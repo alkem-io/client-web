@@ -1008,7 +1008,8 @@
     "mobileTabBar": "Навигация с табове",
     "moreActionsDrawer": "Допълнителни действия",
     "close": "Затвори",
-    "loadingPost": "Зареждане на публикация"
+    "loadingPost": "Зареждане на публикация",
+    "loadingContributions": "Зареждане на приноси"
   },
   "activity": {
     "dialogTitle": "Скорошна активност"

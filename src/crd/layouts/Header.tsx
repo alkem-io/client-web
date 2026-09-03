@@ -137,7 +137,10 @@ export function Header({
   }, [overlayBanner]);
 
   const isTransparent = overlayBanner && !scrolledPastBanner;
-  const pillClasses = isTransparent ? 'bg-white/75 dark:bg-black/40 backdrop-blur-md rounded-lg px-3 py-1' : undefined;
+  // The vertical padding is always on so the groups keep one height whether or not the
+  // translucent pill is showing — toggling it moved the header contents by 8px on every
+  // banner-overlay / scroll transition.
+  const pillClasses = isTransparent ? 'bg-white/75 dark:bg-black/40 backdrop-blur-md rounded-lg px-3' : undefined;
 
   return (
     <header
@@ -159,8 +162,9 @@ export function Header({
               contentColumnClass(fullWidth)
             )}
           >
-            {/* Left: Logo + breadcrumbs */}
-            <div className={cn('flex items-center gap-4 min-w-0', pillClasses)}>
+            {/* Left: Logo + breadcrumbs. `min-h-10` reserves the breadcrumb row height so the
+                pill doesn't grow (and re-center) once the breadcrumbs mount a beat after the logo. */}
+            <div className={cn('flex items-center gap-4 min-w-0 min-h-10 py-1', pillClasses)}>
               <a href={navigationHrefs.home} className="flex items-center shrink-0" aria-label={t('header.home')}>
                 <AlkemioLogo className="w-8 h-8" />
               </a>
@@ -172,8 +176,9 @@ export function Header({
               )}
             </div>
 
-            {/* Right: icon row */}
-            <nav aria-label={t('header.menu')} className={cn('flex items-center gap-1', pillClasses)}>
+            {/* Right: icon row. `min-h-11` matches the tallest item (the avatar) so the pill keeps
+                its final height while the authenticated buttons mount after the session resolves. */}
+            <nav aria-label={t('header.menu')} className={cn('flex items-center gap-1 min-h-11 py-1', pillClasses)}>
               <HeaderIconButton
                 onClick={onSearchClick}
                 ariaLabel={t('header.search')}

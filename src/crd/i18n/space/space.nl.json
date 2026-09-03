@@ -1008,7 +1008,8 @@
     "mobileTabBar": "Tabbladnavigatie",
     "moreActionsDrawer": "Extra acties",
     "close": "Sluiten",
-    "loadingPost": "$t(common.callout) laden"
+    "loadingPost": "$t(common.callout) laden",
+    "loadingContributions": "Bijdragen laden"
   },
   "activity": {
     "dialogTitle": "Recente activiteit"

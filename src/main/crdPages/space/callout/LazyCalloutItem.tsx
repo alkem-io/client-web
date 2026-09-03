@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
@@ -15,10 +15,16 @@ import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/us
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
-import { getCalloutContributionType, mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
+import {
+  getCalloutContributionType,
+  mapCalloutDetailsToPostCard,
+  mapContributionTypeToPreviewKind,
+  mapFramingTypeToPostType,
+} from '../dataMappers/calloutDataMapper';
 import { useCrdCalloutMoveActions } from '../hooks/useCrdCalloutMoveActions';
 import { useFlowStateLayout } from '../hooks/useFlowStateLayout';
 import { useMediaGalleryDirectUpload } from '../hooks/useMediaGalleryDirectUpload';
+import { useRememberedCalloutHeight } from '../hooks/useRememberedCalloutHeight';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
@@ -46,6 +52,14 @@ type LazyCalloutItemProps = {
    * compact regardless of how the tab is configured to browse.
    */
   forceDescriptionCollapsed?: boolean;
+  /**
+   * Skeleton shape hints, known from the feed list before this card's details
+   * query resolves — the placeholder reserves the framing preview + contributions
+   * grid footprint so the feed doesn't jump when the card lands (issue #10043).
+   */
+  framingType?: CalloutFramingType;
+  contributionType?: CalloutContributionType;
+  contributionCount?: number;
   onClick?: () => void;
   onExpandClick?: () => void;
 };
@@ -56,6 +70,9 @@ export function LazyCalloutItem({
   orderedCalloutIds = [],
   canReorder = false,
   forceDescriptionCollapsed = false,
+  framingType,
+  contributionType,
+  contributionCount,
   onClick,
   onExpandClick,
 }: LazyCalloutItemProps) {
@@ -70,20 +87,46 @@ export function LazyCalloutItem({
     withClassification: true,
   });
 
+  // Once loaded, the card's rendered height is remembered (per viewport width) so the
+  // next visit's placeholder takes exactly that height — measured, not estimated.
+  const loaded = inView && !loading && callout !== undefined;
+  const { ref: contentRef, height } = useRememberedCalloutHeight(calloutId, loaded);
+
+  const skeleton = (
+    <PostCardSkeleton
+      type={framingType ? mapFramingTypeToPostType(framingType) : undefined}
+      contributions={
+        contributionType
+          ? { kind: mapContributionTypeToPreviewKind(contributionType), count: contributionCount ?? 0 }
+          : undefined
+      }
+      height={height}
+    />
+  );
+
   return (
     <div ref={ref} id={calloutId}>
       {inView && !loading && callout ? (
-        <LazyCalloutItemContent
-          callout={callout}
-          calloutsSetId={calloutsSetId}
-          orderedCalloutIds={orderedCalloutIds}
-          canReorder={canReorder}
-          forceDescriptionCollapsed={forceDescriptionCollapsed}
-          onClick={onClick}
-          onExpandClick={onExpandClick}
-        />
+        <div ref={contentRef}>
+          {/* Own Suspense boundary: the card subtree pulls in lazily-loaded i18n namespaces
+              (crd-reactions, crd-taskBoard) and chunks. Without a boundary here the first
+              card to mount suspends up to the tab-level boundary, which swaps the ENTIRE
+              feed for a spinner for a frame — the biggest single layout jump on the page
+              (issue #10043). The fallback is the same skeleton, so nothing moves. */}
+          <Suspense fallback={skeleton}>
+            <LazyCalloutItemContent
+              callout={callout}
+              calloutsSetId={calloutsSetId}
+              orderedCalloutIds={orderedCalloutIds}
+              canReorder={canReorder}
+              forceDescriptionCollapsed={forceDescriptionCollapsed}
+              onClick={onClick}
+              onExpandClick={onExpandClick}
+            />
+          </Suspense>
+        </div>
       ) : (
-        <PostCardSkeleton />
+        skeleton
       )}
     </div>
   );

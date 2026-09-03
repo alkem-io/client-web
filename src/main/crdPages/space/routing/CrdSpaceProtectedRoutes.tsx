@@ -22,7 +22,7 @@ const CrdSpaceProtectedRoutes = () => {
   const parentContext = useOutletContext();
 
   if (resolvingUrl || loadingSpace) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner className="min-h-[60vh]" />;
   }
 
   if (!permissions.canRead) {

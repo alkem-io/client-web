@@ -118,7 +118,9 @@ export default function CrdSpacePageLayout() {
   useEdgeSwipe(() => setMobileMenuOpen(true), { enabled: belowLg && isLevelZero && !isOnSettings });
 
   if (resolvingUrl || loadingSpace) {
-    return <LoadingSpinner />;
+    // Full-viewport so the footer stays below the fold; a short spinner would let the
+    // footer sit mid-screen and then get pushed out when the shell mounts (issue #10043).
+    return <LoadingSpinner className="min-h-screen" />;
   }
 
   // Parse section index from URL (1-indexed) and clamp to valid tab range. Bound by the full

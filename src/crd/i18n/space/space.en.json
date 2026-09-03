@@ -1008,7 +1008,8 @@
     "mobileTabBar": "Tab navigation",
     "moreActionsDrawer": "Additional actions",
     "close": "Close",
-    "loadingPost": "Loading $t(common.callout)"
+    "loadingPost": "Loading $t(common.callout)",
+    "loadingContributions": "Loading contributions"
   },
   "activity": {
     "dialogTitle": "Recent Activity"

@@ -51,6 +51,12 @@ export interface useCalloutContributionsProvided {
 
   subscriptionEnabled: boolean;
   loading?: boolean;
+  /**
+   * Whether any contributions page has arrived yet (cache or network). False until the
+   * observed element scrolls into view and the first result lands — consumers render a
+   * placeholder for `contributions` until then.
+   */
+  loaded: boolean;
 
   /**
    * just bubbles up for a callout refetch
@@ -154,6 +160,7 @@ const useCalloutContributions = ({
       total: totalContributionsCount,
     },
     loading,
+    loaded: effectiveData !== undefined,
     subscriptionEnabled: subscription.enabled,
     onCalloutContributionsUpdate: async () => {
       await onCalloutUpdate?.();

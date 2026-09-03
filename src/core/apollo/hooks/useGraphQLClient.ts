@@ -5,6 +5,7 @@ import { env } from '@/main/env';
 import { typePolicies } from '../config/typePolicies';
 import {
   consoleLink,
+  devDelayLink,
   guestHeaderLink,
   httpLink,
   omitTypenameLink,
@@ -51,6 +52,7 @@ export const useGraphQLClient = (
           errorHandlerLink,
           retryLink,
           redirectLink,
+          devDelayLink,
           httpLink(graphQLEndpoint, enableWebSockets),
         ]),
         cache,

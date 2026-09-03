@@ -29700,6 +29700,16 @@ export const CalloutsListForFeedDocument = gql`
       callouts(classificationTagsets: $classificationTagsets) {
         id
         sortOrder
+        activity
+        framing {
+          id
+          type
+        }
+        settings {
+          contribution {
+            allowedTypes
+          }
+        }
       }
     }
   }

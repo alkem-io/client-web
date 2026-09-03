@@ -4,7 +4,7 @@ import { LazyCalloutItem } from './LazyCalloutItem';
 
 type CalloutListConnectorProps = {
   title?: string;
-  // The feed reads only id + sortOrder; each card lazy-loads its own content.
+  // The feed reads id + sortOrder + skeleton shape hints; each card lazy-loads its own content.
   callouts: CrdFeedCallout[];
   calloutsSetId: string | undefined;
   canCreate?: boolean;
@@ -43,6 +43,9 @@ export function CalloutListConnector({
           calloutsSetId={calloutsSetId}
           orderedCalloutIds={orderedCalloutIds}
           canReorder={canReorder}
+          framingType={callout.framing?.type}
+          contributionType={callout.settings?.contribution?.allowedTypes?.[0]}
+          contributionCount={callout.activity}
         />
       ))}
     </SpaceFeed>

@@ -1008,7 +1008,8 @@
     "mobileTabBar": "Navegación por pestañas",
     "moreActionsDrawer": "Acciones adicionales",
     "close": "Cerrar",
-    "loadingPost": "Cargando publicación"
+    "loadingPost": "Cargando publicación",
+    "loadingContributions": "Cargando contribuciones"
   },
   "activity": {
     "dialogTitle": "Actividad reciente"

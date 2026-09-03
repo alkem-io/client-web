@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { cn } from '@/crd/lib/utils';
@@ -43,6 +43,11 @@ type Overflow = 'unknown' | 'yes' | 'no';
 // (text, image, embed) to the same ~N-line band. `0.875rem` is the rendered
 // `text-body` size (14px); `1.625` is the paragraph `leading-relaxed`.
 const collapsedMaxHeight = (maxLines: number) => `calc(${maxLines} * 1.625 * 0.875rem)`;
+/** The same clamp height in px, for comparing against the measured content height. */
+const collapsedMaxHeightPx = (maxLines: number) => {
+  const rootFontSize = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+  return maxLines * 1.625 * 0.875 * rootFontSize;
+};
 
 /**
  * Markdown body with a "Read more" / "Read less" toggle that only appears when
@@ -76,37 +81,36 @@ export function ExpandableMarkdown({
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // Overflow depends only on the rendered text and the clamp height — re-detect
-  // when those change, NOT when the display-mode setting flips. Decoupling the
-  // two is what makes the component adhere to the setting: when the space
-  // settings query resolves (or an admin toggles the mode), `defaultExpanded`
-  // flips and the view switches instantly via `isExpanded` below — no
-  // re-measurement, no race that could leave a "Collapse by default" post open.
-  useEffect(() => {
-    setOverflow('unknown');
-    setUserExpanded(null);
-  }, [content, maxLines]);
-
   const isExpanded = userExpanded ?? defaultExpanded;
-  // Clamp while we still need to measure, or while collapsed.
-  const isClamped = overflow === 'unknown' || (overflow === 'yes' && !isExpanded);
+  // Clamp only while collapsed (and the content overflows or is still unmeasured).
+  // An expanded block renders at full height from its very first paint: clamping it
+  // "until measured" and then releasing the clamp a frame later made every
+  // expanded-by-default post with a long description jump ~hundreds of px on each
+  // load (issue #10043).
+  const isClamped = !isExpanded && overflow !== 'no';
 
-  // Measure while clamped. The clamped container's own box is fixed by
-  // `max-height` + `overflow: hidden`, so it never resizes as the markdown
-  // grows — observe the *content* element (its height reflects the unclamped
-  // markdown once react-markdown commits / web fonts load) plus the container (width changes
-  // on sidebar resize / rotation) and re-evaluate on either. This re-measures
-  // whenever layout settles, so a first pass that measured too early no longer
-  // latches the wrong result. While expanded the clamp is off and we trust the
-  // prior measurement (the user explicitly opened it), matching MUI.
+  // Overflow depends only on the rendered text and the clamp height — re-detect when
+  // those change, NOT when the display-mode setting flips. Decoupling the two is what
+  // makes the component adhere to the setting: when the space settings query resolves
+  // (or an admin toggles the mode), `defaultExpanded` flips and the view switches
+  // instantly via `isExpanded` — no re-measurement, no race that could leave a
+  // "Collapse by default" post open. A content change also drops the user's explicit
+  // toggle so the new text follows the setting again.
+  //
+  // Detection is independent of the clamp: compare the *content* element's own height
+  // (unaffected by the container's `max-height` + `overflow: hidden`) with the clamp
+  // height, synchronously before paint. Re-measured by a ResizeObserver on the content
+  // (react-markdown commits, web fonts) and the container (width changes on sidebar
+  // resize / rotation), so a first pass that measured too early never latches the
+  // wrong result.
   useLayoutEffect(() => {
-    if (!isClamped) return;
+    setUserExpanded(null);
     const container = containerRef.current;
     const contentEl = contentRef.current;
     if (!container || !contentEl) return;
 
     const evaluate = () => {
-      const overflowing = container.scrollHeight > container.clientHeight + 1; // +1px tolerance for sub-pixel rounding
+      const overflowing = contentEl.getBoundingClientRect().height > collapsedMaxHeightPx(maxLines) + 1; // +1px tolerance for sub-pixel rounding
       setOverflow(overflowing ? 'yes' : 'no');
     };
 
@@ -116,7 +120,7 @@ export function ExpandableMarkdown({
     observer.observe(contentEl);
     observer.observe(container);
     return () => observer.disconnect();
-  }, [isClamped, content, maxLines]);
+  }, [content, maxLines]);
 
   const showToggle = overflow === 'yes';
   const surfaceClass = surfaceClasses[surface];

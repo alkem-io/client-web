@@ -1,4 +1,5 @@
 export * from './consoleLink';
+export * from './devDelayLink';
 export * from './guestHeaderLink';
 export * from './httpLink';
 export * from './omitTypenameLink';

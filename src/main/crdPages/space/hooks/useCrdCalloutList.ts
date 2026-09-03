@@ -1,4 +1,5 @@
 import { useCalloutsListForFeedQuery } from '@/core/apollo/generated/apollo-hooks';
+import type { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { useCalloutsSetAuthorization } from '@/domain/collaboration/calloutsSet/authorization/useCalloutsSetAuthorization';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
@@ -8,9 +9,21 @@ type UseCrdCalloutListParams = {
   skip?: boolean;
 };
 
-/** The feed only needs each callout's id + sort order — every card lazy-fetches
- *  its own content via CalloutDetails on scroll-into-view. */
-export type CrdFeedCallout = { id: string; sortOrder: number };
+/**
+ * The feed needs each callout's id + sort order — every card lazy-fetches its own
+ * content via CalloutDetails on scroll-into-view — plus the shape hints its loading
+ * placeholder uses to reserve the card's footprint (framing type, contribution type,
+ * contribution count). The hints are optional so the heavier `CalloutModelLight`
+ * (subspace / knowledge-base feeds) satisfies this shape as-is.
+ */
+export type CrdFeedCallout = {
+  id: string;
+  sortOrder: number;
+  /** Contribution count when the callout accepts contributions (comment count otherwise). */
+  activity?: number;
+  framing?: { type: CalloutFramingType };
+  settings?: { contribution?: { allowedTypes?: CalloutContributionType[] } };
+};
 
 export function useCrdCalloutList({ tabPosition, skip }: UseCrdCalloutListParams) {
   const {
@@ -29,8 +42,8 @@ export function useCrdCalloutList({ tabPosition, skip }: UseCrdCalloutListParams
     loading: authLoading,
   } = useCalloutsSetAuthorization({ calloutsSetId, skip });
 
-  // Lean list query (feature 007): id + sortOrder only. Replaces the heavy
-  // `CalloutsOnCalloutsSetUsingClassification`, whose framing/classification
+  // Lean list query (feature 007): id + sortOrder + skeleton shape hints. Replaces
+  // the heavy `CalloutsOnCalloutsSetUsingClassification`, whose framing/classification
   // payload is now fetched lazily by the Post Index dialog instead.
   const { data, loading: feedLoading } = useCalloutsListForFeedQuery({
     variables: {

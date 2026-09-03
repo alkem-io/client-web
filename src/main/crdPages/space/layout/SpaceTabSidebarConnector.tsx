@@ -19,6 +19,7 @@ import { SearchSection, type SearchSectionProps } from '@/crd/components/space/s
 import { SubspacesSection } from '@/crd/components/space/sidebar/SubspacesSection';
 import { UpdatesSection } from '@/crd/components/space/sidebar/UpdatesSection';
 import { VirtualContributorsSection } from '@/crd/components/space/sidebar/VirtualContributorsSection';
+import { Skeleton } from '@/crd/primitives/skeleton';
 import type { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
@@ -117,9 +118,9 @@ export function SpaceTabSidebarConnector({
     skip: skips.applicationButton,
   });
 
-  const sidebarLeads = useCrdSpaceLeads(space.id, skips.intent);
+  const { leads: sidebarLeads, loading: leadsLoading } = useCrdSpaceLeads(space.id, skips.intent);
 
-  const { dashboardNavigation } = useCrdSpaceDashboard({ skip: skips.subspaceLinks });
+  const { dashboardNavigation, loading: subspacesLoading } = useCrdSpaceDashboard({ skip: skips.subspaceLinks });
   const subspaces =
     dashboardNavigation?.children?.map(child => ({
       name: child.displayName,
@@ -153,11 +154,19 @@ export function SpaceTabSidebarConnector({
   // on exactly those two; guidelines gates its own content query. The addUser
   // widget needs no query at all — canInvite/roleSetId/communityId all come from
   // the space context.
-  const { leadUsers, virtualContributors, hasVcEntitlement, canInvite, communityId, roleSetId, guidelines } =
-    useCrdSpaceCommunity({
-      skipContributors: skips.contactLeads && skips.virtualContributors,
-      skipGuidelines: skips.guidelines,
-    });
+  const {
+    leadUsers,
+    virtualContributors,
+    hasVcEntitlement,
+    canInvite,
+    communityId,
+    roleSetId,
+    guidelines,
+    loading: communityLoading,
+  } = useCrdSpaceCommunity({
+    skipContributors: skips.contactLeads && skips.virtualContributors,
+    skipGuidelines: skips.guidelines,
+  });
   const canContactLeads = leadUsers.length > 0 && Boolean(communityId);
   const canInviteVc = hasVcEntitlement && canInvite && Boolean(roleSetId);
   const leadRecipients: ContactLeadRecipient[] = leadUsers.map(lead => ({
@@ -176,21 +185,27 @@ export function SpaceTabSidebarConnector({
         key="intent"
         description={space.about.profile.description || ''}
         leads={sidebarLeads}
+        leadsLoading={leadsLoading}
         onEditClick={onEditClick}
       />
     ),
     about: <AboutButton key="about" onClick={onAboutClick} />,
     createPost: canCreatePost && <CreatePostButton key="createPost" onClick={onCreatePost} />,
-    applicationButton: !applyLoading && !isSpaceMember && (
-      <SpaceAboutApplyButton key="applicationButton" {...applyButtonProps} className="w-full" />
-    ),
+    // Hold the button's footprint while membership is being resolved (it lands ~1s after
+    // the sidebar renders and would otherwise push every widget below it down).
+    applicationButton: applyLoading
+      ? !skips.applicationButton && <Skeleton key="applicationButton" className="h-9 w-full rounded-md" />
+      : !isSpaceMember && <SpaceAboutApplyButton key="applicationButton" {...applyButtonProps} className="w-full" />,
     createSubspace: permissions.canCreateSubspaces && (
       <CreateSubspaceButton key="createSubspace" onClick={onCreateSubspace} />
     ),
-    subspaceLinks: subspaces.length > 0 && (
+    // Also rendered (as a placeholder) while the navigation query is in flight, so the
+    // widgets below don't get pushed down when the list lands (issue #10043).
+    subspaceLinks: (subspaces.length > 0 || subspacesLoading) && (
       <SubspacesSection
         key="subspaceLinks"
         subspaces={subspaces}
+        loading={subspacesLoading}
         // A dialog instead of a link to the Subspaces tab: the Subspaces callout
         // can be moved to any tab, so a hardcoded tab redirect may land the user
         // on a page without it (alkem-io/alkemio#2023).
@@ -216,7 +231,13 @@ export function SpaceTabSidebarConnector({
         locale={locale}
       />
     ),
-    contactLeads: canContactLeads && <ContactLeadButton key="contactLeads" onClick={() => setContactOpen(true)} />,
+    // Nearly every space has a lead, so hold the button's footprint while the roster
+    // query is in flight rather than pushing the widgets below down when it lands.
+    contactLeads: canContactLeads ? (
+      <ContactLeadButton key="contactLeads" onClick={() => setContactOpen(true)} />
+    ) : (
+      !skips.contactLeads && communityLoading && <Skeleton key="contactLeads" className="h-9 w-full rounded-md" />
+    ),
     addUser: canInvite && <InviteButton key="addUser" onClick={() => setInviteOpen(true)} />,
     virtualContributors: hasVcEntitlement && (virtualContributors.length > 0 || canInviteVc) && (
       <VirtualContributorsSection

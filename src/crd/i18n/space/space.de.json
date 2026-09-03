@@ -1008,7 +1008,8 @@
     "mobileTabBar": "Reiternavigation",
     "moreActionsDrawer": "Weitere Aktionen",
     "close": "Schließen",
-    "loadingPost": "Beitrag wird geladen"
+    "loadingPost": "Beitrag wird geladen",
+    "loadingContributions": "Beiträge werden geladen"
   },
   "activity": {
     "dialogTitle": "Letzte Aktivität"

@@ -1008,7 +1008,8 @@
     "mobileTabBar": "Navigation par onglets",
     "moreActionsDrawer": "Actions supplémentaires",
     "close": "Fermer",
-    "loadingPost": "Chargement de la publication"
+    "loadingPost": "Chargement de la publication",
+    "loadingContributions": "Chargement des contributions"
   },
   "activity": {
     "dialogTitle": "Activité récente"
