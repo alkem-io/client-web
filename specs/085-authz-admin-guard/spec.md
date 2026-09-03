@@ -9,7 +9,7 @@
 
 ### Session 2026-04-15
 
-- Q: Which privilege must the current user hold on the entity for the "Add user" action to be enabled? → A: GRANT (correction of the initial input, which said UPDATE)
+- Q: Which privilege must the current user hold on the entity for the "Add user" action to be enabled? → A: GRANT (correction of the initial input, which said UPDATE). **Superseded 2026-09-03**: verified against the running backend, the platform role set enforces `GRANT_GLOBAL_ADMINS`, not `GRANT`. FR-012 governs — the token is per-surface and determined by the resolver.
 - Q: What is the scope of pages this change should cover? → A: Every page in the app where an "Add user" control exists — treat silent failure as a global bug and apply the disable+tooltip+error pattern consistently wherever role/user assignment controls appear.
 - Q: Is there existing prior art in the codebase for this pattern? → A: The Platform Admin "Conversions & Transfer" tab's callout-transfer feature (`src/domain/platformAdmin/management/transfer/transferCallout/`) already reads `authorization.myPrivileges` to gate its action button (using `TransferResourceOffer` on the source and `TransferResourceAccept` on the target). It is a **different use case** and is **out of scope** for this feature — it is NOT to be migrated onto the shared pattern. It should be treated as reference material only: its approach to reading privileges from GraphQL informs this feature's design. If — and only if — aligning it to the same hover/focus tooltip feedback pattern is cheap and non-disruptive, it MAY be updated as a nice-to-have; otherwise it is left alone.
 
@@ -23,7 +23,7 @@
 
 ## User Scenarios & Testing *(mandatory)*
 
-> **Note on the privilege token**: both stories are written against the platform authorization admin page, whose token is `GRANT`. Other covered surfaces enforce more granular tokens (e.g. `ROLESET_ENTRY_ROLE_ASSIGN`); FR-012 governs those, and the scenarios below read identically with each surface's own token substituted.
+> **Note on the privilege token**: both stories are written against the platform authorization admin page, whose token is `GRANT_GLOBAL_ADMINS` (confirmed against the backend; see research.md). Other covered surfaces enforce more granular tokens (e.g. `ROLESET_ENTRY_ROLE_ASSIGN`); FR-012 governs those, and the scenarios below read identically with each surface's own token substituted.
 
 ### User Story 1 - Prevent silent failures with visible error feedback (Priority: P1)
 
@@ -70,8 +70,8 @@ When the current user does not hold the `GRANT` privilege on the entity shown on
 
 ### Functional Requirements
 
-- **FR-001**: A surface MUST determine whether the current user holds the privilege its backend enforces for the action (see FR-012) on the entity being administered, before rendering role-assignment controls in an interactive state. On the platform authorization admin page this is `GRANT`; other surfaces enforce more granular tokens.
-- **FR-002**: When the current user does not hold the required privilege on the entity, every role-assignment control on the page — both the "Add" control and the per-member "Remove" control, for all contributor types — MUST be rendered in a disabled state that cannot be activated by mouse, keyboard, or assistive technology. "Disabled state" here means the control is conveyed and treated as disabled while remaining keyboard-focusable, so that FR-003 and FR-004 can be satisfied; it does NOT mean the native HTML `disabled` attribute, which would remove the control from the tab order.
+- **FR-001**: A surface MUST determine whether the current user holds the privilege its backend enforces for the action (see FR-012) on the entity being administered, before rendering role-assignment controls in an interactive state. On the platform authorization admin page this is `GRANT_GLOBAL_ADMINS`; other surfaces enforce more granular tokens such as `ROLESET_ENTRY_ROLE_ASSIGN`.
+- **FR-002**: When the current user does not hold the required privilege on the entity, every role-assignment control on the page — both the "Add" control and the per-member "Remove" control, for all contributor types — MUST be rendered in a disabled state that cannot be activated by mouse, keyboard, or assistive technology. The control itself is genuinely disabled — visibly greyed and non-activatable — and FR-003's explanatory tooltip is therefore carried by a focusable wrapper around it, which is how FR-004's keyboard reachability is satisfied without leaving the control activatable.
 - **FR-003**: A disabled role-assignment control MUST display, on hover and on keyboard focus, a tooltip stating in plain language that the user lacks permission for the action. The tooltip MUST NOT expose internal privilege tokens (such as `GRANT`) and MUST NOT name an escalation target, so that one surface-agnostic string serves every covered surface.
 - **FR-004**: The tooltip text MUST be accessible to screen readers and conform to the platform's accessibility standards (WCAG 2.1 AA), including being reachable via keyboard focus.
 - **FR-005**: When a role-assignment control is disabled due to missing privilege, the system MUST NOT send any backend request if the user attempts to activate it.

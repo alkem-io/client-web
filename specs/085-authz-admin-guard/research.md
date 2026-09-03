@@ -53,11 +53,26 @@ Surfaces 2 and 3 share one presentational component (`src/crd/components/contrib
 - **Consequence**: surface 4 reuses the tokens `useCommunityAdmin` already computes. Surfaces 1–3 need their token confirmed against the backend resolver before implementation; see Open Risk R1.
 - **Alternatives rejected**: hard-coding `GRANT` everywhere (contradicts observed behavior on surface 4); attempting the mutation to discover the answer (that is the bug).
 
-## Decision 3: `aria-disabled`, not the native `disabled` attribute
+## Decision 3: native `disabled` on the control, tooltip on a focusable wrapper
 
-- **Decision**: The gated control renders with `aria-disabled="true"`, stays in the tab order, and short-circuits its handler. It is not given the HTML `disabled` attribute.
-- **Rationale**: FR-002 requires the control be non-activatable while FR-003/FR-004 require a tooltip on **keyboard focus** reachable by assistive technology. A natively `disabled` element is removed from the tab order and fires no pointer events, so it can satisfy neither — the two requirements are only jointly satisfiable via `aria-disabled`. This is also the standard WCAG 2.1 AA pattern and avoids the Radix/MUI `<span>`-wrapper hack for tooltips on disabled triggers.
-- **Alternatives rejected**: native `disabled` + wrapper span (tooltip works on hover but not on keyboard focus — fails FR-004/SC-005); hiding the control entirely (layout shift, hides the action's existence, contradicts FR-002).
+**Revised 2026-09-03 after testing against a running backend.** The first implementation used
+`aria-disabled` alone, keeping the control in the tab order and anchoring the tooltip to it.
+In the browser this read as a bug: the button looked fully enabled, and the only indication
+it was unavailable was a tooltip on hover — invisible on touch and easy to miss on desktop.
+
+- **Decision**: The gated control gets the native `disabled` attribute (which also picks up
+  the CRD button's `disabled:opacity-*` styling, so it visibly reads as unavailable) plus
+  `aria-disabled`. The tooltip hangs off a focusable `<span>` wrapper rather than the control.
+- **Rationale**: FR-002 asks for a control rendered in a disabled state — visual affordance
+  included, not just an announced state. A disabled control fires no pointer events and
+  leaves the tab order, so the tooltip has to be anchored to something else; the wrapper
+  carries `tabIndex={0}`, which keeps the explanation reachable by keyboard and screen reader
+  and so still satisfies FR-003/FR-004. The button primitive's `disabled:pointer-events-none`
+  is what makes this work — hover passes through the inert control to the wrapper.
+- **Alternatives rejected**: `aria-disabled` alone (no visual affordance — the state this
+  revision fixes); native `disabled` with the tooltip on the control itself (unreachable by
+  both mouse and keyboard); hiding the control entirely (layout shift, hides the action's
+  existence, contradicts FR-002).
 
 ## Decision 4: Notify at the mutation-owning hook, filtered to authorization codes only
 
@@ -90,21 +105,34 @@ Determined by mutation identity rather than guesswork, and centralized in
 | 2, 3 — Organization authorization / associates | `assignRoleToUser`, `removeRoleFromUser` | `ROLESET_ENTRY_ROLE_ASSIGN` | **Same mutation pair** as the space-community user path, which production code (`useCommunityAdmin.ts:206`) already gates on this token. Same resolver, same policy. |
 | 4 — Space community (users, VCs) | `assignRoleToUser`, `assignRoleToVirtualContributor` | `ROLESET_ENTRY_ROLE_ASSIGN` | Established in `useCommunityAdmin.ts`. |
 | 4 — Space community (organizations) | `assignRoleToOrganization`, `removeRoleFromOrganization` | `ROLESET_ENTRY_ROLE_ASSIGN_ORGANIZATION` **and** `GRANT` | Established in `useCommunityAdmin.ts:211-213`. |
-| 1 — Platform global roles | `assignPlatformRoleToUser`, `removePlatformRoleFromUser` | `GRANT` — **still unconfirmed** | A different mutation pair, so the inference above does not carry. `GRANT` is the value recorded during clarification. See R1 below. |
+| 1 — Platform global roles | `assignPlatformRoleToUser`, `removePlatformRoleFromUser` | `GRANT_GLOBAL_ADMINS` | **Confirmed empirically 2026-09-03.** `PlatformRoleResolverMutations.assignPlatformRoleToUser` calls `grantAccessOrFail` with `grant-global-admins`. The `GRANT` value recorded during clarification was wrong. |
 
 **R2 — resolved.** `useCommunityAdmin` now exposes its raw `myPrivileges` alongside the
 existing booleans, `useCommunityTabData` forwards them plus the previously-dropped
 `canAddUsers`, and `CrdSpaceSettingsPage` derives one decision per control.
 
-## Open Risks
+## Closed Risks
 
-- **R1 (narrowed) — the platform surface's token is still unverified.** Surfaces 2–4 are
-  settled by the table above. Surface 1 uses `assignPlatformRoleToUser`, whose backend
-  policy has not been checked against a running server; the implementation uses `GRANT`
-  per the spec clarification. If it is wrong the symptom is a control gated for a user who
-  is in fact permitted — correct it in `PLATFORM_ROLE_ASSIGN_PRIVILEGES`, a one-line
-  change. Confirm via `quickstart.md` step 1 before release.
-- **R1 (original) — Privilege token unverified on surfaces 1–3.** Decision 2 establishes that the token is per-surface, but only surface 4's tokens are evidenced in-repo. The spec's clarification names `GRANT` for the platform role set; the analogous space-community operation uses `ROLESET_ENTRY_ROLE_ASSIGN`. Before implementation, each surface's token must be confirmed against the backend resolver (or empirically, per `quickstart.md` step 2). Getting this wrong reintroduces UI/backend disagreement in the opposite direction — a control disabled for someone who is in fact permitted. The design contains the blast radius: the token is one argument at one call site per surface.
+- **R1 — CLOSED 2026-09-03.** Every surface's token is now evidenced; see the table above.
+  The platform surface was the last open one and the clarified `GRANT` proved **wrong**:
+  against a running backend, an admin holding `GRANT` was shown an enabled control and
+  then refused with
+
+  > `ForbiddenAuthorizationPolicyException: Authorization: unable to grant 'grant-global-admins' privilege: assign role to User ... on roleSet of type: platform`
+
+  Corrected to `GRANT_GLOBAL_ADMINS` in `PLATFORM_ROLE_ASSIGN_PRIVILEGES`.
+
+  Worth recording how this surfaced: the UI wrongly **allowed** the action and the User
+  Story 1 error toast caught it — exactly the safety-net role the spec assigns to US1 when
+  the UI privilege check and the backend disagree. Before this feature the same click
+  failed silently.
+
+  One caveat left open: the evidence covers the assignment the tester performed. If the
+  backend ever gates *lower* platform roles on a weaker privilege, gating all of them on
+  `GRANT_GLOBAL_ADMINS` would over-gate — fail-closed, so safer than the previous state,
+  but worth a second check if anyone reports a missing control on that page.
+
+- **R1 (original wording, superseded) — Privilege token unverified on surfaces 1–3.** Decision 2 establishes that the token is per-surface, but only surface 4's tokens are evidenced in-repo. The spec's clarification names `GRANT` for the platform role set; the analogous space-community operation uses `ROLESET_ENTRY_ROLE_ASSIGN`. Before implementation, each surface's token must be confirmed against the backend resolver (or empirically, per `quickstart.md` step 2). Getting this wrong reintroduces UI/backend disagreement in the opposite direction — a control disabled for someone who is in fact permitted. The design contains the blast radius: the token is one argument at one call site per surface.
 - **R2 — Surface 4 currently drops `canAddUsers`.** `useCommunityAdmin` computes it but `useCommunityTabData.ts:349-358` does not forward it, and `AddCommunityMemberDialog` accepts no permission prop. This is an existing ungated path, not merely a missing tooltip.
 
 ## Deferred to `/speckit.tasks`

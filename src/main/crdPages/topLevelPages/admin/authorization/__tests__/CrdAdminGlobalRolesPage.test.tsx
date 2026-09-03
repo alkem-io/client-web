@@ -24,7 +24,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 const assignPlatformRoleToUser = vi.fn();
 const removePlatformRoleFromUser = vi.fn();
 /** Privileges the mocked role-set manager reports; per-test overridable. */
-const myPrivilegesMock = vi.fn<() => string[] | undefined>(() => ['GRANT']);
+const myPrivilegesMock = vi.fn<() => string[] | undefined>(() => ['GRANT_GLOBAL_ADMINS']);
 
 vi.mock('@/domain/access/RoleSetManager/useRoleSetManager', () => ({
   RELEVANT_ROLES: {
@@ -131,12 +131,13 @@ describe('CrdAdminGlobalRolesPage', () => {
     const removeButton = () => screen.getByRole('button', { name: 'roleMembers.remove' });
 
     afterEach(() => {
-      myPrivilegesMock.mockReturnValue(['GRANT']);
+      myPrivilegesMock.mockReturnValue(['GRANT_GLOBAL_ADMINS']);
     });
 
     // spec FR-002 / SC-007
     test('gates add and remove when the privilege is absent, and dispatches no mutation', async () => {
-      myPrivilegesMock.mockReturnValue(['READ']);
+      // Holding plain GRANT is not enough here: the resolver demands GRANT_GLOBAL_ADMINS.
+      myPrivilegesMock.mockReturnValue(['GRANT']);
       render(<CrdAdminGlobalRolesPage />);
 
       expect(addButton()).toHaveAttribute('aria-disabled', 'true');
@@ -149,7 +150,7 @@ describe('CrdAdminGlobalRolesPage', () => {
     });
 
     test('leaves both controls interactive when the privilege is present', () => {
-      myPrivilegesMock.mockReturnValue(['GRANT']);
+      myPrivilegesMock.mockReturnValue(['GRANT_GLOBAL_ADMINS']);
       render(<CrdAdminGlobalRolesPage />);
 
       expect(addButton()).not.toHaveAttribute('aria-disabled');

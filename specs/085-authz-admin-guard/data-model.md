@@ -81,9 +81,8 @@ type GatedActionProps = {
 ### Behavioral contract
 
 1. `disabledReason === undefined` → children render untouched, no tooltip wrapper, no added ARIA.
-2. `disabledReason` set → the child gets `aria-disabled="true"`, remains in the tab order, and its `onClick` / activation handler is suppressed (FR-005, SC-007).
-3. The tooltip shows on both hover and keyboard focus, and is associated with the control for screen readers (FR-003, FR-004, SC-005).
-4. The native `disabled` attribute is never applied — it would remove the control from the tab order and defeat requirement 3 (research Decision 3).
+2. `disabledReason` set → the child gets the native `disabled` attribute (so it is visibly greyed and functionally inert, FR-005 / SC-007) plus `aria-disabled` for assistive technology.
+3. The tooltip is anchored to a focusable `<span>` wrapper rather than the control, and shows on both hover and keyboard focus (FR-003, FR-004, SC-005). A disabled control fires no pointer events and leaves the tab order, so the wrapper is what keeps the explanation reachable — see research Decision 3.
 
 ## Contract 3 — Mutation error notification
 

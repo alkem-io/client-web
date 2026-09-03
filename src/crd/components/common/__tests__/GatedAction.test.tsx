@@ -46,21 +46,20 @@ describe('GatedAction', () => {
     expect(screen.getByRole('button', { name: 'Add' })).toHaveAttribute('aria-disabled', 'true');
   });
 
-  // spec FR-002 vs FR-004 — the native `disabled` attribute would leave the tab order,
-  // making a focus tooltip impossible. It must never be applied.
-  test('never applies the native disabled attribute', () => {
+  // spec FR-002 — the control must read as unavailable, not merely be announced as such
+  test('applies the native disabled attribute so the control looks and behaves disabled', () => {
     render(
       <GatedAction disabledReason={REASON}>
         <button type="button">Add</button>
       </GatedAction>
     );
 
-    const button = screen.getByRole('button', { name: 'Add' });
-    expect(button).not.toBeDisabled();
-    expect(button).not.toHaveAttribute('disabled');
+    expect(screen.getByRole('button', { name: 'Add' })).toBeDisabled();
   });
 
-  test('keeps the gated control keyboard focusable', async () => {
+  // spec FR-004 — a disabled control leaves the tab order, so the focusable wrapper is what
+  // keeps the explanation reachable by keyboard.
+  test('keeps the explanation keyboard reachable via the wrapper', async () => {
     render(
       <GatedAction disabledReason={REASON}>
         <button type="button">Add</button>
@@ -68,7 +67,8 @@ describe('GatedAction', () => {
     );
 
     await userEvent.tab();
-    expect(screen.getByRole('button', { name: 'Add' })).toHaveFocus();
+    expect(screen.getByRole('button', { name: 'Add' })).not.toHaveFocus();
+    expect(document.activeElement).toHaveAttribute('tabindex', '0');
   });
 
   test('shows the reason on hover', async () => {
@@ -122,5 +122,6 @@ describe('GatedAction', () => {
     await userEvent.keyboard('{Enter}');
     await userEvent.keyboard(' ');
     expect(onClick).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: 'Add' })).toBeDisabled();
   });
 });

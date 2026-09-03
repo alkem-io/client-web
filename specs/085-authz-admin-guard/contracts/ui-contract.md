@@ -45,7 +45,7 @@ Consumers pass `disabledReason?: string` and a single child element. Full behavi
 
 1. `GatedAction` never imports from `@/domain/*`, `@/core/apollo`, `@apollo/client`, `react-router-dom`, or `formik` (CRD rule).
 2. It never receives a privilege array, a GraphQL type, or a boolean named after a privilege — only a finished, translated string.
-3. It never applies the native `disabled` attribute.
+3. It applies the native `disabled` attribute to the control and anchors the tooltip to a focusable wrapper, so the control reads as unavailable while the explanation stays keyboard-reachable.
 
 ## Hook contract — `useActionPermission`
 

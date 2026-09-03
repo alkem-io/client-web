@@ -30,13 +30,18 @@ export const ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES = [
 /**
  * Platform role set — `assignPlatformRoleToUser` / `removePlatformRoleFromUser`.
  *
- * These are a different mutation pair from the role-set assignment above, so the token
- * used elsewhere does not carry over. `GRANT` is the value recorded during specification
- * clarification and has NOT yet been confirmed against the backend resolver — see Open
- * Risk R1 in specs/085-authz-admin-guard/research.md. If it proves wrong, the symptom is
- * a control disabled for someone who is in fact permitted; correct it here.
+ * Confirmed against the running backend (2026-09-03). `PlatformRoleResolverMutations
+ * .assignPlatformRoleToUser` calls `grantAccessOrFail` with `grant-global-admins`, so the
+ * plain `GRANT` privilege is NOT sufficient here — an admin holding only `GRANT` was shown
+ * an enabled control and then refused by the server:
+ *
+ *   ForbiddenAuthorizationPolicyException: Authorization: unable to grant
+ *   'grant-global-admins' privilege: assign role to User ... on roleSet of type: platform
+ *
+ * This is a different mutation pair from the role-set assignment above, which is why the
+ * `ROLESET_ENTRY_ROLE_ASSIGN` token used elsewhere does not apply.
  */
-export const PLATFORM_ROLE_ASSIGN_PRIVILEGES = [AuthorizationPrivilege.Grant];
+export const PLATFORM_ROLE_ASSIGN_PRIVILEGES = [AuthorizationPrivilege.GrantGlobalAdmins];
 
 /**
  * Adding a virtual contributor from the account, an alternative to
