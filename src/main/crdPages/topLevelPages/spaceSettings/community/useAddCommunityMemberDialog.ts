@@ -158,8 +158,8 @@ export function useAddVirtualContributorDialog({
 }
 
 // `useAddVirtualContributorExternalDialog` was removed: the settings "Invite
-// External Virtual Contributor" entry now uses the combined
-// `VirtualContributorInviteConnector` (library list + welcome-message step after
+// External Virtual Contributor" entry now uses `InviteMembersDialogConnector`
+// with kind="virtualContributor" (library list + welcome-message step after
 // selection), matching MUI's `InviteVCsDialog` → `InviteVirtualContributorDialog`
 // flow instead of an inline message on the picker.
 

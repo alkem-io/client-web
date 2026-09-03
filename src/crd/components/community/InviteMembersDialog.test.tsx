@@ -1,7 +1,13 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
-import { type InvitationResult, InviteMembersDialog, type InviteMembersDialogLabels } from './InviteMembersDialog';
+import {
+  type InvitationResult,
+  InviteMembersDialog,
+  type InviteMembersDialogLabels,
+  type InviteMembersDialogVcLabels,
+  type InviteRole,
+} from './InviteMembersDialog';
 
 const labels: InviteMembersDialogLabels = {
   title: 'Invite to TestSpace',
@@ -294,5 +300,114 @@ describe('InviteMembersDialog', () => {
     expect(onBack).toHaveBeenCalled();
     expect(onWelcomeMessageChange).not.toHaveBeenCalled();
     expect(onExtraRolesChange).not.toHaveBeenCalled();
+  });
+});
+
+// ─── virtualContributor kind (T019 fold — every assertion here is ported
+// verbatim, in intent, from the pre-fold VirtualContributorInviteDialog.test.tsx
+// parity baseline; T004/R-4). Unlike the old standalone dialog, VcDialogBody
+// takes every label as a prop (no internal useTranslation), so no i18n mock
+// is needed here — plain literal strings suffice. ───────────────────────────
+
+const vcLabels: InviteMembersDialogVcLabels = {
+  searchPlaceholder: 'Search virtual contributors…',
+  loading: 'Loading virtual contributors',
+  onAccount: 'On your account',
+  onAccountEmpty: 'No virtual contributors available on your account.',
+  inLibrary: 'In the library',
+  inLibraryEmpty: 'No library virtual contributors match your search.',
+  add: 'Add',
+  invite: 'Invite',
+  addAriaLabel: (name: string) => `Add ${name}`,
+  inviteAriaLabel: (name: string) => `Invite ${name}`,
+  previewAriaLabel: (name: string) => `Preview ${name}`,
+  back: 'Back',
+  welcomeMessageLabel: 'Welcome message',
+  welcomeMessagePlaceholder: 'Add a message…',
+  sendInvite: 'Send invitation',
+};
+
+const accountVc = { id: 'vc-account-1', displayName: 'Account VC' };
+const libraryVc = { id: 'vc-library-1', displayName: 'Library VC' };
+
+const vcBaseProps = {
+  ...baseProps,
+  kind: 'virtualContributor' as const,
+  extraRoles: ['Member'] as InviteRole[],
+  labels: { ...labels, title: 'Invite Virtual Contributor', searchHint: 'Add or invite a Virtual Contributor.' },
+  vcLabels,
+  searchQuery: '',
+  onSearchChange: vi.fn(),
+  vcAccountItems: [accountVc],
+  vcLibraryItems: [libraryVc],
+  onAddAccountVc: vi.fn(),
+  onInviteLibraryVc: vi.fn(),
+};
+
+describe('InviteMembersDialog — virtualContributor kind (T019 fold parity)', () => {
+  test('account VC row: clicking Add calls onAddAccountVc with its id', async () => {
+    const onAddAccountVc = vi.fn();
+    render(<InviteMembersDialog {...vcBaseProps} onAddAccountVc={onAddAccountVc} />);
+    await userEvent.click(screen.getByRole('button', { name: 'Add Account VC' }));
+    expect(onAddAccountVc).toHaveBeenCalledWith('vc-account-1');
+  });
+
+  test('library VC row: clicking Invite opens the welcome-message step, then Send calls onInviteLibraryVc(id, message)', async () => {
+    const onInviteLibraryVc = vi.fn();
+    render(<InviteMembersDialog {...vcBaseProps} onInviteLibraryVc={onInviteLibraryVc} />);
+
+    await userEvent.click(screen.getByRole('button', { name: 'Invite Library VC' }));
+    expect(screen.getByText('Library VC')).toBeInTheDocument();
+    const textarea = screen.getByLabelText('Welcome message');
+    await userEvent.type(textarea, 'Welcome aboard');
+    await userEvent.click(screen.getByRole('button', { name: 'Send invitation' }));
+
+    expect(onInviteLibraryVc).toHaveBeenCalledWith('vc-library-1', 'Welcome aboard');
+  });
+
+  test('library message step: Send is disabled while the message is empty/whitespace', async () => {
+    render(<InviteMembersDialog {...vcBaseProps} />);
+    await userEvent.click(screen.getByRole('button', { name: 'Invite Library VC' }));
+    expect(screen.getByRole('button', { name: 'Send invitation' })).toBeDisabled();
+  });
+
+  test('preview sub-view: clicking a row opens onPreviewVc(id) and renders VirtualContributorPreview data', async () => {
+    const onPreviewVc = vi.fn();
+    const { rerender } = render(
+      <InviteMembersDialog {...vcBaseProps} onPreviewVc={onPreviewVc} vcPreviewData={undefined} />
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Preview Account VC' }));
+    expect(onPreviewVc).toHaveBeenCalledWith('vc-account-1');
+
+    rerender(
+      <InviteMembersDialog
+        {...vcBaseProps}
+        onPreviewVc={onPreviewVc}
+        vcPreviewData={{ id: 'vc-account-1', displayName: 'Account VC', tags: [], description: 'A VC.' }}
+      />
+    );
+    expect(screen.getByRole('heading', { name: 'Account VC' })).toBeInTheDocument();
+  });
+
+  test('libraryOnly hides the account section entirely', () => {
+    render(<InviteMembersDialog {...vcBaseProps} libraryOnly={true} />);
+    expect(screen.queryByText('On your account')).not.toBeInTheDocument();
+    expect(screen.queryByText('Account VC')).not.toBeInTheDocument();
+    expect(screen.getByText('In the library')).toBeInTheDocument();
+    expect(screen.getByText('Library VC')).toBeInTheDocument();
+  });
+
+  test('loading state renders a status output instead of the VC lists', () => {
+    render(<InviteMembersDialog {...vcBaseProps} searchLoading={true} />);
+    expect(screen.getByLabelText('Loading virtual contributors')).toBeInTheDocument();
+    expect(screen.queryByText('Account VC')).not.toBeInTheDocument();
+    expect(screen.queryByText('Library VC')).not.toBeInTheDocument();
+  });
+
+  test('typing in the search box fires onSearchChange', async () => {
+    const onSearchChange = vi.fn();
+    render(<InviteMembersDialog {...vcBaseProps} onSearchChange={onSearchChange} />);
+    await userEvent.type(screen.getByPlaceholderText('Search virtual contributors…'), 'a');
+    expect(onSearchChange).toHaveBeenCalled();
   });
 });
