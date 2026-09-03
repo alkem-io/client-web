@@ -91,13 +91,16 @@ export function InfoBlock({ description, leads = [], leadsLoading = false, onEdi
       )}
 
       {showLeadsPlaceholder && (
-        <div className={cn('pt-3 border-t border-white/15', description && 'mt-3')} aria-hidden="true">
+        <output
+          className={cn('block pt-3 border-t border-white/15', description && 'mt-3')}
+          aria-label={t('a11y.loadingLeads')}
+        >
           <Skeleton className="mb-2 h-3 w-20 bg-white/15" />
           <div className="flex items-center gap-3">
             <Skeleton className="size-8 shrink-0 rounded-full bg-white/15" />
             <Skeleton className="h-4 w-28 bg-white/15" />
           </div>
-        </div>
+        </output>
       )}
 
       {leads.length > 0 && (

@@ -76,11 +76,11 @@ export function SearchSection({
         <CollapsibleTagList tags={allTags} selectedTags={selectedTags} onTagClick={onToggleTag} maxRows={2} />
       ) : (
         tagsLoading && (
-          <div className="flex flex-wrap gap-1.5" aria-hidden="true">
+          <output className="flex flex-wrap gap-1.5" aria-label={t('a11y.loadingTags')}>
             {PLACEHOLDER_CHIPS.map(chip => (
               <Skeleton key={chip.key} className={cn('h-7 rounded-full', chip.width)} />
             ))}
-          </div>
+          </output>
         )
       )}
       {matchCount !== undefined && hasActiveFilter && (

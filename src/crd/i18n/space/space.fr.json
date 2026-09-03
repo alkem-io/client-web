@@ -1009,7 +1009,11 @@
     "moreActionsDrawer": "Actions supplémentaires",
     "close": "Fermer",
     "loadingPost": "Chargement de la publication",
-    "loadingContributions": "Chargement des contributions"
+    "loadingContributions": "Chargement des contributions",
+    "loadingSubspaces": "Chargement des sous-espaces",
+    "loadingLeads": "Chargement des responsables de l'Espace",
+    "loadingTags": "Chargement des tags",
+    "loadingMembership": "Chargement du statut de membre"
   },
   "activity": {
     "dialogTitle": "Activité récente"

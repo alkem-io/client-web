@@ -13,7 +13,11 @@ type ContributionsPreviewSkeletonProps = {
 /** The feed preview renders at most 4 slots (3 + a "more" tile past that). */
 const MAX_CELLS = 4;
 
-/** Matches the `min-h-*` of the corresponding `Contribution*Card`. */
+/**
+ * Matches the `min-h-*` of the corresponding `Contribution*Card`. `ContributionPostCard` has
+ * no `min-h` (content-driven): 140px is a typical post — title, author row and a two-line
+ * description — so a post without a description lands ~50px shorter than its placeholder.
+ */
 const CELL_HEIGHT: Record<Exclude<ContributionPreviewKind, 'link'>, string> = {
   whiteboard: 'min-h-[200px]',
   document: 'min-h-[200px]',

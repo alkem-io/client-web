@@ -43,6 +43,8 @@ export function useCrdSpaceDashboard({ skip }: UseCrdSpaceDashboardParams = {}) 
       calloutsSetProvided.calloutsSetAuthorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false,
     tabDescription: tabDescription ?? '',
     dashboardNavigation,
+    /** Only the subspace navigation fetch — `loading` also covers the tab + callouts-set queries. */
+    navigationLoading: navLoading,
     flowStateForNewCallouts,
     loading: tabLoading || calloutsSetProvided.loading || navLoading,
     readUsersAccess: permissions.canRead,

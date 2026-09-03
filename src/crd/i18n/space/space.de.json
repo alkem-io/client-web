@@ -1009,7 +1009,11 @@
     "moreActionsDrawer": "Weitere Aktionen",
     "close": "Schließen",
     "loadingPost": "Beitrag wird geladen",
-    "loadingContributions": "Beiträge werden geladen"
+    "loadingContributions": "Beiträge werden geladen",
+    "loadingSubspaces": "Unterbereiche werden geladen",
+    "loadingLeads": "Bereichsleiter werden geladen",
+    "loadingTags": "Tags werden geladen",
+    "loadingMembership": "Mitgliedschaftsstatus wird geladen"
   },
   "activity": {
     "dialogTitle": "Letzte Aktivität"

@@ -14,7 +14,10 @@ import { CroppedMarkdown } from '@/crd/primitives/croppedMarkdown';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
-import { getCalloutContributionType, mapContributionTypeToPreviewKind } from '../dataMappers/calloutDataMapper';
+import {
+  getCalloutContributionType,
+  mapContributionTypeToPreviewKind,
+} from '@/main/crdPages/space/dataMappers/calloutDataMapper';
 import {
   type ContributionCardData,
   mapAnyContributionToCardData,

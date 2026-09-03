@@ -92,7 +92,7 @@ const useCalloutContributions = ({
     }
   };
 
-  const { data, previousData, loading, refetch, subscribeToMore } = useCalloutContributionsQuery({
+  const { data, previousData, loading, error, refetch, subscribeToMore } = useCalloutContributionsQuery({
     variables: {
       calloutId: callout?.id!,
       includeLink: contributionType === CalloutContributionType.Link,
@@ -160,7 +160,9 @@ const useCalloutContributions = ({
       total: totalContributionsCount,
     },
     loading,
-    loaded: effectiveData !== undefined,
+    // Settled once — with data OR with a terminal error (default errorPolicy leaves `data`
+    // undefined then), so a failed first page never leaves the consumer on its skeleton.
+    loaded: effectiveData !== undefined || error !== undefined,
     subscriptionEnabled: subscription.enabled,
     onCalloutContributionsUpdate: async () => {
       await onCalloutUpdate?.();

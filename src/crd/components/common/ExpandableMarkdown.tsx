@@ -25,6 +25,8 @@ type ExpandableMarkdownProps = {
   expandLabel?: string;
   /** Override the expanded-state toggle label (defaults to "Read less"). */
   collapseLabel?: string;
+  /** Emits when the user clicks "Read more" / "Read less" (not when `defaultExpanded` flips). */
+  onUserToggle?: (expanded: boolean) => void;
   className?: string;
 };
 
@@ -71,6 +73,7 @@ export function ExpandableMarkdown({
   surface = 'card',
   expandLabel,
   collapseLabel,
+  onUserToggle,
   className,
 }: ExpandableMarkdownProps) {
   const { t } = useTranslation('crd-space');
@@ -122,6 +125,11 @@ export function ExpandableMarkdown({
     return () => observer.disconnect();
   }, [content, maxLines]);
 
+  const toggle = (expanded: boolean) => {
+    setUserExpanded(expanded);
+    onUserToggle?.(expanded);
+  };
+
   const showToggle = overflow === 'yes';
   const surfaceClass = surfaceClasses[surface];
   const expandText = expandLabel ?? t('postSnippet.readMore');
@@ -149,7 +157,7 @@ export function ExpandableMarkdown({
               The fade gradient above provides contrast behind the label. */}
           <button
             type="button"
-            onClick={() => setUserExpanded(true)}
+            onClick={() => toggle(true)}
             aria-expanded={false}
             className={cn(
               'absolute bottom-0 right-0 z-10 cursor-pointer text-caption uppercase text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded px-1',
@@ -164,7 +172,7 @@ export function ExpandableMarkdown({
         <div className="flex justify-end mt-1">
           <button
             type="button"
-            onClick={() => setUserExpanded(false)}
+            onClick={() => toggle(false)}
             aria-expanded={true}
             className="cursor-pointer text-caption uppercase text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
           >

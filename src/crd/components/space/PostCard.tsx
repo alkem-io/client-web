@@ -204,6 +204,8 @@ type PostCardProps = {
    * `CalloutCommentsConnector.skipSubscription`).
    */
   onCommentsExpandedChange?: (expanded: boolean) => void;
+  /** Emits when the viewer clicks the description's "Read more" / "Read less" toggle. */
+  onDescriptionToggle?: (expanded: boolean) => void;
   className?: string;
 };
 
@@ -224,6 +226,7 @@ export function PostCard({
   commentsSlot,
   commentInputSlot,
   onCommentsExpandedChange,
+  onDescriptionToggle,
   className,
 }: PostCardProps) {
   const { t } = useTranslation('crd-space');
@@ -412,7 +415,12 @@ export function PostCard({
           </h3>
         )}
         {post.snippet && (
-          <ExpandableMarkdown content={post.snippet} maxLines={3} defaultExpanded={post.descriptionExpanded} />
+          <ExpandableMarkdown
+            content={post.snippet}
+            maxLines={3}
+            defaultExpanded={post.descriptionExpanded}
+            onUserToggle={onDescriptionToggle}
+          />
         )}
 
         {/* References + tags row — same component as the detail dialog (DRY). */}

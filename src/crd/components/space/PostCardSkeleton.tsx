@@ -3,9 +3,9 @@ import {
   type ContributionPreviewKind,
   ContributionsPreviewSkeleton,
 } from '@/crd/components/contribution/ContributionsPreviewSkeleton';
+import type { PostType } from '@/crd/components/space/PostCard';
 import { cn } from '@/crd/lib/utils';
 import { Skeleton } from '@/crd/primitives/skeleton';
-import type { PostType } from './PostCard';
 
 export type PostCardSkeletonContributions = { kind: ContributionPreviewKind; count: number };
 
@@ -35,7 +35,7 @@ function FramingPlaceholder({ type }: { type: PostType }) {
     case 'document':
       return <Skeleton className="w-full h-28 rounded-lg" />;
     case 'callToAction':
-      return <Skeleton className="w-full h-10 rounded-md" />;
+      return <Skeleton className="w-full h-9 rounded-md mt-1" />;
     case 'poll':
       return (
         <div className="space-y-2">

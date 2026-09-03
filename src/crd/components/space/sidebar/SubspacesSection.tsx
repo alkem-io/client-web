@@ -54,7 +54,7 @@ export function SubspacesSection({
         <div className="flex items-center justify-between mb-3 px-1">
           <h3 className="uppercase text-label text-muted-foreground">{t('sidebar.subspaces')}</h3>
         </div>
-        <output className="block space-y-1" aria-label={t('sidebar.subspaces')}>
+        <output className="block space-y-1" aria-label={t('a11y.loadingSubspaces')}>
           {PLACEHOLDER_ROWS.map(row => (
             <div key={row} className="flex items-center gap-3 px-3 py-2">
               <Skeleton className="size-7 shrink-0 rounded-md" />

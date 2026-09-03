@@ -1,6 +1,6 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import type { ContactLeadRecipient } from '@/crd/components/chat/ContactLeadsDialog';
 import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
@@ -118,9 +118,25 @@ export function SpaceTabSidebarConnector({
     skip: skips.applicationButton,
   });
 
+  // The apply button's placeholder holds its footprint only until the FIRST resolution:
+  // the hook also reports `loading` while joining, and swapping the button (which shows
+  // its own busy state) for a skeleton mid-action would move the widgets below it.
+  const [applyResolved, setApplyResolved] = useState(false);
+  useEffect(() => {
+    if (!applyLoading) {
+      setApplyResolved(true);
+    }
+  }, [applyLoading]);
+  // Members never get the button — the space context already knows the membership
+  // synchronously, so don't reserve space that would only vanish once the hook resolves.
+  const isKnownMember = space.about.membership?.myMembershipStatus === CommunityMembershipStatus.Member;
+  const showApplyPlaceholder = !skips.applicationButton && applyLoading && !applyResolved && !isKnownMember;
+
   const { leads: sidebarLeads, loading: leadsLoading } = useCrdSpaceLeads(space.id, skips.intent);
 
-  const { dashboardNavigation, loading: subspacesLoading } = useCrdSpaceDashboard({ skip: skips.subspaceLinks });
+  const { dashboardNavigation, navigationLoading } = useCrdSpaceDashboard({ skip: skips.subspaceLinks });
+  // L2 spaces can't have children, so never reserve a subspaces footprint for them.
+  const subspacesLoading = navigationLoading && space.level !== SpaceLevel.L2;
   const subspaces =
     dashboardNavigation?.children?.map(child => ({
       name: child.displayName,
@@ -193,9 +209,14 @@ export function SpaceTabSidebarConnector({
     createPost: canCreatePost && <CreatePostButton key="createPost" onClick={onCreatePost} />,
     // Hold the button's footprint while membership is being resolved (it lands ~1s after
     // the sidebar renders and would otherwise push every widget below it down).
-    applicationButton: applyLoading
-      ? !skips.applicationButton && <Skeleton key="applicationButton" className="h-9 w-full rounded-md" />
-      : !isSpaceMember && <SpaceAboutApplyButton key="applicationButton" {...applyButtonProps} className="w-full" />,
+    applicationButton: showApplyPlaceholder ? (
+      <output key="applicationButton" className="block" aria-label={t('a11y.loadingMembership')}>
+        <Skeleton className="h-9 w-full rounded-md" />
+      </output>
+    ) : (
+      !isKnownMember &&
+      !isSpaceMember && <SpaceAboutApplyButton key="applicationButton" {...applyButtonProps} className="w-full" />
+    ),
     createSubspace: permissions.canCreateSubspaces && (
       <CreateSubspaceButton key="createSubspace" onClick={onCreateSubspace} />
     ),
@@ -231,12 +252,17 @@ export function SpaceTabSidebarConnector({
         locale={locale}
       />
     ),
-    // Nearly every space has a lead, so hold the button's footprint while the roster
+    // Nearly every space has a user lead, so hold the button's footprint while the roster
     // query is in flight rather than pushing the widgets below down when it lands.
     contactLeads: canContactLeads ? (
       <ContactLeadButton key="contactLeads" onClick={() => setContactOpen(true)} />
     ) : (
-      !skips.contactLeads && communityLoading && <Skeleton key="contactLeads" className="h-9 w-full rounded-md" />
+      !skips.contactLeads &&
+      communityLoading && (
+        <output key="contactLeads" className="block" aria-label={t('a11y.loadingLeads')}>
+          <Skeleton className="h-9 w-full rounded-md" />
+        </output>
+      )
     ),
     addUser: canInvite && <InviteButton key="addUser" onClick={() => setInviteOpen(true)} />,
     virtualContributors: hasVcEntitlement && (virtualContributors.length > 0 || canInviteVc) && (

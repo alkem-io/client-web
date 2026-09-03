@@ -14,7 +14,9 @@ import { canRenameCollaboraDocument } from '@/domain/collaboration/calloutContri
 import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
+import { useRememberedCalloutHeight } from '@/main/crdPages/space/hooks/useRememberedCalloutHeight';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
+import { useSpaceFullWidthState } from '@/main/ui/layout/LayoutWidthContext';
 import {
   getCalloutContributionType,
   mapCalloutDetailsToPostCard,
@@ -24,7 +26,6 @@ import {
 import { useCrdCalloutMoveActions } from '../hooks/useCrdCalloutMoveActions';
 import { useFlowStateLayout } from '../hooks/useFlowStateLayout';
 import { useMediaGalleryDirectUpload } from '../hooks/useMediaGalleryDirectUpload';
-import { useRememberedCalloutHeight } from '../hooks/useRememberedCalloutHeight';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
@@ -87,10 +88,18 @@ export function LazyCalloutItem({
     withClassification: true,
   });
 
-  // Once loaded, the card's rendered height is remembered (per viewport width) so the
-  // next visit's placeholder takes exactly that height — measured, not estimated.
-  const loaded = inView && !loading && callout !== undefined;
-  const { ref: contentRef, height } = useRememberedCalloutHeight(calloutId, loaded);
+  // Once loaded, the card's rendered height is remembered (per viewport width and per
+  // rendering variant) so the next visit's placeholder takes exactly that height —
+  // measured, not estimated. Recording pauses while the card is in a state the next
+  // mount won't reproduce (inline comments open, description toggled by the viewer).
+  const { wide } = useSpaceFullWidthState();
+  const [commentsExpanded, setCommentsExpanded] = useState(false);
+  const [descriptionToggled, setDescriptionToggled] = useState(false);
+  const { ref: contentRef, height } = useRememberedCalloutHeight({
+    calloutId,
+    variant: `${wide ? 'wide' : 'default'}:${forceDescriptionCollapsed ? 'compact' : 'feed'}`,
+    paused: commentsExpanded || descriptionToggled,
+  });
 
   const skeleton = (
     <PostCardSkeleton
@@ -107,24 +116,28 @@ export function LazyCalloutItem({
   return (
     <div ref={ref} id={calloutId}>
       {inView && !loading && callout ? (
-        <div ref={contentRef}>
-          {/* Own Suspense boundary: the card subtree pulls in lazily-loaded i18n namespaces
-              (crd-reactions, crd-taskBoard) and chunks. Without a boundary here the first
-              card to mount suspends up to the tab-level boundary, which swaps the ENTIRE
-              feed for a spinner for a frame — the biggest single layout jump on the page
-              (issue #10043). The fallback is the same skeleton, so nothing moves. */}
-          <Suspense fallback={skeleton}>
+        /* Own Suspense boundary: the card subtree pulls in lazily-loaded i18n namespaces
+           (crd-reactions, crd-taskBoard) and chunks. Without a boundary here the first
+           card to mount suspends up to the tab-level boundary, which swaps the ENTIRE
+           feed for a spinner for a frame — the biggest single layout jump on the page
+           (issue #10043). The fallback is the same skeleton, so nothing moves. The
+           measured wrapper sits INSIDE the boundary so the fallback is never recorded. */
+        <Suspense fallback={skeleton}>
+          <div ref={contentRef}>
             <LazyCalloutItemContent
               callout={callout}
               calloutsSetId={calloutsSetId}
               orderedCalloutIds={orderedCalloutIds}
               canReorder={canReorder}
               forceDescriptionCollapsed={forceDescriptionCollapsed}
+              commentsExpanded={commentsExpanded}
+              onCommentsExpandedChange={setCommentsExpanded}
+              onDescriptionToggle={() => setDescriptionToggled(true)}
               onClick={onClick}
               onExpandClick={onExpandClick}
             />
-          </Suspense>
-        </div>
+          </div>
+        </Suspense>
       ) : (
         skeleton
       )}
@@ -142,6 +155,9 @@ function LazyCalloutItemContent({
   orderedCalloutIds,
   canReorder,
   forceDescriptionCollapsed,
+  commentsExpanded,
+  onCommentsExpandedChange,
+  onDescriptionToggle,
   onClick,
   onExpandClick,
 }: {
@@ -150,6 +166,10 @@ function LazyCalloutItemContent({
   orderedCalloutIds: string[];
   canReorder: boolean;
   forceDescriptionCollapsed: boolean;
+  /** Inline comments state is owned by the parent — it pauses height recording while open. */
+  commentsExpanded: boolean;
+  onCommentsExpandedChange: (expanded: boolean) => void;
+  onDescriptionToggle: () => void;
   onClick?: () => void;
   onExpandClick?: () => void;
 }) {
@@ -163,7 +183,6 @@ function LazyCalloutItemContent({
   const [initialMemoId, setInitialMemoId] = useState<string | undefined>();
   const [initialPostId, setInitialPostId] = useState<string | undefined>();
   const [collaboraEditorOpen, setCollaboraEditorOpen] = useState(false);
-  const [commentsExpanded, setCommentsExpanded] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   // Framing-direct-open state: clicking "Open Memo" / "Open Whiteboard" in the
   // feed launches the matching editor without going through the callout dialog.
@@ -420,7 +439,8 @@ function LazyCalloutItemContent({
               onOpenFramingDocument={collaboraDocumentId ? () => setCollaboraEditorOpen(true) : undefined}
               commentsSlot={thread}
               commentInputSlot={commentsEnabled ? commentInput : null}
-              onCommentsExpandedChange={setCommentsExpanded}
+              onCommentsExpandedChange={onCommentsExpandedChange}
+              onDescriptionToggle={onDescriptionToggle}
               contributionsPreview={contributionsPreview}
               reactionsSlot={reactionsBar}
             >
@@ -440,6 +460,7 @@ function LazyCalloutItemContent({
           onOpenFraming={handleOpenFraming}
           onAddMediaGalleryImages={handleAddMediaGalleryImages}
           onCommentsClick={() => openDialog()}
+          onDescriptionToggle={onDescriptionToggle}
           settingsSlot={
             <CalloutSettingsConnector
               callout={callout}
