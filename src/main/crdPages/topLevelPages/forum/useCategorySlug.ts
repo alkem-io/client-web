@@ -11,7 +11,20 @@ export const slugFor = (category: ForumDiscussionCategory | undefined): string =
   return category.toLowerCase().replace(/_/g, '-');
 };
 
-export const categoryFor = (slug: string | undefined): ForumDiscussionCategory | undefined => {
+// The reverse transform. `loadedCategories` is the forum's active list as the
+// server actually sent it; it is searched first so that a category added to
+// the server ahead of this client build still resolves to a real category
+// instead of `undefined`. That distinction matters because callers read
+// `undefined` as "no category filter — show everything", so a server-added
+// category resolving to `undefined` would silently turn its own page into an
+// unfiltered listing. The compiled enum is kept as a fallback so known slugs
+// still resolve before the forum query settles. A slug that matches neither
+// stays `undefined`.
+export const categoryFor = (
+  slug: string | undefined,
+  loadedCategories: readonly ForumDiscussionCategory[] = []
+): ForumDiscussionCategory | undefined => {
   if (!slug || slug === ALL_SLUG) return undefined;
-  return Object.values(ForumDiscussionCategory).find(category => slugFor(category) === slug);
+  const candidates = [...loadedCategories, ...Object.values(ForumDiscussionCategory)];
+  return candidates.find(category => slugFor(category) === slug);
 };

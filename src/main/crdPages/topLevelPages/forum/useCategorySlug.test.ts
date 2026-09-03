@@ -36,7 +36,7 @@ describe('categoryFor', () => {
     expect(categoryFor(slug)).toBe(category);
   });
 
-  it('resolves the Help slug to the Help category (Q&A is a label-only relabel, D-01)', () => {
+  it('resolves the Help slug to the Help category (Q&A is a label-only relabel)', () => {
     expect(categoryFor('help')).toBe(ForumDiscussionCategory.Help);
   });
 
@@ -44,5 +44,30 @@ describe('categoryFor', () => {
     expect(categoryFor(ALL_SLUG)).toBeUndefined();
     expect(categoryFor(undefined)).toBeUndefined();
     expect(categoryFor('not-a-real-category')).toBeUndefined();
+  });
+
+  it.each(Object.entries(LIVE_SLUGS))('still reverses %s <- %s when an active list is supplied', (category, slug) => {
+    expect(categoryFor(slug, [ForumDiscussionCategory.Help])).toBe(category);
+  });
+
+  it('keeps ALL_SLUG unresolved even if the server ever sends a category that derives it', () => {
+    expect(categoryFor(ALL_SLUG, ['ALL' as ForumDiscussionCategory])).toBeUndefined();
+  });
+
+  // Deploy skew: the server runs ahead of this client build and sends a
+  // category the compiled enum has never heard of. The derived slug must round
+  // trip through the loaded active list, because resolving to `undefined` reads
+  // as "no filter" at every call site.
+  it('round-trips a wire value the client build does not know, via the loaded active list', () => {
+    const unknownFromServer = 'FUTURE_CATEGORY' as ForumDiscussionCategory;
+    const derivedSlug = slugFor(unknownFromServer);
+
+    expect(derivedSlug).toBe('future-category');
+    expect(categoryFor(derivedSlug)).toBeUndefined();
+    expect(categoryFor(derivedSlug, [ForumDiscussionCategory.Help, unknownFromServer])).toBe(unknownFromServer);
+  });
+
+  it('leaves a slug absent from both the active list and the compiled enum unresolved', () => {
+    expect(categoryFor('not-a-real-category', [ForumDiscussionCategory.Help])).toBeUndefined();
   });
 });

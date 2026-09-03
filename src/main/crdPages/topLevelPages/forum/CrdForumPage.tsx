@@ -38,7 +38,6 @@ const CrdForumPage = () => {
 
   const params = useParams<{ categorySlug?: string }>();
   const slugFromUrl = params.categorySlug ?? ALL_SLUG;
-  const activeCategory = categoryFor(slugFromUrl);
 
   const { data, loading: loadingDiscussions, subscribeToMore } = usePlatformDiscussionsQuery();
   // @ts-expect-error react-18 / subscribeToMore generic mismatch (matches legacy MUI pattern)
@@ -55,6 +54,12 @@ const CrdForumPage = () => {
   // is the actual control; this filter is UX only.
   const validCategories = data?.platform.forum.discussionCategories ?? [];
   const discussionCreationCategories = discussionCreationCategoriesFor(validCategories, isPlatformAdmin);
+
+  // Resolve the URL slug against the active list the server actually sent, not
+  // just the categories this build was compiled against — otherwise a category
+  // the server knows and this client doesn't resolves to `undefined` and the
+  // filter below degrades into "show every discussion" on that category's page.
+  const activeCategory = categoryFor(slugFromUrl, validCategories);
 
   const forumId = data?.platform.forum.id;
 
