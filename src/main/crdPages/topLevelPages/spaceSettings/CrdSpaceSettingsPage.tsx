@@ -31,7 +31,6 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import { InviteMembersDialogConnector } from '@/main/crdPages/space/dialogs/InviteMembersDialogConnector';
-import { VirtualContributorInviteConnector } from '@/main/crdPages/space/dialogs/VirtualContributorInviteConnector';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
@@ -220,7 +219,6 @@ export default function CrdSpaceSettingsPage() {
     loading: community.loading,
     errored: community.errored,
   });
-  const spaceLevelEnum = level === 'L0' ? SpaceLevel.L0 : level === 'L1' ? SpaceLevel.L1 : SpaceLevel.L2;
 
   // Subspace-only (L1/L2) "Save as a template" + delete sections at the bottom of the Settings tab
   // — these are not part of a top-level space's own settings (it templates / deletes its subspaces
@@ -934,17 +932,13 @@ export default function CrdSpaceSettingsPage() {
         onAdd={id => void addVCDialog.onAdd(id)}
       />
 
-      {roleSetId && (
-        <VirtualContributorInviteConnector
-          open={vcExternalOpen}
-          onClose={() => setVcExternalOpen(false)}
-          roleSetId={roleSetId}
-          spaceId={spaceId}
-          spaceLevel={spaceLevelEnum}
-          spaceName={spaceContext.about.profile.displayName}
-          libraryOnly={true}
-        />
-      )}
+      <InviteMembersDialogConnector
+        open={vcExternalOpen}
+        onClose={() => setVcExternalOpen(false)}
+        kind="virtualContributor"
+        spaceId={spaceId}
+        libraryOnly={true}
+      />
 
       <InviteMembersDialogConnector
         open={inviteMembersOpen}

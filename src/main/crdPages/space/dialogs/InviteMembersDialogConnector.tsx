@@ -6,6 +6,8 @@ import {
   RoleName,
   RoleSetInvitationResultNotice,
   RoleSetInvitationResultType,
+  SpaceLevel,
+  type VirtualContributorFullFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
@@ -13,7 +15,9 @@ import {
   type InviteKind,
   InviteMembersDialog,
   type InviteRole,
+  type VcInviteItem,
 } from '@/crd/components/community/InviteMembersDialog';
+import type { VcPreviewData } from '@/crd/components/virtualContributor/community/VirtualContributorPreview.types';
 import type { ContributorSelectorInvitee, ContributorSelectorUserResult } from '@/crd/forms/ContributorSelector';
 import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
@@ -23,6 +27,8 @@ import emailParser from '@/domain/community/inviteContributors/components/Formik
 import { useContributors } from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/useContributors';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
+import useCommunityAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin';
+import useVirtualContributorsAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useVirtualContributorsAdmin';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export type InviteMembersDialogConnectorProps = {
@@ -43,6 +49,12 @@ export type InviteMembersDialogConnectorProps = {
    * are then derived from this id via `useInviteUsersDialogQuery`.
    */
   spaceId?: string;
+  /**
+   * virtualContributor kind only: only the library section is shown (the settings
+   * "Invite External Virtual Contributor" entry — account VCs are added via a
+   * separate button there). Mirrors the pre-fold VirtualContributorInviteConnector prop.
+   */
+  libraryOnly?: boolean;
 };
 
 /**
@@ -130,6 +142,7 @@ export function InviteMembersDialogConnector({
   kind = 'user',
   onlyFromParentCommunity = false,
   spaceId: spaceIdOverride,
+  libraryOnly = false,
 }: InviteMembersDialogConnectorProps) {
   const { t } = useTranslation('crd-community');
   const { i18n } = useTranslation();
@@ -153,6 +166,7 @@ export function InviteMembersDialogConnector({
 
   const spaceName = spaceData?.lookup.space?.about.profile.displayName ?? '';
   const roleSetId = spaceData?.lookup.space?.about.membership.roleSetID;
+  const spaceLevel = spaceData?.lookup.space?.level;
 
   // ---------- form state ----------
   const [selectedContributors, setSelectedContributors] = useState<ContributorSelectorInvitee[]>([]);
@@ -317,6 +331,93 @@ export function InviteMembersDialogConnector({
 
   const searchResults = kind === 'organization' ? organizationSearchResults : userSearchResults;
 
+  // ---------- virtualContributor candidates (T019 fold) ----------
+  // `useCommunityAdmin` is only actually fetched for the virtualContributor kind — its
+  // internal `useRoleSetManager` skips its queries when roleSetId is falsy, so passing ''
+  // for the other kinds costs nothing. Reused (not re-derived) because virtualContributorAdmin
+  // .onAdd (a role ASSIGNMENT, not an invitation) and .inviteContributors already exist there.
+  const vcCommunity = useCommunityAdmin({ roleSetId: kind === 'virtualContributor' ? (roleSetId ?? '') : '' });
+  const { virtualContributorAdmin: vcLookup } = useVirtualContributorsAdmin({
+    level: spaceLevel ?? SpaceLevel.L0,
+    spaceId: spaceId ?? '',
+    currentMembers: vcCommunity.virtualContributorAdmin.members,
+  });
+  const [vcAccountItems, setVcAccountItems] = useState<VcInviteItem[]>([]);
+  const [vcLibraryItems, setVcLibraryItems] = useState<VcInviteItem[]>([]);
+  const [vcFetchedItems, setVcFetchedItems] = useState<VirtualContributorFullFragment[]>([]);
+  const [vcLoading, setVcLoading] = useState(false);
+  const [vcBusyId, setVcBusyId] = useState<string | null>(null);
+  const [vcPreviewData, setVcPreviewData] = useState<VcPreviewData | undefined>(undefined);
+  const toVcItem = (vc: { id: string; profile?: { displayName: string } }): VcInviteItem => ({
+    id: vc.id,
+    displayName: vc.profile?.displayName ?? '',
+  });
+  const toVcPreviewData = (vc: VirtualContributorFullFragment): VcPreviewData => ({
+    id: vc.id,
+    displayName: vc.profile?.displayName ?? '',
+    avatarUrl: vc.profile?.avatar?.uri,
+    tags: (vc.profile?.tagsets ?? []).flatMap(tagset => tagset.tags),
+    description: vc.profile?.description ?? '',
+  });
+  // `vcLookup` is intentionally excluded from deps — it returns a fresh object every render.
+  useEffect(() => {
+    if (!open || kind !== 'virtualContributor') return;
+    let cancelled = false;
+    setVcLoading(true);
+    void (async () => {
+      try {
+        const [account, library] = await Promise.all([
+          libraryOnly ? Promise.resolve([]) : vcLookup.getAvailable(trimmedQuery || undefined),
+          vcLookup.getAvailableInLibrary(trimmedQuery || undefined),
+        ]);
+        if (cancelled) return;
+        setVcAccountItems(account.map(toVcItem));
+        setVcLibraryItems(library.map(toVcItem));
+        setVcFetchedItems([...account, ...library]);
+      } finally {
+        if (!cancelled) setVcLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [open, kind, libraryOnly, trimmedQuery]);
+
+  const handleAddAccountVc = async (id: string) => {
+    setVcBusyId(id);
+    try {
+      await vcCommunity.virtualContributorAdmin.onAdd(id);
+      notify(t('inviteMembers.dialog.virtualContributor.addedNotice'), 'success');
+      onClose();
+    } catch {
+      notify(t('inviteMembers.dialog.virtualContributor.error'), 'error');
+    } finally {
+      setVcBusyId(null);
+    }
+  };
+
+  const handleInviteLibraryVc = async (id: string, message: string) => {
+    setVcBusyId(id);
+    try {
+      await vcCommunity.virtualContributorAdmin.inviteContributors({
+        welcomeMessage: message,
+        invitedContributorIds: [id],
+        invitedUserEmails: [],
+      });
+      notify(t('inviteMembers.dialog.virtualContributor.invitedNotice'), 'success');
+      onClose();
+    } catch {
+      notify(t('inviteMembers.dialog.virtualContributor.error'), 'error');
+    } finally {
+      setVcBusyId(null);
+    }
+  };
+
+  const handlePreviewVc = (id: string) => {
+    const vc = vcFetchedItems.find(v => v.id === id);
+    setVcPreviewData(vc ? toVcPreviewData(vc) : undefined);
+  };
+
   // ---------- handlers ----------
   const handleSelectUser = (id: string) => {
     const row = searchResults.find(r => r.userId === id);
@@ -471,15 +572,22 @@ export function InviteMembersDialogConnector({
   // `roleSetId` resolves, Send becomes available. spaceName empty → title
   // shows the placeholder ("…").
   const isOrganization = kind === 'organization';
+  const isVirtualContributor = kind === 'virtualContributor';
   const title = isOrganization
     ? t('inviteMembers.dialog.organization.title', { spaceName: spaceName || '…' })
-    : t('inviteMembers.dialog.title', { spaceName: spaceName || '…' });
+    : isVirtualContributor
+      ? t('inviteMembers.dialog.virtualContributor.title')
+      : t('inviteMembers.dialog.title', { spaceName: spaceName || '…' });
   const searchHint = isOrganization
     ? t('inviteMembers.dialog.organization.searchHint')
-    : t('inviteMembers.dialog.searchHint');
+    : isVirtualContributor
+      ? t('inviteMembers.dialog.virtualContributor.description')
+      : t('inviteMembers.dialog.searchHint');
   const searchPlaceholder = isOrganization
     ? t('inviteMembers.dialog.organization.searchPlaceholder')
-    : t('inviteMembers.dialog.searchPlaceholder');
+    : isVirtualContributor
+      ? t('inviteMembers.dialog.virtualContributor.searchPlaceholder')
+      : t('inviteMembers.dialog.searchPlaceholder');
 
   return (
     <InviteMembersDialog
@@ -494,7 +602,11 @@ export function InviteMembersDialogConnector({
       onSelectUser={handleSelectUser}
       onAddEmails={isOrganization || onlyFromParentCommunity ? undefined : handleAddEmails}
       onRemoveContributor={handleRemoveContributor}
-      searchLoading={(isOrganization ? orgLoading : contributorsLoading) || loadingSpace || loadingRoleSet}
+      searchLoading={
+        (isOrganization ? orgLoading : isVirtualContributor ? vcLoading : contributorsLoading) ||
+        loadingSpace ||
+        loadingRoleSet
+      }
       hasMoreSearchResults={isOrganization ? false : hasMore}
       onLoadMoreSearchResults={isOrganization ? undefined : fetchMore}
       allowEmailInvites={!isOrganization && !onlyFromParentCommunity}
@@ -542,6 +654,35 @@ export function InviteMembersDialogConnector({
         suggestedLanguagePlaceholder: t('inviteMembers.dialog.suggestedLanguagePlaceholder'),
         // Reuse the placeholder text ("No preference") for the explicit reset option in the Select.
         suggestedLanguageNoPreferenceLabel: t('inviteMembers.dialog.suggestedLanguagePlaceholder'),
+      }}
+      vcAccountItems={vcAccountItems}
+      vcLibraryItems={vcLibraryItems}
+      onAddAccountVc={handleAddAccountVc}
+      onInviteLibraryVc={handleInviteLibraryVc}
+      vcBusyId={vcBusyId}
+      vcDefaultWelcomeMessage={t('inviteMembers.dialog.virtualContributor.defaultWelcomeMessage', {
+        space: spaceName,
+      })}
+      libraryOnly={libraryOnly}
+      vcPreviewData={vcPreviewData}
+      onPreviewVc={handlePreviewVc}
+      onClosePreviewVc={() => setVcPreviewData(undefined)}
+      vcLabels={{
+        searchPlaceholder: t('inviteMembers.dialog.virtualContributor.searchPlaceholder'),
+        loading: t('inviteVc.loading'),
+        onAccount: t('inviteMembers.dialog.virtualContributor.onAccount'),
+        onAccountEmpty: t('inviteMembers.dialog.virtualContributor.onAccountEmpty'),
+        inLibrary: t('inviteMembers.dialog.virtualContributor.inLibrary'),
+        inLibraryEmpty: t('inviteMembers.dialog.virtualContributor.inLibraryEmpty'),
+        add: t('inviteMembers.dialog.virtualContributor.add'),
+        invite: t('inviteMembers.dialog.virtualContributor.invite'),
+        addAriaLabel: (name: string) => t('inviteMembers.dialog.virtualContributor.addAriaLabel', { name }),
+        inviteAriaLabel: (name: string) => t('inviteMembers.dialog.virtualContributor.inviteAriaLabel', { name }),
+        previewAriaLabel: (name: string) => t('inviteVc.previewAriaLabel', { name }),
+        back: t('inviteVc.back'),
+        welcomeMessageLabel: t('inviteMembers.dialog.virtualContributor.welcomeMessageLabel'),
+        welcomeMessagePlaceholder: t('inviteMembers.dialog.virtualContributor.welcomeMessagePlaceholder'),
+        sendInvite: t('inviteMembers.dialog.virtualContributor.sendInvite'),
       }}
     />
   );

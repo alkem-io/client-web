@@ -14056,6 +14056,7 @@ export const InviteUsersDialogDocument = gql`
   lookup {
     space(ID: $spaceId) {
       id
+      level
       about {
         id
         profile {
