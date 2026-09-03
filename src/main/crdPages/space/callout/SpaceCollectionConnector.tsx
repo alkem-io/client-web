@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { SpaceCollection } from '@/crd/components/callout/SpaceCollection/SpaceCollection';
 import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
@@ -17,6 +18,11 @@ type SpaceCollectionConnectorProps = {
 
 export function SpaceCollectionConnector({ calloutId, className }: SpaceCollectionConnectorProps) {
   const navigate = useNavigate();
+  // The subspace cards need the lazily-loaded `crd-exploreSpaces` namespace, but they only
+  // mount once the query resolves — suspending then would swap the already-rendered card
+  // for its skeleton. Pull the namespace in here, while the card's boundary is still
+  // showing the skeleton anyway (issue #10043).
+  useTranslation('crd-exploreSpaces');
   const { subspaces, loading } = useCrdSpaceSubspaces(calloutId);
 
   const handleSubspaceClick = (space: SpaceCardData) => navigate(space.href);

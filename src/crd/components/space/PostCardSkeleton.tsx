@@ -7,7 +7,7 @@ import type { PostType } from '@/crd/components/space/PostCard';
 import { cn } from '@/crd/lib/utils';
 import { Skeleton } from '@/crd/primitives/skeleton';
 
-export type PostCardSkeletonContributions = { kind: ContributionPreviewKind; count: number };
+export type PostCardSkeletonContributions = { kind: ContributionPreviewKind; count?: number };
 
 type PostCardSkeletonProps = {
   /** Framing type of the callout being loaded — reserves the matching framing preview block. */

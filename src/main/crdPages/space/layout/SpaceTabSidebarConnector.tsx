@@ -1,6 +1,7 @@
 import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import useNavigate from '@/core/routing/useNavigate';
 import type { ContactLeadRecipient } from '@/crd/components/chat/ContactLeadsDialog';
 import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
@@ -39,7 +40,7 @@ import { CrdCalendarDialogConnector } from '../timeline/CrdCalendarDialogConnect
 import { useCrdCalendarUrlState } from '../timeline/useCrdCalendarUrlState';
 import { useSpaceApplyFlow } from '../useSpaceApplyFlow';
 import { SpaceSidebarPortal } from './SpaceSidebarPortal';
-import { deriveWidgetSkips, resolveSidebarPlan } from './sidebarWidgetPlan';
+import { deriveWidgetSkips, resolveSidebarPlan, type SidebarWidgetId } from './sidebarWidgetPlan';
 
 type SpaceTabSidebarConnectorProps = {
   /** The active state's stored `sidebar` — wire enum values (e.g. `'INTENT'`), NonNull per contract. */
@@ -105,6 +106,12 @@ export function SpaceTabSidebarConnector({
 
   const plan = resolveSidebarPlan(sidebar);
   const skips = deriveWidgetSkips(plan);
+  const { isAuthenticated } = useAuthenticationContext();
+
+  // A loading placeholder is only worth its footprint when something renders below it (the
+  // last widget can land or vanish without moving anything) AND the widget is likely to
+  // resolve non-empty — a placeholder that then unmounts is itself a layout jump.
+  const hasWidgetsBelow = (widgetId: SidebarWidgetId) => plan.indexOf(widgetId) < plan.length - 1;
 
   const {
     isMember: isSpaceMember,
@@ -135,8 +142,9 @@ export function SpaceTabSidebarConnector({
   const { leads: sidebarLeads, loading: leadsLoading } = useCrdSpaceLeads(space.id, skips.intent);
 
   const { dashboardNavigation, navigationLoading } = useCrdSpaceDashboard({ skip: skips.subspaceLinks });
-  // L2 spaces can't have children, so never reserve a subspaces footprint for them.
-  const subspacesLoading = navigationLoading && space.level !== SpaceLevel.L2;
+  // Only an L0 reliably has children (L2s can't; L1s mostly don't), so only there is the
+  // placeholder more likely to be replaced by the list than to vanish.
+  const subspacesLoading = navigationLoading && space.level === SpaceLevel.L0 && hasWidgetsBelow('subspaceLinks');
   const subspaces =
     dashboardNavigation?.children?.map(child => ({
       name: child.displayName,
@@ -184,6 +192,10 @@ export function SpaceTabSidebarConnector({
     skipGuidelines: skips.guidelines,
   });
   const canContactLeads = leadUsers.length > 0 && Boolean(communityId);
+  // The roster query is skipped for viewers without READ_USERS — every anonymous visitor —
+  // so only a signed-in viewer can end up with the button; nearly every space has a user lead.
+  const showContactLeadsPlaceholder =
+    !skips.contactLeads && communityLoading && isAuthenticated && hasWidgetsBelow('contactLeads');
   const canInviteVc = hasVcEntitlement && canInvite && Boolean(roleSetId);
   const leadRecipients: ContactLeadRecipient[] = leadUsers.map(lead => ({
     id: lead.id,
@@ -201,7 +213,7 @@ export function SpaceTabSidebarConnector({
         key="intent"
         description={space.about.profile.description || ''}
         leads={sidebarLeads}
-        leadsLoading={leadsLoading}
+        leadsLoading={leadsLoading && hasWidgetsBelow('intent')}
         onEditClick={onEditClick}
       />
     ),
@@ -252,13 +264,10 @@ export function SpaceTabSidebarConnector({
         locale={locale}
       />
     ),
-    // Nearly every space has a user lead, so hold the button's footprint while the roster
-    // query is in flight rather than pushing the widgets below down when it lands.
     contactLeads: canContactLeads ? (
       <ContactLeadButton key="contactLeads" onClick={() => setContactOpen(true)} />
     ) : (
-      !skips.contactLeads &&
-      communityLoading && (
+      showContactLeadsPlaceholder && (
         <output key="contactLeads" className="block" aria-label={t('a11y.loadingLeads')}>
           <Skeleton className="h-9 w-full rounded-md" />
         </output>
@@ -285,7 +294,7 @@ export function SpaceTabSidebarConnector({
       />
     ),
     index: <PostIndexButton key="index" onClick={() => setIndexOpen(true)} />,
-    search: <SearchSection key="search" {...search} />,
+    search: <SearchSection key="search" {...search} tagsLoading={search.tagsLoading && hasWidgetsBelow('search')} />,
   };
 
   return (

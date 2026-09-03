@@ -20,9 +20,9 @@ type InfoBlockProps = {
   description: string;
   leads?: LeadItem[];
   /**
-   * True while the leads are still being fetched. Holds the leads row's footprint
-   * (heading + one row) so the block doesn't grow — and push every widget below
-   * it down — when they arrive.
+   * True while the leads are still being fetched. When the block already renders (it has
+   * a description), holds the leads row's footprint (heading + one row) so it doesn't
+   * grow — and push every widget below it down — when they arrive.
    */
   leadsLoading?: boolean;
   onEditClick?: () => void;
@@ -62,8 +62,10 @@ export function InfoBlock({ description, leads = [], leadsLoading = false, onEdi
     setIsOverflowing(el.scrollHeight > el.clientHeight + 1);
   }, [description, isExpanded]);
 
+  // Never mount the block just for the placeholder: with no description, an empty leads
+  // result would unmount it again — a bigger jump than the one the placeholder prevents.
+  if (!description && leads.length === 0) return null;
   const showLeadsPlaceholder = leads.length === 0 && leadsLoading;
-  if (!description && leads.length === 0 && !showLeadsPlaceholder) return null;
 
   const leadHeading = leads.length === 1 ? t('sidebar.spaceLead') : t('sidebar.spaceLeads');
 

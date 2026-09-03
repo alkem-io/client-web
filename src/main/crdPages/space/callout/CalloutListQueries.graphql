@@ -22,9 +22,10 @@ query CalloutsListForFeed($calloutsSetId: UUID!, $classificationTagsets: [Tagset
       callouts(classificationTagsets: $classificationTagsets) {
         id
         sortOrder
-        # Skeleton shape hints: framing type → framing preview block,
-        # allowedTypes + activity → contributions grid rows.
-        activity
+        # Skeleton shape hints: framing type → framing preview block, allowedTypes →
+        # contributions grid. Deliberately NOT `activity`: for comment-only callouts the
+        # server resolves it with an unbatched Matrix room fetch per callout, and this
+        # query gates the feed's first paint.
         framing {
           id
           type

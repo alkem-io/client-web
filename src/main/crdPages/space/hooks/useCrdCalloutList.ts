@@ -12,14 +12,14 @@ type UseCrdCalloutListParams = {
 /**
  * The feed needs each callout's id + sort order — every card lazy-fetches its own
  * content via CalloutDetails on scroll-into-view — plus the shape hints its loading
- * placeholder uses to reserve the card's footprint (framing type, contribution type,
- * contribution count). The hints are optional so the heavier `CalloutModelLight`
- * (subspace / knowledge-base feeds) satisfies this shape as-is.
+ * placeholder uses to reserve the card's footprint (framing type, contribution type).
+ * The hints are optional so the heavier `CalloutModelLight` (subspace / knowledge-base
+ * feeds) satisfies this shape as-is.
  */
 export type CrdFeedCallout = {
   id: string;
   sortOrder: number;
-  /** Contribution count when the callout accepts contributions (comment count otherwise). */
+  /** Contribution count — only the feeds built on `CalloutModelLight` carry it. */
   activity?: number;
   framing?: { type: CalloutFramingType };
   settings?: { contribution?: { allowedTypes?: CalloutContributionType[] } };

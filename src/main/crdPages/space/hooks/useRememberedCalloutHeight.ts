@@ -1,109 +1,56 @@
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+
 /**
- * Remembers the rendered height of each feed callout card (per viewport width) across
- * mounts and full page reloads, so the next time the card is loading its placeholder
- * can reserve exactly the space the card will take (issue #10043 — layout jump).
+ * Remembers the rendered height of each feed callout card across mounts and full page
+ * reloads, so the next time the card is loading its placeholder can reserve exactly the
+ * space the card will take (issue #10043 — layout jump).
  *
- * Heights are keyed by `<calloutId>@<variant>@<viewport width>` — a card's height only
- * holds for the width it was measured at AND for the rendering variant (the same callout
- * is taller in the normal feed than forced-collapsed in search results, and wraps
- * differently in the full-width layout). The store lives in `sessionStorage` (every in-app
- * CRD navigation is a full reload, so an in-memory map alone would rarely survive) with an
- * in-memory mirror, and is best-effort: storage failures fall back to memory only.
+ * Heights are keyed by `<calloutId>@<variant>@<column width bucket>`: a card's height only
+ * holds for the width it wraps at — the feed column's, which changes with the viewport AND
+ * with the sidebar being shown or not — and for the rendering variant (the same callout is
+ * taller in the normal feed than forced-collapsed in search results). One `sessionStorage`
+ * entry per key (per tab, dies with it; every in-app CRD navigation is a full reload, so
+ * memory alone would rarely survive). Best-effort: storage failures are ignored.
  */
 
-const STORAGE_KEY = 'alkemio_callout_heights';
-const MAX_ENTRIES = 300;
-/** Writes are coalesced: a ResizeObserver can fire per frame during a resize drag. */
-const PERSIST_DELAY_MS = 250;
+const KEY_PREFIX = 'alkemio_callout_height:';
+/** Widths are bucketed so a resize drag doesn't leave one entry per intermediate width. */
+const WIDTH_BUCKET_PX = 40;
+/** The observer fires per frame during a resize drag — only the settled height is written. */
+const RECORD_DELAY_MS = 300;
 
-let heights: Map<string, number> | undefined;
-let persistTimer: ReturnType<typeof setTimeout> | undefined;
-let flushOnPageHideRegistered = false;
+const storageKey = (calloutId: string, variant: string, columnWidth: number) =>
+  `${KEY_PREFIX}${calloutId}@${variant}@${Math.round(columnWidth / WIDTH_BUCKET_PX)}`;
 
-function readStore(): Map<string, number> {
-  if (heights) {
-    return heights;
-  }
-  heights = new Map();
+export function getRememberedCalloutHeight(calloutId: string, variant: string, columnWidth: number) {
   try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      for (const [key, value] of Object.entries(JSON.parse(raw) as Record<string, unknown>)) {
-        if (typeof value === 'number') {
-          heights.set(key, value);
-        }
-      }
-    }
+    const height = Number(sessionStorage.getItem(storageKey(calloutId, variant, columnWidth)));
+    return height > 0 ? height : undefined;
   } catch {
-    // sessionStorage unavailable or corrupt — keep the in-memory map only.
-  }
-  return heights;
-}
-
-function flushPersist() {
-  if (persistTimer !== undefined) {
-    clearTimeout(persistTimer);
-    persistTimer = undefined;
-  }
-  if (!heights) {
-    return;
-  }
-  try {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(Object.fromEntries(heights)));
-  } catch {
-    // Quota / privacy mode — the in-memory map still serves this session.
+    return undefined;
   }
 }
 
-function schedulePersist() {
-  if (!flushOnPageHideRegistered) {
-    flushOnPageHideRegistered = true;
-    // Every CRD navigation is a full reload: flush whatever is pending before the page goes.
-    window.addEventListener('pagehide', flushPersist);
-  }
-  if (persistTimer === undefined) {
-    persistTimer = setTimeout(flushPersist, PERSIST_DELAY_MS);
-  }
-}
-
-const storageKey = (calloutId: string, variant: string) => `${calloutId}@${variant}@${window.innerWidth}`;
-
-export function getRememberedCalloutHeight(calloutId: string, variant: string): number | undefined {
-  return readStore().get(storageKey(calloutId, variant));
-}
-
-export function rememberCalloutHeight(calloutId: string, variant: string, height: number) {
-  const store = readStore();
-  const key = storageKey(calloutId, variant);
+export function rememberCalloutHeight(calloutId: string, variant: string, columnWidth: number, height: number) {
   const rounded = Math.round(height);
-  if (rounded <= 0 || store.get(key) === rounded) {
+  if (rounded <= 0) {
     return;
   }
-  // Re-insert so the key moves to the end: Map keeps insertion order, so the
-  // oldest entries are the first ones and get evicted first.
-  store.delete(key);
-  store.set(key, rounded);
-  while (store.size > MAX_ENTRIES) {
-    const oldest = store.keys().next().value;
-    if (oldest === undefined) {
-      break;
-    }
-    store.delete(oldest);
+  try {
+    sessionStorage.setItem(storageKey(calloutId, variant, columnWidth), String(rounded));
+  } catch {
+    // Quota / privacy mode — the placeholder falls back to its shape-based guess.
   }
-  schedulePersist();
 }
 
 type UseRememberedCalloutHeightParams = {
   calloutId: string;
-  /**
-   * Distinguishes renderings of the same callout that differ in height at the same viewport
-   * width (normal feed vs forced-collapsed search results, default vs full-width layout).
-   */
+  /** Distinguishes renderings of the same callout that differ in height at the same width. */
   variant: string;
   /**
    * True while the card is in a transient state its next mount won't reproduce (inline
-   * comments opened, description toggled by the user) — the height is not recorded then,
-   * so the placeholder keeps matching the card as it mounts.
+   * comments opened, description expanded by the viewer) — the height is not recorded then,
+   * so the placeholder keeps matching the card as it mounts. Re-measured when it turns false.
    */
   paused?: boolean;
 };
@@ -111,21 +58,80 @@ type UseRememberedCalloutHeightParams = {
 /**
  * Returns the remembered height for the card (if any) as the exact `height` for whichever
  * placeholder stands in for it — the not-yet-loaded skeleton AND the Suspense fallback shown
- * while the loaded card's subtree is still resolving — plus a `ref` to attach to the element
- * wrapping the real card once it has mounted: its height is tracked (ResizeObserver, so
- * late-arriving images and contributions are included) and remembered for the next visit.
- * The ref is a callback with cleanup, so it only ever observes the mounted card — never the
- * Suspense fallback that precedes it.
+ * while the loaded card's subtree is still resolving — plus two refs:
+ * - `columnRef` goes on the always-mounted wrapper (placeholder or card) — its width is the
+ *   width the card wraps at, and part of the key.
+ * - `ref` goes on the element wrapping the real card once it has mounted: its height is
+ *   tracked (ResizeObserver, so late-arriving images and contributions are included) and
+ *   remembered for the next visit. It is a callback with cleanup, so it only ever observes
+ *   the mounted card — never the Suspense fallback that precedes it — and is created once
+ *   per mount: the observer reads the latest params through a ref instead of being torn
+ *   down and rebuilt on every re-render.
  */
 export function useRememberedCalloutHeight({ calloutId, variant, paused = false }: UseRememberedCalloutHeightParams) {
-  const ref = (element: HTMLDivElement | null) => {
-    if (!element || paused) {
-      return;
-    }
-    const observer = new ResizeObserver(() => rememberCalloutHeight(calloutId, variant, element.offsetHeight));
-    observer.observe(element);
-    return () => observer.disconnect();
+  const columnElementRef = useRef<HTMLDivElement | null>(null);
+  const contentElementRef = useRef<HTMLDivElement | null>(null);
+  const [columnWidth, setColumnWidth] = useState<number>();
+
+  // A callback (not the ref object) so the consumer can compose it with its own ref.
+  const columnRef = (element: HTMLDivElement | null) => {
+    columnElementRef.current = element;
   };
 
-  return { ref, height: getRememberedCalloutHeight(calloutId, variant) };
+  const latest = useRef({ calloutId, variant, paused });
+  useEffect(() => {
+    latest.current = { calloutId, variant, paused };
+  });
+
+  // Measured synchronously so the placeholder has its height before the first paint;
+  // the observer follows later width changes (viewport resize, sidebar shown / hidden).
+  useLayoutEffect(() => {
+    const column = columnElementRef.current;
+    if (!column) {
+      return;
+    }
+    setColumnWidth(column.clientWidth);
+    const observer = new ResizeObserver(() => setColumnWidth(column.clientWidth));
+    observer.observe(column);
+    return () => observer.disconnect();
+  }, []);
+
+  const record = (element: HTMLDivElement) => {
+    const current = latest.current;
+    if (!current.paused) {
+      rememberCalloutHeight(current.calloutId, current.variant, element.clientWidth, element.offsetHeight);
+    }
+  };
+
+  // Growth while paused (a "Read more") is skipped; record the settled state once unpaused.
+  useEffect(() => {
+    const element = contentElementRef.current;
+    if (!paused && element) {
+      record(element);
+    }
+  }, [paused]);
+
+  const ref = (element: HTMLDivElement | null) => {
+    contentElementRef.current = element;
+    if (!element) {
+      return;
+    }
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const observer = new ResizeObserver(() => {
+      clearTimeout(timer);
+      timer = setTimeout(() => record(element), RECORD_DELAY_MS);
+    });
+    observer.observe(element);
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+      contentElementRef.current = null;
+    };
+  };
+
+  return {
+    columnRef,
+    ref,
+    height: columnWidth === undefined ? undefined : getRememberedCalloutHeight(calloutId, variant, columnWidth),
+  };
 }

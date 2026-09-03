@@ -32,7 +32,7 @@ function readDelaySetting(): DelaySetting | undefined {
 /**
  * Dev-only link that holds GraphQL operations for a configurable delay, so loading
  * states (skeletons, layout shift) can be inspected without throttling the whole
- * browser. A no-op pass-through in production builds.
+ * browser. Only added to the link chain in dev builds (`useGraphQLClient`).
  *
  * Toggle from the DevTools console — takes effect on the next request, no reload:
  *
@@ -41,9 +41,6 @@ function readDelaySetting(): DelaySetting | undefined {
  *   localStorage.removeItem('alkemio_graphql_delay_ms')                                    // off
  */
 export const devDelayLink = new ApolloLink((operation, forward) => {
-  if (!import.meta.env.DEV) {
-    return forward(operation);
-  }
   const setting = readDelaySetting();
   if (!setting || (setting.operations && !setting.operations.has(operation.operationName))) {
     return forward(operation);

@@ -37788,7 +37788,6 @@ export type CalloutsListForFeedQuery = {
             __typename?: 'Callout';
             id: string;
             sortOrder: number;
-            activity: number;
             framing: { __typename?: 'CalloutFraming'; id: string; type: CalloutFramingType };
             settings: {
               __typename?: 'CalloutSettings';

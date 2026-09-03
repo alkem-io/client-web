@@ -112,8 +112,9 @@ export function ExpandableMarkdown({
     const contentEl = contentRef.current;
     if (!container || !contentEl) return;
 
+    const clampPx = collapsedMaxHeightPx(maxLines);
     const evaluate = () => {
-      const overflowing = contentEl.getBoundingClientRect().height > collapsedMaxHeightPx(maxLines) + 1; // +1px tolerance for sub-pixel rounding
+      const overflowing = contentEl.getBoundingClientRect().height > clampPx + 1; // +1px tolerance for sub-pixel rounding
       setOverflow(overflowing ? 'yes' : 'no');
     };
 
@@ -142,7 +143,10 @@ export function ExpandableMarkdown({
         className={cn(isClamped && 'overflow-hidden')}
         style={isClamped ? { maxHeight: collapsedMaxHeight(maxLines) } : undefined}
       >
-        <div ref={contentRef}>
+        {/* `flow-root` makes the measured wrapper a block formatting context, so a leading
+            heading's / trailing list's margin lands inside its height instead of collapsing
+            through it — the clamp box includes those margins, so the measurement must too. */}
+        <div ref={contentRef} className="flow-root">
           <MarkdownContent content={content} className="text-muted-foreground" />
         </div>
       </div>

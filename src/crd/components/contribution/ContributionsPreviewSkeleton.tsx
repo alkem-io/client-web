@@ -5,13 +5,18 @@ export type ContributionPreviewKind = 'post' | 'whiteboard' | 'memo' | 'document
 
 type ContributionsPreviewSkeletonProps = {
   kind: ContributionPreviewKind;
-  /** Number of contributions the loaded preview will show — capped at the preview's 4 slots. */
-  count: number;
+  /**
+   * Number of contributions the loaded preview will show — capped at the preview's 4 slots.
+   * Unknown (the feed list doesn't fetch it) reserves one grid row.
+   */
+  count?: number;
   className?: string;
 };
 
 /** The feed preview renders at most 4 slots (3 + a "more" tile past that). */
 const MAX_CELLS = 4;
+/** One row of the two-column grid — the most common size of a populated preview. */
+const DEFAULT_CELLS = 2;
 
 /**
  * Matches the `min-h-*` of the corresponding `Contribution*Card`. `ContributionPostCard` has
@@ -31,7 +36,11 @@ const CELL_HEIGHT: Record<Exclude<ContributionPreviewKind, 'link'>, string> = {
  * so the card doesn't grow when the lazily-fetched contributions arrive (issue #10043).
  * Purely decorative: the consumer supplies the `<output aria-label>` status wrapper.
  */
-export function ContributionsPreviewSkeleton({ kind, count, className }: ContributionsPreviewSkeletonProps) {
+export function ContributionsPreviewSkeleton({
+  kind,
+  count = DEFAULT_CELLS,
+  className,
+}: ContributionsPreviewSkeletonProps) {
   const cells = Array.from({ length: Math.min(count, MAX_CELLS) }, (_, index) => index);
   if (cells.length === 0) {
     return null;

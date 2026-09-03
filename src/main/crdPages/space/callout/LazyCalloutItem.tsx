@@ -16,7 +16,6 @@ import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGue
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import { useRememberedCalloutHeight } from '@/main/crdPages/space/hooks/useRememberedCalloutHeight';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
-import { useSpaceFullWidthState } from '@/main/ui/layout/LayoutWidthContext';
 import {
   getCalloutContributionType,
   mapCalloutDetailsToPostCard,
@@ -88,25 +87,32 @@ export function LazyCalloutItem({
     withClassification: true,
   });
 
-  // Once loaded, the card's rendered height is remembered (per viewport width and per
+  // Once loaded, the card's rendered height is remembered (per column width and per
   // rendering variant) so the next visit's placeholder takes exactly that height —
   // measured, not estimated. Recording pauses while the card is in a state the next
-  // mount won't reproduce (inline comments open, description toggled by the viewer).
-  const { wide } = useSpaceFullWidthState();
+  // mount won't reproduce (inline comments open, description expanded by the viewer).
   const [commentsExpanded, setCommentsExpanded] = useState(false);
-  const [descriptionToggled, setDescriptionToggled] = useState(false);
-  const { ref: contentRef, height } = useRememberedCalloutHeight({
+  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+  const {
+    columnRef,
+    ref: contentRef,
+    height,
+  } = useRememberedCalloutHeight({
     calloutId,
-    variant: `${wide ? 'wide' : 'default'}:${forceDescriptionCollapsed ? 'compact' : 'feed'}`,
-    paused: commentsExpanded || descriptionToggled,
+    variant: forceDescriptionCollapsed ? 'compact' : 'feed',
+    paused: commentsExpanded || descriptionExpanded,
   });
+  const wrapperRef = (element: HTMLDivElement | null) => {
+    ref(element);
+    columnRef(element);
+  };
 
   const skeleton = (
     <PostCardSkeleton
       type={framingType ? mapFramingTypeToPostType(framingType) : undefined}
       contributions={
         contributionType
-          ? { kind: mapContributionTypeToPreviewKind(contributionType), count: contributionCount ?? 0 }
+          ? { kind: mapContributionTypeToPreviewKind(contributionType), count: contributionCount }
           : undefined
       }
       height={height}
@@ -114,7 +120,7 @@ export function LazyCalloutItem({
   );
 
   return (
-    <div ref={ref} id={calloutId}>
+    <div ref={wrapperRef} id={calloutId}>
       {inView && !loading && callout ? (
         /* Own Suspense boundary: the card subtree pulls in lazily-loaded i18n namespaces
            (crd-reactions, crd-taskBoard) and chunks. Without a boundary here the first
@@ -132,7 +138,7 @@ export function LazyCalloutItem({
               forceDescriptionCollapsed={forceDescriptionCollapsed}
               commentsExpanded={commentsExpanded}
               onCommentsExpandedChange={setCommentsExpanded}
-              onDescriptionToggle={() => setDescriptionToggled(true)}
+              onDescriptionToggle={setDescriptionExpanded}
               onClick={onClick}
               onExpandClick={onExpandClick}
             />
@@ -169,7 +175,8 @@ function LazyCalloutItemContent({
   /** Inline comments state is owned by the parent — it pauses height recording while open. */
   commentsExpanded: boolean;
   onCommentsExpandedChange: (expanded: boolean) => void;
-  onDescriptionToggle: () => void;
+  /** "Read more" / "Read less" on the description — also pauses height recording while expanded. */
+  onDescriptionToggle: (expanded: boolean) => void;
   onClick?: () => void;
   onExpandClick?: () => void;
 }) {

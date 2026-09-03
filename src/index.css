@@ -33,6 +33,10 @@
 
 html {
   height: 100%;
+  /* Reserve the scrollbar gutter even when the document does not overflow, so a loading
+     state taller than the settled page cannot toggle the scrollbar and shift every
+     centred element horizontally as it lands (issue #10043). */
+  scrollbar-gutter: stable;
 }
 
 body {

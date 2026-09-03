@@ -52,7 +52,8 @@ export const useGraphQLClient = (
           errorHandlerLink,
           retryLink,
           redirectLink,
-          devDelayLink,
+          // Dev-only diagnostic; left out of the production chain entirely.
+          ...(import.meta.env.DEV ? [devDelayLink] : []),
           httpLink(graphQLEndpoint, enableWebSockets),
         ]),
         cache,
