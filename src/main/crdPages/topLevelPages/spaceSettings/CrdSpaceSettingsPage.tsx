@@ -194,6 +194,7 @@ export default function CrdSpaceSettingsPage() {
   });
   const [vcExternalOpen, setVcExternalOpen] = useState(false);
   const [inviteMembersOpen, setInviteMembersOpen] = useState(false);
+  const [inviteOrganizationsOpen, setInviteOrganizationsOpen] = useState(false);
   const { space: spaceContext } = useSpace();
   const { subspace } = useSubSpace();
   // `useSpace()` always resolves the top-level (root) Space regardless of the
@@ -513,6 +514,7 @@ export default function CrdSpaceSettingsPage() {
                 pendingMemberships={community.pendingMemberships}
                 organizations={community.organizations}
                 virtualContributors={community.virtualContributors}
+                pendingOrganizationInvitations={community.pendingOrganizationInvitations}
                 applicationFormSlot={
                   roleSetId ? (
                     <ApplicationFormEditor
@@ -566,8 +568,10 @@ export default function CrdSpaceSettingsPage() {
                 onUserRemove={community.onUserRemove}
                 onMemberChangeRole={member => setActiveMemberSubject(buildUserSubject(member))}
                 onOrgAdd={addOrgDialog.openDialog}
+                onInviteOrganizations={() => setInviteOrganizationsOpen(true)}
                 onOrgRemove={community.onOrgRemove}
                 onOrgChangeRole={org => setActiveMemberSubject(buildOrgSubject(org))}
+                onOrgInvitationRevoke={community.onOrgInvitationRevoke}
                 onVCAdd={addVCDialog.openDialog}
                 onVCAddExternal={() => setVcExternalOpen(true)}
                 onVCRemove={community.onVCRemove}
@@ -947,6 +951,13 @@ export default function CrdSpaceSettingsPage() {
         onClose={() => setInviteMembersOpen(false)}
         spaceId={spaceId}
         onlyFromParentCommunity={level === 'L2'}
+      />
+
+      <InviteMembersDialogConnector
+        open={inviteOrganizationsOpen}
+        onClose={() => setInviteOrganizationsOpen(false)}
+        kind="organization"
+        spaceId={spaceId}
       />
 
       <ConfirmationDialog
