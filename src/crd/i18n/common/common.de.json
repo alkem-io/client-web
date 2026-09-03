@@ -893,7 +893,7 @@
         },
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION": {
           "subject": "Ihre $t(common.organization) {{organizationName}} wurde eingeladen, {{spaceName}} beizutreten",
-          "description": "Als {{role}}.{{spacesToJoin}}"
+          "description": "Als {{invitationRole}}.{{spacesToJoin}}"
         },
         "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_ACCEPTED": {
           "subject": "{{organizationName}} hat Ihre Einladung zum Beitritt zu {{spaceName}} angenommen",
@@ -903,7 +903,8 @@
           "subject": "{{organizationName}} hat Ihre Einladung zum Beitritt zu {{spaceName}} abgelehnt",
           "description": ""
         }
-      }
+      },
+      "spacesToJoin": "Bei Annahme werden Sie auch beitreten: {{spaces}}"
     },
     "profile": {
       "fields": {

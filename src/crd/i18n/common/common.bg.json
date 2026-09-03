@@ -893,7 +893,7 @@
         },
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION": {
           "subject": "Вашата $t(common.organization) {{organizationName}} беше поканена да се присъедини към {{spaceName}}",
-          "description": "Като {{role}}.{{spacesToJoin}}"
+          "description": "Като {{invitationRole}}.{{spacesToJoin}}"
         },
         "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_ACCEPTED": {
           "subject": "{{organizationName}} прие поканата ви да се присъедини към {{spaceName}}",
@@ -903,7 +903,8 @@
           "subject": "{{organizationName}} отказа поканата ви да се присъедини към {{spaceName}}",
           "description": ""
         }
-      }
+      },
+      "spacesToJoin": "При приемане ще се присъедините и към: {{spaces}}"
     },
     "profile": {
       "fields": {

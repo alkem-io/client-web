@@ -7,6 +7,7 @@ import {
   NotificationEventCategory,
   NotificationEventInAppState,
   NotificationEventPayload,
+  RoleName,
 } from '@/core/apollo/generated/graphql-schema';
 import type { InAppNotificationModel } from '@/main/inAppNotifications/model/InAppNotificationModel';
 import type { InAppNotificationPayloadModel } from '@/main/inAppNotifications/model/InAppNotificationPayloadModel';
@@ -110,6 +111,126 @@ describe('resolved notification destinations', () => {
 
     expect(created).toBe('/my-space/calendar/sprint-demo');
     expect(commented).toBe('/my-space/calendar/sprint-demo');
+  });
+
+  it('sends the org-invited notification to the organization Invitations tab, not the space (061, contract §4)', () => {
+    const href = hrefOf(
+      notification(
+        NotificationEvent.OrganizationAdminSpaceCommunityInvitation,
+        {
+          type: NotificationEventPayload.SpaceCommunityInvitation,
+          space: spacePayload(),
+          organization: { id: 'org-1', profile: { displayName: 'Acme Org', url: '/organization/acme' } },
+        },
+        NotificationEventCategory.Organization
+      )
+    );
+
+    expect(href).toBe('/organization/acme/settings/invitations');
+  });
+
+  it('sends the org-accepted notification to the inviting space Community tab', () => {
+    const href = hrefOf(
+      notification(
+        NotificationEvent.SpaceAdminOrganizationCommunityInvitationAccepted,
+        {
+          type: NotificationEventPayload.SpaceCommunityActor,
+          space: spacePayload('/my-space'),
+          actor: { type: undefined, profile: { displayName: 'Acme Org', url: '/organization/acme' } },
+        },
+        NotificationEventCategory.SpaceAdmin
+      )
+    );
+
+    expect(href).toBe('/my-space/settings/community');
+  });
+
+  it('sends the org-declined notification to the inviting space Community tab', () => {
+    const href = hrefOf(
+      notification(
+        NotificationEvent.SpaceAdminOrganizationCommunityInvitationDeclined,
+        {
+          type: NotificationEventPayload.SpaceCommunityActor,
+          space: spacePayload('/my-space'),
+          actor: { type: undefined, profile: { displayName: 'Acme Org', url: '/organization/acme' } },
+        },
+        NotificationEventCategory.SpaceAdmin
+      )
+    );
+
+    expect(href).toBe('/my-space/settings/community');
+  });
+});
+
+describe('organization space-invitation translation values (061)', () => {
+  const orgInvitedNotification = (invitation: NonNullable<InAppNotificationPayloadModel['invitation']>) =>
+    notification(
+      NotificationEvent.OrganizationAdminSpaceCommunityInvitation,
+      {
+        type: NotificationEventPayload.SpaceCommunityInvitation,
+        space: spacePayload(),
+        organization: { id: 'org-1', profile: { displayName: 'Acme Org', url: '/organization/acme' } },
+        invitation,
+      },
+      NotificationEventCategory.Organization
+    );
+
+  it('resolves invitationRole to "member" (translated) when extraRoles has no Lead', () => {
+    const data = mapNotificationToItemData(
+      orgInvitedNotification({ extraRoles: [], invitedToParent: false, spacesToJoinOnAccept: [] }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.invitationRole).toBe('member');
+    expect(title.props.values.organizationName).toBe('Acme Org');
+  });
+
+  it('resolves invitationRole to "member + lead" when extraRoles includes Lead', () => {
+    const data = mapNotificationToItemData(
+      orgInvitedNotification({
+        extraRoles: [RoleName.Lead],
+        invitedToParent: false,
+        spacesToJoinOnAccept: [],
+      }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.invitationRole).toBe('member + lead');
+  });
+
+  it('spacesToJoin is empty when accepting joins only the target Space', () => {
+    const data = mapNotificationToItemData(
+      orgInvitedNotification({
+        extraRoles: [],
+        invitedToParent: false,
+        spacesToJoinOnAccept: [{ profile: { displayName: 'Green Energy', url: '/space/green-energy' } }],
+      }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.spacesToJoin).toBe('');
+  });
+
+  it('spacesToJoin lists every extra Space when accepting joins more than one', () => {
+    const data = mapNotificationToItemData(
+      orgInvitedNotification({
+        extraRoles: [],
+        invitedToParent: true,
+        spacesToJoinOnAccept: [
+          { profile: { displayName: 'Root Space', url: '/space/root' } },
+          { profile: { displayName: 'Green Energy', url: '/space/root/green-energy' } },
+        ],
+      }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    // `t` here is the plain key-echo stub (as elsewhere in this file) — assert the nested
+    // key was reached (not the interpolated English, which a real i18next instance renders).
+    expect(title.props.values.spacesToJoin).toContain('components.inAppNotifications.spacesToJoin');
   });
 });
 
