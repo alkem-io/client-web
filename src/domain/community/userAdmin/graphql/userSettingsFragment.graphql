@@ -66,6 +66,11 @@ fragment userSettingsFragment on UserSettings {
         inApp
         push
       }
+      adminSpaceCommunityInvitation {
+        email
+        inApp
+        push
+      }
     }
     space {
       # Admin related notifications
