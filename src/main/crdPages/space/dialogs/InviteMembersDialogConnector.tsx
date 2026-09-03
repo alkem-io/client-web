@@ -262,6 +262,8 @@ export function InviteMembersDialogConnector({
     alreadyMember: t('inviteMembers.results.alreadyMember'),
     alreadyHasApplication: t('inviteMembers.results.alreadyHasApplication'),
     parentNotAuthorized: t('inviteMembers.results.parentNotAuthorized'),
+    notAcceptingInvitations: t('inviteMembers.results.notAcceptingInvitations'),
+    leadLimitReached: t('inviteMembers.results.leadLimitReached'),
     error: t('inviteMembers.results.error'),
   } satisfies Record<InvitationResult['outcome'], string>;
 

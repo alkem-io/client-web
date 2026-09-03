@@ -15,6 +15,10 @@ import { Textarea } from '@/crd/primitives/textarea';
 
 export type InviteRole = 'Member' | 'Lead' | 'Admin';
 
+/** Who the dialog is inviting — drives search source, allowed roles, and which optional
+ * controls (email paste, suggested language) are shown. */
+export type InviteKind = 'user' | 'organization' | 'virtualContributor';
+
 export type InvitationResult = {
   invitee: ContributorSelectorInvitee;
   /**
@@ -24,10 +28,22 @@ export type InvitationResult = {
    *
    * `alreadyInvited`, `alreadyMember` and `alreadyHasApplication` are
    * informational (the invite simply wasn't needed/possible), not failures, so
-   * they render in a neutral tone. Only `parentNotAuthorized` and `error` are
-   * treated as failures.
+   * they render in a neutral tone. `notAcceptingInvitations` and
+   * `leadLimitReached` (organization kind only) are likewise informational —
+   * nothing was created, but nothing failed either. Only `parentNotAuthorized`
+   * and `error` are treated as failures.
    */
-  outcome: 'sent' | 'alreadyInvited' | 'alreadyMember' | 'alreadyHasApplication' | 'parentNotAuthorized' | 'error';
+  outcome:
+    | 'sent'
+    | 'alreadyInvited'
+    | 'alreadyMember'
+    | 'alreadyHasApplication'
+    | 'parentNotAuthorized'
+    | 'notAcceptingInvitations'
+    | 'leadLimitReached'
+    | 'error';
+  /** Informational addendum rendered as an extra line on a `sent` row (organization kind). */
+  notice?: 'noAdministrators';
 };
 
 export type InviteMembersDialogLabels = {
@@ -53,6 +69,8 @@ export type InviteMembersDialogLabels = {
   closeButtonLabel: string;
   closeAriaLabel: string;
   resultOutcomeLabels: Record<InvitationResult['outcome'], string>;
+  /** Label for the informational addendum rendered under a `sent` row's outcome label. */
+  resultNoticeLabels?: Record<NonNullable<InvitationResult['notice']>, string>;
   /** Label for the suggested-language select (T013). */
   suggestedLanguageLabel?: string;
   suggestedLanguagePlaceholder?: string;
@@ -63,6 +81,9 @@ export type InviteMembersDialogLabels = {
 export type InviteMembersDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+
+  /** Who is being invited — drives allowed roles and which optional controls show (default 'user'). */
+  kind?: InviteKind;
 
   /** Empty string while the underlying space query is loading; renders a placeholder title. */
   spaceName: string;
@@ -115,7 +136,11 @@ export type InviteMembersDialogProps = {
 };
 
 const LOCKED_ROLES: InviteRole[] = ['Member'];
-const OPTIONAL_ROLES: InviteRole[] = ['Lead', 'Admin'];
+const OPTIONAL_ROLES_BY_KIND: Record<InviteKind, InviteRole[]> = {
+  user: ['Lead', 'Admin'],
+  organization: ['Lead'],
+  virtualContributor: [],
+};
 
 /** Sentinel value for the "no preference" SelectItem (Radix forbids empty-string values). */
 const NO_LANGUAGE_SENTINEL = '__none__';
@@ -140,6 +165,7 @@ const NO_LANGUAGE_SENTINEL = '__none__';
 export function InviteMembersDialog({
   open,
   onOpenChange,
+  kind = 'user',
   spaceName,
   selectedContributors,
   searchResults,
@@ -151,7 +177,7 @@ export function InviteMembersDialog({
   searchLoading,
   hasMoreSearchResults,
   onLoadMoreSearchResults,
-  allowEmailInvites = true,
+  allowEmailInvites: allowEmailInvitesProp = true,
   welcomeMessage,
   onWelcomeMessageChange,
   suggestedLanguage,
@@ -176,6 +202,11 @@ export function InviteMembersDialog({
   useEffect(() => {
     setView(results === undefined ? 'form' : 'result');
   }, [results]);
+
+  // Email paste and the suggested-language control only ever apply to user invitees.
+  const allowEmailInvites = kind === 'user' && allowEmailInvitesProp;
+  const optionalRoles = OPTIONAL_ROLES_BY_KIND[kind];
+  const showLanguageControl = kind === 'user' && availableLanguages.length > 0 && Boolean(onSuggestedLanguageChange);
 
   const hasInvalidChips = selectedContributors.some(c => c.kind === 'email' && c.validationError !== undefined);
   const messageEmpty = welcomeMessage.trim().length === 0;
@@ -232,8 +263,8 @@ export function InviteMembersDialog({
                 />
               </div>
 
-              {/* T013 — Suggested language control. Hidden when eligible set is empty (R-8 kill-switch). */}
-              {availableLanguages.length > 0 && onSuggestedLanguageChange && (
+              {/* T013 — Suggested language control. User kind only; hidden when eligible set is empty (R-8 kill-switch). */}
+              {showLanguageControl && onSuggestedLanguageChange && (
                 <div className="flex flex-col gap-2">
                   <label className="text-body-emphasis text-foreground" htmlFor="invite-members-language">
                     {labels.suggestedLanguageLabel}
@@ -273,7 +304,7 @@ export function InviteMembersDialog({
                   value={extraRoles}
                   onChange={onExtraRolesChange}
                   lockedRoles={LOCKED_ROLES}
-                  optionalRoles={OPTIONAL_ROLES}
+                  optionalRoles={optionalRoles}
                   roleLabels={labels.roleLabels}
                   triggerLabel={labels.inviteToRoleLabel}
                   triggerAriaLabel={labels.rolePopoverAriaLabel}
@@ -293,6 +324,7 @@ export function InviteMembersDialog({
           <ResultView
             results={results ?? []}
             outcomeLabels={labels.resultOutcomeLabels}
+            noticeLabels={labels.resultNoticeLabels}
             onBack={onBack}
             onClose={() => onOpenChange(false)}
             backLabel={labels.backButtonLabel}
@@ -308,6 +340,7 @@ export function InviteMembersDialog({
 function ResultView({
   results,
   outcomeLabels,
+  noticeLabels,
   onBack,
   onClose,
   backLabel,
@@ -316,6 +349,7 @@ function ResultView({
 }: {
   results: InvitationResult[];
   outcomeLabels: InviteMembersDialogLabels['resultOutcomeLabels'];
+  noticeLabels: InviteMembersDialogLabels['resultNoticeLabels'];
   onBack: () => void;
   onClose: () => void;
   backLabel: string;
@@ -334,6 +368,7 @@ function ResultView({
             key={index}
             result={result}
             outcomeLabel={outcomeLabels[result.outcome]}
+            noticeLabel={result.notice ? noticeLabels?.[result.notice] : undefined}
           />
         ))}
       </ul>
@@ -349,7 +384,15 @@ function ResultView({
   );
 }
 
-function ResultRow({ result, outcomeLabel }: { result: InvitationResult; outcomeLabel: string }) {
+function ResultRow({
+  result,
+  outcomeLabel,
+  noticeLabel,
+}: {
+  result: InvitationResult;
+  outcomeLabel: string;
+  noticeLabel?: string;
+}) {
   const labelText =
     result.invitee.kind === 'user'
       ? result.invitee.displayName
@@ -359,7 +402,9 @@ function ResultRow({ result, outcomeLabel }: { result: InvitationResult; outcome
   const isNeutral =
     result.outcome === 'alreadyInvited' ||
     result.outcome === 'alreadyMember' ||
-    result.outcome === 'alreadyHasApplication';
+    result.outcome === 'alreadyHasApplication' ||
+    result.outcome === 'notAcceptingInvitations' ||
+    result.outcome === 'leadLimitReached';
   const Icon =
     result.outcome === 'sent'
       ? CheckCircle2
@@ -395,6 +440,7 @@ function ResultRow({ result, outcomeLabel }: { result: InvitationResult; outcome
           <Icon className="size-3.5 shrink-0" aria-hidden="true" />
           <span className="truncate">{outcomeLabel}</span>
         </p>
+        {noticeLabel && <p className="text-caption text-muted-foreground truncate">{noticeLabel}</p>}
       </div>
     </li>
   );
