@@ -73,6 +73,8 @@ const CrdOrgAuthorizationTab = () => {
           loadingCurrent: adminState.loadingCurrent,
           loadingAvailable: adminState.loadingAvailable,
           updating: adminState.updating,
+          addDisabledReason: adminState.addDisabledReason,
+          removeDisabledReason: adminState.removeDisabledReason,
         }}
         owner={{
           current: ownerCurrent,
@@ -89,6 +91,8 @@ const CrdOrgAuthorizationTab = () => {
           loadingCurrent: ownerState.loadingCurrent,
           loadingAvailable: ownerState.loadingAvailable,
           updating: ownerState.updating,
+          addDisabledReason: ownerState.addDisabledReason,
+          removeDisabledReason: ownerState.removeDisabledReason,
         }}
       />
       <ConfirmationDialog

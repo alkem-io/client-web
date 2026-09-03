@@ -1400,6 +1400,12 @@
       }
     }
   },
+  "permissions": {
+    "checking": "Comprobando permisos…",
+    "denied": "No tienes permiso para cambiar los miembros de este rol.",
+    "errorDenied": "No tienes permiso para realizar este cambio. El cambio no se ha guardado.",
+    "unverifiable": "No se han podido verificar los permisos."
+  },
   "pinned": "Fijado",
   "private": "Privado",
   "public": "Público",
