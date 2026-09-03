@@ -348,6 +348,18 @@
         "description": "Estas organizaciones serán visibles como miembros en este Space y en su perfil de organización.",
         "search": "Buscar organizaciones…",
         "empty": "Ninguna organización coincide con tu búsqueda."
+      },
+      "invite": "Invitar organización",
+      "search": "Buscar organizaciones…",
+      "pendingInvitations": {
+        "title": "Invitaciones pendientes",
+        "empty": "No hay invitaciones de organización pendientes.",
+        "role": "Rol",
+        "date": "Fecha",
+        "revoke": "Revocar",
+        "revokeAriaLabel": "Revocar invitación a {{name}}",
+        "roleMember": "Miembro",
+        "roleMemberLead": "Miembro + Lead"
       }
     },
     "virtualContributors": {

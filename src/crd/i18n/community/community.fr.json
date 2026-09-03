@@ -22,7 +22,34 @@
       "sendingButtonLabel": "Envoi…",
       "backButtonLabel": "Retour",
       "closeButtonLabel": "Fermer",
-      "closeAriaLabel": "Fermer la boîte de dialogue d'invitation"
+      "closeAriaLabel": "Fermer la boîte de dialogue d'invitation",
+      "organization": {
+        "title": "Inviter une organisation à rejoindre « {{spaceName}} »",
+        "searchPlaceholder": "Nom de l'organisation…",
+        "searchHint": "Rechercher une organisation à inviter",
+        "defaultWelcomeMessage": "Bonjour, nous aimerions inviter votre organisation à rejoindre {{spaceName}}. Consultez l'espace ou cliquez sur le bouton ci-dessous pour accepter ou refuser l'invitation."
+      },
+      "virtualContributor": {
+        "title": "Inviter un contributeur virtuel",
+        "description": "Ajoutez un contributeur virtuel depuis votre compte ou invitez-en un depuis la bibliothèque Alkemio.",
+        "searchPlaceholder": "Rechercher des contributeurs virtuels…",
+        "onAccount": "Sur votre compte",
+        "onAccountEmpty": "Aucun contributeur virtuel disponible sur votre compte.",
+        "inLibrary": "Dans la bibliothèque",
+        "inLibraryEmpty": "Aucun contributeur virtuel de la bibliothèque ne correspond à votre recherche.",
+        "add": "Ajouter",
+        "invite": "Inviter",
+        "addAriaLabel": "Ajouter {{name}}",
+        "inviteAriaLabel": "Inviter {{name}}",
+        "welcomeMessageLabel": "Message de bienvenue",
+        "welcomeMessagePlaceholder": "Ajoutez un message à l'invitation…",
+        "sendInvite": "Envoyer l'invitation",
+        "defaultWelcomeMessage": "Nous aimerions vous inviter à contribuer à {{space}}.",
+        "addedNotice": "Contributeur virtuel ajouté.",
+        "invitedNotice": "Invitation envoyée.",
+        "error": "Une erreur s'est produite. Veuillez réessayer.",
+        "previewAriaLabel": "Aperçu de {{name}}"
+      }
     },
     "roles": {
       "Member": "Member",
@@ -40,7 +67,10 @@
       "alreadyMember": "Déjà membre de cet espace",
       "alreadyHasApplication": "A déjà une candidature en cours pour cet espace",
       "parentNotAuthorized": "Invitation impossible — la personne devrait aussi rejoindre l'espace parent, et vous n'avez pas la permission d'y inviter.",
-      "error": "Échec de l'invitation."
+      "error": "Échec de l'invitation.",
+      "notAcceptingInvitations": "Cette organisation n'accepte pas les invitations aux espaces",
+      "leadLimitReached": "La limite du rôle Lead pour les organisations a été atteinte",
+      "sentNoAdministrators": "Invitation envoyée — cette organisation n'a actuellement aucun administrateur à notifier"
     },
     "toast": {
       "someFailed": "{{count}} invitations n'ont pas pu être envoyées — consultez les résultats pour plus de détails."

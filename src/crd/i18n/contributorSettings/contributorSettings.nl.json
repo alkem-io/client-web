@@ -95,7 +95,8 @@
         "account": "Account",
         "community": "Community",
         "authorization": "Autorisatie",
-        "settings": "Instellingen"
+        "settings": "Instellingen",
+        "invitations": "Uitnodigingen"
       },
       "vc": {
         "profile": "Profiel",
@@ -520,7 +521,7 @@
         },
         "spaceAdmin": {
           "communityApplicationReceived": "Krijg een melding wanneer een nieuwe community-aanvraag wordt ingediend",
-          "communityNewMember": "Krijg een melding wanneer een nieuw lid zich bij de community aansluit",
+          "communityNewMember": "Ontvang een melding wanneer een nieuw lid zich bij de community voegt, of wanneer een uitgenodigde organisatie toetreding accepteert of afwijst",
           "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een callout wordt aangemaakt",
           "communicationMessageReceived": "Krijg een melding wanneer er een community-bericht wordt ontvangen",
           "userEmailChanged": "Krijg een melding wanneer het inloge-mailadres van een lid van een Space die je beheert wordt gewijzigd"
@@ -547,7 +548,8 @@
         },
         "organization": {
           "adminMentioned": "Krijg een melding wanneer mijn organisatie wordt vermeld",
-          "adminMessageReceived": "Ontvang directe berichten gericht aan mijn organisatie"
+          "adminMessageReceived": "Ontvang directe berichten gericht aan mijn organisatie",
+          "adminSpaceCommunityInvitation": "Ontvang een melding wanneer een organisatie die ik beheer wordt uitgenodigd om lid te worden van een Space"
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Krijg een melding wanneer een VC-beheerder wordt uitgenodigd om lid te worden van een community"
@@ -815,7 +817,9 @@
       "membership": {
         "title": "Lidmaatschap",
         "allowDomainLabel": "Sta gebruikers met het domein van deze organisatie toe lid te worden",
-        "allowDomainCaption": "Wanneer ingeschakeld, kunnen gebruikers wier e-maildomein overeenkomt met deze organisatie zich aansluiten zonder uitnodiging."
+        "allowDomainCaption": "Wanneer ingeschakeld, kunnen gebruikers wier e-maildomein overeenkomt met deze organisatie zich aansluiten zonder uitnodiging.",
+        "allowSpaceInvitationsLabel": "Spaces toestaan om deze organisatie uit te nodigen",
+        "allowSpaceInvitationsCaption": "Indien ingeschakeld, kunnen Space-beheerders deze organisatie uitnodigen om lid te worden van hun Space-community."
       },
       "privacy": {
         "title": "Privacy",
@@ -823,6 +827,24 @@
         "contributionRolesCaption": "Wanneer ingeschakeld, zijn de roltoewijzingen van de organisatie (Beheerder, Eigenaar, Geassocieerde) zichtbaar op het openbare profiel."
       },
       "errorToast": "Voorkeur opslaan mislukt — probeer opnieuw"
+    },
+    "invitations": {
+      "pageTitle": "Uitnodigingen",
+      "title": "Space-uitnodigingen",
+      "empty": "Geen openstaande Space-uitnodigingen.",
+      "invitedBy": "Uitgenodigd door {{name}}",
+      "invitedByUnknown": "Uitgenodigd door een Space-beheerder",
+      "date": "Datum",
+      "role": "Rol",
+      "roleMember": "Lid",
+      "roleMemberLead": "Lid + Lead",
+      "spacesToJoin": "Bij accepteren treedt u ook toe tot: {{spaces}}",
+      "accept": "Accepteren",
+      "decline": "Afwijzen",
+      "acceptConfirmTitle": "Deze uitnodiging accepteren?",
+      "acceptConfirmBody": "Uw organisatie treedt toe tot {{spaceName}} als {{role}}.",
+      "acceptConfirmAction": "Uitnodiging accepteren",
+      "errorToast": "De uitnodiging kon niet worden bijgewerkt — probeer het opnieuw"
     }
   },
   "vc": {

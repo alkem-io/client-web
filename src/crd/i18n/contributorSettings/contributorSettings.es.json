@@ -95,7 +95,8 @@
         "account": "Cuenta",
         "community": "Comunidad",
         "authorization": "Autorización",
-        "settings": "Ajustes"
+        "settings": "Ajustes",
+        "invitations": "Invitaciones"
       },
       "vc": {
         "profile": "Perfil",
@@ -520,7 +521,7 @@
         },
         "spaceAdmin": {
           "communityApplicationReceived": "Recibir una notificación cuando se envía una nueva solicitud a la comunidad",
-          "communityNewMember": "Recibir una notificación cuando un nuevo miembro se une a la comunidad",
+          "communityNewMember": "Recibir una notificación cuando un nuevo miembro se une a la comunidad, o cuando una organización invitada acepta o rechaza unirse",
           "collaborationCalloutContributionCreated": "Recibir una notificación cuando se crea una nueva contribución en una llamada",
           "communicationMessageReceived": "Recibir una notificación cuando se recibe un mensaje de la comunidad",
           "userEmailChanged": "Recibir una notificación cuando se cambia el correo electrónico de inicio de sesión de un miembro de un Space que administras"
@@ -547,7 +548,8 @@
         },
         "organization": {
           "adminMentioned": "Recibir una notificación cuando se menciona a mi organización",
-          "adminMessageReceived": "Recibir mensajes directos a mi organización"
+          "adminMessageReceived": "Recibir mensajes directos a mi organización",
+          "adminSpaceCommunityInvitation": "Recibir una notificación cuando una organización que administro sea invitada a unirse a un Space"
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Recibir una notificación cuando se invita a un gestor de VC a unirse a una comunidad"
@@ -815,7 +817,9 @@
       "membership": {
         "title": "Membresía",
         "allowDomainLabel": "Permitir que los usuarios cuyo dominio coincida con la organización se unan",
-        "allowDomainCaption": "Cuando está activado, los usuarios con un dominio de correo coincidente pueden unirse sin invitación."
+        "allowDomainCaption": "Cuando está activado, los usuarios con un dominio de correo coincidente pueden unirse sin invitación.",
+        "allowSpaceInvitationsLabel": "Permitir que los Spaces inviten a esta organización",
+        "allowSpaceInvitationsCaption": "Cuando está activado, los administradores del Space pueden invitar a esta organización a unirse a su comunidad del Space."
       },
       "privacy": {
         "title": "Privacidad",
@@ -823,6 +827,24 @@
         "contributionRolesCaption": "Cuando está activado, las asignaciones de roles de la organización (Administrador, Propietario, Asociado) son visibles en el perfil público."
       },
       "errorToast": "No se pudo guardar la preferencia — inténtalo de nuevo"
+    },
+    "invitations": {
+      "pageTitle": "Invitaciones",
+      "title": "Invitaciones a Spaces",
+      "empty": "No hay invitaciones a Spaces pendientes.",
+      "invitedBy": "Invitado por {{name}}",
+      "invitedByUnknown": "Invitado por un administrador del Space",
+      "date": "Fecha",
+      "role": "Rol",
+      "roleMember": "Miembro",
+      "roleMemberLead": "Miembro + Lead",
+      "spacesToJoin": "Al aceptar también se unirá a: {{spaces}}",
+      "accept": "Aceptar",
+      "decline": "Rechazar",
+      "acceptConfirmTitle": "¿Aceptar esta invitación?",
+      "acceptConfirmBody": "Su organización se unirá a {{spaceName}} como {{role}}.",
+      "acceptConfirmAction": "Aceptar invitación",
+      "errorToast": "No se pudo actualizar la invitación — inténtelo de nuevo"
     }
   },
   "vc": {

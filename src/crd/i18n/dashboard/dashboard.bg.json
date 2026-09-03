@@ -190,7 +190,14 @@
       "join": "Присъедини се",
       "joinAriaLabel": "Присъедини се към {{spaceName}}"
     },
-    "applicationAriaLabel": "Виж чакащо заявление за {{spaceName}}"
+    "applicationAriaLabel": "Виж чакащо заявление за {{spaceName}}",
+    "orgInvitationsSection": "Покани за организации",
+    "orgInvitationDialog": {
+      "title": "Покана за {{organizationName}}",
+      "accept": "Приеми",
+      "role": "Роля",
+      "spacesToJoin": "При приемане ще се присъедините и към: {{spaces}}"
+    }
   },
   "nonActivity": {
     "sections": {

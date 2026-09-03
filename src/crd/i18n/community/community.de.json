@@ -22,7 +22,34 @@
       "sendingButtonLabel": "Wird gesendet…",
       "backButtonLabel": "Zurück",
       "closeButtonLabel": "Schließen",
-      "closeAriaLabel": "Einladungsdialog schließen"
+      "closeAriaLabel": "Einladungsdialog schließen",
+      "organization": {
+        "title": "Eine Organisation einladen, um „{{spaceName}}“ beizutreten",
+        "searchPlaceholder": "Organisationsname…",
+        "searchHint": "Nach einer einzuladenden Organisation suchen",
+        "defaultWelcomeMessage": "Hallo, wir möchten Ihre Organisation einladen, {{spaceName}} beizutreten. Werfen Sie einen Blick auf den Space oder klicken Sie unten, um die Einladung anzunehmen oder abzulehnen."
+      },
+      "virtualContributor": {
+        "title": "Virtuellen Mitwirkenden einladen",
+        "description": "Fügen Sie einen virtuellen Mitwirkenden aus Ihrem Konto hinzu oder laden Sie einen aus der Alkemio-Bibliothek ein.",
+        "searchPlaceholder": "Virtuelle Mitwirkende suchen…",
+        "onAccount": "In Ihrem Konto",
+        "onAccountEmpty": "Keine virtuellen Mitwirkenden in Ihrem Konto verfügbar.",
+        "inLibrary": "In der Bibliothek",
+        "inLibraryEmpty": "Keine virtuellen Mitwirkenden in der Bibliothek entsprechen Ihrer Suche.",
+        "add": "Hinzufügen",
+        "invite": "Einladen",
+        "addAriaLabel": "{{name}} hinzufügen",
+        "inviteAriaLabel": "{{name}} einladen",
+        "welcomeMessageLabel": "Willkommensnachricht",
+        "welcomeMessagePlaceholder": "Fügen Sie der Einladung eine Nachricht hinzu…",
+        "sendInvite": "Einladung senden",
+        "defaultWelcomeMessage": "Wir möchten Sie einladen, zu {{space}} beizutragen.",
+        "addedNotice": "Virtueller Mitwirkender hinzugefügt.",
+        "invitedNotice": "Einladung gesendet.",
+        "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+        "previewAriaLabel": "Vorschau von {{name}}"
+      }
     },
     "roles": {
       "Member": "Member",
@@ -40,7 +67,10 @@
       "alreadyMember": "Bereits Mitglied dieses Spaces",
       "alreadyHasApplication": "Hat bereits eine offene Bewerbung für diesen Space",
       "parentNotAuthorized": "Einladung nicht möglich — die Person müsste auch dem übergeordneten Space beitreten, und Sie haben dort keine Einladungsberechtigung.",
-      "error": "Einladung fehlgeschlagen."
+      "error": "Einladung fehlgeschlagen.",
+      "notAcceptingInvitations": "Diese Organisation nimmt keine Space-Einladungen an",
+      "leadLimitReached": "Das Limit der Lead-Rolle für Organisationen wurde erreicht",
+      "sentNoAdministrators": "Einladung gesendet — diese Organisation hat derzeit keine Administratoren, die benachrichtigt werden könnten"
     },
     "toast": {
       "someFailed": "{{count}} Einladungen konnten nicht gesendet werden — Details siehe Ergebnisse."

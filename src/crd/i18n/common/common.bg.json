@@ -890,6 +890,18 @@
         "VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION": {
           "description": "",
           "subject": "{{triggeredByName}} е поканил {{contributorName}} към {{spaceName}}, за което Вие сте $t(common.admin)"
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION": {
+          "subject": "Вашата $t(common.organization) {{organizationName}} беше поканена да се присъедини към {{spaceName}}",
+          "description": "Като {{role}}.{{spacesToJoin}}"
+        },
+        "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{organizationName}} прие поканата ви да се присъедини към {{spaceName}}",
+          "description": "{{organizationName}} се присъедини към {{spaceName}}, на което сте $t(common.admin)."
+        },
+        "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{organizationName}} отказа поканата ви да се присъедини към {{spaceName}}",
+          "description": ""
         }
       }
     },

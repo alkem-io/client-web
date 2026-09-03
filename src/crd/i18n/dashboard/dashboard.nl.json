@@ -190,7 +190,14 @@
       "join": "Toetreden",
       "joinAriaLabel": "Toetreden tot {{spaceName}}"
     },
-    "applicationAriaLabel": "Openstaande aanvraag voor {{spaceName}} bekijken"
+    "applicationAriaLabel": "Openstaande aanvraag voor {{spaceName}} bekijken",
+    "orgInvitationsSection": "Organisatie-uitnodigingen",
+    "orgInvitationDialog": {
+      "title": "Uitnodiging voor {{organizationName}}",
+      "accept": "Accepteren",
+      "role": "Rol",
+      "spacesToJoin": "Bij accepteren treedt u ook toe tot: {{spaces}}"
+    }
   },
   "nonActivity": {
     "sections": {
