@@ -45,6 +45,11 @@ fragment InvitationData on CommunityInvitationResult {
     actor {
       id
       type
+      profile {
+        id
+        displayName
+        url
+      }
     }
     spacesToJoinOnAccept {
       id

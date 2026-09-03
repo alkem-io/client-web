@@ -14,6 +14,13 @@ type PendingInvitationCardData = {
   /** Deterministic accent colour, shown as the avatar fallback when
    * `spaceAvatarUrl` is missing. */
   color?: string;
+  /**
+   * Set for an organization invitation — the invited organization's name.
+   * When present, the card leads with this (the decision-relevant fact for
+   * an org admin skimming several invitations) and demotes `spaceName` to
+   * the subtitle row `senderName` normally occupies.
+   */
+  organizationName?: string;
 };
 
 type PendingInvitationCardProps = {
@@ -23,6 +30,9 @@ type PendingInvitationCardProps = {
 };
 
 function PendingInvitationCard({ invitation, onClick, className }: PendingInvitationCardProps) {
+  const primaryLabel = invitation.organizationName ?? invitation.spaceName;
+  const secondaryLabel = invitation.organizationName ? invitation.spaceName : invitation.senderName;
+
   return (
     <button
       type="button"
@@ -35,19 +45,19 @@ function PendingInvitationCard({ invitation, onClick, className }: PendingInvita
     >
       <Avatar className="size-10 shrink-0 rounded-lg">
         {invitation.spaceAvatarUrl ? (
-          <AvatarImage src={invitation.spaceAvatarUrl} alt={invitation.spaceName} className="rounded-lg object-cover" />
+          <AvatarImage src={invitation.spaceAvatarUrl} alt={primaryLabel} className="rounded-lg object-cover" />
         ) : null}
         <AvatarFallback
           className={cn('rounded-lg text-caption', invitation.color && 'text-white')}
           color={invitation.color}
         >
-          {getInitials(invitation.spaceName)}
+          {getInitials(primaryLabel)}
         </AvatarFallback>
       </Avatar>
 
       <div className="flex-1 min-w-0">
-        <p className="text-card-title leading-tight truncate">{invitation.spaceName}</p>
-        <p className="text-caption text-muted-foreground mt-0.5 truncate">{invitation.senderName}</p>
+        <p className="text-card-title leading-tight truncate">{primaryLabel}</p>
+        <p className="text-caption text-muted-foreground mt-0.5 truncate">{secondaryLabel}</p>
         {invitation.welcomeMessageExcerpt && (
           <p className="text-caption text-muted-foreground mt-0.5 line-clamp-1">{invitation.welcomeMessageExcerpt}</p>
         )}
