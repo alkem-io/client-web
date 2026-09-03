@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import type {
   PendingMembership,
   PendingMembershipContributorType,
@@ -35,14 +35,28 @@ export type CommunityPendingRemoval =
       state: PendingMembershipState;
     };
 
+/** A pending organization invitation shown in the Member Organisations section (T009). */
+export type PendingOrganizationInvitationRow = {
+  id: string;
+  organizationDisplayName: string;
+  organizationUrl?: string;
+  /** Whether the invitation also offers the Lead role, alongside the always-granted Member role. */
+  role: 'member' | 'memberLead';
+  createdDate: string;
+  canRevoke: boolean;
+};
+
 export type UseCommunityTabDataResult = {
   members: CommunityMember[];
   applications: ApplicationModel[];
   pendingMemberships: PendingMembership[];
   organizations: CommunityOrg[];
   virtualContributors: CommunityVC[];
+  pendingOrganizationInvitations: PendingOrganizationInvitationRow[];
+  onOrgInvitationRevoke: (id: string) => void;
   permissions: {
     canInvite: boolean;
+    canInviteOrganizations: boolean;
     canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
   };
@@ -181,7 +195,10 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     })
     .filter((x): x is PendingMembership => x !== null);
 
+  // Organization invitations get their own section (Member Organisations → Pending
+  // invitations), not the generic pending-memberships table — excluded here.
   const invitationMemberships: PendingMembership[] = community.membershipAdmin.invitations
+    .filter(inv => inv.contributorType !== ActorType.Organization)
     .map<PendingMembership | null>(inv => {
       const state = mapInvitationState(inv.state);
       if (!state) return null;
@@ -200,6 +217,21 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
       };
     })
     .filter((x): x is PendingMembership => x !== null);
+
+  const pendingOrganizationInvitations: PendingOrganizationInvitationRow[] = community.membershipAdmin.invitations
+    .filter(inv => inv.contributorType === ActorType.Organization)
+    .map(inv => ({
+      id: inv.id,
+      organizationDisplayName: inv.actor.profile?.displayName ?? '',
+      organizationUrl: inv.actor.profile?.url,
+      role: inv.extraRoles.includes(RoleName.Lead) ? ('memberLead' as const) : ('member' as const),
+      createdDate: toIsoString(inv.createdDate),
+      canRevoke: inv.state === InvitationState.INVITED,
+    }));
+
+  const onOrgInvitationRevoke = (id: string) => {
+    void community.membershipAdmin.onDeleteInvitation(id);
+  };
 
   const platformInvitationMemberships: PendingMembership[] = community.membershipAdmin.platformInvitations.map(inv => ({
     id: inv.id,
@@ -346,8 +378,11 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     pendingMemberships,
     organizations,
     virtualContributors,
+    pendingOrganizationInvitations,
+    onOrgInvitationRevoke,
     permissions: {
       canInvite: community.permissions.canInvite,
+      canInviteOrganizations: community.permissions.canInviteOrganizations,
       canAddOrganizations: community.permissions.canAddOrganizations,
       // Mirror MUI (`SpaceAdminCommunityPage`): a space admin may add a VC via
       // EITHER the role-set assign privilege OR the account-assign privilege.
