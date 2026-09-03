@@ -12048,7 +12048,12 @@ export type UserPendingMembershipsQuery = {
               profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
             }
           | undefined;
-        actor: { __typename?: 'Actor'; id: string; type: ActorType };
+        actor: {
+          __typename?: 'Actor';
+          id: string;
+          type: ActorType;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+        };
         spacesToJoinOnAccept: Array<{
           __typename?: 'SpaceAbout';
           id: string;
@@ -23461,7 +23466,12 @@ export type OrgInvitationsQuery = {
               profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
             }
           | undefined;
-        actor: { __typename?: 'Actor'; id: string; type: ActorType };
+        actor: {
+          __typename?: 'Actor';
+          id: string;
+          type: ActorType;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+        };
         spacesToJoinOnAccept: Array<{
           __typename?: 'SpaceAbout';
           id: string;
@@ -25386,7 +25396,12 @@ export type InvitationDataFragment = {
           profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
         }
       | undefined;
-    actor: { __typename?: 'Actor'; id: string; type: ActorType };
+    actor: {
+      __typename?: 'Actor';
+      id: string;
+      type: ActorType;
+      profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+    };
     spacesToJoinOnAccept: Array<{
       __typename?: 'SpaceAbout';
       id: string;
@@ -26355,7 +26370,12 @@ export type VcMembershipsQuery = {
               profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
             }
           | undefined;
-        actor: { __typename?: 'Actor'; id: string; type: ActorType };
+        actor: {
+          __typename?: 'Actor';
+          id: string;
+          type: ActorType;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+        };
         spacesToJoinOnAccept: Array<{
           __typename?: 'SpaceAbout';
           id: string;

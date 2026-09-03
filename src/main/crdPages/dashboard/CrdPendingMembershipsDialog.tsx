@@ -1,7 +1,7 @@
 import { defer } from 'lodash-es';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { ReferencesAndTagsStrip } from '@/crd/components/callout/ReferencesAndTagsStrip';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
@@ -29,6 +29,40 @@ import {
   mapHydratedInvitationToCardData,
   mapHydratedInvitationToDetailData,
 } from './pendingMembershipsDataMappers';
+
+// ─── Pure helpers (exported for unit testing — T014) ───────────────────────
+
+/**
+ * Neither VC nor organization invitations navigate to the space on accept —
+ * VCs aren't a space the current user visits, and an org invitation is acted
+ * on by an org admin who isn't necessarily joining the space themselves (R4).
+ * Both return to the pending-memberships list instead (`onInvitationAccept`
+ * falls through to `setOpenDialog({ type: PendingMembershipsList })` whenever
+ * `openDialog.spaceUri` is undefined).
+ */
+export const resolveInvitationSpaceUri = (actorType: ActorType | undefined, spaceUrl: string): string | undefined => {
+  const returnsToList = actorType === ActorType.VirtualContributor || actorType === ActorType.Organization;
+  return returnsToList ? undefined : spaceUrl;
+};
+
+/** Splits the flat invitation list into the three sections the list dialog renders. */
+export const classifyInvitations = <T extends { invitation: { actor?: { type: ActorType } } }>(
+  invitations: T[] | undefined
+): {
+  userInvitations: T[] | undefined;
+  organizationInvitations: T[] | undefined;
+  virtualContributorInvitations: T[] | undefined;
+} => ({
+  userInvitations: invitations?.filter(
+    inv =>
+      inv.invitation.actor?.type !== ActorType.VirtualContributor &&
+      inv.invitation.actor?.type !== ActorType.Organization
+  ),
+  organizationInvitations: invitations?.filter(inv => inv.invitation.actor?.type === ActorType.Organization),
+  virtualContributorInvitations: invitations?.filter(
+    inv => inv.invitation.actor?.type === ActorType.VirtualContributor
+  ),
+});
 
 // ─── Per-item hydration wrappers ────────────────────────────────────────────
 
@@ -116,19 +150,31 @@ const InvitationDetailContainer = ({
   }
 
   const isVC = hydrated.invitation.actor?.type === ActorType.VirtualContributor;
+  const isOrg = hydrated.invitation.actor?.type === ActorType.Organization;
 
-  const title = isVC
-    ? tMain('community.pendingMembership.invitationDialog.vc.title', {
-        space: hydrated.space.about.profile.displayName,
+  const title = isOrg
+    ? t('pendingMemberships.orgInvitationDialog.title', {
+        organizationName: hydrated.invitation.actor?.profile?.displayName ?? '',
       })
-    : tMain('community.pendingMembership.invitationDialog.title', {
-        space: hydrated.space.about.profile.displayName,
-      });
+    : isVC
+      ? tMain('community.pendingMembership.invitationDialog.vc.title', {
+          space: hydrated.space.about.profile.displayName,
+        })
+      : tMain('community.pendingMembership.invitationDialog.title', {
+          space: hydrated.space.about.profile.displayName,
+        });
 
-  const acceptLabel = isVC ? t('pendingMemberships.detail.accept') : t('pendingMemberships.detail.join');
+  const acceptLabel = isVC || isOrg ? t('pendingMemberships.detail.accept') : t('pendingMemberships.detail.join');
   const rejectLabel = t('pendingMemberships.detail.reject');
 
   const detailData = mapHydratedInvitationToDetailData(hydrated, i18n.language);
+
+  // The offered role + every Space the organization joins on accept (D7) — organization
+  // invitations only; the generic activity description above already covers user/VC invites.
+  const roleText = hydrated.invitation.extraRoles?.includes(RoleName.Lead)
+    ? `${tMain('member')} + ${tMain('lead')}`
+    : tMain('member');
+  const spacesToJoin = hydrated.invitation.spacesToJoinOnAccept ?? [];
 
   const descriptionSlot = (
     <div className="text-caption text-muted-foreground">
@@ -141,6 +187,15 @@ const InvitationDetailContainer = ({
         author={{ displayName: hydrated.userDisplayName }}
         type={hydrated.invitation.actor?.type}
       />
+      {isOrg && (
+        <p className="mt-1">
+          {t('pendingMemberships.orgInvitationDialog.role')}: {roleText}
+          {spacesToJoin.length > 1 &&
+            ` · ${t('pendingMemberships.orgInvitationDialog.spacesToJoin', {
+              spaces: spacesToJoin.map(space => space.profile.displayName).join(', '),
+            })}`}
+        </p>
+      )}
     </div>
   );
 
@@ -207,7 +262,7 @@ const CrdPendingMembershipsDialog = () => {
     setOpenDialog({
       type: PendingMembershipsDialogType.InvitationView,
       invitationId: id,
-      spaceUri: invitation.actor?.type === ActorType.VirtualContributor ? undefined : space.about.profile.url,
+      spaceUri: resolveInvitationSpaceUri(invitation.actor?.type, space.about.profile.url),
     });
   };
 
@@ -221,16 +276,13 @@ const CrdPendingMembershipsDialog = () => {
       ? invitations?.find(inv => inv.id === openDialog.invitationId)
       : undefined;
 
-  const virtualContributorInvitations = invitations?.filter(
-    inv => inv.invitation.actor?.type === ActorType.VirtualContributor
-  );
-
-  const nonVirtualContributorInvitations = invitations?.filter(
-    inv => inv.invitation.actor?.type !== ActorType.VirtualContributor
-  );
+  const { userInvitations, organizationInvitations, virtualContributorInvitations } = classifyInvitations(invitations);
 
   const isEmpty =
-    !nonVirtualContributorInvitations?.length && !virtualContributorInvitations?.length && !applications?.length;
+    !userInvitations?.length &&
+    !organizationInvitations?.length &&
+    !virtualContributorInvitations?.length &&
+    !applications?.length;
 
   const onInvitationAccept = () => {
     if (openDialog?.spaceUri) {
@@ -253,9 +305,17 @@ const CrdPendingMembershipsDialog = () => {
         loading={loading}
         empty={isEmpty}
       >
-        {nonVirtualContributorInvitations?.length ? (
+        {userInvitations?.length ? (
           <PendingMembershipsSection title={t('pendingMemberships.invitationsSection')}>
-            {nonVirtualContributorInvitations.map(inv => (
+            {userInvitations.map(inv => (
+              <HydratedInvitationCard key={inv.id} invitation={inv} onClick={handleInvitationCardClick} />
+            ))}
+          </PendingMembershipsSection>
+        ) : null}
+
+        {organizationInvitations?.length ? (
+          <PendingMembershipsSection title={t('pendingMemberships.orgInvitationsSection')}>
+            {organizationInvitations.map(inv => (
               <HydratedInvitationCard key={inv.id} invitation={inv} onClick={handleInvitationCardClick} />
             ))}
           </PendingMembershipsSection>

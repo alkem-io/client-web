@@ -1927,6 +1927,11 @@ export const InvitationDataFragmentDoc = gql`
     actor {
       id
       type
+      profile {
+        id
+        displayName
+        url
+      }
     }
     spacesToJoinOnAccept {
       id
