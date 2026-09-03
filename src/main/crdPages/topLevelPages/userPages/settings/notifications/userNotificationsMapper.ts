@@ -462,6 +462,16 @@ export const mapUserNotifications = (
             'adminMessageReceived'
           ),
         },
+        {
+          property: 'adminSpaceCommunityInvitation',
+          label: t('user.notifications.rows.organization.adminSpaceCommunityInvitation'),
+          channels: resolveChannels(
+            server.organization?.adminSpaceCommunityInvitation,
+            overrides,
+            'organization',
+            'adminSpaceCommunityInvitation'
+          ),
+        },
       ],
     });
   }

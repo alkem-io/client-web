@@ -53,6 +53,7 @@ export interface UserNotificationSettings {
 export interface OrganizationNotificationSettings {
   adminMentioned?: NotificationChannels;
   adminMessageReceived?: NotificationChannels;
+  adminSpaceCommunityInvitation?: NotificationChannels;
 }
 
 // Platform notification settings (Forum)

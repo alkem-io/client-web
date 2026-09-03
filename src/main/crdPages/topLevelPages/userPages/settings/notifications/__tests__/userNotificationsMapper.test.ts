@@ -120,3 +120,47 @@ describe('mapUserNotifications — callout reaction row', () => {
     expect(row?.channels.push).toBe(false);
   });
 });
+
+describe('mapUserNotifications — organization.adminSpaceCommunityInvitation row (061)', () => {
+  const orgAdminPrivileges: NotificationPrivileges = { ...noPrivileges, isOrganizationAdmin: true };
+  const serverWithOrgInvitation: NotificationSettings = {
+    organization: {
+      adminSpaceCommunityInvitation: { email: true, inApp: true, push: false },
+    },
+  };
+
+  const findOrgGroup = (server: NotificationSettings, privileges = orgAdminPrivileges) => {
+    const { groups } = mapUserNotifications(server, new Map(), privileges, t);
+    const orgGroup = groups.find(group => group.groupId === 'organization');
+    if (!orgGroup) throw new Error('organization group missing');
+    return orgGroup;
+  };
+
+  it('exposes adminSpaceCommunityInvitation after adminMessageReceived in the organization group', () => {
+    const orgGroup = findOrgGroup(serverWithOrgInvitation);
+    const properties = orgGroup.rows.map(row => row.property);
+    const invitationIndex = properties.indexOf('adminSpaceCommunityInvitation');
+    const messageReceivedIndex = properties.indexOf('adminMessageReceived');
+    expect(invitationIndex).toBeGreaterThan(-1);
+    expect(invitationIndex).toBe(messageReceivedIndex + 1);
+  });
+
+  it('resolves channels from the server value', () => {
+    const orgGroup = findOrgGroup(serverWithOrgInvitation);
+    const row = orgGroup.rows.find(r => r.property === 'adminSpaceCommunityInvitation');
+    expect(row?.channels).toEqual({ email: true, inApp: true, push: false });
+  });
+
+  it('the organization group is hidden entirely without platform-admin or org-admin privileges', () => {
+    const { groups } = mapUserNotifications(serverWithOrgInvitation, new Map(), noPrivileges, t);
+    expect(groups.find(g => g.groupId === 'organization')).toBeUndefined();
+  });
+
+  it('applies optimistic overrides on the new row', () => {
+    const overrides = new Map<string, boolean>([['organization::adminSpaceCommunityInvitation::email', false]]);
+    const { groups } = mapUserNotifications(serverWithOrgInvitation, overrides, orgAdminPrivileges, t);
+    const orgGroup = groups.find(g => g.groupId === 'organization');
+    const row = orgGroup?.rows.find(r => r.property === 'adminSpaceCommunityInvitation');
+    expect(row?.channels.email).toBe(false);
+  });
+});
