@@ -219,6 +219,13 @@ const buildOrganization = (
 ) => ({
   adminMentioned: channel(type, property, 'adminMentioned', value, server?.adminMentioned),
   adminMessageReceived: channel(type, property, 'adminMessageReceived', value, server?.adminMessageReceived),
+  adminSpaceCommunityInvitation: channel(
+    type,
+    property,
+    'adminSpaceCommunityInvitation',
+    value,
+    server?.adminSpaceCommunityInvitation
+  ),
 });
 
 const buildPlatform = (
