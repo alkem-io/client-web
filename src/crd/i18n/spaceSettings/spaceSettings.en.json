@@ -348,6 +348,18 @@
         "description": "These organizations will be visible as members in this Space and on their organization profile.",
         "search": "Search organisations…",
         "empty": "No organisations match your search."
+      },
+      "invite": "Invite Organisation",
+      "search": "Search organisations…",
+      "pendingInvitations": {
+        "title": "Pending Invitations",
+        "empty": "No pending organisation invitations.",
+        "role": "Role",
+        "date": "Date",
+        "revoke": "Revoke",
+        "revokeAriaLabel": "Revoke invitation to {{name}}",
+        "roleMember": "Member",
+        "roleMemberLead": "Member + Lead"
       }
     },
     "virtualContributors": {

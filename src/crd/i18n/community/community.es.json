@@ -22,7 +22,34 @@
       "sendingButtonLabel": "Enviando…",
       "backButtonLabel": "Atrás",
       "closeButtonLabel": "Cerrar",
-      "closeAriaLabel": "Cerrar el diálogo de invitación"
+      "closeAriaLabel": "Cerrar el diálogo de invitación",
+      "organization": {
+        "title": "Invitar a una organización a unirse a «{{spaceName}}»",
+        "searchPlaceholder": "Nombre de la organización…",
+        "searchHint": "Buscar una organización para invitar",
+        "defaultWelcomeMessage": "Hola, nos gustaría invitar a su organización a unirse a {{spaceName}}. Eche un vistazo al Space o haga clic en el botón de abajo para aceptar o rechazar la invitación."
+      },
+      "virtualContributor": {
+        "title": "Invitar colaborador virtual",
+        "description": "Añade un colaborador virtual de tu cuenta o invita a uno de la biblioteca de Alkemio.",
+        "searchPlaceholder": "Buscar colaboradores virtuales…",
+        "onAccount": "En tu cuenta",
+        "onAccountEmpty": "No hay colaboradores virtuales disponibles en tu cuenta.",
+        "inLibrary": "En la biblioteca",
+        "inLibraryEmpty": "Ningún colaborador virtual de la biblioteca coincide con tu búsqueda.",
+        "add": "Añadir",
+        "invite": "Invitar",
+        "addAriaLabel": "Añadir {{name}}",
+        "inviteAriaLabel": "Invitar a {{name}}",
+        "welcomeMessageLabel": "Mensaje de bienvenida",
+        "welcomeMessagePlaceholder": "Añade un mensaje a la invitación…",
+        "sendInvite": "Enviar invitación",
+        "defaultWelcomeMessage": "Nos gustaría invitarte a contribuir a {{space}}.",
+        "addedNotice": "Colaborador virtual añadido.",
+        "invitedNotice": "Invitación enviada.",
+        "error": "Algo salió mal. Inténtalo de nuevo.",
+        "previewAriaLabel": "Vista previa de {{name}}"
+      }
     },
     "roles": {
       "Member": "Member",
@@ -40,7 +67,10 @@
       "alreadyMember": "Ya es miembro de este espacio",
       "alreadyHasApplication": "Ya tiene una solicitud pendiente en este espacio",
       "parentNotAuthorized": "No se puede invitar: también tendría que unirse al espacio principal y no tienes permiso para invitar allí.",
-      "error": "Error al enviar la invitación."
+      "error": "Error al enviar la invitación.",
+      "notAcceptingInvitations": "Esta organización no acepta invitaciones a Spaces",
+      "leadLimitReached": "Se ha alcanzado el límite del rol Lead para organizaciones",
+      "sentNoAdministrators": "Invitación enviada — esta organización actualmente no tiene administradores a quienes notificar"
     },
     "toast": {
       "someFailed": "No se pudieron enviar {{count}} invitaciones — consulta los resultados para más detalles."

@@ -190,7 +190,14 @@
       "join": "Beitreten",
       "joinAriaLabel": "{{spaceName}} beitreten"
     },
-    "applicationAriaLabel": "Ausstehende Bewerbung für {{spaceName}} anzeigen"
+    "applicationAriaLabel": "Ausstehende Bewerbung für {{spaceName}} anzeigen",
+    "orgInvitationsSection": "Organisationseinladungen",
+    "orgInvitationDialog": {
+      "title": "Einladung für {{organizationName}}",
+      "accept": "Annehmen",
+      "role": "Rolle",
+      "spacesToJoin": "Bei Annahme werden Sie auch beitreten: {{spaces}}"
+    }
   },
   "nonActivity": {
     "sections": {

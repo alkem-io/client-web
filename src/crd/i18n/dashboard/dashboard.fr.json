@@ -190,7 +190,14 @@
       "join": "Rejoindre",
       "joinAriaLabel": "Rejoindre {{spaceName}}"
     },
-    "applicationAriaLabel": "Voir la candidature en attente pour {{spaceName}}"
+    "applicationAriaLabel": "Voir la candidature en attente pour {{spaceName}}",
+    "orgInvitationsSection": "Invitations d'organisation",
+    "orgInvitationDialog": {
+      "title": "Invitation pour {{organizationName}}",
+      "accept": "Accepter",
+      "role": "Rôle",
+      "spacesToJoin": "En acceptant, vous rejoindrez aussi : {{spaces}}"
+    }
   },
   "nonActivity": {
     "sections": {

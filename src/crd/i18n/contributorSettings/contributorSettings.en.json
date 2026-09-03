@@ -95,7 +95,8 @@
         "account": "Account",
         "community": "Community",
         "authorization": "Authorisation",
-        "settings": "Settings"
+        "settings": "Settings",
+        "invitations": "Invitations"
       },
       "vc": {
         "profile": "Profile",
@@ -520,7 +521,7 @@
         },
         "spaceAdmin": {
           "communityApplicationReceived": "Receive a notification when a new community application is submitted",
-          "communityNewMember": "Receive a notification when a new member joins the community",
+          "communityNewMember": "Receive a notification when a new member joins the community, or an invited organisation accepts or declines to join",
           "collaborationCalloutContributionCreated": "Receive a notification when a new contribution is created on a callout",
           "communicationMessageReceived": "Receive a notification when a community message is received",
           "userEmailChanged": "Receive a notification when the login email of a member of a space you administer is changed"
@@ -547,7 +548,8 @@
         },
         "organization": {
           "adminMentioned": "Receive a notification when my organisation is mentioned",
-          "adminMessageReceived": "Receive direct messages to my organisation"
+          "adminMessageReceived": "Receive direct messages to my organisation",
+          "adminSpaceCommunityInvitation": "Receive a notification when an organisation I administer is invited to join a Space"
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Receive a notification when a VC manager is invited to join a community"
@@ -815,7 +817,9 @@
       "membership": {
         "title": "Membership",
         "allowDomainLabel": "Allow users matching the organisation's domain to join",
-        "allowDomainCaption": "When enabled, users whose email domain matches this organisation can self-join without an invitation."
+        "allowDomainCaption": "When enabled, users whose email domain matches this organisation can self-join without an invitation.",
+        "allowSpaceInvitationsLabel": "Allow Spaces to invite this organisation",
+        "allowSpaceInvitationsCaption": "When enabled, Space admins can invite this organisation to join their Space community."
       },
       "privacy": {
         "title": "Privacy",
@@ -823,6 +827,24 @@
         "contributionRolesCaption": "When enabled, the organisation's role assignments (Admin, Owner, Associate) are visible on its public profile."
       },
       "errorToast": "Couldn't save preference — try again"
+    },
+    "invitations": {
+      "pageTitle": "Invitations",
+      "title": "Space Invitations",
+      "empty": "No pending Space invitations.",
+      "invitedBy": "Invited by {{name}}",
+      "invitedByUnknown": "Invited by a Space admin",
+      "date": "Date",
+      "role": "Role",
+      "roleMember": "Member",
+      "roleMemberLead": "Member + Lead",
+      "spacesToJoin": "Accepting also joins: {{spaces}}",
+      "accept": "Accept",
+      "decline": "Decline",
+      "acceptConfirmTitle": "Accept this invitation?",
+      "acceptConfirmBody": "Your organisation will join {{spaceName}} as {{role}}.",
+      "acceptConfirmAction": "Accept invitation",
+      "errorToast": "Couldn't update the invitation — try again"
     }
   },
   "vc": {

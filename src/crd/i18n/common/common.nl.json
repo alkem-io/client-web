@@ -890,6 +890,18 @@
         "VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION": {
           "description": "",
           "subject": "{{triggeredByName}} heeft {{contributorName}} uitgenodigd voor {{spaceName}}, waarvan je een $t(common.admin) bent"
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION": {
+          "subject": "Uw $t(common.organization) {{organizationName}} is uitgenodigd om lid te worden van {{spaceName}}",
+          "description": "Als {{role}}.{{spacesToJoin}}"
+        },
+        "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{organizationName}} heeft uw uitnodiging om lid te worden van {{spaceName}} geaccepteerd",
+          "description": "{{organizationName}} is toegetreden tot {{spaceName}}, waarvan u $t(common.admin) bent."
+        },
+        "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{organizationName}} heeft uw uitnodiging om lid te worden van {{spaceName}} afgewezen",
+          "description": ""
         }
       }
     },

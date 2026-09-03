@@ -348,6 +348,18 @@
         "description": "Deze organisaties worden zichtbaar als leden in deze Space en op hun organisatieprofiel.",
         "search": "Organisaties zoeken…",
         "empty": "Geen organisaties komen overeen met je zoekopdracht."
+      },
+      "invite": "Organisatie uitnodigen",
+      "search": "Organisaties zoeken…",
+      "pendingInvitations": {
+        "title": "Openstaande uitnodigingen",
+        "empty": "Geen openstaande organisatie-uitnodigingen.",
+        "role": "Rol",
+        "date": "Datum",
+        "revoke": "Intrekken",
+        "revokeAriaLabel": "Uitnodiging aan {{name}} intrekken",
+        "roleMember": "Lid",
+        "roleMemberLead": "Lid + Lead"
       }
     },
     "virtualContributors": {

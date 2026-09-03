@@ -22,7 +22,34 @@
       "sendingButtonLabel": "Sending…",
       "backButtonLabel": "Back",
       "closeButtonLabel": "Close",
-      "closeAriaLabel": "Close invite dialog"
+      "closeAriaLabel": "Close invite dialog",
+      "organization": {
+        "title": "Invite an organisation to join \"{{spaceName}}\"",
+        "searchPlaceholder": "Organisation name…",
+        "searchHint": "Search for an organisation to invite",
+        "defaultWelcomeMessage": "Hi, we would like to invite your organisation to join {{spaceName}}. Have a look at the Space or click the button below to accept or decline the invitation."
+      },
+      "virtualContributor": {
+        "title": "Invite Virtual Contributor",
+        "description": "Add a Virtual Contributor from your account, or invite one from the Alkemio library.",
+        "searchPlaceholder": "Search virtual contributors…",
+        "onAccount": "On your account",
+        "onAccountEmpty": "No virtual contributors available on your account.",
+        "inLibrary": "In the library",
+        "inLibraryEmpty": "No library virtual contributors match your search.",
+        "add": "Add",
+        "invite": "Invite",
+        "addAriaLabel": "Add {{name}}",
+        "inviteAriaLabel": "Invite {{name}}",
+        "welcomeMessageLabel": "Welcome message",
+        "welcomeMessagePlaceholder": "Add a message to the invitation…",
+        "sendInvite": "Send invitation",
+        "defaultWelcomeMessage": "We'd like to invite you to contribute to {{space}}.",
+        "addedNotice": "Virtual Contributor added.",
+        "invitedNotice": "Invitation sent.",
+        "error": "Something went wrong. Please try again.",
+        "previewAriaLabel": "Preview {{name}}"
+      }
     },
     "roles": {
       "Member": "Member",
@@ -40,7 +67,10 @@
       "alreadyMember": "Already a member of this space",
       "alreadyHasApplication": "Already has an open application to this space",
       "parentNotAuthorized": "Can't invite — they'd also need to join the parent space, and you don't have permission to invite there.",
-      "error": "Invitation failed."
+      "error": "Invitation failed.",
+      "notAcceptingInvitations": "This organisation is not accepting Space invitations",
+      "leadLimitReached": "The Lead role limit for organisations has been reached",
+      "sentNoAdministrators": "Invitation sent — this organisation currently has no administrators to notify"
     },
     "toast": {
       "someFailed": "{{count}} invitations couldn't be sent — see the results for details."

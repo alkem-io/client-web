@@ -22,7 +22,34 @@
       "sendingButtonLabel": "Versturen…",
       "backButtonLabel": "Terug",
       "closeButtonLabel": "Sluiten",
-      "closeAriaLabel": "Uitnodigingsdialoog sluiten"
+      "closeAriaLabel": "Uitnodigingsdialoog sluiten",
+      "organization": {
+        "title": "Een organisatie uitnodigen voor \"{{spaceName}}\"",
+        "searchPlaceholder": "Organisatienaam…",
+        "searchHint": "Zoek naar een organisatie om uit te nodigen",
+        "defaultWelcomeMessage": "Hallo, we willen graag uw organisatie uitnodigen om deel te nemen aan {{spaceName}}. Bekijk de Space of klik op de knop hieronder om de uitnodiging te accepteren of af te wijzen."
+      },
+      "virtualContributor": {
+        "title": "Virtual Contributor uitnodigen",
+        "description": "Voeg een Virtual Contributor van je account toe, of nodig er een uit de Alkemio-bibliotheek uit.",
+        "searchPlaceholder": "Virtual Contributors zoeken…",
+        "onAccount": "Op je account",
+        "onAccountEmpty": "Geen Virtual Contributors beschikbaar op je account.",
+        "inLibrary": "In de bibliotheek",
+        "inLibraryEmpty": "Geen Virtual Contributors in de bibliotheek komen overeen met je zoekopdracht.",
+        "add": "Toevoegen",
+        "invite": "Uitnodigen",
+        "addAriaLabel": "{{name}} toevoegen",
+        "inviteAriaLabel": "{{name}} uitnodigen",
+        "welcomeMessageLabel": "Welkomstbericht",
+        "welcomeMessagePlaceholder": "Voeg een bericht toe aan de uitnodiging…",
+        "sendInvite": "Uitnodiging versturen",
+        "defaultWelcomeMessage": "We willen je graag uitnodigen om bij te dragen aan {{space}}.",
+        "addedNotice": "Virtual Contributor toegevoegd.",
+        "invitedNotice": "Uitnodiging verzonden.",
+        "error": "Er ging iets mis. Probeer het opnieuw.",
+        "previewAriaLabel": "Voorbeeld van {{name}}"
+      }
     },
     "roles": {
       "Member": "Member",
@@ -40,7 +67,10 @@
       "alreadyMember": "Al lid van deze Space",
       "alreadyHasApplication": "Heeft al een openstaande aanvraag voor deze Space",
       "parentNotAuthorized": "Uitnodigen lukt niet — diegene zou ook lid moeten worden van de bovenliggende Space, en je hebt geen rechten om daar uit te nodigen.",
-      "error": "Uitnodiging mislukt."
+      "error": "Uitnodiging mislukt.",
+      "notAcceptingInvitations": "Deze organisatie accepteert geen Space-uitnodigingen",
+      "leadLimitReached": "De limiet voor de Lead-rol voor organisaties is bereikt",
+      "sentNoAdministrators": "Uitnodiging verzonden — deze organisatie heeft momenteel geen beheerders om te informeren"
     },
     "toast": {
       "someFailed": "{{count}} uitnodigingen konden niet worden verstuurd — bekijk de resultaten voor details."

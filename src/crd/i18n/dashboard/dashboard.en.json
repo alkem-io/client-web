@@ -190,7 +190,14 @@
       "join": "Join",
       "joinAriaLabel": "Join {{spaceName}}"
     },
-    "applicationAriaLabel": "View pending application for {{spaceName}}"
+    "applicationAriaLabel": "View pending application for {{spaceName}}",
+    "orgInvitationsSection": "Organisation Invitations",
+    "orgInvitationDialog": {
+      "title": "Invitation for {{organizationName}}",
+      "accept": "Accept",
+      "role": "Role",
+      "spacesToJoin": "Accepting also joins: {{spaces}}"
+    }
   },
   "nonActivity": {
     "sections": {
