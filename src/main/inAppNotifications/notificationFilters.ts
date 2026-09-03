@@ -47,6 +47,11 @@ const SPACE_NOTIFICATION_TYPES: NotificationEvent[] = [
   // VC-admin notification about the VC being invited to a space community —
   // still a space-membership event from the recipient's perspective.
   NotificationEvent.VirtualAdminSpaceCommunityInvitation,
+  // Organization-admin space-membership events (061) — same rationale as the
+  // VC-admin invitation above: about a space, from an admin's perspective.
+  NotificationEvent.OrganizationAdminSpaceCommunityInvitation,
+  NotificationEvent.SpaceAdminOrganizationCommunityInvitationAccepted,
+  NotificationEvent.SpaceAdminOrganizationCommunityInvitationDeclined,
 ];
 
 // Platform notifications - platform admin, forum, and the Alkemio sign-up

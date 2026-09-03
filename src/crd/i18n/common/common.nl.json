@@ -893,7 +893,7 @@
         },
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION": {
           "subject": "Uw $t(common.organization) {{organizationName}} is uitgenodigd om lid te worden van {{spaceName}}",
-          "description": "Als {{role}}.{{spacesToJoin}}"
+          "description": "Als {{invitationRole}}.{{spacesToJoin}}"
         },
         "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_ACCEPTED": {
           "subject": "{{organizationName}} heeft uw uitnodiging om lid te worden van {{spaceName}} geaccepteerd",
@@ -903,7 +903,8 @@
           "subject": "{{organizationName}} heeft uw uitnodiging om lid te worden van {{spaceName}} afgewezen",
           "description": ""
         }
-      }
+      },
+      "spacesToJoin": "Bij accepteren treedt u ook toe tot: {{spaces}}"
     },
     "profile": {
       "fields": {

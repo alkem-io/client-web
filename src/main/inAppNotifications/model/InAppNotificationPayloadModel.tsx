@@ -3,6 +3,7 @@ import type {
   CalendarEventType,
   ForumDiscussionCategory,
   NotificationEventPayload,
+  RoleName,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
 
@@ -106,6 +107,17 @@ export interface InAppNotificationPayloadModel {
       displayName: string;
       url: string;
     };
+  };
+  /** Community-invitation payloads (061) — role(s) offered and every Space joined on accept. */
+  invitation?: {
+    extraRoles: RoleName[];
+    invitedToParent: boolean;
+    spacesToJoinOnAccept: {
+      profile: {
+        displayName: string;
+        url: string;
+      };
+    }[];
   };
 }
 // nullable aliases are required because you can have different nullability for the same field name conditionally by payload type

@@ -18,6 +18,7 @@ import {
   type ForumDiscussionCategory,
   NotificationEvent,
   type NotificationEventInAppState,
+  RoleName,
 } from '@/core/apollo/generated/graphql-schema';
 import { kebabToConstantCase } from '@/core/utils/string';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
@@ -94,6 +95,22 @@ function buildTranslationValues(
     // emoji: used by SPACE_COLLABORATION_CALLOUT_REACTION — slug resolved to glyph;
     // unknown slug yields undefined so the placeholder renders empty, never crashes
     emoji: payload.emoji ? glyphForSlug(payload.emoji) : undefined,
+    // invitationRole: used by ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION — "Member" or
+    // "Member + Lead", resolved from the offered extraRoles. Distinct from `role` above
+    // (a raw platform-role string) to avoid colliding with PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED.
+    invitationRole: payload.invitation
+      ? payload.invitation.extraRoles.includes(RoleName.Lead)
+        ? `${t('member')} + ${t('lead')}`
+        : t('member')
+      : undefined,
+    // spacesToJoin: used by ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION — an extra "also
+    // joins: …" clause, only when accepting joins more than the target Space itself.
+    spacesToJoin:
+      payload.invitation && payload.invitation.spacesToJoinOnAccept.length > 1
+        ? ` ${t('components.inAppNotifications.spacesToJoin', {
+            spaces: payload.invitation.spacesToJoinOnAccept.map(s => s.profile.displayName).join(', '),
+          })}`
+        : '',
   };
 }
 
@@ -121,6 +138,14 @@ const URL_OVERRIDES_BY_TYPE: Partial<
   // Calendar payloads carry both the event and its space; the space must not win.
   [NotificationEvent.SpaceCommunityCalendarEventCreated]: payload => payload.calendarEvent?.profile?.url,
   [NotificationEvent.SpaceCommunityCalendarEventComment]: payload => payload.calendarEvent?.profile?.url,
+  // The org admin acts from the org's own Invitations tab, not the space (061, contract §4).
+  [NotificationEvent.OrganizationAdminSpaceCommunityInvitation]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'invitations'),
+  // Accepted/declined land the inviting space admin on the Community tab, same as a new application.
+  [NotificationEvent.SpaceAdminOrganizationCommunityInvitationAccepted]: payload =>
+    buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
+  [NotificationEvent.SpaceAdminOrganizationCommunityInvitationDeclined]: payload =>
+    buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
 };
 
 /**

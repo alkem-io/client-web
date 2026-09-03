@@ -893,7 +893,7 @@
         },
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION": {
           "subject": "Your $t(common.organization) {{organizationName}} was invited to join {{spaceName}}",
-          "description": "As {{role}}.{{spacesToJoin}}"
+          "description": "As {{invitationRole}}.{{spacesToJoin}}"
         },
         "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_ACCEPTED": {
           "subject": "{{organizationName}} accepted your invitation to join {{spaceName}}",
@@ -903,7 +903,8 @@
           "subject": "{{organizationName}} declined your invitation to join {{spaceName}}",
           "description": ""
         }
-      }
+      },
+      "spacesToJoin": "Accepting also joins: {{spaces}}"
     },
     "profile": {
       "fields": {
