@@ -19,6 +19,10 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { PendingMembership } from '@/crd/components/space/settings/PendingMembershipsTable';
 import { PendingMembershipsTable } from '@/crd/components/space/settings/PendingMembershipsTable';
+import type { PendingOrganizationInvitationItem } from '@/crd/components/space/settings/PendingOrganizationInvitationsList';
+import { PendingOrganizationInvitationsList } from '@/crd/components/space/settings/PendingOrganizationInvitationsList';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
+import { formatShortDate } from '@/crd/lib/dateTimeFormat';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -65,6 +69,17 @@ export type CommunityVC = {
   url?: string;
 };
 
+export type PendingOrganizationInvitation = {
+  id: string;
+  organizationDisplayName: string;
+  organizationUrl?: string;
+  /** Whether the invitation also offers the Lead role, alongside the always-granted Member role. */
+  role: 'member' | 'memberLead';
+  /** Raw ISO date string — the view formats it for display. */
+  createdDate: string;
+  canRevoke: boolean;
+};
+
 export type SpaceSettingsCommunityViewProps = {
   /**
    * Space hierarchy level. Drives:
@@ -77,10 +92,12 @@ export type SpaceSettingsCommunityViewProps = {
   pendingMemberships: PendingMembership[];
   organizations: CommunityOrg[];
   virtualContributors: CommunityVC[];
+  pendingOrganizationInvitations: PendingOrganizationInvitation[];
   applicationFormSlot?: ReactNode;
   communityGuidelinesSlot?: ReactNode;
   permissions: {
     canInvite: boolean;
+    canInviteOrganizations: boolean;
     canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
   };
@@ -89,10 +106,13 @@ export type SpaceSettingsCommunityViewProps = {
   /** Open the Member settings dialog for this user. Replaces the legacy inline lead-toggle dropdown item. */
   onMemberChangeRole?: (member: CommunityMember) => void;
   onOrgAdd: () => void;
+  /** Opens the unified invite dialog with kind='organization'. */
+  onInviteOrganizations: () => void;
   /** Show the destructive "Remove from Space" dropdown item on organization rows. Omit to hide. */
   onOrgRemove?: (id: string) => void;
   /** Open the Member settings dialog for this organization. */
   onOrgChangeRole?: (org: CommunityOrg) => void;
+  onOrgInvitationRevoke: (id: string) => void;
   onVCAdd: () => void;
   onVCAddExternal?: () => void;
   onVCRemove: (id: string) => void;
@@ -114,14 +134,17 @@ export function SpaceSettingsCommunityView({
   pendingMemberships,
   organizations,
   virtualContributors,
+  pendingOrganizationInvitations,
   applicationFormSlot,
   communityGuidelinesSlot,
   permissions,
   onUserRemove,
   onMemberChangeRole,
   onOrgAdd,
+  onInviteOrganizations,
   onOrgRemove,
   onOrgChangeRole,
+  onOrgInvitationRevoke,
   onVCAdd,
   onVCAddExternal,
   onVCRemove,
@@ -134,15 +157,34 @@ export function SpaceSettingsCommunityView({
   exportDisabled,
   className,
 }: SpaceSettingsCommunityViewProps) {
-  const { t } = useTranslation('crd-spaceSettings');
+  const { t, i18n } = useTranslation('crd-spaceSettings');
+  const locale = resolveDateFnsLocale(i18n.language);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
+  const [orgSearch, setOrgSearch] = useState('');
 
   const filtered = members.filter(m => {
     if (!search) return true;
     const needle = search.toLowerCase();
     return m.displayName.toLowerCase().includes(needle) || (m.email?.toLowerCase().includes(needle) ?? false);
   });
+
+  const filteredOrganizations = organizations.filter(org => {
+    if (!orgSearch) return true;
+    return org.displayName.toLowerCase().includes(orgSearch.toLowerCase());
+  });
+
+  const pendingOrgInvitationItems: PendingOrganizationInvitationItem[] = pendingOrganizationInvitations.map(inv => ({
+    id: inv.id,
+    organizationDisplayName: inv.organizationDisplayName,
+    organizationUrl: inv.organizationUrl,
+    roleLabel:
+      inv.role === 'memberLead'
+        ? t('community.organizations.pendingInvitations.roleMemberLead')
+        : t('community.organizations.pendingInvitations.roleMember'),
+    date: formatShortDate(inv.createdDate, locale) ?? '',
+    canRevoke: inv.canRevoke,
+  }));
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / MEMBERS_PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
@@ -380,8 +422,29 @@ export function SpaceSettingsCommunityView({
         icon={Building}
         title={t('community.organizations.title')}
         description={t('community.organizations.description')}
-        count={organizations.length}
+        count={filteredOrganizations.length}
       >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <div className="relative">
+            <Search
+              aria-hidden="true"
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
+            />
+            <Input
+              aria-label={t('community.organizations.search')}
+              placeholder={t('community.organizations.search')}
+              value={orgSearch}
+              onChange={e => setOrgSearch(e.target.value)}
+              className="h-9 w-[220px] pl-9 text-control"
+            />
+          </div>
+          {permissions.canInviteOrganizations && (
+            <Button type="button" size="sm" className="gap-2" onClick={onInviteOrganizations}>
+              <UserPlus aria-hidden="true" className="size-4" />
+              {t('community.organizations.invite')}
+            </Button>
+          )}
+        </div>
         <div className="rounded-lg border bg-card overflow-hidden">
           <Table>
             <TableHeader>
@@ -392,14 +455,14 @@ export function SpaceSettingsCommunityView({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {organizations.length === 0 && (
+              {filteredOrganizations.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={3} className="text-center text-muted-foreground py-6">
                     {t('community.organizations.empty')}
                   </TableCell>
                 </TableRow>
               )}
-              {organizations.map((org, index) => (
+              {filteredOrganizations.map((org, index) => (
                 <TableRow key={org.id} className={cn(index % 2 === 1 && 'bg-muted/30')}>
                   <TableCell>
                     <div className="flex items-center gap-3 min-w-0">
@@ -483,6 +546,17 @@ export function SpaceSettingsCommunityView({
             </Button>
           </div>
         )}
+        <PendingOrganizationInvitationsList
+          className="mt-6"
+          title={t('community.organizations.pendingInvitations.title')}
+          items={pendingOrgInvitationItems}
+          emptyLabel={t('community.organizations.pendingInvitations.empty')}
+          roleColumnLabel={t('community.organizations.pendingInvitations.role')}
+          dateColumnLabel={t('community.organizations.pendingInvitations.date')}
+          revokeLabel={t('community.organizations.pendingInvitations.revoke')}
+          revokeAriaLabel={name => t('community.organizations.pendingInvitations.revokeAriaLabel', { name })}
+          onRevoke={onOrgInvitationRevoke}
+        />
       </SectionCard>
 
       {level === 'L0' && (
