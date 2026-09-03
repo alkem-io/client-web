@@ -12,6 +12,10 @@ export type OrgSettingsTabViewProps = {
   allowUsersMatchingDomainToJoin: boolean;
   membershipSaving: boolean;
   onToggleAllowDomain: (next: boolean) => void;
+  // Membership — allow Spaces to invite this organization (061)
+  allowSpaceInvitations: boolean;
+  allowSpaceInvitationsSaving: boolean;
+  onToggleAllowSpaceInvitations: (next: boolean) => void;
   // Privacy
   contributionRolesPubliclyVisible: boolean;
   privacySaving: boolean;
@@ -21,13 +25,14 @@ export type OrgSettingsTabViewProps = {
 /**
  * Org Settings tab — presentational view (US12).
  *
- * Two `SettingsCard`s, each containing one `Switch`:
+ * Two `SettingsCard`s:
  *
- * 1. **Membership** (`allowUsersMatchingDomainToJoin`).
+ * 1. **Membership** — `allowUsersMatchingDomainToJoin` and
+ *    `allowSpaceInvitations` (whether Spaces may invite this organization).
  * 2. **Privacy** (`contributionRolesPubliclyVisible`).
  *
- * **No Design System toggle** on this tab (FR-132 — User-only). Both
- * switches commit via callback props; the parent owns the optimistic
+ * **No Design System toggle** on this tab (FR-132 — User-only). Every
+ * switch commits via a callback prop; the parent owns the optimistic
  * flip + hard-failure revert with toast (FR-133).
  */
 export function OrgSettingsTabView(props: OrgSettingsTabViewProps) {
@@ -58,6 +63,20 @@ export function OrgSettingsTabView(props: OrgSettingsTabViewProps) {
             disabled={props.membershipSaving}
             onCheckedChange={props.onToggleAllowDomain}
             aria-label={t('org.settings.membership.allowDomainLabel')}
+          />
+        </div>
+        <div className="mt-4 flex items-start justify-between gap-4">
+          <div className="flex-1">
+            <p className="text-body-emphasis">{t('org.settings.membership.allowSpaceInvitationsLabel')}</p>
+            <p className="mt-0.5 text-caption text-muted-foreground">
+              {t('org.settings.membership.allowSpaceInvitationsCaption')}
+            </p>
+          </div>
+          <Switch
+            checked={props.allowSpaceInvitations}
+            disabled={props.allowSpaceInvitationsSaving}
+            onCheckedChange={props.onToggleAllowSpaceInvitations}
+            aria-label={t('org.settings.membership.allowSpaceInvitationsLabel')}
           />
         </div>
       </SettingsCard>
