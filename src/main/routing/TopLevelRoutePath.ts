@@ -22,6 +22,7 @@ export enum TopLevelRoutePath {
   Contact = 'contact',
   Help = 'help', // Legacy route that's not used anymore but is decided to be reserved
   About = 'about', // Legacy route that's not used anymore but is decided to be reserved
+  MatrixCallback = 'matrix-callback',
   _Landing = 'landing', // Legacy route that redirects to Welcome site
   _Identity = 'identity', // Legacy route that's not used anymore but is decided to be reserved
 }

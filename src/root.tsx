@@ -11,6 +11,7 @@ import { CookiesProvider } from 'react-cookie';
 import { BrowserRouter, useLocation } from 'react-router-dom';
 import { Error40XBoundary } from '@/core/40XErrorHandler/ErrorBoundary';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { MatrixSessionProvider } from '@/core/matrix/MatrixSessionProvider';
 import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
 import ScrollToTop from '@/core/routing/ScrollToTop';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
@@ -103,33 +104,35 @@ const Root: FC = () => {
                             <PendingMembershipsDialogProvider>
                               <InAppNotificationsProvider>
                                 <PushNotificationProvider>
-                                  <UnifiedChatProvider>
-                                    <FullscreenEditorProvider>
-                                      <AssistantProvider>
-                                        <NavigationHistoryTracker />
-                                        <ApmUserSetter />
-                                        <ScrollToTop />
-                                        <NotificationsGate />
-                                        <InAppNotificationCountSubscriber />
-                                        <ConversationEventsSubscriber />
-                                        <UnreadTabBadge />
-                                        <Suspense fallback={null}>
-                                          <AssistantDialog />
-                                        </Suspense>
-                                        <VersionHandling />
-                                        <OnlineStatusNotification />
-                                        <Error40XBoundary
-                                          errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
-                                        >
-                                          <TopLevelRoutes />
-                                          <GlobalErrorDialogGate />
-                                        </Error40XBoundary>
-                                        {/* Rendered after TopLevelRoutes so the full-screen mobile chat
+                                  <MatrixSessionProvider>
+                                    <UnifiedChatProvider>
+                                      <FullscreenEditorProvider>
+                                        <AssistantProvider>
+                                          <NavigationHistoryTracker />
+                                          <ApmUserSetter />
+                                          <ScrollToTop />
+                                          <NotificationsGate />
+                                          <InAppNotificationCountSubscriber />
+                                          <ConversationEventsSubscriber />
+                                          <UnreadTabBadge />
+                                          <Suspense fallback={null}>
+                                            <AssistantDialog />
+                                          </Suspense>
+                                          <VersionHandling />
+                                          <OnlineStatusNotification />
+                                          <Error40XBoundary
+                                            errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
+                                          >
+                                            <TopLevelRoutes />
+                                            <GlobalErrorDialogGate />
+                                          </Error40XBoundary>
+                                          {/* Rendered after TopLevelRoutes so the full-screen mobile chat
                                             panel (z-50) paints above the app header (also z-50). */}
-                                        <UnifiedChatGate />
-                                      </AssistantProvider>
-                                    </FullscreenEditorProvider>
-                                  </UnifiedChatProvider>
+                                          <UnifiedChatGate />
+                                        </AssistantProvider>
+                                      </FullscreenEditorProvider>
+                                    </UnifiedChatProvider>
+                                  </MatrixSessionProvider>
                                 </PushNotificationProvider>
                               </InAppNotificationsProvider>
                             </PendingMembershipsDialogProvider>
