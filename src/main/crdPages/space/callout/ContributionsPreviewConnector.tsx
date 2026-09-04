@@ -8,6 +8,7 @@ import { ContributionMemoCard } from '@/crd/components/contribution/Contribution
 import { ContributionPostCard } from '@/crd/components/contribution/ContributionPostCard';
 import { ContributionsPreviewSkeleton } from '@/crd/components/contribution/ContributionsPreviewSkeleton';
 import { ContributionWhiteboardCard } from '@/crd/components/contribution/ContributionWhiteboardCard';
+import { colorByType, iconByType } from '@/crd/lib/collaboraDocumentPreview';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { Button } from '@/crd/primitives/button';
 import { CroppedMarkdown } from '@/crd/primitives/croppedMarkdown';
@@ -23,6 +24,7 @@ import {
   mapAnyContributionToCardData,
   mapContributionToLinkItem,
 } from '../dataMappers/contributionDataMapper';
+import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
 import { DocumentContributionAddConnector } from './DocumentContributionAddConnector';
 import { LinkContributionAddConnector } from './LinkContributionAddConnector';
 import { LinkContributionEditConnector } from './LinkContributionEditConnector';
@@ -275,10 +277,12 @@ export function ContributionsPreviewConnector({
     );
   }
 
-  // Image-like contribution types (Whiteboard, Memo) use the "+N more" overlay on the last visible card.
+  // Image-like / preview-carrying contribution types use the "+N more" overlay on the last visible card.
   // Text-like types (Post) use a dashed "+N more" card.
   const usesOverlayPattern =
-    contributionType === CalloutContributionType.Whiteboard || contributionType === CalloutContributionType.Memo;
+    contributionType === CalloutContributionType.Whiteboard ||
+    contributionType === CalloutContributionType.Memo ||
+    contributionType === CalloutContributionType.CollaboraDocument;
 
   if (usesOverlayPattern && hasMore) {
     const lastContribution = contributions[ITEMS_BEFORE_MORE];
@@ -351,6 +355,7 @@ function OverlayMoreCard({
 }) {
   const showImage = contributionType === CalloutContributionType.Whiteboard && lastContribution?.previewUrl;
   const showMemoPreview = contributionType === CalloutContributionType.Memo && lastContribution?.markdownContent;
+  const showDocumentIcon = contributionType === CalloutContributionType.CollaboraDocument;
 
   return (
     <button
@@ -366,6 +371,17 @@ function OverlayMoreCard({
           <CroppedMarkdown content={lastContribution.markdownContent} maxHeight="180px" />
         </div>
       )}
+      {showDocumentIcon &&
+        (() => {
+          const previewType = toCollaboraPreviewType(lastContribution?.documentType);
+          const Icon = iconByType[previewType];
+          const accentColor = colorByType[previewType];
+          return (
+            <div className="w-full h-full flex items-center justify-center">
+              <Icon className={`w-8 h-8 ${accentColor}`} aria-hidden="true" />
+            </div>
+          );
+        })()}
       <div className="absolute inset-0 flex items-center justify-center bg-primary/60 backdrop-blur-[2px]">
         <span className="text-white font-bold text-subsection-title">{label}</span>
       </div>
@@ -418,6 +434,7 @@ function ContributionCard({
         <ContributionDocumentCard
           title={contribution.title}
           documentType={contribution.documentType ?? 'text'}
+          previewUrl={contribution.previewUrl}
           author={contribution.author?.name}
           onClick={onClick}
         />
