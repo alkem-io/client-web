@@ -148,6 +148,10 @@ interface MatrixSdkModule {
   }): MatrixClientLike;
   ClientEvent: { Sync: string };
   HttpApiEvent: { SessionLoggedOut: string };
+  /** Thrown from tokenRefreshFunction to make the SDK treat the failure as a logout (emit SessionLoggedOut), not a transient error. */
+  TokenRefreshLogoutError: new (
+    cause?: Error
+  ) => Error;
   SyncState: {
     Prepared: string;
     Syncing: string;
@@ -321,8 +325,20 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
       accessToken: credentials.accessToken,
       refreshToken: credentials.refreshToken,
       logger: silentSdkLogger,
-      tokenRefreshFunction: refreshToken =>
-        refreshMatrixTokens(credentials.homeserverUrl, credentials.userId, refreshToken),
+      // The SDK classifies a thrown refresh error as transient (keep retrying) unless it is
+      // its own TokenRefreshLogoutError — only then does it emit SessionLoggedOut, which is
+      // what drives recovery (contract §6). A server verdict must therefore be translated;
+      // a network failure stays untranslated so the sync loop keeps retrying.
+      tokenRefreshFunction: async refreshToken => {
+        try {
+          return await refreshMatrixTokens(credentials.homeserverUrl, credentials.userId, refreshToken);
+        } catch (error) {
+          if (error instanceof TokenRefreshError) {
+            throw new sdk.TokenRefreshLogoutError(error);
+          }
+          throw error;
+        }
+      },
     });
     activeClient = client;
 

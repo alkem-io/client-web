@@ -170,6 +170,11 @@ const makeSdkMock = () => {
     createClient,
     ClientEvent: { Sync: 'sync' },
     HttpApiEvent: { SessionLoggedOut: 'Session.logged_out' },
+    TokenRefreshLogoutError: class TokenRefreshLogoutError extends Error {
+      constructor(cause?: Error) {
+        super(cause?.message);
+      }
+    },
     SyncState: {
       Prepared: 'PREPARED',
       Syncing: 'SYNCING',
@@ -564,6 +569,32 @@ describe('establishSession', () => {
       expect(states).toEqual(['starting', 'ready', 'signed-out']);
       expect(handle.machine.state()).toBe('signed-out');
       expect(client.stopClient).toHaveBeenCalled();
+    });
+  });
+
+  describe('SDK-facing refresh function (contract §6 — hard rejection must reach the SDK as a logout)', () => {
+    it('translates a server-rejected refresh into the SDK logout error so Session.logged_out fires', async () => {
+      await seedRecord();
+      const { sdk, createClient } = makeSdkMock();
+      await establishSession(ACTOR, { loadSdk: async () => sdk, silentSso: vi.fn(async () => 'timeout' as const) });
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(JSON.stringify({ errcode: 'M_UNKNOWN_TOKEN' }), { status: 401 })
+      );
+
+      const refresh = createClient.mock.calls[0][0].tokenRefreshFunction;
+
+      await expect(refresh('syr_stored_refresh')).rejects.toBeInstanceOf(sdk.TokenRefreshLogoutError);
+    });
+
+    it('lets a network failure through untranslated — transient, the SDK keeps retrying', async () => {
+      await seedRecord();
+      const { sdk, createClient } = makeSdkMock();
+      await establishSession(ACTOR, { loadSdk: async () => sdk, silentSso: vi.fn(async () => 'timeout' as const) });
+      vi.spyOn(globalThis, 'fetch').mockRejectedValueOnce(new TypeError('Failed to fetch'));
+
+      const refresh = createClient.mock.calls[0][0].tokenRefreshFunction;
+
+      await expect(refresh('syr_stored_refresh')).rejects.toBeInstanceOf(TypeError);
     });
   });
 
