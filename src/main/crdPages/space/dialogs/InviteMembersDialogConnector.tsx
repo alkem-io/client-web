@@ -351,6 +351,7 @@ export function InviteMembersDialogConnector({
   // for the other kinds costs nothing. Reused (not re-derived) because virtualContributorAdmin
   // .onAdd (a role ASSIGNMENT, not an invitation) and .inviteContributors already exist there.
   const vcCommunity = useCommunityAdmin({ roleSetId: kind === 'virtualContributor' ? (roleSetId ?? '') : '' });
+  const currentVcMemberIds = vcCommunity.virtualContributorAdmin.members.map(m => m.id).join(',');
   const { virtualContributorAdmin: vcLookup } = useVirtualContributorsAdmin({
     level: spaceLevel ?? SpaceLevel.L0,
     spaceId: spaceId ?? '',
@@ -374,8 +375,13 @@ export function InviteMembersDialogConnector({
     description: vc.profile?.description ?? '',
   });
   // `vcLookup` is intentionally excluded from deps — it returns a fresh object every render.
+  // The space query (`roleSetId`/`spaceLevel`) is still unresolved on the render where
+  // `open` flips true, so the effect is gated on both resolving — otherwise it fetches
+  // through the L0 branch on a subspace and filters against an empty current-member set.
+  // `currentVcMemberIds` (not `vcCommunity.virtualContributorAdmin.members`, a fresh array
+  // every render) re-runs the fetch once the member list itself settles.
   useEffect(() => {
-    if (!open || kind !== 'virtualContributor') return;
+    if (!open || kind !== 'virtualContributor' || !roleSetId || !spaceLevel) return;
     let cancelled = false;
     setVcLoading(true);
     void (async () => {
@@ -395,7 +401,7 @@ export function InviteMembersDialogConnector({
     return () => {
       cancelled = true;
     };
-  }, [open, kind, libraryOnly, trimmedQuery]);
+  }, [open, kind, libraryOnly, trimmedQuery, roleSetId, spaceLevel, currentVcMemberIds]);
 
   const handleAddAccountVc = async (id: string) => {
     setVcBusyId(id);
