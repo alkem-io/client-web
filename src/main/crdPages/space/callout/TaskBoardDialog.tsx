@@ -48,7 +48,7 @@ export function TaskBoardDialog({ calloutId, title, open, onOpenChange, onOpenTa
           // caps the width at ≥sm even with `max-w-none`, so fullscreen would fill
           // only the height. `inset-0` + no translate pins it to the viewport.
           fullscreen
-            ? 'fixed inset-0 left-0 top-0 translate-x-0 translate-y-0 max-w-none sm:max-w-none w-screen h-screen rounded-none border-none'
+            ? 'fixed inset-0 left-0 top-0 translate-x-0 translate-y-0 max-w-none sm:max-w-none h-screen rounded-none border-none'
             : 'w-full sm:max-w-6xl h-[85vh] rounded-xl'
         )}
         aria-describedby="task-board-dialog-description"

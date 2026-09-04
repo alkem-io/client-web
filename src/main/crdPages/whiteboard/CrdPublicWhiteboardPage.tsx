@@ -155,7 +155,7 @@ const CrdPublicWhiteboardPageContent: FC = () => {
 
   if (loading || userLoading) {
     return (
-      <div className="w-screen h-screen overflow-hidden relative">
+      <div className="w-full h-screen overflow-hidden relative">
         <Loading />
       </div>
     );
@@ -164,7 +164,7 @@ const CrdPublicWhiteboardPageContent: FC = () => {
   if (error) {
     const { title, message } = getErrorInfo(error);
     return (
-      <div className="w-screen h-screen overflow-hidden relative">
+      <div className="w-full h-screen overflow-hidden relative">
         <WhiteboardErrorState title={title} message={message} onRetry={() => refetch()} />
       </div>
     );
@@ -172,7 +172,7 @@ const CrdPublicWhiteboardPageContent: FC = () => {
 
   if (!isAuthenticated && needsGuestName) {
     return (
-      <div className="w-screen h-screen overflow-hidden relative">
+      <div className="w-full h-screen overflow-hidden relative">
         <JoinWhiteboardDialog
           open={true}
           value={guestNameInput}
@@ -189,7 +189,7 @@ const CrdPublicWhiteboardPageContent: FC = () => {
 
   if (whiteboard && !whiteboard.guestContributionsAllowed) {
     return (
-      <div className="w-screen h-screen overflow-hidden relative">
+      <div className="w-full h-screen overflow-hidden relative">
         <WhiteboardErrorState title={t('error.notFound.title')} message={t('error.notFound.message')} />
       </div>
     );

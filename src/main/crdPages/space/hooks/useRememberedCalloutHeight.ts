@@ -16,8 +16,6 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 const KEY_PREFIX = 'alkemio_callout_height:';
 /** Widths are bucketed so a resize drag doesn't leave one entry per intermediate width. */
 const WIDTH_BUCKET_PX = 40;
-/** The observer fires per frame during a resize drag — only the settled height is written. */
-const RECORD_DELAY_MS = 300;
 
 const storageKey = (calloutId: string, variant: string, columnWidth: number) =>
   `${KEY_PREFIX}${calloutId}@${variant}@${Math.round(columnWidth / WIDTH_BUCKET_PX)}`;
@@ -116,14 +114,12 @@ export function useRememberedCalloutHeight({ calloutId, variant, paused = false 
     if (!element) {
       return;
     }
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    const observer = new ResizeObserver(() => {
-      clearTimeout(timer);
-      timer = setTimeout(() => record(element), RECORD_DELAY_MS);
-    });
+    // Written on every notification (the width bucket already absorbs a resize drag's key
+    // churn): every CRD navigation is a full reload, so a deferred write would be lost
+    // whenever the user leaves within the delay.
+    const observer = new ResizeObserver(() => record(element));
     observer.observe(element);
     return () => {
-      clearTimeout(timer);
       observer.disconnect();
       contentElementRef.current = null;
     };

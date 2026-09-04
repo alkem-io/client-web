@@ -1,5 +1,9 @@
 import { useCalloutsListForFeedQuery } from '@/core/apollo/generated/apollo-hooks';
-import type { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import {
+  type CalloutContributionsCountOutput,
+  CalloutContributionType,
+  type CalloutFramingType,
+} from '@/core/apollo/generated/graphql-schema';
 import { useCalloutsSetAuthorization } from '@/domain/collaboration/calloutsSet/authorization/useCalloutsSetAuthorization';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
@@ -19,10 +23,21 @@ type UseCrdCalloutListParams = {
 export type CrdFeedCallout = {
   id: string;
   sortOrder: number;
-  /** Contribution count — only the feeds built on `CalloutModelLight` carry it. */
+  /** Contribution count for the placeholder grid — the feeds built on `CalloutModelLight` carry `activity`. */
   activity?: number;
   framing?: { type: CalloutFramingType };
   settings?: { contribution?: { allowedTypes?: CalloutContributionType[] } };
+};
+
+const contributionsCountKey: Record<
+  CalloutContributionType,
+  Exclude<keyof CalloutContributionsCountOutput, '__typename'>
+> = {
+  [CalloutContributionType.Post]: 'post',
+  [CalloutContributionType.Link]: 'link',
+  [CalloutContributionType.Whiteboard]: 'whiteboard',
+  [CalloutContributionType.Memo]: 'memo',
+  [CalloutContributionType.CollaboraDocument]: 'collaboraDocument',
 };
 
 export function useCrdCalloutList({ tabPosition, skip }: UseCrdCalloutListParams) {
@@ -55,7 +70,11 @@ export function useCrdCalloutList({ tabPosition, skip }: UseCrdCalloutListParams
     skip: skip || !calloutsSetId,
   });
 
-  const callouts: CrdFeedCallout[] = data?.lookup.calloutsSet?.callouts ?? [];
+  // The placeholder reserves one grid cell per contribution of the callout's (single) allowed type.
+  const callouts: CrdFeedCallout[] = (data?.lookup.calloutsSet?.callouts ?? []).map(callout => {
+    const type = callout.settings.contribution.allowedTypes[0];
+    return { ...callout, activity: type ? callout.contributionsCount[contributionsCountKey[type]] : undefined };
+  });
 
   return {
     callouts,

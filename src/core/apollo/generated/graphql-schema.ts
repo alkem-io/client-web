@@ -37796,6 +37796,14 @@ export type CalloutsListForFeedQuery = {
                 allowedTypes: Array<CalloutContributionType>;
               };
             };
+            contributionsCount: {
+              __typename?: 'CalloutContributionsCountOutput';
+              post: number;
+              link: number;
+              whiteboard: number;
+              memo: number;
+              collaboraDocument: number;
+            };
           }>;
         }
       | undefined;

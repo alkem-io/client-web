@@ -107,6 +107,11 @@ export function ExpandableMarkdown({
   // resize / rotation), so a first pass that measured too early never latches the
   // wrong result.
   useLayoutEffect(() => {
+    if (userExpanded !== null) {
+      // Dropping the user's toggle collapses the block — tell the parent, which may have
+      // paused something (height recording) on the expand it is now undoing.
+      onUserToggle?.(false);
+    }
     setUserExpanded(null);
     const container = containerRef.current;
     const contentEl = contentRef.current;

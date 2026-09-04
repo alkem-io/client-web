@@ -39,6 +39,14 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* react-remove-scroll-bar (behind every Radix Dialog / Sheet / DropdownMenu / Select) compensates
+   for the scrollbar it hides with a `margin-right` equal to the gap it measured. The gutter above
+   is kept under `overflow: hidden`, so nothing is removed and that margin alone would shift the
+   page on every overlay open. */
+html body[data-scroll-locked] {
+  margin-right: 0 !important;
+}
+
 body {
   height: 100%;
   margin: 0;

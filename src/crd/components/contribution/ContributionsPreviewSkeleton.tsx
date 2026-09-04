@@ -7,7 +7,7 @@ type ContributionsPreviewSkeletonProps = {
   kind: ContributionPreviewKind;
   /**
    * Number of contributions the loaded preview will show — capped at the preview's 4 slots.
-   * Unknown (the feed list doesn't fetch it) reserves one grid row.
+   * Unknown reserves one grid row.
    */
   count?: number;
   className?: string;

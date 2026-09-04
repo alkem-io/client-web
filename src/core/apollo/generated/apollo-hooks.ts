@@ -29709,6 +29709,13 @@ export const CalloutsListForFeedDocument = gql`
             allowedTypes
           }
         }
+        contributionsCount {
+          post
+          link
+          whiteboard
+          memo
+          collaboraDocument
+        }
       }
     }
   }

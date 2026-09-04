@@ -37,7 +37,6 @@ const lastObserver = () => FakeResizeObserver.instances[FakeResizeObserver.insta
 
 describe('useRememberedCalloutHeight', () => {
   beforeEach(() => {
-    vi.useFakeTimers();
     sessionStorage.clear();
     FakeResizeObserver.instances = [];
     vi.stubGlobal('ResizeObserver', FakeResizeObserver);
@@ -46,7 +45,6 @@ describe('useRememberedCalloutHeight', () => {
   afterEach(() => {
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
-    vi.useRealTimers();
   });
 
   describe('store', () => {
@@ -115,7 +113,7 @@ describe('useRememberedCalloutHeight', () => {
       expect(result.current.height).toBeUndefined();
     });
 
-    it('observes the mounted card and records its settled height after the delay', () => {
+    it('observes the mounted card and records its height on every notification', () => {
       const { result } = render();
       const card = element({ width: 800, height: 640 });
 
@@ -123,11 +121,8 @@ describe('useRememberedCalloutHeight', () => {
       const observer = lastObserver();
       expect(observer.observed).toEqual([card]);
 
-      observer.fire();
-      observer.fire();
       expect(getRememberedCalloutHeight('c1', 'feed', 800)).toBeUndefined();
-
-      vi.advanceTimersByTime(300);
+      observer.fire();
       expect(getRememberedCalloutHeight('c1', 'feed', 800)).toBe(640);
 
       cleanup?.();
@@ -140,7 +135,6 @@ describe('useRememberedCalloutHeight', () => {
       result.current.ref(card);
 
       lastObserver().fire();
-      vi.advanceTimersByTime(300);
       expect(getRememberedCalloutHeight('c1', 'feed', 800)).toBeUndefined();
 
       rerender({ paused: false });

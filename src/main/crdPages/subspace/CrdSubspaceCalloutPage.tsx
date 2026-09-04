@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toRoutePath } from '@/crd/lib/toRoutePath';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
@@ -17,11 +18,16 @@ export default function CrdSubspaceCalloutPage() {
   return (
     <>
       <CrdSubspaceCalloutsPage />
-      <CrdCalloutDialogFromUrl
-        onClose={() =>
-          navigate(toRoutePath(subspace?.about.profile.url), { replace: true, state: { keepScroll: true } })
-        }
-      />
+      {/* Own boundary: the dialog subtree suspends on lazily-loaded i18n namespaces
+          (crd-reactions, crd-exploreSpaces, …). Without it the suspension reaches the
+          route boundary and hides the already-rendered feed behind a spinner. */}
+      <Suspense fallback={null}>
+        <CrdCalloutDialogFromUrl
+          onClose={() =>
+            navigate(toRoutePath(subspace?.about.profile.url), { replace: true, state: { keepScroll: true } })
+          }
+        />
+      </Suspense>
     </>
   );
 }

@@ -138,9 +138,6 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
 
   return (
     <>
-      {/* The sidebar is portalled next to the feed; if one of its widgets suspends (a lazy
-          i18n namespace, a chunk) it must not bubble up to the tab-level boundary and swap
-          the whole feed for a spinner — leave the sidebar blank for that beat instead. */}
       <Suspense fallback={null}>
         <SpaceTabSidebarConnector
           sidebar={sidebarWire}
@@ -198,11 +195,6 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
         )}
       </div>
 
-      {/* These dialogs mount closed as soon as the permission queries resolve, and their
-          subtrees pull in lazily-loaded i18n namespaces (crd-templates, crd-exploreSpaces)
-          plus heavy editor modules. Without their own boundary that suspension climbs to the
-          tab-level Suspense and replaces the already-rendered feed with a spinner for ~500ms
-          (issue #10043). A closed dialog renders nothing, so `null` is the right fallback. */}
       <Suspense fallback={null}>
         {canCreateCallout && (
           <CalloutFormConnector

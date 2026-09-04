@@ -22,10 +22,11 @@ query CalloutsListForFeed($calloutsSetId: UUID!, $classificationTagsets: [Tagset
       callouts(classificationTagsets: $classificationTagsets) {
         id
         sortOrder
-        # Skeleton shape hints: framing type → framing preview block, allowedTypes →
-        # contributions grid. Deliberately NOT `activity`: for comment-only callouts the
-        # server resolves it with an unbatched Matrix room fetch per callout, and this
-        # query gates the feed's first paint.
+        # Skeleton shape hints: framing type → framing preview block, allowedTypes +
+        # contributionsCount → contributions grid (one grouped DB count per callout).
+        # Deliberately NOT `activity`: for comment-only callouts the server resolves it
+        # with an unbatched Matrix room fetch per callout, and this query gates the
+        # feed's first paint.
         framing {
           id
           type
@@ -34,6 +35,13 @@ query CalloutsListForFeed($calloutsSetId: UUID!, $classificationTagsets: [Tagset
           contribution {
             allowedTypes
           }
+        }
+        contributionsCount {
+          post
+          link
+          whiteboard
+          memo
+          collaboraDocument
         }
       }
     }

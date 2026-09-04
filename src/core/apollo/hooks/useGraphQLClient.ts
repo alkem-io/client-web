@@ -5,7 +5,6 @@ import { env } from '@/main/env';
 import { typePolicies } from '../config/typePolicies';
 import {
   consoleLink,
-  devDelayLink,
   guestHeaderLink,
   httpLink,
   omitTypenameLink,
@@ -52,8 +51,6 @@ export const useGraphQLClient = (
           errorHandlerLink,
           retryLink,
           redirectLink,
-          // Dev-only diagnostic; left out of the production chain entirely.
-          ...(import.meta.env.DEV ? [devDelayLink] : []),
           httpLink(graphQLEndpoint, enableWebSockets),
         ]),
         cache,

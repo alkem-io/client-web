@@ -110,8 +110,14 @@ export function SpaceTabSidebarConnector({
 
   // A loading placeholder is only worth its footprint when something renders below it (the
   // last widget can land or vanish without moving anything) AND the widget is likely to
-  // resolve non-empty — a placeholder that then unmounts is itself a layout jump.
-  const hasWidgetsBelow = (widgetId: SidebarWidgetId) => plan.indexOf(widgetId) < plan.length - 1;
+  // resolve non-empty — a placeholder that then unmounts is itself a layout jump. Only
+  // widgets known to render before any query resolves count as "below": a trailing widget
+  // gated on async data (addUser, virtualContributors, guidelines, …) often renders nothing.
+  const alwaysRendered = new Set<SidebarWidgetId>(['intent', 'about', 'events', 'updates', 'index', 'search']);
+  if (canCreatePost) alwaysRendered.add('createPost');
+  if (permissions.canCreateSubspaces) alwaysRendered.add('createSubspace');
+  const hasWidgetsBelow = (widgetId: SidebarWidgetId) =>
+    plan.slice(plan.indexOf(widgetId) + 1).some(id => alwaysRendered.has(id));
 
   const {
     isMember: isSpaceMember,
