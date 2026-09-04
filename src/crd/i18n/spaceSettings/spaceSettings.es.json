@@ -133,7 +133,8 @@
           "addUser": "Invitar",
           "virtualContributors": "Contribuidores virtuales",
           "guidelines": "Directrices de la comunidad",
-          "index": "Índice de publicaciones"
+          "index": "Índice de publicaciones",
+          "search": "Buscar"
         }
       },
       "postTemplate": {
@@ -921,7 +922,7 @@
       },
       "pageBanner": {
         "title": "Banner de página",
-        "hint": "Se muestra en la parte superior de la página del Space. Usa una imagen de al menos 1536 × 154px.",
+        "hint": "Se muestra en la parte superior de la página del Space. Usa una imagen de al menos 1200 × 120px.",
         "recrop": "Recortar el banner de página actual"
       },
       "cardBanner": {

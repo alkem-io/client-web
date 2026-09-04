@@ -2,19 +2,25 @@
  * Space page banner shape.
  *
  * The banner strip is no longer a fixed 6:1 — a space admin picks a width /
- * height ratio and it is stored on the space's BANNER visual. These values
+ * height ratio and it is stored on the space's BANNER visual. `MIN`/`MAX`
  * mirror `DEFAULT_VISUAL_CONSTRAINTS[VisualType.BANNER]` in the server
  * (`src/domain/common/visual/visual.constraints.ts`) and exist only as a
  * fallback for the moment before the server's real constraints have loaded —
  * the authoritative bounds always come from
  * `platform.configuration.defaultVisualTypeConstraints(type: BANNER)`.
  *
- * The ratio cannot be expressed as a Tailwind `aspect-[6/1]` class because the
+ * `DEFAULT` is the 10:1 slim strip and mirrors the server's row-creation
+ * default (`DEFAULT_VISUAL_CONSTRAINTS[BANNER].aspectRatio`, also 10). Rows
+ * created before that default changed still carry the historic 6, chosen by
+ * nobody, which is why `resolveBannerAspectRatio` only trusts a stored ratio
+ * when an image was actually cropped to it.
+ *
+ * The ratio cannot be expressed as a Tailwind `aspect-[10/1]` class because the
  * JIT scanner needs a literal string at build time, so consumers apply it as an
  * inline `style={{ aspectRatio }}` — permitted under the CRD carve-out for
  * user-provided runtime values.
  */
-export const DEFAULT_BANNER_ASPECT_RATIO = 6;
+export const DEFAULT_BANNER_ASPECT_RATIO = 10;
 export const MIN_BANNER_ASPECT_RATIO = 6;
 export const MAX_BANNER_ASPECT_RATIO = 10;
 /** Granularity of the admin-facing ratio control; matches the DB's numeric(3,1). */
@@ -43,8 +49,16 @@ export function bannerPlaceholderSize(aspectRatio: number): { width: number; hei
 }
 
 /**
- * The ratio to render a stored banner at: the value the server recorded, or the
- * default when there isn't a usable one.
+ * The ratio to render a banner strip at: the value the server recorded — when
+ * it means anything — or the default.
+ *
+ * The stored ratio is only honoured when the visual actually has an image. The
+ * server derives it from the uploaded pixels — which the crop dialog cut to
+ * the shape slider's ratio — so a stored ratio describes an uploaded image's
+ * shape; a visual with no image still carries a persisted value, but it is only
+ * the server's row-creation default (10 today, 6 on rows created before the
+ * default changed), chosen by nobody, and letting it through would pin a
+ * legacy no-image gradient to the historic shape instead of `DEFAULT`.
  *
  * Deliberately does **not** clamp into `MIN`/`MAX`. Those two constants are a
  * fallback for the *edit* control while the server's real bounds are loading;
@@ -54,7 +68,11 @@ export function bannerPlaceholderSize(aspectRatio: number): { width: number; hei
  * what is legal, and the page would shift on load. The server validates the
  * ratio on write, so what it hands back is by definition in range.
  */
-export function resolveBannerAspectRatio(ratio: number | undefined | null): number {
+export function resolveBannerAspectRatio(
+  banner: { uri?: string | null; aspectRatio?: number | null } | null | undefined
+): number {
+  if (!banner?.uri) return DEFAULT_BANNER_ASPECT_RATIO;
+  const ratio = banner.aspectRatio;
   if (!ratio || !Number.isFinite(ratio)) return DEFAULT_BANNER_ASPECT_RATIO;
   return ratio;
 }

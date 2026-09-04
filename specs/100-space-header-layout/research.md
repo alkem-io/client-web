@@ -4,6 +4,8 @@ All four `[NEEDS CLARIFICATION]` markers were resolved during `/speckit.clarify`
 
 ## R1 — `aspect-ratio: 6 / 1` in Tailwind v4
 
+> **Superseded 2026-08-31.** The fixed `aspect-[6/1]` class shipped as decided here; PR #10121 then made the ratio a per-space value (`Visual.aspectRatio`, server-bounded 6–10) and PR #10222 (issue #10178) moved the design default to 10:1. The banner now takes its shape from `bannerPlaceholderSize(bannerAspectRatio)` on the `<img>` and an inline `aspectRatio` on the gradient fallback — see spec A8. The research below is kept as the record of the original decision.
+
 **Decision**: Use `aspect-[6/1]` (arbitrary-value variant) on the banner `<div>`. Drop the existing `h-[256px]` / `h-52 md:h-64` fixed heights.
 
 **Rationale**:
@@ -30,7 +32,7 @@ All four `[NEEDS CLARIFICATION]` markers were resolved during `/speckit.clarify`
 - `CrdSubspacePageLayout.tsx` mounts `<SubspaceHeader>` directly inside a `<div className="flex flex-col bg-background min-h-screen">` — no horizontal padding either; padding (`px-6 md:px-8`) lives only on the content `<main>` below.
 - `SubspacePage.tsx` (standalone) mirrors this: `<div className="min-h-screen bg-background flex flex-col"><SubspaceHeader />…</div>`.
 
-The banner `<div>` inside both header components is already `w-full`. We keep that, drop the fixed height, add `aspect-[6/1]`.
+The banner `<div>` inside both header components is already `w-full`. We keep that, drop the fixed height, add `aspect-[6/1]` *(class since replaced by the per-space ratio — see the R1 note)*.
 
 **Alternatives considered**:
 - *Full-bleed escape via `w-screen ml-[calc(50%-50vw)]`*: would be needed if the banner were inside a padded parent; it isn't, so we don't introduce the trick.
@@ -80,7 +82,7 @@ The banner `<div>` inside both header components is already `w-full`. We keep th
 
 ## R6 — Avatar fallback (gradient) on the now-fluid banner
 
-**Decision**: Keep the existing fallback. When `bannerUrl` / `parentBannerUrl` is missing, the deterministic gradient from `pickColorFromId` renders in the same `aspect-[6/1]` div — no change to fallback logic, only to host height.
+**Decision**: Keep the existing fallback. When `bannerUrl` / `parentBannerUrl` is missing, the deterministic gradient from `pickColorFromId` renders in the same banner region — at the 10:1 `DEFAULT_BANNER_ASPECT_RATIO` since 2026-08-31, originally `aspect-[6/1]` — no change to fallback logic, only to host height.
 
 **Rationale**:
 - `pickColorFromId` is already used (see CRD § Deterministic Accent Colors). It produces a 135deg gradient that looks good at any aspect ratio.

@@ -133,7 +133,8 @@
           "addUser": "Einladen",
           "virtualContributors": "Virtuelle Mitwirkende",
           "guidelines": "Gemeinschaftsrichtlinien",
-          "index": "Beitragsindex"
+          "index": "Beitragsindex",
+          "search": "Suche"
         }
       },
       "postTemplate": {
@@ -921,7 +922,7 @@
       },
       "pageBanner": {
         "title": "Seiten-Banner",
-        "hint": "Wird oben auf der Space-Seite angezeigt. Verwenden Sie ein Bild von mindestens 1536 × 154px.",
+        "hint": "Wird oben auf der Space-Seite angezeigt. Verwenden Sie ein Bild von mindestens 1200 × 120px.",
         "recrop": "Aktuelles Seitenbanner zuschneiden"
       },
       "cardBanner": {

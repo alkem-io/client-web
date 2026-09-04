@@ -51,7 +51,7 @@ export function mapSubspaceBanner({
     bannerAlt: levelZeroProfile?.banner?.alternativeText || undefined,
     // Inherited from the L0 root along with the image itself, so a subspace
     // banner is always the same shape as its parent space's.
-    bannerAspectRatio: resolveBannerAspectRatio(levelZeroProfile?.banner?.aspectRatio ?? undefined),
+    bannerAspectRatio: resolveBannerAspectRatio(levelZeroProfile?.banner),
     color: pickColorFromId(levelZeroSpaceId ?? levelZeroName),
   };
 }

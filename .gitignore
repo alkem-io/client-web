@@ -25,6 +25,9 @@ npm-debug.log
 .env.test.local
 .env.production.local
 
+# GraphQL schema snapshot — local-only, never committed (codegen reads the live server)
+/schema.graphql
+
 # misc
 .DS_Store
 .build/docker/.env.base

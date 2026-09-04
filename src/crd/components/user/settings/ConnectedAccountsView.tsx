@@ -1,4 +1,4 @@
-import { AlertCircle, KeyRound, Link2, ShieldCheck } from 'lucide-react';
+import { AlertCircle, Info, KeyRound, Link2, ShieldCheck } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -45,8 +45,17 @@ export type ConnectedAccountsFlowMessage = {
 };
 
 export type ConnectedAccountsViewProps = {
-  status: 'loading' | 'unavailable' | 'ready';
-  /** Already-translated; set only when `status === 'unavailable'` (FR-024). */
+  /**
+   * `sessionExpired` is the identity provider's own session having lapsed. It is deliberately
+   * separate from `unavailable`: that one is a transient failure a retry can clear, and this one is
+   * not — no number of retries mints a new identity-provider session, so the retry action is
+   * withheld and the reason points at the sign-out card instead.
+   */
+  status: 'loading' | 'unavailable' | 'sessionExpired' | 'ready';
+  /**
+   * Already-translated reason the rows cannot be shown; set whenever `status` is `unavailable`
+   * (FR-024) or `sessionExpired`.
+   */
   unavailableReason?: string;
   onRetry: () => void;
   providers: ConnectedAccountsProviderRow[];
@@ -119,6 +128,20 @@ export function ConnectedAccountsView({
           <Skeleton className="h-14 w-full" />
           <Skeleton className="h-14 w-full" />
           <Skeleton className="h-14 w-full" />
+        </output>
+      ) : status === 'sessionExpired' ? (
+        // No retry button: the settings flow this section is derived from answers 401 for as long as
+        // the identity-provider session stays lapsed, so a retry would re-run the same failing
+        // request and land right back here. The way out is the sign-out action in the card below,
+        // which this reason names. Styled as information rather than an alert for the same reason
+        // the tab-level card is — nothing is broken, a session simply ended. `<output>` carries an
+        // implicit `role="status"`, the polite counterpart to the `role="alert"` the unavailable
+        // branch uses: the outcome of the load still has to reach assistive technology, but it does
+        // not warrant interrupting. Spelled as the element rather than the ARIA attribute because
+        // that is what the repo's a11y lint requires wherever a semantic equivalent exists.
+        <output className="flex items-start gap-2 rounded-md border bg-muted/30 p-4 text-body text-muted-foreground">
+          <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+          <p>{unavailableReason}</p>
         </output>
       ) : status === 'unavailable' ? (
         <div className="flex flex-col gap-3">

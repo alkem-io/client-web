@@ -37,7 +37,7 @@
 - **Unit tests**: `pnpm vitest run --reporter=basic`
   - Vitest default is interactive watch; append `--watch=false` to exit automatically. Execution (~1.2s) passes 19 files / 247 tests; one UI spec is explicitly skipped. Use `--coverage.enabled` flags only when needed (`pnpm test:coverage`).
 - **GraphQL codegen**: `pnpm codegen`
-  - Requires the Alkemio GraphQL API at `http://localhost:3000/graphql` or update `codegen.yml`. Runs ESLint + Prettier on generated files via hooks.
+  - Requires the Alkemio GraphQL API at `http://localhost:3000/graphql` (`CODEGEN_SCHEMA` in the committed `.env`, loaded via dotenv-flow; override in `.env.local` only). Runs Biome on generated files via hooks. **Never commit a `schema.graphql` snapshot** — it is gitignored; the schema always comes from a running server.
 - **Formatting**: `pnpm format` (Prettier over `src/**/*.ts{,x}`) and `pnpm lint:fix` for autofixes.
 - **Serve built assets**: `pnpm serve:dev` (serves `build/` on port 3001).
 
@@ -89,7 +89,7 @@ _Observed behavior (Oct 2025): all commands above complete without manual tweaks
   - Prefer MCP servers supporting **feedback and validation** (e.g., GitHub comments, Context7 evaluation).
   - Use them to cross-check and refine responses before completion.
 - For Git operations, **all commits must be signed**.
-- Always regenerate types after editing `.graphql` files with `pnpm codegen`; commit generated outputs. Codegen fetches schema from a running server.
+- Always regenerate types after editing `.graphql` files with `pnpm codegen`; commit generated outputs. Codegen fetches the schema from a running server (`CODEGEN_SCHEMA` in `.env`); a `schema.graphql` snapshot must never be added to the repo — it is gitignored and a local copy is only ever a personal `.env.local` override.
 - **Internationalization (i18n)**: New user-facing strings go to the CRD per-feature namespaces under `src/crd/i18n/<feature>/`, with all six supported languages (en, nl, es, bg, de, fr) edited in the same PR (key parity required; managed manually, not Crowdin). The legacy core file `src/core/i18n/en/translation.en.json` is **frozen for new keys** — do not add new strings there; it serves the not-yet-migrated MUI app. For legacy upkeep, **Crowdin is no longer used** — all core locale files (`translation.en.json` and every non-English `translation.<lang>.json`) are now edited directly in-repo, in the same PR, preserving key parity across languages. The project uses `react-i18next` with custom formatters (lowercase, capitalize, uppercase) configured in `src/core/i18n/config.ts`.
 - New env vars must be prefixed with `VITE_` to be exposed. For runtime injection, ensure they flow through `.env` and `buildConfiguration.js` so they end up in `public/env-config.js` and `window._env_`.
 - React components should remain function-based; hooks live close to their domain. Follow `docs/code-guidelines.md` for naming (PascalCase components, `camelCase` hooks) and folder placement (`src/domain/<entity>`).

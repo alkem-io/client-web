@@ -19,7 +19,7 @@ type SpaceHeaderProps = {
   bannerAlt?: string;
   /**
    * Width / height ratio of the banner strip, chosen per space by an admin.
-   * The server bounds it (BANNER: 6-10); 6 is the historic shape and the
+   * The server bounds it (BANNER: 6-10); 10 is the default shape and the
    * fallback when the value has not loaded yet.
    */
   bannerAspectRatio?: number;
