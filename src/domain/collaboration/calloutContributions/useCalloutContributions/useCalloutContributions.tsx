@@ -51,6 +51,12 @@ export interface useCalloutContributionsProvided {
 
   subscriptionEnabled: boolean;
   loading?: boolean;
+  /**
+   * Whether any contributions page has arrived yet (cache or network). False until the
+   * observed element scrolls into view and the first result lands — consumers render a
+   * placeholder for `contributions` until then.
+   */
+  loaded: boolean;
 
   /**
    * just bubbles up for a callout refetch
@@ -86,7 +92,7 @@ const useCalloutContributions = ({
     }
   };
 
-  const { data, previousData, loading, refetch, subscribeToMore } = useCalloutContributionsQuery({
+  const { data, previousData, loading, error, refetch, subscribeToMore } = useCalloutContributionsQuery({
     variables: {
       calloutId: callout?.id!,
       includeLink: contributionType === CalloutContributionType.Link,
@@ -154,6 +160,9 @@ const useCalloutContributions = ({
       total: totalContributionsCount,
     },
     loading,
+    // Settled once — with data OR with a terminal error (default errorPolicy leaves `data`
+    // undefined then), so a failed first page never leaves the consumer on its skeleton.
+    loaded: effectiveData !== undefined || error !== undefined,
     subscriptionEnabled: subscription.enabled,
     onCalloutContributionsUpdate: async () => {
       await onCalloutUpdate?.();

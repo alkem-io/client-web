@@ -1,8 +1,11 @@
 import { ChevronRight, Lock, Pin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
+import { Skeleton } from '@/crd/primitives/skeleton';
 
 const MAX_VISIBLE = 6;
+/** Rows reserved while the list is loading — a typical L0 sidebar shows a few subspaces. */
+const PLACEHOLDER_ROWS = ['row-1', 'row-2', 'row-3'];
 
 type SubspaceItem = {
   name: string;
@@ -24,6 +27,12 @@ type SubspacesSectionProps = {
    *  a "Create" link that calls this callback. The section stays hidden when
    *  empty AND this is not provided. */
   onCreateClick?: () => void;
+  /**
+   * True while the list is still being fetched. With no subspaces yet, the section
+   * renders its heading plus placeholder rows so it already occupies its footprint
+   * instead of appearing later and pushing the widgets below it down.
+   */
+  loading?: boolean;
   className?: string;
 };
 
@@ -33,10 +42,29 @@ export function SubspacesSection({
   onShowAllClick,
   onSubspaceClick,
   onCreateClick,
+  loading = false,
   className,
 }: SubspacesSectionProps) {
   const { t } = useTranslation('crd-space');
   const { t: tCommon } = useTranslation('crd-common');
+
+  if (loading && subspaces.length === 0) {
+    return (
+      <div className={className}>
+        <div className="flex items-center justify-between mb-3 px-1">
+          <h3 className="uppercase text-label text-muted-foreground">{t('sidebar.subspaces')}</h3>
+        </div>
+        <output className="block space-y-1" aria-label={t('a11y.loadingSubspaces')}>
+          {PLACEHOLDER_ROWS.map(row => (
+            <div key={row} className="flex items-center gap-3 px-3 py-2">
+              <Skeleton className="size-7 shrink-0 rounded-md" />
+              <Skeleton className="h-4 w-28" />
+            </div>
+          ))}
+        </output>
+      </div>
+    );
+  }
 
   // When the consumer wires a "Show all" affordance, cap the list at 6 and
   // surface the top-right link. Without a wire-up (e.g. the dedicated Subspaces

@@ -488,7 +488,11 @@ export default function CrdSubspacePageLayout() {
         }
       />
 
-      {data.canCreateSubspace && <CreateSubspaceDialogs createSubspace={createSubspace} />}
+      {/* Own boundary: the closed dialog's subtree suspends on lazy i18n namespaces / chunks,
+          and must not swap the already-rendered page for a spinner (issue #10043). */}
+      <Suspense fallback={null}>
+        {data.canCreateSubspace && <CreateSubspaceDialogs createSubspace={createSubspace} />}
+      </Suspense>
     </StorageConfigContextProvider>
   );
 }

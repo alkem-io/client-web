@@ -1008,7 +1008,12 @@
     "mobileTabBar": "Навигация с табове",
     "moreActionsDrawer": "Допълнителни действия",
     "close": "Затвори",
-    "loadingPost": "Зареждане на публикация"
+    "loadingPost": "Зареждане на публикация",
+    "loadingContributions": "Зареждане на приноси",
+    "loadingSubspaces": "Зареждане на подпространства",
+    "loadingLeads": "Зареждане на ръководителите на пространството",
+    "loadingTags": "Зареждане на тагове",
+    "loadingMembership": "Зареждане на статуса на членство"
   },
   "activity": {
     "dialogTitle": "Скорошна активност"

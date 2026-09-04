@@ -1008,7 +1008,12 @@
     "mobileTabBar": "Navegación por pestañas",
     "moreActionsDrawer": "Acciones adicionales",
     "close": "Cerrar",
-    "loadingPost": "Cargando publicación"
+    "loadingPost": "Cargando publicación",
+    "loadingContributions": "Cargando contribuciones",
+    "loadingSubspaces": "Cargando subespacios",
+    "loadingLeads": "Cargando líderes del Espacio",
+    "loadingTags": "Cargando etiquetas",
+    "loadingMembership": "Cargando estado de membresía"
   },
   "activity": {
     "dialogTitle": "Actividad reciente"

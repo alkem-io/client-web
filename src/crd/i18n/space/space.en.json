@@ -1008,7 +1008,12 @@
     "mobileTabBar": "Tab navigation",
     "moreActionsDrawer": "Additional actions",
     "close": "Close",
-    "loadingPost": "Loading $t(common.callout)"
+    "loadingPost": "Loading $t(common.callout)",
+    "loadingContributions": "Loading contributions",
+    "loadingSubspaces": "Loading subspaces",
+    "loadingLeads": "Loading Space Leads",
+    "loadingTags": "Loading tags",
+    "loadingMembership": "Loading membership status"
   },
   "activity": {
     "dialogTitle": "Recent Activity"

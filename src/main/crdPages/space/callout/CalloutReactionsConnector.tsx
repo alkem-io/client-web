@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useAddReactionToCalloutMutation,
   useCalloutWhoReactedLazyQuery,
@@ -40,6 +41,10 @@ export function CalloutReactionsConnector({
   isPublished,
 }: CalloutReactionsConnectorProps) {
   const [whoReactedRows, setWhoReactedRows] = useState<WhoReactedRow[]>([]);
+  // The total pill (lazily-loaded `crd-reactions` namespace) only mounts once the total is
+  // > 0 — for a viewer who can't react, that can be a later refetch, and suspending then
+  // would swap the rendered card for its skeleton. Load the namespace at mount instead.
+  useTranslation('crd-reactions');
 
   // CONTRIBUTE permission + published callout required to react
   const canReact = isPublished && myPrivileges.includes(AuthorizationPrivilege.Contribute);

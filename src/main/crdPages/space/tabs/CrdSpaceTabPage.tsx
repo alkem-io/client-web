@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useCalloutsSetTagsQuery,
@@ -96,7 +96,7 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
   // a term typed right after a clear can never re-apply the cleared one.
   const appliedText = useDebouncedValue(searchText, SEARCH_DEBOUNCE_MS, { immediate: isEmptySearchText }).trim();
   const flowStateId = flowStateForNewCallouts?.id;
-  const { data: tagsData } = useCalloutsSetTagsQuery({
+  const { data: tagsData, loading: tagsLoading } = useCalloutsSetTagsQuery({
     variables: {
       // biome-ignore lint/style/noNonNullAssertion: ensured by skip
       calloutsSetId: calloutsSetId!,
@@ -138,27 +138,30 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
 
   return (
     <>
-      <SpaceTabSidebarConnector
-        sidebar={sidebarWire}
-        calloutsSetId={calloutsSetId}
-        classificationTagsets={classificationTagsets}
-        tabPosition={tabPosition}
-        canCreatePost={canCreateCallout}
-        onCreatePost={() => setCreateOpen(true)}
-        onAboutClick={onOpenAbout}
-        onCreateSubspace={createSubspace.openDialog}
-        search={{
-          text: searchText,
-          onTextChange: setSearchText,
-          appliedText,
-          allTags,
-          selectedTags: tagsFilter,
-          onToggleTag: handleToggleTag,
-          matchCount,
-          hasMore: search.hasMore,
-          onClear: clearSearch,
-        }}
-      />
+      <Suspense fallback={null}>
+        <SpaceTabSidebarConnector
+          sidebar={sidebarWire}
+          calloutsSetId={calloutsSetId}
+          classificationTagsets={classificationTagsets}
+          tabPosition={tabPosition}
+          canCreatePost={canCreateCallout}
+          onCreatePost={() => setCreateOpen(true)}
+          onAboutClick={onOpenAbout}
+          onCreateSubspace={createSubspace.openDialog}
+          search={{
+            text: searchText,
+            onTextChange: setSearchText,
+            appliedText,
+            allTags,
+            tagsLoading,
+            selectedTags: tagsFilter,
+            onToggleTag: handleToggleTag,
+            matchCount,
+            hasMore: search.hasMore,
+            onClear: clearSearch,
+          }}
+        />
+      </Suspense>
 
       <div className="space-y-6">
         <TabStateHeader description={tabDescription} />
@@ -192,17 +195,19 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
         )}
       </div>
 
-      {canCreateCallout && (
-        <CalloutFormConnector
-          open={createOpen}
-          onOpenChange={setCreateOpen}
-          calloutsSetId={calloutsSetId}
-          activeFlowStateName={flowStateForNewCallouts?.displayName}
-          defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
-        />
-      )}
+      <Suspense fallback={null}>
+        {canCreateCallout && (
+          <CalloutFormConnector
+            open={createOpen}
+            onOpenChange={setCreateOpen}
+            calloutsSetId={calloutsSetId}
+            activeFlowStateName={flowStateForNewCallouts?.displayName}
+            defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
+          />
+        )}
 
-      {canCreateSubspace && <CreateSubspaceDialogs createSubspace={createSubspace} />}
+        {canCreateSubspace && <CreateSubspaceDialogs createSubspace={createSubspace} />}
+      </Suspense>
     </>
   );
 }
