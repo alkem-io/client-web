@@ -25,8 +25,6 @@ type ExpandableMarkdownProps = {
   expandLabel?: string;
   /** Override the expanded-state toggle label (defaults to "Read less"). */
   collapseLabel?: string;
-  /** Emits when the user clicks "Read more" / "Read less" (not when `defaultExpanded` flips). */
-  onUserToggle?: (expanded: boolean) => void;
   className?: string;
 };
 
@@ -73,7 +71,6 @@ export function ExpandableMarkdown({
   surface = 'card',
   expandLabel,
   collapseLabel,
-  onUserToggle,
   className,
 }: ExpandableMarkdownProps) {
   const { t } = useTranslation('crd-space');
@@ -107,11 +104,6 @@ export function ExpandableMarkdown({
   // resize / rotation), so a first pass that measured too early never latches the
   // wrong result.
   useLayoutEffect(() => {
-    if (userExpanded !== null) {
-      // Dropping the user's toggle collapses the block — tell the parent, which may have
-      // paused something (height recording) on the expand it is now undoing.
-      onUserToggle?.(false);
-    }
     setUserExpanded(null);
     const container = containerRef.current;
     const contentEl = contentRef.current;
@@ -131,10 +123,7 @@ export function ExpandableMarkdown({
     return () => observer.disconnect();
   }, [content, maxLines]);
 
-  const toggle = (expanded: boolean) => {
-    setUserExpanded(expanded);
-    onUserToggle?.(expanded);
-  };
+  const toggle = (expanded: boolean) => setUserExpanded(expanded);
 
   const showToggle = overflow === 'yes';
   const surfaceClass = surfaceClasses[surface];

@@ -18,9 +18,6 @@ export default function CrdSubspaceCalloutPage() {
   return (
     <>
       <CrdSubspaceCalloutsPage />
-      {/* Own boundary: the dialog subtree suspends on lazily-loaded i18n namespaces
-          (crd-reactions, crd-exploreSpaces, …). Without it the suspension reaches the
-          route boundary and hides the already-rendered feed behind a spinner. */}
       <Suspense fallback={null}>
         <CrdCalloutDialogFromUrl
           onClose={() =>

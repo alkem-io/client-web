@@ -14,13 +14,6 @@ type PostCardSkeletonProps = {
   type?: PostType;
   /** Contributions preview the loaded card will render — reserves its header + grid rows. */
   contributions?: PostCardSkeletonContributions;
-  /**
-   * Last measured height of the loaded card (remembered by the consumer). Applied as the
-   * exact height — not a minimum — so the placeholder matches the card that replaces it in
-   * both directions (the shape-based guess can overshoot, e.g. a card with no description)
-   * and content below doesn't move. The decorative inner lines are clipped if needed.
-   */
-  height?: number;
   className?: string;
 };
 
@@ -66,12 +59,11 @@ function FramingPlaceholder({ type }: { type: PostType }) {
  * grid, and the comments footer. Reserving the loaded footprint up front is what keeps
  * the feed from jumping as each card's data arrives (issue #10043).
  */
-export function PostCardSkeleton({ type = 'text', contributions, height, className }: PostCardSkeletonProps) {
+export function PostCardSkeleton({ type = 'text', contributions, className }: PostCardSkeletonProps) {
   const { t } = useTranslation('crd-space');
   return (
     <output
-      className={cn('flex flex-col gap-6 overflow-hidden rounded-xl border border-border/60 bg-card', className)}
-      style={height ? { height } : undefined}
+      className={cn('flex flex-col gap-6 rounded-xl border border-border/60 bg-card', className)}
       aria-label={t('a11y.loadingPost')}
     >
       {/* Publisher row — mirrors the CardHeader (avatar + name/timestamp, action cluster). */}
