@@ -118,7 +118,9 @@ export default function CrdSpacePageLayout() {
   useEdgeSwipe(() => setMobileMenuOpen(true), { enabled: belowLg && isLevelZero && !isOnSettings });
 
   if (resolvingUrl || loadingSpace) {
-    return <LoadingSpinner />;
+    // Same reservation as `SpaceShell`'s content column, so the footer stays put while the
+    // page passes from this gate to the shell's own loading phases (issue #10043).
+    return <LoadingSpinner className="min-h-[60vh]" />;
   }
 
   // Parse section index from URL (1-indexed) and clamp to valid tab range. Bound by the full

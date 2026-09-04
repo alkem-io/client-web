@@ -40,6 +40,7 @@ describe('UserSecurityTabView', () => {
           webauthnForm={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
+          deleteAccountCard={null}
         />
       );
 
@@ -53,6 +54,7 @@ describe('UserSecurityTabView', () => {
           webauthnForm={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
+          deleteAccountCard={null}
         />
       );
 
@@ -92,6 +94,7 @@ describe('UserSecurityTabView', () => {
           webauthnForm={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
+          deleteAccountCard={null}
         />
       );
 
@@ -109,6 +112,50 @@ describe('UserSecurityTabView', () => {
     }
   );
 
+  it.each<[string, UserSecurityViewState]>([
+    ['loading', { kind: 'loading' }],
+    ['error', { kind: 'error' }],
+    ['ready', { kind: 'ready', hasPassword: true, hasWebauthn: false }],
+  ])(
+    "renders the Delete-account slot in the '%s' state (spec-cw-3, FR-001) — the app-store-mandated " +
+      'deletion entry point is self-contained and must never disappear because an unrelated Kratos ' +
+      'settings-flow load is slow or failed',
+    (_label, state) => {
+      render(
+        <UserSecurityTabView
+          state={state}
+          passwordForm={null}
+          webauthnForm={null}
+          mcpApiKeysCard={null}
+          connectedAccountsSection={null}
+          deleteAccountCard={<div data-testid="delete-account-card-probe">delete card</div>}
+        />
+      );
+
+      expect(screen.getByTestId('delete-account-card-probe')).toBeInTheDocument();
+    }
+  );
+
+  // The one deliberate exception to the rule above. `sessionExpired` is not a
+  // failure to load the Security tab — it means the identity-provider session
+  // is gone, so a deletion attempted from here could not satisfy the server's
+  // session-age gate anyway. Offering the entry point would be a dead end, so
+  // it is withheld on purpose rather than by oversight.
+  it('withholds the Delete-account slot in the lapsed-session state, where deletion could not succeed', () => {
+    render(
+      <UserSecurityTabView
+        state={{ kind: 'sessionExpired', reauthHref: '/logout' }}
+        passwordForm={null}
+        webauthnForm={null}
+        mcpApiKeysCard={null}
+        connectedAccountsSection={null}
+        deleteAccountCard={<div data-testid="delete-account-card-probe">delete card</div>}
+      />
+    );
+
+    expect(screen.queryByTestId('delete-account-card-probe')).not.toBeInTheDocument();
+  });
+
   it(
     'renders the lapsed-identity-provider-session state with a way out rather than the generic ' +
       "'try refreshing' card — refreshing provably cannot mint a new identity-provider session, " +
@@ -123,6 +170,7 @@ describe('UserSecurityTabView', () => {
           webauthnForm={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={null}
+          deleteAccountCard={null}
         />
       );
 

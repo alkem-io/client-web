@@ -769,7 +769,7 @@
         },
         "PLATFORM_ADMIN_USER_PROFILE_REMOVED": {
           "description": "",
-          "subject": "{{userName}} ({{userEmail}}) has been removed from the platform"
+          "subject": "Ein Benutzerprofil wurde von der Plattform entfernt"
         },
         "PLATFORM_ADMIN_USER_SIGNED_UP": {
           "description": "",
@@ -1399,6 +1399,12 @@
         "unavailableTitle": "$t(common.Whiteboard) nicht verfügbar"
       }
     }
+  },
+  "permissions": {
+    "checking": "Berechtigungen werden geprüft…",
+    "denied": "Du hast keine Berechtigung, die Mitglieder dieser Rolle zu ändern.",
+    "errorDenied": "Du hast keine Berechtigung für diese Änderung. Die Änderung wurde nicht gespeichert.",
+    "unverifiable": "Berechtigungen konnten nicht überprüft werden."
   },
   "pinned": "Angeheftet",
   "private": "Privat",

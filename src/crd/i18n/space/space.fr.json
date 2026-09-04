@@ -22,8 +22,8 @@
     "inactive": "Cet Espace est actuellement inactif."
   },
   "knowledge": {
-    "searchPlaceholder": "Rechercher...",
-    "searchLabel": "Rechercher dans la base de connaissances",
+    "searchPlaceholder": "Rechercher des publications...",
+    "searchLabel": "Rechercher des publications",
     "noResults": "Aucun résultat",
     "search": {
       "emptyTitle": "Aucun résultat",
@@ -33,8 +33,17 @@
       "retry": "Réessayer",
       "loadingLabel": "Chargement des résultats de recherche",
       "appendingLabel": "Chargement de résultats supplémentaires",
-      "removeTerm": "Supprimer le terme {{term}}",
-      "removeTag": "Supprimer l'étiquette {{tag}}"
+      "tagLabel_one": "au tag",
+      "tagLabel_other": "aux tags",
+      "matchText_one": "<b>{{count}}</b> élément lié à <text></text>",
+      "matchText_other": "<b>{{count}}</b> éléments liés à <text></text>",
+      "matchTextMore": "<b>{{count}}+</b> éléments liés à <text></text>",
+      "matchTags_one": "<b>{{count}}</b> élément lié {{tagLabel}} <tags></tags>",
+      "matchTags_other": "<b>{{count}}</b> éléments liés {{tagLabel}} <tags></tags>",
+      "matchTagsMore": "<b>{{count}}+</b> éléments liés {{tagLabel}} <tags></tags>",
+      "matchBoth_one": "<b>{{count}}</b> élément lié à <text></text> et {{tagLabel}} <tags></tags>",
+      "matchBoth_other": "<b>{{count}}</b> éléments liés à <text></text> et {{tagLabel}} <tags></tags>",
+      "matchBothMore": "<b>{{count}}+</b> éléments liés à <text></text> et {{tagLabel}} <tags></tags>"
     },
     "viewGrid": "Vue en cartes",
     "viewList": "Vue en liste",
@@ -999,7 +1008,12 @@
     "mobileTabBar": "Navigation par onglets",
     "moreActionsDrawer": "Actions supplémentaires",
     "close": "Fermer",
-    "loadingPost": "Chargement de la publication"
+    "loadingPost": "Chargement de la publication",
+    "loadingContributions": "Chargement des contributions",
+    "loadingSubspaces": "Chargement des sous-espaces",
+    "loadingLeads": "Chargement des responsables de l'Espace",
+    "loadingTags": "Chargement des tags",
+    "loadingMembership": "Chargement du statut de membre"
   },
   "activity": {
     "dialogTitle": "Activité récente"

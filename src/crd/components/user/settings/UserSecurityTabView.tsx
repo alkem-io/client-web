@@ -1,4 +1,4 @@
-import { Info, KeyRound, Link2, Plug, ShieldAlert, ShieldCheck } from 'lucide-react';
+import { Info, KeyRound, Link2, Plug, ShieldAlert, ShieldCheck, Trash2 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
@@ -56,6 +56,15 @@ export type UserSecurityTabViewProps = {
    * renders whenever `state.kind === 'ready'` alongside the other cards.
    */
   connectedAccountsSection: ReactNode;
+  /**
+   * Slot for the Delete-account card (054). Provided by the integration page
+   * so the CRD view stays free of Apollo/GraphQL imports; the card owns its
+   * own pre-flight read and dialog state, so — like `connectedAccountsSection`
+   * — it renders in every branch (`loading`, `error`, `ready`), never only
+   * when the unrelated Kratos settings flow this tab otherwise gates on has
+   * finished loading (FR-001).
+   */
+  deleteAccountCard: ReactNode;
 };
 
 /**
@@ -69,8 +78,24 @@ export function UserSecurityTabView({
   webauthnForm,
   mcpApiKeysCard,
   connectedAccountsSection,
+  deleteAccountCard,
 }: UserSecurityTabViewProps) {
   const { t } = useTranslation(NS);
+
+  // The Delete-account card is self-contained — its own pre-flight read, its own dialogs — and has
+  // no dependency on the Kratos settings flow this tab otherwise gates on. It renders in every
+  // branch below, not just 'ready' (FR-001): the app-store-mandated deletion entry point must stay
+  // reachable even while an unrelated Kratos settings-flow failure or a slow initial load would
+  // otherwise hide it, exactly like `connectedAccountsSection` already does for the same reason.
+  const deleteAccountSection = (
+    <SettingsCard
+      icon={Trash2}
+      title={t('user.security.deleteAccount.title')}
+      description={t('user.security.deleteAccount.description')}
+    >
+      {deleteAccountCard}
+    </SettingsCard>
+  );
 
   if (state.kind === 'loading') {
     // The Connected Accounts card — and the outcome live region inside it — renders here too,
@@ -91,6 +116,7 @@ export function UserSecurityTabView({
           {connectedAccountsSection}
         </SettingsCard>
         <Skeleton className="h-64 w-full" />
+        {deleteAccountSection}
       </div>
     );
   }
@@ -150,6 +176,7 @@ export function UserSecurityTabView({
             <p>{t('user.security.errorDescription')}</p>
           </div>
         </SettingsCard>
+        {deleteAccountSection}
       </div>
     );
   }
@@ -200,6 +227,7 @@ export function UserSecurityTabView({
       >
         {mcpApiKeysCard}
       </SettingsCard>
+      {deleteAccountSection}
     </div>
   );
 }

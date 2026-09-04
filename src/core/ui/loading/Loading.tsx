@@ -1,16 +1,9 @@
-import { Loader2 } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { Loading as CrdLoading } from '@/crd/components/common/Loading';
 
-const Loading = ({ text }: { text?: string }) => {
-  const { t } = useTranslation();
-  const resolvedText = text ?? t('common.loading');
-
-  return (
-    <div className="flex grow items-center justify-center gap-4 h-full text-primary">
-      <Loader2 className="size-10 animate-spin" aria-hidden="true" />
-      <span className="text-xs font-medium uppercase leading-none">{resolvedText}</span>
-    </div>
-  );
-};
+/**
+ * Route-level loading fallback — the same `LoadingSpinner` every other loading state
+ * uses, grown to fill the main area between the header and the footer.
+ */
+const Loading = ({ text }: { text?: string }) => <CrdLoading text={text} className="grow" />;
 
 export default Loading;

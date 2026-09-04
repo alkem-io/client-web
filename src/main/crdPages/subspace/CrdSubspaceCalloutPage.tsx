@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toRoutePath } from '@/crd/lib/toRoutePath';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
@@ -17,11 +18,13 @@ export default function CrdSubspaceCalloutPage() {
   return (
     <>
       <CrdSubspaceCalloutsPage />
-      <CrdCalloutDialogFromUrl
-        onClose={() =>
-          navigate(toRoutePath(subspace?.about.profile.url), { replace: true, state: { keepScroll: true } })
-        }
-      />
+      <Suspense fallback={null}>
+        <CrdCalloutDialogFromUrl
+          onClose={() =>
+            navigate(toRoutePath(subspace?.about.profile.url), { replace: true, state: { keepScroll: true } })
+          }
+        />
+      </Suspense>
     </>
   );
 }

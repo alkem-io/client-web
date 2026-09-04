@@ -33,6 +33,18 @@
 
 html {
   height: 100%;
+  /* Reserve the scrollbar gutter even when the document does not overflow, so a loading
+     state taller than the settled page cannot toggle the scrollbar and shift every
+     centred element horizontally as it lands (issue #10043). */
+  scrollbar-gutter: stable;
+}
+
+/* react-remove-scroll-bar (behind every Radix Dialog / Sheet / DropdownMenu / Select) compensates
+   for the scrollbar it hides with a `margin-right` equal to the gap it measured. The gutter above
+   is kept under `overflow: hidden`, so nothing is removed and that margin alone would shift the
+   page on every overlay open. */
+html body[data-scroll-locked] {
+  margin-right: 0 !important;
 }
 
 body {

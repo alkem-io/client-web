@@ -40,6 +40,14 @@ describe('resolveSidebarPlan', () => {
     expect(resolveSidebarPlan(null)).toEqual([]);
     expect(resolveSidebarPlan(undefined)).toEqual([]);
   });
+
+  it('maps the search widget both directions (055)', () => {
+    expect(resolveSidebarPlan([SidebarWidget.Search])).toEqual(['search']);
+    expect(toWireSidebar(['search'])).toEqual([SidebarWidget.Search]);
+    const skips = deriveWidgetSkips(['search']);
+    expect(skips.search).toBe(false);
+    expect(skips.index).toBe(true);
+  });
 });
 
 describe('toWireSidebar', () => {

@@ -769,7 +769,7 @@
         },
         "PLATFORM_ADMIN_USER_PROFILE_REMOVED": {
           "description": "",
-          "subject": "{{userName}} ({{userEmail}}) is verwijderd van het platform"
+          "subject": "Een gebruikersprofiel is van het platform verwijderd"
         },
         "PLATFORM_ADMIN_USER_SIGNED_UP": {
           "description": "",
@@ -1399,6 +1399,12 @@
         "unavailableTitle": "$t(common.Whiteboard) niet beschikbaar"
       }
     }
+  },
+  "permissions": {
+    "checking": "Rechten controleren…",
+    "denied": "Je hebt geen rechten om de leden van deze rol te wijzigen.",
+    "errorDenied": "Je hebt geen rechten om deze wijziging te maken. De wijziging is niet opgeslagen.",
+    "unverifiable": "Rechten konden niet worden geverifieerd."
   },
   "pinned": "Vastgezet",
   "private": "Privé",

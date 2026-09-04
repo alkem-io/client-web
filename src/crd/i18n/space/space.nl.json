@@ -22,8 +22,8 @@
     "inactive": "Deze Space is momenteel inactief."
   },
   "knowledge": {
-    "searchPlaceholder": "Zoeken...",
-    "searchLabel": "Zoek in de kennisbank",
+    "searchPlaceholder": "Zoek posts...",
+    "searchLabel": "Posts zoeken",
     "noResults": "Geen resultaten",
     "search": {
       "emptyTitle": "Geen resultaten",
@@ -33,8 +33,17 @@
       "retry": "Opnieuw proberen",
       "loadingLabel": "Zoekresultaten laden",
       "appendingLabel": "Meer resultaten laden",
-      "removeTerm": "Term {{term}} verwijderen",
-      "removeTag": "Tag {{tag}} verwijderen"
+      "tagLabel_one": "tag",
+      "tagLabel_other": "tags",
+      "matchText_one": "<b>{{count}}</b> item gerelateerd aan <text></text>",
+      "matchText_other": "<b>{{count}}</b> items gerelateerd aan <text></text>",
+      "matchTextMore": "<b>{{count}}+</b> items gerelateerd aan <text></text>",
+      "matchTags_one": "<b>{{count}}</b> item gerelateerd aan {{tagLabel}} <tags></tags>",
+      "matchTags_other": "<b>{{count}}</b> items gerelateerd aan {{tagLabel}} <tags></tags>",
+      "matchTagsMore": "<b>{{count}}+</b> items gerelateerd aan {{tagLabel}} <tags></tags>",
+      "matchBoth_one": "<b>{{count}}</b> item gerelateerd aan <text></text> en {{tagLabel}} <tags></tags>",
+      "matchBoth_other": "<b>{{count}}</b> items gerelateerd aan <text></text> en {{tagLabel}} <tags></tags>",
+      "matchBothMore": "<b>{{count}}+</b> items gerelateerd aan <text></text> en {{tagLabel}} <tags></tags>"
     },
     "viewGrid": "Kaartweergave",
     "viewList": "Lijstweergave",
@@ -999,7 +1008,12 @@
     "mobileTabBar": "Tabbladnavigatie",
     "moreActionsDrawer": "Extra acties",
     "close": "Sluiten",
-    "loadingPost": "$t(common.callout) laden"
+    "loadingPost": "$t(common.callout) laden",
+    "loadingContributions": "Bijdragen laden",
+    "loadingSubspaces": "Subspaces laden",
+    "loadingLeads": "Space-Leads laden",
+    "loadingTags": "Tags laden",
+    "loadingMembership": "Lidmaatschapsstatus laden"
   },
   "activity": {
     "dialogTitle": "Recente activiteit"

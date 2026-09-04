@@ -1,3 +1,5 @@
+import type { ApolloError } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 import {
   useAssignPlatformRoleToUserMutation,
   useAssignRoleToOrganizationMutation,
@@ -10,6 +12,8 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import type { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 
 type useRoleSetManagerRolesAssignmentParams = {
   roleSetId: string | undefined;
@@ -28,6 +32,42 @@ export type useRoleSetManagerRolesAssignmentProvided = {
   loading: boolean;
 };
 
+const AUTHORIZATION_ERROR_CODES: string[] = [
+  AlkemioGraphqlErrorCode.FORBIDDEN,
+  AlkemioGraphqlErrorCode.FORBIDDEN_POLICY,
+];
+
+/**
+ * True when the rejection consists of NOTHING BUT authorization errors.
+ *
+ * Deliberately whole-response, not "contains an authorization error". The global link
+ * (`useErrorHandlerLink`) strips the authorization codes and forwards whatever remains to
+ * `useApolloErrorHandler`, so it stays silent only when the filtered list is empty. If a
+ * response mixes, say, FORBIDDEN with ENTITY_NOT_FOUND, the global handler already
+ * notifies for the latter — notifying here as well would give the user two toasts for one
+ * failure, which spec FR-006 forbids.
+ *
+ * The precedence is therefore: any non-authorization content in the response (a GraphQL
+ * error with another code, a network error, or a client error) hands ownership to the
+ * global handler and this wrapper says nothing.
+ */
+const isExclusivelyAuthorizationError = (error: unknown): boolean => {
+  const apolloError = error as ApolloError | undefined;
+  const graphQLErrors = apolloError?.graphQLErrors;
+
+  if (!graphQLErrors?.length) {
+    return false;
+  }
+
+  if (apolloError?.networkError || apolloError?.clientErrors?.length) {
+    return false;
+  }
+
+  return graphQLErrors.every(graphqlError =>
+    AUTHORIZATION_ERROR_CODES.includes(graphqlError.extensions?.code as string)
+  );
+};
+
 /**
  * Do not use this hook directly, normally you should use useRoleSetManager instead
  */
@@ -35,6 +75,9 @@ const useRoleSetManagerRolesAssignment = ({
   roleSetId,
   refetchRoleSetOnMutation = false,
 }: useRoleSetManagerRolesAssignmentParams): useRoleSetManagerRolesAssignmentProvided => {
+  const notify = useNotification();
+  const { t } = useTranslation('crd-common');
+
   const refetchQueries = (cache: Parameters<typeof evictFromCache>[0]) => {
     if (refetchRoleSetOnMutation && roleSetId) {
       evictFromCache(cache, roleSetId, 'RoleSet');
@@ -158,16 +201,41 @@ const useRoleSetManagerRolesAssignment = ({
     assignRoleToVirtualContributorLoading ||
     removeRoleFromVirtualContributorLoading;
 
+  /**
+   * Surfaces authorization failures that would otherwise be silent.
+   *
+   * Scoped deliberately to authorization codes only: every other failure class
+   * (validation, network, server) is already reported by the global error link,
+   * so notifying here as well would show the user two toasts for one failure.
+   * The rejection is always re-thrown so callers still see it.
+   */
+  const withPermissionErrorNotification =
+    <TArgs extends unknown[]>(run: (...args: TArgs) => Promise<unknown>) =>
+    async (...args: TArgs) => {
+      try {
+        return await run(...args);
+      } catch (error) {
+        if (isExclusivelyAuthorizationError(error)) {
+          notify(t('permissions.errorDenied'), 'error');
+        }
+        throw error;
+      }
+    };
+
   const notReady = () => Promise.reject('roleSetId is not defined');
   return {
-    assignPlatformRoleToUser: roleSetId ? assignPlatformRoleToUser : notReady,
-    removePlatformRoleFromUser: roleSetId ? removePlatformRoleFromUser : notReady,
-    assignRoleToUser: roleSetId ? assignRoleToUser : notReady,
-    removeRoleFromUser: roleSetId ? removeRoleFromUser : notReady,
-    assignRoleToOrganization: roleSetId ? assignRoleToOrganization : notReady,
-    removeRoleFromOrganization: roleSetId ? removeRoleFromOrganization : notReady,
-    assignRoleToVirtualContributor: roleSetId ? assignRoleToVirtualContributor : notReady,
-    removeRoleFromVirtualContributor: roleSetId ? removeRoleFromVirtualContributor : notReady,
+    assignPlatformRoleToUser: roleSetId ? withPermissionErrorNotification(assignPlatformRoleToUser) : notReady,
+    removePlatformRoleFromUser: roleSetId ? withPermissionErrorNotification(removePlatformRoleFromUser) : notReady,
+    assignRoleToUser: roleSetId ? withPermissionErrorNotification(assignRoleToUser) : notReady,
+    removeRoleFromUser: roleSetId ? withPermissionErrorNotification(removeRoleFromUser) : notReady,
+    assignRoleToOrganization: roleSetId ? withPermissionErrorNotification(assignRoleToOrganization) : notReady,
+    removeRoleFromOrganization: roleSetId ? withPermissionErrorNotification(removeRoleFromOrganization) : notReady,
+    assignRoleToVirtualContributor: roleSetId
+      ? withPermissionErrorNotification(assignRoleToVirtualContributor)
+      : notReady,
+    removeRoleFromVirtualContributor: roleSetId
+      ? withPermissionErrorNotification(removeRoleFromVirtualContributor)
+      : notReady,
     loading,
   };
 };

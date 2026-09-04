@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.161.0",
+  "version": "0.163.0",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "type": "module",
   "repository": {
@@ -20,7 +20,7 @@
     "build": "NODE_ENV=production node buildConfiguration && NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 vite build",
     "build:dev": "NODE_ENV=development node buildConfiguration && NODE_ENV=development NODE_OPTIONS=--max-old-space-size=8192 vite build --mode development",
     "build:sentry": "NODE_ENV=production node buildConfiguration && NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 vite -c vite.sentry.config.mjs build",
-    "codegen": "graphql-codegen --config codegen.yml",
+    "codegen": "graphql-codegen --require dotenv-flow/config --config codegen.yml",
     "crd:dev": "vite --config src/crd/app/vite.config.ts",
     "crd:build": "vite build --config src/crd/app/vite.config.ts",
     "format": "biome format --write .",

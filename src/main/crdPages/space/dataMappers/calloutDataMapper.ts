@@ -1,6 +1,6 @@
 import type { TFunction } from 'i18next';
 import {
-  type CalloutContributionType,
+  CalloutContributionType,
   CalloutFramingType,
   CollaboraDocumentType,
 } from '@/core/apollo/generated/graphql-schema';
@@ -8,6 +8,7 @@ import { isFileAttachmentUrl } from '@/core/utils/links';
 import type { CollaboraDocumentPreviewType } from '@/crd/components/callout/CalloutCollaboraPreview';
 import type { CalloutDetailDialogData } from '@/crd/components/callout/CalloutDetailDialog';
 import type { ReferencesAndTagsStripReference } from '@/crd/components/callout/ReferencesAndTagsStrip';
+import type { ContributionPreviewKind } from '@/crd/components/contribution/ContributionsPreviewSkeleton';
 import type { PostCardData, PostType } from '@/crd/components/space/PostCard';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import { mapLinkToCallToActionProps } from './callToActionDataMapper';
@@ -42,6 +43,19 @@ const FRAMING_TYPE_TO_POST_TYPE: Record<CalloutFramingType, PostType> = {
 
 function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
   return FRAMING_TYPE_TO_POST_TYPE[framingType] ?? 'text';
+}
+
+/** Maps a contribution type to the placeholder kind `ContributionsPreviewSkeleton` reserves space for. */
+const CONTRIBUTION_TYPE_TO_PREVIEW_KIND: Record<CalloutContributionType, ContributionPreviewKind> = {
+  [CalloutContributionType.Post]: 'post',
+  [CalloutContributionType.Whiteboard]: 'whiteboard',
+  [CalloutContributionType.Memo]: 'memo',
+  [CalloutContributionType.Link]: 'link',
+  [CalloutContributionType.CollaboraDocument]: 'document',
+};
+
+export function mapContributionTypeToPreviewKind(contributionType: CalloutContributionType): ContributionPreviewKind {
+  return CONTRIBUTION_TYPE_TO_PREVIEW_KIND[contributionType];
 }
 
 /**

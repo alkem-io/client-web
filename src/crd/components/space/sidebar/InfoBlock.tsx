@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
+import { Skeleton } from '@/crd/primitives/skeleton';
 
 export type LeadItem = {
   id: string;
@@ -18,6 +19,12 @@ export type LeadItem = {
 type InfoBlockProps = {
   description: string;
   leads?: LeadItem[];
+  /**
+   * True while the leads are still being fetched. When the block already renders (it has
+   * a description), holds the leads row's footprint (heading + one row) so it doesn't
+   * grow — and push every widget below it down — when they arrive.
+   */
+  leadsLoading?: boolean;
   onEditClick?: () => void;
   className?: string;
 };
@@ -39,7 +46,7 @@ const MARKDOWN_OVERRIDES = cn(
   '[&_a]:text-primary-foreground [&_a]:underline'
 );
 
-export function InfoBlock({ description, leads = [], onEditClick, className }: InfoBlockProps) {
+export function InfoBlock({ description, leads = [], leadsLoading = false, onEditClick, className }: InfoBlockProps) {
   const { t } = useTranslation('crd-space');
   const descriptionRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -55,7 +62,10 @@ export function InfoBlock({ description, leads = [], onEditClick, className }: I
     setIsOverflowing(el.scrollHeight > el.clientHeight + 1);
   }, [description, isExpanded]);
 
+  // Never mount the block just for the placeholder: with no description, an empty leads
+  // result would unmount it again — a bigger jump than the one the placeholder prevents.
   if (!description && leads.length === 0) return null;
+  const showLeadsPlaceholder = leads.length === 0 && leadsLoading;
 
   const leadHeading = leads.length === 1 ? t('sidebar.spaceLead') : t('sidebar.spaceLeads');
 
@@ -80,6 +90,19 @@ export function InfoBlock({ description, leads = [], onEditClick, className }: I
             </button>
           )}
         </>
+      )}
+
+      {showLeadsPlaceholder && (
+        <output
+          className={cn('block pt-3 border-t border-white/15', description && 'mt-3')}
+          aria-label={t('a11y.loadingLeads')}
+        >
+          <Skeleton className="mb-2 h-3 w-20 bg-white/15" />
+          <div className="flex items-center gap-3">
+            <Skeleton className="size-8 shrink-0 rounded-full bg-white/15" />
+            <Skeleton className="h-4 w-28 bg-white/15" />
+          </div>
+        </output>
       )}
 
       {leads.length > 0 && (

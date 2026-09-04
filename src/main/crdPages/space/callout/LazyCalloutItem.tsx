@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
@@ -73,15 +73,22 @@ export function LazyCalloutItem({
   return (
     <div ref={ref} id={calloutId}>
       {inView && !loading && callout ? (
-        <LazyCalloutItemContent
-          callout={callout}
-          calloutsSetId={calloutsSetId}
-          orderedCalloutIds={orderedCalloutIds}
-          canReorder={canReorder}
-          forceDescriptionCollapsed={forceDescriptionCollapsed}
-          onClick={onClick}
-          onExpandClick={onExpandClick}
-        />
+        /* Own Suspense boundary: the card subtree pulls in lazily-loaded i18n namespaces
+           (crd-reactions, crd-taskBoard) and chunks. Without a boundary here the first
+           card to mount suspends up to the tab-level boundary, which swaps the ENTIRE
+           feed for a spinner for a frame — the biggest single layout jump on the page
+           (issue #10043). The fallback is the same skeleton, so nothing moves. */
+        <Suspense fallback={<PostCardSkeleton />}>
+          <LazyCalloutItemContent
+            callout={callout}
+            calloutsSetId={calloutsSetId}
+            orderedCalloutIds={orderedCalloutIds}
+            canReorder={canReorder}
+            forceDescriptionCollapsed={forceDescriptionCollapsed}
+            onClick={onClick}
+            onExpandClick={onExpandClick}
+          />
+        </Suspense>
       ) : (
         <PostCardSkeleton />
       )}

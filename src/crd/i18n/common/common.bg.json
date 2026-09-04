@@ -769,7 +769,7 @@
         },
         "PLATFORM_ADMIN_USER_PROFILE_REMOVED": {
           "description": "",
-          "subject": "{{userName}} ({{userEmail}}) е премахнат от платформата"
+          "subject": "Потребителски профил беше премахнат от платформата"
         },
         "PLATFORM_ADMIN_USER_SIGNED_UP": {
           "description": "",
@@ -1399,6 +1399,12 @@
         "unavailableTitle": "$t(common.Whiteboard) не е достъпна"
       }
     }
+  },
+  "permissions": {
+    "checking": "Проверка на правата…",
+    "denied": "Нямате права да променяте членовете на тази роля.",
+    "errorDenied": "Нямате права да направите тази промяна. Промяната не беше запазена.",
+    "unverifiable": "Правата не можаха да бъдат проверени."
   },
   "pinned": "Закрепено",
   "private": "Частно",

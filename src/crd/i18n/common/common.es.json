@@ -769,7 +769,7 @@
         },
         "PLATFORM_ADMIN_USER_PROFILE_REMOVED": {
           "description": "",
-          "subject": "{{userName}} ({{userEmail}}) ha sido eliminado/a de la plataforma"
+          "subject": "Se ha eliminado un perfil de usuario de la plataforma"
         },
         "PLATFORM_ADMIN_USER_SIGNED_UP": {
           "description": "",
@@ -1399,6 +1399,12 @@
         "unavailableTitle": "$t(common.Whiteboard) no disponible"
       }
     }
+  },
+  "permissions": {
+    "checking": "Comprobando permisos…",
+    "denied": "No tienes permiso para cambiar los miembros de este rol.",
+    "errorDenied": "No tienes permiso para realizar este cambio. El cambio no se ha guardado.",
+    "unverifiable": "No se han podido verificar los permisos."
   },
   "pinned": "Fijado",
   "private": "Privado",
