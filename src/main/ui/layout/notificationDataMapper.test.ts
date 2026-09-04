@@ -2,6 +2,7 @@ import type { TFunction } from 'i18next';
 import type { ReactElement } from 'react';
 import { describe, expect, it } from 'vitest';
 import {
+  ActorType,
   CalendarEventType,
   NotificationEvent,
   NotificationEventCategory,
@@ -136,7 +137,7 @@ describe('resolved notification destinations', () => {
         {
           type: NotificationEventPayload.SpaceCommunityActor,
           space: spacePayload('/my-space'),
-          actor: { type: undefined, profile: { displayName: 'Acme Org', url: '/organization/acme' } },
+          actor: { type: ActorType.Organization, profile: { displayName: 'Acme Org', url: '/organization/acme' } },
         },
         NotificationEventCategory.SpaceAdmin
       )
@@ -152,13 +153,64 @@ describe('resolved notification destinations', () => {
         {
           type: NotificationEventPayload.SpaceCommunityActor,
           space: spacePayload('/my-space'),
-          actor: { type: undefined, profile: { displayName: 'Acme Org', url: '/organization/acme' } },
+          actor: { type: ActorType.Organization, profile: { displayName: 'Acme Org', url: '/organization/acme' } },
         },
         NotificationEventCategory.SpaceAdmin
       )
     );
 
     expect(href).toBe('/my-space/settings/community');
+  });
+});
+
+describe('organization outcome notifications name the organization (061, spec-cw-5)', () => {
+  const outcomeNotification = (type: NotificationEvent) =>
+    notification(
+      type,
+      {
+        type: NotificationEventPayload.SpaceCommunityActor,
+        space: spacePayload('/my-space'),
+        actor: { type: ActorType.Organization, profile: { displayName: 'Acme Org', url: '/organization/acme' } },
+      },
+      NotificationEventCategory.SpaceAdmin
+    );
+
+  it('names the organization on the accepted notification, not just the space', () => {
+    const data = mapNotificationToItemData(
+      outcomeNotification(NotificationEvent.SpaceAdminOrganizationCommunityInvitationAccepted),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.organizationName).toBe('Acme Org');
+  });
+
+  it('names the organization on the declined notification, not just the space', () => {
+    const data = mapNotificationToItemData(
+      outcomeNotification(NotificationEvent.SpaceAdminOrganizationCommunityInvitationDeclined),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.organizationName).toBe('Acme Org');
+  });
+
+  it('does not name an organization when the actor is not one (e.g. new-member notification sharing the same payload)', () => {
+    const data = mapNotificationToItemData(
+      notification(
+        NotificationEvent.SpaceAdminCommunityNewMember,
+        {
+          type: NotificationEventPayload.SpaceCommunityActor,
+          space: spacePayload('/my-space'),
+          actor: { type: ActorType.User, profile: { displayName: 'Ada Lovelace', url: '/user/ada' } },
+        },
+        NotificationEventCategory.SpaceAdmin
+      ),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.organizationName).toBeUndefined();
   });
 });
 

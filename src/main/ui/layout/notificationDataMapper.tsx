@@ -15,6 +15,7 @@
 import type { TFunction } from 'i18next';
 import { Trans } from 'react-i18next';
 import {
+  ActorType,
   type ForumDiscussionCategory,
   NotificationEvent,
   type NotificationEventInAppState,
@@ -54,7 +55,13 @@ function buildTranslationValues(
     triggeredByName: triggeredBy.profile.displayName,
     spaceName: payload.space?.about?.profile?.displayName,
     calloutName: payload.callout?.framing?.profile?.displayName,
-    organizationName: payload.organization?.profile?.displayName,
+    // organizationName: the organization payload field is present only on events that carry a
+    // dedicated `organization` relation (e.g. the org-invited event); the org-accepted/declined
+    // events instead carry the organization as the generic SpaceCommunityActor `actor`, so fall
+    // back to the actor's display name when it is typed as an organization.
+    organizationName:
+      payload.organization?.profile?.displayName ??
+      (payload.actor?.type === ActorType.Organization ? payload.actor.profile?.displayName : undefined),
     userName: payload.user?.profile?.displayName ?? payload.actor?.profile?.displayName,
     comment:
       payload.comment ??
