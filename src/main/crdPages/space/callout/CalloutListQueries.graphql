@@ -10,11 +10,11 @@
 #   - CalloutsListForFeed  → eager, drives the feed's ordered skeleton list.
 #   - CalloutsIndexList     → lazy, fired only when the Post Index dialog opens.
 
-# Feed: the ordered id list plus the few scalars the card skeleton needs to
-# reserve its loaded footprint (issue #10043 — layout jump). No profile, no
-# descriptions, no classification, no authorization — the feed lazy-loads each
-# card's content on scroll-into-view. Reorder/create privileges come from the
-# separate `useCalloutsSetAuthorization` query, so they are not re-fetched here.
+# Feed: just the ordered id list. No framing, no classification, no
+# descriptions, no authorization — the feed reads only id + sortOrder and
+# lazy-loads each card's content on scroll-into-view. Reorder/create privileges
+# come from the separate `useCalloutsSetAuthorization` query, so they are not
+# re-fetched here.
 query CalloutsListForFeed($calloutsSetId: UUID!, $classificationTagsets: [TagsetArgs!] = []) {
   lookup {
     calloutsSet(ID: $calloutsSetId) {
@@ -22,27 +22,6 @@ query CalloutsListForFeed($calloutsSetId: UUID!, $classificationTagsets: [Tagset
       callouts(classificationTagsets: $classificationTagsets) {
         id
         sortOrder
-        # Skeleton shape hints: framing type → framing preview block, allowedTypes +
-        # contributionsCount → contributions grid (one grouped DB count per callout).
-        # Deliberately NOT `activity`: for comment-only callouts the server resolves it
-        # with an unbatched Matrix room fetch per callout, and this query gates the
-        # feed's first paint.
-        framing {
-          id
-          type
-        }
-        settings {
-          contribution {
-            allowedTypes
-          }
-        }
-        contributionsCount {
-          post
-          link
-          whiteboard
-          memo
-          collaboraDocument
-        }
       }
     }
   }

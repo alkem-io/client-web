@@ -1,9 +1,4 @@
 import { useCalloutsListForFeedQuery } from '@/core/apollo/generated/apollo-hooks';
-import {
-  type CalloutContributionsCountOutput,
-  CalloutContributionType,
-  type CalloutFramingType,
-} from '@/core/apollo/generated/graphql-schema';
 import { useCalloutsSetAuthorization } from '@/domain/collaboration/calloutsSet/authorization/useCalloutsSetAuthorization';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
@@ -13,32 +8,9 @@ type UseCrdCalloutListParams = {
   skip?: boolean;
 };
 
-/**
- * The feed needs each callout's id + sort order — every card lazy-fetches its own
- * content via CalloutDetails on scroll-into-view — plus the shape hints its loading
- * placeholder uses to reserve the card's footprint (framing type, contribution type).
- * The hints are optional so the heavier `CalloutModelLight` (subspace / knowledge-base
- * feeds) satisfies this shape as-is.
- */
-export type CrdFeedCallout = {
-  id: string;
-  sortOrder: number;
-  /** Contribution count for the placeholder grid — the feeds built on `CalloutModelLight` carry `activity`. */
-  activity?: number;
-  framing?: { type: CalloutFramingType };
-  settings?: { contribution?: { allowedTypes?: CalloutContributionType[] } };
-};
-
-const contributionsCountKey: Record<
-  CalloutContributionType,
-  Exclude<keyof CalloutContributionsCountOutput, '__typename'>
-> = {
-  [CalloutContributionType.Post]: 'post',
-  [CalloutContributionType.Link]: 'link',
-  [CalloutContributionType.Whiteboard]: 'whiteboard',
-  [CalloutContributionType.Memo]: 'memo',
-  [CalloutContributionType.CollaboraDocument]: 'collaboraDocument',
-};
+/** The feed only needs each callout's id + sort order — every card lazy-fetches
+ *  its own content via CalloutDetails on scroll-into-view. */
+export type CrdFeedCallout = { id: string; sortOrder: number };
 
 export function useCrdCalloutList({ tabPosition, skip }: UseCrdCalloutListParams) {
   const {
@@ -57,8 +29,8 @@ export function useCrdCalloutList({ tabPosition, skip }: UseCrdCalloutListParams
     loading: authLoading,
   } = useCalloutsSetAuthorization({ calloutsSetId, skip });
 
-  // Lean list query (feature 007): id + sortOrder + skeleton shape hints. Replaces
-  // the heavy `CalloutsOnCalloutsSetUsingClassification`, whose framing/classification
+  // Lean list query (feature 007): id + sortOrder only. Replaces the heavy
+  // `CalloutsOnCalloutsSetUsingClassification`, whose framing/classification
   // payload is now fetched lazily by the Post Index dialog instead.
   const { data, loading: feedLoading } = useCalloutsListForFeedQuery({
     variables: {
@@ -70,11 +42,7 @@ export function useCrdCalloutList({ tabPosition, skip }: UseCrdCalloutListParams
     skip: skip || !calloutsSetId,
   });
 
-  // The placeholder reserves one grid cell per contribution of the callout's (single) allowed type.
-  const callouts: CrdFeedCallout[] = (data?.lookup.calloutsSet?.callouts ?? []).map(callout => {
-    const type = callout.settings.contribution.allowedTypes[0];
-    return { ...callout, activity: type ? callout.contributionsCount[contributionsCountKey[type]] : undefined };
-  });
+  const callouts: CrdFeedCallout[] = data?.lookup.calloutsSet?.callouts ?? [];
 
   return {
     callouts,

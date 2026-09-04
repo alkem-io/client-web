@@ -15,12 +15,7 @@ import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/us
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
-import {
-  getCalloutContributionType,
-  mapCalloutDetailsToPostCard,
-  mapContributionTypeToPreviewKind,
-  mapFramingTypeToPostType,
-} from '../dataMappers/calloutDataMapper';
+import { getCalloutContributionType, mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
 import { useCrdCalloutMoveActions } from '../hooks/useCrdCalloutMoveActions';
 import { useFlowStateLayout } from '../hooks/useFlowStateLayout';
 import { useMediaGalleryDirectUpload } from '../hooks/useMediaGalleryDirectUpload';
@@ -51,14 +46,6 @@ type LazyCalloutItemProps = {
    * compact regardless of how the tab is configured to browse.
    */
   forceDescriptionCollapsed?: boolean;
-  /**
-   * Skeleton shape hints, known from the feed list before this card's details
-   * query resolves — the placeholder reserves the framing preview + contributions
-   * grid footprint so the feed doesn't jump when the card lands (issue #10043).
-   */
-  framingType?: CalloutFramingType;
-  contributionType?: CalloutContributionType;
-  contributionCount?: number;
   onClick?: () => void;
   onExpandClick?: () => void;
 };
@@ -69,9 +56,6 @@ export function LazyCalloutItem({
   orderedCalloutIds = [],
   canReorder = false,
   forceDescriptionCollapsed = false,
-  framingType,
-  contributionType,
-  contributionCount,
   onClick,
   onExpandClick,
 }: LazyCalloutItemProps) {
@@ -86,17 +70,6 @@ export function LazyCalloutItem({
     withClassification: true,
   });
 
-  const skeleton = (
-    <PostCardSkeleton
-      type={framingType ? mapFramingTypeToPostType(framingType) : undefined}
-      contributions={
-        contributionType
-          ? { kind: mapContributionTypeToPreviewKind(contributionType), count: contributionCount }
-          : undefined
-      }
-    />
-  );
-
   return (
     <div ref={ref} id={calloutId}>
       {inView && !loading && callout ? (
@@ -105,7 +78,7 @@ export function LazyCalloutItem({
            card to mount suspends up to the tab-level boundary, which swaps the ENTIRE
            feed for a spinner for a frame — the biggest single layout jump on the page
            (issue #10043). The fallback is the same skeleton, so nothing moves. */
-        <Suspense fallback={skeleton}>
+        <Suspense fallback={<PostCardSkeleton />}>
           <LazyCalloutItemContent
             callout={callout}
             calloutsSetId={calloutsSetId}
@@ -117,7 +90,7 @@ export function LazyCalloutItem({
           />
         </Suspense>
       ) : (
-        skeleton
+        <PostCardSkeleton />
       )}
     </div>
   );

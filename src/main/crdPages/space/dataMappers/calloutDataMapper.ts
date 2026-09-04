@@ -41,7 +41,7 @@ const FRAMING_TYPE_TO_POST_TYPE: Record<CalloutFramingType, PostType> = {
   [CalloutFramingType.Spaces]: 'spaces',
 };
 
-export function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
+function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
   return FRAMING_TYPE_TO_POST_TYPE[framingType] ?? 'text';
 }
 

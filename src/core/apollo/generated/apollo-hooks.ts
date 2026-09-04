@@ -29700,22 +29700,6 @@ export const CalloutsListForFeedDocument = gql`
       callouts(classificationTagsets: $classificationTagsets) {
         id
         sortOrder
-        framing {
-          id
-          type
-        }
-        settings {
-          contribution {
-            allowedTypes
-          }
-        }
-        contributionsCount {
-          post
-          link
-          whiteboard
-          memo
-          collaboraDocument
-        }
       }
     }
   }

@@ -37784,27 +37784,7 @@ export type CalloutsListForFeedQuery = {
       | {
           __typename?: 'CalloutsSet';
           id: string;
-          callouts: Array<{
-            __typename?: 'Callout';
-            id: string;
-            sortOrder: number;
-            framing: { __typename?: 'CalloutFraming'; id: string; type: CalloutFramingType };
-            settings: {
-              __typename?: 'CalloutSettings';
-              contribution: {
-                __typename?: 'CalloutSettingsContribution';
-                allowedTypes: Array<CalloutContributionType>;
-              };
-            };
-            contributionsCount: {
-              __typename?: 'CalloutContributionsCountOutput';
-              post: number;
-              link: number;
-              whiteboard: number;
-              memo: number;
-              collaboraDocument: number;
-            };
-          }>;
+          callouts: Array<{ __typename?: 'Callout'; id: string; sortOrder: number }>;
         }
       | undefined;
   };
