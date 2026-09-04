@@ -22,6 +22,7 @@ import type { ContributorSelectorInvitee, ContributorSelectorUserResult } from '
 import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
 import type InvitationResultModel from '@/domain/access/model/InvitationResultModel';
+import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
 import { InvitationState } from '@/domain/community/invitations/InvitationApplicationConstants';
 import emailParser from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/emailParser';
 import { useContributors } from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/useContributors';
@@ -287,7 +288,20 @@ export function InviteMembersDialogConnector({
     });
 
   // ---------- organization candidates (D12) ----------
-  const { findAvailableOrganizationsForRoleSet } = useRoleSetAvailableContributors({ roleSetId });
+  // Current member/lead organizations of this space are excluded from the search
+  // results client-side (the server still rejects a duplicate as a safety net).
+  // Fetched narrowly (organizations only, no role definitions) rather than via the
+  // heavier useCommunityAdmin, and skipped entirely outside the organization kind.
+  const { organizations: currentMemberOrganizations } = useRoleSetManager({
+    roleSetId: kind === 'organization' ? roleSetId : undefined,
+    relevantRoles: RELEVANT_ROLES.Community,
+    contributorTypes: [ActorType.Organization],
+    fetchContributors: true,
+  });
+  const { findAvailableOrganizationsForRoleSet } = useRoleSetAvailableContributors({
+    roleSetId,
+    filterCurrentMembers: currentMemberOrganizations,
+  });
   const [orgCandidates, setOrgCandidates] = useState<ContributorSelectorUserResult[]>([]);
   const [orgLoading, setOrgLoading] = useState(false);
   // Organizations with an already-open invitation (`invited` state) are excluded — sending
