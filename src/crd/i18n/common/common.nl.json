@@ -359,13 +359,15 @@
         "CHALLENGE_CENTRIC": "Opgavegericht werken",
         "COMMUNITY_BUILDING": "$t(common.Community) Building",
         "GENERAL": "Algemeen",
-        "HELP": "Hulp nodig?",
+        "HELP": "Q&A",
         "IDEAS": "Ideeën",
+        "NEWSLETTER": "Nieuwsbrief",
         "OTHER": "Overig",
         "PLATFORM_FUNCTIONALITIES": "Platform Functionaliteiten",
         "QUESTIONS": "Vragen",
         "RELEASES": "Releases",
-        "SHARING": "Delen"
+        "SHARING": "Delen",
+        "TIPS_AND_TRICKS": "Tips & Trucs"
       },
       "edit-mode": {
         "edit": "Pas aan",

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { usePlatformDiscussionsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { ForumDiscussionList } from '@/crd/components/forum/ForumDiscussionList';
@@ -20,7 +20,11 @@ import {
   ForumDiscussionFormConnector,
   type ForumDiscussionFormState,
 } from '@/main/crdPages/topLevelPages/forum/ForumDiscussionFormConnector';
-import { buildMetaLine, mapDiscussionsToListData } from '@/main/crdPages/topLevelPages/forum/forumDataMapper';
+import {
+  buildMetaLine,
+  discussionCreationCategoriesFor,
+  mapDiscussionsToListData,
+} from '@/main/crdPages/topLevelPages/forum/forumDataMapper';
 import { ALL_SLUG, categoryFor } from '@/main/crdPages/topLevelPages/forum/useCategorySlug';
 import { useForumSubscription } from '@/main/crdPages/topLevelPages/forum/useForumSubscription';
 
@@ -34,7 +38,6 @@ const CrdForumPage = () => {
 
   const params = useParams<{ categorySlug?: string }>();
   const slugFromUrl = params.categorySlug ?? ALL_SLUG;
-  const activeCategory = categoryFor(slugFromUrl);
 
   const { data, loading: loadingDiscussions, subscribeToMore } = usePlatformDiscussionsQuery();
   // @ts-expect-error react-18 / subscribeToMore generic mismatch (matches legacy MUI pattern)
@@ -46,12 +49,17 @@ const CrdForumPage = () => {
 
   const isPlatformAdmin = platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;
 
-  // Non-admins can't create "Releases" discussions — that's reserved for the
-  // Alkemio team's release-notes posts. Matches the legacy MUI ForumPage logic.
+  // Non-admins can't create posts in the outbound editorial categories
+  // (Releases, Newsletter) — those speak in the platform's voice. The server
+  // is the actual control; this filter is UX only.
   const validCategories = data?.platform.forum.discussionCategories ?? [];
-  const discussionCreationCategories = isPlatformAdmin
-    ? validCategories
-    : validCategories.filter(category => category !== ForumDiscussionCategory.Releases);
+  const discussionCreationCategories = discussionCreationCategoriesFor(validCategories, isPlatformAdmin);
+
+  // Resolve the URL slug against the active list the server actually sent, not
+  // just the categories this build was compiled against — otherwise a category
+  // the server knows and this client doesn't resolves to `undefined` and the
+  // filter below degrades into "show every discussion" on that category's page.
+  const activeCategory = categoryFor(slugFromUrl, validCategories);
 
   const forumId = data?.platform.forum.id;
 
