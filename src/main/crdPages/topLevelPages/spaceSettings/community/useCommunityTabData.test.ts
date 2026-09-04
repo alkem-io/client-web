@@ -115,13 +115,32 @@ describe('useCommunityTabData — organization invitations (T009)', () => {
     expect(result.current.pendingOrganizationInvitations[0].role).toBe('memberLead');
   });
 
-  it('a non-invited-state organization invitation cannot be revoked', () => {
+  it('an accepting-state organization invitation is listed but cannot be revoked', () => {
     vi.mocked(useCommunityAdmin).mockReturnValue(
       baseAdmin([orgInvitation({ state: 'accepting' })]) as ReturnType<typeof useCommunityAdmin>
     );
     const { result } = renderHook(() => useCommunityTabData('rs1'));
 
+    expect(result.current.pendingOrganizationInvitations).toHaveLength(1);
     expect(result.current.pendingOrganizationInvitations[0].canRevoke).toBe(false);
+  });
+
+  it('excludes an accepted organization invitation from pendingOrganizationInvitations', () => {
+    vi.mocked(useCommunityAdmin).mockReturnValue(
+      baseAdmin([orgInvitation({ state: 'accepted' })]) as ReturnType<typeof useCommunityAdmin>
+    );
+    const { result } = renderHook(() => useCommunityTabData('rs1'));
+
+    expect(result.current.pendingOrganizationInvitations).toHaveLength(0);
+  });
+
+  it('excludes a rejected organization invitation from pendingOrganizationInvitations', () => {
+    vi.mocked(useCommunityAdmin).mockReturnValue(
+      baseAdmin([orgInvitation({ state: 'rejected' })]) as ReturnType<typeof useCommunityAdmin>
+    );
+    const { result } = renderHook(() => useCommunityTabData('rs1'));
+
+    expect(result.current.pendingOrganizationInvitations).toHaveLength(0);
   });
 
   it('onOrgInvitationRevoke delegates to membershipAdmin.onDeleteInvitation', () => {

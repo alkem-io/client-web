@@ -219,7 +219,15 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     .filter((x): x is PendingMembership => x !== null);
 
   const pendingOrganizationInvitations: PendingOrganizationInvitationRow[] = community.membershipAdmin.invitations
-    .filter(inv => inv.contributorType === ActorType.Organization)
+    .filter(
+      inv =>
+        inv.contributorType === ActorType.Organization &&
+        // Open invitations only — 'invited' (actionable) and the brief
+        // in-flight 'accepting' state; an 'accepted'/'rejected' invitation is
+        // final (the row is never deleted server-side) and must stop being
+        // presented as outstanding once its lifecycle resolves.
+        (inv.state === InvitationState.INVITED || inv.state === 'accepting')
+    )
     .map(inv => ({
       id: inv.id,
       organizationDisplayName: inv.actor.profile?.displayName ?? '',
