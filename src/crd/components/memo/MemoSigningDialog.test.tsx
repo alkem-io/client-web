@@ -87,7 +87,7 @@ describe('MemoSigningDialog', () => {
     renderDialog({
       stage: 'idle',
       onClose,
-      signatures: [{ id: 'pending-1', updatedDate: '2026-09-05T10:30:00.000Z' }],
+      signatures: [{ id: 'pending-1', updatedDate: '2026-09-05T10:30:00.000Z', recordedAt: '' }],
     });
 
     expect(screen.getByRole('heading', { level: 2, name: 'Signed copies' })).toBeInTheDocument();
@@ -104,7 +104,7 @@ describe('MemoSigningDialog', () => {
     ['failed', 'The PDF could not be signed'],
     ['expired', 'This signing attempt expired'],
     ['prepare-error', 'The exact memo copy could not be prepared'],
-    ['continue-error', 'The signing session could not be started'],
+    ['continue-error', 'The signing session could not be started. Prepare a fresh copy and try again.'],
     ['return-error', 'The signing result could not be loaded'],
   ] as const)('renders the %s server outcome', (stage, message) => {
     renderDialog({ stage });
@@ -121,18 +121,23 @@ describe('MemoSigningDialog', () => {
           document: { url: '/api/private/file-1' },
           actor: { profile: { displayName: 'Alice Example', url: '/user/alice' } },
           updatedDate: '2026-09-05T10:30:00.000Z',
+          recordedAt: '09/05/2026, 10:30:00',
         },
         {
           id: 'attempt-2',
           document: { url: '/api/private/file-2' },
+          actor: { profile: { displayName: 'Former member', url: '' } },
           updatedDate: '2026-09-05T11:30:00.000Z',
+          recordedAt: '09/05/2026, 11:30:00',
         },
       ],
     });
 
     expect(screen.getAllByRole('listitem')).toHaveLength(2);
     expect(screen.getByRole('link', { name: 'Alice Example' })).toHaveAttribute('href', '/user/alice');
-    expect(screen.getByText('Deleted user')).toBeInTheDocument();
+    expect(screen.getByText('Former member')).toBeInTheDocument();
+    expect(screen.getAllByText(/Recorded:/)).toHaveLength(2);
+    expect(screen.getByText('09/05/2026, 10:30:00')).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: 'Download signed PDF' })).toHaveLength(2);
     expect(
       screen.getByText('Downloaded PDFs can be independently verified with standard PDF tools.')

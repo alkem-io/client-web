@@ -26,6 +26,8 @@ import { CollaborativeMarkdownEditor } from '@/crd/forms/markdown/CollaborativeM
 import type { CollabProviderLike, YDocLike } from '@/crd/forms/markdown/collabProviderTypes';
 import { htmlToMarkdown } from '@/crd/forms/markdown/markdownConverter';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
+import { formatAbsoluteDateTime } from '@/crd/lib/dateTimeFormat';
 import { Button } from '@/crd/primitives/button';
 import useMemoManager from '@/domain/collaboration/memo/MemoManager/useMemoManager';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -60,7 +62,7 @@ export const canStartMemoSigning = (privileges: AuthorizationPrivilege[]) =>
   privileges.includes(AuthorizationPrivilege.Contribute);
 
 export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, onDelete }: CrdMemoDialogProps) {
-  const { t } = useTranslation('crd-space');
+  const { t, i18n } = useTranslation('crd-space');
   const { t: tCommon } = useTranslation('crd-common');
   useRegisterFullscreenEditor(open);
   const client = useApolloClient();
@@ -111,7 +113,9 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const [closeBlocked, setCloseBlocked] = useState(false);
   const [closeFinalizing, setCloseFinalizing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [returnAttemptId] = useState(() => new URLSearchParams(globalThis.location.search).get('signingAttemptId'));
+  const [returnAttemptId, setReturnAttemptId] = useState(() =>
+    new URLSearchParams(globalThis.location.search).get('signingAttemptId')
+  );
   const [signingDialogOpen, setSigningDialogOpen] = useState(Boolean(returnAttemptId));
   const closeInFlight = useRef(false);
 
@@ -137,13 +141,32 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     },
     navigate: url => globalThis.location.assign(url),
   });
-  const signingStage = returnAttemptId
-    ? returnAttempt.loading
-      ? 'checking'
-      : returnAttempt.error || !returnAttempt.data
-        ? 'return-error'
-        : (returnAttempt.data.signingAttempt.status.toLowerCase() as typeof signingFlow.stage)
-    : signingFlow.stage;
+  const signingStage =
+    signingFlow.stage !== 'idle'
+      ? signingFlow.stage
+      : returnAttemptId
+        ? returnAttempt.loading
+          ? 'checking'
+          : returnAttempt.error || !returnAttempt.data
+            ? 'return-error'
+            : (returnAttempt.data.signingAttempt.status.toLowerCase() as typeof signingFlow.stage)
+        : signingFlow.stage;
+  const clearSigningReturn = () => {
+    if (!returnAttemptId) return;
+    const search = new URLSearchParams(globalThis.location.search);
+    search.delete('signingAttemptId');
+    const query = search.toString();
+    globalThis.history.replaceState(
+      globalThis.history.state,
+      '',
+      `${globalThis.location.pathname}${query ? `?${query}` : ''}${globalThis.location.hash}`
+    );
+    setReturnAttemptId(null);
+  };
+  const signatures = (memo?.signatures ?? []).map(signature => ({
+    ...signature,
+    recordedAt: formatAbsoluteDateTime(signature.updatedDate, resolveDateFnsLocale(i18n.language)) ?? '',
+  }));
 
   const privileges = memo?.authorization?.myPrivileges ?? [];
   const hasUpdatePrivileges = privileges.includes(AuthorizationPrivilege.Update);
@@ -297,10 +320,13 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
           type="button"
           variant="outline"
           size="sm"
-          disabled={hasContributePrivileges && !provider}
+          disabled={(hasContributePrivileges && !provider) || signingFlow.stage === 'preparing'}
           onClick={() => {
             setSigningDialogOpen(true);
-            if (hasContributePrivileges) void signingFlow.prepare();
+            if (hasContributePrivileges) {
+              clearSigningReturn();
+              void signingFlow.prepare();
+            }
           }}
         >
           <FileSignature aria-hidden="true" />
@@ -402,9 +428,12 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
         open={signingDialogOpen}
         stage={signingStage}
         previewUrl={signingFlow.attempt?.previewUrl}
-        signatures={memo?.signatures ?? []}
+        signatures={signatures}
         onContinue={() => void signingFlow.continueSigning()}
-        onClose={() => setSigningDialogOpen(false)}
+        onClose={() => {
+          clearSigningReturn();
+          setSigningDialogOpen(false);
+        }}
       />
     </>
   );

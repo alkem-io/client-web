@@ -15398,20 +15398,6 @@ export type UpdateCalloutContentMutation = {
                     | undefined;
                 }
               | undefined;
-            signatures: Array<{
-              __typename?: 'MemoSignature';
-              id: string;
-              status: SigningAttemptStatus;
-              updatedDate: Date;
-              actor?:
-                | {
-                    __typename?: 'User';
-                    id: string;
-                    profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
-                  }
-                | undefined;
-              document?: { __typename?: 'Document'; id: string; url: string } | undefined;
-            }>;
           }
         | undefined;
       link?:
@@ -15904,20 +15890,6 @@ export type UpdateCalloutVisibilityMutation = {
                     | undefined;
                 }
               | undefined;
-            signatures: Array<{
-              __typename?: 'MemoSignature';
-              id: string;
-              status: SigningAttemptStatus;
-              updatedDate: Date;
-              actor?:
-                | {
-                    __typename?: 'User';
-                    id: string;
-                    profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
-                  }
-                | undefined;
-              document?: { __typename?: 'Document'; id: string; url: string } | undefined;
-            }>;
           }
         | undefined;
       link?:
@@ -16880,20 +16852,6 @@ export type CreateMemoOnCalloutMutation = {
                   | undefined;
               }
             | undefined;
-          signatures: Array<{
-            __typename?: 'MemoSignature';
-            id: string;
-            status: SigningAttemptStatus;
-            updatedDate: Date;
-            actor?:
-              | {
-                  __typename?: 'User';
-                  id: string;
-                  profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
-                }
-              | undefined;
-            document?: { __typename?: 'Document'; id: string; url: string } | undefined;
-          }>;
         }
       | undefined;
   };
@@ -17814,20 +17772,6 @@ export type CreateCalloutMutation = {
                     | undefined;
                 }
               | undefined;
-            signatures: Array<{
-              __typename?: 'MemoSignature';
-              id: string;
-              status: SigningAttemptStatus;
-              updatedDate: Date;
-              actor?:
-                | {
-                    __typename?: 'User';
-                    id: string;
-                    profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
-                  }
-                | undefined;
-              document?: { __typename?: 'Document'; id: string; url: string } | undefined;
-            }>;
           }
         | undefined;
       link?:
@@ -18450,22 +18394,6 @@ export type CalloutDetailsQuery = {
                           | undefined;
                       }
                     | undefined;
-                  signatures: Array<{
-                    __typename?: 'MemoSignature';
-                    id: string;
-                    status: SigningAttemptStatus;
-                    updatedDate: Date;
-                    actor?:
-                      | {
-                          __typename?: 'User';
-                          id: string;
-                          profile?:
-                            | { __typename?: 'Profile'; id: string; displayName: string; url: string }
-                            | undefined;
-                        }
-                      | undefined;
-                    document?: { __typename?: 'Document'; id: string; url: string } | undefined;
-                  }>;
                 }
               | undefined;
             link?:
@@ -19032,20 +18960,6 @@ export type CalloutDetailsFragment = {
                   | undefined;
               }
             | undefined;
-          signatures: Array<{
-            __typename?: 'MemoSignature';
-            id: string;
-            status: SigningAttemptStatus;
-            updatedDate: Date;
-            actor?:
-              | {
-                  __typename?: 'User';
-                  id: string;
-                  profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
-                }
-              | undefined;
-            document?: { __typename?: 'Document'; id: string; url: string } | undefined;
-          }>;
         }
       | undefined;
     link?:
@@ -19397,6 +19311,19 @@ export type MemoDetailsQuery = {
           createdDate: Date;
           markdown?: string | undefined;
           contentUpdatePolicy: ContentUpdatePolicy;
+          signatures: Array<{
+            __typename?: 'MemoSignature';
+            id: string;
+            updatedDate: Date;
+            actor?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+                }
+              | undefined;
+            document?: { __typename?: 'Document'; id: string; url: string } | undefined;
+          }>;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -19453,20 +19380,6 @@ export type MemoDetailsQuery = {
                   | undefined;
               }
             | undefined;
-          signatures: Array<{
-            __typename?: 'MemoSignature';
-            id: string;
-            status: SigningAttemptStatus;
-            updatedDate: Date;
-            actor?:
-              | {
-                  __typename?: 'User';
-                  id: string;
-                  profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
-                }
-              | undefined;
-            document?: { __typename?: 'Document'; id: string; url: string } | undefined;
-          }>;
         }
       | undefined;
   };
@@ -19562,20 +19475,6 @@ export type MemoDetailsFragment = {
           | undefined;
       }
     | undefined;
-  signatures: Array<{
-    __typename?: 'MemoSignature';
-    id: string;
-    status: SigningAttemptStatus;
-    updatedDate: Date;
-    actor?:
-      | {
-          __typename?: 'User';
-          id: string;
-          profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
-        }
-      | undefined;
-    document?: { __typename?: 'Document'; id: string; url: string } | undefined;
-  }>;
 };
 
 export type PollSettingsFieldsFragment = {
@@ -37974,7 +37873,7 @@ export type MemoSigningAttemptQueryVariables = Exact<{
 
 export type MemoSigningAttemptQuery = {
   __typename?: 'Query';
-  signingAttempt: { __typename?: 'MemoSignature'; id: string; status: SigningAttemptStatus; updatedDate: Date };
+  signingAttempt: { __typename?: 'MemoSignature'; id: string; status: SigningAttemptStatus };
 };
 
 export type CalloutsListForFeedQueryVariables = Exact<{

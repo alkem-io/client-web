@@ -20,9 +20,12 @@ export function useMemoSigningFlow({
 }: UseMemoSigningFlowOptions) {
   const [stage, setStage] = useState<MemoSigningStage>('idle');
   const [attempt, setAttempt] = useState<PreparedAttempt>();
+  const preparing = useRef(false);
   const continuing = useRef(false);
 
   const prepare = async () => {
+    if (preparing.current) return;
+    preparing.current = true;
     setStage('preparing');
     try {
       await requestDurability();
@@ -31,6 +34,8 @@ export function useMemoSigningFlow({
       setStage('preview');
     } catch {
       setStage('prepare-error');
+    } finally {
+      preparing.current = false;
     }
   };
 

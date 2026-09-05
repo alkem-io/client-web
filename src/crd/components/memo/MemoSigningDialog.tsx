@@ -30,6 +30,7 @@ type MemoSignature = {
   document?: { url: string };
   actor?: { profile?: { displayName: string; url: string } };
   updatedDate: string | Date;
+  recordedAt: string;
 };
 
 export type MemoSigningDialogProps = {
@@ -85,11 +86,12 @@ export function MemoSigningDialog({
                           {signature.actor.profile.displayName}
                         </a>
                       ) : (
-                        <span>{signature.actor?.profile?.displayName ?? t('memo.signing.deletedUser')}</span>
+                        <span>{signature.actor?.profile?.displayName}</span>
                       )}
-                      <time dateTime={new Date(signature.updatedDate).toISOString()}>
-                        {new Date(signature.updatedDate).toLocaleString()}
-                      </time>
+                      <span>
+                        {t('memo.signing.recorded')}:{' '}
+                        <time dateTime={new Date(signature.updatedDate).toISOString()}>{signature.recordedAt}</time>
+                      </span>
                       <a className="text-primary underline" href={signature.document.url} download={true}>
                         {t('memo.signing.download')}
                       </a>

@@ -29,15 +29,18 @@ describe('useMemoSigningFlow', () => {
     );
 
     let preparation!: Promise<void>;
+    let duplicate!: Promise<void>;
     act(() => {
       preparation = result.current.prepare();
+      duplicate = result.current.prepare();
     });
     expect(result.current.stage).toBe('preparing');
+    expect(requestDurability).toHaveBeenCalledOnce();
     expect(prepare).not.toHaveBeenCalled();
 
     await act(async () => {
       durability.resolve();
-      await preparation;
+      await Promise.all([preparation, duplicate]);
     });
     expect(order).toEqual(['durability', 'prepare']);
     expect(result.current.stage).toBe('preview');
@@ -112,6 +115,7 @@ describe('useMemoSigningFlow', () => {
     await act(() => result.current.continueSigning());
 
     expect(result.current.stage).toBe('continue-error');
+    expect(continueSigning).toHaveBeenCalledOnce();
     expect(navigate).not.toHaveBeenCalled();
   });
 });

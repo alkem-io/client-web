@@ -741,7 +741,7 @@
       "continue": "Continuar a Cleverbase",
       "continuing": "Continuando a Cleverbase",
       "signedCopies": "Copias firmadas",
-      "deletedUser": "Usuario eliminado",
+      "recorded": "Registrado",
       "download": "Descargar PDF firmado",
       "standardTools": "Los PDF descargados se pueden verificar de forma independiente con herramientas PDF estándar.",
       "stage": {
@@ -756,7 +756,7 @@
         "failed": "No se pudo firmar el PDF",
         "expired": "Este intento de firma ha caducado",
         "prepare-error": "No se pudo preparar la copia exacta del memo",
-        "continue-error": "No se pudo iniciar la sesión de firma",
+        "continue-error": "No se pudo iniciar la sesión de firma. Prepare una copia nueva e inténtelo de nuevo.",
         "return-error": "No se pudo cargar el resultado de la firma"
       }
     }

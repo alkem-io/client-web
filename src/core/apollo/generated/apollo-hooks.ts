@@ -863,23 +863,6 @@ export const MemoDetailsFragmentDoc = gql`
       }
     }
   }
-  signatures {
-    id
-    status
-    updatedDate
-    actor {
-      id
-      profile {
-        id
-        displayName
-        url
-      }
-    }
-    document {
-      id
-      url
-    }
-  }
 }
     ${MemoProfileFragmentDoc}
 ${VisualModelFragmentDoc}`;
@@ -10134,6 +10117,22 @@ export const MemoDetailsDocument = gql`
   lookup {
     memo(ID: $id) {
       ...MemoDetails
+      signatures {
+        id
+        updatedDate
+        actor {
+          id
+          profile {
+            id
+            displayName
+            url
+          }
+        }
+        document {
+          id
+          url
+        }
+      }
     }
   }
 }
@@ -29809,7 +29808,6 @@ export const MemoSigningAttemptDocument = gql`
   signingAttempt(ID: $attemptID) {
     id
     status
-    updatedDate
   }
 }
     `;

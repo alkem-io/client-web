@@ -741,7 +741,7 @@
       "continue": "Weiter zu Cleverbase",
       "continuing": "Weiterleitung zu Cleverbase",
       "signedCopies": "Signierte Kopien",
-      "deletedUser": "Gelöschter Benutzer",
+      "recorded": "Erfasst",
       "download": "Signierte PDF herunterladen",
       "standardTools": "Heruntergeladene PDFs können unabhängig mit Standard-PDF-Werkzeugen geprüft werden.",
       "stage": {
@@ -756,7 +756,7 @@
         "failed": "Die PDF konnte nicht signiert werden",
         "expired": "Dieser Signierversuch ist abgelaufen",
         "prepare-error": "Die exakte Memo-Kopie konnte nicht vorbereitet werden",
-        "continue-error": "Der Signiervorgang konnte nicht gestartet werden",
+        "continue-error": "Der Signiervorgang konnte nicht gestartet werden. Bereiten Sie eine neue Kopie vor und versuchen Sie es erneut.",
         "return-error": "Das Signierergebnis konnte nicht geladen werden"
       }
     }

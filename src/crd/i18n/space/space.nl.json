@@ -739,9 +739,9 @@
       "previewTitle": "Voorbeeld van memo-ondertekening",
       "openPreview": "Pdf-voorbeeld openen",
       "continue": "Doorgaan naar Cleverbase",
-      "continuing": "Doorgaan naar Cleverbase",
+      "continuing": "Cleverbase wordt geopend",
       "signedCopies": "Ondertekende kopieën",
-      "deletedUser": "Verwijderde gebruiker",
+      "recorded": "Vastgelegd",
       "download": "Ondertekende pdf downloaden",
       "standardTools": "Gedownloade pdf's kunnen onafhankelijk worden gecontroleerd met standaard pdf-tools.",
       "stage": {
@@ -756,7 +756,7 @@
         "failed": "De pdf kon niet worden ondertekend",
         "expired": "Deze ondertekeningspoging is verlopen",
         "prepare-error": "De exacte memokopie kon niet worden voorbereid",
-        "continue-error": "De ondertekeningssessie kon niet worden gestart",
+        "continue-error": "De ondertekeningssessie kon niet worden gestart. Bereid een nieuwe kopie voor en probeer het opnieuw.",
         "return-error": "Het ondertekeningsresultaat kon niet worden geladen"
       }
     }

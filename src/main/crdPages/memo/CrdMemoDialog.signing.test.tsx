@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthorizationPrivilege, SigningAttemptStatus } from '@/core/apollo/generated/graphql-schema';
 import type { MemoSigningDialogProps } from '@/crd/components/memo/MemoSigningDialog';
 import { CrdMemoDialog } from './CrdMemoDialog';
@@ -13,6 +13,7 @@ const mocks = vi.hoisted(() => ({
   memo: undefined as Record<string, unknown> | undefined,
   prepareMutation: vi.fn(),
   provider: undefined as Record<string, unknown> | undefined,
+  replaceState: vi.fn(),
   requestDurability: vi.fn(),
   returnAttempt: { loading: false, error: undefined, data: undefined } as Record<string, unknown>,
   returnAttemptQuery: vi.fn(),
@@ -58,7 +59,7 @@ vi.mock('./memoFooterMapper', () => ({
 }));
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
 }));
 vi.mock('@/crd/components/memo/MemoEditorShell', () => ({
   MemoEditorShell: ({ children, headerActions }: { children: ReactNode; headerActions: ReactNode }) => (
@@ -107,7 +108,11 @@ const renderDialog = () => render(<CrdMemoDialog open={true} memoId="memo-1" onC
 describe('CrdMemoDialog signing connector', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.stubGlobal('location', { assign: mocks.assign, search: '' });
+    vi.stubGlobal('location', { assign: mocks.assign, hash: '', pathname: '/memo-1', search: '' });
+    mocks.replaceState.mockImplementation((_state, _title, url: string) => {
+      (globalThis.location as unknown as { search: string }).search = new URL(url, 'https://alkem.io').search;
+    });
+    vi.stubGlobal('history', { replaceState: mocks.replaceState, state: null });
     mocks.memo = memoWith([AuthorizationPrivilege.Contribute]);
     const collaborationProvider = {
       hasLocalEdits: false,
@@ -141,6 +146,10 @@ describe('CrdMemoDialog signing connector', () => {
     };
   });
 
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   it('persists the memo, prepares one exact copy, then performs a full Cleverbase navigation', async () => {
     const user = userEvent.setup();
     renderDialog();
@@ -155,6 +164,32 @@ describe('CrdMemoDialog signing connector', () => {
 
     await waitFor(() => expect(mocks.continueMutation).toHaveBeenCalledWith({ variables: { attemptID: 'attempt-1' } }));
     expect(mocks.assign).toHaveBeenCalledWith('https://cleverbase.example/authorize');
+  });
+
+  it('disables duplicate preparation while durability is unresolved', async () => {
+    const user = userEvent.setup();
+    let releaseDurability!: () => void;
+    mocks.requestDurability.mockImplementation(() => new Promise<void>(resolve => (releaseDurability = resolve)));
+    renderDialog();
+
+    const sign = screen.getByRole('button', { name: 'memo.signing.title' });
+    await user.click(sign);
+
+    expect(sign).toBeDisabled();
+    await user.click(sign);
+    expect(mocks.requestDurability).toHaveBeenCalledOnce();
+    expect(mocks.prepareMutation).not.toHaveBeenCalled();
+
+    releaseDurability();
+    await waitFor(() => expect(mocks.prepareMutation).toHaveBeenCalledOnce());
+    expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-stage', 'preview');
+  });
+
+  it('renders while memo details are loading without a signed-copy dialog', () => {
+    mocks.memo = undefined;
+    renderDialog();
+
+    expect(screen.queryByTestId('signing-dialog')).not.toBeInTheDocument();
   });
 
   it('opens signed copies for a READ-only actor without preparing another copy', async () => {
@@ -219,7 +254,12 @@ describe('CrdMemoDialog signing connector', () => {
       'signed',
     ],
   ])('loads the bookmarked signing outcome as %s -> %s', (returnAttempt, stage) => {
-    vi.stubGlobal('location', { assign: mocks.assign, search: '?signingAttemptId=attempt-1' });
+    vi.stubGlobal('location', {
+      assign: mocks.assign,
+      hash: '',
+      pathname: '/memo-1',
+      search: '?signingAttemptId=attempt-1',
+    });
     mocks.returnAttempt = returnAttempt;
 
     renderDialog();
@@ -230,5 +270,34 @@ describe('CrdMemoDialog signing connector', () => {
       fetchPolicy: 'network-only',
     });
     expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-stage', stage);
+  });
+
+  it.each([
+    ['?signingAttemptId=attempt-1', '/memo-1'],
+    ['?keep=1&signingAttemptId=attempt-1', '/memo-1?keep=1'],
+  ])('consumes a terminal return before preparing a fresh signing preview from %s', async (search, expectedUrl) => {
+    const user = userEvent.setup();
+    vi.stubGlobal('location', {
+      assign: mocks.assign,
+      hash: '',
+      pathname: '/memo-1',
+      search,
+    });
+    mocks.returnAttempt = {
+      loading: false,
+      error: undefined,
+      data: { signingAttempt: { status: SigningAttemptStatus.Signed } },
+    };
+    renderDialog();
+
+    expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-stage', 'signed');
+    await user.click(screen.getByRole('button', { name: 'close signing' }));
+    await user.click(screen.getByRole('button', { name: 'memo.signing.title' }));
+
+    await waitFor(() => expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-stage', 'preview'));
+    expect(mocks.replaceState).toHaveBeenCalledWith(null, '', expectedUrl);
+    expect(mocks.prepareMutation).toHaveBeenCalledOnce();
+    await user.click(screen.getByRole('button', { name: 'continue signing' }));
+    expect(mocks.continueMutation).toHaveBeenCalledOnce();
   });
 });

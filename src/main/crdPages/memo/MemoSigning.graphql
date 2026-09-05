@@ -15,6 +15,5 @@ query memoSigningAttempt($attemptID: UUID!) {
   signingAttempt(ID: $attemptID) {
     id
     status
-    updatedDate
   }
 }

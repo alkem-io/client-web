@@ -741,7 +741,7 @@
       "continue": "Continuer vers Cleverbase",
       "continuing": "Redirection vers Cleverbase",
       "signedCopies": "Copies signées",
-      "deletedUser": "Utilisateur supprimé",
+      "recorded": "Enregistré",
       "download": "Télécharger le PDF signé",
       "standardTools": "Les PDF téléchargés peuvent être vérifiés indépendamment avec des outils PDF standard.",
       "stage": {
@@ -756,7 +756,7 @@
         "failed": "Le PDF n’a pas pu être signé",
         "expired": "Cette tentative de signature a expiré",
         "prepare-error": "La copie exacte du mémo n’a pas pu être préparée",
-        "continue-error": "La session de signature n’a pas pu démarrer",
+        "continue-error": "La session de signature n’a pas pu démarrer. Préparez une nouvelle copie et réessayez.",
         "return-error": "Le résultat de la signature n’a pas pu être chargé"
       }
     }
