@@ -163,9 +163,10 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     );
     setReturnAttemptId(null);
   };
+  // TypeORM timestamptz reaches this field as a valid GraphQL DateTime ISO string.
   const signatures = (memo?.signatures ?? []).map(signature => ({
     ...signature,
-    recordedAt: formatAbsoluteDateTime(signature.updatedDate, resolveDateFnsLocale(i18n.language)) ?? '',
+    recordedAt: formatAbsoluteDateTime(signature.updatedDate, resolveDateFnsLocale(i18n.language)),
   }));
 
   const privileges = memo?.authorization?.myPrivileges ?? [];

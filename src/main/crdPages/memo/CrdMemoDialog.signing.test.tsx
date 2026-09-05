@@ -273,13 +273,13 @@ describe('CrdMemoDialog signing connector', () => {
   });
 
   it.each([
-    ['?signingAttemptId=attempt-1', '/memo-1'],
-    ['?keep=1&signingAttemptId=attempt-1', '/memo-1?keep=1'],
-  ])('consumes a terminal return before preparing a fresh signing preview from %s', async (search, expectedUrl) => {
+    ['?signingAttemptId=attempt-1', '', '/memo-1'],
+    ['?keep=1&signingAttemptId=attempt-1', '#section', '/memo-1?keep=1#section'],
+  ])('consumes a terminal return before preparing a fresh signing preview from %s', async (search, hash, expectedUrl) => {
     const user = userEvent.setup();
     vi.stubGlobal('location', {
       assign: mocks.assign,
-      hash: '',
+      hash,
       pathname: '/memo-1',
       search,
     });

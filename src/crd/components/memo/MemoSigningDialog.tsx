@@ -30,7 +30,7 @@ type MemoSignature = {
   document?: { url: string };
   actor?: { profile?: { displayName: string; url: string } };
   updatedDate: string | Date;
-  recordedAt: string;
+  recordedAt?: string;
 };
 
 export type MemoSigningDialogProps = {
