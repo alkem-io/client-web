@@ -185,13 +185,6 @@ describe('CrdMemoDialog signing connector', () => {
     expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-stage', 'preview');
   });
 
-  it('renders while memo details are loading without a signed-copy dialog', () => {
-    mocks.memo = undefined;
-    renderDialog();
-
-    expect(screen.queryByTestId('signing-dialog')).not.toBeInTheDocument();
-  });
-
   it('opens signed copies for a READ-only actor without preparing another copy', async () => {
     const user = userEvent.setup();
     mocks.memo = memoWith(

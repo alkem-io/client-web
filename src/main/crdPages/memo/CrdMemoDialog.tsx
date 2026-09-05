@@ -141,16 +141,13 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     },
     navigate: url => globalThis.location.assign(url),
   });
-  const signingStage =
-    signingFlow.stage !== 'idle'
-      ? signingFlow.stage
-      : returnAttemptId
-        ? returnAttempt.loading
-          ? 'checking'
-          : returnAttempt.error || !returnAttempt.data
-            ? 'return-error'
-            : (returnAttempt.data.signingAttempt.status.toLowerCase() as typeof signingFlow.stage)
-        : signingFlow.stage;
+  const signingStage = returnAttemptId
+    ? returnAttempt.loading
+      ? 'checking'
+      : returnAttempt.error || !returnAttempt.data
+        ? 'return-error'
+        : (returnAttempt.data.signingAttempt.status.toLowerCase() as typeof signingFlow.stage)
+    : signingFlow.stage;
   const clearSigningReturn = () => {
     if (!returnAttemptId) return;
     const search = new URLSearchParams(globalThis.location.search);
