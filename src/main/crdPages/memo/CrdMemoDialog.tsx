@@ -34,11 +34,11 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { withCloseFinalizing } from '@/main/crdPages/closeFinalizing';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
+import { mapMemoFooterProps } from '@/main/crdPages/memo/memoFooterMapper';
+import { useCrdMemoProvider } from '@/main/crdPages/memo/useCrdMemoProvider';
+import { useMemoSigningFlow } from '@/main/crdPages/memo/useMemoSigningFlow';
 import { CrdCollaborationSettings } from '@/main/crdPages/whiteboard/CrdCollaborationSettings';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { mapMemoFooterProps } from './memoFooterMapper';
-import { useCrdMemoProvider } from './useCrdMemoProvider';
-import { useMemoSigningFlow } from './useMemoSigningFlow';
 
 type CrdMemoDialogProps = {
   open: boolean;
