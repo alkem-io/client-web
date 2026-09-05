@@ -732,6 +732,33 @@
       "title": "Memo verwijderen",
       "body": "Weet je zeker dat je dit memo wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
       "confirm": "Verwijderen"
+    },
+    "signing": {
+      "title": "Memo ondertekenen",
+      "description": "Controleer de exacte pdf-kopie voordat je de ondertekeningssessie start. Elke ondertekende pdf is een aparte kopie; de memo blijft bewerkbaar.",
+      "previewTitle": "Voorbeeld van memo-ondertekening",
+      "openPreview": "Pdf-voorbeeld openen",
+      "continue": "Doorgaan naar Cleverbase",
+      "continuing": "Doorgaan naar Cleverbase",
+      "signedCopies": "Ondertekende kopieën",
+      "deletedUser": "Verwijderde gebruiker",
+      "download": "Ondertekende pdf downloaden",
+      "standardTools": "Gedownloade pdf's kunnen onafhankelijk worden gecontroleerd met standaard pdf-tools.",
+      "stage": {
+        "idle": "Klaar om een kopie voor ondertekening te maken",
+        "preparing": "De exacte memokopie wordt voorbereid voor ondertekening",
+        "preview": "Controleer de exacte pdf voordat je doorgaat",
+        "continuing": "De ondertekeningssessie wordt geopend",
+        "checking": "Het ondertekeningsresultaat wordt gecontroleerd",
+        "pending": "De ondertekening is nog bezig. Laad deze pagina opnieuw om nogmaals te controleren.",
+        "signed": "De pdf is succesvol ondertekend",
+        "cancelled": "De ondertekening is geannuleerd",
+        "failed": "De pdf kon niet worden ondertekend",
+        "expired": "Deze ondertekeningspoging is verlopen",
+        "prepare-error": "De exacte memokopie kon niet worden voorbereid",
+        "continue-error": "De ondertekeningssessie kon niet worden gestart",
+        "return-error": "Het ondertekeningsresultaat kon niet worden geladen"
+      }
     }
   },
   "callToAction": {

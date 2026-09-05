@@ -1,8 +1,14 @@
 import { useApolloClient } from '@apollo/client';
 import type { Editor } from '@tiptap/react';
+import { FileSignature } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUpdateMemoDisplayNameMutation } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useContinueMemoSigningMutation,
+  useMemoSigningAttemptQuery,
+  usePrepareMemoSigningMutation,
+  useUpdateMemoDisplayNameMutation,
+} from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useRegisterFullscreenEditor } from '@/core/ui/fullscreen/FullscreenEditorContext';
@@ -15,10 +21,12 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import { MemoCollabFooter } from '@/crd/components/memo/MemoCollabFooter';
 import { MemoDisplayName } from '@/crd/components/memo/MemoDisplayName';
 import { MemoEditorShell } from '@/crd/components/memo/MemoEditorShell';
+import { MemoSigningDialog } from '@/crd/components/memo/MemoSigningDialog';
 import { CollaborativeMarkdownEditor } from '@/crd/forms/markdown/CollaborativeMarkdownEditor';
 import type { CollabProviderLike, YDocLike } from '@/crd/forms/markdown/collabProviderTypes';
 import { htmlToMarkdown } from '@/crd/forms/markdown/markdownConverter';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
+import { Button } from '@/crd/primitives/button';
 import useMemoManager from '@/domain/collaboration/memo/MemoManager/useMemoManager';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
@@ -28,6 +36,7 @@ import { CrdCollaborationSettings } from '@/main/crdPages/whiteboard/CrdCollabor
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { mapMemoFooterProps } from './memoFooterMapper';
 import { useCrdMemoProvider } from './useCrdMemoProvider';
+import { useMemoSigningFlow } from './useMemoSigningFlow';
 
 type CrdMemoDialogProps = {
   open: boolean;
@@ -46,6 +55,9 @@ export const updateMemoMarkdownCache = (
   if (!editor || !hadLocalEdits) return Promise.resolve();
   return htmlToMarkdown(editor.getHTML()).then(writeMarkdown);
 };
+
+export const canStartMemoSigning = (privileges: AuthorizationPrivilege[]) =>
+  privileges.includes(AuthorizationPrivilege.Contribute);
 
 export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, onDelete }: CrdMemoDialogProps) {
   const { t } = useTranslation('crd-space');
@@ -99,12 +111,44 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const [closeBlocked, setCloseBlocked] = useState(false);
   const [closeFinalizing, setCloseFinalizing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [returnAttemptId] = useState(() => new URLSearchParams(globalThis.location.search).get('signingAttemptId'));
+  const [signingDialogOpen, setSigningDialogOpen] = useState(Boolean(returnAttemptId));
   const closeInFlight = useRef(false);
+
+  const [prepareMemoSigning] = usePrepareMemoSigningMutation();
+  const [continueMemoSigning] = useContinueMemoSigningMutation();
+  const returnAttempt = useMemoSigningAttemptQuery({
+    variables: { attemptID: returnAttemptId ?? '' },
+    skip: !returnAttemptId,
+    fetchPolicy: 'network-only',
+  });
+  const signingFlow = useMemoSigningFlow({
+    memoId,
+    requestDurability: () => provider?.requestDurability() ?? Promise.reject(new Error('Memo is not connected')),
+    prepare: async id => {
+      const result = (await prepareMemoSigning({ variables: { memoID: id } })).data?.prepareMemoSigning;
+      if (!result) throw new Error('Memo signing preparation returned no result');
+      return result;
+    },
+    continueSigning: async attemptID => {
+      const result = (await continueMemoSigning({ variables: { attemptID } })).data?.continueMemoSigning;
+      if (!result) throw new Error('Memo signing continuation returned no result');
+      return result.authorizeUrl;
+    },
+    navigate: url => globalThis.location.assign(url),
+  });
+  const signingStage = returnAttemptId
+    ? returnAttempt.loading
+      ? 'checking'
+      : returnAttempt.error || !returnAttempt.data
+        ? 'return-error'
+        : (returnAttempt.data.signingAttempt.status.toLowerCase() as typeof signingFlow.stage)
+    : signingFlow.stage;
 
   const privileges = memo?.authorization?.myPrivileges ?? [];
   const hasUpdatePrivileges = privileges.includes(AuthorizationPrivilege.Update);
   const hasDeletePrivileges = privileges.includes(AuthorizationPrivilege.Delete);
-  const hasContributePrivileges = privileges.includes(AuthorizationPrivilege.Contribute);
+  const hasContributePrivileges = canStartMemoSigning(privileges);
 
   const canEditDisplayName = isContribution && hasUpdatePrivileges;
   const displayName = memo?.profile.displayName ?? t('memo.errors.loading');
@@ -248,6 +292,21 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
 
   const headerActions = (
     <>
+      {(hasContributePrivileges || Boolean(memo?.signatures.length)) && (
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={hasContributePrivileges && !provider}
+          onClick={() => {
+            setSigningDialogOpen(true);
+            if (hasContributePrivileges) void signingFlow.prepare();
+          }}
+        >
+          <FileSignature aria-hidden="true" />
+          {t(hasContributePrivileges ? 'memo.signing.title' : 'memo.signing.signedCopies')}
+        </Button>
+      )}
       {/* Share dropdown. For users who can update the memo, it also hosts the content-update-policy
           control (Owner / Admins / Contributors) — parity with the CRD whiteboard and the legacy MUI
           memo dialog, and what makes the footer's "ask the owner to change the share settings" message
@@ -338,6 +397,14 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
         onSave={() => setCloseBlocked(false)}
         onDiscard={onClose}
         onCancel={() => void exportUnsavedMemo()}
+      />
+      <MemoSigningDialog
+        open={signingDialogOpen}
+        stage={signingStage}
+        previewUrl={signingFlow.attempt?.previewUrl}
+        signatures={memo?.signatures ?? []}
+        onContinue={() => void signingFlow.continueSigning()}
+        onClose={() => setSigningDialogOpen(false)}
       />
     </>
   );

@@ -732,6 +732,33 @@
       "title": "Supprimer le mémo",
       "body": "Êtes-vous sûr de vouloir supprimer ce mémo ? Cette action est irréversible.",
       "confirm": "Supprimer"
+    },
+    "signing": {
+      "title": "Signer le mémo",
+      "description": "Vérifiez la copie PDF exacte avant de démarrer la session de signature. Chaque PDF signé est une copie distincte ; le mémo reste modifiable.",
+      "previewTitle": "Aperçu de signature du mémo",
+      "openPreview": "Ouvrir l’aperçu PDF",
+      "continue": "Continuer vers Cleverbase",
+      "continuing": "Redirection vers Cleverbase",
+      "signedCopies": "Copies signées",
+      "deletedUser": "Utilisateur supprimé",
+      "download": "Télécharger le PDF signé",
+      "standardTools": "Les PDF téléchargés peuvent être vérifiés indépendamment avec des outils PDF standard.",
+      "stage": {
+        "idle": "Prêt à préparer une copie à signer",
+        "preparing": "Préparation de la copie exacte du mémo pour signature",
+        "preview": "Vérifiez le PDF exact avant de continuer",
+        "continuing": "Ouverture de la session de signature",
+        "checking": "Vérification du résultat de la signature",
+        "pending": "La signature est toujours en cours. Rechargez cette page pour vérifier à nouveau.",
+        "signed": "Le PDF a été signé avec succès",
+        "cancelled": "La signature a été annulée",
+        "failed": "Le PDF n’a pas pu être signé",
+        "expired": "Cette tentative de signature a expiré",
+        "prepare-error": "La copie exacte du mémo n’a pas pu être préparée",
+        "continue-error": "La session de signature n’a pas pu démarrer",
+        "return-error": "Le résultat de la signature n’a pas pu être chargé"
+      }
     }
   },
   "callToAction": {

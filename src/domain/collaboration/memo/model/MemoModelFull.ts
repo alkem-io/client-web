@@ -1,4 +1,8 @@
-import type { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
+import type {
+  AuthorizationPrivilege,
+  ContentUpdatePolicy,
+  MemoDetailsFragment,
+} from '@/core/apollo/generated/graphql-schema';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import type { PreviewImageDimensions } from '../../whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 
@@ -25,4 +29,5 @@ export interface MemoModelFull {
       avatar?: { id: string; uri: string };
     };
   };
+  signatures: MemoDetailsFragment['signatures'];
 }

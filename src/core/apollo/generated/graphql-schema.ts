@@ -5001,8 +5001,47 @@ export type Memo = {
   nameID: Scalars['NameID']['output'];
   /** The Profile for this Memo. */
   profile: Profile;
+  /** Signed copies of this Memo visible to readers of the Memo. */
+  signatures: Array<MemoSignature>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
+};
+
+export type MemoSignature = {
+  __typename?: 'MemoSignature';
+  /** The Alkemio user who initiated this signed copy. */
+  actor?: Maybe<User>;
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** The immutable PDF produced for this signed copy. */
+  document?: Maybe<Document>;
+  /** The ID of the entity */
+  id: Scalars['UUID']['output'];
+  /** The terminal outcome of this Memo signing attempt. */
+  status: SigningAttemptStatus;
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
+};
+
+export type MemoSigningContinueInput = {
+  /** The prepared signing attempt to start. */
+  attemptID: Scalars['UUID']['input'];
+};
+
+export type MemoSigningContinueResult = {
+  __typename?: 'MemoSigningContinueResult';
+  authorizeUrl: Scalars['String']['output'];
+};
+
+export type MemoSigningPrepareInput = {
+  /** The Memo to prepare for signing. */
+  memoID: Scalars['UUID']['input'];
+};
+
+export type MemoSigningPrepareResult = {
+  __typename?: 'MemoSigningPrepareResult';
+  attemptId: Scalars['UUID']['output'];
+  previewUrl: Scalars['String']['output'];
 };
 
 /** A message that was sent in a chat room */
@@ -5289,6 +5328,8 @@ export type Mutation = {
   castPollVote: Poll;
   /** Deletes collections nameID-... */
   cleanupCollections: MigrateEmbeddings;
+  /** Starts signing the prepared Memo copy. */
+  continueMemoSigning: MemoSigningContinueResult;
   /** Move an L1 Space up in the hierarchy, to be a L0 Space. */
   convertSpaceL1ToSpaceL0: Space;
   /** Move an L1 Space down in the hierarchy within the same L0 Space, to be a L2 Space.       Restrictions: the Space L1 must remain within the same L0 Space.       Roles: all user, organization and virtual contributor role assignments are removed, with       the exception of Admin role assignments for Users. */
@@ -5455,6 +5496,8 @@ export type Mutation = {
   moveSpaceL2ToSpaceL1: Space;
   /** Moves a task to another column on its Tasks board. Authorized as MOVE_TASK on the parent Callout, so a board member can move any task. */
   moveTaskToColumn: CalloutContribution;
+  /** Prepares an exact PDF preview for signing the specified Memo. */
+  prepareMemoSigning: MemoSigningPrepareResult;
   /** Refresh the Bodies of Knowledge on All VCs */
   refreshAllBodiesOfKnowledge: Scalars['Boolean']['output'];
   /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
@@ -5825,6 +5868,10 @@ export type MutationCastPollVoteArgs = {
   voteData: CastPollVoteInput;
 };
 
+export type MutationContinueMemoSigningArgs = {
+  signingData: MemoSigningContinueInput;
+};
+
 export type MutationConvertSpaceL1ToSpaceL0Args = {
   convertData: ConvertSpaceL1ToSpaceL0Input;
 };
@@ -6151,6 +6198,10 @@ export type MutationMoveSpaceL2ToSpaceL1Args = {
 
 export type MutationMoveTaskToColumnArgs = {
   moveData: MoveTaskToColumnInput;
+};
+
+export type MutationPrepareMemoSigningArgs = {
+  signingData: MemoSigningPrepareInput;
 };
 
 export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
@@ -7682,6 +7733,8 @@ export type Query = {
   rolesVirtualContributor: ActorRoles;
   /** Search the platform for terms supplied */
   search: ISearchResults;
+  /** A Memo signing attempt belonging to the current actor. */
+  signingAttempt: MemoSignature;
   /** The Spaces on this platform; If accessed through an Innovation Hub will return ONLY the Spaces defined in it. */
   spaces: Array<Space>;
   /** The Spaces on this platform */
@@ -7782,6 +7835,10 @@ export type QueryRolesVirtualContributorArgs = {
 
 export type QuerySearchArgs = {
   searchData: SearchInput;
+};
+
+export type QuerySigningAttemptArgs = {
+  ID: Scalars['UUID']['input'];
 };
 
 export type QuerySpacesArgs = {
@@ -8764,6 +8821,14 @@ export enum SidebarWidget {
   SubspaceLinks = 'SUBSPACE_LINKS',
   Updates = 'UPDATES',
   VirtualContributors = 'VIRTUAL_CONTRIBUTORS',
+}
+
+export enum SigningAttemptStatus {
+  Cancelled = 'CANCELLED',
+  Expired = 'EXPIRED',
+  Failed = 'FAILED',
+  Pending = 'PENDING',
+  Signed = 'SIGNED',
 }
 
 export type Space = ActorFull & {
@@ -15333,6 +15398,20 @@ export type UpdateCalloutContentMutation = {
                     | undefined;
                 }
               | undefined;
+            signatures: Array<{
+              __typename?: 'MemoSignature';
+              id: string;
+              status: SigningAttemptStatus;
+              updatedDate: Date;
+              actor?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+                  }
+                | undefined;
+              document?: { __typename?: 'Document'; id: string; url: string } | undefined;
+            }>;
           }
         | undefined;
       link?:
@@ -15825,6 +15904,20 @@ export type UpdateCalloutVisibilityMutation = {
                     | undefined;
                 }
               | undefined;
+            signatures: Array<{
+              __typename?: 'MemoSignature';
+              id: string;
+              status: SigningAttemptStatus;
+              updatedDate: Date;
+              actor?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+                  }
+                | undefined;
+              document?: { __typename?: 'Document'; id: string; url: string } | undefined;
+            }>;
           }
         | undefined;
       link?:
@@ -16787,6 +16880,20 @@ export type CreateMemoOnCalloutMutation = {
                   | undefined;
               }
             | undefined;
+          signatures: Array<{
+            __typename?: 'MemoSignature';
+            id: string;
+            status: SigningAttemptStatus;
+            updatedDate: Date;
+            actor?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+                }
+              | undefined;
+            document?: { __typename?: 'Document'; id: string; url: string } | undefined;
+          }>;
         }
       | undefined;
   };
@@ -17707,6 +17814,20 @@ export type CreateCalloutMutation = {
                     | undefined;
                 }
               | undefined;
+            signatures: Array<{
+              __typename?: 'MemoSignature';
+              id: string;
+              status: SigningAttemptStatus;
+              updatedDate: Date;
+              actor?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+                  }
+                | undefined;
+              document?: { __typename?: 'Document'; id: string; url: string } | undefined;
+            }>;
           }
         | undefined;
       link?:
@@ -18329,6 +18450,22 @@ export type CalloutDetailsQuery = {
                           | undefined;
                       }
                     | undefined;
+                  signatures: Array<{
+                    __typename?: 'MemoSignature';
+                    id: string;
+                    status: SigningAttemptStatus;
+                    updatedDate: Date;
+                    actor?:
+                      | {
+                          __typename?: 'User';
+                          id: string;
+                          profile?:
+                            | { __typename?: 'Profile'; id: string; displayName: string; url: string }
+                            | undefined;
+                        }
+                      | undefined;
+                    document?: { __typename?: 'Document'; id: string; url: string } | undefined;
+                  }>;
                 }
               | undefined;
             link?:
@@ -18895,6 +19032,20 @@ export type CalloutDetailsFragment = {
                   | undefined;
               }
             | undefined;
+          signatures: Array<{
+            __typename?: 'MemoSignature';
+            id: string;
+            status: SigningAttemptStatus;
+            updatedDate: Date;
+            actor?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+                }
+              | undefined;
+            document?: { __typename?: 'Document'; id: string; url: string } | undefined;
+          }>;
         }
       | undefined;
     link?:
@@ -19302,6 +19453,20 @@ export type MemoDetailsQuery = {
                   | undefined;
               }
             | undefined;
+          signatures: Array<{
+            __typename?: 'MemoSignature';
+            id: string;
+            status: SigningAttemptStatus;
+            updatedDate: Date;
+            actor?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+                }
+              | undefined;
+            document?: { __typename?: 'Document'; id: string; url: string } | undefined;
+          }>;
         }
       | undefined;
   };
@@ -19397,6 +19562,20 @@ export type MemoDetailsFragment = {
           | undefined;
       }
     | undefined;
+  signatures: Array<{
+    __typename?: 'MemoSignature';
+    id: string;
+    status: SigningAttemptStatus;
+    updatedDate: Date;
+    actor?:
+      | {
+          __typename?: 'User';
+          id: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+        }
+      | undefined;
+    document?: { __typename?: 'Document'; id: string; url: string } | undefined;
+  }>;
 };
 
 export type PollSettingsFieldsFragment = {
@@ -37769,6 +37948,33 @@ export type InnovationLibraryTemplatesPaginatedQuery = {
       };
     };
   };
+};
+
+export type PrepareMemoSigningMutationVariables = Exact<{
+  memoID: Scalars['UUID']['input'];
+}>;
+
+export type PrepareMemoSigningMutation = {
+  __typename?: 'Mutation';
+  prepareMemoSigning: { __typename?: 'MemoSigningPrepareResult'; attemptId: string; previewUrl: string };
+};
+
+export type ContinueMemoSigningMutationVariables = Exact<{
+  attemptID: Scalars['UUID']['input'];
+}>;
+
+export type ContinueMemoSigningMutation = {
+  __typename?: 'Mutation';
+  continueMemoSigning: { __typename?: 'MemoSigningContinueResult'; authorizeUrl: string };
+};
+
+export type MemoSigningAttemptQueryVariables = Exact<{
+  attemptID: Scalars['UUID']['input'];
+}>;
+
+export type MemoSigningAttemptQuery = {
+  __typename?: 'Query';
+  signingAttempt: { __typename?: 'MemoSignature'; id: string; status: SigningAttemptStatus; updatedDate: Date };
 };
 
 export type CalloutsListForFeedQueryVariables = Exact<{

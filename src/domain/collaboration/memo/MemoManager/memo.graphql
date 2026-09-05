@@ -56,4 +56,21 @@ fragment MemoDetails on Memo {
       }
     }
   }
+  signatures {
+    id
+    status
+    updatedDate
+    actor {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+    document {
+      id
+      url
+    }
+  }
 }
