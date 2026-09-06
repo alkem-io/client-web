@@ -1,4 +1,9 @@
-import { registerActiveSession, unregisterActiveSession } from './activeSession';
+import {
+  notifyMessagingOpened,
+  onMessagingOpened,
+  registerActiveSession,
+  unregisterActiveSession,
+} from './activeSession';
 import { cleanupMatrixUser } from './logoutCleanup';
 import { createMultiTabCoordinator, type MultiTabCallbacks, type MultiTabCoordinator } from './multiTab';
 import { redactBreadcrumb, redactString } from './redaction';
@@ -74,31 +79,6 @@ const createSessionMachine = (onBreadcrumb?: BreadcrumbSink): SessionMachine => 
 
       return true;
     },
-  };
-};
-
-let messagingOpened = false;
-const activationListeners = new Set<() => void>();
-
-const notifyMessagingOpened = (): void => {
-  if (messagingOpened) {
-    return;
-  }
-  messagingOpened = true;
-  for (const listener of activationListeners) {
-    listener();
-  }
-  activationListeners.clear();
-};
-
-const onMessagingOpened = (listener: () => void): (() => void) => {
-  if (messagingOpened) {
-    listener();
-    return () => {};
-  }
-  activationListeners.add(listener);
-  return () => {
-    activationListeners.delete(listener);
   };
 };
 
