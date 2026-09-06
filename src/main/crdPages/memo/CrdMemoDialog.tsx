@@ -160,6 +160,10 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     );
     setReturnAttemptId(null);
   };
+  const closeSigningDialog = () => {
+    clearSigningReturn();
+    setSigningDialogOpen(false);
+  };
   // TypeORM timestamptz reaches this field as a valid GraphQL DateTime ISO string.
   const signatures = (memo?.signatures ?? []).map(signature => ({
     ...signature,
@@ -424,14 +428,12 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
       />
       <MemoSigningDialog
         open={signingDialogOpen}
+        onOpenChange={open => !open && closeSigningDialog()}
         stage={signingStage}
         previewUrl={signingFlow.attempt?.previewUrl}
         signatures={signatures}
         onContinue={() => void signingFlow.continueSigning()}
-        onClose={() => {
-          clearSigningReturn();
-          setSigningDialogOpen(false);
-        }}
+        onClose={closeSigningDialog}
       />
     </>
   );

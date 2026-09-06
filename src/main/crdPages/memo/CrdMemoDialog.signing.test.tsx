@@ -80,6 +80,9 @@ vi.mock('@/crd/components/memo/MemoSigningDialog', () => ({
         <button type="button" onClick={props.onClose}>
           close signing
         </button>
+        <button type="button" onClick={() => props.onOpenChange(false)}>
+          dismiss signing
+        </button>
       </div>
     ) : null;
   },
@@ -263,6 +266,27 @@ describe('CrdMemoDialog signing connector', () => {
       fetchPolicy: 'network-only',
     });
     expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-stage', stage);
+  });
+
+  it('owns dialog dismissal and returned-attempt cleanup in the integration layer', async () => {
+    const user = userEvent.setup();
+    vi.stubGlobal('location', {
+      assign: mocks.assign,
+      hash: '#section',
+      pathname: '/memo-1',
+      search: '?keep=1&signingAttemptId=attempt-1',
+    });
+    mocks.returnAttempt = {
+      loading: false,
+      error: undefined,
+      data: { signingAttempt: { status: SigningAttemptStatus.Signed } },
+    };
+    renderDialog();
+
+    await user.click(screen.getByRole('button', { name: 'dismiss signing' }));
+
+    expect(mocks.replaceState).toHaveBeenCalledWith(null, '', '/memo-1?keep=1#section');
+    expect(screen.queryByTestId('signing-dialog')).not.toBeInTheDocument();
   });
 
   it.each([

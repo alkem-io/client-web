@@ -35,6 +35,7 @@ type MemoSignature = {
 
 export type MemoSigningDialogProps = {
   open: boolean;
+  onOpenChange: (open: boolean) => void;
   stage: MemoSigningStage;
   signatures: MemoSignature[];
   previewUrl?: string;
@@ -44,6 +45,7 @@ export type MemoSigningDialogProps = {
 
 export function MemoSigningDialog({
   open,
+  onOpenChange,
   stage,
   signatures,
   previewUrl,
@@ -55,7 +57,7 @@ export function MemoSigningDialog({
   const busy = stage === 'preparing' || stage === 'continuing' || stage === 'checking';
 
   return (
-    <Dialog open={open} onOpenChange={nextOpen => !nextOpen && onClose()}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent overlayClassName="z-[70]" className="z-[70] sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>{t(stage === 'idle' ? 'memo.signing.signedCopies' : 'memo.signing.title')}</DialogTitle>

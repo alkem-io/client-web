@@ -23,6 +23,7 @@ const renderDialog = (props: Partial<MemoSigningDialogProps> = {}) =>
         open={true}
         stage="preparing"
         signatures={[]}
+        onOpenChange={vi.fn()}
         onContinue={vi.fn()}
         onClose={vi.fn()}
         {...props}
@@ -65,6 +66,7 @@ describe('MemoSigningDialog', () => {
           stage="continuing"
           previewUrl="/api/public/rest/content-signing/attempt-1/snapshot"
           signatures={[]}
+          onOpenChange={vi.fn()}
           onContinue={onContinue}
           onClose={vi.fn()}
         />
@@ -83,17 +85,17 @@ describe('MemoSigningDialog', () => {
   });
 
   it('closes from the dialog boundary and ignores signatures without a signed document', async () => {
-    const onClose = vi.fn();
+    const onOpenChange = vi.fn();
     renderDialog({
       stage: 'idle',
-      onClose,
+      onOpenChange,
       signatures: [{ id: 'pending-1', updatedDate: '2026-09-05T10:30:00.000Z', recordedAt: '' }],
     });
 
     expect(screen.getByRole('heading', { level: 2, name: 'Signed copies' })).toBeInTheDocument();
     expect(screen.queryByRole('listitem')).not.toBeInTheDocument();
     await userEvent.keyboard('{Escape}');
-    expect(onClose).toHaveBeenCalledOnce();
+    expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 
   it.each([
