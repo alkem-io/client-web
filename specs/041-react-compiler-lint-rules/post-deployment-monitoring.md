@@ -41,7 +41,7 @@ client-facing metric* on a critical page triggers investigation before it is acc
 
 | Metric | Command | Expectation |
 |---|---|---|
-| Bundle size (JS raw) | `pnpm build` + measure `build/**/*.js` | ≤ anchor (15.26 MB) barring intentional feature growth |
+| Bundle size (JS raw) | `pnpm build` + measure `build/**/*.js` | ≤ anchor (15.26 MiB) barring intentional feature growth |
 | React Compiler coverage | `pnpm compiler:healthcheck` | ~100% (1285/1285 at anchor); a drop = new non-compilable code |
 
 ## Procedure

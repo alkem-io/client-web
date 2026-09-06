@@ -15,7 +15,7 @@ Add ESLint `no-restricted-syntax` rules to prevent reintroduction of manual memo
 **Testing**: Vitest (592 tests), ESLint validation, production build
 **Target Platform**: Web (SPA served by Vite)
 **Project Type**: Web application (React SPA)
-**Performance Goals**: No regression from pre-migration baseline (14.19 MB JS, Lighthouse scores stable)
+**Performance Goals**: No regression from pre-migration baseline (14.19 MiB JS, Lighthouse scores stable)
 **Constraints**: Warn-level rules initially (T040-T042 still pending); error level after domain migrations complete
 **Scale/Scope**: 2 config files modified, 0 source files, ~18k module codebase
 
@@ -94,7 +94,7 @@ biome.json                  # Read-only verification (useExhaustiveDependencies:
 ### T6: Run production build [PENDING]
 
 **Command**: `pnpm build`
-**Expected**: Build succeeds with no new errors. Bundle size stable or decreased from 14.19 MB baseline.
+**Expected**: Build succeeds with no new errors. Bundle size stable or decreased from 14.19 MiB baseline.
 
 ### T7: Run bundle analysis [PENDING — requires build]
 

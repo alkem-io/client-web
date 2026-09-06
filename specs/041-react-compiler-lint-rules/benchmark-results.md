@@ -15,7 +15,7 @@
 > `no-restricted-syntax` enforcement (`eslint.config.mjs`) + docs, and **T026 additionally
 > removed 17 non-essential manual memoizations** from 5 hooks so the compiler handles them.
 > That is a runtime change, but a **bundle-neutral** one: the compiler substitutes the
-> memoization it removes, so the production JS is unchanged (15.26 MB, +1.4 KB / +0.009% vs
+> memoization it removes, so the production JS is unchanged (15.26 MiB, +1.4 KiB / +0.009% vs
 > the pre-T026 anchor). The numbers below are the **post-T026 production snapshot**, and are
 > the current final-validation evidence for the spec's US3.
 
@@ -47,14 +47,14 @@ It is unrelated to this PR (no `src/` changes) and passes in the CI en-US locale
 
 | Metric | March baseline (023) | Current `develop` | Note |
 |---|---|---|---|
-| Total JS (raw) | 14.19 MB | **15.26 MB** | +7.5% |
+| Total JS (raw) | 14.19 MiB | **15.26 MiB** | +7.5% |
 | JS chunks | 324 | **516** | |
-| Total CSS (raw) | ~0.16 MB | **0.37 MB** | |
-| Largest JS chunk | — | 1.82 MB (`subset-shared`) | shared font subset |
+| Total CSS (raw) | ~0.16 MiB | **0.37 MiB** | |
+| Largest JS chunk | — | 1.82 MiB (`subset-shared`) | shared font subset |
 
 **The +7.5% is not a regression from this PR or from React Compiler memoization.** The
 baseline predates ~471 commits of product work (new CRD pages, domains, features) — net
-of the full MUI/Emotion removal (epic #1888). SC-004's "+0.5% of the 14.19 MB baseline"
+of the full MUI/Emotion removal (epic #1888). SC-004's "+0.5% of the 14.19 MiB baseline"
 threshold compares against a 4-month-old tree and is not a meaningful gate for a
 build-neutral change; it is recorded here for completeness, not treated as a blocker.
 
@@ -85,9 +85,9 @@ desktop, headless Chrome). No backend, so routes render as static shells.
 
 | Cycle | Used heap | DOM nodes | Listeners |
 |---|---|---|---|
-| 1 | 26.75 MB | 63 | 159 |
-| 2 | 26.74 MB | 63 | 159 |
-| 3 | 26.74 MB | 63 | 159 |
+| 1 | 26.75 MiB | 63 | 159 |
+| 2 | 26.74 MiB | 63 | 159 |
+| 3 | 26.74 MiB | 63 | 159 |
 
 **Growth −0.04% over 3 cycles, trend stable, `potentialLeak: false`.** DOM node and
 listener counts are flat → **no leak detected.** ✓ SC-005.
@@ -99,7 +99,7 @@ listener counts are flat → **no leak detected.** ✓ SC-005.
 | SC-001 | New memoization triggers a lint warning | ✅ verified |
 | SC-002 | No-memoization policy discoverable in CLAUDE.md | ✅ (State & Hooks + React Compiler sections) |
 | SC-003 | Client metrics ≥ baseline | ✅ production Lighthouse 94–95/100, LCP ~1.3s (baseline non-comparable — see §4) |
-| SC-004 | Bundle within +0.5% of 14.19 MB | ⚠️ 15.26 MB; delta is product growth over 471 commits, not this PR (see §3) |
+| SC-004 | Bundle within +0.5% of 14.19 MiB | ⚠️ 15.26 MiB; delta is product growth over 471 commits, not this PR (see §3) |
 | SC-005 | No new memory leaks | ✅ 0.27% growth, stable |
 | SC-006 | Documented exceptions allowed via eslint-disable | ✅ warn-level; suppressible with a reason comment |
 

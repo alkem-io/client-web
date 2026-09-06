@@ -72,13 +72,13 @@
 
 **Goal**: Run the final validation suite to confirm the migration has not degraded any client-facing metrics. Produce the definitive before/after evidence.
 
-**Independent Test**: Run `pnpm vitest run` → all tests pass. Run `pnpm build` → succeeds. Run `pnpm analyze` → bundle size stable vs 14.19 MB baseline. Run `pnpm benchmark:compare` (when backend available) → no regressions.
+**Independent Test**: Run `pnpm vitest run` → all tests pass. Run `pnpm build` → succeeds. Run `pnpm analyze` → bundle size stable vs 14.19 MiB baseline. Run `pnpm benchmark:compare` (when backend available) → no regressions.
 
 ### Implementation
 
 - [x] T011 [US3] Run full test suite: `pnpm vitest run` — 1940 passed, 2 skipped, 232 test files. One pre-existing failure (`src/main/assistant/__tests__/budgetMeter.test.tsx`) is a locale/`Intl.NumberFormat` grouping-separator mismatch (local ICU renders `25 000`, test expects `25,000`); it is unrelated to this PR (0 `src/` changes) and passes in the CI en-US locale.
 - [x] T012 [US3] Run ESLint validation: `pnpm eslint .` — 0 errors, 28 warnings
-- [x] T013 [P] [US3] Run production build: `pnpm build` — succeeds in ~48s, 0 errors. Production bundle: 15.26 MB JS raw / 516 chunks + 0.37 MB CSS. See `benchmark-results.md`. NB: the +7.5% vs the 14.19 MB March baseline reflects 471 commits of product work since (net of full MUI removal), **not** this build-neutral PR (which adds only a lint rule + docs and touches no runtime code).
+- [x] T013 [P] [US3] Run production build: `pnpm build` — succeeds in ~48s, 0 errors. Production bundle: 15.26 MiB JS raw / 516 chunks + 0.37 MiB CSS. See `benchmark-results.md`. NB: the +7.5% vs the 14.19 MiB March baseline reflects 471 commits of product work since (net of full MUI removal), **not** this build-neutral PR (which adds only a lint rule + docs and touches no runtime code).
 - [x] T014 [P] [US3] Bundle size measured directly from `build/` output and recorded in `benchmark-results.md`. (`build/stats.html` visualization requires `pnpm analyze` / `ANALYZE=true` and was not regenerated — not needed to record the size delta.)
 - [x] T015 [US3] Run Lighthouse benchmarks: served the production build on `localhost:3000` and ran `node scripts/performance-benchmark.mjs post-migration-final`. Results in `benchmark-results.md`. NB: routes load as static shells (no GraphQL backend), and the March baseline was a dev-server capture, so the numbers are a fresh snapshot rather than a rigorous before/after — see the caveats in the report.
 - [x] T016 [US3] Memory profiling captured as part of the `performance-benchmark.mjs` run (per-route peak/heap + leak-trend heuristic); recorded in `benchmark-results.md`.

@@ -56,7 +56,7 @@ As a product owner, I need a final comprehensive performance report confirming t
 **Acceptance Scenarios**:
 
 1. **Given** the full memoization migration is complete, **When** `pnpm benchmark` is run and compared against the pre-migration baseline, **Then** all Lighthouse metrics (FCP, LCP, TTI, TBT, CLS) are equal to or better than baseline.
-2. **Given** a production build, **When** `pnpm analyze` is run, **Then** the total bundle size is stable or decreased compared to the pre-migration baseline (14.19 MB JS).
+2. **Given** a production build, **When** `pnpm analyze` is run, **Then** the total bundle size is stable or decreased compared to the pre-migration baseline (14.19 MiB JS).
 3. **Given** the migrated codebase, **When** `pnpm benchmark:memory` is run, **Then** no new memory leaks are detected by the 3-cycle leak detection.
 4. **Given** each migration phase has shipped to production, **When** Sentry transaction traces and Elastic APM RUM data are reviewed for 1 week, **Then** no real-user performance regressions are observed.
 
@@ -113,6 +113,6 @@ As a product owner, I need a final comprehensive performance report confirming t
 - **SC-001**: Any new useMemo/useCallback/React.memo usage in the codebase triggers a lint warning, preventing silent reintroduction.
 - **SC-002**: CLAUDE.md contains a clear no-memoization policy discoverable by new developers within the Code Conventions section.
 - **SC-003**: Final benchmark report shows all client-facing metrics (FCP, LCP, TTI, TBT, CLS) equal to or better than pre-migration baseline.
-- **SC-004**: Bundle size does not increase beyond +0.5% of the pre-migration baseline (14.19 MB JS, threshold: 14.26 MB).
+- **SC-004**: Bundle size does not increase beyond +0.5% of the pre-migration baseline (14.19 MiB JS, threshold: 14.26 MiB).
 - **SC-005**: Memory leak detection confirms no new leaks introduced by the migration.
 - **SC-006**: Lint rules correctly allow documented exceptions with eslint-disable and a reason comment.
