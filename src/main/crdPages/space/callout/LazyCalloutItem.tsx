@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
@@ -6,6 +6,7 @@ import {
   CalloutContributionType,
   CalloutFramingType,
 } from '@/core/apollo/generated/graphql-schema';
+import { isTaskBoardEnabled } from '@/crd/components/callout/task-board/taskBoard';
 import { PostCard } from '@/crd/components/space/PostCard';
 import { PostCardSkeleton } from '@/crd/components/space/PostCardSkeleton';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -21,6 +22,7 @@ import { useMediaGalleryDirectUpload } from '../hooks/useMediaGalleryDirectUploa
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
+import { CalloutReactionsConnector } from './CalloutReactionsConnector';
 import { CalloutSettingsConnector } from './CalloutSettingsConnector';
 import { CalloutShareDialog } from './CalloutShareDialog';
 import { CollaboraFramingEditorOverlay } from './CollaboraFramingEditorOverlay';
@@ -28,6 +30,8 @@ import { ContributionsPreviewConnector } from './ContributionsPreviewConnector';
 import { ContributorCollectionConnector } from './ContributorCollectionConnector';
 import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
 import { SpaceCollectionConnector } from './SpaceCollectionConnector';
+import { TaskBoardConnector } from './TaskBoardConnector';
+import { TaskBoardDialog } from './TaskBoardDialog';
 
 type LazyCalloutItemProps = {
   calloutId: string;
@@ -69,15 +73,22 @@ export function LazyCalloutItem({
   return (
     <div ref={ref} id={calloutId}>
       {inView && !loading && callout ? (
-        <LazyCalloutItemContent
-          callout={callout}
-          calloutsSetId={calloutsSetId}
-          orderedCalloutIds={orderedCalloutIds}
-          canReorder={canReorder}
-          forceDescriptionCollapsed={forceDescriptionCollapsed}
-          onClick={onClick}
-          onExpandClick={onExpandClick}
-        />
+        /* Own Suspense boundary: the card subtree pulls in lazily-loaded i18n namespaces
+           (crd-reactions, crd-taskBoard) and chunks. Without a boundary here the first
+           card to mount suspends up to the tab-level boundary, which swaps the ENTIRE
+           feed for a spinner for a frame — the biggest single layout jump on the page
+           (issue #10043). The fallback is the same skeleton, so nothing moves. */
+        <Suspense fallback={<PostCardSkeleton />}>
+          <LazyCalloutItemContent
+            callout={callout}
+            calloutsSetId={calloutsSetId}
+            orderedCalloutIds={orderedCalloutIds}
+            canReorder={canReorder}
+            forceDescriptionCollapsed={forceDescriptionCollapsed}
+            onClick={onClick}
+            onExpandClick={onExpandClick}
+          />
+        </Suspense>
       ) : (
         <PostCardSkeleton />
       )}
@@ -107,6 +118,11 @@ function LazyCalloutItemContent({
   onExpandClick?: () => void;
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
+  // A Tasks board opens to the board dialog (like a whiteboard/memo), not the
+  // post-detail dialog. `isBoard` is confirmed asynchronously by the board
+  // connector's query; until then a click falls back to the normal dialog.
+  const [isBoard, setIsBoard] = useState(false);
+  const [boardDialogOpen, setBoardDialogOpen] = useState(false);
   const [initialContributionId, setInitialContributionId] = useState<string | undefined>();
   const [initialMemoId, setInitialMemoId] = useState<string | undefined>();
   const [initialPostId, setInitialPostId] = useState<string | undefined>();
@@ -166,6 +182,26 @@ function LazyCalloutItemContent({
     setDialogOpen(true);
   };
 
+  // A Tasks board callout opens to the board dialog; any other callout opens its
+  // detail dialog. Detection is async, so this falls back to the dialog until
+  // the board connector confirms.
+  const handleCardOpen = () => {
+    if (isBoard) {
+      setBoardDialogOpen(true);
+    } else {
+      openDialog();
+    }
+  };
+
+  // The callout-header fullscreen icon opens the board dialog AND enters browser
+  // fullscreen. requestFullscreen must run inside the click gesture, so it is
+  // fired here (not in an effect after the dialog mounts).
+  const openBoardFullscreen = () => {
+    const request = document.documentElement.requestFullscreen?.();
+    if (request) request.catch(() => {});
+    setBoardDialogOpen(true);
+  };
+
   const handleDialogClose = (open: boolean) => {
     setDialogOpen(open);
     if (!open) {
@@ -176,8 +212,8 @@ function LazyCalloutItemContent({
   };
 
   // Mirror CalloutDetailDialogConnector.handleFramingMemoClose: refresh the
-  // framing memo's markdown after Hocuspocus has had a chance to persist
-  // (~2.5s), so the feed preview reflects the latest content.
+  // framing memo's markdown after the collab room has had a chance to persist
+  // its snapshot (~2.5s), so the feed preview reflects the latest content.
   const handleFramingMemoClose = () => {
     const fmId = callout.framing.memo?.id;
     if (framingRefreshRef.current) {
@@ -238,13 +274,53 @@ function LazyCalloutItemContent({
     includeContentEditors: true,
   });
 
-  const contributionsPreview = hasContributionType ? (
+  // Omit the bar entirely when the callout has no reactions summary (the server
+  // module may not be deployed). The connector renders null in that case, but an
+  // element is still truthy — passing it would render an empty padded section.
+  const reactionsBar =
+    callout.reactionsSummary == null ? undefined : (
+      <CalloutReactionsConnector
+        calloutId={callout.id}
+        reactionsSummary={callout.reactionsSummary}
+        myPrivileges={callout.authorization?.myPrivileges?.map(p => p as string)}
+        isPublished={!callout.draft}
+      />
+    );
+
+  // POSTS-only callouts may be Tasks boards. Gate the (extra) board query on the
+  // cheap, already-loaded signals — POSTS-only contribution config and the build
+  // kill switch — so non-board callouts never fetch it. The connector confirms
+  // the board marker from its own query and falls back to the plain preview when
+  // absent, keeping every non-board callout byte-identical.
+  const allowedContributionTypes = callout.settings.contribution.allowedTypes;
+  const isPostsOnly =
+    allowedContributionTypes.length === 1 && allowedContributionTypes[0] === CalloutContributionType.Post;
+  const maybeTaskBoard = isPostsOnly && isTaskBoardEnabled();
+
+  const plainContributionsPreview = hasContributionType ? (
     <ContributionsPreviewConnector
       callout={callout}
       onShowAll={() => openDialog()}
       onContributionClick={(contributionId, memoId) => openDialog(contributionId, memoId)}
+      isTaskBoard={isBoard}
     />
   ) : undefined;
+
+  const contributionsPreview = maybeTaskBoard ? (
+    <TaskBoardConnector
+      calloutId={callout.id}
+      onBoardResolved={setIsBoard}
+      fallback={plainContributionsPreview}
+      onOpenTask={contributionId => {
+        // Clicking a task in the inline preview presents it on top of the board
+        // dialog: open the board dialog and the task's focused dialog above it.
+        setBoardDialogOpen(true);
+        openDialog(contributionId);
+      }}
+    />
+  ) : (
+    plainContributionsPreview
+  );
 
   const pollPreview =
     callout.framing.type === CalloutFramingType.Poll ? <CalloutPollConnector callout={callout} /> : null;
@@ -290,7 +366,7 @@ function LazyCalloutItemContent({
             <PostCard
               post={postData}
               onClick={() => {
-                openDialog();
+                handleCardOpen();
                 onClick?.();
               }}
               onOpenFraming={handleOpenFraming}
@@ -300,14 +376,17 @@ function LazyCalloutItemContent({
                   callout={callout}
                   moveActions={moveActions}
                   onShare={() => setShareOpen(true)}
+                  isTaskBoard={isBoard}
                 />
               }
-              onExpandClick={onExpandClick}
+              onExpandClick={isBoard ? openBoardFullscreen : onExpandClick}
+              expandIcon={isBoard ? 'fullscreen' : undefined}
               onOpenFramingDocument={collaboraDocumentId ? () => setCollaboraEditorOpen(true) : undefined}
               commentsSlot={thread}
               commentInputSlot={commentsEnabled ? commentInput : null}
               onCommentsExpandedChange={setCommentsExpanded}
               contributionsPreview={contributionsPreview}
+              reactionsSlot={reactionsBar}
             >
               {pollPreview}
               {contributorsPreview}
@@ -319,18 +398,25 @@ function LazyCalloutItemContent({
         <PostCard
           post={postData}
           onClick={() => {
-            openDialog();
+            handleCardOpen();
             onClick?.();
           }}
           onOpenFraming={handleOpenFraming}
           onAddMediaGalleryImages={handleAddMediaGalleryImages}
           onCommentsClick={() => openDialog()}
           settingsSlot={
-            <CalloutSettingsConnector callout={callout} moveActions={moveActions} onShare={() => setShareOpen(true)} />
+            <CalloutSettingsConnector
+              callout={callout}
+              moveActions={moveActions}
+              onShare={() => setShareOpen(true)}
+              isTaskBoard={isBoard}
+            />
           }
-          onExpandClick={onExpandClick}
+          onExpandClick={isBoard ? openBoardFullscreen : onExpandClick}
+          expandIcon={isBoard ? 'fullscreen' : undefined}
           onOpenFramingDocument={collaboraDocumentId ? () => setCollaboraEditorOpen(true) : undefined}
           contributionsPreview={contributionsPreview}
+          reactionsSlot={reactionsBar}
         >
           {pollPreview}
           {contributorsPreview}
@@ -338,6 +424,16 @@ function LazyCalloutItemContent({
         </PostCard>
       )}
       {mediaGalleryFileInput}
+
+      {isBoard && boardDialogOpen && (
+        <TaskBoardDialog
+          calloutId={callout.id}
+          title={callout.framing.profile.displayName}
+          open={boardDialogOpen}
+          onOpenChange={setBoardDialogOpen}
+          onOpenTask={openDialog}
+        />
+      )}
 
       <CalloutDetailDialogConnector
         open={dialogOpen}
@@ -347,6 +443,9 @@ function LazyCalloutItemContent({
         initialContributionId={initialContributionId}
         initialMemoId={initialMemoId}
         initialPostId={initialPostId}
+        // A task's focused dialog opens on top of the board dialog, so it (and
+        // its edit/delete/share) must stack above it.
+        elevated={isBoard}
       />
 
       {collaboraDocumentId && (

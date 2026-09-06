@@ -3,6 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { ClassificationPickerDialog } from '@/crd/components/classification/ClassificationPickerDialog';
+import { ClassificationRemoveConfirm } from '@/crd/components/classification/ClassificationRemoveConfirm';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -10,7 +13,6 @@ import { AddCommunityMemberDialog } from '@/crd/components/space/settings/AddCom
 import { ApplicationFormEditor } from '@/crd/components/space/settings/ApplicationFormEditor';
 import { ChangeDefaultSubspaceTemplateDialog } from '@/crd/components/space/settings/ChangeDefaultSubspaceTemplateDialog';
 import { CommunityGuidelinesEditor } from '@/crd/components/space/settings/CommunityGuidelinesEditor';
-import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
 import { MemberSettingsDialog } from '@/crd/components/space/settings/MemberSettingsDialog';
 import type { MemberSettingsSubject } from '@/crd/components/space/settings/memberSettingsTypes';
 import { SpaceSettingsAboutView } from '@/crd/components/space/settings/SpaceSettingsAboutView';
@@ -24,10 +26,17 @@ import { SpaceSettingsSubspacesView } from '@/crd/components/space/settings/Spac
 import { SpaceSettingsUpdatesView } from '@/crd/components/space/settings/SpaceSettingsUpdatesView';
 import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
+import useActionPermission from '@/domain/access/permissions/useActionPermission';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
+import {
+  ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES,
+  ROLE_SET_ASSIGN_PRIVILEGES,
+  VC_FROM_ACCOUNT_PRIVILEGES,
+} from '@/main/crdPages/permissions/roleAssignmentPrivileges';
+import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionReasonText';
 import { InviteMembersDialogConnector } from '@/main/crdPages/space/dialogs/InviteMembersDialogConnector';
 import { VirtualContributorInviteConnector } from '@/main/crdPages/space/dialogs/VirtualContributorInviteConnector';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
@@ -35,9 +44,11 @@ import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { LayoutReplaceFlowConnector } from '../../space/innovationFlow/LayoutReplaceFlowConnector';
 import { useAboutTabData } from './about/useAboutTabData';
+import { useClassificationPicker } from './about/useClassificationPicker';
 import { useAccountTabData } from './account/useAccountTabData';
 import { MembershipDetailDialogConnector, type ViewingMembership } from './community/MembershipDetailDialogConnector';
 import { useAddOrganizationDialog, useAddVirtualContributorDialog } from './community/useAddCommunityMemberDialog';
+import { useCommunityCsvExport } from './community/useCommunityCsvExport';
 import { useCommunityGuidelinesData } from './community/useCommunityGuidelinesData';
 import { useCommunityTabData } from './community/useCommunityTabData';
 import { useDirtyTabGuardContext } from './DirtyTabGuardContext';
@@ -47,6 +58,7 @@ import { useApplicationFormData } from './settings/useApplicationFormData';
 import { useSettingsTabData } from './settings/useSettingsTabData';
 import { useSubspaceDangerZone } from './settings/useSubspaceDangerZone';
 import { useStorageTabData } from './storage/useStorageTabData';
+import { CreateSubspaceDialogs } from './subspaces/CreateSubspaceDialogs';
 import { useCreateSubspace } from './subspaces/useCreateSubspace';
 import { useSubspacesTabData } from './subspaces/useSubspacesTabData';
 import { CrdSpaceTemplatesTab } from './templates/CrdSpaceTemplatesTab';
@@ -65,6 +77,7 @@ import { getVisibleSettingsTabs } from './useVisibleSettingsTabs';
  */
 export default function CrdSpaceSettingsPage() {
   const { t, i18n } = useTranslation('crd-spaceSettings');
+  const notify = useNotification();
   const scope = useSettingsScope();
   const { id: spaceId, level, url: spaceUrl, roleSetId, communityId, accountId, loading: scopeLoading } = scope;
 
@@ -98,6 +111,27 @@ export default function CrdSpaceSettingsPage() {
   const about = useAboutTabData(activeTab === 'about' ? spaceId : '', spaceUrl, level);
   const layout = useLayoutTabData(activeTab === 'layout' ? spaceId : '', level);
   const community = useCommunityTabData(activeTab === 'community' ? roleSetId : '');
+
+  // Gate each role-assignment control on the privilege its own backend resolver enforces.
+  // Organization rows need the grant pair; user and VC rows need the assign privilege.
+  const reasonText = usePermissionReasonText();
+  const assignReason = reasonText(
+    useActionPermission(community.myPrivileges, ROLE_SET_ASSIGN_PRIVILEGES, community.loading)
+  );
+  const assignOrganizationReason = reasonText(
+    useActionPermission(community.myPrivileges, ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES, community.loading)
+  );
+  // Virtual contributors are permitted by EITHER the role-set assign privilege or the
+  // account-assign privilege — space admins may hold only the latter. Mirrors the union in
+  // `useCommunityAdmin`; gating on the assign privilege alone would lock those admins out.
+  const assignVcPermission = useActionPermission(community.myPrivileges, ROLE_SET_ASSIGN_PRIVILEGES, community.loading);
+  const assignVcFromAccountPermission = useActionPermission(
+    community.myPrivileges,
+    VC_FROM_ACCOUNT_PRIVILEGES,
+    community.loading
+  );
+  const assignVcReason =
+    assignVcPermission.allowed || assignVcFromAccountPermission.allowed ? undefined : reasonText(assignVcPermission);
   const subspacesTab = useSubspacesTabData(activeTab === 'subspaces' ? spaceId : '');
   const createSubspace = useCreateSubspace(spaceId, {
     accountId,
@@ -190,6 +224,29 @@ export default function CrdSpaceSettingsPage() {
   const [inviteMembersOpen, setInviteMembersOpen] = useState(false);
   const { space: spaceContext } = useSpace();
   const { subspace } = useSubSpace();
+  // `useSpace()` always resolves the top-level (root) Space regardless of the
+  // current route's depth, so its id IS the FR-007a "top-level Space's
+  // Template Library" target — never the immediate parent's.
+  const classificationPicker = useClassificationPicker(spaceContext.id);
+  const [pendingRemoveClassificationId, setPendingRemoveClassificationId] = useState<string | null>(null);
+
+  // A selection write that lost to a concurrent removal refetches silently in
+  // the hook; surface the outcome once as a toast (house pattern) and reset
+  // the flag so the next occurrence toasts again.
+  useEffect(() => {
+    if (about.classificationRemovedError) {
+      notify(t('classifications.removedConcurrently'), 'error');
+      about.dismissClassificationRemovedError();
+    }
+  }, [about.classificationRemovedError]);
+
+  const csvExport = useCommunityCsvExport({
+    members: community.members,
+    applications: community.applications,
+    spaceDisplayName: level === 'L0' ? spaceContext.about.profile.displayName : subspace.about.profile.displayName,
+    loading: community.loading,
+    errored: community.errored,
+  });
   const spaceLevelEnum = level === 'L0' ? SpaceLevel.L0 : level === 'L1' ? SpaceLevel.L1 : SpaceLevel.L2;
 
   // Subspace-only (L1/L2) "Save as a template" + delete sections at the bottom of the Settings tab
@@ -402,6 +459,7 @@ export default function CrdSpaceSettingsPage() {
                   onUploadAvatar={about.onUploadAvatar}
                   onUploadPageBanner={about.onUploadPageBanner}
                   onUploadCardBanner={about.onUploadCardBanner}
+                  onRecropVisual={about.onRecropVisual}
                   onReferencesChange={about.onReferencesChange}
                   onReferenceFileUpload={about.onReferenceFileUpload}
                   referenceUploadAccept={about.referenceUploadAccept}
@@ -409,6 +467,16 @@ export default function CrdSpaceSettingsPage() {
                   onImageUpload={md.onImageUpload}
                   iframeAllowedUrls={md.iframeAllowedUrls}
                   onError={md.onError}
+                  classifications={about.classifications}
+                  classificationSelectionPendingIds={about.classificationSelectionPendingIds}
+                  onAddClassification={classificationPicker.openPicker}
+                  onSelectClassificationValues={(entryId, selectedValueIDs) =>
+                    void about.updateClassificationSelection(entryId, selectedValueIDs)
+                  }
+                  onToggleClassificationDisplay={(entryId, display) =>
+                    void about.updateClassificationDisplay(entryId, display)
+                  }
+                  onRequestRemoveClassification={setPendingRemoveClassificationId}
                 />
               ) : (
                 <LoadingSpinner />
@@ -488,6 +556,8 @@ export default function CrdSpaceSettingsPage() {
                       onQuestionMoveUp={applicationForm.onQuestionMoveUp}
                       onQuestionMoveDown={applicationForm.onQuestionMoveDown}
                       onSave={applicationForm.onSave}
+                      onExportApplications={csvExport.exportApplications}
+                      exportDisabled={csvExport.exportDisabled}
                       onImageUpload={md.onImageUpload}
                       iframeAllowedUrls={md.iframeAllowedUrls}
                       onError={md.onError}
@@ -521,6 +591,10 @@ export default function CrdSpaceSettingsPage() {
                   ) : undefined
                 }
                 permissions={community.permissions}
+                addDisabledReasons={{
+                  organizations: assignOrganizationReason,
+                  virtualContributors: assignVcReason,
+                }}
                 onUserRemove={community.onUserRemove}
                 onMemberChangeRole={member => setActiveMemberSubject(buildUserSubject(member))}
                 onOrgAdd={addOrgDialog.openDialog}
@@ -537,6 +611,8 @@ export default function CrdSpaceSettingsPage() {
                 onPendingReject={community.onPendingReject}
                 onPendingDelete={community.onPendingDelete}
                 onInviteUsers={() => setInviteMembersOpen(true)}
+                onExportMembers={csvExport.exportMembers}
+                exportDisabled={csvExport.exportDisabled}
               />
             )}
             {activeTab === 'subspaces' && isTabVisible('subspaces') && (
@@ -640,54 +716,11 @@ export default function CrdSpaceSettingsPage() {
           `SaveSubspaceAsTemplateDialog` + `useSaveSubspaceAsTemplate` remain on disk for reference
           but are no longer wired to this page. */}
 
-      <CreateSubspaceDialog
-        open={createSubspace.open}
-        onOpenChange={open => {
-          if (!open) createSubspace.closeDialog();
-        }}
-        values={createSubspace.values}
-        errors={createSubspace.errors}
-        selectedTemplateName={createSubspace.selectedTemplateName}
-        selectedTemplateContent={createSubspace.selectedTemplateContent}
-        selectedTemplateLoading={createSubspace.selectedTemplateLoading}
-        onOpenTemplatePicker={createSubspace.onOpenTemplatePicker}
-        onClearTemplate={createSubspace.onClearTemplate}
-        submitting={createSubspace.submitting}
-        canSubmit={createSubspace.canSubmit}
-        avatarConstraints={createSubspace.avatarConstraints}
-        cardBannerConstraints={createSubspace.cardBannerConstraints}
-        onChange={createSubspace.onChange}
-        onSubmit={() => void createSubspace.onSubmit()}
+      <CreateSubspaceDialogs
+        createSubspace={createSubspace}
         onImageUpload={mdCreate.onImageUpload}
         iframeAllowedUrls={mdCreate.iframeAllowedUrls}
         onError={mdCreate.onError}
-      />
-      <TemplatePicker {...createSubspace.picker} />
-      <ConfirmationDialog
-        open={createSubspace.overwriteConfirmOpen}
-        onOpenChange={open => {
-          if (!open) createSubspace.onCancelOverwriteTemplate();
-        }}
-        title={t('subspaces.createDialog.template.overwriteConfirm.title')}
-        description={t('subspaces.createDialog.template.overwriteConfirm.description')}
-        confirmLabel={t('subspaces.createDialog.template.overwriteConfirm.confirm')}
-        cancelLabel={t('subspaces.createDialog.template.overwriteConfirm.cancel')}
-        onConfirm={createSubspace.onConfirmOverwriteTemplate}
-        onCancel={createSubspace.onCancelOverwriteTemplate}
-      />
-      <ImageCropDialog
-        open={Boolean(createSubspace.pendingCrop)}
-        file={createSubspace.pendingCrop?.file}
-        config={createSubspace.pendingCrop?.config ?? {}}
-        onSave={({ file, altText }) => createSubspace.onCropComplete(file, altText)}
-        onCancel={createSubspace.onCropCancel}
-        title={t('subspaces.createDialog.crop.title')}
-        description={t('subspaces.createDialog.crop.description')}
-        saveLabel={t('subspaces.createDialog.crop.save')}
-        savingLabel={t('subspaces.createDialog.crop.saving')}
-        cancelLabel={t('subspaces.createDialog.crop.cancel')}
-        altTextLabel={t('subspaces.createDialog.crop.altLabel')}
-        altTextPlaceholder={t('subspaces.createDialog.crop.altPlaceholder')}
       />
 
       <ChangeDefaultSubspaceTemplateDialog
@@ -715,6 +748,57 @@ export default function CrdSpaceSettingsPage() {
         title={t('about.branding.cropDialog.title')}
         altTextLabel={t('about.branding.cropDialog.altText')}
         altTextPlaceholder={t('about.branding.cropDialog.altTextPlaceholder')}
+        initialAltText={about.pendingCrop?.altText}
+      />
+
+      <ClassificationPickerDialog
+        open={classificationPicker.open}
+        onOpenChange={open => {
+          if (!open) classificationPicker.closePicker();
+        }}
+        sources={classificationPicker.sources}
+        onSelectTemplate={(templateId, displayLabel) => {
+          void about.addClassificationFromTemplate(templateId, displayLabel).then(ok => {
+            if (ok) classificationPicker.closePicker();
+          });
+        }}
+        conflict={about.classificationConflict}
+        onRetryWithLabel={(templateId, displayLabel) => {
+          void about.addClassificationFromTemplate(templateId, displayLabel).then(ok => {
+            if (ok) classificationPicker.closePicker();
+          });
+        }}
+        onDismissConflict={about.dismissClassificationConflict}
+        submitting={about.classificationSubmitting}
+      />
+
+      <ClassificationRemoveConfirm
+        open={pendingRemoveClassificationId !== null}
+        onOpenChange={open => {
+          if (!open) setPendingRemoveClassificationId(null);
+        }}
+        displayLabel={
+          about.classifications.find(entry => entry.id === pendingRemoveClassificationId)?.displayLabel ?? ''
+        }
+        onConfirm={() => {
+          if (!pendingRemoveClassificationId) return;
+          void about.removeClassification(pendingRemoveClassificationId);
+          setPendingRemoveClassificationId(null);
+        }}
+      />
+
+      <ConfirmationDialog
+        open={about.recropConfirmOpen}
+        onOpenChange={open => {
+          if (!open) about.onCancelRecropConfirm();
+        }}
+        variant="destructive"
+        title={t('about.branding.recropConfirm.title')}
+        description={t('about.branding.recropConfirm.description')}
+        confirmLabel={t('about.branding.recropConfirm.confirm')}
+        cancelLabel={t('about.branding.recropConfirm.cancel')}
+        onConfirm={about.onConfirmRecrop}
+        onCancel={about.onCancelRecropConfirm}
       />
 
       <ConfirmationDialog
@@ -839,6 +923,9 @@ export default function CrdSpaceSettingsPage() {
                   }
                 }
           }
+          leadDisabledReason={activeMemberSubject.type === 'user' ? assignReason : assignOrganizationReason}
+          adminDisabledReason={assignReason}
+          removeDisabledReason={activeMemberSubject.type === 'user' ? assignReason : assignOrganizationReason}
         />
       )}
 
@@ -858,6 +945,7 @@ export default function CrdSpaceSettingsPage() {
         emptyLabel={t('community.organizations.addDialog.empty')}
         onSearchChange={addOrgDialog.onSearchChange}
         onAdd={id => void addOrgDialog.onAdd(id)}
+        addDisabledReason={assignOrganizationReason}
       />
 
       <AddCommunityMemberDialog
@@ -876,6 +964,7 @@ export default function CrdSpaceSettingsPage() {
         emptyLabel={t('community.virtualContributors.addDialog.empty')}
         onSearchChange={addVCDialog.onSearchChange}
         onAdd={id => void addVCDialog.onAdd(id)}
+        addDisabledReason={assignVcReason}
       />
 
       {roleSetId && (

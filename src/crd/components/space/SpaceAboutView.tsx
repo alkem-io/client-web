@@ -1,6 +1,10 @@
 import { ExternalLink, Globe, type LucideIcon, MapPin, Pencil, Target, UserCheck, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  ClassificationGroupList,
+  type ClassificationGroupListEntry,
+} from '@/crd/components/classification/ClassificationGroupList';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -33,6 +37,15 @@ export type SpaceAboutData = {
   leadUsers: SpaceLeadData[];
   leadOrganizations: SpaceLeadData[];
   references: CalloutReference[];
+  /** Freeform Tags — rendered on the info panel so they stay visible alongside Classifications (FR-013). */
+  tags?: string[];
+  /**
+   * Already filtered + ordered for the CURRENT viewer (see `groupEntriesForDisplay` in
+   * `@/crd/components/classification/types`) — a read-only visitor's list already excludes
+   * hidden and zero-value entries; an editor's includes them. The About page is the only
+   * rendering surface this iteration (D2).
+   */
+  classifications: ClassificationGroupListEntry[];
 };
 
 type SpaceAboutViewProps = {
@@ -58,6 +71,8 @@ type SpaceAboutViewProps = {
   onEditReferences?: () => void;
   /** "Manage community" on the panel — navigates to settings/community. */
   onEditMembers?: () => void;
+  /** Deep-links into Settings → About's Classifications section (FR-018d — reachable and reversible). */
+  onEditClassifications?: () => void;
 };
 
 // Force light markdown colors when rendered on the dark accent panel. MarkdownContent
@@ -85,6 +100,7 @@ export function SpaceAboutView({
   onEditWho,
   onEditReferences,
   onEditMembers,
+  onEditClassifications,
 }: SpaceAboutViewProps) {
   const { t } = useTranslation('crd-space');
 
@@ -92,7 +108,8 @@ export function SpaceAboutView({
   const hasLeads = leads.length > 0;
   const hasPanelEditIcons = hasEditPrivilege && Boolean(onEditDescription || onEditMembers);
   const hasMeta = Boolean(data.location) || memberCount !== undefined || Boolean(isMember);
-  const showPanel = Boolean(data.description) || hasMeta || hasLeads || hasPanelEditIcons;
+  const hasTags = (data.tags?.length ?? 0) > 0;
+  const showPanel = Boolean(data.description) || hasMeta || hasLeads || hasPanelEditIcons || hasTags;
 
   return (
     <div className={cn('max-w-3xl mx-auto space-y-6', className)}>
@@ -145,6 +162,21 @@ export function SpaceAboutView({
                   </span>
                 )}
               </div>
+            )}
+
+            {/* Freeform Tags — kept visible beside Classifications (FR-013 coexistence). */}
+            {hasTags && (
+              // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
+              // biome-ignore lint/a11y/useSemanticElements: role="list" restores semantics after Tailwind reset
+              <ul role="list" aria-label={t('about.tags')} className="flex flex-wrap gap-1.5 mt-4">
+                {data.tags?.map(tag => (
+                  <li key={tag}>
+                    <span className="inline-flex rounded-md bg-primary-foreground/15 px-2 py-0.5 text-caption text-primary-foreground">
+                      {tag}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             )}
 
             {/* Leads — name only (no per-lead location) */}
@@ -203,6 +235,18 @@ export function SpaceAboutView({
           editLabel={t('about.edit')}
         >
           <MarkdownContent content={data.who} />
+        </SectionCard>
+      )}
+
+      {/* ── Classifications (FR-018 — the only rendering surface this iteration, D2) ── */}
+      {data.classifications.length > 0 && (
+        <SectionCard
+          title={t('classifications.sectionTitle')}
+          canEdit={hasEditPrivilege}
+          onEdit={onEditClassifications}
+          editLabel={t('about.edit')}
+        >
+          <ClassificationGroupList entries={data.classifications} canEdit={hasEditPrivilege} />
         </SectionCard>
       )}
 

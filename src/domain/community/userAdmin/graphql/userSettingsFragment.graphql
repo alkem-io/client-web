@@ -11,6 +11,9 @@ fragment userSettingsFragment on UserSettings {
     spaceID
     autoRedirect
   }
+  dashboard {
+    activityView
+  }
   notification {
     platform {
       admin {
@@ -109,6 +112,11 @@ fragment userSettingsFragment on UserSettings {
         inApp
         push
       }
+      collaborationCalloutReaction {
+        email
+        inApp
+        push
+      }
       collaborationCalloutComment {
         email
         inApp
@@ -169,6 +177,16 @@ fragment userSettingsFragment on UserSettings {
         push
       }
       messageReceived {
+        email
+        inApp
+        push
+      }
+      conversationMessageDirect {
+        email
+        inApp
+        push
+      }
+      conversationMessageGroup {
         email
         inApp
         push

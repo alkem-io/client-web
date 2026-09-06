@@ -33,6 +33,10 @@
       "communityGuidelines": {
         "title": "Modèles de directives communautaires",
         "subtitle": "Règles et attentes pour une communauté."
+      },
+      "classification": {
+        "title": "Classification templates",
+        "subtitle": "Structured, reusable vocabularies such as SDGs, Language, or Sector."
       }
     }
   },
@@ -43,7 +47,11 @@
     "edit": "Modifier",
     "duplicate": "Dupliquer",
     "delete": "Supprimer",
-    "noPreview": "Pas d’aperçu"
+    "noPreview": "Pas d’aperçu",
+    "classification": {
+      "multiSelect": "Sélection multiple",
+      "singleSelect": "Sélection unique"
+    }
   },
   "framingKind": {
     "none": "Texte",
@@ -101,6 +109,13 @@
       "title": "Titre des directives",
       "body": "Directives",
       "references": "Références"
+    },
+    "classification": {
+      "multiSelect": "Sélection multiple",
+      "singleSelect": "Sélection unique",
+      "valueCount_one": "{{count}} valeur",
+      "valueCount_other": "{{count}} valeurs",
+      "definedValues": "Valeurs définies"
     }
   },
   "picker": {
@@ -129,14 +144,16 @@
       "callout": "Créer un modèle d’outil de collaboration",
       "whiteboard": "Créer un modèle de tableau blanc",
       "post": "Créer un modèle de publication",
-      "communityGuidelines": "Créer un modèle de directives communautaires"
+      "communityGuidelines": "Créer un modèle de directives communautaires",
+      "classification": "Create classification template"
     },
     "editTitle": {
       "space": "Modifier un modèle d’espace",
       "callout": "Modifier un modèle d’outil de collaboration",
       "whiteboard": "Modifier un modèle de tableau blanc",
       "post": "Modifier un modèle de publication",
-      "communityGuidelines": "Modifier un modèle de directives communautaires"
+      "communityGuidelines": "Modifier un modèle de directives communautaires",
+      "classification": "Edit classification template"
     },
     "common": {
       "name": "Nom du modèle",
@@ -151,6 +168,7 @@
       "uploadBanner": "Téléverser une image d’aperçu"
     },
     "save": "Enregistrer",
+    "done": "Terminé",
     "cancel": "Annuler",
     "whiteboard": {
       "drawing": "Tableau blanc",
@@ -192,6 +210,27 @@
       "body": "Directives",
       "bodyPlaceholder": "Écrivez les directives pour cette communauté…",
       "references": "Références"
+    },
+    "classification": {
+      "cardinality": "Type de sélection",
+      "cardinalitySingle": "Sélection unique — les utilisateurs choisissent une valeur",
+      "cardinalityMulti": "Sélection multiple — les utilisateurs peuvent choisir plusieurs valeurs",
+      "values": "Values",
+      "moveValueUp": "Déplacer la valeur {{position}} vers le haut",
+      "moveValueDown": "Déplacer la valeur {{position}} vers le bas",
+      "valueLabelPlaceholder": "Value label",
+      "valueIdOverride": "Custom id (optional)",
+      "valueIdOverridePlaceholder": "Leave blank to derive an id from the label",
+      "valueIdCollision": "This id is already used by another value in this set.",
+      "addValue": "Add value",
+      "removeValue": "Remove value",
+      "atLeastOneValue": "A value set needs at least one value.",
+      "tooManyValues": "A value set can hold at most 50 values.",
+      "valuesRequired": "Add at least one value.",
+      "valuesHint": "Définissez les valeurs autorisées pour cette classification. Saisissez une valeur et appuyez sur Entrée.",
+      "quickAddPlaceholder": "p. ex. ODD 1 – Pas de pauvreté",
+      "valuesDefined_one": "{{count}} valeur définie",
+      "valuesDefined_other": "{{count}} valeurs définies"
     }
   },
   "references": {
@@ -271,13 +310,13 @@
     "searchVisibility": "Visibilité dans la recherche",
     "searchVisibilityOptions": {
       "public": "Public",
-      "authenticated": "Utilisateurs authentifiés",
-      "account": "Compte uniquement"
+      "account": "Compte",
+      "hidden": "Masqué"
     },
     "searchVisibilityHints": {
-      "public": "Tout le monde — y compris les visiteurs non authentifiés — peut trouver ce pack via la recherche.",
-      "authenticated": "Les utilisateurs connectés peuvent trouver ce pack via la recherche.",
-      "account": "Seuls les membres du compte propriétaire peuvent trouver ce pack via la recherche."
+      "public": "Tout le monde peut trouver ce pack via la recherche.",
+      "account": "Seul le compte propriétaire peut trouver ce pack via la recherche — y compris ses Associés, si le propriétaire est une organisation.",
+      "hidden": "Seuls les administrateurs du compte propriétaire peuvent trouver ce pack via la recherche."
     },
     "save": "Enregistrer les modifications",
     "crop": {
@@ -344,7 +383,8 @@
         "callout": "Outils de collaboration",
         "whiteboard": "Tableaux blancs",
         "post": "Publications",
-        "communityGuidelines": "Règles de la communauté"
+        "communityGuidelines": "Règles de la communauté",
+        "classification": "Classifications"
       },
       "summary": "{{first}} et {{count}} de plus",
       "pair": "{{first}} et {{second}}"

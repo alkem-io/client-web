@@ -1,0 +1,59 @@
+# GraphQL documents for callout emoji reactions.
+# Codegen generates typed hooks from these documents into apollo-hooks.ts.
+
+fragment CalloutReactionsSummary on Callout {
+  reactionsSummary {
+    total
+    emojis
+    myReactionEmoji
+    allowedEmojis
+  }
+}
+
+mutation AddReactionToCallout($reactionData: AddReactionToCalloutInput!) {
+  addReactionToCallout(reactionData: $reactionData) {
+    id
+    reactionsSummary {
+      total
+      emojis
+      myReactionEmoji
+      allowedEmojis
+    }
+  }
+}
+
+mutation RemoveReactionFromCallout($reactionData: RemoveReactionFromCalloutInput!) {
+  removeReactionFromCallout(reactionData: $reactionData) {
+    id
+    reactionsSummary {
+      total
+      emojis
+      myReactionEmoji
+      allowedEmojis
+    }
+  }
+}
+
+query CalloutWhoReacted($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      reactions {
+        id
+        emoji
+        updatedDate
+        user {
+          id
+          profile {
+            id
+            displayName
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+          }
+        }
+      }
+    }
+  }
+}

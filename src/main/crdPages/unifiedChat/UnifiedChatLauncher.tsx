@@ -5,6 +5,7 @@ import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useUnreadConversationsCount } from '@/main/userMessaging/useUnreadConversationsCount';
 import { UnifiedChatPanelConnector } from './UnifiedChatPanelConnector';
+import { useChatDeepLinkOpen } from './useChatDeepLink';
 
 type UnifiedChatLauncherProps = {
   /** Suppressed on auth routes / fullscreen editors (decided by the mount site). */
@@ -21,6 +22,10 @@ export const UnifiedChatLauncher = ({ hidden }: UnifiedChatLauncherProps) => {
   const { isEnabled, isOpen, setIsOpen } = useUserMessagingContext();
   const { isSmallScreen } = useScreenSize();
   const unreadCount = useUnreadConversationsCount();
+  // `?chat={conversationID}` deep link (contract C-6 / US1) — opens the panel
+  // on a cold load; this is the always-mounted spot that can do so (the panel
+  // connector below only renders once `isOpen`).
+  useChatDeepLinkOpen();
 
   if (!isEnabled || hidden) {
     return null;

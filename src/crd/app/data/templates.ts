@@ -210,7 +210,6 @@ export const MOCK_TEMPLATE_CONTENT_BY_ID: Record<string, TemplateContent> = {
     framingKind: 'whiteboard',
     framingTitle: 'Crazy 8s — eight ideas, eight minutes',
     framingDescription: 'Fold a sheet of paper into 8 cells. Sketch one idea per cell, one minute each.',
-    framingWhiteboardContent: '{}',
     allowedContributionTypes: ['post'],
     commentsEnabled: true,
   },
@@ -246,12 +245,10 @@ export const MOCK_TEMPLATE_CONTENT_BY_ID: Record<string, TemplateContent> = {
   },
   'tpl-wb-1': {
     type: 'whiteboard',
-    whiteboardContent: '{}',
     previewImageUrl: PACK_BANNERS[0],
   },
   'tpl-wb-2': {
     type: 'whiteboard',
-    whiteboardContent: '{}',
   },
   'tpl-post-1': {
     type: 'post',

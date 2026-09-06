@@ -44,9 +44,12 @@ export default function CrdSpaceRoutes() {
               }
             />
 
-            {/* Calendar dialog routes — render the dashboard tab so the URL
+            {/* Calendar dialog routes — render the active tab so the URL
                 resolver populates calendarEventId; the dialog opens on top via
-                CrdCalendarDialogConnector inside CrdSpaceDashboardPage. */}
+                CrdCalendarDialogConnector inside the sidebar connector, which
+                mounts it route-driven whenever the URL is in the /calendar tree
+                (deep links work on every tab) and widget-driven when the tab's
+                plan includes the events widget. */}
             <Route
               path="calendar"
               element={

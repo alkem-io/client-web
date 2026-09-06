@@ -69,13 +69,25 @@ export const InnovationHubBanner = ({
           !fullWidth && 'rounded-b-xl',
           contentColumnClass(fullWidth)
         )}
-        role="img"
-        aria-label={alt}
       >
-        <div
-          className={cn('absolute inset-0 bg-cover bg-center', !imageUrl && !color && 'bg-muted')}
-          style={imageUrl ? { backgroundImage: `url(${imageUrl})` } : color ? backgroundGradient(color) : undefined}
-        />
+        {/* A real <img> rather than a CSS background — see the matching note in
+            SpaceHeader: LCP discoverability plus a genuine alt attribute. */}
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={alt}
+            className="absolute inset-0 size-full object-cover object-center"
+            fetchPriority="high"
+            decoding="async"
+          />
+        ) : (
+          <div
+            className={cn('absolute inset-0', !color && 'bg-muted')}
+            style={color ? backgroundGradient(color) : undefined}
+            role="img"
+            aria-label={alt}
+          />
+        )}
       </div>
     </div>
   </div>

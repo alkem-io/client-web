@@ -114,6 +114,29 @@
         "saving": "Speichern…",
         "save": "Speichern"
       },
+      "sidebarDialog": {
+        "title": "Seitenleisten-Widgets",
+        "help": "Wähle aus, welche Widgets in der Seitenleiste dieses Tabs erscheinen und in welcher Reihenfolge.",
+        "emptyNote": "Keine Widgets ausgewählt — die Seitenleiste bleibt für diesen Tab leer.",
+        "toggleAriaLabel": "{{widget}} umschalten",
+        "dragHandleAriaLabel": "{{widget}} neu anordnen",
+        "widgets": {
+          "intent": "Zweck & Leiter",
+          "about": "Über diesen Bereich",
+          "createPost": "Post hinzufügen",
+          "applicationButton": "Bewerben / Beitreten",
+          "createSubspace": "Unterbereich erstellen",
+          "subspaceLinks": "Unterbereiche",
+          "events": "Anstehende Veranstaltungen",
+          "updates": "Neueste Aktualisierung",
+          "contactLeads": "Leiter kontaktieren",
+          "addUser": "Einladen",
+          "virtualContributors": "Virtuelle Mitwirkende",
+          "guidelines": "Gemeinschaftsrichtlinien",
+          "index": "Beitragsindex",
+          "search": "Suche"
+        }
+      },
       "postTemplate": {
         "menuLabel": "Post-Vorlage",
         "dialogTitle": "Post-Vorlage: {{phaseName}}",
@@ -284,7 +307,8 @@
         "page": "Seite {{page}} von {{total}}",
         "next": "Nächste Seite"
       },
-      "roleColumn": "Rolle"
+      "roleColumn": "Rolle",
+      "export": "Alle Mitglieder exportieren"
     },
     "memberSettings": {
       "title": "Mitgliedereinstellungen",
@@ -321,7 +345,7 @@
       },
       "addDialog": {
         "title": "Organisation hinzufügen",
-        "description": "Wählen Sie eine Organisation aus, deren Mitglieder ohne Genehmigung diesem Space beitreten können.",
+        "description": "Diese Organisationen werden als Mitglieder in diesem Space und auf ihrem Organisationsprofil sichtbar sein.",
         "search": "Organisationen suchen…",
         "empty": "Keine Organisationen entsprechen Ihrer Suche."
       }
@@ -768,7 +792,8 @@
         "description": "Möchten Sie diese Frage wirklich entfernen?",
         "confirm": "Löschen"
       },
-      "save": "Speichern"
+      "save": "Speichern",
+      "export": "Alle eingereichten Bewerbungen exportieren"
     },
     "allowedActions": {
       "title": "Erlaubte Aktionen",
@@ -887,20 +912,23 @@
     },
     "branding": {
       "title": "Space-Branding",
-      "description": "Laden Sie einen Avatar, einen Seiten-Banner (1536×256) und einen Karten-Banner (416×256) hoch.",
+      "description": "Laden Sie einen Avatar, einen Seiten-Banner (3840px) und einen Karten-Banner (416×256) hoch.",
       "noImage": "Kein Bild",
       "upload": "Hochladen",
       "avatar": {
         "title": "Avatar",
-        "hint": "Das Logo des Spaces."
+        "hint": "Das Logo des Spaces.",
+        "recrop": "Aktuellen Avatar zuschneiden"
       },
       "pageBanner": {
-        "title": "Seiten-Banner (1536 × 256px)",
-        "hint": "Wird oben auf der Space-Seite angezeigt."
+        "title": "Seiten-Banner",
+        "hint": "Wird oben auf der Space-Seite angezeigt. Verwenden Sie ein Bild von mindestens 1200 × 120px.",
+        "recrop": "Aktuelles Seitenbanner zuschneiden"
       },
       "cardBanner": {
         "title": "Karten-Banner (416 × 256px)",
-        "hint": "Wird in Suchergebnissen und Space-Karten angezeigt."
+        "hint": "Wird in Suchergebnissen und Space-Karten angezeigt.",
+        "recrop": "Aktuelles Kartenbanner zuschneiden"
       },
       "cropDialog": {
         "save": "Speichern",
@@ -910,7 +938,14 @@
         "altText": "Beschreibung",
         "altTextPlaceholder": "Dieses Bild beschreiben…"
       },
-      "changeBanner": "Banner ändern"
+      "recropConfirm": {
+        "title": "Originalbild ersetzen?",
+        "description": "Beim Speichern dieses Zuschnitts wird ein neues Bild hochgeladen und das Original dauerhaft verworfen. Die weggeschnittenen Bereiche können später nicht wiederhergestellt werden.",
+        "confirm": "Bild ersetzen",
+        "cancel": "Abbrechen"
+      },
+      "changeBanner": "Banner ändern",
+      "recropFailed": "Dieses Bild konnte nicht zum Zuschneiden geladen werden. Bitte erneut versuchen."
     },
     "location": {
       "title": "Standort",
@@ -977,5 +1012,55 @@
       "title": "Über",
       "subtitle": "Definieren Sie den Zweck, die Motivation und das Zielpublikum Ihres Spaces."
     }
+  },
+  "classifications": {
+    "sectionTitle": "Klassifikationen",
+    "sectionDescription": "Klassifiziere deinen Space mit strukturierten Vokabularen (z. B. SDGs, Sektor) für Auffindbarkeit und Berichte.",
+    "addButton": "Klassifikation hinzufügen",
+    "picker": {
+      "title": "Add a classification",
+      "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
+      "platformSection": "Platform-wide",
+      "spaceSection": "This Space's library",
+      "emptyState": {
+        "title": "No Classification Templates yet",
+        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it."
+      },
+      "conflict": {
+        "title": "That name is already in use",
+        "description": "This Space already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
+        "fieldLabel": "Display label",
+        "retry": "Add with this label"
+      },
+      "cancel": "Cancel",
+      "searchPlaceholder": "Vorlagen durchsuchen…",
+      "noMatches": "Keine Vorlagen passen zu \"{{query}}\".",
+      "multiSelect": "Mehrfach",
+      "singleSelect": "Einzeln"
+    },
+    "valueSelector": {
+      "noneSelected": "No values selected yet"
+    },
+    "display": {
+      "toggleLabel": "Show on the Space page",
+      "hiddenHint": "Not shown on the Space page"
+    },
+    "remove": {
+      "menuLabel": "Remove classification",
+      "confirmTitle": "Remove this classification?",
+      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
+      "confirmButton": "Remove"
+    },
+    "removedEntryError": "This classification was removed — refreshing the page.",
+    "entry": {
+      "multiSelect": "Mehrfachauswahl",
+      "singleSelect": "Einzelauswahl",
+      "selectedCount_one": "{{count}} ausgewählt",
+      "selectedCount_other": "{{count}} ausgewählt",
+      "actions": "Klassifikations-Aktionen: {{label}}",
+      "selectValues": "Werte auswählen…",
+      "deselectValue": "{{label}} abwählen"
+    },
+    "removedConcurrently": "Diese Klassifikation wurde von jemand anderem entfernt. Die Liste wurde aktualisiert."
   }
 }

@@ -287,6 +287,9 @@ export function SpaceSettingsLayoutView({
                     columnMenuActions={columnMenuActions}
                     entityNoun={entityNoun}
                     draggable={canReorderColumns}
+                    // Sidebar widget configuration is L0-only for now — subspace phases
+                    // hide the section in the Layout dialog (stored values untouched).
+                    sidebarSettingsEnabled={level === 'L0'}
                     onImageUpload={onImageUpload}
                     iframeAllowedUrls={iframeAllowedUrls}
                     onError={onError}

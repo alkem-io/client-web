@@ -151,7 +151,7 @@ export function CalloutTemplatePreview({ content }: { content: CalloutContent })
         </div>
       )}
 
-      {content.defaultWhiteboardContent && (
+      {content.defaultWhiteboardAvailable && (
         <div className="space-y-1.5">
           <p className="text-label uppercase text-muted-foreground">{t('preview.callout.defaultWhiteboard')}</p>
           <p className="text-body text-muted-foreground">

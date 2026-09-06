@@ -1,13 +1,15 @@
+import { useApolloClient } from '@apollo/client';
 import { useRef, useState } from 'react';
 import {
   refetchAllTemplatesInTemplatesSetQuery,
+  TemplateContentDocument,
   useAllTemplatesInTemplatesSetQuery,
   useCreateTemplateFromContentSpaceMutation,
   useDeleteTemplateMutation,
   useImportTemplateDialogAccountTemplatesQuery,
   useImportTemplateDialogPlatformTemplatesQuery,
-  useTemplateContentLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import type { TemplateContentQuery, TemplateContentQueryVariables } from '@/core/apollo/generated/graphql-schema';
 import type {
   TemplateAction,
   TemplateCardData,
@@ -100,7 +102,33 @@ export function useTemplatesManager({
 
   // ── create/edit form lifecycle ──
   const form = useTemplateForms({ templatesSetId, spaceId, markdownUpload, referenceUpload });
-  const [getTemplateContent] = useTemplateContentLazyQuery();
+  // One-shot content read for preview / edit / duplicate. Deliberately imperative
+  // (`client.query`) rather than `useTemplateContentLazyQuery`: a lazy query leaves a
+  // standing observer bound to its last `templateId`, and when that template is later
+  // deleted the delete's `cache.evict` + `cache.gc()` invalidates that observer, which
+  // then refetches the now-deleted id and surfaces a spurious ENTITY_NOT_FOUND toast
+  // even though the delete succeeded. A one-shot query has no observer to invalidate.
+  const apolloClient = useApolloClient();
+  const getTemplateContent = async (options: {
+    variables: TemplateContentQueryVariables;
+  }): Promise<{ data: TemplateContentQuery | undefined }> => {
+    // Default errorPolicy ('none') rejects on a GraphQL error, so partial data never
+    // reaches copy/save. `client.query` also rejects on network errors regardless of
+    // policy — we catch both here and surface `{ data: undefined }`, the shape every
+    // caller already treats as "nothing to show" (`if (!fetched) return`, or clearing
+    // the preview spinner). A failed read therefore can neither leave a spinner stuck
+    // nor raise an unhandled rejection from the fire-and-forget callers.
+    try {
+      const result = await apolloClient.query<TemplateContentQuery, TemplateContentQueryVariables>({
+        query: TemplateContentDocument,
+        variables: options.variables,
+        fetchPolicy: 'network-only',
+      });
+      return { data: result.data };
+    } catch {
+      return { data: undefined };
+    }
+  };
   const [createTemplateFromContentSpace] = useCreateTemplateFromContentSpaceMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
@@ -322,16 +350,17 @@ export function useTemplatesManager({
   const [importPreviewContent, setImportPreviewContent] = useState<TemplateContent | undefined>(undefined);
   const [importPreviewLoading, setImportPreviewLoading] = useState(false);
   const importOpen = importType !== null;
+  const importIncludesSpace = importType === 'space';
 
   const { data: importAccountData, loading: importAccountLoading } = useImportTemplateDialogAccountTemplatesQuery({
-    variables: { accountId: accountId ?? '', includeCallout: false, includeSpace: false },
+    variables: { accountId: accountId ?? '', includeCallout: false, includeSpace: importIncludesSpace },
     skip: !isSpaceHolder || !accountId || !importOpen,
   });
   const { data: importPlatformData, loading: importPlatformLoading } = useImportTemplateDialogPlatformTemplatesQuery({
     variables: {
       templateTypes: importType ? [toGqlTemplateType(importType)] : [],
       includeCallout: false,
-      includeSpace: false,
+      includeSpace: importIncludesSpace,
     },
     skip: !isSpaceHolder || !importOpen,
   });

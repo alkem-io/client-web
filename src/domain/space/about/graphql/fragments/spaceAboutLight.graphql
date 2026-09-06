@@ -33,5 +33,6 @@ fragment SubspaceVisuals on Profile {
   }
   banner: visual(type: BANNER) {
     ...VisualModel
+    aspectRatio
   }
 }

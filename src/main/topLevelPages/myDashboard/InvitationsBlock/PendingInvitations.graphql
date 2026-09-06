@@ -17,6 +17,10 @@ query PendingInvitations {
         }
         createdBy {
           id
+          profile {
+            id
+            displayName
+          }
         }
         state
         createdDate

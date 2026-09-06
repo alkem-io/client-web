@@ -1,7 +1,9 @@
+import type { RegistrationFlow } from '@ory/kratos-client';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
+import { isInputNode, isSubmitButton } from '@/core/auth/authentication/components/Kratos/helpers';
 import { _AUTH_LOGIN_PATH, PARAM_NAME_RETURN_URL } from '@/core/auth/authentication/constants/authentication.constants';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
@@ -29,6 +31,97 @@ import { useTranslateDescriptor } from './useKratosMessageCopy';
 // in with the existing method or reset their password — instead of stranding
 // them on a registration form they can never complete.
 const MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID = 4000007;
+
+// A person who presses a provider button believing they are signing in, but
+// whose provider identity Kratos does not yet recognise, is bounced into this
+// same registration flow rather than told to sign up. Kratos stamps the
+// active strategy on a flow continued from an OIDC callback; a person who
+// chose to register directly gets a fresh flow with no active method. This
+// is the discriminator the sign-up signpost (FR-013/014) branches on.
+// Fallback: a fresh browser registration flow never carries `oidc` group
+// input (non-submit) nodes — those only appear once an OIDC continuation has
+// pre-filled provider-supplied traits — so their presence is equivalent
+// evidence if `active` is ever unset for this arrival.
+//
+// This flow-shape evidence alone cannot tell apart "bounced here from the
+// login screen" from "pressed a provider button on THIS sign-up screen" —
+// both produce the identical `active: 'oidc'` continuation, because the
+// accept-terms trait Kratos still needs cannot come from the provider. Only
+// the former is the FR-013 case; the latter is a deliberate registration and
+// FR-014 requires the signpost to stay silent. `arrivedFromSignUpProviderClick`
+// (set by `onProviderClick` below, sessionStorage-backed so it survives the
+// full-page OIDC round trip) is the origin marker that resolves that
+// ambiguity — see `markSignUpProviderClickOrigin`/`consumeSignUpProviderClickOrigin`.
+const isProviderArrivalFlow = (flow: RegistrationFlow | undefined): boolean => {
+  if (!flow) return false;
+  if (flow.active === 'oidc') return true;
+  const nodes = flow.ui?.nodes ?? [];
+  return nodes.some(node => node.group === 'oidc' && isInputNode(node) && !isSubmitButton(node));
+};
+
+/** sessionStorage marker proving the current tab's OIDC round trip was started by
+ * pressing a provider button on THIS sign-up screen (as opposed to a login-screen
+ * bounce). Distinct from `SIGNUP_INITIATED_MARKER`, which is set unconditionally
+ * on every mount of this page and so cannot make that distinction.
+ *
+ * The stored value is the id of the registration flow that was on screen at
+ * click time — not a plain boolean sentinel. Kratos preserves the flow id
+ * across the OIDC redirect (the returning `/registration?flow=<id>` is a
+ * continuation of the same flow, not a new one), so comparing the marker
+ * against the loaded flow's id scopes suppression to that exact flow: a
+ * second render of the same continuation (page reload, a validation-error
+ * bounce back to `/registration?flow=<id>`) still matches and stays
+ * suppressed, while an unrelated OIDC continuation (a different flow id —
+ * e.g. a login-screen bounce) never matches a marker left over from an
+ * earlier, abandoned provider click.
+ *
+ * DEVIATION from the pinned two-row table in
+ * `contracts/signup-signpost.md` (workspace spec, out of this repo's lane
+ * to amend): that contract only discriminates on flow shape and does not
+ * mention this origin marker, so a deliberate provider sign-up (contract
+ * row 1) is undocumented as "not shown". Flagged for the spec owner to
+ * reconcile the contract (and `tasks/client-web.md` T006) with this
+ * behaviour, which FR-014 requires. */
+export const SIGNUP_PROVIDER_CLICK_ORIGIN_MARKER = 'alkemio.signupProviderClickOrigin';
+
+/** Set from `SignUpCard.onProviderClick`, before the form's native submit navigates
+ * away to the provider. Stores the flow id that was loaded at click time; a
+ * missing flow id (still loading) leaves no marker, and the signpost falls
+ * back to plain flow-shape evidence for that trip. */
+function markSignUpProviderClickOrigin(flowId: string | undefined): void {
+  if (!flowId) {
+    return;
+  }
+  try {
+    sessionStorage.setItem(SIGNUP_PROVIDER_CLICK_ORIGIN_MARKER, flowId);
+  } catch {
+    // sessionStorage blocked — the signpost falls back to flow-shape evidence only
+  }
+}
+
+/** Pure read — never mutates storage, so it is safe to call on every render,
+ * including a render the i18n Suspense retry (`crd-auth` is a lazy
+ * namespace) discards before commit. Consuming the marker inside a render
+ * (e.g. a `useState` initializer) is what the previous version did, and it
+ * lost the marker whenever the committing render was not the first one. */
+function readSignUpProviderClickOriginFlowId(): string | null {
+  try {
+    return sessionStorage.getItem(SIGNUP_PROVIDER_CLICK_ORIGIN_MARKER);
+  } catch {
+    return null;
+  }
+}
+
+/** Clears the marker. Only called from the commit-phase effect below, once the
+ * loaded flow is confirmed to no longer be an OIDC continuation — never from
+ * render. */
+function clearSignUpProviderClickOrigin(): void {
+  try {
+    sessionStorage.removeItem(SIGNUP_PROVIDER_CLICK_ORIGIN_MARKER);
+  } catch {
+    // sessionStorage blocked — nothing to clear
+  }
+}
 
 type CrdSignUpPageProps = {
   /**
@@ -86,6 +179,25 @@ function CrdSignUpPage({ lockAcceptedTerms }: CrdSignUpPageProps) {
 
   const translateDescriptor = useTranslateDescriptor();
   usePasskeyScript(registrationFlow?.ui?.nodes);
+
+  // Pure read on every render (see `readSignUpProviderClickOriginFlowId`) — safe
+  // under the i18n Suspense retry below, and under any future StrictMode /
+  // `startTransition` double-render, because it never mutates storage as a
+  // side effect of rendering. See `isProviderArrivalFlow` above for why this is
+  // needed alongside the flow-shape discriminator (FR-013/014).
+  const arrivedFromSignUpProviderClick =
+    Boolean(registrationFlow) && readSignUpProviderClickOriginFlowId() === registrationFlow?.id;
+
+  // Clears the marker once the flow it was scoped to resolves as something
+  // other than an OIDC continuation (registrationFlow undefined — still
+  // loading — is deliberately excluded, so this never fires before the
+  // returning flow has actually loaded and been compared above). Runs only
+  // after commit, so it never races the render-phase read.
+  useEffect(() => {
+    if (registrationFlow && !isProviderArrivalFlow(registrationFlow)) {
+      clearSignUpProviderClickOrigin();
+    }
+  }, [registrationFlow]);
 
   const [accepted, setAccepted] = useState(false);
   // Set once, from this mount's initial sessionStorage hydration only — never
@@ -151,6 +263,10 @@ function CrdSignUpPage({ lockAcceptedTerms }: CrdSignUpPageProps) {
           <SignUpCard
             descriptor={descriptor}
             isLoading={loading}
+            showSignpost={isProviderArrivalFlow(registrationFlow) && !arrivedFromSignUpProviderClick}
+            // Every provider continuation gets the explanatory heading + labeled
+            // CTA, regardless of arrival origin — only the signpost is FR-014-gated.
+            providerContinuation={isProviderArrivalFlow(registrationFlow)}
             signInHref={
               // Carry the destination into the sign-in link so a user who
               // switches from sign-up to sign-in keeps it.
@@ -160,6 +276,7 @@ function CrdSignUpPage({ lockAcceptedTerms }: CrdSignUpPageProps) {
             privacyPolicyHref={locations?.privacy ?? '#'}
             hasAcceptedTerms={accepted}
             onAcceptedTermsChange={handleAcceptedChange}
+            onProviderClick={() => markSignUpProviderClickOrigin(registrationFlow?.id)}
             onPasskeyTrigger={trigger => {
               invokePasskeyTrigger(trigger).catch(() => {
                 /* passkey errors are surfaced inline once passkey is wired for registration */

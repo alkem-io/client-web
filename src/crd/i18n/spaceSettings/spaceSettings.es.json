@@ -114,6 +114,29 @@
         "saving": "Guardando…",
         "save": "Guardar"
       },
+      "sidebarDialog": {
+        "title": "Widgets de la barra lateral",
+        "help": "Elige qué widgets aparecen en la barra lateral de esta pestaña y en qué orden.",
+        "emptyNote": "No hay widgets seleccionados: la barra lateral estará vacía en esta pestaña.",
+        "toggleAriaLabel": "Activar o desactivar {{widget}}",
+        "dragHandleAriaLabel": "Reordenar {{widget}}",
+        "widgets": {
+          "intent": "Intención y líderes",
+          "about": "Acerca de este Espacio",
+          "createPost": "Añadir publicación",
+          "applicationButton": "Solicitar / Unirse",
+          "createSubspace": "Crear subespacio",
+          "subspaceLinks": "Subespacios",
+          "events": "Próximos eventos",
+          "updates": "Última actualización",
+          "contactLeads": "Contactar líderes",
+          "addUser": "Invitar",
+          "virtualContributors": "Contribuidores virtuales",
+          "guidelines": "Directrices de la comunidad",
+          "index": "Índice de publicaciones",
+          "search": "Buscar"
+        }
+      },
       "postTemplate": {
         "menuLabel": "Plantilla de Post",
         "dialogTitle": "Plantilla de Post: {{phaseName}}",
@@ -284,7 +307,8 @@
         "page": "Página {{page}} de {{total}}",
         "next": "Página siguiente"
       },
-      "roleColumn": "Rol"
+      "roleColumn": "Rol",
+      "export": "Exportar todos los miembros"
     },
     "memberSettings": {
       "title": "Configuración del miembro",
@@ -321,7 +345,7 @@
       },
       "addDialog": {
         "title": "Añadir organización",
-        "description": "Elige una organización cuyos miembros puedan unirse a este espacio sin aprobación.",
+        "description": "Estas organizaciones serán visibles como miembros en este Space y en su perfil de organización.",
         "search": "Buscar organizaciones…",
         "empty": "Ninguna organización coincide con tu búsqueda."
       }
@@ -768,7 +792,8 @@
         "description": "¿Estás seguro de que quieres eliminar esta pregunta?",
         "confirm": "Eliminar"
       },
-      "save": "Guardar"
+      "save": "Guardar",
+      "export": "Exportar todas las solicitudes enviadas"
     },
     "allowedActions": {
       "title": "Acciones permitidas",
@@ -887,20 +912,23 @@
     },
     "branding": {
       "title": "Branding del espacio",
-      "description": "Sube un avatar, un banner de página (1536×256) y un banner de tarjeta (416×256).",
+      "description": "Sube un avatar, un banner de página (3840px) y un banner de tarjeta (416×256).",
       "noImage": "Sin imagen",
       "upload": "Subir",
       "avatar": {
         "title": "Avatar",
-        "hint": "El logo del espacio."
+        "hint": "El logo del espacio.",
+        "recrop": "Recortar el avatar actual"
       },
       "pageBanner": {
-        "title": "Banner de página (1536 × 256px)",
-        "hint": "Se muestra en la parte superior de la página del espacio."
+        "title": "Banner de página",
+        "hint": "Se muestra en la parte superior de la página del Space. Usa una imagen de al menos 1200 × 120px.",
+        "recrop": "Recortar el banner de página actual"
       },
       "cardBanner": {
         "title": "Banner de tarjeta (416 × 256px)",
-        "hint": "Se muestra en los resultados de búsqueda y las tarjetas de espacio."
+        "hint": "Se muestra en los resultados de búsqueda y las tarjetas de espacio.",
+        "recrop": "Recortar el banner de tarjeta actual"
       },
       "cropDialog": {
         "save": "Guardar",
@@ -910,7 +938,14 @@
         "altText": "Descripción",
         "altTextPlaceholder": "Describe esta imagen…"
       },
-      "changeBanner": "Cambiar banner"
+      "recropConfirm": {
+        "title": "¿Reemplazar la imagen original?",
+        "description": "Al guardar este recorte se sube una nueva imagen y se descarta el original de forma permanente. Las áreas recortadas no se podrán recuperar más adelante.",
+        "confirm": "Reemplazar imagen",
+        "cancel": "Cancelar"
+      },
+      "changeBanner": "Cambiar banner",
+      "recropFailed": "No se pudo cargar esta imagen para recortarla. Inténtalo de nuevo."
     },
     "location": {
       "title": "Ubicación",
@@ -977,5 +1012,55 @@
       "title": "Acerca de",
       "subtitle": "Define el propósito, la motivación y el público objetivo de tu espacio."
     }
+  },
+  "classifications": {
+    "sectionTitle": "Clasificaciones",
+    "sectionDescription": "Clasifica tu espacio con vocabularios estructurados (p. ej. ODS, Sector) para mejorar la visibilidad y los informes.",
+    "addButton": "Añadir clasificación",
+    "picker": {
+      "title": "Add a classification",
+      "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
+      "platformSection": "Platform-wide",
+      "spaceSection": "This Space's library",
+      "emptyState": {
+        "title": "No Classification Templates yet",
+        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it."
+      },
+      "conflict": {
+        "title": "That name is already in use",
+        "description": "This Space already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
+        "fieldLabel": "Display label",
+        "retry": "Add with this label"
+      },
+      "cancel": "Cancel",
+      "searchPlaceholder": "Buscar plantillas…",
+      "noMatches": "Ninguna plantilla coincide con \"{{query}}\".",
+      "multiSelect": "Múltiple",
+      "singleSelect": "Única"
+    },
+    "valueSelector": {
+      "noneSelected": "No values selected yet"
+    },
+    "display": {
+      "toggleLabel": "Show on the Space page",
+      "hiddenHint": "Not shown on the Space page"
+    },
+    "remove": {
+      "menuLabel": "Remove classification",
+      "confirmTitle": "Remove this classification?",
+      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
+      "confirmButton": "Remove"
+    },
+    "removedEntryError": "This classification was removed — refreshing the page.",
+    "entry": {
+      "multiSelect": "Selección múltiple",
+      "singleSelect": "Selección única",
+      "selectedCount_one": "{{count}} seleccionado",
+      "selectedCount_other": "{{count}} seleccionados",
+      "actions": "Acciones de clasificación: {{label}}",
+      "selectValues": "Seleccionar valores…",
+      "deselectValue": "Deseleccionar {{label}}"
+    },
+    "removedConcurrently": "Esta clasificación fue eliminada por otra persona. La lista se ha actualizado."
   }
 }

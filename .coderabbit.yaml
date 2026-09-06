@@ -54,6 +54,7 @@ reviews:
         - **i18n — all strings live in CRD**: The legacy default `translation` namespace and its `src/core/i18n/<lang>/translation.<lang>.json` files were REMOVED (story #9885). The default namespace is now `crd-common` (`src/crd/i18n/common/`). Every user-facing string belongs in the CRD per-feature namespaces under `src/crd/i18n/<feature>/`. There is no longer a frozen legacy core file. Flag any reintroduction of a `src/core/i18n/**/translation.*.json` file or a `useTranslation('translation')` / `{ ns: 'translation' }` reference as a BLOCKING issue.
         - **i18n/CRD (manual translations + parity)**: Translations under `src/crd/i18n/**/*.json` are NOT managed by Crowdin. They are maintained manually (AI-assisted) per `src/crd/CLAUDE.md`; changes to any CRD locale file — including non-English ones — are expected and must pass review without Crowdin-compliance objections. All six supported languages (en, nl, es, bg, de, fr) are edited in the same PR. Enforce KEY PARITY: any key added or removed MUST be mirrored across all six language files — flag a missing or orphaned key in any locale as a blocking issue.
         - Reject commits containing build artifacts (`.build/`, `public/env-config.js`, `build/`) or missing validation evidence.
+        - **No GraphQL schema snapshot in the repo**: the client obtains the schema from a running server (`CODEGEN_SCHEMA=http://localhost:3000/graphql` in the committed `.env`; `pnpm codegen` loads it via dotenv-flow). Flag as a BLOCKING issue: any added `schema.graphql` (or other GraphQL SDL snapshot) file, removal of `/schema.graphql` from `.gitignore`, or a change to `codegen.yml`/`.env` that makes codegen read a local file by default instead of the live endpoint. A local snapshot is allowed only as a gitignored, uncommitted developer override via `.env.local`.
         - Ensure new env vars use the `VITE_APP_*` prefix and flow through `buildConfiguration.js` into `window._env_`.
 
         Trust this onboarding note first;
@@ -73,6 +74,7 @@ reviews:
     - path: "src/**/*.{graphql,gql}"
       instructions: |
         Ensure documents follow generated fragment conventions, stay in sync with server schema, and include matching codegen artifacts. Flag missing schema diffs or cache update plans.
+        Generated artifacts must come from `pnpm codegen` against a running server — never from a committed `schema.graphql` snapshot (BLOCKING if one is added).
     - path: "src/**/*.json"
       instructions: |
         Validate structure, schema compliance, and absence of secrets. Keep localization payloads consistent.

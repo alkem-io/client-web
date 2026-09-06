@@ -1,6 +1,7 @@
 import { Menu } from 'lucide-react';
-import { type ReactNode, useEffect, useRef } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDragScroll } from '@/crd/hooks/useDragScroll';
 import { cn } from '@/crd/lib/utils';
 
 type TabItem = {
@@ -11,6 +12,15 @@ type TabItem = {
 
 const MOBILE_TAB_LIST_CLASSES =
   'flex items-center gap-3 flex-1 min-w-0 overflow-x-auto scrollbar-hide [-ms-overflow-style:none] [scrollbar-width:none] px-3';
+
+/* Edge fades hinting at clipped tabs — applied only on the side(s) that
+   actually have more content, so the last tab never fades when everything fits. */
+const FADE_LEFT =
+  '[mask-image:linear-gradient(to_right,transparent,black_2rem)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_2rem)]';
+const FADE_RIGHT =
+  '[mask-image:linear-gradient(to_right,black_calc(100%_-_2rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,black_calc(100%_-_2rem),transparent)]';
+const FADE_BOTH =
+  '[mask-image:linear-gradient(to_right,transparent,black_2rem,black_calc(100%_-_2rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_2rem,black_calc(100%_-_2rem),transparent)]';
 
 type SpaceNavigationTabsProps = {
   tabs: TabItem[];
@@ -66,23 +76,55 @@ function DesktopTabs({
   className?: string;
 }) {
   const { t } = useTranslation('crd-space');
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const dragScroll = useDragScroll<HTMLDivElement>();
+  const [overflow, setOverflow] = useState({ left: false, right: false });
+
+  const updateOverflow = () => {
+    const el = dragScroll.ref.current;
+    if (!el) return;
+    const left = el.scrollLeft > 1;
+    const right = el.scrollLeft + el.clientWidth < el.scrollWidth - 1;
+    setOverflow(prev => (prev.left === left && prev.right === right ? prev : { left, right }));
+  };
 
   useEffect(() => {
-    if (scrollRef.current) {
-      const activeTab = scrollRef.current.querySelector('[data-active="true"]');
+    if (dragScroll.ref.current) {
+      const activeTab = dragScroll.ref.current.querySelector('[data-active="true"]');
       if (activeTab) {
         activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       }
     }
   }, [activeIndex]);
 
+  // Track overflow so the edge fades only show when tabs are actually clipped
+  // (long flow-state names, narrow viewports).
+  useEffect(() => {
+    updateOverflow();
+    const el = dragScroll.ref.current;
+    if (!el) return;
+    const observer = new ResizeObserver(updateOverflow);
+    observer.observe(el);
+    return () => observer.disconnect();
+    // `tabs` (not just its length) so label changes without a container resize
+    // (locale switch, async rename) also refresh the fade state.
+  }, [tabs]);
+
   return (
     <nav className={cn('w-full', className)} aria-label={t('a11y.tabNavigation')}>
-      <div className="flex items-center gap-6">
+      <div className="relative flex items-end justify-between gap-4">
+        {/* Bottom border line that runs the full width — the active tab covers it with -mb-px */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-border" aria-hidden="true" />
         <div
-          ref={scrollRef}
-          className="flex items-center gap-6 overflow-x-auto scrollbar-hide overscroll-x-contain flex-1 min-w-0"
+          ref={dragScroll.ref}
+          onPointerDown={dragScroll.onPointerDown}
+          onScroll={updateOverflow}
+          className={cn(
+            'flex items-end overflow-x-auto overscroll-x-contain min-w-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+            (overflow.left || overflow.right) && 'cursor-grab',
+            overflow.left && overflow.right && FADE_BOTH,
+            overflow.left && !overflow.right && FADE_LEFT,
+            !overflow.left && overflow.right && FADE_RIGHT
+          )}
           role="tablist"
         >
           {tabs.map(tab => {
@@ -94,11 +136,13 @@ function DesktopTabs({
                 role="tab"
                 aria-selected={active}
                 data-active={active}
+                // Native link-dragging would hijack the pointer-drag scroll gesture.
+                draggable={false}
                 className={cn(
-                  'pb-2 transition-all duration-200 whitespace-nowrap border-b-2 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  'relative px-5 py-3 text-body transition-all duration-200 whitespace-nowrap select-none rounded-t-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
                   active
-                    ? 'border-primary text-primary'
-                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted'
+                    ? 'bg-background text-foreground font-semibold border border-border border-b-0 z-10 -mb-px'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50 border border-transparent'
                 )}
                 onClick={e => {
                   e.preventDefault();
@@ -110,7 +154,7 @@ function DesktopTabs({
             );
           })}
         </div>
-        {action && <div className="shrink-0 pb-2">{action}</div>}
+        {action && <div className="shrink-0 pb-3 relative z-10">{action}</div>}
       </div>
     </nav>
   );
@@ -141,6 +185,20 @@ function MobileTabBar({
       aria-label={t('a11y.mobileTabBar')}
     >
       <div className="flex items-stretch h-14">
+        {onMenuClick && (
+          <>
+            <button
+              type="button"
+              onClick={onMenuClick}
+              className="shrink-0 px-4 flex items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+              aria-label={t('mobile.menu')}
+              aria-haspopup="dialog"
+            >
+              <Menu className="h-5 w-5" aria-hidden="true" />
+            </button>
+            <div className="w-px h-6 self-center bg-border" aria-hidden="true" />
+          </>
+        )}
         {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
         {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
         <ul ref={scrollRef} role="list" className={MOBILE_TAB_LIST_CLASSES}>
@@ -164,20 +222,6 @@ function MobileTabBar({
             );
           })}
         </ul>
-        {onMenuClick && (
-          <>
-            <div className="w-px h-6 self-center bg-border" aria-hidden="true" />
-            <button
-              type="button"
-              onClick={onMenuClick}
-              className="shrink-0 px-4 flex items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
-              aria-label={t('mobile.menu')}
-              aria-haspopup="dialog"
-            >
-              <Menu className="h-5 w-5" aria-hidden="true" />
-            </button>
-          </>
-        )}
       </div>
     </nav>
   );

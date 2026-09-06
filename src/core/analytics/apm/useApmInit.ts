@@ -69,7 +69,7 @@ export const useApmInit = (user: CurrentUserModel | undefined) => {
   };
 };
 
-const useGetOrSetApmCookie = (): string | undefined => {
+export const useGetOrSetApmCookie = (): string | undefined => {
   // TODO Refactor to store data in localStorage, remove react-cookie npm
   const [cookies, setCookie] = useCookies([APM_CLIENT_TRACK_COOKIE, ALKEMIO_COOKIE_NAME]);
 
@@ -78,8 +78,13 @@ const useGetOrSetApmCookie = (): string | undefined => {
   if (cookieId) {
     return cookieId;
   }
-  const acceptedCookies: string = cookies[ALKEMIO_COOKIE_NAME];
-  if (!acceptedCookies || !acceptedCookies.includes(AlkemioCookieTypes.analysis)) {
+  // react-cookie JSON-parses cookie values, so a valid consent cookie comes back as a
+  // string[] (it is written as JSON.stringify(['technical','analysis'])). A wrong-shape but
+  // still-valid-JSON value (true, 42, {…}) parses to a non-array with no .includes, which
+  // previously threw a TypeError into the app-wide error boundary (#10123). Guard the shape
+  // before calling .includes so a bad cookie degrades to "not tracked" instead of crashing.
+  const acceptedCookies: unknown = cookies[ALKEMIO_COOKIE_NAME];
+  if (!Array.isArray(acceptedCookies) || !acceptedCookies.includes(AlkemioCookieTypes.analysis)) {
     return undefined;
   }
 

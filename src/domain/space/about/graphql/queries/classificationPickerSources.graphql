@@ -1,0 +1,47 @@
+# Step A picker sources (FR-007). Platform-wide half: every publicly-listed
+# platform Template Pack (FR-005b) — never restricted to the seeded pack alone.
+query ClassificationTemplatesPlatformWide {
+  platform {
+    library {
+      templates(filter: { types: [CLASSIFICATION] }) {
+        template {
+          ...ClassificationTemplateOption
+        }
+      }
+    }
+  }
+}
+
+# Space-scoped half: the top-level (root) Space's own Template Library (FR-007a) —
+# a subspace borrows its root Space's set rather than having one of its own.
+query ClassificationTemplatesForSpace($levelZeroSpaceId: UUID!) {
+  lookup {
+    space(ID: $levelZeroSpaceId) {
+      id
+      templatesManager {
+        templatesSet {
+          id
+          classificationTemplates {
+            ...ClassificationTemplateOption
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment ClassificationTemplateOption on Template {
+  id
+  profile {
+    id
+    displayName
+    description
+  }
+  classification {
+    cardinality
+    values {
+      id
+      label
+    }
+  }
+}

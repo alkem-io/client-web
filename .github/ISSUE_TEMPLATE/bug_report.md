@@ -2,8 +2,9 @@
 name: Bug report
 about: Create a report to help us improve
 title: 'BUG: '
-labels: bug, CE, client
+labels: CE, client
 assignees: ''
+type: Bug
 
 ---
 

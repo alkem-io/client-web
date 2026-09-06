@@ -18,6 +18,13 @@ export interface UseApplicationButtonParams {
   parentSpaceId?: string;
   spaceId?: string;
   loading?: boolean;
+  /**
+   * When true, NO query this hook drives is issued — neither the per-space
+   * ApplicationButton query nor the global UserPendingMemberships list.
+   * Distinct from `loading`, which only defers the per-space query while the
+   * caller's own inputs are still resolving.
+   */
+  skip?: boolean;
   onJoin?: (params: { communityId: string }) => void;
 }
 
@@ -25,6 +32,7 @@ const useApplicationButton = ({
   parentSpaceId,
   spaceId,
   loading: loadingParams = false,
+  skip = false,
   onJoin,
 }: UseApplicationButtonParams) => {
   const { t } = useTranslation();
@@ -41,7 +49,7 @@ const useApplicationButton = ({
   // in-flight network load feeds `loading` below so the button isn't actionable
   // until the invitation is actually available.
   const { data: pendingMembershipsData, loading: pendingMembershipsLoading } = useUserPendingMembershipsQuery({
-    skip: !isAuthenticated || !userModel,
+    skip: skip || !isAuthenticated || !userModel,
     fetchPolicy: 'cache-and-network',
   });
   const { communityApplications: pendingApplications, communityInvitations: pendingInvitations } =
@@ -61,7 +69,7 @@ const useApplicationButton = ({
       parentSpaceId,
       includeParentSpace: !!parentSpaceId,
     },
-    skip: loadingParams || !spaceId,
+    skip: skip || loadingParams || !spaceId,
   });
 
   // TODO ideally this should be a dependency passed from the context where the button is rendered

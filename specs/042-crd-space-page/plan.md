@@ -141,7 +141,7 @@ CRD components use `prototype/src/app/components/space/` as the **visual design 
 **Design Decisions from prototype review:**
 - **D-proto-1**: 12-col grid layout (prototype grid) instead of flex sidebar+content
 - **D-proto-2**: Desktop tabs are text-only links inside the content column (no icons), matching prototype
-- **D-proto-3**: Mobile tabs use spec bottom bar with overflow drawer (not prototype's simple scroll — better mobile UX)
+- **D-proto-3**: Mobile tabs use spec bottom bar with overflow drawer (not prototype's simple scroll — better mobile UX) *(as shipped: left-end hamburger → sidebar drawer + edge swipe, no "More" overflow — see spec.md US14 amendment)*
 - **D-proto-4**: All callouts render as PostCard with slots for type-specific content: whiteboard framing shows a preview image; contributions are rendered by the integration layer via a `contributionsPreview` slot using the appropriate CRD contribution components; polls use the existing `children` slot
 - **D-proto-5**: Sidebar is a single variant-based component with extracted sub-components, matching prototype architecture
 
@@ -312,7 +312,7 @@ Callout blocks load progressively as user scrolls, matching current behavior. CR
 Poll questions, options, and voting UI rendered in CRD. Vote submission via `onVote` callback to integration layer. Real-time updates via existing GraphQL subscriptions (data layer unchanged). Vote results display with counts and percentages — pure presentation.
 
 ### D16: Mobile bottom navigation
-CRD `SpaceTabs` component renders as horizontal tabs on desktop (above content) and as a fixed bottom bar on mobile (below content). Overflow actions (Activity, Video Call, Share, Settings) accessible via a "More" button that opens a drawer (Radix Dialog/Sheet). Same UX as current MUI BottomNavigation but CRD-styled.
+CRD `SpaceTabs` component renders as horizontal tabs on desktop (above content) and as a fixed bottom bar on mobile (below content). Overflow actions (Activity, Video Call, Share, Settings) accessible via a "More" button that opens a drawer (Radix Dialog/Sheet). Same UX as current MUI BottomNavigation but CRD-styled. *(As shipped: no "More" button — a hamburger at the bar's left end (moved from the right 2026-08-21) opens `MobileSidebarDrawer`, also openable via left-edge swipe; the overflow actions render in the header icon row.)*
 
 ### D19: Comments live inside `CalloutDetailDialog`, not below the callout card on the feed
 

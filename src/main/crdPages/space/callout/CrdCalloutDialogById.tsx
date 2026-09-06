@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import useCalloutDetails from '@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails';
-import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
+import { CalloutDeeplinkView } from './CalloutDeeplinkView';
 
 type CrdCalloutDialogByIdProps = {
   /** Callout to open. When undefined nothing renders. */
@@ -54,13 +54,5 @@ export function CrdCalloutDialogById({ calloutId, calloutsSetId, onLoaded, onClo
     return null;
   }
 
-  return (
-    <CalloutDetailDialogConnector
-      open={true}
-      onOpenChange={isOpen => {
-        if (!isOpen) onClose();
-      }}
-      callout={callout}
-    />
-  );
+  return <CalloutDeeplinkView callout={callout} onClose={onClose} />;
 }

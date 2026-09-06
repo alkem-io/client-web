@@ -84,7 +84,7 @@ describe('useCrdNavigation — handleLanguageChange', () => {
 
     await result.current.handleLanguageChange('bg');
 
-    expect(notifyMock).toHaveBeenCalledWith('user.settings.language.error', 'error');
+    expect(notifyMock).toHaveBeenCalledWith('header.changeLanguageError', 'error');
     expect(mockI18nInstance.changeLanguage).not.toHaveBeenCalled();
   });
 });

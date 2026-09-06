@@ -22,8 +22,8 @@
     "inactive": "Este Espacio está actualmente inactivo."
   },
   "knowledge": {
-    "searchPlaceholder": "Buscar...",
-    "searchLabel": "Buscar en la base de conocimiento",
+    "searchPlaceholder": "Buscar publicaciones...",
+    "searchLabel": "Buscar publicaciones",
     "noResults": "Sin resultados",
     "search": {
       "emptyTitle": "Sin resultados",
@@ -33,8 +33,17 @@
       "retry": "Reintentar",
       "loadingLabel": "Cargando resultados de búsqueda",
       "appendingLabel": "Cargando más resultados",
-      "removeTerm": "Eliminar término {{term}}",
-      "removeTag": "Eliminar etiqueta {{tag}}"
+      "tagLabel_one": "la etiqueta",
+      "tagLabel_other": "las etiquetas",
+      "matchText_one": "<b>{{count}}</b> elemento relacionado con <text></text>",
+      "matchText_other": "<b>{{count}}</b> elementos relacionados con <text></text>",
+      "matchTextMore": "<b>{{count}}+</b> elementos relacionados con <text></text>",
+      "matchTags_one": "<b>{{count}}</b> elemento relacionado con {{tagLabel}} <tags></tags>",
+      "matchTags_other": "<b>{{count}}</b> elementos relacionados con {{tagLabel}} <tags></tags>",
+      "matchTagsMore": "<b>{{count}}+</b> elementos relacionados con {{tagLabel}} <tags></tags>",
+      "matchBoth_one": "<b>{{count}}</b> elemento relacionado con <text></text> y {{tagLabel}} <tags></tags>",
+      "matchBoth_other": "<b>{{count}}</b> elementos relacionados con <text></text> y {{tagLabel}} <tags></tags>",
+      "matchBothMore": "<b>{{count}}+</b> elementos relacionados con <text></text> y {{tagLabel}} <tags></tags>"
     },
     "viewGrid": "Vista de tarjetas",
     "viewList": "Vista de lista",
@@ -188,21 +197,26 @@
     "openAria": "Abrir {{title}}",
     "draft": "Borrador",
     "expand": "Mostrar más",
+    "fullscreen": "Pantalla completa",
     "collapse": "Mostrar menos",
     "openWhiteboard": "Abrir pizarra",
     "openMemo": "Abrir memo",
     "openDocument": "Abrir documento",
+    "openDocumentPdf": "Ver",
     "document": "Documento",
-    "documentText": "Documento de Word",
+    "documentText": "Documento de texto",
     "documentSpreadsheet": "Hoja de cálculo",
     "documentPresentation": "Presentación",
+    "documentPdf": "PDF",
     "addDocument": "Añadir documento",
     "defaultDocumentName": "Nuevo documento",
+    "createDocument": "Crear nuevo documento",
+    "documentNameLabel": "Título del documento",
     "documentTypeLabel": "Tipo de documento",
     "createNew": "Crear nuevo",
     "documentImportOr": "o",
     "documentImportHint": "Arrastra un archivo o haz clic para subirlo",
-    "documentImportMaxSize": ".docx, .xlsx, .pptx hasta {{cap}} MB",
+    "documentImportMaxSize": ".docx, .xlsx, .pptx, .pdf hasta {{cap}} MB",
     "documentReplaceAccepts": "{{ext}} hasta {{cap}} MB",
     "documentImportRemoveFile": "Eliminar archivo",
     "documentImportErrorUnsupported": "Este tipo de archivo no es compatible. Prueba con {{formats}}.",
@@ -283,6 +297,10 @@
     "postTagsLabel": "Etiquetas",
     "postSave": "Guardar",
     "postCreate": "Publicar",
+    "createTask": "Crear tarea",
+    "editTask": "Editar tarea",
+    "taskCreate": "Crear tarea",
+    "tasksHeader": "Tareas ({{count}})",
     "postDelete": "Eliminar publicación",
     "postDeleteConfirmTitle": "¿Eliminar esta publicación?",
     "postDeleteConfirmDescription": "Esto eliminará permanentemente la publicación y sus comentarios. Esta acción no se puede deshacer.",
@@ -322,7 +340,6 @@
   },
   "members": {
     "subtitle": "{{users}} miembros y {{organizations}} organizaciones en este espacio.",
-    "inviteMember": "Invitar miembro",
     "search": "Buscar miembros u organizaciones...",
     "filterAll": "Todos",
     "filterLead": "Líder",
@@ -407,7 +424,8 @@
         "why": "¿Por qué este subespacio?",
         "who": "¿Quién participa?"
       }
-    }
+    },
+    "tags": "Etiquetas"
   },
   "apply": {
     "apply": "Solicitar acceso",
@@ -497,6 +515,9 @@
     "comments_other": "Se eliminarán {{count}} comentarios",
     "success": "El aviso “{{title}}” se ha eliminado.",
     "saveFailed": "No se pudo eliminar el aviso. Vuelve a intentarlo."
+  },
+  "deleteTask": {
+    "title": "¿Eliminar esta tarea?"
   },
   "deleteContribution": {
     "title": "¿Eliminar esta contribución?",
@@ -644,6 +665,9 @@
     "template": "Plantilla",
     "templatePlaceholder": "Elige una plantilla…",
     "templateLoading": "Cargando plantillas…",
+    "whiteboardConfigured": "Hay una pizarra predeterminada configurada.",
+    "whiteboardNotConfigured": "Las nuevas contribuciones comenzarán con una pizarra vacía.",
+    "clearWhiteboard": "Borrar predeterminado",
     "save": "Guardar"
   },
   "calloutDialog": {
@@ -671,6 +695,11 @@
       "connected": "Conectado",
       "connecting": "Conectando…",
       "disconnected": "Desconectado",
+      "saved": "Guardado",
+      "saving": "Guardando…",
+      "finalizing": "Finalizando cambios…",
+      "offline": "Sin conexión — se sincronizará automáticamente",
+      "saveFailed": "No se pudieron guardar los cambios",
       "membersOnline_one": "1 miembro en línea",
       "membersOnline_other": "{{count}} miembros en línea",
       "connectedUsersLabel": "Usuarios conectados",
@@ -690,6 +719,14 @@
     "errors": {
       "loading": "Cargando nota…",
       "loadFailed": "No se pudo cargar la nota"
+    },
+    "unsavedClose": {
+      "title": "Cambios de memo sin guardar",
+      "description": "Estos cambios no se pueden guardar ahora. Mantén el memo abierto, expórtalos o descártalos explícitamente.",
+      "wait": "Mantener abierto y esperar",
+      "discard": "Descartar y cerrar",
+      "export": "Exportar primero",
+      "exportFailed": "No se pudo exportar el memo. Permanece abierto."
     },
     "deleteConfirm": {
       "title": "Eliminar memo",
@@ -813,6 +850,7 @@
     "seeFullDescription": "Ver descripción completa"
   },
   "postPreview": {
+    "createdBy": "Creado por",
     "label": "Vista previa de la contribución seleccionada",
     "edit": "Editar respuesta",
     "share": "Compartir respuesta",
@@ -970,7 +1008,12 @@
     "mobileTabBar": "Navegación por pestañas",
     "moreActionsDrawer": "Acciones adicionales",
     "close": "Cerrar",
-    "loadingPost": "Cargando publicación"
+    "loadingPost": "Cargando publicación",
+    "loadingContributions": "Cargando contribuciones",
+    "loadingSubspaces": "Cargando subespacios",
+    "loadingLeads": "Cargando líderes del Espacio",
+    "loadingTags": "Cargando etiquetas",
+    "loadingMembership": "Cargando estado de membresía"
   },
   "activity": {
     "dialogTitle": "Actividad reciente"
@@ -1023,5 +1066,15 @@
       "title": "Aún no hay subespacios",
       "description": "Este espacio aún no tiene subespacios."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Clasificaciones"
+  },
+  "parentStack": {
+    "goTo": "Ir a {{name}}"
   }
 }

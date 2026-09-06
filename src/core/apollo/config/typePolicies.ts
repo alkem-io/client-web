@@ -74,6 +74,13 @@ export const typePolicies: TypedTypePolicies = {
   CalloutSettings: {
     merge: true,
   },
+  // Non-normalized (no id). Queries select different slices of `Space.settings`
+  // (e.g. `SpaceSubspaceCards` reads only `sortMode` while `SpaceSettings` reads
+  // the full object); without a merge a partial write replaces the object and
+  // drops the other fields, forcing every watcher of them into a network refetch.
+  SpaceSettings: {
+    merge: true,
+  },
   // Non-normalized (no id). The feed-list `Callout` fragment and the full
   // `CalloutDetails` query both write `Callout.settings.contribution`; without a
   // merge here a partial list write can replace the object and drop `enabled` /

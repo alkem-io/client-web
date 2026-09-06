@@ -54,11 +54,6 @@ fragment WhiteboardDetails on Whiteboard {
   }
 }
 
-fragment WhiteboardContent on Whiteboard {
-  id
-  content
-}
-
 fragment CollaborationWithWhiteboardDetails on Collaboration {
   id
   calloutsSet {
@@ -108,6 +103,14 @@ query whiteboardLastUpdatedDate($whiteboardId: UUID!) {
     whiteboard(ID: $whiteboardId) {
       id
       updatedDate
+    }
+  }
+}
+
+query WhiteboardDetailsById($whiteboardId: UUID!) {
+  lookup {
+    whiteboard(ID: $whiteboardId) {
+      ...WhiteboardDetails
     }
   }
 }

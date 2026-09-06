@@ -148,7 +148,7 @@ export function CalloutWhiteboardContributionPreview({
         type="button"
         onClick={onOpen}
         aria-label={t('whiteboardPreview.openFull')}
-        className="group block w-full bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="group block w-full bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <div className="relative aspect-video bg-muted/30 border-b border-border overflow-hidden">
           {loading ? (

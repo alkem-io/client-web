@@ -106,7 +106,14 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
   });
 
   const { createSubspace, loading: submitting } = useSubspaceCreation({
-    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId })],
+    // Two independent readers show the new subspace and neither is reachable from
+    // the other's cache entry. The settings tab reads `space.subspaces`, refetched
+    // here by variables; the Subspaces tab and the subspace page render a
+    // spaces-collection callout, which reads `callout.framing.subspaces` — a
+    // different field under a different parent, so the mutation's cache update
+    // cannot reach it. Refetch that one by name: the calloutId belongs to whichever
+    // collection is currently mounted and is not known here.
+    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId }), 'SpaceCollectionSubspaces'],
     awaitRefetchQueries: true,
   });
 

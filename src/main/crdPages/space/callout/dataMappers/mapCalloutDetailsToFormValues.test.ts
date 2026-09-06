@@ -124,3 +124,71 @@ describe('mapCalloutDetailsToFormValues — mapView prefill', () => {
     expect(result.contributorCollection?.mapView).toBeNull();
   });
 });
+
+// Board-ness must survive Save-as-Template. The save path fetches the source
+// callout via this query and maps it to form values; the create-template mapper
+// then emits `taskBoard.columns` from `taskBoard`/`taskBoardColumns`. If this
+// mapper does not read the reserved TASK classification tagset, the template
+// stores a plain posts callout and the board→template→board round-trip is lost.
+
+const makePostsCalloutData = (classification: { tagsets: { name: string; allowedValues?: string[] }[] } | undefined) =>
+  ({
+    lookup: {
+      callout: {
+        framing: {
+          type: CalloutFramingType.None,
+          profile: { displayName: 'Posts callout', description: '', tagsets: [], references: [] },
+        },
+        classification,
+        settings: {
+          contribution: {
+            allowedTypes: [CalloutContributionType.Post],
+            canAddContributions: CalloutAllowedActors.Members,
+            commentsEnabled: true,
+          },
+          framing: { commentsEnabled: false },
+        },
+        contributionDefaults: {},
+      },
+    },
+  }) as unknown as CalloutContentQuery;
+
+describe('mapCalloutDetailsToFormValues — taskBoard capture (FR-023)', () => {
+  it('a board callout → taskBoard truthy + the ordered columns', () => {
+    const columns = ['Backlog', 'To do', 'In progress', 'Done'];
+    const result = mapCalloutDetailsToFormValues(
+      makePostsCalloutData({ tagsets: [{ name: 'task', allowedValues: columns }] })
+    );
+    expect(result.taskBoard).toBe(true);
+    expect(result.taskBoardColumns).toEqual(columns);
+  });
+
+  it('preserves a custom column set in its original order', () => {
+    const columns = ['Ideas', 'Doing', 'Shipped'];
+    const result = mapCalloutDetailsToFormValues(
+      makePostsCalloutData({ tagsets: [{ name: 'task', allowedValues: columns }] })
+    );
+    expect(result.taskBoard).toBe(true);
+    expect(result.taskBoardColumns).toEqual(columns);
+  });
+
+  it('a plain posts callout (no TASK tagset) → taskBoard falsy, no columns (AS3 no regression)', () => {
+    const result = mapCalloutDetailsToFormValues(makePostsCalloutData({ tagsets: [] }));
+    expect(result.taskBoard).toBe(false);
+    expect(result.taskBoardColumns).toEqual([]);
+  });
+
+  it('a callout with no classification at all → taskBoard falsy', () => {
+    const result = mapCalloutDetailsToFormValues(makePostsCalloutData(undefined));
+    expect(result.taskBoard).toBe(false);
+    expect(result.taskBoardColumns).toEqual([]);
+  });
+
+  it('ignores a non-TASK classification tagset (e.g. flow-state) — no false board', () => {
+    const result = mapCalloutDetailsToFormValues(
+      makePostsCalloutData({ tagsets: [{ name: 'flow-state', allowedValues: ['Explore', 'Define'] }] })
+    );
+    expect(result.taskBoard).toBe(false);
+    expect(result.taskBoardColumns).toEqual([]);
+  });
+});

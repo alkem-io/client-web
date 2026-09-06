@@ -101,9 +101,10 @@ export function useInnovationPackAdmin({
   const templatesSetId = pack?.templatesSetId;
 
   // Reference file upload (paperclip) — uploads land in the pack's own storage bucket. Shared by the
-  // pack-details form AND the CG template form (via `useTemplatesManager` → `useTemplateForms`);
-  // `useReferenceFileUpload` always uses `temporaryLocation: true`, so a file attached before a new
-  // template exists is GC'd if abandoned and claimed on save.
+  // pack-details form AND the CG template form (via `useTemplatesManager` → `useTemplateForms`).
+  // The pack already exists, so `useStorageConfig` resolves `temporaryLocation: false` and
+  // `useReferenceFileUpload` uploads permanently into the pack bucket — required so the file is
+  // propagated to `file_backup_outbox` (issue #10126).
   const { storageConfig } = useStorageConfig({ locationType: 'innovationPack', innovationPackId });
   const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(storageConfig);
 

@@ -72,10 +72,10 @@ describe('mapInnovationPackToBasics', () => {
 // ---------------------------------------------------------------------------
 
 describe('searchVisibilityToGql', () => {
-  it('maps the form-level union to the GraphQL enum (legacy: Hidden = account-only)', () => {
+  it('maps the form-level union to the GraphQL enum 1:1', () => {
     expect(searchVisibilityToGql('public')).toBe(GqlSearchVisibility.Public);
-    expect(searchVisibilityToGql('authenticated')).toBe(GqlSearchVisibility.Account);
-    expect(searchVisibilityToGql('account')).toBe(GqlSearchVisibility.Hidden);
+    expect(searchVisibilityToGql('account')).toBe(GqlSearchVisibility.Account);
+    expect(searchVisibilityToGql('hidden')).toBe(GqlSearchVisibility.Hidden);
   });
 });
 
@@ -112,10 +112,10 @@ describe('mapInnovationPackToDetail', () => {
   });
 
   it('round-trips searchVisibility through the form-level union', () => {
-    const cases: Array<[GqlSearchVisibility, 'public' | 'authenticated' | 'account']> = [
+    const cases: Array<[GqlSearchVisibility, 'public' | 'account' | 'hidden']> = [
       [GqlSearchVisibility.Public, 'public'],
-      [GqlSearchVisibility.Account, 'authenticated'],
-      [GqlSearchVisibility.Hidden, 'account'],
+      [GqlSearchVisibility.Account, 'account'],
+      [GqlSearchVisibility.Hidden, 'hidden'],
     ];
     for (const [gql, formValue] of cases) {
       const detail = mapInnovationPackToDetail(buildPack({ searchVisibility: gql } as unknown as Partial<PackFixture>));
@@ -148,7 +148,7 @@ describe('formValuesToUpdateInnovationPackInput', () => {
     avatarFile: undefined,
     references: [{ id: 'ref-1', name: 'Docs', uri: 'https://docs.example', description: 'main docs' }],
     listedInStore: false,
-    searchVisibility: 'authenticated',
+    searchVisibility: 'account',
     ...over,
   });
 

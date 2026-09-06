@@ -23,6 +23,7 @@ import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
+import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import {
   Dialog,
@@ -62,6 +63,22 @@ type CrdPostContributionDialogProps = {
   contributionId?: string;
   defaultDisplayName?: string;
   defaultDescription?: string;
+  /**
+   * create mode only: the Tasks board column the new post starts in. Only
+   * meaningful when the callout is a Tasks board; the server defaults to the
+   * first column when omitted.
+   */
+  taskColumn?: string;
+  /**
+   * Tasks board only: retitles the dialog and the create submit button in
+   * task-specific terms ("Create task" / "Edit task" / "Create task"). Left
+   * false for ordinary post-with-responses callouts so their strings are
+   * unchanged.
+   */
+  isTaskBoard?: boolean;
+  /** Escape hatch to raise the dialog's stacking above a custom overlay (e.g. the fullscreen task board at z-[100]). */
+  overlayClassName?: string;
+  contentClassName?: string;
   onCreated?: (post: { id: string }) => void;
   onDeleted?: () => void;
   onUpdated?: () => void;
@@ -79,6 +96,10 @@ export function CrdPostContributionDialog({
   contributionId,
   defaultDisplayName,
   defaultDescription,
+  taskColumn,
+  isTaskBoard,
+  overlayClassName,
+  contentClassName,
   onCreated,
   onDeleted,
   onUpdated,
@@ -244,8 +265,11 @@ export function CrdPostContributionDialog({
             },
             tags: values.tags,
           },
+          // Present only for a Tasks board; the server ignores it otherwise and
+          // defaults to the first column when omitted.
+          taskColumn,
         },
-        refetchQueries: ['CalloutDetails', 'CalloutContributions'],
+        refetchQueries: ['CalloutDetails', 'CalloutContributions', 'TaskBoardData'],
         awaitRefetchQueries: true,
       });
       const created = createData?.createContributionOnCallout.post;
@@ -348,7 +372,11 @@ export function CrdPostContributionDialog({
         try {
           await moveContributionToCallout({
             variables: { contributionId, calloutId: targetCalloutId },
-            refetchQueries: ['CalloutContributions', 'CalloutDetails'],
+            // Also refresh any Tasks board views: the server may have added or
+            // dropped the task-column classification (moving a post into a board
+            // makes it a task; moving a task out makes it a plain post), so both
+            // the source and destination boards must re-render.
+            refetchQueries: ['CalloutContributions', 'CalloutDetails', 'TaskBoardData'],
           });
           await refetchSiblingCallouts();
           baselineCalloutIdRef.current = targetCalloutId;
@@ -387,7 +415,13 @@ export function CrdPostContributionDialog({
 
   const submitting = creating || updating;
   const showCommentsSection = mode === 'edit' && Boolean(commentsRoom);
-  const dialogTitle = mode === 'create' ? t('callout.createPost') : t('callout.editPost');
+  const dialogTitle = isTaskBoard
+    ? mode === 'create'
+      ? t('callout.createTask')
+      : t('callout.editTask')
+    : mode === 'create'
+      ? t('callout.createPost')
+      : t('callout.editPost');
 
   return (
     <>
@@ -398,7 +432,10 @@ export function CrdPostContributionDialog({
           else onOpenChange(true);
         }}
       >
-        <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+        <DialogContent
+          overlayClassName={overlayClassName}
+          className={cn('sm:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden', contentClassName)}
+        >
           <DialogHeader className="shrink-0">
             <DialogTitle>{dialogTitle}</DialogTitle>
             <DialogDescription className="sr-only">{dialogTitle}</DialogDescription>
@@ -488,7 +525,10 @@ export function CrdPostContributionDialog({
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent>
+                      {/* z-[130]: this dialog is elevated (z-[120]) when editing a
+                          task on a board, and the primitive's default z-50 dropdown
+                          would open behind it. Matches the editor toolbar dialogs. */}
+                      <SelectContent className="z-[130]">
                         {siblingCallouts.map(sibling => (
                           <SelectItem key={sibling.id} value={sibling.id}>
                             {sibling.framing.profile.displayName}
@@ -533,7 +573,11 @@ export function CrdPostContributionDialog({
               </Button>
               <Button onClick={handleSubmit} disabled={submitting || deleting} aria-busy={submitting}>
                 {submitting && <Loader2 aria-hidden="true" className="mr-1.5 size-4 animate-spin" />}
-                {mode === 'create' ? t('callout.postCreate') : t('callout.postSave')}
+                {mode === 'create'
+                  ? isTaskBoard
+                    ? t('callout.taskCreate')
+                    : t('callout.postCreate')
+                  : t('callout.postSave')}
               </Button>
             </div>
           </DialogFooter>
@@ -548,6 +592,11 @@ export function CrdPostContributionDialog({
         confirmLabel={t('callout.postUnsavedCloseConfirm')}
         cancelLabel={t('callout.postUnsavedCloseCancel')}
         variant="destructive"
+        // When this dialog is elevated above the board (z-[110]/z-[120]), the
+        // confirmation must ride the same layer or it renders behind the post
+        // dialog's overlay. Harmless (undefined) when the dialog is not elevated.
+        overlayClassName={overlayClassName}
+        contentClassName={contentClassName}
         onConfirm={() => {
           setCloseConfirmOpen(false);
           onOpenChange(false);
@@ -562,6 +611,11 @@ export function CrdPostContributionDialog({
         confirmLabel={t('callout.postDelete')}
         variant="destructive"
         loading={deleting}
+        // See the unsaved-close dialog above: match the post dialog's elevation
+        // so the confirmation is not trapped behind its overlay when stacked over
+        // the board.
+        overlayClassName={overlayClassName}
+        contentClassName={contentClassName}
         onConfirm={handleDelete}
       />
     </>

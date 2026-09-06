@@ -2,7 +2,7 @@
 
 :root {
   --font-size: 16px;
-  
+
   /* Typography Variables */
   --text-4xl: 48px;
   --text-3xl: 30px;
@@ -10,9 +10,10 @@
   --text-xl: 20px;
   --text-base: 16px;
   --text-sm: 14px;
-  
-  /* The default background color for the application. */
-  --background: rgba(255, 255, 255, 1.00);
+
+  /* The default background color for the application. Slightly gray (prototype
+     #FCFDFE) — cards/popovers/inputs stay pure white so they lift off the page. */
+  --background: rgba(252, 253, 254, 1.00);
   /* The default color for elements or text that appears on top of the background. */
   --foreground: rgba(29, 56, 74, 1.00);
   /* The background color for cards, modals, and other containers. */

@@ -80,9 +80,37 @@ fragment InAppNotificationAllTypes on InAppNotification {
     ... on InAppNotificationPayloadSpaceCommunityCalendarEventComment {
       ...InAppNotificationPayloadSpaceCommunityCalendarEventComment
     }
+    ... on InAppNotificationPayloadSpaceCollaborationCalloutReaction {
+      ...InAppNotificationPayloadSpaceCollaborationCalloutReaction
+    }
     ... on InAppNotificationPayloadSpaceCollaborationPoll {
       ...InAppNotificationPayloadSpaceCollaborationPoll
     }
+  }
+}
+
+fragment InAppNotificationPayloadSpaceCollaborationCalloutReaction on InAppNotificationPayloadSpaceCollaborationCalloutReaction {
+  type
+  emoji
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+    reactionsSummary {
+      total
+      emojis
+      myReactionEmoji
+      allowedEmojis
+    }
+  }
+  space {
+    ...spaceNotification
   }
 }
 
@@ -225,8 +253,6 @@ fragment InAppNotificationPayloadPlatformUser on InAppNotificationPayloadPlatfor
 
 fragment InAppNotificationPayloadPlatformUserProfileRemoved on InAppNotificationPayloadPlatformUserProfileRemoved {
   type
-  userEmail
-  userDisplayName
 }
 
 fragment InAppNotificationPayloadSpaceCommunityApplication on InAppNotificationPayloadSpaceCommunityApplication {

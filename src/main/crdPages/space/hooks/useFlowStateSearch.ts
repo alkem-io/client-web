@@ -12,15 +12,22 @@ type CalloutResultItems = CalloutResults['results'];
 
 export type UseFlowStateSearchParams = {
   /**
-   * The viewed InnovationFlowState UUID — the sole scope (FR-008/012). Its
-   * globally-unique UUID transitively pins the Collaboration, so no separate
-   * CalloutsSet scope is needed.
+   * The viewed InnovationFlowState UUID. Its globally-unique UUID
+   * transitively pins the Collaboration, so no separate CalloutsSet scope is
+   * needed.
    */
   flowStateID: string | undefined;
   /**
-   * The active query terms: the submitted free-text term split into words PLUS
-   * each selected tag pill (FR-004). An empty array is browse mode (FR-018) —
-   * still a valid scoped request, served paginated.
+   * The current L0 Space UUID — hard-scopes callout documents to the Space
+   * tree. The flow-state filter alone is "absent OR equals": a callout whose
+   * search document was never stamped with a flow state would otherwise
+   * match every flow-state-scoped search across the whole platform: this
+   * bounds that soft leak to the current Space.
+   */
+  spaceID?: string;
+  /**
+   * The active query terms: `[]` (browse) or exactly ONE joined term built
+   * from the applied text and the selected tags — never split into words.
    */
   terms: string[];
   /** Skip while the scope UUIDs are not yet resolved. */
@@ -51,7 +58,12 @@ const concat = (a: CalloutResultItems = [], b: CalloutResultItems = []): Callout
  * always -1), and a fresh page-1 reset that discards in-flight pages of a prior
  * term/tag set (FR-022, latest-wins).
  */
-export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSearchParams): UseFlowStateSearchResult {
+export function useFlowStateSearch({
+  flowStateID,
+  spaceID,
+  terms,
+  skip,
+}: UseFlowStateSearchParams): UseFlowStateSearchResult {
   const shouldSkip = skip || !flowStateID;
 
   // A stable signature for the current term/tag set. When it changes, the query
@@ -62,7 +74,7 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
   // when a term itself contains spaces — `['foo bar']` and `['foo', 'bar']` would
   // collapse to the same key, letting a stale in-flight page from the prior term
   // set pass the latest-wins check and merge into the new query.
-  const requestKey = JSON.stringify({ flowStateID: flowStateID ?? '', terms });
+  const requestKey = JSON.stringify({ flowStateID: flowStateID ?? '', spaceID: spaceID ?? '', terms });
   const requestKeyRef = useRef(requestKey);
   // Sync the latest-wins signature inside an effect (never during render).
   useEffect(() => {
@@ -71,19 +83,23 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
 
   const [appending, setAppending] = useState(false);
 
-  // The cursor whose append last failed. While the sentinel stays in view, a
-  // failed `fetchMore` must not be retried immediately: its `.finally` flips
-  // `appending` back to false, which re-runs the sentinel effect, which — with
-  // `inView`, `cursor`, and `loading` all unchanged — would fire the same failed
-  // request again in a tight loop. We block that exact cursor until the sentinel
-  // leaves view (or the term/tag set changes), then allow a fresh attempt.
+  // The cursor whose append last failed. A failed `fetchMore` must not be
+  // retried immediately: its `.finally` flips `appending` back to false, which
+  // re-runs the paging effect, which — with `inView` and `cursor` unchanged —
+  // would fire the same failed request again in a tight loop. We block that
+  // exact cursor until the context moves on (see the clearing effect below).
   const failedCursorRef = useRef<string | null>(null);
+
+  // Whether the one eager short-page confirmation this request is allowed has
+  // been spent (see `lastPageWasShort` below). Reset per term/tag set.
+  const eagerConfirmationSpentRef = useRef(false);
 
   const { data, loading, error, fetchMore, refetch } = useFlowStateSearchQuery({
     variables: {
       searchData: {
         terms,
         searchInFlowStateFilter: flowStateID,
+        searchInSpaceFilter: spaceID,
         // Match in the callout framing resources and contributions too; matches
         // fold up to the containing callout, deduped, in calloutResults.
         foldCalloutResources: true,
@@ -103,16 +119,41 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
   });
 
   // Reset the append flag whenever the term/tag set changes — a new page-1 load
-  // is a skeleton (FR-023), not an append. A new context also clears any failed
-  // cursor: the prior failure no longer applies to this request.
+  // is a skeleton (FR-023), not an append. A new request also gets a fresh eager
+  // confirmation allowance.
   useEffect(() => {
     setAppending(false);
-    failedCursorRef.current = null;
+    eagerConfirmationSpentRef.current = false;
   }, [requestKey]);
 
   const results = data?.search.calloutResults.results ?? [];
   const cursor = data?.search.calloutResults.cursor;
   const hasMore = Boolean(cursor);
+
+  // Size of the most recently received page (page 1, or the last appended
+  // page). The server only signals the end of results by omitting the cursor
+  // on the request AFTER the last one, so a short page still carries a cursor
+  // and the count label would read "N+" with every card already on screen —
+  // for good, on a list tall enough that the sentinel never comes into view.
+  // A short page is therefore confirmed eagerly (below), without waiting for
+  // the sentinel: the follow-up request either returns nothing and drops the
+  // cursor, settling the count to the exact "N" (FR-006), or returns real
+  // results that were going to be needed anyway. A short page is never
+  // treated as the end by itself — authorization can thin a page while more
+  // readable results remain, and only the server may say "no more".
+  // Exactly ONE such confirmation is allowed per term/tag set: the server
+  // emits a cursor for every non-empty folded page and folding routinely thins
+  // pages below PAGE_SIZE, so an uncapped confirmation would chain sequential
+  // requests on a single keystroke until a full or empty page arrived. After
+  // the one confirmation, further pages are sentinel-driven only.
+  const resultsLength = results.length;
+  const previousResultsLengthRef = useRef(0);
+  const [lastPageSize, setLastPageSize] = useState(0);
+  useEffect(() => {
+    setLastPageSize(resultsLength - previousResultsLengthRef.current);
+    previousResultsLengthRef.current = resultsLength;
+  }, [resultsLength, requestKey]);
+  const lastPageWasShort = resultsLength > 0 && lastPageSize > 0 && lastPageSize < PAGE_SIZE;
 
   // Distinguish a first-page load (skeleton) from a subsequent append (footer
   // spinner): if we already hold results, an in-flight network call is an
@@ -131,22 +172,37 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
     status = 'empty';
   }
 
-  // Infinite scroll (FR-013): auto-load the next page as the sentinel nears view.
+  // Infinite scroll (FR-013): auto-load the next page as the sentinel nears view,
+  // or right away to confirm a short page (see `lastPageWasShort` above).
   // The load is inlined in the effect with complete dependencies so the rules of
   // React (and the React Compiler) hold without disabling any lint rule.
   const { ref: sentinelRef, inView } = useInView({ rootMargin: '200px', delay: 100 });
 
-  // Once the sentinel scrolls out of view, clear any failed-cursor block so the
-  // next time it re-enters a retry is allowed.
+  // Lift the failed-cursor block whenever the context moves on: a new term/tag
+  // set, a new cursor, or the sentinel crossing the viewport edge in either
+  // direction — so a page that failed while the sentinel was out of view (an
+  // eager confirmation) is retried on the sentinel's first entry, and a page
+  // that failed in view is retried once the user scrolls away and back.
+  // Declared before the paging effect so the clear is visible to it in the
+  // same commit.
   useEffect(() => {
-    if (!inView) {
-      failedCursorRef.current = null;
-    }
-  }, [inView]);
+    failedCursorRef.current = null;
+  }, [requestKey, cursor, inView]);
 
+  // Pages >= 2 gate on the hook's own `appending` flag — never on Apollo's
+  // `loading`: a rejected `fetchMore` leaves the query's networkStatus at
+  // `fetchMore` (and `loading` true) indefinitely, which would deadlock every
+  // later page after one transient failure. Page 1 in flight has no cursor
+  // (`data` is undefined while new variables load), so `!cursor` covers it.
   useEffect(() => {
-    if (!inView || shouldSkip || !cursor || appending || loading || failedCursorRef.current === cursor) {
+    if (shouldSkip || !cursor || appending || failedCursorRef.current === cursor) {
       return;
+    }
+    if (!inView) {
+      if (!lastPageWasShort || eagerConfirmationSpentRef.current) {
+        return;
+      }
+      eagerConfirmationSpentRef.current = true;
     }
     const keyAtRequest = requestKeyRef.current;
     setAppending(true);
@@ -155,6 +211,7 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
         searchData: {
           terms,
           searchInFlowStateFilter: flowStateID,
+          searchInSpaceFilter: spaceID,
           foldCalloutResources: true,
           filters: [
             {
@@ -186,7 +243,8 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
       .catch(() => {
         // Append failure keeps prior results; the footer spinner simply stops.
         // Record the cursor so the effect doesn't immediately retry the same
-        // failed page while the sentinel is still in view (avoids a tight loop).
+        // failed page (avoids a tight loop); the clearing effect above lifts
+        // the block once the context moves on.
         failedCursorRef.current = cursor;
       })
       .finally(() => {
@@ -194,7 +252,7 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
           setAppending(false);
         }
       });
-  }, [inView, shouldSkip, cursor, appending, loading, terms, flowStateID, fetchMore]);
+  }, [inView, lastPageWasShort, shouldSkip, cursor, appending, terms, flowStateID, spaceID, fetchMore]);
 
   const retry = () => {
     void refetch();

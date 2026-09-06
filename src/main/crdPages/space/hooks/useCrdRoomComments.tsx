@@ -25,6 +25,12 @@ type UseCrdRoomCommentsParams = {
    *  forwards `!inView` here for lazy subscription; CalendarCommentsConnector
    *  omits to default to false (always subscribe). */
   skipSubscription?: boolean;
+  /** z-index escape hatches for the delete-confirmation dialog, so it stacks above
+   *  a host that itself sits above the default layer — e.g. the focused-task
+   *  dialog on a Tasks board (z-[110]), where the default confirm layer would open
+   *  behind it and block the UI. */
+  confirmOverlayClassName?: string;
+  confirmContentClassName?: string;
 };
 
 export type CrdRoomCommentsSlots = {
@@ -45,6 +51,8 @@ export function useCrdRoomComments({
   roomId,
   room,
   skipSubscription = false,
+  confirmOverlayClassName,
+  confirmContentClassName,
 }: UseCrdRoomCommentsParams): CrdRoomCommentsSlots {
   const { t } = useTranslation('crd-space');
   // `tMain` resolves the default `translation` namespace, where the
@@ -153,6 +161,8 @@ export function useCrdRoomComments({
         description={t('comments.deleteConfirmDescription')}
         confirmLabel={t('comments.delete')}
         variant="destructive"
+        overlayClassName={confirmOverlayClassName}
+        contentClassName={confirmContentClassName}
         loading={deletingMessage}
         onConfirm={() => {
           void confirmDelete();

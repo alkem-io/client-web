@@ -64,7 +64,7 @@ export function ContributorCard({ contributor, onContributorClick, className }: 
   );
 
   return (
-    <Card className={cn('overflow-hidden hover:shadow-md transition-shadow', className)}>
+    <Card className={cn('h-full overflow-hidden hover:shadow-md transition-shadow', className)}>
       <CardContent className="p-0">
         <div className="p-4 flex items-start gap-3">
           {href ? (

@@ -7,7 +7,6 @@ import { ContributionAddCard } from '@/crd/components/contribution/ContributionA
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
 import { Input } from '@/crd/primitives/input';
-import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
 
@@ -21,7 +20,6 @@ type UncontrolledOpen = { open?: undefined; onOpenChange?: undefined };
 type WhiteboardContributionAddConnectorProps = {
   calloutId: string;
   defaultDisplayName?: string;
-  defaultContent?: string;
   onCreated?: () => void;
   /** When true, suppresses the in-grid trigger card; a parent renders its own trigger and controls `open`. */
   inlineTrigger?: boolean;
@@ -30,7 +28,6 @@ type WhiteboardContributionAddConnectorProps = {
 export function WhiteboardContributionAddConnector({
   calloutId,
   defaultDisplayName,
-  defaultContent,
   onCreated,
   inlineTrigger,
   open: controlledOpen,
@@ -72,7 +69,6 @@ export function WhiteboardContributionAddConnector({
         calloutId,
         whiteboard: {
           profile: { displayName: trimmed },
-          content: defaultContent ?? EmptyWhiteboardString,
         },
       },
       refetchQueries: ['CalloutDetails', 'CalloutContributions'],

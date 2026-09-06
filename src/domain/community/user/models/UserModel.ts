@@ -27,6 +27,11 @@ export interface UserModel {
     communities: Community[];
     organizations: Organization[];
   };
+  settings?: {
+    dashboard?: {
+      activityView?: boolean;
+    };
+  };
 }
 
 interface Community {

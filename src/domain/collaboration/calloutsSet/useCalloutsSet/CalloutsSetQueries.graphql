@@ -113,7 +113,7 @@ fragment CalloutDetails on Callout {
     id
     defaultDisplayName
     postDescription
-    whiteboardContent
+    whiteboardContentAvailable
   }
   sortOrder
   activity
@@ -192,5 +192,11 @@ fragment CalloutDetails on Callout {
         uri
       }
     }
+  }
+  reactionsSummary {
+    total
+    emojis
+    myReactionEmoji
+    allowedEmojis
   }
 }

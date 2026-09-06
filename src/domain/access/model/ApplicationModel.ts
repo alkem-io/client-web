@@ -15,4 +15,6 @@ export type ApplicationModel = {
       url: string;
     };
   };
+  questions?: Array<{ id: string; name: string; value: string }>;
+  user?: { id: string; email: string } | null;
 };

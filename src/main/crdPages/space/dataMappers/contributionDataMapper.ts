@@ -1,10 +1,12 @@
 import type { Locale } from 'date-fns';
 import { isFileAttachmentUrl } from '@/core/utils/links';
+import type { CollaboraDocumentPreviewType } from '@/crd/lib/collaboraDocumentPreview';
 import { formatShortDate } from '@/crd/lib/dateTimeFormat';
+import { toCollaboraPreviewType } from '@/main/crdPages/space/callout/collaboraDocumentTypeMap';
 
 type ContributionCardData = {
   id: string;
-  type: 'post' | 'memo' | 'whiteboard' | 'link';
+  type: 'post' | 'memo' | 'whiteboard' | 'link' | 'document';
   title: string;
   author?: { name: string; avatarUrl?: string };
   createdDate?: string;
@@ -28,6 +30,10 @@ type ContributionCardData = {
   canDeleteLink?: boolean;
   /** For link contributions: true when `linkUrl` points to our private storage (uploaded document) rather than an external URL. */
   linkIsFile?: boolean;
+  /** For document contributions: the underlying CollaboraDocument id (different from the contribution wrapper id). Opens the editor. */
+  documentId?: string;
+  /** For document contributions: drives the type-differentiated icon (Word/Sheet/Slide/PDF). */
+  documentType?: CollaboraDocumentPreviewType;
 };
 
 export type { ContributionCardData };
@@ -102,6 +108,13 @@ type AnyContributionItem = {
     uri: string;
     profile: { id?: string; displayName: string; description?: string | null };
     authorization?: { myPrivileges?: string[] };
+  } | null;
+  collaboraDocument?: {
+    id: string;
+    documentType?: string;
+    createdDate?: Date | string;
+    createdBy?: ContributionAuthorBase | null;
+    profile: { id?: string; url?: string; displayName: string };
   } | null;
 };
 
@@ -182,6 +195,20 @@ export function mapAnyContributionToCardData(
       canEditLink: privileges.includes('UPDATE'),
       canDeleteLink: privileges.includes('DELETE'),
       linkIsFile: isFileAttachmentUrl(link.uri),
+    };
+  }
+
+  if (item.collaboraDocument) {
+    const doc = item.collaboraDocument;
+    return {
+      id: item.id,
+      type: 'document',
+      title: doc.profile.displayName,
+      href: doc.profile.url,
+      documentId: doc.id,
+      documentType: toCollaboraPreviewType(doc.documentType),
+      author: extractAuthor(doc.createdBy),
+      createdDate: toDateString(doc.createdDate, locale),
     };
   }
 

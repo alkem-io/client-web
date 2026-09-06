@@ -3,5 +3,6 @@ mutation uploadVisual($file: Upload!, $uploadData: VisualUploadImageInput!) {
     id
     uri
     alternativeText
+    aspectRatio
   }
 }

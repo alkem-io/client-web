@@ -1,6 +1,6 @@
 import path from 'path';
 import swc from 'unplugin-swc';
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [
@@ -25,5 +25,9 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['src/setupTests.ts'],
     globals: true,
+    // Unit/component tests live under src/. Both Playwright e2e suites run on
+    // their own runner (@playwright/test), so keep them out of the Vitest pass.
+    include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    exclude: [...configDefaults.exclude, 'e2e/**', 'tests/e2e/**'],
   },
 });

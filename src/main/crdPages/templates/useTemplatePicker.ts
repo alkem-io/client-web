@@ -68,8 +68,10 @@ export function useTemplatePicker({
     onOpenChange?.(next);
   };
   const [search, setSearch] = useState('');
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
-  const [selectedTemplateContent, setSelectedTemplateContent] = useState<TemplateContent | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<{
+    id: string;
+    content: TemplateContent | null;
+  } | null>(null);
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [previewContent, setPreviewContent] = useState<TemplateContent | undefined>(undefined);
   const [previewLoading, setPreviewLoading] = useState(false);
@@ -122,32 +124,15 @@ export function useTemplatePicker({
   if (accountId) sources.push({ key: 'account', templates: accountTemplates, loading: accountLoading });
   sources.push({ key: 'platform', templates: platformTemplates, loading: platformLoading });
 
-  const fetchContent = async (
-    templateId: string,
-    set: (c: TemplateContent | undefined) => void,
-    setLoading: (b: boolean) => void
-  ) => {
-    if (!primaryType) return;
-    setLoading(true);
-    set(undefined);
-    try {
-      const { data } = await getTemplateContent({
-        variables: { templateId, ...templateContentIncludeVars(primaryType) },
-      });
-      const fetched = data?.lookup.template;
-      if (fetched) set(mapTemplateContent(fetched, primaryType));
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Tracks the latest preview request so a slow response for template A doesn't overwrite the
   // content shown for template B if the user previewed another card mid-fetch. `previewId` drives a
   // committing action (Use/Import) in the preview pane, so a stale overwrite could apply the wrong template.
   const activePreviewIdRef = useRef<string | null>(null);
+  const selectionRequestRef = useRef(0);
 
   const onPreview = (templateId: string) => {
     if (!primaryType) return;
+    const cardPreviewUrl = sources.flatMap(source => source.templates).find(card => card.id === templateId)?.bannerUrl;
     activePreviewIdRef.current = templateId;
     setPreviewId(templateId);
     setPreviewContent(undefined);
@@ -156,7 +141,12 @@ export function useTemplatePicker({
       .then(({ data }) => {
         if (activePreviewIdRef.current !== templateId) return;
         const fetched = data?.lookup.template;
-        setPreviewContent(fetched ? mapTemplateContent(fetched, primaryType) : undefined);
+        const content = fetched ? mapTemplateContent(fetched, primaryType) : undefined;
+        setPreviewContent(
+          content?.type === 'whiteboard' && !content.previewImageUrl && cardPreviewUrl
+            ? { ...content, previewImageUrl: cardPreviewUrl }
+            : content
+        );
       })
       .catch(() => {
         // The request failed (network / auth / GraphQL). Leave the (already-cleared) preview empty
@@ -170,24 +160,40 @@ export function useTemplatePicker({
   };
 
   const onSelect = (templateId: string | null) => {
+    const request = ++selectionRequestRef.current;
     if (templateId === null) {
-      setSelectedTemplateId(null);
-      setSelectedTemplateContent(null);
+      setSelectedTemplate(null);
       setOpen(false);
       return;
     }
-    setSelectedTemplateId(templateId);
+    setSelectedTemplate({ id: templateId, content: null });
     setOpen(false);
-    void fetchContent(
-      templateId,
-      c => setSelectedTemplateContent(c ?? null),
-      () => {}
-    );
+    if (!primaryType) return;
+    void getTemplateContent({
+      variables: { templateId, ...templateContentIncludeVars(primaryType) },
+    })
+      .then(({ data }) => {
+        if (selectionRequestRef.current !== request) return;
+        const fetched = data?.lookup.template;
+        setSelectedTemplate(
+          fetched
+            ? {
+                id: templateId,
+                content: mapTemplateContent(fetched, primaryType),
+              }
+            : null
+        );
+      })
+      .catch(() => {
+        // Apollo's error link reports the failure. Drop this transient pick so consumers
+        // never observe a permanently half-loaded `{ id, content: null }` selection.
+        if (selectionRequestRef.current === request) setSelectedTemplate(null);
+      });
   };
 
   const clearSelection = () => {
-    setSelectedTemplateId(null);
-    setSelectedTemplateContent(null);
+    selectionRequestRef.current += 1;
+    setSelectedTemplate(null);
   };
 
   const pickerProps: TemplatePickerSelectProps = {
@@ -219,8 +225,8 @@ export function useTemplatePicker({
       setOpen(true);
     },
     pickerProps,
-    selectedTemplateId,
-    selectedTemplateContent,
+    selectedTemplateId: selectedTemplate?.id ?? null,
+    selectedTemplateContent: selectedTemplate?.content ?? null,
     clearSelection,
   };
 }

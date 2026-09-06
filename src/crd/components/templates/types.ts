@@ -9,6 +9,7 @@
  */
 
 import type { ReactNode } from 'react';
+import type { ClassificationCardinality, ClassificationValueData } from '@/crd/components/classification/types';
 import type { FramingChip } from '@/crd/forms/callout/types';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 
@@ -17,7 +18,7 @@ import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 // ---------------------------------------------------------------------------
 
 /** String-union template type used everywhere in CRD (NOT the GraphQL `TemplateType` enum). */
-export type TemplateType = 'space' | 'callout' | 'whiteboard' | 'post' | 'communityGuidelines';
+export type TemplateType = 'space' | 'callout' | 'whiteboard' | 'post' | 'communityGuidelines' | 'classification';
 
 type ContributionType = 'post' | 'whiteboard' | 'link' | 'memo';
 
@@ -27,6 +28,10 @@ export const TEMPLATE_TYPE_ORDER: readonly TemplateType[] = [
   'callout',
   'whiteboard',
   'post',
+  // Classification above community guidelines — product#2161 designs place the
+  // Classification Templates section directly above Community Guidelines in
+  // every library surface (space library, platform library, pack).
+  'classification',
   'communityGuidelines',
 ] as const;
 
@@ -60,6 +65,16 @@ export type TemplateCardData = {
   url?: string;
   /** Owning pack name etc. — only set in library / account-source contexts. */
   ownerLabel?: string;
+  /**
+   * Classification-only card header data (product#2161): the card renders a
+   * cardinality badge + a preview of the value set (authored order, FR-002b)
+   * instead of the banner/gradient. Ignored for every other type.
+   */
+  classification?: {
+    cardinality: ClassificationCardinality;
+    /** Value display labels, authored order — the card previews the first few. */
+    valueLabels: string[];
+  };
 };
 
 export type TemplateCategorySection = {
@@ -107,12 +122,12 @@ export type TemplatesManagerViewProps = {
 export type TemplateContent =
   | {
       type: 'callout';
+      /** Source callout id used for server-side copying of internal defaults. */
+      sourceCalloutId?: string;
       framingKind: FramingKind;
       framingTitle: string;
       /** markdown */
       framingDescription: string;
-      /** Excalidraw JSON — when framingKind === 'whiteboard' */
-      framingWhiteboardContent?: string;
       /**
        * When `framingKind === 'whiteboard'` — the server-rendered preview image URL
        * (`framing.whiteboard.profile.preview.uri`). The preview surface renders this as an
@@ -141,16 +156,20 @@ export type TemplateContent =
       commentsEnabled: boolean;
       /** markdown */
       defaultPostDescription?: string;
-      /** Excalidraw JSON */
-      defaultWhiteboardContent?: string;
+      /** Whether this callout template has a canonical default whiteboard snapshot. */
+      defaultWhiteboardAvailable?: boolean;
       /** The default title new whiteboard contributions are created with (`contributionDefaults.defaultDisplayName`). */
       defaultWhiteboardName?: string;
     }
   | {
       type: 'whiteboard';
-      /** Excalidraw JSON */
-      whiteboardContent: string;
       previewImageUrl?: string;
+      /**
+       * The SOURCE whiteboard's id. Its stored content is WS-only (unreadable on the client),
+       * so duplicate / import-from-library pass this id and the server copies the source's
+       * snapshot into the new template's whiteboard on create.
+       */
+      sourceWhiteboardId?: string;
     }
   | {
       type: 'post';
@@ -179,6 +198,12 @@ export type TemplateContent =
       /** markdown */
       guidelinesMarkdown: string;
       references: ReferenceRow[];
+    }
+  | {
+      type: 'classification';
+      cardinality: ClassificationCardinality;
+      /** The value set, in authored order — never re-sorted (FR-002b). */
+      values: ClassificationValueData[];
     };
 
 export type TemplateContentPreviewProps = {
@@ -222,7 +247,6 @@ export type CalloutTemplateValues = TemplateCommonValues & {
   framingKind: FramingKind;
   framingTitle: string;
   framingDescription: string;
-  framingWhiteboardContent?: string;
   framingMemoContent?: string;
   framingCollaboraDoc?: { displayName?: string; documentType?: string; uploadFile?: File };
   framingLinks?: { name: string; uri: string }[];
@@ -231,16 +255,13 @@ export type CalloutTemplateValues = TemplateCommonValues & {
   allowedContributionTypes: ContributionType[];
   commentsEnabled: boolean;
   defaultPostDescription?: string;
-  defaultWhiteboardContent?: string;
+  defaultWhiteboardAvailable?: boolean;
 };
-
-/** Mirrors the live whiteboard editor's preview-settings shape — opaque at the CRD layer. */
-export type WhiteboardPreviewSettings = Record<string, unknown>;
 
 export type WhiteboardTemplateValues = TemplateCommonValues & {
   type: 'whiteboard';
-  whiteboardContent: string;
-  previewSettings?: WhiteboardPreviewSettings;
+  /** Source whiteboard id threaded to the server so it copies the source snapshot on create. */
+  sourceWhiteboardId?: string;
 };
 
 export type PostTemplateValues = TemplateCommonValues & {
@@ -264,12 +285,27 @@ export type CommunityGuidelinesTemplateValues = TemplateCommonValues & {
   references: ReferenceRow[];
 };
 
+/**
+ * A value row as authored in the form: `id` is the OPTIONAL override
+ * (FR-002c) — the UI must not require it, so leaving it blank is the normal
+ * path and the id is slugified from `label` server-side.
+ */
+export type ClassificationTemplateValueRow = { id?: string; label: string };
+
+export type ClassificationTemplateValues = TemplateCommonValues & {
+  type: 'classification';
+  cardinality: ClassificationCardinality;
+  /** Authored order, preserved verbatim — never re-sorted (FR-002b). */
+  values: ClassificationTemplateValueRow[];
+};
+
 export type TemplateFormValues =
   | CalloutTemplateValues
   | WhiteboardTemplateValues
   | PostTemplateValues
   | SpaceTemplateValues
-  | CommunityGuidelinesTemplateValues;
+  | CommunityGuidelinesTemplateValues
+  | ClassificationTemplateValues;
 
 /** Per-field validation errors (any subset of the form's keys, plus indexed keys for list rows). */
 export type TemplateFormErrors = Partial<Record<string, string>>;
@@ -314,6 +350,12 @@ export type CommunityGuidelinesTemplateFormProps = {
   /** `accept` attribute for the references file picker. */
   referenceUploadAccept?: string;
 } & MarkdownUploadProps;
+export type ClassificationTemplateFormProps = {
+  value: ClassificationTemplateValues;
+  errors: TemplateFormErrors;
+  onChange: (next: ClassificationTemplateValues) => void;
+};
+
 export type SpaceTemplateFormProps = {
   value: SpaceTemplateValues;
   errors: TemplateFormErrors;

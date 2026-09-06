@@ -37,3 +37,12 @@ export const OIDC_ID_TOKEN_HINT_PATH = `${OIDC_BFF_BASE}/id-token-hint`;
 // mint a session can't trap the user in a redirect loop. Cleared on logout and
 // whenever a live BFF session is next observed.
 export const OIDC_RECOVERY_ATTEMPTED_KEY = 'alkemio_oidc_recovery_attempted';
+
+// sessionStorage marker (see useDeleteAccount): a forced re-authentication
+// round trip for account deletion has already been attempted in this tab —
+// loop guard so a session that a re-login never freshens (window/IdP
+// mismatch, clock skew) can't trap the user in a redirect loop, and so a
+// `?resume=delete-account` URL supplied any other way than this tab's own
+// redirect can't kick off a forced re-login with no user gesture. Cleared
+// once a pre-flight reports a fresh session.
+export const DELETE_ACCOUNT_REAUTH_ATTEMPTED_KEY = 'alkemio_delete_account_reauth_attempted';

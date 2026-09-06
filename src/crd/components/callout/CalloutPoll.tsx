@@ -170,7 +170,7 @@ function CustomOptionRow({
           disabled={isLoading}
           maxLength={512}
           aria-label={t('poll.customOption.placeholder')}
-          className="flex-1 h-8 px-2 border border-border rounded-md bg-background text-body focus:outline-none focus:ring-2 focus:ring-primary/20"
+          className="flex-1 h-8 px-2 border border-border rounded-md bg-input-background text-body focus:outline-none focus:ring-2 focus:ring-primary/20"
         />
         <Button
           variant="ghost"

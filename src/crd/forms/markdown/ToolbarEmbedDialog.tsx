@@ -78,8 +78,10 @@ export function ToolbarEmbedDialog({ editor, iframeAllowedUrls, onError, disable
         </button>
       </DialogTrigger>
       <DialogContent
-        className="z-[70] sm:max-w-lg max-h-[90vh] flex flex-col overflow-hidden"
-        overlayClassName="z-[70]"
+        // z-[130]: above the elevated focused-task edit dialog (z-[120]) so the
+        // embed dialog isn't buried behind it (see ToolbarImageDialog).
+        className="z-[130] sm:max-w-lg max-h-[90vh] flex flex-col overflow-hidden"
+        overlayClassName="z-[130]"
       >
         <DialogHeader className="shrink-0">
           <DialogTitle>{t('editor.embed.dialogTitle')}</DialogTitle>

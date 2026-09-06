@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import type {
   PendingMembership,
@@ -11,6 +12,7 @@ import type {
   CommunityOrg,
   CommunityVC,
 } from '@/crd/components/space/settings/SpaceSettingsCommunityView';
+import type { ApplicationModel } from '@/domain/access/model/ApplicationModel';
 import {
   ApplicationEvent,
   ApplicationState,
@@ -36,14 +38,25 @@ export type CommunityPendingRemoval =
 
 export type UseCommunityTabDataResult = {
   members: CommunityMember[];
+  applications: ApplicationModel[];
   pendingMemberships: PendingMembership[];
   organizations: CommunityOrg[];
   virtualContributors: CommunityVC[];
   permissions: {
     canInvite: boolean;
+    /**
+     * Direct add of a member. Previously computed by `useCommunityAdmin` but never
+     * forwarded here, which left the add-member path entirely ungated.
+     */
+    canAddUsers: boolean;
     canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
   };
+  /**
+   * Raw role-set privileges plus the privilege-query loading flag, forwarded so the page
+   * can derive per-control gating that distinguishes checking / denied / unverifiable.
+   */
+  myPrivileges: AuthorizationPrivilege[] | undefined;
   /**
    * Aggregate lead-role policy: derived from `leadRoleDefinition.{user,organization}Policy`
    * and the current count of leads. Per-user disabled state is `(!canAddLead && !row.isLead) ||
@@ -69,6 +82,7 @@ export type UseCommunityTabDataResult = {
   onPendingReject: (id: string) => void;
   onPendingDelete: (id: string) => void;
   loading: boolean;
+  errored: boolean;
   pendingRemoval: CommunityPendingRemoval | null;
   confirmRemoval: () => Promise<void>;
   cancelRemoval: () => void;
@@ -77,7 +91,7 @@ export type UseCommunityTabDataResult = {
 
 // Pass the raw ISO date through to the CRD layer; the table formats the
 // display string and the tooltip timestamp itself (locale-aware, via date-fns).
-const toIsoString = (d: Date | string | undefined | null): string => {
+export const toIsoString = (d: Date | string | undefined | null): string => {
   if (!d) return '';
   if (d instanceof Date) return d.toISOString();
   return String(d);
@@ -339,6 +353,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
 
   return {
     members,
+    applications: community.membershipAdmin.applications,
     pendingMemberships,
     organizations,
     virtualContributors,
@@ -349,9 +364,11 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
       // EITHER the role-set assign privilege OR the account-assign privilege.
       // The CRD gate previously checked only the former, hiding the VC add
       // buttons for admins (e.g. space Admin/Lead) who only hold the latter.
+      canAddUsers: community.permissions.canAddUsers,
       canAddVirtualContributors:
         community.permissions.canAddVirtualContributors || community.permissions.canAddVirtualContributorsFromAccount,
     },
+    myPrivileges: community.myPrivileges,
     leadPolicy,
     onUserRemove,
     onUserLeadChange,
@@ -365,6 +382,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     getMemberFirstName,
     viewerId: userModel?.id,
     loading: community.loading,
+    errored: community.errored,
     pendingRemoval,
     confirmRemoval,
     cancelRemoval,

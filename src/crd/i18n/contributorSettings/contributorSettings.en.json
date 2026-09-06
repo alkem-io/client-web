@@ -16,7 +16,7 @@
       "paths": {
         "writtenKnowledge": {
           "title": "Written knowledge",
-          "subtitle": "Add posts and documents"
+          "subtitle": "Add Posts and documents"
         },
         "existingSpace": {
           "title": "Existing Space",
@@ -29,12 +29,12 @@
       }
     },
     "addKnowledge": {
-      "intro": "What knowledge do you want your Virtual Contributor to have? Write it down in posts or upload it in documents. You can update, add, and remove content later.",
+      "intro": "What knowledge do you want your Virtual Contributor to have? Write it down in Posts or upload it in documents. You can update, add, and remove content later.",
       "postsTitle": "Posts",
       "postTitle": "Title",
       "postDescription": "Content",
-      "removePost": "Remove post",
-      "addPost": "Add post",
+      "removePost": "Remove Post",
+      "addPost": "Add Post",
       "documentsTitle": "Documents",
       "documentName": "Name",
       "documentUrl": "URL",
@@ -246,12 +246,185 @@
       "description": "Manage passkeys and WebAuthn credentials for your account.",
       "notEnabled": "WebAuthn / Passkey is not enabled on this account.",
       "errorDescription": "Couldn't load security settings — try refreshing the page.",
+      "sessionExpired": {
+        "description": "Your session with our sign-in provider has expired, so these settings can't be loaded. Refreshing won't help — sign out and sign in again to restore it. The rest of Alkemio keeps working in the meantime.",
+        "action": "Sign out and sign in again"
+      },
       "password": {
         "title": "Change password",
         "description": "Update the password used to sign in to your account.",
         "notEnabled": "Password sign-in is not enabled on this account.",
         "confirmLabel": "Confirm new password",
         "mismatch": "Passwords don't match."
+      },
+      "mcpApiKeys": {
+        "title": "MCP API Keys",
+        "description": "Create keys so external MCP clients (like Claude Desktop or Claude Code) can connect to Alkemio on your behalf.",
+        "empty": {
+          "title": "No API keys yet",
+          "description": "Create a key to connect an MCP client to your account.",
+          "create": "Create API key"
+        },
+        "list": {
+          "name": "Name",
+          "operations": "Operations",
+          "created": "Created",
+          "expires": "Expires",
+          "neverExpires": "Never expires",
+          "lastUsed": "Last used",
+          "neverUsed": "Never used",
+          "lastUsedFrom": "from {{address}}",
+          "status": "Status",
+          "revoke": "Revoke"
+        },
+        "status": {
+          "active": "Active",
+          "expired": "Expired",
+          "revoked": "Revoked"
+        },
+        "operations": {
+          "read": "Read",
+          "tools": "Tools"
+        },
+        "create": {
+          "trigger": "Create API key",
+          "title": "Create MCP API key",
+          "description": "Choose a name, the operations it can perform, and an optional expiry.",
+          "nameLabel": "Name",
+          "namePlaceholder": "e.g. Claude Desktop",
+          "operationsLabel": "Operations",
+          "operationsRequired": "Choose at least one operation.",
+          "expiryLabel": "Expiry (optional)",
+          "expiryPlaceholder": "Never expires",
+          "expiryPastError": "Expiry must be in the future.",
+          "cancel": "Cancel",
+          "submit": "Create key",
+          "submitting": "Creating…",
+          "capReachedError": "You've reached the limit of {{limit}} active API keys. Revoke one to free up an allowance.",
+          "genericError": "Couldn't create the API key — try again."
+        },
+        "reveal": {
+          "title": "API key created",
+          "warning": "Copy this key now — you will not be able to see it again.",
+          "keyLabel": "API key",
+          "copy": "Copy",
+          "copied": "Copied",
+          "copyAnnouncement": "API key copied to clipboard.",
+          "manualCopyHint": "Clipboard access isn't available — select the field above and copy manually.",
+          "recipeTitle": "Connection recipe",
+          "recipeEndpointLabel": "Endpoint",
+          "recipeHeaderLabel": "Header",
+          "close": "Done"
+        },
+        "interrupted": {
+          "title": "Key value unavailable",
+          "description": "This key's value can no longer be shown. Revoke it and create a new one if you still need to connect a client.",
+          "revokeAndRecreate": "Revoke and create a new key"
+        },
+        "revoke": {
+          "title": "Revoke API key",
+          "description": "Revoking \"{{name}}\" will immediately stop it from authenticating. This cannot be undone.",
+          "cancel": "Cancel",
+          "confirm": "Revoke key",
+          "revoking": "Revoking…",
+          "success": "\"{{name}}\" has been revoked.",
+          "error": "Couldn't revoke the key — try again."
+        },
+        "errors": {
+          "notFound": "That API key could not be found.",
+          "loadError": "Couldn't load your API keys — try refreshing the page.",
+          "retry": "Try again"
+        }
+      },
+      "connectedAccounts": {
+        "title": "Connected Accounts",
+        "description": "Every way you can currently sign in to this account.",
+        "provider": {
+          "notConnected": "Not connected",
+          "connected": "Connected"
+        },
+        "actions": {
+          "connect": "Connect",
+          "connectAria": "Connect {{provider}}",
+          "disconnect": "Disconnect",
+          "disconnectAria": "Disconnect {{provider}}"
+        },
+        "confirmDisconnect": {
+          "title": "Disconnect {{provider}}?",
+          "description": "You won't be able to sign in with {{provider}} anymore. If you reconnect later and the provider has changed how it identifies you, this exact connection may not come back.",
+          "confirm": "Disconnect"
+        },
+        "locked": {
+          "reason": "This is your only way to sign in right now — add a password or a passkey below before you can disconnect it."
+        },
+        "unavailable": {
+          "message": "We can't show your sign-in methods right now. Try again in a moment - no reload needed.",
+          "retry": "Try again"
+        },
+        "sessionExpired": {
+          "message": "Your session with our sign-in provider has expired, so your sign-in methods can't be loaded. Trying again won't help — use the sign-out action below to restore it."
+        },
+        "messages": {
+          "changesSaved": "Your changes have been saved!",
+          "identityAlreadyLinked": "That identity is already connected to a different Alkemio account. Nothing has changed on either account.",
+          "linked": "{{provider}} connected.",
+          "unlinked": "{{provider}} disconnected.",
+          "connectFailed": "Couldn't connect {{provider}} — try again.",
+          "disconnectFailed": "Couldn't disconnect {{provider}} — try again.",
+          "reauthRequiredConnect": "Confirm it's you, then connect {{provider}} again.",
+          "reauthRequiredDisconnect": "Confirm it's you, then disconnect {{provider}} again."
+        },
+        "credentials": {
+          "password": {
+            "label": "Password",
+            "set": "Set",
+            "notSet": "Not set",
+            "manage": "Change password"
+          },
+          "passkey": {
+            "label": "Passkey",
+            "set": "Set",
+            "notSet": "Not set",
+            "manage": "Manage passkeys"
+          }
+        }
+      },
+      "deleteAccount": {
+        "title": "Delete account",
+        "description": "Permanently delete your Alkemio account.",
+        "cardBody": "Deleting your account is immediate and permanent. Your profile, settings, uploaded files, and sign-in credentials are removed, and this cannot be undone.",
+        "trigger": "Delete account",
+        "preflightError": "Couldn't check whether your account can be deleted - try again.",
+        "reauthFailed": "We couldn't refresh your session. Sign out and sign back in, then try again.",
+        "confirm": {
+          "title": "Delete your account?",
+          "description": "This permanently deletes your Alkemio account. This cannot be undone.",
+          "instructions": "Type your name - {{name}} - to confirm.",
+          "namePlaceholder": "Type your name to confirm",
+          "subscriptionNotice": "Your account has an active subscription linked to it. Deletion will proceed; billing is reconciled separately.",
+          "cancel": "Cancel",
+          "confirmLabel": "Delete my account",
+          "deleting": "Deleting…",
+          "genericError": "Couldn't delete your account - try again."
+        },
+        "blocked": {
+          "title": "You can't delete your account yet",
+          "description": "Your account still holds items that must be resolved first.",
+          "truncatedNotice": "Showing the first {{count}} of {{total}} items.",
+          "resolveLink": "Manage my account resources",
+          "supportLink": "Contact support",
+          "close": "Close",
+          "soleOwner": {
+            "notice": "You're the only owner of {{name}}. Appoint another owner before deleting your account, or contact support for help."
+          },
+          "kinds": {
+            "ACCOUNT_SPACE": "Space",
+            "ACCOUNT_VIRTUAL_CONTRIBUTOR": "Virtual Contributor",
+            "ACCOUNT_INNOVATION_PACK": "Innovation Pack",
+            "ACCOUNT_INNOVATION_HUB": "Innovation Hub",
+            "SOLE_ORGANIZATION_OWNER": "Organization (sole owner)"
+          }
+        }
       }
     },
     "settings": {
@@ -282,6 +455,7 @@
       "helpBanner": "Edit your notification preferences. Changes are saved automatically.",
       "toggleAria": "Toggle {{channel}} notification for: {{label}}",
       "toggleError": "Couldn't save preference — try again",
+      "inAppLockedChat": "Chat messages already appear live in the chat panel, so in-app notifications aren't sent for this row",
       "columns": {
         "activity": "Activity",
         "inApp": "In-App",
@@ -299,7 +473,7 @@
       "groups": {
         "space": {
           "title": "Space Notifications",
-          "description": "Manage notifications for space-related events like posts, comments, and community updates."
+          "description": "Manage notifications for space-related events like Posts, comments, and community updates."
         },
         "spaceAdmin": {
           "title": "Space Admin Notifications",
@@ -334,7 +508,8 @@
         "space": {
           "communicationUpdates": "Receive a notification when a new communication is shared on a community",
           "collaborationCalloutPublished": "Receive a notification when a callout is published in a community I am a member of",
-          "collaborationCalloutPostContributionComment": "Receive a notification when a comment is made on a post I follow",
+          "collaborationCalloutReaction": "Receive a notification when someone reacts to my Post with an emoji",
+          "collaborationCalloutPostContributionComment": "Receive a notification when a comment is made on a Post I follow",
           "collaborationCalloutContributionCreated": "Receive a notification when a new contribution is created on a callout",
           "collaborationCalloutComment": "Receive a notification when a new comment is added to a callout I follow",
           "communityCalendarEvents": "Receive a notification for community calendar events",
@@ -354,6 +529,8 @@
           "commentReply": "Receive a notification when someone replies to my comment",
           "mentioned": "Receive a notification when I am mentioned",
           "messageReceived": "Receive a notification when someone sends me a direct message",
+          "conversationMessageDirect": "Receive a notification when someone sends me a direct (1:1) chat message",
+          "conversationMessageGroup": "Receive a notification when someone posts in a group chat I am a member of",
           "membershipInvitationReceived": "Receive a notification when someone invites me to join a community",
           "membershipCommunityJoined": "Receive a notification when I join a new Space"
         },

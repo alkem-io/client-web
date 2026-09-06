@@ -77,7 +77,16 @@ export interface useCommunityAdminProvided {
     canAddVirtualContributors: boolean;
     canAddVirtualContributorsFromAccount: boolean;
   };
+  /**
+   * Raw privileges on the role set, alongside the derived booleans above.
+   *
+   * Consumers that gate a control need this rather than the booleans: a boolean cannot
+   * distinguish "still loading" from "denied" from "no privilege list returned", which
+   * the gating UI must show differently (spec FR-008 / Edge Case 3).
+   */
+  myPrivileges: AuthorizationPrivilege[] | undefined;
   loading: boolean;
+  errored: boolean;
 }
 
 export interface CommunityMemberUserFragmentWithRoles extends RoleSetMemberUserFragment {
@@ -104,6 +113,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     assignRoleToVirtualContributor,
     removeRoleFromVirtualContributor,
     loading,
+    errored: erroredMembers,
   } = useRoleSetManager({
     roleSetId,
     relevantRoles: RELEVANT_ROLES.Community,
@@ -184,6 +194,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     deleteInvitation,
     deletePlatformInvitation,
     loading: loadingApplicationsAndInvitations,
+    errored: erroredApplicationsAndInvitations,
   } = useRoleSetApplicationsAndInvitations({
     roleSetId,
   });
@@ -244,7 +255,9 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
       onDeletePlatformInvitation: deletePlatformInvitation,
     },
     permissions,
+    myPrivileges: authorizationPrivileges,
     loading: loading || loadingApplicationsAndInvitations,
+    errored: erroredMembers || erroredApplicationsAndInvitations,
   };
 };
 

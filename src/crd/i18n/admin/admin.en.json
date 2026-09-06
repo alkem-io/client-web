@@ -202,11 +202,11 @@
     },
     "calloutTransfer": {
       "title": "Transfer Post",
-      "sourceLabel": "Source post URL",
+      "sourceLabel": "Source Post URL",
       "targetLabel": "Target space URL",
-      "description": "Move a post to another space.",
-      "confirmTitle": "Confirm post transfer",
-      "confirmDescription": "This moves the post to the target space. Contributors, links, and history may be affected, and the action cannot be undone."
+      "description": "Move a Post to another space.",
+      "confirmTitle": "Confirm Post transfer",
+      "confirmDescription": "This moves the Post to the target space. Contributors, links, and history may be affected, and the action cannot be undone."
     },
     "resolved": "Resolved"
   },

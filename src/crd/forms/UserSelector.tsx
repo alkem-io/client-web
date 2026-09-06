@@ -122,7 +122,7 @@ export function UserSelector({
         <ul className="flex flex-wrap gap-2">
           {selectedUsers.map(user => (
             <li key={user.id}>
-              <span className="inline-flex items-center gap-2 pr-1 pl-1 py-1 rounded-full border border-border bg-background">
+              <span className="inline-flex items-center gap-2 pr-1 pl-1 py-1 rounded-full border border-border bg-input-background">
                 <Avatar className="size-6">
                   {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
                   <AvatarFallback className="text-badge">{getInitials(user.displayName)}</AvatarFallback>

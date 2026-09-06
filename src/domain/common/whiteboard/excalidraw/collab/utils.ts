@@ -1,4 +1,4 @@
-import type { ExcalidrawElement, ExcalidrawImageElement, FileId } from '@alkemio/excalidraw/element/types';
+import type { FileId } from '@excalidraw-yjs/excalidraw/element/types';
 
 ///// This is copied from Excalidraw sources because VITE cannot import certain things from the package,
 ///// even though VSCode seems to have no problem to see them and shows no compilation error
@@ -9,16 +9,6 @@ export const bytesToHexString = (bytes: Uint8Array) => {
     .map(byte => `0${byte.toString(16)}`.slice(-2))
     .join('');
 };
-
-export const isImageElement = (element: ExcalidrawElement | null): element is ExcalidrawImageElement => {
-  return !!element && element.type === 'image';
-};
-
-export enum UserIdleState {
-  ACTIVE = 'active',
-  AWAY = 'away',
-  IDLE = 'idle',
-}
 
 type IMAGE_MIME_TYPES =
   | 'image/svg+xml'

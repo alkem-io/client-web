@@ -280,7 +280,8 @@ try {
 
 **Connection Parameters**:
 
-- URL: `VITE_APP_COLLAB_URL` (e.g., `http://localhost:3000`)
+- Origin: the first non-empty value of `VITE_APP_ALKEMIO_DOMAIN`, otherwise
+  `window.location.origin` (there is no separate collaboration-origin setting)
 - Path: `VITE_APP_COLLAB_PATH` (e.g., `/api/private/ws/socket.io`)
 - Transport: WebSocket (with polling fallback)
 

@@ -9,6 +9,7 @@ export type GqlTemplatesSetLike = {
   whiteboardTemplates?: GqlTemplateLike[] | null;
   postTemplates?: GqlTemplateLike[] | null;
   communityGuidelinesTemplates?: GqlTemplateLike[] | null;
+  classificationTemplates?: GqlTemplateLike[] | null;
 };
 
 /** GraphQL `TemplatesSet` → ordered category sections (one per type, in `TEMPLATE_TYPE_ORDER`). */
@@ -21,6 +22,7 @@ export function mapTemplatesSetToCategories(
     whiteboard: templatesSet?.whiteboardTemplates ?? [],
     post: templatesSet?.postTemplates ?? [],
     communityGuidelines: templatesSet?.communityGuidelinesTemplates ?? [],
+    classification: templatesSet?.classificationTemplates ?? [],
   } as const;
 
   return TEMPLATE_TYPE_ORDER.map(type => ({

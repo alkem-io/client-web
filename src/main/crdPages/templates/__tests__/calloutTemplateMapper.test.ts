@@ -14,8 +14,8 @@ import {
   TagsetType,
   WhiteboardPreviewMode,
 } from '@/core/apollo/generated/graphql-schema';
-import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { type CalloutFormValues, EMPTY_CALLOUT_FORM_VALUES } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
+
 import {
   calloutFormValuesToCreateCalloutInput,
   calloutFormValuesToUpdateCalloutEntityInput,
@@ -69,12 +69,21 @@ describe('calloutFormValuesToCreateCalloutInput', () => {
     );
   });
 
-  it('carries the whiteboard drawing for whiteboard framing', () => {
+  it('sends sourceWhiteboardID and never sends content for a source-backed whiteboard', () => {
     const input = calloutFormValuesToCreateCalloutInput(
-      values({ framingChip: 'whiteboard', whiteboardContent: '{"elements":[]}' }),
+      values({
+        framingChip: 'whiteboard',
+        editMeta: { framingProfileId: 'fp-1', originalReferenceIds: [], whiteboardId: 'source-wb-1' },
+      }),
       fallbacks
     );
-    expect(input.framing.whiteboard?.content).toBe('{"elements":[]}');
+    expect(input.framing.whiteboard?.sourceWhiteboardID).toBe('source-wb-1');
+    expect((input.framing.whiteboard as { content?: unknown }).content).toBeUndefined();
+  });
+
+  it('does NOT send sourceWhiteboardID for a from-scratch whiteboard template (no source whiteboard id)', () => {
+    const input = calloutFormValuesToCreateCalloutInput(values({ framingChip: 'whiteboard' }), fallbacks);
+    expect(input.framing.whiteboard?.sourceWhiteboardID).toBeUndefined();
   });
 
   it('carries the poll definition for poll framing', () => {
@@ -106,21 +115,17 @@ describe('calloutFormValuesToUpdateCalloutEntityInput', () => {
     expect(input.framing?.profile?.displayName).toBe('Edited');
   });
 
-  it('adds the whiteboard body + preview settings for whiteboard framing (unlike the live-callout mapper)', () => {
-    const input = calloutFormValuesToUpdateCalloutEntityInput(
-      values({ framingChip: 'whiteboard', whiteboardContent: '{"elements":[1]}' }),
-      'c1'
-    );
-    expect(input.framing?.whiteboardContent).toBe('{"elements":[1]}');
-    expect(input.framing?.whiteboardPreviewSettings).toBeDefined();
+  it('does not add a whiteboard body for whiteboard framing', () => {
+    const input = calloutFormValuesToUpdateCalloutEntityInput(values({ framingChip: 'whiteboard' }), 'c1');
+    expect((input.framing as { whiteboardContent?: unknown })?.whiteboardContent).toBeUndefined();
   });
 
-  it('adds the memo body for memo framing when non-empty', () => {
+  it('does not add the memo body for memo framing; existing templates use the collaborative editor', () => {
     const input = calloutFormValuesToUpdateCalloutEntityInput(
       values({ framingChip: 'memo', memoMarkdown: '# Notes' }),
       'c1'
     );
-    expect(input.framing?.memoContent).toBe('# Notes');
+    expect(input.framing?.memoContent).toBeUndefined();
   });
 
   it('does not add a memo body for non-memo framing', () => {
@@ -147,6 +152,7 @@ const baseFragment = (
 ): CalloutTemplateContentFragment => ({
   __typename: 'Callout',
   id: 'callout-1',
+  classification: undefined,
   framing: {
     __typename: 'CalloutFraming',
     id: 'framing-1',
@@ -186,7 +192,7 @@ const baseFragment = (
     id: 'cd-1',
     defaultDisplayName: 'Item',
     postDescription: 'A post',
-    whiteboardContent: undefined,
+    whiteboardContentAvailable: false,
   },
 });
 
@@ -204,10 +210,63 @@ describe('calloutTemplateContentToFormValues', () => {
     expect(v.contributionDefaults).toEqual({
       defaultDisplayName: 'Item',
       postDescription: 'A post',
-      whiteboardContent: '',
+      whiteboardContentAvailable: false,
+      sourceCalloutId: 'callout-1',
     });
     expect(v.referenceRows).toEqual([{ id: 'ref-1', name: 'Docs', uri: 'https://x.test', description: 'd' }]);
     expect(v.editMeta?.framingProfileTagsetId).toBe('ts-1');
+  });
+
+  // A template saved from a Tasks board carries the reserved TASK classification
+  // whose allowedValues are the columns. Applying it MUST restore board mode and
+  // the exact custom column set — otherwise the create form loses board-ness and
+  // posts a plain callout.
+  it('restores board mode and custom columns from a board template', () => {
+    const frag = baseFragment();
+    frag.classification = {
+      __typename: 'Classification',
+      id: 'cls-1',
+      tagsets: [
+        {
+          __typename: 'Tagset',
+          id: 'ts-task',
+          name: 'task',
+          tags: [],
+          allowedValues: ['A', 'B', 'C'],
+          type: TagsetType.SelectOne,
+        },
+      ],
+    };
+    const v = calloutTemplateContentToFormValues(frag);
+    expect(v.taskBoard).toBe(true);
+    expect(v.taskBoardColumns).toEqual(['A', 'B', 'C']);
+  });
+
+  it('leaves board mode off for a plain (non-board) template', () => {
+    const v = calloutTemplateContentToFormValues(baseFragment());
+    expect(v.taskBoard).toBe(false);
+    expect(v.taskBoardColumns).toEqual([]);
+  });
+
+  it('leaves board mode off when the classification has other tagsets but no task marker', () => {
+    const frag = baseFragment();
+    frag.classification = {
+      __typename: 'Classification',
+      id: 'cls-1',
+      tagsets: [
+        {
+          __typename: 'Tagset',
+          id: 'ts-flow',
+          name: 'flow-state',
+          tags: ['To do'],
+          allowedValues: ['To do', 'Done'],
+          type: TagsetType.SelectOne,
+        },
+      ],
+    };
+    const v = calloutTemplateContentToFormValues(frag);
+    expect(v.taskBoard).toBe(false);
+    expect(v.taskBoardColumns).toEqual([]);
   });
 
   // Feature 008 — applying a contributors template MUST carry its captured config
@@ -239,13 +298,12 @@ describe('calloutTemplateContentToFormValues', () => {
     });
   });
 
-  it('copies the whiteboard drawing (unlike the live-callout edit prefill)', () => {
+  it('seeds an empty whiteboard placeholder — the server copies the real drawing on create (#29)', () => {
     const v = calloutTemplateContentToFormValues(
       baseFragment({
         type: CalloutFramingType.Whiteboard,
         whiteboard: {
           __typename: 'Whiteboard',
-          content: '{"elements":[42]}',
           id: 'wb-1',
           nameID: 'wb-1',
           createdDate: new Date(),
@@ -273,7 +331,6 @@ describe('calloutTemplateContentToFormValues', () => {
       })
     );
     expect(v.framingChip).toBe('whiteboard');
-    expect(v.whiteboardContent).toBe('{"elements":[42]}');
     expect(v.whiteboardConfigured).toBe(true);
     // D16 (2026-05-18): server preview URL is undefined when the loaded whiteboard has no Visual.
     expect(v.whiteboardPreviewServerUrl).toBeUndefined();
@@ -289,7 +346,6 @@ describe('calloutTemplateContentToFormValues', () => {
         type: CalloutFramingType.Whiteboard,
         whiteboard: {
           __typename: 'Whiteboard',
-          content: '{"elements":[]}',
           id: 'wb-1',
           nameID: 'wb-1',
           createdDate: new Date(),
@@ -323,9 +379,9 @@ describe('calloutTemplateContentToFormValues', () => {
     expect(v.whiteboardPreviewServerUrl).toBe('https://cdn.alkem.io/wb/preview.png');
   });
 
-  it('falls back to the empty-whiteboard sentinel when whiteboard framing has no drawing', () => {
+  it('does not expose whiteboard snapshot bytes when whiteboard framing has no drawing', () => {
     const v = calloutTemplateContentToFormValues(baseFragment());
-    expect(v.whiteboardContent).toBe(EmptyWhiteboardString);
+    expect(v.whiteboardContent).toBe(EMPTY_CALLOUT_FORM_VALUES.whiteboardContent);
   });
 
   it('copies the memo body', () => {
@@ -423,6 +479,28 @@ describe('calloutTemplateContentToFormValues', () => {
     );
     expect(v.framingChip).toBe('document');
     expect(v.collaboraDocumentType).toBe(CollaboraDocumentType.Presentation);
+  });
+
+  it('captures the media gallery identity and original ordering for edit persistence', () => {
+    const v = calloutTemplateContentToFormValues(
+      baseFragment({
+        type: CalloutFramingType.MediaGallery,
+        mediaGallery: {
+          __typename: 'MediaGallery',
+          id: 'gallery-1',
+          visuals: [
+            { __typename: 'Visual', id: 'visual-2', uri: '/two', sortOrder: 2 },
+            { __typename: 'Visual', id: 'visual-1', uri: '/one', sortOrder: 1 },
+          ],
+        } as never,
+      })
+    );
+
+    expect(v.editMeta).toMatchObject({
+      mediaGalleryId: 'gallery-1',
+      originalMediaGalleryVisualIds: ['visual-2', 'visual-1'],
+      originalMediaGallerySortOrders: { 'visual-2': 2, 'visual-1': 1 },
+    });
   });
 
   it('falls back to the "none" response type only when allowedTypes is empty', () => {

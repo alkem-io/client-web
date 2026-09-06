@@ -138,7 +138,7 @@ export function HubSpacesSection({ spaces, hubName, spacesLoading = false }: Hub
                   onChange={event => handleSearchChange(event.target.value)}
                   placeholder={t('home.spacesSection.searchPlaceholder')}
                   aria-label={t('home.spacesSection.searchPlaceholder')}
-                  className="w-full h-10 pl-9 pr-9 border border-border bg-background rounded-lg text-body text-foreground transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary"
+                  className="w-full h-10 pl-9 pr-9 border border-border bg-input-background rounded-lg text-body text-foreground transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary"
                 />
                 {hasSearch && (
                   <button

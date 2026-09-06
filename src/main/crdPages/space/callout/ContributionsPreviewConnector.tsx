@@ -2,9 +2,11 @@ import { Plus } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import { ContributionDocumentCard } from '@/crd/components/contribution/ContributionDocumentCard';
 import { ContributionLinkList } from '@/crd/components/contribution/ContributionLinkList';
 import { ContributionMemoCard } from '@/crd/components/contribution/ContributionMemoCard';
 import { ContributionPostCard } from '@/crd/components/contribution/ContributionPostCard';
+import { ContributionsPreviewSkeleton } from '@/crd/components/contribution/ContributionsPreviewSkeleton';
 import { ContributionWhiteboardCard } from '@/crd/components/contribution/ContributionWhiteboardCard';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { Button } from '@/crd/primitives/button';
@@ -12,12 +14,16 @@ import { CroppedMarkdown } from '@/crd/primitives/croppedMarkdown';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
-import { getCalloutContributionType } from '../dataMappers/calloutDataMapper';
+import {
+  getCalloutContributionType,
+  mapContributionTypeToPreviewKind,
+} from '@/main/crdPages/space/dataMappers/calloutDataMapper';
 import {
   type ContributionCardData,
   mapAnyContributionToCardData,
   mapContributionToLinkItem,
 } from '../dataMappers/contributionDataMapper';
+import { DocumentContributionAddConnector } from './DocumentContributionAddConnector';
 import { LinkContributionAddConnector } from './LinkContributionAddConnector';
 import { LinkContributionEditConnector } from './LinkContributionEditConnector';
 import { MemoContributionAddConnector } from './MemoContributionAddConnector';
@@ -31,12 +37,19 @@ type ContributionsPreviewConnectorProps = {
   callout: CalloutDetailsModelExtended;
   onShowAll: () => void;
   onContributionClick?: (contributionId: string, memoId?: string) => void;
+  /**
+   * True when this callout renders as a Tasks board. Retitles the section
+   * header "Tasks (N)" instead of "Contributions (N)". Resolved asynchronously
+   * by the parent (`LazyCalloutItem`); ordinary callouts leave it false.
+   */
+  isTaskBoard?: boolean;
 };
 
 export function ContributionsPreviewConnector({
   callout,
   onShowAll,
   onContributionClick,
+  isTaskBoard,
 }: ContributionsPreviewConnectorProps) {
   const { t, i18n } = useTranslation('crd-space');
   const locale = resolveDateFnsLocale(i18n.language);
@@ -56,6 +69,7 @@ export function ContributionsPreviewConnector({
 
   const {
     inViewRef,
+    loaded,
     contributions: { items, total },
   } = useCalloutContributions({
     callout,
@@ -85,7 +99,6 @@ export function ContributionsPreviewConnector({
           onOpenChange={setAddOpen}
           calloutId={callout.id}
           defaultDisplayName={defaults?.defaultDisplayName}
-          defaultContent={defaults?.whiteboardContent}
         />
       ) : contributionType === CalloutContributionType.Memo ? (
         <MemoContributionAddConnector
@@ -106,6 +119,7 @@ export function ContributionsPreviewConnector({
           open={addOpen}
           onOpenChange={setAddOpen}
           calloutId={callout.id}
+          isTaskBoard={isTaskBoard}
           defaultDisplayName={defaults?.defaultDisplayName}
           defaultDescription={defaults?.postDescription}
         />
@@ -115,6 +129,14 @@ export function ContributionsPreviewConnector({
           open={addOpen}
           onOpenChange={setAddOpen}
           calloutId={callout.id}
+        />
+      ) : contributionType === CalloutContributionType.CollaboraDocument ? (
+        <DocumentContributionAddConnector
+          inlineTrigger={true}
+          open={addOpen}
+          onOpenChange={setAddOpen}
+          calloutId={callout.id}
+          calloutPrivileges={callout.authorization?.myPrivileges}
         />
       ) : null
     ) : null;
@@ -131,7 +153,9 @@ export function ContributionsPreviewConnector({
           ? t('callout.addPost')
           : contributionType === CalloutContributionType.Link
             ? t('callout.addLinkOrFile')
-            : '';
+            : contributionType === CalloutContributionType.CollaboraDocument
+              ? t('callout.addDocument')
+              : '';
 
   // Link-list edit state. The "+ Add link" action lives in the section-header `+` button alongside
   // every other contribution type (see `addConnector` above); per-row Edit / Delete still need their
@@ -157,6 +181,20 @@ export function ContributionsPreviewConnector({
   const visibleItems = hasMore ? contributions.slice(0, ITEMS_BEFORE_MORE) : contributions;
   const moreCount = total - ITEMS_BEFORE_MORE;
 
+  // The contributions page is fetched lazily (own in-view observer + round-trip), so
+  // for a while the card would show `Contributions (0)` and no grid, then grow when the
+  // page lands. The details fragment already carries one stub per contribution — use
+  // its length for the header count and to size a same-footprint placeholder until the
+  // real page arrives (issue #10043).
+  const expectedCount = callout.contributions.length;
+  const displayedTotal = loaded ? total : expectedCount;
+  const loadingBody =
+    !loaded && expectedCount > 0 ? (
+      <output className="block" aria-label={t('a11y.loadingContributions')}>
+        <ContributionsPreviewSkeleton kind={mapContributionTypeToPreviewKind(contributionType)} count={expectedCount} />
+      </output>
+    ) : undefined;
+
   // MUI parity (`CalloutContributionsBlock`): a `Contributions (n)` header
   // anchors the section so the callout's nature is obvious even with zero
   // contributions and contributions disabled. Without the header, a memo
@@ -169,7 +207,11 @@ export function ContributionsPreviewConnector({
   // detail dialog just to add another contribution.
   const header = (
     <div className="mt-4 mb-2 flex items-center justify-between gap-2">
-      <p className="text-label uppercase text-muted-foreground">{t('callout.contributionsHeader', { count: total })}</p>
+      <p className="text-label uppercase text-muted-foreground">
+        {isTaskBoard
+          ? t('callout.tasksHeader', { count: displayedTotal })
+          : t('callout.contributionsHeader', { count: displayedTotal })}
+      </p>
       {canCreateContribution && addLabel && (
         <Button
           variant="ghost"
@@ -205,18 +247,22 @@ export function ContributionsPreviewConnector({
     return (
       <div ref={inViewRef}>
         {header}
-        {contributions.length > 0 && (
-          <ContributionLinkList
-            links={hasMore ? links.slice(0, ITEMS_BEFORE_MORE) : links}
-            canAdd={false}
-            onEdit={id => openLinkTarget(id, 'edit')}
-            onDelete={id => openLinkTarget(id, 'delete')}
-          />
-        )}
-        {hasMore && (
-          <Button variant="ghost" size="sm" className="mt-2 text-muted-foreground" onClick={onShowAll}>
-            {t('callout.moreContributions', { count: moreCount })}
-          </Button>
+        {loadingBody ?? (
+          <>
+            {contributions.length > 0 && (
+              <ContributionLinkList
+                links={hasMore ? links.slice(0, ITEMS_BEFORE_MORE) : links}
+                canAdd={false}
+                onEdit={id => openLinkTarget(id, 'edit')}
+                onDelete={id => openLinkTarget(id, 'delete')}
+              />
+            )}
+            {hasMore && (
+              <Button variant="ghost" size="sm" className="mt-2 text-muted-foreground" onClick={onShowAll}>
+                {t('callout.moreContributions', { count: moreCount })}
+              </Button>
+            )}
+          </>
         )}
         {addConnector}
         <LinkContributionEditConnector
@@ -265,27 +311,28 @@ export function ContributionsPreviewConnector({
   return (
     <div ref={inViewRef}>
       {header}
-      {(visibleItems.length > 0 || hasMore) && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {visibleItems.map(contribution => (
-            <ContributionCard
-              key={contribution.id}
-              contribution={contribution}
-              contributionType={contributionType}
-              onClick={() => onContributionClick?.(contribution.id, contribution.memoId)}
-            />
-          ))}
-          {hasMore && (
-            <button
-              type="button"
-              className="flex items-center justify-center rounded-lg border border-dashed border-border bg-muted/20 hover:bg-muted/40 transition-colors cursor-pointer text-muted-foreground text-card-title min-h-[100px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              onClick={onShowAll}
-            >
-              {t('callout.moreContributions', { count: moreCount })}
-            </button>
-          )}
-        </div>
-      )}
+      {loadingBody ??
+        ((visibleItems.length > 0 || hasMore) && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {visibleItems.map(contribution => (
+              <ContributionCard
+                key={contribution.id}
+                contribution={contribution}
+                contributionType={contributionType}
+                onClick={() => onContributionClick?.(contribution.id, contribution.memoId)}
+              />
+            ))}
+            {hasMore && (
+              <button
+                type="button"
+                className="flex items-center justify-center rounded-lg border border-dashed border-border bg-muted/20 hover:bg-muted/40 transition-colors cursor-pointer text-muted-foreground text-card-title min-h-[100px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                onClick={onShowAll}
+              >
+                {t('callout.moreContributions', { count: moreCount })}
+              </button>
+            )}
+          </div>
+        ))}
       {addConnector}
     </div>
   );
@@ -362,6 +409,15 @@ function ContributionCard({
         <ContributionMemoCard
           title={contribution.title}
           markdownContent={contribution.markdownContent}
+          author={contribution.author?.name}
+          onClick={onClick}
+        />
+      );
+    case CalloutContributionType.CollaboraDocument:
+      return (
+        <ContributionDocumentCard
+          title={contribution.title}
+          documentType={contribution.documentType ?? 'text'}
           author={contribution.author?.name}
           onClick={onClick}
         />

@@ -246,12 +246,185 @@
       "description": "Verwalte Passkeys und WebAuthn-Anmeldedaten für dein Konto.",
       "notEnabled": "WebAuthn / Passkey ist für dieses Konto nicht aktiviert.",
       "errorDescription": "Sicherheitseinstellungen konnten nicht geladen werden — bitte aktualisiere die Seite.",
+      "sessionExpired": {
+        "description": "Deine Sitzung bei unserem Anmeldedienst ist abgelaufen, daher können diese Einstellungen nicht geladen werden. Ein Neuladen hilft nicht — melde dich ab und wieder an, um sie wiederherzustellen. Der Rest von Alkemio funktioniert währenddessen weiter.",
+        "action": "Abmelden und erneut anmelden"
+      },
       "password": {
         "title": "Passwort ändern",
         "description": "Aktualisiere das Passwort, mit dem du dich in deinem Konto anmeldest.",
         "notEnabled": "Die Anmeldung mit Passwort ist für dieses Konto nicht aktiviert.",
         "confirmLabel": "Neues Passwort bestätigen",
         "mismatch": "Passwörter stimmen nicht überein."
+      },
+      "mcpApiKeys": {
+        "title": "MCP-API-Schlüssel",
+        "description": "Erstelle Schlüssel, damit externe MCP-Clients (wie Claude Desktop oder Claude Code) sich in deinem Namen mit Alkemio verbinden können.",
+        "empty": {
+          "title": "Noch keine API-Schlüssel",
+          "description": "Erstelle einen Schlüssel, um einen MCP-Client mit deinem Konto zu verbinden.",
+          "create": "API-Schlüssel erstellen"
+        },
+        "list": {
+          "name": "Name",
+          "operations": "Operationen",
+          "created": "Erstellt",
+          "expires": "Läuft ab",
+          "neverExpires": "Läuft nie ab",
+          "lastUsed": "Zuletzt verwendet",
+          "neverUsed": "Nie verwendet",
+          "lastUsedFrom": "von {{address}}",
+          "status": "Status",
+          "revoke": "Widerrufen"
+        },
+        "status": {
+          "active": "Aktiv",
+          "expired": "Abgelaufen",
+          "revoked": "Widerrufen"
+        },
+        "operations": {
+          "read": "Lesen",
+          "tools": "Tools"
+        },
+        "create": {
+          "trigger": "API-Schlüssel erstellen",
+          "title": "MCP-API-Schlüssel erstellen",
+          "description": "Wähle einen Namen, die zulässigen Operationen und optional ein Ablaufdatum.",
+          "nameLabel": "Name",
+          "namePlaceholder": "z. B. Claude Desktop",
+          "operationsLabel": "Operationen",
+          "operationsRequired": "Wähle mindestens eine Operation.",
+          "expiryLabel": "Ablaufdatum (optional)",
+          "expiryPlaceholder": "Läuft nie ab",
+          "expiryPastError": "Das Ablaufdatum muss in der Zukunft liegen.",
+          "cancel": "Abbrechen",
+          "submit": "Schlüssel erstellen",
+          "submitting": "Wird erstellt…",
+          "capReachedError": "Du hast das Limit von {{limit}} aktiven API-Schlüsseln erreicht. Widerrufe einen, um Platz zu schaffen.",
+          "genericError": "Der API-Schlüssel konnte nicht erstellt werden — versuche es erneut."
+        },
+        "reveal": {
+          "title": "API-Schlüssel erstellt",
+          "warning": "Kopiere diesen Schlüssel jetzt — du wirst ihn danach nicht mehr sehen können.",
+          "keyLabel": "API-Schlüssel",
+          "copy": "Kopieren",
+          "copied": "Kopiert",
+          "copyAnnouncement": "API-Schlüssel in die Zwischenablage kopiert.",
+          "manualCopyHint": "Zwischenablagenzugriff nicht verfügbar — wähle das Feld oben aus und kopiere manuell.",
+          "recipeTitle": "Verbindungsanleitung",
+          "recipeEndpointLabel": "Endpunkt",
+          "recipeHeaderLabel": "Header",
+          "close": "Fertig"
+        },
+        "interrupted": {
+          "title": "Schlüsselwert nicht mehr verfügbar",
+          "description": "Der Wert dieses Schlüssels kann nicht mehr angezeigt werden. Widerrufe ihn und erstelle einen neuen, falls du noch einen Client verbinden musst.",
+          "revokeAndRecreate": "Widerrufen und neuen Schlüssel erstellen"
+        },
+        "revoke": {
+          "title": "API-Schlüssel widerrufen",
+          "description": "Das Widerrufen von \"{{name}}\" beendet die Authentifizierung sofort. Dies kann nicht rückgängig gemacht werden.",
+          "cancel": "Abbrechen",
+          "confirm": "Schlüssel widerrufen",
+          "revoking": "Wird widerrufen…",
+          "success": "\"{{name}}\" wurde widerrufen.",
+          "error": "Der Schlüssel konnte nicht widerrufen werden — versuche es erneut."
+        },
+        "errors": {
+          "notFound": "Dieser API-Schlüssel konnte nicht gefunden werden.",
+          "loadError": "Deine API-Schlüssel konnten nicht geladen werden — bitte aktualisiere die Seite.",
+          "retry": "Erneut versuchen"
+        }
+      },
+      "connectedAccounts": {
+        "title": "Verbundene Konten",
+        "description": "Jede Möglichkeit, mit der du dich derzeit bei diesem Konto anmelden kannst.",
+        "provider": {
+          "notConnected": "Nicht verbunden",
+          "connected": "Verbunden"
+        },
+        "actions": {
+          "connect": "Verbinden",
+          "connectAria": "{{provider}} verbinden",
+          "disconnect": "Trennen",
+          "disconnectAria": "{{provider}} trennen"
+        },
+        "confirmDisconnect": {
+          "title": "{{provider}} trennen?",
+          "description": "Du kannst dich nicht mehr mit {{provider}} anmelden. Wenn du später erneut verbindest und der Anbieter seine Art der Identifizierung geändert hat, ist genau diese Verbindung möglicherweise nicht wiederherstellbar.",
+          "confirm": "Trennen"
+        },
+        "locked": {
+          "reason": "Dies ist derzeit deine einzige Möglichkeit, dich anzumelden — füge unten zuerst ein Passwort oder einen Passkey hinzu, bevor du die Verbindung trennen kannst."
+        },
+        "unavailable": {
+          "message": "Wir können deine Anmeldemethoden gerade nicht anzeigen. Versuche es gleich erneut - die Seite muss nicht neu geladen werden.",
+          "retry": "Erneut versuchen"
+        },
+        "sessionExpired": {
+          "message": "Deine Sitzung bei unserem Anmeldedienst ist abgelaufen, daher können deine Anmeldemethoden nicht geladen werden. Ein erneuter Versuch hilft nicht — melde dich über die Aktion unten ab, um sie wiederherzustellen."
+        },
+        "messages": {
+          "changesSaved": "Deine Änderungen wurden gespeichert!",
+          "identityAlreadyLinked": "Diese Identität ist bereits mit einem anderen Alkemio-Konto verbunden. An keinem der beiden Konten wurde etwas geändert.",
+          "linked": "{{provider}} verbunden.",
+          "unlinked": "{{provider}} getrennt.",
+          "connectFailed": "{{provider}} konnte nicht verbunden werden — versuche es erneut.",
+          "disconnectFailed": "{{provider}} konnte nicht getrennt werden — versuche es erneut.",
+          "reauthRequiredConnect": "Bestätige, dass du es bist, und versuche anschließend erneut, {{provider}} zu verbinden.",
+          "reauthRequiredDisconnect": "Bestätige, dass du es bist, und versuche anschließend erneut, {{provider}} zu trennen."
+        },
+        "credentials": {
+          "password": {
+            "label": "Passwort",
+            "set": "Eingerichtet",
+            "notSet": "Nicht eingerichtet",
+            "manage": "Passwort ändern"
+          },
+          "passkey": {
+            "label": "Passkey",
+            "set": "Eingerichtet",
+            "notSet": "Nicht eingerichtet",
+            "manage": "Passkeys verwalten"
+          }
+        }
+      },
+      "deleteAccount": {
+        "title": "Konto löschen",
+        "description": "Löscht dein Alkemio-Konto dauerhaft.",
+        "cardBody": "Das Löschen deines Kontos ist sofort und endgültig. Dein Profil, deine Einstellungen, hochgeladene Dateien und Anmeldedaten werden entfernt und können nicht wiederhergestellt werden.",
+        "trigger": "Konto löschen",
+        "preflightError": "Es konnte nicht geprüft werden, ob dein Konto gelöscht werden kann - versuche es erneut.",
+        "reauthFailed": "Deine Sitzung konnte nicht aktualisiert werden. Melde dich ab und wieder an und versuche es dann erneut.",
+        "confirm": {
+          "title": "Konto löschen?",
+          "description": "Dies löscht dein Alkemio-Konto dauerhaft. Dies kann nicht rückgängig gemacht werden.",
+          "instructions": "Gib deinen Namen - {{name}} - ein, um zu bestätigen.",
+          "namePlaceholder": "Gib deinen Namen zur Bestätigung ein",
+          "subscriptionNotice": "Mit deinem Konto ist ein aktives Abonnement verknüpft. Die Löschung wird fortgesetzt; die Abrechnung erfolgt separat.",
+          "cancel": "Abbrechen",
+          "confirmLabel": "Mein Konto löschen",
+          "deleting": "Wird gelöscht…",
+          "genericError": "Dein Konto konnte nicht gelöscht werden - versuche es erneut."
+        },
+        "blocked": {
+          "title": "Du kannst dein Konto noch nicht löschen",
+          "description": "Dein Konto enthält noch Elemente, die zuerst aufgelöst werden müssen.",
+          "truncatedNotice": "Zeigt die ersten {{count}} von {{total}} Elementen.",
+          "resolveLink": "Meine Kontoressourcen verwalten",
+          "supportLink": "Support kontaktieren",
+          "close": "Schließen",
+          "soleOwner": {
+            "notice": "Du bist der einzige Eigentümer von {{name}}. Ernenne einen weiteren Eigentümer, bevor du dein Konto löschst, oder kontaktiere den Support."
+          },
+          "kinds": {
+            "ACCOUNT_SPACE": "Space",
+            "ACCOUNT_VIRTUAL_CONTRIBUTOR": "Virtual Contributor",
+            "ACCOUNT_INNOVATION_PACK": "Innovationspaket",
+            "ACCOUNT_INNOVATION_HUB": "Innovations-Hub",
+            "SOLE_ORGANIZATION_OWNER": "Organisation (einziger Eigentümer)"
+          }
+        }
       }
     },
     "settings": {
@@ -282,6 +455,7 @@
       "helpBanner": "Bearbeite deine Benachrichtigungseinstellungen. Änderungen werden automatisch gespeichert.",
       "toggleAria": "{{channel}}-Benachrichtigung umschalten für: {{label}}",
       "toggleError": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen",
+      "inAppLockedChat": "Chatnachrichten erscheinen bereits live im Chat-Panel, daher werden für diese Zeile keine In-App-Benachrichtigungen gesendet",
       "columns": {
         "activity": "Aktivität",
         "inApp": "In-App",
@@ -334,6 +508,7 @@
         "space": {
           "communicationUpdates": "Benachrichtigung erhalten, wenn eine neue Mitteilung in einer Community geteilt wird",
           "collaborationCalloutPublished": "Benachrichtigung erhalten, wenn ein Callout in einer Community veröffentlicht wird, in der ich Mitglied bin",
+          "collaborationCalloutReaction": "Benachrichtigung erhalten, wenn jemand auf meinen Post mit einem Emoji reagiert",
           "collaborationCalloutPostContributionComment": "Benachrichtigung erhalten, wenn ein Beitrag, dem ich folge, kommentiert wird",
           "collaborationCalloutContributionCreated": "Benachrichtigung erhalten, wenn ein neuer Beitrag zu einem Callout erstellt wird",
           "collaborationCalloutComment": "Benachrichtigung erhalten, wenn ein neuer Kommentar zu einem Callout, dem ich folge, hinzugefügt wird",
@@ -354,6 +529,8 @@
           "commentReply": "Benachrichtigung erhalten, wenn jemand auf meinen Kommentar antwortet",
           "mentioned": "Benachrichtigung erhalten, wenn ich erwähnt werde",
           "messageReceived": "Benachrichtigung erhalten, wenn mir jemand eine direkte Nachricht sendet",
+          "conversationMessageDirect": "Benachrichtigung erhalten, wenn mir jemand eine direkte (1:1) Chatnachricht sendet",
+          "conversationMessageGroup": "Benachrichtigung erhalten, wenn jemand in einem Gruppenchat postet, dessen Mitglied ich bin",
           "membershipInvitationReceived": "Benachrichtigung erhalten, wenn mich jemand in eine Community einlädt",
           "membershipCommunityJoined": "Benachrichtigung erhalten, wenn ich einem neuen Space beitrete"
         },

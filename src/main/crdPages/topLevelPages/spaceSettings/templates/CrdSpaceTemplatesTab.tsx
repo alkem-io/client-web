@@ -29,8 +29,9 @@ export function CrdSpaceTemplatesTab({ spaceId, accountId }: { spaceId: string; 
   // one has no bucket yet → temporary (server GCs if abandoned) — mirrors MUI.
   const mdEdit = useMarkdownEditorIntegration();
   const mdCreate = useMarkdownEditorIntegration({ temporaryLocation: true });
-  // References paperclip — uploads land in the space bucket (`temporaryLocation: true`), so a file
-  // attached before a new template exists is GC'd if the create is abandoned, and claimed on save.
+  // References paperclip — uploads land in the space's own (ABOUT) bucket. The space already exists,
+  // so the ambient context resolves `temporaryLocation: false` and the upload is permanent, so the
+  // file is propagated to `file_backup_outbox` (issue #10126).
   const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(
     useStorageConfigContext()
   );

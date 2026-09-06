@@ -42,6 +42,25 @@ export function filterTree(
   return result;
 }
 
+// Restrict the tree to items whose roles intersect `roles`. An ancestor that does not
+// itself match is kept as context when one of its descendants does, preserving the tree
+// shape (same behaviour as search matching in `filterTree`). Used by the non-activity
+// home "show more" to scope the panel to a section's Spaces (e.g. Lead / Admin).
+export function restrictTreeToRoles(items: MembershipItem[], roles: MembershipRole[]): MembershipItem[] {
+  const result: MembershipItem[] = [];
+
+  for (const item of items) {
+    const filteredChildren = restrictTreeToRoles(item.children ?? [], roles);
+    const selfMatches = roles.some(role => item.roles.includes(role));
+
+    if (selfMatches || filteredChildren.length > 0) {
+      result.push({ ...item, children: filteredChildren });
+    }
+  }
+
+  return result;
+}
+
 export function countTreeItems(items: MembershipItem[]): number {
   let total = 0;
   for (const item of items) {

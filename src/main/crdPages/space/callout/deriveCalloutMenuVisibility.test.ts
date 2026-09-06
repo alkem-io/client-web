@@ -8,6 +8,7 @@ const baseInput: CalloutMenuPermissionsInput = {
   canMoveSet: false,
   contributionsEnabled: false,
   contributionsCount: 0,
+  isTaskBoard: false,
   canBeSavedAsTemplate: false,
   saveAsTemplateFeatureEnabled: false,
   isCollaboraDocument: false,
@@ -65,6 +66,13 @@ describe('deriveCalloutMenuVisibility', () => {
   it('Sort Contributions shown when enabled + 2+ contributions + Update', () => {
     const perms = deriveCalloutMenuVisibility(withUpdate({ contributionsEnabled: true, contributionsCount: 2 }));
     expect(perms.showSortContributions).toBe(true);
+  });
+
+  it('Sort Contributions hidden for a Tasks board even when otherwise eligible (board reorders via drag-and-drop)', () => {
+    const perms = deriveCalloutMenuVisibility(
+      withUpdate({ contributionsEnabled: true, contributionsCount: 5, isTaskBoard: true })
+    );
+    expect(perms.showSortContributions).toBe(false);
   });
 
   it('Save-as-Template requires: Update + canBeSavedAsTemplate + feature flag', () => {

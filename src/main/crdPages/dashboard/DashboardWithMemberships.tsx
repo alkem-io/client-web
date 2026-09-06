@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  refetchUserSettingsQuery,
+  useDashboardExploreSpacesQuery,
   useHomeSpaceLookupQuery,
   useLatestContributionsQuery,
   useLatestContributionsSpacesFlatQuery,
   useMyMembershipsQuery,
+  useNonActivityHostedSpacesQuery,
   useRecentSpacesQuery,
+  useUpdateUserSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   ActivityEventType,
@@ -27,12 +31,19 @@ import { useHomeSpaceSettings } from '@/domain/community/userCurrent/useHomeSpac
 import { CrdCreateSpaceDialog } from '@/main/crdPages/topLevelPages/createSpace/CrdCreateSpaceDialog';
 import { CrdVCCreationWizardDialog } from '@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog';
 import { URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
+import { LEGACY_VIEW_KEY, resolveActivityView, SEED_FLAG_KEY, shouldSeedFromLegacy } from './activityViewPreference';
 import {
   mapActivityToFeedItems,
+  mapHostedSpacesToPanelItems,
+  mapHostSection,
+  mapLastActiveSection,
+  mapLeadAdminSection,
   mapMembershipsToPanelItems,
+  mapMostActivitySection,
   mapRecentSpacesToCompactCards,
   type RecentSpaceEntry,
 } from './dashboardDataMappers';
+import { NonActivityHomeSections } from './NonActivityHomeSections';
 import type { DashboardDialogType } from './useDashboardDialogs';
 import { useDashboardSidebar } from './useDashboardSidebar';
 
@@ -50,6 +61,8 @@ type DashboardWithMembershipsProps = {
 
 const EXCLUDED_ACTIVITY_TYPES = [ActivityEventType.CalloutWhiteboardContentModified];
 const ACTIVITY_PAGE_SIZE = 20;
+const SECTION_ACTIVITY_DAYS = 7;
+const SECTION_ITEM_CAP = 4;
 
 export default function DashboardWithMemberships({
   dialogState,
@@ -58,19 +71,50 @@ export default function DashboardWithMemberships({
   const { t } = useTranslation('crd-dashboard');
   const { t: tMain } = useTranslation();
   const navigate = useNavigate();
-  const { platformRoles, accountEntitlements, accountId } = useCurrentUserContext();
+  const { platformRoles, accountEntitlements, accountId, userModel } = useCurrentUserContext();
   const [createSpaceOpen, setCreateSpaceOpen] = useState(false);
   const [createVcOpen, setCreateVcOpen] = useState(false);
 
-  // Activity view toggle — persisted in localStorage
-  const [activityEnabled, setActivityEnabledState] = useState(() => {
-    const cached = localStorage.getItem('dashboardView');
-    return cached !== 'SPACES';
-  });
-  const setActivityEnabled = (enabled: boolean) => {
-    localStorage.setItem('dashboardView', enabled ? 'ACTIVITY' : 'SPACES');
-    setActivityEnabledState(enabled);
+  // Activity view toggle — persisted per-user in UserSettings.dashboard.activityView.
+  // Default: Activity view on (true) when the user has never set it (FR-024). A local
+  // override gives the toggle instant feedback ahead of the mutation resolving.
+  const userId = userModel?.id;
+  const settingActivityView = userModel?.settings?.dashboard?.activityView;
+  const [activityOverride, setActivityOverride] = useState<boolean | null>(null);
+  const activityEnabled = resolveActivityView(activityOverride, settingActivityView);
+
+  const [updateUserSettings] = useUpdateUserSettingsMutation();
+
+  const persistActivityView = (enabled: boolean) => {
+    if (!userId) return;
+    updateUserSettings({
+      variables: { settingsData: { userID: userId, settings: { dashboard: { activityView: enabled } } } },
+      refetchQueries: [refetchUserSettingsQuery({ userID: userId })],
+    }).catch(() => {
+      // Persist failed — drop the local override so the UI falls back to the
+      // last-known server value rather than showing a change that didn't save.
+      setActivityOverride(null);
+    });
   };
+
+  const setActivityEnabled = (enabled: boolean) => {
+    setActivityOverride(enabled);
+    persistActivityView(enabled);
+  };
+
+  // Seed-once (FR-026): on the first post-release load with no explicitly-set account
+  // preference, migrate a legacy localStorage "SPACES" choice into the setting. An
+  // ACTIVITY / unset legacy value already matches the default, so no write is needed.
+  useEffect(() => {
+    if (!userId) return;
+    if (localStorage.getItem(SEED_FLAG_KEY)) return;
+    const legacy = localStorage.getItem(LEGACY_VIEW_KEY);
+    if (shouldSeedFromLegacy(legacy, settingActivityView)) {
+      setActivityOverride(false);
+      persistActivityView(false);
+    }
+    localStorage.setItem(SEED_FLAG_KEY, '1');
+  }, [userId, settingActivityView]);
 
   // Recent spaces
   const { homeSpaceId, membershipSettingsUrl } = useHomeSpaceSettings();
@@ -85,12 +129,11 @@ export default function DashboardWithMemberships({
   const myRecentSpaces = recentSpacesData?.me.mySpaces ?? [];
   const recentSpacesEmpty = !recentSpacesLoading && myRecentSpaces.length === 0;
 
-  // Memberships — drives the "Explore all" panel and, when the user has no recent
-  // contributions (empty mySpaces), serves as the fallback source for Recent spaces.
-  // Skipped while recent spaces are still loading: the fallback is only needed once
-  // mySpaces has resolved to empty.
+  // Memberships — drives the "Explore all" panel, the non-activity Lead & Administer
+  // section, and (when the user has no recent contributions) the Recent-spaces fallback.
+  const needMemberships = dialogState.openDialog === 'memberships' || !activityEnabled || recentSpacesEmpty;
   const { data: myMembershipsData, loading: membershipsLoading } = useMyMembershipsQuery({
-    skip: dialogState.openDialog !== 'memberships' && (recentSpacesLoading || !recentSpacesEmpty),
+    skip: !needMemberships,
   });
 
   const recentSpaces = (() => {
@@ -105,6 +148,24 @@ export default function DashboardWithMemberships({
     const all = homeSpace ? [{ space: homeSpace }, ...filtered] : filtered;
     return mapRecentSpacesToCompactCards(all, homeSpaceId);
   })();
+
+  // Non-activity home sections (024)
+  const { data: exploreData } = useDashboardExploreSpacesQuery({
+    variables: { daysOld: SECTION_ACTIVITY_DAYS, limit: SECTION_ITEM_CAP },
+    skip: activityEnabled,
+  });
+  const { data: hostedData, loading: hostedLoading } = useNonActivityHostedSpacesQuery({
+    skip: activityEnabled,
+  });
+
+  const hierarchicalMemberships = myMembershipsData?.me?.spaceMembershipsHierarchical ?? [];
+  const hostedSpaces = hostedData?.me.user?.account?.spaces ?? [];
+
+  const lastActiveItems = mapLastActiveSection(myRecentSpaces, homeSpaceData?.lookup.space ?? undefined, homeSpaceId);
+  const mostActivityItems = mapMostActivitySection(exploreData?.exploreSpaces ?? []);
+  const leadAdminItems = mapLeadAdminSection(hierarchicalMemberships);
+  const hostItems = mapHostSection(hostedSpaces);
+  const hostedPanelItems = mapHostedSpacesToPanelItems(hostedSpaces);
 
   // Sidebar
   const sidebarData = useDashboardSidebar({
@@ -244,18 +305,20 @@ export default function DashboardWithMemberships({
           />
         }
       >
-        <RecentSpaces
-          spaces={recentSpaces}
-          loading={recentSpacesLoading || (recentSpacesEmpty && membershipsLoading)}
-          hasHomeSpace={!!homeSpaceId}
-          homeSpaceSettingsHref={membershipSettingsUrl}
-          onExploreAllClick={dialogState.openMemberships}
-          onPinClick={() => membershipSettingsUrl && navigate(membershipSettingsUrl)}
-        />
+        {activityEnabled && (
+          <RecentSpaces
+            spaces={recentSpaces}
+            loading={recentSpacesLoading || (recentSpacesEmpty && membershipsLoading)}
+            hasHomeSpace={!!homeSpaceId}
+            homeSpaceSettingsHref={membershipSettingsUrl}
+            onExploreAllClick={dialogState.openMemberships}
+            onPinClick={() => membershipSettingsUrl && navigate(membershipSettingsUrl)}
+          />
+        )}
 
         {showCampaign && <CampaignBanner onAction={() => setCreateVcOpen(true)} />}
 
-        {activityEnabled && (
+        {activityEnabled ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <ActivityFeed
               variant="spaces"
@@ -285,6 +348,21 @@ export default function DashboardWithMemberships({
               maxItems={7}
             />
           </div>
+        ) : (
+          <NonActivityHomeSections
+            pinnedLastActive={lastActiveItems}
+            mostActivity={mostActivityItems}
+            leadAdmin={leadAdminItems}
+            host={hostItems}
+            membershipsItems={membershipsItems}
+            hostedPanelItems={hostedPanelItems}
+            pinnedLoading={recentSpacesLoading}
+            membershipsLoading={membershipsLoading}
+            hostedLoading={hostedLoading}
+            homeSpaceId={homeSpaceId}
+            membershipSettingsUrl={membershipSettingsUrl}
+            onNavigate={navigate}
+          />
         )}
       </DashboardLayout>
       {accountId && (

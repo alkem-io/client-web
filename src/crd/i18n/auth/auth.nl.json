@@ -16,7 +16,17 @@
     "intro": "Alkemio is ontworpen ten dienste van de samenleving. Lees en accepteer de <terms>Gebruiksvoorwaarden</terms> en het <privacy>Privacybeleid</privacy> voordat je verdergaat.",
     "acceptTerms": "Ik accepteer de <terms>Gebruiksvoorwaarden</terms> en het <privacy>Privacybeleid</privacy>.",
     "openTerms": "Open de Gebruiksvoorwaarden in een nieuw tabblad",
-    "openPrivacy": "Open het Privacybeleid in een nieuw tabblad"
+    "openPrivacy": "Open het Privacybeleid in een nieuw tabblad",
+    "signpost": {
+      "warning": "Je probeert je te registreren met {{provider}}. Als je al een Alkemio-account met hetzelfde e-mailadres hebt, wordt {{provider}} aan dat account gekoppeld en kun je voortaan beide inlogmethoden gebruiken.",
+      "signInAction": "Inloggen met een ander account"
+    },
+    "continuation": {
+      "divider": "of",
+      "heading": "Registratie afronden met {{provider}}",
+      "intro": "Deze gegevens zijn gedeeld door de provider - controleer of ze kloppen en accepteer de voorwaarden om je account aan te maken.",
+      "cta": "Account aanmaken met {{provider}}"
+    }
   },
   "recovery": {
     "title": "Wachtwoordherstel",

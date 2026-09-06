@@ -76,7 +76,7 @@ self.addEventListener('push', event => {
     return;
   }
 
-  const { title, body, url, eventType } = payload;
+  const { title, body, url, eventType, tag } = payload;
 
   event.waitUntil(
     self.registration.showNotification(title, {
@@ -84,7 +84,20 @@ self.addEventListener('push', event => {
       icon: '/icons/icon-192.png',
       badge: '/icons/badge-72.png',
       data: { url },
-      tag: `${eventType}-${Date.now()}`,
+      // A payload-supplied tag lets a newer digest REPLACE the previous
+      // unattended one for the same track instead of stacking a toast per
+      // dispatch (FR-024). Senders that supply no tag keep the legacy
+      // unique-per-delivery construction, so non-messaging pushes are
+      // unaffected and still stack.
+      tag: tag || `${eventType}-${Date.now()}`,
+      // Replacing a notification that carries an existing tag is SILENT by
+      // default — no sound, no vibration, no re-banner. Without this, a user
+      // who left the first digest sitting in the tray was never alerted again
+      // for that track: the text just quietly mutated on a notification they
+      // had already looked past. Only set when the sender supplied the tag;
+      // the legacy unique-tag path never replaces anything, and `renotify`
+      // without a `tag` throws a TypeError.
+      renotify: Boolean(tag),
     })
   );
 });
@@ -98,7 +111,17 @@ self.addEventListener('notificationclick', event => {
 
   const handleClick = async () => {
     const allClients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-    const existingClient = allClients.find(client => client.url && new URL(client.url).origin === self.location.origin);
+    const sameOriginClients = allClients.filter(
+      client => client.url && new URL(client.url).origin === self.location.origin
+    );
+
+    // Prefer the window the user is actually looking at. Taking the first
+    // same-origin client would navigate an arbitrary BACKGROUND tab away from
+    // whatever it was showing.
+    const existingClient =
+      sameOriginClients.find(client => client.focused) ||
+      sameOriginClients.find(client => client.visibilityState === 'visible') ||
+      sameOriginClients[0];
 
     if (existingClient) {
       await existingClient.focus();

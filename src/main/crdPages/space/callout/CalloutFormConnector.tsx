@@ -15,7 +15,7 @@
  * payloads. Dirty tracking drives the `DiscardChangesDialog` + `useBeforeUnloadGuard`.
  */
 import { ApolloError } from '@apollo/client';
-import { Hash } from 'lucide-react';
+import { Columns3, Hash } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -36,6 +36,8 @@ import {
 import { error as logError } from '@/core/logging/sentry/log';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { TaskColumnsDraftDialog } from '@/crd/components/callout/task-board/TaskColumnsDraftDialog';
+import { isTaskBoardEnabled } from '@/crd/components/callout/task-board/taskBoard';
 import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
 import type { ContributorMapPin } from '@/crd/components/map/ContributorMap';
 import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
@@ -43,11 +45,12 @@ import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
 import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
 import { type DisabledChipMap, type FramingChipId, FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
 import { ResponsePanel } from '@/crd/forms/callout/ResponsePanel';
-import { ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip';
+import { type DisabledResponseChipMap, ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
+import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
 import { Switch } from '@/crd/primitives/switch';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -56,6 +59,7 @@ import {
   COLLABORA_IMPORT_EXTENSIONS_P1,
   COLLABORA_IMPORT_MAX_BYTES,
 } from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraImportFormats';
+import { deriveCollaboraImportErrorMessage } from '@/domain/collaboration/calloutContributions/collaboraDocument/deriveCollaboraImportErrorMessage';
 import { filenameWithoutExtension } from '@/domain/collaboration/calloutContributions/collaboraDocument/filenameWithoutExtension';
 import { useRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
 import { validateCollaboraImportFile } from '@/domain/collaboration/calloutContributions/collaboraDocument/validateCollaboraImportFile';
@@ -63,6 +67,7 @@ import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/call
 import { useCalloutCreation } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
 import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
+import { useWhiteboardDraft } from '@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft';
 import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import { useSpace } from '@/domain/space/context/useSpace';
 import {
@@ -196,6 +201,7 @@ function CalloutFormConnectorInner({
   restrictions,
 }: CalloutFormConnectorProps) {
   const { t } = useTranslation('crd-space');
+  const { t: tTaskBoard } = useTranslation('crd-taskBoard');
 
   // Restriction-driven create-mode defaults: any comment toggle that is hidden
   // must still submit `false`, so seed the empty form accordingly.
@@ -241,7 +247,27 @@ function CalloutFormConnectorInner({
   const showFramingComments = mode !== 'create' || !restrictions?.disableFramingComments;
   const showContributionComments = mode !== 'create' || !restrictions?.disableContributionComments;
   const disableRichMedia = mode === 'create' && Boolean(restrictions?.disableRichMedia);
-  const { values, errors, setField, validate, reset, prefill, dirty } = form;
+  const { values, errors, setField, setValues, validate, reset, prefill, dirty } = form;
+
+  const framingWhiteboardDraft = useWhiteboardDraft({
+    scope: { type: 'calloutsSet', id: calloutsSetId },
+    handle: values.framingWhiteboardDraft,
+    onHandleChange: handle => setField('framingWhiteboardDraft', handle),
+    source: { sourceWhiteboardID: values.editMeta?.whiteboardId },
+  });
+  const defaultWhiteboardDraft = useWhiteboardDraft({
+    scope: { type: 'calloutsSet', id: calloutsSetId },
+    handle: values.contributionDefaults.whiteboardDraft,
+    onHandleChange: handle =>
+      setValues(current => ({
+        ...current,
+        contributionDefaults: { ...current.contributionDefaults, whiteboardDraft: handle },
+      })),
+    source: {
+      sourceWhiteboardID: values.contributionDefaults.sourceWhiteboardId,
+      sourceCalloutID: values.contributionDefaults.sourceCalloutId,
+    },
+  });
 
   // Feature 025: contributor candidates for the custom-selection picker (T005).
   // Only fetched when the contributors chip is active AND the dialog is open.
@@ -296,6 +322,7 @@ function CalloutFormConnectorInner({
 
   const [discardOpen, setDiscardOpen] = useState(false);
   const [defaultsOpen, setDefaultsOpen] = useState(false);
+  const [columnsDraftOpen, setColumnsDraftOpen] = useState(false);
   const [importTemplateOpen, setImportTemplateOpen] = useState(false);
   // Import-zone validation error (client pre-check OR server FORMAT_NOT_SUPPORTED /
   // STORAGE_UPLOAD_FAILED). Cleared on successful re-stage and on framing-type
@@ -313,6 +340,12 @@ function CalloutFormConnectorInner({
   const officeDocumentsEnabled =
     spaceContextLoading || entitlements.includes(LicenseEntitlementType.SpaceFlagOfficeDocuments);
   const disabledChips: DisabledChipMap | undefined = officeDocumentsEnabled
+    ? undefined
+    : { document: { tooltip: t('framing.officeDocumentsNotEnabled') } };
+  // The same office-documents entitlement gates the "Document" *response* type:
+  // a callout must not offer document contributions on a space that lacks the
+  // SPACE_FLAG_OFFICE_DOCUMENTS feature, mirroring the framing gate above.
+  const responseDisabledChips: DisabledResponseChipMap | undefined = officeDocumentsEnabled
     ? undefined
     : { document: { tooltip: t('framing.officeDocumentsNotEnabled') } };
 
@@ -415,7 +448,6 @@ function CalloutFormConnectorInner({
   const setCollaboraImportFile = (file: File | null) => {
     if (!file) {
       setField('collaboraUploadFile', null);
-      setField('collaboraAutoPrefilledTitle', undefined);
       return;
     }
     const validation = validateCollaboraImportFile([file]);
@@ -423,42 +455,27 @@ function CalloutFormConnectorInner({
       setCollaboraImportError(validation.error);
       // Don't stage the file when validation fails — pre-check before any network call.
       setField('collaboraUploadFile', null);
-      setField('collaboraAutoPrefilledTitle', undefined);
       return;
     }
     setCollaboraImportError(null);
     setField('collaboraUploadFile', file);
     // Auto-prefill the post title from the filename when the title is empty.
-    // Captures the prefilled value so the submit-time mapper can decide whether
-    // to send the displayName explicitly or rely on the server's filename
-    // derivation (FR-004a + FR-004b).
+    // Pure convenience default: the post title and the document's own name
+    // are independent — the server always derives the document's name from
+    // the uploaded file, regardless of what the post title ends up as.
     if (!values.title.trim()) {
-      const prefilled = filenameWithoutExtension(file.name);
-      setField('title', prefilled);
-      setField('collaboraAutoPrefilledTitle', prefilled);
-    } else {
-      setField('collaboraAutoPrefilledTitle', undefined);
+      setField('title', filenameWithoutExtension(file.name));
     }
   };
 
   const formatList = COLLABORA_IMPORT_EXTENSIONS_P1.join(', ');
   const capMb = Math.round(COLLABORA_IMPORT_MAX_BYTES / (1024 * 1024));
-  const collaboraImportErrorMessage: string | null = collaboraImportError
-    ? (() => {
-        switch (collaboraImportError.kind) {
-          case 'extension':
-            return t('callout.documentImportErrorUnsupported', { formats: formatList });
-          case 'size':
-            return t('callout.documentImportErrorTooLarge', { cap: capMb });
-          case 'multiple-files':
-            return t('callout.documentImportErrorMultiple');
-          case 'folder':
-            return t('callout.documentImportErrorFolder');
-          default:
-            return null;
-        }
-      })()
-    : null;
+  const collaboraImportErrorMessage: string | null = deriveCollaboraImportErrorMessage(
+    collaboraImportError,
+    t,
+    formatList,
+    capMb
+  );
 
   // Map server errors raised by the create-callout mutation to the appropriate
   // surface. FORMAT_NOT_SUPPORTED + STORAGE_UPLOAD_FAILED render inline near the
@@ -498,7 +515,8 @@ function CalloutFormConnectorInner({
   };
 
   // --- Create path -------------------------------------------------------
-  const submitting = creating || updating || mediaGalleryUploading;
+  const submitting =
+    creating || updating || mediaGalleryUploading || framingWhiteboardDraft.loading || defaultWhiteboardDraft.loading;
 
   const createAndUpload = async (visibility: CalloutVisibility) => {
     const validationErrors = validate();
@@ -590,6 +608,8 @@ function CalloutFormConnectorInner({
       logError(new Error('Callout post-create visual upload failed', { cause: err as Error }));
       notify(t('callout.uploadAfterCreateFailed'), 'error');
     } finally {
+      framingWhiteboardDraft.consumed();
+      defaultWhiteboardDraft.consumed();
       reset();
       onOpenChange(false);
     }
@@ -844,6 +864,14 @@ function CalloutFormConnectorInner({
   const handleSaveDraft = () => createAndUpload(CalloutVisibility.Draft);
   const handleSaveEdit = () => saveEdit();
 
+  const discardWhiteboardDrafts = async () => {
+    const [framingDiscarded, defaultDiscarded] = await Promise.all([
+      framingWhiteboardDraft.discard(),
+      defaultWhiteboardDraft.discard(),
+    ]);
+    return framingDiscarded && defaultDiscarded;
+  };
+
   const requestClose = (nextOpen: boolean) => {
     if (nextOpen) {
       onOpenChange(true);
@@ -853,11 +881,16 @@ function CalloutFormConnectorInner({
       setDiscardOpen(true);
       return;
     }
-    reset();
-    onOpenChange(false);
+    void discardWhiteboardDrafts().then(discarded => {
+      if (!discarded) return;
+      reset();
+      onOpenChange(false);
+    });
   };
 
-  const handleDiscardConfirm = () => {
+  const handleDiscardConfirm = async () => {
+    const discarded = await discardWhiteboardDrafts();
+    if (!discarded) return;
     setDiscardOpen(false);
     reset();
     onOpenChange(false);
@@ -928,8 +961,10 @@ function CalloutFormConnectorInner({
                   // framing type (Edge Case in spec.md).
                   if (chip !== 'document' && values.framingChip === 'document') {
                     setField('collaboraUploadFile', null);
-                    setField('collaboraAutoPrefilledTitle', undefined);
                     setCollaboraImportError(null);
+                  }
+                  if (chip !== 'whiteboard' && values.framingChip === 'whiteboard') {
+                    void framingWhiteboardDraft.discard();
                   }
                   setField('framingChip', chip);
                 }}
@@ -971,18 +1006,11 @@ function CalloutFormConnectorInner({
                 // always open, so the toggle stays hidden until there is a `pollId`.
                 pollStatus={pollStatus === PollStatus.Closed ? 'closed' : pollId ? 'open' : undefined}
                 onPollStatusChange={handlePollStatusChange}
-                whiteboardContent={values.whiteboardContent}
-                whiteboardPreviewSettings={values.whiteboardPreviewSettings}
                 whiteboardConfigured={values.whiteboardConfigured}
                 whiteboardTitle={values.title.trim() || t('callout.whiteboard')}
+                whiteboardDraft={framingWhiteboardDraft}
                 whiteboardPreviewImages={values.whiteboardPreviewImages}
                 whiteboardPreviewServerUrl={values.whiteboardPreviewServerUrl}
-                onWhiteboardChange={(content, previewImages, previewSettings) => {
-                  setField('whiteboardContent', content);
-                  setField('whiteboardPreviewImages', previewImages ?? []);
-                  setField('whiteboardPreviewSettings', previewSettings);
-                  setField('whiteboardConfigured', true);
-                }}
                 memoMarkdown={values.memoMarkdown}
                 onMemoMarkdownChange={v => setField('memoMarkdown', v)}
                 memoUpload={editorMarkdownUpload}
@@ -1044,12 +1072,34 @@ function CalloutFormConnectorInner({
             <ResponseTypeChipStrip
               value={values.responseType}
               allowedChips={responseAllowList}
+              disabledChips={responseDisabledChips}
               onChange={type => {
                 // Locked in edit mode (see framing strip) — only fires during
                 // create, so the response type can't be changed or cleared on
-                // an existing callout.
-                setField('responseType', type);
+                // an existing callout. Picking a real response type also leaves
+                // the Tasks board (they are mutually exclusive selections).
+                setValues(prev => ({ ...prev, responseType: type, taskBoard: false }));
               }}
+              // Tasks is a sibling chip of the response types (create only), not a
+              // separate switch. Selecting it makes the callout a POST-only board;
+              // it seeds responseType='post' so the Posts config panel (members /
+              // admins / comments / defaults) renders. Deselecting clears both.
+              // A Tasks board is post-based (selecting it seeds responseType='post'),
+              // so only offer it when posts are actually allowed by the response
+              // restrictions — otherwise it would create a post board the
+              // restriction forbids.
+              showTasksChip={
+                mode === 'create' && isTaskBoardEnabled() && (!responseAllowList || responseAllowList.includes('post'))
+              }
+              tasksActive={values.taskBoard}
+              tasksLabel={tTaskBoard('create.option')}
+              onSelectTasks={() =>
+                setValues(prev =>
+                  prev.taskBoard
+                    ? { ...prev, taskBoard: false, responseType: 'none' }
+                    : { ...prev, taskBoard: true, responseType: 'post' }
+                )
+              }
               locked={mode === 'edit'}
             />
             <ResponsePanel
@@ -1067,6 +1117,18 @@ function CalloutFormConnectorInner({
               onSetDefaults={responseTypeSupportsDefaults ? () => setDefaultsOpen(true) : undefined}
               disabled={submitting}
             />
+            {values.taskBoard && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setColumnsDraftOpen(true)}
+                disabled={submitting}
+              >
+                <Columns3 className="w-4 h-4" aria-hidden="true" />
+                {tTaskBoard('columns.manage')}
+              </Button>
+            )}
           </div>
         }
         moreOptionsSlot={
@@ -1105,12 +1167,20 @@ function CalloutFormConnectorInner({
         onFindTemplate={mode === 'create' ? handleFindTemplate : undefined}
       />
       <DiscardChangesDialog open={discardOpen} onOpenChange={setDiscardOpen} onConfirm={handleDiscardConfirm} />
+      <TaskColumnsDraftDialog
+        open={columnsDraftOpen}
+        onOpenChange={setColumnsDraftOpen}
+        columns={values.taskBoardColumns}
+        onSave={columns => setField('taskBoardColumns', columns)}
+      />
       <ResponseDefaultsConnector
         open={defaultsOpen}
         onOpenChange={setDefaultsOpen}
         type={values.responseType}
+        spaceId={space.levelZeroSpaceId}
         values={values.contributionDefaults}
         onSave={next => setField('contributionDefaults', next)}
+        whiteboardDraft={mode === 'create' ? defaultWhiteboardDraft : undefined}
         markdownUpload={editorMarkdownUpload}
       />
       {mode === 'create' && (

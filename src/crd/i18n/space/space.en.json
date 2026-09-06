@@ -1,9 +1,9 @@
 {
   "common": {
     "Callout": "Post",
-    "callout": "post",
+    "callout": "Post",
     "Callouts": "Posts",
-    "callouts": "posts"
+    "callouts": "Posts"
   },
   "banner": {
     "homeSpace": "Home Space",
@@ -22,8 +22,8 @@
     "inactive": "This Space is currently inactive."
   },
   "knowledge": {
-    "searchPlaceholder": "Search...",
-    "searchLabel": "Search the knowledge base",
+    "searchPlaceholder": "Search posts...",
+    "searchLabel": "Search posts",
     "noResults": "No matches",
     "search": {
       "emptyTitle": "No matches",
@@ -33,14 +33,23 @@
       "retry": "Try again",
       "loadingLabel": "Loading search results",
       "appendingLabel": "Loading more results",
-      "removeTerm": "Remove term {{term}}",
-      "removeTag": "Remove tag {{tag}}"
+      "tagLabel_one": "tag",
+      "tagLabel_other": "tags",
+      "matchText_one": "<b>{{count}}</b> item related to <text></text>",
+      "matchText_other": "<b>{{count}}</b> items related to <text></text>",
+      "matchTextMore": "<b>{{count}}+</b> items related to <text></text>",
+      "matchTags_one": "<b>{{count}}</b> item related to {{tagLabel}} <tags></tags>",
+      "matchTags_other": "<b>{{count}}</b> items related to {{tagLabel}} <tags></tags>",
+      "matchTagsMore": "<b>{{count}}+</b> items related to {{tagLabel}} <tags></tags>",
+      "matchBoth_one": "<b>{{count}}</b> item related to <text></text> and {{tagLabel}} <tags></tags>",
+      "matchBoth_other": "<b>{{count}}</b> items related to <text></text> and {{tagLabel}} <tags></tags>",
+      "matchBothMore": "<b>{{count}}+</b> items related to <text></text> and {{tagLabel}} <tags></tags>"
     },
     "viewGrid": "Card view",
     "viewList": "List view",
     "count": {
-      "post_one": "{{count}} post",
-      "post_other": "{{count}} posts",
+      "post_one": "{{count}} Post",
+      "post_other": "{{count}} Posts",
       "whiteboard_one": "{{count}} whiteboard",
       "whiteboard_other": "{{count}} whiteboards",
       "memo_one": "{{count}} memo",
@@ -54,7 +63,7 @@
   "postIndexDialog": {
     "close": "Close",
     "loadingLabel": "Loading Post Index",
-    "empty": "No posts yet"
+    "empty": "No Posts yet"
   },
   "sidebar": {
     "aboutSpace": "About this Space",
@@ -188,6 +197,7 @@
     "openAria": "Open {{title}}",
     "draft": "Draft",
     "expand": "Show more",
+    "fullscreen": "Fullscreen",
     "collapse": "Show less",
     "openWhiteboard": "Open Whiteboard",
     "openMemo": "Open Memo",
@@ -220,17 +230,21 @@
     "createMemo": "Create new memo",
     "defaultMemoName": "New Memo",
     "memoNameLabel": "Memo title",
-    "documentText": "Word Document",
+    "documentText": "Text Document",
     "documentSpreadsheet": "Spreadsheet",
     "documentPresentation": "Presentation",
+    "documentPdf": "PDF",
     "openDocument": "Open Document",
+    "openDocumentPdf": "View",
     "addDocument": "Add document",
     "defaultDocumentName": "New Document",
+    "createDocument": "Create new document",
+    "documentNameLabel": "Document title",
     "documentTypeLabel": "Document type",
     "createNew": "Create new",
     "documentImportOr": "or",
     "documentImportHint": "Drag & drop a file, or click to upload",
-    "documentImportMaxSize": ".docx, .xlsx, .pptx up to {{cap}} MB",
+    "documentImportMaxSize": ".docx, .xlsx, .pptx, .pdf up to {{cap}} MB",
     "documentReplaceAccepts": "{{ext}} up to {{cap}} MB",
     "documentImportRemoveFile": "Remove file",
     "documentImportErrorUnsupported": "This file type isn't supported. Try {{formats}}.",
@@ -273,19 +287,23 @@
     "linkDelete": "Delete link",
     "linkDeleteConfirmTitle": "Delete this link?",
     "linkDeleteConfirmDescription": "This will permanently remove the link from this $t(common.callout). This action cannot be undone.",
-    "addPost": "Add post",
-    "createPost": "Create post",
-    "editPost": "Edit post",
+    "addPost": "Add Post",
+    "createPost": "Create Post",
+    "editPost": "Edit Post",
     "defaultPostName": "New Post",
     "postNameLabel": "Title",
     "postDescriptionLabel": "Description",
-    "postDescriptionPlaceholder": "Write your post...",
+    "postDescriptionPlaceholder": "Write your Post...",
     "postTagsLabel": "Tags",
     "postSave": "Save",
     "postCreate": "Post",
-    "postDelete": "Delete post",
-    "postDeleteConfirmTitle": "Delete this post?",
-    "postDeleteConfirmDescription": "This will permanently remove the post and its comments. This action cannot be undone.",
+    "createTask": "Create task",
+    "editTask": "Edit task",
+    "taskCreate": "Create task",
+    "tasksHeader": "Tasks ({{count}})",
+    "postDelete": "Delete Post",
+    "postDeleteConfirmTitle": "Delete this Post?",
+    "postDeleteConfirmDescription": "This will permanently remove the Post and its comments. This action cannot be undone.",
     "postUnsavedCloseTitle": "Discard unsaved changes?",
     "postUnsavedCloseDescription": "You have unsaved changes. If you close now, your edits will be lost.",
     "postUnsavedCloseConfirm": "Discard changes",
@@ -322,7 +340,6 @@
   },
   "members": {
     "subtitle": "{{users}} members and {{organizations}} organisations in this space.",
-    "inviteMember": "Invite Member",
     "search": "Search members or organisations...",
     "filterAll": "All",
     "filterLead": "Lead",
@@ -407,7 +424,8 @@
         "why": "Why this subspace?",
         "who": "Who is involved?"
       }
-    }
+    },
+    "tags": "Tags"
   },
   "apply": {
     "apply": "Apply",
@@ -498,6 +516,9 @@
     "success": "$t(common.Callout) “{{title}}” was deleted.",
     "saveFailed": "Could not delete the $t(common.callout). Please try again."
   },
+  "deleteTask": {
+    "title": "Delete this task?"
+  },
   "deleteContribution": {
     "title": "Delete this contribution?",
     "description": "“{{title}}” will be deleted permanently. This cannot be undone.",
@@ -546,7 +567,7 @@
     "tagsLabel": "Tags",
     "tagsPlaceholder": "Add a tag and press Enter",
     "tagsTooShort": "Each tag must be at least {{min}} characters.",
-    "framingType": "Add to post",
+    "framingType": "Add to Post",
     "typeLockedHint": "Additional content settings cannot be changed after creation",
     "visibility": "Visibility",
     "publishedLabel": "Published",
@@ -644,6 +665,9 @@
     "template": "Template",
     "templatePlaceholder": "Choose a template…",
     "templateLoading": "Loading templates…",
+    "whiteboardConfigured": "A default whiteboard is configured.",
+    "whiteboardNotConfigured": "New contributions will start with a blank whiteboard.",
+    "clearWhiteboard": "Clear default",
     "save": "Save"
   },
   "calloutDialog": {
@@ -671,6 +695,11 @@
       "connected": "Connected",
       "connecting": "Connecting…",
       "disconnected": "Disconnected",
+      "saved": "Saved",
+      "saving": "Saving…",
+      "finalizing": "Finalizing changes…",
+      "offline": "Offline — will sync automatically",
+      "saveFailed": "Unable to save changes",
       "membersOnline_one": "1 member online",
       "membersOnline_other": "{{count}} members online",
       "connectedUsersLabel": "Connected users",
@@ -690,6 +719,14 @@
     "errors": {
       "loading": "Loading memo…",
       "loadFailed": "Unable to load memo"
+    },
+    "unsavedClose": {
+      "title": "Unsaved memo changes",
+      "description": "These changes cannot be saved right now. Keep the memo open, export them, or explicitly discard them.",
+      "wait": "Keep open and wait",
+      "discard": "Discard and close",
+      "export": "Export first",
+      "exportFailed": "The memo could not be exported. It remains open."
     },
     "deleteConfirm": {
       "title": "Delete memo",
@@ -813,6 +850,7 @@
     "seeFullDescription": "See full description"
   },
   "postPreview": {
+    "createdBy": "Created by",
     "label": "Selected contribution preview",
     "edit": "Edit response",
     "share": "Share response",
@@ -823,7 +861,7 @@
   },
   "postLocation": {
     "label": "Post location",
-    "warning": "Be careful changing the response location. Moving the response to another post will make it disappear from the current post. This might make it difficult for people, including the person who created this response, to retrieve it. Note that you can only move responses within the same Space or Subspace.",
+    "warning": "Be careful changing the response location. Moving the response to another Post will make it disappear from the current Post. This might make it difficult for people, including the person who created this response, to retrieve it. Note that you can only move responses within the same Space or Subspace.",
     "moved": "Response moved successfully.",
     "moveFailed": "Could not move the response. Please try again."
   },
@@ -970,7 +1008,12 @@
     "mobileTabBar": "Tab navigation",
     "moreActionsDrawer": "Additional actions",
     "close": "Close",
-    "loadingPost": "Loading $t(common.callout)"
+    "loadingPost": "Loading $t(common.callout)",
+    "loadingContributions": "Loading contributions",
+    "loadingSubspaces": "Loading subspaces",
+    "loadingLeads": "Loading Space Leads",
+    "loadingTags": "Loading tags",
+    "loadingMembership": "Loading membership status"
   },
   "activity": {
     "dialogTitle": "Recent Activity"
@@ -1023,5 +1066,15 @@
       "title": "No subspaces yet",
       "description": "This space has no subspaces yet."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Classifications"
+  },
+  "parentStack": {
+    "goTo": "Go to {{name}}"
   }
 }

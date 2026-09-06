@@ -1,5 +1,10 @@
 overwrite: true
-schema: 'http://localhost:3000/graphql'
+# The schema is fetched from a running server by default: CODEGEN_SCHEMA is set
+# in the committed .env (http://localhost:3000/graphql) and `pnpm codegen` loads
+# .env/.env.local via dotenv-flow. To work offline, point it at a local SDL
+# snapshot from .env.local (e.g. CODEGEN_SCHEMA=./schema.graphql) — that file is
+# gitignored and must never be committed.
+schema: '${CODEGEN_SCHEMA:http://localhost:3000/graphql}'
 documents:
   - 'src/**/*.graphql'
 hooks:

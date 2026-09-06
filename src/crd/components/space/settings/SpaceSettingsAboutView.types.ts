@@ -8,6 +8,17 @@ export type AboutVisual = {
   id: string;
   uri: string | null;
   altText: string | null;
+  /**
+   * Width / height ratio this visual is displayed at. Fixed for avatar and card
+   * banner; admin-adjustable for the L0 page banner (see `aspectRatioBounds`).
+   */
+  aspectRatio?: number;
+};
+
+/** Inclusive range an adjustable visual's aspect ratio may be set to, from the server. */
+export type AboutVisualAspectRatioBounds = {
+  min: number;
+  max: number;
 };
 
 export type AboutReference = {
@@ -67,7 +78,16 @@ export type SpaceCardPreview = {
  * Logical "sections" inside About that can be saved independently. Each maps
  * to one visible field group in the UI and to one save handler in the hook.
  */
-export type AboutSectionKey = 'name' | 'tagline' | 'location' | 'tags' | 'references' | 'what' | 'why' | 'who';
+export type AboutSectionKey =
+  | 'name'
+  | 'tagline'
+  | 'location'
+  | 'tags'
+  | 'references'
+  | 'what'
+  | 'why'
+  | 'who'
+  | 'classifications';
 
 export type AboutSectionSaveStatus =
   | { kind: 'idle' }

@@ -3,25 +3,26 @@ import { useOutletContext } from 'react-router-dom';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 
-const CrdSpaceDashboardPage = lazyWithGlobalErrorHandler(() => import('./CrdSpaceDashboardPage'));
-const CrdSpaceCommunityPage = lazyWithGlobalErrorHandler(() => import('./CrdSpaceCommunityPage'));
-const CrdSpaceSubspacesPage = lazyWithGlobalErrorHandler(() => import('./CrdSpaceSubspacesPage'));
-const CrdSpaceCustomTabPage = lazyWithGlobalErrorHandler(() => import('./CrdSpaceCustomTabPage'));
+const CrdSpaceTabPage = lazyWithGlobalErrorHandler(() => import('./CrdSpaceTabPage'));
 
 type OutletContext = {
   activeTabIndex: number;
   totalTabs: number;
+  /** Opens the layout-owned shared About dialog (single mount, see CrdSpacePageLayout). */
+  onOpenAbout: () => void;
 };
 
 export default function CrdSpaceTabbedPages() {
-  const { activeTabIndex, totalTabs } = useOutletContext<OutletContext>();
+  const { activeTabIndex, totalTabs, onOpenAbout } = useOutletContext<OutletContext>();
 
   return (
     <Suspense fallback={<LoadingSpinner />}>
-      {activeTabIndex === 0 && <CrdSpaceDashboardPage />}
-      {activeTabIndex === 1 && <CrdSpaceCommunityPage />}
-      {activeTabIndex === 2 && <CrdSpaceSubspacesPage />}
-      {activeTabIndex >= 3 && activeTabIndex < totalTabs && <CrdSpaceCustomTabPage sectionIndex={activeTabIndex} />}
+      {/* key: one collapsed instance serves every tab — remount on tab switch so
+          per-tab local state (search pills, tag filters, dialog open-state)
+          never leaks into another tab / flowStateID. */}
+      {activeTabIndex < totalTabs && (
+        <CrdSpaceTabPage key={activeTabIndex} tabPosition={activeTabIndex} onOpenAbout={onOpenAbout} />
+      )}
     </Suspense>
   );
 }

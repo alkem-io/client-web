@@ -1,4 +1,4 @@
-export const COLLABORA_IMPORT_EXTENSIONS_P1 = ['.docx', '.xlsx', '.pptx'] as const;
+export const COLLABORA_IMPORT_EXTENSIONS_P1 = ['.docx', '.xlsx', '.pptx', '.pdf'] as const;
 
 export type CollaboraImportExtensionP1 = (typeof COLLABORA_IMPORT_EXTENSIONS_P1)[number];
 

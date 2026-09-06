@@ -16,7 +16,17 @@
     "intro": "Alkemio está diseñado para beneficiar a la sociedad. Lee y acepta las <terms>Condiciones de uso</terms> y la <privacy>Política de privacidad</privacy> antes de continuar.",
     "acceptTerms": "Acepto las <terms>Condiciones de uso</terms> y la <privacy>Política de privacidad</privacy>.",
     "openTerms": "Abrir las Condiciones de uso en una pestaña nueva",
-    "openPrivacy": "Abrir la Política de privacidad en una pestaña nueva"
+    "openPrivacy": "Abrir la Política de privacidad en una pestaña nueva",
+    "signpost": {
+      "warning": "Estás intentando registrarte con {{provider}}. Si ya tienes una cuenta de Alkemio con el mismo correo, {{provider}} se conectará a esa cuenta y podrás usar ambos métodos de inicio de sesión.",
+      "signInAction": "Iniciar sesión con otra cuenta"
+    },
+    "continuation": {
+      "divider": "o",
+      "heading": "Termina de registrarte con {{provider}}",
+      "intro": "Estos datos los compartió el proveedor - comprueba que son correctos y acepta los términos para terminar de crear tu cuenta.",
+      "cta": "Crear cuenta con {{provider}}"
+    }
   },
   "recovery": {
     "title": "Recuperación de contraseña",

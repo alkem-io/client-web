@@ -3,12 +3,13 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 
 export const usePendingInvitationsCount = () => {
   const { userModel, isAuthenticated } = useCurrentUserContext();
-  const { data: invitesData } = usePendingInvitationsCountQuery({
+  const { data: invitesData, loading } = usePendingInvitationsCountQuery({
     skip: !isAuthenticated || !userModel,
     fetchPolicy: 'cache-first',
   });
 
   return {
     count: invitesData?.me?.communityInvitationsCount || 0,
+    loading,
   };
 };

@@ -22,8 +22,8 @@
     "inactive": "Това пространство е неактивно в момента."
   },
   "knowledge": {
-    "searchPlaceholder": "Търсене...",
-    "searchLabel": "Търсене в базата знания",
+    "searchPlaceholder": "Търсене на публикации...",
+    "searchLabel": "Търсене на публикации",
     "noResults": "Няма съвпадения",
     "search": {
       "emptyTitle": "Няма съвпадения",
@@ -33,8 +33,17 @@
       "retry": "Опитайте отново",
       "loadingLabel": "Зареждане на резултатите от търсенето",
       "appendingLabel": "Зареждане на още резултати",
-      "removeTerm": "Премахни термина {{term}}",
-      "removeTag": "Премахни етикета {{tag}}"
+      "tagLabel_one": "таг",
+      "tagLabel_other": "тагове",
+      "matchText_one": "<b>{{count}}</b> елемент, свързан с <text></text>",
+      "matchText_other": "<b>{{count}}</b> елемента, свързани с <text></text>",
+      "matchTextMore": "<b>{{count}}+</b> елемента, свързани с <text></text>",
+      "matchTags_one": "<b>{{count}}</b> елемент, свързан с {{tagLabel}} <tags></tags>",
+      "matchTags_other": "<b>{{count}}</b> елемента, свързани с {{tagLabel}} <tags></tags>",
+      "matchTagsMore": "<b>{{count}}+</b> елемента, свързани с {{tagLabel}} <tags></tags>",
+      "matchBoth_one": "<b>{{count}}</b> елемент, свързан с <text></text> и {{tagLabel}} <tags></tags>",
+      "matchBoth_other": "<b>{{count}}</b> елемента, свързани с <text></text> и {{tagLabel}} <tags></tags>",
+      "matchBothMore": "<b>{{count}}+</b> елемента, свързани с <text></text> и {{tagLabel}} <tags></tags>"
     },
     "viewGrid": "Изглед с карти",
     "viewList": "Списъчен изглед",
@@ -188,21 +197,26 @@
     "openAria": "Отвори {{title}}",
     "draft": "Чернова",
     "expand": "Покажи повече",
+    "fullscreen": "Цял екран",
     "collapse": "Покажи по-малко",
     "openWhiteboard": "Отвори дъска",
     "openMemo": "Отвори бележка",
     "openDocument": "Отвори документ",
+    "openDocumentPdf": "Преглед",
     "document": "Документ",
-    "documentText": "Word документ",
+    "documentText": "Текстов документ",
     "documentSpreadsheet": "Електронна таблица",
     "documentPresentation": "Презентация",
+    "documentPdf": "PDF",
     "addDocument": "Добави документ",
     "defaultDocumentName": "Нов документ",
+    "createDocument": "Създай нов документ",
+    "documentNameLabel": "Заглавие на документа",
     "documentTypeLabel": "Тип документ",
     "createNew": "Създай нов",
     "documentImportOr": "или",
     "documentImportHint": "Плъзнете файл или щракнете, за да качите",
-    "documentImportMaxSize": ".docx, .xlsx, .pptx до {{cap}} MB",
+    "documentImportMaxSize": ".docx, .xlsx, .pptx, .pdf до {{cap}} MB",
     "documentReplaceAccepts": "{{ext}} до {{cap}} MB",
     "documentImportRemoveFile": "Премахни файла",
     "documentImportErrorUnsupported": "Този тип файл не се поддържа. Опитайте с {{formats}}.",
@@ -283,6 +297,10 @@
     "postTagsLabel": "Етикети",
     "postSave": "Запази",
     "postCreate": "Публикувай",
+    "createTask": "Създай задача",
+    "editTask": "Редактирай задачата",
+    "taskCreate": "Създай задача",
+    "tasksHeader": "Задачи ({{count}})",
     "postDelete": "Изтрий публикацията",
     "postDeleteConfirmTitle": "Да се изтрие ли тази публикация?",
     "postDeleteConfirmDescription": "Това ще премахне публикацията и всички коментари за постоянно. Действието е необратимо.",
@@ -322,7 +340,6 @@
   },
   "members": {
     "subtitle": "{{users}} членове и {{organizations}} организации в това пространство.",
-    "inviteMember": "Покани член",
     "search": "Търсене на членове или организации...",
     "filterAll": "Всички",
     "filterLead": "Ръководител",
@@ -407,7 +424,8 @@
         "why": "Защо това подпространство?",
         "who": "Кой участва?"
       }
-    }
+    },
+    "tags": "Етикети"
   },
   "apply": {
     "apply": "Кандидатствай",
@@ -497,6 +515,9 @@
     "comments_other": "Ще се изтрият {{count}} коментара",
     "success": "$t(common.Callout)-ът “{{title}}” беше изтрит.",
     "saveFailed": "$t(common.Callout)-ът не можа да бъде изтрит. Опитайте отново."
+  },
+  "deleteTask": {
+    "title": "Да изтрия ли тази задача?"
   },
   "deleteContribution": {
     "title": "Да изтрия ли този принос?",
@@ -644,6 +665,9 @@
     "template": "Шаблон",
     "templatePlaceholder": "Избери шаблон…",
     "templateLoading": "Зареждане на шаблоните…",
+    "whiteboardConfigured": "Конфигурирана е бяла дъска по подразбиране.",
+    "whiteboardNotConfigured": "Новите приноси ще започват с празна бяла дъска.",
+    "clearWhiteboard": "Изчистване по подразбиране",
     "save": "Запази"
   },
   "calloutDialog": {
@@ -671,6 +695,11 @@
       "connected": "Свързан",
       "connecting": "Свързване…",
       "disconnected": "Прекъсната връзка",
+      "saved": "Запазено",
+      "saving": "Запазване…",
+      "finalizing": "Завършване на промените…",
+      "offline": "Офлайн — ще се синхронизира автоматично",
+      "saveFailed": "Промените не могат да бъдат запазени",
       "membersOnline_one": "1 член онлайн",
       "membersOnline_other": "{{count}} члена онлайн",
       "connectedUsersLabel": "Свързани потребители",
@@ -690,6 +719,14 @@
     "errors": {
       "loading": "Зареждане на бележка…",
       "loadFailed": "Неуспешно зареждане на бележка"
+    },
+    "unsavedClose": {
+      "title": "Незапазени промени в бележката",
+      "description": "Тези промени не могат да бъдат запазени сега. Оставете бележката отворена, експортирайте ги или ги отхвърлете изрично.",
+      "wait": "Оставете отворено и изчакайте",
+      "discard": "Отхвърлете и затворете",
+      "export": "Първо експортирайте",
+      "exportFailed": "Бележката не можа да бъде експортирана. Тя остава отворена."
     },
     "deleteConfirm": {
       "title": "Изтриване на бележка",
@@ -813,6 +850,7 @@
     "seeFullDescription": "Виж пълното описание"
   },
   "postPreview": {
+    "createdBy": "Създадено от",
     "label": "Преглед на избрания отговор",
     "edit": "Редактиране на отговора",
     "share": "Споделяне на отговора",
@@ -970,7 +1008,12 @@
     "mobileTabBar": "Навигация с табове",
     "moreActionsDrawer": "Допълнителни действия",
     "close": "Затвори",
-    "loadingPost": "Зареждане на публикация"
+    "loadingPost": "Зареждане на публикация",
+    "loadingContributions": "Зареждане на приноси",
+    "loadingSubspaces": "Зареждане на подпространства",
+    "loadingLeads": "Зареждане на ръководителите на пространството",
+    "loadingTags": "Зареждане на тагове",
+    "loadingMembership": "Зареждане на статуса на членство"
   },
   "activity": {
     "dialogTitle": "Скорошна активност"
@@ -1023,5 +1066,15 @@
       "title": "Все още няма подпространства",
       "description": "Това пространство все още няма подпространства."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Класификации"
+  },
+  "parentStack": {
+    "goTo": "Към {{name}}"
   }
 }

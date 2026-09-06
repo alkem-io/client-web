@@ -77,8 +77,11 @@ export function ToolbarImageDialog({ editor, onImageUpload, onError }: ToolbarIm
         </button>
       </DialogTrigger>
       <DialogContent
-        className="z-[70] sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden"
-        overlayClassName="z-[70]"
+        // z-[130] keeps this above the highest dialog tier that can host the
+        // editor — the elevated focused-task edit dialog on a Tasks board sits at
+        // z-[120]; at the old z-[70] the image dialog opened behind it.
+        className="z-[130] sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden"
+        overlayClassName="z-[130]"
       >
         <DialogHeader className="shrink-0">
           <DialogTitle>{t('editor.image.dialogTitle')}</DialogTitle>

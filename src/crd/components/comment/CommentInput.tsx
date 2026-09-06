@@ -251,7 +251,7 @@ export function CommentInput({
       </Avatar>
 
       <div className="min-w-0 flex-1">
-        <div className="flex items-end gap-1 rounded-md border border-border bg-background px-2 py-1.5 transition-colors focus-within:border-primary/50">
+        <div className="flex items-end gap-1 rounded-md border border-border bg-input-background px-2 py-1.5 transition-colors focus-within:border-primary/50">
           {mentionsEnabled ? (
             <div className="min-h-6 min-w-0 flex-1 text-body [&_textarea]:placeholder:text-muted-foreground">
               <MentionsInput

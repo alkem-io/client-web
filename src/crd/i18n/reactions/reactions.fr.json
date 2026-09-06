@@ -1,0 +1,19 @@
+{
+  "addReaction": "Ajouter une réaction",
+  "pickerTitle": "Réagir à cette publication",
+  "pickerAriaLabel": "Sélecteur de réactions emoji",
+  "totalAriaLabel": "{{count}} personnes ont réagi",
+  "totalAriaLabel_one": "1 personne a réagi",
+  "whoReactedTitle": "Qui a réagi",
+  "whoReactedEmpty": "Aucune réaction pour l'instant",
+  "removeReaction": "Supprimer votre réaction",
+  "emoji": {
+    "heart": "Cœur",
+    "hugging-face": "Visage qui fait un câlin",
+    "clapping-hands": "Mains qui applaudissent",
+    "light-bulb": "Ampoule",
+    "bullseye": "Cible",
+    "check-mark": "Coche",
+    "rocket": "Fusée"
+  }
+}

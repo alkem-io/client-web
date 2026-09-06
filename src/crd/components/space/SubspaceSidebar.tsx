@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
+import { ParentSpaceStack, type ParentSpaceStackItem } from './ParentSpaceStack';
 import { InfoBlock, type LeadItem } from './sidebar/InfoBlock';
 import { SubspacesSection } from './sidebar/SubspacesSection';
 
@@ -50,6 +51,17 @@ export type SubspaceSidebarProps = SubspaceSidebarData & {
   /** "About this Subspace" button — opens the read-only about dialog. */
   onAboutClick: () => void;
   onQuickActionClick: (id: SubspaceQuickActionId) => void;
+  /** Primary page actions (Add Post, …) rendered below the About button in the
+   *  expanded sidebar (and the mobile drawer). The consumer gates each button
+   *  on its own permission. Not shown in the collapsed rail — pass compact
+   *  icon-button equivalents via `collapsedActionsSlot` for that. */
+  actionsSlot?: ReactNode;
+  /** Compact (icon-only) versions of the primary actions for the collapsed
+   *  rail, rendered between the expand toggle and the quick-action icons. */
+  collapsedActionsSlot?: ReactNode;
+  /** Ancestor spaces (outermost first) stacked behind the info block as
+   *  clickable mini-cards — the prototype's parent stack. Not shown collapsed. */
+  parentSpaces?: ParentSpaceStackItem[];
   /** Nested subspaces of the current subspace (used by the widget under the nav). */
   subspaces?: SubspaceWidgetItem[];
   /** Opens the Subspaces dialog with the full list. */
@@ -89,6 +101,9 @@ export function SubspaceSidebar({
   onEditClick,
   onAboutClick,
   onQuickActionClick,
+  actionsSlot,
+  collapsedActionsSlot,
+  parentSpaces,
   subspaces,
   onShowAllSubspaces,
   onSubspaceClick,
@@ -119,6 +134,7 @@ export function SubspaceSidebar({
         >
           <PanelLeftOpen className="w-4 h-4" aria-hidden="true" />
         </Button>
+        {collapsedActionsSlot && <div className="flex flex-col items-center gap-1">{collapsedActionsSlot}</div>}
         {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
         {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
         <ul role="list" className="flex flex-col items-center gap-1">
@@ -189,12 +205,20 @@ export function SubspaceSidebar({
 
   return (
     <aside className={cn('flex flex-col gap-6', className)} aria-label={t('a11y.sidebarNavigation')}>
-      <InfoBlock description={description} leads={leadItems} onEditClick={onEditClick} />
+      {parentSpaces && parentSpaces.length > 0 ? (
+        <ParentSpaceStack parents={parentSpaces}>
+          <InfoBlock description={description} leads={leadItems} onEditClick={onEditClick} />
+        </ParentSpaceStack>
+      ) : (
+        <InfoBlock description={description} leads={leadItems} onEditClick={onEditClick} />
+      )}
 
       <Button variant="outline" className="w-full uppercase gap-2 font-medium px-2" onClick={onAboutClick}>
         <Info className="w-4 h-4 shrink-0" aria-hidden="true" />
         <span className="truncate text-body-emphasis">{t('sidebar.about')}</span>
       </Button>
+
+      {actionsSlot && <div className="flex flex-col gap-2">{actionsSlot}</div>}
 
       {onToggleCollapse && (
         <Button className="w-full uppercase gap-2 font-medium px-2" onClick={onToggleCollapse}>

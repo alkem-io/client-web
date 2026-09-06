@@ -11,7 +11,7 @@
 ```bash
 pnpm crd:dev      # localhost:5200
 ```
-Build/iterate `src/crd/components/chat/*` against mock data: launcher, panel (floating card + mobile expansion), list, thread, bubbles (own/other, reactions, VC badge), and the dialogs (NewChat, GroupSettings, GuidanceInfo). Verify responsiveness and a11y here before wiring data.
+Build/iterate `src/crd/components/chat/*` against mock data: launcher (visible ≥ 640px only), panel (floating card + mobile expansion), list, thread, bubbles (own/other, reactions, VC badge), and the dialogs (NewChat, GroupSettings, GuidanceInfo). Verify responsiveness and a11y here before wiring data.
 
 ## Full app (integration, behind the toggle)
 
@@ -30,7 +30,7 @@ localStorage.setItem('alkemio-design-version', '1'); location.reload();
 ## Manual verification (maps to spec acceptance scenarios)
 
 **US1 — one surface (P1)**
-1. Sign in (CRD on) → a floating chat button shows bottom-right; the header has **no** messages icon.
+1. Sign in (CRD on) → on a ≥ 640px viewport a floating chat button shows bottom-right (hidden on phone widths since 2026-08-21); the header messages icon is present and opens the same unified panel.
 2. Click it → floating card opens to the **conversation list** (never auto-selects). Guidance is pinned on top.
 3. Type in search → list filters by name; guidance filters like any row and loses its pin; clear search → guidance returns pinned.
 4. Select a conversation → thread shows in the same card; back returns to the list.
@@ -55,9 +55,9 @@ localStorage.setItem('alkemio-design-version', '1'); location.reload();
 15. Add a member (immediate); remove a member (confirm); leave group → removed from list.
 
 **Gating / edges**
-16. With guidance disabled (flag/privilege off) → no pinned guidance row; launcher + people/group chats still work.
+16. With guidance disabled (flag/privilege off) → no pinned guidance row; launcher (≥ 640px) / header icon + people/group chats still work.
 17. A 3+ member group that includes the VC shows as a normal group, not pinned guidance.
-18. Mobile viewport → panel expands; list/thread/composer all usable.
+18. Mobile viewport → no launcher (hidden < 640px); open via the header messages icon → panel expands; list/thread/composer all usable.
 19. Toggle to design-version `1` → legacy guidance widget + UserMessaging dialog unchanged.
 
 ## Pre-PR checks

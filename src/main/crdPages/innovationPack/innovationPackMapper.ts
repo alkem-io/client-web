@@ -64,9 +64,9 @@ const searchVisibilityFromGql = (v: GqlSearchVisibility): SearchVisibilityValue 
     case GqlSearchVisibility.Public:
       return 'public';
     case GqlSearchVisibility.Account:
-      return 'authenticated';
-    case GqlSearchVisibility.Hidden:
       return 'account';
+    case GqlSearchVisibility.Hidden:
+      return 'hidden';
   }
 };
 
@@ -74,9 +74,9 @@ export const searchVisibilityToGql = (v: SearchVisibilityValue): GqlSearchVisibi
   switch (v) {
     case 'public':
       return GqlSearchVisibility.Public;
-    case 'authenticated':
-      return GqlSearchVisibility.Account;
     case 'account':
+      return GqlSearchVisibility.Account;
+    case 'hidden':
       return GqlSearchVisibility.Hidden;
   }
 };

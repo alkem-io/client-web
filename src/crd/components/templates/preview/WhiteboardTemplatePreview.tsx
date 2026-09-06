@@ -15,11 +15,10 @@ export function WhiteboardTemplatePreview({ content }: { content: WhiteboardCont
     );
   }
 
-  const hasDrawing = Boolean(content.whiteboardContent && content.whiteboardContent.trim().length > 2);
   return (
     <div className="flex flex-col items-center justify-center gap-3 rounded-md border border-dashed py-16 text-center text-muted-foreground">
       <PenTool aria-hidden="true" className="size-10 opacity-30" />
-      <p className="text-body">{hasDrawing ? t('framingKind.whiteboard') : t('preview.whiteboard.empty')}</p>
+      <p className="text-body">{t('preview.whiteboard.empty')}</p>
     </div>
   );
 }

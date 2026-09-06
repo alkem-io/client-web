@@ -556,6 +556,8 @@ A user navigates to the About route (`/:spaceNameId/about`) and sees a full-page
 
 On mobile devices, the Space page adapts: the sidebar collapses (content flows into a single column), tab navigation moves to the bottom of the screen as a fixed bottom bar, and overflow actions (Activity, Video Call, Share, Settings) are accessible via a "More" drawer. The banner adapts to smaller viewports. Callout blocks, forms, and contribution grids adapt to single-column layouts.
 
+> **Amendment (as shipped; burger position + edge swipe updated 2026-08-21)**: the "More" overflow drawer was replaced during implementation by a hamburger button that opens the mobile **sidebar drawer** (`MobileSidebarDrawer`, sliding in from the left) — the header action icons cover Activity/Video Call/Share/Settings instead. The hamburger sits at the **left** end of the fixed bottom bar (moved from the right on 2026-08-21). The drawer can also be opened by a left-edge swipe gesture (`useEdgeSwipe`: touch starting ≤24px from the left edge, dragged right; armed below `lg` on non-settings pages) — a progressive enhancement alongside the button. The same pattern applies on subspace pages (`SubspaceFlowTabs`' bottom bar).
+
 **Why this priority**: Mobile responsiveness is essential for accessibility but can be polished after the desktop experience is solid. The structural patterns established in P0-P2 inform the responsive breakpoints.
 
 **Independent Test**: Open a Space page on a mobile viewport. Bottom navigation appears. All tabs are reachable. "More" drawer contains overflow actions. Callout blocks and contribution grids reflow to single-column. Content is readable without horizontal scrolling.
@@ -563,7 +565,7 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 **Acceptance Scenarios**:
 
 1. **Given** a mobile viewport, **When** a Space page loads, **Then** tab navigation renders as a fixed bottom bar
-2. **Given** more actions than can fit in the bottom bar, **When** the "More" button is tapped, **Then** a drawer slides up with Activity, Video Call, Share, and Settings options
+2. **Given** more actions than can fit in the bottom bar, **When** the hamburger at the bar's left end is tapped (or the user swipes right from the left screen edge), **Then** the sidebar drawer slides in from the left *(amended — originally: a "More" drawer sliding up with Activity, Video Call, Share, and Settings; those actions live in the header icon row instead)*
 3. **Given** a mobile viewport, **When** any tab content renders, **Then** the sidebar content is either hidden or integrated into the single-column flow
 4. **Given** a mobile viewport, **When** callout contribution grids render, **Then** cards display in a single column instead of 5-per-row
 5. **Given** a mobile viewport, **When** the callout creation form opens, **Then** it adapts to full-width layout with stacked form sections
@@ -791,7 +793,7 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 #### Responsive Design
 
 - **FR-092**: On desktop (>960px), tab navigation MUST render above the content with a sidebar + content area layout
-- **FR-093**: On mobile (<=600px), tab navigation MUST render as a fixed bottom bar with a "More" drawer for overflow actions
+- **FR-093** *(amended — see US14 amendment)*: On mobile, tab navigation MUST render as a fixed bottom bar (shipped `lg:hidden`, i.e. < 1024px) with a hamburger at its **left** end opening the mobile sidebar drawer (no "More" drawer); a left-edge swipe also opens the drawer since 2026-08-21
 - **FR-094**: On mobile, the sidebar MUST collapse so content flows in a single column
 - **FR-095**: The banner MUST adapt to viewport width without horizontal overflow
 - **FR-096**: Responsive padding MUST follow CRD conventions (compact on mobile, spacious on desktop)

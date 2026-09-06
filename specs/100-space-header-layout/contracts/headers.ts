@@ -68,10 +68,10 @@ export type SubspaceHeaderProps = {
   /** Short tagline below the title. */
   tagline?: string;
 
-  /** Subspace identity (single 56px avatar inline with the title). */
-  subspaceInitials: string;
-  subspaceColor: string;
-  subspaceAvatarUrl?: string;
+  // Removed 2026-08-21: `subspaceInitials`, `subspaceColor`, `subspaceAvatarUrl`.
+  // The single 56px avatar tile inline with the title was dropped — the header
+  // renders the bare title (matching L0); subspace identity images moved to the
+  // breadcrumb trail (`BreadcrumbTrailItem.avatar`).
 
   /**
    * Parent banner image — renders as the banner background.

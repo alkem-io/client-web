@@ -16,7 +16,17 @@
     "intro": "Alkemio dient dem Wohl der Gesellschaft. Bitte lies und akzeptiere die <terms>Nutzungsbedingungen</terms> und die <privacy>Datenschutzrichtlinie</privacy>, bevor du fortfährst.",
     "acceptTerms": "Ich akzeptiere die <terms>Nutzungsbedingungen</terms> und die <privacy>Datenschutzrichtlinie</privacy>.",
     "openTerms": "Nutzungsbedingungen in einem neuen Tab öffnen",
-    "openPrivacy": "Datenschutzrichtlinie in einem neuen Tab öffnen"
+    "openPrivacy": "Datenschutzrichtlinie in einem neuen Tab öffnen",
+    "signpost": {
+      "warning": "Du versuchst, dich mit {{provider}} zu registrieren. Wenn du bereits ein Alkemio-Konto mit derselben E-Mail-Adresse hast, wird {{provider}} mit diesem Konto verbunden und du kannst künftig beide Anmeldemethoden nutzen.",
+      "signInAction": "Mit einem anderen Konto anmelden"
+    },
+    "continuation": {
+      "divider": "oder",
+      "heading": "Registrierung abschließen mit {{provider}}",
+      "intro": "Diese Angaben wurden vom Anbieter übermittelt - prüfe, ob sie stimmen, und akzeptiere die Bedingungen, um dein Konto fertig zu erstellen.",
+      "cta": "Konto erstellen mit {{provider}}"
+    }
   },
   "recovery": {
     "title": "Passwort-Wiederherstellung",

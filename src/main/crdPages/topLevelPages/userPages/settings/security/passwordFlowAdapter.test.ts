@@ -70,6 +70,26 @@ describe('adaptSettingsPasswordFlow', () => {
     ]);
   });
 
+  it('keeps flow-level messages when the flow was produced by the password method', () => {
+    const flow = buildFlow(
+      [hiddenNode('csrf_token', 'x'), passwordInputNode(), passwordSubmitNode()],
+      [{ id: 1050001, text: 'Your changes have been saved!', type: 'success' }]
+    );
+    (flow as unknown as { active: string }).active = 'password';
+
+    expect(adaptSettingsPasswordFlow(flow)?.messages).toHaveLength(1);
+  });
+
+  it("drops flow-level messages produced by another method — the shared flow's oidc link refusal must not render as a password ribbon", () => {
+    const flow = buildFlow(
+      [hiddenNode('csrf_token', 'x'), passwordInputNode(), passwordSubmitNode()],
+      [{ id: 4000007, text: 'An account with the same identifier exists already.', type: 'error' }]
+    );
+    (flow as unknown as { active: string }).active = 'oidc';
+
+    expect(adaptSettingsPasswordFlow(flow)?.messages).toEqual([]);
+  });
+
   it('returns null when the password input or submit is absent', () => {
     expect(adaptSettingsPasswordFlow(buildFlow([hiddenNode('csrf_token', 'x'), passwordSubmitNode()]))).toBeNull();
     expect(adaptSettingsPasswordFlow(buildFlow([hiddenNode('csrf_token', 'x'), passwordInputNode()]))).toBeNull();

@@ -22,8 +22,8 @@
     "inactive": "Cet Espace est actuellement inactif."
   },
   "knowledge": {
-    "searchPlaceholder": "Rechercher...",
-    "searchLabel": "Rechercher dans la base de connaissances",
+    "searchPlaceholder": "Rechercher des publications...",
+    "searchLabel": "Rechercher des publications",
     "noResults": "Aucun résultat",
     "search": {
       "emptyTitle": "Aucun résultat",
@@ -33,8 +33,17 @@
       "retry": "Réessayer",
       "loadingLabel": "Chargement des résultats de recherche",
       "appendingLabel": "Chargement de résultats supplémentaires",
-      "removeTerm": "Supprimer le terme {{term}}",
-      "removeTag": "Supprimer l'étiquette {{tag}}"
+      "tagLabel_one": "au tag",
+      "tagLabel_other": "aux tags",
+      "matchText_one": "<b>{{count}}</b> élément lié à <text></text>",
+      "matchText_other": "<b>{{count}}</b> éléments liés à <text></text>",
+      "matchTextMore": "<b>{{count}}+</b> éléments liés à <text></text>",
+      "matchTags_one": "<b>{{count}}</b> élément lié {{tagLabel}} <tags></tags>",
+      "matchTags_other": "<b>{{count}}</b> éléments liés {{tagLabel}} <tags></tags>",
+      "matchTagsMore": "<b>{{count}}+</b> éléments liés {{tagLabel}} <tags></tags>",
+      "matchBoth_one": "<b>{{count}}</b> élément lié à <text></text> et {{tagLabel}} <tags></tags>",
+      "matchBoth_other": "<b>{{count}}</b> éléments liés à <text></text> et {{tagLabel}} <tags></tags>",
+      "matchBothMore": "<b>{{count}}+</b> éléments liés à <text></text> et {{tagLabel}} <tags></tags>"
     },
     "viewGrid": "Vue en cartes",
     "viewList": "Vue en liste",
@@ -188,21 +197,26 @@
     "openAria": "Ouvrir {{title}}",
     "draft": "Brouillon",
     "expand": "Afficher plus",
+    "fullscreen": "Plein écran",
     "collapse": "Afficher moins",
     "openWhiteboard": "Ouvrir le tableau blanc",
     "openMemo": "Ouvrir le mémo",
     "openDocument": "Ouvrir le document",
+    "openDocumentPdf": "Afficher",
     "document": "Document",
-    "documentText": "Document Word",
+    "documentText": "Document texte",
     "documentSpreadsheet": "Feuille de calcul",
     "documentPresentation": "Présentation",
+    "documentPdf": "PDF",
     "addDocument": "Ajouter un document",
     "defaultDocumentName": "Nouveau document",
+    "createDocument": "Créer un nouveau document",
+    "documentNameLabel": "Titre du document",
     "documentTypeLabel": "Type de document",
     "createNew": "Créer nouveau",
     "documentImportOr": "ou",
     "documentImportHint": "Glissez un fichier ou cliquez pour téléverser",
-    "documentImportMaxSize": ".docx, .xlsx, .pptx jusqu'à {{cap}} Mo",
+    "documentImportMaxSize": ".docx, .xlsx, .pptx, .pdf jusqu'à {{cap}} Mo",
     "documentReplaceAccepts": "{{ext}} jusqu'à {{cap}} Mo",
     "documentImportRemoveFile": "Supprimer le fichier",
     "documentImportErrorUnsupported": "Ce type de fichier n'est pas pris en charge. Essayez {{formats}}.",
@@ -283,6 +297,10 @@
     "postTagsLabel": "Étiquettes",
     "postSave": "Enregistrer",
     "postCreate": "Publier",
+    "createTask": "Créer une tâche",
+    "editTask": "Modifier la tâche",
+    "taskCreate": "Créer une tâche",
+    "tasksHeader": "Tâches ({{count}})",
     "postDelete": "Supprimer la publication",
     "postDeleteConfirmTitle": "Supprimer cette publication ?",
     "postDeleteConfirmDescription": "La publication et ses commentaires seront définitivement supprimés. Cette action est irréversible.",
@@ -322,7 +340,6 @@
   },
   "members": {
     "subtitle": "{{users}} membres et {{organizations}} organisations dans cet espace.",
-    "inviteMember": "Inviter un membre",
     "search": "Rechercher des membres ou organisations...",
     "filterAll": "Tous",
     "filterLead": "Responsable",
@@ -407,7 +424,8 @@
         "why": "Pourquoi ce sous-espace ?",
         "who": "Qui est impliqué ?"
       }
-    }
+    },
+    "tags": "Étiquettes"
   },
   "apply": {
     "apply": "Postuler",
@@ -497,6 +515,9 @@
     "comments_other": "{{count}} commentaires seront supprimés",
     "success": "La $t(common.callout) « {{title}} » a été supprimée.",
     "saveFailed": "Impossible de supprimer le $t(common.callout). Veuillez réessayer."
+  },
+  "deleteTask": {
+    "title": "Supprimer cette tâche ?"
   },
   "deleteContribution": {
     "title": "Supprimer cette contribution ?",
@@ -644,6 +665,9 @@
     "template": "Modèle",
     "templatePlaceholder": "Choisir un modèle…",
     "templateLoading": "Chargement des modèles…",
+    "whiteboardConfigured": "Un tableau blanc par défaut est configuré.",
+    "whiteboardNotConfigured": "Les nouvelles contributions commenceront avec un tableau blanc vide.",
+    "clearWhiteboard": "Effacer le contenu par défaut",
     "save": "Enregistrer"
   },
   "calloutDialog": {
@@ -671,6 +695,11 @@
       "connected": "Connecté",
       "connecting": "Connexion…",
       "disconnected": "Déconnecté",
+      "saved": "Enregistré",
+      "saving": "Enregistrement…",
+      "finalizing": "Finalisation des modifications…",
+      "offline": "Hors ligne — synchronisation automatique",
+      "saveFailed": "Impossible d'enregistrer les modifications",
       "membersOnline_one": "1 membre en ligne",
       "membersOnline_other": "{{count}} membres en ligne",
       "connectedUsersLabel": "Utilisateurs connectés",
@@ -690,6 +719,14 @@
     "errors": {
       "loading": "Chargement du mémo…",
       "loadFailed": "Impossible de charger le mémo"
+    },
+    "unsavedClose": {
+      "title": "Modifications du mémo non enregistrées",
+      "description": "Ces modifications ne peuvent pas être enregistrées maintenant. Gardez le mémo ouvert, exportez-les ou abandonnez-les explicitement.",
+      "wait": "Garder ouvert et attendre",
+      "discard": "Abandonner et fermer",
+      "export": "Exporter d’abord",
+      "exportFailed": "Le mémo n’a pas pu être exporté. Il reste ouvert."
     },
     "deleteConfirm": {
       "title": "Supprimer le mémo",
@@ -813,6 +850,7 @@
     "seeFullDescription": "Voir la description complète"
   },
   "postPreview": {
+    "createdBy": "Créé par",
     "label": "Aperçu de la contribution sélectionnée",
     "edit": "Modifier la réponse",
     "share": "Partager la réponse",
@@ -970,7 +1008,12 @@
     "mobileTabBar": "Navigation par onglets",
     "moreActionsDrawer": "Actions supplémentaires",
     "close": "Fermer",
-    "loadingPost": "Chargement de la publication"
+    "loadingPost": "Chargement de la publication",
+    "loadingContributions": "Chargement des contributions",
+    "loadingSubspaces": "Chargement des sous-espaces",
+    "loadingLeads": "Chargement des responsables de l'Espace",
+    "loadingTags": "Chargement des tags",
+    "loadingMembership": "Chargement du statut de membre"
   },
   "activity": {
     "dialogTitle": "Activité récente"
@@ -1023,5 +1066,15 @@
       "title": "Aucun sous-espace pour le moment",
       "description": "Cet espace n'a pas encore de sous-espaces."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Classifications"
+  },
+  "parentStack": {
+    "goTo": "Aller à {{name}}"
   }
 }

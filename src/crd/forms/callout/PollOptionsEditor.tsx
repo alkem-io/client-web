@@ -87,7 +87,7 @@ function SortableOptionRow({
         placeholder={t('forms.pollOption', { number: index + 1 })}
         disabled={disabled}
         maxLength={512}
-        className="flex-1 h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex-1 h-9 px-3 border border-border rounded-md bg-input-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label={t('forms.pollOption', { number: index + 1 })}
       />
       {canRemove && (
@@ -218,7 +218,7 @@ export function PollOptionsEditor({
           placeholder={t('forms.pollQuestion')}
           disabled={isClosed}
           className={cn(
-            'w-full h-9 px-3 border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed',
+            'w-full h-9 px-3 border rounded-md bg-input-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed',
             questionError ? 'border-destructive' : 'border-border'
           )}
         />

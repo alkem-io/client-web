@@ -9,6 +9,9 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
         spaceID
         autoRedirect
       }
+      dashboard {
+        activityView
+      }
       notification {
         user {
           mentioned {
@@ -22,6 +25,16 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
             push
           }
           messageReceived {
+            email
+            inApp
+            push
+          }
+          conversationMessageDirect {
+            email
+            inApp
+            push
+          }
+          conversationMessageGroup {
             email
             inApp
             push
@@ -46,6 +59,11 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
             push
           }
           collaborationCalloutPublished {
+            email
+            inApp
+            push
+          }
+          collaborationCalloutReaction {
             email
             inApp
             push

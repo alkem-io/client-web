@@ -34,15 +34,8 @@ export type InnovationPackCardData = {
 // `specs/098-crd-templates/contracts/innovation-pack.ts`).
 // ---------------------------------------------------------------------------
 
-/**
- * Three-way mapping to the server `SearchVisibility` enum:
- *  - `'public'`         ⇄ `SearchVisibility.Public`
- *  - `'authenticated'`  ⇄ `SearchVisibility.Account` (legacy enum name, the broader visibility tier)
- *  - `'account'`        ⇄ `SearchVisibility.Hidden`
- *
- * Naming follows the contract; the integration mapper handles the GraphQL-enum mapping.
- */
-export type SearchVisibilityValue = 'public' | 'authenticated' | 'account';
+/** Mirrors the server `SearchVisibility` enum 1:1 (`Public` / `Account` / `Hidden`). */
+export type SearchVisibilityValue = 'public' | 'account' | 'hidden';
 
 /**
  * The pack EDIT form (on the admin screen). Provider is NOT a field — it's shown
