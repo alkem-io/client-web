@@ -1,7 +1,7 @@
 import { getConfig } from './matrixConfig';
 import { redactBreadcrumb } from './redaction';
 import { clearSsoFlowState, loadSsoFlowState } from './ssoLogin';
-import { NEVER_EXPIRES, storeCredentials } from './storage';
+import { expiresAtFrom, storeCredentials } from './storage';
 
 interface ExchangeResult {
   readonly user_id: string;
@@ -99,7 +99,7 @@ const handleMatrixCallback = async (
       deviceId: result.device_id,
       accessToken: result.access_token,
       refreshToken: result.refresh_token ?? '',
-      expiresAt: result.expires_in_ms ? Date.now() + result.expires_in_ms : NEVER_EXPIRES,
+      expiresAt: expiresAtFrom(result.expires_in_ms),
       homeserverUrl: config.homeserverUrl,
       storedAt: Date.now(),
     });

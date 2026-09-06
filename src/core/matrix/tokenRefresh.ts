@@ -1,4 +1,4 @@
-import { NEVER_EXPIRES, rotateTokens } from './storage';
+import { expiresAtFrom, rotateTokens } from './storage';
 
 interface RefreshedTokens {
   readonly accessToken: string;
@@ -67,7 +67,7 @@ const refreshMatrixTokens = async (
     expires_in_ms?: number;
   };
 
-  const expiresAt = body.expires_in_ms ? Date.now() + body.expires_in_ms : NEVER_EXPIRES;
+  const expiresAt = expiresAtFrom(body.expires_in_ms);
   const nextRefreshToken = body.refresh_token ?? refreshToken;
   await rotateTokens(userId, body.access_token, nextRefreshToken, expiresAt);
 
