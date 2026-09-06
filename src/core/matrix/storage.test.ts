@@ -1,6 +1,14 @@
 import 'fake-indexeddb/auto';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { type CredentialRecord, clearNamespace, loadCredentials, rotateTokens, storeCredentials } from './storage';
+import {
+  type CredentialRecord,
+  clearNamespace,
+  expiresAtFrom,
+  loadCredentials,
+  NEVER_EXPIRES,
+  rotateTokens,
+  storeCredentials,
+} from './storage';
 
 const USER_ID = '@alice:matrix.example.com';
 const OTHER_USER_ID = '@bob:matrix.example.com';
@@ -20,6 +28,27 @@ describe('storage (IndexedDB)', () => {
   afterEach(async () => {
     await clearNamespace(USER_ID);
     await clearNamespace(OTHER_USER_ID);
+  });
+
+  describe('expiresAtFrom', () => {
+    const NOW = 1_700_000_000_000;
+
+    it('treats an omitted lifetime as non-expiring', () => {
+      expect(expiresAtFrom(undefined, NOW)).toBe(NEVER_EXPIRES);
+    });
+
+    it('honors a positive lifetime relative to now', () => {
+      expect(expiresAtFrom(900_000, NOW)).toBe(NOW + 900_000);
+    });
+
+    it('honors an explicit zero lifetime as already expired, never as non-expiring', () => {
+      expect(expiresAtFrom(0, NOW)).toBe(NOW);
+    });
+
+    it('falls back to non-expiring for a non-numeric value', () => {
+      expect(expiresAtFrom(Number.NaN, NOW)).toBe(NEVER_EXPIRES);
+      expect(expiresAtFrom(null as unknown as undefined, NOW)).toBe(NEVER_EXPIRES);
+    });
   });
 
   describe('CRUD round-trip', () => {

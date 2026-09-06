@@ -165,6 +165,23 @@ describe('matrixCallback', () => {
       expect(stored.record?.expiresAt).toBeGreaterThan(Date.now() + 1_000_000_000);
     });
 
+    it('stores an already-expired record when the response states a zero lifetime', async () => {
+      setEnv();
+      setPendingFlow();
+      setUrlWithToken('mlt_zero');
+
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(JSON.stringify({ ...EXCHANGE_RESPONSE, expires_in_ms: 0 }), { status: 200 })
+      );
+
+      const { handleMatrixCallback: fresh } = await import('./matrixCallback');
+      const result = await fresh();
+      expect(result.ok).toBe(true);
+
+      const stored = await loadCredentials(EXCHANGE_RESPONSE.user_id);
+      expect(stored.record?.expiresAt).toBeLessThanOrEqual(Date.now());
+    });
+
     it('navigates to saved return path', async () => {
       setEnv();
       setPendingFlow('/my/return/path');

@@ -7,6 +7,11 @@ const RECORD_KEY = 'session';
 // Kept within the maximum valid Date time value, since it is turned into one.
 const NEVER_EXPIRES = 8_640_000_000_000_000;
 
+// A lifetime the server omits means the token does not expire; a lifetime it
+// states — zero included — is honored literally, so `0` is expired on receipt.
+const expiresAtFrom = (expiresInMs: number | undefined, now: number = Date.now()): number =>
+  typeof expiresInMs === 'number' && Number.isFinite(expiresInMs) ? now + expiresInMs : NEVER_EXPIRES;
+
 interface CredentialRecord {
   readonly userId: string;
   readonly deviceId: string;
@@ -167,5 +172,6 @@ export {
   findStoredUserId,
   listStoredUserIds,
   NEVER_EXPIRES,
+  expiresAtFrom,
 };
 export type { CredentialRecord, StorageResult };
