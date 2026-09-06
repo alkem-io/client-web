@@ -17,12 +17,13 @@ interface SsoIdpResult {
   readonly unreachable?: boolean;
 }
 
-const discoverIdp = async (homeserverUrl: string): Promise<SsoIdpResult> => {
+const discoverIdp = async (homeserverUrl: string, signal?: AbortSignal): Promise<SsoIdpResult> => {
   let response: Response;
   let body: { flows?: { type?: string; identity_providers?: { id?: string }[] }[] };
   try {
     response = await fetch(`${homeserverUrl}/_matrix/client/v3/login`, {
       credentials: 'omit',
+      signal,
     });
 
     if (!response.ok) {
@@ -153,7 +154,18 @@ const attemptSilentSso = async (
     return 'unavailable';
   }
 
-  const idpResult = await discoverIdp(config.homeserverUrl);
+  // One deadline bounds the whole attempt, discovery included: a login endpoint
+  // that accepts the connection and never answers must not hold establishment
+  // open past the timeout. An aborted discovery reads as unreachable.
+  const deadline = Date.now() + timeoutMs;
+  const discovery = new AbortController();
+  const discoveryTimer = setTimeout(() => discovery.abort(), timeoutMs);
+  let idpResult: SsoIdpResult;
+  try {
+    idpResult = await discoverIdp(config.homeserverUrl, discovery.signal);
+  } finally {
+    clearTimeout(discoveryTimer);
+  }
   if (!idpResult.ok || !idpResult.idpId) {
     return idpResult.unreachable ? 'unreachable' : 'unavailable';
   }
@@ -167,7 +179,6 @@ const attemptSilentSso = async (
   document.body.appendChild(iframe);
 
   try {
-    const deadline = Date.now() + timeoutMs;
     while (Date.now() < deadline) {
       await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
       const userId = await findStoredUserId(expectedLocalpart);
