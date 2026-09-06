@@ -1,4 +1,4 @@
-import { stopActiveSession } from './activeSession';
+import { resetMessagingActivation, stopActiveSession } from './activeSession';
 import { getConfig } from './matrixConfig';
 import { clearNamespace, listStoredUserIds, loadCredentials } from './storage';
 
@@ -75,6 +75,7 @@ const runMatrixLogoutCleanup = async (options: CleanupOptions = {}): Promise<voi
     return;
   }
   stopActiveSession();
+  resetMessagingActivation();
   const userIds = await listStoredUserIds();
   for (const userId of userIds) {
     await cleanupMatrixUser(userId, options);

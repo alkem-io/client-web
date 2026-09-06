@@ -122,6 +122,22 @@ describe('logoutCleanup', () => {
     expect(channel?.posted).toEqual([{ type: 'logout' }]);
   });
 
+  it('resets the messaging-opened latch so the next sign-in stays dormant until messaging opens again', async () => {
+    setEnv();
+    const { notifyMessagingOpened, onMessagingOpened } = await import('./activeSession');
+    notifyMessagingOpened();
+
+    const { runMatrixLogoutCleanup } = await import('./logoutCleanup');
+    await runMatrixLogoutCleanup();
+
+    const listener = vi.fn();
+    onMessagingOpened(listener);
+    expect(listener).not.toHaveBeenCalled();
+
+    notifyMessagingOpened();
+    expect(listener).toHaveBeenCalledOnce();
+  });
+
   it('is a no-op with the flag off — no network, no storage access', async () => {
     setEnv(false);
     await seedRecord();
