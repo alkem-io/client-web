@@ -155,12 +155,37 @@ const listStoredUserIds = async (): Promise<string[]> => {
   }
 };
 
-const clearNamespace = async (userId: string): Promise<void> => {
+// How long a blocked delete waits for the other connection to close before the
+// cleanup is reported as failed rather than left silently pending.
+const BLOCKED_DELETE_TIMEOUT_MS = 2_000;
+
+interface ClearOptions {
+  readonly blockedTimeoutMs?: number;
+}
+
+const clearNamespace = async (userId: string, options: ClearOptions = {}): Promise<void> => {
+  const blockedTimeoutMs = options.blockedTimeoutMs ?? BLOCKED_DELETE_TIMEOUT_MS;
   await new Promise<void>((resolve, reject) => {
+    let blockedTimer: ReturnType<typeof setTimeout> | undefined;
     const request = indexedDB.deleteDatabase(dbName(userId));
-    request.onsuccess = () => resolve();
-    request.onerror = () => reject(request.error);
-    request.onblocked = () => resolve();
+    request.onsuccess = () => {
+      clearTimeout(blockedTimer);
+      resolve();
+    };
+    request.onerror = () => {
+      clearTimeout(blockedTimer);
+      reject(request.error);
+    };
+    // Blocked is not failure: another connection still holds the database open
+    // and the deletion completes once it closes. Keep waiting for that — but
+    // bounded, so a connection that never closes surfaces as a failure instead
+    // of either a hang or a cleanup reported done while the tokens still exist.
+    request.onblocked = () => {
+      blockedTimer ??= setTimeout(
+        () => reject(new Error('credential namespace deletion blocked by an open connection')),
+        blockedTimeoutMs
+      );
+    };
   });
 };
 
