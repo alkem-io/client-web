@@ -34,6 +34,13 @@ across 8 files (all genuine third-party/lifecycle), each carrying an
 `useMemo`/`useCallback`/`memo`/`React.memo` anywhere — bare or namespaced (`React.useMemo`) —
 now fails lint with a descriptive message.
 
+> **Post-merge state (2026-09-06).** After reconciling onto `develop` (113 commits since the
+> 2026-08-05 base) the surface is **4 exceptions across 4 files**: `develop`'s rewrite of the
+> collaborative editor and whiteboard removed the Yjs/TipTap and Excalidraw cases, and the two
+> manual memoizations it had introduced were removed, not excepted. `pnpm compiler:healthcheck`
+> reports **1366 / 1366**; `pnpm lint` 0 errors; `pnpm build` ok. The T026-time figures above
+> are kept as the record of that measurement.
+
 ## 2. Test suite (SC — regression gate)
 
 `pnpm vitest run`: **1940 passed, 2 skipped, 232 files**. One failure —

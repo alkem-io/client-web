@@ -164,6 +164,6 @@
 - [Story] label maps task to specific user story for traceability
 - T006-T007 are blocked on external work (remaining domain memoization migrations) — they should be completed in a follow-up once those land and `pnpm eslint .` reports zero `no-restricted-syntax` warnings outside documented exception files
 - T017 is deferred — it requires a production deployment + one week of observation
-- Final state: the rule is **error**-level with **11** `no-restricted-syntax` exceptions across 8 files (all genuine third-party/lifecycle), plus 1 `react-compiler` exception in `GlobalErrorContext.tsx`. `pnpm eslint .` is clean (0 errors, 0 warnings).
+- Final state: the rule is **error**-level with **4** `no-restricted-syntax` exceptions across 4 files (Apollo links/client, cookie-consent ref), plus 1 `react-compiler` exception in `GlobalErrorContext.tsx`. `pnpm eslint .` is clean (0 errors, 0 warnings). (11 across 8 files at T026 time; the 2026-09-06 `develop` reconciliation removed the Yjs/TipTap and Excalidraw cases — see quickstart › Documented Exceptions.)
 - Commit after each logical group of tasks
 - PR description MUST note that Lighthouse/memory validation (T015-T016) is deferred pending backend availability and must complete before production release per Constitution Principle V (Experience Quality & Safeguards)

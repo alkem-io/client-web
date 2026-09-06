@@ -92,6 +92,10 @@ memoizations (the compiler handles them; coverage stayed 100%). The remaining 11
 irreducible third-party/lifecycle cases (Yjs/TipTap, Apollo links/client, Excalidraw
 debounce + effect-dep stability, a ref callback) that the compiler cannot substitute for.
 
+> **Update 2026-09-06 (post `develop` reconciliation).** Exceptions remaining: **4 across
+> 4 files** (Apollo links/client, cookie-consent ref); components compiled **1366 / 1366
+> (100%)**. The 2026-07 figures above are the dated baseline and are left as measured.
+
 ## 3. How to reproduce
 
 ```bash

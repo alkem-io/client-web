@@ -58,14 +58,20 @@ pnpm compiler:healthcheck   # % of src/ components the compiler optimizes (KPI; 
 
 ## Documented Exceptions
 
-The rule is at **error** level with every remaining usage annotated — **11
-`no-restricted-syntax` exceptions across 8 files** (plus one `react-compiler` exception in
+The rule is at **error** level with every remaining usage annotated — **4
+`no-restricted-syntax` exceptions across 4 files** (plus one `react-compiler` exception in
 `GlobalErrorContext.tsx`). All are **genuinely necessary** (real technical reason in the
-comment): the collaborative editor (Yjs `Y.Doc`, TipTap provider/extensions in
-`useCollaboration.ts`), Apollo `onError` links and `ApolloClient` stability
-(`src/core/apollo/**`), Excalidraw `debounce` wrappers and effect-dependency object stability
-(`src/domain/common/whiteboard/excalidraw/**`), and the cookie-consent ref callback
-(`App.tsx`).
+comment): Apollo `onError` links and `ApolloClient` stability (`src/core/apollo/**`) and the
+cookie-consent ref callback (`App.tsx`).
+
+At T026 time the count was 11 across 8 files; the 2026-09-06 reconciliation onto `develop`
+brought in its rewrite of the collaborative editor and the whiteboard, which dropped the
+Yjs/TipTap and Excalidraw cases (`useCollaboration.ts`, `ExcalidrawWrapper.tsx`,
+`CollaborativeExcalidrawWrapper.tsx`, and the deleted `useWhiteboardFilesManager.ts`). The
+two manual memoizations `develop` had introduced meanwhile were removed rather than excepted
+(`CollaborativeExcalidrawWrapper.tsx` `CollabAPI` object → plain const; the
+`ExcalidrawEditorBinding.tsx` debounced scroll refresh → created inside the effect that owns
+its listener).
 
 > The earlier "retained pending migration" CRD-hook memoizations (17 usages in
 > `src/main/crdPages/**`, `src/main/pushNotifications/**`, and `useAccountSearch.ts`) were
