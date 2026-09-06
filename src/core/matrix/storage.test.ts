@@ -131,6 +131,42 @@ describe('storage (IndexedDB)', () => {
       expect(aliceResult.record).toBe(null);
       expect(bobResult.record?.deviceId).toBe('DEVICE_BOB');
     });
+
+    describe('blocked by an open connection', () => {
+      const holdOpen = () =>
+        new Promise<IDBDatabase>((resolve, reject) => {
+          const request = indexedDB.open(`alkemio-matrix/${USER_ID}`);
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+
+      it('waits for the connection to close, then completes — never reports done while the record exists', async () => {
+        await storeCredentials(makeRecord());
+        const held = await holdOpen();
+
+        let settled = false;
+        const clearing = clearNamespace(USER_ID).then(() => {
+          settled = true;
+        });
+        await new Promise(resolve => setTimeout(resolve, 30));
+        expect(settled).toBe(false);
+
+        held.close();
+        await clearing;
+        expect(settled).toBe(true);
+        expect((await loadCredentials(USER_ID)).record).toBe(null);
+      });
+
+      it('reports a failure once the bound lapses instead of hanging or succeeding', async () => {
+        await storeCredentials(makeRecord());
+        const held = await holdOpen();
+        try {
+          await expect(clearNamespace(USER_ID, { blockedTimeoutMs: 50 })).rejects.toThrow('blocked');
+        } finally {
+          held.close();
+        }
+      });
+    });
   });
 
   describe('listStoredUserIds', () => {
