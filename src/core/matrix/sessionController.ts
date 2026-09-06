@@ -384,11 +384,20 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
   };
 
   // One recovery attempt per establishment: a session that dies again after a
-  // fresh silent SSO would just loop, so it ends in auth-required instead.
+  // fresh silent SSO would just loop, so the repeat is terminal instead.
   const recover = async (staleUserId: string): Promise<void> => {
     try {
       await clearNamespace(staleUserId);
-      if (stopped || recovered) {
+      if (stopped) {
+        return;
+      }
+      if (recovered) {
+        // The client is already stopped, so a machine still reporting a live
+        // state would be lying — fail closed wherever the table still allows it.
+        if (TRANSITIONS.get(machine.state())?.has('failed')) {
+          reportError('session closed by the server again after recovery');
+          setState('failed');
+        }
         return;
       }
       recovered = true;
