@@ -730,5 +730,43 @@ describe('establishSession', () => {
       expect(createClient.mock.calls[1][0].accessToken).toBe('syt_recovered');
       expect(states).toEqual(['starting', 'ready', 'recovering', 'starting']);
     });
+
+    it('a second logout after a successful recovery fails closed — never a live state without a client', async () => {
+      await seedRecord();
+      const { sdk, handlers, createClient, client } = makeSdkMock();
+      const silentSso = vi.fn(async () => {
+        await seedRecord({ accessToken: 'syt_recovered', deviceId: 'DEV2' });
+        return 'authenticated' as const;
+      });
+      const states: SessionState[] = [];
+      const errors: string[] = [];
+
+      await establishSession(ACTOR, {
+        loadSdk: async () => sdk,
+        silentSso,
+        onState: s => states.push(s),
+        onError: message => errors.push(message),
+      });
+
+      handlers.get('sync')?.('PREPARED');
+      handlers.get('Session.logged_out')?.();
+      await vi.waitFor(() => {
+        expect(states[states.length - 1]).toBe('starting');
+      });
+      handlers.get('sync')?.('PREPARED');
+      expect(states[states.length - 1]).toBe('ready');
+
+      handlers.get('Session.logged_out')?.();
+      await vi.waitFor(() => {
+        expect(states[states.length - 1]).toBe('failed');
+      });
+
+      // The one recovery is spent: no third client, no second SSO round-trip.
+      expect(silentSso).toHaveBeenCalledOnce();
+      expect(createClient).toHaveBeenCalledTimes(2);
+      expect(client.stopClient).toHaveBeenCalledTimes(2);
+      expect(errors).toEqual([expect.stringContaining('after recovery')]);
+      expect(states).toEqual(['starting', 'ready', 'recovering', 'starting', 'ready', 'failed']);
+    });
   });
 });
