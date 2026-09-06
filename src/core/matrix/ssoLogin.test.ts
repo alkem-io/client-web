@@ -95,6 +95,24 @@ describe('ssoLogin', () => {
       const [, init] = fetchSpy.mock.calls[0];
       expect(init?.credentials).toBe('omit');
     });
+
+    it("hands the caller's abort signal to fetch and reports an abort as unreachable", async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementationOnce(
+        (_url, init) =>
+          new Promise<Response>((_resolve, reject) => {
+            init?.signal?.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError')));
+          })
+      );
+      const controller = new AbortController();
+
+      const pending = discoverIdp(HOMESERVER, controller.signal);
+      controller.abort();
+      const result = await pending;
+
+      expect(fetchSpy.mock.calls[0][1]?.signal).toBe(controller.signal);
+      expect(result.ok).toBe(false);
+      expect(result.unreachable).toBe(true);
+    });
   });
 
   describe('initiateSsoRedirect', () => {
@@ -240,6 +258,25 @@ describe('ssoLogin', () => {
       const result = await fresh(LOCALPART, { timeoutMs: 200, pollIntervalMs: 20 });
 
       expect(result).toBe('unreachable');
+      expect(document.querySelector('iframe')).toBeNull();
+    });
+
+    it('resolves unreachable within the timeout when discovery never answers — no iframe, no hang', async () => {
+      setEnv();
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementationOnce(
+        (_url, init) =>
+          new Promise<Response>((_resolve, reject) => {
+            init?.signal?.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError')));
+          })
+      );
+
+      const { attemptSilentSso: fresh } = await import('./ssoLogin');
+      const startedAt = Date.now();
+      const result = await fresh(LOCALPART, { timeoutMs: 100, pollIntervalMs: 20 });
+
+      expect(result).toBe('unreachable');
+      expect(Date.now() - startedAt).toBeLessThan(1_000);
+      expect(fetchSpy.mock.calls[0][1]?.signal).toBeInstanceOf(AbortSignal);
       expect(document.querySelector('iframe')).toBeNull();
     });
 
