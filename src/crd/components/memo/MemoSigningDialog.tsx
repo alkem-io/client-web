@@ -105,18 +105,13 @@ export function MemoSigningDialog({
                         variant="outline"
                         size="sm"
                         disabled={signature.verification === 'checking'}
+                        aria-busy={signature.verification === 'checking'}
                         onClick={() => onVerify(signature.id)}
                       >
                         {t('memo.signing.verify')}
                       </Button>
                       {signature.verification && (
-                        <output>
-                          {signature.verification === 'verified'
-                            ? t('memo.signing.verification.verified', {
-                                name: signature.actor?.profile?.displayName,
-                              })
-                            : t(`memo.signing.verification.${signature.verification}` as const)}
-                        </output>
+                        <output>{t(`memo.signing.verification.${signature.verification}` as const)}</output>
                       )}
                     </li>
                   ) : null

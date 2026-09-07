@@ -747,7 +747,7 @@
       "verify": "Verify signature",
       "verification": {
         "checking": "Verifying signature",
-        "verified": "The PDF is unmodified and signed by {{name}}",
+        "verified": "The PDF is unmodified",
         "invalid": "Signature invalid",
         "unavailable": "Could not verify"
       },

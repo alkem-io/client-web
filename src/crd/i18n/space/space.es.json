@@ -747,7 +747,7 @@
       "verify": "Verificar firma",
       "verification": {
         "checking": "Verificando firma",
-        "verified": "El PDF no se ha modificado y está firmado por {{name}}",
+        "verified": "El PDF no se ha modificado",
         "invalid": "Firma no válida",
         "unavailable": "No se pudo verificar"
       },

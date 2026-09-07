@@ -747,7 +747,7 @@
       "verify": "Handtekening verifiëren",
       "verification": {
         "checking": "Handtekening wordt geverifieerd",
-        "verified": "De pdf is ongewijzigd en ondertekend door {{name}}",
+        "verified": "De pdf is ongewijzigd",
         "invalid": "Handtekening ongeldig",
         "unavailable": "Kon niet verifiëren"
       },

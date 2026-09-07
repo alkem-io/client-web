@@ -18,6 +18,7 @@ const mocks = vi.hoisted(() => ({
   returnAttempt: { loading: false, error: undefined, data: undefined } as Record<string, unknown>,
   returnAttemptQuery: vi.fn(),
   verificationQuery: vi.fn(),
+  verificationQueryOptions: vi.fn(),
   verificationResult: { data: undefined, error: undefined, loading: false, variables: undefined } as Record<
     string,
     unknown
@@ -35,7 +36,10 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
     return mocks.returnAttempt;
   },
   usePrepareMemoSigningMutation: () => [mocks.prepareMutation],
-  useVerifyMemoSignatureLazyQuery: () => [mocks.verificationQuery, mocks.verificationResult],
+  useVerifyMemoSignatureLazyQuery: (options: unknown) => {
+    mocks.verificationQueryOptions(options);
+    return [mocks.verificationQuery, mocks.verificationResult];
+  },
   useUpdateMemoDisplayNameMutation: () => [vi.fn(), { loading: false }],
 }));
 
@@ -217,7 +221,7 @@ describe('CrdMemoDialog signing connector', () => {
     expect(screen.queryByTestId('signing-dialog')).not.toBeInTheDocument();
   });
 
-  it('runs one network-only verification only after the signed-copy action', async () => {
+  it('runs one uncached verification only after the signed-copy action', async () => {
     const user = userEvent.setup();
     mocks.memo = memoWith(
       [AuthorizationPrivilege.Read],
@@ -230,12 +234,14 @@ describe('CrdMemoDialog signing connector', () => {
     renderDialog();
     await user.click(screen.getByRole('button', { name: 'memo.signing.signedCopies' }));
     expect(mocks.verificationQuery).not.toHaveBeenCalled();
+    expect(mocks.verificationQueryOptions).toHaveBeenCalledWith({
+      fetchPolicy: 'no-cache',
+    });
 
     await user.click(screen.getByRole('button', { name: 'verify signed copy' }));
     expect(mocks.verificationQuery).toHaveBeenCalledOnce();
     expect(mocks.verificationQuery).toHaveBeenCalledWith({
       variables: { attemptID: 'signed-1' },
-      fetchPolicy: 'network-only',
     });
   });
 
@@ -244,6 +250,14 @@ describe('CrdMemoDialog signing connector', () => {
     {
       result: { data: { verifyMemoSignature: 'VERIFIED' } },
       expected: 'verified',
+    },
+    {
+      result: { data: { verifyMemoSignature: 'INVALID' } },
+      expected: 'invalid',
+    },
+    {
+      result: { data: { verifyMemoSignature: 'UNAVAILABLE' } },
+      expected: 'unavailable',
     },
     {
       result: { error: new Error('gateway unavailable') },

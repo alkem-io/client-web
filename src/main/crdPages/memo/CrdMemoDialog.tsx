@@ -122,7 +122,9 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
 
   const [prepareMemoSigning] = usePrepareMemoSigningMutation();
   const [continueMemoSigning] = useContinueMemoSigningMutation();
-  const [verifyMemoSignature, verification] = useVerifyMemoSignatureLazyQuery();
+  const [verifyMemoSignature, verification] = useVerifyMemoSignatureLazyQuery({
+    fetchPolicy: 'no-cache',
+  });
   const returnAttempt = useMemoSigningAttemptQuery({
     variables: { attemptID: returnAttemptId ?? '' },
     skip: !returnAttemptId,
@@ -446,7 +448,6 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
         onVerify={attemptID =>
           void verifyMemoSignature({
             variables: { attemptID },
-            fetchPolicy: 'network-only',
           })
         }
         onClose={closeSigningDialog}

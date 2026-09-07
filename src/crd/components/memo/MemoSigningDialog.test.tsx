@@ -172,7 +172,7 @@ describe('MemoSigningDialog', () => {
 
     for (const [verification, message] of [
       ['checking', 'Verifying signature'],
-      ['verified', 'The PDF is unmodified and signed by Alice Example'],
+      ['verified', 'The PDF is unmodified'],
       ['invalid', 'Signature invalid'],
       ['unavailable', 'Could not verify'],
     ] as const) {
@@ -191,6 +191,22 @@ describe('MemoSigningDialog', () => {
       );
       expect(screen.getByText(message)).toBeInTheDocument();
     }
+    expect(screen.getByRole('button', { name: 'Verify signature' })).toHaveAttribute('aria-busy', 'false');
+
+    rerender(
+      <I18nextProvider i18n={i18n}>
+        <MemoSigningDialog
+          open={true}
+          stage="idle"
+          signatures={[{ ...signature, verification: 'checking' }]}
+          onOpenChange={vi.fn()}
+          onContinue={vi.fn()}
+          onVerify={onVerify}
+          onClose={vi.fn()}
+        />
+      </I18nextProvider>
+    );
+    expect(screen.getByRole('button', { name: 'Verify signature' })).toHaveAttribute('aria-busy', 'true');
     expect(screen.queryByText(/certificate|serial|common name|B-T/i)).not.toBeInTheDocument();
   });
 });
