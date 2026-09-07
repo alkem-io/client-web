@@ -34,6 +34,7 @@ import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdo
 import {
   ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES,
   ROLE_SET_ASSIGN_PRIVILEGES,
+  ROLE_SET_INVITE_PRIVILEGES,
   VC_FROM_ACCOUNT_PRIVILEGES,
 } from '@/main/crdPages/permissions/roleAssignmentPrivileges';
 import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionReasonText';
@@ -119,6 +120,12 @@ export default function CrdSpaceSettingsPage() {
   );
   const assignOrganizationReason = reasonText(
     useActionPermission(community.myPrivileges, ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES, community.loading)
+  );
+  // Inviting is a different token from adding — a space admin holds the invite privilege
+  // without the platform-admin direct-add pair — so the Invite organisation button gets
+  // its own reason rather than reusing `assignOrganizationReason`.
+  const inviteOrganizationsReason = reasonText(
+    useActionPermission(community.myPrivileges, ROLE_SET_INVITE_PRIVILEGES, community.loading)
   );
   // Virtual contributors are permitted by EITHER the role-set assign privilege or the
   // account-assign privilege — space admins may hold only the latter. Mirrors the union in
@@ -595,6 +602,7 @@ export default function CrdSpaceSettingsPage() {
                   organizations: assignOrganizationReason,
                   virtualContributors: assignVcReason,
                 }}
+                inviteOrganizationsDisabledReason={inviteOrganizationsReason}
                 onUserRemove={community.onUserRemove}
                 onMemberChangeRole={member => setActiveMemberSubject(buildUserSubject(member))}
                 onOrgAdd={addOrgDialog.openDialog}

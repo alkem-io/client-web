@@ -71,23 +71,36 @@ describe('SpaceSettingsCommunityView — organization search, invite gating, and
     expect(screen.queryByText('Beta Org')).not.toBeInTheDocument();
   });
 
-  test('Invite organisation button only renders when canInviteOrganizations is true', async () => {
+  // The invite action is GATED, never hidden — same contract as the Add organisation
+  // button beside it. Hiding it would conceal the action's existence from an admin who
+  // lacks the privilege, and flip it hidden->shown once the privilege query resolves.
+  test('Invite organisation button is always rendered, and disabled with a reason when the action is not permitted', async () => {
     const { rerender } = render(
+      <SpaceSettingsCommunityView {...baseProps} inviteOrganizationsDisabledReason="no permission" />
+    );
+    await openOrgSection();
+    const gatedButton = screen.getByRole('button', { name: 'community.organizations.invite' });
+    expect(gatedButton).toBeInTheDocument();
+    expect(gatedButton).toBeDisabled();
+
+    rerender(<SpaceSettingsCommunityView {...baseProps} inviteOrganizationsDisabledReason={undefined} />);
+    const enabledButton = screen.getByRole('button', { name: 'community.organizations.invite' });
+    expect(enabledButton).toBeInTheDocument();
+    expect(enabledButton).toBeEnabled();
+  });
+
+  test('a gated Invite organisation button does not call onInviteOrganizations when clicked', async () => {
+    const onInviteOrganizations = vi.fn();
+    render(
       <SpaceSettingsCommunityView
         {...baseProps}
-        permissions={{ ...baseProps.permissions, canInviteOrganizations: false }}
+        inviteOrganizationsDisabledReason="no permission"
+        onInviteOrganizations={onInviteOrganizations}
       />
     );
     await openOrgSection();
-    expect(screen.queryByText('community.organizations.invite')).not.toBeInTheDocument();
-
-    rerender(
-      <SpaceSettingsCommunityView
-        {...baseProps}
-        permissions={{ ...baseProps.permissions, canInviteOrganizations: true }}
-      />
-    );
-    expect(screen.getByText('community.organizations.invite')).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'community.organizations.invite' }));
+    expect(onInviteOrganizations).not.toHaveBeenCalled();
   });
 
   test('clicking Invite organisation calls onInviteOrganizations', async () => {

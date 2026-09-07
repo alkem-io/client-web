@@ -43,9 +43,12 @@ function PendingInvitationCard({ invitation, onClick, className }: PendingInvita
         className
       )}
     >
+      {/* The avatar is always the Space's card banner, on both the Space and the
+          organization variant of this card — so it is described by the Space name, never
+          by `primaryLabel` (which is the organization on an org invitation). */}
       <Avatar className="size-10 shrink-0 rounded-lg">
         {invitation.spaceAvatarUrl ? (
-          <AvatarImage src={invitation.spaceAvatarUrl} alt={primaryLabel} className="rounded-lg object-cover" />
+          <AvatarImage src={invitation.spaceAvatarUrl} alt={invitation.spaceName} className="rounded-lg object-cover" />
         ) : null}
         <AvatarFallback
           className={cn('rounded-lg text-caption', invitation.color && 'text-white')}
