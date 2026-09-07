@@ -744,6 +744,13 @@
       "recorded": "Enregistré",
       "download": "Télécharger le PDF signé",
       "standardTools": "Les PDF téléchargés peuvent être vérifiés indépendamment avec des outils PDF standard.",
+      "verify": "Vérifier la signature",
+      "verification": {
+        "checking": "Vérification de la signature",
+        "verified": "Le PDF n’a pas été modifié et est signé par {{name}}",
+        "invalid": "Signature non valide",
+        "unavailable": "Vérification impossible"
+      },
       "stage": {
         "idle": "Prêt à préparer une copie à signer",
         "preparing": "Préparation de la copie exacte du mémo pour signature",

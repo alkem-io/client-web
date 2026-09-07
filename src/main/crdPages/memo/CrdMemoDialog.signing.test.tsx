@@ -17,6 +17,11 @@ const mocks = vi.hoisted(() => ({
   requestDurability: vi.fn(),
   returnAttempt: { loading: false, error: undefined, data: undefined } as Record<string, unknown>,
   returnAttemptQuery: vi.fn(),
+  verificationQuery: vi.fn(),
+  verificationResult: { data: undefined, error: undefined, loading: false, variables: undefined } as Record<
+    string,
+    unknown
+  >,
 }));
 
 vi.mock('@apollo/client', () => ({
@@ -30,6 +35,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
     return mocks.returnAttempt;
   },
   usePrepareMemoSigningMutation: () => [mocks.prepareMutation],
+  useVerifyMemoSignatureLazyQuery: () => [mocks.verificationQuery, mocks.verificationResult],
   useUpdateMemoDisplayNameMutation: () => [vi.fn(), { loading: false }],
 }));
 
@@ -83,6 +89,9 @@ vi.mock('@/crd/components/memo/MemoSigningDialog', () => ({
         <button type="button" onClick={() => props.onOpenChange(false)}>
           dismiss signing
         </button>
+        <button type="button" onClick={() => props.onVerify('signed-1')}>
+          verify signed copy
+        </button>
       </div>
     ) : null;
   },
@@ -135,6 +144,7 @@ describe('CrdMemoDialog signing connector', () => {
       data: { continueMemoSigning: { authorizeUrl: 'https://cleverbase.example/authorize' } },
     });
     mocks.returnAttempt = { loading: false, error: undefined, data: undefined };
+    mocks.verificationResult = { data: undefined, error: undefined, loading: false, variables: undefined };
     mocks.provider = {
       connectedUsers: [],
       connectionStatus: 'connected',
@@ -205,6 +215,56 @@ describe('CrdMemoDialog signing connector', () => {
 
     await user.click(screen.getByRole('button', { name: 'close signing' }));
     expect(screen.queryByTestId('signing-dialog')).not.toBeInTheDocument();
+  });
+
+  it('runs one network-only verification only after the signed-copy action', async () => {
+    const user = userEvent.setup();
+    mocks.memo = memoWith(
+      [AuthorizationPrivilege.Read],
+      [{ id: 'signed-1', status: SigningAttemptStatus.Signed, updatedDate: new Date() }]
+    );
+    mocks.verificationQuery.mockResolvedValue({
+      data: { verifyMemoSignature: 'VERIFIED' },
+    });
+
+    renderDialog();
+    await user.click(screen.getByRole('button', { name: 'memo.signing.signedCopies' }));
+    expect(mocks.verificationQuery).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole('button', { name: 'verify signed copy' }));
+    expect(mocks.verificationQuery).toHaveBeenCalledOnce();
+    expect(mocks.verificationQuery).toHaveBeenCalledWith({
+      variables: { attemptID: 'signed-1' },
+      fetchPolicy: 'network-only',
+    });
+  });
+
+  it.each([
+    { result: { loading: true }, expected: 'checking' },
+    {
+      result: { data: { verifyMemoSignature: 'VERIFIED' } },
+      expected: 'verified',
+    },
+    {
+      result: { error: new Error('gateway unavailable') },
+      expected: 'unavailable',
+    },
+  ])('maps a requested verification result to $expected', ({ result, expected }) => {
+    mocks.memo = memoWith(
+      [AuthorizationPrivilege.Read],
+      [{ id: 'signed-1', status: SigningAttemptStatus.Signed, updatedDate: new Date() }]
+    );
+    mocks.verificationResult = {
+      data: undefined,
+      error: undefined,
+      loading: false,
+      variables: { attemptID: 'signed-1' },
+      ...result,
+    };
+
+    renderDialog();
+
+    expect(mocks.lastSigningDialogProps?.signatures[0].verification).toBe(expected);
   });
 
   it('fails preparation when GraphQL returns no prepared attempt', async () => {

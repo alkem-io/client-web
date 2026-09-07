@@ -25,6 +25,7 @@ const renderDialog = (props: Partial<MemoSigningDialogProps> = {}) =>
         signatures={[]}
         onOpenChange={vi.fn()}
         onContinue={vi.fn()}
+        onVerify={vi.fn()}
         onClose={vi.fn()}
         {...props}
       />
@@ -68,6 +69,7 @@ describe('MemoSigningDialog', () => {
           signatures={[]}
           onOpenChange={vi.fn()}
           onContinue={onContinue}
+          onVerify={vi.fn()}
           onClose={vi.fn()}
         />
       </I18nextProvider>
@@ -146,5 +148,49 @@ describe('MemoSigningDialog', () => {
     ).toBeInTheDocument();
     expect(screen.getByText(/Each signed PDF is a separate copy; the memo remains editable/)).toBeInTheDocument();
     expect(screen.queryByText(/certificate|serial|common name/i)).not.toBeInTheDocument();
+  });
+
+  it('verifies a signed copy only on request and renders the three safe outcomes', async () => {
+    const onVerify = vi.fn();
+    const signature = {
+      id: 'attempt-1',
+      document: { url: '/api/private/file-1' },
+      actor: { profile: { displayName: 'Alice Example', url: '/user/alice' } },
+      updatedDate: '2026-09-05T10:30:00.000Z',
+      recordedAt: '09/05/2026, 10:30:00',
+    };
+    const { rerender } = renderDialog({
+      stage: 'idle',
+      signatures: [signature],
+      onVerify,
+    });
+
+    expect(onVerify).not.toHaveBeenCalled();
+    await userEvent.click(screen.getByRole('button', { name: 'Verify signature' }));
+    expect(onVerify).toHaveBeenCalledOnce();
+    expect(onVerify).toHaveBeenCalledWith('attempt-1');
+
+    for (const [verification, message] of [
+      ['checking', 'Verifying signature'],
+      ['verified', 'The PDF is unmodified and signed by Alice Example'],
+      ['invalid', 'Signature invalid'],
+      ['unavailable', 'Could not verify'],
+    ] as const) {
+      rerender(
+        <I18nextProvider i18n={i18n}>
+          <MemoSigningDialog
+            open={true}
+            stage="idle"
+            signatures={[{ ...signature, verification }]}
+            onOpenChange={vi.fn()}
+            onContinue={vi.fn()}
+            onVerify={onVerify}
+            onClose={vi.fn()}
+          />
+        </I18nextProvider>
+      );
+      expect(screen.getByText(message)).toBeInTheDocument();
+    }
+    expect(screen.queryByText(/certificate|serial|common name|B-T/i)).not.toBeInTheDocument();
   });
 });

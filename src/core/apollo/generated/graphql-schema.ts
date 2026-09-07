@@ -5023,6 +5023,17 @@ export type MemoSignature = {
   updatedDate: Scalars['DateTime']['output'];
 };
 
+export enum MemoSignatureVerificationStatus {
+  Invalid = 'INVALID',
+  Unavailable = 'UNAVAILABLE',
+  Verified = 'VERIFIED',
+}
+
+export type MemoSignatureVerifyInput = {
+  /** The signed Memo attempt to verify. */
+  attemptID: Scalars['UUID']['input'];
+};
+
 export type MemoSigningContinueInput = {
   /** The prepared signing attempt to start. */
   attemptID: Scalars['UUID']['input'];
@@ -7755,6 +7766,8 @@ export type Query = {
   usersWithAuthorizationCredential: Array<User>;
   /** Returns the VAPID public key needed by clients to subscribe to push notifications. Returns null if push notifications are not enabled on this server. */
   vapidPublicKey?: Maybe<Scalars['String']['output']>;
+  /** Checks the stored integrity of a signed Memo copy. */
+  verifyMemoSignature: MemoSignatureVerificationStatus;
   /** A particular VirtualContributor */
   virtualContributor: VirtualContributor;
   /** The VirtualContributors on this platform; only accessible to platform admins */
@@ -7888,6 +7901,10 @@ export type QueryUsersPaginatedArgs = {
 
 export type QueryUsersWithAuthorizationCredentialArgs = {
   credentialsCriteriaData: UsersWithAuthorizationCredentialInput;
+};
+
+export type QueryVerifyMemoSignatureArgs = {
+  verificationData: MemoSignatureVerifyInput;
 };
 
 export type QueryVirtualContributorArgs = {
@@ -37875,6 +37892,12 @@ export type MemoSigningAttemptQuery = {
   __typename?: 'Query';
   signingAttempt: { __typename?: 'MemoSignature'; id: string; status: SigningAttemptStatus };
 };
+
+export type VerifyMemoSignatureQueryVariables = Exact<{
+  attemptID: Scalars['UUID']['input'];
+}>;
+
+export type VerifyMemoSignatureQuery = { __typename?: 'Query'; verifyMemoSignature: MemoSignatureVerificationStatus };
 
 export type CalloutsListForFeedQueryVariables = Exact<{
   calloutsSetId: Scalars['UUID']['input'];

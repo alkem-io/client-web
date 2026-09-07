@@ -744,6 +744,13 @@
       "recorded": "Erfasst",
       "download": "Signierte PDF herunterladen",
       "standardTools": "Heruntergeladene PDFs können unabhängig mit Standard-PDF-Werkzeugen geprüft werden.",
+      "verify": "Signatur prüfen",
+      "verification": {
+        "checking": "Signatur wird geprüft",
+        "verified": "Die PDF ist unverändert und wurde von {{name}} signiert",
+        "invalid": "Signatur ungültig",
+        "unavailable": "Überprüfung nicht möglich"
+      },
       "stage": {
         "idle": "Bereit, eine Kopie zum Signieren vorzubereiten",
         "preparing": "Die exakte Memo-Kopie wird zum Signieren vorbereitet",

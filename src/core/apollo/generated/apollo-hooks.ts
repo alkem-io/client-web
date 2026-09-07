@@ -29874,6 +29874,77 @@ export type MemoSigningAttemptQueryResult = Apollo.QueryResult<
 export function refetchMemoSigningAttemptQuery(variables: SchemaTypes.MemoSigningAttemptQueryVariables) {
   return { query: MemoSigningAttemptDocument, variables: variables };
 }
+export const VerifyMemoSignatureDocument = gql`
+    query verifyMemoSignature($attemptID: UUID!) {
+  verifyMemoSignature(verificationData: {attemptID: $attemptID})
+}
+    `;
+
+/**
+ * __useVerifyMemoSignatureQuery__
+ *
+ * To run a query within a React component, call `useVerifyMemoSignatureQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVerifyMemoSignatureQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVerifyMemoSignatureQuery({
+ *   variables: {
+ *      attemptID: // value for 'attemptID'
+ *   },
+ * });
+ */
+export function useVerifyMemoSignatureQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.VerifyMemoSignatureQuery,
+    SchemaTypes.VerifyMemoSignatureQueryVariables
+  > &
+    ({ variables: SchemaTypes.VerifyMemoSignatureQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.VerifyMemoSignatureQuery, SchemaTypes.VerifyMemoSignatureQueryVariables>(
+    VerifyMemoSignatureDocument,
+    options
+  );
+}
+export function useVerifyMemoSignatureLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VerifyMemoSignatureQuery,
+    SchemaTypes.VerifyMemoSignatureQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.VerifyMemoSignatureQuery, SchemaTypes.VerifyMemoSignatureQueryVariables>(
+    VerifyMemoSignatureDocument,
+    options
+  );
+}
+export function useVerifyMemoSignatureSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.VerifyMemoSignatureQuery,
+        SchemaTypes.VerifyMemoSignatureQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.VerifyMemoSignatureQuery, SchemaTypes.VerifyMemoSignatureQueryVariables>(
+    VerifyMemoSignatureDocument,
+    options
+  );
+}
+export type VerifyMemoSignatureQueryHookResult = ReturnType<typeof useVerifyMemoSignatureQuery>;
+export type VerifyMemoSignatureLazyQueryHookResult = ReturnType<typeof useVerifyMemoSignatureLazyQuery>;
+export type VerifyMemoSignatureSuspenseQueryHookResult = ReturnType<typeof useVerifyMemoSignatureSuspenseQuery>;
+export type VerifyMemoSignatureQueryResult = Apollo.QueryResult<
+  SchemaTypes.VerifyMemoSignatureQuery,
+  SchemaTypes.VerifyMemoSignatureQueryVariables
+>;
+export function refetchVerifyMemoSignatureQuery(variables: SchemaTypes.VerifyMemoSignatureQueryVariables) {
+  return { query: VerifyMemoSignatureDocument, variables: variables };
+}
 export const CalloutsListForFeedDocument = gql`
     query CalloutsListForFeed($calloutsSetId: UUID!, $classificationTagsets: [TagsetArgs!] = []) {
   lookup {

@@ -17,3 +17,7 @@ query memoSigningAttempt($attemptID: UUID!) {
     status
   }
 }
+
+query verifyMemoSignature($attemptID: UUID!) {
+  verifyMemoSignature(verificationData: { attemptID: $attemptID })
+}

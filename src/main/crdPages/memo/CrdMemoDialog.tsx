@@ -8,6 +8,7 @@ import {
   useMemoSigningAttemptQuery,
   usePrepareMemoSigningMutation,
   useUpdateMemoDisplayNameMutation,
+  useVerifyMemoSignatureLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
@@ -121,6 +122,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
 
   const [prepareMemoSigning] = usePrepareMemoSigningMutation();
   const [continueMemoSigning] = useContinueMemoSigningMutation();
+  const [verifyMemoSignature, verification] = useVerifyMemoSignatureLazyQuery();
   const returnAttempt = useMemoSigningAttemptQuery({
     variables: { attemptID: returnAttemptId ?? '' },
     skip: !returnAttemptId,
@@ -168,6 +170,14 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const signatures = (memo?.signatures ?? []).map(signature => ({
     ...signature,
     recordedAt: formatAbsoluteDateTime(signature.updatedDate, resolveDateFnsLocale(i18n.language)),
+    verification:
+      verification.variables?.attemptID === signature.id
+        ? verification.loading
+          ? ('checking' as const)
+          : verification.error || !verification.data
+            ? ('unavailable' as const)
+            : (verification.data.verifyMemoSignature.toLowerCase() as 'verified' | 'invalid' | 'unavailable')
+        : undefined,
   }));
 
   const privileges = memo?.authorization?.myPrivileges ?? [];
@@ -433,6 +443,12 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
         previewUrl={signingFlow.attempt?.previewUrl}
         signatures={signatures}
         onContinue={() => void signingFlow.continueSigning()}
+        onVerify={attemptID =>
+          void verifyMemoSignature({
+            variables: { attemptID },
+            fetchPolicy: 'network-only',
+          })
+        }
         onClose={closeSigningDialog}
       />
     </>
