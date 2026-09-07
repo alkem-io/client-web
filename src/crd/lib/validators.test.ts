@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { isValidEmail, isValidEmailOrEmpty, isValidUrlOrEmpty } from './validators';
+import { isValidEmail, isValidEmailOrEmpty, isValidNameId, isValidUrlOrEmpty } from './validators';
 
 describe('isValidEmail', () => {
   test('accepts a well-formed address', () => {
@@ -43,5 +43,34 @@ describe('isValidUrlOrEmpty', () => {
 
   test('rejects an unparseable value', () => {
     expect(isValidUrlOrEmpty('not a url')).toBe(false);
+  });
+});
+
+describe('isValidNameId', () => {
+  test('accepts lowercase letters, digits and hyphens', () => {
+    expect(isValidNameId('acme')).toBe(true);
+    expect(isValidNameId('canocorp')).toBe(true);
+    expect(isValidNameId('acme-corp-2')).toBe(true);
+  });
+
+  test('rejects uppercase — the server scalar refuses it for variables', () => {
+    expect(isValidNameId('CanoCorp')).toBe(false);
+  });
+
+  test('rejects values outside the 3-28 length window', () => {
+    expect(isValidNameId('ab')).toBe(false);
+    expect(isValidNameId('a'.repeat(29))).toBe(false);
+    expect(isValidNameId('a'.repeat(28))).toBe(true);
+  });
+
+  test('rejects spaces and other disallowed characters', () => {
+    expect(isValidNameId('cano corp')).toBe(false);
+    expect(isValidNameId('cano_corp')).toBe(false);
+    expect(isValidNameId('cano.corp')).toBe(false);
+    expect(isValidNameId('')).toBe(false);
+  });
+
+  test('validates the trimmed value so a padded-but-valid alias is not wrongly rejected', () => {
+    expect(isValidNameId('  acme  ')).toBe(true);
   });
 });
