@@ -196,7 +196,7 @@
       "title": "Invitation for {{organizationName}}",
       "accept": "Accept",
       "role": "Role",
-      "spacesToJoin": "Accepting also joins: {{spaces}}"
+      "spacesToJoin": "Accepting joins: {{spaces}}"
     }
   },
   "nonActivity": {

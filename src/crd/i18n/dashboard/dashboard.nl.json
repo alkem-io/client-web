@@ -196,7 +196,7 @@
       "title": "Uitnodiging voor {{organizationName}}",
       "accept": "Accepteren",
       "role": "Rol",
-      "spacesToJoin": "Bij accepteren treedt u ook toe tot: {{spaces}}"
+      "spacesToJoin": "Bij accepteren wordt toegetreden tot: {{spaces}}"
     }
   },
   "nonActivity": {

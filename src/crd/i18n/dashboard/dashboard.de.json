@@ -196,7 +196,7 @@
       "title": "Einladung für {{organizationName}}",
       "accept": "Annehmen",
       "role": "Rolle",
-      "spacesToJoin": "Bei Annahme werden Sie auch beitreten: {{spaces}}"
+      "spacesToJoin": "Bei Annahme wird beigetreten zu: {{spaces}}"
     }
   },
   "nonActivity": {

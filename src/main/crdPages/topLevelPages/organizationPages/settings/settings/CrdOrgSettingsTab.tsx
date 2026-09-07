@@ -58,9 +58,12 @@ const CrdOrgSettingsTab = () => {
           settingsData: {
             organizationID: organizationId,
             settings: {
-              // The API requires the sibling field on every call — include the
-              // current resolved allowSpaceInvitations so this toggle never clobbers it.
-              membership: { allowUsersMatchingDomainToJoin: next, allowSpaceInvitations },
+              // `allowSpaceInvitations` is deliberately OMITTED: it is optional on
+              // the input and the server writes it only when it is defined, so a
+              // toggle that does not change it must not echo a possibly-stale
+              // cached value back — that turns a partial merge into last-write-wins
+              // and can silently re-enable Space invitations for the organization.
+              membership: { allowUsersMatchingDomainToJoin: next },
               privacy: { contributionRolesPubliclyVisible: contributionRoles },
             },
           },
@@ -114,7 +117,9 @@ const CrdOrgSettingsTab = () => {
           settingsData: {
             organizationID: organizationId,
             settings: {
-              membership: { allowUsersMatchingDomainToJoin: allowDomain, allowSpaceInvitations },
+              // `allowSpaceInvitations` omitted — see onToggleAllowDomain.
+              // `allowUsersMatchingDomainToJoin` cannot be: it is required on the input.
+              membership: { allowUsersMatchingDomainToJoin: allowDomain },
               privacy: { contributionRolesPubliclyVisible: next },
             },
           },

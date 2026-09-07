@@ -6,7 +6,7 @@ import {
   useDashboardWelcomeSpaceQuery,
   usePendingInvitationsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { ApplicationsBlock } from '@/crd/components/dashboard/ApplicationsBlock';
 import { CampaignBanner } from '@/crd/components/dashboard/CampaignBanner';
@@ -67,10 +67,22 @@ export default function DashboardWithoutMemberships({
   const { data: invitationsData, loading: invitationsLoading } = usePendingInvitationsQuery({
     skip: pendingCount === 0,
   });
-  const invitations = mapInvitationsToCards(
-    (invitationsData?.me.communityInvitations ?? []) as Parameters<typeof mapInvitationsToCards>[0]
+  // `me.communityInvitations` carries the invitations addressed to the ORGANIZATIONS
+  // and Virtual Contributors this user administers alongside their own. This block
+  // renders each entry as "You've been invited to <Space>" with Accept/Decline and
+  // navigates into the Space on accept — none of which is true for an invitation
+  // addressed to an organization, whose acceptance is a consent decision on the
+  // organization's behalf and joins the ORGANIZATION, not the viewer. Those belong in
+  // the pending-memberships dialog, which classifies them into their own section
+  // (`classifyInvitations`), so keep only the viewer's own here.
+  const ownInvitations = (invitationsData?.me.communityInvitations ?? []).filter(
+    entry => entry.invitation.actor?.type === ActorType.User || entry.invitation.actor?.type === undefined
   );
-  const hasInvitations = pendingCount > 0;
+  const invitations = mapInvitationsToCards(ownInvitations as Parameters<typeof mapInvitationsToCards>[0]);
+  // Driven by the rendered list, not by `communityInvitationsCount`, which counts the
+  // organization/VC invitations too — an org admin with no personal invitation would
+  // otherwise get an empty "Invitations" block.
+  const hasInvitations = invitations.length > 0;
 
   // Applications. No count query exists for these, so the block is driven by the
   // list itself and renders nothing until it resolves non-empty.
@@ -78,12 +90,14 @@ export default function DashboardWithoutMemberships({
   const applicationCards = mapApplicationsToCards(applications ?? []);
   const hasApplications = applicationCards.length > 0;
 
-  // Combined pending total (FR-015): applications + invitations.
-  const pendingTotal = applicationCards.length + pendingCount;
+  // Combined pending total (FR-015): applications + the viewer's own invitations.
+  const pendingTotal = applicationCards.length + invitations.length;
   const hasPending = pendingTotal > 0;
-  // Both pending sources must resolve before choosing pending-vs-welcome, else a
+  // Every pending source must resolve before choosing pending-vs-welcome, else a
   // user with pending items briefly sees the welcome block before it swaps out.
-  const pendingLoading = pendingCountLoading || applicationsLoading;
+  // `invitationsLoading` is part of it now that the invitation count is derived
+  // from the resolved list rather than from `communityInvitationsCount`.
+  const pendingLoading = pendingCountLoading || applicationsLoading || invitationsLoading;
 
   // Explore Spaces — compact block: up to 8 most-active Spaces (welcome Space first when
   // it is among them), no search/filter chrome (FR-020).

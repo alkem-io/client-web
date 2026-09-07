@@ -836,6 +836,8 @@ export default function CrdSpaceSettingsPage() {
               return t('community.confirmRemove.virtualContributor.title');
             case 'applicationReject':
               return t('community.confirmRemove.applicationReject.title');
+            case 'organizationInvitationRevoke':
+              return t('community.confirmRemove.invitation.title');
             case 'pendingDelete':
               if (community.pendingRemoval.membershipType === 'application') {
                 return t('community.confirmRemove.applicationDelete.title');
@@ -856,6 +858,8 @@ export default function CrdSpaceSettingsPage() {
               return t('community.confirmRemove.virtualContributor.description', { name });
             case 'applicationReject':
               return t('community.confirmRemove.applicationReject.description', { name });
+            case 'organizationInvitationRevoke':
+              return t('community.confirmRemove.invitation.description', { name });
             case 'pendingDelete':
               if (community.pendingRemoval.membershipType === 'application') {
                 return t('community.confirmRemove.applicationDelete.description', { name });

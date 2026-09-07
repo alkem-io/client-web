@@ -896,19 +896,19 @@
           "description": "As {{invitationRole}}.{{spacesToJoin}}"
         },
         "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_ACCEPTED": {
-          "subject": "{{organizationName}} accepted your invitation to join {{spaceName}}",
+          "subject": "{{organizationName}} accepted the invitation to join {{spaceName}}",
           "description": "{{organizationName}} has joined {{spaceName}}, of which you are an $t(common.admin)."
         },
         "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_DECLINED": {
-          "subject": "{{organizationName}} declined your invitation to join {{spaceName}}",
+          "subject": "{{organizationName}} declined the invitation to join {{spaceName}}",
           "description": ""
         },
         "SPACE_ADMIN_USER_COMMUNITY_INVITATION_ACCEPTED": {
-          "subject": "{{userName}} accepted your invitation to join {{spaceName}}",
+          "subject": "{{userName}} accepted the invitation to join {{spaceName}}",
           "description": "{{userName}} has joined {{spaceName}}, of which you are an $t(common.admin)."
         },
         "SPACE_ADMIN_USER_COMMUNITY_INVITATION_DECLINED": {
-          "subject": "{{userName}} declined your invitation to join {{spaceName}}",
+          "subject": "{{userName}} declined the invitation to join {{spaceName}}",
           "description": ""
         },
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
@@ -916,7 +916,7 @@
           "description": "No further action is needed."
         }
       },
-      "spacesToJoin": "Accepting also joins: {{spaces}}"
+      "spacesToJoin": "Accepting joins: {{spaces}}"
     },
     "profile": {
       "fields": {

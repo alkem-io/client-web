@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import type { InvitationModel } from '@/domain/access/model/InvitationModel';
@@ -144,13 +144,23 @@ describe('useCommunityTabData — organization invitations (T009)', () => {
     expect(result.current.pendingOrganizationInvitations).toHaveLength(0);
   });
 
-  it('onOrgInvitationRevoke delegates to membershipAdmin.onDeleteInvitation', () => {
+  it('onOrgInvitationRevoke asks for confirmation and only then deletes (CRD rule 9)', async () => {
     const admin = baseAdmin([orgInvitation()]);
     vi.mocked(useCommunityAdmin).mockReturnValue(admin as ReturnType<typeof useCommunityAdmin>);
     const { result } = renderHook(() => useCommunityTabData('rs1'));
 
-    result.current.onOrgInvitationRevoke('inv-org-1');
+    act(() => result.current.onOrgInvitationRevoke('inv-org-1'));
+
+    // Revoking is destructive — the organization's admins were already emailed —
+    // so it must stage a confirmation rather than fire the mutation.
+    expect(admin.membershipAdmin.onDeleteInvitation).not.toHaveBeenCalled();
+    expect(result.current.pendingRemoval).toEqual(
+      expect.objectContaining({ kind: 'organizationInvitationRevoke', id: 'inv-org-1' })
+    );
+
+    await act(() => result.current.confirmRemoval());
     expect(admin.membershipAdmin.onDeleteInvitation).toHaveBeenCalledWith('inv-org-1');
+    expect(result.current.pendingRemoval).toBeNull();
   });
 
   it('surfaces permissions.canInviteOrganizations from the admin hook', () => {

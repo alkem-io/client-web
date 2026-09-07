@@ -522,7 +522,7 @@
         "spaceAdmin": {
           "communityApplicationReceived": "Krijg een melding wanneer een nieuwe community-aanvraag wordt ingediend",
           "communityNewMember": "Ontvang een melding wanneer een nieuw lid zich bij de community voegt",
-          "communityInvitationResponse": "Ontvang een melding wanneer iemand een door u verzonden uitnodiging accepteert of afwijst",
+          "communityInvitationResponse": "Ontvang een melding wanneer iemand een uitnodiging accepteert of afwijst voor een Space die u beheert",
           "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een callout wordt aangemaakt",
           "communicationMessageReceived": "Krijg een melding wanneer er een community-bericht wordt ontvangen",
           "userEmailChanged": "Krijg een melding wanneer het inloge-mailadres van een lid van een Space die je beheert wordt gewijzigd"
@@ -839,7 +839,7 @@
       "role": "Rol",
       "roleMember": "Lid",
       "roleMemberLead": "Lid + Lead",
-      "spacesToJoin": "Bij accepteren treedt u ook toe tot: {{spaces}}",
+      "spacesToJoin": "Bij accepteren wordt toegetreden tot: {{spaces}}",
       "accept": "Accepteren",
       "decline": "Afwijzen",
       "acceptConfirmTitle": "Deze uitnodiging accepteren?",

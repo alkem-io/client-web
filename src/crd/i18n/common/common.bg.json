@@ -896,19 +896,19 @@
           "description": "Като {{invitationRole}}.{{spacesToJoin}}"
         },
         "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_ACCEPTED": {
-          "subject": "{{organizationName}} прие поканата ви да се присъедини към {{spaceName}}",
+          "subject": "{{organizationName}} прие поканата да се присъедини към {{spaceName}}",
           "description": "{{organizationName}} се присъедини към {{spaceName}}, на което сте $t(common.admin)."
         },
         "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_DECLINED": {
-          "subject": "{{organizationName}} отказа поканата ви да се присъедини към {{spaceName}}",
+          "subject": "{{organizationName}} отказа поканата да се присъедини към {{spaceName}}",
           "description": ""
         },
         "SPACE_ADMIN_USER_COMMUNITY_INVITATION_ACCEPTED": {
-          "subject": "{{userName}} прие поканата ви да се присъедини към {{spaceName}}",
+          "subject": "{{userName}} прие поканата да се присъедини към {{spaceName}}",
           "description": "{{userName}} се присъедини към {{spaceName}}, на което сте $t(common.admin)."
         },
         "SPACE_ADMIN_USER_COMMUNITY_INVITATION_DECLINED": {
-          "subject": "{{userName}} отказа поканата ви да се присъедини към {{spaceName}}",
+          "subject": "{{userName}} отказа поканата да се присъедини към {{spaceName}}",
           "description": ""
         },
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
@@ -916,7 +916,7 @@
           "description": "Не е необходимо допълнително действие."
         }
       },
-      "spacesToJoin": "При приемане ще се присъедините и към: {{spaces}}"
+      "spacesToJoin": "При приемане се присъединява към: {{spaces}}"
     },
     "profile": {
       "fields": {
