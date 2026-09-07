@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import type {
   PendingMembership,
@@ -57,9 +58,19 @@ export type UseCommunityTabDataResult = {
   permissions: {
     canInvite: boolean;
     canInviteOrganizations: boolean;
+    /**
+     * Direct add of a member. Previously computed by `useCommunityAdmin` but never
+     * forwarded here, which left the add-member path entirely ungated.
+     */
+    canAddUsers: boolean;
     canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
   };
+  /**
+   * Raw role-set privileges plus the privilege-query loading flag, forwarded so the page
+   * can derive per-control gating that distinguishes checking / denied / unverifiable.
+   */
+  myPrivileges: AuthorizationPrivilege[] | undefined;
   /**
    * Aggregate lead-role policy: derived from `leadRoleDefinition.{user,organization}Policy`
    * and the current count of leads. Per-user disabled state is `(!canAddLead && !row.isLead) ||
@@ -396,9 +407,11 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
       // EITHER the role-set assign privilege OR the account-assign privilege.
       // The CRD gate previously checked only the former, hiding the VC add
       // buttons for admins (e.g. space Admin/Lead) who only hold the latter.
+      canAddUsers: community.permissions.canAddUsers,
       canAddVirtualContributors:
         community.permissions.canAddVirtualContributors || community.permissions.canAddVirtualContributorsFromAccount,
     },
+    myPrivileges: community.myPrivileges,
     leadPolicy,
     onUserRemove,
     onUserLeadChange,

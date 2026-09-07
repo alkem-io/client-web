@@ -3,6 +3,17 @@ import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { SearchMatchSummary } from '@/crd/components/space/sidebar/SearchMatchSummary';
 import { SearchField } from '@/crd/forms/SearchField';
 import { cn } from '@/crd/lib/utils';
+import { Skeleton } from '@/crd/primitives/skeleton';
+
+/** Chip widths for the loading placeholder — two rows, like the capped tag list. */
+const PLACEHOLDER_CHIPS = [
+  { key: 'chip-1', width: 'w-16' },
+  { key: 'chip-2', width: 'w-12' },
+  { key: 'chip-3', width: 'w-20' },
+  { key: 'chip-4', width: 'w-14' },
+  { key: 'chip-5', width: 'w-24' },
+  { key: 'chip-6', width: 'w-12' },
+];
 
 export type SearchSectionProps = {
   /** The raw, controlled input value (not yet applied — the page debounces it). */
@@ -12,6 +23,11 @@ export type SearchSectionProps = {
   appliedText: string;
   /** The tags of the callouts visible in this tab's flow state, most frequent first. */
   allTags: string[];
+  /**
+   * True while `allTags` is still being fetched. Holds the two chip rows' footprint so
+   * the widgets below don't get pushed down when the tags land.
+   */
+  tagsLoading?: boolean;
   /** Currently-toggled tags, in the order they were selected. */
   selectedTags: string[];
   onToggleTag: (tag: string) => void;
@@ -36,6 +52,7 @@ export function SearchSection({
   onTextChange,
   appliedText,
   allTags,
+  tagsLoading = false,
   selectedTags,
   onToggleTag,
   matchCount,
@@ -55,8 +72,16 @@ export function SearchSection({
         placeholder={t('knowledge.searchPlaceholder')}
         ariaLabel={t('knowledge.searchLabel')}
       />
-      {allTags.length > 0 && (
+      {allTags.length > 0 ? (
         <CollapsibleTagList tags={allTags} selectedTags={selectedTags} onTagClick={onToggleTag} maxRows={2} />
+      ) : (
+        tagsLoading && (
+          <output className="flex flex-wrap gap-1.5" aria-label={t('a11y.loadingTags')}>
+            {PLACEHOLDER_CHIPS.map(chip => (
+              <Skeleton key={chip.key} className={cn('h-7 rounded-full', chip.width)} />
+            ))}
+          </output>
+        )
       )}
       {matchCount !== undefined && hasActiveFilter && (
         <SearchMatchSummary
