@@ -902,6 +902,18 @@
         "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_DECLINED": {
           "subject": "{{organizationName}} hat Ihre Einladung zum Beitritt zu {{spaceName}} abgelehnt",
           "description": ""
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{userName}} hat Ihre Einladung zum Beitritt zu {{spaceName}} angenommen",
+          "description": "{{userName}} ist {{spaceName}} beigetreten, dessen $t(common.admin) Sie sind."
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{userName}} hat Ihre Einladung zum Beitritt zu {{spaceName}} abgelehnt",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
+          "subject": "Ihre $t(common.organization) {{organizationName}} ist {{spaceName}} beigetreten",
+          "description": "Es ist keine weitere Aktion erforderlich."
         }
       },
       "spacesToJoin": "Bei Annahme werden Sie auch beitreten: {{spaces}}"

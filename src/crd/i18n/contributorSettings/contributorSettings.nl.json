@@ -521,7 +521,8 @@
         },
         "spaceAdmin": {
           "communityApplicationReceived": "Krijg een melding wanneer een nieuwe community-aanvraag wordt ingediend",
-          "communityNewMember": "Ontvang een melding wanneer een nieuw lid zich bij de community voegt, of wanneer een uitgenodigde organisatie toetreding accepteert of afwijst",
+          "communityNewMember": "Ontvang een melding wanneer een nieuw lid zich bij de community voegt",
+          "communityInvitationResponse": "Ontvang een melding wanneer iemand een door u verzonden uitnodiging accepteert of afwijst",
           "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een callout wordt aangemaakt",
           "communicationMessageReceived": "Krijg een melding wanneer er een community-bericht wordt ontvangen",
           "userEmailChanged": "Krijg een melding wanneer het inloge-mailadres van een lid van een Space die je beheert wordt gewijzigd"
@@ -549,7 +550,7 @@
         "organization": {
           "adminMentioned": "Krijg een melding wanneer mijn organisatie wordt vermeld",
           "adminMessageReceived": "Ontvang directe berichten gericht aan mijn organisatie",
-          "adminSpaceCommunityInvitation": "Ontvang een melding wanneer een organisatie die ik beheer wordt uitgenodigd om lid te worden van een Space"
+          "adminSpaceCommunityInvitation": "Ontvang een melding wanneer een organisatie die ik beheer wordt uitgenodigd om lid te worden van een Space, en wanneer deze lid wordt"
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Krijg een melding wanneer een VC-beheerder wordt uitgenodigd om lid te worden van een community"

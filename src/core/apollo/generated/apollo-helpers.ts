@@ -5862,6 +5862,7 @@ export type UserSettingsNotificationSpaceAdminKeySpecifier = (
   | 'collaborationCalloutContributionCreated'
   | 'communicationMessageReceived'
   | 'communityApplicationReceived'
+  | 'communityInvitationResponse'
   | 'communityNewMember'
   | 'userEmailChanged'
   | UserSettingsNotificationSpaceAdminKeySpecifier
@@ -5870,6 +5871,7 @@ export type UserSettingsNotificationSpaceAdminFieldPolicy = {
   collaborationCalloutContributionCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communityApplicationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityInvitationResponse?: FieldPolicy<any> | FieldReadFunction<any>;
   communityNewMember?: FieldPolicy<any> | FieldReadFunction<any>;
   userEmailChanged?: FieldPolicy<any> | FieldReadFunction<any>;
 };

@@ -902,6 +902,18 @@
         "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_DECLINED": {
           "subject": "{{organizationName}} rechazó su invitación para unirse a {{spaceName}}",
           "description": ""
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{userName}} aceptó su invitación para unirse a {{spaceName}}",
+          "description": "{{userName}} se ha unido a {{spaceName}}, del cual usted es $t(common.admin)."
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{userName}} rechazó su invitación para unirse a {{spaceName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
+          "subject": "Su $t(common.organization) {{organizationName}} se ha unido a {{spaceName}}",
+          "description": "No se requiere ninguna acción adicional."
         }
       },
       "spacesToJoin": "Al aceptar también se unirá a: {{spaces}}"

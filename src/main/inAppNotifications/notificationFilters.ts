@@ -52,6 +52,11 @@ const SPACE_NOTIFICATION_TYPES: NotificationEvent[] = [
   NotificationEvent.OrganizationAdminSpaceCommunityInvitation,
   NotificationEvent.SpaceAdminOrganizationCommunityInvitationAccepted,
   NotificationEvent.SpaceAdminOrganizationCommunityInvitationDeclined,
+  NotificationEvent.OrganizationAdminSpaceCommunityJoined,
+  // "Someone responded to your invitation" for a user invitee — the Space-side
+  // counterpart of the organization accepted/declined events above.
+  NotificationEvent.SpaceAdminUserCommunityInvitationAccepted,
+  NotificationEvent.SpaceAdminUserCommunityInvitationDeclined,
 ];
 
 // Platform notifications - platform admin, forum, and the Alkemio sign-up

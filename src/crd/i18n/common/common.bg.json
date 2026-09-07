@@ -902,6 +902,18 @@
         "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_DECLINED": {
           "subject": "{{organizationName}} отказа поканата ви да се присъедини към {{spaceName}}",
           "description": ""
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{userName}} прие поканата ви да се присъедини към {{spaceName}}",
+          "description": "{{userName}} се присъедини към {{spaceName}}, на което сте $t(common.admin)."
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{userName}} отказа поканата ви да се присъедини към {{spaceName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
+          "subject": "Вашата $t(common.organization) {{organizationName}} се присъедини към {{spaceName}}",
+          "description": "Не е необходимо допълнително действие."
         }
       },
       "spacesToJoin": "При приемане ще се присъедините и към: {{spaces}}"
