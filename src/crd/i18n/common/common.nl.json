@@ -896,19 +896,19 @@
           "description": "Als {{invitationRole}}.{{spacesToJoin}}"
         },
         "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_ACCEPTED": {
-          "subject": "{{organizationName}} heeft uw uitnodiging om lid te worden van {{spaceName}} geaccepteerd",
+          "subject": "{{organizationName}} heeft de uitnodiging om lid te worden van {{spaceName}} geaccepteerd",
           "description": "{{organizationName}} is toegetreden tot {{spaceName}}, waarvan u $t(common.admin) bent."
         },
         "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_DECLINED": {
-          "subject": "{{organizationName}} heeft uw uitnodiging om lid te worden van {{spaceName}} afgewezen",
+          "subject": "{{organizationName}} heeft de uitnodiging om lid te worden van {{spaceName}} afgewezen",
           "description": ""
         },
         "SPACE_ADMIN_USER_COMMUNITY_INVITATION_ACCEPTED": {
-          "subject": "{{userName}} heeft uw uitnodiging om lid te worden van {{spaceName}} geaccepteerd",
+          "subject": "{{userName}} heeft de uitnodiging om lid te worden van {{spaceName}} geaccepteerd",
           "description": "{{userName}} is toegetreden tot {{spaceName}}, waarvan u $t(common.admin) bent."
         },
         "SPACE_ADMIN_USER_COMMUNITY_INVITATION_DECLINED": {
-          "subject": "{{userName}} heeft uw uitnodiging om lid te worden van {{spaceName}} afgewezen",
+          "subject": "{{userName}} heeft de uitnodiging om lid te worden van {{spaceName}} afgewezen",
           "description": ""
         },
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
@@ -916,7 +916,7 @@
           "description": "Er is geen verdere actie nodig."
         }
       },
-      "spacesToJoin": "Bij accepteren treedt u ook toe tot: {{spaces}}"
+      "spacesToJoin": "Bij accepteren wordt toegetreden tot: {{spaces}}"
     },
     "profile": {
       "fields": {

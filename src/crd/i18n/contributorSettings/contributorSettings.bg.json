@@ -522,7 +522,7 @@
         "spaceAdmin": {
           "communityApplicationReceived": "Получавайте известие, когато бъде подадена нова заявка за общност",
           "communityNewMember": "Получавайте известие, когато нов член се присъедини към общността",
-          "communityInvitationResponse": "Получавайте известие, когато някой приеме или откаже изпратена от вас покана",
+          "communityInvitationResponse": "Получавайте известие, когато някой приеме или откаже покана към Space, който администрирате",
           "collaborationCalloutContributionCreated": "Получавайте известие, когато бъде създаден нов принос към оповестяване",
           "communicationMessageReceived": "Получавайте известие, когато бъде получено съобщение от общността",
           "userEmailChanged": "Получавайте известие, когато имейл адресът за вход на член на Space, който управлявате, бъде променен"
@@ -839,7 +839,7 @@
       "role": "Роля",
       "roleMember": "Член",
       "roleMemberLead": "Член + Lead",
-      "spacesToJoin": "При приемане ще се присъедините и към: {{spaces}}",
+      "spacesToJoin": "При приемане се присъединява към: {{spaces}}",
       "accept": "Приеми",
       "decline": "Откажи",
       "acceptConfirmTitle": "Да приемете ли тази покана?",

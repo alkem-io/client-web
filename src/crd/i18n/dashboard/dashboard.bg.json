@@ -196,7 +196,7 @@
       "title": "Покана за {{organizationName}}",
       "accept": "Приеми",
       "role": "Роля",
-      "spacesToJoin": "При приемане ще се присъедините и към: {{spaces}}"
+      "spacesToJoin": "При приемане се присъединява към: {{spaces}}"
     }
   },
   "nonActivity": {

@@ -28,6 +28,7 @@ export type CommunityPendingRemoval =
   | { kind: 'organization'; id: string; name: string }
   | { kind: 'virtualContributor'; id: string; name: string }
   | { kind: 'applicationReject'; id: string; name: string }
+  | { kind: 'organizationInvitationRevoke'; id: string; name: string }
   | {
       kind: 'pendingDelete';
       id: string;
@@ -248,8 +249,18 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
       canRevoke: inv.state === InvitationState.INVITED,
     }));
 
+  // Revoking a pending organization invitation is destructive — the organization's
+  // admins were already emailed about it — so it goes through the same
+  // ConfirmationDialog every other removal on this page uses, never straight to the
+  // mutation (CRD rule 9, "All Deletions Must Be Confirmed").
   const onOrgInvitationRevoke = (id: string) => {
-    void community.membershipAdmin.onDeleteInvitation(id);
+    const target = pendingOrganizationInvitations.find(invitation => invitation.id === id);
+    if (!target?.canRevoke) return;
+    setPendingRemoval({
+      kind: 'organizationInvitationRevoke',
+      id,
+      name: target.organizationDisplayName,
+    });
   };
 
   const platformInvitationMemberships: PendingMembership[] = community.membershipAdmin.platformInvitations.map(inv => ({
@@ -362,6 +373,9 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
         return;
       case 'applicationReject':
         await community.membershipAdmin.onApplicationStateChange(target.id, ApplicationEvent.REJECT);
+        return;
+      case 'organizationInvitationRevoke':
+        await community.membershipAdmin.onDeleteInvitation(target.id);
         return;
       case 'pendingDelete':
         if (target.membershipType === 'application') {

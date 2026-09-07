@@ -50,7 +50,10 @@ export const mapOrgInvitations = (
       createdDate: toIsoString(inv.invitation.createdDate),
       role: inv.invitation.extraRoles.includes(RoleName.Lead) ? ('memberLead' as const) : ('member' as const),
       welcomeMessage: inv.invitation.welcomeMessage ?? undefined,
-      spacesToJoin: inv.invitation.spacesToJoinOnAccept.map(space => ({
+      // Nullable: the server returns null when the caller may not answer this
+      // invitation on the invited Actor's behalf, rather than erroring the whole
+      // query. Nothing to disclose then.
+      spacesToJoin: (inv.invitation.spacesToJoinOnAccept ?? []).map(space => ({
         displayName: space.profile.displayName,
         url: space.profile.url,
       })),

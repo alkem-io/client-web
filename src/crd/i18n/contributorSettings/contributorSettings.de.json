@@ -522,7 +522,7 @@
         "spaceAdmin": {
           "communityApplicationReceived": "Benachrichtigung erhalten, wenn eine neue Community-Bewerbung eingeht",
           "communityNewMember": "Erhalten Sie eine Benachrichtigung, wenn ein neues Mitglied der Community beitritt",
-          "communityInvitationResponse": "Erhalten Sie eine Benachrichtigung, wenn jemand eine von Ihnen gesendete Einladung annimmt oder ablehnt",
+          "communityInvitationResponse": "Erhalten Sie eine Benachrichtigung, wenn jemand eine Einladung zu einem von Ihnen verwalteten Space annimmt oder ablehnt",
           "collaborationCalloutContributionCreated": "Benachrichtigung erhalten, wenn ein neuer Beitrag zu einem Callout erstellt wird",
           "communicationMessageReceived": "Benachrichtigung erhalten, wenn eine Community-Nachricht empfangen wird",
           "userEmailChanged": "Benachrichtigung erhalten, wenn die Anmelde-E-Mail-Adresse eines Mitglieds eines von dir verwalteten Space geändert wird"
@@ -839,7 +839,7 @@
       "role": "Rolle",
       "roleMember": "Mitglied",
       "roleMemberLead": "Mitglied + Lead",
-      "spacesToJoin": "Bei Annahme werden Sie auch beitreten: {{spaces}}",
+      "spacesToJoin": "Bei Annahme wird beigetreten zu: {{spaces}}",
       "accept": "Annehmen",
       "decline": "Ablehnen",
       "acceptConfirmTitle": "Diese Einladung annehmen?",

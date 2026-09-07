@@ -110,12 +110,14 @@ function buildTranslationValues(
         ? `${t('member')} + ${t('lead')}`
         : t('member')
       : undefined,
-    // spacesToJoin: used by ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION — an extra "also
-    // joins: …" clause, only when accepting joins more than the target Space itself.
+    // spacesToJoin: used by ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION — an extra
+    // "Accepting joins: …" clause listing every Space accepting joins (the target
+    // included), shown only when that is more than the target Space itself.
     spacesToJoin:
-      payload.invitation && payload.invitation.spacesToJoinOnAccept.length > 1
+      (payload.invitation?.spacesToJoinOnAccept?.length ?? 0) > 1
         ? ` ${t('components.inAppNotifications.spacesToJoin', {
-            spaces: payload.invitation.spacesToJoinOnAccept.map(s => s.profile.displayName).join(', '),
+            // biome-ignore lint/style/noNonNullAssertion: guarded by the length check above
+            spaces: payload.invitation!.spacesToJoinOnAccept!.map(s => s.profile.displayName).join(', '),
           })}`
         : '',
   };

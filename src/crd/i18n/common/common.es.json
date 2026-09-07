@@ -896,19 +896,19 @@
           "description": "Como {{invitationRole}}.{{spacesToJoin}}"
         },
         "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_ACCEPTED": {
-          "subject": "{{organizationName}} aceptó su invitación para unirse a {{spaceName}}",
+          "subject": "{{organizationName}} aceptó la invitación para unirse a {{spaceName}}",
           "description": "{{organizationName}} se ha unido a {{spaceName}}, del cual usted es $t(common.admin)."
         },
         "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_DECLINED": {
-          "subject": "{{organizationName}} rechazó su invitación para unirse a {{spaceName}}",
+          "subject": "{{organizationName}} rechazó la invitación para unirse a {{spaceName}}",
           "description": ""
         },
         "SPACE_ADMIN_USER_COMMUNITY_INVITATION_ACCEPTED": {
-          "subject": "{{userName}} aceptó su invitación para unirse a {{spaceName}}",
+          "subject": "{{userName}} aceptó la invitación para unirse a {{spaceName}}",
           "description": "{{userName}} se ha unido a {{spaceName}}, del cual usted es $t(common.admin)."
         },
         "SPACE_ADMIN_USER_COMMUNITY_INVITATION_DECLINED": {
-          "subject": "{{userName}} rechazó su invitación para unirse a {{spaceName}}",
+          "subject": "{{userName}} rechazó la invitación para unirse a {{spaceName}}",
           "description": ""
         },
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
@@ -916,7 +916,7 @@
           "description": "No se requiere ninguna acción adicional."
         }
       },
-      "spacesToJoin": "Al aceptar también se unirá a: {{spaces}}"
+      "spacesToJoin": "Al aceptar se une a: {{spaces}}"
     },
     "profile": {
       "fields": {

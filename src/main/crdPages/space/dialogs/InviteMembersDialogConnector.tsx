@@ -322,6 +322,13 @@ export function InviteMembersDialogConnector({
   // `findAvailableOrganizationsForRoleSet` is intentionally excluded from deps — it returns a
   // fresh function on every render, so including it would re-fetch on every render. Mirrors
   // VirtualContributorInviteConnector's `lookup` exclusion.
+  //
+  // `currentMemberOrgIds` IS a dep (as a joined string, not the array, which is fresh every
+  // render): the member list arrives two round trips after `roleSetId` resolves, so the first
+  // fetch filters against an empty set and offers organizations that are already Members or
+  // Leads. Re-running once it settles is what makes US1-AS2's exclusion hold. The VC branch
+  // below guards the same way with `currentVcMemberIds`.
+  const currentMemberOrgIds = currentMemberOrganizations.map(org => org.id).join(',');
   useEffect(() => {
     if (!open || kind !== 'organization' || !roleSetId) return;
     let cancelled = false;
@@ -331,6 +338,9 @@ export function InviteMembersDialogConnector({
         const { organizations } = await findAvailableOrganizationsForRoleSet(trimmedQuery || undefined);
         if (cancelled) return;
         setOrgCandidates(organizations.map(org => ({ userId: org.id, displayName: org.profile?.displayName ?? '' })));
+      } catch {
+        // A failed lookup must render as "no results", not as an unhandled rejection.
+        if (!cancelled) setOrgCandidates([]);
       } finally {
         if (!cancelled) setOrgLoading(false);
       }
@@ -338,7 +348,7 @@ export function InviteMembersDialogConnector({
     return () => {
       cancelled = true;
     };
-  }, [open, kind, roleSetId, trimmedQuery]);
+  }, [open, kind, roleSetId, trimmedQuery, currentMemberOrgIds]);
   const organizationSearchResults: ContributorSelectorUserResult[] = orgCandidates.filter(
     c => !openOrgInvitationIds.has(c.userId) && !selectedOrgIds.has(c.userId)
   );

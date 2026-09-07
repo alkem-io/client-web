@@ -4025,8 +4025,8 @@ export type Invitation = {
   lifecycle: Lifecycle;
   /** The next events of this Lifecycle. */
   nextEvents: Array<Scalars['String']['output']>;
-  /** The Spaces that will be joined if this invitation is accepted, root Space first. */
-  spacesToJoinOnAccept: Array<SpaceAbout>;
+  /** The Spaces that will be joined if this invitation is accepted, root Space first; null when the caller may not answer this invitation on the invited Actor's behalf. */
+  spacesToJoinOnAccept?: Maybe<Array<SpaceAbout>>;
   /** The current state of this Lifecycle. */
   state: Scalars['String']['output'];
   /** Optional language the inviter expects the invitee to prefer; recorded per invitation. */
@@ -12061,11 +12061,13 @@ export type UserPendingMembershipsQuery = {
           type: ActorType;
           profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
         };
-        spacesToJoinOnAccept: Array<{
-          __typename?: 'SpaceAbout';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-        }>;
+        spacesToJoinOnAccept?:
+          | Array<{
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            }>
+          | undefined;
       };
     }>;
   };
@@ -23480,11 +23482,13 @@ export type OrgInvitationsQuery = {
           type: ActorType;
           profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
         };
-        spacesToJoinOnAccept: Array<{
-          __typename?: 'SpaceAbout';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-        }>;
+        spacesToJoinOnAccept?:
+          | Array<{
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            }>
+          | undefined;
       };
     }>;
   };
@@ -25434,11 +25438,13 @@ export type InvitationDataFragment = {
       type: ActorType;
       profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
     };
-    spacesToJoinOnAccept: Array<{
-      __typename?: 'SpaceAbout';
-      id: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-    }>;
+    spacesToJoinOnAccept?:
+      | Array<{
+          __typename?: 'SpaceAbout';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+        }>
+      | undefined;
   };
 };
 
@@ -26408,11 +26414,13 @@ export type VcMembershipsQuery = {
           type: ActorType;
           profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
         };
-        spacesToJoinOnAccept: Array<{
-          __typename?: 'SpaceAbout';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-        }>;
+        spacesToJoinOnAccept?:
+          | Array<{
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            }>
+          | undefined;
       };
     }>;
   };
@@ -40990,11 +40998,13 @@ export type InAppNotificationReceivedSubscription = {
                 id: string;
                 extraRoles: Array<RoleName>;
                 invitedToParent: boolean;
-                spacesToJoinOnAccept: Array<{
-                  __typename?: 'SpaceAbout';
-                  id: string;
-                  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-                }>;
+                spacesToJoinOnAccept?:
+                  | Array<{
+                      __typename?: 'SpaceAbout';
+                      id: string;
+                      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                    }>
+                  | undefined;
               }
             | undefined;
         }
@@ -42250,11 +42260,13 @@ export type InAppNotificationsQuery = {
                     id: string;
                     extraRoles: Array<RoleName>;
                     invitedToParent: boolean;
-                    spacesToJoinOnAccept: Array<{
-                      __typename?: 'SpaceAbout';
-                      id: string;
-                      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-                    }>;
+                    spacesToJoinOnAccept?:
+                      | Array<{
+                          __typename?: 'SpaceAbout';
+                          id: string;
+                          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                        }>
+                      | undefined;
                   }
                 | undefined;
             }
@@ -43516,11 +43528,13 @@ export type InAppNotificationAllTypesFragment = {
               id: string;
               extraRoles: Array<RoleName>;
               invitedToParent: boolean;
-              spacesToJoinOnAccept: Array<{
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-              }>;
+              spacesToJoinOnAccept?:
+                | Array<{
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                  }>
+                | undefined;
             }
           | undefined;
       }
@@ -44328,11 +44342,13 @@ export type InAppNotificationPayloadSpaceCommunityInvitationFragment = {
         id: string;
         extraRoles: Array<RoleName>;
         invitedToParent: boolean;
-        spacesToJoinOnAccept: Array<{
-          __typename?: 'SpaceAbout';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-        }>;
+        spacesToJoinOnAccept?:
+          | Array<{
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            }>
+          | undefined;
       }
     | undefined;
 };

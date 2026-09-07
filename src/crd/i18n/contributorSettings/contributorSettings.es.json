@@ -522,7 +522,7 @@
         "spaceAdmin": {
           "communityApplicationReceived": "Recibir una notificación cuando se envía una nueva solicitud a la comunidad",
           "communityNewMember": "Recibir una notificación cuando un nuevo miembro se une a la comunidad",
-          "communityInvitationResponse": "Recibir una notificación cuando alguien acepta o rechaza una invitación que enviaste",
+          "communityInvitationResponse": "Recibir una notificación cuando alguien acepta o rechaza una invitación a un Space que administras",
           "collaborationCalloutContributionCreated": "Recibir una notificación cuando se crea una nueva contribución en una llamada",
           "communicationMessageReceived": "Recibir una notificación cuando se recibe un mensaje de la comunidad",
           "userEmailChanged": "Recibir una notificación cuando se cambia el correo electrónico de inicio de sesión de un miembro de un Space que administras"
@@ -839,7 +839,7 @@
       "role": "Rol",
       "roleMember": "Miembro",
       "roleMemberLead": "Miembro + Lead",
-      "spacesToJoin": "Al aceptar también se unirá a: {{spaces}}",
+      "spacesToJoin": "Al aceptar se une a: {{spaces}}",
       "accept": "Aceptar",
       "decline": "Rechazar",
       "acceptConfirmTitle": "¿Aceptar esta invitación?",
