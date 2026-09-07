@@ -521,7 +521,8 @@
         },
         "spaceAdmin": {
           "communityApplicationReceived": "Receive a notification when a new community application is submitted",
-          "communityNewMember": "Receive a notification when a new member joins the community, or an invited organisation accepts or declines to join",
+          "communityNewMember": "Receive a notification when a new member joins the community",
+          "communityInvitationResponse": "Receive a notification when someone accepts or declines an invitation you sent",
           "collaborationCalloutContributionCreated": "Receive a notification when a new contribution is created on a callout",
           "communicationMessageReceived": "Receive a notification when a community message is received",
           "userEmailChanged": "Receive a notification when the login email of a member of a space you administer is changed"
@@ -549,7 +550,7 @@
         "organization": {
           "adminMentioned": "Receive a notification when my organisation is mentioned",
           "adminMessageReceived": "Receive direct messages to my organisation",
-          "adminSpaceCommunityInvitation": "Receive a notification when an organisation I administer is invited to join a Space"
+          "adminSpaceCommunityInvitation": "Receive a notification when an organisation I administer is invited to join a Space, and when it joins"
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Receive a notification when a VC manager is invited to join a community"

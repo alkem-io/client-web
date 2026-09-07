@@ -119,6 +119,11 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
               inApp
               push
             }
+            communityInvitationResponse {
+              email
+              inApp
+              push
+            }
             collaborationCalloutContributionCreated {
               email
               inApp
@@ -182,6 +187,11 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
             push
           }
           adminMessageReceived {
+            email
+            inApp
+            push
+          }
+          adminSpaceCommunityInvitation {
             email
             inApp
             push

@@ -153,6 +153,10 @@ const URL_OVERRIDES_BY_TYPE: Partial<
     buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
   [NotificationEvent.SpaceAdminOrganizationCommunityInvitationDeclined]: payload =>
     buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
+  [NotificationEvent.SpaceAdminUserCommunityInvitationAccepted]: payload =>
+    buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
+  [NotificationEvent.SpaceAdminUserCommunityInvitationDeclined]: payload =>
+    buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
 };
 
 /**

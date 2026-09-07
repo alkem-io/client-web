@@ -153,6 +153,13 @@ const buildSpaceAdmin = (
     server?.communityApplicationReceived
   ),
   communityNewMember: channel(type, property, 'communityNewMember', value, server?.communityNewMember),
+  communityInvitationResponse: channel(
+    type,
+    property,
+    'communityInvitationResponse',
+    value,
+    server?.communityInvitationResponse
+  ),
   collaborationCalloutContributionCreated: channel(
     type,
     property,

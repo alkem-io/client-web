@@ -1767,6 +1767,11 @@ export const UserSettingsFragmentFragmentDoc = gql`
           inApp
           push
         }
+        communityInvitationResponse {
+          email
+          inApp
+          push
+        }
         communicationMessageReceived {
           email
           inApp
@@ -16163,6 +16168,11 @@ export const UpdateUserSettingsDocument = gql`
               inApp
               push
             }
+            communityInvitationResponse {
+              email
+              inApp
+              push
+            }
             collaborationCalloutContributionCreated {
               email
               inApp
@@ -16226,6 +16236,11 @@ export const UpdateUserSettingsDocument = gql`
             push
           }
           adminMessageReceived {
+            email
+            inApp
+            push
+          }
+          adminSpaceCommunityInvitation {
             email
             inApp
             push

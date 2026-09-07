@@ -90,6 +90,11 @@ fragment userSettingsFragment on UserSettings {
           inApp
           push
         }
+        communityInvitationResponse {
+          email
+          inApp
+          push
+        }
         communicationMessageReceived {
           email
           inApp

@@ -521,7 +521,8 @@
         },
         "spaceAdmin": {
           "communityApplicationReceived": "Recibir una notificación cuando se envía una nueva solicitud a la comunidad",
-          "communityNewMember": "Recibir una notificación cuando un nuevo miembro se une a la comunidad, o cuando una organización invitada acepta o rechaza unirse",
+          "communityNewMember": "Recibir una notificación cuando un nuevo miembro se une a la comunidad",
+          "communityInvitationResponse": "Recibir una notificación cuando alguien acepta o rechaza una invitación que enviaste",
           "collaborationCalloutContributionCreated": "Recibir una notificación cuando se crea una nueva contribución en una llamada",
           "communicationMessageReceived": "Recibir una notificación cuando se recibe un mensaje de la comunidad",
           "userEmailChanged": "Recibir una notificación cuando se cambia el correo electrónico de inicio de sesión de un miembro de un Space que administras"
@@ -549,7 +550,7 @@
         "organization": {
           "adminMentioned": "Recibir una notificación cuando se menciona a mi organización",
           "adminMessageReceived": "Recibir mensajes directos a mi organización",
-          "adminSpaceCommunityInvitation": "Recibir una notificación cuando una organización que administro sea invitada a unirse a un Space"
+          "adminSpaceCommunityInvitation": "Recibir una notificación cuando una organización que administro sea invitada a unirse a un Space, y cuando se una"
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Recibir una notificación cuando se invita a un gestor de VC a unirse a una comunidad"

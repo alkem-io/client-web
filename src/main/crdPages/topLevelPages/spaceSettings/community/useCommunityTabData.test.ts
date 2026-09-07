@@ -71,6 +71,7 @@ const baseAdmin = (invitations: InvitationModel[]) => ({
     canAddVirtualContributors: false,
     canAddVirtualContributorsFromAccount: false,
   },
+  myPrivileges: [],
   loading: false,
   errored: false,
 });

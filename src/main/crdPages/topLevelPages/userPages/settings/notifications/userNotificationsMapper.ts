@@ -266,6 +266,16 @@ export const mapUserNotifications = (
           ),
         },
         {
+          property: 'communityInvitationResponse',
+          label: t('user.notifications.rows.spaceAdmin.communityInvitationResponse'),
+          channels: resolveChannels(
+            server.spaceAdmin?.communityInvitationResponse,
+            overrides,
+            'spaceAdmin',
+            'communityInvitationResponse'
+          ),
+        },
+        {
           property: 'collaborationCalloutContributionCreated',
           label: t('user.notifications.rows.spaceAdmin.collaborationCalloutContributionCreated'),
           channels: resolveChannels(
