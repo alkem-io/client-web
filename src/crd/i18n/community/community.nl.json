@@ -70,7 +70,7 @@
       "error": "Uitnodiging mislukt.",
       "notAcceptingInvitations": "Deze organisatie accepteert geen Space-uitnodigingen",
       "leadLimitReached": "De limiet voor de Lead-rol voor organisaties is bereikt",
-      "sentNoAdministrators": "Uitnodiging verzonden — deze organisatie heeft momenteel geen beheerders om te informeren"
+      "sentNoAdministrators": "Uitnodiging verzonden — deze organisatie heeft momenteel geen beheerders om te informeren, daarom is de platformondersteuning op de hoogte gebracht"
     },
     "toast": {
       "someFailed": "{{count}} uitnodigingen konden niet worden verstuurd — bekijk de resultaten voor details."

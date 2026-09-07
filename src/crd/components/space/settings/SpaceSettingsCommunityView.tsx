@@ -96,6 +96,11 @@ export type SpaceSettingsCommunityViewProps = {
   pendingOrganizationInvitations: PendingOrganizationInvitation[];
   applicationFormSlot?: ReactNode;
   communityGuidelinesSlot?: ReactNode;
+  /**
+   * The community permissions this view reports upward. None of them decide whether a
+   * launch button is RENDERED — every gated action is rendered always and disabled via
+   * its `*DisabledReason` prop — so adding a flag here never hides anything.
+   */
   permissions: {
     canInvite: boolean;
     canInviteOrganizations: boolean;
@@ -113,6 +118,13 @@ export type SpaceSettingsCommunityViewProps = {
     organizations?: string;
     virtualContributors?: string;
   };
+  /**
+   * Tooltip copy for the *Invite organisation* button when the action is unavailable.
+   * Same gated-not-hidden contract as `addDisabledReasons` above — the two controls sit
+   * in the same card and must not use two different conventions. Undefined means
+   * permitted.
+   */
+  inviteOrganizationsDisabledReason?: string;
   /** Show the destructive "Remove from Space" dropdown item on member rows. Omit to hide. */
   onUserRemove?: (id: string) => void;
   /** Open the Member settings dialog for this user. Replaces the legacy inline lead-toggle dropdown item. */
@@ -151,6 +163,7 @@ export function SpaceSettingsCommunityView({
   communityGuidelinesSlot,
   permissions,
   addDisabledReasons,
+  inviteOrganizationsDisabledReason,
   onUserRemove,
   onMemberChangeRole,
   onOrgAdd,
@@ -451,12 +464,16 @@ export function SpaceSettingsCommunityView({
               className="h-9 w-[220px] pl-9 text-control"
             />
           </div>
-          {permissions.canInviteOrganizations && (
+          {/* Gated, not hidden — the same contract, and the same mechanism, as the Add
+              organisation button further down this card. Conditionally rendering this
+              button on the privilege would conceal the action's existence from an admin
+              who lacks it, and flip it hidden→shown once the privilege query resolves. */}
+          <GatedAction disabledReason={inviteOrganizationsDisabledReason}>
             <Button type="button" size="sm" className="gap-2" onClick={onInviteOrganizations}>
               <UserPlus aria-hidden="true" className="size-4" />
               {t('community.organizations.invite')}
             </Button>
-          )}
+          </GatedAction>
         </div>
         <div className="rounded-lg border bg-card overflow-hidden">
           <Table>

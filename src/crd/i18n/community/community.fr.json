@@ -70,7 +70,7 @@
       "error": "Échec de l'invitation.",
       "notAcceptingInvitations": "Cette organisation n'accepte pas les invitations aux espaces",
       "leadLimitReached": "La limite du rôle Lead pour les organisations a été atteinte",
-      "sentNoAdministrators": "Invitation envoyée — cette organisation n'a actuellement aucun administrateur à notifier"
+      "sentNoAdministrators": "Invitation envoyée — cette organisation n'a actuellement aucun administrateur à notifier, le support de la plateforme a donc été prévenu à la place"
     },
     "toast": {
       "someFailed": "{{count}} invitations n'ont pas pu être envoyées — consultez les résultats pour plus de détails."

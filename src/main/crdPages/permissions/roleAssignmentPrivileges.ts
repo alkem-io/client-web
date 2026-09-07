@@ -28,6 +28,17 @@ export const ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES = [
 ];
 
 /**
+ * Inviting an actor (user, organization or by email) to a role set —
+ * `inviteForEntryRoleOnRoleSet`.
+ *
+ * A distinct token from the assign privileges above: space admins hold the invite
+ * privilege while the direct-add privileges are reserved for platform admins, which is
+ * exactly why the invite and add controls beside each other can be gated differently.
+ * Mirrors `useCommunityAdmin.ts`'s `canInvite` / `canInviteOrganizations`.
+ */
+export const ROLE_SET_INVITE_PRIVILEGES = [AuthorizationPrivilege.RolesetEntryRoleInvite];
+
+/**
  * Platform role set — `assignPlatformRoleToUser` / `removePlatformRoleFromUser`.
  *
  * Confirmed against the running backend (2026-09-03). `PlatformRoleResolverMutations

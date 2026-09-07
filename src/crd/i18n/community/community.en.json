@@ -70,7 +70,7 @@
       "error": "Invitation failed.",
       "notAcceptingInvitations": "This organisation is not accepting Space invitations",
       "leadLimitReached": "The Lead role limit for organisations has been reached",
-      "sentNoAdministrators": "Invitation sent — this organisation currently has no administrators to notify"
+      "sentNoAdministrators": "Invitation sent — this organisation currently has no administrators to notify, so platform support has been notified instead"
     },
     "toast": {
       "someFailed": "{{count}} invitations couldn't be sent — see the results for details."

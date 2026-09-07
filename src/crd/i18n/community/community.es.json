@@ -70,7 +70,7 @@
       "error": "Error al enviar la invitación.",
       "notAcceptingInvitations": "Esta organización no acepta invitaciones a Spaces",
       "leadLimitReached": "Se ha alcanzado el límite del rol Lead para organizaciones",
-      "sentNoAdministrators": "Invitación enviada — esta organización actualmente no tiene administradores a quienes notificar"
+      "sentNoAdministrators": "Invitación enviada — esta organización actualmente no tiene administradores a quienes notificar, por lo que se ha notificado al soporte de la plataforma"
     },
     "toast": {
       "someFailed": "No se pudieron enviar {{count}} invitaciones — consulta los resultados para más detalles."
