@@ -64,6 +64,26 @@ describe('OrganizationForm', () => {
     expect(screen.getByRole('button', { name: 'orgForm.create' })).toBeDisabled();
   });
 
+  test('an alias the server would reject blocks submit and shows an error', () => {
+    const { rerender } = render(
+      <OrganizationForm mode="create" values={{ ...empty, nameID: 'CanoCorp', displayName: 'Cano' }} {...baseProps} />
+    );
+    expect(screen.getByText('orgForm.invalidNameID')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'orgForm.create' })).toBeDisabled();
+
+    rerender(
+      <OrganizationForm mode="create" values={{ ...empty, nameID: 'canocorp', displayName: 'Cano' }} {...baseProps} />
+    );
+    expect(screen.queryByText('orgForm.invalidNameID')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'orgForm.create' })).toBeEnabled();
+  });
+
+  test('an empty alias disables submit without showing the format error', () => {
+    render(<OrganizationForm mode="create" values={{ ...empty, displayName: 'Cano' }} {...baseProps} />);
+    expect(screen.queryByText('orgForm.invalidNameID')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'orgForm.create' })).toBeDisabled();
+  });
+
   test('edit mode makes the alias read-only and shows the location section + Save', () => {
     render(<OrganizationForm mode="edit" values={{ ...empty, nameID: 'acme', displayName: 'Acme' }} {...baseProps} />);
     expect(screen.getByLabelText('orgForm.nameID')).toHaveAttribute('readonly');

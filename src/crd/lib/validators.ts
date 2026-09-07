@@ -23,3 +23,22 @@ export const isValidUrlOrEmpty = (value: string): boolean => {
     return false;
   }
 };
+
+/**
+ * Mirrors the server's `NameID` GraphQL scalar
+ * (`server/src/domain/common/scalars/scalar.nameid.ts`): 3–28 characters, only
+ * `a-z`, `0-9` and `-`. Uppercase is rejected — the scalar lowercases inline
+ * literals but validates variables as-is, so an uppercase alias sent from a
+ * client fails at variable coercion, before any resolver runs, and comes back
+ * as an opaque `BAD_USER_INPUT`.
+ */
+export const NAMEID_MIN_LENGTH = 3;
+export const NAMEID_MAX_LENGTH = 28;
+
+const NAMEID_REGEX = /^[a-z0-9-]+$/;
+
+/** True when `value` is a valid nameID (alias). Trims first, as the form mappers do. */
+export const isValidNameId = (value: string): boolean => {
+  const trimmed = value.trim();
+  return trimmed.length >= NAMEID_MIN_LENGTH && trimmed.length <= NAMEID_MAX_LENGTH && NAMEID_REGEX.test(trimmed);
+};
