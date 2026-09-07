@@ -744,6 +744,13 @@
       "recorded": "Vastgelegd",
       "download": "Ondertekende pdf downloaden",
       "standardTools": "Gedownloade pdf's kunnen onafhankelijk worden gecontroleerd met standaard pdf-tools.",
+      "verify": "Handtekening verifiëren",
+      "verification": {
+        "checking": "Handtekening wordt geverifieerd",
+        "verified": "De pdf is ongewijzigd",
+        "invalid": "Handtekening ongeldig",
+        "unavailable": "Kon niet verifiëren"
+      },
       "stage": {
         "idle": "Klaar om een kopie voor ondertekening te maken",
         "preparing": "De exacte memokopie wordt voorbereid voor ondertekening",

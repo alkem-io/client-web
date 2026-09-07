@@ -744,6 +744,13 @@
       "recorded": "Registrado",
       "download": "Descargar PDF firmado",
       "standardTools": "Los PDF descargados se pueden verificar de forma independiente con herramientas PDF estándar.",
+      "verify": "Verificar firma",
+      "verification": {
+        "checking": "Verificando firma",
+        "verified": "El PDF no se ha modificado",
+        "invalid": "Firma no válida",
+        "unavailable": "No se pudo verificar"
+      },
       "stage": {
         "idle": "Listo para preparar una copia para firmar",
         "preparing": "Preparando la copia exacta del memo para firmar",

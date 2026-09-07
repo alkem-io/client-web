@@ -744,6 +744,13 @@
       "recorded": "Recorded",
       "download": "Download signed PDF",
       "standardTools": "Downloaded PDFs can be independently verified with standard PDF tools.",
+      "verify": "Verify signature",
+      "verification": {
+        "checking": "Verifying signature",
+        "verified": "The PDF is unmodified",
+        "invalid": "Signature invalid",
+        "unavailable": "Could not verify"
+      },
       "stage": {
         "idle": "Ready to prepare a copy for signing",
         "preparing": "Preparing the exact memo copy for signing",

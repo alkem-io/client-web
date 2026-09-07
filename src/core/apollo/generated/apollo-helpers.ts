@@ -4361,6 +4361,7 @@ export type QueryKeySpecifier = (
   | 'usersPaginated'
   | 'usersWithAuthorizationCredential'
   | 'vapidPublicKey'
+  | 'verifyMemoSignature'
   | 'virtualContributor'
   | 'virtualContributors'
   | QueryKeySpecifier
@@ -4404,6 +4405,7 @@ export type QueryFieldPolicy = {
   usersPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   usersWithAuthorizationCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   vapidPublicKey?: FieldPolicy<any> | FieldReadFunction<any>;
+  verifyMemoSignature?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };

@@ -31,6 +31,7 @@ type MemoSignature = {
   actor?: { profile?: { displayName: string; url: string } };
   updatedDate: string | Date;
   recordedAt?: string;
+  verification?: 'checking' | 'verified' | 'invalid' | 'unavailable';
 };
 
 export type MemoSigningDialogProps = {
@@ -40,6 +41,7 @@ export type MemoSigningDialogProps = {
   signatures: MemoSignature[];
   previewUrl?: string;
   onContinue: () => void;
+  onVerify: (attemptId: string) => void;
   onClose: () => void;
 };
 
@@ -50,6 +52,7 @@ export function MemoSigningDialog({
   signatures,
   previewUrl,
   onContinue,
+  onVerify,
   onClose,
 }: MemoSigningDialogProps) {
   const { t } = useTranslation('crd-space');
@@ -97,6 +100,19 @@ export function MemoSigningDialog({
                       <a className="text-primary underline" href={signature.document.url} download={true}>
                         {t('memo.signing.download')}
                       </a>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={signature.verification === 'checking'}
+                        aria-busy={signature.verification === 'checking'}
+                        onClick={() => onVerify(signature.id)}
+                      >
+                        {t('memo.signing.verify')}
+                      </Button>
+                      {signature.verification && (
+                        <output>{t(`memo.signing.verification.${signature.verification}` as const)}</output>
+                      )}
                     </li>
                   ) : null
                 )}
