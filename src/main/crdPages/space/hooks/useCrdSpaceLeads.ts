@@ -12,12 +12,15 @@ import { mapSidebarLeads } from '../dataMappers/spacePageDataMapper';
  *
  * `skip: true` suppresses the query — the sidebar connector passes this when
  * the `intent` widget is not configured on the active tab (FR-019).
+ *
+ * `loading` lets the info block hold the leads row's footprint until the query
+ * lands, instead of growing when it does (issue #10043).
  */
-export function useCrdSpaceLeads(spaceId: string | undefined, skip?: boolean): LeadItem[] {
-  const { data } = useSpaceAboutDetailsQuery({
+export function useCrdSpaceLeads(spaceId: string | undefined, skip?: boolean): { leads: LeadItem[]; loading: boolean } {
+  const { data, loading } = useSpaceAboutDetailsQuery({
     variables: { spaceId: spaceId ?? '' },
     skip: skip || !spaceId,
   });
   const membership = data?.lookup.space?.about.membership;
-  return mapSidebarLeads(membership?.leadUsers, membership?.leadOrganizations);
+  return { leads: mapSidebarLeads(membership?.leadUsers, membership?.leadOrganizations), loading };
 }

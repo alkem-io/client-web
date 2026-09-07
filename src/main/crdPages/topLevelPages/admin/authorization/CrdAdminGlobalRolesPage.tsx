@@ -7,7 +7,10 @@ import useNavigate from '@/core/routing/useNavigate';
 import { type RoleMember, RoleMembersEditor } from '@/crd/components/admin/roles/RoleMembersEditor';
 import { Button } from '@/crd/primitives/button';
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
+import useActionPermission from '@/domain/access/permissions/useActionPermission';
 import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
+import { PLATFORM_ROLE_ASSIGN_PRIVILEGES } from '@/main/crdPages/permissions/roleAssignmentPrivileges';
+import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionReasonText';
 import { useDebouncedValue } from '@/main/crdPages/utils/useDebouncedValue';
 
 const PLATFORM_ROLES = RELEVANT_ROLES.Platform;
@@ -41,12 +44,19 @@ const CrdAdminGlobalRolesPage = () => {
   const { data } = usePlatformRoleSetQuery();
   const roleSetId = data?.platform.roleSet.id;
 
-  const { usersByRole, assignPlatformRoleToUser, removePlatformRoleFromUser, loading, updating } = useRoleSetManager({
-    roleSetId,
-    relevantRoles: PLATFORM_ROLES,
-    contributorTypes: [ActorType.User],
-    fetchContributors: true,
-  });
+  const { usersByRole, assignPlatformRoleToUser, removePlatformRoleFromUser, loading, updating, myPrivileges } =
+    useRoleSetManager({
+      roleSetId,
+      relevantRoles: PLATFORM_ROLES,
+      contributorTypes: [ActorType.User],
+      fetchContributors: true,
+    });
+
+  // Gate the add/remove controls on the privilege the backend enforces, so the action is
+  // prevented rather than silently refused. Defaults to gated while privileges load.
+  const reasonText = usePermissionReasonText();
+  const assignPermission = useActionPermission(myPrivileges, PLATFORM_ROLE_ASSIGN_PRIVILEGES, loading);
+  const assignDisabledReason = reasonText(assignPermission);
 
   const currentUsers = usersByRole?.[selectedRole] ?? [];
   const members: RoleMember[] = currentUsers.map(user => ({
@@ -143,6 +153,8 @@ const CrdAdminGlobalRolesPage = () => {
         onRemove={userId => {
           void removePlatformRoleFromUser(userId, selectedRole);
         }}
+        addDisabledReason={assignDisabledReason}
+        removeDisabledReason={assignDisabledReason}
         loadingMembers={loading}
         loadingAvailable={loadingAvailable}
         updating={updating}

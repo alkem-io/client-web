@@ -26,10 +26,17 @@ import { SpaceSettingsSubspacesView } from '@/crd/components/space/settings/Spac
 import { SpaceSettingsUpdatesView } from '@/crd/components/space/settings/SpaceSettingsUpdatesView';
 import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
+import useActionPermission from '@/domain/access/permissions/useActionPermission';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
+import {
+  ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES,
+  ROLE_SET_ASSIGN_PRIVILEGES,
+  VC_FROM_ACCOUNT_PRIVILEGES,
+} from '@/main/crdPages/permissions/roleAssignmentPrivileges';
+import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionReasonText';
 import { InviteMembersDialogConnector } from '@/main/crdPages/space/dialogs/InviteMembersDialogConnector';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
@@ -103,6 +110,27 @@ export default function CrdSpaceSettingsPage() {
   const about = useAboutTabData(activeTab === 'about' ? spaceId : '', spaceUrl, level);
   const layout = useLayoutTabData(activeTab === 'layout' ? spaceId : '', level);
   const community = useCommunityTabData(activeTab === 'community' ? roleSetId : '');
+
+  // Gate each role-assignment control on the privilege its own backend resolver enforces.
+  // Organization rows need the grant pair; user and VC rows need the assign privilege.
+  const reasonText = usePermissionReasonText();
+  const assignReason = reasonText(
+    useActionPermission(community.myPrivileges, ROLE_SET_ASSIGN_PRIVILEGES, community.loading)
+  );
+  const assignOrganizationReason = reasonText(
+    useActionPermission(community.myPrivileges, ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES, community.loading)
+  );
+  // Virtual contributors are permitted by EITHER the role-set assign privilege or the
+  // account-assign privilege — space admins may hold only the latter. Mirrors the union in
+  // `useCommunityAdmin`; gating on the assign privilege alone would lock those admins out.
+  const assignVcPermission = useActionPermission(community.myPrivileges, ROLE_SET_ASSIGN_PRIVILEGES, community.loading);
+  const assignVcFromAccountPermission = useActionPermission(
+    community.myPrivileges,
+    VC_FROM_ACCOUNT_PRIVILEGES,
+    community.loading
+  );
+  const assignVcReason =
+    assignVcPermission.allowed || assignVcFromAccountPermission.allowed ? undefined : reasonText(assignVcPermission);
   const subspacesTab = useSubspacesTabData(activeTab === 'subspaces' ? spaceId : '');
   const createSubspace = useCreateSubspace(spaceId, {
     accountId,
@@ -563,6 +591,10 @@ export default function CrdSpaceSettingsPage() {
                   ) : undefined
                 }
                 permissions={community.permissions}
+                addDisabledReasons={{
+                  organizations: assignOrganizationReason,
+                  virtualContributors: assignVcReason,
+                }}
                 onUserRemove={community.onUserRemove}
                 onMemberChangeRole={member => setActiveMemberSubject(buildUserSubject(member))}
                 onOrgAdd={addOrgDialog.openDialog}
@@ -893,6 +925,9 @@ export default function CrdSpaceSettingsPage() {
                   }
                 }
           }
+          leadDisabledReason={activeMemberSubject.type === 'user' ? assignReason : assignOrganizationReason}
+          adminDisabledReason={assignReason}
+          removeDisabledReason={activeMemberSubject.type === 'user' ? assignReason : assignOrganizationReason}
         />
       )}
 
@@ -912,6 +947,7 @@ export default function CrdSpaceSettingsPage() {
         emptyLabel={t('community.organizations.addDialog.empty')}
         onSearchChange={addOrgDialog.onSearchChange}
         onAdd={id => void addOrgDialog.onAdd(id)}
+        addDisabledReason={assignOrganizationReason}
       />
 
       <AddCommunityMemberDialog
@@ -930,6 +966,7 @@ export default function CrdSpaceSettingsPage() {
         emptyLabel={t('community.virtualContributors.addDialog.empty')}
         onSearchChange={addVCDialog.onSearchChange}
         onAdd={id => void addVCDialog.onAdd(id)}
+        addDisabledReason={assignVcReason}
       />
 
       <InviteMembersDialogConnector
