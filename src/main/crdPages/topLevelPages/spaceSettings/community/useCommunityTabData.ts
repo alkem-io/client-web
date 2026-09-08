@@ -131,6 +131,18 @@ const mapApplicationState = (state: string): PendingMembershipState | null => {
   }
 };
 
+// An organization invitation is "open" while it is still awaiting the
+// organization's answer — 'invited' (actionable) plus the brief in-flight
+// 'accepting'. Only those are moved out of the generic pending-memberships
+// table into the dedicated Member Organisations > Pending invitations section.
+// A RESOLVED one (accepted / rejected) stays in the generic table: the row is
+// never deleted server-side, so excluding every state would leave a declined
+// organization invitation invisible AND undeletable, while the identical user
+// invitation stays listed and removable.
+const isOpenOrganizationInvitation = (invitation: { contributorType: ActorType; state: string }) =>
+  invitation.contributorType === ActorType.Organization &&
+  (invitation.state === InvitationState.INVITED || invitation.state === 'accepting');
+
 const mapInvitationState = (state: string): PendingMembershipState | null => {
   switch (state) {
     case InvitationState.INVITED:
@@ -207,10 +219,12 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     })
     .filter((x): x is PendingMembership => x !== null);
 
-  // Organization invitations get their own section (Member Organisations → Pending
-  // invitations), not the generic pending-memberships table — excluded here.
+  // Open organization invitations get their own section (Member Organisations →
+  // Pending invitations), not the generic pending-memberships table — excluded
+  // here. Resolved ones fall through and are listed (and deletable) exactly
+  // like a resolved user invitation.
   const invitationMemberships: PendingMembership[] = community.membershipAdmin.invitations
-    .filter(inv => inv.contributorType !== ActorType.Organization)
+    .filter(inv => !isOpenOrganizationInvitation(inv))
     .map<PendingMembership | null>(inv => {
       const state = mapInvitationState(inv.state);
       if (!state) return null;
@@ -231,15 +245,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     .filter((x): x is PendingMembership => x !== null);
 
   const pendingOrganizationInvitations: PendingOrganizationInvitationRow[] = community.membershipAdmin.invitations
-    .filter(
-      inv =>
-        inv.contributorType === ActorType.Organization &&
-        // Open invitations only — 'invited' (actionable) and the brief
-        // in-flight 'accepting' state; an 'accepted'/'rejected' invitation is
-        // final (the row is never deleted server-side) and must stop being
-        // presented as outstanding once its lifecycle resolves.
-        (inv.state === InvitationState.INVITED || inv.state === 'accepting')
-    )
+    .filter(isOpenOrganizationInvitation)
     .map(inv => ({
       id: inv.id,
       organizationDisplayName: inv.actor.profile?.displayName ?? '',

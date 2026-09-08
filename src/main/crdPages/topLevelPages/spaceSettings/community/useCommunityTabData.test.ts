@@ -81,7 +81,7 @@ describe('useCommunityTabData — organization invitations (T009)', () => {
     vi.mocked(useCommunityAdmin).mockReset();
   });
 
-  it('excludes organization invitations from the generic pendingMemberships table', () => {
+  it('excludes OPEN organization invitations from the generic pendingMemberships table', () => {
     vi.mocked(useCommunityAdmin).mockReturnValue(
       baseAdmin([orgInvitation(), userInvitation()]) as ReturnType<typeof useCommunityAdmin>
     );
@@ -126,22 +126,29 @@ describe('useCommunityTabData — organization invitations (T009)', () => {
     expect(result.current.pendingOrganizationInvitations[0].canRevoke).toBe(false);
   });
 
-  it('excludes an accepted organization invitation from pendingOrganizationInvitations', () => {
+  it.each([
+    'accepted',
+    'rejected',
+  ] as const)('moves a %s organization invitation out of pendingOrganizationInvitations and into the generic table, deletable', state => {
     vi.mocked(useCommunityAdmin).mockReturnValue(
-      baseAdmin([orgInvitation({ state: 'accepted' })]) as ReturnType<typeof useCommunityAdmin>
+      baseAdmin([orgInvitation({ state })]) as ReturnType<typeof useCommunityAdmin>
     );
     const { result } = renderHook(() => useCommunityTabData('rs1'));
 
+    // No longer presented as outstanding ...
     expect(result.current.pendingOrganizationInvitations).toHaveLength(0);
-  });
-
-  it('excludes a rejected organization invitation from pendingOrganizationInvitations', () => {
-    vi.mocked(useCommunityAdmin).mockReturnValue(
-      baseAdmin([orgInvitation({ state: 'rejected' })]) as ReturnType<typeof useCommunityAdmin>
-    );
-    const { result } = renderHook(() => useCommunityTabData('rs1'));
-
-    expect(result.current.pendingOrganizationInvitations).toHaveLength(0);
+    // ... but the row still exists server-side, so it must remain visible and
+    // removable exactly like the equivalent user invitation — otherwise a
+    // declined organization invitation is invisible AND undeletable forever.
+    expect(result.current.pendingMemberships).toEqual([
+      expect.objectContaining({
+        id: 'inv-org-1',
+        type: 'invitation',
+        state,
+        contributorType: 'organization',
+        canDelete: true,
+      }),
+    ]);
   });
 
   it('onOrgInvitationRevoke asks for confirmation and only then deletes (CRD rule 9)', async () => {
