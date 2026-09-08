@@ -207,7 +207,8 @@
         "associateAdmin": "Geassocieerde + Beheerder",
         "associateOwner": "Geassocieerde + Eigenaar"
       },
-      "pendingLabel": "In behandeling"
+      "pendingLabel": "In behandeling",
+      "invitedBy": "Uitgenodigd door {{name}}"
     }
   },
   "nonActivity": {

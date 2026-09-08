@@ -207,7 +207,8 @@
         "associateAdmin": "Associate + Admin",
         "associateOwner": "Associate + Owner"
       },
-      "pendingLabel": "Pending"
+      "pendingLabel": "Pending",
+      "invitedBy": "Invited by {{name}}"
     }
   },
   "nonActivity": {

@@ -207,7 +207,8 @@
         "associateAdmin": "Асоцииран + Админ",
         "associateOwner": "Асоцииран + Собственик"
       },
-      "pendingLabel": "Чакащо"
+      "pendingLabel": "Чакащо",
+      "invitedBy": "Поканен(а) от {{name}}"
     }
   },
   "nonActivity": {
