@@ -28,6 +28,23 @@ export const ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES = [
 ];
 
 /**
+ * Managing an organization that is ALREADY in the role set — changing its role
+ * between Member and Lead, or removing it from the Space.
+ *
+ * Deliberately NOT `ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES`. That pair gates
+ * bringing a *new* organization in, which is global-admin-only because a direct
+ * add never asks the organization. Once an organization is in the role set the
+ * server gates both mutations on GRANT alone —
+ * `removeRoleFromOrganization` always has, and `assignRoleToOrganization` does
+ * too for an organization that already holds the entry role (server R32,
+ * `role.set.resolver.mutations.ts` `authorizeAssignOrganization`). Gating these
+ * two controls on the assign-organization pair disabled them for every Space
+ * admin, so an organization that accepted an invitation could not be given
+ * Lead, demoted, or removed.
+ */
+export const ROLE_SET_MANAGE_ORGANIZATION_PRIVILEGES = [AuthorizationPrivilege.Grant];
+
+/**
  * Inviting an actor (user, organization or by email) to a role set —
  * `inviteForEntryRoleOnRoleSet`.
  *
