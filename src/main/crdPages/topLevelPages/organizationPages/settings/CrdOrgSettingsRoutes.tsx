@@ -5,7 +5,7 @@ import CrdOrgSettingsPage from './CrdOrgSettingsPage';
 
 const CrdOrgProfileTab = lazy(() => import('./profile/CrdOrgProfileTab'));
 const CrdOrgAccountTab = lazy(() => import('./account/CrdOrgAccountTab'));
-const CrdOrgCommunityTab = lazy(() => import('./community/CrdOrgCommunityTab'));
+const CrdOrgAssociatesTab = lazy(() => import('./community/CrdOrgAssociatesTab'));
 const CrdOrgInvitationsTab = lazy(() => import('./invitations/CrdOrgInvitationsTab'));
 const CrdOrgAuthorizationTab = lazy(() => import('./authorization/CrdOrgAuthorizationTab'));
 const CrdOrgSettingsTab = lazy(() => import('./settings/CrdOrgSettingsTab'));
@@ -41,7 +41,7 @@ export const CrdOrgSettingsRoutes = () => (
         path="community"
         element={
           <Suspense fallback={<Loading />}>
-            <CrdOrgCommunityTab />
+            <CrdOrgAssociatesTab />
           </Suspense>
         }
       />

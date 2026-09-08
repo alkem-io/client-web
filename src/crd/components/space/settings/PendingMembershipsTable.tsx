@@ -34,6 +34,11 @@ export type PendingMembershipsTableProps = {
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
   onDelete: (id: string) => void;
+  /** Overrides the built-in "Pending Memberships" heading — e.g. the organization Associates
+   * tab, which renders its own "Pending applications & invitations" card title above this
+   * table and would otherwise show the word "Memberships" twice, once in Space-flavoured
+   * copy the P5 wording rule forbids on an organization surface. */
+  title?: string;
   className?: string;
 };
 
@@ -101,6 +106,7 @@ export function PendingMembershipsTable({
   onApprove,
   onReject,
   onDelete,
+  title,
   className,
 }: PendingMembershipsTableProps) {
   const { t, i18n } = useTranslation('crd-spaceSettings');
@@ -182,7 +188,7 @@ export function PendingMembershipsTable({
   return (
     <div className={cn('flex flex-col gap-4', className)}>
       <div className="flex items-center gap-2">
-        <h3 className="text-subsection-title">{t('community.pendingMemberships.title')}</h3>
+        <h3 className="text-subsection-title">{title ?? t('community.pendingMemberships.title')}</h3>
         <Badge variant="secondary" className="rounded-full">
           {items.length}
         </Badge>

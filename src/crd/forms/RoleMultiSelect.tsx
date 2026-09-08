@@ -17,8 +17,8 @@ export type RoleMultiSelectProps<TRole extends string> = {
   /** Roles the user can toggle on/off. Order is the rendering order. */
   optionalRoles: TRole[];
 
-  /** Pre-localised label per role. */
-  roleLabels: Record<TRole, string>;
+  /** Pre-localised label per role. Only the roles this render actually offers need an entry. */
+  roleLabels: Partial<Record<TRole, string>>;
 
   /** Prefix text shown next to the trigger ("Invite to be a:"). */
   triggerLabel: string;

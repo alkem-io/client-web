@@ -23801,37 +23801,6 @@ export type OrgAssociatesTabQuery = {
                 | undefined;
             }>;
           }>;
-          applications: Array<{
-            __typename?: 'Application';
-            id: string;
-            createdDate: Date;
-            updatedDate: Date;
-            state: string;
-            nextEvents: Array<string>;
-            actor: {
-              __typename?: 'Actor';
-              id: string;
-              type: ActorType;
-              profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
-            };
-            questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
-            user?: { __typename?: 'User'; id: string; email: string } | undefined;
-          }>;
-          invitations: Array<{
-            __typename?: 'Invitation';
-            id: string;
-            createdDate: Date;
-            updatedDate: Date;
-            state: string;
-            nextEvents: Array<string>;
-            extraRoles: Array<RoleName>;
-            actor: {
-              __typename?: 'Actor';
-              id: string;
-              type: ActorType;
-              profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
-            };
-          }>;
         }
       | undefined;
   };

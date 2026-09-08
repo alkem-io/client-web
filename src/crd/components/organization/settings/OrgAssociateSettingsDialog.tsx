@@ -1,0 +1,168 @@
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
+import { Button } from '@/crd/primitives/button';
+import { Dialog, DialogContent, DialogFooter, DialogTitle } from '@/crd/primitives/dialog';
+import { Label } from '@/crd/primitives/label';
+import { Switch } from '@/crd/primitives/switch';
+
+export type OrgAssociateSettingsSubject = {
+  id: string;
+  displayName: string;
+  avatarUrl?: string;
+  color: string;
+  isAssociate: boolean;
+  isAdmin: boolean;
+  isOwner: boolean;
+};
+
+export type OrgAssociateSettingsDialogProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  subject: OrgAssociateSettingsSubject | null;
+  saving: boolean;
+  /** Readable copy for a role-limit refusal (limitAdmin / limitOwner / minOwner), cleared by the caller. */
+  errorMessage?: string;
+  onSave: (next: { isAssociate: boolean; isAdmin: boolean; isOwner: boolean }) => void;
+  onRemove: () => void;
+};
+
+const NS = 'crd-contributorSettings';
+
+/**
+ * The Associates tab's role editor — three independent toggles (unlike the two-toggle
+ * Space member dialog, which cannot represent an admin/owner who is not an associate,
+ * D14) plus a confirmed destructive Remove. The Associate toggle is disabled while
+ * Admin or Owner is on (both roles declare `requiresEntryRole`), with an explanatory
+ * caption rather than a silent no-op.
+ */
+export function OrgAssociateSettingsDialog({
+  open,
+  onOpenChange,
+  subject,
+  saving,
+  errorMessage,
+  onSave,
+  onRemove,
+}: OrgAssociateSettingsDialogProps) {
+  const { t } = useTranslation(NS);
+  const [isAssociate, setIsAssociate] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
+  const [confirmingRemove, setConfirmingRemove] = useState(false);
+
+  useEffect(() => {
+    if (open && subject) {
+      setIsAssociate(subject.isAssociate);
+      setIsAdmin(subject.isAdmin);
+      setIsOwner(subject.isOwner);
+      setConfirmingRemove(false);
+    }
+  }, [open, subject]);
+
+  if (!subject) return null;
+
+  const associateLocked = isAdmin || isOwner;
+
+  return (
+    <>
+      <Dialog open={open && !confirmingRemove} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-md">
+          <DialogTitle>{t('org.associates.editor.title', { name: subject.displayName })}</DialogTitle>
+
+          <div className="flex items-center gap-3 py-2">
+            <Avatar className="size-10 border border-border">
+              {subject.avatarUrl && <AvatarImage src={subject.avatarUrl} alt="" />}
+              <AvatarFallback color={subject.color} className="text-white">
+                {subject.displayName.slice(0, 2).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <p className="text-body-emphasis truncate">{subject.displayName}</p>
+          </div>
+
+          <div className="flex flex-col gap-4 py-2">
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center justify-between gap-4">
+                <Label htmlFor="org-associate-toggle-associate">{t('org.associates.editor.associateLabel')}</Label>
+                <Switch
+                  id="org-associate-toggle-associate"
+                  checked={isAssociate}
+                  disabled={associateLocked || saving}
+                  onCheckedChange={setIsAssociate}
+                />
+              </div>
+              {associateLocked && (
+                <p className="text-caption text-muted-foreground">{t('org.associates.editor.associateCaption')}</p>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between gap-4">
+              <Label htmlFor="org-associate-toggle-admin">{t('org.associates.editor.adminLabel')}</Label>
+              <Switch
+                id="org-associate-toggle-admin"
+                checked={isAdmin}
+                disabled={saving}
+                onCheckedChange={next => {
+                  setIsAdmin(next);
+                  if (next) setIsAssociate(true);
+                }}
+              />
+            </div>
+
+            <div className="flex items-center justify-between gap-4">
+              <Label htmlFor="org-associate-toggle-owner">{t('org.associates.editor.ownerLabel')}</Label>
+              <Switch
+                id="org-associate-toggle-owner"
+                checked={isOwner}
+                disabled={saving}
+                onCheckedChange={next => {
+                  setIsOwner(next);
+                  if (next) setIsAssociate(true);
+                }}
+              />
+            </div>
+
+            {errorMessage && <p className="text-caption text-destructive">{errorMessage}</p>}
+          </div>
+
+          <DialogFooter className="justify-between sm:justify-between">
+            <Button type="button" variant="destructive" onClick={() => setConfirmingRemove(true)} disabled={saving}>
+              {t('org.associates.editor.remove')}
+            </Button>
+            <div className="flex gap-2">
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
+                {t('org.associates.editor.cancel')}
+              </Button>
+              <Button
+                type="button"
+                onClick={() => onSave({ isAssociate, isAdmin, isOwner })}
+                disabled={saving}
+                aria-busy={saving}
+              >
+                {t('org.associates.editor.save')}
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <ConfirmationDialog
+        open={confirmingRemove}
+        onOpenChange={next => {
+          if (!next) setConfirmingRemove(false);
+        }}
+        variant="destructive"
+        title={t('org.associates.editor.removeConfirmTitle', { name: subject.displayName })}
+        description={t('org.associates.editor.removeConfirmBody', { name: subject.displayName })}
+        confirmLabel={t('org.associates.editor.remove')}
+        onConfirm={() => {
+          setConfirmingRemove(false);
+          onRemove();
+        }}
+        onCancel={() => setConfirmingRemove(false)}
+        loading={saving}
+      />
+    </>
+  );
+}

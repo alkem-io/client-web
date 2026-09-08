@@ -28,11 +28,20 @@ import { Input } from '@/crd/primitives/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
 import { Textarea } from '@/crd/primitives/textarea';
 
-export type InviteRole = 'Member' | 'Lead' | 'Admin';
+export type InviteRole = 'Member' | 'Lead' | 'Admin' | 'Associate' | 'Owner';
 
 /** Who the dialog is inviting — drives search source, allowed roles, and which optional
  * controls (email paste, suggested language) are shown. */
 export type InviteKind = 'user' | 'organization' | 'virtualContributor';
+
+/**
+ * What the invitation targets — orthogonal to `kind`. `'space'` (default) is every
+ * existing flow: a Space's role set, inviting a user/organization/VC. `'organization'`
+ * is the 062 flow: a USER (`kind` stays `'user'`) invited to ASSOCIATE with an
+ * organization's own role set — locked to Associate plus at most one of Admin/Owner, no
+ * email paste, no suggested-language control.
+ */
+export type InviteTarget = 'space' | 'organization';
 
 export type InvitationResult = {
   invitee: ContributorSelectorInvitee;
@@ -56,6 +65,8 @@ export type InvitationResult = {
     | 'parentNotAuthorized'
     | 'notAcceptingInvitations'
     | 'leadLimitReached'
+    /** Organization target only — an offered extra role's cap was already full; the entry role was still sent. */
+    | 'extraRoleLimitReached'
     | 'error';
   /** Informational addendum rendered as an extra line on a `sent` row (organization kind). */
   notice?: 'noAdministrators';
@@ -106,7 +117,8 @@ export type InviteMembersDialogLabels = {
   inviteToRoleLabel: string;
   rolePopoverHelper: string;
   rolePopoverAriaLabel: string;
-  roleLabels: Record<InviteRole, string>;
+  /** Only the roles a given `kind`/`target` combination ever renders need a label. */
+  roleLabels: Partial<Record<InviteRole, string>>;
   sendButtonLabel: string;
   sendingButtonLabel: string;
   backButtonLabel: string;
@@ -131,7 +143,10 @@ export type InviteMembersDialogProps = {
   /** Who is being invited — drives allowed roles and which optional controls show (default 'user'). */
   kind?: InviteKind;
 
-  /** Empty string while the underlying space query is loading; renders a placeholder title. */
+  /** What the invitation targets (default 'space') — see `InviteTarget`. */
+  target?: InviteTarget;
+
+  /** Empty string while the underlying space (or organization) query is loading; renders a placeholder title. */
   spaceName: string;
 
   selectedContributors: ContributorSelectorInvitee[];
@@ -234,6 +249,7 @@ export function InviteMembersDialog({
   open,
   onOpenChange,
   kind = 'user',
+  target = 'space',
   spaceName,
   selectedContributors,
   searchResults,
@@ -309,6 +325,7 @@ export function InviteMembersDialog({
       open={open}
       onOpenChange={onOpenChange}
       kind={kind}
+      target={target}
       spaceName={spaceName}
       selectedContributors={selectedContributors}
       searchResults={searchResults}
@@ -344,6 +361,7 @@ function InviteMembersFormDialog({
   open,
   onOpenChange,
   kind,
+  target = 'space',
   spaceName,
   selectedContributors,
   searchResults,
@@ -397,16 +415,36 @@ function InviteMembersFormDialog({
     setView(results === undefined ? 'form' : 'result');
   }, [results]);
 
-  // Email paste and the suggested-language control only ever apply to user invitees.
-  const allowEmailInvites = kind === 'user' && allowEmailInvitesProp;
-  const optionalRoles = OPTIONAL_ROLES_BY_KIND[kind];
-  const showLanguageControl = kind === 'user' && availableLanguages.length > 0 && Boolean(onSuggestedLanguageChange);
+  const isOrganizationTarget = target === 'organization';
+
+  // Email paste and the suggested-language control apply only to a Space-target user
+  // invitee — the organization target has neither (D16: existing Alkemio users only,
+  // no per-invitee language preference for an associate invitation).
+  const allowEmailInvites = kind === 'user' && !isOrganizationTarget && allowEmailInvitesProp;
+  const lockedRoles: InviteRole[] = isOrganizationTarget ? ['Associate'] : LOCKED_ROLES;
+  const optionalRoles: InviteRole[] = isOrganizationTarget ? ['Admin', 'Owner'] : OPTIONAL_ROLES_BY_KIND[kind];
+  const showLanguageControl =
+    kind === 'user' && !isOrganizationTarget && availableLanguages.length > 0 && Boolean(onSuggestedLanguageChange);
+
+  // The organization target offers Admin/Owner as a single-select: RoleMultiSelect's
+  // checkbox group can technically select both, so the newly-toggled one wins.
+  const handleExtraRolesChange = (next: InviteRole[]) => {
+    if (isOrganizationTarget) {
+      const optionalSelected = next.filter(r => r !== 'Associate');
+      if (optionalSelected.length > 1) {
+        const newlyAdded = optionalSelected.find(r => !extraRoles.includes(r));
+        onExtraRolesChange(['Associate', newlyAdded ?? optionalSelected[optionalSelected.length - 1]]);
+        return;
+      }
+    }
+    onExtraRolesChange(next);
+  };
 
   const hasInvalidChips = selectedContributors.some(c => c.kind === 'email' && c.validationError !== undefined);
   const messageEmpty = welcomeMessage.trim().length === 0;
-  const missingMemberRole = !extraRoles.includes('Member');
+  const missingLockedRole = !lockedRoles.every(role => extraRoles.includes(role));
   const sendDisabled =
-    sending || selectedContributors.length === 0 || hasInvalidChips || messageEmpty || missingMemberRole;
+    sending || selectedContributors.length === 0 || hasInvalidChips || messageEmpty || missingLockedRole;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -500,8 +538,8 @@ function InviteMembersFormDialog({
                 )}
                 <RoleMultiSelect<InviteRole>
                   value={extraRoles}
-                  onChange={onExtraRolesChange}
-                  lockedRoles={LOCKED_ROLES}
+                  onChange={handleExtraRolesChange}
+                  lockedRoles={lockedRoles}
                   optionalRoles={optionalRoles}
                   roleLabels={labels.roleLabels}
                   triggerLabel={labels.inviteToRoleLabel}
@@ -602,7 +640,8 @@ function ResultRow({
     result.outcome === 'alreadyMember' ||
     result.outcome === 'alreadyHasApplication' ||
     result.outcome === 'notAcceptingInvitations' ||
-    result.outcome === 'leadLimitReached';
+    result.outcome === 'leadLimitReached' ||
+    result.outcome === 'extraRoleLimitReached';
   const Icon =
     result.outcome === 'sent'
       ? CheckCircle2

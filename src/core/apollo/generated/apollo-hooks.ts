@@ -14751,18 +14751,10 @@ export const OrgAssociatesTabDocument = gql`
           ...RoleSetMemberUser
         }
       }
-      applications {
-        ...AdminCommunityApplication
-      }
-      invitations {
-        ...AdminCommunityInvitation
-      }
     }
   }
 }
-    ${RoleSetMemberUserFragmentDoc}
-${AdminCommunityApplicationFragmentDoc}
-${AdminCommunityInvitationFragmentDoc}`;
+    ${RoleSetMemberUserFragmentDoc}`;
 
 /**
  * __useOrgAssociatesTabQuery__

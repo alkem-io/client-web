@@ -90,7 +90,7 @@
       "notAcceptingInvitations": "Diese Organisation nimmt keine Space-Einladungen an",
       "leadLimitReached": "Das Limit der Lead-Rolle für Organisationen wurde erreicht",
       "sentNoAdministrators": "Einladung gesendet — diese Organisation hat derzeit keine Administratoren, die benachrichtigt werden könnten; stattdessen wurde der Plattform-Support benachrichtigt",
-      "extraRoleLimitReached": "Rollenlimit erreicht – nur als Assoziierter eingeladen",
+      "extraRoleLimitReached": "Das Limit für die angebotene Rolle wurde erreicht",
       "alreadyAssociate": "Bereits assoziiert"
     },
     "toast": {

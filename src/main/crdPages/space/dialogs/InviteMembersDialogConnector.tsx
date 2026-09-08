@@ -129,6 +129,11 @@ const ROLE_TO_NAME: Record<InviteRole, RoleName> = {
   Member: RoleName.Member,
   Lead: RoleName.Lead,
   Admin: RoleName.Admin,
+  // Associate/Owner are never offered on a Space-target invite (organization target only,
+  // 062) — the shared role type is exhaustive, so this map needs an entry even though these
+  // two are unreachable here.
+  Associate: RoleName.Associate,
+  Owner: RoleName.Owner,
 };
 
 /**
@@ -519,6 +524,9 @@ export function InviteMembersDialogConnector({
     parentNotAuthorized: t('inviteMembers.results.parentNotAuthorized'),
     notAcceptingInvitations: t('inviteMembers.results.notAcceptingInvitations'),
     leadLimitReached: t('inviteMembers.results.leadLimitReached'),
+    // Never rendered on a Space-target invite (organization target only, 062) — the shared
+    // outcome type is exhaustive, so this row needs a value even though it is unreachable here.
+    extraRoleLimitReached: t('inviteMembers.results.extraRoleLimitReached'),
     error: t('inviteMembers.results.error'),
   } satisfies Record<InvitationResult['outcome'], string>;
 

@@ -90,7 +90,7 @@
       "notAcceptingInvitations": "Esta organización no acepta invitaciones a Spaces",
       "leadLimitReached": "Se ha alcanzado el límite del rol Lead para organizaciones",
       "sentNoAdministrators": "Invitación enviada — esta organización actualmente no tiene administradores a quienes notificar, por lo que se ha notificado al soporte de la plataforma",
-      "extraRoleLimitReached": "Límite de rol alcanzado — invitado solo como asociado",
+      "extraRoleLimitReached": "Se ha alcanzado el límite del rol ofrecido",
       "alreadyAssociate": "Ya es asociado"
     },
     "toast": {
