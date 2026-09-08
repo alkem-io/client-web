@@ -120,7 +120,27 @@ function buildTranslationValues(
             spaces: payload.invitation!.spacesToJoinOnAccept!.map(s => s.displayName).join(', '),
           })}`
         : '',
+    // associateRole: used by the organization-associate events (062) — the offered/held extra
+    // role(s), pre-translated as "Associate" / "Associate + Admin" / "Associate + Owner".
+    associateRole: payload.invitation
+      ? t(`components.inAppNotifications.associateRole.${associateRoleKey(payload.invitation.extraRoles)}`)
+      : undefined,
+    // withheld: used by ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED — an extra clause naming
+    // the extra role that could not be granted when the accept-time cap check consumed it meanwhile.
+    withheld:
+      payload.extraRolesWithheld && payload.extraRolesWithheld.length > 0
+        ? t('components.inAppNotifications.associateRoleWithheld', {
+            role: t(`components.inAppNotifications.associateRole.${associateRoleKey(payload.extraRolesWithheld)}`),
+          })
+        : '',
   };
+}
+
+/** Maps a set of extra roles (invitation offer, or the withheld list) to the associateRole i18n leaf. */
+function associateRoleKey(extraRoles: RoleName[]): 'associateAdmin' | 'associateOwner' | 'associate' {
+  if (extraRoles.includes(RoleName.Admin)) return 'associateAdmin';
+  if (extraRoles.includes(RoleName.Owner)) return 'associateOwner';
+  return 'associate';
 }
 
 /**
@@ -159,6 +179,20 @@ const URL_OVERRIDES_BY_TYPE: Partial<
     buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
   [NotificationEvent.SpaceAdminUserCommunityInvitationDeclined]: payload =>
     buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
+  // Organization-associate events (062) — user-side call-to-actions lead to the organization's
+  // own profile (its hero action reflects the invitation/decision); organisation-side
+  // call-to-actions lead to the Associates tab, where the pending section and the list live.
+  [NotificationEvent.UserOrganizationAssociateInvitation]: payload => payload.organization?.profile?.url,
+  [NotificationEvent.UserOrganizationAssociateApplicationApproved]: payload => payload.organization?.profile?.url,
+  [NotificationEvent.UserOrganizationAssociateApplicationDeclined]: payload => payload.organization?.profile?.url,
+  [NotificationEvent.OrganizationAdminAssociateInvitationAccepted]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'community'),
+  [NotificationEvent.OrganizationAdminAssociateInvitationDeclined]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'community'),
+  [NotificationEvent.OrganizationAdminAssociateApplication]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'community'),
+  [NotificationEvent.OrganizationAdminAssociateJoined]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'community'),
 };
 
 /**

@@ -914,9 +914,43 @@
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
           "subject": "Your $t(common.organization) {{organizationName}} has joined {{spaceName}}",
           "description": "No further action is needed."
+        },
+        "USER_ORGANIZATION_ASSOCIATE_INVITATION": {
+          "subject": "{{triggeredByName}} invited you to associate with {{organizationName}}",
+          "description": "As {{associateRole}}."
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED": {
+          "subject": "{{triggeredByName}} accepted the invitation to associate with {{organizationName}}",
+          "description": "{{triggeredByName}} is now an associate of {{organizationName}}, of which you are an $t(common.admin).{{withheld}}"
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} declined the invitation to associate with {{organizationName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_APPLICATION": {
+          "subject": "{{triggeredByName}} applied to associate with {{organizationName}}",
+          "description": "Review the application on the $t(common.organization) $t(common.settings)"
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_APPROVED": {
+          "subject": "Your application to associate with {{organizationName}} was approved",
+          "description": ""
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_DECLINED": {
+          "subject": "Your application to associate with {{organizationName}} was declined",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
+          "subject": "\"{{triggeredByName}}\" joined {{organizationName}} as an associate",
+          "description": "{{triggeredByName}} has joined {{organizationName}}, of which you are an $t(common.admin)."
         }
       },
-      "spacesToJoin": "Accepting joins: {{spaces}}"
+      "spacesToJoin": "Accepting joins: {{spaces}}",
+      "associateRole": {
+        "associate": "Associate",
+        "associateAdmin": "Associate + Admin",
+        "associateOwner": "Associate + Owner"
+      },
+      "associateRoleWithheld": " The {{role}} role could not be granted — the limit was reached."
     },
     "profile": {
       "fields": {

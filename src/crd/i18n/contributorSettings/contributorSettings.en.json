@@ -534,7 +534,9 @@
           "conversationMessageDirect": "Receive a notification when someone sends me a direct (1:1) chat message",
           "conversationMessageGroup": "Receive a notification when someone posts in a group chat I am a member of",
           "membershipInvitationReceived": "Receive a notification when someone invites me to join a community",
-          "membershipCommunityJoined": "Receive a notification when I join a new Space"
+          "membershipCommunityJoined": "Receive a notification when I join a new Space",
+          "organizationAssociateInvitationReceived": "Receive a notification when I am invited to associate with an organisation",
+          "organizationAssociateApplicationDecided": "Receive a notification when an organisation decides on my application to associate"
         },
         "platform": {
           "forumDiscussionComment": "Receive a notification when a new comment is added to a discussion I follow",
@@ -550,7 +552,10 @@
         "organization": {
           "adminMentioned": "Receive a notification when my organisation is mentioned",
           "adminMessageReceived": "Receive direct messages to my organisation",
-          "adminSpaceCommunityInvitation": "Receive a notification when an organisation I administer is invited to join a Space, and when it joins"
+          "adminSpaceCommunityInvitation": "Receive a notification when an organisation I administer is invited to join a Space, and when it joins",
+          "adminAssociateInvitationResponse": "Receive a notification when someone responds to an invitation to associate with an organisation I administer",
+          "adminAssociateApplicationReceived": "Receive a notification when someone applies to associate with an organisation I administer",
+          "adminAssociateJoined": "Receive a notification when someone joins an organisation I administer as an associate"
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Receive a notification when a VC manager is invited to join a community"
@@ -762,7 +767,7 @@
       }
     },
     "community": {
-      "pageTitle": "Community",
+      "pageTitle": "Associates",
       "title": "Associates",
       "description": "Manage who is associated with this organisation. Add new associates from the available users list; removing an associate revokes their organisation role.",
       "currentAssociatesTitle": "Current Associates",
@@ -817,8 +822,6 @@
       "title": "Organisation Settings",
       "membership": {
         "title": "Membership",
-        "allowDomainLabel": "Allow users matching the organisation's domain to join",
-        "allowDomainCaption": "When enabled, users whose email domain matches this organisation can self-join without an invitation.",
         "allowSpaceInvitationsLabel": "Allow Spaces to invite this organisation",
         "allowSpaceInvitationsCaption": "When enabled, Space admins can invite this organisation to join their Space community."
       },
@@ -846,6 +849,56 @@
       "acceptConfirmBody": "Your organisation will join {{spaceName}} as {{role}}.",
       "acceptConfirmAction": "Accept invitation",
       "errorToast": "Couldn't update the invitation — try again"
+    },
+    "associates": {
+      "title": "Associates",
+      "description": "Everyone associated with this organisation — associates, admins and owners — with the ability to edit roles, invite new associates and manage pending applications & invitations.",
+      "invite": "Invite",
+      "empty": "No associates yet.",
+      "badge": {
+        "associate": "Associate",
+        "admin": "Admin",
+        "owner": "Owner"
+      },
+      "editAriaLabel": "Edit {{name}}",
+      "editor": {
+        "title": "Edit {{name}}",
+        "associateLabel": "Associate",
+        "associateCaption": "The baseline role — required to also hold Admin or Owner.",
+        "adminLabel": "Admin",
+        "ownerLabel": "Owner",
+        "remove": "Remove from organisation",
+        "removeConfirmTitle": "Remove {{name}} from the organisation?",
+        "removeConfirmBody": "{{name}} will lose every role they hold on this organisation.",
+        "save": "Save",
+        "cancel": "Cancel",
+        "removeSuccess": "{{name}} removed from the organisation",
+        "removeError": "Couldn't remove {{name}} — try again",
+        "saveError": "Couldn't save changes — try again"
+      },
+      "errors": {
+        "limitAdmin": "An organisation can have at most 6 admins",
+        "limitOwner": "An organisation can have at most 3 owners",
+        "minOwner": "An organisation must keep at least one owner",
+        "generic": "Something went wrong — try again"
+      },
+      "pending": {
+        "title": "Pending applications & invitations",
+        "empty": "No pending applications or invitations.",
+        "offeredRole": {
+          "associate": "Associate",
+          "associateAdmin": "Associate + Admin",
+          "associateOwner": "Associate + Owner"
+        }
+      },
+      "switches": {
+        "title": "Membership",
+        "allowDomainLabel": "Allow users matching this domain to join",
+        "allowDomainCaption": "Users whose email domain matches this organisation's verified domain can join as an associate with one click.",
+        "allowApplicationsLabel": "Allow users to apply to associate",
+        "allowApplicationsCaption": "When off, the organisation's public profile offers no Apply action; pending applications stay listed and decidable.",
+        "saveError": "Couldn't save — try again"
+      }
     }
   },
   "vc": {

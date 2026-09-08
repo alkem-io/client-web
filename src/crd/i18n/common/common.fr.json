@@ -914,9 +914,43 @@
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
           "subject": "Votre $t(common.organization) {{organizationName}} a rejoint {{spaceName}}",
           "description": "Aucune action supplémentaire n'est requise."
+        },
+        "USER_ORGANIZATION_ASSOCIATE_INVITATION": {
+          "subject": "{{triggeredByName}} vous a invité(e) à vous associer à {{organizationName}}",
+          "description": "En tant que {{associateRole}}."
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED": {
+          "subject": "{{triggeredByName}} a accepté l’invitation à s’associer à {{organizationName}}",
+          "description": "{{triggeredByName}} est désormais associé(e) de {{organizationName}}, dont vous êtes $t(common.admin).{{withheld}}"
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} a refusé l’invitation à s’associer à {{organizationName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_APPLICATION": {
+          "subject": "{{triggeredByName}} a postulé pour s’associer à {{organizationName}}",
+          "description": "Examinez la candidature dans les paramètres de l’organisation"
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_APPROVED": {
+          "subject": "Votre candidature pour vous associer à {{organizationName}} a été approuvée",
+          "description": ""
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_DECLINED": {
+          "subject": "Votre candidature pour vous associer à {{organizationName}} a été refusée",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
+          "subject": "« {{triggeredByName}} » a rejoint {{organizationName}} en tant qu’associé",
+          "description": "{{triggeredByName}} a rejoint {{organizationName}}, dont vous êtes $t(common.admin)."
         }
       },
-      "spacesToJoin": "L'acceptation entraîne l'adhésion à : {{spaces}}"
+      "spacesToJoin": "L'acceptation entraîne l'adhésion à : {{spaces}}",
+      "associateRole": {
+        "associate": "Associé",
+        "associateAdmin": "Associé + Admin",
+        "associateOwner": "Associé + Propriétaire"
+      },
+      "associateRoleWithheld": " Le rôle {{role}} n’a pas pu être accordé — la limite a été atteinte."
     },
     "profile": {
       "fields": {

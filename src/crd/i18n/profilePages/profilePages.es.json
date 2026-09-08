@@ -107,7 +107,31 @@
       "resourcesHosted": "Aún no aloja ningún recurso.",
       "leading": "Aún no lidera ningún espacio."
     },
-    "vcType": "Colaborador virtual"
+    "vcType": "Colaborador virtual",
+    "associate": {
+      "join": "Unirse como asociado",
+      "joinCaption": "Tu dominio de correo coincide con esta organización verificada, así que puedes unirte sin solicitarlo.",
+      "apply": "Solicitar asociarse",
+      "applyLogin": "Solicitar asociarse",
+      "respond": "Responder a la invitación",
+      "pending": "Solicitud pendiente",
+      "closed": "Esta organización no está aceptando solicitudes en este momento."
+    },
+    "applyDialog": {
+      "title": "Solicitar asociarse con {{organizationName}}",
+      "messageLabel": "Mensaje (opcional)",
+      "messageOptional": "Cuéntale a la organización por qué te gustaría asociarte — opcional.",
+      "submit": "Enviar solicitud",
+      "submitted": "Solicitud enviada"
+    },
+    "invitationDialog": {
+      "title": "Invitación a asociarte con {{organizationName}}",
+      "role": "Rol ofrecido",
+      "invitedBy": "Invitado por {{name}}",
+      "accept": "Aceptar",
+      "decline": "Rechazar",
+      "withheld": "No se pudo conceder el rol {{role}} — se alcanzó el límite. Eres asociado."
+    }
   },
   "vcProfile": {
     "typeBadge": "Colaborador virtual",

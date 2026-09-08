@@ -57,12 +57,23 @@
         "loadingLabel": "Loading virtual contributors…"
       },
       "resultsSummary_one": "{{count}} invitation processed for {{spaceName}}.",
-      "resultsSummary_other": "{{count}} invitations processed for {{spaceName}}."
+      "resultsSummary_other": "{{count}} invitations processed for {{spaceName}}.",
+      "associates": {
+        "title": "Invite associates to \"{{organizationName}}\"",
+        "searchHint": "Search for a registered user to invite as an associate",
+        "searchPlaceholder": "User name…",
+        "searchAriaLabel": "Search for users by name",
+        "noResultsLabel": "No matching users",
+        "loadingLabel": "Loading users…",
+        "defaultWelcomeMessage": "Hi, we would like to invite you to associate with {{organizationName}}. Click the button below to accept or decline the invitation."
+      }
     },
     "roles": {
       "Member": "Member",
       "Lead": "Lead",
-      "Admin": "Admin"
+      "Admin": "Admin",
+      "Associate": "Associate",
+      "Owner": "Owner"
     },
     "errors": {
       "invalidEmail": "This isn't a valid email address.",
@@ -78,7 +89,9 @@
       "error": "Invitation failed.",
       "notAcceptingInvitations": "This organisation is not accepting Space invitations",
       "leadLimitReached": "The Lead role limit for organisations has been reached",
-      "sentNoAdministrators": "Invitation sent — this organisation currently has no administrators to notify, so platform support has been notified instead"
+      "sentNoAdministrators": "Invitation sent — this organisation currently has no administrators to notify, so platform support has been notified instead",
+      "extraRoleLimitReached": "Role limit reached — invited as Associate only",
+      "alreadyAssociate": "Already an associate"
     },
     "toast": {
       "someFailed": "{{count}} invitations couldn't be sent — see the results for details."

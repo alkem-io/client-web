@@ -107,7 +107,31 @@
       "resourcesHosted": "Nog geen gehoste bronnen.",
       "leading": "Nog geen leiding over spaces."
     },
-    "vcType": "Virtual Contributor"
+    "vcType": "Virtual Contributor",
+    "associate": {
+      "join": "Word geassocieerde",
+      "joinCaption": "Je e-maildomein komt overeen met deze geverifieerde organisatie, dus je kunt lid worden zonder te solliciteren.",
+      "apply": "Solliciteer om te associëren",
+      "applyLogin": "Solliciteer om te associëren",
+      "respond": "Reageer op uitnodiging",
+      "pending": "Aanvraag in behandeling",
+      "closed": "Deze organisatie accepteert momenteel geen aanvragen."
+    },
+    "applyDialog": {
+      "title": "Solliciteren om te associëren met {{organizationName}}",
+      "messageLabel": "Bericht (optioneel)",
+      "messageOptional": "Vertel de organisatie waarom je je wilt associëren — optioneel.",
+      "submit": "Aanvraag indienen",
+      "submitted": "Aanvraag ingediend"
+    },
+    "invitationDialog": {
+      "title": "Uitnodiging om te associëren met {{organizationName}}",
+      "role": "Aangeboden rol",
+      "invitedBy": "Uitgenodigd door {{name}}",
+      "accept": "Accepteren",
+      "decline": "Weigeren",
+      "withheld": "De rol {{role}} kon niet worden toegekend — de limiet is bereikt. Je bent geassocieerde."
+    }
   },
   "vcProfile": {
     "typeBadge": "Virtual Contributor",

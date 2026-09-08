@@ -107,7 +107,31 @@
       "resourcesHosted": "Aucune ressource hébergée pour le moment.",
       "leading": "N'anime aucun espace pour le moment."
     },
-    "vcType": "Contributeur virtuel"
+    "vcType": "Contributeur virtuel",
+    "associate": {
+      "join": "Rejoindre en tant qu’associé",
+      "joinCaption": "Votre domaine de messagerie correspond à cette organisation vérifiée, vous pouvez donc rejoindre sans postuler.",
+      "apply": "Postuler pour s’associer",
+      "applyLogin": "Postuler pour s’associer",
+      "respond": "Répondre à l’invitation",
+      "pending": "Candidature en attente",
+      "closed": "Cette organisation n’accepte pas de candidatures pour le moment."
+    },
+    "applyDialog": {
+      "title": "Postuler pour s’associer à {{organizationName}}",
+      "messageLabel": "Message (facultatif)",
+      "messageOptional": "Expliquez à l’organisation pourquoi vous souhaitez vous associer — facultatif.",
+      "submit": "Envoyer la candidature",
+      "submitted": "Candidature envoyée"
+    },
+    "invitationDialog": {
+      "title": "Invitation à vous associer à {{organizationName}}",
+      "role": "Rôle proposé",
+      "invitedBy": "Invité(e) par {{name}}",
+      "accept": "Accepter",
+      "decline": "Refuser",
+      "withheld": "Le rôle {{role}} n’a pas pu être accordé — la limite a été atteinte. Vous êtes associé(e)."
+    }
   },
   "vcProfile": {
     "typeBadge": "Contributeur virtuel",

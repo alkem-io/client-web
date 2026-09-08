@@ -197,6 +197,17 @@
       "accept": "Приеми",
       "role": "Роля",
       "spacesToJoin": "При приемане се присъединява към: {{spaces}}"
+    },
+    "orgAssociateInvitationsSection": "Покани от организации",
+    "orgAssociateApplicationsSection": "Кандидатури за организации",
+    "orgAssociateCard": {
+      "badge": "Организация",
+      "role": {
+        "associate": "Асоцииран",
+        "associateAdmin": "Асоцииран + Админ",
+        "associateOwner": "Асоцииран + Собственик"
+      },
+      "pendingLabel": "Чакащо"
     }
   },
   "nonActivity": {

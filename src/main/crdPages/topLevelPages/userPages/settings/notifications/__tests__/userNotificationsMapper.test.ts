@@ -205,3 +205,58 @@ describe('mapUserNotifications — spaceAdmin.communityInvitationResponse row (R
     expect(group.rows.find(r => r.property === 'communityInvitationResponse')?.channels.inApp).toBe(false);
   });
 });
+
+describe('mapUserNotifications — organization-associate rows (062, US6)', () => {
+  it('exposes the two user-side rows under the correct dot-paths', () => {
+    const userGroup = findUserGroup({
+      user: {
+        membership: {
+          organizationAssociateInvitationReceived: { email: true, inApp: true, push: true },
+          organizationAssociateApplicationDecided: { email: false, inApp: true, push: false },
+        },
+      },
+    });
+    const properties = userGroup.rows.map(row => row.property);
+    expect(properties).toContain('membership.organizationAssociateInvitationReceived');
+    expect(properties).toContain('membership.organizationAssociateApplicationDecided');
+    expect(
+      userGroup.rows.find(r => r.property === 'membership.organizationAssociateInvitationReceived')?.channels
+    ).toEqual({ email: true, inApp: true, push: true });
+    expect(
+      userGroup.rows.find(r => r.property === 'membership.organizationAssociateApplicationDecided')?.channels
+    ).toEqual({ email: false, inApp: true, push: false });
+  });
+
+  it('exposes the three organisation-side rows only when the organization group is gated in', () => {
+    const server: NotificationSettings = {
+      organization: {
+        adminAssociateInvitationResponse: { email: true, inApp: true, push: true },
+        adminAssociateApplicationReceived: { email: true, inApp: false, push: true },
+        adminAssociateJoined: { email: false, inApp: false, push: true },
+      },
+    };
+    const { groups: withoutPrivilege } = mapUserNotifications(server, new Map(), noPrivileges, t);
+    expect(withoutPrivilege.find(g => g.groupId === 'organization')).toBeUndefined();
+
+    const { groups: withPrivilege } = mapUserNotifications(
+      server,
+      new Map(),
+      { ...noPrivileges, isOrganizationAdmin: true },
+      t
+    );
+    const orgGroup = withPrivilege.find(g => g.groupId === 'organization');
+    const properties = orgGroup?.rows.map(row => row.property) ?? [];
+    expect(properties).toEqual(
+      expect.arrayContaining([
+        'adminAssociateInvitationResponse',
+        'adminAssociateApplicationReceived',
+        'adminAssociateJoined',
+      ])
+    );
+    expect(orgGroup?.rows.find(r => r.property === 'adminAssociateJoined')?.channels).toEqual({
+      email: false,
+      inApp: false,
+      push: true,
+    });
+  });
+});

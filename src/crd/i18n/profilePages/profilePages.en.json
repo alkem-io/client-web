@@ -107,7 +107,31 @@
       "resourcesHosted": "No resources hosted yet.",
       "leading": "Not leading any spaces yet."
     },
-    "vcType": "Virtual Contributor"
+    "vcType": "Virtual Contributor",
+    "associate": {
+      "join": "Join as an associate",
+      "joinCaption": "Your email domain matches this verified organisation, so you can join without applying.",
+      "apply": "Apply to associate",
+      "applyLogin": "Apply to associate",
+      "respond": "Respond to invitation",
+      "pending": "Application pending",
+      "closed": "This organisation is not currently accepting applications."
+    },
+    "applyDialog": {
+      "title": "Apply to associate with {{organizationName}}",
+      "messageLabel": "Message (optional)",
+      "messageOptional": "Tell the organisation why you'd like to associate — optional.",
+      "submit": "Submit application",
+      "submitted": "Application submitted"
+    },
+    "invitationDialog": {
+      "title": "Invitation to associate with {{organizationName}}",
+      "role": "Offered role",
+      "invitedBy": "Invited by {{name}}",
+      "accept": "Accept",
+      "decline": "Decline",
+      "withheld": "The {{role}} role could not be granted — the limit was reached. You are an associate."
+    }
   },
   "vcProfile": {
     "typeBadge": "Virtual Contributor",

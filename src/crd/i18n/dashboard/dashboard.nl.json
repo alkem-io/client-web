@@ -197,6 +197,17 @@
       "accept": "Accepteren",
       "role": "Rol",
       "spacesToJoin": "Bij accepteren wordt toegetreden tot: {{spaces}}"
+    },
+    "orgAssociateInvitationsSection": "Organisatie-uitnodigingen",
+    "orgAssociateApplicationsSection": "Organisatie-aanvragen",
+    "orgAssociateCard": {
+      "badge": "Organisatie",
+      "role": {
+        "associate": "Geassocieerde",
+        "associateAdmin": "Geassocieerde + Beheerder",
+        "associateOwner": "Geassocieerde + Eigenaar"
+      },
+      "pendingLabel": "In behandeling"
     }
   },
   "nonActivity": {

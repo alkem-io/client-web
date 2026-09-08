@@ -914,9 +914,43 @@
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
           "subject": "Uw $t(common.organization) {{organizationName}} is toegetreden tot {{spaceName}}",
           "description": "Er is geen verdere actie nodig."
+        },
+        "USER_ORGANIZATION_ASSOCIATE_INVITATION": {
+          "subject": "{{triggeredByName}} heeft je uitgenodigd om je te associëren met {{organizationName}}",
+          "description": "Als {{associateRole}}."
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED": {
+          "subject": "{{triggeredByName}} heeft de uitnodiging om zich te associëren met {{organizationName}} geaccepteerd",
+          "description": "{{triggeredByName}} is nu geassocieerde van {{organizationName}}, waarvan jij beheerder bent.{{withheld}}"
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} heeft de uitnodiging om zich te associëren met {{organizationName}} geweigerd",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_APPLICATION": {
+          "subject": "{{triggeredByName}} heeft gesolliciteerd om zich te associëren met {{organizationName}}",
+          "description": "Bekijk de aanvraag in de organisatie-instellingen"
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_APPROVED": {
+          "subject": "Je aanvraag om je te associëren met {{organizationName}} is goedgekeurd",
+          "description": ""
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_DECLINED": {
+          "subject": "Je aanvraag om je te associëren met {{organizationName}} is afgewezen",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
+          "subject": "\"{{triggeredByName}}\" is toegetreden tot {{organizationName}} als geassocieerde",
+          "description": "{{triggeredByName}} is toegetreden tot {{organizationName}}, waarvan jij beheerder bent."
         }
       },
-      "spacesToJoin": "Bij accepteren wordt toegetreden tot: {{spaces}}"
+      "spacesToJoin": "Bij accepteren wordt toegetreden tot: {{spaces}}",
+      "associateRole": {
+        "associate": "Geassocieerde",
+        "associateAdmin": "Geassocieerde + Beheerder",
+        "associateOwner": "Geassocieerde + Eigenaar"
+      },
+      "associateRoleWithheld": " De rol {{role}} kon niet worden toegekend — de limiet is bereikt."
     },
     "profile": {
       "fields": {

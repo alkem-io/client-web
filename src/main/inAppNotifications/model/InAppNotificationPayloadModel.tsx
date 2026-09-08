@@ -122,9 +122,20 @@ export interface InAppNotificationPayloadModel {
       url: string;
     }[];
   };
+  /** Organization-associate application payloads (062) — set for the three application events. */
+  application?: {
+    id: string;
+  };
+  /**
+   * Offered extra roles that could not be granted on accept (062, organization invitations
+   * only). Present only on the admin-facing "accepted" notification.
+   */
+  extraRolesWithheld?: RoleName[];
 }
 // nullable aliases are required because you can have different nullability for the same field name conditionally by payload type
 // to be mapped to InAppNotificationPayloadModel
 export interface InAppNotificationIncomingPayloadModel extends InAppNotificationPayloadModel {
   nullableOrganization?: InAppNotificationPayloadModel['organization'];
+  nullableActor?: InAppNotificationPayloadModel['actor'];
+  nullableApplication?: InAppNotificationPayloadModel['application'];
 }

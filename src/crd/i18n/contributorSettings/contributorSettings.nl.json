@@ -534,7 +534,9 @@
           "conversationMessageDirect": "Krijg een melding wanneer iemand mij een direct (1-op-1) chatbericht stuurt",
           "conversationMessageGroup": "Krijg een melding wanneer iemand een bericht plaatst in een groepschat waarvan ik lid ben",
           "membershipInvitationReceived": "Krijg een melding wanneer iemand mij uitnodigt om lid te worden van een community",
-          "membershipCommunityJoined": "Krijg een melding wanneer ik lid word van een nieuwe Space"
+          "membershipCommunityJoined": "Krijg een melding wanneer ik lid word van een nieuwe Space",
+          "organizationAssociateInvitationReceived": "Ontvang een melding wanneer ik word uitgenodigd om me te associëren met een organisatie",
+          "organizationAssociateApplicationDecided": "Ontvang een melding wanneer een organisatie beslist over mijn aanvraag om te associëren"
         },
         "platform": {
           "forumDiscussionComment": "Krijg een melding wanneer er een nieuwe reactie wordt toegevoegd aan een discussie die ik volg",
@@ -550,7 +552,10 @@
         "organization": {
           "adminMentioned": "Krijg een melding wanneer mijn organisatie wordt vermeld",
           "adminMessageReceived": "Ontvang directe berichten gericht aan mijn organisatie",
-          "adminSpaceCommunityInvitation": "Ontvang een melding wanneer een organisatie die ik beheer wordt uitgenodigd om lid te worden van een Space, en wanneer deze lid wordt"
+          "adminSpaceCommunityInvitation": "Ontvang een melding wanneer een organisatie die ik beheer wordt uitgenodigd om lid te worden van een Space, en wanneer deze lid wordt",
+          "adminAssociateInvitationResponse": "Ontvang een melding wanneer iemand reageert op een uitnodiging om zich te associëren met een organisatie die ik beheer",
+          "adminAssociateApplicationReceived": "Ontvang een melding wanneer iemand solliciteert om zich te associëren met een organisatie die ik beheer",
+          "adminAssociateJoined": "Ontvang een melding wanneer iemand als geassocieerde toetreedt tot een organisatie die ik beheer"
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Krijg een melding wanneer een VC-beheerder wordt uitgenodigd om lid te worden van een community"
@@ -762,7 +767,7 @@
       }
     },
     "community": {
-      "pageTitle": "Community",
+      "pageTitle": "Geassocieerden",
       "title": "Geassocieerden",
       "description": "Beheer wie aan deze organisatie verbonden is. Voeg nieuwe geassocieerden toe uit de lijst met beschikbare gebruikers; het verwijderen van een geassocieerde trekt hun organisatierol in.",
       "currentAssociatesTitle": "Huidige geassocieerden",
@@ -817,8 +822,6 @@
       "title": "Organisatie-instellingen",
       "membership": {
         "title": "Lidmaatschap",
-        "allowDomainLabel": "Sta gebruikers met het domein van deze organisatie toe lid te worden",
-        "allowDomainCaption": "Wanneer ingeschakeld, kunnen gebruikers wier e-maildomein overeenkomt met deze organisatie zich aansluiten zonder uitnodiging.",
         "allowSpaceInvitationsLabel": "Spaces toestaan om deze organisatie uit te nodigen",
         "allowSpaceInvitationsCaption": "Indien ingeschakeld, kunnen Space-beheerders deze organisatie uitnodigen om lid te worden van hun Space-community."
       },
@@ -846,6 +849,56 @@
       "acceptConfirmBody": "Uw organisatie treedt toe tot {{spaceName}} als {{role}}.",
       "acceptConfirmAction": "Uitnodiging accepteren",
       "errorToast": "De uitnodiging kon niet worden bijgewerkt — probeer het opnieuw"
+    },
+    "associates": {
+      "title": "Geassocieerden",
+      "description": "Iedereen die aan deze organisatie verbonden is — geassocieerden, beheerders en eigenaren — met de mogelijkheid om rollen te bewerken, nieuwe geassocieerden uit te nodigen en openstaande aanvragen en uitnodigingen te beheren.",
+      "invite": "Uitnodigen",
+      "empty": "Nog geen geassocieerden.",
+      "badge": {
+        "associate": "Geassocieerde",
+        "admin": "Beheerder",
+        "owner": "Eigenaar"
+      },
+      "editAriaLabel": "{{name}} bewerken",
+      "editor": {
+        "title": "{{name}} bewerken",
+        "associateLabel": "Geassocieerde",
+        "associateCaption": "De basisrol — vereist om ook Beheerder of Eigenaar te zijn.",
+        "adminLabel": "Beheerder",
+        "ownerLabel": "Eigenaar",
+        "remove": "Verwijderen uit organisatie",
+        "removeConfirmTitle": "{{name}} verwijderen uit de organisatie?",
+        "removeConfirmBody": "{{name}} verliest alle rollen binnen deze organisatie.",
+        "save": "Opslaan",
+        "cancel": "Annuleren",
+        "removeSuccess": "{{name}} is verwijderd uit de organisatie",
+        "removeError": "Kon {{name}} niet verwijderen — probeer opnieuw",
+        "saveError": "Kon wijzigingen niet opslaan — probeer opnieuw"
+      },
+      "errors": {
+        "limitAdmin": "Een organisatie kan maximaal 6 beheerders hebben",
+        "limitOwner": "Een organisatie kan maximaal 3 eigenaren hebben",
+        "minOwner": "Een organisatie moet minstens één eigenaar behouden",
+        "generic": "Er is iets misgegaan — probeer opnieuw"
+      },
+      "pending": {
+        "title": "Openstaande aanvragen en uitnodigingen",
+        "empty": "Geen openstaande aanvragen of uitnodigingen.",
+        "offeredRole": {
+          "associate": "Geassocieerde",
+          "associateAdmin": "Geassocieerde + Beheerder",
+          "associateOwner": "Geassocieerde + Eigenaar"
+        }
+      },
+      "switches": {
+        "title": "Lidmaatschap",
+        "allowDomainLabel": "Gebruikers met dit domein toestaan om lid te worden",
+        "allowDomainCaption": "Gebruikers van wie het e-maildomein overeenkomt met het geverifieerde domein van deze organisatie, kunnen met één klik als geassocieerde lid worden.",
+        "allowApplicationsLabel": "Gebruikers toestaan om te solliciteren als geassocieerde",
+        "allowApplicationsCaption": "Indien uit, biedt het openbare profiel van de organisatie geen sollicitatieactie; openstaande aanvragen blijven zichtbaar en beslisbaar.",
+        "saveError": "Opslaan mislukt — probeer opnieuw"
+      }
     }
   },
   "vc": {
