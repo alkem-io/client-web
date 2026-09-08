@@ -94,7 +94,6 @@
         "profile": "Profil",
         "account": "Konto",
         "community": "Assoziierte",
-        "authorization": "Autorisierung",
         "settings": "Einstellungen",
         "invitations": "Einladungen"
       },
@@ -535,8 +534,8 @@
           "conversationMessageGroup": "Benachrichtigung erhalten, wenn jemand in einem Gruppenchat postet, dessen Mitglied ich bin",
           "membershipInvitationReceived": "Benachrichtigung erhalten, wenn mich jemand in eine Community einlädt",
           "membershipCommunityJoined": "Benachrichtigung erhalten, wenn ich einem neuen Space beitrete",
-          "organizationAssociateInvitationReceived": "Benachrichtigung erhalten, wenn ich eingeladen werde, mich einer Organisation anzuschließen",
-          "organizationAssociateApplicationDecided": "Benachrichtigung erhalten, wenn eine Organisation über meine Bewerbung entscheidet"
+          "membershipOrganizationAssociateInvitationReceived": "Benachrichtigung erhalten, wenn ich eingeladen werde, mich einer Organisation anzuschließen",
+          "membershipOrganizationAssociateApplicationDecided": "Benachrichtigung erhalten, wenn eine Organisation über meine Bewerbung entscheidet"
         },
         "platform": {
           "forumDiscussionComment": "Benachrichtigung erhalten, wenn ein neuer Kommentar zu einer Diskussion, der ich folge, hinzugefügt wird",
@@ -767,55 +766,7 @@
       }
     },
     "community": {
-      "pageTitle": "Assoziierte",
-      "title": "Mitglieder",
-      "description": "Verwalte, wer mit dieser Organisation verbunden ist. Füge neue Mitglieder aus der Liste der verfügbaren Nutzer hinzu; das Entfernen eines Mitglieds entzieht die Organisationsrolle.",
-      "currentAssociatesTitle": "Aktuelle Mitglieder",
-      "availableUsersTitle": "Verfügbare Nutzer",
-      "searchPlaceholder": "Nutzer nach Namen suchen…",
-      "addAriaLabel": "{name} als Mitglied hinzufügen",
-      "removeAriaLabel": "{name} als Mitglied entfernen",
-      "loadMore": "Mehr laden",
-      "emptyCurrent": "Noch keine Mitglieder.",
-      "emptyAvailable": "Keine passenden Nutzer gefunden.",
-      "removeDialogTitle": "Dieses Mitglied entfernen?",
-      "removeDialogDescription": "{{name}} verliert die Mitgliedsrolle und alle zugehörigen Rechte.",
-      "removeConfirmAssociate": "{{name}} als Mitglied entfernen",
-      "removeSuccess": "Mitglied entfernt",
-      "removeError": "Entfernen fehlgeschlagen — bitte erneut versuchen"
-    },
-    "authorization": {
-      "pageTitle": "Autorisierung",
-      "title": "Autorisierung",
-      "description": "Weisen Sie die Rollen Administrator und Eigentümer für diese Organisation zu. Administratoren verwalten den täglichen Betrieb; Eigentümer haben volle Kontrolle.",
-      "adminTabLabel": "Administrator",
-      "ownerTabLabel": "Eigentümer",
-      "loadMore": "Mehr laden",
-      "admin": {
-        "currentTitle": "Aktuelle Administratoren",
-        "availableTitle": "Verfügbare Nutzer",
-        "searchPlaceholder": "Nutzer nach Name suchen…",
-        "addAriaLabel": "{name} als Administrator hinzufügen",
-        "removeAriaLabel": "{name} als Administrator entfernen",
-        "emptyCurrent": "Noch keine Administratoren.",
-        "emptyAvailable": "Keine passenden Nutzer gefunden."
-      },
-      "owner": {
-        "currentTitle": "Aktuelle Eigentümer",
-        "availableTitle": "Verfügbare Nutzer",
-        "searchPlaceholder": "Nutzer nach Name suchen…",
-        "addAriaLabel": "{name} als Eigentümer hinzufügen",
-        "removeAriaLabel": "{name} als Eigentümer entfernen",
-        "emptyCurrent": "Noch keine Eigentümer.",
-        "emptyAvailable": "Keine passenden Nutzer gefunden."
-      },
-      "removeDialogTitle": "Diese Rolle entfernen?",
-      "removeDialogDescription": "{{name}} verliert diese Rolle und alle zugehörigen Rechte.",
-      "removeConfirmAdmin": "{{name}} als Administrator entfernen",
-      "removeConfirmOwner": "{{name}} als Eigentümer entfernen",
-      "removeSuccessAdmin": "Administrator-Rolle entfernt",
-      "removeSuccessOwner": "Eigentümer-Rolle entfernt",
-      "removeError": "Rolle konnte nicht entfernt werden — bitte erneut versuchen"
+      "pageTitle": "Assoziierte"
     },
     "settings": {
       "pageTitle": "Einstellungen",

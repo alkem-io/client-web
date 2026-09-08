@@ -110,14 +110,14 @@
     "vcType": "Virtual Contributor",
     "associate": {
       "join": "Word geassocieerde",
-      "joinCaption": "Je e-maildomein komt overeen met deze geverifieerde organisatie, dus je kunt lid worden zonder te solliciteren.",
+      "joinCaption": "Je e-maildomein komt overeen met deze geverifieerde organisatie, dus je kunt toetreden zonder te solliciteren.",
       "apply": "Solliciteer om te associëren",
       "applyLogin": "Solliciteer om te associëren",
       "respond": "Reageer op uitnodiging",
       "pending": "Aanvraag in behandeling",
       "closed": "Deze organisatie accepteert momenteel geen aanvragen.",
-      "joinNotEligible": "Je komt op dit moment niet in aanmerking om lid te worden — probeer in plaats daarvan te solliciteren.",
-      "joinError": "Lid worden mislukt — probeer opnieuw"
+      "joinNotEligible": "Je komt op dit moment niet in aanmerking om toe te treden — probeer in plaats daarvan te solliciteren.",
+      "joinError": "Toetreden mislukt — probeer opnieuw"
     },
     "applyDialog": {
       "title": "Solliciteren om te associëren met {{organizationName}}",

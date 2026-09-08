@@ -94,7 +94,6 @@
         "profile": "Profile",
         "account": "Account",
         "community": "Associates",
-        "authorization": "Authorisation",
         "settings": "Settings",
         "invitations": "Invitations"
       },
@@ -535,8 +534,8 @@
           "conversationMessageGroup": "Receive a notification when someone posts in a group chat I am a member of",
           "membershipInvitationReceived": "Receive a notification when someone invites me to join a community",
           "membershipCommunityJoined": "Receive a notification when I join a new Space",
-          "organizationAssociateInvitationReceived": "Receive a notification when I am invited to associate with an organisation",
-          "organizationAssociateApplicationDecided": "Receive a notification when an organisation decides on my application to associate"
+          "membershipOrganizationAssociateInvitationReceived": "Receive a notification when I am invited to associate with an organisation",
+          "membershipOrganizationAssociateApplicationDecided": "Receive a notification when an organisation decides on my application to associate"
         },
         "platform": {
           "forumDiscussionComment": "Receive a notification when a new comment is added to a discussion I follow",
@@ -767,55 +766,7 @@
       }
     },
     "community": {
-      "pageTitle": "Associates",
-      "title": "Associates",
-      "description": "Manage who is associated with this organisation. Add new associates from the available users list; removing an associate revokes their organisation role.",
-      "currentAssociatesTitle": "Current Associates",
-      "availableUsersTitle": "Available Users",
-      "searchPlaceholder": "Search users by name…",
-      "addAriaLabel": "Add {name} as Associate",
-      "removeAriaLabel": "Remove {name} as Associate",
-      "loadMore": "Load more",
-      "emptyCurrent": "No associates yet.",
-      "emptyAvailable": "No matching users found.",
-      "removeDialogTitle": "Remove this associate?",
-      "removeDialogDescription": "{{name}} will lose their associate role and any related permissions.",
-      "removeConfirmAssociate": "Remove {{name}} as Associate",
-      "removeSuccess": "Associate removed",
-      "removeError": "Couldn't remove associate — try again"
-    },
-    "authorization": {
-      "pageTitle": "Authorisation",
-      "title": "Authorisation",
-      "description": "Assign Admin and Owner roles for this organisation. Admins can manage day-to-day settings; Owners have full control over the organisation.",
-      "adminTabLabel": "Admin",
-      "ownerTabLabel": "Owner",
-      "loadMore": "Load more",
-      "admin": {
-        "currentTitle": "Current Admins",
-        "availableTitle": "Available Users",
-        "searchPlaceholder": "Search users by name…",
-        "addAriaLabel": "Add {name} as Admin",
-        "removeAriaLabel": "Remove {name} as Admin",
-        "emptyCurrent": "No admins yet.",
-        "emptyAvailable": "No matching users found."
-      },
-      "owner": {
-        "currentTitle": "Current Owners",
-        "availableTitle": "Available Users",
-        "searchPlaceholder": "Search users by name…",
-        "addAriaLabel": "Add {name} as Owner",
-        "removeAriaLabel": "Remove {name} as Owner",
-        "emptyCurrent": "No owners yet.",
-        "emptyAvailable": "No matching users found."
-      },
-      "removeDialogTitle": "Remove this role?",
-      "removeDialogDescription": "{{name}} will lose this role and any related permissions.",
-      "removeConfirmAdmin": "Remove {{name}} as Admin",
-      "removeConfirmOwner": "Remove {{name}} as Owner",
-      "removeSuccessAdmin": "Admin role removed",
-      "removeSuccessOwner": "Owner role removed",
-      "removeError": "Couldn't remove role — try again"
+      "pageTitle": "Associates"
     },
     "settings": {
       "pageTitle": "Settings",

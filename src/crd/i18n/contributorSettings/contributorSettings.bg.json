@@ -94,7 +94,6 @@
         "profile": "Профил",
         "account": "Акаунт",
         "community": "Асоциирани",
-        "authorization": "Оторизация",
         "settings": "Настройки",
         "invitations": "Покани"
       },
@@ -535,8 +534,8 @@
           "conversationMessageGroup": "Получавайте известие, когато някой публикува в групов чат, на който съм член",
           "membershipInvitationReceived": "Получавайте известие, когато някой ме покани в общност",
           "membershipCommunityJoined": "Получавайте известие, когато се присъединя към нов Space",
-          "organizationAssociateInvitationReceived": "Получаване на известие, когато съм поканен(а) да се асоциирам с организация",
-          "organizationAssociateApplicationDecided": "Получаване на известие, когато организация вземе решение по моята кандидатура"
+          "membershipOrganizationAssociateInvitationReceived": "Получаване на известие, когато съм поканен(а) да се асоциирам с организация",
+          "membershipOrganizationAssociateApplicationDecided": "Получаване на известие, когато организация вземе решение по моята кандидатура"
         },
         "platform": {
           "forumDiscussionComment": "Получавайте известие, когато бъде добавен нов коментар към дискусия, която следвам",
@@ -767,55 +766,7 @@
       }
     },
     "community": {
-      "pageTitle": "Асоциирани",
-      "title": "Асоциирани",
-      "description": "Управлявайте кой е асоцииран с тази организация. Добавяйте нови асоциирани от списъка с налични потребители; премахването на асоцииран отнема ролята му в организацията.",
-      "currentAssociatesTitle": "Текущи асоциирани",
-      "availableUsersTitle": "Налични потребители",
-      "searchPlaceholder": "Търсене на потребители по име…",
-      "addAriaLabel": "Добавяне на {name} като асоцииран",
-      "removeAriaLabel": "Премахване на {name} като асоцииран",
-      "loadMore": "Зареди още",
-      "emptyCurrent": "Все още няма асоциирани.",
-      "emptyAvailable": "Няма намерени потребители.",
-      "removeDialogTitle": "Премахване на този асоцииран?",
-      "removeDialogDescription": "{{name}} ще загуби ролята си на асоцииран и всички свързани права.",
-      "removeConfirmAssociate": "Премахване на {{name}} като асоцииран",
-      "removeSuccess": "Асоциираният е премахнат",
-      "removeError": "Премахването не успя — опитайте отново"
-    },
-    "authorization": {
-      "pageTitle": "Оторизация",
-      "title": "Оторизация",
-      "description": "Назначете ролите Администратор и Собственик за тази организация. Администраторите управляват ежедневните настройки; Собствениците имат пълен контрол.",
-      "adminTabLabel": "Администратор",
-      "ownerTabLabel": "Собственик",
-      "loadMore": "Зареди още",
-      "admin": {
-        "currentTitle": "Текущи администратори",
-        "availableTitle": "Налични потребители",
-        "searchPlaceholder": "Търсене на потребители по име…",
-        "addAriaLabel": "Добавяне на {name} като администратор",
-        "removeAriaLabel": "Премахване на {name} като администратор",
-        "emptyCurrent": "Все още няма администратори.",
-        "emptyAvailable": "Не са намерени съответстващи потребители."
-      },
-      "owner": {
-        "currentTitle": "Текущи собственици",
-        "availableTitle": "Налични потребители",
-        "searchPlaceholder": "Търсене на потребители по име…",
-        "addAriaLabel": "Добавяне на {name} като собственик",
-        "removeAriaLabel": "Премахване на {name} като собственик",
-        "emptyCurrent": "Все още няма собственици.",
-        "emptyAvailable": "Не са намерени съответстващи потребители."
-      },
-      "removeDialogTitle": "Премахване на тази роля?",
-      "removeDialogDescription": "{{name}} ще загуби тази роля и всички свързани права.",
-      "removeConfirmAdmin": "Премахване на {{name}} като администратор",
-      "removeConfirmOwner": "Премахване на {{name}} като собственик",
-      "removeSuccessAdmin": "Ролята администратор е премахната",
-      "removeSuccessOwner": "Ролята собственик е премахната",
-      "removeError": "Премахването на ролята не успя — опитайте отново"
+      "pageTitle": "Асоциирани"
     },
     "settings": {
       "pageTitle": "Настройки",

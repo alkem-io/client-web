@@ -94,7 +94,6 @@
         "profile": "Profiel",
         "account": "Account",
         "community": "Geassocieerden",
-        "authorization": "Autorisatie",
         "settings": "Instellingen",
         "invitations": "Uitnodigingen"
       },
@@ -535,8 +534,8 @@
           "conversationMessageGroup": "Krijg een melding wanneer iemand een bericht plaatst in een groepschat waarvan ik lid ben",
           "membershipInvitationReceived": "Krijg een melding wanneer iemand mij uitnodigt om lid te worden van een community",
           "membershipCommunityJoined": "Krijg een melding wanneer ik lid word van een nieuwe Space",
-          "organizationAssociateInvitationReceived": "Ontvang een melding wanneer ik word uitgenodigd om me te associëren met een organisatie",
-          "organizationAssociateApplicationDecided": "Ontvang een melding wanneer een organisatie beslist over mijn aanvraag om te associëren"
+          "membershipOrganizationAssociateInvitationReceived": "Ontvang een melding wanneer ik word uitgenodigd om me te associëren met een organisatie",
+          "membershipOrganizationAssociateApplicationDecided": "Ontvang een melding wanneer een organisatie beslist over mijn aanvraag om te associëren"
         },
         "platform": {
           "forumDiscussionComment": "Krijg een melding wanneer er een nieuwe reactie wordt toegevoegd aan een discussie die ik volg",
@@ -767,55 +766,7 @@
       }
     },
     "community": {
-      "pageTitle": "Geassocieerden",
-      "title": "Geassocieerden",
-      "description": "Beheer wie aan deze organisatie verbonden is. Voeg nieuwe geassocieerden toe uit de lijst met beschikbare gebruikers; het verwijderen van een geassocieerde trekt hun organisatierol in.",
-      "currentAssociatesTitle": "Huidige geassocieerden",
-      "availableUsersTitle": "Beschikbare gebruikers",
-      "searchPlaceholder": "Zoek gebruikers op naam…",
-      "addAriaLabel": "{name} toevoegen als geassocieerde",
-      "removeAriaLabel": "{name} verwijderen als geassocieerde",
-      "loadMore": "Meer laden",
-      "emptyCurrent": "Nog geen geassocieerden.",
-      "emptyAvailable": "Geen overeenkomende gebruikers gevonden.",
-      "removeDialogTitle": "Deze geassocieerde verwijderen?",
-      "removeDialogDescription": "{{name}} verliest de rol van geassocieerde en alle bijbehorende rechten.",
-      "removeConfirmAssociate": "{{name}} verwijderen als geassocieerde",
-      "removeSuccess": "Geassocieerde verwijderd",
-      "removeError": "Verwijderen mislukt — probeer opnieuw"
-    },
-    "authorization": {
-      "pageTitle": "Autorisatie",
-      "title": "Autorisatie",
-      "description": "Wijs de rollen Beheerder en Eigenaar voor deze organisatie toe. Beheerders kunnen de dagelijkse instellingen beheren; Eigenaren hebben volledige controle over de organisatie.",
-      "adminTabLabel": "Beheerder",
-      "ownerTabLabel": "Eigenaar",
-      "loadMore": "Meer laden",
-      "admin": {
-        "currentTitle": "Huidige Beheerders",
-        "availableTitle": "Beschikbare Gebruikers",
-        "searchPlaceholder": "Zoek gebruikers op naam…",
-        "addAriaLabel": "{name} toevoegen als Beheerder",
-        "removeAriaLabel": "{name} verwijderen als Beheerder",
-        "emptyCurrent": "Nog geen beheerders.",
-        "emptyAvailable": "Geen overeenkomende gebruikers gevonden."
-      },
-      "owner": {
-        "currentTitle": "Huidige Eigenaren",
-        "availableTitle": "Beschikbare Gebruikers",
-        "searchPlaceholder": "Zoek gebruikers op naam…",
-        "addAriaLabel": "{name} toevoegen als Eigenaar",
-        "removeAriaLabel": "{name} verwijderen als Eigenaar",
-        "emptyCurrent": "Nog geen eigenaren.",
-        "emptyAvailable": "Geen overeenkomende gebruikers gevonden."
-      },
-      "removeDialogTitle": "Deze rol verwijderen?",
-      "removeDialogDescription": "{{name}} verliest deze rol en alle bijbehorende rechten.",
-      "removeConfirmAdmin": "{{name}} verwijderen als Beheerder",
-      "removeConfirmOwner": "{{name}} verwijderen als Eigenaar",
-      "removeSuccessAdmin": "Beheerdersrol verwijderd",
-      "removeSuccessOwner": "Eigenaarsrol verwijderd",
-      "removeError": "Verwijderen mislukt — probeer opnieuw"
+      "pageTitle": "Geassocieerden"
     },
     "settings": {
       "pageTitle": "Instellingen",
@@ -893,8 +844,8 @@
       },
       "switches": {
         "title": "Lidmaatschap",
-        "allowDomainLabel": "Gebruikers met dit domein toestaan om lid te worden",
-        "allowDomainCaption": "Gebruikers van wie het e-maildomein overeenkomt met het geverifieerde domein van deze organisatie, kunnen met één klik als geassocieerde lid worden.",
+        "allowDomainLabel": "Gebruikers met dit domein toestaan om toe te treden",
+        "allowDomainCaption": "Gebruikers van wie het e-maildomein overeenkomt met het geverifieerde domein van deze organisatie, kunnen met één klik als geassocieerde toetreden.",
         "allowApplicationsLabel": "Gebruikers toestaan om te solliciteren als geassocieerde",
         "allowApplicationsCaption": "Indien uit, biedt het openbare profiel van de organisatie geen sollicitatieactie; openstaande aanvragen blijven zichtbaar en beslisbaar.",
         "saveError": "Opslaan mislukt — probeer opnieuw"

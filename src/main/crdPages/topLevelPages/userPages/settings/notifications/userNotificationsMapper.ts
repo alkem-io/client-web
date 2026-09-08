@@ -364,7 +364,7 @@ export const mapUserNotifications = (
       },
       {
         property: 'membership.organizationAssociateInvitationReceived',
-        label: t('user.notifications.rows.user.organizationAssociateInvitationReceived'),
+        label: t('user.notifications.rows.user.membershipOrganizationAssociateInvitationReceived'),
         channels: resolveChannels(
           server.user?.membership?.organizationAssociateInvitationReceived,
           overrides,
@@ -374,7 +374,7 @@ export const mapUserNotifications = (
       },
       {
         property: 'membership.organizationAssociateApplicationDecided',
-        label: t('user.notifications.rows.user.organizationAssociateApplicationDecided'),
+        label: t('user.notifications.rows.user.membershipOrganizationAssociateApplicationDecided'),
         channels: resolveChannels(
           server.user?.membership?.organizationAssociateApplicationDecided,
           overrides,

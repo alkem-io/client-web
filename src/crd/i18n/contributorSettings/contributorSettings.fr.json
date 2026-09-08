@@ -94,7 +94,6 @@
         "profile": "Profil",
         "account": "Compte",
         "community": "Associés",
-        "authorization": "Autorisation",
         "settings": "Paramètres",
         "invitations": "Invitations"
       },
@@ -535,8 +534,8 @@
           "conversationMessageGroup": "Recevoir une notification lorsque quelqu'un publie dans un chat de groupe dont je suis membre",
           "membershipInvitationReceived": "Recevoir une notification lorsque quelqu'un m'invite à rejoindre une communauté",
           "membershipCommunityJoined": "Recevoir une notification lorsque je rejoins un nouveau Space",
-          "organizationAssociateInvitationReceived": "Recevoir une notification lorsque je suis invité(e) à m’associer à une organisation",
-          "organizationAssociateApplicationDecided": "Recevoir une notification lorsqu’une organisation statue sur ma candidature d’association"
+          "membershipOrganizationAssociateInvitationReceived": "Recevoir une notification lorsque je suis invité(e) à m’associer à une organisation",
+          "membershipOrganizationAssociateApplicationDecided": "Recevoir une notification lorsqu’une organisation statue sur ma candidature d’association"
         },
         "platform": {
           "forumDiscussionComment": "Recevoir une notification lorsqu'un nouveau commentaire est ajouté à une discussion que je suis",
@@ -767,55 +766,7 @@
       }
     },
     "community": {
-      "pageTitle": "Associés",
-      "title": "Associés",
-      "description": "Gérez qui est associé à cette organisation. Ajoutez de nouveaux associés depuis la liste des utilisateurs disponibles ; retirer un associé révoque son rôle dans l'organisation.",
-      "currentAssociatesTitle": "Associés actuels",
-      "availableUsersTitle": "Utilisateurs disponibles",
-      "searchPlaceholder": "Rechercher des utilisateurs par nom…",
-      "addAriaLabel": "Ajouter {name} comme associé",
-      "removeAriaLabel": "Retirer {name} en tant qu'associé",
-      "loadMore": "Charger plus",
-      "emptyCurrent": "Aucun associé pour l'instant.",
-      "emptyAvailable": "Aucun utilisateur correspondant.",
-      "removeDialogTitle": "Retirer cet associé ?",
-      "removeDialogDescription": "{{name}} perdra son rôle d'associé et les permissions associées.",
-      "removeConfirmAssociate": "Retirer {{name}} en tant qu'associé",
-      "removeSuccess": "Associé retiré",
-      "removeError": "Échec — réessayez"
-    },
-    "authorization": {
-      "pageTitle": "Autorisation",
-      "title": "Autorisation",
-      "description": "Attribuez les rôles Administrateur et Propriétaire pour cette organisation. Les administrateurs gèrent les paramètres quotidiens ; les propriétaires ont un contrôle total.",
-      "adminTabLabel": "Administrateur",
-      "ownerTabLabel": "Propriétaire",
-      "loadMore": "Charger plus",
-      "admin": {
-        "currentTitle": "Administrateurs actuels",
-        "availableTitle": "Utilisateurs disponibles",
-        "searchPlaceholder": "Rechercher des utilisateurs par nom…",
-        "addAriaLabel": "Ajouter {name} en tant qu'administrateur",
-        "removeAriaLabel": "Retirer {name} en tant qu'administrateur",
-        "emptyCurrent": "Aucun administrateur pour l'instant.",
-        "emptyAvailable": "Aucun utilisateur correspondant."
-      },
-      "owner": {
-        "currentTitle": "Propriétaires actuels",
-        "availableTitle": "Utilisateurs disponibles",
-        "searchPlaceholder": "Rechercher des utilisateurs par nom…",
-        "addAriaLabel": "Ajouter {name} en tant que propriétaire",
-        "removeAriaLabel": "Retirer {name} en tant que propriétaire",
-        "emptyCurrent": "Aucun propriétaire pour l'instant.",
-        "emptyAvailable": "Aucun utilisateur correspondant."
-      },
-      "removeDialogTitle": "Retirer ce rôle ?",
-      "removeDialogDescription": "{{name}} perdra ce rôle et les permissions associées.",
-      "removeConfirmAdmin": "Retirer {{name}} en tant qu'administrateur",
-      "removeConfirmOwner": "Retirer {{name}} en tant que propriétaire",
-      "removeSuccessAdmin": "Rôle d'administrateur retiré",
-      "removeSuccessOwner": "Rôle de propriétaire retiré",
-      "removeError": "Échec du retrait du rôle — réessayez"
+      "pageTitle": "Associés"
     },
     "settings": {
       "pageTitle": "Paramètres",
