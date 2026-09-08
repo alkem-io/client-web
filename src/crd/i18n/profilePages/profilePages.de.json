@@ -115,14 +115,17 @@
       "applyLogin": "Als Assoziierter bewerben",
       "respond": "Auf Einladung antworten",
       "pending": "Bewerbung ausstehend",
-      "closed": "Diese Organisation nimmt derzeit keine Bewerbungen an."
+      "closed": "Diese Organisation nimmt derzeit keine Bewerbungen an.",
+      "joinNotEligible": "Du bist derzeit nicht berechtigt beizutreten – versuche es stattdessen mit einer Bewerbung.",
+      "joinError": "Beitritt fehlgeschlagen – bitte erneut versuchen"
     },
     "applyDialog": {
       "title": "Bewerbung um Assoziierung mit {{organizationName}}",
       "messageLabel": "Nachricht (optional)",
       "messageOptional": "Sag der Organisation, warum du dich anschließen möchtest – optional.",
       "submit": "Bewerbung einreichen",
-      "submitted": "Bewerbung eingereicht"
+      "submitted": "Bewerbung eingereicht",
+      "error": "Senden fehlgeschlagen – bitte erneut versuchen"
     },
     "invitationDialog": {
       "title": "Einladung zur Assoziierung mit {{organizationName}}",
@@ -130,7 +133,18 @@
       "invitedBy": "Eingeladen von {{name}}",
       "accept": "Annehmen",
       "decline": "Ablehnen",
-      "withheld": "Die Rolle {{role}} konnte nicht vergeben werden – das Limit wurde erreicht. Du bist assoziiert."
+      "withheld": "Die Rolle {{role}} konnte nicht vergeben werden – das Limit wurde erreicht. Du bist assoziiert.",
+      "roleName": {
+        "admin": "Admin",
+        "owner": "Eigentümer"
+      },
+      "acceptError": "Annahme fehlgeschlagen – bitte erneut versuchen",
+      "declineError": "Ablehnen fehlgeschlagen – bitte erneut versuchen",
+      "offeredRole": {
+        "associate": "Assoziiert",
+        "associateAdmin": "Assoziiert + Admin",
+        "associateOwner": "Assoziiert + Eigentümer"
+      }
     }
   },
   "vcProfile": {

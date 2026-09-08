@@ -115,14 +115,17 @@
       "applyLogin": "Apply to associate",
       "respond": "Respond to invitation",
       "pending": "Application pending",
-      "closed": "This organisation is not currently accepting applications."
+      "closed": "This organisation is not currently accepting applications.",
+      "joinNotEligible": "You're not eligible to join right now — try applying instead.",
+      "joinError": "Couldn't join — try again"
     },
     "applyDialog": {
       "title": "Apply to associate with {{organizationName}}",
       "messageLabel": "Message (optional)",
       "messageOptional": "Tell the organisation why you'd like to associate — optional.",
       "submit": "Submit application",
-      "submitted": "Application submitted"
+      "submitted": "Application submitted",
+      "error": "Couldn't submit — try again"
     },
     "invitationDialog": {
       "title": "Invitation to associate with {{organizationName}}",
@@ -130,7 +133,18 @@
       "invitedBy": "Invited by {{name}}",
       "accept": "Accept",
       "decline": "Decline",
-      "withheld": "The {{role}} role could not be granted — the limit was reached. You are an associate."
+      "withheld": "The {{role}} role could not be granted — the limit was reached. You are an associate.",
+      "roleName": {
+        "admin": "Admin",
+        "owner": "Owner"
+      },
+      "acceptError": "Couldn't accept — try again",
+      "declineError": "Couldn't decline — try again",
+      "offeredRole": {
+        "associate": "Associate",
+        "associateAdmin": "Associate + Admin",
+        "associateOwner": "Associate + Owner"
+      }
     }
   },
   "vcProfile": {

@@ -115,14 +115,17 @@
       "applyLogin": "Solicitar asociarse",
       "respond": "Responder a la invitación",
       "pending": "Solicitud pendiente",
-      "closed": "Esta organización no está aceptando solicitudes en este momento."
+      "closed": "Esta organización no está aceptando solicitudes en este momento.",
+      "joinNotEligible": "No eres elegible para unirte en este momento — prueba a solicitarlo en su lugar.",
+      "joinError": "No se pudo unir — inténtalo de nuevo"
     },
     "applyDialog": {
       "title": "Solicitar asociarse con {{organizationName}}",
       "messageLabel": "Mensaje (opcional)",
       "messageOptional": "Cuéntale a la organización por qué te gustaría asociarte — opcional.",
       "submit": "Enviar solicitud",
-      "submitted": "Solicitud enviada"
+      "submitted": "Solicitud enviada",
+      "error": "No se pudo enviar — inténtalo de nuevo"
     },
     "invitationDialog": {
       "title": "Invitación a asociarte con {{organizationName}}",
@@ -130,7 +133,18 @@
       "invitedBy": "Invitado por {{name}}",
       "accept": "Aceptar",
       "decline": "Rechazar",
-      "withheld": "No se pudo conceder el rol {{role}} — se alcanzó el límite. Eres asociado."
+      "withheld": "No se pudo conceder el rol {{role}} — se alcanzó el límite. Eres asociado.",
+      "roleName": {
+        "admin": "Admin",
+        "owner": "Propietario"
+      },
+      "acceptError": "No se pudo aceptar — inténtalo de nuevo",
+      "declineError": "No se pudo rechazar — inténtalo de nuevo",
+      "offeredRole": {
+        "associate": "Asociado",
+        "associateAdmin": "Asociado + Admin",
+        "associateOwner": "Asociado + Propietario"
+      }
     }
   },
   "vcProfile": {
