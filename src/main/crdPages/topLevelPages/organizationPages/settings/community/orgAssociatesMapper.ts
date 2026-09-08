@@ -28,12 +28,12 @@ export type UsersInRoleLike = {
   }[];
 };
 
-const buildSubtitle = (member: UsersInRoleLike['users'][number]): string | undefined => {
-  const city = member.profile?.location?.city;
-  const country = member.profile?.location?.country;
+const buildSubtitle = (associate: UsersInRoleLike['users'][number]): string | undefined => {
+  const city = associate.profile?.location?.city;
+  const country = associate.profile?.location?.country;
   const location = [city, country].filter(Boolean).join(', ');
   if (location) return location;
-  return member.email || undefined;
+  return associate.email || undefined;
 };
 
 /**
