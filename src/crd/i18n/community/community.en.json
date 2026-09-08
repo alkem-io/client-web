@@ -27,7 +27,10 @@
         "title": "Invite an organisation to join \"{{spaceName}}\"",
         "searchPlaceholder": "Organisation name…",
         "searchHint": "Search for an organisation to invite",
-        "defaultWelcomeMessage": "Hi, we would like to invite your organisation to join {{spaceName}}. Have a look at the Space or click the button below to accept or decline the invitation."
+        "defaultWelcomeMessage": "Hi, we would like to invite your organisation to join {{spaceName}}. Have a look at the Space or click the button below to accept or decline the invitation.",
+        "searchAriaLabel": "Search for organisations by name",
+        "noResultsLabel": "No matching organisations",
+        "loadingLabel": "Loading organisations…"
       },
       "virtualContributor": {
         "title": "Invite Virtual Contributor",
@@ -48,8 +51,13 @@
         "addedNotice": "Virtual Contributor added.",
         "invitedNotice": "Invitation sent.",
         "error": "Something went wrong. Please try again.",
-        "previewAriaLabel": "Preview {{name}}"
-      }
+        "previewAriaLabel": "Preview {{name}}",
+        "searchAriaLabel": "Search for virtual contributors by name",
+        "noResultsLabel": "No matching virtual contributors",
+        "loadingLabel": "Loading virtual contributors…"
+      },
+      "resultsSummary_one": "{{count}} invitation processed for {{spaceName}}.",
+      "resultsSummary_other": "{{count}} invitations processed for {{spaceName}}."
     },
     "roles": {
       "Member": "Member",

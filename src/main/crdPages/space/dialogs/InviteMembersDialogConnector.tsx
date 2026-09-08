@@ -618,6 +618,26 @@ export function InviteMembersDialogConnector({
     : isVirtualContributor
       ? t('inviteMembers.dialog.virtualContributor.searchPlaceholder')
       : t('inviteMembers.dialog.searchPlaceholder');
+  // The search affordances name what is being searched for, so they branch on
+  // kind like the three labels above. Left shared, an organization admin was
+  // told "No matching users" / "Loading users…" and screen readers announced
+  // "Search for users by name or email" in a dialog that searches nothing but
+  // organizations.
+  const searchAriaLabel = isOrganization
+    ? t('inviteMembers.dialog.organization.searchAriaLabel')
+    : isVirtualContributor
+      ? t('inviteMembers.dialog.virtualContributor.searchAriaLabel')
+      : t('inviteMembers.dialog.searchAriaLabel');
+  const noResultsLabel = isOrganization
+    ? t('inviteMembers.dialog.organization.noResultsLabel')
+    : isVirtualContributor
+      ? t('inviteMembers.dialog.virtualContributor.noResultsLabel')
+      : t('inviteMembers.dialog.noResultsLabel');
+  const loadingLabel = isOrganization
+    ? t('inviteMembers.dialog.organization.loadingLabel')
+    : isVirtualContributor
+      ? t('inviteMembers.dialog.virtualContributor.loadingLabel')
+      : t('inviteMembers.dialog.loadingLabel');
 
   return (
     <InviteMembersDialog
@@ -655,16 +675,21 @@ export function InviteMembersDialogConnector({
         title,
         searchHint,
         searchPlaceholder,
-        searchAriaLabel: t('inviteMembers.dialog.searchAriaLabel'),
-        noResultsLabel: t('inviteMembers.dialog.noResultsLabel'),
-        loadingLabel: t('inviteMembers.dialog.loadingLabel'),
+        searchAriaLabel,
+        noResultsLabel,
+        loadingLabel,
         loadMoreLabel: t('inviteMembers.dialog.loadMoreLabel'),
         removeAriaLabel: (label: string) => t('inviteMembers.dialog.removeAriaLabel', { label }),
         validationErrorLabel: errKind =>
           errKind === 'invalid' ? t('inviteMembers.errors.invalidEmail') : t('inviteMembers.errors.duplicateEmail'),
         welcomeMessageLabel: t('inviteMembers.dialog.welcomeMessageLabel'),
         welcomeMessagePlaceholder: t('inviteMembers.dialog.welcomeMessagePlaceholder'),
-        emailVisibilityNote: t('inviteMembers.dialog.emailVisibilityNote'),
+        // Users only. Before the CRD rewrite hoisted it to a shared label this
+        // copy lived under `inviteContributorsDialog.users.note`; shown on the
+        // organization dialog it warns about exposing your personal email in a
+        // flow that has no email path at all (FR-009).
+        emailVisibilityNote:
+          isOrganization || isVirtualContributor ? undefined : t('inviteMembers.dialog.emailVisibilityNote'),
         inviteToRoleLabel: t('inviteMembers.dialog.inviteToRoleLabel'),
         rolePopoverHelper: t('inviteMembers.dialog.rolePopoverHelper'),
         rolePopoverAriaLabel: t('inviteMembers.dialog.rolePopoverAriaLabel'),
@@ -678,6 +703,8 @@ export function InviteMembersDialogConnector({
         backButtonLabel: t('inviteMembers.dialog.backButtonLabel'),
         closeButtonLabel: t('inviteMembers.dialog.closeButtonLabel'),
         closeAriaLabel: t('inviteMembers.dialog.closeAriaLabel'),
+        resultsSummary: (count: number) =>
+          t('inviteMembers.dialog.resultsSummary', { count, spaceName: spaceName || '…' }),
         resultOutcomeLabels,
         resultNoticeLabels: { noAdministrators: t('inviteMembers.results.sentNoAdministrators') },
         suggestedLanguageLabel: t('inviteMembers.dialog.suggestedLanguageLabel'),

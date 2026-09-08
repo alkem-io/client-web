@@ -27,7 +27,10 @@
         "title": "Invitar a una organización a unirse a «{{spaceName}}»",
         "searchPlaceholder": "Nombre de la organización…",
         "searchHint": "Buscar una organización para invitar",
-        "defaultWelcomeMessage": "Hola, nos gustaría invitar a su organización a unirse a {{spaceName}}. Eche un vistazo al Space o haga clic en el botón de abajo para aceptar o rechazar la invitación."
+        "defaultWelcomeMessage": "Hola, nos gustaría invitar a su organización a unirse a {{spaceName}}. Eche un vistazo al Space o haga clic en el botón de abajo para aceptar o rechazar la invitación.",
+        "searchAriaLabel": "Buscar organizaciones por nombre",
+        "noResultsLabel": "No hay organizaciones coincidentes",
+        "loadingLabel": "Cargando organizaciones…"
       },
       "virtualContributor": {
         "title": "Invitar colaborador virtual",
@@ -48,8 +51,13 @@
         "addedNotice": "Colaborador virtual añadido.",
         "invitedNotice": "Invitación enviada.",
         "error": "Algo salió mal. Inténtalo de nuevo.",
-        "previewAriaLabel": "Vista previa de {{name}}"
-      }
+        "previewAriaLabel": "Vista previa de {{name}}",
+        "searchAriaLabel": "Buscar contribuidores virtuales por nombre",
+        "noResultsLabel": "No hay contribuidores virtuales coincidentes",
+        "loadingLabel": "Cargando contribuidores virtuales…"
+      },
+      "resultsSummary_one": "{{count}} invitación procesada para {{spaceName}}.",
+      "resultsSummary_other": "{{count}} invitaciones procesadas para {{spaceName}}."
     },
     "roles": {
       "Member": "Member",

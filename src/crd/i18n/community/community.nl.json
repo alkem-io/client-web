@@ -27,7 +27,10 @@
         "title": "Een organisatie uitnodigen voor \"{{spaceName}}\"",
         "searchPlaceholder": "Organisatienaam…",
         "searchHint": "Zoek naar een organisatie om uit te nodigen",
-        "defaultWelcomeMessage": "Hallo, we willen graag uw organisatie uitnodigen om deel te nemen aan {{spaceName}}. Bekijk de Space of klik op de knop hieronder om de uitnodiging te accepteren of af te wijzen."
+        "defaultWelcomeMessage": "Hallo, we willen graag uw organisatie uitnodigen om deel te nemen aan {{spaceName}}. Bekijk de Space of klik op de knop hieronder om de uitnodiging te accepteren of af te wijzen.",
+        "searchAriaLabel": "Zoek organisaties op naam",
+        "noResultsLabel": "Geen overeenkomende organisaties",
+        "loadingLabel": "Organisaties laden…"
       },
       "virtualContributor": {
         "title": "Virtual Contributor uitnodigen",
@@ -48,8 +51,13 @@
         "addedNotice": "Virtual Contributor toegevoegd.",
         "invitedNotice": "Uitnodiging verzonden.",
         "error": "Er ging iets mis. Probeer het opnieuw.",
-        "previewAriaLabel": "Voorbeeld van {{name}}"
-      }
+        "previewAriaLabel": "Voorbeeld van {{name}}",
+        "searchAriaLabel": "Zoek virtuele bijdragers op naam",
+        "noResultsLabel": "Geen overeenkomende virtuele bijdragers",
+        "loadingLabel": "Virtuele bijdragers laden…"
+      },
+      "resultsSummary_one": "{{count}} uitnodiging verwerkt voor {{spaceName}}.",
+      "resultsSummary_other": "{{count}} uitnodigingen verwerkt voor {{spaceName}}."
     },
     "roles": {
       "Member": "Member",

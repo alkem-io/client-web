@@ -80,6 +80,7 @@ export function VCAddToCommunityDemoPage() {
           backButtonLabel: '',
           closeButtonLabel: 'Close',
           closeAriaLabel: 'Close invite dialog',
+          resultsSummary: (count: number) => `${count} invitations processed.`,
           resultOutcomeLabels: {
             sent: '',
             alreadyInvited: '',

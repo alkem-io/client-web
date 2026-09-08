@@ -101,7 +101,8 @@ export type InviteMembersDialogLabels = {
   validationErrorLabel: (kind: 'invalid' | 'duplicate') => string;
   welcomeMessageLabel: string;
   welcomeMessagePlaceholder: string;
-  emailVisibilityNote: string;
+  /** Users only — the organization and VC dialogs have no email-invite path. */
+  emailVisibilityNote?: string;
   inviteToRoleLabel: string;
   rolePopoverHelper: string;
   rolePopoverAriaLabel: string;
@@ -111,6 +112,8 @@ export type InviteMembersDialogLabels = {
   backButtonLabel: string;
   closeButtonLabel: string;
   closeAriaLabel: string;
+  /** Localized result-count summary; count-aware so plurals work per locale. */
+  resultsSummary: (count: number) => string;
   resultOutcomeLabels: Record<InvitationResult['outcome'], string>;
   /** Label for the informational addendum rendered under a `sent` row's outcome label. */
   resultNoticeLabels?: Record<NonNullable<InvitationResult['notice']>, string>;
@@ -490,7 +493,11 @@ function InviteMembersFormDialog({
               {errorSlot}
 
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-caption text-muted-foreground max-w-md">{labels.emailVisibilityNote}</p>
+                {labels.emailVisibilityNote ? (
+                  <p className="text-caption text-muted-foreground max-w-md">{labels.emailVisibilityNote}</p>
+                ) : (
+                  <span />
+                )}
                 <RoleMultiSelect<InviteRole>
                   value={extraRoles}
                   onChange={onExtraRolesChange}
@@ -520,7 +527,7 @@ function InviteMembersFormDialog({
             onClose={() => onOpenChange(false)}
             backLabel={labels.backButtonLabel}
             closeLabel={labels.closeButtonLabel}
-            spaceName={spaceName}
+            summaryLabel={labels.resultsSummary}
           />
         )}
       </DialogContent>
@@ -536,7 +543,7 @@ function ResultView({
   onClose,
   backLabel,
   closeLabel,
-  spaceName,
+  summaryLabel,
 }: {
   results: InvitationResult[];
   outcomeLabels: InviteMembersDialogLabels['resultOutcomeLabels'];
@@ -545,13 +552,13 @@ function ResultView({
   onClose: () => void;
   backLabel: string;
   closeLabel: string;
-  spaceName: string;
+  // Localized summary for the result count. Was an inline English template
+  // literal with English pluralization, shown to every locale.
+  summaryLabel: InviteMembersDialogLabels['resultsSummary'];
 }) {
   return (
     <>
-      <DialogDescription className="shrink-0">
-        {results.length} invitation{results.length === 1 ? '' : 's'} processed for {spaceName}.
-      </DialogDescription>
+      <DialogDescription className="shrink-0">{summaryLabel(results.length)}</DialogDescription>
       <ul className="flex flex-col gap-2 flex-1 min-h-0 overflow-y-auto">
         {results.map((result, index) => (
           <ResultRow
