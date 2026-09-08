@@ -336,7 +336,7 @@
       "actions": "Actions",
       "empty": "Aucune organisation.",
       "remove": "Retirer l'organisation",
-      "description": "Aperçu de toutes les organisations membres et lead. Pour ajouter une organisation, contactez l'équipe Alkemio à support@alkem.io.",
+      "description": "Aperçu de toutes les organisations membres et lead. Invitez une organisation à rejoindre, ou ajoutez-en une directement.",
       "add": "Ajouter une organisation",
       "dropdown": {
         "viewProfile": "Voir le profil",

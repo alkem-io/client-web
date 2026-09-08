@@ -31,6 +31,7 @@ const labels: InviteMembersDialogLabels = {
   backButtonLabel: 'Back',
   closeButtonLabel: 'Close',
   closeAriaLabel: 'Close dialog',
+  resultsSummary: (count: number) => `${count} invitations processed.`,
   resultOutcomeLabels: {
     sent: 'Sent',
     alreadyInvited: 'Already invited',

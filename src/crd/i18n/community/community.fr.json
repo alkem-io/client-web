@@ -27,7 +27,10 @@
         "title": "Inviter une organisation à rejoindre « {{spaceName}} »",
         "searchPlaceholder": "Nom de l'organisation…",
         "searchHint": "Rechercher une organisation à inviter",
-        "defaultWelcomeMessage": "Bonjour, nous aimerions inviter votre organisation à rejoindre {{spaceName}}. Consultez l'espace ou cliquez sur le bouton ci-dessous pour accepter ou refuser l'invitation."
+        "defaultWelcomeMessage": "Bonjour, nous aimerions inviter votre organisation à rejoindre {{spaceName}}. Consultez l'espace ou cliquez sur le bouton ci-dessous pour accepter ou refuser l'invitation.",
+        "searchAriaLabel": "Rechercher des organisations par nom",
+        "noResultsLabel": "Aucune organisation correspondante",
+        "loadingLabel": "Chargement des organisations…"
       },
       "virtualContributor": {
         "title": "Inviter un contributeur virtuel",
@@ -48,8 +51,13 @@
         "addedNotice": "Contributeur virtuel ajouté.",
         "invitedNotice": "Invitation envoyée.",
         "error": "Une erreur s'est produite. Veuillez réessayer.",
-        "previewAriaLabel": "Aperçu de {{name}}"
-      }
+        "previewAriaLabel": "Aperçu de {{name}}",
+        "searchAriaLabel": "Rechercher des contributeurs virtuels par nom",
+        "noResultsLabel": "Aucun contributeur virtuel correspondant",
+        "loadingLabel": "Chargement des contributeurs virtuels…"
+      },
+      "resultsSummary_one": "{{count}} invitation traitée pour {{spaceName}}.",
+      "resultsSummary_other": "{{count}} invitations traitées pour {{spaceName}}."
     },
     "roles": {
       "Member": "Member",
