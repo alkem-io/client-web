@@ -54,8 +54,8 @@ export const mapOrgInvitations = (
       // invitation on the invited Actor's behalf, rather than erroring the whole
       // query. Nothing to disclose then.
       spacesToJoin: (inv.invitation.spacesToJoinOnAccept ?? []).map(space => ({
-        displayName: space.profile.displayName,
-        url: space.profile.url,
+        displayName: space.displayName,
+        url: space.url,
       })),
       canAct: inv.invitation.nextEvents.includes('ACCEPT'),
     }));

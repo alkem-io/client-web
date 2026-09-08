@@ -1940,11 +1940,8 @@ export const InvitationDataFragmentDoc = gql`
     }
     spacesToJoinOnAccept {
       id
-      profile {
-        id
-        displayName
-        url
-      }
+      displayName
+      url
     }
   }
 }
@@ -3761,11 +3758,8 @@ export const InAppNotificationPayloadSpaceCommunityInvitationFragmentDoc = gql`
     invitedToParent
     spacesToJoinOnAccept {
       id
-      profile {
-        id
-        displayName
-        url
-      }
+      displayName
+      url
     }
   }
 }

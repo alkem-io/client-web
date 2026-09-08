@@ -117,7 +117,7 @@ function buildTranslationValues(
       (payload.invitation?.spacesToJoinOnAccept?.length ?? 0) > 1
         ? ` ${t('components.inAppNotifications.spacesToJoin', {
             // biome-ignore lint/style/noNonNullAssertion: guarded by the length check above
-            spaces: payload.invitation!.spacesToJoinOnAccept!.map(s => s.profile.displayName).join(', '),
+            spaces: payload.invitation!.spacesToJoinOnAccept!.map(s => s.displayName).join(', '),
           })}`
         : '',
   };

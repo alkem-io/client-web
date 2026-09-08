@@ -5012,6 +5012,12 @@ export type SpaceAboutMembershipFieldPolicy = {
   myPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSetID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type SpaceJoinPreviewKeySpecifier = ('displayName' | 'id' | 'url' | SpaceJoinPreviewKeySpecifier)[];
+export type SpaceJoinPreviewFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type SpacePendingMembershipInfoKeySpecifier = (
   | 'about'
   | 'communityGuidelines'
@@ -7672,6 +7678,10 @@ export type StrictTypedTypePolicies = {
   SpaceAboutMembership?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceAboutMembershipKeySpecifier | (() => undefined | SpaceAboutMembershipKeySpecifier);
     fields?: SpaceAboutMembershipFieldPolicy;
+  };
+  SpaceJoinPreview?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SpaceJoinPreviewKeySpecifier | (() => undefined | SpaceJoinPreviewKeySpecifier);
+    fields?: SpaceJoinPreviewFieldPolicy;
   };
   SpacePendingMembershipInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

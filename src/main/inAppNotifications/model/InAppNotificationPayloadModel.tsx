@@ -118,10 +118,8 @@ export interface InAppNotificationPayloadModel {
     extraRoles: RoleName[];
     invitedToParent: boolean;
     spacesToJoinOnAccept?: {
-      profile: {
-        displayName: string;
-        url: string;
-      };
+      displayName: string;
+      url: string;
     }[];
   };
 }
