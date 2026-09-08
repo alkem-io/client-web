@@ -192,7 +192,7 @@ const InvitationDetailContainer = ({
           {t('pendingMemberships.orgInvitationDialog.role')}: {roleText}
           {spacesToJoin.length > 1 &&
             ` · ${t('pendingMemberships.orgInvitationDialog.spacesToJoin', {
-              spaces: spacesToJoin.map(space => space.profile.displayName).join(', '),
+              spaces: spacesToJoin.map(space => space.displayName).join(', '),
             })}`}
         </p>
       )}

@@ -4026,7 +4026,7 @@ export type Invitation = {
   /** The next events of this Lifecycle. */
   nextEvents: Array<Scalars['String']['output']>;
   /** The Spaces that will be joined if this invitation is accepted, root Space first; null when the caller may not answer this invitation on the invited Actor's behalf. */
-  spacesToJoinOnAccept?: Maybe<Array<SpaceAbout>>;
+  spacesToJoinOnAccept?: Maybe<Array<SpaceJoinPreview>>;
   /** The current state of this Lifecycle. */
   state: Scalars['String']['output'];
   /** Optional language the inviter expects the invitee to prefer; recorded per invitation. */
@@ -8923,6 +8923,16 @@ export type SpaceFilterInput = {
   visibilities?: InputMaybe<Array<SpaceVisibility>>;
 };
 
+export type SpaceJoinPreview = {
+  __typename?: 'SpaceJoinPreview';
+  /** The display name of the Space that will be joined. */
+  displayName: Scalars['String']['output'];
+  /** The ID of the Space that will be joined. */
+  id: Scalars['UUID']['output'];
+  /** The URL of the Space that will be joined. */
+  url: Scalars['String']['output'];
+};
+
 export enum SpaceLevel {
   L0 = 'L0',
   L1 = 'L1',
@@ -12062,11 +12072,7 @@ export type UserPendingMembershipsQuery = {
           profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
         };
         spacesToJoinOnAccept?:
-          | Array<{
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-            }>
+          | Array<{ __typename?: 'SpaceJoinPreview'; id: string; displayName: string; url: string }>
           | undefined;
       };
     }>;
@@ -23483,11 +23489,7 @@ export type OrgInvitationsQuery = {
           profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
         };
         spacesToJoinOnAccept?:
-          | Array<{
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-            }>
+          | Array<{ __typename?: 'SpaceJoinPreview'; id: string; displayName: string; url: string }>
           | undefined;
       };
     }>;
@@ -25439,11 +25441,7 @@ export type InvitationDataFragment = {
       profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
     };
     spacesToJoinOnAccept?:
-      | Array<{
-          __typename?: 'SpaceAbout';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-        }>
+      | Array<{ __typename?: 'SpaceJoinPreview'; id: string; displayName: string; url: string }>
       | undefined;
   };
 };
@@ -26415,11 +26413,7 @@ export type VcMembershipsQuery = {
           profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
         };
         spacesToJoinOnAccept?:
-          | Array<{
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-            }>
+          | Array<{ __typename?: 'SpaceJoinPreview'; id: string; displayName: string; url: string }>
           | undefined;
       };
     }>;
@@ -40999,11 +40993,7 @@ export type InAppNotificationReceivedSubscription = {
                 extraRoles: Array<RoleName>;
                 invitedToParent: boolean;
                 spacesToJoinOnAccept?:
-                  | Array<{
-                      __typename?: 'SpaceAbout';
-                      id: string;
-                      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-                    }>
+                  | Array<{ __typename?: 'SpaceJoinPreview'; id: string; displayName: string; url: string }>
                   | undefined;
               }
             | undefined;
@@ -42261,11 +42251,7 @@ export type InAppNotificationsQuery = {
                     extraRoles: Array<RoleName>;
                     invitedToParent: boolean;
                     spacesToJoinOnAccept?:
-                      | Array<{
-                          __typename?: 'SpaceAbout';
-                          id: string;
-                          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-                        }>
+                      | Array<{ __typename?: 'SpaceJoinPreview'; id: string; displayName: string; url: string }>
                       | undefined;
                   }
                 | undefined;
@@ -43529,11 +43515,7 @@ export type InAppNotificationAllTypesFragment = {
               extraRoles: Array<RoleName>;
               invitedToParent: boolean;
               spacesToJoinOnAccept?:
-                | Array<{
-                    __typename?: 'SpaceAbout';
-                    id: string;
-                    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-                  }>
+                | Array<{ __typename?: 'SpaceJoinPreview'; id: string; displayName: string; url: string }>
                 | undefined;
             }
           | undefined;
@@ -44343,11 +44325,7 @@ export type InAppNotificationPayloadSpaceCommunityInvitationFragment = {
         extraRoles: Array<RoleName>;
         invitedToParent: boolean;
         spacesToJoinOnAccept?:
-          | Array<{
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-            }>
+          | Array<{ __typename?: 'SpaceJoinPreview'; id: string; displayName: string; url: string }>
           | undefined;
       }
     | undefined;

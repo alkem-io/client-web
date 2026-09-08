@@ -257,7 +257,7 @@ describe('organization space-invitation translation values (061)', () => {
       orgInvitedNotification({
         extraRoles: [],
         invitedToParent: false,
-        spacesToJoinOnAccept: [{ profile: { displayName: 'Green Energy', url: '/space/green-energy' } }],
+        spacesToJoinOnAccept: [{ displayName: 'Green Energy', url: '/space/green-energy' }],
       }),
       t,
       NotificationEventInAppState.Unread
@@ -272,8 +272,8 @@ describe('organization space-invitation translation values (061)', () => {
         extraRoles: [],
         invitedToParent: true,
         spacesToJoinOnAccept: [
-          { profile: { displayName: 'Root Space', url: '/space/root' } },
-          { profile: { displayName: 'Green Energy', url: '/space/root/green-energy' } },
+          { displayName: 'Root Space', url: '/space/root' },
+          { displayName: 'Green Energy', url: '/space/root/green-energy' },
         ],
       }),
       t,

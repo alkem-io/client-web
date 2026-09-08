@@ -312,11 +312,8 @@ fragment InAppNotificationPayloadSpaceCommunityInvitation on InAppNotificationPa
     invitedToParent
     spacesToJoinOnAccept {
       id
-      profile {
-        id
-        displayName
-        url
-      }
+      displayName
+      url
     }
   }
 }

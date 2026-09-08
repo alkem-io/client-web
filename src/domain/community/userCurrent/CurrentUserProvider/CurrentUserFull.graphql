@@ -53,11 +53,8 @@ fragment InvitationData on CommunityInvitationResult {
     }
     spacesToJoinOnAccept {
       id
-      profile {
-        id
-        displayName
-        url
-      }
+      displayName
+      url
     }
   }
 }

@@ -22,6 +22,6 @@ export interface PendingInvitationItem extends Identifiable {
         url?: string;
       };
     };
-    spacesToJoinOnAccept?: { id: string; profile: { displayName: string; url: string } }[];
+    spacesToJoinOnAccept?: { id: string; displayName: string; url: string }[];
   };
 }

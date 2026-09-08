@@ -24,9 +24,7 @@ const invitationResult = (
     createdDate: new Date('2026-01-01T00:00:00.000Z'),
     createdBy: { id: 'u1', profile: { id: 'p2', displayName: 'Alice' } },
     actor: { id: actorId, type: actorType },
-    spacesToJoinOnAccept: [
-      { id: 'space-1', profile: { id: 'p1', displayName: 'Green Energy', url: '/space/green-energy' } },
-    ],
+    spacesToJoinOnAccept: [{ id: 'space-1', displayName: 'Green Energy', url: '/space/green-energy' }],
     ...overrides,
   },
 });
@@ -91,8 +89,8 @@ describe('mapOrgInvitations', () => {
     const data = buildData([
       invitationResult({
         spacesToJoinOnAccept: [
-          { id: 'root', profile: { id: 'p-root', displayName: 'Root Space', url: '/space/root' } },
-          { id: 'target', profile: { id: 'p-target', displayName: 'Target Subspace', url: '/space/root/target' } },
+          { id: 'root', displayName: 'Root Space', url: '/space/root' },
+          { id: 'target', displayName: 'Target Subspace', url: '/space/root/target' },
         ],
       }),
     ]);
