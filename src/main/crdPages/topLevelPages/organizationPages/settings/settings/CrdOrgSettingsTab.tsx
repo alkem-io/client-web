@@ -34,9 +34,6 @@ const CrdOrgSettingsTab = () => {
 
   const [updateOrgSettings] = useUpdateOrganizationSettingsMutation();
 
-  const [membershipOverride, setMembershipOverride] = useState<boolean | null>(null);
-  const [membershipSaving, setMembershipSaving] = useState(false);
-
   const [spaceInvitationsOverride, setSpaceInvitationsOverride] = useState<boolean | null>(null);
   const [spaceInvitationsSaving, setSpaceInvitationsSaving] = useState(false);
 
@@ -44,41 +41,13 @@ const CrdOrgSettingsTab = () => {
   const [privacySaving, setPrivacySaving] = useState(false);
 
   // Resolved values: optimistic override wins until the mutation settles.
-  const allowDomain = membershipOverride ?? mapped.allowUsersMatchingDomainToJoin;
+  // `allowDomain` is no longer switch-editable here (the switch moved to the
+  // Associates tab); it is still read so the two remaining mutations can pass
+  // the current value through — the input's `allowUsersMatchingDomainToJoin`
+  // field is required and must never be silently reset by an unrelated toggle.
+  const allowDomain = mapped.allowUsersMatchingDomainToJoin;
   const allowSpaceInvitations = spaceInvitationsOverride ?? mapped.allowSpaceInvitations;
   const contributionRoles = privacyOverride ?? mapped.contributionRolesPubliclyVisible;
-
-  const onToggleAllowDomain = async (next: boolean) => {
-    if (!organizationId) return;
-    setMembershipOverride(next);
-    setMembershipSaving(true);
-    try {
-      await updateOrgSettings({
-        variables: {
-          settingsData: {
-            organizationID: organizationId,
-            settings: {
-              // `allowSpaceInvitations` is deliberately OMITTED: it is optional on
-              // the input and the server writes it only when it is defined, so a
-              // toggle that does not change it must not echo a possibly-stale
-              // cached value back — that turns a partial merge into last-write-wins
-              // and can silently re-enable Space invitations for the organization.
-              membership: { allowUsersMatchingDomainToJoin: next },
-              privacy: { contributionRolesPubliclyVisible: contributionRoles },
-            },
-          },
-        },
-        refetchQueries: [refetchOrganizationSettingsQuery({ orgId: organizationId })],
-        awaitRefetchQueries: true,
-      });
-      setMembershipOverride(null);
-    } catch {
-      setMembershipOverride(null);
-      notify(t('org.settings.errorToast'), 'error');
-    } finally {
-      setMembershipSaving(false);
-    }
-  };
 
   const onToggleAllowSpaceInvitations = async (next: boolean) => {
     if (!organizationId) return;
@@ -139,9 +108,6 @@ const CrdOrgSettingsTab = () => {
   return (
     <OrgSettingsTabView
       loading={loading && !data}
-      allowUsersMatchingDomainToJoin={allowDomain}
-      membershipSaving={membershipSaving}
-      onToggleAllowDomain={onToggleAllowDomain}
       allowSpaceInvitations={allowSpaceInvitations}
       allowSpaceInvitationsSaving={spaceInvitationsSaving}
       onToggleAllowSpaceInvitations={onToggleAllowSpaceInvitations}

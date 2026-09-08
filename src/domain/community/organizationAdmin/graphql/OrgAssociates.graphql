@@ -1,0 +1,22 @@
+query OrgAssociatesTab($roleSetId: UUID!) {
+  lookup {
+    roleSet(ID: $roleSetId) {
+      id
+      authorization {
+        myPrivileges
+      }
+      usersInRoles(roles: [ASSOCIATE, ADMIN, OWNER]) {
+        role
+        users {
+          ...RoleSetMemberUser
+        }
+      }
+      applications {
+        ...AdminCommunityApplication
+      }
+      invitations {
+        ...AdminCommunityInvitation
+      }
+    }
+  }
+}

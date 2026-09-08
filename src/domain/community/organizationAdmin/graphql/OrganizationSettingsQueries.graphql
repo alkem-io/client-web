@@ -6,6 +6,7 @@ query OrganizationSettings($orgId: UUID!) {
         membership {
           allowUsersMatchingDomainToJoin
           allowSpaceInvitations
+          allowApplications
         }
         privacy {
           contributionRolesPubliclyVisible

@@ -11877,7 +11877,13 @@ export type InvitationStateEventMutationVariables = Exact<{
 
 export type InvitationStateEventMutation = {
   __typename?: 'Mutation';
-  eventOnInvitation: { __typename?: 'Invitation'; id: string; nextEvents: Array<string>; state: string };
+  eventOnInvitation: {
+    __typename?: 'Invitation';
+    id: string;
+    nextEvents: Array<string>;
+    state: string;
+    extraRolesWithheld?: Array<RoleName> | undefined;
+  };
 };
 
 export type InviteForEntryRoleOnRoleSetMutationVariables = Exact<{
@@ -12199,6 +12205,134 @@ export type UserPendingMembershipsQuery = {
           | undefined;
       };
     }>;
+    organizationInvitations: Array<{
+      __typename?: 'OrganizationInvitationResult';
+      id: string;
+      invitation: {
+        __typename?: 'Invitation';
+        id: string;
+        extraRoles: Array<RoleName>;
+        welcomeMessage?: string | undefined;
+        createdDate: Date;
+        nextEvents: Array<string>;
+        createdBy?:
+          | {
+              __typename?: 'User';
+              id: string;
+              profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+            }
+          | undefined;
+      };
+      organization: {
+        __typename?: 'Organization';
+        id: string;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              avatar?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            }
+          | undefined;
+      };
+    }>;
+    organizationApplications: Array<{
+      __typename?: 'OrganizationApplicationResult';
+      id: string;
+      application: {
+        __typename?: 'Application';
+        id: string;
+        state: string;
+        createdDate: Date;
+        nextEvents: Array<string>;
+      };
+      organization: {
+        __typename?: 'Organization';
+        id: string;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              avatar?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            }
+          | undefined;
+      };
+    }>;
+  };
+};
+
+export type OrgPendingInvitationDataFragment = {
+  __typename?: 'OrganizationInvitationResult';
+  id: string;
+  invitation: {
+    __typename?: 'Invitation';
+    id: string;
+    extraRoles: Array<RoleName>;
+    welcomeMessage?: string | undefined;
+    createdDate: Date;
+    nextEvents: Array<string>;
+    createdBy?:
+      | {
+          __typename?: 'User';
+          id: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+        }
+      | undefined;
+  };
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type OrgPendingApplicationDataFragment = {
+  __typename?: 'OrganizationApplicationResult';
+  id: string;
+  application: { __typename?: 'Application'; id: string; state: string; createdDate: Date; nextEvents: Array<string> };
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -23361,7 +23495,38 @@ export type OrganizationInfoFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
-  roleSet: { __typename?: 'RoleSet'; id: string };
+  roleSet: {
+    __typename?: 'RoleSet';
+    id: string;
+    myMembershipStatus?: CommunityMembershipStatus | undefined;
+    applicationForm: {
+      __typename?: 'Form';
+      id: string;
+      description?: string | undefined;
+      questions: Array<{
+        __typename?: 'FormQuestion';
+        question: string;
+        required: boolean;
+        maxLength: number;
+        sortOrder: number;
+        explanation: string;
+      }>;
+    };
+  };
+  settings: {
+    __typename?: 'OrganizationSettings';
+    membership: {
+      __typename?: 'OrganizationSettingsMembership';
+      allowUsersMatchingDomainToJoin: boolean;
+      allowApplications: boolean;
+    };
+  };
+  myAssociateEligibility: {
+    __typename?: 'OrganizationAssociateEligibility';
+    canApply: boolean;
+    canJoinDirectly: boolean;
+    reason: OrganizationAssociateEligibilityReason;
+  };
   verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
   profile?:
     | {
@@ -23422,7 +23587,38 @@ export type OrganizationInfoQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
-          roleSet: { __typename?: 'RoleSet'; id: string };
+          roleSet: {
+            __typename?: 'RoleSet';
+            id: string;
+            myMembershipStatus?: CommunityMembershipStatus | undefined;
+            applicationForm: {
+              __typename?: 'Form';
+              id: string;
+              description?: string | undefined;
+              questions: Array<{
+                __typename?: 'FormQuestion';
+                question: string;
+                required: boolean;
+                maxLength: number;
+                sortOrder: number;
+                explanation: string;
+              }>;
+            };
+          };
+          settings: {
+            __typename?: 'OrganizationSettings';
+            membership: {
+              __typename?: 'OrganizationSettingsMembership';
+              allowUsersMatchingDomainToJoin: boolean;
+              allowApplications: boolean;
+            };
+          };
+          myAssociateEligibility: {
+            __typename?: 'OrganizationAssociateEligibility';
+            canApply: boolean;
+            canJoinDirectly: boolean;
+            reason: OrganizationAssociateEligibilityReason;
+          };
           verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
           profile?:
             | {
@@ -23545,6 +23741,99 @@ export type RolesOrganizationQuery = {
         level: SpaceLevel;
       }>;
     }>;
+  };
+};
+
+export type OrgAssociatesTabQueryVariables = Exact<{
+  roleSetId: Scalars['UUID']['input'];
+}>;
+
+export type OrgAssociatesTabQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    roleSet?:
+      | {
+          __typename?: 'RoleSet';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          usersInRoles: Array<{
+            __typename?: 'UsersInRolesResponse';
+            role: RoleName;
+            users: Array<{
+              __typename?: 'User';
+              id: string;
+              isContactable: boolean;
+              email: string;
+              firstName: string;
+              lastName: string;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    location?:
+                      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                      | undefined;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
+                  }
+                | undefined;
+            }>;
+          }>;
+          applications: Array<{
+            __typename?: 'Application';
+            id: string;
+            createdDate: Date;
+            updatedDate: Date;
+            state: string;
+            nextEvents: Array<string>;
+            actor: {
+              __typename?: 'Actor';
+              id: string;
+              type: ActorType;
+              profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+            };
+            questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
+            user?: { __typename?: 'User'; id: string; email: string } | undefined;
+          }>;
+          invitations: Array<{
+            __typename?: 'Invitation';
+            id: string;
+            createdDate: Date;
+            updatedDate: Date;
+            state: string;
+            nextEvents: Array<string>;
+            extraRoles: Array<RoleName>;
+            actor: {
+              __typename?: 'Actor';
+              id: string;
+              type: ActorType;
+              profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+            };
+          }>;
+        }
+      | undefined;
   };
 };
 
@@ -23774,6 +24063,7 @@ export type OrganizationSettingsQuery = {
               __typename?: 'OrganizationSettingsMembership';
               allowUsersMatchingDomainToJoin: boolean;
               allowSpaceInvitations: boolean;
+              allowApplications: boolean;
             };
             privacy: { __typename?: 'OrganizationSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
           };
@@ -23860,6 +24150,7 @@ export type UpdateOrganizationSettingsMutation = {
         __typename?: 'OrganizationSettingsMembership';
         allowUsersMatchingDomainToJoin: boolean;
         allowSpaceInvitations: boolean;
+        allowApplications: boolean;
       };
     };
   };
@@ -23869,7 +24160,7 @@ export type PendingInvitationsCountQueryVariables = Exact<{ [key: string]: never
 
 export type PendingInvitationsCountQuery = {
   __typename?: 'Query';
-  me: { __typename?: 'MeQueryResults'; communityInvitationsCount: number };
+  me: { __typename?: 'MeQueryResults'; communityInvitationsCount: number; organizationInvitationsCount: number };
 };
 
 export type PendingMembershipsSpaceQueryVariables = Exact<{
@@ -24732,6 +25023,18 @@ export type UpdateUserSettingsMutation = {
               inApp: boolean;
               push: boolean;
             };
+            organizationAssociateInvitationReceived: {
+              __typename?: 'UserSettingsNotificationChannels';
+              email: boolean;
+              inApp: boolean;
+              push: boolean;
+            };
+            organizationAssociateApplicationDecided: {
+              __typename?: 'UserSettingsNotificationChannels';
+              email: boolean;
+              inApp: boolean;
+              push: boolean;
+            };
           };
         };
         space: {
@@ -24910,6 +25213,24 @@ export type UpdateUserSettingsMutation = {
             inApp: boolean;
             push: boolean;
           };
+          adminAssociateInvitationResponse: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
+          adminAssociateApplicationReceived: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
+          adminAssociateJoined: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
         };
         virtualContributor: {
           __typename?: 'UserSettingsNotificationVirtualContributor';
@@ -25001,6 +25322,24 @@ export type UserSettingsFragmentFragment = {
         push: boolean;
       };
       adminSpaceCommunityInvitation: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
+      adminAssociateInvitationResponse: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
+      adminAssociateApplicationReceived: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
+      adminAssociateJoined: {
         __typename?: 'UserSettingsNotificationChannels';
         email: boolean;
         inApp: boolean;
@@ -25126,6 +25465,18 @@ export type UserSettingsFragmentFragment = {
           push: boolean;
         };
         spaceCommunityJoined: {
+          __typename?: 'UserSettingsNotificationChannels';
+          email: boolean;
+          inApp: boolean;
+          push: boolean;
+        };
+        organizationAssociateInvitationReceived: {
+          __typename?: 'UserSettingsNotificationChannels';
+          email: boolean;
+          inApp: boolean;
+          push: boolean;
+        };
+        organizationAssociateApplicationDecided: {
           __typename?: 'UserSettingsNotificationChannels';
           email: boolean;
           inApp: boolean;
@@ -25259,6 +25610,24 @@ export type UserSettingsQuery = {
                   inApp: boolean;
                   push: boolean;
                 };
+                adminAssociateInvitationResponse: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
+                adminAssociateApplicationReceived: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
+                adminAssociateJoined: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
               };
               space: {
                 __typename?: 'UserSettingsNotificationSpace';
@@ -25379,6 +25748,18 @@ export type UserSettingsQuery = {
                     push: boolean;
                   };
                   spaceCommunityJoined: {
+                    __typename?: 'UserSettingsNotificationChannels';
+                    email: boolean;
+                    inApp: boolean;
+                    push: boolean;
+                  };
+                  organizationAssociateInvitationReceived: {
+                    __typename?: 'UserSettingsNotificationChannels';
+                    email: boolean;
+                    inApp: boolean;
+                    push: boolean;
+                  };
+                  organizationAssociateApplicationDecided: {
                     __typename?: 'UserSettingsNotificationChannels';
                     email: boolean;
                     inApp: boolean;
@@ -40078,8 +40459,72 @@ export type InAppNotificationReceivedSubscription = {
         }
       | undefined;
     payload:
-      | { __typename?: 'InAppNotificationPayloadOrganizationAssociateActor'; type: NotificationEventPayload }
-      | { __typename?: 'InAppNotificationPayloadOrganizationAssociateInvitation'; type: NotificationEventPayload }
+      | {
+          __typename?: 'InAppNotificationPayloadOrganizationAssociateActor';
+          type: NotificationEventPayload;
+          extraRolesWithheld?: Array<RoleName> | undefined;
+          nullableOrganization?:
+            | {
+                __typename?: 'Organization';
+                id: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      visual?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+          nullableActor?:
+            | {
+                __typename?: 'Actor';
+                id: string;
+                profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+              }
+            | undefined;
+          nullableApplication?: { __typename?: 'Application'; id: string } | undefined;
+        }
+      | {
+          __typename?: 'InAppNotificationPayloadOrganizationAssociateInvitation';
+          type: NotificationEventPayload;
+          nullableOrganization?:
+            | {
+                __typename?: 'Organization';
+                id: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      visual?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+          invitation?:
+            | { __typename?: 'Invitation'; id: string; extraRoles: Array<RoleName>; invitedToParent: boolean }
+            | undefined;
+        }
       | {
           __typename?: 'InAppNotificationPayloadOrganizationMessageDirect';
           type: NotificationEventPayload;
@@ -41338,8 +41783,72 @@ export type InAppNotificationsQuery = {
             }
           | undefined;
         payload:
-          | { __typename?: 'InAppNotificationPayloadOrganizationAssociateActor'; type: NotificationEventPayload }
-          | { __typename?: 'InAppNotificationPayloadOrganizationAssociateInvitation'; type: NotificationEventPayload }
+          | {
+              __typename?: 'InAppNotificationPayloadOrganizationAssociateActor';
+              type: NotificationEventPayload;
+              extraRolesWithheld?: Array<RoleName> | undefined;
+              nullableOrganization?:
+                | {
+                    __typename?: 'Organization';
+                    id: string;
+                    profile?:
+                      | {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          url: string;
+                          visual?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: VisualType;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
+              nullableActor?:
+                | {
+                    __typename?: 'Actor';
+                    id: string;
+                    profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+                  }
+                | undefined;
+              nullableApplication?: { __typename?: 'Application'; id: string } | undefined;
+            }
+          | {
+              __typename?: 'InAppNotificationPayloadOrganizationAssociateInvitation';
+              type: NotificationEventPayload;
+              nullableOrganization?:
+                | {
+                    __typename?: 'Organization';
+                    id: string;
+                    profile?:
+                      | {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          url: string;
+                          visual?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: VisualType;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
+              invitation?:
+                | { __typename?: 'Invitation'; id: string; extraRoles: Array<RoleName>; invitedToParent: boolean }
+                | undefined;
+            }
           | {
               __typename?: 'InAppNotificationPayloadOrganizationMessageDirect';
               type: NotificationEventPayload;
@@ -42604,8 +43113,72 @@ export type InAppNotificationAllTypesFragment = {
       }
     | undefined;
   payload:
-    | { __typename?: 'InAppNotificationPayloadOrganizationAssociateActor'; type: NotificationEventPayload }
-    | { __typename?: 'InAppNotificationPayloadOrganizationAssociateInvitation'; type: NotificationEventPayload }
+    | {
+        __typename?: 'InAppNotificationPayloadOrganizationAssociateActor';
+        type: NotificationEventPayload;
+        extraRolesWithheld?: Array<RoleName> | undefined;
+        nullableOrganization?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    visual?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
+            }
+          | undefined;
+        nullableActor?:
+          | {
+              __typename?: 'Actor';
+              id: string;
+              profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+            }
+          | undefined;
+        nullableApplication?: { __typename?: 'Application'; id: string } | undefined;
+      }
+    | {
+        __typename?: 'InAppNotificationPayloadOrganizationAssociateInvitation';
+        type: NotificationEventPayload;
+        nullableOrganization?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    visual?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
+            }
+          | undefined;
+        invitation?:
+          | { __typename?: 'Invitation'; id: string; extraRoles: Array<RoleName>; invitedToParent: boolean }
+          | undefined;
+      }
     | {
         __typename?: 'InAppNotificationPayloadOrganizationMessageDirect';
         type: NotificationEventPayload;
@@ -44887,6 +45460,72 @@ export type InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragment =
     type: CalendarEventType;
     profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
+};
+
+export type InAppNotificationPayloadOrganizationAssociateInvitationFragment = {
+  __typename?: 'InAppNotificationPayloadOrganizationAssociateInvitation';
+  nullableOrganization?:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              visual?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            }
+          | undefined;
+      }
+    | undefined;
+  invitation?:
+    | { __typename?: 'Invitation'; id: string; extraRoles: Array<RoleName>; invitedToParent: boolean }
+    | undefined;
+};
+
+export type InAppNotificationPayloadOrganizationAssociateActorFragment = {
+  __typename?: 'InAppNotificationPayloadOrganizationAssociateActor';
+  extraRolesWithheld?: Array<RoleName> | undefined;
+  nullableOrganization?:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              visual?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            }
+          | undefined;
+      }
+    | undefined;
+  nullableActor?:
+    | {
+        __typename?: 'Actor';
+        id: string;
+        profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+      }
+    | undefined;
+  nullableApplication?: { __typename?: 'Application'; id: string } | undefined;
 };
 
 export type InAppNotificationsUnreadCountQueryVariables = Exact<{ [key: string]: never }>;

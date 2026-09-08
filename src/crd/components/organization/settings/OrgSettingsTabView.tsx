@@ -8,11 +8,8 @@ const NS = 'crd-contributorSettings';
 
 export type OrgSettingsTabViewProps = {
   loading: boolean;
-  // Membership
-  allowUsersMatchingDomainToJoin: boolean;
-  membershipSaving: boolean;
-  onToggleAllowDomain: (next: boolean) => void;
-  // Membership — allow Spaces to invite this organization (061)
+  // Membership — allow Spaces to invite this organization (061). The domain-match
+  // switch moved to the Associates tab and is no longer rendered here (062).
   allowSpaceInvitations: boolean;
   allowSpaceInvitationsSaving: boolean;
   onToggleAllowSpaceInvitations: (next: boolean) => void;
@@ -52,20 +49,6 @@ export function OrgSettingsTabView(props: OrgSettingsTabViewProps) {
     <div className="space-y-6">
       <SettingsCard icon={Users} title={t('org.settings.membership.title')}>
         <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <p className="text-body-emphasis">{t('org.settings.membership.allowDomainLabel')}</p>
-            <p className="mt-0.5 text-caption text-muted-foreground">
-              {t('org.settings.membership.allowDomainCaption')}
-            </p>
-          </div>
-          <Switch
-            checked={props.allowUsersMatchingDomainToJoin}
-            disabled={props.membershipSaving}
-            onCheckedChange={props.onToggleAllowDomain}
-            aria-label={t('org.settings.membership.allowDomainLabel')}
-          />
-        </div>
-        <div className="mt-4 flex items-start justify-between gap-4">
           <div className="flex-1">
             <p className="text-body-emphasis">{t('org.settings.membership.allowSpaceInvitationsLabel')}</p>
             <p className="mt-0.5 text-caption text-muted-foreground">
