@@ -5,6 +5,7 @@ import useActionPermission from '@/domain/access/permissions/useActionPermission
 import {
   ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES,
   ROLE_SET_ASSIGN_PRIVILEGES,
+  ROLE_SET_MANAGE_ORGANIZATION_PRIVILEGES,
   VC_FROM_ACCOUNT_PRIVILEGES,
 } from '@/main/crdPages/permissions/roleAssignmentPrivileges';
 
@@ -54,7 +55,7 @@ describe('space settings community — user and VC controls', () => {
   });
 });
 
-describe('space settings community — organization rows need both tokens', () => {
+describe('space settings community — ADDING an organization needs both tokens', () => {
   it('is denied with only the organization assign privilege', () => {
     expect(useActionPermission([ASSIGN_ORG], ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES, false).allowed).toBe(false);
   });
@@ -79,6 +80,43 @@ describe('space settings community — organization rows need both tokens', () =
     const privileges = [ASSIGN];
     expect(useActionPermission(privileges, ROLE_SET_ASSIGN_PRIVILEGES, false).allowed).toBe(true);
     expect(useActionPermission(privileges, ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES, false).allowed).toBe(false);
+  });
+});
+
+/**
+ * MANAGING an organization already in the role set is a different decision from ADDING
+ * one. The server gates `removeRoleFromOrganization` — and `assignRoleToOrganization`
+ * for an organization that already holds the entry role — on GRANT alone. Gating the
+ * Lead toggle and Remove button on the add pair disabled both for every space admin,
+ * because `roleset-entry-role-assign-organization` is only ever granted to global
+ * admins, support and beta testers. An organization that accepted a Space invitation
+ * was therefore unmanageable by the admin who invited it.
+ */
+describe('space settings community — MANAGING an organization already in the role set', () => {
+  const SPACE_ADMIN_PRIVILEGES = [ASSIGN, GRANT, AuthorizationPrivilege.RolesetEntryRoleInvite];
+
+  it('permits the lead toggle and remove for a space admin', () => {
+    expect(useActionPermission(SPACE_ADMIN_PRIVILEGES, ROLE_SET_MANAGE_ORGANIZATION_PRIVILEGES, false)).toEqual({
+      allowed: true,
+      reason: 'allowed',
+    });
+  });
+
+  it('is the decision that the add pair would have denied', () => {
+    expect(useActionPermission(SPACE_ADMIN_PRIVILEGES, ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES, false).allowed).toBe(
+      false
+    );
+    expect(useActionPermission(SPACE_ADMIN_PRIVILEGES, ROLE_SET_MANAGE_ORGANIZATION_PRIVILEGES, false).allowed).toBe(
+      true
+    );
+  });
+
+  it('still denies a plain member, who holds neither token', () => {
+    expect(useActionPermission([ASSIGN], ROLE_SET_MANAGE_ORGANIZATION_PRIVILEGES, false).allowed).toBe(false);
+  });
+
+  it('is checking while privileges load, never interactive first', () => {
+    expect(useActionPermission(undefined, ROLE_SET_MANAGE_ORGANIZATION_PRIVILEGES, true).reason).toBe('checking');
   });
 });
 

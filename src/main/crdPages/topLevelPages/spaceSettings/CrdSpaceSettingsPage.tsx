@@ -35,6 +35,7 @@ import {
   ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES,
   ROLE_SET_ASSIGN_PRIVILEGES,
   ROLE_SET_INVITE_PRIVILEGES,
+  ROLE_SET_MANAGE_ORGANIZATION_PRIVILEGES,
   VC_FROM_ACCOUNT_PRIVILEGES,
 } from '@/main/crdPages/permissions/roleAssignmentPrivileges';
 import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionReasonText';
@@ -120,6 +121,13 @@ export default function CrdSpaceSettingsPage() {
   );
   const assignOrganizationReason = reasonText(
     useActionPermission(community.myPrivileges, ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES, community.loading)
+  );
+  // Managing an organization that is already a member is a third token again: the server
+  // gates those two mutations on GRANT alone. Reusing `assignOrganizationReason` here left
+  // the Lead toggle and Remove button permanently disabled for space admins, so an
+  // organization that accepted an invitation could never be given Lead, demoted or removed.
+  const manageOrganizationReason = reasonText(
+    useActionPermission(community.myPrivileges, ROLE_SET_MANAGE_ORGANIZATION_PRIVILEGES, community.loading)
   );
   // Inviting is a different token from adding — a space admin holds the invite privilege
   // without the platform-admin direct-add pair — so the Invite organisation button gets
@@ -937,9 +945,9 @@ export default function CrdSpaceSettingsPage() {
                   }
                 }
           }
-          leadDisabledReason={activeMemberSubject.type === 'user' ? assignReason : assignOrganizationReason}
+          leadDisabledReason={activeMemberSubject.type === 'user' ? assignReason : manageOrganizationReason}
           adminDisabledReason={assignReason}
-          removeDisabledReason={activeMemberSubject.type === 'user' ? assignReason : assignOrganizationReason}
+          removeDisabledReason={activeMemberSubject.type === 'user' ? assignReason : manageOrganizationReason}
         />
       )}
 
