@@ -9,40 +9,48 @@ import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
  */
 
 /**
- * Space and organization role sets — `assignRoleToUser` / `removeRoleFromUser`.
+ * Adding a USER to the member role of a SPACE role set — `assignRoleToUser`.
  *
- * Established in production by `useCommunityAdmin.ts`, which gates the space-community
- * add path on this token. The organization surfaces call the same two mutations, so they
- * resolve through the same backend policy.
+ * This is the ONLY branch of `RoleSetResolverMutations` that enforces this token:
+ *
+ *   case RoleSetType.SPACE:
+ *     privilegeRequired = AuthorizationPrivilege.GRANT;
+ *     if (roleData.role === RoleName.MEMBER) {
+ *       privilegeRequired = AuthorizationPrivilege.ROLESET_ENTRY_ROLE_ASSIGN;
+ *     }
+ *
+ * The backend grants `ROLESET_ENTRY_ROLE_ASSIGN` on a role set to global admins and
+ * global support only, so it is the direct-add token reserved for platform admins — an
+ * ordinary space admin never holds it. Applying it to any other action gates that action
+ * shut for every space admin. Use `ROLE_SET_GRANT_PRIVILEGES` for those; mirrors
+ * `useCommunityAdmin.ts`'s `canAddUsers`, which gates only the direct-add path on it.
  */
 export const ROLE_SET_ASSIGN_PRIVILEGES = [AuthorizationPrivilege.RolesetEntryRoleAssign];
 
 /**
- * Organization rows on a role set — `assignRoleToOrganization` / `removeRoleFromOrganization`.
+ * Every other user role change on a SPACE or ORGANIZATION role set — assigning the lead
+ * or admin role, and removing any user role — plus removing an organization from a space
+ * role set.
  *
- * Both tokens are required; mirrors `useCommunityAdmin.ts`'s `canAddOrganizations`.
+ * `assignRoleToUser` defaults to `GRANT` for both role-set types and only swaps to
+ * `ROLESET_ENTRY_ROLE_ASSIGN` for a space MEMBER; `removeRoleFromUser` requires `GRANT`
+ * for every role (member self-removal merely extends the policy so the subject also holds
+ * it); `removeRoleFromOrganization` requires `GRANT` alone. Space admins and organization
+ * admins hold `GRANT` on their role set, which is what makes these actions theirs.
+ */
+export const ROLE_SET_GRANT_PRIVILEGES = [AuthorizationPrivilege.Grant];
+
+/**
+ * Adding an organization to a role set — `assignRoleToOrganization`.
+ *
+ * Both tokens are required; mirrors `useCommunityAdmin.ts`'s `canAddOrganizations`. The
+ * matching removal is NOT gated on this pair — `removeRoleFromOrganization` asks for
+ * `GRANT` only, so it uses `ROLE_SET_GRANT_PRIVILEGES`.
  */
 export const ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES = [
   AuthorizationPrivilege.RolesetEntryRoleAssignOrganization,
   AuthorizationPrivilege.Grant,
 ];
-
-/**
- * Managing an organization that is ALREADY in the role set — changing its role
- * between Member and Lead, or removing it from the Space.
- *
- * Deliberately NOT `ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES`. That pair gates
- * bringing a *new* organization in, which is global-admin-only because a direct
- * add never asks the organization. Once an organization is in the role set the
- * server gates both mutations on GRANT alone —
- * `removeRoleFromOrganization` always has, and `assignRoleToOrganization` does
- * too for an organization that already holds the entry role (server R32,
- * `role.set.resolver.mutations.ts` `authorizeAssignOrganization`). Gating these
- * two controls on the assign-organization pair disabled them for every Space
- * admin, so an organization that accepted an invitation could not be given
- * Lead, demoted, or removed.
- */
-export const ROLE_SET_MANAGE_ORGANIZATION_PRIVILEGES = [AuthorizationPrivilege.Grant];
 
 /**
  * Inviting an actor (user, organization or by email) to a role set —

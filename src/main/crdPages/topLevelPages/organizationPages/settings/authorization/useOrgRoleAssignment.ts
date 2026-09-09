@@ -3,7 +3,7 @@ import { ActorType, type RoleName } from '@/core/apollo/generated/graphql-schema
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
 import useActionPermission from '@/domain/access/permissions/useActionPermission';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
-import { ROLE_SET_ASSIGN_PRIVILEGES } from '@/main/crdPages/permissions/roleAssignmentPrivileges';
+import { ROLE_SET_GRANT_PRIVILEGES } from '@/main/crdPages/permissions/roleAssignmentPrivileges';
 import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionReasonText';
 
 export type AuthorizationRoleName = RoleName.Admin | RoleName.Owner;
@@ -73,11 +73,11 @@ export const useOrgRoleAssignment = (
   });
 
   // Gate add/remove on the privilege the backend enforces for assignRoleToUser /
-  // removeRoleFromUser, so the action is prevented rather than silently refused.
+  // removeRoleFromUser, so the action is prevented rather than silently refused. On an
+  // organization role set both mutations require GRANT — the direct-add token applies only
+  // to adding a member to a SPACE role set, and organization admins never hold it.
   const reasonText = usePermissionReasonText();
-  const assignDisabledReason = reasonText(
-    useActionPermission(myPrivileges, ROLE_SET_ASSIGN_PRIVILEGES, loadingCurrent)
-  );
+  const assignDisabledReason = reasonText(useActionPermission(myPrivileges, ROLE_SET_GRANT_PRIVILEGES, loadingCurrent));
 
   const availableResponse = useRoleSetAvailableUsers({
     roleSetId,
