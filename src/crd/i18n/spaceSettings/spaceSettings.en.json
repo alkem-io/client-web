@@ -238,6 +238,9 @@
       "email": "Email",
       "date": "Date",
       "type": "Type",
+      "offeredRole": {
+        "column": "Offered role"
+      },
       "actions": "Actions",
       "approve": "Approve",
       "reject": "Reject",
@@ -251,6 +254,7 @@
       "viewDialog": {
         "created": "Created {{date}}",
         "updated": "Updated {{date}}",
+        "offeredRole": "Offered role: {{role}}",
         "welcomeMessage": "Welcome message",
         "noWelcomeMessage": "No welcome message provided.",
         "noAnswers": "No answers provided.",

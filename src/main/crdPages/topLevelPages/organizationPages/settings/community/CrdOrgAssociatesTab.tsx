@@ -139,6 +139,7 @@ const CrdOrgAssociatesTab = () => {
         onOpenChange={open => {
           if (!open) setViewingMembership(null);
         }}
+        showOfferedRole={true}
       />
 
       <OrgInviteAssociatesDialogConnector

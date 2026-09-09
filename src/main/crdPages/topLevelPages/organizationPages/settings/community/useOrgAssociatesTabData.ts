@@ -24,6 +24,7 @@ import {
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 import { ORG_ROLE_SET_MANAGE_PRIVILEGES } from '@/main/crdPages/permissions/roleAssignmentPrivileges';
 import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionReasonText';
+import { offeredRoleLabelKey } from '@/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper';
 import { mapRoleLimitError, mapUsersInRolesToAssociateRows, type OrgAssociateRow } from './orgAssociatesMapper';
 
 export type PendingRoleRemoval = { contributorId: string; displayName: string };
@@ -221,6 +222,7 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
         canApprove: false,
         canReject: false,
         canDelete: inv.state === InvitationState.INVITED,
+        offeredRoleLabel: t(`org.associates.pending.offeredRole.${offeredRoleLabelKey(inv.extraRoles)}`),
       };
     })
     .filter((x): x is PendingMembership => x !== null);

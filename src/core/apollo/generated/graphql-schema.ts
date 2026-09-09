@@ -32379,6 +32379,7 @@ export type CommunityInvitationQuery = {
           createdDate: Date;
           updatedDate: Date;
           welcomeMessage?: string | undefined;
+          extraRoles: Array<RoleName>;
           actor: {
             __typename?: 'Actor';
             type: ActorType;

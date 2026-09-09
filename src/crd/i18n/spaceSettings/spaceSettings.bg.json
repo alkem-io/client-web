@@ -238,6 +238,9 @@
       "email": "Имейл",
       "date": "Дата",
       "type": "Тип",
+      "offeredRole": {
+        "column": "Предложена роля"
+      },
       "actions": "Действия",
       "approve": "Одобри",
       "reject": "Отхвърли",
@@ -251,6 +254,7 @@
       "viewDialog": {
         "created": "Създадено на {{date}}",
         "updated": "Актуализирано на {{date}}",
+        "offeredRole": "Предложена роля: {{role}}",
         "welcomeMessage": "Приветствено съобщение",
         "noWelcomeMessage": "Няма предоставено приветствено съобщение.",
         "noAnswers": "Няма предоставени отговори.",

@@ -27,6 +27,9 @@ export type MembershipDetailDialogProps = {
   country?: string;
   createdDate?: Date | string;
   updatedDate?: Date | string;
+  /** The extra role(s) offered alongside the entry role, pre-formatted for display
+   * (e.g. "Associate + Admin"). Only rendered for `kind === 'invitation'` when set. */
+  offeredRoleLabel?: string;
   /** Application answers — rendered for `kind === 'application'`. */
   questions?: MembershipDetailQuestion[];
   /** Invitation welcome text (markdown) — rendered for `kind === 'invitation'`. */
@@ -47,6 +50,7 @@ export function MembershipDetailDialog({
   country,
   createdDate,
   updatedDate,
+  offeredRoleLabel,
   questions,
   welcomeMessage,
   className,
@@ -93,7 +97,7 @@ export function MembershipDetailDialog({
               </div>
             </div>
 
-            {(created || updated) && (
+            {(created || updated || offeredRoleLabel) && (
               <div className="flex flex-col gap-0.5">
                 {created && (
                   <p className="text-caption text-muted-foreground">
@@ -103,6 +107,11 @@ export function MembershipDetailDialog({
                 {updated && (
                   <p className="text-caption text-muted-foreground">
                     {t('community.pendingMemberships.viewDialog.updated', { date: updated })}
+                  </p>
+                )}
+                {kind === 'invitation' && offeredRoleLabel && (
+                  <p className="text-caption text-muted-foreground">
+                    {t('community.pendingMemberships.viewDialog.offeredRole', { role: offeredRoleLabel })}
                   </p>
                 )}
               </div>

@@ -25558,6 +25558,7 @@ export const CommunityInvitationDocument = gql`
       createdDate
       updatedDate
       welcomeMessage
+      extraRoles
       actor {
         type
         id

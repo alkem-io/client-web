@@ -26,6 +26,10 @@ export type PendingMembership = {
   canApprove: boolean;
   canReject: boolean;
   canDelete: boolean;
+  /** The extra role(s) offered alongside the entry role, pre-formatted for display (e.g. "Associate + Admin").
+   * Only the organization Associates consumer populates this; the "Offered role" column renders only when
+   * at least one row in `items` carries it, so other consumers (Space settings) are unaffected. */
+  offeredRoleLabel?: string;
 };
 
 export type PendingMembershipsTableProps = {
@@ -179,6 +183,8 @@ export function PendingMembershipsTable({
     onSort: toggleSort,
   });
 
+  const hasOfferedRole = items.some(item => item.offeredRoleLabel !== undefined);
+
   const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
   const pageStart = (safePage - 1) * PAGE_SIZE;
@@ -227,13 +233,14 @@ export function PendingMembershipsTable({
               <SortableHead {...headProps('date', t('community.pendingMemberships.date'))} />
               <SortableHead {...headProps('status', t('community.pendingMemberships.status.column'))} />
               <SortableHead {...headProps('type', t('community.pendingMemberships.type'))} />
+              {hasOfferedRole && <TableHead>{t('community.pendingMemberships.offeredRole.column')}</TableHead>}
               <TableHead className="w-[160px] text-right">{t('community.pendingMemberships.actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {paginated.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground py-6">
+                <TableCell colSpan={hasOfferedRole ? 7 : 6} className="text-center text-muted-foreground py-6">
                   {items.length === 0
                     ? t('community.pendingMemberships.empty')
                     : t('community.pendingMemberships.noMatch')}
@@ -276,6 +283,9 @@ export function PendingMembershipsTable({
                     </Badge>
                   </TableCell>
                   <TableCell className="text-body-emphasis">{typeLabel(row)}</TableCell>
+                  {hasOfferedRole && (
+                    <TableCell className="text-body text-muted-foreground">{row.offeredRoleLabel ?? '—'}</TableCell>
+                  )}
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
                       {row.canApprove && (
