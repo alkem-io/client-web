@@ -2976,6 +2976,7 @@ export type MemoKeySpecifier = (
   | 'markdown'
   | 'nameID'
   | 'profile'
+  | 'signatures'
   | 'updatedDate'
   | MemoKeySpecifier
 )[];
@@ -2989,7 +2990,38 @@ export type MemoFieldPolicy = {
   markdown?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  signatures?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MemoSignatureKeySpecifier = (
+  | 'actor'
+  | 'createdDate'
+  | 'document'
+  | 'id'
+  | 'status'
+  | 'updatedDate'
+  | MemoSignatureKeySpecifier
+)[];
+export type MemoSignatureFieldPolicy = {
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  document?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  status?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MemoSigningContinueResultKeySpecifier = ('authorizeUrl' | MemoSigningContinueResultKeySpecifier)[];
+export type MemoSigningContinueResultFieldPolicy = {
+  authorizeUrl?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MemoSigningPrepareResultKeySpecifier = (
+  | 'attemptId'
+  | 'previewUrl'
+  | MemoSigningPrepareResultKeySpecifier
+)[];
+export type MemoSigningPrepareResultFieldPolicy = {
+  attemptId?: FieldPolicy<any> | FieldReadFunction<any>;
+  previewUrl?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageKeySpecifier = (
   | 'id'
@@ -3120,6 +3152,7 @@ export type MutationKeySpecifier = (
   | 'authorizationPolicyResetToGlobalAdminsAccess'
   | 'castPollVote'
   | 'cleanupCollections'
+  | 'continueMemoSigning'
   | 'convertSpaceL1ToSpaceL0'
   | 'convertSpaceL1ToSpaceL2'
   | 'convertSpaceL2ToSpaceL1'
@@ -3203,6 +3236,7 @@ export type MutationKeySpecifier = (
   | 'moveSpaceL1ToSpaceL2'
   | 'moveSpaceL2ToSpaceL1'
   | 'moveTaskToColumn'
+  | 'prepareMemoSigning'
   | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
   | 'removeCommunityGuidelinesContent'
@@ -3363,6 +3397,7 @@ export type MutationFieldPolicy = {
   authorizationPolicyResetToGlobalAdminsAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   castPollVote?: FieldPolicy<any> | FieldReadFunction<any>;
   cleanupCollections?: FieldPolicy<any> | FieldReadFunction<any>;
+  continueMemoSigning?: FieldPolicy<any> | FieldReadFunction<any>;
   convertSpaceL1ToSpaceL0?: FieldPolicy<any> | FieldReadFunction<any>;
   convertSpaceL1ToSpaceL2?: FieldPolicy<any> | FieldReadFunction<any>;
   convertSpaceL2ToSpaceL1?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3446,6 +3481,7 @@ export type MutationFieldPolicy = {
   moveSpaceL1ToSpaceL2?: FieldPolicy<any> | FieldReadFunction<any>;
   moveSpaceL2ToSpaceL1?: FieldPolicy<any> | FieldReadFunction<any>;
   moveTaskToColumn?: FieldPolicy<any> | FieldReadFunction<any>;
+  prepareMemoSigning?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4314,6 +4350,7 @@ export type QueryKeySpecifier = (
   | 'rolesUser'
   | 'rolesVirtualContributor'
   | 'search'
+  | 'signingAttempt'
   | 'spaces'
   | 'spacesPaginated'
   | 'task'
@@ -4324,6 +4361,7 @@ export type QueryKeySpecifier = (
   | 'usersPaginated'
   | 'usersWithAuthorizationCredential'
   | 'vapidPublicKey'
+  | 'verifyMemoSignature'
   | 'virtualContributor'
   | 'virtualContributors'
   | QueryKeySpecifier
@@ -4356,6 +4394,7 @@ export type QueryFieldPolicy = {
   rolesUser?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   search?: FieldPolicy<any> | FieldReadFunction<any>;
+  signingAttempt?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
   spacesPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   task?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4366,6 +4405,7 @@ export type QueryFieldPolicy = {
   usersPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   usersWithAuthorizationCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   vapidPublicKey?: FieldPolicy<any> | FieldReadFunction<any>;
+  verifyMemoSignature?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -7193,6 +7233,21 @@ export type StrictTypedTypePolicies = {
   Memo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MemoKeySpecifier | (() => undefined | MemoKeySpecifier);
     fields?: MemoFieldPolicy;
+  };
+  MemoSignature?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MemoSignatureKeySpecifier | (() => undefined | MemoSignatureKeySpecifier);
+    fields?: MemoSignatureFieldPolicy;
+  };
+  MemoSigningContinueResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | MemoSigningContinueResultKeySpecifier
+      | (() => undefined | MemoSigningContinueResultKeySpecifier);
+    fields?: MemoSigningContinueResultFieldPolicy;
+  };
+  MemoSigningPrepareResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MemoSigningPrepareResultKeySpecifier | (() => undefined | MemoSigningPrepareResultKeySpecifier);
+    fields?: MemoSigningPrepareResultFieldPolicy;
   };
   Message?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier);
