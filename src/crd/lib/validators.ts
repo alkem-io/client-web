@@ -25,15 +25,20 @@ export const isValidUrlOrEmpty = (value: string): boolean => {
 };
 
 /**
- * Mirrors the server's `NameID` GraphQL scalar
- * (`server/src/domain/common/scalars/scalar.nameid.ts`): 3–28 characters, only
- * `a-z`, `0-9` and `-`. Uppercase is rejected — the scalar lowercases inline
- * literals but validates variables as-is, so an uppercase alias sent from a
- * client fails at variable coercion, before any resolver runs, and comes back
- * as an opaque `BAD_USER_INPUT`.
+ * Mirrors what a PERSON may type into a nameID (alias) field: 3–25
+ * characters, only `a-z`, `0-9` and `-`. Uppercase is rejected — the server's
+ * `NameID` scalar lowercases inline literals but validates variables as-is,
+ * so an uppercase alias sent from a client fails at variable coercion, before
+ * any resolver runs, and comes back as an opaque `BAD_USER_INPUT`.
+ *
+ * The scalar itself accepts 28 (`scalar.nameid.ts`: `NAMEID_MAX_LENGTH + 3`),
+ * but those last three characters are reserved headroom for the server's own
+ * collision suffix (`-1`, `-12`) when a generated alias overlaps a reserved
+ * one. 25 is therefore the correct limit for user entry, and matches the
+ * long-standing `nameIdValidator` used by the pre-CRD forms.
  */
 export const NAMEID_MIN_LENGTH = 3;
-export const NAMEID_MAX_LENGTH = 28;
+export const NAMEID_MAX_LENGTH = 25;
 
 const NAMEID_REGEX = /^[a-z0-9-]+$/;
 

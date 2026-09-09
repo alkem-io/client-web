@@ -60,13 +60,20 @@ export type InviteMembersDialogConnectorProps = {
 
 /**
  * Correlates the mutation's per-invitee results back to what was submitted.
- * Successful results carry the created `invitation`/`platformInvitation`, so
- * those are matched by actor id (organization) / userId (user) / email
- * (platform invite). Typed failures that create nothing (opt-out, Lead limit,
- * already member, ...) come back with both null, so they can't be matched
- * that way — each result is consumed once and unmatched invitees fall back to
- * the next id-less result in submission order (the server returns one result
- * per invitee, in input order). Exported for unit testing (T007).
+ *
+ * Every result carries the invitee's identity — `invitedActorID` for an actor
+ * (and for an email address that turned out to belong to an existing user),
+ * `invitedEmail` for anything submitted as an email — so the match is exact
+ * and independent of ordering. That matters because the server moves an email
+ * that resolves to an existing user out of the email group and into the actor
+ * group, which breaks any assumption that results come back in input order,
+ * and because typed failures (opt-out, Lead limit, already member, ...) create
+ * neither an `invitation` nor a `platformInvitation` to match on.
+ *
+ * The legacy fallbacks below (match on the created entity, then consume the
+ * next id-less result positionally) are kept only for a server that predates
+ * those fields; they are unreachable against a current server.
+ * Exported for unit testing (T007).
  */
 export const mapInvitationResults = (
   submittedInvitees: ContributorSelectorInvitee[],
@@ -78,14 +85,27 @@ export const mapInvitationResults = (
     return idx === -1 ? undefined : remaining.splice(idx, 1)[0];
   };
   return submittedInvitees.map(invitee => {
+    const inviteeActorId =
+      invitee.kind === 'organization' ? invitee.id : invitee.kind === 'user' ? invitee.userId : undefined;
+    const inviteeEmail = invitee.kind === 'email' ? invitee.email.toLowerCase() : undefined;
+
+    // Exact identity match first — see the docblock.
+    const identityMatched =
+      inviteeActorId !== undefined
+        ? take(r => r.invitedActorID === inviteeActorId)
+        : inviteeEmail !== undefined
+          ? take(r => r.invitedEmail?.toLowerCase() === inviteeEmail)
+          : undefined;
+
     const matched =
-      invitee.kind === 'organization'
+      identityMatched ??
+      (invitee.kind === 'organization'
         ? take(r => r.invitation?.actor?.id === invitee.id)
         : invitee.kind === 'user'
           ? take(r => r.invitation?.actor?.id === invitee.userId)
           : invitee.kind === 'email'
             ? take(r => r.platformInvitation?.email?.toLowerCase() === invitee.email.toLowerCase())
-            : undefined;
+            : undefined);
     const legacyResult = matched ?? take(r => !r.invitation && !r.platformInvitation);
     if (!legacyResult) {
       return { invitee, outcome: 'error' as const };
@@ -311,9 +331,19 @@ export function InviteMembersDialogConnector({
     inviteContributorsOnRoleSet,
     loading: loadingRoleSet,
   } = useRoleSetApplicationsAndInvitations({ roleSetId });
+  // "Open" must mean the same thing here as in the Member Organisations >
+  // Pending invitations list (`useCommunityTabData.isOpenOrganizationInvitation`):
+  // 'invited' PLUS the brief in-flight 'accepting'. Excluding only 'invited'
+  // let an organization that had just clicked Accept show up as an invitable
+  // candidate while it was still listed as pending, so re-inviting it came
+  // back as "Already invited to this space".
   const openOrgInvitationIds = new Set(
     existingInvitations
-      .filter(inv => inv.contributorType === ActorType.Organization && inv.state === InvitationState.INVITED)
+      .filter(
+        inv =>
+          inv.contributorType === ActorType.Organization &&
+          (inv.state === InvitationState.INVITED || inv.state === 'accepting')
+      )
       .map(inv => inv.actor.id)
   );
   const selectedOrgIds = new Set(
@@ -404,6 +434,15 @@ export function InviteMembersDialogConnector({
         setVcAccountItems(account.map(toVcItem));
         setVcLibraryItems(library.map(toVcItem));
         setVcFetchedItems([...account, ...library]);
+      } catch {
+        // Same contract as the organization lookup above: a failed lookup must
+        // render as "no results", not as an unhandled rejection that leaves the
+        // previous query's candidates on screen once the spinner clears.
+        if (!cancelled) {
+          setVcAccountItems([]);
+          setVcLibraryItems([]);
+          setVcFetchedItems([]);
+        }
       } finally {
         if (!cancelled) setVcLoading(false);
       }

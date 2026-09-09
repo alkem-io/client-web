@@ -117,10 +117,12 @@ export interface InAppNotificationPayloadModel {
   invitation?: {
     extraRoles: RoleName[];
     invitedToParent: boolean;
-    spacesToJoinOnAccept?: {
-      displayName: string;
-      url: string;
-    }[];
+    spacesToJoinOnAccept?:
+      | {
+          displayName: string;
+          url: string;
+        }[]
+      | null;
   };
 }
 // nullable aliases are required because you can have different nullability for the same field name conditionally by payload type

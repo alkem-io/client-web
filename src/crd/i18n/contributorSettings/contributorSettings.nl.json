@@ -845,6 +845,9 @@
       "acceptConfirmTitle": "Deze uitnodiging accepteren?",
       "acceptConfirmBody": "Uw organisatie treedt toe tot {{spaceName}} als {{role}}.",
       "acceptConfirmAction": "Uitnodiging accepteren",
+      "declineConfirmTitle": "Deze uitnodiging afwijzen?",
+      "declineConfirmBody": "{{spaceName}} krijgt te horen dat uw organisatie heeft afgewezen. Dit kan niet ongedaan worden gemaakt — een Space-beheerder moet dan een nieuwe uitnodiging sturen.",
+      "declineConfirmAction": "Uitnodiging afwijzen",
       "errorToast": "De uitnodiging kon niet worden bijgewerkt — probeer het opnieuw"
     }
   },

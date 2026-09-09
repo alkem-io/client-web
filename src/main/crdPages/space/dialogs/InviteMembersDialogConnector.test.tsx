@@ -136,6 +136,39 @@ describe('mapInvitationResults', () => {
     expect(results).toEqual([{ invitee: invitees[0], outcome: 'leadLimitReached' }]);
   });
 
+  test('an email that is an existing user keeps its own outcome and does not steal an id-less result', () => {
+    // The server invites an email belonging to an existing user through the
+    // ACTOR path, so its result carries `invitation`, never
+    // `platformInvitation`, and it is returned in the actor group — ahead of
+    // the email group the chip was submitted in. Matching on
+    // invitedEmail/invitedActorID keeps each invitee's outcome its own; the
+    // old positional fallback handed the email chip Acme's opt-out failure
+    // and left Acme with outcome 'error'.
+    const invitees: ContributorSelectorInvitee[] = [
+      { kind: 'email', email: 'bob@existing.com' },
+      { kind: 'organization', id: 'org-1', displayName: 'Acme' },
+    ];
+    const legacyResults: InvitationResultModel[] = [
+      {
+        type: RoleSetInvitationResultType.InvitedToRoleSet,
+        invitedActorID: 'user-existing',
+        invitedEmail: 'bob@existing.com',
+        invitation: { id: 'inv-1', actor: { id: 'user-existing' } },
+      },
+      {
+        type: RoleSetInvitationResultType.OrganizationNotAcceptingInvitations,
+        invitedActorID: 'org-1',
+      },
+    ];
+
+    const results = mapInvitationResults(invitees, legacyResults);
+
+    expect(results).toEqual([
+      { invitee: invitees[0], outcome: 'sent' },
+      { invitee: invitees[1], outcome: 'notAcceptingInvitations' },
+    ]);
+  });
+
   test('a batch of organizations: matched-by-id results are consumed before id-less results are assigned in order', () => {
     const invitees: ContributorSelectorInvitee[] = [
       { kind: 'organization', id: 'org-1', displayName: 'Acme' },

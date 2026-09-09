@@ -4584,6 +4584,8 @@ export type RoleSetFieldPolicy = {
 export type RoleSetInvitationResultKeySpecifier = (
   | 'application'
   | 'invitation'
+  | 'invitedActorID'
+  | 'invitedEmail'
   | 'notice'
   | 'platformInvitation'
   | 'type'
@@ -4592,6 +4594,8 @@ export type RoleSetInvitationResultKeySpecifier = (
 export type RoleSetInvitationResultFieldPolicy = {
   application?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  invitedActorID?: FieldPolicy<any> | FieldReadFunction<any>;
+  invitedEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   notice?: FieldPolicy<any> | FieldReadFunction<any>;
   platformInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;

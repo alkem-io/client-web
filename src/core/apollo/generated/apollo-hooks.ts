@@ -5343,6 +5343,8 @@ export const InviteForEntryRoleOnRoleSetDocument = gql`
   ) {
     type
     notice
+    invitedActorID
+    invitedEmail
     invitation {
       id
       actor {

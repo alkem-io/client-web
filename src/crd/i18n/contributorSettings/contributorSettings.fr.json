@@ -845,6 +845,9 @@
       "acceptConfirmTitle": "Accepter cette invitation ?",
       "acceptConfirmBody": "Votre organisation rejoindra {{spaceName}} en tant que {{role}}.",
       "acceptConfirmAction": "Accepter l'invitation",
+      "declineConfirmTitle": "Refuser cette invitation ?",
+      "declineConfirmBody": "{{spaceName}} sera informé que votre organisation a refusé. Cette action est irréversible — un administrateur du Space devrait envoyer une nouvelle invitation.",
+      "declineConfirmAction": "Refuser l'invitation",
       "errorToast": "Impossible de mettre à jour l'invitation — réessayez"
     }
   },
