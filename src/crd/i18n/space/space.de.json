@@ -732,6 +732,40 @@
       "title": "Memo löschen",
       "body": "Möchten Sie dieses Memo wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
       "confirm": "Löschen"
+    },
+    "signing": {
+      "title": "Memo signieren",
+      "description": "Prüfen Sie die exakte PDF-Kopie, bevor Sie den Signiervorgang starten. Jede signierte PDF ist eine eigenständige Kopie; das Memo bleibt bearbeitbar.",
+      "previewTitle": "Vorschau der Memo-Signatur",
+      "openPreview": "PDF-Vorschau öffnen",
+      "continue": "Weiter zu Cleverbase",
+      "continuing": "Weiterleitung zu Cleverbase",
+      "signedCopies": "Signierte Kopien",
+      "recorded": "Erfasst",
+      "download": "Signierte PDF herunterladen",
+      "standardTools": "Heruntergeladene PDFs können unabhängig mit Standard-PDF-Werkzeugen geprüft werden.",
+      "verify": "Signatur prüfen",
+      "verification": {
+        "checking": "Signatur wird geprüft",
+        "verified": "Die PDF ist unverändert",
+        "invalid": "Signatur ungültig",
+        "unavailable": "Überprüfung nicht möglich"
+      },
+      "stage": {
+        "idle": "Bereit, eine Kopie zum Signieren vorzubereiten",
+        "preparing": "Die exakte Memo-Kopie wird zum Signieren vorbereitet",
+        "preview": "Prüfen Sie die exakte PDF, bevor Sie fortfahren",
+        "continuing": "Der Signiervorgang wird geöffnet",
+        "checking": "Das Signierergebnis wird geprüft",
+        "pending": "Der Signiervorgang läuft noch. Laden Sie diese Seite erneut, um den Status zu prüfen.",
+        "signed": "Die PDF wurde erfolgreich signiert",
+        "cancelled": "Der Signiervorgang wurde abgebrochen",
+        "failed": "Die PDF konnte nicht signiert werden",
+        "expired": "Dieser Signierversuch ist abgelaufen",
+        "prepare-error": "Die exakte Memo-Kopie konnte nicht vorbereitet werden",
+        "continue-error": "Der Signiervorgang konnte nicht gestartet werden. Bereiten Sie eine neue Kopie vor und versuchen Sie es erneut.",
+        "return-error": "Das Signierergebnis konnte nicht geladen werden"
+      }
     }
   },
   "callToAction": {
