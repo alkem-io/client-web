@@ -660,6 +660,7 @@
           "title": "$t(common.Membership) pendiente de $t(common.virtualContributor): {{space}}"
         }
       },
+      "organization": "tu organización",
       "vc": "tu $t(common.virtualContributor)",
       "you": "tú"
     }

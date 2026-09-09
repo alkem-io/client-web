@@ -799,6 +799,9 @@
       "acceptConfirmTitle": "Diese Einladung annehmen?",
       "acceptConfirmBody": "Ihre Organisation wird {{spaceName}} als {{role}} beitreten.",
       "acceptConfirmAction": "Einladung annehmen",
+      "declineConfirmTitle": "Diese Einladung ablehnen?",
+      "declineConfirmBody": "{{spaceName}} wird mitgeteilt, dass Ihre Organisation abgelehnt hat. Dies kann nicht rückgängig gemacht werden — ein Space-Administrator müsste eine neue Einladung senden.",
+      "declineConfirmAction": "Einladung ablehnen",
       "errorToast": "Die Einladung konnte nicht aktualisiert werden — bitte erneut versuchen"
     },
     "associates": {

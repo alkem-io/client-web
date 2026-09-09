@@ -18,6 +18,8 @@ mutation InviteForEntryRoleOnRoleSet($roleSetId: UUID!, $invitedActorIds: [UUID!
   }) {
     type
     notice
+    invitedActorID
+    invitedEmail
     invitation {
       id
       actor {

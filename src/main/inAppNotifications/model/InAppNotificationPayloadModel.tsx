@@ -117,10 +117,12 @@ export interface InAppNotificationPayloadModel {
   invitation?: {
     extraRoles: RoleName[];
     invitedToParent: boolean;
-    spacesToJoinOnAccept?: {
-      displayName: string;
-      url: string;
-    }[];
+    spacesToJoinOnAccept?:
+      | {
+          displayName: string;
+          url: string;
+        }[]
+      | null;
   };
   /** Organization-associate application payloads (062) — set for the three application events. */
   application?: {

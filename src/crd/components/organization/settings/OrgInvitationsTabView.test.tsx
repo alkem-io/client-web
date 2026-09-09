@@ -32,7 +32,34 @@ const baseProps: OrgInvitationsTabViewProps = {
     onConfirm: vi.fn(),
     onCancel: vi.fn(),
   },
+  declineConfirm: {
+    open: false,
+    title: 'Decline this invitation?',
+    body: 'Green Energy will be told your organisation declined.',
+    confirmLabel: 'Decline invitation',
+    onConfirm: vi.fn(),
+    onCancel: vi.fn(),
+  },
 };
+
+describe('OrgInvitationsTabView — decline confirmation (Golden Rule 9)', () => {
+  test('renders the destructive decline confirmation when it is open', () => {
+    render(
+      <OrgInvitationsTabView
+        {...baseProps}
+        declineConfirm={{ ...baseProps.declineConfirm, open: true }}
+        rows={[row()]}
+      />
+    );
+    expect(screen.getByText('Decline this invitation?')).toBeInTheDocument();
+    expect(screen.getByText('Green Energy will be told your organisation declined.')).toBeInTheDocument();
+  });
+
+  test('does not render the decline confirmation while it is closed', () => {
+    render(<OrgInvitationsTabView {...baseProps} rows={[row()]} />);
+    expect(screen.queryByText('Decline this invitation?')).not.toBeInTheDocument();
+  });
+});
 
 describe('OrgInvitationsTabView (T013)', () => {
   test('renders the always-present empty state when there are no rows', () => {
@@ -97,5 +124,28 @@ describe('OrgInvitationsTabView (T013)', () => {
     render(<OrgInvitationsTabView {...baseProps} loading={true} rows={[row()]} />);
     expect(screen.queryByText('No pending Space invitations.')).not.toBeInTheDocument();
     expect(screen.queryByText('Green Energy')).not.toBeInTheDocument();
+  });
+
+  test('both actions are disabled while a mutation is in flight', async () => {
+    // Decline has no confirmation step and the row is not removed
+    // optimistically — it disappears only after the refetch. Without this
+    // guard a second click sent a second REJECT into a state whose lifecycle
+    // defines no REJECT transition, so the server threw and the org admin was
+    // shown a failure toast for a decline that had actually succeeded.
+    const onDecline = vi.fn();
+    const onAccept = vi.fn();
+    render(
+      <OrgInvitationsTabView {...baseProps} rows={[row()]} onDecline={onDecline} onAccept={onAccept} busy={true} />
+    );
+
+    const decline = screen.getByRole('button', { name: 'Decline' });
+    const accept = screen.getByRole('button', { name: 'Accept' });
+    expect(decline).toBeDisabled();
+    expect(accept).toBeDisabled();
+
+    await userEvent.click(decline);
+    await userEvent.click(accept);
+    expect(onDecline).not.toHaveBeenCalled();
+    expect(onAccept).not.toHaveBeenCalled();
   });
 });

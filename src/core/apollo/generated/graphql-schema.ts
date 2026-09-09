@@ -8381,6 +8381,10 @@ export type RoleSetInvitationResult = {
   /** The existing open application that blocks this invitation, when the result type is ALREADY_HAS_OPEN_APPLICATION. */
   application?: Maybe<Application>;
   invitation?: Maybe<Invitation>;
+  /** The id of the invited actor this result belongs to, when the invitee was an actor or an email that resolved to an existing user. */
+  invitedActorID?: Maybe<Scalars['UUID']['output']>;
+  /** The email address this result belongs to, when the invitee was submitted as an email address. */
+  invitedEmail?: Maybe<Scalars['String']['output']>;
   /** An informational addendum to the result, set only alongside a successful invite outcome. */
   notice?: Maybe<RoleSetInvitationResultNotice>;
   platformInvitation?: Maybe<PlatformInvitation>;
@@ -10076,7 +10080,7 @@ export type UpdateOrganizationSettingsMembershipInput = {
   /** Allow Spaces to invite this Organization to join them. */
   allowSpaceInvitations?: InputMaybe<Scalars['Boolean']['input']>;
   /** Allow Users with email addresses matching the domain of this Organization to join. */
-  allowUsersMatchingDomainToJoin: Scalars['Boolean']['input'];
+  allowUsersMatchingDomainToJoin?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateOrganizationSettingsPrivacyInput = {
@@ -11901,6 +11905,8 @@ export type InviteForEntryRoleOnRoleSetMutation = {
     __typename?: 'RoleSetInvitationResult';
     type: RoleSetInvitationResultType;
     notice?: RoleSetInvitationResultNotice | undefined;
+    invitedActorID?: string | undefined;
+    invitedEmail?: string | undefined;
     invitation?:
       | {
           __typename?: 'Invitation';

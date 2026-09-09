@@ -660,6 +660,7 @@
           "title": "Pending $t(common.virtualContributor) $t(common.membership): {{space}}"
         }
       },
+      "organization": "votre organisation",
       "vc": "your $t(common.virtualContributor)",
       "you": "vous"
     }

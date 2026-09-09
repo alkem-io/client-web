@@ -54,7 +54,12 @@ function PendingInvitationCard({ invitation, onClick, className }: PendingInvita
           className={cn('rounded-lg text-caption', invitation.color && 'text-white')}
           color={invitation.color}
         >
-          {getInitials(primaryLabel)}
+          {/* Same rule as the `alt` above: this slot stands in for the Space's
+              card banner when there isn't one, so it must carry the SPACE's
+              initials. Using `primaryLabel` made one widget show two different
+              identities for the same org invitation — the Space when the Space
+              had a banner, the organization when it did not. */}
+          {getInitials(invitation.spaceName)}
         </AvatarFallback>
       </Avatar>
 

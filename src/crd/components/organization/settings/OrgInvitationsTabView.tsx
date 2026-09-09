@@ -8,8 +8,10 @@ import type { OrgInvitationRow, OrgInvitationsTabViewProps } from './OrgInvitati
 /**
  * Presentational view for the organization Invitations tab. Mirrors the
  * pending-invitations section of `VCMembershipTabView` — one `SettingsCard`
- * of rows, an always-rendered empty state, and an accept confirmation
- * dialog. Pure — all data + i18n resolution happens in the connector.
+ * of rows, an always-rendered empty state, and a confirmation dialog for
+ * each action — declining is irreversible from here, so it is confirmed too
+ * (CRD Golden Rule 9). Pure — all data + i18n resolution happens in the
+ * connector.
  */
 export function OrgInvitationsTabView({
   loading,
@@ -21,6 +23,8 @@ export function OrgInvitationsTabView({
   onAccept,
   onDecline,
   acceptConfirm,
+  declineConfirm,
+  busy = false,
 }: OrgInvitationsTabViewProps) {
   if (loading) {
     return (
@@ -46,6 +50,7 @@ export function OrgInvitationsTabView({
                 declineLabel={declineLabel}
                 onAccept={onAccept}
                 onDecline={onDecline}
+                busy={busy}
               />
             ))}
           </ul>
@@ -63,6 +68,19 @@ export function OrgInvitationsTabView({
         onConfirm={acceptConfirm.onConfirm}
         onCancel={acceptConfirm.onCancel}
       />
+
+      <ConfirmationDialog
+        open={declineConfirm.open}
+        onOpenChange={open => {
+          if (!open) declineConfirm.onCancel();
+        }}
+        variant="destructive"
+        title={declineConfirm.title}
+        description={declineConfirm.body}
+        confirmLabel={declineConfirm.confirmLabel}
+        onConfirm={declineConfirm.onConfirm}
+        onCancel={declineConfirm.onCancel}
+      />
     </div>
   );
 }
@@ -73,12 +91,14 @@ function InvitationRow({
   declineLabel,
   onAccept,
   onDecline,
+  busy,
 }: {
   row: OrgInvitationRow;
   acceptLabel: string;
   declineLabel: string;
   onAccept: (id: string) => void;
   onDecline: (id: string) => void;
+  busy: boolean;
 }) {
   return (
     <li className="flex items-start gap-3 rounded-lg border bg-card p-3">
@@ -93,10 +113,10 @@ function InvitationRow({
         {row.welcomeMessage && <p className="mt-1 text-caption text-muted-foreground">{row.welcomeMessage}</p>}
         {row.spacesToJoinText && <p className="mt-1 text-caption text-muted-foreground">{row.spacesToJoinText}</p>}
         <div className="mt-3 flex items-center justify-end gap-2">
-          <Button variant="outline" size="sm" disabled={!row.canAct} onClick={() => onDecline(row.id)}>
+          <Button variant="outline" size="sm" disabled={!row.canAct || busy} onClick={() => onDecline(row.id)}>
             {declineLabel}
           </Button>
-          <Button size="sm" disabled={!row.canAct} onClick={() => onAccept(row.id)}>
+          <Button size="sm" disabled={!row.canAct || busy} onClick={() => onAccept(row.id)}>
             {acceptLabel}
           </Button>
         </div>

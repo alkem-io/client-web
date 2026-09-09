@@ -799,6 +799,9 @@
       "acceptConfirmTitle": "Да приемете ли тази покана?",
       "acceptConfirmBody": "Вашата организация ще се присъедини към {{spaceName}} като {{role}}.",
       "acceptConfirmAction": "Приеми поканата",
+      "declineConfirmTitle": "Да откажете ли тази покана?",
+      "declineConfirmBody": "{{spaceName}} ще бъде уведомен, че вашата организация е отказала. Това действие не може да бъде отменено — администратор на Space ще трябва да изпрати нова покана.",
+      "declineConfirmAction": "Откажи поканата",
       "errorToast": "Поканата не можа да бъде актуализирана — опитайте отново"
     },
     "associates": {
