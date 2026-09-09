@@ -632,6 +632,14 @@ export function InviteMembersDialogConnector({
       setExtraRoles(['Member']);
       setSuggestedLanguage(undefined);
       setResults(undefined);
+      // Carried over from VirtualContributorInviteConnector's own
+      // onOpenChange, which reset its preview on close. The fold-in dropped it,
+      // so a previewed VC's description, tags and avatar survived for the life
+      // of the page. Nothing renders it stale today (VcDialogBody clears
+      // previewSource on !open), but the invariant the deleted code held is
+      // cheap to keep and the next change to the preview timing would surface
+      // the wrong contributor.
+      setVcPreviewData(undefined);
       onClose();
     }
   };
