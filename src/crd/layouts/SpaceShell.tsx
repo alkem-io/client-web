@@ -84,9 +84,13 @@ export function SpaceShell({
             </div>
           )}
 
+          {/* `min-h-[60vh]`: while the content is still a loading fallback the column would
+              otherwise collapse to the spinner's height and pull the footer up into the
+              viewport — then push it back out when the content lands. Reserving most of a
+              viewport keeps the footer below the fold through every loading phase. */}
           <div
             className={cn(
-              'col-span-12 min-w-0',
+              'col-span-12 min-w-0 min-h-[60vh]',
               showSidebar ? (fullWidth ? 'lg:col-span-10' : 'lg:col-span-8') : contentColumnClass(fullWidth)
             )}
           >

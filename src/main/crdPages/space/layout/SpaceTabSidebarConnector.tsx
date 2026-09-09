@@ -1,6 +1,7 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import useNavigate from '@/core/routing/useNavigate';
 import type { ContactLeadRecipient } from '@/crd/components/chat/ContactLeadsDialog';
 import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
@@ -19,6 +20,7 @@ import { SearchSection, type SearchSectionProps } from '@/crd/components/space/s
 import { SubspacesSection } from '@/crd/components/space/sidebar/SubspacesSection';
 import { UpdatesSection } from '@/crd/components/space/sidebar/UpdatesSection';
 import { VirtualContributorsSection } from '@/crd/components/space/sidebar/VirtualContributorsSection';
+import { Skeleton } from '@/crd/primitives/skeleton';
 import type { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
@@ -38,7 +40,7 @@ import { CrdCalendarDialogConnector } from '../timeline/CrdCalendarDialogConnect
 import { useCrdCalendarUrlState } from '../timeline/useCrdCalendarUrlState';
 import { useSpaceApplyFlow } from '../useSpaceApplyFlow';
 import { SpaceSidebarPortal } from './SpaceSidebarPortal';
-import { deriveWidgetSkips, resolveSidebarPlan } from './sidebarWidgetPlan';
+import { deriveWidgetSkips, resolveSidebarPlan, type SidebarWidgetId } from './sidebarWidgetPlan';
 
 type SpaceTabSidebarConnectorProps = {
   /** The active state's stored `sidebar` — wire enum values (e.g. `'INTENT'`), NonNull per contract. */
@@ -104,6 +106,18 @@ export function SpaceTabSidebarConnector({
 
   const plan = resolveSidebarPlan(sidebar);
   const skips = deriveWidgetSkips(plan);
+  const { isAuthenticated } = useAuthenticationContext();
+
+  // A loading placeholder is only worth its footprint when something renders below it (the
+  // last widget can land or vanish without moving anything) AND the widget is likely to
+  // resolve non-empty — a placeholder that then unmounts is itself a layout jump. Only
+  // widgets known to render before any query resolves count as "below": a trailing widget
+  // gated on async data (addUser, virtualContributors, guidelines, …) often renders nothing.
+  const alwaysRendered = new Set<SidebarWidgetId>(['intent', 'about', 'events', 'updates', 'index', 'search']);
+  if (canCreatePost) alwaysRendered.add('createPost');
+  if (permissions.canCreateSubspaces) alwaysRendered.add('createSubspace');
+  const hasWidgetsBelow = (widgetId: SidebarWidgetId) =>
+    plan.slice(plan.indexOf(widgetId) + 1).some(id => alwaysRendered.has(id));
 
   const {
     isMember: isSpaceMember,
@@ -117,9 +131,26 @@ export function SpaceTabSidebarConnector({
     skip: skips.applicationButton,
   });
 
-  const sidebarLeads = useCrdSpaceLeads(space.id, skips.intent);
+  // The apply button's placeholder holds its footprint only until the FIRST resolution:
+  // the hook also reports `loading` while joining, and swapping the button (which shows
+  // its own busy state) for a skeleton mid-action would move the widgets below it.
+  const [applyResolved, setApplyResolved] = useState(false);
+  useEffect(() => {
+    if (!applyLoading) {
+      setApplyResolved(true);
+    }
+  }, [applyLoading]);
+  // Members never get the button — the space context already knows the membership
+  // synchronously, so don't reserve space that would only vanish once the hook resolves.
+  const isKnownMember = space.about.membership?.myMembershipStatus === CommunityMembershipStatus.Member;
+  const showApplyPlaceholder = !skips.applicationButton && applyLoading && !applyResolved && !isKnownMember;
 
-  const { dashboardNavigation } = useCrdSpaceDashboard({ skip: skips.subspaceLinks });
+  const { leads: sidebarLeads, loading: leadsLoading } = useCrdSpaceLeads(space.id, skips.intent);
+
+  const { dashboardNavigation, navigationLoading } = useCrdSpaceDashboard({ skip: skips.subspaceLinks });
+  // Only an L0 reliably has children (L2s can't; L1s mostly don't), so only there is the
+  // placeholder more likely to be replaced by the list than to vanish.
+  const subspacesLoading = navigationLoading && space.level === SpaceLevel.L0 && hasWidgetsBelow('subspaceLinks');
   const subspaces =
     dashboardNavigation?.children?.map(child => ({
       name: child.displayName,
@@ -153,12 +184,24 @@ export function SpaceTabSidebarConnector({
   // on exactly those two; guidelines gates its own content query. The addUser
   // widget needs no query at all — canInvite/roleSetId/communityId all come from
   // the space context.
-  const { leadUsers, virtualContributors, hasVcEntitlement, canInvite, communityId, roleSetId, guidelines } =
-    useCrdSpaceCommunity({
-      skipContributors: skips.contactLeads && skips.virtualContributors,
-      skipGuidelines: skips.guidelines,
-    });
+  const {
+    leadUsers,
+    virtualContributors,
+    hasVcEntitlement,
+    canInvite,
+    communityId,
+    roleSetId,
+    guidelines,
+    loading: communityLoading,
+  } = useCrdSpaceCommunity({
+    skipContributors: skips.contactLeads && skips.virtualContributors,
+    skipGuidelines: skips.guidelines,
+  });
   const canContactLeads = leadUsers.length > 0 && Boolean(communityId);
+  // The roster query is skipped for viewers without READ_USERS — every anonymous visitor —
+  // so only a signed-in viewer can end up with the button; nearly every space has a user lead.
+  const showContactLeadsPlaceholder =
+    !skips.contactLeads && communityLoading && isAuthenticated && hasWidgetsBelow('contactLeads');
   const canInviteVc = hasVcEntitlement && canInvite && Boolean(roleSetId);
   const leadRecipients: ContactLeadRecipient[] = leadUsers.map(lead => ({
     id: lead.id,
@@ -176,21 +219,32 @@ export function SpaceTabSidebarConnector({
         key="intent"
         description={space.about.profile.description || ''}
         leads={sidebarLeads}
+        leadsLoading={leadsLoading && hasWidgetsBelow('intent')}
         onEditClick={onEditClick}
       />
     ),
     about: <AboutButton key="about" onClick={onAboutClick} />,
     createPost: canCreatePost && <CreatePostButton key="createPost" onClick={onCreatePost} />,
-    applicationButton: !applyLoading && !isSpaceMember && (
-      <SpaceAboutApplyButton key="applicationButton" {...applyButtonProps} className="w-full" />
+    // Hold the button's footprint while membership is being resolved (it lands ~1s after
+    // the sidebar renders and would otherwise push every widget below it down).
+    applicationButton: showApplyPlaceholder ? (
+      <output key="applicationButton" className="block" aria-label={t('a11y.loadingMembership')}>
+        <Skeleton className="h-9 w-full rounded-md" />
+      </output>
+    ) : (
+      !isKnownMember &&
+      !isSpaceMember && <SpaceAboutApplyButton key="applicationButton" {...applyButtonProps} className="w-full" />
     ),
     createSubspace: permissions.canCreateSubspaces && (
       <CreateSubspaceButton key="createSubspace" onClick={onCreateSubspace} />
     ),
-    subspaceLinks: subspaces.length > 0 && (
+    // Also rendered (as a placeholder) while the navigation query is in flight, so the
+    // widgets below don't get pushed down when the list lands (issue #10043).
+    subspaceLinks: (subspaces.length > 0 || subspacesLoading) && (
       <SubspacesSection
         key="subspaceLinks"
         subspaces={subspaces}
+        loading={subspacesLoading}
         // A dialog instead of a link to the Subspaces tab: the Subspaces callout
         // can be moved to any tab, so a hardcoded tab redirect may land the user
         // on a page without it (alkem-io/alkemio#2023).
@@ -216,7 +270,15 @@ export function SpaceTabSidebarConnector({
         locale={locale}
       />
     ),
-    contactLeads: canContactLeads && <ContactLeadButton key="contactLeads" onClick={() => setContactOpen(true)} />,
+    contactLeads: canContactLeads ? (
+      <ContactLeadButton key="contactLeads" onClick={() => setContactOpen(true)} />
+    ) : (
+      showContactLeadsPlaceholder && (
+        <output key="contactLeads" className="block" aria-label={t('a11y.loadingLeads')}>
+          <Skeleton className="h-9 w-full rounded-md" />
+        </output>
+      )
+    ),
     addUser: canInvite && <InviteButton key="addUser" onClick={() => setInviteOpen(true)} />,
     virtualContributors: hasVcEntitlement && (virtualContributors.length > 0 || canInviteVc) && (
       <VirtualContributorsSection
@@ -238,7 +300,7 @@ export function SpaceTabSidebarConnector({
       />
     ),
     index: <PostIndexButton key="index" onClick={() => setIndexOpen(true)} />,
-    search: <SearchSection key="search" {...search} />,
+    search: <SearchSection key="search" {...search} tagsLoading={search.tagsLoading && hasWidgetsBelow('search')} />,
   };
 
   return (

@@ -1,6 +1,7 @@
 import { Loader2, Trash2 } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { GatedAction } from '@/crd/components/common/GatedAction';
 import type { MemberSettingsSubject } from '@/crd/components/space/settings/memberSettingsTypes';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
@@ -30,6 +31,15 @@ export type MemberSettingsDialogProps = {
   onAdminChange?: (id: string, isAdmin: boolean) => Promise<unknown>;
   /** Provided when the viewer can remove this member AND it is not the viewer themselves. */
   onRemoveMember?: (id: string) => void;
+  /**
+   * Per-control gating copy. Separate props because these controls are gated
+   * independently: lead/admin toggles and member removal resolve against the role-set
+   * assign privilege, while organization rows additionally require the grant pair
+   * (spec FR-012 / data-model.md Surface 4 table).
+   */
+  leadDisabledReason?: string;
+  adminDisabledReason?: string;
+  removeDisabledReason?: string;
 };
 
 const initials = (name: string) => {
@@ -49,6 +59,9 @@ export function MemberSettingsDialog({
   onLeadChange,
   onAdminChange,
   onRemoveMember,
+  leadDisabledReason,
+  adminDisabledReason,
+  removeDisabledReason,
 }: MemberSettingsDialogProps) {
   const { t } = useTranslation('crd-spaceSettings');
   const leadCheckboxId = useId();
@@ -144,14 +157,16 @@ export function MemberSettingsDialog({
           <div className="flex flex-col gap-2">
             <h3 className="text-label uppercase text-muted-foreground">{t('community.memberSettings.section.role')}</h3>
             <div className="flex items-start gap-3">
-              <Checkbox
-                id={leadCheckboxId}
-                checked={isLead}
-                disabled={leadDisabled}
-                aria-describedby={maxLeadsHelpId}
-                onCheckedChange={value => setIsLead(value === true)}
-                className="mt-1"
-              />
+              <GatedAction disabledReason={leadDisabledReason}>
+                <Checkbox
+                  id={leadCheckboxId}
+                  checked={isLead}
+                  disabled={leadDisabled}
+                  aria-describedby={maxLeadsHelpId}
+                  onCheckedChange={value => setIsLead(value === true)}
+                  className="mt-1"
+                />
+              </GatedAction>
               {/* `block` overrides Label's default `flex items-center gap-2`, which would otherwise insert
                   flex gaps around the inline <strong> produced by <Trans>. */}
               <Label htmlFor={leadCheckboxId} className="block text-body font-normal leading-snug cursor-pointer">
@@ -178,13 +193,15 @@ export function MemberSettingsDialog({
                 {t('community.memberSettings.section.authorization')}
               </h3>
               <div className="flex items-start gap-3">
-                <Checkbox
-                  id={adminCheckboxId}
-                  checked={isAdmin}
-                  disabled={saveInFlight}
-                  onCheckedChange={value => setIsAdmin(value === true)}
-                  className="mt-1"
-                />
+                <GatedAction disabledReason={adminDisabledReason}>
+                  <Checkbox
+                    id={adminCheckboxId}
+                    checked={isAdmin}
+                    disabled={saveInFlight}
+                    onCheckedChange={value => setIsAdmin(value === true)}
+                    className="mt-1"
+                  />
+                </GatedAction>
                 <Label htmlFor={adminCheckboxId} className="block text-body font-normal leading-snug cursor-pointer">
                   <Trans
                     t={t}
@@ -202,15 +219,17 @@ export function MemberSettingsDialog({
               <h3 className="text-label uppercase text-muted-foreground">
                 {t('community.memberSettings.section.removeMember')}
               </h3>
-              <button
-                type="button"
-                disabled={saveInFlight}
-                onClick={() => onRemoveMember?.(subject.id)}
-                className="flex items-center gap-2 self-start text-body text-destructive hover:underline focus-visible:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <Trash2 aria-hidden="true" className="size-4 shrink-0" />
-                <span className="text-left">{t('community.memberSettings.remove.link')}</span>
-              </button>
+              <GatedAction disabledReason={removeDisabledReason}>
+                <button
+                  type="button"
+                  disabled={saveInFlight}
+                  onClick={() => onRemoveMember?.(subject.id)}
+                  className="flex items-center gap-2 self-start text-body text-destructive hover:underline focus-visible:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <Trash2 aria-hidden="true" className="size-4 shrink-0" />
+                  <span className="text-left">{t('community.memberSettings.remove.link')}</span>
+                </button>
+              </GatedAction>
             </div>
           )}
         </div>

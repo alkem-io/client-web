@@ -21,6 +21,10 @@ export type OrgCommunityTabViewProps = {
   loadingCurrent: boolean;
   loadingAvailable: boolean;
   updating: boolean;
+  /** Tooltip copy when the add controls are gated; undefined when permitted. */
+  addDisabledReason?: string;
+  /** Tooltip copy when the remove controls are gated; undefined when permitted. */
+  removeDisabledReason?: string;
 };
 
 /**
@@ -57,6 +61,8 @@ export function OrgCommunityTabView(props: OrgCommunityTabViewProps) {
         loadingCurrent={props.loadingCurrent}
         loadingAvailable={props.loadingAvailable}
         updating={props.updating}
+        addDisabledReason={props.addDisabledReason}
+        removeDisabledReason={props.removeDisabledReason}
         labels={labels}
       />
     </SettingsCard>
