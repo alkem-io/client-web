@@ -457,7 +457,7 @@ export function InviteMembersDialogConnector({
     try {
       await vcCommunity.virtualContributorAdmin.onAdd(id);
       notify(t('inviteMembers.dialog.virtualContributor.addedNotice'), 'success');
-      onClose();
+      closeAndReset();
     } catch {
       notify(t('inviteMembers.dialog.virtualContributor.error'), 'error');
     } finally {
@@ -474,7 +474,7 @@ export function InviteMembersDialogConnector({
         invitedUserEmails: [],
       });
       notify(t('inviteMembers.dialog.virtualContributor.invitedNotice'), 'success');
-      onClose();
+      closeAndReset();
     } catch {
       notify(t('inviteMembers.dialog.virtualContributor.error'), 'error');
     } finally {
@@ -621,26 +621,36 @@ export function InviteMembersDialogConnector({
     // welcomeMessage and extraRoles are intentionally retained.
   };
 
+  /**
+   * Every piece of state the next open must not inherit. Extracted so that the
+   * two paths out of this dialog cannot diverge: `handleOpenChange(false)` (the
+   * X, Escape, backdrop) and the virtual-contributor success handlers, which
+   * call `onClose()` directly and therefore never run `onOpenChange`. The VC
+   * preview reset was carried over from `VirtualContributorInviteConnector` and
+   * initially put in `handleOpenChange` alone, which left the add-account and
+   * invite-library paths inheriting it — the same half-fix the fold-in made in
+   * the first place.
+   */
+  const resetDialogState = () => {
+    setSelectedContributors([]);
+    setSearchQuery('');
+    setDebouncedQuery('');
+    setWelcomeMessage('');
+    setDefaultMessage('');
+    setExtraRoles(['Member']);
+    setSuggestedLanguage(undefined);
+    setResults(undefined);
+    setVcPreviewData(undefined);
+  };
+
+  const closeAndReset = () => {
+    resetDialogState();
+    onClose();
+  };
+
   const handleOpenChange = (next: boolean) => {
     if (!next) {
-      // Reset everything on close so the next open starts fresh.
-      setSelectedContributors([]);
-      setSearchQuery('');
-      setDebouncedQuery('');
-      setWelcomeMessage('');
-      setDefaultMessage('');
-      setExtraRoles(['Member']);
-      setSuggestedLanguage(undefined);
-      setResults(undefined);
-      // Carried over from VirtualContributorInviteConnector's own
-      // onOpenChange, which reset its preview on close. The fold-in dropped it,
-      // so a previewed VC's description, tags and avatar survived for the life
-      // of the page. Nothing renders it stale today (VcDialogBody clears
-      // previewSource on !open), but the invariant the deleted code held is
-      // cheap to keep and the next change to the preview timing would surface
-      // the wrong contributor.
-      setVcPreviewData(undefined);
-      onClose();
+      closeAndReset();
     }
   };
 
