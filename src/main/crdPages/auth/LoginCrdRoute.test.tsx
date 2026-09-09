@@ -205,6 +205,18 @@ describe('LoginCrdRoute', () => {
     );
   });
 
+  it('preserves the memo signing server callback as the OIDC return path', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch =
+      'returnUrl=%2Fapi%2Fpublic%2Frest%2Fcontent-signing%2Fcomplete%3FcorrelationId%3Dcorrelation-1%26clientState%3Dstate-1';
+
+    renderRoute();
+
+    expect(replaceSpy).toHaveBeenCalledWith(
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2Fapi%2Fpublic%2Frest%2Fcontent-signing%2Fcomplete%3FcorrelationId%3Dcorrelation-1%26clientState%3Dstate-1'
+    );
+  });
+
   it('OIDC entry refuses an off-platform returnUrl', () => {
     mockIsAuthenticated.mockReturnValue(false);
     mockSearch = 'returnUrl=https://evil.example.com/steal';

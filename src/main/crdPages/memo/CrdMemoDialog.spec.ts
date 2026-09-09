@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { updateMemoMarkdownCache } from '@/main/crdPages/memo/CrdMemoDialog';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { canStartMemoSigning, updateMemoMarkdownCache } from '@/main/crdPages/memo/CrdMemoDialog';
 
 describe('updateMemoMarkdownCache', () => {
   it('does not replace cached content when the editor has not mounted', async () => {
@@ -18,5 +19,12 @@ describe('updateMemoMarkdownCache', () => {
 
     expect(editor.getHTML).not.toHaveBeenCalled();
     expect(writeMarkdown).not.toHaveBeenCalled();
+  });
+});
+
+describe('canStartMemoSigning', () => {
+  it('shows Sign only to actors with CONTRIBUTE on the memo', () => {
+    expect(canStartMemoSigning([AuthorizationPrivilege.Contribute])).toBe(true);
+    expect(canStartMemoSigning([AuthorizationPrivilege.Read])).toBe(false);
   });
 });
