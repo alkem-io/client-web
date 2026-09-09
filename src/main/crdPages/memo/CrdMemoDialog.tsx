@@ -8,9 +8,15 @@ import {
   useMemoSigningAttemptQuery,
   usePrepareMemoSigningMutation,
   useUpdateMemoDisplayNameMutation,
+  useUserSecurityAuthenticationMethodsQuery,
   useVerifyMemoSignatureLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthenticationType,
+  AuthorizationPrivilege,
+  LicenseEntitlementType,
+  SpaceLevel,
+} from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useRegisterFullscreenEditor } from '@/core/ui/fullscreen/FullscreenEditorContext';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
@@ -59,8 +65,16 @@ export const updateMemoMarkdownCache = (
   return htmlToMarkdown(editor.getHTML()).then(writeMarkdown);
 };
 
-export const canStartMemoSigning = (privileges: AuthorizationPrivilege[]) =>
-  privileges.includes(AuthorizationPrivilege.Contribute);
+export const canStartMemoSigning = (
+  privileges: AuthorizationPrivilege[],
+  entitlements: LicenseEntitlementType[],
+  authenticationMethods: AuthenticationType[] | undefined,
+  authenticationMethodsReady: boolean
+) =>
+  authenticationMethodsReady &&
+  privileges.includes(AuthorizationPrivilege.Contribute) &&
+  entitlements.includes(LicenseEntitlementType.SpaceFlagMemoSigning) &&
+  authenticationMethods?.includes(AuthenticationType.Cleverbase) === true;
 
 export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, onDelete }: CrdMemoDialogProps) {
   const { t, i18n } = useTranslation('crd-space');
@@ -71,8 +85,13 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const { memo, loading } = useMemoManager({ id: memoId });
   const editorRef = useRef<Editor | null>(null);
   const { isAuthenticated } = useAuthenticationContext();
+  const {
+    data: authenticationMethodsData,
+    loading: authenticationMethodsLoading,
+    error: authenticationMethodsError,
+  } = useUserSecurityAuthenticationMethodsQuery({ skip: !isAuthenticated });
   const { spaceLevel = SpaceLevel.L0 } = useUrlResolver();
-  const { space } = useSpace();
+  const { space, entitlements } = useSpace();
   const { subspace } = useSubSpace();
   const myMembershipStatus =
     spaceLevel === SpaceLevel.L0
@@ -185,7 +204,13 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const privileges = memo?.authorization?.myPrivileges ?? [];
   const hasUpdatePrivileges = privileges.includes(AuthorizationPrivilege.Update);
   const hasDeletePrivileges = privileges.includes(AuthorizationPrivilege.Delete);
-  const hasContributePrivileges = canStartMemoSigning(privileges);
+  const hasContributePrivileges = privileges.includes(AuthorizationPrivilege.Contribute);
+  const canSign = canStartMemoSigning(
+    privileges,
+    entitlements,
+    authenticationMethodsData?.me.user?.authentication?.methods,
+    isAuthenticated && !authenticationMethodsLoading && !authenticationMethodsError
+  );
 
   const canEditDisplayName = isContribution && hasUpdatePrivileges;
   const displayName = memo?.profile.displayName ?? t('memo.errors.loading');
@@ -329,22 +354,22 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
 
   const headerActions = (
     <>
-      {(hasContributePrivileges || Boolean(memo?.signatures.length)) && (
+      {(canSign || Boolean(memo?.signatures.length)) && (
         <Button
           type="button"
           variant="outline"
           size="sm"
-          disabled={(hasContributePrivileges && !provider) || signingFlow.stage === 'preparing'}
+          disabled={(canSign && !provider) || signingFlow.stage === 'preparing'}
           onClick={() => {
             setSigningDialogOpen(true);
-            if (hasContributePrivileges) {
+            if (canSign) {
               clearSigningReturn();
               void signingFlow.prepare();
             }
           }}
         >
           <FileSignature aria-hidden="true" />
-          {t(hasContributePrivileges ? 'memo.signing.title' : 'memo.signing.signedCopies')}
+          {t(canSign ? 'memo.signing.title' : 'memo.signing.signedCopies')}
         </Button>
       )}
       {/* Share dropdown. For users who can update the memo, it also hosts the content-update-policy
