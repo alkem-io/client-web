@@ -111,7 +111,7 @@ export default function CrdSpaceSettingsPage() {
   const reasonText = usePermissionReasonText();
   const actionPermissions = useCommunityActionPermissions(community.myPrivileges, community.loading);
   const userRoleChangeReason = reasonText(actionPermissions.userRoleChange);
-  const organizationLeadReason = reasonText(actionPermissions.organizationLeadChange);
+  const organizationLeadAssignReason = reasonText(actionPermissions.organizationLeadAssign);
   const organizationRemoveReason = reasonText(actionPermissions.organizationRemove);
   const addOrganizationReason = reasonText(actionPermissions.addOrganization);
   const addVcReason = reasonText(actionPermissions.addVirtualContributor);
@@ -324,6 +324,13 @@ export default function CrdSpaceSettingsPage() {
   // flow originated from inside the dialog itself (FR-Story-3 AC #3 + AC #2).
   const [activeMemberSubject, setActiveMemberSubject] = useState<MemberSettingsSubject | null>(null);
   const [removeOriginatedFromDialog, setRemoveOriginatedFromDialog] = useState(false);
+
+  // The organization lead toggle drives two different mutations with two different gates:
+  // assignRoleToOrganization needs the organization pair, while un-leading goes through
+  // removeRoleFromOrganization, which is gated on GRANT alone.
+  const organizationLeadDisabledReason = activeMemberSubject?.isLead
+    ? organizationRemoveReason
+    : organizationLeadAssignReason;
 
   // Pending-membership "view" dialog — holds the application/invitation being inspected (read-only).
   const [viewingMembership, setViewingMembership] = useState<ViewingMembership | null>(null);
@@ -906,7 +913,9 @@ export default function CrdSpaceSettingsPage() {
                   }
                 }
           }
-          leadDisabledReason={activeMemberSubject.type === 'user' ? userRoleChangeReason : organizationLeadReason}
+          leadDisabledReason={
+            activeMemberSubject.type === 'user' ? userRoleChangeReason : organizationLeadDisabledReason
+          }
           adminDisabledReason={userRoleChangeReason}
           removeDisabledReason={activeMemberSubject.type === 'user' ? userRoleChangeReason : organizationRemoveReason}
         />

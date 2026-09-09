@@ -65,7 +65,19 @@ describe('space community settings — a space admin may change an existing memb
     const permissions = useCommunityActionPermissions(SPACE_ADMIN, false);
 
     expect(permissions.addOrganization.allowed).toBe(false);
-    expect(permissions.organizationLeadChange.allowed).toBe(false);
+    expect(permissions.organizationLeadAssign.allowed).toBe(false);
+  });
+
+  // The organization lead toggle is one control driving two mutations with two gates.
+  // Ticking it calls assignRoleToOrganization, which demands the organization token a
+  // space admin never holds; un-ticking it calls removeRoleFromOrganization, which the
+  // same admin may do on GRANT alone. Collapsing the two into one gate breaks whichever
+  // direction it does not match.
+  it('separates the two directions of the organization lead toggle', () => {
+    const permissions = useCommunityActionPermissions(SPACE_ADMIN, false);
+
+    expect(permissions.organizationLeadAssign).toEqual({ allowed: false, reason: 'denied' });
+    expect(permissions.organizationRemove).toEqual({ allowed: true, reason: 'allowed' });
   });
 });
 
@@ -73,7 +85,7 @@ describe('space community settings — the gates still hold for everyone else', 
   it('denies every control to a member without administrative privileges', () => {
     const permissions = useCommunityActionPermissions(VIEWER, false);
 
-    expect(Object.values(permissions).every(permission => permission.allowed)).toBe(false);
+    expect(Object.values(permissions).every(permission => !permission.allowed)).toBe(true);
     expect(permissions.userRoleChange).toEqual({ allowed: false, reason: 'denied' });
     expect(permissions.organizationRemove).toEqual({ allowed: false, reason: 'denied' });
   });

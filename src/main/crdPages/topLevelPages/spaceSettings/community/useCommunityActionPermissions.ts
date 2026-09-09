@@ -23,9 +23,16 @@ export type CommunityActionPermissions = {
   userRoleChange: ActionPermission;
   /** Add an ORGANIZATION to the space. */
   addOrganization: ActionPermission;
-  /** Lead toggle on an ORGANIZATION row — assignment needs the organization pair. */
-  organizationLeadChange: ActionPermission;
-  /** Remove an ORGANIZATION from the space. */
+  /**
+   * Ticking the lead toggle on an ORGANIZATION row. `authorizeAssignOrganization` demands
+   * the organization assign token AND grant, so this covers the assign direction only —
+   * un-ticking it is a removal and resolves from `organizationRemove`.
+   */
+  organizationLeadAssign: ActionPermission;
+  /**
+   * Every `removeRoleFromOrganization` call: removing an ORGANIZATION from the space and
+   * un-leading one alike. That resolver asks for grant alone, unlike its assign twin.
+   */
   organizationRemove: ActionPermission;
   /** Add a virtual contributor — permitted by either token, never by both being required. */
   addVirtualContributor: ActionPermission;
@@ -50,7 +57,7 @@ const useCommunityActionPermissions = (
     addMember,
     userRoleChange: grantAction,
     addOrganization: organizationAssign,
-    organizationLeadChange: organizationAssign,
+    organizationLeadAssign: organizationAssign,
     organizationRemove: grantAction,
     addVirtualContributor,
   };
