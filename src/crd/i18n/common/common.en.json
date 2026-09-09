@@ -359,13 +359,15 @@
         "CHALLENGE_CENTRIC": "Working Challenge Centric",
         "COMMUNITY_BUILDING": "$t(common.Community) Building",
         "GENERAL": "General",
-        "HELP": "Need Help?",
+        "HELP": "Q&A",
         "IDEAS": "Ideas",
+        "NEWSLETTER": "Newsletter",
         "OTHER": "Other",
         "PLATFORM_FUNCTIONALITIES": "Platform Functionalities",
         "QUESTIONS": "Questions",
         "RELEASES": "Releases",
-        "SHARING": "Sharing"
+        "SHARING": "Sharing",
+        "TIPS_AND_TRICKS": "Tips & Tricks"
       },
       "edit-mode": {
         "edit": "Edit",
