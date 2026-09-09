@@ -10335,6 +10335,22 @@ export const MemoDetailsDocument = gql`
   lookup {
     memo(ID: $id) {
       ...MemoDetails
+      signatures {
+        id
+        updatedDate
+        actor {
+          id
+          profile {
+            id
+            displayName
+            url
+          }
+        }
+        document {
+          id
+          url
+        }
+      }
     }
   }
 }
@@ -12702,6 +12718,7 @@ export const PlatformDiscussionDocument = gql`
     id
     forum {
       id
+      discussionCategories
       authorization {
         id
         myPrivileges
@@ -30105,6 +30122,243 @@ export function refetchInnovationLibraryTemplatesPaginatedQuery(
   variables: SchemaTypes.InnovationLibraryTemplatesPaginatedQueryVariables
 ) {
   return { query: InnovationLibraryTemplatesPaginatedDocument, variables: variables };
+}
+export const PrepareMemoSigningDocument = gql`
+    mutation prepareMemoSigning($memoID: UUID!) {
+  prepareMemoSigning(signingData: {memoID: $memoID}) {
+    attemptId
+    previewUrl
+  }
+}
+    `;
+export type PrepareMemoSigningMutationFn = Apollo.MutationFunction<
+  SchemaTypes.PrepareMemoSigningMutation,
+  SchemaTypes.PrepareMemoSigningMutationVariables
+>;
+
+/**
+ * __usePrepareMemoSigningMutation__
+ *
+ * To run a mutation, you first call `usePrepareMemoSigningMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePrepareMemoSigningMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [prepareMemoSigningMutation, { data, loading, error }] = usePrepareMemoSigningMutation({
+ *   variables: {
+ *      memoID: // value for 'memoID'
+ *   },
+ * });
+ */
+export function usePrepareMemoSigningMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.PrepareMemoSigningMutation,
+    SchemaTypes.PrepareMemoSigningMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.PrepareMemoSigningMutation, SchemaTypes.PrepareMemoSigningMutationVariables>(
+    PrepareMemoSigningDocument,
+    options
+  );
+}
+export type PrepareMemoSigningMutationHookResult = ReturnType<typeof usePrepareMemoSigningMutation>;
+export type PrepareMemoSigningMutationResult = Apollo.MutationResult<SchemaTypes.PrepareMemoSigningMutation>;
+export type PrepareMemoSigningMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.PrepareMemoSigningMutation,
+  SchemaTypes.PrepareMemoSigningMutationVariables
+>;
+export const ContinueMemoSigningDocument = gql`
+    mutation continueMemoSigning($attemptID: UUID!) {
+  continueMemoSigning(signingData: {attemptID: $attemptID}) {
+    authorizeUrl
+  }
+}
+    `;
+export type ContinueMemoSigningMutationFn = Apollo.MutationFunction<
+  SchemaTypes.ContinueMemoSigningMutation,
+  SchemaTypes.ContinueMemoSigningMutationVariables
+>;
+
+/**
+ * __useContinueMemoSigningMutation__
+ *
+ * To run a mutation, you first call `useContinueMemoSigningMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useContinueMemoSigningMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [continueMemoSigningMutation, { data, loading, error }] = useContinueMemoSigningMutation({
+ *   variables: {
+ *      attemptID: // value for 'attemptID'
+ *   },
+ * });
+ */
+export function useContinueMemoSigningMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.ContinueMemoSigningMutation,
+    SchemaTypes.ContinueMemoSigningMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.ContinueMemoSigningMutation, SchemaTypes.ContinueMemoSigningMutationVariables>(
+    ContinueMemoSigningDocument,
+    options
+  );
+}
+export type ContinueMemoSigningMutationHookResult = ReturnType<typeof useContinueMemoSigningMutation>;
+export type ContinueMemoSigningMutationResult = Apollo.MutationResult<SchemaTypes.ContinueMemoSigningMutation>;
+export type ContinueMemoSigningMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.ContinueMemoSigningMutation,
+  SchemaTypes.ContinueMemoSigningMutationVariables
+>;
+export const MemoSigningAttemptDocument = gql`
+    query memoSigningAttempt($attemptID: UUID!) {
+  signingAttempt(ID: $attemptID) {
+    id
+    status
+  }
+}
+    `;
+
+/**
+ * __useMemoSigningAttemptQuery__
+ *
+ * To run a query within a React component, call `useMemoSigningAttemptQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMemoSigningAttemptQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMemoSigningAttemptQuery({
+ *   variables: {
+ *      attemptID: // value for 'attemptID'
+ *   },
+ * });
+ */
+export function useMemoSigningAttemptQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.MemoSigningAttemptQuery,
+    SchemaTypes.MemoSigningAttemptQueryVariables
+  > &
+    ({ variables: SchemaTypes.MemoSigningAttemptQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.MemoSigningAttemptQuery, SchemaTypes.MemoSigningAttemptQueryVariables>(
+    MemoSigningAttemptDocument,
+    options
+  );
+}
+export function useMemoSigningAttemptLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.MemoSigningAttemptQuery,
+    SchemaTypes.MemoSigningAttemptQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.MemoSigningAttemptQuery, SchemaTypes.MemoSigningAttemptQueryVariables>(
+    MemoSigningAttemptDocument,
+    options
+  );
+}
+export function useMemoSigningAttemptSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.MemoSigningAttemptQuery, SchemaTypes.MemoSigningAttemptQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.MemoSigningAttemptQuery, SchemaTypes.MemoSigningAttemptQueryVariables>(
+    MemoSigningAttemptDocument,
+    options
+  );
+}
+export type MemoSigningAttemptQueryHookResult = ReturnType<typeof useMemoSigningAttemptQuery>;
+export type MemoSigningAttemptLazyQueryHookResult = ReturnType<typeof useMemoSigningAttemptLazyQuery>;
+export type MemoSigningAttemptSuspenseQueryHookResult = ReturnType<typeof useMemoSigningAttemptSuspenseQuery>;
+export type MemoSigningAttemptQueryResult = Apollo.QueryResult<
+  SchemaTypes.MemoSigningAttemptQuery,
+  SchemaTypes.MemoSigningAttemptQueryVariables
+>;
+export function refetchMemoSigningAttemptQuery(variables: SchemaTypes.MemoSigningAttemptQueryVariables) {
+  return { query: MemoSigningAttemptDocument, variables: variables };
+}
+export const VerifyMemoSignatureDocument = gql`
+    query verifyMemoSignature($attemptID: UUID!) {
+  verifyMemoSignature(verificationData: {attemptID: $attemptID})
+}
+    `;
+
+/**
+ * __useVerifyMemoSignatureQuery__
+ *
+ * To run a query within a React component, call `useVerifyMemoSignatureQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVerifyMemoSignatureQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVerifyMemoSignatureQuery({
+ *   variables: {
+ *      attemptID: // value for 'attemptID'
+ *   },
+ * });
+ */
+export function useVerifyMemoSignatureQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.VerifyMemoSignatureQuery,
+    SchemaTypes.VerifyMemoSignatureQueryVariables
+  > &
+    ({ variables: SchemaTypes.VerifyMemoSignatureQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.VerifyMemoSignatureQuery, SchemaTypes.VerifyMemoSignatureQueryVariables>(
+    VerifyMemoSignatureDocument,
+    options
+  );
+}
+export function useVerifyMemoSignatureLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VerifyMemoSignatureQuery,
+    SchemaTypes.VerifyMemoSignatureQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.VerifyMemoSignatureQuery, SchemaTypes.VerifyMemoSignatureQueryVariables>(
+    VerifyMemoSignatureDocument,
+    options
+  );
+}
+export function useVerifyMemoSignatureSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.VerifyMemoSignatureQuery,
+        SchemaTypes.VerifyMemoSignatureQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.VerifyMemoSignatureQuery, SchemaTypes.VerifyMemoSignatureQueryVariables>(
+    VerifyMemoSignatureDocument,
+    options
+  );
+}
+export type VerifyMemoSignatureQueryHookResult = ReturnType<typeof useVerifyMemoSignatureQuery>;
+export type VerifyMemoSignatureLazyQueryHookResult = ReturnType<typeof useVerifyMemoSignatureLazyQuery>;
+export type VerifyMemoSignatureSuspenseQueryHookResult = ReturnType<typeof useVerifyMemoSignatureSuspenseQuery>;
+export type VerifyMemoSignatureQueryResult = Apollo.QueryResult<
+  SchemaTypes.VerifyMemoSignatureQuery,
+  SchemaTypes.VerifyMemoSignatureQueryVariables
+>;
+export function refetchVerifyMemoSignatureQuery(variables: SchemaTypes.VerifyMemoSignatureQueryVariables) {
+  return { query: VerifyMemoSignatureDocument, variables: variables };
 }
 export const CalloutsListForFeedDocument = gql`
     query CalloutsListForFeed($calloutsSetId: UUID!, $classificationTagsets: [TagsetArgs!] = []) {
