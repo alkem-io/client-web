@@ -65,6 +65,32 @@ describe('useMemoSigningFlow', () => {
     expect(prepare).not.toHaveBeenCalled();
   });
 
+  it.each([
+    'durability',
+    'prepare',
+  ] as const)('clears the previous attempt when a later %s request fails', async failurePoint => {
+    const previousAttempt = { attemptId: 'attempt-1', previewUrl: '/snapshot/attempt-1' };
+    const requestDurability =
+      failurePoint === 'durability'
+        ? vi.fn().mockResolvedValueOnce(undefined).mockRejectedValueOnce(new Error('offline'))
+        : vi.fn().mockResolvedValue(undefined);
+    const prepare =
+      failurePoint === 'prepare'
+        ? vi.fn().mockResolvedValueOnce(previousAttempt).mockRejectedValueOnce(new Error('prepare failed'))
+        : vi.fn().mockResolvedValue(previousAttempt);
+    const { result } = renderHook(() =>
+      useMemoSigningFlow({ memoId: 'memo-1', requestDurability, prepare, continueSigning: vi.fn(), navigate: vi.fn() })
+    );
+
+    await act(() => result.current.prepare());
+    expect(result.current.attempt).toEqual(previousAttempt);
+
+    await act(() => result.current.prepare());
+
+    expect(result.current.stage).toBe('prepare-error');
+    expect(result.current.attempt).toBeUndefined();
+  });
+
   it('continues the prepared attempt once and performs a full browser navigation', async () => {
     const authorization = deferred<string>();
     const continueSigning = vi.fn(() => authorization.promise);

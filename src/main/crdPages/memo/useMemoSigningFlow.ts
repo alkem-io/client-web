@@ -27,6 +27,7 @@ export function useMemoSigningFlow({
     if (preparing.current) return;
     preparing.current = true;
     setStage('preparing');
+    setAttempt(undefined);
     try {
       await requestDurability();
       const prepared = await prepareMutation(memoId);
