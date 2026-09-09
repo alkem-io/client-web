@@ -2,12 +2,30 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { AuthorizationPrivilege, SigningAttemptStatus } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthenticationType,
+  AuthorizationPrivilege,
+  LicenseEntitlementType,
+  SigningAttemptStatus,
+} from '@/core/apollo/generated/graphql-schema';
 import type { MemoSigningDialogProps } from '@/crd/components/memo/MemoSigningDialog';
 import { CrdMemoDialog } from './CrdMemoDialog';
 
 const mocks = vi.hoisted(() => ({
   assign: vi.fn(),
+  authenticated: true,
+  authenticationMethodsOptions: vi.fn(),
+  authenticationMethodsResult: {
+    data: {
+      me: {
+        user: {
+          authentication: { methods: ['CLEVERBASE'] },
+        },
+      },
+    },
+    error: undefined,
+    loading: false,
+  } as Record<string, unknown>,
   continueMutation: vi.fn(),
   lastSigningDialogProps: undefined as MemoSigningDialogProps | undefined,
   memo: undefined as Record<string, unknown> | undefined,
@@ -17,6 +35,7 @@ const mocks = vi.hoisted(() => ({
   requestDurability: vi.fn(),
   returnAttempt: { loading: false, error: undefined, data: undefined } as Record<string, unknown>,
   returnAttemptQuery: vi.fn(),
+  spaceEntitlements: ['SPACE_FLAG_MEMO_SIGNING'] as LicenseEntitlementType[],
   verificationQuery: vi.fn(),
   verificationQueryOptions: vi.fn(),
   verificationResult: { data: undefined, error: undefined, loading: false, variables: undefined } as Record<
@@ -36,6 +55,10 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
     return mocks.returnAttempt;
   },
   usePrepareMemoSigningMutation: () => [mocks.prepareMutation],
+  useUserSecurityAuthenticationMethodsQuery: (options: unknown) => {
+    mocks.authenticationMethodsOptions(options);
+    return mocks.authenticationMethodsResult;
+  },
   useVerifyMemoSignatureLazyQuery: (options: unknown) => {
     mocks.verificationQueryOptions(options);
     return [mocks.verificationQuery, mocks.verificationResult];
@@ -44,14 +67,17 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 }));
 
 vi.mock('@/core/auth/authentication/hooks/useAuthenticationContext', () => ({
-  useAuthenticationContext: () => ({ isAuthenticated: true }),
+  useAuthenticationContext: () => ({ isAuthenticated: mocks.authenticated }),
 }));
 vi.mock('@/core/ui/fullscreen/FullscreenEditorContext', () => ({ useRegisterFullscreenEditor: () => {} }));
 vi.mock('@/core/ui/fullscreen/useFullscreen', () => ({ useFullscreen: () => ({ fullscreen: false }) }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
 vi.mock('@/crd/hooks/useMediaQuery', () => ({ useMediaQuery: () => false }));
 vi.mock('@/domain/space/context/useSpace', () => ({
-  useSpace: () => ({ space: { about: { membership: {} } } }),
+  useSpace: () => ({
+    entitlements: mocks.spaceEntitlements,
+    space: { about: { membership: {} } },
+  }),
 }));
 vi.mock('@/domain/space/hooks/useSubSpace', () => ({
   useSubSpace: () => ({ subspace: { about: { membership: {} } } }),
@@ -130,6 +156,19 @@ describe('CrdMemoDialog signing connector', () => {
     });
     vi.stubGlobal('history', { replaceState: mocks.replaceState, state: null });
     mocks.memo = memoWith([AuthorizationPrivilege.Contribute]);
+    mocks.authenticated = true;
+    mocks.authenticationMethodsResult = {
+      data: {
+        me: {
+          user: {
+            authentication: { methods: [AuthenticationType.Cleverbase] },
+          },
+        },
+      },
+      error: undefined,
+      loading: false,
+    };
+    mocks.spaceEntitlements = [LicenseEntitlementType.SpaceFlagMemoSigning];
     const collaborationProvider = {
       hasLocalEdits: false,
       hasUnsavedChanges: false,
@@ -208,6 +247,12 @@ describe('CrdMemoDialog signing connector', () => {
       [AuthorizationPrivilege.Read],
       [{ id: 'signed-1', status: SigningAttemptStatus.Signed, updatedDate: new Date() }]
     );
+    mocks.spaceEntitlements = [];
+    mocks.authenticationMethodsResult = {
+      data: undefined,
+      error: undefined,
+      loading: false,
+    };
 
     renderDialog();
     await user.click(screen.getByRole('button', { name: 'memo.signing.signedCopies' }));
@@ -219,6 +264,80 @@ describe('CrdMemoDialog signing connector', () => {
 
     await user.click(screen.getByRole('button', { name: 'close signing' }));
     expect(screen.queryByTestId('signing-dialog')).not.toBeInTheDocument();
+  });
+
+  it.each([
+    ['the space entitlement', [], [AuthenticationType.Cleverbase]],
+    ['a linked Cleverbase identity', [LicenseEntitlementType.SpaceFlagMemoSigning], [AuthenticationType.Email]],
+  ] as const)('opens existing signed copies for a contributor without %s and never prepares', async (_gate, entitlements, methods) => {
+    const user = userEvent.setup();
+    mocks.memo = memoWith(
+      [AuthorizationPrivilege.Contribute],
+      [
+        {
+          id: 'signed-1',
+          status: SigningAttemptStatus.Signed,
+          updatedDate: new Date(),
+        },
+      ]
+    );
+    mocks.spaceEntitlements = [...entitlements];
+    mocks.authenticationMethodsResult = {
+      data: { me: { user: { authentication: { methods: [...methods] } } } },
+      error: undefined,
+      loading: false,
+    };
+
+    renderDialog();
+    await user.click(screen.getByRole('button', { name: 'memo.signing.signedCopies' }));
+
+    expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-signatures', '1');
+    expect(mocks.prepareMutation).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    {
+      name: 'CONTRIBUTE',
+      privileges: [AuthorizationPrivilege.Read],
+    },
+    { name: 'the space entitlement', entitlements: [] },
+    {
+      name: 'a linked Cleverbase identity',
+      authenticationMethods: [AuthenticationType.Email],
+    },
+    { name: 'loaded authentication methods', loading: true },
+    { name: 'available authentication methods', error: new Error('offline') },
+  ])('hides Sign without $name', gate => {
+    mocks.memo = memoWith(gate.privileges ?? [AuthorizationPrivilege.Contribute]);
+    mocks.spaceEntitlements = gate.entitlements ?? [LicenseEntitlementType.SpaceFlagMemoSigning];
+    mocks.authenticationMethodsResult = {
+      data: {
+        me: {
+          user: {
+            authentication: {
+              methods: gate.authenticationMethods ?? [AuthenticationType.Cleverbase],
+            },
+          },
+        },
+      },
+      error: gate.error,
+      loading: gate.loading ?? false,
+    };
+
+    renderDialog();
+
+    expect(screen.queryByRole('button', { name: 'memo.signing.title' })).not.toBeInTheDocument();
+  });
+
+  it('skips authentication methods and hides Sign for an unauthenticated actor', () => {
+    mocks.authenticated = false;
+
+    renderDialog();
+
+    expect(mocks.authenticationMethodsOptions).toHaveBeenCalledWith({
+      skip: true,
+    });
+    expect(screen.queryByRole('button', { name: 'memo.signing.title' })).not.toBeInTheDocument();
   });
 
   it('runs one uncached verification only after the signed-copy action', async () => {
