@@ -43,7 +43,10 @@ describe('useOrgInvitationsTabData — mutation failures are surfaced', () => {
     rejectInvitationMock.mockRejectedValue(new Error('FORBIDDEN_POLICY'));
     const { result } = renderHook(() => useOrgInvitationsTabData('org-1'));
 
-    await act(() => result.current.onDecline('inv-1'));
+    act(() => result.current.onRequestDecline('inv-1'));
+    await act(async () => {
+      result.current.declineConfirm.onConfirm();
+    });
 
     expect(rejectInvitationMock).toHaveBeenCalledWith('inv-1');
     await waitFor(() => expect(notifyMock).toHaveBeenCalledWith('org.invitations.errorToast', 'error'));
@@ -62,11 +65,33 @@ describe('useOrgInvitationsTabData — mutation failures are surfaced', () => {
     await waitFor(() => expect(notifyMock).toHaveBeenCalledWith('org.invitations.errorToast', 'error'));
   });
 
+  it('does not decline until the confirmation is confirmed (Golden Rule 9)', async () => {
+    // Declining is irreversible from this surface: the lifecycle has no
+    // transition from `rejected` back to `invited`, so a single mis-click
+    // would need a Space admin to archive and re-invite.
+    rejectInvitationMock.mockResolvedValue(undefined);
+    const { result } = renderHook(() => useOrgInvitationsTabData('org-1'));
+
+    act(() => result.current.onRequestDecline('inv-1'));
+
+    expect(rejectInvitationMock).not.toHaveBeenCalled();
+    expect(result.current.declineConfirm.pendingId).toBe('inv-1');
+    expect(result.current.declineConfirm.pendingSpaceName).toBe('Space One');
+
+    act(() => result.current.declineConfirm.onCancel());
+
+    expect(rejectInvitationMock).not.toHaveBeenCalled();
+    expect(result.current.declineConfirm.pendingId).toBeNull();
+  });
+
   it('does not toast when the mutation succeeds', async () => {
     rejectInvitationMock.mockResolvedValue(undefined);
     const { result } = renderHook(() => useOrgInvitationsTabData('org-1'));
 
-    await act(() => result.current.onDecline('inv-1'));
+    act(() => result.current.onRequestDecline('inv-1'));
+    await act(async () => {
+      result.current.declineConfirm.onConfirm();
+    });
 
     expect(notifyMock).not.toHaveBeenCalled();
   });

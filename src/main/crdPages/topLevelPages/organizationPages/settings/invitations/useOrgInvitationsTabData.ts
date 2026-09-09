@@ -5,15 +5,16 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import useInvitationActions from '@/domain/community/invitations/useInvitationActions';
 import { mapOrgInvitations } from './orgInvitationsMapper';
 
-type PendingAccept = {
+type PendingAction = {
   invitationId: string;
   spaceDisplayName: string;
 };
 
 /**
  * Integration hook for the organization Invitations tab. Clones the shape of
- * `vcPages/settings/membership/useVcMembershipTabData.ts`: accept goes
- * through a confirmation step (Rule #9), decline is direct. Reuses the
+ * `vcPages/settings/membership/useVcMembershipTabData.ts`: BOTH accept and
+ * decline go through a confirmation step (Rule #9 — decline is irreversible
+ * from this surface, see the view's prop docs). Reuses the
  * shared `useInvitationActions` accept/reject mutation wrapper (same
  * refetches — pending count, pending list — the personal dialog relies on)
  * and additionally refetches this tab's own query on every state change.
@@ -34,7 +35,8 @@ export const useOrgInvitationsTabData = (organizationId: string | undefined) => 
     skip: !organizationId,
   });
 
-  const [pendingAccept, setPendingAccept] = useState<PendingAccept | null>(null);
+  const [pendingAccept, setPendingAccept] = useState<PendingAction | null>(null);
+  const [pendingDecline, setPendingDecline] = useState<PendingAction | null>(null);
 
   const { acceptInvitation, rejectInvitation, accepting, rejecting } = useInvitationActions({
     onUpdate: () => void refetch(),
@@ -62,9 +64,20 @@ export const useOrgInvitationsTabData = (organizationId: string | undefined) => 
     }
   };
 
-  const onDecline = async (invitationId: string) => {
+  const onRequestDecline = (invitationId: string) => {
+    const row = rows.find(r => r.id === invitationId);
+    if (!row) return;
+    setPendingDecline({ invitationId, spaceDisplayName: row.spaceDisplayName });
+  };
+
+  const onCancelDecline = () => setPendingDecline(null);
+
+  const onConfirmDecline = async () => {
+    const pending = pendingDecline;
+    if (!pending) return;
+    setPendingDecline(null);
     try {
-      await rejectInvitation(invitationId);
+      await rejectInvitation(pending.invitationId);
     } catch {
       notify(t('org.invitations.errorToast'), 'error');
     }
@@ -74,7 +87,7 @@ export const useOrgInvitationsTabData = (organizationId: string | undefined) => 
     loading,
     rows,
     onRequestAccept,
-    onDecline,
+    onRequestDecline,
     accepting,
     rejecting,
     acceptConfirm: {
@@ -82,6 +95,12 @@ export const useOrgInvitationsTabData = (organizationId: string | undefined) => 
       pendingSpaceName: pendingAccept?.spaceDisplayName ?? null,
       onConfirm: () => void onConfirmAccept(),
       onCancel: onCancelAccept,
+    },
+    declineConfirm: {
+      pendingId: pendingDecline?.invitationId ?? null,
+      pendingSpaceName: pendingDecline?.spaceDisplayName ?? null,
+      onConfirm: () => void onConfirmDecline(),
+      onCancel: onCancelDecline,
     },
   };
 };

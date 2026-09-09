@@ -617,7 +617,14 @@ function ResultRow({
 
   return (
     <li className="flex items-center gap-3 p-3 rounded-md border border-border">
-      {result.invitee.kind === 'user' ? (
+      {/*
+        The `@` glyph below means "this invitee is an email address". Only the
+        `email` kind may render it: every other kind carries `avatarUrl` and a
+        display name, so sending the organization branch through it made the
+        feature's primary flow report "@ Acme Corp" — the organization labelled
+        as if the admin had typed an address.
+      */}
+      {result.invitee.kind !== 'email' ? (
         <Avatar className="size-8">
           {result.invitee.avatarUrl && <AvatarImage src={result.invitee.avatarUrl} alt="" />}
           <AvatarFallback className="text-badge">{labelText.slice(0, 1).toUpperCase()}</AvatarFallback>

@@ -845,6 +845,9 @@
       "acceptConfirmTitle": "Accept this invitation?",
       "acceptConfirmBody": "Your organisation will join {{spaceName}} as {{role}}.",
       "acceptConfirmAction": "Accept invitation",
+      "declineConfirmTitle": "Decline this invitation?",
+      "declineConfirmBody": "{{spaceName}} will be told your organisation declined. This cannot be undone — a Space admin would have to send a new invitation.",
+      "declineConfirmAction": "Decline invitation",
       "errorToast": "Couldn't update the invitation — try again"
     }
   },

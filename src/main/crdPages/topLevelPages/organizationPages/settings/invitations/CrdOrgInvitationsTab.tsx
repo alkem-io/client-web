@@ -41,7 +41,7 @@ const CrdOrgInvitationsTab = () => {
     canAct: row.canAct,
   }));
 
-  const pendingRow = data.rows.find(row => row.id === data.acceptConfirm.pendingId);
+  const pendingAcceptRow = data.rows.find(row => row.id === data.acceptConfirm.pendingId);
 
   return (
     <OrgInvitationsTabView
@@ -52,17 +52,28 @@ const CrdOrgInvitationsTab = () => {
       acceptLabel={t('org.invitations.accept')}
       declineLabel={t('org.invitations.decline')}
       onAccept={data.onRequestAccept}
-      onDecline={data.onDecline}
+      onDecline={data.onRequestDecline}
+      busy={data.accepting || data.rejecting}
       acceptConfirm={{
         open: Boolean(data.acceptConfirm.pendingId),
         title: t('org.invitations.acceptConfirmTitle'),
         body: t('org.invitations.acceptConfirmBody', {
           spaceName: data.acceptConfirm.pendingSpaceName ?? '',
-          role: pendingRow ? roleLabel(pendingRow.role) : '',
+          role: pendingAcceptRow ? roleLabel(pendingAcceptRow.role) : '',
         }),
         confirmLabel: t('org.invitations.acceptConfirmAction'),
         onConfirm: data.acceptConfirm.onConfirm,
         onCancel: data.acceptConfirm.onCancel,
+      }}
+      declineConfirm={{
+        open: Boolean(data.declineConfirm.pendingId),
+        title: t('org.invitations.declineConfirmTitle'),
+        body: t('org.invitations.declineConfirmBody', {
+          spaceName: data.declineConfirm.pendingSpaceName ?? '',
+        }),
+        confirmLabel: t('org.invitations.declineConfirmAction'),
+        onConfirm: data.declineConfirm.onConfirm,
+        onCancel: data.declineConfirm.onCancel,
       }}
     />
   );
