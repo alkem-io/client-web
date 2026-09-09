@@ -660,6 +660,7 @@
           "title": "Чакащо $t(common.virtualContributor) $t(common.membership): {{space}}"
         }
       },
+      "organization": "вашата организация",
       "vc": "Вашия $t(common.virtualContributor)",
       "you": "Вие"
     }

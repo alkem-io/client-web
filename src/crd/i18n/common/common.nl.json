@@ -660,6 +660,7 @@
           "title": "Openstaande $t(common.virtualContributor) $t(common.membership): {{space}}"
         }
       },
+      "organization": "jouw organisatie",
       "vc": "jouw $t(common.virtualContributor)",
       "you": "jij"
     }
