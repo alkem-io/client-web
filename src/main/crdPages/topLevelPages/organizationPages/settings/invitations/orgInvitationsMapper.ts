@@ -57,6 +57,14 @@ export const mapOrgInvitations = (
         displayName: space.displayName,
         url: space.url,
       })),
-      canAct: inv.invitation.nextEvents.includes('ACCEPT'),
+      // `nextEvents` is derived from the lifecycle state alone and is blind to
+      // WHO is asking, so on its own it enables Accept/Decline for a caller the
+      // server will reject with FORBIDDEN (an org admin demoted to associate
+      // keeps the row until it is cleaned up). `spacesToJoinOnAccept` is the
+      // server's per-caller signal for exactly this: the resolver returns null
+      // when the caller lacks ROLESET_ENTRY_ROLE_INVITE_ACCEPT on the
+      // invitation. Both must hold — the invitation is still answerable AND
+      // this viewer may answer it.
+      canAct: inv.invitation.nextEvents.includes('ACCEPT') && inv.invitation.spacesToJoinOnAccept !== null,
     }));
 };
