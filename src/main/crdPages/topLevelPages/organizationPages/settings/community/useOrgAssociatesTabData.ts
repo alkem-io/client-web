@@ -221,7 +221,14 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
         createdDate: inv.createdDate ? new Date(inv.createdDate).toISOString() : '',
         canApprove: false,
         canReject: false,
-        canDelete: inv.state === InvitationState.INVITED,
+        // Every invitation row is removable, matching the Space side
+        // (`useCommunityTabData`). This is not cosmetic: 061 deliberately removed the
+        // lifecycle's REINVITE transition, so the ONLY sanctioned way to re-invite
+        // someone who declined is to remove the declined invitation and invite again —
+        // which re-runs the opt-out, the role-cap check and the notification. Gating
+        // removal on `INVITED` alone left a declined user permanently un-invitable,
+        // with no action anywhere in the product to clear the row.
+        canDelete: true,
         offeredRoleLabel: t(`org.associates.pending.offeredRole.${offeredRoleLabelKey(inv.extraRoles)}`),
       };
     })
