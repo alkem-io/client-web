@@ -3121,6 +3121,7 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationSyncSpaceHierarchy'
   | 'adminCommunicationUpdateRoomState'
+  | 'adminForumRemoveDiscussionCategory'
   | 'adminIdentityDeleteKratosIdentity'
   | 'adminInAppNotificationsPrune'
   | 'adminLicensePolicyCreateCredentialRule'
@@ -3366,6 +3367,7 @@ export type MutationFieldPolicy = {
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationSyncSpaceHierarchy?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomState?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminForumRemoveDiscussionCategory?: FieldPolicy<any> | FieldReadFunction<any>;
   adminIdentityDeleteKratosIdentity?: FieldPolicy<any> | FieldReadFunction<any>;
   adminInAppNotificationsPrune?: FieldPolicy<any> | FieldReadFunction<any>;
   adminLicensePolicyCreateCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
