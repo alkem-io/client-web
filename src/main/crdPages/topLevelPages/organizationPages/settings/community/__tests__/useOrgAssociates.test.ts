@@ -8,9 +8,9 @@ const mockAssignRoleToUser = vi.fn();
 const mockRemoveRoleFromUser = vi.fn();
 const mockFetchMore = vi.fn();
 const usersByRoleState: Record<string, Array<{ id: string; profile: { displayName: string } }>> = {};
-// Privileges the mocked role-set manager reports. Default is permitted, so the
-// existing specs exercise the happy path; the gating block overrides it.
-let mockMyPrivileges: string[] | undefined = ['ROLESET_ENTRY_ROLE_ASSIGN'];
+// Privileges the mocked role-set manager reports. Default is an organization admin, so
+// the existing specs exercise the happy path; the gating block overrides it.
+let mockMyPrivileges: string[] | undefined = ['GRANT'];
 let mockManagerLoading = false;
 let mockManagerUpdating = false;
 let mockAvailableLoading = false;
@@ -50,7 +50,7 @@ beforeEach(() => {
   mockRemoveRoleFromUser.mockReset().mockResolvedValue(undefined);
   mockFetchMore.mockReset().mockResolvedValue(undefined);
   for (const k of Object.keys(usersByRoleState)) delete usersByRoleState[k];
-  mockMyPrivileges = ['ROLESET_ENTRY_ROLE_ASSIGN'];
+  mockMyPrivileges = ['GRANT'];
   mockManagerLoading = false;
   mockManagerUpdating = false;
   mockAvailableLoading = false;
@@ -126,14 +126,23 @@ describe('useOrgAssociates — search & pagination passthrough', () => {
 });
 
 describe('useOrgAssociates permission gating', () => {
-  // spec FR-002 — assignRoleToUser/removeRoleFromUser are gated on the privilege the
-  // backend enforces for those mutations.
-  it('reports no disabled reason when the assign privilege is held', () => {
-    mockMyPrivileges = ['ROLESET_ENTRY_ROLE_ASSIGN'];
+  // On an organization role set both assignRoleToUser and removeRoleFromUser are enforced
+  // on GRANT, which is exactly what the organization-admin credential rule grants. Gating
+  // them on the direct-add token instead disabled both for every organization admin.
+  it('reports no disabled reason for an organization admin, who holds GRANT', () => {
+    mockMyPrivileges = ['GRANT', 'CREATE', 'UPDATE', 'DELETE'];
     const { result } = renderHook(() => useOrgAssociates('rs-1'));
 
     expect(result.current.addDisabledReason).toBeUndefined();
     expect(result.current.removeDisabledReason).toBeUndefined();
+  });
+
+  it('gates add and remove for the direct-add token alone, which the backend ignores here', () => {
+    mockMyPrivileges = ['ROLESET_ENTRY_ROLE_ASSIGN'];
+    const { result } = renderHook(() => useOrgAssociates('rs-1'));
+
+    expect(result.current.addDisabledReason).toBe('permissions.denied');
+    expect(result.current.removeDisabledReason).toBe('permissions.denied');
   });
 
   it('gates add and remove when the privilege is absent', () => {
