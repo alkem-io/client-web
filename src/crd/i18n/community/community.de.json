@@ -65,7 +65,8 @@
         "searchAriaLabel": "Nutzer nach Namen suchen",
         "noResultsLabel": "Keine passenden Nutzer",
         "loadingLabel": "Nutzer werden geladen…",
-        "defaultWelcomeMessage": "Hallo, wir möchten dich einladen, dich {{organizationName}} anzuschließen. Klicke unten, um die Einladung anzunehmen oder abzulehnen."
+        "defaultWelcomeMessage": "Hallo, wir möchten dich einladen, dich {{organizationName}} anzuschließen. Klicke unten, um die Einladung anzunehmen oder abzulehnen.",
+        "rolePopoverHelper": "Assoziiert wird bei Annahme der Einladung immer vergeben."
       }
     },
     "roles": {

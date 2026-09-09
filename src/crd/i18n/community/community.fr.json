@@ -65,7 +65,8 @@
         "searchAriaLabel": "Rechercher des utilisateurs par nom",
         "noResultsLabel": "Aucun utilisateur correspondant",
         "loadingLabel": "Chargement des utilisateurs…",
-        "defaultWelcomeMessage": "Bonjour, nous aimerions vous inviter à vous associer à {{organizationName}}. Cliquez ci-dessous pour accepter ou refuser l’invitation."
+        "defaultWelcomeMessage": "Bonjour, nous aimerions vous inviter à vous associer à {{organizationName}}. Cliquez ci-dessous pour accepter ou refuser l’invitation.",
+        "rolePopoverHelper": "Associé est toujours accordé à l'acceptation de l'invitation."
       }
     },
     "roles": {

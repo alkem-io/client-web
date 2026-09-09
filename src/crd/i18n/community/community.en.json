@@ -65,7 +65,8 @@
         "searchAriaLabel": "Search for users by name",
         "noResultsLabel": "No matching users",
         "loadingLabel": "Loading users…",
-        "defaultWelcomeMessage": "Hi, we would like to invite you to associate with {{organizationName}}. Click the button below to accept or decline the invitation."
+        "defaultWelcomeMessage": "Hi, we would like to invite you to associate with {{organizationName}}. Click the button below to accept or decline the invitation.",
+        "rolePopoverHelper": "Associate is always granted on accepting the invitation."
       }
     },
     "roles": {

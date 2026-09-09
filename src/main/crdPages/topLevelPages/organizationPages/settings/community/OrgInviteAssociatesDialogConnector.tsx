@@ -219,7 +219,7 @@ export function OrgInviteAssociatesDialogConnector({
         welcomeMessageLabel: t('inviteMembers.dialog.welcomeMessageLabel'),
         welcomeMessagePlaceholder: t('inviteMembers.dialog.welcomeMessagePlaceholder'),
         inviteToRoleLabel: t('inviteMembers.dialog.inviteToRoleLabel'),
-        rolePopoverHelper: t('inviteMembers.dialog.rolePopoverHelper'),
+        rolePopoverHelper: t('inviteMembers.dialog.associates.rolePopoverHelper'),
         rolePopoverAriaLabel: t('inviteMembers.dialog.rolePopoverAriaLabel'),
         roleLabels: {
           Associate: t('inviteMembers.roles.Associate'),
