@@ -26,18 +26,10 @@ import { SpaceSettingsSubspacesView } from '@/crd/components/space/settings/Spac
 import { SpaceSettingsUpdatesView } from '@/crd/components/space/settings/SpaceSettingsUpdatesView';
 import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
-import useActionPermission from '@/domain/access/permissions/useActionPermission';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
-import {
-  ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES,
-  ROLE_SET_ASSIGN_PRIVILEGES,
-  ROLE_SET_INVITE_PRIVILEGES,
-  ROLE_SET_MANAGE_ORGANIZATION_PRIVILEGES,
-  VC_FROM_ACCOUNT_PRIVILEGES,
-} from '@/main/crdPages/permissions/roleAssignmentPrivileges';
 import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionReasonText';
 import { InviteMembersDialogConnector } from '@/main/crdPages/space/dialogs/InviteMembersDialogConnector';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
@@ -49,6 +41,7 @@ import { useClassificationPicker } from './about/useClassificationPicker';
 import { useAccountTabData } from './account/useAccountTabData';
 import { MembershipDetailDialogConnector, type ViewingMembership } from './community/MembershipDetailDialogConnector';
 import { useAddOrganizationDialog, useAddVirtualContributorDialog } from './community/useAddCommunityMemberDialog';
+import useCommunityActionPermissions from './community/useCommunityActionPermissions';
 import { useCommunityCsvExport } from './community/useCommunityCsvExport';
 import { useCommunityGuidelinesData } from './community/useCommunityGuidelinesData';
 import { useCommunityTabData } from './community/useCommunityTabData';
@@ -114,38 +107,17 @@ export default function CrdSpaceSettingsPage() {
   const community = useCommunityTabData(activeTab === 'community' ? roleSetId : '');
 
   // Gate each role-assignment control on the privilege its own backend resolver enforces.
-  // Organization rows need the grant pair; user and VC rows need the assign privilege.
   const reasonText = usePermissionReasonText();
-  const assignReason = reasonText(
-    useActionPermission(community.myPrivileges, ROLE_SET_ASSIGN_PRIVILEGES, community.loading)
-  );
-  const assignOrganizationReason = reasonText(
-    useActionPermission(community.myPrivileges, ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES, community.loading)
-  );
-  // Managing an organization that is already a member is a third token again: the server
-  // gates those two mutations on GRANT alone. Reusing `assignOrganizationReason` here left
-  // the Lead toggle and Remove button permanently disabled for space admins, so an
-  // organization that accepted an invitation could never be given Lead, demoted or removed.
-  const manageOrganizationReason = reasonText(
-    useActionPermission(community.myPrivileges, ROLE_SET_MANAGE_ORGANIZATION_PRIVILEGES, community.loading)
-  );
+  const actionPermissions = useCommunityActionPermissions(community.myPrivileges, community.loading);
+  const userRoleChangeReason = reasonText(actionPermissions.userRoleChange);
+  const organizationLeadAssignReason = reasonText(actionPermissions.organizationLeadAssign);
+  const organizationRemoveReason = reasonText(actionPermissions.organizationRemove);
+  const addOrganizationReason = reasonText(actionPermissions.addOrganization);
+  const addVcReason = reasonText(actionPermissions.addVirtualContributor);
   // Inviting is a different token from adding — a space admin holds the invite privilege
   // without the platform-admin direct-add pair — so the Invite organisation button gets
-  // its own reason rather than reusing `assignOrganizationReason`.
-  const inviteOrganizationsReason = reasonText(
-    useActionPermission(community.myPrivileges, ROLE_SET_INVITE_PRIVILEGES, community.loading)
-  );
-  // Virtual contributors are permitted by EITHER the role-set assign privilege or the
-  // account-assign privilege — space admins may hold only the latter. Mirrors the union in
-  // `useCommunityAdmin`; gating on the assign privilege alone would lock those admins out.
-  const assignVcPermission = useActionPermission(community.myPrivileges, ROLE_SET_ASSIGN_PRIVILEGES, community.loading);
-  const assignVcFromAccountPermission = useActionPermission(
-    community.myPrivileges,
-    VC_FROM_ACCOUNT_PRIVILEGES,
-    community.loading
-  );
-  const assignVcReason =
-    assignVcPermission.allowed || assignVcFromAccountPermission.allowed ? undefined : reasonText(assignVcPermission);
+  // its own reason rather than reusing `addOrganizationReason`.
+  const inviteOrganizationsReason = reasonText(actionPermissions.invite);
   const subspacesTab = useSubspacesTabData(activeTab === 'subspaces' ? spaceId : '');
   const createSubspace = useCreateSubspace(spaceId, {
     accountId,
@@ -355,6 +327,13 @@ export default function CrdSpaceSettingsPage() {
   // flow originated from inside the dialog itself (FR-Story-3 AC #3 + AC #2).
   const [activeMemberSubject, setActiveMemberSubject] = useState<MemberSettingsSubject | null>(null);
   const [removeOriginatedFromDialog, setRemoveOriginatedFromDialog] = useState(false);
+
+  // The organization lead toggle drives two different mutations with two different gates:
+  // assignRoleToOrganization needs the organization pair, while un-leading goes through
+  // removeRoleFromOrganization, which is gated on GRANT alone.
+  const organizationLeadDisabledReason = activeMemberSubject?.isLead
+    ? organizationRemoveReason
+    : organizationLeadAssignReason;
 
   // Pending-membership "view" dialog — holds the application/invitation being inspected (read-only).
   const [viewingMembership, setViewingMembership] = useState<ViewingMembership | null>(null);
@@ -607,8 +586,8 @@ export default function CrdSpaceSettingsPage() {
                 }
                 permissions={community.permissions}
                 addDisabledReasons={{
-                  organizations: assignOrganizationReason,
-                  virtualContributors: assignVcReason,
+                  organizations: addOrganizationReason,
+                  virtualContributors: addVcReason,
                 }}
                 inviteOrganizationsDisabledReason={inviteOrganizationsReason}
                 onUserRemove={community.onUserRemove}
@@ -945,9 +924,11 @@ export default function CrdSpaceSettingsPage() {
                   }
                 }
           }
-          leadDisabledReason={activeMemberSubject.type === 'user' ? assignReason : manageOrganizationReason}
-          adminDisabledReason={assignReason}
-          removeDisabledReason={activeMemberSubject.type === 'user' ? assignReason : manageOrganizationReason}
+          leadDisabledReason={
+            activeMemberSubject.type === 'user' ? userRoleChangeReason : organizationLeadDisabledReason
+          }
+          adminDisabledReason={userRoleChangeReason}
+          removeDisabledReason={activeMemberSubject.type === 'user' ? userRoleChangeReason : organizationRemoveReason}
         />
       )}
 
@@ -967,7 +948,7 @@ export default function CrdSpaceSettingsPage() {
         emptyLabel={t('community.organizations.addDialog.empty')}
         onSearchChange={addOrgDialog.onSearchChange}
         onAdd={id => void addOrgDialog.onAdd(id)}
-        addDisabledReason={assignOrganizationReason}
+        addDisabledReason={addOrganizationReason}
       />
 
       <AddCommunityMemberDialog
@@ -986,7 +967,7 @@ export default function CrdSpaceSettingsPage() {
         emptyLabel={t('community.virtualContributors.addDialog.empty')}
         onSearchChange={addVCDialog.onSearchChange}
         onAdd={id => void addVCDialog.onAdd(id)}
-        addDisabledReason={assignVcReason}
+        addDisabledReason={addVcReason}
       />
 
       <InviteMembersDialogConnector
