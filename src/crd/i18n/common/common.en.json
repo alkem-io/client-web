@@ -1400,6 +1400,12 @@
       }
     }
   },
+  "permissions": {
+    "checking": "Checking permissions…",
+    "denied": "You don't have permission to change members of this role.",
+    "errorDenied": "You don't have permission to make this change. The change was not saved.",
+    "unverifiable": "Permissions could not be verified."
+  },
   "pinned": "Pinned",
   "private": "Private",
   "public": "Public",

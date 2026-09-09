@@ -77,6 +77,14 @@ export interface useCommunityAdminProvided {
     canAddVirtualContributors: boolean;
     canAddVirtualContributorsFromAccount: boolean;
   };
+  /**
+   * Raw privileges on the role set, alongside the derived booleans above.
+   *
+   * Consumers that gate a control need this rather than the booleans: a boolean cannot
+   * distinguish "still loading" from "denied" from "no privilege list returned", which
+   * the gating UI must show differently (spec FR-008 / Edge Case 3).
+   */
+  myPrivileges: AuthorizationPrivilege[] | undefined;
   loading: boolean;
   errored: boolean;
 }
@@ -247,6 +255,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
       onDeletePlatformInvitation: deletePlatformInvitation,
     },
     permissions,
+    myPrivileges: authorizationPrivileges,
     loading: loading || loadingApplicationsAndInvitations,
     errored: erroredMembers || erroredApplicationsAndInvitations,
   };

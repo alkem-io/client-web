@@ -1400,6 +1400,12 @@
       }
     }
   },
+  "permissions": {
+    "checking": "Vérification des autorisations…",
+    "denied": "Vous n'avez pas l'autorisation de modifier les membres de ce rôle.",
+    "errorDenied": "Vous n'avez pas l'autorisation d'effectuer cette modification. La modification n'a pas été enregistrée.",
+    "unverifiable": "Les autorisations n'ont pas pu être vérifiées."
+  },
   "pinned": "Épinglé",
   "private": "Privé",
   "public": "Public",

@@ -1400,6 +1400,12 @@
       }
     }
   },
+  "permissions": {
+    "checking": "Berechtigungen werden geprüft…",
+    "denied": "Du hast keine Berechtigung, die Mitglieder dieser Rolle zu ändern.",
+    "errorDenied": "Du hast keine Berechtigung für diese Änderung. Die Änderung wurde nicht gespeichert.",
+    "unverifiable": "Berechtigungen konnten nicht überprüft werden."
+  },
   "pinned": "Angeheftet",
   "private": "Privat",
   "public": "Öffentlich",
