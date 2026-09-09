@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthenticationType,
+  AuthorizationPrivilege,
+  LicenseEntitlementType,
+} from '@/core/apollo/generated/graphql-schema';
 import { canStartMemoSigning, updateMemoMarkdownCache } from '@/main/crdPages/memo/CrdMemoDialog';
 
 describe('updateMemoMarkdownCache', () => {
@@ -23,8 +27,50 @@ describe('updateMemoMarkdownCache', () => {
 });
 
 describe('canStartMemoSigning', () => {
-  it('shows Sign only to actors with CONTRIBUTE on the memo', () => {
-    expect(canStartMemoSigning([AuthorizationPrivilege.Contribute])).toBe(true);
-    expect(canStartMemoSigning([AuthorizationPrivilege.Read])).toBe(false);
+  it.each([
+    {
+      privileges: [AuthorizationPrivilege.Contribute],
+      entitlements: [LicenseEntitlementType.SpaceFlagMemoSigning],
+      authenticationMethods: [AuthenticationType.Cleverbase],
+      authenticationMethodsReady: true,
+      expected: true,
+    },
+    {
+      privileges: [AuthorizationPrivilege.Read],
+      entitlements: [LicenseEntitlementType.SpaceFlagMemoSigning],
+      authenticationMethods: [AuthenticationType.Cleverbase],
+      authenticationMethodsReady: true,
+      expected: false,
+    },
+    {
+      privileges: [AuthorizationPrivilege.Contribute],
+      entitlements: [],
+      authenticationMethods: [AuthenticationType.Cleverbase],
+      authenticationMethodsReady: true,
+      expected: false,
+    },
+    {
+      privileges: [AuthorizationPrivilege.Contribute],
+      entitlements: [LicenseEntitlementType.SpaceFlagMemoSigning],
+      authenticationMethods: [AuthenticationType.Email],
+      authenticationMethodsReady: true,
+      expected: false,
+    },
+    {
+      privileges: [AuthorizationPrivilege.Contribute],
+      entitlements: [LicenseEntitlementType.SpaceFlagMemoSigning],
+      authenticationMethods: [AuthenticationType.Cleverbase],
+      authenticationMethodsReady: false,
+      expected: false,
+    },
+  ])('returns $expected for the complete signing gate', gate => {
+    expect(
+      canStartMemoSigning(
+        gate.privileges,
+        gate.entitlements,
+        gate.authenticationMethods,
+        gate.authenticationMethodsReady
+      )
+    ).toBe(gate.expected);
   });
 });
