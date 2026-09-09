@@ -9,6 +9,18 @@ import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { afterEach } from 'vitest';
 
+// Flag-state evidence leg: the full suite must also pass with the Matrix
+// session flag ON for an allowlisted cohort (nothing else may change behavior,
+// because admission is per-user). Opt in per run: MATRIX_FLAG_ON=1 pnpm vitest run
+if (process.env.MATRIX_FLAG_ON === '1' && typeof window !== 'undefined') {
+  window._env_ = {
+    ...window._env_,
+    VITE_APP_MATRIX_ENABLED: 'true',
+    VITE_APP_MATRIX_HOMESERVER_URL: 'https://matrix.test.invalid',
+    VITE_APP_MATRIX_ALLOWED_USERS: '11111111-2222-3333-4444-555555555555',
+  };
+}
+
 // jsdom does not implement ResizeObserver, but several components (notably Radix
 // UI primitives like Tooltip/Popover via @radix-ui/react-use-size) instantiate
 // one in a layout effect. Without this stub the constructor throws
