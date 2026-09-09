@@ -38,8 +38,19 @@ export const useOrgInvitationsTabData = (organizationId: string | undefined) => 
   const [pendingAccept, setPendingAccept] = useState<PendingAction | null>(null);
   const [pendingDecline, setPendingDecline] = useState<PendingAction | null>(null);
 
+  // The mutation's own `accepting`/`rejecting` flags go false the moment the
+  // mutation resolves, which is BEFORE this tab's refetch lands. In that gap
+  // the acted-on row is still on screen and still enabled, so a second click
+  // fires a transition that no longer exists and the user gets an error toast
+  // for an action that actually succeeded. Hold the busy state across the
+  // refetch too.
+  const [refreshing, setRefreshing] = useState(false);
+
   const { acceptInvitation, rejectInvitation, accepting, rejecting } = useInvitationActions({
-    onUpdate: () => void refetch(),
+    onUpdate: () => {
+      setRefreshing(true);
+      void refetch().finally(() => setRefreshing(false));
+    },
   });
 
   const rows = mapOrgInvitations(data, organizationId);
@@ -88,8 +99,8 @@ export const useOrgInvitationsTabData = (organizationId: string | undefined) => 
     rows,
     onRequestAccept,
     onRequestDecline,
-    accepting,
-    rejecting,
+    accepting: accepting || refreshing,
+    rejecting: rejecting || refreshing,
     acceptConfirm: {
       pendingId: pendingAccept?.invitationId ?? null,
       pendingSpaceName: pendingAccept?.spaceDisplayName ?? null,

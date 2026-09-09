@@ -16,7 +16,13 @@ import { useOrgInvitationsTabData } from './useOrgInvitationsTabData';
 const CrdOrgInvitationsTab = () => {
   const { t, i18n } = useTranslation('crd-contributorSettings');
   const locale = resolveDateFnsLocale(i18n.language);
-  const { organizationId } = useOrganizationContext();
+  // `loading` matters as much as the id here: until useUrlResolver settles,
+  // organizationId is '' and useOrgInvitationsTabData skips its query, so
+  // Apollo reports loading:false with no rows. Without folding the context's
+  // own loading in, the tab renders "no pending invitations" for that beat —
+  // on the exact screen the invitation email and in-app notification deep-link
+  // to.
+  const { organizationId, loading: resolvingOrganization } = useOrganizationContext();
   const data = useOrgInvitationsTabData(organizationId);
 
   usePageTitle(t('org.invitations.pageTitle'));
@@ -45,7 +51,7 @@ const CrdOrgInvitationsTab = () => {
 
   return (
     <OrgInvitationsTabView
-      loading={data.loading}
+      loading={resolvingOrganization || data.loading}
       title={t('org.invitations.title')}
       rows={rows}
       emptyLabel={t('org.invitations.empty')}

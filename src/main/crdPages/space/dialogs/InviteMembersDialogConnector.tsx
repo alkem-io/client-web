@@ -210,7 +210,14 @@ export function InviteMembersDialogConnector({
       kind === 'organization'
         ? t('inviteMembers.dialog.organization.defaultWelcomeMessage', { spaceName })
         : t('inviteMembers.dialog.defaultWelcomeMessage', { spaceName });
-    if (welcomeMessage === '' || welcomeMessage === defaultMessage) {
+    // Only `=== defaultMessage`. The extra `welcomeMessage === ''` arm made the
+    // box unclearable: deleting the last character re-ran this effect with an
+    // empty value and immediately refilled the default. `resetDialogState()`
+    // clears both on close, so a reopen still starts from '' === '' and
+    // prefills; a later space-name resolution still refills an untouched
+    // default; and an emptied box is now respected as the deliberate edit it
+    // is.
+    if (welcomeMessage === defaultMessage) {
       setWelcomeMessage(next);
     }
     setDefaultMessage(next);
