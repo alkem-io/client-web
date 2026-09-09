@@ -133,10 +133,13 @@ export function OrgInviteAssociatesDialogConnector({
           },
         });
         const legacyResults = data?.inviteForEntryRoleOnRoleSet ?? [];
-        const remaining = [...legacyResults];
-        const built: InvitationResult[] = validInvitees.map(invitee => {
-          const idx = remaining.findIndex(r => r.invitation?.actor?.id === (invitee as { userId: string }).userId);
-          const legacyResult = idx === -1 ? undefined : remaining.splice(idx, 1)[0];
+        // Match positionally: the server returns one result per requested invitee, in request
+        // order (invitedContributorIds above). Several result types (EXTRA_ROLE_LIMIT_REACHED,
+        // ALREADY_MEMBER_OF_ROLE_SET, ORGANIZATION_NOT_ACCEPTING_INVITATIONS,
+        // ORGANIZATION_LEAD_ROLE_LIMIT_REACHED, ALREADY_HAS_OPEN_APPLICATION) leave `invitation`
+        // null, so matching by `invitation.actor.id` silently drops those rows to a generic error.
+        const built: InvitationResult[] = validInvitees.map((invitee, index) => {
+          const legacyResult = legacyResults[index];
           if (!legacyResult) return { invitee, outcome: 'error' as const };
           const outcome: InvitationResult['outcome'] =
             legacyResult.type === RoleSetInvitationResultType.InvitedToRoleSet
