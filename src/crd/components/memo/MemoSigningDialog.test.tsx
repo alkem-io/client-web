@@ -16,19 +16,45 @@ beforeAll(async () => {
   });
 });
 
-const renderDialog = (props: Partial<MemoSigningDialogProps> = {}) =>
+type SigningDialogOverrides = Partial<Omit<Extract<MemoSigningDialogProps, { mode: 'signing' }>, 'mode'>> & {
+  mode?: 'signing';
+};
+type HistoryDialogOverrides = Partial<Omit<Extract<MemoSigningDialogProps, { mode: 'history' }>, 'mode'>> & {
+  mode: 'history';
+};
+type DialogOverrides = SigningDialogOverrides | HistoryDialogOverrides;
+
+const dialogProps = (props: DialogOverrides = {}): MemoSigningDialogProps => {
+  if (props.mode === 'history') {
+    return {
+      ...props,
+      open: props.open ?? true,
+      mode: 'history',
+      historyState: props.historyState ?? 'ready',
+      signatures: props.signatures ?? [],
+      onOpenChange: props.onOpenChange ?? vi.fn(),
+      onVerify: props.onVerify ?? vi.fn(),
+      onDownload: props.onDownload ?? vi.fn(),
+      onClose: props.onClose ?? vi.fn(),
+    };
+  }
+
+  return {
+    ...props,
+    open: props.open ?? true,
+    mode: 'signing',
+    stage: props.stage ?? 'preparing',
+    onOpenChange: props.onOpenChange ?? vi.fn(),
+    onContinue: props.onContinue ?? vi.fn(),
+    onVerify: props.onVerify ?? vi.fn(),
+    onClose: props.onClose ?? vi.fn(),
+  };
+};
+
+const renderDialog = (props: DialogOverrides = {}) =>
   render(
     <I18nextProvider i18n={i18n}>
-      <MemoSigningDialog
-        open={true}
-        stage="preparing"
-        signatures={[]}
-        onOpenChange={vi.fn()}
-        onContinue={vi.fn()}
-        onVerify={vi.fn()}
-        onClose={vi.fn()}
-        {...props}
-      />
+      <MemoSigningDialog {...dialogProps(props)} />
     </I18nextProvider>
   );
 
@@ -64,9 +90,9 @@ describe('MemoSigningDialog', () => {
       <I18nextProvider i18n={i18n}>
         <MemoSigningDialog
           open={true}
+          mode="signing"
           stage="continuing"
           previewUrl="/api/public/rest/content-signing/attempt-1/snapshot"
-          signatures={[]}
           onOpenChange={vi.fn()}
           onContinue={onContinue}
           onVerify={vi.fn()}
@@ -89,21 +115,121 @@ describe('MemoSigningDialog', () => {
   it('closes from the dialog boundary and ignores signatures without a signed document', async () => {
     const onOpenChange = vi.fn();
     renderDialog({
-      stage: 'idle',
+      mode: 'history',
+      historyState: 'ready',
       onOpenChange,
       signatures: [{ id: 'pending-1', updatedDate: '2026-09-05T10:30:00.000Z', recordedAt: '' }],
     });
 
     expect(screen.getByRole('heading', { level: 2, name: 'Signed copies' })).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: 'Close' })).toHaveLength(2);
     expect(screen.queryByRole('listitem')).not.toBeInTheDocument();
     await userEvent.keyboard('{Escape}');
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 
   it.each([
+    ['loading', 'Loading signed copies'],
+    ['error', 'Signed copies could not be loaded'],
+    ['ready', 'No signed copies have been saved yet'],
+  ] as const)('shows an explicit %s history state without any signing action', (historyState, message) => {
+    renderDialog({ mode: 'history', historyState, signatures: [] });
+
+    expect(screen.getByText(message)).toBeInTheDocument();
+    if (historyState === 'error') {
+      expect(screen.getByRole('alert')).toHaveTextContent(message);
+    }
+    expect(screen.queryByRole('button', { name: 'Continue to Cleverbase' })).not.toBeInTheDocument();
+  });
+
+  it('binds saved success actions to the returned attempt', () => {
+    renderDialog({
+      mode: 'signing',
+      stage: 'signed',
+      completedSignature: {
+        id: 'returned-attempt',
+        document: { id: 'returned-document', url: '/api/private/returned.pdf', displayName: 'returned.pdf' },
+        updatedDate: '2026-09-10T09:00:00.000Z',
+      },
+    });
+
+    expect(screen.getByRole('heading', { name: 'Signed copy saved' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Open PDF' })).toHaveAttribute('href', '/api/private/returned.pdf');
+    expect(screen.getByRole('button', { name: 'Download' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Back to memo' })).toBeInTheDocument();
+    expect(
+      screen.getByText('This signed copy is a fixed snapshot. Later memo edits do not change it.')
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Continue to Cleverbase' })).not.toBeInTheDocument();
+    expect(screen.queryByText(/Review the exact PDF copy before starting/)).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Signed copies' })).not.toBeInTheDocument();
+  });
+
+  it('delegates an authenticated download instead of relying on the anchor download attribute', async () => {
+    const onDownload = vi.fn();
+    renderDialog({
+      mode: 'history',
+      historyState: 'ready',
+      signatures: [
+        {
+          id: 'attempt-1',
+          document: { id: 'document-1', url: '/api/private/file-1', displayName: 'signed-copy.pdf' },
+          updatedDate: '2026-09-05T10:30:00.000Z',
+          recordedAt: '09/05/2026, 10:30:00',
+        },
+      ],
+      onDownload,
+    });
+
+    await userEvent.click(screen.getByRole('button', { name: 'Download' }));
+    expect(onDownload).toHaveBeenCalledWith({
+      id: 'document-1',
+      url: '/api/private/file-1',
+      displayName: 'signed-copy.pdf',
+    });
+  });
+
+  it('disables the exact document download while its authenticated fetch is in progress', async () => {
+    const onDownload = vi.fn();
+    renderDialog({
+      mode: 'history',
+      historyState: 'ready',
+      signatures: [
+        {
+          id: 'attempt-1',
+          document: { id: 'document-1', url: '/api/private/file-1', displayName: 'signed-copy.pdf' },
+          updatedDate: '2026-09-05T10:30:00.000Z',
+          recordedAt: '09/05/2026, 10:30:00',
+        },
+        {
+          id: 'attempt-2',
+          document: { id: 'document-2', url: '/api/private/file-2', displayName: 'another-copy.pdf' },
+          updatedDate: '2026-09-05T11:30:00.000Z',
+          recordedAt: '09/05/2026, 11:30:00',
+        },
+      ],
+      downloadingDocumentIds: new Set(['document-1']),
+      onDownload,
+    });
+
+    const [busyDownload, availableDownload] = screen.getAllByRole('button', { name: 'Download' });
+    expect(busyDownload).toBeDisabled();
+    expect(busyDownload).toHaveAttribute('aria-busy', 'true');
+    expect(availableDownload).toBeEnabled();
+    expect(availableDownload).toHaveAttribute('aria-busy', 'false');
+    await userEvent.click(busyDownload);
+    expect(onDownload).not.toHaveBeenCalled();
+    await userEvent.click(availableDownload);
+    expect(onDownload).toHaveBeenCalledWith({
+      id: 'document-2',
+      url: '/api/private/file-2',
+      displayName: 'another-copy.pdf',
+    });
+  });
+
+  it.each([
     ['checking', 'Checking the signing result'],
     ['pending', 'Signing is still in progress. Reload this page to check again.'],
-    ['signed', 'The PDF was signed successfully'],
     ['cancelled', 'Signing was cancelled'],
     ['failed', 'The PDF could not be signed'],
     ['expired', 'This signing attempt expired'],
@@ -113,23 +239,64 @@ describe('MemoSigningDialog', () => {
   ] as const)('renders the %s server outcome', (stage, message) => {
     renderDialog({ stage });
 
+    const outcome = screen.getByText(message);
+    expect(outcome).toBeInTheDocument();
+    expect(outcome.closest('[aria-live="polite"]')).toHaveAttribute('aria-atomic', 'true');
+    expect(screen.queryByText(/Review the exact PDF copy before starting/)).not.toBeInTheDocument();
+  });
+
+  it('announces an asynchronously resolved signing outcome', () => {
+    const { rerender } = renderDialog({ stage: 'checking' });
+
+    rerender(
+      <I18nextProvider i18n={i18n}>
+        <MemoSigningDialog {...dialogProps({ stage: 'failed' })} />
+      </I18nextProvider>
+    );
+
+    const outcome = screen.getByText('The PDF could not be signed');
+    expect(outcome.closest('[aria-live="polite"]')).toHaveAttribute('aria-atomic', 'true');
+  });
+
+  it.each([
+    ['checking', 'Checking the signing result'],
+    ['pending', 'Signing is still in progress. Reload this page to check again.'],
+    ['cancelled', 'Signing was cancelled'],
+    ['failed', 'The PDF could not be signed'],
+    ['expired', 'This signing attempt expired'],
+    ['prepare-error', 'The exact memo copy could not be prepared'],
+    ['continue-error', 'The signing session could not be started. Prepare a fresh copy and try again.'],
+    ['return-error', 'The signing result could not be loaded'],
+  ] as const)('keeps %s mutually exclusive from saved-copy and stale preview actions', (stage, message) => {
+    renderDialog({
+      mode: 'signing',
+      stage,
+      previewUrl: '/api/public/rest/content-signing/attempt-1/snapshot',
+    });
+
     expect(screen.getByText(message)).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Signed copy saved' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Open PDF' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Download' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Continue to Cleverbase' })).not.toBeInTheDocument();
+    expect(screen.queryByTitle('Memo signing preview')).not.toBeInTheDocument();
   });
 
   it('lists independent signed copies with Alkemio attribution and a deleted-user fallback', () => {
     renderDialog({
-      stage: 'signed',
+      mode: 'history',
+      historyState: 'ready',
       signatures: [
         {
           id: 'attempt-1',
-          document: { url: '/api/private/file-1' },
+          document: { id: 'document-1', url: '/api/private/file-1', displayName: 'Signed decision 1.pdf' },
           actor: { profile: { displayName: 'Alice Example', url: '/user/alice' } },
           updatedDate: '2026-09-05T10:30:00.000Z',
           recordedAt: '09/05/2026, 10:30:00',
         },
         {
           id: 'attempt-2',
-          document: { url: '/api/private/file-2' },
+          document: { id: 'document-2', url: '/api/private/file-2', displayName: 'Signed decision 2.pdf' },
           actor: { profile: { displayName: 'Former member', url: '' } },
           updatedDate: '2026-09-05T11:30:00.000Z',
           recordedAt: '09/05/2026, 11:30:00',
@@ -142,7 +309,8 @@ describe('MemoSigningDialog', () => {
     expect(screen.getByText('Former member')).toBeInTheDocument();
     expect(screen.getAllByText(/Recorded:/)).toHaveLength(2);
     expect(screen.getByText('09/05/2026, 10:30:00')).toBeInTheDocument();
-    expect(screen.getAllByRole('link', { name: 'Download signed PDF' })).toHaveLength(2);
+    expect(screen.getAllByRole('link', { name: 'Open PDF' })).toHaveLength(2);
+    expect(screen.getAllByRole('button', { name: 'Download' })).toHaveLength(2);
     expect(
       screen.getByText('Downloaded PDFs can be independently verified with standard PDF tools.')
     ).toBeInTheDocument();
@@ -154,13 +322,14 @@ describe('MemoSigningDialog', () => {
     const onVerify = vi.fn();
     const signature = {
       id: 'attempt-1',
-      document: { url: '/api/private/file-1' },
+      document: { id: 'document-1', url: '/api/private/file-1', displayName: 'Signed decision.pdf' },
       actor: { profile: { displayName: 'Alice Example', url: '/user/alice' } },
       updatedDate: '2026-09-05T10:30:00.000Z',
       recordedAt: '09/05/2026, 10:30:00',
     };
     const { rerender } = renderDialog({
-      stage: 'idle',
+      mode: 'history',
+      historyState: 'ready',
       signatures: [signature],
       onVerify,
     });
@@ -179,13 +348,12 @@ describe('MemoSigningDialog', () => {
       rerender(
         <I18nextProvider i18n={i18n}>
           <MemoSigningDialog
-            open={true}
-            stage="idle"
-            signatures={[{ ...signature, verification }]}
-            onOpenChange={vi.fn()}
-            onContinue={vi.fn()}
-            onVerify={onVerify}
-            onClose={vi.fn()}
+            {...dialogProps({
+              mode: 'history',
+              historyState: 'ready',
+              signatures: [{ ...signature, verification }],
+              onVerify,
+            })}
           />
         </I18nextProvider>
       );
@@ -196,17 +364,45 @@ describe('MemoSigningDialog', () => {
     rerender(
       <I18nextProvider i18n={i18n}>
         <MemoSigningDialog
-          open={true}
-          stage="idle"
-          signatures={[{ ...signature, verification: 'checking' }]}
-          onOpenChange={vi.fn()}
-          onContinue={vi.fn()}
-          onVerify={onVerify}
-          onClose={vi.fn()}
+          {...dialogProps({
+            mode: 'history',
+            historyState: 'ready',
+            signatures: [{ ...signature, verification: 'checking' }],
+            onVerify,
+          })}
         />
       </I18nextProvider>
     );
     expect(screen.getByRole('button', { name: 'Verify signature' })).toHaveAttribute('aria-busy', 'true');
     expect(screen.queryByText(/certificate|serial|common name|B-T/i)).not.toBeInTheDocument();
+  });
+
+  it('visibly serializes verification while one signed copy is being checked', async () => {
+    const onVerify = vi.fn();
+    const signatures = [
+      {
+        id: 'attempt-1',
+        document: { id: 'document-1', url: '/api/private/file-1', displayName: 'First.pdf' },
+        updatedDate: '2026-09-05T10:30:00.000Z',
+        recordedAt: '09/05/2026, 10:30:00',
+        verification: 'checking' as const,
+      },
+      {
+        id: 'attempt-2',
+        document: { id: 'document-2', url: '/api/private/file-2', displayName: 'Second.pdf' },
+        updatedDate: '2026-09-05T11:30:00.000Z',
+        recordedAt: '09/05/2026, 11:30:00',
+      },
+    ];
+
+    renderDialog({ mode: 'history', historyState: 'ready', signatures, onVerify, verifyDisabled: true });
+
+    const [activeVerify, otherVerify] = screen.getAllByRole('button', { name: 'Verify signature' });
+    expect(activeVerify).toBeDisabled();
+    expect(activeVerify).toHaveAttribute('aria-busy', 'true');
+    expect(otherVerify).toBeDisabled();
+    expect(otherVerify).toHaveAttribute('aria-busy', 'false');
+    await userEvent.click(otherVerify);
+    expect(onVerify).not.toHaveBeenCalled();
   });
 });

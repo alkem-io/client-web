@@ -14,6 +14,7 @@ import { canRenameCollaboraDocument } from '@/domain/collaboration/calloutContri
 import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
+import { MemoSignedCopiesDialogConnector } from '@/main/crdPages/memo/MemoSignedCopiesDialogConnector';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
 import { getCalloutContributionType, mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
 import { useCrdCalloutMoveActions } from '../hooks/useCrdCalloutMoveActions';
@@ -132,6 +133,7 @@ function LazyCalloutItemContent({
   // Framing-direct-open state: clicking "Open Memo" / "Open Whiteboard" in the
   // feed launches the matching editor without going through the callout dialog.
   const [framingMemoOpen, setFramingMemoOpen] = useState(false);
+  const [signedCopiesMemoId, setSignedCopiesMemoId] = useState<string>();
   const [framingWhiteboardOpen, setFramingWhiteboardOpen] = useState(false);
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -302,6 +304,7 @@ function LazyCalloutItemContent({
       callout={callout}
       onShowAll={() => openDialog()}
       onContributionClick={(contributionId, memoId) => openDialog(contributionId, memoId)}
+      onOpenMemoSignedCopies={setSignedCopiesMemoId}
       isTaskBoard={isBoard}
     />
   ) : undefined;
@@ -370,6 +373,11 @@ function LazyCalloutItemContent({
                 onClick?.();
               }}
               onOpenFraming={handleOpenFraming}
+              onOpenMemoSignedCopies={
+                framingMemoId && (postData.memoSignedCopiesCount ?? 0) > 0
+                  ? () => setSignedCopiesMemoId(framingMemoId)
+                  : undefined
+              }
               onAddMediaGalleryImages={handleAddMediaGalleryImages}
               settingsSlot={
                 <CalloutSettingsConnector
@@ -402,6 +410,11 @@ function LazyCalloutItemContent({
             onClick?.();
           }}
           onOpenFraming={handleOpenFraming}
+          onOpenMemoSignedCopies={
+            framingMemoId && (postData.memoSignedCopiesCount ?? 0) > 0
+              ? () => setSignedCopiesMemoId(framingMemoId)
+              : undefined
+          }
           onAddMediaGalleryImages={handleAddMediaGalleryImages}
           onCommentsClick={() => openDialog()}
           settingsSlot={
@@ -460,6 +473,14 @@ function LazyCalloutItemContent({
       )}
       {framingMemoOpen && framingMemoId && (
         <CrdMemoDialog open={true} memoId={framingMemoId} isContribution={false} onClose={handleFramingMemoClose} />
+      )}
+
+      {signedCopiesMemoId && (
+        <MemoSignedCopiesDialogConnector
+          open={true}
+          memoId={signedCopiesMemoId}
+          onOpenChange={open => !open && setSignedCopiesMemoId(undefined)}
+        />
       )}
 
       {framingWhiteboardOpen && framingWhiteboard && (
