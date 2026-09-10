@@ -110,7 +110,7 @@ vi.mock('@/crd/components/memo/MemoEditorShell', () => ({
   ),
 }));
 vi.mock('@/crd/components/memo/MemoSigningDialog', () => ({
-  MemoSigningDialog: (props: MemoSigningDialogProps) => {
+  MemoSigningDialog: (props: Extract<MemoSigningDialogProps, { mode: 'signing' }>) => {
     mocks.lastSigningDialogProps = props;
     return props.open ? (
       <div data-testid="signing-dialog" data-stage={props.stage}>
@@ -306,7 +306,7 @@ describe('CrdMemoDialog signing connector', () => {
     };
 
     renderDialog();
-    await user.click(screen.getByRole('button', { name: 'memo.signing.signedCopies' }));
+    await user.click(screen.getByRole('button', { name: 'memo.signing.signedCopiesCount' }));
 
     expect(screen.getByTestId('history-dialog')).toHaveAttribute('data-memo-id', 'memo-1');
     expect(screen.queryByTestId('signing-dialog')).not.toBeInTheDocument();
@@ -355,7 +355,7 @@ describe('CrdMemoDialog signing connector', () => {
     };
 
     renderDialog();
-    await user.click(screen.getByRole('button', { name: 'memo.signing.signedCopies' }));
+    await user.click(screen.getByRole('button', { name: 'memo.signing.signedCopiesCount' }));
 
     expect(screen.getByTestId('history-dialog')).toHaveAttribute('data-memo-id', 'memo-1');
     expect(screen.queryByTestId('signing-dialog')).not.toBeInTheDocument();

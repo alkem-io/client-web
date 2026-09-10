@@ -37,6 +37,7 @@ type ContributionsPreviewConnectorProps = {
   callout: CalloutDetailsModelExtended;
   onShowAll: () => void;
   onContributionClick?: (contributionId: string, memoId?: string) => void;
+  onOpenMemoSignedCopies?: (memoId: string) => void;
   /**
    * True when this callout renders as a Tasks board. Retitles the section
    * header "Tasks (N)" instead of "Contributions (N)". Resolved asynchronously
@@ -49,6 +50,7 @@ export function ContributionsPreviewConnector({
   callout,
   onShowAll,
   onContributionClick,
+  onOpenMemoSignedCopies,
   isTaskBoard,
 }: ContributionsPreviewConnectorProps) {
   const { t, i18n } = useTranslation('crd-space');
@@ -292,6 +294,7 @@ export function ContributionsPreviewConnector({
               contribution={contribution}
               contributionType={contributionType}
               onClick={() => onContributionClick?.(contribution.id, contribution.memoId)}
+              onOpenMemoSignedCopies={onOpenMemoSignedCopies}
             />
           ))}
           <OverlayMoreCard
@@ -320,6 +323,7 @@ export function ContributionsPreviewConnector({
                 contribution={contribution}
                 contributionType={contributionType}
                 onClick={() => onContributionClick?.(contribution.id, contribution.memoId)}
+                onOpenMemoSignedCopies={onOpenMemoSignedCopies}
               />
             ))}
             {hasMore && (
@@ -377,10 +381,12 @@ function ContributionCard({
   contribution,
   contributionType,
   onClick,
+  onOpenMemoSignedCopies,
 }: {
   contribution: ContributionCardData;
   contributionType: CalloutContributionType;
   onClick?: () => void;
+  onOpenMemoSignedCopies?: (memoId: string) => void;
 }) {
   switch (contributionType) {
     case CalloutContributionType.Whiteboard:
@@ -404,15 +410,19 @@ function ContributionCard({
           onClick={onClick}
         />
       );
-    case CalloutContributionType.Memo:
+    case CalloutContributionType.Memo: {
+      const memoId = contribution.memoId;
       return (
         <ContributionMemoCard
           title={contribution.title}
           markdownContent={contribution.markdownContent}
           author={contribution.author?.name}
           onClick={onClick}
+          signedCopiesCount={contribution.signedCopiesCount}
+          onOpenSignedCopies={memoId ? () => onOpenMemoSignedCopies?.(memoId) : undefined}
         />
       );
+    }
     case CalloutContributionType.CollaboraDocument:
       return (
         <ContributionDocumentCard

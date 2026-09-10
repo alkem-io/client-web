@@ -1,6 +1,7 @@
 import {
   BarChart3,
   ChevronDown,
+  FileSignature,
   FileText,
   FolderTree,
   ImagePlus,
@@ -97,6 +98,8 @@ export type PostCardData = {
   framingImageUrl?: string;
   /** Framing-level memo markdown (memo framing only) — rendered as a compact cropped preview in the feed */
   framingMemoMarkdown?: string;
+  /** Number of saved, document-backed signatures for memo framing. */
+  memoSignedCopiesCount?: number;
   /**
    * Framing-level media gallery preview (media gallery framing only) — up to 4 thumbnails
    * as `{ id, url }` pairs; the feed grid shows a "+N more" overlay on the 4th cell when
@@ -153,6 +156,8 @@ type PostCardProps = {
    * callout dialog). Consumers wire this to launch the framing editor directly.
    */
   onOpenFraming?: () => void;
+  /** Opens saved memo copies without opening the callout or starting a new signing attempt. */
+  onOpenMemoSignedCopies?: () => void;
   /**
    * Fired when the user clicks "Add images" on a media-gallery framing preview.
    * When omitted, the button is hidden. Consumer wires this to a hidden file
@@ -212,6 +217,7 @@ export function PostCard({
   href,
   onClick,
   onOpenFraming,
+  onOpenMemoSignedCopies,
   onAddMediaGalleryImages,
   onCommentsClick,
   settingsSlot,
@@ -244,6 +250,10 @@ export function PostCard({
   const commentLabel = post.commentCount
     ? t('callout.comments', { count: post.commentCount })
     : t('callout.commentsZero');
+  const signedCopiesLabel = t('memo.signing.signedCopiesCount', {
+    count: post.memoSignedCopiesCount,
+    defaultValue: 'Signed copies ({{count}})',
+  }).replace('{{count}}', String(post.memoSignedCopiesCount));
 
   return (
     <Card
@@ -454,29 +464,39 @@ export function PostCard({
             Whole box is the click target (cursor-pointer everywhere); the label is a non-interactive
             <span>. Mirrors the contribution cards, which likewise nest CroppedMarkdown in a button. */}
         {post.type === 'memo' && (
-          <button
-            type="button"
-            onClick={event => {
-              event.stopPropagation();
-              (onOpenFraming ?? onClick)?.();
-            }}
-            className="relative block w-full cursor-pointer overflow-hidden rounded-lg border border-border bg-muted/30 h-32 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            {post.framingMemoMarkdown ? (
-              <div className="p-3 h-full">
-                <CroppedMarkdown content={post.framingMemoMarkdown} maxHeight="100%" />
-              </div>
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <StickyNote className="w-12 h-12 text-muted-foreground/50" aria-hidden="true" />
+          <div className="space-y-2">
+            {(post.memoSignedCopiesCount ?? 0) > 0 && onOpenMemoSignedCopies && (
+              <div className="relative z-10 flex justify-end">
+                <Button className="z-10" type="button" variant="outline" size="sm" onClick={onOpenMemoSignedCopies}>
+                  <FileSignature aria-hidden="true" />
+                  {signedCopiesLabel}
+                </Button>
               </div>
             )}
-            <div className="absolute inset-0 flex items-center justify-center bg-primary/10 group-hover:bg-primary/20 transition-colors">
-              <span className="inline-flex items-center justify-center rounded-md bg-secondary text-secondary-foreground shadow-sm h-9 px-4 text-control">
-                {t('callout.openMemo')}
-              </span>
-            </div>
-          </button>
+            <button
+              type="button"
+              onClick={event => {
+                event.stopPropagation();
+                (onOpenFraming ?? onClick)?.();
+              }}
+              className="relative block w-full cursor-pointer overflow-hidden rounded-lg border border-border bg-muted/30 h-32 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {post.framingMemoMarkdown ? (
+                <div className="p-3 h-full">
+                  <CroppedMarkdown content={post.framingMemoMarkdown} maxHeight="100%" />
+                </div>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <StickyNote className="w-12 h-12 text-muted-foreground/50" aria-hidden="true" />
+                </div>
+              )}
+              <div className="absolute inset-0 flex items-center justify-center bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                <span className="inline-flex items-center justify-center rounded-md bg-secondary text-secondary-foreground shadow-sm h-9 px-4 text-control">
+                  {t('callout.openMemo')}
+                </span>
+              </div>
+            </button>
+          </div>
         )}
 
         {/* Media gallery framing preview — 4-tile grid; falls back to a placeholder

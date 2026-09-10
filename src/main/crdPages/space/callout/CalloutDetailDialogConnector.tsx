@@ -25,6 +25,7 @@ import { canRenameCollaboraDocument } from '@/domain/collaboration/calloutContri
 import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
+import { MemoSignedCopiesDialogConnector } from '@/main/crdPages/memo/MemoSignedCopiesDialogConnector';
 import type { CalloutMoveActions } from '@/main/crdPages/space/hooks/useCrdCalloutMoveActions';
 import {
   getCalloutContributionType,
@@ -87,11 +88,13 @@ function ContributionsSlot({
   open,
   onContributionClick,
   onContributionCreated,
+  onOpenMemoSignedCopies,
 }: {
   callout: CalloutDetailsModelExtended;
   open: boolean;
   onContributionClick?: (id: string, entityId?: string) => void;
   onContributionCreated?: () => void;
+  onOpenMemoSignedCopies?: (memoId: string) => void;
 }) {
   const { i18n } = useTranslation('crd-space');
   const locale = resolveDateFnsLocale(i18n.language);
@@ -181,6 +184,7 @@ function ContributionsSlot({
         <ContributionGridConnector
           contributions={mapped}
           onContributionClick={onContributionClick}
+          onOpenMemoSignedCopies={onOpenMemoSignedCopies}
           trailingSlot={trailingSlot}
         />
       )}
@@ -303,6 +307,7 @@ export function CalloutDetailDialogConnector({
   // preview inside the dialog body (MUI parity).
   const [postEditOpen, setPostEditOpen] = useState(false);
   const [framingMemoOpen, setFramingMemoOpen] = useState(false);
+  const [signedCopiesMemoId, setSignedCopiesMemoId] = useState<string>();
   const [framingCollaboraOpen, setFramingCollaboraOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   // Trash icon in the contribution-preview title bar → confirmation → delete
@@ -404,7 +409,11 @@ export function CalloutDetailDialogConnector({
 
   const hasMemoFraming = callout.framing.type === CalloutFramingType.Memo && !!callout.framing.memo;
   const memoFramingSlot = hasMemoFraming ? (
-    <MemoFramingConnector callout={callout} onOpen={() => setFramingMemoOpen(true)} />
+    <MemoFramingConnector
+      callout={callout}
+      onOpen={() => setFramingMemoOpen(true)}
+      onOpenSignedCopies={setSignedCopiesMemoId}
+    />
   ) : undefined;
   const framingMemoId = callout.framing.memo?.id;
 
@@ -488,7 +497,12 @@ export function CalloutDetailDialogConnector({
   // See `ContributionsSlot` above for why `enabled` is intentionally NOT in this gate.
   const hasContributionType = Boolean(getCalloutContributionType(callout));
   const contributionsSlot = hasContributionType ? (
-    <ContributionsSlot callout={callout} open={open} onContributionClick={handleContributionClick} />
+    <ContributionsSlot
+      callout={callout}
+      open={open}
+      onContributionClick={handleContributionClick}
+      onOpenMemoSignedCopies={setSignedCopiesMemoId}
+    />
   ) : undefined;
 
   // Inline preview of the selected post contribution — mirrors the MUI flow
@@ -809,6 +823,13 @@ export function CalloutDetailDialogConnector({
   const shareDialog = (
     <CalloutShareDialog open={shareOpen} onOpenChange={setShareOpen} callout={callout} {...elevatedNested} />
   );
+  const signedCopiesDialog = signedCopiesMemoId ? (
+    <MemoSignedCopiesDialogConnector
+      open={true}
+      memoId={signedCopiesMemoId}
+      onOpenChange={historyOpen => !historyOpen && setSignedCopiesMemoId(undefined)}
+    />
+  ) : null;
 
   // Mirrors MUI: when the admin disables commenting, suppress the comment input but keep
   // existing messages readable. The dialog itself hides the discussion section entirely
@@ -866,6 +887,7 @@ export function CalloutDetailDialogConnector({
           settingsSlot={settingsSlot}
           onShareClick={handleShareClick}
         />
+        {signedCopiesDialog}
         {whiteboardOverlay}
         {documentOverlay}
         {memoOverlay}
@@ -935,6 +957,7 @@ export function CalloutDetailDialogConnector({
           />
         )}
       </CalloutCommentsConnector>
+      {signedCopiesDialog}
       {whiteboardOverlay}
       {documentOverlay}
       {memoOverlay}

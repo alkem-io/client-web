@@ -77,8 +77,8 @@ vi.mock('@/main/crdPages/memo/CrdMemoDialog', () => ({
 vi.mock('./CalloutCommentsConnector', () => ({}));
 vi.mock('./CalloutPollConnector', () => ({}));
 vi.mock('./CalloutReactionsConnector', () => ({}));
-vi.mock('./CalloutSettingsConnector', () => ({}));
-vi.mock('./CalloutShareDialog', () => ({}));
+vi.mock('./CalloutSettingsConnector', () => ({ CalloutSettingsConnector: () => null }));
+vi.mock('./CalloutShareDialog', () => ({ CalloutShareDialog: () => null }));
 vi.mock('./CallToActionFramingConnector', () => ({}));
 vi.mock('./CollaboraFramingConnector', () => ({}));
 vi.mock('./CollaboraFramingEditorOverlay', () => ({}));

@@ -1,5 +1,4 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-// @ts-expect-error The production module is the GREEN counterpart of this RED contract.
 import { downloadMemoSignaturePdf } from './downloadMemoSignaturePdf';
 
 describe('downloadMemoSignaturePdf', () => {

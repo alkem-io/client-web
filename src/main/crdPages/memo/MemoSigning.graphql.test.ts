@@ -30,13 +30,14 @@ describe('memo signing browse and return GraphQL contracts', () => {
     expect(source).toMatch(/updatedDate/);
   });
 
-  it.each([
-    ['callout details', CalloutDetailsDocument],
-    ['memo contributions', CalloutContributionsDocument],
-  ])('%s selects only the fields needed to count actionable saved copies', (_surface, document) => {
-    const source = print(document);
+  it('selects only the fields needed to count actionable saved copies in callout details', () => {
+    expect(print(CalloutDetailsDocument)).toMatch(/memo\s*\{[^}]*signatures\s*\{\s*id\s+document\s*\{\s*id\s*\}/s);
+  });
 
-    expect(source).toMatch(/memo\s*\{[^}]*signatures\s*\{\s*id\s+document\s*\{\s*id\s*\}/s);
+  it('selects only the fields needed to count actionable saved copies in memo contributions', () => {
+    expect(print(CalloutContributionsDocument)).toMatch(
+      /fragment CalloutContributionsMemoCard on Memo\s*\{[^}]*signatures\s*\{\s*id\s+document\s*\{\s*id\s*\}/s
+    );
   });
 
   it('selects the exact returned attempt document and attribution for saved-success actions', () => {
@@ -71,11 +72,16 @@ describe('memo signing browse and return GraphQL contracts', () => {
       }
     `;
     const contributionMemoSeed = gql`
-      query ContributionMemoCountSeed($calloutId: UUID!, $includeMemo: Boolean!) {
+      query ContributionMemoCountSeed(
+        $calloutId: UUID!
+        $includeMemo: Boolean!
+        $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, MEMO, POST, COLLABORA_DOCUMENT]
+        $limit: Int
+      ) {
         lookup {
           callout(ID: $calloutId) {
             id
-            contributions {
+            contributions(filter: { types: $filter }, limit: $limit) {
               id
               sortOrder
               memo @include(if: $includeMemo) {
@@ -198,14 +204,24 @@ describe('memo signing browse and return GraphQL contracts', () => {
                 id: 'signed-1',
                 updatedDate: '2026-09-10T09:00:00.000Z',
                 actor: null,
-                document: { __typename: 'Document', id: 'document-1', url: '/document-1' },
+                document: {
+                  __typename: 'Document',
+                  id: 'document-1',
+                  url: '/document-1',
+                  displayName: 'Signed copy 1.pdf',
+                },
               },
               {
                 __typename: 'MemoSignature',
                 id: 'signed-2',
                 updatedDate: '2026-09-10T10:00:00.000Z',
                 actor: null,
-                document: { __typename: 'Document', id: 'document-2', url: '/document-2' },
+                document: {
+                  __typename: 'Document',
+                  id: 'document-2',
+                  url: '/document-2',
+                  displayName: 'Signed copy 2.pdf',
+                },
               },
               {
                 __typename: 'MemoSignature',

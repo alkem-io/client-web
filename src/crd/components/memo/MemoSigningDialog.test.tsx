@@ -68,9 +68,9 @@ describe('MemoSigningDialog', () => {
       <I18nextProvider i18n={i18n}>
         <MemoSigningDialog
           open={true}
+          mode="signing"
           stage="continuing"
           previewUrl="/api/public/rest/content-signing/attempt-1/snapshot"
-          signatures={[]}
           onOpenChange={vi.fn()}
           onContinue={onContinue}
           onVerify={vi.fn()}

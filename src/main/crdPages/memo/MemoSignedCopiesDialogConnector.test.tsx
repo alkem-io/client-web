@@ -2,7 +2,6 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-// @ts-expect-error The production connector is the GREEN counterpart of this RED contract.
 import { MemoSignedCopiesDialogConnector } from './MemoSignedCopiesDialogConnector';
 
 const mocks = vi.hoisted(() => ({
