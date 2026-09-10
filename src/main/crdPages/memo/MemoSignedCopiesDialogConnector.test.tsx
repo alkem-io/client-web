@@ -8,6 +8,12 @@ import { MemoSignedCopiesDialogConnector } from './MemoSignedCopiesDialogConnect
 const mocks = vi.hoisted(() => ({
   download: vi.fn(),
   historyOptions: vi.fn(),
+  lastDialogProps: undefined as
+    | {
+        mode: string;
+        signatures: Array<{ id: string; verification?: string }>;
+      }
+    | undefined,
   historyResult: {
     data: {
       lookup: {
@@ -65,13 +71,15 @@ vi.mock('./downloadMemoSignaturePdf', () => ({
 vi.mock('@/crd/components/memo/MemoSigningDialog', () => ({
   MemoSigningDialog: (props: {
     open: boolean;
+    mode: string;
     historyState: string;
     signatures: Array<{ id: string; document?: { id: string; url: string; displayName?: string } }>;
     onVerify: (attemptId: string) => void;
     onDownload: (document: { id: string; url: string; displayName?: string }) => void;
     onOpenChange: (open: boolean) => void;
-  }) =>
-    props.open ? (
+  }) => {
+    mocks.lastDialogProps = props;
+    return props.open ? (
       <div data-testid="signed-copies-dialog" data-history-state={props.historyState}>
         <output data-testid="history-count">{props.signatures.length}</output>
         <button type="button" onClick={() => props.onVerify('attempt-1')}>
@@ -93,7 +101,8 @@ vi.mock('@/crd/components/memo/MemoSigningDialog', () => ({
           close
         </button>
       </div>
-    ) : null,
+    ) : null;
+  },
 }));
 
 function Harness({ children }: { children: ReactNode }) {
@@ -104,6 +113,8 @@ describe('MemoSignedCopiesDialogConnector', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.download.mockResolvedValue(undefined);
+    mocks.lastDialogProps = undefined;
+    mocks.verificationResult = { data: undefined, error: undefined, loading: false, variables: undefined };
     mocks.historyResult = {
       data: {
         lookup: {
@@ -164,6 +175,39 @@ describe('MemoSignedCopiesDialogConnector', () => {
     await user.click(screen.getByRole('button', { name: 'verify' }));
 
     expect(mocks.verify).toHaveBeenCalledWith({ variables: { attemptID: 'attempt-1' } });
+  });
+
+  it.each([
+    { result: { loading: true }, expected: 'checking' },
+    {
+      result: { data: { verifyMemoSignature: 'VERIFIED' } },
+      expected: 'verified',
+    },
+    {
+      result: { data: { verifyMemoSignature: 'INVALID' } },
+      expected: 'invalid',
+    },
+    {
+      result: { data: { verifyMemoSignature: 'UNAVAILABLE' } },
+      expected: 'unavailable',
+    },
+    {
+      result: { error: new Error('gateway unavailable') },
+      expected: 'unavailable',
+    },
+  ])('maps an explicitly requested verification result to $expected', ({ result, expected }) => {
+    mocks.verificationResult = {
+      data: undefined,
+      error: undefined,
+      loading: false,
+      variables: { attemptID: 'attempt-1' },
+      ...result,
+    };
+
+    render(<MemoSignedCopiesDialogConnector open={true} memoId="memo-1" onOpenChange={vi.fn()} />);
+
+    expect(mocks.lastDialogProps?.mode).toBe('history');
+    expect(mocks.lastDialogProps?.signatures[0].verification).toBe(expected);
   });
 
   it('downloads through the authenticated helper and localizes a visible failure notification', async () => {

@@ -2,6 +2,7 @@ import { gql, InMemoryCache } from '@apollo/client';
 import { print } from 'graphql';
 import { describe, expect, it } from 'vitest';
 import { typePolicies } from '@/core/apollo/config/typePolicies';
+import * as ApolloHooks from '@/core/apollo/generated/apollo-hooks';
 import {
   CalloutContributionsDocument,
   CalloutDetailsDocument,
@@ -13,6 +14,22 @@ const countDocumentBacked = (signatures: Array<{ document?: unknown }> | undefin
   signatures?.filter(signature => signature.document).length ?? 0;
 
 describe('memo signing browse and return GraphQL contracts', () => {
+  it('selects complete actionable history rows for the dedicated signed-copies connector', () => {
+    const document = (
+      ApolloHooks as unknown as {
+        MemoSignedCopiesDocument?: Parameters<typeof print>[0];
+      }
+    ).MemoSignedCopiesDocument;
+
+    expect(document).toBeDefined();
+    if (!document) return;
+
+    const source = print(document);
+    expect(source).toMatch(/signatures\s*\{[^}]*id\s+document\s*\{[^}]*id[^}]*url[^}]*displayName/s);
+    expect(source).toMatch(/actor\s*\{[^}]*profile\s*\{[^}]*displayName[^}]*url/s);
+    expect(source).toMatch(/updatedDate/);
+  });
+
   it.each([
     ['callout details', CalloutDetailsDocument],
     ['memo contributions', CalloutContributionsDocument],
