@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it, vi } from 'vitest';
 import type { PostCardData } from './PostCard';
 import { PostCard } from './PostCard';
 
@@ -108,6 +109,43 @@ describe('PostCard showPublishDetails', () => {
     expect(content).toBeTruthy();
     expect(content).toHaveClass('empty:hidden');
     expect(content?.childNodes.length).toBe(0);
+  });
+});
+
+describe('PostCard signed memo copies', () => {
+  it('exposes document-backed memo copies as an independent keyboard action above the stretched card link', async () => {
+    const onClick = vi.fn();
+    const onOpenMemoSignedCopies = vi.fn();
+    const user = userEvent.setup();
+    const { container } = render(
+      <PostCard
+        post={{ ...basePost, type: 'memo', memoSignedCopiesCount: 2 } as PostCardData}
+        href="/callout-1"
+        onClick={onClick}
+        {...({ onOpenMemoSignedCopies } as Record<string, unknown>)}
+      />
+    );
+
+    const history = screen.getByRole('button', { name: 'Signed copies (2)' });
+    expect(history).toHaveClass('z-10');
+    expect(container.querySelector('a[href="/callout-1"]')?.contains(history)).toBe(false);
+
+    history.focus();
+    await user.keyboard('{Enter}');
+
+    expect(onOpenMemoSignedCopies).toHaveBeenCalledOnce();
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it('does not render a dead history control when no saved PDF exists', () => {
+    render(
+      <PostCard
+        post={{ ...basePost, type: 'memo', memoSignedCopiesCount: 0 } as PostCardData}
+        {...({ onOpenMemoSignedCopies: vi.fn() } as Record<string, unknown>)}
+      />
+    );
+
+    expect(screen.queryByRole('button', { name: /Signed copies/ })).not.toBeInTheDocument();
   });
 });
 

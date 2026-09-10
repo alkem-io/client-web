@@ -32,6 +32,8 @@ const renderDialog = (props: Partial<MemoSigningDialogProps> = {}) =>
     </I18nextProvider>
   );
 
+const uxProps = (props: Record<string, unknown>) => props as Partial<MemoSigningDialogProps>;
+
 describe('MemoSigningDialog', () => {
   it('announces preparation before a preview has resolved', () => {
     renderDialog();
@@ -98,6 +100,96 @@ describe('MemoSigningDialog', () => {
     expect(screen.queryByRole('listitem')).not.toBeInTheDocument();
     await userEvent.keyboard('{Escape}');
     expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it.each([
+    ['loading', 'Loading signed copies'],
+    ['error', 'Signed copies could not be loaded'],
+    ['ready', 'No signed copies have been saved yet'],
+  ] as const)('shows an explicit %s history state without any signing action', (historyState, message) => {
+    renderDialog(uxProps({ mode: 'history', stage: 'idle', historyState, signatures: [] }));
+
+    expect(screen.getByText(message)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Continue to Cleverbase' })).not.toBeInTheDocument();
+  });
+
+  it('binds saved success actions to the returned attempt rather than a newer history row', () => {
+    renderDialog(
+      uxProps({
+        mode: 'signing',
+        stage: 'signed',
+        completedSignature: {
+          id: 'returned-attempt',
+          document: { id: 'returned-document', url: '/api/private/returned.pdf', displayName: 'returned.pdf' },
+          updatedDate: '2026-09-10T09:00:00.000Z',
+        },
+        signatures: [
+          {
+            id: 'newer-unrelated-attempt',
+            document: { url: '/api/private/newer.pdf' },
+            updatedDate: '2026-09-10T10:00:00.000Z',
+          },
+        ],
+      })
+    );
+
+    expect(screen.getByRole('heading', { name: 'Signed copy saved' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Open PDF' })).toHaveAttribute('href', '/api/private/returned.pdf');
+    expect(screen.getByRole('button', { name: 'Download' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Back to memo' })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /newer\.pdf/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Continue to Cleverbase' })).not.toBeInTheDocument();
+  });
+
+  it('does not claim success when SIGNED returns without its saved document', () => {
+    renderDialog(
+      uxProps({
+        mode: 'signing',
+        stage: 'signed',
+        completedSignature: {
+          id: 'returned-attempt',
+          updatedDate: '2026-09-10T09:00:00.000Z',
+        },
+        signatures: [
+          {
+            id: 'newer-unrelated-attempt',
+            document: { url: '/api/private/newer.pdf' },
+            updatedDate: '2026-09-10T10:00:00.000Z',
+          },
+        ],
+      })
+    );
+
+    expect(screen.getByText('The signed copy is not available yet')).toBeInTheDocument();
+    expect(screen.queryByText('Signed copy saved')).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Open PDF' })).not.toBeInTheDocument();
+  });
+
+  it('delegates an authenticated download instead of relying on the anchor download attribute', async () => {
+    const onDownload = vi.fn();
+    renderDialog(
+      uxProps({
+        mode: 'history',
+        stage: 'idle',
+        historyState: 'ready',
+        signatures: [
+          {
+            id: 'attempt-1',
+            document: { id: 'document-1', url: '/api/private/file-1', displayName: 'signed-copy.pdf' },
+            updatedDate: '2026-09-05T10:30:00.000Z',
+            recordedAt: '09/05/2026, 10:30:00',
+          },
+        ],
+        onDownload,
+      })
+    );
+
+    await userEvent.click(screen.getByRole('button', { name: 'Download' }));
+    expect(onDownload).toHaveBeenCalledWith({
+      id: 'document-1',
+      url: '/api/private/file-1',
+      displayName: 'signed-copy.pdf',
+    });
   });
 
   it.each([
