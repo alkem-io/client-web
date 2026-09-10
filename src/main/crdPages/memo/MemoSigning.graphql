@@ -15,6 +15,45 @@ query memoSigningAttempt($attemptID: UUID!) {
   signingAttempt(ID: $attemptID) {
     id
     status
+    document {
+      id
+      url
+      displayName
+    }
+    actor {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+    updatedDate
+  }
+}
+
+query memoSignedCopies($memoID: UUID!) {
+  lookup {
+    memo(ID: $memoID) {
+      id
+      signatures {
+        id
+        document {
+          id
+          url
+          displayName
+        }
+        actor {
+          id
+          profile {
+            id
+            displayName
+            url
+          }
+        }
+        updatedDate
+      }
+    }
   }
 }
 

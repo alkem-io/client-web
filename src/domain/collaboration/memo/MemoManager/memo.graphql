@@ -16,6 +16,7 @@ query memoDetails($id: UUID!) {
         document {
           id
           url
+          displayName
         }
       }
     }

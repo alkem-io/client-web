@@ -27,11 +27,15 @@ const mocks = vi.hoisted(() => ({
     loading: false,
   } as Record<string, unknown>,
   continueMutation: vi.fn(),
+  lastHistoryDialogProps: undefined as
+    | { open: boolean; memoId: string; onOpenChange: (open: boolean) => void }
+    | undefined,
   lastSigningDialogProps: undefined as MemoSigningDialogProps | undefined,
   memo: undefined as Record<string, unknown> | undefined,
   prepareMutation: vi.fn(),
   provider: undefined as Record<string, unknown> | undefined,
   replaceState: vi.fn(),
+  refreshMemo: vi.fn(),
   requestDurability: vi.fn(),
   returnAttempt: { loading: false, error: undefined, data: undefined } as Record<string, unknown>,
   returnAttemptQuery: vi.fn(),
@@ -87,7 +91,7 @@ vi.mock('@/main/crdPages/markdown/useMarkdownEditorIntegration', () => ({
   useMarkdownEditorIntegration: () => ({ iframeAllowedUrls: [], onError: vi.fn(), onImageUpload: vi.fn() }),
 }));
 vi.mock('@/domain/collaboration/memo/MemoManager/useMemoManager', () => ({
-  default: () => ({ memo: mocks.memo, loading: false }),
+  default: () => ({ memo: mocks.memo, loading: false, refreshMemo: mocks.refreshMemo }),
 }));
 vi.mock('./useCrdMemoProvider', () => ({ useCrdMemoProvider: () => mocks.provider }));
 vi.mock('./memoFooterMapper', () => ({
@@ -106,10 +110,10 @@ vi.mock('@/crd/components/memo/MemoEditorShell', () => ({
   ),
 }));
 vi.mock('@/crd/components/memo/MemoSigningDialog', () => ({
-  MemoSigningDialog: (props: MemoSigningDialogProps) => {
+  MemoSigningDialog: (props: Extract<MemoSigningDialogProps, { mode: 'signing' }>) => {
     mocks.lastSigningDialogProps = props;
     return props.open ? (
-      <div data-testid="signing-dialog" data-stage={props.stage} data-signatures={props.signatures.length}>
+      <div data-testid="signing-dialog" data-stage={props.stage}>
         <button type="button" onClick={props.onContinue}>
           continue signing
         </button>
@@ -119,8 +123,21 @@ vi.mock('@/crd/components/memo/MemoSigningDialog', () => ({
         <button type="button" onClick={() => props.onOpenChange(false)}>
           dismiss signing
         </button>
-        <button type="button" onClick={() => props.onVerify('signed-1')}>
-          verify signed copy
+      </div>
+    ) : null;
+  },
+}));
+vi.mock('./MemoSignedCopiesDialogConnector', () => ({
+  MemoSignedCopiesDialogConnector: (props: {
+    open: boolean;
+    memoId: string;
+    onOpenChange: (open: boolean) => void;
+  }) => {
+    mocks.lastHistoryDialogProps = props;
+    return props.open ? (
+      <div data-testid="history-dialog" data-memo-id={props.memoId}>
+        <button type="button" onClick={() => props.onOpenChange(false)}>
+          close history
         </button>
       </div>
     ) : null;
@@ -187,6 +204,7 @@ describe('CrdMemoDialog signing connector', () => {
       data: { continueMemoSigning: { authorizeUrl: 'https://cleverbase.example/authorize' } },
     });
     mocks.returnAttempt = { loading: false, error: undefined, data: undefined };
+    mocks.lastHistoryDialogProps = undefined;
     mocks.verificationResult = { data: undefined, error: undefined, loading: false, variables: undefined };
     mocks.provider = {
       connectedUsers: [],
@@ -222,6 +240,32 @@ describe('CrdMemoDialog signing connector', () => {
     expect(mocks.assign).toHaveBeenCalledWith('https://cleverbase.example/authorize');
   });
 
+  it('renders history and new-signature actions independently for an eligible signer', async () => {
+    const user = userEvent.setup();
+    mocks.memo = memoWith(
+      [AuthorizationPrivilege.Contribute],
+      [
+        {
+          id: 'signed-1',
+          status: SigningAttemptStatus.Signed,
+          document: { id: 'document-1', url: '/api/private/document-1' },
+          updatedDate: new Date(),
+        },
+      ]
+    );
+
+    renderDialog();
+
+    expect(screen.getByRole('button', { name: 'memo.signing.title' })).toBeInTheDocument();
+    const history = screen.getByRole('button', { name: 'memo.signing.signedCopiesCount' });
+    await user.click(history);
+
+    expect(mocks.requestDurability).not.toHaveBeenCalled();
+    expect(mocks.prepareMutation).not.toHaveBeenCalled();
+    expect(screen.getByTestId('history-dialog')).toHaveAttribute('data-memo-id', 'memo-1');
+    expect(screen.queryByTestId('signing-dialog')).not.toBeInTheDocument();
+  });
+
   it('disables duplicate preparation while durability is unresolved', async () => {
     const user = userEvent.setup();
     let releaseDurability!: () => void;
@@ -245,7 +289,14 @@ describe('CrdMemoDialog signing connector', () => {
     const user = userEvent.setup();
     mocks.memo = memoWith(
       [AuthorizationPrivilege.Read],
-      [{ id: 'signed-1', status: SigningAttemptStatus.Signed, updatedDate: new Date() }]
+      [
+        {
+          id: 'signed-1',
+          status: SigningAttemptStatus.Signed,
+          document: { id: 'document-1', url: '/api/private/document-1' },
+          updatedDate: new Date(),
+        },
+      ]
     );
     mocks.spaceEntitlements = [];
     mocks.authenticationMethodsResult = {
@@ -255,15 +306,29 @@ describe('CrdMemoDialog signing connector', () => {
     };
 
     renderDialog();
-    await user.click(screen.getByRole('button', { name: 'memo.signing.signedCopies' }));
+    await user.click(screen.getByRole('button', { name: 'memo.signing.signedCopiesCount' }));
 
-    expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-stage', 'idle');
-    expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-signatures', '1');
+    expect(screen.getByTestId('history-dialog')).toHaveAttribute('data-memo-id', 'memo-1');
+    expect(screen.queryByTestId('signing-dialog')).not.toBeInTheDocument();
     expect(mocks.requestDurability).not.toHaveBeenCalled();
     expect(mocks.prepareMutation).not.toHaveBeenCalled();
 
-    await user.click(screen.getByRole('button', { name: 'close signing' }));
-    expect(screen.queryByTestId('signing-dialog')).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'close history' }));
+    expect(screen.queryByTestId('history-dialog')).not.toBeInTheDocument();
+  });
+
+  it('does not expose history when the memo has only documentless signing rows', () => {
+    mocks.memo = memoWith(
+      [AuthorizationPrivilege.Read],
+      [{ id: 'incomplete-1', status: SigningAttemptStatus.Signed, document: null, updatedDate: new Date() }]
+    );
+    mocks.spaceEntitlements = [];
+
+    renderDialog();
+
+    expect(screen.queryByRole('button', { name: /memo\.signing\.signedCopies/ })).not.toBeInTheDocument();
+    expect(mocks.requestDurability).not.toHaveBeenCalled();
+    expect(mocks.prepareMutation).not.toHaveBeenCalled();
   });
 
   it.each([
@@ -277,6 +342,7 @@ describe('CrdMemoDialog signing connector', () => {
         {
           id: 'signed-1',
           status: SigningAttemptStatus.Signed,
+          document: { id: 'document-1', url: '/api/private/document-1' },
           updatedDate: new Date(),
         },
       ]
@@ -289,9 +355,10 @@ describe('CrdMemoDialog signing connector', () => {
     };
 
     renderDialog();
-    await user.click(screen.getByRole('button', { name: 'memo.signing.signedCopies' }));
+    await user.click(screen.getByRole('button', { name: 'memo.signing.signedCopiesCount' }));
 
-    expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-signatures', '1');
+    expect(screen.getByTestId('history-dialog')).toHaveAttribute('data-memo-id', 'memo-1');
+    expect(screen.queryByTestId('signing-dialog')).not.toBeInTheDocument();
     expect(mocks.prepareMutation).not.toHaveBeenCalled();
   });
 
@@ -340,66 +407,6 @@ describe('CrdMemoDialog signing connector', () => {
     expect(screen.queryByRole('button', { name: 'memo.signing.title' })).not.toBeInTheDocument();
   });
 
-  it('runs one uncached verification only after the signed-copy action', async () => {
-    const user = userEvent.setup();
-    mocks.memo = memoWith(
-      [AuthorizationPrivilege.Read],
-      [{ id: 'signed-1', status: SigningAttemptStatus.Signed, updatedDate: new Date() }]
-    );
-    mocks.verificationQuery.mockResolvedValue({
-      data: { verifyMemoSignature: 'VERIFIED' },
-    });
-
-    renderDialog();
-    await user.click(screen.getByRole('button', { name: 'memo.signing.signedCopies' }));
-    expect(mocks.verificationQuery).not.toHaveBeenCalled();
-    expect(mocks.verificationQueryOptions).toHaveBeenCalledWith({
-      fetchPolicy: 'no-cache',
-    });
-
-    await user.click(screen.getByRole('button', { name: 'verify signed copy' }));
-    expect(mocks.verificationQuery).toHaveBeenCalledOnce();
-    expect(mocks.verificationQuery).toHaveBeenCalledWith({
-      variables: { attemptID: 'signed-1' },
-    });
-  });
-
-  it.each([
-    { result: { loading: true }, expected: 'checking' },
-    {
-      result: { data: { verifyMemoSignature: 'VERIFIED' } },
-      expected: 'verified',
-    },
-    {
-      result: { data: { verifyMemoSignature: 'INVALID' } },
-      expected: 'invalid',
-    },
-    {
-      result: { data: { verifyMemoSignature: 'UNAVAILABLE' } },
-      expected: 'unavailable',
-    },
-    {
-      result: { error: new Error('gateway unavailable') },
-      expected: 'unavailable',
-    },
-  ])('maps a requested verification result to $expected', ({ result, expected }) => {
-    mocks.memo = memoWith(
-      [AuthorizationPrivilege.Read],
-      [{ id: 'signed-1', status: SigningAttemptStatus.Signed, updatedDate: new Date() }]
-    );
-    mocks.verificationResult = {
-      data: undefined,
-      error: undefined,
-      loading: false,
-      variables: { attemptID: 'signed-1' },
-      ...result,
-    };
-
-    renderDialog();
-
-    expect(mocks.lastSigningDialogProps?.signatures[0].verification).toBe(expected);
-  });
-
   it('fails preparation when GraphQL returns no prepared attempt', async () => {
     const user = userEvent.setup();
     mocks.prepareMutation.mockResolvedValue({ data: undefined });
@@ -440,6 +447,26 @@ describe('CrdMemoDialog signing connector', () => {
         error: undefined,
         data: { signingAttempt: { status: SigningAttemptStatus.Signed } },
       },
+      'return-error',
+    ],
+    [
+      {
+        loading: false,
+        error: undefined,
+        data: {
+          signingAttempt: {
+            id: 'attempt-1',
+            status: SigningAttemptStatus.Signed,
+            document: {
+              id: 'document-1',
+              url: '/api/private/document-1',
+              displayName: 'Signed memo.pdf',
+            },
+            actor: { profile: { displayName: 'Alice Example', url: '/user/alice' } },
+            updatedDate: '2026-09-10T09:00:00.000Z',
+          },
+        },
+      },
       'signed',
     ],
   ])('loads the bookmarked signing outcome as %s -> %s', (returnAttempt, stage) => {
@@ -461,6 +488,67 @@ describe('CrdMemoDialog signing connector', () => {
     expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-stage', stage);
   });
 
+  it('refreshes MemoDetails once and binds success to the returned saved document', async () => {
+    vi.stubGlobal('location', {
+      assign: mocks.assign,
+      hash: '',
+      pathname: '/memo-1',
+      search: '?signingAttemptId=returned-attempt',
+    });
+    mocks.returnAttempt = {
+      loading: false,
+      error: undefined,
+      data: {
+        signingAttempt: {
+          id: 'returned-attempt',
+          status: SigningAttemptStatus.Signed,
+          document: {
+            id: 'returned-document',
+            url: '/api/private/returned-document',
+            displayName: 'Signed decision.pdf',
+          },
+          actor: { profile: { displayName: 'Alice Example', url: '/user/alice' } },
+          updatedDate: '2026-09-10T09:00:00.000Z',
+        },
+      },
+    };
+    mocks.memo = memoWith(
+      [AuthorizationPrivilege.Contribute],
+      [
+        {
+          id: 'newer-unrelated-attempt',
+          document: { id: 'newer-document', url: '/api/private/newer-document' },
+          updatedDate: '2026-09-10T10:00:00.000Z',
+        },
+      ]
+    );
+
+    renderDialog();
+
+    await waitFor(() => expect(mocks.refreshMemo).toHaveBeenCalledOnce());
+    expect(
+      (
+        mocks.lastSigningDialogProps as unknown as {
+          completedSignature?: {
+            id: string;
+            document?: { id: string; url: string; displayName?: string };
+            actor?: { profile?: { displayName: string; url: string } };
+            updatedDate: string;
+          };
+        }
+      ).completedSignature
+    ).toMatchObject({
+      id: 'returned-attempt',
+      document: {
+        id: 'returned-document',
+        url: '/api/private/returned-document',
+        displayName: 'Signed decision.pdf',
+      },
+      actor: { profile: { displayName: 'Alice Example', url: '/user/alice' } },
+      updatedDate: '2026-09-10T09:00:00.000Z',
+    });
+  });
+
   it('owns dialog dismissal and returned-attempt cleanup in the integration layer', async () => {
     const user = userEvent.setup();
     vi.stubGlobal('location', {
@@ -472,7 +560,19 @@ describe('CrdMemoDialog signing connector', () => {
     mocks.returnAttempt = {
       loading: false,
       error: undefined,
-      data: { signingAttempt: { status: SigningAttemptStatus.Signed } },
+      data: {
+        signingAttempt: {
+          id: 'attempt-1',
+          status: SigningAttemptStatus.Signed,
+          document: {
+            id: 'document-1',
+            url: '/api/private/document-1',
+            displayName: 'Signed memo.pdf',
+          },
+          actor: { profile: { displayName: 'Alice Example', url: '/user/alice' } },
+          updatedDate: '2026-09-10T09:00:00.000Z',
+        },
+      },
     };
     renderDialog();
 
@@ -496,7 +596,19 @@ describe('CrdMemoDialog signing connector', () => {
     mocks.returnAttempt = {
       loading: false,
       error: undefined,
-      data: { signingAttempt: { status: SigningAttemptStatus.Signed } },
+      data: {
+        signingAttempt: {
+          id: 'attempt-1',
+          status: SigningAttemptStatus.Signed,
+          document: {
+            id: 'document-1',
+            url: '/api/private/document-1',
+            displayName: 'Signed memo.pdf',
+          },
+          actor: { profile: { displayName: 'Alice Example', url: '/user/alice' } },
+          updatedDate: '2026-09-10T09:00:00.000Z',
+        },
+      },
     };
     renderDialog();
 
