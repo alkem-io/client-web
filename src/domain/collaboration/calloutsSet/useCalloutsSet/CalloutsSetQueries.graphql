@@ -95,6 +95,12 @@ fragment CalloutDetails on Callout {
     }
     memo {
       ...MemoDetails
+      signatures {
+        id
+        document {
+          id
+        }
+      }
     }
     link {
       ...LinkDetails

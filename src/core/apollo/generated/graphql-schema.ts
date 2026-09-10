@@ -15362,6 +15362,11 @@ export type UpdateCalloutContentMutation = {
             createdDate: Date;
             markdown?: string | undefined;
             contentUpdatePolicy: ContentUpdatePolicy;
+            signatures: Array<{
+              __typename?: 'MemoSignature';
+              id: string;
+              document?: { __typename?: 'Document'; id: string } | undefined;
+            }>;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -15854,6 +15859,11 @@ export type UpdateCalloutVisibilityMutation = {
             createdDate: Date;
             markdown?: string | undefined;
             contentUpdatePolicy: ContentUpdatePolicy;
+            signatures: Array<{
+              __typename?: 'MemoSignature';
+              id: string;
+              document?: { __typename?: 'Document'; id: string } | undefined;
+            }>;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -17056,6 +17066,11 @@ export type CalloutContributionsQuery = {
                   id: string;
                   markdown?: string | undefined;
                   createdDate: Date;
+                  signatures: Array<{
+                    __typename?: 'MemoSignature';
+                    id: string;
+                    document?: { __typename?: 'Document'; id: string } | undefined;
+                  }>;
                   profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
                   createdBy?:
                     | {
@@ -17263,6 +17278,11 @@ export type CalloutContributionsMemoCardFragment = {
   id: string;
   markdown?: string | undefined;
   createdDate: Date;
+  signatures: Array<{
+    __typename?: 'MemoSignature';
+    id: string;
+    document?: { __typename?: 'Document'; id: string } | undefined;
+  }>;
   profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   createdBy?:
     | {
@@ -17736,6 +17756,11 @@ export type CreateCalloutMutation = {
             createdDate: Date;
             markdown?: string | undefined;
             contentUpdatePolicy: ContentUpdatePolicy;
+            signatures: Array<{
+              __typename?: 'MemoSignature';
+              id: string;
+              document?: { __typename?: 'Document'; id: string } | undefined;
+            }>;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -18354,6 +18379,11 @@ export type CalloutDetailsQuery = {
                   createdDate: Date;
                   markdown?: string | undefined;
                   contentUpdatePolicy: ContentUpdatePolicy;
+                  signatures: Array<{
+                    __typename?: 'MemoSignature';
+                    id: string;
+                    document?: { __typename?: 'Document'; id: string } | undefined;
+                  }>;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -18924,6 +18954,11 @@ export type CalloutDetailsFragment = {
           createdDate: Date;
           markdown?: string | undefined;
           contentUpdatePolicy: ContentUpdatePolicy;
+          signatures: Array<{
+            __typename?: 'MemoSignature';
+            id: string;
+            document?: { __typename?: 'Document'; id: string } | undefined;
+          }>;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -19342,7 +19377,7 @@ export type MemoDetailsQuery = {
                   profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
                 }
               | undefined;
-            document?: { __typename?: 'Document'; id: string; url: string } | undefined;
+            document?: { __typename?: 'Document'; id: string; url: string; displayName: string } | undefined;
           }>;
           profile: {
             __typename?: 'Profile';
@@ -37893,7 +37928,50 @@ export type MemoSigningAttemptQueryVariables = Exact<{
 
 export type MemoSigningAttemptQuery = {
   __typename?: 'Query';
-  signingAttempt: { __typename?: 'MemoSignature'; id: string; status: SigningAttemptStatus };
+  signingAttempt: {
+    __typename?: 'MemoSignature';
+    id: string;
+    status: SigningAttemptStatus;
+    updatedDate: Date;
+    document?: { __typename?: 'Document'; id: string; url: string; displayName: string } | undefined;
+    actor?:
+      | {
+          __typename?: 'User';
+          id: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type MemoSignedCopiesQueryVariables = Exact<{
+  memoID: Scalars['UUID']['input'];
+}>;
+
+export type MemoSignedCopiesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    memo?:
+      | {
+          __typename?: 'Memo';
+          id: string;
+          signatures: Array<{
+            __typename?: 'MemoSignature';
+            id: string;
+            updatedDate: Date;
+            document?: { __typename?: 'Document'; id: string; url: string; displayName: string } | undefined;
+            actor?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+                }
+              | undefined;
+          }>;
+        }
+      | undefined;
+  };
 };
 
 export type VerifyMemoSignatureQueryVariables = Exact<{
