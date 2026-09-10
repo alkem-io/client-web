@@ -640,6 +640,12 @@ ${ContributionAuthorFragmentDoc}`;
 export const CalloutContributionsMemoCardFragmentDoc = gql`
     fragment CalloutContributionsMemoCard on Memo {
   id
+  signatures {
+    id
+    document {
+      id
+    }
+  }
   profile {
     id
     url
@@ -1114,6 +1120,12 @@ export const CalloutDetailsFragmentDoc = gql`
     }
     memo {
       ...MemoDetails
+      signatures {
+        id
+        document {
+          id
+        }
+      }
     }
     link {
       ...LinkDetails
@@ -10185,6 +10197,7 @@ export const MemoDetailsDocument = gql`
         document {
           id
           url
+          displayName
         }
       }
     }
@@ -29952,6 +29965,20 @@ export const MemoSigningAttemptDocument = gql`
   signingAttempt(ID: $attemptID) {
     id
     status
+    document {
+      id
+      url
+      displayName
+    }
+    actor {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+    updatedDate
   }
 }
     `;
@@ -30017,6 +30044,92 @@ export type MemoSigningAttemptQueryResult = Apollo.QueryResult<
 >;
 export function refetchMemoSigningAttemptQuery(variables: SchemaTypes.MemoSigningAttemptQueryVariables) {
   return { query: MemoSigningAttemptDocument, variables: variables };
+}
+export const MemoSignedCopiesDocument = gql`
+    query memoSignedCopies($memoID: UUID!) {
+  lookup {
+    memo(ID: $memoID) {
+      id
+      signatures {
+        id
+        document {
+          id
+          url
+          displayName
+        }
+        actor {
+          id
+          profile {
+            id
+            displayName
+            url
+          }
+        }
+        updatedDate
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useMemoSignedCopiesQuery__
+ *
+ * To run a query within a React component, call `useMemoSignedCopiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMemoSignedCopiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMemoSignedCopiesQuery({
+ *   variables: {
+ *      memoID: // value for 'memoID'
+ *   },
+ * });
+ */
+export function useMemoSignedCopiesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.MemoSignedCopiesQuery, SchemaTypes.MemoSignedCopiesQueryVariables> &
+    ({ variables: SchemaTypes.MemoSignedCopiesQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.MemoSignedCopiesQuery, SchemaTypes.MemoSignedCopiesQueryVariables>(
+    MemoSignedCopiesDocument,
+    options
+  );
+}
+export function useMemoSignedCopiesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.MemoSignedCopiesQuery,
+    SchemaTypes.MemoSignedCopiesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.MemoSignedCopiesQuery, SchemaTypes.MemoSignedCopiesQueryVariables>(
+    MemoSignedCopiesDocument,
+    options
+  );
+}
+export function useMemoSignedCopiesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.MemoSignedCopiesQuery, SchemaTypes.MemoSignedCopiesQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.MemoSignedCopiesQuery, SchemaTypes.MemoSignedCopiesQueryVariables>(
+    MemoSignedCopiesDocument,
+    options
+  );
+}
+export type MemoSignedCopiesQueryHookResult = ReturnType<typeof useMemoSignedCopiesQuery>;
+export type MemoSignedCopiesLazyQueryHookResult = ReturnType<typeof useMemoSignedCopiesLazyQuery>;
+export type MemoSignedCopiesSuspenseQueryHookResult = ReturnType<typeof useMemoSignedCopiesSuspenseQuery>;
+export type MemoSignedCopiesQueryResult = Apollo.QueryResult<
+  SchemaTypes.MemoSignedCopiesQuery,
+  SchemaTypes.MemoSignedCopiesQueryVariables
+>;
+export function refetchMemoSignedCopiesQuery(variables: SchemaTypes.MemoSignedCopiesQueryVariables) {
+  return { query: MemoSignedCopiesDocument, variables: variables };
 }
 export const VerifyMemoSignatureDocument = gql`
     query verifyMemoSignature($attemptID: UUID!) {
