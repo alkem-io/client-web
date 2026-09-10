@@ -4,7 +4,7 @@ type MemoSignatureDownload = {
 };
 
 export async function downloadMemoSignaturePdf({ url, displayName }: MemoSignatureDownload): Promise<void> {
-  const response = await fetch(url);
+  const response = await fetch(url, { credentials: 'include' });
   if (!response.ok) {
     throw new Error(`Signed PDF download failed with status ${response.status}`);
   }
@@ -19,6 +19,6 @@ export async function downloadMemoSignaturePdf({ url, displayName }: MemoSignatu
     anchor.click();
   } finally {
     anchor.remove();
-    URL.revokeObjectURL(objectUrl);
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 30_000);
   }
 }

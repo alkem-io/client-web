@@ -3,11 +3,13 @@ import { downloadMemoSignaturePdf } from './downloadMemoSignaturePdf';
 
 describe('downloadMemoSignaturePdf', () => {
   afterEach(() => {
+    vi.useRealTimers();
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
-  it('downloads authenticated bytes through a Blob URL and revokes it', async () => {
+  it('downloads authenticated bytes and keeps the Blob URL alive long enough for the browser', async () => {
+    vi.useFakeTimers();
     const blob = new Blob(['signed pdf'], { type: 'application/pdf' });
     const fetch = vi.fn().mockResolvedValue({ ok: true, blob: () => Promise.resolve(blob) });
     const createObjectURL = vi.fn().mockReturnValue('blob:signed-copy');
@@ -25,12 +27,16 @@ describe('downloadMemoSignaturePdf', () => {
       displayName: 'Board decision.pdf',
     });
 
-    expect(fetch).toHaveBeenCalledWith('/api/private/signed-copy');
+    expect(fetch).toHaveBeenCalledWith('/api/private/signed-copy', { credentials: 'include' });
     expect(createObjectURL).toHaveBeenCalledWith(blob);
     expect(anchor.download).toBe('Board decision.pdf');
     expect(document.body.appendChild).toHaveBeenCalledWith(anchor);
     expect(click).toHaveBeenCalledOnce();
     expect(remove).toHaveBeenCalledOnce();
+    expect(revokeObjectURL).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(29_999);
+    expect(revokeObjectURL).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(1);
     expect(revokeObjectURL).toHaveBeenCalledWith('blob:signed-copy');
   });
 
@@ -43,6 +49,7 @@ describe('downloadMemoSignaturePdf', () => {
   });
 
   it('removes the temporary anchor and revokes the Blob URL when the browser download throws', async () => {
+    vi.useFakeTimers();
     const blob = new Blob(['signed pdf'], { type: 'application/pdf' });
     const remove = vi.fn();
     const revokeObjectURL = vi.fn();
@@ -64,6 +71,8 @@ describe('downloadMemoSignaturePdf', () => {
     ).rejects.toThrow('browser blocked download');
 
     expect(remove).toHaveBeenCalledOnce();
+    expect(revokeObjectURL).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(30_000);
     expect(revokeObjectURL).toHaveBeenCalledWith('blob:signed-copy');
   });
 });

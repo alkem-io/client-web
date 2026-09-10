@@ -30,7 +30,8 @@ describe('ContributionMemoCard signed copies', () => {
         title="Pilot memo"
         markdownContent="Fixed proposal"
         onClick={onClick}
-        {...({ signedCopiesCount: 1, onOpenSignedCopies } as Record<string, unknown>)}
+        signedCopiesCount={1}
+        onOpenSignedCopies={onOpenSignedCopies}
       />
     );
 

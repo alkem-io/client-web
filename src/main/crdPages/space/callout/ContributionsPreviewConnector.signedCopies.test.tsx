@@ -74,7 +74,7 @@ describe('ContributionsPreviewConnector signed copies', () => {
         callout={callout as never}
         onShowAll={vi.fn()}
         onContributionClick={onContributionClick}
-        {...({ onOpenMemoSignedCopies } as Record<string, unknown>)}
+        onOpenMemoSignedCopies={onOpenMemoSignedCopies}
       />
     );
 
@@ -82,5 +82,29 @@ describe('ContributionsPreviewConnector signed copies', () => {
 
     expect(onOpenMemoSignedCopies).toHaveBeenCalledWith('memo-1');
     expect(onContributionClick).not.toHaveBeenCalled();
+  });
+
+  it('does not expose a no-op history control when the parent capability is absent', () => {
+    const callout = {
+      id: 'callout-1',
+      framing: {
+        type: CalloutFramingType.None,
+        profile: { displayName: 'Responses' },
+      },
+      settings: {
+        framing: { commentsEnabled: true },
+        contribution: {
+          enabled: true,
+          allowedTypes: [CalloutContributionType.Memo],
+          canAddContributions: 'NONE',
+          commentsEnabled: false,
+        },
+      },
+      contributions: [{ id: 'contribution-1' }],
+    };
+
+    render(<ContributionsPreviewConnector callout={callout as never} onShowAll={vi.fn()} />);
+
+    expect(screen.queryByRole('button', { name: 'Signed copies (1)' })).not.toBeInTheDocument();
   });
 });

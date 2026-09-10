@@ -29,7 +29,7 @@ describe('ContributionGridConnector signed copies', () => {
       <ContributionGridConnector
         contributions={contributions as never}
         onContributionClick={onContributionClick}
-        {...({ onOpenMemoSignedCopies } as Record<string, unknown>)}
+        onOpenMemoSignedCopies={onOpenMemoSignedCopies}
       />
     );
 
@@ -37,5 +37,25 @@ describe('ContributionGridConnector signed copies', () => {
 
     expect(onOpenMemoSignedCopies).toHaveBeenCalledWith('memo-1');
     expect(onContributionClick).not.toHaveBeenCalled();
+  });
+
+  it('does not expose a no-op history control when the parent capability is absent', () => {
+    render(
+      <ContributionGridConnector
+        contributions={
+          [
+            {
+              id: 'contribution-1',
+              type: 'memo',
+              title: 'Decision',
+              memoId: 'memo-1',
+              signedCopiesCount: 2,
+            },
+          ] as never
+        }
+      />
+    );
+
+    expect(screen.queryByRole('button', { name: 'Signed copies (2)' })).not.toBeInTheDocument();
   });
 });

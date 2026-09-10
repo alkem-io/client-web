@@ -52,7 +52,7 @@ export function ContributionGridConnector({
                 author={contribution.author?.name}
                 onClick={() => onContributionClick?.(contribution.id, contribution.memoId)}
                 signedCopiesCount={contribution.signedCopiesCount}
-                onOpenSignedCopies={memoId ? () => onOpenMemoSignedCopies?.(memoId) : undefined}
+                onOpenSignedCopies={memoId && onOpenMemoSignedCopies ? () => onOpenMemoSignedCopies(memoId) : undefined}
               />
             );
           }

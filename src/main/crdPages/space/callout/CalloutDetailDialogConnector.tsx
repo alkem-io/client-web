@@ -390,6 +390,7 @@ export function CalloutDetailDialogConnector({
     setWhiteboardEditorOpen(false);
     setDocumentEditorOpen(false);
     setPostEditOpen(false);
+    setSignedCopiesMemoId(undefined);
   }, [
     open,
     initialContributionId,
@@ -823,14 +824,15 @@ export function CalloutDetailDialogConnector({
   const shareDialog = (
     <CalloutShareDialog open={shareOpen} onOpenChange={setShareOpen} callout={callout} {...elevatedNested} />
   );
-  const signedCopiesDialog = signedCopiesMemoId ? (
-    <MemoSignedCopiesDialogConnector
-      open={true}
-      memoId={signedCopiesMemoId}
-      onOpenChange={historyOpen => !historyOpen && setSignedCopiesMemoId(undefined)}
-      {...elevatedNested}
-    />
-  ) : null;
+  const signedCopiesDialog =
+    open && signedCopiesMemoId ? (
+      <MemoSignedCopiesDialogConnector
+        open={true}
+        memoId={signedCopiesMemoId}
+        onOpenChange={historyOpen => !historyOpen && setSignedCopiesMemoId(undefined)}
+        {...elevatedNested}
+      />
+    ) : null;
 
   // Mirrors MUI: when the admin disables commenting, suppress the comment input but keep
   // existing messages readable. The dialog itself hides the discussion section entirely

@@ -38,13 +38,7 @@ describe('MemoFramingConnector signed copies', () => {
       },
     };
 
-    render(
-      <MemoFramingConnector
-        callout={callout as never}
-        onOpen={onOpen}
-        {...({ onOpenSignedCopies } as Record<string, unknown>)}
-      />
-    );
+    render(<MemoFramingConnector callout={callout as never} onOpen={onOpen} onOpenSignedCopies={onOpenSignedCopies} />);
 
     await user.click(screen.getByRole('button', { name: 'Signed copies (1)' }));
 

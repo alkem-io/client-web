@@ -202,6 +202,7 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
   const isPreview = stage === 'preview' || stage === 'continuing';
   const isActiveWorkflow = stage === 'idle' || stage === 'preparing' || isPreview;
   const completedSignature = stage === 'signed' ? props.completedSignature : undefined;
+  const announceOutcome = !isActiveWorkflow;
 
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
@@ -214,7 +215,10 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
           <DialogTitle>
             {completedSignature?.document ? t('memo.signing.savedTitle') : t('memo.signing.title')}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription
+            aria-live={announceOutcome ? 'polite' : undefined}
+            aria-atomic={announceOutcome ? true : undefined}
+          >
             {completedSignature?.document
               ? t('memo.signing.snapshotExplanation')
               : isActiveWorkflow

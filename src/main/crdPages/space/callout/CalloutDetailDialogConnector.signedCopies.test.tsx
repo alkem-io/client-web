@@ -149,7 +149,10 @@ describe('CalloutDetailDialogConnector framing signed copies', () => {
       },
     };
 
-    render(<CalloutDetailDialogConnector open={true} onOpenChange={vi.fn()} callout={callout as never} />);
+    const onOpenChange = vi.fn();
+    const { rerender } = render(
+      <CalloutDetailDialogConnector open={true} onOpenChange={onOpenChange} callout={callout as never} />
+    );
 
     await user.click(screen.getByRole('button', { name: 'Signed copies (1)' }));
 
@@ -161,6 +164,14 @@ describe('CalloutDetailDialogConnector framing signed copies', () => {
     expect(historyDialog).toHaveAttribute('data-memo-id', 'memo-1');
 
     await user.click(screen.getByRole('button', { name: 'close history' }));
+    expect(screen.queryByTestId('signed-copies-dialog')).not.toBeInTheDocument();
+    expect(screen.getByTestId('callout-dialog')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Signed copies (1)' }));
+    rerender(<CalloutDetailDialogConnector open={false} onOpenChange={onOpenChange} callout={callout as never} />);
+    expect(screen.queryByTestId('signed-copies-dialog')).not.toBeInTheDocument();
+
+    rerender(<CalloutDetailDialogConnector open={true} onOpenChange={onOpenChange} callout={callout as never} />);
     expect(screen.queryByTestId('signed-copies-dialog')).not.toBeInTheDocument();
     expect(screen.getByTestId('callout-dialog')).toBeInTheDocument();
   });

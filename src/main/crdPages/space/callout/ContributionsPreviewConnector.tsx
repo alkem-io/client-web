@@ -419,7 +419,7 @@ function ContributionCard({
           author={contribution.author?.name}
           onClick={onClick}
           signedCopiesCount={contribution.signedCopiesCount}
-          onOpenSignedCopies={memoId ? () => onOpenMemoSignedCopies?.(memoId) : undefined}
+          onOpenSignedCopies={memoId && onOpenMemoSignedCopies ? () => onOpenMemoSignedCopies(memoId) : undefined}
         />
       );
     }

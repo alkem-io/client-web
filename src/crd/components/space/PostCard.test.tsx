@@ -138,7 +138,7 @@ describe('PostCard signed memo copies', () => {
         post={{ ...basePost, type: 'memo', memoSignedCopiesCount: 2 } as PostCardData}
         href="/callout-1"
         onClick={onClick}
-        {...({ onOpenMemoSignedCopies } as Record<string, unknown>)}
+        onOpenMemoSignedCopies={onOpenMemoSignedCopies}
       />
     );
 
@@ -157,7 +157,7 @@ describe('PostCard signed memo copies', () => {
     render(
       <PostCard
         post={{ ...basePost, type: 'memo', memoSignedCopiesCount: 0 } as PostCardData}
-        {...({ onOpenMemoSignedCopies: vi.fn() } as Record<string, unknown>)}
+        onOpenMemoSignedCopies={vi.fn()}
       />
     );
 

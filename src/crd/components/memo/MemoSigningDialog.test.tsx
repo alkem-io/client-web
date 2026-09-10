@@ -16,20 +16,42 @@ beforeAll(async () => {
   });
 });
 
-const dialogProps = (props: Record<string, unknown> = {}) =>
-  ({
-    open: true,
-    mode: 'signing',
-    stage: 'preparing',
-    signatures: [],
-    onOpenChange: vi.fn(),
-    onContinue: vi.fn(),
-    onVerify: vi.fn(),
-    onClose: vi.fn(),
-    ...props,
-  }) as MemoSigningDialogProps;
+type SigningDialogOverrides = Partial<Omit<Extract<MemoSigningDialogProps, { mode: 'signing' }>, 'mode'>> & {
+  mode?: 'signing';
+};
+type HistoryDialogOverrides = Partial<Omit<Extract<MemoSigningDialogProps, { mode: 'history' }>, 'mode'>> & {
+  mode: 'history';
+};
+type DialogOverrides = SigningDialogOverrides | HistoryDialogOverrides;
 
-const renderDialog = (props: Record<string, unknown> = {}) =>
+const dialogProps = (props: DialogOverrides = {}): MemoSigningDialogProps => {
+  if (props.mode === 'history') {
+    return {
+      ...props,
+      open: props.open ?? true,
+      mode: 'history',
+      historyState: props.historyState ?? 'ready',
+      signatures: props.signatures ?? [],
+      onOpenChange: props.onOpenChange ?? vi.fn(),
+      onVerify: props.onVerify ?? vi.fn(),
+      onDownload: props.onDownload ?? vi.fn(),
+      onClose: props.onClose ?? vi.fn(),
+    };
+  }
+
+  return {
+    ...props,
+    open: props.open ?? true,
+    mode: 'signing',
+    stage: props.stage ?? 'preparing',
+    onOpenChange: props.onOpenChange ?? vi.fn(),
+    onContinue: props.onContinue ?? vi.fn(),
+    onVerify: props.onVerify ?? vi.fn(),
+    onClose: props.onClose ?? vi.fn(),
+  };
+};
+
+const renderDialog = (props: DialogOverrides = {}) =>
   render(
     <I18nextProvider i18n={i18n}>
       <MemoSigningDialog {...dialogProps(props)} />
@@ -94,7 +116,6 @@ describe('MemoSigningDialog', () => {
     const onOpenChange = vi.fn();
     renderDialog({
       mode: 'history',
-      stage: 'idle',
       historyState: 'ready',
       onOpenChange,
       signatures: [{ id: 'pending-1', updatedDate: '2026-09-05T10:30:00.000Z', recordedAt: '' }],
@@ -112,7 +133,7 @@ describe('MemoSigningDialog', () => {
     ['error', 'Signed copies could not be loaded'],
     ['ready', 'No signed copies have been saved yet'],
   ] as const)('shows an explicit %s history state without any signing action', (historyState, message) => {
-    renderDialog({ mode: 'history', stage: 'idle', historyState, signatures: [] });
+    renderDialog({ mode: 'history', historyState, signatures: [] });
 
     expect(screen.getByText(message)).toBeInTheDocument();
     if (historyState === 'error') {
@@ -121,7 +142,7 @@ describe('MemoSigningDialog', () => {
     expect(screen.queryByRole('button', { name: 'Continue to Cleverbase' })).not.toBeInTheDocument();
   });
 
-  it('binds saved success actions to the returned attempt rather than a newer history row', () => {
+  it('binds saved success actions to the returned attempt', () => {
     renderDialog({
       mode: 'signing',
       stage: 'signed',
@@ -130,13 +151,6 @@ describe('MemoSigningDialog', () => {
         document: { id: 'returned-document', url: '/api/private/returned.pdf', displayName: 'returned.pdf' },
         updatedDate: '2026-09-10T09:00:00.000Z',
       },
-      signatures: [
-        {
-          id: 'newer-unrelated-attempt',
-          document: { url: '/api/private/newer.pdf' },
-          updatedDate: '2026-09-10T10:00:00.000Z',
-        },
-      ],
     });
 
     expect(screen.getByRole('heading', { name: 'Signed copy saved' })).toBeInTheDocument();
@@ -146,7 +160,6 @@ describe('MemoSigningDialog', () => {
     expect(
       screen.getByText('This signed copy is a fixed snapshot. Later memo edits do not change it.')
     ).toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: /newer\.pdf/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Continue to Cleverbase' })).not.toBeInTheDocument();
     expect(screen.queryByText(/Review the exact PDF copy before starting/)).not.toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Signed copies' })).not.toBeInTheDocument();
@@ -156,7 +169,6 @@ describe('MemoSigningDialog', () => {
     const onDownload = vi.fn();
     renderDialog({
       mode: 'history',
-      stage: 'idle',
       historyState: 'ready',
       signatures: [
         {
@@ -227,8 +239,23 @@ describe('MemoSigningDialog', () => {
   ] as const)('renders the %s server outcome', (stage, message) => {
     renderDialog({ stage });
 
-    expect(screen.getByText(message)).toBeInTheDocument();
+    const outcome = screen.getByText(message);
+    expect(outcome).toBeInTheDocument();
+    expect(outcome.closest('[aria-live="polite"]')).toHaveAttribute('aria-atomic', 'true');
     expect(screen.queryByText(/Review the exact PDF copy before starting/)).not.toBeInTheDocument();
+  });
+
+  it('announces an asynchronously resolved signing outcome', () => {
+    const { rerender } = renderDialog({ stage: 'checking' });
+
+    rerender(
+      <I18nextProvider i18n={i18n}>
+        <MemoSigningDialog {...dialogProps({ stage: 'failed' })} />
+      </I18nextProvider>
+    );
+
+    const outcome = screen.getByText('The PDF could not be signed');
+    expect(outcome.closest('[aria-live="polite"]')).toHaveAttribute('aria-atomic', 'true');
   });
 
   it.each([
@@ -258,7 +285,6 @@ describe('MemoSigningDialog', () => {
   it('lists independent signed copies with Alkemio attribution and a deleted-user fallback', () => {
     renderDialog({
       mode: 'history',
-      stage: 'idle',
       historyState: 'ready',
       signatures: [
         {
@@ -303,7 +329,6 @@ describe('MemoSigningDialog', () => {
     };
     const { rerender } = renderDialog({
       mode: 'history',
-      stage: 'idle',
       historyState: 'ready',
       signatures: [signature],
       onVerify,
@@ -325,7 +350,6 @@ describe('MemoSigningDialog', () => {
           <MemoSigningDialog
             {...dialogProps({
               mode: 'history',
-              stage: 'idle',
               historyState: 'ready',
               signatures: [{ ...signature, verification }],
               onVerify,
@@ -342,7 +366,6 @@ describe('MemoSigningDialog', () => {
         <MemoSigningDialog
           {...dialogProps({
             mode: 'history',
-            stage: 'idle',
             historyState: 'ready',
             signatures: [{ ...signature, verification: 'checking' }],
             onVerify,
