@@ -10,7 +10,13 @@ const mocks = vi.hoisted(() => ({
   lastDialogProps: undefined as
     | {
         mode: string;
-        signatures: Array<{ id: string; verification?: string }>;
+        signatures: Array<{
+          id: string;
+          document?: { id: string; url: string; displayName?: string };
+          verification?: string;
+        }>;
+        downloadingDocumentIds?: ReadonlySet<string>;
+        verifyDisabled?: boolean;
       }
     | undefined,
   historyResult: {
@@ -76,26 +82,29 @@ vi.mock('@/crd/components/memo/MemoSigningDialog', () => ({
     onVerify: (attemptId: string) => void;
     onDownload: (document: { id: string; url: string; displayName?: string }) => void;
     onOpenChange: (open: boolean) => void;
+    downloadingDocumentIds?: ReadonlySet<string>;
+    verifyDisabled?: boolean;
   }) => {
     mocks.lastDialogProps = props;
     return props.open ? (
       <div data-testid="signed-copies-dialog" data-history-state={props.historyState}>
         <output data-testid="history-count">{props.signatures.length}</output>
-        <button type="button" onClick={() => props.onVerify('attempt-1')}>
-          verify
-        </button>
-        <button
-          type="button"
-          onClick={() =>
-            props.onDownload({
-              id: 'document-1',
-              url: '/api/private/document-1',
-              displayName: 'Decision.pdf',
-            })
-          }
-        >
-          download
-        </button>
+        {props.signatures.map(signature => (
+          <div key={signature.id}>
+            <button type="button" disabled={props.verifyDisabled} onClick={() => props.onVerify(signature.id)}>
+              verify {signature.id}
+            </button>
+            {signature.document && (
+              <button
+                type="button"
+                disabled={props.downloadingDocumentIds?.has(signature.document.id)}
+                onClick={() => signature.document && props.onDownload(signature.document)}
+              >
+                download {signature.document.id}
+              </button>
+            )}
+          </div>
+        ))}
         <button type="button" onClick={() => props.onOpenChange(false)}>
           close
         </button>
@@ -171,7 +180,7 @@ describe('MemoSignedCopiesDialogConnector', () => {
     expect(mocks.verifyOptions).toHaveBeenCalledWith({ fetchPolicy: 'no-cache' });
     expect(mocks.verify).not.toHaveBeenCalled();
 
-    await user.click(screen.getByRole('button', { name: 'verify' }));
+    await user.click(screen.getByRole('button', { name: 'verify attempt-1' }));
 
     expect(mocks.verify).toHaveBeenCalledWith({ variables: { attemptID: 'attempt-1' } });
   });
@@ -207,6 +216,7 @@ describe('MemoSignedCopiesDialogConnector', () => {
 
     expect(mocks.lastDialogProps?.mode).toBe('history');
     expect(mocks.lastDialogProps?.signatures[0].verification).toBe(expected);
+    expect(mocks.lastDialogProps?.verifyDisabled).toBe(result.loading === true);
   });
 
   it('downloads through the authenticated helper and localizes a visible failure notification', async () => {
@@ -214,7 +224,7 @@ describe('MemoSignedCopiesDialogConnector', () => {
     mocks.download.mockRejectedValue(new Error('forbidden'));
     render(<MemoSignedCopiesDialogConnector open={true} memoId="memo-1" onOpenChange={vi.fn()} />);
 
-    await user.click(screen.getByRole('button', { name: 'download' }));
+    await user.click(screen.getByRole('button', { name: 'download document-1' }));
 
     expect(mocks.download).toHaveBeenCalledWith({
       id: 'document-1',
@@ -222,5 +232,53 @@ describe('MemoSignedCopiesDialogConnector', () => {
       displayName: 'Decision.pdf',
     });
     await waitFor(() => expect(mocks.notify).toHaveBeenCalledWith('memo.signing.downloadFailed', 'error'));
+  });
+
+  it('tracks overlapping downloads independently until each exact document settles', async () => {
+    let resolveFirst: (() => void) | undefined;
+    let resolveSecond: (() => void) | undefined;
+    const first = new Promise<void>(resolve => {
+      resolveFirst = resolve;
+    });
+    const second = new Promise<void>(resolve => {
+      resolveSecond = resolve;
+    });
+    mocks.historyResult = {
+      data: {
+        lookup: {
+          memo: {
+            signatures: [
+              {
+                id: 'attempt-1',
+                document: { id: 'document-1', url: '/api/private/document-1', displayName: 'First.pdf' },
+                updatedDate: '2026-09-10T09:00:00.000Z',
+              },
+              {
+                id: 'attempt-2',
+                document: { id: 'document-2', url: '/api/private/document-2', displayName: 'Second.pdf' },
+                updatedDate: '2026-09-10T10:00:00.000Z',
+              },
+            ],
+          },
+        },
+      },
+      error: undefined,
+      loading: false,
+    };
+    mocks.download.mockImplementation((document: { id: string }) => (document.id === 'document-1' ? first : second));
+    const user = userEvent.setup();
+    render(<MemoSignedCopiesDialogConnector open={true} memoId="memo-1" onOpenChange={vi.fn()} />);
+
+    await user.click(screen.getByRole('button', { name: 'download document-1' }));
+    await user.click(screen.getByRole('button', { name: 'download document-2' }));
+    await waitFor(() =>
+      expect(mocks.lastDialogProps?.downloadingDocumentIds).toEqual(new Set(['document-1', 'document-2']))
+    );
+
+    resolveFirst?.();
+    await waitFor(() => expect(mocks.lastDialogProps?.downloadingDocumentIds).toEqual(new Set(['document-2'])));
+
+    resolveSecond?.();
+    await waitFor(() => expect(mocks.lastDialogProps?.downloadingDocumentIds).toEqual(new Set()));
   });
 });

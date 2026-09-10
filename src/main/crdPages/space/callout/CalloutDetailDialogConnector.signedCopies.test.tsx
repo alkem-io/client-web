@@ -61,9 +61,20 @@ vi.mock('./MemoFramingConnector', () => ({
   ),
 }));
 vi.mock('@/main/crdPages/memo/MemoSignedCopiesDialogConnector', () => ({
-  MemoSignedCopiesDialogConnector: (props: { open: boolean; memoId: string; onOpenChange: (open: boolean) => void }) =>
+  MemoSignedCopiesDialogConnector: (props: {
+    open: boolean;
+    memoId: string;
+    onOpenChange: (open: boolean) => void;
+    overlayClassName?: string;
+    contentClassName?: string;
+  }) =>
     props.open ? (
-      <div data-testid="signed-copies-dialog" data-memo-id={props.memoId}>
+      <div
+        data-testid="signed-copies-dialog"
+        data-memo-id={props.memoId}
+        data-overlay-class={props.overlayClassName}
+        data-content-class={props.contentClassName}
+      >
         <button type="button" onClick={() => props.onOpenChange(false)}>
           close history
         </button>
@@ -183,5 +194,39 @@ describe('CalloutDetailDialogConnector framing signed copies', () => {
     expect(screen.getByTestId('signed-copies-dialog')).toHaveAttribute('data-memo-id', 'contribution-memo-1');
     expect(screen.getByTestId('callout-dialog')).toBeInTheDocument();
     expect(screen.queryByTestId('memo-editor')).not.toBeInTheDocument();
+  });
+
+  it('raises signed-copy history above an elevated focused-board dialog', async () => {
+    const user = userEvent.setup();
+    const callout = {
+      id: 'callout-1',
+      draft: false,
+      contributions: [],
+      framing: {
+        type: CalloutFramingType.Memo,
+        profile: { displayName: 'Decision' },
+        memo: {
+          id: 'memo-1',
+          signatures: [{ id: 'attempt-1', document: { id: 'document-1' } }],
+        },
+      },
+      settings: {
+        framing: { commentsEnabled: true },
+        contribution: {
+          allowedTypes: [CalloutContributionType.Memo],
+          enabled: false,
+          commentsEnabled: false,
+        },
+      },
+    };
+
+    render(
+      <CalloutDetailDialogConnector open={true} onOpenChange={vi.fn()} callout={callout as never} elevated={true} />
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Signed copies (1)' }));
+
+    expect(screen.getByTestId('signed-copies-dialog')).toHaveAttribute('data-overlay-class', 'z-[120]');
+    expect(screen.getByTestId('signed-copies-dialog')).toHaveAttribute('data-content-class', 'z-[120]');
   });
 });

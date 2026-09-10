@@ -141,7 +141,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   );
   const [signingDialogOpen, setSigningDialogOpen] = useState(Boolean(returnAttemptId));
   const [signedCopiesDialogOpen, setSignedCopiesDialogOpen] = useState(false);
-  const [downloadingDocumentId, setDownloadingDocumentId] = useState<string>();
+  const [downloadingDocumentIds, setDownloadingDocumentIds] = useState<ReadonlySet<string>>(() => new Set());
   const refreshedAttemptId = useRef<string | undefined>(undefined);
   const closeInFlight = useRef(false);
 
@@ -226,13 +226,17 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const signedCopiesCount = memo?.signatures.filter(signature => signature.document).length ?? 0;
 
   const handleDownloadSignedCopy = async (document: MemoSignatureDocument) => {
-    setDownloadingDocumentId(document.id);
+    setDownloadingDocumentIds(current => new Set(current).add(document.id));
     try {
       await downloadMemoSignaturePdf(document);
     } catch {
       notify(t('memo.signing.downloadFailed'), 'error');
     } finally {
-      setDownloadingDocumentId(undefined);
+      setDownloadingDocumentIds(current => {
+        const next = new Set(current);
+        next.delete(document.id);
+        return next;
+      });
     }
   };
 
@@ -516,7 +520,8 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
           })
         }
         onDownload={document => void handleDownloadSignedCopy(document)}
-        downloadingDocumentId={downloadingDocumentId}
+        downloadingDocumentIds={downloadingDocumentIds}
+        verifyDisabled={verification.loading}
         onClose={closeSigningDialog}
       />
       <MemoSignedCopiesDialogConnector

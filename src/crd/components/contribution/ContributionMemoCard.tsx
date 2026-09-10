@@ -25,11 +25,11 @@ export function ContributionMemoCard({
   className,
 }: ContributionMemoCardProps) {
   const { t } = useTranslation('crd-space');
-  const openMemoLabel = t('callout.openMemo', { defaultValue: 'Open Memo' });
+  const openMemoLabel = t('callout.openMemo');
+  const openMemoAriaLabel = t('callout.openAria', { title });
   const signedCopiesLabel = t('memo.signing.signedCopiesCount', {
     count: signedCopiesCount,
-    defaultValue: 'Signed copies ({{count}})',
-  }).replace('{{count}}', String(signedCopiesCount));
+  });
 
   return (
     <div
@@ -40,7 +40,7 @@ export function ContributionMemoCard({
     >
       <button
         type="button"
-        aria-label={openMemoLabel}
+        aria-label={openMemoAriaLabel}
         className="absolute inset-0 z-0 w-full cursor-pointer text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
         onClick={onClick}
       />

@@ -828,6 +828,7 @@ export function CalloutDetailDialogConnector({
       open={true}
       memoId={signedCopiesMemoId}
       onOpenChange={historyOpen => !historyOpen && setSignedCopiesMemoId(undefined)}
+      {...elevatedNested}
     />
   ) : null;
 

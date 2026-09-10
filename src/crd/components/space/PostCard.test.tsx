@@ -1,8 +1,24 @@
-import { render, screen } from '@testing-library/react';
+import { render as renderBase, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { createInstance } from 'i18next';
+import type { ReactElement } from 'react';
+import { I18nextProvider } from 'react-i18next';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
+import spaceEn from '@/crd/i18n/space/space.en.json';
 import type { PostCardData } from './PostCard';
 import { PostCard } from './PostCard';
+
+const i18n = createInstance();
+
+beforeAll(async () => {
+  await i18n.init({
+    lng: 'en',
+    resources: { en: { 'crd-space': spaceEn } },
+    interpolation: { escapeValue: false },
+  });
+});
+
+const render = (element: ReactElement) => renderBase(<I18nextProvider i18n={i18n}>{element}</I18nextProvider>);
 
 const basePost: PostCardData = {
   id: 'c1',
@@ -172,7 +188,7 @@ describe('PostCard reactionsSlot placement', () => {
     );
     const footer = container.querySelector('[data-slot="card-footer"]');
     const reactionsNode = screen.getByTestId('reactions');
-    const trigger = screen.getByRole('button', { name: /expandComments|collapseComments/i });
+    const trigger = screen.getByRole('button', { name: /expand comments|collapse comments/i });
     expect(footer?.contains(reactionsNode)).toBe(true);
     // The reactions must NOT be inside the trigger button — invalid HTML + a
     // reaction click would toggle the collapsible and swallow its popover.
@@ -202,7 +218,7 @@ describe('PostCard reactionsSlot placement', () => {
     );
     // The existing thread stays reachable, so the footer survives...
     expect(container.querySelector('[data-slot="card-footer"]')).toBeTruthy();
-    expect(screen.getByRole('button', { name: /expandComments|collapseComments/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /expand comments|collapse comments/i })).toBeInTheDocument();
     // ...but the reactions surface is gone with the comments switch.
     expect(screen.queryByTestId('reactions')).not.toBeInTheDocument();
   });

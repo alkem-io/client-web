@@ -251,9 +251,8 @@ export function PostCard({
     ? t('callout.comments', { count: post.commentCount })
     : t('callout.commentsZero');
   const signedCopiesLabel = t('memo.signing.signedCopiesCount', {
-    count: post.memoSignedCopiesCount,
-    defaultValue: 'Signed copies ({{count}})',
-  }).replace('{{count}}', String(post.memoSignedCopiesCount));
+    count: post.memoSignedCopiesCount ?? 0,
+  });
 
   return (
     <Card

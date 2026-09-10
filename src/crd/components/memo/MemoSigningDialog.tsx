@@ -1,5 +1,6 @@
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import {
   Dialog,
@@ -44,6 +45,8 @@ type CommonProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onClose: () => void;
+  overlayClassName?: string;
+  contentClassName?: string;
 };
 
 type HistoryProps = CommonProps & {
@@ -52,7 +55,8 @@ type HistoryProps = CommonProps & {
   signatures: MemoSignatureView[];
   onVerify: (attemptId: string) => void;
   onDownload: (document: MemoSignatureDocument) => void;
-  downloadingDocumentId?: string;
+  downloadingDocumentIds?: ReadonlySet<string>;
+  verifyDisabled?: boolean;
 };
 
 type SigningProps = CommonProps & {
@@ -63,7 +67,8 @@ type SigningProps = CommonProps & {
   onContinue: () => void;
   onVerify?: (attemptId: string) => void;
   onDownload?: (document: MemoSignatureDocument) => void;
-  downloadingDocumentId?: string;
+  downloadingDocumentIds?: ReadonlySet<string>;
+  verifyDisabled?: boolean;
 };
 
 export type MemoSigningDialogProps = HistoryProps | SigningProps;
@@ -72,15 +77,16 @@ type SignedCopyProps = {
   signature: MemoSignatureView;
   onVerify?: (attemptId: string) => void;
   onDownload?: (document: MemoSignatureDocument) => void;
-  downloadingDocumentId?: string;
+  downloadingDocumentIds?: ReadonlySet<string>;
+  verifyDisabled?: boolean;
 };
 
-function SignedCopy({ signature, onVerify, onDownload, downloadingDocumentId }: SignedCopyProps) {
+function SignedCopy({ signature, onVerify, onDownload, downloadingDocumentIds, verifyDisabled }: SignedCopyProps) {
   const { t } = useTranslation('crd-space');
   const document = signature.document;
   if (!document) return null;
 
-  const downloading = downloadingDocumentId === document.id;
+  const downloading = downloadingDocumentIds?.has(document.id) === true;
 
   return (
     <li className="space-y-2 border-t pt-3 text-body first:border-t-0 first:pt-0">
@@ -118,7 +124,7 @@ function SignedCopy({ signature, onVerify, onDownload, downloadingDocumentId }: 
             type="button"
             variant="outline"
             size="sm"
-            disabled={signature.verification === 'checking'}
+            disabled={verifyDisabled || signature.verification === 'checking'}
             aria-busy={signature.verification === 'checking'}
             onClick={() => onVerify(signature.id)}
           >
@@ -138,7 +144,11 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
     const signatures = props.signatures.filter(signature => signature.document);
     return (
       <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-        <DialogContent overlayClassName="z-[70]" className="z-[70] sm:max-w-3xl">
+        <DialogContent
+          overlayClassName={props.overlayClassName ?? 'z-[70]'}
+          className={cn('sm:max-w-3xl', props.contentClassName ?? 'z-[70]')}
+          closeLabel={t('memo.close')}
+        >
           <DialogHeader>
             <DialogTitle>{t('memo.signing.signedCopies')}</DialogTitle>
             <DialogDescription>{t('memo.signing.historyDescription')}</DialogDescription>
@@ -150,7 +160,11 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
                 {t('memo.signing.historyLoading')}
               </output>
             )}
-            {props.historyState === 'error' && <p className="text-body">{t('memo.signing.historyError')}</p>}
+            {props.historyState === 'error' && (
+              <p role="alert" className="text-body">
+                {t('memo.signing.historyError')}
+              </p>
+            )}
             {props.historyState === 'ready' && signatures.length === 0 && (
               <p className="text-body">{t('memo.signing.historyEmpty')}</p>
             )}
@@ -163,7 +177,8 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
                       signature={signature}
                       onVerify={props.onVerify}
                       onDownload={props.onDownload}
-                      downloadingDocumentId={props.downloadingDocumentId}
+                      downloadingDocumentIds={props.downloadingDocumentIds}
+                      verifyDisabled={props.verifyDisabled}
                     />
                   ))}
                 </ul>
@@ -183,19 +198,29 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
 
   const { stage } = props;
   const message = t(`memo.signing.stage.${stage}` as const);
-  const busy = stage === 'preparing' || stage === 'continuing' || stage === 'checking';
+  const busy = stage === 'preparing' || stage === 'continuing';
   const isPreview = stage === 'preview' || stage === 'continuing';
+  const isActiveWorkflow = stage === 'idle' || stage === 'preparing' || isPreview;
   const completedSignature = stage === 'signed' ? props.completedSignature : undefined;
 
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-      <DialogContent overlayClassName="z-[70]" className="z-[70] sm:max-w-3xl">
+      <DialogContent
+        overlayClassName={props.overlayClassName ?? 'z-[70]'}
+        className={cn('sm:max-w-3xl', props.contentClassName ?? 'z-[70]')}
+        closeLabel={t('memo.close')}
+      >
         <DialogHeader>
           <DialogTitle>
             {completedSignature?.document ? t('memo.signing.savedTitle') : t('memo.signing.title')}
           </DialogTitle>
           <DialogDescription>
-            {completedSignature?.document ? t('memo.signing.snapshotExplanation') : t('memo.signing.description')}
+            {completedSignature?.document
+              ? t('memo.signing.snapshotExplanation')
+              : isActiveWorkflow
+                ? t('memo.signing.description')
+                : message}
+            {stage === 'checking' && <Loader2 aria-hidden="true" className="ml-2 inline size-4 animate-spin" />}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 overflow-y-auto">
@@ -205,10 +230,11 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
                 signature={completedSignature}
                 onVerify={props.onVerify}
                 onDownload={props.onDownload}
-                downloadingDocumentId={props.downloadingDocumentId}
+                downloadingDocumentIds={props.downloadingDocumentIds}
+                verifyDisabled={props.verifyDisabled}
               />
             </ul>
-          ) : (
+          ) : isActiveWorkflow ? (
             <>
               <output aria-label={message} className="flex items-center gap-2 text-body">
                 {busy && <Loader2 aria-hidden="true" className="size-4 animate-spin" />}
@@ -227,7 +253,7 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
                 </div>
               )}
             </>
-          )}
+          ) : null}
         </div>
         <DialogFooter className="flex-wrap">
           <Button type="button" variant="outline" onClick={props.onClose}>

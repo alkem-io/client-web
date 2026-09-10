@@ -101,6 +101,7 @@ describe('MemoSigningDialog', () => {
     });
 
     expect(screen.getByRole('heading', { level: 2, name: 'Signed copies' })).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: 'Close' })).toHaveLength(2);
     expect(screen.queryByRole('listitem')).not.toBeInTheDocument();
     await userEvent.keyboard('{Escape}');
     expect(onOpenChange).toHaveBeenCalledWith(false);
@@ -114,6 +115,9 @@ describe('MemoSigningDialog', () => {
     renderDialog({ mode: 'history', stage: 'idle', historyState, signatures: [] });
 
     expect(screen.getByText(message)).toBeInTheDocument();
+    if (historyState === 'error') {
+      expect(screen.getByRole('alert')).toHaveTextContent(message);
+    }
     expect(screen.queryByRole('button', { name: 'Continue to Cleverbase' })).not.toBeInTheDocument();
   });
 
@@ -192,7 +196,7 @@ describe('MemoSigningDialog', () => {
           recordedAt: '09/05/2026, 11:30:00',
         },
       ],
-      downloadingDocumentId: 'document-1',
+      downloadingDocumentIds: new Set(['document-1']),
       onDownload,
     });
 
@@ -224,6 +228,7 @@ describe('MemoSigningDialog', () => {
     renderDialog({ stage });
 
     expect(screen.getByText(message)).toBeInTheDocument();
+    expect(screen.queryByText(/Review the exact PDF copy before starting/)).not.toBeInTheDocument();
   });
 
   it.each([
@@ -347,5 +352,34 @@ describe('MemoSigningDialog', () => {
     );
     expect(screen.getByRole('button', { name: 'Verify signature' })).toHaveAttribute('aria-busy', 'true');
     expect(screen.queryByText(/certificate|serial|common name|B-T/i)).not.toBeInTheDocument();
+  });
+
+  it('visibly serializes verification while one signed copy is being checked', async () => {
+    const onVerify = vi.fn();
+    const signatures = [
+      {
+        id: 'attempt-1',
+        document: { id: 'document-1', url: '/api/private/file-1', displayName: 'First.pdf' },
+        updatedDate: '2026-09-05T10:30:00.000Z',
+        recordedAt: '09/05/2026, 10:30:00',
+        verification: 'checking' as const,
+      },
+      {
+        id: 'attempt-2',
+        document: { id: 'document-2', url: '/api/private/file-2', displayName: 'Second.pdf' },
+        updatedDate: '2026-09-05T11:30:00.000Z',
+        recordedAt: '09/05/2026, 11:30:00',
+      },
+    ];
+
+    renderDialog({ mode: 'history', historyState: 'ready', signatures, onVerify, verifyDisabled: true });
+
+    const [activeVerify, otherVerify] = screen.getAllByRole('button', { name: 'Verify signature' });
+    expect(activeVerify).toBeDisabled();
+    expect(activeVerify).toHaveAttribute('aria-busy', 'true');
+    expect(otherVerify).toBeDisabled();
+    expect(otherVerify).toHaveAttribute('aria-busy', 'false');
+    await userEvent.click(otherVerify);
+    expect(onVerify).not.toHaveBeenCalled();
   });
 });
