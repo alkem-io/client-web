@@ -14,7 +14,8 @@ describe('downloadMemoSignaturePdf', () => {
     const createObjectURL = vi.fn().mockReturnValue('blob:signed-copy');
     const revokeObjectURL = vi.fn();
     const click = vi.fn();
-    const anchor = { click, href: '', download: '', remove: vi.fn() } as unknown as HTMLAnchorElement;
+    const remove = vi.fn();
+    const anchor = { click, href: '', download: '', remove } as unknown as HTMLAnchorElement;
     vi.stubGlobal('fetch', fetch);
     vi.stubGlobal('URL', { createObjectURL, revokeObjectURL });
     vi.spyOn(document, 'createElement').mockReturnValue(anchor);
@@ -22,13 +23,15 @@ describe('downloadMemoSignaturePdf', () => {
 
     await downloadMemoSignaturePdf({
       url: '/api/private/signed-copy',
-      displayName: 'Board decision',
+      displayName: 'Board decision.pdf',
     });
 
     expect(fetch).toHaveBeenCalledWith('/api/private/signed-copy');
     expect(createObjectURL).toHaveBeenCalledWith(blob);
     expect(anchor.download).toBe('Board decision.pdf');
+    expect(document.body.appendChild).toHaveBeenCalledWith(anchor);
     expect(click).toHaveBeenCalledOnce();
+    expect(remove).toHaveBeenCalledOnce();
     expect(revokeObjectURL).toHaveBeenCalledWith('blob:signed-copy');
   });
 
@@ -38,5 +41,30 @@ describe('downloadMemoSignaturePdf', () => {
     await expect(
       downloadMemoSignaturePdf({ url: '/api/private/forbidden', displayName: 'Signed copy.pdf' })
     ).rejects.toThrow('403');
+  });
+
+  it('removes the temporary anchor and revokes the Blob URL when the browser download throws', async () => {
+    const blob = new Blob(['signed pdf'], { type: 'application/pdf' });
+    const remove = vi.fn();
+    const revokeObjectURL = vi.fn();
+    const anchor = {
+      click: vi.fn(() => {
+        throw new Error('browser blocked download');
+      }),
+      href: '',
+      download: '',
+      remove,
+    } as unknown as HTMLAnchorElement;
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, blob: () => Promise.resolve(blob) }));
+    vi.stubGlobal('URL', { createObjectURL: vi.fn().mockReturnValue('blob:signed-copy'), revokeObjectURL });
+    vi.spyOn(document, 'createElement').mockReturnValue(anchor);
+    vi.spyOn(document.body, 'appendChild').mockImplementation(node => node);
+
+    await expect(
+      downloadMemoSignaturePdf({ url: '/api/private/signed-copy', displayName: 'Signed copy' })
+    ).rejects.toThrow('browser blocked download');
+
+    expect(remove).toHaveBeenCalledOnce();
+    expect(revokeObjectURL).toHaveBeenCalledWith('blob:signed-copy');
   });
 });

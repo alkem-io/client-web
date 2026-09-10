@@ -1,6 +1,7 @@
-import { InMemoryCache } from '@apollo/client';
+import { gql, InMemoryCache } from '@apollo/client';
 import { print } from 'graphql';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { typePolicies } from '@/core/apollo/config/typePolicies';
 import {
   CalloutContributionsDocument,
   CalloutDetailsDocument,
@@ -10,8 +11,6 @@ import {
 
 const countDocumentBacked = (signatures: Array<{ document?: unknown }> | undefined) =>
   signatures?.filter(signature => signature.document).length ?? 0;
-
-afterEach(() => vi.restoreAllMocks());
 
 describe('memo signing browse and return GraphQL contracts', () => {
   it.each([
@@ -32,11 +31,50 @@ describe('memo signing browse and return GraphQL contracts', () => {
   });
 
   it('propagates one MemoDetails signature refresh into mounted callout and contribution counts by Memo identity', () => {
-    // These deliberately partial fixtures exercise only Memo identity and the
-    // signatures field. Apollo reports every unrelated omitted selection in dev
-    // mode, so suppress that fixture-only noise while retaining the assertions.
-    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
-    const cache = new InMemoryCache();
+    const cache = new InMemoryCache({ typePolicies });
+    const calloutMemoSeed = gql`
+      query CalloutMemoCountSeed($calloutId: UUID!) {
+        lookup {
+          callout(ID: $calloutId) {
+            id
+            framing {
+              id
+              memo {
+                id
+                signatures {
+                  id
+                  document {
+                    id
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+    const contributionMemoSeed = gql`
+      query ContributionMemoCountSeed($calloutId: UUID!, $includeMemo: Boolean!) {
+        lookup {
+          callout(ID: $calloutId) {
+            id
+            contributions {
+              id
+              sortOrder
+              memo @include(if: $includeMemo) {
+                id
+                signatures {
+                  id
+                  document {
+                    id
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
     const initialSignatures = [
       {
         __typename: 'MemoSignature',
@@ -46,8 +84,8 @@ describe('memo signing browse and return GraphQL contracts', () => {
     ];
 
     cache.writeQuery({
-      query: CalloutDetailsDocument,
-      variables: { calloutId: 'callout-1', withClassification: false },
+      query: calloutMemoSeed,
+      variables: { calloutId: 'callout-1' },
       data: {
         lookup: {
           __typename: 'LookupQueryResults',
@@ -64,7 +102,7 @@ describe('memo signing browse and return GraphQL contracts', () => {
       } as never,
     });
     cache.writeQuery({
-      query: CalloutContributionsDocument,
+      query: contributionMemoSeed,
       variables: { calloutId: 'callout-1', includeMemo: true },
       data: {
         lookup: {
@@ -124,6 +162,19 @@ describe('memo signing browse and return GraphQL contracts', () => {
           memo: {
             __typename: 'Memo',
             id: 'memo-1',
+            createdDate: '2026-09-10T08:00:00.000Z',
+            profile: {
+              __typename: 'Profile',
+              id: 'profile-1',
+              displayName: 'Decision memo',
+              preview: null,
+              storageBucket: { __typename: 'StorageBucket', id: 'bucket-1' },
+              url: '/memo-1',
+            },
+            markdown: 'Decision',
+            authorization: { __typename: 'Authorization', id: 'authorization-1', myPrivileges: [] },
+            contentUpdatePolicy: 'CONTRIBUTORS',
+            createdBy: null,
             signatures: [
               {
                 __typename: 'MemoSignature',
@@ -152,10 +203,9 @@ describe('memo signing browse and return GraphQL contracts', () => {
       } as never,
     });
 
-    expect(calloutCounts.at(-1)).toBe(2);
-    expect(contributionCounts.at(-1)).toBe(2);
+    expect(calloutCounts[calloutCounts.length - 1]).toBe(2);
+    expect(contributionCounts[contributionCounts.length - 1]).toBe(2);
     stopCalloutWatch();
     stopContributionWatch();
-    consoleError.mockRestore();
   });
 });

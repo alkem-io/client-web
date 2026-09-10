@@ -137,8 +137,13 @@ describe('MemoSigningDialog', () => {
     expect(screen.getByRole('link', { name: 'Open PDF' })).toHaveAttribute('href', '/api/private/returned.pdf');
     expect(screen.getByRole('button', { name: 'Download' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Back to memo' })).toBeInTheDocument();
+    expect(
+      screen.getByText('This signed copy is a fixed snapshot. Later memo edits do not change it.')
+    ).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /newer\.pdf/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Continue to Cleverbase' })).not.toBeInTheDocument();
+    expect(screen.queryByText(/Review the exact PDF copy before starting/)).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Signed copies' })).not.toBeInTheDocument();
   });
 
   it('does not claim success when SIGNED returns without its saved document', () => {
@@ -192,6 +197,32 @@ describe('MemoSigningDialog', () => {
     });
   });
 
+  it('disables the exact document download while its authenticated fetch is in progress', async () => {
+    const onDownload = vi.fn();
+    renderDialog(
+      uxProps({
+        mode: 'history',
+        historyState: 'ready',
+        signatures: [
+          {
+            id: 'attempt-1',
+            document: { id: 'document-1', url: '/api/private/file-1', displayName: 'signed-copy.pdf' },
+            updatedDate: '2026-09-05T10:30:00.000Z',
+            recordedAt: '09/05/2026, 10:30:00',
+          },
+        ],
+        downloadingDocumentId: 'document-1',
+        onDownload,
+      })
+    );
+
+    const download = screen.getByRole('button', { name: 'Download' });
+    expect(download).toBeDisabled();
+    expect(download).toHaveAttribute('aria-busy', 'true');
+    await userEvent.click(download);
+    expect(onDownload).not.toHaveBeenCalled();
+  });
+
   it.each([
     ['checking', 'Checking the signing result'],
     ['pending', 'Signing is still in progress. Reload this page to check again.'],
@@ -206,6 +237,32 @@ describe('MemoSigningDialog', () => {
     renderDialog({ stage });
 
     expect(screen.getByText(message)).toBeInTheDocument();
+  });
+
+  it.each([
+    ['checking', 'Checking the signing result'],
+    ['pending', 'Signing is still in progress. Reload this page to check again.'],
+    ['cancelled', 'Signing was cancelled'],
+    ['failed', 'The PDF could not be signed'],
+    ['expired', 'This signing attempt expired'],
+    ['prepare-error', 'The exact memo copy could not be prepared'],
+    ['continue-error', 'The signing session could not be started. Prepare a fresh copy and try again.'],
+    ['return-error', 'The signing result could not be loaded'],
+  ] as const)('keeps %s mutually exclusive from saved-copy and stale preview actions', (stage, message) => {
+    renderDialog(
+      uxProps({
+        mode: 'signing',
+        stage,
+        previewUrl: '/api/public/rest/content-signing/attempt-1/snapshot',
+      })
+    );
+
+    expect(screen.getByText(message)).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Signed copy saved' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Open PDF' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Download' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Continue to Cleverbase' })).not.toBeInTheDocument();
+    expect(screen.queryByTitle('Memo signing preview')).not.toBeInTheDocument();
   });
 
   it('lists independent signed copies with Alkemio attribution and a deleted-user fallback', () => {

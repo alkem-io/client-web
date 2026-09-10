@@ -271,7 +271,14 @@ describe('CrdMemoDialog signing connector', () => {
     const user = userEvent.setup();
     mocks.memo = memoWith(
       [AuthorizationPrivilege.Read],
-      [{ id: 'signed-1', status: SigningAttemptStatus.Signed, updatedDate: new Date() }]
+      [
+        {
+          id: 'signed-1',
+          status: SigningAttemptStatus.Signed,
+          document: { id: 'document-1', url: '/api/private/document-1' },
+          updatedDate: new Date(),
+        },
+      ]
     );
     mocks.spaceEntitlements = [];
     mocks.authenticationMethodsResult = {
@@ -292,6 +299,20 @@ describe('CrdMemoDialog signing connector', () => {
     expect(screen.queryByTestId('signing-dialog')).not.toBeInTheDocument();
   });
 
+  it('does not expose history when the memo has only documentless signing rows', () => {
+    mocks.memo = memoWith(
+      [AuthorizationPrivilege.Read],
+      [{ id: 'incomplete-1', status: SigningAttemptStatus.Signed, document: null, updatedDate: new Date() }]
+    );
+    mocks.spaceEntitlements = [];
+
+    renderDialog();
+
+    expect(screen.queryByRole('button', { name: /memo\.signing\.signedCopies/ })).not.toBeInTheDocument();
+    expect(mocks.requestDurability).not.toHaveBeenCalled();
+    expect(mocks.prepareMutation).not.toHaveBeenCalled();
+  });
+
   it.each([
     ['the space entitlement', [], [AuthenticationType.Cleverbase]],
     ['a linked Cleverbase identity', [LicenseEntitlementType.SpaceFlagMemoSigning], [AuthenticationType.Email]],
@@ -303,6 +324,7 @@ describe('CrdMemoDialog signing connector', () => {
         {
           id: 'signed-1',
           status: SigningAttemptStatus.Signed,
+          document: { id: 'document-1', url: '/api/private/document-1' },
           updatedDate: new Date(),
         },
       ]
@@ -370,7 +392,14 @@ describe('CrdMemoDialog signing connector', () => {
     const user = userEvent.setup();
     mocks.memo = memoWith(
       [AuthorizationPrivilege.Read],
-      [{ id: 'signed-1', status: SigningAttemptStatus.Signed, updatedDate: new Date() }]
+      [
+        {
+          id: 'signed-1',
+          status: SigningAttemptStatus.Signed,
+          document: { id: 'document-1', url: '/api/private/document-1' },
+          updatedDate: new Date(),
+        },
+      ]
     );
     mocks.verificationQuery.mockResolvedValue({
       data: { verifyMemoSignature: 'VERIFIED' },
@@ -411,7 +440,14 @@ describe('CrdMemoDialog signing connector', () => {
   ])('maps a requested verification result to $expected', ({ result, expected }) => {
     mocks.memo = memoWith(
       [AuthorizationPrivilege.Read],
-      [{ id: 'signed-1', status: SigningAttemptStatus.Signed, updatedDate: new Date() }]
+      [
+        {
+          id: 'signed-1',
+          status: SigningAttemptStatus.Signed,
+          document: { id: 'document-1', url: '/api/private/document-1' },
+          updatedDate: new Date(),
+        },
+      ]
     );
     mocks.verificationResult = {
       data: undefined,
@@ -465,6 +501,26 @@ describe('CrdMemoDialog signing connector', () => {
         loading: false,
         error: undefined,
         data: { signingAttempt: { status: SigningAttemptStatus.Signed } },
+      },
+      'return-error',
+    ],
+    [
+      {
+        loading: false,
+        error: undefined,
+        data: {
+          signingAttempt: {
+            id: 'attempt-1',
+            status: SigningAttemptStatus.Signed,
+            document: {
+              id: 'document-1',
+              url: '/api/private/document-1',
+              displayName: 'Signed memo.pdf',
+            },
+            actor: { profile: { displayName: 'Alice Example', url: '/user/alice' } },
+            updatedDate: '2026-09-10T09:00:00.000Z',
+          },
+        },
       },
       'signed',
     ],
@@ -526,8 +582,26 @@ describe('CrdMemoDialog signing connector', () => {
 
     await waitFor(() => expect(mocks.refreshMemo).toHaveBeenCalledOnce());
     expect(
-      (mocks.lastSigningDialogProps as unknown as { completedSignature?: { id: string } }).completedSignature?.id
-    ).toBe('returned-attempt');
+      (
+        mocks.lastSigningDialogProps as unknown as {
+          completedSignature?: {
+            id: string;
+            document?: { id: string; url: string; displayName?: string };
+            actor?: { profile?: { displayName: string; url: string } };
+            updatedDate: string;
+          };
+        }
+      ).completedSignature
+    ).toMatchObject({
+      id: 'returned-attempt',
+      document: {
+        id: 'returned-document',
+        url: '/api/private/returned-document',
+        displayName: 'Signed decision.pdf',
+      },
+      actor: { profile: { displayName: 'Alice Example', url: '/user/alice' } },
+      updatedDate: '2026-09-10T09:00:00.000Z',
+    });
   });
 
   it('owns dialog dismissal and returned-attempt cleanup in the integration layer', async () => {
