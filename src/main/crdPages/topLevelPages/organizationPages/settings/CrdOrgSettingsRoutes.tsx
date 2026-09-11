@@ -56,6 +56,14 @@ export const CrdOrgSettingsRoutes = () => (
           </Suspense>
         }
       />
+      <Route
+        path="authorization"
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdOrgInvitationsTab />
+          </Suspense>
+        }
+      />
       {/* Must precede the catch-all below so a matched "authorization" segment redirects
           explicitly rather than falling through to the generic Navigate to="profile". */}
       <Route path="authorization" element={<Navigate to="../community" replace={true} />} />

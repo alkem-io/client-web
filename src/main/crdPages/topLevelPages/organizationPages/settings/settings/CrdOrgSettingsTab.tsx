@@ -41,11 +41,10 @@ const CrdOrgSettingsTab = () => {
   const [privacySaving, setPrivacySaving] = useState(false);
 
   // Resolved values: optimistic override wins until the mutation settles.
-  // `allowDomain` is no longer switch-editable here (the switch moved to the
-  // Associates tab); it is still read so the two remaining mutations can pass
-  // the current value through — the input's `allowUsersMatchingDomainToJoin`
-  // field is required and must never be silently reset by an unrelated toggle.
-  const allowDomain = mapped.allowUsersMatchingDomainToJoin;
+  // The domain switch moved to the Associates tab (062): this tab neither renders
+  // it nor sends `allowUsersMatchingDomainToJoin`. Every membership field is
+  // optional on the input, so each toggle sends only what it changes rather than
+  // echoing a cached value back (061).
   const allowSpaceInvitations = spaceInvitationsOverride ?? mapped.allowSpaceInvitations;
   const contributionRoles = privacyOverride ?? mapped.contributionRolesPubliclyVisible;
 
@@ -59,8 +58,10 @@ const CrdOrgSettingsTab = () => {
           settingsData: {
             organizationID: organizationId,
             settings: {
-              membership: { allowUsersMatchingDomainToJoin: allowDomain, allowSpaceInvitations: next },
-              privacy: { contributionRolesPubliclyVisible: contributionRoles },
+              // Send ONLY what this toggle changes. Every membership and privacy field is
+              // optional on the input and the server writes only what is defined, so echoing a
+              // cached value back turns a partial merge into last-write-wins (061).
+              membership: { allowSpaceInvitations: next },
             },
           },
         },
@@ -86,9 +87,7 @@ const CrdOrgSettingsTab = () => {
           settingsData: {
             organizationID: organizationId,
             settings: {
-              // `allowSpaceInvitations` omitted — see onToggleAllowDomain.
-              // `allowUsersMatchingDomainToJoin` cannot be: it is required on the input.
-              membership: { allowUsersMatchingDomainToJoin: allowDomain },
+              // Privacy only — no membership field is sent, for the same reason (061).
               privacy: { contributionRolesPubliclyVisible: next },
             },
           },

@@ -95,7 +95,8 @@
         "account": "Compte",
         "community": "Associés",
         "settings": "Paramètres",
-        "invitations": "Invitations"
+        "invitations": "Invitations",
+        "authorization": "Autorisation"
       },
       "vc": {
         "profile": "Profil",
@@ -766,7 +767,22 @@
       }
     },
     "community": {
-      "pageTitle": "Associés"
+      "pageTitle": "Associés",
+      "title": "Associés",
+      "description": "Gérez qui est associé à cette organisation. Ajoutez de nouveaux associés depuis la liste des utilisateurs disponibles ; retirer un associé révoque son rôle dans l'organisation.",
+      "currentAssociatesTitle": "Associés actuels",
+      "availableUsersTitle": "Utilisateurs disponibles",
+      "searchPlaceholder": "Rechercher des utilisateurs par nom…",
+      "addAriaLabel": "Ajouter {name} comme associé",
+      "removeAriaLabel": "Retirer {name} en tant qu'associé",
+      "loadMore": "Charger plus",
+      "emptyCurrent": "Aucun associé pour l'instant.",
+      "emptyAvailable": "Aucun utilisateur correspondant.",
+      "removeDialogTitle": "Retirer cet associé ?",
+      "removeDialogDescription": "{{name}} perdra son rôle d'associé et les permissions associées.",
+      "removeConfirmAssociate": "Retirer {{name}} en tant qu'associé",
+      "removeSuccess": "Associé retiré",
+      "removeError": "Échec — réessayez"
     },
     "settings": {
       "pageTitle": "Paramètres",
@@ -774,7 +790,9 @@
       "membership": {
         "title": "Adhésion",
         "allowSpaceInvitationsLabel": "Autoriser les espaces à inviter cette organisation",
-        "allowSpaceInvitationsCaption": "Une fois activé, les administrateurs d'espace peuvent inviter cette organisation à rejoindre leur communauté d'espace."
+        "allowSpaceInvitationsCaption": "Une fois activé, les administrateurs d'espace peuvent inviter cette organisation à rejoindre leur communauté d'espace.",
+        "allowDomainLabel": "Autoriser les utilisateurs ayant le domaine de l'organisation à rejoindre",
+        "allowDomainCaption": "Lorsque activé, les utilisateurs dont le domaine de l'e-mail correspond à celui de l'organisation peuvent rejoindre sans invitation."
       },
       "privacy": {
         "title": "Confidentialité",
@@ -853,6 +871,39 @@
         "allowApplicationsCaption": "Lorsque désactivé, le profil public de l’organisation n’offre aucune action de candidature ; les candidatures en attente restent listées et décidables.",
         "saveError": "Échec de l’enregistrement — réessayez"
       }
+    },
+    "authorization": {
+      "pageTitle": "Autorisation",
+      "title": "Autorisation",
+      "description": "Attribuez les rôles Administrateur et Propriétaire pour cette organisation. Les administrateurs gèrent les paramètres quotidiens ; les propriétaires ont un contrôle total.",
+      "adminTabLabel": "Administrateur",
+      "ownerTabLabel": "Propriétaire",
+      "loadMore": "Charger plus",
+      "admin": {
+        "currentTitle": "Administrateurs actuels",
+        "availableTitle": "Utilisateurs disponibles",
+        "searchPlaceholder": "Rechercher des utilisateurs par nom…",
+        "addAriaLabel": "Ajouter {name} en tant qu'administrateur",
+        "removeAriaLabel": "Retirer {name} en tant qu'administrateur",
+        "emptyCurrent": "Aucun administrateur pour l'instant.",
+        "emptyAvailable": "Aucun utilisateur correspondant."
+      },
+      "owner": {
+        "currentTitle": "Propriétaires actuels",
+        "availableTitle": "Utilisateurs disponibles",
+        "searchPlaceholder": "Rechercher des utilisateurs par nom…",
+        "addAriaLabel": "Ajouter {name} en tant que propriétaire",
+        "removeAriaLabel": "Retirer {name} en tant que propriétaire",
+        "emptyCurrent": "Aucun propriétaire pour l'instant.",
+        "emptyAvailable": "Aucun utilisateur correspondant."
+      },
+      "removeDialogTitle": "Retirer ce rôle ?",
+      "removeDialogDescription": "{{name}} perdra ce rôle et les permissions associées.",
+      "removeConfirmAdmin": "Retirer {{name}} en tant qu'administrateur",
+      "removeConfirmOwner": "Retirer {{name}} en tant que propriétaire",
+      "removeSuccessAdmin": "Rôle d'administrateur retiré",
+      "removeSuccessOwner": "Rôle de propriétaire retiré",
+      "removeError": "Échec du retrait du rôle — réessayez"
     }
   },
   "vc": {

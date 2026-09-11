@@ -62,6 +62,20 @@ export function OrgSettingsTabView(props: OrgSettingsTabViewProps) {
             aria-label={t('org.settings.membership.allowSpaceInvitationsLabel')}
           />
         </div>
+        <div className="mt-4 flex items-start justify-between gap-4">
+          <div className="flex-1">
+            <p className="text-body-emphasis">{t('org.settings.membership.allowSpaceInvitationsLabel')}</p>
+            <p className="mt-0.5 text-caption text-muted-foreground">
+              {t('org.settings.membership.allowSpaceInvitationsCaption')}
+            </p>
+          </div>
+          <Switch
+            checked={props.allowSpaceInvitations}
+            disabled={props.allowSpaceInvitationsSaving}
+            onCheckedChange={props.onToggleAllowSpaceInvitations}
+            aria-label={t('org.settings.membership.allowSpaceInvitationsLabel')}
+          />
+        </div>
       </SettingsCard>
 
       <SettingsCard icon={Eye} title={t('org.settings.privacy.title')}>

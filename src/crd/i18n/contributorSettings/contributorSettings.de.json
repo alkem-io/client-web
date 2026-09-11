@@ -95,7 +95,8 @@
         "account": "Konto",
         "community": "Assoziierte",
         "settings": "Einstellungen",
-        "invitations": "Einladungen"
+        "invitations": "Einladungen",
+        "authorization": "Autorisierung"
       },
       "vc": {
         "profile": "Profil",
@@ -766,7 +767,22 @@
       }
     },
     "community": {
-      "pageTitle": "Assoziierte"
+      "pageTitle": "Assoziierte",
+      "title": "Mitglieder",
+      "description": "Verwalte, wer mit dieser Organisation verbunden ist. Füge neue Mitglieder aus der Liste der verfügbaren Nutzer hinzu; das Entfernen eines Mitglieds entzieht die Organisationsrolle.",
+      "currentAssociatesTitle": "Aktuelle Mitglieder",
+      "availableUsersTitle": "Verfügbare Nutzer",
+      "searchPlaceholder": "Nutzer nach Namen suchen…",
+      "addAriaLabel": "{name} als Mitglied hinzufügen",
+      "removeAriaLabel": "{name} als Mitglied entfernen",
+      "loadMore": "Mehr laden",
+      "emptyCurrent": "Noch keine Mitglieder.",
+      "emptyAvailable": "Keine passenden Nutzer gefunden.",
+      "removeDialogTitle": "Dieses Mitglied entfernen?",
+      "removeDialogDescription": "{{name}} verliert die Mitgliedsrolle und alle zugehörigen Rechte.",
+      "removeConfirmAssociate": "{{name}} als Mitglied entfernen",
+      "removeSuccess": "Mitglied entfernt",
+      "removeError": "Entfernen fehlgeschlagen — bitte erneut versuchen"
     },
     "settings": {
       "pageTitle": "Einstellungen",
@@ -774,7 +790,9 @@
       "membership": {
         "title": "Mitgliedschaft",
         "allowSpaceInvitationsLabel": "Spaces erlauben, diese Organisation einzuladen",
-        "allowSpaceInvitationsCaption": "Wenn aktiviert, können Space-Administratoren diese Organisation einladen, ihrer Space-Community beizutreten."
+        "allowSpaceInvitationsCaption": "Wenn aktiviert, können Space-Administratoren diese Organisation einladen, ihrer Space-Community beizutreten.",
+        "allowDomainLabel": "Nutzer mit passender Domain dürfen beitreten",
+        "allowDomainCaption": "Wenn aktiviert, können Nutzer, deren E-Mail-Domain mit der Organisation übereinstimmt, ohne Einladung beitreten."
       },
       "privacy": {
         "title": "Privatsphäre",
@@ -853,6 +871,39 @@
         "allowApplicationsCaption": "Ist diese Option deaktiviert, bietet das öffentliche Profil der Organisation keine Bewerbungsmöglichkeit; ausstehende Bewerbungen bleiben sichtbar und entscheidbar.",
         "saveError": "Speichern fehlgeschlagen – bitte erneut versuchen"
       }
+    },
+    "authorization": {
+      "pageTitle": "Autorisierung",
+      "title": "Autorisierung",
+      "description": "Weisen Sie die Rollen Administrator und Eigentümer für diese Organisation zu. Administratoren verwalten den täglichen Betrieb; Eigentümer haben volle Kontrolle.",
+      "adminTabLabel": "Administrator",
+      "ownerTabLabel": "Eigentümer",
+      "loadMore": "Mehr laden",
+      "admin": {
+        "currentTitle": "Aktuelle Administratoren",
+        "availableTitle": "Verfügbare Nutzer",
+        "searchPlaceholder": "Nutzer nach Name suchen…",
+        "addAriaLabel": "{name} als Administrator hinzufügen",
+        "removeAriaLabel": "{name} als Administrator entfernen",
+        "emptyCurrent": "Noch keine Administratoren.",
+        "emptyAvailable": "Keine passenden Nutzer gefunden."
+      },
+      "owner": {
+        "currentTitle": "Aktuelle Eigentümer",
+        "availableTitle": "Verfügbare Nutzer",
+        "searchPlaceholder": "Nutzer nach Name suchen…",
+        "addAriaLabel": "{name} als Eigentümer hinzufügen",
+        "removeAriaLabel": "{name} als Eigentümer entfernen",
+        "emptyCurrent": "Noch keine Eigentümer.",
+        "emptyAvailable": "Keine passenden Nutzer gefunden."
+      },
+      "removeDialogTitle": "Diese Rolle entfernen?",
+      "removeDialogDescription": "{{name}} verliert diese Rolle und alle zugehörigen Rechte.",
+      "removeConfirmAdmin": "{{name}} als Administrator entfernen",
+      "removeConfirmOwner": "{{name}} als Eigentümer entfernen",
+      "removeSuccessAdmin": "Administrator-Rolle entfernt",
+      "removeSuccessOwner": "Eigentümer-Rolle entfernt",
+      "removeError": "Rolle konnte nicht entfernt werden — bitte erneut versuchen"
     }
   },
   "vc": {

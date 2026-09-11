@@ -95,7 +95,8 @@
         "account": "Account",
         "community": "Associates",
         "settings": "Settings",
-        "invitations": "Invitations"
+        "invitations": "Invitations",
+        "authorization": "Authorisation"
       },
       "vc": {
         "profile": "Profile",
@@ -766,7 +767,22 @@
       }
     },
     "community": {
-      "pageTitle": "Associates"
+      "pageTitle": "Associates",
+      "title": "Associates",
+      "description": "Manage who is associated with this organisation. Add new associates from the available users list; removing an associate revokes their organisation role.",
+      "currentAssociatesTitle": "Current Associates",
+      "availableUsersTitle": "Available Users",
+      "searchPlaceholder": "Search users by name…",
+      "addAriaLabel": "Add {name} as Associate",
+      "removeAriaLabel": "Remove {name} as Associate",
+      "loadMore": "Load more",
+      "emptyCurrent": "No associates yet.",
+      "emptyAvailable": "No matching users found.",
+      "removeDialogTitle": "Remove this associate?",
+      "removeDialogDescription": "{{name}} will lose their associate role and any related permissions.",
+      "removeConfirmAssociate": "Remove {{name}} as Associate",
+      "removeSuccess": "Associate removed",
+      "removeError": "Couldn't remove associate — try again"
     },
     "settings": {
       "pageTitle": "Settings",
@@ -774,7 +790,9 @@
       "membership": {
         "title": "Membership",
         "allowSpaceInvitationsLabel": "Allow Spaces to invite this organisation",
-        "allowSpaceInvitationsCaption": "When enabled, Space admins can invite this organisation to join their Space community."
+        "allowSpaceInvitationsCaption": "When enabled, Space admins can invite this organisation to join their Space community.",
+        "allowDomainLabel": "Allow users matching the organisation's domain to join",
+        "allowDomainCaption": "When enabled, users whose email domain matches this organisation can self-join without an invitation."
       },
       "privacy": {
         "title": "Privacy",
@@ -853,6 +871,39 @@
         "allowApplicationsCaption": "When off, the organisation's public profile offers no Apply action; pending applications stay listed and decidable.",
         "saveError": "Couldn't save — try again"
       }
+    },
+    "authorization": {
+      "pageTitle": "Authorisation",
+      "title": "Authorisation",
+      "description": "Assign Admin and Owner roles for this organisation. Admins can manage day-to-day settings; Owners have full control over the organisation.",
+      "adminTabLabel": "Admin",
+      "ownerTabLabel": "Owner",
+      "loadMore": "Load more",
+      "admin": {
+        "currentTitle": "Current Admins",
+        "availableTitle": "Available Users",
+        "searchPlaceholder": "Search users by name…",
+        "addAriaLabel": "Add {name} as Admin",
+        "removeAriaLabel": "Remove {name} as Admin",
+        "emptyCurrent": "No admins yet.",
+        "emptyAvailable": "No matching users found."
+      },
+      "owner": {
+        "currentTitle": "Current Owners",
+        "availableTitle": "Available Users",
+        "searchPlaceholder": "Search users by name…",
+        "addAriaLabel": "Add {name} as Owner",
+        "removeAriaLabel": "Remove {name} as Owner",
+        "emptyCurrent": "No owners yet.",
+        "emptyAvailable": "No matching users found."
+      },
+      "removeDialogTitle": "Remove this role?",
+      "removeDialogDescription": "{{name}} will lose this role and any related permissions.",
+      "removeConfirmAdmin": "Remove {{name}} as Admin",
+      "removeConfirmOwner": "Remove {{name}} as Owner",
+      "removeSuccessAdmin": "Admin role removed",
+      "removeSuccessOwner": "Owner role removed",
+      "removeError": "Couldn't remove role — try again"
     }
   },
   "vc": {

@@ -3154,6 +3154,7 @@ export type MutationKeySpecifier = (
   | 'addVisualToMediaGallery'
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationMigrateOrphanedConversations'
+  | 'adminCommunicationReconcileForumHierarchy'
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationSyncSpaceHierarchy'
   | 'adminCommunicationUpdateRoomState'
@@ -3400,6 +3401,7 @@ export type MutationFieldPolicy = {
   addVisualToMediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationMigrateOrphanedConversations?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminCommunicationReconcileForumHierarchy?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationSyncSpaceHierarchy?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomState?: FieldPolicy<any> | FieldReadFunction<any>;
