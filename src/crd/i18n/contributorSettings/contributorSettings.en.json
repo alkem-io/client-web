@@ -791,8 +791,10 @@
         "title": "Membership",
         "allowSpaceInvitationsLabel": "Allow Spaces to invite this organisation",
         "allowSpaceInvitationsCaption": "When enabled, Space admins can invite this organisation to join their Space community.",
-        "allowDomainLabel": "Allow users matching the organisation's domain to join",
-        "allowDomainCaption": "When enabled, users whose email domain matches this organisation can self-join without an invitation."
+        "allowDomainLabel": "Allow users matching this domain to join",
+        "allowDomainCaption": "Users whose email domain matches this organisation's verified domain can join as an associate with one click.",
+        "allowApplicationsLabel": "Allow users to apply to associate",
+        "allowApplicationsCaption": "When off, the organisation's public profile offers no Apply action; pending applications stay listed and decidable."
       },
       "privacy": {
         "title": "Privacy",
@@ -846,7 +848,8 @@
         "cancel": "Cancel",
         "removeSuccess": "{{name}} removed from the organisation",
         "removeError": "Couldn't remove {{name}} — try again",
-        "saveError": "Couldn't save changes — try again"
+        "saveError": "Couldn't save changes — try again",
+        "selfAdminLocked": "You can't remove your own Admin role here."
       },
       "errors": {
         "limitAdmin": "An organisation can have at most 6 admins",
@@ -862,14 +865,6 @@
           "associateAdmin": "Associate + Admin",
           "associateOwner": "Associate + Owner"
         }
-      },
-      "switches": {
-        "title": "Membership",
-        "allowDomainLabel": "Allow users matching this domain to join",
-        "allowDomainCaption": "Users whose email domain matches this organisation's verified domain can join as an associate with one click.",
-        "allowApplicationsLabel": "Allow users to apply to associate",
-        "allowApplicationsCaption": "When off, the organisation's public profile offers no Apply action; pending applications stay listed and decidable.",
-        "saveError": "Couldn't save — try again"
       }
     },
     "authorization": {

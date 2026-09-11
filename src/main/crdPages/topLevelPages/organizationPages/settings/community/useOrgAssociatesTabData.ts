@@ -1,11 +1,7 @@
-import { ApolloError, useApolloClient } from '@apollo/client';
+import { ApolloError } from '@apollo/client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  OrganizationInfoDocument,
-  useOrgAssociatesTabQuery,
-  useUpdateOrganizationSettingsMutation,
-} from '@/core/apollo/generated/apollo-hooks';
+import { useOrgAssociatesTabQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type {
@@ -21,7 +17,6 @@ import {
   ApplicationState,
   InvitationState,
 } from '@/domain/community/invitations/InvitationApplicationConstants';
-import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 import { ORG_ROLE_SET_MANAGE_PRIVILEGES } from '@/main/crdPages/permissions/roleAssignmentPrivileges';
 import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionReasonText';
 import { offeredRoleLabelKey } from '@/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper';
@@ -88,21 +83,11 @@ export type UseOrgAssociatesTabDataResult = {
   inviteOpen: boolean;
   openInvite: () => void;
   closeInvite: () => void;
-
-  switches: {
-    allowUsersMatchingDomainToJoin: boolean;
-    allowApplications: boolean;
-    saving: boolean;
-    onToggleAllowDomain: (next: boolean) => Promise<void>;
-    onToggleAllowApplications: (next: boolean) => Promise<void>;
-  };
 };
 
 export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAssociatesTabDataResult => {
   const { t } = useTranslation('crd-contributorSettings');
   const notify = useNotification();
-  const apolloClient = useApolloClient();
-  const { organization, organizationId } = useOrganizationContext();
 
   const { data, loading, refetch } = useOrgAssociatesTabQuery({
     variables: { roleSetId: roleSetId ?? '' },
@@ -246,49 +231,6 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
     void deleteInvitation(id).then(() => refetchApplicationsAndInvitations());
   };
 
-  // ---------- membership switches ----------
-  const [updateSettings, { loading: savingSettings }] = useUpdateOrganizationSettingsMutation();
-  const allowUsersMatchingDomainToJoin = organization?.settings?.membership.allowUsersMatchingDomainToJoin ?? false;
-  const allowApplications = organization?.settings?.membership.allowApplications ?? true;
-
-  const refreshOrganizationInfo = () => void apolloClient.refetchQueries({ include: [OrganizationInfoDocument] });
-
-  const onToggleAllowDomain = async (next: boolean) => {
-    if (!organizationId) return;
-    try {
-      await updateSettings({
-        variables: {
-          settingsData: {
-            organizationID: organizationId,
-            settings: { membership: { allowUsersMatchingDomainToJoin: next, allowApplications } },
-          },
-        },
-      });
-      refreshOrganizationInfo();
-    } catch {
-      notify(t('org.associates.switches.saveError'), 'error');
-    }
-  };
-
-  const onToggleAllowApplications = async (next: boolean) => {
-    if (!organizationId) return;
-    try {
-      await updateSettings({
-        variables: {
-          settingsData: {
-            organizationID: organizationId,
-            settings: {
-              membership: { allowUsersMatchingDomainToJoin: allowUsersMatchingDomainToJoin, allowApplications: next },
-            },
-          },
-        },
-      });
-      refreshOrganizationInfo();
-    } catch {
-      notify(t('org.associates.switches.saveError'), 'error');
-    }
-  };
-
   return {
     associates,
     loading,
@@ -310,13 +252,6 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
     inviteOpen,
     openInvite: () => setInviteOpen(true),
     closeInvite: () => setInviteOpen(false),
-    switches: {
-      allowUsersMatchingDomainToJoin,
-      allowApplications,
-      saving: savingSettings,
-      onToggleAllowDomain,
-      onToggleAllowApplications,
-    },
   };
 };
 

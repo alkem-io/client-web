@@ -9,7 +9,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Skeleton } from '@/crd/primitives/skeleton';
-import { Switch } from '@/crd/primitives/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 
 export type OrgAssociateListRow = {
@@ -36,12 +35,6 @@ export type OrgAssociatesTabViewProps = {
   onPendingReject: (id: string) => void;
   onPendingRevoke: (id: string) => void;
   onPendingView: (id: string) => void;
-
-  allowUsersMatchingDomainToJoin: boolean;
-  allowApplications: boolean;
-  switchesSaving: boolean;
-  onToggleAllowDomain: (next: boolean) => void;
-  onToggleAllowApplications: (next: boolean) => void;
 };
 
 const NS = 'crd-contributorSettings';
@@ -58,11 +51,6 @@ export function OrgAssociatesTabView({
   onPendingReject,
   onPendingRevoke,
   onPendingView,
-  allowUsersMatchingDomainToJoin,
-  allowApplications,
-  switchesSaving,
-  onToggleAllowDomain,
-  onToggleAllowApplications,
 }: OrgAssociatesTabViewProps) {
   const { t } = useTranslation(NS);
 
@@ -75,6 +63,14 @@ export function OrgAssociatesTabView({
 
   return (
     <div className="space-y-6">
+      <PendingMembershipsTable
+        items={pending}
+        title={t('org.associates.pending.title')}
+        onView={onPendingView}
+        onApprove={onPendingApprove}
+        onReject={onPendingReject}
+        onDelete={onPendingRevoke}
+      />
       <SettingsCard
         icon={Users}
         title={t('org.associates.title')}
@@ -130,46 +126,6 @@ export function OrgAssociatesTabView({
             ))}
           </ul>
         )}
-      </SettingsCard>
-
-      <PendingMembershipsTable
-        items={pending}
-        title={t('org.associates.pending.title')}
-        onView={onPendingView}
-        onApprove={onPendingApprove}
-        onReject={onPendingReject}
-        onDelete={onPendingRevoke}
-      />
-
-      <SettingsCard title={t('org.associates.switches.title')}>
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <p className="text-body-emphasis">{t('org.associates.switches.allowDomainLabel')}</p>
-            <p className="mt-0.5 text-caption text-muted-foreground">
-              {t('org.associates.switches.allowDomainCaption')}
-            </p>
-          </div>
-          <Switch
-            checked={allowUsersMatchingDomainToJoin}
-            disabled={switchesSaving}
-            onCheckedChange={onToggleAllowDomain}
-            aria-label={t('org.associates.switches.allowDomainLabel')}
-          />
-        </div>
-        <div className="mt-4 flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <p className="text-body-emphasis">{t('org.associates.switches.allowApplicationsLabel')}</p>
-            <p className="mt-0.5 text-caption text-muted-foreground">
-              {t('org.associates.switches.allowApplicationsCaption')}
-            </p>
-          </div>
-          <Switch
-            checked={allowApplications}
-            disabled={switchesSaving}
-            onCheckedChange={onToggleAllowApplications}
-            aria-label={t('org.associates.switches.allowApplicationsLabel')}
-          />
-        </div>
       </SettingsCard>
     </div>
   );

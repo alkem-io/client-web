@@ -8,6 +8,7 @@ import {
 } from '@/crd/components/organization/settings/OrgAssociateSettingsDialog';
 import { OrgAssociatesTabView } from '@/crd/components/organization/settings/OrgAssociatesTabView';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import {
   MembershipDetailDialogConnector,
   type ViewingMembership,
@@ -24,11 +25,13 @@ const ROLE_LIMIT_KEY_BY_ERROR = {
 /**
  * Integration page for the Associates tab (replaces the old Community tab, D14).
  * Wires `useOrgAssociatesTabData` (union list + role editor + pending applications &
- * invitations + the two membership switches + invite) to `OrgAssociatesTabView`.
+ * invitations + invite) to `OrgAssociatesTabView`. The tab carries no settings
+ * switch — all three membership switches live on the Settings tab (R41).
  */
 const CrdOrgAssociatesTab = () => {
   const { t } = useTranslation('crd-contributorSettings');
   const { roleSetId, displayName } = useOrganizationContext();
+  const { userModel } = useCurrentUserContext();
 
   usePageTitle(t('org.community.pageTitle'));
 
@@ -94,11 +97,6 @@ const CrdOrgAssociatesTab = () => {
           const item = state.pendingMemberships.find(m => m.id === id);
           if (item) setViewingMembership({ id: item.id, type: item.type });
         }}
-        allowUsersMatchingDomainToJoin={state.switches.allowUsersMatchingDomainToJoin}
-        allowApplications={state.switches.allowApplications}
-        switchesSaving={state.switches.saving}
-        onToggleAllowDomain={next => void state.switches.onToggleAllowDomain(next)}
-        onToggleAllowApplications={next => void state.switches.onToggleAllowApplications(next)}
       />
 
       <OrgAssociateSettingsDialog
@@ -111,6 +109,7 @@ const CrdOrgAssociatesTab = () => {
         }}
         subject={editingSubject}
         saving={state.updating}
+        isSelf={Boolean(userModel?.id) && editingSubject?.id === userModel?.id}
         errorMessage={roleLimitErrorMessage}
         onSave={handleSave}
         onRemove={() => {

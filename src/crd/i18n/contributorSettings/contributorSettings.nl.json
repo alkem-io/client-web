@@ -791,8 +791,10 @@
         "title": "Lidmaatschap",
         "allowSpaceInvitationsLabel": "Spaces toestaan om deze organisatie uit te nodigen",
         "allowSpaceInvitationsCaption": "Indien ingeschakeld, kunnen Space-beheerders deze organisatie uitnodigen om lid te worden van hun Space-community.",
-        "allowDomainLabel": "Sta gebruikers met het domein van deze organisatie toe lid te worden",
-        "allowDomainCaption": "Wanneer ingeschakeld, kunnen gebruikers wier e-maildomein overeenkomt met deze organisatie zich aansluiten zonder uitnodiging."
+        "allowDomainLabel": "Gebruikers met dit domein toestaan om toe te treden",
+        "allowDomainCaption": "Gebruikers van wie het e-maildomein overeenkomt met het geverifieerde domein van deze organisatie, kunnen met één klik als geassocieerde toetreden.",
+        "allowApplicationsLabel": "Gebruikers toestaan om te solliciteren als geassocieerde",
+        "allowApplicationsCaption": "Indien uit, biedt het openbare profiel van de organisatie geen sollicitatieactie; openstaande aanvragen blijven zichtbaar en beslisbaar."
       },
       "privacy": {
         "title": "Privacy",
@@ -846,7 +848,8 @@
         "cancel": "Annuleren",
         "removeSuccess": "{{name}} is verwijderd uit de organisatie",
         "removeError": "Kon {{name}} niet verwijderen — probeer opnieuw",
-        "saveError": "Kon wijzigingen niet opslaan — probeer opnieuw"
+        "saveError": "Kon wijzigingen niet opslaan — probeer opnieuw",
+        "selfAdminLocked": "You can't remove your own Admin role here."
       },
       "errors": {
         "limitAdmin": "Een organisatie kan maximaal 6 beheerders hebben",
@@ -862,14 +865,6 @@
           "associateAdmin": "Geassocieerde + Beheerder",
           "associateOwner": "Geassocieerde + Eigenaar"
         }
-      },
-      "switches": {
-        "title": "Lidmaatschap",
-        "allowDomainLabel": "Gebruikers met dit domein toestaan om toe te treden",
-        "allowDomainCaption": "Gebruikers van wie het e-maildomein overeenkomt met het geverifieerde domein van deze organisatie, kunnen met één klik als geassocieerde toetreden.",
-        "allowApplicationsLabel": "Gebruikers toestaan om te solliciteren als geassocieerde",
-        "allowApplicationsCaption": "Indien uit, biedt het openbare profiel van de organisatie geen sollicitatieactie; openstaande aanvragen blijven zichtbaar en beslisbaar.",
-        "saveError": "Opslaan mislukt — probeer opnieuw"
       }
     },
     "authorization": {
