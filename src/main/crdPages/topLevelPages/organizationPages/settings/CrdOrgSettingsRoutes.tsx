@@ -6,15 +6,16 @@ import CrdOrgSettingsPage from './CrdOrgSettingsPage';
 const CrdOrgProfileTab = lazy(() => import('./profile/CrdOrgProfileTab'));
 const CrdOrgAccountTab = lazy(() => import('./account/CrdOrgAccountTab'));
 const CrdOrgCommunityTab = lazy(() => import('./community/CrdOrgCommunityTab'));
+const CrdOrgInvitationsTab = lazy(() => import('./invitations/CrdOrgInvitationsTab'));
 const CrdOrgAuthorizationTab = lazy(() => import('./authorization/CrdOrgAuthorizationTab'));
 const CrdOrgSettingsTab = lazy(() => import('./settings/CrdOrgSettingsTab'));
 
 /**
  * Routes the Org settings sub-tree (`/organization/<orgSlug>/settings/*`).
  *
- * All five tabs (Profile, Account, Community, Authorization, Settings) are
- * wired with their CRD per-tab components. The shell + tab strip live in
- * `CrdOrgSettingsPage`.
+ * All six tabs (Profile, Account, Community, Invitations, Authorization,
+ * Settings) are wired with their CRD per-tab components. The shell + tab
+ * strip live in `CrdOrgSettingsPage`.
  */
 export const CrdOrgSettingsRoutes = () => (
   <Routes>
@@ -41,6 +42,14 @@ export const CrdOrgSettingsRoutes = () => (
         element={
           <Suspense fallback={<Loading />}>
             <CrdOrgCommunityTab />
+          </Suspense>
+        }
+      />
+      <Route
+        path="invitations"
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdOrgInvitationsTab />
           </Suspense>
         }
       />

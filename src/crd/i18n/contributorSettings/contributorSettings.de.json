@@ -93,9 +93,10 @@
       "org": {
         "profile": "Profil",
         "account": "Konto",
-        "community": "Gemeinschaft",
+        "community": "Assoziierte",
         "authorization": "Autorisierung",
-        "settings": "Einstellungen"
+        "settings": "Einstellungen",
+        "invitations": "Einladungen"
       },
       "vc": {
         "profile": "Profil",
@@ -520,7 +521,8 @@
         },
         "spaceAdmin": {
           "communityApplicationReceived": "Benachrichtigung erhalten, wenn eine neue Community-Bewerbung eingeht",
-          "communityNewMember": "Benachrichtigung erhalten, wenn ein neues Mitglied der Community beitritt",
+          "communityNewMember": "Erhalten Sie eine Benachrichtigung, wenn ein neues Mitglied der Community beitritt",
+          "communityInvitationResponse": "Erhalten Sie eine Benachrichtigung, wenn jemand eine Einladung zu einem von Ihnen verwalteten Space annimmt oder ablehnt",
           "collaborationCalloutContributionCreated": "Benachrichtigung erhalten, wenn ein neuer Beitrag zu einem Callout erstellt wird",
           "communicationMessageReceived": "Benachrichtigung erhalten, wenn eine Community-Nachricht empfangen wird",
           "userEmailChanged": "Benachrichtigung erhalten, wenn die Anmelde-E-Mail-Adresse eines Mitglieds eines von dir verwalteten Space geändert wird"
@@ -547,7 +549,8 @@
         },
         "organization": {
           "adminMentioned": "Benachrichtigung erhalten, wenn meine Organisation erwähnt wird",
-          "adminMessageReceived": "Direktnachrichten an meine Organisation erhalten"
+          "adminMessageReceived": "Direktnachrichten an meine Organisation erhalten",
+          "adminSpaceCommunityInvitation": "Erhalten Sie eine Benachrichtigung, wenn eine von Ihnen verwaltete Organisation eingeladen wird, einem Space beizutreten, und wenn sie beitritt"
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Benachrichtigung erhalten, wenn ein VC-Manager eingeladen wird, einer Community beizutreten"
@@ -815,7 +818,9 @@
       "membership": {
         "title": "Mitgliedschaft",
         "allowDomainLabel": "Nutzer mit passender Domain dürfen beitreten",
-        "allowDomainCaption": "Wenn aktiviert, können Nutzer, deren E-Mail-Domain mit der Organisation übereinstimmt, ohne Einladung beitreten."
+        "allowDomainCaption": "Wenn aktiviert, können Nutzer, deren E-Mail-Domain mit der Organisation übereinstimmt, ohne Einladung beitreten.",
+        "allowSpaceInvitationsLabel": "Spaces erlauben, diese Organisation einzuladen",
+        "allowSpaceInvitationsCaption": "Wenn aktiviert, können Space-Administratoren diese Organisation einladen, ihrer Space-Community beizutreten."
       },
       "privacy": {
         "title": "Privatsphäre",
@@ -823,6 +828,27 @@
         "contributionRolesCaption": "Wenn aktiviert, sind die Rollenzuweisungen der Organisation (Administrator, Eigentümer, Mitglied) im öffentlichen Profil sichtbar."
       },
       "errorToast": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen"
+    },
+    "invitations": {
+      "pageTitle": "Einladungen",
+      "title": "Space-Einladungen",
+      "empty": "Keine ausstehenden Space-Einladungen.",
+      "invitedBy": "Eingeladen von {{name}}",
+      "invitedByUnknown": "Eingeladen von einem Space-Administrator",
+      "date": "Datum",
+      "role": "Rolle",
+      "roleMember": "Mitglied",
+      "roleMemberLead": "Mitglied + Lead",
+      "spacesToJoin": "Bei Annahme wird beigetreten zu: {{spaces}}",
+      "accept": "Annehmen",
+      "decline": "Ablehnen",
+      "acceptConfirmTitle": "Diese Einladung annehmen?",
+      "acceptConfirmBody": "Ihre Organisation wird {{spaceName}} als {{role}} beitreten.",
+      "acceptConfirmAction": "Einladung annehmen",
+      "declineConfirmTitle": "Diese Einladung ablehnen?",
+      "declineConfirmBody": "{{spaceName}} wird mitgeteilt, dass Ihre Organisation abgelehnt hat. Dies kann nicht rückgängig gemacht werden — ein Space-Administrator müsste eine neue Einladung senden.",
+      "declineConfirmAction": "Einladung ablehnen",
+      "errorToast": "Die Einladung konnte nicht aktualisiert werden — bitte erneut versuchen"
     }
   },
   "vc": {

@@ -135,6 +135,7 @@ export const AdminCommunityInvitationFragmentDoc = gql`
   updatedDate
   state
   nextEvents
+  extraRoles
   actor {
     ...AdminCommunityCandidateMember
   }
@@ -1755,6 +1756,11 @@ export const UserSettingsFragmentFragmentDoc = gql`
         inApp
         push
       }
+      adminSpaceCommunityInvitation {
+        email
+        inApp
+        push
+      }
     }
     space {
       admin {
@@ -1769,6 +1775,11 @@ export const UserSettingsFragmentFragmentDoc = gql`
           push
         }
         communityNewMember {
+          email
+          inApp
+          push
+        }
+        communityInvitationResponse {
           email
           inApp
           push
@@ -1918,14 +1929,31 @@ export const InvitationDataFragmentDoc = gql`
     id
     welcomeMessage
     suggestedLanguage
+    extraRoles
+    invitedToParent
+    nextEvents
     createdBy {
       id
+      profile {
+        id
+        displayName
+      }
     }
     state
     createdDate
     actor {
       id
       type
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+    spacesToJoinOnAccept {
+      id
+      displayName
+      url
     }
   }
 }
@@ -3724,8 +3752,31 @@ export const InAppNotificationPayloadSpaceCommunityInvitationFragmentDoc = gql`
   space {
     ...spaceNotification
   }
+  nullableOrganization: organization {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      url
+      visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
+  }
+  invitation {
+    id
+    extraRoles
+    invitedToParent
+    spacesToJoinOnAccept {
+      id
+      displayName
+      url
+    }
+  }
 }
-    ${SpaceNotificationFragmentDoc}`;
+    ${SpaceNotificationFragmentDoc}
+${VisualModelFragmentDoc}`;
 export const InAppNotificationPayloadSpaceCommunityInvitationPlatformFragmentDoc = gql`
     fragment InAppNotificationPayloadSpaceCommunityInvitationPlatform on InAppNotificationPayloadSpaceCommunityInvitationPlatform {
   space {
@@ -5303,6 +5354,9 @@ export const InviteForEntryRoleOnRoleSetDocument = gql`
     invitationData: {invitedActorIDs: $invitedActorIds, invitedUserEmails: $invitedUserEmails, roleSetID: $roleSetId, welcomeMessage: $welcomeMessage, extraRoles: $extraRoles, suggestedLanguage: $suggestedLanguage}
   ) {
     type
+    notice
+    invitedActorID
+    invitedEmail
     invitation {
       id
       actor {
@@ -14033,6 +14087,7 @@ export const InviteUsersDialogDocument = gql`
   lookup {
     space(ID: $spaceId) {
       id
+      level
       about {
         id
         profile {
@@ -14550,6 +14605,82 @@ export type RolesOrganizationQueryResult = Apollo.QueryResult<
 export function refetchRolesOrganizationQuery(variables: SchemaTypes.RolesOrganizationQueryVariables) {
   return { query: RolesOrganizationDocument, variables: variables };
 }
+export const OrgInvitationsDocument = gql`
+    query OrgInvitations($organizationId: UUID!) {
+  lookup {
+    organization(ID: $organizationId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+  me {
+    id
+    communityInvitations(states: ["invited", "accepting"]) {
+      ...InvitationData
+    }
+  }
+}
+    ${InvitationDataFragmentDoc}`;
+
+/**
+ * __useOrgInvitationsQuery__
+ *
+ * To run a query within a React component, call `useOrgInvitationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrgInvitationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrgInvitationsQuery({
+ *   variables: {
+ *      organizationId: // value for 'organizationId'
+ *   },
+ * });
+ */
+export function useOrgInvitationsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.OrgInvitationsQuery, SchemaTypes.OrgInvitationsQueryVariables> &
+    ({ variables: SchemaTypes.OrgInvitationsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OrgInvitationsQuery, SchemaTypes.OrgInvitationsQueryVariables>(
+    OrgInvitationsDocument,
+    options
+  );
+}
+export function useOrgInvitationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.OrgInvitationsQuery, SchemaTypes.OrgInvitationsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.OrgInvitationsQuery, SchemaTypes.OrgInvitationsQueryVariables>(
+    OrgInvitationsDocument,
+    options
+  );
+}
+export function useOrgInvitationsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.OrgInvitationsQuery, SchemaTypes.OrgInvitationsQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.OrgInvitationsQuery, SchemaTypes.OrgInvitationsQueryVariables>(
+    OrgInvitationsDocument,
+    options
+  );
+}
+export type OrgInvitationsQueryHookResult = ReturnType<typeof useOrgInvitationsQuery>;
+export type OrgInvitationsLazyQueryHookResult = ReturnType<typeof useOrgInvitationsLazyQuery>;
+export type OrgInvitationsSuspenseQueryHookResult = ReturnType<typeof useOrgInvitationsSuspenseQuery>;
+export type OrgInvitationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrgInvitationsQuery,
+  SchemaTypes.OrgInvitationsQueryVariables
+>;
+export function refetchOrgInvitationsQuery(variables: SchemaTypes.OrgInvitationsQueryVariables) {
+  return { query: OrgInvitationsDocument, variables: variables };
+}
 export const OrganizationAccountDocument = gql`
     query OrganizationAccount($organizationId: UUID!) {
   lookup {
@@ -14715,6 +14846,7 @@ export const OrganizationSettingsDocument = gql`
       settings {
         membership {
           allowUsersMatchingDomainToJoin
+          allowSpaceInvitations
         }
         privacy {
           contributionRolesPubliclyVisible
@@ -14844,6 +14976,7 @@ export const UpdateOrganizationSettingsDocument = gql`
     settings {
       membership {
         allowUsersMatchingDomainToJoin
+        allowSpaceInvitations
       }
     }
   }
@@ -16061,6 +16194,11 @@ export const UpdateUserSettingsDocument = gql`
               inApp
               push
             }
+            communityInvitationResponse {
+              email
+              inApp
+              push
+            }
             collaborationCalloutContributionCreated {
               email
               inApp
@@ -16124,6 +16262,11 @@ export const UpdateUserSettingsDocument = gql`
             push
           }
           adminMessageReceived {
+            email
+            inApp
+            push
+          }
+          adminSpaceCommunityInvitation {
             email
             inApp
             push

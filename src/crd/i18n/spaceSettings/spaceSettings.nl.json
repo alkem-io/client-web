@@ -336,7 +336,7 @@
       "actions": "Acties",
       "empty": "Geen organisaties.",
       "remove": "Organisatie verwijderen",
-      "description": "Overzicht van alle leden- en Lead-organisaties. Om een organisatie toe te voegen, neem contact op met het Alkemio-team via support@alkem.io.",
+      "description": "Overzicht van alle leden- en Lead-organisaties. Nodig een organisatie uit om deel te nemen, of voeg er direct een toe.",
       "add": "Organisatie toevoegen",
       "dropdown": {
         "viewProfile": "Profiel bekijken",
@@ -348,6 +348,18 @@
         "description": "Deze organisaties worden zichtbaar als leden in deze Space en op hun organisatieprofiel.",
         "search": "Organisaties zoeken…",
         "empty": "Geen organisaties komen overeen met je zoekopdracht."
+      },
+      "invite": "Organisatie uitnodigen",
+      "search": "Organisaties zoeken…",
+      "pendingInvitations": {
+        "title": "Openstaande uitnodigingen",
+        "empty": "Geen openstaande organisatie-uitnodigingen.",
+        "role": "Rol",
+        "date": "Datum",
+        "revoke": "Intrekken",
+        "revokeAriaLabel": "Uitnodiging aan {{name}} intrekken",
+        "roleMember": "Lid",
+        "roleMemberLead": "Lid + Lead"
       }
     },
     "virtualContributors": {

@@ -44,6 +44,7 @@ fragment AdminCommunityInvitation on Invitation {
   updatedDate
   state
   nextEvents
+  extraRoles
   actor {
     ...AdminCommunityCandidateMember
   }

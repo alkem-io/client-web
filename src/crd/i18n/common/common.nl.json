@@ -662,6 +662,7 @@
           "title": "Openstaande $t(common.virtualContributor) $t(common.membership): {{space}}"
         }
       },
+      "organization": "jouw organisatie",
       "vc": "jouw $t(common.virtualContributor)",
       "you": "jij"
     }
@@ -892,8 +893,33 @@
         "VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION": {
           "description": "",
           "subject": "{{triggeredByName}} heeft {{contributorName}} uitgenodigd voor {{spaceName}}, waarvan je een $t(common.admin) bent"
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION": {
+          "subject": "Uw $t(common.organization) {{organizationName}} is uitgenodigd om lid te worden van {{spaceName}}",
+          "description": "Als {{invitationRole}}.{{spacesToJoin}}"
+        },
+        "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{organizationName}} heeft de uitnodiging om lid te worden van {{spaceName}} geaccepteerd",
+          "description": "{{organizationName}} is toegetreden tot {{spaceName}}, waarvan u $t(common.admin) bent."
+        },
+        "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{organizationName}} heeft de uitnodiging om lid te worden van {{spaceName}} afgewezen",
+          "description": ""
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{userName}} heeft de uitnodiging om lid te worden van {{spaceName}} geaccepteerd",
+          "description": "{{userName}} is toegetreden tot {{spaceName}}, waarvan u $t(common.admin) bent."
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{userName}} heeft de uitnodiging om lid te worden van {{spaceName}} afgewezen",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
+          "subject": "Uw $t(common.organization) {{organizationName}} is toegetreden tot {{spaceName}}",
+          "description": "Er is geen verdere actie nodig."
         }
-      }
+      },
+      "spacesToJoin": "Bij accepteren wordt toegetreden tot: {{spaces}}"
     },
     "profile": {
       "fields": {

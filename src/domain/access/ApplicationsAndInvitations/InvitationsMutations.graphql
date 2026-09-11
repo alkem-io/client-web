@@ -16,6 +16,9 @@ mutation InviteForEntryRoleOnRoleSet($roleSetId: UUID!, $invitedActorIds: [UUID!
     suggestedLanguage: $suggestedLanguage
   }) {
     type
+    notice
+    invitedActorID
+    invitedEmail
     invitation {
       id
       actor {

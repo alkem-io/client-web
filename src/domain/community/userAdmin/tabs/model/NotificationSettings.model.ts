@@ -29,6 +29,7 @@ export interface SpaceNotificationSettings {
 export interface SpaceAdminNotificationSettings {
   communityApplicationReceived?: NotificationChannels;
   communityNewMember?: NotificationChannels;
+  communityInvitationResponse?: NotificationChannels;
   collaborationCalloutContributionCreated?: NotificationChannels;
   communicationMessageReceived?: NotificationChannels;
   userEmailChanged?: NotificationChannels;
@@ -53,6 +54,7 @@ export interface UserNotificationSettings {
 export interface OrganizationNotificationSettings {
   adminMentioned?: NotificationChannels;
   adminMessageReceived?: NotificationChannels;
+  adminSpaceCommunityInvitation?: NotificationChannels;
 }
 
 // Platform notification settings (Forum)

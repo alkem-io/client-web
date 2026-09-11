@@ -662,6 +662,7 @@
           "title": "Pending $t(common.virtualContributor) $t(common.membership): {{space}}"
         }
       },
+      "organization": "your organisation",
       "vc": "your $t(common.virtualContributor)",
       "you": "you"
     }
@@ -892,8 +893,33 @@
         "VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION": {
           "description": "",
           "subject": "{{triggeredByName}} has invited {{contributorName}} to {{spaceName}}, of which you're an $t(common.admin)"
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION": {
+          "subject": "Your $t(common.organization) {{organizationName}} was invited to join {{spaceName}}",
+          "description": "As {{invitationRole}}.{{spacesToJoin}}"
+        },
+        "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{organizationName}} accepted the invitation to join {{spaceName}}",
+          "description": "{{organizationName}} has joined {{spaceName}}, of which you are an $t(common.admin)."
+        },
+        "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{organizationName}} declined the invitation to join {{spaceName}}",
+          "description": ""
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{userName}} accepted the invitation to join {{spaceName}}",
+          "description": "{{userName}} has joined {{spaceName}}, of which you are an $t(common.admin)."
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{userName}} declined the invitation to join {{spaceName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
+          "subject": "Your $t(common.organization) {{organizationName}} has joined {{spaceName}}",
+          "description": "No further action is needed."
         }
-      }
+      },
+      "spacesToJoin": "Accepting joins: {{spaces}}"
     },
     "profile": {
       "fields": {

@@ -2243,11 +2243,15 @@ export type InAppNotificationPayloadSpaceCommunityCalendarEventCommentFieldPolic
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadSpaceCommunityInvitationKeySpecifier = (
+  | 'invitation'
+  | 'organization'
   | 'space'
   | 'type'
   | InAppNotificationPayloadSpaceCommunityInvitationKeySpecifier
 )[];
 export type InAppNotificationPayloadSpaceCommunityInvitationFieldPolicy = {
+  invitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  organization?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2438,6 +2442,7 @@ export type InvitationKeySpecifier = (
   | 'isFinalized'
   | 'lifecycle'
   | 'nextEvents'
+  | 'spacesToJoinOnAccept'
   | 'state'
   | 'suggestedLanguage'
   | 'updatedDate'
@@ -2455,6 +2460,7 @@ export type InvitationFieldPolicy = {
   isFinalized?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   nextEvents?: FieldPolicy<any> | FieldReadFunction<any>;
+  spacesToJoinOnAccept?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   suggestedLanguage?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3672,10 +3678,12 @@ export type OrganizationSettingsFieldPolicy = {
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganizationSettingsMembershipKeySpecifier = (
+  | 'allowSpaceInvitations'
   | 'allowUsersMatchingDomainToJoin'
   | OrganizationSettingsMembershipKeySpecifier
 )[];
 export type OrganizationSettingsMembershipFieldPolicy = {
+  allowSpaceInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
   allowUsersMatchingDomainToJoin?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganizationSettingsPrivacyKeySpecifier = (
@@ -4618,6 +4626,9 @@ export type RoleSetFieldPolicy = {
 export type RoleSetInvitationResultKeySpecifier = (
   | 'application'
   | 'invitation'
+  | 'invitedActorID'
+  | 'invitedEmail'
+  | 'notice'
   | 'platformInvitation'
   | 'type'
   | RoleSetInvitationResultKeySpecifier
@@ -4625,6 +4636,9 @@ export type RoleSetInvitationResultKeySpecifier = (
 export type RoleSetInvitationResultFieldPolicy = {
   application?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  invitedActorID?: FieldPolicy<any> | FieldReadFunction<any>;
+  invitedEmail?: FieldPolicy<any> | FieldReadFunction<any>;
+  notice?: FieldPolicy<any> | FieldReadFunction<any>;
   platformInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -5043,6 +5057,12 @@ export type SpaceAboutMembershipFieldPolicy = {
   myMembershipStatus?: FieldPolicy<any> | FieldReadFunction<any>;
   myPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSetID?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SpaceJoinPreviewKeySpecifier = ('displayName' | 'id' | 'url' | SpaceJoinPreviewKeySpecifier)[];
+export type SpaceJoinPreviewFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpacePendingMembershipInfoKeySpecifier = (
   | 'about'
@@ -5818,11 +5838,13 @@ export type UserSettingsNotificationChannelsFieldPolicy = {
 export type UserSettingsNotificationOrganizationKeySpecifier = (
   | 'adminMentioned'
   | 'adminMessageReceived'
+  | 'adminSpaceCommunityInvitation'
   | UserSettingsNotificationOrganizationKeySpecifier
 )[];
 export type UserSettingsNotificationOrganizationFieldPolicy = {
   adminMentioned?: FieldPolicy<any> | FieldReadFunction<any>;
   adminMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminSpaceCommunityInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationPlatformKeySpecifier = (
   | 'admin'
@@ -5892,6 +5914,7 @@ export type UserSettingsNotificationSpaceAdminKeySpecifier = (
   | 'collaborationCalloutContributionCreated'
   | 'communicationMessageReceived'
   | 'communityApplicationReceived'
+  | 'communityInvitationResponse'
   | 'communityNewMember'
   | 'userEmailChanged'
   | UserSettingsNotificationSpaceAdminKeySpecifier
@@ -5900,6 +5923,7 @@ export type UserSettingsNotificationSpaceAdminFieldPolicy = {
   collaborationCalloutContributionCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communityApplicationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityInvitationResponse?: FieldPolicy<any> | FieldReadFunction<any>;
   communityNewMember?: FieldPolicy<any> | FieldReadFunction<any>;
   userEmailChanged?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -7715,6 +7739,10 @@ export type StrictTypedTypePolicies = {
   SpaceAboutMembership?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceAboutMembershipKeySpecifier | (() => undefined | SpaceAboutMembershipKeySpecifier);
     fields?: SpaceAboutMembershipFieldPolicy;
+  };
+  SpaceJoinPreview?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SpaceJoinPreviewKeySpecifier | (() => undefined | SpaceJoinPreviewKeySpecifier);
+    fields?: SpaceJoinPreviewFieldPolicy;
   };
   SpacePendingMembershipInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

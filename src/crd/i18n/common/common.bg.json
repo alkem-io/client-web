@@ -662,6 +662,7 @@
           "title": "Чакащо $t(common.virtualContributor) $t(common.membership): {{space}}"
         }
       },
+      "organization": "вашата организация",
       "vc": "Вашия $t(common.virtualContributor)",
       "you": "Вие"
     }
@@ -892,8 +893,33 @@
         "VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION": {
           "description": "",
           "subject": "{{triggeredByName}} е поканил {{contributorName}} към {{spaceName}}, за което Вие сте $t(common.admin)"
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION": {
+          "subject": "Вашата $t(common.organization) {{organizationName}} беше поканена да се присъедини към {{spaceName}}",
+          "description": "Като {{invitationRole}}.{{spacesToJoin}}"
+        },
+        "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{organizationName}} прие поканата да се присъедини към {{spaceName}}",
+          "description": "{{organizationName}} се присъедини към {{spaceName}}, на което сте $t(common.admin)."
+        },
+        "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{organizationName}} отказа поканата да се присъедини към {{spaceName}}",
+          "description": ""
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{userName}} прие поканата да се присъедини към {{spaceName}}",
+          "description": "{{userName}} се присъедини към {{spaceName}}, на което сте $t(common.admin)."
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{userName}} отказа поканата да се присъедини към {{spaceName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
+          "subject": "Вашата $t(common.organization) {{organizationName}} се присъедини към {{spaceName}}",
+          "description": "Не е необходимо допълнително действие."
         }
-      }
+      },
+      "spacesToJoin": "При приемане се присъединява към: {{spaces}}"
     },
     "profile": {
       "fields": {

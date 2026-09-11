@@ -9,7 +9,7 @@
  * pages render the production CRD components directly with this data.
  */
 
-import type { VcInviteItem } from '@/crd/components/community/VirtualContributorInviteDialog';
+import type { VcInviteItem } from '@/crd/components/community/InviteMembersDialog';
 import type {
   VcWizardCreatedVc,
   VcWizardSelectableSpace,

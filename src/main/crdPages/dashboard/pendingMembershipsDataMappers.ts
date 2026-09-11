@@ -1,5 +1,6 @@
 import { formatDistanceToNow } from 'date-fns';
 import type { TFunction } from 'i18next';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import type { PendingApplicationCardData } from '@/crd/components/dashboard/PendingApplicationCard';
 import type { PendingInvitationCardData } from '@/crd/components/dashboard/PendingInvitationCard';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
@@ -29,6 +30,10 @@ export const mapHydratedInvitationToCardData = (
   spaceName: hydrated.space.about.profile.displayName,
   spaceAvatarUrl: hydrated.space.about.profile.cardBanner?.uri,
   senderName: hydrated.userDisplayName ?? '',
+  organizationName:
+    hydrated.invitation.actor?.type === ActorType.Organization
+      ? hydrated.invitation.actor.profile?.displayName
+      : undefined,
   welcomeMessageExcerpt: hydrated.invitation.welcomeMessage
     ? truncate(hydrated.invitation.welcomeMessage, 100)
     : undefined,

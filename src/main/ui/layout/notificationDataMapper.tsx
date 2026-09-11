@@ -15,9 +15,11 @@
 import type { TFunction } from 'i18next';
 import { Trans } from 'react-i18next';
 import {
+  ActorType,
   type ForumDiscussionCategory,
   NotificationEvent,
   type NotificationEventInAppState,
+  RoleName,
 } from '@/core/apollo/generated/graphql-schema';
 import { kebabToConstantCase } from '@/core/utils/string';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
@@ -53,7 +55,13 @@ function buildTranslationValues(
     triggeredByName: triggeredBy.profile.displayName,
     spaceName: payload.space?.about?.profile?.displayName,
     calloutName: payload.callout?.framing?.profile?.displayName,
-    organizationName: payload.organization?.profile?.displayName,
+    // organizationName: the organization payload field is present only on events that carry a
+    // dedicated `organization` relation (e.g. the org-invited event); the org-accepted/declined
+    // events instead carry the organization as the generic SpaceCommunityActor `actor`, so fall
+    // back to the actor's display name when it is typed as an organization.
+    organizationName:
+      payload.organization?.profile?.displayName ??
+      (payload.actor?.type === ActorType.Organization ? payload.actor.profile?.displayName : undefined),
     userName: payload.user?.profile?.displayName ?? payload.actor?.profile?.displayName,
     comment:
       payload.comment ??
@@ -94,6 +102,24 @@ function buildTranslationValues(
     // emoji: used by SPACE_COLLABORATION_CALLOUT_REACTION — slug resolved to glyph;
     // unknown slug yields undefined so the placeholder renders empty, never crashes
     emoji: payload.emoji ? glyphForSlug(payload.emoji) : undefined,
+    // invitationRole: used by ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION — "Member" or
+    // "Member + Lead", resolved from the offered extraRoles. Distinct from `role` above
+    // (a raw platform-role string) to avoid colliding with PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED.
+    invitationRole: payload.invitation
+      ? payload.invitation.extraRoles.includes(RoleName.Lead)
+        ? `${t('member')} + ${t('lead')}`
+        : t('member')
+      : undefined,
+    // spacesToJoin: used by ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION — an extra
+    // "Accepting joins: …" clause listing every Space accepting joins (the target
+    // included), shown only when that is more than the target Space itself.
+    spacesToJoin:
+      (payload.invitation?.spacesToJoinOnAccept?.length ?? 0) > 1
+        ? ` ${t('components.inAppNotifications.spacesToJoin', {
+            // biome-ignore lint/style/noNonNullAssertion: guarded by the length check above
+            spaces: payload.invitation!.spacesToJoinOnAccept!.map(s => s.displayName).join(', '),
+          })}`
+        : '',
   };
 }
 
@@ -121,6 +147,18 @@ const URL_OVERRIDES_BY_TYPE: Partial<
   // Calendar payloads carry both the event and its space; the space must not win.
   [NotificationEvent.SpaceCommunityCalendarEventCreated]: payload => payload.calendarEvent?.profile?.url,
   [NotificationEvent.SpaceCommunityCalendarEventComment]: payload => payload.calendarEvent?.profile?.url,
+  // The org admin acts from the org's own Invitations tab, not the space (061, contract §4).
+  [NotificationEvent.OrganizationAdminSpaceCommunityInvitation]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'invitations'),
+  // Accepted/declined land the inviting space admin on the Community tab, same as a new application.
+  [NotificationEvent.SpaceAdminOrganizationCommunityInvitationAccepted]: payload =>
+    buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
+  [NotificationEvent.SpaceAdminOrganizationCommunityInvitationDeclined]: payload =>
+    buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
+  [NotificationEvent.SpaceAdminUserCommunityInvitationAccepted]: payload =>
+    buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
+  [NotificationEvent.SpaceAdminUserCommunityInvitationDeclined]: payload =>
+    buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
 };
 
 /**
