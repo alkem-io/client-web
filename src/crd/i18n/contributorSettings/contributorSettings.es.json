@@ -837,6 +837,7 @@
       "editAriaLabel": "Editar a {{name}}",
       "editor": {
         "title": "Editar a {{name}}",
+        "description": "Cambia los roles que {{name}} tiene en esta organización, o elimínale de ella.",
         "associateLabel": "Asociado",
         "associateCaption": "El rol básico: necesario para tener también Admin o Propietario.",
         "adminLabel": "Admin",

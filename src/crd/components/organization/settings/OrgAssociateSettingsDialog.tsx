@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
-import { Dialog, DialogContent, DialogFooter, DialogTitle } from '@/crd/primitives/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '@/crd/primitives/dialog';
 import { Label } from '@/crd/primitives/label';
 import { Switch } from '@/crd/primitives/switch';
 
@@ -73,6 +73,12 @@ export function OrgAssociateSettingsDialog({
       <Dialog open={open && !confirmingRemove} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-md">
           <DialogTitle>{t('org.associates.editor.title', { name: subject.displayName })}</DialogTitle>
+          {/* Radix requires an accessible description on every DialogContent; the
+              visible body is a bare list of toggles, so the description is
+              screen-reader only rather than repeated on screen. */}
+          <DialogDescription className="sr-only">
+            {t('org.associates.editor.description', { name: subject.displayName })}
+          </DialogDescription>
 
           <div className="flex items-center gap-3 py-2">
             <Avatar className="size-10 border border-border">

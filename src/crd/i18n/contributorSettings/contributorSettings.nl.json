@@ -837,6 +837,7 @@
       "editAriaLabel": "{{name}} bewerken",
       "editor": {
         "title": "{{name}} bewerken",
+        "description": "Wijzig welke rollen {{name}} heeft in deze organisatie, of verwijder deze persoon eruit.",
         "associateLabel": "Geassocieerde",
         "associateCaption": "De basisrol — vereist om ook Beheerder of Eigenaar te zijn.",
         "adminLabel": "Beheerder",

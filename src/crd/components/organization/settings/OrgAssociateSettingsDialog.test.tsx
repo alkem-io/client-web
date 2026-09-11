@@ -38,6 +38,15 @@ const renderDialog = (overrides: Partial<OrgAssociateSettingsDialogProps> = {}) 
 const adminToggle = () => screen.getByLabelText('org.associates.editor.adminLabel');
 const removeButton = () => screen.getByRole('button', { name: 'org.associates.editor.remove' });
 
+describe('OrgAssociateSettingsDialog — accessibility', () => {
+  test('gives the dialog an accessible description, not just a title', () => {
+    renderDialog();
+    // Radix warns (and screen-reader users get nothing) when DialogContent has no
+    // aria-describedby. The description is sr-only, so assert the wiring, not the pixels.
+    expect(screen.getByRole('dialog')).toHaveAccessibleDescription('org.associates.editor.description');
+  });
+});
+
 describe('OrgAssociateSettingsDialog — self-admin guard (R43 / FR-019a)', () => {
   test('locks the Admin toggle and says why when an admin edits their own row', () => {
     renderDialog({ isSelf: true });

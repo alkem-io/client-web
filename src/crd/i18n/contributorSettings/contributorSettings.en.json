@@ -837,6 +837,7 @@
       "editAriaLabel": "Edit {{name}}",
       "editor": {
         "title": "Edit {{name}}",
+        "description": "Change which roles {{name}} holds on this organisation, or remove them from it.",
         "associateLabel": "Associate",
         "associateCaption": "The baseline role — required to also hold Admin or Owner.",
         "adminLabel": "Admin",

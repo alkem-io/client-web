@@ -837,6 +837,7 @@
       "editAriaLabel": "{{name}} bearbeiten",
       "editor": {
         "title": "{{name}} bearbeiten",
+        "description": "Ändern Sie, welche Rollen {{name}} in dieser Organisation innehat, oder entfernen Sie die Person daraus.",
         "associateLabel": "Assoziiert",
         "associateCaption": "Die Grundrolle – erforderlich, um zusätzlich Admin oder Eigentümer zu sein.",
         "adminLabel": "Admin",
