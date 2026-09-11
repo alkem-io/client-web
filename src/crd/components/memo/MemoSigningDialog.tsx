@@ -87,16 +87,17 @@ function SignedCopy({ signature, onVerify, onDownload, downloadingDocumentIds, v
   if (!document) return null;
 
   const downloading = downloadingDocumentIds?.has(document.id) === true;
+  const signerName = signature.actor?.profile?.displayName;
 
   return (
     <li className="space-y-2 border-t pt-3 text-body first:border-t-0 first:pt-0">
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-        {signature.actor?.profile?.url ? (
+        {signerName && signature.actor?.profile?.url ? (
           <a className="text-primary underline" href={signature.actor.profile.url}>
-            {signature.actor.profile.displayName}
+            {signerName}
           </a>
         ) : (
-          <span>{signature.actor?.profile?.displayName}</span>
+          <span>{signerName || t('memo.signing.unknownSigner')}</span>
         )}
         <span>
           {t('memo.signing.recorded')}:{' '}

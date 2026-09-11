@@ -742,6 +742,7 @@
       "continuing": "Redirection vers Cleverbase",
       "signedCopies": "Copies signées",
       "signedCopiesCount": "Copies signées ({{count}})",
+      "unknownSigner": "Signataire inconnu",
       "savedTitle": "Copie signée enregistrée",
       "snapshotExplanation": "Cette copie signée est un instantané figé. Les modifications ultérieures du mémo ne la changent pas.",
       "historyDescription": "Chaque PDF signé est une copie distincte ; le mémo reste modifiable. Les modifications ultérieures ne changent pas une copie signée existante.",

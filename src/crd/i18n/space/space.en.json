@@ -742,6 +742,7 @@
       "continuing": "Continuing to Cleverbase",
       "signedCopies": "Signed copies",
       "signedCopiesCount": "Signed copies ({{count}})",
+      "unknownSigner": "Unknown signer",
       "savedTitle": "Signed copy saved",
       "snapshotExplanation": "This signed copy is a fixed snapshot. Later memo edits do not change it.",
       "historyDescription": "Each signed PDF is a separate copy; the memo remains editable. Later edits do not change an existing signed copy.",

@@ -742,6 +742,7 @@
       "continuing": "Cleverbase wordt geopend",
       "signedCopies": "Ondertekende kopieën",
       "signedCopiesCount": "Ondertekende kopieën ({{count}})",
+      "unknownSigner": "Onbekende ondertekenaar",
       "savedTitle": "Ondertekende kopie opgeslagen",
       "snapshotExplanation": "Deze ondertekende kopie is een vaste momentopname. Latere wijzigingen aan de memo veranderen deze niet.",
       "historyDescription": "Elke ondertekende PDF is een afzonderlijke kopie; de memo blijft bewerkbaar. Latere wijzigingen veranderen een bestaande ondertekende kopie niet.",

@@ -742,6 +742,7 @@
       "continuing": "Continuando a Cleverbase",
       "signedCopies": "Copias firmadas",
       "signedCopiesCount": "Copias firmadas ({{count}})",
+      "unknownSigner": "Firmante desconocido",
       "savedTitle": "Copia firmada guardada",
       "snapshotExplanation": "Esta copia firmada es una instantánea fija. Las ediciones posteriores del memorando no la modifican.",
       "historyDescription": "Cada PDF firmado es una copia separada; el memorando sigue siendo editable. Las ediciones posteriores no modifican una copia firmada existente.",
