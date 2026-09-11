@@ -50,6 +50,8 @@ const CrdOrgCommunityTab = () => {
         loadingCurrent={state.loadingCurrent}
         loadingAvailable={state.loadingAvailable}
         updating={state.updating}
+        addDisabledReason={state.addDisabledReason}
+        removeDisabledReason={state.removeDisabledReason}
       />
       <ConfirmationDialog
         open={Boolean(state.pendingRemove)}

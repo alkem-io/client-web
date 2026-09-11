@@ -1,0 +1,62 @@
+mutation prepareMemoSigning($memoID: UUID!) {
+  prepareMemoSigning(signingData: { memoID: $memoID }) {
+    attemptId
+    previewUrl
+  }
+}
+
+mutation continueMemoSigning($attemptID: UUID!) {
+  continueMemoSigning(signingData: { attemptID: $attemptID }) {
+    authorizeUrl
+  }
+}
+
+query memoSigningAttempt($attemptID: UUID!) {
+  signingAttempt(ID: $attemptID) {
+    id
+    status
+    document {
+      id
+      url
+      displayName
+    }
+    actor {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+    updatedDate
+  }
+}
+
+query memoSignedCopies($memoID: UUID!) {
+  lookup {
+    memo(ID: $memoID) {
+      id
+      signatures {
+        id
+        document {
+          id
+          url
+          displayName
+        }
+        actor {
+          id
+          profile {
+            id
+            displayName
+            url
+          }
+        }
+        updatedDate
+      }
+    }
+  }
+}
+
+query verifyMemoSignature($attemptID: UUID!) {
+  verifyMemoSignature(verificationData: { attemptID: $attemptID })
+}

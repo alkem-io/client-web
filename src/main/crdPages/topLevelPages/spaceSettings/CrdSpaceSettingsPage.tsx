@@ -30,6 +30,7 @@ import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
+import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionReasonText';
 import { InviteMembersDialogConnector } from '@/main/crdPages/space/dialogs/InviteMembersDialogConnector';
 import { VirtualContributorInviteConnector } from '@/main/crdPages/space/dialogs/VirtualContributorInviteConnector';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
@@ -41,6 +42,7 @@ import { useClassificationPicker } from './about/useClassificationPicker';
 import { useAccountTabData } from './account/useAccountTabData';
 import { MembershipDetailDialogConnector, type ViewingMembership } from './community/MembershipDetailDialogConnector';
 import { useAddOrganizationDialog, useAddVirtualContributorDialog } from './community/useAddCommunityMemberDialog';
+import useCommunityActionPermissions from './community/useCommunityActionPermissions';
 import { useCommunityCsvExport } from './community/useCommunityCsvExport';
 import { useCommunityGuidelinesData } from './community/useCommunityGuidelinesData';
 import { useCommunityTabData } from './community/useCommunityTabData';
@@ -104,6 +106,15 @@ export default function CrdSpaceSettingsPage() {
   const about = useAboutTabData(activeTab === 'about' ? spaceId : '', spaceUrl, level);
   const layout = useLayoutTabData(activeTab === 'layout' ? spaceId : '', level);
   const community = useCommunityTabData(activeTab === 'community' ? roleSetId : '');
+
+  // Gate each role-assignment control on the privilege its own backend resolver enforces.
+  const reasonText = usePermissionReasonText();
+  const actionPermissions = useCommunityActionPermissions(community.myPrivileges, community.loading);
+  const userRoleChangeReason = reasonText(actionPermissions.userRoleChange);
+  const organizationLeadAssignReason = reasonText(actionPermissions.organizationLeadAssign);
+  const organizationRemoveReason = reasonText(actionPermissions.organizationRemove);
+  const addOrganizationReason = reasonText(actionPermissions.addOrganization);
+  const addVcReason = reasonText(actionPermissions.addVirtualContributor);
   const subspacesTab = useSubspacesTabData(activeTab === 'subspaces' ? spaceId : '');
   const createSubspace = useCreateSubspace(spaceId, {
     accountId,
@@ -313,6 +324,13 @@ export default function CrdSpaceSettingsPage() {
   // flow originated from inside the dialog itself (FR-Story-3 AC #3 + AC #2).
   const [activeMemberSubject, setActiveMemberSubject] = useState<MemberSettingsSubject | null>(null);
   const [removeOriginatedFromDialog, setRemoveOriginatedFromDialog] = useState(false);
+
+  // The organization lead toggle drives two different mutations with two different gates:
+  // assignRoleToOrganization needs the organization pair, while un-leading goes through
+  // removeRoleFromOrganization, which is gated on GRANT alone.
+  const organizationLeadDisabledReason = activeMemberSubject?.isLead
+    ? organizationRemoveReason
+    : organizationLeadAssignReason;
 
   // Pending-membership "view" dialog — holds the application/invitation being inspected (read-only).
   const [viewingMembership, setViewingMembership] = useState<ViewingMembership | null>(null);
@@ -563,6 +581,10 @@ export default function CrdSpaceSettingsPage() {
                   ) : undefined
                 }
                 permissions={community.permissions}
+                addDisabledReasons={{
+                  organizations: addOrganizationReason,
+                  virtualContributors: addVcReason,
+                }}
                 onUserRemove={community.onUserRemove}
                 onMemberChangeRole={member => setActiveMemberSubject(buildUserSubject(member))}
                 onOrgAdd={addOrgDialog.openDialog}
@@ -891,6 +913,11 @@ export default function CrdSpaceSettingsPage() {
                   }
                 }
           }
+          leadDisabledReason={
+            activeMemberSubject.type === 'user' ? userRoleChangeReason : organizationLeadDisabledReason
+          }
+          adminDisabledReason={userRoleChangeReason}
+          removeDisabledReason={activeMemberSubject.type === 'user' ? userRoleChangeReason : organizationRemoveReason}
         />
       )}
 
@@ -910,6 +937,7 @@ export default function CrdSpaceSettingsPage() {
         emptyLabel={t('community.organizations.addDialog.empty')}
         onSearchChange={addOrgDialog.onSearchChange}
         onAdd={id => void addOrgDialog.onAdd(id)}
+        addDisabledReason={addOrganizationReason}
       />
 
       <AddCommunityMemberDialog
@@ -928,6 +956,7 @@ export default function CrdSpaceSettingsPage() {
         emptyLabel={t('community.virtualContributors.addDialog.empty')}
         onSearchChange={addVCDialog.onSearchChange}
         onAdd={id => void addVCDialog.onAdd(id)}
+        addDisabledReason={addVcReason}
       />
 
       {roleSetId && (

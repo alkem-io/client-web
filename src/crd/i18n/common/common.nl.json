@@ -1400,6 +1400,12 @@
       }
     }
   },
+  "permissions": {
+    "checking": "Rechten controleren…",
+    "denied": "Je hebt geen rechten om de leden van deze rol te wijzigen.",
+    "errorDenied": "Je hebt geen rechten om deze wijziging te maken. De wijziging is niet opgeslagen.",
+    "unverifiable": "Rechten konden niet worden geverifieerd."
+  },
   "pinned": "Vastgezet",
   "private": "Privé",
   "public": "Openbaar",

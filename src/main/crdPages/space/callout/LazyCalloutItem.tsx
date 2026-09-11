@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
@@ -14,6 +14,7 @@ import { canRenameCollaboraDocument } from '@/domain/collaboration/calloutContri
 import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
+import { MemoSignedCopiesDialogConnector } from '@/main/crdPages/memo/MemoSignedCopiesDialogConnector';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
 import { getCalloutContributionType, mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
 import { useCrdCalloutMoveActions } from '../hooks/useCrdCalloutMoveActions';
@@ -73,15 +74,22 @@ export function LazyCalloutItem({
   return (
     <div ref={ref} id={calloutId}>
       {inView && !loading && callout ? (
-        <LazyCalloutItemContent
-          callout={callout}
-          calloutsSetId={calloutsSetId}
-          orderedCalloutIds={orderedCalloutIds}
-          canReorder={canReorder}
-          forceDescriptionCollapsed={forceDescriptionCollapsed}
-          onClick={onClick}
-          onExpandClick={onExpandClick}
-        />
+        /* Own Suspense boundary: the card subtree pulls in lazily-loaded i18n namespaces
+           (crd-reactions, crd-taskBoard) and chunks. Without a boundary here the first
+           card to mount suspends up to the tab-level boundary, which swaps the ENTIRE
+           feed for a spinner for a frame — the biggest single layout jump on the page
+           (issue #10043). The fallback is the same skeleton, so nothing moves. */
+        <Suspense fallback={<PostCardSkeleton />}>
+          <LazyCalloutItemContent
+            callout={callout}
+            calloutsSetId={calloutsSetId}
+            orderedCalloutIds={orderedCalloutIds}
+            canReorder={canReorder}
+            forceDescriptionCollapsed={forceDescriptionCollapsed}
+            onClick={onClick}
+            onExpandClick={onExpandClick}
+          />
+        </Suspense>
       ) : (
         <PostCardSkeleton />
       )}
@@ -125,6 +133,7 @@ function LazyCalloutItemContent({
   // Framing-direct-open state: clicking "Open Memo" / "Open Whiteboard" in the
   // feed launches the matching editor without going through the callout dialog.
   const [framingMemoOpen, setFramingMemoOpen] = useState(false);
+  const [signedCopiesMemoId, setSignedCopiesMemoId] = useState<string>();
   const [framingWhiteboardOpen, setFramingWhiteboardOpen] = useState(false);
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -295,6 +304,7 @@ function LazyCalloutItemContent({
       callout={callout}
       onShowAll={() => openDialog()}
       onContributionClick={(contributionId, memoId) => openDialog(contributionId, memoId)}
+      onOpenMemoSignedCopies={setSignedCopiesMemoId}
       isTaskBoard={isBoard}
     />
   ) : undefined;
@@ -363,6 +373,11 @@ function LazyCalloutItemContent({
                 onClick?.();
               }}
               onOpenFraming={handleOpenFraming}
+              onOpenMemoSignedCopies={
+                framingMemoId && (postData.memoSignedCopiesCount ?? 0) > 0
+                  ? () => setSignedCopiesMemoId(framingMemoId)
+                  : undefined
+              }
               onAddMediaGalleryImages={handleAddMediaGalleryImages}
               settingsSlot={
                 <CalloutSettingsConnector
@@ -395,6 +410,11 @@ function LazyCalloutItemContent({
             onClick?.();
           }}
           onOpenFraming={handleOpenFraming}
+          onOpenMemoSignedCopies={
+            framingMemoId && (postData.memoSignedCopiesCount ?? 0) > 0
+              ? () => setSignedCopiesMemoId(framingMemoId)
+              : undefined
+          }
           onAddMediaGalleryImages={handleAddMediaGalleryImages}
           onCommentsClick={() => openDialog()}
           settingsSlot={
@@ -453,6 +473,14 @@ function LazyCalloutItemContent({
       )}
       {framingMemoOpen && framingMemoId && (
         <CrdMemoDialog open={true} memoId={framingMemoId} isContribution={false} onClose={handleFramingMemoClose} />
+      )}
+
+      {signedCopiesMemoId && (
+        <MemoSignedCopiesDialogConnector
+          open={true}
+          memoId={signedCopiesMemoId}
+          onOpenChange={open => !open && setSignedCopiesMemoId(undefined)}
+        />
       )}
 
       {framingWhiteboardOpen && framingWhiteboard && (

@@ -3098,6 +3098,7 @@ export enum CredentialType {
   PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceFeatureMemoMultiUser = 'SPACE_FEATURE_MEMO_MULTI_USER',
+  SpaceFeatureMemoSigning = 'SPACE_FEATURE_MEMO_SIGNING',
   SpaceFeatureOfficeDocuments = 'SPACE_FEATURE_OFFICE_DOCUMENTS',
   SpaceFeatureSaveAsTemplate = 'SPACE_FEATURE_SAVE_AS_TEMPLATE',
   SpaceFeatureVirtualContributors = 'SPACE_FEATURE_VIRTUAL_CONTRIBUTORS',
@@ -4221,6 +4222,7 @@ export enum LicenseEntitlementType {
   AccountSpacePremium = 'ACCOUNT_SPACE_PREMIUM',
   AccountVirtualContributor = 'ACCOUNT_VIRTUAL_CONTRIBUTOR',
   SpaceFlagMemoMultiUser = 'SPACE_FLAG_MEMO_MULTI_USER',
+  SpaceFlagMemoSigning = 'SPACE_FLAG_MEMO_SIGNING',
   SpaceFlagOfficeDocuments = 'SPACE_FLAG_OFFICE_DOCUMENTS',
   SpaceFlagSaveAsTemplate = 'SPACE_FLAG_SAVE_AS_TEMPLATE',
   SpaceFlagVirtualContributorAccess = 'SPACE_FLAG_VIRTUAL_CONTRIBUTOR_ACCESS',
@@ -4306,6 +4308,7 @@ export type Licensing = {
 export enum LicensingCredentialBasedCredentialType {
   AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
   SpaceFeatureMemoMultiUser = 'SPACE_FEATURE_MEMO_MULTI_USER',
+  SpaceFeatureMemoSigning = 'SPACE_FEATURE_MEMO_SIGNING',
   SpaceFeatureOfficeDocuments = 'SPACE_FEATURE_OFFICE_DOCUMENTS',
   SpaceFeatureSaveAsTemplate = 'SPACE_FEATURE_SAVE_AS_TEMPLATE',
   SpaceFeatureVirtualContributors = 'SPACE_FEATURE_VIRTUAL_CONTRIBUTORS',
@@ -5001,8 +5004,58 @@ export type Memo = {
   nameID: Scalars['NameID']['output'];
   /** The Profile for this Memo. */
   profile: Profile;
+  /** Signed copies of this Memo visible to readers of the Memo. */
+  signatures: Array<MemoSignature>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
+};
+
+export type MemoSignature = {
+  __typename?: 'MemoSignature';
+  /** The Alkemio user who initiated this signed copy. */
+  actor?: Maybe<User>;
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** The immutable PDF produced for this signed copy. */
+  document?: Maybe<Document>;
+  /** The ID of the entity */
+  id: Scalars['UUID']['output'];
+  /** The terminal outcome of this Memo signing attempt. */
+  status: SigningAttemptStatus;
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
+};
+
+export enum MemoSignatureVerificationStatus {
+  Invalid = 'INVALID',
+  Unavailable = 'UNAVAILABLE',
+  Verified = 'VERIFIED',
+}
+
+export type MemoSignatureVerifyInput = {
+  /** The signed Memo attempt to verify. */
+  attemptID: Scalars['UUID']['input'];
+};
+
+export type MemoSigningContinueInput = {
+  /** The prepared signing attempt to start. */
+  attemptID: Scalars['UUID']['input'];
+};
+
+export type MemoSigningContinueResult = {
+  __typename?: 'MemoSigningContinueResult';
+  authorizeUrl: Scalars['String']['output'];
+};
+
+export type MemoSigningPrepareInput = {
+  /** The Memo to prepare for signing. */
+  memoID: Scalars['UUID']['input'];
+};
+
+export type MemoSigningPrepareResult = {
+  __typename?: 'MemoSigningPrepareResult';
+  attemptId: Scalars['UUID']['output'];
+  previewUrl: Scalars['String']['output'];
 };
 
 /** A message that was sent in a chat room */
@@ -5289,6 +5342,8 @@ export type Mutation = {
   castPollVote: Poll;
   /** Deletes collections nameID-... */
   cleanupCollections: MigrateEmbeddings;
+  /** Starts signing the prepared Memo copy. */
+  continueMemoSigning: MemoSigningContinueResult;
   /** Move an L1 Space up in the hierarchy, to be a L0 Space. */
   convertSpaceL1ToSpaceL0: Space;
   /** Move an L1 Space down in the hierarchy within the same L0 Space, to be a L2 Space.       Restrictions: the Space L1 must remain within the same L0 Space.       Roles: all user, organization and virtual contributor role assignments are removed, with       the exception of Admin role assignments for Users. */
@@ -5455,6 +5510,8 @@ export type Mutation = {
   moveSpaceL2ToSpaceL1: Space;
   /** Moves a task to another column on its Tasks board. Authorized as MOVE_TASK on the parent Callout, so a board member can move any task. */
   moveTaskToColumn: CalloutContribution;
+  /** Prepares an exact PDF preview for signing the specified Memo. */
+  prepareMemoSigning: MemoSigningPrepareResult;
   /** Refresh the Bodies of Knowledge on All VCs */
   refreshAllBodiesOfKnowledge: Scalars['Boolean']['output'];
   /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
@@ -5825,6 +5882,10 @@ export type MutationCastPollVoteArgs = {
   voteData: CastPollVoteInput;
 };
 
+export type MutationContinueMemoSigningArgs = {
+  signingData: MemoSigningContinueInput;
+};
+
 export type MutationConvertSpaceL1ToSpaceL0Args = {
   convertData: ConvertSpaceL1ToSpaceL0Input;
 };
@@ -6151,6 +6212,10 @@ export type MutationMoveSpaceL2ToSpaceL1Args = {
 
 export type MutationMoveTaskToColumnArgs = {
   moveData: MoveTaskToColumnInput;
+};
+
+export type MutationPrepareMemoSigningArgs = {
+  signingData: MemoSigningPrepareInput;
 };
 
 export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
@@ -7682,6 +7747,8 @@ export type Query = {
   rolesVirtualContributor: ActorRoles;
   /** Search the platform for terms supplied */
   search: ISearchResults;
+  /** A Memo signing attempt belonging to the current actor. */
+  signingAttempt: MemoSignature;
   /** The Spaces on this platform; If accessed through an Innovation Hub will return ONLY the Spaces defined in it. */
   spaces: Array<Space>;
   /** The Spaces on this platform */
@@ -7702,6 +7769,8 @@ export type Query = {
   usersWithAuthorizationCredential: Array<User>;
   /** Returns the VAPID public key needed by clients to subscribe to push notifications. Returns null if push notifications are not enabled on this server. */
   vapidPublicKey?: Maybe<Scalars['String']['output']>;
+  /** Checks the stored integrity of a signed Memo copy. */
+  verifyMemoSignature: MemoSignatureVerificationStatus;
   /** A particular VirtualContributor */
   virtualContributor: VirtualContributor;
   /** The VirtualContributors on this platform; only accessible to platform admins */
@@ -7784,6 +7853,10 @@ export type QuerySearchArgs = {
   searchData: SearchInput;
 };
 
+export type QuerySigningAttemptArgs = {
+  ID: Scalars['UUID']['input'];
+};
+
 export type QuerySpacesArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
   filter?: InputMaybe<SpaceFilterInput>;
@@ -7831,6 +7904,10 @@ export type QueryUsersPaginatedArgs = {
 
 export type QueryUsersWithAuthorizationCredentialArgs = {
   credentialsCriteriaData: UsersWithAuthorizationCredentialInput;
+};
+
+export type QueryVerifyMemoSignatureArgs = {
+  verificationData: MemoSignatureVerifyInput;
 };
 
 export type QueryVirtualContributorArgs = {
@@ -8764,6 +8841,14 @@ export enum SidebarWidget {
   SubspaceLinks = 'SUBSPACE_LINKS',
   Updates = 'UPDATES',
   VirtualContributors = 'VIRTUAL_CONTRIBUTORS',
+}
+
+export enum SigningAttemptStatus {
+  Cancelled = 'CANCELLED',
+  Expired = 'EXPIRED',
+  Failed = 'FAILED',
+  Pending = 'PENDING',
+  Signed = 'SIGNED',
 }
 
 export type Space = ActorFull & {
@@ -15277,6 +15362,11 @@ export type UpdateCalloutContentMutation = {
             createdDate: Date;
             markdown?: string | undefined;
             contentUpdatePolicy: ContentUpdatePolicy;
+            signatures: Array<{
+              __typename?: 'MemoSignature';
+              id: string;
+              document?: { __typename?: 'Document'; id: string } | undefined;
+            }>;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -15769,6 +15859,11 @@ export type UpdateCalloutVisibilityMutation = {
             createdDate: Date;
             markdown?: string | undefined;
             contentUpdatePolicy: ContentUpdatePolicy;
+            signatures: Array<{
+              __typename?: 'MemoSignature';
+              id: string;
+              document?: { __typename?: 'Document'; id: string } | undefined;
+            }>;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -16971,6 +17066,11 @@ export type CalloutContributionsQuery = {
                   id: string;
                   markdown?: string | undefined;
                   createdDate: Date;
+                  signatures: Array<{
+                    __typename?: 'MemoSignature';
+                    id: string;
+                    document?: { __typename?: 'Document'; id: string } | undefined;
+                  }>;
                   profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
                   createdBy?:
                     | {
@@ -17178,6 +17278,11 @@ export type CalloutContributionsMemoCardFragment = {
   id: string;
   markdown?: string | undefined;
   createdDate: Date;
+  signatures: Array<{
+    __typename?: 'MemoSignature';
+    id: string;
+    document?: { __typename?: 'Document'; id: string } | undefined;
+  }>;
   profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   createdBy?:
     | {
@@ -17651,6 +17756,11 @@ export type CreateCalloutMutation = {
             createdDate: Date;
             markdown?: string | undefined;
             contentUpdatePolicy: ContentUpdatePolicy;
+            signatures: Array<{
+              __typename?: 'MemoSignature';
+              id: string;
+              document?: { __typename?: 'Document'; id: string } | undefined;
+            }>;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -18269,6 +18379,11 @@ export type CalloutDetailsQuery = {
                   createdDate: Date;
                   markdown?: string | undefined;
                   contentUpdatePolicy: ContentUpdatePolicy;
+                  signatures: Array<{
+                    __typename?: 'MemoSignature';
+                    id: string;
+                    document?: { __typename?: 'Document'; id: string } | undefined;
+                  }>;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -18839,6 +18954,11 @@ export type CalloutDetailsFragment = {
           createdDate: Date;
           markdown?: string | undefined;
           contentUpdatePolicy: ContentUpdatePolicy;
+          signatures: Array<{
+            __typename?: 'MemoSignature';
+            id: string;
+            document?: { __typename?: 'Document'; id: string } | undefined;
+          }>;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -19246,6 +19366,19 @@ export type MemoDetailsQuery = {
           createdDate: Date;
           markdown?: string | undefined;
           contentUpdatePolicy: ContentUpdatePolicy;
+          signatures: Array<{
+            __typename?: 'MemoSignature';
+            id: string;
+            updatedDate: Date;
+            actor?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+                }
+              | undefined;
+            document?: { __typename?: 'Document'; id: string; url: string; displayName: string } | undefined;
+          }>;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -37770,6 +37903,82 @@ export type InnovationLibraryTemplatesPaginatedQuery = {
     };
   };
 };
+
+export type PrepareMemoSigningMutationVariables = Exact<{
+  memoID: Scalars['UUID']['input'];
+}>;
+
+export type PrepareMemoSigningMutation = {
+  __typename?: 'Mutation';
+  prepareMemoSigning: { __typename?: 'MemoSigningPrepareResult'; attemptId: string; previewUrl: string };
+};
+
+export type ContinueMemoSigningMutationVariables = Exact<{
+  attemptID: Scalars['UUID']['input'];
+}>;
+
+export type ContinueMemoSigningMutation = {
+  __typename?: 'Mutation';
+  continueMemoSigning: { __typename?: 'MemoSigningContinueResult'; authorizeUrl: string };
+};
+
+export type MemoSigningAttemptQueryVariables = Exact<{
+  attemptID: Scalars['UUID']['input'];
+}>;
+
+export type MemoSigningAttemptQuery = {
+  __typename?: 'Query';
+  signingAttempt: {
+    __typename?: 'MemoSignature';
+    id: string;
+    status: SigningAttemptStatus;
+    updatedDate: Date;
+    document?: { __typename?: 'Document'; id: string; url: string; displayName: string } | undefined;
+    actor?:
+      | {
+          __typename?: 'User';
+          id: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type MemoSignedCopiesQueryVariables = Exact<{
+  memoID: Scalars['UUID']['input'];
+}>;
+
+export type MemoSignedCopiesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    memo?:
+      | {
+          __typename?: 'Memo';
+          id: string;
+          signatures: Array<{
+            __typename?: 'MemoSignature';
+            id: string;
+            updatedDate: Date;
+            document?: { __typename?: 'Document'; id: string; url: string; displayName: string } | undefined;
+            actor?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+                }
+              | undefined;
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type VerifyMemoSignatureQueryVariables = Exact<{
+  attemptID: Scalars['UUID']['input'];
+}>;
+
+export type VerifyMemoSignatureQuery = { __typename?: 'Query'; verifyMemoSignature: MemoSignatureVerificationStatus };
 
 export type CalloutsListForFeedQueryVariables = Exact<{
   calloutsSetId: Scalars['UUID']['input'];

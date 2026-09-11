@@ -732,6 +732,50 @@
       "title": "Delete memo",
       "body": "Are you sure you want to delete this memo? This action cannot be undone.",
       "confirm": "Delete"
+    },
+    "signing": {
+      "title": "Sign memo",
+      "description": "Review the exact PDF copy before starting the signing session. Each signed PDF is a separate copy; the memo remains editable.",
+      "previewTitle": "Memo signing preview",
+      "openPreview": "Open PDF preview",
+      "continue": "Continue to Cleverbase",
+      "continuing": "Continuing to Cleverbase",
+      "signedCopies": "Signed copies",
+      "signedCopiesCount": "Signed copies ({{count}})",
+      "savedTitle": "Signed copy saved",
+      "snapshotExplanation": "This signed copy is a fixed snapshot. Later memo edits do not change it.",
+      "historyDescription": "Each signed PDF is a separate copy; the memo remains editable. Later edits do not change an existing signed copy.",
+      "historyLoading": "Loading signed copies",
+      "historyError": "Signed copies could not be loaded",
+      "historyEmpty": "No signed copies have been saved yet",
+      "recorded": "Recorded",
+      "openPdf": "Open PDF",
+      "download": "Download",
+      "downloadFailed": "The signed PDF could not be downloaded",
+      "backToMemo": "Back to memo",
+      "standardTools": "Downloaded PDFs can be independently verified with standard PDF tools.",
+      "verify": "Verify signature",
+      "verification": {
+        "checking": "Verifying signature",
+        "verified": "The PDF is unmodified",
+        "invalid": "Signature invalid",
+        "unavailable": "Could not verify"
+      },
+      "stage": {
+        "idle": "Ready to prepare a copy for signing",
+        "preparing": "Preparing the exact memo copy for signing",
+        "preview": "Review the exact PDF before continuing",
+        "continuing": "Opening the signing session",
+        "checking": "Checking the signing result",
+        "pending": "Signing is still in progress. Reload this page to check again.",
+        "signed": "The PDF was signed successfully",
+        "cancelled": "Signing was cancelled",
+        "failed": "The PDF could not be signed",
+        "expired": "This signing attempt expired",
+        "prepare-error": "The exact memo copy could not be prepared",
+        "continue-error": "The signing session could not be started. Prepare a fresh copy and try again.",
+        "return-error": "The signing result could not be loaded"
+      }
     }
   },
   "collabora": {
@@ -1008,7 +1052,12 @@
     "mobileTabBar": "Tab navigation",
     "moreActionsDrawer": "Additional actions",
     "close": "Close",
-    "loadingPost": "Loading $t(common.callout)"
+    "loadingPost": "Loading $t(common.callout)",
+    "loadingContributions": "Loading contributions",
+    "loadingSubspaces": "Loading subspaces",
+    "loadingLeads": "Loading Space Leads",
+    "loadingTags": "Loading tags",
+    "loadingMembership": "Loading membership status"
   },
   "activity": {
     "dialogTitle": "Recent Activity"

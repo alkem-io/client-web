@@ -732,6 +732,50 @@
       "title": "Eliminar memo",
       "body": "¿Estás seguro de que quieres eliminar este memo? Esta acción no se puede deshacer.",
       "confirm": "Eliminar"
+    },
+    "signing": {
+      "title": "Firmar memo",
+      "description": "Revisa la copia PDF exacta antes de iniciar la sesión de firma. Cada PDF firmado es una copia independiente; el memorando sigue siendo editable.",
+      "previewTitle": "Vista previa de firma del memo",
+      "openPreview": "Abrir vista previa del PDF",
+      "continue": "Continuar a Cleverbase",
+      "continuing": "Continuando a Cleverbase",
+      "signedCopies": "Copias firmadas",
+      "signedCopiesCount": "Copias firmadas ({{count}})",
+      "savedTitle": "Copia firmada guardada",
+      "snapshotExplanation": "Esta copia firmada es una instantánea fija. Las ediciones posteriores del memorando no la modifican.",
+      "historyDescription": "Cada PDF firmado es una copia separada; el memorando sigue siendo editable. Las ediciones posteriores no modifican una copia firmada existente.",
+      "historyLoading": "Cargando copias firmadas",
+      "historyError": "No se pudieron cargar las copias firmadas",
+      "historyEmpty": "Aún no se han guardado copias firmadas",
+      "recorded": "Registrado",
+      "openPdf": "Abrir PDF",
+      "download": "Descargar",
+      "downloadFailed": "No se pudo descargar el PDF firmado",
+      "backToMemo": "Volver al memorando",
+      "standardTools": "Los PDF descargados se pueden verificar de forma independiente con herramientas PDF estándar.",
+      "verify": "Verificar firma",
+      "verification": {
+        "checking": "Verificando firma",
+        "verified": "El PDF no se ha modificado",
+        "invalid": "Firma no válida",
+        "unavailable": "No se pudo verificar"
+      },
+      "stage": {
+        "idle": "Listo para preparar una copia para firmar",
+        "preparing": "Preparando la copia exacta del memo para firmar",
+        "preview": "Revisa el PDF exacto antes de continuar",
+        "continuing": "Abriendo la sesión de firma",
+        "checking": "Comprobando el resultado de la firma",
+        "pending": "La firma sigue en curso. Recarga esta página para volver a comprobarlo.",
+        "signed": "El PDF se firmó correctamente",
+        "cancelled": "La firma se canceló",
+        "failed": "No se pudo firmar el PDF",
+        "expired": "Este intento de firma ha caducado",
+        "prepare-error": "No se pudo preparar la copia exacta del memo",
+        "continue-error": "No se pudo iniciar la sesión de firma. Prepare una copia nueva e inténtelo de nuevo.",
+        "return-error": "No se pudo cargar el resultado de la firma"
+      }
     }
   },
   "callToAction": {
@@ -1008,7 +1052,12 @@
     "mobileTabBar": "Navegación por pestañas",
     "moreActionsDrawer": "Acciones adicionales",
     "close": "Cerrar",
-    "loadingPost": "Cargando publicación"
+    "loadingPost": "Cargando publicación",
+    "loadingContributions": "Cargando contribuciones",
+    "loadingSubspaces": "Cargando subespacios",
+    "loadingLeads": "Cargando líderes del Espacio",
+    "loadingTags": "Cargando etiquetas",
+    "loadingMembership": "Cargando estado de membresía"
   },
   "activity": {
     "dialogTitle": "Actividad reciente"

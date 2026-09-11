@@ -17,6 +17,7 @@ import {
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { GatedAction } from '@/crd/components/common/GatedAction';
 import type { PendingMembership } from '@/crd/components/space/settings/PendingMembershipsTable';
 import { PendingMembershipsTable } from '@/crd/components/space/settings/PendingMembershipsTable';
 import { cn } from '@/crd/lib/utils';
@@ -84,6 +85,17 @@ export type SpaceSettingsCommunityViewProps = {
     canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
   };
+  /**
+   * Tooltip copy for the add launch buttons when the action is unavailable.
+   *
+   * These buttons are rendered gated rather than hidden: hiding conceals the action's
+   * existence and produces a hidden→shown flip once privileges resolve, which spec FR-002
+   * and FR-008 rule out. Undefined means permitted.
+   */
+  addDisabledReasons?: {
+    organizations?: string;
+    virtualContributors?: string;
+  };
   /** Show the destructive "Remove from Space" dropdown item on member rows. Omit to hide. */
   onUserRemove?: (id: string) => void;
   /** Open the Member settings dialog for this user. Replaces the legacy inline lead-toggle dropdown item. */
@@ -117,6 +129,7 @@ export function SpaceSettingsCommunityView({
   applicationFormSlot,
   communityGuidelinesSlot,
   permissions,
+  addDisabledReasons,
   onUserRemove,
   onMemberChangeRole,
   onOrgAdd,
@@ -475,14 +488,14 @@ export function SpaceSettingsCommunityView({
             </TableBody>
           </Table>
         </div>
-        {permissions.canAddOrganizations && (
-          <div className="mt-4">
+        <div className="mt-4">
+          <GatedAction disabledReason={addDisabledReasons?.organizations}>
             <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onOrgAdd}>
               <Plus aria-hidden="true" className="size-4" />
               {t('community.organizations.add')}
             </Button>
-          </div>
-        )}
+          </GatedAction>
+        </div>
       </SectionCard>
 
       {level === 'L0' && (
@@ -541,20 +554,22 @@ export function SpaceSettingsCommunityView({
               </TableBody>
             </Table>
           </div>
-          {permissions.canAddVirtualContributors && (
-            <div className="mt-4 flex flex-wrap items-center gap-2">
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <GatedAction disabledReason={addDisabledReasons?.virtualContributors}>
               <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAdd}>
                 <Plus aria-hidden="true" className="size-4" />
                 {t('community.virtualContributors.add')}
               </Button>
-              {onVCAddExternal && (
+            </GatedAction>
+            {onVCAddExternal && (
+              <GatedAction disabledReason={addDisabledReasons?.virtualContributors}>
                 <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAddExternal}>
                   <Plus aria-hidden="true" className="size-4" />
                   {t('community.virtualContributors.addExternal')}
                 </Button>
-              )}
-            </div>
-          )}
+              </GatedAction>
+            )}
+          </div>
         </SectionCard>
       )}
     </div>
