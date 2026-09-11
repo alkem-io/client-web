@@ -282,7 +282,7 @@ describe('MemoSigningDialog', () => {
     expect(screen.queryByTitle('Memo signing preview')).not.toBeInTheDocument();
   });
 
-  it('lists independent signed copies with Alkemio attribution and a deleted-user fallback', () => {
+  it('lists independent signed copies with Alkemio attribution and signer-name fallbacks', () => {
     renderDialog({
       mode: 'history',
       historyState: 'ready',
@@ -301,16 +301,24 @@ describe('MemoSigningDialog', () => {
           updatedDate: '2026-09-05T11:30:00.000Z',
           recordedAt: '09/05/2026, 11:30:00',
         },
+        {
+          id: 'attempt-3',
+          document: { id: 'document-3', url: '/api/private/file-3', displayName: 'Signed decision 3.pdf' },
+          actor: null,
+          updatedDate: '2026-09-05T12:30:00.000Z',
+          recordedAt: '09/05/2026, 12:30:00',
+        },
       ],
     });
 
-    expect(screen.getAllByRole('listitem')).toHaveLength(2);
+    expect(screen.getAllByRole('listitem')).toHaveLength(3);
     expect(screen.getByRole('link', { name: 'Alice Example' })).toHaveAttribute('href', '/user/alice');
     expect(screen.getByText('Former member')).toBeInTheDocument();
-    expect(screen.getAllByText(/Recorded:/)).toHaveLength(2);
+    expect(screen.getByText('Unknown signer')).toBeInTheDocument();
+    expect(screen.getAllByText(/Recorded:/)).toHaveLength(3);
     expect(screen.getByText('09/05/2026, 10:30:00')).toBeInTheDocument();
-    expect(screen.getAllByRole('link', { name: 'Open PDF' })).toHaveLength(2);
-    expect(screen.getAllByRole('button', { name: 'Download' })).toHaveLength(2);
+    expect(screen.getAllByRole('link', { name: 'Open PDF' })).toHaveLength(3);
+    expect(screen.getAllByRole('button', { name: 'Download' })).toHaveLength(3);
     expect(
       screen.getByText('Downloaded PDFs can be independently verified with standard PDF tools.')
     ).toBeInTheDocument();
