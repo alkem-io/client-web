@@ -246,7 +246,7 @@ function ForumDiscussionFormBody({
           onValueChange={value => {
             void setFieldValue('category', value as ForumDiscussionCategory);
           }}
-          disabled={editing || isSubmitting}
+          disabled={isSubmitting}
         >
           <SelectTrigger
             id={categoryId}

@@ -742,6 +742,7 @@
       "continuing": "Weiterleitung zu Cleverbase",
       "signedCopies": "Signierte Kopien",
       "signedCopiesCount": "Signierte Kopien ({{count}})",
+      "unknownSigner": "Unbekannte signierende Person",
       "savedTitle": "Signierte Kopie gespeichert",
       "snapshotExplanation": "Diese signierte Kopie ist eine feste Momentaufnahme. Spätere Änderungen am Memo verändern sie nicht.",
       "historyDescription": "Jede signierte PDF ist eine separate Kopie; das Memo bleibt bearbeitbar. Spätere Änderungen verändern eine vorhandene signierte Kopie nicht.",

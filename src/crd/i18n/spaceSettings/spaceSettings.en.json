@@ -336,7 +336,7 @@
       "actions": "Actions",
       "empty": "No organisations.",
       "remove": "Remove organisation",
-      "description": "Overview of all member and lead organisations. To add an organisation, contact the Alkemio team at support@alkem.io.",
+      "description": "Overview of all member and lead organisations. Invite an organisation to join, or add one directly.",
       "add": "Add Organisation",
       "dropdown": {
         "viewProfile": "View Profile",
@@ -348,6 +348,18 @@
         "description": "These organizations will be visible as members in this Space and on their organization profile.",
         "search": "Search organisations…",
         "empty": "No organisations match your search."
+      },
+      "invite": "Invite Organisation",
+      "search": "Search organisations…",
+      "pendingInvitations": {
+        "title": "Pending Invitations",
+        "empty": "No pending organisation invitations.",
+        "role": "Role",
+        "date": "Date",
+        "revoke": "Revoke",
+        "revokeAriaLabel": "Revoke invitation to {{name}}",
+        "roleMember": "Member",
+        "roleMemberLead": "Member + Lead"
       }
     },
     "virtualContributors": {
