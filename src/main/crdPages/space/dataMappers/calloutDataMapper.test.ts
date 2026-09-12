@@ -18,12 +18,31 @@ const baseCallout = (overrides: Record<string, unknown> = {}) =>
   }) as unknown as CalloutDetailsModelExtended;
 
 describe('mapCalloutDetailsToPostCard — CollaboraDocument framing', () => {
-  it('leaves framingDocumentPreviewUrl undefined — no backend field exists yet (spec A-001/A-002)', () => {
+  it('carries framingDocumentPreviewUrl through when the backend resolves one', () => {
     const callout = baseCallout({
       framing: {
         type: CalloutFramingType.CollaboraDocument,
         profile: { displayName: 'Q3 roadmap', references: [] },
-        collaboraDocument: { id: 'doc-1', documentType: CollaboraDocumentType.Wordprocessing },
+        collaboraDocument: {
+          id: 'doc-1',
+          documentType: CollaboraDocumentType.Wordprocessing,
+          previewUrl: '/api/private/wopi/files/file-1/preview',
+        },
+      },
+    });
+
+    const result = mapCalloutDetailsToPostCard(callout, t);
+
+    expect(result.framingDocumentPreviewUrl).toBe('/api/private/wopi/files/file-1/preview');
+    expect(result.framingDocumentType).toBe('text');
+  });
+
+  it('leaves framingDocumentPreviewUrl undefined when the backend resolves null (no backing file)', () => {
+    const callout = baseCallout({
+      framing: {
+        type: CalloutFramingType.CollaboraDocument,
+        profile: { displayName: 'Q3 roadmap', references: [] },
+        collaboraDocument: { id: 'doc-1', documentType: CollaboraDocumentType.Wordprocessing, previewUrl: null },
       },
     });
 
