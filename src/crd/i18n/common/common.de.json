@@ -917,9 +917,43 @@
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
           "subject": "Ihre $t(common.organization) {{organizationName}} ist {{spaceName}} beigetreten",
           "description": "Es ist keine weitere Aktion erforderlich."
+        },
+        "USER_ORGANIZATION_ASSOCIATE_INVITATION": {
+          "subject": "{{triggeredByName}} hat dich eingeladen, dich {{organizationName}} anzuschließen",
+          "description": "Als {{associateRole}}."
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED": {
+          "subject": "{{triggeredByName}} hat die Einladung zu {{organizationName}} angenommen",
+          "description": "{{triggeredByName}} ist jetzt Assoziierte(r) von {{organizationName}}, dessen Admin du bist.{{withheld}}"
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} hat die Einladung zu {{organizationName}} abgelehnt",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_APPLICATION": {
+          "subject": "{{triggeredByName}} hat sich beworben, um sich {{organizationName}} anzuschließen",
+          "description": "Bewerbung in den Organisationseinstellungen prüfen"
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_APPROVED": {
+          "subject": "Deine Bewerbung um Assoziierung mit {{organizationName}} wurde angenommen",
+          "description": ""
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_DECLINED": {
+          "subject": "Deine Bewerbung um Assoziierung mit {{organizationName}} wurde abgelehnt",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
+          "subject": "„{{triggeredByName}}“ ist {{organizationName}} als Assoziierte(r) beigetreten",
+          "description": "{{triggeredByName}} ist {{organizationName}} beigetreten, dessen Admin du bist."
         }
       },
-      "spacesToJoin": "Bei Annahme wird beigetreten zu: {{spaces}}"
+      "spacesToJoin": "Bei Annahme wird beigetreten zu: {{spaces}}",
+      "associateRole": {
+        "associate": "Assoziiert",
+        "associateAdmin": "Assoziiert + Admin",
+        "associateOwner": "Assoziiert + Eigentümer"
+      },
+      "associateRoleWithheld": " Die Rolle {{role}} konnte nicht vergeben werden – das Limit wurde erreicht."
     },
     "profile": {
       "fields": {

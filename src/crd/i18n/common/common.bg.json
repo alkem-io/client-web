@@ -917,9 +917,43 @@
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
           "subject": "Вашата $t(common.organization) {{organizationName}} се присъедини към {{spaceName}}",
           "description": "Не е необходимо допълнително действие."
+        },
+        "USER_ORGANIZATION_ASSOCIATE_INVITATION": {
+          "subject": "{{triggeredByName}} ви покани да се асоциирате с {{organizationName}}",
+          "description": "Като {{associateRole}}."
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED": {
+          "subject": "{{triggeredByName}} прие поканата за асоцииране с {{organizationName}}",
+          "description": "{{triggeredByName}} вече е асоцииран с {{organizationName}}, на която сте администратор.{{withheld}}"
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} отказа поканата за асоцииране с {{organizationName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_APPLICATION": {
+          "subject": "{{triggeredByName}} кандидатства за асоцииране с {{organizationName}}",
+          "description": "Прегледайте кандидатурата в настройките на организацията"
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_APPROVED": {
+          "subject": "Вашата кандидатура за асоцииране с {{organizationName}} бе одобрена",
+          "description": ""
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_DECLINED": {
+          "subject": "Вашата кандидатура за асоцииране с {{organizationName}} бе отказана",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
+          "subject": "„{{triggeredByName}}“ се присъедини към {{organizationName}} като асоцииран",
+          "description": "{{triggeredByName}} се присъедини към {{organizationName}}, на която сте администратор."
         }
       },
-      "spacesToJoin": "При приемане се присъединява към: {{spaces}}"
+      "spacesToJoin": "При приемане се присъединява към: {{spaces}}",
+      "associateRole": {
+        "associate": "Асоцииран",
+        "associateAdmin": "Асоцииран + Админ",
+        "associateOwner": "Асоцииран + Собственик"
+      },
+      "associateRoleWithheld": " Ролята {{role}} не можа да бъде предоставена — лимитът е достигнат."
     },
     "profile": {
       "fields": {

@@ -917,9 +917,43 @@
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
           "subject": "Su $t(common.organization) {{organizationName}} se ha unido a {{spaceName}}",
           "description": "No se requiere ninguna acción adicional."
+        },
+        "USER_ORGANIZATION_ASSOCIATE_INVITATION": {
+          "subject": "{{triggeredByName}} te invitó a asociarte con {{organizationName}}",
+          "description": "Como {{associateRole}}."
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED": {
+          "subject": "{{triggeredByName}} aceptó la invitación a asociarse con {{organizationName}}",
+          "description": "{{triggeredByName}} ahora es asociado de {{organizationName}}, de la que eres $t(common.admin).{{withheld}}"
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} rechazó la invitación a asociarse con {{organizationName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_APPLICATION": {
+          "subject": "{{triggeredByName}} solicitó asociarse con {{organizationName}}",
+          "description": "Revisa la solicitud en la configuración de la organización"
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_APPROVED": {
+          "subject": "Tu solicitud para asociarte con {{organizationName}} fue aprobada",
+          "description": ""
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_DECLINED": {
+          "subject": "Tu solicitud para asociarte con {{organizationName}} fue rechazada",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
+          "subject": "\"{{triggeredByName}}\" se unió a {{organizationName}} como asociado",
+          "description": "{{triggeredByName}} se ha unido a {{organizationName}}, de la que eres $t(common.admin)."
         }
       },
-      "spacesToJoin": "Al aceptar se une a: {{spaces}}"
+      "spacesToJoin": "Al aceptar se une a: {{spaces}}",
+      "associateRole": {
+        "associate": "Asociado",
+        "associateAdmin": "Asociado + Admin",
+        "associateOwner": "Asociado + Propietario"
+      },
+      "associateRoleWithheld": " No se pudo conceder el rol {{role}} — se alcanzó el límite."
     },
     "profile": {
       "fields": {

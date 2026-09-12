@@ -57,12 +57,24 @@
         "loadingLabel": "Chargement des contributeurs virtuels…"
       },
       "resultsSummary_one": "{{count}} invitation traitée pour {{spaceName}}.",
-      "resultsSummary_other": "{{count}} invitations traitées pour {{spaceName}}."
+      "resultsSummary_other": "{{count}} invitations traitées pour {{spaceName}}.",
+      "associates": {
+        "title": "Inviter des associés à « {{organizationName}} »",
+        "searchHint": "Rechercher un utilisateur inscrit à inviter en tant qu’associé",
+        "searchPlaceholder": "Nom d’utilisateur…",
+        "searchAriaLabel": "Rechercher des utilisateurs par nom",
+        "noResultsLabel": "Aucun utilisateur correspondant",
+        "loadingLabel": "Chargement des utilisateurs…",
+        "defaultWelcomeMessage": "Bonjour, nous aimerions vous inviter à vous associer à {{organizationName}}. Cliquez ci-dessous pour accepter ou refuser l’invitation.",
+        "rolePopoverHelper": "Associé est toujours accordé à l'acceptation de l'invitation."
+      }
     },
     "roles": {
       "Member": "Member",
       "Lead": "Lead",
-      "Admin": "Admin"
+      "Admin": "Admin",
+      "Associate": "Associé",
+      "Owner": "Propriétaire"
     },
     "errors": {
       "invalidEmail": "Ce n'est pas une adresse e-mail valide.",
@@ -78,7 +90,9 @@
       "error": "Échec de l'invitation.",
       "notAcceptingInvitations": "Cette organisation n'accepte pas les invitations aux espaces",
       "leadLimitReached": "La limite du rôle Lead pour les organisations a été atteinte",
-      "sentNoAdministrators": "Invitation envoyée — cette organisation n'a actuellement aucun administrateur à notifier, le support de la plateforme a donc été prévenu à la place"
+      "sentNoAdministrators": "Invitation envoyée — cette organisation n'a actuellement aucun administrateur à notifier, le support de la plateforme a donc été prévenu à la place",
+      "extraRoleLimitReached": "La limite pour le rôle proposé a été atteinte",
+      "alreadyAssociate": "Déjà associé"
     },
     "toast": {
       "someFailed": "{{count}} invitations n'ont pas pu être envoyées — consultez les résultats pour plus de détails."

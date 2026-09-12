@@ -27,6 +27,7 @@ import { glyphForSlug } from '@/crd/components/reactions/reactionEmoji';
 import type { CrdNotificationItemData } from '@/crd/layouts/types';
 import { getInitials } from '@/crd/lib/getInitials';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import { offeredRoleLabelKey } from '@/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper';
 import type { InAppNotificationModel } from '@/main/inAppNotifications/model/InAppNotificationModel';
 import type { InAppNotificationPayloadModel } from '@/main/inAppNotifications/model/InAppNotificationPayloadModel';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
@@ -120,6 +121,19 @@ function buildTranslationValues(
             spaces: payload.invitation!.spacesToJoinOnAccept!.map(s => s.displayName).join(', '),
           })}`
         : '',
+    // associateRole: used by the organization-associate events (062) — the offered/held extra
+    // role(s), pre-translated as "Associate" / "Associate + Admin" / "Associate + Owner".
+    associateRole: payload.invitation
+      ? t(`components.inAppNotifications.associateRole.${offeredRoleLabelKey(payload.invitation.extraRoles)}`)
+      : undefined,
+    // withheld: used by ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED — an extra clause naming
+    // the extra role that could not be granted when the accept-time cap check consumed it meanwhile.
+    withheld:
+      payload.extraRolesWithheld && payload.extraRolesWithheld.length > 0
+        ? t('components.inAppNotifications.associateRoleWithheld', {
+            role: t(`components.inAppNotifications.associateRole.${offeredRoleLabelKey(payload.extraRolesWithheld)}`),
+          })
+        : '',
   };
 }
 
@@ -159,6 +173,20 @@ const URL_OVERRIDES_BY_TYPE: Partial<
     buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
   [NotificationEvent.SpaceAdminUserCommunityInvitationDeclined]: payload =>
     buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
+  // Organization-associate events (062) — user-side call-to-actions lead to the organization's
+  // own profile (its hero action reflects the invitation/decision); organisation-side
+  // call-to-actions lead to the Associates tab, where the pending section and the list live.
+  [NotificationEvent.UserOrganizationAssociateInvitation]: payload => payload.organization?.profile?.url,
+  [NotificationEvent.UserOrganizationAssociateApplicationApproved]: payload => payload.organization?.profile?.url,
+  [NotificationEvent.UserOrganizationAssociateApplicationDeclined]: payload => payload.organization?.profile?.url,
+  [NotificationEvent.OrganizationAdminAssociateInvitationAccepted]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'community'),
+  [NotificationEvent.OrganizationAdminAssociateInvitationDeclined]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'community'),
+  [NotificationEvent.OrganizationAdminAssociateApplication]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'community'),
+  [NotificationEvent.OrganizationAdminAssociateJoined]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'community'),
 };
 
 /**

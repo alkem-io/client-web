@@ -238,6 +238,9 @@
       "email": "E-mail",
       "date": "Datum",
       "type": "Type",
+      "offeredRole": {
+        "column": "Aangeboden rol"
+      },
       "actions": "Acties",
       "approve": "Goedkeuren",
       "reject": "Afwijzen",
@@ -251,6 +254,7 @@
       "viewDialog": {
         "created": "Aangemaakt op {{date}}",
         "updated": "Bijgewerkt op {{date}}",
+        "offeredRole": "Aangeboden rol: {{role}}",
         "welcomeMessage": "Welkomstbericht",
         "noWelcomeMessage": "Geen welkomstbericht opgegeven.",
         "noAnswers": "Geen antwoorden opgegeven.",

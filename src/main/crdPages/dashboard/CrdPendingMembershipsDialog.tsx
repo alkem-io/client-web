@@ -1,15 +1,19 @@
 import { defer } from 'lodash-es';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { ReferencesAndTagsStrip } from '@/crd/components/callout/ReferencesAndTagsStrip';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { InvitationDetailDialog } from '@/crd/components/dashboard/InvitationDetailDialog';
+import { OrgPendingApplicationCard } from '@/crd/components/dashboard/OrgPendingApplicationCard';
+import { OrgPendingInvitationCard } from '@/crd/components/dashboard/OrgPendingInvitationCard';
 import { PendingApplicationCard } from '@/crd/components/dashboard/PendingApplicationCard';
 import { PendingInvitationCard, PendingInvitationCardSkeleton } from '@/crd/components/dashboard/PendingInvitationCard';
 import { PendingMembershipsListDialog } from '@/crd/components/dashboard/PendingMembershipsListDialog';
 import { PendingMembershipsSection } from '@/crd/components/dashboard/PendingMembershipsSection';
+import { OrgInvitationDetailDialog } from '@/crd/components/organization/OrgInvitationDetailDialog';
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import useInvitationActions from '@/domain/community/invitations/useInvitationActions';
 import type { InvitationWithMeta } from '@/domain/community/pendingMembership/PendingMemberships';
 import {
@@ -24,10 +28,14 @@ import {
 import type { PendingApplicationItem } from '@/domain/community/user/models/PendingApplicationItem';
 import type { PendingInvitationItem } from '@/domain/community/user/models/PendingInvitationItem';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
+import { offeredRoleLabelKey } from '@/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper';
+import { useOrgInvitationResponse } from '@/main/crdPages/topLevelPages/organizationPages/publicProfile/useOrgInvitationResponse';
 import {
   mapHydratedApplicationToCardData,
   mapHydratedInvitationToCardData,
   mapHydratedInvitationToDetailData,
+  mapOrgApplicationToCardData,
+  mapOrgInvitationToCardData,
 } from './pendingMembershipsDataMappers';
 
 // ─── Pure helpers (exported for unit testing — T014) ───────────────────────
@@ -241,6 +249,11 @@ const InvitationDetailContainer = ({
 const CrdPendingMembershipsDialog = () => {
   const { t } = useTranslation('crd-dashboard');
   const navigate = useNavigate();
+  // `TFunction<'crd-dashboard'>`'s literal-key overload set (grown further by this
+  // feature's own new keys) pushes TypeScript's generic instantiation past its depth
+  // limit when passed into a plainly-typed helper parameter; widen once here rather
+  // than fight the compiler at every call site below.
+  const orgCardTranslator = t as unknown as (key: string, options?: Record<string, unknown>) => string;
   const { openDialog, setOpenDialog } = usePendingMembershipsDialog();
 
   const closeDialog = () => setOpenDialog(undefined);
@@ -248,7 +261,7 @@ const CrdPendingMembershipsDialog = () => {
   const isDialogOpen = Object.values(PendingMembershipsDialogType).includes(openDialog?.type ?? '');
   const isPendingMembershipsList = openDialog?.type === PendingMembershipsDialogType.PendingMembershipsList;
 
-  const { invitations, applications, loading, refetch } = usePendingMemberships({
+  const { invitations, applications, orgInvitations, orgApplications, loading, refetch } = usePendingMemberships({
     skip: !isDialogOpen,
   });
 
@@ -257,6 +270,15 @@ const CrdPendingMembershipsDialog = () => {
       refetch();
     }
   }, [isPendingMembershipsList, refetch]);
+
+  // Organization invitations (062) — their own dialog, not the Space InvitationDetailContainer
+  // below (which hydrates a Space and has no organization-shaped equivalent).
+  const [viewingOrgInvitationId, setViewingOrgInvitationId] = useState<string | null>(null);
+  const viewingOrgInvitation = orgInvitations?.find(inv => inv.id === viewingOrgInvitationId);
+  const orgInvitationResponse = useOrgInvitationResponse(() => {
+    setViewingOrgInvitationId(null);
+    refetch();
+  });
 
   const handleInvitationCardClick = ({ id, space, invitation }: InvitationWithMeta) => {
     setOpenDialog({
@@ -282,7 +304,9 @@ const CrdPendingMembershipsDialog = () => {
     !userInvitations?.length &&
     !organizationInvitations?.length &&
     !virtualContributorInvitations?.length &&
-    !applications?.length;
+    !applications?.length &&
+    !orgInvitations?.length &&
+    !orgApplications?.length;
 
   const onInvitationAccept = () => {
     if (openDialog?.spaceUri) {
@@ -336,6 +360,33 @@ const CrdPendingMembershipsDialog = () => {
             ))}
           </PendingMembershipsSection>
         ) : null}
+
+        {orgInvitations?.length ? (
+          <PendingMembershipsSection title={t('pendingMemberships.orgAssociateInvitationsSection')}>
+            {orgInvitations.map(inv => (
+              <OrgPendingInvitationCard
+                key={inv.id}
+                invitation={mapOrgInvitationToCardData(inv, orgCardTranslator)}
+                onClick={() => setViewingOrgInvitationId(inv.id)}
+              />
+            ))}
+          </PendingMembershipsSection>
+        ) : null}
+
+        {orgApplications?.length ? (
+          <PendingMembershipsSection title={t('pendingMemberships.orgAssociateApplicationsSection')}>
+            {orgApplications.map(app => (
+              <OrgPendingApplicationCard
+                key={app.id}
+                application={mapOrgApplicationToCardData(app)}
+                onClick={() => {
+                  const href = app.organization.profile?.url;
+                  if (href) handleSpaceCardClick(href);
+                }}
+              />
+            ))}
+          </PendingMembershipsSection>
+        ) : null}
       </PendingMembershipsListDialog>
 
       <InvitationDetailContainer
@@ -346,6 +397,37 @@ const CrdPendingMembershipsDialog = () => {
         onClose={closeDialog}
         onBack={() => setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList })}
       />
+
+      {viewingOrgInvitation && (
+        <OrgInvitationDetailDialog
+          open={viewingOrgInvitationId !== null}
+          onOpenChange={open => {
+            if (!open) {
+              setViewingOrgInvitationId(null);
+              orgInvitationResponse.clearWithheldNotice();
+            }
+          }}
+          organizationName={viewingOrgInvitation.organization.profile?.displayName ?? ''}
+          organizationAvatarUrl={viewingOrgInvitation.organization.profile?.avatar?.uri}
+          organizationColor={pickColorFromId(viewingOrgInvitation.organization.id)}
+          offeredRoleLabel={t(
+            `pendingMemberships.orgAssociateCard.role.${offeredRoleLabelKey(viewingOrgInvitation.invitation.extraRoles)}`
+          )}
+          invitedByLabel={
+            viewingOrgInvitation.invitation.createdBy?.profile?.displayName
+              ? t('pendingMemberships.orgAssociateCard.invitedBy', {
+                  name: viewingOrgInvitation.invitation.createdBy.profile.displayName,
+                })
+              : undefined
+          }
+          message={viewingOrgInvitation.invitation.welcomeMessage ?? undefined}
+          onAccept={() => orgInvitationResponse.onAccept(viewingOrgInvitation.invitation.id)}
+          onDecline={() => orgInvitationResponse.onDecline(viewingOrgInvitation.invitation.id)}
+          accepting={orgInvitationResponse.accepting}
+          declining={orgInvitationResponse.declining}
+          withheldNotice={orgInvitationResponse.withheldNotice}
+        />
+      )}
     </>
   );
 };

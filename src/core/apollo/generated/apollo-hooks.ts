@@ -148,6 +148,58 @@ export const AdminPlatformInvitationCommunityFragmentDoc = gql`
   email
 }
     `;
+export const OrgPendingInvitationDataFragmentDoc = gql`
+    fragment OrgPendingInvitationData on OrganizationInvitationResult {
+  id
+  invitation {
+    id
+    extraRoles
+    welcomeMessage
+    createdDate
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+    nextEvents
+  }
+  organization {
+    id
+    profile {
+      id
+      displayName
+      url
+      avatar: visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
+  }
+}
+    ${VisualModelFragmentDoc}`;
+export const OrgPendingApplicationDataFragmentDoc = gql`
+    fragment OrgPendingApplicationData on OrganizationApplicationResult {
+  id
+  application {
+    id
+    state
+    createdDate
+    nextEvents
+  }
+  organization {
+    id
+    profile {
+      id
+      displayName
+      url
+      avatar: visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
+  }
+}
+    ${VisualModelFragmentDoc}`;
 export const AvailableUserForRoleSetFragmentDoc = gql`
     fragment AvailableUserForRoleSet on User {
   id
@@ -1460,6 +1512,29 @@ export const OrganizationInfoFragmentDoc = gql`
   }
   roleSet {
     id
+    myMembershipStatus
+    applicationForm {
+      id
+      description
+      questions {
+        question
+        required
+        maxLength
+        sortOrder
+        explanation
+      }
+    }
+  }
+  settings {
+    membership {
+      allowUsersMatchingDomainToJoin
+      allowApplications
+    }
+  }
+  myAssociateEligibility {
+    canApply
+    canJoinDirectly
+    reason
   }
   verification {
     id
@@ -1761,6 +1836,21 @@ export const UserSettingsFragmentFragmentDoc = gql`
         inApp
         push
       }
+      adminAssociateInvitationResponse {
+        email
+        inApp
+        push
+      }
+      adminAssociateApplicationReceived {
+        email
+        inApp
+        push
+      }
+      adminAssociateJoined {
+        email
+        inApp
+        push
+      }
     }
     space {
       admin {
@@ -1859,6 +1949,16 @@ export const UserSettingsFragmentFragmentDoc = gql`
           push
         }
         spaceCommunityJoined {
+          email
+          inApp
+          push
+        }
+        organizationAssociateInvitationReceived {
+          email
+          inApp
+          push
+        }
+        organizationAssociateApplicationDecided {
           email
           inApp
           push
@@ -3953,6 +4053,53 @@ export const InAppNotificationPayloadSpaceCollaborationPollFragmentDoc = gql`
   }
 }
     ${SpaceNotificationFragmentDoc}`;
+export const InAppNotificationPayloadOrganizationAssociateInvitationFragmentDoc = gql`
+    fragment InAppNotificationPayloadOrganizationAssociateInvitation on InAppNotificationPayloadOrganizationAssociateInvitation {
+  nullableOrganization: organization {
+    id
+    profile {
+      id
+      displayName
+      url
+      visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
+  }
+  invitation {
+    id
+    extraRoles
+    invitedToParent
+  }
+}
+    ${VisualModelFragmentDoc}`;
+export const InAppNotificationPayloadOrganizationAssociateActorFragmentDoc = gql`
+    fragment InAppNotificationPayloadOrganizationAssociateActor on InAppNotificationPayloadOrganizationAssociateActor {
+  nullableOrganization: organization {
+    id
+    profile {
+      id
+      displayName
+      url
+      visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
+  }
+  nullableActor: actor {
+    id
+    profile {
+      id
+      displayName
+      url
+    }
+  }
+  nullableApplication: application {
+    id
+  }
+  extraRolesWithheld
+}
+    ${VisualModelFragmentDoc}`;
 export const InAppNotificationAllTypesFragmentDoc = gql`
     fragment InAppNotificationAllTypes on InAppNotification {
   id
@@ -4042,6 +4189,12 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
     ... on InAppNotificationPayloadSpaceCollaborationPoll {
       ...InAppNotificationPayloadSpaceCollaborationPoll
     }
+    ... on InAppNotificationPayloadOrganizationAssociateInvitation {
+      ...InAppNotificationPayloadOrganizationAssociateInvitation
+    }
+    ... on InAppNotificationPayloadOrganizationAssociateActor {
+      ...InAppNotificationPayloadOrganizationAssociateActor
+    }
   }
 }
     ${VisualModelFragmentDoc}
@@ -4067,7 +4220,9 @@ ${InAppNotificationPayloadVirtualContributorFragmentDoc}
 ${InAppNotificationPayloadSpaceCommunityCalendarEventFragmentDoc}
 ${InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragmentDoc}
 ${InAppNotificationPayloadSpaceCollaborationCalloutReactionFragmentDoc}
-${InAppNotificationPayloadSpaceCollaborationPollFragmentDoc}`;
+${InAppNotificationPayloadSpaceCollaborationPollFragmentDoc}
+${InAppNotificationPayloadOrganizationAssociateInvitationFragmentDoc}
+${InAppNotificationPayloadOrganizationAssociateActorFragmentDoc}`;
 export const UrlResolverResultFragmentDoc = gql`
     fragment UrlResolverResult on UrlResolverQueryResults {
   type
@@ -5304,6 +5459,7 @@ export const InvitationStateEventDocument = gql`
     id
     nextEvents
     state
+    extraRolesWithheld
   }
 }
     `;
@@ -5646,12 +5802,20 @@ export const UserPendingMembershipsDocument = gql`
     communityInvitations(states: ["invited"]) {
       ...InvitationData
     }
+    organizationInvitations(states: ["invited"]) {
+      ...OrgPendingInvitationData
+    }
+    organizationApplications(states: ["new"]) {
+      ...OrgPendingApplicationData
+    }
   }
 }
     ${UserDetailsFragmentDoc}
 ${SpaceAboutMinimalUrlFragmentDoc}
 ${VisualModelFragmentDoc}
-${InvitationDataFragmentDoc}`;
+${InvitationDataFragmentDoc}
+${OrgPendingInvitationDataFragmentDoc}
+${OrgPendingApplicationDataFragmentDoc}`;
 
 /**
  * __useUserPendingMembershipsQuery__
@@ -14605,6 +14769,84 @@ export type RolesOrganizationQueryResult = Apollo.QueryResult<
 export function refetchRolesOrganizationQuery(variables: SchemaTypes.RolesOrganizationQueryVariables) {
   return { query: RolesOrganizationDocument, variables: variables };
 }
+export const OrgAssociatesTabDocument = gql`
+    query OrgAssociatesTab($roleSetId: UUID!) {
+  lookup {
+    roleSet(ID: $roleSetId) {
+      id
+      authorization {
+        myPrivileges
+      }
+      usersInRoles(roles: [ASSOCIATE, ADMIN, OWNER]) {
+        role
+        users {
+          ...RoleSetMemberUser
+        }
+      }
+    }
+  }
+}
+    ${RoleSetMemberUserFragmentDoc}`;
+
+/**
+ * __useOrgAssociatesTabQuery__
+ *
+ * To run a query within a React component, call `useOrgAssociatesTabQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrgAssociatesTabQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrgAssociatesTabQuery({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *   },
+ * });
+ */
+export function useOrgAssociatesTabQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.OrgAssociatesTabQuery, SchemaTypes.OrgAssociatesTabQueryVariables> &
+    ({ variables: SchemaTypes.OrgAssociatesTabQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OrgAssociatesTabQuery, SchemaTypes.OrgAssociatesTabQueryVariables>(
+    OrgAssociatesTabDocument,
+    options
+  );
+}
+export function useOrgAssociatesTabLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrgAssociatesTabQuery,
+    SchemaTypes.OrgAssociatesTabQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.OrgAssociatesTabQuery, SchemaTypes.OrgAssociatesTabQueryVariables>(
+    OrgAssociatesTabDocument,
+    options
+  );
+}
+export function useOrgAssociatesTabSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.OrgAssociatesTabQuery, SchemaTypes.OrgAssociatesTabQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.OrgAssociatesTabQuery, SchemaTypes.OrgAssociatesTabQueryVariables>(
+    OrgAssociatesTabDocument,
+    options
+  );
+}
+export type OrgAssociatesTabQueryHookResult = ReturnType<typeof useOrgAssociatesTabQuery>;
+export type OrgAssociatesTabLazyQueryHookResult = ReturnType<typeof useOrgAssociatesTabLazyQuery>;
+export type OrgAssociatesTabSuspenseQueryHookResult = ReturnType<typeof useOrgAssociatesTabSuspenseQuery>;
+export type OrgAssociatesTabQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrgAssociatesTabQuery,
+  SchemaTypes.OrgAssociatesTabQueryVariables
+>;
+export function refetchOrgAssociatesTabQuery(variables: SchemaTypes.OrgAssociatesTabQueryVariables) {
+  return { query: OrgAssociatesTabDocument, variables: variables };
+}
 export const OrgInvitationsDocument = gql`
     query OrgInvitations($organizationId: UUID!) {
   lookup {
@@ -14847,6 +15089,7 @@ export const OrganizationSettingsDocument = gql`
         membership {
           allowUsersMatchingDomainToJoin
           allowSpaceInvitations
+          allowApplications
         }
         privacy {
           contributionRolesPubliclyVisible
@@ -14977,6 +15220,7 @@ export const UpdateOrganizationSettingsDocument = gql`
       membership {
         allowUsersMatchingDomainToJoin
         allowSpaceInvitations
+        allowApplications
       }
     }
   }
@@ -15027,6 +15271,7 @@ export const PendingInvitationsCountDocument = gql`
     query PendingInvitationsCount {
   me {
     communityInvitationsCount(states: ["invited"])
+    organizationInvitationsCount(states: ["invited"])
   }
 }
     `;
@@ -16125,6 +16370,16 @@ export const UpdateUserSettingsDocument = gql`
               inApp
               push
             }
+            organizationAssociateInvitationReceived {
+              email
+              inApp
+              push
+            }
+            organizationAssociateApplicationDecided {
+              email
+              inApp
+              push
+            }
           }
         }
         space {
@@ -16267,6 +16522,21 @@ export const UpdateUserSettingsDocument = gql`
             push
           }
           adminSpaceCommunityInvitation {
+            email
+            inApp
+            push
+          }
+          adminAssociateInvitationResponse {
+            email
+            inApp
+            push
+          }
+          adminAssociateApplicationReceived {
+            email
+            inApp
+            push
+          }
+          adminAssociateJoined {
             email
             inApp
             push
@@ -25320,6 +25590,7 @@ export const CommunityInvitationDocument = gql`
       createdDate
       updatedDate
       welcomeMessage
+      extraRoles
       actor {
         type
         id

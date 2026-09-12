@@ -107,7 +107,45 @@
       "resourcesHosted": "Aucune ressource hébergée pour le moment.",
       "leading": "N'anime aucun espace pour le moment."
     },
-    "vcType": "Contributeur virtuel"
+    "vcType": "Contributeur virtuel",
+    "associate": {
+      "join": "Rejoindre en tant qu’associé",
+      "joinCaption": "Votre domaine de messagerie correspond à cette organisation vérifiée, vous pouvez donc rejoindre sans postuler.",
+      "apply": "Postuler pour s’associer",
+      "applyLogin": "Postuler pour s’associer",
+      "respond": "Répondre à l’invitation",
+      "pending": "Candidature en attente",
+      "closed": "Cette organisation n’accepte pas de candidatures pour le moment.",
+      "joinNotEligible": "Vous n'êtes pas éligible pour rejoindre pour le moment — essayez plutôt de postuler.",
+      "joinError": "Impossible de rejoindre — réessayez"
+    },
+    "applyDialog": {
+      "title": "Postuler pour s’associer à {{organizationName}}",
+      "messageLabel": "Message (facultatif)",
+      "messageOptional": "Expliquez à l’organisation pourquoi vous souhaitez vous associer — facultatif.",
+      "submit": "Envoyer la candidature",
+      "submitted": "Candidature envoyée",
+      "error": "Échec de l'envoi — réessayez"
+    },
+    "invitationDialog": {
+      "title": "Invitation à vous associer à {{organizationName}}",
+      "role": "Rôle proposé",
+      "invitedBy": "Invité(e) par {{name}}",
+      "accept": "Accepter",
+      "decline": "Refuser",
+      "withheld": "Le rôle {{role}} n’a pas pu être attribué. Vous êtes associé.",
+      "roleName": {
+        "admin": "Admin",
+        "owner": "Propriétaire"
+      },
+      "acceptError": "Échec de l'acceptation — réessayez",
+      "declineError": "Échec du refus — réessayez",
+      "offeredRole": {
+        "associate": "Associé",
+        "associateAdmin": "Associé + Admin",
+        "associateOwner": "Associé + Propriétaire"
+      }
+    }
   },
   "vcProfile": {
     "typeBadge": "Contributeur virtuel",

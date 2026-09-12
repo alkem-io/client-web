@@ -197,6 +197,18 @@
       "accept": "Accepter",
       "role": "Rôle",
       "spacesToJoin": "L'acceptation entraîne l'adhésion à : {{spaces}}"
+    },
+    "orgAssociateInvitationsSection": "Invitations d’organisation",
+    "orgAssociateApplicationsSection": "Candidatures d’organisation",
+    "orgAssociateCard": {
+      "badge": "Organisation",
+      "role": {
+        "associate": "Associé",
+        "associateAdmin": "Associé + Admin",
+        "associateOwner": "Associé + Propriétaire"
+      },
+      "pendingLabel": "En attente",
+      "invitedBy": "Invité(e) par {{name}}"
     }
   },
   "nonActivity": {

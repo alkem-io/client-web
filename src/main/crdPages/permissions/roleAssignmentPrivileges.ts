@@ -80,6 +80,18 @@ export const ROLE_SET_INVITE_PRIVILEGES = [AuthorizationPrivilege.RolesetEntryRo
 export const PLATFORM_ROLE_ASSIGN_PRIVILEGES = [AuthorizationPrivilege.GrantGlobalAdmins];
 
 /**
+ * Managing an organization's own Associates tab — `assignRoleToUser` /
+ * `removeRoleFromUser` on the organization's role set (Associate, Admin, Owner).
+ *
+ * Server-side, organization role assignment resolves through the ORGANIZATION branch
+ * of `authorizeAssignActorToRole`, which requires GRANT on the role set — held by
+ * ORGANIZATION_ADMIN and ORGANIZATION_OWNER (062, `role.set.resolver.mutations.ts`).
+ * Deliberately NOT `ROLE_SET_ASSIGN_PRIVILEGES` (`RolesetEntryRoleAssign`), which gates
+ * the Space-side entry-role assignment token only.
+ */
+export const ORG_ROLE_SET_MANAGE_PRIVILEGES = [AuthorizationPrivilege.Grant];
+
+/**
  * Adding a virtual contributor from the account, an alternative to
  * `ROLE_SET_ASSIGN_PRIVILEGES` rather than an addition to it.
  *

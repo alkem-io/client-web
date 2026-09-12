@@ -1,4 +1,5 @@
 import { BadgeCheck, Mail, MapPin, Settings } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MessagePopover } from '@/crd/components/common/MessagePopover';
 import { fallbackInitials } from '@/crd/lib/fallbackInitials';
@@ -19,6 +20,8 @@ export type OrganizationPageHeroProps = {
   settingsHref: string | null;
   /** When `null` (anonymous viewer) the Message button is hidden. */
   onSendMessage: ((messageText: string) => Promise<void>) | null;
+  /** The viewer's Join / Apply / Respond / Pending / closed action, rendered beside Message. `undefined` renders nothing. */
+  associateAction?: ReactNode;
 };
 
 export function OrganizationPageHero({
@@ -30,6 +33,7 @@ export function OrganizationPageHero({
   verified,
   settingsHref,
   onSendMessage,
+  associateAction,
 }: OrganizationPageHeroProps) {
   const { t } = useTranslation('crd-profilePages');
 
@@ -72,6 +76,7 @@ export function OrganizationPageHero({
             </div>
 
             <div className="flex gap-3 shrink-0">
+              {associateAction}
               {onSendMessage ? (
                 <MessagePopover
                   triggerLabel={t('orgProfile.hero.messageButton')}

@@ -86,6 +86,12 @@ fragment InAppNotificationAllTypes on InAppNotification {
     ... on InAppNotificationPayloadSpaceCollaborationPoll {
       ...InAppNotificationPayloadSpaceCollaborationPoll
     }
+    ... on InAppNotificationPayloadOrganizationAssociateInvitation {
+      ...InAppNotificationPayloadOrganizationAssociateInvitation
+    }
+    ... on InAppNotificationPayloadOrganizationAssociateActor {
+      ...InAppNotificationPayloadOrganizationAssociateActor
+    }
   }
 }
 
@@ -456,4 +462,49 @@ fragment InAppNotificationPayloadSpaceCommunityCalendarEventComment on InAppNoti
       url
     }
   }
+}
+
+fragment InAppNotificationPayloadOrganizationAssociateInvitation on InAppNotificationPayloadOrganizationAssociateInvitation {
+  nullableOrganization: organization {
+    id
+    profile {
+      id
+      displayName
+      url
+      visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
+  }
+  invitation {
+    id
+    extraRoles
+    invitedToParent
+  }
+}
+
+fragment InAppNotificationPayloadOrganizationAssociateActor on InAppNotificationPayloadOrganizationAssociateActor {
+  nullableOrganization: organization {
+    id
+    profile {
+      id
+      displayName
+      url
+      visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
+  }
+  nullableActor: actor {
+    id
+    profile {
+      id
+      displayName
+      url
+    }
+  }
+  nullableApplication: application {
+    id
+  }
+  extraRolesWithheld
 }

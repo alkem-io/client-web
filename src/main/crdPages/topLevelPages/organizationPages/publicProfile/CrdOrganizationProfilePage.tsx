@@ -1,10 +1,16 @@
+import { useApolloClient } from '@apollo/client';
 import { Building2 } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { OrganizationInfoDocument } from '@/core/apollo/generated/apollo-hooks';
 import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import type { ProfileResourceTab, ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
+import { OrganizationAssociateAction } from '@/crd/components/organization/OrganizationAssociateAction';
 import { OrganizationPublicProfileView } from '@/crd/components/organization/OrganizationPublicProfileView';
+import { OrgInvitationDetailDialog } from '@/crd/components/organization/OrgInvitationDetailDialog';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMemberships';
@@ -15,19 +21,46 @@ import { MembershipCardConnector } from '@/main/crdPages/topLevelPages/common/Me
 import { buildTagsetGroups, normaliseReferences } from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
 import useResourceTabs from '@/main/crdPages/topLevelPages/common/useResourceTabs';
 import { useSendMessageToOrganizationHandler } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
-import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { buildLoginUrl, buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
-import { mapAssociates, mapOrgHostedResources } from './organizationProfileMapper';
+import { OrgApplyDialogConnector } from './OrgApplyDialogConnector';
+import { mapAssociates, mapOrgHostedResources, offeredRoleLabelKey } from './organizationProfileMapper';
 import { useCrdOrganizationProfilePageData } from './useCrdOrganizationProfilePageData';
+import { useOrganizationAssociateAction } from './useOrganizationAssociateAction';
+import { useOrgInvitationResponse } from './useOrgInvitationResponse';
 
 export const CrdOrganizationProfilePage = () => {
   const { t } = useTranslation('crd-profilePages');
+  const navigate = useNavigate();
   const { organization, provided, isAuthenticated, accountResources, loading } = useCrdOrganizationProfilePageData();
 
   usePageTitle(organization?.profile?.displayName);
 
   const { onSendMessage } = useSendMessageToOrganizationHandler({
     recipientOrganizationId: organization?.id,
+  });
+
+  const [applyDialogOpen, setApplyDialogOpen] = useState(false);
+  const [invitationDialogOpen, setInvitationDialogOpen] = useState(false);
+  const [applicationJustSubmitted, setApplicationJustSubmitted] = useState(false);
+
+  const apolloClient = useApolloClient();
+  const refreshOrganization = () => {
+    void apolloClient.refetchQueries({ include: [OrganizationInfoDocument] });
+  };
+
+  const associateAction = useOrganizationAssociateAction({
+    organizationId: organization?.id,
+    roleSetId: organization?.roleSet.id,
+    eligibilityReason: organization?.myAssociateEligibility.reason,
+    membershipStatus: organization?.roleSet.myMembershipStatus,
+    isAuthenticated,
+    onJoined: refreshOrganization,
+  });
+
+  const invitationResponse = useOrgInvitationResponse(() => {
+    setInvitationDialogOpen(false);
+    refreshOrganization();
   });
 
   const { activeTab, onSelectTab } = useResourceTabs('memberOf');
@@ -95,6 +128,10 @@ export const CrdOrganizationProfilePage = () => {
   const leadSpaces = leadItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
   const memberOf = memberItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
 
+  const displayedAction = applicationJustSubmitted ? 'pending-application' : associateAction.action;
+  const pendingInvitation = associateAction.pendingInvitation;
+  const inviterName = pendingInvitation?.invitation.createdBy?.profile?.displayName;
+
   return (
     <OrganizationPublicProfileView
       hero={{
@@ -106,6 +143,21 @@ export const CrdOrganizationProfilePage = () => {
         verified,
         settingsHref,
         onSendMessage: isAuthenticated ? onSendMessage : null,
+        associateAction: (
+          <OrganizationAssociateAction
+            action={displayedAction}
+            helperText={
+              displayedAction === 'join' && organization?.myAssociateEligibility.canJoinDirectly
+                ? t('orgProfile.associate.joinCaption')
+                : undefined
+            }
+            loading={associateAction.joining}
+            onJoin={associateAction.onJoin}
+            onApply={() => setApplyDialogOpen(true)}
+            onRespond={() => setInvitationDialogOpen(true)}
+            onLogin={() => navigate(buildLoginUrl(profile?.url))}
+          />
+        ),
       }}
       sidebar={{
         bio: profile?.description ?? null,
@@ -169,7 +221,42 @@ export const CrdOrganizationProfilePage = () => {
         hostedResources: t('common.loading.hostedResources'),
         memberships: t('common.loading.memberships'),
       }}
-    />
+    >
+      {organization && (
+        <OrgApplyDialogConnector
+          open={applyDialogOpen}
+          onOpenChange={setApplyDialogOpen}
+          organizationName={profile?.displayName ?? ''}
+          roleSetId={organization.roleSet.id}
+          onSubmitted={() => {
+            setApplicationJustSubmitted(true);
+            refreshOrganization();
+          }}
+        />
+      )}
+      {pendingInvitation && (
+        <OrgInvitationDetailDialog
+          open={invitationDialogOpen}
+          onOpenChange={open => {
+            setInvitationDialogOpen(open);
+            if (!open) invitationResponse.clearWithheldNotice();
+          }}
+          organizationName={pendingInvitation.organization.profile?.displayName ?? ''}
+          organizationAvatarUrl={pendingInvitation.organization.profile?.avatar?.uri}
+          organizationColor={pickColorFromId(pendingInvitation.organization.id)}
+          offeredRoleLabel={t(
+            `orgProfile.invitationDialog.offeredRole.${offeredRoleLabelKey(pendingInvitation.invitation.extraRoles)}`
+          )}
+          invitedByLabel={inviterName ? t('orgProfile.invitationDialog.invitedBy', { name: inviterName }) : undefined}
+          message={pendingInvitation.invitation.welcomeMessage ?? undefined}
+          onAccept={() => invitationResponse.onAccept(pendingInvitation.invitation.id)}
+          onDecline={() => invitationResponse.onDecline(pendingInvitation.invitation.id)}
+          accepting={invitationResponse.accepting}
+          declining={invitationResponse.declining}
+          withheldNotice={invitationResponse.withheldNotice}
+        />
+      )}
+    </OrganizationPublicProfileView>
   );
 };
 

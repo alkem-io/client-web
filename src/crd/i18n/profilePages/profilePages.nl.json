@@ -107,7 +107,45 @@
       "resourcesHosted": "Nog geen gehoste bronnen.",
       "leading": "Nog geen leiding over spaces."
     },
-    "vcType": "Virtual Contributor"
+    "vcType": "Virtual Contributor",
+    "associate": {
+      "join": "Word geassocieerde",
+      "joinCaption": "Je e-maildomein komt overeen met deze geverifieerde organisatie, dus je kunt toetreden zonder te solliciteren.",
+      "apply": "Solliciteer om te associëren",
+      "applyLogin": "Solliciteer om te associëren",
+      "respond": "Reageer op uitnodiging",
+      "pending": "Aanvraag in behandeling",
+      "closed": "Deze organisatie accepteert momenteel geen aanvragen.",
+      "joinNotEligible": "Je komt op dit moment niet in aanmerking om toe te treden — probeer in plaats daarvan te solliciteren.",
+      "joinError": "Toetreden mislukt — probeer opnieuw"
+    },
+    "applyDialog": {
+      "title": "Solliciteren om te associëren met {{organizationName}}",
+      "messageLabel": "Bericht (optioneel)",
+      "messageOptional": "Vertel de organisatie waarom je je wilt associëren — optioneel.",
+      "submit": "Aanvraag indienen",
+      "submitted": "Aanvraag ingediend",
+      "error": "Verzenden mislukt — probeer opnieuw"
+    },
+    "invitationDialog": {
+      "title": "Uitnodiging om te associëren met {{organizationName}}",
+      "role": "Aangeboden rol",
+      "invitedBy": "Uitgenodigd door {{name}}",
+      "accept": "Accepteren",
+      "decline": "Weigeren",
+      "withheld": "De rol {{role}} kon niet worden toegekend. Je bent geassocieerde.",
+      "roleName": {
+        "admin": "Beheerder",
+        "owner": "Eigenaar"
+      },
+      "acceptError": "Accepteren mislukt — probeer opnieuw",
+      "declineError": "Weigeren mislukt — probeer opnieuw",
+      "offeredRole": {
+        "associate": "Geassocieerde",
+        "associateAdmin": "Geassocieerde + Beheerder",
+        "associateOwner": "Geassocieerde + Eigenaar"
+      }
+    }
   },
   "vcProfile": {
     "typeBadge": "Virtual Contributor",

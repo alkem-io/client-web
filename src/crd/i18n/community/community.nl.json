@@ -57,12 +57,24 @@
         "loadingLabel": "Virtuele bijdragers laden…"
       },
       "resultsSummary_one": "{{count}} uitnodiging verwerkt voor {{spaceName}}.",
-      "resultsSummary_other": "{{count}} uitnodigingen verwerkt voor {{spaceName}}."
+      "resultsSummary_other": "{{count}} uitnodigingen verwerkt voor {{spaceName}}.",
+      "associates": {
+        "title": "Geassocieerden uitnodigen voor \"{{organizationName}}\"",
+        "searchHint": "Zoek een geregistreerde gebruiker om als geassocieerde uit te nodigen",
+        "searchPlaceholder": "Gebruikersnaam…",
+        "searchAriaLabel": "Zoek gebruikers op naam",
+        "noResultsLabel": "Geen overeenkomende gebruikers",
+        "loadingLabel": "Gebruikers laden…",
+        "defaultWelcomeMessage": "Hoi, we willen je graag uitnodigen om je te associëren met {{organizationName}}. Klik hieronder om de uitnodiging te accepteren of te weigeren.",
+        "rolePopoverHelper": "Geassocieerde wordt altijd toegekend bij het accepteren van de uitnodiging."
+      }
     },
     "roles": {
       "Member": "Member",
       "Lead": "Lead",
-      "Admin": "Admin"
+      "Admin": "Admin",
+      "Associate": "Geassocieerde",
+      "Owner": "Eigenaar"
     },
     "errors": {
       "invalidEmail": "Dit is geen geldig e-mailadres.",
@@ -78,7 +90,9 @@
       "error": "Uitnodiging mislukt.",
       "notAcceptingInvitations": "Deze organisatie accepteert geen Space-uitnodigingen",
       "leadLimitReached": "De limiet voor de Lead-rol voor organisaties is bereikt",
-      "sentNoAdministrators": "Uitnodiging verzonden — deze organisatie heeft momenteel geen beheerders om te informeren, daarom is de platformondersteuning op de hoogte gebracht"
+      "sentNoAdministrators": "Uitnodiging verzonden — deze organisatie heeft momenteel geen beheerders om te informeren, daarom is de platformondersteuning op de hoogte gebracht",
+      "extraRoleLimitReached": "De limiet voor de aangeboden rol is bereikt",
+      "alreadyAssociate": "Al geassocieerd"
     },
     "toast": {
       "someFailed": "{{count}} uitnodigingen konden niet worden verstuurd — bekijk de resultaten voor details."
