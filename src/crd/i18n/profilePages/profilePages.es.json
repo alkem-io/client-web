@@ -133,7 +133,7 @@
       "invitedBy": "Invitado por {{name}}",
       "accept": "Aceptar",
       "decline": "Rechazar",
-      "withheld": "No se pudo conceder el rol {{role}} — se alcanzó el límite. Eres asociado.",
+      "withheld": "No se pudo conceder el rol {{role}}. Eres asociado.",
       "roleName": {
         "admin": "Admin",
         "owner": "Propietario"

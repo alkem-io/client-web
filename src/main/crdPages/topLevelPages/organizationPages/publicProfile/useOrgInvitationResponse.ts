@@ -51,9 +51,17 @@ export const useOrgInvitationResponse = (onSettled: () => void): UseOrgInvitatio
       const withheld = result.data?.eventOnInvitation.extraRolesWithheld;
       const withheldRole = withheld && withheldRoleKey(withheld);
       if (action === 'accept' && withheldRole) {
-        setWithheldNotice(
-          t('orgProfile.invitationDialog.withheld', { role: t(`orgProfile.invitationDialog.roleName.${withheldRole}`) })
-        );
+        const message = t('orgProfile.invitationDialog.withheld', {
+          role: t(`orgProfile.invitationDialog.roleName.${withheldRole}`),
+        });
+        setWithheldNotice(message);
+        // Also raise it as a notification, and do it BEFORE onSettled. Both call
+        // sites implement onSettled as "close the dialog", and the refetch has
+        // already removed this invitation from the pending list the dialog is
+        // rendered from — so the inline notice unmounts in the same commit that
+        // sets it and is never seen. Accepting and being silently downgraded to
+        // a plain associate is the one outcome this must not do.
+        notify(message, 'warning');
       }
       onSettled();
     } catch {

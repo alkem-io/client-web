@@ -850,7 +850,7 @@
         "removeSuccess": "{{name}} бе премахнат(а) от организацията",
         "removeError": "{{name}} не можа да бъде премахнат(а) — опитайте отново",
         "saveError": "Промените не могат да бъдат запазени — опитайте отново",
-        "selfAdminLocked": "You can't remove your own Admin role here."
+        "selfAdminLocked": "Тук не можете да премахнете собствената си роля Admin."
       },
       "errors": {
         "limitAdmin": "Една организация може да има най-много 6 администратора",
@@ -865,7 +865,14 @@
           "associate": "Асоцииран",
           "associateAdmin": "Асоцииран + Админ",
           "associateOwner": "Асоцииран + Собственик"
-        }
+        },
+        "rejectConfirmTitle": "Отхвърляне на кандидатурата на {{name}}?",
+        "rejectConfirmBody": "{{name}} ще бъде уведомен, че кандидатурата е отхвърлена, и може да кандидатства отново по-късно.",
+        "rejectConfirm": "Отхвърляне на кандидатурата",
+        "revokeConfirmTitle": "Оттегляне на поканата към {{name}}?",
+        "revokeConfirmBody": "Поканата ще бъде оттеглена. {{name}} вече няма да може да я приеме.",
+        "revokeConfirm": "Оттегляне на поканата",
+        "actionError": "Действието не бе изпълнено — опитайте отново"
       }
     },
     "authorization": {

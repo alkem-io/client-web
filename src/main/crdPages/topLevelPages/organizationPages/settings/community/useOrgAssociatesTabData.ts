@@ -24,6 +24,17 @@ import { mapRoleLimitError, mapUsersInRolesToAssociateRows, type OrgAssociateRow
 
 export type PendingRoleRemoval = { contributorId: string; displayName: string };
 
+/**
+ * Everything on this tab that destroys something the admin cannot get back in a
+ * click, routed through one confirmation. Golden Rule 9 covers removing a member,
+ * a role, an application and an invitation alike, and the Space consumer of this
+ * same pending table already confirms all of them.
+ */
+export type OrgPendingConfirmation =
+  | { kind: 'removeAll'; id: string; displayName: string }
+  | { kind: 'rejectApplication'; id: string; displayName: string }
+  | { kind: 'revokeInvitation'; id: string; displayName: string };
+
 const graphQLErrorInfo = (error: unknown): { code?: string; message?: string } => {
   if (!(error instanceof ApolloError)) return {};
   const first = error.graphQLErrors[0];
@@ -69,10 +80,10 @@ export type UseOrgAssociatesTabDataResult = {
   onToggleRole: (contributorId: string, role: 'Associate' | 'Admin' | 'Owner', on: boolean) => Promise<void>;
   roleLimitError?: 'limitAdmin' | 'limitOwner' | 'minOwner';
   clearRoleLimitError: () => void;
-  pendingRemove: PendingRoleRemoval | null;
+  pendingConfirmation: OrgPendingConfirmation | null;
   onRequestRemoveAll: (contributorId: string, displayName: string) => void;
-  onConfirmRemoveAll: () => Promise<void>;
-  onCancelRemoveAll: () => void;
+  onConfirm: () => Promise<void>;
+  onCancelConfirmation: () => void;
 
   pendingMemberships: PendingMembership[];
   onPendingApprove: (id: string) => void;
@@ -112,7 +123,7 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
   });
 
   const [roleLimitError, setRoleLimitError] = useState<'limitAdmin' | 'limitOwner' | 'minOwner' | undefined>(undefined);
-  const [pendingRemove, setPendingRemove] = useState<PendingRoleRemoval | null>(null);
+  const [pendingConfirmation, setPendingConfirmation] = useState<OrgPendingConfirmation | null>(null);
   const [inviteOpen, setInviteOpen] = useState(false);
 
   const ROLE_TO_NAME: Record<'Associate' | 'Admin' | 'Owner', RoleName> = {
@@ -142,12 +153,11 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
   };
 
   const onRequestRemoveAll = (contributorId: string, displayName: string) =>
-    setPendingRemove({ contributorId, displayName });
-  const onCancelRemoveAll = () => setPendingRemove(null);
-  const onConfirmRemoveAll = async () => {
-    if (!pendingRemove) return;
-    const row = associates.find(a => a.id === pendingRemove.contributorId);
-    setPendingRemove(null);
+    setPendingConfirmation({ kind: 'removeAll', id: contributorId, displayName });
+  const onCancelConfirmation = () => setPendingConfirmation(null);
+
+  const confirmRemoveAll = async (contributorId: string) => {
+    const row = associates.find(a => a.id === contributorId);
     if (!row) return;
     try {
       // Owner → Admin → Associate: cascade so a demoted-then-removed row never
@@ -186,7 +196,10 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
         createdDate: app.createdDate ? new Date(app.createdDate).toISOString() : '',
         canApprove: state === 'new',
         canReject: state === 'new',
-        canDelete: state !== 'approved',
+        // Revoke deletes an INVITATION. An application is dismissed by rejecting
+        // it, which is the adjacent control; offering the trash here only fired
+        // the invitation mutation with an application id.
+        canDelete: false,
       };
     })
     .filter((x): x is PendingMembership => x !== null);
@@ -224,11 +237,34 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
   const onPendingApprove = (id: string) => {
     void applicationStateChange(id, ApplicationEvent.APPROVE).then(() => refetchApplicationsAndInvitations());
   };
-  const onPendingReject = (id: string) => {
-    void applicationStateChange(id, ApplicationEvent.REJECT).then(() => refetchApplicationsAndInvitations());
-  };
-  const onPendingRevoke = (id: string) => {
-    void deleteInvitation(id).then(() => refetchApplicationsAndInvitations());
+  const nameOfPendingRow = (id: string) => pendingMemberships.find(m => m.id === id)?.displayName ?? '';
+
+  const onPendingReject = (id: string) =>
+    setPendingConfirmation({ kind: 'rejectApplication', id, displayName: nameOfPendingRow(id) });
+  const onPendingRevoke = (id: string) =>
+    setPendingConfirmation({ kind: 'revokeInvitation', id, displayName: nameOfPendingRow(id) });
+
+  const onConfirm = async () => {
+    const confirmation = pendingConfirmation;
+    if (!confirmation) return;
+    setPendingConfirmation(null);
+    if (confirmation.kind === 'removeAll') {
+      await confirmRemoveAll(confirmation.id);
+      return;
+    }
+    try {
+      // Dispatch on what the row IS. `deleteInvitation` on an application id
+      // fails server-side, and an unhandled rejection means the admin clicks
+      // again and again with nothing on screen changing.
+      if (confirmation.kind === 'rejectApplication') {
+        await applicationStateChange(confirmation.id, ApplicationEvent.REJECT);
+      } else {
+        await deleteInvitation(confirmation.id);
+      }
+      await refetchApplicationsAndInvitations();
+    } catch {
+      notify(t('org.associates.pending.actionError'), 'error');
+    }
   };
 
   return {
@@ -240,10 +276,10 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
     onToggleRole,
     roleLimitError,
     clearRoleLimitError: () => setRoleLimitError(undefined),
-    pendingRemove,
+    pendingConfirmation,
     onRequestRemoveAll,
-    onConfirmRemoveAll,
-    onCancelRemoveAll,
+    onConfirm,
+    onCancelConfirmation,
     pendingMemberships,
     onPendingApprove,
     onPendingReject,

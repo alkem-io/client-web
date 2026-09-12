@@ -16,6 +16,25 @@ import {
 import { OrgInviteAssociatesDialogConnector } from './OrgInviteAssociatesDialogConnector';
 import { useOrgAssociatesTabData } from './useOrgAssociatesTabData';
 
+/** One destructive confirmation serves all three actions; only the copy differs. */
+const CONFIRMATION_COPY = {
+  removeAll: {
+    title: 'org.associates.editor.removeConfirmTitle',
+    body: 'org.associates.editor.removeConfirmBody',
+    confirm: 'org.associates.editor.remove',
+  },
+  rejectApplication: {
+    title: 'org.associates.pending.rejectConfirmTitle',
+    body: 'org.associates.pending.rejectConfirmBody',
+    confirm: 'org.associates.pending.rejectConfirm',
+  },
+  revokeInvitation: {
+    title: 'org.associates.pending.revokeConfirmTitle',
+    body: 'org.associates.pending.revokeConfirmBody',
+    confirm: 'org.associates.pending.revokeConfirm',
+  },
+} as const;
+
 const ROLE_LIMIT_KEY_BY_ERROR = {
   limitAdmin: 'org.associates.errors.limitAdmin',
   limitOwner: 'org.associates.errors.limitOwner',
@@ -54,6 +73,11 @@ const CrdOrgAssociatesTab = () => {
     : null;
 
   const roleLimitErrorMessage = state.roleLimitError ? t(ROLE_LIMIT_KEY_BY_ERROR[state.roleLimitError]) : undefined;
+
+  // Keep the last kind while the dialog animates out, so the copy does not flash
+  // to another action's wording on close.
+  const confirmationKind = state.pendingConfirmation?.kind ?? 'removeAll';
+  const confirmationName = state.pendingConfirmation?.displayName ?? '';
 
   const handleSave = async (next: { isAssociate: boolean; isAdmin: boolean; isOwner: boolean }) => {
     if (!editingRow) return;
@@ -120,16 +144,16 @@ const CrdOrgAssociatesTab = () => {
       />
 
       <ConfirmationDialog
-        open={Boolean(state.pendingRemove)}
+        open={Boolean(state.pendingConfirmation)}
         onOpenChange={open => {
-          if (!open) state.onCancelRemoveAll();
+          if (!open) state.onCancelConfirmation();
         }}
         variant="destructive"
-        title={t('org.associates.editor.removeConfirmTitle', { name: state.pendingRemove?.displayName ?? '' })}
-        description={t('org.associates.editor.removeConfirmBody', { name: state.pendingRemove?.displayName ?? '' })}
-        confirmLabel={t('org.associates.editor.remove')}
-        onConfirm={state.onConfirmRemoveAll}
-        onCancel={state.onCancelRemoveAll}
+        title={t(CONFIRMATION_COPY[confirmationKind].title, { name: confirmationName })}
+        description={t(CONFIRMATION_COPY[confirmationKind].body, { name: confirmationName })}
+        confirmLabel={t(CONFIRMATION_COPY[confirmationKind].confirm)}
+        onConfirm={state.onConfirm}
+        onCancel={state.onCancelConfirmation}
         loading={state.updating}
       />
 

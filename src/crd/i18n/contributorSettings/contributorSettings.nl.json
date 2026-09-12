@@ -850,7 +850,7 @@
         "removeSuccess": "{{name}} is verwijderd uit de organisatie",
         "removeError": "Kon {{name}} niet verwijderen — probeer opnieuw",
         "saveError": "Kon wijzigingen niet opslaan — probeer opnieuw",
-        "selfAdminLocked": "You can't remove your own Admin role here."
+        "selfAdminLocked": "Je kunt hier je eigen Admin-rol niet verwijderen."
       },
       "errors": {
         "limitAdmin": "Een organisatie kan maximaal 6 beheerders hebben",
@@ -865,7 +865,14 @@
           "associate": "Geassocieerde",
           "associateAdmin": "Geassocieerde + Beheerder",
           "associateOwner": "Geassocieerde + Eigenaar"
-        }
+        },
+        "rejectConfirmTitle": "Aanvraag van {{name}} afwijzen?",
+        "rejectConfirmBody": "{{name}} krijgt bericht dat de aanvraag is afgewezen en kan later opnieuw aanvragen.",
+        "rejectConfirm": "Aanvraag afwijzen",
+        "revokeConfirmTitle": "Uitnodiging aan {{name}} intrekken?",
+        "revokeConfirmBody": "De uitnodiging wordt ingetrokken. {{name}} kan deze dan niet meer accepteren.",
+        "revokeConfirm": "Uitnodiging intrekken",
+        "actionError": "Actie mislukt — probeer opnieuw"
       }
     },
     "authorization": {

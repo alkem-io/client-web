@@ -865,7 +865,14 @@
           "associate": "Associate",
           "associateAdmin": "Associate + Admin",
           "associateOwner": "Associate + Owner"
-        }
+        },
+        "rejectConfirmTitle": "Reject {{name}}'s application?",
+        "rejectConfirmBody": "{{name}} will be told the application was declined. They can apply again later.",
+        "rejectConfirm": "Reject application",
+        "revokeConfirmTitle": "Revoke the invitation to {{name}}?",
+        "revokeConfirmBody": "The invitation will be withdrawn. {{name}} will no longer be able to accept it.",
+        "revokeConfirm": "Revoke invitation",
+        "actionError": "Couldn't complete that — try again"
       }
     },
     "authorization": {

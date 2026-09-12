@@ -133,7 +133,7 @@
       "invitedBy": "Uitgenodigd door {{name}}",
       "accept": "Accepteren",
       "decline": "Weigeren",
-      "withheld": "De rol {{role}} kon niet worden toegekend — de limiet is bereikt. Je bent geassocieerde.",
+      "withheld": "De rol {{role}} kon niet worden toegekend. Je bent geassocieerde.",
       "roleName": {
         "admin": "Beheerder",
         "owner": "Eigenaar"

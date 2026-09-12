@@ -27,6 +27,7 @@ import { glyphForSlug } from '@/crd/components/reactions/reactionEmoji';
 import type { CrdNotificationItemData } from '@/crd/layouts/types';
 import { getInitials } from '@/crd/lib/getInitials';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import { offeredRoleLabelKey } from '@/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper';
 import type { InAppNotificationModel } from '@/main/inAppNotifications/model/InAppNotificationModel';
 import type { InAppNotificationPayloadModel } from '@/main/inAppNotifications/model/InAppNotificationPayloadModel';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
@@ -123,24 +124,17 @@ function buildTranslationValues(
     // associateRole: used by the organization-associate events (062) — the offered/held extra
     // role(s), pre-translated as "Associate" / "Associate + Admin" / "Associate + Owner".
     associateRole: payload.invitation
-      ? t(`components.inAppNotifications.associateRole.${associateRoleKey(payload.invitation.extraRoles)}`)
+      ? t(`components.inAppNotifications.associateRole.${offeredRoleLabelKey(payload.invitation.extraRoles)}`)
       : undefined,
     // withheld: used by ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED — an extra clause naming
     // the extra role that could not be granted when the accept-time cap check consumed it meanwhile.
     withheld:
       payload.extraRolesWithheld && payload.extraRolesWithheld.length > 0
         ? t('components.inAppNotifications.associateRoleWithheld', {
-            role: t(`components.inAppNotifications.associateRole.${associateRoleKey(payload.extraRolesWithheld)}`),
+            role: t(`components.inAppNotifications.associateRole.${offeredRoleLabelKey(payload.extraRolesWithheld)}`),
           })
         : '',
   };
-}
-
-/** Maps a set of extra roles (invitation offer, or the withheld list) to the associateRole i18n leaf. */
-function associateRoleKey(extraRoles: RoleName[]): 'associateAdmin' | 'associateOwner' | 'associate' {
-  if (extraRoles.includes(RoleName.Admin)) return 'associateAdmin';
-  if (extraRoles.includes(RoleName.Owner)) return 'associateOwner';
-  return 'associate';
 }
 
 /**

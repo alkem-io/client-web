@@ -850,7 +850,7 @@
         "removeSuccess": "{{name}} a été retiré(e) de l’organisation",
         "removeError": "Impossible de retirer {{name}} — réessayez",
         "saveError": "Impossible d’enregistrer les modifications — réessayez",
-        "selfAdminLocked": "You can't remove your own Admin role here."
+        "selfAdminLocked": "Vous ne pouvez pas retirer votre propre rôle Admin ici."
       },
       "errors": {
         "limitAdmin": "Une organisation peut avoir au maximum 6 admins",
@@ -865,7 +865,14 @@
           "associate": "Associé",
           "associateAdmin": "Associé + Admin",
           "associateOwner": "Associé + Propriétaire"
-        }
+        },
+        "rejectConfirmTitle": "Refuser la candidature de {{name}} ?",
+        "rejectConfirmBody": "{{name}} sera informé du refus et pourra postuler à nouveau plus tard.",
+        "rejectConfirm": "Refuser la candidature",
+        "revokeConfirmTitle": "Révoquer l’invitation envoyée à {{name}} ?",
+        "revokeConfirmBody": "L’invitation sera retirée. {{name}} ne pourra plus l’accepter.",
+        "revokeConfirm": "Révoquer l’invitation",
+        "actionError": "Action impossible — réessayez"
       }
     },
     "authorization": {

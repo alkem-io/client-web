@@ -133,7 +133,7 @@
       "invitedBy": "Eingeladen von {{name}}",
       "accept": "Annehmen",
       "decline": "Ablehnen",
-      "withheld": "Die Rolle {{role}} konnte nicht vergeben werden – das Limit wurde erreicht. Du bist assoziiert.",
+      "withheld": "Die Rolle {{role}} konnte nicht vergeben werden. Sie sind Assoziierter.",
       "roleName": {
         "admin": "Admin",
         "owner": "Eigentümer"
