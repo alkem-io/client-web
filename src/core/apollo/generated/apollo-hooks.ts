@@ -689,6 +689,7 @@ export const CalloutContributionsCollaboraDocumentCardFragmentDoc = gql`
     fragment CalloutContributionsCollaboraDocumentCard on CollaboraDocument {
   id
   documentType
+  previewUrl
   profile {
     id
     url
@@ -964,6 +965,7 @@ export const CollaboraDocumentGateFragmentDoc = gql`
     fragment CollaboraDocumentGate on CollaboraDocument {
   id
   documentType
+  previewUrl
   authorization {
     id
     myPrivileges
@@ -8243,6 +8245,7 @@ export const CalloutContributionDocument = gql`
       collaboraDocument @include(if: $includeCollaboraDocument) {
         id
         documentType
+        previewUrl
         profile {
           id
           url
