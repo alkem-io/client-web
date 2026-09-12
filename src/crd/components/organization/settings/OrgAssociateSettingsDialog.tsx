@@ -102,10 +102,10 @@ export function OrgAssociateSettingsDialog({
             )}
           </div>
 
-          {/* An administrator may not switch off their OWN Admin role here (R43 /
-                FR-019a): one accidental click would otherwise lock them out of the
-                surface they are standing on. Deliberate self-demotion is still
-                possible through the API — this is an interface guard, not a rule. */}
+          {/* An administrator may not switch off their OWN Admin role here: one
+              accidental click would otherwise lock them out of the surface they
+              are standing on. Deliberate self-demotion is still possible through
+              the API — this is an interface guard, not a rule. */}
           <div className="flex items-center justify-between gap-4">
             <Label htmlFor="org-associate-toggle-admin">{t('org.associates.editor.adminLabel')}</Label>
             <Switch
