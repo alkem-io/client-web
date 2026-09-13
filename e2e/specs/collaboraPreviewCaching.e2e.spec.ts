@@ -75,13 +75,116 @@ const previewUrl = (fileID: string) => `${BASE_URL}/api/private/wopi/files/${fil
 /** Render availability is environment-dependent (Collabora reachability); the cache contract is not. */
 const RENDER_UNAVAILABLE_STATUSES = [502, 503];
 
-/** A minimal, valid .docx whose only visible text is the given marker string. */
-function minimalDocxBytes(_marker: string): Buffer {
-  // Placeholder for a real minimal-docx builder; CI wiring supplies a fixture
-  // generator (see quickstart.md §3) that produces a valid OOXML package with
-  // the marker text substituted into word/document.xml, matching the manual
-  // walk recorded in forge/evidence/US3.
-  throw new Error('wire a minimal-docx fixture generator before enabling this suite in CI');
+/** Bitwise CRC-32 (no lookup table — these fixtures are a few hundred bytes each). */
+function crc32(buf: Buffer): number {
+  let crc = 0xffffffff;
+  for (const byte of buf) {
+    crc ^= byte;
+    for (let k = 0; k < 8; k++) {
+      crc = crc & 1 ? (crc >>> 1) ^ 0xedb88320 : crc >>> 1;
+    }
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+/** Builds an uncompressed (STORED-method) ZIP archive — sufficient for a package this small and avoids a deflate dependency. */
+function buildZip(entries: { name: string; data: Buffer }[]): Buffer {
+  const localParts: Buffer[] = [];
+  const centralParts: Buffer[] = [];
+  let offset = 0;
+
+  for (const entry of entries) {
+    const nameBuf = Buffer.from(entry.name, 'utf8');
+    const crc = crc32(entry.data);
+    const size = entry.data.length;
+
+    const localHeader = Buffer.alloc(30);
+    localHeader.writeUInt32LE(0x04034b50, 0);
+    localHeader.writeUInt16LE(20, 4); // version needed to extract
+    localHeader.writeUInt16LE(0, 6); // general purpose flags
+    localHeader.writeUInt16LE(0, 8); // compression method: stored
+    localHeader.writeUInt16LE(0, 10); // mod time
+    localHeader.writeUInt16LE(0x21, 12); // mod date: 1980-01-01
+    localHeader.writeUInt32LE(crc, 14);
+    localHeader.writeUInt32LE(size, 18); // compressed size
+    localHeader.writeUInt32LE(size, 22); // uncompressed size
+    localHeader.writeUInt16LE(nameBuf.length, 26);
+    localHeader.writeUInt16LE(0, 28); // extra field length
+    localParts.push(localHeader, nameBuf, entry.data);
+
+    const centralHeader = Buffer.alloc(46);
+    centralHeader.writeUInt32LE(0x02014b50, 0);
+    centralHeader.writeUInt16LE(20, 4); // version made by
+    centralHeader.writeUInt16LE(20, 6); // version needed to extract
+    centralHeader.writeUInt16LE(0, 8); // general purpose flags
+    centralHeader.writeUInt16LE(0, 10); // compression method
+    centralHeader.writeUInt16LE(0, 12); // mod time
+    centralHeader.writeUInt16LE(0x21, 14); // mod date
+    centralHeader.writeUInt32LE(crc, 16);
+    centralHeader.writeUInt32LE(size, 20);
+    centralHeader.writeUInt32LE(size, 24);
+    centralHeader.writeUInt16LE(nameBuf.length, 28);
+    centralHeader.writeUInt16LE(0, 30); // extra field length
+    centralHeader.writeUInt16LE(0, 32); // comment length
+    centralHeader.writeUInt16LE(0, 34); // disk number start
+    centralHeader.writeUInt16LE(0, 36); // internal attributes
+    centralHeader.writeUInt32LE(0, 38); // external attributes
+    centralHeader.writeUInt32LE(offset, 42); // offset of local header
+    centralParts.push(centralHeader, nameBuf);
+
+    offset += localHeader.length + nameBuf.length + entry.data.length;
+  }
+
+  const centralDirectory = Buffer.concat(centralParts);
+  const eocd = Buffer.alloc(22);
+  eocd.writeUInt32LE(0x06054b50, 0);
+  eocd.writeUInt16LE(0, 4);
+  eocd.writeUInt16LE(0, 6);
+  eocd.writeUInt16LE(entries.length, 8);
+  eocd.writeUInt16LE(entries.length, 10);
+  eocd.writeUInt32LE(centralDirectory.length, 12);
+  eocd.writeUInt32LE(offset, 16); // offset of start of central directory
+  eocd.writeUInt16LE(0, 20); // comment length
+
+  return Buffer.concat([...localParts, centralDirectory, eocd]);
+}
+
+/**
+ * A minimal, valid .docx (OOXML WordprocessingML package) whose only visible
+ * text is the given marker string. Built in-process with a tiny STORED-method
+ * ZIP writer (see `buildZip`/`crc32` above) rather than a checked-in binary
+ * fixture, so every save gets a document whose content is provably distinct
+ * (the marker is substituted straight into `word/document.xml`) without
+ * shipping a fixture-generation dependency.
+ */
+function minimalDocxBytes(marker: string): Buffer {
+  const escapedMarker = marker.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+</Types>`;
+
+  const rootRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>`;
+
+  const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p><w:r><w:t>${escapedMarker}</w:t></w:r></w:p>
+    <w:sectPr/>
+  </w:body>
+</w:document>`;
+
+  return buildZip([
+    { name: '[Content_Types].xml', data: Buffer.from(contentTypes, 'utf8') },
+    { name: '_rels/.rels', data: Buffer.from(rootRels, 'utf8') },
+    { name: 'word/document.xml', data: Buffer.from(documentXml, 'utf8') },
+  ]);
 }
 
 /** Mints a WOPI access token the way the server's cluster-internal adapter does, then LOCK+PUT+UNLOCKs new content. */
@@ -141,14 +244,21 @@ test.describe('US3 — reuse rendering without burdening saves', () => {
 
   test('AS2 — a cached preview at the current updatedDate is served without invoking Collabora', async ({
     authedPage,
+    freshPrimaryUser,
   }) => {
     const first = await authedPage.request.get(previewUrl(FILE_ID!));
     test.skip(RENDER_UNAVAILABLE_STATUSES.includes(first.status()), 'render unavailable in this environment');
     const firstEtag = first.headers()['etag'];
 
-    // A second, independent request context stands in for "another browser":
-    // no cookie/cache state is shared with `authedPage`.
-    const second = await authedPage.request.get(previewUrl(FILE_ID!));
+    // A genuinely separate browser context stands in for "another browser":
+    // its own login, cookie jar, and Playwright-level request context — none
+    // of which is shared with `authedPage`. Same account (document access is
+    // otherwise unverifiable here); the property under test is cache reuse
+    // across sessions, not per-user access.
+    const other = await freshPrimaryUser();
+    const second = await other.page.request.get(previewUrl(FILE_ID!));
+    await other.close();
+
     expect(second.status()).toBe(200);
     expect(second.headers()['etag']).toBe(firstEtag);
 
@@ -176,7 +286,7 @@ test.describe('US3 — reuse rendering without burdening saves', () => {
     expect(afterBody.equals(beforeBody)).toBeFalsy();
   });
 
-  test('AS4 — repeated saves with no preview request in between never touch the preview endpoint', async ({
+  test('AS4 — repeated saves with no preview request in between never touch the preview endpoint, and the eventual request renders exactly once', async ({
     authedPage,
     request,
   }) => {
@@ -190,12 +300,28 @@ test.describe('US3 — reuse rendering without burdening saves', () => {
     await saveThroughWopiProtocol(request, FILE_ID!, `AS4-2-${Date.now()}`);
     await saveThroughWopiProtocol(request, FILE_ID!, `AS4-3-${Date.now()}`);
 
-    // The mapping/ETag must still reflect the pre-save render: nothing requested a
-    // preview during the save window, so nothing should have re-rendered.
-    const stillWarm = await authedPage.request.get(previewUrl(FILE_ID!), {
+    // Nothing requested a preview during the save window, so the source has
+    // advanced three times with no intervening render: the ETag contract
+    // (validator == source updatedDate) means the *first* post-save request
+    // MUST see a fresh render — a 304 here would mean the endpoint was
+    // touched (and rendered) during the save window itself, which is exactly
+    // what this scenario forbids. A stale 304 is a contract violation, not a
+    // sign of "no work happened".
+    const afterSaves = await authedPage.request.get(previewUrl(FILE_ID!), {
       headers: { 'If-None-Match': warmEtag! },
     });
-    expect(stillWarm.status()).toBe(304);
+    expect(afterSaves.status()).toBe(200);
+    expect(afterSaves.headers()['etag']).not.toBe(warmEtag);
+    const freshEtag = afterSaves.headers()['etag'];
+
+    // That one on-demand render is the only one that happened: a follow-up
+    // request presenting the ETag it just returned must now be a cache hit,
+    // proving the mapping it produced is stable rather than re-rendered on
+    // every request.
+    const cached = await authedPage.request.get(previewUrl(FILE_ID!), {
+      headers: { 'If-None-Match': freshEtag! },
+    });
+    expect(cached.status()).toBe(304);
   });
 
   test('AS5 — twelve parallel requests for the same uncached document collapse to one render', async ({
@@ -242,10 +368,20 @@ test.describe('US3 — reuse rendering without burdening saves', () => {
     test.skip(!ACTOR_ID, 'E2E_WOPI_ACTOR_ID is required for QS6');
     await saveThroughWopiProtocol(request, FILE_ID!, `QS6-${Date.now()}`);
 
-    // Abort almost immediately — the admitted job must still finish server-side.
-    const controller = new AbortController();
-    setTimeout(() => controller.abort(), 20);
-    await authedPage.request.get(previewUrl(FILE_ID!)).catch(() => undefined);
+    // Issue and abort the initiating request from inside the page itself:
+    // Playwright's `APIRequestContext.get()` takes no cancellation signal, so
+    // it always runs to completion regardless of any `AbortController` built
+    // around it — a browser `fetch()` aborted mid-flight is what actually
+    // severs the connection the way a real disconnecting client would.
+    await authedPage.evaluate(async url => {
+      const controller = new AbortController();
+      setTimeout(() => controller.abort(), 20);
+      try {
+        await fetch(url, { signal: controller.signal, credentials: 'include' });
+      } catch {
+        // Expected: the fetch is aborted client-side before it completes.
+      }
+    }, previewUrl(FILE_ID!));
 
     // Poll briefly for the service-owned deadline to land the mapping.
     let landed = false;
