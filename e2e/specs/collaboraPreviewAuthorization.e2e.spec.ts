@@ -39,6 +39,15 @@ import { LoginPage } from '../fixtures/loginPage';
  *                                  render). AS5 is skipped without it — this
  *                                  file only reaches the endpoint that must
  *                                  refuse it, not the render pipeline itself.
+ *   E2E_WOPI_ACTOR_ID           — the platform-admin user's internal actor
+ *                                  ID (same fixture the caching suite uses to
+ *                                  drive the real WOPI protocol). AS7 forges
+ *                                  this header from an unauthenticated
+ *                                  context to prove it is never honoured —
+ *                                  an ID nobody owns can't discriminate a
+ *                                  trusted header from a stripped one, since
+ *                                  both paths already 401/403. AS7 is skipped
+ *                                  without it.
  *
  * A locally-run Collabora instance whose own `net.post_allow` guard rejects
  * WOPI's macOS-Docker-Desktop-NAT'd source address cannot complete a render
@@ -61,6 +70,7 @@ const PUBLIC_FILE_ID = process.env.E2E_PREVIEW_FILE_ID_PUBLIC;
 const NON_MEMBER_EMAIL = process.env.E2E_NON_MEMBER_EMAIL;
 const NON_MEMBER_PASSWORD = process.env.E2E_NON_MEMBER_PASSWORD;
 const CACHED_PREVIEW_FILE_ID = process.env.E2E_PREVIEW_CACHED_FILE_ID;
+const ACTOR_ID = process.env.E2E_WOPI_ACTOR_ID;
 
 const previewUrl = (fileID: string) => `${BASE_URL}/api/private/wopi/files/${fileID}/preview`;
 
@@ -154,8 +164,15 @@ test.describe('US2 — preview access follows document access', () => {
   });
 
   test('AS7 — a forged X-Alkemio-Actor-Id header never grants the impersonated identity', async ({ request }) => {
+    test.skip(!ACTOR_ID, 'E2E_WOPI_ACTOR_ID is required for AS7 (must forge an ID that would actually succeed if trusted)');
+    // ACTOR_ID demonstrably CAN read PRIVATE_FILE_ID as an authenticated
+    // session (AS1) — forging it from a request with no session at all is
+    // the only way this assertion can distinguish "the header was stripped"
+    // from "the header was honoured but named nobody". A response of 401/403
+    // here means the gateway/middleware trust boundary held; a 200 would
+    // mean it did not.
     const res = await request.get(previewUrl(PRIVATE_FILE_ID!), {
-      headers: { 'X-Alkemio-Actor-Id': '00000000-0000-0000-0000-000000000001' },
+      headers: { 'X-Alkemio-Actor-Id': ACTOR_ID! },
     });
     expect([401, 403]).toContain(res.status());
   });
