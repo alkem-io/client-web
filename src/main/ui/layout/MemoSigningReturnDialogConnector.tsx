@@ -37,7 +37,14 @@ export function MemoSigningReturnDialogConnector() {
   const location = useLocation();
   const notify = useNotification();
   const { loading: currentUserLoading, userModel } = useCurrentUserContext();
-  const { restoreResolution, setRestoreIntent, setRestoreResolution } = useMemoSigningReturnContext();
+  const {
+    restoreResolution,
+    setRestoreIntent,
+    setRestoreResolution,
+    routeSettlement,
+    setRouteSettlementRequest,
+    setRouteSettlement,
+  } = useMemoSigningReturnContext();
   const [capture, setCapture] = useState<ReturnCapture>();
   const [queryAttemptId, setQueryAttemptId] = useState<string>();
   const [returnRecord, setReturnRecord] = useState<MemoSigningReturnRecord>();
@@ -55,6 +62,8 @@ export function MemoSigningReturnDialogConnector() {
       if (capture?.attemptId === attemptId) return;
       setRestoreIntent(current => (current?.attemptId !== attemptId ? undefined : current));
       setRestoreResolution(current => (current?.attemptId !== attemptId ? undefined : current));
+      setRouteSettlement(undefined);
+      setRouteSettlementRequest({ attemptId });
       setCapture({ attemptId, routeKey });
       setQueryAttemptId(undefined);
       setReturnRecord(undefined);
@@ -69,22 +78,40 @@ export function MemoSigningReturnDialogConnector() {
     if (capture && capture.routeKey !== routeKey) {
       setRestoreIntent(current => (current?.attemptId === capture.attemptId ? undefined : current));
       setRestoreResolution(current => (current?.attemptId === capture.attemptId ? undefined : current));
+      setRouteSettlement(current => (current?.attemptId === capture.attemptId ? undefined : current));
+      setRouteSettlementRequest(current => (current?.attemptId === capture.attemptId ? undefined : current));
       setCapture(undefined);
       setQueryAttemptId(undefined);
       setReturnRecord(undefined);
       setRestoreExpectedAttemptId(undefined);
       setRestoreReadyAttemptId(undefined);
     }
-  }, [capture, location.search, routeKey, setRestoreIntent, setRestoreResolution]);
+  }, [
+    capture,
+    location.search,
+    routeKey,
+    setRestoreIntent,
+    setRestoreResolution,
+    setRouteSettlement,
+    setRouteSettlementRequest,
+  ]);
 
   useEffect(() => {
-    if (!capture || currentUserLoading || !userModel || storageReadForAttempt.current === capture.attemptId) return;
+    if (
+      !capture ||
+      currentUserLoading ||
+      !userModel ||
+      routeSettlement?.attemptId !== capture.attemptId ||
+      storageReadForAttempt.current === capture.attemptId
+    ) {
+      return;
+    }
 
     storageReadForAttempt.current = capture.attemptId;
     const stored = takeMemoSigningReturnRecord(capture.attemptId);
     setReturnRecord(stored?.userId === userModel.id ? stored : undefined);
     setQueryAttemptId(capture.attemptId);
-  }, [capture, currentUserLoading, userModel]);
+  }, [capture, currentUserLoading, routeSettlement, userModel]);
 
   const returnAttempt = useMemoSigningAttemptQuery({
     variables: { attemptID: queryAttemptId ?? '' },

@@ -8,6 +8,7 @@ import {
   CalloutFramingType,
   SigningAttemptStatus,
 } from '@/core/apollo/generated/graphql-schema';
+import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
 import { MemoEditorShell } from '@/crd/components/memo/MemoEditorShell';
 import { CrdCalloutDialogFromUrl } from '@/main/crdPages/space/callout/CrdCalloutDialogFromUrl';
 import { CrdLayoutWrapper } from './CrdLayoutWrapper';
@@ -22,7 +23,11 @@ const state = vi.hoisted(() => ({
   attemptHasDocument: true,
   taskBoardEnabled: false,
   boardResult: false,
+  boardResolutionPending: false,
   editorAlreadyOpen: false,
+  calloutLoading: false,
+  calloutAvailable: true,
+  realCalloutPortal: false,
   calloutKind: 'framing' as 'framing' | 'contribution',
   calloutId: 'callout-1',
   attemptQuery: vi.fn(),
@@ -174,14 +179,20 @@ vi.mock('@/main/routing/urlResolver/useUrlResolver', () => ({
   }),
 }));
 vi.mock('@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails', () => ({
-  default: () => ({ callout: callout(), loading: false }),
+  default: () => ({
+    callout: state.calloutAvailable && !state.calloutLoading ? callout() : undefined,
+    loading: state.calloutLoading,
+  }),
 }));
 vi.mock('@/crd/components/callout/task-board/taskBoard', () => ({
   isTaskBoardEnabled: () => state.taskBoardEnabled,
 }));
 vi.mock('@/main/crdPages/space/callout/TaskBoardConnector', () => ({
   TaskBoardConnector: ({ onBoardResolved }: { onBoardResolved: (board: boolean) => void }) => {
-    useEffect(() => onBoardResolved(state.boardResult), [onBoardResolved]);
+    const resolutionPending = state.boardResolutionPending;
+    useEffect(() => {
+      if (!resolutionPending) onBoardResolved(state.boardResult);
+    }, [onBoardResolved, resolutionPending]);
     return null;
   },
 }));
@@ -190,6 +201,8 @@ vi.mock('@/main/crdPages/space/callout/TaskBoardDialog', () => ({
 }));
 vi.mock('@/main/crdPages/space/callout/CalloutDetailDialogConnector', () => ({
   CalloutDetailDialogConnector: (props: {
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
     initialContributionId?: string;
     memoSigningRestore?: {
       attemptId: string;
@@ -208,6 +221,18 @@ vi.mock('@/main/crdPages/space/callout/CalloutDetailDialogConnector', () => ({
         setEditorKind(props.memoSigningRestore.kind);
       }
     }, [props.memoSigningRestore]);
+
+    if (state.realCalloutPortal) {
+      return (
+        <CalloutDetailDialog
+          open={props.open ?? true}
+          onOpenChange={props.onOpenChange ?? vi.fn()}
+          callout={{ id: state.calloutId, title: 'Delayed callout' }}
+          commentsSlot={<div />}
+          onShareClick={vi.fn()}
+        />
+      );
+    }
 
     return (
       <div data-testid="callout-dialog">
@@ -275,7 +300,11 @@ beforeEach(() => {
   state.attemptHasDocument = true;
   state.taskBoardEnabled = false;
   state.boardResult = false;
+  state.boardResolutionPending = false;
   state.editorAlreadyOpen = false;
+  state.calloutLoading = false;
+  state.calloutAvailable = true;
+  state.realCalloutPortal = false;
   state.calloutKind = 'framing';
   state.calloutId = 'callout-1';
   state.attemptQuery.mockClear();
@@ -285,6 +314,47 @@ beforeEach(() => {
 });
 
 describe('CrdLayoutWrapper memo-signing return lifecycle', () => {
+  it('keeps a context-free result foreground when the real callout portal mounts after callback capture', async () => {
+    const user = userEvent.setup();
+    state.realCalloutPortal = true;
+    state.calloutLoading = true;
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+
+    const view = renderRoute();
+    await waitFor(() => expect(globalThis.location.search).toBe(''));
+    expect(screen.queryByRole('dialog', { name: 'memo.signing.savedTitle' })).not.toBeInTheDocument();
+
+    state.calloutLoading = false;
+    view.rerender(
+      <BrowserRouter>
+        <CrdLayoutWrapper>
+          <CrdCalloutDialogFromUrl onClose={vi.fn()} />
+        </CrdLayoutWrapper>
+      </BrowserRouter>
+    );
+
+    await screen.findByRole('button', { name: 'calloutDialog.share', hidden: true });
+    const resultDialog = screen.getByText('memo.signing.savedTitle').closest('[role="dialog"]') as HTMLElement;
+    expect(resultDialog).not.toHaveAttribute('aria-hidden', 'true');
+    expect(resultDialog).not.toHaveStyle({ pointerEvents: 'none' });
+    expect(resultDialog).toContainElement(document.activeElement as HTMLElement);
+
+    await user.keyboard('{Escape}');
+
+    expect(screen.queryByRole('dialog', { name: 'memo.signing.savedTitle' })).not.toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'Delayed callout' })).toBeInTheDocument();
+  });
+
+  it('settles a context-free return when the route has no callout modal to mount', async () => {
+    state.calloutAvailable = false;
+    globalThis.history.replaceState(null, '', '/space/collaboration/missing?signingAttemptId=attempt-1');
+
+    renderRoute();
+
+    expect(await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' })).toBeInTheDocument();
+    expect(screen.queryByRole('dialog', { name: 'Delayed callout' })).not.toBeInTheDocument();
+  });
+
   it('keeps the result foreground when late restoration mounts a real editor portal', async () => {
     const user = userEvent.setup();
     storeContext('framing');
@@ -462,6 +532,29 @@ describe('CrdLayoutWrapper memo-signing return lifecycle', () => {
     expect(await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' })).toBeInTheDocument();
     expect(screen.getByTestId('task-board')).toBeInTheDocument();
     expect(screen.queryByTestId('framing-memo-editor')).not.toBeInTheDocument();
+  });
+
+  it('waits for board detection to settle before opening a context-free result', async () => {
+    state.taskBoardEnabled = true;
+    state.boardResult = true;
+    state.boardResolutionPending = true;
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+
+    const view = renderRoute();
+    await waitFor(() => expect(globalThis.location.search).toBe(''));
+    expect(screen.queryByRole('dialog', { name: 'memo.signing.savedTitle' })).not.toBeInTheDocument();
+
+    state.boardResolutionPending = false;
+    view.rerender(
+      <BrowserRouter>
+        <CrdLayoutWrapper>
+          <CrdCalloutDialogFromUrl onClose={vi.fn()} />
+        </CrdLayoutWrapper>
+      </BrowserRouter>
+    );
+
+    expect(await screen.findByTestId('task-board')).toBeInTheDocument();
+    expect(await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' })).toBeInTheDocument();
   });
 
   it('restores through the normal detail dialog when a board candidate resolves isBoard false', async () => {

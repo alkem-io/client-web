@@ -13,6 +13,8 @@ type CalloutDeeplinkViewProps = {
   /** Deep-linked underlying post id, for post contributions. */
   postId?: string;
   memoSigningRestore?: MemoSigningRestoreIntent;
+  memoSigningRouteAttemptId?: string;
+  onMemoSigningRouteSettled?: (attemptId: string) => void;
   onMemoSigningRestoreConsumed?: (attemptId: string, focusTarget?: HTMLElement) => void;
   /** Closes the whole deep-linked view (navigate back to the parent page). */
   onClose: () => void;
@@ -35,6 +37,8 @@ export function CalloutDeeplinkView({
   contributionId,
   postId,
   memoSigningRestore,
+  memoSigningRouteAttemptId,
+  onMemoSigningRouteSettled,
   onMemoSigningRestoreConsumed,
   onClose,
 }: CalloutDeeplinkViewProps) {
@@ -58,6 +62,11 @@ export function CalloutDeeplinkView({
       onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
     }
   }, [isBoard, maybeBoard, memoSigningRestore, onMemoSigningRestoreConsumed]);
+
+  useEffect(() => {
+    if (!memoSigningRouteAttemptId || (maybeBoard && isBoard === null)) return;
+    onMemoSigningRouteSettled?.(memoSigningRouteAttemptId);
+  }, [isBoard, maybeBoard, memoSigningRouteAttemptId, onMemoSigningRouteSettled]);
 
   if (!maybeBoard) {
     return (

@@ -1,9 +1,9 @@
 import { X } from 'lucide-react';
 import { type ReactNode, type Ref, useId } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useCombinedRefs } from '@/crd/lib/useCombinedRefs';
 import { cn } from '@/crd/lib/utils';
 import { Dialog, DialogContentRaw, DialogOverlay, DialogPortal } from '@/crd/primitives/dialog';
-import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 
 type MemoEditorShellProps = {
   open: boolean;

@@ -21,7 +21,8 @@ type CrdCalloutDialogFromUrlProps = {
  */
 export function CrdCalloutDialogFromUrl({ onClose }: CrdCalloutDialogFromUrlProps) {
   const { calloutId, calloutsSetId, contributionId, postId, loading: urlLoading } = useUrlResolver();
-  const { restoreIntent, setRestoreIntent, setRestoreResolution } = useMemoSigningReturnContext();
+  const { restoreIntent, setRestoreIntent, setRestoreResolution, routeSettlementRequest, setRouteSettlement } =
+    useMemoSigningReturnContext();
 
   const { callout, loading: calloutLoading } = useCalloutDetails({
     calloutId,
@@ -43,6 +44,15 @@ export function CrdCalloutDialogFromUrl({ onClose }: CrdCalloutDialogFromUrlProp
     setRestoreIntent(current => (current?.attemptId === restoreIntent.attemptId ? undefined : current));
   }, [callout, calloutLoading, restoreIntent, setRestoreIntent, setRestoreResolution, urlLoading]);
 
+  useEffect(() => {
+    if (urlLoading || calloutLoading || callout || !routeSettlementRequest) return;
+    setRouteSettlement(current =>
+      current?.attemptId === routeSettlementRequest.attemptId
+        ? current
+        : { attemptId: routeSettlementRequest.attemptId }
+    );
+  }, [callout, calloutLoading, routeSettlementRequest, setRouteSettlement, urlLoading]);
+
   // The URL resolver and callout details both have to settle before we can
   // decide whether to render the dialog — until then, defer rendering so the
   // underlying page (rendered by the parent) shows alone.
@@ -60,6 +70,10 @@ export function CrdCalloutDialogFromUrl({ onClose }: CrdCalloutDialogFromUrlProp
       contributionId={contributionId}
       postId={postId}
       memoSigningRestore={restoreIntent?.calloutId === callout.id ? restoreIntent : undefined}
+      memoSigningRouteAttemptId={routeSettlementRequest?.attemptId}
+      onMemoSigningRouteSettled={attemptId =>
+        setRouteSettlement(current => (current?.attemptId === attemptId ? current : { attemptId }))
+      }
       onMemoSigningRestoreConsumed={(attemptId, focusTarget) => {
         const restoredFocusTarget =
           focusTarget?.querySelector<HTMLElement>('button:not([disabled]), [href], input:not([disabled])') ??
