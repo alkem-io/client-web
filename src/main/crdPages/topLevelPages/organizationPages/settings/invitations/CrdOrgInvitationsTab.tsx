@@ -1,0 +1,88 @@
+import { useTranslation } from 'react-i18next';
+import { usePageTitle } from '@/core/routing/usePageTitle';
+import { OrgInvitationsTabView } from '@/crd/components/organization/settings/OrgInvitationsTabView';
+import type { OrgInvitationRow } from '@/crd/components/organization/settings/OrgInvitationsTabView.types';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
+import { formatShortDate } from '@/crd/lib/dateTimeFormat';
+import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
+import { useOrgInvitationsTabData } from './useOrgInvitationsTabData';
+
+/**
+ * Integration page for the organization Invitations tab. Wires
+ * `useOrganizationContext().organizationId` → `useOrgInvitationsTabData`
+ * (query, accept-confirm state machine, decline) → `OrgInvitationsTabView`
+ * (presentational). Owns every `t()` resolution — the view stays label-free.
+ */
+const CrdOrgInvitationsTab = () => {
+  const { t, i18n } = useTranslation('crd-contributorSettings');
+  const locale = resolveDateFnsLocale(i18n.language);
+  // `loading` matters as much as the id here: until useUrlResolver settles,
+  // organizationId is '' and useOrgInvitationsTabData skips its query, so
+  // Apollo reports loading:false with no rows. Without folding the context's
+  // own loading in, the tab renders "no pending invitations" for that beat —
+  // on the exact screen the invitation email and in-app notification deep-link
+  // to.
+  const { organizationId, loading: resolvingOrganization } = useOrganizationContext();
+  const data = useOrgInvitationsTabData(organizationId);
+
+  usePageTitle(t('org.invitations.pageTitle'));
+
+  const roleLabel = (role: 'member' | 'memberLead') =>
+    role === 'memberLead' ? t('org.invitations.roleMemberLead') : t('org.invitations.roleMember');
+
+  const rows: OrgInvitationRow[] = data.rows.map(row => ({
+    id: row.id,
+    spaceDisplayName: row.spaceDisplayName,
+    spaceUrl: row.spaceUrl,
+    invitedByText: row.invitedBy
+      ? t('org.invitations.invitedBy', { name: row.invitedBy })
+      : t('org.invitations.invitedByUnknown'),
+    dateText: formatShortDate(row.createdDate, locale) ?? '',
+    roleLabel: roleLabel(row.role),
+    welcomeMessage: row.welcomeMessage,
+    spacesToJoinText:
+      row.spacesToJoin.length > 1
+        ? t('org.invitations.spacesToJoin', { spaces: row.spacesToJoin.map(space => space.displayName).join(', ') })
+        : undefined,
+    canAct: row.canAct,
+  }));
+
+  const pendingAcceptRow = data.rows.find(row => row.id === data.acceptConfirm.pendingId);
+
+  return (
+    <OrgInvitationsTabView
+      loading={resolvingOrganization || data.loading}
+      title={t('org.invitations.title')}
+      rows={rows}
+      emptyLabel={t('org.invitations.empty')}
+      acceptLabel={t('org.invitations.accept')}
+      declineLabel={t('org.invitations.decline')}
+      onAccept={data.onRequestAccept}
+      onDecline={data.onRequestDecline}
+      busy={data.accepting || data.rejecting}
+      acceptConfirm={{
+        open: Boolean(data.acceptConfirm.pendingId),
+        title: t('org.invitations.acceptConfirmTitle'),
+        body: t('org.invitations.acceptConfirmBody', {
+          spaceName: data.acceptConfirm.pendingSpaceName ?? '',
+          role: pendingAcceptRow ? roleLabel(pendingAcceptRow.role) : '',
+        }),
+        confirmLabel: t('org.invitations.acceptConfirmAction'),
+        onConfirm: data.acceptConfirm.onConfirm,
+        onCancel: data.acceptConfirm.onCancel,
+      }}
+      declineConfirm={{
+        open: Boolean(data.declineConfirm.pendingId),
+        title: t('org.invitations.declineConfirmTitle'),
+        body: t('org.invitations.declineConfirmBody', {
+          spaceName: data.declineConfirm.pendingSpaceName ?? '',
+        }),
+        confirmLabel: t('org.invitations.declineConfirmAction'),
+        onConfirm: data.declineConfirm.onConfirm,
+        onCancel: data.declineConfirm.onCancel,
+      }}
+    />
+  );
+};
+
+export default CrdOrgInvitationsTab;

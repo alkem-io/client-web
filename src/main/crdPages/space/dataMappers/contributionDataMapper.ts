@@ -18,6 +18,8 @@ type ContributionCardData = {
   markdownContent?: string;
   /** For memo contributions: the underlying memo id (different from the contribution wrapper id). */
   memoId?: string;
+  /** Number of saved signatures that have an actionable PDF document. */
+  signedCopiesCount?: number;
   /** For post contributions: the underlying post id (different from the contribution wrapper id). */
   postId?: string;
   linkUrl?: string;
@@ -102,6 +104,7 @@ type AnyContributionItem = {
     createdBy?: ContributionAuthorBase | null;
     profile: { id?: string; url?: string; displayName: string };
     markdown?: string;
+    signatures?: Array<{ id: string; document?: { id: string } | null }>;
   } | null;
   link?: {
     id: string;
@@ -177,6 +180,7 @@ export function mapAnyContributionToCardData(
       href: memo.profile.url,
       markdownContent: memo.markdown,
       memoId: memo.id,
+      signedCopiesCount: memo.signatures?.filter(signature => signature.document).length ?? 0,
       author: extractAuthor(memo.createdBy),
       createdDate: toDateString(memo.createdDate, locale),
     };

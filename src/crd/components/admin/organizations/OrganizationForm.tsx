@@ -5,7 +5,7 @@ import { AdminFormField } from '@/crd/forms/AdminFormField';
 import { AdminFormSection } from '@/crd/forms/AdminFormSection';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { type ReferenceRow, ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
-import { isValidEmailOrEmpty, isValidUrlOrEmpty } from '@/crd/lib/validators';
+import { isValidEmailOrEmpty, isValidNameId, isValidUrlOrEmpty } from '@/crd/lib/validators';
 import { Button } from '@/crd/primitives/button';
 import { Input } from '@/crd/primitives/input';
 
@@ -70,7 +70,10 @@ export function OrganizationForm({
 
   const emailValid = isValidEmailOrEmpty(values.contactEmail);
   const websiteValid = isValidUrlOrEmpty(values.website);
-  const nameIdValid = mode === 'edit' || Boolean(values.nameID.trim());
+  // The alias is read-only in edit mode, so it is only validated on create.
+  const nameIdValid = mode === 'edit' || isValidNameId(values.nameID);
+  // Don't shout at an alias the admin has not finished typing yet.
+  const showNameIdError = mode === 'create' && Boolean(values.nameID.trim()) && !nameIdValid;
   const canSubmit = Boolean(values.displayName.trim()) && nameIdValid && emailValid && websiteValid;
 
   return (
@@ -82,7 +85,12 @@ export function OrganizationForm({
       }}
     >
       <AdminFormSection title={t('orgForm.identity')}>
-        <AdminFormField id={ids.nameID} label={t('orgForm.nameID')} required={mode === 'create'}>
+        <AdminFormField
+          id={ids.nameID}
+          label={t('orgForm.nameID')}
+          required={mode === 'create'}
+          error={showNameIdError ? t('orgForm.invalidNameID') : undefined}
+        >
           <Input
             id={ids.nameID}
             value={values.nameID}
@@ -91,6 +99,7 @@ export function OrganizationForm({
             readOnly={mode === 'edit'}
             className={mode === 'edit' ? 'bg-muted/50 font-mono' : 'font-mono'}
             required={mode === 'create'}
+            aria-invalid={showNameIdError}
           />
         </AdminFormField>
         <AdminFormField id={ids.displayName} label={t('orgForm.displayName')} required={true}>

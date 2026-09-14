@@ -144,6 +144,10 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
         ? callout.framing.whiteboard?.profile.preview?.uri
         : undefined,
     framingMemoMarkdown: callout.framing.type === CalloutFramingType.Memo ? callout.framing.memo?.markdown : undefined,
+    memoSignedCopiesCount:
+      callout.framing.type === CalloutFramingType.Memo
+        ? callout.framing.memo?.signatures?.filter(signature => signature.document).length
+        : undefined,
     framingMediaGallery:
       callout.framing.type === CalloutFramingType.MediaGallery
         ? (() => {
