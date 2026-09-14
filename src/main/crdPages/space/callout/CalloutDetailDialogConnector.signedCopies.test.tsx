@@ -1,16 +1,42 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { ReactNode } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { type ComponentType, type ReactNode, useEffect } from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
+
+const contributionQueryState = vi.hoisted(() => ({
+  loading: false,
+  error: undefined as Error | undefined,
+  contributionId: 'contribution-1',
+  memoId: 'contribution-memo-1',
+  query: vi.fn(),
+}));
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
 }));
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useCalloutContributionQuery: () => ({ data: undefined, loading: false }),
+  useCalloutContributionQuery: (options: { variables: { includeMemo?: boolean } }) => {
+    if (!options.variables.includeMemo) return { data: undefined, loading: false };
+    contributionQueryState.query(options);
+    return {
+      data:
+        contributionQueryState.loading || contributionQueryState.error
+          ? undefined
+          : {
+              lookup: {
+                contribution: {
+                  id: contributionQueryState.contributionId,
+                  memo: { id: contributionQueryState.memoId },
+                },
+              },
+            },
+      loading: contributionQueryState.loading,
+      error: contributionQueryState.error,
+    };
+  },
   useDeleteContributionMutation: () => [vi.fn()],
   useMemoMarkdownLazyQuery: () => [vi.fn()],
 }));
@@ -82,7 +108,25 @@ vi.mock('@/main/crdPages/memo/MemoSignedCopiesDialogConnector', () => ({
     ) : null,
 }));
 vi.mock('@/main/crdPages/memo/CrdMemoDialog', () => ({
-  CrdMemoDialog: (props: { open: boolean }) => (props.open ? <div data-testid="memo-editor">memo editor</div> : null),
+  CrdMemoDialog: (props: {
+    open: boolean;
+    memoId: string;
+    refreshAfterSigningAttemptId?: string;
+    onEditorMounted?: (focusTarget: HTMLElement) => void;
+  }) => {
+    useEffect(() => {
+      if (props.open) props.onEditorMounted?.(document.createElement('div'));
+    }, [props.open, props.onEditorMounted]);
+    return props.open ? (
+      <div
+        data-testid="memo-editor"
+        data-memo-id={props.memoId}
+        data-refresh-attempt-id={props.refreshAfterSigningAttemptId}
+      >
+        memo editor
+      </div>
+    ) : null;
+  },
 }));
 
 vi.mock('./CalloutCommentsConnector', () => ({}));
@@ -100,7 +144,27 @@ vi.mock('./LinkContributionAddConnector', () => ({}));
 vi.mock('./LinkContributionEditConnector', () => ({}));
 vi.mock('./MediaGalleryFramingConnector', () => ({}));
 vi.mock('./MemoContributionAddConnector', () => ({}));
-vi.mock('./MemoContributionConnector', () => ({}));
+vi.mock('./MemoContributionConnector', () => ({
+  MemoContributionConnector: (props: {
+    open: boolean;
+    contributionId: string;
+    memoId: string;
+    refreshAfterSigningAttemptId?: string;
+    onEditorMounted?: (focusTarget: HTMLElement) => void;
+  }) => {
+    useEffect(() => {
+      if (props.open) props.onEditorMounted?.(document.createElement('div'));
+    }, [props.open, props.onEditorMounted]);
+    return props.open ? (
+      <div
+        data-testid="contribution-memo-editor"
+        data-contribution-id={props.contributionId}
+        data-memo-id={props.memoId}
+        data-refresh-attempt-id={props.refreshAfterSigningAttemptId}
+      />
+    ) : null;
+  },
+}));
 vi.mock('./ContributionGridConnector', () => ({
   ContributionGridConnector: (props: { onOpenMemoSignedCopies?: (memoId: string) => void }) =>
     props.onOpenMemoSignedCopies ? (
@@ -239,5 +303,252 @@ describe('CalloutDetailDialogConnector framing signed copies', () => {
 
     expect(screen.getByTestId('signed-copies-dialog')).toHaveAttribute('data-overlay-class', 'z-[120]');
     expect(screen.getByTestId('signed-copies-dialog')).toHaveAttribute('data-content-class', 'z-[120]');
+  });
+});
+
+type MemoSigningRestoreIntent = {
+  attemptId: string;
+  calloutId: string;
+  memoId: string;
+  kind: 'framing' | 'contribution';
+  contributionId?: string;
+  refreshMemo: boolean;
+};
+
+const RestoreCapableCalloutDetailDialogConnector = CalloutDetailDialogConnector as unknown as ComponentType<{
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  callout: never;
+  initialContributionId?: string;
+  memoSigningRestore?: MemoSigningRestoreIntent;
+  onMemoSigningRestoreConsumed?: (attemptId: string, focusTarget?: HTMLElement) => void;
+}>;
+
+const memoCallout = {
+  id: 'callout-1',
+  draft: false,
+  contributions: [],
+  framing: {
+    type: CalloutFramingType.Memo,
+    profile: { displayName: 'Decision' },
+    memo: { id: 'memo-1', signatures: [] },
+  },
+  settings: {
+    framing: { commentsEnabled: true },
+    contribution: {
+      allowedTypes: [CalloutContributionType.Memo],
+      enabled: false,
+      commentsEnabled: false,
+    },
+  },
+} as never;
+
+beforeEach(() => {
+  contributionQueryState.loading = false;
+  contributionQueryState.error = undefined;
+  contributionQueryState.contributionId = 'contribution-1';
+  contributionQueryState.memoId = 'contribution-memo-1';
+  contributionQueryState.query.mockClear();
+});
+
+describe('CalloutDetailDialogConnector memo-signing restoration', () => {
+  it('synchronizes a late framing restore once and carries the exact success refresh signal', async () => {
+    const onConsumed = vi.fn();
+    const view = render(
+      <RestoreCapableCalloutDetailDialogConnector
+        open={true}
+        onOpenChange={vi.fn()}
+        callout={memoCallout}
+        initialContributionId="contribution-1"
+        onMemoSigningRestoreConsumed={onConsumed}
+      />
+    );
+    expect(screen.queryByTestId('memo-editor')).not.toBeInTheDocument();
+
+    view.rerender(
+      <RestoreCapableCalloutDetailDialogConnector
+        open={true}
+        onOpenChange={vi.fn()}
+        callout={memoCallout}
+        initialContributionId="contribution-1"
+        memoSigningRestore={{
+          attemptId: 'attempt-1',
+          calloutId: 'callout-1',
+          memoId: 'memo-1',
+          kind: 'framing',
+          refreshMemo: true,
+        }}
+        onMemoSigningRestoreConsumed={onConsumed}
+      />
+    );
+
+    expect(await screen.findByTestId('memo-editor')).toHaveAttribute('data-memo-id', 'memo-1');
+    expect(screen.getByTestId('memo-editor')).toHaveAttribute('data-refresh-attempt-id', 'attempt-1');
+    expect(onConsumed).toHaveBeenCalledOnce();
+    expect(onConsumed).toHaveBeenCalledWith('attempt-1', expect.any(HTMLElement));
+  });
+
+  it('restores only an exact contribution wrapper and memo pair after the callout is mounted', async () => {
+    const onConsumed = vi.fn();
+    const view = render(
+      <RestoreCapableCalloutDetailDialogConnector
+        open={true}
+        onOpenChange={vi.fn()}
+        callout={memoCallout}
+        initialContributionId="contribution-1"
+        onMemoSigningRestoreConsumed={onConsumed}
+      />
+    );
+
+    view.rerender(
+      <RestoreCapableCalloutDetailDialogConnector
+        open={true}
+        onOpenChange={vi.fn()}
+        callout={memoCallout}
+        initialContributionId="contribution-1"
+        memoSigningRestore={{
+          attemptId: 'attempt-2',
+          calloutId: 'callout-1',
+          contributionId: 'contribution-1',
+          memoId: 'contribution-memo-1',
+          kind: 'contribution',
+          refreshMemo: true,
+        }}
+        onMemoSigningRestoreConsumed={onConsumed}
+      />
+    );
+
+    expect(await screen.findByTestId('contribution-memo-editor')).toHaveAttribute(
+      'data-contribution-id',
+      'contribution-1'
+    );
+    expect(screen.getByTestId('contribution-memo-editor')).toHaveAttribute('data-memo-id', 'contribution-memo-1');
+    expect(screen.getByTestId('contribution-memo-editor')).toHaveAttribute('data-refresh-attempt-id', 'attempt-2');
+    expect(onConsumed).toHaveBeenCalledWith('attempt-2', expect.any(HTMLElement));
+    expect(contributionQueryState.query).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variables: expect.objectContaining({ contributionId: 'contribution-1', includeMemo: true }),
+      })
+    );
+  });
+
+  it('rejects a stored contribution memo id that does not match the loaded contribution entity', async () => {
+    const onConsumed = vi.fn();
+    contributionQueryState.memoId = 'different-memo';
+
+    render(
+      <RestoreCapableCalloutDetailDialogConnector
+        open={true}
+        onOpenChange={vi.fn()}
+        callout={memoCallout}
+        initialContributionId="contribution-1"
+        memoSigningRestore={{
+          attemptId: 'attempt-mismatch',
+          calloutId: 'callout-1',
+          contributionId: 'contribution-1',
+          memoId: 'contribution-memo-1',
+          kind: 'contribution',
+          refreshMemo: true,
+        }}
+        onMemoSigningRestoreConsumed={onConsumed}
+      />
+    );
+
+    await waitFor(() => expect(onConsumed).toHaveBeenCalledWith('attempt-mismatch'));
+    expect(screen.queryByTestId('contribution-memo-editor')).not.toBeInTheDocument();
+  });
+
+  it('waits for the exact contribution query before restoring its memo', async () => {
+    const onConsumed = vi.fn();
+    contributionQueryState.loading = true;
+    const restore = {
+      attemptId: 'attempt-loading',
+      calloutId: 'callout-1',
+      contributionId: 'contribution-1',
+      memoId: 'contribution-memo-1',
+      kind: 'contribution' as const,
+      refreshMemo: true,
+    };
+    const view = render(
+      <RestoreCapableCalloutDetailDialogConnector
+        open={true}
+        onOpenChange={vi.fn()}
+        callout={memoCallout}
+        initialContributionId="contribution-1"
+        memoSigningRestore={restore}
+        onMemoSigningRestoreConsumed={onConsumed}
+      />
+    );
+
+    expect(screen.queryByTestId('contribution-memo-editor')).not.toBeInTheDocument();
+    expect(onConsumed).not.toHaveBeenCalled();
+
+    contributionQueryState.loading = false;
+    view.rerender(
+      <RestoreCapableCalloutDetailDialogConnector
+        open={true}
+        onOpenChange={vi.fn()}
+        callout={memoCallout}
+        initialContributionId="contribution-1"
+        memoSigningRestore={restore}
+        onMemoSigningRestoreConsumed={onConsumed}
+      />
+    );
+
+    expect(await screen.findByTestId('contribution-memo-editor')).toHaveAttribute(
+      'data-memo-id',
+      'contribution-memo-1'
+    );
+    expect(onConsumed).toHaveBeenCalledWith('attempt-loading', expect.any(HTMLElement));
+  });
+
+  it('rejects restoration without opening a memo when the contribution query fails', async () => {
+    const onConsumed = vi.fn();
+    contributionQueryState.error = new Error('not available');
+
+    render(
+      <RestoreCapableCalloutDetailDialogConnector
+        open={true}
+        onOpenChange={vi.fn()}
+        callout={memoCallout}
+        initialContributionId="contribution-1"
+        memoSigningRestore={{
+          attemptId: 'attempt-error',
+          calloutId: 'callout-1',
+          contributionId: 'contribution-1',
+          memoId: 'contribution-memo-1',
+          kind: 'contribution',
+          refreshMemo: true,
+        }}
+        onMemoSigningRestoreConsumed={onConsumed}
+      />
+    );
+
+    await waitFor(() => expect(onConsumed).toHaveBeenCalledWith('attempt-error'));
+    expect(screen.queryByTestId('contribution-memo-editor')).not.toBeInTheDocument();
+  });
+
+  it('acknowledges mismatched framing context without opening an editor', async () => {
+    const onConsumed = vi.fn();
+
+    render(
+      <RestoreCapableCalloutDetailDialogConnector
+        open={true}
+        onOpenChange={vi.fn()}
+        callout={memoCallout}
+        memoSigningRestore={{
+          attemptId: 'attempt-3',
+          calloutId: 'callout-1',
+          memoId: 'different-memo',
+          kind: 'framing',
+          refreshMemo: true,
+        }}
+        onMemoSigningRestoreConsumed={onConsumed}
+      />
+    );
+
+    await waitFor(() => expect(onConsumed).toHaveBeenCalledWith('attempt-3'));
+    expect(screen.queryByTestId('memo-editor')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('contribution-memo-editor')).not.toBeInTheDocument();
   });
 });

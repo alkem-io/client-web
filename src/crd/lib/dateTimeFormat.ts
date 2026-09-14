@@ -1,13 +1,15 @@
 import type { Locale } from 'date-fns';
-import { format, formatDistanceToNow, formatDistanceToNowStrict } from 'date-fns';
+import { format, formatDistanceToNow, formatDistanceToNowStrict, formatISO, parseISO } from 'date-fns';
 
 /**
- * Reusable date/time formatters for the CRD layer. Three variants — pick the
+ * Reusable date/time formatters for the CRD layer. Four variants — pick the
  * one whose semantics match the surface:
  *
  * - `formatAbsoluteDateTime` — comments, audit logs, anything that benefits
  *   from a precise timestamp ("13/05/2026, 15:51:44"). Mirrors MUI's
  *   `toLocaleString`-driven comment timestamp.
+ * - `formatMachineDateTime` — ISO 8601 values for machine-readable HTML
+ *   attributes such as `time[datetime]`.
  * - `formatRelativeFromNow` — preview headers, "X ago" affordances where the
  *   approximate distance is more useful than the precise time. Equivalent to
  *   MUI's `formatTimeElapsed('long')` ("about 1 hour ago", "less than a minute ago").
@@ -22,7 +24,7 @@ import { format, formatDistanceToNow, formatDistanceToNowStrict } from 'date-fns
 
 const toDate = (input: Date | string | number | null | undefined): Date | undefined => {
   if (input === null || input === undefined) return undefined;
-  const parsed = input instanceof Date ? input : new Date(input);
+  const parsed = input instanceof Date ? input : typeof input === 'string' ? parseISO(input) : new Date(input);
   return Number.isNaN(parsed.getTime()) ? undefined : parsed;
 };
 
@@ -34,6 +36,12 @@ export function formatAbsoluteDateTime(
   const date = toDate(input);
   if (!date) return undefined;
   return format(date, 'P, HH:mm:ss', locale ? { locale } : undefined);
+}
+
+/** ISO 8601 machine-readable datetime for the HTML `time` element. */
+export function formatMachineDateTime(input: Date | string | number | null | undefined): string | undefined {
+  const date = toDate(input);
+  return date ? formatISO(date) : undefined;
 }
 
 /** "about 1 hour ago", "less than a minute ago", "5 days ago". */
