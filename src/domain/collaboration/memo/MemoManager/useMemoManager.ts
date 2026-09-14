@@ -5,6 +5,7 @@ interface useMemoManagerProvided {
   memo: MemoModelFull | undefined;
   loading: boolean;
   refreshMarkdown: () => Promise<void>;
+  refreshMemo: () => Promise<void>;
 }
 
 interface useMemoManagerProps {
@@ -12,8 +13,8 @@ interface useMemoManagerProps {
 }
 
 const useMemoManager = ({ id }: useMemoManagerProps): useMemoManagerProvided => {
-  const { data, loading } = useMemoDetailsQuery({
-    variables: { id: id! },
+  const { data, loading, refetch } = useMemoDetailsQuery({
+    variables: { id: id ?? '' },
     skip: !id,
   });
 
@@ -26,12 +27,19 @@ const useMemoManager = ({ id }: useMemoManagerProps): useMemoManagerProvided => 
     }
   };
 
+  const refreshMemo = async () => {
+    if (id) {
+      await refetch({ id });
+    }
+  };
+
   const memo: MemoModelFull | undefined = data?.lookup.memo;
 
   return {
     memo,
     loading,
     refreshMarkdown,
+    refreshMemo,
   };
 };
 

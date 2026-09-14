@@ -24,6 +24,10 @@ export type OrgAuthorizationRoleSlot = {
   loadingCurrent: boolean;
   loadingAvailable: boolean;
   updating: boolean;
+  /** Tooltip copy when the add controls are gated; undefined when permitted. */
+  addDisabledReason?: string;
+  /** Tooltip copy when the remove controls are gated; undefined when permitted. */
+  removeDisabledReason?: string;
 };
 
 export type OrgAuthorizationTabViewProps = {
@@ -93,6 +97,8 @@ export function OrgAuthorizationTabView(props: OrgAuthorizationTabViewProps) {
             loadingCurrent={props.admin.loadingCurrent}
             loadingAvailable={props.admin.loadingAvailable}
             updating={props.admin.updating}
+            addDisabledReason={props.admin.addDisabledReason}
+            removeDisabledReason={props.admin.removeDisabledReason}
             labels={adminLabels}
           />
         </TabsContent>
@@ -109,6 +115,8 @@ export function OrgAuthorizationTabView(props: OrgAuthorizationTabViewProps) {
             loadingCurrent={props.owner.loadingCurrent}
             loadingAvailable={props.owner.loadingAvailable}
             updating={props.owner.updating}
+            addDisabledReason={props.owner.addDisabledReason}
+            removeDisabledReason={props.owner.removeDisabledReason}
             labels={ownerLabels}
           />
         </TabsContent>

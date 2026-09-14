@@ -93,9 +93,10 @@
       "org": {
         "profile": "Profil",
         "account": "Compte",
-        "community": "Communauté",
+        "community": "Associés",
         "authorization": "Autorisation",
-        "settings": "Paramètres"
+        "settings": "Paramètres",
+        "invitations": "Invitations"
       },
       "vc": {
         "profile": "Profil",
@@ -246,6 +247,10 @@
       "description": "Gérez les passkeys et les identifiants WebAuthn de votre compte.",
       "notEnabled": "WebAuthn / Passkey n'est pas activé pour ce compte.",
       "errorDescription": "Impossible de charger les paramètres de sécurité — essayez de recharger la page.",
+      "sessionExpired": {
+        "description": "Votre session auprès de notre fournisseur de connexion a expiré, ces paramètres ne peuvent donc pas être chargés. Actualiser la page n'y changera rien : déconnectez-vous puis reconnectez-vous pour la rétablir. Le reste d'Alkemio continue de fonctionner entre-temps.",
+        "action": "Se déconnecter et se reconnecter"
+      },
       "password": {
         "title": "Changer le mot de passe",
         "description": "Mettez à jour le mot de passe utilisé pour vous connecter à votre compte.",
@@ -331,6 +336,96 @@
           "loadError": "Impossible de charger vos clés API — essayez de recharger la page.",
           "retry": "Réessayer"
         }
+      },
+      "connectedAccounts": {
+        "title": "Comptes connectés",
+        "description": "Tous les moyens actuels de vous connecter à ce compte.",
+        "provider": {
+          "notConnected": "Non connecté",
+          "connected": "Connecté"
+        },
+        "actions": {
+          "connect": "Connecter",
+          "connectAria": "Connecter {{provider}}",
+          "disconnect": "Déconnecter",
+          "disconnectAria": "Déconnecter {{provider}}"
+        },
+        "confirmDisconnect": {
+          "title": "Déconnecter {{provider}} ?",
+          "description": "Vous ne pourrez plus vous connecter avec {{provider}}. Si vous le reconnectez plus tard et que le fournisseur a modifié la façon dont il vous identifie, cette connexion exacte pourrait ne pas être récupérable.",
+          "confirm": "Déconnecter"
+        },
+        "locked": {
+          "reason": "C'est actuellement votre seul moyen de vous connecter — ajoutez d'abord un mot de passe ou une clé d'accès ci-dessous avant de pouvoir le déconnecter."
+        },
+        "unavailable": {
+          "message": "Nous ne pouvons pas afficher vos méthodes de connexion pour le moment. Réessayez dans un instant - pas besoin de recharger la page.",
+          "retry": "Réessayer"
+        },
+        "sessionExpired": {
+          "message": "Votre session auprès de notre fournisseur de connexion a expiré, vos méthodes de connexion ne peuvent donc pas être chargées. Réessayer n'y changera rien : utilisez l'action de déconnexion ci-dessous pour la rétablir."
+        },
+        "messages": {
+          "changesSaved": "Vos modifications ont été enregistrées !",
+          "identityAlreadyLinked": "Cette identité est déjà connectée à un autre compte Alkemio. Aucun des deux comptes n'a été modifié.",
+          "linked": "{{provider}} connecté.",
+          "unlinked": "{{provider}} déconnecté.",
+          "connectFailed": "Impossible de connecter {{provider}} — réessayez.",
+          "disconnectFailed": "Impossible de déconnecter {{provider}} — réessayez.",
+          "reauthRequiredConnect": "Confirmez qu'il s'agit bien de vous, puis réessayez de connecter {{provider}}.",
+          "reauthRequiredDisconnect": "Confirmez qu'il s'agit bien de vous, puis réessayez de déconnecter {{provider}}."
+        },
+        "credentials": {
+          "password": {
+            "label": "Mot de passe",
+            "set": "Défini",
+            "notSet": "Non défini",
+            "manage": "Changer le mot de passe"
+          },
+          "passkey": {
+            "label": "Clé d'accès",
+            "set": "Définie",
+            "notSet": "Non définie",
+            "manage": "Gérer les clés d'accès"
+          }
+        }
+      },
+      "deleteAccount": {
+        "title": "Supprimer le compte",
+        "description": "Supprimez définitivement votre compte Alkemio.",
+        "cardBody": "La suppression de votre compte est immédiate et définitive. Votre profil, vos paramètres, vos fichiers téléversés et vos identifiants de connexion sont supprimés, et cette action est irréversible.",
+        "trigger": "Supprimer le compte",
+        "preflightError": "Impossible de vérifier si votre compte peut être supprimé - réessayez.",
+        "reauthFailed": "Impossible d'actualiser votre session. Déconnectez-vous puis reconnectez-vous, et réessayez ensuite.",
+        "confirm": {
+          "title": "Supprimer votre compte ?",
+          "description": "Cette action supprime définitivement votre compte Alkemio. Elle est irréversible.",
+          "instructions": "Saisissez votre nom - {{name}} - pour confirmer.",
+          "namePlaceholder": "Saisissez votre nom pour confirmer",
+          "subscriptionNotice": "Un abonnement actif est associé à votre compte. La suppression se poursuivra ; la facturation est régularisée séparément.",
+          "cancel": "Annuler",
+          "confirmLabel": "Supprimer mon compte",
+          "deleting": "Suppression…",
+          "genericError": "Impossible de supprimer votre compte - réessayez."
+        },
+        "blocked": {
+          "title": "Vous ne pouvez pas encore supprimer votre compte",
+          "description": "Votre compte contient encore des éléments à résoudre au préalable.",
+          "truncatedNotice": "Affichage des {{count}} premiers éléments sur {{total}}.",
+          "resolveLink": "Gérer mes ressources de compte",
+          "supportLink": "Contacter le support",
+          "close": "Fermer",
+          "soleOwner": {
+            "notice": "Vous êtes le seul propriétaire de {{name}}. Désignez un autre propriétaire avant de supprimer votre compte, ou contactez le support pour obtenir de l'aide."
+          },
+          "kinds": {
+            "ACCOUNT_SPACE": "Space",
+            "ACCOUNT_VIRTUAL_CONTRIBUTOR": "Contributeur virtuel",
+            "ACCOUNT_INNOVATION_PACK": "Pack d'innovation",
+            "ACCOUNT_INNOVATION_HUB": "Hub d'innovation",
+            "SOLE_ORGANIZATION_OWNER": "Organisation (propriétaire unique)"
+          }
+        }
       }
     },
     "settings": {
@@ -414,6 +509,7 @@
         "space": {
           "communicationUpdates": "Recevoir une notification lorsqu'une nouvelle communication est partagée dans une communauté",
           "collaborationCalloutPublished": "Recevoir une notification lorsqu'un callout est publié dans une communauté dont je suis membre",
+          "collaborationCalloutReaction": "Recevoir une notification lorsque quelqu'un réagit à mon Post avec un emoji",
           "collaborationCalloutPostContributionComment": "Recevoir une notification lorsqu'un commentaire est ajouté à une publication que je suis",
           "collaborationCalloutContributionCreated": "Recevoir une notification lorsqu'une nouvelle contribution est créée sur un callout",
           "collaborationCalloutComment": "Recevoir une notification lorsqu'un nouveau commentaire est ajouté à un callout que je suis",
@@ -426,6 +522,7 @@
         "spaceAdmin": {
           "communityApplicationReceived": "Recevoir une notification lorsqu'une nouvelle candidature à la communauté est soumise",
           "communityNewMember": "Recevoir une notification lorsqu'un nouveau membre rejoint la communauté",
+          "communityInvitationResponse": "Recevoir une notification lorsqu'une personne accepte ou refuse une invitation à un Space que vous administrez",
           "collaborationCalloutContributionCreated": "Recevoir une notification lorsqu'une nouvelle contribution est créée sur un callout",
           "communicationMessageReceived": "Recevoir une notification lorsqu'un message de la communauté est reçu",
           "userEmailChanged": "Recevoir une notification lorsque l'adresse e-mail de connexion d'un membre d'un Space que vous administrez est modifiée"
@@ -452,7 +549,8 @@
         },
         "organization": {
           "adminMentioned": "Recevoir une notification lorsque mon organisation est mentionnée",
-          "adminMessageReceived": "Recevoir les messages directs adressés à mon organisation"
+          "adminMessageReceived": "Recevoir les messages directs adressés à mon organisation",
+          "adminSpaceCommunityInvitation": "Recevoir une notification lorsqu'une organisation que j'administre est invitée à rejoindre un espace, et lorsqu'elle le rejoint"
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Recevoir une notification lorsqu'un manager VC est invité à rejoindre une communauté"
@@ -720,7 +818,9 @@
       "membership": {
         "title": "Adhésion",
         "allowDomainLabel": "Autoriser les utilisateurs ayant le domaine de l'organisation à rejoindre",
-        "allowDomainCaption": "Lorsque activé, les utilisateurs dont le domaine de l'e-mail correspond à celui de l'organisation peuvent rejoindre sans invitation."
+        "allowDomainCaption": "Lorsque activé, les utilisateurs dont le domaine de l'e-mail correspond à celui de l'organisation peuvent rejoindre sans invitation.",
+        "allowSpaceInvitationsLabel": "Autoriser les espaces à inviter cette organisation",
+        "allowSpaceInvitationsCaption": "Une fois activé, les administrateurs d'espace peuvent inviter cette organisation à rejoindre leur communauté d'espace."
       },
       "privacy": {
         "title": "Confidentialité",
@@ -728,6 +828,27 @@
         "contributionRolesCaption": "Lorsque activé, les attributions de rôles de l'organisation (Administrateur, Propriétaire, Associé) sont visibles sur le profil public."
       },
       "errorToast": "Échec de l'enregistrement de la préférence — réessayez"
+    },
+    "invitations": {
+      "pageTitle": "Invitations",
+      "title": "Invitations aux espaces",
+      "empty": "Aucune invitation à un espace en attente.",
+      "invitedBy": "Invité par {{name}}",
+      "invitedByUnknown": "Invité par un administrateur d'espace",
+      "date": "Date",
+      "role": "Rôle",
+      "roleMember": "Membre",
+      "roleMemberLead": "Membre + Lead",
+      "spacesToJoin": "L'acceptation entraîne l'adhésion à : {{spaces}}",
+      "accept": "Accepter",
+      "decline": "Refuser",
+      "acceptConfirmTitle": "Accepter cette invitation ?",
+      "acceptConfirmBody": "Votre organisation rejoindra {{spaceName}} en tant que {{role}}.",
+      "acceptConfirmAction": "Accepter l'invitation",
+      "declineConfirmTitle": "Refuser cette invitation ?",
+      "declineConfirmBody": "{{spaceName}} sera informé que votre organisation a refusé. Cette action est irréversible — un administrateur du Space devrait envoyer une nouvelle invitation.",
+      "declineConfirmAction": "Refuser l'invitation",
+      "errorToast": "Impossible de mettre à jour l'invitation — réessayez"
     }
   },
   "vc": {

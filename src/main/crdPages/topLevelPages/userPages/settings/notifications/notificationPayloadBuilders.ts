@@ -66,6 +66,13 @@ const buildSpace = (
     value,
     server?.collaborationCalloutPublished
   ),
+  collaborationCalloutReaction: channel(
+    type,
+    property,
+    'collaborationCalloutReaction',
+    value,
+    server?.collaborationCalloutReaction
+  ),
   collaborationCalloutPostContributionComment: channel(
     type,
     property,
@@ -121,6 +128,7 @@ const buildSpace = (
 const preserveSpace = (server: SpaceNotificationSettings | undefined) => ({
   communicationUpdates: preserve(server?.communicationUpdates),
   collaborationCalloutPublished: preserve(server?.collaborationCalloutPublished),
+  collaborationCalloutReaction: preserve(server?.collaborationCalloutReaction),
   collaborationCalloutPostContributionComment: preserve(server?.collaborationCalloutPostContributionComment),
   collaborationCalloutContributionCreated: preserve(server?.collaborationCalloutContributionCreated),
   collaborationCalloutComment: preserve(server?.collaborationCalloutComment),
@@ -145,6 +153,13 @@ const buildSpaceAdmin = (
     server?.communityApplicationReceived
   ),
   communityNewMember: channel(type, property, 'communityNewMember', value, server?.communityNewMember),
+  communityInvitationResponse: channel(
+    type,
+    property,
+    'communityInvitationResponse',
+    value,
+    server?.communityInvitationResponse
+  ),
   collaborationCalloutContributionCreated: channel(
     type,
     property,
@@ -211,6 +226,13 @@ const buildOrganization = (
 ) => ({
   adminMentioned: channel(type, property, 'adminMentioned', value, server?.adminMentioned),
   adminMessageReceived: channel(type, property, 'adminMessageReceived', value, server?.adminMessageReceived),
+  adminSpaceCommunityInvitation: channel(
+    type,
+    property,
+    'adminSpaceCommunityInvitation',
+    value,
+    server?.adminSpaceCommunityInvitation
+  ),
 });
 
 const buildPlatform = (

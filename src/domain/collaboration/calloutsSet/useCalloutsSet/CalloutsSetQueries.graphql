@@ -95,6 +95,12 @@ fragment CalloutDetails on Callout {
     }
     memo {
       ...MemoDetails
+      signatures {
+        id
+        document {
+          id
+        }
+      }
     }
     link {
       ...LinkDetails
@@ -113,7 +119,7 @@ fragment CalloutDetails on Callout {
     id
     defaultDisplayName
     postDescription
-    whiteboardContent
+    whiteboardContentAvailable
   }
   sortOrder
   activity

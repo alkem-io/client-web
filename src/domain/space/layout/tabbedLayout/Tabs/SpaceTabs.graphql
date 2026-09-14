@@ -19,6 +19,7 @@ query SpaceTabs($spaceId: UUID!) {
               visible
               descriptionDisplayMode
               showPublishDetails
+              sidebar
             }
           }
         }

@@ -27,7 +27,7 @@ export function SearchField({ value, onValueChange, placeholder, ariaLabel, clas
         onChange={event => onValueChange(event.target.value)}
         placeholder={placeholder}
         aria-label={ariaLabel ?? placeholder}
-        className="w-full h-10 pl-9 pr-4 border border-border bg-background rounded-lg text-body text-foreground transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary"
+        className="w-full h-10 pl-9 pr-4 border border-border bg-input-background rounded-lg text-body text-foreground transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary"
       />
     </div>
   );

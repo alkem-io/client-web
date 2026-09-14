@@ -39,6 +39,12 @@ type CalloutPostPreviewProps = {
   onDelete?: () => void;
   /** Closing the preview returns to the contributions grid in the parent. */
   onClose?: () => void;
+  /**
+   * De-emphasise the creator: hide the author avatar and prefix the name with
+   * "Created by". Used on Tasks boards, where a task is worked by several
+   * assignees and the single creator should not be stressed.
+   */
+  deEmphasizeCreator?: boolean;
   className?: string;
 };
 
@@ -56,6 +62,7 @@ export function CalloutPostPreview({
   shareSlot,
   onDelete,
   onClose,
+  deEmphasizeCreator,
   className,
 }: CalloutPostPreviewProps) {
   const { t } = useTranslation('crd-space');
@@ -70,7 +77,9 @@ export function CalloutPostPreview({
     >
       <header className="flex items-start justify-between gap-3 px-4 py-3 border-b border-border bg-primary/5">
         <div className="flex items-center gap-3 min-w-0">
-          {post.author &&
+          {/* The avatar is hidden when the creator is de-emphasised (Tasks board). */}
+          {!deEmphasizeCreator &&
+            post.author &&
             (post.author.profileUrl ? (
               <a
                 href={post.author.profileUrl}
@@ -95,6 +104,7 @@ export function CalloutPostPreview({
             </h3>
             {(post.author || post.timestamp) && (
               <p className="text-caption text-muted-foreground truncate">
+                {post.author && deEmphasizeCreator && `${t('postPreview.createdBy')} `}
                 {post.author?.profileUrl ? (
                   <a
                     href={post.author.profileUrl}

@@ -52,6 +52,7 @@ export interface useCommunityAdminProvided {
         };
       }[]
     >;
+    inviteContributors: (inviteData: InviteContributorsData) => Promise<unknown>;
   };
   virtualContributorAdmin: {
     members: RoleSetMemberVirtualContributorFragmentWithRoles[];
@@ -73,10 +74,19 @@ export interface useCommunityAdminProvided {
   permissions: {
     canAddUsers: boolean;
     canInvite: boolean;
+    canInviteOrganizations: boolean;
     canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
     canAddVirtualContributorsFromAccount: boolean;
   };
+  /**
+   * Raw privileges on the role set, alongside the derived booleans above.
+   *
+   * Consumers that gate a control need this rather than the booleans: a boolean cannot
+   * distinguish "still loading" from "denied" from "no privilege list returned", which
+   * the gating UI must show differently (spec FR-008 / Edge Case 3).
+   */
+  myPrivileges: AuthorizationPrivilege[] | undefined;
   loading: boolean;
   errored: boolean;
 }
@@ -199,6 +209,11 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     // Inviting (incl. by email) is gated by the dedicated invite privilege, which space admins
     // hold even when they lack RolesetEntryRoleAssign (the direct-add privilege reserved for PAs).
     canInvite: authorizationPrivileges.some(priv => priv === AuthorizationPrivilege.RolesetEntryRoleInvite),
+    // Same invite privilege covers organization invitees — distinct from canAddOrganizations
+    // below, which is the platform-admin direct-add path.
+    canInviteOrganizations: authorizationPrivileges.some(
+      priv => priv === AuthorizationPrivilege.RolesetEntryRoleInvite
+    ),
     canAddOrganizations:
       authorizationPrivileges.some(priv => priv === AuthorizationPrivilege.RolesetEntryRoleAssignOrganization) &&
       authorizationPrivileges.some(priv => priv === AuthorizationPrivilege.Grant),
@@ -228,6 +243,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
       onAdd: onAddOrganization,
       onRemove: onRemoveOrganization,
       getAvailable: getAvailableOrganizations,
+      inviteContributors,
     },
     virtualContributorAdmin: {
       members: virtualContributors,
@@ -247,6 +263,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
       onDeletePlatformInvitation: deletePlatformInvitation,
     },
     permissions,
+    myPrivileges: authorizationPrivileges,
     loading: loading || loadingApplicationsAndInvitations,
     errored: erroredMembers || erroredApplicationsAndInvitations,
   };

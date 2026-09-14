@@ -4,6 +4,7 @@ import {
   CalloutFramingType,
   CalloutSelectionMode,
   CalloutVisibility,
+  type CreateCalloutTaskBoardInput,
   PollResultsDetail,
   PollResultsVisibility,
   type UpdateCalloutEntityInput,
@@ -13,7 +14,6 @@ import { ensureHttps } from '@/crd/lib/ensureHttps';
 import type { CalloutCreationType } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import type { MemoFieldSubmittedValues } from '@/domain/collaboration/memo/model/MemoFieldSubmittedValues';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
-import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { contributorCollectionToServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
 import type {
   AllowedActors,
@@ -116,6 +116,12 @@ export type CalloutCreationInput = Omit<CalloutCreationType, 'framing'> & {
   framing: CalloutCreationType['framing'] & {
     memo?: MemoFieldSubmittedValues;
   };
+  /**
+   * When present, creates this callout as a Tasks board. The domain
+   * `CalloutCreationType` omits this additive field, so it lives on the local
+   * extension; the server input (`CreateCalloutOnCalloutsSetInput`) accepts it.
+   */
+  taskBoard?: CreateCalloutTaskBoardInput;
 };
 
 export type MapFormResult = {
@@ -145,7 +151,9 @@ export type MapFormResult = {
  */
 export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options: MapFormOptions): MapFormResult => {
   const framingType = framingChipToServer(values.framingChip);
-  const responseType = responseTypeToServer(values.responseType);
+  // A Tasks board is a POST-only callout regardless of the picked response chip —
+  // the server requires `allowedTypes == [POST]` alongside `taskBoard`.
+  const responseType = values.taskBoard ? CalloutContributionType.Post : responseTypeToServer(values.responseType);
   // `values.tags` is already `string[]` from `TagsInput`. Dedup defensively.
   const tagsArray = Array.from(new Set(values.tags.map(t => t.trim()).filter(Boolean)));
   const hasResponseType = responseType !== undefined;
@@ -219,23 +227,34 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     sendNotification: values.notifyMembers && options.visibility !== CalloutVisibility.Draft,
   };
 
-  // Contribution defaults — spec FR-40..46, D5. Mirror MUI's response-type
-  // filter (CreateCalloutDialog `contributionDefaults` block): only send
-  // `postDescription` for post/memo responses, and ALWAYS send
-  // `whiteboardContent` for whiteboard responses (falling back to the empty
-  // Excalidraw JSON when the user hasn't customised it). The server rejects
-  // whiteboard contributions on callouts that were created without a
-  // `contributionDefaults.whiteboardContent`, which is why this can't be
-  // gated on "user touched the default".
+  // Tasks board: when the form carries explicit columns (a board template was
+  // applied), send them so the new board reproduces the template's column set;
+  // otherwise send an empty input so the server seeds the default columns.
+  if (values.taskBoard) {
+    const columns = values.taskBoardColumns.map(column => column.trim()).filter(Boolean);
+    callout.taskBoard = columns.length > 0 ? { columns } : {};
+  }
+
+  // Contribution defaults carry Markdown or a source whiteboard id only. The server owns the
+  // canonical whiteboard snapshot and media re-home; Yjs bytes never cross this mutation.
   if (hasResponseType) {
     const defaults = values.contributionDefaults;
-    const isWhiteboardResponse = values.responseType === 'whiteboard';
     const isPostOrMemoResponse = values.responseType === 'post' || values.responseType === 'memo';
     const defaultDisplayName = defaults.defaultDisplayName.trim() || undefined;
     const postDescription = isPostOrMemoResponse ? defaults.postDescription.trim() || undefined : undefined;
-    const whiteboardContent = isWhiteboardResponse ? defaults.whiteboardContent || EmptyWhiteboardString : undefined;
-    if (defaultDisplayName || postDescription || whiteboardContent) {
-      callout.contributionDefaults = { defaultDisplayName, postDescription, whiteboardContent };
+    const draftWhiteboardID = values.responseType === 'whiteboard' ? defaults.whiteboardDraft?.whiteboardID : undefined;
+    const sourceWhiteboardID =
+      values.responseType === 'whiteboard' && !draftWhiteboardID ? defaults.sourceWhiteboardId : undefined;
+    const sourceCalloutID =
+      values.responseType === 'whiteboard' && !draftWhiteboardID ? defaults.sourceCalloutId : undefined;
+    if (defaultDisplayName || postDescription || draftWhiteboardID || sourceWhiteboardID || sourceCalloutID) {
+      callout.contributionDefaults = {
+        defaultDisplayName,
+        postDescription,
+        draftWhiteboardID,
+        sourceWhiteboardID,
+        sourceCalloutID,
+      };
     }
   }
 
@@ -262,7 +281,8 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
   // the mutation resolves.
   if (framingType === CalloutFramingType.Whiteboard) {
     callout.framing.whiteboard = {
-      content: values.whiteboardContent,
+      draftWhiteboardID: values.framingWhiteboardDraft?.whiteboardID,
+      sourceWhiteboardID: values.framingWhiteboardDraft ? undefined : values.editMeta?.whiteboardId,
       profile: { displayName: values.title.trim() || options.whiteboardFallbackDisplayName },
       previewSettings: values.whiteboardPreviewSettings,
     };
@@ -362,8 +382,7 @@ export type MapUpdateResult = {
  * - Omits `settings.contribution.allowedTypes` — read-only on edit.
  * - Sends framing profile via `UpdateProfileInput`, reusing tagset + reference
  *   IDs captured in `values.editMeta`.
- * - Whiteboard content travels on `framing.whiteboardContent`, not
- *   `framing.whiteboard` (the server uses the former on update).
+ * - Whiteboard content is edited through the collaborative dialog and never travels here.
  * - Memo content travels on `framing.memoContent` (same scalar, separate
  *   from the create-time `framing.memo.markdown`). On edit, the memo body
  *   is edited through `CrdMemoDialog` so `memoMarkdown` is normally empty —
@@ -472,7 +491,9 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
   };
   if (contributionSettings) settings.contribution = contributionSettings;
 
-  const whiteboardDefault = values.contributionDefaults.whiteboardContent;
+  const defaultWhiteboardDraftID =
+    values.responseType === 'whiteboard' ? values.contributionDefaults.whiteboardDraft?.whiteboardID : undefined;
+
   const contributionDefaultsInput: UpdateCalloutEntityInput['contributionDefaults'] | undefined = hasResponseType
     ? {
         defaultDisplayName: values.contributionDefaults.defaultDisplayName.trim() || undefined,
@@ -480,7 +501,19 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
           values.responseType === 'post' || values.responseType === 'memo'
             ? values.contributionDefaults.postDescription.trim() || undefined
             : undefined,
-        whiteboardContent: values.responseType === 'whiteboard' && whiteboardDefault ? whiteboardDefault : undefined,
+        draftWhiteboardID: defaultWhiteboardDraftID,
+        sourceWhiteboardID:
+          values.responseType === 'whiteboard' && !defaultWhiteboardDraftID
+            ? values.contributionDefaults.sourceWhiteboardId
+            : undefined,
+        sourceCalloutID:
+          values.responseType === 'whiteboard' && !defaultWhiteboardDraftID
+            ? values.contributionDefaults.sourceCalloutId
+            : undefined,
+        clearWhiteboardContent:
+          values.responseType === 'whiteboard' && !defaultWhiteboardDraftID
+            ? values.contributionDefaults.clearWhiteboardContent || undefined
+            : undefined,
       }
     : undefined;
 

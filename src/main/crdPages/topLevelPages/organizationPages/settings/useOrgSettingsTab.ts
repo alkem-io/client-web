@@ -2,7 +2,14 @@ import { useLocation } from 'react-router-dom';
 import useNavigate from '@/core/routing/useNavigate';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 
-export const ORG_SETTINGS_TAB_IDS = ['profile', 'account', 'community', 'authorization', 'settings'] as const;
+export const ORG_SETTINGS_TAB_IDS = [
+  'profile',
+  'account',
+  'community',
+  'invitations',
+  'authorization',
+  'settings',
+] as const;
 
 export type OrgSettingsTabId = (typeof ORG_SETTINGS_TAB_IDS)[number];
 

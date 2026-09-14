@@ -1,4 +1,4 @@
-import { FileText, Link as LinkIcon, MessageSquare, Presentation, StickyNote, X } from 'lucide-react';
+import { Columns3, FileText, Link as LinkIcon, MessageSquare, Presentation, StickyNote, X } from 'lucide-react';
 import type { ComponentType, SVGProps } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -51,6 +51,17 @@ export type ResponseTypeChipStripProps = {
    * `undefined` renders all chips.
    */
   allowedChips?: ResponseTypeChipId[];
+  /**
+   * Renders an extra "Tasks" chip alongside the response types (create only).
+   * Selecting it turns the callout into a task board — it is a sibling of the
+   * real response types, not a separate switch. When `tasksActive` no real chip
+   * is shown selected; clicking a real chip switches back to that response type
+   * (the consumer clears the board flag).
+   */
+  showTasksChip?: boolean;
+  tasksActive?: boolean;
+  tasksLabel?: string;
+  onSelectTasks?: () => void;
   className?: string;
 };
 
@@ -60,11 +71,18 @@ export function ResponseTypeChipStrip({
   locked = false,
   disabledChips,
   allowedChips,
+  showTasksChip = false,
+  tasksActive = false,
+  tasksLabel,
+  onSelectTasks,
   className,
 }: ResponseTypeChipStripProps) {
   const { t } = useTranslation('crd-space');
 
   const chips = allowedChips ? CHIPS.filter(chip => allowedChips.includes(chip.id)) : CHIPS;
+  // While the board is selected, no response chip reads as active — the Tasks
+  // chip owns the selection — so a click on any response chip switches to it.
+  const effectiveValue = tasksActive ? 'none' : value;
 
   const handleClick = (chip: Chip) => {
     if (chip.disabled) return;
@@ -75,7 +93,7 @@ export function ResponseTypeChipStrip({
     // disabled — e.g. `document` when the space lacks the office-documents
     // feature — is inert.
     if (disabledChips?.[chip.id]) return;
-    if (chip.id === value) {
+    if (chip.id === effectiveValue) {
       onChange('none');
     } else {
       onChange(chip.id);
@@ -91,7 +109,7 @@ export function ResponseTypeChipStrip({
         className={cn('flex flex-wrap gap-2 overflow-x-auto', className)}
       >
         {chips.map(chip => {
-          const active = value === chip.id;
+          const active = effectiveValue === chip.id;
           const disabledInfo = disabledChips?.[chip.id];
           // A chip is "disabled" when it is statically off (`chip.disabled`, e.g.
           // "coming soon") or entitlement-gated by the consumer (`disabledInfo`).
@@ -138,6 +156,28 @@ export function ResponseTypeChipStrip({
             </button>
           );
         })}
+        {/* Tasks board is a sibling of the response types, not a separate switch.
+            Selecting it makes the callout a board of columns for posts. */}
+        {showTasksChip && (
+          // biome-ignore lint/a11y/useSemanticElements: styled <button>, not <input type="radio">
+          <button
+            type="button"
+            role="radio"
+            aria-checked={tasksActive}
+            aria-label={tasksLabel}
+            onClick={onSelectTasks}
+            className={cn(
+              'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+              tasksActive
+                ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
+                : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground'
+            )}
+          >
+            <Columns3 className="w-4 h-4" aria-hidden="true" />
+            <span>{tasksLabel}</span>
+            {tasksActive && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
+          </button>
+        )}
       </div>
     </div>
   );

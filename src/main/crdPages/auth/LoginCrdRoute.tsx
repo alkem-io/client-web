@@ -1,3 +1,4 @@
+import { formatDuration } from 'date-fns';
 import type { TFunction } from 'i18next';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +23,7 @@ import { useQueryParams } from '@/core/routing/useQueryParams';
 import { resolveInternalReturnPath } from '@/core/utils/links';
 import type { KratosFlowDescriptor, KratosMessage } from '@/crd/components/auth/flowDescriptor';
 import { LoginCard } from '@/crd/components/auth/LoginCard';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import { buildSignUpUrl } from '@/main/routing/urlBuilders';
 import { AuthShellWrapper } from './AuthShellWrapper';
@@ -35,13 +37,36 @@ const ACCOUNT_LOCKOUT_MESSAGE_ID = 9000429;
 // Client-side message id for a passkey ceremony failure.
 const PASSKEY_ERROR_MESSAGE_ID = -1;
 
+/**
+ * Absolute URL that restarts sign-in at the OIDC BFF, preserving the pending
+ * destination.
+ *
+ * FR-017a — the server-side validator requires a same-origin, path-only
+ * `returnTo`. Resolve it against the apex rather than `window.location.origin`:
+ * this page also renders on the identity subdomain (its sign-up / recovery
+ * pages link back to /login), where an apex-absolute returnUrl would be judged
+ * cross-origin and collapse to '/', dropping the destination on every deployed
+ * sign-up.
+ *
+ * The BFF (/api/auth/oidc/*) is apex-only, so the hand-off must be absolute: a
+ * same-origin-relative one on the identity subdomain lands on
+ * identity.<domain>/api/auth/oidc/login, which is unrouted (Traefik sends it to
+ * the SPA catch-all → no OIDC flow). `platformOrigin` is the apex
+ * (`https://<locations.domain>`) and falls back to relative when unknown
+ * (single-host dev). Mirrors `LoginPage`.
+ */
+function buildOidcRestartHref(rawReturnUrl: string, platformOrigin: string | undefined) {
+  const returnTo = resolveInternalReturnPath(rawReturnUrl, platformOrigin) ?? '/';
+  return `${platformOrigin ?? ''}${OIDC_LOGIN_PATH}?returnTo=${encodeURIComponent(returnTo)}`;
+}
+
 function CrdLoginPage({ flow }: { flow?: string }) {
   useTransactionScope({ type: 'authentication' });
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   usePageTitle(t('pages.titles.signIn'));
 
   const navigate = useNavigate();
-  const { flow: loginFlow, loading } = useKratosFlow(FlowTypeName.Login, flow);
+  const { flow: loginFlow, loading, error: loginFlowError } = useKratosFlow(FlowTypeName.Login, flow);
   const { kratosErrors } = (useLocation().state as LocationStateWithKratosErrors | null) ?? {};
   const params = useQueryParams();
   const [passkeyError, setPasskeyError] = useState<string>();
@@ -60,37 +85,40 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   const { returnUrl: storedReturnUrl, setReturnUrl } = useReturnUrl();
   const signUpReturnUrl = returnUrlFromParam ?? storedReturnUrl;
   const platformOrigin = usePlatformOrigin();
-  const isOidcEntry = !flow;
+  // The login-backoff proxy (kratos-webhooks) 303s a locked-out browser to a
+  // flow-less `/login?lockout=true&retry_after=N`. Treating that as a fresh
+  // OIDC entry would immediately redirect away and discard the params before
+  // the lockout notice can render — so a lockout arrival is NOT an OIDC entry;
+  // it renders the notice with a manual way back into sign-in instead.
+  const isLockedOutArrival = params.get('lockout') === 'true';
+  const isOidcEntry = !flow && !isLockedOutArrival;
 
   useLayoutEffect(() => {
     if (!isOidcEntry) return;
     if (returnUrlFromParam) {
       setReturnUrl(returnUrlFromParam);
     }
-    const raw = returnUrlFromParam ?? storedReturnUrl ?? '/';
-    // FR-017a — server-side validator requires a same-origin path-only value.
-    // Resolve against the apex, not `window.location.origin`: this page also
-    // renders on the identity subdomain (see below), where an apex-absolute
-    // returnUrl would otherwise be judged cross-origin and collapse to '/',
-    // dropping the destination on every deployed sign-up.
-    const returnTo = resolveInternalReturnPath(raw, platformOrigin) ?? '/';
-    // The OIDC BFF (/api/auth/oidc/*) is apex-only and called same-origin-relative.
-    // This page also renders on the identity subdomain (its sign-up/recovery pages
-    // link back to /login); a relative replace there would land on
-    // identity.<domain>/api/auth/oidc/login, which is unrouted (Traefik sends it to
-    // the SPA catch-all → no OIDC flow). Always hand off to the apex origin
-    // absolutely. platformOrigin is the apex (`https://<locations.domain>`); falls
-    // back to relative when unknown (single-host dev). Mirrors `LoginPage`.
-    const base = platformOrigin ?? '';
-    window.location.replace(`${base}${OIDC_LOGIN_PATH}?returnTo=${encodeURIComponent(returnTo)}`);
+    window.location.replace(buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin));
   }, [isOidcEntry, returnUrlFromParam, platformOrigin]);
 
   usePasskeyScript(loginFlow?.ui?.nodes);
 
-  const isLockedOut = params.get('lockout') === 'true';
+  const isLockedOut = isLockedOutArrival;
   const retryAfterRaw = Number(params.get('retry_after'));
   const retryAfterSeconds = Number.isFinite(retryAfterRaw) ? Math.max(0, retryAfterRaw) : 0;
-  const lockoutMinutes = Math.max(1, Math.ceil(retryAfterSeconds / 60));
+  // Human-readable remaining time ("2 minutes", "1 minute 50 seconds"),
+  // localized by date-fns through the same locale mapping the rest of CRD uses.
+  // Built from total minutes/seconds rather than `intervalToDuration`: that helper
+  // carries whole hours in its own `hours` field, which this `format` list omits, so
+  // a 3600s lockout formatted to the empty string and 3660s rendered as "1 minute".
+  const lockoutTotalSeconds = Math.max(1, retryAfterSeconds);
+  const lockoutDuration = formatDuration(
+    { minutes: Math.floor(lockoutTotalSeconds / 60), seconds: lockoutTotalSeconds % 60 },
+    {
+      locale: resolveDateFnsLocale(i18n.language),
+      format: ['minutes', 'seconds'],
+    }
+  );
 
   // Email-not-verified → redirect to the verification reminder (parity with LoginPage).
   useEffect(() => {
@@ -125,7 +153,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
         {
           id: ACCOUNT_LOCKOUT_MESSAGE_ID,
           type: 'error',
-          text: t('authentication.lockout', { minutes: lockoutMinutes }),
+          text: t('authentication.lockout', { duration: lockoutDuration }),
         },
       ];
     }
@@ -134,6 +162,30 @@ function CrdLoginPage({ flow }: { flow?: string }) {
     }
     return { ...base, messages };
   })();
+
+  // Locked-out arrival (no flow): render the lockout notice with a manual
+  // re-entry into the OIDC sign-in. No Kratos form is offered — the flow the
+  // hook auto-provisioned is deliberately ignored, both because a Kratos-native
+  // login would bypass Hydra and because the backoff proxy would refuse the
+  // POST anyway. If still locked when the person retries, the proxy bounces
+  // them back here with fresh params.
+  if (!flow && isLockedOutArrival) {
+    return (
+      <AuthShellWrapper>
+        <LoginCard
+          descriptor={undefined}
+          isLoading={false}
+          notice={{
+            text: t('authentication.lockout', { duration: lockoutDuration }),
+            actionLabel: t('authentication.lockoutRetry'),
+            actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
+          }}
+          signUpHref={signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH}
+          forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
+        />
+      </AuthShellWrapper>
+    );
+  }
 
   // OIDC entry: a full-page redirect to the BFF login route is in flight (see
   // the useLayoutEffect above). Show the card in its loading state rather than
@@ -150,6 +202,31 @@ function CrdLoginPage({ flow }: { flow?: string }) {
             // sign-up (bare /sign_up would drop it — they'd land on home).
             signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH
           }
+          forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
+        />
+      </AuthShellWrapper>
+    );
+  }
+
+  // The flow on the URL could not be read — most often Kratos answering 403
+  // `security_csrf_violation` because the anti-CSRF cookie no longer matches
+  // this flow id. Without this branch `descriptor` is undefined and the card
+  // falls back to its loading state, so a terminal failure is indistinguishable
+  // from "still preparing" and the person waits for ever. Offer the only
+  // recovery that actually works: restart at the BFF, which mints a fresh flow
+  // *and* a matching cookie. Re-reading this flow id would fail identically.
+  if (loginFlowError && !loginFlow && !loading) {
+    return (
+      <AuthShellWrapper>
+        <LoginCard
+          descriptor={undefined}
+          isLoading={false}
+          notice={{
+            text: t('authentication.flowUnavailable'),
+            actionLabel: t('authentication.flowUnavailableRetry'),
+            actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
+          }}
+          signUpHref={signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH}
           forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
         />
       </AuthShellWrapper>

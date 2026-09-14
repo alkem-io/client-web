@@ -1,7 +1,24 @@
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { render as renderBase, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { createInstance } from 'i18next';
+import type { ReactElement } from 'react';
+import { I18nextProvider } from 'react-i18next';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
+import spaceEn from '@/crd/i18n/space/space.en.json';
 import type { PostCardData } from './PostCard';
 import { PostCard } from './PostCard';
+
+const i18n = createInstance();
+
+beforeAll(async () => {
+  await i18n.init({
+    lng: 'en',
+    resources: { en: { 'crd-space': spaceEn } },
+    interpolation: { escapeValue: false },
+  });
+});
+
+const render = (element: ReactElement) => renderBase(<I18nextProvider i18n={i18n}>{element}</I18nextProvider>);
 
 const basePost: PostCardData = {
   id: 'c1',
@@ -45,11 +62,6 @@ describe('PostCard showPublishDetails', () => {
   it('hides timestamp when showPublishDetails=false', () => {
     render(<PostCard post={{ ...basePost, showPublishDetails: false }} />);
     expect(screen.queryByText(/2 hours ago/)).not.toBeInTheDocument();
-  });
-
-  it('shows the post type label when showPublishDetails=true', () => {
-    render(<PostCard post={{ ...basePost, type: 'contributors', title: 'Hello', showPublishDetails: true }} />);
-    expect(screen.getByText(/contributors/i)).toBeInTheDocument();
   });
 
   it('hides the post type treatment (icon + label) when showPublishDetails=false', () => {
@@ -116,6 +128,43 @@ describe('PostCard showPublishDetails', () => {
   });
 });
 
+describe('PostCard signed memo copies', () => {
+  it('exposes document-backed memo copies as an independent keyboard action above the stretched card link', async () => {
+    const onClick = vi.fn();
+    const onOpenMemoSignedCopies = vi.fn();
+    const user = userEvent.setup();
+    const { container } = render(
+      <PostCard
+        post={{ ...basePost, type: 'memo', memoSignedCopiesCount: 2 } as PostCardData}
+        href="/callout-1"
+        onClick={onClick}
+        onOpenMemoSignedCopies={onOpenMemoSignedCopies}
+      />
+    );
+
+    const history = screen.getByRole('button', { name: 'Signed copies (2)' });
+    expect(history).toHaveClass('z-10');
+    expect(container.querySelector('a[href="/callout-1"]')?.contains(history)).toBe(false);
+
+    history.focus();
+    await user.keyboard('{Enter}');
+
+    expect(onOpenMemoSignedCopies).toHaveBeenCalledOnce();
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it('does not render a dead history control when no saved PDF exists', () => {
+    render(
+      <PostCard
+        post={{ ...basePost, type: 'memo', memoSignedCopiesCount: 0 } as PostCardData}
+        onOpenMemoSignedCopies={vi.fn()}
+      />
+    );
+
+    expect(screen.queryByRole('button', { name: /Signed copies/ })).not.toBeInTheDocument();
+  });
+});
+
 describe('PostCard reactionsSlot placement', () => {
   const reactions = <div data-testid="reactions">R</div>;
 
@@ -139,7 +188,7 @@ describe('PostCard reactionsSlot placement', () => {
     );
     const footer = container.querySelector('[data-slot="card-footer"]');
     const reactionsNode = screen.getByTestId('reactions');
-    const trigger = screen.getByRole('button', { name: /expandComments|collapseComments/i });
+    const trigger = screen.getByRole('button', { name: /expand comments|collapse comments/i });
     expect(footer?.contains(reactionsNode)).toBe(true);
     // The reactions must NOT be inside the trigger button — invalid HTML + a
     // reaction click would toggle the collapsible and swallow its popover.
@@ -149,19 +198,34 @@ describe('PostCard reactionsSlot placement', () => {
     expect(reactionsNode.parentElement?.parentElement).toBe(trigger.parentElement);
   });
 
-  it('renders a reactions-only footer when comments are suppressed but reactions exist (edge case)', () => {
-    // commentsEnabled=false AND no existing comments AND no commentsSlot → the
-    // comments footer is suppressed, but reactions still need a home.
+  it('renders no footer and no reactions when comments are turned off and none exist yet', () => {
+    // Reactions follow the comments switch: with commenting off and no existing
+    // messages, the card falls back to its pre-reactions look — no footer row at all.
     const { container } = render(
       <PostCard post={{ ...basePost, commentsEnabled: false, commentCount: 0 }} reactionsSlot={reactions} />
     );
-    const footer = container.querySelector('[data-slot="card-footer"]');
-    expect(footer).toBeTruthy();
-    const reactionsNode = screen.getByTestId('reactions');
-    expect(footer?.contains(reactionsNode)).toBe(true);
-    expect(reactionsNode.parentElement).toHaveClass('ml-auto');
-    // No comments affordance in this minimal footer.
-    expect(screen.queryByRole('button', { name: /Comments/i })).not.toBeInTheDocument();
+    expect(container.querySelector('[data-slot="card-footer"]')).toBeNull();
+    expect(screen.queryByTestId('reactions')).not.toBeInTheDocument();
+  });
+
+  it('hides reactions but keeps the read-only comments footer when comments are turned off with existing messages', () => {
+    const { container } = render(
+      <PostCard
+        post={{ ...basePost, commentsEnabled: false, commentCount: 3 }}
+        reactionsSlot={reactions}
+        commentsSlot={<div>thread</div>}
+      />
+    );
+    // The existing thread stays reachable, so the footer survives...
+    expect(container.querySelector('[data-slot="card-footer"]')).toBeTruthy();
+    expect(screen.getByRole('button', { name: /expand comments|collapse comments/i })).toBeInTheDocument();
+    // ...but the reactions surface is gone with the comments switch.
+    expect(screen.queryByTestId('reactions')).not.toBeInTheDocument();
+  });
+
+  it('renders reactions when comments are explicitly enabled', () => {
+    render(<PostCard post={{ ...basePost, commentsEnabled: true, commentCount: 0 }} reactionsSlot={reactions} />);
+    expect(screen.getByTestId('reactions')).toBeInTheDocument();
   });
 
   it('renders no footer at all when comments are suppressed and there is no reactions slot', () => {

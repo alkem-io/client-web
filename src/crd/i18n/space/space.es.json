@@ -22,8 +22,8 @@
     "inactive": "Este Espacio está actualmente inactivo."
   },
   "knowledge": {
-    "searchPlaceholder": "Buscar...",
-    "searchLabel": "Buscar en la base de conocimiento",
+    "searchPlaceholder": "Buscar publicaciones...",
+    "searchLabel": "Buscar publicaciones",
     "noResults": "Sin resultados",
     "search": {
       "emptyTitle": "Sin resultados",
@@ -33,8 +33,17 @@
       "retry": "Reintentar",
       "loadingLabel": "Cargando resultados de búsqueda",
       "appendingLabel": "Cargando más resultados",
-      "removeTerm": "Eliminar término {{term}}",
-      "removeTag": "Eliminar etiqueta {{tag}}"
+      "tagLabel_one": "la etiqueta",
+      "tagLabel_other": "las etiquetas",
+      "matchText_one": "<b>{{count}}</b> elemento relacionado con <text></text>",
+      "matchText_other": "<b>{{count}}</b> elementos relacionados con <text></text>",
+      "matchTextMore": "<b>{{count}}+</b> elementos relacionados con <text></text>",
+      "matchTags_one": "<b>{{count}}</b> elemento relacionado con {{tagLabel}} <tags></tags>",
+      "matchTags_other": "<b>{{count}}</b> elementos relacionados con {{tagLabel}} <tags></tags>",
+      "matchTagsMore": "<b>{{count}}+</b> elementos relacionados con {{tagLabel}} <tags></tags>",
+      "matchBoth_one": "<b>{{count}}</b> elemento relacionado con <text></text> y {{tagLabel}} <tags></tags>",
+      "matchBoth_other": "<b>{{count}}</b> elementos relacionados con <text></text> y {{tagLabel}} <tags></tags>",
+      "matchBothMore": "<b>{{count}}+</b> elementos relacionados con <text></text> y {{tagLabel}} <tags></tags>"
     },
     "viewGrid": "Vista de tarjetas",
     "viewList": "Vista de lista",
@@ -188,6 +197,7 @@
     "openAria": "Abrir {{title}}",
     "draft": "Borrador",
     "expand": "Mostrar más",
+    "fullscreen": "Pantalla completa",
     "collapse": "Mostrar menos",
     "openWhiteboard": "Abrir pizarra",
     "openMemo": "Abrir memo",
@@ -287,6 +297,10 @@
     "postTagsLabel": "Etiquetas",
     "postSave": "Guardar",
     "postCreate": "Publicar",
+    "createTask": "Crear tarea",
+    "editTask": "Editar tarea",
+    "taskCreate": "Crear tarea",
+    "tasksHeader": "Tareas ({{count}})",
     "postDelete": "Eliminar publicación",
     "postDeleteConfirmTitle": "¿Eliminar esta publicación?",
     "postDeleteConfirmDescription": "Esto eliminará permanentemente la publicación y sus comentarios. Esta acción no se puede deshacer.",
@@ -326,7 +340,6 @@
   },
   "members": {
     "subtitle": "{{users}} miembros y {{organizations}} organizaciones en este espacio.",
-    "inviteMember": "Invitar miembro",
     "search": "Buscar miembros u organizaciones...",
     "filterAll": "Todos",
     "filterLead": "Líder",
@@ -411,7 +424,8 @@
         "why": "¿Por qué este subespacio?",
         "who": "¿Quién participa?"
       }
-    }
+    },
+    "tags": "Etiquetas"
   },
   "apply": {
     "apply": "Solicitar acceso",
@@ -501,6 +515,9 @@
     "comments_other": "Se eliminarán {{count}} comentarios",
     "success": "El aviso “{{title}}” se ha eliminado.",
     "saveFailed": "No se pudo eliminar el aviso. Vuelve a intentarlo."
+  },
+  "deleteTask": {
+    "title": "¿Eliminar esta tarea?"
   },
   "deleteContribution": {
     "title": "¿Eliminar esta contribución?",
@@ -648,6 +665,9 @@
     "template": "Plantilla",
     "templatePlaceholder": "Elige una plantilla…",
     "templateLoading": "Cargando plantillas…",
+    "whiteboardConfigured": "Hay una pizarra predeterminada configurada.",
+    "whiteboardNotConfigured": "Las nuevas contribuciones comenzarán con una pizarra vacía.",
+    "clearWhiteboard": "Borrar predeterminado",
     "save": "Guardar"
   },
   "calloutDialog": {
@@ -675,6 +695,11 @@
       "connected": "Conectado",
       "connecting": "Conectando…",
       "disconnected": "Desconectado",
+      "saved": "Guardado",
+      "saving": "Guardando…",
+      "finalizing": "Finalizando cambios…",
+      "offline": "Sin conexión — se sincronizará automáticamente",
+      "saveFailed": "No se pudieron guardar los cambios",
       "membersOnline_one": "1 miembro en línea",
       "membersOnline_other": "{{count}} miembros en línea",
       "connectedUsersLabel": "Usuarios conectados",
@@ -695,10 +720,63 @@
       "loading": "Cargando nota…",
       "loadFailed": "No se pudo cargar la nota"
     },
+    "unsavedClose": {
+      "title": "Cambios de memo sin guardar",
+      "description": "Estos cambios no se pueden guardar ahora. Mantén el memo abierto, expórtalos o descártalos explícitamente.",
+      "wait": "Mantener abierto y esperar",
+      "discard": "Descartar y cerrar",
+      "export": "Exportar primero",
+      "exportFailed": "No se pudo exportar el memo. Permanece abierto."
+    },
     "deleteConfirm": {
       "title": "Eliminar memo",
       "body": "¿Estás seguro de que quieres eliminar este memo? Esta acción no se puede deshacer.",
       "confirm": "Eliminar"
+    },
+    "signing": {
+      "title": "Firmar memo",
+      "description": "Revisa la copia PDF exacta antes de iniciar la sesión de firma. Cada PDF firmado es una copia independiente; el memorando sigue siendo editable.",
+      "previewTitle": "Vista previa de firma del memo",
+      "openPreview": "Abrir vista previa del PDF",
+      "continue": "Continuar a Cleverbase",
+      "continuing": "Continuando a Cleverbase",
+      "signedCopies": "Copias firmadas",
+      "signedCopiesCount": "Copias firmadas ({{count}})",
+      "unknownSigner": "Firmante desconocido",
+      "savedTitle": "Copia firmada guardada",
+      "snapshotExplanation": "Esta copia firmada es una instantánea fija. Las ediciones posteriores del memorando no la modifican.",
+      "historyDescription": "Cada PDF firmado es una copia separada; el memorando sigue siendo editable. Las ediciones posteriores no modifican una copia firmada existente.",
+      "historyLoading": "Cargando copias firmadas",
+      "historyError": "No se pudieron cargar las copias firmadas",
+      "historyEmpty": "Aún no se han guardado copias firmadas",
+      "recorded": "Registrado",
+      "openPdf": "Abrir PDF",
+      "download": "Descargar",
+      "downloadFailed": "No se pudo descargar el PDF firmado",
+      "backToMemo": "Volver al memorando",
+      "standardTools": "Los PDF descargados se pueden verificar de forma independiente con herramientas PDF estándar.",
+      "verify": "Verificar firma",
+      "verification": {
+        "checking": "Verificando firma",
+        "verified": "El PDF no se ha modificado",
+        "invalid": "Firma no válida",
+        "unavailable": "No se pudo verificar"
+      },
+      "stage": {
+        "idle": "Listo para preparar una copia para firmar",
+        "preparing": "Preparando la copia exacta del memo para firmar",
+        "preview": "Revisa el PDF exacto antes de continuar",
+        "continuing": "Abriendo la sesión de firma",
+        "checking": "Comprobando el resultado de la firma",
+        "pending": "La firma sigue en curso. Recarga esta página para volver a comprobarlo.",
+        "signed": "El PDF se firmó correctamente",
+        "cancelled": "La firma se canceló",
+        "failed": "No se pudo firmar el PDF",
+        "expired": "Este intento de firma ha caducado",
+        "prepare-error": "No se pudo preparar la copia exacta del memo",
+        "continue-error": "No se pudo iniciar la sesión de firma. Prepare una copia nueva e inténtelo de nuevo.",
+        "return-error": "No se pudo cargar el resultado de la firma"
+      }
     }
   },
   "callToAction": {
@@ -817,6 +895,7 @@
     "seeFullDescription": "Ver descripción completa"
   },
   "postPreview": {
+    "createdBy": "Creado por",
     "label": "Vista previa de la contribución seleccionada",
     "edit": "Editar respuesta",
     "share": "Compartir respuesta",
@@ -974,7 +1053,12 @@
     "mobileTabBar": "Navegación por pestañas",
     "moreActionsDrawer": "Acciones adicionales",
     "close": "Cerrar",
-    "loadingPost": "Cargando publicación"
+    "loadingPost": "Cargando publicación",
+    "loadingContributions": "Cargando contribuciones",
+    "loadingSubspaces": "Cargando subespacios",
+    "loadingLeads": "Cargando líderes del Espacio",
+    "loadingTags": "Cargando etiquetas",
+    "loadingMembership": "Cargando estado de membresía"
   },
   "activity": {
     "dialogTitle": "Actividad reciente"
@@ -1027,5 +1111,15 @@
       "title": "Aún no hay subespacios",
       "description": "Este espacio aún no tiene subespacios."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Clasificaciones"
+  },
+  "parentStack": {
+    "goTo": "Ir a {{name}}"
   }
 }

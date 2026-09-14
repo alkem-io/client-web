@@ -39,10 +39,19 @@
       "title": "Annuler les modifications non enregistrées ?",
       "description": "Vous avez des modifications non enregistrées qui seront perdues. Êtes-vous sûr de vouloir continuer ?",
       "confirm": "Abandonner",
-      "cancel": "Continuer l'édition"
+      "cancel": "Continuer l'édition",
+      "wait": "Garder ouvert et attendre",
+      "export": "Exporter d’abord"
     }
   },
   "footer": {
+    "saveStatus": {
+      "saved": "Enregistré",
+      "saving": "Enregistrement…",
+      "finalizing": "Finalisation des modifications…",
+      "offline": "Hors ligne — synchronisation automatique",
+      "ended": "Indisponible"
+    },
     "guestContributionsWarning": "Toute personne disposant du lien peut modifier",
     "readonlyReason": {
       "readonly": "<strong>Mode lecture seule</strong> <learnwhy>cliquez ici pour savoir pourquoi</learnwhy>",

@@ -1,5 +1,6 @@
 import { Check, Loader2, Plus, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { GatedAction } from '@/crd/components/common/GatedAction';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
@@ -26,6 +27,11 @@ export type AddCommunityMemberDialogProps = {
   addedIds: ReadonlySet<string>;
   /** Id currently being added — its row shows a spinner. */
   addingId: string | null;
+  /**
+   * When set, the add controls are gated and this string is shown as their tooltip.
+   * Distinct from `addingId`, which is in-flight state rather than permission state.
+   */
+  addDisabledReason?: string;
   emptyLabel?: string;
   onSearchChange: (next: string) => void;
   onAdd: (id: string) => void;
@@ -47,6 +53,7 @@ export function AddCommunityMemberDialog({
   search,
   addedIds,
   addingId,
+  addDisabledReason,
   emptyLabel,
   onSearchChange,
   onAdd,
@@ -126,24 +133,26 @@ export function AddCommunityMemberDialog({
                               {t('community.addDialog.added')}
                             </span>
                           ) : (
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => onAdd(c.id)}
-                              disabled={isAdding}
-                              aria-busy={isAdding}
-                              aria-label={t('community.addDialog.addAriaLabel', { name: c.displayName })}
-                            >
-                              {isAdding ? (
-                                <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-                              ) : (
-                                <>
-                                  <Plus aria-hidden="true" className="mr-1.5 size-4" />
-                                  {t('community.addDialog.add')}
-                                </>
-                              )}
-                            </Button>
+                            <GatedAction disabledReason={addDisabledReason}>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => onAdd(c.id)}
+                                disabled={isAdding}
+                                aria-busy={isAdding}
+                                aria-label={t('community.addDialog.addAriaLabel', { name: c.displayName })}
+                              >
+                                {isAdding ? (
+                                  <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+                                ) : (
+                                  <>
+                                    <Plus aria-hidden="true" className="mr-1.5 size-4" />
+                                    {t('community.addDialog.add')}
+                                  </>
+                                )}
+                              </Button>
+                            </GatedAction>
                           )}
                         </TableCell>
                       </TableRow>

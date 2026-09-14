@@ -1,0 +1,5 @@
+mutation UpdateClassificationEntrySelection($classificationData: UpdateClassificationEntrySelectionInput!) {
+  updateClassificationEntrySelection(classificationData: $classificationData) {
+    ...ClassificationEntryFull
+  }
+}

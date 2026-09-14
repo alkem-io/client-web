@@ -15,6 +15,11 @@ import createNameId from '@/core/utils/nameId/createNameId';
 import type { ImageCropConfig } from '@/crd/components/common/ImageCropDialog';
 import type { CreateSpaceFieldErrors, CreateSpaceFormValues } from '@/crd/components/space/CreateSpaceDialog';
 import type { TemplateContent, TemplatePickerSelectProps } from '@/crd/components/templates/types';
+import {
+  DEFAULT_BANNER_ASPECT_RATIO,
+  MAX_BANNER_ASPECT_RATIO,
+  MIN_BANNER_ASPECT_RATIO,
+} from '@/crd/lib/bannerAspectRatio';
 import type { VisualConstraints } from '@/domain/common/visual/model/VisualModel';
 import { useSpacePlans } from '@/domain/space/components/CreateSpace/hooks/spacePlans/useSpacePlans';
 import { useSpaceCreation } from '@/domain/space/components/CreateSpace/hooks/useSpaceCreation/useSpaceCreation';
@@ -323,8 +328,20 @@ export function useCreateSpace({
     clearSelectedTemplate();
   };
 
-  const toCropConfig = (c: VisualConstraints): ImageCropConfig => ({
-    aspectRatio: c.aspectRatio,
+  // The page banner opens on the 10:1 design default rather than on whatever
+  // `c.aspectRatio` the platform config reports (10 today; 6 on a server that
+  // predates that default): a space created with a banner here must get the
+  // same shape as one whose banner is first cropped in Settings > About.
+  // Clamped into the server's range so the crop can never be cut to a ratio
+  // the upload would then reject.
+  const bannerCropAspectRatio = (c: VisualConstraints) =>
+    Math.min(
+      Math.max(DEFAULT_BANNER_ASPECT_RATIO, c.minAspectRatio ?? MIN_BANNER_ASPECT_RATIO),
+      c.maxAspectRatio ?? MAX_BANNER_ASPECT_RATIO
+    );
+
+  const toCropConfig = (key: 'bannerFile' | 'cardBannerFile', c: VisualConstraints): ImageCropConfig => ({
+    aspectRatio: key === 'bannerFile' ? bannerCropAspectRatio(c) : c.aspectRatio,
     maxWidth: c.maxWidth,
     maxHeight: c.maxHeight,
     minWidth: c.minWidth,
@@ -337,7 +354,7 @@ export function useCreateSpace({
     const constraints = key === 'bannerFile' ? bannerConstraints : cardBannerConstraints;
     if (constraints) {
       setErrors(prev => ({ ...prev, [key]: undefined }));
-      setPendingCrop({ key, file, config: toCropConfig(constraints) });
+      setPendingCrop({ key, file, config: toCropConfig(key, constraints) });
     } else {
       // Constraints not loaded yet — apply the raw file as a fallback.
       setValues(prev => ({ ...prev, [key]: file }));

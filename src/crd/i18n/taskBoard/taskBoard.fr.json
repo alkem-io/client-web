@@ -1,0 +1,36 @@
+{
+  "addTask": "Ajouter une tâche",
+  "expand": "Plein écran",
+  "collapse": "Quitter le plein écran",
+  "emptyColumn": "Aucune tâche pour l'instant",
+  "moveError": "Impossible de déplacer la tâche. Veuillez réessayer.",
+  "columns": {
+    "manage": "Gérer les colonnes",
+    "title": "Colonnes du tableau des tâches",
+    "description": "Ajoutez, renommez, réordonnez et supprimez les colonnes de ce tableau des tâches.",
+    "add": "Ajouter une colonne",
+    "namePlaceholder": "Nom de la colonne",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "deleteFirstDisabled": "La première colonne ne peut pas être supprimée — les tâches y sont replacées.",
+    "delete": {
+      "title": "Supprimer la colonne",
+      "description": "Supprimer « {{name}} » ? Ses tâches passent vers « {{target}} ».",
+      "confirm": "Supprimer la colonne"
+    },
+    "validation": {
+      "required": "Saisissez un nom de colonne.",
+      "tooLong": "Le nom doit comporter moins de 128 caractères.",
+      "comma": "Les noms de colonne ne peuvent pas contenir de virgules.",
+      "duplicate": "Cette colonne existe déjà."
+    },
+    "dragLabel": "Réordonner la colonne",
+    "deleteLabel": "Supprimer la colonne",
+    "saving": "Enregistrement…",
+    "saveError": "Impossible d'enregistrer la modification de la colonne. Veuillez réessayer."
+  },
+  "create": {
+    "option": "Tableau de tâches",
+    "optionDescription": "Un tableau de colonnes pour les publications, déplacées par glisser-déposer."
+  }
+}

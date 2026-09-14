@@ -151,6 +151,16 @@ export const mapUserNotifications = (
         ),
       },
       {
+        property: 'collaborationCalloutReaction',
+        label: t('user.notifications.rows.space.collaborationCalloutReaction'),
+        channels: resolveChannels(
+          server.space?.collaborationCalloutReaction,
+          overrides,
+          'space',
+          'collaborationCalloutReaction'
+        ),
+      },
+      {
         property: 'collaborationCalloutPostContributionComment',
         label: t('user.notifications.rows.space.collaborationCalloutPostContributionComment'),
         channels: resolveChannels(
@@ -253,6 +263,16 @@ export const mapUserNotifications = (
             overrides,
             'spaceAdmin',
             'communityNewMember'
+          ),
+        },
+        {
+          property: 'communityInvitationResponse',
+          label: t('user.notifications.rows.spaceAdmin.communityInvitationResponse'),
+          channels: resolveChannels(
+            server.spaceAdmin?.communityInvitationResponse,
+            overrides,
+            'spaceAdmin',
+            'communityInvitationResponse'
           ),
         },
         {
@@ -450,6 +470,16 @@ export const mapUserNotifications = (
             overrides,
             'organization',
             'adminMessageReceived'
+          ),
+        },
+        {
+          property: 'adminSpaceCommunityInvitation',
+          label: t('user.notifications.rows.organization.adminSpaceCommunityInvitation'),
+          channels: resolveChannels(
+            server.organization?.adminSpaceCommunityInvitation,
+            overrides,
+            'organization',
+            'adminSpaceCommunityInvitation'
           ),
         },
       ],

@@ -1,0 +1,36 @@
+{
+  "addTask": "Add task",
+  "expand": "Fullscreen",
+  "collapse": "Exit fullscreen",
+  "emptyColumn": "No tasks yet",
+  "moveError": "Couldn't move the task. Please try again.",
+  "columns": {
+    "manage": "Manage columns",
+    "title": "Task board columns",
+    "description": "Add, rename, reorder, and remove the columns of this task board.",
+    "add": "Add column",
+    "namePlaceholder": "Column name",
+    "save": "Save",
+    "cancel": "Cancel",
+    "deleteFirstDisabled": "The first column can't be removed — tasks reflow into it.",
+    "delete": {
+      "title": "Delete column",
+      "description": "Delete \"{{name}}\"? Its tasks move to \"{{target}}\".",
+      "confirm": "Delete column"
+    },
+    "validation": {
+      "required": "Enter a column name.",
+      "tooLong": "Keep the name under 128 characters.",
+      "comma": "Column names can't contain commas.",
+      "duplicate": "That column already exists."
+    },
+    "dragLabel": "Reorder column",
+    "deleteLabel": "Delete column",
+    "saving": "Saving…",
+    "saveError": "Couldn't save the column change. Please try again."
+  },
+  "create": {
+    "option": "Tasks board",
+    "optionDescription": "A board of columns for posts, moved by drag and drop."
+  }
+}

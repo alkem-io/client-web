@@ -15,12 +15,15 @@
 import type { TFunction } from 'i18next';
 import { Trans } from 'react-i18next';
 import {
+  ActorType,
   type ForumDiscussionCategory,
   NotificationEvent,
   type NotificationEventInAppState,
+  RoleName,
 } from '@/core/apollo/generated/graphql-schema';
 import { kebabToConstantCase } from '@/core/utils/string';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
+import { glyphForSlug } from '@/crd/components/reactions/reactionEmoji';
 import type { CrdNotificationItemData } from '@/crd/layouts/types';
 import { getInitials } from '@/crd/lib/getInitials';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
@@ -52,7 +55,13 @@ function buildTranslationValues(
     triggeredByName: triggeredBy.profile.displayName,
     spaceName: payload.space?.about?.profile?.displayName,
     calloutName: payload.callout?.framing?.profile?.displayName,
-    organizationName: payload.organization?.profile?.displayName,
+    // organizationName: the organization payload field is present only on events that carry a
+    // dedicated `organization` relation (e.g. the org-invited event); the org-accepted/declined
+    // events instead carry the organization as the generic SpaceCommunityActor `actor`, so fall
+    // back to the actor's display name when it is typed as an organization.
+    organizationName:
+      payload.organization?.profile?.displayName ??
+      (payload.actor?.type === ActorType.Organization ? payload.actor.profile?.displayName : undefined),
     userName: payload.user?.profile?.displayName ?? payload.actor?.profile?.displayName,
     comment:
       payload.comment ??
@@ -62,8 +71,6 @@ function buildTranslationValues(
       payload.organizationMessage,
     discussionName: payload.discussion?.displayName,
     role: payload.role,
-    userEmail: payload.userEmail,
-    userDisplayName: payload.userDisplayName,
     // memberName: used by SPACE_ADMIN_COMMUNITY_NEW_MEMBER — the new member is the actor
     memberName: payload.actor?.profile?.displayName,
     // parentName: used by USER_COMMENT_REPLY — the parent message/thread name
@@ -92,6 +99,27 @@ function buildTranslationValues(
           `common.enums.discussion-category.${kebabToConstantCase(payload.discussion.category) as ForumDiscussionCategory}`
         )
       : undefined,
+    // emoji: used by SPACE_COLLABORATION_CALLOUT_REACTION — slug resolved to glyph;
+    // unknown slug yields undefined so the placeholder renders empty, never crashes
+    emoji: payload.emoji ? glyphForSlug(payload.emoji) : undefined,
+    // invitationRole: used by ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION — "Member" or
+    // "Member + Lead", resolved from the offered extraRoles. Distinct from `role` above
+    // (a raw platform-role string) to avoid colliding with PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED.
+    invitationRole: payload.invitation
+      ? payload.invitation.extraRoles.includes(RoleName.Lead)
+        ? `${t('member')} + ${t('lead')}`
+        : t('member')
+      : undefined,
+    // spacesToJoin: used by ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION — an extra
+    // "Accepting joins: …" clause listing every Space accepting joins (the target
+    // included), shown only when that is more than the target Space itself.
+    spacesToJoin:
+      (payload.invitation?.spacesToJoinOnAccept?.length ?? 0) > 1
+        ? ` ${t('components.inAppNotifications.spacesToJoin', {
+            // biome-ignore lint/style/noNonNullAssertion: guarded by the length check above
+            spaces: payload.invitation!.spacesToJoinOnAccept!.map(s => s.displayName).join(', '),
+          })}`
+        : '',
   };
 }
 
@@ -119,6 +147,18 @@ const URL_OVERRIDES_BY_TYPE: Partial<
   // Calendar payloads carry both the event and its space; the space must not win.
   [NotificationEvent.SpaceCommunityCalendarEventCreated]: payload => payload.calendarEvent?.profile?.url,
   [NotificationEvent.SpaceCommunityCalendarEventComment]: payload => payload.calendarEvent?.profile?.url,
+  // The org admin acts from the org's own Invitations tab, not the space (061, contract §4).
+  [NotificationEvent.OrganizationAdminSpaceCommunityInvitation]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'invitations'),
+  // Accepted/declined land the inviting space admin on the Community tab, same as a new application.
+  [NotificationEvent.SpaceAdminOrganizationCommunityInvitationAccepted]: payload =>
+    buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
+  [NotificationEvent.SpaceAdminOrganizationCommunityInvitationDeclined]: payload =>
+    buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
+  [NotificationEvent.SpaceAdminUserCommunityInvitationAccepted]: payload =>
+    buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
+  [NotificationEvent.SpaceAdminUserCommunityInvitationDeclined]: payload =>
+    buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
 };
 
 /**
@@ -146,12 +186,48 @@ function resolveNotificationUrl(notification: InAppNotificationModel): string | 
   );
 }
 
+/**
+ * The profile shape the item's avatar needs. Both `triggeredBy.profile` and the optional
+ * contributor profiles carried on the payload satisfy it.
+ */
+type NotificationAvatarProfile = {
+  displayName: string;
+  visual?: { uri?: string } | undefined;
+};
+
+/**
+ * Per-type overrides for whose avatar the item shows.
+ *
+ * The avatar defaults to the user who triggered the notification, which is right for every
+ * template that opens with `{{triggeredByName}}`. A few templates are worded about someone
+ * else entirely, and for those the triggering user is not the subject — their avatar beside
+ * another person's name reads as if the wrong person acted.
+ *
+ * A type absent from this map keeps `triggeredBy`, and so does an entry whose profile the
+ * payload does not carry. Only add an entry where the template unambiguously names someone
+ * other than the triggering user as its subject.
+ */
+const AVATAR_SUBJECT_BY_TYPE: Partial<
+  Record<NotificationEvent, (payload: InAppNotificationPayloadModel) => NotificationAvatarProfile | undefined>
+> = {
+  // "<member> joined <space>" — the member is the payload actor, whereas the trigger is
+  // whoever performed the join: on the invitation and admin-adds-a-member paths that is a
+  // lead, not the new member.
+  [NotificationEvent.SpaceAdminCommunityNewMember]: payload => payload.actor?.profile,
+};
+
+/** Resolves the profile whose avatar and initials the item renders. */
+function resolveAvatarProfile(notification: InAppNotificationModel): NotificationAvatarProfile {
+  return AVATAR_SUBJECT_BY_TYPE[notification.type]?.(notification.payload) ?? notification.triggeredBy.profile;
+}
+
 export function mapNotificationToItemData(
   notification: InAppNotificationModel,
   t: TFunction,
   unreadState: NotificationEventInAppState
 ): CrdNotificationItemData {
   const values = buildTranslationValues(notification, t);
+  const avatarProfile = resolveAvatarProfile(notification);
   const typeKey = `components.inAppNotifications.type.${notification.type}`;
   const subjectKey = `${typeKey}.subject`;
   const descriptionKey = `${typeKey}.description`;
@@ -175,8 +251,8 @@ export function mapNotificationToItemData(
       <Trans i18nKey={descriptionKey as any} values={values} components={TRANS_COMPONENTS} />
     ) : undefined,
     comment: rawComment ? <InlineMarkdown content={rawComment} clampLines={2} className="text-body" /> : undefined,
-    avatarUrl: notification.triggeredBy.profile.visual?.uri,
-    avatarFallback: getInitials(notification.triggeredBy.profile.displayName),
+    avatarUrl: avatarProfile.visual?.uri,
+    avatarFallback: getInitials(avatarProfile.displayName),
     timestamp: formatTimeElapsed(notification.triggeredAt, t),
     isUnread: notification.state === unreadState,
     href: resolveNotificationUrl(notification),

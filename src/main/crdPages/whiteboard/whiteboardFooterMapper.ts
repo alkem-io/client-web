@@ -3,8 +3,8 @@ import {
   CommunityMembershipStatus,
   ContentUpdatePolicy,
 } from '@/core/apollo/generated/graphql-schema';
-import {
-  type CollaboratorMode,
+import type {
+  CollaboratorMode,
   CollaboratorModeReasons,
 } from '@/domain/common/whiteboard/excalidraw/collab/excalidrawAppConstants';
 
@@ -79,16 +79,13 @@ export function mapWhiteboardFooterProps(params: MapWhiteboardFooterParams): Whi
     hasOwner: params.hasOwner,
   });
 
-  const canRestart =
-    readonlyReason === ReadonlyReason.Readonly &&
-    (!params.collaboratorModeReason || params.collaboratorModeReason === CollaboratorModeReasons.INACTIVITY);
-
   return {
     canDelete: hasDeletePrivilege && !params.preventWhiteboardDeletion,
     // Delete permission is independent from edit permission: a user may have Delete without UpdateContent
     // (e.g. the creator of a whiteboard contribution who isn't a space editor). Only block while a save is in flight.
     deleteDisabled: !!params.updating,
-    canRestart,
+    // Re-admission is automatic and uses the provider's one ordinary connect loop.
+    canRestart: false,
     guestWarningVisible: params.guestContributionsAllowed === true,
     readonlyReason,
   };

@@ -1,15 +1,21 @@
+import { ApolloError } from '@apollo/client';
 import { useEffect, useRef, useState, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  useAddClassificationEntryFromTemplateMutation,
   useCreateReferenceOnProfileMutation,
   useDefaultVisualTypeConstraintsQuery,
+  useDeleteClassificationEntryMutation,
   useDeleteReferenceMutation,
   useSpaceAboutDetailsQuery,
+  useUpdateClassificationEntryDisplayMutation,
+  useUpdateClassificationEntrySelectionMutation,
   useUpdateSpaceMutation,
   useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { type UpdateSpaceInput, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import type { ClassificationEntryData } from '@/crd/components/classification/types';
 import type { ImageCropConfig } from '@/crd/components/common/ImageCropDialog';
 import type {
   AboutFormValues,
@@ -23,7 +29,7 @@ import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
 import { MAX_BANNER_ASPECT_RATIO, MIN_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
-import { buildPreviewCard, mapSpaceToAboutFormValues } from './aboutMapper';
+import { buildPreviewCard, mapClassificationEntries, mapSpaceToAboutFormValues } from './aboutMapper';
 
 export type { AboutFormValues };
 
@@ -43,7 +49,7 @@ export type UseAboutTabDataResult = {
   /** Server-defined range the page banner's aspect ratio may be set to. Null while loading. */
   pageBannerAspectRatioBounds: AboutVisualAspectRatioBounds | null;
   pendingCrop: PendingCrop | null;
-  onCropComplete: (croppedFile: File, altText: string, aspectRatio?: number) => void;
+  onCropComplete: (croppedFile: File, altText: string) => void;
   onCropCancel: () => void;
   /** Re-crop an already-uploaded visual. Opens the crop dialog with the existing image. */
   onRecropVisual: (key: 'avatar' | 'pageBanner' | 'cardBanner') => void;
@@ -64,7 +70,38 @@ export type UseAboutTabDataResult = {
   onSaveAll: () => Promise<void>;
   /** Discard all local edits back to the server-saved snapshot (guard's "Discard"). */
   onResetAll: () => void;
+
+  // ── Classifications (D1) — each action commits on its own (FR-006a) ──
+  classifications: ClassificationEntryData[];
+  /** Entry ids with a selection write in flight — pass through as `disabled` on their value selector. */
+  classificationSelectionPendingIds: string[];
+  /** Step A — add from a template. Resolves `false` (and sets `classificationConflict`) on a display-label collision. */
+  addClassificationFromTemplate: (templateId: string, displayLabel?: string) => Promise<boolean>;
+  /** Step B — full-replacement selection write (FR-012d). */
+  updateClassificationSelection: (entryId: string, selectedValueIDs: string[]) => Promise<void>;
+  /** The shown/hidden toggle (FR-010b) — render-only, not an access control. */
+  updateClassificationDisplay: (entryId: string, display: boolean) => Promise<void>;
+  /** Permanent removal (FR-014b) — the caller is expected to have already confirmed. */
+  removeClassification: (entryId: string) => Promise<void>;
+  /** Set after a failed add whose server error was a display-label conflict (FR-011b). */
+  classificationConflict: { templateId: string; attemptedLabel: string } | null;
+  dismissClassificationConflict: () => void;
+  classificationSubmitting: boolean;
+  /** True right after a selection write failed against a concurrently-removed entry. */
+  classificationRemovedError: boolean;
+  dismissClassificationRemovedError: () => void;
 };
+
+/**
+ * FR-011a/FR-011b's server-side display-label conflict has no dedicated error
+ * code — it is a `ValidationException` (`BAD_USER_INPUT`) like any other
+ * classification validation failure, so it is identified by its stable
+ * message text rather than a code alone.
+ */
+function isDisplayLabelConflictError(err: unknown): boolean {
+  if (!(err instanceof ApolloError)) return false;
+  return err.graphQLErrors.some(gqlErr => /display label already exists/i.test(gqlErr.message));
+}
 
 const TEMP_PREFIX = 'temp-';
 function isTempId(id: string) {
@@ -115,6 +152,10 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   const [uploadVisual] = useUploadVisualMutation();
   const [createReference] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
+  const [addClassificationEntryFromTemplate] = useAddClassificationEntryFromTemplateMutation();
+  const [updateClassificationEntrySelection] = useUpdateClassificationEntrySelectionMutation();
+  const [updateClassificationEntryDisplay] = useUpdateClassificationEntryDisplayMutation();
+  const [deleteClassificationEntry] = useDeleteClassificationEntryMutation();
 
   // The allowed ratio range is a property of the visual TYPE, so it comes from
   // the platform config rather than from this space's own visual row.
@@ -212,8 +253,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     // Passed explicitly rather than read back off `valuesRef`: the caller queues
     // a `setValues` for this same alt text, and that updater runs at render, not
     // at dispatch, so the ref still holds the pre-edit value at this point.
-    altText: string,
-    aspectRatio?: number
+    altText: string
   ) => {
     const current = valuesRef.current;
     const visual = current?.[key];
@@ -233,7 +273,11 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
                 ...base[key],
                 uri: uploaded.uri,
                 altText: uploaded.alternativeText ?? null,
-                ...(aspectRatio !== undefined && { aspectRatio }),
+                // The server derives the stored ratio from the uploaded pixels
+                // (the crop is cut to the slider's ratio, so they agree to the
+                // 0.1 the DB keeps); take its value as the truth so local state
+                // and the Apollo cache never disagree.
+                aspectRatio: uploaded.aspectRatio,
               },
             };
             valuesRef.current = next;
@@ -264,8 +308,16 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     // Page banner is the only visual with adjustable aspect ratio.
     const aspectRatioBounds = key === 'pageBanner' ? (pageBannerAspectRatioBounds ?? undefined) : undefined;
 
+    // A stored banner ratio describes an uploaded image's shape — the server
+    // derives it from the pixels the crop dialog cut. With no image the row
+    // still carries the server's creation default (10 today, 6 on legacy
+    // rows), chosen by nobody; passing it through would open the first-ever
+    // crop on that value instead of the dialog's own default (the bounds'
+    // max, 10).
+    const hasImage = Boolean(values?.[key]?.uri ?? visualRaw?.uri);
+
     return {
-      aspectRatio: aspectRatio ?? visualRaw?.aspectRatio ?? 1,
+      aspectRatio: key === 'pageBanner' && !hasImage ? undefined : (aspectRatio ?? visualRaw?.aspectRatio ?? 1),
       maxHeight: visualRaw?.maxHeight,
       minHeight: visualRaw?.minHeight,
       maxWidth: visualRaw?.maxWidth,
@@ -323,13 +375,14 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   // A re-crop save waiting on the replace-original confirmation. The crop
   // dialog stays open underneath, so cancelling the confirmation drops the
   // user back into the crop they already framed.
-  const [pendingRecropSave, setPendingRecropSave] = useState<{
-    file: File;
-    altText: string;
-    aspectRatio?: number;
-  } | null>(null);
+  const [pendingRecropSave, setPendingRecropSave] = useState<{ file: File; altText: string } | null>(null);
 
-  const commitCrop = (crop: PendingCrop, croppedFile: File, altText: string, aspectRatio?: number) => {
+  // Only the alt text is written here. The ratio the dialog was cut to lands
+  // in `values` together with `uri` once the upload resolves (see
+  // `uploadVisualForField`): writing it now would have the preview claim a
+  // shape the server does not hold yet — and keep claiming it after a failed
+  // upload, with the old image letterboxed into the new box.
+  const commitCrop = (crop: PendingCrop, croppedFile: File, altText: string) => {
     setPendingCrop(null);
     setPendingRecropSave(null);
     const key = crop.key;
@@ -338,29 +391,29 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
       if (!base) return prev;
       const next: AboutFormValues = {
         ...base,
-        [key]: { ...base[key], altText, ...(aspectRatio !== undefined && { aspectRatio }) },
+        [key]: { ...base[key], altText },
       };
       valuesRef.current = next;
       return next;
     });
-    void uploadVisualForField(key, croppedFile, altText, aspectRatio);
+    void uploadVisualForField(key, croppedFile, altText);
   };
 
-  const onCropComplete = (croppedFile: File, altText: string, aspectRatio?: number) => {
+  const onCropComplete = (croppedFile: File, altText: string) => {
     if (!pendingCrop) return;
     if (pendingCrop.isRecrop) {
       // Re-cropping overwrites the stored original irreversibly (#10148), so
       // the upload waits for an explicit confirmation. A fresh upload commits
       // straight away — the original is still on the user's disk.
-      setPendingRecropSave({ file: croppedFile, altText, aspectRatio });
+      setPendingRecropSave({ file: croppedFile, altText });
       return;
     }
-    commitCrop(pendingCrop, croppedFile, altText, aspectRatio);
+    commitCrop(pendingCrop, croppedFile, altText);
   };
 
   const onConfirmRecrop = () => {
     if (!pendingCrop || !pendingRecropSave) return;
-    commitCrop(pendingCrop, pendingRecropSave.file, pendingRecropSave.altText, pendingRecropSave.aspectRatio);
+    commitCrop(pendingCrop, pendingRecropSave.file, pendingRecropSave.altText);
   };
 
   const onCancelRecropConfirm = () => setPendingRecropSave(null);
@@ -416,6 +469,11 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
         };
       case 'references':
         return null; // handled via dedicated create/delete/patch flow below
+      case 'classifications':
+        // Never buffered: each classification action commits on its own via its own mutation
+        // (FR-006a) — `onSaveSection('classifications')` is never called, but the key still
+        // needs an exhaustive case here.
+        return null;
     }
   };
 
@@ -531,6 +589,109 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
   const previewCard = values ? buildPreviewCard(spaceId, values, spaceUrl, level) : null;
 
+  // ────────────────── Classifications (D1: about.classifications[].values[]) ──────────────────
+  // Each action commits on its own, immediately (FR-006a) — never buffered with the rest of the
+  // About form. Cache normalization keeps single-entry updates in sync for free; add/remove change
+  // the array's membership, which normalization can't do on its own, so those two refetch.
+  //
+  // A selection write is a full-replacement mutation (FR-012d): the checkbox only visually ticks
+  // once the mutation round trip resolves and the cache updates. Without buffering the in-flight
+  // intent locally, two clicks inside one round trip would both compute their "next selection" off
+  // the same stale `entry.selectedValueIDs`, so the second write would silently clobber the first.
+  // `classificationSelectionOverrides` holds the latest locally-applied selection per entry while
+  // its write is in flight, so consecutive toggles compose off the last user intent, not the last
+  // server response.
+  const [classificationSelectionOverrides, setClassificationSelectionOverrides] = useState<Record<string, string[]>>(
+    {}
+  );
+
+  const classifications = space
+    ? mapClassificationEntries(space).map(entry =>
+        entry.id in classificationSelectionOverrides
+          ? { ...entry, selectedValueIDs: classificationSelectionOverrides[entry.id] }
+          : entry
+      )
+    : [];
+
+  /** Entries with a selection write currently in flight (drives the value selector's `disabled`). */
+  const classificationSelectionPendingIds = Object.keys(classificationSelectionOverrides);
+
+  const [classificationConflict, setClassificationConflict] = useState<{
+    templateId: string;
+    attemptedLabel: string;
+  } | null>(null);
+  const [classificationSubmitting, setClassificationSubmitting] = useState(false);
+  const [classificationRemovedError, setClassificationRemovedError] = useState(false);
+
+  /** Returns `true` on success (the caller may close the picker); `false` on a display-label conflict. */
+  const addClassificationFromTemplate = async (templateId: string, displayLabel?: string): Promise<boolean> => {
+    setClassificationSubmitting(true);
+    try {
+      await addClassificationEntryFromTemplate({
+        variables: { classificationData: { spaceID: spaceId, templateID: templateId, displayLabel } },
+      });
+      await refetch();
+      setClassificationConflict(null);
+      return true;
+    } catch (err) {
+      if (isDisplayLabelConflictError(err)) {
+        setClassificationConflict({ templateId, attemptedLabel: displayLabel ?? '' });
+        return false;
+      }
+      // Any other failure surfaces via the Apollo error link / global handler.
+      return false;
+    } finally {
+      setClassificationSubmitting(false);
+    }
+  };
+
+  const updateClassificationSelection = async (entryId: string, selectedValueIDs: string[]) => {
+    // Apply the intended selection locally right away — see the `classificationSelectionOverrides`
+    // comment above the `classifications` derivation for why this has to happen before the mutation
+    // is awaited, not after it resolves.
+    setClassificationSelectionOverrides(prev => ({ ...prev, [entryId]: selectedValueIDs }));
+    setSectionStatus('classifications', { kind: 'saving' });
+    try {
+      await updateClassificationEntrySelection({
+        variables: { classificationData: { classificationEntryID: entryId, selectedValueIDs } },
+      });
+      flashSaved('classifications');
+    } catch (err) {
+      setSectionStatus('classifications', { kind: 'idle' });
+      // A concurrently-removed entry fails the write against a now-deleted id — refetch so the UI
+      // drops the stale entry instead of silently re-creating it (Edge Cases: concurrent removal).
+      if (err instanceof ApolloError) {
+        setClassificationRemovedError(true);
+        await refetch();
+      }
+    } finally {
+      // Only clear the override if it is still the one THIS call set. A slower, earlier write
+      // resolving after a faster, later one must not wipe out the newer local selection while the
+      // later write is still in flight — array identity (not a deep-equal) is enough here because
+      // `selectedValueIDs` is the exact reference each call closed over above.
+      setClassificationSelectionOverrides(prev => {
+        if (prev[entryId] !== selectedValueIDs) return prev;
+        const next = { ...prev };
+        delete next[entryId];
+        return next;
+      });
+    }
+  };
+
+  const updateClassificationDisplay = async (entryId: string, display: boolean) => {
+    await updateClassificationEntryDisplay({
+      variables: { classificationData: { classificationEntryID: entryId, display } },
+    });
+  };
+
+  const removeClassification = async (entryId: string) => {
+    await deleteClassificationEntry({ variables: { classificationData: { ID: entryId } } });
+    await refetch();
+  };
+
+  const dismissClassificationConflict = () => setClassificationConflict(null);
+  const dismissClassificationRemovedError = () => setClassificationRemovedError(false);
+
   return {
     values,
     previewCard,
@@ -557,6 +718,17 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     isDirty,
     onSaveAll,
     onResetAll,
+    classifications,
+    classificationSelectionPendingIds,
+    addClassificationFromTemplate,
+    updateClassificationSelection,
+    updateClassificationDisplay,
+    removeClassification,
+    classificationConflict,
+    dismissClassificationConflict,
+    classificationSubmitting,
+    classificationRemovedError,
+    dismissClassificationRemovedError,
   };
 }
 
@@ -582,6 +754,10 @@ function mergeSavedSection(buffer: AboutFormValues, fresh: AboutFormValues, sect
       return { ...buffer, tags: fresh.tags, tagsetId: fresh.tagsetId };
     case 'references':
       return { ...buffer, references: fresh.references };
+    case 'classifications':
+      // `onSaveSection` never runs for this key (see `buildSectionPatch`) — `AboutFormValues`
+      // doesn't even carry a classifications field to merge. Exhaustive case only.
+      return buffer;
   }
 }
 

@@ -25,6 +25,9 @@ npm-debug.log
 .env.test.local
 .env.production.local
 
+# GraphQL schema snapshot — local-only, never committed (codegen reads the live server)
+/schema.graphql
+
 # misc
 .DS_Store
 .build/docker/.env.base
@@ -51,3 +54,9 @@ public/*config.js
 
 # Claude Code
 .claude/settings.local.json
+
+# Playwright e2e (006 acceptance matrix)
+/playwright-report
+/test-results
+/e2e/.tmp
+/.auth
