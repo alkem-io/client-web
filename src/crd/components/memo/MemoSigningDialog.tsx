@@ -124,7 +124,7 @@ function SignedCopy({ signature, onVerify, onDownload, downloadingDocumentIds, v
   const signerName = signature.actor?.profile?.displayName;
   const signerInitial = signerName?.trim().charAt(0).toUpperCase() || '?';
   const machineDateTime = formatMachineDateTime(signature.updatedDate);
-  const recordedAt = signature.recordedAt.trim() || machineDateTime;
+  const recordedAt = signature.recordedAt.trim() || machineDateTime || '—';
 
   return (
     <li className="flex flex-col gap-4 rounded-xl border bg-card p-4 sm:flex-row sm:items-center">
@@ -147,7 +147,8 @@ function SignedCopy({ signature, onVerify, onDownload, downloadingDocumentIds, v
             <p className="truncate text-body-emphasis">{signerName || t('memo.signing.unknownSigner')}</p>
           )}
           <p className="text-caption text-muted-foreground">
-            {t('memo.signing.recorded')}: <time dateTime={machineDateTime}>{recordedAt}</time>
+            {t('memo.signing.recorded')}:{' '}
+            {machineDateTime ? <time dateTime={machineDateTime}>{recordedAt}</time> : <span>{recordedAt}</span>}
           </p>
           {signature.verification && <VerificationResult value={signature.verification} />}
         </div>
@@ -336,7 +337,9 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
         overlayClassName={props.overlayClassName ?? 'z-[70]'}
         className={cn(
           'gap-0 overflow-hidden p-0',
-          isActiveWorkflow ? 'flex h-[min(92vh,820px)] flex-col sm:max-w-6xl' : 'sm:max-w-xl',
+          isActiveWorkflow
+            ? 'flex h-[min(92vh,820px)] flex-col sm:max-w-6xl'
+            : 'flex max-h-[88vh] flex-col sm:max-w-xl',
           props.contentClassName ?? 'z-[70]'
         )}
         closeLabel={t('memo.close')}
@@ -344,7 +347,7 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
         {completedSignature?.document ? (
           <>
             <SuccessHeader />
-            <div className="px-6 py-5">
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
               <ul>
                 <SignedCopy
                   signature={completedSignature}
@@ -395,7 +398,7 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
             </div>
           </>
         ) : (
-          <div className="px-6 pb-6 pt-7">
+          <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-6 pt-7">
             <DialogHeader>
               <DialogTitle>{t('memo.signing.resultTitle')}</DialogTitle>
               <DialogDescription aria-live={announceOutcome ? 'polite' : undefined} aria-atomic={true}>

@@ -1,16 +1,18 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { type ReactNode, useEffect, useState } from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { lazy, type ReactNode, Suspense, useEffect, useLayoutEffect, useState } from 'react';
+import { BrowserRouter, useLocation } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   CalloutContributionType,
   CalloutFramingType,
   SigningAttemptStatus,
 } from '@/core/apollo/generated/graphql-schema';
+import { AUTH_REQUIRED_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
 import { MemoEditorShell } from '@/crd/components/memo/MemoEditorShell';
 import { CrdCalloutDialogFromUrl } from '@/main/crdPages/space/callout/CrdCalloutDialogFromUrl';
+import { buildReturnUrlParam } from '@/main/routing/urlBuilders';
 import { CrdLayoutWrapper } from './CrdLayoutWrapper';
 
 const state = vi.hoisted(() => ({
@@ -28,10 +30,14 @@ const state = vi.hoisted(() => ({
   calloutLoading: false,
   calloutAvailable: true,
   realCalloutPortal: false,
+  routeHasCallout: true,
   calloutKind: 'framing' as 'framing' | 'contribution',
   calloutId: 'callout-1',
   attemptQuery: vi.fn(),
+  attemptFetch: vi.fn(),
   verify: vi.fn(),
+  plainChildMounted: vi.fn(),
+  forbiddenReturnUrlObserved: vi.fn(),
 }));
 
 const returnStorageKey = (attemptId: string) => `alkemio.memo-signing-return.v1:${attemptId}`;
@@ -67,6 +73,11 @@ vi.mock('react-i18next', () => ({
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useMemoSigningAttemptQuery: (options: { variables: { attemptID: string }; skip: boolean }) => {
     state.attemptQuery(options);
+    useEffect(() => {
+      if (!options.skip) {
+        state.attemptFetch(options.variables.attemptID);
+      }
+    }, [options.skip, options.variables.attemptID]);
     if (options.skip) return { data: undefined, loading: false, error: undefined };
     if (state.attemptLoading) return { data: undefined, loading: true, error: undefined };
     if (state.attemptError) return { data: undefined, loading: false, error: state.attemptError };
@@ -171,7 +182,7 @@ vi.mock('@/core/routing/useNavigate', () => ({ default: () => vi.fn() }));
 
 vi.mock('@/main/routing/urlResolver/useUrlResolver', () => ({
   default: () => ({
-    calloutId: state.calloutId,
+    calloutId: state.routeHasCallout ? state.calloutId : undefined,
     calloutsSetId: 'callouts-set-1',
     contributionId: state.calloutKind === 'contribution' ? 'contribution-1' : undefined,
     postId: undefined,
@@ -290,6 +301,42 @@ const renderRoute = () =>
     </BrowserRouter>
   );
 
+function PlainRouteChild() {
+  const location = useLocation();
+  const forbiddenReturnUrl = `${AUTH_REQUIRED_PATH}${buildReturnUrlParam(
+    `${location.pathname}${location.search}${location.hash}`
+  )}`;
+  state.forbiddenReturnUrlObserved(forbiddenReturnUrl);
+
+  useEffect(() => {
+    state.plainChildMounted();
+  }, []);
+
+  return (
+    <>
+      <output data-testid="router-search">{location.search}</output>
+      <output data-testid="forbidden-return-url">{forbiddenReturnUrl}</output>
+    </>
+  );
+}
+
+function ReplaceTokenBeforeCapture() {
+  useLayoutEffect(() => {
+    globalThis.history.replaceState(null, '', '/dashboard?signingAttemptId=attempt-2');
+  }, []);
+
+  return null;
+}
+
+const renderPlainRoute = () =>
+  render(
+    <BrowserRouter>
+      <CrdLayoutWrapper>
+        <PlainRouteChild />
+      </CrdLayoutWrapper>
+    </BrowserRouter>
+  );
+
 beforeEach(() => {
   state.authLoading = false;
   state.userId = 'user-1';
@@ -305,15 +352,93 @@ beforeEach(() => {
   state.calloutLoading = false;
   state.calloutAvailable = true;
   state.realCalloutPortal = false;
+  state.routeHasCallout = true;
   state.calloutKind = 'framing';
   state.calloutId = 'callout-1';
   state.attemptQuery.mockClear();
+  state.attemptFetch.mockClear();
   state.verify.mockClear();
+  state.plainChildMounted.mockClear();
+  state.forbiddenReturnUrlObserved.mockClear();
   window.sessionStorage.clear();
   globalThis.history.replaceState(null, '', '/space/collaboration/callout-1');
 });
 
 describe('CrdLayoutWrapper memo-signing return lifecycle', () => {
+  it('self-settles a signing return when no route-modal claimant is mounted', async () => {
+    state.routeHasCallout = false;
+    globalThis.history.replaceState(null, '', '/dashboard?signingAttemptId=attempt-1');
+
+    renderPlainRoute();
+
+    expect(await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' })).toBeInTheDocument();
+  });
+
+  it('router-synchronizes token consumption without remounting or querying the attempt twice', async () => {
+    state.routeHasCallout = false;
+    globalThis.history.replaceState(null, '', '/dashboard?keep=1&signingAttemptId=attempt-1#decision');
+
+    renderPlainRoute();
+
+    await waitFor(() => expect(screen.getByTestId('router-search')).toHaveTextContent('?keep=1'));
+    expect(globalThis.location.search).toBe('?keep=1');
+    expect(globalThis.location.hash).toBe('#decision');
+    const forbiddenReturnUrl = decodeURI(screen.getByTestId('forbidden-return-url').textContent ?? '');
+    expect(forbiddenReturnUrl).toContain('/dashboard?keep=1#decision');
+    expect(forbiddenReturnUrl).not.toContain('signingAttemptId');
+    const observedReturnUrls = state.forbiddenReturnUrlObserved.mock.calls.map(([value]) => decodeURI(value));
+    expect(observedReturnUrls[0]).toContain('signingAttemptId=attempt-1');
+    expect(observedReturnUrls.at(-1)).not.toContain('signingAttemptId');
+    expect(state.plainChildMounted).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(state.attemptFetch).toHaveBeenCalledTimes(1));
+    expect(state.attemptFetch).toHaveBeenCalledWith('attempt-1');
+  });
+
+  it('does not clobber a newer live token that arrives before the capture effect runs', async () => {
+    state.routeHasCallout = false;
+    globalThis.history.replaceState(null, '', '/dashboard?signingAttemptId=attempt-1');
+
+    render(
+      <BrowserRouter>
+        <CrdLayoutWrapper>
+          <ReplaceTokenBeforeCapture />
+        </CrdLayoutWrapper>
+      </BrowserRouter>
+    );
+
+    await waitFor(() => expect(globalThis.location.search).toBe('?signingAttemptId=attempt-2'));
+    expect(state.attemptFetch).not.toHaveBeenCalled();
+  });
+
+  it('keeps a callout route pending while its lazy route claimant has not mounted', async () => {
+    let resolveRoute: (() => void) | undefined;
+    const LazyCalloutRoute = lazy(
+      () =>
+        new Promise<{ default: typeof CrdCalloutDialogFromUrl }>(resolve => {
+          resolveRoute = () => resolve({ default: CrdCalloutDialogFromUrl });
+        })
+    );
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+
+    render(
+      <BrowserRouter>
+        <CrdLayoutWrapper>
+          <Suspense fallback={<span>Loading callout route</span>}>
+            <LazyCalloutRoute onClose={vi.fn()} />
+          </Suspense>
+        </CrdLayoutWrapper>
+      </BrowserRouter>
+    );
+
+    await waitFor(() => expect(globalThis.location.search).toBe(''));
+    expect(screen.getByText('Loading callout route')).toBeInTheDocument();
+    expect(screen.queryByRole('dialog', { name: 'memo.signing.savedTitle' })).not.toBeInTheDocument();
+
+    await act(async () => resolveRoute?.());
+
+    expect(await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' })).toBeInTheDocument();
+  });
+
   it('keeps a context-free result foreground when the real callout portal mounts after callback capture', async () => {
     const user = userEvent.setup();
     state.realCalloutPortal = true;

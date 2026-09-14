@@ -221,6 +221,46 @@ describe('MemoSigningDialog', () => {
     expect(screen.getByText(machineDateTime)).toHaveAttribute('datetime', machineDateTime);
   });
 
+  it.each([
+    'history',
+    'signing',
+  ] as const)('renders an honest visible fallback without a time element for an invalid %s timestamp', mode => {
+    const signature = {
+      id: 'attempt-invalid-date',
+      document: { id: 'document-invalid-date', url: '/api/private/invalid-date.pdf' },
+      updatedDate: 'not-a-date',
+      recordedAt: '',
+    };
+
+    renderDialog(
+      mode === 'history'
+        ? { mode: 'history', historyState: 'ready', signatures: [signature] }
+        : { mode: 'signing', stage: 'signed', completedSignature: signature }
+    );
+
+    const metadata = screen.getByText('—').closest('p');
+    expect(metadata).toHaveTextContent('Signed: —');
+    expect(metadata?.querySelector('time')).toBeNull();
+  });
+
+  it('keeps a signed-success result within a scrollable dialog body', () => {
+    renderDialog({
+      mode: 'signing',
+      stage: 'signed',
+      completedSignature: {
+        id: 'attempt-1',
+        document: { id: 'document-1', url: '/api/private/document-1' },
+        updatedDate: '2026-09-14T09:00:00.000Z',
+        recordedAt: '09/14/2026, 09:00:00',
+      },
+    });
+
+    const dialog = screen.getByRole('dialog', { name: "It's signed" });
+    const body = screen.getByRole('list').parentElement;
+    expect(dialog).toHaveClass('flex', 'max-h-[88vh]', 'overflow-hidden');
+    expect(body).toHaveClass('min-h-0', 'flex-1', 'overflow-y-auto');
+  });
+
   it('disables the exact document download while its authenticated fetch is in progress', async () => {
     const onDownload = vi.fn();
     renderDialog({

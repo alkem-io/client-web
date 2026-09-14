@@ -1,41 +1,47 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
-import { useMemoSigningAttemptQuery, useVerifyMemoSignatureLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import type { MemoSignatureDocument, MemoSignatureView } from '@/crd/components/memo/MemoSigningDialog';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useMemoSigningAttemptQuery } from '@/core/apollo/generated/apollo-hooks';
+import type { MemoSignatureView } from '@/crd/components/memo/MemoSigningDialog';
 import { MemoSigningDialog, type MemoSigningStage } from '@/crd/components/memo/MemoSigningDialog';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { formatAbsoluteDateTime, formatMachineDateTime } from '@/crd/lib/dateTimeFormat';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { downloadMemoSignaturePdf } from '@/main/crdPages/memo/downloadMemoSignaturePdf';
+import { useMemoSignatureActions } from '@/main/crdPages/memo/useMemoSignatureActions';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useMemoSigningReturnContext } from './MemoSigningReturnContext';
 import { type MemoSigningReturnRecord, takeMemoSigningReturnRecord } from './memoSigningReturnStorage';
 
 type ReturnCapture = {
   attemptId: string;
   routeKey: string;
+  cleanedRoute?: string;
 };
 
 const getSigningAttemptId = (search: string) => new URLSearchParams(search).get('signingAttemptId');
 
-const stripCapturedAttempt = (attemptId: string) => {
-  const search = new URLSearchParams(globalThis.location.search);
+const locationWithoutCapturedAttempt = (
+  location: Pick<Location, 'pathname' | 'search' | 'hash'>,
+  attemptId: string
+) => {
+  const search = new URLSearchParams(location.search);
   if (search.get('signingAttemptId') !== attemptId) return;
 
   search.delete('signingAttemptId');
   const query = search.toString();
-  globalThis.history.replaceState(
-    globalThis.history.state,
-    '',
-    `${globalThis.location.pathname}${query ? `?${query}` : ''}${globalThis.location.hash}`
-  );
+  return {
+    pathname: location.pathname,
+    search: query ? `?${query}` : '',
+    hash: location.hash,
+  };
 };
 
 export function MemoSigningReturnDialogConnector() {
-  const { t, i18n } = useTranslation('crd-space');
+  const { i18n } = useTranslation('crd-space');
   const location = useLocation();
-  const notify = useNotification();
+  const navigate = useNavigate();
+  const { calloutId: resolvedCalloutId, loading: urlResolverLoading } = useUrlResolver();
+  const signatureActions = useMemoSignatureActions();
   const { loading: currentUserLoading, userModel } = useCurrentUserContext();
   const {
     restoreResolution,
@@ -51,7 +57,6 @@ export function MemoSigningReturnDialogConnector() {
   const [dismissedAttemptId, setDismissedAttemptId] = useState<string>();
   const [restoreExpectedAttemptId, setRestoreExpectedAttemptId] = useState<string>();
   const [restoreReadyAttemptId, setRestoreReadyAttemptId] = useState<string>();
-  const [downloadingDocumentIds, setDownloadingDocumentIds] = useState<ReadonlySet<string>>(() => new Set());
   const storageReadForAttempt = useRef<string | undefined>(undefined);
 
   const routeKey = `${location.key}:${location.pathname}${location.search}${location.hash}`;
@@ -60,18 +65,34 @@ export function MemoSigningReturnDialogConnector() {
     const attemptId = getSigningAttemptId(location.search);
     if (attemptId) {
       if (capture?.attemptId === attemptId) return;
+      const liveRoute = `${globalThis.location.pathname}${globalThis.location.search}${globalThis.location.hash}`;
+      const renderedRoute = `${location.pathname}${location.search}${location.hash}`;
+      if (liveRoute !== renderedRoute || getSigningAttemptId(globalThis.location.search) !== attemptId) return;
+      const cleanedLocation = locationWithoutCapturedAttempt(location, attemptId);
+      if (!cleanedLocation) return;
       setRestoreIntent(current => (current?.attemptId !== attemptId ? undefined : current));
       setRestoreResolution(current => (current?.attemptId !== attemptId ? undefined : current));
       setRouteSettlement(undefined);
       setRouteSettlementRequest({ attemptId });
-      setCapture({ attemptId, routeKey });
+      setCapture({
+        attemptId,
+        routeKey,
+        cleanedRoute: `${cleanedLocation.pathname}${cleanedLocation.search}${cleanedLocation.hash}`,
+      });
       setQueryAttemptId(undefined);
       setReturnRecord(undefined);
       setDismissedAttemptId(undefined);
       setRestoreExpectedAttemptId(undefined);
       setRestoreReadyAttemptId(undefined);
       storageReadForAttempt.current = undefined;
-      stripCapturedAttempt(attemptId);
+      navigate(cleanedLocation, { replace: true, state: location.state });
+      return;
+    }
+
+    if (capture?.cleanedRoute && capture.cleanedRoute === `${location.pathname}${location.search}${location.hash}`) {
+      if (capture.routeKey !== routeKey) {
+        setCapture({ ...capture, routeKey, cleanedRoute: undefined });
+      }
       return;
     }
 
@@ -89,12 +110,23 @@ export function MemoSigningReturnDialogConnector() {
   }, [
     capture,
     location.search,
+    location.hash,
+    location.pathname,
+    location.state,
+    navigate,
     routeKey,
     setRestoreIntent,
     setRestoreResolution,
     setRouteSettlement,
     setRouteSettlementRequest,
   ]);
+
+  useEffect(() => {
+    if (!capture || urlResolverLoading || resolvedCalloutId || routeSettlement?.attemptId === capture.attemptId) {
+      return;
+    }
+    setRouteSettlement({ attemptId: capture.attemptId });
+  }, [capture, resolvedCalloutId, routeSettlement, setRouteSettlement, urlResolverLoading]);
 
   useEffect(() => {
     if (
@@ -118,7 +150,6 @@ export function MemoSigningReturnDialogConnector() {
     skip: !queryAttemptId,
     fetchPolicy: 'network-only',
   });
-  const [verifyMemoSignature, verification] = useVerifyMemoSignatureLazyQuery({ fetchPolicy: 'no-cache' });
 
   const returnedAttempt = returnAttempt.data?.signingAttempt;
   const returnedAttemptMatches = Boolean(queryAttemptId && returnedAttempt?.id === queryAttemptId);
@@ -166,32 +197,11 @@ export function MemoSigningReturnDialogConnector() {
           updatedDate: returnedAttempt.updatedDate,
           recordedAt:
             formatAbsoluteDateTime(returnedAttempt.updatedDate, resolveDateFnsLocale(i18n.language)) ??
-            formatMachineDateTime(returnedAttempt.updatedDate),
-          verification:
-            verification.variables?.attemptID === returnedAttempt.id
-              ? verification.loading
-                ? 'checking'
-                : verification.error || !verification.data
-                  ? 'unavailable'
-                  : (verification.data.verifyMemoSignature.toLowerCase() as 'verified' | 'invalid' | 'unavailable')
-              : undefined,
+            formatMachineDateTime(returnedAttempt.updatedDate) ??
+            '—',
+          verification: signatureActions.verificationFor(returnedAttempt.id),
         }
       : undefined;
-
-  const handleDownload = async (document: MemoSignatureDocument) => {
-    setDownloadingDocumentIds(current => new Set(current).add(document.id));
-    try {
-      await downloadMemoSignaturePdf(document);
-    } catch {
-      notify(t('memo.signing.downloadFailed'), 'error');
-    } finally {
-      setDownloadingDocumentIds(current => {
-        const next = new Set(current);
-        next.delete(document.id);
-        return next;
-      });
-    }
-  };
 
   const close = () => {
     if (!queryAttemptId) return;
@@ -236,10 +246,10 @@ export function MemoSigningReturnDialogConnector() {
       stage={signingStage}
       completedSignature={completedSignature}
       onContinue={() => undefined}
-      onVerify={attemptID => void verifyMemoSignature({ variables: { attemptID } })}
-      onDownload={document => void handleDownload(document)}
-      downloadingDocumentIds={downloadingDocumentIds}
-      verifyDisabled={verification.loading}
+      onVerify={signatureActions.verify}
+      onDownload={document => void signatureActions.download(document)}
+      downloadingDocumentIds={signatureActions.downloadingDocumentIds}
+      verifyDisabled={signatureActions.verifyDisabled}
       onClose={close}
       onCloseAutoFocus={event => {
         const focusTarget =

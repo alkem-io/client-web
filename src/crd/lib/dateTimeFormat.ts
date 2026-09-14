@@ -24,7 +24,7 @@ import { format, formatDistanceToNow, formatDistanceToNowStrict, formatISO, pars
 
 const toDate = (input: Date | string | number | null | undefined): Date | undefined => {
   if (input === null || input === undefined) return undefined;
-  const parsed = input instanceof Date ? input : new Date(input);
+  const parsed = input instanceof Date ? input : typeof input === 'string' ? parseISO(input) : new Date(input);
   return Number.isNaN(parsed.getTime()) ? undefined : parsed;
 };
 
@@ -39,8 +39,9 @@ export function formatAbsoluteDateTime(
 }
 
 /** ISO 8601 machine-readable datetime for the HTML `time` element. */
-export function formatMachineDateTime(input: Date | string): string {
-  return formatISO(input instanceof Date ? input : parseISO(input));
+export function formatMachineDateTime(input: Date | string | number | null | undefined): string | undefined {
+  const date = toDate(input);
+  return date ? formatISO(date) : undefined;
 }
 
 /** "about 1 hour ago", "less than a minute ago", "5 days ago". */
