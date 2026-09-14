@@ -21,7 +21,7 @@ type CrdCalloutDialogFromUrlProps = {
  */
 export function CrdCalloutDialogFromUrl({ onClose }: CrdCalloutDialogFromUrlProps) {
   const { calloutId, calloutsSetId, contributionId, postId, loading: urlLoading } = useUrlResolver();
-  const { restoreIntent, setRestoreIntent } = useMemoSigningReturnContext();
+  const { restoreIntent, setRestoreIntent, setRestoreResolution } = useMemoSigningReturnContext();
 
   const { callout, loading: calloutLoading } = useCalloutDetails({
     calloutId,
@@ -33,8 +33,15 @@ export function CrdCalloutDialogFromUrl({ onClose }: CrdCalloutDialogFromUrlProp
 
   useEffect(() => {
     if (!callout || !restoreIntent || restoreIntent.calloutId === callout.id) return;
+    setRestoreResolution({ attemptId: restoreIntent.attemptId });
     setRestoreIntent(current => (current?.attemptId === restoreIntent.attemptId ? undefined : current));
-  }, [callout, restoreIntent, setRestoreIntent]);
+  }, [callout, restoreIntent, setRestoreIntent, setRestoreResolution]);
+
+  useEffect(() => {
+    if (urlLoading || calloutLoading || callout || !restoreIntent) return;
+    setRestoreResolution({ attemptId: restoreIntent.attemptId });
+    setRestoreIntent(current => (current?.attemptId === restoreIntent.attemptId ? undefined : current));
+  }, [callout, calloutLoading, restoreIntent, setRestoreIntent, setRestoreResolution, urlLoading]);
 
   // The URL resolver and callout details both have to settle before we can
   // decide whether to render the dialog — until then, defer rendering so the
@@ -53,9 +60,14 @@ export function CrdCalloutDialogFromUrl({ onClose }: CrdCalloutDialogFromUrlProp
       contributionId={contributionId}
       postId={postId}
       memoSigningRestore={restoreIntent?.calloutId === callout.id ? restoreIntent : undefined}
-      onMemoSigningRestoreConsumed={attemptId =>
-        setRestoreIntent(current => (current?.attemptId === attemptId ? undefined : current))
-      }
+      onMemoSigningRestoreConsumed={(attemptId, focusTarget) => {
+        const restoredFocusTarget =
+          focusTarget?.querySelector<HTMLElement>('button:not([disabled]), [href], input:not([disabled])') ??
+          focusTarget;
+        if (restoredFocusTarget?.isConnected) restoredFocusTarget.focus();
+        setRestoreResolution({ attemptId, focusTarget: restoredFocusTarget });
+        setRestoreIntent(current => (current?.attemptId === attemptId ? undefined : current));
+      }}
       onClose={onClose}
     />
   );

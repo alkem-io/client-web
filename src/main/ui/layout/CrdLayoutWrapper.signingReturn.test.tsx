@@ -1,6 +1,6 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { type ReactNode, useEffect } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
@@ -8,6 +8,7 @@ import {
   CalloutFramingType,
   SigningAttemptStatus,
 } from '@/core/apollo/generated/graphql-schema';
+import { MemoEditorShell } from '@/crd/components/memo/MemoEditorShell';
 import { CrdCalloutDialogFromUrl } from '@/main/crdPages/space/callout/CrdCalloutDialogFromUrl';
 import { CrdLayoutWrapper } from './CrdLayoutWrapper';
 
@@ -196,16 +197,37 @@ vi.mock('@/main/crdPages/space/callout/CalloutDetailDialogConnector', () => ({
       memoId: string;
       contributionId?: string;
     };
-    onMemoSigningRestoreConsumed?: (attemptId: string) => void;
+    onMemoSigningRestoreConsumed?: (attemptId: string, focusTarget?: HTMLElement) => void;
   }) => {
-    const editorKind = props.memoSigningRestore?.kind ?? (state.editorAlreadyOpen ? state.calloutKind : undefined);
+    const [editorKind, setEditorKind] = useState<'framing' | 'contribution' | undefined>(() =>
+      state.editorAlreadyOpen ? state.calloutKind : undefined
+    );
+
+    useEffect(() => {
+      if (props.memoSigningRestore) {
+        setEditorKind(props.memoSigningRestore.kind);
+      }
+    }, [props.memoSigningRestore]);
+
     return (
       <div data-testid="callout-dialog">
-        {editorKind === 'framing' && <div data-testid="framing-memo-editor">{props.memoSigningRestore?.memoId}</div>}
-        {editorKind === 'contribution' && (
-          <div data-testid="contribution-memo-editor">
-            {props.memoSigningRestore?.contributionId}:{props.memoSigningRestore?.memoId}
-          </div>
+        {editorKind && (
+          <MemoEditorShell
+            open={true}
+            title={`Restored ${editorKind} memo editor`}
+            onMounted={focusTarget => {
+              if (props.memoSigningRestore?.kind === editorKind) {
+                props.onMemoSigningRestoreConsumed?.(props.memoSigningRestore.attemptId, focusTarget);
+              }
+            }}
+            onClose={() => setEditorKind(undefined)}
+          >
+            <button type="button" data-testid={`${editorKind}-memo-editor`}>
+              {editorKind === 'contribution'
+                ? `${props.memoSigningRestore?.contributionId}:${props.memoSigningRestore?.memoId}`
+                : props.memoSigningRestore?.memoId}
+            </button>
+          </MemoEditorShell>
         )}
       </div>
     );
@@ -263,6 +285,61 @@ beforeEach(() => {
 });
 
 describe('CrdLayoutWrapper memo-signing return lifecycle', () => {
+  it('keeps the result foreground when late restoration mounts a real editor portal', async () => {
+    const user = userEvent.setup();
+    storeContext('framing');
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+
+    renderRoute();
+
+    const resultTitle = await screen.findByText('memo.signing.savedTitle');
+    const resultDialog = resultTitle.closest('[role="dialog"]') as HTMLElement;
+    expect(await screen.findByText('Restored framing memo editor')).toBeInTheDocument();
+    expect(resultDialog).not.toHaveAttribute('aria-hidden', 'true');
+    expect(resultDialog).not.toHaveStyle({ pointerEvents: 'none' });
+    expect(resultDialog).toContainElement(document.activeElement as HTMLElement);
+
+    await user.keyboard('{Escape}');
+
+    expect(screen.queryByRole('dialog', { name: 'memo.signing.savedTitle' })).not.toBeInTheDocument();
+    const editorDialog = screen.getByRole('dialog', { name: 'Restored framing memo editor' });
+    expect(editorDialog).toBeInTheDocument();
+    expect(editorDialog).toContainElement(document.activeElement as HTMLElement);
+    expect(screen.getByTestId('framing-memo-editor')).toBeInTheDocument();
+  });
+
+  it('keeps the result foreground when the real editor portal was already open before return', async () => {
+    const user = userEvent.setup();
+    state.editorAlreadyOpen = true;
+    const view = renderRoute();
+    expect(await screen.findByRole('dialog', { name: 'Restored framing memo editor' })).toBeInTheDocument();
+
+    storeContext('framing');
+    await act(async () => {
+      globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+      globalThis.dispatchEvent(new PopStateEvent('popstate'));
+    });
+    view.rerender(
+      <BrowserRouter>
+        <CrdLayoutWrapper>
+          <CrdCalloutDialogFromUrl onClose={vi.fn()} />
+        </CrdLayoutWrapper>
+      </BrowserRouter>
+    );
+
+    const resultDialog = (await screen.findByText('memo.signing.savedTitle')).closest('[role="dialog"]') as HTMLElement;
+    expect(resultDialog).not.toHaveAttribute('aria-hidden', 'true');
+    expect(resultDialog).not.toHaveStyle({ pointerEvents: 'none' });
+    expect(resultDialog).toContainElement(document.activeElement as HTMLElement);
+
+    await user.keyboard('{Escape}');
+
+    expect(screen.queryByRole('dialog', { name: 'memo.signing.savedTitle' })).not.toBeInTheDocument();
+    const editorDialog = screen.getByRole('dialog', { name: 'Restored framing memo editor' });
+    expect(editorDialog).toContainElement(document.activeElement as HTMLElement);
+    expect(screen.getByTestId('framing-memo-editor')).toBeInTheDocument();
+  });
+
   it.each([
     'framing',
     'contribution',
@@ -554,7 +631,7 @@ describe('CrdLayoutWrapper memo-signing return lifecycle', () => {
     await user.click(
       screen.getAllByRole('button', { name: 'memo.close' }).find(button => button.textContent) as HTMLElement
     );
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'Restored framing memo editor' })).toBeInTheDocument();
     expect(screen.getAllByTestId('framing-memo-editor')).toHaveLength(1);
   });
 });

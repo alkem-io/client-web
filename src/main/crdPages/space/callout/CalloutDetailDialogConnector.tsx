@@ -83,7 +83,7 @@ type CalloutDetailDialogConnectorProps = {
    */
   elevated?: boolean;
   memoSigningRestore?: MemoSigningRestoreIntent;
-  onMemoSigningRestoreConsumed?: (attemptId: string) => void;
+  onMemoSigningRestoreConsumed?: (attemptId: string, focusTarget?: HTMLElement) => void;
 };
 
 function ContributionsSlot({
@@ -327,6 +327,18 @@ export function CalloutDetailDialogConnector({
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const consumedSigningRestore = useRef<string | undefined>(undefined);
+  const [restoringAttemptId, setRestoringAttemptId] = useState<string>();
+
+  const restoreContributionId =
+    memoSigningRestore?.kind === 'contribution' ? memoSigningRestore.contributionId : undefined;
+  const {
+    data: restoreContributionData,
+    loading: restoreContributionLoading,
+    error: restoreContributionError,
+  } = useCalloutContributionQuery({
+    variables: { contributionId: restoreContributionId ?? '', includeMemo: true },
+    skip: !open || !restoreContributionId || contributionType !== CalloutContributionType.Memo,
+  });
 
   // CrdMemoDialog writes the editor content to Apollo cache on close for instant preview updates.
   // Schedule a delayed server fetch as a safety net to reconcile with the canonical server markdown
@@ -387,28 +399,68 @@ export function CalloutDetailDialogConnector({
   useEffect(() => {
     if (!open || !memoSigningRestore || consumedSigningRestore.current === memoSigningRestore.attemptId) return;
 
-    consumedSigningRestore.current = memoSigningRestore.attemptId;
-    if (memoSigningRestore.kind === 'framing' && callout.framing.memo?.id === memoSigningRestore.memoId) {
+    if (memoSigningRestore.calloutId !== callout.id) {
+      consumedSigningRestore.current = memoSigningRestore.attemptId;
+      onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
+      return;
+    }
+
+    if (memoSigningRestore.kind === 'framing') {
+      consumedSigningRestore.current = memoSigningRestore.attemptId;
+      if (callout.framing.memo?.id !== memoSigningRestore.memoId) {
+        onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
+        return;
+      }
+      setRestoringAttemptId(memoSigningRestore.attemptId);
       setRefreshAfterSigningAttemptId(memoSigningRestore.refreshMemo ? memoSigningRestore.attemptId : undefined);
       setFramingMemoOpen(true);
-    } else if (
-      memoSigningRestore.kind === 'contribution' &&
-      contributionType === CalloutContributionType.Memo &&
-      initialContributionId === memoSigningRestore.contributionId
-    ) {
-      setMemoContributionId(memoSigningRestore.contributionId);
-      setMemoId(memoSigningRestore.memoId);
-      setRefreshAfterSigningAttemptId(memoSigningRestore.refreshMemo ? memoSigningRestore.attemptId : undefined);
+      return;
     }
-    onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
+
+    if (
+      contributionType !== CalloutContributionType.Memo ||
+      initialContributionId !== memoSigningRestore.contributionId
+    ) {
+      consumedSigningRestore.current = memoSigningRestore.attemptId;
+      onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
+      return;
+    }
+    if (restoreContributionLoading) return;
+
+    consumedSigningRestore.current = memoSigningRestore.attemptId;
+    const loadedContribution = restoreContributionData?.lookup.contribution;
+    if (
+      restoreContributionError ||
+      !loadedContribution ||
+      loadedContribution.id !== memoSigningRestore.contributionId ||
+      loadedContribution.memo?.id !== memoSigningRestore.memoId
+    ) {
+      onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
+      return;
+    }
+
+    setRestoringAttemptId(memoSigningRestore.attemptId);
+    setMemoContributionId(loadedContribution.id);
+    setMemoId(loadedContribution.memo.id);
+    setRefreshAfterSigningAttemptId(memoSigningRestore.refreshMemo ? memoSigningRestore.attemptId : undefined);
   }, [
+    callout.id,
     callout.framing.memo?.id,
     contributionType,
     initialContributionId,
     memoSigningRestore,
     onMemoSigningRestoreConsumed,
     open,
+    restoreContributionData,
+    restoreContributionError,
+    restoreContributionLoading,
   ]);
+
+  const handleRestoredEditorMounted = (focusTarget: HTMLElement) => {
+    if (!restoringAttemptId) return;
+    onMemoSigningRestoreConsumed?.(restoringAttemptId, focusTarget);
+    setRestoringAttemptId(undefined);
+  };
 
   // Reset per-contribution state whenever the dialog closes so reopening
   // starts from the fresh initial values rather than stale selections from
@@ -782,6 +834,8 @@ export function CalloutDetailDialogConnector({
         contributionId={memoContributionId}
         memoId={memoId}
         refreshAfterSigningAttemptId={refreshAfterSigningAttemptId}
+        editorMountKey={restoringAttemptId}
+        onEditorMounted={handleRestoredEditorMounted}
         onClose={() => {
           setMemoContributionId(undefined);
           setMemoId(undefined);
@@ -835,6 +889,8 @@ export function CalloutDetailDialogConnector({
         isContribution={false}
         refreshAfterSigningAttemptId={refreshAfterSigningAttemptId}
         signingOrigin={{ kind: 'framing', calloutId: callout.id }}
+        editorMountKey={restoringAttemptId}
+        onEditorMounted={handleRestoredEditorMounted}
         onClose={() => handleFramingMemoClose()}
       />
     ) : null;

@@ -37,11 +37,13 @@ export function MemoSigningReturnDialogConnector() {
   const location = useLocation();
   const notify = useNotification();
   const { loading: currentUserLoading, userModel } = useCurrentUserContext();
-  const { setRestoreIntent } = useMemoSigningReturnContext();
+  const { restoreResolution, setRestoreIntent, setRestoreResolution } = useMemoSigningReturnContext();
   const [capture, setCapture] = useState<ReturnCapture>();
   const [queryAttemptId, setQueryAttemptId] = useState<string>();
   const [returnRecord, setReturnRecord] = useState<MemoSigningReturnRecord>();
   const [dismissedAttemptId, setDismissedAttemptId] = useState<string>();
+  const [restoreExpectedAttemptId, setRestoreExpectedAttemptId] = useState<string>();
+  const [restoreReadyAttemptId, setRestoreReadyAttemptId] = useState<string>();
   const [downloadingDocumentIds, setDownloadingDocumentIds] = useState<ReadonlySet<string>>(() => new Set());
   const storageReadForAttempt = useRef<string | undefined>(undefined);
 
@@ -52,10 +54,13 @@ export function MemoSigningReturnDialogConnector() {
     if (attemptId) {
       if (capture?.attemptId === attemptId) return;
       setRestoreIntent(current => (current?.attemptId !== attemptId ? undefined : current));
+      setRestoreResolution(current => (current?.attemptId !== attemptId ? undefined : current));
       setCapture({ attemptId, routeKey });
       setQueryAttemptId(undefined);
       setReturnRecord(undefined);
       setDismissedAttemptId(undefined);
+      setRestoreExpectedAttemptId(undefined);
+      setRestoreReadyAttemptId(undefined);
       storageReadForAttempt.current = undefined;
       stripCapturedAttempt(attemptId);
       return;
@@ -63,11 +68,14 @@ export function MemoSigningReturnDialogConnector() {
 
     if (capture && capture.routeKey !== routeKey) {
       setRestoreIntent(current => (current?.attemptId === capture.attemptId ? undefined : current));
+      setRestoreResolution(current => (current?.attemptId === capture.attemptId ? undefined : current));
       setCapture(undefined);
       setQueryAttemptId(undefined);
       setReturnRecord(undefined);
+      setRestoreExpectedAttemptId(undefined);
+      setRestoreReadyAttemptId(undefined);
     }
-  }, [capture, location.search, routeKey, setRestoreIntent]);
+  }, [capture, location.search, routeKey, setRestoreIntent, setRestoreResolution]);
 
   useEffect(() => {
     if (!capture || currentUserLoading || !userModel || storageReadForAttempt.current === capture.attemptId) return;
@@ -93,6 +101,8 @@ export function MemoSigningReturnDialogConnector() {
   useEffect(() => {
     if (!capture || !returnedAttemptMatches || !returnRecord) return;
 
+    setRestoreExpectedAttemptId(capture.attemptId);
+    setRestoreResolution(current => (current?.attemptId === capture.attemptId ? current : undefined));
     setRestoreIntent({
       attemptId: capture.attemptId,
       calloutId: returnRecord.calloutId,
@@ -102,7 +112,7 @@ export function MemoSigningReturnDialogConnector() {
       refreshMemo: isSignedWithDocument,
     });
     setReturnRecord(undefined);
-  }, [capture, isSignedWithDocument, returnRecord, returnedAttemptMatches, setRestoreIntent]);
+  }, [capture, isSignedWithDocument, returnRecord, returnedAttemptMatches, setRestoreIntent, setRestoreResolution]);
 
   const signingStage: MemoSigningStage | undefined = queryAttemptId
     ? returnAttempt.loading
@@ -159,7 +169,34 @@ export function MemoSigningReturnDialogConnector() {
     setDismissedAttemptId(queryAttemptId);
   };
 
-  const open = Boolean(signingStage && queryAttemptId !== dismissedAttemptId);
+  useEffect(() => {
+    if (
+      !dismissedAttemptId ||
+      restoreResolution?.attemptId !== dismissedAttemptId ||
+      !restoreResolution.focusTarget?.isConnected
+    ) {
+      return;
+    }
+    restoreResolution.focusTarget.focus();
+  }, [dismissedAttemptId, restoreResolution]);
+
+  useEffect(() => {
+    if (
+      !queryAttemptId ||
+      restoreExpectedAttemptId !== queryAttemptId ||
+      restoreResolution?.attemptId !== queryAttemptId
+    ) {
+      return;
+    }
+    setRestoreReadyAttemptId(queryAttemptId);
+  }, [queryAttemptId, restoreExpectedAttemptId, restoreResolution]);
+
+  const waitingForRestore = Boolean(
+    queryAttemptId &&
+      ((returnRecord?.attemptId === queryAttemptId && (returnAttempt.loading || returnedAttemptMatches)) ||
+        (restoreExpectedAttemptId === queryAttemptId && restoreReadyAttemptId !== queryAttemptId))
+  );
+  const open = Boolean(signingStage && queryAttemptId !== dismissedAttemptId && !waitingForRestore);
   if (!signingStage) return null;
 
   return (
@@ -175,6 +212,15 @@ export function MemoSigningReturnDialogConnector() {
       downloadingDocumentIds={downloadingDocumentIds}
       verifyDisabled={verification.loading}
       onClose={close}
+      onCloseAutoFocus={event => {
+        const focusTarget =
+          restoreResolution && restoreResolution.attemptId === queryAttemptId
+            ? restoreResolution.focusTarget
+            : undefined;
+        if (!focusTarget?.isConnected) return;
+        event.preventDefault();
+        focusTarget.focus();
+      }}
     />
   );
 }

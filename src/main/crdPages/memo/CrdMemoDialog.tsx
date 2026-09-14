@@ -55,6 +55,8 @@ type CrdMemoDialogProps = {
   onDelete?: () => Promise<void> | void;
   signingOrigin?: Pick<MemoSigningOrigin, 'kind' | 'calloutId' | 'contributionId'>;
   refreshAfterSigningAttemptId?: string;
+  editorMountKey?: string;
+  onEditorMounted?: (focusTarget: HTMLElement) => void;
 };
 
 export const updateMemoMarkdownCache = (
@@ -85,6 +87,8 @@ export function CrdMemoDialog({
   onDelete,
   signingOrigin,
   refreshAfterSigningAttemptId,
+  editorMountKey,
+  onEditorMounted,
 }: CrdMemoDialogProps) {
   const { t } = useTranslation('crd-space');
   const { t: tCommon } = useTranslation('crd-common');
@@ -94,7 +98,7 @@ export function CrdMemoDialog({
   const { memo, loading, refreshMemo } = useMemoManager({ id: memoId });
   const editorRef = useRef<Editor | null>(null);
   const { isAuthenticated } = useAuthenticationContext();
-  const { userModel } = useCurrentUserContext();
+  const { loading: currentUserLoading, userModel } = useCurrentUserContext();
   const {
     data: authenticationMethodsData,
     loading: authenticationMethodsLoading,
@@ -146,6 +150,7 @@ export function CrdMemoDialog({
   const [signingDialogOpen, setSigningDialogOpen] = useState(false);
   const [signedCopiesDialogOpen, setSignedCopiesDialogOpen] = useState(false);
   const refreshedAttemptId = useRef<string | undefined>(undefined);
+  const notifiedEditorMountKey = useRef<string | undefined>(undefined);
   const closeInFlight = useRef(false);
 
   const [prepareMemoSigning] = usePrepareMemoSigningMutation();
@@ -179,6 +184,13 @@ export function CrdMemoDialog({
     refreshedAttemptId.current = refreshAfterSigningAttemptId;
     void refreshMemo();
   }, [refreshAfterSigningAttemptId, refreshMemo]);
+
+  const handleEditorMounted = (focusTarget: HTMLElement) => {
+    if (!open || !editorMountKey || !onEditorMounted) return;
+    if (notifiedEditorMountKey.current === editorMountKey) return;
+    notifiedEditorMountKey.current = editorMountKey;
+    onEditorMounted(focusTarget);
+  };
   const closeSigningDialog = () => setSigningDialogOpen(false);
   const signedCopiesCount = memo?.signatures.filter(signature => signature.document).length ?? 0;
 
@@ -189,9 +201,18 @@ export function CrdMemoDialog({
   const authenticationMethods = authenticationMethodsData?.me.user?.authentication?.methods;
   const authenticationMethodsReady = isAuthenticated && !authenticationMethodsLoading && !authenticationMethodsError;
   const hasSigningEntitlement = entitlements.includes(LicenseEntitlementType.SpaceFlagMemoSigning);
-  const signingAvailableForActor = authenticationMethodsReady && hasContributePrivileges && hasSigningEntitlement;
+  const signingIdentityReady = !currentUserLoading && Boolean(userModel);
+  const signingAvailableForActor =
+    authenticationMethodsReady && hasContributePrivileges && hasSigningEntitlement && signingIdentityReady;
   const hasLinkedCleverbase = authenticationMethods?.includes(AuthenticationType.Cleverbase) === true;
-  const canSign = canStartMemoSigning(privileges, entitlements, authenticationMethods, authenticationMethodsReady);
+  const hasSigningAccess = canStartMemoSigning(
+    privileges,
+    entitlements,
+    authenticationMethods,
+    authenticationMethodsReady
+  );
+  const canSign = hasSigningAccess && signingIdentityReady;
+  const signingIdentityLoading = hasSigningAccess && currentUserLoading;
   const showCleverbaseGuidance = signingAvailableForActor && !hasLinkedCleverbase && Boolean(provider);
 
   const canEditDisplayName = isContribution && hasUpdatePrivileges;
@@ -348,12 +369,12 @@ export function CrdMemoDialog({
           {t('memo.signing.signedCopiesCount', { count: signedCopiesCount })}
         </Button>
       )}
-      {canSign && (
+      {(canSign || signingIdentityLoading) && (
         <Button
           type="button"
           variant="outline"
           size="sm"
-          disabled={!provider || signingFlow.stage === 'preparing'}
+          disabled={!provider || !signingIdentityReady || signingFlow.stage === 'preparing'}
           onClick={() => {
             setSigningDialogOpen(true);
             void signingFlow.prepare();
@@ -394,6 +415,7 @@ export function CrdMemoDialog({
   return (
     <>
       <MemoEditorShell
+        onMounted={handleEditorMounted}
         open={open}
         fullscreen={isFullscreen}
         onClose={handleClose}

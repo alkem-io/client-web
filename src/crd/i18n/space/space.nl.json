@@ -788,7 +788,7 @@
         "preview": "Controleer de exacte pdf voordat je doorgaat",
         "continuing": "De ondertekeningssessie wordt geopend",
         "checking": "Het ondertekeningsresultaat wordt gecontroleerd",
-        "pending": "De ondertekening is nog bezig. Laad deze pagina opnieuw om nogmaals te controleren.",
+        "pending": "De ondertekening is nog bezig. Sluit dit resultaat en open later de ondertekende kopieën van de betreffende memo om te controleren of er een voltooid exemplaar is.",
         "signed": "De pdf is succesvol ondertekend",
         "cancelled": "De ondertekening is geannuleerd",
         "failed": "De pdf kon niet worden ondertekend",

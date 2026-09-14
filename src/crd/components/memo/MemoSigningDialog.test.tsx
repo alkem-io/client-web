@@ -103,6 +103,16 @@ describe('MemoSigningDialog', () => {
     expect(screen.getByRole('button', { name: 'Continuing to Cleverbase' })).toBeDisabled();
   });
 
+  it('lets the stacked mobile preview and journey scroll without changing the desktop row layout', () => {
+    renderDialog({
+      stage: 'preview',
+      previewUrl: '/api/public/rest/content-signing/attempt-1/snapshot',
+    });
+
+    const previewAndJourney = screen.getByTitle('Memo signing preview').parentElement?.parentElement;
+    expect(previewAndJourney).toHaveClass('overflow-y-auto', 'lg:flex-row', 'lg:overflow-hidden');
+  });
+
   it('does not offer a gateway retry after continuation failed', () => {
     renderDialog({
       stage: 'continue-error',
@@ -229,7 +239,10 @@ describe('MemoSigningDialog', () => {
 
   it.each([
     ['checking', 'Checking the signing result'],
-    ['pending', 'Signing is still in progress. Reload this page to check again.'],
+    [
+      'pending',
+      "Signing is still in progress. Close this result, then open the relevant memo's signed copies later to check for a completed copy.",
+    ],
     ['cancelled', 'Signing was cancelled'],
     ['failed', 'The PDF could not be signed'],
     ['expired', 'This signing attempt expired'],
@@ -243,6 +256,17 @@ describe('MemoSigningDialog', () => {
     expect(outcome).toBeInTheDocument();
     expect(outcome.closest('[aria-live="polite"]')).toHaveAttribute('aria-atomic', 'true');
     expect(screen.queryByText(/Review the exact PDF copy before starting/)).not.toBeInTheDocument();
+  });
+
+  it('keeps a pending return truthful after its single-use URL token has been consumed', () => {
+    renderDialog({ stage: 'pending' });
+
+    expect(
+      screen.getByText(
+        "Signing is still in progress. Close this result, then open the relevant memo's signed copies later to check for a completed copy."
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/reload|refresh|retry|automatic(?:ally)? update/i)).not.toBeInTheDocument();
   });
 
   it('announces an asynchronously resolved signing outcome', () => {
@@ -260,7 +284,10 @@ describe('MemoSigningDialog', () => {
 
   it.each([
     ['checking', 'Checking the signing result'],
-    ['pending', 'Signing is still in progress. Reload this page to check again.'],
+    [
+      'pending',
+      "Signing is still in progress. Close this result, then open the relevant memo's signed copies later to check for a completed copy.",
+    ],
     ['cancelled', 'Signing was cancelled'],
     ['failed', 'The PDF could not be signed'],
     ['expired', 'This signing attempt expired'],

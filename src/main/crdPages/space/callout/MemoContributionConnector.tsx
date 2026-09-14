@@ -9,6 +9,8 @@ type MemoContributionConnectorProps = {
   memoId: string;
   onClose: () => void;
   refreshAfterSigningAttemptId?: string;
+  editorMountKey?: string;
+  onEditorMounted?: (focusTarget: HTMLElement) => void;
 };
 
 export function MemoContributionConnector({
@@ -18,6 +20,8 @@ export function MemoContributionConnector({
   memoId,
   onClose,
   refreshAfterSigningAttemptId,
+  editorMountKey,
+  onEditorMounted,
 }: MemoContributionConnectorProps) {
   const [deleteContribution] = useDeleteContributionMutation();
   const [fetchMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
@@ -71,6 +75,8 @@ export function MemoContributionConnector({
       isContribution={true}
       refreshAfterSigningAttemptId={refreshAfterSigningAttemptId}
       signingOrigin={{ kind: 'contribution', calloutId, contributionId }}
+      editorMountKey={editorMountKey}
+      onEditorMounted={onEditorMounted}
       onClose={handleClose}
       onDelete={handleMemoDeleted}
     />

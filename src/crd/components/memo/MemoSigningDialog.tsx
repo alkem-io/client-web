@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   SquareArrowOutUpRight,
 } from 'lucide-react';
+import type { ComponentProps } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -58,6 +59,7 @@ type CommonProps = {
   onClose: () => void;
   overlayClassName?: string;
   contentClassName?: string;
+  onCloseAutoFocus?: ComponentProps<typeof DialogContent>['onCloseAutoFocus'];
 };
 
 type HistoryProps = CommonProps & {
@@ -251,6 +253,7 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
     return (
       <Dialog open={props.open} onOpenChange={props.onOpenChange}>
         <DialogContent
+          onCloseAutoFocus={props.onCloseAutoFocus}
           overlayClassName={props.overlayClassName ?? 'z-[70]'}
           className={cn(
             'flex max-h-[88vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl',
@@ -327,6 +330,7 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
       <DialogContent
+        onCloseAutoFocus={props.onCloseAutoFocus}
         overlayClassName={props.overlayClassName ?? 'z-[70]'}
         className={cn(
           'gap-0 overflow-hidden p-0',
@@ -358,7 +362,7 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
                 <DialogDescription>{t('memo.signing.description')}</DialogDescription>
               </DialogHeader>
             </div>
-            <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
+            <div className="flex min-h-0 flex-1 flex-col overflow-y-auto lg:flex-row lg:overflow-hidden">
               <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3 p-5">
                 {busy && (
                   <output aria-label={message} className="flex items-center gap-2 text-body">

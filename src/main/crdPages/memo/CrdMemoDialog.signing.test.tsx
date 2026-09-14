@@ -27,6 +27,8 @@ const mocks = vi.hoisted(() => ({
     loading: false,
   } as Record<string, unknown>,
   continueMutation: vi.fn(),
+  currentUserLoading: false,
+  currentUserModel: { id: 'user-1' } as { id: string } | undefined,
   lastHistoryDialogProps: undefined as
     | { open: boolean; memoId: string; onOpenChange: (open: boolean) => void }
     | undefined,
@@ -77,6 +79,9 @@ vi.mock('@/core/ui/fullscreen/FullscreenEditorContext', () => ({ useRegisterFull
 vi.mock('@/core/ui/fullscreen/useFullscreen', () => ({ useFullscreen: () => ({ fullscreen: false }) }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
 vi.mock('@/crd/hooks/useMediaQuery', () => ({ useMediaQuery: () => false }));
+vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
+  useCurrentUserContext: () => ({ loading: mocks.currentUserLoading, userModel: mocks.currentUserModel }),
+}));
 vi.mock('@/domain/space/context/useSpace', () => ({
   useSpace: () => ({
     entitlements: mocks.spaceEntitlements,
@@ -168,6 +173,7 @@ const RefreshCapableCrdMemoDialog = CrdMemoDialog as unknown as ComponentType<{
   memoId: string;
   onClose: () => void;
   refreshAfterSigningAttemptId?: string;
+  signingOrigin?: { kind: 'framing'; calloutId: string };
 }>;
 
 describe('CrdMemoDialog signing connector', () => {
@@ -180,6 +186,8 @@ describe('CrdMemoDialog signing connector', () => {
     vi.stubGlobal('history', { replaceState: mocks.replaceState, state: null });
     mocks.memo = memoWith([AuthorizationPrivilege.Contribute]);
     mocks.authenticated = true;
+    mocks.currentUserLoading = false;
+    mocks.currentUserModel = { id: 'user-1' };
     mocks.authenticationMethodsResult = {
       data: {
         me: {
@@ -244,6 +252,65 @@ describe('CrdMemoDialog signing connector', () => {
 
     await waitFor(() => expect(mocks.continueMutation).toHaveBeenCalledWith({ variables: { attemptID: 'attempt-1' } }));
     expect(mocks.assign).toHaveBeenCalledWith('https://cleverbase.example/authorize');
+  });
+
+  it('cannot initiate an editor-origin signing until the current user identity settles', async () => {
+    const user = userEvent.setup();
+    window.sessionStorage.clear();
+    const storagePrototype = Object.getPrototypeOf(window.sessionStorage) as Storage;
+    const setItem = vi.spyOn(storagePrototype, 'setItem');
+    mocks.currentUserLoading = true;
+    mocks.currentUserModel = undefined;
+    const view = render(
+      <RefreshCapableCrdMemoDialog
+        open={true}
+        memoId="memo-1"
+        onClose={vi.fn()}
+        signingOrigin={{ kind: 'framing', calloutId: 'callout-1' }}
+      />
+    );
+
+    const unresolvedSign = screen.getByRole('button', { name: 'memo.signing.title' });
+    expect(unresolvedSign).toBeDisabled();
+    await user.click(unresolvedSign);
+    expect(mocks.requestDurability).not.toHaveBeenCalled();
+    expect(mocks.prepareMutation).not.toHaveBeenCalled();
+
+    mocks.currentUserLoading = false;
+    mocks.currentUserModel = { id: 'user-1' };
+    view.rerender(
+      <RefreshCapableCrdMemoDialog
+        open={true}
+        memoId="memo-1"
+        onClose={vi.fn()}
+        signingOrigin={{ kind: 'framing', calloutId: 'callout-1' }}
+      />
+    );
+
+    const resolvedSign = screen.getByRole('button', { name: 'memo.signing.title' });
+    expect(resolvedSign).toBeEnabled();
+    await user.click(resolvedSign);
+    await waitFor(() => expect(mocks.prepareMutation).toHaveBeenCalledOnce());
+
+    await user.click(screen.getByRole('button', { name: 'continue signing' }));
+    await waitFor(() => expect(mocks.assign).toHaveBeenCalledWith('https://cleverbase.example/authorize'));
+
+    expect(setItem).toHaveBeenCalledOnce();
+    expect(setItem.mock.calls[0]?.[0]).toBe('alkemio.memo-signing-return.v1:attempt-1');
+    const record = JSON.parse(setItem.mock.calls[0]?.[1] ?? '{}');
+    expect(record).toEqual({
+      version: 1,
+      expiresAt: expect.any(Number),
+      attemptId: 'attempt-1',
+      userId: 'user-1',
+      memoId: 'memo-1',
+      kind: 'framing',
+      calloutId: 'callout-1',
+    });
+    expect(Object.keys(record).sort()).toEqual(
+      ['version', 'expiresAt', 'attemptId', 'userId', 'memoId', 'kind', 'calloutId'].sort()
+    );
+    setItem.mockRestore();
   });
 
   it('renders history and new-signature actions independently for an eligible signer', async () => {

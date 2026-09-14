@@ -13,7 +13,7 @@ type CalloutDeeplinkViewProps = {
   /** Deep-linked underlying post id, for post contributions. */
   postId?: string;
   memoSigningRestore?: MemoSigningRestoreIntent;
-  onMemoSigningRestoreConsumed?: (attemptId: string) => void;
+  onMemoSigningRestoreConsumed?: (attemptId: string, focusTarget?: HTMLElement) => void;
   /** Closes the whole deep-linked view (navigate back to the parent page). */
   onClose: () => void;
 };

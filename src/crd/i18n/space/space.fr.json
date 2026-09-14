@@ -788,7 +788,7 @@
         "preview": "Vérifiez le PDF exact avant de continuer",
         "continuing": "Ouverture de la session de signature",
         "checking": "Vérification du résultat de la signature",
-        "pending": "La signature est toujours en cours. Rechargez cette page pour vérifier à nouveau.",
+        "pending": "La signature est toujours en cours. Fermez ce résultat, puis ouvrez plus tard les copies signées du mémo concerné pour vérifier si une copie a été finalisée.",
         "signed": "Le PDF a été signé avec succès",
         "cancelled": "La signature a été annulée",
         "failed": "Le PDF n’a pas pu être signé",

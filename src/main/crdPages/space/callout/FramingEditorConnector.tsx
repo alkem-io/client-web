@@ -114,6 +114,8 @@ type FramingEditorConnectorProps = {
    * dialogs directly, not by the main callout form.
    */
   mode?: 'create' | 'edit';
+  /** Parent callout id used to preserve memo-signing return intent. */
+  calloutId?: string;
   /** Server id of the existing memo, used by `CrdMemoDialog` on edit. */
   editMemoId?: string;
   /** Server-loaded whiteboard, used by `CrdWhiteboardView` on edit (T048). */
@@ -264,6 +266,7 @@ type FramingEditorConnectorProps = {
 
 export function FramingEditorConnector({
   mode = 'create',
+  calloutId,
   editMemoId,
   editWhiteboard,
   editWhiteboardShareUrl,
@@ -437,7 +440,12 @@ export function FramingEditorConnector({
                 {t('framing.openMemo')}
               </Button>
             </div>
-            <CrdMemoDialog open={memoDialogOpen} memoId={editMemoId} onClose={() => setMemoDialogOpen(false)} />
+            <CrdMemoDialog
+              open={memoDialogOpen}
+              memoId={editMemoId}
+              signingOrigin={calloutId ? { kind: 'framing', calloutId } : undefined}
+              onClose={() => setMemoDialogOpen(false)}
+            />
           </>
         );
       }

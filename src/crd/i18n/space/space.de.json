@@ -788,7 +788,7 @@
         "preview": "Prüfen Sie die exakte PDF, bevor Sie fortfahren",
         "continuing": "Der Signiervorgang wird geöffnet",
         "checking": "Das Signierergebnis wird geprüft",
-        "pending": "Der Signiervorgang läuft noch. Laden Sie diese Seite erneut, um den Status zu prüfen.",
+        "pending": "Der Signiervorgang läuft noch. Schließen Sie dieses Ergebnis und öffnen Sie später die signierten Kopien des betreffenden Memos, um nach einem fertiggestellten Exemplar zu sehen.",
         "signed": "Die PDF wurde erfolgreich signiert",
         "cancelled": "Der Signiervorgang wurde abgebrochen",
         "failed": "Die PDF konnte nicht signiert werden",

@@ -1,8 +1,9 @@
 import { X } from 'lucide-react';
-import { type ReactNode, useId } from 'react';
+import { type ReactNode, type Ref, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Dialog, DialogContentRaw, DialogOverlay, DialogPortal } from '@/crd/primitives/dialog';
+import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 
 type MemoEditorShellProps = {
   open: boolean;
@@ -14,6 +15,8 @@ type MemoEditorShellProps = {
   children: ReactNode;
   footer?: ReactNode;
   className?: string;
+  contentRef?: Ref<HTMLDivElement>;
+  onMounted?: (focusTarget: HTMLElement) => void;
 };
 
 export function MemoEditorShell({
@@ -26,9 +29,14 @@ export function MemoEditorShell({
   children,
   footer,
   className,
+  contentRef,
+  onMounted,
 }: MemoEditorShellProps) {
   const { t } = useTranslation('crd-space');
   const titleId = useId();
+  const editorContentRef = useCombinedRefs<HTMLDivElement | null>(null, contentRef, element => {
+    if (element) onMounted?.(element);
+  });
 
   return (
     <Dialog
@@ -40,6 +48,7 @@ export function MemoEditorShell({
       <DialogPortal>
         <DialogOverlay className="z-[60] bg-background/80 backdrop-blur-sm" />
         <DialogContentRaw
+          ref={editorContentRef}
           aria-labelledby={titleId}
           onInteractOutside={e => e.preventDefault()}
           onPointerDownOutside={e => e.preventDefault()}

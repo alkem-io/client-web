@@ -788,7 +788,7 @@
         "preview": "Review the exact PDF before continuing",
         "continuing": "Opening the signing session",
         "checking": "Checking the signing result",
-        "pending": "Signing is still in progress. Reload this page to check again.",
+        "pending": "Signing is still in progress. Close this result, then open the relevant memo's signed copies later to check for a completed copy.",
         "signed": "The PDF was signed successfully",
         "cancelled": "Signing was cancelled",
         "failed": "The PDF could not be signed",
