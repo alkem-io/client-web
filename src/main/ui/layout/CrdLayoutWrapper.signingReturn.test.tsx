@@ -183,6 +183,7 @@ vi.mock('@/core/routing/useNavigate', () => ({ default: () => vi.fn() }));
 vi.mock('@/main/routing/urlResolver/useUrlResolver', () => ({
   default: () => ({
     providerPresent: true,
+    resolutionComplete: true,
     calloutId: state.routeHasCallout ? state.calloutId : undefined,
     calloutsSetId: 'callouts-set-1',
     contributionId: state.calloutKind === 'contribution' ? 'contribution-1' : undefined,

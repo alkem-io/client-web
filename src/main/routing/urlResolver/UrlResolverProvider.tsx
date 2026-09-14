@@ -15,6 +15,7 @@ export type SpaceHierarchyPath = [] | [string] | [string, string] | [string, str
 
 export type UrlResolverContextValue = {
   providerPresent: boolean;
+  resolutionComplete: boolean;
   type: UrlType | undefined;
   // Space:
   /**
@@ -65,6 +66,7 @@ export type UrlResolverContextValue = {
 
 const emptyResult: UrlResolverContextValue = {
   providerPresent: false,
+  resolutionComplete: false,
   type: undefined,
   spaceId: undefined,
   spaceLevel: undefined,
@@ -257,6 +259,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
 
       const value = {
         providerPresent: true,
+        resolutionComplete: !urlResolverLoading,
         type,
         // Space:
         spaceId: data.space?.id,
@@ -322,10 +325,10 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     }
     // return the cached value until the new request is resolved
     if (urlResolverLoading) {
-      return valueRef.current;
+      return { ...valueRef.current, resolutionComplete: false };
     }
     // if the value is not resolved and loading is complete return empty result
-    return providerEmptyResult;
+    return { ...providerEmptyResult, resolutionComplete: true };
   })();
 
   return <UrlResolverContext value={value}>{children}</UrlResolverContext>;

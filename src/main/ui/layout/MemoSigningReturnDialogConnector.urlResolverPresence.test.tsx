@@ -1,15 +1,17 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { SigningAttemptStatus, type UrlType } from '@/core/apollo/generated/graphql-schema';
 import type { UrlResolverContextValue } from '@/main/routing/urlResolver/UrlResolverProvider';
-import { UrlResolverContext } from '@/main/routing/urlResolver/UrlResolverProvider';
+import { UrlResolverContext, UrlResolverProvider } from '@/main/routing/urlResolver/UrlResolverProvider';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { MemoSigningReturnProvider } from './MemoSigningReturnContext';
 import { MemoSigningReturnDialogConnector } from './MemoSigningReturnDialogConnector';
 
 const state = vi.hoisted(() => ({
   attemptQuery: vi.fn(),
+  urlResolverQuery: vi.fn(),
+  urlResolverLoading: false,
 }));
 
 vi.mock('react-i18next', () => ({
@@ -19,6 +21,10 @@ vi.mock('react-i18next', () => ({
 }));
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
+  useUrlResolverQuery: (options: { skip: boolean; variables: { url: string } }) => {
+    state.urlResolverQuery(options);
+    return { data: undefined, error: undefined, loading: state.urlResolverLoading };
+  },
   useMemoSigningAttemptQuery: (options: { variables: { attemptID: string }; skip: boolean }) => {
     state.attemptQuery(options);
     return options.skip
@@ -67,10 +73,12 @@ vi.mock('@/crd/components/memo/MemoSigningDialog', () => ({
 
 const resolverValue = ({
   providerPresent,
+  resolutionComplete,
   loading,
   calloutId,
 }: {
   providerPresent: boolean;
+  resolutionComplete: boolean;
   loading: boolean;
   calloutId?: string;
 }) =>
@@ -99,11 +107,12 @@ const resolverValue = ({
     innovationHubId: undefined,
     loading,
     providerPresent,
+    resolutionComplete,
   }) as UrlResolverContextValue;
 
 const ResolverState = () => {
-  const { loading, providerPresent } = useUrlResolver();
-  return <span data-testid="resolver-state">{`${providerPresent}:${loading}`}</span>;
+  const { loading, providerPresent, resolutionComplete } = useUrlResolver();
+  return <span data-testid="resolver-state">{`${providerPresent}:${loading}:${resolutionComplete}`}</span>;
 };
 
 const renderConnector = (resolver?: UrlResolverContextValue) => {
@@ -128,6 +137,8 @@ const expectAttemptNotStarted = async () => {
 describe('MemoSigningReturnDialogConnector URL-resolver presence', () => {
   beforeEach(() => {
     state.attemptQuery.mockClear();
+    state.urlResolverQuery.mockClear();
+    state.urlResolverLoading = false;
     window.sessionStorage.clear();
     globalThis.history.replaceState(null, '', '/dashboard?signingAttemptId=attempt-1');
   });
@@ -135,27 +146,88 @@ describe('MemoSigningReturnDialogConnector URL-resolver presence', () => {
   it('self-settles when mounted outside UrlResolverProvider without changing the default loading state', async () => {
     renderConnector();
 
-    expect(screen.getByTestId('resolver-state')).toHaveTextContent('false:true');
+    expect(screen.getByTestId('resolver-state')).toHaveTextContent('false:true:false');
     expect(await screen.findByRole('dialog', { name: 'memo signing return' })).toBeInTheDocument();
     expect(state.attemptQuery).toHaveBeenCalledWith(expect.objectContaining({ skip: false }));
   });
 
   it('waits while a mounted URL resolver is loading', async () => {
-    renderConnector(resolverValue({ providerPresent: true, loading: true }));
+    renderConnector(resolverValue({ providerPresent: true, resolutionComplete: false, loading: true }));
 
     await expectAttemptNotStarted();
   });
 
   it('waits for the route child when a mounted URL resolver identifies a callout', async () => {
-    renderConnector(resolverValue({ providerPresent: true, loading: false, calloutId: 'callout-1' }));
+    renderConnector(
+      resolverValue({ providerPresent: true, resolutionComplete: true, loading: false, calloutId: 'callout-1' })
+    );
 
     await expectAttemptNotStarted();
   });
 
   it('self-settles when a mounted URL resolver settles without a callout', async () => {
-    renderConnector(resolverValue({ providerPresent: true, loading: false }));
+    renderConnector(resolverValue({ providerPresent: true, resolutionComplete: true, loading: false }));
 
     expect(await screen.findByRole('dialog', { name: 'memo signing return' })).toBeInTheDocument();
     expect(state.attemptQuery).toHaveBeenCalledWith(expect.objectContaining({ skip: false }));
+  });
+
+  it('waits through an actual provider request and self-settles when the URL completes without a result', async () => {
+    state.urlResolverLoading = true;
+    const view = render(
+      <BrowserRouter>
+        <UrlResolverProvider>
+          <MemoSigningReturnProvider>
+            <ResolverState />
+            <MemoSigningReturnDialogConnector />
+          </MemoSigningReturnProvider>
+        </UrlResolverProvider>
+      </BrowserRouter>
+    );
+
+    await waitFor(() => expect(state.urlResolverQuery).toHaveBeenCalledWith(expect.objectContaining({ skip: false })));
+    await waitFor(() => expect(screen.getByTestId('resolver-state')).toHaveTextContent('true:false:false'));
+    expect(screen.queryByRole('dialog', { name: 'memo signing return' })).not.toBeInTheDocument();
+
+    state.urlResolverLoading = false;
+    view.rerender(
+      <BrowserRouter>
+        <UrlResolverProvider>
+          <MemoSigningReturnProvider>
+            <ResolverState />
+            <MemoSigningReturnDialogConnector />
+          </MemoSigningReturnProvider>
+        </UrlResolverProvider>
+      </BrowserRouter>
+    );
+
+    expect(await screen.findByRole('dialog', { name: 'memo signing return' })).toBeInTheDocument();
+    expect(screen.getByTestId('resolver-state')).toHaveTextContent('true:true:true');
+  });
+
+  it('clears a cached completed resolution while the actual provider resolves a new URL', async () => {
+    const view = render(
+      <BrowserRouter>
+        <UrlResolverProvider>
+          <ResolverState />
+        </UrlResolverProvider>
+      </BrowserRouter>
+    );
+
+    await waitFor(() => expect(screen.getByTestId('resolver-state')).toHaveTextContent('true:true:true'));
+
+    await act(() => {
+      state.urlResolverLoading = true;
+      globalThis.history.pushState(null, '', '/space/collaboration/callout-2');
+    });
+    view.rerender(
+      <BrowserRouter>
+        <UrlResolverProvider>
+          <ResolverState />
+        </UrlResolverProvider>
+      </BrowserRouter>
+    );
+
+    await waitFor(() => expect(screen.getByTestId('resolver-state')).toHaveTextContent('true:false:false'));
   });
 });
