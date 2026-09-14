@@ -2,6 +2,23 @@ query memoDetails($id: UUID!) {
   lookup {
     memo(ID: $id) {
       ...MemoDetails
+      signatures {
+        id
+        updatedDate
+        actor {
+          id
+          profile {
+            id
+            displayName
+            url
+          }
+        }
+        document {
+          id
+          url
+          displayName
+        }
+      }
     }
   }
 }

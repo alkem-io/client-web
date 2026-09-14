@@ -2,6 +2,7 @@ import type { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/
 
 export interface MemoModel {
   id: string;
+  signatures?: Array<{ id: string; document?: { id: string } | null }>;
   contentUpdatePolicy?: ContentUpdatePolicy;
   authorization?: {
     myPrivileges?: AuthorizationPrivilege[];

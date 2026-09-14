@@ -56,3 +56,27 @@ describe('mapCalloutDetailsToPostCard — Collabora document framing type mappin
     expect(result.framingDocumentType).toBeUndefined();
   });
 });
+
+describe('mapCalloutDetailsToPostCard — actionable signed memo copies', () => {
+  it('counts only signatures backed by a saved PDF document', () => {
+    const callout = {
+      ...makeCollaboraCallout(CollaboraDocumentType.Pdf),
+      framing: {
+        type: CalloutFramingType.Memo,
+        profile: { id: 'p', displayName: 'Memo title', tagset: undefined, references: [] },
+        memo: {
+          id: 'memo-1',
+          markdown: 'Proposal',
+          signatures: [
+            { id: 'signed-1', document: { id: 'document-1' } },
+            { id: 'pending-1', document: undefined },
+          ],
+        },
+      },
+    } as unknown as CalloutDetailsModelExtended;
+
+    expect(
+      (mapCalloutDetailsToPostCard(callout, t) as unknown as { memoSignedCopiesCount?: number }).memoSignedCopiesCount
+    ).toBe(1);
+  });
+});
