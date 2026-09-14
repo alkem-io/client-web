@@ -1,6 +1,8 @@
+import { useEffect } from 'react';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import useCalloutDetails from '@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useMemoSigningReturnContext } from '@/main/ui/layout/MemoSigningReturnContext';
 import { CalloutDeeplinkView } from './CalloutDeeplinkView';
 
 type CrdCalloutDialogFromUrlProps = {
@@ -19,6 +21,7 @@ type CrdCalloutDialogFromUrlProps = {
  */
 export function CrdCalloutDialogFromUrl({ onClose }: CrdCalloutDialogFromUrlProps) {
   const { calloutId, calloutsSetId, contributionId, postId, loading: urlLoading } = useUrlResolver();
+  const { restoreIntent, setRestoreIntent } = useMemoSigningReturnContext();
 
   const { callout, loading: calloutLoading } = useCalloutDetails({
     calloutId,
@@ -27,6 +30,11 @@ export function CrdCalloutDialogFromUrl({ onClose }: CrdCalloutDialogFromUrlProp
     skip: !calloutId,
     overrideCalloutSettings: { movable: true },
   });
+
+  useEffect(() => {
+    if (!callout || !restoreIntent || restoreIntent.calloutId === callout.id) return;
+    setRestoreIntent(current => (current?.attemptId === restoreIntent.attemptId ? undefined : current));
+  }, [callout, restoreIntent, setRestoreIntent]);
 
   // The URL resolver and callout details both have to settle before we can
   // decide whether to render the dialog — until then, defer rendering so the
@@ -39,5 +47,16 @@ export function CrdCalloutDialogFromUrl({ onClose }: CrdCalloutDialogFromUrlProp
     return null;
   }
 
-  return <CalloutDeeplinkView callout={callout} contributionId={contributionId} postId={postId} onClose={onClose} />;
+  return (
+    <CalloutDeeplinkView
+      callout={callout}
+      contributionId={contributionId}
+      postId={postId}
+      memoSigningRestore={restoreIntent?.calloutId === callout.id ? restoreIntent : undefined}
+      onMemoSigningRestoreConsumed={attemptId =>
+        setRestoreIntent(current => (current?.attemptId === attemptId ? undefined : current))
+      }
+      onClose={onClose}
+    />
+  );
 }

@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   AuthenticationType,
@@ -163,6 +163,12 @@ const memoWith = (privileges: AuthorizationPrivilege[], signatures: Record<strin
 });
 
 const renderDialog = () => render(<CrdMemoDialog open={true} memoId="memo-1" onClose={vi.fn()} />);
+const RefreshCapableCrdMemoDialog = CrdMemoDialog as unknown as ComponentType<{
+  open: boolean;
+  memoId: string;
+  onClose: () => void;
+  refreshAfterSigningAttemptId?: string;
+}>;
 
 describe('CrdMemoDialog signing connector', () => {
   beforeEach(() => {
@@ -258,6 +264,7 @@ describe('CrdMemoDialog signing connector', () => {
 
     expect(screen.getByRole('button', { name: 'memo.signing.title' })).toBeInTheDocument();
     const history = screen.getByRole('button', { name: 'memo.signing.signedCopiesCount' });
+    expect(history).not.toHaveClass('border');
     await user.click(history);
 
     expect(mocks.requestDurability).not.toHaveBeenCalled();
@@ -368,10 +375,6 @@ describe('CrdMemoDialog signing connector', () => {
       privileges: [AuthorizationPrivilege.Read],
     },
     { name: 'the space entitlement', entitlements: [] },
-    {
-      name: 'a linked Cleverbase identity',
-      authenticationMethods: [AuthenticationType.Email],
-    },
     { name: 'loaded authentication methods', loading: true },
     { name: 'available authentication methods', error: new Error('offline') },
   ])('hides Sign without $name', gate => {
@@ -382,7 +385,7 @@ describe('CrdMemoDialog signing connector', () => {
         me: {
           user: {
             authentication: {
-              methods: gate.authenticationMethods ?? [AuthenticationType.Cleverbase],
+              methods: [AuthenticationType.Cleverbase],
             },
           },
         },
@@ -394,6 +397,28 @@ describe('CrdMemoDialog signing connector', () => {
     renderDialog();
 
     expect(screen.queryByRole('button', { name: 'memo.signing.title' })).not.toBeInTheDocument();
+  });
+
+  it('shows focusable connected-accounts guidance without invocation for an otherwise eligible unlinked contributor', async () => {
+    const user = userEvent.setup();
+    mocks.authenticationMethodsResult = {
+      data: { me: { user: { authentication: { methods: [AuthenticationType.Email] } } } },
+      error: undefined,
+      loading: false,
+    };
+
+    renderDialog();
+
+    const sign = screen.getByRole('button', { name: 'memo.signing.title' });
+    expect(sign).toBeDisabled();
+    await user.tab();
+    expect(screen.getByRole('link', { name: 'memo.signing.connectCleverbase' })).toHaveAttribute(
+      'href',
+      'https://alkem.io/documentation/en-US/how-to/connected-accounts'
+    );
+    expect(screen.getByText('memo.signing.cleverbaseRequired')).toBeInTheDocument();
+    expect(mocks.requestDurability).not.toHaveBeenCalled();
+    expect(mocks.prepareMutation).not.toHaveBeenCalled();
   });
 
   it('skips authentication methods and hides Sign for an unauthenticated actor', () => {
@@ -437,189 +462,46 @@ describe('CrdMemoDialog signing connector', () => {
     expect(screen.getByRole('button', { name: 'memo.signing.title' })).toBeDisabled();
   });
 
-  it.each([
-    [{ loading: true, error: undefined, data: undefined }, 'checking'],
-    [{ loading: false, error: new Error('network'), data: undefined }, 'return-error'],
-    [{ loading: false, error: undefined, data: undefined }, 'return-error'],
-    [
-      {
-        loading: false,
-        error: undefined,
-        data: { signingAttempt: { status: SigningAttemptStatus.Signed } },
-      },
-      'return-error',
-    ],
-    [
-      {
-        loading: false,
-        error: undefined,
-        data: {
-          signingAttempt: {
-            id: 'attempt-1',
-            status: SigningAttemptStatus.Signed,
-            document: {
-              id: 'document-1',
-              url: '/api/private/document-1',
-              displayName: 'Signed memo.pdf',
-            },
-            actor: { profile: { displayName: 'Alice Example', url: '/user/alice' } },
-            updatedDate: '2026-09-10T09:00:00.000Z',
-          },
-        },
-      },
-      'signed',
-    ],
-  ])('loads the bookmarked signing outcome as %s -> %s', (returnAttempt, stage) => {
+  it('does not own or query a signing return token from the memo editor', () => {
     vi.stubGlobal('location', {
       assign: mocks.assign,
       hash: '',
       pathname: '/memo-1',
       search: '?signingAttemptId=attempt-1',
     });
-    mocks.returnAttempt = returnAttempt;
 
     renderDialog();
 
-    expect(mocks.returnAttemptQuery).toHaveBeenCalledWith({
-      variables: { attemptID: 'attempt-1' },
-      skip: false,
-      fetchPolicy: 'network-only',
-    });
-    expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-stage', stage);
-  });
-
-  it('refreshes MemoDetails once and binds success to the returned saved document', async () => {
-    vi.stubGlobal('location', {
-      assign: mocks.assign,
-      hash: '',
-      pathname: '/memo-1',
-      search: '?signingAttemptId=returned-attempt',
-    });
-    mocks.returnAttempt = {
-      loading: false,
-      error: undefined,
-      data: {
-        signingAttempt: {
-          id: 'returned-attempt',
-          status: SigningAttemptStatus.Signed,
-          document: {
-            id: 'returned-document',
-            url: '/api/private/returned-document',
-            displayName: 'Signed decision.pdf',
-          },
-          actor: { profile: { displayName: 'Alice Example', url: '/user/alice' } },
-          updatedDate: '2026-09-10T09:00:00.000Z',
-        },
-      },
-    };
-    mocks.memo = memoWith(
-      [AuthorizationPrivilege.Contribute],
-      [
-        {
-          id: 'newer-unrelated-attempt',
-          document: { id: 'newer-document', url: '/api/private/newer-document' },
-          updatedDate: '2026-09-10T10:00:00.000Z',
-        },
-      ]
-    );
-
-    renderDialog();
-
-    await waitFor(() => expect(mocks.refreshMemo).toHaveBeenCalledOnce());
-    expect(
-      (
-        mocks.lastSigningDialogProps as unknown as {
-          completedSignature?: {
-            id: string;
-            document?: { id: string; url: string; displayName?: string };
-            actor?: { profile?: { displayName: string; url: string } };
-            updatedDate: string;
-          };
-        }
-      ).completedSignature
-    ).toMatchObject({
-      id: 'returned-attempt',
-      document: {
-        id: 'returned-document',
-        url: '/api/private/returned-document',
-        displayName: 'Signed decision.pdf',
-      },
-      actor: { profile: { displayName: 'Alice Example', url: '/user/alice' } },
-      updatedDate: '2026-09-10T09:00:00.000Z',
-    });
-  });
-
-  it('owns dialog dismissal and returned-attempt cleanup in the integration layer', async () => {
-    const user = userEvent.setup();
-    vi.stubGlobal('location', {
-      assign: mocks.assign,
-      hash: '#section',
-      pathname: '/memo-1',
-      search: '?keep=1&signingAttemptId=attempt-1',
-    });
-    mocks.returnAttempt = {
-      loading: false,
-      error: undefined,
-      data: {
-        signingAttempt: {
-          id: 'attempt-1',
-          status: SigningAttemptStatus.Signed,
-          document: {
-            id: 'document-1',
-            url: '/api/private/document-1',
-            displayName: 'Signed memo.pdf',
-          },
-          actor: { profile: { displayName: 'Alice Example', url: '/user/alice' } },
-          updatedDate: '2026-09-10T09:00:00.000Z',
-        },
-      },
-    };
-    renderDialog();
-
-    await user.click(screen.getByRole('button', { name: 'dismiss signing' }));
-
-    expect(mocks.replaceState).toHaveBeenCalledWith(null, '', '/memo-1?keep=1#section');
+    expect(mocks.returnAttemptQuery).not.toHaveBeenCalled();
     expect(screen.queryByTestId('signing-dialog')).not.toBeInTheDocument();
   });
 
-  it.each([
-    ['?signingAttemptId=attempt-1', '', '/memo-1'],
-    ['?keep=1&signingAttemptId=attempt-1', '#section', '/memo-1?keep=1#section'],
-  ])('consumes a terminal return before preparing a fresh signing preview from %s', async (search, hash, expectedUrl) => {
-    const user = userEvent.setup();
-    vi.stubGlobal('location', {
-      assign: mocks.assign,
-      hash,
-      pathname: '/memo-1',
-      search,
-    });
-    mocks.returnAttempt = {
-      loading: false,
-      error: undefined,
-      data: {
-        signingAttempt: {
-          id: 'attempt-1',
-          status: SigningAttemptStatus.Signed,
-          document: {
-            id: 'document-1',
-            url: '/api/private/document-1',
-            displayName: 'Signed memo.pdf',
-          },
-          actor: { profile: { displayName: 'Alice Example', url: '/user/alice' } },
-          updatedDate: '2026-09-10T09:00:00.000Z',
-        },
-      },
-    };
-    renderDialog();
+  it('refetches MemoDetails once only when the normal restored editor receives the validated success signal', async () => {
+    const view = render(
+      <RefreshCapableCrdMemoDialog
+        open={true}
+        memoId="memo-1"
+        onClose={vi.fn()}
+        refreshAfterSigningAttemptId="attempt-1"
+      />
+    );
 
-    expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-stage', 'signed');
-    await user.click(screen.getByRole('button', { name: 'close signing' }));
-    await user.click(screen.getByRole('button', { name: 'memo.signing.title' }));
+    await waitFor(() => expect(mocks.refreshMemo).toHaveBeenCalledOnce());
 
-    await waitFor(() => expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-stage', 'preview'));
-    expect(mocks.replaceState).toHaveBeenCalledWith(null, '', expectedUrl);
-    expect(mocks.prepareMutation).toHaveBeenCalledOnce();
-    await user.click(screen.getByRole('button', { name: 'continue signing' }));
-    expect(mocks.continueMutation).toHaveBeenCalledOnce();
+    view.rerender(
+      <RefreshCapableCrdMemoDialog
+        open={true}
+        memoId="memo-1"
+        onClose={vi.fn()}
+        refreshAfterSigningAttemptId="attempt-1"
+      />
+    );
+    expect(mocks.refreshMemo).toHaveBeenCalledOnce();
+  });
+
+  it('does not refetch MemoDetails for a context-free result without a restored success signal', () => {
+    render(<RefreshCapableCrdMemoDialog open={true} memoId="memo-1" onClose={vi.fn()} />);
+
+    expect(mocks.refreshMemo).not.toHaveBeenCalled();
   });
 });

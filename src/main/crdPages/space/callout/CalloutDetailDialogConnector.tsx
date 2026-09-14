@@ -27,6 +27,7 @@ import useCalloutContributions from '@/domain/collaboration/calloutContributions
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import { MemoSignedCopiesDialogConnector } from '@/main/crdPages/memo/MemoSignedCopiesDialogConnector';
 import type { CalloutMoveActions } from '@/main/crdPages/space/hooks/useCrdCalloutMoveActions';
+import type { MemoSigningRestoreIntent } from '@/main/ui/layout/MemoSigningReturnContext';
 import {
   getCalloutContributionType,
   mapCalloutDetailsToDialogData,
@@ -81,6 +82,8 @@ type CalloutDetailDialogConnectorProps = {
    * it and every dialog it spawns (edit, delete, share) must stack above it.
    */
   elevated?: boolean;
+  memoSigningRestore?: MemoSigningRestoreIntent;
+  onMemoSigningRestoreConsumed?: (attemptId: string) => void;
 };
 
 function ContributionsSlot({
@@ -270,6 +273,8 @@ export function CalloutDetailDialogConnector({
   initialPostId,
   moveActions,
   elevated = false,
+  memoSigningRestore,
+  onMemoSigningRestoreConsumed,
 }: CalloutDetailDialogConnectorProps) {
   const { t, i18n } = useTranslation('crd-space');
   // Over the fullscreen board (z-[100]) the detail dialog sits at z-[110], and
@@ -307,6 +312,7 @@ export function CalloutDetailDialogConnector({
   // preview inside the dialog body (MUI parity).
   const [postEditOpen, setPostEditOpen] = useState(false);
   const [framingMemoOpen, setFramingMemoOpen] = useState(false);
+  const [refreshAfterSigningAttemptId, setRefreshAfterSigningAttemptId] = useState<string>();
   const [signedCopiesMemoId, setSignedCopiesMemoId] = useState<string>();
   const [framingCollaboraOpen, setFramingCollaboraOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
@@ -320,6 +326,7 @@ export function CalloutDetailDialogConnector({
   const [deleteContribution] = useDeleteContributionMutation();
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const consumedSigningRestore = useRef<string | undefined>(undefined);
 
   // CrdMemoDialog writes the editor content to Apollo cache on close for instant preview updates.
   // Schedule a delayed server fetch as a safety net to reconcile with the canonical server markdown
@@ -337,6 +344,7 @@ export function CalloutDetailDialogConnector({
       }, 2500);
     }
     setFramingMemoOpen(false);
+    setRefreshAfterSigningAttemptId(undefined);
   };
 
   // Clear the pending refresh on unmount — otherwise an unmount during the
@@ -376,6 +384,32 @@ export function CalloutDetailDialogConnector({
     // grid card itself owns the navigation.
   }, [open, initialContributionId, initialMemoId, initialPostId, contributionType]);
 
+  useEffect(() => {
+    if (!open || !memoSigningRestore || consumedSigningRestore.current === memoSigningRestore.attemptId) return;
+
+    consumedSigningRestore.current = memoSigningRestore.attemptId;
+    if (memoSigningRestore.kind === 'framing' && callout.framing.memo?.id === memoSigningRestore.memoId) {
+      setRefreshAfterSigningAttemptId(memoSigningRestore.refreshMemo ? memoSigningRestore.attemptId : undefined);
+      setFramingMemoOpen(true);
+    } else if (
+      memoSigningRestore.kind === 'contribution' &&
+      contributionType === CalloutContributionType.Memo &&
+      initialContributionId === memoSigningRestore.contributionId
+    ) {
+      setMemoContributionId(memoSigningRestore.contributionId);
+      setMemoId(memoSigningRestore.memoId);
+      setRefreshAfterSigningAttemptId(memoSigningRestore.refreshMemo ? memoSigningRestore.attemptId : undefined);
+    }
+    onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
+  }, [
+    callout.framing.memo?.id,
+    contributionType,
+    initialContributionId,
+    memoSigningRestore,
+    onMemoSigningRestoreConsumed,
+    open,
+  ]);
+
   // Reset per-contribution state whenever the dialog closes so reopening
   // starts from the fresh initial values rather than stale selections from
   // the previous session.
@@ -391,6 +425,7 @@ export function CalloutDetailDialogConnector({
     setDocumentEditorOpen(false);
     setPostEditOpen(false);
     setSignedCopiesMemoId(undefined);
+    setRefreshAfterSigningAttemptId(undefined);
   }, [
     open,
     initialContributionId,
@@ -743,11 +778,14 @@ export function CalloutDetailDialogConnector({
     memoContributionId && memoId ? (
       <MemoContributionConnector
         open={true}
+        calloutId={callout.id}
         contributionId={memoContributionId}
         memoId={memoId}
+        refreshAfterSigningAttemptId={refreshAfterSigningAttemptId}
         onClose={() => {
           setMemoContributionId(undefined);
           setMemoId(undefined);
+          setRefreshAfterSigningAttemptId(undefined);
         }}
       />
     ) : null;
@@ -795,6 +833,8 @@ export function CalloutDetailDialogConnector({
         open={true}
         memoId={framingMemoId}
         isContribution={false}
+        refreshAfterSigningAttemptId={refreshAfterSigningAttemptId}
+        signingOrigin={{ kind: 'framing', calloutId: callout.id }}
         onClose={() => handleFramingMemoClose()}
       />
     ) : null;

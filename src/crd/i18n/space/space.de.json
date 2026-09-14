@@ -735,30 +735,50 @@
     },
     "signing": {
       "title": "Memo signieren",
-      "description": "Prüfen Sie die exakte PDF-Kopie, bevor Sie den Signiervorgang starten. Jede signierte PDF ist eine eigenständige Kopie; das Memo bleibt bearbeitbar.",
+      "description": "Prüfen Sie die PDF, die für diesen Signierversuch verwendet wird.",
       "previewTitle": "Vorschau der Memo-Signatur",
-      "openPreview": "PDF-Vorschau öffnen",
+      "openPreview": "In neuem Tab öffnen",
       "continue": "Weiter zu Cleverbase",
       "continuing": "Weiterleitung zu Cleverbase",
       "signedCopies": "Signierte Kopien",
       "signedCopiesCount": "Signierte Kopien ({{count}})",
       "unknownSigner": "Unbekannte signierende Person",
-      "savedTitle": "Signierte Kopie gespeichert",
-      "snapshotExplanation": "Diese signierte Kopie ist eine feste Momentaufnahme. Spätere Änderungen am Memo verändern sie nicht.",
-      "historyDescription": "Jede signierte PDF ist eine separate Kopie; das Memo bleibt bearbeitbar. Spätere Änderungen verändern eine vorhandene signierte Kopie nicht.",
+      "savedTitle": "Signiert",
+      "snapshotExplanation": "Ihr signiertes Dokument ist bereit.",
+      "resultTitle": "Signierergebnis",
+      "whatHappensNext": "Was als Nächstes passiert",
+      "steps": {
+        "provider": {
+          "title": "Cleverbase wird geöffnet",
+          "description": "Dieser Tab öffnet den Dienst für den Signiervorgang."
+        },
+        "identity": {
+          "title": "Sie bestätigen Ihre Identität",
+          "description": "Cleverbase fordert Sie auf, Ihre verknüpfte Identitätsmethode zu verwenden."
+        },
+        "return": {
+          "title": "Sie kehren zu Alkemio zurück",
+          "description": "Nach dem Vorgang zeigt Alkemio das Ergebnis Ihres Signierversuchs."
+        }
+      },
+      "editableTitle": "Das Memo bleibt bearbeitbar",
+      "editableDescription": "Beim Signieren wird eine separate PDF-Kopie erstellt; die Bearbeitungsrechte des Memos ändern sich nicht.",
+      "cleverbaseRequired": "Verknüpfen Sie Cleverbase, bevor Sie signieren.",
+      "connectCleverbase": "Cleverbase verknüpfen",
+      "historyDescription": "Jede Zeile ist eine signierte PDF-Kopie. Das Memo bleibt bearbeitbar.",
+      "historyCount": "Signierte Kopien: {{count}}",
       "historyLoading": "Signierte Kopien werden geladen",
       "historyError": "Signierte Kopien konnten nicht geladen werden",
       "historyEmpty": "Es wurden noch keine signierten Kopien gespeichert",
-      "recorded": "Erfasst",
-      "openPdf": "PDF öffnen",
+      "recorded": "Signiert",
+      "openSignedPdf": "Signierte PDF öffnen",
       "download": "Herunterladen",
       "downloadFailed": "Die signierte PDF konnte nicht heruntergeladen werden",
-      "backToMemo": "Zurück zum Memo",
-      "standardTools": "Heruntergeladene PDFs können unabhängig mit Standard-PDF-Werkzeugen geprüft werden.",
+      "standardTools": "Heruntergeladene PDFs können mit kompatiblen Werkzeugen für PDF-Signaturen geprüft werden.",
       "verify": "Signatur prüfen",
       "verification": {
         "checking": "Signatur wird geprüft",
-        "verified": "Die PDF ist unverändert",
+        "verified": "Kryptografische Signatur verifiziert",
         "invalid": "Signatur ungültig",
         "unavailable": "Überprüfung nicht möglich"
       },

@@ -472,7 +472,13 @@ function LazyCalloutItemContent({
         />
       )}
       {framingMemoOpen && framingMemoId && (
-        <CrdMemoDialog open={true} memoId={framingMemoId} isContribution={false} onClose={handleFramingMemoClose} />
+        <CrdMemoDialog
+          open={true}
+          memoId={framingMemoId}
+          isContribution={false}
+          signingOrigin={{ kind: 'framing', calloutId: callout.id }}
+          onClose={handleFramingMemoClose}
+        />
       )}
 
       {signedCopiesMemoId && (

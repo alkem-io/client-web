@@ -78,7 +78,7 @@ describe('MemoSigningDialog', () => {
       'src',
       '/api/public/rest/content-signing/attempt-1/snapshot'
     );
-    expect(screen.getByRole('link', { name: 'Open PDF preview' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Open in a new tab' })).toHaveAttribute(
       'href',
       '/api/public/rest/content-signing/attempt-1/snapshot'
     );
@@ -153,16 +153,16 @@ describe('MemoSigningDialog', () => {
       },
     });
 
-    expect(screen.getByRole('heading', { name: 'Signed copy saved' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Open PDF' })).toHaveAttribute('href', '/api/private/returned.pdf');
+    expect(screen.getByRole('heading', { name: "It's signed" })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Open signed PDF' })).toHaveAttribute('href', '/api/private/returned.pdf');
     expect(screen.getByRole('button', { name: 'Download' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Back to memo' })).toBeInTheDocument();
-    expect(
-      screen.getByText('This signed copy is a fixed snapshot. Later memo edits do not change it.')
-    ).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: 'Close' })).toHaveLength(2);
+    expect(screen.getByText('Your signed document is ready.')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Back to memo' })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Continue to Cleverbase' })).not.toBeInTheDocument();
     expect(screen.queryByText(/Review the exact PDF copy before starting/)).not.toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Signed copies' })).not.toBeInTheDocument();
+    expect(document.body).not.toHaveTextContent(/unchanged|unmodified|certificate|revocation|qualification/i);
   });
 
   it('delegates an authenticated download instead of relying on the anchor download attribute', async () => {
@@ -315,14 +315,12 @@ describe('MemoSigningDialog', () => {
     expect(screen.getByRole('link', { name: 'Alice Example' })).toHaveAttribute('href', '/user/alice');
     expect(screen.getByText('Former member')).toBeInTheDocument();
     expect(screen.getByText('Unknown signer')).toBeInTheDocument();
-    expect(screen.getAllByText(/Recorded:/)).toHaveLength(3);
+    expect(screen.getAllByText(/Signed:/)).toHaveLength(3);
     expect(screen.getByText('09/05/2026, 10:30:00')).toBeInTheDocument();
-    expect(screen.getAllByRole('link', { name: 'Open PDF' })).toHaveLength(3);
+    expect(screen.getAllByRole('link', { name: 'Open signed PDF' })).toHaveLength(3);
     expect(screen.getAllByRole('button', { name: 'Download' })).toHaveLength(3);
-    expect(
-      screen.getByText('Downloaded PDFs can be independently verified with standard PDF tools.')
-    ).toBeInTheDocument();
-    expect(screen.getByText(/Each signed PDF is a separate copy; the memo remains editable/)).toBeInTheDocument();
+    expect(screen.getByText('Downloaded PDFs can be checked with compatible PDF signature tools.')).toBeInTheDocument();
+    expect(screen.getByText(/Each row is a signed PDF copy/)).toBeInTheDocument();
     expect(screen.queryByText(/certificate|serial|common name/i)).not.toBeInTheDocument();
   });
 
@@ -349,7 +347,7 @@ describe('MemoSigningDialog', () => {
 
     for (const [verification, message] of [
       ['checking', 'Verifying signature'],
-      ['verified', 'The PDF is unmodified'],
+      ['verified', 'Cryptographic signature verified'],
       ['invalid', 'Signature invalid'],
       ['unavailable', 'Could not verify'],
     ] as const) {
@@ -412,5 +410,37 @@ describe('MemoSigningDialog', () => {
     expect(otherVerify).toHaveAttribute('aria-busy', 'false');
     await userEvent.click(otherVerify);
     expect(onVerify).not.toHaveBeenCalled();
+  });
+
+  it('explains the real handoff once in a responsive document-first preview', () => {
+    renderDialog({
+      stage: 'preview',
+      previewUrl: '/api/public/rest/content-signing/attempt-1/snapshot',
+    });
+
+    expect(screen.getByText('What happens next')).toBeInTheDocument();
+    expect(screen.getByText('Cleverbase opens')).toBeInTheDocument();
+    expect(screen.getByText('You confirm your identity')).toBeInTheDocument();
+    expect(screen.getByText('You return to Alkemio')).toBeInTheDocument();
+    expect(screen.getByText('The memo remains editable')).toBeInTheDocument();
+    expect(screen.getAllByText(/Review the PDF/)).toHaveLength(1);
+  });
+
+  it('keeps the celebration meaningful with reduced motion and no trust overclaim', () => {
+    renderDialog({
+      stage: 'signed',
+      completedSignature: {
+        id: 'attempt-1',
+        document: { id: 'document-1', url: '/api/private/document-1' },
+        updatedDate: '2026-09-14T09:00:00.000Z',
+        verification: 'verified',
+      },
+    });
+
+    expect(screen.getByTestId('memo-signing-success-mark')).toHaveClass('motion-reduce:animate-none');
+    expect(screen.getByText('Cryptographic signature verified')).toBeInTheDocument();
+    expect(document.body).not.toHaveTextContent(
+      /unchanged|unmodified|certificate|trust path|revocation|qualification|identity verified|privacy/i
+    );
   });
 });

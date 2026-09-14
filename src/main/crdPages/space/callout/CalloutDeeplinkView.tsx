@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { isTaskBoardEnabled } from '@/crd/components/callout/task-board/taskBoard';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import type { MemoSigningRestoreIntent } from '@/main/ui/layout/MemoSigningReturnContext';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
 import { TaskBoardConnector } from './TaskBoardConnector';
 import { TaskBoardDialog } from './TaskBoardDialog';
@@ -11,6 +12,8 @@ type CalloutDeeplinkViewProps = {
   contributionId?: string;
   /** Deep-linked underlying post id, for post contributions. */
   postId?: string;
+  memoSigningRestore?: MemoSigningRestoreIntent;
+  onMemoSigningRestoreConsumed?: (attemptId: string) => void;
   /** Closes the whole deep-linked view (navigate back to the parent page). */
   onClose: () => void;
 };
@@ -27,7 +30,14 @@ type CalloutDeeplinkViewProps = {
  * callout model carries only the flow-state classification, not the task
  * marker), so we key off `onBoardResolved` rather than the passed model.
  */
-export function CalloutDeeplinkView({ callout, contributionId, postId, onClose }: CalloutDeeplinkViewProps) {
+export function CalloutDeeplinkView({
+  callout,
+  contributionId,
+  postId,
+  memoSigningRestore,
+  onMemoSigningRestoreConsumed,
+  onClose,
+}: CalloutDeeplinkViewProps) {
   // null while board detection is still in flight — keep the board fullscreen in
   // that window so a board never flashes as an inline (feed-less) preview first.
   const [isBoard, setIsBoard] = useState<boolean | null>(null);
@@ -43,6 +53,12 @@ export function CalloutDeeplinkView({ callout, contributionId, postId, onClose }
   const maybeBoard =
     isTaskBoardEnabled() && allowedTypes.length === 1 && String(allowedTypes[0]).toLowerCase() === 'post';
 
+  useEffect(() => {
+    if (maybeBoard && isBoard === true && memoSigningRestore) {
+      onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
+    }
+  }, [isBoard, maybeBoard, memoSigningRestore, onMemoSigningRestoreConsumed]);
+
   if (!maybeBoard) {
     return (
       <CalloutDetailDialogConnector
@@ -53,6 +69,8 @@ export function CalloutDeeplinkView({ callout, contributionId, postId, onClose }
         callout={callout}
         initialContributionId={contributionId}
         initialPostId={postId}
+        memoSigningRestore={memoSigningRestore}
+        onMemoSigningRestoreConsumed={onMemoSigningRestoreConsumed}
       />
     );
   }
@@ -72,6 +90,8 @@ export function CalloutDeeplinkView({ callout, contributionId, postId, onClose }
           callout={callout}
           initialContributionId={contributionId}
           initialPostId={postId}
+          memoSigningRestore={memoSigningRestore}
+          onMemoSigningRestoreConsumed={onMemoSigningRestoreConsumed}
         />
       )}
 

@@ -1,0 +1,560 @@
+import { act, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { type ReactNode, useEffect } from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  CalloutContributionType,
+  CalloutFramingType,
+  SigningAttemptStatus,
+} from '@/core/apollo/generated/graphql-schema';
+import { CrdCalloutDialogFromUrl } from '@/main/crdPages/space/callout/CrdCalloutDialogFromUrl';
+import { CrdLayoutWrapper } from './CrdLayoutWrapper';
+
+const state = vi.hoisted(() => ({
+  authLoading: false,
+  userId: 'user-1',
+  attemptError: undefined as { networkError?: Error } | undefined,
+  attemptLoading: false,
+  attemptStatus: 'SIGNED' as SigningAttemptStatus,
+  attemptResponseId: undefined as string | undefined,
+  attemptHasDocument: true,
+  taskBoardEnabled: false,
+  boardResult: false,
+  editorAlreadyOpen: false,
+  calloutKind: 'framing' as 'framing' | 'contribution',
+  calloutId: 'callout-1',
+  attemptQuery: vi.fn(),
+  verify: vi.fn(),
+}));
+
+const returnStorageKey = (attemptId: string) => `alkemio.memo-signing-return.v1:${attemptId}`;
+
+const callout = () => ({
+  id: state.calloutId,
+  calloutsSetId: 'callouts-set-1',
+  draft: false,
+  contributions: [],
+  authorization: { myPrivileges: [] },
+  framing: {
+    type: CalloutFramingType.Memo,
+    profile: { displayName: 'Decision memo' },
+    memo: { id: 'framing-memo-1', markdown: 'Decision' },
+  },
+  settings: {
+    framing: { commentsEnabled: true },
+    contribution: {
+      allowedTypes: [state.taskBoardEnabled ? CalloutContributionType.Post : CalloutContributionType.Memo],
+      enabled: true,
+      commentsEnabled: true,
+    },
+  },
+});
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, values?: { count?: number }) => (values?.count === undefined ? key : `${key}:${values.count}`),
+    i18n: { language: 'en' },
+  }),
+}));
+
+vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
+  useMemoSigningAttemptQuery: (options: { variables: { attemptID: string }; skip: boolean }) => {
+    state.attemptQuery(options);
+    if (options.skip) return { data: undefined, loading: false, error: undefined };
+    if (state.attemptLoading) return { data: undefined, loading: true, error: undefined };
+    if (state.attemptError) return { data: undefined, loading: false, error: state.attemptError };
+    return {
+      data: {
+        signingAttempt: {
+          id: state.attemptResponseId ?? options.variables.attemptID,
+          status: state.attemptStatus,
+          document: state.attemptHasDocument
+            ? {
+                id: 'signed-document-1',
+                url: '/api/private/signed-document-1',
+                displayName: 'Signed decision.pdf',
+              }
+            : undefined,
+          actor: { profile: { displayName: 'Alice Example', url: '/user/alice' } },
+          updatedDate: '2026-09-14T09:00:00.000Z',
+        },
+      },
+      loading: false,
+      error: undefined,
+    };
+  },
+  useVerifyMemoSignatureLazyQuery: () => [state.verify, { loading: false, data: undefined, error: undefined }],
+}));
+
+vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
+  useCurrentUserContext: () => ({
+    loading: state.authLoading,
+    userModel: state.authLoading ? undefined : { id: state.userId, profile: { displayName: 'Alice Example' } },
+  }),
+}));
+vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
+
+vi.mock('@/main/ui/layout/useCrdUser', () => ({
+  useCrdUser: () => ({
+    user: { name: 'Alice Example', initials: 'AE' },
+    userModel: { id: state.userId },
+    isAuthenticated: true,
+    isAdmin: false,
+  }),
+}));
+vi.mock('@/domain/platform/config/useConfig', () => ({ useConfig: () => ({}) }));
+vi.mock('@/main/ui/layout/useCrdNavigation', () => ({
+  useCrdNavigation: () => ({
+    navigationHrefs: {},
+    footerLinks: [],
+    languages: [],
+    currentLanguage: 'en',
+    currentPath: '/',
+    handleLanguageChange: vi.fn(),
+    platformNavigationItems: [],
+  }),
+}));
+vi.mock('@/main/inAppNotifications/InAppNotificationsContext', () => ({
+  useInAppNotificationsContext: () => ({ setIsOpen: vi.fn() }),
+}));
+vi.mock('@/main/inAppNotifications/useInAppNotifications', () => ({
+  useInAppNotifications: () => ({ unreadCount: 0 }),
+}));
+vi.mock('@/main/userMessaging/UserMessagingContext', () => ({
+  useUserMessagingContext: () => ({ setIsOpen: vi.fn() }),
+}));
+vi.mock('@/main/userMessaging/useUnreadConversationsCount', () => ({ useUnreadConversationsCount: () => 0 }));
+vi.mock('@/domain/community/pendingMembership/PendingMembershipsDialogContext', () => ({
+  PendingMembershipsDialogType: { PendingMembershipsList: 'list' },
+  usePendingMembershipsDialog: () => ({ setOpenDialog: vi.fn() }),
+}));
+vi.mock('@/domain/community/pendingMembership/usePendingInvitationsCount', () => ({
+  usePendingInvitationsCount: () => ({ count: 0 }),
+}));
+vi.mock('@/main/search/SearchContext', () => ({
+  SearchProvider: ({ children }: { children: ReactNode }) => children,
+  useSearch: () => ({ openSearch: vi.fn() }),
+}));
+vi.mock('@/main/ui/breadcrumbs/BreadcrumbsContext', () => ({
+  BreadcrumbsProvider: ({ children }: { children: ReactNode }) => children,
+  useBreadcrumbs: () => [],
+}));
+vi.mock('@/main/ui/layout/BannerOverlayContext', () => ({
+  BannerOverlayProvider: ({ children }: { children: ReactNode }) => children,
+  useBannerOverlay: () => undefined,
+}));
+vi.mock('@/main/ui/layout/LayoutWidthContext', () => ({
+  LayoutWidthProvider: ({ children }: { children: ReactNode }) => children,
+  useSpaceFullWidthActive: () => false,
+}));
+vi.mock('@/main/ui/layout/useDownNoticeBanner', () => ({
+  useDownNoticeBanner: () => ({ visible: false, dismiss: vi.fn() }),
+}));
+vi.mock('@/core/lazyLoading/lazyWithGlobalErrorHandler', () => ({
+  lazyWithGlobalErrorHandler: () => () => null,
+}));
+vi.mock('@/crd/layouts/CrdLayout', () => ({
+  CrdLayout: ({ children }: { children: ReactNode }) => <main>{children}</main>,
+}));
+vi.mock('@/crd/lib/markdownConfig', () => ({
+  MarkdownConfigProvider: ({ children }: { children: ReactNode }) => children,
+}));
+vi.mock('@/domain/language/LanguageOfferBannerConnector', () => ({ LanguageOfferBannerConnector: () => null }));
+vi.mock('@/core/routing/useNavigate', () => ({ default: () => vi.fn() }));
+
+vi.mock('@/main/routing/urlResolver/useUrlResolver', () => ({
+  default: () => ({
+    calloutId: state.calloutId,
+    calloutsSetId: 'callouts-set-1',
+    contributionId: state.calloutKind === 'contribution' ? 'contribution-1' : undefined,
+    postId: undefined,
+    loading: false,
+  }),
+}));
+vi.mock('@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails', () => ({
+  default: () => ({ callout: callout(), loading: false }),
+}));
+vi.mock('@/crd/components/callout/task-board/taskBoard', () => ({
+  isTaskBoardEnabled: () => state.taskBoardEnabled,
+}));
+vi.mock('@/main/crdPages/space/callout/TaskBoardConnector', () => ({
+  TaskBoardConnector: ({ onBoardResolved }: { onBoardResolved: (board: boolean) => void }) => {
+    useEffect(() => onBoardResolved(state.boardResult), [onBoardResolved]);
+    return null;
+  },
+}));
+vi.mock('@/main/crdPages/space/callout/TaskBoardDialog', () => ({
+  TaskBoardDialog: () => <div data-testid="task-board">task board</div>,
+}));
+vi.mock('@/main/crdPages/space/callout/CalloutDetailDialogConnector', () => ({
+  CalloutDetailDialogConnector: (props: {
+    initialContributionId?: string;
+    memoSigningRestore?: {
+      attemptId: string;
+      kind: 'framing' | 'contribution';
+      memoId: string;
+      contributionId?: string;
+    };
+    onMemoSigningRestoreConsumed?: (attemptId: string) => void;
+  }) => {
+    const editorKind = props.memoSigningRestore?.kind ?? (state.editorAlreadyOpen ? state.calloutKind : undefined);
+    return (
+      <div data-testid="callout-dialog">
+        {editorKind === 'framing' && <div data-testid="framing-memo-editor">{props.memoSigningRestore?.memoId}</div>}
+        {editorKind === 'contribution' && (
+          <div data-testid="contribution-memo-editor">
+            {props.memoSigningRestore?.contributionId}:{props.memoSigningRestore?.memoId}
+          </div>
+        )}
+      </div>
+    );
+  },
+}));
+vi.mock('@/main/crdPages/memo/downloadMemoSignaturePdf', () => ({ downloadMemoSignaturePdf: vi.fn() }));
+
+const storeContext = (
+  kind: 'framing' | 'contribution',
+  attemptId = 'attempt-1',
+  overrides: Record<string, unknown> = {}
+) => {
+  window.sessionStorage.setItem(
+    returnStorageKey(attemptId),
+    JSON.stringify({
+      version: 1,
+      expiresAt: Date.now() + 60_000,
+      attemptId,
+      userId: state.userId,
+      memoId: kind === 'framing' ? 'framing-memo-1' : 'contribution-memo-1',
+      kind,
+      calloutId: state.calloutId,
+      ...(kind === 'contribution' ? { contributionId: 'contribution-1' } : {}),
+      ...overrides,
+    })
+  );
+};
+
+const renderRoute = () =>
+  render(
+    <BrowserRouter>
+      <CrdLayoutWrapper>
+        <CrdCalloutDialogFromUrl onClose={vi.fn()} />
+      </CrdLayoutWrapper>
+    </BrowserRouter>
+  );
+
+beforeEach(() => {
+  state.authLoading = false;
+  state.userId = 'user-1';
+  state.attemptError = undefined;
+  state.attemptLoading = false;
+  state.attemptStatus = SigningAttemptStatus.Signed;
+  state.attemptResponseId = undefined;
+  state.attemptHasDocument = true;
+  state.taskBoardEnabled = false;
+  state.boardResult = false;
+  state.editorAlreadyOpen = false;
+  state.calloutKind = 'framing';
+  state.calloutId = 'callout-1';
+  state.attemptQuery.mockClear();
+  state.verify.mockClear();
+  window.sessionStorage.clear();
+  globalThis.history.replaceState(null, '', '/space/collaboration/callout-1');
+});
+
+describe('CrdLayoutWrapper memo-signing return lifecycle', () => {
+  it.each([
+    'framing',
+    'contribution',
+  ] as const)('shows the first %s return above the restored editor and leaves that editor open after close', async kind => {
+    const user = userEvent.setup();
+    state.calloutKind = kind;
+    storeContext(kind);
+    globalThis.history.replaceState(
+      null,
+      '',
+      '/space/collaboration/callout-1?keep=1&signingAttemptId=attempt-1#decision'
+    );
+
+    renderRoute();
+
+    expect(await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' })).toBeInTheDocument();
+    expect(screen.getByTestId(`${kind}-memo-editor`)).toBeInTheDocument();
+    expect(screen.getAllByRole('dialog')).toHaveLength(1);
+    expect(globalThis.location.search).toBe('?keep=1');
+    expect(globalThis.location.hash).toBe('#decision');
+
+    await user.click(
+      screen.getAllByRole('button', { name: 'memo.close' }).find(button => button.textContent) as HTMLElement
+    );
+
+    expect(screen.queryByRole('dialog', { name: 'memo.signing.savedTitle' })).not.toBeInTheDocument();
+    expect(screen.getByTestId(`${kind}-memo-editor`)).toBeInTheDocument();
+  });
+
+  it.each([
+    'framing',
+    'contribution',
+  ] as const)('shows a context-free %s result without guessing an editor', async kind => {
+    state.calloutKind = kind;
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+
+    renderRoute();
+
+    expect(await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' })).toBeInTheDocument();
+    expect(screen.queryByTestId('framing-memo-editor')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('contribution-memo-editor')).not.toBeInTheDocument();
+  });
+
+  it('captures and strips the token before auth settles, then reads and deletes context exactly once', async () => {
+    state.authLoading = true;
+    storeContext('framing');
+    const storagePrototype = Object.getPrototypeOf(window.sessionStorage);
+    const getItem = vi.spyOn(storagePrototype, 'getItem');
+    const removeItem = vi.spyOn(storagePrototype, 'removeItem');
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+
+    const view = renderRoute();
+
+    await waitFor(() => expect(globalThis.location.search).toBe(''));
+    expect(getItem).not.toHaveBeenCalled();
+    expect(removeItem).not.toHaveBeenCalled();
+    expect(state.attemptQuery).not.toHaveBeenCalledWith(expect.objectContaining({ skip: false }));
+
+    state.authLoading = false;
+    view.rerender(
+      <BrowserRouter>
+        <CrdLayoutWrapper>
+          <CrdCalloutDialogFromUrl onClose={vi.fn()} />
+        </CrdLayoutWrapper>
+      </BrowserRouter>
+    );
+
+    expect(await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' })).toBeInTheDocument();
+    expect(getItem).toHaveBeenCalledTimes(1);
+    expect(removeItem).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not reveal or restore an invalid or non-owned attempt', async () => {
+    state.attemptError = {};
+    storeContext('framing');
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+
+    renderRoute();
+
+    await waitFor(() => expect(globalThis.location.search).toBe(''));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('framing-memo-editor')).not.toBeInTheDocument();
+    expect(window.sessionStorage.getItem(returnStorageKey('attempt-1'))).toBeNull();
+  });
+
+  it('does not replay a consumed callback on refresh or back/forward history', async () => {
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+    const first = renderRoute();
+    expect(await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' })).toBeInTheDocument();
+    first.unmount();
+
+    renderRoute();
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    expect(globalThis.location.search).toBe('');
+  });
+
+  it('keeps ordinary callout navigation unchanged and restores only through normal non-board paths', async () => {
+    renderRoute();
+    expect(screen.getByTestId('callout-dialog')).toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+
+    storeContext('framing');
+    await act(async () => {
+      globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+      globalThis.dispatchEvent(new PopStateEvent('popstate'));
+    });
+
+    expect(await screen.findByTestId('framing-memo-editor')).toBeInTheDocument();
+  });
+
+  it('rejects restore intent for a confirmed board while still showing the attempt-centric result', async () => {
+    state.taskBoardEnabled = true;
+    state.boardResult = true;
+    storeContext('framing');
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+
+    renderRoute();
+
+    expect(await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' })).toBeInTheDocument();
+    expect(screen.getByTestId('task-board')).toBeInTheDocument();
+    expect(screen.queryByTestId('framing-memo-editor')).not.toBeInTheDocument();
+  });
+
+  it('restores through the normal detail dialog when a board candidate resolves isBoard false', async () => {
+    state.taskBoardEnabled = true;
+    state.boardResult = false;
+    storeContext('framing');
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+
+    renderRoute();
+
+    expect(await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' })).toBeInTheDocument();
+    expect(await screen.findByTestId('framing-memo-editor')).toBeInTheDocument();
+    expect(screen.queryByTestId('task-board')).not.toBeInTheDocument();
+  });
+
+  it.each([
+    SigningAttemptStatus.Pending,
+    SigningAttemptStatus.Cancelled,
+    SigningAttemptStatus.Failed,
+    SigningAttemptStatus.Expired,
+  ])('maps the %s attempt status into the return dialog', async status => {
+    state.attemptStatus = status;
+    state.attemptHasDocument = false;
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+
+    renderRoute();
+
+    expect(await screen.findByText(`memo.signing.stage.${status.toLowerCase()}`)).toBeInTheDocument();
+  });
+
+  it('shows checking while the authorized attempt query is pending', async () => {
+    state.attemptLoading = true;
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+
+    renderRoute();
+
+    expect(await screen.findByText('memo.signing.stage.checking')).toBeInTheDocument();
+  });
+
+  it.each([
+    ['network failure', { networkError: new Error('offline') }, true],
+    ['signed response without its document', undefined, false],
+  ] as const)('maps %s to a non-specific return error', async (_name, error, hasDocument) => {
+    state.attemptError = error;
+    state.attemptHasDocument = hasDocument;
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+
+    renderRoute();
+
+    expect(await screen.findByText('memo.signing.stage.return-error')).toBeInTheDocument();
+  });
+
+  it('ignores a stale attempt payload after a newer callback token was captured', async () => {
+    state.attemptResponseId = 'attempt-stale';
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-current');
+
+    renderRoute();
+
+    await waitFor(() => expect(globalThis.location.search).toBe(''));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('framing-memo-editor')).not.toBeInTheDocument();
+  });
+
+  it('cancels a pending result when navigation advances to a different route generation', async () => {
+    state.attemptLoading = true;
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+    const view = renderRoute();
+    expect(await screen.findByText('memo.signing.stage.checking')).toBeInTheDocument();
+
+    await act(async () => {
+      globalThis.history.pushState(null, '', '/space/collaboration/callout-2');
+      globalThis.dispatchEvent(new PopStateEvent('popstate'));
+    });
+    state.attemptLoading = false;
+    view.rerender(
+      <BrowserRouter>
+        <CrdLayoutWrapper>
+          <CrdCalloutDialogFromUrl onClose={vi.fn()} />
+        </CrdLayoutWrapper>
+      </BrowserRouter>
+    );
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    expect(screen.queryByTestId('framing-memo-editor')).not.toBeInTheDocument();
+  });
+
+  it('lets a newer callback token supersede a still-pending captured token', async () => {
+    state.attemptLoading = true;
+    storeContext('framing', 'attempt-2');
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+    const view = renderRoute();
+    expect(await screen.findByText('memo.signing.stage.checking')).toBeInTheDocument();
+
+    await act(async () => {
+      globalThis.history.pushState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-2');
+      globalThis.dispatchEvent(new PopStateEvent('popstate'));
+    });
+    state.attemptLoading = false;
+    view.rerender(
+      <BrowserRouter>
+        <CrdLayoutWrapper>
+          <CrdCalloutDialogFromUrl onClose={vi.fn()} />
+        </CrdLayoutWrapper>
+      </BrowserRouter>
+    );
+
+    expect(await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' })).toBeInTheDocument();
+    expect(await screen.findByTestId('framing-memo-editor')).toBeInTheDocument();
+    expect(state.attemptQuery).toHaveBeenCalledWith(
+      expect.objectContaining({ variables: { attemptID: 'attempt-2' }, skip: false })
+    );
+  });
+
+  it.each([
+    ['expired', () => storeContext('framing', 'attempt-1', { expiresAt: Date.now() - 1 })],
+    ['unmatched attempt', () => storeContext('framing', 'attempt-1', { attemptId: 'another-attempt' })],
+    ['foreign user', () => storeContext('framing', 'attempt-1', { userId: 'user-2' })],
+    ['malformed', () => window.sessionStorage.setItem(returnStorageKey('attempt-1'), '{not-valid-json')],
+  ] as const)('deletes %s return context without restoring an editor', async (_name, arrange) => {
+    arrange();
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+
+    renderRoute();
+
+    expect(await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' })).toBeInTheDocument();
+    expect(screen.queryByTestId('framing-memo-editor')).not.toBeInTheDocument();
+    expect(window.sessionStorage.getItem(returnStorageKey('attempt-1'))).toBeNull();
+  });
+
+  it('falls back to an attempt-centric result when session storage is unavailable', async () => {
+    const storagePrototype = Object.getPrototypeOf(window.sessionStorage) as Storage;
+    const getItem = vi.spyOn(storagePrototype, 'getItem').mockImplementation(() => {
+      throw new Error('storage denied');
+    });
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+
+    renderRoute();
+
+    expect(await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' })).toBeInTheDocument();
+    expect(screen.queryByTestId('framing-memo-editor')).not.toBeInTheDocument();
+    getItem.mockRestore();
+  });
+
+  it('does not restore context for a different loaded callout', async () => {
+    storeContext('framing', 'attempt-1', { calloutId: 'callout-other' });
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+
+    renderRoute();
+
+    expect(await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' })).toBeInTheDocument();
+    expect(screen.queryByTestId('framing-memo-editor')).not.toBeInTheDocument();
+  });
+
+  it('keeps one result owner when the originating editor is already open', async () => {
+    const user = userEvent.setup();
+    state.editorAlreadyOpen = true;
+    storeContext('framing');
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+
+    renderRoute();
+
+    const resultDialog = await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' });
+    expect(screen.getAllByRole('dialog')).toHaveLength(1);
+    expect(screen.getAllByTestId('framing-memo-editor')).toHaveLength(1);
+    expect(resultDialog).toContainElement(document.activeElement as HTMLElement);
+
+    await user.click(
+      screen.getAllByRole('button', { name: 'memo.close' }).find(button => button.textContent) as HTMLElement
+    );
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(screen.getAllByTestId('framing-memo-editor')).toHaveLength(1);
+  });
+});

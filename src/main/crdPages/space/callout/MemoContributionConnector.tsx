@@ -4,12 +4,21 @@ import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 
 type MemoContributionConnectorProps = {
   open: boolean;
+  calloutId: string;
   contributionId: string;
   memoId: string;
   onClose: () => void;
+  refreshAfterSigningAttemptId?: string;
 };
 
-export function MemoContributionConnector({ open, contributionId, memoId, onClose }: MemoContributionConnectorProps) {
+export function MemoContributionConnector({
+  open,
+  calloutId,
+  contributionId,
+  memoId,
+  onClose,
+  refreshAfterSigningAttemptId,
+}: MemoContributionConnectorProps) {
   const [deleteContribution] = useDeleteContributionMutation();
   const [fetchMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -60,6 +69,8 @@ export function MemoContributionConnector({ open, contributionId, memoId, onClos
       open={open}
       memoId={memoId}
       isContribution={true}
+      refreshAfterSigningAttemptId={refreshAfterSigningAttemptId}
+      signingOrigin={{ kind: 'contribution', calloutId, contributionId }}
       onClose={handleClose}
       onDelete={handleMemoDeleted}
     />
