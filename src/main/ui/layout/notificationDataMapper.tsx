@@ -127,11 +127,15 @@ function buildTranslationValues(
       ? t(`components.inAppNotifications.associateRole.${offeredRoleLabelKey(payload.invitation.extraRoles)}`)
       : undefined,
     // withheld: used by ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED — an extra clause naming
-    // the extra role that could not be granted when the accept-time cap check consumed it meanwhile.
+    // the extra role(s) that could not be granted at accept time (the cap, or the offerer
+    // re-check; no cause is carried, so the copy is cause-neutral). Names the role alone
+    // ("Admin"), never the "Associate + Admin" combo label — the associate role WAS granted.
     withheld:
       payload.extraRolesWithheld && payload.extraRolesWithheld.length > 0
         ? t('components.inAppNotifications.associateRoleWithheld', {
-            role: t(`components.inAppNotifications.associateRole.${offeredRoleLabelKey(payload.extraRolesWithheld)}`),
+            role: payload.extraRolesWithheld
+              .map(role => t(`components.inAppNotifications.withheldRole.${withheldRoleKey(role)}`))
+              .join(', '),
           })
         : '',
   };
@@ -248,6 +252,9 @@ const AVATAR_SUBJECT_BY_TYPE: Partial<
 function resolveAvatarProfile(notification: InAppNotificationModel): NotificationAvatarProfile {
   return AVATAR_SUBJECT_BY_TYPE[notification.type]?.(notification.payload) ?? notification.triggeredBy.profile;
 }
+
+/** The i18n key of a withheld extra role, named on its own (never the associate combo). */
+const withheldRoleKey = (role: RoleName): 'admin' | 'owner' => (role === RoleName.Owner ? 'owner' : 'admin');
 
 export function mapNotificationToItemData(
   notification: InAppNotificationModel,

@@ -953,7 +953,11 @@
         "associateAdmin": "Geassocieerde + Beheerder",
         "associateOwner": "Geassocieerde + Eigenaar"
       },
-      "associateRoleWithheld": " De rol {{role}} kon niet worden toegekend — de limiet is bereikt."
+      "withheldRole": {
+        "admin": "Beheerder",
+        "owner": "Eigenaar"
+      },
+      "associateRoleWithheld": " De rol {{role}} kon niet worden toegekend."
     },
     "profile": {
       "fields": {

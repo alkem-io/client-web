@@ -953,7 +953,11 @@
         "associateAdmin": "Assoziiert + Admin",
         "associateOwner": "Assoziiert + Eigentümer"
       },
-      "associateRoleWithheld": " Die Rolle {{role}} konnte nicht vergeben werden – das Limit wurde erreicht."
+      "withheldRole": {
+        "admin": "Admin",
+        "owner": "Eigentümer"
+      },
+      "associateRoleWithheld": " Die Rolle {{role}} konnte nicht vergeben werden."
     },
     "profile": {
       "fields": {

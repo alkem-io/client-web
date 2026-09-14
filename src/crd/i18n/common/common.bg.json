@@ -953,7 +953,11 @@
         "associateAdmin": "Асоцииран + Админ",
         "associateOwner": "Асоцииран + Собственик"
       },
-      "associateRoleWithheld": " Ролята {{role}} не можа да бъде предоставена — лимитът е достигнат."
+      "withheldRole": {
+        "admin": "Админ",
+        "owner": "Собственик"
+      },
+      "associateRoleWithheld": " Ролята {{role}} не можа да бъде предоставена."
     },
     "profile": {
       "fields": {
