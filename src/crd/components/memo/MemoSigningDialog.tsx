@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import type { ComponentProps } from 'react';
 import { useTranslation } from 'react-i18next';
+import { formatMachineDateTime } from '@/crd/lib/dateTimeFormat';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import {
@@ -49,7 +50,7 @@ export type MemoSignatureView = {
   document?: MemoSignatureDocument | null;
   actor?: { profile?: { displayName: string; url: string } | null } | null;
   updatedDate: string | Date;
-  recordedAt?: string;
+  recordedAt: string;
   verification?: 'checking' | 'verified' | 'invalid' | 'unavailable';
 };
 
@@ -122,6 +123,8 @@ function SignedCopy({ signature, onVerify, onDownload, downloadingDocumentIds, v
   const downloading = downloadingDocumentIds?.has(document.id) === true;
   const signerName = signature.actor?.profile?.displayName;
   const signerInitial = signerName?.trim().charAt(0).toUpperCase() || '?';
+  const machineDateTime = formatMachineDateTime(signature.updatedDate);
+  const recordedAt = signature.recordedAt.trim() || machineDateTime;
 
   return (
     <li className="flex flex-col gap-4 rounded-xl border bg-card p-4 sm:flex-row sm:items-center">
@@ -144,8 +147,7 @@ function SignedCopy({ signature, onVerify, onDownload, downloadingDocumentIds, v
             <p className="truncate text-body-emphasis">{signerName || t('memo.signing.unknownSigner')}</p>
           )}
           <p className="text-caption text-muted-foreground">
-            {t('memo.signing.recorded')}:{' '}
-            <time dateTime={new Date(signature.updatedDate).toISOString()}>{signature.recordedAt}</time>
+            {t('memo.signing.recorded')}: <time dateTime={machineDateTime}>{recordedAt}</time>
           </p>
           {signature.verification && <VerificationResult value={signature.verification} />}
         </div>

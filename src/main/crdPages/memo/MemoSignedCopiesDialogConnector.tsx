@@ -8,7 +8,7 @@ import {
   MemoSigningDialog,
 } from '@/crd/components/memo/MemoSigningDialog';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
-import { formatAbsoluteDateTime } from '@/crd/lib/dateTimeFormat';
+import { formatAbsoluteDateTime, formatMachineDateTime } from '@/crd/lib/dateTimeFormat';
 import { downloadMemoSignaturePdf } from './downloadMemoSignaturePdf';
 
 type MemoSignedCopiesDialogConnectorProps = {
@@ -38,7 +38,9 @@ export function MemoSignedCopiesDialogConnector({
 
   const signatures: MemoSignatureView[] = (history.data?.lookup.memo?.signatures ?? []).map(signature => ({
     ...signature,
-    recordedAt: formatAbsoluteDateTime(signature.updatedDate, resolveDateFnsLocale(i18n.language)),
+    recordedAt:
+      formatAbsoluteDateTime(signature.updatedDate, resolveDateFnsLocale(i18n.language)) ??
+      formatMachineDateTime(signature.updatedDate),
     verification:
       verification.variables?.attemptID === signature.id
         ? verification.loading

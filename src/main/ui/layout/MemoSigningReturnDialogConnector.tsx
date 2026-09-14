@@ -6,7 +6,7 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { MemoSignatureDocument, MemoSignatureView } from '@/crd/components/memo/MemoSigningDialog';
 import { MemoSigningDialog, type MemoSigningStage } from '@/crd/components/memo/MemoSigningDialog';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
-import { formatAbsoluteDateTime } from '@/crd/lib/dateTimeFormat';
+import { formatAbsoluteDateTime, formatMachineDateTime } from '@/crd/lib/dateTimeFormat';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { downloadMemoSignaturePdf } from '@/main/crdPages/memo/downloadMemoSignaturePdf';
 import { useMemoSigningReturnContext } from './MemoSigningReturnContext';
@@ -164,7 +164,9 @@ export function MemoSigningReturnDialogConnector() {
           document: returnedAttempt.document,
           actor: returnedAttempt.actor,
           updatedDate: returnedAttempt.updatedDate,
-          recordedAt: formatAbsoluteDateTime(returnedAttempt.updatedDate, resolveDateFnsLocale(i18n.language)),
+          recordedAt:
+            formatAbsoluteDateTime(returnedAttempt.updatedDate, resolveDateFnsLocale(i18n.language)) ??
+            formatMachineDateTime(returnedAttempt.updatedDate),
           verification:
             verification.variables?.attemptID === returnedAttempt.id
               ? verification.loading

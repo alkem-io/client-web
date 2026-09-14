@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { formatISO, parseISO } from 'date-fns';
 import { createInstance } from 'i18next';
 import { I18nextProvider } from 'react-i18next';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
@@ -160,6 +161,7 @@ describe('MemoSigningDialog', () => {
         id: 'returned-attempt',
         document: { id: 'returned-document', url: '/api/private/returned.pdf', displayName: 'returned.pdf' },
         updatedDate: '2026-09-10T09:00:00.000Z',
+        recordedAt: '09/10/2026, 09:00:00',
       },
     });
 
@@ -197,6 +199,26 @@ describe('MemoSigningDialog', () => {
       url: '/api/private/file-1',
       displayName: 'signed-copy.pdf',
     });
+  });
+
+  it('never renders blank signed metadata and uses a date-fns machine datetime', () => {
+    const updatedDate = '2026-09-05T10:30:00.000Z';
+    const machineDateTime = formatISO(parseISO(updatedDate));
+
+    renderDialog({
+      mode: 'history',
+      historyState: 'ready',
+      signatures: [
+        {
+          id: 'attempt-1',
+          document: { id: 'document-1', url: '/api/private/file-1', displayName: 'signed-copy.pdf' },
+          updatedDate,
+          recordedAt: '',
+        },
+      ],
+    });
+
+    expect(screen.getByText(machineDateTime)).toHaveAttribute('datetime', machineDateTime);
   });
 
   it('disables the exact document download while its authenticated fetch is in progress', async () => {
@@ -460,6 +482,7 @@ describe('MemoSigningDialog', () => {
         id: 'attempt-1',
         document: { id: 'document-1', url: '/api/private/document-1' },
         updatedDate: '2026-09-14T09:00:00.000Z',
+        recordedAt: '09/14/2026, 09:00:00',
         verification: 'verified',
       },
     });
