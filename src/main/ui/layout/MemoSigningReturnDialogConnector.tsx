@@ -40,7 +40,11 @@ export function MemoSigningReturnDialogConnector() {
   const { i18n } = useTranslation('crd-space');
   const location = useLocation();
   const navigate = useNavigate();
-  const { calloutId: resolvedCalloutId, loading: urlResolverLoading } = useUrlResolver();
+  const {
+    calloutId: resolvedCalloutId,
+    loading: urlResolverLoading,
+    providerPresent: urlResolverProviderPresent,
+  } = useUrlResolver();
   const signatureActions = useMemoSignatureActions();
   const { loading: currentUserLoading, userModel } = useCurrentUserContext();
   const {
@@ -122,11 +126,15 @@ export function MemoSigningReturnDialogConnector() {
   ]);
 
   useEffect(() => {
-    if (!capture || urlResolverLoading || resolvedCalloutId || routeSettlement?.attemptId === capture.attemptId) {
+    if (
+      !capture ||
+      (urlResolverProviderPresent && (urlResolverLoading || resolvedCalloutId)) ||
+      routeSettlement?.attemptId === capture.attemptId
+    ) {
       return;
     }
     setRouteSettlement({ attemptId: capture.attemptId });
-  }, [capture, resolvedCalloutId, routeSettlement, setRouteSettlement, urlResolverLoading]);
+  }, [capture, resolvedCalloutId, routeSettlement, setRouteSettlement, urlResolverLoading, urlResolverProviderPresent]);
 
   useEffect(() => {
     if (
