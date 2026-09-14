@@ -88,11 +88,14 @@ export const useOrganizationAssociateAction = ({
   const action = mapEligibilityToAction(eligibilityReason, membershipStatus);
 
   // Only fetched when a pending invitation is actually needed to render the
-  // Respond action's detail dialog — the top-bar pending dialog shares this
-  // exact query and cache entry, so this rarely triggers a fresh request.
+  // Respond action's detail dialog. `cache-and-network`, not cache-first: the
+  // top-bar pending dialog shares this query, so a warm cache from before the
+  // invitation was issued would answer without it — the Respond button would
+  // render (the action comes from the fresh OrganizationInfo query) but have
+  // no invitation to open. Same fix as the Space path (useApplicationButton).
   const { data: pendingData, loading: pendingLoading } = useUserPendingMembershipsQuery({
     skip: !isAuthenticated || action !== 'respond' || !userModel,
-    fetchPolicy: 'cache-first',
+    fetchPolicy: 'cache-and-network',
   });
   const pendingInvitation = pendingData?.me.organizationInvitations.find(inv => inv.organization.id === organizationId);
 

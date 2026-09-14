@@ -3,7 +3,11 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApplyForEntryRoleOnRoleSetMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { type ApplicationAnswer, ApplicationFormDialog } from '@/crd/components/community/ApplicationFormDialog';
+import {
+  type ApplicationAnswer,
+  ApplicationFormDialog,
+  type ApplicationQuestion,
+} from '@/crd/components/community/ApplicationFormDialog';
 import { ApplicationSubmittedDialog } from '@/crd/components/community/ApplicationSubmittedDialog';
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 
@@ -12,6 +16,10 @@ export type OrgApplyDialogConnectorProps = {
   onOpenChange: (open: boolean) => void;
   organizationName: string;
   roleSetId: string;
+  /** The organization role set's seeded application form (OrganizationInfo fragment). */
+  applicationForm?: {
+    questions: { question: string; required: boolean; maxLength: number; sortOrder?: number | null }[];
+  } | null;
   /** After a successful submission, lets the caller flip the hero to "Application pending" without a refetch round-trip. */
   onSubmitted: () => void;
 };
@@ -22,18 +30,33 @@ const graphQLErrorCode = (error: unknown): string | undefined =>
 /**
  * Wires the shared `ApplicationFormDialog` to the organization apply mutation.
  * The organization's seeded application form has exactly one, optional question
- * (D13/FR-011) — relabelled here rather than shown verbatim, and rendered with no
- * form description (the product email: "skip the full application form").
+ * (D13/FR-011), rendered with no form description (the product email: "skip the
+ * full application form"). The form's own question text is used verbatim: the
+ * dialog persists the question text as the answer's name, so admins reviewing
+ * the application (and the seeded-form migration) rely on it being the form's
+ * question rather than a viewer-locale label. The local optional-message
+ * question is only a fallback for a role set with no form questions.
  */
 export function OrgApplyDialogConnector({
   open,
   onOpenChange,
   organizationName,
   roleSetId,
+  applicationForm,
   onSubmitted,
 }: OrgApplyDialogConnectorProps) {
   const { t } = useTranslation('crd-profilePages');
   const notify = useNotification();
+  const formQuestions: ApplicationQuestion[] = (applicationForm?.questions ?? []).map(q => ({
+    question: q.question,
+    required: q.required,
+    maxLength: q.maxLength,
+    sortOrder: q.sortOrder ?? 0,
+  }));
+  const questions: ApplicationQuestion[] =
+    formQuestions.length > 0
+      ? formQuestions
+      : [{ question: t('orgProfile.applyDialog.messageLabel'), required: false, maxLength: 512 }];
   const [submitted, setSubmitted] = useState(false);
   const [runApply, { loading: submitting }] = useApplyForEntryRoleOnRoleSetMutation();
 
@@ -72,13 +95,7 @@ export function OrgApplyDialogConnector({
       open={open}
       onOpenChange={handleClose}
       communityName={organizationName}
-      questions={[
-        {
-          question: t('orgProfile.applyDialog.messageLabel'),
-          required: false,
-          maxLength: 512,
-        },
-      ]}
+      questions={questions}
       mode="apply"
       submitting={submitting}
       onSubmit={handleSubmit}

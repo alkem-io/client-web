@@ -324,7 +324,10 @@ const CrdPendingMembershipsDialog = () => {
   return (
     <>
       <PendingMembershipsListDialog
-        open={isPendingMembershipsList}
+        // Hidden while an organization invitation is being viewed so the two
+        // dialogs never stack (the Space path swaps `openDialog.type` instead);
+        // closing the detail dialog brings the list back.
+        open={isPendingMembershipsList && viewingOrgInvitationId === null}
         onClose={closeDialog}
         loading={loading}
         empty={isEmpty}

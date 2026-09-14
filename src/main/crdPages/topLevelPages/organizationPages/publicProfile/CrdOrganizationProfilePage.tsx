@@ -42,7 +42,10 @@ export const CrdOrganizationProfilePage = () => {
 
   const [applyDialogOpen, setApplyDialogOpen] = useState(false);
   const [invitationDialogOpen, setInvitationDialogOpen] = useState(false);
-  const [applicationJustSubmitted, setApplicationJustSubmitted] = useState(false);
+  // Keyed to the organization: the `:organizationNameId/*` route element is
+  // reused across organizations, so a plain boolean would carry "pending" onto
+  // the next organization's profile (e.g. via the pending-memberships dialog).
+  const [applicationJustSubmittedFor, setApplicationJustSubmittedFor] = useState<string | null>(null);
 
   const apolloClient = useApolloClient();
   const refreshOrganization = () => {
@@ -128,6 +131,7 @@ export const CrdOrganizationProfilePage = () => {
   const leadSpaces = leadItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
   const memberOf = memberItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
 
+  const applicationJustSubmitted = applicationJustSubmittedFor !== null && applicationJustSubmittedFor === id;
   const displayedAction = applicationJustSubmitted ? 'pending-application' : associateAction.action;
   const pendingInvitation = associateAction.pendingInvitation;
   const inviterName = pendingInvitation?.invitation.createdBy?.profile?.displayName;
@@ -228,8 +232,9 @@ export const CrdOrganizationProfilePage = () => {
           onOpenChange={setApplyDialogOpen}
           organizationName={profile?.displayName ?? ''}
           roleSetId={organization.roleSet.id}
+          applicationForm={organization.roleSet.applicationForm}
           onSubmitted={() => {
-            setApplicationJustSubmitted(true);
+            setApplicationJustSubmittedFor(organization.id);
             refreshOrganization();
           }}
         />
