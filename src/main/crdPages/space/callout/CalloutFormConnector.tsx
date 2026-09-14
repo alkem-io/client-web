@@ -973,6 +973,7 @@ function CalloutFormConnectorInner({
               />
               <FramingEditorConnector
                 mode={mode}
+                calloutId={calloutId}
                 editMemoId={values.editMeta?.memoId}
                 editWhiteboard={mode === 'edit' ? editCallout?.framing.whiteboard : undefined}
                 editWhiteboardShareUrl={mode === 'edit' ? editCallout?.framing.profile.url : undefined}

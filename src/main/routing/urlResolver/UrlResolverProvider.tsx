@@ -14,6 +14,8 @@ import { buildReturnUrlParam, TabbedLayoutParams } from '../urlBuilders';
 export type SpaceHierarchyPath = [] | [string] | [string, string] | [string, string, string];
 
 export type UrlResolverContextValue = {
+  providerPresent: boolean;
+  resolutionComplete: boolean;
   type: UrlType | undefined;
   // Space:
   /**
@@ -63,6 +65,8 @@ export type UrlResolverContextValue = {
 };
 
 const emptyResult: UrlResolverContextValue = {
+  providerPresent: false,
+  resolutionComplete: false,
   type: undefined,
   spaceId: undefined,
   spaceLevel: undefined,
@@ -86,6 +90,11 @@ const emptyResult: UrlResolverContextValue = {
   templateId: undefined,
   innovationHubId: undefined,
   loading: true,
+};
+
+const providerEmptyResult: UrlResolverContextValue = {
+  ...emptyResult,
+  providerPresent: true,
 };
 
 /**
@@ -232,11 +241,11 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   // Create cache for the resolver value
-  const valueRef = useRef<UrlResolverContextValue>(emptyResult);
+  const valueRef = useRef<UrlResolverContextValue>(providerEmptyResult);
   const value = (() => {
     // When URL is empty (e.g., /user/me routes), return empty non-loading context
     if (!currentUrl) {
-      const cleared = { ...emptyResult, loading: false };
+      const cleared = { ...providerEmptyResult, loading: false };
       valueRef.current = cleared;
       return cleared;
     }
@@ -249,6 +258,8 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
       const spaceHierarchyPath = spacesIds.length > 0 ? (spacesIds as SpaceHierarchyPath) : undefined;
 
       const value = {
+        providerPresent: true,
+        resolutionComplete: !urlResolverLoading,
         type,
         // Space:
         spaceId: data.space?.id,
@@ -314,10 +325,10 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     }
     // return the cached value until the new request is resolved
     if (urlResolverLoading) {
-      return valueRef.current;
+      return { ...valueRef.current, resolutionComplete: false };
     }
     // if the value is not resolved and loading is complete return empty result
-    return emptyResult;
+    return { ...providerEmptyResult, resolutionComplete: true };
   })();
 
   return <UrlResolverContext value={value}>{children}</UrlResolverContext>;
