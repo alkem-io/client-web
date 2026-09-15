@@ -42,3 +42,30 @@ describe('organization space-invitation events belong to the Space filter (061, 
     }
   });
 });
+
+describe('organization-associate events belong to the Space filter (062)', () => {
+  const associateEvents = [
+    NotificationEvent.UserOrganizationAssociateInvitation,
+    NotificationEvent.UserOrganizationAssociateApplicationApproved,
+    NotificationEvent.UserOrganizationAssociateApplicationDeclined,
+    NotificationEvent.OrganizationAdminAssociateInvitationAccepted,
+    NotificationEvent.OrganizationAdminAssociateInvitationDeclined,
+    NotificationEvent.OrganizationAdminAssociateApplication,
+    NotificationEvent.OrganizationAdminAssociateJoined,
+  ];
+
+  it('are included in both the Space and All filter type lists', () => {
+    const spaceTypes = getNotificationTypesForFilter(NotificationFilterType.Space);
+    const allTypes = getNotificationTypesForFilter(NotificationFilterType.All);
+    for (const event of associateEvents) {
+      expect(spaceTypes).toContain(event);
+      expect(allTypes).toContain(event);
+    }
+  });
+
+  it('resolve to the Space category', () => {
+    for (const event of associateEvents) {
+      expect(getCategoryFilterForNotificationType(event)).toBe(NotificationFilterType.Space);
+    }
+  });
+});

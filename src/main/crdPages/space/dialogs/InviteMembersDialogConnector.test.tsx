@@ -24,8 +24,16 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
 
 vi.mock('@/domain/platform/config/useConfig', () => ({ useConfig: () => ({ language: { eligible: [] } }) }));
 
+const useRoleSetApplicationsAndInvitationsMock = vi.fn(
+  (_params: { roleSetId: string | undefined; includeApplications?: boolean }) => ({
+    invitations: [],
+    inviteContributorsOnRoleSet: vi.fn(),
+    loading: false,
+  })
+);
 vi.mock('@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations', () => ({
-  default: () => ({ invitations: [], inviteContributorsOnRoleSet: vi.fn(), loading: false }),
+  default: (params: { roleSetId: string | undefined; includeApplications?: boolean }) =>
+    useRoleSetApplicationsAndInvitationsMock(params),
 }));
 
 vi.mock('@/domain/access/AvailableContributors/useRoleSetAvailableContributors', () => ({
@@ -266,5 +274,33 @@ describe('InviteMembersDialogConnector — virtualContributor fetch waits for th
     const lastCallArgs = calls[calls.length - 1][0];
     expect(lastCallArgs.level).toBe(SpaceLevel.L1);
     expect(lastCallArgs.currentMembers).toEqual([{ id: 'vc-existing' }]);
+  });
+});
+
+describe('InviteMembersDialogConnector — the invitation dedupe never selects applications', () => {
+  test('reads the role set with includeApplications: false, so an inviter without GRANT still gets the invitations', async () => {
+    inviteUsersDialogQueryReturn = {
+      data: {
+        lookup: {
+          space: {
+            about: { profile: { displayName: 'My Subspace' }, membership: { roleSetID: 'rs-1' } },
+            level: SpaceLevel.L1,
+          },
+        },
+      },
+      loading: false,
+    };
+    useRoleSetApplicationsAndInvitationsMock.mockClear();
+
+    await act(async () => {
+      render(<InviteMembersDialogConnector open={true} kind="organization" spaceId="space-1" onClose={vi.fn()} />);
+    });
+
+    const calls = useRoleSetApplicationsAndInvitationsMock.mock.calls;
+    expect(calls.length).toBeGreaterThan(0);
+    for (const [params] of calls) {
+      expect(params.includeApplications).toBe(false);
+    }
+    expect(calls[calls.length - 1][0].roleSetId).toBe('rs-1');
   });
 });

@@ -27,6 +27,7 @@ import { glyphForSlug } from '@/crd/components/reactions/reactionEmoji';
 import type { CrdNotificationItemData } from '@/crd/layouts/types';
 import { getInitials } from '@/crd/lib/getInitials';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import { offeredRoleLabelKey } from '@/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper';
 import type { InAppNotificationModel } from '@/main/inAppNotifications/model/InAppNotificationModel';
 import type { InAppNotificationPayloadModel } from '@/main/inAppNotifications/model/InAppNotificationPayloadModel';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
@@ -120,6 +121,23 @@ function buildTranslationValues(
             spaces: payload.invitation!.spacesToJoinOnAccept!.map(s => s.displayName).join(', '),
           })}`
         : '',
+    // associateRole: used by the organization-associate events (062) — the offered/held extra
+    // role(s), pre-translated as "Associate" / "Associate + Admin" / "Associate + Owner".
+    associateRole: payload.invitation
+      ? t(`components.inAppNotifications.associateRole.${offeredRoleLabelKey(payload.invitation.extraRoles)}`)
+      : undefined,
+    // withheld: used by ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED — an extra clause naming
+    // the extra role(s) that could not be granted at accept time (the cap, or the offerer
+    // re-check; no cause is carried, so the copy is cause-neutral). Names the role alone
+    // ("Admin"), never the "Associate + Admin" combo label — the associate role WAS granted.
+    withheld:
+      payload.extraRolesWithheld && payload.extraRolesWithheld.length > 0
+        ? t('components.inAppNotifications.associateRoleWithheld', {
+            role: payload.extraRolesWithheld
+              .map(role => t(`components.inAppNotifications.withheldRole.${withheldRoleKey(role)}`))
+              .join(', '),
+          })
+        : '',
   };
 }
 
@@ -159,6 +177,20 @@ const URL_OVERRIDES_BY_TYPE: Partial<
     buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
   [NotificationEvent.SpaceAdminUserCommunityInvitationDeclined]: payload =>
     buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
+  // Organization-associate events (062) — user-side call-to-actions lead to the organization's
+  // own profile (its hero action reflects the invitation/decision); organisation-side
+  // call-to-actions lead to the Associates tab, where the pending section and the list live.
+  [NotificationEvent.UserOrganizationAssociateInvitation]: payload => payload.organization?.profile?.url,
+  [NotificationEvent.UserOrganizationAssociateApplicationApproved]: payload => payload.organization?.profile?.url,
+  [NotificationEvent.UserOrganizationAssociateApplicationDeclined]: payload => payload.organization?.profile?.url,
+  [NotificationEvent.OrganizationAdminAssociateInvitationAccepted]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'community'),
+  [NotificationEvent.OrganizationAdminAssociateInvitationDeclined]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'community'),
+  [NotificationEvent.OrganizationAdminAssociateApplication]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'community'),
+  [NotificationEvent.OrganizationAdminAssociateJoined]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'community'),
 };
 
 /**
@@ -220,6 +252,9 @@ const AVATAR_SUBJECT_BY_TYPE: Partial<
 function resolveAvatarProfile(notification: InAppNotificationModel): NotificationAvatarProfile {
   return AVATAR_SUBJECT_BY_TYPE[notification.type]?.(notification.payload) ?? notification.triggeredBy.profile;
 }
+
+/** The i18n key of a withheld extra role, named on its own (never the associate combo). */
+const withheldRoleKey = (role: RoleName): 'admin' | 'owner' => (role === RoleName.Owner ? 'owner' : 'admin');
 
 export function mapNotificationToItemData(
   notification: InAppNotificationModel,
