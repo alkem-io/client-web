@@ -129,7 +129,7 @@ describe('PostCard showPublishDetails', () => {
 });
 
 describe('PostCard signed memo copies', () => {
-  it('exposes document-backed memo copies as an independent keyboard action above the stretched card link', async () => {
+  it('exposes document-backed memo copies as a quiet keyboard action below the memo preview', async () => {
     const onClick = vi.fn();
     const onOpenMemoSignedCopies = vi.fn();
     const user = userEvent.setup();
@@ -143,7 +143,10 @@ describe('PostCard signed memo copies', () => {
     );
 
     const history = screen.getByRole('button', { name: 'Signed copies (2)' });
+    const openMemo = screen.getByRole('button', { name: 'Open Memo' });
     expect(history).toHaveClass('z-10');
+    expect(history).not.toHaveClass('border');
+    expect(openMemo.compareDocumentPosition(history) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(container.querySelector('a[href="/callout-1"]')?.contains(history)).toBe(false);
 
     history.focus();

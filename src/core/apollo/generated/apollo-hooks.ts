@@ -9356,6 +9356,7 @@ export const CreateMemoOnCalloutDocument = gql`
   createContributionOnCallout(
     contributionData: {calloutID: $calloutId, type: MEMO, memo: $memo}
   ) {
+    id
     memo {
       ...MemoDetails
       profile {

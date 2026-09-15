@@ -1,15 +1,9 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMemoSignedCopiesQuery, useVerifyMemoSignatureLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import {
-  type MemoSignatureDocument,
-  type MemoSignatureView,
-  MemoSigningDialog,
-} from '@/crd/components/memo/MemoSigningDialog';
+import { useMemoSignedCopiesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { type MemoSignatureView, MemoSigningDialog } from '@/crd/components/memo/MemoSigningDialog';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
-import { formatAbsoluteDateTime } from '@/crd/lib/dateTimeFormat';
-import { downloadMemoSignaturePdf } from './downloadMemoSignaturePdf';
+import { formatAbsoluteDateTime, formatMachineDateTime } from '@/crd/lib/dateTimeFormat';
+import { useMemoSignatureActions } from './useMemoSignatureActions';
 
 type MemoSignedCopiesDialogConnectorProps = {
   open: boolean;
@@ -26,43 +20,22 @@ export function MemoSignedCopiesDialogConnector({
   overlayClassName,
   contentClassName,
 }: MemoSignedCopiesDialogConnectorProps) {
-  const { t, i18n } = useTranslation('crd-space');
-  const notify = useNotification();
-  const [downloadingDocumentIds, setDownloadingDocumentIds] = useState<ReadonlySet<string>>(() => new Set());
+  const { i18n } = useTranslation('crd-space');
+  const signatureActions = useMemoSignatureActions();
   const history = useMemoSignedCopiesQuery({
     variables: { memoID: memoId },
     skip: !open,
     fetchPolicy: 'cache-and-network',
   });
-  const [verifyMemoSignature, verification] = useVerifyMemoSignatureLazyQuery({ fetchPolicy: 'no-cache' });
 
   const signatures: MemoSignatureView[] = (history.data?.lookup.memo?.signatures ?? []).map(signature => ({
     ...signature,
-    recordedAt: formatAbsoluteDateTime(signature.updatedDate, resolveDateFnsLocale(i18n.language)),
-    verification:
-      verification.variables?.attemptID === signature.id
-        ? verification.loading
-          ? 'checking'
-          : verification.error || !verification.data
-            ? 'unavailable'
-            : (verification.data.verifyMemoSignature.toLowerCase() as 'verified' | 'invalid' | 'unavailable')
-        : undefined,
+    recordedAt:
+      formatAbsoluteDateTime(signature.updatedDate, resolveDateFnsLocale(i18n.language)) ??
+      formatMachineDateTime(signature.updatedDate) ??
+      '—',
+    verification: signatureActions.verificationFor(signature.id),
   }));
-
-  const handleDownload = async (document: MemoSignatureDocument) => {
-    setDownloadingDocumentIds(current => new Set(current).add(document.id));
-    try {
-      await downloadMemoSignaturePdf(document);
-    } catch {
-      notify(t('memo.signing.downloadFailed'), 'error');
-    } finally {
-      setDownloadingDocumentIds(current => {
-        const next = new Set(current);
-        next.delete(document.id);
-        return next;
-      });
-    }
-  };
 
   return (
     <MemoSigningDialog
@@ -74,10 +47,10 @@ export function MemoSignedCopiesDialogConnector({
       mode="history"
       historyState={history.error ? 'error' : history.loading && !history.data ? 'loading' : 'ready'}
       signatures={signatures}
-      onVerify={attemptID => void verifyMemoSignature({ variables: { attemptID } })}
-      onDownload={document => void handleDownload(document)}
-      downloadingDocumentIds={downloadingDocumentIds}
-      verifyDisabled={verification.loading}
+      onVerify={signatureActions.verify}
+      onDownload={document => void signatureActions.download(document)}
+      downloadingDocumentIds={signatureActions.downloadingDocumentIds}
+      verifyDisabled={signatureActions.verifyDisabled}
     />
   );
 }

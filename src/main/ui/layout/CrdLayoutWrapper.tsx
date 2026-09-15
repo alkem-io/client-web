@@ -21,6 +21,8 @@ import { SearchProvider, useSearch } from '@/main/search/SearchContext';
 import { BreadcrumbsProvider, useBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { BannerOverlayProvider, useBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { LayoutWidthProvider, useSpaceFullWidthActive } from '@/main/ui/layout/LayoutWidthContext';
+import { MemoSigningReturnProvider } from '@/main/ui/layout/MemoSigningReturnContext';
+import { MemoSigningReturnDialogConnector } from '@/main/ui/layout/MemoSigningReturnDialogConnector';
 import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
 import { useCrdUser } from '@/main/ui/layout/useCrdUser';
 import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
@@ -127,6 +129,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
       <Suspense fallback={null}>
         <CrdSearchOverlay />
       </Suspense>
+      <MemoSigningReturnDialogConnector />
     </MarkdownConfigProvider>
   );
 }
@@ -139,7 +142,9 @@ export function CrdLayoutWrapper({ children }: { children?: ReactNode } = {}) {
       <BannerOverlayProvider>
         <LayoutWidthProvider>
           <SearchProvider>
-            <CrdLayoutConnector>{children}</CrdLayoutConnector>
+            <MemoSigningReturnProvider>
+              <CrdLayoutConnector>{children}</CrdLayoutConnector>
+            </MemoSigningReturnProvider>
           </SearchProvider>
         </LayoutWidthProvider>
       </BannerOverlayProvider>
