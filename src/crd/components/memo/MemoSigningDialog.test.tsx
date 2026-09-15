@@ -111,6 +111,7 @@ describe('MemoSigningDialog', () => {
       'href',
       '/api/public/rest/content-signing/attempt-1/snapshot'
     );
+    expect(screen.getByRole('list')).toHaveAttribute('role', 'list');
 
     await userEvent.click(screen.getByRole('button', { name: 'Continue to Cleverbase' }));
     expect(onContinue).toHaveBeenCalledTimes(1);
@@ -284,7 +285,9 @@ describe('MemoSigningDialog', () => {
     });
 
     const dialog = screen.getByRole('dialog', { name: "It's signed" });
-    const body = screen.getByRole('list').parentElement;
+    const list = screen.getByRole('list');
+    const body = list.parentElement;
+    expect(list).toHaveAttribute('role', 'list');
     expect(dialog).toHaveClass('flex', 'max-h-[88vh]', 'overflow-hidden');
     expect(body).toHaveClass('min-h-0', 'flex-1', 'overflow-y-auto');
   });

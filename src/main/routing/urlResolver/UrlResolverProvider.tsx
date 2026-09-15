@@ -126,6 +126,7 @@ const UrlResolverContext = createContext<UrlResolverContextValue>(emptyResult);
 const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   // Using a state to force a re-render of the children when the url changes
   const [currentUrl, setCurrentUrl] = useState<string>('');
+  const [resolutionDeliberatelySkipped, setResolutionDeliberatelySkipped] = useState(false);
   const { isAuthenticated } = useContext(AuthenticationContext);
   const location = useLocation();
 
@@ -213,12 +214,14 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
       const pathname = globalThis.location.pathname;
       if (pathname === ROUTE_USER_ME || pathname.startsWith(`${ROUTE_USER_ME}/`)) {
         lastProcessedUrlRef.current = nextUrl;
+        setResolutionDeliberatelySkipped(true);
         setCurrentUrl('');
         return;
       }
 
       // Update the last processed URL and trigger URL resolution
       lastProcessedUrlRef.current = nextUrl;
+      setResolutionDeliberatelySkipped(false);
       setCurrentUrl(nextUrl);
     };
 
@@ -245,7 +248,11 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   const value = (() => {
     // When URL is empty (e.g., /user/me routes), return empty non-loading context
     if (!currentUrl) {
-      const cleared = { ...providerEmptyResult, loading: false };
+      const cleared = {
+        ...providerEmptyResult,
+        loading: false,
+        resolutionComplete: resolutionDeliberatelySkipped,
+      };
       valueRef.current = cleared;
       return cleared;
     }

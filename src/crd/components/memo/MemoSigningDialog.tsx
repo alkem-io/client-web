@@ -201,7 +201,9 @@ function SigningJourney() {
     <aside className="flex w-full shrink-0 flex-col gap-5 border-t bg-muted/25 p-5 lg:w-80 lg:border-l lg:border-t-0">
       <div>
         <p className="text-label uppercase text-muted-foreground">{t('memo.signing.whatHappensNext')}</p>
-        <ol className="mt-4 space-y-4">
+        {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight strips the list semantics that this role restores */}
+        {/* biome-ignore lint/a11y/useSemanticElements: the ol is already the semantic element */}
+        <ol role="list" className="mt-4 space-y-4">
           {steps.map(step => (
             <li key={step.key} className="flex gap-3">
               <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -348,7 +350,9 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
           <>
             <SuccessHeader />
             <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
-              <ul>
+              {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight strips the list semantics that this role restores */}
+              {/* biome-ignore lint/a11y/useSemanticElements: the ul is already the semantic element */}
+              <ul role="list">
                 <SignedCopy
                   signature={completedSignature}
                   onVerify={props.onVerify}
