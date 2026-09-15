@@ -60,6 +60,34 @@ const renderDialog = (props: DialogOverrides = {}) =>
   );
 
 describe('MemoSigningDialog', () => {
+  it.each([
+    'signing',
+    'history',
+  ] as const)('separates readable signed-copy metadata from the action toolbar in %s', mode => {
+    const signature = {
+      id: 'signature-layout',
+      document: { id: 'document-layout', url: '/signed.pdf' },
+      actor: {
+        profile: { displayName: 'Alexandra van der Meer — International Collaboration Coordinator', url: '/user' },
+      },
+      updatedDate: '2026-09-14T21:21:22Z',
+      recordedAt: '09/14/2026, 23:21:22',
+    };
+    renderDialog(
+      mode === 'history' ? { mode, signatures: [signature] } : { stage: 'signed', completedSignature: signature }
+    );
+
+    const card = screen.getByRole('listitem');
+    expect(card).toHaveClass('flex-col');
+    expect(card).not.toHaveClass('sm:flex-row');
+    const signer = screen.getByRole('link', { name: signature.actor.profile.displayName });
+    expect(signer).toHaveClass('break-words');
+    expect(signer).not.toHaveClass('truncate');
+    const actions = screen.getByRole('link', { name: 'Open signed PDF' }).parentElement;
+    expect(actions).toHaveClass('flex-wrap', 'gap-2');
+    expect(actions).not.toContainElement(signer);
+  });
+
   it('announces preparation before a preview has resolved', () => {
     renderDialog();
 
