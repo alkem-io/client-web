@@ -127,8 +127,8 @@ function SignedCopy({ signature, onVerify, onDownload, downloadingDocumentIds, v
   const recordedAt = signature.recordedAt.trim() || machineDateTime || '—';
 
   return (
-    <li className="flex flex-col gap-4 rounded-xl border bg-card p-4 sm:flex-row sm:items-center">
-      <div className="flex min-w-0 flex-1 items-start gap-3">
+    <li className="flex flex-col gap-4 rounded-xl border bg-card p-4">
+      <div className="flex min-w-0 items-start gap-3">
         <div className="relative flex size-12 shrink-0 items-center justify-center rounded-lg border bg-muted/40 text-muted-foreground">
           <FileText aria-hidden="true" className="size-6" />
           <span className="absolute -bottom-1 -right-1 flex size-5 items-center justify-center rounded-full bg-primary text-badge text-primary-foreground ring-2 ring-card">
@@ -138,13 +138,13 @@ function SignedCopy({ signature, onVerify, onDownload, downloadingDocumentIds, v
         <div className="min-w-0 space-y-1.5">
           {signerName && signature.actor?.profile?.url ? (
             <a
-              className="block truncate text-body-emphasis text-primary underline underline-offset-2"
+              className="block break-words text-body-emphasis text-primary underline underline-offset-2"
               href={signature.actor.profile.url}
             >
               {signerName}
             </a>
           ) : (
-            <p className="truncate text-body-emphasis">{signerName || t('memo.signing.unknownSigner')}</p>
+            <p className="break-words text-body-emphasis">{signerName || t('memo.signing.unknownSigner')}</p>
           )}
           <p className="text-caption text-muted-foreground">
             {t('memo.signing.recorded')}:{' '}
@@ -153,7 +153,7 @@ function SignedCopy({ signature, onVerify, onDownload, downloadingDocumentIds, v
           {signature.verification && <VerificationResult value={signature.verification} />}
         </div>
       </div>
-      <div className="flex flex-wrap items-center gap-1 sm:justify-end">
+      <div className="flex flex-wrap items-center gap-2">
         <Button asChild={true} size="sm">
           <a href={document.url} target="_blank" rel="noreferrer">
             {t('memo.signing.openSignedPdf')}
