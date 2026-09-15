@@ -40,7 +40,12 @@ describe('MemoFramingConnector signed copies', () => {
 
     render(<MemoFramingConnector callout={callout as never} onOpen={onOpen} onOpenSignedCopies={onOpenSignedCopies} />);
 
-    await user.click(screen.getByRole('button', { name: 'Signed copies (1)' }));
+    const openMemo = screen.getByRole('button', { name: 'Decision callout.openMemo' });
+    const history = screen.getByRole('button', { name: 'Signed copies (1)' });
+    expect(history).not.toHaveClass('border');
+    expect(openMemo.compareDocumentPosition(history) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+    await user.click(history);
 
     expect(onOpenSignedCopies).toHaveBeenCalledWith('memo-1');
     expect(onOpen).not.toHaveBeenCalled();

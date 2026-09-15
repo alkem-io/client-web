@@ -16819,6 +16819,7 @@ export type CreateMemoOnCalloutMutation = {
   __typename?: 'Mutation';
   createContributionOnCallout: {
     __typename?: 'CalloutContribution';
+    id: string;
     memo?:
       | {
           __typename?: 'Memo';

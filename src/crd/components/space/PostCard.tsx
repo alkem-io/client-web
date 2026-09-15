@@ -464,14 +464,6 @@ export function PostCard({
             <span>. Mirrors the contribution cards, which likewise nest CroppedMarkdown in a button. */}
         {post.type === 'memo' && (
           <div className="space-y-2">
-            {(post.memoSignedCopiesCount ?? 0) > 0 && onOpenMemoSignedCopies && (
-              <div className="relative z-10 flex justify-end">
-                <Button className="z-10" type="button" variant="outline" size="sm" onClick={onOpenMemoSignedCopies}>
-                  <FileSignature aria-hidden="true" />
-                  {signedCopiesLabel}
-                </Button>
-              </div>
-            )}
             <button
               type="button"
               onClick={event => {
@@ -495,6 +487,20 @@ export function PostCard({
                 </span>
               </div>
             </button>
+            {(post.memoSignedCopiesCount ?? 0) > 0 && onOpenMemoSignedCopies && (
+              <div className="relative z-10 flex justify-end">
+                <Button
+                  className="z-10 text-muted-foreground"
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={onOpenMemoSignedCopies}
+                >
+                  <FileSignature aria-hidden="true" />
+                  {signedCopiesLabel}
+                </Button>
+              </div>
+            )}
           </div>
         )}
 
