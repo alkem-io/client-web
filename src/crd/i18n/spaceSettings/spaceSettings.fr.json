@@ -336,7 +336,7 @@
       "actions": "Actions",
       "empty": "Aucune organisation.",
       "remove": "Retirer l'organisation",
-      "description": "Aperçu de toutes les organisations membres et lead. Pour ajouter une organisation, contactez l'équipe Alkemio à support@alkem.io.",
+      "description": "Aperçu de toutes les organisations membres et lead. Invitez une organisation à rejoindre, ou ajoutez-en une directement.",
       "add": "Ajouter une organisation",
       "dropdown": {
         "viewProfile": "Voir le profil",
@@ -348,6 +348,18 @@
         "description": "Ces organisations seront visibles en tant que membres dans ce Space et sur leur profil d'organisation.",
         "search": "Rechercher des organisations…",
         "empty": "Aucune organisation ne correspond à votre recherche."
+      },
+      "invite": "Inviter une organisation",
+      "search": "Rechercher des organisations…",
+      "pendingInvitations": {
+        "title": "Invitations en attente",
+        "empty": "Aucune invitation d'organisation en attente.",
+        "role": "Rôle",
+        "date": "Date",
+        "revoke": "Révoquer",
+        "revokeAriaLabel": "Révoquer l'invitation de {{name}}",
+        "roleMember": "Membre",
+        "roleMemberLead": "Membre + Lead"
       }
     },
     "virtualContributors": {

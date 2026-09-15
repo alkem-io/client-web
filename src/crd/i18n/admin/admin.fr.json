@@ -268,6 +268,7 @@
     "website": "Site web",
     "references": "Références",
     "invalidEmail": "Saisissez une adresse e-mail valide.",
+    "invalidNameID": "Utilisez 3 à 28 caractères : uniquement des minuscules, des chiffres et des traits d’union.",
     "invalidUrl": "Saisissez une URL valide.",
     "create": "Créer l’organisation",
     "save": "Enregistrer",

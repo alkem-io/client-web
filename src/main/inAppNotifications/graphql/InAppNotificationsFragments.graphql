@@ -294,6 +294,28 @@ fragment InAppNotificationPayloadSpaceCommunityInvitation on InAppNotificationPa
   space {
     ...spaceNotification
   }
+  nullableOrganization: organization {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      url
+      visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
+  }
+  invitation {
+    id
+    extraRoles
+    invitedToParent
+    spacesToJoinOnAccept {
+      id
+      displayName
+      url
+    }
+  }
 }
 
 fragment InAppNotificationPayloadSpaceCommunityInvitationPlatform on InAppNotificationPayloadSpaceCommunityInvitationPlatform {

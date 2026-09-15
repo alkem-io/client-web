@@ -359,13 +359,15 @@
         "CHALLENGE_CENTRIC": "Trabajar centrado en desafíos",
         "COMMUNITY_BUILDING": "Construcción de $t(common.Community)",
         "GENERAL": "General",
-        "HELP": "¿Necesitas ayuda?",
+        "HELP": "Q&A",
         "IDEAS": "Ideas",
+        "NEWSLETTER": "Boletín",
         "OTHER": "Otro",
         "PLATFORM_FUNCTIONALITIES": "Funcionalidades de la plataforma",
         "QUESTIONS": "Preguntas",
         "RELEASES": "Lanzamientos",
-        "SHARING": "Compartir"
+        "SHARING": "Compartir",
+        "TIPS_AND_TRICKS": "Consejos y Trucos"
       },
       "edit-mode": {
         "edit": "Editar",
@@ -660,6 +662,7 @@
           "title": "$t(common.Membership) pendiente de $t(common.virtualContributor): {{space}}"
         }
       },
+      "organization": "tu organización",
       "vc": "tu $t(common.virtualContributor)",
       "you": "tú"
     }
@@ -890,8 +893,33 @@
         "VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION": {
           "description": "",
           "subject": "{{triggeredByName}} ha invitado a {{contributorName}} a {{spaceName}}, del cual eres $t(common.admin)"
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION": {
+          "subject": "Su $t(common.organization) {{organizationName}} fue invitada a unirse a {{spaceName}}",
+          "description": "Como {{invitationRole}}.{{spacesToJoin}}"
+        },
+        "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{organizationName}} aceptó la invitación para unirse a {{spaceName}}",
+          "description": "{{organizationName}} se ha unido a {{spaceName}}, del cual usted es $t(common.admin)."
+        },
+        "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{organizationName}} rechazó la invitación para unirse a {{spaceName}}",
+          "description": ""
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{userName}} aceptó la invitación para unirse a {{spaceName}}",
+          "description": "{{userName}} se ha unido a {{spaceName}}, del cual usted es $t(common.admin)."
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{userName}} rechazó la invitación para unirse a {{spaceName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
+          "subject": "Su $t(common.organization) {{organizationName}} se ha unido a {{spaceName}}",
+          "description": "No se requiere ninguna acción adicional."
         }
-      }
+      },
+      "spacesToJoin": "Al aceptar se une a: {{spaces}}"
     },
     "profile": {
       "fields": {

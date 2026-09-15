@@ -120,3 +120,88 @@ describe('mapUserNotifications — callout reaction row', () => {
     expect(row?.channels.push).toBe(false);
   });
 });
+
+describe('mapUserNotifications — organization.adminSpaceCommunityInvitation row (061)', () => {
+  const orgAdminPrivileges: NotificationPrivileges = { ...noPrivileges, isOrganizationAdmin: true };
+  const serverWithOrgInvitation: NotificationSettings = {
+    organization: {
+      adminSpaceCommunityInvitation: { email: true, inApp: true, push: false },
+    },
+  };
+
+  const findOrgGroup = (server: NotificationSettings, privileges = orgAdminPrivileges) => {
+    const { groups } = mapUserNotifications(server, new Map(), privileges, t);
+    const orgGroup = groups.find(group => group.groupId === 'organization');
+    if (!orgGroup) throw new Error('organization group missing');
+    return orgGroup;
+  };
+
+  it('exposes adminSpaceCommunityInvitation after adminMessageReceived in the organization group', () => {
+    const orgGroup = findOrgGroup(serverWithOrgInvitation);
+    const properties = orgGroup.rows.map(row => row.property);
+    const invitationIndex = properties.indexOf('adminSpaceCommunityInvitation');
+    const messageReceivedIndex = properties.indexOf('adminMessageReceived');
+    expect(invitationIndex).toBeGreaterThan(-1);
+    expect(invitationIndex).toBe(messageReceivedIndex + 1);
+  });
+
+  it('resolves channels from the server value', () => {
+    const orgGroup = findOrgGroup(serverWithOrgInvitation);
+    const row = orgGroup.rows.find(r => r.property === 'adminSpaceCommunityInvitation');
+    expect(row?.channels).toEqual({ email: true, inApp: true, push: false });
+  });
+
+  it('the organization group is hidden entirely without platform-admin or org-admin privileges', () => {
+    const { groups } = mapUserNotifications(serverWithOrgInvitation, new Map(), noPrivileges, t);
+    expect(groups.find(g => g.groupId === 'organization')).toBeUndefined();
+  });
+
+  it('applies optimistic overrides on the new row', () => {
+    const overrides = new Map<string, boolean>([['organization::adminSpaceCommunityInvitation::email', false]]);
+    const { groups } = mapUserNotifications(serverWithOrgInvitation, overrides, orgAdminPrivileges, t);
+    const orgGroup = groups.find(g => g.groupId === 'organization');
+    const row = orgGroup?.rows.find(r => r.property === 'adminSpaceCommunityInvitation');
+    expect(row?.channels.email).toBe(false);
+  });
+});
+
+describe('mapUserNotifications — spaceAdmin.communityInvitationResponse row (R27)', () => {
+  const spaceAdminPrivileges: NotificationPrivileges = { ...noPrivileges, isSpaceAdmin: true };
+  const server: NotificationSettings = {
+    spaceAdmin: {
+      communityNewMember: { email: true, inApp: true, push: true },
+      communityInvitationResponse: { email: false, inApp: true, push: true },
+    },
+  };
+
+  const findSpaceAdminGroup = (overrides = new Map<string, boolean>()) => {
+    const { groups } = mapUserNotifications(server, overrides, spaceAdminPrivileges, t);
+    const group = groups.find(g => g.groupId === 'spaceAdmin');
+    if (!group) throw new Error('spaceAdmin group missing');
+    return group;
+  };
+
+  it('exposes communityInvitationResponse immediately after communityNewMember', () => {
+    const properties = findSpaceAdminGroup().rows.map(row => row.property);
+    expect(properties.indexOf('communityInvitationResponse')).toBe(properties.indexOf('communityNewMember') + 1);
+  });
+
+  it('resolves its own channels, independent of communityNewMember', () => {
+    const rows = findSpaceAdminGroup().rows;
+    expect(rows.find(r => r.property === 'communityInvitationResponse')?.channels).toEqual({
+      email: false,
+      inApp: true,
+      push: true,
+    });
+    expect(rows.find(r => r.property === 'communityNewMember')?.channels).toEqual({
+      email: true,
+      inApp: true,
+      push: true,
+    });
+  });
+
+  it('applies optimistic overrides on the new row', () => {
+    const group = findSpaceAdminGroup(new Map([['spaceAdmin::communityInvitationResponse::inApp', false]]));
+    expect(group.rows.find(r => r.property === 'communityInvitationResponse')?.channels.inApp).toBe(false);
+  });
+});

@@ -32,7 +32,6 @@ import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionReasonText';
 import { InviteMembersDialogConnector } from '@/main/crdPages/space/dialogs/InviteMembersDialogConnector';
-import { VirtualContributorInviteConnector } from '@/main/crdPages/space/dialogs/VirtualContributorInviteConnector';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
@@ -115,6 +114,10 @@ export default function CrdSpaceSettingsPage() {
   const organizationRemoveReason = reasonText(actionPermissions.organizationRemove);
   const addOrganizationReason = reasonText(actionPermissions.addOrganization);
   const addVcReason = reasonText(actionPermissions.addVirtualContributor);
+  // Inviting is a different token from adding — a space admin holds the invite privilege
+  // without the platform-admin direct-add pair — so the Invite organisation button gets
+  // its own reason rather than reusing `addOrganizationReason`.
+  const inviteOrganizationsReason = reasonText(actionPermissions.invite);
   const subspacesTab = useSubspacesTabData(activeTab === 'subspaces' ? spaceId : '');
   const createSubspace = useCreateSubspace(spaceId, {
     accountId,
@@ -205,6 +208,7 @@ export default function CrdSpaceSettingsPage() {
   });
   const [vcExternalOpen, setVcExternalOpen] = useState(false);
   const [inviteMembersOpen, setInviteMembersOpen] = useState(false);
+  const [inviteOrganizationsOpen, setInviteOrganizationsOpen] = useState(false);
   const { space: spaceContext } = useSpace();
   const { subspace } = useSubSpace();
   // `useSpace()` always resolves the top-level (root) Space regardless of the
@@ -230,7 +234,6 @@ export default function CrdSpaceSettingsPage() {
     loading: community.loading,
     errored: community.errored,
   });
-  const spaceLevelEnum = level === 'L0' ? SpaceLevel.L0 : level === 'L1' ? SpaceLevel.L1 : SpaceLevel.L2;
 
   // Subspace-only (L1/L2) "Save as a template" + delete sections at the bottom of the Settings tab
   // — these are not part of a top-level space's own settings (it templates / deletes its subspaces
@@ -531,6 +534,7 @@ export default function CrdSpaceSettingsPage() {
                 pendingMemberships={community.pendingMemberships}
                 organizations={community.organizations}
                 virtualContributors={community.virtualContributors}
+                pendingOrganizationInvitations={community.pendingOrganizationInvitations}
                 applicationFormSlot={
                   roleSetId ? (
                     <ApplicationFormEditor
@@ -585,11 +589,14 @@ export default function CrdSpaceSettingsPage() {
                   organizations: addOrganizationReason,
                   virtualContributors: addVcReason,
                 }}
+                inviteOrganizationsDisabledReason={inviteOrganizationsReason}
                 onUserRemove={community.onUserRemove}
                 onMemberChangeRole={member => setActiveMemberSubject(buildUserSubject(member))}
                 onOrgAdd={addOrgDialog.openDialog}
+                onInviteOrganizations={() => setInviteOrganizationsOpen(true)}
                 onOrgRemove={community.onOrgRemove}
                 onOrgChangeRole={org => setActiveMemberSubject(buildOrgSubject(org))}
+                onOrgInvitationRevoke={community.onOrgInvitationRevoke}
                 onVCAdd={addVCDialog.openDialog}
                 onVCAddExternal={() => setVcExternalOpen(true)}
                 onVCRemove={community.onVCRemove}
@@ -824,6 +831,8 @@ export default function CrdSpaceSettingsPage() {
               return t('community.confirmRemove.virtualContributor.title');
             case 'applicationReject':
               return t('community.confirmRemove.applicationReject.title');
+            case 'organizationInvitationRevoke':
+              return t('community.confirmRemove.invitation.title');
             case 'pendingDelete':
               if (community.pendingRemoval.membershipType === 'application') {
                 return t('community.confirmRemove.applicationDelete.title');
@@ -844,6 +853,8 @@ export default function CrdSpaceSettingsPage() {
               return t('community.confirmRemove.virtualContributor.description', { name });
             case 'applicationReject':
               return t('community.confirmRemove.applicationReject.description', { name });
+            case 'organizationInvitationRevoke':
+              return t('community.confirmRemove.invitation.description', { name });
             case 'pendingDelete':
               if (community.pendingRemoval.membershipType === 'application') {
                 return t('community.confirmRemove.applicationDelete.description', { name });
@@ -959,23 +970,26 @@ export default function CrdSpaceSettingsPage() {
         addDisabledReason={addVcReason}
       />
 
-      {roleSetId && (
-        <VirtualContributorInviteConnector
-          open={vcExternalOpen}
-          onClose={() => setVcExternalOpen(false)}
-          roleSetId={roleSetId}
-          spaceId={spaceId}
-          spaceLevel={spaceLevelEnum}
-          spaceName={spaceContext.about.profile.displayName}
-          libraryOnly={true}
-        />
-      )}
+      <InviteMembersDialogConnector
+        open={vcExternalOpen}
+        onClose={() => setVcExternalOpen(false)}
+        kind="virtualContributor"
+        spaceId={spaceId}
+        libraryOnly={true}
+      />
 
       <InviteMembersDialogConnector
         open={inviteMembersOpen}
         onClose={() => setInviteMembersOpen(false)}
         spaceId={spaceId}
         onlyFromParentCommunity={level === 'L2'}
+      />
+
+      <InviteMembersDialogConnector
+        open={inviteOrganizationsOpen}
+        onClose={() => setInviteOrganizationsOpen(false)}
+        kind="organization"
+        spaceId={spaceId}
       />
 
       <ConfirmationDialog

@@ -153,6 +153,13 @@ const buildSpaceAdmin = (
     server?.communityApplicationReceived
   ),
   communityNewMember: channel(type, property, 'communityNewMember', value, server?.communityNewMember),
+  communityInvitationResponse: channel(
+    type,
+    property,
+    'communityInvitationResponse',
+    value,
+    server?.communityInvitationResponse
+  ),
   collaborationCalloutContributionCreated: channel(
     type,
     property,
@@ -219,6 +226,13 @@ const buildOrganization = (
 ) => ({
   adminMentioned: channel(type, property, 'adminMentioned', value, server?.adminMentioned),
   adminMessageReceived: channel(type, property, 'adminMessageReceived', value, server?.adminMessageReceived),
+  adminSpaceCommunityInvitation: channel(
+    type,
+    property,
+    'adminSpaceCommunityInvitation',
+    value,
+    server?.adminSpaceCommunityInvitation
+  ),
 });
 
 const buildPlatform = (

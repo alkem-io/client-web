@@ -65,18 +65,25 @@ describe('space community settings — a space admin may change an existing memb
     const permissions = useCommunityActionPermissions(SPACE_ADMIN, false);
 
     expect(permissions.addOrganization.allowed).toBe(false);
-    expect(permissions.organizationLeadAssign.allowed).toBe(false);
   });
 
-  // The organization lead toggle is one control driving two mutations with two gates.
-  // Ticking it calls assignRoleToOrganization, which demands the organization token a
-  // space admin never holds; un-ticking it calls removeRoleFromOrganization, which the
-  // same admin may do on GRANT alone. Collapsing the two into one gate breaks whichever
-  // direction it does not match.
-  it('separates the two directions of the organization lead toggle', () => {
+  // BOTH directions of the organization lead toggle are a space admin's to make.
+  //
+  // This assertion was inverted before server ruling R32: ticking the toggle calls
+  // `assignRoleToOrganization`, which used to demand the organization assign token for
+  // EVERY role change, so the control was disabled for every space admin — an
+  // organization that accepted an invitation could never be given Lead, demoted or
+  // removed. R32 narrowed that token to bringing a NEW organization in; for one already
+  // holding the entry role the resolver asks for GRANT alone, exactly like
+  // `removeRoleFromOrganization` always has.
+  //
+  // So this is the organization-shaped twin of the user bug #10280 fixed, and the two
+  // directions no longer diverge. Adding a new organization is still gated separately —
+  // see the test above.
+  it('permits both directions of the organization lead toggle (R32)', () => {
     const permissions = useCommunityActionPermissions(SPACE_ADMIN, false);
 
-    expect(permissions.organizationLeadAssign).toEqual({ allowed: false, reason: 'denied' });
+    expect(permissions.organizationLeadAssign).toEqual({ allowed: true, reason: 'allowed' });
     expect(permissions.organizationRemove).toEqual({ allowed: true, reason: 'allowed' });
   });
 });

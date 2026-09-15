@@ -7,7 +7,7 @@ import {
   useSubspacePageLazyQuery,
   useUserPendingMembershipsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
 import clearCacheForType from '@/core/apollo/utils/clearCacheForType';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -112,7 +112,16 @@ const useApplicationButton = ({
 
   const userApplication = pendingApplications?.find(x => x.spacePendingMembershipInfo.id === spaceId);
 
-  const userInvitation = pendingInvitations?.find(x => x.spacePendingMembershipInfo.id === spaceId);
+  // `me.communityInvitations` also carries invitations addressed to the ORGANIZATIONS
+  // and Virtual Contributors this user administers. This button is the viewer's own
+  // membership control on the Space page, so it must match on the viewer's own
+  // invitation only — matching on Space alone made which one it picked depend on the
+  // server's array order.
+  const userInvitation = pendingInvitations?.find(
+    x =>
+      x.spacePendingMembershipInfo.id === spaceId &&
+      (x.invitation.actor?.type === ActorType.User || x.invitation.actor?.type === undefined)
+  );
 
   // find an application which does not have a spaceID, meaning it's on space level,
   // but you are at least at Space level to have a parent application
