@@ -4,6 +4,7 @@ import {
   OIDC_LOGOUT_PATH,
   OIDC_RECOVERY_ATTEMPTED_KEY,
 } from '@/core/auth/authentication/constants/authentication.constants';
+import { runMatrixLogoutCleanup } from '@/core/matrix/logoutCleanup';
 import { useIdTokenHint } from './useIdTokenHint';
 import { useKratosLogout } from './useKratosLogout';
 
@@ -33,6 +34,10 @@ export const useLogoutUrl = () => {
     // automatic re-login. (Logout also ends the Kratos SSO session below, which
     // alone stops recovery — this clears the per-tab loop guard belt-and-suspenders.)
     sessionStorage.removeItem(OIDC_RECOVERY_ATTEMPTED_KEY);
+    // The Matrix session dies before any logout navigation: stop the client,
+    // best-effort server-side device invalidation (bounded), unconditional
+    // local credential removal, cross-tab fan-out. No-op while the flag is off.
+    await runMatrixLogoutCleanup();
     const postLogoutRedirectUri = `${window.location.origin}${AUTH_LOGOUT_PATH}`;
     try {
       const idToken = await fetchIdTokenHint();
