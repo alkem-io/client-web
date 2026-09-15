@@ -1,3 +1,4 @@
+import type { Page } from '@playwright/test';
 import { expect, test } from '../fixtures/authFixture';
 
 /**
@@ -50,6 +51,19 @@ const previewUrl = (fileID: string) => `${BASE_URL}/api/private/wopi/files/${fil
 /** Render availability is environment-dependent (Collabora reachability); the rendering contract is not. */
 const RENDER_UNAVAILABLE_STATUSES = [502, 503];
 
+/**
+ * Every scenario below asserts on a *rendered* preview, so each must skip when
+ * the renderer is unavailable rather than report a product failure. A 502/503
+ * drives the card's onError path, which removes the image — without this guard
+ * AS3 fails its visibility assertion and AS4/AS5 fail on a missing element.
+ * Collabora being down is a designed-for state (US3-AS6), not a defect.
+ */
+const skipIfRenderUnavailable = async (authedPage: Page) => {
+  const probe = await authedPage.request.get(previewUrl(FILE_ID!));
+  test.skip(RENDER_UNAVAILABLE_STATUSES.includes(probe.status()), 'render unavailable in this environment');
+  return probe;
+};
+
 const PNG_MAGIC = Buffer.from([0x89, 0x50, 0x4e, 0x47]);
 
 test.describe('US1 — recognize a document without opening it', () => {
@@ -58,8 +72,7 @@ test.describe('US1 — recognize a document without opening it', () => {
   test('AS1 — the Collabora-generated preview replaces the document-type placeholder in the feed card', async ({
     authedPage,
   }) => {
-    const direct = await authedPage.request.get(previewUrl(FILE_ID!));
-    test.skip(RENDER_UNAVAILABLE_STATUSES.includes(direct.status()), 'render unavailable in this environment');
+    const direct = await skipIfRenderUnavailable(authedPage);
     expect(direct.status()).toBe(200);
     expect(direct.headers()['content-type']).toBe('image/png');
     const body = await direct.body();
@@ -79,6 +92,7 @@ test.describe('US1 — recognize a document without opening it', () => {
   test('AS3 — the callout detail dialog renders the same previewUrl with the same fallback behaviour', async ({
     authedPage,
   }) => {
+    await skipIfRenderUnavailable(authedPage);
     await authedPage.goto(SPACE_URL!);
     await authedPage.getByRole('link', { name: POST_TITLE!, exact: true }).first().click();
 
@@ -92,6 +106,7 @@ test.describe('US1 — recognize a document without opening it', () => {
   });
 
   test('AS4 — the preview image uses native lazy loading', async ({ authedPage }) => {
+    await skipIfRenderUnavailable(authedPage);
     await authedPage.goto(SPACE_URL!);
     const img = authedPage.locator(`img[src*="/api/private/wopi/files/${FILE_ID}/preview"]`).first();
     await expect(img).toHaveAttribute('loading', 'lazy');
@@ -100,6 +115,7 @@ test.describe('US1 — recognize a document without opening it', () => {
   test('AS5 — the preview image is decorative and does not duplicate the card\'s accessible name', async ({
     authedPage,
   }) => {
+    await skipIfRenderUnavailable(authedPage);
     await authedPage.goto(SPACE_URL!);
     const img = authedPage.locator(`img[src*="/api/private/wopi/files/${FILE_ID}/preview"]`).first();
     await expect(img).toHaveAttribute('alt', '');
