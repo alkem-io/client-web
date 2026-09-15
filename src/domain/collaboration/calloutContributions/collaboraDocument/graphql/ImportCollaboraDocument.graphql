@@ -1,0 +1,9 @@
+mutation ImportCollaboraDocument($file: Upload!, $uploadData: ImportCollaboraDocumentInput!) {
+  importCollaboraDocument(file: $file, uploadData: $uploadData) {
+    id
+    sortOrder
+    collaboraDocument {
+      ...CalloutContributionsCollaboraDocumentCard
+    }
+  }
+}

@@ -66,5 +66,19 @@ export const adaptPasswordFlow = (ui: UiContainer): CrdKratosPasswordFlow | null
   };
 };
 
-export const adaptSettingsPasswordFlow = (flow: SettingsFlow): CrdKratosPasswordFlow | null =>
-  adaptPasswordFlow(flow.ui);
+/**
+ * One settings flow drives every card on the Security tab, so a flow-level
+ * message belongs to the method that produced it (`flow.active`), not to every
+ * renderer of the shared flow — an errored *link* attempt (active `oidc`) must
+ * not surface its "identifier already exists" ribbon inside Change Password.
+ * When Kratos left `active` unset the message is unattributed; keep it visible
+ * here rather than risk dropping it everywhere (FR-012).
+ */
+export const adaptSettingsPasswordFlow = (flow: SettingsFlow): CrdKratosPasswordFlow | null => {
+  const adapted = adaptPasswordFlow(flow.ui);
+  if (!adapted) return null;
+  if (flow.active !== undefined && flow.active !== 'password') {
+    return { ...adapted, messages: [] };
+  }
+  return adapted;
+};

@@ -1,6 +1,7 @@
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { GatedAction } from '@/crd/components/common/GatedAction';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { SearchField } from '@/crd/forms/SearchField';
 import { Button } from '@/crd/primitives/button';
@@ -57,6 +58,10 @@ type RoleMembersEditorProps = {
   onSearchTermChange: (term: string) => void;
   onAdd: (userId: string) => void;
   onRemove: (userId: string) => void;
+  /** When set, the add controls are gated and this string is shown as their tooltip. */
+  addDisabledReason?: string;
+  /** When set, the remove controls are gated and this string is shown as their tooltip. */
+  removeDisabledReason?: string;
   loadingMembers?: boolean;
   loadingAvailable?: boolean;
   updating?: boolean;
@@ -94,6 +99,8 @@ type MemberColumnsProps = {
   onSearchTermChange: (term: string) => void;
   onAdd: (id: string) => void;
   onRequestRemove: (member: RoleMember) => void;
+  addDisabledReason?: string;
+  removeDisabledReason?: string;
   loadingMembers?: boolean;
   loadingAvailable?: boolean;
   updating?: boolean;
@@ -117,6 +124,8 @@ function MemberColumns({
   onSearchTermChange,
   onAdd,
   onRequestRemove,
+  addDisabledReason,
+  removeDisabledReason,
   loadingMembers = false,
   loadingAvailable = false,
   updating = false,
@@ -156,16 +165,18 @@ function MemberColumns({
               >
                 <span className="text-body break-words">{memberLabel(member)}</span>
                 {!readOnly && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="text-destructive hover:text-destructive"
-                    disabled={updating}
-                    onClick={() => onRequestRemove(member)}
-                  >
-                    {t('roleMembers.remove')}
-                  </Button>
+                  <GatedAction disabledReason={removeDisabledReason}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="text-destructive hover:text-destructive"
+                      disabled={updating}
+                      onClick={() => onRequestRemove(member)}
+                    >
+                      {t('roleMembers.remove')}
+                    </Button>
+                  </GatedAction>
                 )}
               </li>
             ))}
@@ -195,16 +206,18 @@ function MemberColumns({
                   className="flex items-center justify-between gap-3 rounded-lg border border-border px-3 py-2"
                 >
                   <span className="text-body break-words">{memberLabel(candidate)}</span>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    aria-label={t('roleMembers.add')}
-                    disabled={updating}
-                    onClick={() => onAdd(candidate.id)}
-                  >
-                    <Plus aria-hidden="true" className="size-4" />
-                  </Button>
+                  <GatedAction disabledReason={addDisabledReason}>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      aria-label={t('roleMembers.add')}
+                      disabled={updating}
+                      onClick={() => onAdd(candidate.id)}
+                    >
+                      <Plus aria-hidden="true" className="size-4" />
+                    </Button>
+                  </GatedAction>
                 </li>
               ))}
             </ul>
@@ -249,6 +262,8 @@ export function RoleMembersEditor({
   onSearchTermChange,
   onAdd,
   onRemove,
+  addDisabledReason,
+  removeDisabledReason,
   loadingMembers = false,
   loadingAvailable = false,
   updating = false,
@@ -291,6 +306,8 @@ export function RoleMembersEditor({
         onSearchTermChange={onSearchTermChange}
         onAdd={onAdd}
         onRequestRemove={member => setPendingRemove({ kind: 'user', member })}
+        addDisabledReason={addDisabledReason}
+        removeDisabledReason={removeDisabledReason}
         loadingMembers={loadingMembers}
         loadingAvailable={loadingAvailable}
         updating={updating}
@@ -312,6 +329,8 @@ export function RoleMembersEditor({
             onSearchTermChange={organizationSection.onSearchTermChange}
             onAdd={organizationSection.onAdd}
             onRequestRemove={member => setPendingRemove({ kind: 'organization', member })}
+            addDisabledReason={addDisabledReason}
+            removeDisabledReason={removeDisabledReason}
             loadingMembers={organizationSection.loadingMembers}
             loadingAvailable={organizationSection.loadingAvailable}
             updating={updating}

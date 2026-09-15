@@ -300,7 +300,7 @@ function LinkFormRow({
           placeholder={t('callout.linkDescriptionPlaceholder')}
           disabled={saving}
           rows={3}
-          className="w-full px-3 py-2 border border-border rounded-md bg-background text-control resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+          className="w-full px-3 py-2 border border-border rounded-md bg-input-background text-control resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
         />
       </div>
     </div>
@@ -442,7 +442,7 @@ function LinkEditDialog({
                 placeholder={t('callout.linkDescriptionPlaceholder')}
                 disabled={saving}
                 rows={3}
-                className="w-full px-3 py-2 border border-border rounded-md bg-background text-control resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+                className="w-full px-3 py-2 border border-border rounded-md bg-input-background text-control resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
               />
             </div>
           </div>

@@ -17,6 +17,14 @@ export type NotificationRow = {
   label: string;
   /** Resolved channel state (server values + optimistic overrides applied). Channels missing on the server default to `false`. */
   channels: NotificationChannels;
+  /**
+   * When set, the row's in-app cell renders as a disabled OFF switch with this
+   * pre-localized caption (affordance only — enforcement is server-side,
+   * contract C-5 / D-2). Used by the two conversation-message rows: chat
+   * messages already surface live in the chat panel, so in-app is permanently
+   * off for them.
+   */
+  inAppLockedCaption?: string;
 };
 
 export type NotificationGroup = {
@@ -143,6 +151,16 @@ export const mapUserNotifications = (
         ),
       },
       {
+        property: 'collaborationCalloutReaction',
+        label: t('user.notifications.rows.space.collaborationCalloutReaction'),
+        channels: resolveChannels(
+          server.space?.collaborationCalloutReaction,
+          overrides,
+          'space',
+          'collaborationCalloutReaction'
+        ),
+      },
+      {
         property: 'collaborationCalloutPostContributionComment',
         label: t('user.notifications.rows.space.collaborationCalloutPostContributionComment'),
         channels: resolveChannels(
@@ -248,6 +266,16 @@ export const mapUserNotifications = (
           ),
         },
         {
+          property: 'communityInvitationResponse',
+          label: t('user.notifications.rows.spaceAdmin.communityInvitationResponse'),
+          channels: resolveChannels(
+            server.spaceAdmin?.communityInvitationResponse,
+            overrides,
+            'spaceAdmin',
+            'communityInvitationResponse'
+          ),
+        },
+        {
           property: 'collaborationCalloutContributionCreated',
           label: t('user.notifications.rows.spaceAdmin.collaborationCalloutContributionCreated'),
           channels: resolveChannels(
@@ -296,6 +324,23 @@ export const mapUserNotifications = (
         property: 'messageReceived',
         label: t('user.notifications.rows.user.messageReceived'),
         channels: resolveChannels(server.user?.messageReceived, overrides, 'user', 'messageReceived'),
+      },
+      {
+        property: 'conversationMessageDirect',
+        label: t('user.notifications.rows.user.conversationMessageDirect'),
+        channels: resolveChannels(
+          server.user?.conversationMessageDirect,
+          overrides,
+          'user',
+          'conversationMessageDirect'
+        ),
+        inAppLockedCaption: t('user.notifications.inAppLockedChat'),
+      },
+      {
+        property: 'conversationMessageGroup',
+        label: t('user.notifications.rows.user.conversationMessageGroup'),
+        channels: resolveChannels(server.user?.conversationMessageGroup, overrides, 'user', 'conversationMessageGroup'),
+        inAppLockedCaption: t('user.notifications.inAppLockedChat'),
       },
       {
         property: 'membership.spaceCommunityInvitationReceived',
@@ -425,6 +470,16 @@ export const mapUserNotifications = (
             overrides,
             'organization',
             'adminMessageReceived'
+          ),
+        },
+        {
+          property: 'adminSpaceCommunityInvitation',
+          label: t('user.notifications.rows.organization.adminSpaceCommunityInvitation'),
+          channels: resolveChannels(
+            server.organization?.adminSpaceCommunityInvitation,
+            overrides,
+            'organization',
+            'adminSpaceCommunityInvitation'
           ),
         },
       ],

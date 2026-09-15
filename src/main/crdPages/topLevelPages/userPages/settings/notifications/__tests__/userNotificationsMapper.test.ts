@@ -1,0 +1,207 @@
+import { describe, expect, it } from 'vitest';
+import type { NotificationSettings } from '@/domain/community/userAdmin/tabs/model/NotificationSettings.model';
+import {
+  type ContributorSettingsTranslator,
+  mapUserNotifications,
+  type NotificationPrivileges,
+} from '../userNotificationsMapper';
+
+// Identity translator — mirrors the pattern used across the settings test suite
+// (e.g. CrdUserSettingsTab.test.tsx): asserting on keys is enough here, the
+// literal copy is exercised by the i18n key-parity check, not by unit tests.
+const t = ((key: string) => key) as ContributorSettingsTranslator;
+
+const noPrivileges: NotificationPrivileges = {
+  isPlatformAdmin: false,
+  isOrganizationAdmin: false,
+  isSpaceAdmin: false,
+  isSpaceLead: false,
+};
+
+// Per data-model.md §1 the migration backfill seeds both rows with these
+// channel defaults (email off, push on, inApp always off).
+const backfilledDefaults = { email: false, inApp: false, push: true };
+
+const serverWithMessagingRows: NotificationSettings = {
+  user: {
+    conversationMessageDirect: backfilledDefaults,
+    conversationMessageGroup: backfilledDefaults,
+  },
+};
+
+const findUserGroup = (server: NotificationSettings) => {
+  const { groups } = mapUserNotifications(server, new Map(), noPrivileges, t);
+  const userGroup = groups.find(group => group.groupId === 'user');
+  if (!userGroup) throw new Error('user group missing');
+  return userGroup;
+};
+
+describe('mapUserNotifications — conversation-message rows (US3, contract C-5)', () => {
+  it('binds the two rows under the exact field names conversationMessageDirect / conversationMessageGroup', () => {
+    const userGroup = findUserGroup(serverWithMessagingRows);
+    const properties = userGroup.rows.map(row => row.property);
+    expect(properties).toContain('conversationMessageDirect');
+    expect(properties).toContain('conversationMessageGroup');
+  });
+
+  it('resolves server-fed defaults: email off, push on, inApp off', () => {
+    const userGroup = findUserGroup(serverWithMessagingRows);
+    const direct = userGroup.rows.find(row => row.property === 'conversationMessageDirect');
+    const group = userGroup.rows.find(row => row.property === 'conversationMessageGroup');
+
+    expect(direct?.channels).toEqual({ email: false, inApp: false, push: true });
+    expect(group?.channels).toEqual({ email: false, inApp: false, push: true });
+  });
+
+  it('defaults channels to false when the server has not yet backfilled the row', () => {
+    const userGroup = findUserGroup({ user: {} });
+    const direct = userGroup.rows.find(row => row.property === 'conversationMessageDirect');
+    expect(direct?.channels).toEqual({ email: false, inApp: false, push: false });
+  });
+
+  it('marks the in-app cell locked (with a caption) for both messaging rows only', () => {
+    const userGroup = findUserGroup(serverWithMessagingRows);
+    const direct = userGroup.rows.find(row => row.property === 'conversationMessageDirect');
+    const group = userGroup.rows.find(row => row.property === 'conversationMessageGroup');
+    const commentReply = userGroup.rows.find(row => row.property === 'commentReply');
+
+    expect(direct?.inAppLockedCaption).toBe('user.notifications.inAppLockedChat');
+    expect(group?.inAppLockedCaption).toBe('user.notifications.inAppLockedChat');
+    // Other rows in the same group are unaffected.
+    expect(commentReply?.inAppLockedCaption).toBeUndefined();
+  });
+
+  it('applies optimistic overrides on top of the server value, same as any other row', () => {
+    const overrides = new Map<string, boolean>([['user::conversationMessageDirect::push', false]]);
+    const { groups } = mapUserNotifications(serverWithMessagingRows, overrides, noPrivileges, t);
+    const userGroup = groups.find(g => g.groupId === 'user');
+    const direct = userGroup?.rows.find(row => row.property === 'conversationMessageDirect');
+    expect(direct?.channels.push).toBe(false);
+  });
+});
+
+describe('mapUserNotifications — callout reaction row', () => {
+  const serverWithReaction: NotificationSettings = {
+    space: {
+      collaborationCalloutReaction: { email: false, inApp: true, push: true },
+    },
+  };
+
+  const findSpaceGroup = (server: NotificationSettings) => {
+    const { groups } = mapUserNotifications(server, new Map(), noPrivileges, t);
+    const spaceGroup = groups.find(group => group.groupId === 'space');
+    if (!spaceGroup) throw new Error('space group missing');
+    return spaceGroup;
+  };
+
+  it('exposes the collaborationCalloutReaction row in the space group', () => {
+    const spaceGroup = findSpaceGroup(serverWithReaction);
+    const properties = spaceGroup.rows.map(row => row.property);
+    expect(properties).toContain('collaborationCalloutReaction');
+  });
+
+  it('resolves channels from the server value: email off, inApp on, push on', () => {
+    const spaceGroup = findSpaceGroup(serverWithReaction);
+    const row = spaceGroup.rows.find(row => row.property === 'collaborationCalloutReaction');
+    expect(row?.channels).toEqual({ email: false, inApp: true, push: true });
+  });
+
+  it('defaults all channels to false when the server has not yet backfilled the row', () => {
+    const spaceGroup = findSpaceGroup({ space: {} });
+    const row = spaceGroup.rows.find(row => row.property === 'collaborationCalloutReaction');
+    expect(row?.channels).toEqual({ email: false, inApp: false, push: false });
+  });
+
+  it('applies optimistic overrides on the reaction row', () => {
+    const overrides = new Map<string, boolean>([['space::collaborationCalloutReaction::push', false]]);
+    const { groups } = mapUserNotifications(serverWithReaction, overrides, noPrivileges, t);
+    const spaceGroup = groups.find(g => g.groupId === 'space');
+    const row = spaceGroup?.rows.find(r => r.property === 'collaborationCalloutReaction');
+    expect(row?.channels.push).toBe(false);
+  });
+});
+
+describe('mapUserNotifications — organization.adminSpaceCommunityInvitation row (061)', () => {
+  const orgAdminPrivileges: NotificationPrivileges = { ...noPrivileges, isOrganizationAdmin: true };
+  const serverWithOrgInvitation: NotificationSettings = {
+    organization: {
+      adminSpaceCommunityInvitation: { email: true, inApp: true, push: false },
+    },
+  };
+
+  const findOrgGroup = (server: NotificationSettings, privileges = orgAdminPrivileges) => {
+    const { groups } = mapUserNotifications(server, new Map(), privileges, t);
+    const orgGroup = groups.find(group => group.groupId === 'organization');
+    if (!orgGroup) throw new Error('organization group missing');
+    return orgGroup;
+  };
+
+  it('exposes adminSpaceCommunityInvitation after adminMessageReceived in the organization group', () => {
+    const orgGroup = findOrgGroup(serverWithOrgInvitation);
+    const properties = orgGroup.rows.map(row => row.property);
+    const invitationIndex = properties.indexOf('adminSpaceCommunityInvitation');
+    const messageReceivedIndex = properties.indexOf('adminMessageReceived');
+    expect(invitationIndex).toBeGreaterThan(-1);
+    expect(invitationIndex).toBe(messageReceivedIndex + 1);
+  });
+
+  it('resolves channels from the server value', () => {
+    const orgGroup = findOrgGroup(serverWithOrgInvitation);
+    const row = orgGroup.rows.find(r => r.property === 'adminSpaceCommunityInvitation');
+    expect(row?.channels).toEqual({ email: true, inApp: true, push: false });
+  });
+
+  it('the organization group is hidden entirely without platform-admin or org-admin privileges', () => {
+    const { groups } = mapUserNotifications(serverWithOrgInvitation, new Map(), noPrivileges, t);
+    expect(groups.find(g => g.groupId === 'organization')).toBeUndefined();
+  });
+
+  it('applies optimistic overrides on the new row', () => {
+    const overrides = new Map<string, boolean>([['organization::adminSpaceCommunityInvitation::email', false]]);
+    const { groups } = mapUserNotifications(serverWithOrgInvitation, overrides, orgAdminPrivileges, t);
+    const orgGroup = groups.find(g => g.groupId === 'organization');
+    const row = orgGroup?.rows.find(r => r.property === 'adminSpaceCommunityInvitation');
+    expect(row?.channels.email).toBe(false);
+  });
+});
+
+describe('mapUserNotifications — spaceAdmin.communityInvitationResponse row (R27)', () => {
+  const spaceAdminPrivileges: NotificationPrivileges = { ...noPrivileges, isSpaceAdmin: true };
+  const server: NotificationSettings = {
+    spaceAdmin: {
+      communityNewMember: { email: true, inApp: true, push: true },
+      communityInvitationResponse: { email: false, inApp: true, push: true },
+    },
+  };
+
+  const findSpaceAdminGroup = (overrides = new Map<string, boolean>()) => {
+    const { groups } = mapUserNotifications(server, overrides, spaceAdminPrivileges, t);
+    const group = groups.find(g => g.groupId === 'spaceAdmin');
+    if (!group) throw new Error('spaceAdmin group missing');
+    return group;
+  };
+
+  it('exposes communityInvitationResponse immediately after communityNewMember', () => {
+    const properties = findSpaceAdminGroup().rows.map(row => row.property);
+    expect(properties.indexOf('communityInvitationResponse')).toBe(properties.indexOf('communityNewMember') + 1);
+  });
+
+  it('resolves its own channels, independent of communityNewMember', () => {
+    const rows = findSpaceAdminGroup().rows;
+    expect(rows.find(r => r.property === 'communityInvitationResponse')?.channels).toEqual({
+      email: false,
+      inApp: true,
+      push: true,
+    });
+    expect(rows.find(r => r.property === 'communityNewMember')?.channels).toEqual({
+      email: true,
+      inApp: true,
+      push: true,
+    });
+  });
+
+  it('applies optimistic overrides on the new row', () => {
+    const group = findSpaceAdminGroup(new Map([['spaceAdmin::communityInvitationResponse::inApp', false]]));
+    expect(group.rows.find(r => r.property === 'communityInvitationResponse')?.channels.inApp).toBe(false);
+  });
+});

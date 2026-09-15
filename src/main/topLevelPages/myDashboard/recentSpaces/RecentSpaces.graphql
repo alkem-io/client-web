@@ -22,6 +22,10 @@ query RecentSpaces($limit: Float) {
         visibility
         __typename # do not remove
       }
+      latestActivity {
+        id
+        createdDate
+      }
     }
   }
 }

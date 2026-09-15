@@ -14,6 +14,7 @@ export interface NotificationChannels {
 export interface SpaceNotificationSettings {
   communicationUpdates?: NotificationChannels;
   collaborationCalloutPublished?: NotificationChannels;
+  collaborationCalloutReaction?: NotificationChannels;
   collaborationCalloutPostContributionComment?: NotificationChannels;
   collaborationCalloutContributionCreated?: NotificationChannels;
   collaborationCalloutComment?: NotificationChannels;
@@ -28,6 +29,7 @@ export interface SpaceNotificationSettings {
 export interface SpaceAdminNotificationSettings {
   communityApplicationReceived?: NotificationChannels;
   communityNewMember?: NotificationChannels;
+  communityInvitationResponse?: NotificationChannels;
   collaborationCalloutContributionCreated?: NotificationChannels;
   communicationMessageReceived?: NotificationChannels;
   userEmailChanged?: NotificationChannels;
@@ -38,6 +40,10 @@ export interface UserNotificationSettings {
   commentReply?: NotificationChannels;
   mentioned?: NotificationChannels;
   messageReceived?: NotificationChannels;
+  // The inApp channel is permanently OFF for these two (enforced server-side,
+  // contract C-5) — chat messages already surface live in the chat panel.
+  conversationMessageDirect?: NotificationChannels;
+  conversationMessageGroup?: NotificationChannels;
   membership?: {
     spaceCommunityInvitationReceived?: NotificationChannels;
     spaceCommunityJoined?: NotificationChannels;
@@ -48,6 +54,7 @@ export interface UserNotificationSettings {
 export interface OrganizationNotificationSettings {
   adminMentioned?: NotificationChannels;
   adminMessageReceived?: NotificationChannels;
+  adminSpaceCommunityInvitation?: NotificationChannels;
 }
 
 // Platform notification settings (Forum)

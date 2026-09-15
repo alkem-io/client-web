@@ -1,0 +1,19 @@
+{
+  "addReaction": "Reaktion hinzufügen",
+  "pickerTitle": "Auf diesen Beitrag reagieren",
+  "pickerAriaLabel": "Emoji-Reaktions-Auswahl",
+  "totalAriaLabel": "{{count}} Personen reagierten",
+  "totalAriaLabel_one": "1 Person reagierte",
+  "whoReactedTitle": "Wer reagierte",
+  "whoReactedEmpty": "Noch keine Reaktionen",
+  "removeReaction": "Reaktion entfernen",
+  "emoji": {
+    "heart": "Herz",
+    "hugging-face": "Umarmendes Gesicht",
+    "clapping-hands": "Klatschende Hände",
+    "light-bulb": "Glühbirne",
+    "bullseye": "Zielscheibe",
+    "check-mark": "Häkchen",
+    "rocket": "Rakete"
+  }
+}

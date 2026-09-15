@@ -14,8 +14,15 @@ export type ShouldPlayChatSoundInput = {
  *
  * Plays when the sound is enabled, the message is not the user's own, and the
  * conversation is not both selected and focused. The `isViewing && hasFocus`
- * suppression is sound-only (FR-010): read/unread state stays selection-based
- * and focus-independent.
+ * suppression here is sound-only (FR-010), and the unread BADGE stays
+ * selection-based.
+ *
+ * The READ RECEIPT is a separate, now focus-gated signal (FR-018b, gated in
+ * `useConversationView` via `useIsDocumentActive`): the server cancels a pending
+ * message digest when the recipient's unread count is zero, so reporting a
+ * conversation read must mean the user was actually present. Read state is
+ * therefore no longer focus-independent — do not reason from an older comment
+ * that said it was.
  */
 export const shouldPlayChatSound = ({
   isOwnMessage,

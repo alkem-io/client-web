@@ -1,7 +1,9 @@
+import { useEffect } from 'react';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import useCalloutDetails from '@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
+import { useMemoSigningReturnContext } from '@/main/ui/layout/MemoSigningReturnContext';
+import { CalloutDeeplinkView } from './CalloutDeeplinkView';
 
 type CrdCalloutDialogFromUrlProps = {
   /** Called when the user closes the dialog (X / Escape). The page route
@@ -19,6 +21,8 @@ type CrdCalloutDialogFromUrlProps = {
  */
 export function CrdCalloutDialogFromUrl({ onClose }: CrdCalloutDialogFromUrlProps) {
   const { calloutId, calloutsSetId, contributionId, postId, loading: urlLoading } = useUrlResolver();
+  const { restoreIntent, setRestoreIntent, setRestoreResolution, routeSettlementRequest, setRouteSettlement } =
+    useMemoSigningReturnContext();
 
   const { callout, loading: calloutLoading } = useCalloutDetails({
     calloutId,
@@ -27,6 +31,27 @@ export function CrdCalloutDialogFromUrl({ onClose }: CrdCalloutDialogFromUrlProp
     skip: !calloutId,
     overrideCalloutSettings: { movable: true },
   });
+
+  useEffect(() => {
+    if (!callout || !restoreIntent || restoreIntent.calloutId === callout.id) return;
+    setRestoreResolution({ attemptId: restoreIntent.attemptId });
+    setRestoreIntent(current => (current?.attemptId === restoreIntent.attemptId ? undefined : current));
+  }, [callout, restoreIntent, setRestoreIntent, setRestoreResolution]);
+
+  useEffect(() => {
+    if (urlLoading || calloutLoading || callout || !restoreIntent) return;
+    setRestoreResolution({ attemptId: restoreIntent.attemptId });
+    setRestoreIntent(current => (current?.attemptId === restoreIntent.attemptId ? undefined : current));
+  }, [callout, calloutLoading, restoreIntent, setRestoreIntent, setRestoreResolution, urlLoading]);
+
+  useEffect(() => {
+    if (urlLoading || calloutLoading || callout || !routeSettlementRequest) return;
+    setRouteSettlement(current =>
+      current?.attemptId === routeSettlementRequest.attemptId
+        ? current
+        : { attemptId: routeSettlementRequest.attemptId }
+    );
+  }, [callout, calloutLoading, routeSettlementRequest, setRouteSettlement, urlLoading]);
 
   // The URL resolver and callout details both have to settle before we can
   // decide whether to render the dialog — until then, defer rendering so the
@@ -40,14 +65,24 @@ export function CrdCalloutDialogFromUrl({ onClose }: CrdCalloutDialogFromUrlProp
   }
 
   return (
-    <CalloutDetailDialogConnector
-      open={true}
-      onOpenChange={isOpen => {
-        if (!isOpen) onClose();
-      }}
+    <CalloutDeeplinkView
       callout={callout}
-      initialContributionId={contributionId}
-      initialPostId={postId}
+      contributionId={contributionId}
+      postId={postId}
+      memoSigningRestore={restoreIntent?.calloutId === callout.id ? restoreIntent : undefined}
+      memoSigningRouteAttemptId={routeSettlementRequest?.attemptId}
+      onMemoSigningRouteSettled={attemptId =>
+        setRouteSettlement(current => (current?.attemptId === attemptId ? current : { attemptId }))
+      }
+      onMemoSigningRestoreConsumed={(attemptId, focusTarget) => {
+        const restoredFocusTarget =
+          focusTarget?.querySelector<HTMLElement>('button:not([disabled]), [href], input:not([disabled])') ??
+          focusTarget;
+        if (restoredFocusTarget?.isConnected) restoredFocusTarget.focus();
+        setRestoreResolution({ attemptId, focusTarget: restoredFocusTarget });
+        setRestoreIntent(current => (current?.attemptId === attemptId ? undefined : current));
+      }}
+      onClose={onClose}
     />
   );
 }

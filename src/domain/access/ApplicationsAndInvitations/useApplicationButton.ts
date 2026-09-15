@@ -7,7 +7,7 @@ import {
   useSubspacePageLazyQuery,
   useUserPendingMembershipsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
 import clearCacheForType from '@/core/apollo/utils/clearCacheForType';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -18,6 +18,13 @@ export interface UseApplicationButtonParams {
   parentSpaceId?: string;
   spaceId?: string;
   loading?: boolean;
+  /**
+   * When true, NO query this hook drives is issued — neither the per-space
+   * ApplicationButton query nor the global UserPendingMemberships list.
+   * Distinct from `loading`, which only defers the per-space query while the
+   * caller's own inputs are still resolving.
+   */
+  skip?: boolean;
   onJoin?: (params: { communityId: string }) => void;
 }
 
@@ -25,6 +32,7 @@ const useApplicationButton = ({
   parentSpaceId,
   spaceId,
   loading: loadingParams = false,
+  skip = false,
   onJoin,
 }: UseApplicationButtonParams) => {
   const { t } = useTranslation();
@@ -41,7 +49,7 @@ const useApplicationButton = ({
   // in-flight network load feeds `loading` below so the button isn't actionable
   // until the invitation is actually available.
   const { data: pendingMembershipsData, loading: pendingMembershipsLoading } = useUserPendingMembershipsQuery({
-    skip: !isAuthenticated || !userModel,
+    skip: skip || !isAuthenticated || !userModel,
     fetchPolicy: 'cache-and-network',
   });
   const { communityApplications: pendingApplications, communityInvitations: pendingInvitations } =
@@ -61,7 +69,7 @@ const useApplicationButton = ({
       parentSpaceId,
       includeParentSpace: !!parentSpaceId,
     },
-    skip: loadingParams || !spaceId,
+    skip: skip || loadingParams || !spaceId,
   });
 
   // TODO ideally this should be a dependency passed from the context where the button is rendered
@@ -104,7 +112,16 @@ const useApplicationButton = ({
 
   const userApplication = pendingApplications?.find(x => x.spacePendingMembershipInfo.id === spaceId);
 
-  const userInvitation = pendingInvitations?.find(x => x.spacePendingMembershipInfo.id === spaceId);
+  // `me.communityInvitations` also carries invitations addressed to the ORGANIZATIONS
+  // and Virtual Contributors this user administers. This button is the viewer's own
+  // membership control on the Space page, so it must match on the viewer's own
+  // invitation only — matching on Space alone made which one it picked depend on the
+  // server's array order.
+  const userInvitation = pendingInvitations?.find(
+    x =>
+      x.spacePendingMembershipInfo.id === spaceId &&
+      (x.invitation.actor?.type === ActorType.User || x.invitation.actor?.type === undefined)
+  );
 
   // find an application which does not have a spaceID, meaning it's on space level,
   // but you are at least at Space level to have a parent application

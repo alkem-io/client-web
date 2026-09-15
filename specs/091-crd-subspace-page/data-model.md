@@ -18,9 +18,10 @@ type SubspaceBannerData = {
   /** L1 / L2 subspace identity */
   title: string;                        // subspace.about.profile.displayName
   tagline?: string;                     // subspace.about.profile.tagline
-  subspaceInitials: string;             // first 2 letters of title (uppercase)
-  subspaceColor: string;                // pickColorFromId(subspace.id) — only used when subspaceAvatarUrl is missing
-  subspaceAvatarUrl?: string;           // subspace.about.profile.avatar?.uri
+  // Removed 2026-08-21: subspaceInitials / subspaceColor / subspaceAvatarUrl —
+  // the header avatar tile was deleted from SubspaceHeader, so the mapper no
+  // longer emits them. The subspace's avatar now appears in the breadcrumb
+  // trail instead (exposed by useCrdSubspace as subspaceAvatarUrl at hook level).
 
   /** Immediate parent identity (L0 for an L1; L1 for an L2). Per FR-003 + clarification Q3. */
   parentName: string;                   // parent.about.profile.displayName — used for aria-label
@@ -282,13 +283,17 @@ type CrdSubspacePageData = {
   subspaceId: string;
   subspaceName: string;
   subspaceUrl: string;
+  subspaceAvatarUrl: string | undefined;   // AVATAR visual — breadcrumb identity image (added 2026-08-21)
   parentSpaceId: string | undefined;
   parentSpaceUrl: string | undefined;
   parentSpaceName: string | undefined;
+  /** Parent identity image for breadcrumbs: avatar visual at L1, cardBanner when the parent is the L0 (added 2026-08-21) */
+  parentSpaceAvatarUrl: string | undefined;
   /** L0 ancestor — distinct from parent only when viewing an L2 (otherwise identical) */
   levelZeroSpaceId: string | undefined;
   levelZeroSpaceUrl: string | undefined;
   levelZeroSpaceName: string | undefined;
+  levelZeroSpaceAvatarUrl: string | undefined; // L0 cardBanner — breadcrumb identity image (added 2026-08-21)
   roleSetId: string | undefined;
   collaborationId: string | undefined;
   calloutsSetId: string | undefined;
@@ -337,8 +342,8 @@ No state machines needed.
 
 ## Validation rules (mapper-level)
 
-- `subspaceInitials` and `parentInitials` always have ≥1 character (mapper takes `displayName.slice(0,2).toUpperCase()`; for empty displayNames the mapper returns `'??'`).
-- `subspaceColor` and `parentColor` are always defined; `pickColorFromId` is total over all string ids.
+- `parentInitials` always has ≥1 character (mapper takes `displayName.slice(0,2).toUpperCase()`; for empty displayNames the mapper returns `'??'`). *(`subspaceInitials` removed 2026-08-21 with the header avatar tile.)*
+- `parentColor` is always defined; `pickColorFromId` is total over all string ids. *(`subspaceColor` removed 2026-08-21.)*
 - `bannerAvatars` length is bounded to ≤5 by the component (`SubspaceHeader` slices the prop). May be empty → the avatar stack is hidden (FR-028).
 - `flowTabs.phases` may be empty → the component renders the empty-state message (FR-008 edge case + clarification Q4).
 - `flowTabs.activePhaseId` is always one of `phases[].id` when `phases` is non-empty (resolver guarantees this).

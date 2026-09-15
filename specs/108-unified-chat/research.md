@@ -4,7 +4,7 @@ The technical approach was supplied in detail with the `/speckit.plan` input and
 
 ## D1. Panel surface: floating card vs. Radix Sheet/Dialog modal
 
-- **Decision**: A lightweight **floating card** anchored bottom-right above the launcher (`fixed`, fixed width e.g. `w-[380px]`, capped height with internal scroll), NOT a Radix `Dialog`/`Sheet` modal. On mobile it expands toward full-screen via `useScreenSize` (`@/crd/hooks/useMediaQuery`).
+- **Decision**: A lightweight **floating card** anchored bottom-right above the launcher (`fixed`, fixed width e.g. `w-[380px]`, capped height with internal scroll), NOT a Radix `Dialog`/`Sheet` modal. On mobile it expands toward full-screen via `useScreenSize` (`@/crd/hooks/useMediaQuery`). *(Amended 2026-08-21: on phone-width viewports the launcher itself is hidden — the full-screen panel is opened from the header messages icon instead, so "anchored above the launcher" applies only at ≥ 640px.)*
 - **Rationale**: Matches the confirmed product decision (spec A-003) and the current guidance widget feel — a persistent, non-blocking surface with no full-screen overlay. The list↔thread swap happens *within* the card.
 - **Alternatives rejected**: Radix `Sheet` side-drawer (wrong affordance for a launcher-anchored popover; adds a modal overlay that blocks the page); centered `Dialog` (modal, breaks the "floating" intent). Radix dialogs are still used for the *secondary* dialogs (NewChat, GroupSettings, GuidanceInfo) which are genuinely modal.
 
@@ -45,6 +45,7 @@ The technical approach was supplied in detail with the `/speckit.plan` input and
 - **Decision**: Behind `useCrdEnabled()`, replace `CrdGuidanceChatGate` + the MUI `<UserMessagingDialog/>` with a single `<UnifiedChatLauncher/>` in `root.tsx`. Remove the CRD Header messages icon + `onMessagesClick`/`unreadMessagesCount` wiring (`Header.tsx`, `CrdLayoutWrapper.tsx`). Keep hide rules for auth route + fullscreen editor, but **do not hide on mobile** (the unified chat is the only messaging surface). When guidance is disabled (flag/privilege off) omit the pinned row; the rest works. Keep a `useUserMessagingContext` alias so the still-mounted MUI dialog compiles while the toggle is OFF.
 - **Rationale**: Single entry point per the product decision (FR-002); coexistence keeps the legacy path intact (FR-036) until validation. Gating mirrors `PlatformHelpButton` (`GuidenceEngine` flag + `AccessInteractiveGuidance` privilege).
 - **Alternatives rejected**: Removing the MUI surfaces now (breaks legacy toggle users); keeping the header icon (contradicts the single-entry decision).
+- **Superseded (2026-08-21)**: two parts of this decision were reversed in practice. (1) The header messages icon was **kept** and rewired to open the unified panel (`CrdLayoutWrapper` `onMessagesClick` → `setMessagingOpen(true)`, tracked as `headerIcon`). (2) The launcher **is hidden on phone-width viewports** (`hidden sm:flex` in `FloatingChatLauncher`) — product decision that the floating button is not needed on small screens; the header icon is the mobile entry point. Auth-route/fullscreen-editor hide rules unchanged.
 
 ## D8. i18n strategy
 

@@ -4,6 +4,7 @@ mutation UpdateOrganizationSettings($settingsData: UpdateOrganizationSettingsInp
     settings {
       membership {
         allowUsersMatchingDomainToJoin
+        allowSpaceInvitations
       }
     }
   }

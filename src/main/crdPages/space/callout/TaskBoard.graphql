@@ -1,0 +1,120 @@
+fragment TaskBoardCallout on Callout {
+  id
+  authorization {
+    id
+    myPrivileges
+  }
+  settings {
+    contribution {
+      allowedTypes
+    }
+  }
+  classification {
+    id
+    tagsets {
+      id
+      name
+      allowedValues
+    }
+  }
+  contributionDefaults {
+    id
+    defaultDisplayName
+    postDescription
+  }
+  taskColumnCounts {
+    column
+    count
+  }
+}
+
+fragment TaskBoardContribution on CalloutContribution {
+  id
+  sortOrder
+  classification {
+    id
+    tagsets {
+      id
+      name
+      tags
+    }
+  }
+  post {
+    id
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          id
+          uri
+        }
+      }
+    }
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        id
+        tags
+      }
+    }
+    comments {
+      id
+      messagesCount
+    }
+  }
+}
+
+query TaskBoardData($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      ...TaskBoardCallout
+      contributions {
+        ...TaskBoardContribution
+      }
+    }
+  }
+}
+
+mutation MoveTaskToColumn($moveData: MoveTaskToColumnInput!) {
+  moveTaskToColumn(moveData: $moveData) {
+    ...TaskBoardContribution
+  }
+}
+
+mutation CreateTaskColumnOnCallout($columnData: CreateTaskColumnOnCalloutInput!) {
+  createTaskColumnOnCallout(columnData: $columnData) {
+    ...TaskBoardCallout
+  }
+}
+
+# Rename re-points every task carrying the old column value to the new name
+# server-side, so the response re-selects the contributions to refresh their
+# cached task tags — otherwise the normalized cache keeps the old tag and every
+# card in the renamed column mis-groups into the first column until a reload.
+mutation UpdateTaskColumnOnCallout($columnData: UpdateTaskColumnOnCalloutInput!) {
+  updateTaskColumnOnCallout(columnData: $columnData) {
+    ...TaskBoardCallout
+    contributions {
+      ...TaskBoardContribution
+    }
+  }
+}
+
+mutation DeleteTaskColumnOnCallout($columnData: DeleteTaskColumnOnCalloutInput!) {
+  deleteTaskColumnOnCallout(columnData: $columnData) {
+    ...TaskBoardCallout
+    contributions {
+      ...TaskBoardContribution
+    }
+  }
+}
+
+mutation UpdateTaskColumnsSortOrderOnCallout($sortOrderData: UpdateTaskColumnsSortOrderOnCalloutInput!) {
+  updateTaskColumnsSortOrderOnCallout(sortOrderData: $sortOrderData) {
+    ...TaskBoardCallout
+  }
+}

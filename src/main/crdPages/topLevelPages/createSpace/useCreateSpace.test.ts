@@ -94,14 +94,18 @@ vi.mock('@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpac
   useDashboardSpaces: () => ({ refetchSpaces: vi.fn() }),
 }));
 
+// Phase count is per-test: the hook must apply a Space template whatever the
+// length of its innovation flow.
+let mappedPhases: { name: string }[] = [];
 vi.mock('@/main/crdPages/templates/templateContentMapper', () => ({
-  mapTemplateContent: () => ({ type: 'space', phases: [] }),
+  mapTemplateContent: () => ({ type: 'space', phases: mappedPhases }),
 }));
 
+let pickerSelectedId: string | null = null;
 const clearSelectionMock = vi.fn();
 vi.mock('@/main/crdPages/templates/useTemplatePicker', () => ({
   useTemplatePicker: () => ({
-    selectedTemplateId: null,
+    selectedTemplateId: pickerSelectedId,
     pickerProps: {},
     openPicker: vi.fn(),
     clearSelection: clearSelectionMock,
@@ -122,6 +126,8 @@ describe('useCreateSpace', () => {
     addSpaceWelcomeCacheMock.mockReset();
     clearSelectionMock.mockReset();
     getTemplateContentMock.mockReset();
+    mappedPhases = [];
+    pickerSelectedId = null;
   });
 
   afterEach(() => vi.clearAllMocks());
@@ -199,6 +205,73 @@ describe('useCreateSpace', () => {
     expect(addSpaceWelcomeCacheMock).toHaveBeenCalledWith('space-1');
     expect(onClose).toHaveBeenCalledTimes(1);
     expect(navigateMock).toHaveBeenCalledWith('/space/climate');
+  });
+
+  // Regression: Space templates were rejected unless their innovation flow had
+  // exactly four phases, so a template with more phases could not seed a Space
+  // at all. Any phase count must now be applied, matching subspace creation.
+  describe('applying a Space template', () => {
+    const TEMPLATE_ID = 'template-1';
+
+    const phases = (count: number) => Array.from({ length: count }, (_, i) => ({ name: `Phase ${i + 1}` }));
+
+    const templateResponse = {
+      data: {
+        lookup: {
+          template: {
+            profile: { displayName: 'Six Phase Template', defaultTagset: { tags: ['pack-tag'] } },
+            contentSpace: {
+              about: {
+                profile: {
+                  displayName: 'Climate Journey',
+                  tagline: 'From idea to impact',
+                  description: 'A six-phase journey.',
+                  tagsets: [{ name: 'default', type: 'FREEFORM', tags: ['climate'] }],
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    /** Opens the dialog, then picks a template whose flow has `phaseCount` phases. */
+    const pickTemplate = async (phaseCount: number) => {
+      mappedPhases = phases(phaseCount);
+      getTemplateContentMock.mockResolvedValue(templateResponse);
+      const rendered = setup();
+      // The open transition resets the form (and invalidates in-flight fetches),
+      // so the selection is made on the already-open dialog, as a user would.
+      clearSelectionMock.mockReset();
+
+      pickerSelectedId = TEMPLATE_ID;
+      await act(async () => {
+        rendered.rerender();
+        await Promise.resolve();
+      });
+      return rendered;
+    };
+
+    it.each([1, 4, 6, 9])('applies a template whose innovation flow has %i phases', async phaseCount => {
+      const { result } = await pickTemplate(phaseCount);
+
+      expect(result.current.values.spaceTemplateId).toBe(TEMPLATE_ID);
+      expect(result.current.selectedTemplateName).toBe('Six Phase Template');
+      expect(result.current.selectedTemplateContent).toEqual({ type: 'space', phases: phases(phaseCount) });
+      // The pick is neither rejected nor warned about, whatever the flow length.
+      expect(clearSelectionMock).not.toHaveBeenCalled();
+      expect(notifyMock).not.toHaveBeenCalled();
+    });
+
+    it('pre-fills the form from a template with more than four phases', async () => {
+      const { result } = await pickTemplate(6);
+
+      expect(result.current.values.displayName).toBe('Climate Journey');
+      expect(result.current.values.nameId).toBe('climatejourney');
+      expect(result.current.values.tagline).toBe('From idea to impact');
+      expect(result.current.values.description).toBe('A six-phase journey.');
+      expect(result.current.values.tags).toEqual(['climate']);
+    });
   });
 
   it('keeps the dialog open (no navigation) when the create mutation rejects', async () => {

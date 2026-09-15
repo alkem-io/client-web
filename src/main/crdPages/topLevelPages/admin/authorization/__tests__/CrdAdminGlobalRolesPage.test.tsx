@@ -40,7 +40,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 // don't override privileges is that combined holder, so they still see all 13
 // target roles. A bare `GRANT_GLOBAL_ADMINS` holder (legacy `global-admin`) is
 // exercised explicitly in the assigner-capability-filter describe block below.
-let mockMyPrivileges: AuthorizationPrivilege[] = [
+let mockMyPrivileges: AuthorizationPrivilege[] | undefined = [
   AuthorizationPrivilege.GrantGlobalAdmins,
   AuthorizationPrivilege.FeatureRoleAssign,
 ];
@@ -611,6 +611,62 @@ describe('CrdAdminGlobalRolesPage', () => {
       render(<CrdAdminGlobalRolesPage />);
       expect(screen.queryByRole('status')).toBeNull();
       expect(screen.getByRole('navigation')).toBeInTheDocument();
+    });
+  });
+  // #9537 (authz admin guard), re-anchored onto the 027 assigner split: the
+  // offer-side filter (FR-012) already withholds every role the operator may
+  // not manage, so an absent privilege means NO add/remove control at all —
+  // never an enabled control the server then refuses. The `GatedAction` gate
+  // on the controls that DO render must honour the disjoint tokens
+  // (corr-client-web-8): `GRANT_GLOBAL_ADMINS` for a `Platform …` role,
+  // `FEATURE_ROLE_ASSIGN` for a `Feature …` role — never one flat token.
+  describe('permission gating (#9537)', () => {
+    const addButtons = () => screen.getAllByRole('button', { name: 'roleMembers.add' });
+    const removeButtons = () => screen.getAllByRole('button', { name: 'roleMembers.remove' });
+
+    // spec FR-002 / SC-007: plain GRANT is not an assigner privilege here.
+    test('an operator without an assigner privilege gets no add/remove control and dispatches no mutation', () => {
+      mockMyPrivileges = [AuthorizationPrivilege.Grant];
+      render(<CrdAdminGlobalRolesPage />);
+
+      expect(screen.queryByRole('button', { name: 'roleMembers.add' })).toBeNull();
+      expect(screen.queryByRole('button', { name: 'roleMembers.remove' })).toBeNull();
+      expect(screen.getByText('roleMembers.noAssignablePrivilege')).toBeInTheDocument();
+      expect(assignPlatformRoleToUser).not.toHaveBeenCalled();
+      expect(removePlatformRoleFromUser).not.toHaveBeenCalled();
+    });
+
+    test('leaves both controls interactive for a GRANT_GLOBAL_ADMINS holder on a Platform role', () => {
+      mockMyPrivileges = [AuthorizationPrivilege.GrantGlobalAdmins];
+      render(<CrdAdminGlobalRolesPage />);
+
+      for (const button of [...addButtons(), ...removeButtons()]) {
+        expect(button).not.toHaveAttribute('aria-disabled');
+        expect(button).not.toBeDisabled();
+      }
+    });
+
+    test('leaves both controls interactive for a FEATURE_ROLE_ASSIGN-only holder on a Feature role', () => {
+      mockMyPrivileges = [AuthorizationPrivilege.FeatureRoleAssign];
+      mockPathname = '/admin/authorization/roles/FEATURE_BETA_TESTER';
+      render(<CrdAdminGlobalRolesPage />);
+
+      // Both holder kinds render on a Feature role (SC-009): the user and the
+      // organization add columns, plus the organization holder's remove.
+      for (const button of [...addButtons(), ...removeButtons()]) {
+        expect(button).not.toHaveAttribute('aria-disabled');
+        expect(button).not.toBeDisabled();
+      }
+    });
+
+    // spec Edge Case 3 — a completed query that carried no privilege list fails closed
+    test('fails closed when privileges are unavailable: no controls, explicit empty state', () => {
+      mockMyPrivileges = undefined;
+      render(<CrdAdminGlobalRolesPage />);
+
+      expect(screen.queryByRole('button', { name: 'roleMembers.add' })).toBeNull();
+      expect(screen.queryByRole('button', { name: 'roleMembers.remove' })).toBeNull();
+      expect(screen.getByText('roleMembers.noAssignablePrivilege')).toBeInTheDocument();
     });
   });
 });

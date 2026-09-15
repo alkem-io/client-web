@@ -1,4 +1,5 @@
 import { Plus, Search, UserMinus } from 'lucide-react';
+import { GatedAction } from '@/crd/components/common/GatedAction';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
@@ -56,6 +57,10 @@ export type RoleAssignmentViewProps = {
   loadingAvailable: boolean;
   /** True while any add / remove mutation is in flight — disables both columns. */
   updating: boolean;
+  /** When set, the add controls are gated and this string is shown as their tooltip. */
+  addDisabledReason?: string;
+  /** When set, the remove controls are gated and this string is shown as their tooltip. */
+  removeDisabledReason?: string;
   labels: RoleAssignmentLabels;
 };
 
@@ -80,6 +85,7 @@ export function RoleAssignmentView(props: RoleAssignmentViewProps) {
         loading={props.loadingCurrent}
         updating={props.updating}
         onRequestRemove={props.onRequestRemove}
+        disabledReason={props.removeDisabledReason}
         labels={props.labels}
       />
       <AvailableColumn
@@ -91,6 +97,7 @@ export function RoleAssignmentView(props: RoleAssignmentViewProps) {
         hasMore={props.hasMore}
         loading={props.loadingAvailable}
         updating={props.updating}
+        disabledReason={props.addDisabledReason}
         labels={props.labels}
       />
     </div>
@@ -104,12 +111,14 @@ function CurrentColumn({
   loading,
   updating,
   onRequestRemove,
+  disabledReason,
   labels,
 }: {
   people: RoleAssignmentPerson[];
   loading: boolean;
   updating: boolean;
   onRequestRemove: (id: string) => void;
+  disabledReason?: string;
   labels: RoleAssignmentLabels;
 }) {
   return (
@@ -130,6 +139,7 @@ function CurrentColumn({
                 person={person}
                 action="remove"
                 disabled={updating}
+                disabledReason={disabledReason}
                 onClick={() => onRequestRemove(person.id)}
                 ariaLabel={labels.removeAriaLabel.replace('{name}', person.displayName)}
               />
@@ -152,6 +162,7 @@ function AvailableColumn({
   hasMore,
   loading,
   updating,
+  disabledReason,
   labels,
 }: {
   people: RoleAssignmentPerson[];
@@ -162,6 +173,7 @@ function AvailableColumn({
   hasMore: boolean;
   loading: boolean;
   updating: boolean;
+  disabledReason?: string;
   labels: RoleAssignmentLabels;
 }) {
   return (
@@ -195,6 +207,7 @@ function AvailableColumn({
                 person={person}
                 action="add"
                 disabled={updating}
+                disabledReason={disabledReason}
                 onClick={() => onAdd(person.id)}
                 ariaLabel={labels.addAriaLabel.replace('{name}', person.displayName)}
               />
@@ -219,12 +232,14 @@ function PersonRow({
   person,
   action,
   disabled,
+  disabledReason,
   onClick,
   ariaLabel,
 }: {
   person: RoleAssignmentPerson;
   action: 'add' | 'remove';
   disabled: boolean;
+  disabledReason?: string;
   onClick: () => void;
   ariaLabel: string;
 }) {
@@ -243,17 +258,19 @@ function PersonRow({
         <p className="truncate text-body-emphasis">{person.displayName}</p>
         {person.subtitle ? <p className="truncate text-caption text-muted-foreground">{person.subtitle}</p> : null}
       </div>
-      <Button
-        type="button"
-        variant={action === 'remove' ? 'ghost' : 'ghost'}
-        size="icon"
-        className={cn('size-8 shrink-0', action === 'remove' && 'text-destructive hover:text-destructive')}
-        onClick={onClick}
-        disabled={disabled}
-        aria-label={ariaLabel}
-      >
-        <Icon aria-hidden="true" className="size-4" />
-      </Button>
+      <GatedAction disabledReason={disabledReason}>
+        <Button
+          type="button"
+          variant={action === 'remove' ? 'ghost' : 'ghost'}
+          size="icon"
+          className={cn('size-8 shrink-0', action === 'remove' && 'text-destructive hover:text-destructive')}
+          onClick={onClick}
+          disabled={disabled}
+          aria-label={ariaLabel}
+        >
+          <Icon aria-hidden="true" className="size-4" />
+        </Button>
+      </GatedAction>
     </li>
   );
 }

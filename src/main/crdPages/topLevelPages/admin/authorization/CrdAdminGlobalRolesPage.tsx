@@ -11,6 +11,7 @@ import { Loading } from '@/crd/components/common/Loading';
 import { Button } from '@/crd/primitives/button';
 import useRoleSetAvailableOrganizationsOnPlatform from '@/domain/access/AvailableContributors/useRoleSetAvailableOrganizationsOnPlatform';
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
+import useActionPermission from '@/domain/access/permissions/useActionPermission';
 import useRoleSetManager, {
   getOfferedLegacyPlatformRoles,
   getOfferedPlatformRoles,
@@ -18,6 +19,11 @@ import useRoleSetManager, {
   isFeaturePlatformRole,
   type RELEVANT_ROLES,
 } from '@/domain/access/RoleSetManager/useRoleSetManager';
+import {
+  FEATURE_ROLE_ASSIGN_PRIVILEGES,
+  PLATFORM_ROLE_ASSIGN_PRIVILEGES,
+} from '@/main/crdPages/permissions/roleAssignmentPrivileges';
+import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionReasonText';
 import { useDebouncedValue } from '@/main/crdPages/utils/useDebouncedValue';
 
 type PlatformRole = (typeof RELEVANT_ROLES.Platform)[number];
@@ -136,6 +142,24 @@ const CrdAdminGlobalRolesPage = () => {
     contributorTypes: [ActorType.User],
     fetchContributors: true,
   });
+
+  // Gate the add/remove controls on the privilege the backend enforces for the
+  // SELECTED role, so the action is prevented rather than silently refused
+  // (#9537). The two assigner privileges gate disjoint role families
+  // (corr-client-web-8): the 3 `Feature …` roles need `FEATURE_ROLE_ASSIGN`,
+  // the 10 `Platform …` roles need `GRANT_GLOBAL_ADMINS` — never one flat
+  // token for all 13. The offered-set filter above already guarantees this
+  // resolves to "allowed" for every manageable role; it stays as the
+  // belt-and-braces guard `GatedAction` was introduced for.
+  const reasonText = usePermissionReasonText();
+  const assignPermission = useActionPermission(
+    myPrivileges,
+    selectedRole && isFeaturePlatformRole(selectedRole)
+      ? FEATURE_ROLE_ASSIGN_PRIVILEGES
+      : PLATFORM_ROLE_ASSIGN_PRIVILEGES,
+    privilegesPending
+  );
+  const assignDisabledReason = reasonText(assignPermission);
 
   const legacyRoleGroups = legacyRoles.map(role => ({
     role,
@@ -314,6 +338,8 @@ const CrdAdminGlobalRolesPage = () => {
                       setAssignmentError(extractErrorMessage(error));
                     }
                   }}
+                  addDisabledReason={assignDisabledReason}
+                  removeDisabledReason={assignDisabledReason}
                   loadingMembers={loading}
                   loadingAvailable={loadingAvailable}
                   updating={updating}

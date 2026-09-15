@@ -224,6 +224,7 @@ interface useRoleSetManagerProvided extends useRoleSetManagerRolesAssignmentProv
    */
   rolesDefinitions: Record<RoleName, RoleDefinition> | undefined;
   loading: boolean;
+  errored: boolean;
   updating: boolean;
   refetchRoleSetAssignment: () => Promise<unknown>;
   /**
@@ -263,7 +264,11 @@ const useRoleSetManager = ({
   const skipAuthorization = skip || !roleSetId;
   const skipAssignment = skip || !roleSetId || !relevantRoles || relevantRoles.length === 0;
 
-  const { data: roleSetDetails, loading: loadingRoleSet } = useRoleSetAuthorizationQuery({
+  const {
+    data: roleSetDetails,
+    loading: loadingRoleSet,
+    error: roleSetAuthError,
+  } = useRoleSetAuthorizationQuery({
     variables: {
       roleSetId: roleSetId!,
     },
@@ -428,6 +433,7 @@ const useRoleSetManager = ({
     myPrivileges,
     roleNames: validRoles,
     loading: loadingRoleSet || loadingRoleSetData,
+    errored: !!roleSetDataError || !!roleSetAuthError,
 
     users: data.users,
     organizations: data.organizations,

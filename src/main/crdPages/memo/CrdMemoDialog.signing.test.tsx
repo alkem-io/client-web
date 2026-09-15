@@ -1,0 +1,574 @@
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import type { ComponentType, ReactNode } from 'react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  AuthenticationType,
+  AuthorizationPrivilege,
+  LicenseEntitlementType,
+  SigningAttemptStatus,
+} from '@/core/apollo/generated/graphql-schema';
+import type { MemoSigningDialogProps } from '@/crd/components/memo/MemoSigningDialog';
+import { CrdMemoDialog } from './CrdMemoDialog';
+
+const mocks = vi.hoisted(() => ({
+  assign: vi.fn(),
+  authenticated: true,
+  authenticationMethodsOptions: vi.fn(),
+  authenticationMethodsResult: {
+    data: {
+      me: {
+        user: {
+          authentication: { methods: ['CLEVERBASE'] },
+        },
+      },
+    },
+    error: undefined,
+    loading: false,
+  } as Record<string, unknown>,
+  continueMutation: vi.fn(),
+  currentUserLoading: false,
+  currentUserModel: { id: 'user-1' } as { id: string } | undefined,
+  lastHistoryDialogProps: undefined as
+    | { open: boolean; memoId: string; onOpenChange: (open: boolean) => void }
+    | undefined,
+  lastSigningDialogProps: undefined as MemoSigningDialogProps | undefined,
+  memo: undefined as Record<string, unknown> | undefined,
+  prepareMutation: vi.fn(),
+  provider: undefined as Record<string, unknown> | undefined,
+  replaceState: vi.fn(),
+  refreshMemo: vi.fn(),
+  requestDurability: vi.fn(),
+  returnAttempt: { loading: false, error: undefined, data: undefined } as Record<string, unknown>,
+  returnAttemptQuery: vi.fn(),
+  spaceEntitlements: ['SPACE_FLAG_MEMO_SIGNING'] as LicenseEntitlementType[],
+  verificationQuery: vi.fn(),
+  verificationQueryOptions: vi.fn(),
+  verificationResult: { data: undefined, error: undefined, loading: false, variables: undefined } as Record<
+    string,
+    unknown
+  >,
+}));
+
+vi.mock('@apollo/client', () => ({
+  useApolloClient: () => ({ cache: { identify: vi.fn(), modify: vi.fn() } }),
+}));
+
+vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
+  useContinueMemoSigningMutation: () => [mocks.continueMutation],
+  useMemoSigningAttemptQuery: (options: unknown) => {
+    mocks.returnAttemptQuery(options);
+    return mocks.returnAttempt;
+  },
+  usePrepareMemoSigningMutation: () => [mocks.prepareMutation],
+  useUserSecurityAuthenticationMethodsQuery: (options: unknown) => {
+    mocks.authenticationMethodsOptions(options);
+    return mocks.authenticationMethodsResult;
+  },
+  useVerifyMemoSignatureLazyQuery: (options: unknown) => {
+    mocks.verificationQueryOptions(options);
+    return [mocks.verificationQuery, mocks.verificationResult];
+  },
+  useUpdateMemoDisplayNameMutation: () => [vi.fn(), { loading: false }],
+}));
+
+vi.mock('@/core/auth/authentication/hooks/useAuthenticationContext', () => ({
+  useAuthenticationContext: () => ({ isAuthenticated: mocks.authenticated }),
+}));
+vi.mock('@/core/ui/fullscreen/FullscreenEditorContext', () => ({ useRegisterFullscreenEditor: () => {} }));
+vi.mock('@/core/ui/fullscreen/useFullscreen', () => ({ useFullscreen: () => ({ fullscreen: false }) }));
+vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
+vi.mock('@/crd/hooks/useMediaQuery', () => ({ useMediaQuery: () => false }));
+vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
+  useCurrentUserContext: () => ({ loading: mocks.currentUserLoading, userModel: mocks.currentUserModel }),
+}));
+vi.mock('@/domain/space/context/useSpace', () => ({
+  useSpace: () => ({
+    entitlements: mocks.spaceEntitlements,
+    space: { about: { membership: {} } },
+  }),
+}));
+vi.mock('@/domain/space/hooks/useSubSpace', () => ({
+  useSubSpace: () => ({ subspace: { about: { membership: {} } } }),
+}));
+vi.mock('@/main/routing/urlResolver/useUrlResolver', () => ({ default: () => ({ spaceLevel: 'L0' }) }));
+vi.mock('@/main/crdPages/markdown/useMarkdownEditorIntegration', () => ({
+  useMarkdownEditorIntegration: () => ({ iframeAllowedUrls: [], onError: vi.fn(), onImageUpload: vi.fn() }),
+}));
+vi.mock('@/domain/collaboration/memo/MemoManager/useMemoManager', () => ({
+  default: () => ({ memo: mocks.memo, loading: false, refreshMemo: mocks.refreshMemo }),
+}));
+vi.mock('./useCrdMemoProvider', () => ({ useCrdMemoProvider: () => mocks.provider }));
+vi.mock('./memoFooterMapper', () => ({
+  mapMemoFooterProps: () => ({ connectionStatus: 'connected', saveStatus: 'saved' }),
+}));
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
+}));
+vi.mock('@/crd/components/memo/MemoEditorShell', () => ({
+  MemoEditorShell: ({ children, headerActions }: { children: ReactNode; headerActions: ReactNode }) => (
+    <div>
+      {headerActions}
+      {children}
+    </div>
+  ),
+}));
+vi.mock('@/crd/components/memo/MemoSigningDialog', () => ({
+  MemoSigningDialog: (props: Extract<MemoSigningDialogProps, { mode: 'signing' }>) => {
+    mocks.lastSigningDialogProps = props;
+    return props.open ? (
+      <div data-testid="signing-dialog" data-stage={props.stage}>
+        <button type="button" onClick={props.onContinue}>
+          continue signing
+        </button>
+        <button type="button" onClick={props.onClose}>
+          close signing
+        </button>
+        <button type="button" onClick={() => props.onOpenChange(false)}>
+          dismiss signing
+        </button>
+      </div>
+    ) : null;
+  },
+}));
+vi.mock('./MemoSignedCopiesDialogConnector', () => ({
+  MemoSignedCopiesDialogConnector: (props: {
+    open: boolean;
+    memoId: string;
+    onOpenChange: (open: boolean) => void;
+  }) => {
+    mocks.lastHistoryDialogProps = props;
+    return props.open ? (
+      <div data-testid="history-dialog" data-memo-id={props.memoId}>
+        <button type="button" onClick={() => props.onOpenChange(false)}>
+          close history
+        </button>
+      </div>
+    ) : null;
+  },
+}));
+vi.mock('@/crd/components/common/CrdFullscreenButton', () => ({ CrdFullscreenButton: () => null }));
+vi.mock('@/crd/components/common/Loading', () => ({ Loading: ({ text }: { text: string }) => <div>{text}</div> }));
+vi.mock('@/crd/components/common/ShareButton', () => ({
+  ShareButton: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
+}));
+vi.mock('@/crd/components/dialogs/ConfirmationDialog', () => ({ ConfirmationDialog: () => null }));
+vi.mock('@/crd/components/memo/MemoCollabFooter', () => ({ MemoCollabFooter: () => null }));
+vi.mock('@/crd/components/memo/MemoDisplayName', () => ({ MemoDisplayName: () => null }));
+vi.mock('@/crd/forms/markdown/CollaborativeMarkdownEditor', () => ({ CollaborativeMarkdownEditor: () => null }));
+vi.mock('@/main/crdPages/whiteboard/CrdCollaborationSettings', () => ({ CrdCollaborationSettings: () => null }));
+
+const memoWith = (privileges: AuthorizationPrivilege[], signatures: Record<string, unknown>[] = []) => ({
+  authorization: { myPrivileges: privileges },
+  contentUpdatePolicy: 'CONTRIBUTORS',
+  createdBy: undefined,
+  profile: { displayName: 'Signing memo', storageBucket: { id: 'bucket-1' }, url: '/memo-1' },
+  signatures,
+});
+
+const renderDialog = () => render(<CrdMemoDialog open={true} memoId="memo-1" onClose={vi.fn()} />);
+const RefreshCapableCrdMemoDialog = CrdMemoDialog as unknown as ComponentType<{
+  open: boolean;
+  memoId: string;
+  onClose: () => void;
+  refreshAfterSigningAttemptId?: string;
+  signingOrigin?: { kind: 'framing'; calloutId: string };
+}>;
+
+describe('CrdMemoDialog signing connector', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.stubGlobal('location', { assign: mocks.assign, hash: '', pathname: '/memo-1', search: '' });
+    mocks.replaceState.mockImplementation((_state, _title, url: string) => {
+      (globalThis.location as unknown as { search: string }).search = new URL(url, 'https://alkem.io').search;
+    });
+    vi.stubGlobal('history', { replaceState: mocks.replaceState, state: null });
+    mocks.memo = memoWith([AuthorizationPrivilege.Contribute]);
+    mocks.authenticated = true;
+    mocks.currentUserLoading = false;
+    mocks.currentUserModel = { id: 'user-1' };
+    mocks.authenticationMethodsResult = {
+      data: {
+        me: {
+          user: {
+            authentication: { methods: [AuthenticationType.Cleverbase] },
+          },
+        },
+      },
+      error: undefined,
+      loading: false,
+    };
+    mocks.spaceEntitlements = [LicenseEntitlementType.SpaceFlagMemoSigning];
+    const collaborationProvider = {
+      hasLocalEdits: false,
+      hasUnsavedChanges: false,
+      requestDurability: mocks.requestDurability,
+    };
+    mocks.requestDurability.mockResolvedValue(undefined);
+    mocks.prepareMutation.mockResolvedValue({
+      data: {
+        prepareMemoSigning: {
+          attemptId: 'attempt-1',
+          previewUrl: '/api/public/rest/content-signing/attempt-1/snapshot',
+        },
+      },
+    });
+    mocks.continueMutation.mockResolvedValue({
+      data: { continueMemoSigning: { authorizeUrl: 'https://cleverbase.example/authorize' } },
+    });
+    mocks.returnAttempt = { loading: false, error: undefined, data: undefined };
+    mocks.lastHistoryDialogProps = undefined;
+    mocks.verificationResult = { data: undefined, error: undefined, loading: false, variables: undefined };
+    mocks.provider = {
+      connectedUsers: [],
+      connectionStatus: 'connected',
+      isReadOnly: false,
+      lastSaveError: undefined,
+      lifecycle: { kind: 'active', access: 'write', save: 'saved' },
+      memberCount: 1,
+      provider: collaborationProvider,
+      synced: true,
+      user: { name: 'Alice', color: '#123456' },
+      ydoc: {},
+    };
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('persists the memo, prepares one exact copy, then performs a full Cleverbase navigation', async () => {
+    const user = userEvent.setup();
+    renderDialog();
+
+    await user.click(screen.getByRole('button', { name: 'memo.signing.title' }));
+
+    await waitFor(() => expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-stage', 'preview'));
+    expect(mocks.requestDurability).toHaveBeenCalledOnce();
+    expect(mocks.prepareMutation).toHaveBeenCalledWith({ variables: { memoID: 'memo-1' } });
+
+    await user.click(screen.getByRole('button', { name: 'continue signing' }));
+
+    await waitFor(() => expect(mocks.continueMutation).toHaveBeenCalledWith({ variables: { attemptID: 'attempt-1' } }));
+    expect(mocks.assign).toHaveBeenCalledWith('https://cleverbase.example/authorize');
+  });
+
+  it('cannot initiate an editor-origin signing until the current user identity settles', async () => {
+    const user = userEvent.setup();
+    window.sessionStorage.clear();
+    const storagePrototype = Object.getPrototypeOf(window.sessionStorage) as Storage;
+    const setItem = vi.spyOn(storagePrototype, 'setItem');
+    mocks.currentUserLoading = true;
+    mocks.currentUserModel = undefined;
+    const view = render(
+      <RefreshCapableCrdMemoDialog
+        open={true}
+        memoId="memo-1"
+        onClose={vi.fn()}
+        signingOrigin={{ kind: 'framing', calloutId: 'callout-1' }}
+      />
+    );
+
+    const unresolvedSign = screen.getByRole('button', { name: 'memo.signing.title' });
+    expect(unresolvedSign).toBeDisabled();
+    await user.click(unresolvedSign);
+    expect(mocks.requestDurability).not.toHaveBeenCalled();
+    expect(mocks.prepareMutation).not.toHaveBeenCalled();
+
+    mocks.currentUserLoading = false;
+    mocks.currentUserModel = { id: 'user-1' };
+    view.rerender(
+      <RefreshCapableCrdMemoDialog
+        open={true}
+        memoId="memo-1"
+        onClose={vi.fn()}
+        signingOrigin={{ kind: 'framing', calloutId: 'callout-1' }}
+      />
+    );
+
+    const resolvedSign = screen.getByRole('button', { name: 'memo.signing.title' });
+    expect(resolvedSign).toBeEnabled();
+    await user.click(resolvedSign);
+    await waitFor(() => expect(mocks.prepareMutation).toHaveBeenCalledOnce());
+
+    await user.click(screen.getByRole('button', { name: 'continue signing' }));
+    await waitFor(() => expect(mocks.assign).toHaveBeenCalledWith('https://cleverbase.example/authorize'));
+
+    expect(setItem).toHaveBeenCalledOnce();
+    expect(setItem.mock.calls[0]?.[0]).toBe('alkemio.memo-signing-return.v1:attempt-1');
+    const record = JSON.parse(setItem.mock.calls[0]?.[1] ?? '{}');
+    expect(record).toEqual({
+      version: 1,
+      expiresAt: expect.any(Number),
+      attemptId: 'attempt-1',
+      userId: 'user-1',
+      memoId: 'memo-1',
+      kind: 'framing',
+      calloutId: 'callout-1',
+    });
+    expect(Object.keys(record).sort()).toEqual(
+      ['version', 'expiresAt', 'attemptId', 'userId', 'memoId', 'kind', 'calloutId'].sort()
+    );
+    setItem.mockRestore();
+  });
+
+  it('renders history and new-signature actions independently for an eligible signer', async () => {
+    const user = userEvent.setup();
+    mocks.memo = memoWith(
+      [AuthorizationPrivilege.Contribute],
+      [
+        {
+          id: 'signed-1',
+          status: SigningAttemptStatus.Signed,
+          document: { id: 'document-1', url: '/api/private/document-1' },
+          updatedDate: new Date(),
+        },
+      ]
+    );
+
+    renderDialog();
+
+    expect(screen.getByRole('button', { name: 'memo.signing.title' })).toBeInTheDocument();
+    const history = screen.getByRole('button', { name: 'memo.signing.signedCopiesCount' });
+    expect(history).not.toHaveClass('border');
+    await user.click(history);
+
+    expect(mocks.requestDurability).not.toHaveBeenCalled();
+    expect(mocks.prepareMutation).not.toHaveBeenCalled();
+    expect(screen.getByTestId('history-dialog')).toHaveAttribute('data-memo-id', 'memo-1');
+    expect(screen.queryByTestId('signing-dialog')).not.toBeInTheDocument();
+  });
+
+  it('disables duplicate preparation while durability is unresolved', async () => {
+    const user = userEvent.setup();
+    let releaseDurability!: () => void;
+    mocks.requestDurability.mockImplementation(() => new Promise<void>(resolve => (releaseDurability = resolve)));
+    renderDialog();
+
+    const sign = screen.getByRole('button', { name: 'memo.signing.title' });
+    await user.click(sign);
+
+    expect(sign).toBeDisabled();
+    await user.click(sign);
+    expect(mocks.requestDurability).toHaveBeenCalledOnce();
+    expect(mocks.prepareMutation).not.toHaveBeenCalled();
+
+    releaseDurability();
+    await waitFor(() => expect(mocks.prepareMutation).toHaveBeenCalledOnce());
+    expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-stage', 'preview');
+  });
+
+  it('opens signed copies for a READ-only actor without preparing another copy', async () => {
+    const user = userEvent.setup();
+    mocks.memo = memoWith(
+      [AuthorizationPrivilege.Read],
+      [
+        {
+          id: 'signed-1',
+          status: SigningAttemptStatus.Signed,
+          document: { id: 'document-1', url: '/api/private/document-1' },
+          updatedDate: new Date(),
+        },
+      ]
+    );
+    mocks.spaceEntitlements = [];
+    mocks.authenticationMethodsResult = {
+      data: undefined,
+      error: undefined,
+      loading: false,
+    };
+
+    renderDialog();
+    await user.click(screen.getByRole('button', { name: 'memo.signing.signedCopiesCount' }));
+
+    expect(screen.getByTestId('history-dialog')).toHaveAttribute('data-memo-id', 'memo-1');
+    expect(screen.queryByTestId('signing-dialog')).not.toBeInTheDocument();
+    expect(mocks.requestDurability).not.toHaveBeenCalled();
+    expect(mocks.prepareMutation).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole('button', { name: 'close history' }));
+    expect(screen.queryByTestId('history-dialog')).not.toBeInTheDocument();
+  });
+
+  it('does not expose history when the memo has only documentless signing rows', () => {
+    mocks.memo = memoWith(
+      [AuthorizationPrivilege.Read],
+      [{ id: 'incomplete-1', status: SigningAttemptStatus.Signed, document: null, updatedDate: new Date() }]
+    );
+    mocks.spaceEntitlements = [];
+
+    renderDialog();
+
+    expect(screen.queryByRole('button', { name: /memo\.signing\.signedCopies/ })).not.toBeInTheDocument();
+    expect(mocks.requestDurability).not.toHaveBeenCalled();
+    expect(mocks.prepareMutation).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ['the space entitlement', [], [AuthenticationType.Cleverbase]],
+    ['a linked Cleverbase identity', [LicenseEntitlementType.SpaceFlagMemoSigning], [AuthenticationType.Email]],
+  ] as const)('opens existing signed copies for a contributor without %s and never prepares', async (_gate, entitlements, methods) => {
+    const user = userEvent.setup();
+    mocks.memo = memoWith(
+      [AuthorizationPrivilege.Contribute],
+      [
+        {
+          id: 'signed-1',
+          status: SigningAttemptStatus.Signed,
+          document: { id: 'document-1', url: '/api/private/document-1' },
+          updatedDate: new Date(),
+        },
+      ]
+    );
+    mocks.spaceEntitlements = [...entitlements];
+    mocks.authenticationMethodsResult = {
+      data: { me: { user: { authentication: { methods: [...methods] } } } },
+      error: undefined,
+      loading: false,
+    };
+
+    renderDialog();
+    await user.click(screen.getByRole('button', { name: 'memo.signing.signedCopiesCount' }));
+
+    expect(screen.getByTestId('history-dialog')).toHaveAttribute('data-memo-id', 'memo-1');
+    expect(screen.queryByTestId('signing-dialog')).not.toBeInTheDocument();
+    expect(mocks.prepareMutation).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    {
+      name: 'CONTRIBUTE',
+      privileges: [AuthorizationPrivilege.Read],
+    },
+    { name: 'the space entitlement', entitlements: [] },
+    { name: 'loaded authentication methods', loading: true },
+    { name: 'available authentication methods', error: new Error('offline') },
+  ])('hides Sign without $name', gate => {
+    mocks.memo = memoWith(gate.privileges ?? [AuthorizationPrivilege.Contribute]);
+    mocks.spaceEntitlements = gate.entitlements ?? [LicenseEntitlementType.SpaceFlagMemoSigning];
+    mocks.authenticationMethodsResult = {
+      data: {
+        me: {
+          user: {
+            authentication: {
+              methods: [AuthenticationType.Cleverbase],
+            },
+          },
+        },
+      },
+      error: gate.error,
+      loading: gate.loading ?? false,
+    };
+
+    renderDialog();
+
+    expect(screen.queryByRole('button', { name: 'memo.signing.title' })).not.toBeInTheDocument();
+  });
+
+  it('shows focusable connected-accounts guidance without invocation for an otherwise eligible unlinked contributor', async () => {
+    const user = userEvent.setup();
+    mocks.authenticationMethodsResult = {
+      data: { me: { user: { authentication: { methods: [AuthenticationType.Email] } } } },
+      error: undefined,
+      loading: false,
+    };
+
+    renderDialog();
+
+    const sign = screen.getByRole('button', { name: 'memo.signing.title' });
+    expect(sign).toBeDisabled();
+    await user.tab();
+    expect(screen.getByRole('link', { name: 'memo.signing.connectCleverbase' })).toHaveAttribute(
+      'href',
+      'https://alkem.io/documentation/en-US/how-to/connected-accounts'
+    );
+    expect(screen.getByText('memo.signing.cleverbaseRequired')).toBeInTheDocument();
+    expect(mocks.requestDurability).not.toHaveBeenCalled();
+    expect(mocks.prepareMutation).not.toHaveBeenCalled();
+  });
+
+  it('skips authentication methods and hides Sign for an unauthenticated actor', () => {
+    mocks.authenticated = false;
+
+    renderDialog();
+
+    expect(mocks.authenticationMethodsOptions).toHaveBeenCalledWith({
+      skip: true,
+    });
+    expect(screen.queryByRole('button', { name: 'memo.signing.title' })).not.toBeInTheDocument();
+  });
+
+  it('fails preparation when GraphQL returns no prepared attempt', async () => {
+    const user = userEvent.setup();
+    mocks.prepareMutation.mockResolvedValue({ data: undefined });
+
+    renderDialog();
+    await user.click(screen.getByRole('button', { name: 'memo.signing.title' }));
+
+    await waitFor(() => expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-stage', 'prepare-error'));
+  });
+
+  it('fails continuation when GraphQL returns no authorization URL', async () => {
+    const user = userEvent.setup();
+    mocks.continueMutation.mockResolvedValue({ data: undefined });
+
+    renderDialog();
+    await user.click(screen.getByRole('button', { name: 'memo.signing.title' }));
+    await waitFor(() => expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-stage', 'preview'));
+    await user.click(screen.getByRole('button', { name: 'continue signing' }));
+
+    await waitFor(() => expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-stage', 'continue-error'));
+  });
+
+  it('disables preparation until the collaboration provider exists', () => {
+    mocks.provider = { ...mocks.provider, provider: undefined };
+
+    renderDialog();
+
+    expect(screen.getByRole('button', { name: 'memo.signing.title' })).toBeDisabled();
+  });
+
+  it('does not own or query a signing return token from the memo editor', () => {
+    vi.stubGlobal('location', {
+      assign: mocks.assign,
+      hash: '',
+      pathname: '/memo-1',
+      search: '?signingAttemptId=attempt-1',
+    });
+
+    renderDialog();
+
+    expect(mocks.returnAttemptQuery).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('signing-dialog')).not.toBeInTheDocument();
+  });
+
+  it('refetches MemoDetails once only when the normal restored editor receives the validated success signal', async () => {
+    const view = render(
+      <RefreshCapableCrdMemoDialog
+        open={true}
+        memoId="memo-1"
+        onClose={vi.fn()}
+        refreshAfterSigningAttemptId="attempt-1"
+      />
+    );
+
+    await waitFor(() => expect(mocks.refreshMemo).toHaveBeenCalledOnce());
+
+    view.rerender(
+      <RefreshCapableCrdMemoDialog
+        open={true}
+        memoId="memo-1"
+        onClose={vi.fn()}
+        refreshAfterSigningAttemptId="attempt-1"
+      />
+    );
+    expect(mocks.refreshMemo).toHaveBeenCalledOnce();
+  });
+
+  it('does not refetch MemoDetails for a context-free result without a restored success signal', () => {
+    render(<RefreshCapableCrdMemoDialog open={true} memoId="memo-1" onClose={vi.fn()} />);
+
+    expect(mocks.refreshMemo).not.toHaveBeenCalled();
+  });
+});

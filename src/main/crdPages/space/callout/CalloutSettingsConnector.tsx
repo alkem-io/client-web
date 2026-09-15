@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useCalloutContentLazyQuery,
@@ -6,7 +6,7 @@ import {
   useSpaceTemplatesManagerQuery,
   useUpdateContributionsSortOrderMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutFramingType, CalloutVisibility, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutFramingType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { CalloutContextMenu } from '@/crd/components/callout/CalloutContextMenu';
@@ -16,17 +16,16 @@ import { DeleteCalloutDialog } from '@/crd/components/dialogs/DeleteCalloutDialo
 import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import { useCalloutManager } from '@/domain/collaboration/callout/utils/useCalloutManager';
-import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { useSpace } from '@/domain/space/context/useSpace';
 import type { CalloutFormValues } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 import type { CalloutMoveActions } from '@/main/crdPages/space/hooks/useCrdCalloutMoveActions';
-import { fetchPreviewImageBlob } from '@/main/crdPages/templates/fetchPreviewImageBlob';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { CalloutEditConnector } from './CalloutEditConnector';
 import { CollaboraFramingReplaceConnector } from './CollaboraFramingReplaceConnector';
 import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
 import { mapCalloutToDeletionSummary } from './dataMappers/mapCalloutToDeletionSummary';
 import { deriveCalloutMenuVisibility } from './deriveCalloutMenuVisibility';
+import { TaskBoardColumnsConnector } from './TaskBoardColumnsConnector';
 
 type CalloutSettingsConnectorProps = {
   callout: CalloutDetailsModelExtended;
@@ -39,6 +38,14 @@ type CalloutSettingsConnectorProps = {
    * single dialog instance. When omitted, the Share menu item is hidden.
    */
   onShare?: () => void;
+  /**
+   * True when this callout renders as a Tasks board. Hides the manual "Sort
+   * contributions" menu item — the board owns its ordering via drag-and-drop,
+   * so the two paths would desync. Resolved asynchronously by the parent
+   * (`LazyCalloutItem` / the deep-link view), since the callout model here does
+   * not carry the board marker tagset.
+   */
+  isTaskBoard?: boolean;
   /**
    * Fires after the callout has been deleted (FR-018). The detail dialog uses
    * it to close itself — the feed card needs nothing, it unmounts when the
@@ -62,7 +69,13 @@ type CalloutSettingsConnectorProps = {
  * Share is owned by the parent connector via `onShare` (so the detail dialog's
  * header / reactions-bar Share buttons share state with the menu's Share item).
  */
-export function CalloutSettingsConnector({ callout, moveActions, onShare, onDeleted }: CalloutSettingsConnectorProps) {
+export function CalloutSettingsConnector({
+  callout,
+  moveActions,
+  onShare,
+  isTaskBoard,
+  onDeleted,
+}: CalloutSettingsConnectorProps) {
   const { t } = useTranslation('crd-space');
   const notify = useNotification();
   const {
@@ -73,6 +86,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare, onDele
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [replaceOpen, setReplaceOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
+  const [columnsOpen, setColumnsOpen] = useState(false);
   const [mutating, setMutating] = useState(false);
 
   const { changeCalloutVisibility, deleteCallout } = useCalloutManager();
@@ -119,6 +133,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare, onDele
     canMoveSet: !!moveActions,
     contributionsEnabled: callout.settings.contribution.enabled,
     contributionsCount: callout.contributions.length,
+    isTaskBoard: isTaskBoard ?? false,
     canBeSavedAsTemplate: callout.canBeSavedAsTemplate,
     saveAsTemplateFeatureEnabled: true,
     // Saving a document callout as a template is not yet supported — the menu
@@ -144,7 +159,15 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare, onDele
     }
   };
 
+  // Synchronous re-entry guard: `mutating` is React state, so it updates a tick
+  // later — a fast double-click (or a double-invoked confirm) can fire the delete
+  // twice before the button disables, and the second call hits the already-deleted
+  // callout with ENTITY_NOT_FOUND. A ref blocks the second call immediately.
+  const deletingRef = useRef(false);
+
   const handleDeleteConfirm = async () => {
+    if (deletingRef.current) return;
+    deletingRef.current = true;
     setMutating(true);
     try {
       await deleteCallout(callout);
@@ -156,6 +179,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare, onDele
       notify(t('deleteCallout.saveFailed'), 'error');
     } finally {
       setMutating(false);
+      deletingRef.current = false;
     }
   };
 
@@ -178,19 +202,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare, onDele
     const { data } = await fetchCalloutContent({ variables: { calloutId: callout.id } });
     const loaded = data?.lookup.callout;
     const body: Partial<CalloutFormValues> = mapCalloutDetailsToFormValues(data);
-    if (loaded?.framing.whiteboard?.content) body.whiteboardContent = loaded.framing.whiteboard.content;
-    else if (body.whiteboardConfigured) body.whiteboardContent = EmptyWhiteboardString;
     body.memoMarkdown = loaded?.framing.memo?.markdown ?? '';
-    // Seed the source whiteboard's server-rendered preview as a blob so the post-create upload step
-    // (uploadCalloutWhiteboardPreview) persists it onto the new template whiteboard's WHITEBOARD_PREVIEW
-    // Visual — otherwise the template is created with content but no preview image. Mirrors
-    // loadCalloutTemplateFormValues (D18). A failed fetch is non-fatal — the blob seed is just skipped.
-    if (body.whiteboardPreviewServerUrl) {
-      const blob = await fetchPreviewImageBlob(body.whiteboardPreviewServerUrl);
-      if (blob) {
-        body.whiteboardPreviewImages = [{ visualType: VisualType.WhiteboardPreview, imageData: blob }];
-      }
-    }
     saveAs.openSaveAs({
       kind: 'callout',
       calloutBody: body,
@@ -207,6 +219,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare, onDele
         saveAsTemplateDisabled={perms.saveAsTemplateDisabled}
         saveAsTemplateDisabledReason={t('contextMenu.saveAsTemplateUnsupported')}
         onEdit={perms.showEdit ? () => setEditOpen(true) : undefined}
+        onManageColumns={isTaskBoard && perms.editable ? () => setColumnsOpen(true) : undefined}
         onReplace={perms.showReplace ? () => setReplaceOpen(true) : undefined}
         onPublish={perms.showPublish ? () => setVisibilityAction('publish') : undefined}
         onUnpublish={perms.showUnpublish ? () => setVisibilityAction('unpublish') : undefined}
@@ -266,6 +279,10 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare, onDele
         loading={sortLoading || updatingSort}
         onConfirm={handleSortConfirm}
       />
+
+      {isTaskBoard && perms.editable && (
+        <TaskBoardColumnsConnector calloutId={callout.id} open={columnsOpen} onOpenChange={setColumnsOpen} />
+      )}
 
       <TemplateFormDialog
         open={saveAs.form.open}

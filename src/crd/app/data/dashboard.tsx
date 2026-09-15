@@ -251,7 +251,7 @@ export const MOCK_INVITATIONS = [
     spaceId: 's-sustainability',
     spaceName: 'Sustainability Goals 2024',
     spaceHref: '/space/sustainability-goals',
-    role: 'Editor',
+    inviterName: 'Priya Patel',
     color: pickColorFromId('s-sustainability'),
   },
   {
@@ -259,7 +259,7 @@ export const MOCK_INVITATIONS = [
     spaceId: 's-urban-mobility',
     spaceName: 'Urban Mobility Lab',
     spaceHref: '/space/urban-mobility',
-    role: 'Viewer',
+    inviterName: 'Marco Rossi',
     color: pickColorFromId('s-urban-mobility'),
   },
   {
@@ -267,7 +267,7 @@ export const MOCK_INVITATIONS = [
     spaceId: 's-financial',
     spaceName: 'Q1 Financial Planning',
     spaceHref: '/space/financial-planning',
-    role: 'Admin',
+    inviterName: 'Aisha Khan',
     color: pickColorFromId('s-financial'),
   },
 ];

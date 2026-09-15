@@ -82,7 +82,8 @@ const useSpaceDashboardNavigation = ({
 
   const space = subSpacesQueryData?.lookup.space;
 
-  const loading = subSpacesQueryLoading;
+  // The subspaces query is chained on the privileges query — the list is "loading" through both.
+  const loading = subSpacesAuthLoading || subSpacesQueryLoading;
 
   const dashboardNavigation = (() => {
     if (!space) {

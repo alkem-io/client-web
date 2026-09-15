@@ -81,6 +81,12 @@ fragment CalloutContributionsWhiteboardCard on Whiteboard {
 
 fragment CalloutContributionsMemoCard on Memo {
   id
+  signatures {
+    id
+    document {
+      id
+    }
+  }
   profile {
     id
     url

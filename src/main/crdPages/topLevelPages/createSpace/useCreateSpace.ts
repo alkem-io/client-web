@@ -15,6 +15,11 @@ import createNameId from '@/core/utils/nameId/createNameId';
 import type { ImageCropConfig } from '@/crd/components/common/ImageCropDialog';
 import type { CreateSpaceFieldErrors, CreateSpaceFormValues } from '@/crd/components/space/CreateSpaceDialog';
 import type { TemplateContent, TemplatePickerSelectProps } from '@/crd/components/templates/types';
+import {
+  DEFAULT_BANNER_ASPECT_RATIO,
+  MAX_BANNER_ASPECT_RATIO,
+  MIN_BANNER_ASPECT_RATIO,
+} from '@/crd/lib/bannerAspectRatio';
 import type { VisualConstraints } from '@/domain/common/visual/model/VisualModel';
 import { useSpacePlans } from '@/domain/space/components/CreateSpace/hooks/spacePlans/useSpacePlans';
 import { useSpaceCreation } from '@/domain/space/components/CreateSpace/hooks/useSpaceCreation/useSpaceCreation';
@@ -22,9 +27,6 @@ import { addSpaceWelcomeCache } from '@/domain/space/components/CreateSpace/util
 import { mapTemplateContent } from '@/main/crdPages/templates/templateContentMapper';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 import { useDashboardSpaces } from '@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpaces/useDashboardSpaces';
-
-/** The number of innovation-flow states a Space template must have to seed an L0 Space (parity with the MUI selector). */
-const REQUIRED_FLOW_STATES = 4;
 
 export type CreatedSpaceResult = {
   id: string;
@@ -240,11 +242,10 @@ export function useCreateSpace({
   };
 
   /**
-   * Fetch the chosen Space template's content. Only templates whose captured
-   * space has a complete 4-state innovation flow may seed an L0 Space (parity
-   * with the MUI selector's `isTemplateSelectable`) — a non-conforming pick is
-   * rejected here (the picker can't pre-filter: card data carries no flow info).
-   * Otherwise: render the preview and pre-fill the form's text fields.
+   * Fetch the chosen Space template's content, render the preview and pre-fill
+   * the form's text fields. Any innovation-flow length is accepted — a Space's
+   * flow is no longer capped at four phases, and subspace creation applies its
+   * templates unconditionally too.
    */
   const applyTemplate = async (templateId: string) => {
     const requestSeq = ++templateRequestSeqRef.current;
@@ -256,15 +257,6 @@ export function useCreateSpace({
       const template = data?.lookup.template;
       if (!template) return;
       const mapped = mapTemplateContent(template, 'space');
-      const flowStateCount = mapped.type === 'space' ? mapped.phases.length : 0;
-
-      if (flowStateCount !== REQUIRED_FLOW_STATES) {
-        notify(t('template.invalidFlow'), 'warning');
-        templatePicker.clearSelection();
-        setAppliedTemplateId(null);
-        clearSelectedTemplate();
-        return;
-      }
 
       setSelectedTemplateName(template.profile.displayName);
       setSelectedTemplateContent(mapped);
@@ -336,8 +328,20 @@ export function useCreateSpace({
     clearSelectedTemplate();
   };
 
-  const toCropConfig = (c: VisualConstraints): ImageCropConfig => ({
-    aspectRatio: c.aspectRatio,
+  // The page banner opens on the 10:1 design default rather than on whatever
+  // `c.aspectRatio` the platform config reports (10 today; 6 on a server that
+  // predates that default): a space created with a banner here must get the
+  // same shape as one whose banner is first cropped in Settings > About.
+  // Clamped into the server's range so the crop can never be cut to a ratio
+  // the upload would then reject.
+  const bannerCropAspectRatio = (c: VisualConstraints) =>
+    Math.min(
+      Math.max(DEFAULT_BANNER_ASPECT_RATIO, c.minAspectRatio ?? MIN_BANNER_ASPECT_RATIO),
+      c.maxAspectRatio ?? MAX_BANNER_ASPECT_RATIO
+    );
+
+  const toCropConfig = (key: 'bannerFile' | 'cardBannerFile', c: VisualConstraints): ImageCropConfig => ({
+    aspectRatio: key === 'bannerFile' ? bannerCropAspectRatio(c) : c.aspectRatio,
     maxWidth: c.maxWidth,
     maxHeight: c.maxHeight,
     minWidth: c.minWidth,
@@ -350,7 +354,7 @@ export function useCreateSpace({
     const constraints = key === 'bannerFile' ? bannerConstraints : cardBannerConstraints;
     if (constraints) {
       setErrors(prev => ({ ...prev, [key]: undefined }));
-      setPendingCrop({ key, file, config: toCropConfig(constraints) });
+      setPendingCrop({ key, file, config: toCropConfig(key, constraints) });
     } else {
       // Constraints not loaded yet — apply the raw file as a fallback.
       setValues(prev => ({ ...prev, [key]: file }));

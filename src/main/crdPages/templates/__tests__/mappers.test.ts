@@ -31,7 +31,7 @@ const tpl = (over: Partial<GqlTemplateLike> & { id: string }): GqlTemplateLike =
 
 describe('templateCardMapper', () => {
   it('round-trips the type enum ⇄ string union', () => {
-    const types = ['space', 'callout', 'whiteboard', 'post', 'communityGuidelines'] as const;
+    const types = ['space', 'callout', 'whiteboard', 'post', 'communityGuidelines', 'classification'] as const;
     for (const t of types) expect(mapGqlTemplateType(toGqlTemplateType(t))).toBe(t);
   });
 
@@ -54,6 +54,32 @@ describe('templateCardMapper', () => {
     expect(
       mapTemplateToCardData(tpl({ id: 'b', profile: { displayName: 'B', cardBanner: { uri: 'c' } } })).bannerUrl
     ).toBe('c');
+  });
+
+  it('uses the canonical Whiteboard card visual before the legacy template visual', () => {
+    const card = mapTemplateToCardData(
+      tpl({
+        id: 'wb',
+        type: GqlTemplateType.Whiteboard,
+        profile: { displayName: 'WB', visual: { uri: 'legacy-parent' } },
+        whiteboard: { profile: { cardBanner: { uri: 'canonical-child' } } },
+      })
+    );
+
+    expect(card.bannerUrl).toBe('canonical-child');
+  });
+
+  it('uses the captured Space card banner before the legacy template visual', () => {
+    const card = mapTemplateToCardData(
+      tpl({
+        id: 'space',
+        type: GqlTemplateType.Space,
+        profile: { displayName: 'Space', visual: { uri: 'legacy-parent' } },
+        contentSpace: { about: { profile: { cardBanner: { uri: 'captured-space' } } } },
+      })
+    );
+
+    expect(card.bannerUrl).toBe('captured-space');
   });
 
   it('reads tags from defaultTagset, then tagset, filtering non-strings', () => {
@@ -81,7 +107,14 @@ describe('templateCardMapper', () => {
 describe('templatesManagerMapper', () => {
   it('returns one section per type in TEMPLATE_TYPE_ORDER even when the set is empty/undefined', () => {
     const sections = mapTemplatesSetToCategories(undefined);
-    expect(sections.map(s => s.type)).toEqual(['space', 'callout', 'whiteboard', 'post', 'communityGuidelines']);
+    expect(sections.map(s => s.type)).toEqual([
+      'space',
+      'callout',
+      'whiteboard',
+      'post',
+      'classification',
+      'communityGuidelines',
+    ]);
     expect(sections.every(s => s.templates.length === 0)).toBe(true);
   });
 
@@ -129,6 +162,7 @@ describe('templateContentMapper', () => {
       includePost: false,
       includeSpace: false,
       includeCommunityGuidelines: false,
+      includeClassification: false,
     });
     expect(templateContentIncludeVars('communityGuidelines').includeCommunityGuidelines).toBe(true);
   });
@@ -140,10 +174,11 @@ describe('templateContentMapper', () => {
       framingKind: 'none',
       framingTitle: '',
       framingDescription: '',
+      sourceCalloutId: '',
       allowedContributionTypes: [],
       commentsEnabled: false,
     });
-    expect(mapTemplateContent(empty, 'whiteboard')).toEqual({ type: 'whiteboard', whiteboardContent: '' });
+    expect(mapTemplateContent(empty, 'whiteboard')).toEqual({ type: 'whiteboard' });
     expect(mapTemplateContent(empty, 'post')).toEqual({ type: 'post', defaultDescription: '' });
     expect(mapTemplateContent(empty, 'space')).toEqual({
       type: 'space',
@@ -156,6 +191,31 @@ describe('templateContentMapper', () => {
       title: '',
       guidelinesMarkdown: '',
       references: [],
+    });
+    expect(mapTemplateContent(empty, 'classification')).toEqual({
+      type: 'classification',
+      cardinality: 'MULTI_SELECT',
+      values: [],
+    });
+  });
+
+  it('maps a classification content payload, preserving authored value order (FR-002b)', () => {
+    const template = {
+      classification: {
+        cardinality: 'SINGLE_SELECT',
+        values: [
+          { id: 'sdg-13', label: '13 · Climate Action' },
+          { id: 'sdg-14', label: '14 · Life Below Water' },
+        ],
+      },
+    } as unknown as TemplateContentTemplate;
+    expect(mapTemplateContent(template, 'classification')).toEqual({
+      type: 'classification',
+      cardinality: 'SINGLE_SELECT',
+      values: [
+        { id: 'sdg-13', label: '13 · Climate Action' },
+        { id: 'sdg-14', label: '14 · Life Below Water' },
+      ],
     });
   });
 
@@ -199,7 +259,6 @@ describe('templateContentMapper', () => {
           type: CalloutFramingType.Whiteboard,
           profile: { displayName: 'Roadmap WB', description: 'workshop' },
           whiteboard: {
-            content: '{"elements":[]}',
             profile: { preview: { uri: 'https://cdn.alkem.io/wb/preview.png' } },
           },
         },
@@ -214,7 +273,6 @@ describe('templateContentMapper', () => {
     expect(content).toMatchObject({
       type: 'callout',
       framingKind: 'whiteboard',
-      framingWhiteboardContent: '{"elements":[]}',
       framingWhiteboardPreviewImageUrl: 'https://cdn.alkem.io/wb/preview.png',
     });
   });
@@ -318,12 +376,12 @@ describe('templateContentMapper', () => {
       tags: ['t'],
       defaultDescription: 'pd',
     });
-    expect(templateContentToFormValues({ type: 'whiteboard', whiteboardContent: '{}' }, 'W')).toEqual({
+    expect(templateContentToFormValues({ type: 'whiteboard', sourceWhiteboardId: 'wb-1' }, 'W')).toEqual({
       type: 'whiteboard',
       name: 'W',
       description: '',
       tags: [],
-      whiteboardContent: '{}',
+      sourceWhiteboardId: 'wb-1',
     });
     expect(
       templateContentToFormValues(

@@ -27,6 +27,15 @@ fragment AdminCommunityApplication on Application {
   actor {
     ...AdminCommunityCandidateMember
   }
+  questions {
+    id
+    name
+    value
+  }
+  user {
+    id
+    email
+  }
 }
 
 fragment AdminCommunityInvitation on Invitation {
@@ -35,6 +44,7 @@ fragment AdminCommunityInvitation on Invitation {
   updatedDate
   state
   nextEvents
+  extraRoles
   actor {
     ...AdminCommunityCandidateMember
   }

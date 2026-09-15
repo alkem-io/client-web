@@ -37,7 +37,9 @@ const CrdUserProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUp
   const { userId } = useUserPageRouteContext();
   const data = useUserProfileTabData(userId);
 
-  // Reference file upload (paperclip) — uploads to the user's storage bucket.
+  // Reference file upload (paperclip) — uploads to the user's storage bucket. The user already exists,
+  // so `useStorageConfig` resolves `temporaryLocation: false` and the upload is permanent (propagated
+  // to `file_backup_outbox`, issue #10126).
   const { storageConfig } = useStorageConfig({ locationType: 'user', userId: userId ?? '', skip: !userId });
   const referenceUpload = useReferenceFileUpload(storageConfig);
 

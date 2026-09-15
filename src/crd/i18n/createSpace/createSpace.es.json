@@ -17,8 +17,7 @@
       "description": "Aplicar esta plantilla sobrescribirá el nombre, el subtítulo, la descripción y las etiquetas que ya has introducido.",
       "confirm": "Aplicar plantilla",
       "cancel": "Mantener mis cambios"
-    },
-    "invalidFlow": "Esta plantilla no se puede usar para crear un Espacio: necesita un flujo de innovación de 4 fases."
+    }
   },
   "displayName": {
     "label": "Nombre",

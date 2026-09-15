@@ -20,6 +20,7 @@
     "pendingMemberships": "Membresías pendientes",
     "administration": "Administración",
     "changeLanguage": "Cambiar idioma",
+    "changeLanguageError": "No se pudo guardar la preferencia de idioma — inténtalo de nuevo.",
     "getHelp": "Obtener ayuda",
     "showGrid": "Mostrar cuadrícula",
     "hideGrid": "Ocultar cuadrícula"
