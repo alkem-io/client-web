@@ -1046,6 +1046,7 @@ export type CollaboraDocumentKeySpecifier = (
   | 'createdDate'
   | 'documentType'
   | 'id'
+  | 'previewUrl'
   | 'profile'
   | 'updatedDate'
   | CollaboraDocumentKeySpecifier
@@ -1056,6 +1057,7 @@ export type CollaboraDocumentFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   documentType?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  previewUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -3118,6 +3120,7 @@ export type MutationKeySpecifier = (
   | 'addVisualToMediaGallery'
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationMigrateOrphanedConversations'
+  | 'adminCommunicationReconcileForumHierarchy'
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationSyncSpaceHierarchy'
   | 'adminCommunicationUpdateRoomState'
@@ -3364,6 +3367,7 @@ export type MutationFieldPolicy = {
   addVisualToMediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationMigrateOrphanedConversations?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminCommunicationReconcileForumHierarchy?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationSyncSpaceHierarchy?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomState?: FieldPolicy<any> | FieldReadFunction<any>;

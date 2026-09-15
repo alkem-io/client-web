@@ -24,11 +24,11 @@ type CalloutCollaboraPreviewProps = {
    */
   onReplace?: () => void;
   /**
-   * Real rendered preview image, when the backend eventually supplies one (no
-   * source exists yet — always `undefined` in production today, workspace
-   * story client-web#9872 P3). When present and loadable, replaces the
-   * type-icon treatment; falls back to the type-icon treatment if it fails to
-   * load.
+   * Authorized, same-origin preview image URL for the current saved
+   * document, or `undefined` when the backend has no backing file to
+   * preview. When present, the image loads lazily and, once it succeeds,
+   * replaces the type-icon treatment; the type-icon stays visible until then
+   * and again if the image fails to load.
    */
   previewImageUrl?: string;
   /** `default` = aspect-video (used inside the callout detail dialog);
@@ -51,8 +51,13 @@ export function CalloutCollaboraPreview({
   const typeLabel = t(typeLabelKey[documentType] as 'callout.document');
   const openLabel = t(openLabelKey[documentType]);
   const compact = size === 'compact';
+  // Tracked by URL value (not a boolean) so a later `previewImageUrl` prop change
+  // — e.g. after a re-render generates a fresh image — starts in the correct
+  // not-yet-loaded/not-errored state without an extra effect to reset it.
+  const [loadedUrl, setLoadedUrl] = useState<string | undefined>(undefined);
   const [erroredUrl, setErroredUrl] = useState<string | undefined>(undefined);
   const showImage = Boolean(previewImageUrl) && previewImageUrl !== erroredUrl;
+  const imageLoaded = showImage && previewImageUrl === loadedUrl;
 
   return (
     <div
@@ -62,16 +67,23 @@ export function CalloutCollaboraPreview({
         className
       )}
     >
-      <div className="w-full h-full flex items-center justify-center bg-muted">
-        {showImage ? (
+      <div className="w-full h-full flex items-center justify-center bg-muted relative">
+        {/* Type icon stays mounted (and visible) until the preview image has
+         * actually loaded, and again after a load error — it is never
+         * replaced eagerly just because a URL was supplied. */}
+        <Icon className={cn(compact ? 'w-8 h-8' : 'w-12 h-12', accentColor)} aria-hidden="true" />
+        {showImage && (
           <img
             src={previewImageUrl}
-            alt={typeLabel}
-            className="w-full h-full object-cover"
+            // Empty alt: the type badge below already names the document type,
+            // and the card/dialog around this component carries its own
+            // accessible name — this image is decorative, not a second label.
+            alt=""
+            loading="lazy"
+            className={cn('absolute inset-0 w-full h-full object-cover', !imageLoaded && 'invisible')}
+            onLoad={() => setLoadedUrl(previewImageUrl)}
             onError={() => setErroredUrl(previewImageUrl)}
           />
-        ) : (
-          <Icon className={cn(compact ? 'w-8 h-8' : 'w-12 h-12', accentColor)} aria-hidden="true" />
         )}
       </div>
       <div className="absolute top-3 right-3">

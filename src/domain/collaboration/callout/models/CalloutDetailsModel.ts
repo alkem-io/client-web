@@ -42,6 +42,7 @@ export type CalloutDetailsModel = CalloutModelLight & {
     collaboraDocument?: {
       id: string;
       documentType: string;
+      previewUrl?: string | null;
       authorization?: {
         id?: string;
         myPrivileges?: AuthorizationPrivilege[];
