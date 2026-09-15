@@ -270,9 +270,11 @@
       "status": {
         "column": "Status",
         "applicationReceived": "Antrag erhalten",
+        "applicationApproving": "Wird genehmigt…",
         "applicationApproved": "Antrag genehmigt",
         "applicationRejected": "Antrag abgelehnt",
         "invited": "Eingeladen",
+        "invitationAccepting": "Wird angenommen…",
         "invitationAccepted": "Einladung angenommen",
         "invitationRejected": "Einladung abgelehnt",
         "invitedExternal": "Eingeladen (extern)"

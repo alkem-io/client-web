@@ -278,7 +278,7 @@ const CrdPendingMembershipsDialog = () => {
   const orgInvitationResponse = useOrgInvitationResponse(() => {
     setViewingOrgInvitationId(null);
     refetch();
-  });
+  }, viewingOrgInvitation?.invitation.id);
 
   const handleInvitationCardClick = ({ id, space, invitation }: InvitationWithMeta) => {
     setOpenDialog({

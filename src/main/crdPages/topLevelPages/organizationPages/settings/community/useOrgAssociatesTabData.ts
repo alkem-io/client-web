@@ -17,6 +17,7 @@ import {
   ApplicationState,
   InvitationState,
 } from '@/domain/community/invitations/InvitationApplicationConstants';
+import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 import { ORG_ROLE_SET_MANAGE_PRIVILEGES } from '@/main/crdPages/permissions/roleAssignmentPrivileges';
 import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionReasonText';
 import { offeredRoleLabelKey } from '@/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper';
@@ -41,10 +42,27 @@ const graphQLErrorInfo = (error: unknown): { code?: string; message?: string } =
   return { code: first?.extensions?.code as string | undefined, message: first?.message };
 };
 
+// Authorization failures already surfaced their own toast (useRoleSetManagerRolesAssignment).
+const isAuthorizationCode = (code: string | undefined) =>
+  code === AlkemioGraphqlErrorCode.FORBIDDEN || code === AlkemioGraphqlErrorCode.FORBIDDEN_POLICY;
+
+/**
+ * Every mutation this tab owns renders its own failure (inline copy or one toast), so the
+ * global error link must stay quiet for them — otherwise the admin sees two messages for
+ * one refusal.
+ */
+const OWN_ERROR_HANDLING = { skipGlobalErrorHandler: true } as const;
+
+/**
+ * A transient `approving` / `accepting` row stays listed — the admin can see that the
+ * answer is being processed — with every action disabled.
+ */
 const mapApplicationState = (state: string): PendingMembershipState | null => {
   switch (state) {
     case ApplicationState.NEW:
       return 'new';
+    case ApplicationState.APPROVING:
+      return 'approving';
     case ApplicationState.APPROVED:
       return 'approved';
     case ApplicationState.REJECTED:
@@ -58,6 +76,8 @@ const mapInvitationState = (state: string): PendingMembershipState | null => {
   switch (state) {
     case InvitationState.INVITED:
       return 'invited';
+    case InvitationState.ACCEPTING:
+      return 'accepting';
     case InvitationState.ACCEPTED:
       return 'accepted';
     case InvitationState.REJECTED:
@@ -120,6 +140,7 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
   } = useRoleSetManagerRolesAssignment({
     roleSetId,
     refetchRoleSetOnMutation: false,
+    context: OWN_ERROR_HANDLING,
   });
 
   const [roleLimitError, setRoleLimitError] = useState<'limitAdmin' | 'limitOwner' | 'minOwner' | undefined>(undefined);
@@ -142,10 +163,10 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
       await refetch();
     } catch (error) {
       const { code, message } = graphQLErrorInfo(error);
-      if (code === 'ROLESET_POLICY_ROLE_LIMITS_VIOLATED') {
-        setRoleLimitError(mapRoleLimitError(message));
-      } else if (code !== 'FORBIDDEN' && code !== 'FORBIDDEN_POLICY') {
-        // Authorization failures already surfaced their own toast (useRoleSetManagerRolesAssignment).
+      const limit = code === AlkemioGraphqlErrorCode.ROLESET_POLICY_ROLE_LIMITS_VIOLATED && mapRoleLimitError(message);
+      if (limit) {
+        setRoleLimitError(limit);
+      } else if (!isAuthorizationCode(code)) {
         notify(t('org.associates.errors.generic'), 'error');
       }
       throw error;
@@ -167,8 +188,15 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
       if (row.isAssociate) await removeRoleFromUser(row.id, RoleName.Associate);
       await refetch();
       notify(t('org.associates.editor.removeSuccess', { name: row.displayName }), 'success');
-    } catch {
-      notify(t('org.associates.editor.removeError', { name: row.displayName }), 'error');
+    } catch (error) {
+      const { code, message } = graphQLErrorInfo(error);
+      const limit = code === AlkemioGraphqlErrorCode.ROLESET_POLICY_ROLE_LIMITS_VIOLATED && mapRoleLimitError(message);
+      if (limit) {
+        // Removing the last owner is refused by the role policy: say which limit, not "couldn't remove".
+        notify(t(`org.associates.errors.${limit}`), 'error');
+      } else if (!isAuthorizationCode(code)) {
+        notify(t('org.associates.editor.removeError', { name: row.displayName }), 'error');
+      }
     }
   };
 
@@ -179,7 +207,7 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
     applicationStateChange,
     deleteInvitation,
     refetch: refetchApplicationsAndInvitations,
-  } = useRoleSetApplicationsAndInvitations({ roleSetId });
+  } = useRoleSetApplicationsAndInvitations({ roleSetId, mutationContext: OWN_ERROR_HANDLING });
 
   const applicationRows: PendingMembership[] = applications
     .map<PendingMembership | null>(app => {
@@ -225,8 +253,9 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
         // someone who declined is to remove the declined invitation and invite again —
         // which re-runs the opt-out, the role-cap check and the notification. Gating
         // removal on `INVITED` alone left a declined user permanently un-invitable,
-        // with no action anywhere in the product to clear the row.
-        canDelete: true,
+        // with no action anywhere in the product to clear the row. The one
+        // exception is the transient 'accepting' row, whose answer is in flight.
+        canDelete: state !== 'accepting',
         offeredRoleLabel: t(`org.associates.pending.offeredRole.${offeredRoleLabelKey(inv.extraRoles)}`),
       };
     })
@@ -235,7 +264,9 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
   const pendingMemberships: PendingMembership[] = [...applicationRows, ...invitationRows];
 
   const onPendingApprove = (id: string) => {
-    void applicationStateChange(id, ApplicationEvent.APPROVE).then(() => refetchApplicationsAndInvitations());
+    void applicationStateChange(id, ApplicationEvent.APPROVE)
+      .then(() => refetchApplicationsAndInvitations())
+      .catch(() => notify(t('org.associates.pending.actionError'), 'error'));
   };
   const nameOfPendingRow = (id: string) => pendingMemberships.find(m => m.id === id)?.displayName ?? '';
 

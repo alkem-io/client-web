@@ -5674,14 +5674,14 @@ export type DeletePlatformInvitationMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.DeletePlatformInvitationMutationVariables
 >;
 export const CommunityApplicationsInvitationsDocument = gql`
-    query CommunityApplicationsInvitations($roleSetId: UUID!) {
+    query CommunityApplicationsInvitations($roleSetId: UUID!, $includeApplications: Boolean = true) {
   lookup {
     roleSet(ID: $roleSetId) {
       id
       authorization {
         myPrivileges
       }
-      applications {
+      applications @include(if: $includeApplications) {
         ...AdminCommunityApplication
       }
       invitations {
@@ -5710,6 +5710,7 @@ ${AdminPlatformInvitationCommunityFragmentDoc}`;
  * const { data, loading, error } = useCommunityApplicationsInvitationsQuery({
  *   variables: {
  *      roleSetId: // value for 'roleSetId'
+ *      includeApplications: // value for 'includeApplications'
  *   },
  * });
  */

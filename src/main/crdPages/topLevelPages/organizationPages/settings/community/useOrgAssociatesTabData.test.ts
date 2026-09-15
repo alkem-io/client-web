@@ -19,21 +19,34 @@ vi.mock('@/main/crdPages/permissions/usePermissionReasonText', () => ({ default:
 vi.mock('@/domain/access/permissions/useActionPermission', () => ({
   default: () => ({ allowed: true, reason: undefined }),
 }));
+const useRoleSetManagerRolesAssignmentMock = vi.fn((_params: unknown) => ({
+  assignRoleToUser,
+  removeRoleFromUser,
+  loading: false,
+}));
 vi.mock('@/domain/access/RoleSetManager/RolesAssignment/useRoleSetManagerRolesAssignment', () => ({
-  default: () => ({ assignRoleToUser, removeRoleFromUser, loading: false }),
+  default: (params: unknown) => useRoleSetManagerRolesAssignmentMock(params),
 }));
 
 let applications: unknown[] = [];
 let invitations: unknown[] = [];
-vi.mock('@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations', () => ({
-  default: () => ({
-    applications,
-    invitations,
-    applicationStateChange,
-    deleteInvitation,
-    refetch: refetchApplicationsAndInvitations,
-  }),
+const useRoleSetApplicationsAndInvitationsMock = vi.fn((_params: unknown) => ({
+  applications,
+  invitations,
+  applicationStateChange,
+  deleteInvitation,
+  refetch: refetchApplicationsAndInvitations,
 }));
+vi.mock('@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations', () => ({
+  default: (params: unknown) => useRoleSetApplicationsAndInvitationsMock(params),
+}));
+
+const roleLimitError = (message: string) =>
+  new ApolloError({
+    graphQLErrors: [{ message, extensions: { code: 'ROLESET_POLICY_ROLE_LIMITS_VIOLATED' } } as never],
+  });
+const forbiddenError = () =>
+  new ApolloError({ graphQLErrors: [{ message: 'Forbidden', extensions: { code: 'FORBIDDEN' } } as never] });
 
 const associateRow = {
   role: RoleName.Associate,
@@ -104,18 +117,15 @@ describe('useOrgAssociatesTabData — removing every role (the R-13 mitigation)'
 });
 
 describe('useOrgAssociatesTabData — role-limit refusals are readable, not generic', () => {
+  // The exact server text (role.set.service.ts): the role token is the enum VALUE, lower-case.
   it.each([
-    ["Max limit of 6 reached for role 'ADMIN'", 'limitAdmin'],
-    ["Max limit of 3 reached for role 'OWNER'", 'limitOwner'],
-    ["Min limit of 1 reached for role 'OWNER'", 'minOwner'],
+    ["Max limit of users reached for role 'admin': 6, cannot assign new user.", 'limitAdmin'],
+    ["Max limit of users reached for role 'owner': 3, cannot assign new user.", 'limitOwner'],
+    ["Min limit of users reached for role 'owner': 1, cannot remove user.", 'minOwner'],
   ])('maps %s to %s and raises no generic toast', async (message, expected) => {
     // A real ApolloError: the hook narrows on `instanceof`, so a shaped plain
     // object would take the generic-toast path and pass a weaker assertion.
-    removeRoleFromUser.mockRejectedValueOnce(
-      new ApolloError({
-        graphQLErrors: [{ message, extensions: { code: 'ROLESET_POLICY_ROLE_LIMITS_VIOLATED' } } as never],
-      })
-    );
+    removeRoleFromUser.mockRejectedValueOnce(roleLimitError(message));
     const { result } = render();
 
     await act(async () => {
@@ -124,6 +134,117 @@ describe('useOrgAssociatesTabData — role-limit refusals are readable, not gene
 
     await waitFor(() => expect(result.current.roleLimitError).toBe(expected));
     expect(notify).not.toHaveBeenCalled();
+  });
+
+  it('says which limit was hit when removing the last owner from the organisation is refused', async () => {
+    usersInRoles = [ownerRow];
+    removeRoleFromUser.mockRejectedValueOnce(
+      roleLimitError("Min limit of users reached for role 'owner': 1, cannot remove user.")
+    );
+    const { result } = render();
+
+    act(() => result.current.onRequestRemoveAll('u-1', 'Ada Lovelace'));
+    await act(async () => {
+      await result.current.onConfirm();
+    });
+
+    expect(notify).toHaveBeenCalledTimes(1);
+    expect(notify).toHaveBeenCalledWith('org.associates.errors.minOwner', 'error');
+  });
+
+  it('still reports an unrelated remove failure generically, once', async () => {
+    usersInRoles = [ownerRow];
+    removeRoleFromUser.mockRejectedValueOnce(new Error('nope'));
+    const { result } = render();
+
+    act(() => result.current.onRequestRemoveAll('u-1', 'Ada Lovelace'));
+    await act(async () => {
+      await result.current.onConfirm();
+    });
+
+    expect(notify).toHaveBeenCalledTimes(1);
+    expect(notify).toHaveBeenCalledWith('org.associates.editor.removeError', 'error');
+  });
+});
+
+describe('useOrgAssociatesTabData — exactly one message per failure', () => {
+  it('owns the error handling of every mutation it runs, so the global link stays quiet', () => {
+    render();
+
+    expect(useRoleSetManagerRolesAssignmentMock).toHaveBeenCalledWith(
+      expect.objectContaining({ roleSetId: 'rs-1', context: { skipGlobalErrorHandler: true } })
+    );
+    expect(useRoleSetApplicationsAndInvitationsMock).toHaveBeenCalledWith(
+      expect.objectContaining({ roleSetId: 'rs-1', mutationContext: { skipGlobalErrorHandler: true } })
+    );
+  });
+
+  it('adds nothing on an authorization refusal — the role assignment wrapper already toasted', async () => {
+    usersInRoles = [ownerRow];
+    removeRoleFromUser.mockRejectedValueOnce(forbiddenError()).mockRejectedValueOnce(forbiddenError());
+    const { result } = render();
+
+    await act(async () => {
+      await result.current.onToggleRole('u-1', 'Owner', false).catch(() => undefined);
+    });
+    act(() => result.current.onRequestRemoveAll('u-1', 'Ada Lovelace'));
+    await act(async () => {
+      await result.current.onConfirm();
+    });
+
+    expect(removeRoleFromUser).toHaveBeenCalledTimes(2);
+    expect(notify).not.toHaveBeenCalled();
+  });
+
+  it('toasts once when approving an application fails', async () => {
+    applications = [
+      {
+        id: 'app-1',
+        state: 'new',
+        createdDate: '2026-09-01T00:00:00.000Z',
+        contributorType: 'USER',
+        actor: { profile: { displayName: 'Grace Hopper' } },
+      },
+    ];
+    applicationStateChange.mockRejectedValueOnce(new Error('nope'));
+    const { result } = render();
+
+    await act(async () => {
+      result.current.onPendingApprove('app-1');
+    });
+
+    await waitFor(() => expect(notify).toHaveBeenCalledTimes(1));
+    expect(notify).toHaveBeenCalledWith('org.associates.pending.actionError', 'error');
+  });
+});
+
+describe('useOrgAssociatesTabData — transient rows stay listed with actions disabled', () => {
+  it('lists an approving application and an accepting invitation without any action', () => {
+    applications = [
+      {
+        id: 'app-approving',
+        state: 'approving',
+        createdDate: '2026-09-01T00:00:00.000Z',
+        contributorType: 'USER',
+        actor: { profile: { displayName: 'Grace Hopper' } },
+      },
+    ];
+    invitations = [
+      {
+        id: 'inv-accepting',
+        state: 'accepting',
+        createdDate: '2026-09-01T00:00:00.000Z',
+        contributorType: 'USER',
+        extraRoles: [],
+        actor: { profile: { displayName: 'Alan Turing' } },
+      },
+    ];
+    const { result } = render();
+
+    const approving = result.current.pendingMemberships.find(m => m.id === 'app-approving');
+    expect(approving).toMatchObject({ state: 'approving', canApprove: false, canReject: false, canDelete: false });
+    const accepting = result.current.pendingMemberships.find(m => m.id === 'inv-accepting');
+    expect(accepting).toMatchObject({ state: 'accepting', canApprove: false, canReject: false, canDelete: false });
   });
 });
 

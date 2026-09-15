@@ -33,24 +33,35 @@ describe('mapUsersInRolesToAssociateRows (062, T005)', () => {
 });
 
 describe('mapRoleLimitError (062, T005)', () => {
+  // The exact server text: `${actorType}s` / `'${roleType}'` interpolate the enum VALUES,
+  // so the role token arrives lower-case.
   it('maps the Admin max-limit message', () => {
-    expect(mapRoleLimitError("Max limit of Users reached for role 'ADMIN': 6, cannot assign new Users.")).toBe(
+    expect(mapRoleLimitError("Max limit of users reached for role 'admin': 6, cannot assign new user.")).toBe(
       'limitAdmin'
     );
   });
 
   it('maps the Owner max-limit message', () => {
-    expect(mapRoleLimitError("Max limit of Users reached for role 'OWNER': 3, cannot assign new Users.")).toBe(
+    expect(mapRoleLimitError("Max limit of users reached for role 'owner': 3, cannot assign new user.")).toBe(
       'limitOwner'
     );
   });
 
   it('maps the Owner min-limit message', () => {
-    expect(mapRoleLimitError("Min limit of Users reached for role 'OWNER': 1, cannot remove Users.")).toBe('minOwner');
+    expect(mapRoleLimitError("Min limit of users reached for role 'owner': 1, cannot remove user.")).toBe('minOwner');
   });
 
-  it('returns undefined for an unrelated message', () => {
+  it('does not depend on the role token being upper-case', () => {
+    expect(mapRoleLimitError("Max limit of Users reached for role 'ADMIN': 6, cannot assign new Users.")).toBe(
+      'limitAdmin'
+    );
+    expect(mapRoleLimitError("Min limit of Users reached for role 'Owner': 1, cannot remove Users.")).toBe('minOwner');
+  });
+
+  it('returns undefined for an unrelated message or an unknown role', () => {
     expect(mapRoleLimitError('Some other server error')).toBeUndefined();
+    expect(mapRoleLimitError("Min limit of users reached for role 'admin': 1, cannot remove user.")).toBeUndefined();
+    expect(mapRoleLimitError("Max limit of users reached for role 'lead': 2, cannot assign new user.")).toBeUndefined();
     expect(mapRoleLimitError(undefined)).toBeUndefined();
   });
 });

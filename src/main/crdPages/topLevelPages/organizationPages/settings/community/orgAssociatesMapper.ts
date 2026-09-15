@@ -78,17 +78,23 @@ export const mapUsersInRolesToAssociateRows = (
 export type RoleLimitErrorKind = 'limitAdmin' | 'limitOwner' | 'minOwner';
 
 /**
- * Maps a `RoleSetPolicyRoleLimitsException` message (server text, `role.set.service.ts`:
- * `Max limit of Users reached for role 'ADMIN': 6, cannot assign new Users.` /
- * `Min limit of Users reached for role 'OWNER': 1, cannot remove Users.`) to the readable
- * copy key naming the limit — never a generic failure toast (FR-019).
+ * The server's `RoleSetPolicyRoleLimitsException` text (`role.set.service.ts`), e.g.
+ * `Max limit of users reached for role 'admin': 6, cannot assign new user.` /
+ * `Min limit of users reached for role 'owner': 1, cannot remove user.`. The role token is
+ * the enum VALUE (lower-case), so it is matched case-insensitively — an upper-case variant
+ * would silently fall through to a generic failure otherwise.
  */
+const ROLE_LIMIT_MESSAGE = /\b(Max|Min) limit\b.*?\brole '([\w-]+)'/i;
+
+/** Maps a role-limit refusal to the readable copy key naming the limit, never a generic failure. */
 export const mapRoleLimitError = (message: string | undefined): RoleLimitErrorKind | undefined => {
   if (!message) return undefined;
-  const isMax = message.includes('Max limit');
-  const isMin = message.includes('Min limit');
-  if (isMax && message.includes("'ADMIN'")) return 'limitAdmin';
-  if (isMax && message.includes("'OWNER'")) return 'limitOwner';
-  if (isMin && message.includes("'OWNER'")) return 'minOwner';
+  const match = ROLE_LIMIT_MESSAGE.exec(message);
+  if (!match) return undefined;
+  const bound = match[1].toLowerCase();
+  const role = match[2].toLowerCase();
+  if (bound === 'max' && role === 'admin') return 'limitAdmin';
+  if (bound === 'max' && role === 'owner') return 'limitOwner';
+  if (bound === 'min' && role === 'owner') return 'minOwner';
   return undefined;
 };

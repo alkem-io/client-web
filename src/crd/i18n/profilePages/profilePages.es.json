@@ -125,6 +125,8 @@
       "messageOptional": "Cuéntale a la organización por qué te gustaría asociarte — opcional.",
       "submit": "Enviar solicitud",
       "submitted": "Solicitud enviada",
+      "submittedBody": "Tu solicitud para asociarte con {{organizationName}} ha sido enviada.",
+      "submittedReview": "Los administradores de la organización la revisarán. Cuando se apruebe, recibirás una notificación <bell/> y figurarás como asociado.",
       "error": "No se pudo enviar — inténtalo de nuevo"
     },
     "invitationDialog": {

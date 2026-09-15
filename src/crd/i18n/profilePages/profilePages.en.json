@@ -125,6 +125,8 @@
       "messageOptional": "Tell the organisation why you'd like to associate — optional.",
       "submit": "Submit application",
       "submitted": "Application submitted",
+      "submittedBody": "Your application to associate with {{organizationName}} has been submitted.",
+      "submittedReview": "The organisation's admins will review it. Once it is approved you will get a notification <bell/> and be listed as an associate.",
       "error": "Couldn't submit — try again"
     },
     "invitationDialog": {

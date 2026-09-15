@@ -11,7 +11,14 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/toolti
 
 export type PendingMembershipType = 'application' | 'invitation' | 'platformInvitation';
 export type PendingMembershipContributorType = 'user' | 'organization' | 'virtualContributor';
-export type PendingMembershipState = 'new' | 'approved' | 'rejected' | 'invited' | 'accepted';
+export type PendingMembershipState =
+  | 'new'
+  | 'approving'
+  | 'approved'
+  | 'rejected'
+  | 'invited'
+  | 'accepting'
+  | 'accepted';
 
 export type PendingMembership = {
   id: string;
@@ -75,6 +82,16 @@ const ALL_STATUS_IDS: StatusId[] = [
 const DEFAULT_HIDDEN_STATUSES: StatusId[] = ['applicationApproved', 'applicationRejected'];
 const DEFAULT_ACTIVE_STATUSES: StatusId[] = ALL_STATUS_IDS.filter(id => !DEFAULT_HIDDEN_STATUSES.includes(id));
 
+/**
+ * The server is still processing the answer (`approving` / `accepting`): the row stays
+ * listed so the admin sees it is in flight, but nothing can act on it yet.
+ */
+const isTransient = (state: PendingMembershipState) => state === 'approving' || state === 'accepting';
+
+/**
+ * Filter-chip grouping. A transient row files under the chip it is leaving
+ * (received / invited) — it is still pending until the server has finished.
+ */
 function statusId(type: PendingMembershipType, state: PendingMembershipState): StatusId {
   if (type === 'application') {
     if (state === 'approved') return 'applicationApproved';
@@ -124,6 +141,12 @@ export function PendingMembershipsTable({
   const [page, setPage] = useState(1);
 
   const statusLabel = (id: StatusId) => t(`community.pendingMemberships.status.${id}`);
+  const rowStatusLabel = (row: PendingMembership) =>
+    row.state === 'approving'
+      ? t('community.pendingMemberships.status.applicationApproving')
+      : row.state === 'accepting'
+        ? t('community.pendingMemberships.status.invitationAccepting')
+        : statusLabel(statusId(row.type, row.state));
   const typeLabel = (row: PendingMembership) =>
     t(`community.pendingMemberships.contributorType.${row.contributorType}`);
 
@@ -164,10 +187,7 @@ export function PendingMembershipsTable({
         return (ta - tb) * dir;
       }
       case 'status':
-        return (
-          statusLabel(statusId(a.type, a.state)).localeCompare(statusLabel(statusId(b.type, b.state)), i18n.language) *
-          dir
-        );
+        return rowStatusLabel(a).localeCompare(rowStatusLabel(b), i18n.language) * dir;
       case 'type':
         return typeLabel(a).localeCompare(typeLabel(b), i18n.language) * dir;
       default:
@@ -279,7 +299,7 @@ export function PendingMembershipsTable({
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline" className={cn('text-badge', statusVariantClass(id))}>
-                      {statusLabel(id)}
+                      {rowStatusLabel(row)}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-body-emphasis">{typeLabel(row)}</TableCell>
@@ -319,6 +339,7 @@ export function PendingMembershipsTable({
                             variant="ghost"
                             size="icon"
                             className="size-8"
+                            disabled={isTransient(row.state)}
                             onClick={() => onView(row.id)}
                             aria-label={
                               row.type === 'application'

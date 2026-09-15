@@ -125,6 +125,8 @@
       "messageOptional": "Vertel de organisatie waarom je je wilt associëren — optioneel.",
       "submit": "Aanvraag indienen",
       "submitted": "Aanvraag ingediend",
+      "submittedBody": "Je aanvraag om te associëren met {{organizationName}} is ingediend.",
+      "submittedReview": "De beheerders van de organisatie beoordelen deze. Zodra deze is goedgekeurd, krijg je een melding <bell/> en word je vermeld als geassocieerde.",
       "error": "Verzenden mislukt — probeer opnieuw"
     },
     "invitationDialog": {

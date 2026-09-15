@@ -125,6 +125,8 @@
       "messageOptional": "Sag der Organisation, warum du dich anschließen möchtest – optional.",
       "submit": "Bewerbung einreichen",
       "submitted": "Bewerbung eingereicht",
+      "submittedBody": "Deine Bewerbung um Assoziierung mit {{organizationName}} wurde eingereicht.",
+      "submittedReview": "Die Admins der Organisation prüfen sie. Sobald sie genehmigt ist, erhältst du eine Benachrichtigung <bell/> und wirst als Assoziierter geführt.",
       "error": "Senden fehlgeschlagen – bitte erneut versuchen"
     },
     "invitationDialog": {

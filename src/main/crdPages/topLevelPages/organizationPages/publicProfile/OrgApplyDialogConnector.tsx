@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useApplyForEntryRoleOnRoleSetMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
@@ -8,7 +8,10 @@ import {
   ApplicationFormDialog,
   type ApplicationQuestion,
 } from '@/crd/components/community/ApplicationFormDialog';
-import { ApplicationSubmittedDialog } from '@/crd/components/community/ApplicationSubmittedDialog';
+import {
+  ApplicationSubmittedBellIcon,
+  ApplicationSubmittedDialog,
+} from '@/crd/components/community/ApplicationSubmittedDialog';
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 
 export type OrgApplyDialogConnectorProps = {
@@ -28,13 +31,13 @@ const graphQLErrorCode = (error: unknown): string | undefined =>
   error instanceof ApolloError ? (error.graphQLErrors[0]?.extensions?.code as string | undefined) : undefined;
 
 /**
- * Wires the shared `ApplicationFormDialog` to the organization apply mutation.
- * The organization's seeded application form has exactly one, optional question
- * (D13/FR-011), rendered with no form description (the product email: "skip the
- * full application form"). The form's own question text is used verbatim: the
- * dialog persists the question text as the answer's name, so admins reviewing
- * the application (and the seeded-form migration) rely on it being the form's
- * question rather than a viewer-locale label. The local optional-message
+ * Wires the shared `ApplicationFormDialog` to the organization apply mutation, with
+ * organization wording throughout ("associate", never "member"/"community"). The
+ * organization's seeded application form has exactly one, optional question, rendered
+ * as an optional-message field: the cue the user reads is the organization copy, while
+ * the form's own question text is still what gets persisted as the answer's name, so
+ * admins reviewing the application see the form's question rather than a viewer-locale
+ * label. A form with several questions is rendered verbatim; the local optional-message
  * question is only a fallback for a role set with no form questions.
  */
 export function OrgApplyDialogConnector({
@@ -53,10 +56,13 @@ export function OrgApplyDialogConnector({
     maxLength: q.maxLength,
     sortOrder: q.sortOrder ?? 0,
   }));
+  const messageLabel = t('orgProfile.applyDialog.messageLabel');
   const questions: ApplicationQuestion[] =
-    formQuestions.length > 0
-      ? formQuestions
-      : [{ question: t('orgProfile.applyDialog.messageLabel'), required: false, maxLength: 512 }];
+    formQuestions.length === 1
+      ? [{ ...formQuestions[0], label: messageLabel }]
+      : formQuestions.length > 1
+        ? formQuestions
+        : [{ question: messageLabel, required: false, maxLength: 512 }];
   const [submitted, setSubmitted] = useState(false);
   const [runApply, { loading: submitting }] = useApplyForEntryRoleOnRoleSetMutation();
 
@@ -67,6 +73,8 @@ export function OrgApplyDialogConnector({
           roleSetId,
           questions: answers.map(a => ({ name: a.name, value: a.value, sortOrder: a.sortOrder })),
         },
+        // The failure is reported right below; the global error link must not add a second toast.
+        context: { skipGlobalErrorHandler: true },
       });
       setSubmitted(true);
       onSubmitted();
@@ -87,7 +95,24 @@ export function OrgApplyDialogConnector({
   };
 
   if (submitted) {
-    return <ApplicationSubmittedDialog open={open} onOpenChange={handleClose} communityName={organizationName} />;
+    return (
+      <ApplicationSubmittedDialog
+        open={open}
+        onOpenChange={handleClose}
+        communityName={organizationName}
+        copy={{
+          title: t('orgProfile.applyDialog.submitted'),
+          body: t('orgProfile.applyDialog.submittedBody', { organizationName }),
+          review: (
+            <Trans
+              t={t}
+              i18nKey="orgProfile.applyDialog.submittedReview"
+              components={{ bell: <ApplicationSubmittedBellIcon /> }}
+            />
+          ),
+        }}
+      />
+    );
   }
 
   return (
@@ -99,6 +124,11 @@ export function OrgApplyDialogConnector({
       mode="apply"
       submitting={submitting}
       onSubmit={handleSubmit}
+      copy={{
+        title: t('orgProfile.applyDialog.title', { organizationName }),
+        subheader: t('orgProfile.applyDialog.messageOptional'),
+        submitLabel: t('orgProfile.applyDialog.submit'),
+      }}
     />
   );
 }

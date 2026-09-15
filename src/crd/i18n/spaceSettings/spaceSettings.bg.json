@@ -270,9 +270,11 @@
       "status": {
         "column": "Статус",
         "applicationReceived": "Получена кандидатура",
+        "applicationApproving": "Одобрява се…",
         "applicationApproved": "Одобрена кандидатура",
         "applicationRejected": "Отхвърлена кандидатура",
         "invited": "Поканен",
+        "invitationAccepting": "Приема се…",
         "invitationAccepted": "Поканата е приета",
         "invitationRejected": "Поканата е отхвърлена",
         "invitedExternal": "Поканен (външен)"

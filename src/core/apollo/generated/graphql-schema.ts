@@ -12065,6 +12065,7 @@ export type DeletePlatformInvitationMutation = {
 
 export type CommunityApplicationsInvitationsQueryVariables = Exact<{
   roleSetId: Scalars['UUID']['input'];
+  includeApplications?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 export type CommunityApplicationsInvitationsQuery = {
@@ -12078,7 +12079,7 @@ export type CommunityApplicationsInvitationsQuery = {
           authorization?:
             | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
-          applications: Array<{
+          applications?: Array<{
             __typename?: 'Application';
             id: string;
             createdDate: Date;

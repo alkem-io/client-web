@@ -64,7 +64,7 @@ export const CrdOrganizationProfilePage = () => {
   const invitationResponse = useOrgInvitationResponse(() => {
     setInvitationDialogOpen(false);
     refreshOrganization();
-  });
+  }, associateAction.pendingInvitation?.invitation.id);
 
   const { activeTab, onSelectTab } = useResourceTabs('memberOf');
 

@@ -270,9 +270,11 @@
       "status": {
         "column": "Status",
         "applicationReceived": "Application received",
+        "applicationApproving": "Approving…",
         "applicationApproved": "Application approved",
         "applicationRejected": "Application rejected",
         "invited": "Invited",
+        "invitationAccepting": "Accepting…",
         "invitationAccepted": "Invitation accepted",
         "invitationRejected": "Invitation rejected",
         "invitedExternal": "Invited (external)"

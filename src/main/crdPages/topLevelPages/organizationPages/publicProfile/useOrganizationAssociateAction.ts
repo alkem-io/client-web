@@ -104,7 +104,8 @@ export const useOrganizationAssociateAction = ({
   const onJoin = async () => {
     if (!roleSetId) return;
     try {
-      await runJoin({ variables: { roleSetId } });
+      // The failure is reported right below; the global error link must not add a second toast.
+      await runJoin({ variables: { roleSetId }, context: { skipGlobalErrorHandler: true } });
       onJoined();
     } catch (error) {
       const code = graphQLErrorCode(error);

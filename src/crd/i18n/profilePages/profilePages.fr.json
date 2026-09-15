@@ -125,6 +125,8 @@
       "messageOptional": "Expliquez à l’organisation pourquoi vous souhaitez vous associer — facultatif.",
       "submit": "Envoyer la candidature",
       "submitted": "Candidature envoyée",
+      "submittedBody": "Votre candidature pour vous associer à {{organizationName}} a été envoyée.",
+      "submittedReview": "Les administrateurs de l’organisation l’examineront. Une fois approuvée, vous recevrez une notification <bell/> et figurerez comme associé.",
       "error": "Échec de l'envoi — réessayez"
     },
     "invitationDialog": {
