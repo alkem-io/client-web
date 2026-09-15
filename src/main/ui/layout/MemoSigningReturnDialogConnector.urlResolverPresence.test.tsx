@@ -151,6 +151,27 @@ describe('MemoSigningReturnDialogConnector URL-resolver presence', () => {
     expect(state.attemptQuery).toHaveBeenCalledWith(expect.objectContaining({ skip: false }));
   });
 
+  it('self-settles when the actual provider deliberately skips the user profile route', async () => {
+    globalThis.history.replaceState(null, '', '/user/me?signingAttemptId=attempt-1');
+
+    render(
+      <BrowserRouter>
+        <UrlResolverProvider>
+          <MemoSigningReturnProvider>
+            <ResolverState />
+            <MemoSigningReturnDialogConnector />
+          </MemoSigningReturnProvider>
+        </UrlResolverProvider>
+      </BrowserRouter>
+    );
+
+    await waitFor(() => expect(globalThis.location.search).toBe(''));
+    expect(screen.getByTestId('resolver-state')).toHaveTextContent('true:false:true');
+    expect(await screen.findByRole('dialog', { name: 'memo signing return' })).toBeInTheDocument();
+    expect(state.urlResolverQuery).not.toHaveBeenCalledWith(expect.objectContaining({ skip: false }));
+    expect(state.attemptQuery).toHaveBeenCalledWith(expect.objectContaining({ skip: false }));
+  });
+
   it('waits while a mounted URL resolver is loading', async () => {
     renderConnector(resolverValue({ providerPresent: true, resolutionComplete: false, loading: true }));
 
@@ -173,6 +194,7 @@ describe('MemoSigningReturnDialogConnector URL-resolver presence', () => {
   });
 
   it('waits through an actual provider request and self-settles when the URL completes without a result', async () => {
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
     state.urlResolverLoading = true;
     const view = render(
       <BrowserRouter>

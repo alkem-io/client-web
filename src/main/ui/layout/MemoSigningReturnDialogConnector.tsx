@@ -191,9 +191,7 @@ export function MemoSigningReturnDialogConnector() {
     ? returnAttempt.loading
       ? 'checking'
       : returnAttempt.error
-        ? returnAttempt.error.networkError
-          ? 'return-error'
-          : undefined
+        ? 'return-error'
         : returnAttempt.data?.signingAttempt && !returnedAttemptMatches
           ? undefined
           : !returnAttempt.data?.signingAttempt

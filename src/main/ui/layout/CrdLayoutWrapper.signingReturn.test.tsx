@@ -18,7 +18,7 @@ import { CrdLayoutWrapper } from './CrdLayoutWrapper';
 const state = vi.hoisted(() => ({
   authLoading: false,
   userId: 'user-1',
-  attemptError: undefined as { networkError?: Error } | undefined,
+  attemptError: undefined as { networkError?: Error; graphQLErrors?: readonly Error[] } | undefined,
   attemptLoading: false,
   attemptStatus: 'SIGNED' as SigningAttemptStatus,
   attemptResponseId: undefined as string | undefined,
@@ -609,7 +609,7 @@ describe('CrdLayoutWrapper memo-signing return lifecycle', () => {
     expect(removeItem).toHaveBeenCalledTimes(1);
   });
 
-  it('does not reveal or restore an invalid or non-owned attempt', async () => {
+  it('shows a non-specific error without revealing or restoring an invalid or non-owned attempt', async () => {
     state.attemptError = {};
     storeContext('framing');
     globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
@@ -617,7 +617,9 @@ describe('CrdLayoutWrapper memo-signing return lifecycle', () => {
     renderRoute();
 
     await waitFor(() => expect(globalThis.location.search).toBe(''));
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(await screen.findByText('memo.signing.stage.return-error')).toBeInTheDocument();
+    expect(screen.queryByText('memo.signing.savedTitle')).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /signed pdf/i })).not.toBeInTheDocument();
     expect(screen.queryByTestId('framing-memo-editor')).not.toBeInTheDocument();
     expect(window.sessionStorage.getItem(returnStorageKey('attempt-1'))).toBeNull();
   });
@@ -732,6 +734,21 @@ describe('CrdLayoutWrapper memo-signing return lifecycle', () => {
     renderRoute();
 
     expect(await screen.findByText('memo.signing.stage.return-error')).toBeInTheDocument();
+  });
+
+  it('shows a non-specific error without restoring or disclosing data for a GraphQL failure', async () => {
+    state.attemptError = { graphQLErrors: [new Error('attempt is not available')] };
+    storeContext('framing');
+    globalThis.history.replaceState(null, '', '/space/collaboration/callout-1?signingAttemptId=attempt-1');
+
+    renderRoute();
+
+    await waitFor(() => expect(globalThis.location.search).toBe(''));
+    expect(await screen.findByText('memo.signing.stage.return-error')).toBeInTheDocument();
+    expect(screen.queryByText('memo.signing.savedTitle')).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /signed pdf/i })).not.toBeInTheDocument();
+    expect(screen.queryByTestId('framing-memo-editor')).not.toBeInTheDocument();
+    expect(window.sessionStorage.getItem(returnStorageKey('attempt-1'))).toBeNull();
   });
 
   it('ignores a stale attempt payload after a newer callback token was captured', async () => {
