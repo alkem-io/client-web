@@ -19,7 +19,7 @@ import type { TemplateMarkdownUploadByIntent } from '@/main/crdPages/templates/u
 import { useTemplatesManager } from '@/main/crdPages/templates/useTemplatesManager';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { canEditInnovationPack } from './innovationPackAccess';
+import { canEditInnovationPack, toRouterPath } from './innovationPackAccess';
 import {
   formValuesToUpdateInnovationPackInput,
   type InnovationPackBasics,
@@ -47,7 +47,7 @@ export type UseInnovationPackAdminResult = {
    * save can only fail.
    */
   denied: boolean;
-  /** The pack's public profile URL — where a denied viewer is sent. */
+  /** The pack's public profile as an in-app PATH (never the absolute `profile.url`) — where a denied viewer is sent. */
   deniedRedirectTo: string | undefined;
   innovationPackId: string | undefined;
   pack: InnovationPackBasics | undefined;
@@ -294,7 +294,7 @@ export function useInnovationPackAdmin({
   const loading = resolvingUrl || (Boolean(innovationPackId) && loadingPack);
   const notFound = !loading && Boolean(innovationPackId) && !gqlPack;
   const denied = !loading && Boolean(gqlPack) && !canEditInnovationPack(gqlPack?.authorization?.myPrivileges);
-  const deniedRedirectTo = gqlPack?.profile.url || undefined;
+  const deniedRedirectTo = gqlPack?.profile.url ? toRouterPath(gqlPack.profile.url) : undefined;
 
   return {
     loading,

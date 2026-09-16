@@ -22,3 +22,19 @@ export const canDeleteOrgResource = (myPrivileges: readonly AuthorizationPrivile
   (myPrivileges ?? []).some(
     p => p === AuthorizationPrivilege.Delete || p === AuthorizationPrivilege.PlatformContentFullAccess
   );
+
+/**
+ * `profile.url` is ABSOLUTE (`https://host/innovation-packs/slug`). react-router's
+ * `<Navigate to>` treats anything without a leading `/` as relative to the current
+ * route and appends it — which is how a denied viewer ended up on
+ * `/innovation-packs/x/settings/https://host/innovation-packs/x`. Reduce to the
+ * in-app path (path + search + hash) before handing it to the router.
+ */
+export const toRouterPath = (absoluteOrRelativeUrl: string): string => {
+  try {
+    const u = new URL(absoluteOrRelativeUrl, window.location.origin);
+    return `${u.pathname}${u.search}${u.hash}`;
+  } catch {
+    return absoluteOrRelativeUrl;
+  }
+};

@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { canDeleteOrgResource, canEditInnovationPack } from '../innovationPackAccess';
+import { canDeleteOrgResource, canEditInnovationPack, toRouterPath } from '../innovationPackAccess';
 
 /**
  * The two predicates mirror the server's dual-path gates verbatim
@@ -22,6 +22,14 @@ describe('innovationPackAccess', () => {
     expect(canEditInnovationPack([AuthorizationPrivilege.Read])).toBe(false);
     expect(canEditInnovationPack(undefined)).toBe(false);
   });
+  // Sandbox walk 2026-09-16: the redirect appended the absolute profile URL to the
+  // settings route. The router must get a path, never an absolute URL.
+  test('toRouterPath reduces an absolute profile url to its in-app path', () => {
+    expect(toRouterPath('https://sandbox-alkem.io/innovation-packs/templ1')).toBe('/innovation-packs/templ1');
+    expect(toRouterPath('https://x.io/a/b?tab=1#h')).toBe('/a/b?tab=1#h');
+    expect(toRouterPath('/already/a/path')).toBe('/already/a/path');
+  });
+
   test('delete: owner (Delete) or Content Full Access, never Support', () => {
     expect(canDeleteOrgResource([AuthorizationPrivilege.Delete])).toBe(true);
     expect(canDeleteOrgResource([AuthorizationPrivilege.PlatformContentFullAccess])).toBe(true);
