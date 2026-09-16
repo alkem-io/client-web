@@ -359,13 +359,15 @@
         "CHALLENGE_CENTRIC": "Défi de travail centré",
         "COMMUNITY_BUILDING": "$t(common.Community) Building",
         "GENERAL": "Général",
-        "HELP": "Besoin d'aide ?",
+        "HELP": "Q&A",
         "IDEAS": "Idées",
+        "NEWSLETTER": "Newsletter",
         "OTHER": "Autre",
         "PLATFORM_FUNCTIONALITIES": "Fonctionnalités de la plateforme",
         "QUESTIONS": "Questions",
         "RELEASES": "Sortis",
-        "SHARING": "Partager"
+        "SHARING": "Partager",
+        "TIPS_AND_TRICKS": "Astuces & Conseils"
       },
       "edit-mode": {
         "edit": "Éditer",
@@ -660,6 +662,7 @@
           "title": "Pending $t(common.virtualContributor) $t(common.membership): {{space}}"
         }
       },
+      "organization": "votre organisation",
       "vc": "your $t(common.virtualContributor)",
       "you": "vous"
     }
@@ -890,8 +893,71 @@
         "VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION": {
           "description": "",
           "subject": "{{triggeredByName}} has invited {{contributorName}} to {{spaceName}}, of which you're an $t(common.admin)"
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION": {
+          "subject": "Votre $t(common.organization) {{organizationName}} a été invitée à rejoindre {{spaceName}}",
+          "description": "En tant que {{invitationRole}}.{{spacesToJoin}}"
+        },
+        "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{organizationName}} a accepté l’invitation à rejoindre {{spaceName}}",
+          "description": "{{organizationName}} a rejoint {{spaceName}}, dont vous êtes $t(common.admin)."
+        },
+        "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{organizationName}} a refusé l’invitation à rejoindre {{spaceName}}",
+          "description": ""
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{userName}} a accepté l’invitation à rejoindre {{spaceName}}",
+          "description": "{{userName}} a rejoint {{spaceName}}, dont vous êtes $t(common.admin)."
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{userName}} a refusé l’invitation à rejoindre {{spaceName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
+          "subject": "Votre $t(common.organization) {{organizationName}} a rejoint {{spaceName}}",
+          "description": "Aucune action supplémentaire n'est requise."
+        },
+        "USER_ORGANIZATION_ASSOCIATE_INVITATION": {
+          "subject": "{{triggeredByName}} vous a invité(e) à vous associer à {{organizationName}}",
+          "description": "En tant que {{associateRole}}."
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED": {
+          "subject": "{{triggeredByName}} a accepté l’invitation à s’associer à {{organizationName}}",
+          "description": "{{triggeredByName}} est désormais associé(e) de {{organizationName}}, dont vous êtes $t(common.admin).{{withheld}}"
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} a refusé l’invitation à s’associer à {{organizationName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_APPLICATION": {
+          "subject": "{{triggeredByName}} a postulé pour s’associer à {{organizationName}}",
+          "description": "Examinez la candidature dans les paramètres de l’organisation"
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_APPROVED": {
+          "subject": "Votre candidature pour vous associer à {{organizationName}} a été approuvée",
+          "description": ""
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_DECLINED": {
+          "subject": "Votre candidature pour vous associer à {{organizationName}} a été refusée",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
+          "subject": "« {{memberName}} » a rejoint {{organizationName}} en tant qu’associé",
+          "description": "{{memberName}} a rejoint {{organizationName}}, dont vous êtes $t(common.admin)."
         }
-      }
+      },
+      "spacesToJoin": "L'acceptation entraîne l'adhésion à : {{spaces}}",
+      "associateRole": {
+        "associate": "Associé",
+        "associateAdmin": "Associé + Admin",
+        "associateOwner": "Associé + Propriétaire"
+      },
+      "withheldRole": {
+        "admin": "Admin",
+        "owner": "Propriétaire"
+      },
+      "associateRoleWithheld": " Le rôle {{role}} n’a pas pu être accordé."
     },
     "profile": {
       "fields": {

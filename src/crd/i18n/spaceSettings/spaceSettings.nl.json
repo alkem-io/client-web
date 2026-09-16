@@ -238,6 +238,9 @@
       "email": "E-mail",
       "date": "Datum",
       "type": "Type",
+      "offeredRole": {
+        "column": "Aangeboden rol"
+      },
       "actions": "Acties",
       "approve": "Goedkeuren",
       "reject": "Afwijzen",
@@ -251,6 +254,7 @@
       "viewDialog": {
         "created": "Aangemaakt op {{date}}",
         "updated": "Bijgewerkt op {{date}}",
+        "offeredRole": "Aangeboden rol: {{role}}",
         "welcomeMessage": "Welkomstbericht",
         "noWelcomeMessage": "Geen welkomstbericht opgegeven.",
         "noAnswers": "Geen antwoorden opgegeven.",
@@ -266,9 +270,11 @@
       "status": {
         "column": "Status",
         "applicationReceived": "Aanvraag ontvangen",
+        "applicationApproving": "Wordt goedgekeurd…",
         "applicationApproved": "Aanvraag goedgekeurd",
         "applicationRejected": "Aanvraag afgewezen",
         "invited": "Uitgenodigd",
+        "invitationAccepting": "Wordt geaccepteerd…",
         "invitationAccepted": "Uitnodiging geaccepteerd",
         "invitationRejected": "Uitnodiging afgewezen",
         "invitedExternal": "Uitgenodigd (extern)"
@@ -336,7 +342,7 @@
       "actions": "Acties",
       "empty": "Geen organisaties.",
       "remove": "Organisatie verwijderen",
-      "description": "Overzicht van alle leden- en Lead-organisaties. Om een organisatie toe te voegen, neem contact op met het Alkemio-team via support@alkem.io.",
+      "description": "Overzicht van alle leden- en Lead-organisaties. Nodig een organisatie uit om deel te nemen, of voeg er direct een toe.",
       "add": "Organisatie toevoegen",
       "dropdown": {
         "viewProfile": "Profiel bekijken",
@@ -348,6 +354,18 @@
         "description": "Deze organisaties worden zichtbaar als leden in deze Space en op hun organisatieprofiel.",
         "search": "Organisaties zoeken…",
         "empty": "Geen organisaties komen overeen met je zoekopdracht."
+      },
+      "invite": "Organisatie uitnodigen",
+      "search": "Organisaties zoeken…",
+      "pendingInvitations": {
+        "title": "Openstaande uitnodigingen",
+        "empty": "Geen openstaande organisatie-uitnodigingen.",
+        "role": "Rol",
+        "date": "Datum",
+        "revoke": "Intrekken",
+        "revokeAriaLabel": "Uitnodiging aan {{name}} intrekken",
+        "roleMember": "Lid",
+        "roleMemberLead": "Lid + Lead"
       }
     },
     "virtualContributors": {

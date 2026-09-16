@@ -66,6 +66,26 @@ fragment userSettingsFragment on UserSettings {
         inApp
         push
       }
+      adminSpaceCommunityInvitation {
+        email
+        inApp
+        push
+      }
+      adminAssociateInvitationResponse {
+        email
+        inApp
+        push
+      }
+      adminAssociateApplicationReceived {
+        email
+        inApp
+        push
+      }
+      adminAssociateJoined {
+        email
+        inApp
+        push
+      }
     }
     space {
       # Admin related notifications
@@ -81,6 +101,11 @@ fragment userSettingsFragment on UserSettings {
           push
         }
         communityNewMember {
+          email
+          inApp
+          push
+        }
+        communityInvitationResponse {
           email
           inApp
           push
@@ -161,6 +186,16 @@ fragment userSettingsFragment on UserSettings {
           push
         }
         spaceCommunityJoined {
+          email
+          inApp
+          push
+        }
+        organizationAssociateInvitationReceived {
+          email
+          inApp
+          push
+        }
+        organizationAssociateApplicationDecided {
           email
           inApp
           push

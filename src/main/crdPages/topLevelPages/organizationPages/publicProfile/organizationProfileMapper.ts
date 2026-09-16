@@ -1,9 +1,19 @@
-import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { RoleName, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import type { AssociateGridItem } from '@/crd/components/organization/OrganizationProfileSidebar';
 import {
   type AccountResourcesShape,
   mapAccountHostedResources,
 } from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
+
+/** i18n leaf under `org.associates.pending.offeredRole.*` / `pendingMemberships.orgAssociateCard.role.*`. */
+export type OfferedRoleLabelKey = 'associate' | 'associateAdmin' | 'associateOwner';
+
+/** Maps an invitation's extra roles to the offered-role label key (Associate is always implied). */
+export const offeredRoleLabelKey = (extraRoles: readonly RoleName[]): OfferedRoleLabelKey => {
+  if (extraRoles.includes(RoleName.Admin)) return 'associateAdmin';
+  if (extraRoles.includes(RoleName.Owner)) return 'associateOwner';
+  return 'associate';
+};
 
 export type AssociateInput = {
   id: string;

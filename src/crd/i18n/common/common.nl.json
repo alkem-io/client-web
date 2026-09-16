@@ -359,13 +359,15 @@
         "CHALLENGE_CENTRIC": "Opgavegericht werken",
         "COMMUNITY_BUILDING": "$t(common.Community) Building",
         "GENERAL": "Algemeen",
-        "HELP": "Hulp nodig?",
+        "HELP": "Q&A",
         "IDEAS": "Ideeën",
+        "NEWSLETTER": "Nieuwsbrief",
         "OTHER": "Overig",
         "PLATFORM_FUNCTIONALITIES": "Platform Functionaliteiten",
         "QUESTIONS": "Vragen",
         "RELEASES": "Releases",
-        "SHARING": "Delen"
+        "SHARING": "Delen",
+        "TIPS_AND_TRICKS": "Tips & Trucs"
       },
       "edit-mode": {
         "edit": "Pas aan",
@@ -660,6 +662,7 @@
           "title": "Openstaande $t(common.virtualContributor) $t(common.membership): {{space}}"
         }
       },
+      "organization": "jouw organisatie",
       "vc": "jouw $t(common.virtualContributor)",
       "you": "jij"
     }
@@ -890,8 +893,71 @@
         "VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION": {
           "description": "",
           "subject": "{{triggeredByName}} heeft {{contributorName}} uitgenodigd voor {{spaceName}}, waarvan je een $t(common.admin) bent"
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION": {
+          "subject": "Uw $t(common.organization) {{organizationName}} is uitgenodigd om lid te worden van {{spaceName}}",
+          "description": "Als {{invitationRole}}.{{spacesToJoin}}"
+        },
+        "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{organizationName}} heeft de uitnodiging om lid te worden van {{spaceName}} geaccepteerd",
+          "description": "{{organizationName}} is toegetreden tot {{spaceName}}, waarvan u $t(common.admin) bent."
+        },
+        "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{organizationName}} heeft de uitnodiging om lid te worden van {{spaceName}} afgewezen",
+          "description": ""
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{userName}} heeft de uitnodiging om lid te worden van {{spaceName}} geaccepteerd",
+          "description": "{{userName}} is toegetreden tot {{spaceName}}, waarvan u $t(common.admin) bent."
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{userName}} heeft de uitnodiging om lid te worden van {{spaceName}} afgewezen",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
+          "subject": "Uw $t(common.organization) {{organizationName}} is toegetreden tot {{spaceName}}",
+          "description": "Er is geen verdere actie nodig."
+        },
+        "USER_ORGANIZATION_ASSOCIATE_INVITATION": {
+          "subject": "{{triggeredByName}} heeft je uitgenodigd om je te associëren met {{organizationName}}",
+          "description": "Als {{associateRole}}."
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED": {
+          "subject": "{{triggeredByName}} heeft de uitnodiging om zich te associëren met {{organizationName}} geaccepteerd",
+          "description": "{{triggeredByName}} is nu geassocieerde van {{organizationName}}, waarvan jij beheerder bent.{{withheld}}"
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} heeft de uitnodiging om zich te associëren met {{organizationName}} geweigerd",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_APPLICATION": {
+          "subject": "{{triggeredByName}} heeft gesolliciteerd om zich te associëren met {{organizationName}}",
+          "description": "Bekijk de aanvraag in de organisatie-instellingen"
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_APPROVED": {
+          "subject": "Je aanvraag om je te associëren met {{organizationName}} is goedgekeurd",
+          "description": ""
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_DECLINED": {
+          "subject": "Je aanvraag om je te associëren met {{organizationName}} is afgewezen",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
+          "subject": "\"{{memberName}}\" is toegetreden tot {{organizationName}} als geassocieerde",
+          "description": "{{memberName}} is toegetreden tot {{organizationName}}, waarvan jij beheerder bent."
         }
-      }
+      },
+      "spacesToJoin": "Bij accepteren wordt toegetreden tot: {{spaces}}",
+      "associateRole": {
+        "associate": "Geassocieerde",
+        "associateAdmin": "Geassocieerde + Beheerder",
+        "associateOwner": "Geassocieerde + Eigenaar"
+      },
+      "withheldRole": {
+        "admin": "Beheerder",
+        "owner": "Eigenaar"
+      },
+      "associateRoleWithheld": " De rol {{role}} kon niet worden toegekend."
     },
     "profile": {
       "fields": {

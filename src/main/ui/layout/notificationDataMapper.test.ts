@@ -2,11 +2,13 @@ import type { TFunction } from 'i18next';
 import type { ReactElement } from 'react';
 import { describe, expect, it } from 'vitest';
 import {
+  ActorType,
   CalendarEventType,
   NotificationEvent,
   NotificationEventCategory,
   NotificationEventInAppState,
   NotificationEventPayload,
+  RoleName,
 } from '@/core/apollo/generated/graphql-schema';
 import type { InAppNotificationModel } from '@/main/inAppNotifications/model/InAppNotificationModel';
 import type { InAppNotificationPayloadModel } from '@/main/inAppNotifications/model/InAppNotificationPayloadModel';
@@ -110,6 +112,177 @@ describe('resolved notification destinations', () => {
 
     expect(created).toBe('/my-space/calendar/sprint-demo');
     expect(commented).toBe('/my-space/calendar/sprint-demo');
+  });
+
+  it('sends the org-invited notification to the organization Invitations tab, not the space (061, contract §4)', () => {
+    const href = hrefOf(
+      notification(
+        NotificationEvent.OrganizationAdminSpaceCommunityInvitation,
+        {
+          type: NotificationEventPayload.SpaceCommunityInvitation,
+          space: spacePayload(),
+          organization: { id: 'org-1', profile: { displayName: 'Acme Org', url: '/organization/acme' } },
+        },
+        NotificationEventCategory.Organization
+      )
+    );
+
+    expect(href).toBe('/organization/acme/settings/invitations');
+  });
+
+  it('sends the org-accepted notification to the inviting space Community tab', () => {
+    const href = hrefOf(
+      notification(
+        NotificationEvent.SpaceAdminOrganizationCommunityInvitationAccepted,
+        {
+          type: NotificationEventPayload.SpaceCommunityActor,
+          space: spacePayload('/my-space'),
+          actor: { type: ActorType.Organization, profile: { displayName: 'Acme Org', url: '/organization/acme' } },
+        },
+        NotificationEventCategory.SpaceAdmin
+      )
+    );
+
+    expect(href).toBe('/my-space/settings/community');
+  });
+
+  it('sends the org-declined notification to the inviting space Community tab', () => {
+    const href = hrefOf(
+      notification(
+        NotificationEvent.SpaceAdminOrganizationCommunityInvitationDeclined,
+        {
+          type: NotificationEventPayload.SpaceCommunityActor,
+          space: spacePayload('/my-space'),
+          actor: { type: ActorType.Organization, profile: { displayName: 'Acme Org', url: '/organization/acme' } },
+        },
+        NotificationEventCategory.SpaceAdmin
+      )
+    );
+
+    expect(href).toBe('/my-space/settings/community');
+  });
+});
+
+describe('organization outcome notifications name the organization (061, spec-cw-5)', () => {
+  const outcomeNotification = (type: NotificationEvent) =>
+    notification(
+      type,
+      {
+        type: NotificationEventPayload.SpaceCommunityActor,
+        space: spacePayload('/my-space'),
+        actor: { type: ActorType.Organization, profile: { displayName: 'Acme Org', url: '/organization/acme' } },
+      },
+      NotificationEventCategory.SpaceAdmin
+    );
+
+  it('names the organization on the accepted notification, not just the space', () => {
+    const data = mapNotificationToItemData(
+      outcomeNotification(NotificationEvent.SpaceAdminOrganizationCommunityInvitationAccepted),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.organizationName).toBe('Acme Org');
+  });
+
+  it('names the organization on the declined notification, not just the space', () => {
+    const data = mapNotificationToItemData(
+      outcomeNotification(NotificationEvent.SpaceAdminOrganizationCommunityInvitationDeclined),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.organizationName).toBe('Acme Org');
+  });
+
+  it('does not name an organization when the actor is not one (e.g. new-member notification sharing the same payload)', () => {
+    const data = mapNotificationToItemData(
+      notification(
+        NotificationEvent.SpaceAdminCommunityNewMember,
+        {
+          type: NotificationEventPayload.SpaceCommunityActor,
+          space: spacePayload('/my-space'),
+          actor: { type: ActorType.User, profile: { displayName: 'Ada Lovelace', url: '/user/ada' } },
+        },
+        NotificationEventCategory.SpaceAdmin
+      ),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.organizationName).toBeUndefined();
+  });
+});
+
+describe('organization space-invitation translation values (061)', () => {
+  const orgInvitedNotification = (invitation: NonNullable<InAppNotificationPayloadModel['invitation']>) =>
+    notification(
+      NotificationEvent.OrganizationAdminSpaceCommunityInvitation,
+      {
+        type: NotificationEventPayload.SpaceCommunityInvitation,
+        space: spacePayload(),
+        organization: { id: 'org-1', profile: { displayName: 'Acme Org', url: '/organization/acme' } },
+        invitation,
+      },
+      NotificationEventCategory.Organization
+    );
+
+  it('resolves invitationRole to "member" (translated) when extraRoles has no Lead', () => {
+    const data = mapNotificationToItemData(
+      orgInvitedNotification({ extraRoles: [], invitedToParent: false, spacesToJoinOnAccept: [] }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.invitationRole).toBe('member');
+    expect(title.props.values.organizationName).toBe('Acme Org');
+  });
+
+  it('resolves invitationRole to "member + lead" when extraRoles includes Lead', () => {
+    const data = mapNotificationToItemData(
+      orgInvitedNotification({
+        extraRoles: [RoleName.Lead],
+        invitedToParent: false,
+        spacesToJoinOnAccept: [],
+      }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.invitationRole).toBe('member + lead');
+  });
+
+  it('spacesToJoin is empty when accepting joins only the target Space', () => {
+    const data = mapNotificationToItemData(
+      orgInvitedNotification({
+        extraRoles: [],
+        invitedToParent: false,
+        spacesToJoinOnAccept: [{ displayName: 'Green Energy', url: '/space/green-energy' }],
+      }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.spacesToJoin).toBe('');
+  });
+
+  it('spacesToJoin lists every extra Space when accepting joins more than one', () => {
+    const data = mapNotificationToItemData(
+      orgInvitedNotification({
+        extraRoles: [],
+        invitedToParent: true,
+        spacesToJoinOnAccept: [
+          { displayName: 'Root Space', url: '/space/root' },
+          { displayName: 'Green Energy', url: '/space/root/green-energy' },
+        ],
+      }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    // `t` here is the plain key-echo stub (as elsewhere in this file) — assert the nested
+    // key was reached (not the interpolated English, which a real i18next instance renders).
+    expect(title.props.values.spacesToJoin).toContain('components.inAppNotifications.spacesToJoin');
   });
 });
 
@@ -283,7 +456,7 @@ describe('reaction notification rendering', () => {
     // The unknown slug must resolve through glyphForSlug to undefined — never the
     // raw wire slug — so the subject placeholder renders empty rather than
     // leaking "unknown-slug-9999".
-    const title = data!.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    const title = data?.title as ReactElement<{ values: Record<string, string | undefined> }>;
     expect(title.props.values.emoji).toBeUndefined();
   });
 
@@ -328,6 +501,33 @@ describe('notification avatar subject', () => {
     expect(data.avatarFallback).toBe('GH');
   });
 
+  it('shows the new associate, not the admin who approved or granted the role', () => {
+    // ORGANIZATION_ADMIN_ASSOCIATE_JOINED only fires for a direct join, an approved
+    // application or a direct role grant, so the trigger is the acting admin while the
+    // subject is the payload actor. Copy and avatar must name the same person.
+    const data = mapNotificationToItemData(
+      notification(
+        NotificationEvent.OrganizationAdminAssociateJoined,
+        {
+          type: NotificationEventPayload.OrganizationAssociateActor,
+          organization: { id: 'org-1', profile: { displayName: 'Acme Org', url: '/organization/acme' } },
+          actor: {
+            type: ActorType.User,
+            profile: { displayName: 'Grace Hopper', url: '/user/grace', visual: { uri: 'grace.png' } },
+          },
+        },
+        NotificationEventCategory.Organization
+      ),
+      t,
+      NotificationEventInAppState.Unread
+    );
+
+    expect(data.avatarUrl).toBe('grace.png');
+    expect(data.avatarFallback).toBe('GH');
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.memberName).toBe('Grace Hopper');
+  });
+
   it('falls back to the triggering user when the payload carries no actor', () => {
     const data = newMember(undefined);
 
@@ -350,5 +550,91 @@ describe('notification avatar subject', () => {
 
     expect(data.avatarUrl).toBe('ada.png');
     expect(data.avatarFallback).toBe('AL');
+  });
+});
+
+describe('organization-associate notifications (062)', () => {
+  const orgPayload = (url = '/organization/acme'): InAppNotificationPayloadModel['organization'] => ({
+    id: 'org-1',
+    profile: { displayName: 'Acme Org', url },
+  });
+
+  it('sends the user-side invitation notification to the organization profile', () => {
+    const href = hrefOf(
+      notification(NotificationEvent.UserOrganizationAssociateInvitation, {
+        type: NotificationEventPayload.OrganizationAssociateInvitation,
+        organization: orgPayload(),
+        invitation: { extraRoles: [], invitedToParent: false },
+      })
+    );
+    expect(href).toBe('/organization/acme');
+  });
+
+  it('sends the organisation-side events to the Associates (community) settings tab', () => {
+    const orgSideTypes = [
+      NotificationEvent.OrganizationAdminAssociateInvitationAccepted,
+      NotificationEvent.OrganizationAdminAssociateInvitationDeclined,
+      NotificationEvent.OrganizationAdminAssociateApplication,
+      NotificationEvent.OrganizationAdminAssociateJoined,
+    ];
+    for (const type of orgSideTypes) {
+      const href = hrefOf(
+        notification(type, {
+          type: NotificationEventPayload.OrganizationAssociateActor,
+          organization: orgPayload(),
+        })
+      );
+      expect(href).toBe('/organization/acme/settings/community');
+    }
+  });
+
+  it('resolves associateRole to Associate + Admin / Owner from the offered extra roles', () => {
+    const buildValues = (extraRoles: RoleName[]) => {
+      const data = mapNotificationToItemData(
+        notification(NotificationEvent.UserOrganizationAssociateInvitation, {
+          type: NotificationEventPayload.OrganizationAssociateInvitation,
+          organization: orgPayload(),
+          invitation: { extraRoles, invitedToParent: false },
+        }),
+        t,
+        NotificationEventInAppState.Unread
+      );
+      return (data.description as ReactElement<{ values: Record<string, string | undefined> }>).props.values;
+    };
+    expect(buildValues([]).associateRole).toBe('components.inAppNotifications.associateRole.associate');
+    expect(buildValues([RoleName.Admin]).associateRole).toBe(
+      'components.inAppNotifications.associateRole.associateAdmin'
+    );
+    expect(buildValues([RoleName.Owner]).associateRole).toBe(
+      'components.inAppNotifications.associateRole.associateOwner'
+    );
+  });
+
+  it('produces a withheld clause only when extraRolesWithheld is non-empty', () => {
+    const data = mapNotificationToItemData(
+      notification(NotificationEvent.OrganizationAdminAssociateInvitationAccepted, {
+        type: NotificationEventPayload.OrganizationAssociateActor,
+        organization: orgPayload(),
+        extraRolesWithheld: [RoleName.Owner],
+      }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const values = (data.description as ReactElement<{ values: Record<string, string | undefined> }>).props.values;
+    expect(values.withheld).toBe('components.inAppNotifications.associateRoleWithheld');
+
+    const dataNoWithheld = mapNotificationToItemData(
+      notification(NotificationEvent.OrganizationAdminAssociateInvitationAccepted, {
+        type: NotificationEventPayload.OrganizationAssociateActor,
+        organization: orgPayload(),
+        extraRolesWithheld: [],
+      }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const valuesNoWithheld = (
+      dataNoWithheld.description as ReactElement<{ values: Record<string, string | undefined> }>
+    ).props.values;
+    expect(valuesNoWithheld.withheld).toBe('');
   });
 });
