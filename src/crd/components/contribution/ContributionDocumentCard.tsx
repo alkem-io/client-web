@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type CollaboraDocumentPreviewType, colorByType, iconByType } from '@/crd/lib/collaboraDocumentPreview';
 import { cn } from '@/crd/lib/utils';
@@ -5,21 +6,23 @@ import { cn } from '@/crd/lib/utils';
 type ContributionDocumentCardProps = {
   title: string;
   documentType: CollaboraDocumentPreviewType;
+  previewUrl?: string;
   author?: string;
   onClick?: () => void;
   className?: string;
 };
 
 /**
- * Type-icon card for a document response — structurally mirrors
+ * Card for a document contribution — structurally mirrors
  * `ContributionWhiteboardCard` (fixed-height box, hover "Open Document"
- * overlay, title/author gradient footer) but renders only the icon-fallback
- * branch: no `VisualType` preview mechanism exists for `CollaboraDocument`
- * (unlike whiteboards' `WHITEBOARD_PREVIEW`), so there is no image branch.
+ * overlay, title/author gradient footer). Renders a preview image when
+ * available, falling back to the type-specific icon on load error or when
+ * no preview URL is provided.
  */
 export function ContributionDocumentCard({
   title,
   documentType,
+  previewUrl,
   author,
   onClick,
   className,
@@ -27,6 +30,10 @@ export function ContributionDocumentCard({
   const { t } = useTranslation('crd-space');
   const Icon = iconByType[documentType];
   const accentColor = colorByType[documentType];
+
+  // Track which URL failed so we fall back to the icon without re-trying the same broken URL.
+  const [erroredUrl, setErroredUrl] = useState<string | undefined>(undefined);
+  const showImage = Boolean(previewUrl) && previewUrl !== erroredUrl;
 
   return (
     <button
@@ -37,9 +44,18 @@ export function ContributionDocumentCard({
       )}
       onClick={onClick}
     >
-      <div className="w-full h-full flex items-center justify-center">
-        <Icon className={cn('w-8 h-8', accentColor)} aria-hidden="true" />
-      </div>
+      {showImage ? (
+        <img
+          src={previewUrl}
+          alt={title}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover/doc:scale-105"
+          onError={() => setErroredUrl(previewUrl)}
+        />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center">
+          <Icon className={cn('w-8 h-8', accentColor)} aria-hidden="true" />
+        </div>
+      )}
 
       {/* Hover "Open Document" button overlay */}
       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/doc:opacity-100 transition-opacity duration-200 bg-primary/40">
