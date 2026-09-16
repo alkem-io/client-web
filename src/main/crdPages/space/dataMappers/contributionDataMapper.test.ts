@@ -55,6 +55,34 @@ describe('mapAnyContributionToCardData', () => {
     expect(result?.documentId).toBe('doc-2');
   });
 
+  it('carries previewUrl through when the backend resolves one', () => {
+    const result = mapAnyContributionToCardData({
+      id: 'contribution-4',
+      collaboraDocument: {
+        id: 'doc-4',
+        documentType: CollaboraDocumentType.Presentation,
+        previewUrl: '/api/private/wopi/files/file-4/preview',
+        profile: { displayName: 'Pitch deck' },
+      },
+    });
+
+    expect(result?.previewUrl).toBe('/api/private/wopi/files/file-4/preview');
+  });
+
+  it('leaves previewUrl undefined when the backend resolves null (no backing file)', () => {
+    const result = mapAnyContributionToCardData({
+      id: 'contribution-5',
+      collaboraDocument: {
+        id: 'doc-5',
+        documentType: CollaboraDocumentType.Presentation,
+        previewUrl: null,
+        profile: { displayName: 'Pitch deck' },
+      },
+    });
+
+    expect(result?.previewUrl).toBeUndefined();
+  });
+
   it('maps only document-backed memo signatures into the actionable copies count', () => {
     const result = mapAnyContributionToCardData({
       id: 'contribution-3',
