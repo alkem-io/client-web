@@ -74,6 +74,17 @@ type ResponseDefaultsConnectorProps = {
   /** Image-upload wiring for the default post/memo description editor. */
   markdownUpload?: MarkdownUploadProps;
   whiteboardDraft?: WhiteboardDraftLifecycle;
+  /**
+   * Id of the Callout that already stores this default, when one is being edited.
+   * A stored Whiteboard default is a content snapshot with no Whiteboard id of its
+   * own, so it cannot be opened in the collaborative editor directly — the server
+   * seeds a fresh draft from this Callout instead. Only used when the form carries
+   * no template-picked source, and only as a seed: the stored default is rewritten
+   * by the callout-update mutation, never by editing the draft. Keep it stable for
+   * the lifetime of the form — it is part of the draft's source key, so a value
+   * that flips mid-session would re-materialize the draft and lose the user's work.
+   */
+  existingDefaultSourceCalloutId?: string;
 };
 
 /**
@@ -97,6 +108,7 @@ export function ResponseDefaultsConnector({
   onSave,
   markdownUpload,
   whiteboardDraft,
+  existingDefaultSourceCalloutId,
 }: ResponseDefaultsConnectorProps) {
   const { t } = useTranslation('crd-space');
   const [whiteboardEditorSession, setWhiteboardEditorSession] = useState<number>();
@@ -136,12 +148,17 @@ export function ResponseDefaultsConnector({
   const whiteboardSlot =
     type === 'whiteboard' && whiteboardDraft
       ? ({ draft, applyDraft }: { draft: ContributionDefaults; applyDraft: ApplyDraft }) => {
+          // A template the user picked in this form wins; otherwise fall back to the
+          // Callout that already stores the default, so editing an existing default
+          // opens its content instead of a blank board. With neither, the draft is
+          // blank — the create-time behaviour.
+          const draftSource =
+            draft.sourceWhiteboardId || draft.sourceCalloutId
+              ? { sourceWhiteboardID: draft.sourceWhiteboardId, sourceCalloutID: draft.sourceCalloutId }
+              : { sourceCalloutID: existingDefaultSourceCalloutId };
           const openEditor = async () => {
             const dialogSession = dialogSessionRef.current;
-            const materialized = await whiteboardDraft.materialize({
-              sourceWhiteboardID: draft.sourceWhiteboardId,
-              sourceCalloutID: draft.sourceCalloutId,
-            });
+            const materialized = await whiteboardDraft.materialize(draftSource);
             if (!materialized || dialogSessionRef.current !== dialogSession) return;
             applyDraft({
               whiteboardDraft: materialized,
@@ -180,6 +197,16 @@ export function ResponseDefaultsConnector({
     return whiteboardDraft.discard();
   };
 
+  // Clearing the default replaces it, so the draft the user materialized in this
+  // session is deleted through the canonical Whiteboard deletion path. The stored
+  // default is untouched here — the callout-update mutation is what clears it.
+  const handleWhiteboardCleared = () => {
+    setWhiteboardEditorSession(undefined);
+    if (whiteboardDraft?.handle && whiteboardDraft.handle.whiteboardID !== initialDraftID.current) {
+      void whiteboardDraft.discard();
+    }
+  };
+
   const handleDialogOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
       dialogSessionRef.current += 1;
@@ -199,6 +226,7 @@ export function ResponseDefaultsConnector({
         templateSlot={templateSlot}
         whiteboardSlot={whiteboardSlot}
         onCancel={type === 'whiteboard' ? cancelWhiteboardDraft : undefined}
+        onWhiteboardCleared={handleWhiteboardCleared}
         disabled={whiteboardDraft?.loading}
         onImageUpload={markdownUpload?.onImageUpload}
         iframeAllowedUrls={markdownUpload?.iframeAllowedUrls}
