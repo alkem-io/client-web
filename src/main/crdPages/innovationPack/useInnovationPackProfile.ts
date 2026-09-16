@@ -17,7 +17,11 @@ export type UseInnovationPackProfileResult = {
   pack: InnovationPackProfileViewProps['pack'] | undefined;
   /** Holder-agnostic templates manager bound to the pack's templates set — read-only listing + preview. */
   tm: ReturnType<typeof useTemplatesManager>;
-  /** True when the viewer has `Update` privilege on the pack — i.e. should see "Manage this pack". */
+  /**
+   * True when the viewer may edit the pack — i.e. should see "Manage this pack": the owner's
+   * `Update`, or Platform Support's `PlatformSupportOrgResources` (A7, 027 R-F.2 — the server
+   * accepts either on `updateInnovationPack` and the pack's template CRUD).
+   */
   canManage: boolean;
   /** `<pack.profile.url>/settings` — passed to `InnovationPackProfileView` only when `canManage`. */
   adminHref: string | undefined;
@@ -73,7 +77,10 @@ export function useInnovationPackProfile(): UseInnovationPackProfileResult {
   const gqlPack = data?.lookup.innovationPack;
   const pack = gqlPack ? mapProfilePackToCard(gqlPack) : undefined;
   const templatesSetId = gqlPack?.templatesSet?.id;
-  const canManage = gqlPack?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+  const myPrivileges = gqlPack?.authorization?.myPrivileges ?? [];
+  const canManage =
+    myPrivileges.includes(AuthorizationPrivilege.Update) ||
+    myPrivileges.includes(AuthorizationPrivilege.PlatformSupportOrgResources);
   const adminHref = canManage && pack ? buildInnovationPackSettingsUrl(pack.url) : undefined;
   const shareUrl = pack?.url ?? '';
 

@@ -70,6 +70,17 @@ describe('useAdminAccessGuard', () => {
     expect(guard({ platform: ['PLATFORM_CONTENT_FULL_ACCESS'] }).isPlatformAdmin).toBe(true);
   });
 
+  // R-F.2 (2026-09-16): Support was the one role whose whole job sits behind the
+  // shell — organizations, packs, hubs — and the one role the shell turned away.
+  test('admits Platform Support via PlatformSupportListsRead (R-F.2)', () => {
+    expect(
+      guard({
+        platform: ['CREATE_ORGANIZATION', 'PLATFORM_FORUM_MANAGE', 'PLATFORM_SUPPORT_LISTS_READ'],
+        myRoles: ['PLATFORM_SUPPORT'],
+      }).isPlatformAdmin
+    ).toBe(true);
+  });
+
   test('admits Platform Audit Reader for its view-only holder lists', () => {
     expect(guard({ platform: ['PLATFORM_AUDIT_READ'], roleSet: ['PLATFORM_ROLE_HOLDERS_READ'] }).isPlatformAdmin).toBe(
       true
@@ -95,7 +106,6 @@ describe('useAdminAccessGuard', () => {
    * `ROLE_ADMIN_SECTIONS` and this expectation flips there, not here.
    */
   test.each([
-    ['Platform Support', { platform: ['CREATE_ORGANIZATION', 'PLATFORM_FORUM_MANAGE'], myRoles: ['PLATFORM_SUPPORT'] }],
     ['Platform Operations Admin', { platform: ['AUTHORIZATION_RESET', 'PLATFORM_OPERATIONS_ADMIN'] }],
     ['Platform Settings Admin', { platform: ['PLATFORM_SETTINGS_ADMIN'] }],
     ['Platform License Manager + Beta Tester', { myRoles: ['PLATFORM_LICENSE_MANAGER', 'FEATURE_BETA_TESTER'] }],

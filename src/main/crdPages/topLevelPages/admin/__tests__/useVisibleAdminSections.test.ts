@@ -112,6 +112,33 @@ describe('useVisibleAdminSections', () => {
     // Read-only oversight. `CrdAdminGlobalRolesPage` already collapses to
     // `getViewOnlyPlatformRoles` when no manage privilege is present, so this
     // lands on holders-visible / no-add-remove rather than on dead buttons.
+    // R-F.2 (2026-09-16, research D29). Support's owning privileges are anchored
+    // on the organization/account trees, so at platform level it reported only
+    // CREATE_ORGANIZATION + PLATFORM_FORUM_MANAGE and could not load a single
+    // list — the customer-facing admin role landed on /restricted. The server
+    // now grants it PLATFORM_SUPPORT_LISTS_READ on the platform policy, admitted
+    // by exactly the three lists whose rows it acts on.
+    test('Platform Support — the three lists it services, and nothing else', () => {
+      expect(
+        arrange({
+          platform: ['CREATE_ORGANIZATION', 'PLATFORM_FORUM_MANAGE', 'PLATFORM_SUPPORT_LISTS_READ'],
+          roleSet: ['PLATFORM_FORUM_MANAGE'],
+          myRoles: ['PLATFORM_SUPPORT'],
+        }).sort()
+      ).toEqual(['innovation-hubs', 'innovation-packs', 'organizations']);
+    });
+
+    // A legacy global-support holder reaches everything through PLATFORM_ADMIN
+    // anyway; this pins the NEW privilege's reach on its own, so a future
+    // section (spaces, users, …) cannot ride in on it by accident.
+    test('PLATFORM_SUPPORT_LISTS_READ alone admits exactly the three Support lists', () => {
+      expect(arrange({ platform: ['PLATFORM_SUPPORT_LISTS_READ'] }).sort()).toEqual([
+        'innovation-hubs',
+        'innovation-packs',
+        'organizations',
+      ]);
+    });
+
     test('Platform Audit Reader — the holder lists, view-only', () => {
       expect(
         arrange({
@@ -129,21 +156,12 @@ describe('useVisibleAdminSections', () => {
      * points at the role whose matrix entry is now stale. That is the intent:
      * an empty entry must be revisited, not preserved.
      *
-     * Support's three lists are gated on PLATFORM_CONTENT_FULL_ACCESS while its
-     * own privilege is anchored on the org/pack/hub policies (still-open half of
-     * F6). Operations Admin's inspector queries still require the legacy
+     * Operations Admin's inspector queries still require the legacy
      * PLATFORM_ADMIN. License Manager and Beta Tester report nothing at platform
-     * level at all (F1). Settings Admin has no section to see.
+     * level at all (F1). Settings Admin has no section to see. (Support left this
+     * table on 2026-09-16 — R-F.2 closed, see the positive case above.)
      */
     test.each([
-      [
-        'Platform Support',
-        {
-          platform: ['CREATE_ORGANIZATION', 'PLATFORM_FORUM_MANAGE'],
-          roleSet: ['PLATFORM_FORUM_MANAGE'],
-          myRoles: ['PLATFORM_SUPPORT'],
-        },
-      ],
       ['Platform Settings Admin', { platform: ['PLATFORM_SETTINGS_ADMIN'], myRoles: ['PLATFORM_SETTINGS_ADMIN'] }],
       [
         'Platform Operations Admin',

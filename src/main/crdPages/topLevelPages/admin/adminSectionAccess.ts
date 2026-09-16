@@ -24,8 +24,11 @@ import { ADMIN_SECTIONS, type AdminSectionDescriptor, type AdminSectionId } from
  * gates, read off `platform.admin.resolver.fields.ts` (`grantAnyOrFail`) and
  * `lookup.resolver.fields.ts`:
  *
- *   platformAdmin.spaces / organizations / innovationPacks / innovationHubs /
- *   virtualContributors / accounts  -> PLATFORM_ADMIN | PLATFORM_CONTENT_FULL_ACCESS
+ *   platformAdmin.spaces / virtualContributors / accounts
+ *                                   -> PLATFORM_ADMIN | PLATFORM_CONTENT_FULL_ACCESS
+ *   platformAdmin.organizations / innovationPacks / innovationHubs
+ *                                   -> PLATFORM_ADMIN | PLATFORM_CONTENT_FULL_ACCESS
+ *                                      | PLATFORM_SUPPORT_LISTS_READ   (R-F.2, 2026-09-16)
  *   platformAdmin.users / identity  -> PLATFORM_ADMIN | PLATFORM_USERS_ADMIN
  *   lookup.authorizationPolicy      -> PLATFORM_ADMIN            (only)
  *   lookup.authorizationPrivilegesForUser -> PLATFORM_ADMIN      (only)
@@ -97,16 +100,16 @@ export const ROLE_ADMIN_SECTIONS: Record<PlatformRoleNames, readonly AdminSectio
   // performs no administrative action, it reviews the ones others performed.
   [RoleName.PlatformAuditReader]: ['authorization'],
 
-  // GAP (server). Its three sections — organizations, packs, hubs — are gated
-  // on PLATFORM_CONTENT_FULL_ACCESS, and Support's owning privilege
-  // (PLATFORM_SUPPORT_ORG_RESOURCES) is anchored on the org/pack/hub policies,
-  // so the platform policy has nothing to check. Its only platform-level
-  // privileges are CREATE_ORGANIZATION and PLATFORM_FORUM_MANAGE, and gating
-  // the lists on CREATE_ORGANIZATION would also admit Feature Organization
-  // Creator and beta-tester, which is wrong. Closing this needs a platform-level
-  // anchor for A7 or a per-entity read on the server — recorded as the
-  // still-open half of finding F6, deliberately NOT papered over here.
-  [RoleName.PlatformSupport]: [],
+  // The customer-facing admin role: the organization lifecycle (A6) and
+  // org-owned pack/hub edits (A7). Until 2026-09-16 this was `[]` — a recorded
+  // server gap (F6's other half): its owning privileges are anchored on the
+  // organization/account policies, so the platform policy the three lists
+  // check had nothing of Support's. Closed by `PLATFORM_SUPPORT_LISTS_READ`
+  // (research D29), a platform-level READ the server now grants Support and
+  // admits on exactly these three lists. Gating them on CREATE_ORGANIZATION
+  // was rejected — it would also admit Feature Organization Creator and
+  // beta-tester. Each row's edit/delete still meets its own server gate.
+  [RoleName.PlatformSupport]: ['organizations', 'innovation-packs', 'innovation-hubs'],
 
   // GAP (product). Platform settings, integrations, notification config and
   // license-plan DEFINITION have no CRD admin section at all — there is nothing
@@ -177,10 +180,18 @@ export const SECTION_ADMITTING_ROLES: Partial<Record<AdminSectionId, RoleName[]>
 export const SECTION_ADMITTING_PRIVILEGES: Partial<Record<AdminSectionId, AuthorizationPrivilege[]>> = {
   // `platformAdmin.{spaces,organizations,innovationPacks,innovationHubs,virtualContributors}`.
   spaces: [AuthorizationPrivilege.PlatformContentFullAccess],
-  organizations: [AuthorizationPrivilege.PlatformContentFullAccess],
-  'innovation-packs': [AuthorizationPrivilege.PlatformContentFullAccess],
-  'innovation-hubs': [AuthorizationPrivilege.PlatformContentFullAccess],
   'virtual-contributors': [AuthorizationPrivilege.PlatformContentFullAccess],
+  // The three lists Platform Support services also admit its own platform-level
+  // list read (R-F.2, 2026-09-16) — checked by the server on exactly these three.
+  organizations: [AuthorizationPrivilege.PlatformContentFullAccess, AuthorizationPrivilege.PlatformSupportListsRead],
+  'innovation-packs': [
+    AuthorizationPrivilege.PlatformContentFullAccess,
+    AuthorizationPrivilege.PlatformSupportListsRead,
+  ],
+  'innovation-hubs': [
+    AuthorizationPrivilege.PlatformContentFullAccess,
+    AuthorizationPrivilege.PlatformSupportListsRead,
+  ],
   // `platformAdmin.users` + `platformAdmin.identity`.
   users: [AuthorizationPrivilege.PlatformUsersAdmin],
   // Assigners AND the two holder-list readers — the Audit Reader's view-only
