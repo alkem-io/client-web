@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
-import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { LONG_MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { MAX_POLL_OPTIONS, MIN_POLL_OPTIONS } from '@/crd/forms/callout/PollOptionsEditor';
 import type {
@@ -265,7 +265,9 @@ export type UseCrdCalloutFormResult = {
  *   `prefill` always wins over these — the overrides only seed the empty form.
  */
 export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>): UseCrdCalloutFormResult {
-  const { t } = useTranslation('crd-space');
+  // `crd-space` stays first, so it remains the default namespace for every bare
+  // key below; `crd-common` is added only so the shared validation copy is reachable.
+  const { t } = useTranslation(['crd-space', 'crd-common']);
   const [initialValues, setInitialValues] = useState<CalloutFormValues>(() => ({
     ...EMPTY_CALLOUT_FORM_VALUES,
     ...initialOverrides,
@@ -296,7 +298,11 @@ export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>)
       case 'maxMid':
         return t('validation.maxMid', { count: MID_TEXT_LENGTH, ...params });
       case 'maxMarkdown':
-        return t('validation.maxMarkdown', { count: MARKDOWN_TEXT_LENGTH, ...params });
+        // Deliberately no figure: the rule measures the raw markdown source, so any
+        // number quoted here would not match the text length the author perceives,
+        // and there is no live counter to reconcile the two against. This is the same
+        // count-free message the Post description already shows.
+        return t('crd-common:components.wysiwyg-editor.validation.maxLength');
       case 'minPollOptions':
         return t('validation.minPollOptions', { count: MIN_POLL_OPTIONS, ...params });
       case 'maxPollOptions':
@@ -322,7 +328,10 @@ export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>)
   // required, min 3, max SMALL_TEXT_LENGTH, no spaces-only.
   const schema = yup.object().shape({
     title: yup.string().trim().required('required').min(3, 'minDisplayName').max(SMALL_TEXT_LENGTH, 'maxSmall'),
-    description: yup.string().max(MARKDOWN_TEXT_LENGTH, 'maxMarkdown').notRequired(),
+    // The callout body and the Post contribution body are the same server field
+    // (`UpdateProfileInput.description`, allowed up to 65568 characters), so they
+    // share the same client ceiling.
+    description: yup.string().max(LONG_MARKDOWN_TEXT_LENGTH, 'maxMarkdown').notRequired(),
   });
 
   const validateFraming = (v: CalloutFormValues, next: CalloutFormErrors) => {
