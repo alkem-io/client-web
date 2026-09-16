@@ -823,6 +823,12 @@ function CalloutFormConnectorInner({
     const updated = result.data?.updateCallout;
     if (!updated) return;
 
+    // The callout is durable, so the server has consumed any response-default draft this
+    // save carried. Drop the local handle here rather than at the end: the steps below can
+    // still fail, and retrying them must not resubmit a draft id the server already
+    // deleted. Framing whiteboards are edited directly in edit mode and hold no draft.
+    defaultWhiteboardDraft.consumed();
+
     // Media gallery diff — mirrors MUI EditCalloutDialog lines 305-316.
     const mediaGalleryId = updated.framing.mediaGallery?.id;
     if (mediaGalleryId && values.mediaGalleryVisuals.length > 0) {
@@ -1181,7 +1187,12 @@ function CalloutFormConnectorInner({
         spaceId={space.levelZeroSpaceId}
         values={values.contributionDefaults}
         onSave={next => setField('contributionDefaults', next)}
-        whiteboardDraft={mode === 'create' ? defaultWhiteboardDraft : undefined}
+        whiteboardDraft={defaultWhiteboardDraft}
+        // Edit mode seeds the draft from this callout's stored default. The value has to
+        // stay stable for the form's lifetime because it is part of the draft's source
+        // key, so it keys off the mode rather than off whether a default currently
+        // exists — a callout without one simply materializes a blank draft.
+        existingDefaultSourceCalloutId={mode === 'edit' ? calloutId : undefined}
         markdownUpload={editorMarkdownUpload}
       />
       {mode === 'create' && (
