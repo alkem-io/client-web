@@ -11811,6 +11811,9 @@ export type AdminInnovationPackQuery = {
           id: string;
           listedInStore: boolean;
           searchVisibility: SearchVisibility;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           provider: {
             __typename?: 'Actor';
             id: string;
@@ -28279,6 +28282,9 @@ export type PlatformAdminInnovationHubsQuery = {
       subdomain: string;
       listedInStore: boolean;
       searchVisibility: SearchVisibility;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
       account: {
         __typename?: 'Account';
         id: string;
@@ -28306,6 +28312,9 @@ export type PlatformAdminInnovationPacksQuery = {
       id: string;
       listedInStore: boolean;
       searchVisibility: SearchVisibility;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
       provider: {
         __typename?: 'Actor';
         id: string;

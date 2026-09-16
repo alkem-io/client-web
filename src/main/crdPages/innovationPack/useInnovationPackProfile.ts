@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useInnovationPackProfilePageQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, type InnovationPackProfilePageQuery } from '@/core/apollo/generated/graphql-schema';
+import type { InnovationPackProfilePageQuery } from '@/core/apollo/generated/graphql-schema';
 import type { InnovationPackProfileViewProps } from '@/crd/components/innovationPack/InnovationPackProfileView';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useTemplatesManager } from '@/main/crdPages/templates/useTemplatesManager';
 import { buildInnovationPackSettingsUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { canEditInnovationPack } from './innovationPackAccess';
 
 type GqlProfilePack = NonNullable<InnovationPackProfilePageQuery['lookup']['innovationPack']>;
 
@@ -77,10 +78,7 @@ export function useInnovationPackProfile(): UseInnovationPackProfileResult {
   const gqlPack = data?.lookup.innovationPack;
   const pack = gqlPack ? mapProfilePackToCard(gqlPack) : undefined;
   const templatesSetId = gqlPack?.templatesSet?.id;
-  const myPrivileges = gqlPack?.authorization?.myPrivileges ?? [];
-  const canManage =
-    myPrivileges.includes(AuthorizationPrivilege.Update) ||
-    myPrivileges.includes(AuthorizationPrivilege.PlatformSupportOrgResources);
+  const canManage = canEditInnovationPack(gqlPack?.authorization?.myPrivileges);
   const adminHref = canManage && pack ? buildInnovationPackSettingsUrl(pack.url) : undefined;
   const shareUrl = pack?.url ?? '';
 

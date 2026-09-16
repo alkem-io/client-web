@@ -19,6 +19,7 @@ import type { TemplateMarkdownUploadByIntent } from '@/main/crdPages/templates/u
 import { useTemplatesManager } from '@/main/crdPages/templates/useTemplatesManager';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { canEditInnovationPack } from './innovationPackAccess';
 import {
   formValuesToUpdateInnovationPackInput,
   type InnovationPackBasics,
@@ -38,6 +39,16 @@ const dirtySnapshot = (v: InnovationPackFormValues): string =>
 export type UseInnovationPackAdminResult = {
   loading: boolean;
   notFound: boolean;
+  /**
+   * Loaded, but the viewer may not edit this pack — neither the owner's `Update`
+   * nor Platform Support's `PlatformSupportOrgResources` (027 R-F.2: a user-hosted
+   * pack reports neither to Support). The page redirects to `deniedRedirectTo`,
+   * mirroring the hub settings guard (FR-027b) instead of rendering a form whose
+   * save can only fail.
+   */
+  denied: boolean;
+  /** The pack's public profile URL — where a denied viewer is sent. */
+  deniedRedirectTo: string | undefined;
   innovationPackId: string | undefined;
   pack: InnovationPackBasics | undefined;
   /** Pack details extended (form values, provider name, ids). `undefined` while loading. */
@@ -282,10 +293,14 @@ export function useInnovationPackAdmin({
 
   const loading = resolvingUrl || (Boolean(innovationPackId) && loadingPack);
   const notFound = !loading && Boolean(innovationPackId) && !gqlPack;
+  const denied = !loading && Boolean(gqlPack) && !canEditInnovationPack(gqlPack?.authorization?.myPrivileges);
+  const deniedRedirectTo = gqlPack?.profile.url || undefined;
 
   return {
     loading,
     notFound,
+    denied,
+    deniedRedirectTo,
     innovationPackId,
     pack,
     detail,

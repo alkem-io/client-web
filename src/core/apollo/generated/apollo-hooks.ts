@@ -5033,6 +5033,10 @@ export const AdminInnovationPackDocument = gql`
   lookup {
     innovationPack(ID: $innovationPackId) {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       provider {
         ...InnovationPackProviderProfileWithAvatar
       }
@@ -19220,6 +19224,10 @@ export const PlatformAdminInnovationHubsDocument = gql`
   platformAdmin {
     innovationHubs {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       subdomain
       listedInStore
       searchVisibility
@@ -19315,6 +19323,10 @@ export const PlatformAdminInnovationPacksDocument = gql`
   platformAdmin {
     innovationPacks {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       listedInStore
       searchVisibility
       provider {

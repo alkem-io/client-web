@@ -28,6 +28,10 @@ query AdminInnovationPack($innovationPackId: UUID!) {
   lookup {
     innovationPack(ID: $innovationPackId) {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       provider {
         ...InnovationPackProviderProfileWithAvatar
       }
