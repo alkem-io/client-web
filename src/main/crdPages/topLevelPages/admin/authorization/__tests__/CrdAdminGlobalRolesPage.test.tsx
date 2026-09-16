@@ -37,7 +37,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 // real filter (from useRoleSetManager.ts) is what's under test here (T008).
 // corr-client-web-8: a Platform Roles Admin holds BOTH `GRANT_GLOBAL_ADMINS`
 // and `FEATURE_ROLE_ASSIGN` server-side — the default persona for tests that
-// don't override privileges is that combined holder, so they still see all 13
+// don't override privileges is that combined holder, so they still see all 14
 // target roles. A bare `GRANT_GLOBAL_ADMINS` holder (legacy `global-admin`) is
 // exercised explicitly in the assigner-capability-filter describe block below.
 let mockMyPrivileges: AuthorizationPrivilege[] | undefined = [
@@ -166,10 +166,10 @@ beforeEach(() => {
 });
 
 describe('CrdAdminGlobalRolesPage', () => {
-  test('offers all thirteen target roles as selectable tabs for a Platform Roles Admin', () => {
+  test('offers all fourteen target roles as selectable tabs for a Platform Roles Admin', () => {
     render(<CrdAdminGlobalRolesPage />);
     const nav = screen.getByRole('navigation');
-    expect(within(nav).getAllByRole('button')).toHaveLength(13);
+    expect(within(nav).getAllByRole('button')).toHaveLength(14);
     for (const role of RELEVANT_ROLES.Platform) {
       expect(within(nav).getByRole('button', { name: `roles.${role}` })).toBeInTheDocument();
     }
@@ -239,24 +239,25 @@ describe('CrdAdminGlobalRolesPage', () => {
   // T008 [US2]: the assigner filter (FR-012) — no reimplementation of any
   // server rule, just the offer/deny split driven by `myPrivileges`.
   describe('assigner-capability filter (FR-012)', () => {
-    test('a holder of only FEATURE_ROLE_ASSIGN is offered exactly the 3 Feature roles', () => {
+    test('a holder of only FEATURE_ROLE_ASSIGN is offered exactly the 4 Feature roles', () => {
       mockMyPrivileges = [AuthorizationPrivilege.FeatureRoleAssign];
       mockPathname = '/admin/authorization/roles/FEATURE_BETA_TESTER';
       render(<CrdAdminGlobalRolesPage />);
       const nav = screen.getByRole('navigation');
       const buttons = within(nav).getAllByRole('button');
-      expect(buttons).toHaveLength(3);
+      expect(buttons).toHaveLength(4);
       expect(within(nav).getByRole('button', { name: 'roles.FEATURE_BETA_TESTER' })).toBeInTheDocument();
       expect(within(nav).getByRole('button', { name: 'roles.FEATURE_VIRTUAL_ASSISTANT' })).toBeInTheDocument();
       expect(within(nav).getByRole('button', { name: 'roles.FEATURE_ORGANIZATION_CREATOR' })).toBeInTheDocument();
+      expect(within(nav).getByRole('button', { name: 'roles.FEATURE_VC_CAMPAIGN' })).toBeInTheDocument();
       expect(within(nav).queryByRole('button', { name: 'roles.PLATFORM_ROLES_ADMIN' })).toBeNull();
     });
 
-    test('a holder of GRANT_GLOBAL_ADMINS and FEATURE_ROLE_ASSIGN (Platform Roles Admin) is offered all 13 roles', () => {
+    test('a holder of GRANT_GLOBAL_ADMINS and FEATURE_ROLE_ASSIGN (Platform Roles Admin) is offered all 14 roles', () => {
       mockMyPrivileges = [AuthorizationPrivilege.GrantGlobalAdmins, AuthorizationPrivilege.FeatureRoleAssign];
       render(<CrdAdminGlobalRolesPage />);
       const nav = screen.getByRole('navigation');
-      expect(within(nav).getAllByRole('button')).toHaveLength(13);
+      expect(within(nav).getAllByRole('button')).toHaveLength(14);
     });
 
     // corr-client-web-8: a bare GRANT_GLOBAL_ADMINS holder (the legacy
@@ -272,6 +273,7 @@ describe('CrdAdminGlobalRolesPage', () => {
       expect(within(nav).queryByRole('button', { name: 'roles.FEATURE_BETA_TESTER' })).toBeNull();
       expect(within(nav).queryByRole('button', { name: 'roles.FEATURE_VIRTUAL_ASSISTANT' })).toBeNull();
       expect(within(nav).queryByRole('button', { name: 'roles.FEATURE_ORGANIZATION_CREATOR' })).toBeNull();
+      expect(within(nav).queryByRole('button', { name: 'roles.FEATURE_VC_CAMPAIGN' })).toBeNull();
     });
 
     // corr-client-web-3: a holder of neither privilege gets an explicit,
@@ -451,7 +453,7 @@ describe('CrdAdminGlobalRolesPage', () => {
       mockMyPrivileges = [AuthorizationPrivilege.GrantGlobalAdmins];
       render(<CrdAdminGlobalRolesPage />);
       expect(screen.queryByText('roleMembers.legacyRolesHeading')).toBeNull();
-      // spec-clientweb-2/sec-client-web-3: the 13 target roles' holder lists
+      // spec-clientweb-2/sec-client-web-3: the 14 target roles' holder lists
       // must still render — a denied/absent legacy request never degrades them.
       expect(screen.getByRole('navigation')).toBeInTheDocument();
       expect(screen.getByText('Alice (alice@x.io)')).toBeInTheDocument();
@@ -514,13 +516,13 @@ describe('CrdAdminGlobalRolesPage', () => {
   });
 
   // corr-client-web-7: a legacy holder-list-read privilege (no manage
-  // privilege at all) still offers the 13 target roles — read-only.
+  // privilege at all) still offers the 14 target roles — read-only.
   describe('read-only target-role view (corr-client-web-7)', () => {
-    test('a legacy PlatformAdmin-equivalent holder with no manage privilege gets all 13 roles read-only', () => {
+    test('a legacy PlatformAdmin-equivalent holder with no manage privilege gets all 14 roles read-only', () => {
       mockMyPrivileges = [AuthorizationPrivilege.Read, AuthorizationPrivilege.Grant];
       render(<CrdAdminGlobalRolesPage />);
       const nav = screen.getByRole('navigation');
-      expect(within(nav).getAllByRole('button')).toHaveLength(13);
+      expect(within(nav).getAllByRole('button')).toHaveLength(14);
       expect(screen.getByText('roleMembers.readOnlyNotice')).toBeInTheDocument();
       expect(screen.queryByText('roleMembers.noAssignablePrivilege')).toBeNull();
       // Current holder still renders …
@@ -537,7 +539,7 @@ describe('CrdAdminGlobalRolesPage', () => {
         AuthorizationPrivilege.FeatureRoleHoldersRead,
       ];
       render(<CrdAdminGlobalRolesPage />);
-      expect(within(screen.getByRole('navigation')).getAllByRole('button')).toHaveLength(13);
+      expect(within(screen.getByRole('navigation')).getAllByRole('button')).toHaveLength(14);
       expect(screen.getByText('roleMembers.readOnlyNotice')).toBeInTheDocument();
       // No legacy READ + GRANT — no legacy panel for this operator.
       expect(screen.queryByText('roleMembers.legacyRolesHeading')).toBeNull();

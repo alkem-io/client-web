@@ -528,6 +528,7 @@
       "ASSOCIATE": "Koppelen",
       "FEATURE_BETA_TESTER": "Feature Bètatester",
       "FEATURE_ORGANIZATION_CREATOR": "Feature Organisatiemaker",
+      "FEATURE_VC_CAMPAIGN": "VC Vroegtijdige Toegang",
       "FEATURE_VIRTUAL_ASSISTANT": "Feature Virtuele assistent",
       "GLOBAL_ADMIN": "Globale $t(common.Admin)",
       "GLOBAL_COMMUNITY_READER": "$t(common.Community) Manager",

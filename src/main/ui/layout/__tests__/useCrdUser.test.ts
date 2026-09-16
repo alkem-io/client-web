@@ -54,6 +54,7 @@ vi.mock('@/core/apollo/generated/graphql-schema', () => ({
     FeatureBetaTester: 'FEATURE_BETA_TESTER',
     FeatureVirtualAssistant: 'FEATURE_VIRTUAL_ASSISTANT',
     FeatureOrganizationCreator: 'FEATURE_ORGANIZATION_CREATOR',
+    FeatureVcCampaign: 'FEATURE_VC_CAMPAIGN',
   },
 }));
 
@@ -88,7 +89,7 @@ describe('useCrdUser', () => {
     });
   });
 
-  describe('D2 — role label covers the thirteen new roles', () => {
+  describe('D2 — role label covers the fourteen new roles', () => {
     test.each([
       'PLATFORM_ROLES_ADMIN',
       'PLATFORM_CONTENT_FULL_ACCESS',
@@ -103,6 +104,7 @@ describe('useCrdUser', () => {
       'FEATURE_BETA_TESTER',
       'FEATURE_VIRTUAL_ASSISTANT',
       'FEATURE_ORGANIZATION_CREATOR',
+      'FEATURE_VC_CAMPAIGN',
     ])('%s renders a label', role => {
       expect(arrange({ roles: [role] }).user?.role).toBe(`common.roles.${role}`);
     });
@@ -127,6 +129,12 @@ describe('useCrdUser', () => {
 
       expect(forward).toBe('common.roles.PLATFORM_ROLES_ADMIN');
       expect(reversed).toBe(forward);
+    });
+
+    test('the Feature VC Campaign successor outranks its legacy PLATFORM_VC_CAMPAIGN twin (Slice A: both held at once)', () => {
+      expect(arrange({ roles: ['PLATFORM_VC_CAMPAIGN', 'FEATURE_VC_CAMPAIGN'] }).user?.role).toBe(
+        'common.roles.FEATURE_VC_CAMPAIGN'
+      );
     });
 
     test('legacy global admin outranks the new roles', () => {

@@ -157,6 +157,7 @@ describe('useVisibleAdminSections', () => {
         'Feature Organization Creator',
         { platform: ['CREATE_ORGANIZATION'], myRoles: ['FEATURE_ORGANIZATION_CREATOR'] },
       ],
+      ['Feature VC Campaign', { myRoles: ['FEATURE_VC_CAMPAIGN'] }],
     ])('%s sees no section (recorded gap)', (_role, fixture) => {
       expect(arrange(fixture)).toEqual([]);
     });
@@ -186,7 +187,7 @@ describe('useVisibleAdminSections', () => {
     expect(arrange({ platform: ['TRANSFER_RESOURCE_ACCEPT'] })).toEqual(['transfer']);
   });
 
-  test('every one of the thirteen roles has an answer, empty or not', () => {
-    expect(Object.keys(ROLE_ADMIN_SECTIONS)).toHaveLength(13);
+  test('every one of the fourteen roles has an answer, empty or not', () => {
+    expect(Object.keys(ROLE_ADMIN_SECTIONS)).toHaveLength(14);
   });
 });

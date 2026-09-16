@@ -6,7 +6,7 @@ import { useAdminAccessGuard } from '@/main/crdPages/topLevelPages/admin/useAdmi
 
 /**
  * The label shown under a user's name, keyed by role. Every key resolves in
- * `crd-common` (eagerly loaded) — the same thirteen strings also exist in
+ * `crd-common` (eagerly loaded) — the same fourteen strings also exist in
  * `crd-admin`, but that namespace is lazy and the layout renders before it.
  *
  * Full keys rather than suffixes: `t()` is typed against the literal key union,
@@ -31,6 +31,7 @@ const ROLE_LABEL_KEYS = {
   [RoleName.FeatureBetaTester]: 'common.roles.FEATURE_BETA_TESTER',
   [RoleName.FeatureVirtualAssistant]: 'common.roles.FEATURE_VIRTUAL_ASSISTANT',
   [RoleName.FeatureOrganizationCreator]: 'common.roles.FEATURE_ORGANIZATION_CREATOR',
+  [RoleName.FeatureVcCampaign]: 'common.roles.FEATURE_VC_CAMPAIGN',
 } as const;
 
 /** Most-privileged first — a holder of several roles is labelled by the strongest. */
@@ -51,6 +52,7 @@ const ROLE_LABEL_PRECEDENCE: (keyof typeof ROLE_LABEL_KEYS)[] = [
   RoleName.FeatureOrganizationCreator,
   RoleName.FeatureVirtualAssistant,
   RoleName.FeatureBetaTester,
+  RoleName.FeatureVcCampaign,
   RoleName.PlatformBetaTester,
   RoleName.PlatformVcCampaign,
 ];

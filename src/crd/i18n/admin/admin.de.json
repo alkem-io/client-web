@@ -89,7 +89,8 @@
     "PLATFORM_AUDIT_READER": "Platform Audit-Leser",
     "FEATURE_BETA_TESTER": "Feature Beta-Tester",
     "FEATURE_VIRTUAL_ASSISTANT": "Feature Virtueller Assistent",
-    "FEATURE_ORGANIZATION_CREATOR": "Feature Organisationsersteller"
+    "FEATURE_ORGANIZATION_CREATOR": "Feature Organisationsersteller",
+    "FEATURE_VC_CAMPAIGN": "Feature VC Campaign"
   },
   "roleDescriptions": {
     "GLOBAL_ADMIN": "Vollständige administrative Kontrolle über die gesamte Plattform.",
@@ -114,7 +115,8 @@
     "PLATFORM_AUDIT_READER": "Liest das Plattform-Audit-Protokoll (PII-maskiert) und die Mitgliederlisten aller 13 Rollen, damit das Protokoll gegen den Live-Zustand interpretiert werden kann. Führt keine administrative Aktion aus, kann keine Audit-Datensätze schreiben, ändern oder löschen und schließt sich gegenseitig mit jeder anderen Platform-…-Rolle aus.",
     "FEATURE_BETA_TESTER": "Trägt eine Beta-/Test-Lizenzberechtigung. Beinhaltet keine Organisationserstellung.",
     "FEATURE_VIRTUAL_ASSISTANT": "Gewährt Zugang zum virtuellen Assistenten.",
-    "FEATURE_ORGANIZATION_CREATOR": "Erlaubt das Erstellen von Organisationen. Beinhaltet nicht das Löschen von Organisationen."
+    "FEATURE_ORGANIZATION_CREATOR": "Erlaubt das Erstellen von Organisationen. Beinhaltet nicht das Löschen von Organisationen.",
+    "FEATURE_VC_CAMPAIGN": "Zielgruppe der Virtual-Contributor-Kampagne: erhält auf dem Dashboard das Angebot, einen Virtual Contributor zu erstellen. Gewährt keine Administrationsrechte."
   },
   "roleMembers": {
     "currentMembers": "Aktuelle Mitglieder",

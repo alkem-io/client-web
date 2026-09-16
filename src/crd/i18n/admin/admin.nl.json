@@ -89,7 +89,8 @@
     "PLATFORM_AUDIT_READER": "Platform Audit-lezer",
     "FEATURE_BETA_TESTER": "Feature Bètatester",
     "FEATURE_VIRTUAL_ASSISTANT": "Feature Virtuele assistent",
-    "FEATURE_ORGANIZATION_CREATOR": "Feature Organisatiemaker"
+    "FEATURE_ORGANIZATION_CREATOR": "Feature Organisatiemaker",
+    "FEATURE_VC_CAMPAIGN": "Feature VC Campaign"
   },
   "roleDescriptions": {
     "GLOBAL_ADMIN": "Volledige administratieve controle over het hele platform.",
@@ -114,7 +115,8 @@
     "PLATFORM_AUDIT_READER": "Leest het platformauditlogboek (met gemaskeerde persoonsgegevens) en de ledenlijsten van alle 13 rollen, zodat het logboek tegen de actuele status kan worden geïnterpreteerd. Voert geen enkele administratieve actie uit, kan geen auditrecords schrijven, wijzigen of verwijderen, en sluit elke andere Platform …-rol wederzijds uit.",
     "FEATURE_BETA_TESTER": "Geeft een bèta-/proeflicentierecht. Omvat geen organisatiecreatie.",
     "FEATURE_VIRTUAL_ASSISTANT": "Geeft toegang tot de virtuele assistent.",
-    "FEATURE_ORGANIZATION_CREATOR": "Staat het aanmaken van organisaties toe. Omvat niet het verwijderen van organisaties."
+    "FEATURE_ORGANIZATION_CREATOR": "Staat het aanmaken van organisaties toe. Omvat niet het verwijderen van organisaties.",
+    "FEATURE_VC_CAMPAIGN": "Doelgroep van de Virtual Contributor-campagne: krijgt op het dashboard het aanbod om een Virtual Contributor aan te maken. Geeft geen beheerrechten."
   },
   "roleMembers": {
     "currentMembers": "Huidige leden",

@@ -4,7 +4,7 @@ import { AuthorizationPrivilege, RoleName } from '@/core/apollo/generated/graphq
 
 // spec-clientweb-1 / sec-client-web-2: the holder-list read (`RoleSetRoleAssignment`)
 // must be authorized by `PLATFORM_ROLE_HOLDERS_READ` / `FEATURE_ROLE_HOLDERS_READ`
-// (FR-032/A20/A20b) — not gated on plain `READ`, which none of the 13 target
+// (FR-032/A20/A20b) — not gated on plain `READ`, which none of the 14 target
 // roles' assigners hold. These tests drive `useRoleSetManager` directly against
 // mocked Apollo hooks so the real `canReadRoleSet` / `holdersUnavailable`
 // derivations are what's under test, not a wholesale hook mock.
@@ -186,7 +186,7 @@ describe('getOfferedLegacyPlatformRoles — legacy-revoke gate (sec-client-web-4
 });
 
 // corr-client-web-7: a legacy holder-list-read privilege authorizes viewing
-// the 13 target roles' holders even without a manage privilege — scoped per
+// the 14 target roles' holders even without a manage privilege — scoped per
 // role family so a holder of only one read privilege is never sent a request
 // for the role family it doesn't cover (would reproduce the FR-032
 // fail-closed-as-a-whole bug one level down).
@@ -206,23 +206,23 @@ describe('getViewOnlyPlatformRoles — read-only offer (corr-client-web-7)', () 
     }
   });
 
-  test('PLATFORM_ROLE_HOLDERS_READ alone offers only the 10 admin roles, not the 3 feature roles', () => {
+  test('PLATFORM_ROLE_HOLDERS_READ alone offers only the 10 admin roles, not the 4 feature roles', () => {
     const roles = getViewOnlyPlatformRoles([AuthorizationPrivilege.PlatformRoleHoldersRead]);
     expect(roles).toEqual(expect.arrayContaining(RELEVANT_ROLES.Platform.slice(0, 10)));
     expect(roles).not.toEqual(expect.arrayContaining([RELEVANT_ROLES.Platform[10]]));
   });
 
-  test('FEATURE_ROLE_HOLDERS_READ alone offers only the 3 feature roles', () => {
+  test('FEATURE_ROLE_HOLDERS_READ alone offers only the 4 feature roles', () => {
     const roles = getViewOnlyPlatformRoles([AuthorizationPrivilege.FeatureRoleHoldersRead]);
     expect(roles).toEqual(RELEVANT_ROLES.Platform.slice(10));
   });
 
-  test('both holder-read privileges together offer the full 13', () => {
+  test('both holder-read privileges together offer the full 14', () => {
     const roles = getViewOnlyPlatformRoles([
       AuthorizationPrivilege.PlatformRoleHoldersRead,
       AuthorizationPrivilege.FeatureRoleHoldersRead,
     ]);
-    expect(roles).toHaveLength(13);
+    expect(roles).toHaveLength(14);
   });
 });
 
@@ -237,24 +237,24 @@ describe('getOfferedPlatformRoles — manage gate unchanged', () => {
 // corr-client-web-8: the two assigner privileges gate DISJOINT role families
 // server-side and must be UNIONED, not short-circuited — a legacy
 // `global-admin` (GRANT_GLOBAL_ADMINS only, no FEATURE_ROLE_ASSIGN) must be
-// offered exactly the 10 `Platform …` roles, never the 3 `Feature …` roles the
+// offered exactly the 10 `Platform …` roles, never the 4 `Feature …` roles the
 // server would reject.
 describe('getOfferedPlatformRoles — per-family union (corr-client-web-8)', () => {
-  test('GRANT_GLOBAL_ADMINS alone offers only the 10 platform admin roles, not the 3 feature roles', () => {
+  test('GRANT_GLOBAL_ADMINS alone offers only the 10 platform admin roles, not the 4 feature roles', () => {
     const roles = getOfferedPlatformRoles([AuthorizationPrivilege.GrantGlobalAdmins]);
     expect(roles).toEqual(RELEVANT_ROLES.Platform.slice(0, 10));
   });
 
-  test('FEATURE_ROLE_ASSIGN alone offers only the 3 feature roles', () => {
+  test('FEATURE_ROLE_ASSIGN alone offers only the 4 feature roles', () => {
     const roles = getOfferedPlatformRoles([AuthorizationPrivilege.FeatureRoleAssign]);
     expect(roles).toEqual(RELEVANT_ROLES.Platform.slice(10));
   });
 
-  test('both privileges together offer the full 13 (platform-roles-admin, T005/SC-009)', () => {
+  test('both privileges together offer the full 14 (platform-roles-admin, T005/SC-009)', () => {
     const roles = getOfferedPlatformRoles([
       AuthorizationPrivilege.GrantGlobalAdmins,
       AuthorizationPrivilege.FeatureRoleAssign,
     ]);
-    expect(roles).toHaveLength(13);
+    expect(roles).toHaveLength(14);
   });
 });

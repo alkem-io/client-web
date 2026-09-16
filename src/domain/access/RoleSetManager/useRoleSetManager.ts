@@ -28,12 +28,15 @@ const PLATFORM_ADMIN_ROLES = [
   RoleName.PlatformAuditReader,
 ] as const;
 
-// The 3 `Feature …` roles — assignable by a holder of `FEATURE_ROLE_ASSIGN`
+// The 4 `Feature …` roles — assignable by a holder of `FEATURE_ROLE_ASSIGN`
 // (Platform Users Admin) or by anyone who can assign the full Platform set.
 const FEATURE_ROLES = [
   RoleName.FeatureBetaTester,
   RoleName.FeatureVirtualAssistant,
   RoleName.FeatureOrganizationCreator,
+  // Additive successor of the legacy `PLATFORM_VC_CAMPAIGN` below; both are
+  // honoured until Slice B retires the legacy one.
+  RoleName.FeatureVcCampaign,
 ] as const;
 
 // sec-client-web-1: the ten legacy platform credentials remain the platform's

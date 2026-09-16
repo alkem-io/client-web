@@ -528,6 +528,7 @@
       "ASSOCIATE": "Associate",
       "FEATURE_BETA_TESTER": "Feature Beta Tester",
       "FEATURE_ORGANIZATION_CREATOR": "Feature Organization Creator",
+      "FEATURE_VC_CAMPAIGN": "VC Early Access",
       "FEATURE_VIRTUAL_ASSISTANT": "Feature Virtual Assistant",
       "GLOBAL_ADMIN": "Global $t(common.Admin)",
       "GLOBAL_COMMUNITY_READER": "$t(common.Community) Manager",

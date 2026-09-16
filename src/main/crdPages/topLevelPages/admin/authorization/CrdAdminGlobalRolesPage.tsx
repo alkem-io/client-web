@@ -247,6 +247,7 @@ const CrdAdminGlobalRolesPage = () => {
     [RoleName.FeatureBetaTester]: t('roles.FEATURE_BETA_TESTER'),
     [RoleName.FeatureVirtualAssistant]: t('roles.FEATURE_VIRTUAL_ASSISTANT'),
     [RoleName.FeatureOrganizationCreator]: t('roles.FEATURE_ORGANIZATION_CREATOR'),
+    [RoleName.FeatureVcCampaign]: t('roles.FEATURE_VC_CAMPAIGN'),
   };
 
   const roleDescriptions: Record<PlatformRole, string> = {
@@ -263,6 +264,7 @@ const CrdAdminGlobalRolesPage = () => {
     [RoleName.FeatureBetaTester]: t('roleDescriptions.FEATURE_BETA_TESTER'),
     [RoleName.FeatureVirtualAssistant]: t('roleDescriptions.FEATURE_VIRTUAL_ASSISTANT'),
     [RoleName.FeatureOrganizationCreator]: t('roleDescriptions.FEATURE_ORGANIZATION_CREATOR'),
+    [RoleName.FeatureVcCampaign]: t('roleDescriptions.FEATURE_VC_CAMPAIGN'),
   };
 
   const selectRole = (role: PlatformRole) => {

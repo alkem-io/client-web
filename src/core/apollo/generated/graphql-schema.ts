@@ -708,16 +708,6 @@ export type AdminUserEmailChangeInput = {
   userID: Scalars['UUID']['input'];
 };
 
-export type AdminWhiteboardFilesResult = {
-  __typename?: 'AdminWhiteboardFilesResult';
-  /** Errors */
-  errors: Array<Scalars['String']['output']>;
-  /** Successes */
-  results: Array<Scalars['String']['output']>;
-  /** Warnings */
-  warns: Array<Scalars['String']['output']>;
-};
-
 export type AiPersona = {
   __typename?: 'AiPersona';
   /** The authorization rules for the entity */
@@ -943,6 +933,7 @@ export enum AuthorizationCredential {
   BetaTester = 'BETA_TESTER',
   FeatureBetaTester = 'FEATURE_BETA_TESTER',
   FeatureOrganizationCreator = 'FEATURE_ORGANIZATION_CREATOR',
+  FeatureVcCampaign = 'FEATURE_VC_CAMPAIGN',
   FeatureVirtualAssistant = 'FEATURE_VIRTUAL_ASSISTANT',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
@@ -3128,6 +3119,7 @@ export enum CredentialType {
   BetaTester = 'BETA_TESTER',
   FeatureBetaTester = 'FEATURE_BETA_TESTER',
   FeatureOrganizationCreator = 'FEATURE_ORGANIZATION_CREATOR',
+  FeatureVcCampaign = 'FEATURE_VC_CAMPAIGN',
   FeatureVirtualAssistant = 'FEATURE_VIRTUAL_ASSISTANT',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
@@ -5339,7 +5331,7 @@ export type Mutation = {
   adminCommunicationSyncSpaceHierarchy: Scalars['Boolean']['output'];
   /** Allow updating the state flags of a particular rule. */
   adminCommunicationUpdateRoomState: Scalars['Boolean']['output'];
-  /** Removes one category from the platform Forum's active discussionCategories list. Refuses while any Discussion still carries the category. Idempotent for an already-absent category. The enum member is never removed. Requires PLATFORM_ADMIN. Audited (PLATFORM_OPERATIONS). */
+  /** Removes one category from the platform Forum's active discussionCategories list. Refuses while any Discussion still carries the category. Idempotent for an already-absent category. The enum member is never removed. Requires PLATFORM_FORUM_MANAGE. Audited (PLATFORM_OPERATIONS). */
   adminForumRemoveDiscussionCategory: Forum;
   /** Delete a Kratos identity by ID. */
   adminIdentityDeleteKratosIdentity: Scalars['Boolean']['output'];
@@ -5351,7 +5343,7 @@ export type Mutation = {
   adminLicensePolicyDeleteCredentialRule: LicensingCredentialBasedPolicyCredentialRule;
   /** Updates a CredentialRule on the LicensePolicy. */
   adminLicensePolicyUpdateCredentialRule: LicensingCredentialBasedPolicyCredentialRule;
-  /** Platform admin: revoke a named user's MCP API key. Idempotent. */
+  /** Platform Users Admin: revoke a named user's MCP API key. Idempotent. */
   adminRevokeMcpApiKey: McpApiKey;
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
   adminSearchIngestFromScratch: Scalars['String']['output'];
@@ -5359,8 +5351,6 @@ export type Mutation = {
   adminUpdateContributorAvatars: Profile;
   /** Updates the GeoLocation data where required on the platform. */
   adminUpdateGeoLocationData: Scalars['Boolean']['output'];
-  /** Uploads the files from the Whiteboard content into the StorageBucket of that Whiteboard. */
-  adminUploadFilesFromContentToStorageBucket: AdminWhiteboardFilesResult;
   /** Remove the Kratos account associated with the specified User. Note: the Users profile on the platform is not deleted. */
   adminUserAccountDelete: User;
   /** Change a user's login email synchronously, acting as a platform administrator. The admin is responsible for verifying the subject user's identity out-of-band — the platform does NOT send a confirmation message to the new mailbox and does NOT require the new mailbox to prove ownership. Validates uniqueness, commits Kratos → Alkemio with bounded retry, invalidates the subject's existing sessions, and sends a security-signal notification to the old address. Requires PLATFORM_USERS_ADMIN. */
@@ -7212,7 +7202,7 @@ export type PlatformAdminQueryResults = {
   innovationPacks: Array<InnovationPack>;
   /** The most recent email-change audit entry for the named subject user. Returns null if no audit entry exists. */
   latestUserEmailChangeAuditEntry?: Maybe<UserEmailChangeAuditEntry>;
-  /** MCP API keys belonging to the named user. Platform admins only. Keys bound to a system actor are never returned. */
+  /** MCP API keys belonging to the named user. Platform Users Admin only. Keys bound to a system actor are never returned. */
   mcpApiKeys: Array<McpApiKey>;
   /** Retrieve all Organizations on the Platform. This is only available to Platform Admins. */
   organizations: PaginatedOrganization;
@@ -8306,6 +8296,7 @@ export enum RoleName {
   Associate = 'ASSOCIATE',
   FeatureBetaTester = 'FEATURE_BETA_TESTER',
   FeatureOrganizationCreator = 'FEATURE_ORGANIZATION_CREATOR',
+  FeatureVcCampaign = 'FEATURE_VC_CAMPAIGN',
   FeatureVirtualAssistant = 'FEATURE_VIRTUAL_ASSISTANT',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalCommunityReader = 'GLOBAL_COMMUNITY_READER',

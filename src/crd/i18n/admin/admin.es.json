@@ -89,7 +89,8 @@
     "PLATFORM_AUDIT_READER": "Lector de auditoría de la plataforma",
     "FEATURE_BETA_TESTER": "Función: Beta Tester",
     "FEATURE_VIRTUAL_ASSISTANT": "Función: Asistente virtual",
-    "FEATURE_ORGANIZATION_CREATOR": "Función: Creador de organizaciones"
+    "FEATURE_ORGANIZATION_CREATOR": "Función: Creador de organizaciones",
+    "FEATURE_VC_CAMPAIGN": "Feature VC Campaign"
   },
   "roleDescriptions": {
     "GLOBAL_ADMIN": "Control administrativo total sobre toda la plataforma.",
@@ -114,7 +115,8 @@
     "PLATFORM_AUDIT_READER": "Lee el registro de auditoría de la plataforma (con los datos personales enmascarados) y las listas de titulares de los 13 roles, de modo que el registro pueda interpretarse frente al estado en vivo. No realiza ninguna acción administrativa, no puede escribir, alterar ni eliminar registros de auditoría, y es mutuamente excluyente con cualquier otro rol Platform … .",
     "FEATURE_BETA_TESTER": "Otorga un derecho de licencia beta o de prueba. No incluye la creación de organizaciones.",
     "FEATURE_VIRTUAL_ASSISTANT": "Concede acceso al asistente virtual.",
-    "FEATURE_ORGANIZATION_CREATOR": "Permite crear organizaciones. No incluye la eliminación de organizaciones."
+    "FEATURE_ORGANIZATION_CREATOR": "Permite crear organizaciones. No incluye la eliminación de organizaciones.",
+    "FEATURE_VC_CAMPAIGN": "Destinatario de la campaña de Virtual Contributor: se le muestra en el panel la oferta para crear un Virtual Contributor. No concede derechos administrativos."
   },
   "roleMembers": {
     "currentMembers": "Miembros actuales",

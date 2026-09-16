@@ -528,6 +528,7 @@
       "ASSOCIATE": "Asociado",
       "FEATURE_BETA_TESTER": "Función: Beta Tester",
       "FEATURE_ORGANIZATION_CREATOR": "Función: Creador de organizaciones",
+      "FEATURE_VC_CAMPAIGN": "Acceso temprano a VC",
       "FEATURE_VIRTUAL_ASSISTANT": "Función: Asistente virtual",
       "GLOBAL_ADMIN": "Administrador $t(common.global)",
       "GLOBAL_COMMUNITY_READER": "Gestor de $t(common.Community)",

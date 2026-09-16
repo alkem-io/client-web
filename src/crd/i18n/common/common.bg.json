@@ -528,6 +528,7 @@
       "ASSOCIATE": "Асоцииран",
       "FEATURE_BETA_TESTER": "Бета тестер (функция)",
       "FEATURE_ORGANIZATION_CREATOR": "Създател на организации (функция)",
+      "FEATURE_VC_CAMPAIGN": "Ранен достъп до VC",
       "FEATURE_VIRTUAL_ASSISTANT": "Виртуален асистент (функция)",
       "GLOBAL_ADMIN": "Глобален $t(common.Admin)",
       "GLOBAL_COMMUNITY_READER": "Мениджър на $t(common.community)",

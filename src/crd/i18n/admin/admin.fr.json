@@ -89,7 +89,8 @@
     "PLATFORM_AUDIT_READER": "Lecteur d'audit de la plateforme",
     "FEATURE_BETA_TESTER": "Fonctionnalité : testeur bêta",
     "FEATURE_VIRTUAL_ASSISTANT": "Fonctionnalité : assistant virtuel",
-    "FEATURE_ORGANIZATION_CREATOR": "Fonctionnalité : créateur d'organisations"
+    "FEATURE_ORGANIZATION_CREATOR": "Fonctionnalité : créateur d'organisations",
+    "FEATURE_VC_CAMPAIGN": "Feature VC Campaign"
   },
   "roleDescriptions": {
     "GLOBAL_ADMIN": "Contrôle administratif complet sur l'ensemble de la plateforme.",
@@ -114,7 +115,8 @@
     "PLATFORM_AUDIT_READER": "Consulte le journal d'audit de la plateforme (données personnelles masquées) et les listes de titulaires des 13 rôles, afin que le journal puisse être interprété par rapport à l'état en direct. N'effectue aucune action administrative, ne peut ni écrire, ni modifier, ni supprimer les enregistrements d'audit, et est mutuellement exclusif avec tout autre rôle Platform … .",
     "FEATURE_BETA_TESTER": "Confère un droit de licence bêta ou d'essai. N'inclut pas la création d'organisations.",
     "FEATURE_VIRTUAL_ASSISTANT": "Donne accès à l'assistant virtuel.",
-    "FEATURE_ORGANIZATION_CREATOR": "Permet de créer des organisations. N'inclut pas la suppression d'organisations."
+    "FEATURE_ORGANIZATION_CREATOR": "Permet de créer des organisations. N'inclut pas la suppression d'organisations.",
+    "FEATURE_VC_CAMPAIGN": "Ciblé par la campagne Virtual Contributor : l'offre de créer un Virtual Contributor est affichée sur le tableau de bord. N'accorde aucun droit d'administration."
   },
   "roleMembers": {
     "currentMembers": "Membres actuels",

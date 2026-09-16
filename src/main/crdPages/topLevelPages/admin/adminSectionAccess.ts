@@ -39,7 +39,7 @@ import { ADMIN_SECTIONS, type AdminSectionDescriptor, type AdminSectionId } from
  * failure from the nav to the page body.
  */
 
-/** The thirteen roles this feature introduces. Deliberately a closed union: a
+/** The fourteen roles this feature introduces. Deliberately a closed union: a
  * `Record` over it forces every future role to be answered here rather than
  * silently defaulting to "sees nothing" (or, worse, "sees everything"). */
 export type PlatformRoleNames =
@@ -55,7 +55,8 @@ export type PlatformRoleNames =
   | RoleName.PlatformAuditReader
   | RoleName.FeatureBetaTester
   | RoleName.FeatureVirtualAssistant
-  | RoleName.FeatureOrganizationCreator;
+  | RoleName.FeatureOrganizationCreator
+  | RoleName.FeatureVcCampaign;
 
 export const ROLE_ADMIN_SECTIONS: Record<PlatformRoleNames, readonly AdminSectionId[]> = {
   // Assigns all thirteen roles and reads every holder list — the sole re-grant
@@ -138,6 +139,10 @@ export const ROLE_ADMIN_SECTIONS: Record<PlatformRoleNames, readonly AdminSectio
   [RoleName.FeatureBetaTester]: [],
   [RoleName.FeatureVirtualAssistant]: [],
   [RoleName.FeatureOrganizationCreator]: [],
+  // Successor of the legacy `PLATFORM_VC_CAMPAIGN`: gates the dashboard VC
+  // campaign banner (plus a trial entitlement written server-side on grant).
+  // A capability, not administration — same disposition as the three above.
+  [RoleName.FeatureVcCampaign]: [],
 };
 
 /** `ROLE_ADMIN_SECTIONS` inverted. Derived, never hand-maintained — the two

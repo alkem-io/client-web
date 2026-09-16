@@ -89,7 +89,8 @@
     "PLATFORM_AUDIT_READER": "Platform Audit Reader",
     "FEATURE_BETA_TESTER": "Feature Beta Tester",
     "FEATURE_VIRTUAL_ASSISTANT": "Feature Virtual Assistant",
-    "FEATURE_ORGANIZATION_CREATOR": "Feature Organization Creator"
+    "FEATURE_ORGANIZATION_CREATOR": "Feature Organization Creator",
+    "FEATURE_VC_CAMPAIGN": "Feature VC Campaign"
   },
   "roleDescriptions": {
     "GLOBAL_ADMIN": "Full administrative control over the entire platform.",
@@ -114,7 +115,8 @@
     "PLATFORM_AUDIT_READER": "Reads the platform audit trail (PII-masked) and the holder lists of all 13 roles, so the trail can be interpreted against live state. Performs no administrative action, cannot write, alter or delete audit records, and is mutually exclusive with every other Platform … role.",
     "FEATURE_BETA_TESTER": "Carries a beta or trial license entitlement. Does not include organisation creation.",
     "FEATURE_VIRTUAL_ASSISTANT": "Grants access to the virtual assistant.",
-    "FEATURE_ORGANIZATION_CREATOR": "Allows creating organisations. Does not include deleting organisations."
+    "FEATURE_ORGANIZATION_CREATOR": "Allows creating organisations. Does not include deleting organisations.",
+    "FEATURE_VC_CAMPAIGN": "Targeted for the Virtual Contributor campaign: shown the dashboard offer to create a Virtual Contributor. Grants no administrative rights."
   },
   "roleMembers": {
     "currentMembers": "Current members",
