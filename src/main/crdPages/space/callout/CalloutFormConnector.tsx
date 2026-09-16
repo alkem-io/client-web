@@ -942,15 +942,24 @@ function CalloutFormConnectorInner({
           counterThreshold: TITLE_COUNTER_THRESHOLD,
         }}
         descriptionSlot={
-          <MarkdownEditor
-            value={values.description}
-            onChange={v => setField('description', v)}
-            placeholder={t('forms.descriptionPlaceholder')}
-            onImageUpload={disableRichMedia ? undefined : editorMarkdownUpload.onImageUpload}
-            iframeAllowedUrls={editorMarkdownUpload.iframeAllowedUrls}
-            onError={editorMarkdownUpload.onError}
-            hideImageOptions={disableRichMedia}
-          />
+          <div className="space-y-1.5">
+            <MarkdownEditor
+              value={values.description}
+              onChange={v => setField('description', v)}
+              placeholder={t('forms.descriptionPlaceholder')}
+              onImageUpload={disableRichMedia ? undefined : editorMarkdownUpload.onImageUpload}
+              iframeAllowedUrls={editorMarkdownUpload.iframeAllowedUrls}
+              onError={editorMarkdownUpload.onError}
+              hideImageOptions={disableRichMedia}
+            />
+            {/* Submit-time validation only: without this the description error had no
+                rendering path, so an over-long body aborted Save with no feedback. */}
+            {errors.description && (
+              <p className="text-caption text-destructive" aria-live="polite">
+                {errors.description}
+              </p>
+            )}
+          </div>
         }
         framingZoneSlot={
           hideFramingZone ? undefined : (
