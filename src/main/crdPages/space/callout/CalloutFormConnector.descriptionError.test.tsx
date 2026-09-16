@@ -9,6 +9,12 @@ import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { LONG_MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
+/**
+ * `t` is stubbed to echo its key, so this is the key the description error
+ * resolves to — the shared, count-free length message.
+ */
+const MAX_LENGTH_MESSAGE = 'crd-common:components.wysiwyg-editor.validation.maxLength';
+
 const handleCreateCallout = vi.fn();
 
 vi.mock('react-i18next', () => ({
@@ -133,8 +139,18 @@ describe('CalloutFormConnector — over-long description feedback', () => {
     form.typeDescription('a'.repeat(LONG_MARKDOWN_TEXT_LENGTH + 1));
     form.publish();
 
-    expect(screen.getByText(`validation.maxMarkdown:${LONG_MARKDOWN_TEXT_LENGTH}`)).toBeInTheDocument();
+    expect(screen.getByText(MAX_LENGTH_MESSAGE)).toBeInTheDocument();
     expect(handleCreateCallout).not.toHaveBeenCalled();
+  });
+
+  // The limit counts raw markdown, so the surfaced error must not quote a figure
+  // the author has no way to check their own text against.
+  test('the surfaced error quotes no character figure', () => {
+    const form = openForm();
+    form.typeDescription('a'.repeat(LONG_MARKDOWN_TEXT_LENGTH + 1));
+    form.publish();
+
+    expect(screen.getByText(MAX_LENGTH_MESSAGE).textContent).not.toMatch(/\d/);
   });
 
   test('announces the error so it is not missed on submit', () => {
@@ -142,10 +158,7 @@ describe('CalloutFormConnector — over-long description feedback', () => {
     form.typeDescription('a'.repeat(LONG_MARKDOWN_TEXT_LENGTH + 1));
     form.publish();
 
-    expect(screen.getByText(`validation.maxMarkdown:${LONG_MARKDOWN_TEXT_LENGTH}`)).toHaveAttribute(
-      'aria-live',
-      'polite'
-    );
+    expect(screen.getByText(MAX_LENGTH_MESSAGE)).toHaveAttribute('aria-live', 'polite');
   });
 
   test('a description under the limit submits without a description error', () => {
@@ -153,7 +166,7 @@ describe('CalloutFormConnector — over-long description feedback', () => {
     form.typeDescription('a'.repeat(20000));
     form.publish();
 
-    expect(screen.queryByText(`validation.maxMarkdown:${LONG_MARKDOWN_TEXT_LENGTH}`)).not.toBeInTheDocument();
+    expect(screen.queryByText(MAX_LENGTH_MESSAGE)).not.toBeInTheDocument();
     expect(handleCreateCallout).toHaveBeenCalled();
   });
 });

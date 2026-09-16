@@ -265,7 +265,9 @@ export type UseCrdCalloutFormResult = {
  *   `prefill` always wins over these — the overrides only seed the empty form.
  */
 export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>): UseCrdCalloutFormResult {
-  const { t } = useTranslation('crd-space');
+  // `crd-space` stays first, so it remains the default namespace for every bare
+  // key below; `crd-common` is added only so the shared validation copy is reachable.
+  const { t } = useTranslation(['crd-space', 'crd-common']);
   const [initialValues, setInitialValues] = useState<CalloutFormValues>(() => ({
     ...EMPTY_CALLOUT_FORM_VALUES,
     ...initialOverrides,
@@ -296,7 +298,11 @@ export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>)
       case 'maxMid':
         return t('validation.maxMid', { count: MID_TEXT_LENGTH, ...params });
       case 'maxMarkdown':
-        return t('validation.maxMarkdown', { count: LONG_MARKDOWN_TEXT_LENGTH, ...params });
+        // Deliberately no figure: the rule measures the raw markdown source, so any
+        // number quoted here would not match the text length the author perceives,
+        // and there is no live counter to reconcile the two against. This is the same
+        // count-free message the Post description already shows.
+        return t('crd-common:components.wysiwyg-editor.validation.maxLength');
       case 'minPollOptions':
         return t('validation.minPollOptions', { count: MIN_POLL_OPTIONS, ...params });
       case 'maxPollOptions':
