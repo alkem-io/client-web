@@ -94,9 +94,9 @@
         "profile": "Profil",
         "account": "Konto",
         "community": "Assoziierte",
-        "authorization": "Autorisierung",
         "settings": "Einstellungen",
-        "invitations": "Einladungen"
+        "invitations": "Einladungen",
+        "authorization": "Autorisierung"
       },
       "vc": {
         "profile": "Profil",
@@ -534,7 +534,9 @@
           "conversationMessageDirect": "Benachrichtigung erhalten, wenn mir jemand eine direkte (1:1) Chatnachricht sendet",
           "conversationMessageGroup": "Benachrichtigung erhalten, wenn jemand in einem Gruppenchat postet, dessen Mitglied ich bin",
           "membershipInvitationReceived": "Benachrichtigung erhalten, wenn mich jemand in eine Community einlädt",
-          "membershipCommunityJoined": "Benachrichtigung erhalten, wenn ich einem neuen Space beitrete"
+          "membershipCommunityJoined": "Benachrichtigung erhalten, wenn ich einem neuen Space beitrete",
+          "membershipOrganizationAssociateInvitationReceived": "Benachrichtigung erhalten, wenn ich eingeladen werde, mich einer Organisation anzuschließen",
+          "membershipOrganizationAssociateApplicationDecided": "Benachrichtigung erhalten, wenn eine Organisation über meine Bewerbung entscheidet"
         },
         "platform": {
           "forumDiscussionComment": "Benachrichtigung erhalten, wenn ein neuer Kommentar zu einer Diskussion, der ich folge, hinzugefügt wird",
@@ -550,7 +552,10 @@
         "organization": {
           "adminMentioned": "Benachrichtigung erhalten, wenn meine Organisation erwähnt wird",
           "adminMessageReceived": "Direktnachrichten an meine Organisation erhalten",
-          "adminSpaceCommunityInvitation": "Erhalten Sie eine Benachrichtigung, wenn eine von Ihnen verwaltete Organisation eingeladen wird, einem Space beizutreten, und wenn sie beitritt"
+          "adminSpaceCommunityInvitation": "Erhalten Sie eine Benachrichtigung, wenn eine von Ihnen verwaltete Organisation eingeladen wird, einem Space beizutreten, und wenn sie beitritt",
+          "adminAssociateInvitationResponse": "Benachrichtigung erhalten, wenn jemand auf eine Einladung zu einer von mir verwalteten Organisation antwortet",
+          "adminAssociateApplicationReceived": "Benachrichtigung erhalten, wenn sich jemand bei einer von mir verwalteten Organisation bewirbt",
+          "adminAssociateJoined": "Benachrichtigung erhalten, wenn jemand einer von mir verwalteten Organisation als Assoziierter beitritt"
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Benachrichtigung erhalten, wenn ein VC-Manager eingeladen wird, einer Community beizutreten"
@@ -762,7 +767,7 @@
       }
     },
     "community": {
-      "pageTitle": "Gemeinschaft",
+      "pageTitle": "Assoziierte",
       "title": "Mitglieder",
       "description": "Verwalte, wer mit dieser Organisation verbunden ist. Füge neue Mitglieder aus der Liste der verfügbaren Nutzer hinzu; das Entfernen eines Mitglieds entzieht die Organisationsrolle.",
       "currentAssociatesTitle": "Aktuelle Mitglieder",
@@ -778,6 +783,97 @@
       "removeConfirmAssociate": "{{name}} als Mitglied entfernen",
       "removeSuccess": "Mitglied entfernt",
       "removeError": "Entfernen fehlgeschlagen — bitte erneut versuchen"
+    },
+    "settings": {
+      "pageTitle": "Einstellungen",
+      "title": "Organisationseinstellungen",
+      "membership": {
+        "title": "Mitgliedschaft",
+        "allowSpaceInvitationsLabel": "Spaces erlauben, diese Organisation einzuladen",
+        "allowSpaceInvitationsCaption": "Wenn aktiviert, können Space-Administratoren diese Organisation einladen, ihrer Space-Community beizutreten.",
+        "allowDomainLabel": "Nutzern mit dieser Domain den Beitritt erlauben",
+        "allowDomainCaption": "Nutzer, deren E-Mail-Domain mit der verifizierten Domain dieser Organisation übereinstimmt, können mit einem Klick als Assoziierte beitreten.",
+        "allowApplicationsLabel": "Nutzern erlauben, sich als Assoziierte zu bewerben",
+        "allowApplicationsCaption": "Ist diese Option deaktiviert, bietet das öffentliche Profil der Organisation keine Bewerbungsmöglichkeit; ausstehende Bewerbungen bleiben sichtbar und entscheidbar."
+      },
+      "privacy": {
+        "title": "Privatsphäre",
+        "contributionRolesLabel": "Beitragsrollen öffentlich anzeigen",
+        "contributionRolesCaption": "Wenn aktiviert, sind die Rollenzuweisungen der Organisation (Administrator, Eigentümer, Mitglied) im öffentlichen Profil sichtbar."
+      },
+      "errorToast": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen"
+    },
+    "invitations": {
+      "pageTitle": "Einladungen",
+      "title": "Space-Einladungen",
+      "empty": "Keine ausstehenden Space-Einladungen.",
+      "invitedBy": "Eingeladen von {{name}}",
+      "invitedByUnknown": "Eingeladen von einem Space-Administrator",
+      "date": "Datum",
+      "role": "Rolle",
+      "roleMember": "Mitglied",
+      "roleMemberLead": "Mitglied + Lead",
+      "spacesToJoin": "Bei Annahme wird beigetreten zu: {{spaces}}",
+      "accept": "Annehmen",
+      "decline": "Ablehnen",
+      "acceptConfirmTitle": "Diese Einladung annehmen?",
+      "acceptConfirmBody": "Ihre Organisation wird {{spaceName}} als {{role}} beitreten.",
+      "acceptConfirmAction": "Einladung annehmen",
+      "declineConfirmTitle": "Diese Einladung ablehnen?",
+      "declineConfirmBody": "{{spaceName}} wird mitgeteilt, dass Ihre Organisation abgelehnt hat. Dies kann nicht rückgängig gemacht werden — ein Space-Administrator müsste eine neue Einladung senden.",
+      "declineConfirmAction": "Einladung ablehnen",
+      "errorToast": "Die Einladung konnte nicht aktualisiert werden — bitte erneut versuchen"
+    },
+    "associates": {
+      "title": "Assoziierte",
+      "description": "Alle mit dieser Organisation verbundenen Personen – Assoziierte, Admins und Eigentümer – mit der Möglichkeit, Rollen zu bearbeiten, neue Assoziierte einzuladen und ausstehende Bewerbungen und Einladungen zu verwalten.",
+      "invite": "Einladen",
+      "empty": "Noch keine Assoziierten.",
+      "badge": {
+        "associate": "Assoziiert",
+        "admin": "Admin",
+        "owner": "Eigentümer"
+      },
+      "editAriaLabel": "{{name}} bearbeiten",
+      "editor": {
+        "title": "{{name}} bearbeiten",
+        "description": "Ändern Sie, welche Rollen {{name}} in dieser Organisation innehat, oder entfernen Sie die Person daraus.",
+        "associateLabel": "Assoziiert",
+        "associateCaption": "Die Grundrolle – erforderlich, um zusätzlich Admin oder Eigentümer zu sein.",
+        "adminLabel": "Admin",
+        "ownerLabel": "Eigentümer",
+        "remove": "Aus der Organisation entfernen",
+        "removeConfirmTitle": "{{name}} aus der Organisation entfernen?",
+        "removeConfirmBody": "{{name}} verliert alle Rollen in dieser Organisation.",
+        "save": "Speichern",
+        "cancel": "Abbrechen",
+        "removeSuccess": "{{name}} wurde aus der Organisation entfernt",
+        "removeError": "{{name}} konnte nicht entfernt werden – bitte erneut versuchen",
+        "saveError": "Änderungen konnten nicht gespeichert werden – bitte erneut versuchen",
+        "selfAdminLocked": "Sie können Ihre eigene Admin-Rolle hier nicht entfernen."
+      },
+      "errors": {
+        "limitAdmin": "Eine Organisation kann höchstens 6 Admins haben",
+        "limitOwner": "Eine Organisation kann höchstens 3 Eigentümer haben",
+        "minOwner": "Eine Organisation muss mindestens einen Eigentümer behalten",
+        "generic": "Etwas ist schiefgelaufen – bitte erneut versuchen"
+      },
+      "pending": {
+        "title": "Ausstehende Bewerbungen und Einladungen",
+        "empty": "Keine ausstehenden Bewerbungen oder Einladungen.",
+        "offeredRole": {
+          "associate": "Assoziiert",
+          "associateAdmin": "Assoziiert + Admin",
+          "associateOwner": "Assoziiert + Eigentümer"
+        },
+        "rejectConfirmTitle": "Bewerbung von {{name}} ablehnen?",
+        "rejectConfirmBody": "{{name}} wird über die Ablehnung informiert und kann sich später erneut bewerben.",
+        "rejectConfirm": "Bewerbung ablehnen",
+        "revokeConfirmTitle": "Einladung an {{name}} zurückziehen?",
+        "revokeConfirmBody": "Die Einladung wird zurückgezogen. {{name}} kann sie dann nicht mehr annehmen.",
+        "revokeConfirm": "Einladung zurückziehen",
+        "actionError": "Aktion fehlgeschlagen – bitte erneut versuchen"
+      }
     },
     "authorization": {
       "pageTitle": "Autorisierung",
@@ -811,44 +907,6 @@
       "removeSuccessAdmin": "Administrator-Rolle entfernt",
       "removeSuccessOwner": "Eigentümer-Rolle entfernt",
       "removeError": "Rolle konnte nicht entfernt werden — bitte erneut versuchen"
-    },
-    "settings": {
-      "pageTitle": "Einstellungen",
-      "title": "Organisationseinstellungen",
-      "membership": {
-        "title": "Mitgliedschaft",
-        "allowDomainLabel": "Nutzer mit passender Domain dürfen beitreten",
-        "allowDomainCaption": "Wenn aktiviert, können Nutzer, deren E-Mail-Domain mit der Organisation übereinstimmt, ohne Einladung beitreten.",
-        "allowSpaceInvitationsLabel": "Spaces erlauben, diese Organisation einzuladen",
-        "allowSpaceInvitationsCaption": "Wenn aktiviert, können Space-Administratoren diese Organisation einladen, ihrer Space-Community beizutreten."
-      },
-      "privacy": {
-        "title": "Privatsphäre",
-        "contributionRolesLabel": "Beitragsrollen öffentlich anzeigen",
-        "contributionRolesCaption": "Wenn aktiviert, sind die Rollenzuweisungen der Organisation (Administrator, Eigentümer, Mitglied) im öffentlichen Profil sichtbar."
-      },
-      "errorToast": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen"
-    },
-    "invitations": {
-      "pageTitle": "Einladungen",
-      "title": "Space-Einladungen",
-      "empty": "Keine ausstehenden Space-Einladungen.",
-      "invitedBy": "Eingeladen von {{name}}",
-      "invitedByUnknown": "Eingeladen von einem Space-Administrator",
-      "date": "Datum",
-      "role": "Rolle",
-      "roleMember": "Mitglied",
-      "roleMemberLead": "Mitglied + Lead",
-      "spacesToJoin": "Bei Annahme wird beigetreten zu: {{spaces}}",
-      "accept": "Annehmen",
-      "decline": "Ablehnen",
-      "acceptConfirmTitle": "Diese Einladung annehmen?",
-      "acceptConfirmBody": "Ihre Organisation wird {{spaceName}} als {{role}} beitreten.",
-      "acceptConfirmAction": "Einladung annehmen",
-      "declineConfirmTitle": "Diese Einladung ablehnen?",
-      "declineConfirmBody": "{{spaceName}} wird mitgeteilt, dass Ihre Organisation abgelehnt hat. Dies kann nicht rückgängig gemacht werden — ein Space-Administrator müsste eine neue Einladung senden.",
-      "declineConfirmAction": "Einladung ablehnen",
-      "errorToast": "Die Einladung konnte nicht aktualisiert werden — bitte erneut versuchen"
     }
   },
   "vc": {

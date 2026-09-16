@@ -30,3 +30,12 @@ describe('useOrgSettingsTab — invitations tab (T011, contract §4)', () => {
     expect(result.current.activeTabId).toBe('community');
   });
 });
+
+describe('useOrgSettingsTab — the removed Authorization tab (062, T010)', () => {
+  it('no longer recognizes "authorization" as a tab id (the route itself redirects to community — see CrdOrgSettingsRoutes.test.tsx)', () => {
+    const { result } = renderHook(() => useOrgSettingsTab({ profileUrl: '/organization/x' }), {
+      wrapper: wrapper('/organization/x/settings/authorization'),
+    });
+    expect(result.current.activeTabId).toBe('profile');
+  });
+});

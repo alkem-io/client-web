@@ -64,8 +64,12 @@ const mapIncomingToPayloadModel = (
   // Map the nullable aliases to their corresponding fields
   // is the alias is defined the normal field would be undefined and vice versa
   clonedPayload.organization = incomingInAppPayload.nullableOrganization ?? incomingInAppPayload.organization;
+  clonedPayload.actor = incomingInAppPayload.nullableActor ?? incomingInAppPayload.actor;
+  clonedPayload.application = incomingInAppPayload.nullableApplication ?? incomingInAppPayload.application;
   // Remove nullable fields as they are not needed in the model
   delete clonedPayload.nullableOrganization;
+  delete clonedPayload.nullableActor;
+  delete clonedPayload.nullableApplication;
 
   return clonedPayload as InAppNotificationPayloadModel;
 };

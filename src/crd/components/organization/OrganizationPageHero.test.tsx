@@ -18,6 +18,32 @@ const baseProps = {
   onSendMessage: null,
 };
 
+describe('OrganizationPageHero — associate action placement (FR-011, R44)', () => {
+  afterEach(() => vi.clearAllMocks());
+
+  test('renders the associate action in the hero action row, immediately before Message', () => {
+    render(
+      <OrganizationPageHero
+        {...baseProps}
+        onSendMessage={async () => {}}
+        associateAction={<button type="button">Apply to associate</button>}
+      />
+    );
+    const apply = screen.getByRole('button', { name: 'Apply to associate' });
+    const message = screen.getByRole('button', { name: /orgProfile\.hero\.messageButton/ });
+    // Same action row, Apply first: Carlos expected it "on the top right of the
+    // Organization profile, next to the button that says Message".
+    expect(apply.parentElement).toBe(message.parentElement);
+    // Node.DOCUMENT_POSITION_FOLLOWING === 4.
+    expect(apply.compareDocumentPosition(message) & 4).toBeTruthy();
+  });
+
+  test('renders no associate action when the viewer has none (already an associate)', () => {
+    render(<OrganizationPageHero {...baseProps} onSendMessage={async () => {}} />);
+    expect(screen.queryByRole('button', { name: 'Apply to associate' })).toBeNull();
+  });
+});
+
 describe('OrganizationPageHero — tagline (FR-020)', () => {
   afterEach(() => vi.clearAllMocks());
 

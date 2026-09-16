@@ -1,4 +1,4 @@
-import type { ApolloError } from '@apollo/client';
+import type { ApolloError, DefaultContext } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import {
   useAssignPlatformRoleToOrganizationMutation,
@@ -20,6 +20,13 @@ import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 type useRoleSetManagerRolesAssignmentParams = {
   roleSetId: string | undefined;
   refetchRoleSetOnMutation?: boolean;
+  /**
+   * Apollo link context attached to every mutation this hook runs — e.g.
+   * `{ skipGlobalErrorHandler: true }` for a caller that renders every failure itself
+   * and must not get a second, generic toast from the global error link. Omitted by
+   * default, so existing callers keep the global handler.
+   */
+  context?: DefaultContext;
 };
 
 export type useRoleSetManagerRolesAssignmentProvided = {
@@ -78,6 +85,7 @@ const isExclusivelyAuthorizationError = (error: unknown): boolean => {
 const useRoleSetManagerRolesAssignment = ({
   roleSetId,
   refetchRoleSetOnMutation = false,
+  context,
 }: useRoleSetManagerRolesAssignmentParams): useRoleSetManagerRolesAssignmentProvided => {
   const notify = useNotification();
   const { t } = useTranslation('crd-common');
@@ -102,6 +110,7 @@ const useRoleSetManagerRolesAssignment = ({
         role,
       },
       update: cache => refetchQueries(cache),
+      context,
     });
   };
 
@@ -112,6 +121,7 @@ const useRoleSetManagerRolesAssignment = ({
         role,
       },
       update: cache => refetchQueries(cache),
+      context,
     });
   };
 
@@ -151,6 +161,7 @@ const useRoleSetManagerRolesAssignment = ({
         roleSetId: roleSetId!,
       },
       update: cache => refetchQueries(cache),
+      context,
     });
   };
 
@@ -163,6 +174,7 @@ const useRoleSetManagerRolesAssignment = ({
         roleSetId: roleSetId!,
       },
       update: cache => refetchQueries(cache),
+      context,
     });
   };
 
@@ -179,6 +191,7 @@ const useRoleSetManagerRolesAssignment = ({
         roleSetId: roleSetId!,
       },
       update: cache => refetchQueries(cache),
+      context,
     });
   };
 
@@ -191,6 +204,7 @@ const useRoleSetManagerRolesAssignment = ({
         roleSetId: roleSetId!,
       },
       update: cache => refetchQueries(cache),
+      context,
     });
   };
 
@@ -207,6 +221,7 @@ const useRoleSetManagerRolesAssignment = ({
         roleSetId: roleSetId!,
       },
       update: cache => refetchQueries(cache),
+      context,
     });
   };
 
@@ -219,6 +234,7 @@ const useRoleSetManagerRolesAssignment = ({
         roleSetId: roleSetId!,
       },
       update: cache => refetchQueries(cache),
+      context,
     });
   };
   const loading =

@@ -40,6 +40,7 @@ const labels: InviteMembersDialogLabels = {
     parentNotAuthorized: "Can't invite to parent",
     notAcceptingInvitations: 'Not accepting invitations',
     leadLimitReached: 'Lead limit reached',
+    extraRoleLimitReached: 'Extra role limit reached',
     error: 'Failed',
   },
 };
@@ -410,5 +411,74 @@ describe('InviteMembersDialog — virtualContributor kind (T019 fold parity)', (
     render(<InviteMembersDialog {...vcBaseProps} onSearchChange={onSearchChange} />);
     await userEvent.type(screen.getByPlaceholderText('Search virtual contributors…'), 'a');
     expect(onSearchChange).toHaveBeenCalled();
+  });
+});
+
+describe('InviteMembersDialog — organization target (062, T007)', () => {
+  const orgLabels: InviteMembersDialogLabels = {
+    ...labels,
+    title: 'Invite associates to "Acme"',
+    roleLabels: { Associate: 'Associate', Admin: 'Admin', Owner: 'Owner' },
+    resultOutcomeLabels: {
+      ...labels.resultOutcomeLabels,
+      alreadyMember: 'Already an associate',
+      extraRoleLimitReached: 'The offered role limit has been reached',
+    },
+  };
+
+  const orgProps = {
+    ...baseProps,
+    target: 'organization' as const,
+    labels: orgLabels,
+    extraRoles: ['Associate'] as InviteRole[],
+    allowEmailInvites: false,
+    onAddEmails: undefined,
+  };
+
+  test('offers no email-paste path', () => {
+    render(<InviteMembersDialog {...orgProps} />);
+    expect(screen.queryByText(/paste email/i)).not.toBeInTheDocument();
+  });
+
+  test('offers no suggested-language control', () => {
+    render(<InviteMembersDialog {...orgProps} availableLanguages={[{ code: 'en', label: 'English' }]} />);
+    expect(screen.queryByLabelText(/language/i)).not.toBeInTheDocument();
+  });
+
+  test('Associate is locked and the role picker offers Admin/Owner as extras', async () => {
+    render(<InviteMembersDialog {...orgProps} />);
+    await userEvent.click(screen.getByRole('button', { name: 'Choose roles' }));
+    expect(screen.getAllByText('Associate').length).toBeGreaterThan(0);
+    expect(screen.getByText('Admin')).toBeInTheDocument();
+    expect(screen.getByText('Owner')).toBeInTheDocument();
+  });
+
+  test('selecting Owner after Admin keeps only the newly-selected role, plus the locked Associate', async () => {
+    const onExtraRolesChange = vi.fn();
+    render(
+      <InviteMembersDialog {...orgProps} extraRoles={['Associate', 'Admin']} onExtraRolesChange={onExtraRolesChange} />
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Choose roles' }));
+    await userEvent.click(screen.getByText('Owner'));
+    expect(onExtraRolesChange).toHaveBeenCalledWith(['Associate', 'Owner']);
+  });
+
+  test('Send is disabled until the locked Associate role is present', () => {
+    render(
+      <InviteMembersDialog
+        {...orgProps}
+        selectedContributors={[{ kind: 'user', userId: 'u1', displayName: 'Alice' }]}
+        extraRoles={[]}
+      />
+    );
+    expect(screen.getByRole('button', { name: 'Send' })).toBeDisabled();
+  });
+
+  test('renders the extraRoleLimitReached outcome row', () => {
+    const results: InvitationResult[] = [
+      { invitee: { kind: 'user', userId: 'u1', displayName: 'Alice' }, outcome: 'extraRoleLimitReached' },
+    ];
+    render(<InviteMembersDialog {...orgProps} results={results} />);
+    expect(screen.getByText('The offered role limit has been reached')).toBeInTheDocument();
   });
 });
