@@ -97,9 +97,16 @@ export type SpaceSettingsCommunityViewProps = {
   applicationFormSlot?: ReactNode;
   communityGuidelinesSlot?: ReactNode;
   /**
-   * The community permissions this view reports upward. None of them decide whether a
-   * launch button is RENDERED — every gated action is rendered always and disabled via
-   * its `*DisabledReason` prop — so adding a flag here never hides anything.
+   * The community permissions this view reports upward.
+   *
+   * One of them decides whether a launch button is RENDERED: `canAddOrganizations` hides
+   * *Add Organisation* (client-web#10292). Every other gated action is rendered always and
+   * disabled via its `*DisabledReason` prop, so adding a flag here hides nothing by itself.
+   *
+   * `canAddOrganizations` must be false while the privilege query is unresolved, so the
+   * button never appears before the answer is known. The page derives it from the same
+   * `useActionPermission` decision that feeds the tooltips, whose `checking` state is not
+   * `allowed`.
    */
   permissions: {
     canInvite: boolean;
@@ -113,16 +120,19 @@ export type SpaceSettingsCommunityViewProps = {
    * These buttons are rendered gated rather than hidden: hiding conceals the action's
    * existence and produces a hidden→shown flip once privileges resolve, which spec FR-002
    * and FR-008 rule out. Undefined means permitted.
+   *
+   * *Add Organisation* is deliberately NOT here any more — it is hidden outright, keyed on
+   * `permissions.canAddOrganizations` (client-web#10292), because its privilege is one an
+   * ordinary Space admin can never hold.
    */
   addDisabledReasons?: {
-    organizations?: string;
     virtualContributors?: string;
   };
   /**
    * Tooltip copy for the *Invite organisation* button when the action is unavailable.
-   * Same gated-not-hidden contract as `addDisabledReasons` above — the two controls sit
-   * in the same card and must not use two different conventions. Undefined means
-   * permitted.
+   * Gated, never hidden. The two organization controls in this card DO use two different
+   * conventions, on purpose (client-web#10292): invite is obtainable by any Space admin
+   * and stays gated, direct add is not and is hidden. Undefined means permitted.
    */
   inviteOrganizationsDisabledReason?: string;
   /** Show the destructive "Remove from Space" dropdown item on member rows. Omit to hide. */
@@ -464,10 +474,12 @@ export function SpaceSettingsCommunityView({
               className="h-9 w-[220px] pl-9 text-control"
             />
           </div>
-          {/* Gated, not hidden — the same contract, and the same mechanism, as the Add
-              organisation button further down this card. Conditionally rendering this
-              button on the privilege would conceal the action's existence from an admin
-              who lacks it, and flip it hidden→shown once the privilege query resolves. */}
+          {/* Gated, not hidden. Deliberately a DIFFERENT convention from the Add
+              organisation button further down this card, which client-web#10292 hides:
+              every Space admin can eventually invite, so concealing this action would hide
+              a capability the user can actually obtain, and it would flip hidden→shown once
+              the privilege query resolves. Direct add is a platform-role capability an
+              ordinary admin can never hold, which is why only that one hides. */}
           <GatedAction disabledReason={inviteOrganizationsDisabledReason}>
             <Button type="button" size="sm" className="gap-2" onClick={onInviteOrganizations}>
               <UserPlus aria-hidden="true" className="size-4" />
@@ -568,14 +580,20 @@ export function SpaceSettingsCommunityView({
             </TableBody>
           </Table>
         </div>
-        <div className="mt-4">
-          <GatedAction disabledReason={addDisabledReasons?.organizations}>
+        {/* HIDDEN, not gated — the one carve-out from this card's gated-not-hidden contract
+            (client-web#10292). Direct add needs a platform-role privilege an ordinary Space
+            admin can never obtain, so a permanently dead control plus a tooltip explaining an
+            unobtainable capability is noise. `canAddOrganizations` is false while the privilege
+            query is still resolving, so nothing renders until the answer is known. Its sibling
+            *Invite organisation* stays gated: every Space admin can eventually invite. */}
+        {permissions.canAddOrganizations && (
+          <div className="mt-4">
             <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onOrgAdd}>
               <Plus aria-hidden="true" className="size-4" />
               {t('community.organizations.add')}
             </Button>
-          </GatedAction>
-        </div>
+          </div>
+        )}
         <PendingOrganizationInvitationsList
           className="mt-6"
           title={t('community.organizations.pendingInvitations.title')}
