@@ -46,7 +46,12 @@ const CrdDiscussionPage = () => {
   const { getAuthor } = useAuthorsDetails(authorIds);
 
   const { platformPrivilegeWrapper } = useCurrentUserContext();
-  const isPlatformAdmin = platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;
+  // 027-platform-role-redesign A15 (spec-clientweb-5): same disjunction as
+  // CrdForumPage — the forum family's own `PLATFORM_FORUM_MANAGE`, with the
+  // retiring `PLATFORM_ADMIN` kept alongside so legacy reach is not narrowed.
+  const canManageForum = [AuthorizationPrivilege.PlatformForumManage, AuthorizationPrivilege.PlatformAdmin].some(
+    privilege => Boolean(platformPrivilegeWrapper?.hasPlatformPrivilege(privilege))
+  );
   const activeCategories = data?.platform.forum.discussionCategories ?? [];
 
   // Edit / delete dialog state. Always declared (no conditional hooks) — the
@@ -137,7 +142,7 @@ const CrdDiscussionPage = () => {
             }}
             availableCategories={availableCategoriesFor(
               activeCategories,
-              isPlatformAdmin,
+              canManageForum,
               rawDiscussion.category as ForumDiscussionCategory
             )}
             onStateChange={setEditFormState}
