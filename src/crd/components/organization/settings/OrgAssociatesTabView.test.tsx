@@ -34,6 +34,7 @@ const baseProps: OrgAssociatesTabViewProps = {
   associates: [associate()],
   loading: false,
   canManage: true,
+  canInvite: true,
   onEdit: vi.fn(),
   onInvite: vi.fn(),
   pending: [pendingRow()],
@@ -57,5 +58,17 @@ describe('OrgAssociatesTabView — layout (R41, R42)', () => {
     // the pending heading in document order. Pending is what needs acting on, so
     // it leads (R42 / FR-019).
     expect(pendingHeading.compareDocumentPosition(associatesHeading) & 4).toBeTruthy();
+  });
+});
+
+describe('OrgAssociatesTabView — Invite gate (R47)', () => {
+  test('Invite follows canInvite, not canManage: an inviter without GRANT can still invite', () => {
+    render(<OrgAssociatesTabView {...baseProps} canManage={false} canInvite={true} />);
+    expect(screen.getByRole('button', { name: 'org.associates.invite' })).toBeEnabled();
+  });
+
+  test('Invite is disabled without the invite privilege', () => {
+    render(<OrgAssociatesTabView {...baseProps} canInvite={false} inviteDisabledReason="no permission" />);
+    expect(screen.getByRole('button', { name: 'org.associates.invite' })).toBeDisabled();
   });
 });

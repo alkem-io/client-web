@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  OrganizationInfoDocument,
   refetchPendingInvitationsCountQuery,
   refetchUserPendingMembershipsQuery,
   useInvitationStateEventMutation,
@@ -52,7 +53,14 @@ export const useOrgInvitationResponse = (
   const [pendingAction, setPendingAction] = useState<'accept' | 'decline' | null>(null);
   const [withheldNotice, setWithheldNotice] = useState<WithheldNotice | undefined>(undefined);
 
-  const refetchQueries = [refetchUserPendingMembershipsQuery(), refetchPendingInvitationsCountQuery()];
+  // OrganizationInfo too: the profile's associate action ("Respond to invitation") comes from
+  // it, so answering from the top-bar pending dialog would otherwise leave that button stale,
+  // pointing at an invitation the refetched pending list no longer has.
+  const refetchQueries = [
+    refetchUserPendingMembershipsQuery(),
+    refetchPendingInvitationsCountQuery(),
+    OrganizationInfoDocument,
+  ];
 
   const respond = async (invitationId: string, eventName: InvitationEvent, action: 'accept' | 'decline') => {
     setPendingAction(action);

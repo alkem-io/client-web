@@ -110,7 +110,8 @@ const CrdOrgAssociatesTab = () => {
         associates={state.associates}
         loading={state.loading}
         canManage={state.canManage}
-        manageDisabledReason={state.manageDisabledReason}
+        canInvite={state.canInvite}
+        inviteDisabledReason={state.inviteDisabledReason}
         onEdit={setEditingId}
         onInvite={state.openInvite}
         pending={state.pendingMemberships}

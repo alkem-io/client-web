@@ -26,7 +26,8 @@ export type OrgAssociatesTabViewProps = {
   associates: OrgAssociateListRow[];
   loading: boolean;
   canManage: boolean;
-  manageDisabledReason?: string;
+  canInvite: boolean;
+  inviteDisabledReason?: string;
   onEdit: (id: string) => void;
   onInvite: () => void;
 
@@ -43,7 +44,8 @@ export function OrgAssociatesTabView({
   associates,
   loading,
   canManage,
-  manageDisabledReason,
+  canInvite,
+  inviteDisabledReason,
   onEdit,
   onInvite,
   pending,
@@ -55,7 +57,7 @@ export function OrgAssociatesTabView({
   const { t } = useTranslation(NS);
 
   const inviteButton = (
-    <Button type="button" size="sm" className="gap-2" onClick={onInvite} disabled={!canManage}>
+    <Button type="button" size="sm" className="gap-2" onClick={onInvite} disabled={!canInvite}>
       <UserPlus className="size-4" aria-hidden="true" />
       {t('org.associates.invite')}
     </Button>
@@ -76,14 +78,14 @@ export function OrgAssociatesTabView({
         title={t('org.associates.title')}
         description={t('org.associates.description')}
         titleAccessory={
-          canManage ? (
+          canInvite ? (
             inviteButton
           ) : (
             <Tooltip>
               <TooltipTrigger asChild={true}>
                 <span>{inviteButton}</span>
               </TooltipTrigger>
-              <TooltipContent>{manageDisabledReason}</TooltipContent>
+              <TooltipContent>{inviteDisabledReason}</TooltipContent>
             </Tooltip>
           )
         }

@@ -17,7 +17,10 @@ vi.mock('react-i18next', () => ({
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notify }));
 vi.mock('@/main/crdPages/permissions/usePermissionReasonText', () => ({ default: () => () => 'no permission' }));
 vi.mock('@/domain/access/permissions/useActionPermission', () => ({
-  default: () => ({ allowed: true, reason: undefined }),
+  default: (myPrivileges: string[] | undefined, required: string[]) =>
+    required.every(p => myPrivileges?.includes(p))
+      ? { allowed: true, reason: 'allowed' }
+      : { allowed: false, reason: 'denied' },
 }));
 const useRoleSetManagerRolesAssignmentMock = vi.fn((_params: unknown) => ({
   assignRoleToUser,
@@ -54,10 +57,11 @@ const associateRow = {
 };
 const ownerRow = { role: RoleName.Owner, users: [{ id: 'u-1', profile: { displayName: 'Ada Lovelace' } }] };
 let usersInRoles: unknown[] = [associateRow];
+let myPrivileges: string[] = ['GRANT', 'ROLESET_ENTRY_ROLE_INVITE'];
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useOrgAssociatesTabQuery: () => ({
-    data: { lookup: { roleSet: { usersInRoles, authorization: { myPrivileges: ['GRANT'] } } } },
+    data: { lookup: { roleSet: { usersInRoles, authorization: { myPrivileges } } } },
     loading: false,
     refetch,
   }),
@@ -70,6 +74,7 @@ const render = () => renderHook(() => useOrgAssociatesTabData('rs-1'));
 beforeEach(() => {
   vi.clearAllMocks();
   usersInRoles = [associateRow];
+  myPrivileges = ['GRANT', 'ROLESET_ENTRY_ROLE_INVITE'];
   applications = [];
   invitations = [];
 });
@@ -313,5 +318,29 @@ describe('useOrgAssociatesTabData — pending rows dispatch on what the row IS',
     });
 
     expect(notify).toHaveBeenCalledWith('org.associates.pending.actionError', 'error');
+  });
+});
+
+describe('useOrgAssociatesTabData — inviting is gated apart from managing roles (R47)', () => {
+  it('an organization admin (GRANT) manages, invites, and reads applications', () => {
+    const { result } = render();
+
+    expect(result.current.canManage).toBe(true);
+    expect(result.current.canInvite).toBe(true);
+    expect(useRoleSetApplicationsAndInvitationsMock).toHaveBeenCalledWith(
+      expect.objectContaining({ roleSetId: 'rs-1', includeApplications: true })
+    );
+  });
+
+  it('an inviter without GRANT (GLOBAL_SUPPORT) can invite, and does not select the GRANT-gated applications', () => {
+    myPrivileges = ['ROLESET_ENTRY_ROLE_INVITE'];
+    const { result } = render();
+
+    expect(result.current.canManage).toBe(false);
+    expect(result.current.canInvite).toBe(true);
+    // Selecting `applications` without GRANT would null the whole role set, invitations included.
+    expect(useRoleSetApplicationsAndInvitationsMock).toHaveBeenCalledWith(
+      expect.objectContaining({ roleSetId: 'rs-1', includeApplications: false })
+    );
   });
 });

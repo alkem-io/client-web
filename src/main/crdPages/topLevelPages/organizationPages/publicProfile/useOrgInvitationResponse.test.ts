@@ -12,6 +12,7 @@ vi.mock('react-i18next', () => ({
 }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notify }));
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
+  OrganizationInfoDocument: 'OrganizationInfoDocument',
   useInvitationStateEventMutation: () => [runEvent, { loading: false }],
   refetchUserPendingMembershipsQuery: () => ({ query: 'UserPendingMemberships' }),
   refetchPendingInvitationsCountQuery: () => ({ query: 'PendingInvitationsCount' }),
@@ -93,5 +94,19 @@ describe('useOrgInvitationResponse — exactly one message per failure', () => {
     expect(notify).toHaveBeenCalledTimes(1);
     expect(notify).toHaveBeenCalledWith('orgProfile.invitationDialog.declineError', 'error');
     expect(onSettled).not.toHaveBeenCalled();
+  });
+});
+
+describe('useOrgInvitationResponse — every surface showing the invitation is refreshed', () => {
+  it('refetches OrganizationInfo, so the profile does not keep a stale "Respond to invitation"', async () => {
+    const { result } = renderHook(() => useOrgInvitationResponse(vi.fn()));
+
+    await act(async () => {
+      await result.current.onAccept('inv-a');
+    });
+
+    expect(runEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ refetchQueries: expect.arrayContaining(['OrganizationInfoDocument']) })
+    );
   });
 });

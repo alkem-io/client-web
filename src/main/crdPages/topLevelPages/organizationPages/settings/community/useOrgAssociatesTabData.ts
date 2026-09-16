@@ -18,7 +18,10 @@ import {
   InvitationState,
 } from '@/domain/community/invitations/InvitationApplicationConstants';
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
-import { ORG_ROLE_SET_MANAGE_PRIVILEGES } from '@/main/crdPages/permissions/roleAssignmentPrivileges';
+import {
+  ORG_ROLE_SET_MANAGE_PRIVILEGES,
+  ROLE_SET_INVITE_PRIVILEGES,
+} from '@/main/crdPages/permissions/roleAssignmentPrivileges';
 import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionReasonText';
 import { offeredRoleLabelKey } from '@/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper';
 import { mapRoleLimitError, mapUsersInRolesToAssociateRows, type OrgAssociateRow } from './orgAssociatesMapper';
@@ -95,7 +98,8 @@ export type UseOrgAssociatesTabDataResult = {
   loading: boolean;
 
   canManage: boolean;
-  manageDisabledReason?: string;
+  canInvite: boolean;
+  inviteDisabledReason?: string;
   updating: boolean;
   onToggleRole: (contributorId: string, role: 'Associate' | 'Admin' | 'Owner', on: boolean) => Promise<void>;
   roleLimitError?: 'limitAdmin' | 'limitOwner' | 'minOwner';
@@ -130,8 +134,12 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
 
   const reasonText = usePermissionReasonText();
   const managePermission = useActionPermission(myPrivileges, ORG_ROLE_SET_MANAGE_PRIVILEGES, loading);
-  const manageDisabledReason = reasonText(managePermission);
   const canManage = managePermission.allowed;
+  // Inviting needs only the invite privilege, which GLOBAL_SUPPORT holds on every organization
+  // role set without GRANT (R47) — so it is gated separately from the role editor.
+  const invitePermission = useActionPermission(myPrivileges, ROLE_SET_INVITE_PRIVILEGES, loading);
+  const inviteDisabledReason = reasonText(invitePermission);
+  const canInvite = invitePermission.allowed;
 
   const {
     assignRoleToUser,
@@ -207,7 +215,14 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
     applicationStateChange,
     deleteInvitation,
     refetch: refetchApplicationsAndInvitations,
-  } = useRoleSetApplicationsAndInvitations({ roleSetId, mutationContext: OWN_ERROR_HANDLING });
+  } = useRoleSetApplicationsAndInvitations({
+    // Wait for the privileges, then select `applications` only with GRANT: the server gates that
+    // field on GRANT, and for an inviter without it the error would null the whole role set —
+    // emptying the invitations list too.
+    roleSetId: myPrivileges ? roleSetId : undefined,
+    includeApplications: canManage,
+    mutationContext: OWN_ERROR_HANDLING,
+  });
 
   const applicationRows: PendingMembership[] = applications
     .map<PendingMembership | null>(app => {
@@ -302,7 +317,8 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
     associates,
     loading,
     canManage,
-    manageDisabledReason,
+    canInvite,
+    inviteDisabledReason,
     updating,
     onToggleRole,
     roleLimitError,
