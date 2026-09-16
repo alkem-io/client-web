@@ -456,7 +456,7 @@ describe('reaction notification rendering', () => {
     // The unknown slug must resolve through glyphForSlug to undefined — never the
     // raw wire slug — so the subject placeholder renders empty rather than
     // leaking "unknown-slug-9999".
-    const title = data!.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    const title = data?.title as ReactElement<{ values: Record<string, string | undefined> }>;
     expect(title.props.values.emoji).toBeUndefined();
   });
 
@@ -501,6 +501,33 @@ describe('notification avatar subject', () => {
     expect(data.avatarFallback).toBe('GH');
   });
 
+  it('shows the new associate, not the admin who approved or granted the role', () => {
+    // ORGANIZATION_ADMIN_ASSOCIATE_JOINED only fires for a direct join, an approved
+    // application or a direct role grant, so the trigger is the acting admin while the
+    // subject is the payload actor. Copy and avatar must name the same person.
+    const data = mapNotificationToItemData(
+      notification(
+        NotificationEvent.OrganizationAdminAssociateJoined,
+        {
+          type: NotificationEventPayload.OrganizationAssociateActor,
+          organization: { id: 'org-1', profile: { displayName: 'Acme Org', url: '/organization/acme' } },
+          actor: {
+            type: ActorType.User,
+            profile: { displayName: 'Grace Hopper', url: '/user/grace', visual: { uri: 'grace.png' } },
+          },
+        },
+        NotificationEventCategory.Organization
+      ),
+      t,
+      NotificationEventInAppState.Unread
+    );
+
+    expect(data.avatarUrl).toBe('grace.png');
+    expect(data.avatarFallback).toBe('GH');
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.memberName).toBe('Grace Hopper');
+  });
+
   it('falls back to the triggering user when the payload carries no actor', () => {
     const data = newMember(undefined);
 
@@ -523,5 +550,91 @@ describe('notification avatar subject', () => {
 
     expect(data.avatarUrl).toBe('ada.png');
     expect(data.avatarFallback).toBe('AL');
+  });
+});
+
+describe('organization-associate notifications (062)', () => {
+  const orgPayload = (url = '/organization/acme'): InAppNotificationPayloadModel['organization'] => ({
+    id: 'org-1',
+    profile: { displayName: 'Acme Org', url },
+  });
+
+  it('sends the user-side invitation notification to the organization profile', () => {
+    const href = hrefOf(
+      notification(NotificationEvent.UserOrganizationAssociateInvitation, {
+        type: NotificationEventPayload.OrganizationAssociateInvitation,
+        organization: orgPayload(),
+        invitation: { extraRoles: [], invitedToParent: false },
+      })
+    );
+    expect(href).toBe('/organization/acme');
+  });
+
+  it('sends the organisation-side events to the Associates (community) settings tab', () => {
+    const orgSideTypes = [
+      NotificationEvent.OrganizationAdminAssociateInvitationAccepted,
+      NotificationEvent.OrganizationAdminAssociateInvitationDeclined,
+      NotificationEvent.OrganizationAdminAssociateApplication,
+      NotificationEvent.OrganizationAdminAssociateJoined,
+    ];
+    for (const type of orgSideTypes) {
+      const href = hrefOf(
+        notification(type, {
+          type: NotificationEventPayload.OrganizationAssociateActor,
+          organization: orgPayload(),
+        })
+      );
+      expect(href).toBe('/organization/acme/settings/community');
+    }
+  });
+
+  it('resolves associateRole to Associate + Admin / Owner from the offered extra roles', () => {
+    const buildValues = (extraRoles: RoleName[]) => {
+      const data = mapNotificationToItemData(
+        notification(NotificationEvent.UserOrganizationAssociateInvitation, {
+          type: NotificationEventPayload.OrganizationAssociateInvitation,
+          organization: orgPayload(),
+          invitation: { extraRoles, invitedToParent: false },
+        }),
+        t,
+        NotificationEventInAppState.Unread
+      );
+      return (data.description as ReactElement<{ values: Record<string, string | undefined> }>).props.values;
+    };
+    expect(buildValues([]).associateRole).toBe('components.inAppNotifications.associateRole.associate');
+    expect(buildValues([RoleName.Admin]).associateRole).toBe(
+      'components.inAppNotifications.associateRole.associateAdmin'
+    );
+    expect(buildValues([RoleName.Owner]).associateRole).toBe(
+      'components.inAppNotifications.associateRole.associateOwner'
+    );
+  });
+
+  it('produces a withheld clause only when extraRolesWithheld is non-empty', () => {
+    const data = mapNotificationToItemData(
+      notification(NotificationEvent.OrganizationAdminAssociateInvitationAccepted, {
+        type: NotificationEventPayload.OrganizationAssociateActor,
+        organization: orgPayload(),
+        extraRolesWithheld: [RoleName.Owner],
+      }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const values = (data.description as ReactElement<{ values: Record<string, string | undefined> }>).props.values;
+    expect(values.withheld).toBe('components.inAppNotifications.associateRoleWithheld');
+
+    const dataNoWithheld = mapNotificationToItemData(
+      notification(NotificationEvent.OrganizationAdminAssociateInvitationAccepted, {
+        type: NotificationEventPayload.OrganizationAssociateActor,
+        organization: orgPayload(),
+        extraRolesWithheld: [],
+      }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const valuesNoWithheld = (
+      dataNoWithheld.description as ReactElement<{ values: Record<string, string | undefined> }>
+    ).props.values;
+    expect(valuesNoWithheld.withheld).toBe('');
   });
 });
