@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { AwarenessRouter, type PointerPayload } from './awarenessRouter';
+import { AwarenessRouter, type EphemeralEvent, type PointerPayload } from './awarenessRouter';
 
 const viewportUtils = {
   getVisibleSceneBounds: (appState: { scrollX: number; scrollY: number }) =>
@@ -125,6 +125,18 @@ const move = (x: number, button: 'up' | 'down' = 'up'): PointerPayload => ({
   pointer: { x, y: x },
   button,
 });
+
+function makeEphemeralChannel() {
+  let handler: ((event: EphemeralEvent) => void) | undefined;
+  return {
+    send: vi.fn(),
+    subscribe: vi.fn((h: (event: EphemeralEvent) => void) => {
+      handler = h;
+      return vi.fn();
+    }),
+    emit: (event: EphemeralEvent) => handler?.(event),
+  };
+}
 
 describe('AwarenessRouter follow mode', () => {
   beforeEach(() => vi.useFakeTimers());
@@ -365,5 +377,60 @@ describe('AwarenessRouter pointer throttle', () => {
     // destroy() clears presence via setLocalState(null); it must NOT emit another pointer frame.
     expect(pointerFrames(aw).length).toBe(before);
     expect(aw.setLocalState).toHaveBeenLastCalledWith(null);
+  });
+});
+
+describe('AwarenessRouter session chat', () => {
+  it('broadcasts a chat message on the ephemeral channel, stamped with the local sender identity — never the scene doc', () => {
+    const aw = makeAwareness(7);
+    aw.setLocalStateField('user', { username: 'Ada', color: '#123' });
+    const api = makeApi();
+    const ephemeral = makeEphemeralChannel();
+    const router = new AwarenessRouter({ awareness: aw as never, api: api as never, ephemeral });
+
+    router.broadcastChatMessage('let’s group these by owner');
+
+    expect(ephemeral.send).toHaveBeenCalledTimes(1);
+    const [event] = ephemeral.send.mock.calls[0] as [EphemeralEvent];
+    expect(event.type).toBe('CHAT_MESSAGE');
+    expect(event).toMatchObject({
+      type: 'CHAT_MESSAGE',
+      payload: { text: 'let’s group these by owner', senderId: '7', senderName: 'Ada' },
+    });
+    expect(typeof (event as { payload: { id: string } }).payload.id).toBe('string');
+    expect(typeof (event as { payload: { timestamp: number } }).payload.timestamp).toBe('number');
+    expect(api.updateScene.mock.calls.every(([scene]) => !('elements' in scene))).toBe(true);
+    router.destroy();
+  });
+
+  it('routes an incoming CHAT_MESSAGE ephemeral event to onIncomingChatMessage, not the imperative API', () => {
+    const aw = makeAwareness();
+    const api = makeApi();
+    const ephemeral = makeEphemeralChannel();
+    const onIncomingChatMessage = vi.fn();
+    const router = new AwarenessRouter({ awareness: aw as never, api: api as never, ephemeral, onIncomingChatMessage });
+
+    const payload = { id: 'm1', text: 'hello', senderId: '2', senderName: 'Priya', timestamp: 1_700_000_000_000 };
+    ephemeral.emit({ type: 'CHAT_MESSAGE', payload });
+
+    expect(onIncomingChatMessage).toHaveBeenCalledWith(payload);
+    expect(api.dispatchIncomingEmojiReaction).not.toHaveBeenCalled();
+    expect(api.dispatchIncomingCountdownTimer).not.toHaveBeenCalled();
+    router.destroy();
+  });
+
+  it('does nothing when a CHAT_MESSAGE arrives with no onIncomingChatMessage wired', () => {
+    const aw = makeAwareness();
+    const api = makeApi();
+    const ephemeral = makeEphemeralChannel();
+    const router = new AwarenessRouter({ awareness: aw as never, api: api as never, ephemeral });
+
+    expect(() =>
+      ephemeral.emit({
+        type: 'CHAT_MESSAGE',
+        payload: { id: 'm1', text: 'hi', senderId: '2', senderName: 'Priya', timestamp: Date.now() },
+      })
+    ).not.toThrow();
+    router.destroy();
   });
 });

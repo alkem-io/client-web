@@ -44,10 +44,22 @@ export type CountdownTimerPayload = {
   active: boolean;
 };
 
+/** A session-chat message carried on the ephemeral channel — never written to the
+ *  scene doc, never persisted. `senderId` is the sender's awareness socket id (stable
+ *  for the lifetime of their connection, available for guests and members alike). */
+export type ChatMessagePayload = {
+  id: string;
+  text: string;
+  senderId: string;
+  senderName: string;
+  timestamp: number;
+};
+
 /** Ephemeral event kinds carried out-of-band (never in the scene doc). */
 export type EphemeralEvent =
   | { type: 'EMOJI_REACTION'; payload: EmojiReactionPayload }
-  | { type: 'COUNTDOWN_TIMER'; payload: CountdownTimerPayload };
+  | { type: 'COUNTDOWN_TIMER'; payload: CountdownTimerPayload }
+  | { type: 'CHAT_MESSAGE'; payload: ChatMessagePayload };
 
 /** Transport seam for the ephemeral channel (wired to the provider's `2` Ephemeral WS type). */
 export type EphemeralChannel = {
@@ -68,6 +80,10 @@ export type AwarenessRouterDeps = {
   >;
   ephemeral?: EphemeralChannel;
   loadViewportUtils?: () => Promise<ExcalidrawViewportUtils>;
+  /** Session chat lives entirely in client-web (a CRD rail, not a canvas overlay), so
+   *  incoming messages are handed straight to the host rather than round-tripped
+   *  through the Excalidraw imperative API like emoji reactions/the countdown timer. */
+  onIncomingChatMessage?: (payload: ChatMessagePayload) => void;
 };
 
 /**
@@ -78,6 +94,7 @@ export class AwarenessRouter {
   private readonly awareness: Awareness;
   private readonly api: AwarenessRouterDeps['api'];
   private readonly ephemeral?: EphemeralChannel;
+  private readonly onIncomingChatMessage?: (payload: ChatMessagePayload) => void;
   private readonly cleanups: Array<() => void> = [];
   private readonly excalidrawUtils: Promise<ExcalidrawViewportUtils | undefined>;
   private destroyed = false;
@@ -103,6 +120,7 @@ export class AwarenessRouter {
     this.awareness = deps.awareness;
     this.api = deps.api;
     this.ephemeral = deps.ephemeral;
+    this.onIncomingChatMessage = deps.onIncomingChatMessage;
     this.excalidrawUtils = (deps.loadViewportUtils ?? (() => import('@excalidraw-yjs/excalidraw')))().catch(
       () => undefined
     );
@@ -226,6 +244,21 @@ export class AwarenessRouter {
     this.ephemeral?.send({ type: 'COUNTDOWN_TIMER', payload });
   }
 
+  /** Local chat message → ephemeral channel (never the scene doc). `senderId` is this
+   *  replica's own awareness socket id, stable for the life of the connection. */
+  broadcastChatMessage(text: string): void {
+    this.ephemeral?.send({
+      type: 'CHAT_MESSAGE',
+      payload: {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+        text,
+        senderId: toSocketId(this.awareness.clientID),
+        senderName: (this.awareness.getLocalState()?.user?.username as string | undefined) ?? '',
+        timestamp: Date.now(),
+      },
+    });
+  }
+
   /** Dispatch an incoming ephemeral event to the editor. */
   private dispatchIncoming(event: EphemeralEvent): void {
     switch (event.type) {
@@ -234,6 +267,9 @@ export class AwarenessRouter {
         break;
       case 'COUNTDOWN_TIMER':
         this.api.dispatchIncomingCountdownTimer(event.payload);
+        break;
+      case 'CHAT_MESSAGE':
+        this.onIncomingChatMessage?.(event.payload);
         break;
       default:
         break;

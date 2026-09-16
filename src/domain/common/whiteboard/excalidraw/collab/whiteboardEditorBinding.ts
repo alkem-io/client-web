@@ -1,6 +1,6 @@
 import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/types';
 import type { Awareness } from 'y-protocols/awareness';
-import { AwarenessRouter, type EphemeralChannel } from './awarenessRouter';
+import { AwarenessRouter, type ChatMessagePayload, type EphemeralChannel } from './awarenessRouter';
 
 const CURSOR_COLORS = [
   '#958DF1',
@@ -26,9 +26,10 @@ const cursorColorFor = (name: string): string => {
 export const bindWhiteboardEditor = (
   api: ExcalidrawImperativeAPI,
   awareness: Awareness,
-  ephemeral: EphemeralChannel
+  ephemeral: EphemeralChannel,
+  onIncomingChatMessage?: (payload: ChatMessagePayload) => void
 ) => {
-  const router = new AwarenessRouter({ awareness, api, ephemeral });
+  const router = new AwarenessRouter({ awareness, api, ephemeral, onIncomingChatMessage });
   return {
     setUser: (username: string) => awareness.setLocalStateField('user', { username, color: cursorColorFor(username) }),
     onPointerUpdate: router.onPointerUpdate.bind(router),
@@ -36,6 +37,7 @@ export const bindWhiteboardEditor = (
       router.broadcastEmojiReaction({ id: `${Date.now()}-${Math.random().toString(36).slice(2)}`, emoji, x, y }),
     broadcastCountdownTimer: (remainingSeconds: number, startedBy: string, active: boolean) =>
       router.broadcastCountdownTimer({ remainingSeconds, startedBy, active }),
+    sendChatMessage: (text: string) => router.broadcastChatMessage(text),
     fitScene: () => {
       const elements = api.getSceneElements();
       if (elements.length > 0) {

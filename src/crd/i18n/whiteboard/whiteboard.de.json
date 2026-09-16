@@ -104,5 +104,12 @@
       "loading": "Laden",
       "zoom": "Zoom"
     }
+  },
+  "chat": {
+    "title": "Sitzungschat",
+    "subtitle": "Sichtbar für alle in dieser Sitzung",
+    "open": "Sitzungschat öffnen",
+    "close": "Sitzungschat schließen",
+    "unread": "Ungelesene Nachrichten"
   }
 }

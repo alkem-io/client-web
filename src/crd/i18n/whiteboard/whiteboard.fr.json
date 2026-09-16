@@ -104,5 +104,12 @@
       "loading": "Chargement",
       "zoom": "Zoom"
     }
+  },
+  "chat": {
+    "title": "Discussion de session",
+    "subtitle": "Visible par toutes les personnes présentes dans cette session",
+    "open": "Ouvrir la discussion de session",
+    "close": "Fermer la discussion de session",
+    "unread": "Messages non lus"
   }
 }

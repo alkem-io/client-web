@@ -22,11 +22,14 @@ import { Loading } from '@/crd/components/common/Loading';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { PreviewCropDialog } from '@/crd/components/whiteboard/PreviewCropDialog';
 import { PreviewSettingsDialog } from '@/crd/components/whiteboard/PreviewSettingsDialog';
+import { WhiteboardChatRail } from '@/crd/components/whiteboard/WhiteboardChatRail';
+import { WhiteboardChatToggle } from '@/crd/components/whiteboard/WhiteboardChatToggle';
 import { WhiteboardCollabFooter } from '@/crd/components/whiteboard/WhiteboardCollabFooter';
 import { WhiteboardDisplayName } from '@/crd/components/whiteboard/WhiteboardDisplayName';
 import { WhiteboardEditorShell } from '@/crd/components/whiteboard/WhiteboardEditorShell';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
 import type { CollaborationState } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
+import { resolveWhiteboardGuestIdentity } from '@/domain/collaboration/whiteboard/guestAccess/utils/resolveWhiteboardGuestIdentity';
 import { loadWhiteboardSceneFromCollaboration } from '@/domain/collaboration/whiteboard/utils/loadWhiteboardSceneFromCollaboration';
 import mergeWhiteboard from '@/domain/collaboration/whiteboard/utils/mergeWhiteboard';
 import whiteboardValidationSchema, {
@@ -50,10 +53,14 @@ import CollaborativeExcalidrawWrapper, {
   type CollabAPI,
 } from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
 import { CollaboratorModeReasons } from '@/domain/common/whiteboard/excalidraw/collab/excalidrawAppConstants';
+import { useWhiteboardChat } from '@/domain/common/whiteboard/excalidraw/collab/useWhiteboardChat';
 import { handleExcalidrawEscape } from '@/domain/common/whiteboard/excalidraw/excalidrawEscape';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { useAssistantContext } from '@/main/assistant/AssistantContext';
+import { useAssistantEnabled } from '@/main/assistant/useAssistantEnabled';
 import { withCloseFinalizing } from '@/main/crdPages/closeFinalizing';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
@@ -226,6 +233,41 @@ const CrdWhiteboardDialog = ({
   const [closeFinalizing, setCloseFinalizing] = useState(false);
   const collabApiRef = useRef<CollabAPI>(null);
   const editModeEnabled = options.canEdit;
+
+  const { userModel } = useCurrentUserContext();
+  const guestIdentity = resolveWhiteboardGuestIdentity();
+  const chatUsername = guestIdentity.isPublicRoute
+    ? (guestIdentity.guestName ?? t('common.guestUserFallback'))
+    : (userModel?.profile?.displayName ?? t('common.guestUserFallback'));
+  const chatCurrentUser = { id: userModel?.id ?? 'guest', name: chatUsername };
+  const chat = useWhiteboardChat(text => collabApiRef.current?.sendChatMessage(text), chatCurrentUser);
+
+  // Mutual exclusion with the AI assistant rail: both dock into the same `rail` slot
+  // (see WhiteboardEditorShell), so only one may be open at a time — the approved design
+  // shows a single docked rail, never two side by side. `WhiteboardAssistantButton` (in
+  // CrdWhiteboardView, outside this component) owns the assistant's own toggle click and
+  // isn't touched here; instead this mirrors WhiteboardAssistantRailConnector's own
+  // `railOpen` computation to react to it, and closes the assistant when chat opens.
+  const assistantEnabled = useAssistantEnabled();
+  const {
+    isOpen: assistantIsOpen,
+    setIsOpen: setAssistantIsOpen,
+    panelContext,
+    clearPanelContext,
+  } = useAssistantContext();
+  const assistantRailOpen = assistantEnabled && assistantIsOpen && panelContext?.whiteboardId === whiteboard?.id;
+  // Deliberately keyed on assistantRailOpen alone — this should react only to the
+  // assistant's own open transition, not re-run for unrelated renders.
+  useEffect(() => {
+    if (assistantRailOpen) chat.close();
+  }, [assistantRailOpen]);
+  const toggleChat = () => {
+    if (!chat.open && assistantRailOpen) {
+      setAssistantIsOpen(false);
+      clearPanelContext();
+    }
+    chat.toggle();
+  };
 
   useEffect(() => () => importAbortRef.current?.abort(), [whiteboard?.id]);
 
@@ -496,6 +538,7 @@ const CrdWhiteboardDialog = ({
             setSceneInitialized(initialized);
             if (!initialized) importAbortRef.current?.abort();
           },
+          onIncomingChatMessage: chat.receiveMessage,
         }}
       >
         {({ children, lifecycle, readOnlyReason }) => {
@@ -603,8 +646,39 @@ const CrdWhiteboardDialog = ({
                       <WhiteboardTemplatePickerButton disabled={!isSceneInitialized} onImport={handleImportTemplate} />
                     ) : undefined
                   }
-                  headerActions={options.headerActions?.(lifecycle)}
-                  rail={<WhiteboardAssistantRailConnector whiteboardId={whiteboard.id} />}
+                  headerActions={
+                    <>
+                      {options.headerActions?.(lifecycle)}
+                      {active && (
+                        <>
+                          <div className="mx-1 h-6 w-px shrink-0 bg-border" aria-hidden="true" />
+                          <WhiteboardChatToggle
+                            open={chat.open}
+                            onClick={toggleChat}
+                            unreadCount={chat.unreadCount}
+                            openLabel={tWb('chat.open')}
+                            closeLabel={tWb('chat.close')}
+                            unreadLabel={tWb('chat.unread')}
+                          />
+                        </>
+                      )}
+                    </>
+                  }
+                  rail={
+                    <>
+                      <WhiteboardAssistantRailConnector whiteboardId={whiteboard.id} />
+                      <WhiteboardChatRail
+                        open={chat.open}
+                        title={tWb('chat.title')}
+                        subtitle={tWb('chat.subtitle')}
+                        onClose={chat.close}
+                        closeLabel={tWb('chat.close')}
+                        messages={chat.messages}
+                        currentUser={chatCurrentUser}
+                        onSendMessage={chat.sendMessage}
+                      />
+                    </>
+                  }
                   footer={
                     <WhiteboardCollabFooter
                       {...footerProps}

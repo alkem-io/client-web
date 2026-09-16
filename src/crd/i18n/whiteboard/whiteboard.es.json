@@ -104,5 +104,12 @@
       "loading": "Cargando",
       "zoom": "Zoom"
     }
+  },
+  "chat": {
+    "title": "Chat de la sesión",
+    "subtitle": "Visible para todas las personas en esta sesión",
+    "open": "Abrir el chat de la sesión",
+    "close": "Cerrar el chat de la sesión",
+    "unread": "Mensajes no leídos"
   }
 }

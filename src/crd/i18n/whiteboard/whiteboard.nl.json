@@ -104,5 +104,12 @@
       "loading": "Laden",
       "zoom": "Zoom"
     }
+  },
+  "chat": {
+    "title": "Sessiechat",
+    "subtitle": "Zichtbaar voor iedereen in deze sessie",
+    "open": "Sessiechat openen",
+    "close": "Sessiechat sluiten",
+    "unread": "Ongelezen berichten"
   }
 }

@@ -104,5 +104,12 @@
       "loading": "Loading",
       "zoom": "Zoom"
     }
+  },
+  "chat": {
+    "title": "Session chat",
+    "subtitle": "Visible to everyone in this session",
+    "open": "Open session chat",
+    "close": "Close session chat",
+    "unread": "Unread messages"
   }
 }

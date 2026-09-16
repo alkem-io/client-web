@@ -7,6 +7,7 @@ import { UnifiedCollabProvider } from '@/domain/collaboration/realTimeCollaborat
 import { useCollaborationBeforeUnload } from '@/domain/collaboration/realTimeCollaboration/useCollaborationBeforeUnload';
 import { resolveWhiteboardGuestIdentity } from '@/domain/collaboration/whiteboard/guestAccess/utils/resolveWhiteboardGuestIdentity';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import type { ChatMessagePayload } from './collab/awarenessRouter';
 import { bindWhiteboardEditor } from './collab/whiteboardEditorBinding';
 import { ExcalidrawEditorBinding, type WhiteboardEditorEntities } from './ExcalidrawEditorBinding';
 
@@ -16,6 +17,9 @@ export type CollabAPI = {
   hasUnsavedChanges: () => boolean;
   hasChangesAtRisk: () => boolean;
   requestDurability: () => Promise<void>;
+  /** No-op (with a dev warning) until the collaboration session is active — chat has
+   *  nothing to broadcast to before then. */
+  sendChatMessage: (text: string) => void;
 };
 export type WhiteboardCollaborationView = {
   lifecycle: CollaborationState;
@@ -28,6 +32,10 @@ export interface WhiteboardWhiteboardProps {
     onInitApi?: (api: ExcalidrawImperativeAPI | null, whiteboardId: string) => void;
     onSceneInitChange?: (initialized: boolean) => void;
     onRemoteSave?: (error?: string) => void;
+    /** A session chat message arrived from another participant (ephemeral, never
+     *  persisted). Own messages sent via `CollabAPI.sendChatMessage` are NOT echoed
+     *  back here — the caller renders its own optimistic copy. */
+    onIncomingChatMessage?: (payload: ChatMessagePayload) => void;
   };
   collabApiRef?: Ref<CollabAPI>;
   children: (props: PropsWithChildren<WhiteboardCollaborationView>) => React.ReactNode;
@@ -47,6 +55,8 @@ const CollaborativeExcalidrawWrapper = ({
     readOnlyReason: undefined,
   });
   const [controls, setControls] = useState<ReturnType<typeof bindWhiteboardEditor>>();
+  const controlsRef = useRef(controls);
+  controlsRef.current = controls;
   const providerRef = useRef<UnifiedCollabProvider | null>(null);
   const collabApi = useMemo<CollabAPI>(
     () => ({
@@ -56,6 +66,7 @@ const CollaborativeExcalidrawWrapper = ({
       hasChangesAtRisk: () => providerRef.current?.hasChangesAtRisk ?? false,
       requestDurability: () =>
         providerRef.current?.requestDurability() ?? Promise.reject(new Error('Collaboration is not ready')),
+      sendChatMessage: (text: string) => controlsRef.current?.sendChatMessage(text),
     }),
     []
   );
@@ -86,7 +97,12 @@ const CollaborativeExcalidrawWrapper = ({
       },
       connect: false,
     });
-    const binding = bindWhiteboardEditor(editor.api, provider.awareness, provider.ephemeralChannel);
+    const binding = bindWhiteboardEditor(
+      editor.api,
+      provider.awareness,
+      provider.ephemeralChannel,
+      actions.onIncomingChatMessage
+    );
     providerRef.current = provider;
     setControls(binding);
     let fitPending = true;
