@@ -198,8 +198,8 @@
       "role": "Rol",
       "spacesToJoin": "Bij accepteren wordt toegetreden tot: {{spaces}}"
     },
-    "orgAssociateInvitationsSection": "Organisatie-uitnodigingen",
-    "orgAssociateApplicationsSection": "Organisatie-aanvragen",
+    "orgAssociateInvitationsSection": "Uitnodigingen als Geassocieerde",
+    "orgAssociateApplicationsSection": "Aanvragen als Geassocieerde",
     "orgAssociateCard": {
       "badge": "Organisatie",
       "role": {

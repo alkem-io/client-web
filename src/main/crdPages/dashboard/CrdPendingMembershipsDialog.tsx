@@ -253,7 +253,11 @@ const CrdPendingMembershipsDialog = () => {
   // feature's own new keys) pushes TypeScript's generic instantiation past its depth
   // limit when passed into a plainly-typed helper parameter; widen once here rather
   // than fight the compiler at every call site below.
-  const orgCardTranslator = t as unknown as (key: string, options?: Record<string, unknown>) => string;
+  const orgCardTranslator = t as (key: string, options?: Record<string, unknown>) => string;
+  // The org cards' relative-time label comes from `common.time.short.*`, which lives in
+  // `crd-common` only, so it needs the default-namespace translator rather than `t`.
+  const { t: tCommon } = useTranslation();
+  const commonTranslator = tCommon as (key: string, options?: Record<string, unknown>) => string;
   const { openDialog, setOpenDialog } = usePendingMembershipsDialog();
 
   const closeDialog = () => setOpenDialog(undefined);
@@ -369,7 +373,7 @@ const CrdPendingMembershipsDialog = () => {
             {orgInvitations.map(inv => (
               <OrgPendingInvitationCard
                 key={inv.id}
-                invitation={mapOrgInvitationToCardData(inv, orgCardTranslator)}
+                invitation={mapOrgInvitationToCardData(inv, orgCardTranslator, commonTranslator)}
                 onClick={() => setViewingOrgInvitationId(inv.id)}
               />
             ))}

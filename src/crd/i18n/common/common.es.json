@@ -943,8 +943,8 @@
           "description": ""
         },
         "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
-          "subject": "\"{{triggeredByName}}\" se unió a {{organizationName}} como asociado",
-          "description": "{{triggeredByName}} se ha unido a {{organizationName}}, de la que eres $t(common.admin)."
+          "subject": "\"{{memberName}}\" se unió a {{organizationName}} como asociado",
+          "description": "{{memberName}} se ha unido a {{organizationName}}, de la que eres $t(common.admin)."
         }
       },
       "spacesToJoin": "Al aceptar se une a: {{spaces}}",

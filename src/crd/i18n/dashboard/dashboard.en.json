@@ -198,8 +198,8 @@
       "role": "Role",
       "spacesToJoin": "Accepting joins: {{spaces}}"
     },
-    "orgAssociateInvitationsSection": "Organisation invitations",
-    "orgAssociateApplicationsSection": "Organisation applications",
+    "orgAssociateInvitationsSection": "Associate Invitations",
+    "orgAssociateApplicationsSection": "Associate Applications",
     "orgAssociateCard": {
       "badge": "Organisation",
       "role": {

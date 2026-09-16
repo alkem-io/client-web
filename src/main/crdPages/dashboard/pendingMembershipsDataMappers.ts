@@ -90,15 +90,24 @@ const ORG_ROLE_LABEL_KEY = {
  */
 type LooseTranslator = (key: string, options?: Record<string, unknown>) => string;
 
+/**
+ * `t` resolves this card's own `crd-dashboard` keys; `tCommon` resolves the shared
+ * `crd-common` ones. They are separate parameters because `formatTimeElapsed` reads
+ * `common.time.short.*`, which lives ONLY in `crd-common`, and i18next is configured
+ * without `fallbackNS` — passing the `crd-dashboard` translator for both renders the
+ * raw key instead of "3d ago" (the Space cards get this right by using the default
+ * namespace, see `HydratedInvitationCard`).
+ */
 export const mapOrgInvitationToCardData = (
   item: OrgPendingInvitationDataFragment,
-  t: LooseTranslator
+  t: LooseTranslator,
+  tCommon: LooseTranslator
 ): OrgPendingInvitationCardData => ({
   id: item.id,
   organizationName: item.organization.profile?.displayName ?? '',
   organizationAvatarUrl: item.organization.profile?.avatar?.uri,
   offeredRoleLabel: t(ORG_ROLE_LABEL_KEY[offeredRoleLabelKey(item.invitation.extraRoles)]),
-  timeElapsed: formatTimeElapsed(item.invitation.createdDate, t as TFunction),
+  timeElapsed: formatTimeElapsed(item.invitation.createdDate, tCommon as TFunction),
   color: pickColorFromId(item.organization.id),
 });
 

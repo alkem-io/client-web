@@ -198,8 +198,8 @@
       "role": "Rolle",
       "spacesToJoin": "Bei Annahme wird beigetreten zu: {{spaces}}"
     },
-    "orgAssociateInvitationsSection": "Organisationseinladungen",
-    "orgAssociateApplicationsSection": "Organisationsbewerbungen",
+    "orgAssociateInvitationsSection": "Einladungen als Assoziierter",
+    "orgAssociateApplicationsSection": "Bewerbungen als Assoziierter",
     "orgAssociateCard": {
       "badge": "Organisation",
       "role": {

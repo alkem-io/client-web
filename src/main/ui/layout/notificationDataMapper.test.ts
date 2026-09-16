@@ -501,6 +501,33 @@ describe('notification avatar subject', () => {
     expect(data.avatarFallback).toBe('GH');
   });
 
+  it('shows the new associate, not the admin who approved or granted the role', () => {
+    // ORGANIZATION_ADMIN_ASSOCIATE_JOINED only fires for a direct join, an approved
+    // application or a direct role grant, so the trigger is the acting admin while the
+    // subject is the payload actor. Copy and avatar must name the same person.
+    const data = mapNotificationToItemData(
+      notification(
+        NotificationEvent.OrganizationAdminAssociateJoined,
+        {
+          type: NotificationEventPayload.OrganizationAssociateActor,
+          organization: { id: 'org-1', profile: { displayName: 'Acme Org', url: '/organization/acme' } },
+          actor: {
+            type: ActorType.User,
+            profile: { displayName: 'Grace Hopper', url: '/user/grace', visual: { uri: 'grace.png' } },
+          },
+        },
+        NotificationEventCategory.Organization
+      ),
+      t,
+      NotificationEventInAppState.Unread
+    );
+
+    expect(data.avatarUrl).toBe('grace.png');
+    expect(data.avatarFallback).toBe('GH');
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.memberName).toBe('Grace Hopper');
+  });
+
   it('falls back to the triggering user when the payload carries no actor', () => {
     const data = newMember(undefined);
 

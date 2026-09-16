@@ -198,8 +198,8 @@
       "role": "Роля",
       "spacesToJoin": "При приемане се присъединява към: {{spaces}}"
     },
-    "orgAssociateInvitationsSection": "Покани от организации",
-    "orgAssociateApplicationsSection": "Кандидатури за организации",
+    "orgAssociateInvitationsSection": "Покани за асоцииран",
+    "orgAssociateApplicationsSection": "Кандидатури за асоцииран",
     "orgAssociateCard": {
       "badge": "Организация",
       "role": {

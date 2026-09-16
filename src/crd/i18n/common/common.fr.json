@@ -943,8 +943,8 @@
           "description": ""
         },
         "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
-          "subject": "« {{triggeredByName}} » a rejoint {{organizationName}} en tant qu’associé",
-          "description": "{{triggeredByName}} a rejoint {{organizationName}}, dont vous êtes $t(common.admin)."
+          "subject": "« {{memberName}} » a rejoint {{organizationName}} en tant qu’associé",
+          "description": "{{memberName}} a rejoint {{organizationName}}, dont vous êtes $t(common.admin)."
         }
       },
       "spacesToJoin": "L'acceptation entraîne l'adhésion à : {{spaces}}",

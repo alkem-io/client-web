@@ -72,7 +72,9 @@ function buildTranslationValues(
       payload.organizationMessage,
     discussionName: payload.discussion?.displayName,
     role: payload.role,
-    // memberName: used by SPACE_ADMIN_COMMUNITY_NEW_MEMBER — the new member is the actor
+    // memberName: used by SPACE_ADMIN_COMMUNITY_NEW_MEMBER and
+    // ORGANIZATION_ADMIN_ASSOCIATE_JOINED — the new member/associate is the actor, never the
+    // triggering user (who is the approving or granting admin on those paths)
     memberName: payload.actor?.profile?.displayName,
     // parentName: used by USER_COMMENT_REPLY — the parent message/thread name
     parentName: payload.messageDetails?.parent?.displayName,
@@ -246,6 +248,9 @@ const AVATAR_SUBJECT_BY_TYPE: Partial<
   // whoever performed the join: on the invitation and admin-adds-a-member paths that is a
   // lead, not the new member.
   [NotificationEvent.SpaceAdminCommunityNewMember]: payload => payload.actor?.profile,
+  // "<associate> joined <organization>" — same shape as above: the trigger is the admin who
+  // approved the application or granted the role, so the avatar must follow the payload actor.
+  [NotificationEvent.OrganizationAdminAssociateJoined]: payload => payload.actor?.profile,
 };
 
 /** Resolves the profile whose avatar and initials the item renders. */
