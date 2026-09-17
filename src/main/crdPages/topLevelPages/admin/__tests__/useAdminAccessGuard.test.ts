@@ -43,10 +43,14 @@ const guard = (fixture: Parameters<typeof queryResult>[0], loading?: boolean, pr
 };
 
 describe('useAdminAccessGuard', () => {
-  test('reports platform admin when the legacy PlatformAdmin privilege is present', () => {
+  test('the retired PLATFORM_ADMIN catch-all no longer admits anyone (Slice B, T013)', () => {
     const result = guard({ platform: ['PLATFORM_ADMIN'] });
-    expect(result.isPlatformAdmin).toBe(true);
+    expect(result.isPlatformAdmin).toBe(false);
     expect(result.loading).toBe(false);
+  });
+
+  test('admits Platform Operations Admin — the authorization-policies inspector is its section (Slice B, T074)', () => {
+    expect(guard({ platform: ['AUTHORIZATION_RESET', 'PLATFORM_OPERATIONS_ADMIN'] }).isPlatformAdmin).toBe(true);
   });
 
   // FR-012 regression. PLATFORM_ADMIN is granted only to the legacy global-admin /
@@ -55,8 +59,8 @@ describe('useAdminAccessGuard', () => {
   // after deploy — was redirected away from the admin UI it must use to re-grant
   // every role. If this fails, the admin area is unreachable for exactly the
   // operators this feature creates.
-  test('admits Platform Roles Admin via GrantGlobalAdmins (FR-012)', () => {
-    expect(guard({ roleSet: ['GRANT_GLOBAL_ADMINS'] }).isPlatformAdmin).toBe(true);
+  test('admits Platform Roles Admin via PlatformRolesAssign (FR-012)', () => {
+    expect(guard({ roleSet: ['PLATFORM_ROLES_ASSIGN'] }).isPlatformAdmin).toBe(true);
   });
 
   test('admits Platform Users Admin via FeatureRoleAssign (FR-012)', () => {
@@ -106,7 +110,6 @@ describe('useAdminAccessGuard', () => {
    * `ROLE_ADMIN_SECTIONS` and this expectation flips there, not here.
    */
   test.each([
-    ['Platform Operations Admin', { platform: ['AUTHORIZATION_RESET', 'PLATFORM_OPERATIONS_ADMIN'] }],
     ['Platform Settings Admin', { platform: ['PLATFORM_SETTINGS_ADMIN'] }],
     ['Platform License Manager + Beta Tester', { myRoles: ['PLATFORM_LICENSE_MANAGER', 'FEATURE_BETA_TESTER'] }],
   ])('denies %s — no usable section', (_role, fixture) => {
@@ -130,8 +133,8 @@ describe('useAdminAccessGuard', () => {
       expect(guard({ platform: ['PLATFORM_USERS_ADMIN'] }).canChangeUserEmail).toBe(true);
     });
 
-    test('granted to the legacy catch-all', () => {
-      expect(guard({ platform: ['PLATFORM_ADMIN'] }).canChangeUserEmail).toBe(true);
+    test('withheld from the retired legacy catch-all (Slice B, T013)', () => {
+      expect(guard({ platform: ['PLATFORM_ADMIN'] }).canChangeUserEmail).toBe(false);
     });
 
     test('withheld from other admin-area roles that cannot perform it', () => {

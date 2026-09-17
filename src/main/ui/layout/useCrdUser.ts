@@ -13,11 +13,6 @@ import { useAdminAccessGuard } from '@/main/crdPages/topLevelPages/admin/useAdmi
  * so a template-built key does not type-check.
  */
 const ROLE_LABEL_KEYS = {
-  [RoleName.GlobalAdmin]: 'common.roles.GLOBAL_ADMIN',
-  [RoleName.GlobalSupport]: 'common.roles.GLOBAL_SUPPORT',
-  [RoleName.GlobalLicenseManager]: 'common.roles.GLOBAL_LICENSE_MANAGER',
-  [RoleName.PlatformBetaTester]: 'common.roles.PLATFORM_BETA_TESTER',
-  [RoleName.PlatformVcCampaign]: 'common.roles.PLATFORM_VC_CAMPAIGN',
   [RoleName.PlatformRolesAdmin]: 'common.roles.PLATFORM_ROLES_ADMIN',
   [RoleName.PlatformContentFullAccess]: 'common.roles.PLATFORM_CONTENT_FULL_ACCESS',
   [RoleName.PlatformResourceAdmin]: 'common.roles.PLATFORM_RESOURCE_ADMIN',
@@ -34,9 +29,17 @@ const ROLE_LABEL_KEYS = {
   [RoleName.FeatureVcCampaign]: 'common.roles.FEATURE_VC_CAMPAIGN',
 } as const;
 
-/** Most-privileged first — a holder of several roles is labelled by the strongest. */
+/**
+ * Most-privileged first — a holder of several roles is labelled by the strongest.
+ *
+ * 027-platform-role-redesign (T014, Slice B): the five legacy entries are gone
+ * from both this list and `ROLE_LABEL_KEYS`. The thirteen target roles are the
+ * whole vocabulary now, so "most privileged" is a total order over them rather
+ * than a mixed legacy/target ranking — which is what made the old order hard to
+ * read: `global-admin` outranked everything while `platform-roles-admin`, the
+ * role that actually replaced it, sat second.
+ */
 const ROLE_LABEL_PRECEDENCE: (keyof typeof ROLE_LABEL_KEYS)[] = [
-  RoleName.GlobalAdmin,
   RoleName.PlatformRolesAdmin,
   RoleName.PlatformUsersAdmin,
   RoleName.PlatformSettingsAdmin,
@@ -47,14 +50,10 @@ const ROLE_LABEL_PRECEDENCE: (keyof typeof ROLE_LABEL_KEYS)[] = [
   RoleName.PlatformSupport,
   RoleName.PlatformAuditReader,
   RoleName.PlatformSpacesReader,
-  RoleName.GlobalSupport,
-  RoleName.GlobalLicenseManager,
   RoleName.FeatureOrganizationCreator,
   RoleName.FeatureVirtualAssistant,
   RoleName.FeatureBetaTester,
   RoleName.FeatureVcCampaign,
-  RoleName.PlatformBetaTester,
-  RoleName.PlatformVcCampaign,
 ];
 
 export function useCrdUser() {

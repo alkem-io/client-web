@@ -35,13 +35,13 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 // FR-012: `myPrivileges` is the only signal the offered-role filter reads. Tests
 // drive it directly rather than mocking `getOfferedPlatformRoles` itself, so the
 // real filter (from useRoleSetManager.ts) is what's under test here (T008).
-// corr-client-web-8: a Platform Roles Admin holds BOTH `GRANT_GLOBAL_ADMINS`
+// corr-client-web-8: a Platform Roles Admin holds BOTH `PLATFORM_ROLES_ASSIGN`
 // and `FEATURE_ROLE_ASSIGN` server-side — the default persona for tests that
 // don't override privileges is that combined holder, so they still see all 14
-// target roles. A bare `GRANT_GLOBAL_ADMINS` holder (legacy `global-admin`) is
-// exercised explicitly in the assigner-capability-filter describe block below.
+// target roles. A bare `PLATFORM_ROLES_ASSIGN` holder is exercised explicitly
+// in the assigner-capability-filter describe block below.
 let mockMyPrivileges: AuthorizationPrivilege[] | undefined = [
-  AuthorizationPrivilege.GrantGlobalAdmins,
+  AuthorizationPrivilege.PlatformRolesAssign,
   AuthorizationPrivilege.FeatureRoleAssign,
 ];
 // corr-client-web-3: distinguishes "still fetching myPrivileges" from "fetched,
@@ -50,11 +50,9 @@ let mockLoadingPrivileges = false;
 // sec-client-web-2: the holder-list read was attempted but is unreachable
 // (privilege gap or query error) — distinct from a genuinely empty list.
 // spec-clientweb-2/sec-client-web-3: this is the TARGET-role read's own flag —
-// kept separate from `mockLegacyHoldersUnavailable` below so a test can pin
 // that a denial on one request never contaminates the other (FR-032, two
 // separate `useRoleSetManager` calls).
 let mockHoldersUnavailable = false;
-let mockLegacyHoldersUnavailable = false;
 
 type MockUsersByRole = Record<string, Array<{ id: string; profile: { displayName: string }; email?: string }>>;
 const baseUsersByRole: MockUsersByRole = {
@@ -64,11 +62,6 @@ const usersByRole: MockUsersByRole = baseUsersByRole;
 const organizationsByRole = {
   FEATURE_BETA_TESTER: [{ id: 'o1', profile: { displayName: 'Acme Org' } }],
 };
-// spec-clientweb-2/sec-client-web-3: the legacy roles' holder list now comes
-// from its OWN request — a separate mutable map so the legacy-panel tests
-// (sec-client-web-1) never leak a second "remove" button into the other
-// describe blocks' "exactly one remove button" assumptions.
-let legacyUsersByRole: MockUsersByRole = {};
 
 const assignPlatformRoleToUser = vi.fn();
 const removePlatformRoleFromUser = vi.fn();
@@ -77,17 +70,14 @@ const removePlatformRoleFromOrganization = vi.fn();
 
 vi.mock('@/domain/access/RoleSetManager/useRoleSetManager', async importOriginal => {
   const actual = await importOriginal<typeof import('@/domain/access/RoleSetManager/useRoleSetManager')>();
-  const legacyRoleNames: readonly unknown[] = actual.RELEVANT_ROLES.LegacyPlatform;
-  const isLegacyCall = (relevantRoles: readonly unknown[]) =>
-    relevantRoles.length > 0 && relevantRoles.every(role => legacyRoleNames.includes(role));
-
   return {
     ...actual,
-    // The page issues THREE calls to this hook: phase 1 with `relevantRoles: []`
-    // (myPrivileges only), phase 2 with the offered target-role set (holder
-    // data + mutations), and phase 3 with the legacy role set (its own holder
-    // data + mutations, sec-client-web-1/spec-clientweb-2) — never combined
-    // into one request. `mockLoadingPrivileges` only applies to the phase-1 call.
+    // T013 (Slice B): the page now issues TWO calls, not three — phase 1 with
+    // `relevantRoles: []` (myPrivileges only) and phase 2 with the offered
+    // target-role set (holder data + mutations). Phase 3, the legacy role set's
+    // own request, went with the legacy panel. The two that remain must STILL not
+    // be combined: the server fails a holder-list read closed as a whole (T051a).
+    // `mockLoadingPrivileges` only applies to the phase-1 call.
     default: ({ relevantRoles }: { relevantRoles: readonly unknown[] }) => {
       if (relevantRoles.length === 0) {
         return {
@@ -101,20 +91,6 @@ vi.mock('@/domain/access/RoleSetManager/useRoleSetManager', async importOriginal
           loading: mockLoadingPrivileges,
           updating: false,
           holdersUnavailable: false,
-        };
-      }
-      if (isLegacyCall(relevantRoles)) {
-        return {
-          myPrivileges: mockMyPrivileges,
-          usersByRole: legacyUsersByRole,
-          organizationsByRole: {},
-          assignPlatformRoleToUser,
-          removePlatformRoleFromUser,
-          assignPlatformRoleToOrganization,
-          removePlatformRoleFromOrganization,
-          loading: false,
-          updating: false,
-          holdersUnavailable: mockLegacyHoldersUnavailable,
         };
       }
       return {
@@ -156,13 +132,11 @@ vi.mock('@/domain/access/AvailableContributors/useRoleSetAvailableOrganizationsO
 beforeEach(() => {
   vi.clearAllMocks();
   mockPathname = '/admin/authorization/roles/PLATFORM_ROLES_ADMIN';
-  mockMyPrivileges = [AuthorizationPrivilege.GrantGlobalAdmins, AuthorizationPrivilege.FeatureRoleAssign];
+  mockMyPrivileges = [AuthorizationPrivilege.PlatformRolesAssign, AuthorizationPrivilege.FeatureRoleAssign];
   mockLoadingPrivileges = false;
   mockHoldersUnavailable = false;
-  mockLegacyHoldersUnavailable = false;
   mockLoadingRoleSetId = false;
   mockRoleSetData = { platform: { roleSet: { id: 'rs1' } } };
-  legacyUsersByRole = {};
 });
 
 describe('CrdAdminGlobalRolesPage', () => {
@@ -253,19 +227,19 @@ describe('CrdAdminGlobalRolesPage', () => {
       expect(within(nav).queryByRole('button', { name: 'roles.PLATFORM_ROLES_ADMIN' })).toBeNull();
     });
 
-    test('a holder of GRANT_GLOBAL_ADMINS and FEATURE_ROLE_ASSIGN (Platform Roles Admin) is offered all 14 roles', () => {
-      mockMyPrivileges = [AuthorizationPrivilege.GrantGlobalAdmins, AuthorizationPrivilege.FeatureRoleAssign];
+    test('a holder of PLATFORM_ROLES_ASSIGN and FEATURE_ROLE_ASSIGN (Platform Roles Admin) is offered all 14 roles', () => {
+      mockMyPrivileges = [AuthorizationPrivilege.PlatformRolesAssign, AuthorizationPrivilege.FeatureRoleAssign];
       render(<CrdAdminGlobalRolesPage />);
       const nav = screen.getByRole('navigation');
       expect(within(nav).getAllByRole('button')).toHaveLength(14);
     });
 
-    // corr-client-web-8: a bare GRANT_GLOBAL_ADMINS holder (the legacy
+    // corr-client-web-8: a bare PLATFORM_ROLES_ASSIGN holder (the legacy
     // `global-admin` credential) does NOT hold FEATURE_ROLE_ASSIGN server-side —
     // it must be offered only the 10 `Platform …` roles, never the 3 `Feature …`
     // roles the server would reject on assign/revoke.
-    test('a bare holder of GRANT_GLOBAL_ADMINS (legacy global-admin) is offered only the 10 platform admin roles', () => {
-      mockMyPrivileges = [AuthorizationPrivilege.GrantGlobalAdmins];
+    test('a bare holder of PLATFORM_ROLES_ASSIGN (legacy global-admin) is offered only the 10 platform admin roles', () => {
+      mockMyPrivileges = [AuthorizationPrivilege.PlatformRolesAssign];
       render(<CrdAdminGlobalRolesPage />);
       const nav = screen.getByRole('navigation');
       const buttons = within(nav).getAllByRole('button');
@@ -400,120 +374,17 @@ describe('CrdAdminGlobalRolesPage', () => {
     });
   });
 
-  // sec-client-web-1: the legacy platform credentials remain live,
-  // authoritative privileged access through the Slice A -> Slice B window.
-  // This panel is the restored revoke-only console surface for that window.
-  // sec-client-web-4/spec-clientweb-3: gated on plain READ + GRANT (the
-  // legacy PlatformAdmin-equivalent signal the server's legacy revoke
-  // branches actually honour), not on GRANT_GLOBAL_ADMINS — a Platform Roles
-  // Admin holds GRANT_GLOBAL_ADMINS via the T034 widening but not READ/GRANT,
-  // and the legacy resolver branches reject them regardless.
-  describe('legacy platform roles panel (sec-client-web-1, sec-client-web-4/spec-clientweb-3)', () => {
-    const legacyAdminPrivileges = [
-      AuthorizationPrivilege.GrantGlobalAdmins,
-      AuthorizationPrivilege.Read,
-      AuthorizationPrivilege.Grant,
-    ];
-
-    const withLegacyHolder = () => {
-      legacyUsersByRole = {
-        GLOBAL_ADMIN: [{ id: 'u3', profile: { displayName: 'Legacy Holder' }, email: 'legacy@x.io' }],
-      };
-    };
-
-    test('shows the panel with its current holder for a legacy PlatformAdmin-equivalent holder (READ + GRANT)', () => {
-      withLegacyHolder();
-      mockMyPrivileges = legacyAdminPrivileges;
-      render(<CrdAdminGlobalRolesPage />);
-      expect(screen.getByText('roleMembers.legacyRolesHeading')).toBeInTheDocument();
-      expect(screen.getByText('Legacy Holder (legacy@x.io)')).toBeInTheDocument();
-    });
-
-    test('shows the "no holders" state when no legacy role has a current holder', () => {
-      mockMyPrivileges = legacyAdminPrivileges;
-      render(<CrdAdminGlobalRolesPage />);
-      expect(screen.getByText('roleMembers.legacyRolesHeading')).toBeInTheDocument();
-      expect(screen.getByText('roleMembers.legacyRolesNoHolders')).toBeInTheDocument();
-    });
-
-    // spec-clientweb-4/qual-clientweb-4: a denied/errored legacy read must not
-    // render the same text as a genuine "no holders" result.
-    test('shows the holders-unavailable alert instead of "no holders" when the legacy read is denied', () => {
-      mockMyPrivileges = legacyAdminPrivileges;
-      mockLegacyHoldersUnavailable = true;
-      render(<CrdAdminGlobalRolesPage />);
-      const legacySection = screen.getByText('roleMembers.legacyRolesHeading').closest('section');
-      if (!legacySection) throw new Error('legacy roles section not found');
-      expect(within(legacySection).getByRole('alert')).toHaveTextContent('roleMembers.holdersUnavailable');
-      expect(screen.queryByText('roleMembers.legacyRolesNoHolders')).toBeNull();
-    });
-
-    test('hides the panel for a bare GRANT_GLOBAL_ADMINS holder (a Platform Roles Admin, no plain READ/GRANT)', () => {
-      withLegacyHolder();
-      mockMyPrivileges = [AuthorizationPrivilege.GrantGlobalAdmins];
-      render(<CrdAdminGlobalRolesPage />);
-      expect(screen.queryByText('roleMembers.legacyRolesHeading')).toBeNull();
-      // spec-clientweb-2/sec-client-web-3: the 14 target roles' holder lists
-      // must still render — a denied/absent legacy request never degrades them.
-      expect(screen.getByRole('navigation')).toBeInTheDocument();
-      expect(screen.getByText('Alice (alice@x.io)')).toBeInTheDocument();
-    });
-
-    test('hides the panel for a holder of only FEATURE_ROLE_ASSIGN', () => {
-      withLegacyHolder();
-      mockMyPrivileges = [AuthorizationPrivilege.FeatureRoleAssign];
-      mockPathname = '/admin/authorization/roles/FEATURE_BETA_TESTER';
-      render(<CrdAdminGlobalRolesPage />);
-      expect(screen.queryByText('roleMembers.legacyRolesHeading')).toBeNull();
-    });
-
-    test('never renders an "add" affordance', () => {
-      withLegacyHolder();
-      mockMyPrivileges = legacyAdminPrivileges;
-      render(<CrdAdminGlobalRolesPage />);
-      const legacySection = screen.getByText('roleMembers.legacyRolesHeading').closest('section');
-      if (!legacySection) throw new Error('legacy roles section not found');
-      expect(within(legacySection).queryByRole('button', { name: 'roleMembers.add' })).toBeNull();
-    });
-
-    test('revoking a legacy holder (after confirm) calls removePlatformRoleFromUser with the legacy role name', async () => {
-      withLegacyHolder();
-      mockMyPrivileges = legacyAdminPrivileges;
-      render(<CrdAdminGlobalRolesPage />);
-      const legacySection = screen.getByText('roleMembers.legacyRolesHeading').closest('section');
-      if (!legacySection) throw new Error('legacy roles section not found');
-      await userEvent.click(within(legacySection).getByRole('button', { name: 'roleMembers.remove' }));
-      const dialog = screen.getByRole('alertdialog');
-      await userEvent.click(within(dialog).getByRole('button', { name: 'roleMembers.remove' }));
-      expect(removePlatformRoleFromUser).toHaveBeenCalledWith('u3', 'GLOBAL_ADMIN');
-    });
-
-    // qual-clientweb-8: a rejected legacy revoke must render its message inside
-    // the legacy section itself (as its own `role="alert"`), never inside the
-    // unrelated, currently-selected target-role editor elsewhere on the page.
-    test('a rejected legacy revoke renders the server message inside the legacy section, not the target-role editor', async () => {
-      withLegacyHolder();
-      mockMyPrivileges = legacyAdminPrivileges;
-      removePlatformRoleFromUser.mockRejectedValueOnce(
-        new ApolloError({ graphQLErrors: [{ message: 'Legacy policy: you may not revoke this role.' }] })
-      );
-      render(<CrdAdminGlobalRolesPage />);
-      const legacySection = screen.getByText('roleMembers.legacyRolesHeading').closest('section');
-      if (!legacySection) throw new Error('legacy roles section not found');
-      await userEvent.click(within(legacySection).getByRole('button', { name: 'roleMembers.remove' }));
-      const dialog = screen.getByRole('alertdialog');
-      await userEvent.click(within(dialog).getByRole('button', { name: 'roleMembers.remove' }));
-
-      const errorMessage = 'Legacy policy: you may not revoke this role.';
-      const legacyAlert = await within(legacySection).findByText(errorMessage);
-      expect(legacyAlert).toHaveAttribute('role', 'alert');
-
-      // The message must appear exactly once — inside the legacy section —
-      // never duplicated into the (unrelated) currently-selected target-role
-      // editor elsewhere on the page.
-      expect(screen.getAllByText(errorMessage)).toHaveLength(1);
-    });
-  });
+  // 027-platform-role-redesign (T013, Slice B): the legacy-platform-roles panel
+  // suite is deleted with the panel.
+  //
+  // It covered the sec-client-web-1 incident-response surface for the additive
+  // window — revoke-only, gated on plain READ + GRANT rather than the assignment
+  // privilege (sec-client-web-4/spec-clientweb-3), because the server's legacy
+  // revoke branch honoured a resolver-local `[GLOBAL_ADMIN]` policy and would have
+  // rejected a bare Platform Roles Admin's click. Server pin, roles and panel are
+  // all gone. The FR-032 property it also guarded — a denied holder-list read must
+  // not degrade the OTHER family's list — is still covered by the
+  // `holdersUnavailable` tests above, which is why those were not touched.
 
   // corr-client-web-7: a legacy holder-list-read privilege (no manage
   // privilege at all) still offers the 14 target roles — read-only.
@@ -545,54 +416,24 @@ describe('CrdAdminGlobalRolesPage', () => {
       expect(screen.queryByText('roleMembers.legacyRolesHeading')).toBeNull();
     });
 
-    test('a holder of GRANT_GLOBAL_ADMINS never sees the read-only notice (manage mode, unchanged)', () => {
+    test('a holder of PLATFORM_ROLES_ASSIGN never sees the read-only notice (manage mode, unchanged)', () => {
       render(<CrdAdminGlobalRolesPage />);
       expect(screen.queryByText('roleMembers.readOnlyNotice')).toBeNull();
       expect(screen.getByRole('button', { name: 'roleMembers.add' })).toBeInTheDocument();
     });
   });
 
-  // spec-clientweb-2/sec-client-web-3 (FR-032): the legacy request and the
-  // target-role request are independent — a denial on one never degrades
-  // the other's holder list.
-  describe('independent holder-list requests (spec-clientweb-2/sec-client-web-3)', () => {
-    test('a denied legacy read never marks the target roles unavailable', () => {
-      mockMyPrivileges = [
-        AuthorizationPrivilege.GrantGlobalAdmins,
-        AuthorizationPrivilege.Read,
-        AuthorizationPrivilege.Grant,
-      ];
-      mockLegacyHoldersUnavailable = true;
-      mockHoldersUnavailable = false;
-      render(<CrdAdminGlobalRolesPage />);
-      expect(screen.getByText('Alice (alice@x.io)')).toBeInTheDocument();
-      const legacySection = screen.getByText('roleMembers.legacyRolesHeading').closest('section');
-      if (!legacySection) throw new Error('legacy roles section not found');
-      expect(within(legacySection).getByRole('alert')).toHaveTextContent('roleMembers.holdersUnavailable');
-    });
-
-    test('a denied target-role read never marks the legacy panel unavailable', () => {
-      // PLATFORM_AUDIT_READER has no mocked holder, so `holdersUnavailable`
-      // (rather than a real holder list) is what drives the target editor's
-      // empty-members branch here — mirrors the sec-client-web-2 test pattern.
-      mockPathname = '/admin/authorization/roles/PLATFORM_AUDIT_READER';
-      mockMyPrivileges = [
-        AuthorizationPrivilege.GrantGlobalAdmins,
-        AuthorizationPrivilege.Read,
-        AuthorizationPrivilege.Grant,
-      ];
-      legacyUsersByRole = {
-        GLOBAL_ADMIN: [{ id: 'u3', profile: { displayName: 'Legacy Holder' }, email: 'legacy@x.io' }],
-      };
-      mockHoldersUnavailable = true;
-      mockLegacyHoldersUnavailable = false;
-      render(<CrdAdminGlobalRolesPage />);
-      expect(screen.getByRole('alert')).toHaveTextContent('roleMembers.holdersUnavailable');
-      expect(screen.getByText('Legacy Holder (legacy@x.io)')).toBeInTheDocument();
-      expect(screen.queryByText('roleMembers.legacyRolesNoHolders')).toBeNull();
-    });
-  });
-
+  // 027-platform-role-redesign (T013, Slice B): the "independent holder-list
+  // requests" suite is deleted — both its tests asserted a legacy request that no
+  // longer exists (a denied legacy read must not degrade the target list, and
+  // vice-versa).
+  //
+  // The FR-032 property they guarded still matters and is NOT dropped: the server
+  // fails a holder-list read closed AS A WHOLE (T051a), so the page must keep
+  // issuing the privilege read and the holder read as separate calls even now that
+  // only one role family remains. That is pinned by the hook mock above, which
+  // branches on `relevantRoles.length === 0` and would break loudly if the two
+  // were ever merged, and by the `holdersUnavailable` tests in the suites above.
   // corr-client-web-4: `roleSetId` itself can still be unresolved while
   // `useRoleSetManager`'s own authorization query is skipped for lack of an
   // id and reports `loading: false` regardless.
@@ -638,8 +479,8 @@ describe('CrdAdminGlobalRolesPage', () => {
       expect(removePlatformRoleFromUser).not.toHaveBeenCalled();
     });
 
-    test('leaves both controls interactive for a GRANT_GLOBAL_ADMINS holder on a Platform role', () => {
-      mockMyPrivileges = [AuthorizationPrivilege.GrantGlobalAdmins];
+    test('leaves both controls interactive for a PLATFORM_ROLES_ASSIGN holder on a Platform role', () => {
+      mockMyPrivileges = [AuthorizationPrivilege.PlatformRolesAssign];
       render(<CrdAdminGlobalRolesPage />);
 
       for (const button of [...addButtons(), ...removeButtons()]) {

@@ -46,11 +46,11 @@ const CrdDiscussionPage = () => {
   const { getAuthor } = useAuthorsDetails(authorIds);
 
   const { platformPrivilegeWrapper } = useCurrentUserContext();
-  // 027-platform-role-redesign A15 (spec-clientweb-5): same disjunction as
-  // CrdForumPage — the forum family's own `PLATFORM_FORUM_MANAGE`, with the
-  // retiring `PLATFORM_ADMIN` kept alongside so legacy reach is not narrowed.
-  const canManageForum = [AuthorizationPrivilege.PlatformForumManage, AuthorizationPrivilege.PlatformAdmin].some(
-    privilege => Boolean(platformPrivilegeWrapper?.hasPlatformPrivilege(privilege))
+  // 027-platform-role-redesign A15 (spec-clientweb-5): same check as
+  // CrdForumPage — the forum family's own `PLATFORM_FORUM_MANAGE`. Slice B
+  // (T013) retired the `PLATFORM_ADMIN` catch-all that stood alongside it.
+  const canManageForum = Boolean(
+    platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformForumManage)
   );
   const activeCategories = data?.platform.forum.discussionCategories ?? [];
 

@@ -1,6 +1,5 @@
 import type { FC, PropsWithChildren } from 'react';
 import { usePlatformLevelAuthorizationQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { canUseAdminArea } from '@/main/crdPages/topLevelPages/admin/adminSectionAccess';
 import NonAdminRedirect from './NonAdminRedirect';
 
@@ -28,10 +27,10 @@ import NonAdminRedirect from './NonAdminRedirect';
  * authority for every query and mutation inside the area.
  *
  * NOTE ON WHERE THE PRIVILEGES LIVE — verified against a running server, not
- * assumed. `GRANT_GLOBAL_ADMINS` / `FEATURE_ROLE_ASSIGN` / the two holder-read
+ * assumed. `PLATFORM_ROLES_ASSIGN` / `FEATURE_ROLE_ASSIGN` / the two holder-read
  * privileges are granted on the platform **role set's** authorization, while
- * `PLATFORM_ADMIN`, `PLATFORM_USERS_ADMIN` and `PLATFORM_CONTENT_FULL_ACCESS`
- * live on the platform authorization. Both sets must be unioned; checking only
+ * `PLATFORM_USERS_ADMIN` and `PLATFORM_CONTENT_FULL_ACCESS` live on the platform
+ * authorization. Both sets must be unioned; checking only
  * `platform.authorization` silently denies half the model.
  */
 const NonPlatformAdminRedirect: FC<PropsWithChildren> = ({ children }) => {
@@ -46,10 +45,9 @@ const NonPlatformAdminRedirect: FC<PropsWithChildren> = ({ children }) => {
     <NonAdminRedirect
       privileges={privileges}
       loading={loading}
-      // `PlatformAdmin` is the legacy short-circuit `NonAdminRedirect` applies
-      // on its own; the real decision arrives through `admitted`, which already
-      // accounts for it.
-      adminPrivilege={AuthorizationPrivilege.PlatformAdmin}
+      // Slice B (T013): no single privilege admits to the platform area any
+      // more — the decision is entirely `admitted`, derived per section.
+      adminPrivilege={[]}
       admitted={canUseAdminArea({ privileges, roles: data?.platform.roleSet.myRoles })}
     >
       {children}

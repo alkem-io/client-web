@@ -15,11 +15,13 @@ vi.mock('react-i18next', () => ({
 
 const useSpacesListMock = vi.fn();
 const deleteSpaceMock = vi.fn();
-const updateSpaceSettingsMock = vi.fn(() => Promise.resolve());
+const updateSpaceVisibilityMock = vi.fn(() => Promise.resolve());
+const updateSpaceNameIdMock = vi.fn(() => Promise.resolve());
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   usePlatformAdminSpacesListQuery: () => useSpacesListMock(),
   useDeleteSpaceMutation: () => [deleteSpaceMock, { loading: false }],
-  useUpdateSpacePlatformSettingsMutation: () => [updateSpaceSettingsMock, { loading: false }],
+  useAdminUpdateSpaceVisibilityMutation: () => [updateSpaceVisibilityMock, { loading: false }],
+  useAdminUpdateSpaceNameIdMutation: () => [updateSpaceNameIdMock, { loading: false }],
   refetchPlatformAdminSpacesListQuery: () => ({}),
 }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
@@ -94,14 +96,29 @@ describe('CrdAdminSpacesPage', () => {
     expect(screen.getByRole('dialog')).toHaveTextContent('license dialog');
   });
 
-  test('edit-settings opens the alias/visibility dialog and saves alias + visibility', async () => {
+  // 027-platform-role-redesign (T013, FR-020): alias and visibility are two
+  // mutations owned by different roles, each sent ONLY when its value changed.
+  test('edit-settings opens the alias/visibility dialog; saving with nothing changed sends nothing', async () => {
     render(<CrdAdminSpacesPage />);
     await userEvent.click(screen.getAllByRole('button', { name: 'spaces.editSettings' })[0]);
     const dialog = screen.getByRole('dialog');
     expect(within(dialog).getByDisplayValue('s1')).toBeInTheDocument(); // alias prefilled
     await userEvent.click(within(dialog).getByRole('button', { name: 'spaces.save' }));
-    expect(updateSpaceSettingsMock).toHaveBeenCalledWith({
-      variables: { spaceId: 's1', nameId: 's1', visibility: 'ACTIVE' },
+    expect(updateSpaceVisibilityMock).not.toHaveBeenCalled();
+    expect(updateSpaceNameIdMock).not.toHaveBeenCalled();
+  });
+
+  test('changing only the alias sends the protected nameID update and not the visibility one', async () => {
+    render(<CrdAdminSpacesPage />);
+    await userEvent.click(screen.getAllByRole('button', { name: 'spaces.editSettings' })[0]);
+    const dialog = screen.getByRole('dialog');
+    const alias = within(dialog).getByDisplayValue('s1');
+    await userEvent.clear(alias);
+    await userEvent.type(alias, 's1-renamed');
+    await userEvent.click(within(dialog).getByRole('button', { name: 'spaces.save' }));
+    expect(updateSpaceNameIdMock).toHaveBeenCalledWith({
+      variables: { spaceId: 's1', nameId: 's1-renamed' },
     });
+    expect(updateSpaceVisibilityMock).not.toHaveBeenCalled();
   });
 });

@@ -5,7 +5,6 @@ import { useLocation } from 'react-router-dom';
 import { usePlatformRoleSetQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
-import { LegacyRoleHoldersPanel } from '@/crd/components/admin/roles/LegacyRoleHoldersPanel';
 import { type RoleMember, RoleMembersEditor } from '@/crd/components/admin/roles/RoleMembersEditor';
 import { Loading } from '@/crd/components/common/Loading';
 import { Button } from '@/crd/primitives/button';
@@ -13,7 +12,6 @@ import useRoleSetAvailableOrganizationsOnPlatform from '@/domain/access/Availabl
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
 import useActionPermission from '@/domain/access/permissions/useActionPermission';
 import useRoleSetManager, {
-  getOfferedLegacyPlatformRoles,
   getOfferedPlatformRoles,
   getViewOnlyPlatformRoles,
   isFeaturePlatformRole,
@@ -73,9 +71,6 @@ const CrdAdminGlobalRolesPage = () => {
   const [memberSearch, setMemberSearch] = useState('');
 
   const [assignmentError, setAssignmentError] = useState<string | undefined>();
-  // qual-clientweb-8: a rejected legacy revoke must surface inside the legacy
-  // panel itself, never inside the (unrelated) target-role editor's error slot.
-  const [legacyError, setLegacyError] = useState<string | undefined>();
 
   const { data, loading: loadingRoleSetId } = usePlatformRoleSetQuery();
   const roleSetId = data?.platform.roleSet.id;
@@ -86,13 +81,12 @@ const CrdAdminGlobalRolesPage = () => {
   // either case (corr-client-web-3).
   const { myPrivileges, loading: loadingPrivileges } = useRoleSetManager({ roleSetId, relevantRoles: [] });
   const manageableRoles = getOfferedPlatformRoles(myPrivileges);
-  // corr-client-web-7: no manage privilege at all (neither GRANT_GLOBAL_ADMINS
+  // corr-client-web-7: no manage privilege at all (neither PLATFORM_ROLES_ASSIGN
   // nor FEATURE_ROLE_ASSIGN) doesn't mean nothing to offer — a legacy
   // holder-list-read privilege (GLOBAL_SUPPORT, GLOBAL_LICENSE_MANAGER) still
   // authorizes *viewing* the same 13 roles' holders, just not managing them.
   const readOnly = manageableRoles.length === 0;
   const offeredRoles = readOnly ? getViewOnlyPlatformRoles(myPrivileges) : manageableRoles;
-  const legacyRoles = getOfferedLegacyPlatformRoles(myPrivileges);
 
   // corr-client-web-4: `roleSetId` itself may still be unresolved (cold cache,
   // or a post-mutation cache eviction re-triggering the read) while
@@ -128,27 +122,23 @@ const CrdAdminGlobalRolesPage = () => {
     fetchContributors: true,
   });
 
-  // Phase 3: the legacy roles' holder list is a SEPARATE request (see the
-  // docblock above) — its own privilege gate, its own denial, its own
-  // `holdersUnavailable`, never combined with the target-role read.
-  const {
-    usersByRole: legacyUsersByRole,
-    removePlatformRoleFromUser: removeLegacyPlatformRoleFromUser,
-    updating: legacyUpdating,
-    holdersUnavailable: legacyHoldersUnavailable,
-  } = useRoleSetManager({
-    roleSetId,
-    relevantRoles: legacyRoles,
-    contributorTypes: [ActorType.User],
-    fetchContributors: true,
-  });
+  // 027-platform-role-redesign (T013, Slice B): Phase 3 — the legacy roles'
+  // SEPARATE holder-list request — is deleted with the roles.
+  //
+  // It was split out for a real reason worth keeping on record: the server fails
+  // a holder-list read closed AS A WHOLE (T051a) when one request spans both role
+  // families and the caller lacks the privilege for even one requested role, so
+  // combining them would have let a denial on the legacy list blank the target
+  // list too (FR-032, spec-clientweb-2/sec-client-web-3). Only ONE family remains,
+  // so there is nothing left to split — but do not re-merge the two remaining
+  // `useRoleSetManager` calls (privileges, then holders) for the same reason.
 
   // Gate the add/remove controls on the privilege the backend enforces for the
   // SELECTED role, so the action is prevented rather than silently refused
   // (#9537). The two assigner privileges gate disjoint role families
-  // (corr-client-web-8): the 3 `Feature …` roles need `FEATURE_ROLE_ASSIGN`,
-  // the 10 `Platform …` roles need `GRANT_GLOBAL_ADMINS` — never one flat
-  // token for all 13. The offered-set filter above already guarantees this
+  // (corr-client-web-8): the 4 `Feature …` roles need `FEATURE_ROLE_ASSIGN`,
+  // the 10 `Platform …` roles need `PLATFORM_ROLES_ASSIGN` — never one flat
+  // token for all 14. The offered-set filter above already guarantees this
   // resolves to "allowed" for every manageable role; it stays as the
   // belt-and-braces guard `GatedAction` was introduced for.
   const reasonText = usePermissionReasonText();
@@ -160,16 +150,6 @@ const CrdAdminGlobalRolesPage = () => {
     privilegesPending
   );
   const assignDisabledReason = reasonText(assignPermission);
-
-  const legacyRoleGroups = legacyRoles.map(role => ({
-    role,
-    roleLabel: t(`roles.${role}`),
-    holders: (legacyUsersByRole?.[role] ?? []).map(user => ({
-      id: user.id,
-      displayName: user.profile?.displayName ?? '',
-      email: user.email ?? undefined,
-    })),
-  }));
 
   const currentUsers = (selectedRole && usersByRole?.[selectedRole]) ?? [];
   const members: RoleMember[] = currentUsers.map(user => ({
@@ -279,132 +259,113 @@ const CrdAdminGlobalRolesPage = () => {
         // until myPrivileges resolves, and roleSetId itself may still be
         // in flight) must not look identical to "no privilege".
         <Loading />
-      ) : offeredRoles.length === 0 && legacyRoles.length === 0 ? (
+      ) : offeredRoles.length === 0 ? (
         // corr-client-web-3/corr-client-web-7: an operator holding none of
-        // GRANT_GLOBAL_ADMINS, FEATURE_ROLE_ASSIGN, a legacy holder-list-read
-        // privilege, or legacy PlatformAdmin-equivalent access gets an
-        // explicit, translated empty state instead of a blank panel
-        // indistinguishable from a broken page.
+        // PLATFORM_ROLES_ASSIGN, FEATURE_ROLE_ASSIGN or a holder-list-read
+        // privilege gets an explicit, translated empty state instead of a blank
+        // panel indistinguishable from a broken page. T013 dropped the
+        // `legacyRoles.length === 0` conjunct with the legacy panel.
         <p className="text-body text-muted-foreground">{t('roleMembers.noAssignablePrivilege')}</p>
       ) : (
-        <>
-          {offeredRoles.length > 0 && (
-            <>
-              <nav aria-label={t('roleMembers.roleLabel')} className="flex flex-wrap gap-2">
-                {offeredRoles.map(role => (
-                  <Button
-                    key={role}
-                    type="button"
-                    variant={role === selectedRole ? 'default' : 'outline'}
-                    size="sm"
-                    aria-pressed={role === selectedRole}
-                    onClick={() => selectRole(role)}
-                  >
-                    {roleLabels[role]}
-                  </Button>
-                ))}
-              </nav>
+        offeredRoles.length > 0 && (
+          <>
+            <nav aria-label={t('roleMembers.roleLabel')} className="flex flex-wrap gap-2">
+              {offeredRoles.map(role => (
+                <Button
+                  key={role}
+                  type="button"
+                  variant={role === selectedRole ? 'default' : 'outline'}
+                  size="sm"
+                  aria-pressed={role === selectedRole}
+                  onClick={() => selectRole(role)}
+                >
+                  {roleLabels[role]}
+                </Button>
+              ))}
+            </nav>
 
-              {readOnly && (
-                // corr-client-web-7: a legacy holder-list-read privilege
-                // (GLOBAL_SUPPORT, GLOBAL_LICENSE_MANAGER) authorizes viewing
-                // these roles' holders, not managing them — say so rather
-                // than silently hiding the add/remove affordances.
-                <output className="text-body text-muted-foreground">{t('roleMembers.readOnlyNotice')}</output>
-              )}
+            {readOnly && (
+              // corr-client-web-7: a legacy holder-list-read privilege
+              // (GLOBAL_SUPPORT, GLOBAL_LICENSE_MANAGER) authorizes viewing
+              // these roles' holders, not managing them — say so rather
+              // than silently hiding the add/remove affordances.
+              <output className="text-body text-muted-foreground">{t('roleMembers.readOnlyNotice')}</output>
+            )}
 
-              {selectedRole && (
-                <RoleMembersEditor
-                  roleLabel={roleLabels[selectedRole]}
-                  roleDescription={roleDescriptions[selectedRole]}
-                  errorMessage={assignmentError}
-                  members={filteredMembers}
-                  availableUsers={available}
-                  memberSearchTerm={memberSearch}
-                  onMemberSearchTermChange={setMemberSearch}
-                  searchTerm={searchInput}
-                  onSearchTermChange={setSearchInput}
-                  onAdd={async userId => {
-                    setAssignmentError(undefined);
-                    try {
-                      await assignPlatformRoleToUser(userId, selectedRole);
-                    } catch (error) {
-                      setAssignmentError(extractErrorMessage(error));
-                    }
-                  }}
-                  onRemove={async userId => {
-                    setAssignmentError(undefined);
-                    try {
-                      await removePlatformRoleFromUser(userId, selectedRole);
-                    } catch (error) {
-                      setAssignmentError(extractErrorMessage(error));
-                    }
-                  }}
-                  addDisabledReason={assignDisabledReason}
-                  removeDisabledReason={assignDisabledReason}
-                  loadingMembers={loading}
-                  loadingAvailable={loadingAvailable}
-                  updating={updating}
-                  holdersUnavailable={holdersUnavailable}
-                  hasMore={hasMore}
-                  readOnly={readOnly}
-                  onLoadMore={() => {
-                    void fetchMore();
-                  }}
-                  organizationSection={
-                    showOrganizationSection
-                      ? {
-                          members: organizationMembers,
-                          availableOrganizations: availableOrganizationMembers,
-                          searchTerm: orgSearchInput,
-                          onSearchTermChange: setOrgSearchInput,
-                          onAdd: async organizationId => {
-                            setAssignmentError(undefined);
-                            try {
-                              await assignPlatformRoleToOrganization(organizationId, selectedRole);
-                            } catch (error) {
-                              setAssignmentError(extractErrorMessage(error));
-                            }
-                          },
-                          onRemove: async organizationId => {
-                            setAssignmentError(undefined);
-                            try {
-                              await removePlatformRoleFromOrganization(organizationId, selectedRole);
-                            } catch (error) {
-                              setAssignmentError(extractErrorMessage(error));
-                            }
-                          },
-                          loadingMembers: loading,
-                          loadingAvailable: loadingAvailableOrganizations,
-                          hasMore: hasMoreOrganizations,
-                          onLoadMore: () => {
-                            void fetchMoreOrganizations();
-                          },
-                        }
-                      : undefined
+            {selectedRole && (
+              <RoleMembersEditor
+                roleLabel={roleLabels[selectedRole]}
+                roleDescription={roleDescriptions[selectedRole]}
+                errorMessage={assignmentError}
+                members={filteredMembers}
+                availableUsers={available}
+                memberSearchTerm={memberSearch}
+                onMemberSearchTermChange={setMemberSearch}
+                searchTerm={searchInput}
+                onSearchTermChange={setSearchInput}
+                onAdd={async userId => {
+                  setAssignmentError(undefined);
+                  try {
+                    await assignPlatformRoleToUser(userId, selectedRole);
+                  } catch (error) {
+                    setAssignmentError(extractErrorMessage(error));
                   }
-                />
-              )}
-            </>
-          )}
-
-          {legacyRoles.length > 0 && (
-            <LegacyRoleHoldersPanel
-              groups={legacyRoleGroups}
-              removing={legacyUpdating}
-              holdersUnavailable={legacyHoldersUnavailable}
-              errorMessage={legacyError}
-              onRemove={async (role, memberId) => {
-                setLegacyError(undefined);
-                try {
-                  await removeLegacyPlatformRoleFromUser(memberId, role as RoleName);
-                } catch (error) {
-                  setLegacyError(extractErrorMessage(error));
+                }}
+                onRemove={async userId => {
+                  setAssignmentError(undefined);
+                  try {
+                    await removePlatformRoleFromUser(userId, selectedRole);
+                  } catch (error) {
+                    setAssignmentError(extractErrorMessage(error));
+                  }
+                }}
+                addDisabledReason={assignDisabledReason}
+                removeDisabledReason={assignDisabledReason}
+                loadingMembers={loading}
+                loadingAvailable={loadingAvailable}
+                updating={updating}
+                holdersUnavailable={holdersUnavailable}
+                hasMore={hasMore}
+                readOnly={readOnly}
+                onLoadMore={() => {
+                  void fetchMore();
+                }}
+                organizationSection={
+                  showOrganizationSection
+                    ? {
+                        members: organizationMembers,
+                        availableOrganizations: availableOrganizationMembers,
+                        searchTerm: orgSearchInput,
+                        onSearchTermChange: setOrgSearchInput,
+                        onAdd: async organizationId => {
+                          setAssignmentError(undefined);
+                          try {
+                            await assignPlatformRoleToOrganization(organizationId, selectedRole);
+                          } catch (error) {
+                            setAssignmentError(extractErrorMessage(error));
+                          }
+                        },
+                        onRemove: async organizationId => {
+                          setAssignmentError(undefined);
+                          try {
+                            await removePlatformRoleFromOrganization(organizationId, selectedRole);
+                          } catch (error) {
+                            setAssignmentError(extractErrorMessage(error));
+                          }
+                        },
+                        loadingMembers: loading,
+                        loadingAvailable: loadingAvailableOrganizations,
+                        hasMore: hasMoreOrganizations,
+                        onLoadMore: () => {
+                          void fetchMoreOrganizations();
+                        },
+                      }
+                    : undefined
                 }
-              }}
-            />
-          )}
-        </>
+              />
+            )}
+          </>
+        )
       )}
     </div>
   );

@@ -690,6 +690,13 @@ export type AdminRevokeMcpApiKeyInput = {
   userID: Scalars['UUID']['input'];
 };
 
+export type AdminUpdateSpaceVisibilityInput = {
+  /** The Space whose visibility is to be updated. */
+  spaceID: Scalars['UUID']['input'];
+  /** Visibility of the Space, only on L0 spaces. */
+  visibility: SpaceVisibility;
+};
+
 export type AdminUserEmailChangeDriftResolveInput = {
   /** The admin-chosen canonical email. MUST equal either the old or new email recorded on the drift_detected audit entry. Both sides are force-aligned to this value. */
   canonicalEmail: Scalars['String']['input'];
@@ -929,22 +936,13 @@ export type AuthorizationHasPrivilegeArgs = {
 
 export enum AuthorizationCredential {
   AccountAdmin = 'ACCOUNT_ADMIN',
-  AssistantAccess = 'ASSISTANT_ACCESS',
-  BetaTester = 'BETA_TESTER',
   FeatureBetaTester = 'FEATURE_BETA_TESTER',
   FeatureOrganizationCreator = 'FEATURE_ORGANIZATION_CREATOR',
   FeatureVcCampaign = 'FEATURE_VC_CAMPAIGN',
   FeatureVirtualAssistant = 'FEATURE_VIRTUAL_ASSISTANT',
-  GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
-  GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalGuest = 'GLOBAL_GUEST',
-  GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
-  GlobalPlatformManager = 'GLOBAL_PLATFORM_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
-  GlobalSpacesReader = 'GLOBAL_SPACES_READER',
-  GlobalSupport = 'GLOBAL_SUPPORT',
-  GlobalSupportManager = 'GLOBAL_SUPPORT_MANAGER',
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
@@ -965,7 +963,6 @@ export enum AuthorizationCredential {
   SpaceSubspaceAdmin = 'SPACE_SUBSPACE_ADMIN',
   UserGroupMember = 'USER_GROUP_MEMBER',
   UserSelfManagement = 'USER_SELF_MANAGEMENT',
-  VcCampaign = 'VC_CAMPAIGN',
 }
 
 export type AuthorizationPolicyRuleCredential = {
@@ -1078,16 +1075,15 @@ export enum AuthorizationPrivilege {
   FileDelete = 'FILE_DELETE',
   FileUpload = 'FILE_UPLOAD',
   Grant = 'GRANT',
-  GrantGlobalAdmins = 'GRANT_GLOBAL_ADMINS',
   LicenseReset = 'LICENSE_RESET',
   MoveContribution = 'MOVE_CONTRIBUTION',
   MovePost = 'MOVE_POST',
   MoveTask = 'MOVE_TASK',
-  PlatformAdmin = 'PLATFORM_ADMIN',
   PlatformAuditRead = 'PLATFORM_AUDIT_READ',
   PlatformContentFullAccess = 'PLATFORM_CONTENT_FULL_ACCESS',
   PlatformForumManage = 'PLATFORM_FORUM_MANAGE',
   PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
+  PlatformRolesAssign = 'PLATFORM_ROLES_ASSIGN',
   PlatformRoleHoldersRead = 'PLATFORM_ROLE_HOLDERS_READ',
   PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
   PlatformSupportListsRead = 'PLATFORM_SUPPORT_LISTS_READ',
@@ -3116,22 +3112,13 @@ export type CredentialDefinition = {
 export enum CredentialType {
   AccountAdmin = 'ACCOUNT_ADMIN',
   AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
-  AssistantAccess = 'ASSISTANT_ACCESS',
-  BetaTester = 'BETA_TESTER',
   FeatureBetaTester = 'FEATURE_BETA_TESTER',
   FeatureOrganizationCreator = 'FEATURE_ORGANIZATION_CREATOR',
   FeatureVcCampaign = 'FEATURE_VC_CAMPAIGN',
   FeatureVirtualAssistant = 'FEATURE_VIRTUAL_ASSISTANT',
-  GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
-  GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalGuest = 'GLOBAL_GUEST',
-  GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
-  GlobalPlatformManager = 'GLOBAL_PLATFORM_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
-  GlobalSpacesReader = 'GLOBAL_SPACES_READER',
-  GlobalSupport = 'GLOBAL_SUPPORT',
-  GlobalSupportManager = 'GLOBAL_SUPPORT_MANAGER',
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
@@ -3162,7 +3149,6 @@ export enum CredentialType {
   SpaceSubspaceAdmin = 'SPACE_SUBSPACE_ADMIN',
   UserGroupMember = 'USER_GROUP_MEMBER',
   UserSelfManagement = 'USER_SELF_MANAGEMENT',
-  VcCampaign = 'VC_CAMPAIGN',
 }
 
 export type DeleteAiPersonaInput = {
@@ -3560,22 +3546,6 @@ export type GrantAssistantActorCapabilitiesInput = {
   enabledCapabilities: Array<AssistantCapabilityToggleInput>;
   /** The VirtualAssistant actor whose admin grant is being set. */
   virtualAssistantID: Scalars['UUID']['input'];
-};
-
-export type GrantAuthorizationCredentialInput = {
-  /** The resource to which this credential is tied. */
-  resourceID?: InputMaybe<Scalars['UUID']['input']>;
-  type: AuthorizationCredential;
-  /** The user to whom the credential is being granted. */
-  userID: Scalars['UUID']['input'];
-};
-
-export type GrantOrganizationAuthorizationCredentialInput = {
-  /** The Organization to whom the credential is being granted. */
-  organizationID: Scalars['UUID']['input'];
-  /** The resource to which this credential is tied. */
-  resourceID?: InputMaybe<Scalars['UUID']['input']>;
-  type: AuthorizationCredential;
 };
 
 export type Groupable = {
@@ -5398,16 +5368,14 @@ export type Mutation = {
   adminUpdateContributorAvatars: Profile;
   /** Updates the GeoLocation data where required on the platform. */
   adminUpdateGeoLocationData: Scalars['Boolean']['output'];
+  /** Update the visibility of the specified Space. */
+  adminUpdateSpaceVisibility: Space;
   /** Remove the Kratos account associated with the specified User. Note: the Users profile on the platform is not deleted. */
   adminUserAccountDelete: User;
   /** Change a user's login email synchronously, acting as a platform administrator. The admin is responsible for verifying the subject user's identity out-of-band — the platform does NOT send a confirmation message to the new mailbox and does NOT require the new mailbox to prove ownership. Validates uniqueness, commits Kratos → Alkemio with bounded retry, invalidates the subject's existing sessions, and sends a security-signal notification to the old address. Requires PLATFORM_USERS_ADMIN. */
   adminUserEmailChange: UserEmailChangeResult;
   /** Reconcile an outstanding drift-detected state for a subject user by force-aligning Alkemio and Kratos to a canonical email chosen by the admin. Requires PLATFORM_USERS_ADMIN. */
   adminUserEmailChangeDriftResolve: UserEmailChangeResult;
-  /** Create a test customer on wingback. */
-  adminWingbackCreateTestCustomer: Scalars['String']['output'];
-  /** Get wingback customer entitlements. */
-  adminWingbackGetCustomerEntitlements: Array<LicensingGrantedEntitlement>;
   /** Reset the Authorization Policy on the specified AiServer. */
   aiServerAuthorizationPolicyReset: AiServer;
   /** Creates a new AiPersona on the aiServer. */
@@ -5516,8 +5484,6 @@ export type Mutation = {
   createWhiteboardDraftOnCalloutsSet: Scalars['UUID']['output'];
   /** Materializes a server-owned live Whiteboard draft for a Template form. GraphQL returns identifiers only. */
   createWhiteboardDraftOnTemplatesSet: Scalars['UUID']['output'];
-  /** Creates an account in Wingback */
-  createWingbackAccount: Scalars['String']['output'];
   /** Removes the specified Application. */
   deleteApplication: Application;
   /** Deletes the specified CalendarEvent. */
@@ -5588,10 +5554,6 @@ export type Mutation = {
   eventOnOrganizationVerification: OrganizationVerification;
   /** Grant a credential to an Actor. */
   grantCredentialToActor: Credential;
-  /** Grants an authorization credential to an Organization. */
-  grantCredentialToOrganization: Organization;
-  /** Grants an authorization credential to a User. */
-  grantCredentialToUser: User;
   /** Import an existing file as a CollaboraDocument contribution on the callout. file-service-go sniffs the MIME from content and rejects formats Collabora cannot edit. */
   importCollaboraDocument: CalloutContribution;
   /** Invite new Contributors or users by email to join the specified RoleSet in the Entry Role. */
@@ -5676,10 +5638,6 @@ export type Mutation = {
   resetLicenseOnAccounts: Scalars['Boolean']['output'];
   /** Revoke a credential from an Actor. */
   revokeCredentialFromActor: Scalars['Boolean']['output'];
-  /** Removes an authorization credential from an Organization. */
-  revokeCredentialFromOrganization: Organization;
-  /** Removes an authorization credential from a User. */
-  revokeCredentialFromUser: User;
   /** Revokes the specified LicensePlan on an Account. */
   revokeLicensePlanFromAccount: Account;
   /** Revokes the specified LicensePlan on a Space. */
@@ -5716,6 +5674,8 @@ export type Mutation = {
   transferVirtualContributorToAccount: InnovationPack;
   /** Disable a push notification subscription for the current user. The subscription is retained but will not receive notifications until re-enabled. */
   unsubscribeFromPushNotifications: PushSubscription;
+  /** Update the nameID (URL path) of the specified Actor. A protected update: renaming repoints every inbound link to the entity. */
+  updateActorNameID: Actor;
   /** Update the Application Form used by this RoleSet. */
   updateApplicationFormOnRoleSet: RoleSet;
   /** Set the admin per-capability grant on the virtual-assistant actor, governing what it may do system-invoked (default read-only). Requires the platform-operations-admin privilege. */
@@ -5776,8 +5736,6 @@ export type Mutation = {
   updateNotificationState: NotificationEventInAppState;
   /** Updates the specified Organization. */
   updateOrganization: Organization;
-  /** Updates the specified Organization platform settings. */
-  updateOrganizationPlatformSettings: Organization;
   /** Updates one of the Setting on an Organization */
   updateOrganizationSettings: Organization;
   /** Updates one of the Setting on the Platform */
@@ -5794,8 +5752,6 @@ export type Mutation = {
   updateReference: Reference;
   /** Updates the Space. */
   updateSpace: Space;
-  /** Update the platform settings, such as nameID, of the specified Space. */
-  updateSpacePlatformSettings: Space;
   /** Updates one of the Setting on a Space */
   updateSpaceSettings: Space;
   /** Updates the pinned state of a Subspace within the specified Space. Returns the updated Subspace. */
@@ -5820,8 +5776,6 @@ export type Mutation = {
   updateUser: User;
   /** Updates the specified User Group. */
   updateUserGroup: UserGroup;
-  /** Update the platform settings, such as nameID, email, for the specified User. */
-  updateUserPlatformSettings: User;
   /** Updates one of the Setting on a User */
   updateUserSettings: User;
   /** Updates the specified VirtualContributor. */
@@ -5918,6 +5872,10 @@ export type MutationAdminUpdateContributorAvatarsArgs = {
   profileID: Scalars['UUID']['input'];
 };
 
+export type MutationAdminUpdateSpaceVisibilityArgs = {
+  updateData: AdminUpdateSpaceVisibilityInput;
+};
+
 export type MutationAdminUserAccountDeleteArgs = {
   userID: Scalars['UUID']['input'];
 };
@@ -5928,10 +5886,6 @@ export type MutationAdminUserEmailChangeArgs = {
 
 export type MutationAdminUserEmailChangeDriftResolveArgs = {
   adminUserEmailChangeDriftResolveData: AdminUserEmailChangeDriftResolveInput;
-};
-
-export type MutationAdminWingbackGetCustomerEntitlementsArgs = {
-  customerID: Scalars['String']['input'];
 };
 
 export type MutationAiServerCreateAiPersonaArgs = {
@@ -6131,10 +6085,6 @@ export type MutationCreateWhiteboardDraftOnTemplatesSetArgs = {
   draftData: CreateWhiteboardDraftOnTemplatesSetInput;
 };
 
-export type MutationCreateWingbackAccountArgs = {
-  accountID: Scalars['UUID']['input'];
-};
-
 export type MutationDeleteApplicationArgs = {
   deleteData: DeleteApplicationInput;
 };
@@ -6275,14 +6225,6 @@ export type MutationGrantCredentialToActorArgs = {
   actorID: Scalars['UUID']['input'];
   credentialType: CredentialType;
   resourceID?: InputMaybe<Scalars['UUID']['input']>;
-};
-
-export type MutationGrantCredentialToOrganizationArgs = {
-  grantCredentialData: GrantOrganizationAuthorizationCredentialInput;
-};
-
-export type MutationGrantCredentialToUserArgs = {
-  grantCredentialData: GrantAuthorizationCredentialInput;
 };
 
 export type MutationImportCollaboraDocumentArgs = {
@@ -6441,14 +6383,6 @@ export type MutationRevokeCredentialFromActorArgs = {
   resourceID?: InputMaybe<Scalars['UUID']['input']>;
 };
 
-export type MutationRevokeCredentialFromOrganizationArgs = {
-  revokeCredentialData: RevokeOrganizationAuthorizationCredentialInput;
-};
-
-export type MutationRevokeCredentialFromUserArgs = {
-  revokeCredentialData: RevokeAuthorizationCredentialInput;
-};
-
 export type MutationRevokeLicensePlanFromAccountArgs = {
   planData: RevokeLicensePlanFromAccount;
 };
@@ -6519,6 +6453,10 @@ export type MutationTransferVirtualContributorToAccountArgs = {
 
 export type MutationUnsubscribeFromPushNotificationsArgs = {
   subscriptionData: UnsubscribeFromPushNotificationsInput;
+};
+
+export type MutationUpdateActorNameIdArgs = {
+  updateData: UpdateActorNameIdInput;
 };
 
 export type MutationUpdateApplicationFormOnRoleSetArgs = {
@@ -6641,10 +6579,6 @@ export type MutationUpdateOrganizationArgs = {
   organizationData: UpdateOrganizationInput;
 };
 
-export type MutationUpdateOrganizationPlatformSettingsArgs = {
-  organizationData: UpdateOrganizationPlatformSettingsInput;
-};
-
 export type MutationUpdateOrganizationSettingsArgs = {
   settingsData: UpdateOrganizationSettingsInput;
 };
@@ -6675,10 +6609,6 @@ export type MutationUpdateReferenceArgs = {
 
 export type MutationUpdateSpaceArgs = {
   spaceData: UpdateSpaceInput;
-};
-
-export type MutationUpdateSpacePlatformSettingsArgs = {
-  updateData: UpdateSpacePlatformSettingsInput;
 };
 
 export type MutationUpdateSpaceSettingsArgs = {
@@ -6727,10 +6657,6 @@ export type MutationUpdateUserArgs = {
 
 export type MutationUpdateUserGroupArgs = {
   userGroupData: UpdateUserGroupInput;
-};
-
-export type MutationUpdateUserPlatformSettingsArgs = {
-  updateData: UpdateUserPlatformSettingsInput;
 };
 
 export type MutationUpdateUserSettingsArgs = {
@@ -8327,14 +8253,6 @@ export type ReplaceWhiteboardContentFromSourceInput = {
   targetWhiteboardID: Scalars['UUID']['input'];
 };
 
-export type RevokeAuthorizationCredentialInput = {
-  /** The resource to which access is being removed. */
-  resourceID: Scalars['String']['input'];
-  type: AuthorizationCredential;
-  /** The user from whom the credential is being removed. */
-  userID: Scalars['UUID']['input'];
-};
-
 export type RevokeLicensePlanFromAccount = {
   /** The ID of the Account to assign the LicensePlan to. */
   accountID: Scalars['UUID']['input'];
@@ -8355,14 +8273,6 @@ export type RevokeLicensePlanFromSpace = {
 
 export type RevokeMcpApiKeyInput = {
   keyID: Scalars['UUID']['input'];
-};
-
-export type RevokeOrganizationAuthorizationCredentialInput = {
-  /** The Organization from whom the credential is being removed. */
-  organizationID: Scalars['UUID']['input'];
-  /** The resource to which access is being removed. */
-  resourceID?: InputMaybe<Scalars['UUID']['input']>;
-  type: AuthorizationCredential;
 };
 
 export type Role = {
@@ -8399,20 +8309,11 @@ export enum RoleName {
   FeatureOrganizationCreator = 'FEATURE_ORGANIZATION_CREATOR',
   FeatureVcCampaign = 'FEATURE_VC_CAMPAIGN',
   FeatureVirtualAssistant = 'FEATURE_VIRTUAL_ASSISTANT',
-  GlobalAdmin = 'GLOBAL_ADMIN',
-  GlobalCommunityReader = 'GLOBAL_COMMUNITY_READER',
-  GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
-  GlobalPlatformManager = 'GLOBAL_PLATFORM_MANAGER',
-  GlobalSpacesReader = 'GLOBAL_SPACES_READER',
-  GlobalSupport = 'GLOBAL_SUPPORT',
-  GlobalSupportManager = 'GLOBAL_SUPPORT_MANAGER',
   Guest = 'GUEST',
   Lead = 'LEAD',
   Member = 'MEMBER',
   Owner = 'OWNER',
-  PlatformAssistantAccess = 'PLATFORM_ASSISTANT_ACCESS',
   PlatformAuditReader = 'PLATFORM_AUDIT_READER',
-  PlatformBetaTester = 'PLATFORM_BETA_TESTER',
   PlatformContentFullAccess = 'PLATFORM_CONTENT_FULL_ACCESS',
   PlatformLicenseManager = 'PLATFORM_LICENSE_MANAGER',
   PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
@@ -8422,7 +8323,6 @@ export enum RoleName {
   PlatformSpacesReader = 'PLATFORM_SPACES_READER',
   PlatformSupport = 'PLATFORM_SUPPORT',
   PlatformUsersAdmin = 'PLATFORM_USERS_ADMIN',
-  PlatformVcCampaign = 'PLATFORM_VC_CAMPAIGN',
   Registered = 'REGISTERED',
 }
 
@@ -9812,6 +9712,13 @@ export type UnsubscribeFromPushNotificationsInput = {
   subscriptionID: Scalars['UUID']['input'];
 };
 
+export type UpdateActorNameIdInput = {
+  /** The Actor (User, Organization or VirtualContributor) to rename. */
+  actorID: Scalars['UUID']['input'];
+  /** The new URL path (nameID) for the Actor. */
+  nameID: Scalars['NameID']['input'];
+};
+
 export type UpdateAiPersonaInput = {
   ID: Scalars['UUID']['input'];
   engine?: InputMaybe<AiPersonaEngine>;
@@ -10233,13 +10140,6 @@ export type UpdateOrganizationInput = {
   website?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type UpdateOrganizationPlatformSettingsInput = {
-  /** Upate the URL path for the Organization. */
-  nameID: Scalars['NameID']['input'];
-  /** The ID of the Organization to update. */
-  organizationID: Scalars['UUID']['input'];
-};
-
 export type UpdateOrganizationSettingsEntityInput = {
   membership?: InputMaybe<UpdateOrganizationSettingsMembershipInput>;
   privacy?: InputMaybe<UpdateOrganizationSettingsPrivacyInput>;
@@ -10344,15 +10244,8 @@ export type UpdateSpaceInput = {
   ID: Scalars['UUID']['input'];
   /** Update the Space About information. */
   about?: InputMaybe<UpdateSpaceAboutInput>;
-};
-
-export type UpdateSpacePlatformSettingsInput = {
-  /** Upate the URL path for the Space. */
+  /** Update the URL path (nameID) for the Space. Protected: additionally requires the UPDATE_NAMEID privilege. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
-  /** The identifier for the Space whose license etc is to be updated. */
-  spaceID: Scalars['UUID']['input'];
-  /** Visibility of the Space, only on L0 spaces. */
-  visibility?: InputMaybe<SpaceVisibility>;
 };
 
 export type UpdateSpaceSettingsCollaborationInput = {
@@ -10499,14 +10392,6 @@ export type UpdateUserInput = {
   profileData?: InputMaybe<UpdateProfileInput>;
   /** Set this user profile as being used as a service account or not. */
   serviceProfile?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-export type UpdateUserPlatformSettingsInput = {
-  email?: InputMaybe<Scalars['String']['input']>;
-  /** Upate the URL path for the User. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
-  /** The identifier for the User whose platform managed information is to be updated. */
-  userID: Scalars['String']['input'];
 };
 
 export type UpdateUserSettingsAssistantInput = {
@@ -23429,12 +23314,6 @@ export type BasicOrganizationDetailsFragment = {
     | undefined;
 };
 
-export type CreateWingbackAccountMutationVariables = Exact<{
-  accountID: Scalars['UUID']['input'];
-}>;
-
-export type CreateWingbackAccountMutation = { __typename?: 'Mutation'; createWingbackAccount: string };
-
 export type ActorDetailsQueryVariables = Exact<{
   actorId: Scalars['UUID']['input'];
 }>;
@@ -28408,6 +28287,26 @@ export type AdminOrganizationVerifyMutation = {
   };
 };
 
+export type AdminUpdateSpaceNameIdMutationVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+  nameId: Scalars['NameID']['input'];
+}>;
+
+export type AdminUpdateSpaceNameIdMutation = {
+  __typename?: 'Mutation';
+  updateSpace: { __typename?: 'Space'; id: string; nameID: string };
+};
+
+export type AdminUpdateSpaceVisibilityMutationVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+  visibility: SpaceVisibility;
+}>;
+
+export type AdminUpdateSpaceVisibilityMutation = {
+  __typename?: 'Mutation';
+  adminUpdateSpaceVisibility: { __typename?: 'Space'; id: string; visibility: SpaceVisibility };
+};
+
 export type AssignLicensePlanToSpaceMutationVariables = Exact<{
   licensePlanId: Scalars['UUID']['input'];
   spaceId: Scalars['UUID']['input'];
@@ -28434,17 +28333,6 @@ export type RevokeLicensePlanFromSpaceMutation = {
     id: string;
     subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
   };
-};
-
-export type UpdateSpacePlatformSettingsMutationVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
-  nameId: Scalars['NameID']['input'];
-  visibility: SpaceVisibility;
-}>;
-
-export type UpdateSpacePlatformSettingsMutation = {
-  __typename?: 'Mutation';
-  updateSpacePlatformSettings: { __typename?: 'Space'; id: string; nameID: string; visibility: SpaceVisibility };
 };
 
 export type PlatformAdminSpacesListQueryVariables = Exact<{ [key: string]: never }>;

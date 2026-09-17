@@ -40,12 +40,17 @@ const arrange = ({
 };
 
 describe('useVisibleAdminSections', () => {
-  test('the legacy global admin keeps seeing every section (Slice A is additive)', () => {
-    const visible = arrange({ platform: ['PLATFORM_ADMIN'] });
+  test('the retired PLATFORM_ADMIN catch-all admits no section (Slice B, T013)', () => {
+    expect(arrange({ platform: ['PLATFORM_ADMIN'] })).toEqual([]);
+  });
 
-    expect(visible).toHaveLength(9);
-    expect(visible).toContain('spaces');
-    expect(visible).toContain('transfer');
+  test('Platform Operations Admin — the authorization-policies inspector its server gate now admits (Slice B, T074)', () => {
+    expect(
+      arrange({
+        platform: ['AUTHORIZATION_RESET', 'PLATFORM_OPERATIONS_ADMIN'],
+        myRoles: ['PLATFORM_OPERATIONS_ADMIN'],
+      })
+    ).toEqual(['authorization-policies']);
   });
 
   test('a user with no admin privileges sees no sections', () => {
@@ -70,7 +75,7 @@ describe('useVisibleAdminSections', () => {
       expect(
         arrange({
           platform: ['SET_SERVICE_PROFILE'],
-          roleSet: ['GRANT_GLOBAL_ADMINS', 'FEATURE_ROLE_ASSIGN', 'PLATFORM_ROLE_HOLDERS_READ'],
+          roleSet: ['PLATFORM_ROLES_ASSIGN', 'FEATURE_ROLE_ASSIGN', 'PLATFORM_ROLE_HOLDERS_READ'],
           myRoles: ['PLATFORM_ROLES_ADMIN'],
         })
       ).toEqual(['authorization']);
@@ -128,9 +133,8 @@ describe('useVisibleAdminSections', () => {
       ).toEqual(['innovation-hubs', 'innovation-packs', 'organizations']);
     });
 
-    // A legacy global-support holder reaches everything through PLATFORM_ADMIN
-    // anyway; this pins the NEW privilege's reach on its own, so a future
-    // section (spaces, users, …) cannot ride in on it by accident.
+    // This pins the privilege's reach on its own, so a future section (spaces,
+    // users, …) cannot ride in on it by accident.
     test('PLATFORM_SUPPORT_LISTS_READ alone admits exactly the three Support lists', () => {
       expect(arrange({ platform: ['PLATFORM_SUPPORT_LISTS_READ'] }).sort()).toEqual([
         'innovation-hubs',
@@ -156,17 +160,14 @@ describe('useVisibleAdminSections', () => {
      * points at the role whose matrix entry is now stale. That is the intent:
      * an empty entry must be revisited, not preserved.
      *
-     * Operations Admin's inspector queries still require the legacy
-     * PLATFORM_ADMIN. License Manager and Beta Tester report nothing at platform
-     * level at all (F1). Settings Admin has no section to see. (Support left this
-     * table on 2026-09-16 — R-F.2 closed, see the positive case above.)
+     * License Manager and Beta Tester report nothing at platform level at all
+     * (F1). Settings Admin has no section to see. (Support left this table on
+     * 2026-09-16 — R-F.2 closed; Operations Admin left it at Slice B — T074
+     * re-gated the inspector queries onto its own privilege. Both positive
+     * cases are above.)
      */
     test.each([
       ['Platform Settings Admin', { platform: ['PLATFORM_SETTINGS_ADMIN'], myRoles: ['PLATFORM_SETTINGS_ADMIN'] }],
-      [
-        'Platform Operations Admin',
-        { platform: ['AUTHORIZATION_RESET', 'PLATFORM_OPERATIONS_ADMIN'], myRoles: ['PLATFORM_OPERATIONS_ADMIN'] },
-      ],
       ['Platform License Manager', { myRoles: ['PLATFORM_LICENSE_MANAGER'] }],
       ['Platform Spaces Reader', { myRoles: ['PLATFORM_SPACES_READER'] }],
       ['Feature Beta Tester', { myRoles: ['FEATURE_BETA_TESTER'] }],
@@ -184,8 +185,7 @@ describe('useVisibleAdminSections', () => {
   // The former default was "an unmapped section stays visible". With one
   // all-powerful role that was harmless; with narrow roles it made every future
   // section visible to every admitted role, and it is what put the
-  // authorization-policies inspector — whose queries still require the legacy
-  // PLATFORM_ADMIN — in front of roles that cannot load it.
+  // authorization-policies inspector in front of roles that cannot load it.
   test('a section nobody is mapped to is hidden, not shown by default', () => {
     expect(arrange({ platform: ['PLATFORM_USERS_ADMIN'], roleSet: ['FEATURE_ROLE_ASSIGN'] })).not.toContain(
       'authorization-policies'
@@ -195,8 +195,8 @@ describe('useVisibleAdminSections', () => {
   test('the assignment privileges are read from the ROLE SET, not the platform', () => {
     // The exact defect class that hid the nav entry: reading only the platform
     // policy makes every one of the thirteen roles look unprivileged.
-    expect(arrange({ platform: ['GRANT_GLOBAL_ADMINS'], roleSet: [] })).toEqual(['authorization']);
-    expect(arrange({ platform: [], roleSet: ['GRANT_GLOBAL_ADMINS'] })).toEqual(['authorization']);
+    expect(arrange({ platform: ['PLATFORM_ROLES_ASSIGN'], roleSet: [] })).toEqual(['authorization']);
+    expect(arrange({ platform: [], roleSet: ['PLATFORM_ROLES_ASSIGN'] })).toEqual(['authorization']);
   });
 
   // The privilege path must survive the role path existing: a legacy holder

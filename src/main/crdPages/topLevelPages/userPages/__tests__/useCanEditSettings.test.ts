@@ -35,12 +35,12 @@ describe('useCanEditSettings', () => {
     expect(result.current.isPlatformAdmin).toBe(false);
   });
 
-  it('returns true (isPlatformAdmin) when viewer is not owner but holds PlatformAdmin', () => {
+  it('returns true (isPlatformAdmin) when viewer is not owner but holds PLATFORM_USERS_ADMIN (T013: the catch-all is retired)', () => {
     mocked.mockReturnValue({
       ...baseCtx,
       userModel: { id: 'user-2' },
       platformPrivilegeWrapper: {
-        hasPlatformPrivilege: p => p === AuthorizationPrivilege.PlatformAdmin,
+        hasPlatformPrivilege: p => p === AuthorizationPrivilege.PlatformUsersAdmin,
       },
     } as unknown as ReturnType<typeof useCurrentUserContext>);
 

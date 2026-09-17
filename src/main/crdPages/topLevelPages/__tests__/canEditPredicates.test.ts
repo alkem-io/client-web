@@ -42,12 +42,12 @@ describe('useCanEditUserSettings (User vertical)', () => {
     expect(result.current.isPlatformAdmin).toBe(false);
   });
 
-  it('isPlatformAdmin branch — viewer is admin but not owner', () => {
+  it('isPlatformAdmin branch — viewer holds PLATFORM_USERS_ADMIN but is not owner', () => {
     mockedCurrentUser.mockReturnValue({
       ...baseUserCtx,
       userModel: { id: 'user-2' },
       platformPrivilegeWrapper: {
-        hasPlatformPrivilege: p => p === AuthorizationPrivilege.PlatformAdmin,
+        hasPlatformPrivilege: p => p === AuthorizationPrivilege.PlatformUsersAdmin,
       },
     } as unknown as ReturnType<typeof useCurrentUserContext>);
 

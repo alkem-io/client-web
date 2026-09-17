@@ -1,0 +1,15 @@
+# 027-platform-role-redesign (T012/T013, FR-020, A17) — the rename half of the
+# retired `updateSpacePlatformSettings`.
+#
+# `nameID` is now a PROTECTED field on the ordinary `updateSpace` input: the
+# server additionally requires `UPDATE_NAMEID`, which is held by the space's own
+# admins and by no global platform role — Content Full Access included. A
+# platform operator who is not also an admin of the space will be refused this
+# call while `AdminUpdateSpaceVisibility` still succeeds, which is why the UI
+# issues them separately and only sends this one when the alias actually changed.
+mutation AdminUpdateSpaceNameId($spaceId: UUID!, $nameId: NameID!) {
+  updateSpace(spaceData: { ID: $spaceId, nameID: $nameId }) {
+    id
+    nameID
+  }
+}

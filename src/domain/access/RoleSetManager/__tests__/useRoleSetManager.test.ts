@@ -34,7 +34,6 @@ vi.mock('../RolesAssignment/useRoleSetManagerRolesAssignment', () => ({
 }));
 
 import useRoleSetManager, {
-  getOfferedLegacyPlatformRoles,
   getOfferedPlatformRoles,
   getViewOnlyPlatformRoles,
   RELEVANT_ROLES,
@@ -70,7 +69,7 @@ beforeEach(() => {
 describe('useRoleSetManager — holder-list read gating (FR-032/A20/A20b)', () => {
   test('does not skip the holder-list query for PLATFORM_ROLE_HOLDERS_READ without plain READ', () => {
     useRoleSetAuthorizationQueryMock.mockReturnValue(
-      authorizationResult([AuthorizationPrivilege.GrantGlobalAdmins, AuthorizationPrivilege.PlatformRoleHoldersRead])
+      authorizationResult([AuthorizationPrivilege.PlatformRolesAssign, AuthorizationPrivilege.PlatformRoleHoldersRead])
     );
 
     renderHook(() => useRoleSetManager({ roleSetId, relevantRoles, fetchContributors: true }));
@@ -97,7 +96,7 @@ describe('useRoleSetManager — holder-list read gating (FR-032/A20/A20b)', () =
   });
 
   test('skips the holder-list query when neither the new nor the legacy read privilege is present', () => {
-    useRoleSetAuthorizationQueryMock.mockReturnValue(authorizationResult([AuthorizationPrivilege.GrantGlobalAdmins]));
+    useRoleSetAuthorizationQueryMock.mockReturnValue(authorizationResult([AuthorizationPrivilege.PlatformRolesAssign]));
 
     renderHook(() => useRoleSetManager({ roleSetId, relevantRoles, fetchContributors: true }));
 
@@ -107,7 +106,7 @@ describe('useRoleSetManager — holder-list read gating (FR-032/A20/A20b)', () =
 
 describe('useRoleSetManager — holdersUnavailable (sec-client-web-2)', () => {
   test('is true when the read privilege is missing and roles were actually requested', () => {
-    useRoleSetAuthorizationQueryMock.mockReturnValue(authorizationResult([AuthorizationPrivilege.GrantGlobalAdmins]));
+    useRoleSetAuthorizationQueryMock.mockReturnValue(authorizationResult([AuthorizationPrivilege.PlatformRolesAssign]));
 
     const { result } = renderHook(() => useRoleSetManager({ roleSetId, relevantRoles, fetchContributors: true }));
 
@@ -116,7 +115,7 @@ describe('useRoleSetManager — holdersUnavailable (sec-client-web-2)', () => {
 
   test('is false when the read privilege is present and the query has not errored', () => {
     useRoleSetAuthorizationQueryMock.mockReturnValue(
-      authorizationResult([AuthorizationPrivilege.GrantGlobalAdmins, AuthorizationPrivilege.PlatformRoleHoldersRead])
+      authorizationResult([AuthorizationPrivilege.PlatformRolesAssign, AuthorizationPrivilege.PlatformRoleHoldersRead])
     );
 
     const { result } = renderHook(() => useRoleSetManager({ roleSetId, relevantRoles, fetchContributors: true }));
@@ -126,7 +125,7 @@ describe('useRoleSetManager — holdersUnavailable (sec-client-web-2)', () => {
 
   test('is true when the read privilege is present but the query itself errored', () => {
     useRoleSetAuthorizationQueryMock.mockReturnValue(
-      authorizationResult([AuthorizationPrivilege.GrantGlobalAdmins, AuthorizationPrivilege.PlatformRoleHoldersRead])
+      authorizationResult([AuthorizationPrivilege.PlatformRolesAssign, AuthorizationPrivilege.PlatformRoleHoldersRead])
     );
     useRoleSetRoleAssignmentQueryMock.mockReturnValue({
       ...emptyAssignmentResult,
@@ -151,7 +150,7 @@ describe('useRoleSetManager — holdersUnavailable (sec-client-web-2)', () => {
   });
 
   test('is false when no roles were requested (phase-1 myPrivileges-only call)', () => {
-    useRoleSetAuthorizationQueryMock.mockReturnValue(authorizationResult([AuthorizationPrivilege.GrantGlobalAdmins]));
+    useRoleSetAuthorizationQueryMock.mockReturnValue(authorizationResult([AuthorizationPrivilege.PlatformRolesAssign]));
 
     const { result } = renderHook(() => useRoleSetManager({ roleSetId, relevantRoles: [] }));
 
@@ -161,29 +160,18 @@ describe('useRoleSetManager — holdersUnavailable (sec-client-web-2)', () => {
 
 // sec-client-web-4/spec-clientweb-3/corr-client-web-6: the legacy revoke
 // panel must be offered only to an operator the server's legacy resolver
-// branches actually let revoke — plain READ + GRANT, not GRANT_GLOBAL_ADMINS
+// branches actually let revoke — plain READ + GRANT, not PLATFORM_ROLES_ASSIGN
 // (which T034 also widens to PLATFORM_ROLES_ADMIN, who the legacy branches
-// reject).
-describe('getOfferedLegacyPlatformRoles — legacy-revoke gate (sec-client-web-4/spec-clientweb-3)', () => {
-  test('offers nothing for undefined privileges', () => {
-    expect(getOfferedLegacyPlatformRoles(undefined)).toEqual([]);
-  });
-
-  test('offers nothing for a bare GRANT_GLOBAL_ADMINS holder (a Platform Roles Admin, no plain READ/GRANT)', () => {
-    expect(getOfferedLegacyPlatformRoles([AuthorizationPrivilege.GrantGlobalAdmins])).toEqual([]);
-  });
-
-  test('offers nothing when only one of READ/GRANT is present', () => {
-    expect(getOfferedLegacyPlatformRoles([AuthorizationPrivilege.Read])).toEqual([]);
-    expect(getOfferedLegacyPlatformRoles([AuthorizationPrivilege.Grant])).toEqual([]);
-  });
-
-  test('offers all ten legacy roles for a legacy PlatformAdmin-equivalent holder (plain READ + GRANT)', () => {
-    expect(getOfferedLegacyPlatformRoles([AuthorizationPrivilege.Read, AuthorizationPrivilege.Grant])).toEqual([
-      ...RELEVANT_ROLES.LegacyPlatform,
-    ]);
-  });
-});
+/// 027-platform-role-redesign (T013, Slice B): the `getOfferedLegacyPlatformRoles`
+// suite is deleted with the function and the ten roles it offered.
+//
+// Worth recording what it proved, because the subtlety is what made it necessary
+// (sec-client-web-4/spec-clientweb-3): a bare PLATFORM_ROLES_ASSIGN holder had to
+// be offered NOTHING, because the server's legacy revoke branch checked a
+// resolver-local `[GLOBAL_ADMIN]` policy and would reject their click — so the
+// gate was plain READ + GRANT, not the assignment privilege. Both the server pin
+// (T077) and the roles are gone. Do not resurrect a READ + GRANT gate anywhere in
+// this module: after FR-007(c) split the broad GRANT, that pair identifies no role.
 
 // corr-client-web-7: a legacy holder-list-read privilege authorizes viewing
 // the 14 target roles' holders even without a manage privilege — scoped per
@@ -196,7 +184,7 @@ describe('getViewOnlyPlatformRoles — read-only offer (corr-client-web-7)', () 
   });
 
   test('offers nothing for a holder of neither read privilege', () => {
-    expect(getViewOnlyPlatformRoles([AuthorizationPrivilege.GrantGlobalAdmins])).toEqual([]);
+    expect(getViewOnlyPlatformRoles([AuthorizationPrivilege.PlatformRolesAssign])).toEqual([]);
   });
 
   test('plain READ (legacy admitter) offers both role families', () => {
@@ -229,19 +217,19 @@ describe('getViewOnlyPlatformRoles — read-only offer (corr-client-web-7)', () 
 // FR-012: pinned here so a future edit to the read-only fallback in
 // CrdAdminGlobalRolesPage.tsx can't silently widen who gets manage access.
 describe('getOfferedPlatformRoles — manage gate unchanged', () => {
-  test('a legacy PlatformAdmin-equivalent holder (READ + GRANT, no GRANT_GLOBAL_ADMINS) is offered no manage roles', () => {
+  test('a legacy PlatformAdmin-equivalent holder (READ + GRANT, no PLATFORM_ROLES_ASSIGN) is offered no manage roles', () => {
     expect(getOfferedPlatformRoles([AuthorizationPrivilege.Read, AuthorizationPrivilege.Grant])).toEqual([]);
   });
 });
 
 // corr-client-web-8: the two assigner privileges gate DISJOINT role families
 // server-side and must be UNIONED, not short-circuited — a legacy
-// `global-admin` (GRANT_GLOBAL_ADMINS only, no FEATURE_ROLE_ASSIGN) must be
+// `global-admin` (PLATFORM_ROLES_ASSIGN only, no FEATURE_ROLE_ASSIGN) must be
 // offered exactly the 10 `Platform …` roles, never the 4 `Feature …` roles the
 // server would reject.
 describe('getOfferedPlatformRoles — per-family union (corr-client-web-8)', () => {
-  test('GRANT_GLOBAL_ADMINS alone offers only the 10 platform admin roles, not the 4 feature roles', () => {
-    const roles = getOfferedPlatformRoles([AuthorizationPrivilege.GrantGlobalAdmins]);
+  test('PLATFORM_ROLES_ASSIGN alone offers only the 10 platform admin roles, not the 4 feature roles', () => {
+    const roles = getOfferedPlatformRoles([AuthorizationPrivilege.PlatformRolesAssign]);
     expect(roles).toEqual(RELEVANT_ROLES.Platform.slice(0, 10));
   });
 
@@ -252,7 +240,7 @@ describe('getOfferedPlatformRoles — per-family union (corr-client-web-8)', () 
 
   test('both privileges together offer the full 14 (platform-roles-admin, T005/SC-009)', () => {
     const roles = getOfferedPlatformRoles([
-      AuthorizationPrivilege.GrantGlobalAdmins,
+      AuthorizationPrivilege.PlatformRolesAssign,
       AuthorizationPrivilege.FeatureRoleAssign,
     ]);
     expect(roles).toHaveLength(14);

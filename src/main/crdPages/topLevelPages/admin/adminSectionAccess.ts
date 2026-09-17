@@ -25,13 +25,13 @@ import { ADMIN_SECTIONS, type AdminSectionDescriptor, type AdminSectionId } from
  * `lookup.resolver.fields.ts`:
  *
  *   platformAdmin.spaces / virtualContributors / accounts
- *                                   -> PLATFORM_ADMIN | PLATFORM_CONTENT_FULL_ACCESS
+ *                                   -> PLATFORM_CONTENT_FULL_ACCESS
  *   platformAdmin.organizations / innovationPacks / innovationHubs
- *                                   -> PLATFORM_ADMIN | PLATFORM_CONTENT_FULL_ACCESS
+ *                                   -> PLATFORM_CONTENT_FULL_ACCESS
  *                                      | PLATFORM_SUPPORT_LISTS_READ   (R-F.2, 2026-09-16)
- *   platformAdmin.users / identity  -> PLATFORM_ADMIN | PLATFORM_USERS_ADMIN
- *   lookup.authorizationPolicy      -> PLATFORM_ADMIN            (only)
- *   lookup.authorizationPrivilegesForUser -> PLATFORM_ADMIN      (only)
+ *   platformAdmin.users / identity  -> PLATFORM_USERS_ADMIN
+ *   lookup.authorizationPolicy      -> PLATFORM_OPERATIONS_ADMIN  (Slice B, T074)
+ *   lookup.authorizationPrivilegesForUser -> PLATFORM_OPERATIONS_ADMIN
  *   platform.roleSet holder lists   -> PLATFORM_ROLE_HOLDERS_READ |
  *                                      FEATURE_ROLE_HOLDERS_READ | READ
  *   /admin/transfer                 -> account- and space-anchored, see below
@@ -116,13 +116,14 @@ export const ROLE_ADMIN_SECTIONS: Record<PlatformRoleNames, readonly AdminSectio
   // to show, not merely nothing it may see.
   [RoleName.PlatformSettingsAdmin]: [],
 
-  // GAP (server). It owns `authorizationPolicyResetAll`, but the client never
-  // exposed that mutation; the `authorization-policies` section is a read-only
-  // INSPECTOR whose two queries (`lookup.authorizationPolicy`,
-  // `lookup.authorizationPrivilegesForUser`) are still gated on the legacy
-  // PLATFORM_ADMIN catch-all, held by no new role. Offering the section would
-  // guarantee two failed queries on first paint.
-  [RoleName.PlatformOperationsAdmin]: [],
+  // The `authorization-policies` section is a read-only INSPECTOR whose two
+  // queries (`lookup.authorizationPolicy`, `lookup.authorizationPrivilegesForUser`)
+  // were gated on the legacy PLATFORM_ADMIN catch-all through Slice A (a
+  // recorded server gap). Slice B (server T074) re-gated both onto
+  // PLATFORM_OPERATIONS_ADMIN — reading authorization state is the diagnostic
+  // twin of the authorization RESET this role owns — so the section is now
+  // loadable by exactly this role.
+  [RoleName.PlatformOperationsAdmin]: ['authorization-policies'],
 
   // GAP (server), same shape as F1. Its surfaces — space visibility, and the
   // license-plan dialogs on the spaces/users/organizations lists — sit inside
@@ -163,12 +164,10 @@ export const SECTION_ADMITTING_ROLES: Partial<Record<AdminSectionId, RoleName[]>
  * The same admissions expressed as privileges, unioned with (never instead of)
  * the role matrix above.
  *
- * Two reasons this exists alongside the roles. First, legacy: a `global-admin`
- * / `global-support` / `global-license-manager` holder reaches these sections
- * through PLATFORM_ADMIN and holds none of the thirteen role names — Slice A is
- * additive and nobody who can use a section today may lose sight of it. Second,
- * subsumption: a privilege granted to a role by some future rule admits its
- * holder here without this file needing to know the rule exists.
+ * Why this exists alongside the roles: subsumption — a privilege granted to a
+ * role by some future rule admits its holder here without this file needing to
+ * know the rule exists. (Through Slice A it also carried the legacy catch-all
+ * holders; Slice B retired PLATFORM_ADMIN and the legacy roles with it.)
  *
  * Every entry is a privilege the server ACTUALLY checks for that section's list
  * query, and one the platform-level query actually returns. Privileges that are
@@ -197,7 +196,7 @@ export const SECTION_ADMITTING_PRIVILEGES: Partial<Record<AdminSectionId, Author
   // Assigners AND the two holder-list readers — the Audit Reader's view-only
   // path through this page is a read privilege, not an assignment one.
   authorization: [
-    AuthorizationPrivilege.GrantGlobalAdmins,
+    AuthorizationPrivilege.PlatformRolesAssign,
     AuthorizationPrivilege.FeatureRoleAssign,
     AuthorizationPrivilege.PlatformRoleHoldersRead,
     AuthorizationPrivilege.FeatureRoleHoldersRead,
@@ -205,11 +204,10 @@ export const SECTION_ADMITTING_PRIVILEGES: Partial<Record<AdminSectionId, Author
   // Kept so a future platform-anchored transfer grant admits without an edit
   // here; today only the role name in `ROLE_ADMIN_SECTIONS` can fire (F1).
   transfer: [AuthorizationPrivilege.TransferResourceOffer, AuthorizationPrivilege.TransferResourceAccept],
-  // `authorization-policies` is deliberately absent: both its queries require
-  // the legacy PLATFORM_ADMIN, which short-circuits below anyway. It previously
-  // mapped to AUTHORIZATION_RESET — a privilege Platform Operations Admin
-  // really does hold at platform level, so that mapping FIRED and would have
-  // handed the role a section whose every query the server refuses.
+  // Both inspector queries are gated on PLATFORM_OPERATIONS_ADMIN since Slice B
+  // (server T074). NOT AUTHORIZATION_RESET: that mapping once fired for a role
+  // whose every inspector query the server then refused.
+  'authorization-policies': [AuthorizationPrivilege.PlatformOperationsAdmin],
 };
 
 /**
@@ -229,10 +227,11 @@ export const resolveVisibleAdminSections = ({
 }): readonly AdminSectionDescriptor[] => {
   const held = new Set(privileges ?? []);
 
-  // The legacy catch-all keeps seeing everything. Slice A is strictly additive.
-  if (held.has(AuthorizationPrivilege.PlatformAdmin)) {
-    return ADMIN_SECTIONS;
-  }
+  // 027-platform-role-redesign (T013, Slice B): the legacy catch-all
+  // short-circuit that returned EVERY section to a `PLATFORM_ADMIN` holder is
+  // DELETED with the privilege. It was correct while Slice A was additive and
+  // exactly wrong afterwards — one privilege showing every admin section while
+  // the server had decomposed them per family.
 
   const heldRoles = new Set(roles ?? []);
 

@@ -50,11 +50,11 @@ const allActions = [
   ['removeRoleFromUser', (p: ReturnType<typeof provided>) => p.removeRoleFromUser('u1', RoleName.Member)],
   [
     'assignPlatformRoleToUser',
-    (p: ReturnType<typeof provided>) => p.assignPlatformRoleToUser('u1', RoleName.GlobalAdmin),
+    (p: ReturnType<typeof provided>) => p.assignPlatformRoleToUser('u1', RoleName.PlatformRolesAdmin),
   ],
   [
     'removePlatformRoleFromUser',
-    (p: ReturnType<typeof provided>) => p.removePlatformRoleFromUser('u1', RoleName.GlobalAdmin),
+    (p: ReturnType<typeof provided>) => p.removePlatformRoleFromUser('u1', RoleName.PlatformRolesAdmin),
   ],
   [
     'assignPlatformRoleToOrganization',

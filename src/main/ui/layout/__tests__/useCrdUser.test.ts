@@ -36,11 +36,6 @@ vi.mock('@/crd/lib/getInitials', () => ({ getInitials: () => 'XX' }));
 
 vi.mock('@/core/apollo/generated/graphql-schema', () => ({
   RoleName: {
-    GlobalAdmin: 'GLOBAL_ADMIN',
-    GlobalSupport: 'GLOBAL_SUPPORT',
-    GlobalLicenseManager: 'GLOBAL_LICENSE_MANAGER',
-    PlatformBetaTester: 'PLATFORM_BETA_TESTER',
-    PlatformVcCampaign: 'PLATFORM_VC_CAMPAIGN',
     PlatformRolesAdmin: 'PLATFORM_ROLES_ADMIN',
     PlatformContentFullAccess: 'PLATFORM_CONTENT_FULL_ACCESS',
     PlatformResourceAdmin: 'PLATFORM_RESOURCE_ADMIN',
@@ -109,9 +104,9 @@ describe('useCrdUser', () => {
       expect(arrange({ roles: [role] }).user?.role).toBe(`common.roles.${role}`);
     });
 
-    test('legacy roles still render their label (Slice A is additive)', () => {
-      expect(arrange({ roles: ['GLOBAL_ADMIN'] }).user?.role).toBe('common.roles.GLOBAL_ADMIN');
-      expect(arrange({ roles: ['GLOBAL_SUPPORT'] }).user?.role).toBe('common.roles.GLOBAL_SUPPORT');
+    test('the retired legacy roles yield no label (Slice B, T013)', () => {
+      expect(arrange({ roles: ['GLOBAL_ADMIN'] }).user?.role).toBeUndefined();
+      expect(arrange({ roles: ['GLOBAL_SUPPORT'] }).user?.role).toBeUndefined();
     });
 
     test('a role with no label yields undefined rather than throwing', () => {
@@ -131,14 +126,12 @@ describe('useCrdUser', () => {
       expect(reversed).toBe(forward);
     });
 
-    test('the Feature VC Campaign successor outranks its legacy PLATFORM_VC_CAMPAIGN twin (Slice A: both held at once)', () => {
-      expect(arrange({ roles: ['PLATFORM_VC_CAMPAIGN', 'FEATURE_VC_CAMPAIGN'] }).user?.role).toBe(
-        'common.roles.FEATURE_VC_CAMPAIGN'
-      );
+    test('the Feature VC Campaign successor is labelled on its own (its legacy twin is retired)', () => {
+      expect(arrange({ roles: ['FEATURE_VC_CAMPAIGN'] }).user?.role).toBe('common.roles.FEATURE_VC_CAMPAIGN');
     });
 
-    test('legacy global admin outranks the new roles', () => {
-      expect(arrange({ roles: ['PLATFORM_SUPPORT', 'GLOBAL_ADMIN'] }).user?.role).toBe('common.roles.GLOBAL_ADMIN');
+    test('a retired legacy role never outranks a live one (Slice B, T013)', () => {
+      expect(arrange({ roles: ['PLATFORM_SUPPORT', 'GLOBAL_ADMIN'] }).user?.role).toBe('common.roles.PLATFORM_SUPPORT');
     });
   });
 

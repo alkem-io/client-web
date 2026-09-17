@@ -31,17 +31,15 @@ export const useAdminAccessGuard = () => {
    * May the viewer change another user's login email?
    *
    * A capability, NOT "is an admin". `adminUserEmailChange` is gated on
-   * `PLATFORM_USERS_ADMIN` (plus the legacy catch-all) at its own resolver, so
-   * deriving the affordance from admin-area access hands a Change Email button
-   * to every other role that reaches the shell — a Platform Roles Admin today,
-   * and Platform Content Full Access once the area admits it. The button then
-   * opens a dialog whose submit the server always refuses, which is finding
-   * F8's defect shape exactly: an editor offered to a role that can edit none.
+   * `PLATFORM_USERS_ADMIN` at its own resolver, so deriving the affordance from
+   * admin-area access hands a Change Email button to every other role that
+   * reaches the shell — a Platform Roles Admin today, and Platform Content Full
+   * Access once the area admits it. The button then opens a dialog whose submit
+   * the server always refuses, which is finding F8's defect shape exactly: an
+   * editor offered to a role that can edit none. (Slice B, T013: the legacy
+   * `PLATFORM_ADMIN` catch-all is gone with the privilege.)
    */
-  const canChangeUserEmail = privileges.some(
-    privilege =>
-      privilege === AuthorizationPrivilege.PlatformUsersAdmin || privilege === AuthorizationPrivilege.PlatformAdmin
-  );
+  const canChangeUserEmail = privileges.some(privilege => privilege === AuthorizationPrivilege.PlatformUsersAdmin);
 
   return { loading, isPlatformAdmin, canChangeUserEmail };
 };

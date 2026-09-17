@@ -14107,51 +14107,6 @@ export type RemoveCommunityGuidelinesContentMutationOptions = Apollo.BaseMutatio
   SchemaTypes.RemoveCommunityGuidelinesContentMutation,
   SchemaTypes.RemoveCommunityGuidelinesContentMutationVariables
 >;
-export const CreateWingbackAccountDocument = gql`
-    mutation createWingbackAccount($accountID: UUID!) {
-  createWingbackAccount(accountID: $accountID)
-}
-    `;
-export type CreateWingbackAccountMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateWingbackAccountMutation,
-  SchemaTypes.CreateWingbackAccountMutationVariables
->;
-
-/**
- * __useCreateWingbackAccountMutation__
- *
- * To run a mutation, you first call `useCreateWingbackAccountMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateWingbackAccountMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createWingbackAccountMutation, { data, loading, error }] = useCreateWingbackAccountMutation({
- *   variables: {
- *      accountID: // value for 'accountID'
- *   },
- * });
- */
-export function useCreateWingbackAccountMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateWingbackAccountMutation,
-    SchemaTypes.CreateWingbackAccountMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.CreateWingbackAccountMutation,
-    SchemaTypes.CreateWingbackAccountMutationVariables
-  >(CreateWingbackAccountDocument, options);
-}
-export type CreateWingbackAccountMutationHookResult = ReturnType<typeof useCreateWingbackAccountMutation>;
-export type CreateWingbackAccountMutationResult = Apollo.MutationResult<SchemaTypes.CreateWingbackAccountMutation>;
-export type CreateWingbackAccountMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateWingbackAccountMutation,
-  SchemaTypes.CreateWingbackAccountMutationVariables
->;
 export const ActorDetailsDocument = gql`
     query ActorDetails($actorId: UUID!) {
   actor(id: $actorId) {
@@ -19676,6 +19631,107 @@ export type AdminOrganizationVerifyMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AdminOrganizationVerifyMutation,
   SchemaTypes.AdminOrganizationVerifyMutationVariables
 >;
+export const AdminUpdateSpaceNameIdDocument = gql`
+    mutation AdminUpdateSpaceNameId($spaceId: UUID!, $nameId: NameID!) {
+  updateSpace(spaceData: {ID: $spaceId, nameID: $nameId}) {
+    id
+    nameID
+  }
+}
+    `;
+export type AdminUpdateSpaceNameIdMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AdminUpdateSpaceNameIdMutation,
+  SchemaTypes.AdminUpdateSpaceNameIdMutationVariables
+>;
+
+/**
+ * __useAdminUpdateSpaceNameIdMutation__
+ *
+ * To run a mutation, you first call `useAdminUpdateSpaceNameIdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminUpdateSpaceNameIdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminUpdateSpaceNameIdMutation, { data, loading, error }] = useAdminUpdateSpaceNameIdMutation({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      nameId: // value for 'nameId'
+ *   },
+ * });
+ */
+export function useAdminUpdateSpaceNameIdMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AdminUpdateSpaceNameIdMutation,
+    SchemaTypes.AdminUpdateSpaceNameIdMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AdminUpdateSpaceNameIdMutation,
+    SchemaTypes.AdminUpdateSpaceNameIdMutationVariables
+  >(AdminUpdateSpaceNameIdDocument, options);
+}
+export type AdminUpdateSpaceNameIdMutationHookResult = ReturnType<typeof useAdminUpdateSpaceNameIdMutation>;
+export type AdminUpdateSpaceNameIdMutationResult = Apollo.MutationResult<SchemaTypes.AdminUpdateSpaceNameIdMutation>;
+export type AdminUpdateSpaceNameIdMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AdminUpdateSpaceNameIdMutation,
+  SchemaTypes.AdminUpdateSpaceNameIdMutationVariables
+>;
+export const AdminUpdateSpaceVisibilityDocument = gql`
+    mutation AdminUpdateSpaceVisibility($spaceId: UUID!, $visibility: SpaceVisibility!) {
+  adminUpdateSpaceVisibility(
+    updateData: {spaceID: $spaceId, visibility: $visibility}
+  ) {
+    id
+    visibility
+  }
+}
+    `;
+export type AdminUpdateSpaceVisibilityMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AdminUpdateSpaceVisibilityMutation,
+  SchemaTypes.AdminUpdateSpaceVisibilityMutationVariables
+>;
+
+/**
+ * __useAdminUpdateSpaceVisibilityMutation__
+ *
+ * To run a mutation, you first call `useAdminUpdateSpaceVisibilityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminUpdateSpaceVisibilityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminUpdateSpaceVisibilityMutation, { data, loading, error }] = useAdminUpdateSpaceVisibilityMutation({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      visibility: // value for 'visibility'
+ *   },
+ * });
+ */
+export function useAdminUpdateSpaceVisibilityMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AdminUpdateSpaceVisibilityMutation,
+    SchemaTypes.AdminUpdateSpaceVisibilityMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AdminUpdateSpaceVisibilityMutation,
+    SchemaTypes.AdminUpdateSpaceVisibilityMutationVariables
+  >(AdminUpdateSpaceVisibilityDocument, options);
+}
+export type AdminUpdateSpaceVisibilityMutationHookResult = ReturnType<typeof useAdminUpdateSpaceVisibilityMutation>;
+export type AdminUpdateSpaceVisibilityMutationResult =
+  Apollo.MutationResult<SchemaTypes.AdminUpdateSpaceVisibilityMutation>;
+export type AdminUpdateSpaceVisibilityMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AdminUpdateSpaceVisibilityMutation,
+  SchemaTypes.AdminUpdateSpaceVisibilityMutationVariables
+>;
 export const AssignLicensePlanToSpaceDocument = gql`
     mutation AssignLicensePlanToSpace($licensePlanId: UUID!, $spaceId: UUID!) {
   assignLicensePlanToSpace(
@@ -19783,60 +19839,6 @@ export type RevokeLicensePlanFromSpaceMutationResult =
 export type RevokeLicensePlanFromSpaceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RevokeLicensePlanFromSpaceMutation,
   SchemaTypes.RevokeLicensePlanFromSpaceMutationVariables
->;
-export const UpdateSpacePlatformSettingsDocument = gql`
-    mutation UpdateSpacePlatformSettings($spaceId: UUID!, $nameId: NameID!, $visibility: SpaceVisibility!) {
-  updateSpacePlatformSettings(
-    updateData: {spaceID: $spaceId, nameID: $nameId, visibility: $visibility}
-  ) {
-    id
-    nameID
-    visibility
-  }
-}
-    `;
-export type UpdateSpacePlatformSettingsMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateSpacePlatformSettingsMutation,
-  SchemaTypes.UpdateSpacePlatformSettingsMutationVariables
->;
-
-/**
- * __useUpdateSpacePlatformSettingsMutation__
- *
- * To run a mutation, you first call `useUpdateSpacePlatformSettingsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateSpacePlatformSettingsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateSpacePlatformSettingsMutation, { data, loading, error }] = useUpdateSpacePlatformSettingsMutation({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      nameId: // value for 'nameId'
- *      visibility: // value for 'visibility'
- *   },
- * });
- */
-export function useUpdateSpacePlatformSettingsMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateSpacePlatformSettingsMutation,
-    SchemaTypes.UpdateSpacePlatformSettingsMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateSpacePlatformSettingsMutation,
-    SchemaTypes.UpdateSpacePlatformSettingsMutationVariables
-  >(UpdateSpacePlatformSettingsDocument, options);
-}
-export type UpdateSpacePlatformSettingsMutationHookResult = ReturnType<typeof useUpdateSpacePlatformSettingsMutation>;
-export type UpdateSpacePlatformSettingsMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateSpacePlatformSettingsMutation>;
-export type UpdateSpacePlatformSettingsMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateSpacePlatformSettingsMutation,
-  SchemaTypes.UpdateSpacePlatformSettingsMutationVariables
 >;
 export const PlatformAdminSpacesListDocument = gql`
     query platformAdminSpacesList {
