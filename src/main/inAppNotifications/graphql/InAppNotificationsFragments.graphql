@@ -221,6 +221,7 @@ fragment InAppNotificationPayloadOrganizationMessageRoom on InAppNotificationPay
 fragment InAppNotificationPayloadPlatformGlobalRoleChange on InAppNotificationPayloadPlatformGlobalRoleChange {
   type
   role
+  changeType
   user {
     id
     profile {
