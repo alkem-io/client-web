@@ -390,6 +390,13 @@ export function CrdPostContributionDialog({
       notify(t('contribution.edit'), 'success');
       setIsDirty(false);
       onUpdated?.();
+      // A successful save ends the editing session, so dismiss the dialog just
+      // like the create branch does. Clearing the dirty flag first keeps the
+      // unsaved-changes confirmation out of the way; the close is deliberately
+      // the direct prop call rather than `requestClose`. Mutation failures throw
+      // before reaching here, so a failed save still leaves the form open with
+      // the user's input intact.
+      onOpenChange(false);
     }
   };
 

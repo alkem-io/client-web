@@ -862,6 +862,17 @@ export function CalloutDetailDialogConnector({
         // Closing the edit dialog returns to the read-only preview — only
         // explicit close on the preview itself clears the selection.
         onClose={() => setPostEditOpen(false)}
+        // A saved task must hand the user back to the board. On a board
+        // (elevated) this dialog is a single-task layer over the columns, so
+        // stopping at the read-only preview would keep covering the very
+        // columns the user is trying to get back to. A non-board callout keeps
+        // its contributions grid behind the edit dialog, so the preview there
+        // is a useful landing spot and stays.
+        onUpdated={() => {
+          if (elevated) {
+            onOpenChange(false);
+          }
+        }}
         // Deleting the post must clear the inline preview too — otherwise the
         // grid refreshes without the post but the preview keeps rendering its
         // cached snapshot, making it look like the deletion failed.
