@@ -547,6 +547,7 @@
       "LEAD": "Référent",
       "MEMBER": "$t(common.Member)",
       "OWNER": "Propriétaire",
+      "PLATFORM_ASSISTANT_ACCESS": "Accès à l'assistant de la plateforme",
       "PLATFORM_AUDIT_READER": "Lecteur d'audit de la plateforme",
       "PLATFORM_BETA_TESTER": "Beta Tester",
       "PLATFORM_CONTENT_FULL_ACCESS": "Accès complet au contenu de la plateforme",
@@ -779,7 +780,8 @@
         },
         "PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED": {
           "description": "",
-          "subject": "{{triggeredByName}} has assigned {{role}} to {{userName}}"
+          "subject": "{{triggeredByName}} has assigned {{role}} to {{userName}}",
+          "subjectRemoved": "{{triggeredByName}} a retiré {{role}} à {{userName}}"
         },
         "PLATFORM_ADMIN_SPACE_CREATED": {
           "description": "{{spaceName}}",

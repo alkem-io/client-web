@@ -547,6 +547,7 @@
       "LEAD": "Лидер",
       "MEMBER": "$t(common.Member)",
       "OWNER": "Собственик",
+      "PLATFORM_ASSISTANT_ACCESS": "Достъп до асистента на платформата",
       "PLATFORM_AUDIT_READER": "Четец на одитния дневник на платформата",
       "PLATFORM_BETA_TESTER": "Бета тестер",
       "PLATFORM_CONTENT_FULL_ACCESS": "Пълен достъп до съдържанието на платформата",
@@ -779,7 +780,8 @@
         },
         "PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED": {
           "description": "",
-          "subject": "{{triggeredByName}} присвои {{role}} на {{userName}}"
+          "subject": "{{triggeredByName}} присвои {{role}} на {{userName}}",
+          "subjectRemoved": "{{triggeredByName}} премахна {{role}} от {{userName}}"
         },
         "PLATFORM_ADMIN_SPACE_CREATED": {
           "description": "{{spaceName}}",
