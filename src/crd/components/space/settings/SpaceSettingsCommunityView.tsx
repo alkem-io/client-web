@@ -474,18 +474,33 @@ export function SpaceSettingsCommunityView({
               className="h-9 w-[220px] pl-9 text-control"
             />
           </div>
-          {/* Gated, not hidden. Deliberately a DIFFERENT convention from the Add
-              organisation button further down this card, which client-web#10292 hides:
-              every Space admin can eventually invite, so concealing this action would hide
-              a capability the user can actually obtain, and it would flip hidden→shown once
-              the privilege query resolves. Direct add is a platform-role capability an
-              ordinary admin can never hold, which is why only that one hides. */}
-          <GatedAction disabledReason={inviteOrganizationsDisabledReason}>
-            <Button type="button" size="sm" className="gap-2" onClick={onInviteOrganizations}>
-              <UserPlus aria-hidden="true" className="size-4" />
-              {t('community.organizations.invite')}
-            </Button>
-          </GatedAction>
+          <div className="flex">
+            {/* HIDDEN, not gated — the one carve-out from this card's gated-not-hidden contract
+              (client-web#10292). Direct add needs a platform-role privilege an ordinary Space
+              admin can never obtain, so a permanently dead control plus a tooltip explaining an
+              unobtainable capability is noise. `canAddOrganizations` is false while the privilege
+              query is still resolving, so nothing renders until the answer is known. Its sibling
+              *Invite organisation* stays gated: every Space admin can eventually invite. */}
+            {permissions.canAddOrganizations && (
+              <Button type="button" variant="outline" size="sm" className="gap-2 me-2" onClick={onOrgAdd}>
+                <Plus aria-hidden="true" className="size-4" />
+                {t('community.organizations.add')}
+              </Button>
+            )}
+
+            {/* Gated, not hidden. Deliberately a DIFFERENT convention from the Add
+                organisation button further down this card, which client-web#10292 hides:
+                every Space admin can eventually invite, so concealing this action would hide
+                a capability the user can actually obtain, and it would flip hidden→shown once
+                the privilege query resolves. Direct add is a platform-role capability an
+                ordinary admin can never hold, which is why only that one hides. */}
+            <GatedAction disabledReason={inviteOrganizationsDisabledReason}>
+              <Button type="button" size="sm" className="gap-2" onClick={onInviteOrganizations}>
+                <UserPlus aria-hidden="true" className="size-4" />
+                {t('community.organizations.invite')}
+              </Button>
+            </GatedAction>
+          </div>
         </div>
         <div className="rounded-lg border bg-card overflow-hidden">
           <Table>
@@ -580,20 +595,6 @@ export function SpaceSettingsCommunityView({
             </TableBody>
           </Table>
         </div>
-        {/* HIDDEN, not gated — the one carve-out from this card's gated-not-hidden contract
-            (client-web#10292). Direct add needs a platform-role privilege an ordinary Space
-            admin can never obtain, so a permanently dead control plus a tooltip explaining an
-            unobtainable capability is noise. `canAddOrganizations` is false while the privilege
-            query is still resolving, so nothing renders until the answer is known. Its sibling
-            *Invite organisation* stays gated: every Space admin can eventually invite. */}
-        {permissions.canAddOrganizations && (
-          <div className="mt-4">
-            <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onOrgAdd}>
-              <Plus aria-hidden="true" className="size-4" />
-              {t('community.organizations.add')}
-            </Button>
-          </div>
-        )}
         <PendingOrganizationInvitationsList
           className="mt-6"
           title={t('community.organizations.pendingInvitations.title')}
