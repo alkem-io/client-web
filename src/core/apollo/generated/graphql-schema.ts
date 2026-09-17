@@ -2495,6 +2495,8 @@ export type CreateContributionOnCalloutInput = {
   link?: InputMaybe<CreateLinkInput>;
   memo?: InputMaybe<CreateMemoInput>;
   post?: InputMaybe<CreatePostInput>;
+  /** Send the space-member and space-admin contribution notifications. Defaults to true; only an explicit false suppresses. The activity log entry is written regardless. */
+  sendNotification?: InputMaybe<Scalars['Boolean']['input']>;
   /** The sort order to assign to this Contribution. */
   sortOrder?: InputMaybe<Scalars['Float']['input']>;
   /** The Tasks board column this task starts in. Only valid when the parent Callout is a Tasks board; defaults to the first column. */
@@ -17310,6 +17312,7 @@ export type CreatePostOnCalloutMutationVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
   post: CreatePostInput;
   taskColumn?: InputMaybe<Scalars['String']['input']>;
+  sendNotification?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 export type CreatePostOnCalloutMutation = {
