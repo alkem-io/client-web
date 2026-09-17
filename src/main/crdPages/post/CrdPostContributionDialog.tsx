@@ -36,6 +36,7 @@ import {
 import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
+import { Switch } from '@/crd/primitives/switch';
 import useValidationMessageTranslation from '@/domain/shared/i18n/ValidationMessageTranslation/useValidationMessageTranslation';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
@@ -129,6 +130,9 @@ export function CrdPostContributionDialog({
   const [isDirty, setIsDirty] = useState(false);
   const [closeConfirmOpen, setCloseConfirmOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  // Create mode only — per-action choice, off by default, never persisted (FR-002).
+  // Reset alongside the rest of the create-mode form state below.
+  const [notifyMembers, setNotifyMembers] = useState(false);
 
   // Edit mode — fetch the post; prefill once data arrives.
   const { data, loading: loadingPost } = usePostSettingsQuery({
@@ -182,6 +186,7 @@ export function CrdPostContributionDialog({
       setValues(emptyPostContributionFormValues(fallbackName, fallbackDescription));
       setIsDirty(false);
       setErrors({});
+      setNotifyMembers(false);
     }
   }, [open, mode, fallbackName, fallbackDescription]);
 
@@ -268,6 +273,9 @@ export function CrdPostContributionDialog({
           // Present only for a Tasks board; the server ignores it otherwise and
           // defaults to the first column when omitted.
           taskColumn,
+          // Explicit on every create — omission means "notify" server-side, so the
+          // off-by-default switch state must always be sent (FR-005).
+          sendNotification: notifyMembers,
         },
         refetchQueries: ['CalloutDetails', 'CalloutContributions', 'TaskBoardData'],
         awaitRefetchQueries: true,
@@ -575,6 +583,19 @@ export function CrdPostContributionDialog({
               )}
             </div>
             <div className="flex items-center gap-2">
+              {mode === 'create' && (
+                <div className="flex items-center gap-2 mr-2">
+                  <Switch
+                    id="contribution-notify-members"
+                    checked={notifyMembers}
+                    onCheckedChange={setNotifyMembers}
+                    disabled={submitting}
+                  />
+                  <Label htmlFor="contribution-notify-members" className="text-body text-muted-foreground">
+                    {t('forms.notifyMembers')}
+                  </Label>
+                </div>
+              )}
               <Button variant="ghost" onClick={requestClose} disabled={submitting || deleting}>
                 {t('dialogs.cancel')}
               </Button>
