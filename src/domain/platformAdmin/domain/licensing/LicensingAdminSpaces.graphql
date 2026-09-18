@@ -6,7 +6,6 @@ query licensingAdminSpaces {
   platformAdmin {
     spaces(filter: { visibilities: [ACTIVE, DEMO, INACTIVE, ARCHIVED] }) {
       id
-      nameID
       visibility
       subscriptions {
         name

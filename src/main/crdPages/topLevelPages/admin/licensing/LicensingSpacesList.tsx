@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   refetchLicensingAdminSpacesQuery,
   useLicensingAdminSpacesQuery,
-  useUpdateSpacePlatformSettingsMutation,
+  useLicensingUpdateSpaceVisibilityMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -28,7 +28,6 @@ const VISIBILITY_VALUES = [
 ] as const;
 
 type LicensingSpaceRow = AdminTableRow & {
-  nameId: string;
   visibility: SpaceVisibility;
   owner: string;
   plans: ActivePlan[];
@@ -36,9 +35,9 @@ type LicensingSpaceRow = AdminTableRow & {
 
 /**
  * Licensing → Spaces. Read-only rows apart from the two controls the License
- * Manager owns: inline visibility (A14, `updateSpacePlatformSettings` at Slice
- * A — T078 renames it `adminUpdateSpaceVisibility` at Slice B) and the plan
- * dialog (A12). No delete, no settings, no admin links.
+ * Manager owns: inline visibility (A14 — `updateSpacePlatformSettings` with
+ * visibility ONLY at Slice A; T078 renames it `adminUpdateSpaceVisibility` at
+ * Slice B) and the plan dialog (A12). No delete, no settings, no admin links.
  */
 export function LicensingSpacesList({ plans }: { plans: LicensingPlan[] }) {
   const { t } = useTranslation('crd-admin');
@@ -47,7 +46,7 @@ export function LicensingSpacesList({ plans }: { plans: LicensingPlan[] }) {
   // nested policy must not blank the whole list.
   const { data, loading } = useLicensingAdminSpacesQuery({ errorPolicy: 'all' });
 
-  const [updateVisibility, { loading: saving }] = useUpdateSpacePlatformSettingsMutation({
+  const [updateVisibility, { loading: saving }] = useLicensingUpdateSpaceVisibilityMutation({
     refetchQueries: [refetchLicensingAdminSpacesQuery()],
     awaitRefetchQueries: true,
     onCompleted: () => notify(t('licensing.visibilityUpdated'), 'success'),
@@ -57,7 +56,6 @@ export function LicensingSpacesList({ plans }: { plans: LicensingPlan[] }) {
     id: space.id,
     name: space.about.profile.displayName,
     url: space.about.profile.url,
-    nameId: space.nameID,
     visibility: space.visibility,
     owner: space.about.provider?.profile?.displayName || 'N/A',
     plans: resolveActivePlans(plans, space.subscriptions),
@@ -87,11 +85,9 @@ export function LicensingSpacesList({ plans }: { plans: LicensingPlan[] }) {
           disabled={saving}
           onValueChange={next => {
             if (next === row.visibility) return;
-            // The alias is echoed back untouched: the mutation input carries it,
-            // but this role only owns the visibility half.
-            void updateVisibility({
-              variables: { spaceId: row.id, nameId: row.nameId, visibility: next as SpaceVisibility },
-            });
+            // Visibility only — never the alias: the server treats a call
+            // carrying `nameID` as a rename, which this role may not do.
+            void updateVisibility({ variables: { spaceId: row.id, visibility: next as SpaceVisibility } });
           }}
         />
       ),

@@ -28373,7 +28373,6 @@ export type LicensingAdminSpacesQuery = {
     spaces: Array<{
       __typename?: 'Space';
       id: string;
-      nameID: string;
       visibility: SpaceVisibility;
       subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
       about: {
@@ -28428,6 +28427,16 @@ export type LicensingAdminUsersQuery = {
       };
     };
   };
+};
+
+export type LicensingUpdateSpaceVisibilityMutationVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+  visibility: SpaceVisibility;
+}>;
+
+export type LicensingUpdateSpaceVisibilityMutation = {
+  __typename?: 'Mutation';
+  updateSpacePlatformSettings: { __typename?: 'Space'; id: string; visibility: SpaceVisibility };
 };
 
 export type AssignLicensePlanToAccountMutationVariables = Exact<{

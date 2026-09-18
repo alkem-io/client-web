@@ -25,7 +25,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useLicensingAdminOrganizationsQuery: () => orgsQueryMock(),
   useLicensingAdminUsersQuery: () => usersQueryMock(),
   usePlatformLicensingPlansQuery: () => plansQueryMock(),
-  useUpdateSpacePlatformSettingsMutation: () => [updateVisibilityMock, { loading: false }],
+  useLicensingUpdateSpaceVisibilityMutation: () => [updateVisibilityMock, { loading: false }],
   useAssignLicensePlanToAccountMutation: () => [assignAccountPlanMock, { loading: false }],
   useRevokeLicensePlanFromAccountMutation: () => [revokeAccountPlanMock, { loading: false }],
   refetchLicensingAdminSpacesQuery: () => ({}),
@@ -181,12 +181,12 @@ describe('CrdAdminLicensingPage', () => {
     expect(within(demo).getByText('licensing.noPlans')).toBeInTheDocument();
   });
 
-  test('changing visibility fires A14 with the alias echoed back untouched', async () => {
+  test('changing visibility fires A14 with visibility only — never the alias', async () => {
     render(<CrdAdminLicensingPage />);
     const select = screen.getByLabelText('licensing.visibilityOf:{"name":"Climate Lab"}');
     await userEvent.selectOptions(select, 'ARCHIVED');
     expect(updateVisibilityMock).toHaveBeenCalledWith(
-      expect.objectContaining({ variables: { spaceId: 's1', nameId: 'climate', visibility: 'ARCHIVED' } })
+      expect.objectContaining({ variables: { spaceId: 's1', visibility: 'ARCHIVED' } })
     );
   });
 

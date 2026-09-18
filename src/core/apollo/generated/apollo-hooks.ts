@@ -19518,7 +19518,6 @@ export const LicensingAdminSpacesDocument = gql`
   platformAdmin {
     spaces(filter: {visibilities: [ACTIVE, DEMO, INACTIVE, ARCHIVED]}) {
       id
-      nameID
       visibility
       subscriptions {
         name
@@ -19700,6 +19699,60 @@ export type LicensingAdminUsersQueryResult = Apollo.QueryResult<
 export function refetchLicensingAdminUsersQuery(variables: SchemaTypes.LicensingAdminUsersQueryVariables) {
   return { query: LicensingAdminUsersDocument, variables: variables };
 }
+export const LicensingUpdateSpaceVisibilityDocument = gql`
+    mutation licensingUpdateSpaceVisibility($spaceId: UUID!, $visibility: SpaceVisibility!) {
+  updateSpacePlatformSettings(
+    updateData: {spaceID: $spaceId, visibility: $visibility}
+  ) {
+    id
+    visibility
+  }
+}
+    `;
+export type LicensingUpdateSpaceVisibilityMutationFn = Apollo.MutationFunction<
+  SchemaTypes.LicensingUpdateSpaceVisibilityMutation,
+  SchemaTypes.LicensingUpdateSpaceVisibilityMutationVariables
+>;
+
+/**
+ * __useLicensingUpdateSpaceVisibilityMutation__
+ *
+ * To run a mutation, you first call `useLicensingUpdateSpaceVisibilityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLicensingUpdateSpaceVisibilityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [licensingUpdateSpaceVisibilityMutation, { data, loading, error }] = useLicensingUpdateSpaceVisibilityMutation({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      visibility: // value for 'visibility'
+ *   },
+ * });
+ */
+export function useLicensingUpdateSpaceVisibilityMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.LicensingUpdateSpaceVisibilityMutation,
+    SchemaTypes.LicensingUpdateSpaceVisibilityMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.LicensingUpdateSpaceVisibilityMutation,
+    SchemaTypes.LicensingUpdateSpaceVisibilityMutationVariables
+  >(LicensingUpdateSpaceVisibilityDocument, options);
+}
+export type LicensingUpdateSpaceVisibilityMutationHookResult = ReturnType<
+  typeof useLicensingUpdateSpaceVisibilityMutation
+>;
+export type LicensingUpdateSpaceVisibilityMutationResult =
+  Apollo.MutationResult<SchemaTypes.LicensingUpdateSpaceVisibilityMutation>;
+export type LicensingUpdateSpaceVisibilityMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.LicensingUpdateSpaceVisibilityMutation,
+  SchemaTypes.LicensingUpdateSpaceVisibilityMutationVariables
+>;
 export const AssignLicensePlanToAccountDocument = gql`
     mutation AssignLicensePlanToAccount($licensePlanId: UUID!, $accountId: UUID!, $licensingId: UUID!) {
   assignLicensePlanToAccount(
