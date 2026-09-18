@@ -22,7 +22,7 @@ export function CollaboraTopAlert({ icon: Icon, message, className }: CollaboraT
       role="alert"
       aria-live="assertive"
       className={cn(
-        'absolute top-3 left-1/2 -translate-x-1/2 z-10 flex max-w-xl items-start gap-3 rounded-lg border border-border bg-background px-5 py-3 shadow-lg',
+        'absolute top-3 left-1/2 -translate-x-1/2 z-10 flex max-w-xl items-start gap-3 rounded-lg border border-border bg-popover px-5 py-3 shadow-lg',
         className
       )}
     >

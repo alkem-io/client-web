@@ -1,15 +1,19 @@
 import { defer } from 'lodash-es';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { ReferencesAndTagsStrip } from '@/crd/components/callout/ReferencesAndTagsStrip';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { InvitationDetailDialog } from '@/crd/components/dashboard/InvitationDetailDialog';
+import { OrgPendingApplicationCard } from '@/crd/components/dashboard/OrgPendingApplicationCard';
+import { OrgPendingInvitationCard } from '@/crd/components/dashboard/OrgPendingInvitationCard';
 import { PendingApplicationCard } from '@/crd/components/dashboard/PendingApplicationCard';
 import { PendingInvitationCard, PendingInvitationCardSkeleton } from '@/crd/components/dashboard/PendingInvitationCard';
 import { PendingMembershipsListDialog } from '@/crd/components/dashboard/PendingMembershipsListDialog';
 import { PendingMembershipsSection } from '@/crd/components/dashboard/PendingMembershipsSection';
+import { OrgInvitationDetailDialog } from '@/crd/components/organization/OrgInvitationDetailDialog';
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import useInvitationActions from '@/domain/community/invitations/useInvitationActions';
 import type { InvitationWithMeta } from '@/domain/community/pendingMembership/PendingMemberships';
 import {
@@ -24,11 +28,49 @@ import {
 import type { PendingApplicationItem } from '@/domain/community/user/models/PendingApplicationItem';
 import type { PendingInvitationItem } from '@/domain/community/user/models/PendingInvitationItem';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
+import { offeredRoleLabelKey } from '@/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper';
+import { useOrgInvitationResponse } from '@/main/crdPages/topLevelPages/organizationPages/publicProfile/useOrgInvitationResponse';
 import {
   mapHydratedApplicationToCardData,
   mapHydratedInvitationToCardData,
   mapHydratedInvitationToDetailData,
+  mapOrgApplicationToCardData,
+  mapOrgInvitationToCardData,
 } from './pendingMembershipsDataMappers';
+
+// ─── Pure helpers (exported for unit testing — T014) ───────────────────────
+
+/**
+ * Neither VC nor organization invitations navigate to the space on accept —
+ * VCs aren't a space the current user visits, and an org invitation is acted
+ * on by an org admin who isn't necessarily joining the space themselves (R4).
+ * Both return to the pending-memberships list instead (`onInvitationAccept`
+ * falls through to `setOpenDialog({ type: PendingMembershipsList })` whenever
+ * `openDialog.spaceUri` is undefined).
+ */
+export const resolveInvitationSpaceUri = (actorType: ActorType | undefined, spaceUrl: string): string | undefined => {
+  const returnsToList = actorType === ActorType.VirtualContributor || actorType === ActorType.Organization;
+  return returnsToList ? undefined : spaceUrl;
+};
+
+/** Splits the flat invitation list into the three sections the list dialog renders. */
+export const classifyInvitations = <T extends { invitation: { actor?: { type: ActorType } } }>(
+  invitations: T[] | undefined
+): {
+  userInvitations: T[] | undefined;
+  organizationInvitations: T[] | undefined;
+  virtualContributorInvitations: T[] | undefined;
+} => ({
+  userInvitations: invitations?.filter(
+    inv =>
+      inv.invitation.actor?.type !== ActorType.VirtualContributor &&
+      inv.invitation.actor?.type !== ActorType.Organization
+  ),
+  organizationInvitations: invitations?.filter(inv => inv.invitation.actor?.type === ActorType.Organization),
+  virtualContributorInvitations: invitations?.filter(
+    inv => inv.invitation.actor?.type === ActorType.VirtualContributor
+  ),
+});
 
 // ─── Per-item hydration wrappers ────────────────────────────────────────────
 
@@ -116,19 +158,31 @@ const InvitationDetailContainer = ({
   }
 
   const isVC = hydrated.invitation.actor?.type === ActorType.VirtualContributor;
+  const isOrg = hydrated.invitation.actor?.type === ActorType.Organization;
 
-  const title = isVC
-    ? tMain('community.pendingMembership.invitationDialog.vc.title', {
-        space: hydrated.space.about.profile.displayName,
+  const title = isOrg
+    ? t('pendingMemberships.orgInvitationDialog.title', {
+        organizationName: hydrated.invitation.actor?.profile?.displayName ?? '',
       })
-    : tMain('community.pendingMembership.invitationDialog.title', {
-        space: hydrated.space.about.profile.displayName,
-      });
+    : isVC
+      ? tMain('community.pendingMembership.invitationDialog.vc.title', {
+          space: hydrated.space.about.profile.displayName,
+        })
+      : tMain('community.pendingMembership.invitationDialog.title', {
+          space: hydrated.space.about.profile.displayName,
+        });
 
-  const acceptLabel = isVC ? t('pendingMemberships.detail.accept') : t('pendingMemberships.detail.join');
+  const acceptLabel = isVC || isOrg ? t('pendingMemberships.detail.accept') : t('pendingMemberships.detail.join');
   const rejectLabel = t('pendingMemberships.detail.reject');
 
   const detailData = mapHydratedInvitationToDetailData(hydrated, i18n.language);
+
+  // The offered role + every Space the organization joins on accept (D7) — organization
+  // invitations only; the generic activity description above already covers user/VC invites.
+  const roleText = hydrated.invitation.extraRoles?.includes(RoleName.Lead)
+    ? `${tMain('member')} + ${tMain('lead')}`
+    : tMain('member');
+  const spacesToJoin = hydrated.invitation.spacesToJoinOnAccept ?? [];
 
   const descriptionSlot = (
     <div className="text-caption text-muted-foreground">
@@ -141,6 +195,15 @@ const InvitationDetailContainer = ({
         author={{ displayName: hydrated.userDisplayName }}
         type={hydrated.invitation.actor?.type}
       />
+      {isOrg && (
+        <p className="mt-1">
+          {t('pendingMemberships.orgInvitationDialog.role')}: {roleText}
+          {spacesToJoin.length > 1 &&
+            ` · ${t('pendingMemberships.orgInvitationDialog.spacesToJoin', {
+              spaces: spacesToJoin.map(space => space.displayName).join(', '),
+            })}`}
+        </p>
+      )}
     </div>
   );
 
@@ -186,6 +249,15 @@ const InvitationDetailContainer = ({
 const CrdPendingMembershipsDialog = () => {
   const { t } = useTranslation('crd-dashboard');
   const navigate = useNavigate();
+  // `TFunction<'crd-dashboard'>`'s literal-key overload set (grown further by this
+  // feature's own new keys) pushes TypeScript's generic instantiation past its depth
+  // limit when passed into a plainly-typed helper parameter; widen once here rather
+  // than fight the compiler at every call site below.
+  const orgCardTranslator = t as (key: string, options?: Record<string, unknown>) => string;
+  // The org cards' relative-time label comes from `common.time.short.*`, which lives in
+  // `crd-common` only, so it needs the default-namespace translator rather than `t`.
+  const { t: tCommon } = useTranslation();
+  const commonTranslator = tCommon as (key: string, options?: Record<string, unknown>) => string;
   const { openDialog, setOpenDialog } = usePendingMembershipsDialog();
 
   const closeDialog = () => setOpenDialog(undefined);
@@ -193,7 +265,7 @@ const CrdPendingMembershipsDialog = () => {
   const isDialogOpen = Object.values(PendingMembershipsDialogType).includes(openDialog?.type ?? '');
   const isPendingMembershipsList = openDialog?.type === PendingMembershipsDialogType.PendingMembershipsList;
 
-  const { invitations, applications, loading, refetch } = usePendingMemberships({
+  const { invitations, applications, orgInvitations, orgApplications, loading, refetch } = usePendingMemberships({
     skip: !isDialogOpen,
   });
 
@@ -203,11 +275,20 @@ const CrdPendingMembershipsDialog = () => {
     }
   }, [isPendingMembershipsList, refetch]);
 
+  // Organization invitations (062) — their own dialog, not the Space InvitationDetailContainer
+  // below (which hydrates a Space and has no organization-shaped equivalent).
+  const [viewingOrgInvitationId, setViewingOrgInvitationId] = useState<string | null>(null);
+  const viewingOrgInvitation = orgInvitations?.find(inv => inv.id === viewingOrgInvitationId);
+  const orgInvitationResponse = useOrgInvitationResponse(() => {
+    setViewingOrgInvitationId(null);
+    refetch();
+  }, viewingOrgInvitation?.invitation.id);
+
   const handleInvitationCardClick = ({ id, space, invitation }: InvitationWithMeta) => {
     setOpenDialog({
       type: PendingMembershipsDialogType.InvitationView,
       invitationId: id,
-      spaceUri: invitation.actor?.type === ActorType.VirtualContributor ? undefined : space.about.profile.url,
+      spaceUri: resolveInvitationSpaceUri(invitation.actor?.type, space.about.profile.url),
     });
   };
 
@@ -221,16 +302,15 @@ const CrdPendingMembershipsDialog = () => {
       ? invitations?.find(inv => inv.id === openDialog.invitationId)
       : undefined;
 
-  const virtualContributorInvitations = invitations?.filter(
-    inv => inv.invitation.actor?.type === ActorType.VirtualContributor
-  );
-
-  const nonVirtualContributorInvitations = invitations?.filter(
-    inv => inv.invitation.actor?.type !== ActorType.VirtualContributor
-  );
+  const { userInvitations, organizationInvitations, virtualContributorInvitations } = classifyInvitations(invitations);
 
   const isEmpty =
-    !nonVirtualContributorInvitations?.length && !virtualContributorInvitations?.length && !applications?.length;
+    !userInvitations?.length &&
+    !organizationInvitations?.length &&
+    !virtualContributorInvitations?.length &&
+    !applications?.length &&
+    !orgInvitations?.length &&
+    !orgApplications?.length;
 
   const onInvitationAccept = () => {
     if (openDialog?.spaceUri) {
@@ -248,14 +328,25 @@ const CrdPendingMembershipsDialog = () => {
   return (
     <>
       <PendingMembershipsListDialog
-        open={isPendingMembershipsList}
+        // Hidden while an organization invitation is being viewed so the two
+        // dialogs never stack (the Space path swaps `openDialog.type` instead);
+        // closing the detail dialog brings the list back.
+        open={isPendingMembershipsList && viewingOrgInvitationId === null}
         onClose={closeDialog}
         loading={loading}
         empty={isEmpty}
       >
-        {nonVirtualContributorInvitations?.length ? (
+        {userInvitations?.length ? (
           <PendingMembershipsSection title={t('pendingMemberships.invitationsSection')}>
-            {nonVirtualContributorInvitations.map(inv => (
+            {userInvitations.map(inv => (
+              <HydratedInvitationCard key={inv.id} invitation={inv} onClick={handleInvitationCardClick} />
+            ))}
+          </PendingMembershipsSection>
+        ) : null}
+
+        {organizationInvitations?.length ? (
+          <PendingMembershipsSection title={t('pendingMemberships.orgInvitationsSection')}>
+            {organizationInvitations.map(inv => (
               <HydratedInvitationCard key={inv.id} invitation={inv} onClick={handleInvitationCardClick} />
             ))}
           </PendingMembershipsSection>
@@ -276,6 +367,33 @@ const CrdPendingMembershipsDialog = () => {
             ))}
           </PendingMembershipsSection>
         ) : null}
+
+        {orgInvitations?.length ? (
+          <PendingMembershipsSection title={t('pendingMemberships.orgAssociateInvitationsSection')}>
+            {orgInvitations.map(inv => (
+              <OrgPendingInvitationCard
+                key={inv.id}
+                invitation={mapOrgInvitationToCardData(inv, orgCardTranslator, commonTranslator)}
+                onClick={() => setViewingOrgInvitationId(inv.id)}
+              />
+            ))}
+          </PendingMembershipsSection>
+        ) : null}
+
+        {orgApplications?.length ? (
+          <PendingMembershipsSection title={t('pendingMemberships.orgAssociateApplicationsSection')}>
+            {orgApplications.map(app => (
+              <OrgPendingApplicationCard
+                key={app.id}
+                application={mapOrgApplicationToCardData(app)}
+                onClick={() => {
+                  const href = app.organization.profile?.url;
+                  if (href) handleSpaceCardClick(href);
+                }}
+              />
+            ))}
+          </PendingMembershipsSection>
+        ) : null}
       </PendingMembershipsListDialog>
 
       <InvitationDetailContainer
@@ -286,6 +404,37 @@ const CrdPendingMembershipsDialog = () => {
         onClose={closeDialog}
         onBack={() => setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList })}
       />
+
+      {viewingOrgInvitation && (
+        <OrgInvitationDetailDialog
+          open={viewingOrgInvitationId !== null}
+          onOpenChange={open => {
+            if (!open) {
+              setViewingOrgInvitationId(null);
+              orgInvitationResponse.clearWithheldNotice();
+            }
+          }}
+          organizationName={viewingOrgInvitation.organization.profile?.displayName ?? ''}
+          organizationAvatarUrl={viewingOrgInvitation.organization.profile?.avatar?.uri}
+          organizationColor={pickColorFromId(viewingOrgInvitation.organization.id)}
+          offeredRoleLabel={t(
+            `pendingMemberships.orgAssociateCard.role.${offeredRoleLabelKey(viewingOrgInvitation.invitation.extraRoles)}`
+          )}
+          invitedByLabel={
+            viewingOrgInvitation.invitation.createdBy?.profile?.displayName
+              ? t('pendingMemberships.orgAssociateCard.invitedBy', {
+                  name: viewingOrgInvitation.invitation.createdBy.profile.displayName,
+                })
+              : undefined
+          }
+          message={viewingOrgInvitation.invitation.welcomeMessage ?? undefined}
+          onAccept={() => orgInvitationResponse.onAccept(viewingOrgInvitation.invitation.id)}
+          onDecline={() => orgInvitationResponse.onDecline(viewingOrgInvitation.invitation.id)}
+          accepting={orgInvitationResponse.accepting}
+          declining={orgInvitationResponse.declining}
+          withheldNotice={orgInvitationResponse.withheldNotice}
+        />
+      )}
     </>
   );
 };

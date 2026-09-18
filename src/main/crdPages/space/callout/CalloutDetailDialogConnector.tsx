@@ -25,7 +25,9 @@ import { canRenameCollaboraDocument } from '@/domain/collaboration/calloutContri
 import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
+import { MemoSignedCopiesDialogConnector } from '@/main/crdPages/memo/MemoSignedCopiesDialogConnector';
 import type { CalloutMoveActions } from '@/main/crdPages/space/hooks/useCrdCalloutMoveActions';
+import type { MemoSigningRestoreIntent } from '@/main/ui/layout/MemoSigningReturnContext';
 import {
   getCalloutContributionType,
   mapCalloutDetailsToDialogData,
@@ -38,6 +40,7 @@ import {
 } from '../dataMappers/contributionDataMapper';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
+import { CalloutReactionsConnector } from './CalloutReactionsConnector';
 import { CalloutSettingsConnector } from './CalloutSettingsConnector';
 import { CalloutShareDialog } from './CalloutShareDialog';
 import { CallToActionFramingConnector } from './CallToActionFramingConnector';
@@ -74,6 +77,13 @@ type CalloutDetailDialogConnectorProps = {
   initialPostId?: string;
   /** Move-action prop bag forwarded from the feed (plan T064) so the detail-dialog's 3-dots menu offers the same Move items as the card's. */
   moveActions?: CalloutMoveActions;
+  /**
+   * When true, the dialog is opened over the fullscreen task board (z-[100]), so
+   * it and every dialog it spawns (edit, delete, share) must stack above it.
+   */
+  elevated?: boolean;
+  memoSigningRestore?: MemoSigningRestoreIntent;
+  onMemoSigningRestoreConsumed?: (attemptId: string, focusTarget?: HTMLElement) => void;
 };
 
 function ContributionsSlot({
@@ -81,11 +91,13 @@ function ContributionsSlot({
   open,
   onContributionClick,
   onContributionCreated,
+  onOpenMemoSignedCopies,
 }: {
   callout: CalloutDetailsModelExtended;
   open: boolean;
   onContributionClick?: (id: string, entityId?: string) => void;
   onContributionCreated?: () => void;
+  onOpenMemoSignedCopies?: (memoId: string) => void;
 }) {
   const { i18n } = useTranslation('crd-space');
   const locale = resolveDateFnsLocale(i18n.language);
@@ -124,7 +136,6 @@ function ContributionsSlot({
       <WhiteboardContributionAddConnector
         calloutId={callout.id}
         defaultDisplayName={defaults?.defaultDisplayName}
-        defaultContent={defaults?.whiteboardContent}
         onCreated={onContributionCreated}
       />
     ) : contributionType === CalloutContributionType.Memo ? (
@@ -176,6 +187,7 @@ function ContributionsSlot({
         <ContributionGridConnector
           contributions={mapped}
           onContributionClick={onContributionClick}
+          onOpenMemoSignedCopies={onOpenMemoSignedCopies}
           trailingSlot={trailingSlot}
         />
       )}
@@ -260,8 +272,15 @@ export function CalloutDetailDialogConnector({
   initialMemoId,
   initialPostId,
   moveActions,
+  elevated = false,
+  memoSigningRestore,
+  onMemoSigningRestoreConsumed,
 }: CalloutDetailDialogConnectorProps) {
   const { t, i18n } = useTranslation('crd-space');
+  // Over the fullscreen board (z-[100]) the detail dialog sits at z-[110], and
+  // any dialog it spawns (edit, delete, share) at z-[120] so it clears both.
+  const elevatedDialog = elevated ? { overlayClassName: 'z-[110]', contentClassName: 'z-[110]' } : {};
+  const elevatedNested = elevated ? { overlayClassName: 'z-[120]', contentClassName: 'z-[120]' } : {};
   const contributionType = getCalloutContributionType(callout);
   const initialIsMemo = contributionType === CalloutContributionType.Memo;
   const initialIsPost = contributionType === CalloutContributionType.Post;
@@ -293,6 +312,8 @@ export function CalloutDetailDialogConnector({
   // preview inside the dialog body (MUI parity).
   const [postEditOpen, setPostEditOpen] = useState(false);
   const [framingMemoOpen, setFramingMemoOpen] = useState(false);
+  const [refreshAfterSigningAttemptId, setRefreshAfterSigningAttemptId] = useState<string>();
+  const [signedCopiesMemoId, setSignedCopiesMemoId] = useState<string>();
   const [framingCollaboraOpen, setFramingCollaboraOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   // Trash icon in the contribution-preview title bar → confirmation → delete
@@ -305,10 +326,23 @@ export function CalloutDetailDialogConnector({
   const [deleteContribution] = useDeleteContributionMutation();
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const consumedSigningRestore = useRef<string | undefined>(undefined);
+  const [restoringAttemptId, setRestoringAttemptId] = useState<string>();
+
+  const restoreContributionId =
+    memoSigningRestore?.kind === 'contribution' ? memoSigningRestore.contributionId : undefined;
+  const {
+    data: restoreContributionData,
+    loading: restoreContributionLoading,
+    error: restoreContributionError,
+  } = useCalloutContributionQuery({
+    variables: { contributionId: restoreContributionId ?? '', includeMemo: true },
+    skip: !open || !restoreContributionId || contributionType !== CalloutContributionType.Memo,
+  });
 
   // CrdMemoDialog writes the editor content to Apollo cache on close for instant preview updates.
   // Schedule a delayed server fetch as a safety net to reconcile with the canonical server markdown
-  // once Hocuspocus has persisted (~2s lag).
+  // once the collab room has persisted its snapshot (~2s lag).
   const handleFramingMemoClose = () => {
     const fmId = callout.framing.memo?.id;
     if (framingRefreshRef.current) {
@@ -322,6 +356,7 @@ export function CalloutDetailDialogConnector({
       }, 2500);
     }
     setFramingMemoOpen(false);
+    setRefreshAfterSigningAttemptId(undefined);
   };
 
   // Clear the pending refresh on unmount — otherwise an unmount during the
@@ -361,6 +396,72 @@ export function CalloutDetailDialogConnector({
     // grid card itself owns the navigation.
   }, [open, initialContributionId, initialMemoId, initialPostId, contributionType]);
 
+  useEffect(() => {
+    if (!open || !memoSigningRestore || consumedSigningRestore.current === memoSigningRestore.attemptId) return;
+
+    if (memoSigningRestore.calloutId !== callout.id) {
+      consumedSigningRestore.current = memoSigningRestore.attemptId;
+      onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
+      return;
+    }
+
+    if (memoSigningRestore.kind === 'framing') {
+      consumedSigningRestore.current = memoSigningRestore.attemptId;
+      if (callout.framing.memo?.id !== memoSigningRestore.memoId) {
+        onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
+        return;
+      }
+      setRestoringAttemptId(memoSigningRestore.attemptId);
+      setRefreshAfterSigningAttemptId(memoSigningRestore.refreshMemo ? memoSigningRestore.attemptId : undefined);
+      setFramingMemoOpen(true);
+      return;
+    }
+
+    if (
+      contributionType !== CalloutContributionType.Memo ||
+      initialContributionId !== memoSigningRestore.contributionId
+    ) {
+      consumedSigningRestore.current = memoSigningRestore.attemptId;
+      onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
+      return;
+    }
+    if (restoreContributionLoading) return;
+
+    consumedSigningRestore.current = memoSigningRestore.attemptId;
+    const loadedContribution = restoreContributionData?.lookup.contribution;
+    if (
+      restoreContributionError ||
+      !loadedContribution ||
+      loadedContribution.id !== memoSigningRestore.contributionId ||
+      loadedContribution.memo?.id !== memoSigningRestore.memoId
+    ) {
+      onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
+      return;
+    }
+
+    setRestoringAttemptId(memoSigningRestore.attemptId);
+    setMemoContributionId(loadedContribution.id);
+    setMemoId(loadedContribution.memo.id);
+    setRefreshAfterSigningAttemptId(memoSigningRestore.refreshMemo ? memoSigningRestore.attemptId : undefined);
+  }, [
+    callout.id,
+    callout.framing.memo?.id,
+    contributionType,
+    initialContributionId,
+    memoSigningRestore,
+    onMemoSigningRestoreConsumed,
+    open,
+    restoreContributionData,
+    restoreContributionError,
+    restoreContributionLoading,
+  ]);
+
+  const handleRestoredEditorMounted = (focusTarget: HTMLElement) => {
+    if (!restoringAttemptId) return;
+    onMemoSigningRestoreConsumed?.(restoringAttemptId, focusTarget);
+    setRestoringAttemptId(undefined);
+  };
+
   // Reset per-contribution state whenever the dialog closes so reopening
   // starts from the fresh initial values rather than stale selections from
   // the previous session.
@@ -375,6 +476,8 @@ export function CalloutDetailDialogConnector({
     setWhiteboardEditorOpen(false);
     setDocumentEditorOpen(false);
     setPostEditOpen(false);
+    setSignedCopiesMemoId(undefined);
+    setRefreshAfterSigningAttemptId(undefined);
   }, [
     open,
     initialContributionId,
@@ -394,7 +497,11 @@ export function CalloutDetailDialogConnector({
 
   const hasMemoFraming = callout.framing.type === CalloutFramingType.Memo && !!callout.framing.memo;
   const memoFramingSlot = hasMemoFraming ? (
-    <MemoFramingConnector callout={callout} onOpen={() => setFramingMemoOpen(true)} />
+    <MemoFramingConnector
+      callout={callout}
+      onOpen={() => setFramingMemoOpen(true)}
+      onOpenSignedCopies={setSignedCopiesMemoId}
+    />
   ) : undefined;
   const framingMemoId = callout.framing.memo?.id;
 
@@ -438,6 +545,22 @@ export function CalloutDetailDialogConnector({
   const hasSpaces = callout.framing.type === CalloutFramingType.Spaces;
   const spacesFramingSlot = hasSpaces ? <SpaceCollectionConnector calloutId={callout.id} /> : undefined;
 
+  // Omit the slot entirely when the callout has no reactions summary (the server
+  // module may not be deployed), or when commenting is turned off for the callout —
+  // reactions share the comments switch, and an omitted slot also drops the bordered
+  // section that hosts them. The framing-level flag is read here rather than from the
+  // dialog's `commentsEnabled` prop, which swaps to the contribution-level switch while
+  // a post contribution is selected and would gate callout reactions on the wrong toggle.
+  const reactionsSlot =
+    callout.reactionsSummary == null || !callout.settings.framing.commentsEnabled ? undefined : (
+      <CalloutReactionsConnector
+        calloutId={callout.id}
+        reactionsSummary={callout.reactionsSummary}
+        myPrivileges={callout.authorization?.myPrivileges?.map(p => p as string)}
+        isPublished={!callout.draft}
+      />
+    );
+
   const handleContributionClick = (contributionId: string, clickedEntityId?: string) => {
     if (contributionType === CalloutContributionType.Memo) {
       setMemoContributionId(contributionId);
@@ -462,7 +585,12 @@ export function CalloutDetailDialogConnector({
   // See `ContributionsSlot` above for why `enabled` is intentionally NOT in this gate.
   const hasContributionType = Boolean(getCalloutContributionType(callout));
   const contributionsSlot = hasContributionType ? (
-    <ContributionsSlot callout={callout} open={open} onContributionClick={handleContributionClick} />
+    <ContributionsSlot
+      callout={callout}
+      open={open}
+      onContributionClick={handleContributionClick}
+      onOpenMemoSignedCopies={setSignedCopiesMemoId}
+    />
   ) : undefined;
 
   // Inline preview of the selected post contribution — mirrors the MUI flow
@@ -517,6 +645,13 @@ export function CalloutDetailDialogConnector({
       if (confirmDeleteContribution.kind === 'post') {
         setPostContributionId(undefined);
         setPostId(undefined);
+        // On a Tasks board the dialog is a focused single-task view layered over
+        // the board (not a contributions grid). Clearing the selection alone would
+        // flip it back to the full "post with responses" grid on top of the board;
+        // close the dialog instead. Non-board callouts keep the grid fallback.
+        if (elevated) {
+          onOpenChange(false);
+        }
       } else if (confirmDeleteContribution.kind === 'whiteboard') {
         setWhiteboardEditorOpen(false);
         setWhiteboardContributionId(undefined);
@@ -537,13 +672,16 @@ export function CalloutDetailDialogConnector({
     <ConfirmationDialog
       open={confirmDeleteContribution !== undefined}
       onOpenChange={isOpen => !isOpen && setConfirmDeleteContribution(undefined)}
-      title={t('deleteContribution.title')}
+      // Over a task board the focused post is a task, so name the delete prompt
+      // accordingly; the description/confirm stay generic (shared with posts).
+      title={elevated ? t('deleteTask.title') : t('deleteContribution.title')}
       description={t('deleteContribution.description', { title: confirmDeleteContribution?.title ?? '' })}
       confirmLabel={t('deleteContribution.confirm')}
       cancelLabel={t('dialogs.cancel')}
       onConfirm={handleDeleteContributionConfirm}
       variant="destructive"
       loading={deletingContribution}
+      {...elevatedNested}
     />
   );
 
@@ -596,6 +734,9 @@ export function CalloutDetailDialogConnector({
     postContributionId && contributionType === CalloutContributionType.Post ? (
       <CalloutPostPreview
         loading={loadingPostContribution && !selectedPost}
+        // On a Tasks board (elevated) the task is worked by several assignees, so
+        // de-emphasise the single creator: drop the avatar, prefix "Created by".
+        deEmphasizeCreator={elevated}
         post={{
           id: selectedPost?.id ?? postContributionId,
           title: selectedPost?.profile.displayName ?? '',
@@ -629,12 +770,25 @@ export function CalloutDetailDialogConnector({
             : undefined
         }
         onClose={() => {
+          // In focused mode the preview IS the dialog (no grid to fall back to),
+          // so its close control closes the whole dialog.
+          if (elevated) {
+            onOpenChange(false);
+            return;
+          }
           setPostContributionId(undefined);
           setPostId(undefined);
         }}
         shareSlot={
           selectedPostUrl ? (
-            <ShareButton url={selectedPostUrl} tooltip={t('postPreview.share')} dialogTitle={t('postPreview.share')} />
+            <ShareButton
+              url={selectedPostUrl}
+              tooltip={t('postPreview.share')}
+              dialogTitle={t('postPreview.share')}
+              // Over the fullscreen board the share dialog must clear the board.
+              dialogClassName={elevated ? 'z-[120]' : undefined}
+              overlayClassName={elevated ? 'z-[120]' : undefined}
+            />
           ) : undefined
         }
       />
@@ -676,11 +830,16 @@ export function CalloutDetailDialogConnector({
     memoContributionId && memoId ? (
       <MemoContributionConnector
         open={true}
+        calloutId={callout.id}
         contributionId={memoContributionId}
         memoId={memoId}
+        refreshAfterSigningAttemptId={refreshAfterSigningAttemptId}
+        editorMountKey={restoringAttemptId}
+        onEditorMounted={handleRestoredEditorMounted}
         onClose={() => {
           setMemoContributionId(undefined);
           setMemoId(undefined);
+          setRefreshAfterSigningAttemptId(undefined);
         }}
       />
     ) : null;
@@ -703,6 +862,17 @@ export function CalloutDetailDialogConnector({
         // Closing the edit dialog returns to the read-only preview — only
         // explicit close on the preview itself clears the selection.
         onClose={() => setPostEditOpen(false)}
+        // A saved task must hand the user back to the board. On a board
+        // (elevated) this dialog is a single-task layer over the columns, so
+        // stopping at the read-only preview would keep covering the very
+        // columns the user is trying to get back to. A non-board callout keeps
+        // its contributions grid behind the edit dialog, so the preview there
+        // is a useful landing spot and stays.
+        onUpdated={() => {
+          if (elevated) {
+            onOpenChange(false);
+          }
+        }}
         // Deleting the post must clear the inline preview too — otherwise the
         // grid refreshes without the post but the preview keeps rendering its
         // cached snapshot, making it look like the deletion failed.
@@ -710,7 +880,15 @@ export function CalloutDetailDialogConnector({
           setPostEditOpen(false);
           setPostContributionId(undefined);
           setPostId(undefined);
+          // On a board (elevated) the focused-task dialog has no contributions
+          // grid behind it — deleting the task via the edit dialog must close it,
+          // not fall back to the "post with responses" grid on top of the board.
+          if (elevated) {
+            onOpenChange(false);
+          }
         }}
+        isTaskBoard={elevated}
+        {...elevatedNested}
       />
     ) : null;
 
@@ -720,6 +898,10 @@ export function CalloutDetailDialogConnector({
         open={true}
         memoId={framingMemoId}
         isContribution={false}
+        refreshAfterSigningAttemptId={refreshAfterSigningAttemptId}
+        signingOrigin={{ kind: 'framing', calloutId: callout.id }}
+        editorMountKey={restoringAttemptId}
+        onEditorMounted={handleRestoredEditorMounted}
         onClose={() => handleFramingMemoClose()}
       />
     ) : null;
@@ -741,11 +923,23 @@ export function CalloutDetailDialogConnector({
       callout={callout}
       moveActions={moveActions}
       onShare={handleShareClick}
+      isTaskBoard={elevated}
       onDeleted={() => onOpenChange(false)}
     />
   );
 
-  const shareDialog = <CalloutShareDialog open={shareOpen} onOpenChange={setShareOpen} callout={callout} />;
+  const shareDialog = (
+    <CalloutShareDialog open={shareOpen} onOpenChange={setShareOpen} callout={callout} {...elevatedNested} />
+  );
+  const signedCopiesDialog =
+    open && signedCopiesMemoId ? (
+      <MemoSignedCopiesDialogConnector
+        open={true}
+        memoId={signedCopiesMemoId}
+        onOpenChange={historyOpen => !historyOpen && setSignedCopiesMemoId(undefined)}
+        {...elevatedNested}
+      />
+    ) : null;
 
   // Mirrors MUI: when the admin disables commenting, suppress the comment input but keep
   // existing messages readable. The dialog itself hides the discussion section entirely
@@ -779,6 +973,8 @@ export function CalloutDetailDialogConnector({
         <CalloutDetailDialog
           open={open}
           onOpenChange={onOpenChange}
+          {...elevatedDialog}
+          focusedPost={elevated && isPostSelected}
           callout={{
             ...mapCalloutDetailsToDialogData(callout, t),
             commentCount: isPostSelected ? postMessagesCount : undefined,
@@ -797,9 +993,11 @@ export function CalloutDetailDialogConnector({
           contributionsSlot={contributionsSlot}
           contributionsCount={callout.contributions.length}
           selectedContributionSlot={selectedContributionSlot}
+          reactionsSlot={reactionsSlot}
           settingsSlot={settingsSlot}
           onShareClick={handleShareClick}
         />
+        {signedCopiesDialog}
         {whiteboardOverlay}
         {documentOverlay}
         {memoOverlay}
@@ -822,6 +1020,11 @@ export function CalloutDetailDialogConnector({
         calloutId={callout.id}
         contributionId={isPostSelected ? postContributionId : undefined}
         roomData={activeRoomData}
+        // In the focused-task dialog on a board (elevated, z-[110]) the comment
+        // delete-confirmation would otherwise open behind it and block the UI —
+        // lift it to the same nested tier as the dialog's other confirmations.
+        confirmOverlayClassName={elevated ? 'z-[120]' : undefined}
+        confirmContentClassName={elevated ? 'z-[120]' : undefined}
         // The connector's wrapper `<div ref={ref}>` ends up in the feed-card's React tree
         // (alongside the dialog trigger), NOT inside the dialog's Radix portal. With the user
         // scrolled away from that card, `useInView` never fires and the post-comments query
@@ -833,6 +1036,8 @@ export function CalloutDetailDialogConnector({
           <CalloutDetailDialog
             open={open}
             onOpenChange={onOpenChange}
+            {...elevatedDialog}
+            focusedPost={elevated && isPostSelected}
             callout={{
               ...mapCalloutDetailsToDialogData(callout, t),
               // While the live thread is still loading, fall back to the post's `messagesCount`
@@ -856,11 +1061,13 @@ export function CalloutDetailDialogConnector({
             callToActionFramingSlot={callToActionFramingSlot}
             contributorsFramingSlot={contributorsFramingSlot}
             spacesFramingSlot={spacesFramingSlot}
+            reactionsSlot={reactionsSlot}
             settingsSlot={settingsSlot}
             onShareClick={handleShareClick}
           />
         )}
       </CalloutCommentsConnector>
+      {signedCopiesDialog}
       {whiteboardOverlay}
       {documentOverlay}
       {memoOverlay}

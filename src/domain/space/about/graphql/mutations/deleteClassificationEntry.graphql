@@ -1,0 +1,5 @@
+mutation DeleteClassificationEntry($classificationData: DeleteClassificationEntryInput!) {
+  deleteClassificationEntry(classificationData: $classificationData) {
+    id
+  }
+}

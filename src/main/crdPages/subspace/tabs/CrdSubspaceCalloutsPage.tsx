@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { AuthorizationPrivilege, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import { SubspaceFlowTabs } from '@/crd/components/space/SubspaceFlowTabs';
@@ -6,15 +5,13 @@ import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
-import { CalloutFormConnector } from '../../space/callout/CalloutFormConnector';
 import { CalloutListConnector } from '../../space/callout/CalloutListConnector';
 import { useCrdSubspaceFlow } from '../hooks/useCrdSubspaceFlow';
 import type { SubspaceOutletContext } from '../layout/CrdSubspacePageLayout';
 
 export default function CrdSubspaceCalloutsPage() {
-  const { data, mobileMenu } = useOutletContext<SubspaceOutletContext>();
+  const { data, mobileMenu, headerActionIcons } = useOutletContext<SubspaceOutletContext>();
   const { phases, currentPhaseId, calloutsSetId, canEditFlow, subspaceUrl } = data;
-  const [createOpen, setCreateOpen] = useState(false);
   const { activePhaseId, setActivePhaseId } = useCrdSubspaceFlow(phases, currentPhaseId);
   const isSmallScreen = useMediaQuery('(max-width: 639px)');
 
@@ -25,7 +22,6 @@ export default function CrdSubspaceCalloutsPage() {
     callouts,
     loading: calloutsLoading,
     calloutsSetAuthorization,
-    canCreateCallout,
   } = useCalloutsSet({
     calloutsSetId,
     classificationTagsets,
@@ -33,10 +29,8 @@ export default function CrdSubspaceCalloutsPage() {
   });
   // Reordering callouts requires Update on the calloutsSet (not the callout).
   const canReorderCallouts = calloutsSetAuthorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
-  // Creating a post (callout) is gated by the calloutsSet's CreateCallout privilege — the same
-  // gate every L0 space tab uses. The previous `canAddPost` checked the space-entity `Create`
-  // privilege, which only admins hold, so members never saw the Add Post button on L1 even when
-  // contributions were enabled for them.
+  // Add Post moved to the sidebar — the layout owns the button and its dialog
+  // (gated on the calloutsSet's CreateCallout privilege, same as the L0 tabs).
 
   const editFlowHref = subspaceUrl ? buildSettingsTabUrl(subspaceUrl, 'layout') : undefined;
 
@@ -46,9 +40,8 @@ export default function CrdSubspaceCalloutsPage() {
       activePhaseId={activePhaseId}
       onPhaseChange={setActivePhaseId}
       canEditFlow={canEditFlow}
-      canAddPost={canCreateCallout && phases.length > 0}
       editFlowHref={editFlowHref}
-      onAddPostClick={() => setCreateOpen(true)}
+      action={headerActionIcons}
       mobileMenuOpen={mobileMenu.open}
       onMobileMenuOpenChange={mobileMenu.onOpenChange}
       mobileMenuContent={mobileMenu.content}
@@ -60,7 +53,7 @@ export default function CrdSubspaceCalloutsPage() {
       {isSmallScreen ? (
         flowTabs
       ) : (
-        <div className="sticky top-16 z-10 pt-4 pb-3 bg-background/95 backdrop-blur-sm">{flowTabs}</div>
+        <div className="sticky top-16 z-30 pt-4 pb-3 bg-background/95 backdrop-blur-sm">{flowTabs}</div>
       )}
 
       {/* Active phase description — collapsible (2 lines, 3 on small screens)
@@ -78,19 +71,8 @@ export default function CrdSubspaceCalloutsPage() {
         />
       )}
 
-      {/* Mobile bottom-bar clearance: only render when the fixed bar / FAB is actually shown
-          (i.e. when there are phases — otherwise SubspaceFlowTabs renders the empty state). */}
-      {phases.length > 0 && <div className="h-36 sm:hidden" aria-hidden="true" />}
-
-      {canCreateCallout && calloutsSetId && (
-        <CalloutFormConnector
-          open={createOpen}
-          onOpenChange={setCreateOpen}
-          calloutsSetId={calloutsSetId}
-          activeFlowStateName={activePhase?.label}
-          defaultTemplateId={activePhase?.defaultCalloutTemplateId}
-        />
-      )}
+      {/* Clearance for the fixed h-14 mobile bottom bar (always rendered below sm). */}
+      <div className="h-20 sm:hidden" aria-hidden="true" />
     </div>
   );
 }

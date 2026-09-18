@@ -7,9 +7,13 @@ import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFr
  * Fetches a community's update messages and maps them to the CRD `CommunityUpdate`
  * shape (newest first). Powers the sidebar `UpdatesSection` (latest) and the
  * `CommunityUpdatesDialog` (full list) on both Space and subspace pages.
+ *
+ * `skip: true` suppresses the query — the sidebar connector passes this when
+ * the `updates` widget is not configured on the active tab (FR-019). Forwarded
+ * as an absent `communityId` since `useCommunityUpdates` skips on `!communityId`.
  */
-export function useCrdCommunityUpdates(communityId: string | undefined) {
-  const { entities, state } = useCommunityUpdates({ communityId });
+export function useCrdCommunityUpdates(communityId: string | undefined, skip?: boolean) {
+  const { entities, state } = useCommunityUpdates({ communityId: skip ? undefined : communityId });
 
   const updates: CommunityUpdate[] = [...entities.messages]
     .sort((a, b) => b.timestamp - a.timestamp)

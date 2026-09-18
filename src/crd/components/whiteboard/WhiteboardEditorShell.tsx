@@ -1,8 +1,8 @@
 import { X } from 'lucide-react';
-import { type ReactNode, useId } from 'react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
-import { Dialog, DialogContentRaw, DialogOverlay, DialogPortal } from '@/crd/primitives/dialog';
+import { Dialog, DialogContentRaw, DialogOverlay, DialogPortal, DialogTitle } from '@/crd/primitives/dialog';
 
 type WhiteboardEditorShellProps = {
   open: boolean;
@@ -39,7 +39,6 @@ export function WhiteboardEditorShell({
   onEscapeKeyDown,
 }: WhiteboardEditorShellProps) {
   const { t } = useTranslation('crd-whiteboard');
-  const titleId = useId();
 
   return (
     <Dialog
@@ -51,7 +50,6 @@ export function WhiteboardEditorShell({
       <DialogPortal>
         <DialogOverlay className="z-[60] bg-background/80 backdrop-blur-sm" />
         <DialogContentRaw
-          aria-labelledby={titleId}
           onInteractOutside={e => e.preventDefault()}
           onPointerDownOutside={e => e.preventDefault()}
           onEscapeKeyDown={e => {
@@ -73,10 +71,12 @@ export function WhiteboardEditorShell({
         >
           {/* Header */}
           <div className="flex items-center gap-2 px-4 py-2 border-b border-border shrink-0">
-            <div id={titleId} className="flex-1 min-w-0 flex items-center gap-2">
-              {title}
-              {titleExtra}
-            </div>
+            <DialogTitle asChild={true}>
+              <div className="flex-1 min-w-0 flex items-center gap-2">
+                {title}
+                {titleExtra}
+              </div>
+            </DialogTitle>
             <div className="flex items-center gap-1 shrink-0">
               {headerActions}
               <button

@@ -1,12 +1,24 @@
 import { useApolloClient } from '@apollo/client';
 import type { Editor } from '@tiptap/react';
-import { useRef, useState } from 'react';
+import { FileSignature } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUpdateMemoDisplayNameMutation } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import {
+  useContinueMemoSigningMutation,
+  usePrepareMemoSigningMutation,
+  useUpdateMemoDisplayNameMutation,
+  useUserSecurityAuthenticationMethodsQuery,
+} from '@/core/apollo/generated/apollo-hooks';
+import {
+  AuthenticationType,
+  AuthorizationPrivilege,
+  LicenseEntitlementType,
+  SpaceLevel,
+} from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useRegisterFullscreenEditor } from '@/core/ui/fullscreen/FullscreenEditorContext';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { CrdFullscreenButton } from '@/crd/components/common/CrdFullscreenButton';
 import { Loading } from '@/crd/components/common/Loading';
 import { ShareButton } from '@/crd/components/common/ShareButton';
@@ -14,18 +26,25 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import { MemoCollabFooter } from '@/crd/components/memo/MemoCollabFooter';
 import { MemoDisplayName } from '@/crd/components/memo/MemoDisplayName';
 import { MemoEditorShell } from '@/crd/components/memo/MemoEditorShell';
+import { MemoSigningDialog } from '@/crd/components/memo/MemoSigningDialog';
 import { CollaborativeMarkdownEditor } from '@/crd/forms/markdown/CollaborativeMarkdownEditor';
 import type { CollabProviderLike, YDocLike } from '@/crd/forms/markdown/collabProviderTypes';
 import { htmlToMarkdown } from '@/crd/forms/markdown/markdownConverter';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
+import { Button } from '@/crd/primitives/button';
 import useMemoManager from '@/domain/collaboration/memo/MemoManager/useMemoManager';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { withCloseFinalizing } from '@/main/crdPages/closeFinalizing';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
+import { MemoSignedCopiesDialogConnector } from '@/main/crdPages/memo/MemoSignedCopiesDialogConnector';
+import { mapMemoFooterProps } from '@/main/crdPages/memo/memoFooterMapper';
+import { useCrdMemoProvider } from '@/main/crdPages/memo/useCrdMemoProvider';
+import { useMemoSigningFlow } from '@/main/crdPages/memo/useMemoSigningFlow';
 import { CrdCollaborationSettings } from '@/main/crdPages/whiteboard/CrdCollaborationSettings';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { mapMemoFooterProps } from './memoFooterMapper';
-import { useCrdMemoProvider } from './useCrdMemoProvider';
+import type { MemoSigningOrigin } from '@/main/ui/layout/memoSigningReturnStorage';
 
 type CrdMemoDialogProps = {
   open: boolean;
@@ -34,27 +53,76 @@ type CrdMemoDialogProps = {
   /** True when this is a memo contribution (deletable), false for framing */
   isContribution?: boolean;
   onDelete?: () => Promise<void> | void;
+  signingOrigin?: Pick<MemoSigningOrigin, 'kind' | 'calloutId' | 'contributionId'>;
+  refreshAfterSigningAttemptId?: string;
+  editorMountKey?: string;
+  onEditorMounted?: (focusTarget: HTMLElement) => void;
 };
 
-export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, onDelete }: CrdMemoDialogProps) {
+export const updateMemoMarkdownCache = (
+  editor: Pick<Editor, 'getHTML'> | null,
+  writeMarkdown: (markdown: string) => void,
+  hadLocalEdits = true
+): Promise<void> => {
+  if (!editor || !hadLocalEdits) return Promise.resolve();
+  return htmlToMarkdown(editor.getHTML()).then(writeMarkdown);
+};
+
+export const canStartMemoSigning = (
+  privileges: AuthorizationPrivilege[],
+  entitlements: LicenseEntitlementType[],
+  authenticationMethods: AuthenticationType[] | undefined,
+  authenticationMethodsReady: boolean
+) =>
+  authenticationMethodsReady &&
+  privileges.includes(AuthorizationPrivilege.Contribute) &&
+  entitlements.includes(LicenseEntitlementType.SpaceFlagMemoSigning) &&
+  authenticationMethods?.includes(AuthenticationType.Cleverbase) === true;
+
+export function CrdMemoDialog({
+  open,
+  memoId,
+  onClose,
+  isContribution = false,
+  onDelete,
+  signingOrigin,
+  refreshAfterSigningAttemptId,
+  editorMountKey,
+  onEditorMounted,
+}: CrdMemoDialogProps) {
   const { t } = useTranslation('crd-space');
   const { t: tCommon } = useTranslation('crd-common');
   useRegisterFullscreenEditor(open);
   const client = useApolloClient();
-  const { memo, loading } = useMemoManager({ id: memoId });
+  const notify = useNotification();
+  const { memo, loading, refreshMemo } = useMemoManager({ id: memoId });
   const editorRef = useRef<Editor | null>(null);
   const { isAuthenticated } = useAuthenticationContext();
+  const { loading: currentUserLoading, userModel } = useCurrentUserContext();
+  const {
+    data: authenticationMethodsData,
+    loading: authenticationMethodsLoading,
+    error: authenticationMethodsError,
+  } = useUserSecurityAuthenticationMethodsQuery({ skip: !isAuthenticated });
   const { spaceLevel = SpaceLevel.L0 } = useUrlResolver();
-  const { space } = useSpace();
+  const { space, entitlements } = useSpace();
   const { subspace } = useSubSpace();
   const myMembershipStatus =
     spaceLevel === SpaceLevel.L0
       ? space.about.membership?.myMembershipStatus
       : subspace.about.membership?.myMembershipStatus;
-  const { ydoc, provider, connectionStatus, synced, isReadOnly, memberCount, connectedUsers, user } =
-    useCrdMemoProvider({
-      collaborationId: memoId,
-    });
+  const {
+    ydoc,
+    provider,
+    lifecycle,
+    lastSaveError,
+    connectionStatus,
+    synced,
+    isReadOnly,
+    memberCount,
+    connectedUsers,
+    user,
+  } = useCrdMemoProvider({ collaborationId: memoId });
 
   // Memo images upload into the memo's own storage bucket (where collaborators have FileUpload),
   // not the ambient space bucket. Mirrors the legacy MUI `MemoDialog`, which passed the memo's
@@ -76,12 +144,76 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const [editingDisplayName, setEditingDisplayName] = useState(false);
   const [displayNameDraft, setDisplayNameDraft] = useState('');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [closeBlocked, setCloseBlocked] = useState(false);
+  const [closeFinalizing, setCloseFinalizing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [signingDialogOpen, setSigningDialogOpen] = useState(false);
+  const [signedCopiesDialogOpen, setSignedCopiesDialogOpen] = useState(false);
+  const refreshedAttemptId = useRef<string | undefined>(undefined);
+  const notifiedEditorMountKey = useRef<string | undefined>(undefined);
+  const closeInFlight = useRef(false);
+
+  const [prepareMemoSigning] = usePrepareMemoSigningMutation();
+  const [continueMemoSigning] = useContinueMemoSigningMutation();
+  const signingFlow = useMemoSigningFlow({
+    memoId,
+    requestDurability: () => provider?.requestDurability() ?? Promise.reject(new Error('Memo is not connected')),
+    prepare: async id => {
+      const result = (await prepareMemoSigning({ variables: { memoID: id } })).data?.prepareMemoSigning;
+      if (!result) throw new Error('Memo signing preparation returned no result');
+      return result;
+    },
+    continueSigning: async attemptID => {
+      const result = (await continueMemoSigning({ variables: { attemptID } })).data?.continueMemoSigning;
+      if (!result) throw new Error('Memo signing continuation returned no result');
+      return result.authorizeUrl;
+    },
+    navigate: url => globalThis.location.assign(url),
+    returnContext:
+      userModel && signingOrigin
+        ? {
+            userId: userModel.id,
+            memoId,
+            ...signingOrigin,
+          }
+        : undefined,
+  });
+
+  useEffect(() => {
+    if (!refreshAfterSigningAttemptId || refreshedAttemptId.current === refreshAfterSigningAttemptId) return;
+    refreshedAttemptId.current = refreshAfterSigningAttemptId;
+    void refreshMemo();
+  }, [refreshAfterSigningAttemptId, refreshMemo]);
+
+  const handleEditorMounted = (focusTarget: HTMLElement) => {
+    if (!open || !editorMountKey || !onEditorMounted) return;
+    if (notifiedEditorMountKey.current === editorMountKey) return;
+    notifiedEditorMountKey.current = editorMountKey;
+    onEditorMounted(focusTarget);
+  };
+  const closeSigningDialog = () => setSigningDialogOpen(false);
+  const signedCopiesCount = memo?.signatures.filter(signature => signature.document).length ?? 0;
 
   const privileges = memo?.authorization?.myPrivileges ?? [];
   const hasUpdatePrivileges = privileges.includes(AuthorizationPrivilege.Update);
   const hasDeletePrivileges = privileges.includes(AuthorizationPrivilege.Delete);
   const hasContributePrivileges = privileges.includes(AuthorizationPrivilege.Contribute);
+  const authenticationMethods = authenticationMethodsData?.me.user?.authentication?.methods;
+  const authenticationMethodsReady = isAuthenticated && !authenticationMethodsLoading && !authenticationMethodsError;
+  const hasSigningEntitlement = entitlements.includes(LicenseEntitlementType.SpaceFlagMemoSigning);
+  const signingIdentityReady = !currentUserLoading && Boolean(userModel);
+  const signingAvailableForActor =
+    authenticationMethodsReady && hasContributePrivileges && hasSigningEntitlement && signingIdentityReady;
+  const hasLinkedCleverbase = authenticationMethods?.includes(AuthenticationType.Cleverbase) === true;
+  const hasSigningAccess = canStartMemoSigning(
+    privileges,
+    entitlements,
+    authenticationMethods,
+    authenticationMethodsReady
+  );
+  const canSign = hasSigningAccess && signingIdentityReady;
+  const signingIdentityLoading = hasSigningAccess && currentUserLoading;
+  const showCleverbaseGuidance = signingAvailableForActor && !hasLinkedCleverbase && Boolean(provider);
 
   const canEditDisplayName = isContribution && hasUpdatePrivileges;
   const displayName = memo?.profile.displayName ?? t('memo.errors.loading');
@@ -103,28 +235,57 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const handleCancelEdit = () => setEditingDisplayName(false);
 
   // Write the editor's current content directly to Apollo cache so previews update instantly.
-  // Hocuspocus's autosave lags by ~2s; fetching from the server immediately returns stale data.
+  // The collab room debounces its snapshot save by ~2s; fetching from the server immediately returns stale data.
   // Instead, we grab the HTML from Tiptap, convert to markdown, and write it to the normalized
   // cache entry. Connectors schedule a delayed server fetch as a safety net.
-  const handleClose = () => {
-    if (editorRef.current) {
-      const html = editorRef.current.getHTML();
-      // Fire-and-forget: write to cache as soon as conversion completes.
-      // The dialog unmounts on close so we can't rely on timeouts; this runs
-      // outside React lifecycle as a plain promise. Swallow failures — the
-      // connector's delayed server refetch is the safety net.
-      void htmlToMarkdown(html)
-        .then(markdown => {
+  const currentMarkdown = () => htmlToMarkdown(editorRef.current?.getHTML() ?? '');
+  const finishClose = async () => {
+    try {
+      await updateMemoMarkdownCache(
+        editorRef.current,
+        markdown => {
           client.cache.modify({
             id: client.cache.identify({ __typename: 'Memo', id: memoId }),
-            fields: {
-              markdown: () => markdown,
-            },
+            fields: { markdown: () => markdown },
           });
-        })
-        .catch(() => {});
+        },
+        !!provider?.hasLocalEdits
+      );
+    } catch {
+      // The connector's delayed refetch remains the cache fallback.
     }
     onClose();
+  };
+  const handleClose = async () => {
+    if (closeInFlight.current) return;
+    const unsaved = !!provider?.hasUnsavedChanges;
+    if (unsaved && !(lifecycle.kind === 'active' && lifecycle.access === 'write' && lifecycle.save !== 'offline')) {
+      setCloseBlocked(true);
+      return;
+    }
+    closeInFlight.current = true;
+    try {
+      if (unsaved && provider) {
+        await withCloseFinalizing(setCloseFinalizing, () => provider.requestDurability());
+      }
+      await finishClose();
+    } catch {
+      setCloseBlocked(true);
+    } finally {
+      closeInFlight.current = false;
+    }
+  };
+  const exportUnsavedMemo = async () => {
+    try {
+      const url = URL.createObjectURL(new Blob([await currentMarkdown()], { type: 'text/markdown' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${displayName || 'memo'}.md`;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 30_000);
+    } catch {
+      notify(t('memo.unsavedClose.exportFailed'), 'error');
+    }
   };
 
   // The footer Delete button opens the confirmation; the actual delete runs from the
@@ -146,6 +307,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
 
   const footerProps = mapMemoFooterProps({
     connectionStatus,
+    saveStatus: lifecycle.kind === 'active' ? lifecycle.save : undefined,
     synced,
     isAuthenticated,
     isReadOnly,
@@ -158,12 +320,23 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     hasOwner: !!memo?.createdBy?.profile,
     myMembershipStatus,
   });
+  const footerStatusLabel = closeFinalizing
+    ? t('memo.footer.finalizing')
+    : footerProps.saveStatus
+      ? t(`memo.footer.${footerProps.saveStatus}` as const)
+      : footerProps.connectionStatus === 'connected'
+        ? t('memo.footer.saved')
+        : footerProps.connectionStatus === 'connecting'
+          ? t('memo.footer.connecting')
+          : t('memo.footer.disconnected');
 
   // The connection-loading overlay below blocks interaction until the provider
   // is `connected` AND the initial sync packet has arrived. By the time the
   // overlay disappears, the editor is built with the final disabled state
   // (permission-driven only), so it does not need to rebuild mid-session.
-  const isConnectionReady = connectionStatus === 'connected' && synced;
+  // Once the document has synced, transient transport loss keeps the same local
+  // Y.Doc mounted and editable; the provider converges it on its next ordinary dial.
+  const isConnectionReady = synced;
   const editorDisabled = isReadOnly || !hasContributePrivileges;
 
   const title = (
@@ -184,6 +357,50 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
 
   const headerActions = (
     <>
+      {signedCopiesCount > 0 && (
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="text-muted-foreground"
+          onClick={() => setSignedCopiesDialogOpen(true)}
+        >
+          <FileSignature aria-hidden="true" />
+          {t('memo.signing.signedCopiesCount', { count: signedCopiesCount })}
+        </Button>
+      )}
+      {(canSign || signingIdentityLoading) && (
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={!provider || !signingIdentityReady || signingFlow.stage === 'preparing'}
+          onClick={() => {
+            setSigningDialogOpen(true);
+            void signingFlow.prepare();
+          }}
+        >
+          <FileSignature aria-hidden="true" />
+          {t('memo.signing.title')}
+        </Button>
+      )}
+      {showCleverbaseGuidance && (
+        <div className="flex max-w-56 flex-col items-end gap-1 text-right">
+          <Button type="button" variant="outline" size="sm" disabled={true}>
+            <FileSignature aria-hidden="true" />
+            {t('memo.signing.title')}
+          </Button>
+          <span className="text-caption text-muted-foreground">{t('memo.signing.cleverbaseRequired')}</span>
+          <a
+            href="https://alkem.io/documentation/en-US/how-to/connected-accounts"
+            target="_blank"
+            rel="noreferrer"
+            className="text-caption text-primary underline underline-offset-2 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {t('memo.signing.connectCleverbase')}
+          </a>
+        </div>
+      )}
       {/* Share dropdown. For users who can update the memo, it also hosts the content-update-policy
           control (Owner / Admins / Contributors) — parity with the CRD whiteboard and the legacy MUI
           memo dialog, and what makes the footer's "ask the owner to change the share settings" message
@@ -198,6 +415,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   return (
     <>
       <MemoEditorShell
+        onMounted={handleEditorMounted}
         open={open}
         fullscreen={isFullscreen}
         onClose={handleClose}
@@ -206,6 +424,9 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
         footer={
           <MemoCollabFooter
             {...footerProps}
+            saveStatus={closeFinalizing ? 'finalizing' : footerProps.saveStatus}
+            statusLabel={footerStatusLabel}
+            saveErrorLabel={lastSaveError ? t('memo.footer.saveFailed') : undefined}
             owner={
               memo?.createdBy?.profile
                 ? { name: memo.createdBy.profile.displayName, url: memo.createdBy.profile.url }
@@ -218,7 +439,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
           <Loading text={t('memo.errors.loading')} />
         ) : (
           <div className="h-full p-3 relative">
-            {/* The collaborative editor is only mounted once the Hocuspocus
+            {/* The collaborative editor is only mounted once the unified collab
                 provider is fully connected and the initial Yjs sync has
                 completed. Mounting earlier produces an editor instance that
                 attaches to an empty/partial ydoc, which Tiptap then has to
@@ -259,6 +480,33 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
           loading={isDeleting}
         />
       )}
+      <ConfirmationDialog
+        open={closeBlocked}
+        onOpenChange={setCloseBlocked}
+        variant="discard"
+        title={t('memo.unsavedClose.title')}
+        description={t('memo.unsavedClose.description')}
+        saveLabel={t('memo.unsavedClose.wait')}
+        discardLabel={t('memo.unsavedClose.discard')}
+        cancelLabel={t('memo.unsavedClose.export')}
+        onSave={() => setCloseBlocked(false)}
+        onDiscard={onClose}
+        onCancel={() => void exportUnsavedMemo()}
+      />
+      <MemoSigningDialog
+        open={signingDialogOpen}
+        onOpenChange={open => !open && closeSigningDialog()}
+        mode="signing"
+        stage={signingFlow.stage}
+        previewUrl={signingFlow.attempt?.previewUrl}
+        onContinue={() => void signingFlow.continueSigning()}
+        onClose={closeSigningDialog}
+      />
+      <MemoSignedCopiesDialogConnector
+        open={signedCopiesDialogOpen}
+        memoId={memoId}
+        onOpenChange={setSignedCopiesDialogOpen}
+      />
     </>
   );
 }

@@ -160,6 +160,14 @@ type FlowDescriptorOptions = {
    * password fields. Defaults to keeping them (recovery-completion).
    */
   dropPasswordMethod?: boolean;
+  /**
+   * Settings flow only. When `true`, flow-level `ui.messages` are dropped —
+   * used by cards that share one settings flow with other cards, where a
+   * flow-level message belongs to whichever method (`flow.active`) produced it
+   * and must render only in that method's card. Defaults to keeping them
+   * (recovery-completion renders the flow alone).
+   */
+  dropFlowMessages?: boolean;
 };
 
 export function flowDescriptorAdapter(
@@ -347,12 +355,14 @@ export function flowDescriptorAdapter(
     // so are `info` messages Alkemio has explicit copy for: those are actionable
     // (most importantly the OIDC account-linking conflict, id 1010016, which
     // tells the user the email already belongs to another account).
-    messages: (flow.ui.messages ?? []).map(toMessage).filter(message => {
-      if (message.type !== 'info' || (flowType !== 'login' && flowType !== 'registration')) {
-        return true;
-      }
-      return String(message.id) in kratosMessageTranslationKeys;
-    }),
+    messages: options.dropFlowMessages
+      ? []
+      : (flow.ui.messages ?? []).map(toMessage).filter(message => {
+          if (message.type !== 'info' || (flowType !== 'login' && flowType !== 'registration')) {
+            return true;
+          }
+          return String(message.id) in kratosMessageTranslationKeys;
+        }),
     acceptTerms,
     groups,
   };

@@ -32,5 +32,5 @@
 ## Notes
 
 - Items marked incomplete require spec updates before `/speckit.clarify` or `/speckit.plan`.
-- Validation result: all items pass. Confirmed product decisions (single floating-card panel, header messages icon removed, single combined unread badge) were supplied in the feature description and are recorded as Assumptions A-003/A-004/A-005, so no [NEEDS CLARIFICATION] markers were required.
+- Validation result: all items pass. Confirmed product decisions (single floating-card panel, header messages icon removed, single combined unread badge) were supplied in the feature description and are recorded as Assumptions A-003/A-004/A-005, so no [NEEDS CLARIFICATION] markers were required. *(A-004 was later superseded — the header icon was retained and, since 2026-08-21, is the sole chat entry on phone-width viewports where the launcher is hidden; see spec.md amendment.)*
 - Spec deliberately avoids naming components/files/hooks/GraphQL operations; those live in the planning artifacts (the `/plan` output), not the spec.

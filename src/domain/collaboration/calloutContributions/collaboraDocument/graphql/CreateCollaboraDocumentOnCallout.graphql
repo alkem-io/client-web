@@ -4,6 +4,7 @@ mutation CreateCollaboraDocumentOnCallout($calloutId: UUID!, $collaboraDocument:
     type: COLLABORA_DOCUMENT,
     collaboraDocument: $collaboraDocument
   }) {
+    id
     collaboraDocument {
       id
       documentType

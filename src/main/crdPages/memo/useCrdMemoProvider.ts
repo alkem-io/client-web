@@ -24,10 +24,10 @@ function sameUsers(a: ConnectedUser[], b: ConnectedUser[]): boolean {
 }
 
 /**
- * Thin wrapper around the MUI collab-input `useCollaboration` hook.
+ * Thin wrapper around the shared collab-input `useCollaboration` hook.
  *
- * Reuses the existing Hocuspocus provider lifecycle (WebSocket URL resolution,
- * provider creation, event wiring, cleanup) so there is exactly one source of
+ * Reuses the unified collaboration-provider lifecycle (`/collab/<id>?type=memo`):
+ * provider creation, event wiring, cleanup — so there is exactly one source of
  * truth for memo/collab wiring. See `src/core/ui/forms/CollaborativeMarkdownInput/hooks/useCollaboration.ts`.
  *
  * Adds: member count + connected-user presence list derived from provider
@@ -48,8 +48,8 @@ export function useCrdMemoProvider({ collaborationId }: UseCrdMemoProviderProps)
       const states = provider.awareness?.getStates();
       if (!states) return { count: 0, users: [] as ConnectedUser[] };
       const users: ConnectedUser[] = [];
-      // `user` is written into awareness by Tiptap's CollaborationCaret extension
-      // (see src/core/ui/forms/CollaborativeMarkdownInput/hooks/useCollaboration.ts).
+      // `user` is written into awareness by the collaborative markdown editor's
+      // CollaborationCaret extension.
       // Clients that have not yet announced a user are counted but not rendered.
       states.forEach((state, clientId) => {
         const user = (state as { user?: { id?: string; name?: string; color?: string } } | undefined)?.user;
@@ -110,6 +110,8 @@ export function useCrdMemoProvider({ collaborationId }: UseCrdMemoProviderProps)
   return {
     ydoc: collab.ydoc,
     provider: collab.provider,
+    lifecycle: collab.lifecycle,
+    lastSaveError: collab.lastSaveError,
     connectionStatus,
     synced: collab.synced,
     isReadOnly: collab.isReadOnly ?? false,

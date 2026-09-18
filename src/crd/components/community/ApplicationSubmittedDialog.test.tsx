@@ -3,7 +3,7 @@ import { createInstance } from 'i18next';
 import { I18nextProvider } from 'react-i18next';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import spaceEn from '@/crd/i18n/space/space.en.json';
-import { ApplicationSubmittedDialog } from './ApplicationSubmittedDialog';
+import { ApplicationSubmittedBellIcon, ApplicationSubmittedDialog } from './ApplicationSubmittedDialog';
 
 // A real i18next instance, not a mocked `t`. The review copy is rendered through
 // <Trans> and carries a custom `<bell/>` tag; a stubbed `t` returning the key
@@ -51,5 +51,35 @@ describe('ApplicationSubmittedDialog', () => {
     expect(bell).not.toBeNull();
     expect(bell).toHaveAttribute('aria-hidden', 'true');
     expect(review.textContent).not.toContain('<bell');
+  });
+});
+
+describe('ApplicationSubmittedDialog — consumer copy overrides', () => {
+  it('renders the consumer wording in place of every Space default, bell included', () => {
+    render(
+      <I18nextProvider i18n={i18n}>
+        <ApplicationSubmittedDialog
+          open={true}
+          onOpenChange={vi.fn()}
+          communityName="Welcome Sub"
+          copy={{
+            title: 'Sent',
+            body: 'Your request to Acme is in.',
+            review: (
+              <>
+                Watch for a notification <ApplicationSubmittedBellIcon /> from Acme.
+              </>
+            ),
+          }}
+        />
+      </I18nextProvider>
+    );
+
+    expect(screen.getByRole('dialog', { name: 'Sent' })).toBeInTheDocument();
+    expect(screen.getByText('Your request to Acme is in.')).toBeInTheDocument();
+    const review = screen.getByText(/Watch for a notification/);
+    expect(review.querySelector('svg.lucide-bell')).not.toBeNull();
+    expect(screen.queryByText(/Welcome Sub/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Home dashboard/)).not.toBeInTheDocument();
   });
 });

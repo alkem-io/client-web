@@ -28,7 +28,7 @@ describe('useGuestSession', () => {
   });
 
   describe('anonymization algorithm', () => {
-    it('should anonymize "First Last" as "First L."', () => {
+    it('should anonymize "First Last" as the period-free "First L" form', () => {
       // This test assumes we can mock the current user context
       // For now, testing the logic through the hook interface
       const { result } = renderHook(() => useGuestSession(), { wrapper });

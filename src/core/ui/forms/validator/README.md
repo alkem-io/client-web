@@ -129,8 +129,15 @@ Available from `@/core/ui/forms/field-length.constants`:
 - `MID_TEXT_LENGTH = 512` - For taglines, short descriptions
 - `LONG_TEXT_LENGTH = 2048` - For longer descriptions, bios
 - `MARKDOWN_TEXT_LENGTH = 8000` - For markdown content
-- `LONG_MARKDOWN_TEXT_LENGTH = 16000` - For extended markdown content
+- `LONG_MARKDOWN_TEXT_LENGTH = 48000` - For extended markdown content
 - `COMMENTS_TEXT_LENGTH = 8000` - For comment fields
+
+The markdown limits are measured against the raw markdown source, not the rendered
+text, so formatting, links and inlined images all count. They are held deliberately
+below the server ceiling they map to - for both post contribution and callout framing
+descriptions that is the 65568 limit on `profile.description` - so client validation
+fails before the API does. `field-length.constants.ts` carries the fuller note on which
+constants mirror the server and which are client-only.
 
 ## Benefits
 

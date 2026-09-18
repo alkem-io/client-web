@@ -1,0 +1,5 @@
+mutation ReplaceWhiteboardContentFromSource($input: ReplaceWhiteboardContentFromSourceInput!) {
+  replaceWhiteboardContentFromSource(input: $input) {
+    id
+  }
+}

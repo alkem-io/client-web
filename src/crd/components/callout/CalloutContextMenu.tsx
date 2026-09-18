@@ -4,6 +4,7 @@ import {
   ArrowUp,
   ArrowUpToLine,
   Bookmark,
+  Columns3,
   Eye,
   EyeOff,
   GripVertical,
@@ -33,6 +34,8 @@ type CalloutContextMenuProps = {
   /** Tooltip explaining why Save-as-Template is disabled. */
   saveAsTemplateDisabledReason?: string;
   onEdit?: () => void;
+  /** Tasks board only: open the column-management dialog. Gated on edit capability. */
+  onManageColumns?: () => void;
   /** Replace the backing file of a Collabora (OfficeDocs) framing document. */
   onReplace?: () => void;
   onPublish?: () => void;
@@ -56,6 +59,7 @@ export function CalloutContextMenu({
   saveAsTemplateDisabled,
   saveAsTemplateDisabledReason,
   onEdit,
+  onManageColumns,
   onReplace,
   onPublish,
   onUnpublish,
@@ -69,6 +73,10 @@ export function CalloutContextMenu({
   onShare,
 }: CalloutContextMenuProps) {
   const { t } = useTranslation('crd-space');
+  // The manage-columns label is a task-board string — read it from its own
+  // namespace (the column dialog uses the same key) rather than duplicating it
+  // under crd-space.
+  const { t: tTaskBoard } = useTranslation('crd-taskBoard');
 
   return (
     <DropdownMenu>
@@ -87,6 +95,13 @@ export function CalloutContextMenu({
           <DropdownMenuItem onClick={onEdit}>
             <Pencil className="w-4 h-4 mr-2" aria-hidden="true" />
             {t('contextMenu.edit')}
+          </DropdownMenuItem>
+        )}
+
+        {editable && onManageColumns && (
+          <DropdownMenuItem onClick={onManageColumns}>
+            <Columns3 className="w-4 h-4 mr-2" aria-hidden="true" />
+            {tTaskBoard('columns.manage')}
           </DropdownMenuItem>
         )}
 

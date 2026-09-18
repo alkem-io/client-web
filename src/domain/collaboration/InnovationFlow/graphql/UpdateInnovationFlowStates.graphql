@@ -18,6 +18,7 @@ mutation CreateStateOnInnovationFlow($stateData: CreateStateOnInnovationFlowInpu
       allowNewCallouts
       descriptionDisplayMode
       showPublishDetails
+      sidebar
     }
   }
 }
@@ -50,6 +51,7 @@ mutation UpdateInnovationFlowState(
       visible
       descriptionDisplayMode
       showPublishDetails
+      sidebar
     }
   }
 }
@@ -68,6 +70,7 @@ mutation UpdateInnovationFlowStateSettings($innovationFlowStateId: UUID!, $setti
       visible
       descriptionDisplayMode
       showPublishDetails
+      sidebar
     }
   }
 }

@@ -54,4 +54,20 @@ describe('mapAnyContributionToCardData', () => {
     expect(result?.author).toBeUndefined();
     expect(result?.documentId).toBe('doc-2');
   });
+
+  it('maps only document-backed memo signatures into the actionable copies count', () => {
+    const result = mapAnyContributionToCardData({
+      id: 'contribution-3',
+      memo: {
+        id: 'memo-3',
+        profile: { displayName: 'Pilot memo' },
+        signatures: [
+          { id: 'signed-1', document: { id: 'document-1' } },
+          { id: 'incomplete-1', document: null },
+        ],
+      },
+    } as never);
+
+    expect((result as unknown as { signedCopiesCount?: number })?.signedCopiesCount).toBe(1);
+  });
 });

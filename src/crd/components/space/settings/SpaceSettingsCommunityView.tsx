@@ -5,6 +5,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronUp,
+  Download,
   FileText,
   MoreHorizontal,
   Plus,
@@ -16,8 +17,13 @@ import {
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { GatedAction } from '@/crd/components/common/GatedAction';
 import type { PendingMembership } from '@/crd/components/space/settings/PendingMembershipsTable';
 import { PendingMembershipsTable } from '@/crd/components/space/settings/PendingMembershipsTable';
+import type { PendingOrganizationInvitationItem } from '@/crd/components/space/settings/PendingOrganizationInvitationsList';
+import { PendingOrganizationInvitationsList } from '@/crd/components/space/settings/PendingOrganizationInvitationsList';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
+import { formatShortDate } from '@/crd/lib/dateTimeFormat';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -64,6 +70,17 @@ export type CommunityVC = {
   url?: string;
 };
 
+export type PendingOrganizationInvitation = {
+  id: string;
+  organizationDisplayName: string;
+  organizationUrl?: string;
+  /** Whether the invitation also offers the Lead role, alongside the always-granted Member role. */
+  role: 'member' | 'memberLead';
+  /** Raw ISO date string — the view formats it for display. */
+  createdDate: string;
+  canRevoke: boolean;
+};
+
 export type SpaceSettingsCommunityViewProps = {
   /**
    * Space hierarchy level. Drives:
@@ -76,22 +93,60 @@ export type SpaceSettingsCommunityViewProps = {
   pendingMemberships: PendingMembership[];
   organizations: CommunityOrg[];
   virtualContributors: CommunityVC[];
+  pendingOrganizationInvitations: PendingOrganizationInvitation[];
   applicationFormSlot?: ReactNode;
   communityGuidelinesSlot?: ReactNode;
+  /**
+   * The community permissions this view reports upward.
+   *
+   * One of them decides whether a launch button is RENDERED: `canAddOrganizations` hides
+   * *Add Organisation* (client-web#10292). Every other gated action is rendered always and
+   * disabled via its `*DisabledReason` prop, so adding a flag here hides nothing by itself.
+   *
+   * `canAddOrganizations` must be false while the privilege query is unresolved, so the
+   * button never appears before the answer is known. The page derives it from the same
+   * `useActionPermission` decision that feeds the tooltips, whose `checking` state is not
+   * `allowed`.
+   */
   permissions: {
     canInvite: boolean;
+    canInviteOrganizations: boolean;
     canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
   };
+  /**
+   * Tooltip copy for the add launch buttons when the action is unavailable.
+   *
+   * These buttons are rendered gated rather than hidden: hiding conceals the action's
+   * existence and produces a hidden→shown flip once privileges resolve, which spec FR-002
+   * and FR-008 rule out. Undefined means permitted.
+   *
+   * *Add Organisation* is deliberately NOT here any more — it is hidden outright, keyed on
+   * `permissions.canAddOrganizations` (client-web#10292), because its privilege is one an
+   * ordinary Space admin can never hold.
+   */
+  addDisabledReasons?: {
+    virtualContributors?: string;
+  };
+  /**
+   * Tooltip copy for the *Invite organisation* button when the action is unavailable.
+   * Gated, never hidden. The two organization controls in this card DO use two different
+   * conventions, on purpose (client-web#10292): invite is obtainable by any Space admin
+   * and stays gated, direct add is not and is hidden. Undefined means permitted.
+   */
+  inviteOrganizationsDisabledReason?: string;
   /** Show the destructive "Remove from Space" dropdown item on member rows. Omit to hide. */
   onUserRemove?: (id: string) => void;
   /** Open the Member settings dialog for this user. Replaces the legacy inline lead-toggle dropdown item. */
   onMemberChangeRole?: (member: CommunityMember) => void;
   onOrgAdd: () => void;
+  /** Opens the unified invite dialog with kind='organization'. */
+  onInviteOrganizations: () => void;
   /** Show the destructive "Remove from Space" dropdown item on organization rows. Omit to hide. */
   onOrgRemove?: (id: string) => void;
   /** Open the Member settings dialog for this organization. */
   onOrgChangeRole?: (org: CommunityOrg) => void;
+  onOrgInvitationRevoke: (id: string) => void;
   onVCAdd: () => void;
   onVCAddExternal?: () => void;
   onVCRemove: (id: string) => void;
@@ -100,6 +155,8 @@ export type SpaceSettingsCommunityViewProps = {
   onPendingReject: (id: string) => void;
   onPendingDelete: (id: string) => void;
   onInviteUsers: () => void;
+  onExportMembers?: () => void;
+  exportDisabled?: boolean;
   className?: string;
 };
 
@@ -111,14 +168,19 @@ export function SpaceSettingsCommunityView({
   pendingMemberships,
   organizations,
   virtualContributors,
+  pendingOrganizationInvitations,
   applicationFormSlot,
   communityGuidelinesSlot,
   permissions,
+  addDisabledReasons,
+  inviteOrganizationsDisabledReason,
   onUserRemove,
   onMemberChangeRole,
   onOrgAdd,
+  onInviteOrganizations,
   onOrgRemove,
   onOrgChangeRole,
+  onOrgInvitationRevoke,
   onVCAdd,
   onVCAddExternal,
   onVCRemove,
@@ -127,17 +189,38 @@ export function SpaceSettingsCommunityView({
   onPendingReject,
   onPendingDelete,
   onInviteUsers,
+  onExportMembers,
+  exportDisabled,
   className,
 }: SpaceSettingsCommunityViewProps) {
-  const { t } = useTranslation('crd-spaceSettings');
+  const { t, i18n } = useTranslation('crd-spaceSettings');
+  const locale = resolveDateFnsLocale(i18n.language);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
+  const [orgSearch, setOrgSearch] = useState('');
 
   const filtered = members.filter(m => {
     if (!search) return true;
     const needle = search.toLowerCase();
     return m.displayName.toLowerCase().includes(needle) || (m.email?.toLowerCase().includes(needle) ?? false);
   });
+
+  const filteredOrganizations = organizations.filter(org => {
+    if (!orgSearch) return true;
+    return org.displayName.toLowerCase().includes(orgSearch.toLowerCase());
+  });
+
+  const pendingOrgInvitationItems: PendingOrganizationInvitationItem[] = pendingOrganizationInvitations.map(inv => ({
+    id: inv.id,
+    organizationDisplayName: inv.organizationDisplayName,
+    organizationUrl: inv.organizationUrl,
+    roleLabel:
+      inv.role === 'memberLead'
+        ? t('community.organizations.pendingInvitations.roleMemberLead')
+        : t('community.organizations.pendingInvitations.roleMember'),
+    date: formatShortDate(inv.createdDate, locale) ?? '',
+    canRevoke: inv.canRevoke,
+  }));
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / MEMBERS_PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
@@ -196,6 +279,19 @@ export function SpaceSettingsCommunityView({
               <Button type="button" size="sm" className="gap-2" onClick={onInviteUsers}>
                 <UserPlus aria-hidden="true" className="size-4" />
                 {t('community.members.invite')}
+              </Button>
+            )}
+            {onExportMembers && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={onExportMembers}
+                disabled={exportDisabled}
+              >
+                <Download aria-hidden="true" className="size-4" />
+                {t('community.members.export')}
               </Button>
             )}
           </div>
@@ -362,8 +458,50 @@ export function SpaceSettingsCommunityView({
         icon={Building}
         title={t('community.organizations.title')}
         description={t('community.organizations.description')}
-        count={organizations.length}
+        count={filteredOrganizations.length}
       >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <div className="relative">
+            <Search
+              aria-hidden="true"
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
+            />
+            <Input
+              aria-label={t('community.organizations.search')}
+              placeholder={t('community.organizations.search')}
+              value={orgSearch}
+              onChange={e => setOrgSearch(e.target.value)}
+              className="h-9 w-[220px] pl-9 text-control"
+            />
+          </div>
+          <div className="flex">
+            {/* HIDDEN, not gated — the one carve-out from this card's gated-not-hidden contract
+              (client-web#10292). Direct add needs a platform-role privilege an ordinary Space
+              admin can never obtain, so a permanently dead control plus a tooltip explaining an
+              unobtainable capability is noise. `canAddOrganizations` is false while the privilege
+              query is still resolving, so nothing renders until the answer is known. Its sibling
+              *Invite organisation* stays gated: every Space admin can eventually invite. */}
+            {permissions.canAddOrganizations && (
+              <Button type="button" variant="outline" size="sm" className="gap-2 me-2" onClick={onOrgAdd}>
+                <Plus aria-hidden="true" className="size-4" />
+                {t('community.organizations.add')}
+              </Button>
+            )}
+
+            {/* Gated, not hidden. Deliberately a DIFFERENT convention from the Add
+                organisation button further down this card, which client-web#10292 hides:
+                every Space admin can eventually invite, so concealing this action would hide
+                a capability the user can actually obtain, and it would flip hidden→shown once
+                the privilege query resolves. Direct add is a platform-role capability an
+                ordinary admin can never hold, which is why only that one hides. */}
+            <GatedAction disabledReason={inviteOrganizationsDisabledReason}>
+              <Button type="button" size="sm" className="gap-2" onClick={onInviteOrganizations}>
+                <UserPlus aria-hidden="true" className="size-4" />
+                {t('community.organizations.invite')}
+              </Button>
+            </GatedAction>
+          </div>
+        </div>
         <div className="rounded-lg border bg-card overflow-hidden">
           <Table>
             <TableHeader>
@@ -374,14 +512,14 @@ export function SpaceSettingsCommunityView({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {organizations.length === 0 && (
+              {filteredOrganizations.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={3} className="text-center text-muted-foreground py-6">
                     {t('community.organizations.empty')}
                   </TableCell>
                 </TableRow>
               )}
-              {organizations.map((org, index) => (
+              {filteredOrganizations.map((org, index) => (
                 <TableRow key={org.id} className={cn(index % 2 === 1 && 'bg-muted/30')}>
                   <TableCell>
                     <div className="flex items-center gap-3 min-w-0">
@@ -457,14 +595,17 @@ export function SpaceSettingsCommunityView({
             </TableBody>
           </Table>
         </div>
-        {permissions.canAddOrganizations && (
-          <div className="mt-4">
-            <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onOrgAdd}>
-              <Plus aria-hidden="true" className="size-4" />
-              {t('community.organizations.add')}
-            </Button>
-          </div>
-        )}
+        <PendingOrganizationInvitationsList
+          className="mt-6"
+          title={t('community.organizations.pendingInvitations.title')}
+          items={pendingOrgInvitationItems}
+          emptyLabel={t('community.organizations.pendingInvitations.empty')}
+          roleColumnLabel={t('community.organizations.pendingInvitations.role')}
+          dateColumnLabel={t('community.organizations.pendingInvitations.date')}
+          revokeLabel={t('community.organizations.pendingInvitations.revoke')}
+          revokeAriaLabel={name => t('community.organizations.pendingInvitations.revokeAriaLabel', { name })}
+          onRevoke={onOrgInvitationRevoke}
+        />
       </SectionCard>
 
       {level === 'L0' && (
@@ -523,20 +664,22 @@ export function SpaceSettingsCommunityView({
               </TableBody>
             </Table>
           </div>
-          {permissions.canAddVirtualContributors && (
-            <div className="mt-4 flex flex-wrap items-center gap-2">
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <GatedAction disabledReason={addDisabledReasons?.virtualContributors}>
               <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAdd}>
                 <Plus aria-hidden="true" className="size-4" />
                 {t('community.virtualContributors.add')}
               </Button>
-              {onVCAddExternal && (
+            </GatedAction>
+            {onVCAddExternal && (
+              <GatedAction disabledReason={addDisabledReasons?.virtualContributors}>
                 <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAddExternal}>
                   <Plus aria-hidden="true" className="size-4" />
                   {t('community.virtualContributors.addExternal')}
                 </Button>
-              )}
-            </div>
-          )}
+              </GatedAction>
+            )}
+          </div>
         </SectionCard>
       )}
     </div>

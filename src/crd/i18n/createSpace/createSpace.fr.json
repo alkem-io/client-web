@@ -17,8 +17,7 @@
       "description": "L'application de ce modèle écrasera le nom, l'accroche, la description et les étiquettes que vous avez déjà saisis.",
       "confirm": "Appliquer le modèle",
       "cancel": "Conserver mes modifications"
-    },
-    "invalidFlow": "Ce modèle ne peut pas être utilisé pour créer un espace — il nécessite un flux d'innovation à 4 phases."
+    }
   },
   "displayName": {
     "label": "Nom",

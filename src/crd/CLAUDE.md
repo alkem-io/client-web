@@ -229,8 +229,11 @@ Two hero tokens (`text-display`, `text-hero`) are **fluid via `clamp()`** — th
 
 **Every** destructive action in the CRD layer — anything that removes data the user can't trivially recover — **must** go through `ConfirmationDialog` (`@/crd/components/dialogs/ConfirmationDialog`) before the mutation fires. No exceptions, no "small" deletions, no inline "are you sure" toasts.
 
+**Exemption — trivially reversible self-reaction toggles:** Removing a callout emoji reaction (un-reacting) requires **no confirmation dialog**. A reaction toggle is reversible in one click — the user can immediately re-react with the same or a different emoji. This exemption also covers the already-shipped comment-reaction pills (`ReactionPill`), where clicking a reacted pill removes the reaction without a dialog. The shared principle: if the action is a one-click toggle and the result is recoverable in one more click, a confirmation prompt is harmful friction rather than a useful guard.
+
 **This includes (non-exhaustive):**
-- Deleting a comment, reply, or reaction
+- Deleting a comment or reply
+- Deleting a reaction that is NOT a reversible toggle (e.g. a moderation-level removal — not built in this iteration)
 - Deleting a poll option (and any other in-form list rows that map to a server-side delete on save)
 - Deleting a callout, post, memo, whiteboard, contribution, or any other entity
 - Removing a member, role, application, or invitation

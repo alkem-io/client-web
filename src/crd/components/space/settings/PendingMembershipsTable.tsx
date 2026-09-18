@@ -11,7 +11,14 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/toolti
 
 export type PendingMembershipType = 'application' | 'invitation' | 'platformInvitation';
 export type PendingMembershipContributorType = 'user' | 'organization' | 'virtualContributor';
-export type PendingMembershipState = 'new' | 'approved' | 'rejected' | 'invited' | 'accepted';
+export type PendingMembershipState =
+  | 'new'
+  | 'approving'
+  | 'approved'
+  | 'rejected'
+  | 'invited'
+  | 'accepting'
+  | 'accepted';
 
 export type PendingMembership = {
   id: string;
@@ -26,6 +33,10 @@ export type PendingMembership = {
   canApprove: boolean;
   canReject: boolean;
   canDelete: boolean;
+  /** The extra role(s) offered alongside the entry role, pre-formatted for display (e.g. "Associate + Admin").
+   * Only the organization Associates consumer populates this; the "Offered role" column renders only when
+   * at least one row in `items` carries it, so other consumers (Space settings) are unaffected. */
+  offeredRoleLabel?: string;
 };
 
 export type PendingMembershipsTableProps = {
@@ -34,6 +45,11 @@ export type PendingMembershipsTableProps = {
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
   onDelete: (id: string) => void;
+  /** Overrides the built-in "Pending Memberships" heading — e.g. the organization Associates
+   * tab, which renders its own "Pending applications & invitations" card title above this
+   * table and would otherwise show the word "Memberships" twice, once in Space-flavoured
+   * copy the P5 wording rule forbids on an organization surface. */
+  title?: string;
   className?: string;
 };
 
@@ -66,6 +82,16 @@ const ALL_STATUS_IDS: StatusId[] = [
 const DEFAULT_HIDDEN_STATUSES: StatusId[] = ['applicationApproved', 'applicationRejected'];
 const DEFAULT_ACTIVE_STATUSES: StatusId[] = ALL_STATUS_IDS.filter(id => !DEFAULT_HIDDEN_STATUSES.includes(id));
 
+/**
+ * The server is still processing the answer (`approving` / `accepting`): the row stays
+ * listed so the admin sees it is in flight, but nothing can act on it yet.
+ */
+const isTransient = (state: PendingMembershipState) => state === 'approving' || state === 'accepting';
+
+/**
+ * Filter-chip grouping. A transient row files under the chip it is leaving
+ * (received / invited) — it is still pending until the server has finished.
+ */
 function statusId(type: PendingMembershipType, state: PendingMembershipState): StatusId {
   if (type === 'application') {
     if (state === 'approved') return 'applicationApproved';
@@ -101,6 +127,7 @@ export function PendingMembershipsTable({
   onApprove,
   onReject,
   onDelete,
+  title,
   className,
 }: PendingMembershipsTableProps) {
   const { t, i18n } = useTranslation('crd-spaceSettings');
@@ -114,6 +141,12 @@ export function PendingMembershipsTable({
   const [page, setPage] = useState(1);
 
   const statusLabel = (id: StatusId) => t(`community.pendingMemberships.status.${id}`);
+  const rowStatusLabel = (row: PendingMembership) =>
+    row.state === 'approving'
+      ? t('community.pendingMemberships.status.applicationApproving')
+      : row.state === 'accepting'
+        ? t('community.pendingMemberships.status.invitationAccepting')
+        : statusLabel(statusId(row.type, row.state));
   const typeLabel = (row: PendingMembership) =>
     t(`community.pendingMemberships.contributorType.${row.contributorType}`);
 
@@ -154,10 +187,7 @@ export function PendingMembershipsTable({
         return (ta - tb) * dir;
       }
       case 'status':
-        return (
-          statusLabel(statusId(a.type, a.state)).localeCompare(statusLabel(statusId(b.type, b.state)), i18n.language) *
-          dir
-        );
+        return rowStatusLabel(a).localeCompare(rowStatusLabel(b), i18n.language) * dir;
       case 'type':
         return typeLabel(a).localeCompare(typeLabel(b), i18n.language) * dir;
       default:
@@ -173,6 +203,8 @@ export function PendingMembershipsTable({
     onSort: toggleSort,
   });
 
+  const hasOfferedRole = items.some(item => item.offeredRoleLabel !== undefined);
+
   const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
   const pageStart = (safePage - 1) * PAGE_SIZE;
@@ -182,7 +214,7 @@ export function PendingMembershipsTable({
   return (
     <div className={cn('flex flex-col gap-4', className)}>
       <div className="flex items-center gap-2">
-        <h3 className="text-subsection-title">{t('community.pendingMemberships.title')}</h3>
+        <h3 className="text-subsection-title">{title ?? t('community.pendingMemberships.title')}</h3>
         <Badge variant="secondary" className="rounded-full">
           {items.length}
         </Badge>
@@ -221,13 +253,14 @@ export function PendingMembershipsTable({
               <SortableHead {...headProps('date', t('community.pendingMemberships.date'))} />
               <SortableHead {...headProps('status', t('community.pendingMemberships.status.column'))} />
               <SortableHead {...headProps('type', t('community.pendingMemberships.type'))} />
+              {hasOfferedRole && <TableHead>{t('community.pendingMemberships.offeredRole.column')}</TableHead>}
               <TableHead className="w-[160px] text-right">{t('community.pendingMemberships.actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {paginated.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground py-6">
+                <TableCell colSpan={hasOfferedRole ? 7 : 6} className="text-center text-muted-foreground py-6">
                   {items.length === 0
                     ? t('community.pendingMemberships.empty')
                     : t('community.pendingMemberships.noMatch')}
@@ -266,10 +299,13 @@ export function PendingMembershipsTable({
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline" className={cn('text-badge', statusVariantClass(id))}>
-                      {statusLabel(id)}
+                      {rowStatusLabel(row)}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-body-emphasis">{typeLabel(row)}</TableCell>
+                  {hasOfferedRole && (
+                    <TableCell className="text-body text-muted-foreground">{row.offeredRoleLabel ?? '—'}</TableCell>
+                  )}
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
                       {row.canApprove && (
@@ -303,6 +339,7 @@ export function PendingMembershipsTable({
                             variant="ghost"
                             size="icon"
                             className="size-8"
+                            disabled={isTransient(row.state)}
                             onClick={() => onView(row.id)}
                             aria-label={
                               row.type === 'application'

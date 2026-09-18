@@ -76,6 +76,20 @@ describe('WhiteboardDisconnectedDialog — Reload page escape hatch (story #1013
     expect(reconnectButton?.disabled).toBe(true);
   });
 
+  test('hides reconnect and reload actions for a terminal unavailable verdict', () => {
+    render(
+      <WhiteboardDisconnectedDialog
+        {...baseProps}
+        canReconnect={false}
+        showReconnect={false}
+        onReloadPage={undefined}
+        hasError={true}
+      />
+    );
+    expect(screen.queryByText('disconnected.reconnect')).toBeNull();
+    expect(screen.queryByText(RELOAD_LABEL)).toBeNull();
+  });
+
   test('the escape hatch stays hidden when no onReloadPage callback is provided', () => {
     render(
       <WhiteboardDisconnectedDialog {...baseProps} canReconnect={false} onReloadPage={undefined} hasError={true} />

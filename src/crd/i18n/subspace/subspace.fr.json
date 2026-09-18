@@ -1,12 +1,4 @@
 {
-  "actions": {
-    "activity": "Activité récente",
-    "videoCall": "Démarrer un appel vidéo",
-    "share": "Partager",
-    "settings": "Paramètres",
-    "expandWidth": "Étendre à pleine largeur",
-    "collapseWidth": "Réduire à la mise en page centrée"
-  },
   "members": {
     "memberCount_one": "{{count}} membre",
     "memberCount_other": "{{count}} membres"
@@ -53,7 +45,6 @@
     "empty": "Aucune publication pour le moment."
   },
   "subspaces": {
-    "dialogTitle": "SousEspaces",
     "empty": "Ce sous-espace ne contient pas de sous-espaces imbriqués."
   },
   "breadcrumbs": {

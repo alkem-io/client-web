@@ -190,11 +190,30 @@
       "join": "Присъедини се",
       "joinAriaLabel": "Присъедини се към {{spaceName}}"
     },
-    "applicationAriaLabel": "Виж чакащо заявление за {{spaceName}}"
+    "applicationAriaLabel": "Виж чакащо заявление за {{spaceName}}",
+    "orgInvitationsSection": "Покани за организации",
+    "orgInvitationDialog": {
+      "title": "Покана за {{organizationName}}",
+      "accept": "Приеми",
+      "role": "Роля",
+      "spacesToJoin": "При приемане се присъединява към: {{spaces}}"
+    },
+    "orgAssociateInvitationsSection": "Покани за асоцииран",
+    "orgAssociateApplicationsSection": "Кандидатури за асоцииран",
+    "orgAssociateCard": {
+      "badge": "Организация",
+      "role": {
+        "associate": "Асоцииран",
+        "associateAdmin": "Асоцииран + Админ",
+        "associateOwner": "Асоцииран + Собственик"
+      },
+      "pendingLabel": "Чакащо",
+      "invitedBy": "Поканен(а) от {{name}}"
+    }
   },
   "nonActivity": {
     "sections": {
-      "pinnedLastActive": "Последна активност",
+      "pinnedLastActive": "Закачени & Последна активност",
       "mostActivity": "Пространства с най-голяма активност",
       "leadAdmin": "Пространства, които ръководя и администрирам",
       "host": "Пространства, които домакинствам"

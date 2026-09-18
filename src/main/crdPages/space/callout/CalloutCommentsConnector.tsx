@@ -37,6 +37,10 @@ type CalloutCommentsConnectorProps = {
    * decouples the dialog flow from feed scroll detection.
    */
   eager?: boolean;
+  /** z-index escape hatches forwarded to the comment delete-confirmation dialog,
+   *  so it stacks above an elevated host (e.g. the focused-task dialog on a board). */
+  confirmOverlayClassName?: string;
+  confirmContentClassName?: string;
   children?: (slots: { thread: ReactNode; commentInput: ReactNode | null; commentCount: number }) => ReactNode;
 };
 
@@ -53,6 +57,8 @@ export function CalloutCommentsConnector({
   roomData,
   skipSubscription,
   eager = false,
+  confirmOverlayClassName,
+  confirmContentClassName,
   children,
 }: CalloutCommentsConnectorProps) {
   const { ref, inView } = useInView({ triggerOnce: true, delay: 200 });
@@ -76,6 +82,8 @@ export function CalloutCommentsConnector({
     roomId,
     room,
     skipSubscription: skipSubscription ?? !effectiveInView,
+    confirmOverlayClassName,
+    confirmContentClassName,
   });
 
   if (children) {

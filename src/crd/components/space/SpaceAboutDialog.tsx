@@ -26,6 +26,7 @@ type SpaceAboutDialogProps = {
   onEditWho?: () => void;
   onEditReferences?: () => void;
   onEditMembers?: () => void;
+  onEditClassifications?: () => void;
 
   className?: string;
 };
@@ -48,6 +49,7 @@ export function SpaceAboutDialog({
   onEditWho,
   onEditReferences,
   onEditMembers,
+  onEditClassifications,
 }: SpaceAboutDialogProps) {
   const { t } = useTranslation('crd-space');
 
@@ -104,6 +106,7 @@ export function SpaceAboutDialog({
             onEditWho={onEditWho}
             onEditReferences={onEditReferences}
             onEditMembers={onEditMembers}
+            onEditClassifications={onEditClassifications}
           />
         </div>
       </DialogContent>

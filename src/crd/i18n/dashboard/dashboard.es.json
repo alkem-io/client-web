@@ -190,11 +190,30 @@
       "join": "Unirse",
       "joinAriaLabel": "Unirse a {{spaceName}}"
     },
-    "applicationAriaLabel": "Ver solicitud pendiente para {{spaceName}}"
+    "applicationAriaLabel": "Ver solicitud pendiente para {{spaceName}}",
+    "orgInvitationsSection": "Invitaciones de organización",
+    "orgInvitationDialog": {
+      "title": "Invitación para {{organizationName}}",
+      "accept": "Aceptar",
+      "role": "Rol",
+      "spacesToJoin": "Al aceptar se une a: {{spaces}}"
+    },
+    "orgAssociateInvitationsSection": "Invitaciones como Asociado",
+    "orgAssociateApplicationsSection": "Solicitudes como Asociado",
+    "orgAssociateCard": {
+      "badge": "Organización",
+      "role": {
+        "associate": "Asociado",
+        "associateAdmin": "Asociado + Admin",
+        "associateOwner": "Asociado + Propietario"
+      },
+      "pendingLabel": "Pendiente",
+      "invitedBy": "Invitado por {{name}}"
+    }
   },
   "nonActivity": {
     "sections": {
-      "pinnedLastActive": "Actividad reciente",
+      "pinnedLastActive": "Fijados y Actividad reciente",
       "mostActivity": "Espacios con más actividad",
       "leadAdmin": "Espacios que lidero y administro",
       "host": "Espacios que alojo"

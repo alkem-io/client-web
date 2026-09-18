@@ -1,5 +1,6 @@
 import type { Locale } from 'date-fns';
 import { isFileAttachmentUrl } from '@/core/utils/links';
+import type { CollaboraDocumentPreviewType } from '@/crd/lib/collaboraDocumentPreview';
 import { formatShortDate } from '@/crd/lib/dateTimeFormat';
 import { toCollaboraPreviewType } from '@/main/crdPages/space/callout/collaboraDocumentTypeMap';
 
@@ -17,6 +18,8 @@ type ContributionCardData = {
   markdownContent?: string;
   /** For memo contributions: the underlying memo id (different from the contribution wrapper id). */
   memoId?: string;
+  /** Number of saved signatures that have an actionable PDF document. */
+  signedCopiesCount?: number;
   /** For post contributions: the underlying post id (different from the contribution wrapper id). */
   postId?: string;
   linkUrl?: string;
@@ -31,8 +34,8 @@ type ContributionCardData = {
   linkIsFile?: boolean;
   /** For document contributions: the underlying CollaboraDocument id (different from the contribution wrapper id). Opens the editor. */
   documentId?: string;
-  /** For document contributions: drives the type-differentiated icon (Word/Sheet/Slide). */
-  documentType?: 'text' | 'spreadsheet' | 'presentation';
+  /** For document contributions: drives the type-differentiated icon (Word/Sheet/Slide/PDF). */
+  documentType?: CollaboraDocumentPreviewType;
 };
 
 export type { ContributionCardData };
@@ -101,6 +104,7 @@ type AnyContributionItem = {
     createdBy?: ContributionAuthorBase | null;
     profile: { id?: string; url?: string; displayName: string };
     markdown?: string;
+    signatures?: Array<{ id: string; document?: { id: string } | null }>;
   } | null;
   link?: {
     id: string;
@@ -176,6 +180,7 @@ export function mapAnyContributionToCardData(
       href: memo.profile.url,
       markdownContent: memo.markdown,
       memoId: memo.id,
+      signedCopiesCount: memo.signatures?.filter(signature => signature.document).length ?? 0,
       author: extractAuthor(memo.createdBy),
       createdDate: toDateString(memo.createdDate, locale),
     };

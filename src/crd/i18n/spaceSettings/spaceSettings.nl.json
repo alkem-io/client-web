@@ -31,7 +31,7 @@
   "layout": {
     "pageHeader": {
       "title": "Layout",
-      "subtitle": "Pas de navigatietabbladen van je Space aan. Hernoem, herorden en beheer toewijzingen van posts."
+      "subtitle": "Pas de navigatietabbladen van je Space aan. Hernoem, herorden en beheer toewijzingen van Posts."
     },
     "discardChangesDialog": {
       "title": "Wijzigingen verwerpen?",
@@ -113,6 +113,29 @@
         "cancel": "Annuleren",
         "saving": "Opslaan…",
         "save": "Opslaan"
+      },
+      "sidebarDialog": {
+        "title": "Sidebar-widgets",
+        "help": "Kies welke widgets in de sidebar van dit tabblad verschijnen en in welke volgorde.",
+        "emptyNote": "Geen widgets geselecteerd — de sidebar is leeg voor dit tabblad.",
+        "toggleAriaLabel": "{{widget}} in-/uitschakelen",
+        "dragHandleAriaLabel": "{{widget}} herordenen",
+        "widgets": {
+          "intent": "Intentie & Leads",
+          "about": "Over deze Space",
+          "createPost": "Post toevoegen",
+          "applicationButton": "Aanmelden / Deelnemen",
+          "createSubspace": "Subspace aanmaken",
+          "subspaceLinks": "Subspaces",
+          "events": "Aankomende evenementen",
+          "updates": "Laatste update",
+          "contactLeads": "Leads contacteren",
+          "addUser": "Uitnodigen",
+          "virtualContributors": "Virtual Contributors",
+          "guidelines": "Communityrichtlijnen",
+          "index": "Post-index",
+          "search": "Zoeken"
+        }
       },
       "postTemplate": {
         "menuLabel": "Post-template",
@@ -215,6 +238,9 @@
       "email": "E-mail",
       "date": "Datum",
       "type": "Type",
+      "offeredRole": {
+        "column": "Aangeboden rol"
+      },
       "actions": "Acties",
       "approve": "Goedkeuren",
       "reject": "Afwijzen",
@@ -228,6 +254,7 @@
       "viewDialog": {
         "created": "Aangemaakt op {{date}}",
         "updated": "Bijgewerkt op {{date}}",
+        "offeredRole": "Aangeboden rol: {{role}}",
         "welcomeMessage": "Welkomstbericht",
         "noWelcomeMessage": "Geen welkomstbericht opgegeven.",
         "noAnswers": "Geen antwoorden opgegeven.",
@@ -243,9 +270,11 @@
       "status": {
         "column": "Status",
         "applicationReceived": "Aanvraag ontvangen",
+        "applicationApproving": "Wordt goedgekeurd…",
         "applicationApproved": "Aanvraag goedgekeurd",
         "applicationRejected": "Aanvraag afgewezen",
         "invited": "Uitgenodigd",
+        "invitationAccepting": "Wordt geaccepteerd…",
         "invitationAccepted": "Uitnodiging geaccepteerd",
         "invitationRejected": "Uitnodiging afgewezen",
         "invitedExternal": "Uitgenodigd (extern)"
@@ -284,7 +313,8 @@
         "page": "Pagina {{page}} van {{total}}",
         "next": "Volgende pagina"
       },
-      "roleColumn": "Rol"
+      "roleColumn": "Rol",
+      "export": "Exporteer volledig ledenoverzicht"
     },
     "memberSettings": {
       "title": "Lidinstellingen",
@@ -312,7 +342,7 @@
       "actions": "Acties",
       "empty": "Geen organisaties.",
       "remove": "Organisatie verwijderen",
-      "description": "Overzicht van alle leden- en Lead-organisaties. Om een organisatie toe te voegen, neem contact op met het Alkemio-team via support@alkem.io.",
+      "description": "Overzicht van alle leden- en Lead-organisaties. Nodig een organisatie uit om deel te nemen, of voeg er direct een toe.",
       "add": "Organisatie toevoegen",
       "dropdown": {
         "viewProfile": "Profiel bekijken",
@@ -321,9 +351,21 @@
       },
       "addDialog": {
         "title": "Organisatie toevoegen",
-        "description": "Kies een organisatie waarvan de leden zonder goedkeuring lid kunnen worden van deze Space.",
+        "description": "Deze organisaties worden zichtbaar als leden in deze Space en op hun organisatieprofiel.",
         "search": "Organisaties zoeken…",
         "empty": "Geen organisaties komen overeen met je zoekopdracht."
+      },
+      "invite": "Organisatie uitnodigen",
+      "search": "Organisaties zoeken…",
+      "pendingInvitations": {
+        "title": "Openstaande uitnodigingen",
+        "empty": "Geen openstaande organisatie-uitnodigingen.",
+        "role": "Rol",
+        "date": "Datum",
+        "revoke": "Intrekken",
+        "revokeAriaLabel": "Uitnodiging aan {{name}} intrekken",
+        "roleMember": "Lid",
+        "roleMemberLead": "Lid + Lead"
       }
     },
     "virtualContributors": {
@@ -701,8 +743,8 @@
       "descriptionPlaceholder": "Beschrijf dit template…",
       "tags": "Tags",
       "tagsPlaceholder": "Voeg een tag toe en druk op Enter",
-      "postDefault": "Standaard post-beschrijving",
-      "postDefaultPlaceholder": "Vooraf ingevuld weergegeven wanneer leden een post maken op basis van dit template…",
+      "postDefault": "Standaard Post-beschrijving",
+      "postDefaultPlaceholder": "Vooraf ingevuld weergegeven wanneer leden een Post maken op basis van dit template…",
       "cancel": "Annuleren",
       "save": "Opslaan",
       "saving": "Opslaan…"
@@ -768,7 +810,8 @@
         "description": "Weet je zeker dat je deze vraag wilt verwijderen?",
         "confirm": "Verwijderen"
       },
-      "save": "Opslaan"
+      "save": "Opslaan",
+      "export": "Exporteer alle ingediende aanvragen"
     },
     "allowedActions": {
       "title": "Toegestane acties",
@@ -897,7 +940,7 @@
       },
       "pageBanner": {
         "title": "Paginabanner",
-        "hint": "Wordt bovenaan de Space-pagina getoond. Gebruik een afbeelding van minimaal 1536 × 154px.",
+        "hint": "Wordt bovenaan de Space-pagina getoond. Gebruik een afbeelding van minimaal 1200 × 120px.",
         "recrop": "Huidige paginabanner bijsnijden"
       },
       "cardBanner": {
@@ -912,6 +955,12 @@
         "title": "Afbeelding bijsnijden",
         "altText": "Beschrijving",
         "altTextPlaceholder": "Beschrijf deze afbeelding…"
+      },
+      "recropConfirm": {
+        "title": "Originele afbeelding vervangen?",
+        "description": "Als je deze bijsnijding opslaat, wordt een nieuwe afbeelding geüpload en gaat het origineel definitief verloren. De weggesneden delen kunnen later niet worden hersteld.",
+        "confirm": "Afbeelding vervangen",
+        "cancel": "Annuleren"
       },
       "changeBanner": "Banner wijzigen",
       "recropFailed": "Kan deze afbeelding niet laden om bij te snijden. Probeer het opnieuw."
@@ -981,5 +1030,55 @@
       "title": "Over",
       "subtitle": "Definieer het doel, de motivatie en het doelpubliek van je Space."
     }
+  },
+  "classifications": {
+    "sectionTitle": "Classificaties",
+    "sectionDescription": "Classificeer je Space met gestructureerde vocabulaires (bijv. SDG's, Sector) voor vindbaarheid en rapportage.",
+    "addButton": "Classificatie toevoegen",
+    "picker": {
+      "title": "Add a classification",
+      "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
+      "platformSection": "Platform-wide",
+      "spaceSection": "This Space's library",
+      "emptyState": {
+        "title": "No Classification Templates yet",
+        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it."
+      },
+      "conflict": {
+        "title": "That name is already in use",
+        "description": "This Space already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
+        "fieldLabel": "Display label",
+        "retry": "Add with this label"
+      },
+      "cancel": "Cancel",
+      "searchPlaceholder": "Templates zoeken…",
+      "noMatches": "Geen templates gevonden voor \"{{query}}\".",
+      "multiSelect": "Meer",
+      "singleSelect": "Eén"
+    },
+    "valueSelector": {
+      "noneSelected": "No values selected yet"
+    },
+    "display": {
+      "toggleLabel": "Show on the Space page",
+      "hiddenHint": "Not shown on the Space page"
+    },
+    "remove": {
+      "menuLabel": "Remove classification",
+      "confirmTitle": "Remove this classification?",
+      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
+      "confirmButton": "Remove"
+    },
+    "removedEntryError": "This classification was removed — refreshing the page.",
+    "entry": {
+      "multiSelect": "Meerkeuze",
+      "singleSelect": "Eén keuze",
+      "selectedCount_one": "{{count}} geselecteerd",
+      "selectedCount_other": "{{count}} geselecteerd",
+      "actions": "Classificatie-acties: {{label}}",
+      "selectValues": "Waarden selecteren…",
+      "deselectValue": "{{label}} deselecteren"
+    },
+    "removedConcurrently": "Deze classificatie is door iemand anders verwijderd. De lijst is vernieuwd."
   }
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import type {
   PendingMembership,
   PendingMembershipContributorType,
@@ -11,6 +12,7 @@ import type {
   CommunityOrg,
   CommunityVC,
 } from '@/crd/components/space/settings/SpaceSettingsCommunityView';
+import type { ApplicationModel } from '@/domain/access/model/ApplicationModel';
 import {
   ApplicationEvent,
   ApplicationState,
@@ -26,6 +28,7 @@ export type CommunityPendingRemoval =
   | { kind: 'organization'; id: string; name: string }
   | { kind: 'virtualContributor'; id: string; name: string }
   | { kind: 'applicationReject'; id: string; name: string }
+  | { kind: 'organizationInvitationRevoke'; id: string; name: string }
   | {
       kind: 'pendingDelete';
       id: string;
@@ -34,16 +37,41 @@ export type CommunityPendingRemoval =
       state: PendingMembershipState;
     };
 
+/** A pending organization invitation shown in the Member Organisations section (T009). */
+export type PendingOrganizationInvitationRow = {
+  id: string;
+  organizationDisplayName: string;
+  organizationUrl?: string;
+  /** Whether the invitation also offers the Lead role, alongside the always-granted Member role. */
+  role: 'member' | 'memberLead';
+  createdDate: string;
+  canRevoke: boolean;
+};
+
 export type UseCommunityTabDataResult = {
   members: CommunityMember[];
+  applications: ApplicationModel[];
   pendingMemberships: PendingMembership[];
   organizations: CommunityOrg[];
   virtualContributors: CommunityVC[];
+  pendingOrganizationInvitations: PendingOrganizationInvitationRow[];
+  onOrgInvitationRevoke: (id: string) => void;
   permissions: {
     canInvite: boolean;
+    canInviteOrganizations: boolean;
+    /**
+     * Direct add of a member. Previously computed by `useCommunityAdmin` but never
+     * forwarded here, which left the add-member path entirely ungated.
+     */
+    canAddUsers: boolean;
     canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
   };
+  /**
+   * Raw role-set privileges plus the privilege-query loading flag, forwarded so the page
+   * can derive per-control gating that distinguishes checking / denied / unverifiable.
+   */
+  myPrivileges: AuthorizationPrivilege[] | undefined;
   /**
    * Aggregate lead-role policy: derived from `leadRoleDefinition.{user,organization}Policy`
    * and the current count of leads. Per-user disabled state is `(!canAddLead && !row.isLead) ||
@@ -69,6 +97,7 @@ export type UseCommunityTabDataResult = {
   onPendingReject: (id: string) => void;
   onPendingDelete: (id: string) => void;
   loading: boolean;
+  errored: boolean;
   pendingRemoval: CommunityPendingRemoval | null;
   confirmRemoval: () => Promise<void>;
   cancelRemoval: () => void;
@@ -77,7 +106,7 @@ export type UseCommunityTabDataResult = {
 
 // Pass the raw ISO date through to the CRD layer; the table formats the
 // display string and the tooltip timestamp itself (locale-aware, via date-fns).
-const toIsoString = (d: Date | string | undefined | null): string => {
+export const toIsoString = (d: Date | string | undefined | null): string => {
   if (!d) return '';
   if (d instanceof Date) return d.toISOString();
   return String(d);
@@ -101,6 +130,18 @@ const mapApplicationState = (state: string): PendingMembershipState | null => {
       return null;
   }
 };
+
+// An organization invitation is "open" while it is still awaiting the
+// organization's answer — 'invited' (actionable) plus the brief in-flight
+// 'accepting'. Only those are moved out of the generic pending-memberships
+// table into the dedicated Member Organisations > Pending invitations section.
+// A RESOLVED one (accepted / rejected) stays in the generic table: the row is
+// never deleted server-side, so excluding every state would leave a declined
+// organization invitation invisible AND undeletable, while the identical user
+// invitation stays listed and removable.
+const isOpenOrganizationInvitation = (invitation: { contributorType: ActorType; state: string }) =>
+  invitation.contributorType === ActorType.Organization &&
+  (invitation.state === InvitationState.INVITED || invitation.state === 'accepting');
 
 const mapInvitationState = (state: string): PendingMembershipState | null => {
   switch (state) {
@@ -178,7 +219,12 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     })
     .filter((x): x is PendingMembership => x !== null);
 
+  // Open organization invitations get their own section (Member Organisations →
+  // Pending invitations), not the generic pending-memberships table — excluded
+  // here. Resolved ones fall through and are listed (and deletable) exactly
+  // like a resolved user invitation.
   const invitationMemberships: PendingMembership[] = community.membershipAdmin.invitations
+    .filter(inv => !isOpenOrganizationInvitation(inv))
     .map<PendingMembership | null>(inv => {
       const state = mapInvitationState(inv.state);
       if (!state) return null;
@@ -197,6 +243,31 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
       };
     })
     .filter((x): x is PendingMembership => x !== null);
+
+  const pendingOrganizationInvitations: PendingOrganizationInvitationRow[] = community.membershipAdmin.invitations
+    .filter(isOpenOrganizationInvitation)
+    .map(inv => ({
+      id: inv.id,
+      organizationDisplayName: inv.actor.profile?.displayName ?? '',
+      organizationUrl: inv.actor.profile?.url,
+      role: inv.extraRoles.includes(RoleName.Lead) ? ('memberLead' as const) : ('member' as const),
+      createdDate: toIsoString(inv.createdDate),
+      canRevoke: inv.state === InvitationState.INVITED,
+    }));
+
+  // Revoking a pending organization invitation is destructive — the organization's
+  // admins were already emailed about it — so it goes through the same
+  // ConfirmationDialog every other removal on this page uses, never straight to the
+  // mutation (CRD rule 9, "All Deletions Must Be Confirmed").
+  const onOrgInvitationRevoke = (id: string) => {
+    const target = pendingOrganizationInvitations.find(invitation => invitation.id === id);
+    if (!target?.canRevoke) return;
+    setPendingRemoval({
+      kind: 'organizationInvitationRevoke',
+      id,
+      name: target.organizationDisplayName,
+    });
+  };
 
   const platformInvitationMemberships: PendingMembership[] = community.membershipAdmin.platformInvitations.map(inv => ({
     id: inv.id,
@@ -309,6 +380,9 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
       case 'applicationReject':
         await community.membershipAdmin.onApplicationStateChange(target.id, ApplicationEvent.REJECT);
         return;
+      case 'organizationInvitationRevoke':
+        await community.membershipAdmin.onDeleteInvitation(target.id);
+        return;
       case 'pendingDelete':
         if (target.membershipType === 'application') {
           if (target.state === 'new') {
@@ -339,19 +413,25 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
 
   return {
     members,
+    applications: community.membershipAdmin.applications,
     pendingMemberships,
     organizations,
     virtualContributors,
+    pendingOrganizationInvitations,
+    onOrgInvitationRevoke,
     permissions: {
       canInvite: community.permissions.canInvite,
+      canInviteOrganizations: community.permissions.canInviteOrganizations,
       canAddOrganizations: community.permissions.canAddOrganizations,
       // Mirror MUI (`SpaceAdminCommunityPage`): a space admin may add a VC via
       // EITHER the role-set assign privilege OR the account-assign privilege.
       // The CRD gate previously checked only the former, hiding the VC add
       // buttons for admins (e.g. space Admin/Lead) who only hold the latter.
+      canAddUsers: community.permissions.canAddUsers,
       canAddVirtualContributors:
         community.permissions.canAddVirtualContributors || community.permissions.canAddVirtualContributorsFromAccount,
     },
+    myPrivileges: community.myPrivileges,
     leadPolicy,
     onUserRemove,
     onUserLeadChange,
@@ -365,6 +445,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     getMemberFirstName,
     viewerId: userModel?.id,
     loading: community.loading,
+    errored: community.errored,
     pendingRemoval,
     confirmRemoval,
     cancelRemoval,

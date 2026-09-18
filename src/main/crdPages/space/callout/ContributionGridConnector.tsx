@@ -15,6 +15,7 @@ type ContributionGridConnectorProps = {
    * `entityId` slot to keep the signature flat.
    */
   onContributionClick?: (id: string, entityId?: string) => void;
+  onOpenMemoSignedCopies?: (memoId: string) => void;
   /** Rendered at the end of the grid — used for the "Add Response" card */
   trailingSlot?: ReactNode;
 };
@@ -22,6 +23,7 @@ type ContributionGridConnectorProps = {
 export function ContributionGridConnector({
   contributions,
   onContributionClick,
+  onOpenMemoSignedCopies,
   trailingSlot,
 }: ContributionGridConnectorProps) {
   if (contributions.length === 0 && !trailingSlot) return null;
@@ -40,7 +42,8 @@ export function ContributionGridConnector({
                 onClick={() => onContributionClick?.(contribution.id)}
               />
             );
-          case 'memo':
+          case 'memo': {
+            const memoId = contribution.memoId;
             return (
               <ContributionMemoCard
                 key={contribution.id}
@@ -48,8 +51,11 @@ export function ContributionGridConnector({
                 markdownContent={contribution.markdownContent}
                 author={contribution.author?.name}
                 onClick={() => onContributionClick?.(contribution.id, contribution.memoId)}
+                signedCopiesCount={contribution.signedCopiesCount}
+                onOpenSignedCopies={memoId && onOpenMemoSignedCopies ? () => onOpenMemoSignedCopies(memoId) : undefined}
               />
             );
+          }
           case 'document':
             return (
               <ContributionDocumentCard

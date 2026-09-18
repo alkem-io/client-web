@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toRoutePath } from '@/crd/lib/toRoutePath';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -17,16 +18,18 @@ export default function CrdSpaceCalloutPage() {
   return (
     <>
       <CrdSpaceTabbedPages />
-      <CrdCalloutDialogFromUrl
-        onClose={() =>
-          // Preserve the current `?tab=N` so closing the dialog leaves the user
-          // on the tab the callout was opened from, not the first tab.
-          navigate(
-            { pathname: toRoutePath(space.about.profile.url), search: window.location.search },
-            { replace: true, state: { keepScroll: true } }
-          )
-        }
-      />
+      <Suspense fallback={null}>
+        <CrdCalloutDialogFromUrl
+          onClose={() =>
+            // Preserve the current `?tab=N` so closing the dialog leaves the user
+            // on the tab the callout was opened from, not the first tab.
+            navigate(
+              { pathname: toRoutePath(space.about.profile.url), search: window.location.search },
+              { replace: true, state: { keepScroll: true } }
+            )
+          }
+        />
+      </Suspense>
     </>
   );
 }

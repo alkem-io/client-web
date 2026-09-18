@@ -16,6 +16,14 @@ type PostContributionConnectorProps = {
    *  also clear its selected-post preview (otherwise the user sees the cached
    *  preview of a post that no longer exists). */
   onDeleted?: () => void;
+  /** Fires after a successful save, before the edit dialog is dismissed, so the
+   *  parent can decide what the user lands on next. */
+  onUpdated?: () => void;
+  /** Raise the edit dialog above a custom overlay (e.g. the fullscreen task board). */
+  overlayClassName?: string;
+  contentClassName?: string;
+  /** When editing a task on a Tasks board, use task-specific wording ("Edit task"). */
+  isTaskBoard?: boolean;
 };
 
 export function PostContributionConnector({
@@ -26,6 +34,10 @@ export function PostContributionConnector({
   postId,
   onClose,
   onDeleted,
+  onUpdated,
+  overlayClassName,
+  contentClassName,
+  isTaskBoard,
 }: PostContributionConnectorProps) {
   if (!open) return null;
   return (
@@ -44,6 +56,10 @@ export function PostContributionConnector({
         postId={postId}
         contributionId={contributionId}
         onDeleted={onDeleted}
+        onUpdated={onUpdated}
+        overlayClassName={overlayClassName}
+        contentClassName={contentClassName}
+        isTaskBoard={isTaskBoard}
       />
     </StorageConfigContextProvider>
   );

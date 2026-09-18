@@ -46,7 +46,7 @@ export function CalloutSidebarList({ items, onItemClick, className }: CalloutSid
             placeholder={t('members.search')}
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 border border-border rounded-md bg-background text-body focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="w-full pl-9 pr-3 py-1.5 border border-border rounded-md bg-input-background text-body focus:outline-none focus:ring-2 focus:ring-primary/20"
             aria-label={t('members.search')}
           />
         </div>

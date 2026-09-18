@@ -4,6 +4,7 @@ mutation CreateMemoOnCallout($calloutId: UUID!, $memo: CreateMemoInput!) {
     type: MEMO,
     memo: $memo
   }) {
+    id
     memo {
       ...MemoDetails
       profile {
@@ -12,4 +13,3 @@ mutation CreateMemoOnCallout($calloutId: UUID!, $memo: CreateMemoInput!) {
     }
   }
 }
-

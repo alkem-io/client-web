@@ -24,6 +24,12 @@ export type UseSpaceApplyFlowParams = {
    * still-open modal and leaves `pointer-events:none` stuck on the page.
    */
   onJoined?: () => void;
+  /**
+   * When true the underlying membership/application queries are not issued —
+   * used by the sidebar connector to preserve fetch parity when the
+   * `applicationButton` widget is not part of the active tab's configuration.
+   */
+  skip?: boolean;
 };
 
 export type UseSpaceApplyFlowResult = {
@@ -39,6 +45,7 @@ export function useSpaceApplyFlow({
   communityName,
   parentSpaceId,
   onJoined,
+  skip,
 }: UseSpaceApplyFlowParams): UseSpaceApplyFlowResult {
   const navigate = useNavigate();
 
@@ -57,6 +64,10 @@ export function useSpaceApplyFlow({
   const { applicationButtonProps, loading } = useApplicationButton({
     spaceId,
     parentSpaceId,
+    // A real skip (not `loading`): gates BOTH the per-space ApplicationButton
+    // query and the global cache-and-network UserPendingMemberships list, so a
+    // skipped consumer (widget not configured / dialog closed) issues nothing.
+    skip,
     // On success, either close the hosting dialog (About) or navigate into the space.
     onJoin: onJoined ?? (() => navigate(spaceProfileUrl)),
   });

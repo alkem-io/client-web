@@ -156,7 +156,7 @@ function SortableRow({ item, disabled }: { item: SortableContribution; disabled:
       ref={setNodeRef}
       style={style}
       className={cn(
-        'flex items-center gap-3 px-3 py-2 rounded-md border border-border bg-background',
+        'flex items-center gap-3 px-3 py-2 rounded-md border border-border bg-card',
         isDragging && 'shadow-md ring-2 ring-ring/50'
       )}
     >

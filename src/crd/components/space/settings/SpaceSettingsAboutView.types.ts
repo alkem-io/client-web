@@ -78,7 +78,16 @@ export type SpaceCardPreview = {
  * Logical "sections" inside About that can be saved independently. Each maps
  * to one visible field group in the UI and to one save handler in the hook.
  */
-export type AboutSectionKey = 'name' | 'tagline' | 'location' | 'tags' | 'references' | 'what' | 'why' | 'who';
+export type AboutSectionKey =
+  | 'name'
+  | 'tagline'
+  | 'location'
+  | 'tags'
+  | 'references'
+  | 'what'
+  | 'why'
+  | 'who'
+  | 'classifications';
 
 export type AboutSectionSaveStatus =
   | { kind: 'idle' }

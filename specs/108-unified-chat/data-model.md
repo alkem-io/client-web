@@ -106,4 +106,4 @@ Header model passed to `ChatThreadView`.
 | Reaction | `CommentReaction` (reused) |
 | Participant / Member | `GroupMember` / `CommentAuthor` |
 | Guidance Assistant | guidance `ChatListItem`/`ChatThreadHeader` (`isGuidance`) + synthetic intro `ChatMessage` |
-| Unread Indicator | `totalUnreadCount` → launcher `Badge` |
+| Unread Indicator | `totalUnreadCount` → launcher `Badge` (≥ 640px) + header messages icon dot (all viewports) |

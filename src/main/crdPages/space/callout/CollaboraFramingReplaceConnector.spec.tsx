@@ -255,6 +255,91 @@ describe('CollaboraFramingReplaceConnector', () => {
     expect(await screen.findByText(lockMessage)).toBeInTheDocument();
   });
 
+  it('names PDF as the current document type and narrows the picker + hint to .pdf only', () => {
+    renderConnector(
+      <CollaboraFramingReplaceConnector
+        open={true}
+        onOpenChange={() => {}}
+        collaboraDocumentId={DOC_ID}
+        currentDocumentType={CollaboraDocumentType.Pdf}
+        currentTitle={CURRENT_TITLE}
+      />
+    );
+
+    expect(screen.getByText(enJson.callout.documentPdf)).toBeInTheDocument();
+    expect(fileInput().getAttribute('accept')).toBe('.pdf');
+    const hint = enJson.callout.documentReplaceAccepts.replace('{{ext}}', '.pdf').replace('{{cap}}', '15');
+    expect(screen.getByText(hint)).toBeInTheDocument();
+  });
+
+  it('replacing an existing PDF document with another PDF succeeds', async () => {
+    let captured: Record<string, unknown> | undefined;
+    const onOpenChange = vi.fn();
+    const mocks: MockedResponse[] = [
+      {
+        request: { query: ReplaceCollaboraDocumentDocument },
+        variableMatcher: variables => {
+          captured = variables;
+          return true;
+        },
+        result: { data: { replaceCollaboraDocument: { __typename: 'CollaboraDocument', id: DOC_ID } } },
+      },
+    ];
+
+    renderConnector(
+      <CollaboraFramingReplaceConnector
+        open={true}
+        onOpenChange={onOpenChange}
+        collaboraDocumentId={DOC_ID}
+        currentDocumentType={CollaboraDocumentType.Pdf}
+        currentTitle={CURRENT_TITLE}
+      />,
+      mocks
+    );
+
+    stage(makeFile('revised-report.pdf'));
+    fireEvent.click(screen.getByRole('button', { name: enJson.callout.documentReplaceConfirm }));
+
+    await waitFor(() => expect(captured).toBeDefined());
+    expect(captured?.file).toBeInstanceOf(File);
+    await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(false));
+  });
+
+  it('rejects replacing a PDF document with a non-PDF file, client-side, without calling the mutation', async () => {
+    const variableMatcher = vi.fn().mockReturnValue(true);
+    const mocks: MockedResponse[] = [
+      {
+        request: { query: ReplaceCollaboraDocumentDocument },
+        variableMatcher,
+        result: { data: { replaceCollaboraDocument: { __typename: 'CollaboraDocument', id: DOC_ID } } },
+      },
+    ];
+
+    renderConnector(
+      <CollaboraFramingReplaceConnector
+        open={true}
+        onOpenChange={() => {}}
+        collaboraDocumentId={DOC_ID}
+        currentDocumentType={CollaboraDocumentType.Pdf}
+        currentTitle={CURRENT_TITLE}
+      />,
+      mocks
+    );
+
+    stage(makeFile('revised-report.docx'));
+
+    const expected = enJson.callout.documentReplaceErrorSameType
+      .replace('{{type}}', enJson.callout.documentPdf)
+      .replace('{{ext}}', '.pdf');
+    expect(await screen.findByRole('alert')).toHaveTextContent(expected);
+
+    const confirmButton = screen.getByRole('button', { name: enJson.callout.documentReplaceConfirm });
+    expect(confirmButton).toBeDisabled();
+    fireEvent.click(confirmButton);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    expect(variableMatcher).not.toHaveBeenCalled();
+  });
+
   it('surfaces a coded server rejection (FORMAT_NOT_SUPPORTED) while a file is staged, without dead-ending', async () => {
     const mocks: MockedResponse[] = [
       {
@@ -288,7 +373,7 @@ describe('CollaboraFramingReplaceConnector', () => {
     // The mapped message renders in the dialog's always-visible alert — it must
     // NOT be routed to the import-zone surface (invisible while a file is staged),
     // which previously produced a silent dead-end with a greyed-out Confirm.
-    const expected = enJson.callout.documentImportErrorUnsupported.replace('{{formats}}', '.docx, .xlsx, .pptx');
+    const expected = enJson.callout.documentImportErrorUnsupported.replace('{{formats}}', '.docx, .xlsx, .pptx, .pdf');
     expect(await screen.findByText(expected)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: enJson.callout.documentReplaceConfirm })).not.toBeDisabled();
   });

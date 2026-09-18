@@ -1,11 +1,13 @@
 import {
   BarChart3,
   ChevronDown,
+  FileSignature,
   FileText,
   FolderTree,
   ImagePlus,
   Images,
   type LucideIcon,
+  Maximize,
   Maximize2,
   Megaphone,
   MessageSquare,
@@ -96,6 +98,8 @@ export type PostCardData = {
   framingImageUrl?: string;
   /** Framing-level memo markdown (memo framing only) — rendered as a compact cropped preview in the feed */
   framingMemoMarkdown?: string;
+  /** Number of saved, document-backed signatures for memo framing. */
+  memoSignedCopiesCount?: number;
   /**
    * Framing-level media gallery preview (media gallery framing only) — up to 4 thumbnails
    * as `{ id, url }` pairs; the feed grid shows a "+N more" overlay on the 4th cell when
@@ -152,6 +156,8 @@ type PostCardProps = {
    * callout dialog). Consumers wire this to launch the framing editor directly.
    */
   onOpenFraming?: () => void;
+  /** Opens saved memo copies without opening the callout or starting a new signing attempt. */
+  onOpenMemoSignedCopies?: () => void;
   /**
    * Fired when the user clicks "Add images" on a media-gallery framing preview.
    * When omitted, the button is hidden. Consumer wires this to a hidden file
@@ -172,11 +178,18 @@ type PostCardProps = {
    */
   settingsSlot?: ReactNode;
   onExpandClick?: () => void;
+  /** Icon shown for the expand control — the fullscreen icon (e.g. a Tasks board opens fullscreen) or the default expand icon. */
+  expandIcon?: 'expand' | 'fullscreen';
   /** Opens the Collabora editor directly from the feed preview (document framing only).
    *  Distinct from `onClick`, which opens the callout dialog via the title link. */
   onOpenFramingDocument?: () => void;
   /** Contribution preview rendered by the integration layer (ContributionsPreviewConnector) */
   contributionsPreview?: ReactNode;
+  /**
+   * Reactions bar rendered in the card footer area, before the comments trigger.
+   * Provided by CalloutReactionsConnector — props-only, zero Apollo in PostCard.
+   */
+  reactionsSlot?: ReactNode;
   /** Content injected after the description/preview area, before the footer (e.g. poll) */
   children?: ReactNode;
   /**
@@ -204,12 +217,15 @@ export function PostCard({
   href,
   onClick,
   onOpenFraming,
+  onOpenMemoSignedCopies,
   onAddMediaGalleryImages,
   onCommentsClick,
   settingsSlot,
   onExpandClick,
+  expandIcon,
   onOpenFramingDocument,
   contributionsPreview,
+  reactionsSlot,
   children,
   commentsSlot,
   commentInputSlot,
@@ -217,10 +233,14 @@ export function PostCard({
   className,
 }: PostCardProps) {
   const { t } = useTranslation('crd-space');
-  const TypeIcon = POST_TYPE_DESCRIPTORS[post.type].icon;
   const hasCollapsibleComments = commentsSlot !== undefined;
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const showPublishDetails = post.showPublishDetails !== false;
+  // Emoji reactions ride on the same switch as comments. When commenting is turned
+  // off for the callout, the whole reactions surface (picker, total pill, who-reacted)
+  // goes with it; with nothing else to show, the footer row disappears too, so the card
+  // looks exactly as it did before reactions existed.
+  const showReactions = post.commentsEnabled !== false;
 
   const handleCommentsOpenChange = (open: boolean) => {
     setIsCommentsOpen(open);
@@ -230,6 +250,9 @@ export function PostCard({
   const commentLabel = post.commentCount
     ? t('callout.comments', { count: post.commentCount })
     : t('callout.commentsZero');
+  const signedCopiesLabel = t('memo.signing.signedCopiesCount', {
+    count: post.memoSignedCopiesCount ?? 0,
+  });
 
   return (
     <Card
@@ -318,10 +341,6 @@ export function PostCard({
                     {t('callout.draft')}
                   </Badge>
                 )}
-                <span className="text-caption text-muted-foreground flex items-center gap-1">
-                  <TypeIcon className="w-4 h-4" aria-hidden="true" />
-                  {t(POST_TYPE_DESCRIPTORS[post.type].labelKey)}
-                </span>
               </div>
             </div>
           </div>
@@ -363,9 +382,13 @@ export function PostCard({
                 e.stopPropagation();
                 onExpandClick();
               }}
-              aria-label={t('callout.expand')}
+              aria-label={expandIcon === 'fullscreen' ? t('callout.fullscreen') : t('callout.expand')}
             >
-              <Maximize2 className="w-4 h-4" aria-hidden="true" />
+              {expandIcon === 'fullscreen' ? (
+                <Maximize className="w-4 h-4" aria-hidden="true" />
+              ) : (
+                <Maximize2 className="w-4 h-4" aria-hidden="true" />
+              )}
             </Button>
           )}
           {settingsSlot}
@@ -440,29 +463,45 @@ export function PostCard({
             Whole box is the click target (cursor-pointer everywhere); the label is a non-interactive
             <span>. Mirrors the contribution cards, which likewise nest CroppedMarkdown in a button. */}
         {post.type === 'memo' && (
-          <button
-            type="button"
-            onClick={event => {
-              event.stopPropagation();
-              (onOpenFraming ?? onClick)?.();
-            }}
-            className="relative block w-full cursor-pointer overflow-hidden rounded-lg border border-border bg-muted/30 h-32 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            {post.framingMemoMarkdown ? (
-              <div className="p-3 h-full">
-                <CroppedMarkdown content={post.framingMemoMarkdown} maxHeight="100%" />
+          <div className="space-y-2">
+            <button
+              type="button"
+              onClick={event => {
+                event.stopPropagation();
+                (onOpenFraming ?? onClick)?.();
+              }}
+              className="relative block w-full cursor-pointer overflow-hidden rounded-lg border border-border bg-muted/30 h-32 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {post.framingMemoMarkdown ? (
+                <div className="p-3 h-full">
+                  <CroppedMarkdown content={post.framingMemoMarkdown} maxHeight="100%" />
+                </div>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <StickyNote className="w-12 h-12 text-muted-foreground/50" aria-hidden="true" />
+                </div>
+              )}
+              <div className="absolute inset-0 flex items-center justify-center bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                <span className="inline-flex items-center justify-center rounded-md bg-secondary text-secondary-foreground shadow-sm h-9 px-4 text-control">
+                  {t('callout.openMemo')}
+                </span>
               </div>
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <StickyNote className="w-12 h-12 text-muted-foreground/50" aria-hidden="true" />
+            </button>
+            {(post.memoSignedCopiesCount ?? 0) > 0 && onOpenMemoSignedCopies && (
+              <div className="relative z-10 flex justify-end">
+                <Button
+                  className="z-10 text-muted-foreground"
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={onOpenMemoSignedCopies}
+                >
+                  <FileSignature aria-hidden="true" />
+                  {signedCopiesLabel}
+                </Button>
               </div>
             )}
-            <div className="absolute inset-0 flex items-center justify-center bg-primary/10 group-hover:bg-primary/20 transition-colors">
-              <span className="inline-flex items-center justify-center rounded-md bg-secondary text-secondary-foreground shadow-sm h-9 px-4 text-control">
-                {t('callout.openMemo')}
-              </span>
-            </div>
-          </button>
+          </div>
         )}
 
         {/* Media gallery framing preview — 4-tile grid; falls back to a placeholder
@@ -534,25 +573,34 @@ export function PostCard({
 
       {/* Footer is hidden entirely when comments are disabled AND there are no existing messages —
           mirrors the MUI behavior. When messages exist, the thread stays visible (read-only via
-          consumer-gated `commentInputSlot`) even after the admin disables further commenting. */}
+          consumer-gated `commentInputSlot`) even after the admin disables further commenting.
+          The reactions widget lives here too, bottom-right of the footer — but only while
+          commenting is enabled, so a comments-disabled card never keeps a reactions-only row. */}
       {(post.commentsEnabled !== false || (post.commentCount ?? 0) > 0) &&
         (hasCollapsibleComments ? (
           <CardFooter className="!p-0 flex-col items-stretch gap-0 border-t bg-muted/5">
             <Collapsible open={isCommentsOpen} onOpenChange={handleCommentsOpenChange}>
-              <CollapsibleTrigger asChild={true}>
-                <button
-                  type="button"
-                  className="group/comments flex w-full items-center gap-2 px-6 py-3 text-caption text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  aria-label={t(isCommentsOpen ? 'callout.collapseComments' : 'callout.expandComments')}
-                >
-                  <ChevronDown
-                    className="size-4 transition-transform duration-200 group-data-[state=open]/comments:rotate-180"
-                    aria-hidden="true"
-                  />
-                  <MessageSquare className="size-4" aria-hidden="true" />
-                  <span>{commentLabel}</span>
-                </button>
-              </CollapsibleTrigger>
+              {/* Trigger and reactions are SIBLINGS in this row — the reactions must
+                  not nest inside the trigger button (invalid HTML, and a reaction
+                  click would toggle the collapsible and swallow its popover). Row
+                  padding lives on the wrapper so both children align. */}
+              <div className="flex w-full items-center gap-2 px-6 py-3">
+                <CollapsibleTrigger asChild={true}>
+                  <button
+                    type="button"
+                    className="group/comments flex flex-1 items-center gap-2 text-caption text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    aria-label={t(isCommentsOpen ? 'callout.collapseComments' : 'callout.expandComments')}
+                  >
+                    <ChevronDown
+                      className="size-4 transition-transform duration-200 group-data-[state=open]/comments:rotate-180"
+                      aria-hidden="true"
+                    />
+                    <MessageSquare className="size-4" aria-hidden="true" />
+                    <span>{commentLabel}</span>
+                  </button>
+                </CollapsibleTrigger>
+                {showReactions && reactionsSlot && <div className="shrink-0">{reactionsSlot}</div>}
+              </div>
               <CollapsibleContent className="px-6 pt-4 pb-4">
                 <div className="flex flex-col gap-3">
                   {commentInputSlot}
@@ -575,6 +623,7 @@ export function PostCard({
               <MessageSquare className="w-4 h-4" aria-hidden="true" />
               <span className="text-caption">{commentLabel}</span>
             </Button>
+            {showReactions && reactionsSlot && <div className="ml-auto shrink-0">{reactionsSlot}</div>}
           </CardFooter>
         ))}
     </Card>

@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Skeleton } from '@/crd/primitives/skeleton';
 import { CalloutTemplatePreview } from './preview/CalloutTemplatePreview';
+import { ClassificationTemplatePreview } from './preview/ClassificationTemplatePreview';
 import { CommunityGuidelinesTemplatePreview } from './preview/CommunityGuidelinesTemplatePreview';
 import { PostTemplatePreview } from './preview/PostTemplatePreview';
 import { SpaceTemplatePreview } from './preview/SpaceTemplatePreview';
@@ -20,6 +21,8 @@ function PreviewBody({ content }: { content: TemplateContentPreviewProps['conten
       return <SpaceTemplatePreview content={content} />;
     case 'communityGuidelines':
       return <CommunityGuidelinesTemplatePreview content={content} />;
+    case 'classification':
+      return <ClassificationTemplatePreview content={content} />;
   }
 }
 

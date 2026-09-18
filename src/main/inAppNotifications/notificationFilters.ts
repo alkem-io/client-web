@@ -31,6 +31,7 @@ const SPACE_NOTIFICATION_TYPES: NotificationEvent[] = [
   NotificationEvent.SpaceCollaborationCalloutContribution,
   NotificationEvent.SpaceCollaborationCalloutPostContributionComment,
   NotificationEvent.SpaceCollaborationCalloutPublished,
+  NotificationEvent.SpaceCollaborationCalloutReaction,
   NotificationEvent.SpaceCommunicationUpdate,
   NotificationEvent.SpaceCommunityInvitationUserPlatform,
   NotificationEvent.SpaceLeadCommunicationMessage,
@@ -46,6 +47,27 @@ const SPACE_NOTIFICATION_TYPES: NotificationEvent[] = [
   // VC-admin notification about the VC being invited to a space community —
   // still a space-membership event from the recipient's perspective.
   NotificationEvent.VirtualAdminSpaceCommunityInvitation,
+  // Organization-admin space-membership events (061) — same rationale as the
+  // VC-admin invitation above: about a space, from an admin's perspective.
+  NotificationEvent.OrganizationAdminSpaceCommunityInvitation,
+  NotificationEvent.SpaceAdminOrganizationCommunityInvitationAccepted,
+  NotificationEvent.SpaceAdminOrganizationCommunityInvitationDeclined,
+  NotificationEvent.OrganizationAdminSpaceCommunityJoined,
+  // "Someone responded to your invitation" for a user invitee — the Space-side
+  // counterpart of the organization accepted/declined events above.
+  NotificationEvent.SpaceAdminUserCommunityInvitationAccepted,
+  NotificationEvent.SpaceAdminUserCommunityInvitationDeclined,
+  // Organization-associate membership lifecycle events (062) — same rationale
+  // as the space-membership events above: personal (invited/decided) or
+  // org-admin-facing (responded/applied/joined), none tied to a Space, but
+  // this bucket is where every other membership lifecycle event already lives.
+  NotificationEvent.UserOrganizationAssociateInvitation,
+  NotificationEvent.UserOrganizationAssociateApplicationApproved,
+  NotificationEvent.UserOrganizationAssociateApplicationDeclined,
+  NotificationEvent.OrganizationAdminAssociateInvitationAccepted,
+  NotificationEvent.OrganizationAdminAssociateInvitationDeclined,
+  NotificationEvent.OrganizationAdminAssociateApplication,
+  NotificationEvent.OrganizationAdminAssociateJoined,
 ];
 
 // Platform notifications - platform admin, forum, and the Alkemio sign-up

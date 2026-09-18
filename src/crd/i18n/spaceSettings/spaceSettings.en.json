@@ -31,7 +31,7 @@
   "layout": {
     "pageHeader": {
       "title": "Layout",
-      "subtitle": "Customise your Space's navigation tabs. Rename, reorder, and manage post assignments."
+      "subtitle": "Customise your Space's navigation tabs. Rename, reorder, and manage Post assignments."
     },
     "discardChangesDialog": {
       "title": "Discard changes?",
@@ -90,7 +90,7 @@
         "hiddenBadge": "Hidden",
         "confirm": {
           "title": "Hide this phase?",
-          "description": "This only hides the phase from the menu. It does not remove access to its content: anyone with a link to the phase, or to a post inside it, can still open it.",
+          "description": "This only hides the phase from the menu. It does not remove access to its content: anyone with a link to the phase, or to a Post inside it, can still open it.",
           "confirm": "Hide",
           "cancel": "Cancel"
         }
@@ -102,7 +102,7 @@
           "label": "Post description",
           "collapsedHint": "Posts start collapsed — members expand to read.",
           "expandedHint": "Posts are fully expanded by default.",
-          "switchLabel": "Collapse post descriptions"
+          "switchLabel": "Collapse Post descriptions"
         },
         "publishDetails": {
           "label": "Publisher details",
@@ -113,6 +113,29 @@
         "cancel": "Cancel",
         "saving": "Saving…",
         "save": "Save"
+      },
+      "sidebarDialog": {
+        "title": "Sidebar widgets",
+        "help": "Choose which widgets appear in this tab's sidebar, and in what order.",
+        "emptyNote": "No widgets selected — the sidebar will be empty for this tab.",
+        "toggleAriaLabel": "Toggle {{widget}}",
+        "dragHandleAriaLabel": "Reorder {{widget}}",
+        "widgets": {
+          "intent": "Intention & Leads",
+          "about": "About this Space",
+          "createPost": "Add Post",
+          "applicationButton": "Apply / Join",
+          "createSubspace": "Create Subspace",
+          "subspaceLinks": "Subspaces",
+          "events": "Upcoming Events",
+          "updates": "Latest Update",
+          "contactLeads": "Contact Leads",
+          "addUser": "Invite",
+          "virtualContributors": "Virtual Contributors",
+          "guidelines": "Community Guidelines",
+          "index": "Post Index",
+          "search": "Search"
+        }
       },
       "postTemplate": {
         "menuLabel": "Post Template",
@@ -215,6 +238,9 @@
       "email": "Email",
       "date": "Date",
       "type": "Type",
+      "offeredRole": {
+        "column": "Offered role"
+      },
       "actions": "Actions",
       "approve": "Approve",
       "reject": "Reject",
@@ -228,6 +254,7 @@
       "viewDialog": {
         "created": "Created {{date}}",
         "updated": "Updated {{date}}",
+        "offeredRole": "Offered role: {{role}}",
         "welcomeMessage": "Welcome message",
         "noWelcomeMessage": "No welcome message provided.",
         "noAnswers": "No answers provided.",
@@ -243,9 +270,11 @@
       "status": {
         "column": "Status",
         "applicationReceived": "Application received",
+        "applicationApproving": "Approving…",
         "applicationApproved": "Application approved",
         "applicationRejected": "Application rejected",
         "invited": "Invited",
+        "invitationAccepting": "Accepting…",
         "invitationAccepted": "Invitation accepted",
         "invitationRejected": "Invitation rejected",
         "invitedExternal": "Invited (external)"
@@ -284,7 +313,8 @@
         "page": "Page {{page}} of {{total}}",
         "next": "Next page"
       },
-      "roleColumn": "Role"
+      "roleColumn": "Role",
+      "export": "Export all Member overview"
     },
     "memberSettings": {
       "title": "Member settings",
@@ -312,7 +342,7 @@
       "actions": "Actions",
       "empty": "No organisations.",
       "remove": "Remove organisation",
-      "description": "Overview of all member and lead organisations. To add an organisation, contact the Alkemio team at support@alkem.io.",
+      "description": "Overview of all member and lead organisations. Invite an organisation to join, or add one directly.",
       "add": "Add Organisation",
       "dropdown": {
         "viewProfile": "View Profile",
@@ -321,9 +351,21 @@
       },
       "addDialog": {
         "title": "Add Organisation",
-        "description": "Pick an organisation whose members can join this space without approval.",
+        "description": "These organizations will be visible as members in this Space and on their organization profile.",
         "search": "Search organisations…",
         "empty": "No organisations match your search."
+      },
+      "invite": "Invite Organisation",
+      "search": "Search organisations…",
+      "pendingInvitations": {
+        "title": "Pending Invitations",
+        "empty": "No pending organisation invitations.",
+        "role": "Role",
+        "date": "Date",
+        "revoke": "Revoke",
+        "revokeAriaLabel": "Revoke invitation to {{name}}",
+        "roleMember": "Member",
+        "roleMemberLead": "Member + Lead"
       }
     },
     "virtualContributors": {
@@ -655,7 +697,7 @@
   "templates": {
     "pageHeader": {
       "title": "Templates",
-      "subtitle": "Manage templates for spaces, collaboration tools, whiteboards, posts, and community guidelines."
+      "subtitle": "Manage templates for spaces, collaboration tools, whiteboards, Posts, and community guidelines."
     },
     "search": "Search templates...",
     "addNew": "Add New",
@@ -701,8 +743,8 @@
       "descriptionPlaceholder": "Describe this template…",
       "tags": "Tags",
       "tagsPlaceholder": "Add a tag and press Enter",
-      "postDefault": "Default post description",
-      "postDefaultPlaceholder": "Shown pre-filled when members create a post from this template…",
+      "postDefault": "Default Post description",
+      "postDefaultPlaceholder": "Shown pre-filled when members create a Post from this template…",
       "cancel": "Cancel",
       "save": "Save",
       "saving": "Saving…"
@@ -768,7 +810,8 @@
         "description": "Are you sure you want to remove this question?",
         "confirm": "Delete"
       },
-      "save": "Save"
+      "save": "Save",
+      "export": "Export All Submitted Applications"
     },
     "allowedActions": {
       "title": "Allowed Actions",
@@ -897,7 +940,7 @@
       },
       "pageBanner": {
         "title": "Page Banner",
-        "hint": "Shown at the top of the Space page. Use an image at least 1536 × 154px.",
+        "hint": "Shown at the top of the Space page. Use an image at least 1200 × 120px.",
         "recrop": "Crop current page banner"
       },
       "cardBanner": {
@@ -912,6 +955,12 @@
         "title": "Crop Image",
         "altText": "Description",
         "altTextPlaceholder": "Describe this image…"
+      },
+      "recropConfirm": {
+        "title": "Replace the original image?",
+        "description": "Saving this crop uploads a new image and permanently discards the original. The areas you crop out cannot be recovered later.",
+        "confirm": "Replace image",
+        "cancel": "Cancel"
       },
       "changeBanner": "Change Banner",
       "recropFailed": "Could not load this image for cropping. Please try again."
@@ -981,5 +1030,55 @@
       "title": "About",
       "subtitle": "Define your space's purpose, motivation, and target audience."
     }
+  },
+  "classifications": {
+    "sectionTitle": "Classifications",
+    "sectionDescription": "Classify your space with structured vocabularies (e.g. SDGs, Sector) for discoverability and reporting.",
+    "addButton": "Add Classification",
+    "picker": {
+      "title": "Add a classification",
+      "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
+      "platformSection": "Platform-wide",
+      "spaceSection": "This Space's library",
+      "emptyState": {
+        "title": "No Classification Templates yet",
+        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it."
+      },
+      "conflict": {
+        "title": "That name is already in use",
+        "description": "This Space already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
+        "fieldLabel": "Display label",
+        "retry": "Add with this label"
+      },
+      "cancel": "Cancel",
+      "searchPlaceholder": "Search templates…",
+      "noMatches": "No templates match \"{{query}}\".",
+      "multiSelect": "Multi",
+      "singleSelect": "Single"
+    },
+    "valueSelector": {
+      "noneSelected": "No values selected yet"
+    },
+    "display": {
+      "toggleLabel": "Show on the Space page",
+      "hiddenHint": "Not shown on the Space page"
+    },
+    "remove": {
+      "menuLabel": "Remove classification",
+      "confirmTitle": "Remove this classification?",
+      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
+      "confirmButton": "Remove"
+    },
+    "removedEntryError": "This classification was removed — refreshing the page.",
+    "entry": {
+      "multiSelect": "Multi-select",
+      "singleSelect": "Single-select",
+      "selectedCount_one": "{{count}} selected",
+      "selectedCount_other": "{{count}} selected",
+      "actions": "Classification actions: {{label}}",
+      "selectValues": "Select values…",
+      "deselectValue": "Deselect {{label}}"
+    },
+    "removedConcurrently": "This classification was removed by someone else. The list has been refreshed."
   }
 }

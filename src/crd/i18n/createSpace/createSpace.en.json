@@ -17,8 +17,7 @@
       "description": "Applying this template will overwrite the name, tagline, description and tags you've already entered.",
       "confirm": "Apply template",
       "cancel": "Keep my changes"
-    },
-    "invalidFlow": "This template can't be used to create a Space — it needs a 4-phase innovation flow."
+    }
   },
   "displayName": {
     "label": "Name",
@@ -62,7 +61,7 @@
   },
   "addTutorials": {
     "header": "Tutorials",
-    "label": "Add Tutorials and example posts to this Space"
+    "label": "Add Tutorials and example Posts to this Space"
   },
   "terms": {
     "checkboxLabel": "I accept the <terms>terms and conditions</terms> for creating a Space.",

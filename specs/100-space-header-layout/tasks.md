@@ -46,9 +46,9 @@
 
 ## Phase 3: User Story 1 — Full-width edge-to-edge banner (Priority: P1) 🎯 MVP
 
-**Goal**: Banner spans the full viewport width and scales fluidly with viewport via `aspect-[6/1]`, replacing today's fixed pixel heights, on both Space and Subspace.
+**Goal**: Banner spans the full viewport width and scales fluidly with viewport via `aspect-[6/1]`, replacing today's fixed pixel heights, on both Space and Subspace. *(Superseded 2026-08-31: the ratio is now per-space — `Visual.aspectRatio`, 6–10, 10:1 default — see spec A8; T005/T006 below are the historical record.)*
 
-**Independent Test**: Open a Space page and a Subspace page at 320/768/1024/1440/1920. Banner reaches both viewport edges with no horizontal gutter. Banner height = viewport width / 6 (≈53px at 320px, ≈320px at 1920px). Inner content below the banner is byte-identical in width to the baseline screenshots from T004.
+**Independent Test**: Open a Space page and a Subspace page at 320/768/1024/1440/1920. Banner reaches both viewport edges with no horizontal gutter. Banner height = viewport width / the space's ratio (originally / 6: ≈53px at 320px, ≈320px at 1920px; at the 10:1 default ≈32px / ≈192px). Inner content below the banner is byte-identical in width to the baseline screenshots from T004.
 
 - [X] T005 [P] [US1] In `src/crd/components/space/SpaceHeader.tsx`, change the banner `<div>` (currently `className="relative w-full h-[256px] overflow-hidden group"`, line 61) to `className="relative w-full aspect-[6/1] overflow-hidden group"`. Keep `role="img"`, `aria-label`, and the inner gradient/image markup intact.
 - [X] T006 [P] [US1] In `src/crd/components/space/SubspaceHeader.tsx`, change the banner `<div>` (currently `className="relative w-full h-52 md:h-64 overflow-hidden group"`, line 83) to `className="relative w-full aspect-[6/1] overflow-hidden group"`. Keep `role="img"`, `aria-label`, and the inner gradient/image markup intact.
@@ -60,6 +60,8 @@
 ## Phase 4: User Story 2 — Title and subtitle below the banner (Priority: P1)
 
 **Goal**: Title and subtitle move into a new below-banner section, inside the existing inner content width, using theme text tokens (no more white-on-photo). The banner overlay content for title/tagline is removed. Subspace: single ~56px avatar inline with the title; layered parent-avatar pair, level badge, and member-avatar stack are removed entirely.
+
+> **Amendment (2026-08-21)**: the "single ~56px avatar inline with the title" delivered by this phase was later removed as well — `SubspaceHeader` now renders the bare `<h1>` (no avatar at any level), the `subspaceInitials`/`subspaceColor`/`subspaceAvatarUrl` props are deleted, and subspace identity images moved into the breadcrumb trail. Task texts below describe the state as delivered at the time.
 
 **Independent Test**: On both pages, title is `<h1 className="text-hero text-foreground truncate">`, subtitle is `<p className="text-body text-muted-foreground truncate">`, both inside `lg:col-start-2 / lg:col-span-10`. No overlaid title text on the banner. No member-avatar stack on the banner. For Subspace: no parent-tile avatar, no "Subspace"/"Sub-subspace" badge, single 56px avatar inline with the title.
 

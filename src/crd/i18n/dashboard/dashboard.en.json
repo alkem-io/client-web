@@ -43,8 +43,8 @@
     "showMore": "Show more",
     "noActivity": "No recent activity",
     "iconLabel": {
-      "CALLOUT_PUBLISHED": "New post",
-      "CALLOUT_POST_CREATED": "New post",
+      "CALLOUT_PUBLISHED": "New Post",
+      "CALLOUT_POST_CREATED": "New Post",
       "CALLOUT_POST_COMMENT": "New comment",
       "DISCUSSION_COMMENT": "New comment",
       "CALLOUT_WHITEBOARD_CREATED": "New whiteboard",
@@ -190,11 +190,30 @@
       "join": "Join",
       "joinAriaLabel": "Join {{spaceName}}"
     },
-    "applicationAriaLabel": "View pending application for {{spaceName}}"
+    "applicationAriaLabel": "View pending application for {{spaceName}}",
+    "orgInvitationsSection": "Organisation Invitations",
+    "orgInvitationDialog": {
+      "title": "Invitation for {{organizationName}}",
+      "accept": "Accept",
+      "role": "Role",
+      "spacesToJoin": "Accepting joins: {{spaces}}"
+    },
+    "orgAssociateInvitationsSection": "Associate Invitations",
+    "orgAssociateApplicationsSection": "Associate Applications",
+    "orgAssociateCard": {
+      "badge": "Organisation",
+      "role": {
+        "associate": "Associate",
+        "associateAdmin": "Associate + Admin",
+        "associateOwner": "Associate + Owner"
+      },
+      "pendingLabel": "Pending",
+      "invitedBy": "Invited by {{name}}"
+    }
   },
   "nonActivity": {
     "sections": {
-      "pinnedLastActive": "Last Active In",
+      "pinnedLastActive": "Pinned & Last Active In",
       "mostActivity": "Spaces with Most Activity",
       "leadAdmin": "Spaces I Lead & Administer",
       "host": "Spaces I Host"

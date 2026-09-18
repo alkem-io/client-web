@@ -16,13 +16,15 @@ describe('Loading component', () => {
 
     // assert
     expect(screen.getByText(message)).toBeInTheDocument();
+    expect(screen.getByRole('status')).toHaveAccessibleName(message);
   });
 
-  test('renders the localized default loading text', () => {
+  test('renders a spinner with the localized accessible name by default', () => {
     // act
     render(<Loading />);
 
-    // assert — falls back to the `common.loading` i18n key, not a hardcoded string
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    // assert — no visible caption, but the status region is named via the `loading` i18n key
+    expect(screen.getByRole('status')).toHaveAccessibleName('Loading');
+    expect(screen.queryByText('Loading')).not.toBeInTheDocument();
   });
 });
