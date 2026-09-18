@@ -9,7 +9,8 @@
     "virtual-contributors": "Contributeurs virtuels",
     "authorization": "Autorisation",
     "authorization-policies": "Politiques d'autorisation",
-    "transfer": "Conversions et transferts"
+    "transfer": "Conversions et transferts",
+    "licensing": "Licences"
   },
   "placeholder": {
     "title": "Bientôt disponible",
@@ -340,5 +341,18 @@
     "back": "Retour",
     "viewTitle": "Consulter {{name}}",
     "readOnlyNotice": "Vous pouvez consulter cette fiche utilisateur mais pas la modifier. Votre rôle autorise la lecture des données personnelles, pas leur modification."
+  },
+  "licensing": {
+    "tabs": {
+      "spaces": "Espaces",
+      "organizations": "Organisations",
+      "users": "Utilisateurs"
+    },
+    "columns": {
+      "plans": "Formules de licence"
+    },
+    "noPlans": "Aucune formule",
+    "visibilityOf": "Visibilité de {{name}}",
+    "visibilityUpdated": "Visibilité mise à jour"
   }
 }

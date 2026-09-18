@@ -19415,6 +19415,291 @@ export function refetchPlatformAdminInnovationPacksQuery(
 ) {
   return { query: PlatformAdminInnovationPacksDocument, variables: variables };
 }
+export const LicensingAdminOrganizationsDocument = gql`
+    query licensingAdminOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
+  platformAdmin {
+    organizations(first: $first, after: $after, filter: $filter) {
+      total
+      organization {
+        id
+        account {
+          id
+          subscriptions {
+            name
+          }
+        }
+        profile {
+          id
+          url
+          displayName
+        }
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}
+    ${PageInfoFragmentDoc}`;
+
+/**
+ * __useLicensingAdminOrganizationsQuery__
+ *
+ * To run a query within a React component, call `useLicensingAdminOrganizationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLicensingAdminOrganizationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLicensingAdminOrganizationsQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useLicensingAdminOrganizationsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.LicensingAdminOrganizationsQuery,
+    SchemaTypes.LicensingAdminOrganizationsQueryVariables
+  > &
+    ({ variables: SchemaTypes.LicensingAdminOrganizationsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.LicensingAdminOrganizationsQuery,
+    SchemaTypes.LicensingAdminOrganizationsQueryVariables
+  >(LicensingAdminOrganizationsDocument, options);
+}
+export function useLicensingAdminOrganizationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LicensingAdminOrganizationsQuery,
+    SchemaTypes.LicensingAdminOrganizationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.LicensingAdminOrganizationsQuery,
+    SchemaTypes.LicensingAdminOrganizationsQueryVariables
+  >(LicensingAdminOrganizationsDocument, options);
+}
+export function useLicensingAdminOrganizationsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.LicensingAdminOrganizationsQuery,
+        SchemaTypes.LicensingAdminOrganizationsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.LicensingAdminOrganizationsQuery,
+    SchemaTypes.LicensingAdminOrganizationsQueryVariables
+  >(LicensingAdminOrganizationsDocument, options);
+}
+export type LicensingAdminOrganizationsQueryHookResult = ReturnType<typeof useLicensingAdminOrganizationsQuery>;
+export type LicensingAdminOrganizationsLazyQueryHookResult = ReturnType<typeof useLicensingAdminOrganizationsLazyQuery>;
+export type LicensingAdminOrganizationsSuspenseQueryHookResult = ReturnType<
+  typeof useLicensingAdminOrganizationsSuspenseQuery
+>;
+export type LicensingAdminOrganizationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.LicensingAdminOrganizationsQuery,
+  SchemaTypes.LicensingAdminOrganizationsQueryVariables
+>;
+export function refetchLicensingAdminOrganizationsQuery(
+  variables: SchemaTypes.LicensingAdminOrganizationsQueryVariables
+) {
+  return { query: LicensingAdminOrganizationsDocument, variables: variables };
+}
+export const LicensingAdminSpacesDocument = gql`
+    query licensingAdminSpaces {
+  platformAdmin {
+    spaces(filter: {visibilities: [ACTIVE, DEMO, INACTIVE, ARCHIVED]}) {
+      id
+      nameID
+      visibility
+      subscriptions {
+        name
+      }
+      about {
+        id
+        profile {
+          id
+          displayName
+          url
+        }
+        provider {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useLicensingAdminSpacesQuery__
+ *
+ * To run a query within a React component, call `useLicensingAdminSpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLicensingAdminSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLicensingAdminSpacesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLicensingAdminSpacesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.LicensingAdminSpacesQuery,
+    SchemaTypes.LicensingAdminSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.LicensingAdminSpacesQuery, SchemaTypes.LicensingAdminSpacesQueryVariables>(
+    LicensingAdminSpacesDocument,
+    options
+  );
+}
+export function useLicensingAdminSpacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LicensingAdminSpacesQuery,
+    SchemaTypes.LicensingAdminSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.LicensingAdminSpacesQuery, SchemaTypes.LicensingAdminSpacesQueryVariables>(
+    LicensingAdminSpacesDocument,
+    options
+  );
+}
+export function useLicensingAdminSpacesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.LicensingAdminSpacesQuery,
+        SchemaTypes.LicensingAdminSpacesQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.LicensingAdminSpacesQuery, SchemaTypes.LicensingAdminSpacesQueryVariables>(
+    LicensingAdminSpacesDocument,
+    options
+  );
+}
+export type LicensingAdminSpacesQueryHookResult = ReturnType<typeof useLicensingAdminSpacesQuery>;
+export type LicensingAdminSpacesLazyQueryHookResult = ReturnType<typeof useLicensingAdminSpacesLazyQuery>;
+export type LicensingAdminSpacesSuspenseQueryHookResult = ReturnType<typeof useLicensingAdminSpacesSuspenseQuery>;
+export type LicensingAdminSpacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.LicensingAdminSpacesQuery,
+  SchemaTypes.LicensingAdminSpacesQueryVariables
+>;
+export function refetchLicensingAdminSpacesQuery(variables?: SchemaTypes.LicensingAdminSpacesQueryVariables) {
+  return { query: LicensingAdminSpacesDocument, variables: variables };
+}
+export const LicensingAdminUsersDocument = gql`
+    query licensingAdminUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
+  platformAdmin {
+    users(first: $first, after: $after, filter: $filter) {
+      total
+      users {
+        id
+        account {
+          id
+          subscriptions {
+            name
+          }
+        }
+        profile {
+          id
+          url
+          displayName
+        }
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}
+    ${PageInfoFragmentDoc}`;
+
+/**
+ * __useLicensingAdminUsersQuery__
+ *
+ * To run a query within a React component, call `useLicensingAdminUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLicensingAdminUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLicensingAdminUsersQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useLicensingAdminUsersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.LicensingAdminUsersQuery,
+    SchemaTypes.LicensingAdminUsersQueryVariables
+  > &
+    ({ variables: SchemaTypes.LicensingAdminUsersQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.LicensingAdminUsersQuery, SchemaTypes.LicensingAdminUsersQueryVariables>(
+    LicensingAdminUsersDocument,
+    options
+  );
+}
+export function useLicensingAdminUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LicensingAdminUsersQuery,
+    SchemaTypes.LicensingAdminUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.LicensingAdminUsersQuery, SchemaTypes.LicensingAdminUsersQueryVariables>(
+    LicensingAdminUsersDocument,
+    options
+  );
+}
+export function useLicensingAdminUsersSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.LicensingAdminUsersQuery,
+        SchemaTypes.LicensingAdminUsersQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.LicensingAdminUsersQuery, SchemaTypes.LicensingAdminUsersQueryVariables>(
+    LicensingAdminUsersDocument,
+    options
+  );
+}
+export type LicensingAdminUsersQueryHookResult = ReturnType<typeof useLicensingAdminUsersQuery>;
+export type LicensingAdminUsersLazyQueryHookResult = ReturnType<typeof useLicensingAdminUsersLazyQuery>;
+export type LicensingAdminUsersSuspenseQueryHookResult = ReturnType<typeof useLicensingAdminUsersSuspenseQuery>;
+export type LicensingAdminUsersQueryResult = Apollo.QueryResult<
+  SchemaTypes.LicensingAdminUsersQuery,
+  SchemaTypes.LicensingAdminUsersQueryVariables
+>;
+export function refetchLicensingAdminUsersQuery(variables: SchemaTypes.LicensingAdminUsersQueryVariables) {
+  return { query: LicensingAdminUsersDocument, variables: variables };
+}
 export const AssignLicensePlanToAccountDocument = gql`
     mutation AssignLicensePlanToAccount($licensePlanId: UUID!, $accountId: UUID!, $licensingId: UUID!) {
   assignLicensePlanToAccount(

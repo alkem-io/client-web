@@ -43,9 +43,10 @@ describe('useVisibleAdminSections', () => {
   test('the legacy global admin keeps seeing every section (Slice A is additive)', () => {
     const visible = arrange({ platform: ['PLATFORM_ADMIN'] });
 
-    expect(visible).toHaveLength(9);
+    expect(visible).toHaveLength(10);
     expect(visible).toContain('spaces');
     expect(visible).toContain('transfer');
+    expect(visible).toContain('licensing');
   });
 
   test('a user with no admin privileges sees no sections', () => {
@@ -139,6 +140,27 @@ describe('useVisibleAdminSections', () => {
       ]);
     });
 
+    // R-F.3 (2026-09-18, licensing-section-design.md). The role's own privileges
+    // are anchored @account/@space/@licensing-framework and never appear at
+    // platform level (F1); the server now grants it a platform-level list read
+    // that admits exactly the tenth section.
+    test('Platform License Manager — its own licensing section, nothing else', () => {
+      expect(
+        arrange({
+          platform: ['PLATFORM_LICENSING_LISTS_READ'],
+          myRoles: ['PLATFORM_LICENSE_MANAGER'],
+        })
+      ).toEqual(['licensing']);
+    });
+
+    test('PLATFORM_LICENSING_LISTS_READ alone admits exactly the licensing section', () => {
+      expect(arrange({ platform: ['PLATFORM_LICENSING_LISTS_READ'] })).toEqual(['licensing']);
+    });
+
+    test('Platform Settings Admin — defines plans but does not get the licensing section', () => {
+      expect(arrange({ platform: ['PLATFORM_SETTINGS_ADMIN'], myRoles: ['PLATFORM_SETTINGS_ADMIN'] })).toEqual([]);
+    });
+
     test('Platform Audit Reader — the holder lists, view-only', () => {
       expect(
         arrange({
@@ -157,9 +179,10 @@ describe('useVisibleAdminSections', () => {
      * an empty entry must be revisited, not preserved.
      *
      * Operations Admin's inspector queries still require the legacy
-     * PLATFORM_ADMIN. License Manager and Beta Tester report nothing at platform
-     * level at all (F1). Settings Admin has no section to see. (Support left this
-     * table on 2026-09-16 — R-F.2 closed, see the positive case above.)
+     * PLATFORM_ADMIN. Beta Tester reports nothing at platform level at all (F1).
+     * Settings Admin has no section to see. (Support left this table on
+     * 2026-09-16 — R-F.2; License Manager on 2026-09-18 — R-F.3; see the
+     * positive cases above.)
      */
     test.each([
       ['Platform Settings Admin', { platform: ['PLATFORM_SETTINGS_ADMIN'], myRoles: ['PLATFORM_SETTINGS_ADMIN'] }],
@@ -167,7 +190,6 @@ describe('useVisibleAdminSections', () => {
         'Platform Operations Admin',
         { platform: ['AUTHORIZATION_RESET', 'PLATFORM_OPERATIONS_ADMIN'], myRoles: ['PLATFORM_OPERATIONS_ADMIN'] },
       ],
-      ['Platform License Manager', { myRoles: ['PLATFORM_LICENSE_MANAGER'] }],
       ['Platform Spaces Reader', { myRoles: ['PLATFORM_SPACES_READER'] }],
       ['Feature Beta Tester', { myRoles: ['FEATURE_BETA_TESTER'] }],
       ['Feature Virtual Assistant', { platform: ['ACCESS_VIRTUAL_ASSISTANT'], myRoles: ['FEATURE_VIRTUAL_ASSISTANT'] }],
@@ -203,6 +225,40 @@ describe('useVisibleAdminSections', () => {
   // whose transfer reach comes from an account-anchored grant still sees it.
   test('the transfer privilege mapping still admits without the role', () => {
     expect(arrange({ platform: ['TRANSFER_RESOURCE_ACCEPT'] })).toEqual(['transfer']);
+  });
+
+  // Roles are additive on the admin page: a holder of several roles sees the
+  // UNION of their sections. Operator requirement (2026-09-18) — pinned so a
+  // future resolver change cannot turn the union into a first-match.
+  describe('multiple roles add up', () => {
+    test('License Manager + Users Admin — users, authorization AND licensing', () => {
+      expect(
+        arrange({
+          platform: ['PLATFORM_LICENSING_LISTS_READ', 'PLATFORM_USERS_ADMIN'],
+          roleSet: ['FEATURE_ROLE_ASSIGN', 'FEATURE_ROLE_HOLDERS_READ'],
+          myRoles: ['PLATFORM_LICENSE_MANAGER', 'PLATFORM_USERS_ADMIN'],
+        }).sort()
+      ).toEqual(['authorization', 'licensing', 'users']);
+    });
+
+    test('Support + Users Admin — the union of both section sets', () => {
+      expect(
+        arrange({
+          platform: ['PLATFORM_SUPPORT_LISTS_READ', 'PLATFORM_USERS_ADMIN'],
+          roleSet: ['FEATURE_ROLE_ASSIGN', 'FEATURE_ROLE_HOLDERS_READ'],
+          myRoles: ['PLATFORM_SUPPORT', 'PLATFORM_USERS_ADMIN'],
+        }).sort()
+      ).toEqual(['authorization', 'innovation-hubs', 'innovation-packs', 'organizations', 'users']);
+    });
+
+    test('a second role never removes a section the first one granted', () => {
+      const alone = arrange({ platform: ['PLATFORM_USERS_ADMIN'], myRoles: ['PLATFORM_USERS_ADMIN'] });
+      const paired = arrange({
+        platform: ['PLATFORM_USERS_ADMIN', 'PLATFORM_LICENSING_LISTS_READ'],
+        myRoles: ['PLATFORM_USERS_ADMIN', 'PLATFORM_LICENSE_MANAGER'],
+      });
+      for (const id of alone) expect(paired).toContain(id);
+    });
   });
 
   test('every one of the fourteen roles has an answer, empty or not', () => {

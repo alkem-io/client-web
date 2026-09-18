@@ -81,6 +81,12 @@ describe('useAdminAccessGuard', () => {
     ).toBe(true);
   });
 
+  // R-F.3 (2026-09-18): the License Manager reports nothing of its own at
+  // platform level (F1); the server's dedicated list read is what admits it.
+  test('admits Platform License Manager via PlatformLicensingListsRead (R-F.3)', () => {
+    expect(guard({ platform: ['PLATFORM_LICENSING_LISTS_READ'] }).isPlatformAdmin).toBe(true);
+  });
+
   test('admits Platform Audit Reader for its view-only holder lists', () => {
     expect(guard({ platform: ['PLATFORM_AUDIT_READ'], roleSet: ['PLATFORM_ROLE_HOLDERS_READ'] }).isPlatformAdmin).toBe(
       true
@@ -108,7 +114,7 @@ describe('useAdminAccessGuard', () => {
   test.each([
     ['Platform Operations Admin', { platform: ['AUTHORIZATION_RESET', 'PLATFORM_OPERATIONS_ADMIN'] }],
     ['Platform Settings Admin', { platform: ['PLATFORM_SETTINGS_ADMIN'] }],
-    ['Platform License Manager + Beta Tester', { myRoles: ['PLATFORM_LICENSE_MANAGER', 'FEATURE_BETA_TESTER'] }],
+    ['Feature Beta Tester', { myRoles: ['FEATURE_BETA_TESTER'] }],
   ])('denies %s — no usable section', (_role, fixture) => {
     expect(guard(fixture).isPlatformAdmin).toBe(false);
   });

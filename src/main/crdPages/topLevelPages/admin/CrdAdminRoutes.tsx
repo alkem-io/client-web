@@ -20,6 +20,7 @@ const CrdAdminAuthorizationPoliciesPage = lazy(
   () => import('./authorizationPolicies/CrdAdminAuthorizationPoliciesPage')
 );
 const CrdAdminTransferPage = lazy(() => import('./transfer/CrdAdminTransferPage'));
+const CrdAdminLicensingPage = lazy(() => import('./licensing/CrdAdminLicensingPage'));
 
 /** Migrated section bodies. Sections not listed render the placeholder. */
 const SECTION_ELEMENTS: Partial<Record<AdminSectionId, ReactNode>> = {
@@ -32,6 +33,7 @@ const SECTION_ELEMENTS: Partial<Record<AdminSectionId, ReactNode>> = {
   authorization: <CrdAdminGlobalRolesPage />,
   'authorization-policies': <CrdAdminAuthorizationPoliciesPage />,
   transfer: <CrdAdminTransferPage />,
+  licensing: <CrdAdminLicensingPage />,
 };
 
 /**

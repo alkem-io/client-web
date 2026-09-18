@@ -9,7 +9,8 @@
     "virtual-contributors": "Colaboradores virtuales",
     "authorization": "Autorización",
     "authorization-policies": "Políticas de autorización",
-    "transfer": "Conversiones y transferencias"
+    "transfer": "Conversiones y transferencias",
+    "licensing": "Licencias"
   },
   "placeholder": {
     "title": "Próximamente",
@@ -340,5 +341,18 @@
     "back": "Volver",
     "viewTitle": "Ver a {{name}}",
     "readOnlyNotice": "Puedes consultar este registro de usuario, pero no editarlo. Tu rol permite leer datos personales, no modificarlos."
+  },
+  "licensing": {
+    "tabs": {
+      "spaces": "Espacios",
+      "organizations": "Organizaciones",
+      "users": "Usuarios"
+    },
+    "columns": {
+      "plans": "Planes de licencia"
+    },
+    "noPlans": "Sin planes",
+    "visibilityOf": "Visibilidad de {{name}}",
+    "visibilityUpdated": "Visibilidad actualizada"
   }
 }

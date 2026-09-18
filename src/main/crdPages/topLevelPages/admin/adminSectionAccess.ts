@@ -124,13 +124,15 @@ export const ROLE_ADMIN_SECTIONS: Record<PlatformRoleNames, readonly AdminSectio
   // guarantee two failed queries on first paint.
   [RoleName.PlatformOperationsAdmin]: [],
 
-  // GAP (server), same shape as F1. Its surfaces — space visibility, and the
-  // license-plan dialogs on the spaces/users/organizations lists — sit inside
-  // sections whose LIST query it cannot load, so it would land on an empty
-  // table with a dialog it can never open. Its own privileges
-  // (ACCOUNT_LICENSE_MANAGE @account, GRANT @licensing-framework) are invisible
-  // at platform level.
-  [RoleName.PlatformLicenseManager]: [],
+  // CLOSED 2026-09-18 (R-F.3, licensing-section-design.md). Its own privileges
+  // (ACCOUNT_LICENSE_MANAGE @account/@space, GRANT @licensing-framework) are
+  // invisible at platform level (F1), and its surfaces — space visibility and
+  // the plan dialogs — sat inside lists it could not load. The server now
+  // grants it PLATFORM_LICENSING_LISTS_READ, a platform-level READ admitted by
+  // the spaces/organizations/users lists, and the client gives it a section of
+  // its own composing exactly those controls. Admitted by PRIVILEGE (below),
+  // not by the role-name hatch — this is the one role for which F1 is closed.
+  [RoleName.PlatformLicenseManager]: ['licensing'],
 
   // Not for humans — a grant to a non-service account is refused outright
   // (rule `spaces-reader-service-account`). Integrations do not use a browser.
@@ -205,6 +207,11 @@ export const SECTION_ADMITTING_PRIVILEGES: Partial<Record<AdminSectionId, Author
   // Kept so a future platform-anchored transfer grant admits without an edit
   // here; today only the role name in `ROLE_ADMIN_SECTIONS` can fire (F1).
   transfer: [AuthorizationPrivilege.TransferResourceOffer, AuthorizationPrivilege.TransferResourceAccept],
+  // R-F.3 (2026-09-18): the License Manager's platform-level list read — a
+  // READ, not a write; every assign/revoke and visibility change in the
+  // section keeps its own A12/A14 gate. Settings Admin (defines plans) is
+  // deliberately not admitted.
+  licensing: [AuthorizationPrivilege.PlatformLicensingListsRead],
   // `authorization-policies` is deliberately absent: both its queries require
   // the legacy PLATFORM_ADMIN, which short-circuits below anyway. It previously
   // mapped to AUTHORIZATION_RESET — a privilege Platform Operations Admin
