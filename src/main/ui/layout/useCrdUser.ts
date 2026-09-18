@@ -82,22 +82,18 @@ export function useCrdUser() {
   const { isPlatformAdmin } = useAdminAccessGuard();
   const isAdmin = isPlatformAdmin;
 
-  const role = (() => {
-    // Precedence, not server order. The previous form iterated `platformRoles`
-    // and returned the first match, which made the displayed label depend on
-    // the order the API happened to return roles in — invisible while only one
-    // role could realistically be held, ambiguous now that a user can hold
-    // several of the thirteen at once. Most-privileged wins.
-    //
-    // The thirteen were absent entirely (2026-08-05): a `platform-roles-admin`
-    // holder had NO label under their name while a legacy global admin did.
-    for (const platformRole of ROLE_LABEL_PRECEDENCE) {
-      if (platformRoles.includes(platformRole)) {
-        return t(ROLE_LABEL_KEYS[platformRole]);
-      }
-    }
-    return undefined;
-  })();
+  // Every held role, precedence-ordered — filter the precedence list rather
+  // than sort `platformRoles`, so the result never depends on the order the
+  // API happened to return roles in (the defect the single label fixed on
+  // 2026-08-05). Unmapped/retired roles simply do not survive the filter.
+  //
+  // The menu shows the head as the caption and the rest as a "+N" count: a
+  // holder of Roles Admin AND Content Full Access — the combination the role
+  // model exists to make visible — must not be silently collapsed to one.
+  const roles = ROLE_LABEL_PRECEDENCE.filter(platformRole => platformRoles.includes(platformRole)).map(platformRole =>
+    t(ROLE_LABEL_KEYS[platformRole])
+  );
+  const role: string | undefined = roles[0];
 
   const user = userModel?.profile
     ? {
@@ -105,6 +101,7 @@ export function useCrdUser() {
         avatarUrl: userModel.profile.avatar?.uri,
         initials: getInitials(userModel.profile.displayName),
         role,
+        roles,
       }
     : undefined;
 

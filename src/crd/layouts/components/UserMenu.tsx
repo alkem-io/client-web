@@ -1,6 +1,7 @@
 import { Check, CircleEllipsis, Globe, Grid3X3, HelpCircle, Home, LogOut, Settings, Shield, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useGridOverlay } from '@/crd/hooks/useGridOverlay';
+import { UserMenuRoles } from '@/crd/layouts/components/UserMenuRoles';
 import type { CrdLanguageOption, CrdNavigationHrefs, CrdUserInfo } from '@/crd/layouts/types';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -86,7 +87,7 @@ export function UserMenu({
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col gap-0.5">
             <span className="text-card-title">{user.name}</span>
-            {user.role && <span className="text-label uppercase text-muted-foreground">{user.role}</span>}
+            <UserMenuRoles roles={user.roles ?? (user.role ? [user.role] : [])} />
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

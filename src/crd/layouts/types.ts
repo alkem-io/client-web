@@ -4,7 +4,10 @@ export type CrdUserInfo = {
   name: string;
   avatarUrl?: string;
   initials: string;
+  /** Strongest held platform role — always `roles[0]`. */
   role?: string;
+  /** Every held platform role label, most-privileged first. */
+  roles?: string[];
 };
 
 export type CrdNavigationHrefs = {

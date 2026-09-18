@@ -135,6 +135,37 @@ describe('useCrdUser', () => {
     });
   });
 
+  describe('roles — every held role, precedence-ordered', () => {
+    test('lists all held roles most-privileged first, independent of API order', () => {
+      const { user } = arrange({ roles: ['FEATURE_BETA_TESTER', 'PLATFORM_SUPPORT', 'PLATFORM_ROLES_ADMIN'] });
+
+      expect(user?.roles).toEqual([
+        'common.roles.PLATFORM_ROLES_ADMIN',
+        'common.roles.PLATFORM_SUPPORT',
+        'common.roles.FEATURE_BETA_TESTER',
+      ]);
+    });
+
+    test('the single label IS the head of the list — one source of truth', () => {
+      const { user } = arrange({ roles: ['PLATFORM_SUPPORT', 'PLATFORM_USERS_ADMIN'] });
+
+      expect(user?.role).toBe(user?.roles[0]);
+    });
+
+    test('unmapped and retired roles are dropped, not rendered as raw keys', () => {
+      const { user } = arrange({ roles: ['GLOBAL_ADMIN', 'SOME_UNMAPPED_ROLE', 'PLATFORM_AUDIT_READER'] });
+
+      expect(user?.roles).toEqual(['common.roles.PLATFORM_AUDIT_READER']);
+    });
+
+    test('no held roles yields an empty list and no label', () => {
+      const { user } = arrange({ roles: [] });
+
+      expect(user?.roles).toEqual([]);
+      expect(user?.role).toBeUndefined();
+    });
+  });
+
   test('no profile yields no user object', () => {
     useAdminAccessGuardMock.mockReturnValue({ isPlatformAdmin: false, loading: false });
     useCurrentUserContextMock.mockReturnValue({ isAuthenticated: false, userModel: undefined, platformRoles: [] });
