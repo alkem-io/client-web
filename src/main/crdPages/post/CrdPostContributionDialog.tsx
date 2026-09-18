@@ -588,7 +588,14 @@ export function CrdPostContributionDialog({
                   <Switch
                     id="contribution-notify-members"
                     checked={notifyMembers}
-                    onCheckedChange={setNotifyMembers}
+                    onCheckedChange={checked => {
+                      setNotifyMembers(checked);
+                      // Mark dirty like the target-callout Select does: this is a
+                      // deliberate user choice, so closing after changing it must
+                      // route through the discard confirmation rather than
+                      // dropping it silently.
+                      setIsDirty(true);
+                    }}
                     disabled={submitting}
                   />
                   <Label htmlFor="contribution-notify-members" className="text-body text-muted-foreground">
