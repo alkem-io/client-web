@@ -80,6 +80,20 @@ export const ROLE_SET_INVITE_PRIVILEGES = [AuthorizationPrivilege.RolesetEntryRo
 export const PLATFORM_ROLE_ASSIGN_PRIVILEGES = [AuthorizationPrivilege.GrantGlobalAdmins];
 
 /**
+ * Platform role set, the 4 `Feature …` roles — `assignPlatformRoleToUser` /
+ * `assignPlatformRoleToOrganization` and their removals for `FEATURE_BETA_TESTER`,
+ * `FEATURE_VIRTUAL_ASSISTANT`, `FEATURE_ORGANIZATION_CREATOR` and `FEATURE_VC_CAMPAIGN`.
+ *
+ * The server's `assignerPrivilegeFor` (platform.role.assignment.rules.service.ts) gates the
+ * two role families on DISJOINT tokens: the 10 `Platform …` roles on `GRANT_GLOBAL_ADMINS`
+ * above, the 4 `Feature …` roles on `FEATURE_ROLE_ASSIGN` (held by a Platform Users Admin,
+ * NOT by a legacy global-admin). Gating a Feature role on `PLATFORM_ROLE_ASSIGN_PRIVILEGES`
+ * would lock its rightful assigner out; see `getOfferedPlatformRoles` in
+ * `useRoleSetManager.ts` for the matching offer-side split (workspace#027, corr-client-web-8).
+ */
+export const FEATURE_ROLE_ASSIGN_PRIVILEGES = [AuthorizationPrivilege.FeatureRoleAssign];
+
+/**
  * Managing an organization's own Associates tab — `assignRoleToUser` /
  * `removeRoleFromUser` on the organization's role set (Associate, Admin, Owner).
  *

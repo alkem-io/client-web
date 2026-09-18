@@ -47,13 +47,21 @@ const CrdForumPage = () => {
   const canCreateDiscussion =
     data?.platform.forum.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateDiscussion) ?? false;
 
-  const isPlatformAdmin = platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;
+  // spec-clientweb-5 (2026-07-31): re-anchored off the retiring
+  // `PLATFORM_ADMIN` catch-all onto A15's own privilege,
+  // `PLATFORM_FORUM_MANAGE` (owner: platform-support). `PLATFORM_ADMIN` is
+  // kept alongside it so the legacy credentials that reach this today are
+  // not narrowed — Slice A is additive.
+  const canManageForum =
+    [AuthorizationPrivilege.PlatformForumManage, AuthorizationPrivilege.PlatformAdmin].some(privilege =>
+      Boolean(platformPrivilegeWrapper?.hasPlatformPrivilege(privilege))
+    ) ?? false;
 
   // Non-admins can't create posts in the outbound editorial categories
   // (Releases, Newsletter) — those speak in the platform's voice. The server
   // is the actual control; this filter is UX only.
   const validCategories = data?.platform.forum.discussionCategories ?? [];
-  const discussionCreationCategories = discussionCreationCategoriesFor(validCategories, isPlatformAdmin);
+  const discussionCreationCategories = discussionCreationCategoriesFor(validCategories, canManageForum);
 
   // Resolve the URL slug against the active list the server actually sent, not
   // just the categories this build was compiled against — otherwise a category

@@ -3181,6 +3181,7 @@ export type MutationKeySpecifier = (
   | 'assignConversationMember'
   | 'assignLicensePlanToAccount'
   | 'assignLicensePlanToSpace'
+  | 'assignPlatformRoleToOrganization'
   | 'assignPlatformRoleToUser'
   | 'assignRole'
   | 'assignRoleToOrganization'
@@ -3289,6 +3290,7 @@ export type MutationKeySpecifier = (
   | 'removeIframeAllowedURL'
   | 'removeMessageOnRoom'
   | 'removeNotificationEmailFromBlacklist'
+  | 'removePlatformRoleFromOrganization'
   | 'removePlatformRoleFromUser'
   | 'removePollOption'
   | 'removePollVote'
@@ -3428,6 +3430,7 @@ export type MutationFieldPolicy = {
   assignConversationMember?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignPlatformRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   assignPlatformRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignRole?: FieldPolicy<any> | FieldReadFunction<any>;
   assignRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3536,6 +3539,7 @@ export type MutationFieldPolicy = {
   removeIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeNotificationEmailFromBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
+  removePlatformRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removePollOption?: FieldPolicy<any> | FieldReadFunction<any>;
   removePollVote?: FieldPolicy<any> | FieldReadFunction<any>;
