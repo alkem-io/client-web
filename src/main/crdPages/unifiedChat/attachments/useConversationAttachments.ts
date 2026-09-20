@@ -64,7 +64,14 @@ export function useConversationAttachments(
   const { t } = useTranslation('crd-space');
   const [uploadFile] = useUploadFileMutation();
   const [attachments, setAttachments] = useState<StagedAttachment[]>([]);
-  const [error, setError] = useState<string | undefined>();
+  // Only the message that CANNOT be derived from the staged chips lives in
+  // state: a rejected pick never becomes a chip, so nothing on screen implies
+  // it. The upload-failure message is fully derivable (some chip is in `error`
+  // status) and is computed below — keeping it out of state is what lets the
+  // upload-failure and removal paths use pure `setAttachments` updaters. React
+  // may invoke an updater more than once, or discard the render it ran in, so
+  // an updater must never call another setter or write a ref.
+  const [validationError, setValidationError] = useState<string | undefined>();
   // Live count of slots the draft occupies against the cap = staged chips that
   // are already present + slots reserved for accepted files whose chip has not
   // been added yet. Read instead of the `attachments` state closure when
@@ -92,6 +99,17 @@ export function useConversationAttachments(
     ? storageConfig.allowedMimeTypes
     : DEFAULT_ALLOWED_ATTACHMENT_MIME_TYPES;
 
+  // Keep the count ref in sync with *committed* state. `attachFiles` still
+  // reserves its slots synchronously below (before its first await) to cover the
+  // window before this commit; from then on the invariant is re-derived here
+  // rather than from inside a `setAttachments` updater, so a render React
+  // discards can never leave the ref describing state that never landed.
+  // Declared BEFORE the conversation-switch effect below so that effect's reset
+  // to 0 wins on the commit where the selection changes.
+  useLayoutEffect(() => {
+    stagedCountRef.current = attachments.length + pendingReservationRef.current;
+  }, [attachments]);
+
   // Staged uploads land in the *current* conversation's temporary bucket. When
   // the selected conversation changes, drop any unsent draft so a later send
   // never carries a previous conversation's document ids — the server READ-gates
@@ -103,7 +121,7 @@ export function useConversationAttachments(
   useLayoutEffect(() => {
     conversationIdRef.current = conversationId;
     setAttachments([]);
-    setError(undefined);
+    setValidationError(undefined);
     stagedCountRef.current = 0;
     pendingReservationRef.current = 0;
   }, [conversationId]);
@@ -126,12 +144,11 @@ export function useConversationAttachments(
     // The conversation this batch belongs to; if it changes while an upload is
     // in flight, later resolutions/rejections must not paint the new one.
     const requestConversationId = conversationId;
-    // Drop a stale message, but keep the upload-failed one while a failed chip is
-    // still staged: that chip is what disables Send, so clearing its explanation
-    // would leave a dead Send button with nothing on screen to act on.
-    setError(
-      attachments.some(attachment => attachment.status === 'error') ? t('comments.attachments.uploadFailed') : undefined
-    );
+    // Drop a stale rejection message from an earlier pick. The upload-failed
+    // message is NOT dropped here — it is derived from the staged chips, so it
+    // survives exactly as long as the failed chip that disables Send does,
+    // leaving the user something on screen to act on.
+    setValidationError(undefined);
     if (!storageConfig) return;
 
     const { accepted, rejected } = validateAttachments(files, {
@@ -141,7 +158,7 @@ export function useConversationAttachments(
     });
 
     if (rejected.length > 0) {
-      setError(describeRejection(rejected[0]));
+      setValidationError(describeRejection(rejected[0]));
     }
 
     // Reserve the accepted slots synchronously (before the first upload await)
@@ -181,36 +198,28 @@ export function useConversationAttachments(
         // Same guard as the success path: a rejection from a previous
         // conversation must not surface a spurious error on the current one.
         if (conversationIdRef.current !== requestConversationId) return;
-        setAttachments(prev => {
-          // The chip may have been removed while its upload was in flight. The
-          // "remove the file" message would then point at nothing the user can
-          // see, so raise it only while the failed chip is still on screen.
-          // Idempotent under a double-invoked updater (same value each time).
-          if (prev.some(attachment => attachment.id === stagedId)) {
-            setError(t('comments.attachments.uploadFailed'));
-          }
-          return prev.map(attachment => (attachment.id === stagedId ? { ...attachment, status: 'error' } : attachment));
-        });
+        // Pure updater: flag the chip and nothing else. The chip may have been
+        // removed while its upload was in flight, in which case this maps over
+        // nothing — and because the error message is derived from the staged
+        // chips, no "remove the file" text is raised for a chip the user can no
+        // longer see.
+        setAttachments(prev =>
+          prev.map(attachment => (attachment.id === stagedId ? { ...attachment, status: 'error' } : attachment))
+        );
       }
     }
   };
 
   const removeAttachment = (id: string): void => {
-    setAttachments(prev => {
-      const next = prev.filter(attachment => attachment.id !== id);
-      // Re-derive from the invariant (present chips + pending reservations)
-      // rather than `next.length` alone, so removing an already-added chip while
-      // later files in the same batch are still uploading does not discard their
-      // reserved slots. Idempotent under a double-invoked updater.
-      stagedCountRef.current = next.length + pendingReservationRef.current;
-      // Re-derive the error from what remains: a stale validation/upload message
-      // for a now-removed file should not linger. Keep the upload-failed message
-      // only while some staged attachment is still in an error state.
-      setError(
-        next.some(attachment => attachment.status === 'error') ? t('comments.attachments.uploadFailed') : undefined
-      );
-      return next;
-    });
+    // A rejection message describes a pick the user is now editing away from, so
+    // it should not linger. The upload-failed message needs no handling: it is
+    // derived, and disappears with the last chip still in `error` status.
+    setValidationError(undefined);
+    // Pure updater. The count ref is re-derived from committed state by the
+    // layout effect above, which reads `pendingReservationRef` too — so removing
+    // an already-added chip while later files in the same batch are still
+    // uploading does not discard their reserved slots.
+    setAttachments(prev => prev.filter(attachment => attachment.id !== id));
   };
 
   /**
@@ -227,7 +236,7 @@ export function useConversationAttachments(
       return;
     }
     setAttachments([]);
-    setError(undefined);
+    setValidationError(undefined);
     stagedCountRef.current = 0;
     pendingReservationRef.current = 0;
   };
@@ -236,6 +245,16 @@ export function useConversationAttachments(
   // to the curated default when the bucket declares no policy, so the picker does too
   // (otherwise it offered everything and the validator then rejected it).
   const accept = storageConfig ? mimeTypesToAccept(effectiveAllowedMimeTypes) : undefined;
+
+  // A rejected pick outranks a failed upload: it is the message for what the
+  // user just did. Otherwise surface the upload failure for as long as a failed
+  // chip is staged — that chip is what disables Send, so its explanation has to
+  // stay on screen alongside it.
+  const error =
+    validationError ??
+    (attachments.some(attachment => attachment.status === 'error')
+      ? t('comments.attachments.uploadFailed')
+      : undefined);
 
   return {
     enabled,

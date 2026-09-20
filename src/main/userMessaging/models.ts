@@ -45,16 +45,12 @@ export interface MessageReaction {
   };
 }
 
-// Attachment shape on a conversation message (feature 013)
-export interface MessageAttachmentModel {
-  id: string;
-  url: string;
-  displayName: string;
-  mimeType: string;
-  size: number;
-  width?: number;
-  height?: number;
-}
+// Attachment shape on a conversation message (feature 013). These values flow
+// straight through `mapMessageToChatMessage` into `ChatMessage.attachments`,
+// which is typed `MessageAttachment[]` — so the CRD render contract is the
+// single source of truth. Re-declaring the fields here lets optional ones drift
+// apart without a type error.
+export type MessageAttachmentModel = MessageAttachment;
 
 // Message type used for conversation messages
 export interface ConversationMessage {

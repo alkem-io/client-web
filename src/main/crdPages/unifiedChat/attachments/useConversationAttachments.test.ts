@@ -204,6 +204,51 @@ describe('useConversationAttachments', () => {
     expect(result.current.error).toBe('comments.attachments.errorTooMany');
   });
 
+  // The cap has to hold for a pick made while an earlier batch is STILL in
+  // flight: the slots that batch reserved but has not yet turned into chips are
+  // invisible in `attachments`, so a count taken from the staged chips alone
+  // undercounts and lets the pair exceed 10. The sibling test above drains the
+  // first batch before picking again, which hides that.
+  test('a second pick made mid-batch still respects the cap', async () => {
+    const resolvers: Array<(id: string) => void> = [];
+    mockUploadFile.mockImplementation(
+      () =>
+        new Promise(resolve => {
+          resolvers.push(id => resolve({ data: { uploadFileOnStorageBucket: { id, url: 'https://x' } } }));
+        })
+    );
+    const resolveNext = async (id: string): Promise<void> => {
+      resolvers.shift()?.(id);
+      await tick();
+    };
+
+    const { result } = renderHook(() => useConversationAttachments(bucketConfig));
+
+    // Start a 6-file batch and let two chips land — four slots stay reserved but
+    // unstaged while their uploads are still in flight.
+    act(() => {
+      void result.current.attachFiles(batch('a', 6));
+    });
+    await tick();
+    await resolveNext('doc-a0');
+    expect(result.current.attachments).toHaveLength(2);
+
+    // Pick 6 more WITHOUT draining the first batch: only 4 may be accepted.
+    act(() => {
+      void result.current.attachFiles(batch('b', 6));
+    });
+    await tick();
+    expect(result.current.error).toBe('comments.attachments.errorTooMany');
+
+    // Drain every outstanding upload from both batches.
+    for (let i = 0; i < 40 && resolvers.length > 0; i += 1) {
+      await resolveNext(`doc-drain-${i}`);
+    }
+
+    // 6 from the first batch + 4 from the second — never 12.
+    expect(result.current.attachments).toHaveLength(10);
+  });
+
   test('a stale upload rejection from a previous conversation is not surfaced in the new one', async () => {
     let rejectA: (reason?: unknown) => void = () => {};
     mockUploadFile.mockImplementationOnce(
