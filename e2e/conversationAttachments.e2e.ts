@@ -5,18 +5,20 @@ import { expect, test } from '@playwright/test';
  *
  * STATUS: NOT RUN in this environment. Requires the full running stack and is
  * NOT wired into CI. To run it you need ALL of:
- *   1. `@playwright/test` installed (only the `playwright` core ships today):
- *        pnpm add -D @playwright/test && pnpm exec playwright install chromium
+ *   1. The Chromium browser binary (`@playwright/test` itself is already a
+ *        devDependency — only the browser has to be fetched):
+ *        pnpm exec playwright install chromium
  *   2. The web app on http://localhost:3001 with the Alkemio backend on :3000
  *        (matrix-adapter + file-service + Synapse — the full conversation stack).
- *   3. The `ATTACHMENTS` platform feature flag enabled on the backend (the server
- *        only populates `Conversation.storageBucket` when this is on — with the
- *        flag off the bucket is null and the composer's attach affordance stays
- *        inert, so this spec will correctly not find the attach control).
- *   4. The authenticated session being a MEMBER of the conversation, so the
- *        READ-gated `Conversation.storageBucket` resolves and the composer can
- *        resolve an upload target — see
+ *   3. A conversation whose `Conversation.storageBucket` resolves NON-NULL. That
+ *        bucket is the *only* thing that makes the composer's attach affordance
+ *        appear — availability is derived from `storageBucket != null`, not from
+ *        any platform feature flag. With a null bucket the affordance stays inert
+ *        and this spec will correctly not find the attach control. See
  *        `src/main/crdPages/unifiedChat/attachments/useConversationStorageConfig.ts`.
+ *   4. The authenticated session being a MEMBER of the conversation: the bucket
+ *        is READ-gated, so a non-member sees it as null and gets no attach
+ *        affordance (same inert path as 3).
  *   5. An authenticated session with at least one conversation, fixture image at
  *        `e2e/fixtures/photo.png`, and the env below.
  *
@@ -28,9 +30,12 @@ import { expect, test } from '@playwright/test';
 
 const BASE_URL = process.env.E2E_BASE_URL ?? 'http://localhost:3001';
 const CONVERSATION_PATH = process.env.E2E_CONVERSATION_PATH; // e.g. open the messaging panel + a conversation
-// A *second* conversation the same session is a member of, for the
-// switch-resets-the-draft scenario (round-2 review finding 1).
-const CONVERSATION_PATH_B = process.env.E2E_CONVERSATION_PATH_B;
+// The *display name* of a second conversation the same session is a member of,
+// for the switch-resets-the-draft scenario (round-2 review finding 1). A name
+// rather than a URL because that conversation has to be reached by clicking the
+// running chat UI — see the test for why a URL would defeat it. Pick a name that
+// is unambiguous within the conversation list.
+const CONVERSATION_B_NAME = process.env.E2E_CONVERSATION_B_NAME;
 
 test.describe('conversation attachments', () => {
   test.skip(!CONVERSATION_PATH, 'Set E2E_CONVERSATION_PATH and run the full stack to enable.');
@@ -62,8 +67,15 @@ test.describe('conversation attachments', () => {
   // Round-2 review finding 1: a staged-but-unsent attachment must NOT survive a
   // conversation switch — its document lives in conversation A's bucket and
   // would be READ-gate-rejected if it rode along on a send in conversation B.
+  //
+  // The switch MUST happen inside the running app. `page.goto` creates a new
+  // document, so React remounts the composer and the staged state is gone no
+  // matter what — a navigation-based version of this test passes even when the
+  // in-app reset is broken, i.e. it cannot fail for the reason it claims to
+  // test. Driving the chat UI keeps the composer mounted, so only the app's own
+  // conversation-change reset can clear the chip.
   test('staging in one conversation does not carry over after switching to another', async ({ page }) => {
-    test.skip(!CONVERSATION_PATH_B, 'Set E2E_CONVERSATION_PATH_B (a second member conversation) to enable.');
+    test.skip(!CONVERSATION_B_NAME, 'Set E2E_CONVERSATION_B_NAME (a second member conversation) to enable.');
 
     await page.goto(`${BASE_URL}${CONVERSATION_PATH}`);
 
@@ -71,11 +83,22 @@ test.describe('conversation attachments', () => {
     await page.getByRole('button', { name: /attach files/i }).click();
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles('e2e/fixtures/photo.png');
-    await expect(page.getByText('photo.png')).toBeVisible();
 
-    // Switch to conversation B without sending — the staged chip must be gone.
-    await page.goto(`${BASE_URL}${CONVERSATION_PATH_B}`);
-    await expect(page.getByText('photo.png')).toHaveCount(0);
+    // Scope the chip assertions to the composer's staged list (aria-label from
+    // crd-space `comments.attachments.stagedListLabel`) so a thread message that
+    // merely mentions the filename cannot satisfy — or defeat — them.
+    const stagedList = page.getByRole('list', { name: /files to send/i });
+    await expect(stagedList.getByText('photo.png')).toBeVisible();
+
+    // Back to the conversation list, then select B — both are in-app clicks, no
+    // document reload. Labels: crd-chat `thread.back`, and the row's accessible
+    // name contains the conversation display name.
+    await page.getByRole('button', { name: /back to conversations/i }).click();
+    await page.getByRole('button', { name: CONVERSATION_B_NAME }).click();
+
+    // The staged list unmounts entirely once nothing is staged, so this asserts
+    // the chip is gone — before anything is sent.
+    await expect(stagedList).toHaveCount(0);
 
     // A text-only send in B must succeed (it carries no stale document ids).
     const composer = page.getByRole('textbox');
