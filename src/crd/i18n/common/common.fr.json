@@ -1567,6 +1567,7 @@
     "imageAlt": "Image jointe : {{name}}",
     "download": "Télécharger {{name}}",
     "unavailableHint": "Ce fichier n’a pas pu être chargé. Téléchargez-le pour le consulter.",
+    "unavailableNoDownload": "Ce fichier n’est pas disponible.",
     "loading": "Chargement de la pièce jointe"
   }
 }

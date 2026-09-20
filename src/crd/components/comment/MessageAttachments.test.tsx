@@ -63,7 +63,20 @@ describe('MessageAttachments', () => {
     // No link or image is rendered for an unsafe URL.
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
     expect(screen.queryByRole('img')).not.toBeInTheDocument();
-    expect(screen.getByText('messageAttachments.unavailableHint')).toBeInTheDocument();
+    // There is nothing to click, so the hint must not tell the user to download.
+    expect(screen.getByText('messageAttachments.unavailableNoDownload')).toBeInTheDocument();
+    expect(screen.queryByText('messageAttachments.unavailableHint')).not.toBeInTheDocument();
+  });
+
+  // An *image* with an unsafe URL takes the AttachmentImage fallback, which
+  // passes the download-oriented hint explicitly. The chip is still
+  // non-interactive, so that hint must not win.
+  test('a non-http(s) image falls back to a chip that does not offer a download', () => {
+    const unsafeImage: MessageAttachment = { ...image, id: 'att-unsafe-img', url: 'javascript:alert(1)' };
+    render(<MessageAttachments attachments={[unsafeImage]} />);
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
+    expect(screen.getByText('messageAttachments.unavailableNoDownload')).toBeInTheDocument();
+    expect(screen.queryByText('messageAttachments.unavailableHint')).not.toBeInTheDocument();
   });
 
   test('renders multiple attachments as a labelled list', () => {

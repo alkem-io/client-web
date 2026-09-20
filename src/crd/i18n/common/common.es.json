@@ -1567,6 +1567,7 @@
     "imageAlt": "Imagen adjunta: {{name}}",
     "download": "Descargar {{name}}",
     "unavailableHint": "No se pudo cargar este archivo. Descárgalo para verlo.",
+    "unavailableNoDownload": "Este archivo no está disponible.",
     "loading": "Cargando adjunto"
   }
 }

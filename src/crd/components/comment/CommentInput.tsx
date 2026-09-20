@@ -68,6 +68,8 @@ type EnrichedSuggestion = SuggestionDataItem & CrdMentionSuggestion;
 
 const MAX_ROWS = 5;
 
+const STAGED_LIST_CLASS = 'mb-1.5 flex flex-wrap gap-1.5';
+
 // react-mentions renders an overlay + textarea stack. These inline styles
 // neutralize its defaults so the textarea blends with the surrounding Tailwind
 // bordered container (no double borders, transparent background).
@@ -302,7 +304,9 @@ export function CommentInput({
         {/* The list label is distinct from the paperclip button's — sharing one makes a
             screen reader announce "Attach files, list" then "Attach files, button". */}
         {attachmentsEnabled && attachments.length > 0 && (
-          <ul aria-label={t('comments.attachments.stagedListLabel')} className="mb-1.5 flex flex-wrap gap-1.5">
+          // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
+          // biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset
+          <ul role="list" aria-label={t('comments.attachments.stagedListLabel')} className={STAGED_LIST_CLASS}>
             {attachments.map(attachment => (
               <li
                 key={attachment.id}
@@ -312,19 +316,32 @@ export function CommentInput({
                 )}
               >
                 {attachment.status === 'uploading' ? (
-                  <Loader2
-                    aria-label={t('comments.attachments.uploading')}
-                    className="size-3.5 shrink-0 animate-spin"
-                  />
+                  // `<output>` is an implicit live region (role="status" +
+                  // aria-live="polite"), so the chip appearing mid-upload is
+                  // actually announced — an aria-label on the spinner alone
+                  // describes it but never announces its insertion. Mirrors the
+                  // loading skeleton in MessageAttachments.
+                  <output aria-label={t('comments.attachments.uploading')} className="flex shrink-0">
+                    <Loader2 aria-hidden="true" className="size-3.5 animate-spin" />
+                  </output>
                 ) : (
                   <Paperclip aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" />
                 )}
                 <span className="min-w-0 flex-1 truncate">{attachment.name}</span>
                 <button
                   type="button"
-                  onClick={() => onRemoveAttachment?.(attachment.id)}
+                  // The consumer snapshots the ready document ids *before*
+                  // awaiting the send, so a removal accepted mid-send would drop
+                  // the chip while the message still ships that attachment. The
+                  // callback is guarded too: `disabled` only blocks pointer and
+                  // keyboard activation, not a programmatic call.
+                  disabled={disabled}
+                  onClick={() => {
+                    if (disabled) return;
+                    onRemoveAttachment?.(attachment.id);
+                  }}
                   aria-label={t('comments.attachments.removeAttachment', { name: attachment.name })}
-                  className="flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
                 >
                   <X aria-hidden="true" className="size-3.5" />
                 </button>

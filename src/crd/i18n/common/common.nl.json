@@ -1567,6 +1567,7 @@
     "imageAlt": "Bijgevoegde afbeelding: {{name}}",
     "download": "{{name}} downloaden",
     "unavailableHint": "Dit bestand kon niet worden geladen. Download het om te bekijken.",
+    "unavailableNoDownload": "Dit bestand is niet beschikbaar.",
     "loading": "Bijlage laden"
   }
 }

@@ -35,11 +35,12 @@ export function MessageAttachments({ attachments, align = 'start', className }: 
     return null;
   }
 
+  const listClassName = cn('flex flex-col gap-1.5', align === 'end' && 'items-end', className);
+
   return (
-    <ul
-      aria-label={t('messageAttachments.listLabel')}
-      className={cn('flex flex-col gap-1.5', align === 'end' && 'items-end', className)}
-    >
+    // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
+    // biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset
+    <ul role="list" aria-label={t('messageAttachments.listLabel')} className={listClassName}>
       {attachments.map(attachment => (
         <li key={attachment.id} className="max-w-[min(320px,100%)]">
           {isImage(attachment.mimeType) ? (
@@ -121,7 +122,11 @@ function AttachmentFileChip({ attachment, hint }: { attachment: MessageAttachmen
   // Only treat a server-issued http(s) URL as downloadable; anything else is
   // surfaced as an unavailable, non-interactive chip.
   const downloadable = isHttpUrl(attachment.url);
-  const effectiveHint = hint ?? (downloadable ? undefined : t('messageAttachments.unavailableHint'));
+  // A non-downloadable chip renders as a non-interactive <span> with no link to
+  // follow, so it must never carry a "download it to view" hint — not even the
+  // one the image fallback passes explicitly, which assumes a usable document
+  // URL. Those chips get the generic unavailable message instead.
+  const effectiveHint = downloadable ? hint : t('messageAttachments.unavailableNoDownload');
 
   const body = (
     <>

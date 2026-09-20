@@ -124,6 +124,36 @@ describe('CommentInput attachments', () => {
     expect(onRemoveAttachment).toHaveBeenCalledWith('a1');
   });
 
+  // The consumer snapshots the ready document ids BEFORE awaiting the send
+  // mutation, so a removal accepted mid-send drops the chip while the message
+  // still ships that attachment — the user sees one thing and the room gets
+  // another. `disabled` is the in-flight-send signal ChatThreadView passes down.
+  test('attachment removal is blocked while a send is in flight', async () => {
+    const onRemoveAttachment = vi.fn();
+    render(
+      <CommentInput
+        onSubmit={vi.fn()}
+        disabled={true}
+        attachmentsEnabled={true}
+        attachments={[ready]}
+        onRemoveAttachment={onRemoveAttachment}
+      />
+    );
+
+    const remove = screen.getByRole('button', { name: 'comments.attachments.removeAttachment:photo.png' });
+    expect(remove).toBeDisabled();
+    await userEvent.click(remove);
+    expect(onRemoveAttachment).not.toHaveBeenCalled();
+  });
+
+  // An aria-label describes the spinner but does not announce its insertion.
+  // `<output>` carries an implicit role="status" + aria-live="polite", so the
+  // chip appearing mid-upload is actually read out.
+  test('an in-flight upload is announced through a live region, not just labelled', () => {
+    render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachments={[uploading]} />);
+    expect(screen.getByRole('status', { name: 'comments.attachments.uploading' })).toBeInTheDocument();
+  });
+
   test('send is enabled for an attachment-only message (no text) once ready', async () => {
     const onSubmit = vi.fn();
     render(<CommentInput onSubmit={onSubmit} attachmentsEnabled={true} attachments={[ready]} />);
