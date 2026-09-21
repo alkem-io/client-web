@@ -176,10 +176,7 @@ export function Header({
             </div>
 
             {/* Right: icon row — same unconditional pill padding as the left group. */}
-            <nav
-              aria-label={t('header.menu')}
-              className={cn('flex shrink-0 items-center gap-1 px-1 md:px-3 py-1', pillClasses)}
-            >
+            <nav aria-label={t('header.menu')} className={cn('flex items-center gap-1 px-1 md:px-3 py-1', pillClasses)}>
               <HeaderIconButton
                 onClick={onSearchClick}
                 ariaLabel={t('header.search')}
