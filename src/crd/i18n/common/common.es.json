@@ -8,8 +8,13 @@
       "MESSAGING_NOT_ENABLED": "Este usuario ha desactivado la mensajería directa. No puede enviarle un mensaje en este momento.",
       "NOT_SUPPORTED": "No soportado: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
+      "UNSPECIFIED": "Se produjo un error inesperado. Inténtelo de nuevo.",
       "generic": "Se ha producido un error",
       "generic-with-code": "Se ha producido un error con el código {{code}}",
+      "network": {
+        "session_store_unavailable": "El servicio no está disponible temporalmente. Inténtelo de nuevo en un momento.",
+        "generic": "Se produjo un problema de conexión. Compruebe su conexión e inténtelo de nuevo."
+      },
       "support": {
         "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
         "emailBodyGeneric": "Hello,\n\nI encountered an error while using Alkemio.\n\nPlease help me resolve this issue.\n\nThank you.",

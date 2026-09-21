@@ -8,8 +8,13 @@
       "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time.",
       "NOT_SUPPORTED": "Not supported: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
+      "UNSPECIFIED": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
       "generic": "Ein Fehler ist aufgetreten",
       "generic-with-code": "Ein Fehler ist aufgetreten mit Code {{code}}",
+      "network": {
+        "session_store_unavailable": "Der Dienst ist vorübergehend nicht verfügbar. Bitte versuchen Sie es in einem Moment erneut.",
+        "generic": "Es ist ein Verbindungsproblem aufgetreten. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut."
+      },
       "support": {
         "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
         "emailBodyGeneric": "Hello,\n\nI encountered an error while using Alkemio.\n\nPlease help me resolve this issue.\n\nThank you.",

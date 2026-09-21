@@ -8,8 +8,13 @@
       "MESSAGING_NOT_ENABLED": "Този потребител е деактивирал директните съобщения. Не можете да им изпратите съобщение в момента.",
       "NOT_SUPPORTED": "Не се поддържа: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
+      "UNSPECIFIED": "Възникна неочаквана грешка. Моля, опитайте отново.",
       "generic": "Възникна грешка",
       "generic-with-code": "Възникна грешка с код {{code}}",
+      "network": {
+        "session_store_unavailable": "Услугата е временно недостъпна. Моля, опитайте отново след момент.",
+        "generic": "Възникна проблем с връзката. Моля, проверете връзката си и опитайте отново."
+      },
       "support": {
         "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
         "emailBodyGeneric": "Hello,\n\nI encountered an error while using Alkemio.\n\nPlease help me resolve this issue.\n\nThank you.",
