@@ -849,8 +849,7 @@
         "cancel": "Cancelar",
         "removeSuccess": "Se quitó a {{name}} de la organización",
         "removeError": "No se pudo quitar a {{name}} — inténtalo de nuevo",
-        "saveError": "No se pudieron guardar los cambios — inténtalo de nuevo",
-        "selfAdminLocked": "Aquí no puedes quitarte tu propio rol de Admin."
+        "saveError": "No se pudieron guardar los cambios — inténtalo de nuevo"
       },
       "errors": {
         "limitAdmin": "Una organización puede tener como máximo 6 administradores",
