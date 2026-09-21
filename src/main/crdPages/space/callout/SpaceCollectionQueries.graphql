@@ -1,4 +1,4 @@
-# Spaces-collection callout query (feature 013).
+# Spaces-collection callout query (feature 013; expanded-card variant, feature 076).
 #
 # A SPACES callout renders the host space's subspaces as cards. The server returns
 # the FULL authorized set via `framing.subspaces` — already ordered pinned-first,
@@ -6,7 +6,13 @@
 # client name-searches + paginates client-side over that set (via the reused
 # `SpaceSubspacesList`). Selecting the existing `SubspaceCard` fragment fields keeps
 # the card shape identical to the block this callout replaces (no new card shape).
-query SpaceCollectionSubspaces($calloutId: UUID!) {
+#
+# `SubspaceCardAboutContext` carries the additional What/Why/Who excerpt sources for
+# the expanded card variant. It is gated behind `@include(if: $expanded)` so a compact
+# post's response carries no more About text than before this feature (FR-027/SC-006) —
+# `why` is the one exception, already selected unconditionally by the shared
+# `SubspaceCard` fragment (research D6, pre-existing).
+query SpaceCollectionSubspaces($calloutId: UUID!, $expanded: Boolean!) {
   lookup {
     callout(ID: $calloutId) {
       id
@@ -14,8 +20,22 @@ query SpaceCollectionSubspaces($calloutId: UUID!) {
         id
         subspaces {
           ...SubspaceCard
+          ...SubspaceCardAboutContext @include(if: $expanded)
         }
       }
+    }
+  }
+}
+
+fragment SubspaceCardAboutContext on Space {
+  id
+  about {
+    id
+    why
+    who
+    profile {
+      id
+      description
     }
   }
 }

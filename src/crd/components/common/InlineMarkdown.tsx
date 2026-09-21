@@ -29,6 +29,18 @@ export type InlineMarkdownProps = {
    * itself an `<a>`), where a nested anchor is invalid HTML and causes a hydration error.
    */
   disableLinks?: boolean;
+  /**
+   * How raw HTML embedded in the markdown source is handled. Defaults to `'sanitize'`,
+   * the existing behaviour: raw HTML is parsed and its attributes/styles sanitized, and
+   * images/iframes are present in the DOM but CSS-hidden.
+   *
+   * Pass `'skip'` when content authored in one administrative scope is rendered inside
+   * another (e.g. a subspace's About text excerpted onto the host space's page): raw HTML
+   * is not interpreted at all (no author-supplied element, attribute or style reaches the
+   * page — text inside inline tags still survives as plain text), and images are not
+   * merely hidden but absent from the DOM, so the browser never requests them.
+   */
+  rawHtml?: 'sanitize' | 'skip';
   className?: string;
 };
 
@@ -43,14 +55,29 @@ export type InlineMarkdownProps = {
  * this component exists to prevent. For full-width rich markdown content (callout
  * framing, post body, about view), use `MarkdownContent` instead.
  */
-export function InlineMarkdown({ content, clampLines = 2, disableLinks, className }: InlineMarkdownProps) {
+export function InlineMarkdown({
+  content,
+  clampLines = 2,
+  disableLinks,
+  rawHtml = 'sanitize',
+  className,
+}: InlineMarkdownProps) {
   const clampClass =
     clampLines === 0 ? '' : clampLines === 1 ? 'line-clamp-1' : clampLines === 3 ? 'line-clamp-3' : 'line-clamp-2';
+  const isCardSafe = rawHtml === 'skip';
 
   // Render links as plain text inside clickable containers to avoid nested-<a> (invalid HTML).
-  const components = disableLinks
-    ? { a: ({ children }: { children?: ReactNode }) => <span>{children}</span> }
-    : undefined;
+  // In card-safe mode links are always plain text (FR-024) — the card itself is the only link.
+  const components = {
+    ...((disableLinks || isCardSafe) && { a: ({ children }: { children?: ReactNode }) => <span>{children}</span> }),
+    // Card-safe table flatten: a trailing space text node (not CSS) keeps cell text apart once
+    // the table's block structure is flattened away — CSS-generated spacing wouldn't show up in
+    // rendered textContent.
+    ...(isCardSafe && {
+      td: ({ children }: { children?: ReactNode }) => <td>{children} </td>,
+      th: ({ children }: { children?: ReactNode }) => <th>{children} </th>,
+    }),
+  };
 
   return (
     <div
@@ -76,12 +103,25 @@ export function InlineMarkdown({ content, clampLines = 2, disableLinks, classNam
         '[&_strong]:font-semibold',
         '[&_em]:italic',
         '[&_a]:text-primary [&_a]:no-underline hover:[&_a]:underline',
-        className
+        className,
+        // Card-safe-only additions — never present in default ('sanitize') mode, whose class
+        // list must stay byte-identical to the pre-076 behaviour for its ten existing consumers.
+        isCardSafe && [
+          '[&_h5]:text-inherit [&_h5]:font-inherit [&_h5]:m-0 [&_h5]:inline',
+          '[&_h6]:text-inherit [&_h6]:font-inherit [&_h6]:m-0 [&_h6]:inline',
+          '[&_table]:inline [&_thead]:inline [&_tbody]:inline [&_tr]:inline [&_td]:inline [&_th]:inline',
+          '[&_table]:border-0 [&_td]:border-0 [&_th]:border-0 [&_td]:p-0 [&_th]:p-0',
+          'break-words',
+        ]
       )}
     >
       <Markdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[[rehypeRaw, { passThrough: [] }], [rehypeSanitize, sanitizeSchema], rehypeSanitizeStyles]}
+        rehypePlugins={
+          isCardSafe ? [] : [[rehypeRaw, { passThrough: [] }], [rehypeSanitize, sanitizeSchema], rehypeSanitizeStyles]
+        }
+        skipHtml={isCardSafe}
+        disallowedElements={isCardSafe ? ['img'] : undefined}
         components={components}
       >
         {content}

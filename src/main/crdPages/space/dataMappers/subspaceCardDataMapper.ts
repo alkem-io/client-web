@@ -7,9 +7,12 @@ type SubspaceQueryData = {
   id: string;
   visibility?: SpaceVisibility;
   about: {
+    why?: string | null;
+    who?: string | null;
     profile: {
       displayName: string;
       tagline?: string | null;
+      description?: string | null;
       url: string;
       avatar?: { uri: string } | null;
       cardBanner?: { uri: string } | null;
@@ -63,6 +66,15 @@ function mapSubspaceToCardData(subspace: SubspaceQueryData, showPinIndicator: bo
     id: subspace.id,
     name: profile.displayName,
     description: profile.tagline ?? '',
+    // Expanded-card excerpt sources (feature 076). Naming trap: `what` is the About
+    // *description* — never rename/alias this to `description`, which above already
+    // carries the tagline. `who` is likewise never fetched for a compact post (FR-027);
+    // `why` is fetched unconditionally by the shared `SubspaceCard` fragment today
+    // regardless of variant (research D6, pre-existing) and simply maps through harmlessly
+    // when the field wasn't selected (`undefined`) — only `variant === 'expanded'` reads it.
+    what: profile.description ?? undefined,
+    why: subspace.about.why ?? undefined,
+    who: subspace.about.who ?? undefined,
     // L1/L2 subspace card = cardBanner + inline avatar + title. Per the canonical visual-fields
     // rule, never substitute cardBanner for avatar (or vice versa). When either is missing the
     // SpaceCard renders the deterministic gradient/initials from `avatarColor`.
@@ -92,7 +104,6 @@ function mapVisibilityToStatus(visibility?: SpaceVisibility): string {
       return 'inactive';
     case SpaceVisibility.Demo:
       return 'demo';
-    case SpaceVisibility.Active:
     default:
       return 'active';
   }

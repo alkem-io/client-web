@@ -956,12 +956,18 @@ export type CalloutSettingsFramingKeySpecifier = (
   | 'commentsEnabled'
   | 'contributors'
   | 'selection'
+  | 'spaces'
   | CalloutSettingsFramingKeySpecifier
 )[];
 export type CalloutSettingsFramingFieldPolicy = {
   commentsEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
   contributors?: FieldPolicy<any> | FieldReadFunction<any>;
   selection?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaces?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutSpacesSettingsKeySpecifier = ('cardVariant' | CalloutSpacesSettingsKeySpecifier)[];
+export type CalloutSpacesSettingsFieldPolicy = {
+  cardVariant?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutsSetKeySpecifier = (
   | 'authorization'
@@ -1619,12 +1625,21 @@ export type CreateCalloutSettingsFramingDataKeySpecifier = (
   | 'commentsEnabled'
   | 'contributors'
   | 'selection'
+  | 'spaces'
   | CreateCalloutSettingsFramingDataKeySpecifier
 )[];
 export type CreateCalloutSettingsFramingDataFieldPolicy = {
   commentsEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
   contributors?: FieldPolicy<any> | FieldReadFunction<any>;
   selection?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaces?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateCalloutSpacesSettingsDataKeySpecifier = (
+  | 'cardVariant'
+  | CreateCalloutSpacesSettingsDataKeySpecifier
+)[];
+export type CreateCalloutSpacesSettingsDataFieldPolicy = {
+  cardVariant?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutTaskBoardDataKeySpecifier = ('columns' | CreateCalloutTaskBoardDataKeySpecifier)[];
 export type CreateCalloutTaskBoardDataFieldPolicy = {
@@ -6585,6 +6600,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CalloutSettingsFramingKeySpecifier | (() => undefined | CalloutSettingsFramingKeySpecifier);
     fields?: CalloutSettingsFramingFieldPolicy;
   };
+  CalloutSpacesSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutSpacesSettingsKeySpecifier | (() => undefined | CalloutSpacesSettingsKeySpecifier);
+    fields?: CalloutSpacesSettingsFieldPolicy;
+  };
   CalloutsSet?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutsSetKeySpecifier | (() => undefined | CalloutsSetKeySpecifier);
     fields?: CalloutsSetFieldPolicy;
@@ -6859,6 +6878,13 @@ export type StrictTypedTypePolicies = {
       | CreateCalloutSettingsFramingDataKeySpecifier
       | (() => undefined | CreateCalloutSettingsFramingDataKeySpecifier);
     fields?: CreateCalloutSettingsFramingDataFieldPolicy;
+  };
+  CreateCalloutSpacesSettingsData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCalloutSpacesSettingsDataKeySpecifier
+      | (() => undefined | CreateCalloutSpacesSettingsDataKeySpecifier);
+    fields?: CreateCalloutSpacesSettingsDataFieldPolicy;
   };
   CreateCalloutTaskBoardData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

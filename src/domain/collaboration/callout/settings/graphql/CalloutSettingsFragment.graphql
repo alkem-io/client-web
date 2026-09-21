@@ -21,6 +21,9 @@ fragment CalloutSettingsFull on CalloutSettings {
       mode
       selectedIds
     }
+    spaces {
+      cardVariant
+    }
   }
   visibility
 }

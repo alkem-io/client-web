@@ -5,7 +5,8 @@ import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
 import { mapSubspacesToCardDataList } from '@/main/crdPages/space/dataMappers/subspaceCardDataMapper';
 
 /**
- * Data layer for a Spaces-collection callout (feature 013, T004).
+ * Data layer for a Spaces-collection callout (feature 013, T004; `expanded` arg
+ * feature 076, T010).
  *
  * Fetches the host space's subspaces for a SPACES callout via `framing.subspaces`
  * (the server returns the FULL authorized set, already ordered pinned-first then
@@ -22,21 +23,29 @@ import { mapSubspacesToCardDataList } from '@/main/crdPages/space/dataMappers/su
  * subspaces tab shows pins — so the client re-sort is a no-op over the server
  * order and the pin indicator (`isPinned`, shown only for alphabetical sort)
  * renders exactly as it did on the replaced block.
+ *
+ * `expanded` drives the `$expanded` query variable that gates the
+ * `SubspaceCardAboutContext` fragment (What/Why/Who) — a compact post never asks
+ * for that extra About text (FR-027/SC-006). This hook deliberately never falls
+ * back to Apollo's `previousData` when `expanded` flips: while the new variables
+ * are loading it returns an empty, `loading: true` result so the caller shows its
+ * loading state rather than briefly painting compact-looking cards that then jump
+ * to expanded, or vice versa (FR-029).
  */
 export type UseCrdSpaceSubspacesResult = {
-  /** Mapped subspace cards in server order (pinned-first). */
+  /** Mapped subspace cards in server order (pinned-first). Empty while `loading`. */
   subspaces: SpaceCardData[];
   /** Query loading state. */
   loading: boolean;
 };
 
-export function useCrdSpaceSubspaces(calloutId: string | undefined): UseCrdSpaceSubspacesResult {
+export function useCrdSpaceSubspaces(calloutId: string | undefined, expanded: boolean): UseCrdSpaceSubspacesResult {
   const { data, loading } = useSpaceCollectionSubspacesQuery({
-    variables: { calloutId: calloutId ?? '' },
+    variables: { calloutId: calloutId ?? '', expanded },
     skip: !calloutId,
   });
 
-  const rawSubspaces = data?.lookup.callout?.framing.subspaces;
+  const rawSubspaces = loading ? [] : (data?.lookup.callout?.framing.subspaces ?? []);
   const sortedSubspaces = useSubspacesSorted(rawSubspaces, SpaceSortMode.Alphabetical);
   const subspaces = mapSubspacesToCardDataList(sortedSubspaces, SpaceSortMode.Alphabetical);
 

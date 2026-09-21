@@ -61,4 +61,14 @@ describe('SpaceCollection (feature 013 renderer)', () => {
 
     expect(onSubspaceClick).toHaveBeenCalledWith(expect.objectContaining({ id: 'a' }));
   });
+
+  test('default renders compact (3-up grid, SpaceCard) — regression net for existing consumers', () => {
+    const { container } = render(<SpaceCollection subspaces={[card('a', 'Alpha')]} />);
+    expect(container.querySelector('.grid')).not.toBeNull();
+  });
+
+  test('variant="expanded" reaches the reused SpaceSubspacesList (single column)', () => {
+    const { container } = render(<SpaceCollection subspaces={[card('a', 'Alpha')]} variant="expanded" />);
+    expect(container.querySelector('.grid-cols-1')).not.toBeNull();
+  });
 });

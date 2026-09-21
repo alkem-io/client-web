@@ -375,6 +375,12 @@
       "title": "Keine Unterbereiche gefunden",
       "description": "Keine Unterbereiche entsprechen Ihrer aktuellen Suche oder Ihrem Filter.",
       "clearFilters": "Filter zurücksetzen"
+    },
+    "expandedCard": {
+      "what": "Was",
+      "why": "Warum",
+      "who": "Wer",
+      "open": "Unterbereich öffnen"
     }
   },
   "about": {
@@ -613,6 +619,10 @@
       "loadMore": "Mehr laden…",
       "removeAriaLabel": "{{name}} entfernen",
       "clearSearch": "Suche löschen"
+    },
+    "cardVariant": {
+      "label": "Erweiterte Karte",
+      "description": "Zeigt die vollständige Karte mit dem Was, Warum und Wer des Unterbereichs - mehr Kontext, mehr Höhe."
     }
   },
   "contributionSettings": {

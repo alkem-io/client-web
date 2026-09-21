@@ -13,6 +13,11 @@ export type SpaceCollectionProps = {
   subspaces: SpaceCardData[];
   /** Whether the subspace set is still loading (renders a spinner, not the empty state). */
   loading?: boolean;
+  /**
+   * Card variant (feature 076). `'compact'` (default) is today's 3-up grid;
+   * `'expanded'` renders one rich card per row with What/Why/Who excerpts.
+   */
+  variant?: 'compact' | 'expanded';
   /** Navigate to a subspace when its card is clicked. */
   onSubspaceClick?: (space: SpaceCardData) => void;
   className?: string;
@@ -31,7 +36,13 @@ export type SpaceCollectionProps = {
  * Purely presentational (CRD): all data + navigation flow in via props; the
  * connector in `src/main/crdPages/space/callout/` fetches and wires them.
  */
-export function SpaceCollection({ subspaces, loading = false, onSubspaceClick, className }: SpaceCollectionProps) {
+export function SpaceCollection({
+  subspaces,
+  loading = false,
+  variant = 'compact',
+  onSubspaceClick,
+  className,
+}: SpaceCollectionProps) {
   const { t } = useTranslation('crd-space');
 
   // While the first fetch is in flight, show a spinner rather than briefly
@@ -44,5 +55,12 @@ export function SpaceCollection({ subspaces, loading = false, onSubspaceClick, c
     );
   }
 
-  return <SpaceSubspacesList subspaces={subspaces} onSubspaceClick={onSubspaceClick} className={className} />;
+  return (
+    <SpaceSubspacesList
+      subspaces={subspaces}
+      variant={variant}
+      onSubspaceClick={onSubspaceClick}
+      className={className}
+    />
+  );
 }

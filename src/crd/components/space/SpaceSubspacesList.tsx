@@ -4,8 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { FilterResultsSummary } from '@/crd/components/common/FilterResultsSummary';
 import { TagFilterPopover } from '@/crd/components/common/TagFilterPopover';
 import { SearchField } from '@/crd/forms/SearchField';
+import { useElementWidth } from '@/crd/hooks/useElementWidth';
+import { hasVisibleExcerptText } from '@/crd/lib/markdownExcerpt';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
+import { ExpandedSpaceCard } from './ExpandedSpaceCard';
 import { SpaceCard, type SpaceCardData } from './SpaceCard';
 
 type StatusFilter = 'all' | 'active' | 'archived';
@@ -18,8 +21,16 @@ type SpaceSubspacesListProps = {
   subtitle?: string;
   onSubspaceClick?: (space: SpaceCardData) => void;
   /**
+   * Card variant (feature 076). `'compact'` (default) is today's 3-up grid with an
+   * initial count of 6; `'expanded'` is one rich card per row with an initial count
+   * of 3 (intake ruling OP10-detail). Drives only the default `initialVisibleCount`
+   * and card component — every other behaviour (search, filters, show more/less,
+   * empty state) is identical in both variants (FR-020).
+   */
+  variant?: 'compact' | 'expanded';
+  /**
    * Initial number of subspace cards rendered before a "Show more" button
-   * appears. Defaults to 6 (a 3-column grid with 2 rows).
+   * appears. Defaults to 6 for `'compact'`, 3 for `'expanded'`.
    */
   initialVisibleCount?: number;
   /** Hide the status filter pills and tag filter chips — keep only the search. */
@@ -27,7 +38,12 @@ type SpaceSubspacesListProps = {
   className?: string;
 };
 
-const DEFAULT_INITIAL_VISIBLE = 6;
+const INITIAL_VISIBLE_COMPACT = 6;
+const INITIAL_VISIBLE_EXPANDED = 3;
+/** Card width, in px, at or above which the shared list's own width is wide enough for
+ * an all-empty expanded item to constrain to the identity block's width instead of
+ * stretching full-width — mirrors `ExpandedSpaceCard`'s own row/stacked threshold. */
+const ROW_LAYOUT_MIN_WIDTH = 520;
 
 /**
  * Aggregate tags across every subspace, sort by frequency desc then
@@ -54,7 +70,8 @@ export function SpaceSubspacesList({
   title,
   subtitle,
   onSubspaceClick,
-  initialVisibleCount = DEFAULT_INITIAL_VISIBLE,
+  variant = 'compact',
+  initialVisibleCount,
   disableFilters = false,
   className,
 }: SpaceSubspacesListProps) {
@@ -63,6 +80,12 @@ export function SpaceSubspacesList({
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [showAll, setShowAll] = useState(false);
+  // The list's own measured width (never a viewport breakpoint — FR-012) decides whether an
+  // all-empty expanded item constrains to the identity block's width or goes full width.
+  const [listWidth, listWidthRef] = useElementWidth();
+
+  const effectiveInitialVisibleCount =
+    initialVisibleCount ?? (variant === 'expanded' ? INITIAL_VISIBLE_EXPANDED : INITIAL_VISIBLE_COMPACT);
 
   const allTags = disableFilters ? [] : collectTags(subspaces);
 
@@ -103,7 +126,7 @@ export function SpaceSubspacesList({
 
   const hasActiveFilter =
     searchQuery.length > 0 || (!disableFilters && (selectedTags.length > 0 || statusFilter !== 'all'));
-  const visibleSubspaces = showAll ? filtered : filtered.slice(0, initialVisibleCount);
+  const visibleSubspaces = showAll ? filtered : filtered.slice(0, effectiveInitialVisibleCount);
   const hiddenCount = filtered.length - visibleSubspaces.length;
 
   return (
@@ -176,6 +199,47 @@ export function SpaceSubspacesList({
       {/* Grid */}
       {filtered.length === 0 ? (
         <EmptyState hasActiveFilter={hasActiveFilter} onClear={resetFilters} />
+      ) : variant === 'expanded' ? (
+        <>
+          {/* One column — an expanded list is one rich card per row (FR-011). The list's own
+              measured width (not the screen — FR-012) decides whether an all-empty item
+              constrains to the identity block's width or goes full width (FR-017). */}
+          <ul ref={listWidthRef} className="grid grid-cols-1 gap-4 list-none p-0 m-0">
+            {visibleSubspaces.map(subspace => {
+              const hasExcerpt =
+                hasVisibleExcerptText(subspace.what) ||
+                hasVisibleExcerptText(subspace.why) ||
+                hasVisibleExcerptText(subspace.who);
+              if (hasExcerpt) {
+                return (
+                  <li key={subspace.id}>
+                    <ExpandedSpaceCard space={subspace} onClick={onSubspaceClick} />
+                  </li>
+                );
+              }
+              // All three sections empty → the normal compact card, at the identity block's
+              // width when the list is wide enough for side-by-side, full width otherwise
+              // (FR-017 — exactly what a stacked expanded card's identity block would occupy).
+              return (
+                <li
+                  key={subspace.id}
+                  className={cn('h-full', (listWidth ?? 0) >= ROW_LAYOUT_MIN_WIDTH && 'max-w-[300px]')}
+                >
+                  <SpaceCard space={subspace} onClick={onSubspaceClick} />
+                </li>
+              );
+            })}
+          </ul>
+
+          {/* Show more / show less */}
+          {filtered.length > effectiveInitialVisibleCount && (
+            <div className="flex justify-center pt-4">
+              <Button variant="outline" onClick={() => setShowAll(prev => !prev)}>
+                {showAll ? t('subspaces.showLess') : t('subspaces.showMore', { count: hiddenCount })}
+              </Button>
+            </div>
+          )}
+        </>
       ) : (
         <>
           <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 list-none p-0 m-0">
@@ -187,7 +251,7 @@ export function SpaceSubspacesList({
           </ul>
 
           {/* Show more / show less */}
-          {filtered.length > initialVisibleCount && (
+          {filtered.length > effectiveInitialVisibleCount && (
             <div className="flex justify-center pt-4">
               <Button variant="outline" onClick={() => setShowAll(prev => !prev)}>
                 {showAll ? t('subspaces.showLess') : t('subspaces.showMore', { count: hiddenCount })}

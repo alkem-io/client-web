@@ -375,6 +375,12 @@
       "title": "No subspaces found",
       "description": "No subspaces match your current search or filter.",
       "clearFilters": "Clear filters"
+    },
+    "expandedCard": {
+      "what": "What",
+      "why": "Why",
+      "who": "Who",
+      "open": "Open subspace"
     }
   },
   "about": {
@@ -613,6 +619,10 @@
       "loadMore": "Loading more…",
       "removeAriaLabel": "Remove {{name}}",
       "clearSearch": "Clear search"
+    },
+    "cardVariant": {
+      "label": "Expanded card",
+      "description": "Shows the full card with the subspace's What, Why and Who - more context, more height."
     }
   },
   "contributionSettings": {
