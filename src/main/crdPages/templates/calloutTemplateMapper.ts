@@ -30,6 +30,7 @@ import {
   mapFormToCalloutUpdateInput,
 } from '@/main/crdPages/space/callout/calloutFormMapper';
 import { contributorCollectionFromServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
+import { cardVariantFromServer } from '@/main/crdPages/space/callout/spaceCollectionCardVariant';
 import type { CalloutFormValues, FramingChip, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
 export type CalloutTemplateMapperFallbacks = {
@@ -158,6 +159,9 @@ export function calloutTemplateContentToFormValues(
     // captured types/default-type/default-view instead of falling back to the form
     // default. Yields the default (all types) for non-contributors framing.
     contributorCollection: contributorCollectionFromServer(settings.framing.contributors),
+    // Card variant (feature 076, FR-006/FR-007/US5-AS3) — the variant travels with the
+    // template; absent `spaces` ⇒ compact.
+    cardVariant: cardVariantFromServer(settings.framing.spaces?.cardVariant),
     memoMarkdown: framing.memo?.markdown ?? '',
     linkUrl: framing.link?.uri ?? '',
     linkDisplayName: framing.link?.profile.displayName ?? '',

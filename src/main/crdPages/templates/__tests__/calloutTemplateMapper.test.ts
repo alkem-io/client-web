@@ -542,3 +542,38 @@ describe('calloutTemplateContentToFormValues', () => {
     expect(calloutTemplateContentToFormValues(frag).allowedActors).toEqual({ members: false, admins: false });
   });
 });
+
+// ---------------------------------------------------------------------------
+// Card variant (feature 076, US5)
+// ---------------------------------------------------------------------------
+
+describe('calloutTemplateContentToFormValues — cardVariant hydration', () => {
+  it('EXPANDED ⇒ "expanded"', () => {
+    const frag = baseFragment();
+    frag.settings.framing.spaces = { __typename: 'CalloutSpacesSettings', cardVariant: 'EXPANDED' as never };
+    expect(calloutTemplateContentToFormValues(frag).cardVariant).toBe('expanded');
+  });
+
+  it('null / absent spaces ⇒ "compact"', () => {
+    const v = calloutTemplateContentToFormValues(baseFragment());
+    expect(v.cardVariant).toBe('compact');
+  });
+});
+
+describe('calloutFormValuesToCreateCalloutInput — cardVariant (feature 076)', () => {
+  it('carries settings.framing.spaces for the spaces chip', () => {
+    const input = calloutFormValuesToCreateCalloutInput(
+      values({ framingChip: 'spaces', cardVariant: 'expanded' }),
+      fallbacks
+    );
+    expect(input.settings?.framing?.spaces).toEqual({ cardVariant: 'EXPANDED' });
+  });
+
+  it('omits it for a non-spaces chip', () => {
+    const input = calloutFormValuesToCreateCalloutInput(
+      values({ framingChip: 'none', cardVariant: 'expanded' }),
+      fallbacks
+    );
+    expect(input.settings?.framing?.spaces).toBeUndefined();
+  });
+});

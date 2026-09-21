@@ -16,7 +16,26 @@ vi.mock('@/crd/forms/callout/ResponseTypeChipStrip', () => ({ ResponseTypeChipSt
 vi.mock('@/crd/forms/markdown/MarkdownEditor', () => ({ MarkdownEditor: () => null }));
 vi.mock('@/crd/forms/references/ReferencesEditor', () => ({ ReferencesEditor: () => null }));
 vi.mock('@/crd/forms/tags-input', () => ({ TagsInput: () => null }));
-vi.mock('@/main/crdPages/space/callout/FramingEditorConnector', () => ({ FramingEditorConnector: () => null }));
+vi.mock('@/main/crdPages/space/callout/FramingEditorConnector', () => ({
+  FramingEditorConnector: ({
+    framingType,
+    cardVariant,
+    onCardVariantChange,
+  }: {
+    framingType: string;
+    cardVariant?: 'compact' | 'expanded';
+    onCardVariantChange?: (next: 'compact' | 'expanded') => void;
+  }) =>
+    framingType === 'spaces' ? (
+      <button
+        type="button"
+        aria-pressed={cardVariant === 'expanded'}
+        onClick={() => onCardVariantChange?.(cardVariant === 'expanded' ? 'compact' : 'expanded')}
+      >
+        Expanded card
+      </button>
+    ) : null,
+}));
 
 vi.mock('@/crd/forms/callout/ResponsePanel', () => ({
   ResponsePanel: ({ onSetDefaults }: { onSetDefaults?: () => void }) => (
@@ -71,5 +90,39 @@ describe('CalloutTemplateForm', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Set defaults' }));
 
     expect(screen.getByTestId('response-default-draft')).toHaveTextContent('draft-whiteboard');
+  });
+
+  it('with the Subspaces chip, the "Expanded card" switch is functional (feature 076, FR-007) — unlike the inert Manual-selection switch, it is not this feature to fix (spec A-9)', () => {
+    const setField = vi.fn();
+
+    render(
+      <CalloutTemplateForm
+        editMode={true}
+        form={
+          {
+            values: {
+              title: 'Template',
+              description: '',
+              framingChip: 'spaces',
+              cardVariant: 'compact',
+              responseType: 'none',
+              contributionDefaults: {},
+              contributorCollection: {},
+              referenceRows: [],
+              tags: [],
+            },
+            errors: {},
+            setField,
+          } as never
+        }
+      />
+    );
+
+    const toggle = screen.getByRole('button', { name: 'Expanded card' });
+    expect(toggle).toHaveAttribute('aria-pressed', 'false');
+
+    fireEvent.click(toggle);
+
+    expect(setField).toHaveBeenCalledWith('cardVariant', 'expanded');
   });
 });

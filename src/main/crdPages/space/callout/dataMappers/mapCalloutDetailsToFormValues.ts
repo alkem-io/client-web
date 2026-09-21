@@ -10,6 +10,7 @@ import { TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard'
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import { allowedActorsFromServer } from '@/main/crdPages/space/callout/calloutFormMapper';
 import { contributorCollectionFromServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
+import { cardVariantFromServer } from '@/main/crdPages/space/callout/spaceCollectionCardVariant';
 import type { CalloutFormValues, FramingChip, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
 type CalloutData = NonNullable<CalloutContentQuery['lookup']['callout']>;
@@ -108,6 +109,8 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     // Selection settings prefill (feature 025). Absent selection ⇒ AUTO (FR-016).
     selectionMode: settings.framing.selection?.mode === CalloutSelectionMode.Custom ? 'custom' : 'auto',
     selectedIds: settings.framing.selection?.selectedIds ?? [],
+    // Card variant prefill (feature 076). Absent `spaces` block ⇒ compact (US2-AS6).
+    cardVariant: cardVariantFromServer(settings.framing.spaces?.cardVariant),
     memoMarkdown: '',
     linkUrl: framing.link?.uri ?? '',
     linkDisplayName: framing.link?.profile.displayName ?? '',

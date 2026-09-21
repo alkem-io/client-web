@@ -626,6 +626,65 @@ describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
   });
 });
 
+describe('mapFormToCalloutCreationInput / mapFormToCalloutUpdateInput — card variant (feature 076)', () => {
+  it('create: sends spaces for the spaces chip, expanded', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'spaces', cardVariant: 'expanded' }),
+      createOptions
+    );
+    expect(result.input.settings?.framing?.spaces).toEqual({ cardVariant: 'EXPANDED' });
+  });
+
+  it('create: sends spaces for the spaces chip, compact', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'spaces', cardVariant: 'compact' }),
+      createOptions
+    );
+    expect(result.input.settings?.framing?.spaces).toEqual({ cardVariant: 'COMPACT' });
+  });
+
+  it('update: sends spaces for the spaces chip', () => {
+    const result = mapFormToCalloutUpdateInput(
+      baseValues({ framingChip: 'spaces', cardVariant: 'expanded' }),
+      updateOptions
+    );
+    expect(result.input.settings?.framing?.spaces).toEqual({ cardVariant: 'EXPANDED' });
+  });
+
+  it.each([
+    'contributors',
+    'whiteboard',
+    'none',
+  ] as const)('not sent for the "%s" chip — SPACES only (FR-004), never reuses the contributors||spaces selection condition', chip => {
+    const created = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: chip, cardVariant: 'expanded' }),
+      createOptions
+    );
+    expect(created.input.settings?.framing?.spaces).toBeUndefined();
+    const updated = mapFormToCalloutUpdateInput(
+      baseValues({ framingChip: chip, cardVariant: 'expanded' }),
+      updateOptions
+    );
+    expect(updated.input.settings?.framing?.spaces).toBeUndefined();
+  });
+
+  it('the selection payload is byte-identical with and without the new field (US2-AS4 — independence)', () => {
+    const withCompact = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'spaces', cardVariant: 'compact', selectionMode: 'custom', selectedIds: ['a', 'b'] }),
+      createOptions
+    );
+    const withExpanded = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'spaces', cardVariant: 'expanded', selectionMode: 'custom', selectedIds: ['a', 'b'] }),
+      createOptions
+    );
+    expect(withCompact.input.settings?.framing?.selection).toEqual(withExpanded.input.settings?.framing?.selection);
+    expect(withCompact.input.settings?.framing?.selection).toEqual({
+      mode: CalloutSelectionMode.Custom,
+      selectedIds: ['a', 'b'],
+    });
+  });
+});
+
 describe('mapFormToCalloutUpdateInput', () => {
   it('always emits ID + framing.type + trimmed displayName + description', () => {
     const result = mapFormToCalloutUpdateInput(

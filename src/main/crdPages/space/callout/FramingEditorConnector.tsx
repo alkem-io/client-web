@@ -9,6 +9,7 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import type { ContributorMapFixedView, ContributorMapPin } from '@/crd/components/map/ContributorMap';
 import { WhiteboardConfigCard } from '@/crd/components/whiteboard/WhiteboardConfigCard';
 import { ContributorSelector } from '@/crd/forms/ContributorSelector';
+import { CalloutCardVariantField } from '@/crd/forms/callout/CalloutCardVariantField';
 import { CalloutSelectionField } from '@/crd/forms/callout/CalloutSelectionField';
 import {
   CollaboraDocumentTypePicker,
@@ -228,6 +229,13 @@ type FramingEditorConnectorProps = {
   selectedIds?: string[];
   onSelectedIdsChange?: (ids: string[]) => void;
   /**
+   * Card variant (feature 076) — present for the 'spaces' framing only. Defaults to
+   * 'compact' when the consumer omits it (e.g. the template form did not pass it
+   * before this feature).
+   */
+  cardVariant?: 'compact' | 'expanded';
+  onCardVariantChange?: (next: 'compact' | 'expanded') => void;
+  /**
    * Picker candidates + search for the contributors chip (feature 025, T005).
    * Derived by `useSelectionCandidates` in `CalloutFormConnector` and passed in
    * so `FramingEditorConnector` stays free of Apollo hooks (CRD connector rules).
@@ -315,6 +323,8 @@ export function FramingEditorConnector({
   onSelectionModeChange,
   selectedIds = [],
   onSelectedIdsChange,
+  cardVariant = 'compact',
+  onCardVariantChange,
   contributorCandidates = [],
   resolveContributorChips,
   contributorCandidatesLoading = false,
@@ -799,35 +809,46 @@ export function FramingEditorConnector({
       };
 
       return (
-        <CalloutSelectionField
-          mode={selectionMode}
-          onModeChange={next => onSelectionModeChange?.(next)}
-          label={t('forms.selection.label')}
-          autoDescription={t('forms.selection.spaces.autoDescription')}
-          customDescription={t('forms.selection.spaces.customDescription')}
-          pickerSlot={
-            <ContributorSelector
-              selectedContributors={subspaceChips}
-              searchResults={subspaceSearchResults}
-              searchQuery={subspaceSearchQuery}
-              onSearchChange={setSubspaceSearchQuery}
-              onSelectUser={handleSubspaceSelect}
-              onRemoveContributor={handleSubspaceRemove}
-              loading={subspaceCandidatesLoading}
-              allowEmailInvites={false}
-              chipsPosition="above"
-              clearSearchAriaLabel={t('forms.selection.clearSearch')}
-              ineligibleLabel={t('forms.selection.noLongerAvailable')}
-              placeholder={t('forms.selection.searchSubspacePlaceholder')}
-              searchAriaLabel={t('forms.selection.searchSubspaceAriaLabel')}
-              noResultsLabel={t('forms.selection.noResults')}
-              loadingLabel={t('forms.selection.loading')}
-              loadMoreLabel={t('forms.selection.loadMore')}
-              removeAriaLabel={name => t('forms.selection.removeAriaLabel', { name })}
-              validationErrorLabel={() => ''}
-            />
-          }
-        />
+        <div className="space-y-4">
+          <CalloutSelectionField
+            mode={selectionMode}
+            onModeChange={next => onSelectionModeChange?.(next)}
+            label={t('forms.selection.label')}
+            autoDescription={t('forms.selection.spaces.autoDescription')}
+            customDescription={t('forms.selection.spaces.customDescription')}
+            pickerSlot={
+              <ContributorSelector
+                selectedContributors={subspaceChips}
+                searchResults={subspaceSearchResults}
+                searchQuery={subspaceSearchQuery}
+                onSearchChange={setSubspaceSearchQuery}
+                onSelectUser={handleSubspaceSelect}
+                onRemoveContributor={handleSubspaceRemove}
+                loading={subspaceCandidatesLoading}
+                allowEmailInvites={false}
+                chipsPosition="above"
+                clearSearchAriaLabel={t('forms.selection.clearSearch')}
+                ineligibleLabel={t('forms.selection.noLongerAvailable')}
+                placeholder={t('forms.selection.searchSubspacePlaceholder')}
+                searchAriaLabel={t('forms.selection.searchSubspaceAriaLabel')}
+                noResultsLabel={t('forms.selection.noResults')}
+                loadingLabel={t('forms.selection.loading')}
+                loadMoreLabel={t('forms.selection.loadMore')}
+                removeAriaLabel={name => t('forms.selection.removeAriaLabel', { name })}
+                validationErrorLabel={() => ''}
+              />
+            }
+          />
+          {/* "Expanded card" switch (feature 076) — placed immediately after the
+              complete Manual selection block (its switch, description and, when
+              on, its picker) per FR-008. */}
+          <CalloutCardVariantField
+            expanded={cardVariant === 'expanded'}
+            onExpandedChange={on => onCardVariantChange?.(on ? 'expanded' : 'compact')}
+            label={t('forms.cardVariant.label')}
+            description={t('forms.cardVariant.description')}
+          />
+        </div>
       );
     }
 

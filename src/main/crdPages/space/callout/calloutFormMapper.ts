@@ -15,6 +15,7 @@ import type { CalloutCreationType } from '@/domain/collaboration/calloutsSet/use
 import type { MemoFieldSubmittedValues } from '@/domain/collaboration/memo/model/MemoFieldSubmittedValues';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { contributorCollectionToServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
+import { cardVariantToServer } from '@/main/crdPages/space/callout/spaceCollectionCardVariant';
 import type {
   AllowedActors,
   CalloutFormValues,
@@ -220,6 +221,12 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
                 selectedIds: values.selectedIds,
               },
             }
+          : {}),
+        // Card variant (feature 076) — SPACES only. The server rejects this block on
+        // every other framing, Contributors included, so this does NOT reuse the
+        // `Contributors || Spaces` condition above (FR-004).
+        ...(framingType === CalloutFramingType.Spaces
+          ? { spaces: { cardVariant: cardVariantToServer(values.cardVariant) } }
           : {}),
       },
       contribution: contributionSettings,
@@ -486,6 +493,10 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
               selectedIds: values.selectedIds,
             },
           }
+        : {}),
+      // Card variant (feature 076) — SPACES only, same rule as create (FR-004).
+      ...(framingType === CalloutFramingType.Spaces
+        ? { spaces: { cardVariant: cardVariantToServer(values.cardVariant) } }
         : {}),
     },
   };

@@ -173,6 +173,8 @@ export function CalloutTemplateForm({
             )
           }
           contributorCollectionError={errors.contributorCollection}
+          cardVariant={values.cardVariant}
+          onCardVariantChange={v => setField('cardVariant', v)}
         />
       </div>
 

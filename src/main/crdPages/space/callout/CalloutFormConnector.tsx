@@ -1066,6 +1066,8 @@ function CalloutFormConnectorInner({
                 onSelectionModeChange={next => setField('selectionMode', next)}
                 selectedIds={values.selectedIds}
                 onSelectedIdsChange={ids => setField('selectedIds', ids)}
+                cardVariant={values.cardVariant}
+                onCardVariantChange={next => setField('cardVariant', next)}
                 contributorCandidates={contributorCandidates}
                 resolveContributorChips={resolveContributorChips}
                 contributorCandidatesLoading={contributorCandidatesLoading}
