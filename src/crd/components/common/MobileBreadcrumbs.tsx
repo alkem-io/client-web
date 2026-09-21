@@ -81,11 +81,13 @@ export function MobileBreadcrumbs({ items, homeHref, className }: MobileBreadcru
 
             if (isCurrent) {
               return (
-                <DropdownMenuItem key={rowKey} aria-current="page" className={cn(indentClass, 'bg-primary/10')}>
+                <DropdownMenuItem key={rowKey} aria-current="page" className={cn(indentClass, 'bg-primary/5')}>
                   <CornerDownRight aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" />
                   <CrumbVisual avatar={item.avatar} icon={item.icon} />
                   <span className="flex-1 truncate">{item.label}</span>
-                  <Badge className="ml-auto shrink-0">{t('breadcrumbs.current')}</Badge>
+                  <Badge className="ml-auto shrink-0 border-transparent bg-primary/10 text-primary">
+                    {t('breadcrumbs.current')}
+                  </Badge>
                 </DropdownMenuItem>
               );
             }

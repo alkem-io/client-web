@@ -266,9 +266,18 @@ describe('MobileBreadcrumbs presentation fidelity (indentation, glyphs, tint/bad
     const geRow = screen.getByRole('menuitem', { name: /Green Energy/ });
     const overviewRow = screen.getByRole('menuitem', { name: /Overview/ });
 
-    expect(homeRow.className).not.toContain('bg-primary/10');
-    expect(geRow.className).not.toContain('bg-primary/10');
-    expect(overviewRow.className).toContain('bg-primary/10');
+    expect(homeRow.className).not.toContain('bg-primary/5');
+    expect(geRow.className).not.toContain('bg-primary/5');
+    expect(overviewRow.className).toContain('bg-primary/5');
+
+    // The badge is the soft primary-tinted pill from the design (pale blue
+    // ground, primary-coloured text) — NOT the Badge primitive's solid
+    // `default` variant, which fills with bg-primary and inverts the text.
+    const currentBadge = within(overviewRow).getByText('breadcrumbs.current');
+    expect(currentBadge.className).toContain('bg-primary/10');
+    expect(currentBadge.className).toContain('text-primary');
+    expect(currentBadge.className).not.toContain('text-primary-foreground');
+
     expect(within(overviewRow).getByText('breadcrumbs.current')).toBeInTheDocument();
     expect(within(homeRow).queryByText('breadcrumbs.current')).not.toBeInTheDocument();
     expect(within(geRow).queryByText('breadcrumbs.current')).not.toBeInTheDocument();
