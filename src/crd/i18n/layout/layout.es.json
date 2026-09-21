@@ -43,6 +43,12 @@
     "restored": "Tu conexión se ha restablecido.",
     "close": "Cerrar"
   },
+  "breadcrumbs": {
+    "openLocationHierarchy": "Mostrar jerarquía de ubicación",
+    "locationHierarchy": "Jerarquía de ubicación",
+    "current": "Actual",
+    "home": "Inicio"
+  },
   "cookieConsent": {
     "consent": "Al hacer clic en \"Aceptar todas las cookies\", aceptas el almacenamiento de cookies en tu dispositivo para mejorar la navegación y analizar el uso del sitio.",
     "settingsIntro": "Al visitar un sitio web, se puede almacenar información en tu navegador en forma de cookies. Esta información puede ser sobre ti, tus preferencias y tu dispositivo. Principalmente, esta información se utiliza para que el sitio web funcione lo mejor posible. Algunos sitios web la usan con fines de marketing. Como Alkemio no permite publicidad en su sitio web, solo distinguimos dos tipos de cookies.",
