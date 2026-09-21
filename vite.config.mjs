@@ -1,11 +1,14 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import svgrPlugin from 'vite-plugin-svgr';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { generateMetaJson } from './build-utils.mjs';
+import { buildDevContentSecurityPolicy } from './src/main/csp/devPolicy';
+
+const env = loadEnv(process.env.NODE_ENV ?? 'development', process.cwd(), 'VITE_APP');
 
 /**
  * Vite configuration for the Alkemio client-web project.
@@ -152,6 +155,14 @@ export default defineConfig({
   server: {
     port: 3001,
     host: 'localhost',
+    // Local report-only mirror of the environments' content-security policy.
+    headers: {
+      'Content-Security-Policy-Report-Only': buildDevContentSecurityPolicy({
+        appOrigin: env.VITE_APP_ALKEMIO_DOMAIN || 'http://localhost:3000',
+        matrixUrl: env.VITE_APP_MATRIX_HOMESERVER_URL || 'http://localhost:8008',
+        identityOrigin: env.VITE_APP_ALKEMIO_DOMAIN || 'http://localhost:3000',
+      }),
+    },
   },
   build: {
     sourcemap: process.env.NODE_ENV === 'development',

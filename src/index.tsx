@@ -1,8 +1,15 @@
 import { createRoot } from 'react-dom/client';
 import '@/crd/styles/crd.css';
 import './index.css';
+import { activateDeferredStylesheet } from './main/csp/deferredStylesheet';
+import { loadInContextTranslation } from './main/inContextTranslation';
 import Root from './root';
 import { register as registerServiceWorker, unregister as unregisterServiceWorker } from './serviceWorker';
+
+// Shell work that used to be inline in index.html; kept out of the HTML so the
+// content-security policy needs no inline-script allowance.
+loadInContextTranslation();
+activateDeferredStylesheet(document.querySelector<HTMLLinkElement>('link#google-fonts-stylesheet'));
 
 const root = createRoot(document.getElementById('root')!);
 root.render(<Root />);
