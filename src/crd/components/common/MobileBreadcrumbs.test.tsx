@@ -73,16 +73,19 @@ describe('MobileBreadcrumbs', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  test('wrapper is md:hidden (the exact complement of the desktop hidden md:inline-flex) and shows an aria-hidden separator before the pill', () => {
+  test('wrapper is md:hidden (the exact complement of the desktop hidden md:inline-flex) and renders NO separator glyph before the pill', () => {
     setup();
     const { container } = render(<MobileBreadcrumbs items={fixture} homeHref={homeHref} />);
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper.className).toContain('md:hidden');
     expect(wrapper.className).not.toContain('md:flex');
     expect(wrapper.className).not.toContain('md:inline-flex');
-    const separator = wrapper.querySelector('svg.lucide-chevron-right') as SVGElement;
-    expect(separator).toBeTruthy();
-    expect(separator.getAttribute('aria-hidden')).toBe('true');
+    // Regression lock for the header-overflow defect found in live verification
+    // (US1-AS1): the separator's 14px glyph plus its gap pushed the pill under
+    // the authenticated icon cluster at phone widths, and the nav painted over
+    // the disclosure chevron. Measured after removal: +27px clearance at 360px,
+    // +57px at 390px. Re-adding a separator here re-opens that defect.
+    expect(wrapper.querySelector('svg.lucide-chevron-right')).toBeNull();
   });
 
   test('trigger accessible name is the i18n key, not the literal ellipsis', () => {
@@ -370,7 +373,6 @@ describe('MobileBreadcrumbs accessibility', () => {
     const { container } = render(<MobileBreadcrumbs items={fixture} homeHref={homeHref} />);
     await openPanel(user);
     const decorativeSelectors = [
-      'svg.lucide-chevron-right',
       'svg.lucide-chevron-down',
       'svg.lucide-corner-down-right',
       'svg.lucide-house',

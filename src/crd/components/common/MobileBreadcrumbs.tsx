@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronRight, CornerDownRight, House } from 'lucide-react';
+import { ChevronDown, CornerDownRight, House } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type BreadcrumbTrailItem, CrumbVisual } from '@/crd/components/common/BreadcrumbsTrail';
@@ -46,16 +46,23 @@ export function MobileBreadcrumbs({ items, homeHref, className }: MobileBreadcru
   const openLabel = t('breadcrumbs.openLocationHierarchy');
 
   return (
-    <div className={cn('inline-flex min-w-0 items-center gap-1.5 md:hidden', className)}>
-      <ChevronRight aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" />
+    // No separator glyph between the home affordance and the pill: on a phone
+    // header carrying the authenticated icon cluster, its 14px + gap pushed the
+    // pill under the icon nav, which painted over the disclosure cue. The pill
+    // reads as its own control without it. (Operator decision, 071.)
+    <div className={cn('inline-flex min-w-0 items-center md:hidden', className)}>
       <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild={true}>
           <button
             type="button"
             aria-label={openLabel}
-            className="flex min-h-11 min-w-11 items-center justify-center gap-0.5 rounded-md text-muted-foreground outline-none hover:bg-accent hover:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            className="flex min-h-11 min-w-11 shrink-0 items-center justify-center gap-0.5 rounded-md text-muted-foreground outline-none hover:bg-accent hover:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
-            <BreadcrumbEllipsis srLabel={openLabel} />
+            {/* The primitive defaults to a 36px box. Inside a 44px-minimum touch
+                target that is wasted width, and on a crowded phone header the
+                surplus pushed the chevron under the icon nav. size-5 keeps the
+                glyph identical while the button still meets the 44px target. */}
+            <BreadcrumbEllipsis className="size-5" srLabel={openLabel} />
             <ChevronDown aria-hidden="true" className="size-3.5 shrink-0" />
           </button>
         </DropdownMenuTrigger>
