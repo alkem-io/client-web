@@ -135,7 +135,7 @@ describe('InlineMarkdown card-safe mode (rawHtml="skip") — cross-scope content
   // every block kind the markdown can emit is flattened to inline first. This is the deterministic
   // half of that guarantee — every block tag the parser can produce, over headings 1-6, lists,
   // a code fence, a blockquote, a horizontal rule, the table above, and one document combining all
-  // of them, must be covered by a matching `[&_<tag>]:inline` (or `:hidden` for `hr`) variant on the
+  // of them, must be covered by a matching per-tag `inline` flatten variant (or `hidden` for `hr`) on the
   // container. A tag with no matching variant means the clamp silently stops bounding that content —
   // this test fails the moment a block kind is added to the markdown surface without a flatten rule.
   const FLATTENABLE_TAGS = [
