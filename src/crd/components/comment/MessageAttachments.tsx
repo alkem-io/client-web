@@ -13,20 +13,19 @@ type MessageAttachmentsProps = {
   className?: string;
 };
 
-const isImage = (mimeType: string) => mimeType.startsWith('image/');
+const isImage = (mimeType: string | undefined) => mimeType?.startsWith('image/');
 
 /** Only ever use a server-issued attachment URL as an `href`/`src` when it is an
  *  http(s) URL — belt-and-suspenders against a `javascript:`/`data:` URL slipping
  *  through. */
-const isHttpUrl = (url: string) => /^https?:\/\//i.test(url);
+const isHttpUrl = (url: string | undefined): url is string => typeof url === 'string' && /^https?:\/\//i.test(url);
 
 /**
  * Renders the media attachments on a message (feature 013). Images show an
  * inline preview that links to the full document; every other type renders a
  * downloadable file chip. `url` is an already-authorized Alkemio document URL,
  * so web- and Element-origin attachments render identically. Images that fail
- * to load (e.g. briefly unfetchable while the document is being re-homed — FR-017)
- * degrade to the same downloadable chip with an "unavailable" hint.
+ * to load degrade to the same downloadable chip with an "unavailable" hint.
  */
 export function MessageAttachments({ attachments, align = 'start', className }: MessageAttachmentsProps) {
   const { t } = useTranslation('crd-common');
@@ -41,8 +40,8 @@ export function MessageAttachments({ attachments, align = 'start', className }: 
     // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
     // biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset
     <ul role="list" aria-label={t('messageAttachments.listLabel')} className={listClassName}>
-      {attachments.map(attachment => (
-        <li key={attachment.id} className="max-w-[min(320px,100%)]">
+      {attachments.map((attachment, index) => (
+        <li key={attachment.id ?? `unavailable-${index}`} className="max-w-[min(320px,100%)]">
           {isImage(attachment.mimeType) ? (
             <AttachmentImage attachment={attachment} />
           ) : (
@@ -58,9 +57,7 @@ function AttachmentImage({ attachment }: { attachment: MessageAttachment }) {
   const { t } = useTranslation('crd-common');
   const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
 
-  // When a document is re-homed (FR-017) the same attachment id can receive a
-  // fresh URL. Reset the load state so an image that previously errored gets
-  // another attempt instead of staying on the fallback chip forever.
+  // Retry presentation when the resolved URL changes.
   useEffect(() => {
     setStatus('loading');
   }, [attachment.url]);
@@ -118,7 +115,7 @@ function AttachmentImage({ attachment }: { attachment: MessageAttachment }) {
 
 function AttachmentFileChip({ attachment, hint }: { attachment: MessageAttachment; hint?: string }) {
   const { t } = useTranslation('crd-common');
-  const formattedSize = formatBytes(attachment.size);
+  const formattedSize = attachment.size === undefined ? '' : formatBytes(attachment.size);
   // Only treat a server-issued http(s) URL as downloadable; anything else is
   // surfaced as an unavailable, non-interactive chip.
   const downloadable = isHttpUrl(attachment.url);

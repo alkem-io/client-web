@@ -970,7 +970,8 @@
       "stagedListLabel": "Archivos para enviar",
       "removeAttachment": "Quitar {{name}}",
       "uploading": "Subiendo…",
-      "uploadFailed": "Error al subir. Elimina el archivo para enviar tu mensaje.",
+      "uploadFailed": "Error al subir. Envía de nuevo para reintentarlo o elimina el archivo.",
+      "sendUnconfirmed": "El envío no se ha confirmado. Revisa la conversación antes de volver a enviar.",
       "errorTooMany": "Puedes adjuntar hasta {{max}} archivos.",
       "errorTooLarge": "{{name}} supera los {{max}} MB.",
       "errorUnsupportedType": "{{name}} tiene un tipo de archivo no admitido."

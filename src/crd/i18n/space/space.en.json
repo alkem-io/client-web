@@ -970,7 +970,8 @@
       "stagedListLabel": "Files to send",
       "removeAttachment": "Remove {{name}}",
       "uploading": "Uploading…",
-      "uploadFailed": "Upload failed. Remove the file to send your message.",
+      "uploadFailed": "Upload failed. Send again to retry, or remove the file.",
+      "sendUnconfirmed": "Send was not confirmed. Check the conversation before sending again.",
       "errorTooMany": "You can attach up to {{max}} files.",
       "errorTooLarge": "{{name}} is larger than {{max}} MB.",
       "errorUnsupportedType": "{{name}} has an unsupported file type."

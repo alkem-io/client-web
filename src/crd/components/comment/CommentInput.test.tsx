@@ -173,55 +173,26 @@ describe('CommentInput attachments', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Too big');
   });
 
-  // Regression guard for silent data loss: a failed upload has no document id,
-  // so sending would post the message WITHOUT that file and then clear the chip
-  // — the user watches their attachment disappear believing it was sent.
-  describe('a failed attachment blocks the send', () => {
-    test('the send button is disabled even when there is text to send', () => {
-      render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachments={[failed]} value="here you go" />);
-      expect(screen.getByRole('button', { name: 'comments.send' })).toBeDisabled();
+  describe('a failed attachment remains available for explicit retry', () => {
+    test('Send submits with the failed file still selected', () => {
+      const onSubmit = vi.fn();
+      render(<CommentInput onSubmit={onSubmit} attachmentsEnabled={true} attachments={[ready, failed]} />);
+      fireEvent.click(screen.getByRole('button', { name: 'comments.send' }));
+      expect(onSubmit).toHaveBeenCalledWith('');
+      expect(screen.getByText('broken.png')).toBeInTheDocument();
     });
 
-    test('the send button is disabled alongside a successfully uploaded file', () => {
-      render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachments={[ready, failed]} />);
-      expect(screen.getByRole('button', { name: 'comments.send' })).toBeDisabled();
-    });
-
-    test('Enter does not submit either — the keyboard path must not bypass the block', () => {
+    test('Enter also allows an explicit retry', () => {
       const onSubmit = vi.fn();
       render(<CommentInput onSubmit={onSubmit} attachmentsEnabled={true} attachments={[failed]} value="here you go" />);
-
       fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' });
-
-      expect(onSubmit).not.toHaveBeenCalled();
+      expect(onSubmit).toHaveBeenCalledWith('here you go');
     });
 
-    // The chips and the error alert render only when `attachmentsEnabled`. If the
-    // block did not follow that gate, a draft staged while attachments were live
-    // (e.g. a deep-linked conversation that resolves to one without a bucket) would
-    // leave Send disabled forever, with no chip to remove and no error to read.
-    test('a staged attachment does not dead-lock Send once attachments are disabled', () => {
-      render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={false} attachments={[failed]} value="hello" />);
-
-      // Nothing on screen would explain a disabled Send here.
-      expect(screen.queryByText('broken.png')).not.toBeInTheDocument();
-      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'comments.send' })).toBeEnabled();
-    });
-
-    test('an in-flight upload does not dead-lock Send once attachments are disabled', () => {
-      render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={false} attachments={[uploading]} value="hello" />);
-      expect(screen.getByRole('button', { name: 'comments.send' })).toBeEnabled();
-    });
-
-    test('removing the failed chip re-enables the send', () => {
-      const { rerender } = render(
-        <CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachments={[ready, failed]} />
-      );
+    test('busy sending disables retry and removal', () => {
+      render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachments={[failed]} disabled={true} />);
       expect(screen.getByRole('button', { name: 'comments.send' })).toBeDisabled();
-
-      rerender(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachments={[ready]} />);
-      expect(screen.getByRole('button', { name: 'comments.send' })).toBeEnabled();
+      expect(screen.getByRole('button', { name: /comments.attachments.removeAttachment/ })).toBeDisabled();
     });
   });
 });

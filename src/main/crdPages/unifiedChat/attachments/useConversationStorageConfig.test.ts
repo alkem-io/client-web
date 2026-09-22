@@ -59,7 +59,7 @@ describe('useConversationStorageConfig', () => {
       allowedMimeTypes: ['image/png'],
       maxFileSize: 1024,
       canUpload: true,
-      temporaryLocation: true,
+      temporaryLocation: false,
     });
   });
 

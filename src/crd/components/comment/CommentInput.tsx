@@ -157,21 +157,11 @@ export function CommentInput({
 
   const trimmedContent = content.trim();
   const anyUploading = attachments.some(attachment => attachment.status === 'uploading');
-  const readyAttachmentCount = attachments.filter(attachment => attachment.status === 'ready').length;
-  // A failed upload has no document id, so sending would drop that file from the
-  // message while the user — still looking at its chip — believes it went out.
-  // Block the send instead; the composer's error alert tells them to remove the
-  // chip, and removing it re-enables sending.
-  const anyFailed = attachments.some(attachment => attachment.status === 'error');
-  // With attachments enabled, an attachment-only message (no text) is valid;
-  // block sending while any upload is still in flight. Both blocks are gated on
-  // `attachmentsEnabled` because the chips and the error alert are — otherwise a
-  // draft staged just before attachments were disabled would dead-lock Send with
-  // no chip to remove and no error explaining why.
+  // Failed files remain selected and can be retried explicitly with Send.
   const canSend =
     !disabled &&
-    !(attachmentsEnabled && (anyUploading || anyFailed)) &&
-    (trimmedContent.length > 0 || (attachmentsEnabled && readyAttachmentCount > 0));
+    !(attachmentsEnabled && anyUploading) &&
+    (trimmedContent.length > 0 || (attachmentsEnabled && attachments.length > 0));
   const showCharCount = content.length >= Math.floor(maxLength * 0.8);
   const mentionsEnabled = Boolean(mentionSearch);
 

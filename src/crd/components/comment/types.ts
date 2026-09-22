@@ -27,14 +27,14 @@ export type CommentReaction = {
  * are present for images only and let the renderer reserve aspect ratio.
  */
 export type MessageAttachment = {
-  id: string;
+  id?: string;
   /** Authorized Alkemio document URL. */
-  url: string;
+  url?: string;
   /** Filename / display name. */
   displayName: string;
-  mimeType: string;
+  mimeType?: string;
   /** Size in bytes. */
-  size: number;
+  size?: number;
   /** Pixel width — images only. */
   width?: number;
   /** Pixel height — images only. */

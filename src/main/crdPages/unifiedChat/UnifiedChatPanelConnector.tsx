@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
 import { ChatPanel } from '@/crd/components/chat/ChatPanel';
-import { ChatThreadView } from '@/crd/components/chat/ChatThreadView';
 import { ConversationAvatar } from '@/crd/components/chat/ConversationAvatar';
 import { GroupAvatar } from '@/crd/components/chat/GroupAvatar';
 import { GroupSettingsDialog } from '@/crd/components/chat/GroupSettingsDialog';
@@ -22,8 +21,7 @@ import { buildUserNotificationSettingsUrl } from '@/main/routing/urlBuilders';
 import { useConversationDrafts } from '@/main/userMessaging/ConversationDraftsContext';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
-import { useConversationAttachments } from './attachments/useConversationAttachments';
-import { useConversationStorageConfig } from './attachments/useConversationStorageConfig';
+import { ConversationThread } from './ConversationThread';
 import {
   injectGuidanceIntro,
   mapConversationToListItem,
@@ -81,18 +79,6 @@ export const UnifiedChatPanelConnector = () => {
   // the panel closed too. The selected room's message stream is inside the view hook.
   const { isSending, handleSendMessage, handleAddReaction, handleRemoveReaction, handleLeaveGroup, clearGuidance } =
     useUnifiedConversationView(selectedConversation ?? null, rawMessages);
-
-  // Attachments (feature 013) — only for real (non-guidance) conversation
-  // threads. The hook fetches the conversation's storage bucket; the server
-  // returns a null bucket whenever attachments are unavailable (feature off
-  // server-side, or the viewer is not a member), which is the only gate —
-  // `enabled` then stays false and the composer renders exactly as before.
-  const { storageConfig: attachmentStorageConfig } = useConversationStorageConfig(selectedConversationId ?? undefined);
-  const messageAttachments = useConversationAttachments(attachmentStorageConfig, selectedConversationId ?? undefined);
-  // Attachments are only offered on real, uploadable threads — never the
-  // guidance/AI thread. Gates both the composer affordance and (belt-and-
-  // suspenders) whether a send carries document ids at all.
-  const attachmentsEnabled = messageAttachments.enabled && !isGuidanceThread;
 
   const groupSettings = useGroupSettings(selectedConversation?.id, selectedConversation?.members ?? [], {
     displayName: selectedConversation?.roomDisplayName ?? '',
@@ -317,8 +303,11 @@ export const UnifiedChatPanelConnector = () => {
         titleAvatar={titleAvatar}
         headerActions={view === 'thread' ? headerActions : undefined}
       >
-        {view === 'thread' ? (
-          <ChatThreadView
+        {view === 'thread' && selectedConversationId ? (
+          <ConversationThread
+            key={selectedConversationId}
+            conversationId={selectedConversationId}
+            attachmentsAllowed={!isGuidanceThread}
             conversation={threadHeader}
             messages={chatMessages}
             messagesLoading={messagesLoading}
@@ -336,34 +325,15 @@ export const UnifiedChatPanelConnector = () => {
                 setDraft(selectedConversationId, value);
               }
             }}
-            onSendMessage={async message => {
-              if (isGuidanceThread) {
-                guidanceResponse.markSent();
-              }
-              // Pin the id: the selection can move while the mutation is in flight.
-              const conversationId = selectedConversationId;
-              // Only carry document ids when attachments are actually enabled
-              // for this thread — a text-only send never ships stale ids.
-              const sent = await handleSendMessage(message, attachmentsEnabled ? messageAttachments.documentIds : []);
-              if (sent) {
-                // Pinned for the same reason as clearDraft below — clearing the
-                // staged attachments of whatever conversation happens to be
-                // selected NOW would discard a draft the user just started.
-                messageAttachments.reset(conversationId ?? undefined);
-                if (conversationId) {
-                  clearDraft(conversationId);
-                }
-              }
-              return sent;
+            sendEvent={async (message, documents) => {
+              if (isGuidanceThread) guidanceResponse.markSent();
+              return handleSendMessage(message, documents);
+            }}
+            onTextSent={() => {
+              if (selectedConversationId) clearDraft(selectedConversationId);
             }}
             onAddReaction={onAddReaction}
             onRemoveReaction={onRemoveReaction}
-            attachmentsEnabled={attachmentsEnabled}
-            attachments={messageAttachments.attachments}
-            onAttachFiles={messageAttachments.attachFiles}
-            onRemoveAttachment={messageAttachments.removeAttachment}
-            attachmentError={messageAttachments.error}
-            acceptMimeTypes={messageAttachments.accept}
           />
         ) : (
           <ChatConversationList

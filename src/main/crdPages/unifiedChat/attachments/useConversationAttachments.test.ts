@@ -1,359 +1,192 @@
-import { act, renderHook } from '@testing-library/react';
+import { act, render, renderHook } from '@testing-library/react';
+import { createElement, StrictMode, useLayoutEffect } from 'react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import type { StorageConfig } from '@/domain/storage/StorageBucket/useStorageConfig';
 import { useConversationAttachments } from './useConversationAttachments';
 
 const mockUploadFile = vi.fn();
-
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
-}));
-
+vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useUploadFileMutation: () => [mockUploadFile, { loading: false }],
 }));
 
 const bucketConfig: StorageConfig = {
-  storageBucketId: 'bucket-1',
+  storageBucketId: 'bucket',
   allowedMimeTypes: ['image/png'],
   maxFileSize: 50 * 1024 * 1024,
   canUpload: true,
-  temporaryLocation: true,
+  temporaryLocation: false,
 };
-
-const makeFile = (name: string, type: string, size = 10): File => {
-  const file = new File(['x'], name, { type });
-  Object.defineProperty(file, 'size', { value: size });
-  return file;
-};
-
-const batch = (prefix: string, count: number): File[] =>
-  Array.from({ length: count }, (_, i) => makeFile(`${prefix}-${i}.png`, 'image/png'));
-
-// Flush pending microtasks + a macrotask so an in-flight upload's continuation
-// (chip status update, next loop iteration) commits inside act().
-const tick = async (): Promise<void> => {
-  await act(async () => {
-    await new Promise(resolve => setTimeout(resolve, 0));
-  });
-};
+const file = (name: string, type = 'image/png') => new File(['bytes'], name, { type });
+const uploadResult = (id: string) => ({ data: { uploadFileOnStorageBucket: { id } } });
 
 describe('useConversationAttachments', () => {
   beforeEach(() => {
     mockUploadFile.mockReset();
   });
 
-  test('is inert when no storage bucket is available (null config)', async () => {
-    const { result } = renderHook(() => useConversationAttachments(undefined));
-
-    expect(result.current.enabled).toBe(false);
-    expect(result.current.accept).toBeUndefined();
-
-    await act(async () => {
-      await result.current.attachFiles([makeFile('a.png', 'image/png')]);
-    });
-
-    // No upload attempted, nothing staged.
-    expect(mockUploadFile).not.toHaveBeenCalled();
-    expect(result.current.attachments).toHaveLength(0);
-    expect(result.current.documentIds).toHaveLength(0);
-  });
-
-  test('uploads into the conversation bucket when a writable bucket is supplied', async () => {
-    mockUploadFile.mockResolvedValue({ data: { uploadFileOnStorageBucket: { id: 'doc-1', url: 'https://x/doc-1' } } });
-    const { result } = renderHook(() => useConversationAttachments(bucketConfig));
-
-    expect(result.current.enabled).toBe(true);
-    // Both the mime type and its extension — some browsers only honour one of them.
+  test('selection and removal are local, including under StrictMode', () => {
+    const { result } = renderHook(() => useConversationAttachments(bucketConfig), { wrapper: StrictMode });
+    act(() => result.current.attachFiles([file('a.png')]));
+    expect(result.current.attachments).toHaveLength(1);
     expect(result.current.accept).toBe('image/png,.png');
-
-    await act(async () => {
-      await result.current.attachFiles([makeFile('a.png', 'image/png')]);
-    });
-
-    expect(mockUploadFile).toHaveBeenCalledWith({
-      variables: { file: expect.any(File), uploadData: { storageBucketId: 'bucket-1', temporaryLocation: true } },
-    });
-    expect(result.current.documentIds).toEqual(['doc-1']);
-    expect(result.current.attachments[0].status).toBe('ready');
-  });
-
-  test('a non-writable bucket (canUpload false) keeps the composer inert', () => {
-    const { result } = renderHook(() => useConversationAttachments({ ...bucketConfig, canUpload: false }));
-    expect(result.current.enabled).toBe(false);
-  });
-
-  test('drives type validation from the bucket policy', async () => {
-    const { result } = renderHook(() => useConversationAttachments(bucketConfig));
-
-    await act(async () => {
-      // application/pdf is not in the bucket's allowedMimeTypes -> rejected.
-      await result.current.attachFiles([makeFile('b.pdf', 'application/pdf')]);
-    });
-
     expect(mockUploadFile).not.toHaveBeenCalled();
+    act(() => result.current.removeAttachment(result.current.attachments[0].id));
+    expect(result.current.attachments).toHaveLength(0);
+  });
+
+  test('no writable bucket means no attachment selection', () => {
+    const { result } = renderHook(() => useConversationAttachments({ ...bucketConfig, canUpload: false }));
+    act(() => result.current.attachFiles([file('a.png')]));
+    expect(result.current.enabled).toBe(false);
+    expect(result.current.attachments).toHaveLength(0);
+    expect(mockUploadFile).not.toHaveBeenCalled();
+  });
+
+  test('validates type, byte size and the count from pending selections', () => {
+    const { result } = renderHook(() => useConversationAttachments({ ...bucketConfig, maxFileSize: 10 }));
+    act(() => result.current.attachFiles([file('a.pdf', 'application/pdf')]));
     expect(result.current.error).toBe('comments.attachments.errorUnsupportedType');
-  });
-
-  test('clears staged attachments when the selected conversation changes', async () => {
-    mockUploadFile.mockResolvedValue({ data: { uploadFileOnStorageBucket: { id: 'doc-A', url: 'https://x/doc-A' } } });
-    const { result, rerender } = renderHook(
-      ({ conversationId }) => useConversationAttachments(bucketConfig, conversationId),
-      { initialProps: { conversationId: 'conv-A' } }
-    );
-
-    await act(async () => {
-      await result.current.attachFiles([makeFile('a.png', 'image/png')]);
-    });
-    // Staged against conversation A's bucket.
-    expect(result.current.documentIds).toEqual(['doc-A']);
-    expect(result.current.attachments).toHaveLength(1);
-
-    // Switching to conversation B must drop the draft so a later send never
-    // carries A's bucket document ids.
+    act(() => result.current.attachFiles([new File(['a'.repeat(11)], 'large.png', { type: 'image/png' })]));
+    expect(result.current.error).toBe('comments.attachments.errorTooLarge');
     act(() => {
-      rerender({ conversationId: 'conv-B' });
+      result.current.attachFiles(Array.from({ length: 6 }, (_, i) => file(`a${i}.png`)));
+      result.current.attachFiles(Array.from({ length: 6 }, (_, i) => file(`b${i}.png`)));
     });
-
-    expect(result.current.attachments).toHaveLength(0);
-    expect(result.current.documentIds).toHaveLength(0);
-    expect(result.current.error).toBeUndefined();
-  });
-
-  test('rapid back-to-back picks respect the 10-attachment cap', async () => {
-    let uploadCount = 0;
-    mockUploadFile.mockImplementation(() => {
-      uploadCount += 1;
-      return Promise.resolve({ data: { uploadFileOnStorageBucket: { id: `doc-${uploadCount}`, url: 'https://x' } } });
-    });
-    const { result } = renderHook(() => useConversationAttachments(bucketConfig));
-
-    const batch = (prefix: string, count: number) =>
-      Array.from({ length: count }, (_, i) => makeFile(`${prefix}-${i}.png`, 'image/png'));
-
-    // Two picks fired back-to-back before a re-render: 6 then 6 = 12 requested,
-    // but the count cap reads the live ref, so only 10 are accepted in total.
-    await act(async () => {
-      await Promise.all([
-        result.current.attachFiles(batch('first', 6)),
-        result.current.attachFiles(batch('second', 6)),
-      ]);
-    });
-
-    expect(result.current.attachments).toHaveLength(10);
-    expect(result.current.documentIds).toHaveLength(10);
-    expect(result.current.error).toBe('comments.attachments.errorTooMany');
-  });
-
-  test('removing a chip mid-batch keeps the count cap honest for a later pick', async () => {
-    // Deferred uploads so chips are added one iteration at a time and we can
-    // remove an already-added chip while later files in the same batch are still
-    // in flight (the reservation-drift scenario).
-    const resolvers: Array<(id: string) => void> = [];
-    mockUploadFile.mockImplementation(
-      () =>
-        new Promise(resolve => {
-          resolvers.push(id => resolve({ data: { uploadFileOnStorageBucket: { id, url: 'https://x' } } }));
-        })
-    );
-    const resolveNext = async (id: string): Promise<void> => {
-      const resolve = resolvers.shift();
-      resolve?.(id);
-      await tick();
-    };
-
-    const { result } = renderHook(() => useConversationAttachments(bucketConfig));
-
-    // Start a 6-file batch; only the first chip is added before it awaits.
-    act(() => {
-      void result.current.attachFiles(batch('a', 6));
-    });
-    await tick();
-    expect(result.current.attachments).toHaveLength(1);
-
-    // Let a-0 finish uploading; a-1's chip is now added too.
-    await resolveNext('doc-a0');
-    expect(result.current.attachments).toHaveLength(2);
-
-    // Remove a-0 while a-2..a-5 are still to be added by the same batch. The old
-    // code reset the count ref to the current length (1), discarding the four
-    // not-yet-added reservations.
-    act(() => {
-      result.current.removeAttachment(result.current.attachments[0].id);
-    });
-    expect(result.current.attachments).toHaveLength(1);
-
-    // Drain the remaining uploads (a-1..a-5).
-    await resolveNext('doc-a1');
-    await resolveNext('doc-a2');
-    await resolveNext('doc-a3');
-    await resolveNext('doc-a4');
-    await resolveNext('doc-a5');
-    expect(result.current.attachments).toHaveLength(5);
-
-    // A later pick of 6 must accept only 5 to reach — but not exceed — the cap of
-    // 10. With the drift bug the ref was 1, so all 6 would have been accepted.
-    mockUploadFile.mockImplementation(() =>
-      Promise.resolve({ data: { uploadFileOnStorageBucket: { id: 'doc-b', url: 'https://x' } } })
-    );
-    await act(async () => {
-      await result.current.attachFiles(batch('b', 6));
-    });
-
     expect(result.current.attachments).toHaveLength(10);
     expect(result.current.error).toBe('comments.attachments.errorTooMany');
+    expect(mockUploadFile).not.toHaveBeenCalled();
   });
 
-  // The cap has to hold for a pick made while an earlier batch is STILL in
-  // flight: the slots that batch reserved but has not yet turned into chips are
-  // invisible in `attachments`, so a count taken from the staged chips alone
-  // undercounts and lets the pair exceed 10. The sibling test above drains the
-  // first batch before picking again, which hides that.
-  test('a second pick made mid-batch still respects the cap', async () => {
-    const resolvers: Array<(id: string) => void> = [];
-    mockUploadFile.mockImplementation(
-      () =>
-        new Promise(resolve => {
-          resolvers.push(id => resolve({ data: { uploadFileOnStorageBucket: { id, url: 'https://x' } } }));
-        })
-    );
-    const resolveNext = async (id: string): Promise<void> => {
-      resolvers.shift()?.(id);
-      await tick();
-    };
-
+  test('sends text and each uploaded file separately, clearing only confirmed items', async () => {
+    mockUploadFile.mockResolvedValueOnce(uploadResult('first')).mockResolvedValueOnce(uploadResult('second'));
+    const sendEvent = vi.fn().mockResolvedValue(true);
+    const textSent = vi.fn();
     const { result } = renderHook(() => useConversationAttachments(bucketConfig));
-
-    // Start a 6-file batch and let two chips land — four slots stay reserved but
-    // unstaged while their uploads are still in flight.
-    act(() => {
-      void result.current.attachFiles(batch('a', 6));
-    });
-    await tick();
-    await resolveNext('doc-a0');
-    expect(result.current.attachments).toHaveLength(2);
-
-    // Pick 6 more WITHOUT draining the first batch: only 4 may be accepted.
-    act(() => {
-      void result.current.attachFiles(batch('b', 6));
-    });
-    await tick();
-    expect(result.current.error).toBe('comments.attachments.errorTooMany');
-
-    // Drain every outstanding upload from both batches.
-    for (let i = 0; i < 40 && resolvers.length > 0; i += 1) {
-      await resolveNext(`doc-drain-${i}`);
-    }
-
-    // 6 from the first batch + 4 from the second — never 12.
-    expect(result.current.attachments).toHaveLength(10);
-  });
-
-  test('a stale upload rejection from a previous conversation is not surfaced in the new one', async () => {
-    let rejectA: (reason?: unknown) => void = () => {};
-    mockUploadFile.mockImplementationOnce(
-      () =>
-        new Promise((_resolve, reject) => {
-          rejectA = reject;
-        })
-    );
-    const { result, rerender } = renderHook(
-      ({ conversationId }) => useConversationAttachments(bucketConfig, conversationId),
-      { initialProps: { conversationId: 'conv-A' } }
-    );
-
-    // Stage a file in conversation A; its upload stays in flight.
-    act(() => {
-      void result.current.attachFiles([makeFile('a.png', 'image/png')]);
-    });
-    await tick();
-    expect(result.current.attachments).toHaveLength(1);
-
-    // Switch to conversation B — the draft (and refs) reset.
-    act(() => {
-      rerender({ conversationId: 'conv-B' });
-    });
-    expect(result.current.attachments).toHaveLength(0);
-
-    // A's upload now rejects. It must NOT repaint conversation B's composer with
-    // a spurious "upload failed" error.
+    act(() => result.current.attachFiles([file('a.png'), file('b.png')]));
     await act(async () => {
-      rejectA(new Error('boom'));
-      await new Promise(resolve => setTimeout(resolve, 0));
+      expect(await result.current.send('hello', sendEvent, textSent)).toBe(true);
     });
-
-    expect(result.current.error).toBeUndefined();
+    expect(sendEvent.mock.calls).toEqual([['hello'], ['', ['first']], ['', ['second']]]);
+    expect(textSent).toHaveBeenCalledTimes(1);
+    expect(mockUploadFile).toHaveBeenCalledWith({
+      variables: { file: expect.any(File), uploadData: { storageBucketId: 'bucket', temporaryLocation: false } },
+    });
     expect(result.current.attachments).toHaveLength(0);
   });
 
-  // A failed chip is what disables Send, so its explanation has to outlive a later
-  // successful attach — otherwise Send stays dead with nothing on screen saying why.
-  test('a later successful attach keeps the failed-upload error while the failed chip is staged', async () => {
+  test('second-file failure keeps it and remaining files; retry reuses its upload', async () => {
     mockUploadFile
-      .mockRejectedValueOnce(new Error('boom'))
-      .mockResolvedValueOnce({ data: { uploadFileOnStorageBucket: { id: 'doc-b', url: 'https://x/doc-b' } } });
+      .mockResolvedValueOnce(uploadResult('first'))
+      .mockResolvedValueOnce(uploadResult('second'))
+      .mockResolvedValueOnce(uploadResult('third'));
+    const sendEvent = vi
+      .fn()
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(false)
+      .mockResolvedValue(true);
+    const textSent = vi.fn();
     const { result } = renderHook(() => useConversationAttachments(bucketConfig));
-
+    act(() => result.current.attachFiles([file('a.png'), file('b.png'), file('c.png')]));
     await act(async () => {
-      await result.current.attachFiles([makeFile('a.png', 'image/png')]);
+      expect(await result.current.send('hello', sendEvent, textSent)).toBe(false);
     });
-    expect(result.current.error).toBe('comments.attachments.uploadFailed');
-
+    expect(result.current.attachments.map(item => item.name)).toEqual(['b.png', 'c.png']);
+    expect(result.current.error).toBe('comments.attachments.sendUnconfirmed');
+    expect(mockUploadFile).toHaveBeenCalledTimes(2);
+    expect(textSent).toHaveBeenCalledTimes(1);
     await act(async () => {
-      await result.current.attachFiles([makeFile('b.png', 'image/png')]);
+      expect(await result.current.send('', sendEvent, textSent)).toBe(true);
     });
-
-    expect(result.current.attachments.map(attachment => attachment.status)).toEqual(['error', 'ready']);
-    expect(result.current.error).toBe('comments.attachments.uploadFailed');
+    expect(sendEvent.mock.calls).toEqual([
+      ['hello'],
+      ['', ['first']],
+      ['', ['second']],
+      ['', ['second']],
+      ['', ['third']],
+    ]);
+    expect(mockUploadFile).toHaveBeenCalledTimes(3);
+    expect(result.current.attachments).toHaveLength(0);
+    expect(textSent).toHaveBeenCalledTimes(1);
   });
 
-  // The mirror case: no error may be shown once its chip is gone — "remove the file"
-  // would point at nothing the user can see.
-  test('a chip removed while its upload is in flight leaves no unactionable error behind', async () => {
-    let rejectUpload: (reason?: unknown) => void = () => {};
-    mockUploadFile.mockImplementationOnce(
-      () =>
-        new Promise((_resolve, reject) => {
-          rejectUpload = reject;
-        })
-    );
+  test('an upload failure stops before media publication and retains the files', async () => {
+    mockUploadFile.mockRejectedValue(new Error('upload unavailable'));
+    const sendEvent = vi.fn();
     const { result } = renderHook(() => useConversationAttachments(bucketConfig));
-
-    act(() => {
-      void result.current.attachFiles([makeFile('a.png', 'image/png')]);
+    act(() => result.current.attachFiles([file('a.png'), file('b.png')]));
+    await act(async () => {
+      expect(await result.current.send('', sendEvent, vi.fn())).toBe(false);
     });
-    await tick();
-    expect(result.current.attachments).toHaveLength(1);
+    expect(result.current.attachments.map(item => item.name)).toEqual(['a.png', 'b.png']);
+    expect(result.current.error).toBe('comments.attachments.uploadFailed');
+    expect(sendEvent).not.toHaveBeenCalled();
+    expect(mockUploadFile).toHaveBeenCalledTimes(1);
+  });
 
+  test('busy send rejects another send and selection changes', async () => {
+    let finish!: (value: ReturnType<typeof uploadResult>) => void;
+    mockUploadFile.mockReturnValue(
+      new Promise(resolve => {
+        finish = resolve;
+      })
+    );
+    const sendEvent = vi.fn().mockResolvedValue(true);
+    const { result } = renderHook(() => useConversationAttachments(bucketConfig));
+    act(() => result.current.attachFiles([file('a.png')]));
+    let sending!: Promise<boolean>;
+    act(() => {
+      sending = result.current.send('', sendEvent, vi.fn());
+    });
     act(() => {
       result.current.removeAttachment(result.current.attachments[0].id);
+      result.current.attachFiles([file('b.png')]);
     });
-    expect(result.current.attachments).toHaveLength(0);
-
+    expect(result.current.attachments.map(item => item.name)).toEqual(['a.png']);
+    expect(await result.current.send('', sendEvent, vi.fn())).toBe(false);
     await act(async () => {
-      rejectUpload(new Error('boom'));
-      await new Promise(resolve => setTimeout(resolve, 0));
+      finish(uploadResult('first'));
+      await sending;
     });
-
-    expect(result.current.attachments).toHaveLength(0);
-    expect(result.current.error).toBeUndefined();
+    expect(mockUploadFile).toHaveBeenCalledTimes(1);
+    expect(sendEvent).toHaveBeenCalledTimes(1);
   });
 
-  test('removeAttachment re-derives the error (clears a stale upload failure)', async () => {
-    mockUploadFile.mockRejectedValue(new Error('boom'));
-    const { result } = renderHook(() => useConversationAttachments(bucketConfig));
-
-    await act(async () => {
-      await result.current.attachFiles([makeFile('a.png', 'image/png')]);
-    });
-    expect(result.current.error).toBe('comments.attachments.uploadFailed');
-    const stagedId = result.current.attachments[0].id;
-
+  // Original A→B→A regression: adapted to upload-on-Send and the actual keyed lifetime.
+  test('returning to a conversation does not resume its discarded upload draft', async () => {
+    let finishFirst!: () => void;
+    mockUploadFile
+      .mockImplementationOnce(
+        () =>
+          new Promise(resolve => {
+            finishFirst = () => resolve(uploadResult('old-first'));
+          })
+      )
+      .mockResolvedValue(uploadResult('old-second'));
+    let current!: ReturnType<typeof useConversationAttachments>;
+    function Draft() {
+      const draft = useConversationAttachments(bucketConfig);
+      useLayoutEffect(() => {
+        current = draft;
+      }, [draft]);
+      return null;
+    }
+    const view = render(createElement(Draft, { key: 'conv-A' }));
+    const sendEvent = vi.fn().mockResolvedValue(true);
+    act(() => current.attachFiles([file('old-1.png'), file('old-2.png')]));
+    let sending!: Promise<boolean>;
     act(() => {
-      result.current.removeAttachment(stagedId);
+      sending = current.send('', sendEvent, vi.fn());
     });
-
-    expect(result.current.attachments).toHaveLength(0);
-    expect(result.current.error).toBeUndefined();
+    view.rerender(createElement(Draft, { key: 'conv-B' }));
+    view.rerender(createElement(Draft, { key: 'conv-A' }));
+    await act(async () => {
+      finishFirst();
+      await sending;
+    });
+    expect(current.attachments).toHaveLength(0);
+    expect(mockUploadFile).toHaveBeenCalledTimes(1);
+    expect(sendEvent).not.toHaveBeenCalled();
   });
 });

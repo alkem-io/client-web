@@ -1970,7 +1970,7 @@ export type Conversation = {
   messaging: Messaging;
   /** The room for this Conversation. */
   room: Room;
-  /** The storage bucket holding this Conversation's message attachments (feature 013). READ-gated to conversation members; null when message attachments are disabled. */
+  /** The storage bucket holding this Conversation's message attachments (feature 013). READ-gated to conversation members; null for a conversation that has no bucket yet (an accepted, backfillable state). */
   storageBucket?: Maybe<StorageBucket>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
@@ -2497,6 +2497,8 @@ export type CreateContributionOnCalloutInput = {
   link?: InputMaybe<CreateLinkInput>;
   memo?: InputMaybe<CreateMemoInput>;
   post?: InputMaybe<CreatePostInput>;
+  /** Send the space-member and space-admin contribution notifications. Defaults to true; only an explicit false suppresses. The activity log entry is written regardless. */
+  sendNotification?: InputMaybe<Scalars['Boolean']['input']>;
   /** The sort order to assign to this Contribution. */
   sortOrder?: InputMaybe<Scalars['Float']['input']>;
   /** The Tasks board column this task starts in. Only valid when the parent Callout is a Tasks board; defaults to the first column. */
@@ -5133,7 +5135,7 @@ export type MemoSigningPrepareResult = {
 /** A message that was sent in a chat room */
 export type Message = {
   __typename?: 'Message';
-  /** The media attachments on this Message (feature 013). READ-gated; empty when the feature is disabled or the viewer cannot read the documents. */
+  /** Media attachments; unavailable documents retain their event filename without a download URL. */
   attachments: Array<MessageAttachment>;
   /** The id for the message event. */
   id: Scalars['MessageID']['output'];
@@ -5156,13 +5158,13 @@ export type MessageAttachment = {
   /** The pixel height of the attachment (images only). */
   height?: Maybe<Scalars['Int']['output']>;
   /** The file-service document id of the attachment. */
-  id: Scalars['UUID']['output'];
+  id?: Maybe<Scalars['UUID']['output']>;
   /** The MIME type of the attachment. */
-  mimeType: Scalars['String']['output'];
+  mimeType?: Maybe<Scalars['String']['output']>;
   /** The size of the attachment in bytes. */
-  size: Scalars['Int']['output'];
+  size?: Maybe<Scalars['Int']['output']>;
   /** The Alkemio document URL (authorized via conversation policy). */
-  url: Scalars['String']['output'];
+  url?: Maybe<Scalars['String']['output']>;
   /** The pixel width of the attachment (images only). */
   width?: Maybe<Scalars['Int']['output']>;
 };
@@ -8727,7 +8729,7 @@ export type RoomRemoveReactionToMessageInput = {
 };
 
 export type RoomSendMessageInput = {
-  /** The file-service document ids of attachments to send with the message (max 10). */
+  /** The file-service document ids of attachments to send with the message (one per event). */
   attachments?: InputMaybe<Array<Scalars['UUID']['input']>>;
   /** The message being sent */
   message: Scalars['String']['input'];
@@ -8736,7 +8738,7 @@ export type RoomSendMessageInput = {
 };
 
 export type RoomSendMessageReplyInput = {
-  /** The file-service document ids of attachments to send with the message (max 10). */
+  /** The file-service document ids of attachments to send with the message (one per event). */
   attachments?: InputMaybe<Array<Scalars['UUID']['input']>>;
   /** The message being sent */
   message: Scalars['String']['input'];
@@ -16029,11 +16031,11 @@ export type UpdateCalloutContentMutation = {
               | undefined;
             attachments: Array<{
               __typename?: 'MessageAttachment';
-              id: string;
-              url: string;
+              id?: string | undefined;
+              url?: string | undefined;
               displayName: string;
-              mimeType: string;
-              size: number;
+              mimeType?: string | undefined;
+              size?: number | undefined;
               width?: number | undefined;
               height?: number | undefined;
             }>;
@@ -16536,11 +16538,11 @@ export type UpdateCalloutVisibilityMutation = {
               | undefined;
             attachments: Array<{
               __typename?: 'MessageAttachment';
-              id: string;
-              url: string;
+              id?: string | undefined;
+              url?: string | undefined;
               displayName: string;
-              mimeType: string;
-              size: number;
+              mimeType?: string | undefined;
+              size?: number | undefined;
               width?: number | undefined;
               height?: number | undefined;
             }>;
@@ -17162,11 +17164,11 @@ export type CalloutContributionCommentsQuery = {
                       | undefined;
                     attachments: Array<{
                       __typename?: 'MessageAttachment';
-                      id: string;
-                      url: string;
+                      id?: string | undefined;
+                      url?: string | undefined;
                       displayName: string;
-                      mimeType: string;
-                      size: number;
+                      mimeType?: string | undefined;
+                      size?: number | undefined;
                       width?: number | undefined;
                       height?: number | undefined;
                     }>;
@@ -18454,11 +18456,11 @@ export type CreateCalloutMutation = {
               | undefined;
             attachments: Array<{
               __typename?: 'MessageAttachment';
-              id: string;
-              url: string;
+              id?: string | undefined;
+              url?: string | undefined;
               displayName: string;
-              mimeType: string;
-              size: number;
+              mimeType?: string | undefined;
+              size?: number | undefined;
               width?: number | undefined;
               height?: number | undefined;
             }>;
@@ -19133,11 +19135,11 @@ export type CalloutDetailsQuery = {
                     | undefined;
                   attachments: Array<{
                     __typename?: 'MessageAttachment';
-                    id: string;
-                    url: string;
+                    id?: string | undefined;
+                    url?: string | undefined;
                     displayName: string;
-                    mimeType: string;
-                    size: number;
+                    mimeType?: string | undefined;
+                    size?: number | undefined;
                     width?: number | undefined;
                     height?: number | undefined;
                   }>;
@@ -19672,11 +19674,11 @@ export type CalloutDetailsFragment = {
             | undefined;
           attachments: Array<{
             __typename?: 'MessageAttachment';
-            id: string;
-            url: string;
+            id?: string | undefined;
+            url?: string | undefined;
             displayName: string;
-            mimeType: string;
-            size: number;
+            mimeType?: string | undefined;
+            size?: number | undefined;
             width?: number | undefined;
             height?: number | undefined;
           }>;
@@ -21936,11 +21938,11 @@ export type CreateDiscussionMutation = {
           | undefined;
         attachments: Array<{
           __typename?: 'MessageAttachment';
-          id: string;
-          url: string;
+          id?: string | undefined;
+          url?: string | undefined;
           displayName: string;
-          mimeType: string;
-          size: number;
+          mimeType?: string | undefined;
+          size?: number | undefined;
           width?: number | undefined;
           height?: number | undefined;
         }>;
@@ -22031,11 +22033,11 @@ export type UpdateDiscussionMutation = {
           | undefined;
         attachments: Array<{
           __typename?: 'MessageAttachment';
-          id: string;
-          url: string;
+          id?: string | undefined;
+          url?: string | undefined;
           displayName: string;
-          mimeType: string;
-          size: number;
+          mimeType?: string | undefined;
+          size?: number | undefined;
           width?: number | undefined;
           height?: number | undefined;
         }>;
@@ -22129,11 +22131,11 @@ export type DiscussionDetailsFragment = {
         | undefined;
       attachments: Array<{
         __typename?: 'MessageAttachment';
-        id: string;
-        url: string;
+        id?: string | undefined;
+        url?: string | undefined;
         displayName: string;
-        mimeType: string;
-        size: number;
+        mimeType?: string | undefined;
+        size?: number | undefined;
         width?: number | undefined;
         height?: number | undefined;
       }>;
@@ -22330,11 +22332,11 @@ export type PlatformDiscussionQuery = {
                   | undefined;
                 attachments: Array<{
                   __typename?: 'MessageAttachment';
-                  id: string;
-                  url: string;
+                  id?: string | undefined;
+                  url?: string | undefined;
                   displayName: string;
-                  mimeType: string;
-                  size: number;
+                  mimeType?: string | undefined;
+                  size?: number | undefined;
                   width?: number | undefined;
                   height?: number | undefined;
                 }>;
@@ -22472,11 +22474,11 @@ export type MessageDetailsFragment = {
     | undefined;
   attachments: Array<{
     __typename?: 'MessageAttachment';
-    id: string;
-    url: string;
+    id?: string | undefined;
+    url?: string | undefined;
     displayName: string;
-    mimeType: string;
-    size: number;
+    mimeType?: string | undefined;
+    size?: number | undefined;
     width?: number | undefined;
     height?: number | undefined;
   }>;
@@ -22484,11 +22486,11 @@ export type MessageDetailsFragment = {
 
 export type MessageAttachmentDetailsFragment = {
   __typename?: 'MessageAttachment';
-  id: string;
-  url: string;
+  id?: string | undefined;
+  url?: string | undefined;
   displayName: string;
-  mimeType: string;
-  size: number;
+  mimeType?: string | undefined;
+  size?: number | undefined;
   width?: number | undefined;
   height?: number | undefined;
 };
@@ -22573,11 +22575,11 @@ export type CommentsWithMessagesFragment = {
       | undefined;
     attachments: Array<{
       __typename?: 'MessageAttachment';
-      id: string;
-      url: string;
+      id?: string | undefined;
+      url?: string | undefined;
       displayName: string;
-      mimeType: string;
-      size: number;
+      mimeType?: string | undefined;
+      size?: number | undefined;
       width?: number | undefined;
       height?: number | undefined;
     }>;
@@ -22810,11 +22812,11 @@ export type ReplyToMessageMutation = {
     sender?: { __typename?: 'Actor'; id: string; type: ActorType } | undefined;
     attachments: Array<{
       __typename?: 'MessageAttachment';
-      id: string;
-      url: string;
+      id?: string | undefined;
+      url?: string | undefined;
       displayName: string;
-      mimeType: string;
-      size: number;
+      mimeType?: string | undefined;
+      size?: number | undefined;
       width?: number | undefined;
       height?: number | undefined;
     }>;
@@ -23078,11 +23080,11 @@ export type SendMessageToRoomMutation = {
     sender?: { __typename?: 'Actor'; id: string; type: ActorType } | undefined;
     attachments: Array<{
       __typename?: 'MessageAttachment';
-      id: string;
-      url: string;
+      id?: string | undefined;
+      url?: string | undefined;
       displayName: string;
-      mimeType: string;
-      size: number;
+      mimeType?: string | undefined;
+      size?: number | undefined;
       width?: number | undefined;
       height?: number | undefined;
     }>;
@@ -23176,11 +23178,11 @@ export type RoomEventsSubscription = {
               | undefined;
             attachments: Array<{
               __typename?: 'MessageAttachment';
-              id: string;
-              url: string;
+              id?: string | undefined;
+              url?: string | undefined;
               displayName: string;
-              mimeType: string;
-              size: number;
+              mimeType?: string | undefined;
+              size?: number | undefined;
               width?: number | undefined;
               height?: number | undefined;
             }>;
@@ -23293,11 +23295,11 @@ export type CommunityUpdatesQuery = {
                   | undefined;
                 attachments: Array<{
                   __typename?: 'MessageAttachment';
-                  id: string;
-                  url: string;
+                  id?: string | undefined;
+                  url?: string | undefined;
                   displayName: string;
-                  mimeType: string;
-                  size: number;
+                  mimeType?: string | undefined;
+                  size?: number | undefined;
                   width?: number | undefined;
                   height?: number | undefined;
                 }>;
@@ -37819,11 +37821,11 @@ export type CalendarEventDetailsQuery = {
                 | undefined;
               attachments: Array<{
                 __typename?: 'MessageAttachment';
-                id: string;
-                url: string;
+                id?: string | undefined;
+                url?: string | undefined;
                 displayName: string;
-                mimeType: string;
-                size: number;
+                mimeType?: string | undefined;
+                size?: number | undefined;
                 width?: number | undefined;
                 height?: number | undefined;
               }>;
@@ -37978,11 +37980,11 @@ export type CalendarEventDetailsFragment = {
         | undefined;
       attachments: Array<{
         __typename?: 'MessageAttachment';
-        id: string;
-        url: string;
+        id?: string | undefined;
+        url?: string | undefined;
         displayName: string;
-        mimeType: string;
-        size: number;
+        mimeType?: string | undefined;
+        size?: number | undefined;
         width?: number | undefined;
         height?: number | undefined;
       }>;
@@ -38157,11 +38159,11 @@ export type CreateCalendarEventMutation = {
           | undefined;
         attachments: Array<{
           __typename?: 'MessageAttachment';
-          id: string;
-          url: string;
+          id?: string | undefined;
+          url?: string | undefined;
           displayName: string;
-          mimeType: string;
-          size: number;
+          mimeType?: string | undefined;
+          size?: number | undefined;
           width?: number | undefined;
           height?: number | undefined;
         }>;
@@ -38315,11 +38317,11 @@ export type UpdateCalendarEventMutation = {
           | undefined;
         attachments: Array<{
           __typename?: 'MessageAttachment';
-          id: string;
-          url: string;
+          id?: string | undefined;
+          url?: string | undefined;
           displayName: string;
-          mimeType: string;
-          size: number;
+          mimeType?: string | undefined;
+          size?: number | undefined;
           width?: number | undefined;
           height?: number | undefined;
         }>;
@@ -51295,11 +51297,11 @@ export type ConversationDetailsQuery = {
                   }>;
                   attachments: Array<{
                     __typename?: 'MessageAttachment';
-                    id: string;
-                    url: string;
+                    id?: string | undefined;
+                    url?: string | undefined;
                     displayName: string;
-                    mimeType: string;
-                    size: number;
+                    mimeType?: string | undefined;
+                    size?: number | undefined;
                     width?: number | undefined;
                     height?: number | undefined;
                   }>;
@@ -51383,11 +51385,11 @@ export type ConversationEventsSubscription = {
                     }>;
                     attachments: Array<{
                       __typename?: 'MessageAttachment';
-                      id: string;
-                      url: string;
+                      id?: string | undefined;
+                      url?: string | undefined;
                       displayName: string;
-                      mimeType: string;
-                      size: number;
+                      mimeType?: string | undefined;
+                      size?: number | undefined;
                       width?: number | undefined;
                       height?: number | undefined;
                     }>;
@@ -51445,11 +51447,11 @@ export type ConversationEventsSubscription = {
                 }>;
                 attachments: Array<{
                   __typename?: 'MessageAttachment';
-                  id: string;
-                  url: string;
+                  id?: string | undefined;
+                  url?: string | undefined;
                   displayName: string;
-                  mimeType: string;
-                  size: number;
+                  mimeType?: string | undefined;
+                  size?: number | undefined;
                   width?: number | undefined;
                   height?: number | undefined;
                 }>;
@@ -51534,11 +51536,11 @@ export type ConversationEventsSubscription = {
             }>;
             attachments: Array<{
               __typename?: 'MessageAttachment';
-              id: string;
-              url: string;
+              id?: string | undefined;
+              url?: string | undefined;
               displayName: string;
-              mimeType: string;
-              size: number;
+              mimeType?: string | undefined;
+              size?: number | undefined;
               width?: number | undefined;
               height?: number | undefined;
             }>;
@@ -51602,11 +51604,11 @@ export type ConversationMessagesQuery = {
               }>;
               attachments: Array<{
                 __typename?: 'MessageAttachment';
-                id: string;
-                url: string;
+                id?: string | undefined;
+                url?: string | undefined;
                 displayName: string;
-                mimeType: string;
-                size: number;
+                mimeType?: string | undefined;
+                size?: number | undefined;
                 width?: number | undefined;
                 height?: number | undefined;
               }>;
@@ -51671,11 +51673,11 @@ export type CreateConversationMutation = {
             }>;
             attachments: Array<{
               __typename?: 'MessageAttachment';
-              id: string;
-              url: string;
+              id?: string | undefined;
+              url?: string | undefined;
               displayName: string;
-              mimeType: string;
-              size: number;
+              mimeType?: string | undefined;
+              size?: number | undefined;
               width?: number | undefined;
               height?: number | undefined;
             }>;
@@ -51793,11 +51795,11 @@ export type UserConversationsQuery = {
                 }>;
                 attachments: Array<{
                   __typename?: 'MessageAttachment';
-                  id: string;
-                  url: string;
+                  id?: string | undefined;
+                  url?: string | undefined;
                   displayName: string;
-                  mimeType: string;
-                  size: number;
+                  mimeType?: string | undefined;
+                  size?: number | undefined;
                   width?: number | undefined;
                   height?: number | undefined;
                 }>;

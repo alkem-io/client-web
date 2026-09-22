@@ -970,7 +970,8 @@
       "stagedListLabel": "Fichiers à envoyer",
       "removeAttachment": "Retirer {{name}}",
       "uploading": "Téléversement…",
-      "uploadFailed": "Échec du téléversement. Supprimez le fichier pour envoyer votre message.",
+      "uploadFailed": "Échec du téléversement. Envoyez à nouveau pour réessayer, ou supprimez le fichier.",
+      "sendUnconfirmed": "L’envoi n’a pas été confirmé. Vérifiez la conversation avant d’envoyer à nouveau.",
       "errorTooMany": "Vous pouvez joindre jusqu’à {{max}} fichiers.",
       "errorTooLarge": "{{name}} dépasse {{max}} Mo.",
       "errorUnsupportedType": "{{name}} a un type de fichier non pris en charge."

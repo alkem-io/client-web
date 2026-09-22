@@ -15,8 +15,10 @@ export default defineConfig({
   fullyParallel: true,
   reporter: 'list',
   use: {
-    baseURL: process.env.E2E_BASE_URL ?? 'http://localhost:3001',
+    baseURL: process.env.E2E_BASE_URL ?? 'http://localhost:3000',
     trace: 'on-first-retry',
+    storageState: process.env.E2E_STORAGE_STATE,
+    launchOptions: { executablePath: process.env.E2E_CHROMIUM_EXECUTABLE },
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
 });

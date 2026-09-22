@@ -133,3 +133,10 @@ describe('MessageAttachments', () => {
     expect(img.style.display).not.toBe('none');
   });
 });
+
+test('an unavailable event keeps its filename without a fabricated document URL', () => {
+  render(<MessageAttachments attachments={[{ displayName: 'unavailable.png' }]} />);
+  expect(screen.getByText('unavailable.png')).toBeInTheDocument();
+  expect(screen.queryByRole('link')).not.toBeInTheDocument();
+  expect(screen.queryByRole('img')).not.toBeInTheDocument();
+});

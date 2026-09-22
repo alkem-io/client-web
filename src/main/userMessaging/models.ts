@@ -78,11 +78,11 @@ type GraphQLSender =
 /** Minimal shape of a GraphQL `MessageAttachment` (feature 013) as selected by
  *  the message documents. Width/height are present for images only. */
 type GraphQLMessageAttachment = {
-  id: string;
-  url: string;
+  id?: string | null;
+  url?: string | null;
   displayName: string;
-  mimeType: string;
-  size: number;
+  mimeType?: string | null;
+  size?: number | null;
   width?: number | null;
   height?: number | null;
 };
@@ -154,11 +154,11 @@ export const mapMessageAttachments = (
   }
 
   return attachments.map(attachment => ({
-    id: attachment.id,
-    url: attachment.url,
+    id: attachment.id ?? undefined,
+    url: attachment.url ?? undefined,
     displayName: attachment.displayName,
-    mimeType: attachment.mimeType,
-    size: attachment.size,
+    mimeType: attachment.mimeType ?? undefined,
+    size: attachment.size ?? undefined,
     width: attachment.width ?? undefined,
     height: attachment.height ?? undefined,
   }));

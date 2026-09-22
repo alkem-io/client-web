@@ -970,7 +970,8 @@
       "stagedListLabel": "Te versturen bestanden",
       "removeAttachment": "{{name}} verwijderen",
       "uploading": "Uploaden…",
-      "uploadFailed": "Uploaden mislukt. Verwijder het bestand om je bericht te versturen.",
+      "uploadFailed": "Uploaden mislukt. Verstuur opnieuw om het nogmaals te proberen, of verwijder het bestand.",
+      "sendUnconfirmed": "Verzenden is niet bevestigd. Controleer het gesprek voordat je opnieuw verzendt.",
       "errorTooMany": "Je kunt maximaal {{max}} bestanden toevoegen.",
       "errorTooLarge": "{{name}} is groter dan {{max}} MB.",
       "errorUnsupportedType": "{{name}} heeft een niet-ondersteund bestandstype."

@@ -36,11 +36,11 @@ export type CommentsWithMessagesModel = {
       sender?: { id: string; profile?: { displayName: string } };
     }[];
     attachments?: {
-      id: string;
-      url: string;
+      id?: string;
+      url?: string;
       displayName: string;
-      mimeType: string;
-      size: number;
+      mimeType?: string;
+      size?: number;
       width?: number;
       height?: number;
     }[];
