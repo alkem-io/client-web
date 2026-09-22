@@ -230,3 +230,32 @@ describe('ContributorCard — organisation website control (US5)', () => {
     expect(profileLinks).toHaveLength(1);
   });
 });
+
+describe('ContributorCard — "Joined this space" bottom line (US4, isolated block)', () => {
+  test('a user with a joinedMonthLabel shows the line', () => {
+    renderCard(<ContributorCard contributor={{ ...baseCard, joinedMonthLabel: 'Oct 2023' }} />);
+
+    expect(screen.getByText('Joined this space Oct 2023')).toBeInTheDocument();
+  });
+
+  test('a user with no joinedMonthLabel shows no line', () => {
+    renderCard(<ContributorCard contributor={{ ...baseCard }} />);
+
+    expect(screen.queryByText(/Joined this space/)).not.toBeInTheDocument();
+  });
+
+  test('organisations and virtual contributors never show the line, even if joinedMonthLabel is passed', () => {
+    renderCard(
+      <>
+        <ContributorCard
+          contributor={{ ...baseCard, type: 'organization', name: 'Some Org', joinedMonthLabel: 'Oct 2023' }}
+        />
+        <ContributorCard
+          contributor={{ ...baseCard, type: 'virtualContributor', name: 'Some VC', joinedMonthLabel: 'Oct 2023' }}
+        />
+      </>
+    );
+
+    expect(screen.queryByText(/Joined this space/)).not.toBeInTheDocument();
+  });
+});

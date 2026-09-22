@@ -1102,7 +1102,8 @@
       "viewProfile": "Ver perfil",
       "message": "Mensaje",
       "website": "Visitar el sitio web de {{name}} (se abre en una pestaña nueva)",
-      "opensInNewTab": "se abre en una pestaña nueva"
+      "opensInNewTab": "se abre en una pestaña nueva",
+      "joined": "Se unió a este espacio en {{date}}"
     },
     "types": {
       "user": "Personas",

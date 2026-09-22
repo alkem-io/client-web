@@ -186,6 +186,11 @@ export function ContributorCard({ contributor, onContributorClick, className }: 
               <span>{t('contributors.card.associates', { count: contributor.associatesCount })}</span>
             </div>
           )}
+          {contributor.type === 'user' && contributor.joinedMonthLabel && (
+            <div className="mt-auto pt-3 text-caption text-muted-foreground">
+              {t('contributors.card.joined', { date: contributor.joinedMonthLabel })}
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

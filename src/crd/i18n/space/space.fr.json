@@ -1102,7 +1102,8 @@
       "viewProfile": "Voir le profil",
       "message": "Message",
       "website": "Visiter le site web de {{name}} (ouvre un nouvel onglet)",
-      "opensInNewTab": "ouvre un nouvel onglet"
+      "opensInNewTab": "ouvre un nouvel onglet",
+      "joined": "A rejoint cet espace en {{date}}"
     },
     "types": {
       "user": "Personnes",

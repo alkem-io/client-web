@@ -1102,7 +1102,8 @@
       "viewProfile": "View Profile",
       "message": "Message",
       "website": "Visit the website of {{name}} (opens in a new tab)",
-      "opensInNewTab": "opens in a new tab"
+      "opensInNewTab": "opens in a new tab",
+      "joined": "Joined this space {{date}}"
     },
     "types": {
       "user": "People",

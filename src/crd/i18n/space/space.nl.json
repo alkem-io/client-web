@@ -1102,7 +1102,8 @@
       "viewProfile": "Profiel bekijken",
       "message": "Bericht",
       "website": "Bezoek de website van {{name}} (opent in een nieuw tabblad)",
-      "opensInNewTab": "opent in een nieuw tabblad"
+      "opensInNewTab": "opent in een nieuw tabblad",
+      "joined": "Lid geworden van deze Space {{date}}"
     },
     "types": {
       "user": "Personen",
