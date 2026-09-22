@@ -1,5 +1,5 @@
 import { ApolloError } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import useNavigate from '@/core/routing/useNavigate';
@@ -51,13 +51,14 @@ export function ContributorCollectionConnector({ calloutId, className }: Contrib
 
   const [activeType, setActiveType] = useState<ContributorTypeId | null>(null);
 
-  // Open on the configured default type once the config resolves.
-  useEffect(() => {
-    if (!activeType && !loading && types.length > 0) {
-      setActiveType(defaultType);
-    }
-  }, [activeType, loading, types, defaultType]);
-
+  // Opens on the configured default type until the viewer (or the child
+  // `ContributorCollection`'s own auto-heal effect, when the default type's
+  // count is zero) explicitly picks one — no separate "open on default type"
+  // effect is needed here, and one previously existed and raced the child's
+  // heal effect within the same commit (both fire when the config query
+  // lands): the child's write could be clobbered by this effect re-applying
+  // the stale default, since its closure still saw `activeType === null` from
+  // that same render.
   const resolvedType = activeType ?? defaultType;
 
   const handleActiveTypeChange = (type: ContributorTypeId) => {
