@@ -73,9 +73,17 @@ const editProps = {
   contributionId: 'contribution-1',
 } as const;
 
+const createProps = {
+  mode: 'create',
+  calloutId: 'callout-1',
+} as const;
+
 beforeEach(() => {
   vi.clearAllMocks();
   state.updatePost.mockResolvedValue({ data: {} });
+  state.createPost.mockResolvedValue({
+    data: { createContributionOnCallout: { post: { id: 'post-new', profile: { id: 'profile-new' } } } },
+  });
 });
 
 describe('CrdPostContributionDialog — save closes the dialog', () => {
@@ -138,5 +146,76 @@ describe('CrdPostContributionDialog — save closes the dialog', () => {
     expect(state.updatePost).not.toHaveBeenCalled();
     expect(onOpenChange).not.toHaveBeenCalled();
     expect(state.notify).not.toHaveBeenCalled();
+  });
+});
+
+// workspace#070-contribution-notify-switch — off-by-default "Notify space members" switch (US1/US2).
+describe('CrdPostContributionDialog — notify members switch (create mode)', () => {
+  test('renders OFF for a plain response', async () => {
+    render(<CrdPostContributionDialog {...createProps} open={true} onOpenChange={vi.fn()} />);
+
+    const toggle = await screen.findByRole('switch', { name: 'forms.notifyMembers' });
+    expect(toggle).toHaveAttribute('aria-checked', 'false');
+  });
+
+  test('renders OFF for a task on a Tasks board', async () => {
+    render(<CrdPostContributionDialog {...createProps} isTaskBoard={true} open={true} onOpenChange={vi.fn()} />);
+
+    const toggle = await screen.findByRole('switch', { name: 'forms.notifyMembers' });
+    expect(toggle).toHaveAttribute('aria-checked', 'false');
+  });
+
+  test('submit untouched sends sendNotification: false', async () => {
+    const user = userEvent.setup();
+    render(<CrdPostContributionDialog {...createProps} open={true} onOpenChange={vi.fn()} />);
+
+    await user.type(screen.getByRole('textbox', { name: 'description' }), 'A description');
+    await user.click(screen.getByRole('button', { name: 'callout.postCreate' }));
+
+    await waitFor(() => expect(state.createPost).toHaveBeenCalledTimes(1));
+    expect(state.createPost.mock.calls[0][0].variables).toMatchObject({ sendNotification: false });
+  });
+
+  test('toggling the switch then submitting sends sendNotification: true', async () => {
+    const user = userEvent.setup();
+    render(<CrdPostContributionDialog {...createProps} open={true} onOpenChange={vi.fn()} />);
+
+    await user.click(await screen.findByRole('switch', { name: 'forms.notifyMembers' }));
+    await user.type(screen.getByRole('textbox', { name: 'description' }), 'A description');
+    await user.click(screen.getByRole('button', { name: 'callout.postCreate' }));
+
+    await waitFor(() => expect(state.createPost).toHaveBeenCalledTimes(1));
+    expect(state.createPost.mock.calls[0][0].variables).toMatchObject({ sendNotification: true });
+  });
+
+  test('reopening after a successful create resets the switch to OFF', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(<CrdPostContributionDialog {...createProps} open={true} onOpenChange={vi.fn()} />);
+
+    await user.click(await screen.findByRole('switch', { name: 'forms.notifyMembers' }));
+    await user.type(screen.getByRole('textbox', { name: 'description' }), 'A description');
+    await user.click(screen.getByRole('button', { name: 'callout.postCreate' }));
+    await waitFor(() => expect(state.createPost).toHaveBeenCalledTimes(1));
+
+    // Simulate the owner closing then reopening the dialog for the next contribution.
+    rerender(<CrdPostContributionDialog {...createProps} open={false} onOpenChange={vi.fn()} />);
+    rerender(<CrdPostContributionDialog {...createProps} open={true} onOpenChange={vi.fn()} />);
+
+    const toggle = await screen.findByRole('switch', { name: 'forms.notifyMembers' });
+    expect(toggle).toHaveAttribute('aria-checked', 'false');
+  });
+
+  test('edit mode renders no switch and the update path carries no sendNotification key', async () => {
+    const user = userEvent.setup();
+    render(<CrdPostContributionDialog {...editProps} open={true} onOpenChange={vi.fn()} />);
+
+    await screen.findByDisplayValue('Original title');
+    expect(screen.queryByRole('switch', { name: 'forms.notifyMembers' })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'callout.postSave' }));
+
+    await waitFor(() => expect(state.updatePost).toHaveBeenCalledTimes(1));
+    expect(state.updatePost.mock.calls[0][0].variables).not.toHaveProperty('sendNotification');
+    expect(state.updatePost.mock.calls[0][0].variables.input).not.toHaveProperty('sendNotification');
   });
 });

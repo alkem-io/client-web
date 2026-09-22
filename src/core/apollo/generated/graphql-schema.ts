@@ -17379,6 +17379,7 @@ export type CreatePostOnCalloutMutationVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
   post: CreatePostInput;
   taskColumn?: InputMaybe<Scalars['String']['input']>;
+  sendNotification?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 export type CreatePostOnCalloutMutation = {
