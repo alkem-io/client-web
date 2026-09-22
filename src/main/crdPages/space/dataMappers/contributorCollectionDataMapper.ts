@@ -57,10 +57,14 @@ export function mapContributorItemToCard(item: ContributorItem): ContributorCard
     // `0` is a real value, not absence — never `item.associatesCount || undefined`.
     associatesCount: item.associatesCount ?? undefined,
     websiteUrl: item.website ?? undefined,
-    // Codegen maps the `DateTime` scalar to `Date`; kept as an ISO string on
-    // the model so `formatJoinedMonth` (and the cache-identity test) work
-    // against a plain, serialisable value.
-    joinedDate: item.joinedDate ? item.joinedDate.toISOString() : undefined,
+    // Codegen types the `DateTime` scalar as `Date` for TypeScript's benefit
+    // only — no scalar-parsing Apollo Link is installed, so the value that
+    // actually arrives at runtime is the raw ISO-8601 string off the wire.
+    // Pass it through as-is (never call `.toISOString()`, which only exists
+    // on a real `Date` instance) so the model's `joinedDate?: string` holds
+    // a plain, serialisable value for `formatJoinedMonth` and the
+    // cache-identity checks.
+    joinedDate: (item.joinedDate as unknown as string | undefined) ?? undefined,
   };
 }
 

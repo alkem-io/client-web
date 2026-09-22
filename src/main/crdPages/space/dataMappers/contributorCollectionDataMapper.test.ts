@@ -29,7 +29,7 @@ type RawItem = Omit<
   tags?: string[] | null;
   website?: string | null;
   associatesCount?: number | null;
-  joinedDate?: Date | null;
+  joinedDate?: string | null;
   location?: RawLocation | null;
 };
 
@@ -51,7 +51,7 @@ const baseItem: RawItem = {
   },
   tagline: '  Building things that matter  ',
   tags: ['Urban Planning', 'Sustainability', 'Facilitation'],
-  joinedDate: new Date('2023-10-01T00:00:00.000Z'),
+  joinedDate: '2023-10-01T00:00:00.000Z',
   website: null,
   associatesCount: null,
 };
