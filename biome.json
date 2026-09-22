@@ -97,10 +97,10 @@
       "**/src/**/*.jsx",
       "**/*.json",
       "**/*.md",
-      "!**/node_modules/**",
-      "!**/build/**",
-      "!**/dist/**",
-      "!**/coverage/**",
+      "!**/node_modules",
+      "!**/build",
+      "!**/dist",
+      "!**/coverage",
       "!**/public/env-config.js",
       "!**/public/meta.json",
       "!**/*.min.js",
@@ -118,6 +118,16 @@
           "correctness": {
             "noUnusedVariables": "off",
             "noUnusedImports": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/src/crd/components/callout/ContributorCollection/ContributorCard.tsx"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "useAnchorContent": "off"
           }
         }
       }

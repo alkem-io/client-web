@@ -120,3 +120,19 @@ describe('ContributorCard — rows and layout (US1)', () => {
     expect(screen.queryByText(/associates? in this organization/)).not.toBeInTheDocument();
   });
 });
+
+describe('ContributorCard — one profile link per card (US1/US2)', () => {
+  test('a card with an href exposes exactly one link, named after the contributor', () => {
+    renderCard(<ContributorCard contributor={{ ...baseCard, href: 'https://alkemio.test/ada' }} />);
+
+    const links = screen.getAllByRole('link', { name: 'Ada' });
+    expect(links).toHaveLength(1);
+    expect(links[0]).toHaveAttribute('href', 'https://alkemio.test/ada');
+  });
+
+  test('a card with no href renders no link at all', () => {
+    renderCard(<ContributorCard contributor={{ ...baseCard }} />);
+
+    expect(screen.queryAllByRole('link')).toHaveLength(0);
+  });
+});

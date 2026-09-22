@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/crd/primitives/card';
 const MAX_CARD_TAGS = 2;
 
 /**
- * Plain CRD data for one contributor card (feature 008). Mirrors the existing
+ * Plain CRD data for one contributor card. Mirrors the existing
  * member-card visual (`SpaceMembers` UserCard/OrganizationCard) so contributors
  * render with the same avatar / name / role-label treatment. Location fields are
  * present only for users/orgs; coordinates only when valid (drives the map plot).
@@ -80,15 +80,15 @@ export function ContributorCard({ contributor, onContributorClick, className }: 
   );
 
   // Tagline: two-line clamp for everyone; a user with none gets the italic
-  // fallback, an organisation/VC with none gets no row at all (FR-002).
+  // fallback, an organisation/VC with none gets no row at all.
   const hasTagline = Boolean(contributor.tagline);
   const showTaglineRow = hasTagline || contributor.type === 'user';
 
-  // At most MAX_CARD_TAGS pills, in stored order, never a "+N" indicator (FR-003).
+  // At most MAX_CARD_TAGS pills, in stored order, never a "+N" indicator.
   const visibleTags = (contributor.tags ?? []).slice(0, MAX_CARD_TAGS);
 
   // Organisation bottom line: shown whenever associatesCount is a number,
-  // including 0 (D-ZERO) — `typeof` distinguishes 0 from "not applicable".
+  // including zero — `typeof` distinguishes 0 from "not applicable".
   const showAssociatesLine = isOrg && typeof contributor.associatesCount === 'number';
 
   return (
@@ -96,13 +96,19 @@ export function ContributorCard({ contributor, onContributorClick, className }: 
       <CardContent className="flex h-full flex-col p-0">
         <div className="p-4 flex items-start gap-3">
           {href ? (
+            // Clickable for pointer users, but out of the tab order and the
+            // accessibility tree — the name link below is the card's ONE
+            // profile link for keyboard and assistive-technology users. The
+            // biome `useAnchorContent` rule is scoped off for this file
+            // (biome.json) because it flags any aria-hidden anchor and its
+            // suggested fix (dropping aria-hidden) is exactly what this
+            // deliberately duplicate, hidden link must not do.
             <a
               href={href}
               onClick={handleClick}
-              className={cn(
-                'shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                isOrg ? 'rounded-md' : 'rounded-full'
-              )}
+              aria-hidden="true"
+              tabIndex={-1}
+              className={cn('shrink-0', isOrg ? 'rounded-md' : 'rounded-full')}
             >
               {avatar}
             </a>

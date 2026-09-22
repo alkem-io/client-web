@@ -15,7 +15,7 @@ import {
 import { type ContributorCardModel, mapContributorItemToCard } from '../dataMappers/contributorCollectionDataMapper';
 
 /**
- * Data layer for a contributor-collection callout (feature 008, T004).
+ * Data layer for a contributor-collection callout.
  *
  * - Eager: fetches the callout config (selected types, default type, default
  *   view) + per-type counts once on mount (`ContributorCollectionConfig`), and
