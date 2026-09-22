@@ -65,6 +65,8 @@ type ContributorCollectionProps = {
   /** Whether the active type's set is currently loading. */
   loading: boolean;
   onContributorClick?: (href: string) => void;
+  /** Opens the Message action for a card (user 1:1 chat, organisation compose dialog). Absent when nothing may message. */
+  onMessage?: (contributor: ContributorCardData) => void;
   /**
    * When true (custom/manual selection), the secondary All | Lead | Member role
    * filter is suppressed — the admin curated a specific list, so the lead/member
@@ -84,6 +86,7 @@ export function ContributorCollection({
   cards,
   loading,
   onContributorClick,
+  onMessage,
   isCustomSelection = false,
   className,
 }: ContributorCollectionProps) {
@@ -368,7 +371,7 @@ export function ContributorCollection({
               <ul className="grid auto-rows-fr grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {unlocated.map(c => (
                   <li key={c.id}>
-                    <ContributorCard contributor={c} onContributorClick={onContributorClick} />
+                    <ContributorCard contributor={c} onContributorClick={onContributorClick} onMessage={onMessage} />
                   </li>
                 ))}
               </ul>
@@ -384,7 +387,7 @@ export function ContributorCollection({
           <ul className="grid auto-rows-fr grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {pageCards.map(c => (
               <li key={c.id}>
-                <ContributorCard contributor={c} onContributorClick={onContributorClick} />
+                <ContributorCard contributor={c} onContributorClick={onContributorClick} onMessage={onMessage} />
               </li>
             ))}
           </ul>

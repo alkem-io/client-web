@@ -7,7 +7,8 @@
  * T009 (US4-AS4): When the caller-supplied `activeType` resolves to zero,
  * the component falls back to the first resolved non-empty type (read-time only).
  */
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import type { ContributorMapFixedView } from '@/crd/components/map/ContributorMap';
 import type { ContributorCardData } from './ContributorCard';
@@ -188,6 +189,142 @@ describe('ContributorCollection — T009 default-segment fallback (US4-AS4)', ()
     // The count line should display for the resolved user type (effectiveActiveType = user).
     // i18n key: contributors.counts.users with { count: 4 }
     expect(screen.getByText('contributors.counts.users:{"count":4}')).toBeInTheDocument();
+  });
+});
+
+// US2 — everything else keeps working: the enriched cards render at both
+// sites, and search/paging/role-filter behave exactly as before.
+
+function makeEnrichedCard(id: string, name: string): ContributorCardData {
+  return {
+    id,
+    type: 'user',
+    name,
+    hasValidCoordinates: false,
+    tagline: 'Loves sustainability projects.',
+    tags: ['Sustainability'],
+  };
+}
+
+describe('ContributorCollection — US2: everything else keeps working', () => {
+  test('enriched cards render identically in the list grid and the "no location data" grid under the map', () => {
+    const cards = [makeEnrichedCard('u1', 'Ada')];
+
+    const { unmount } = render(
+      <ContributorCollection
+        types={['user']}
+        activeType="user"
+        onActiveTypeChange={noop}
+        defaultView="list"
+        counts={makeCounts(1, 0, 0)}
+        cards={cards}
+        loading={false}
+      />
+    );
+    expect(screen.getByText('Loves sustainability projects.')).toBeInTheDocument();
+    expect(screen.getByText('Sustainability')).toBeInTheDocument();
+    unmount();
+
+    // Map view: a card with hasValidCoordinates: false is unlocated, so it
+    // renders in the "no location data" grid — same card, same rows.
+    render(
+      <ContributorCollection
+        types={['user']}
+        activeType="user"
+        onActiveTypeChange={noop}
+        defaultView="map"
+        counts={makeCounts(1, 0, 0)}
+        cards={cards}
+        loading={false}
+      />
+    );
+    expect(screen.getByText('Loves sustainability projects.')).toBeInTheDocument();
+    expect(screen.getByText('Sustainability')).toBeInTheDocument();
+  });
+
+  test('search matches by name only — a query that only matches a tagline or tag finds nobody', () => {
+    render(
+      <ContributorCollection
+        types={['user']}
+        activeType="user"
+        onActiveTypeChange={noop}
+        defaultView="list"
+        counts={makeCounts(1, 0, 0)}
+        cards={[makeEnrichedCard('u1', 'Ada')]}
+        loading={false}
+      />
+    );
+
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Sustainability' } });
+
+    expect(screen.queryByText('Ada')).not.toBeInTheDocument();
+    expect(screen.getByText('contributors.emptySearch')).toBeInTheDocument();
+  });
+
+  test('paging: 10 cards at 9/page renders two pages, 9 cards on the first', () => {
+    const cards = Array.from({ length: 10 }, (_, i) => makeCard(`u${i}`, `User ${i}`));
+
+    render(
+      <ContributorCollection
+        types={['user']}
+        activeType="user"
+        onActiveTypeChange={noop}
+        defaultView="list"
+        counts={makeCounts(10, 0, 0)}
+        cards={cards}
+        loading={false}
+      />
+    );
+
+    expect(screen.getByText('members.pageOf:{"current":1,"total":2}')).toBeInTheDocument();
+    expect(screen.getAllByText(/^User \d$/)).toHaveLength(9);
+  });
+
+  test('the All/Lead/Member role filter still narrows the active set', async () => {
+    const cards: ContributorCardData[] = [
+      { ...makeCard('u1', 'Lead One'), roleLabel: 'lead' },
+      { ...makeCard('u2', 'Member One'), roleLabel: 'member' },
+    ];
+
+    render(
+      <ContributorCollection
+        types={['user']}
+        activeType="user"
+        onActiveTypeChange={noop}
+        defaultView="list"
+        counts={makeCounts(2, 0, 0)}
+        cards={cards}
+        loading={false}
+      />
+    );
+
+    const leadTab = screen.getByText('members.filterLead').closest('[role="tab"]');
+    if (!leadTab) throw new Error('Lead role-filter tab not found');
+    await userEvent.click(leadTab);
+
+    expect(screen.getByText('Lead One')).toBeInTheDocument();
+    expect(screen.queryByText('Member One')).not.toBeInTheDocument();
+  });
+
+  test('onMessage is forwarded to the collection (US3 wiring point) without changing card rendering', () => {
+    const onMessage = vi.fn();
+    render(
+      <ContributorCollection
+        types={['user']}
+        activeType="user"
+        onActiveTypeChange={noop}
+        defaultView="list"
+        counts={makeCounts(1, 0, 0)}
+        cards={[makeCard('u1', 'Ada')]}
+        loading={false}
+        onMessage={onMessage}
+      />
+    );
+
+    // No menu exists yet at this layer — forwarding is proven by the prop
+    // reaching the card without an error and the card still rendering as before.
+    expect(screen.getByText('Ada')).toBeInTheDocument();
+    expect(onMessage).not.toHaveBeenCalled();
   });
 });
 

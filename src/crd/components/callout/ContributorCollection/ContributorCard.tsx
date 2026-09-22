@@ -45,6 +45,8 @@ export type ContributorCardData = {
 type ContributorCardProps = {
   contributor: ContributorCardData;
   onContributorClick?: (href: string) => void;
+  /** Opens the Message action for this card. The "…" menu offers "Message" only when this is set. */
+  onMessage?: (contributor: ContributorCardData) => void;
   className?: string;
 };
 
