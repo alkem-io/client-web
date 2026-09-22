@@ -61,7 +61,7 @@ describe('ExpandedSpaceCard', () => {
     expect(excerpts[2].className).toContain('line-clamp-2');
   });
 
-  test('exactly one <a> in the card, accessible name is the subspace name (FR-018)', () => {
+  test('exactly one <a> in the card, accessible name is the subspace name', () => {
     setWidth(800);
     render(<ExpandedSpaceCard space={baseFixture} />);
     const links = screen.getAllByRole('link');
@@ -104,7 +104,7 @@ describe('ExpandedSpaceCard', () => {
     expect(container.querySelector('.border-b.border-border')).not.toBeNull();
   });
 
-  test('a hostile fixed-position "what" renders with no styled descendant (US3)', () => {
+  test('a hostile fixed-position "what" renders with no styled descendant', () => {
     setWidth(800);
     const hostile =
       '<div style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999">PWNED</div> a sentence.';
@@ -121,7 +121,7 @@ describe('ExpandedSpaceCard', () => {
     expect(excerpt?.textContent).toContain(token);
   });
 
-  test('a maximum-length what (FR-031) renders the same structure as a short one', () => {
+  test('a maximum-length what renders the same structure as a short one', () => {
     setWidth(800);
     const maxLength = 'Lorem ipsum dolor sit amet, consectetur. '.repeat(1600); // ~65k chars
     const { container } = render(<ExpandedSpaceCard space={{ ...baseFixture, what: maxLength }} />);
@@ -129,6 +129,12 @@ describe('ExpandedSpaceCard', () => {
     expect(excerpts).toHaveLength(3);
     expect(excerpts[0].className).toContain('line-clamp-3');
     expect(screen.getAllByRole('link')).toHaveLength(1);
+  });
+
+  test('a deeply-nested "what" (thousands of blockquote levels) renders instead of crashing the page', () => {
+    setWidth(800);
+    const deeplyNested = `${'> '.repeat(8000)}x`;
+    expect(() => render(<ExpandedSpaceCard space={{ ...baseFixture, what: deeplyNested }} />)).not.toThrow();
   });
 
   test('all three fields empty → no section rendered', () => {

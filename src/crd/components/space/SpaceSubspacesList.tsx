@@ -8,7 +8,7 @@ import { useElementWidth } from '@/crd/hooks/useElementWidth';
 import { hasVisibleExcerptText } from '@/crd/lib/markdownExcerpt';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
-import { ExpandedSpaceCard } from './ExpandedSpaceCard';
+import { type ExcerptVisibility, ExpandedSpaceCard } from './ExpandedSpaceCard';
 import { SpaceCard, type SpaceCardData } from './SpaceCard';
 
 type StatusFilter = 'all' | 'active' | 'archived';
@@ -21,11 +21,11 @@ type SpaceSubspacesListProps = {
   subtitle?: string;
   onSubspaceClick?: (space: SpaceCardData) => void;
   /**
-   * Card variant (feature 076). `'compact'` (default) is today's 3-up grid with an
+   * Card variant. `'compact'` (default) is today's 3-up grid with an
    * initial count of 6; `'expanded'` is one rich card per row with an initial count
-   * of 3 (intake ruling OP10-detail). Drives only the default `initialVisibleCount`
+   * of 3. Drives only the default `initialVisibleCount`
    * and card component — every other behaviour (search, filters, show more/less,
-   * empty state) is identical in both variants (FR-020).
+   * empty state) is identical in both variants.
    */
   variant?: 'compact' | 'expanded';
   /**
@@ -80,7 +80,7 @@ export function SpaceSubspacesList({
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [showAll, setShowAll] = useState(false);
-  // The list's own measured width (never a viewport breakpoint — FR-012) decides whether an
+  // The list's own measured width (never a viewport breakpoint) decides whether an
   // all-empty expanded item constrains to the identity block's width or goes full width.
   const [listWidth, listWidthRef] = useElementWidth();
 
@@ -201,25 +201,33 @@ export function SpaceSubspacesList({
         <EmptyState hasActiveFilter={hasActiveFilter} onClear={resetFilters} />
       ) : variant === 'expanded' ? (
         <>
-          {/* One column — an expanded list is one rich card per row (FR-011). The list's own
-              measured width (not the screen — FR-012) decides whether an all-empty item
-              constrains to the identity block's width or goes full width (FR-017). */}
+          {/* One column — an expanded list is one rich card per row. The list's own
+              measured width (not the screen) decides whether an all-empty item
+              constrains to the identity block's width or goes full width. */}
           <ul ref={listWidthRef} className="grid grid-cols-1 gap-4 list-none p-0 m-0">
             {visibleSubspaces.map(subspace => {
-              const hasExcerpt =
-                hasVisibleExcerptText(subspace.what) ||
-                hasVisibleExcerptText(subspace.why) ||
-                hasVisibleExcerptText(subspace.who);
+              // Parsed once here and handed down as `sectionVisibility` — `ExpandedSpaceCard`
+              // uses it as-is instead of parsing the same markdown a second time.
+              const sectionVisibility: ExcerptVisibility = {
+                what: hasVisibleExcerptText(subspace.what),
+                why: hasVisibleExcerptText(subspace.why),
+                who: hasVisibleExcerptText(subspace.who),
+              };
+              const hasExcerpt = sectionVisibility.what || sectionVisibility.why || sectionVisibility.who;
               if (hasExcerpt) {
                 return (
                   <li key={subspace.id}>
-                    <ExpandedSpaceCard space={subspace} onClick={onSubspaceClick} />
+                    <ExpandedSpaceCard
+                      space={subspace}
+                      onClick={onSubspaceClick}
+                      sectionVisibility={sectionVisibility}
+                    />
                   </li>
                 );
               }
               // All three sections empty → the normal compact card, at the identity block's
-              // width when the list is wide enough for side-by-side, full width otherwise
-              // (FR-017 — exactly what a stacked expanded card's identity block would occupy).
+              // width when the list is wide enough for side-by-side, full width otherwise —
+              // exactly what a stacked expanded card's identity block would occupy.
               return (
                 <li
                   key={subspace.id}

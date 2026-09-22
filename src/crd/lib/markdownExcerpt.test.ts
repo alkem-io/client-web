@@ -26,8 +26,25 @@ describe('hasVisibleExcerptText', () => {
   });
 });
 
-describe('hasVisibleExcerptText ⇔ InlineMarkdown contract (FR-016)', () => {
-  // One fixture array run through both the helper and the card-safe renderer — the FR-016
+describe('hasVisibleExcerptText — unbounded source safety', () => {
+  test('a deeply-nested blockquote well under the server-side save limit does not throw', () => {
+    // 8,000 nesting levels — well under the server's ~65k-character save limit for this
+    // field — is enough to blow the parser's call stack when the source is not bounded
+    // before parsing. The source-length cap means this particular payload's trailing
+    // character falls outside the parsed window, so the result is `false` here — the
+    // guarantee under test is that it never throws, not what the boolean happens to be.
+    const deeplyNested = `${'> '.repeat(8000)}x`;
+    expect(() => hasVisibleExcerptText(deeplyNested)).not.toThrow();
+  });
+
+  test('nesting shallow enough to fit inside the cap still reports its visible text', () => {
+    const nestedWithinCap = `${'> '.repeat(900)}x`;
+    expect(hasVisibleExcerptText(nestedWithinCap)).toBe(true);
+  });
+});
+
+describe('hasVisibleExcerptText ⇔ InlineMarkdown contract', () => {
+  // One fixture array run through both the helper and the card-safe renderer — the
   // guarantee that "show the label" and "render the body" always agree. No JSX here so the
   // file can stay `.ts` (matches the plan's file name) rather than `.tsx`.
   const FIXTURES = [
