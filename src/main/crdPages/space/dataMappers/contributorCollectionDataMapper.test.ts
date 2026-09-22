@@ -1,6 +1,6 @@
-import { describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test } from 'vitest';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
-import { mapContributorItemToCard } from './contributorCollectionDataMapper';
+import { formatJoinedMonth, mapContributorItemToCard } from './contributorCollectionDataMapper';
 
 type MapperInput = Parameters<typeof mapContributorItemToCard>[0];
 
@@ -139,5 +139,42 @@ describe('mapContributorItemToCard', () => {
   test('existing role normalisation is unchanged: any non-lead label reads as member', () => {
     expect(map({ ...baseItem, roleLabel: 'admin' }).roleLabel).toBe('member');
     expect(map({ ...baseItem, roleLabel: null }).roleLabel).toBeUndefined();
+  });
+});
+
+describe('formatJoinedMonth', () => {
+  const ORIGINAL_TZ = process.env.TZ;
+
+  afterEach(() => {
+    process.env.TZ = ORIGINAL_TZ;
+  });
+
+  test.each([
+    'America/Los_Angeles',
+    'UTC',
+    'Pacific/Kiritimati',
+  ])('a month-boundary UTC date reads "Oct 2023" from every device timezone (%s)', tz => {
+    process.env.TZ = tz;
+    expect(formatJoinedMonth('2023-10-01T00:00:00.000Z', undefined)).toBe('Oct 2023');
+  });
+
+  // The West-of-UTC failure this guards against: naively formatting the raw
+  // date in local time (`format(parseISO(iso), 'MMM yyyy')`) reads the local
+  // calendar day, which is still September in America/Los_Angeles when the
+  // server always truncates to the first of the month at 00:00 UTC.
+  test('America/Los_Angeles never reads "Sep 2023" for a value truncated to Oct 2023', () => {
+    process.env.TZ = 'America/Los_Angeles';
+    expect(formatJoinedMonth('2023-10-01T00:00:00.000Z', undefined)).not.toBe('Sep 2023');
+  });
+
+  test('an unparsable date string returns undefined, never "Invalid Date"', () => {
+    process.env.TZ = 'UTC';
+    expect(formatJoinedMonth('garbage', undefined)).toBeUndefined();
+  });
+
+  test('a non-English locale produces its own month abbreviation', async () => {
+    process.env.TZ = 'UTC';
+    const { nl } = await import('date-fns/locale');
+    expect(formatJoinedMonth('2023-10-01T00:00:00.000Z', nl)).toMatch(/okt/i);
   });
 });

@@ -1,3 +1,4 @@
+import { format, type Locale, parseISO } from 'date-fns';
 import type { ContributorCollectionByTypeQuery } from '@/core/apollo/generated/graphql-schema';
 import type { ContributorCardData } from '@/crd/components/callout/ContributorCollection/ContributorCard';
 import { contributorTypeFromServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
@@ -61,4 +62,24 @@ export function mapContributorItemToCard(item: ContributorItem): ContributorCard
     // against a plain, serialisable value.
     joinedDate: item.joinedDate ? item.joinedDate.toISOString() : undefined,
   };
+}
+
+/**
+ * Formats the raw ISO `joinedDate` into a ready "Oct 2023"-style label, in the
+ * given locale. The server truncates every value to the first day of the
+ * month at 00:00 UTC, so it always sits on a month boundary — formatting the
+ * *local* calendar day of that instant would read as the previous month for
+ * every viewer whose device is west of UTC. Reading the UTC year/month
+ * directly (and building a new, local-midnight `Date` from them) sidesteps
+ * that entirely: the label is the same in every timezone.
+ *
+ * Returns `undefined` for an unparsable value rather than throwing, so a
+ * malformed date never turns into a broken row (or the literal text
+ * "Invalid Date").
+ */
+export function formatJoinedMonth(iso: string, locale: Locale | undefined): string | undefined {
+  const parsed = parseISO(iso);
+  if (Number.isNaN(parsed.getTime())) return undefined;
+  const monthStart = new Date(parsed.getUTCFullYear(), parsed.getUTCMonth(), 1);
+  return format(monthStart, 'MMM yyyy', { locale });
 }
