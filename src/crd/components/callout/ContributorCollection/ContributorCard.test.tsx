@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import i18next from 'i18next';
 import type { ReactElement } from 'react';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
-import { beforeAll, describe, expect, test } from 'vitest';
+import { beforeAll, describe, expect, test, vi } from 'vitest';
 import spaceEnJson from '@/crd/i18n/space/space.en.json';
 import { ContributorCard, type ContributorCardData } from './ContributorCard';
 
@@ -257,5 +258,81 @@ describe('ContributorCard — "Joined this space" bottom line (US4, isolated blo
     );
 
     expect(screen.queryByText(/Joined this space/)).not.toBeInTheDocument();
+  });
+});
+
+describe('ContributorCard — the "…" actions menu (US3)', () => {
+  const withHref: ContributorCardData = { ...baseCard, href: 'https://alkemio.test/ada' };
+
+  test("the trigger's accessible name contains the contributor's name", () => {
+    renderCard(<ContributorCard contributor={withHref} />);
+
+    expect(screen.getByRole('button', { name: /Actions for Ada/ })).toBeInTheDocument();
+  });
+
+  test('a virtual contributor with no messaging capability has exactly one menu item (View Profile)', async () => {
+    renderCard(
+      <ContributorCard
+        contributor={{
+          ...baseCard,
+          type: 'virtualContributor',
+          name: 'Helper VC',
+          href: 'https://alkemio.test/helper-vc',
+        }}
+      />
+    );
+
+    await userEvent.click(screen.getByRole('button', { name: /Actions for Helper VC/ }));
+
+    expect(screen.getAllByRole('menuitem')).toHaveLength(1);
+    expect(screen.getByRole('menuitem', { name: /View Profile/ })).toBeInTheDocument();
+  });
+
+  test('canMessage: true shows two items, and selecting Message calls onMessage with the contributor', async () => {
+    const onMessage = vi.fn();
+    const contributor: ContributorCardData = { ...withHref, canMessage: true };
+    renderCard(<ContributorCard contributor={contributor} onMessage={onMessage} />);
+
+    await userEvent.click(screen.getByRole('button', { name: /Actions for Ada/ }));
+    expect(screen.getAllByRole('menuitem')).toHaveLength(2);
+
+    await userEvent.click(screen.getByRole('menuitem', { name: 'Message' }));
+    expect(onMessage).toHaveBeenCalledWith(contributor);
+  });
+
+  test('the View Profile item is a new-tab anchor', async () => {
+    renderCard(<ContributorCard contributor={withHref} />);
+
+    await userEvent.click(screen.getByRole('button', { name: /Actions for Ada/ }));
+
+    const viewProfileItem = screen.getByRole('menuitem', { name: /View Profile/ });
+    expect(viewProfileItem).toHaveAttribute('href', 'https://alkemio.test/ada');
+    expect(viewProfileItem).toHaveAttribute('target', '_blank');
+    expect(viewProfileItem).toHaveAttribute('rel', expect.stringContaining('noopener'));
+  });
+
+  test('no href and no messaging capability ⇒ no trigger at all', () => {
+    renderCard(<ContributorCard contributor={{ ...baseCard }} />);
+
+    expect(screen.queryByRole('button', { name: /Actions for/ })).not.toBeInTheDocument();
+  });
+
+  test('no menu item ever reads "remove"', async () => {
+    renderCard(<ContributorCard contributor={{ ...withHref, canMessage: true }} onMessage={vi.fn()} />);
+
+    await userEvent.click(screen.getByRole('button', { name: /Actions for Ada/ }));
+
+    for (const item of screen.getAllByRole('menuitem')) {
+      expect(item.textContent).not.toMatch(/remove/i);
+    }
+  });
+
+  test('opening the menu never calls onContributorClick', async () => {
+    const onContributorClick = vi.fn();
+    renderCard(<ContributorCard contributor={withHref} onContributorClick={onContributorClick} />);
+
+    await userEvent.click(screen.getByRole('button', { name: /Actions for Ada/ }));
+
+    expect(onContributorClick).not.toHaveBeenCalled();
   });
 });

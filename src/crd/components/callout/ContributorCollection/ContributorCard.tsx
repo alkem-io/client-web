@@ -1,8 +1,15 @@
-import { Bot, Building2, ExternalLink, MapPin, User, Users } from 'lucide-react';
+import { Bot, Building2, ExternalLink, MapPin, MoreHorizontal, User, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Card, CardContent } from '@/crd/primitives/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/crd/primitives/dropdown-menu';
+import { IconButton } from '@/crd/primitives/icon-button';
 
 /** A card shows at most this many tag pills — never a "+N" overflow indicator. */
 const MAX_CARD_TAGS = 2;
@@ -56,7 +63,7 @@ const TYPE_ICON = {
   virtualContributor: Bot,
 } as const;
 
-export function ContributorCard({ contributor, onContributorClick, className }: ContributorCardProps) {
+export function ContributorCard({ contributor, onContributorClick, onMessage, className }: ContributorCardProps) {
   const { t } = useTranslation('crd-space');
   const Icon = TYPE_ICON[contributor.type];
   const isOrg = contributor.type === 'organization';
@@ -137,7 +144,7 @@ export function ContributorCard({ contributor, onContributorClick, className }: 
             )}
           </div>
           {/* Control cluster: website (organisations only), then the "…"
-              actions menu, added in a later slice. */}
+              actions menu — same outermost position on every card type. */}
           <div className="flex shrink-0 items-center gap-1">
             {isOrg && contributor.websiteUrl && (
               <a
@@ -149,6 +156,34 @@ export function ContributorCard({ contributor, onContributorClick, className }: 
               >
                 <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
               </a>
+            )}
+            {(href || contributor.canMessage) && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild={true}>
+                  <IconButton
+                    variant="ghost"
+                    tooltipLabel={t('contributors.card.actions', { name: contributor.name })}
+                    className="h-8 w-8 text-muted-foreground"
+                  >
+                    <MoreHorizontal aria-hidden="true" />
+                  </IconButton>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {href && (
+                    <DropdownMenuItem asChild={true}>
+                      <a href={href} target="_blank" rel="noopener noreferrer">
+                        {t('contributors.card.viewProfile')}
+                        <span className="sr-only">{t('contributors.card.opensInNewTab')}</span>
+                      </a>
+                    </DropdownMenuItem>
+                  )}
+                  {contributor.canMessage && onMessage && (
+                    <DropdownMenuItem onSelect={() => onMessage(contributor)}>
+                      {t('contributors.card.message')}
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           </div>
         </div>
