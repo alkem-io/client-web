@@ -39,6 +39,10 @@ export const useStartDirectChat = (userId: string | undefined) => {
           type: ConversationCreationType.Direct,
         },
       },
+      // Callers (e.g. ContributorCollectionConnector's `handleMessage`) map a
+      // failure — such as the recipient having messaging disabled — to their own
+      // friendly toast; the global error-handler link must not add a second, raw one.
+      context: { skipGlobalErrorHandler: true },
       update: (cache, { data }) => {
         const conversation = data?.createConversation;
         const room = conversation?.room;

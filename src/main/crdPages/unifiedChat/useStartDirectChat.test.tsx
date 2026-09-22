@@ -59,6 +59,10 @@ describe('useStartDirectChat — click-time recipient', () => {
     expect(mockCreateConversation).toHaveBeenCalledWith(
       expect.objectContaining({
         variables: { conversationData: { memberIDs: ['u-2'], type: 'DIRECT' } },
+        // The global error-handler link must not also toast a raw server error —
+        // callers (e.g. ContributorCollectionConnector) map a rejection to their
+        // own friendly message.
+        context: { skipGlobalErrorHandler: true },
       })
     );
     expect(outcome).toEqual({ conversationId: 'conv-2', roomId: 'room-2' });
