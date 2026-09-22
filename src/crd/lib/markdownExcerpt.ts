@@ -4,17 +4,57 @@ import { unified } from 'unified';
 import { EXIT, visit } from 'unist-util-visit';
 
 /**
- * Maximum blockquote/list nesting depth this module will hand to the markdown
- * parser. Ordinary prose — however long — never nests this deep, so this bounds
- * pathological *structure*, not source length: a What/Why/Who field at the
- * platform's full save-time character limit parses in full, unmodified, as long
- * as it isn't stacked this deep. Deeper nesting risks exhausting the parser's
- * call stack while parsing — a real, reachable crash (see this file's
- * `markdownExcerpt.test.ts`, "unbounded source safety") — so the source is cut at
- * the start of the first line where nesting exceeds this bound, never at a fixed
- * character count.
+ * Two independent bounds are applied to a markdown source before it reaches the
+ * parser, cheapest first:
+ *
+ * 1. **Parse-length ceiling** (`MAX_EXCERPT_SOURCE_LENGTH`, below) — an excerpt
+ *    only ever renders a few clamped lines, so nothing beyond a few thousand
+ *    characters can ever become visible. This bounds parse *cost*: an inline
+ *    span with no container nesting at all (a long flat run of `*`/`_`/`[`/`]`
+ *    delimiter characters either side of one visible character) still forces the
+ *    parser's delimiter-matching into pathological, super-linear work — no
+ *    blockquote/list nesting is involved, so the depth guard below does not see
+ *    it (see `markdownExcerpt.test.ts`, "unbounded inline-span safety").
+ * 2. **Nesting-depth guard** (`MAX_EXCERPT_NESTING_DEPTH`, below) — the ceiling
+ *    above still leaves room for a couple of thousand characters of *container*
+ *    nesting (blockquote `>` / list markers), which risks exhausting the
+ *    parser's call stack independently of source length (see
+ *    `markdownExcerpt.test.ts`, "unbounded source safety"). This second layer
+ *    cuts at the start of the first line where that nesting crosses the bound.
+ *
+ * Ordinary prose — however long, up to the ceiling — never nests this deep and
+ * is unaffected by the depth guard; it is only ever shortened by the length
+ * ceiling, and only past that ceiling.
  */
 export const MAX_EXCERPT_NESTING_DEPTH = 1000;
+
+/**
+ * Hard ceiling, in characters, on the markdown handed to the parser. Applied
+ * before the nesting-depth guard (see the block comment above). When a source
+ * exceeds it, the cut lands on the last whitespace character within the final
+ * 200 characters of the ceiling, so a word is never split in two; when no
+ * whitespace occurs there, it hard-cuts at the ceiling instead. The excerpt
+ * this feeds renders at most three clamped lines, so nothing user-visible is
+ * ever lost by this cut.
+ */
+export const MAX_EXCERPT_SOURCE_LENGTH = 2000;
+
+const WORD_BOUNDARY_SEARCH_WINDOW = 200;
+
+/**
+ * Cut `markdown` to at most `MAX_EXCERPT_SOURCE_LENGTH` characters, preferring a
+ * whitespace boundary near the end of the allowed range so a word is not split.
+ * Source at or under the ceiling passes through unchanged.
+ */
+function clampToLength(markdown: string): string {
+  if (markdown.length <= MAX_EXCERPT_SOURCE_LENGTH) return markdown;
+  const hardCut = markdown.slice(0, MAX_EXCERPT_SOURCE_LENGTH);
+  const searchFloor = Math.max(0, MAX_EXCERPT_SOURCE_LENGTH - WORD_BOUNDARY_SEARCH_WINDOW);
+  for (let i = hardCut.length - 1; i >= searchFloor; i -= 1) {
+    if (/\s/.test(hardCut[i])) return hardCut.slice(0, i);
+  }
+  return hardCut;
+}
 
 // One level of CommonMark container nesting — a blockquote marker or a list-item
 // marker — at the start of what is left of the line, allowing the up-to-3-space
@@ -47,15 +87,18 @@ function findSafeParseBoundary(markdown: string): number {
 
 /**
  * Bound a markdown source before it reaches excerpt-visibility parsing or
- * card-safe rendering, cutting only a pathologically nested tail (see
- * `findSafeParseBoundary`) — content of any length that never nests past the
- * bound passes through completely unchanged. Safe to call with the same value
- * multiple times.
+ * card-safe rendering: first to `MAX_EXCERPT_SOURCE_LENGTH` characters (cheap,
+ * catches pathological inline-span cost regardless of nesting), then to
+ * whatever prefix stays under `MAX_EXCERPT_NESTING_DEPTH` (catches pathological
+ * container nesting within that length). Content short enough and never nested
+ * past the depth bound passes through completely unchanged. Safe to call with
+ * the same value multiple times.
  */
 export function clampExcerptSource(markdown: string | null | undefined): string {
   if (!markdown) return '';
-  const boundary = findSafeParseBoundary(markdown);
-  return boundary < markdown.length ? markdown.slice(0, boundary) : markdown;
+  const lengthClamped = clampToLength(markdown);
+  const boundary = findSafeParseBoundary(lengthClamped);
+  return boundary < lengthClamped.length ? lengthClamped.slice(0, boundary) : lengthClamped;
 }
 
 /**

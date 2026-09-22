@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import { createElement } from 'react';
 import { describe, expect, test } from 'vitest';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
-import { hasVisibleExcerptText } from './markdownExcerpt';
+import { clampExcerptSource, hasVisibleExcerptText, MAX_EXCERPT_SOURCE_LENGTH } from './markdownExcerpt';
 
 describe('hasVisibleExcerptText', () => {
   test.each([
@@ -48,13 +48,53 @@ describe('hasVisibleExcerptText — unbounded source safety', () => {
     expect(() => hasVisibleExcerptText(deeplyNestedList)).not.toThrow();
   });
 
-  test('ordinary long-form prose is never truncated, however long — only nesting depth bounds the source', () => {
-    // Character count alone is not a valid reason to cut this source (spec dissent
-    // D-4/D-5): only pathological *structure* is. A field at the platform's full
-    // save-time length limit, with no nesting at all, must reach the parser whole.
+  test('ordinary long-form prose still reports visible text once clamped to the parse-length ceiling', () => {
+    // Character count alone was once treated as never a valid reason to cut this source,
+    // on the theory that only pathological *structure* should bound it. That theory did
+    // not hold: a flat run of inline emphasis/bracket markers has no container nesting at
+    // all yet still blows the parser's call stack (see "unbounded inline-span safety"
+    // below), so a length ceiling is now the first layer ahead of the depth guard. An
+    // ordinary field at the platform's full save-time length limit, with no nesting, is cut
+    // to the ceiling — but its visible text sits well within the first 2,000 characters, so
+    // this excerpt is still reported as visible.
     const ordinaryProse = 'Alkemio subspace description. '.repeat(2200); // 66,000 chars, no nesting
     expect(ordinaryProse.length).toBeGreaterThan(65000);
     expect(hasVisibleExcerptText(ordinaryProse)).toBe(true);
+  });
+});
+
+describe('hasVisibleExcerptText — unbounded inline-span safety', () => {
+  test('a large run of emphasis markers on both sides of the visible character resolves within budget and does not throw', () => {
+    const payload = `${'*'.repeat(16000)}x${'*'.repeat(16000)}`;
+    const start = performance.now();
+    expect(() => hasVisibleExcerptText(payload)).not.toThrow();
+    expect(performance.now() - start).toBeLessThan(500);
+  });
+
+  test('a large run of unmatched brackets on both sides of the visible character resolves within budget and does not throw', () => {
+    const payload = `${'['.repeat(24000)}x${']'.repeat(24000)}`;
+    const start = performance.now();
+    expect(() => hasVisibleExcerptText(payload)).not.toThrow();
+    expect(performance.now() - start).toBeLessThan(500);
+  });
+});
+
+describe('clampExcerptSource — length ceiling', () => {
+  test('a source under the length ceiling passes through unchanged', () => {
+    const short = 'A short subspace description, well under the ceiling.';
+    expect(clampExcerptSource(short)).toBe(short);
+  });
+
+  test('a prose source longer than the length ceiling is cut at a word boundary, not mid-word', () => {
+    const prose = 'lorem ipsum dolor sit amet '.repeat(200); // far longer than the ceiling
+    const clamped = clampExcerptSource(prose);
+    expect(clamped.length).toBeLessThanOrEqual(MAX_EXCERPT_SOURCE_LENGTH);
+    expect(prose.startsWith(clamped)).toBe(true);
+    // The character immediately following the cut in the original source is whitespace —
+    // proof the cut landed between words rather than inside one.
+    const nextChar = prose[clamped.length];
+    expect(nextChar).toMatch(/\s/);
+    expect(hasVisibleExcerptText(prose)).toBe(true);
   });
 });
 
