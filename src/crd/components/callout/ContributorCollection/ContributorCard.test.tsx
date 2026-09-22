@@ -136,3 +136,44 @@ describe('ContributorCard — one profile link per card (US1/US2)', () => {
     expect(screen.queryAllByRole('link')).toHaveLength(0);
   });
 });
+
+describe('ContributorCard — the all-absent card is still a valid card (US2)', () => {
+  const enrichedNeighbor: ContributorCardData = {
+    id: 'user-fully-enriched',
+    type: 'user',
+    name: 'Fully Enriched',
+    hasValidCoordinates: false,
+    tagline: 'Everything filled in.',
+    tags: ['Policy', 'Energy'],
+    locationLabel: 'Berlin, DE',
+  };
+
+  test.each<ContributorCardData['type']>([
+    'user',
+    'organization',
+    'virtualContributor',
+  ])('a %s card with only pre-existing fields renders no empty rows and never "undefined"/"null"/"Invalid Date"', type => {
+    const { container } = renderCard(
+      <>
+        <ContributorCard contributor={{ ...baseCard, type, name: `Bare ${type}` }} />
+        <ContributorCard contributor={enrichedNeighbor} />
+      </>
+    );
+
+    expect(container.textContent).not.toMatch(/undefined|null|Invalid Date|NaN/i);
+    // Only the user type gets the italic fallback row; org/VC get none.
+    const fallbackCount = screen.queryAllByText('User has not filled in their tagline.').length;
+    expect(fallbackCount).toBe(type === 'user' ? 1 : 0);
+    expect(screen.queryByText(/associates? in this organization/)).not.toBeInTheDocument();
+  });
+
+  test('tags: undefined and tags: [] render identically (no tag row either way)', () => {
+    const { container: withUndefined } = renderCard(<ContributorCard contributor={{ ...baseCard, tags: undefined }} />);
+    const undefinedHtml = withUndefined.innerHTML;
+
+    withUndefined.remove();
+
+    const { container: withEmpty } = renderCard(<ContributorCard contributor={{ ...baseCard, tags: [] }} />);
+    expect(withEmpty.innerHTML).toBe(undefinedHtml);
+  });
+});
