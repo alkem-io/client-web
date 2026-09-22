@@ -4,7 +4,6 @@ import {
   useContributorCollectionConfigQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { ActorType, CalloutSelectionMode } from '@/core/apollo/generated/graphql-schema';
-import type { ContributorCardData } from '@/crd/components/callout/ContributorCollection/ContributorCard';
 import type { ContributorCollectionCounts } from '@/crd/components/callout/ContributorCollection/ContributorCollection';
 import type { ContributorMapFixedView } from '@/crd/components/map/ContributorMap';
 import type { ContributorTypeId, ContributorViewId } from '@/crd/forms/callout/types';
@@ -13,7 +12,7 @@ import {
   contributorTypeFromServer,
   contributorTypeToServer,
 } from '@/main/crdPages/space/callout/contributorCollectionMapper';
-import { mapContributorItemToCard } from '../dataMappers/contributorCollectionDataMapper';
+import { type ContributorCardModel, mapContributorItemToCard } from '../dataMappers/contributorCollectionDataMapper';
 
 /**
  * Data layer for a contributor-collection callout (feature 008, T004).
@@ -46,7 +45,7 @@ export type UseCrdSpaceContributorsResult = {
   /** Always-visible per-type counts (total eligible set). */
   counts: ContributorCollectionCounts;
   /** Cards for the requested type, or `undefined` until that type is fetched. */
-  getCards: (type: ContributorTypeId) => ContributorCardData[] | undefined;
+  getCards: (type: ContributorTypeId) => ContributorCardModel[] | undefined;
   /** Trigger a one-time lazy fetch of the given type's full set (no-op if already loaded/loading). */
   ensureLoaded: (type: ContributorTypeId) => void;
   /** Whether the given type's set is currently loading. */
@@ -83,7 +82,7 @@ export function useCrdSpaceContributors(calloutId: string | undefined): UseCrdSp
   // Per-type fetched card sets. `requestedRef` tracks which types have already
   // been fetched (a ref, not state, so `ensureLoaded` reads a fresh value without
   // a render cycle). It rolls back on error so a later switch can retry.
-  const [cardsByType, setCardsByType] = useState<Partial<Record<ContributorTypeId, ContributorCardData[]>>>({});
+  const [cardsByType, setCardsByType] = useState<Partial<Record<ContributorTypeId, ContributorCardModel[]>>>({});
   const [loadingTypes, setLoadingTypes] = useState<Set<ContributorTypeId>>(new Set());
   const requestedRef = useRef<Set<ContributorTypeId>>(new Set());
   // Separate, never-rolled-back guard for the eager default-type auto-load. Kept

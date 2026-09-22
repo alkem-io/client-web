@@ -7,12 +7,27 @@ type ContributorItem = NonNullable<
 >['framing']['contributors'][number];
 
 /**
- * Maps a server `ContributorCollectionItem` to the plain CRD `ContributorCardData`
+ * What the hook stores and the connector decorates at render time: every
+ * `ContributorCardData` field except the two the connector derives
+ * (`joinedMonthLabel`, `canMessage`), plus the raw ISO join date those are
+ * derived from. Kept locale-free and viewer-free so the mapper stays pure.
+ */
+export type ContributorCardModel = Omit<ContributorCardData, 'joinedMonthLabel' | 'canMessage'> & {
+  joinedDate?: string;
+};
+
+/**
+ * Maps a server `ContributorCollectionItem` to the plain CRD `ContributorCardModel`
  * (feature 008, T005). Mirrors the existing member-card shape; location carries
  * the precise coordinates only when `hasValidCoordinates` is true, so the map
  * plots exactly the locatable subset and the rest fall into "no location data".
+ *
+ * Pure and locale-free: no i18n, no current-user, no formatting. `joinedDate`
+ * is passed through untouched (the connector turns it into a localised month
+ * label at render time); `associatesCount` keeps `0` as a real value (never
+ * coalesced away by `||`).
  */
-export function mapContributorItemToCard(item: ContributorItem): ContributorCardData {
+export function mapContributorItemToCard(item: ContributorItem): ContributorCardModel {
   const city = item.location?.city ?? undefined;
   const country = item.location?.country ?? undefined;
   const locationLabel = [city, country].filter(Boolean).join(', ') || undefined;
@@ -36,5 +51,14 @@ export function mapContributorItemToCard(item: ContributorItem): ContributorCard
     latitude: hasValidCoordinates ? (item.location?.latitude ?? undefined) : undefined,
     longitude: hasValidCoordinates ? (item.location?.longitude ?? undefined) : undefined,
     hasValidCoordinates,
+    tagline: item.tagline ?? undefined,
+    tags: item.tags ?? [],
+    // `0` is a real value, not absence — never `item.associatesCount || undefined`.
+    associatesCount: item.associatesCount ?? undefined,
+    websiteUrl: item.website ?? undefined,
+    // Codegen maps the `DateTime` scalar to `Date`; kept as an ISO string on
+    // the model so `formatJoinedMonth` (and the cache-identity test) work
+    // against a plain, serialisable value.
+    joinedDate: item.joinedDate ? item.joinedDate.toISOString() : undefined,
   };
 }

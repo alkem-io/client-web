@@ -25,6 +25,18 @@ export type ContributorCardData = {
   latitude?: number;
   longitude?: number;
   hasValidCoordinates: boolean;
+  /** Profile tagline. Users get an italic fallback when absent; org/VC get no row. */
+  tagline?: string;
+  /** The FULL chosen tag list (skills-then-keywords for users; keywords-then-capabilities for org/VC); the card shows only the first two. */
+  tags?: string[];
+  /** Organisations only. The platform-wide associates count; 0 is a value, not absence. */
+  associatesCount?: number;
+  /** Organisations only. Already normalised by the server — used as delivered. */
+  websiteUrl?: string;
+  /** Users only. A ready, localised "Oct 2023"-style label, decorated at render time. */
+  joinedMonthLabel?: string;
+  /** Whether the viewer may message this contributor (decided by the connector: type, signed in, not self). */
+  canMessage?: boolean;
 };
 
 type ContributorCardProps = {
