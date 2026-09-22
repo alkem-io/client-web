@@ -8,20 +8,20 @@ export type CalloutCardVariantFieldProps = {
   onExpandedChange: (next: boolean) => void;
   /** Field label — e.g. "Expanded card". Also used as the switch's aria-label. */
   label: string;
-  /** Fixed description shown beneath the switch, regardless of state (FR-008). */
+  /** Fixed description shown beneath the switch, regardless of state. */
   description: string;
   disabled?: boolean;
   className?: string;
 };
 
 /**
- * "Expanded card" switch for a Subspaces-collection callout (feature 076).
+ * "Expanded card" switch for a Subspaces-collection callout.
  *
  * Pure CRD: props-driven, no fetching, no business logic. Markup mirrors
  * `CalloutSelectionField` — the two fields are meant to read as siblings, the
  * card-variant field placed immediately after the complete selection field
- * (FR-008) — but the description here is ONE fixed string (not a pair that
- * swaps with the switch state): ruling OP7's copy is used verbatim regardless
+ * — but the description here is ONE fixed string (not a pair that
+ * swaps with the switch state): the same copy is used verbatim regardless
  * of on/off.
  */
 export function CalloutCardVariantField({

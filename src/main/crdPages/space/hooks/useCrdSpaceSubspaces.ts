@@ -5,8 +5,8 @@ import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
 import { mapSubspacesToCardDataList } from '@/main/crdPages/space/dataMappers/subspaceCardDataMapper';
 
 /**
- * Data layer for a Spaces-collection callout (feature 013, T004; `expanded` arg
- * feature 076, T010).
+ * Data layer for a Spaces-collection callout, including the `expanded` arg that
+ * drives the rich (expanded) card variant.
  *
  * Fetches the host space's subspaces for a SPACES callout via `framing.subspaces`
  * (the server returns the FULL authorized set, already ordered pinned-first then
@@ -26,11 +26,11 @@ import { mapSubspacesToCardDataList } from '@/main/crdPages/space/dataMappers/su
  *
  * `expanded` drives the `$expanded` query variable that gates the
  * `SubspaceCardAboutContext` fragment (What/Why/Who) — a compact post never asks
- * for that extra About text (FR-027/SC-006). This hook deliberately never falls
+ * for that extra About text. This hook deliberately never falls
  * back to Apollo's `previousData` when `expanded` flips: while the new variables
  * are loading it returns an empty, `loading: true` result so the caller shows its
  * loading state rather than briefly painting compact-looking cards that then jump
- * to expanded, or vice versa (FR-029).
+ * to expanded, or vice versa.
  */
 export type UseCrdSpaceSubspacesResult = {
   /** Mapped subspace cards in server order (pinned-first). Empty while `loading`. */

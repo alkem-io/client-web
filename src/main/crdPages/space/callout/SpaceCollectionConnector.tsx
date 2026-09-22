@@ -14,9 +14,9 @@ import { useCrdSpaceSubspaces } from '@/main/crdPages/space/hooks/useCrdSpaceSub
 type SpaceCollectionConnectorProps = {
   calloutId: string;
   /**
-   * Card variant (feature 076) — required on purpose: TypeScript fails if a mount site
-   * forgets to pass it (FR-030, this callout renders in two places — the feed and the
-   * post detail dialog — and both must agree).
+   * Card variant — required on purpose: TypeScript fails if a mount site
+   * forgets to pass it. This callout renders in two places — the feed and the
+   * post detail dialog — and both must agree.
    */
   cardVariant: 'compact' | 'expanded';
   className?: string;

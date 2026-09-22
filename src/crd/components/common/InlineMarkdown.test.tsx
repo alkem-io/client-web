@@ -3,15 +3,15 @@ import { describe, expect, test } from 'vitest';
 import { InlineMarkdown } from './InlineMarkdown';
 
 /**
- * Characterisation + safety tests for `InlineMarkdown` (feature 076).
+ * Characterisation + safety tests for `InlineMarkdown`.
  *
  * `InlineMarkdown` had zero tests before this feature and ten existing
  * consumers. The tests in this file pin its CURRENT default behaviour first
  * (`describe('default mode — unchanged behaviour')`) so the opt-in card-safe
  * mode added afterwards can never regress a consumer that doesn't ask for it.
  * The card-safe (`rawHtml="skip"`) tests guard the cross-scope content
- * exposure this feature introduces (subspace-authored markdown rendered on
- * the host space's page) — see spec.md User Story 3.
+ * exposure this feature introduces: subspace-authored markdown rendered on
+ * the host space's page.
  */
 
 describe('InlineMarkdown default mode — unchanged behaviour (characterisation)', () => {
@@ -62,7 +62,7 @@ describe('InlineMarkdown default mode — unchanged behaviour (characterisation)
   });
 });
 
-describe('InlineMarkdown card-safe mode (rawHtml="skip") — cross-scope content injection (US3)', () => {
+describe('InlineMarkdown card-safe mode (rawHtml="skip") — cross-scope content injection', () => {
   test('a fixed-position, full-screen raw HTML block is not interpreted: no styled descendant, no div from the input', () => {
     const { container } = render(
       <InlineMarkdown
@@ -74,13 +74,13 @@ describe('InlineMarkdown card-safe mode (rawHtml="skip") — cross-scope content
     expect(container.firstElementChild?.querySelector('div')).toBeNull();
   });
 
-  test('inline raw HTML tags drop, their text content survives (FR-023)', () => {
+  test('inline raw HTML tags drop, their text content survives', () => {
     const { container } = render(<InlineMarkdown content="text <strong>bold</strong> more" rawHtml="skip" />);
     expect(container.querySelector('strong')).toBeNull();
     expect(container.textContent?.replace(/\s+/g, ' ').trim()).toBe('text bold more');
   });
 
-  test('a markdown image is absent from the DOM, not merely hidden (FR-022)', () => {
+  test('a markdown image is absent from the DOM, not merely hidden', () => {
     const { container } = render(<InlineMarkdown content="![x](http://localhost/__p.png)" rawHtml="skip" />);
     expect(container.querySelector('img')).toBeNull();
   });
@@ -113,7 +113,7 @@ describe('InlineMarkdown card-safe mode (rawHtml="skip") — cross-scope content
     expect(container.querySelectorAll('a')).toHaveLength(0);
   });
 
-  test('links render as plain text even without an explicit disableLinks (FR-024, one link per card)', () => {
+  test('links render as plain text even without an explicit disableLinks (one link per card)', () => {
     const { container } = render(<InlineMarkdown content="[click](https://example.org)" rawHtml="skip" />);
     expect(container.querySelectorAll('a')).toHaveLength(0);
     expect(container.textContent).toContain('click');

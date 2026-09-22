@@ -54,9 +54,9 @@ export type SpaceCardData = {
    */
   visibility?: SpaceCardVisibility;
   /**
-   * Raw markdown excerpt sources for the expanded card variant (feature 076). Ignored by
+   * Raw markdown excerpt sources for the expanded card variant. Ignored by
    * the compact `SpaceCard` — only `ExpandedSpaceCard` reads these, and only for a post in
-   * expanded mode (FR-027). `what` is the About *description* — never confuse with this
+   * expanded mode. `what` is the About *description* — never confuse with this
    * type's own `description` field above, which carries the tagline.
    */
   what?: string;

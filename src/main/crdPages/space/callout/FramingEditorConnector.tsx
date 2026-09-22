@@ -229,7 +229,7 @@ type FramingEditorConnectorProps = {
   selectedIds?: string[];
   onSelectedIdsChange?: (ids: string[]) => void;
   /**
-   * Card variant (feature 076) — present for the 'spaces' framing only. Defaults to
+   * Card variant — present for the 'spaces' framing only. Defaults to
    * 'compact' when the consumer omits it (e.g. the template form did not pass it
    * before this feature).
    */
@@ -839,9 +839,9 @@ export function FramingEditorConnector({
               />
             }
           />
-          {/* "Expanded card" switch (feature 076) — placed immediately after the
+          {/* "Expanded card" switch — placed immediately after the
               complete Manual selection block (its switch, description and, when
-              on, its picker) per FR-008. */}
+              on, its picker). */}
           <CalloutCardVariantField
             expanded={cardVariant === 'expanded'}
             onExpandedChange={on => onCardVariantChange?.(on ? 'expanded' : 'compact')}

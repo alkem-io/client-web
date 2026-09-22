@@ -71,8 +71,8 @@ export type CalloutFormValues = {
    */
   selectedIds: string[];
   /**
-   * Card variant for a Subspaces-collection callout (feature 076). Meaningful only
-   * when `framingChip === 'spaces'`. Off by default (`'compact'`) — FR-009.
+   * Card variant for a Subspaces-collection callout. Meaningful only
+   * when `framingChip === 'spaces'`. Off by default (`'compact'`).
    */
   cardVariant: 'compact' | 'expanded';
   memoMarkdown: string;
@@ -194,7 +194,7 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   // Selection defaults: AUTO mode, no ids (feature 025 FR-002 default).
   selectionMode: 'auto',
   selectedIds: [],
-  // Card variant default: compact (feature 076 FR-009).
+  // Card variant default: compact.
   cardVariant: 'compact',
   memoMarkdown: '',
   linkUrl: '',

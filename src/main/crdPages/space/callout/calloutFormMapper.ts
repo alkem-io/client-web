@@ -222,9 +222,9 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
               },
             }
           : {}),
-        // Card variant (feature 076) — SPACES only. The server rejects this block on
+        // Card variant — SPACES only. The server rejects this block on
         // every other framing, Contributors included, so this does NOT reuse the
-        // `Contributors || Spaces` condition above (FR-004).
+        // `Contributors || Spaces` condition above.
         ...(framingType === CalloutFramingType.Spaces
           ? { spaces: { cardVariant: cardVariantToServer(values.cardVariant) } }
           : {}),
@@ -494,7 +494,7 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
             },
           }
         : {}),
-      // Card variant (feature 076) — SPACES only, same rule as create (FR-004).
+      // Card variant — SPACES only, same rule as create.
       ...(framingType === CalloutFramingType.Spaces
         ? { spaces: { cardVariant: cardVariantToServer(values.cardVariant) } }
         : {}),

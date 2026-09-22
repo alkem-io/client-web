@@ -92,7 +92,7 @@ describe('CalloutTemplateForm', () => {
     expect(screen.getByTestId('response-default-draft')).toHaveTextContent('draft-whiteboard');
   });
 
-  it('with the Subspaces chip, the "Expanded card" switch is functional (feature 076, FR-007) — unlike the inert Manual-selection switch, it is not this feature to fix (spec A-9)', () => {
+  it('with the Subspaces chip, the "Expanded card" switch is functional — unlike the inert Manual-selection switch, fixing that is out of scope here', () => {
     const setField = vi.fn();
 
     render(

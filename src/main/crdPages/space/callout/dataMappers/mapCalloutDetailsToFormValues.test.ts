@@ -194,7 +194,7 @@ describe('mapCalloutDetailsToFormValues — taskBoard capture (FR-023)', () => {
   });
 });
 
-// Card-variant prefill (feature 076, US2-AS6).
+// Card-variant prefill.
 
 const makeSpacesCalloutData = (spaces: { cardVariant: SpaceCollectionCardVariant } | null | undefined) =>
   ({
@@ -213,7 +213,7 @@ const makeSpacesCalloutData = (spaces: { cardVariant: SpaceCollectionCardVariant
     },
   }) as unknown as CalloutContentQuery;
 
-describe('mapCalloutDetailsToFormValues — cardVariant prefill (feature 076)', () => {
+describe('mapCalloutDetailsToFormValues — cardVariant prefill', () => {
   it('EXPANDED ⇒ "expanded"', () => {
     const result = mapCalloutDetailsToFormValues(
       makeSpacesCalloutData({ cardVariant: SpaceCollectionCardVariant.Expanded })
@@ -228,7 +228,7 @@ describe('mapCalloutDetailsToFormValues — cardVariant prefill (feature 076)', 
     expect(result.cardVariant).toBe('compact');
   });
 
-  it('spaces: null (pre-feature row) ⇒ "compact" (US2-AS6)', () => {
+  it('spaces: null (pre-feature row) ⇒ "compact"', () => {
     const result = mapCalloutDetailsToFormValues(makeSpacesCalloutData(null));
     expect(result.cardVariant).toBe('compact');
   });

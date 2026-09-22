@@ -7,10 +7,10 @@ import frJson from './space.fr.json';
 import nlJson from './space.nl.json';
 
 /**
- * Feature 076 i18n keys — FR-010: label, description, the three excerpt section
+ * Expanded-card i18n keys — label, description, the three excerpt section
  * labels, and the footer call-to-action, in all six supported languages with full
  * key parity. Complements the generic `space.parity.test.ts` sweep with a
- * feature-scoped check plus the Dutch glossary assertion (spec: "Subspace" stays
+ * feature-scoped check plus the Dutch glossary assertion ("Subspace" stays
  * English).
  */
 
@@ -28,7 +28,7 @@ const locales: Array<[string, Locale]> = [
   ['fr', frJson as unknown as Locale],
 ];
 
-describe('expanded-card i18n keys (feature 076)', () => {
+describe('expanded-card i18n keys', () => {
   test.each(locales)('%s declares all six keys as non-empty strings', (_lang, locale) => {
     expect(locale.forms.cardVariant.label.length).toBeGreaterThan(0);
     expect(locale.forms.cardVariant.description.length).toBeGreaterThan(0);
@@ -38,7 +38,7 @@ describe('expanded-card i18n keys (feature 076)', () => {
     expect(locale.subspaces.expandedCard.open.length).toBeGreaterThan(0);
   });
 
-  test('en description is the verbatim ask (FR-008)', () => {
+  test('en description is the verbatim ask', () => {
     expect(enJson.forms.cardVariant.description).toBe(
       "Shows the full card with the subspace's What, Why and Who - more context, more height."
     );

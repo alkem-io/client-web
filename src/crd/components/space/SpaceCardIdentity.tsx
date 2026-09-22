@@ -31,9 +31,9 @@ export type SpaceCardIdentityProps = {
 /**
  * The compact card's identity block — banner (or the deterministic colour fallback),
  * visibility ribbon, Member/Public-Private/pin badges, avatar, name, parent line,
- * tagline and tags. Extracted from `SpaceCard` (feature 076, T006) so the expanded
- * card variant can reuse exactly this — never a copy — keeping FR-013 ("everything
- * the compact card shows") true by construction. Returns a fragment (two sibling
+ * tagline and tags. Extracted from `SpaceCard` so the expanded
+ * card variant can reuse exactly this — never a copy — keeping "everything
+ * the compact card shows" true by construction. Returns a fragment (two sibling
  * divs — banner, body) so composing it inside `SpaceCard`'s `<article>` produces
  * the exact same DOM as before the extraction; no extra wrapper element.
  */
@@ -193,7 +193,7 @@ export type SpaceCardLeadsProps = {
 };
 
 /**
- * The compact card's leads footer — extracted from `SpaceCard` (feature 076, T006)
+ * The compact card's leads footer — extracted from `SpaceCard`
  * so the expanded card's footer (which additionally carries a call-to-action) can
  * reuse this exact block.
  */

@@ -8,10 +8,9 @@ import { useLayoutEffect, useState } from 'react';
  * the FIRST measurement happens synchronously before paint (`useLayoutEffect`
  * reading `getBoundingClientRect().width`), not inside the `ResizeObserver`
  * callback. A card whose available width decides row-vs-stacked layout
- * (FR-012) would otherwise paint stacked for one frame on every wide screen
+ * would otherwise paint stacked for one frame on every wide screen
  * and then jump to the row layout once the observer's first callback fires —
- * the one cost of measuring width instead of using a screen breakpoint
- * (research D19).
+ * the one cost of measuring width instead of using a screen breakpoint.
  *
  * Returns `[width, ref]`. `width` is `undefined` until the element is
  * measured (SSR, first paint before mount, or no `ResizeObserver` support —

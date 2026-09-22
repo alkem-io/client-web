@@ -88,7 +88,7 @@ describe('useCrdSpaceSubspaces', () => {
     expect(result.current.subspaces).toEqual([]);
   });
 
-  it('compact ⇒ variables.expanded is false (FR-027/SC-006 — no additional About text for a compact post)', () => {
+  it('compact ⇒ variables.expanded is false (no additional About text for a compact post)', () => {
     mockUseQuery.mockReturnValue({ data: dataWith([]), loading: false });
 
     renderHook(() => useCrdSpaceSubspaces('callout-1', false));
@@ -108,7 +108,7 @@ describe('useCrdSpaceSubspaces', () => {
     );
   });
 
-  it('while the variables are loading, subspaces is [] and loading is true — never previousData (FR-029)', () => {
+  it('while the variables are loading, subspaces is [] and loading is true — never previousData', () => {
     mockUseQuery.mockReturnValue({ data: undefined, loading: true });
 
     const { result } = renderHook(() => useCrdSpaceSubspaces('callout-1', true));

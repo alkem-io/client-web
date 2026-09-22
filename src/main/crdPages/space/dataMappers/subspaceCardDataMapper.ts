@@ -66,11 +66,11 @@ function mapSubspaceToCardData(subspace: SubspaceQueryData, showPinIndicator: bo
     id: subspace.id,
     name: profile.displayName,
     description: profile.tagline ?? '',
-    // Expanded-card excerpt sources (feature 076). Naming trap: `what` is the About
+    // Expanded-card excerpt sources. Naming trap: `what` is the About
     // *description* — never rename/alias this to `description`, which above already
-    // carries the tagline. `who` is likewise never fetched for a compact post (FR-027);
+    // carries the tagline. `who` is likewise never fetched for a compact post;
     // `why` is fetched unconditionally by the shared `SubspaceCard` fragment today
-    // regardless of variant (research D6, pre-existing) and simply maps through harmlessly
+    // regardless of variant (pre-existing) and simply maps through harmlessly
     // when the field wasn't selected (`undefined`) — only `variant === 'expanded'` reads it.
     what: profile.description ?? undefined,
     why: subspace.about.why ?? undefined,

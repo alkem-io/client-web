@@ -24,11 +24,11 @@ const baseProps = {
 };
 
 /**
- * Feature 076 T015 — the "Expanded card" switch must sit immediately after the
+ * The "Expanded card" switch must sit immediately after the
  * complete Manual selection block (its switch, description and, when on, its
- * picker), and must be absent for every non-spaces framing (US2-AS1, AS5).
+ * picker), and must be absent for every non-spaces framing.
  */
-describe('FramingEditorConnector — card variant switch placement (feature 076)', () => {
+describe('FramingEditorConnector — card variant switch placement', () => {
   it('follows the selection switch in DOM order when Manual selection is off', () => {
     render(<FramingEditorConnector {...baseProps} framingType="spaces" />);
     const switches = screen.getAllByRole('switch');

@@ -4,7 +4,7 @@ export type SpaceCollectionCardVariantPlain = 'compact' | 'expanded';
 
 /**
  * `SpaceCollectionCardVariant` (server enum) → the plain `'compact' | 'expanded'` union
- * every other client-web site consumes (feature 076, spec dissent D-1 / risk R-11).
+ * every other client-web site consumes.
  *
  * This is the ONLY place in client-web that reads the generated enum. `EXPANDED` maps to
  * `'expanded'`; everything else — `COMPACT`, `null`, `undefined`, and any value the current

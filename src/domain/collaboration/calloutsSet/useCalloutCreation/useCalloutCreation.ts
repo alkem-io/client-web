@@ -68,7 +68,7 @@ export interface CalloutCreationType {
       contributors?: CreateCalloutContributorsSettingsInput;
       /** Selection mode + curated ids — for CONTRIBUTORS or SPACES framing (feature 025). */
       selection?: CreateCalloutSelectionSettingsInput;
-      /** Card-variant settings — SPACES framing only (feature 076). */
+      /** Card-variant settings — SPACES framing only. */
       spaces?: CreateCalloutSpacesSettingsInput;
     };
     contribution?: {

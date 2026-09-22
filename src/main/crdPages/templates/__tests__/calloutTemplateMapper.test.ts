@@ -544,7 +544,7 @@ describe('calloutTemplateContentToFormValues', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Card variant (feature 076, US5)
+// Card variant
 // ---------------------------------------------------------------------------
 
 describe('calloutTemplateContentToFormValues — cardVariant hydration', () => {
@@ -560,7 +560,7 @@ describe('calloutTemplateContentToFormValues — cardVariant hydration', () => {
   });
 });
 
-describe('calloutFormValuesToCreateCalloutInput — cardVariant (feature 076)', () => {
+describe('calloutFormValuesToCreateCalloutInput — cardVariant', () => {
   it('carries settings.framing.spaces for the spaces chip', () => {
     const input = calloutFormValuesToCreateCalloutInput(
       values({ framingChip: 'spaces', cardVariant: 'expanded' }),

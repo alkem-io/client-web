@@ -8,7 +8,7 @@ vi.mock('react-i18next', () => ({
 import { SpaceCard, type SpaceCardData } from './SpaceCard';
 
 /**
- * Characterisation tests for `SpaceCard` (feature 076, T006).
+ * Characterisation tests for `SpaceCard`.
  *
  * `SpaceCard` had zero tests before this feature and ~15 consumers across the
  * app (explorer, search overlay, dashboard, innovation hub, subspaces dialog,
@@ -16,7 +16,7 @@ import { SpaceCard, type SpaceCardData } from './SpaceCard';
  * CURRENT rendered output against a full fixture BEFORE `SpaceCardIdentity` /
  * `SpaceCardLeads` are extracted from it, so the extraction can be verified to
  * change nothing — every assertion here must still pass, unedited, after the
- * refactor (FR-013's "everything the compact card shows" holds by
+ * refactor ("everything the compact card shows" holds by
  * construction, not by copy).
  */
 

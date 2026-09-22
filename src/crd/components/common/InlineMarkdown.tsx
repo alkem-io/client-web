@@ -67,7 +67,7 @@ export function InlineMarkdown({
   const isCardSafe = rawHtml === 'skip';
 
   // Render links as plain text inside clickable containers to avoid nested-<a> (invalid HTML).
-  // In card-safe mode links are always plain text (FR-024) — the card itself is the only link.
+  // In card-safe mode links are always plain text — the card itself is the only link.
   const components = {
     ...((disableLinks || isCardSafe) && { a: ({ children }: { children?: ReactNode }) => <span>{children}</span> }),
     // Card-safe table flatten: a trailing space text node (not CSS) keeps cell text apart once

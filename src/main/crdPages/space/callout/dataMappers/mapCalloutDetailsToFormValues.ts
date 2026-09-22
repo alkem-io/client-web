@@ -109,7 +109,7 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     // Selection settings prefill (feature 025). Absent selection ⇒ AUTO (FR-016).
     selectionMode: settings.framing.selection?.mode === CalloutSelectionMode.Custom ? 'custom' : 'auto',
     selectedIds: settings.framing.selection?.selectedIds ?? [],
-    // Card variant prefill (feature 076). Absent `spaces` block ⇒ compact (US2-AS6).
+    // Card variant prefill. Absent `spaces` block ⇒ compact.
     cardVariant: cardVariantFromServer(settings.framing.spaces?.cardVariant),
     memoMarkdown: '',
     linkUrl: framing.link?.uri ?? '',

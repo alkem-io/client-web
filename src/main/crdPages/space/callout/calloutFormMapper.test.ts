@@ -626,7 +626,7 @@ describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
   });
 });
 
-describe('mapFormToCalloutCreationInput / mapFormToCalloutUpdateInput — card variant (feature 076)', () => {
+describe('mapFormToCalloutCreationInput / mapFormToCalloutUpdateInput — card variant', () => {
   it('create: sends spaces for the spaces chip, expanded', () => {
     const result = mapFormToCalloutCreationInput(
       baseValues({ framingChip: 'spaces', cardVariant: 'expanded' }),
@@ -655,7 +655,7 @@ describe('mapFormToCalloutCreationInput / mapFormToCalloutUpdateInput — card v
     'contributors',
     'whiteboard',
     'none',
-  ] as const)('not sent for the "%s" chip — SPACES only (FR-004), never reuses the contributors||spaces selection condition', chip => {
+  ] as const)('not sent for the "%s" chip — SPACES only, never reuses the contributors||spaces selection condition', chip => {
     const created = mapFormToCalloutCreationInput(
       baseValues({ framingChip: chip, cardVariant: 'expanded' }),
       createOptions
@@ -668,7 +668,7 @@ describe('mapFormToCalloutCreationInput / mapFormToCalloutUpdateInput — card v
     expect(updated.input.settings?.framing?.spaces).toBeUndefined();
   });
 
-  it('the selection payload is byte-identical with and without the new field (US2-AS4 — independence)', () => {
+  it('the selection payload is byte-identical with and without the new field (independence)', () => {
     const withCompact = mapFormToCalloutCreationInput(
       baseValues({ framingChip: 'spaces', cardVariant: 'compact', selectionMode: 'custom', selectedIds: ['a', 'b'] }),
       createOptions

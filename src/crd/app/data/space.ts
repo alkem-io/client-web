@@ -862,9 +862,9 @@ export const MOCK_SIDEBAR = {
   ],
 };
 
-// Expanded-card design-review fixtures (feature 076, T018) — one fully filled card, one
+// Expanded-card design-review fixtures — one fully filled card, one
 // partial card, one all-empty card (falls back to the compact card in the list), and one
-// long-text card (the clamp must hold the same height at any length — FR-031).
+// long-text card (the clamp must hold the same height at any length).
 const LONG_TEXT =
   'This section repeats itself to demonstrate that the line clamp holds at any length, without the card growing taller or the layout shifting. '.repeat(
     8
@@ -903,7 +903,7 @@ export const MOCK_EXPANDED_SUBSPACES: SpaceCardData[] = [
     leads: [{ name: 'David Kim', avatarUrl: AVATARS.david, type: 'person' }],
     href: '/space/green-energy/challenges/urban-mobility',
     what: 'Piloting low-carbon transit options — e-bike shares, bus electrification, and car-free zones — across three neighbourhoods, only.',
-    // why and who intentionally left empty — this card shows partial-fields rendering (US1-AS2).
+    // why and who intentionally left empty — this card shows partial-fields rendering.
   },
   {
     id: 'exp-empty',
@@ -916,7 +916,7 @@ export const MOCK_EXPANDED_SUBSPACES: SpaceCardData[] = [
     isMember: false,
     leads: [],
     href: '/space/green-energy/challenges/green-infrastructure',
-    // No what/why/who at all — falls back to the plain compact card (FR-017, US1-AS3).
+    // No what/why/who at all — falls back to the plain compact card.
   },
   {
     id: 'exp-long',

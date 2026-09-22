@@ -15,9 +15,9 @@ export interface CalloutSettingsModelFull {
   framing: {
     commentsEnabled: boolean;
     /**
-     * Present only on SPACES callouts; absent/null ⇒ COMPACT (feature 076). Read this
-     * only through `cardVariantFromServer` — never compare the enum directly (spec
-     * dissent D-1, risk R-11).
+     * Present only on SPACES callouts; absent/null ⇒ COMPACT. Read this
+     * only through `cardVariantFromServer` — never compare the enum directly, so an
+     * unrecognised future value falls back safely instead of leaking through unchecked.
      */
     spaces?: { cardVariant: SpaceCollectionCardVariant } | null;
   };

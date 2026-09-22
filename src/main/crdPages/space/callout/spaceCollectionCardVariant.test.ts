@@ -15,7 +15,7 @@ describe('cardVariantFromServer', () => {
   test('undefined -> compact', () => {
     expect(cardVariantFromServer(undefined)).toBe('compact');
   });
-  test('an unknown future enum value -> compact (risk R-11)', () => {
+  test('an unknown future enum value -> compact', () => {
     expect(cardVariantFromServer('SOMETHING_NEW' as unknown as SpaceCollectionCardVariant)).toBe('compact');
   });
 });

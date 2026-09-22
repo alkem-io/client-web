@@ -81,12 +81,12 @@ space data and callbacks from the consumer; all data fetching is external.
 
 `SpaceCardIdentity` and `SpaceCardLeads` — the compact card's identity block (banner,
 badges, avatar, name/parent/tagline/tags) and leads footer, extracted from `SpaceCard`
-(feature 076) so `ExpandedSpaceCard` can reuse them unchanged. `SpaceCardIdentity`
+so `ExpandedSpaceCard` can reuse them unchanged. `SpaceCardIdentity`
 accepts an optional `nameSlot` so a caller can render the name as a different link.
 
 ### ExpandedSpaceCard (`space/ExpandedSpaceCard.tsx`)
 
-The rich (expanded) subspace card variant (feature 076) — the compact identity block
+The rich (expanded) subspace card variant — the compact identity block
 plus clamped What/Why/Who excerpts (via card-safe `InlineMarkdown`) and a full-width
 leads footer with a visual "Open subspace" cue. One link per card (a stretched
 name-link); row vs. stacked layout follows the card's own measured width
@@ -140,7 +140,7 @@ Centered error display with AlertCircle icon, title, message, and optional retry
 
 ### CalloutCardVariantField (`forms/callout/CalloutCardVariantField.tsx`)
 
-"Expanded card" on/off switch for a Subspaces-collection callout (feature 076). Markup
+"Expanded card" on/off switch for a Subspaces-collection callout. Markup
 mirrors `CalloutSelectionField` (switch before label) so the two fields read as
 siblings; the description is one fixed string regardless of switch state.
 

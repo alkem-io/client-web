@@ -20,7 +20,7 @@ const baseSubspace = {
   pinned: false,
 };
 
-describe('mapSubspacesToCardDataList — expanded-card excerpt fields (feature 076)', () => {
+describe('mapSubspacesToCardDataList — expanded-card excerpt fields', () => {
   test('description carries the tagline, what carries the About description — two distinct slots, never confused', () => {
     const [card] = mapSubspacesToCardDataList([baseSubspace], SpaceSortMode.Alphabetical);
     expect(card.description).toBe('TAG');
@@ -34,7 +34,7 @@ describe('mapSubspacesToCardDataList — expanded-card excerpt fields (feature 0
     expect(card.who).toBe('WHO');
   });
 
-  test('with compact-query data, what and who are undefined — but why still maps through harmlessly (research D6)', () => {
+  test('with compact-query data, what and who are undefined — but why still maps through harmlessly', () => {
     const compactShaped = {
       ...baseSubspace,
       about: {
