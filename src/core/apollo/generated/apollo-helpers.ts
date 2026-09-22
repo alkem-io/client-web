@@ -1341,23 +1341,33 @@ export type ContributorCollectionCountsFieldPolicy = {
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ContributorCollectionItemKeySpecifier = (
+  | 'associatesCount'
   | 'avatarUrl'
   | 'displayName'
   | 'id'
+  | 'joinedDate'
   | 'location'
   | 'roleLabel'
+  | 'tagline'
+  | 'tags'
   | 'type'
   | 'url'
+  | 'website'
   | ContributorCollectionItemKeySpecifier
 )[];
 export type ContributorCollectionItemFieldPolicy = {
+  associatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   avatarUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  joinedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   location?: FieldPolicy<any> | FieldReadFunction<any>;
   roleLabel?: FieldPolicy<any> | FieldReadFunction<any>;
+  tagline?: FieldPolicy<any> | FieldReadFunction<any>;
+  tags?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   url?: FieldPolicy<any> | FieldReadFunction<any>;
+  website?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ContributorLocationKeySpecifier = (
   | 'city'

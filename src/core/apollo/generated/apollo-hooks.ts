@@ -30968,6 +30968,11 @@ export const ContributorCollectionByTypeDocument = gql`
             longitude
             hasValidCoordinates
           }
+          tagline
+          tags
+          joinedDate
+          website
+          associatesCount
         }
       }
     }
