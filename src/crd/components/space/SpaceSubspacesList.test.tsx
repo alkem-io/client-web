@@ -31,7 +31,7 @@ function card(id: string, name: string, extra: Partial<SpaceCardData> = {}): Spa
   };
 }
 
-describe('SpaceSubspacesList — variant (feature 076)', () => {
+describe('SpaceSubspacesList — variant', () => {
   test('default (no variant) is unchanged: 3-up grid, 6 visible of 8, SpaceCards', () => {
     mockUseElementWidth.mockReturnValue([undefined, vi.fn()]);
     const cards = Array.from({ length: 8 }, (_, i) => card(`s${i}`, `Space ${i}`));
@@ -42,18 +42,24 @@ describe('SpaceSubspacesList — variant (feature 076)', () => {
     expect(screen.getByText(/subspaces.showMore/)).toBeInTheDocument();
   });
 
-  test('variant="expanded" is 1 column, 3 visible of 8, "Show 5 more", show-more reveals all', async () => {
+  test('variant="expanded" is 1 column, 3 visible of 8, ExpandedSpaceCards with their excerpt content, "Show 5 more", show-more reveals all', async () => {
     mockUseElementWidth.mockReturnValue([undefined, vi.fn()]);
     const user = userEvent.setup();
     const cards = Array.from({ length: 8 }, (_, i) => card(`s${i}`, `Space ${i}`, { what: 'excerpt text' }));
     const { container } = render(<SpaceSubspacesList subspaces={cards} variant="expanded" />);
 
     expect(container.querySelector('ul.grid-cols-1')).not.toBeNull();
+    // Marker only ExpandedSpaceCard renders — proves the list is actually mounting the rich
+    // card for its visible items, not silently falling back to the compact SpaceCard.
+    expect(screen.getAllByText('crd-space:subspaces.expandedCard.open')).toHaveLength(3);
+    expect(screen.getAllByText('excerpt text')).toHaveLength(3);
     const showMoreButton = screen.getByText('subspaces.showMore:{"count":5}');
     expect(showMoreButton).toBeInTheDocument();
 
     await user.click(showMoreButton);
     expect(screen.getByText('subspaces.showLess')).toBeInTheDocument();
+    expect(screen.getAllByText('crd-space:subspaces.expandedCard.open')).toHaveLength(8);
+    expect(screen.getAllByText('excerpt text')).toHaveLength(8);
   });
 
   test('a compact list whose items carry `why` still renders plain SpaceCards (legacy selection never flips the list to expanded)', () => {

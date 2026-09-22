@@ -26,7 +26,7 @@ function card(id: string, name: string): SpaceCardData {
   };
 }
 
-describe('SpaceCollection (feature 013 renderer)', () => {
+describe('SpaceCollection', () => {
   test('renders each subspace as a card (reuses SpaceCard, unchanged)', () => {
     render(<SpaceCollection subspaces={[card('a', 'Alpha'), card('b', 'Beta')]} />);
 
@@ -64,11 +64,15 @@ describe('SpaceCollection (feature 013 renderer)', () => {
 
   test('default renders compact (3-up grid, SpaceCard) — regression net for existing consumers', () => {
     const { container } = render(<SpaceCollection subspaces={[card('a', 'Alpha')]} />);
-    expect(container.querySelector('.grid')).not.toBeNull();
+    expect(container.querySelector('.md\\:grid-cols-2.lg\\:grid-cols-3')).not.toBeNull();
   });
 
-  test('variant="expanded" reaches the reused SpaceSubspacesList (single column)', () => {
-    const { container } = render(<SpaceCollection subspaces={[card('a', 'Alpha')]} variant="expanded" />);
-    expect(container.querySelector('.grid-cols-1')).not.toBeNull();
+  test('variant="expanded" reaches the reused SpaceSubspacesList and renders the rich card, not the compact grid', () => {
+    const { container } = render(
+      <SpaceCollection subspaces={[{ ...card('a', 'Alpha'), what: 'Why this subspace exists' }]} variant="expanded" />
+    );
+    expect(container.querySelector('.md\\:grid-cols-2.lg\\:grid-cols-3')).toBeNull();
+    expect(screen.getByText('Why this subspace exists')).toBeInTheDocument();
+    expect(screen.getByText('crd-space:subspaces.expandedCard.open')).toBeInTheDocument();
   });
 });

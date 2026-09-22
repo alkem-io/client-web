@@ -14,7 +14,7 @@ export type SpaceCollectionProps = {
   /** Whether the subspace set is still loading (renders a spinner, not the empty state). */
   loading?: boolean;
   /**
-   * Card variant (feature 076). `'compact'` (default) is today's 3-up grid;
+   * Card variant. `'compact'` (default) is today's 3-up grid;
    * `'expanded'` renders one rich card per row with What/Why/Who excerpts.
    */
   variant?: 'compact' | 'expanded';
@@ -24,14 +24,14 @@ export type SpaceCollectionProps = {
 };
 
 /**
- * Spaces-collection callout renderer (feature 013).
+ * Spaces-collection callout renderer.
  *
  * A THIN WRAPPER around the existing `SpaceSubspacesList` — which already renders
- * the `SpaceCard` (unchanged, FR-003) and owns the name search + tag/status
+ * the `SpaceCard` (unchanged) and owns the name search + tag/status
  * filters + "show more" pagination + empty state. Reusing it verbatim keeps the
  * exact search/filter behaviour of the hard-coded subspaces block this callout
- * replaces (parity — research R6). Cards only: no map, no counts, no segmented
- * switch (FR-008/FR-009).
+ * replaces (parity with prior behaviour). Cards only: no map, no counts, no segmented
+ * switch.
  *
  * Purely presentational (CRD): all data + navigation flow in via props; the
  * connector in `src/main/crdPages/space/callout/` fetches and wires them.
