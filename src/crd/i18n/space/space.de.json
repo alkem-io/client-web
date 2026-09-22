@@ -1094,6 +1094,16 @@
     "viewMap": "Karte",
     "expandMap": "Karte vergrößern",
     "closeMap": "Karte schließen",
+    "card": {
+      "taglineFallback": "Dieser Nutzer hat noch keinen Untertitel eingetragen.",
+      "associates_one": "{{count}} Zugehöriger in dieser Organisation",
+      "associates_other": "{{count}} Zugehörige in dieser Organisation",
+      "actions": "Aktionen für {{name}}",
+      "viewProfile": "Profil ansehen",
+      "message": "Nachricht",
+      "website": "Website von {{name}} besuchen (öffnet in einem neuen Tab)",
+      "opensInNewTab": "öffnet in einem neuen Tab"
+    },
     "types": {
       "user": "Personen",
       "organization": "Organisationen",
