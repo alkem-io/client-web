@@ -177,3 +177,56 @@ describe('ContributorCard — the all-absent card is still a valid card (US2)', 
     expect(withEmpty.innerHTML).toBe(undefinedHtml);
   });
 });
+
+describe('ContributorCard — organisation website control (US5)', () => {
+  const org: ContributorCardData = {
+    id: 'org-green-future',
+    type: 'organization',
+    name: 'Green Future Labs',
+    hasValidCoordinates: false,
+    href: 'https://alkemio.test/green-future-labs',
+    websiteUrl: 'https://greenfuture.example',
+  };
+
+  test('an organization with a website shows the control, opening a new tab with no window.opener access', () => {
+    renderCard(<ContributorCard contributor={org} />);
+
+    const link = screen.getByRole('link', { name: 'Visit the website of Green Future Labs (opens in a new tab)' });
+    expect(link).toHaveAttribute('href', 'https://greenfuture.example');
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'));
+  });
+
+  test('the control is absent when websiteUrl is undefined', () => {
+    renderCard(<ContributorCard contributor={{ ...org, websiteUrl: undefined }} />);
+
+    expect(
+      screen.queryByRole('link', { name: 'Visit the website of Green Future Labs (opens in a new tab)' })
+    ).not.toBeInTheDocument();
+  });
+
+  test('the control never appears for a user or a virtual contributor, even if websiteUrl is passed', () => {
+    renderCard(
+      <>
+        <ContributorCard contributor={{ ...baseCard, websiteUrl: 'https://example.com' }} />
+        <ContributorCard
+          contributor={{
+            ...baseCard,
+            type: 'virtualContributor',
+            name: 'Helper VC',
+            websiteUrl: 'https://example.com',
+          }}
+        />
+      </>
+    );
+
+    expect(screen.queryByRole('link', { name: /opens in a new tab/ })).not.toBeInTheDocument();
+  });
+
+  test('an organization with a website still exposes exactly one profile link, named after the organisation', () => {
+    renderCard(<ContributorCard contributor={org} />);
+
+    const profileLinks = screen.getAllByRole('link', { name: 'Green Future Labs' });
+    expect(profileLinks).toHaveLength(1);
+  });
+});

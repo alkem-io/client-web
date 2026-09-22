@@ -1,4 +1,4 @@
-import { Bot, Building2, MapPin, User, Users } from 'lucide-react';
+import { Bot, Building2, ExternalLink, MapPin, User, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -136,9 +136,21 @@ export function ContributorCard({ contributor, onContributorClick, className }: 
               </span>
             )}
           </div>
-          {/* Control cluster: the organisation website control and the "…"
-              actions menu are added here in later slices. */}
-          <div className="flex shrink-0 items-center gap-1" />
+          {/* Control cluster: website (organisations only), then the "…"
+              actions menu, added in a later slice. */}
+          <div className="flex shrink-0 items-center gap-1">
+            {isOrg && contributor.websiteUrl && (
+              <a
+                href={contributor.websiteUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={t('contributors.card.website', { name: contributor.name })}
+                className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+              </a>
+            )}
+          </div>
         </div>
         <div className="flex flex-1 flex-col px-4 pb-4">
           {showTaglineRow &&
