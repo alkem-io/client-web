@@ -1,8 +1,11 @@
-import { Bot, Building2, User } from 'lucide-react';
+import { Bot, Building2, MapPin, User, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Card, CardContent } from '@/crd/primitives/card';
+
+/** A card shows at most this many tag pills — never a "+N" overflow indicator. */
+const MAX_CARD_TAGS = 2;
 
 /**
  * Plain CRD data for one contributor card (feature 008). Mirrors the existing
@@ -55,6 +58,7 @@ export function ContributorCard({ contributor, onContributorClick, className }: 
   const { t } = useTranslation('crd-space');
   const Icon = TYPE_ICON[contributor.type];
   const isOrg = contributor.type === 'organization';
+  const isVc = contributor.type === 'virtualContributor';
   const href = contributor.href;
 
   const handleClick = (e: React.MouseEvent) => {
@@ -75,9 +79,21 @@ export function ContributorCard({ contributor, onContributorClick, className }: 
     </Avatar>
   );
 
+  // Tagline: two-line clamp for everyone; a user with none gets the italic
+  // fallback, an organisation/VC with none gets no row at all (FR-002).
+  const hasTagline = Boolean(contributor.tagline);
+  const showTaglineRow = hasTagline || contributor.type === 'user';
+
+  // At most MAX_CARD_TAGS pills, in stored order, never a "+N" indicator (FR-003).
+  const visibleTags = (contributor.tags ?? []).slice(0, MAX_CARD_TAGS);
+
+  // Organisation bottom line: shown whenever associatesCount is a number,
+  // including 0 (D-ZERO) — `typeof` distinguishes 0 from "not applicable".
+  const showAssociatesLine = isOrg && typeof contributor.associatesCount === 'number';
+
   return (
     <Card className={cn('h-full overflow-hidden hover:shadow-md transition-shadow', className)}>
-      <CardContent className="p-0">
+      <CardContent className="flex h-full flex-col p-0">
         <div className="p-4 flex items-start gap-3">
           {href ? (
             <a
@@ -111,10 +127,45 @@ export function ContributorCard({ contributor, onContributorClick, className }: 
                 {t(`members.role.${contributor.roleLabel}` as 'members.role.lead')}
               </span>
             )}
-            {contributor.locationLabel && (
-              <p className="mt-2 text-caption text-muted-foreground truncate">{contributor.locationLabel}</p>
-            )}
           </div>
+          {/* Control cluster: the organisation website control and the "…"
+              actions menu are added here in later slices. */}
+          <div className="flex shrink-0 items-center gap-1" />
+        </div>
+        <div className="flex flex-1 flex-col px-4 pb-4">
+          {showTaglineRow &&
+            (hasTagline ? (
+              <p className="line-clamp-2 text-body text-muted-foreground">{contributor.tagline}</p>
+            ) : (
+              <p className="line-clamp-2 text-body text-muted-foreground italic">
+                {t('contributors.card.taglineFallback')}
+              </p>
+            ))}
+          {visibleTags.length > 0 && (
+            <div className="mt-3 flex gap-1 overflow-hidden">
+              {visibleTags.map(tag => (
+                <span
+                  key={tag}
+                  title={tag}
+                  className="min-w-0 shrink truncate rounded-full border border-border bg-muted px-1.5 py-0.5 text-caption text-muted-foreground"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+          {!isVc && contributor.locationLabel && (
+            <div className="mt-3 flex items-center gap-1 text-caption text-muted-foreground">
+              <MapPin className="w-3 h-3 shrink-0" aria-hidden="true" />
+              <span className="truncate">{contributor.locationLabel}</span>
+            </div>
+          )}
+          {showAssociatesLine && (
+            <div className="mt-auto pt-3 flex items-center gap-1 text-caption text-muted-foreground">
+              <Users className="w-3 h-3 shrink-0" aria-hidden="true" />
+              <span>{t('contributors.card.associates', { count: contributor.associatesCount })}</span>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
