@@ -92,23 +92,46 @@ export function useCrdSpaceContributors(calloutId: string | undefined): UseCrdSp
 
   const [fetchByType, { data: byTypeData, variables: byTypeVars }] = useContributorCollectionByTypeLazyQuery();
 
-  // Keep the per-type card cache in sync with the active lazy observer's data.
-  // This fires on the initial fetch AND whenever `refetchQueries` (e.g. after a
-  // callout selection save) re-runs the active `ContributorCollectionByType`
-  // observer — so the mounted collection reflects the saved change in-session,
-  // without needing a remount/reload. `ensureLoaded`'s one-shot `.then` alone
-  // never re-fires on a refetch, which is why the view used to stay stale.
+  // Keep the per-type card cache in sync with the active lazy observer's data,
+  // for the case that actually needs it: a `refetchQueries` re-run (e.g. after a
+  // callout selection save) of the currently-active `ContributorCollectionByType`
+  // observer, which doesn't go through `ensureLoaded`'s own `.then` at all — so
+  // without this, the mounted collection would stay stale until a remount/reload.
+  //
+  // This must NOT also be the writer for `ensureLoaded`'s own fetches: the shared
+  // lazy-query observable's `data`/`variables` pair can reflect two different
+  // in-flight calls (e.g. the eager default-type load racing the auto-heal load
+  // for another type, both firing in quick succession) and clobber a just-written
+  // correct entry with a stale/mismatched one. `ensureLoaded`'s per-call `.then()`
+  // is already the correctly request-scoped writer for every fetch it starts —
+  // gating this effect on "no `ensureLoaded` fetch currently in flight" keeps it
+  // out of that window entirely, leaving it to only mirror a genuine external
+  // refetch (which never overlaps an in-flight `ensureLoaded` call in practice).
+  //
+  // A payload observed while gated off must stay ignored even once the gate
+  // reopens — nothing about it becomes trustworthy just because the sibling
+  // fetch that was in flight has since settled through its own `.then()`.
+  // `skippedDataRef` remembers the exact payload (by reference) that was last
+  // skipped, so the same stale pairing isn't replayed once `noFetchInFlight`
+  // flips back to true; only a genuinely new payload writes.
   const byTypeItems = byTypeData?.lookup.callout?.framing.contributors;
   const byTypeServerType = byTypeVars?.type;
   const byTypeCalloutId = byTypeVars?.calloutId;
+  const noFetchInFlight = loadingTypes.size === 0;
+  const skippedDataRef = useRef<typeof byTypeData>(undefined);
   useEffect(() => {
     // Ignore a late response for a different callout: the lazy observer's variables
     // must match this hook's calloutId before we write into its cache.
     if (!byTypeServerType || byTypeCalloutId !== calloutId) return;
+    if (!noFetchInFlight) {
+      skippedDataRef.current = byTypeData;
+      return;
+    }
+    if (byTypeData === skippedDataRef.current) return;
     const type = contributorTypeFromServer(byTypeServerType);
     // Normalize a missing collection to [] so stale cards are cleared, not left behind.
     setCardsByType(prev => ({ ...prev, [type]: (byTypeItems ?? []).map(mapContributorItemToCard) }));
-  }, [byTypeItems, byTypeServerType, byTypeCalloutId, calloutId]);
+  }, [byTypeData, byTypeItems, byTypeServerType, byTypeCalloutId, calloutId, noFetchInFlight]);
 
   const ensureLoaded = (type: ContributorTypeId) => {
     if (!calloutId || requestedRef.current.has(type)) return;
