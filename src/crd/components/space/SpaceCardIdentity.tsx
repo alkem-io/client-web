@@ -26,6 +26,11 @@ export type SpaceCardIdentityProps = {
    * `<h3>{space.name}</h3>`.
    */
   nameSlot?: ReactNode;
+  /**
+   * Extra classes for the banner's clipping box — e.g. to square a corner when the
+   * identity block sits against a divider instead of the card's own edge.
+   */
+  bannerClassName?: string;
 };
 
 /**
@@ -37,14 +42,14 @@ export type SpaceCardIdentityProps = {
  * divs — banner, body) so composing it inside `SpaceCard`'s `<article>` produces
  * the exact same DOM as before the extraction; no extra wrapper element.
  */
-export function SpaceCardIdentity({ space, onParentClick, nameSlot }: SpaceCardIdentityProps) {
+export function SpaceCardIdentity({ space, onParentClick, nameSlot, bannerClassName }: SpaceCardIdentityProps) {
   const { t } = useTranslation(['crd-exploreSpaces', 'crd-common']);
 
   return (
     <>
       {/* Banner Image */}
       <div className="relative z-0">
-        <div className="overflow-hidden rounded-t-xl aspect-video">
+        <div className={cn('overflow-hidden rounded-t-xl aspect-video', bannerClassName)}>
           {space.bannerImageUrl ? (
             <img
               src={space.bannerImageUrl}

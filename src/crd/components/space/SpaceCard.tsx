@@ -1,3 +1,4 @@
+import type { ExcerptVisibility } from '@/crd/lib/markdownExcerpt';
 import { cn } from '@/crd/lib/utils';
 import { SpaceCardIdentity, SpaceCardLeads } from './SpaceCardIdentity';
 
@@ -45,6 +46,12 @@ export type SpaceCardData = {
   href: string;
   matchedTerms?: boolean;
   parent?: SpaceCardParent;
+  /**
+   * Which of `what`/`why`/`who` render visible text in the expanded card's
+   * card-safe mode. Computed once per fetch by the data mapper, so a list
+   * re-render never parses markdown; when absent, the card parses on the spot.
+   */
+  sectionVisibility?: ExcerptVisibility;
   /** Lifecycle status used for filter pills (e.g. 'active', 'archived'). */
   status?: string;
   /**

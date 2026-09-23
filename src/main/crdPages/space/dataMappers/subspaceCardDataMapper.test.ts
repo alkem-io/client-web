@@ -34,6 +34,18 @@ describe('mapSubspacesToCardDataList — expanded-card excerpt fields', () => {
     expect(card.who).toBe('WHO');
   });
 
+  test('excerpt visibility is decided once by the mapper, mirroring what the card-safe renderer shows', () => {
+    const [card] = mapSubspacesToCardDataList([baseSubspace], SpaceSortMode.Alphabetical);
+    expect(card.sectionVisibility).toEqual({ what: true, why: true, who: true });
+
+    const partial = {
+      ...baseSubspace,
+      about: { ...baseSubspace.about, why: '![only an image](x.png)', who: '' },
+    };
+    const [partialCard] = mapSubspacesToCardDataList([partial], SpaceSortMode.Alphabetical);
+    expect(partialCard.sectionVisibility).toEqual({ what: true, why: false, who: false });
+  });
+
   test('with compact-query data, what and who are undefined — but why still maps through harmlessly', () => {
     const compactShaped = {
       ...baseSubspace,

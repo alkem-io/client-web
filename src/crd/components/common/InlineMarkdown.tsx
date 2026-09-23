@@ -121,7 +121,11 @@ export function InlineMarkdown({
           isCardSafe ? [] : [[rehypeRaw, { passThrough: [] }], [rehypeSanitize, sanitizeSchema], rehypeSanitizeStyles]
         }
         skipHtml={isCardSafe}
-        disallowedElements={isCardSafe ? ['img'] : undefined}
+        // Card-safe mode renders inline text only: no images, no task-list checkboxes
+        // (`input`), no footnote block (`section`) or footnote marker (`sup`) — each of
+        // those either breaks the inline flow the clamp relies on or, for footnotes,
+        // emits page-global ids that would collide across cards.
+        disallowedElements={isCardSafe ? ['img', 'input', 'section', 'sup'] : undefined}
         components={components}
       >
         {content}

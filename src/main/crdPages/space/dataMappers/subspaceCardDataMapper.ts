@@ -1,5 +1,6 @@
 import { CommunityMembershipStatus, SpaceSortMode, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import type { SpaceCardData, SpaceLead } from '@/crd/components/space/SpaceCard';
+import { excerptVisibility } from '@/crd/lib/markdownExcerpt';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { getInitials } from './spacePageDataMapper';
 
@@ -75,6 +76,9 @@ function mapSubspaceToCardData(subspace: SubspaceQueryData, showPinIndicator: bo
     what: profile.description ?? undefined,
     why: subspace.about.why ?? undefined,
     who: subspace.about.who ?? undefined,
+    // Decided here, once per fetch, so the expanded list never parses markdown
+    // inside a render (every resize tick and search keystroke re-renders it).
+    sectionVisibility: excerptVisibility(profile.description, subspace.about.why, subspace.about.who),
     // L1/L2 subspace card = cardBanner + inline avatar + title. Per the canonical visual-fields
     // rule, never substitute cardBanner for avatar (or vice versa). When either is missing the
     // SpaceCard renders the deterministic gradient/initials from `avatarColor`.

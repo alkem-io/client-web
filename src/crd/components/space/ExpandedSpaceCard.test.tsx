@@ -137,6 +137,46 @@ describe('ExpandedSpaceCard', () => {
     expect(() => render(<ExpandedSpaceCard space={{ ...baseFixture, what: deeplyNested }} />)).not.toThrow();
   });
 
+  test('each section carries a stable test id, scoped away from the identity block', () => {
+    setWidth(800);
+    render(<ExpandedSpaceCard space={baseFixture} />);
+    expect(screen.getByTestId('excerpt-what')).toHaveTextContent('The What excerpt text.');
+    expect(screen.getByTestId('excerpt-why')).toHaveTextContent('The Why excerpt text.');
+    expect(screen.getByTestId('excerpt-who')).toHaveTextContent('The Who excerpt text.');
+  });
+
+  test('the article is a hover group so the reused banner zoom works here too', () => {
+    setWidth(800);
+    const { container } = render(<ExpandedSpaceCard space={baseFixture} />);
+    expect(container.querySelector('article')?.className.split(' ')).toContain('group');
+  });
+
+  test('the call-to-action cue sits at the right edge even when no leads render', () => {
+    setWidth(800);
+    const { container } = render(<ExpandedSpaceCard space={{ ...baseFixture, leads: [] }} />);
+    const cue = container.querySelector('[aria-hidden="true"].ml-auto');
+    expect(cue).not.toBeNull();
+    expect(cue).toHaveTextContent('subspaces.expandedCard.open');
+  });
+
+  test('in the row layout the banner squares the corner that meets the divider', () => {
+    setWidth(800);
+    const { container: row } = render(<ExpandedSpaceCard space={baseFixture} />);
+    expect(row.querySelector('.aspect-video')?.className).toContain('rounded-tr-none');
+    setWidth(390);
+    const { container: stacked } = render(<ExpandedSpaceCard space={baseFixture} />);
+    expect(stacked.querySelector('.aspect-video')?.className).not.toContain('rounded-tr-none');
+  });
+
+  test('visibility decided by the data mapper is used as-is', () => {
+    setWidth(800);
+    const decided = { ...baseFixture, sectionVisibility: { what: true, why: false, who: false } };
+    render(<ExpandedSpaceCard space={decided} />);
+    expect(screen.getByTestId('excerpt-what')).toBeInTheDocument();
+    expect(screen.queryByTestId('excerpt-why')).toBeNull();
+    expect(screen.queryByTestId('excerpt-who')).toBeNull();
+  });
+
   test('all three fields empty → no section rendered', () => {
     setWidth(800);
     const { container } = render(

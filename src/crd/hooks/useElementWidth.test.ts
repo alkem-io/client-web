@@ -24,8 +24,18 @@ class ControllableResizeObserver {
   disconnect() {
     this.observed = null;
   }
-  fire(width: number) {
-    this.callback([{ contentRect: { width } } as ResizeObserverEntry], this as unknown as ResizeObserver);
+  /**
+   * Fire the callback the way a browser does: `borderBoxSize` carries the border
+   * box, `contentRect` the (narrower) content box. Pass `borderBoxSize: false` to
+   * mimic an entry without it.
+   */
+  fire(borderWidth: number, { borderBoxSize = true, contentWidth = borderWidth - 2 } = {}) {
+    const entry = {
+      target: this.observed,
+      contentRect: { width: contentWidth },
+      borderBoxSize: borderBoxSize ? [{ inlineSize: borderWidth, blockSize: 0 }] : undefined,
+    } as unknown as ResizeObserverEntry;
+    this.callback([entry], this as unknown as ResizeObserver);
   }
 }
 
@@ -72,6 +82,50 @@ describe('useElementWidth', () => {
       ControllableResizeObserver.instances[0].fire(742);
     });
     expect(latest).toBe(742);
+  });
+
+  test('the observer reads the border box, the same box as the synchronous first measurement', () => {
+    // A bordered element measured 521 (border box) synchronously must not become
+    // 519 (content box) on the observer's first notification — that would flip a
+    // card sitting at the row/stacked threshold one frame after it painted.
+    vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({
+      width: 521,
+      height: 0,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      x: 0,
+      y: 0,
+      toJSON: () => {},
+    });
+    let latest: number | undefined;
+    render(createElement(TestComponent, { onWidth: (w: number | undefined) => (latest = w) }));
+    expect(latest).toBe(521);
+    act(() => {
+      ControllableResizeObserver.instances[0].fire(521, { contentWidth: 519 });
+    });
+    expect(latest).toBe(521);
+  });
+
+  test('falls back to the element rect when an entry carries no borderBoxSize', () => {
+    vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({
+      width: 640,
+      height: 0,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      x: 0,
+      y: 0,
+      toJSON: () => {},
+    });
+    let latest: number | undefined;
+    render(createElement(TestComponent, { onWidth: (w: number | undefined) => (latest = w) }));
+    act(() => {
+      ControllableResizeObserver.instances[0].fire(999, { borderBoxSize: false, contentWidth: 638 });
+    });
+    expect(latest).toBe(640);
   });
 
   test('disconnects on unmount', () => {

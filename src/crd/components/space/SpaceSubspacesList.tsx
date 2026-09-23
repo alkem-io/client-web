@@ -8,7 +8,7 @@ import { useElementWidth } from '@/crd/hooks/useElementWidth';
 import { hasVisibleExcerptText } from '@/crd/lib/markdownExcerpt';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
-import { type ExcerptVisibility, ExpandedSpaceCard } from './ExpandedSpaceCard';
+import { ExpandedSpaceCard, ROW_LAYOUT_MIN_WIDTH } from './ExpandedSpaceCard';
 import { SpaceCard, type SpaceCardData } from './SpaceCard';
 
 type StatusFilter = 'all' | 'active' | 'archived';
@@ -40,10 +40,6 @@ type SpaceSubspacesListProps = {
 
 const INITIAL_VISIBLE_COMPACT = 6;
 const INITIAL_VISIBLE_EXPANDED = 3;
-/** Card width, in px, at or above which the shared list's own width is wide enough for
- * an all-empty expanded item to constrain to the identity block's width instead of
- * stretching full-width — mirrors `ExpandedSpaceCard`'s own row/stacked threshold. */
-const ROW_LAYOUT_MIN_WIDTH = 520;
 
 /**
  * Aggregate tags across every subspace, sort by frequency desc then
@@ -129,6 +125,14 @@ export function SpaceSubspacesList({
   const visibleSubspaces = showAll ? filtered : filtered.slice(0, effectiveInitialVisibleCount);
   const hiddenCount = filtered.length - visibleSubspaces.length;
 
+  const showMoreToggle = filtered.length > effectiveInitialVisibleCount && (
+    <div className="flex justify-center pt-4">
+      <Button variant="outline" onClick={() => setShowAll(prev => !prev)}>
+        {showAll ? t('subspaces.showLess') : t('subspaces.showMore', { count: hiddenCount })}
+      </Button>
+    </div>
+  );
+
   return (
     <section className={cn('space-y-6', className)} aria-label={t('a11y.subspacesGrid')}>
       {/* Section header — rendered only when an explicit title is provided. */}
@@ -206,9 +210,9 @@ export function SpaceSubspacesList({
               constrains to the identity block's width or goes full width. */}
           <ul ref={listWidthRef} className="grid grid-cols-1 gap-4 list-none p-0 m-0">
             {visibleSubspaces.map(subspace => {
-              // Parsed once here and handed down as `sectionVisibility` — `ExpandedSpaceCard`
-              // uses it as-is instead of parsing the same markdown a second time.
-              const sectionVisibility: ExcerptVisibility = {
+              // The data mapper decides excerpt visibility once per fetch; the fallback
+              // parse only runs for callers that hand in bare card data (previews, tests).
+              const sectionVisibility = subspace.sectionVisibility ?? {
                 what: hasVisibleExcerptText(subspace.what),
                 why: hasVisibleExcerptText(subspace.why),
                 who: hasVisibleExcerptText(subspace.who),
@@ -239,14 +243,7 @@ export function SpaceSubspacesList({
             })}
           </ul>
 
-          {/* Show more / show less */}
-          {filtered.length > effectiveInitialVisibleCount && (
-            <div className="flex justify-center pt-4">
-              <Button variant="outline" onClick={() => setShowAll(prev => !prev)}>
-                {showAll ? t('subspaces.showLess') : t('subspaces.showMore', { count: hiddenCount })}
-              </Button>
-            </div>
-          )}
+          {showMoreToggle}
         </>
       ) : (
         <>
@@ -258,14 +255,7 @@ export function SpaceSubspacesList({
             ))}
           </ul>
 
-          {/* Show more / show less */}
-          {filtered.length > effectiveInitialVisibleCount && (
-            <div className="flex justify-center pt-4">
-              <Button variant="outline" onClick={() => setShowAll(prev => !prev)}>
-                {showAll ? t('subspaces.showLess') : t('subspaces.showMore', { count: hiddenCount })}
-              </Button>
-            </div>
-          )}
+          {showMoreToggle}
         </>
       )}
     </section>

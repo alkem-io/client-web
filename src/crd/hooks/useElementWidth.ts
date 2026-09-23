@@ -31,7 +31,14 @@ export function useElementWidth(): [number | undefined, (node: HTMLElement | nul
     if (!node || typeof ResizeObserver === 'undefined') return;
     const observer = new ResizeObserver(entries => {
       const entry = entries[0];
-      if (entry) setWidth(entry.contentRect.width);
+      if (!entry) return;
+      // Same box as the first measurement above (border box). `contentRect` is
+      // the content box, which on a bordered element is a couple of pixels
+      // narrower — reading it here would flip a card sitting right at the
+      // row/stacked threshold to the other layout on the observer's first
+      // notification, one frame after the synchronous measurement painted.
+      const borderBox = entry.borderBoxSize?.[0];
+      setWidth(borderBox ? borderBox.inlineSize : entry.target.getBoundingClientRect().width);
     });
     observer.observe(node);
     return () => observer.disconnect();

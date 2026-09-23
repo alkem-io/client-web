@@ -2,7 +2,12 @@ import { render } from '@testing-library/react';
 import { createElement } from 'react';
 import { describe, expect, test } from 'vitest';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
-import { clampExcerptSource, hasVisibleExcerptText, MAX_EXCERPT_SOURCE_LENGTH } from './markdownExcerpt';
+import {
+  clampExcerptSource,
+  hasVisibleExcerptText,
+  MAX_EXCERPT_NESTING_DEPTH,
+  MAX_EXCERPT_SOURCE_LENGTH,
+} from './markdownExcerpt';
 
 describe('hasVisibleExcerptText', () => {
   test.each([
@@ -38,9 +43,24 @@ describe('hasVisibleExcerptText — unbounded source safety', () => {
     expect(() => hasVisibleExcerptText(deeplyNested)).not.toThrow();
   });
 
-  test('nesting shallow enough to stay under the depth guard still reports its visible text', () => {
-    const nestedWithinDepth = `${'> '.repeat(900)}x`;
-    expect(hasVisibleExcerptText(nestedWithinDepth)).toBe(true);
+  test('nesting at the depth guard still reports its visible text; one level past it is cut', () => {
+    expect(hasVisibleExcerptText(`${'> '.repeat(MAX_EXCERPT_NESTING_DEPTH)}x`)).toBe(true);
+    expect(hasVisibleExcerptText(`${'> '.repeat(MAX_EXCERPT_NESTING_DEPTH + 1)}x`)).toBe(false);
+  });
+
+  test('the depth guard sits where the renderer is safe, not where the parser gives up', () => {
+    // A nested list under the length ceiling but hundreds of levels deep parses
+    // fine, yet building its React element tree recurses once per level and can
+    // exhaust the call stack. The bound must keep such a source away from the
+    // renderer entirely, in a cold process as much as a warm one.
+    for (const depth of [64, 500, 999]) {
+      const source = `${'- '.repeat(depth)}x`;
+      expect(source.length).toBeLessThan(MAX_EXCERPT_SOURCE_LENGTH);
+      expect(clampExcerptSource(source)).toBe('');
+      expect(() =>
+        render(createElement(InlineMarkdown, { content: clampExcerptSource(source), rawHtml: 'skip', clampLines: 0 }))
+      ).not.toThrow();
+    }
   });
 
   test('deeply-nested lists are caught by the same guard', () => {
@@ -95,6 +115,87 @@ describe('clampExcerptSource — length ceiling', () => {
     const nextChar = prose[clamped.length];
     expect(nextChar).toMatch(/\s/);
     expect(hasVisibleExcerptText(prose)).toBe(true);
+  });
+});
+
+describe('clampExcerptSource — cuts never split a markdown construct', () => {
+  const prose = 'Real prose that follows the pasted material and must survive.';
+
+  test('a pasted image at the top of a field does not consume the parse budget', () => {
+    // A data: URL screenshot is tens of kilobytes with no whitespace; images never
+    // render in card-safe mode, so it is removed before the length ceiling applies
+    // and the prose after it stays visible.
+    const source = `![](data:image/png;base64,${'A'.repeat(2500)})\n\n${prose}`;
+    const clamped = clampExcerptSource(source);
+    expect(clamped).toContain(prose);
+    expect(clamped).not.toContain('base64');
+    expect(hasVisibleExcerptText(source)).toBe(true);
+  });
+
+  test('a raw <img> tag at the top of a field is removed the same way', () => {
+    const source = `<img src="data:image/png;base64,${'A'.repeat(2500)}">\n\n${prose}`;
+    expect(clampExcerptSource(source)).toContain(prose);
+  });
+
+  test('a source over the ceiling is cut at its last block boundary, dropping the partial block whole', () => {
+    const paragraph = 'word '.repeat(180).trim(); // 899 chars: two fit, the third is cut mid-way
+    const source = `${paragraph}\n\n${paragraph}\n\n${paragraph}`;
+    expect(clampExcerptSource(source)).toBe(`${paragraph}\n\n${paragraph}`);
+  });
+
+  test('a block that ends exactly at the ceiling is kept whole', () => {
+    const first = 'a'.repeat(998);
+    const second = 'b'.repeat(1000);
+    const source = `${first}\n\n${second}\n\nthird`;
+    expect(source.indexOf('third')).toBeGreaterThan(MAX_EXCERPT_SOURCE_LENGTH);
+    expect(clampExcerptSource(source)).toBe(`${first}\n\n${second}`);
+  });
+
+  test('a single block over the ceiling is cut at whitespace and an unterminated link is dropped with it', () => {
+    const lead = 'lead '.repeat(380).trim(); // ~1900 chars, one paragraph
+    const source = `${lead} [read more](https://example.org/${'x'.repeat(300)}) trailing`;
+    const clamped = clampExcerptSource(source);
+    expect(clamped.length).toBeLessThanOrEqual(MAX_EXCERPT_SOURCE_LENGTH);
+    expect(clamped).not.toContain('[read more');
+    expect(clamped).not.toContain('](https');
+    expect(clamped.endsWith('lead')).toBe(true);
+  });
+
+  test('a single block over the ceiling ending in an unterminated raw tag drops the tag', () => {
+    const lead = 'lead '.repeat(380).trim();
+    const source = `${lead} <span class="${'y'.repeat(300)}">z</span>`;
+    expect(clampExcerptSource(source)).not.toContain('<span');
+  });
+});
+
+describe('card-safe mode renders inline text only', () => {
+  function renderCardSafe(markdown: string) {
+    return render(createElement(InlineMarkdown, { content: markdown, rawHtml: 'skip', clampLines: 0 })).container;
+  }
+
+  test('a task list renders no checkbox', () => {
+    const container = renderCardSafe('- [x] done\n- [ ] todo');
+    expect(container.querySelector('input')).toBeNull();
+    expect(container.textContent).toContain('done');
+  });
+
+  test('a referenced footnote renders neither the footnote section nor the marker', () => {
+    const container = renderCardSafe('See the note[^1].\n\n[^1]: The note body.');
+    expect(container.querySelector('section')).toBeNull();
+    expect(container.querySelector('sup')).toBeNull();
+    expect(container.textContent).toContain('See the note');
+    expect(container.textContent).not.toContain('The note body');
+  });
+
+  test('a field holding only a footnote definition is not visible and renders nothing', () => {
+    const source = '[^1]: Only a definition.';
+    expect(hasVisibleExcerptText(source)).toBe(false);
+    expect(renderCardSafe(source).textContent?.trim()).toBe('');
+  });
+
+  test('a field holding only invisible format characters is not visible', () => {
+    expect(hasVisibleExcerptText('​‍­')).toBe(false);
+    expect(hasVisibleExcerptText('​visible')).toBe(true);
   });
 });
 

@@ -1,11 +1,11 @@
 import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
 import { unified } from 'unified';
-import { EXIT, visit } from 'unist-util-visit';
+import { EXIT, SKIP, visit } from 'unist-util-visit';
 
 /**
  * Two independent bounds are applied to a markdown source before it reaches the
- * parser, cheapest first:
+ * parser or the renderer, cheapest first:
  *
  * 1. **Parse-length ceiling** (`MAX_EXCERPT_SOURCE_LENGTH`, below) — an excerpt
  *    only ever renders a few clamped lines, so nothing beyond a few thousand
@@ -16,44 +16,78 @@ import { EXIT, visit } from 'unist-util-visit';
  *    blockquote/list nesting is involved, so the depth guard below does not see
  *    it (see `markdownExcerpt.test.ts`, "unbounded inline-span safety").
  * 2. **Nesting-depth guard** (`MAX_EXCERPT_NESTING_DEPTH`, below) — the ceiling
- *    above still leaves room for a couple of thousand characters of *container*
- *    nesting (blockquote `>` / list markers), which risks exhausting the
- *    parser's call stack independently of source length (see
- *    `markdownExcerpt.test.ts`, "unbounded source safety"). This second layer
- *    cuts at the start of the first line where that nesting crosses the bound.
+ *    above still leaves room for hundreds of levels of *container* nesting
+ *    (blockquote `>` / list markers) inside one line. The parser copes with far
+ *    more of those than the renderer: building the React element tree recurses
+ *    once per level and exhausts the call stack well under a thousand levels,
+ *    so the bound is set where human-written content lives, not where the
+ *    parser happens to give up. This second layer cuts at the start of the
+ *    first line whose nesting crosses the bound.
  *
  * Ordinary prose — however long, up to the ceiling — never nests this deep and
  * is unaffected by the depth guard; it is only ever shortened by the length
  * ceiling, and only past that ceiling.
  */
-export const MAX_EXCERPT_NESTING_DEPTH = 1000;
+export const MAX_EXCERPT_NESTING_DEPTH = 16;
 
 /**
  * Hard ceiling, in characters, on the markdown handed to the parser. Applied
- * before the nesting-depth guard (see the block comment above). When a source
- * exceeds it, the cut lands on the last whitespace character within the final
- * 200 characters of the ceiling, so a word is never split in two; when no
- * whitespace occurs there, it hard-cuts at the ceiling instead. The excerpt
- * this feeds renders at most three clamped lines, so nothing user-visible is
- * ever lost by this cut.
+ * before the nesting-depth guard (see the block comment above). A source over
+ * the ceiling is cut at its last block boundary inside the allowed range, so
+ * the trailing partial block is dropped whole and no markdown construct is ever
+ * split in two. A single block longer than the ceiling is cut at a whitespace
+ * character near the end of the range instead, and any inline construct the
+ * cut leaves unterminated (an image, a link, a raw tag) is dropped with it —
+ * otherwise its opening half would render as literal text. The excerpt this
+ * feeds renders at most three clamped lines, so nothing user-visible is ever
+ * lost by the cut.
  */
 export const MAX_EXCERPT_SOURCE_LENGTH = 2000;
 
 const WORD_BOUNDARY_SEARCH_WINDOW = 200;
 
+// A complete inline image (`![alt](url "title")`) or raw <img> tag. Images never
+// render in card-safe mode, so they are removed before the length ceiling is
+// applied — a pasted screenshot at the top of a field (tens of kilobytes of
+// data: URL) must not consume the whole parse budget and hide the prose after it.
+const IMAGE_CONSTRUCT = /!\[[^\]]*\]\([^)\s]*(?:\s+"[^"]*")?\)|<img\b[^>]*>/gi;
+
+// The opening half of an inline construct that a cut left unterminated:
+// `![alt](partial-url`, `[text](partial-url`, `[partial`, or `<partial-tag`.
+const UNTERMINATED_INLINE_TAIL = /(?:!?\[[^\]]*(?:\]\([^)]*)?|<[^>]*)$/;
+
+// A blank line — the boundary between two markdown blocks.
+const BLOCK_BOUNDARY = /\n[ \t]*\n/g;
+const BLOCK_BOUNDARY_AT_START = /^\n[ \t]*\n/;
+
 /**
- * Cut `markdown` to at most `MAX_EXCERPT_SOURCE_LENGTH` characters, preferring a
- * whitespace boundary near the end of the allowed range so a word is not split.
- * Source at or under the ceiling passes through unchanged.
+ * Cut `markdown` to at most `MAX_EXCERPT_SOURCE_LENGTH` characters: at the last
+ * block boundary inside the range when there is one, else at a whitespace
+ * boundary near the end of the range with any unterminated inline construct
+ * removed. Source at or under the ceiling passes through unchanged.
  */
 function clampToLength(markdown: string): string {
   if (markdown.length <= MAX_EXCERPT_SOURCE_LENGTH) return markdown;
   const hardCut = markdown.slice(0, MAX_EXCERPT_SOURCE_LENGTH);
+
+  // The ceiling landed exactly on a block boundary: the range holds whole blocks.
+  if (BLOCK_BOUNDARY_AT_START.test(markdown.slice(MAX_EXCERPT_SOURCE_LENGTH))) return hardCut;
+
+  let lastBlockBoundary = -1;
+  for (const match of hardCut.matchAll(BLOCK_BOUNDARY)) {
+    lastBlockBoundary = match.index;
+  }
+  if (lastBlockBoundary > 0) return hardCut.slice(0, lastBlockBoundary);
+
+  let cut = hardCut;
   const searchFloor = Math.max(0, MAX_EXCERPT_SOURCE_LENGTH - WORD_BOUNDARY_SEARCH_WINDOW);
   for (let i = hardCut.length - 1; i >= searchFloor; i -= 1) {
-    if (/\s/.test(hardCut[i])) return hardCut.slice(0, i);
+    if (/\s/.test(hardCut[i])) {
+      cut = hardCut.slice(0, i);
+      break;
+    }
   }
-  return hardCut;
+  return cut.replace(UNTERMINATED_INLINE_TAIL, '').trimEnd();
 }
 
 // One level of CommonMark container nesting — a blockquote marker or a list-item
@@ -62,12 +96,13 @@ function clampToLength(markdown: string): string {
 const NESTING_MARKER = /^ {0,3}(?:>[ \t]?|[-*+][ \t]|\d{1,9}[.)][ \t])/;
 
 /**
- * The offset up to which `markdown` is safe to hand to the parser: the whole
- * string, unless some line's blockquote/list nesting exceeds
+ * The offset up to which `markdown` is safe to hand to the parser and the
+ * renderer: the whole string, unless some line's blockquote/list nesting exceeds
  * `MAX_EXCERPT_NESTING_DEPTH`, in which case the offset stops at the start of
- * that line. A single forward scan over the source with no recursion — each
- * line's own scan also stops the moment the depth bound is crossed — so this
- * cannot itself exhaust the stack on the same input it is bounding.
+ * that line. Every marker counts as one level, so `- - - -` is four deep
+ * whatever follows it. A single forward scan over the source with no recursion
+ * — each line's own scan also stops the moment the depth bound is crossed — so
+ * this cannot itself exhaust the stack on the same input it is bounding.
  */
 function findSafeParseBoundary(markdown: string): number {
   let offset = 0;
@@ -87,18 +122,28 @@ function findSafeParseBoundary(markdown: string): number {
 
 /**
  * Bound a markdown source before it reaches excerpt-visibility parsing or
- * card-safe rendering: first to `MAX_EXCERPT_SOURCE_LENGTH` characters (cheap,
- * catches pathological inline-span cost regardless of nesting), then to
- * whatever prefix stays under `MAX_EXCERPT_NESTING_DEPTH` (catches pathological
- * container nesting within that length). Content short enough and never nested
- * past the depth bound passes through completely unchanged. Safe to call with
- * the same value multiple times.
+ * card-safe rendering: images are removed (they never render in card-safe
+ * mode), then the source is cut to `MAX_EXCERPT_SOURCE_LENGTH` characters
+ * (cheap, catches pathological inline-span cost regardless of nesting), then to
+ * whatever prefix stays under `MAX_EXCERPT_NESTING_DEPTH` (catches container
+ * nesting the renderer cannot take). Content short enough, image-free and never
+ * nested past the depth bound passes through completely unchanged. Safe to call
+ * with the same value multiple times.
  */
 export function clampExcerptSource(markdown: string | null | undefined): string {
   if (!markdown) return '';
-  const lengthClamped = clampToLength(markdown);
+  const withoutImages = markdown.replace(IMAGE_CONSTRUCT, '');
+  const lengthClamped = clampToLength(withoutImages);
   const boundary = findSafeParseBoundary(lengthClamped);
   return boundary < lengthClamped.length ? lengthClamped.slice(0, boundary) : lengthClamped;
+}
+
+// Unicode format characters (zero-width joiners/spaces, soft hyphens, …): present
+// in the string, invisible on screen.
+const FORMAT_CHARACTERS = /\p{Cf}/gu;
+
+function hasVisibleCharacters(value: string): boolean {
+  return value.replace(FORMAT_CHARACTERS, '').trim().length > 0;
 }
 
 /**
@@ -106,32 +151,54 @@ export function clampExcerptSource(markdown: string | null | undefined): string 
  * in card-safe excerpt mode (`InlineMarkdown` with `rawHtml="skip"`).
  *
  * A naive "is the string non-empty" check disagrees with the renderer: a field
- * holding only an image, an embed, or a raw HTML block is non-empty as a string
- * yet renders nothing in card-safe mode (images/iframes/raw HTML are suppressed).
- * This function mirrors that renderer's node filtering exactly, so
- * "show the label" and "render the body" come from one shared rule — a
+ * holding only an image, an embed, a raw HTML block, a footnote definition or
+ * invisible format characters is non-empty as a string yet renders nothing in
+ * card-safe mode. This function mirrors that renderer's node filtering exactly,
+ * so "show the label" and "render the body" come from one shared rule — a
  * label can never appear above empty content, and content can never be silently
  * dropped while its label stays hidden. See `markdownExcerpt.test.ts` for the
  * fixture table that runs the same inputs through both this function and
  * `InlineMarkdown`.
  */
 export function hasVisibleExcerptText(markdown: string | null | undefined): boolean {
-  if (!markdown || !markdown.trim()) return false;
+  if (!markdown || !hasVisibleCharacters(markdown)) return false;
 
   const tree = unified().use(remarkParse).use(remarkGfm).parse(clampExcerptSource(markdown));
   let found = false;
   visit(tree, node => {
     // `html`, `image` and `imageReference` never render in card-safe mode — they don't
     // count toward "has visible content", mirroring InlineMarkdown's `skipHtml` +
-    // `disallowedElements={['img']}`.
+    // `disallowedElements`. A footnote definition renders as a footnotes section,
+    // which card-safe mode drops whole, so its text does not count either.
     if (node.type === 'html' || node.type === 'image' || node.type === 'imageReference') return;
+    if (node.type === 'footnoteDefinition') return SKIP;
     if (node.type === 'text' || node.type === 'inlineCode' || node.type === 'code') {
       const value = (node as { value?: unknown }).value;
-      if (typeof value === 'string' && value.trim().length > 0) {
+      if (typeof value === 'string' && hasVisibleCharacters(value)) {
         found = true;
         return EXIT;
       }
     }
   });
   return found;
+}
+
+/** Which of the What/Why/Who fields render at least one visible character in card-safe mode. */
+export type ExcerptVisibility = { what: boolean; why: boolean; who: boolean };
+
+/**
+ * Compute {@link ExcerptVisibility} for one subspace's three About fields. Meant
+ * to run once where the data is shaped (the data mapper), never inside a render,
+ * so a list re-render — a width change, a search keystroke — parses no markdown.
+ */
+export function excerptVisibility(
+  what: string | null | undefined,
+  why: string | null | undefined,
+  who: string | null | undefined
+): ExcerptVisibility {
+  return {
+    what: hasVisibleExcerptText(what),
+    why: hasVisibleExcerptText(why),
+    who: hasVisibleExcerptText(who),
+  };
 }
