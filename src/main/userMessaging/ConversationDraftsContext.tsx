@@ -36,6 +36,8 @@ export const ConversationDraftsProvider = ({ children }: { children: ReactNode }
   const apm = useApm();
 
   const [drafts, setDrafts] = useState<Record<string, string>>({});
+  // Send confirmations can retain callbacks from before a conversation switch.
+  const draftsRef = useRef(drafts);
 
   const hydratedUserIdRef = useRef<string | null>(null);
   useEffect(() => {
@@ -43,7 +45,9 @@ export const ConversationDraftsProvider = ({ children }: { children: ReactNode }
       return;
     }
     hydratedUserIdRef.current = userId;
-    setDrafts(readMessagingDrafts()[userId] ?? {});
+    const restored = readMessagingDrafts()[userId] ?? {};
+    draftsRef.current = restored;
+    setDrafts(restored);
   }, [userId]);
 
   const pendingRef = useRef<Record<string, string> | null>(null);
@@ -121,7 +125,7 @@ export const ConversationDraftsProvider = ({ children }: { children: ReactNode }
       return;
     }
 
-    const next = { ...drafts };
+    const next = { ...draftsRef.current };
     // A whitespace-only composer is not a draft — drop the entry entirely so it
     // never shows up as an empty "Draft:" row.
     if (value.trim().length === 0) {
@@ -130,17 +134,19 @@ export const ConversationDraftsProvider = ({ children }: { children: ReactNode }
       next[conversationId] = value;
     }
 
+    draftsRef.current = next;
     setDrafts(next);
     schedulePersist(next);
   };
 
   const clearDraft = (conversationId: string) => {
-    if (!userId || !(conversationId in drafts)) {
+    if (!userId || !(conversationId in draftsRef.current)) {
       return;
     }
 
-    const next = { ...drafts };
+    const next = { ...draftsRef.current };
     delete next[conversationId];
+    draftsRef.current = next;
     setDrafts(next);
 
     // Persist immediately: a pending debounce from the last keystroke would

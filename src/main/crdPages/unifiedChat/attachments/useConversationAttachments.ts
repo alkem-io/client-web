@@ -30,9 +30,7 @@ export function useConversationAttachments(storageConfig: StorageConfig | undefi
   }, []);
 
   const enabled = Boolean(storageConfig?.canUpload);
-  const allowedMimeTypes = storageConfig?.allowedMimeTypes?.length
-    ? storageConfig.allowedMimeTypes
-    : DEFAULT_ALLOWED_ATTACHMENT_MIME_TYPES;
+  const allowedMimeTypes = storageConfig?.allowedMimeTypes ?? DEFAULT_ALLOWED_ATTACHMENT_MIME_TYPES;
   const accept = storageConfig
     ? allowedMimeTypes.flatMap(mime => (MIME_TO_EXT[mime] ? [mime, MIME_TO_EXT[mime]] : [mime])).join(',')
     : undefined;
@@ -89,8 +87,8 @@ export function useConversationAttachments(storageConfig: StorageConfig | undefi
     try {
       if (text.trim()) {
         if (!(await sendEvent(text))) throw new Error('send unconfirmed');
-        if (current.disposed) return false;
         textSent();
+        if (current.disposed) return false;
       }
       for (const item of draft.items) {
         if (current.disposed) return false;

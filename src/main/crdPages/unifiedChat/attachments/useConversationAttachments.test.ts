@@ -58,6 +58,38 @@ describe('useConversationAttachments', () => {
     expect(mockUploadFile).not.toHaveBeenCalled();
   });
 
+  test('an explicitly empty MIME allow-list rejects selection', () => {
+    const { result } = renderHook(() => useConversationAttachments({ ...bucketConfig, allowedMimeTypes: [] }));
+    act(() => result.current.attachFiles([file('a.png')]));
+    expect(result.current.attachments).toHaveLength(0);
+    expect(result.current.error).toBe('comments.attachments.errorUnsupportedType');
+    expect(mockUploadFile).not.toHaveBeenCalled();
+  });
+
+  test.each([true, false])('after unmount, clears text only when send is confirmed (%s)', async confirmed => {
+    let finish!: (confirmed: boolean) => void;
+    const sendEvent = vi.fn().mockReturnValue(
+      new Promise<boolean>(resolve => {
+        finish = resolve;
+      })
+    );
+    const textSent = vi.fn();
+    const { result, unmount } = renderHook(() => useConversationAttachments(bucketConfig));
+    act(() => result.current.attachFiles([file('a.png')]));
+    let sending!: Promise<boolean>;
+    act(() => {
+      sending = result.current.send('hello', sendEvent, textSent);
+    });
+    unmount();
+    await act(async () => {
+      finish(confirmed);
+      expect(await sending).toBe(false);
+    });
+    expect(textSent).toHaveBeenCalledTimes(confirmed ? 1 : 0);
+    expect(sendEvent).toHaveBeenCalledExactlyOnceWith('hello');
+    expect(mockUploadFile).not.toHaveBeenCalled();
+  });
+
   test('sends text and each uploaded file separately, clearing only confirmed items', async () => {
     mockUploadFile.mockResolvedValueOnce(uploadResult('first')).mockResolvedValueOnce(uploadResult('second'));
     const sendEvent = vi.fn().mockResolvedValue(true);
