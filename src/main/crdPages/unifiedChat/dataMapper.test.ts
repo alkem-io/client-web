@@ -54,11 +54,11 @@ describe('sortUnifiedConversations', () => {
     const newly = makeConversation({ id: 'new', createdDate: new Date(2) });
     const older = makeConversation({
       id: 'older',
-      lastMessage: { id: 'm1', message: 'hi', timestamp: 100, reactions: [] },
+      lastMessage: { id: 'm1', message: 'hi', timestamp: 100, reactions: [], attachments: [] },
     });
     const newer = makeConversation({
       id: 'newer',
-      lastMessage: { id: 'm2', message: 'yo', timestamp: 200, reactions: [] },
+      lastMessage: { id: 'm2', message: 'yo', timestamp: 200, reactions: [], attachments: [] },
     });
 
     const sorted = sortUnifiedConversations([older, newly, newer, guidance], 'new');
@@ -93,6 +93,7 @@ describe('mapMessageToChatMessage', () => {
       timestamp: 500,
       sender: { id: ME, displayName: 'Me', avatarUri: undefined },
       reactions: [],
+      attachments: [],
     };
     const result = mapMessageToChatMessage(msg, { currentUserId: ME, formatTimestamp });
     expect(result).toMatchObject({ id: 'm1', isOwn: true, timestamp: 't:500', timestampMs: 500 });
@@ -106,6 +107,7 @@ describe('mapMessageToChatMessage', () => {
       timestamp: 1,
       sender: { id: 'other', displayName: 'Other' },
       reactions: [],
+      attachments: [],
     };
     expect(mapMessageToChatMessage(msg, { currentUserId: ME, formatTimestamp }).isOwn).toBe(false);
   });

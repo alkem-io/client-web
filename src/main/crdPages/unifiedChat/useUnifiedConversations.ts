@@ -1,7 +1,7 @@
 import { useUserConversationsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { RoomType } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { mapMessageReactions, mapMessageSender } from '@/main/userMessaging/models';
+import { mapMessageAttachments, mapMessageReactions, mapMessageSender } from '@/main/userMessaging/models';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { isGuidanceConversation, sortUnifiedConversations, type UnifiedConversation } from './dataMapper';
 import { useUnifiedChatContext } from './UnifiedChatProvider';
@@ -83,6 +83,9 @@ export const useUnifiedConversations = () => {
                 timestamp: lastMessage.timestamp,
                 sender: mapMessageSender(lastMessage.sender),
                 reactions: mapMessageReactions(lastMessage.reactions),
+                // A media-only message has an empty body, so without these the
+                // conversation row would render a blank preview line.
+                attachments: mapMessageAttachments(lastMessage.attachments),
               }
             : undefined,
           members,

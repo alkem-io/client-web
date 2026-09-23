@@ -1561,5 +1561,13 @@
     "archived": "Архивирано",
     "demo": "Демо",
     "inactive": "Неактивно"
+  },
+  "messageAttachments": {
+    "listLabel": "Прикачени файлове",
+    "imageAlt": "Прикачено изображение: {{name}}",
+    "download": "Изтегляне на {{name}}",
+    "unavailableHint": "Файлът не можа да се зареди. Изтеглете го, за да го видите.",
+    "unavailableNoDownload": "Файлът не е наличен.",
+    "loading": "Зареждане на прикачен файл"
   }
 }

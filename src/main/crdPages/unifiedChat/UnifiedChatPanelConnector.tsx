@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
 import { ChatPanel } from '@/crd/components/chat/ChatPanel';
-import { ChatThreadView } from '@/crd/components/chat/ChatThreadView';
 import { ConversationAvatar } from '@/crd/components/chat/ConversationAvatar';
 import { GroupAvatar } from '@/crd/components/chat/GroupAvatar';
 import { GroupSettingsDialog } from '@/crd/components/chat/GroupSettingsDialog';
@@ -22,6 +21,7 @@ import { buildUserNotificationSettingsUrl } from '@/main/routing/urlBuilders';
 import { useConversationDrafts } from '@/main/userMessaging/ConversationDraftsContext';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
+import { ConversationThread } from './ConversationThread';
 import {
   injectGuidanceIntro,
   mapConversationToListItem,
@@ -303,8 +303,11 @@ export const UnifiedChatPanelConnector = () => {
         titleAvatar={titleAvatar}
         headerActions={view === 'thread' ? headerActions : undefined}
       >
-        {view === 'thread' ? (
-          <ChatThreadView
+        {view === 'thread' && selectedConversationId ? (
+          <ConversationThread
+            key={selectedConversationId}
+            conversationId={selectedConversationId}
+            attachmentsAllowed={!isGuidanceThread}
             conversation={threadHeader}
             messages={chatMessages}
             messagesLoading={messagesLoading}
@@ -322,17 +325,12 @@ export const UnifiedChatPanelConnector = () => {
                 setDraft(selectedConversationId, value);
               }
             }}
-            onSendMessage={async message => {
-              if (isGuidanceThread) {
-                guidanceResponse.markSent();
-              }
-              // Pin the id: the selection can move while the mutation is in flight.
-              const conversationId = selectedConversationId;
-              const sent = await handleSendMessage(message);
-              if (sent && conversationId) {
-                clearDraft(conversationId);
-              }
-              return sent;
+            sendEvent={async (message, documents) => {
+              if (isGuidanceThread) guidanceResponse.markSent();
+              return handleSendMessage(message, documents);
+            }}
+            onTextSent={() => {
+              if (selectedConversationId) clearDraft(selectedConversationId);
             }}
             onAddReaction={onAddReaction}
             onRemoveReaction={onRemoveReaction}
