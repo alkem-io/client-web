@@ -1,5 +1,5 @@
 import { ApolloError } from '@apollo/client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import useNavigate from '@/core/routing/useNavigate';
@@ -53,13 +53,30 @@ export function ContributorCollectionConnector({ calloutId, className }: Contrib
 
   // Opens on the configured default type until the viewer (or the child
   // `ContributorCollection`'s own auto-heal effect, when the default type's
-  // count is zero) explicitly picks one — no separate "open on default type"
-  // effect is needed here, and one previously existed and raced the child's
-  // heal effect within the same commit (both fire when the config query
-  // lands): the child's write could be clobbered by this effect re-applying
-  // the stale default, since its closure still saw `activeType === null` from
-  // that same render.
+  // count is zero) explicitly picks one — no separate "set activeType to the
+  // default type" effect is needed here, and one previously existed and
+  // raced the child's heal effect within the same commit (both fire when the
+  // config query lands): the child's write could be clobbered by this effect
+  // re-applying the stale default, since its closure still saw
+  // `activeType === null` from that same render.
   const resolvedType = activeType ?? defaultType;
+
+  // Whatever type is resolved must have been requested at least once, even
+  // when it was never reached through a click — e.g. the config's default
+  // type changes after mount (an admin edits the callout and the config
+  // refetches with a different default) while `activeType` is still null, so
+  // `resolvedType` starts pointing at a type nothing has fetched yet. Gated
+  // on `!loading` so it never fires on the very first render, before the
+  // config query has resolved and `defaultType` is still its unloaded
+  // fallback value — the hook's own eager-load effect already owns that
+  // first fetch. This effect never writes `activeType`, only calls the
+  // already-idempotent `ensureLoaded` (guarded by `requestedRef` in the
+  // hook), so it cannot race the child's own auto-heal write the way the
+  // removed effect above did.
+  useEffect(() => {
+    if (loading) return;
+    ensureLoaded(resolvedType);
+  }, [resolvedType, ensureLoaded, loading]);
 
   const handleActiveTypeChange = (type: ContributorTypeId) => {
     setActiveType(type);
