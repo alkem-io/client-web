@@ -208,7 +208,9 @@ export function SpaceSubspacesList({
           {/* One column — an expanded list is one rich card per row. The list's own
               measured width (not the screen) decides whether an all-empty item
               constrains to the identity block's width or goes full width. */}
-          <ul ref={listWidthRef} className="grid grid-cols-1 gap-4 list-none p-0 m-0">
+          {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+          {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+          <ul role="list" ref={listWidthRef} className="grid grid-cols-1 gap-4 list-none p-0 m-0">
             {visibleSubspaces.map(subspace => {
               // The data mapper decides excerpt visibility once per fetch; the fallback
               // parse only runs for callers that hand in bare card data (previews, tests).
@@ -247,7 +249,9 @@ export function SpaceSubspacesList({
         </>
       ) : (
         <>
-          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 list-none p-0 m-0">
+          {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+          {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+          <ul role="list" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 list-none p-0 m-0">
             {visibleSubspaces.map(subspace => (
               <li key={subspace.id} className="h-full">
                 <SpaceCard space={subspace} onClick={onSubspaceClick} />

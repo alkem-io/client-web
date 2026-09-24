@@ -46,15 +46,79 @@ export const MAX_EXCERPT_SOURCE_LENGTH = 2000;
 
 const WORD_BOUNDARY_SEARCH_WINDOW = 200;
 
-// A complete inline image (`![alt](url "title")`) or raw <img> tag. Images never
-// render in card-safe mode, so they are removed before the length ceiling is
-// applied — a pasted screenshot at the top of a field (tens of kilobytes of
-// data: URL) must not consume the whole parse budget and hide the prose after it.
-const IMAGE_CONSTRUCT = /!\[[^\]]*\]\([^)\s]*(?:\s+"[^"]*")?\)|<img\b[^>]*>/gi;
+/**
+ * Remove every complete inline image (`![alt](url)`) and raw `<img …>` tag.
+ * Images never render in card-safe mode, so they are removed before the length
+ * ceiling applies — a pasted screenshot at the top of a field (tens of kilobytes
+ * of data: URL) must not consume the whole parse budget and hide the prose after
+ * it.
+ *
+ * This runs on the raw field (up to the platform's save limit), so it is a
+ * single left-to-right scan: the position of the next closing `]`, `)` and `>`
+ * is cached and only looked up again once the scan passes it. A regex here
+ * rescans to the end of the input from every unclosed `![` / `<img`, which is
+ * quadratic — close to a second of main-thread time per field at the save limit.
+ */
+function stripImages(markdown: string): string {
+  const lower = markdown.toLowerCase();
+  // Each cursor remembers the next occurrence of its needle at or after the
+  // last position asked for; `Infinity` means "none anywhere ahead". Positions
+  // only ever move forward, so every needle is scanned for at most once over
+  // the whole input.
+  const cursor = (haystack: string, needle: string) => {
+    let found = -1;
+    return (pos: number): number => {
+      if (found !== Number.POSITIVE_INFINITY && found < pos) {
+        const hit = haystack.indexOf(needle, pos);
+        found = hit === -1 ? Number.POSITIVE_INFINITY : hit;
+      }
+      return found;
+    };
+  };
+  const nextMdImage = cursor(markdown, '![');
+  const nextImgTag = cursor(lower, '<img');
+  const nextBracket = cursor(markdown, ']');
+  const nextParen = cursor(markdown, ')');
+  const nextAngle = cursor(markdown, '>');
+
+  let out = '';
+  let from = 0;
+  let i = 0;
+  while (i < markdown.length) {
+    const md = nextMdImage(i);
+    const tag = nextImgTag(i);
+    const start = Math.min(md, tag);
+    if (start === Number.POSITIVE_INFINITY) break;
+
+    let end = -1;
+    if (start === md) {
+      const close = nextBracket(start + 2);
+      if (close !== Number.POSITIVE_INFINITY && markdown[close + 1] === '(') {
+        const paren = nextParen(close + 2);
+        if (paren !== Number.POSITIVE_INFINITY) end = paren + 1;
+      }
+    } else {
+      const angle = nextAngle(start + 4);
+      if (angle !== Number.POSITIVE_INFINITY) end = angle + 1;
+    }
+
+    if (end === -1) {
+      i = start + 2;
+      continue;
+    }
+    out += markdown.slice(from, start);
+    from = end;
+    i = end;
+  }
+  return out + markdown.slice(from);
+}
 
 // The opening half of an inline construct that a cut left unterminated:
 // `![alt](partial-url`, `[text](partial-url`, `[partial`, or `<partial-tag`.
-const UNTERMINATED_INLINE_TAIL = /(?:!?\[[^\]]*(?:\]\([^)]*)?|<[^>]*)$/;
+// Bounded, and `<` only where it can open a tag, so that a literal `<3` or
+// `a < b` earlier in the paragraph can never swallow the prose after it — only
+// a construct the cut itself split is dropped.
+const UNTERMINATED_INLINE_TAIL = /(?:!?\[[^[\]\n]{0,300}(?:\]\([^()\s]{0,500})?|<[A-Za-z/][^<>\n]{0,500})$/;
 
 // A blank line — the boundary between two markdown blocks.
 const BLOCK_BOUNDARY = /\n[ \t]*\n/g;
@@ -132,7 +196,7 @@ function findSafeParseBoundary(markdown: string): number {
  */
 export function clampExcerptSource(markdown: string | null | undefined): string {
   if (!markdown) return '';
-  const withoutImages = markdown.replace(IMAGE_CONSTRUCT, '');
+  const withoutImages = stripImages(markdown);
   const lengthClamped = clampToLength(withoutImages);
   const boundary = findSafeParseBoundary(lengthClamped);
   return boundary < lengthClamped.length ? lengthClamped.slice(0, boundary) : lengthClamped;

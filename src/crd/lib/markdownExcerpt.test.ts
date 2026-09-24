@@ -132,6 +132,29 @@ describe('clampExcerptSource — cuts never split a markdown construct', () => {
     expect(hasVisibleExcerptText(source)).toBe(true);
   });
 
+  test('image removal stays linear on the raw field: unclosed openers at the save limit resolve in budget', () => {
+    for (const payload of ['![['.repeat(21856), '<img'.repeat(16392), '![]('.repeat(16392)]) {
+      const start = performance.now();
+      expect(() => clampExcerptSource(payload)).not.toThrow();
+      expect(performance.now() - start).toBeLessThan(100);
+    }
+  });
+
+  test('a literal "<3" or "a < b" early in a long single paragraph does not swallow the prose after it', () => {
+    for (const opener of ['<3 we love this space. ', 'Remember that a < b holds here. ']) {
+      const source = opener + 'ordinary prose continues here '.repeat(90);
+      expect(source.length).toBeGreaterThan(MAX_EXCERPT_SOURCE_LENGTH);
+      const clamped = clampExcerptSource(source);
+      expect(clamped.length).toBeGreaterThan(MAX_EXCERPT_SOURCE_LENGTH - 250);
+      expect(hasVisibleExcerptText(source)).toBe(true);
+    }
+  });
+
+  test('several complete images, markdown and raw, are all removed and the text between them kept', () => {
+    const source = 'one ![a](x.png) two <img src="y.png"> three ![b](z.png "t") four';
+    expect(clampExcerptSource(source)).toBe('one  two  three  four');
+  });
+
   test('a raw <img> tag at the top of a field is removed the same way', () => {
     const source = `<img src="data:image/png;base64,${'A'.repeat(2500)}">\n\n${prose}`;
     expect(clampExcerptSource(source)).toContain(prose);
