@@ -1,4 +1,4 @@
-import { Component, type ReactNode } from 'react';
+import { Component, type ErrorInfo, type ReactNode } from 'react';
 
 type SilentErrorBoundaryProps = {
   children: ReactNode;
@@ -17,14 +17,19 @@ type SilentErrorBoundaryState = { failed: boolean };
  * the application root boundary and replaces the whole route with the error
  * page for every viewer; with it, only that one piece degrades to `fallback`.
  *
- * Containment only: the error is not reported from here. Anything that should
- * be logged belongs to the leaf itself.
+ * Silent to the viewer, not to the team: the caught error is handed to the
+ * browser's global error channel (`reportError`), which the host application's
+ * error monitoring already listens on — the design system never imports it.
  */
 export class SilentErrorBoundary extends Component<SilentErrorBoundaryProps, SilentErrorBoundaryState> {
   state: SilentErrorBoundaryState = { failed: false };
 
   static getDerivedStateFromError(): SilentErrorBoundaryState {
     return { failed: true };
+  }
+
+  componentDidCatch(error: Error, _info: ErrorInfo) {
+    if (typeof globalThis.reportError === 'function') globalThis.reportError(error);
   }
 
   render() {

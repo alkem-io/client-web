@@ -81,7 +81,11 @@ export function ExpandedSpaceCard({
         aria-label={space.name}
         className={cn(
           'truncate block outline-none',
-          'after:absolute after:inset-0 after:content-[""]',
+          // `after:z-[1]` lifts the overlay above positioned-but-unstacked descendants
+          // that come later in the DOM (the footer's lead avatars are `relative`), which
+          // would otherwise paint and hit-test above it and swallow the click. The tag
+          // row's and parent line's real controls sit at `z-10`, still above the overlay.
+          'after:absolute after:inset-0 after:z-[1] after:content-[""]',
           'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-xl'
         )}
       >
@@ -141,14 +145,18 @@ export function ExpandedSpaceCard({
           arrangement. Always renders (it hosts the call-to-action cue, kept at the
           right edge whether or not the "Leads" group renders beside it); the
           "Leads" group alone is omitted when the subspace has no leads. */}
-      <div className="flex items-center gap-3 mt-auto px-4 py-3 border-t border-border">
-        <SpaceCardLeads leads={space.leads} />
+      {/* Wraps: in a narrow (stacked) card the leads group and the cue do not both fit on
+          one line in every language, so the cue drops to its own line, still right-aligned
+          by `ml-auto`, instead of being clipped by the article's `overflow-hidden`. The cue
+          itself may wrap only if it alone is wider than the footer. */}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mt-auto px-4 py-3 border-t border-border">
+        <SpaceCardLeads leads={space.leads} className="min-w-0" />
         <span
           aria-hidden="true"
-          className="ml-auto inline-flex items-center gap-1.5 rounded text-control text-primary-foreground bg-primary px-3 py-1.5 whitespace-nowrap"
+          className="ml-auto inline-flex max-w-full items-center gap-1.5 rounded text-control text-primary-foreground bg-primary px-3 py-1.5"
         >
           {t('crd-space:subspaces.expandedCard.open')}
-          <ArrowRight className="size-3.5" />
+          <ArrowRight className="size-3.5 shrink-0" />
         </span>
       </div>
     </article>

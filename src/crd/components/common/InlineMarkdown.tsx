@@ -111,6 +111,9 @@ export function InlineMarkdown({
           '[&_h6]:text-inherit [&_h6]:font-inherit [&_h6]:m-0 [&_h6]:inline',
           '[&_table]:inline [&_thead]:inline [&_tbody]:inline [&_tr]:inline [&_td]:inline [&_th]:inline',
           '[&_table]:border-0 [&_td]:border-0 [&_th]:border-0 [&_td]:p-0 [&_th]:p-0',
+          // A flattened code block must wrap like the prose around it: without this it keeps
+          // the UA's `white-space: pre`, and a long line is clipped mid-token by the clamp.
+          '[&_pre]:whitespace-normal',
           'break-words',
         ]
       )}

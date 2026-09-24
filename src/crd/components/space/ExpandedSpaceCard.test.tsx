@@ -201,4 +201,30 @@ describe('ExpandedSpaceCard', () => {
       within(screen.getByText('crd-common:leads').parentElement as HTMLElement).getByText('crd-common:leads')
     ).toBeInTheDocument();
   });
+
+  test('the footer wraps, so the cue moves to its own line instead of being clipped', () => {
+    setWidth(390);
+    const { container } = render(<ExpandedSpaceCard space={baseFixture} />);
+    const cue = container.querySelector('[aria-hidden="true"].ml-auto') as HTMLElement;
+    const footer = cue.parentElement as HTMLElement;
+    expect(footer.className.split(' ')).toContain('flex-wrap');
+    // A nowrap cue in a footer narrower than it overflows and is clipped by the article.
+    expect(cue.className.split(' ')).not.toContain('whitespace-nowrap');
+    expect(cue.className.split(' ')).toContain('max-w-full');
+  });
+
+  test('the stretched link overlay sits above the footer avatars but below the z-10 controls', () => {
+    setWidth(800);
+    render(
+      <ExpandedSpaceCard
+        space={{ ...baseFixture, parent: { name: 'Parent', href: '/p', initials: 'P', avatarColor: '#000' } }}
+      />
+    );
+    const linkClasses = screen.getByRole('link', { name: 'Alpha Subspace' }).className.split(' ');
+    expect(linkClasses).toContain('after:absolute');
+    expect(linkClasses).toContain('after:z-[1]');
+    // The parent-line control keeps its own layer above the overlay.
+    const parentLine = screen.getByRole('button', { name: 'Parent' }).parentElement as HTMLElement;
+    expect(parentLine.className.split(' ')).toContain('z-10');
+  });
 });

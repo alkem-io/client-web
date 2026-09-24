@@ -52,6 +52,26 @@ function TestComponentNoRef({ onWidth }: { onWidth: (w: number | undefined) => v
   return null;
 }
 
+/** The element's untransformed border box, as layout reports it — what the hook measures first. */
+function mockOffsetWidth(width: number) {
+  vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(width);
+}
+
+/** The element's on-screen box, which includes CSS transforms (e.g. a dialog's `scale(0.95)` zoom-in). */
+function mockTransformedRectWidth(width: number) {
+  vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({
+    width,
+    height: 0,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    x: 0,
+    y: 0,
+    toJSON: () => {},
+  });
+}
+
 describe('useElementWidth', () => {
   let originalResizeObserver: typeof ResizeObserver;
 
@@ -67,7 +87,7 @@ describe('useElementWidth', () => {
   });
 
   test('returns undefined before measurement', () => {
-    // The hook's ref is never attached to a DOM node, so getBoundingClientRect never runs
+    // The hook's ref is never attached to a DOM node, so it never measures
     // and width stays undefined.
     let latest: number | undefined = -1;
     render(createElement(TestComponentNoRef, { onWidth: (w: number | undefined) => (latest = w) }));
@@ -88,17 +108,7 @@ describe('useElementWidth', () => {
     // A bordered element measured 521 (border box) synchronously must not become
     // 519 (content box) on the observer's first notification — that would flip a
     // card sitting at the row/stacked threshold one frame after it painted.
-    vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({
-      width: 521,
-      height: 0,
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      x: 0,
-      y: 0,
-      toJSON: () => {},
-    });
+    mockOffsetWidth(521);
     let latest: number | undefined;
     render(createElement(TestComponent, { onWidth: (w: number | undefined) => (latest = w) }));
     expect(latest).toBe(521);
@@ -108,18 +118,8 @@ describe('useElementWidth', () => {
     expect(latest).toBe(521);
   });
 
-  test('falls back to the element rect when an entry carries no borderBoxSize', () => {
-    vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({
-      width: 640,
-      height: 0,
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      x: 0,
-      y: 0,
-      toJSON: () => {},
-    });
+  test("falls back to the element's border box when an entry carries no borderBoxSize", () => {
+    mockOffsetWidth(640);
     let latest: number | undefined;
     render(createElement(TestComponent, { onWidth: (w: number | undefined) => (latest = w) }));
     act(() => {
@@ -136,20 +136,21 @@ describe('useElementWidth', () => {
     expect(instance.observed).toBeNull();
   });
 
-  test('with getBoundingClientRect mocked to 800, the value is 800 synchronously after render() — no awaited tick, no observer callback needed', () => {
-    vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({
-      width: 800,
-      height: 0,
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      x: 0,
-      y: 0,
-      toJSON: () => {},
-    });
+  test('with offsetWidth mocked to 800, the value is 800 synchronously after render() — no awaited tick, no observer callback needed', () => {
+    mockOffsetWidth(800);
     let latest: number | undefined;
     render(createElement(TestComponent, { onWidth: (w: number | undefined) => (latest = w) }));
     expect(latest).toBe(800);
+  });
+
+  test("the first measurement ignores CSS transforms, matching the observer's untransformed border box", () => {
+    // Inside the detail dialog's zoom-in (`scale(0.95)`), a 530px card reads 503.5px
+    // on screen. Measuring the transformed box on frame 1 would paint the stacked
+    // layout, then flip to the row layout once the observer reports 530.
+    mockOffsetWidth(530);
+    mockTransformedRectWidth(503.5);
+    let latest: number | undefined;
+    render(createElement(TestComponent, { onWidth: (w: number | undefined) => (latest = w) }));
+    expect(latest).toBe(530);
   });
 });

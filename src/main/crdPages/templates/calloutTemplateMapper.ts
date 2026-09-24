@@ -41,6 +41,17 @@ export type CalloutTemplateMapperFallbacks = {
 };
 
 /**
+ * A template never has a host space, so it can never carry a manual (CUSTOM) collection selection —
+ * the server rejects the whole template input when it does ("Selection requires a host space…").
+ * Saving a Subspaces / Contributors callout with a manual selection as a template therefore resets
+ * the selection to AUTO with no ids (FR-006), while every other captured setting — the Subspaces
+ * card variant included — is kept.
+ */
+function templateSafeSelection(values: CalloutFormValues): CalloutFormValues {
+  return { ...values, selectionMode: 'auto', selectedIds: [] };
+}
+
+/**
  * `CalloutFormValues` → `CreateCalloutInput` for `createTemplate({ ..., calloutData })`.
  * Reuses the live-callout creation mapper (its output is, by construction, a `CreateCalloutOnCalloutsSetInput`
  * minus `calloutsSetID` — i.e. structurally a `CreateCalloutInput`); `visibility` is irrelevant for a
@@ -55,7 +66,7 @@ export function calloutFormValuesToCreateCalloutInput(
   values: CalloutFormValues,
   fallbacks: CalloutTemplateMapperFallbacks
 ): CreateCalloutInput {
-  const { input } = mapFormToCalloutCreationInput(values, {
+  const { input } = mapFormToCalloutCreationInput(templateSafeSelection(values), {
     visibility: CalloutVisibility.Published,
     whiteboardFallbackDisplayName: fallbacks.whiteboardFallbackDisplayName,
     collaboraFallbackDisplayName: fallbacks.collaboraFallbackDisplayName,
@@ -82,7 +93,7 @@ export function calloutFormValuesToUpdateCalloutEntityInput(
   values: CalloutFormValues,
   calloutId: string
 ): UpdateCalloutEntityInput {
-  const { input } = mapFormToCalloutUpdateInput(values, { calloutId });
+  const { input } = mapFormToCalloutUpdateInput(templateSafeSelection(values), { calloutId });
   return input;
 }
 

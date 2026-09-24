@@ -213,7 +213,9 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
           : {}),
         // Selection settings (feature 025) — sent for BOTH collection kinds.
         // AUTO is the server default, but sending it explicitly keeps payloads
-        // consistent. Template capture will strip selectedIds server-side (FR-017/S10).
+        // consistent. A template cannot hold a CUSTOM selection (the server rejects it:
+        // no host space), so the template mappers in `calloutTemplateMapper.ts` reset it
+        // to AUTO with no ids before calling this mapper (FR-006).
         ...(framingType === CalloutFramingType.Contributors || framingType === CalloutFramingType.Spaces
           ? {
               selection: {

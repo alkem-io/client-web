@@ -6,7 +6,7 @@ import { useLayoutEffect, useState } from 'react';
  * Modelled on `useGridColumnCount` — a callback ref held in state so the effect
  * re-observes across mount/unmount/replace cycles — but with one difference:
  * the FIRST measurement happens synchronously before paint (`useLayoutEffect`
- * reading `getBoundingClientRect().width`), not inside the `ResizeObserver`
+ * reading `offsetWidth`, the untransformed border box), not inside the `ResizeObserver`
  * callback. A card whose available width decides row-vs-stacked layout
  * would otherwise paint stacked for one frame on every wide screen
  * and then jump to the row layout once the observer's first callback fires —
@@ -24,7 +24,11 @@ export function useElementWidth(): [number | undefined, (node: HTMLElement | nul
   // never renders its stacked layout for one frame before jumping to the row layout.
   useLayoutEffect(() => {
     if (!node) return;
-    setWidth(node.getBoundingClientRect().width);
+    // `offsetWidth` is the untransformed border box — the same box the observer
+    // below reports via `borderBoxSize`. `getBoundingClientRect()` includes CSS
+    // transforms, so inside a dialog mid zoom-in (`scale(0.95)`) it under-reads a
+    // row-width card, paints it stacked for a frame, then flips to the row layout.
+    setWidth(node.offsetWidth);
   }, [node]);
 
   useLayoutEffect(() => {
@@ -38,7 +42,7 @@ export function useElementWidth(): [number | undefined, (node: HTMLElement | nul
       // row/stacked threshold to the other layout on the observer's first
       // notification, one frame after the synchronous measurement painted.
       const borderBox = entry.borderBoxSize?.[0];
-      setWidth(borderBox ? borderBox.inlineSize : entry.target.getBoundingClientRect().width);
+      setWidth(borderBox ? borderBox.inlineSize : (entry.target as HTMLElement).offsetWidth);
     });
     observer.observe(node);
     return () => observer.disconnect();

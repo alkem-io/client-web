@@ -155,28 +155,51 @@ function clampToLength(markdown: string): string {
 }
 
 // One level of CommonMark container nesting — a blockquote marker or a list-item
-// marker — at the start of what is left of the line, allowing the up-to-3-space
-// indent CommonMark permits before a marker.
-const NESTING_MARKER = /^ {0,3}(?:>[ \t]?|[-*+][ \t]|\d{1,9}[.)][ \t])/;
+// marker — at the start of what is left of the line, after ANY amount of leading
+// whitespace (captured). CommonMark only allows 0-3 spaces before a marker at the
+// top level, but inside a list item that allowance is measured from the item's
+// content column, so an indented line (`10. x\n    - - - …`) still opens one
+// container per marker.
+const NESTING_MARKER = /^([ \t]*)(?:>[ \t]?|[-*+][ \t]|\d{1,9}[.)][ \t])/;
+
+// The narrowest list item (`- `) moves the content column two to the right, so a
+// marker indented by N columns can sit at most N/2 levels deeper than the markers
+// on its own line show — nesting can be built up across lines, not only within one.
+const MIN_COLUMNS_PER_LEVEL = 2;
+const TAB_COLUMNS = 4;
+
+function whitespaceColumns(whitespace: string): number {
+  let columns = 0;
+  for (const char of whitespace) columns += char === '\t' ? TAB_COLUMNS : 1;
+  return columns;
+}
 
 /**
  * The offset up to which `markdown` is safe to hand to the parser and the
- * renderer: the whole string, unless some line's blockquote/list nesting exceeds
- * `MAX_EXCERPT_NESTING_DEPTH`, in which case the offset stops at the start of
- * that line. Every marker counts as one level, so `- - - -` is four deep
- * whatever follows it. A single forward scan over the source with no recursion
- * — each line's own scan also stops the moment the depth bound is crossed — so
- * this cannot itself exhaust the stack on the same input it is bounding.
+ * renderer: the whole string, unless some line's blockquote/list nesting may
+ * exceed `MAX_EXCERPT_NESTING_DEPTH`, in which case the offset stops at the start
+ * of that line. A line's nesting is estimated from above: every marker on it
+ * counts as one level (`- - - -` is four deep whatever follows it), plus the
+ * levels its markers' indentation could have inherited from the lines before it
+ * (see `MIN_COLUMNS_PER_LEVEL`). The estimate can over-count (a marker-like line
+ * in an indented code block), which only ever cuts earlier. A single forward
+ * scan over the source with no recursion — each line's own scan also stops the
+ * moment the depth bound is crossed — so this cannot itself exhaust the stack on
+ * the same input it is bounding.
  */
 function findSafeParseBoundary(markdown: string): number {
   let offset = 0;
   for (const line of markdown.split('\n')) {
+    let markers = 0;
+    let indentColumns = 0;
     let depth = 0;
     let rest = line;
     let match: RegExpExecArray | null;
     while (depth <= MAX_EXCERPT_NESTING_DEPTH && (match = NESTING_MARKER.exec(rest))) {
       rest = rest.slice(match[0].length);
-      depth += 1;
+      markers += 1;
+      indentColumns += whitespaceColumns(match[1]);
+      depth = markers + Math.floor(indentColumns / MIN_COLUMNS_PER_LEVEL);
     }
     if (depth > MAX_EXCERPT_NESTING_DEPTH) return offset;
     offset += line.length + 1;

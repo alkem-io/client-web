@@ -45,4 +45,19 @@ describe('SilentErrorBoundary', () => {
     );
     expect(screen.getByText('fallback')).toBeInTheDocument();
   });
+
+  test('a caught error is reported through the global error channel, not swallowed', () => {
+    const reportError = vi.fn();
+    vi.stubGlobal('reportError', reportError);
+    try {
+      render(
+        <SilentErrorBoundary>
+          <Explodes />
+        </SilentErrorBoundary>
+      );
+      expect(reportError).toHaveBeenCalledWith(expect.objectContaining({ message: 'render failure' }));
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
 });

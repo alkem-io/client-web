@@ -63,6 +63,33 @@ describe('hasVisibleExcerptText — unbounded source safety', () => {
     }
   });
 
+  test('an indented continuation line cannot slip deep nesting past the guard', () => {
+    // Inside a list item the marker indent is measured from the item's content column,
+    // so `10. x` followed by a 4-space-indented line opens one container per marker on
+    // it. Unguarded, this exact 1,999-character field overflows the renderer's stack.
+    const source = `10. x\n    ${'- '.repeat(994)}y`;
+    expect(source.length).toBeLessThan(MAX_EXCERPT_SOURCE_LENGTH);
+    const clamped = clampExcerptSource(source);
+    expect(clamped).toBe('10. x\n');
+    expect(() =>
+      render(createElement(InlineMarkdown, { content: clamped, rawHtml: 'skip', clampLines: 3 }))
+    ).not.toThrow();
+  });
+
+  test('nesting built up across lines by indentation is bounded too', () => {
+    // Each line indents to the previous line's deepest content column and opens 16 more
+    // levels: every line alone is at the per-line marker bound, the nesting keeps growing.
+    const lines = Array.from({ length: 6 }, (_, k) => `${' '.repeat(32 * k)}${'- '.repeat(16)}y`);
+    const source = lines.join('\n');
+    expect(source.length).toBeLessThan(MAX_EXCERPT_SOURCE_LENGTH);
+    expect(clampExcerptSource(source)).toBe(`${lines[0]}\n`);
+  });
+
+  test('an ordinary indented nested list passes through unchanged', () => {
+    const source = '1. one\n   - two\n     - three\n       > quoted\n2. four';
+    expect(clampExcerptSource(source)).toBe(source);
+  });
+
   test('deeply-nested lists are caught by the same guard', () => {
     const deeplyNestedList = `${'- '.repeat(8000)}x`;
     expect(() => hasVisibleExcerptText(deeplyNestedList)).not.toThrow();

@@ -106,6 +106,15 @@ describe('InlineMarkdown card-safe mode (rawHtml="skip") — cross-scope content
     expect(container.textContent).toMatch(/one\s+two/);
   });
 
+  test('a fenced code block flattens and wraps like prose — not `white-space: pre`', () => {
+    const { container } = render(<InlineMarkdown content={'```\nconst x = 1;\n```'} rawHtml="skip" />);
+    expect(container.querySelector('pre')).not.toBeNull();
+    const className = container.firstElementChild?.className;
+    expect(className).toContain('[&_pre]:inline');
+    expect(className).toContain('[&_pre]:whitespace-normal');
+    expect(className).toContain('break-words');
+  });
+
   test('disableLinks still applies (zero <a> elements)', () => {
     const { container } = render(
       <InlineMarkdown content="[click](https://example.org)" rawHtml="skip" disableLinks={true} />

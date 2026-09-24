@@ -4,6 +4,7 @@ import {
   CalloutAllowedActors,
   CalloutContributionType,
   CalloutFramingType,
+  CalloutSelectionMode,
   type CalloutTemplateContentFragment,
   CalloutVisibility,
   CollaboraDocumentType,
@@ -575,5 +576,36 @@ describe('calloutFormValuesToCreateCalloutInput — cardVariant', () => {
       fallbacks
     );
     expect(input.settings?.framing?.spaces).toBeUndefined();
+  });
+});
+
+describe('callout template mappers — a manual selection never reaches a template (FR-006)', () => {
+  // A template has no host space, so the server rejects any template input carrying a CUSTOM
+  // selection. "Save as template" prefills from a live callout, which may well have one.
+  const manual = { selectionMode: 'custom', selectedIds: ['space-1', 'space-2'] } as const;
+
+  it.each(['spaces', 'contributors'] as const)('create resets a %s selection to AUTO with no ids', framingChip => {
+    const input = calloutFormValuesToCreateCalloutInput(
+      values({ framingChip, cardVariant: 'expanded', ...manual, selectedIds: [...manual.selectedIds] }),
+      fallbacks
+    );
+    expect(input.settings?.framing?.selection).toEqual({ mode: CalloutSelectionMode.Auto, selectedIds: [] });
+  });
+
+  it('create keeps the card variant while resetting the selection', () => {
+    const input = calloutFormValuesToCreateCalloutInput(
+      values({ framingChip: 'spaces', cardVariant: 'expanded', ...manual, selectedIds: [...manual.selectedIds] }),
+      fallbacks
+    );
+    expect(input.settings?.framing?.spaces).toEqual({ cardVariant: 'EXPANDED' });
+  });
+
+  it('update resets a manual selection to AUTO with no ids', () => {
+    const input = calloutFormValuesToUpdateCalloutEntityInput(
+      values({ framingChip: 'spaces', cardVariant: 'expanded', ...manual, selectedIds: [...manual.selectedIds] }),
+      'c1'
+    );
+    expect(input.settings?.framing?.selection).toEqual({ mode: CalloutSelectionMode.Auto, selectedIds: [] });
+    expect(input.settings?.framing?.spaces).toEqual({ cardVariant: 'EXPANDED' });
   });
 });
