@@ -53,6 +53,7 @@ const message = (id: string): ConversationMessage => ({
   message: `body of ${id}`,
   timestamp: 1,
   reactions: [],
+  attachments: [],
 });
 
 beforeEach(() => {

@@ -1387,6 +1387,7 @@ export type ConversationKeySpecifier = (
   | 'members'
   | 'messaging'
   | 'room'
+  | 'storageBucket'
   | 'updatedDate'
   | ConversationKeySpecifier
 )[];
@@ -1397,6 +1398,7 @@ export type ConversationFieldPolicy = {
   members?: FieldPolicy<any> | FieldReadFunction<any>;
   messaging?: FieldPolicy<any> | FieldReadFunction<any>;
   room?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ConversationCreatedEventKeySpecifier = (
@@ -3081,6 +3083,7 @@ export type MemoSigningPrepareResultFieldPolicy = {
   previewUrl?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageKeySpecifier = (
+  | 'attachments'
   | 'id'
   | 'message'
   | 'reactions'
@@ -3090,12 +3093,32 @@ export type MessageKeySpecifier = (
   | MessageKeySpecifier
 )[];
 export type MessageFieldPolicy = {
+  attachments?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   message?: FieldPolicy<any> | FieldReadFunction<any>;
   reactions?: FieldPolicy<any> | FieldReadFunction<any>;
   sender?: FieldPolicy<any> | FieldReadFunction<any>;
   threadID?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MessageAttachmentKeySpecifier = (
+  | 'displayName'
+  | 'height'
+  | 'id'
+  | 'mimeType'
+  | 'size'
+  | 'url'
+  | 'width'
+  | MessageAttachmentKeySpecifier
+)[];
+export type MessageAttachmentFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  height?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  mimeType?: FieldPolicy<any> | FieldReadFunction<any>;
+  size?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
+  width?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageDetailsKeySpecifier = ('message' | 'parent' | 'room' | MessageDetailsKeySpecifier)[];
 export type MessageDetailsFieldPolicy = {
@@ -7403,6 +7426,10 @@ export type StrictTypedTypePolicies = {
   Message?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier);
     fields?: MessageFieldPolicy;
+  };
+  MessageAttachment?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MessageAttachmentKeySpecifier | (() => undefined | MessageAttachmentKeySpecifier);
+    fields?: MessageAttachmentFieldPolicy;
   };
   MessageDetails?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageDetailsKeySpecifier | (() => undefined | MessageDetailsKeySpecifier);

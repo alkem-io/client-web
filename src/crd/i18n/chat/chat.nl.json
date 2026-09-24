@@ -55,7 +55,9 @@
     "emptyHint": "Begin een nieuw bericht om te chatten.",
     "noResults": "Geen gesprekken komen overeen met je zoekopdracht.",
     "loading": "Gesprekken laden",
-    "draft": "Concept:"
+    "draft": "Concept:",
+    "attachmentPreview_one": "{{count}} bijlage",
+    "attachmentPreview_other": "{{count}} bijlagen"
   },
   "guidance": {
     "beta": "Bèta",
