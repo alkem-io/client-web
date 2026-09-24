@@ -1566,5 +1566,13 @@
     "archived": "Archived",
     "demo": "Demo",
     "inactive": "Inactive"
+  },
+  "messageAttachments": {
+    "listLabel": "Attachments",
+    "imageAlt": "Attached image: {{name}}",
+    "download": "Download {{name}}",
+    "unavailableHint": "This file could not be loaded. Download it to view.",
+    "unavailableNoDownload": "This file is unavailable.",
+    "loading": "Loading attachment"
   }
 }

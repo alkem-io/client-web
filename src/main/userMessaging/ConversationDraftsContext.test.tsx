@@ -98,6 +98,18 @@ describe('ConversationDraftsProvider', () => {
     expect(readMessagingDrafts()).toEqual({ 'user-1': { 'conv-1': 'mine' }, 'user-2': { 'conv-9': 'theirs' } });
   });
 
+  test('a delayed send confirmation preserves text entered in another conversation', () => {
+    const { result } = renderDrafts();
+    act(() => result.current.setDraft('conv-1', 'sending'));
+    const clearSentDraft = result.current.clearDraft;
+    act(() => result.current.setDraft('conv-2', 'new draft'));
+    act(() => clearSentDraft('conv-1'));
+    expect(result.current.drafts).toEqual({ 'conv-2': 'new draft' });
+    expect(readMessagingDrafts()).toEqual({ 'user-1': { 'conv-2': 'new draft' } });
+    act(() => vi.advanceTimersByTime(500));
+    expect(readMessagingDrafts()).toEqual({ 'user-1': { 'conv-2': 'new draft' } });
+  });
+
   test('flushes a pending draft when the page is hidden', () => {
     const { result } = renderDrafts();
 

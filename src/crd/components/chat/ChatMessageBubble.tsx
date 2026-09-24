@@ -1,6 +1,8 @@
 import { Smile } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { CommentReactions } from '@/crd/components/comment/CommentReactions';
+import { MessageAttachments } from '@/crd/components/comment/MessageAttachments';
+import { hasRenderableText } from '@/crd/components/comment/messageText';
 import { EmojiPicker } from '@/crd/components/common/EmojiPicker';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { VirtualContributorBadge } from '@/crd/components/common/VirtualContributorBadge';
@@ -43,6 +45,9 @@ export function ChatMessageBubble({
   const { isOwn, author } = message;
   // No reactions on optimistic/pending messages or the synthetic guidance intro (FR-016a).
   const effectiveCanReact = canReact && !message.isPending;
+  const hasAttachments = Boolean(message.attachments && message.attachments.length > 0);
+  // Shared with CommentItem — see `hasRenderableText` for the MSC2530 filename-echo rule.
+  const hasText = hasRenderableText(message.content, message.attachments);
 
   const bubbleColumn = (
     <div className={cn('group flex flex-col gap-0.5', isOwn ? 'items-end' : 'items-start')}>
@@ -57,18 +62,25 @@ export function ChatMessageBubble({
           business data, not UI copy (FR-016). */}
       {avatarGutter && !showAuthor && !isOwn && author && <span className="sr-only">{author.name}</span>}
       <div className={cn('flex items-center gap-1', isOwn && 'flex-row-reverse')}>
-        <div
-          className={cn(
-            'max-w-[85%] rounded-2xl px-3 py-2',
-            isOwn ? 'rounded-br-sm bg-primary/15' : 'rounded-bl-sm bg-muted',
-            message.isPending && 'opacity-60'
-          )}
-        >
-          <MarkdownContent
-            content={message.content}
-            className="text-body [&_p]:mb-1 [&_p]:text-foreground [&_p:last-child]:mb-0"
-          />
-        </div>
+        {/* The bubble exists to hold TEXT. An attachment-only message renders
+            just its attachments below, and a message with neither text nor
+            attachments renders no bubble at all — the previous condition
+            (`hasText || !hasAttachments`) painted an empty bubble around an
+            empty MarkdownContent in that case. */}
+        {hasText && (
+          <div
+            className={cn(
+              'max-w-[85%] rounded-2xl px-3 py-2',
+              isOwn ? 'rounded-br-sm bg-primary/15' : 'rounded-bl-sm bg-muted',
+              message.isPending && 'opacity-60'
+            )}
+          >
+            <MarkdownContent
+              content={message.content}
+              className="text-body [&_p]:mb-1 [&_p]:text-foreground [&_p:last-child]:mb-0"
+            />
+          </div>
+        )}
         {effectiveCanReact && onAddReaction && (
           <EmojiPicker
             onSelect={onAddReaction}
@@ -84,6 +96,13 @@ export function ChatMessageBubble({
           />
         )}
       </div>
+      {hasAttachments && (
+        <MessageAttachments
+          attachments={message.attachments ?? []}
+          align={isOwn ? 'end' : 'start'}
+          className="mt-0.5"
+        />
+      )}
       {message.reactions.length > 0 && (
         <CommentReactions
           reactions={message.reactions}

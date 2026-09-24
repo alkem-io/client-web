@@ -55,7 +55,9 @@
     "emptyHint": "Start a new message to begin chatting.",
     "noResults": "No conversations match your search.",
     "loading": "Loading conversations",
-    "draft": "Draft:"
+    "draft": "Draft:",
+    "attachmentPreview_one": "{{count}} attachment",
+    "attachmentPreview_other": "{{count}} attachments"
   },
   "guidance": {
     "beta": "Beta",
