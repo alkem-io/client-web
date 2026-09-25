@@ -62,6 +62,7 @@ export function ContributionGridConnector({
                 key={contribution.id}
                 title={contribution.title}
                 documentType={contribution.documentType ?? 'text'}
+                previewUrl={contribution.previewUrl}
                 author={contribution.author?.name}
                 onClick={() => onContributionClick?.(contribution.id, contribution.documentId)}
               />

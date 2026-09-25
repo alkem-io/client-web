@@ -33,7 +33,8 @@ beforeAll(async () => {
 
 const makeCallout = (
   privileges: AuthorizationPrivilege[],
-  documentType = 'WORDPROCESSING'
+  documentType = 'WORDPROCESSING',
+  previewUrl?: string | null
 ): CalloutDetailsModelExtended =>
   ({
     authorization: { myPrivileges: privileges },
@@ -43,6 +44,7 @@ const makeCallout = (
       collaboraDocument: {
         id: 'doc-1',
         documentType,
+        previewUrl,
         profile: { id: 'dp', displayName: 'Doc title', url: '/doc' },
       },
     },
@@ -89,5 +91,25 @@ describe('CollaboraFramingConnector — Replace action gating', () => {
     expect(screen.getByRole('button', { name: enJson.callout.documentReplace })).toBeInTheDocument();
     // PDF uses "View" framing rather than "Open Document".
     expect(screen.getByRole('button', { name: enJson.callout.openDocumentPdf })).toBeInTheDocument();
+  });
+});
+
+describe('CollaboraFramingConnector — preview image wiring', () => {
+  it('threads collaboraDocument.previewUrl through to the preview image', () => {
+    const { container } = renderConnector(
+      <CollaboraFramingConnector
+        callout={makeCallout([], 'WORDPROCESSING', '/api/private/wopi/files/file-1/preview')}
+        onOpen={() => {}}
+      />
+    );
+    const img = container.querySelector('img');
+    expect(img).toHaveAttribute('src', '/api/private/wopi/files/file-1/preview');
+  });
+
+  it('renders no <img> when collaboraDocument.previewUrl is null', () => {
+    const { container } = renderConnector(
+      <CollaboraFramingConnector callout={makeCallout([], 'WORDPROCESSING', null)} onOpen={() => {}} />
+    );
+    expect(container.querySelector('img')).not.toBeInTheDocument();
   });
 });
