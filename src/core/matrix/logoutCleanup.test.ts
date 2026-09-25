@@ -65,7 +65,7 @@ describe('logoutCleanup', () => {
     await clearNamespace(USER_ID);
   });
 
-  it('runs the sign-out ordering: stop → bounded /logout → clear → broadcast', async () => {
+  it('runs the sign-out ordering: profile sign-out → stop → bounded /logout → clear → broadcast → release', async () => {
     setEnv();
     await seedRecord();
     const order: string[] = [];
@@ -78,8 +78,8 @@ describe('logoutCleanup', () => {
       order.push('clear');
       return new IDBFactory().deleteDatabase(...args);
     });
-    MockBroadcastChannel.onPost = () => {
-      order.push('broadcast');
+    MockBroadcastChannel.onPost = name => {
+      order.push(name === 'alkemio-matrix-signout' ? 'profile-signout' : 'broadcast');
     };
 
     const { registerActiveSession } = await import('./activeSession');
@@ -93,7 +93,9 @@ describe('logoutCleanup', () => {
 
     // The sync lock outlives the cleanup: released earlier, it would promote a
     // follower tab onto credentials that are about to be revoked.
-    expect(order).toEqual(['stop', 'logout-post', 'clear', 'broadcast', 'release-lock']);
+    // The profile-wide announcement goes first so a tab still acquiring
+    // credentials (no per-user channel yet) stops before anything is listed.
+    expect(order).toEqual(['profile-signout', 'stop', 'logout-post', 'clear', 'broadcast', 'release-lock']);
 
     const [url, init] = fetchSpy.mock.calls[0];
     expect(url).toBe(`${HOMESERVER}/_matrix/client/v3/logout`);
@@ -141,19 +143,32 @@ describe('logoutCleanup', () => {
     expect(listener).toHaveBeenCalledOnce();
   });
 
-  it('is a no-op with the flag off — no network, no storage access', async () => {
+  it('with the flag off and nothing stored: no network, no storage writes', async () => {
     setEnv(false);
-    await seedRecord();
 
     const fetchSpy = vi.spyOn(globalThis, 'fetch');
-    const databasesSpy = vi.spyOn(indexedDB, 'databases');
+    const openSpy = vi.spyOn(indexedDB, 'open');
+    const deleteSpy = vi.spyOn(indexedDB, 'deleteDatabase');
 
     const { runMatrixLogoutCleanup } = await import('./logoutCleanup');
     await runMatrixLogoutCleanup();
 
     expect(fetchSpy).not.toHaveBeenCalled();
-    expect(databasesSpy).not.toHaveBeenCalled();
-    expect(MockBroadcastChannel.instances).toEqual([]);
+    expect(openSpy).not.toHaveBeenCalled();
+    expect(deleteSpy).not.toHaveBeenCalled();
+  });
+
+  it('with the flag off, still removes credentials stored while it was on (rollback)', async () => {
+    setEnv(false);
+    await seedRecord();
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('{}', { status: 200 }));
+
+    const { runMatrixLogoutCleanup } = await import('./logoutCleanup');
+    const { loadCredentials } = await import('./storage');
+    await runMatrixLogoutCleanup();
+
+    expect((await loadCredentials(USER_ID)).record).toBe(null);
+    expect(globalThis.fetch).toHaveBeenCalledWith(`${HOMESERVER}/_matrix/client/v3/logout`, expect.anything());
   });
 
   it('never rejects, even when storage enumeration throws', async () => {

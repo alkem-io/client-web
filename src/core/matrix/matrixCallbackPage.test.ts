@@ -1,14 +1,19 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const harness = vi.hoisted(() => ({
-  outcome: { value: { ok: false, error: 'exchange failed' } as { ok: boolean; error?: string; returnPath?: string } },
+  enabled: { value: true },
+  handleMatrixCallback: vi.fn(async () => ({ ok: true })),
 }));
 
 vi.mock('./matrixCallback', () => ({
-  handleMatrixCallback: vi.fn(async () => harness.outcome.value),
+  handleMatrixCallback: harness.handleMatrixCallback,
 }));
 
-import { isMatrixCallbackPage, runMatrixCallbackPage } from './matrixCallbackPage';
+vi.mock('./matrixConfig', () => ({
+  getConfig: () => ({ enabled: harness.enabled.value }),
+}));
+
+import { runMatrixCallbackPage } from './matrixCallbackPage';
 
 describe('matrixCallbackPage', () => {
   const replace = vi.fn();
@@ -16,6 +21,8 @@ describe('matrixCallbackPage', () => {
 
   beforeEach(() => {
     replace.mockClear();
+    harness.handleMatrixCallback.mockClear();
+    harness.enabled.value = true;
     Object.defineProperty(window, 'location', {
       value: { ...originalLocation, pathname: '/matrix-callback', replace },
       configurable: true,
@@ -27,31 +34,24 @@ describe('matrixCallbackPage', () => {
     vi.restoreAllMocks();
   });
 
-  it('recognizes only the callback path', () => {
-    expect(isMatrixCallbackPage()).toBe(true);
-    Object.defineProperty(window, 'location', {
-      value: { ...originalLocation, pathname: '/matrix-callback/x' },
-      configurable: true,
-    });
-    expect(isMatrixCallbackPage()).toBe(false);
+  it('inside the silent-SSO frame: exchanges the token and never navigates', async () => {
+    vi.spyOn(window, 'top', 'get').mockReturnValue({} as Window);
+    await runMatrixCallbackPage();
+    expect(harness.handleMatrixCallback).toHaveBeenCalledOnce();
+    expect(replace).not.toHaveBeenCalled();
   });
 
-  it('leaves for the saved return path on success', async () => {
-    harness.outcome.value = { ok: true, returnPath: '/space/test' };
+  it('opened top-level: goes home without touching the token', async () => {
     await runMatrixCallbackPage();
-    expect(replace).toHaveBeenCalledWith('/space/test');
-  });
-
-  it('goes home when the callback fails, instead of stranding the user', async () => {
-    harness.outcome.value = { ok: false, error: 'exchange failed' };
-    await runMatrixCallbackPage();
+    expect(harness.handleMatrixCallback).not.toHaveBeenCalled();
     expect(replace).toHaveBeenCalledWith('/');
   });
 
-  it('never navigates inside the silent-SSO iframe', async () => {
-    harness.outcome.value = { ok: true, returnPath: '/space/test' };
+  it('flag off: goes home without touching the token, even framed', async () => {
+    harness.enabled.value = false;
     vi.spyOn(window, 'top', 'get').mockReturnValue({} as Window);
     await runMatrixCallbackPage();
-    expect(replace).not.toHaveBeenCalled();
+    expect(harness.handleMatrixCallback).not.toHaveBeenCalled();
+    expect(replace).toHaveBeenCalledWith('/');
   });
 });

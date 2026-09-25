@@ -4,8 +4,9 @@ import { findStoredUserId, loadCredentials } from './storage';
 const CALLBACK_ROUTE = '/matrix-callback';
 const PENDING_SSO_KEY = 'alkemio-matrix-sso-pending';
 
+// Marks a silent SSO this tab started, so the callback can reject a token it
+// never asked for.
 type SsoFlowState = {
-  readonly returnPath: string;
   readonly startedAt: number;
 };
 
@@ -60,12 +61,12 @@ const discoverIdp = async (homeserverUrl: string, signal?: AbortSignal): Promise
   return { ok: true, idpId };
 };
 
-const saveSsoFlowState = (returnPath: string): void => {
-  const state: SsoFlowState = { returnPath, startedAt: Date.now() };
+const saveSsoFlowState = (): void => {
+  const state: SsoFlowState = { startedAt: Date.now() };
   try {
     sessionStorage.setItem(PENDING_SSO_KEY, JSON.stringify(state));
   } catch {
-    // Storage full or blocked — proceed anyway; worst case we lose restore
+    // Storage full or blocked — the callback will reject the token and the attempt times out
   }
 };
 
@@ -87,38 +88,12 @@ const clearSsoFlowState = (): void => {
   }
 };
 
-type InitiateSsoResult = {
-  readonly ok: boolean;
-  readonly error?: string;
-};
-
 const buildSsoUrl = (homeserverUrl: string, idpId: string): string => {
   const redirectUrl = `${window.location.origin}${CALLBACK_ROUTE}`;
   return (
     `${homeserverUrl}/_matrix/client/v3/login/sso/redirect/` +
     `${encodeURIComponent(idpId)}?redirectUrl=${encodeURIComponent(redirectUrl)}`
   );
-};
-
-const initiateSsoRedirect = async (
-  navigate: (url: string) => void = url => {
-    window.location.href = url;
-  }
-): Promise<InitiateSsoResult> => {
-  const config = getConfig();
-  if (!config.enabled || config.homeserverUrl === '') {
-    return { ok: false, error: 'matrix not configured' };
-  }
-
-  const idpResult = await discoverIdp(config.homeserverUrl);
-  if (!idpResult.ok || !idpResult.idpId) {
-    return { ok: false, error: idpResult.error };
-  }
-
-  saveSsoFlowState(window.location.pathname + window.location.search);
-
-  navigate(buildSsoUrl(config.homeserverUrl, idpResult.idpId));
-  return { ok: true };
 };
 
 type SilentSsoOptions = {
@@ -190,7 +165,7 @@ const attemptSilentSso = async (
     return idpResult.unreachable ? 'unreachable' : 'unavailable';
   }
 
-  saveSsoFlowState(window.location.pathname + window.location.search);
+  saveSsoFlowState();
 
   const iframe = document.createElement('iframe');
   iframe.style.display = 'none';
@@ -228,9 +203,8 @@ export {
   PENDING_SSO_KEY,
   attemptSilentSso,
   discoverIdp,
-  initiateSsoRedirect,
   saveSsoFlowState,
   loadSsoFlowState,
   clearSsoFlowState,
 };
-export type { SsoFlowState, SsoIdpResult, InitiateSsoResult, SilentSsoOptions, SilentSsoOutcome };
+export type { SsoFlowState, SsoIdpResult, SilentSsoOptions, SilentSsoOutcome };

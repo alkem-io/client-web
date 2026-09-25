@@ -131,5 +131,36 @@ const createMultiTabCoordinator = async (
   };
 };
 
-export { createMultiTabCoordinator, withEstablishLock };
+// Alkemio sign-out is profile-wide (one Kratos session per profile), so it is
+// announced on a profile-wide channel too: a tab still acquiring credentials
+// has no per-user channel yet and would otherwise miss the per-user logout.
+const SIGN_OUT_CHANNEL = 'alkemio-matrix-signout';
+
+const broadcastProfileSignOut = (): void => {
+  if (typeof BroadcastChannel === 'undefined') {
+    return;
+  }
+  try {
+    const channel = new BroadcastChannel(SIGN_OUT_CHANNEL);
+    channel.postMessage({ type: 'signout' });
+    channel.close();
+  } catch {
+    // Opportunistic, like the per-user fan-out.
+  }
+};
+
+const onProfileSignOut = (listener: () => void): (() => void) => {
+  if (typeof BroadcastChannel === 'undefined') {
+    return () => {};
+  }
+  const channel = new BroadcastChannel(SIGN_OUT_CHANNEL);
+  channel.addEventListener('message', event => {
+    if ((event.data as { type?: string } | undefined)?.type === 'signout') {
+      listener();
+    }
+  });
+  return () => channel.close();
+};
+
+export { broadcastProfileSignOut, createMultiTabCoordinator, onProfileSignOut, withEstablishLock };
 export type { MultiTabCoordinator, MultiTabCallbacks, TabRole, MultiTabMessage };

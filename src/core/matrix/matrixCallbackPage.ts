@@ -1,29 +1,18 @@
 import { handleMatrixCallback } from './matrixCallback';
-import { CALLBACK_ROUTE } from './ssoLogin';
-
-const isMatrixCallbackPage = (): boolean => window.location.pathname === CALLBACK_ROUTE;
+import { getConfig } from './matrixConfig';
 
 /**
- * Runs the SSO callback without booting the app: the page carries the
- * loginToken, so nothing that reports the URL (APM, Sentry) may start on it,
- * and inside the silent-SSO iframe a full second app would be pure waste.
- * Framed, the parent detects success via storage and nothing navigates;
- * top-level, the page leaves for the saved return path (home on failure).
+ * The only legitimate visitor is the hidden silent-SSO frame: it exchanges the
+ * token and persists the credentials, and the parent page detects success via
+ * storage. Anything else — flag off, or the page opened top-level — has no
+ * business here and goes home.
  */
 const runMatrixCallbackPage = async (): Promise<void> => {
-  const framed = window.self !== window.top;
-  let target = '/';
-  try {
-    const outcome = await handleMatrixCallback();
-    if (outcome.ok && outcome.returnPath) {
-      target = outcome.returnPath;
-    }
-  } catch {
-    // Fall through to home: never strand the user on a blank callback page.
+  if (getConfig().enabled && window.self !== window.top) {
+    await handleMatrixCallback();
+    return;
   }
-  if (!framed) {
-    window.location.replace(target);
-  }
+  window.location.replace('/');
 };
 
-export { isMatrixCallbackPage, runMatrixCallbackPage };
+export { runMatrixCallbackPage };

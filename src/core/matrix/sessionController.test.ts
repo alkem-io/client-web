@@ -583,6 +583,33 @@ describe('establishSession', () => {
       releaseSyncLock();
       expect(release).toHaveBeenCalledOnce();
     });
+
+    it('a promoted tab refreshes an expired stored pair itself — it is the leader now', async () => {
+      await seedRecord({ expiresAt: Date.now() - 1000 });
+      const { createCoordinator, captured } = makeCoordinatorMock('follower');
+      const { sdk, createClient } = makeSdkMock();
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({ access_token: 'syt_promoted', refresh_token: 'syr_promoted', expires_in_ms: 60_000 }),
+          {
+            status: 200,
+          }
+        )
+      );
+
+      await establishSession(ACTOR, {
+        loadSdk: async () => sdk,
+        silentSso: vi.fn(async () => 'timeout' as const),
+        createCoordinator,
+      });
+      expect(fetchSpy).not.toHaveBeenCalled();
+
+      captured.callbacks?.onPromoted?.();
+      await vi.waitFor(() => {
+        expect(createClient).toHaveBeenCalledOnce();
+      });
+      expect(createClient.mock.calls[0][0].accessToken).toBe('syt_promoted');
+    });
   });
 
   describe('user switch & sign-out', () => {
@@ -912,6 +939,127 @@ describe('establishSession', () => {
       finishSso?.();
       const handle = await pending;
       expect(handle.machine.state()).toBe('signed-out');
+    });
+
+    it('a 5xx on the startup refresh keeps the stored pair and backs off instead of re-authenticating', async () => {
+      await seedRecord({ expiresAt: Date.now() - 1000 });
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('', { status: 502 }));
+      const silentSso = vi.fn(async () => 'timeout' as const);
+      const states: SessionState[] = [];
+
+      await establishSession(ACTOR, {
+        loadSdk: vi.fn(),
+        silentSso,
+        onState: s => states.push(s),
+        retryDelaysMs: [],
+        wait: async () => {},
+      });
+
+      expect(silentSso).not.toHaveBeenCalled();
+      expect(states).toEqual(['starting', 'offline', 'failed']);
+      const { loadCredentials } = await import('./storage');
+      expect((await loadCredentials(USER_ID)).record?.refreshToken).toBe('syr_stored_refresh');
+    });
+
+    it('a 5xx from the SDK-facing refresh stays transient — never the SDK logout error', async () => {
+      await seedRecord();
+      const { sdk, createClient } = makeSdkMock();
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('', { status: 503 }));
+
+      await establishSession(ACTOR, { loadSdk: async () => sdk, silentSso: vi.fn(async () => 'timeout' as const) });
+
+      const failure = await createClient.mock.calls[0][0].tokenRefreshFunction('syr_stored_refresh').catch(e => e);
+      expect(failure).not.toBeInstanceOf(sdk.TokenRefreshLogoutError);
+    });
+
+    it('several SessionLoggedOut emissions for one dead client start exactly one recovery', async () => {
+      await seedRecord();
+      const { sdk, handlers, createClient } = makeSdkMock();
+      const silentSso = vi.fn(async () => {
+        await seedRecord({ accessToken: 'syt_recovered', deviceId: 'DEV2' });
+        return 'authenticated' as const;
+      });
+      const states: SessionState[] = [];
+
+      await establishSession(ACTOR, { loadSdk: async () => sdk, silentSso, onState: s => states.push(s) });
+      handlers.get('sync')?.('PREPARED');
+
+      handlers.get('Session.logged_out')?.();
+      handlers.get('Session.logged_out')?.();
+      handlers.get('Session.logged_out')?.();
+
+      await vi.waitFor(() => {
+        expect(createClient).toHaveBeenCalledTimes(2);
+      });
+      handlers.get('sync')?.('PREPARED');
+
+      expect(silentSso).toHaveBeenCalledOnce();
+      expect(states).not.toContain('failed');
+      expect(states[states.length - 1]).toBe('ready');
+    });
+
+    it('a server logout before the first sync still recovers, and lands in auth-required when SSO cannot complete', async () => {
+      await seedRecord();
+      const { sdk, handlers } = makeSdkMock();
+      const states: SessionState[] = [];
+
+      await establishSession(ACTOR, {
+        loadSdk: async () => sdk,
+        silentSso: vi.fn(async () => 'timeout' as const),
+        onState: s => states.push(s),
+      });
+      handlers.get('Session.logged_out')?.();
+
+      await vi.waitFor(() => {
+        expect(states[states.length - 1]).toBe('auth-required');
+      });
+      expect(states).toEqual(['starting', 'recovering', 'auth-required']);
+    });
+
+    it('an aborted signal stops an establishment that is still acquiring credentials', async () => {
+      let ssoSignal: AbortSignal | undefined;
+      const silentSso = vi.fn(async (_localpart: string, signal: AbortSignal) => {
+        ssoSignal = signal;
+        await new Promise<void>(resolve => signal.addEventListener('abort', () => resolve()));
+        return 'unavailable' as const;
+      });
+      const session = new AbortController();
+
+      const pending = establishSession(ACTOR, { loadSdk: vi.fn(), silentSso, signal: session.signal });
+      await vi.waitFor(() => {
+        expect(ssoSignal).toBeDefined();
+      });
+      session.abort();
+
+      const handle = await pending;
+      expect(ssoSignal?.aborted).toBe(true);
+      expect(handle.machine.state()).toBe('starting');
+    });
+
+    it('a sign-out in another tab stops a tab mid-SSO and retires credentials its SSO stored afterwards', async () => {
+      let ssoStarted = false;
+      const silentSso = vi.fn(async (_localpart: string, signal: AbortSignal) => {
+        ssoStarted = true;
+        await new Promise<void>(resolve => signal.addEventListener('abort', () => resolve()));
+        // The frame's callback won the race: credentials landed after the sign-out.
+        await seedRecord();
+        return 'unavailable' as const;
+      });
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('{}', { status: 200 }));
+
+      const pending = establishSession(ACTOR, { loadSdk: vi.fn(), silentSso });
+      await vi.waitFor(() => {
+        expect(ssoStarted).toBe(true);
+      });
+
+      const { broadcastProfileSignOut } = await import('./multiTab');
+      broadcastProfileSignOut();
+      const handle = await pending;
+
+      expect(handle.machine.state()).toBe('signed-out');
+      const { loadCredentials } = await import('./storage');
+      expect((await loadCredentials(USER_ID)).record).toBeNull();
+      expect(globalThis.fetch).toHaveBeenCalledWith(`${HOMESERVER}/_matrix/client/v3/logout`, expect.anything());
     });
 
     it('fails closed without touching storage when the browser cannot list IndexedDB databases', async () => {

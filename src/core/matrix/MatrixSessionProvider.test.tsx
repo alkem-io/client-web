@@ -4,21 +4,22 @@ import { MatrixSessionProvider } from './MatrixSessionProvider';
 
 const harness = vi.hoisted(() => {
   const listeners = new Set<() => void>();
-  const stopSpy = vi.fn();
   type EstablishHooks = {
     onState?: (state: string) => void;
     onError?: (message: string) => void;
     onRooms?: unknown;
+    signal?: AbortSignal;
   };
   const harnessState = {
-    stopSpy,
     lastHooks: undefined as EstablishHooks | undefined,
-    establishSession: vi.fn(async (_actorId: string, hooks?: EstablishHooks) => {
+    signals: [] as AbortSignal[],
+    // Never settles: establishment is still in flight whenever the provider is torn down.
+    establishSession: vi.fn((_actorId: string, hooks?: EstablishHooks) => {
       harnessState.lastHooks = hooks;
-      return {
-        machine: { state: () => 'idle', transition: () => true },
-        stop: stopSpy,
-      };
+      if (hooks?.signal) {
+        harnessState.signals.push(hooks.signal);
+      }
+      return new Promise(() => {});
     }),
     admitted: { value: true },
     actorId: { value: 'actor-1' as string | undefined },
@@ -68,7 +69,7 @@ const diagnosticsState = () => (window as unknown as { __alkemioMatrix?: { state
 describe('MatrixSessionProvider', () => {
   beforeEach(() => {
     harness.establishSession.mockClear();
-    harness.stopSpy.mockClear();
+    harness.signals = [];
     harness.listeners.clear();
     harness.opened.value = false;
     harness.admitted.value = true;
@@ -113,13 +114,14 @@ describe('MatrixSessionProvider', () => {
     expect(harness.establishSession).toHaveBeenCalledOnce();
   });
 
-  it('stops the session when the provider unmounts', async () => {
+  it('stops the session when the provider unmounts, even while establishment is still running', async () => {
     const { unmount } = renderProvider();
     await act(async () => {
       harness.notify();
     });
+    expect(harness.signals[0]?.aborted).toBe(false);
     unmount();
-    expect(harness.stopSpy).toHaveBeenCalledOnce();
+    expect(harness.signals[0]?.aborted).toBe(true);
   });
 
   it('stops the old session and establishes a new one when the actor changes', async () => {
@@ -137,18 +139,21 @@ describe('MatrixSessionProvider', () => {
     );
     await act(async () => {});
 
-    expect(harness.stopSpy).toHaveBeenCalledOnce();
+    expect(harness.signals[0]?.aborted).toBe(true);
+    expect(harness.signals[1]?.aborted).toBe(false);
     expect(harness.establishSession).toHaveBeenCalledTimes(2);
     expect(harness.establishSession.mock.calls[1][0]).toBe('actor-2');
   });
 
-  it('reports failed when establishment rejects', async () => {
-    harness.establishSession.mockRejectedValueOnce(new Error('boom'));
-    renderProvider();
+  it('ignores late state reports from a torn-down session', async () => {
+    const { unmount } = renderProvider();
     await act(async () => {
       harness.notify();
     });
-    expect(diagnosticsState()).toBe('failed');
+    const staleHooks = harness.lastHooks;
+    unmount();
+    staleHooks?.onState?.('ready');
+    expect(diagnosticsState()).toBe('idle');
   });
 
   describe('session diagnostics handle', () => {
@@ -181,18 +186,16 @@ describe('MatrixSessionProvider', () => {
       expect(readHandle()?.state).toBe('ready');
     });
 
-    it('stores the last error redacted — no token substring is reachable through the handle', async () => {
+    it('stores the last error as the controller reported it (already redacted there)', async () => {
       renderProvider();
       await act(async () => {
         harness.notify();
       });
       await act(async () => {
-        harness.lastHooks?.onError?.('exchange failed: access_token=syt_super_secret rejected');
+        harness.lastHooks?.onError?.('exchange failed: access_token=[REDACTED] rejected');
       });
 
-      const handle = readHandle();
-      expect(handle?.lastError).toContain('[REDACTED]');
-      expect(JSON.stringify(handle)).not.toContain('syt_super_secret');
+      expect(readHandle()?.lastError).toBe('exchange failed: access_token=[REDACTED] rejected');
     });
 
     it('exposes no rooms observability and logs nothing to the console', async () => {

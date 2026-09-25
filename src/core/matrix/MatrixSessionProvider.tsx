@@ -1,8 +1,7 @@
 import { type ReactNode, useEffect } from 'react';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { isAdmitted } from './matrixConfig';
-import { redactString } from './redaction';
-import { establishSession, onMessagingOpened, type SessionHandle, type SessionState } from './sessionController';
+import { establishSession, onMessagingOpened, type SessionState } from './sessionController';
 
 type MatrixDiagnostics = {
   readonly state: SessionState;
@@ -45,42 +44,33 @@ const MatrixSessionProvider = ({ children }: { children: ReactNode }) => {
       };
     };
 
-    let disposed = false;
+    // Aborting stops the session wherever it is — mid-SSO, in backoff, or running.
+    const session = new AbortController();
     let establishing = false;
-    let handle: SessionHandle | null = null;
 
     const unsubscribe = onMessagingOpened(() => {
-      if (disposed || establishing) {
+      if (session.signal.aborted || establishing) {
         return;
       }
       establishing = true;
-      establishSession(actorId, {
+      void establishSession(actorId, {
+        signal: session.signal,
         onState: state => {
-          updateDiagnostics({ state });
+          if (!session.signal.aborted) {
+            updateDiagnostics({ state });
+          }
         },
         onError: message => {
-          updateDiagnostics({ lastError: redactString(message) });
-        },
-      })
-        .then(established => {
-          if (disposed) {
-            established.stop();
-            return;
+          if (!session.signal.aborted) {
+            updateDiagnostics({ lastError: message });
           }
-          handle = established;
-        })
-        .catch(error => {
-          updateDiagnostics({
-            state: 'failed',
-            lastError: redactString(error instanceof Error ? error.message : String(error)),
-          });
-        });
+        },
+      });
     });
 
     return () => {
-      disposed = true;
+      session.abort();
       unsubscribe();
-      handle?.stop();
     };
   }, [actorId]);
 

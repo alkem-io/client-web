@@ -1,5 +1,5 @@
 import { resetMessagingActivation, stopActiveSession } from './activeSession';
-import { getConfig } from './matrixConfig';
+import { broadcastProfileSignOut } from './multiTab';
 import { clearNamespace, listStoredUserIds, loadCredentials } from './storage';
 
 /**
@@ -65,14 +65,14 @@ const cleanupMatrixUser = async (userId: string, options: CleanupOptions = {}): 
 };
 
 /**
- * The full Alkemio sign-out hook: stop the running client, then
- * clean every stored Matrix identity in this profile. Runs before the logout
- * navigation proceeds; flag off ⇒ complete no-op (storage untouched).
+ * The full Alkemio sign-out hook: stop every tab's session, then clean every
+ * stored Matrix identity in this profile. Runs before the logout navigation
+ * proceeds. Deliberately not gated by the flag: credentials stored while it
+ * was on must not survive a sign-out after it is switched off. With nothing
+ * stored it only lists the databases — no network, no writes.
  */
 const runMatrixLogoutCleanup = async (options: CleanupOptions = {}): Promise<void> => {
-  if (!getConfig().enabled) {
-    return;
-  }
+  broadcastProfileSignOut();
   const releaseSyncLock = stopActiveSession();
   resetMessagingActivation();
   try {

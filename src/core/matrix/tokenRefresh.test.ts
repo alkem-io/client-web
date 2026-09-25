@@ -1,7 +1,7 @@
 import 'fake-indexeddb/auto';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { clearNamespace, loadCredentials, storeCredentials } from './storage';
-import { refreshMatrixTokens } from './tokenRefresh';
+import { refreshMatrixTokens, TokenRefreshError } from './tokenRefresh';
 
 const HOMESERVER = 'https://matrix.dev-alkem.io';
 const USER_ID = '@refresh-user:matrix.dev-alkem.io';
@@ -88,6 +88,33 @@ describe('refreshMatrixTokens', () => {
 
     const stored = await loadCredentials(USER_ID);
     expect(stored.record?.expiresAt).toBeLessThanOrEqual(Date.now());
+  });
+
+  it.each([500, 502, 503, 429])('a %i is transient, not a rejection — never a TokenRefreshError', async status => {
+    await seedRecord();
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response('', { status }));
+
+    const failure = await refreshMatrixTokens(HOMESERVER, USER_ID, 'syr_old_refresh').catch(error => error);
+
+    expect(failure).toBeInstanceOf(Error);
+    expect(failure).not.toBeInstanceOf(TokenRefreshError);
+    expect((await loadCredentials(USER_ID)).record?.refreshToken).toBe('syr_old_refresh');
+  });
+
+  it('drops the stored pair when the rotated one cannot be persisted — the old refresh token is spent', async () => {
+    await seedRecord();
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify({ access_token: 'syt_new', refresh_token: 'syr_new', expires_in_ms: 60_000 }), {
+        status: 200,
+      })
+    );
+    const storage = await import('./storage');
+    vi.spyOn(storage, 'rotateTokens').mockResolvedValueOnce(false);
+
+    const refreshed = await refreshMatrixTokens(HOMESERVER, USER_ID, 'syr_old_refresh');
+
+    expect(refreshed.refreshToken).toBe('syr_new');
+    expect((await loadCredentials(USER_ID)).record).toBeNull();
   });
 
   it('throws on a non-200 response and leaves stored tokens untouched', async () => {

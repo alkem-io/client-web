@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>Alkemio</title>
+    <script src="/env-config.js"></script>
+  </head>
+  <body>
+    <!--
+      The Matrix SSO callback, deliberately outside the app: this page carries
+      the single-use loginToken, so nothing that reports URLs (APM, Sentry) may
+      load here, and inside the hidden silent-SSO frame a second copy of the
+      app would be pure waste.
+    -->
+    <script type="module" src="/src/core/matrix/matrixCallbackEntry.ts"></script>
+  </body>
+</html>

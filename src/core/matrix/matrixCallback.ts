@@ -14,7 +14,6 @@ type ExchangeResult = {
 type CallbackOutcome = {
   readonly ok: boolean;
   readonly error?: string;
-  readonly returnPath?: string;
 };
 
 type BreadcrumbSink = (breadcrumb: { message?: string; data?: Record<string, unknown> }) => void;
@@ -51,10 +50,7 @@ const exchangeLoginToken = async (homeserverUrl: string, loginToken: string): Pr
   return (await response.json()) as ExchangeResult;
 };
 
-const handleMatrixCallback = async (
-  onBreadcrumb?: BreadcrumbSink,
-  navigate?: (path: string) => void
-): Promise<CallbackOutcome> => {
+const handleMatrixCallback = async (onBreadcrumb?: BreadcrumbSink): Promise<CallbackOutcome> => {
   const loginToken = scrubLoginToken();
 
   if (!loginToken) {
@@ -108,13 +104,7 @@ const handleMatrixCallback = async (
       return { ok: false, error: 'failed to persist credentials' };
     }
 
-    const returnPath = flowState.returnPath || '/';
-
-    if (navigate) {
-      navigate(returnPath);
-    }
-
-    return { ok: true, returnPath };
+    return { ok: true };
   } catch (err) {
     if (onBreadcrumb) {
       onBreadcrumb(

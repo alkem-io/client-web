@@ -18,8 +18,8 @@ const setEnv = () => {
   });
 };
 
-const setPendingFlow = (returnPath = '/space/test') => {
-  sessionStorage.setItem(PENDING_SSO_KEY, JSON.stringify({ returnPath, startedAt: Date.now() }));
+const setPendingFlow = () => {
+  sessionStorage.setItem(PENDING_SSO_KEY, JSON.stringify({ startedAt: Date.now() }));
 };
 
 const setUrlWithToken = (token: string) => {
@@ -98,19 +98,17 @@ describe('matrixCallback', () => {
 
     it('exchanges loginToken with refresh_token: true and persists credentials', async () => {
       setEnv();
-      setPendingFlow('/space/test');
+      setPendingFlow();
       setUrlWithToken('mlt_valid');
 
       const fetchSpy = vi
         .spyOn(globalThis, 'fetch')
         .mockResolvedValueOnce(new Response(JSON.stringify(EXCHANGE_RESPONSE), { status: 200 }));
 
-      const navigate = vi.fn();
       const { handleMatrixCallback: fresh } = await import('./matrixCallback');
-      const result = await fresh(undefined, navigate);
+      const result = await fresh();
 
       expect(result.ok).toBe(true);
-      expect(result.returnPath).toBe('/space/test');
 
       const [url, init] = fetchSpy.mock.calls[0];
       expect(url).toBe(`${HOMESERVER}/_matrix/client/v3/login`);
@@ -180,22 +178,6 @@ describe('matrixCallback', () => {
 
       const stored = await loadCredentials(EXCHANGE_RESPONSE.user_id);
       expect(stored.record?.expiresAt).toBeLessThanOrEqual(Date.now());
-    });
-
-    it('navigates to saved return path', async () => {
-      setEnv();
-      setPendingFlow('/my/return/path');
-      setUrlWithToken('mlt_nav');
-
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
-        new Response(JSON.stringify(EXCHANGE_RESPONSE), { status: 200 })
-      );
-
-      const navigate = vi.fn();
-      const { handleMatrixCallback: fresh } = await import('./matrixCallback');
-      await fresh(undefined, navigate);
-
-      expect(navigate).toHaveBeenCalledWith('/my/return/path');
     });
 
     it('clears the pending flow marker after use', async () => {

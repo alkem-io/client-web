@@ -1,4 +1,4 @@
-import { expiresAtFrom, rotateTokens } from './storage';
+import { clearNamespace, expiresAtFrom, rotateTokens } from './storage';
 
 type RefreshedTokens = {
   readonly accessToken: string;
@@ -28,7 +28,15 @@ const postRefresh = async (homeserverUrl: string, refreshToken: string): Promise
     body: JSON.stringify({ refresh_token: refreshToken }),
   });
 
-const toRefreshError = async (response: Response): Promise<TokenRefreshError> => {
+// A server that is down or shedding load has not judged the token: the failure
+// is transient and must never be mistaken for a rejection, which wipes the
+// stored pair and logs the session out.
+const isTransientStatus = (status: number): boolean => status >= 500 || status === 429;
+
+const toRefreshError = async (response: Response): Promise<Error> => {
+  if (isTransientStatus(response.status)) {
+    return new Error(`token refresh unavailable: status ${response.status}`);
+  }
   let errcode: string | undefined;
   let softLogout = false;
   try {
@@ -50,7 +58,7 @@ const refreshMatrixTokens = async (
 
   if (!response.ok) {
     const error = await toRefreshError(response);
-    if (error.errcode !== 'M_UNKNOWN_TOKEN' || !error.softLogout) {
+    if (!(error instanceof TokenRefreshError) || error.errcode !== 'M_UNKNOWN_TOKEN' || !error.softLogout) {
       throw error;
     }
     // soft_logout: the old refresh token stays valid until the new access
@@ -69,7 +77,12 @@ const refreshMatrixTokens = async (
 
   const expiresAt = expiresAtFrom(body.expires_in_ms);
   const nextRefreshToken = body.refresh_token ?? refreshToken;
-  await rotateTokens(userId, body.access_token, nextRefreshToken, expiresAt);
+  // The old refresh token is spent. If the new pair cannot be persisted, the
+  // stored one is dead: drop it, so a reload or a promoted tab re-establishes
+  // instead of replaying a consumed token into a forced logout.
+  if (!(await rotateTokens(userId, body.access_token, nextRefreshToken, expiresAt))) {
+    await clearNamespace(userId).catch(() => {});
+  }
 
   return {
     accessToken: body.access_token,

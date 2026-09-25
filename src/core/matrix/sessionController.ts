@@ -9,6 +9,7 @@ import {
   createMultiTabCoordinator,
   type MultiTabCallbacks,
   type MultiTabCoordinator,
+  onProfileSignOut,
   withEstablishLock,
 } from './multiTab';
 import { redactBreadcrumb, redactString } from './redaction';
@@ -40,7 +41,7 @@ type SessionState = (typeof SESSION_STATES)[number];
 
 const TRANSITIONS: ReadonlyMap<SessionState, ReadonlySet<SessionState>> = new Map([
   ['idle', new Set<SessionState>(['starting', 'signed-out'])],
-  ['starting', new Set<SessionState>(['ready', 'failed', 'offline', 'signed-out'])],
+  ['starting', new Set<SessionState>(['ready', 'recovering', 'failed', 'offline', 'signed-out'])],
   ['ready', new Set<SessionState>(['syncing', 'reconnecting', 'recovering', 'failed', 'offline', 'signed-out'])],
   ['syncing', new Set<SessionState>(['ready', 'reconnecting', 'recovering', 'failed', 'offline', 'signed-out'])],
   ['reconnecting', new Set<SessionState>(['ready', 'recovering', 'failed', 'offline', 'signed-out'])],
@@ -169,6 +170,8 @@ type EstablishmentHooks = {
   /** A server logout within this long of the last recovery is terminal rather than recovered again. */
   readonly recoveryCooldownMs?: number;
   readonly now?: () => number;
+  /** Aborting stops the session at any point, including while it is still being established. */
+  readonly signal?: AbortSignal;
 };
 
 type SessionHandle = {
@@ -213,6 +216,8 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
   let stopped = false;
   // Set by sign-out, which owns the lock release until its cleanup finishes.
   let releaseDeferred = false;
+  // Credentials acquired after a sign-out must not outlive it.
+  let signedOut = false;
   let lastRecoveryAt: number | null = null;
   let lastFailureReason: string | null = null;
   // Cancels an in-flight silent SSO: its iframe would otherwise go on to
@@ -226,6 +231,7 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
     ssoAbort.abort();
     activeClient?.stopClient();
     unregisterActiveSession(signOut);
+    stopListeningForSignOut();
   };
   const handle: SessionHandle = {
     machine,
@@ -236,11 +242,41 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
   };
   const signOut = (): (() => void) => {
     setState('signed-out');
+    signedOut = true;
     releaseDeferred = true;
     shutdown();
     return releaseCoordinator;
   };
   registerActiveSession(signOut);
+  // Another tab signed out: this one stops too, even mid-acquisition.
+  // Ignored once stopped: the signing-out tab hears its own announcement, and
+  // must keep its sync lock until its cleanup releases it.
+  const stopListeningForSignOut = onProfileSignOut(() => {
+    if (stopped) {
+      return;
+    }
+    setState('signed-out');
+    signedOut = true;
+    handle.stop();
+  });
+  if (hooks.signal?.aborted) {
+    handle.stop();
+  }
+  hooks.signal?.addEventListener('abort', () => handle.stop());
+
+  // An acquisition still running at sign-out may have stored credentials after
+  // the sign-out cleanup listed the namespaces (a refresh landing, an SSO
+  // callback winning the race with its frame's removal). Once it has settled,
+  // retire whatever it left the way sign-out would have.
+  const discardIfSignedOut = async (): Promise<void> => {
+    if (!signedOut) {
+      return;
+    }
+    const userId = await findStoredUserId(actorId);
+    if (userId) {
+      await cleanupMatrixUser(userId);
+    }
+  };
 
   // User-switch hygiene: a namespace left behind by a
   // different user (unclean switch, crash before cleanup) is fully retired —
@@ -383,11 +419,14 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
       }
     });
 
+    // The SDK emits this once per request that failed on the dead token; only
+    // the first one for this client may start a recovery.
     client.on(sdk.HttpApiEvent.SessionLoggedOut, () => {
-      client.stopClient();
-      if (activeClient === client) {
-        activeClient = null;
+      if (activeClient !== client) {
+        return;
       }
+      activeClient = null;
+      client.stopClient();
       void recover(credentials.userId);
     });
 
@@ -420,6 +459,7 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
       setState('recovering');
       const record = await withEstablishLock(actorId, acquireWithBackoff);
       if (stopped) {
+        await discardIfSignedOut();
         return;
       }
       if (record === 'unreachable') {
@@ -450,11 +490,15 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
       return;
     }
     try {
-      const fresh = await loadRecordForActor();
+      // Resumes from the stored pair when it is usable; as the leader now, this
+      // tab is also the one entitled to refresh it or, if the previous leader
+      // could not persist it, to re-establish.
+      const fresh = await withEstablishLock(actorId, acquireWithBackoff);
       if (stopped) {
+        await discardIfSignedOut();
         return;
       }
-      if (!fresh) {
+      if (!fresh || fresh === 'unreachable') {
         setState('failed');
         releaseCoordinator();
         return;
@@ -521,6 +565,7 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
     await purgeStaleNamespaces();
     const record = await withEstablishLock(actorId, electAndAcquire);
     if (stopped) {
+      await discardIfSignedOut();
       if (!releaseDeferred) {
         releaseCoordinator();
       }

@@ -115,71 +115,6 @@ describe('ssoLogin', () => {
     });
   });
 
-  describe('initiateSsoRedirect', () => {
-    const setEnv = () => {
-      Object.defineProperty(window, '_env_', {
-        value: {
-          VITE_APP_MATRIX_ENABLED: 'true',
-          VITE_APP_MATRIX_HOMESERVER_URL: HOMESERVER,
-          VITE_APP_MATRIX_ALLOWED_USERS: '',
-        },
-        writable: true,
-        configurable: true,
-      });
-    };
-
-    it('builds redirect URL from own origin + fixed callback route', async () => {
-      setEnv();
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
-        new Response(JSON.stringify(makeLoginResponse()), { status: 200 })
-      );
-
-      const navigate = vi.fn();
-
-      const { initiateSsoRedirect: fresh } = await import('./ssoLogin');
-      const result = await fresh(navigate);
-
-      expect(result.ok).toBe(true);
-      expect(navigate).toHaveBeenCalledOnce();
-
-      const url = navigate.mock.calls[0][0] as string;
-      expect(url).toContain('/_matrix/client/v3/login/sso/redirect/test-idp');
-      expect(url).toContain(`redirectUrl=${encodeURIComponent(`${window.location.origin}${CALLBACK_ROUTE}`)}`);
-    });
-
-    it('saves app state before redirect', async () => {
-      setEnv();
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
-        new Response(JSON.stringify(makeLoginResponse()), { status: 200 })
-      );
-
-      const navigate = vi.fn();
-      const { initiateSsoRedirect: fresh } = await import('./ssoLogin');
-      await fresh(navigate);
-
-      const stored = sessionStorage.getItem(PENDING_SSO_KEY) ?? '';
-      expect(stored).not.toBe('');
-      const state = JSON.parse(stored);
-      expect(state.returnPath).toBeDefined();
-      expect(state.startedAt).toBeGreaterThan(0);
-    });
-
-    it('does not redirect when matrix is disabled', async () => {
-      Object.defineProperty(window, '_env_', {
-        value: { VITE_APP_MATRIX_ENABLED: 'false', VITE_APP_MATRIX_HOMESERVER_URL: HOMESERVER },
-        writable: true,
-        configurable: true,
-      });
-
-      const navigate = vi.fn();
-      const { initiateSsoRedirect: fresh } = await import('./ssoLogin');
-      const result = await fresh(navigate);
-
-      expect(result.ok).toBe(false);
-      expect(navigate).not.toHaveBeenCalled();
-    });
-  });
-
   describe('attemptSilentSso', () => {
     const setEnv = (extra: Record<string, string> = {}) => {
       Object.defineProperty(window, '_env_', {
@@ -320,6 +255,8 @@ describe('ssoLogin', () => {
       expect(iframe?.src).toContain('/_matrix/client/v3/login/sso/redirect/test-idp');
       expect(iframe?.src).toContain(encodeURIComponent(`${window.location.origin}${CALLBACK_ROUTE}`));
       expect(iframe?.style.display).toBe('none');
+      // The callback rejects any token this tab did not ask for.
+      expect(sessionStorage.getItem(PENDING_SSO_KEY)).not.toBeNull();
 
       abort.abort();
       await attempt;
@@ -380,11 +317,11 @@ describe('ssoLogin', () => {
 
   describe('flow state persistence', () => {
     it('round-trips save → load → clear', () => {
-      saveSsoFlowState('/some/page?tab=1');
+      saveSsoFlowState();
 
       const loaded = loadSsoFlowState();
       expect(loaded).not.toBeNull();
-      expect(loaded?.returnPath).toBe('/some/page?tab=1');
+      expect(loaded?.startedAt).toBeGreaterThan(0);
 
       clearSsoFlowState();
       expect(loadSsoFlowState()).toBeNull();
