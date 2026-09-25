@@ -153,7 +153,7 @@ export function Header({
           (`lg:col-start-2 / lg:col-span-10`), matching `SpaceShell`'s body width.
           A small `lg:px-3` keeps the logo / icon row from sitting flush against
           the inset banner edges below. */}
-      <div className="w-full h-full px-6 md:px-8">
+      <div className="w-full h-full px-2 md:px-8">
         <div className="grid grid-cols-12 gap-6 h-full">
           <div
             className={cn(
@@ -163,7 +163,7 @@ export function Header({
           >
             {/* Left: Logo + breadcrumbs. The pill padding (`px-3 py-1`) is unconditional: toggling
                 it with the pill moved the contents 12px sideways / 8px down on every transition. */}
-            <div className={cn('flex items-center gap-4 min-w-0 px-3 py-1', pillClasses)}>
+            <div className={cn('flex items-center gap-2 md:gap-4 min-w-0 px-1 md:px-3 py-1', pillClasses)}>
               <a href={navigationHrefs.home} className="flex items-center shrink-0" aria-label={t('header.home')}>
                 <AlkemioLogo className="w-8 h-8" />
               </a>
@@ -176,7 +176,7 @@ export function Header({
             </div>
 
             {/* Right: icon row — same unconditional pill padding as the left group. */}
-            <nav aria-label={t('header.menu')} className={cn('flex items-center gap-1 px-3 py-1', pillClasses)}>
+            <nav aria-label={t('header.menu')} className={cn('flex items-center gap-1 px-1 md:px-3 py-1', pillClasses)}>
               <HeaderIconButton
                 onClick={onSearchClick}
                 ariaLabel={t('header.search')}

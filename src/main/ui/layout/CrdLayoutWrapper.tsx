@@ -6,6 +6,7 @@ import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErr
 import useNavigate from '@/core/routing/useNavigate';
 import { BreadcrumbsTrail } from '@/crd/components/common/BreadcrumbsTrail';
 import { DownNoticeBanner } from '@/crd/components/common/DownNoticeBanner';
+import { MobileBreadcrumbs } from '@/crd/components/common/MobileBreadcrumbs';
 import { CrdLayout } from '@/crd/layouts/CrdLayout';
 import { MarkdownConfigProvider } from '@/crd/lib/markdownConfig';
 import {
@@ -100,7 +101,14 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         unreadMessagesCount={unreadMessagesCount}
         languages={languages}
         currentLanguage={currentLanguage}
-        breadcrumbs={breadcrumbItems.length > 0 ? <BreadcrumbsTrail items={breadcrumbItems} /> : undefined}
+        breadcrumbs={
+          breadcrumbItems.length > 0 ? (
+            <>
+              <BreadcrumbsTrail items={breadcrumbItems} />
+              <MobileBreadcrumbs items={breadcrumbItems} homeHref={navigationHrefs.home} />
+            </>
+          ) : undefined
+        }
         overlayBanner={overlayBanner}
         topBanner={downNoticeVisible ? <DownNoticeBanner onDismiss={dismissDownNotice} /> : undefined}
         fullWidth={headerFullWidth}
