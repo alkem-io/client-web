@@ -19060,6 +19060,10 @@ export const PlatformLicensingPlansDocument = gql`
   platform {
     licensingFramework {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       plans {
         id
         type
@@ -19870,6 +19874,10 @@ export const PlatformAdminOrganizationsListDocument = gql`
             name
           }
         }
+        authorization {
+          id
+          myPrivileges
+        }
         profile {
           id
           url
@@ -19882,6 +19890,10 @@ export const PlatformAdminOrganizationsListDocument = gql`
         verification {
           id
           state
+          authorization {
+            id
+            myPrivileges
+          }
         }
       }
       pageInfo {
@@ -20123,7 +20135,7 @@ export type RevokeLicensePlanFromSpaceMutationOptions = Apollo.BaseMutationOptio
   SchemaTypes.RevokeLicensePlanFromSpaceMutationVariables
 >;
 export const UpdateSpacePlatformSettingsDocument = gql`
-    mutation UpdateSpacePlatformSettings($spaceId: UUID!, $nameId: NameID!, $visibility: SpaceVisibility!) {
+    mutation UpdateSpacePlatformSettings($spaceId: UUID!, $nameId: NameID, $visibility: SpaceVisibility!) {
   updateSpacePlatformSettings(
     updateData: {spaceID: $spaceId, nameID: $nameId, visibility: $visibility}
   ) {

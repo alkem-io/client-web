@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { AccountPicker } from '@/crd/components/admin/transfer/AccountPicker';
 import { TransferOperationCard } from '@/crd/components/admin/transfer/TransferOperationCard';
 import { UrlResolveField } from '@/crd/components/admin/transfer/UrlResolveField';
+import useAccountOwnerByUrl from '@/domain/platformAdmin/management/transfer/shared/useAccountOwnerByUrl';
 import useAccountSearch from '@/domain/platformAdmin/management/transfer/shared/useAccountSearch';
 import { useDebouncedValue } from '@/main/crdPages/utils/useDebouncedValue';
 
@@ -38,7 +39,7 @@ export function AccountTargetTransfer({
   onTransfer,
 }: AccountTargetTransferProps) {
   const { t } = useTranslation('crd-admin');
-  const { results, loading: searchLoading, handleSearch } = useAccountSearch();
+  const { results, loading: searchLoading, handleSearch, denied } = useAccountSearch();
   const [targetAccountId, setTargetAccountId] = useState<string>();
 
   // Debounce the account search so it fires queries on pause, not per keystroke.
@@ -49,6 +50,13 @@ export function AccountTargetTransfer({
   useEffect(() => {
     handleSearchRef.current(debouncedSearch);
   }, [debouncedSearch]);
+
+  // client-1: when the account search itself is denied (the operator can
+  // resolve the source entity but lacks TRANSFER_RESOURCE_ACCEPT visibility
+  // over the account directory), fall back to resolving the owner directly
+  // by URL — the owner's own account, if accessible, becomes the target.
+  const { accountOwner, ownerLoading, submit: resolveOwnerByUrl } = useAccountOwnerByUrl();
+  const effectiveTargetId = denied ? accountOwner?.accountId : targetAccountId;
 
   const options = results.map(result => ({ id: result.accountId, name: result.name }));
 
@@ -65,9 +73,9 @@ export function AccountTargetTransfer({
               confirmDescription: t('transfer.confirmDescription'),
               confirmLabel: t('transfer.transfer'),
               onConfirm: () => {
-                if (targetAccountId) onTransfer(targetAccountId);
+                if (effectiveTargetId) onTransfer(effectiveTargetId);
               },
-              disabled: !targetAccountId,
+              disabled: !effectiveTargetId,
               loading: transferLoading,
             }
           : undefined
@@ -92,7 +100,16 @@ export function AccountTargetTransfer({
             loading={searchLoading}
             selectedId={targetAccountId}
             onSelect={setTargetAccountId}
+            errorText={denied ? t('transfer.accountSearchDenied') : undefined}
           />
+          {denied && (
+            <UrlResolveField
+              label={t('transfer.targetOwnerUrlLabel')}
+              buttonLabel={t('transfer.resolve')}
+              onResolve={resolveOwnerByUrl}
+              loading={ownerLoading}
+            />
+          )}
         </>
       )}
     </TransferOperationCard>

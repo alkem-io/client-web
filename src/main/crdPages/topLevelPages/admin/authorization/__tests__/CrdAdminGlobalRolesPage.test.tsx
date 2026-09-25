@@ -513,6 +513,29 @@ describe('CrdAdminGlobalRolesPage', () => {
       // editor elsewhere on the page.
       expect(screen.getAllByText(errorMessage)).toHaveLength(1);
     });
+
+    // client-14: a bare READ + GRANT holder (no GRANT_GLOBAL_ADMINS) may
+    // revoke the additive Feature-era legacy roles but not a
+    // PlatformAdmin-equivalent one — per-role, not per-panel.
+    test('a READ + GRANT holder (no GRANT_GLOBAL_ADMINS) can revoke only the non-admin-equivalent legacy holder', () => {
+      legacyUsersByRole = {
+        GLOBAL_ADMIN: [{ id: 'u3', profile: { displayName: 'Legacy Holder' }, email: 'legacy@x.io' }],
+        PLATFORM_BETA_TESTER: [{ id: 'u4', profile: { displayName: 'Beta Holder' }, email: 'beta@x.io' }],
+      };
+      mockMyPrivileges = [AuthorizationPrivilege.Read, AuthorizationPrivilege.Grant];
+      render(<CrdAdminGlobalRolesPage />);
+      const legacySection = screen.getByText('roleMembers.legacyRolesHeading').closest('section');
+      if (!legacySection) throw new Error('legacy roles section not found');
+      expect(within(legacySection).getAllByRole('button', { name: 'roleMembers.remove' })).toHaveLength(1);
+
+      const betaHolderRow = within(legacySection).getByText('Beta Holder (beta@x.io)').closest('li');
+      if (!betaHolderRow) throw new Error('beta holder row not found');
+      expect(within(betaHolderRow).getByRole('button', { name: 'roleMembers.remove' })).toBeInTheDocument();
+
+      const adminHolderRow = within(legacySection).getByText('Legacy Holder (legacy@x.io)').closest('li');
+      if (!adminHolderRow) throw new Error('admin holder row not found');
+      expect(within(adminHolderRow).queryByRole('button', { name: 'roleMembers.remove' })).toBeNull();
+    });
   });
 
   // corr-client-web-7: a legacy holder-list-read privilege (no manage
@@ -543,6 +566,15 @@ describe('CrdAdminGlobalRolesPage', () => {
       expect(screen.getByText('roleMembers.readOnlyNotice')).toBeInTheDocument();
       // No legacy READ + GRANT — no legacy panel for this operator.
       expect(screen.queryByText('roleMembers.legacyRolesHeading')).toBeNull();
+    });
+
+    // client-2: PLATFORM_ROLE_HOLDERS_READ alone (no FEATURE_ROLE_HOLDERS_READ)
+    // is also an additive admitter for the Feature roles' view-only offer.
+    test('a PLATFORM_ROLE_HOLDERS_READ-only holder gets all 14 roles read-only, no add-member button', () => {
+      mockMyPrivileges = [AuthorizationPrivilege.PlatformRoleHoldersRead];
+      render(<CrdAdminGlobalRolesPage />);
+      expect(within(screen.getByRole('navigation')).getAllByRole('button')).toHaveLength(14);
+      expect(screen.queryByRole('button', { name: 'roleMembers.add' })).toBeNull();
     });
 
     test('a holder of GRANT_GLOBAL_ADMINS never sees the read-only notice (manage mode, unchanged)', () => {
@@ -613,6 +645,27 @@ describe('CrdAdminGlobalRolesPage', () => {
       render(<CrdAdminGlobalRolesPage />);
       expect(screen.queryByRole('status')).toBeNull();
       expect(screen.getByRole('navigation')).toBeInTheDocument();
+    });
+  });
+
+  // client-15: a URL naming a role the operator isn't offered (typo, stale
+  // link, or a role that doesn't exist) must show an explicit not-found
+  // state instead of silently falling back to the first offered role.
+  describe('unknown role in the URL (client-15)', () => {
+    test('shows roles.notFound and no add-member control for a role not in the offered set', () => {
+      mockPathname = '/admin/authorization/roles/does-not-exist';
+      render(<CrdAdminGlobalRolesPage />);
+      expect(screen.getByText('roles.notFound')).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'roleMembers.add' })).toBeNull();
+      // The role tabs themselves still render.
+      expect(screen.getByRole('navigation')).toBeInTheDocument();
+    });
+
+    test('keeps rendering the selected role editor for a known role in the URL', () => {
+      mockPathname = '/admin/authorization/roles/PLATFORM_ROLES_ADMIN';
+      render(<CrdAdminGlobalRolesPage />);
+      expect(screen.queryByText('roles.notFound')).toBeNull();
+      expect(screen.getByText('Alice (alice@x.io)')).toBeInTheDocument();
     });
   });
   // #9537 (authz admin guard), re-anchored onto the 027 assigner split: the

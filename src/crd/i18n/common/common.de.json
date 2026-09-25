@@ -1302,7 +1302,10 @@
         "notL0Space": "Only L0 (top-level) spaces can be transferred",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space",
-        "urlNotUserOrOrg": "URL does not resolve to a user or organization"
+        "urlNotUserOrOrg": "URL does not resolve to a user or organization",
+        "accountNotAccessible": "Dieses Konto existiert, ist aber für Sie nicht zugänglich.",
+        "successMessage": "Space erfolgreich übertragen.",
+        "errorMessage": "Der Space konnte nicht übertragen werden."
       },
       "transferVc": {
         "confirmButton": "Transfer",

@@ -102,4 +102,37 @@ describe('RoleMembersEditor', () => {
     render(<RoleMembersEditor {...baseProps} />);
     expect(screen.queryByRole('alert')).toBeNull();
   });
+
+  // client-13: the user "add" search box and the organization "add" search
+  // box previously shared the same placeholder/aria-label — indistinguishable
+  // to a screen reader when both render on a Feature role.
+  describe('distinct search box labels (client-13)', () => {
+    const organizationSection = {
+      members: [],
+      availableOrganizations: [{ id: 'o1', displayName: 'Acme' }],
+      searchTerm: '',
+      onSearchTermChange: vi.fn(),
+      onAdd: vi.fn(),
+      onRemove: vi.fn(),
+    };
+
+    test('the user and organization search boxes have distinct accessible names', () => {
+      render(<RoleMembersEditor {...baseProps} organizationSection={organizationSection} />);
+      const searchBoxes = screen.getAllByRole('searchbox');
+      const names = searchBoxes.map(box => box.getAttribute('aria-label'));
+      expect(names).toContain('roleMembers.searchPlaceholder');
+      expect(names).toContain('roleMembers.searchOrganizationsPlaceholder');
+      expect(new Set(names).size).toBe(names.length);
+    });
+
+    test('the organization "no results" text is distinct from the user one', () => {
+      render(
+        <RoleMembersEditor
+          {...baseProps}
+          organizationSection={{ ...organizationSection, availableOrganizations: [] }}
+        />
+      );
+      expect(screen.getByText('roleMembers.noOrganizationResults')).toBeInTheDocument();
+    });
+  });
 });

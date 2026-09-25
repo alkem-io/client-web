@@ -91,7 +91,8 @@
     "FEATURE_BETA_TESTER": "Feature Beta Tester",
     "FEATURE_VIRTUAL_ASSISTANT": "Feature Virtual Assistant",
     "FEATURE_ORGANIZATION_CREATOR": "Feature Organization Creator",
-    "FEATURE_VC_CAMPAIGN": "Feature VC Campaign"
+    "FEATURE_VC_CAMPAIGN": "Feature VC Campaign",
+    "notFound": "This role could not be found."
   },
   "roleDescriptions": {
     "GLOBAL_ADMIN": "Full administrative control over the entire platform.",
@@ -139,6 +140,8 @@
     "organizations": "Organisations",
     "currentOrganizations": "Current organisations",
     "addOrganizations": "Add organisations",
+    "searchOrganizationsPlaceholder": "Search organisations…",
+    "noOrganizationResults": "No organisations found.",
     "legacyRolesHeading": "Legacy roles (revoke only)",
     "legacyRolesDescription": "These roles are retired from the platform's role model and can no longer be granted. Existing holders are shown here so they can be revoked; this is the only in-console path to remove a legacy credential before it is deleted entirely.",
     "legacyRolesNoHolders": "No one currently holds a legacy role."
@@ -169,6 +172,8 @@
     "targetAccount": "Target account",
     "accountSearchPlaceholder": "Search users or organisations…",
     "noAccounts": "No matching accounts.",
+    "accountSearchDenied": "You don't have permission to search accounts.",
+    "targetOwnerUrlLabel": "Target owner URL (user or organisation)",
     "transfer": "Transfer",
     "currentAccount": "Current account: {{name}}",
     "confirmTitle": "Confirm transfer",

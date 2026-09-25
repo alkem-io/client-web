@@ -141,6 +141,31 @@ export const getOfferedLegacyPlatformRoles = (
 };
 
 /**
+ * client-14: `getOfferedLegacyPlatformRoles` decides whether the legacy panel
+ * is shown at all (READ + GRANT); this decides, PER ROLE, whether the
+ * operator may revoke that specific holder. `PLATFORM_BETA_TESTER` and
+ * `PLATFORM_VC_CAMPAIGN` are additive Feature-era credentials (not
+ * PlatformAdmin-equivalent) — anyone who can see the legacy panel at all may
+ * revoke them. The remaining legacy roles (`GLOBAL_ADMIN` and siblings) ARE
+ * PlatformAdmin-equivalent; sec-client-web-4 already established that the
+ * server's legacy resolver branches check `GRANT_GLOBAL_ADMINS` too narrowly
+ * scoped a token for those to be revoked by a bare READ + GRANT holder, so
+ * they additionally require `GRANT_GLOBAL_ADMINS`.
+ */
+export const canRevokeLegacyPlatformRole = (
+  role: (typeof RELEVANT_ROLES.LegacyPlatform)[number],
+  myPrivileges: AuthorizationPrivilege[]
+): boolean => {
+  if (!isLegacyPlatformAdminEquivalent(myPrivileges)) {
+    return false;
+  }
+  if (role === RoleName.PlatformBetaTester || role === RoleName.PlatformVcCampaign) {
+    return true;
+  }
+  return myPrivileges.includes(AuthorizationPrivilege.GrantGlobalAdmins);
+};
+
+/**
  * corr-client-web-7: `getOfferedPlatformRoles` decides who may *manage*
  * (grant/revoke) the 13 target roles — but a legacy holder-list-read
  * privilege (plain `READ`, or `PLATFORM_ROLE_HOLDERS_READ` /
@@ -150,10 +175,15 @@ export const getOfferedLegacyPlatformRoles = (
  * them straight into `noAssignablePrivilege` withdraws that read visibility
  * with no server-side change behind it. This is a separate, narrower offer:
  * a role appears here only when the operator can actually have its holder
- * list read (mirrors the server's per-role-family read gate — plain `READ`
- * is the legacy additive admitter for both families, same as
- * `HOLDER_READ_PRIVILEGES` above), and the caller renders it read-only
- * (view only, no add/remove) rather than predicting a management rule.
+ * list read, and the caller renders it read-only (view only, no add/remove)
+ * rather than predicting a management rule.
+ *
+ * client-2: `PLATFORM_ROLE_HOLDERS_READ` is, like plain `READ`, an additive
+ * admitter for BOTH role families — not scoped to the 10 Platform roles
+ * only. A holder of just `PLATFORM_ROLE_HOLDERS_READ` still needs to see the
+ * 4 Feature roles' holders (e.g. to confirm nobody unexpected holds one), so
+ * it is included in both checks below; `FEATURE_ROLE_HOLDERS_READ` stays
+ * scoped to the Feature roles only.
  */
 export const getViewOnlyPlatformRoles = (
   myPrivileges: AuthorizationPrivilege[] | undefined
@@ -170,7 +200,8 @@ export const getViewOnlyPlatformRoles = (
   }
   if (
     myPrivileges.includes(AuthorizationPrivilege.Read) ||
-    myPrivileges.includes(AuthorizationPrivilege.FeatureRoleHoldersRead)
+    myPrivileges.includes(AuthorizationPrivilege.FeatureRoleHoldersRead) ||
+    myPrivileges.includes(AuthorizationPrivilege.PlatformRoleHoldersRead)
   ) {
     roles.push(...FEATURE_ROLES);
   }

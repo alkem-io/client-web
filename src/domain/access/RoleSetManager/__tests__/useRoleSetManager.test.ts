@@ -34,6 +34,7 @@ vi.mock('../RolesAssignment/useRoleSetManagerRolesAssignment', () => ({
 }));
 
 import useRoleSetManager, {
+  canRevokeLegacyPlatformRole,
   getOfferedLegacyPlatformRoles,
   getOfferedPlatformRoles,
   getViewOnlyPlatformRoles,
@@ -206,10 +207,13 @@ describe('getViewOnlyPlatformRoles — read-only offer (corr-client-web-7)', () 
     }
   });
 
-  test('PLATFORM_ROLE_HOLDERS_READ alone offers only the 10 admin roles, not the 4 feature roles', () => {
+  // client-2: PLATFORM_ROLE_HOLDERS_READ is also an additive admitter for the
+  // 4 Feature roles' view-only offer — mirrors the widening already applied
+  // to plain READ, so a Platform-roles-holder-read holder sees the full 14.
+  test('PLATFORM_ROLE_HOLDERS_READ alone offers the full 14 roles (both role families)', () => {
     const roles = getViewOnlyPlatformRoles([AuthorizationPrivilege.PlatformRoleHoldersRead]);
-    expect(roles).toEqual(expect.arrayContaining(RELEVANT_ROLES.Platform.slice(0, 10)));
-    expect(roles).not.toEqual(expect.arrayContaining([RELEVANT_ROLES.Platform[10]]));
+    expect(roles).toHaveLength(14);
+    expect(roles).toEqual(expect.arrayContaining(RELEVANT_ROLES.Platform.slice(10)));
   });
 
   test('FEATURE_ROLE_HOLDERS_READ alone offers only the 4 feature roles', () => {
@@ -256,5 +260,42 @@ describe('getOfferedPlatformRoles — per-family union (corr-client-web-8)', () 
       AuthorizationPrivilege.FeatureRoleAssign,
     ]);
     expect(roles).toHaveLength(14);
+  });
+});
+
+// client-14: per-role revoke gate for the legacy panel — a Platform Roles
+// Admin (GRANT_GLOBAL_ADMINS via the T034 widening) must not be able to
+// revoke a legacy PlatformAdmin-equivalent credential (GLOBAL_ADMIN etc.),
+// which the server's legacy resolver branches reject regardless; but the two
+// additive Feature-era legacy roles (PLATFORM_BETA_TESTER, PLATFORM_VC_CAMPAIGN)
+// remain revocable by anyone who could grant them originally.
+describe('canRevokeLegacyPlatformRole — per-role legacy revoke gate (client-14)', () => {
+  test('a bare READ + GRANT holder (no GRANT_GLOBAL_ADMINS) cannot revoke a legacy-admin-equivalent role', () => {
+    expect(
+      canRevokeLegacyPlatformRole(RoleName.GlobalAdmin, [AuthorizationPrivilege.Read, AuthorizationPrivilege.Grant])
+    ).toBe(false);
+  });
+
+  test('a bare READ + GRANT holder can revoke PLATFORM_BETA_TESTER (not admin-equivalent)', () => {
+    expect(
+      canRevokeLegacyPlatformRole(RoleName.PlatformBetaTester, [
+        AuthorizationPrivilege.Read,
+        AuthorizationPrivilege.Grant,
+      ])
+    ).toBe(true);
+  });
+
+  test('READ + GRANT + GRANT_GLOBAL_ADMINS can revoke a legacy-admin-equivalent role', () => {
+    expect(
+      canRevokeLegacyPlatformRole(RoleName.GlobalAdmin, [
+        AuthorizationPrivilege.Read,
+        AuthorizationPrivilege.Grant,
+        AuthorizationPrivilege.GrantGlobalAdmins,
+      ])
+    ).toBe(true);
+  });
+
+  test('a bare GRANT_GLOBAL_ADMINS holder (no READ/GRANT) cannot revoke a legacy-admin-equivalent role', () => {
+    expect(canRevokeLegacyPlatformRole(RoleName.GlobalAdmin, [AuthorizationPrivilege.GrantGlobalAdmins])).toBe(false);
   });
 });

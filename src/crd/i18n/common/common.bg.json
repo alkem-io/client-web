@@ -1302,7 +1302,10 @@
         "notL0Space": "Only L0 (top-level) spaces can be transferred",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space",
-        "urlNotUserOrOrg": "URL does not resolve to a user or organization"
+        "urlNotUserOrOrg": "URL does not resolve to a user or organization",
+        "accountNotAccessible": "Този акаунт съществува, но не е достъпен за вас.",
+        "successMessage": "Пространството е прехвърлено успешно.",
+        "errorMessage": "Прехвърлянето на пространството не бе успешно."
       },
       "transferVc": {
         "confirmButton": "Transfer",

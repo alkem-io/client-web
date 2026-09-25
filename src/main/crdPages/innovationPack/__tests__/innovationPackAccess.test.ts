@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { canDeleteOrgResource, canEditInnovationPack, toRouterPath } from '../innovationPackAccess';
+import { canDeleteOrgResource, canEditOrgResource, toRouterPath } from '../innovationPackAccess';
 
 /**
  * The two predicates mirror the server's dual-path gates verbatim
@@ -13,14 +13,14 @@ import { canDeleteOrgResource, canEditInnovationPack, toRouterPath } from '../in
  */
 describe('innovationPackAccess', () => {
   test('owner edits through Update', () => {
-    expect(canEditInnovationPack([AuthorizationPrivilege.Update])).toBe(true);
+    expect(canEditOrgResource([AuthorizationPrivilege.Update])).toBe(true);
   });
   test('Platform Support edits an org-owned pack through PlatformSupportOrgResources', () => {
-    expect(canEditInnovationPack([AuthorizationPrivilege.PlatformSupportOrgResources])).toBe(true);
+    expect(canEditOrgResource([AuthorizationPrivilege.PlatformSupportOrgResources])).toBe(true);
   });
   test('a user-hosted pack reports neither to Support → no edit', () => {
-    expect(canEditInnovationPack([AuthorizationPrivilege.Read])).toBe(false);
-    expect(canEditInnovationPack(undefined)).toBe(false);
+    expect(canEditOrgResource([AuthorizationPrivilege.Read])).toBe(false);
+    expect(canEditOrgResource(undefined)).toBe(false);
   });
   // Sandbox walk 2026-09-16: the redirect appended the absolute profile URL to the
   // settings route. The router must get a path, never an absolute URL.

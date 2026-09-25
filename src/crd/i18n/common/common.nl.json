@@ -1302,7 +1302,10 @@
         "notL0Space": "Alleen L0 (hoogste niveau) spaces kunnen worden getransferd",
         "urlNotFound": "URL niet gevonden",
         "urlNotSpace": "URL leidt niet naar een space",
-        "urlNotUserOrOrg": "URL leidt niet naar een gebruiker of organisatie"
+        "urlNotUserOrOrg": "URL leidt niet naar een gebruiker of organisatie",
+        "accountNotAccessible": "Dit account bestaat, maar is niet toegankelijk voor u.",
+        "successMessage": "Space succesvol getransfereerd.",
+        "errorMessage": "De space kon niet worden getransfereerd."
       },
       "transferVc": {
         "confirmButton": "Transfer",

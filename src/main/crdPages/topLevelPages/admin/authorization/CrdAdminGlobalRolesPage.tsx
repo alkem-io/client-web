@@ -13,6 +13,7 @@ import useRoleSetAvailableOrganizationsOnPlatform from '@/domain/access/Availabl
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
 import useActionPermission from '@/domain/access/permissions/useActionPermission';
 import useRoleSetManager, {
+  canRevokeLegacyPlatformRole,
   getOfferedLegacyPlatformRoles,
   getOfferedPlatformRoles,
   getViewOnlyPlatformRoles,
@@ -107,7 +108,15 @@ const CrdAdminGlobalRolesPage = () => {
   const segments = pathname.split('/').filter(Boolean);
   const rolesIdx = segments.indexOf('roles');
   const roleFromUrl = rolesIdx >= 0 && rolesIdx < segments.length - 1 ? segments[rolesIdx + 1] : undefined;
-  const selectedRole = offeredRoles.find(role => role === roleFromUrl) ?? offeredRoles[0];
+  // client-15: a URL naming a role the operator isn't offered (typo, stale
+  // link, retired role) must not silently fall back to the first offered
+  // role — that showed the wrong role's holders/editor with no indication
+  // anything was off. Only flag it once privileges have resolved (so a URL
+  // holding steady through the first paint isn't misjudged) and only when a
+  // role segment was actually present in the URL.
+  const roleNotFound =
+    !privilegesPending && roleFromUrl !== undefined && !offeredRoles.includes(roleFromUrl as PlatformRole);
+  const selectedRole = roleNotFound ? undefined : (offeredRoles.find(role => role === roleFromUrl) ?? offeredRoles[0]);
 
   // Phase 2: holder lists + mutations for the 13 target roles, scoped to the
   // offered set only.
@@ -169,6 +178,10 @@ const CrdAdminGlobalRolesPage = () => {
       displayName: user.profile?.displayName ?? '',
       email: user.email ?? undefined,
     })),
+    // client-14: per-role revoke gate, not per-panel — a bare READ + GRANT
+    // holder may revoke the additive Feature-era legacy roles but not a
+    // PlatformAdmin-equivalent one.
+    removable: canRevokeLegacyPlatformRole(role, myPrivileges ?? []),
   }));
 
   const currentUsers = (selectedRole && usersByRole?.[selectedRole]) ?? [];
@@ -196,8 +209,9 @@ const CrdAdminGlobalRolesPage = () => {
     roleSetId,
     // corr-client-web-7: a view-only holder (legacy READ-only holder-list
     // access, no manage privilege) never gets an "add" affordance — don't
-    // fetch candidates that can never be shown.
-    skip: !roleSetId || readOnly,
+    // fetch candidates that can never be shown. client-15: no selected role
+    // (roleNotFound) means nothing to add candidates for either.
+    skip: !roleSetId || readOnly || !selectedRole,
     mode: 'platform',
     filter: searchTerm,
     usersAlreadyInRole: currentUsers,
@@ -312,6 +326,8 @@ const CrdAdminGlobalRolesPage = () => {
                 // than silently hiding the add/remove affordances.
                 <output className="text-body text-muted-foreground">{t('roleMembers.readOnlyNotice')}</output>
               )}
+
+              {roleNotFound && <p className="text-body text-muted-foreground">{t('roles.notFound')}</p>}
 
               {selectedRole && (
                 <RoleMembersEditor

@@ -7314,7 +7314,7 @@ export type PlatformAdminQueryResults = {
   userEmailChangeAuditEntries: UserEmailChangeAuditEntries;
   /** Retrieve all Users on the Platform. This is only available to Platform Admins. */
   users: PaginatedUsers;
-  /** The singleton virtual-assistant actor, including its current admin capability grant and ID. This is only available to Platform Admins, and is the discovery path for updateAssistantActorCapabilities. */
+  /** The singleton virtual-assistant actor, including its current admin capability grant and ID. Only available to Platform Operations Admins (and legacy holders); the discovery path for updateAssistantActorCapabilities. */
   virtualAssistant: VirtualAssistant;
   /** Retrieve all Virtual Contributors on the Platform. This is only available to Platform Admins. */
   virtualContributors: Array<VirtualContributor>;
@@ -28231,6 +28231,9 @@ export type PlatformLicensingPlansQuery = {
     licensingFramework: {
       __typename?: 'Licensing';
       id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
       plans: Array<{
         __typename?: 'LicensePlan';
         id: string;
@@ -28487,6 +28490,9 @@ export type PlatformAdminOrganizationsListQuery = {
               }>;
             }
           | undefined;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
         profile?:
           | {
               __typename?: 'Profile';
@@ -28496,7 +28502,14 @@ export type PlatformAdminOrganizationsListQuery = {
               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             }
           | undefined;
-        verification: { __typename?: 'OrganizationVerification'; id: string; state: string };
+        verification: {
+          __typename?: 'OrganizationVerification';
+          id: string;
+          state: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        };
       }>;
       pageInfo: {
         __typename?: 'PageInfo';
@@ -28552,7 +28565,7 @@ export type RevokeLicensePlanFromSpaceMutation = {
 
 export type UpdateSpacePlatformSettingsMutationVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
-  nameId: Scalars['NameID']['input'];
+  nameId?: InputMaybe<Scalars['NameID']['input']>;
   visibility: SpaceVisibility;
 }>;
 

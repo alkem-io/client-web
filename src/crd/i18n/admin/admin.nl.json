@@ -91,7 +91,8 @@
     "FEATURE_BETA_TESTER": "Feature Bètatester",
     "FEATURE_VIRTUAL_ASSISTANT": "Feature Virtuele assistent",
     "FEATURE_ORGANIZATION_CREATOR": "Feature Organisatiemaker",
-    "FEATURE_VC_CAMPAIGN": "Feature VC Campaign"
+    "FEATURE_VC_CAMPAIGN": "Feature VC Campaign",
+    "notFound": "Deze rol kon niet worden gevonden."
   },
   "roleDescriptions": {
     "GLOBAL_ADMIN": "Volledige administratieve controle over het hele platform.",
@@ -139,6 +140,8 @@
     "organizations": "Organisaties",
     "currentOrganizations": "Huidige organisaties",
     "addOrganizations": "Organisaties toevoegen",
+    "searchOrganizationsPlaceholder": "Organisaties zoeken…",
+    "noOrganizationResults": "Geen organisaties gevonden.",
     "legacyRolesHeading": "Verouderde rollen (alleen intrekken)",
     "legacyRolesDescription": "Deze rollen zijn uit het rollenmodel van het platform teruggetrokken en kunnen niet meer worden toegekend. Bestaande houders worden hier getoond zodat de rol kan worden ingetrokken — dit is de enige manier in de console om een verouderd recht te verwijderen voordat het volledig wordt gewist.",
     "legacyRolesNoHolders": "Momenteel heeft niemand een verouderde rol."
@@ -169,6 +172,8 @@
     "targetAccount": "Doelaccount",
     "accountSearchPlaceholder": "Zoek gebruikers of organisaties…",
     "noAccounts": "Geen overeenkomende accounts.",
+    "accountSearchDenied": "U heeft geen toestemming om accounts te zoeken.",
+    "targetOwnerUrlLabel": "URL van doeleigenaar (gebruiker of organisatie)",
     "transfer": "Overdragen",
     "currentAccount": "Huidig account: {{name}}",
     "confirmTitle": "Overdracht bevestigen",

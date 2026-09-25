@@ -91,7 +91,8 @@
     "FEATURE_BETA_TESTER": "Función: Beta Tester",
     "FEATURE_VIRTUAL_ASSISTANT": "Función: Asistente virtual",
     "FEATURE_ORGANIZATION_CREATOR": "Función: Creador de organizaciones",
-    "FEATURE_VC_CAMPAIGN": "Feature VC Campaign"
+    "FEATURE_VC_CAMPAIGN": "Feature VC Campaign",
+    "notFound": "No se pudo encontrar este rol."
   },
   "roleDescriptions": {
     "GLOBAL_ADMIN": "Control administrativo total sobre toda la plataforma.",
@@ -139,6 +140,8 @@
     "organizations": "Organizaciones",
     "currentOrganizations": "Organizaciones actuales",
     "addOrganizations": "Añadir organizaciones",
+    "searchOrganizationsPlaceholder": "Buscar organizaciones…",
+    "noOrganizationResults": "No se encontraron organizaciones.",
     "legacyRolesHeading": "Roles heredados (solo revocación)",
     "legacyRolesDescription": "Estos roles se han retirado del modelo de roles de la plataforma y ya no se pueden conceder. Los titulares existentes se muestran aquí para poder revocarlos; esta es la única vía en la consola para eliminar una credencial heredada antes de que se elimine por completo.",
     "legacyRolesNoHolders": "Actualmente nadie tiene un rol heredado."
@@ -169,6 +172,8 @@
     "targetAccount": "Cuenta de destino",
     "accountSearchPlaceholder": "Buscar usuarios u organizaciones…",
     "noAccounts": "No hay cuentas coincidentes.",
+    "accountSearchDenied": "No tiene permiso para buscar cuentas.",
+    "targetOwnerUrlLabel": "URL del propietario de destino (usuario u organización)",
     "transfer": "Transferir",
     "currentAccount": "Cuenta actual: {{name}}",
     "confirmTitle": "Confirmar transferencia",

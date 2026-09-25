@@ -5,6 +5,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { AdminSectionPlaceholder } from '@/crd/components/admin/AdminSectionPlaceholder';
 import NonPlatformAdminRedirect from '@/main/admin/NonPlatformAdminRedirect';
 import { CrdNotFoundView } from '@/main/crdPages/error/CrdNotFoundView';
+import AdminSectionGuard from './AdminSectionGuard';
 import { ADMIN_SECTIONS, type AdminSectionId, DEFAULT_ADMIN_SECTION } from './adminSections';
 import CrdAdminShellPage from './CrdAdminShellPage';
 import { useVisibleAdminSections } from './useVisibleAdminSections';
@@ -71,9 +72,11 @@ export const CrdAdminRoutes = () => (
               key={section.id}
               path={`${section.id}/*`}
               element={
-                <Suspense fallback={<Loading />}>
-                  {SECTION_ELEMENTS[section.id] ?? <AdminSectionPlaceholder />}
-                </Suspense>
+                <AdminSectionGuard sectionId={section.id}>
+                  <Suspense fallback={<Loading />}>
+                    {SECTION_ELEMENTS[section.id] ?? <AdminSectionPlaceholder />}
+                  </Suspense>
+                </AdminSectionGuard>
               }
             />
           ))}

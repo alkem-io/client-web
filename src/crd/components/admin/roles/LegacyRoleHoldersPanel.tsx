@@ -8,6 +8,13 @@ export type LegacyRoleGroup = {
   role: string;
   roleLabel: string;
   holders: RoleMember[];
+  /**
+   * client-14: per-role revoke gate — false hides the Remove button for this
+   * group's holders (the current operator may see the panel but isn't
+   * authorized to revoke THIS particular legacy role — e.g. a bare
+   * READ + GRANT holder facing a PlatformAdmin-equivalent legacy role).
+   */
+  removable: boolean;
 };
 
 type LegacyRoleHoldersPanelProps = {
@@ -90,16 +97,18 @@ export function LegacyRoleHoldersPanel({
                   className="flex items-center justify-between gap-3 rounded-lg border border-border px-3 py-2"
                 >
                   <span className="text-body break-words">{memberLabel(member)}</span>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="text-destructive hover:text-destructive"
-                    disabled={removing}
-                    onClick={() => setPendingRemove({ role: group.role, member })}
-                  >
-                    {t('roleMembers.remove')}
-                  </Button>
+                  {group.removable && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="text-destructive hover:text-destructive"
+                      disabled={removing}
+                      onClick={() => setPendingRemove({ role: group.role, member })}
+                    >
+                      {t('roleMembers.remove')}
+                    </Button>
+                  )}
                 </li>
               ))}
             </ul>

@@ -223,9 +223,10 @@ export const SECTION_ADMITTING_PRIVILEGES: Partial<Record<AdminSectionId, Author
  * Resolve the sections a viewer may see.
  *
  * NOT a permission check. The server remains the only authority; this hides
- * affordances the viewer cannot use. Deep links still resolve — a hidden
- * section typed into the URL renders and its queries fail server-side, exactly
- * as before. Predicting the server's answer is what FR-012 forbids.
+ * affordances the viewer cannot use. The route guard (`AdminSectionGuard`)
+ * reads this same answer, so a section hidden here and then typed directly
+ * into the URL redirects rather than rendering and failing server-side.
+ * Predicting the server's answer is what FR-012 forbids.
  */
 export const resolveVisibleAdminSections = ({
   privileges,
