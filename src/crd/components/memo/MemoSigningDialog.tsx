@@ -1,5 +1,18 @@
-import { Loader2 } from 'lucide-react';
+import {
+  BadgeCheck,
+  Download,
+  ExternalLink,
+  FileCheck2,
+  FileText,
+  Fingerprint,
+  Loader2,
+  PenLine,
+  ShieldCheck,
+  SquareArrowOutUpRight,
+} from 'lucide-react';
+import type { ComponentProps } from 'react';
 import { useTranslation } from 'react-i18next';
+import { formatMachineDateTime } from '@/crd/lib/dateTimeFormat';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import {
@@ -37,7 +50,7 @@ export type MemoSignatureView = {
   document?: MemoSignatureDocument | null;
   actor?: { profile?: { displayName: string; url: string } | null } | null;
   updatedDate: string | Date;
-  recordedAt?: string;
+  recordedAt: string;
   verification?: 'checking' | 'verified' | 'invalid' | 'unavailable';
 };
 
@@ -47,6 +60,7 @@ type CommonProps = {
   onClose: () => void;
   overlayClassName?: string;
   contentClassName?: string;
+  onCloseAutoFocus?: ComponentProps<typeof DialogContent>['onCloseAutoFocus'];
 };
 
 type HistoryProps = CommonProps & {
@@ -81,6 +95,26 @@ type SignedCopyProps = {
   verifyDisabled?: boolean;
 };
 
+function VerificationResult({ value }: { value: NonNullable<MemoSignatureView['verification']> }) {
+  const { t } = useTranslation('crd-space');
+  const checking = value === 'checking';
+  const Icon = checking ? Loader2 : value === 'verified' ? ShieldCheck : FileCheck2;
+
+  return (
+    <output
+      className={cn(
+        'inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-caption',
+        value === 'verified' && 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300',
+        value === 'invalid' && 'bg-destructive/10 text-destructive',
+        (checking || value === 'unavailable') && 'bg-muted text-muted-foreground'
+      )}
+    >
+      <Icon aria-hidden="true" className={cn('size-3.5', checking && 'animate-spin motion-reduce:animate-none')} />
+      {t(`memo.signing.verification.${value}` as const)}
+    </output>
+  );
+}
+
 function SignedCopy({ signature, onVerify, onDownload, downloadingDocumentIds, verifyDisabled }: SignedCopyProps) {
   const { t } = useTranslation('crd-space');
   const document = signature.document;
@@ -88,53 +122,131 @@ function SignedCopy({ signature, onVerify, onDownload, downloadingDocumentIds, v
 
   const downloading = downloadingDocumentIds?.has(document.id) === true;
   const signerName = signature.actor?.profile?.displayName;
+  const signerInitial = signerName?.trim().charAt(0).toUpperCase() || '?';
+  const machineDateTime = formatMachineDateTime(signature.updatedDate);
+  const recordedAt = signature.recordedAt.trim() || machineDateTime || '—';
 
   return (
-    <li className="space-y-2 border-t pt-3 text-body first:border-t-0 first:pt-0">
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-        {signerName && signature.actor?.profile?.url ? (
-          <a className="text-primary underline" href={signature.actor.profile.url}>
-            {signerName}
-          </a>
-        ) : (
-          <span>{signerName || t('memo.signing.unknownSigner')}</span>
-        )}
-        <span>
-          {t('memo.signing.recorded')}:{' '}
-          <time dateTime={new Date(signature.updatedDate).toISOString()}>{signature.recordedAt}</time>
-        </span>
+    <li className="flex flex-col gap-4 rounded-xl border bg-card p-4">
+      <div className="flex min-w-0 items-start gap-3">
+        <div className="relative flex size-12 shrink-0 items-center justify-center rounded-lg border bg-muted/40 text-muted-foreground">
+          <FileText aria-hidden="true" className="size-6" />
+          <span className="absolute -bottom-1 -right-1 flex size-5 items-center justify-center rounded-full bg-primary text-badge text-primary-foreground ring-2 ring-card">
+            {signerInitial}
+          </span>
+        </div>
+        <div className="min-w-0 space-y-1.5">
+          {signerName && signature.actor?.profile?.url ? (
+            <a
+              className="block break-words text-body-emphasis text-primary underline underline-offset-2"
+              href={signature.actor.profile.url}
+            >
+              {signerName}
+            </a>
+          ) : (
+            <p className="break-words text-body-emphasis">{signerName || t('memo.signing.unknownSigner')}</p>
+          )}
+          <p className="text-caption text-muted-foreground">
+            {t('memo.signing.recorded')}:{' '}
+            {machineDateTime ? <time dateTime={machineDateTime}>{recordedAt}</time> : <span>{recordedAt}</span>}
+          </p>
+          {signature.verification && <VerificationResult value={signature.verification} />}
+        </div>
       </div>
-      <div className="flex flex-wrap gap-2">
-        <Button asChild={true} variant="outline" size="sm">
+      <div className="flex flex-wrap items-center gap-2">
+        <Button asChild={true} size="sm">
           <a href={document.url} target="_blank" rel="noreferrer">
-            {t('memo.signing.openPdf')}
+            {t('memo.signing.openSignedPdf')}
+            <ExternalLink aria-hidden="true" />
           </a>
         </Button>
         <Button
           type="button"
-          variant="outline"
+          variant="ghost"
           size="sm"
           disabled={downloading}
           aria-busy={downloading}
           onClick={() => onDownload?.(document)}
         >
+          <Download aria-hidden="true" />
           {t('memo.signing.download')}
         </Button>
         {onVerify && (
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             size="sm"
             disabled={verifyDisabled || signature.verification === 'checking'}
             aria-busy={signature.verification === 'checking'}
             onClick={() => onVerify(signature.id)}
           >
+            <ShieldCheck aria-hidden="true" />
             {t('memo.signing.verify')}
           </Button>
         )}
       </div>
-      {signature.verification && <output>{t(`memo.signing.verification.${signature.verification}` as const)}</output>}
     </li>
+  );
+}
+
+function SigningJourney() {
+  const { t } = useTranslation('crd-space');
+  const steps = [
+    { icon: SquareArrowOutUpRight, key: 'provider' },
+    { icon: Fingerprint, key: 'identity' },
+    { icon: FileCheck2, key: 'return' },
+  ] as const;
+
+  return (
+    <aside className="flex w-full shrink-0 flex-col gap-5 border-t bg-muted/25 p-5 lg:w-80 lg:border-l lg:border-t-0">
+      <div>
+        <p className="text-label uppercase text-muted-foreground">{t('memo.signing.whatHappensNext')}</p>
+        {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight strips the list semantics that this role restores */}
+        {/* biome-ignore lint/a11y/useSemanticElements: the ol is already the semantic element */}
+        <ol role="list" className="mt-4 space-y-4">
+          {steps.map(step => (
+            <li key={step.key} className="flex gap-3">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <step.icon aria-hidden="true" className="size-4" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-body-emphasis">{t(`memo.signing.steps.${step.key}.title` as const)}</p>
+                <p className="mt-0.5 text-caption text-muted-foreground">
+                  {t(`memo.signing.steps.${step.key}.description` as const)}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div className="rounded-xl border bg-card p-4">
+        <div className="flex items-center gap-2">
+          <PenLine aria-hidden="true" className="size-4 text-muted-foreground" />
+          <p className="text-body-emphasis">{t('memo.signing.editableTitle')}</p>
+        </div>
+        <p className="mt-1.5 text-caption text-muted-foreground">{t('memo.signing.editableDescription')}</p>
+      </div>
+    </aside>
+  );
+}
+
+function SuccessHeader() {
+  const { t } = useTranslation('crd-space');
+
+  return (
+    <div className="relative overflow-hidden bg-gradient-to-b from-emerald-50 to-background px-6 pb-6 pt-9 text-center dark:from-emerald-500/10">
+      <div aria-hidden="true" className="absolute inset-x-0 top-0 h-28 bg-primary/5 blur-3xl" />
+      <div
+        data-testid="memo-signing-success-mark"
+        className="relative mx-auto flex size-20 animate-in items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg duration-500 zoom-in-50 motion-reduce:animate-none"
+      >
+        <BadgeCheck aria-hidden="true" className="size-10" />
+      </div>
+      <DialogTitle className="relative mt-4 text-page-title">{t('memo.signing.savedTitle')}</DialogTitle>
+      <DialogDescription className="relative mx-auto mt-1.5 max-w-md">
+        {t('memo.signing.snapshotExplanation')}
+      </DialogDescription>
+    </div>
   );
 }
 
@@ -146,18 +258,27 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
     return (
       <Dialog open={props.open} onOpenChange={props.onOpenChange}>
         <DialogContent
+          onCloseAutoFocus={props.onCloseAutoFocus}
           overlayClassName={props.overlayClassName ?? 'z-[70]'}
-          className={cn('sm:max-w-3xl', props.contentClassName ?? 'z-[70]')}
+          className={cn(
+            'flex max-h-[88vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl',
+            props.contentClassName ?? 'z-[70]'
+          )}
           closeLabel={t('memo.close')}
         >
-          <DialogHeader>
-            <DialogTitle>{t('memo.signing.signedCopies')}</DialogTitle>
-            <DialogDescription>{t('memo.signing.historyDescription')}</DialogDescription>
-          </DialogHeader>
-          <div className="max-h-[65vh] space-y-4 overflow-y-auto">
+          <div className="flex shrink-0 items-start gap-4 border-b px-6 py-5 pr-14">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <ShieldCheck aria-hidden="true" className="size-5" />
+            </span>
+            <DialogHeader className="min-w-0 flex-1">
+              <DialogTitle>{t('memo.signing.signedCopies')}</DialogTitle>
+              <DialogDescription>{t('memo.signing.historyDescription')}</DialogDescription>
+            </DialogHeader>
+          </div>
+          <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
             {props.historyState === 'loading' && (
               <output className="flex items-center gap-2 text-body">
-                <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+                <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />
                 {t('memo.signing.historyLoading')}
               </output>
             )}
@@ -167,10 +288,16 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
               </p>
             )}
             {props.historyState === 'ready' && signatures.length === 0 && (
-              <p className="text-body">{t('memo.signing.historyEmpty')}</p>
+              <div className="flex flex-col items-center gap-3 py-10 text-center">
+                <span className="flex size-14 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
+                  <ShieldCheck aria-hidden="true" className="size-7" />
+                </span>
+                <p className="text-subheader">{t('memo.signing.historyEmpty')}</p>
+              </div>
             )}
             {props.historyState === 'ready' && signatures.length > 0 && (
-              <section className="space-y-3">
+              <section className="space-y-4">
+                <p className="text-body-emphasis">{t('memo.signing.historyCount', { count: signatures.length })}</p>
                 <ul className="space-y-3">
                   {signatures.map(signature => (
                     <SignedCopy
@@ -187,8 +314,8 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
               </section>
             )}
           </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={props.onClose}>
+          <DialogFooter className="shrink-0 border-t px-6 py-4">
+            <Button type="button" variant="ghost" onClick={props.onClose}>
               {t('memo.close')}
             </Button>
           </DialogFooter>
@@ -208,65 +335,93 @@ export function MemoSigningDialog(props: MemoSigningDialogProps) {
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
       <DialogContent
+        onCloseAutoFocus={props.onCloseAutoFocus}
         overlayClassName={props.overlayClassName ?? 'z-[70]'}
-        className={cn('sm:max-w-3xl', props.contentClassName ?? 'z-[70]')}
+        className={cn(
+          'gap-0 overflow-hidden p-0',
+          isActiveWorkflow
+            ? 'flex h-[min(92vh,820px)] flex-col sm:max-w-6xl'
+            : 'flex max-h-[88vh] flex-col sm:max-w-xl',
+          props.contentClassName ?? 'z-[70]'
+        )}
         closeLabel={t('memo.close')}
       >
-        <DialogHeader>
-          <DialogTitle>
-            {completedSignature?.document ? t('memo.signing.savedTitle') : t('memo.signing.title')}
-          </DialogTitle>
-          <DialogDescription
-            aria-live={announceOutcome ? 'polite' : undefined}
-            aria-atomic={announceOutcome ? true : undefined}
-          >
-            {completedSignature?.document
-              ? t('memo.signing.snapshotExplanation')
-              : isActiveWorkflow
-                ? t('memo.signing.description')
-                : message}
-            {stage === 'checking' && <Loader2 aria-hidden="true" className="ml-2 inline size-4 animate-spin" />}
-          </DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4 overflow-y-auto">
-          {completedSignature?.document ? (
-            <ul>
-              <SignedCopy
-                signature={completedSignature}
-                onVerify={props.onVerify}
-                onDownload={props.onDownload}
-                downloadingDocumentIds={props.downloadingDocumentIds}
-                verifyDisabled={props.verifyDisabled}
-              />
-            </ul>
-          ) : isActiveWorkflow ? (
-            <>
-              <output aria-label={message} className="flex items-center gap-2 text-body">
-                {busy && <Loader2 aria-hidden="true" className="size-4 animate-spin" />}
+        {completedSignature?.document ? (
+          <>
+            <SuccessHeader />
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
+              {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight strips the list semantics that this role restores */}
+              {/* biome-ignore lint/a11y/useSemanticElements: the ul is already the semantic element */}
+              <ul role="list">
+                <SignedCopy
+                  signature={completedSignature}
+                  onVerify={props.onVerify}
+                  onDownload={props.onDownload}
+                  downloadingDocumentIds={props.downloadingDocumentIds}
+                  verifyDisabled={props.verifyDisabled}
+                />
+              </ul>
+            </div>
+          </>
+        ) : isActiveWorkflow ? (
+          <>
+            <div className="shrink-0 border-b px-6 py-5 pr-14">
+              <DialogHeader>
+                <DialogTitle>{t('memo.signing.title')}</DialogTitle>
+                <DialogDescription>{t('memo.signing.description')}</DialogDescription>
+              </DialogHeader>
+            </div>
+            <div className="flex min-h-0 flex-1 flex-col overflow-y-auto lg:flex-row lg:overflow-hidden">
+              <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3 p-5">
+                {busy && (
+                  <output aria-label={message} className="flex items-center gap-2 text-body">
+                    <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />
+                    {message}
+                  </output>
+                )}
+                {isPreview && props.previewUrl && (
+                  <>
+                    <iframe
+                      title={t('memo.signing.previewTitle')}
+                      src={props.previewUrl}
+                      className="min-h-72 flex-1 rounded-xl border bg-muted shadow-sm"
+                    />
+                    <a
+                      className="inline-flex w-fit items-center gap-1.5 text-body-emphasis text-primary underline underline-offset-2"
+                      href={props.previewUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {t('memo.signing.openPreview')}
+                      <ExternalLink aria-hidden="true" className="size-4" />
+                    </a>
+                  </>
+                )}
+              </div>
+              <SigningJourney />
+            </div>
+          </>
+        ) : (
+          <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-6 pt-7">
+            <DialogHeader>
+              <DialogTitle>{t('memo.signing.resultTitle')}</DialogTitle>
+              <DialogDescription aria-live={announceOutcome ? 'polite' : undefined} aria-atomic={true}>
                 {message}
-              </output>
-              {isPreview && props.previewUrl && (
-                <div className="space-y-2">
-                  <iframe
-                    title={t('memo.signing.previewTitle')}
-                    src={props.previewUrl}
-                    className="h-[55vh] w-full border"
-                  />
-                  <a className="text-primary underline" href={props.previewUrl} target="_blank" rel="noreferrer">
-                    {t('memo.signing.openPreview')}
-                  </a>
-                </div>
-              )}
-            </>
-          ) : null}
-        </div>
-        <DialogFooter className="flex-wrap">
-          <Button type="button" variant="outline" onClick={props.onClose}>
-            {completedSignature?.document ? t('memo.signing.backToMemo') : t('memo.close')}
+                {stage === 'checking' && (
+                  <Loader2 aria-hidden="true" className="ml-2 inline size-4 animate-spin motion-reduce:animate-none" />
+                )}
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+        )}
+        <DialogFooter className="shrink-0 flex-wrap border-t px-6 py-4">
+          <Button type="button" variant="ghost" onClick={props.onClose}>
+            {t('memo.close')}
           </Button>
           {isPreview && props.previewUrl && (
             <Button type="button" onClick={props.onContinue} disabled={stage === 'continuing'}>
               {stage === 'continuing' ? t('memo.signing.continuing') : t('memo.signing.continue')}
+              <ExternalLink aria-hidden="true" />
             </Button>
           )}
         </DialogFooter>

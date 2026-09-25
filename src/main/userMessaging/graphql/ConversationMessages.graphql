@@ -32,6 +32,15 @@ query ConversationMessages($conversationId: UUID!) {
               }
             }
           }
+          attachments {
+            id
+            url
+            displayName
+            mimeType
+            size
+            width
+            height
+          }
         }
       }
     }

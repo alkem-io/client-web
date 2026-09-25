@@ -8,8 +8,13 @@
       "MESSAGING_NOT_ENABLED": "Този потребител е деактивирал директните съобщения. Не можете да им изпратите съобщение в момента.",
       "NOT_SUPPORTED": "Не се поддържа: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
+      "UNSPECIFIED": "Възникна неочаквана грешка. Моля, опитайте отново.",
       "generic": "Възникна грешка",
       "generic-with-code": "Възникна грешка с код {{code}}",
+      "network": {
+        "session_store_unavailable": "Услугата е временно недостъпна. Моля, опитайте отново след момент.",
+        "generic": "Възникна проблем с връзката. Моля, проверете връзката си и опитайте отново."
+      },
       "support": {
         "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
         "emailBodyGeneric": "Hello,\n\nI encountered an error while using Alkemio.\n\nPlease help me resolve this issue.\n\nThank you.",
@@ -917,9 +922,47 @@
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
           "subject": "Вашата $t(common.organization) {{organizationName}} се присъедини към {{spaceName}}",
           "description": "Не е необходимо допълнително действие."
+        },
+        "USER_ORGANIZATION_ASSOCIATE_INVITATION": {
+          "subject": "{{triggeredByName}} ви покани да се асоциирате с {{organizationName}}",
+          "description": "Като {{associateRole}}."
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED": {
+          "subject": "{{triggeredByName}} прие поканата за асоцииране с {{organizationName}}",
+          "description": "{{triggeredByName}} вече е асоцииран с {{organizationName}}, на която сте администратор.{{withheld}}"
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} отказа поканата за асоцииране с {{organizationName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_APPLICATION": {
+          "subject": "{{triggeredByName}} кандидатства за асоцииране с {{organizationName}}",
+          "description": "Прегледайте кандидатурата в настройките на организацията"
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_APPROVED": {
+          "subject": "Вашата кандидатура за асоцииране с {{organizationName}} бе одобрена",
+          "description": ""
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_DECLINED": {
+          "subject": "Вашата кандидатура за асоцииране с {{organizationName}} бе отказана",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
+          "subject": "„{{memberName}}“ се присъедини към {{organizationName}} като асоцииран",
+          "description": "{{memberName}} се присъедини към {{organizationName}}, на която сте администратор."
         }
       },
-      "spacesToJoin": "При приемане се присъединява към: {{spaces}}"
+      "spacesToJoin": "При приемане се присъединява към: {{spaces}}",
+      "associateRole": {
+        "associate": "Асоцииран",
+        "associateAdmin": "Асоцииран + Админ",
+        "associateOwner": "Асоцииран + Собственик"
+      },
+      "withheldRole": {
+        "admin": "Админ",
+        "owner": "Собственик"
+      },
+      "associateRoleWithheld": " Ролята {{role}} не можа да бъде предоставена."
     },
     "profile": {
       "fields": {
@@ -1523,5 +1566,13 @@
     "archived": "Архивирано",
     "demo": "Демо",
     "inactive": "Неактивно"
+  },
+  "messageAttachments": {
+    "listLabel": "Прикачени файлове",
+    "imageAlt": "Прикачено изображение: {{name}}",
+    "download": "Изтегляне на {{name}}",
+    "unavailableHint": "Файлът не можа да се зареди. Изтеглете го, за да го видите.",
+    "unavailableNoDownload": "Файлът не е наличен.",
+    "loading": "Зареждане на прикачен файл"
   }
 }

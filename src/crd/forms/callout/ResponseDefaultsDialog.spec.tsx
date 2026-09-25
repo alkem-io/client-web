@@ -68,6 +68,54 @@ describe('ResponseDefaultsDialog whiteboard source metadata', () => {
     expect(onOpenChange).not.toHaveBeenCalledWith(false);
   });
 
+  it('offers the authoring slot and Clear together once a default exists', () => {
+    render(
+      <ResponseDefaultsDialog
+        open={true}
+        onOpenChange={vi.fn()}
+        type="whiteboard"
+        values={whiteboardDefaults}
+        onSave={vi.fn()}
+        whiteboardSlot={() => <button type="button">open-whiteboard</button>}
+      />
+    );
+
+    expect(screen.getByRole('button', { name: 'open-whiteboard' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'responseDefaults.clearWhiteboard' })).toBeTruthy();
+  });
+
+  it('drops a materialized draft when the default is cleared', () => {
+    const onSave = vi.fn();
+    const onWhiteboardCleared = vi.fn();
+
+    render(
+      <ResponseDefaultsDialog
+        open={true}
+        onOpenChange={vi.fn()}
+        type="whiteboard"
+        values={{
+          ...whiteboardDefaults,
+          whiteboardDraft: { whiteboardID: 'draft-1', sourceKey: ':source-callout' },
+        }}
+        onSave={onSave}
+        whiteboardSlot={() => null}
+        onWhiteboardCleared={onWhiteboardCleared}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'responseDefaults.clearWhiteboard' }));
+    fireEvent.click(screen.getByRole('button', { name: 'responseDefaults.save' }));
+
+    expect(onWhiteboardCleared).toHaveBeenCalledOnce();
+    // A retained handle would be sent as draftWhiteboardID and silently outrank
+    // clearWhiteboardContent in both submit mappers, so the clear would be lost.
+    expect(onSave.mock.calls[0][0]).toMatchObject({
+      whiteboardDraft: undefined,
+      whiteboardContentAvailable: false,
+      clearWhiteboardContent: true,
+    });
+  });
+
   it('keeps the dialog open when explicit draft cleanup fails', async () => {
     const onOpenChange = vi.fn();
     const onCancel = vi.fn().mockResolvedValue(false);

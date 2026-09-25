@@ -3,6 +3,7 @@ mutation InvitationStateEvent($eventName: String!, $invitationId: UUID!) {
     id
     nextEvents
     state
+    extraRolesWithheld
   }
 }
 

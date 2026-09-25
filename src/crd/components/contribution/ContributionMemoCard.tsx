@@ -62,22 +62,27 @@ export function ContributionMemoCard({
       </div>
 
       {/* Title/author gradient overlay */}
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent p-3 flex flex-col justify-end pointer-events-none">
-        <p className="text-white text-caption font-semibold truncate">{title}</p>
-        {author && <p className="text-white/70 text-badge truncate">{author}</p>}
+      <div
+        data-slot="memo-meta"
+        className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent p-3"
+      >
+        <div className="min-w-0">
+          <p className="truncate text-caption font-semibold text-white">{title}</p>
+          {author && <p className="truncate text-badge text-white/70">{author}</p>}
+        </div>
+        {signedCopiesCount > 0 && onOpenSignedCopies && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="pointer-events-auto relative z-10 shrink-0 text-white hover:bg-white/15 hover:text-white"
+            onClick={onOpenSignedCopies}
+          >
+            <FileSignature aria-hidden="true" />
+            {signedCopiesLabel}
+          </Button>
+        )}
       </div>
-      {signedCopiesCount > 0 && onOpenSignedCopies && (
-        <Button
-          type="button"
-          variant="secondary"
-          size="sm"
-          className="absolute right-3 top-3 z-10 shadow-sm"
-          onClick={onOpenSignedCopies}
-        >
-          <FileSignature aria-hidden="true" />
-          {signedCopiesLabel}
-        </Button>
-      )}
     </div>
   );
 }

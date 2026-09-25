@@ -36,7 +36,13 @@ export function MemoFramingConnector({ callout, onOpen, onOpenSignedCopies }: Me
       <CalloutMemoPreview content={content} onOpen={onOpen} />
       {signedCopiesCount > 0 && onOpenSignedCopies && memoId && (
         <div className="flex justify-end">
-          <Button type="button" variant="outline" size="sm" onClick={() => onOpenSignedCopies(memoId)}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground"
+            onClick={() => onOpenSignedCopies(memoId)}
+          >
             <FileSignature aria-hidden="true" />
             {t('memo.signing.signedCopiesCount', { count: signedCopiesCount })}
           </Button>

@@ -238,6 +238,9 @@
       "email": "Имейл",
       "date": "Дата",
       "type": "Тип",
+      "offeredRole": {
+        "column": "Предложена роля"
+      },
       "actions": "Действия",
       "approve": "Одобри",
       "reject": "Отхвърли",
@@ -251,6 +254,7 @@
       "viewDialog": {
         "created": "Създадено на {{date}}",
         "updated": "Актуализирано на {{date}}",
+        "offeredRole": "Предложена роля: {{role}}",
         "welcomeMessage": "Приветствено съобщение",
         "noWelcomeMessage": "Няма предоставено приветствено съобщение.",
         "noAnswers": "Няма предоставени отговори.",
@@ -266,9 +270,11 @@
       "status": {
         "column": "Статус",
         "applicationReceived": "Получена кандидатура",
+        "applicationApproving": "Одобрява се…",
         "applicationApproved": "Одобрена кандидатура",
         "applicationRejected": "Отхвърлена кандидатура",
         "invited": "Поканен",
+        "invitationAccepting": "Приема се…",
         "invitationAccepted": "Поканата е приета",
         "invitationRejected": "Поканата е отхвърлена",
         "invitedExternal": "Поканен (външен)"

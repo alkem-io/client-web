@@ -238,6 +238,9 @@
       "email": "E-mail",
       "date": "Datum",
       "type": "Type",
+      "offeredRole": {
+        "column": "Aangeboden rol"
+      },
       "actions": "Acties",
       "approve": "Goedkeuren",
       "reject": "Afwijzen",
@@ -251,6 +254,7 @@
       "viewDialog": {
         "created": "Aangemaakt op {{date}}",
         "updated": "Bijgewerkt op {{date}}",
+        "offeredRole": "Aangeboden rol: {{role}}",
         "welcomeMessage": "Welkomstbericht",
         "noWelcomeMessage": "Geen welkomstbericht opgegeven.",
         "noAnswers": "Geen antwoorden opgegeven.",
@@ -266,9 +270,11 @@
       "status": {
         "column": "Status",
         "applicationReceived": "Aanvraag ontvangen",
+        "applicationApproving": "Wordt goedgekeurd…",
         "applicationApproved": "Aanvraag goedgekeurd",
         "applicationRejected": "Aanvraag afgewezen",
         "invited": "Uitgenodigd",
+        "invitationAccepting": "Wordt geaccepteerd…",
         "invitationAccepted": "Uitnodiging geaccepteerd",
         "invitationRejected": "Uitnodiging afgewezen",
         "invitedExternal": "Uitgenodigd (extern)"

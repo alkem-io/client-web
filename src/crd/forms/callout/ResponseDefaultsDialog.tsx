@@ -47,6 +47,12 @@ type ResponseDefaultsDialogProps = {
   whiteboardSlot?: (helpers: { draft: ContributionDefaults; applyDraft: ApplyDraft }) => ReactNode;
   /** Explicit dialog cancellation must dispose any server-owned draft first. */
   onCancel?: () => Promise<boolean>;
+  /**
+   * Clearing the default is an explicit replacement, so any server-owned draft the
+   * user materialized in this session has to be disposed as well. The dialog drops
+   * its own handle; the integration layer deletes the draft server-side.
+   */
+  onWhiteboardCleared?: () => void;
   disabled?: boolean;
 } & MarkdownUploadProps;
 
@@ -64,6 +70,7 @@ export function ResponseDefaultsDialog({
   templateSlot,
   whiteboardSlot,
   onCancel,
+  onWhiteboardCleared,
   disabled,
   onImageUpload,
   iframeAllowedUrls,
@@ -207,36 +214,44 @@ export function ResponseDefaultsDialog({
           {type === 'whiteboard' && (
             <div className="space-y-1.5">
               <Label className="text-body text-foreground">{t('responseDefaults.defaultWhiteboard')}</Label>
-              {whiteboardSlot ? (
-                whiteboardSlot({ draft, applyDraft })
-              ) : (
-                <div className="flex items-center justify-between gap-3 rounded-md border p-3">
-                  <span className="text-body text-muted-foreground">
-                    {draft.whiteboardContentAvailable
-                      ? t('responseDefaults.whiteboardConfigured')
-                      : t('responseDefaults.whiteboardNotConfigured')}
-                  </span>
+              {/* One row owns the default-whiteboard state and both of its actions. The
+                  authoring surface is a slot because only the integration layer can
+                  materialize a server-owned draft, but Clear stays here so it is offered
+                  whenever a default exists — while creating the callout and while editing
+                  one that already has a default. */}
+              <div className="flex items-center justify-between gap-3 rounded-md border p-3">
+                <span className="text-body text-muted-foreground">
+                  {draft.whiteboardContentAvailable
+                    ? t('responseDefaults.whiteboardConfigured')
+                    : t('responseDefaults.whiteboardNotConfigured')}
+                </span>
+                <div className="flex items-center gap-2">
+                  {whiteboardSlot?.({ draft, applyDraft })}
                   {draft.whiteboardContentAvailable && (
                     <Button
                       variant="outline"
                       size="sm"
                       disabled={disabled}
-                      onClick={() =>
+                      onClick={() => {
                         setDraft(prev => ({
                           ...prev,
                           sourceWhiteboardId: undefined,
                           sourceCalloutId: undefined,
+                          // A retained draft handle would win over clearWhiteboardContent in
+                          // the submit mappers, so clearing has to drop it too.
+                          whiteboardDraft: undefined,
                           whiteboardContentAvailable: false,
                           clearWhiteboardContent: true,
-                        }))
-                      }
+                        }));
+                        onWhiteboardCleared?.();
+                      }}
                     >
                       <Trash2 className="size-4" aria-hidden="true" />
                       {t('responseDefaults.clearWhiteboard')}
                     </Button>
                   )}
                 </div>
-              )}
+              </div>
             </div>
           )}
         </div>

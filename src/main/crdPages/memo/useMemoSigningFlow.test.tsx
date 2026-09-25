@@ -124,6 +124,91 @@ describe('useMemoSigningFlow', () => {
     expect(navigate).toHaveBeenCalledWith('https://cleverbase.example/authorize');
   });
 
+  it.each([
+    [
+      'framing',
+      {
+        userId: 'user-1',
+        memoId: 'memo-1',
+        kind: 'framing',
+        calloutId: 'callout-1',
+      },
+    ],
+    [
+      'contribution',
+      {
+        userId: 'user-1',
+        memoId: 'memo-2',
+        kind: 'contribution',
+        calloutId: 'callout-1',
+        contributionId: 'contribution-1',
+      },
+    ],
+  ] as const)('stores one minimal %s return record after continuation and before navigation', async (_kind, returnContext) => {
+    vi.restoreAllMocks();
+    window.sessionStorage.clear();
+    const authorization = deferred<string>();
+    const order: string[] = [];
+    const continueSigning = vi.fn(async () => {
+      const authorizeUrl = await authorization.promise;
+      order.push('continuation-resolved');
+      return authorizeUrl;
+    });
+    const navigate = vi.fn(() => order.push('navigate'));
+    const storagePrototype = Object.getPrototypeOf(window.sessionStorage) as Storage;
+    const originalSetItem = storagePrototype.setItem;
+    const setItem = vi.spyOn(storagePrototype, 'setItem').mockImplementation(function (this: Storage, key, value) {
+      order.push('store');
+      return originalSetItem.call(this, key, value);
+    });
+    const options = {
+      memoId: returnContext.memoId,
+      requestDurability: vi.fn(),
+      prepare: () => Promise.resolve({ attemptId: 'attempt-1', previewUrl: '/snapshot/attempt-1' }),
+      continueSigning,
+      navigate,
+      returnContext,
+    } as Parameters<typeof useMemoSigningFlow>[0] & { returnContext: typeof returnContext };
+    const { result } = renderHook(() => useMemoSigningFlow(options));
+
+    await act(() => result.current.prepare());
+    let continuation!: Promise<void>;
+    act(() => {
+      continuation = result.current.continueSigning();
+    });
+    expect(continueSigning).toHaveBeenCalledOnce();
+    expect(setItem).not.toHaveBeenCalled();
+    expect(navigate).not.toHaveBeenCalled();
+
+    await act(async () => {
+      authorization.resolve('https://cleverbase.example/authorize');
+      await continuation;
+    });
+
+    expect(setItem).toHaveBeenCalledOnce();
+    expect(setItem.mock.calls[0]?.[0]).toBe('alkemio.memo-signing-return.v1:attempt-1');
+    expect(JSON.parse(setItem.mock.calls[0]?.[1] ?? '{}')).toEqual({
+      version: 1,
+      expiresAt: expect.any(Number),
+      attemptId: 'attempt-1',
+      ...returnContext,
+    });
+    expect(Object.keys(JSON.parse(setItem.mock.calls[0]?.[1] ?? '{}')).sort()).toEqual(
+      [
+        'version',
+        'expiresAt',
+        'attemptId',
+        'userId',
+        'memoId',
+        'kind',
+        'calloutId',
+        ...('contributionId' in returnContext ? ['contributionId'] : []),
+      ].sort()
+    );
+    expect(order).toEqual(['continuation-resolved', 'store', 'navigate']);
+    setItem.mockRestore();
+  });
+
   it('surfaces a consumed continuation failure without navigating', async () => {
     const continueSigning = vi.fn(() => Promise.reject(new Error('gateway unavailable')));
     const navigate = vi.fn();

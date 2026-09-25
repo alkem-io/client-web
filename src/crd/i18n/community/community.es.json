@@ -57,12 +57,24 @@
         "loadingLabel": "Cargando contribuidores virtuales…"
       },
       "resultsSummary_one": "{{count}} invitación procesada para {{spaceName}}.",
-      "resultsSummary_other": "{{count}} invitaciones procesadas para {{spaceName}}."
+      "resultsSummary_other": "{{count}} invitaciones procesadas para {{spaceName}}.",
+      "associates": {
+        "title": "Invitar asociados a \"{{organizationName}}\"",
+        "searchHint": "Buscar un usuario registrado para invitarlo como asociado",
+        "searchPlaceholder": "Nombre de usuario…",
+        "searchAriaLabel": "Buscar usuarios por nombre",
+        "noResultsLabel": "No hay usuarios coincidentes",
+        "loadingLabel": "Cargando usuarios…",
+        "defaultWelcomeMessage": "Hola, nos gustaría invitarte a asociarte con {{organizationName}}. Haz clic abajo para aceptar o rechazar la invitación.",
+        "rolePopoverHelper": "Asociado siempre se concede al aceptar la invitación."
+      }
     },
     "roles": {
       "Member": "Member",
       "Lead": "Lead",
-      "Admin": "Admin"
+      "Admin": "Admin",
+      "Associate": "Asociado",
+      "Owner": "Propietario"
     },
     "errors": {
       "invalidEmail": "No es una dirección de correo electrónico válida.",
@@ -78,7 +90,9 @@
       "error": "Error al enviar la invitación.",
       "notAcceptingInvitations": "Esta organización no acepta invitaciones a Spaces",
       "leadLimitReached": "Se ha alcanzado el límite del rol Lead para organizaciones",
-      "sentNoAdministrators": "Invitación enviada — esta organización actualmente no tiene administradores a quienes notificar, por lo que se ha notificado al soporte de la plataforma"
+      "sentNoAdministrators": "Invitación enviada — esta organización actualmente no tiene administradores a quienes notificar, por lo que se ha notificado al soporte de la plataforma",
+      "extraRoleLimitReached": "Se ha alcanzado el límite del rol ofrecido",
+      "alreadyAssociate": "Ya es asociado"
     },
     "toast": {
       "someFailed": "No se pudieron enviar {{count}} invitaciones — consulta los resultados para más detalles."

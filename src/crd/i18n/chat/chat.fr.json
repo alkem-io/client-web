@@ -55,7 +55,9 @@
     "emptyHint": "Commencez un nouveau message pour discuter.",
     "noResults": "Aucune conversation ne correspond à votre recherche.",
     "loading": "Chargement des conversations",
-    "draft": "Brouillon :"
+    "draft": "Brouillon :",
+    "attachmentPreview_one": "{{count}} pièce jointe",
+    "attachmentPreview_other": "{{count}} pièces jointes"
   },
   "guidance": {
     "beta": "Bêta",

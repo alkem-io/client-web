@@ -33,5 +33,61 @@ query UserPendingMemberships {
     communityInvitations(states: ["invited"]) {
       ...InvitationData
     }
+    organizationInvitations(states: ["invited"]) {
+      ...OrgPendingInvitationData
+    }
+    organizationApplications(states: ["new"]) {
+      ...OrgPendingApplicationData
+    }
+  }
+}
+
+fragment OrgPendingInvitationData on OrganizationInvitationResult {
+  id
+  invitation {
+    id
+    extraRoles
+    welcomeMessage
+    createdDate
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+    nextEvents
+  }
+  organization {
+    id
+    profile {
+      id
+      displayName
+      url
+      avatar: visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
+  }
+}
+
+fragment OrgPendingApplicationData on OrganizationApplicationResult {
+  id
+  application {
+    id
+    state
+    createdDate
+    nextEvents
+  }
+  organization {
+    id
+    profile {
+      id
+      displayName
+      url
+      avatar: visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
   }
 }

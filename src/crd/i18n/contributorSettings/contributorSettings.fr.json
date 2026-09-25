@@ -94,9 +94,9 @@
         "profile": "Profil",
         "account": "Compte",
         "community": "Associés",
-        "authorization": "Autorisation",
         "settings": "Paramètres",
-        "invitations": "Invitations"
+        "invitations": "Invitations",
+        "authorization": "Autorisation"
       },
       "vc": {
         "profile": "Profil",
@@ -534,7 +534,9 @@
           "conversationMessageDirect": "Recevoir une notification lorsque quelqu'un m'envoie un message de chat direct (1:1)",
           "conversationMessageGroup": "Recevoir une notification lorsque quelqu'un publie dans un chat de groupe dont je suis membre",
           "membershipInvitationReceived": "Recevoir une notification lorsque quelqu'un m'invite à rejoindre une communauté",
-          "membershipCommunityJoined": "Recevoir une notification lorsque je rejoins un nouveau Space"
+          "membershipCommunityJoined": "Recevoir une notification lorsque je rejoins un nouveau Space",
+          "membershipOrganizationAssociateInvitationReceived": "Recevoir une notification lorsque je suis invité(e) à m’associer à une organisation",
+          "membershipOrganizationAssociateApplicationDecided": "Recevoir une notification lorsqu’une organisation statue sur ma candidature d’association"
         },
         "platform": {
           "forumDiscussionComment": "Recevoir une notification lorsqu'un nouveau commentaire est ajouté à une discussion que je suis",
@@ -550,7 +552,10 @@
         "organization": {
           "adminMentioned": "Recevoir une notification lorsque mon organisation est mentionnée",
           "adminMessageReceived": "Recevoir les messages directs adressés à mon organisation",
-          "adminSpaceCommunityInvitation": "Recevoir une notification lorsqu'une organisation que j'administre est invitée à rejoindre un espace, et lorsqu'elle le rejoint"
+          "adminSpaceCommunityInvitation": "Recevoir une notification lorsqu'une organisation que j'administre est invitée à rejoindre un espace, et lorsqu'elle le rejoint",
+          "adminAssociateInvitationResponse": "Recevoir une notification lorsque quelqu’un répond à une invitation à s’associer à une organisation que j’administre",
+          "adminAssociateApplicationReceived": "Recevoir une notification lorsque quelqu’un postule pour s’associer à une organisation que j’administre",
+          "adminAssociateJoined": "Recevoir une notification lorsque quelqu’un rejoint en tant qu’associé une organisation que j’administre"
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Recevoir une notification lorsqu'un manager VC est invité à rejoindre une communauté"
@@ -762,7 +767,7 @@
       }
     },
     "community": {
-      "pageTitle": "Communauté",
+      "pageTitle": "Associés",
       "title": "Associés",
       "description": "Gérez qui est associé à cette organisation. Ajoutez de nouveaux associés depuis la liste des utilisateurs disponibles ; retirer un associé révoque son rôle dans l'organisation.",
       "currentAssociatesTitle": "Associés actuels",
@@ -778,6 +783,97 @@
       "removeConfirmAssociate": "Retirer {{name}} en tant qu'associé",
       "removeSuccess": "Associé retiré",
       "removeError": "Échec — réessayez"
+    },
+    "settings": {
+      "pageTitle": "Paramètres",
+      "title": "Paramètres de l'organisation",
+      "membership": {
+        "title": "Adhésion",
+        "allowSpaceInvitationsLabel": "Autoriser les espaces à inviter cette organisation",
+        "allowSpaceInvitationsCaption": "Une fois activé, les administrateurs d'espace peuvent inviter cette organisation à rejoindre leur communauté d'espace.",
+        "allowDomainLabel": "Autoriser les utilisateurs correspondant à ce domaine à rejoindre",
+        "allowDomainCaption": "Les utilisateurs dont le domaine de messagerie correspond au domaine vérifié de cette organisation peuvent rejoindre en tant qu’associé en un clic.",
+        "allowApplicationsLabel": "Autoriser les utilisateurs à postuler pour devenir associé",
+        "allowApplicationsCaption": "Lorsque désactivé, le profil public de l’organisation n’offre aucune action de candidature ; les candidatures en attente restent listées et décidables."
+      },
+      "privacy": {
+        "title": "Confidentialité",
+        "contributionRolesLabel": "Afficher publiquement les rôles de contribution",
+        "contributionRolesCaption": "Lorsque activé, les attributions de rôles de l'organisation (Administrateur, Propriétaire, Associé) sont visibles sur le profil public."
+      },
+      "errorToast": "Échec de l'enregistrement de la préférence — réessayez"
+    },
+    "invitations": {
+      "pageTitle": "Invitations",
+      "title": "Invitations aux espaces",
+      "empty": "Aucune invitation à un espace en attente.",
+      "invitedBy": "Invité par {{name}}",
+      "invitedByUnknown": "Invité par un administrateur d'espace",
+      "date": "Date",
+      "role": "Rôle",
+      "roleMember": "Membre",
+      "roleMemberLead": "Membre + Lead",
+      "spacesToJoin": "L'acceptation entraîne l'adhésion à : {{spaces}}",
+      "accept": "Accepter",
+      "decline": "Refuser",
+      "acceptConfirmTitle": "Accepter cette invitation ?",
+      "acceptConfirmBody": "Votre organisation rejoindra {{spaceName}} en tant que {{role}}.",
+      "acceptConfirmAction": "Accepter l'invitation",
+      "declineConfirmTitle": "Refuser cette invitation ?",
+      "declineConfirmBody": "{{spaceName}} sera informé que votre organisation a refusé. Cette action est irréversible — un administrateur du Space devrait envoyer une nouvelle invitation.",
+      "declineConfirmAction": "Refuser l'invitation",
+      "errorToast": "Impossible de mettre à jour l'invitation — réessayez"
+    },
+    "associates": {
+      "title": "Associés",
+      "description": "Toutes les personnes associées à cette organisation — associés, admins et propriétaires — avec la possibilité de modifier les rôles, d’inviter de nouveaux associés et de gérer les candidatures et invitations en attente.",
+      "invite": "Inviter",
+      "empty": "Aucun associé pour l’instant.",
+      "badge": {
+        "associate": "Associé",
+        "admin": "Admin",
+        "owner": "Propriétaire"
+      },
+      "editAriaLabel": "Modifier {{name}}",
+      "editor": {
+        "title": "Modifier {{name}}",
+        "description": "Modifiez les rôles que {{name}} détient dans cette organisation, ou retirez cette personne.",
+        "associateLabel": "Associé",
+        "associateCaption": "Le rôle de base — requis pour détenir également Admin ou Propriétaire.",
+        "adminLabel": "Admin",
+        "ownerLabel": "Propriétaire",
+        "remove": "Retirer de l’organisation",
+        "removeConfirmTitle": "Retirer {{name}} de l’organisation ?",
+        "removeConfirmBody": "{{name}} perdra tous les rôles qu’il/elle détient dans cette organisation.",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "removeSuccess": "{{name}} a été retiré(e) de l’organisation",
+        "removeError": "Impossible de retirer {{name}} — réessayez",
+        "saveError": "Impossible d’enregistrer les modifications — réessayez",
+        "selfAdminLocked": "Vous ne pouvez pas retirer votre propre rôle Admin ici."
+      },
+      "errors": {
+        "limitAdmin": "Une organisation peut avoir au maximum 6 admins",
+        "limitOwner": "Une organisation peut avoir au maximum 3 propriétaires",
+        "minOwner": "Une organisation doit conserver au moins un propriétaire",
+        "generic": "Une erreur est survenue — réessayez"
+      },
+      "pending": {
+        "title": "Candidatures et invitations en attente",
+        "empty": "Aucune candidature ni invitation en attente.",
+        "offeredRole": {
+          "associate": "Associé",
+          "associateAdmin": "Associé + Admin",
+          "associateOwner": "Associé + Propriétaire"
+        },
+        "rejectConfirmTitle": "Refuser la candidature de {{name}} ?",
+        "rejectConfirmBody": "{{name}} sera informé du refus et pourra postuler à nouveau plus tard.",
+        "rejectConfirm": "Refuser la candidature",
+        "revokeConfirmTitle": "Révoquer l’invitation envoyée à {{name}} ?",
+        "revokeConfirmBody": "L’invitation sera retirée. {{name}} ne pourra plus l’accepter.",
+        "revokeConfirm": "Révoquer l’invitation",
+        "actionError": "Action impossible — réessayez"
+      }
     },
     "authorization": {
       "pageTitle": "Autorisation",
@@ -811,44 +907,6 @@
       "removeSuccessAdmin": "Rôle d'administrateur retiré",
       "removeSuccessOwner": "Rôle de propriétaire retiré",
       "removeError": "Échec du retrait du rôle — réessayez"
-    },
-    "settings": {
-      "pageTitle": "Paramètres",
-      "title": "Paramètres de l'organisation",
-      "membership": {
-        "title": "Adhésion",
-        "allowDomainLabel": "Autoriser les utilisateurs ayant le domaine de l'organisation à rejoindre",
-        "allowDomainCaption": "Lorsque activé, les utilisateurs dont le domaine de l'e-mail correspond à celui de l'organisation peuvent rejoindre sans invitation.",
-        "allowSpaceInvitationsLabel": "Autoriser les espaces à inviter cette organisation",
-        "allowSpaceInvitationsCaption": "Une fois activé, les administrateurs d'espace peuvent inviter cette organisation à rejoindre leur communauté d'espace."
-      },
-      "privacy": {
-        "title": "Confidentialité",
-        "contributionRolesLabel": "Afficher publiquement les rôles de contribution",
-        "contributionRolesCaption": "Lorsque activé, les attributions de rôles de l'organisation (Administrateur, Propriétaire, Associé) sont visibles sur le profil public."
-      },
-      "errorToast": "Échec de l'enregistrement de la préférence — réessayez"
-    },
-    "invitations": {
-      "pageTitle": "Invitations",
-      "title": "Invitations aux espaces",
-      "empty": "Aucune invitation à un espace en attente.",
-      "invitedBy": "Invité par {{name}}",
-      "invitedByUnknown": "Invité par un administrateur d'espace",
-      "date": "Date",
-      "role": "Rôle",
-      "roleMember": "Membre",
-      "roleMemberLead": "Membre + Lead",
-      "spacesToJoin": "L'acceptation entraîne l'adhésion à : {{spaces}}",
-      "accept": "Accepter",
-      "decline": "Refuser",
-      "acceptConfirmTitle": "Accepter cette invitation ?",
-      "acceptConfirmBody": "Votre organisation rejoindra {{spaceName}} en tant que {{role}}.",
-      "acceptConfirmAction": "Accepter l'invitation",
-      "declineConfirmTitle": "Refuser cette invitation ?",
-      "declineConfirmBody": "{{spaceName}} sera informé que votre organisation a refusé. Cette action est irréversible — un administrateur du Space devrait envoyer une nouvelle invitation.",
-      "declineConfirmAction": "Refuser l'invitation",
-      "errorToast": "Impossible de mettre à jour l'invitation — réessayez"
     }
   },
   "vc": {

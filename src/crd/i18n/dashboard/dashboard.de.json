@@ -197,6 +197,18 @@
       "accept": "Annehmen",
       "role": "Rolle",
       "spacesToJoin": "Bei Annahme wird beigetreten zu: {{spaces}}"
+    },
+    "orgAssociateInvitationsSection": "Einladungen als Assoziierter",
+    "orgAssociateApplicationsSection": "Bewerbungen als Assoziierter",
+    "orgAssociateCard": {
+      "badge": "Organisation",
+      "role": {
+        "associate": "Assoziiert",
+        "associateAdmin": "Assoziiert + Admin",
+        "associateOwner": "Assoziiert + Eigentümer"
+      },
+      "pendingLabel": "Ausstehend",
+      "invitedBy": "Eingeladen von {{name}}"
     }
   },
   "nonActivity": {

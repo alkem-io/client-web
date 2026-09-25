@@ -8,8 +8,13 @@
       "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time.",
       "NOT_SUPPORTED": "Not supported: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
+      "UNSPECIFIED": "An unexpected error occurred. Please try again.",
       "generic": "An error occurred",
       "generic-with-code": "An error occurred with code {{code}}",
+      "network": {
+        "session_store_unavailable": "The service is temporarily unavailable. Please try again in a moment.",
+        "generic": "A connection problem occurred. Please check your connection and try again."
+      },
       "support": {
         "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
         "emailBodyGeneric": "Hello,\n\nI encountered an error while using Alkemio.\n\nPlease help me resolve this issue.\n\nThank you.",
@@ -917,9 +922,47 @@
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
           "subject": "Your $t(common.organization) {{organizationName}} has joined {{spaceName}}",
           "description": "No further action is needed."
+        },
+        "USER_ORGANIZATION_ASSOCIATE_INVITATION": {
+          "subject": "{{triggeredByName}} invited you to associate with {{organizationName}}",
+          "description": "As {{associateRole}}."
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED": {
+          "subject": "{{triggeredByName}} accepted the invitation to associate with {{organizationName}}",
+          "description": "{{triggeredByName}} is now an associate of {{organizationName}}, of which you are an $t(common.admin).{{withheld}}"
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} declined the invitation to associate with {{organizationName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_APPLICATION": {
+          "subject": "{{triggeredByName}} applied to associate with {{organizationName}}",
+          "description": "Review the application on the $t(common.organization) $t(common.settings)"
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_APPROVED": {
+          "subject": "Your application to associate with {{organizationName}} was approved",
+          "description": ""
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_DECLINED": {
+          "subject": "Your application to associate with {{organizationName}} was declined",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
+          "subject": "\"{{memberName}}\" joined {{organizationName}} as an associate",
+          "description": "{{memberName}} has joined {{organizationName}}, of which you are an $t(common.admin)."
         }
       },
-      "spacesToJoin": "Accepting joins: {{spaces}}"
+      "spacesToJoin": "Accepting joins: {{spaces}}",
+      "associateRole": {
+        "associate": "Associate",
+        "associateAdmin": "Associate + Admin",
+        "associateOwner": "Associate + Owner"
+      },
+      "withheldRole": {
+        "admin": "Admin",
+        "owner": "Owner"
+      },
+      "associateRoleWithheld": " The {{role}} role could not be granted."
     },
     "profile": {
       "fields": {
@@ -1523,5 +1566,13 @@
     "archived": "Archived",
     "demo": "Demo",
     "inactive": "Inactive"
+  },
+  "messageAttachments": {
+    "listLabel": "Attachments",
+    "imageAlt": "Attached image: {{name}}",
+    "download": "Download {{name}}",
+    "unavailableHint": "This file could not be loaded. Download it to view.",
+    "unavailableNoDownload": "This file is unavailable.",
+    "loading": "Loading attachment"
   }
 }

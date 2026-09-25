@@ -50,6 +50,16 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
               inApp
               push
             }
+            organizationAssociateInvitationReceived {
+              email
+              inApp
+              push
+            }
+            organizationAssociateApplicationDecided {
+              email
+              inApp
+              push
+            }
           }
         }
         space {
@@ -192,6 +202,21 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
             push
           }
           adminSpaceCommunityInvitation {
+            email
+            inApp
+            push
+          }
+          adminAssociateInvitationResponse {
+            email
+            inApp
+            push
+          }
+          adminAssociateApplicationReceived {
+            email
+            inApp
+            push
+          }
+          adminAssociateJoined {
             email
             inApp
             push

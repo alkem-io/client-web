@@ -47,6 +47,8 @@ export interface UserNotificationSettings {
   membership?: {
     spaceCommunityInvitationReceived?: NotificationChannels;
     spaceCommunityJoined?: NotificationChannels;
+    organizationAssociateInvitationReceived?: NotificationChannels;
+    organizationAssociateApplicationDecided?: NotificationChannels;
   };
 }
 
@@ -55,6 +57,9 @@ export interface OrganizationNotificationSettings {
   adminMentioned?: NotificationChannels;
   adminMessageReceived?: NotificationChannels;
   adminSpaceCommunityInvitation?: NotificationChannels;
+  adminAssociateInvitationResponse?: NotificationChannels;
+  adminAssociateApplicationReceived?: NotificationChannels;
+  adminAssociateJoined?: NotificationChannels;
 }
 
 // Platform notification settings (Forum)

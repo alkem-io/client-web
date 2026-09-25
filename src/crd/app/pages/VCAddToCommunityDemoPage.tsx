@@ -89,6 +89,7 @@ export function VCAddToCommunityDemoPage() {
             parentNotAuthorized: '',
             notAcceptingInvitations: '',
             leadLimitReached: '',
+            extraRoleLimitReached: '',
             error: '',
           },
         }}

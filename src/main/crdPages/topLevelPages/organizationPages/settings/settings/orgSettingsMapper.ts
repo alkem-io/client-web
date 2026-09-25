@@ -7,6 +7,8 @@ export type OrgSettingsMappedData = {
   contributionRolesPubliclyVisible: boolean;
   /** `settings.membership.allowSpaceInvitations` — server backfill/`@AfterLoad` default is `true`; the client mirrors that default (D10, contract §5) rather than defaulting to `false` like the other switches. */
   allowSpaceInvitations: boolean;
+  /** `settings.membership.allowApplications` — server `@AfterLoad` default is `true`; the client mirrors that default. Read here so the Settings tab's other mutations can pass the current value through untouched; the switch itself lives on the Associates tab. */
+  allowApplications: boolean;
 };
 
 /**
@@ -20,5 +22,6 @@ export const mapOrgSettings = (data: OrganizationSettingsQuery | undefined): Org
     allowUsersMatchingDomainToJoin: settings?.membership?.allowUsersMatchingDomainToJoin ?? false,
     contributionRolesPubliclyVisible: settings?.privacy?.contributionRolesPubliclyVisible ?? false,
     allowSpaceInvitations: settings?.membership?.allowSpaceInvitations ?? true,
+    allowApplications: settings?.membership?.allowApplications ?? true,
   };
 };

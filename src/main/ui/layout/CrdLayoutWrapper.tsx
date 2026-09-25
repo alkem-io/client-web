@@ -6,6 +6,7 @@ import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErr
 import useNavigate from '@/core/routing/useNavigate';
 import { BreadcrumbsTrail } from '@/crd/components/common/BreadcrumbsTrail';
 import { DownNoticeBanner } from '@/crd/components/common/DownNoticeBanner';
+import { MobileBreadcrumbs } from '@/crd/components/common/MobileBreadcrumbs';
 import { CrdLayout } from '@/crd/layouts/CrdLayout';
 import { MarkdownConfigProvider } from '@/crd/lib/markdownConfig';
 import {
@@ -21,6 +22,8 @@ import { SearchProvider, useSearch } from '@/main/search/SearchContext';
 import { BreadcrumbsProvider, useBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { BannerOverlayProvider, useBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { LayoutWidthProvider, useSpaceFullWidthActive } from '@/main/ui/layout/LayoutWidthContext';
+import { MemoSigningReturnProvider } from '@/main/ui/layout/MemoSigningReturnContext';
+import { MemoSigningReturnDialogConnector } from '@/main/ui/layout/MemoSigningReturnDialogConnector';
 import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
 import { useCrdUser } from '@/main/ui/layout/useCrdUser';
 import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
@@ -98,7 +101,14 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         unreadMessagesCount={unreadMessagesCount}
         languages={languages}
         currentLanguage={currentLanguage}
-        breadcrumbs={breadcrumbItems.length > 0 ? <BreadcrumbsTrail items={breadcrumbItems} /> : undefined}
+        breadcrumbs={
+          breadcrumbItems.length > 0 ? (
+            <>
+              <BreadcrumbsTrail items={breadcrumbItems} />
+              <MobileBreadcrumbs items={breadcrumbItems} homeHref={navigationHrefs.home} />
+            </>
+          ) : undefined
+        }
         overlayBanner={overlayBanner}
         topBanner={downNoticeVisible ? <DownNoticeBanner onDismiss={dismissDownNotice} /> : undefined}
         fullWidth={headerFullWidth}
@@ -127,6 +137,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
       <Suspense fallback={null}>
         <CrdSearchOverlay />
       </Suspense>
+      <MemoSigningReturnDialogConnector />
     </MarkdownConfigProvider>
   );
 }
@@ -139,7 +150,9 @@ export function CrdLayoutWrapper({ children }: { children?: ReactNode } = {}) {
       <BannerOverlayProvider>
         <LayoutWidthProvider>
           <SearchProvider>
-            <CrdLayoutConnector>{children}</CrdLayoutConnector>
+            <MemoSigningReturnProvider>
+              <CrdLayoutConnector>{children}</CrdLayoutConnector>
+            </MemoSigningReturnProvider>
           </SearchProvider>
         </LayoutWidthProvider>
       </BannerOverlayProvider>

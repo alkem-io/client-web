@@ -8,10 +8,20 @@ import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '@/crd/primitives/dialog';
 
 export type ApplicationQuestion = {
+  /** The form's own question text — persisted as the answer's name. */
   question: string;
+  /** Shown as the field label instead of `question` when set; `question` stays the persisted name. */
+  label?: string;
   required: boolean;
   maxLength: number;
   sortOrder?: number;
+};
+
+/** Consumer copy overrides. Every field defaults to the Space wording. */
+export type ApplicationFormDialogCopy = {
+  title?: string;
+  subheader?: string;
+  submitLabel?: string;
 };
 
 export type ApplicationAnswer = {
@@ -36,6 +46,7 @@ type ApplicationFormDialogProps = {
   mode: 'apply' | 'join';
   submitting: boolean;
   onSubmit: (answers: ApplicationAnswer[]) => void;
+  copy?: ApplicationFormDialogCopy;
   className?: string;
 };
 
@@ -58,6 +69,7 @@ export function ApplicationFormDialog({
   mode,
   submitting,
   onSubmit,
+  copy,
   className,
 }: ApplicationFormDialogProps) {
   const { t } = useTranslation('crd-space');
@@ -91,17 +103,23 @@ export function ApplicationFormDialog({
   const isValid = Object.keys(errors).length === 0;
   const isJoinMode = mode === 'join';
 
-  const title = isJoinMode
-    ? t('apply.joinTitle', { name: communityName ?? '' })
-    : t('apply.applyTitle', { name: communityName ?? '' });
+  const title =
+    copy?.title ??
+    (isJoinMode
+      ? t('apply.joinTitle', { name: communityName ?? '' })
+      : t('apply.applyTitle', { name: communityName ?? '' }));
 
-  const subheader = isJoinMode
-    ? t('apply.subheaderJoin', { name: communityName ?? '' })
-    : formDescription
-      ? null
-      : t('apply.subheader');
+  const subheader =
+    copy?.subheader ??
+    (isJoinMode
+      ? t('apply.subheaderJoin', { name: communityName ?? '' })
+      : formDescription
+        ? null
+        : t('apply.subheader'));
 
-  const submitLabel = submitting ? t('apply.processing') : isJoinMode ? t('apply.join') : t('apply.apply');
+  const submitLabel = submitting
+    ? t('apply.processing')
+    : (copy?.submitLabel ?? (isJoinMode ? t('apply.join') : t('apply.apply')));
 
   const handleSubmit = () => {
     setSubmitAttempted(true);
@@ -125,11 +143,7 @@ export function ApplicationFormDialog({
         <div className="px-6 py-4 border-b border-border shrink-0">
           <DialogTitle>{title}</DialogTitle>
           {subheader && <DialogDescription className="mt-1">{subheader}</DialogDescription>}
-          {!subheader && (
-            <DialogDescription className="sr-only">
-              {t('apply.applyTitle', { name: communityName ?? '' })}
-            </DialogDescription>
-          )}
+          {!subheader && <DialogDescription className="sr-only">{title}</DialogDescription>}
         </div>
 
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
@@ -142,7 +156,7 @@ export function ApplicationFormDialog({
               return (
                 <div key={q.question} className="space-y-1.5">
                   <label htmlFor={fieldId} className="block text-body-emphasis text-foreground">
-                    {q.question}
+                    {q.label ?? q.question}
                     {q.required && (
                       <span aria-hidden="true" className="text-destructive ml-1">
                         *

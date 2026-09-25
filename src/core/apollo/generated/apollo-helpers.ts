@@ -1383,6 +1383,7 @@ export type ConversationKeySpecifier = (
   | 'members'
   | 'messaging'
   | 'room'
+  | 'storageBucket'
   | 'updatedDate'
   | ConversationKeySpecifier
 )[];
@@ -1393,6 +1394,7 @@ export type ConversationFieldPolicy = {
   members?: FieldPolicy<any> | FieldReadFunction<any>;
   messaging?: FieldPolicy<any> | FieldReadFunction<any>;
   room?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ConversationCreatedEventKeySpecifier = (
@@ -2031,6 +2033,34 @@ export type InAppNotificationPayloadKeySpecifier = ('type' | InAppNotificationPa
 export type InAppNotificationPayloadFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type InAppNotificationPayloadOrganizationAssociateActorKeySpecifier = (
+  | 'actor'
+  | 'application'
+  | 'extraRolesWithheld'
+  | 'invitation'
+  | 'organization'
+  | 'type'
+  | InAppNotificationPayloadOrganizationAssociateActorKeySpecifier
+)[];
+export type InAppNotificationPayloadOrganizationAssociateActorFieldPolicy = {
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
+  application?: FieldPolicy<any> | FieldReadFunction<any>;
+  extraRolesWithheld?: FieldPolicy<any> | FieldReadFunction<any>;
+  invitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  organization?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type InAppNotificationPayloadOrganizationAssociateInvitationKeySpecifier = (
+  | 'invitation'
+  | 'organization'
+  | 'type'
+  | InAppNotificationPayloadOrganizationAssociateInvitationKeySpecifier
+)[];
+export type InAppNotificationPayloadOrganizationAssociateInvitationFieldPolicy = {
+  invitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  organization?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type InAppNotificationPayloadOrganizationMessageDirectKeySpecifier = (
   | 'message'
   | 'organization'
@@ -2439,6 +2469,7 @@ export type InvitationKeySpecifier = (
   | 'createdBy'
   | 'createdDate'
   | 'extraRoles'
+  | 'extraRolesWithheld'
   | 'id'
   | 'invitedToParent'
   | 'isFinalized'
@@ -2457,6 +2488,7 @@ export type InvitationFieldPolicy = {
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   extraRoles?: FieldPolicy<any> | FieldReadFunction<any>;
+  extraRolesWithheld?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
   isFinalized?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2935,6 +2967,9 @@ export type MeQueryResultsKeySpecifier = (
   | 'mySpaces'
   | 'notifications'
   | 'notificationsUnreadCount'
+  | 'organizationApplications'
+  | 'organizationInvitations'
+  | 'organizationInvitationsCount'
   | 'spaceMembershipsFlat'
   | 'spaceMembershipsHierarchical'
   | 'user'
@@ -2951,6 +2986,9 @@ export type MeQueryResultsFieldPolicy = {
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   notifications?: FieldPolicy<any> | FieldReadFunction<any>;
   notificationsUnreadCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizationApplications?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizationInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizationInvitationsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMembershipsFlat?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMembershipsHierarchical?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3032,6 +3070,7 @@ export type MemoSigningPrepareResultFieldPolicy = {
   previewUrl?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageKeySpecifier = (
+  | 'attachments'
   | 'id'
   | 'message'
   | 'reactions'
@@ -3041,12 +3080,32 @@ export type MessageKeySpecifier = (
   | MessageKeySpecifier
 )[];
 export type MessageFieldPolicy = {
+  attachments?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   message?: FieldPolicy<any> | FieldReadFunction<any>;
   reactions?: FieldPolicy<any> | FieldReadFunction<any>;
   sender?: FieldPolicy<any> | FieldReadFunction<any>;
   threadID?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MessageAttachmentKeySpecifier = (
+  | 'displayName'
+  | 'height'
+  | 'id'
+  | 'mimeType'
+  | 'size'
+  | 'url'
+  | 'width'
+  | MessageAttachmentKeySpecifier
+)[];
+export type MessageAttachmentFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  height?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  mimeType?: FieldPolicy<any> | FieldReadFunction<any>;
+  size?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
+  width?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageDetailsKeySpecifier = ('message' | 'parent' | 'room' | MessageDetailsKeySpecifier)[];
 export type MessageDetailsFieldPolicy = {
@@ -3642,6 +3701,7 @@ export type OrganizationKeySpecifier = (
   | 'id'
   | 'legalEntityName'
   | 'metrics'
+  | 'myAssociateEligibility'
   | 'nameID'
   | 'profile'
   | 'roleSet'
@@ -3666,6 +3726,7 @@ export type OrganizationFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   legalEntityName?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
+  myAssociateEligibility?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSet?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3676,17 +3737,52 @@ export type OrganizationFieldPolicy = {
   verification?: FieldPolicy<any> | FieldReadFunction<any>;
   website?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type OrganizationApplicationResultKeySpecifier = (
+  | 'application'
+  | 'id'
+  | 'organization'
+  | OrganizationApplicationResultKeySpecifier
+)[];
+export type OrganizationApplicationResultFieldPolicy = {
+  application?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  organization?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type OrganizationAssociateEligibilityKeySpecifier = (
+  | 'canApply'
+  | 'canJoinDirectly'
+  | 'reason'
+  | OrganizationAssociateEligibilityKeySpecifier
+)[];
+export type OrganizationAssociateEligibilityFieldPolicy = {
+  canApply?: FieldPolicy<any> | FieldReadFunction<any>;
+  canJoinDirectly?: FieldPolicy<any> | FieldReadFunction<any>;
+  reason?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type OrganizationInvitationResultKeySpecifier = (
+  | 'id'
+  | 'invitation'
+  | 'organization'
+  | OrganizationInvitationResultKeySpecifier
+)[];
+export type OrganizationInvitationResultFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  invitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  organization?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type OrganizationSettingsKeySpecifier = ('membership' | 'privacy' | OrganizationSettingsKeySpecifier)[];
 export type OrganizationSettingsFieldPolicy = {
   membership?: FieldPolicy<any> | FieldReadFunction<any>;
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganizationSettingsMembershipKeySpecifier = (
+  | 'allowApplications'
   | 'allowSpaceInvitations'
   | 'allowUsersMatchingDomainToJoin'
   | OrganizationSettingsMembershipKeySpecifier
 )[];
 export type OrganizationSettingsMembershipFieldPolicy = {
+  allowApplications?: FieldPolicy<any> | FieldReadFunction<any>;
   allowSpaceInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
   allowUsersMatchingDomainToJoin?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -5840,12 +5936,18 @@ export type UserSettingsNotificationChannelsFieldPolicy = {
   push?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationOrganizationKeySpecifier = (
+  | 'adminAssociateApplicationReceived'
+  | 'adminAssociateInvitationResponse'
+  | 'adminAssociateJoined'
   | 'adminMentioned'
   | 'adminMessageReceived'
   | 'adminSpaceCommunityInvitation'
   | UserSettingsNotificationOrganizationKeySpecifier
 )[];
 export type UserSettingsNotificationOrganizationFieldPolicy = {
+  adminAssociateApplicationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminAssociateInvitationResponse?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminAssociateJoined?: FieldPolicy<any> | FieldReadFunction<any>;
   adminMentioned?: FieldPolicy<any> | FieldReadFunction<any>;
   adminMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   adminSpaceCommunityInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5949,11 +6051,15 @@ export type UserSettingsNotificationUserFieldPolicy = {
   messageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationUserMembershipKeySpecifier = (
+  | 'organizationAssociateApplicationDecided'
+  | 'organizationAssociateInvitationReceived'
   | 'spaceCommunityInvitationReceived'
   | 'spaceCommunityJoined'
   | UserSettingsNotificationUserMembershipKeySpecifier
 )[];
 export type UserSettingsNotificationUserMembershipFieldPolicy = {
+  organizationAssociateApplicationDecided?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizationAssociateInvitationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceCommunityInvitationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceCommunityJoined?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -6959,6 +7065,20 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | InAppNotificationPayloadKeySpecifier | (() => undefined | InAppNotificationPayloadKeySpecifier);
     fields?: InAppNotificationPayloadFieldPolicy;
   };
+  InAppNotificationPayloadOrganizationAssociateActor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InAppNotificationPayloadOrganizationAssociateActorKeySpecifier
+      | (() => undefined | InAppNotificationPayloadOrganizationAssociateActorKeySpecifier);
+    fields?: InAppNotificationPayloadOrganizationAssociateActorFieldPolicy;
+  };
+  InAppNotificationPayloadOrganizationAssociateInvitation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InAppNotificationPayloadOrganizationAssociateInvitationKeySpecifier
+      | (() => undefined | InAppNotificationPayloadOrganizationAssociateInvitationKeySpecifier);
+    fields?: InAppNotificationPayloadOrganizationAssociateInvitationFieldPolicy;
+  };
   InAppNotificationPayloadOrganizationMessageDirect?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -7283,6 +7403,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier);
     fields?: MessageFieldPolicy;
   };
+  MessageAttachment?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MessageAttachmentKeySpecifier | (() => undefined | MessageAttachmentKeySpecifier);
+    fields?: MessageAttachmentFieldPolicy;
+  };
   MessageDetails?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageDetailsKeySpecifier | (() => undefined | MessageDetailsKeySpecifier);
     fields?: MessageDetailsFieldPolicy;
@@ -7343,6 +7467,27 @@ export type StrictTypedTypePolicies = {
   Organization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OrganizationKeySpecifier | (() => undefined | OrganizationKeySpecifier);
     fields?: OrganizationFieldPolicy;
+  };
+  OrganizationApplicationResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | OrganizationApplicationResultKeySpecifier
+      | (() => undefined | OrganizationApplicationResultKeySpecifier);
+    fields?: OrganizationApplicationResultFieldPolicy;
+  };
+  OrganizationAssociateEligibility?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | OrganizationAssociateEligibilityKeySpecifier
+      | (() => undefined | OrganizationAssociateEligibilityKeySpecifier);
+    fields?: OrganizationAssociateEligibilityFieldPolicy;
+  };
+  OrganizationInvitationResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | OrganizationInvitationResultKeySpecifier
+      | (() => undefined | OrganizationInvitationResultKeySpecifier);
+    fields?: OrganizationInvitationResultFieldPolicy;
   };
   OrganizationSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OrganizationSettingsKeySpecifier | (() => undefined | OrganizationSettingsKeySpecifier);
