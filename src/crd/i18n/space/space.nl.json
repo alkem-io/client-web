@@ -1105,6 +1105,17 @@
     "viewMap": "Kaart",
     "expandMap": "Kaart vergroten",
     "closeMap": "Kaart sluiten",
+    "card": {
+      "taglineFallback": "Deze gebruiker heeft geen ondertitel ingevuld.",
+      "associates_one": "{{count}} geassocieerde in deze organisatie",
+      "associates_other": "{{count}} geassocieerden in deze organisatie",
+      "actions": "Acties voor {{name}}",
+      "viewProfile": "Profiel bekijken",
+      "message": "Bericht",
+      "website": "Bezoek de website van {{name}} (opent in een nieuw tabblad)",
+      "opensInNewTab": "opent in een nieuw tabblad",
+      "joined": "Lid geworden van deze Space {{date}}"
+    },
     "types": {
       "user": "Personen",
       "organization": "Organisaties",

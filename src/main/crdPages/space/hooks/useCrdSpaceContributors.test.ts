@@ -1,4 +1,5 @@
 import { renderHook, waitFor } from '@testing-library/react';
+import { useState } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ActorType, ContributorCollectionView } from '@/core/apollo/generated/graphql-schema';
 
@@ -10,8 +11,13 @@ const mockFetchByType = vi.fn();
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useContributorCollectionConfigQuery: (opts: unknown) => mockUseConfigQuery(opts),
   // Apollo's useLazyQuery returns [execute, resultObject]; the hook reads the
-  // result's `data`/`variables` to sync refetched cards, so provide both.
-  useContributorCollectionByTypeLazyQuery: () => [mockFetchByType, { data: undefined, variables: undefined }],
+  // result's `data`/`variables` to mirror a refetch of the currently-active
+  // type (see ContributorCollectionConnector.refetchMirror.test.tsx for that
+  // behaviour against a real ApolloClient), so provide both.
+  useContributorCollectionByTypeLazyQuery: () => {
+    const [state] = useState<{ data: unknown; variables: unknown }>({ data: undefined, variables: undefined });
+    return [mockFetchByType, state];
+  },
 }));
 
 import { useCrdSpaceContributors } from './useCrdSpaceContributors';

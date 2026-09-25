@@ -121,6 +121,16 @@
           }
         }
       }
+    },
+    {
+      "includes": ["**/src/crd/components/callout/ContributorCollection/ContributorCard.tsx"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "useAnchorContent": "off"
+          }
+        }
+      }
     }
   ]
 }

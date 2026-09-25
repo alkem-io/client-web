@@ -1105,6 +1105,17 @@
     "viewMap": "Mapa",
     "expandMap": "Ampliar mapa",
     "closeMap": "Cerrar mapa",
+    "card": {
+      "taglineFallback": "Este usuario no ha completado su subtítulo.",
+      "associates_one": "{{count}} asociado en esta organización",
+      "associates_other": "{{count}} asociados en esta organización",
+      "actions": "Acciones para {{name}}",
+      "viewProfile": "Ver perfil",
+      "message": "Mensaje",
+      "website": "Visitar el sitio web de {{name}} (se abre en una pestaña nueva)",
+      "opensInNewTab": "se abre en una pestaña nueva",
+      "joined": "Se unió a este espacio en {{date}}"
+    },
     "types": {
       "user": "Personas",
       "organization": "Organizaciones",

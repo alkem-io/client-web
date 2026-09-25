@@ -1925,15 +1925,25 @@ export type ContributorCollectionCounts = {
 
 export type ContributorCollectionItem = {
   __typename?: 'ContributorCollectionItem';
+  /** Organizations only. The count of platform-wide associates of the organization (distinct users holding its associate role) — the same number as the organization's 'associates' metric; NOT the number of members of this space. Null for Users and Virtual Contributors. */
+  associatesCount?: Maybe<Scalars['Int']['output']>;
   avatarUrl?: Maybe<Scalars['String']['output']>;
   displayName: Scalars['String']['output'];
   id: Scalars['UUID']['output'];
+  /** Users only. The calendar month in which the user's current membership of the space that owns this callout began ("member since"): the creation date of the member credential, truncated to the first day of the month, 00:00 UTC. Leaving and re-joining restarts it. Null for Organizations and Virtual Contributors, and for a user listed without the member role. */
+  joinedDate?: Maybe<Scalars['DateTime']['output']>;
   /** Location of the contributor; null for Virtual Contributors or when not readable. */
   location?: Maybe<ContributorLocation>;
   /** The role label for this contributor (lead/admin/member). */
   roleLabel?: Maybe<Scalars['String']['output']>;
+  /** All contributor types. The profile tagline, trimmed; null when empty. */
+  tagline?: Maybe<Scalars['String']['output']>;
+  /** All contributor types. The full tag list of the first non-empty profile tagset — Users: skills, then keywords; Organizations and Virtual Contributors: keywords, then capabilities. Never merged, never the default tagset; blank tags removed. Empty list when none. Clients decide how many to show. */
+  tags?: Maybe<Array<Scalars['String']['output']>>;
   type: ActorType;
   url?: Maybe<Scalars['String']['output']>;
+  /** Organizations only. The organization's website, trimmed; null when empty or when it is not an absolute http/https URL. Null for Users and Virtual Contributors. */
+  website?: Maybe<Scalars['String']['output']>;
 };
 
 /** The default display mode for a contributor-collection callout framing. */
@@ -39167,6 +39177,11 @@ export type ContributorCollectionByTypeQuery = {
               avatarUrl?: string | undefined;
               roleLabel?: string | undefined;
               url?: string | undefined;
+              tagline?: string | undefined;
+              tags?: Array<string> | undefined;
+              joinedDate?: Date | undefined;
+              website?: string | undefined;
+              associatesCount?: number | undefined;
               location?:
                 | {
                     __typename?: 'ContributorLocation';

@@ -1105,6 +1105,17 @@
     "viewMap": "Map",
     "expandMap": "Expand map",
     "closeMap": "Close map",
+    "card": {
+      "taglineFallback": "User has not filled in their tagline.",
+      "associates_one": "{{count}} associate in this organization",
+      "associates_other": "{{count}} associates in this organization",
+      "actions": "Actions for {{name}}",
+      "viewProfile": "View Profile",
+      "message": "Message",
+      "website": "Visit the website of {{name}} (opens in a new tab)",
+      "opensInNewTab": "opens in a new tab",
+      "joined": "Joined this space {{date}}"
+    },
     "types": {
       "user": "People",
       "organization": "Organizations",
