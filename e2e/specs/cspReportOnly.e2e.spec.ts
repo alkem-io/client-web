@@ -33,6 +33,11 @@ test.describe('content-security policy', () => {
 
   test('the shell carries the policy and a walk reports no violation', async ({ authedPage: page }) => {
     await installCspViolationCollector(page);
+    // The first /sync is the settle signal: the silent-SSO frame has done its
+    // work and the chat is connected. networkidle never arrives while /sync long-polls.
+    const matrixSynced = page.waitForRequest(
+      request => request.url().startsWith(`${MATRIX_URL}/_matrix/client/`) && request.url().includes('/sync')
+    );
 
     const response = await page.goto('/');
     const policy = response?.headers()[HEADER] ?? '';
@@ -45,10 +50,15 @@ test.describe('content-security policy', () => {
     await page.getByLabel('Notifications').first().click();
     const assistant = page.getByRole('button', { name: /assistant/i });
     if (await assistant.count()) await assistant.first().click();
-    if (WHITEBOARD_URL) await page.goto(WHITEBOARD_URL);
-    await page.waitForLoadState('networkidle');
+    await matrixSynced;
+    // The collector lives in the document, so read it before navigating away.
+    const violations = await readCspViolations(page);
+    if (WHITEBOARD_URL) {
+      await page.goto(WHITEBOARD_URL);
+      await page.locator('.excalidraw canvas').first().waitFor();
+      violations.push(...(await readCspViolations(page)));
+    }
 
-    const violations = (await readCspViolations(page)).filter(v => !isAllowed(v));
-    expect(violations).toEqual([]);
+    expect(violations.filter(v => !isAllowed(v))).toEqual([]);
   });
 });

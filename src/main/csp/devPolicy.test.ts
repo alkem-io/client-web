@@ -40,4 +40,13 @@ describe('buildDevContentSecurityPolicy', () => {
     expect(directive('connect-src')[0]).toContain('ws://localhost:3000');
     expect(directive('frame-src')[0]).toContain('https:');
   });
+
+  it('admits data: fetches for whiteboard images', () => {
+    expect(directive('connect-src')[0]).toContain('data:');
+  });
+
+  it('admits the social-login provider redirects', () => {
+    expect(directive('form-action')[0]).toContain('https://www.linkedin.com');
+    expect(directive('form-action')[0]).toContain('https://login.microsoftonline.com');
+  });
 });
