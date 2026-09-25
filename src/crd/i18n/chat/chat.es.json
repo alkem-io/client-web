@@ -55,7 +55,9 @@
     "emptyHint": "Inicia un mensaje nuevo para empezar a chatear.",
     "noResults": "Ninguna conversación coincide con tu búsqueda.",
     "loading": "Cargando conversaciones",
-    "draft": "Borrador:"
+    "draft": "Borrador:",
+    "attachmentPreview_one": "{{count}} archivo adjunto",
+    "attachmentPreview_other": "{{count}} archivos adjuntos"
   },
   "guidance": {
     "beta": "Beta",

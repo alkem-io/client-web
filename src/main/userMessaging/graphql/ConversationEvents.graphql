@@ -40,6 +40,18 @@ subscription ConversationEvents {
                 }
               }
             }
+            # Media attachments (feature 013). Selected everywhere a Message is
+            # read so the normalized cache entity is never incomplete, and so a
+            # media-only message gets a list preview instead of a blank row.
+            attachments {
+              id
+              url
+              displayName
+              mimeType
+              size
+              width
+              height
+            }
           }
         }
         members {
@@ -83,6 +95,15 @@ subscription ConversationEvents {
               displayName
             }
           }
+        }
+        attachments {
+          id
+          url
+          displayName
+          mimeType
+          size
+          width
+          height
         }
       }
     }
@@ -152,6 +173,15 @@ subscription ConversationEvents {
               displayName
             }
           }
+        }
+        attachments {
+          id
+          url
+          displayName
+          mimeType
+          size
+          width
+          height
         }
       }
     }
