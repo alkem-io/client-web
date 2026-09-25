@@ -87,7 +87,7 @@ class FakeLockManager {
   }
 }
 
-describe('multiTab (E4 — single sync ownership)', () => {
+describe('multiTab — single sync ownership', () => {
   let locks: FakeLockManager;
 
   beforeEach(() => {

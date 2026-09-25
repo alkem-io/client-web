@@ -1,11 +1,16 @@
 import { createRoot } from 'react-dom/client';
 import '@/crd/styles/crd.css';
 import './index.css';
+import { isMatrixCallbackPage, runMatrixCallbackPage } from '@/core/matrix/matrixCallbackPage';
 import Root from './root';
 import { register as registerServiceWorker, unregister as unregisterServiceWorker } from './serviceWorker';
 
-const root = createRoot(document.getElementById('root')!);
-root.render(<Root />);
+if (isMatrixCallbackPage()) {
+  void runMatrixCallbackPage();
+} else {
+  const root = createRoot(document.getElementById('root')!);
+  root.render(<Root />);
+}
 
 // `import.meta.hot` is defined ONLY under the Vite dev server. Do not use
 // `import.meta.env.PROD` here: the deployed dev/test environments are built with

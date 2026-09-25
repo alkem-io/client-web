@@ -213,7 +213,7 @@ describe('matrixCallback', () => {
       expect(sessionStorage.getItem(PENDING_SSO_KEY)).toBeNull();
     });
 
-    it('does not send credentials to homeserver (D-06)', async () => {
+    it('does not send credentials to homeserver', async () => {
       setEnv();
       setPendingFlow();
       setUrlWithToken('mlt_d06');

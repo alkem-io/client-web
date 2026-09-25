@@ -1,22 +1,18 @@
-import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
+import { type ReactNode, useEffect } from 'react';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { isAdmitted } from './matrixConfig';
 import { redactString } from './redaction';
 import { establishSession, onMessagingOpened, type SessionHandle, type SessionState } from './sessionController';
 
-interface MatrixSessionContextValue {
-  readonly state: SessionState;
-}
-
-interface MatrixDiagnostics {
+type MatrixDiagnostics = {
   readonly state: SessionState;
   readonly lastError: string | undefined;
-}
+};
 
 declare global {
   interface Window {
     /**
-     * Session diagnostics for the live proof (FR-011): current lifecycle state
+     * Session diagnostics for the live proof: current lifecycle state
      * and the last redacted error, nothing else. Present in every build in
      * which the foundation is active for an admitted user; never assigned at
      * all while the flag is off. No token material is reachable through it.
@@ -24,8 +20,6 @@ declare global {
     __alkemioMatrix?: MatrixDiagnostics;
   }
 }
-
-const MatrixSessionContext = createContext<MatrixSessionContextValue>({ state: 'idle' });
 
 /**
  * Owns the browser Matrix session lifecycle. Dormant until the current user is
@@ -35,7 +29,6 @@ const MatrixSessionContext = createContext<MatrixSessionContextValue>({ state: '
 const MatrixSessionProvider = ({ children }: { children: ReactNode }) => {
   const { userModel } = useCurrentUserContext();
   const actorId = userModel?.id;
-  const [sessionState, setSessionState] = useState<SessionState>('idle');
 
   useEffect(() => {
     if (!actorId || !isAdmitted(actorId)) {
@@ -63,9 +56,6 @@ const MatrixSessionProvider = ({ children }: { children: ReactNode }) => {
       establishing = true;
       establishSession(actorId, {
         onState: state => {
-          if (!disposed) {
-            setSessionState(state);
-          }
           updateDiagnostics({ state });
         },
         onError: message => {
@@ -80,9 +70,6 @@ const MatrixSessionProvider = ({ children }: { children: ReactNode }) => {
           handle = established;
         })
         .catch(error => {
-          if (!disposed) {
-            setSessionState('failed');
-          }
           updateDiagnostics({
             state: 'failed',
             lastError: redactString(error instanceof Error ? error.message : String(error)),
@@ -94,13 +81,10 @@ const MatrixSessionProvider = ({ children }: { children: ReactNode }) => {
       disposed = true;
       unsubscribe();
       handle?.stop();
-      setSessionState('idle');
     };
   }, [actorId]);
 
-  return <MatrixSessionContext value={{ state: sessionState }}>{children}</MatrixSessionContext>;
+  return children;
 };
 
-const useMatrixSessionContext = () => useContext(MatrixSessionContext);
-
-export { MatrixSessionProvider, useMatrixSessionContext };
+export { MatrixSessionProvider };

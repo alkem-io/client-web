@@ -3,15 +3,14 @@ import { getConfig } from './matrixConfig';
 import { clearNamespace, listStoredUserIds, loadCredentials } from './storage';
 
 /**
- * The single bound both the contract (auth-session §4) and spec FR-005 fix:
- * server-side invalidation is best-effort for this long, then abandoned.
+ * The single bound shared with the server side: server-side invalidation is best-effort for this long, then abandoned.
  * Local credential removal is not subject to it — it always completes.
  */
 const LOGOUT_TIMEOUT_MS = 3000;
 
-interface CleanupOptions {
+type CleanupOptions = {
   readonly timeoutMs?: number;
-}
+};
 
 const serverSideLogout = async (homeserverUrl: string, accessToken: string, timeoutMs: number): Promise<void> => {
   try {
@@ -47,9 +46,9 @@ const broadcastLogout = (userId: string): void => {
 };
 
 /**
- * Contract §4 for one Matrix user: bounded server-side device invalidation,
+ * Sign-out for one Matrix user: bounded server-side device invalidation,
  * unconditional local namespace removal, cross-tab logout fan-out — in that
- * order. Never throws. Also the user-switch cleanup (FR-006).
+ * order. Never throws. Also the user-switch cleanup.
  */
 const cleanupMatrixUser = async (userId: string, options: CleanupOptions = {}): Promise<void> => {
   const timeoutMs = options.timeoutMs ?? LOGOUT_TIMEOUT_MS;
@@ -66,7 +65,7 @@ const cleanupMatrixUser = async (userId: string, options: CleanupOptions = {}): 
 };
 
 /**
- * The full Alkemio sign-out hook (contract §4): stop the running client, then
+ * The full Alkemio sign-out hook: stop the running client, then
  * clean every stored Matrix identity in this profile. Runs before the logout
  * navigation proceeds; flag off ⇒ complete no-op (storage untouched).
  */
@@ -74,11 +73,17 @@ const runMatrixLogoutCleanup = async (options: CleanupOptions = {}): Promise<voi
   if (!getConfig().enabled) {
     return;
   }
-  stopActiveSession();
+  const releaseSyncLock = stopActiveSession();
   resetMessagingActivation();
-  const userIds = await listStoredUserIds();
-  for (const userId of userIds) {
-    await cleanupMatrixUser(userId, options);
+  try {
+    const userIds = await listStoredUserIds();
+    for (const userId of userIds) {
+      await cleanupMatrixUser(userId, options);
+    }
+  } finally {
+    // Only now may a follower tab be promoted: the logout fan-out has already
+    // stopped it, and the credentials it would have resumed from are gone.
+    releaseSyncLock();
   }
 };
 

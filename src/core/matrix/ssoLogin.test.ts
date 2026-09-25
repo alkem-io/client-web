@@ -85,7 +85,7 @@ describe('ssoLogin', () => {
       expect(result.error).toContain('unreachable');
     });
 
-    it('does not pass credentials to the homeserver (D-06)', async () => {
+    it('does not pass credentials to the homeserver', async () => {
       const fetchSpy = vi
         .spyOn(globalThis, 'fetch')
         .mockResolvedValueOnce(new Response(JSON.stringify(makeLoginResponse()), { status: 200 }));
@@ -181,12 +181,13 @@ describe('ssoLogin', () => {
   });
 
   describe('attemptSilentSso', () => {
-    const setEnv = () => {
+    const setEnv = (extra: Record<string, string> = {}) => {
       Object.defineProperty(window, '_env_', {
         value: {
           VITE_APP_MATRIX_ENABLED: 'true',
           VITE_APP_MATRIX_HOMESERVER_URL: HOMESERVER,
           VITE_APP_MATRIX_ALLOWED_USERS: '',
+          ...extra,
         },
         writable: true,
         configurable: true,
@@ -250,7 +251,7 @@ describe('ssoLogin', () => {
       expect(document.querySelector('iframe')).toBeNull();
     });
 
-    it('resolves unreachable without creating an iframe when the login endpoint is down (contract §6)', async () => {
+    it('resolves unreachable without creating an iframe when the login endpoint is down', async () => {
       setEnv();
       vi.spyOn(globalThis, 'fetch').mockRejectedValueOnce(new TypeError('Failed to fetch'));
 
@@ -309,7 +310,8 @@ describe('ssoLogin', () => {
       );
 
       const { attemptSilentSso: fresh } = await import('./ssoLogin');
-      const attempt = fresh(LOCALPART, { timeoutMs: 100, pollIntervalMs: 20 });
+      const abort = new AbortController();
+      const attempt = fresh(LOCALPART, { timeoutMs: 10_000, pollIntervalMs: 20, signal: abort.signal });
       await vi.waitFor(() => {
         expect(document.querySelector('iframe')).not.toBeNull();
       });
@@ -319,7 +321,60 @@ describe('ssoLogin', () => {
       expect(iframe?.src).toContain(encodeURIComponent(`${window.location.origin}${CALLBACK_ROUTE}`));
       expect(iframe?.style.display).toBe('none');
 
+      abort.abort();
       await attempt;
+    });
+
+    it('an abort removes the iframe at once and resolves unavailable', async () => {
+      setEnv();
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(JSON.stringify(makeLoginResponse()), { status: 200 })
+      );
+
+      const { attemptSilentSso: fresh } = await import('./ssoLogin');
+      const abort = new AbortController();
+      const attempt = fresh(LOCALPART, { timeoutMs: 10_000, pollIntervalMs: 20, signal: abort.signal });
+      await vi.waitFor(() => {
+        expect(document.querySelector('iframe')).not.toBeNull();
+      });
+
+      abort.abort();
+      // Synchronous: the frame's callback must not get another tick to persist credentials.
+      expect(document.querySelector('iframe')).toBeNull();
+      expect(await attempt).toBe('unavailable');
+    });
+
+    it('does nothing when already aborted — no discovery, no iframe', async () => {
+      setEnv();
+      const fetchSpy = vi.spyOn(globalThis, 'fetch');
+      const abort = new AbortController();
+      abort.abort();
+
+      const { attemptSilentSso: fresh } = await import('./ssoLogin');
+      expect(await fresh(LOCALPART, { signal: abort.signal })).toBe('unavailable');
+      expect(fetchSpy).not.toHaveBeenCalled();
+      expect(document.querySelector('iframe')).toBeNull();
+    });
+
+    it('does not attempt SSO from an origin other than the platform origin', async () => {
+      setEnv({ VITE_APP_ALKEMIO_DOMAIN: 'https://sandbox-alkem.io' });
+      const fetchSpy = vi.spyOn(globalThis, 'fetch');
+
+      const { attemptSilentSso: fresh } = await import('./ssoLogin');
+      expect(await fresh(LOCALPART)).toBe('unavailable');
+      expect(fetchSpy).not.toHaveBeenCalled();
+      expect(document.querySelector('iframe')).toBeNull();
+    });
+
+    it('attempts SSO on the platform origin (trailing slash tolerated)', async () => {
+      setEnv({ VITE_APP_ALKEMIO_DOMAIN: `${window.location.origin}/` });
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(JSON.stringify(makeLoginResponse([])), { status: 200 })
+      );
+
+      const { attemptSilentSso: fresh } = await import('./ssoLogin');
+      expect(await fresh(LOCALPART)).toBe('unavailable');
+      expect(globalThis.fetch).toHaveBeenCalledOnce();
     });
   });
 

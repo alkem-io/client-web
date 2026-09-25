@@ -1,5 +1,5 @@
 /**
- * E4 — single sync ownership per user per browser profile (contract §5).
+ * Single sync ownership per user per browser profile.
  *
  * Leader election rides the Web Locks API: the tab holding the exclusive lock
  * `alkemio-matrix-sync-{userId}` is the one tab that may instantiate a syncing
@@ -15,16 +15,16 @@ type TabRole = 'leader' | 'follower';
 
 type MultiTabMessage = { type: 'leader'; state: string } | { type: 'state'; state: string } | { type: 'logout' };
 
-interface MultiTabCallbacks {
+type MultiTabCallbacks = {
   /** Fired when a queued follower acquires the lock (leader takeover). Never fired for the initial leader. */
   readonly onPromoted?: () => void;
   /** A remote leader's lifecycle state (messages `leader` and `state`). */
   readonly onRemoteState?: (state: string) => void;
   /** Another tab signed out; this tab must stop and clear. */
   readonly onRemoteLogout?: () => void;
-}
+};
 
-interface MultiTabCoordinator {
+type MultiTabCoordinator = {
   readonly role: () => TabRole;
   /** Leader announcement after promotion: `{type: "leader", state}`. */
   readonly announceLeadership: (state: string) => void;
@@ -32,9 +32,24 @@ interface MultiTabCoordinator {
   readonly broadcastState: (state: string) => void;
   /** Release the lock (promoting the next queued tab) and close the channel. */
   readonly release: () => void;
-}
+};
 
 const lockName = (userId: string): string => `alkemio-matrix-sync-${userId}`;
+const establishLockName = (actorId: string): string => `alkemio-matrix-establish-${actorId.toLowerCase()}`;
+
+/**
+ * Serializes credential acquisition (refresh, silent SSO) across this actor's
+ * tabs. The sync lock cannot do it: it is keyed by the Matrix userId, which a
+ * tab without stored credentials does not know until its own SSO completes.
+ * Without Web Locks the callback simply runs (single-tab degradation).
+ */
+const withEstablishLock = <T>(actorId: string, task: () => Promise<T>): Promise<T> => {
+  const locks = typeof navigator !== 'undefined' ? navigator.locks : undefined;
+  if (!locks?.request) {
+    return task();
+  }
+  return locks.request(establishLockName(actorId), task) as Promise<T>;
+};
 const channelName = (userId: string): string => `alkemio-matrix-${userId}`;
 
 const createMultiTabCoordinator = async (
@@ -116,5 +131,5 @@ const createMultiTabCoordinator = async (
   };
 };
 
-export { createMultiTabCoordinator };
+export { createMultiTabCoordinator, withEstablishLock };
 export type { MultiTabCoordinator, MultiTabCallbacks, TabRole, MultiTabMessage };

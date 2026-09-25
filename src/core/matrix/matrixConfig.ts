@@ -1,10 +1,12 @@
 import { env } from '@/main/env';
 
-interface MatrixConfig {
+type MatrixConfig = {
   readonly enabled: boolean;
   readonly homeserverUrl: string;
   readonly allowedUsers: readonly string[];
-}
+  /** The platform's own web origin, the one Synapse whitelists for SSO. Empty when unset. */
+  readonly appOrigin: string;
+};
 
 const parseConfig = (): MatrixConfig => {
   const raw = env;
@@ -20,7 +22,9 @@ const parseConfig = (): MatrixConfig => {
           .map(id => id.trim().toLowerCase())
           .filter(Boolean);
 
-  return { enabled, homeserverUrl, allowedUsers };
+  const appOrigin = raw?.VITE_APP_ALKEMIO_DOMAIN?.trim().replace(/\/+$/, '') ?? '';
+
+  return { enabled, homeserverUrl, allowedUsers, appOrigin };
 };
 
 let cached: MatrixConfig | undefined;

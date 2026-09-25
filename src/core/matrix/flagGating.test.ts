@@ -21,12 +21,12 @@ const setEnv = (env: Record<string, string>) => {
 };
 
 /**
- * SC-006/SC-009 mechanical half (T023): with the flag off — or on without
+ * With the flag off — or on without
  * admission — the foundation is byte-level inert: no network, no storage,
  * no SDK chunk, no diagnostics handle. Uses the REAL provider, controller,
  * and config; only the user context and the SDK module itself are mocked.
  */
-describe('flag gating — inertness (US5)', () => {
+describe('flag gating — inertness', () => {
   let container: HTMLDivElement;
   let root: ReturnType<typeof createRoot>;
 

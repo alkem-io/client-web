@@ -1,6 +1,6 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { MatrixSessionProvider, useMatrixSessionContext } from './MatrixSessionProvider';
+import { MatrixSessionProvider } from './MatrixSessionProvider';
 
 const harness = vi.hoisted(() => {
   const listeners = new Set<() => void>();
@@ -56,14 +56,14 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: harness.actorId.value ? { id: harness.actorId.value } : undefined }),
 }));
 
-const StateProbe = () => <span data-testid="session-state">{useMatrixSessionContext().state}</span>;
-
 const renderProvider = () =>
   render(
     <MatrixSessionProvider>
-      <StateProbe />
+      <span />
     </MatrixSessionProvider>
   );
+
+const diagnosticsState = () => (window as unknown as { __alkemioMatrix?: { state: string } }).__alkemioMatrix?.state;
 
 describe('MatrixSessionProvider', () => {
   beforeEach(() => {
@@ -132,7 +132,7 @@ describe('MatrixSessionProvider', () => {
     harness.actorId.value = 'actor-2';
     rerender(
       <MatrixSessionProvider>
-        <StateProbe />
+        <span />
       </MatrixSessionProvider>
     );
     await act(async () => {});
@@ -148,10 +148,10 @@ describe('MatrixSessionProvider', () => {
     await act(async () => {
       harness.notify();
     });
-    expect(screen.getByTestId('session-state').textContent).toBe('failed');
+    expect(diagnosticsState()).toBe('failed');
   });
 
-  describe('session diagnostics handle (FR-011, T024)', () => {
+  describe('session diagnostics handle', () => {
     const readHandle = () =>
       (window as unknown as { __alkemioMatrix?: { state: string; lastError?: string } }).__alkemioMatrix;
 
@@ -179,7 +179,6 @@ describe('MatrixSessionProvider', () => {
       });
 
       expect(readHandle()?.state).toBe('ready');
-      expect(screen.getByTestId('session-state').textContent).toBe('ready');
     });
 
     it('stores the last error redacted — no token substring is reachable through the handle', async () => {

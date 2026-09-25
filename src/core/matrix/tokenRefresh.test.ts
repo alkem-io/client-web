@@ -100,7 +100,7 @@ describe('refreshMatrixTokens', () => {
     expect(stored.record?.accessToken).toBe('syt_old_access');
   });
 
-  describe('soft_logout retry (contract §3)', () => {
+  describe('soft_logout retry', () => {
     const softLogoutResponse = () =>
       new Response(JSON.stringify({ errcode: 'M_UNKNOWN_TOKEN', soft_logout: true }), { status: 401 });
 

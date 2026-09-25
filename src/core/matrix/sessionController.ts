@@ -5,10 +5,22 @@ import {
   unregisterActiveSession,
 } from './activeSession';
 import { cleanupMatrixUser } from './logoutCleanup';
-import { createMultiTabCoordinator, type MultiTabCallbacks, type MultiTabCoordinator } from './multiTab';
+import {
+  createMultiTabCoordinator,
+  type MultiTabCallbacks,
+  type MultiTabCoordinator,
+  withEstablishLock,
+} from './multiTab';
 import { redactBreadcrumb, redactString } from './redaction';
 import { attemptSilentSso, type SilentSsoOutcome } from './ssoLogin';
-import { type CredentialRecord, clearNamespace, findStoredUserId, listStoredUserIds, loadCredentials } from './storage';
+import {
+  type CredentialRecord,
+  canEnumerateNamespaces,
+  clearNamespace,
+  findStoredUserId,
+  listStoredUserIds,
+  loadCredentials,
+} from './storage';
 import { refreshMatrixTokens, TokenRefreshError } from './tokenRefresh';
 
 const SESSION_STATES = [
@@ -29,7 +41,7 @@ type SessionState = (typeof SESSION_STATES)[number];
 const TRANSITIONS: ReadonlyMap<SessionState, ReadonlySet<SessionState>> = new Map([
   ['idle', new Set<SessionState>(['starting', 'signed-out'])],
   ['starting', new Set<SessionState>(['ready', 'failed', 'offline', 'signed-out'])],
-  ['ready', new Set<SessionState>(['syncing', 'recovering', 'failed', 'offline', 'signed-out'])],
+  ['ready', new Set<SessionState>(['syncing', 'reconnecting', 'recovering', 'failed', 'offline', 'signed-out'])],
   ['syncing', new Set<SessionState>(['ready', 'reconnecting', 'recovering', 'failed', 'offline', 'signed-out'])],
   ['reconnecting', new Set<SessionState>(['ready', 'recovering', 'failed', 'offline', 'signed-out'])],
   ['recovering', new Set<SessionState>(['starting', 'auth-required', 'failed', 'offline', 'signed-out'])],
@@ -41,10 +53,10 @@ const TRANSITIONS: ReadonlyMap<SessionState, ReadonlySet<SessionState>> = new Ma
 
 type BreadcrumbSink = (breadcrumb: { message?: string; data?: Record<string, unknown> }) => void;
 
-interface SessionMachine {
+type SessionMachine = {
   readonly state: () => SessionState;
   readonly transition: (to: SessionState) => boolean;
-}
+};
 
 const createSessionMachine = (onBreadcrumb?: BreadcrumbSink): SessionMachine => {
   let current: SessionState = 'idle';
@@ -82,19 +94,19 @@ const createSessionMachine = (onBreadcrumb?: BreadcrumbSink): SessionMachine => 
   };
 };
 
-interface RoomSummary {
+type RoomSummary = {
   readonly roomId: string;
   readonly name: string;
-}
+};
 
-interface MatrixClientLike {
+type MatrixClientLike = {
   on(event: string, handler: (...args: unknown[]) => void): unknown;
   startClient(opts?: { initialSyncLimit?: number }): Promise<void>;
   stopClient(): void;
   getRooms(): { roomId: string; name: string }[];
-}
+};
 
-interface SdkLogger {
+type SdkLogger = {
   trace(...msg: unknown[]): void;
   debug(...msg: unknown[]): void;
   info(...msg: unknown[]): void;
@@ -102,7 +114,7 @@ interface SdkLogger {
   error(...msg: unknown[]): void;
   log(...msg: unknown[]): void;
   getChild(namespace: string): SdkLogger;
-}
+};
 
 const silentSdkLogger: SdkLogger = {
   trace: () => {},
@@ -114,7 +126,7 @@ const silentSdkLogger: SdkLogger = {
   getChild: () => silentSdkLogger,
 };
 
-interface MatrixSdkModule {
+type MatrixSdkModule = {
   createClient(opts: {
     baseUrl: string;
     userId: string;
@@ -140,39 +152,47 @@ interface MatrixSdkModule {
     Reconnecting: string;
     Stopped: string;
   };
-}
+};
 
-interface EstablishmentHooks {
+type EstablishmentHooks = {
   readonly onState?: (state: SessionState) => void;
   readonly onBreadcrumb?: BreadcrumbSink;
-  /** Last-error reporting for diagnostics (FR-011). Always receives a redacted message. */
+  /** Last-error reporting for diagnostics. Always receives a redacted message. */
   readonly onError?: (redactedMessage: string) => void;
   readonly onRooms?: (rooms: readonly RoomSummary[]) => void;
   readonly loadSdk?: () => Promise<MatrixSdkModule>;
-  readonly silentSso?: (expectedLocalpart: string) => Promise<SilentSsoOutcome>;
-  /** Backoff schedule for the Synapse-unreachable row (contract §6). One retry per entry. */
+  readonly silentSso?: (expectedLocalpart: string, signal: AbortSignal) => Promise<SilentSsoOutcome>;
+  /** Backoff schedule while Synapse is unreachable. One retry per entry. */
   readonly retryDelaysMs?: readonly number[];
   readonly wait?: (ms: number) => Promise<void>;
   readonly createCoordinator?: (userId: string, callbacks: MultiTabCallbacks) => Promise<MultiTabCoordinator>;
-}
+  /** A server logout within this long of the last recovery is terminal rather than recovered again. */
+  readonly recoveryCooldownMs?: number;
+  readonly now?: () => number;
+};
 
-interface SessionHandle {
+type SessionHandle = {
   readonly machine: SessionMachine;
   readonly stop: () => void;
-}
+};
 
 const defaultLoadSdk = async (): Promise<MatrixSdkModule> =>
   (await import('matrix-js-sdk')) as unknown as MatrixSdkModule;
 
 const DEFAULT_RETRY_DELAYS_MS: readonly number[] = [5_000, 15_000, 45_000];
+const DEFAULT_RECOVERY_COOLDOWN_MS = 10 * 60_000;
 
 const establishSession = async (actorId: string, hooks: EstablishmentHooks = {}): Promise<SessionHandle> => {
   const { onState, onBreadcrumb, onRooms } = hooks;
   const loadSdk = hooks.loadSdk ?? defaultLoadSdk;
-  const silentSso = hooks.silentSso ?? attemptSilentSso;
+  const silentSso =
+    hooks.silentSso ??
+    ((expectedLocalpart: string, signal: AbortSignal) => attemptSilentSso(expectedLocalpart, { signal }));
   const retryDelaysMs = hooks.retryDelaysMs ?? DEFAULT_RETRY_DELAYS_MS;
   const wait = hooks.wait ?? ((ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms)));
   const createCoordinator = hooks.createCoordinator ?? createMultiTabCoordinator;
+  const recoveryCooldownMs = hooks.recoveryCooldownMs ?? DEFAULT_RECOVERY_COOLDOWN_MS;
+  const now = hooks.now ?? Date.now;
 
   let coordinator: MultiTabCoordinator | null = null;
   const reportError = (message: unknown): void => {
@@ -191,24 +211,38 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
 
   let activeClient: MatrixClientLike | null = null;
   let stopped = false;
-  let recovered = false;
+  // Set by sign-out, which owns the lock release until its cleanup finishes.
+  let releaseDeferred = false;
+  let lastRecoveryAt: number | null = null;
   let lastFailureReason: string | null = null;
+  // Cancels an in-flight silent SSO: its iframe would otherwise go on to
+  // persist fresh credentials after sign-out cleanup has already run.
+  const ssoAbort = new AbortController();
+  const releaseCoordinator = (): void => {
+    coordinator?.release();
+  };
+  const shutdown = (): void => {
+    stopped = true;
+    ssoAbort.abort();
+    activeClient?.stopClient();
+    unregisterActiveSession(signOut);
+  };
   const handle: SessionHandle = {
     machine,
     stop: () => {
-      stopped = true;
-      activeClient?.stopClient();
-      coordinator?.release();
-      unregisterActiveSession(signOut);
+      shutdown();
+      releaseCoordinator();
     },
   };
-  const signOut = (): void => {
+  const signOut = (): (() => void) => {
     setState('signed-out');
-    handle.stop();
+    releaseDeferred = true;
+    shutdown();
+    return releaseCoordinator;
   };
   registerActiveSession(signOut);
 
-  // User-switch hygiene (contract §4, P-08b): a namespace left behind by a
+  // User-switch hygiene: a namespace left behind by a
   // different user (unclean switch, crash before cleanup) is fully retired —
   // bounded server-side logout, local wipe, cross-tab fan-out.
   const purgeStaleNamespaces = async (): Promise<void> => {
@@ -259,7 +293,7 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
     }
 
     if (!record) {
-      const outcome = await silentSso(actorId.toLowerCase());
+      const outcome = await silentSso(actorId.toLowerCase(), ssoAbort.signal);
       if (outcome === 'unreachable') {
         return 'unreachable';
       }
@@ -273,7 +307,7 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
     return record;
   };
 
-  // Contract §6: Synapse unreachable → offline with bounded exponential backoff,
+  // Synapse unreachable → offline with bounded exponential backoff,
   // one retry per configured delay, never an auth loop.
   const acquireWithBackoff = async (): Promise<CredentialRecord | null | 'unreachable'> => {
     for (let attempt = 0; ; attempt++) {
@@ -307,7 +341,7 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
       logger: silentSdkLogger,
       // The SDK classifies a thrown refresh error as transient (keep retrying) unless it is
       // its own TokenRefreshLogoutError — only then does it emit SessionLoggedOut, which is
-      // what drives recovery (contract §6). A server verdict must therefore be translated;
+      // what drives recovery. A server verdict must therefore be translated;
       // a network failure stays untranslated so the sync loop keeps retrying.
       tokenRefreshFunction: async refreshToken => {
         try {
@@ -363,15 +397,17 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
     }
   };
 
-  // One recovery attempt per establishment: a session that dies again after a
-  // fresh silent SSO would just loop, so the repeat is terminal instead.
+  // At most one recovery per cooldown window: a session that dies again right
+  // after a fresh silent SSO would just loop, so that repeat is terminal. One
+  // that lived past the window (the server's session cap, an overnight sleep)
+  // is a new failure and gets its own recovery.
   const recover = async (staleUserId: string): Promise<void> => {
     try {
       await clearNamespace(staleUserId);
       if (stopped) {
         return;
       }
-      if (recovered) {
+      if (lastRecoveryAt !== null && now() - lastRecoveryAt < recoveryCooldownMs) {
         // The client is already stopped, so a machine still reporting a live
         // state would be lying — fail closed wherever the table still allows it.
         if (TRANSITIONS.get(machine.state())?.has('failed')) {
@@ -380,9 +416,9 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
         }
         return;
       }
-      recovered = true;
+      lastRecoveryAt = now();
       setState('recovering');
-      const record = await acquireWithBackoff();
+      const record = await withEstablishLock(actorId, acquireWithBackoff);
       if (stopped) {
         return;
       }
@@ -407,7 +443,7 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
     }
   };
 
-  // Contract §5 invariant 3: a promoted tab resumes from the shared stored
+  // A promoted tab resumes from the shared stored
   // credentials (possibly rotated by the previous leader) — never a re-login.
   const becomeLeader = async (): Promise<void> => {
     if (stopped) {
@@ -420,23 +456,81 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
       }
       if (!fresh) {
         setState('failed');
+        releaseCoordinator();
         return;
       }
       coordinator?.announceLeadership(machine.state());
       await startWithRecord(fresh);
     } catch {
       setState('failed');
+      releaseCoordinator();
     }
+  };
+
+  const coordinatorCallbacks: MultiTabCallbacks = {
+    onPromoted: () => {
+      void becomeLeader();
+    },
+    onRemoteState: state => {
+      if (coordinator?.role() !== 'leader' && (SESSION_STATES as readonly string[]).includes(state)) {
+        onState?.(state as SessionState);
+      }
+    },
+    onRemoteLogout: () => {
+      setState('signed-out');
+      handle.stop();
+    },
+  };
+
+  // Only the leader may touch credentials: a refresh rotates the single-use
+  // refresh token under the running leader, and a silent SSO mints a device.
+  // With stored credentials the election runs first and a follower stops here;
+  // without them (nobody can be leading) the SSO runs, then the election.
+  const electAndAcquire = async (): Promise<CredentialRecord | null | 'unreachable' | 'follower'> => {
+    const storedUserId = await findStoredUserId(actorId);
+    if (storedUserId) {
+      coordinator = await createCoordinator(storedUserId, coordinatorCallbacks);
+      if (coordinator.role() !== 'leader') {
+        return 'follower';
+      }
+    }
+    const record = await acquireWithBackoff();
+    if (stopped || !record || record === 'unreachable') {
+      return record;
+    }
+    if (coordinator && storedUserId !== record.userId) {
+      coordinator.release();
+      coordinator = null;
+    }
+    if (!coordinator) {
+      coordinator = await createCoordinator(record.userId, coordinatorCallbacks);
+      if (coordinator.role() !== 'leader') {
+        return 'follower';
+      }
+    }
+    return record;
   };
 
   try {
     setState('starting');
+    if (!canEnumerateNamespaces()) {
+      reportError('establishment failed: browser cannot list IndexedDB databases');
+      setState('failed');
+      return handle;
+    }
     await purgeStaleNamespaces();
-    const record = await acquireWithBackoff();
+    const record = await withEstablishLock(actorId, electAndAcquire);
     if (stopped) {
+      if (!releaseDeferred) {
+        releaseCoordinator();
+      }
+      return handle;
+    }
+    if (record === 'follower') {
       return handle;
     }
     if (!record || record === 'unreachable') {
+      releaseCoordinator();
       reportError(
         record === 'unreachable'
           ? 'establishment failed: homeserver unreachable'
@@ -445,29 +539,11 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
       setState('failed');
       return handle;
     }
-
-    coordinator = await createCoordinator(record.userId, {
-      onPromoted: () => {
-        void becomeLeader();
-      },
-      onRemoteState: state => {
-        if (coordinator?.role() !== 'leader' && (SESSION_STATES as readonly string[]).includes(state)) {
-          onState?.(state as SessionState);
-        }
-      },
-      onRemoteLogout: () => {
-        setState('signed-out');
-        handle.stop();
-      },
-    });
-    if (stopped) {
-      coordinator.release();
-      return handle;
-    }
-    if (coordinator.role() === 'leader') {
-      await startWithRecord(record);
-    }
+    await startWithRecord(record);
   } catch (error) {
+    if (!releaseDeferred) {
+      releaseCoordinator();
+    }
     reportError(error);
     setState('failed');
   }

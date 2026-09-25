@@ -30,7 +30,7 @@ describe('sessionController', () => {
     expect(m.state()).toBe('idle');
   });
 
-  describe('E3 transition table — every legal row', () => {
+  describe('transition table — every legal row', () => {
     const cases: { from: SessionState; to: SessionState }[] = [];
 
     for (const [from, targets] of TRANSITIONS) {
@@ -396,7 +396,7 @@ describe('establishSession', () => {
     expect(states).toEqual(['starting', 'offline']);
   });
 
-  describe('single sync ownership (contract §5)', () => {
+  describe('single sync ownership', () => {
     type CoordinatorCallbacks = {
       onPromoted?: () => void;
       onRemoteState?: (state: string) => void;
@@ -517,16 +517,82 @@ describe('establishSession', () => {
 
       expect(release).toHaveBeenCalled();
     });
+
+    it('a follower never refreshes an expired stored record — only the leader rotates the refresh token', async () => {
+      await seedRecord({ expiresAt: Date.now() - 1000 });
+      const { createCoordinator } = makeCoordinatorMock('follower');
+      const fetchSpy = vi.spyOn(globalThis, 'fetch');
+      const silentSso = vi.fn(async () => 'timeout' as const);
+
+      await establishSession(ACTOR, { loadSdk: vi.fn(), silentSso, createCoordinator });
+
+      expect(fetchSpy).not.toHaveBeenCalled();
+      expect(silentSso).not.toHaveBeenCalled();
+      expect(createCoordinator).toHaveBeenCalledWith(USER_ID, expect.anything());
+    });
+
+    it('with no stored record the election follows the SSO, keyed by the minted userId', async () => {
+      const { createCoordinator } = makeCoordinatorMock('leader');
+      const { sdk, createClient } = makeSdkMock();
+      const order: string[] = [];
+      const silentSso = vi.fn(async () => {
+        order.push('sso');
+        await seedRecord();
+        return 'authenticated' as const;
+      });
+      createCoordinator.mockImplementationOnce(async userId => {
+        order.push(`elect:${userId}`);
+        return makeCoordinatorMock('leader').coordinator;
+      });
+
+      await establishSession(ACTOR, { loadSdk: async () => sdk, silentSso, createCoordinator });
+
+      expect(order).toEqual(['sso', `elect:${USER_ID}`]);
+      expect(createClient).toHaveBeenCalledOnce();
+    });
+
+    it('a leader that cannot establish releases the lock so a follower may try', async () => {
+      await seedRecord({ expiresAt: Date.now() - 1000, refreshToken: '' });
+      const { createCoordinator, release } = makeCoordinatorMock('leader');
+
+      const handle = await establishSession(ACTOR, {
+        loadSdk: vi.fn(),
+        silentSso: vi.fn(async () => 'timeout' as const),
+        createCoordinator,
+      });
+
+      expect(handle.machine.state()).toBe('failed');
+      expect(release).toHaveBeenCalled();
+    });
+
+    it('sign-out keeps the lock until its cleanup releases it, so no follower is promoted mid-logout', async () => {
+      await seedRecord();
+      const { createCoordinator, release } = makeCoordinatorMock('leader');
+      const { sdk } = makeSdkMock();
+
+      await establishSession(ACTOR, {
+        loadSdk: async () => sdk,
+        silentSso: vi.fn(async () => 'timeout' as const),
+        createCoordinator,
+      });
+
+      const { stopActiveSession } = await import('./activeSession');
+      const releaseSyncLock = stopActiveSession();
+      expect(release).not.toHaveBeenCalled();
+
+      releaseSyncLock();
+      expect(release).toHaveBeenCalledOnce();
+    });
   });
 
-  describe('user switch & sign-out (contract §4)', () => {
+  describe('user switch & sign-out', () => {
     const OTHER_USER_ID = '@stale-actor:matrix.dev-alkem.io';
 
     afterEach(async () => {
       await clearNamespace(OTHER_USER_ID);
     });
 
-    it("purges another user's stale namespace at establishment — full §4 sequence, then own session resumes", async () => {
+    it("purges another user's stale namespace at establishment — full sign-out sequence, then own session resumes", async () => {
       await storeCredentials({
         userId: OTHER_USER_ID,
         deviceId: 'DEV_STALE',
@@ -572,7 +638,7 @@ describe('establishSession', () => {
     });
   });
 
-  describe('SDK-facing refresh function (contract §6 — hard rejection must reach the SDK as a logout)', () => {
+  describe('SDK-facing refresh function — hard rejection must reach the SDK as a logout', () => {
     it('translates a server-rejected refresh into the SDK logout error so Session.logged_out fires', async () => {
       await seedRecord();
       const { sdk, createClient } = makeSdkMock();
@@ -598,7 +664,7 @@ describe('establishSession', () => {
     });
   });
 
-  describe('contract §6 fail-closed rows', () => {
+  describe('fail-closed recovery rows', () => {
     const immediateWait = () => {
       const delays: number[] = [];
       const wait = vi.fn(async (ms: number) => {
@@ -767,6 +833,102 @@ describe('establishSession', () => {
       expect(client.stopClient).toHaveBeenCalledTimes(2);
       expect(errors).toEqual([expect.stringContaining('after recovery')]);
       expect(states).toEqual(['starting', 'ready', 'recovering', 'starting', 'ready', 'failed']);
+    });
+
+    it('a logout long after a successful recovery is a new failure and recovers again', async () => {
+      await seedRecord();
+      const { sdk, handlers, createClient } = makeSdkMock();
+      let recoveries = 0;
+      const silentSso = vi.fn(async () => {
+        recoveries++;
+        await seedRecord({ accessToken: `syt_recovered_${recoveries}`, deviceId: `DEV${recoveries + 1}` });
+        return 'authenticated' as const;
+      });
+      let clock = 1_000_000;
+      const states: SessionState[] = [];
+
+      await establishSession(ACTOR, {
+        loadSdk: async () => sdk,
+        silentSso,
+        onState: s => states.push(s),
+        now: () => clock,
+        recoveryCooldownMs: 60_000,
+      });
+
+      handlers.get('sync')?.('PREPARED');
+      handlers.get('Session.logged_out')?.();
+      await vi.waitFor(() => {
+        expect(states[states.length - 1]).toBe('starting');
+      });
+      handlers.get('sync')?.('PREPARED');
+
+      clock += 60_000;
+      handlers.get('Session.logged_out')?.();
+      await vi.waitFor(() => {
+        expect(createClient).toHaveBeenCalledTimes(3);
+      });
+
+      expect(silentSso).toHaveBeenCalledTimes(2);
+      expect(createClient.mock.calls[2][0].accessToken).toBe('syt_recovered_2');
+      expect(states).not.toContain('failed');
+    });
+
+    it('a sync error while ready moves to reconnecting instead of reporting ready through the outage', async () => {
+      await seedRecord();
+      const { sdk, handlers } = makeSdkMock();
+      const breadcrumbs: string[] = [];
+
+      const handle = await establishSession(ACTOR, {
+        loadSdk: async () => sdk,
+        silentSso: vi.fn(async () => 'timeout' as const),
+        onBreadcrumb: b => breadcrumbs.push(b.message ?? ''),
+      });
+
+      handlers.get('sync')?.('PREPARED');
+      handlers.get('sync')?.('ERROR');
+
+      expect(handle.machine.state()).toBe('reconnecting');
+      expect(breadcrumbs.some(m => m.includes('illegal'))).toBe(false);
+    });
+
+    it('stopping during a silent SSO aborts it', async () => {
+      let signal: AbortSignal | undefined;
+      let finishSso: (() => void) | undefined;
+      const silentSso = vi.fn(async (_localpart: string, s: AbortSignal) => {
+        signal = s;
+        await new Promise<void>(resolve => (finishSso = resolve));
+        return 'unavailable' as const;
+      });
+
+      const pending = establishSession(ACTOR, { loadSdk: vi.fn(), silentSso });
+      await vi.waitFor(() => {
+        expect(signal).toBeDefined();
+      });
+
+      const { stopActiveSession } = await import('./activeSession');
+      stopActiveSession()();
+      expect(signal?.aborted).toBe(true);
+
+      finishSso?.();
+      const handle = await pending;
+      expect(handle.machine.state()).toBe('signed-out');
+    });
+
+    it('fails closed without touching storage when the browser cannot list IndexedDB databases', async () => {
+      const original = indexedDB.databases;
+      Object.defineProperty(indexedDB, 'databases', { value: undefined, configurable: true });
+      try {
+        const silentSso = vi.fn(async () => 'timeout' as const);
+        const errors: string[] = [];
+
+        const handle = await establishSession(ACTOR, { silentSso, onError: e => errors.push(e) });
+
+        expect(handle.machine.state()).toBe('failed');
+        expect(silentSso).not.toHaveBeenCalled();
+        expect(errors).toEqual([expect.stringContaining('cannot list IndexedDB databases')]);
+      } finally {
+        Object.defineProperty(indexedDB, 'databases', { value: original, configurable: true });
+      }
     });
   });
 });

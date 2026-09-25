@@ -3,19 +3,19 @@ import { redactBreadcrumb } from './redaction';
 import { clearSsoFlowState, loadSsoFlowState } from './ssoLogin';
 import { expiresAtFrom, storeCredentials } from './storage';
 
-interface ExchangeResult {
+type ExchangeResult = {
   readonly user_id: string;
   readonly device_id: string;
   readonly access_token: string;
   readonly refresh_token?: string;
   readonly expires_in_ms?: number;
-}
+};
 
-interface CallbackOutcome {
+type CallbackOutcome = {
   readonly ok: boolean;
   readonly error?: string;
   readonly returnPath?: string;
-}
+};
 
 type BreadcrumbSink = (breadcrumb: { message?: string; data?: Record<string, unknown> }) => void;
 

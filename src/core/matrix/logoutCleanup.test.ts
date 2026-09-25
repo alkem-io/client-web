@@ -65,7 +65,7 @@ describe('logoutCleanup', () => {
     await clearNamespace(USER_ID);
   });
 
-  it('runs the contract §4 ordering: stop → bounded /logout → clear → broadcast', async () => {
+  it('runs the sign-out ordering: stop → bounded /logout → clear → broadcast', async () => {
     setEnv();
     await seedRecord();
     const order: string[] = [];
@@ -85,12 +85,15 @@ describe('logoutCleanup', () => {
     const { registerActiveSession } = await import('./activeSession');
     registerActiveSession(() => {
       order.push('stop');
+      return () => order.push('release-lock');
     });
 
     const { runMatrixLogoutCleanup } = await import('./logoutCleanup');
     await runMatrixLogoutCleanup();
 
-    expect(order).toEqual(['stop', 'logout-post', 'clear', 'broadcast']);
+    // The sync lock outlives the cleanup: released earlier, it would promote a
+    // follower tab onto credentials that are about to be revoked.
+    expect(order).toEqual(['stop', 'logout-post', 'clear', 'broadcast', 'release-lock']);
 
     const [url, init] = fetchSpy.mock.calls[0];
     expect(url).toBe(`${HOMESERVER}/_matrix/client/v3/logout`);

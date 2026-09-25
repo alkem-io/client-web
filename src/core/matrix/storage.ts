@@ -12,7 +12,7 @@ const NEVER_EXPIRES = 8_640_000_000_000_000;
 const expiresAtFrom = (expiresInMs: number | undefined, now: number = Date.now()): number =>
   typeof expiresInMs === 'number' && Number.isFinite(expiresInMs) ? now + expiresInMs : NEVER_EXPIRES;
 
-interface CredentialRecord {
+type CredentialRecord = {
   readonly userId: string;
   readonly deviceId: string;
   readonly accessToken: string;
@@ -20,12 +20,12 @@ interface CredentialRecord {
   readonly expiresAt: number;
   readonly homeserverUrl: string;
   readonly storedAt: number;
-}
+};
 
-interface StorageResult {
+type StorageResult = {
   readonly available: boolean;
   readonly record: CredentialRecord | null;
-}
+};
 
 const dbName = (userId: string): string => `${DB_PREFIX}${userId}`;
 
@@ -126,9 +126,15 @@ const rotateTokens = async (
   }
 };
 
+// Every namespace lookup — resume, sign-out cleanup, user-switch purge — runs
+// through the database listing. A browser without it can store credentials but
+// never find them again, so it must not be allowed to store any.
+const canEnumerateNamespaces = (): boolean =>
+  typeof indexedDB !== 'undefined' && typeof indexedDB.databases === 'function';
+
 const findStoredUserId = async (actorLocalpart: string): Promise<string | null> => {
   try {
-    if (typeof indexedDB.databases !== 'function') {
+    if (!canEnumerateNamespaces()) {
       return null;
     }
     const databases = await indexedDB.databases();
@@ -142,7 +148,7 @@ const findStoredUserId = async (actorLocalpart: string): Promise<string | null> 
 
 const listStoredUserIds = async (): Promise<string[]> => {
   try {
-    if (typeof indexedDB.databases !== 'function') {
+    if (!canEnumerateNamespaces()) {
       return [];
     }
     const databases = await indexedDB.databases();
@@ -159,9 +165,9 @@ const listStoredUserIds = async (): Promise<string[]> => {
 // cleanup is reported as failed rather than left silently pending.
 const BLOCKED_DELETE_TIMEOUT_MS = 2_000;
 
-interface ClearOptions {
+type ClearOptions = {
   readonly blockedTimeoutMs?: number;
-}
+};
 
 const clearNamespace = async (userId: string, options: ClearOptions = {}): Promise<void> => {
   const blockedTimeoutMs = options.blockedTimeoutMs ?? BLOCKED_DELETE_TIMEOUT_MS;
@@ -190,6 +196,7 @@ const clearNamespace = async (userId: string, options: ClearOptions = {}): Promi
 };
 
 export {
+  canEnumerateNamespaces,
   loadCredentials,
   storeCredentials,
   rotateTokens,

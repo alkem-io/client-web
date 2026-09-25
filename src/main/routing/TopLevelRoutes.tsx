@@ -19,7 +19,6 @@ import { TopLevelRoutePath } from './TopLevelRoutePath';
 import { nameOfUrl } from './urlParams';
 import { UrlResolverProvider } from './urlResolver/UrlResolverProvider';
 
-const MatrixCallbackHandler = lazyWithGlobalErrorHandler(() => import('@/core/matrix/MatrixCallbackHandler'));
 const CrdPublicWhiteboardPage = lazyWithGlobalErrorHandler(
   () => import('@/main/crdPages/whiteboard/CrdPublicWhiteboardPage')
 );
@@ -68,14 +67,6 @@ export const TopLevelRoutes = () => {
                 <CrdPublicWhiteboardPage />
               </Suspense>
             </WithApmTransaction>
-          }
-        />
-        <Route
-          path={TopLevelRoutePath.MatrixCallback}
-          element={
-            <Suspense fallback={<Loading />}>
-              <MatrixCallbackHandler />
-            </Suspense>
           }
         />
         {IdentityRoute()}

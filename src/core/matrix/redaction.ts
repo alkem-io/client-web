@@ -53,10 +53,10 @@ const redactValue = (value: unknown): unknown => {
   return value;
 };
 
-interface BreadcrumbData {
+type BreadcrumbData = {
   message?: string;
   data?: Record<string, unknown>;
-}
+};
 
 const redactBreadcrumb = (breadcrumb: BreadcrumbData): BreadcrumbData => {
   const result: BreadcrumbData = {};

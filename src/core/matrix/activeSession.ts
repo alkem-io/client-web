@@ -5,7 +5,10 @@
  * establishment. Both are facts about the current sign-in and are reset on
  * sign-out, so the next actor starts dormant.
  */
-type SignOut = () => void;
+// Stops the session and hands back the release of its sync lock, so the
+// sign-out flow can keep the lock until cleanup is done: releasing it earlier
+// would promote a follower tab onto credentials that are about to be revoked.
+type SignOut = () => () => void;
 
 let current: SignOut | null = null;
 
@@ -19,11 +22,14 @@ const unregisterActiveSession = (signOut: SignOut): void => {
   }
 };
 
-/** The registered callback owns the signed-out transition and client shutdown. */
-const stopActiveSession = (): void => {
+/**
+ * The registered callback owns the signed-out transition and client shutdown.
+ * Returns the deferred lock release; the caller must invoke it once cleanup ends.
+ */
+const stopActiveSession = (): (() => void) => {
   const signOut = current;
   current = null;
-  signOut?.();
+  return signOut?.() ?? (() => {});
 };
 
 let messagingOpened = false;

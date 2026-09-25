@@ -1,10 +1,10 @@
 import { expiresAtFrom, rotateTokens } from './storage';
 
-interface RefreshedTokens {
+type RefreshedTokens = {
   readonly accessToken: string;
   readonly refreshToken: string;
   readonly expiry: Date;
-}
+};
 
 class TokenRefreshError extends Error {
   readonly status: number;

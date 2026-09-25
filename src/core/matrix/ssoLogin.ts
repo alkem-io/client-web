@@ -4,18 +4,18 @@ import { findStoredUserId, loadCredentials } from './storage';
 const CALLBACK_ROUTE = '/matrix-callback';
 const PENDING_SSO_KEY = 'alkemio-matrix-sso-pending';
 
-interface SsoFlowState {
+type SsoFlowState = {
   readonly returnPath: string;
   readonly startedAt: number;
-}
+};
 
-interface SsoIdpResult {
+type SsoIdpResult = {
   readonly ok: boolean;
   readonly idpId?: string;
   readonly error?: string;
   /** True when the failure looks transient (network down, 5xx, rate limit) rather than a misconfiguration. */
   readonly unreachable?: boolean;
-}
+};
 
 const discoverIdp = async (homeserverUrl: string, signal?: AbortSignal): Promise<SsoIdpResult> => {
   let response: Response;
@@ -87,10 +87,10 @@ const clearSsoFlowState = (): void => {
   }
 };
 
-interface InitiateSsoResult {
+type InitiateSsoResult = {
   readonly ok: boolean;
   readonly error?: string;
-}
+};
 
 const buildSsoUrl = (homeserverUrl: string, idpId: string): string => {
   const redirectUrl = `${window.location.origin}${CALLBACK_ROUTE}`;
@@ -121,16 +121,19 @@ const initiateSsoRedirect = async (
   return { ok: true };
 };
 
-interface SilentSsoOptions {
+type SilentSsoOptions = {
   readonly timeoutMs?: number;
   readonly pollIntervalMs?: number;
-}
+  /** Aborting removes the iframe at once, so a callback still in flight never persists credentials. */
+  readonly signal?: AbortSignal;
+};
 
 /**
  * - `authenticated` — the callback persisted fresh credentials for the expected user.
  * - `unreachable` — the homeserver could not be reached (or answered 5xx/429); worth retrying with backoff.
  * - `timeout` — the round-trip stalled (no live Alkemio session, or an interstitial rendered); fail closed.
- * - `unavailable` — flag off / not configured / SSO misconfigured; fail closed, retrying cannot help.
+ * - `unavailable` — flag off / not configured / SSO misconfigured / page not on the platform origin /
+ *   aborted; fail closed, retrying cannot help.
  */
 type SilentSsoOutcome = 'authenticated' | 'unreachable' | 'timeout' | 'unavailable';
 
@@ -153,6 +156,17 @@ const attemptSilentSso = async (
   if (!config.enabled || config.homeserverUrl === '') {
     return 'unavailable';
   }
+  // Synapse whitelists only the platform origin, and matches it by prefix, so
+  // it cannot cover arbitrary innovation-hub subdomains. From any other origin
+  // the confirmation interstitial would render unseen in the frame and the
+  // attempt could only time out.
+  if (config.appOrigin !== '' && window.location.origin !== config.appOrigin) {
+    return 'unavailable';
+  }
+  const { signal } = options;
+  if (signal?.aborted) {
+    return 'unavailable';
+  }
 
   // One deadline bounds the whole attempt, discovery included: a login endpoint
   // that accepts the connection and never answers must not hold establishment
@@ -160,11 +174,17 @@ const attemptSilentSso = async (
   const deadline = Date.now() + timeoutMs;
   const discovery = new AbortController();
   const discoveryTimer = setTimeout(() => discovery.abort(), timeoutMs);
+  const abortDiscovery = () => discovery.abort();
+  signal?.addEventListener('abort', abortDiscovery);
   let idpResult: SsoIdpResult;
   try {
     idpResult = await discoverIdp(config.homeserverUrl, discovery.signal);
   } finally {
     clearTimeout(discoveryTimer);
+    signal?.removeEventListener('abort', abortDiscovery);
+  }
+  if (signal?.aborted) {
+    return 'unavailable';
   }
   if (!idpResult.ok || !idpResult.idpId) {
     return idpResult.unreachable ? 'unreachable' : 'unavailable';
@@ -177,9 +197,15 @@ const attemptSilentSso = async (
   iframe.setAttribute('aria-hidden', 'true');
   iframe.src = buildSsoUrl(config.homeserverUrl, idpResult.idpId);
   document.body.appendChild(iframe);
+  // Removing the frame tears down its browsing context, callback included.
+  const removeFrame = () => iframe.remove();
+  signal?.addEventListener('abort', removeFrame);
 
   try {
     while (Date.now() < deadline) {
+      if (signal?.aborted) {
+        return 'unavailable';
+      }
       await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
       const userId = await findStoredUserId(expectedLocalpart);
       if (userId) {
@@ -191,6 +217,7 @@ const attemptSilentSso = async (
     }
     return 'timeout';
   } finally {
+    signal?.removeEventListener('abort', removeFrame);
     iframe.remove();
     clearSsoFlowState();
   }
