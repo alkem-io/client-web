@@ -975,6 +975,7 @@ export function CalloutDetailDialogConnector({
           onOpenChange={onOpenChange}
           {...elevatedDialog}
           focusedPost={elevated && isPostSelected}
+          editing={postEditOpen}
           callout={{
             ...mapCalloutDetailsToDialogData(callout, t),
             commentCount: isPostSelected ? postMessagesCount : undefined,
@@ -1038,6 +1039,10 @@ export function CalloutDetailDialogConnector({
             onOpenChange={onOpenChange}
             {...elevatedDialog}
             focusedPost={elevated && isPostSelected}
+            // The post/task edit dialog opens over this one; its comment surface stays
+            // out of the way until the user saves or cancels. The comments connector
+            // above stays mounted throughout, so the count returns unchanged.
+            editing={postEditOpen}
             callout={{
               ...mapCalloutDetailsToDialogData(callout, t),
               // While the live thread is still loading, fall back to the post's `messagesCount`
