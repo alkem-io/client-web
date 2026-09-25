@@ -31,6 +31,7 @@ import { ContributionsPreviewConnector } from './ContributionsPreviewConnector';
 import { ContributorCollectionConnector } from './ContributorCollectionConnector';
 import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
 import { SpaceCollectionConnector } from './SpaceCollectionConnector';
+import { cardVariantFromServer } from './spaceCollectionCardVariant';
 import { TaskBoardConnector } from './TaskBoardConnector';
 import { TaskBoardDialog } from './TaskBoardDialog';
 
@@ -344,7 +345,11 @@ function LazyCalloutItemContent({
   // so it has no contributions-preview — only this body.
   const spacesPreview =
     callout.framing.type === CalloutFramingType.Spaces ? (
-      <SpaceCollectionConnector calloutId={callout.id} className="mt-2" />
+      <SpaceCollectionConnector
+        calloutId={callout.id}
+        cardVariant={cardVariantFromServer(callout.settings.framing.spaces?.cardVariant)}
+        className="mt-2"
+      />
     ) : null;
 
   // Without a comments room we can't wire the inline thread — fall back to the

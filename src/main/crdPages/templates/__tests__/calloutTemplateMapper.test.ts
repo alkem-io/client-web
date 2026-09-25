@@ -4,6 +4,7 @@ import {
   CalloutAllowedActors,
   CalloutContributionType,
   CalloutFramingType,
+  CalloutSelectionMode,
   type CalloutTemplateContentFragment,
   CalloutVisibility,
   CollaboraDocumentType,
@@ -540,5 +541,71 @@ describe('calloutTemplateContentToFormValues', () => {
     frag.settings.contribution.canAddContributions = CalloutAllowedActors.None;
     expect(calloutTemplateContentToFormValues(frag).responseType).toBe('whiteboard');
     expect(calloutTemplateContentToFormValues(frag).allowedActors).toEqual({ members: false, admins: false });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Card variant
+// ---------------------------------------------------------------------------
+
+describe('calloutTemplateContentToFormValues — cardVariant hydration', () => {
+  it('EXPANDED ⇒ "expanded"', () => {
+    const frag = baseFragment();
+    frag.settings.framing.spaces = { __typename: 'CalloutSpacesSettings', cardVariant: 'EXPANDED' as never };
+    expect(calloutTemplateContentToFormValues(frag).cardVariant).toBe('expanded');
+  });
+
+  it('null / absent spaces ⇒ "compact"', () => {
+    const v = calloutTemplateContentToFormValues(baseFragment());
+    expect(v.cardVariant).toBe('compact');
+  });
+});
+
+describe('calloutFormValuesToCreateCalloutInput — cardVariant', () => {
+  it('carries settings.framing.spaces for the spaces chip', () => {
+    const input = calloutFormValuesToCreateCalloutInput(
+      values({ framingChip: 'spaces', cardVariant: 'expanded' }),
+      fallbacks
+    );
+    expect(input.settings?.framing?.spaces).toEqual({ cardVariant: 'EXPANDED' });
+  });
+
+  it('omits it for a non-spaces chip', () => {
+    const input = calloutFormValuesToCreateCalloutInput(
+      values({ framingChip: 'none', cardVariant: 'expanded' }),
+      fallbacks
+    );
+    expect(input.settings?.framing?.spaces).toBeUndefined();
+  });
+});
+
+describe('callout template mappers — a manual selection never reaches a template (FR-006)', () => {
+  // A template has no host space, so the server rejects any template input carrying a CUSTOM
+  // selection. "Save as template" prefills from a live callout, which may well have one.
+  const manual = { selectionMode: 'custom', selectedIds: ['space-1', 'space-2'] } as const;
+
+  it.each(['spaces', 'contributors'] as const)('create resets a %s selection to AUTO with no ids', framingChip => {
+    const input = calloutFormValuesToCreateCalloutInput(
+      values({ framingChip, cardVariant: 'expanded', ...manual, selectedIds: [...manual.selectedIds] }),
+      fallbacks
+    );
+    expect(input.settings?.framing?.selection).toEqual({ mode: CalloutSelectionMode.Auto, selectedIds: [] });
+  });
+
+  it('create keeps the card variant while resetting the selection', () => {
+    const input = calloutFormValuesToCreateCalloutInput(
+      values({ framingChip: 'spaces', cardVariant: 'expanded', ...manual, selectedIds: [...manual.selectedIds] }),
+      fallbacks
+    );
+    expect(input.settings?.framing?.spaces).toEqual({ cardVariant: 'EXPANDED' });
+  });
+
+  it('update resets a manual selection to AUTO with no ids', () => {
+    const input = calloutFormValuesToUpdateCalloutEntityInput(
+      values({ framingChip: 'spaces', cardVariant: 'expanded', ...manual, selectedIds: [...manual.selectedIds] }),
+      'c1'
+    );
+    expect(input.settings?.framing?.selection).toEqual({ mode: CalloutSelectionMode.Auto, selectedIds: [] });
+    expect(input.settings?.framing?.spaces).toEqual({ cardVariant: 'EXPANDED' });
   });
 });

@@ -19,6 +19,7 @@ import { Columns3, Hash } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  SpaceCollectionSubspacesDocument,
   useCalloutContentQuery,
   useCreateReferenceOnProfileMutation,
   useDeleteReferenceMutation,
@@ -791,11 +792,20 @@ function CalloutFormConnectorInner({
       // whose data comes from separate queries; refetch the callout details and the
       // collection queries (and wait) so the view reflects the save in-session instead
       // of only after a reload.
-      const collectionRefetch =
+      // The subspaces collection is refetched by document with the variables the
+      // saved variant will read, not by name: a by-name refetch re-runs the mounted
+      // query with its CURRENT `expanded`, so a variant flip would await a useless
+      // result and then fetch again — cards blank to a spinner in between.
+      const collectionRefetch: Array<string | { query: typeof SpaceCollectionSubspacesDocument; variables: object }> =
         input.framing?.type === CalloutFramingType.Contributors
           ? ['ContributorCollectionConfig', 'ContributorCollectionByType']
           : input.framing?.type === CalloutFramingType.Spaces
-            ? ['SpaceCollectionSubspaces']
+            ? [
+                {
+                  query: SpaceCollectionSubspacesDocument,
+                  variables: { calloutId, expanded: values.cardVariant === 'expanded' },
+                },
+              ]
             : [];
       result = await updateCalloutContent({
         variables: { calloutData: input },
@@ -1066,6 +1076,8 @@ function CalloutFormConnectorInner({
                 onSelectionModeChange={next => setField('selectionMode', next)}
                 selectedIds={values.selectedIds}
                 onSelectedIdsChange={ids => setField('selectedIds', ids)}
+                cardVariant={values.cardVariant}
+                onCardVariantChange={next => setField('cardVariant', next)}
                 contributorCandidates={contributorCandidates}
                 resolveContributorChips={resolveContributorChips}
                 contributorCandidatesLoading={contributorCandidatesLoading}

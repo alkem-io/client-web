@@ -53,6 +53,7 @@ import {
   MOCK_CALLOUT_DIALOG,
   MOCK_MEMBERS,
   MOCK_COMMENTS,
+  MOCK_EXPANDED_SUBSPACES,
   MOCK_LINK_CONTRIBUTIONS,
   MOCK_MEMO_CONTRIBUTIONS,
   MOCK_ORGANIZATIONS,
@@ -601,6 +602,11 @@ export function SpacePage() {
         {activeTab === 2 && (
           <div className="space-y-8">
             <SpaceSubspacesList subspaces={MOCK_SUBSPACES} />
+            {/* Expanded-card design-review aid — lets the designer review the
+                desktop and phone layout with `pnpm crd:dev`, no backend needed. Covers a fully
+                filled card, a partial card, an all-empty card (falls back to the compact card),
+                and a long-text card (clamp-holds-at-any-length demo). */}
+            <SpaceSubspacesList subspaces={MOCK_EXPANDED_SUBSPACES} variant="expanded" title="Expanded card (design review)" />
             <SpaceFeed posts={MOCK_POSTS.slice(2)} />
           </div>
         )}

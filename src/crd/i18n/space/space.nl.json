@@ -375,6 +375,12 @@
       "title": "Geen subspaces gevonden",
       "description": "Geen subspaces komen overeen met je huidige zoekopdracht of filter.",
       "clearFilters": "Filters wissen"
+    },
+    "expandedCard": {
+      "what": "Wat",
+      "why": "Waarom",
+      "who": "Wie",
+      "open": "Subspace openen"
     }
   },
   "about": {
@@ -613,6 +619,10 @@
       "loadMore": "Meer laden…",
       "removeAriaLabel": "{{name}} verwijderen",
       "clearSearch": "Zoekopdracht wissen"
+    },
+    "cardVariant": {
+      "label": "Uitgeklapte kaart",
+      "description": "Toont de volledige kaart met de Wat, Waarom en Wie van de subspace - meer context, meer hoogte."
     }
   },
   "contributionSettings": {

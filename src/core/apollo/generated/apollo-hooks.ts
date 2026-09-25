@@ -1157,6 +1157,9 @@ export const CalloutSettingsFullFragmentDoc = gql`
       mode
       selectedIds
     }
+    spaces {
+      cardVariant
+    }
   }
   visibility
 }
@@ -3485,6 +3488,20 @@ export const CalloutReactionsSummaryFragmentDoc = gql`
     emojis
     myReactionEmoji
     allowedEmojis
+  }
+}
+    `;
+export const SubspaceCardAboutContextFragmentDoc = gql`
+    fragment SubspaceCardAboutContext on Space {
+  id
+  about {
+    id
+    why
+    who
+    profile {
+      id
+      description
+    }
   }
 }
     `;
@@ -31067,7 +31084,7 @@ export function refetchContributorCollectionByTypeQuery(
   return { query: ContributorCollectionByTypeDocument, variables: variables };
 }
 export const SpaceCollectionSubspacesDocument = gql`
-    query SpaceCollectionSubspaces($calloutId: UUID!) {
+    query SpaceCollectionSubspaces($calloutId: UUID!, $expanded: Boolean!) {
   lookup {
     callout(ID: $calloutId) {
       id
@@ -31075,12 +31092,14 @@ export const SpaceCollectionSubspacesDocument = gql`
         id
         subspaces {
           ...SubspaceCard
+          ...SubspaceCardAboutContext @include(if: $expanded)
         }
       }
     }
   }
 }
-    ${SubspaceCardFragmentDoc}`;
+    ${SubspaceCardFragmentDoc}
+${SubspaceCardAboutContextFragmentDoc}`;
 
 /**
  * __useSpaceCollectionSubspacesQuery__
@@ -31095,6 +31114,7 @@ export const SpaceCollectionSubspacesDocument = gql`
  * const { data, loading, error } = useSpaceCollectionSubspacesQuery({
  *   variables: {
  *      calloutId: // value for 'calloutId'
+ *      expanded: // value for 'expanded'
  *   },
  * });
  */

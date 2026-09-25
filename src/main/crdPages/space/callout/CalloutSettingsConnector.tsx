@@ -203,6 +203,10 @@ export function CalloutSettingsConnector({
     const loaded = data?.lookup.callout;
     const body: Partial<CalloutFormValues> = mapCalloutDetailsToFormValues(data);
     body.memoMarkdown = loaded?.framing.memo?.markdown ?? '';
+    // A template has no host space, so it cannot keep this callout's manual selection
+    // (the template mappers enforce AUTO on submit too); the card variant is kept (FR-006).
+    body.selectionMode = 'auto';
+    body.selectedIds = [];
     saveAs.openSaveAs({
       kind: 'callout',
       calloutBody: body,

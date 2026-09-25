@@ -1,5 +1,6 @@
 import { CommunityMembershipStatus, SpaceSortMode, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import type { SpaceCardData, SpaceLead } from '@/crd/components/space/SpaceCard';
+import { excerptVisibility } from '@/crd/lib/markdownExcerpt';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { getInitials } from './spacePageDataMapper';
 
@@ -7,9 +8,12 @@ type SubspaceQueryData = {
   id: string;
   visibility?: SpaceVisibility;
   about: {
+    why?: string | null;
+    who?: string | null;
     profile: {
       displayName: string;
       tagline?: string | null;
+      description?: string | null;
       url: string;
       avatar?: { uri: string } | null;
       cardBanner?: { uri: string } | null;
@@ -63,6 +67,18 @@ function mapSubspaceToCardData(subspace: SubspaceQueryData, showPinIndicator: bo
     id: subspace.id,
     name: profile.displayName,
     description: profile.tagline ?? '',
+    // Expanded-card excerpt sources. Naming trap: `what` is the About
+    // *description* — never rename/alias this to `description`, which above already
+    // carries the tagline. `who` is likewise never fetched for a compact post;
+    // `why` is fetched unconditionally by the shared `SubspaceCard` fragment today
+    // regardless of variant (pre-existing) and simply maps through harmlessly
+    // when the field wasn't selected (`undefined`) — only `variant === 'expanded'` reads it.
+    what: profile.description ?? undefined,
+    why: subspace.about.why ?? undefined,
+    who: subspace.about.who ?? undefined,
+    // Decided here, once per fetch, so the expanded list never parses markdown
+    // inside a render (every resize tick and search keystroke re-renders it).
+    sectionVisibility: excerptVisibility(profile.description, subspace.about.why, subspace.about.who),
     // L1/L2 subspace card = cardBanner + inline avatar + title. Per the canonical visual-fields
     // rule, never substitute cardBanner for avatar (or vice versa). When either is missing the
     // SpaceCard renders the deterministic gradient/initials from `avatarColor`.
@@ -92,7 +108,6 @@ function mapVisibilityToStatus(visibility?: SpaceVisibility): string {
       return 'inactive';
     case SpaceVisibility.Demo:
       return 'demo';
-    case SpaceVisibility.Active:
     default:
       return 'active';
   }

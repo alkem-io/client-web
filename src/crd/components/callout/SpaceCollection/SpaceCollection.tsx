@@ -13,25 +13,36 @@ export type SpaceCollectionProps = {
   subspaces: SpaceCardData[];
   /** Whether the subspace set is still loading (renders a spinner, not the empty state). */
   loading?: boolean;
+  /**
+   * Card variant. `'compact'` (default) is today's 3-up grid;
+   * `'expanded'` renders one rich card per row with What/Why/Who excerpts.
+   */
+  variant?: 'compact' | 'expanded';
   /** Navigate to a subspace when its card is clicked. */
   onSubspaceClick?: (space: SpaceCardData) => void;
   className?: string;
 };
 
 /**
- * Spaces-collection callout renderer (feature 013).
+ * Spaces-collection callout renderer.
  *
  * A THIN WRAPPER around the existing `SpaceSubspacesList` — which already renders
- * the `SpaceCard` (unchanged, FR-003) and owns the name search + tag/status
+ * the `SpaceCard` (unchanged) and owns the name search + tag/status
  * filters + "show more" pagination + empty state. Reusing it verbatim keeps the
  * exact search/filter behaviour of the hard-coded subspaces block this callout
- * replaces (parity — research R6). Cards only: no map, no counts, no segmented
- * switch (FR-008/FR-009).
+ * replaces (parity with prior behaviour). Cards only: no map, no counts, no segmented
+ * switch.
  *
  * Purely presentational (CRD): all data + navigation flow in via props; the
  * connector in `src/main/crdPages/space/callout/` fetches and wires them.
  */
-export function SpaceCollection({ subspaces, loading = false, onSubspaceClick, className }: SpaceCollectionProps) {
+export function SpaceCollection({
+  subspaces,
+  loading = false,
+  variant = 'compact',
+  onSubspaceClick,
+  className,
+}: SpaceCollectionProps) {
   const { t } = useTranslation('crd-space');
 
   // While the first fetch is in flight, show a spinner rather than briefly
@@ -44,5 +55,12 @@ export function SpaceCollection({ subspaces, loading = false, onSubspaceClick, c
     );
   }
 
-  return <SpaceSubspacesList subspaces={subspaces} onSubspaceClick={onSubspaceClick} className={className} />;
+  return (
+    <SpaceSubspacesList
+      subspaces={subspaces}
+      variant={variant}
+      onSubspaceClick={onSubspaceClick}
+      className={className}
+    />
+  );
 }
