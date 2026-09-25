@@ -849,8 +849,7 @@
         "cancel": "Cancel",
         "removeSuccess": "{{name}} removed from the organisation",
         "removeError": "Couldn't remove {{name}} — try again",
-        "saveError": "Couldn't save changes — try again",
-        "selfAdminLocked": "You can't remove your own Admin role here."
+        "saveError": "Couldn't save changes — try again"
       },
       "errors": {
         "limitAdmin": "An organisation can have at most 6 admins",

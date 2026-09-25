@@ -47,43 +47,25 @@ describe('OrgAssociateSettingsDialog — accessibility', () => {
   });
 });
 
-describe('OrgAssociateSettingsDialog — self-admin guard (R43 / FR-019a)', () => {
-  test('locks the Admin toggle and says why when an admin edits their own row', () => {
-    renderDialog({ isSelf: true });
-    expect(adminToggle()).toBeDisabled();
-    expect(screen.getByText('org.associates.editor.selfAdminLocked')).toBeInTheDocument();
-  });
-
-  test('also blocks Remove from organisation on one’s own admin row', () => {
-    renderDialog({ isSelf: true });
-    // Remove would strip the Admin role along with everything else, so the guard
-    // has to cover it too — otherwise the toggle is a speed bump with a door beside it.
-    expect(removeButton()).toBeDisabled();
-  });
-
-  test('saves the Admin role unchanged when an admin edits their own row', async () => {
+describe('OrgAssociateSettingsDialog — role editing', () => {
+  test('lets an administrator remove the Admin role from their own row', async () => {
     const user = userEvent.setup();
-    const { onSave } = renderDialog({ isSelf: true });
-    await user.click(screen.getByRole('button', { name: 'org.associates.editor.save' }));
-    expect(onSave).toHaveBeenCalledWith({ isAssociate: true, isAdmin: true, isOwner: false });
-  });
-
-  test('leaves another administrator’s row fully editable', async () => {
-    const user = userEvent.setup();
-    const { onSave } = renderDialog({ isSelf: false });
+    const { onSave } = renderDialog();
+    // Nothing about the editor is scoped to who is signed in: an administrator
+    // can demote themselves here, the same way they can demote anyone else.
     expect(adminToggle()).toBeEnabled();
     expect(removeButton()).toBeEnabled();
-    expect(screen.queryByText('org.associates.editor.selfAdminLocked')).not.toBeInTheDocument();
 
     await user.click(adminToggle());
     await user.click(screen.getByRole('button', { name: 'org.associates.editor.save' }));
     expect(onSave).toHaveBeenCalledWith({ isAssociate: true, isAdmin: false, isOwner: false });
   });
 
-  test('leaves one’s own row editable when one is not an admin of the organisation', () => {
-    renderDialog({ isSelf: true, subject: subject({ isAdmin: false }) });
-    expect(adminToggle()).toBeEnabled();
-    expect(removeButton()).toBeEnabled();
-    expect(screen.queryByText('org.associates.editor.selfAdminLocked')).not.toBeInTheDocument();
+  test('turning Admin on also turns Associate on, since Admin requires the entry role', async () => {
+    const user = userEvent.setup();
+    const { onSave } = renderDialog({ subject: subject({ isAssociate: false, isAdmin: false }) });
+    await user.click(adminToggle());
+    await user.click(screen.getByRole('button', { name: 'org.associates.editor.save' }));
+    expect(onSave).toHaveBeenCalledWith({ isAssociate: true, isAdmin: true, isOwner: false });
   });
 });

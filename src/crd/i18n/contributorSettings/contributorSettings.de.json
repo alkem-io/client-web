@@ -849,8 +849,7 @@
         "cancel": "Abbrechen",
         "removeSuccess": "{{name}} wurde aus der Organisation entfernt",
         "removeError": "{{name}} konnte nicht entfernt werden – bitte erneut versuchen",
-        "saveError": "Änderungen konnten nicht gespeichert werden – bitte erneut versuchen",
-        "selfAdminLocked": "Sie können Ihre eigene Admin-Rolle hier nicht entfernen."
+        "saveError": "Änderungen konnten nicht gespeichert werden – bitte erneut versuchen"
       },
       "errors": {
         "limitAdmin": "Eine Organisation kann höchstens 6 Admins haben",
