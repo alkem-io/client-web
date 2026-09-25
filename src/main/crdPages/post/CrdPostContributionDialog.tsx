@@ -3,7 +3,6 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ValidationError } from 'yup';
 import {
-  useCalloutContributionCommentsQuery,
   useCreatePostOnCalloutMutation,
   useCreateReferenceOnProfileMutation,
   useDeleteContributionMutation,
@@ -41,7 +40,6 @@ import useValidationMessageTranslation from '@/domain/shared/i18n/ValidationMess
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
-import { CalloutCommentsConnector } from '@/main/crdPages/space/callout/CalloutCommentsConnector';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import {
   emptyPostContributionFormValues,
@@ -87,6 +85,13 @@ type CrdPostContributionDialogProps = {
 
 type FieldErrors = Partial<Record<'displayName' | 'description', string>>;
 
+/**
+ * Create / edit form for a post contribution (a "response", or a "task" on a Tasks
+ * board). Deliberately form-only: it carries no comment surface, because while this
+ * dialog is open the user is writing, not discussing. The post's comments belong to
+ * the read-only surfaces — the callout detail dialog's discussion section and the
+ * feed card — which is where saving or cancelling lands the user, count unchanged.
+ */
 export function CrdPostContributionDialog({
   open,
   onOpenChange,
@@ -169,15 +174,6 @@ export function CrdPostContributionDialog({
   const isMoveTargetChanged = targetCalloutId !== baselineCalloutIdRef.current;
 
   const [moveContributionToCallout] = useMoveContributionToCalloutMutation();
-
-  // Comments live on a separate query that follows the contribution → post.comments path.
-  // The connector also fetches this internally; we fetch here to know the roomId up-front
-  // and pass `roomData` so the connector skips its own fetch.
-  const { data: commentsData } = useCalloutContributionCommentsQuery({
-    variables: { contributionId: contributionId ?? '', includePost: true },
-    skip: mode !== 'edit' || !contributionId || !open,
-  });
-  const commentsRoom = commentsData?.lookup.contribution?.post?.comments;
 
   // Reset state on open / mode change.
   useEffect(() => {
@@ -429,7 +425,6 @@ export function CrdPostContributionDialog({
   };
 
   const submitting = creating || updating;
-  const showCommentsSection = mode === 'edit' && Boolean(commentsRoom);
   const dialogTitle = isTaskBoard
     ? mode === 'create'
       ? t('callout.createTask')
@@ -555,16 +550,6 @@ export function CrdPostContributionDialog({
                   </div>
                 )}
               </>
-            )}
-
-            {showCommentsSection && commentsRoom && contributionId && (
-              <div className="mt-6 pt-6 border-t border-border space-y-4">
-                <CalloutCommentsConnector
-                  roomId={commentsRoom.id}
-                  contributionId={contributionId}
-                  roomData={commentsRoom}
-                />
-              </div>
             )}
           </div>
 

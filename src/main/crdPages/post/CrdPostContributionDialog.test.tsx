@@ -36,7 +36,6 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
     loading: false,
   }),
   usePostCalloutsInCalloutSetQuery: () => ({ data: undefined, refetch: vi.fn() }),
-  useCalloutContributionCommentsQuery: () => ({ data: undefined }),
   useCreatePostOnCalloutMutation: () => [state.createPost, { loading: false }],
   useUpdatePostMutation: () => [state.updatePost, { loading: false }],
   useDeleteContributionMutation: () => [state.deleteContribution],
@@ -57,7 +56,6 @@ vi.mock('@/crd/forms/markdown/MarkdownEditor', () => ({
 }));
 vi.mock('@/crd/forms/references/ReferencesEditor', () => ({ ReferencesEditor: () => null }));
 vi.mock('@/crd/forms/tags-input', () => ({ TagsInput: () => null }));
-vi.mock('@/main/crdPages/space/callout/CalloutCommentsConnector', () => ({ CalloutCommentsConnector: () => null }));
 vi.mock('@/domain/storage/StorageBucket/StorageConfigContext', () => ({ useStorageConfigContext: () => undefined }));
 vi.mock('@/main/crdPages/markdown/useMarkdownEditorIntegration', () => ({
   useMarkdownEditorIntegration: () => ({ onImageUpload: vi.fn(), iframeAllowedUrls: [], onError: vi.fn() }),
