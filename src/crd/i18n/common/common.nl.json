@@ -8,8 +8,13 @@
       "MESSAGING_NOT_ENABLED": "Deze gebruiker heeft direct berichten uitgeschakeld. Je kunt hen op dit moment geen bericht sturen.",
       "NOT_SUPPORTED": "Niet ondersteund: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
+      "UNSPECIFIED": "Er is een onverwachte fout opgetreden. Probeer het opnieuw.",
       "generic": "Er is een fout opgetreden",
       "generic-with-code": "Er is een fout opgetreden met code {{code}}",
+      "network": {
+        "session_store_unavailable": "De dienst is tijdelijk niet beschikbaar. Probeer het over een moment opnieuw.",
+        "generic": "Er is een verbindingsprobleem opgetreden. Controleer je verbinding en probeer het opnieuw."
+      },
       "support": {
         "emailBody": "Hallo,\n\nIk ben een fout tegengekomen tijdens het gebruik van Alkemio.\n\nError Code: {{code}}\n\nHelp me dit probleem op te lossen.\n\nBedankt.",
         "emailBodyGeneric": "Hallo,\n\nIk ben een fout tegengekomen tijdens het gebruik van Alkemio.\n\nHelp me dit probleem op te lossen.\n\nBedankt.",
