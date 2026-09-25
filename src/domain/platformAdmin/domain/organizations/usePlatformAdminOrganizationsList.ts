@@ -10,7 +10,6 @@ import {
   useRevokeLicensePlanFromAccountMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
-import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   OrgVerificationLifecycleEvents,
@@ -59,7 +58,17 @@ export const usePlatformAdminOrganizationsList = () => {
   const notify = useNotification();
 
   const [deleteOrganization] = useDeleteOrganizationMutation({
-    update: cache => clearCacheForQuery(cache, 'organizationsPaginated'),
+    // The admin list reads `platformAdmin.organizations`, not the root
+    // `organizationsPaginated` the previous cache eviction targeted — so a
+    // deleted row stayed on screen until a reload (027 R-F.2 sandbox walk,
+    // 2026-09-16). Refetch the list the way the license handlers below do.
+    refetchQueries: [
+      refetchPlatformAdminOrganizationsListQuery({
+        first: PAGE_SIZE,
+        filter: { displayName: searchTerm },
+      }),
+    ],
+    awaitRefetchQueries: true,
     onCompleted: () => notify(t('pages.admin.organization.notifications.organization-removed'), 'success'),
   });
 

@@ -5048,6 +5048,10 @@ export const AdminInnovationPackDocument = gql`
   lookup {
     innovationPack(ID: $innovationPackId) {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       provider {
         ...InnovationPackProviderProfileWithAvatar
       }
@@ -6282,6 +6286,59 @@ export type AssignPlatformRoleToUserMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.AssignPlatformRoleToUserMutation,
   SchemaTypes.AssignPlatformRoleToUserMutationVariables
 >;
+export const AssignPlatformRoleToOrganizationDocument = gql`
+    mutation AssignPlatformRoleToOrganization($role: RoleName!, $contributorId: UUID!) {
+  assignPlatformRoleToOrganization(
+    roleData: {role: $role, actorID: $contributorId}
+  ) {
+    id
+  }
+}
+    `;
+export type AssignPlatformRoleToOrganizationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignPlatformRoleToOrganizationMutation,
+  SchemaTypes.AssignPlatformRoleToOrganizationMutationVariables
+>;
+
+/**
+ * __useAssignPlatformRoleToOrganizationMutation__
+ *
+ * To run a mutation, you first call `useAssignPlatformRoleToOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignPlatformRoleToOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignPlatformRoleToOrganizationMutation, { data, loading, error }] = useAssignPlatformRoleToOrganizationMutation({
+ *   variables: {
+ *      role: // value for 'role'
+ *      contributorId: // value for 'contributorId'
+ *   },
+ * });
+ */
+export function useAssignPlatformRoleToOrganizationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignPlatformRoleToOrganizationMutation,
+    SchemaTypes.AssignPlatformRoleToOrganizationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AssignPlatformRoleToOrganizationMutation,
+    SchemaTypes.AssignPlatformRoleToOrganizationMutationVariables
+  >(AssignPlatformRoleToOrganizationDocument, options);
+}
+export type AssignPlatformRoleToOrganizationMutationHookResult = ReturnType<
+  typeof useAssignPlatformRoleToOrganizationMutation
+>;
+export type AssignPlatformRoleToOrganizationMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignPlatformRoleToOrganizationMutation>;
+export type AssignPlatformRoleToOrganizationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignPlatformRoleToOrganizationMutation,
+  SchemaTypes.AssignPlatformRoleToOrganizationMutationVariables
+>;
 export const AssignRoleToUserDocument = gql`
     mutation AssignRoleToUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
   assignRoleToUser(
@@ -6491,6 +6548,63 @@ export type RemovePlatformRoleFromUserMutationResult =
 export type RemovePlatformRoleFromUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemovePlatformRoleFromUserMutation,
   SchemaTypes.RemovePlatformRoleFromUserMutationVariables
+>;
+export const RemovePlatformRoleFromOrganizationDocument = gql`
+    mutation RemovePlatformRoleFromOrganization($role: RoleName!, $contributorId: UUID!) {
+  removePlatformRoleFromOrganization(
+    roleData: {role: $role, actorID: $contributorId}
+  ) {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}
+    `;
+export type RemovePlatformRoleFromOrganizationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemovePlatformRoleFromOrganizationMutation,
+  SchemaTypes.RemovePlatformRoleFromOrganizationMutationVariables
+>;
+
+/**
+ * __useRemovePlatformRoleFromOrganizationMutation__
+ *
+ * To run a mutation, you first call `useRemovePlatformRoleFromOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemovePlatformRoleFromOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removePlatformRoleFromOrganizationMutation, { data, loading, error }] = useRemovePlatformRoleFromOrganizationMutation({
+ *   variables: {
+ *      role: // value for 'role'
+ *      contributorId: // value for 'contributorId'
+ *   },
+ * });
+ */
+export function useRemovePlatformRoleFromOrganizationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemovePlatformRoleFromOrganizationMutation,
+    SchemaTypes.RemovePlatformRoleFromOrganizationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemovePlatformRoleFromOrganizationMutation,
+    SchemaTypes.RemovePlatformRoleFromOrganizationMutationVariables
+  >(RemovePlatformRoleFromOrganizationDocument, options);
+}
+export type RemovePlatformRoleFromOrganizationMutationHookResult = ReturnType<
+  typeof useRemovePlatformRoleFromOrganizationMutation
+>;
+export type RemovePlatformRoleFromOrganizationMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemovePlatformRoleFromOrganizationMutation>;
+export type RemovePlatformRoleFromOrganizationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemovePlatformRoleFromOrganizationMutation,
+  SchemaTypes.RemovePlatformRoleFromOrganizationMutationVariables
 >;
 export const RemoveRoleFromUserDocument = gql`
     mutation RemoveRoleFromUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
@@ -15957,6 +16071,10 @@ export const UserDocument = gql`
   lookup {
     user(ID: $id) {
       ...UserDetails
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
 }
@@ -18806,6 +18924,9 @@ export const PlatformLevelAuthorizationDocument = gql`
     roleSet {
       id
       myRoles
+      authorization {
+        myPrivileges
+      }
     }
     authorization {
       myPrivileges
@@ -19125,6 +19246,10 @@ export const PlatformAdminInnovationHubsDocument = gql`
   platformAdmin {
     innovationHubs {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       subdomain
       listedInStore
       searchVisibility
@@ -19220,6 +19345,10 @@ export const PlatformAdminInnovationPacksDocument = gql`
   platformAdmin {
     innovationPacks {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       listedInStore
       searchVisibility
       provider {
@@ -19308,6 +19437,344 @@ export function refetchPlatformAdminInnovationPacksQuery(
 ) {
   return { query: PlatformAdminInnovationPacksDocument, variables: variables };
 }
+export const LicensingAdminOrganizationsDocument = gql`
+    query licensingAdminOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
+  platformAdmin {
+    organizations(first: $first, after: $after, filter: $filter) {
+      total
+      organization {
+        id
+        account {
+          id
+          subscriptions {
+            name
+          }
+        }
+        profile {
+          id
+          url
+          displayName
+        }
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}
+    ${PageInfoFragmentDoc}`;
+
+/**
+ * __useLicensingAdminOrganizationsQuery__
+ *
+ * To run a query within a React component, call `useLicensingAdminOrganizationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLicensingAdminOrganizationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLicensingAdminOrganizationsQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useLicensingAdminOrganizationsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.LicensingAdminOrganizationsQuery,
+    SchemaTypes.LicensingAdminOrganizationsQueryVariables
+  > &
+    ({ variables: SchemaTypes.LicensingAdminOrganizationsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.LicensingAdminOrganizationsQuery,
+    SchemaTypes.LicensingAdminOrganizationsQueryVariables
+  >(LicensingAdminOrganizationsDocument, options);
+}
+export function useLicensingAdminOrganizationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LicensingAdminOrganizationsQuery,
+    SchemaTypes.LicensingAdminOrganizationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.LicensingAdminOrganizationsQuery,
+    SchemaTypes.LicensingAdminOrganizationsQueryVariables
+  >(LicensingAdminOrganizationsDocument, options);
+}
+export function useLicensingAdminOrganizationsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.LicensingAdminOrganizationsQuery,
+        SchemaTypes.LicensingAdminOrganizationsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.LicensingAdminOrganizationsQuery,
+    SchemaTypes.LicensingAdminOrganizationsQueryVariables
+  >(LicensingAdminOrganizationsDocument, options);
+}
+export type LicensingAdminOrganizationsQueryHookResult = ReturnType<typeof useLicensingAdminOrganizationsQuery>;
+export type LicensingAdminOrganizationsLazyQueryHookResult = ReturnType<typeof useLicensingAdminOrganizationsLazyQuery>;
+export type LicensingAdminOrganizationsSuspenseQueryHookResult = ReturnType<
+  typeof useLicensingAdminOrganizationsSuspenseQuery
+>;
+export type LicensingAdminOrganizationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.LicensingAdminOrganizationsQuery,
+  SchemaTypes.LicensingAdminOrganizationsQueryVariables
+>;
+export function refetchLicensingAdminOrganizationsQuery(
+  variables: SchemaTypes.LicensingAdminOrganizationsQueryVariables
+) {
+  return { query: LicensingAdminOrganizationsDocument, variables: variables };
+}
+export const LicensingAdminSpacesDocument = gql`
+    query licensingAdminSpaces {
+  platformAdmin {
+    spaces(filter: {visibilities: [ACTIVE, DEMO, INACTIVE, ARCHIVED]}) {
+      id
+      visibility
+      subscriptions {
+        name
+      }
+      about {
+        id
+        profile {
+          id
+          displayName
+          url
+        }
+        provider {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useLicensingAdminSpacesQuery__
+ *
+ * To run a query within a React component, call `useLicensingAdminSpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLicensingAdminSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLicensingAdminSpacesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLicensingAdminSpacesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.LicensingAdminSpacesQuery,
+    SchemaTypes.LicensingAdminSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.LicensingAdminSpacesQuery, SchemaTypes.LicensingAdminSpacesQueryVariables>(
+    LicensingAdminSpacesDocument,
+    options
+  );
+}
+export function useLicensingAdminSpacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LicensingAdminSpacesQuery,
+    SchemaTypes.LicensingAdminSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.LicensingAdminSpacesQuery, SchemaTypes.LicensingAdminSpacesQueryVariables>(
+    LicensingAdminSpacesDocument,
+    options
+  );
+}
+export function useLicensingAdminSpacesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.LicensingAdminSpacesQuery,
+        SchemaTypes.LicensingAdminSpacesQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.LicensingAdminSpacesQuery, SchemaTypes.LicensingAdminSpacesQueryVariables>(
+    LicensingAdminSpacesDocument,
+    options
+  );
+}
+export type LicensingAdminSpacesQueryHookResult = ReturnType<typeof useLicensingAdminSpacesQuery>;
+export type LicensingAdminSpacesLazyQueryHookResult = ReturnType<typeof useLicensingAdminSpacesLazyQuery>;
+export type LicensingAdminSpacesSuspenseQueryHookResult = ReturnType<typeof useLicensingAdminSpacesSuspenseQuery>;
+export type LicensingAdminSpacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.LicensingAdminSpacesQuery,
+  SchemaTypes.LicensingAdminSpacesQueryVariables
+>;
+export function refetchLicensingAdminSpacesQuery(variables?: SchemaTypes.LicensingAdminSpacesQueryVariables) {
+  return { query: LicensingAdminSpacesDocument, variables: variables };
+}
+export const LicensingAdminUsersDocument = gql`
+    query licensingAdminUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
+  platformAdmin {
+    users(first: $first, after: $after, filter: $filter) {
+      total
+      users {
+        id
+        account {
+          id
+          subscriptions {
+            name
+          }
+        }
+        profile {
+          id
+          url
+          displayName
+        }
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}
+    ${PageInfoFragmentDoc}`;
+
+/**
+ * __useLicensingAdminUsersQuery__
+ *
+ * To run a query within a React component, call `useLicensingAdminUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLicensingAdminUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLicensingAdminUsersQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useLicensingAdminUsersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.LicensingAdminUsersQuery,
+    SchemaTypes.LicensingAdminUsersQueryVariables
+  > &
+    ({ variables: SchemaTypes.LicensingAdminUsersQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.LicensingAdminUsersQuery, SchemaTypes.LicensingAdminUsersQueryVariables>(
+    LicensingAdminUsersDocument,
+    options
+  );
+}
+export function useLicensingAdminUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LicensingAdminUsersQuery,
+    SchemaTypes.LicensingAdminUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.LicensingAdminUsersQuery, SchemaTypes.LicensingAdminUsersQueryVariables>(
+    LicensingAdminUsersDocument,
+    options
+  );
+}
+export function useLicensingAdminUsersSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.LicensingAdminUsersQuery,
+        SchemaTypes.LicensingAdminUsersQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.LicensingAdminUsersQuery, SchemaTypes.LicensingAdminUsersQueryVariables>(
+    LicensingAdminUsersDocument,
+    options
+  );
+}
+export type LicensingAdminUsersQueryHookResult = ReturnType<typeof useLicensingAdminUsersQuery>;
+export type LicensingAdminUsersLazyQueryHookResult = ReturnType<typeof useLicensingAdminUsersLazyQuery>;
+export type LicensingAdminUsersSuspenseQueryHookResult = ReturnType<typeof useLicensingAdminUsersSuspenseQuery>;
+export type LicensingAdminUsersQueryResult = Apollo.QueryResult<
+  SchemaTypes.LicensingAdminUsersQuery,
+  SchemaTypes.LicensingAdminUsersQueryVariables
+>;
+export function refetchLicensingAdminUsersQuery(variables: SchemaTypes.LicensingAdminUsersQueryVariables) {
+  return { query: LicensingAdminUsersDocument, variables: variables };
+}
+export const LicensingUpdateSpaceVisibilityDocument = gql`
+    mutation licensingUpdateSpaceVisibility($spaceId: UUID!, $visibility: SpaceVisibility!) {
+  updateSpacePlatformSettings(
+    updateData: {spaceID: $spaceId, visibility: $visibility}
+  ) {
+    id
+    visibility
+  }
+}
+    `;
+export type LicensingUpdateSpaceVisibilityMutationFn = Apollo.MutationFunction<
+  SchemaTypes.LicensingUpdateSpaceVisibilityMutation,
+  SchemaTypes.LicensingUpdateSpaceVisibilityMutationVariables
+>;
+
+/**
+ * __useLicensingUpdateSpaceVisibilityMutation__
+ *
+ * To run a mutation, you first call `useLicensingUpdateSpaceVisibilityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLicensingUpdateSpaceVisibilityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [licensingUpdateSpaceVisibilityMutation, { data, loading, error }] = useLicensingUpdateSpaceVisibilityMutation({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      visibility: // value for 'visibility'
+ *   },
+ * });
+ */
+export function useLicensingUpdateSpaceVisibilityMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.LicensingUpdateSpaceVisibilityMutation,
+    SchemaTypes.LicensingUpdateSpaceVisibilityMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.LicensingUpdateSpaceVisibilityMutation,
+    SchemaTypes.LicensingUpdateSpaceVisibilityMutationVariables
+  >(LicensingUpdateSpaceVisibilityDocument, options);
+}
+export type LicensingUpdateSpaceVisibilityMutationHookResult = ReturnType<
+  typeof useLicensingUpdateSpaceVisibilityMutation
+>;
+export type LicensingUpdateSpaceVisibilityMutationResult =
+  Apollo.MutationResult<SchemaTypes.LicensingUpdateSpaceVisibilityMutation>;
+export type LicensingUpdateSpaceVisibilityMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.LicensingUpdateSpaceVisibilityMutation,
+  SchemaTypes.LicensingUpdateSpaceVisibilityMutationVariables
+>;
 export const AssignLicensePlanToAccountDocument = gql`
     mutation AssignLicensePlanToAccount($licensePlanId: UUID!, $accountId: UUID!, $licensingId: UUID!) {
   assignLicensePlanToAccount(
@@ -23446,9 +23913,6 @@ export const SpaceAboutBaseDocument = gql`
       id
       level
       nameID
-      account {
-        id
-      }
       about {
         ...SpaceAboutLight
       }
@@ -24363,6 +24827,9 @@ export const SpaceEntitlementsDocument = gql`
   lookup {
     space(ID: $spaceId) {
       id
+      account {
+        id
+      }
       license {
         id
         availableEntitlements

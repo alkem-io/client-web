@@ -9,6 +9,9 @@ export type AdminStoreEntityRow = AdminTableRow & {
   listedInStore: boolean;
   searchVisibility: 'public' | 'internal';
   accountOwner: string;
+  /** Per-row delete gate, read off the entity's `authorization.myPrivileges`.
+   * `undefined` keeps the action (lists that carry no privileges). */
+  canDelete?: boolean;
 };
 
 /** Maps the GraphQL `SearchVisibility` enum to the CRD chip variant. */

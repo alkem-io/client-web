@@ -321,7 +321,14 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
 
   // ────────────────── Prompt Graph (whole-section save + reset) ──────────────────
   const { platformPrivilegeWrapper } = useCurrentUserContext();
-  const isPlatformAdmin = platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;
+  // spec-clientweb-5 (2026-07-31): this gates `promptGraphEditingEnabled`,
+  // a VC *platform setting* — so it re-anchors onto
+  // `PLATFORM_SETTINGS_ADMIN` (A10's owner), not the retiring
+  // `PLATFORM_ADMIN` catch-all. PLATFORM_ADMIN retained so legacy reach is
+  // not narrowed; Slice A is additive.
+  const isPlatformAdmin = [AuthorizationPrivilege.PlatformSettingsAdmin, AuthorizationPrivilege.PlatformAdmin].some(
+    privilege => Boolean(platformPrivilegeWrapper?.hasPlatformPrivilege(privilege))
+  );
   const editingEnabled = vc?.platformSettings?.promptGraphEditingEnabled ?? false;
 
   const [updatePlatformSettings, { loading: togglingPlatformSetting }] =

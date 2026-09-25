@@ -2,6 +2,10 @@ query PlatformAdminInnovationHubs {
   platformAdmin {
     innovationHubs {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       subdomain
       listedInStore
       searchVisibility

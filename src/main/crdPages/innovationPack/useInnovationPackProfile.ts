@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useInnovationPackProfilePageQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, type InnovationPackProfilePageQuery } from '@/core/apollo/generated/graphql-schema';
+import type { InnovationPackProfilePageQuery } from '@/core/apollo/generated/graphql-schema';
 import type { InnovationPackProfileViewProps } from '@/crd/components/innovationPack/InnovationPackProfileView';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useTemplatesManager } from '@/main/crdPages/templates/useTemplatesManager';
 import { buildInnovationPackSettingsUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { canEditInnovationPack } from './innovationPackAccess';
 
 type GqlProfilePack = NonNullable<InnovationPackProfilePageQuery['lookup']['innovationPack']>;
 
@@ -17,7 +18,11 @@ export type UseInnovationPackProfileResult = {
   pack: InnovationPackProfileViewProps['pack'] | undefined;
   /** Holder-agnostic templates manager bound to the pack's templates set — read-only listing + preview. */
   tm: ReturnType<typeof useTemplatesManager>;
-  /** True when the viewer has `Update` privilege on the pack — i.e. should see "Manage this pack". */
+  /**
+   * True when the viewer may edit the pack — i.e. should see "Manage this pack": the owner's
+   * `Update`, or Platform Support's `PlatformSupportOrgResources` (A7, 027 R-F.2 — the server
+   * accepts either on `updateInnovationPack` and the pack's template CRUD).
+   */
   canManage: boolean;
   /** `<pack.profile.url>/settings` — passed to `InnovationPackProfileView` only when `canManage`. */
   adminHref: string | undefined;
@@ -73,7 +78,7 @@ export function useInnovationPackProfile(): UseInnovationPackProfileResult {
   const gqlPack = data?.lookup.innovationPack;
   const pack = gqlPack ? mapProfilePackToCard(gqlPack) : undefined;
   const templatesSetId = gqlPack?.templatesSet?.id;
-  const canManage = gqlPack?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+  const canManage = canEditInnovationPack(gqlPack?.authorization?.myPrivileges);
   const adminHref = canManage && pack ? buildInnovationPackSettingsUrl(pack.url) : undefined;
   const shareUrl = pack?.url ?? '';
 

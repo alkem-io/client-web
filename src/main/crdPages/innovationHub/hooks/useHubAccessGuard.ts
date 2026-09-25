@@ -10,7 +10,8 @@ export type HubAccessGuardResult =
  * Fetches the hub's `authorization.myPrivileges` (via the home fragment, which
  * carries privileges — the settings fragment does not). Returns:
  *   - `loading` while the privilege check is in flight
- *   - `allowed` when the viewer holds `Update`
+ *   - `allowed` when the viewer holds `Update` (the owner) or `PlatformSupportOrgResources`
+ *     (Platform Support editing an organization's hub — A7, 027 R-F.2)
  *   - `denied` with a redirect target (the hub's public home URL) otherwise
  *
  * Per FR-009 / FR-027b — the settings page MUST redirect non-admins to `/hub/<slug>`,
@@ -35,7 +36,10 @@ export const useHubAccessGuard = (innovationHubId: string | undefined): HubAcces
     return { state: 'denied', redirectTo: '/' };
   }
 
-  const canEdit = hub.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+  const myPrivileges = hub.authorization?.myPrivileges ?? [];
+  const canEdit =
+    myPrivileges.includes(AuthorizationPrivilege.Update) ||
+    myPrivileges.includes(AuthorizationPrivilege.PlatformSupportOrgResources);
   if (canEdit) {
     return { state: 'allowed' };
   }
