@@ -51,14 +51,12 @@ describe('ExpandedSpaceCard', () => {
     expect(labels).toEqual(['subspaces.expandedCard.what']);
   });
 
-  test('clamp classes are 3 for What, 2 for Why and Who', () => {
+  test('What, Why and Who all clamp to 5 lines', () => {
     setWidth(800);
     const { container } = render(<ExpandedSpaceCard space={baseFixture} />);
     const excerpts = container.querySelectorAll('.text-body.text-muted-foreground.break-words');
     expect(excerpts).toHaveLength(3);
-    expect(excerpts[0].className).toContain('line-clamp-3');
-    expect(excerpts[1].className).toContain('line-clamp-2');
-    expect(excerpts[2].className).toContain('line-clamp-2');
+    for (const excerpt of excerpts) expect(excerpt.className).toContain('line-clamp-5');
   });
 
   test('exactly one <a> in the card, accessible name is the subspace name', () => {
@@ -94,13 +92,13 @@ describe('ExpandedSpaceCard', () => {
   test('width 800 lays out as a row (side-by-side identity)', () => {
     setWidth(800);
     const { container } = render(<ExpandedSpaceCard space={baseFixture} />);
-    expect(container.querySelector('.w-\\[300px\\]')).not.toBeNull();
+    expect(container.querySelector('.w-\\[320px\\]')).not.toBeNull();
   });
 
   test.each([400, undefined])('width %s stacks (identity full width, bottom border)', width => {
     setWidth(width);
     const { container } = render(<ExpandedSpaceCard space={baseFixture} />);
-    expect(container.querySelector('.w-\\[300px\\]')).toBeNull();
+    expect(container.querySelector('.w-\\[320px\\]')).toBeNull();
     expect(container.querySelector('.border-b.border-border')).not.toBeNull();
   });
 
@@ -127,7 +125,7 @@ describe('ExpandedSpaceCard', () => {
     const { container } = render(<ExpandedSpaceCard space={{ ...baseFixture, what: maxLength }} />);
     const excerpts = container.querySelectorAll('.text-body.text-muted-foreground.break-words');
     expect(excerpts).toHaveLength(3);
-    expect(excerpts[0].className).toContain('line-clamp-3');
+    expect(excerpts[0].className).toContain('line-clamp-5');
     expect(screen.getAllByRole('link')).toHaveLength(1);
   });
 
@@ -151,12 +149,24 @@ describe('ExpandedSpaceCard', () => {
     expect(container.querySelector('article')?.className.split(' ')).toContain('group');
   });
 
-  test('the call-to-action cue sits at the right edge even when no leads render', () => {
+  test('the call-to-action cue sits at the foot of the identity column, even when no leads render', () => {
     setWidth(800);
     const { container } = render(<ExpandedSpaceCard space={{ ...baseFixture, leads: [] }} />);
-    const cue = container.querySelector('[aria-hidden="true"].ml-auto');
-    expect(cue).not.toBeNull();
+    const cue = container.querySelector('[aria-hidden="true"].bg-primary') as HTMLElement;
     expect(cue).toHaveTextContent('subspaces.expandedCard.open');
+    const identityColumn = container.querySelector('.w-\\[320px\\]') as HTMLElement;
+    expect(identityColumn.contains(cue)).toBe(true);
+    expect(contentColumn(container).contains(cue)).toBe(false);
+  });
+
+  test('What, Why and Who labels share one style', () => {
+    setWidth(800);
+    const { container } = render(<ExpandedSpaceCard space={baseFixture} />);
+    const labelClasses = Array.from(contentColumn(container).querySelectorAll('span.uppercase')).map(
+      el => el.className
+    );
+    expect(labelClasses).toHaveLength(3);
+    expect(new Set(labelClasses).size).toBe(1);
   });
 
   test('in the row layout the banner squares the corner that meets the divider', () => {
@@ -202,13 +212,14 @@ describe('ExpandedSpaceCard', () => {
     ).toBeInTheDocument();
   });
 
-  test('the footer wraps, so the cue moves to its own line instead of being clipped', () => {
+  test('leads and the cue each take their own line, so the cue is never squeezed or clipped', () => {
     setWidth(390);
     const { container } = render(<ExpandedSpaceCard space={baseFixture} />);
-    const cue = container.querySelector('[aria-hidden="true"].ml-auto') as HTMLElement;
+    const cue = container.querySelector('[aria-hidden="true"].bg-primary') as HTMLElement;
     const footer = cue.parentElement as HTMLElement;
-    expect(footer.className.split(' ')).toContain('flex-wrap');
-    // A nowrap cue in a footer narrower than it overflows and is clipped by the article.
+    expect(footer.className.split(' ')).toContain('flex-col');
+    expect(within(footer).getByText('crd-common:leads')).toBeInTheDocument();
+    // A nowrap cue narrower than its container would overflow and be clipped by the article.
     expect(cue.className.split(' ')).not.toContain('whitespace-nowrap');
     expect(cue.className.split(' ')).toContain('max-w-full');
   });

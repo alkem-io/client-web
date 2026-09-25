@@ -22,7 +22,7 @@ export type InlineMarkdownProps = {
    * Number of lines to clamp to via `line-clamp-N`. Pass 0 to disable clamping.
    * Defaults to 2 — suitable for notification/activity previews.
    */
-  clampLines?: 0 | 1 | 2 | 3;
+  clampLines?: 0 | 1 | 2 | 3 | 5;
   /**
    * Render markdown links as plain (non-interactive) text instead of `<a>`. Use this
    * when the preview is rendered inside a clickable container (e.g. a card that is
@@ -55,6 +55,15 @@ export type InlineMarkdownProps = {
  * this component exists to prevent. For full-width rich markdown content (callout
  * framing, post body, about view), use `MarkdownContent` instead.
  */
+// Literal class names, so Tailwind's source scan generates every one of them.
+const CLAMP_CLASS = {
+  0: '',
+  1: 'line-clamp-1',
+  2: 'line-clamp-2',
+  3: 'line-clamp-3',
+  5: 'line-clamp-5',
+} as const;
+
 export function InlineMarkdown({
   content,
   clampLines = 2,
@@ -62,8 +71,7 @@ export function InlineMarkdown({
   rawHtml = 'sanitize',
   className,
 }: InlineMarkdownProps) {
-  const clampClass =
-    clampLines === 0 ? '' : clampLines === 1 ? 'line-clamp-1' : clampLines === 3 ? 'line-clamp-3' : 'line-clamp-2';
+  const clampClass = CLAMP_CLASS[clampLines];
   const isCardSafe = rawHtml === 'skip';
 
   // Render links as plain text inside clickable containers to avoid nested-<a> (invalid HTML).

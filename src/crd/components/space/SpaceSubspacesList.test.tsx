@@ -83,15 +83,15 @@ describe('SpaceSubspacesList — variant', () => {
 
     mockUseElementWidth.mockReturnValue([800, vi.fn()]);
     const { container: wide } = render(<SpaceSubspacesList subspaces={cards} variant="expanded" />);
-    expect(wide.querySelector('li.max-w-\\[300px\\]')).not.toBeNull();
+    expect(wide.querySelector('li.max-w-\\[320px\\]')).not.toBeNull();
 
     mockUseElementWidth.mockReturnValue([400, vi.fn()]);
     const { container: narrow } = render(<SpaceSubspacesList subspaces={cards} variant="expanded" />);
-    expect(narrow.querySelector('li.max-w-\\[300px\\]')).toBeNull();
+    expect(narrow.querySelector('li.max-w-\\[320px\\]')).toBeNull();
 
     mockUseElementWidth.mockReturnValue([undefined, vi.fn()]);
     const { container: unmeasured } = render(<SpaceSubspacesList subspaces={cards} variant="expanded" />);
-    expect(unmeasured.querySelector('li.max-w-\\[300px\\]')).toBeNull();
+    expect(unmeasured.querySelector('li.max-w-\\[320px\\]')).toBeNull();
   });
 
   test('an explicit initialVisibleCount overrides the variant default', () => {

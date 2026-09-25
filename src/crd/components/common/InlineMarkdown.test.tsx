@@ -45,6 +45,7 @@ describe('InlineMarkdown default mode — unchanged behaviour (characterisation)
     [1, 'line-clamp-1'],
     [2, 'line-clamp-2'],
     [3, 'line-clamp-3'],
+    [5, 'line-clamp-5'],
   ] as const)('clampLines %s maps to class %s', (clampLines, expectedClass) => {
     const { container } = render(<InlineMarkdown content="hello" clampLines={clampLines} />);
     const root = container.firstElementChild;

@@ -237,7 +237,7 @@ export function SpaceSubspacesList({
               return (
                 <li
                   key={subspace.id}
-                  className={cn('h-full', (listWidth ?? 0) >= ROW_LAYOUT_MIN_WIDTH && 'max-w-[300px]')}
+                  className={cn('h-full', (listWidth ?? 0) >= ROW_LAYOUT_MIN_WIDTH && 'max-w-[320px]')}
                 >
                   <SpaceCard space={subspace} onClick={onSubspaceClick} />
                 </li>

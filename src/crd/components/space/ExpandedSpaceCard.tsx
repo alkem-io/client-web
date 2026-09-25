@@ -17,6 +17,9 @@ import { SpaceCardIdentity, SpaceCardLeads } from './SpaceCardIdentity';
  */
 export const ROW_LAYOUT_MIN_WIDTH = 520;
 
+/** Every excerpt (What, Why and Who alike) clamps to this many lines (design source). */
+const EXCERPT_CLAMP_LINES = 5;
+
 export type { ExcerptVisibility };
 
 export type ExpandedSpaceCardProps = {
@@ -37,13 +40,13 @@ export type ExpandedSpaceCardProps = {
 /**
  * The expanded (rich) subspace card — the compact card's identity
  * block, reused unchanged via `SpaceCardIdentity`, plus clamped What/Why/Who
- * excerpts and a full-width leads footer.
+ * excerpts, with the leads and an "Open subspace" cue at the foot of the identity column.
  *
  * One link per card: the subspace name is a *stretched* link — its hit
  * area (`after:absolute after:inset-0`) covers the whole card via the `article`'s
  * `relative` positioning, while the tag row's own real controls
  * (`SpaceCardIdentity`'s `relative z-10` wrappers) stay above that overlay and
- * keep working. The footer's "Open subspace" cue is `aria-hidden` — a visual cue
+ * keep working. The "Open subspace" cue is `aria-hidden` — a visual cue
  * inside the one link, never a second stop.
  *
  * Layout follows the card's OWN measured width (`useElementWidth`), never a
@@ -82,7 +85,7 @@ export function ExpandedSpaceCard({
         className={cn(
           'truncate block outline-none',
           // `after:z-[1]` lifts the overlay above positioned-but-unstacked descendants
-          // that come later in the DOM (the footer's lead avatars are `relative`), which
+          // that come later in the DOM (the lead avatars are `relative`), which
           // would otherwise paint and hit-test above it and swallow the click. The tag
           // row's and parent line's real controls sit at `z-10`, still above the overlay.
           'after:absolute after:inset-0 after:z-[1] after:content-[""]',
@@ -94,10 +97,10 @@ export function ExpandedSpaceCard({
     </h3>
   );
 
-  const sections: Array<{ key: 'what' | 'why' | 'who'; value: string | undefined; clampLines: 2 | 3 }> = [
-    { key: 'what', value: space.what, clampLines: 3 },
-    { key: 'why', value: space.why, clampLines: 2 },
-    { key: 'who', value: space.who, clampLines: 2 },
+  const sections: Array<{ key: 'what' | 'why' | 'who'; value: string | undefined }> = [
+    { key: 'what', value: space.what },
+    { key: 'why', value: space.why },
+    { key: 'who', value: space.who },
   ];
 
   return (
@@ -112,7 +115,12 @@ export function ExpandedSpaceCard({
       )}
     >
       <div className={cn('flex', isRow ? 'flex-row' : 'flex-col')}>
-        <div className={isRow ? 'w-[300px] shrink-0 border-r border-border' : 'border-b border-border'}>
+        <div
+          className={cn(
+            'flex flex-col',
+            isRow ? 'w-[320px] shrink-0 border-r border-border' : 'border-b border-border'
+          )}
+        >
           <SpaceCardIdentity
             space={space}
             onParentClick={onParentClick}
@@ -121,6 +129,22 @@ export function ExpandedSpaceCard({
             // square that corner so no card-background notch shows beside it.
             bannerClassName={isRow ? 'rounded-tr-none' : undefined}
           />
+
+          {/* Identity-column footer, pinned to the column's bottom: the "Leads" group
+              (omitted when the subspace has no leads) above the call-to-action cue. Each
+              sits on its own line, so neither is ever squeezed or clipped by the other in
+              any language. The cue is `aria-hidden` — a visual cue inside the card's one
+              link, never a second stop. */}
+          <div className="mt-auto flex flex-col gap-4 border-t border-border px-4 py-4">
+            <SpaceCardLeads leads={space.leads} className="min-w-0" />
+            <span
+              aria-hidden="true"
+              className="inline-flex h-9 max-w-full items-center gap-1.5 self-start rounded-md bg-primary px-4 text-[13px] font-semibold text-primary-foreground"
+            >
+              {t('crd-space:subspaces.expandedCard.open')}
+              <ArrowRight className="size-3.5 shrink-0" />
+            </span>
+          </div>
         </div>
 
         <div className="flex-1 min-w-0 flex flex-col gap-5 p-6">
@@ -132,32 +156,11 @@ export function ExpandedSpaceCard({
                   sectionKey={section.key}
                   label={t(`crd-space:subspaces.expandedCard.${section.key}`)}
                   value={clampExcerptSource(section.value)}
-                  clampLines={section.clampLines}
-                  primary={section.key === 'what'}
                 />
               </SilentErrorBoundary>
             ) : null;
           })}
         </div>
-      </div>
-
-      {/* Full-width footer — closes the card in both the row and the stacked
-          arrangement. Always renders (it hosts the call-to-action cue, kept at the
-          right edge whether or not the "Leads" group renders beside it); the
-          "Leads" group alone is omitted when the subspace has no leads. */}
-      {/* Wraps: in a narrow (stacked) card the leads group and the cue do not both fit on
-          one line in every language, so the cue drops to its own line, still right-aligned
-          by `ml-auto`, instead of being clipped by the article's `overflow-hidden`. The cue
-          itself may wrap only if it alone is wider than the footer. */}
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mt-auto px-4 py-3 border-t border-border">
-        <SpaceCardLeads leads={space.leads} className="min-w-0" />
-        <span
-          aria-hidden="true"
-          className="ml-auto inline-flex max-w-full items-center gap-1.5 rounded text-control text-primary-foreground bg-primary px-3 py-1.5"
-        >
-          {t('crd-space:subspaces.expandedCard.open')}
-          <ArrowRight className="size-3.5 shrink-0" />
-        </span>
       </div>
     </article>
   );
@@ -167,29 +170,21 @@ type ExcerptSectionProps = {
   sectionKey: 'what' | 'why' | 'who';
   label: string;
   value: string;
-  clampLines: 2 | 3;
-  primary: boolean;
 };
 
-function ExcerptSection({ sectionKey, label, value, clampLines, primary }: ExcerptSectionProps) {
+function ExcerptSection({ sectionKey, label, value }: ExcerptSectionProps) {
   return (
     <div data-testid={`excerpt-${sectionKey}`}>
       <div className="flex items-center gap-3">
-        <span
-          className={cn(
-            'uppercase shrink-0',
-            primary ? 'text-label text-foreground' : 'text-badge text-muted-foreground'
-          )}
-        >
-          {label}
-        </span>
+        {/* One label style for all three sections (design source). */}
+        <span className="shrink-0 text-[13px] font-semibold uppercase tracking-[0.04em] text-foreground">{label}</span>
         <span aria-hidden="true" className="flex-1 h-px bg-border" />
       </div>
       <InlineMarkdown
         content={value}
         rawHtml="skip"
         disableLinks={true}
-        clampLines={clampLines}
+        clampLines={EXCERPT_CLAMP_LINES}
         className="mt-2.5 text-body text-muted-foreground break-words"
       />
     </div>
