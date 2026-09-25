@@ -1,6 +1,6 @@
 import { expect, test } from '../fixtures/authFixture';
 import allowedViolations from '../fixtures/cspAllowedViolations.json';
-import { type CspViolation, installCspViolationCollector, readCspViolations } from '../fixtures/cspViolations';
+import { type CspViolation, installCspViolationCollector } from '../fixtures/cspViolations';
 
 /**
  * Live walk of the deployed content-security policy: the document carries the
@@ -32,12 +32,19 @@ test.describe('content-security policy', () => {
   test.skip(!MATRIX_URL, 'E2E_MATRIX_URL is unset — point it at the messaging host of the target environment');
 
   test('the shell carries the policy and a walk reports no violation', async ({ authedPage: page }) => {
-    await installCspViolationCollector(page);
+    const violations = await installCspViolationCollector(page);
     // The first /sync is the settle signal: the silent-SSO frame has done its
     // work and the chat is connected. networkidle never arrives while /sync long-polls.
-    const matrixSynced = page.waitForRequest(
-      request => request.url().startsWith(`${MATRIX_URL}/_matrix/client/`) && request.url().includes('/sync')
-    );
+    const matrixSynced = page
+      .waitForRequest(
+        request => request.url().startsWith(`${MATRIX_URL}/_matrix/client/`) && request.url().includes('/sync'),
+        { timeout: 30_000 }
+      )
+      .catch(() => {
+        throw new Error(
+          `No Matrix /sync from the browser to ${MATRIX_URL} within 30s — the target does not run the browser Matrix session, so the chat surface this walk covers is absent`
+        );
+      });
 
     const response = await page.goto('/');
     const policy = response?.headers()[HEADER] ?? '';
@@ -51,12 +58,9 @@ test.describe('content-security policy', () => {
     const assistant = page.getByRole('button', { name: /assistant/i });
     if (await assistant.count()) await assistant.first().click();
     await matrixSynced;
-    // The collector lives in the document, so read it before navigating away.
-    const violations = await readCspViolations(page);
     if (WHITEBOARD_URL) {
       await page.goto(WHITEBOARD_URL);
       await page.locator('.excalidraw canvas').first().waitFor();
-      violations.push(...(await readCspViolations(page)));
     }
 
     expect(violations.filter(v => !isAllowed(v))).toEqual([]);

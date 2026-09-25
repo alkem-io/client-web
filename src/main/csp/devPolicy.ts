@@ -1,8 +1,12 @@
 /**
- * The deployed content-security policy with local origins and no report
- * endpoint, served report-only by the Vite dev server so developers see the
- * same violations the environments report. Vite's own dev preamble is an
- * inline module script and shows up as one expected report-only entry.
+ * A hand-kept mirror of the deployed content-security policy, with local
+ * origins and no report endpoint, served report-only by the Vite dev server so
+ * developers see the same violations the environments report. The deployed
+ * policy is rendered by dev-orchestration's `.scripts/render-web-csp.sh`; a
+ * directive or social-login provider changed there must be changed here too.
+ * Deliberate local differences: frame-src admits http://localhost:*, and there
+ * is no report endpoint. Vite's own dev preamble is an inline module script and
+ * shows up as one expected report-only entry.
  */
 export function buildDevContentSecurityPolicy({
   appOrigin,
