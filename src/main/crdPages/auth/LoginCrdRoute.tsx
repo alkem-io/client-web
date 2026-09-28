@@ -22,7 +22,7 @@ import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { resolveInternalReturnPath } from '@/core/utils/links';
 import type { KratosFlowDescriptor, KratosMessage } from '@/crd/components/auth/flowDescriptor';
-import { LoginCard } from '@/crd/components/auth/LoginCard';
+import { LoginCard, type LoginCardNotice } from '@/crd/components/auth/LoginCard';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import { buildSignUpUrl } from '@/main/routing/urlBuilders';
@@ -43,7 +43,6 @@ const PASSKEY_ERROR_MESSAGE_ID = -1;
 // Any other value is ignored, so a crafted link falls through to the ordinary
 // OIDC entry rather than parking the visitor on a card with no way forward.
 const APP_SIGN_IN_VALUES = ['required', 'cancelled', 'failed'] as const;
-type AppSignInReason = (typeof APP_SIGN_IN_VALUES)[number];
 
 /**
  * Absolute URL that restarts sign-in at the OIDC BFF, preserving the pending
@@ -104,10 +103,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   // back here with a reason; the server does the same when a hand-off fails.
   // Like a lockout arrival this is NOT an OIDC entry — redirecting would throw
   // the reason away before it could be read.
-  const rawAppSignIn = params.get('app_signin');
-  const appSignIn = APP_SIGN_IN_VALUES.includes(rawAppSignIn as AppSignInReason)
-    ? (rawAppSignIn as AppSignInReason)
-    : null;
+  const appSignIn = APP_SIGN_IN_VALUES.find(value => value === params.get('app_signin'));
   const isOidcEntry = !flow && !isLockedOutArrival && !appSignIn;
 
   useLayoutEffect(() => {
@@ -180,46 +176,36 @@ function CrdLoginPage({ flow }: { flow?: string }) {
     return { ...base, messages };
   })();
 
-  // Locked-out arrival (no flow): render the lockout notice with a manual
-  // re-entry into the OIDC sign-in. No Kratos form is offered — the flow the
-  // hook auto-provisioned is deliberately ignored, both because a Kratos-native
-  // login would bypass Hydra and because the backoff proxy would refuse the
-  // POST anyway. If still locked when the person retries, the proxy bounces
-  // them back here with fresh params.
-  if (!flow && isLockedOutArrival) {
-    return (
-      <AuthShellWrapper>
-        <LoginCard
-          descriptor={undefined}
-          isLoading={false}
-          notice={{
-            text: t('authentication.lockout', { duration: lockoutDuration }),
-            actionLabel: t('authentication.lockoutRetry'),
-            actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
-          }}
-          signUpHref={signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH}
-          forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
-        />
-      </AuthShellWrapper>
-    );
-  }
+  // The two arrivals that carry their reason in the query string: the backoff
+  // proxy's lockout bounce, and the shell / server hand-off bounce. Neither may
+  // render a Kratos form — the auto-provisioned flow is deliberately ignored,
+  // both because a Kratos-native login would bypass Hydra and because the
+  // backoff proxy would refuse the POST anyway — so each renders its notice with
+  // a manual re-entry into the OIDC sign-in. Lockout wins when both are present:
+  // the account is blocked either way. Nothing here knows or asks whether it is
+  // running in the app; the card is correct in a plain browser too.
+  const arrivalNotice: LoginCardNotice | undefined = isLockedOutArrival
+    ? {
+        text: t('authentication.lockout', { duration: lockoutDuration }),
+        actionLabel: t('authentication.lockoutRetry'),
+        actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
+      }
+    : appSignIn
+      ? {
+          text: tAuth(`appSignIn.${appSignIn}`),
+          actionLabel: tAuth('appSignIn.action'),
+          actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
+          tone: appSignIn === 'failed' ? 'destructive' : 'info',
+        }
+      : undefined;
 
-  // App sign-in arrival (no flow): explain why sign-in stopped and offer the
-  // one action that restarts it. Nothing here knows or asks whether it is
-  // running in the app — the parameter is produced only by the shell and the
-  // server, and the card it renders is correct in a plain browser too.
-  if (!flow && appSignIn) {
+  if (!flow && arrivalNotice) {
     return (
       <AuthShellWrapper>
         <LoginCard
           descriptor={undefined}
           isLoading={false}
-          notice={{
-            text: tAuth(`appSignIn.${appSignIn}`),
-            actionLabel: tAuth('appSignIn.action'),
-            actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
-            tone: appSignIn === 'failed' ? 'destructive' : 'info',
-          }}
+          notice={arrivalNotice}
           signUpHref={signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH}
           forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
         />
