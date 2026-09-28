@@ -1,7 +1,9 @@
+import 'fake-indexeddb/auto';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { handleMatrixCallback } from './matrixCallback';
-import { HOMESERVER } from './matrixTestFixtures';
-import { loadCredentials } from './storage';
+import { clearNamespace, loadCredentials } from './storage';
+
+const HOMESERVER = 'https://matrix.dev-alkem.io';
 
 const setUrlWithToken = (token: string) => {
   window.history.replaceState(null, '', `/matrix-callback?loginToken=${token}`);
@@ -18,9 +20,10 @@ describe('matrixCallback', () => {
     window.history.replaceState(null, '', '/');
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     vi.restoreAllMocks();
     window.history.replaceState(null, '', '/');
+    await clearNamespace(EXCHANGE_RESPONSE.user_id);
   });
 
   describe('handleMatrixCallback', () => {
@@ -53,16 +56,6 @@ describe('matrixCallback', () => {
       expect(body.token).toBe('mlt_valid');
       expect(body.refresh_token).toBeUndefined();
       expect(body.initial_device_display_name).toBe('Alkemio Web');
-    });
-
-    it('persists credentials to IndexedDB', async () => {
-      setUrlWithToken('mlt_persist');
-
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
-        new Response(JSON.stringify(EXCHANGE_RESPONSE), { status: 200 })
-      );
-
-      await handleMatrixCallback(HOMESERVER);
 
       const stored = await loadCredentials(EXCHANGE_RESPONSE.user_id);
       expect(stored).not.toBeNull();

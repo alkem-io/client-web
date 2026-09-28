@@ -1,7 +1,17 @@
+import 'fake-indexeddb/auto';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { HOMESERVER, setMatrixHomeserver } from './matrixTestFixtures';
-import { CALLBACK_ROUTE } from './ssoLogin';
 import { clearNamespace, storeCredentials } from './storage';
+
+const HOMESERVER = 'https://matrix.dev-alkem.io';
+
+// `@/main/env` snapshots window._env_ at import, so each test re-imports ssoLogin after setting it.
+const setMatrixHomeserver = (url: string): void => {
+  Object.defineProperty(window, '_env_', {
+    value: { VITE_APP_MATRIX_HOMESERVER_URL: url },
+    writable: true,
+    configurable: true,
+  });
+};
 
 describe('ssoLogin', () => {
   beforeEach(() => {
@@ -72,7 +82,7 @@ describe('ssoLogin', () => {
       const iframe = document.querySelector('iframe');
       expect(iframe?.src).toContain(`${HOMESERVER}/_matrix/client/v3/login/sso/redirect?redirectUrl=`);
       expect(iframe?.src).not.toContain('/sso/redirect/');
-      expect(iframe?.src).toContain(encodeURIComponent(`${window.location.origin}${CALLBACK_ROUTE}`));
+      expect(iframe?.src).toContain(encodeURIComponent(`${window.location.origin}/matrix-callback`));
       expect(iframe?.style.display).toBe('none');
 
       abort.abort();

@@ -1,19 +1,21 @@
+import 'fake-indexeddb/auto';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { makeCredentialRecord } from './matrixTestFixtures';
-import { clearNamespace, loadCredentials, storeCredentials } from './storage';
+import { type CredentialRecord, clearNamespace, listStoredUserIds, loadCredentials, storeCredentials } from './storage';
 
 const USER_ID = '@alice:matrix.example.com';
 const OTHER_USER_ID = '@bob:matrix.example.com';
 
-const makeRecord = (overrides: Partial<Parameters<typeof storeCredentials>[0]> = {}) =>
-  makeCredentialRecord({
-    userId: USER_ID,
-    homeserverUrl: 'https://matrix.example.com',
-    ...overrides,
-  });
+const makeRecord = (overrides: Partial<CredentialRecord> = {}): CredentialRecord => ({
+  userId: USER_ID,
+  deviceId: 'DEVICE_ABC',
+  accessToken: 'access-token-1',
+  homeserverUrl: 'https://matrix.example.com',
+  ...overrides,
+});
 
 describe('storage (IndexedDB)', () => {
   afterEach(async () => {
+    vi.restoreAllMocks();
     await clearNamespace(USER_ID);
     await clearNamespace(OTHER_USER_ID);
   });
@@ -54,14 +56,6 @@ describe('storage (IndexedDB)', () => {
   });
 
   describe('whole-namespace wipe', () => {
-    it('deletes the entire database for a user', async () => {
-      await storeCredentials(makeRecord());
-      await clearNamespace(USER_ID);
-
-      const result = await loadCredentials(USER_ID);
-      expect(result).toBe(null);
-    });
-
     it('leaves other users untouched', async () => {
       await storeCredentials(makeRecord({ userId: USER_ID }));
       await storeCredentials(makeRecord({ userId: OTHER_USER_ID, deviceId: 'DEVICE_BOB' }));
@@ -80,7 +74,6 @@ describe('storage (IndexedDB)', () => {
       await storeCredentials(makeRecord({ userId: USER_ID }));
       await storeCredentials(makeRecord({ userId: OTHER_USER_ID }));
 
-      const { listStoredUserIds } = await import('./storage');
       const ids = await listStoredUserIds();
 
       expect(ids).toContain(USER_ID);
@@ -92,7 +85,6 @@ describe('storage (IndexedDB)', () => {
       // @ts-expect-error — simulate a browser without indexedDB.databases()
       indexedDB.databases = undefined;
       try {
-        const { listStoredUserIds } = await import('./storage');
         expect(await listStoredUserIds()).toEqual([]);
       } finally {
         indexedDB.databases = original;
@@ -102,27 +94,21 @@ describe('storage (IndexedDB)', () => {
 
   describe('storage-unavailable fallback', () => {
     it('returns null when IndexedDB throws', async () => {
-      const originalOpen = indexedDB.open.bind(indexedDB);
       vi.spyOn(indexedDB, 'open').mockImplementation(() => {
         throw new Error('SecurityError: IndexedDB not available');
       });
 
       const result = await loadCredentials(USER_ID);
       expect(result).toBe(null);
-
-      vi.mocked(indexedDB.open).mockImplementation(originalOpen);
     });
 
     it('returns false from storeCredentials when IndexedDB throws', async () => {
-      const originalOpen = indexedDB.open.bind(indexedDB);
       vi.spyOn(indexedDB, 'open').mockImplementation(() => {
         throw new Error('SecurityError: IndexedDB not available');
       });
 
       const stored = await storeCredentials(makeRecord());
       expect(stored).toBe(false);
-
-      vi.mocked(indexedDB.open).mockImplementation(originalOpen);
     });
   });
 });

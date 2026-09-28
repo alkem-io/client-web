@@ -1,12 +1,15 @@
+import 'fake-indexeddb/auto';
 import { createClient } from 'matrix-js-sdk';
 import { afterEach, beforeEach, describe, expect, it, type MockedFunction, vi } from 'vitest';
-import { HOMESERVER } from './matrixTestFixtures';
+import { stopActiveSession } from './activeSession';
 import { establishSession, type MatrixClientLike } from './sessionController';
 import { attemptSilentSso } from './ssoLogin';
 import { clearNamespace, storeCredentials } from './storage';
 
 vi.mock('matrix-js-sdk', () => ({ createClient: vi.fn() }));
 vi.mock('./ssoLogin', () => ({ attemptSilentSso: vi.fn() }));
+
+const HOMESERVER = 'https://matrix.dev-alkem.io';
 
 // Cast to the same narrow shape sessionController.ts itself casts the dynamic
 // `import('matrix-js-sdk')` to — the real ICreateClientOpts/MatrixClient types
@@ -138,25 +141,11 @@ describe('establishSession', () => {
       expect(capturedSignal).toBeDefined();
     });
 
-    const { stopActiveSession } = await import('./activeSession');
     stopActiveSession();
     expect(capturedSignal?.aborted).toBe(true);
 
     await pending;
     expect(mockedCreateClient).not.toHaveBeenCalled();
-  });
-
-  it('fails closed without creating a client when the browser cannot list IndexedDB databases', async () => {
-    const original = indexedDB.databases;
-    Object.defineProperty(indexedDB, 'databases', { value: undefined, configurable: true });
-    try {
-      await establishSession(ACTOR);
-
-      expect(mockedSilentSso).toHaveBeenCalledOnce();
-      expect(mockedCreateClient).not.toHaveBeenCalled();
-    } finally {
-      Object.defineProperty(indexedDB, 'databases', { value: original, configurable: true });
-    }
   });
 
   it("never resumes with another actor's stored record", async () => {

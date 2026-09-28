@@ -73,8 +73,12 @@ const listStoredUserIds = async (): Promise<string[]> => {
   }
 };
 
-const findStoredUserId = async (actorLocalpart: string): Promise<string | null> =>
-  (await listStoredUserIds()).find(id => id.startsWith(`@${actorLocalpart.toLowerCase()}:`)) ?? null;
+/** The stored record under the actor's own namespace prefix, or null. */
+const loadActorCredentials = async (actorLocalpart: string): Promise<CredentialRecord | null> => {
+  const prefix = `@${actorLocalpart.toLowerCase()}:`;
+  const userId = (await listStoredUserIds()).find(id => id.startsWith(prefix));
+  return userId ? loadCredentials(userId) : null;
+};
 
 const clearNamespace = async (userId: string): Promise<void> => {
   await new Promise<void>((resolve, reject) => {
@@ -84,5 +88,5 @@ const clearNamespace = async (userId: string): Promise<void> => {
   });
 };
 
-export { loadCredentials, storeCredentials, clearNamespace, findStoredUserId, listStoredUserIds };
+export { loadCredentials, loadActorCredentials, storeCredentials, clearNamespace, listStoredUserIds };
 export type { CredentialRecord };

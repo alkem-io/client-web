@@ -1,6 +1,6 @@
 import { registerActiveSession, unregisterActiveSession } from './activeSession';
 import { attemptSilentSso } from './ssoLogin';
-import { type CredentialRecord, findStoredUserId, loadCredentials } from './storage';
+import { loadActorCredentials } from './storage';
 
 type MatrixClientLike = {
   stopClient(): void;
@@ -31,17 +31,12 @@ const establishSession = async (actorId: string, { signal }: { signal?: AbortSig
   registerActiveSession(stop);
   signal?.addEventListener('abort', stop);
 
-  const loadRecordForActor = async (): Promise<CredentialRecord | null> => {
-    const id = await findStoredUserId(actorId);
-    return id ? loadCredentials(id) : null;
-  };
-
   try {
-    let record = await loadRecordForActor();
+    let record = await loadActorCredentials(actorId);
     if (!record) {
       const outcome = await attemptSilentSso(actorId, { signal: abort.signal });
       if (outcome === 'authenticated') {
-        record = await loadRecordForActor();
+        record = await loadActorCredentials(actorId);
       }
     }
     if (abort.signal.aborted || !record) {

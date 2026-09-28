@@ -1,9 +1,10 @@
+import 'fake-indexeddb/auto';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { registerActiveSession, stopActiveSession } from './activeSession';
 import { runMatrixLogoutCleanup } from './logoutCleanup';
-import { HOMESERVER } from './matrixTestFixtures';
 import { clearNamespace, loadCredentials, storeCredentials } from './storage';
 
+const HOMESERVER = 'https://matrix.dev-alkem.io';
 const USER_ID = '@logout-user:matrix.dev-alkem.io';
 
 const seedRecord = () =>

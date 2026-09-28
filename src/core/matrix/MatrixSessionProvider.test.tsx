@@ -6,9 +6,9 @@ const harness = vi.hoisted(() => {
   const harnessState = {
     signals: [] as AbortSignal[],
     // Never settles: establishment is still in flight whenever the component is torn down.
-    establishSession: vi.fn((_actorId: string, hooks?: { signal?: AbortSignal }) => {
-      if (hooks?.signal) {
-        harnessState.signals.push(hooks.signal);
+    establishSession: vi.fn((_actorId: string, options?: { signal?: AbortSignal }) => {
+      if (options?.signal) {
+        harnessState.signals.push(options.signal);
       }
       return new Promise(() => {});
     }),

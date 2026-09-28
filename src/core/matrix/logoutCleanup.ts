@@ -12,7 +12,7 @@ const runMatrixLogoutCleanup = async (): Promise<void> => {
     return;
   }
   for (const userId of await listStoredUserIds()) {
-    // Unconditional-removal promise: storage failure must not block sign-out.
+    // A storage failure must not block sign-out.
     await clearNamespace(userId).catch(() => undefined);
   }
 };

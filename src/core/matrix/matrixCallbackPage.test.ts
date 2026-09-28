@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const harness = vi.hoisted(() => ({
   configured: { value: true },
-  handleMatrixCallback: vi.fn(async () => ({ ok: true })),
+  handleMatrixCallback: vi.fn(async () => {}),
 }));
 
 vi.mock('./matrixCallback', () => ({
@@ -24,7 +24,7 @@ describe('matrixCallbackPage', () => {
     harness.handleMatrixCallback.mockClear();
     harness.configured.value = true;
     Object.defineProperty(window, 'location', {
-      value: { ...originalLocation, pathname: '/matrix-callback', replace },
+      value: { ...originalLocation, replace },
       configurable: true,
     });
   });

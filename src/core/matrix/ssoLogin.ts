@@ -1,7 +1,5 @@
 import { getConfig } from './matrixConfig';
-import { findStoredUserId, loadCredentials } from './storage';
-
-const CALLBACK_ROUTE = '/matrix-callback';
+import { loadActorCredentials } from './storage';
 
 type SilentSsoOptions = {
   readonly timeoutMs?: number;
@@ -20,7 +18,7 @@ type SilentSsoOutcome = 'authenticated' | 'timeout';
 // Synapse has exactly one configured identity provider, so the SSO redirect
 // needs no idp id: it goes straight to it.
 const buildSsoUrl = (homeserverUrl: string): string => {
-  const redirectUrl = `${window.location.origin}${CALLBACK_ROUTE}`;
+  const redirectUrl = `${window.location.origin}/matrix-callback`;
   return `${homeserverUrl}/_matrix/client/v3/login/sso/redirect?redirectUrl=${encodeURIComponent(redirectUrl)}`;
 };
 
@@ -34,13 +32,9 @@ const buildSsoUrl = (homeserverUrl: string): string => {
  */
 const attemptSilentSso = async (
   expectedLocalpart: string,
-  options: SilentSsoOptions = {}
+  { timeoutMs = 20_000, pollIntervalMs = 400, signal }: SilentSsoOptions = {}
 ): Promise<SilentSsoOutcome> => {
-  const timeoutMs = options.timeoutMs ?? 20_000;
-  const pollIntervalMs = options.pollIntervalMs ?? 400;
-
   const { homeserverUrl } = getConfig();
-  const { signal } = options;
   if (homeserverUrl === '' || signal?.aborted) {
     return 'timeout';
   }
@@ -60,8 +54,7 @@ const attemptSilentSso = async (
         return 'timeout';
       }
       await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
-      const userId = await findStoredUserId(expectedLocalpart);
-      if (userId && (await loadCredentials(userId))) {
+      if (await loadActorCredentials(expectedLocalpart)) {
         return 'authenticated';
       }
     }
@@ -71,4 +64,4 @@ const attemptSilentSso = async (
   }
 };
 
-export { CALLBACK_ROUTE, attemptSilentSso };
+export { attemptSilentSso };
