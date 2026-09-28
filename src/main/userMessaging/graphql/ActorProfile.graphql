@@ -1,0 +1,14 @@
+query ActorProfile($actorId: UUID!) {
+  actor(id: $actorId) {
+    id
+    type
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+}

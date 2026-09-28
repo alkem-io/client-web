@@ -69,9 +69,8 @@ export const UnifiedChatPanelConnector = () => {
   // conversation once this list resolves, then strips the param regardless
   // of match (unknown/inaccessible id degrades to the default list, no error UI).
   useChatDeepLinkSelect(conversations, isLoading);
-  const { messages: rawMessages, isLoading: messagesLoading } = useConversationMessages(selectedConversationId);
-
   const selectedConversation = conversations.find(conversation => conversation.id === selectedConversationId);
+  const { messages: rawMessages, isLoading: messagesLoading } = useConversationMessages(selectedConversation ?? null);
   const isGuidanceThread = selectedConversation?.isGuidance ?? false;
 
   // Realtime conversation events are subscribed globally by

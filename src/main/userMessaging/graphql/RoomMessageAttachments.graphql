@@ -1,0 +1,19 @@
+query RoomMessageAttachments($conversationId: UUID!, $media: [MessageAttachmentMediaInput!]!) {
+  lookup {
+    conversation(ID: $conversationId) {
+      id
+      room {
+        id
+        messageAttachments(media: $media) {
+          id
+          url
+          displayName
+          mimeType
+          size
+          width
+          height
+        }
+      }
+    }
+  }
+}

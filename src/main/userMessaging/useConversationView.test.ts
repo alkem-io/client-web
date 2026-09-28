@@ -6,15 +6,23 @@ import { useConversationView } from './useConversationView';
 
 // ---- Mocks ----
 
-const markAsReadMock = vi.fn(() => Promise.resolve({}));
+// One /read_markers call per mark: m.fully_read and m.read, both on the last message.
+const readMarkersMock = vi.fn((_roomId: string, _fullyRead: string, _read?: string) => Promise.resolve({}));
+const matrixClient = { setRoomReadMarkersHttpRequest: readMarkersMock };
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useMarkMessageAsReadMutation: () => [markAsReadMock, { loading: false }],
   useLeaveConversationMutation: () => [vi.fn(() => Promise.resolve({})), { loading: false }],
   useSendMessageToRoomMutation: () => [vi.fn(() => Promise.resolve({})), { loading: false }],
 }));
 
-vi.mock('@/domain/collaboration/callout/useSubscribeOnRoomEvents', () => ({ default: () => undefined }));
+vi.mock('@/core/matrix/activeClient', () => ({ useMatrixClient: () => matrixClient }));
+
+vi.mock('./matrix/matrixRooms', () => ({
+  resolveMatrixRoomId: (_client: unknown, alkemioRoomId: string) => Promise.resolve(`!matrix-${alkemioRoomId}`),
+}));
+
+// Marking resolves the Matrix room first; let that settle before asserting.
+const flush = () => act(async () => {});
 
 vi.mock('@/domain/communication/room/Comments/useCommentReactionsMutations', () => ({
   default: () => ({ addReaction: vi.fn(), removeReaction: vi.fn() }),
@@ -43,7 +51,6 @@ const conversation: UserConversation = {
   roomId: 'room-1',
   isGroup: false,
   unreadCount: 0,
-  messagesCount: 1,
   createdDate: new Date(0),
   members: [],
 };
@@ -59,7 +66,7 @@ const message = (id: string): ConversationMessage => ({
 beforeEach(() => {
   visibility = 'visible';
   focused = true;
-  markAsReadMock.mockClear();
+  readMarkersMock.mockClear();
 
   Object.defineProperty(document, 'visibilityState', {
     configurable: true,
@@ -78,84 +85,91 @@ afterEach(() => {
  * unattended tab silently suppresses notifications the user should have had.
  */
 describe('useConversationView — read receipts are gated on real presence (FR-018b)', () => {
-  it('marks read when the document is visible AND focused', () => {
+  it('marks read when the document is visible AND focused', async () => {
     renderHook(() => useConversationView(conversation, [message('msg-1')]));
 
-    expect(markAsReadMock).toHaveBeenCalledTimes(1);
-    expect(markAsReadMock).toHaveBeenCalledWith({
-      variables: { messageData: { roomID: 'room-1', messageID: 'msg-1' } },
-    });
+    await flush();
+    expect(readMarkersMock).toHaveBeenCalledTimes(1);
+    expect(readMarkersMock).toHaveBeenCalledWith('!matrix-room-1', 'msg-1', 'msg-1');
   });
 
-  it('does NOT mark read while the tab is hidden', () => {
+  it('does NOT mark read while the tab is hidden', async () => {
     visibility = 'hidden';
 
     renderHook(() => useConversationView(conversation, [message('msg-1')]));
 
-    expect(markAsReadMock).not.toHaveBeenCalled();
+    await flush();
+    expect(readMarkersMock).not.toHaveBeenCalled();
   });
 
-  it('does NOT mark read while the window is blurred, even though the tab is visible', () => {
+  it('does NOT mark read while the window is blurred, even though the tab is visible', async () => {
     focused = false;
 
     renderHook(() => useConversationView(conversation, [message('msg-1')]));
 
-    expect(markAsReadMock).not.toHaveBeenCalled();
+    await flush();
+    expect(readMarkersMock).not.toHaveBeenCalled();
   });
 
-  it('does NOT mark a message that arrives while the user is away', () => {
+  it('does NOT mark a message that arrives while the user is away', async () => {
     const { rerender } = renderHook(({ messages }) => useConversationView(conversation, messages), {
       initialProps: { messages: [message('msg-1')] },
     });
-    expect(markAsReadMock).toHaveBeenCalledTimes(1);
+    await flush();
+    expect(readMarkersMock).toHaveBeenCalledTimes(1);
 
     setActivity({ focused: false });
-    markAsReadMock.mockClear();
+    readMarkersMock.mockClear();
 
     rerender({ messages: [message('msg-1'), message('msg-2')] });
 
-    expect(markAsReadMock).not.toHaveBeenCalled();
+    await flush();
+    expect(readMarkersMock).not.toHaveBeenCalled();
   });
 
-  it('marks read exactly once on returning to an already-open thread with no new message', () => {
+  it('marks read exactly once on returning to an already-open thread with no new message', async () => {
     const { rerender } = renderHook(({ messages }) => useConversationView(conversation, messages), {
       initialProps: { messages: [message('msg-1')] },
     });
-    expect(markAsReadMock).toHaveBeenCalledTimes(1);
+    await flush();
+    expect(readMarkersMock).toHaveBeenCalledTimes(1);
 
     setActivity({ focused: false });
-    markAsReadMock.mockClear();
+    readMarkersMock.mockClear();
 
     setActivity({ focused: true });
 
-    expect(markAsReadMock).toHaveBeenCalledTimes(1);
-    expect(markAsReadMock).toHaveBeenCalledWith({
-      variables: { messageData: { roomID: 'room-1', messageID: 'msg-1' } },
-    });
+    await flush();
+    expect(readMarkersMock).toHaveBeenCalledTimes(1);
+    expect(readMarkersMock).toHaveBeenCalledWith('!matrix-room-1', 'msg-1', 'msg-1');
 
     // Re-renders after the return must not re-fire — the ref key blocks it.
     rerender({ messages: [message('msg-1')] });
     rerender({ messages: [message('msg-1')] });
 
-    expect(markAsReadMock).toHaveBeenCalledTimes(1);
+    await flush();
+    expect(readMarkersMock).toHaveBeenCalledTimes(1);
   });
 
-  it('marks read on returning from a hidden tab too, not only from a blur', () => {
+  it('marks read on returning from a hidden tab too, not only from a blur', async () => {
     renderHook(() => useConversationView(conversation, [message('msg-1')]));
-    expect(markAsReadMock).toHaveBeenCalledTimes(1);
+    await flush();
+    expect(readMarkersMock).toHaveBeenCalledTimes(1);
 
     setActivity({ visibility: 'hidden' });
-    markAsReadMock.mockClear();
+    readMarkersMock.mockClear();
 
     setActivity({ visibility: 'visible' });
 
-    expect(markAsReadMock).toHaveBeenCalledTimes(1);
+    await flush();
+    expect(readMarkersMock).toHaveBeenCalledTimes(1);
   });
 
-  it('does not mark read with no conversation or no messages', () => {
+  it('does not mark read with no conversation or no messages', async () => {
     renderHook(() => useConversationView(null, []));
     renderHook(() => useConversationView(conversation, []));
 
-    expect(markAsReadMock).not.toHaveBeenCalled();
+    await flush();
+    expect(readMarkersMock).not.toHaveBeenCalled();
   });
 });

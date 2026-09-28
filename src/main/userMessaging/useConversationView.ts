@@ -1,11 +1,8 @@
 import { useEffect, useRef } from 'react';
-import {
-  useLeaveConversationMutation,
-  useMarkMessageAsReadMutation,
-  useSendMessageToRoomMutation,
-} from '@/core/apollo/generated/apollo-hooks';
-import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
+import { useLeaveConversationMutation, useSendMessageToRoomMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useMatrixClient } from '@/core/matrix/activeClient';
 import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
+import { resolveMatrixRoomId } from './matrix/matrixRooms';
 import type { UserConversation } from './models';
 import type { ConversationMessage } from './useConversationMessages';
 import { useIsDocumentActive } from './useIsDocumentActive';
@@ -18,8 +15,7 @@ export const useConversationView = (
   const [leaveConversation] = useLeaveConversationMutation();
   const [sendMessage, { loading: isSending }] = useSendMessageToRoomMutation();
   const { addReaction, removeReaction } = useCommentReactionsMutations(conversation?.roomId);
-  useSubscribeOnRoomEvents(conversation?.roomId, !conversation);
-  const [markAsRead] = useMarkMessageAsReadMutation();
+  const matrixClient = useMatrixClient();
   const lastMarkedRef = useRef<string | null>(null);
   const isDocumentActive = useIsDocumentActive();
 
@@ -28,6 +24,11 @@ export const useConversationView = (
   // a pending message digest when the recipient's unread count drops to zero, so
   // an open-but-unattended tab reporting everything as read would silently
   // suppress every notification that user should have received.
+  //
+  // The marker goes straight to Synapse and sets m.fully_read together with
+  // the m.read receipt: the unread count here and the server's digest check
+  // both count from m.fully_read, so a receipt alone would leave the
+  // conversation unread and its digest email due.
   useEffect(() => {
     if (!isDocumentActive) {
       // Forget what was last reported so RETURNING to a conversation that is
@@ -37,7 +38,7 @@ export const useConversationView = (
       return;
     }
 
-    if (!conversation?.roomId || !messages.length) return;
+    if (!matrixClient || !conversation?.roomId || !messages.length) return;
 
     const lastMessage = messages[messages.length - 1];
     const key = `${conversation.roomId}:${lastMessage.id}`;
@@ -47,15 +48,14 @@ export const useConversationView = (
     if (lastMarkedRef.current === key) return;
     lastMarkedRef.current = key;
 
-    markAsRead({
-      variables: {
-        messageData: {
-          roomID: conversation.roomId,
-          messageID: lastMessage.id,
-        },
-      },
-    }).catch(_error => {});
-  }, [conversation?.roomId, messages, markAsRead, isDocumentActive]);
+    void resolveMatrixRoomId(matrixClient, conversation.roomId)
+      .then(matrixRoomId => {
+        if (matrixRoomId) {
+          return matrixClient.setRoomReadMarkersHttpRequest(matrixRoomId, lastMessage.id, lastMessage.id);
+        }
+      })
+      .catch(_error => {});
+  }, [conversation?.roomId, messages, matrixClient, isDocumentActive]);
 
   const handleLeaveGroup = async () => {
     if (!conversation) return;

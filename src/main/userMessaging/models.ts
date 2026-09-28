@@ -20,7 +20,6 @@ export interface UserConversation {
   roomDisplayName?: string;
   avatarUri?: string;
   unreadCount: number;
-  messagesCount: number;
   createdDate: Date;
   lastMessage?: ConversationMessage;
   members: ConversationMember[];
@@ -62,19 +61,6 @@ export interface ConversationMessage {
   attachments: MessageAttachmentModel[];
 }
 
-// GraphQL sender type (from generated types)
-// Sender is now Actor type with id, type, and nullable profile
-type GraphQLSender =
-  | {
-      id: string;
-      profile?: {
-        displayName?: string;
-        avatar?: { uri: string } | null;
-      } | null;
-    }
-  | null
-  | undefined;
-
 /** Minimal shape of a GraphQL `MessageAttachment` (feature 013) as selected by
  *  the message documents. Width/height are present for images only. */
 type GraphQLMessageAttachment = {
@@ -85,59 +71,6 @@ type GraphQLMessageAttachment = {
   size?: number | null;
   width?: number | null;
   height?: number | null;
-};
-
-type GraphQLReaction =
-  | {
-      id: string;
-      emoji: string;
-      timestamp: number;
-      sender?: {
-        id: string;
-        profile?: {
-          displayName?: string;
-        } | null;
-      } | null;
-    }
-  | null
-  | undefined;
-
-/**
- * Maps a GraphQL message sender to our simplified MessageSender type.
- * Supports User and VirtualContributor senders.
- */
-export const mapMessageSender = (sender: GraphQLSender): MessageSender | undefined => {
-  if (!sender) {
-    return undefined;
-  }
-
-  return {
-    id: sender.id,
-    displayName: sender.profile?.displayName ?? '',
-    avatarUri: sender.profile?.avatar?.uri,
-  };
-};
-
-export const mapMessageReactions = (reactions: GraphQLReaction[] | null | undefined): MessageReaction[] => {
-  if (!reactions?.length) {
-    return [];
-  }
-
-  return reactions
-    .filter((reaction): reaction is NonNullable<GraphQLReaction> => Boolean(reaction?.id && reaction?.emoji))
-    .map(reaction => ({
-      id: reaction.id,
-      emoji: reaction.emoji,
-      timestamp: reaction.timestamp ?? 0,
-      sender: reaction.sender
-        ? {
-            id: reaction.sender.id,
-            profile: {
-              displayName: reaction.sender.profile?.displayName ?? '',
-            },
-          }
-        : undefined,
-    }));
 };
 
 /**

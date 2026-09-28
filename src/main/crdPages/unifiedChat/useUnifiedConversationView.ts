@@ -21,7 +21,7 @@ export const useUnifiedConversationView = (
     await resetConversationVc({
       variables: { input: { conversationID: conversationId } },
       // Unified list is driven by UserConversations, so refresh it too (research D6).
-      refetchQueries: ['UserConversations', 'ConversationMessages', 'ConversationWithGuidanceVc'],
+      refetchQueries: ['UserConversations', 'ConversationWithGuidanceVc'],
       awaitRefetchQueries: true,
     });
   };
