@@ -9,6 +9,19 @@ fragment MessageDetails on Message {
   sender {
     ...ContributorDetails
   }
+  attachments {
+    ...MessageAttachmentDetails
+  }
+}
+
+fragment MessageAttachmentDetails on MessageAttachment {
+  id
+  url
+  displayName
+  mimeType
+  size
+  width
+  height
 }
 
 fragment ReactionDetails on Reaction {
