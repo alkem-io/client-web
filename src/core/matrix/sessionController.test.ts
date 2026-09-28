@@ -21,10 +21,7 @@ describe('establishSession', () => {
       userId: USER_ID,
       deviceId: 'DEV1',
       accessToken: 'syt_stored_access',
-      refreshToken: '',
-      expiresAt: Date.now() + 60_000,
       homeserverUrl: HOMESERVER,
-      storedAt: Date.now(),
       ...overrides,
     });
 

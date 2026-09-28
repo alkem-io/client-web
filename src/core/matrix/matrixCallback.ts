@@ -1,12 +1,10 @@
 import { getConfig } from './matrixConfig';
-import { expiresAtFrom, storeCredentials } from './storage';
+import { storeCredentials } from './storage';
 
 type ExchangeResult = {
   readonly user_id: string;
   readonly device_id: string;
   readonly access_token: string;
-  readonly refresh_token?: string;
-  readonly expires_in_ms?: number;
 };
 
 type CallbackOutcome = {
@@ -64,10 +62,7 @@ const handleMatrixCallback = async (): Promise<CallbackOutcome> => {
       userId: result.user_id,
       deviceId: result.device_id,
       accessToken: result.access_token,
-      refreshToken: result.refresh_token ?? '',
-      expiresAt: expiresAtFrom(result.expires_in_ms),
       homeserverUrl: config.homeserverUrl,
-      storedAt: Date.now(),
     });
 
     if (!stored) {

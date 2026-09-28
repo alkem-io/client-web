@@ -54,10 +54,7 @@ describe('ssoLogin', () => {
         userId: USER_ID,
         deviceId: 'DEV1',
         accessToken: 'syt_silent',
-        refreshToken: '',
-        expiresAt: Date.now() + 60_000,
         homeserverUrl: HOMESERVER,
-        storedAt: Date.now(),
       });
 
       const result = await attempt;

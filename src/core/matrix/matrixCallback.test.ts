@@ -21,7 +21,6 @@ const EXCHANGE_RESPONSE = {
   user_id: '@alice-uuid:matrix.dev-alkem.io',
   device_id: 'DEVICE_XYZ',
   access_token: 'syt_new_access_token',
-  expires_in_ms: 900_000,
 };
 
 describe('matrixCallback', () => {
@@ -84,7 +83,7 @@ describe('matrixCallback', () => {
       expect(body.initial_device_display_name).toBe('Alkemio Web');
     });
 
-    it('persists credentials to IndexedDB with an empty refresh token', async () => {
+    it('persists credentials to IndexedDB', async () => {
       setEnv();
       setUrlWithToken('mlt_persist');
 
@@ -99,43 +98,7 @@ describe('matrixCallback', () => {
       expect(stored.available).toBe(true);
       expect(stored.record).not.toBeNull();
       expect(stored.record?.accessToken).toBe(EXCHANGE_RESPONSE.access_token);
-      expect(stored.record?.refreshToken).toBe('');
       expect(stored.record?.deviceId).toBe(EXCHANGE_RESPONSE.device_id);
-    });
-
-    it('stores a non-expiring record when the response omits expiry', async () => {
-      setEnv();
-      setUrlWithToken('mlt_norefresh');
-
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
-        new Response(
-          JSON.stringify({ user_id: EXCHANGE_RESPONSE.user_id, device_id: 'DEV2', access_token: 'syt_norefresh' }),
-          { status: 200 }
-        )
-      );
-
-      const { handleMatrixCallback: fresh } = await import('./matrixCallback');
-      const result = await fresh();
-      expect(result.ok).toBe(true);
-
-      const stored = await loadCredentials(EXCHANGE_RESPONSE.user_id);
-      expect(stored.record?.expiresAt).toBeGreaterThan(Date.now() + 1_000_000_000);
-    });
-
-    it('stores an already-expired record when the response states a zero lifetime', async () => {
-      setEnv();
-      setUrlWithToken('mlt_zero');
-
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
-        new Response(JSON.stringify({ ...EXCHANGE_RESPONSE, expires_in_ms: 0 }), { status: 200 })
-      );
-
-      const { handleMatrixCallback: fresh } = await import('./matrixCallback');
-      const result = await fresh();
-      expect(result.ok).toBe(true);
-
-      const stored = await loadCredentials(EXCHANGE_RESPONSE.user_id);
-      expect(stored.record?.expiresAt).toBeLessThanOrEqual(Date.now());
     });
 
     it('does not send credentials to homeserver', async () => {

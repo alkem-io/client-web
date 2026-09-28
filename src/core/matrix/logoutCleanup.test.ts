@@ -12,10 +12,7 @@ const seedRecord = () =>
     userId: USER_ID,
     deviceId: 'DEV1',
     accessToken: 'syt_logout_access',
-    refreshToken: '',
-    expiresAt: Date.now() + 60_000,
     homeserverUrl: HOMESERVER,
-    storedAt: Date.now(),
   });
 
 describe('logoutCleanup', () => {

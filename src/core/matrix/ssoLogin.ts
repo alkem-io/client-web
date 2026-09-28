@@ -67,7 +67,7 @@ const attemptSilentSso = async (
       const userId = await findStoredUserId(expectedLocalpart);
       if (userId) {
         const { record } = await loadCredentials(userId);
-        if (record && record.expiresAt > Date.now()) {
+        if (record) {
           return 'authenticated';
         }
       }
