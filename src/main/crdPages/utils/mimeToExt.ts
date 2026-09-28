@@ -1,0 +1,30 @@
+// Mirror of `MIME_TO_EXT` in `src/core/ui/upload/FileUpload/FileUpload.tsx`. Some
+// browsers fail to map mime types to file-picker extensions reliably, so we
+// resolve them explicitly here.
+export const MIME_TO_EXT: Record<string, string> = {
+  'application/pdf': '.pdf',
+  'application/vnd.ms-excel': '.xls',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '.xlsx',
+  'application/vnd.oasis.opendocument.spreadsheet': '.ods',
+  'application/msword': '.doc',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
+  'application/vnd.oasis.opendocument.text': '.odt',
+  'text/calendar': '.ics',
+  'image/bmp': '.bmp',
+  'image/jpg': '.jpg',
+  'image/jpeg': '.jpg,.jpeg',
+  'image/x-png': '.png',
+  'image/png': '.png',
+  'image/gif': '.gif',
+  'image/webp': '.webp',
+  'image/svg+xml': '.svg',
+  'image/avif': '.avif',
+  'application/vnd.ms-powerpoint': '.ppt',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
+  'application/vnd.ms-powerpoint.presentation.macroEnabled.12': '.pptm',
+  'application/vnd.openxmlformats-officedocument.presentationml.slideshow': '.ppsx',
+  'application/vnd.ms-powerpoint.slideshow.macroEnabled.12': '.ppsm',
+  'application/vnd.openxmlformats-officedocument.presentationml.template': '.potx',
+  'application/vnd.ms-powerpoint.template.macroEnabled.12': '.potm',
+  'application/vnd.oasis.opendocument.presentation': '.odp',
+};

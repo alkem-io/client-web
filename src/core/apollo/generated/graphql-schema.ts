@@ -1476,6 +1476,14 @@ export type CalloutSettingsFraming = {
   contributors?: Maybe<CalloutContributorsSettings>;
   /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Absent / null ⇒ AUTO (full computed set). */
   selection?: Maybe<CalloutSelectionSettings>;
+  /** Card-variant settings for a Subspaces collection callout. Present only on SPACES callouts. Absent / null ⇒ COMPACT. */
+  spaces?: Maybe<CalloutSpacesSettings>;
+};
+
+export type CalloutSpacesSettings = {
+  __typename?: 'CalloutSpacesSettings';
+  /** The card variant to render for each subspace: COMPACT (default) or EXPANDED. */
+  cardVariant: SpaceCollectionCardVariant;
 };
 
 export enum CalloutVisibility {
@@ -1996,6 +2004,8 @@ export type Conversation = {
   messaging: Messaging;
   /** The room for this Conversation. */
   room: Room;
+  /** The storage bucket holding this Conversation's message attachments (feature 013). READ-gated to conversation members; null for a conversation that has no bucket yet (an accepted, backfillable state). */
+  storageBucket?: Maybe<StorageBucket>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
@@ -2395,6 +2405,8 @@ export type CreateCalloutSettingsFramingData = {
   contributors?: Maybe<CreateCalloutContributorsSettingsData>;
   /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Provide only when framing.type ∈ {CONTRIBUTORS, SPACES}. */
   selection?: Maybe<CreateCalloutSelectionSettingsData>;
+  /** Card-variant settings. Provide only when framing.type = SPACES. */
+  spaces?: Maybe<CreateCalloutSpacesSettingsData>;
 };
 
 export type CreateCalloutSettingsFramingInput = {
@@ -2404,6 +2416,8 @@ export type CreateCalloutSettingsFramingInput = {
   contributors?: InputMaybe<CreateCalloutContributorsSettingsInput>;
   /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Provide only when framing.type ∈ {CONTRIBUTORS, SPACES}. */
   selection?: InputMaybe<CreateCalloutSelectionSettingsInput>;
+  /** Card-variant settings. Provide only when framing.type = SPACES. */
+  spaces?: InputMaybe<CreateCalloutSpacesSettingsInput>;
 };
 
 export type CreateCalloutSettingsInput = {
@@ -2411,6 +2425,17 @@ export type CreateCalloutSettingsInput = {
   framing?: InputMaybe<CreateCalloutSettingsFramingInput>;
   /** Visibility of the Callout. Defaults to PUBLISHED. */
   visibility?: InputMaybe<CalloutVisibility>;
+};
+
+export type CreateCalloutSpacesSettingsData = {
+  __typename?: 'CreateCalloutSpacesSettingsData';
+  /** The card variant (COMPACT or EXPANDED). Defaults to COMPACT when omitted. */
+  cardVariant?: Maybe<SpaceCollectionCardVariant>;
+};
+
+export type CreateCalloutSpacesSettingsInput = {
+  /** The card variant (COMPACT or EXPANDED). Defaults to COMPACT when omitted. */
+  cardVariant?: InputMaybe<SpaceCollectionCardVariant>;
 };
 
 export type CreateCalloutTaskBoardData = {
@@ -2521,6 +2546,8 @@ export type CreateContributionOnCalloutInput = {
   link?: InputMaybe<CreateLinkInput>;
   memo?: InputMaybe<CreateMemoInput>;
   post?: InputMaybe<CreatePostInput>;
+  /** Send the space-member and space-admin contribution notifications. Defaults to true; only an explicit false suppresses. The activity log entry is written regardless. */
+  sendNotification?: InputMaybe<Scalars['Boolean']['input']>;
   /** The sort order to assign to this Contribution. */
   sortOrder?: InputMaybe<Scalars['Float']['input']>;
   /** The Tasks board column this task starts in. Only valid when the parent Callout is a Tasks board; defaults to the first column. */
@@ -5170,6 +5197,8 @@ export type MemoSigningPrepareResult = {
 /** A message that was sent in a chat room */
 export type Message = {
   __typename?: 'Message';
+  /** Media attachments; unavailable documents retain their event filename without a download URL. */
+  attachments: Array<MessageAttachment>;
   /** The id for the message event. */
   id: Scalars['MessageID']['output'];
   /** The message being sent */
@@ -5182,6 +5211,24 @@ export type Message = {
   threadID?: Maybe<Scalars['MessageID']['output']>;
   /** The server timestamp in UTC */
   timestamp: Scalars['Float']['output'];
+};
+
+export type MessageAttachment = {
+  __typename?: 'MessageAttachment';
+  /** The filename / display name of the attachment. */
+  displayName: Scalars['String']['output'];
+  /** The pixel height of the attachment (images only). */
+  height?: Maybe<Scalars['Int']['output']>;
+  /** The file-service document id of the attachment. */
+  id?: Maybe<Scalars['UUID']['output']>;
+  /** The MIME type of the attachment. */
+  mimeType?: Maybe<Scalars['String']['output']>;
+  /** The size of the attachment in bytes. */
+  size?: Maybe<Scalars['Int']['output']>;
+  /** The Alkemio document URL (authorized via conversation policy). */
+  url?: Maybe<Scalars['String']['output']>;
+  /** The pixel width of the attachment (images only). */
+  width?: Maybe<Scalars['Int']['output']>;
 };
 
 /** Details about a message, including the room it was sent in and the parent entity that is using the room. */
@@ -5231,21 +5278,27 @@ export type MigrateEmbeddings = {
 };
 
 export enum MimeType {
+  Aac = 'AAC',
   Avif = 'AVIF',
   Bmp = 'BMP',
   Csv = 'CSV',
   Doc = 'DOC',
   Docx = 'DOCX',
+  Flac = 'FLAC',
   Gif = 'GIF',
   Heic = 'HEIC',
   Heif = 'HEIF',
   Ics = 'ICS',
   Jpeg = 'JPEG',
   Jpg = 'JPG',
+  Mp3 = 'MP3',
+  Mp4 = 'MP4',
   Odg = 'ODG',
   Odp = 'ODP',
   Ods = 'ODS',
   Odt = 'ODT',
+  Oga = 'OGA',
+  Ogv = 'OGV',
   Pdf = 'PDF',
   Png = 'PNG',
   Potm = 'POTM',
@@ -5255,8 +5308,12 @@ export enum MimeType {
   Ppt = 'PPT',
   Pptm = 'PPTM',
   Pptx = 'PPTX',
+  Quicktime = 'QUICKTIME',
   Rtf = 'RTF',
   Svg = 'SVG',
+  Wav = 'WAV',
+  Weba = 'WEBA',
+  Webm = 'WEBM',
   Webp = 'WEBP',
   Xls = 'XLS',
   Xlsx = 'XLSX',
@@ -8759,6 +8816,8 @@ export type RoomRemoveReactionToMessageInput = {
 };
 
 export type RoomSendMessageInput = {
+  /** The file-service document ids of attachments to send with the message (one per event). */
+  attachments?: InputMaybe<Array<Scalars['UUID']['input']>>;
   /** The message being sent */
   message: Scalars['String']['input'];
   /** The Room the message is being sent to */
@@ -8766,6 +8825,8 @@ export type RoomSendMessageInput = {
 };
 
 export type RoomSendMessageReplyInput = {
+  /** The file-service document ids of attachments to send with the message (one per event). */
+  attachments?: InputMaybe<Array<Scalars['UUID']['input']>>;
   /** The message being sent */
   message: Scalars['String']['input'];
   /** The Room the message is being sent to */
@@ -9202,6 +9263,12 @@ export type SpaceAboutMembership = {
   roleSetID: Scalars['UUID']['output'];
 };
 
+/** The card variant of a Subspaces (SPACES) collection callout. COMPACT (default) shows the identity block only; EXPANDED adds the What/Why/Who excerpts. */
+export enum SpaceCollectionCardVariant {
+  Compact = 'COMPACT',
+  Expanded = 'EXPANDED',
+}
+
 export type SpaceFilterInput = {
   /** Return Spaces with a Visibility matching one of the provided types. */
   visibilities?: InputMaybe<Array<SpaceVisibility>>;
@@ -9358,6 +9425,7 @@ export type StorageAggregatorParent = {
 
 export enum StorageAggregatorType {
   Account = 'ACCOUNT',
+  Conversation = 'CONVERSATION',
   Organization = 'ORGANIZATION',
   Platform = 'PLATFORM',
   Space = 'SPACE',
@@ -9954,6 +10022,8 @@ export type UpdateCalloutSettingsFramingInput = {
   contributors?: InputMaybe<UpdateCalloutContributorsSettingsInput>;
   /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Provide only when framing.type ∈ {CONTRIBUTORS, SPACES}. */
   selection?: InputMaybe<UpdateCalloutSelectionSettingsInput>;
+  /** Card-variant settings. Provide only when framing.type = SPACES. */
+  spaces?: InputMaybe<UpdateCalloutSpacesSettingsInput>;
 };
 
 export type UpdateCalloutSettingsInput = {
@@ -9961,6 +10031,11 @@ export type UpdateCalloutSettingsInput = {
   framing?: InputMaybe<UpdateCalloutSettingsFramingInput>;
   /** Visibility of the Callout. */
   visibility?: InputMaybe<CalloutVisibility>;
+};
+
+export type UpdateCalloutSpacesSettingsInput = {
+  /** The card variant (COMPACT or EXPANDED). When omitted, the stored value is unchanged. */
+  cardVariant?: InputMaybe<SpaceCollectionCardVariant>;
 };
 
 export type UpdateCalloutVisibilityInput = {
@@ -15653,6 +15728,7 @@ export type CalloutContentQuery = {
               selection?:
                 | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
                 | undefined;
+              spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
             };
           };
         }
@@ -16081,6 +16157,16 @@ export type UpdateCalloutContentMutation = {
                     | undefined;
                 }
               | undefined;
+            attachments: Array<{
+              __typename?: 'MessageAttachment';
+              id?: string | undefined;
+              url?: string | undefined;
+              displayName: string;
+              mimeType?: string | undefined;
+              size?: number | undefined;
+              width?: number | undefined;
+              height?: number | undefined;
+            }>;
           }>;
           vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
         }
@@ -16115,6 +16201,7 @@ export type UpdateCalloutContentMutation = {
         selection?:
           | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
           | undefined;
+        spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
       };
     };
     createdBy?:
@@ -16578,6 +16665,16 @@ export type UpdateCalloutVisibilityMutation = {
                     | undefined;
                 }
               | undefined;
+            attachments: Array<{
+              __typename?: 'MessageAttachment';
+              id?: string | undefined;
+              url?: string | undefined;
+              displayName: string;
+              mimeType?: string | undefined;
+              size?: number | undefined;
+              width?: number | undefined;
+              height?: number | undefined;
+            }>;
           }>;
           vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
         }
@@ -16612,6 +16709,7 @@ export type UpdateCalloutVisibilityMutation = {
         selection?:
           | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
           | undefined;
+        spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
       };
     };
     createdBy?:
@@ -16687,6 +16785,7 @@ export type CalloutSettingsFullFragment = {
     selection?:
       | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
       | undefined;
+    spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
   };
 };
 
@@ -17194,6 +17293,16 @@ export type CalloutContributionCommentsQuery = {
                             | undefined;
                         }
                       | undefined;
+                    attachments: Array<{
+                      __typename?: 'MessageAttachment';
+                      id?: string | undefined;
+                      url?: string | undefined;
+                      displayName: string;
+                      mimeType?: string | undefined;
+                      size?: number | undefined;
+                      width?: number | undefined;
+                      height?: number | undefined;
+                    }>;
                   }>;
                   vcInteractions: Array<{
                     __typename?: 'VcInteraction';
@@ -17401,6 +17510,7 @@ export type CreatePostOnCalloutMutationVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
   post: CreatePostInput;
   taskColumn?: InputMaybe<Scalars['String']['input']>;
+  sendNotification?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 export type CreatePostOnCalloutMutation = {
@@ -18476,6 +18586,16 @@ export type CreateCalloutMutation = {
                     | undefined;
                 }
               | undefined;
+            attachments: Array<{
+              __typename?: 'MessageAttachment';
+              id?: string | undefined;
+              url?: string | undefined;
+              displayName: string;
+              mimeType?: string | undefined;
+              size?: number | undefined;
+              width?: number | undefined;
+              height?: number | undefined;
+            }>;
           }>;
           vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
         }
@@ -18510,6 +18630,7 @@ export type CreateCalloutMutation = {
         selection?:
           | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
           | undefined;
+        spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
       };
     };
     createdBy?:
@@ -19145,6 +19266,16 @@ export type CalloutDetailsQuery = {
                           | undefined;
                       }
                     | undefined;
+                  attachments: Array<{
+                    __typename?: 'MessageAttachment';
+                    id?: string | undefined;
+                    url?: string | undefined;
+                    displayName: string;
+                    mimeType?: string | undefined;
+                    size?: number | undefined;
+                    width?: number | undefined;
+                    height?: number | undefined;
+                  }>;
                 }>;
                 vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
               }
@@ -19179,6 +19310,7 @@ export type CalloutDetailsQuery = {
               selection?:
                 | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
                 | undefined;
+              spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
             };
           };
           createdBy?:
@@ -19674,6 +19806,16 @@ export type CalloutDetailsFragment = {
                   | undefined;
               }
             | undefined;
+          attachments: Array<{
+            __typename?: 'MessageAttachment';
+            id?: string | undefined;
+            url?: string | undefined;
+            displayName: string;
+            mimeType?: string | undefined;
+            size?: number | undefined;
+            width?: number | undefined;
+            height?: number | undefined;
+          }>;
         }>;
         vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
       }
@@ -19708,6 +19850,7 @@ export type CalloutDetailsFragment = {
       selection?:
         | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
         | undefined;
+      spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
     };
   };
   createdBy?:
@@ -21928,6 +22071,16 @@ export type CreateDiscussionMutation = {
                 | undefined;
             }
           | undefined;
+        attachments: Array<{
+          __typename?: 'MessageAttachment';
+          id?: string | undefined;
+          url?: string | undefined;
+          displayName: string;
+          mimeType?: string | undefined;
+          size?: number | undefined;
+          width?: number | undefined;
+          height?: number | undefined;
+        }>;
       }>;
     };
     authorization?:
@@ -22013,6 +22166,16 @@ export type UpdateDiscussionMutation = {
                 | undefined;
             }
           | undefined;
+        attachments: Array<{
+          __typename?: 'MessageAttachment';
+          id?: string | undefined;
+          url?: string | undefined;
+          displayName: string;
+          mimeType?: string | undefined;
+          size?: number | undefined;
+          width?: number | undefined;
+          height?: number | undefined;
+        }>;
       }>;
     };
     authorization?:
@@ -22101,6 +22264,16 @@ export type DiscussionDetailsFragment = {
               | undefined;
           }
         | undefined;
+      attachments: Array<{
+        __typename?: 'MessageAttachment';
+        id?: string | undefined;
+        url?: string | undefined;
+        displayName: string;
+        mimeType?: string | undefined;
+        size?: number | undefined;
+        width?: number | undefined;
+        height?: number | undefined;
+      }>;
     }>;
   };
   authorization?:
@@ -22292,6 +22465,16 @@ export type PlatformDiscussionQuery = {
                         | undefined;
                     }
                   | undefined;
+                attachments: Array<{
+                  __typename?: 'MessageAttachment';
+                  id?: string | undefined;
+                  url?: string | undefined;
+                  displayName: string;
+                  mimeType?: string | undefined;
+                  size?: number | undefined;
+                  width?: number | undefined;
+                  height?: number | undefined;
+                }>;
               }>;
             };
             authorization?:
@@ -22424,6 +22607,27 @@ export type MessageDetailsFragment = {
           | undefined;
       }
     | undefined;
+  attachments: Array<{
+    __typename?: 'MessageAttachment';
+    id?: string | undefined;
+    url?: string | undefined;
+    displayName: string;
+    mimeType?: string | undefined;
+    size?: number | undefined;
+    width?: number | undefined;
+    height?: number | undefined;
+  }>;
+};
+
+export type MessageAttachmentDetailsFragment = {
+  __typename?: 'MessageAttachment';
+  id?: string | undefined;
+  url?: string | undefined;
+  displayName: string;
+  mimeType?: string | undefined;
+  size?: number | undefined;
+  width?: number | undefined;
+  height?: number | undefined;
 };
 
 export type ReactionDetailsFragment = {
@@ -22504,6 +22708,16 @@ export type CommentsWithMessagesFragment = {
             | undefined;
         }
       | undefined;
+    attachments: Array<{
+      __typename?: 'MessageAttachment';
+      id?: string | undefined;
+      url?: string | undefined;
+      displayName: string;
+      mimeType?: string | undefined;
+      size?: number | undefined;
+      width?: number | undefined;
+      height?: number | undefined;
+    }>;
   }>;
   vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
 };
@@ -22731,6 +22945,16 @@ export type ReplyToMessageMutation = {
     message: string;
     timestamp: number;
     sender?: { __typename?: 'Actor'; id: string; type: ActorType } | undefined;
+    attachments: Array<{
+      __typename?: 'MessageAttachment';
+      id?: string | undefined;
+      url?: string | undefined;
+      displayName: string;
+      mimeType?: string | undefined;
+      size?: number | undefined;
+      width?: number | undefined;
+      height?: number | undefined;
+    }>;
   };
 };
 
@@ -22989,6 +23213,16 @@ export type SendMessageToRoomMutation = {
     message: string;
     timestamp: number;
     sender?: { __typename?: 'Actor'; id: string; type: ActorType } | undefined;
+    attachments: Array<{
+      __typename?: 'MessageAttachment';
+      id?: string | undefined;
+      url?: string | undefined;
+      displayName: string;
+      mimeType?: string | undefined;
+      size?: number | undefined;
+      width?: number | undefined;
+      height?: number | undefined;
+    }>;
   };
 };
 
@@ -23077,6 +23311,16 @@ export type RoomEventsSubscription = {
                     | undefined;
                 }
               | undefined;
+            attachments: Array<{
+              __typename?: 'MessageAttachment';
+              id?: string | undefined;
+              url?: string | undefined;
+              displayName: string;
+              mimeType?: string | undefined;
+              size?: number | undefined;
+              width?: number | undefined;
+              height?: number | undefined;
+            }>;
           };
         }
       | undefined;
@@ -23184,6 +23428,16 @@ export type CommunityUpdatesQuery = {
                         | undefined;
                     }
                   | undefined;
+                attachments: Array<{
+                  __typename?: 'MessageAttachment';
+                  id?: string | undefined;
+                  url?: string | undefined;
+                  displayName: string;
+                  mimeType?: string | undefined;
+                  size?: number | undefined;
+                  width?: number | undefined;
+                  height?: number | undefined;
+                }>;
               }>;
             };
           };
@@ -35424,6 +35678,9 @@ export type TemplateContentQuery = {
                           selectedIds: Array<string>;
                         }
                       | undefined;
+                    spaces?:
+                      | { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant }
+                      | undefined;
                   };
                 };
                 contributionDefaults: {
@@ -36209,6 +36466,7 @@ export type CalloutTemplateContentFragment = {
       selection?:
         | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
         | undefined;
+      spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
     };
   };
   contributionDefaults: {
@@ -37134,6 +37392,7 @@ export type UpdateCalloutTemplateMutation = {
         selection?:
           | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
           | undefined;
+        spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
       };
     };
   };
@@ -37842,6 +38101,16 @@ export type CalendarEventDetailsQuery = {
                       | undefined;
                   }
                 | undefined;
+              attachments: Array<{
+                __typename?: 'MessageAttachment';
+                id?: string | undefined;
+                url?: string | undefined;
+                displayName: string;
+                mimeType?: string | undefined;
+                size?: number | undefined;
+                width?: number | undefined;
+                height?: number | undefined;
+              }>;
             }>;
             vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
           };
@@ -37991,6 +38260,16 @@ export type CalendarEventDetailsFragment = {
               | undefined;
           }
         | undefined;
+      attachments: Array<{
+        __typename?: 'MessageAttachment';
+        id?: string | undefined;
+        url?: string | undefined;
+        displayName: string;
+        mimeType?: string | undefined;
+        size?: number | undefined;
+        width?: number | undefined;
+        height?: number | undefined;
+      }>;
     }>;
     vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
   };
@@ -38160,6 +38439,16 @@ export type CreateCalendarEventMutation = {
                 | undefined;
             }
           | undefined;
+        attachments: Array<{
+          __typename?: 'MessageAttachment';
+          id?: string | undefined;
+          url?: string | undefined;
+          displayName: string;
+          mimeType?: string | undefined;
+          size?: number | undefined;
+          width?: number | undefined;
+          height?: number | undefined;
+        }>;
       }>;
       vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
     };
@@ -38308,6 +38597,16 @@ export type UpdateCalendarEventMutation = {
                 | undefined;
             }
           | undefined;
+        attachments: Array<{
+          __typename?: 'MessageAttachment';
+          id?: string | undefined;
+          url?: string | undefined;
+          displayName: string;
+          mimeType?: string | undefined;
+          size?: number | undefined;
+          width?: number | undefined;
+          height?: number | undefined;
+        }>;
       }>;
       vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
     };
@@ -39168,6 +39467,7 @@ export type ContributorCollectionByTypeQuery = {
 
 export type SpaceCollectionSubspacesQueryVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
+  expanded: Scalars['Boolean']['input'];
 }>;
 
 export type SpaceCollectionSubspacesQuery = {
@@ -39193,6 +39493,7 @@ export type SpaceCollectionSubspacesQuery = {
                 isContentPublic: boolean;
                 why?: string | undefined;
                 id: string;
+                who?: string | undefined;
                 metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
                 membership: {
                   __typename?: 'SpaceAboutMembership';
@@ -39244,6 +39545,7 @@ export type SpaceCollectionSubspacesQuery = {
                 profile: {
                   __typename?: 'Profile';
                   id: string;
+                  description?: string | undefined;
                   displayName: string;
                   url: string;
                   tagline?: string | undefined;
@@ -39281,6 +39583,18 @@ export type SpaceCollectionSubspacesQuery = {
           };
         }
       | undefined;
+  };
+};
+
+export type SubspaceCardAboutContextFragment = {
+  __typename?: 'Space';
+  id: string;
+  about: {
+    __typename?: 'SpaceAbout';
+    id: string;
+    why?: string | undefined;
+    who?: string | undefined;
+    profile: { __typename?: 'Profile'; id: string; description?: string | undefined };
   };
 };
 
@@ -40817,6 +41131,38 @@ export type UserSecurityAuthenticationMethodsQuery = {
           __typename?: 'User';
           id: string;
           authentication?: { __typename?: 'UserAuthenticationResult'; methods: Array<AuthenticationType> } | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type ConversationStorageConfigQueryVariables = Exact<{
+  conversationId: Scalars['UUID']['input'];
+}>;
+
+export type ConversationStorageConfigQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    conversation?:
+      | {
+          __typename?: 'Conversation';
+          id: string;
+          storageBucket?:
+            | {
+                __typename?: 'StorageBucket';
+                id: string;
+                allowedMimeTypes: Array<string>;
+                maxFileSize: number;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -51246,6 +51592,16 @@ export type ConversationDetailsQuery = {
                         }
                       | undefined;
                   }>;
+                  attachments: Array<{
+                    __typename?: 'MessageAttachment';
+                    id?: string | undefined;
+                    url?: string | undefined;
+                    displayName: string;
+                    mimeType?: string | undefined;
+                    size?: number | undefined;
+                    width?: number | undefined;
+                    height?: number | undefined;
+                  }>;
                 }
               | undefined;
           };
@@ -51324,6 +51680,16 @@ export type ConversationEventsSubscription = {
                           }
                         | undefined;
                     }>;
+                    attachments: Array<{
+                      __typename?: 'MessageAttachment';
+                      id?: string | undefined;
+                      url?: string | undefined;
+                      displayName: string;
+                      mimeType?: string | undefined;
+                      size?: number | undefined;
+                      width?: number | undefined;
+                      height?: number | undefined;
+                    }>;
                   }
                 | undefined;
             };
@@ -51375,6 +51741,16 @@ export type ConversationEventsSubscription = {
                         profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
                       }
                     | undefined;
+                }>;
+                attachments: Array<{
+                  __typename?: 'MessageAttachment';
+                  id?: string | undefined;
+                  url?: string | undefined;
+                  displayName: string;
+                  mimeType?: string | undefined;
+                  size?: number | undefined;
+                  width?: number | undefined;
+                  height?: number | undefined;
                 }>;
               }
             | undefined;
@@ -51455,6 +51831,16 @@ export type ConversationEventsSubscription = {
                   }
                 | undefined;
             }>;
+            attachments: Array<{
+              __typename?: 'MessageAttachment';
+              id?: string | undefined;
+              url?: string | undefined;
+              displayName: string;
+              mimeType?: string | undefined;
+              size?: number | undefined;
+              width?: number | undefined;
+              height?: number | undefined;
+            }>;
           };
         }
       | undefined;
@@ -51512,6 +51898,16 @@ export type ConversationMessagesQuery = {
                       profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
                     }
                   | undefined;
+              }>;
+              attachments: Array<{
+                __typename?: 'MessageAttachment';
+                id?: string | undefined;
+                url?: string | undefined;
+                displayName: string;
+                mimeType?: string | undefined;
+                size?: number | undefined;
+                width?: number | undefined;
+                height?: number | undefined;
               }>;
             }>;
           };
@@ -51571,6 +51967,16 @@ export type CreateConversationMutation = {
                     profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
                   }
                 | undefined;
+            }>;
+            attachments: Array<{
+              __typename?: 'MessageAttachment';
+              id?: string | undefined;
+              url?: string | undefined;
+              displayName: string;
+              mimeType?: string | undefined;
+              size?: number | undefined;
+              width?: number | undefined;
+              height?: number | undefined;
             }>;
           }
         | undefined;
@@ -51683,6 +52089,16 @@ export type UserConversationsQuery = {
                         profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
                       }
                     | undefined;
+                }>;
+                attachments: Array<{
+                  __typename?: 'MessageAttachment';
+                  id?: string | undefined;
+                  url?: string | undefined;
+                  displayName: string;
+                  mimeType?: string | undefined;
+                  size?: number | undefined;
+                  width?: number | undefined;
+                  height?: number | undefined;
                 }>;
               }
             | undefined;

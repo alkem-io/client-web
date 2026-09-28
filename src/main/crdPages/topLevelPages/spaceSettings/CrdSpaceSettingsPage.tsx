@@ -112,8 +112,11 @@ export default function CrdSpaceSettingsPage() {
   const userRoleChangeReason = reasonText(actionPermissions.userRoleChange);
   const organizationLeadAssignReason = reasonText(actionPermissions.organizationLeadAssign);
   const organizationRemoveReason = reasonText(actionPermissions.organizationRemove);
-  const addOrganizationReason = reasonText(actionPermissions.addOrganization);
   const addVcReason = reasonText(actionPermissions.addVirtualContributor);
+  // The *Add Organisation* launch button is HIDDEN when the privilege is absent or still
+  // unknown (client-web#10292), so this reason is only for the dialog's own per-row Add
+  // buttons — defence in depth, matching the Virtual Contributor dialog beside it.
+  const addOrganizationReason = reasonText(actionPermissions.addOrganization);
   // Inviting is a different token from adding — a space admin holds the invite privilege
   // without the platform-admin direct-add pair — so the Invite organisation button gets
   // its own reason rather than reusing `addOrganizationReason`.
@@ -584,9 +587,14 @@ export default function CrdSpaceSettingsPage() {
                     />
                   ) : undefined
                 }
-                permissions={community.permissions}
+                permissions={{
+                  ...community.permissions,
+                  // Single source of truth for the HIDDEN *Add Organisation* button
+                  // (client-web#10292): the same decision that feeds every tooltip here, so
+                  // `checking` and `unverifiable` both render nothing rather than a button.
+                  canAddOrganizations: actionPermissions.addOrganization.allowed,
+                }}
                 addDisabledReasons={{
-                  organizations: addOrganizationReason,
                   virtualContributors: addVcReason,
                 }}
                 inviteOrganizationsDisabledReason={inviteOrganizationsReason}

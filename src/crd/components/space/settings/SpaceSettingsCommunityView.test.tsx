@@ -71,9 +71,10 @@ describe('SpaceSettingsCommunityView — organization search, invite gating, and
     expect(screen.queryByText('Beta Org')).not.toBeInTheDocument();
   });
 
-  // The invite action is GATED, never hidden — same contract as the Add organisation
-  // button beside it. Hiding it would conceal the action's existence from an admin who
-  // lacks the privilege, and flip it hidden->shown once the privilege query resolves.
+  // The invite action is GATED, never hidden. Its neighbour *Add Organisation* is the one
+  // carve-out and is HIDDEN instead (client-web#10292) — see the two tests below — because
+  // its privilege is one an ordinary Space admin can never obtain, whereas every Space
+  // admin can eventually invite.
   test('Invite organisation button is always rendered, and disabled with a reason when the action is not permitted', async () => {
     const { rerender } = render(
       <SpaceSettingsCommunityView {...baseProps} inviteOrganizationsDisabledReason="no permission" />
@@ -87,6 +88,40 @@ describe('SpaceSettingsCommunityView — organization search, invite gating, and
     const enabledButton = screen.getByRole('button', { name: 'community.organizations.invite' });
     expect(enabledButton).toBeInTheDocument();
     expect(enabledButton).toBeEnabled();
+  });
+
+  // client-web#10292: hidden, not disabled. `canAddOrganizations` is false both when the
+  // privilege is denied AND while the privilege query is still resolving, so this one
+  // assertion covers the "render nothing until the answer is known" requirement too.
+  test('Add organisation button is not rendered when the direct-add privilege is absent or still unknown', async () => {
+    render(
+      <SpaceSettingsCommunityView
+        {...baseProps}
+        permissions={{ ...baseProps.permissions, canAddOrganizations: false }}
+      />
+    );
+    await openOrgSection();
+
+    expect(screen.queryByRole('button', { name: 'community.organizations.add' })).not.toBeInTheDocument();
+    // The sibling invite control is unaffected: it stays rendered, gated or not.
+    expect(screen.getByRole('button', { name: 'community.organizations.invite' })).toBeInTheDocument();
+  });
+
+  test('Add organisation button renders and is enabled for a user who holds the direct-add privilege', async () => {
+    render(
+      <SpaceSettingsCommunityView
+        {...baseProps}
+        permissions={{ ...baseProps.permissions, canAddOrganizations: true }}
+      />
+    );
+    await openOrgSection();
+
+    const addButton = screen.getByRole('button', { name: 'community.organizations.add' });
+    expect(addButton).toBeInTheDocument();
+    expect(addButton).toBeEnabled();
+
+    await userEvent.click(addButton);
+    expect(baseProps.onOrgAdd).toHaveBeenCalled();
   });
 
   test('a gated Invite organisation button does not call onInviteOrganizations when clicked', async () => {

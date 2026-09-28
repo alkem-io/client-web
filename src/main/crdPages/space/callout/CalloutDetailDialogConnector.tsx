@@ -60,6 +60,7 @@ import { MemoFramingConnector } from './MemoFramingConnector';
 import { PostContributionAddConnector } from './PostContributionAddConnector';
 import { PostContributionConnector } from './PostContributionConnector';
 import { SpaceCollectionConnector } from './SpaceCollectionConnector';
+import { cardVariantFromServer } from './spaceCollectionCardVariant';
 import { WhiteboardContributionAddConnector } from './WhiteboardContributionAddConnector';
 import { WhiteboardContributionConnector } from './WhiteboardContributionConnector';
 import { WhiteboardFramingConnector } from './WhiteboardFramingConnector';
@@ -543,7 +544,12 @@ export function CalloutDetailDialogConnector({
   // Spaces-collection body (feature 013) — the host space's subspaces as cards.
   // Rendered in the detail dialog just like the inline feed card (LazyCalloutItem).
   const hasSpaces = callout.framing.type === CalloutFramingType.Spaces;
-  const spacesFramingSlot = hasSpaces ? <SpaceCollectionConnector calloutId={callout.id} /> : undefined;
+  const spacesFramingSlot = hasSpaces ? (
+    <SpaceCollectionConnector
+      calloutId={callout.id}
+      cardVariant={cardVariantFromServer(callout.settings.framing.spaces?.cardVariant)}
+    />
+  ) : undefined;
 
   // Omit the slot entirely when the callout has no reactions summary (the server
   // module may not be deployed), or when commenting is turned off for the callout —
@@ -862,6 +868,17 @@ export function CalloutDetailDialogConnector({
         // Closing the edit dialog returns to the read-only preview — only
         // explicit close on the preview itself clears the selection.
         onClose={() => setPostEditOpen(false)}
+        // A saved task must hand the user back to the board. On a board
+        // (elevated) this dialog is a single-task layer over the columns, so
+        // stopping at the read-only preview would keep covering the very
+        // columns the user is trying to get back to. A non-board callout keeps
+        // its contributions grid behind the edit dialog, so the preview there
+        // is a useful landing spot and stays.
+        onUpdated={() => {
+          if (elevated) {
+            onOpenChange(false);
+          }
+        }}
         // Deleting the post must clear the inline preview too — otherwise the
         // grid refreshes without the post but the preview keeps rendering its
         // cached snapshot, making it look like the deletion failed.
@@ -964,6 +981,7 @@ export function CalloutDetailDialogConnector({
           onOpenChange={onOpenChange}
           {...elevatedDialog}
           focusedPost={elevated && isPostSelected}
+          editing={postEditOpen}
           callout={{
             ...mapCalloutDetailsToDialogData(callout, t),
             commentCount: isPostSelected ? postMessagesCount : undefined,
@@ -1027,6 +1045,10 @@ export function CalloutDetailDialogConnector({
             onOpenChange={onOpenChange}
             {...elevatedDialog}
             focusedPost={elevated && isPostSelected}
+            // The post/task edit dialog opens over this one; its comment surface stays
+            // out of the way until the user saves or cancels. The comments connector
+            // above stays mounted throughout, so the count returns unchanged.
+            editing={postEditOpen}
             callout={{
               ...mapCalloutDetailsToDialogData(callout, t),
               // While the live thread is still loading, fall back to the post's `messagesCount`

@@ -375,6 +375,12 @@
       "title": "Keine Unterbereiche gefunden",
       "description": "Keine Unterbereiche entsprechen Ihrer aktuellen Suche oder Ihrem Filter.",
       "clearFilters": "Filter zurücksetzen"
+    },
+    "expandedCard": {
+      "what": "Was",
+      "why": "Warum",
+      "who": "Wer",
+      "open": "Unterbereich öffnen"
     }
   },
   "about": {
@@ -613,6 +619,10 @@
       "loadMore": "Mehr laden…",
       "removeAriaLabel": "{{name}} entfernen",
       "clearSearch": "Suche löschen"
+    },
+    "cardVariant": {
+      "label": "Erweiterte Karte",
+      "description": "Zeigt die vollständige Karte mit dem Was, Warum und Wer des Unterbereichs - mehr Kontext, mehr Höhe."
     }
   },
   "contributionSettings": {
@@ -964,7 +974,18 @@
     "empty": "Noch keine Kommentare",
     "unknownUser": "Unbekannter Benutzer",
     "signInToComment": "Melde dich an, um zu kommentieren, antworten oder reagieren.",
-    "cantComment": "Du hast keine Berechtigung, hier zu kommentieren, antworten oder reagieren."
+    "cantComment": "Du hast keine Berechtigung, hier zu kommentieren, antworten oder reagieren.",
+    "attachments": {
+      "attach": "Dateien anhängen",
+      "stagedListLabel": "Zu sendende Dateien",
+      "removeAttachment": "{{name}} entfernen",
+      "uploading": "Wird hochgeladen…",
+      "uploadFailed": "Hochladen fehlgeschlagen. Sende erneut, um es noch einmal zu versuchen, oder entferne die Datei.",
+      "sendUnconfirmed": "Das Senden wurde nicht bestätigt. Prüfe das Gespräch, bevor du erneut sendest.",
+      "errorTooMany": "Du kannst bis zu {{max}} Dateien anhängen.",
+      "errorTooLarge": "{{name}} ist größer als {{max}} MB.",
+      "errorUnsupportedType": "{{name}} hat einen nicht unterstützten Dateityp."
+    }
   },
   "dialogs": {
     "cancel": "Abbrechen",
