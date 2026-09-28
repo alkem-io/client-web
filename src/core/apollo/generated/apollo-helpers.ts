@@ -956,12 +956,18 @@ export type CalloutSettingsFramingKeySpecifier = (
   | 'commentsEnabled'
   | 'contributors'
   | 'selection'
+  | 'spaces'
   | CalloutSettingsFramingKeySpecifier
 )[];
 export type CalloutSettingsFramingFieldPolicy = {
   commentsEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
   contributors?: FieldPolicy<any> | FieldReadFunction<any>;
   selection?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaces?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutSpacesSettingsKeySpecifier = ('cardVariant' | CalloutSpacesSettingsKeySpecifier)[];
+export type CalloutSpacesSettingsFieldPolicy = {
+  cardVariant?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutsSetKeySpecifier = (
   | 'authorization'
@@ -1391,6 +1397,7 @@ export type ConversationKeySpecifier = (
   | 'members'
   | 'messaging'
   | 'room'
+  | 'storageBucket'
   | 'updatedDate'
   | ConversationKeySpecifier
 )[];
@@ -1401,6 +1408,7 @@ export type ConversationFieldPolicy = {
   members?: FieldPolicy<any> | FieldReadFunction<any>;
   messaging?: FieldPolicy<any> | FieldReadFunction<any>;
   room?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ConversationCreatedEventKeySpecifier = (
@@ -1629,12 +1637,21 @@ export type CreateCalloutSettingsFramingDataKeySpecifier = (
   | 'commentsEnabled'
   | 'contributors'
   | 'selection'
+  | 'spaces'
   | CreateCalloutSettingsFramingDataKeySpecifier
 )[];
 export type CreateCalloutSettingsFramingDataFieldPolicy = {
   commentsEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
   contributors?: FieldPolicy<any> | FieldReadFunction<any>;
   selection?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaces?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateCalloutSpacesSettingsDataKeySpecifier = (
+  | 'cardVariant'
+  | CreateCalloutSpacesSettingsDataKeySpecifier
+)[];
+export type CreateCalloutSpacesSettingsDataFieldPolicy = {
+  cardVariant?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutTaskBoardDataKeySpecifier = ('columns' | CreateCalloutTaskBoardDataKeySpecifier)[];
 export type CreateCalloutTaskBoardDataFieldPolicy = {
@@ -3076,6 +3093,7 @@ export type MemoSigningPrepareResultFieldPolicy = {
   previewUrl?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageKeySpecifier = (
+  | 'attachments'
   | 'id'
   | 'message'
   | 'reactions'
@@ -3085,12 +3103,32 @@ export type MessageKeySpecifier = (
   | MessageKeySpecifier
 )[];
 export type MessageFieldPolicy = {
+  attachments?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   message?: FieldPolicy<any> | FieldReadFunction<any>;
   reactions?: FieldPolicy<any> | FieldReadFunction<any>;
   sender?: FieldPolicy<any> | FieldReadFunction<any>;
   threadID?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MessageAttachmentKeySpecifier = (
+  | 'displayName'
+  | 'height'
+  | 'id'
+  | 'mimeType'
+  | 'size'
+  | 'url'
+  | 'width'
+  | MessageAttachmentKeySpecifier
+)[];
+export type MessageAttachmentFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  height?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  mimeType?: FieldPolicy<any> | FieldReadFunction<any>;
+  size?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
+  width?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageDetailsKeySpecifier = ('message' | 'parent' | 'room' | MessageDetailsKeySpecifier)[];
 export type MessageDetailsFieldPolicy = {
@@ -6595,6 +6633,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CalloutSettingsFramingKeySpecifier | (() => undefined | CalloutSettingsFramingKeySpecifier);
     fields?: CalloutSettingsFramingFieldPolicy;
   };
+  CalloutSpacesSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutSpacesSettingsKeySpecifier | (() => undefined | CalloutSpacesSettingsKeySpecifier);
+    fields?: CalloutSpacesSettingsFieldPolicy;
+  };
   CalloutsSet?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutsSetKeySpecifier | (() => undefined | CalloutsSetKeySpecifier);
     fields?: CalloutsSetFieldPolicy;
@@ -6869,6 +6911,13 @@ export type StrictTypedTypePolicies = {
       | CreateCalloutSettingsFramingDataKeySpecifier
       | (() => undefined | CreateCalloutSettingsFramingDataKeySpecifier);
     fields?: CreateCalloutSettingsFramingDataFieldPolicy;
+  };
+  CreateCalloutSpacesSettingsData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCalloutSpacesSettingsDataKeySpecifier
+      | (() => undefined | CreateCalloutSpacesSettingsDataKeySpecifier);
+    fields?: CreateCalloutSpacesSettingsDataFieldPolicy;
   };
   CreateCalloutTaskBoardData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
@@ -7387,6 +7436,10 @@ export type StrictTypedTypePolicies = {
   Message?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier);
     fields?: MessageFieldPolicy;
+  };
+  MessageAttachment?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MessageAttachmentKeySpecifier | (() => undefined | MessageAttachmentKeySpecifier);
+    fields?: MessageAttachmentFieldPolicy;
   };
   MessageDetails?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageDetailsKeySpecifier | (() => undefined | MessageDetailsKeySpecifier);

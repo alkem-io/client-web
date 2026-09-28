@@ -375,6 +375,12 @@
       "title": "No se encontraron subespacios",
       "description": "Ningún subespacio coincide con tu búsqueda o filtro actual.",
       "clearFilters": "Borrar filtros"
+    },
+    "expandedCard": {
+      "what": "Qué",
+      "why": "Por qué",
+      "who": "Quién",
+      "open": "Abrir subespacio"
     }
   },
   "about": {
@@ -613,6 +619,10 @@
       "loadMore": "Cargando más…",
       "removeAriaLabel": "Eliminar {{name}}",
       "clearSearch": "Borrar búsqueda"
+    },
+    "cardVariant": {
+      "label": "Tarjeta ampliada",
+      "description": "Muestra la tarjeta completa con el Qué, Por qué y Quién del subespacio - más contexto, más altura."
     }
   },
   "contributionSettings": {
@@ -964,7 +974,18 @@
     "empty": "Sin comentarios aún",
     "unknownUser": "Usuario desconocido",
     "signInToComment": "Inicia sesión para comentar, responder o reaccionar.",
-    "cantComment": "No tienes permiso para comentar, responder o reaccionar aquí."
+    "cantComment": "No tienes permiso para comentar, responder o reaccionar aquí.",
+    "attachments": {
+      "attach": "Adjuntar archivos",
+      "stagedListLabel": "Archivos para enviar",
+      "removeAttachment": "Quitar {{name}}",
+      "uploading": "Subiendo…",
+      "uploadFailed": "Error al subir. Envía de nuevo para reintentarlo o elimina el archivo.",
+      "sendUnconfirmed": "El envío no se ha confirmado. Revisa la conversación antes de volver a enviar.",
+      "errorTooMany": "Puedes adjuntar hasta {{max}} archivos.",
+      "errorTooLarge": "{{name}} supera los {{max}} MB.",
+      "errorUnsupportedType": "{{name}} tiene un tipo de archivo no admitido."
+    }
   },
   "dialogs": {
     "cancel": "Cancelar",

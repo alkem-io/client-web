@@ -1080,6 +1080,17 @@ export const ContributorDetailsFragmentDoc = gql`
 }
     ${VisualModelFragmentDoc}
 ${TagsetDetailsFragmentDoc}`;
+export const MessageAttachmentDetailsFragmentDoc = gql`
+    fragment MessageAttachmentDetails on MessageAttachment {
+  id
+  url
+  displayName
+  mimeType
+  size
+  width
+  height
+}
+    `;
 export const MessageDetailsFragmentDoc = gql`
     fragment MessageDetails on Message {
   id
@@ -1092,9 +1103,13 @@ export const MessageDetailsFragmentDoc = gql`
   sender {
     ...ContributorDetails
   }
+  attachments {
+    ...MessageAttachmentDetails
+  }
 }
     ${ReactionDetailsFragmentDoc}
-${ContributorDetailsFragmentDoc}`;
+${ContributorDetailsFragmentDoc}
+${MessageAttachmentDetailsFragmentDoc}`;
 export const VcInteractionsDetailsFragmentDoc = gql`
     fragment VcInteractionsDetails on VcInteraction {
   threadID
@@ -1141,6 +1156,9 @@ export const CalloutSettingsFullFragmentDoc = gql`
     selection {
       mode
       selectedIds
+    }
+    spaces {
+      cardVariant
     }
   }
   visibility
@@ -3470,6 +3488,20 @@ export const CalloutReactionsSummaryFragmentDoc = gql`
     emojis
     myReactionEmoji
     allowedEmojis
+  }
+}
+    `;
+export const SubspaceCardAboutContextFragmentDoc = gql`
+    fragment SubspaceCardAboutContext on Space {
+  id
+  about {
+    id
+    why
+    who
+    profile {
+      id
+      description
+    }
   }
 }
     `;
@@ -13218,9 +13250,12 @@ export const ReplyToMessageDocument = gql`
       type
     }
     timestamp
+    attachments {
+      ...MessageAttachmentDetails
+    }
   }
 }
-    `;
+    ${MessageAttachmentDetailsFragmentDoc}`;
 export type ReplyToMessageMutationFn = Apollo.MutationFunction<
   SchemaTypes.ReplyToMessageMutation,
   SchemaTypes.ReplyToMessageMutationVariables
@@ -13367,9 +13402,12 @@ export const SendMessageToRoomDocument = gql`
       type
     }
     timestamp
+    attachments {
+      ...MessageAttachmentDetails
+    }
   }
 }
-    `;
+    ${MessageAttachmentDetailsFragmentDoc}`;
 export type SendMessageToRoomMutationFn = Apollo.MutationFunction<
   SchemaTypes.SendMessageToRoomMutation,
   SchemaTypes.SendMessageToRoomMutationVariables
@@ -31051,7 +31089,7 @@ export function refetchContributorCollectionByTypeQuery(
   return { query: ContributorCollectionByTypeDocument, variables: variables };
 }
 export const SpaceCollectionSubspacesDocument = gql`
-    query SpaceCollectionSubspaces($calloutId: UUID!) {
+    query SpaceCollectionSubspaces($calloutId: UUID!, $expanded: Boolean!) {
   lookup {
     callout(ID: $calloutId) {
       id
@@ -31059,12 +31097,14 @@ export const SpaceCollectionSubspacesDocument = gql`
         id
         subspaces {
           ...SubspaceCard
+          ...SubspaceCardAboutContext @include(if: $expanded)
         }
       }
     }
   }
 }
-    ${SubspaceCardFragmentDoc}`;
+    ${SubspaceCardFragmentDoc}
+${SubspaceCardAboutContextFragmentDoc}`;
 
 /**
  * __useSpaceCollectionSubspacesQuery__
@@ -31079,6 +31119,7 @@ export const SpaceCollectionSubspacesDocument = gql`
  * const { data, loading, error } = useSpaceCollectionSubspacesQuery({
  *   variables: {
  *      calloutId: // value for 'calloutId'
+ *      expanded: // value for 'expanded'
  *   },
  * });
  */
@@ -32267,6 +32308,92 @@ export function refetchUserSecurityAuthenticationMethodsQuery(
   variables?: SchemaTypes.UserSecurityAuthenticationMethodsQueryVariables
 ) {
   return { query: UserSecurityAuthenticationMethodsDocument, variables: variables };
+}
+export const ConversationStorageConfigDocument = gql`
+    query ConversationStorageConfig($conversationId: UUID!) {
+  lookup {
+    conversation(ID: $conversationId) {
+      id
+      storageBucket {
+        id
+        allowedMimeTypes
+        maxFileSize
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useConversationStorageConfigQuery__
+ *
+ * To run a query within a React component, call `useConversationStorageConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useConversationStorageConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useConversationStorageConfigQuery({
+ *   variables: {
+ *      conversationId: // value for 'conversationId'
+ *   },
+ * });
+ */
+export function useConversationStorageConfigQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ConversationStorageConfigQuery,
+    SchemaTypes.ConversationStorageConfigQueryVariables
+  > &
+    ({ variables: SchemaTypes.ConversationStorageConfigQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ConversationStorageConfigQuery,
+    SchemaTypes.ConversationStorageConfigQueryVariables
+  >(ConversationStorageConfigDocument, options);
+}
+export function useConversationStorageConfigLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ConversationStorageConfigQuery,
+    SchemaTypes.ConversationStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ConversationStorageConfigQuery,
+    SchemaTypes.ConversationStorageConfigQueryVariables
+  >(ConversationStorageConfigDocument, options);
+}
+export function useConversationStorageConfigSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.ConversationStorageConfigQuery,
+        SchemaTypes.ConversationStorageConfigQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.ConversationStorageConfigQuery,
+    SchemaTypes.ConversationStorageConfigQueryVariables
+  >(ConversationStorageConfigDocument, options);
+}
+export type ConversationStorageConfigQueryHookResult = ReturnType<typeof useConversationStorageConfigQuery>;
+export type ConversationStorageConfigLazyQueryHookResult = ReturnType<typeof useConversationStorageConfigLazyQuery>;
+export type ConversationStorageConfigSuspenseQueryHookResult = ReturnType<
+  typeof useConversationStorageConfigSuspenseQuery
+>;
+export type ConversationStorageConfigQueryResult = Apollo.QueryResult<
+  SchemaTypes.ConversationStorageConfigQuery,
+  SchemaTypes.ConversationStorageConfigQueryVariables
+>;
+export function refetchConversationStorageConfigQuery(variables: SchemaTypes.ConversationStorageConfigQueryVariables) {
+  return { query: ConversationStorageConfigDocument, variables: variables };
 }
 export const ResetConversationVcDocument = gql`
     mutation resetConversationVc($input: ConversationVcResetInput!) {
@@ -34626,6 +34753,15 @@ export const ConversationDetailsDocument = gql`
               }
             }
           }
+          attachments {
+            id
+            url
+            displayName
+            mimeType
+            size
+            width
+            height
+          }
         }
       }
       members {
@@ -34754,6 +34890,15 @@ export const ConversationEventsDocument = gql`
                 }
               }
             }
+            attachments {
+              id
+              url
+              displayName
+              mimeType
+              size
+              width
+              height
+            }
           }
         }
         members {
@@ -34797,6 +34942,15 @@ export const ConversationEventsDocument = gql`
               displayName
             }
           }
+        }
+        attachments {
+          id
+          url
+          displayName
+          mimeType
+          size
+          width
+          height
         }
       }
     }
@@ -34866,6 +35020,15 @@ export const ConversationEventsDocument = gql`
               displayName
             }
           }
+        }
+        attachments {
+          id
+          url
+          displayName
+          mimeType
+          size
+          width
+          height
         }
       }
     }
@@ -34945,6 +35108,15 @@ export const ConversationMessagesDocument = gql`
                 displayName
               }
             }
+          }
+          attachments {
+            id
+            url
+            displayName
+            mimeType
+            size
+            width
+            height
           }
         }
       }
@@ -35057,6 +35229,15 @@ export const CreateConversationDocument = gql`
               displayName
             }
           }
+        }
+        attachments {
+          id
+          url
+          displayName
+          mimeType
+          size
+          width
+          height
         }
       }
     }
@@ -35388,6 +35569,15 @@ export const UserConversationsDocument = gql`
                   displayName
                 }
               }
+            }
+            attachments {
+              id
+              url
+              displayName
+              mimeType
+              size
+              width
+              height
             }
           }
         }
