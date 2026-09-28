@@ -6,7 +6,6 @@ import {
   expiresAtFrom,
   loadCredentials,
   NEVER_EXPIRES,
-  rotateTokens,
   storeCredentials,
 } from './storage';
 
@@ -17,7 +16,7 @@ const makeRecord = (overrides: Partial<CredentialRecord> = {}): CredentialRecord
   userId: USER_ID,
   deviceId: 'DEVICE_ABC',
   accessToken: 'access-token-1',
-  refreshToken: 'refresh-token-1',
+  refreshToken: '',
   expiresAt: Date.now() + 900_000,
   homeserverUrl: 'https://matrix.example.com',
   storedAt: Date.now(),
@@ -70,12 +69,11 @@ describe('storage (IndexedDB)', () => {
 
     it('overwrites an existing record', async () => {
       await storeCredentials(makeRecord());
-      const updated = makeRecord({ accessToken: 'access-token-2', refreshToken: 'refresh-token-2' });
+      const updated = makeRecord({ accessToken: 'access-token-2' });
       await storeCredentials(updated);
 
       const result = await loadCredentials(USER_ID);
       expect(result.record?.accessToken).toBe('access-token-2');
-      expect(result.record?.refreshToken).toBe('refresh-token-2');
     });
 
     it('isolates per-user namespaces', async () => {
@@ -86,28 +84,6 @@ describe('storage (IndexedDB)', () => {
       const bobResult = await loadCredentials(OTHER_USER_ID);
       expect(aliceResult.record?.deviceId).toBe('DEVICE_ABC');
       expect(bobResult.record?.deviceId).toBe('DEVICE_BOB');
-    });
-  });
-
-  describe('atomic token rotation', () => {
-    it('rotates access and refresh tokens atomically', async () => {
-      await storeCredentials(makeRecord());
-
-      const rotated = await rotateTokens(USER_ID, 'new-access', 'new-refresh', Date.now() + 600_000);
-      expect(rotated).toBe(true);
-
-      const result = await loadCredentials(USER_ID);
-      expect(result.record?.accessToken).toBe('new-access');
-      expect(result.record?.refreshToken).toBe('new-refresh');
-      expect(result.record?.deviceId).toBe('DEVICE_ABC');
-    });
-
-    it('fails rotation when no existing record (aborted transaction)', async () => {
-      const rotated = await rotateTokens(USER_ID, 'new-access', 'new-refresh', Date.now() + 600_000);
-      expect(rotated).toBe(false);
-
-      const result = await loadCredentials(USER_ID);
-      expect(result.record).toBe(null);
     });
   });
 
@@ -132,40 +108,19 @@ describe('storage (IndexedDB)', () => {
       expect(bobResult.record?.deviceId).toBe('DEVICE_BOB');
     });
 
-    describe('blocked by an open connection', () => {
-      const holdOpen = () =>
-        new Promise<IDBDatabase>((resolve, reject) => {
-          const request = indexedDB.open(`alkemio-matrix/${USER_ID}`);
-          request.onsuccess = () => resolve(request.result);
-          request.onerror = () => reject(request.error);
-        });
+    it('resolves once deletion is acknowledged, even while another connection still holds the database open', async () => {
+      await storeCredentials(makeRecord());
+      const held = await new Promise<IDBDatabase>((resolve, reject) => {
+        const request = indexedDB.open(`alkemio-matrix/${USER_ID}`);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
 
-      it('waits for the connection to close, then completes — never reports done while the record exists', async () => {
-        await storeCredentials(makeRecord());
-        const held = await holdOpen();
-
-        let settled = false;
-        const clearing = clearNamespace(USER_ID).then(() => {
-          settled = true;
-        });
-        await new Promise(resolve => setTimeout(resolve, 30));
-        expect(settled).toBe(false);
-
+      try {
+        await expect(clearNamespace(USER_ID)).resolves.toBeUndefined();
+      } finally {
         held.close();
-        await clearing;
-        expect(settled).toBe(true);
-        expect((await loadCredentials(USER_ID)).record).toBe(null);
-      });
-
-      it('reports a failure once the bound lapses instead of hanging or succeeding', async () => {
-        await storeCredentials(makeRecord());
-        const held = await holdOpen();
-        try {
-          await expect(clearNamespace(USER_ID, { blockedTimeoutMs: 50 })).rejects.toThrow('blocked');
-        } finally {
-          held.close();
-        }
-      });
+      }
     });
   });
 

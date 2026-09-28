@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const harness = vi.hoisted(() => ({
-  enabled: { value: true },
+  configured: { value: true },
   handleMatrixCallback: vi.fn(async () => ({ ok: true })),
 }));
 
@@ -10,7 +10,7 @@ vi.mock('./matrixCallback', () => ({
 }));
 
 vi.mock('./matrixConfig', () => ({
-  getConfig: () => ({ enabled: harness.enabled.value }),
+  getConfig: () => ({ homeserverUrl: harness.configured.value ? 'https://matrix.dev-alkem.io' : '' }),
 }));
 
 import { runMatrixCallbackPage } from './matrixCallbackPage';
@@ -22,7 +22,7 @@ describe('matrixCallbackPage', () => {
   beforeEach(() => {
     replace.mockClear();
     harness.handleMatrixCallback.mockClear();
-    harness.enabled.value = true;
+    harness.configured.value = true;
     Object.defineProperty(window, 'location', {
       value: { ...originalLocation, pathname: '/matrix-callback', replace },
       configurable: true,
@@ -47,8 +47,8 @@ describe('matrixCallbackPage', () => {
     expect(replace).toHaveBeenCalledWith('/');
   });
 
-  it('flag off: goes home without touching the token, even framed', async () => {
-    harness.enabled.value = false;
+  it('not configured for this environment: goes home without touching the token, even framed', async () => {
+    harness.configured.value = false;
     vi.spyOn(window, 'top', 'get').mockReturnValue({} as Window);
     await runMatrixCallbackPage();
     expect(harness.handleMatrixCallback).not.toHaveBeenCalled();

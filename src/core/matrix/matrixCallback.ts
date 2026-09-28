@@ -1,6 +1,4 @@
 import { getConfig } from './matrixConfig';
-import { redactBreadcrumb } from './redaction';
-import { clearSsoFlowState, loadSsoFlowState } from './ssoLogin';
 import { expiresAtFrom, storeCredentials } from './storage';
 
 type ExchangeResult = {
@@ -16,19 +14,7 @@ type CallbackOutcome = {
   readonly error?: string;
 };
 
-type BreadcrumbSink = (breadcrumb: { message?: string; data?: Record<string, unknown> }) => void;
-
-const scrubLoginToken = (): string | null => {
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get('loginToken');
-
-  params.delete('loginToken');
-  const cleanSearch = params.toString();
-  const cleanUrl = window.location.pathname + (cleanSearch ? `?${cleanSearch}` : '') + window.location.hash;
-  window.history.replaceState(window.history.state, '', cleanUrl);
-
-  return token;
-};
+const readLoginToken = (): string | null => new URLSearchParams(window.location.search).get('loginToken');
 
 const exchangeLoginToken = async (homeserverUrl: string, loginToken: string): Promise<ExchangeResult> => {
   const response = await fetch(`${homeserverUrl}/_matrix/client/v3/login`, {
@@ -38,7 +24,6 @@ const exchangeLoginToken = async (homeserverUrl: string, loginToken: string): Pr
     body: JSON.stringify({
       type: 'm.login.token',
       token: loginToken,
-      refresh_token: true,
       initial_device_display_name: 'Alkemio Web',
     }),
   });
@@ -50,36 +35,21 @@ const exchangeLoginToken = async (homeserverUrl: string, loginToken: string): Pr
   return (await response.json()) as ExchangeResult;
 };
 
-const handleMatrixCallback = async (onBreadcrumb?: BreadcrumbSink): Promise<CallbackOutcome> => {
-  const loginToken = scrubLoginToken();
+/**
+ * Runs inside the hidden silent-SSO iframe: exchanges the loginToken Synapse
+ * put on this page's URL for a device and access token, and persists them.
+ * The iframe URL never reaches the address bar, so there is no visible token
+ * to scrub.
+ */
+const handleMatrixCallback = async (): Promise<CallbackOutcome> => {
+  const loginToken = readLoginToken();
 
   if (!loginToken) {
-    if (onBreadcrumb) {
-      onBreadcrumb(
-        redactBreadcrumb({
-          message: 'Matrix callback: no loginToken in URL',
-        })
-      );
-    }
     return { ok: false, error: 'no loginToken' };
   }
 
-  const flowState = loadSsoFlowState();
-  if (!flowState) {
-    if (onBreadcrumb) {
-      onBreadcrumb(
-        redactBreadcrumb({
-          message: 'Matrix callback: unsolicited token (no pending flow)',
-        })
-      );
-    }
-    return { ok: false, error: 'unsolicited token' };
-  }
-
-  clearSsoFlowState();
-
   const config = getConfig();
-  if (!config.enabled || config.homeserverUrl === '') {
+  if (config.homeserverUrl === '') {
     return { ok: false, error: 'matrix not configured' };
   }
 
@@ -105,17 +75,10 @@ const handleMatrixCallback = async (onBreadcrumb?: BreadcrumbSink): Promise<Call
     }
 
     return { ok: true };
-  } catch (err) {
-    if (onBreadcrumb) {
-      onBreadcrumb(
-        redactBreadcrumb({
-          message: `Matrix callback: exchange failed — ${err instanceof Error ? err.message : 'unknown'}`,
-        })
-      );
-    }
+  } catch {
     return { ok: false, error: 'exchange failed' };
   }
 };
 
-export { handleMatrixCallback, scrubLoginToken, exchangeLoginToken };
+export { handleMatrixCallback, exchangeLoginToken };
 export type { CallbackOutcome, ExchangeResult };

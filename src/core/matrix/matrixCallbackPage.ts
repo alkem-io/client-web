@@ -8,7 +8,7 @@ import { getConfig } from './matrixConfig';
  * business here and goes home.
  */
 const runMatrixCallbackPage = async (): Promise<void> => {
-  if (getConfig().enabled && window.self !== window.top) {
+  if (getConfig().homeserverUrl !== '' && window.self !== window.top) {
     await handleMatrixCallback();
     return;
   }

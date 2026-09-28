@@ -1,25 +1,16 @@
 import 'fake-indexeddb/auto';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { handleMatrixCallback, scrubLoginToken } from './matrixCallback';
-import { PENDING_SSO_KEY } from './ssoLogin';
+import { handleMatrixCallback } from './matrixCallback';
 import { loadCredentials } from './storage';
 
 const HOMESERVER = 'https://matrix.dev-alkem.io';
 
 const setEnv = () => {
   Object.defineProperty(window, '_env_', {
-    value: {
-      VITE_APP_MATRIX_ENABLED: 'true',
-      VITE_APP_MATRIX_HOMESERVER_URL: HOMESERVER,
-      VITE_APP_MATRIX_ALLOWED_USERS: '',
-    },
+    value: { VITE_APP_MATRIX_HOMESERVER_URL: HOMESERVER },
     writable: true,
     configurable: true,
   });
-};
-
-const setPendingFlow = () => {
-  sessionStorage.setItem(PENDING_SSO_KEY, JSON.stringify({ startedAt: Date.now() }));
 };
 
 const setUrlWithToken = (token: string) => {
@@ -30,50 +21,19 @@ const EXCHANGE_RESPONSE = {
   user_id: '@alice-uuid:matrix.dev-alkem.io',
   device_id: 'DEVICE_XYZ',
   access_token: 'syt_new_access_token',
-  refresh_token: 'syr_new_refresh_token',
   expires_in_ms: 900_000,
 };
 
 describe('matrixCallback', () => {
   beforeEach(() => {
     vi.resetModules();
-    sessionStorage.clear();
     window.history.replaceState(null, '', '/');
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
     delete (window as unknown as Record<string, unknown>)._env_;
-    sessionStorage.clear();
     window.history.replaceState(null, '', '/');
-  });
-
-  describe('scrubLoginToken', () => {
-    it('removes loginToken from URL synchronously and returns the value', () => {
-      setUrlWithToken('mlt_test123');
-
-      const token = scrubLoginToken();
-
-      expect(token).toBe('mlt_test123');
-      expect(window.location.search).not.toContain('loginToken');
-      expect(window.location.pathname).toBe('/matrix-callback');
-    });
-
-    it('preserves other query parameters', () => {
-      window.history.replaceState(null, '', '/matrix-callback?other=value&loginToken=mlt_abc&keep=yes');
-
-      const token = scrubLoginToken();
-
-      expect(token).toBe('mlt_abc');
-      expect(window.location.search).toContain('other=value');
-      expect(window.location.search).toContain('keep=yes');
-      expect(window.location.search).not.toContain('loginToken');
-    });
-
-    it('returns null when no loginToken present', () => {
-      window.history.replaceState(null, '', '/matrix-callback');
-      expect(scrubLoginToken()).toBeNull();
-    });
   });
 
   describe('handleMatrixCallback', () => {
@@ -85,20 +45,22 @@ describe('matrixCallback', () => {
       expect(result.error).toContain('no loginToken');
     });
 
-    it('rejects unsolicited token (no pending flow)', async () => {
-      setUrlWithToken('mlt_unsolicited');
+    it('reads the loginToken without requiring a pending-flow marker', async () => {
+      setEnv();
+      setUrlWithToken('mlt_no_marker');
 
-      const sink = vi.fn();
-      const result = await handleMatrixCallback(sink);
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(JSON.stringify(EXCHANGE_RESPONSE), { status: 200 })
+      );
 
-      expect(result.ok).toBe(false);
-      expect(result.error).toContain('unsolicited');
-      expect(sink).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining('unsolicited') }));
+      const { handleMatrixCallback: fresh } = await import('./matrixCallback');
+      const result = await fresh();
+
+      expect(result.ok).toBe(true);
     });
 
-    it('exchanges loginToken with refresh_token: true and persists credentials', async () => {
+    it('exchanges the loginToken without requesting a refresh token, and persists credentials', async () => {
       setEnv();
-      setPendingFlow();
       setUrlWithToken('mlt_valid');
 
       const fetchSpy = vi
@@ -118,13 +80,12 @@ describe('matrixCallback', () => {
       const body = JSON.parse(init?.body as string);
       expect(body.type).toBe('m.login.token');
       expect(body.token).toBe('mlt_valid');
-      expect(body.refresh_token).toBe(true);
+      expect(body.refresh_token).toBeUndefined();
       expect(body.initial_device_display_name).toBe('Alkemio Web');
     });
 
-    it('persists credentials to IndexedDB', async () => {
+    it('persists credentials to IndexedDB with an empty refresh token', async () => {
       setEnv();
-      setPendingFlow();
       setUrlWithToken('mlt_persist');
 
       vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
@@ -138,13 +99,12 @@ describe('matrixCallback', () => {
       expect(stored.available).toBe(true);
       expect(stored.record).not.toBeNull();
       expect(stored.record?.accessToken).toBe(EXCHANGE_RESPONSE.access_token);
-      expect(stored.record?.refreshToken).toBe(EXCHANGE_RESPONSE.refresh_token);
+      expect(stored.record?.refreshToken).toBe('');
       expect(stored.record?.deviceId).toBe(EXCHANGE_RESPONSE.device_id);
     });
 
-    it('stores a non-expiring record when the response omits refresh token and expiry', async () => {
+    it('stores a non-expiring record when the response omits expiry', async () => {
       setEnv();
-      setPendingFlow();
       setUrlWithToken('mlt_norefresh');
 
       vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
@@ -159,13 +119,11 @@ describe('matrixCallback', () => {
       expect(result.ok).toBe(true);
 
       const stored = await loadCredentials(EXCHANGE_RESPONSE.user_id);
-      expect(stored.record?.refreshToken).toBe('');
       expect(stored.record?.expiresAt).toBeGreaterThan(Date.now() + 1_000_000_000);
     });
 
     it('stores an already-expired record when the response states a zero lifetime', async () => {
       setEnv();
-      setPendingFlow();
       setUrlWithToken('mlt_zero');
 
       vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
@@ -180,24 +138,8 @@ describe('matrixCallback', () => {
       expect(stored.record?.expiresAt).toBeLessThanOrEqual(Date.now());
     });
 
-    it('clears the pending flow marker after use', async () => {
-      setEnv();
-      setPendingFlow();
-      setUrlWithToken('mlt_clear');
-
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
-        new Response(JSON.stringify(EXCHANGE_RESPONSE), { status: 200 })
-      );
-
-      const { handleMatrixCallback: fresh } = await import('./matrixCallback');
-      await fresh();
-
-      expect(sessionStorage.getItem(PENDING_SSO_KEY)).toBeNull();
-    });
-
     it('does not send credentials to homeserver', async () => {
       setEnv();
-      setPendingFlow();
       setUrlWithToken('mlt_d06');
 
       const fetchSpy = vi
