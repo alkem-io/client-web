@@ -76,4 +76,63 @@ describe('RoleMembersEditor', () => {
     expect(screen.getByText('roleMembers.noMembers')).toBeInTheDocument();
     expect(screen.getByText('roleMembers.noResults')).toBeInTheDocument();
   });
+
+  // sec-client-web-2: "holder read denied/unreachable" must render distinctly
+  // from a genuine "no holders" result.
+  test('shows an explicit unavailable message instead of noMembers when holdersUnavailable', () => {
+    render(<RoleMembersEditor {...baseProps} members={[]} holdersUnavailable={true} />);
+    expect(screen.getByRole('alert')).toHaveTextContent('roleMembers.holdersUnavailable');
+    expect(screen.queryByText('roleMembers.noMembers')).toBeNull();
+  });
+
+  test('does not show the unavailable message when there are members', () => {
+    render(<RoleMembersEditor {...baseProps} holdersUnavailable={true} />);
+    expect(screen.queryByText('roleMembers.holdersUnavailable')).toBeNull();
+  });
+
+  // qual-clientweb-2: FR-012's verbatim server-rejection surfacing has no
+  // coverage at any level — pin the one thing this component is responsible
+  // for: rendering whatever `errorMessage` it is given, visibly, via role="alert".
+  test('renders a server rejection message verbatim when errorMessage is set', () => {
+    render(<RoleMembersEditor {...baseProps} errorMessage="Assigner capability: you may not grant this role." />);
+    expect(screen.getByRole('alert')).toHaveTextContent('Assigner capability: you may not grant this role.');
+  });
+
+  test('renders no alert when errorMessage is unset', () => {
+    render(<RoleMembersEditor {...baseProps} />);
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  // client-13: the user "add" search box and the organization "add" search
+  // box previously shared the same placeholder/aria-label — indistinguishable
+  // to a screen reader when both render on a Feature role.
+  describe('distinct search box labels (client-13)', () => {
+    const organizationSection = {
+      members: [],
+      availableOrganizations: [{ id: 'o1', displayName: 'Acme' }],
+      searchTerm: '',
+      onSearchTermChange: vi.fn(),
+      onAdd: vi.fn(),
+      onRemove: vi.fn(),
+    };
+
+    test('the user and organization search boxes have distinct accessible names', () => {
+      render(<RoleMembersEditor {...baseProps} organizationSection={organizationSection} />);
+      const searchBoxes = screen.getAllByRole('searchbox');
+      const names = searchBoxes.map(box => box.getAttribute('aria-label'));
+      expect(names).toContain('roleMembers.searchPlaceholder');
+      expect(names).toContain('roleMembers.searchOrganizationsPlaceholder');
+      expect(new Set(names).size).toBe(names.length);
+    });
+
+    test('the organization "no results" text is distinct from the user one', () => {
+      render(
+        <RoleMembersEditor
+          {...baseProps}
+          organizationSection={{ ...organizationSection, availableOrganizations: [] }}
+        />
+      );
+      expect(screen.getByText('roleMembers.noOrganizationResults')).toBeInTheDocument();
+    });
+  });
 });

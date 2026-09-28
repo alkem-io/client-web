@@ -27,10 +27,38 @@ vi.mock('@/domain/platformAdmin/domain/organizations/usePlatformAdminOrganizatio
   default: () => orgHookMock(),
 }));
 
+const accessGuardMock = vi.fn();
+vi.mock('../../useAdminAccessGuard', () => ({
+  useAdminAccessGuard: () => accessGuardMock(),
+}));
+
+const canManageLicensePlansMock = vi.fn();
+vi.mock('@/domain/platformAdmin/domain/licensing/useCanManageLicensePlans', () => ({
+  default: () => canManageLicensePlansMock(),
+}));
+
 const baseReturn = {
   organizations: [
-    { id: 'o1', value: 'Acme', url: '/org/acme', verified: true, accountId: 'a1', activeLicensePlanIds: ['free'] },
-    { id: 'o2', value: 'Globex', url: '/org/globex', verified: false, accountId: 'a2', activeLicensePlanIds: [] },
+    {
+      id: 'o1',
+      value: 'Acme',
+      url: '/org/acme',
+      verified: true,
+      accountId: 'a1',
+      activeLicensePlanIds: ['free'],
+      orgPrivileges: ['READ', 'UPDATE', 'DELETE'],
+      verificationPrivileges: ['READ', 'UPDATE', 'GRANT'],
+    },
+    {
+      id: 'o2',
+      value: 'Globex',
+      url: '/org/globex',
+      verified: false,
+      accountId: 'a2',
+      activeLicensePlanIds: [],
+      orgPrivileges: ['READ', 'UPDATE', 'DELETE'],
+      verificationPrivileges: ['READ', 'UPDATE', 'GRANT'],
+    },
   ],
   loading: false,
   onDelete,
@@ -53,6 +81,8 @@ const baseReturn = {
 beforeEach(() => {
   vi.clearAllMocks();
   orgHookMock.mockReturnValue(baseReturn);
+  accessGuardMock.mockReturnValue({ loading: false, isPlatformAdmin: true, canCreateOrganization: true });
+  canManageLicensePlansMock.mockReturnValue(true);
 });
 
 describe('CrdAdminOrganizationsPage', () => {
@@ -97,5 +127,40 @@ describe('CrdAdminOrganizationsPage', () => {
     render(<CrdAdminOrganizationsPage />);
     await userEvent.click(screen.getAllByRole('button', { name: 'organizations.edit' })[0]);
     expect(navigateMock).toHaveBeenCalledWith('/admin/organizations/o1/edit');
+  });
+
+  // client-7: Edit/Verify are per-row privilege capabilities, not admin standing.
+  test('a row without Update/verification privileges shows delete but no edit and no verify button', () => {
+    orgHookMock.mockReturnValue({
+      ...baseReturn,
+      organizations: [
+        {
+          id: 'o1',
+          value: 'Acme',
+          url: '/org/acme',
+          verified: true,
+          accountId: 'a1',
+          activeLicensePlanIds: ['free'],
+          orgPrivileges: ['READ', 'DELETE_ORGANIZATION'],
+          verificationPrivileges: ['READ'],
+        },
+      ],
+    });
+    render(<CrdAdminOrganizationsPage />);
+    expect(screen.queryByRole('button', { name: 'organizations.edit' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'organizations.toggleVerification' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'table.delete' })).toBeInTheDocument();
+  });
+
+  test('"New organization" is absent without CreateOrganization', () => {
+    accessGuardMock.mockReturnValue({ loading: false, isPlatformAdmin: true, canCreateOrganization: false });
+    render(<CrdAdminOrganizationsPage />);
+    expect(screen.queryByRole('button', { name: /organizations\.new/ })).toBeNull();
+  });
+
+  test('license-plans action is absent without the manage-license-plans capability', () => {
+    canManageLicensePlansMock.mockReturnValue(false);
+    render(<CrdAdminOrganizationsPage />);
+    expect(screen.queryByRole('button', { name: 'licensePlans.manage' })).toBeNull();
   });
 });

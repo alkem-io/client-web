@@ -1,5 +1,5 @@
 import { useInnovationHubByIdQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { canEditOrgResource } from '@/main/crdPages/innovationPack/innovationPackAccess';
 
 export type HubAccessGuardResult =
   | { state: 'loading' }
@@ -10,7 +10,8 @@ export type HubAccessGuardResult =
  * Fetches the hub's `authorization.myPrivileges` (via the home fragment, which
  * carries privileges — the settings fragment does not). Returns:
  *   - `loading` while the privilege check is in flight
- *   - `allowed` when the viewer holds `Update`
+ *   - `allowed` when the viewer holds `Update` (the owner) or `PlatformSupportOrgResources`
+ *     (Platform Support editing an organization's hub — A7, 027 R-F.2)
  *   - `denied` with a redirect target (the hub's public home URL) otherwise
  *
  * Per FR-009 / FR-027b — the settings page MUST redirect non-admins to `/hub/<slug>`,
@@ -35,7 +36,12 @@ export const useHubAccessGuard = (innovationHubId: string | undefined): HubAcces
     return { state: 'denied', redirectTo: '/' };
   }
 
-  const canEdit = hub.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+  // 027-platform-role-redesign L6 (client-9): the same dual-path gate as
+  // Innovation Packs (A7) — owner `Update`, or Platform Support's
+  // `PlatformSupportOrgResources`. Shared with `mapInnovationHubToHomeData` so
+  // the settings link offered on the home page and this settings-route guard
+  // cannot disagree.
+  const canEdit = canEditOrgResource(hub.authorization?.myPrivileges);
   if (canEdit) {
     return { state: 'allowed' };
   }

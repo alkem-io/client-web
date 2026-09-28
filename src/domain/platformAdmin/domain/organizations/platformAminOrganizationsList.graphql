@@ -10,6 +10,10 @@ query platformAdminOrganizationsList($first: Int!, $after: UUID, $filter: Organi
             name
           }
         }
+        authorization {
+          id
+          myPrivileges
+        }
         profile {
           id
           url
@@ -22,6 +26,10 @@ query platformAdminOrganizationsList($first: Int!, $after: UUID, $filter: Organi
         verification {
           id
           state
+          authorization {
+            id
+            myPrivileges
+          }
         }
       }
       pageInfo {
