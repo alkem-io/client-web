@@ -49,7 +49,12 @@ export function ContributionDocumentCard({
       )}
       onClick={onClick}
     >
-      <div className="w-full h-full flex items-center justify-center relative">
+      {/* absolute inset-0, not w-full h-full: the card sets only min-h-[200px],
+       * so a percentage height here resolves against an auto-height parent and
+       * collapses to the icon (32px) — taking the absolutely positioned preview
+       * with it, which rendered as a strip across the top of the card. Spanning
+       * the card the way the two overlays below already do fixes it. */}
+      <div className="absolute inset-0 flex items-center justify-center">
         <Icon className={cn('w-8 h-8', accentColor)} aria-hidden="true" />
         {showImage && (
           <img
