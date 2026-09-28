@@ -27,7 +27,7 @@ describe('postContributionFormSchema description length', () => {
     expect(validateDescription('a'.repeat(20000))).toBeUndefined();
   });
 
-  test('still rejects an empty description', () => {
-    expect(validateDescription('')).toBeDefined();
+  test('accepts an empty description', () => {
+    expect(validateDescription('')).toBeUndefined();
   });
 });
