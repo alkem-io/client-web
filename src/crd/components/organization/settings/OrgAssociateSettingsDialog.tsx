@@ -21,8 +21,6 @@ export type OrgAssociateSettingsDialogProps = {
   onOpenChange: (open: boolean) => void;
   subject: OrgAssociateSettingsSubject | null;
   saving: boolean;
-  /** True when the row being edited is the signed-in administrator themselves. */
-  isSelf?: boolean;
   /** Readable copy for a role-limit refusal (limitAdmin / limitOwner / minOwner), cleared by the caller. */
   errorMessage?: string;
   onSave: (next: { isAssociate: boolean; isAdmin: boolean; isOwner: boolean }) => void;
@@ -43,7 +41,6 @@ export function OrgAssociateSettingsDialog({
   onOpenChange,
   subject,
   saving,
-  isSelf = false,
   errorMessage,
   onSave,
   onRemove,
@@ -102,26 +99,18 @@ export function OrgAssociateSettingsDialog({
             )}
           </div>
 
-          {/* An administrator may not switch off their OWN Admin role here: one
-              accidental click would otherwise lock them out of the surface they
-              are standing on. Deliberate self-demotion is still possible through
-              the API — this is an interface guard, not a rule. */}
           <div className="flex items-center justify-between gap-4">
             <Label htmlFor="org-associate-toggle-admin">{t('org.associates.editor.adminLabel')}</Label>
             <Switch
               id="org-associate-toggle-admin"
               checked={isAdmin}
-              disabled={saving || (isSelf && isAdmin)}
+              disabled={saving}
               onCheckedChange={next => {
-                if (isSelf && isAdmin && !next) return;
                 setIsAdmin(next);
                 if (next) setIsAssociate(true);
               }}
             />
           </div>
-          {isSelf && isAdmin && (
-            <p className="text-caption text-muted-foreground -mt-2">{t('org.associates.editor.selfAdminLocked')}</p>
-          )}
 
           <div className="flex items-center justify-between gap-4">
             <Label htmlFor="org-associate-toggle-owner">{t('org.associates.editor.ownerLabel')}</Label>
@@ -140,7 +129,7 @@ export function OrgAssociateSettingsDialog({
         </div>
 
         <DialogFooter className="justify-between sm:justify-between">
-          <Button type="button" variant="destructive" onClick={onRemove} disabled={saving || (isSelf && isAdmin)}>
+          <Button type="button" variant="destructive" onClick={onRemove} disabled={saving}>
             {t('org.associates.editor.remove')}
           </Button>
           <div className="flex gap-2">
