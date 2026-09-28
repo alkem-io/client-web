@@ -42,6 +42,9 @@ function makeCard(id: string, name: string): ContributorCardData {
 
 const noop = () => {};
 
+// CollapsibleTagList renders an aria-hidden measuring copy of every tag; text queries skip it.
+const HIDDEN_TEXT = 'script, style, [aria-hidden="true"] *';
+
 describe('ContributorCollection — T008 resolved-count filter gate (US4)', () => {
   test('US4-AS1: hides the type switch when only ONE resolved type has data, even if config lists multiple', () => {
     // Config: three types; only "user" resolves to a non-zero count.
@@ -222,7 +225,7 @@ describe('ContributorCollection — US2: everything else keeps working', () => {
       />
     );
     expect(screen.getByText('Loves sustainability projects.')).toBeInTheDocument();
-    expect(screen.getByText('Sustainability')).toBeInTheDocument();
+    expect(screen.getByText('Sustainability', { ignore: HIDDEN_TEXT })).toBeInTheDocument();
     unmount();
 
     // Map view: a card with hasValidCoordinates: false is unlocated, so it
@@ -239,7 +242,7 @@ describe('ContributorCollection — US2: everything else keeps working', () => {
       />
     );
     expect(screen.getByText('Loves sustainability projects.')).toBeInTheDocument();
-    expect(screen.getByText('Sustainability')).toBeInTheDocument();
+    expect(screen.getByText('Sustainability', { ignore: HIDDEN_TEXT })).toBeInTheDocument();
   });
 
   test('search matches by name only — a query that only matches a tagline or tag finds nobody', () => {

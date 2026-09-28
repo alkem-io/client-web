@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import i18next from 'i18next';
 import type { ReactElement } from 'react';
@@ -19,6 +19,9 @@ beforeAll(async () => {
     interpolation: { escapeValue: false },
   });
 });
+
+// CollapsibleTagList renders an aria-hidden measuring copy of every tag; text queries skip it.
+const HIDDEN_TEXT = 'script, style, [aria-hidden="true"] *';
 
 const renderCard = (ui: ReactElement) => render(<I18nextProvider i18n={i18n}>{ui}</I18nextProvider>);
 
@@ -43,8 +46,8 @@ describe('ContributorCard — rows and layout (US1)', () => {
     );
 
     expect(screen.getByText('Urban planner who loves a good map.')).toBeInTheDocument();
-    expect(screen.getByText('Urban Planning')).toBeInTheDocument();
-    expect(screen.getByText('Sustainability')).toBeInTheDocument();
+    expect(screen.getByText('Urban Planning', { ignore: HIDDEN_TEXT })).toBeInTheDocument();
+    expect(screen.getByText('Sustainability', { ignore: HIDDEN_TEXT })).toBeInTheDocument();
     expect(screen.getByText('Barcelona, ES')).toBeInTheDocument();
   });
 
@@ -66,19 +69,16 @@ describe('ContributorCard — rows and layout (US1)', () => {
     expect(screen.queryByText('User has not filled in their tagline.')).not.toBeInTheDocument();
   });
 
-  test('three tags render exactly two pills — never a "+N" indicator', () => {
+  test('every tag is passed to the tag list, in stored order (fitting and "+N" are CollapsibleTagList\'s job)', () => {
     renderCard(<ContributorCard contributor={{ ...baseCard, tags: ['Policy', 'Energy', 'Water'] }} />);
 
-    expect(screen.getByText('Policy')).toBeInTheDocument();
-    expect(screen.getByText('Energy')).toBeInTheDocument();
-    expect(screen.queryByText('Water')).not.toBeInTheDocument();
-    expect(screen.queryByText(/^\+\d/)).not.toBeInTheDocument();
-  });
-
-  test('a tag pill carries its full text as a title (tooltip) for a cut label', () => {
-    renderCard(<ContributorCard contributor={{ ...baseCard, tags: ['Policy'] }} />);
-
-    expect(screen.getByText('Policy')).toHaveAttribute('title', 'Policy');
+    const tagList = screen.getAllByRole('list').find(list => within(list).queryByText('Policy'));
+    expect(tagList).toBeDefined();
+    expect(
+      within(tagList as HTMLElement)
+        .getAllByRole('listitem')
+        .map(item => item.textContent)
+    ).toEqual(['Policy', 'Energy', 'Water']);
   });
 
   test('a virtual contributor never renders a location row, even when locationLabel is passed', () => {

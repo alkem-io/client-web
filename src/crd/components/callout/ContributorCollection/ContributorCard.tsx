@@ -1,5 +1,6 @@
 import { Bot, Building2, ExternalLink, MapPin, MoreHorizontal, User, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Card, CardContent } from '@/crd/primitives/card';
@@ -10,9 +11,6 @@ import {
   DropdownMenuTrigger,
 } from '@/crd/primitives/dropdown-menu';
 import { IconButton } from '@/crd/primitives/icon-button';
-
-/** A card shows at most this many tag pills — never a "+N" overflow indicator. */
-const MAX_CARD_TAGS = 2;
 
 /**
  * Plain CRD data for one contributor card. Mirrors the existing
@@ -37,7 +35,7 @@ export type ContributorCardData = {
   hasValidCoordinates: boolean;
   /** Profile tagline. Users get an italic fallback when absent; org/VC get no row. */
   tagline?: string;
-  /** The FULL chosen tag list (skills-then-keywords for users; keywords-then-capabilities for org/VC); the card shows only the first two. */
+  /** The merged tag list (users: skills + keywords; org/VC: keywords + capabilities; deduped); the card shows as many as fit on one row, then a "+N" chip. */
   tags?: string[];
   /** Organisations only. The platform-wide associates count; 0 is a value, not absence. */
   associatesCount?: number;
@@ -92,9 +90,6 @@ export function ContributorCard({ contributor, onContributorClick, onMessage, cl
   // fallback, an organisation/VC with none gets no row at all.
   const hasTagline = Boolean(contributor.tagline);
   const showTaglineRow = hasTagline || contributor.type === 'user';
-
-  // At most MAX_CARD_TAGS pills, in stored order, never a "+N" indicator.
-  const visibleTags = (contributor.tags ?? []).slice(0, MAX_CARD_TAGS);
 
   // Organisation bottom line: shown whenever associatesCount is a number,
   // including zero — `typeof` distinguishes 0 from "not applicable".
@@ -189,18 +184,9 @@ export function ContributorCard({ contributor, onContributorClick, onMessage, cl
                 {t('contributors.card.taglineFallback')}
               </p>
             ))}
-          {visibleTags.length > 0 && (
-            <div className="mt-3 flex gap-1 overflow-hidden">
-              {visibleTags.map(tag => (
-                <span
-                  key={tag}
-                  title={tag}
-                  className="min-w-0 shrink truncate rounded-full border border-border bg-muted px-1.5 py-0.5 text-caption text-muted-foreground"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
+          {/* One row, in stored order; tags that don't fit collapse into a "+N" chip. */}
+          {contributor.tags && contributor.tags.length > 0 && (
+            <CollapsibleTagList tags={contributor.tags} maxRows={1} className="mt-3" />
           )}
           {!isVc && contributor.locationLabel && (
             <div className="mt-3 flex items-center gap-1 text-caption text-muted-foreground">
