@@ -70,8 +70,8 @@ const storeCredentials = async (record: CredentialRecord): Promise<boolean> => {
 };
 
 // Every namespace lookup — resume, sign-out cleanup — runs through the
-// database listing. A browser without it can store credentials but never find
-// them again, so it must not be allowed to store any.
+// database listing. A browser without it can still store credentials, but
+// never finds or clears them again.
 const canEnumerateNamespaces = (): boolean =>
   typeof indexedDB !== 'undefined' && typeof indexedDB.databases === 'function';
 

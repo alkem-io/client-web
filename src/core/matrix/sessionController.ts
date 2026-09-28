@@ -1,6 +1,6 @@
 import { registerActiveSession, unregisterActiveSession } from './activeSession';
 import { attemptSilentSso, type SilentSsoOutcome } from './ssoLogin';
-import { type CredentialRecord, clearNamespace, findStoredUserId, loadCredentials } from './storage';
+import { type CredentialRecord, findStoredUserId, loadCredentials } from './storage';
 
 type MatrixClientLike = {
   stopClient(): void;
@@ -62,12 +62,7 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
     if (!storedUserId) {
       return null;
     }
-    const record = (await loadCredentials(storedUserId)).record;
-    if (record && !record.userId.toLowerCase().startsWith(`@${actorId.toLowerCase()}:`)) {
-      await clearNamespace(storedUserId);
-      return null;
-    }
-    return record;
+    return (await loadCredentials(storedUserId)).record;
   };
 
   try {
