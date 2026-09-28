@@ -1450,6 +1450,14 @@ export type CalloutSettingsFraming = {
   contributors?: Maybe<CalloutContributorsSettings>;
   /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Absent / null ⇒ AUTO (full computed set). */
   selection?: Maybe<CalloutSelectionSettings>;
+  /** Card-variant settings for a Subspaces collection callout. Present only on SPACES callouts. Absent / null ⇒ COMPACT. */
+  spaces?: Maybe<CalloutSpacesSettings>;
+};
+
+export type CalloutSpacesSettings = {
+  __typename?: 'CalloutSpacesSettings';
+  /** The card variant to render for each subspace: COMPACT (default) or EXPANDED. */
+  cardVariant: SpaceCollectionCardVariant;
 };
 
 export enum CalloutVisibility {
@@ -2371,6 +2379,8 @@ export type CreateCalloutSettingsFramingData = {
   contributors?: Maybe<CreateCalloutContributorsSettingsData>;
   /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Provide only when framing.type ∈ {CONTRIBUTORS, SPACES}. */
   selection?: Maybe<CreateCalloutSelectionSettingsData>;
+  /** Card-variant settings. Provide only when framing.type = SPACES. */
+  spaces?: Maybe<CreateCalloutSpacesSettingsData>;
 };
 
 export type CreateCalloutSettingsFramingInput = {
@@ -2380,6 +2390,8 @@ export type CreateCalloutSettingsFramingInput = {
   contributors?: InputMaybe<CreateCalloutContributorsSettingsInput>;
   /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Provide only when framing.type ∈ {CONTRIBUTORS, SPACES}. */
   selection?: InputMaybe<CreateCalloutSelectionSettingsInput>;
+  /** Card-variant settings. Provide only when framing.type = SPACES. */
+  spaces?: InputMaybe<CreateCalloutSpacesSettingsInput>;
 };
 
 export type CreateCalloutSettingsInput = {
@@ -2387,6 +2399,17 @@ export type CreateCalloutSettingsInput = {
   framing?: InputMaybe<CreateCalloutSettingsFramingInput>;
   /** Visibility of the Callout. Defaults to PUBLISHED. */
   visibility?: InputMaybe<CalloutVisibility>;
+};
+
+export type CreateCalloutSpacesSettingsData = {
+  __typename?: 'CreateCalloutSpacesSettingsData';
+  /** The card variant (COMPACT or EXPANDED). Defaults to COMPACT when omitted. */
+  cardVariant?: Maybe<SpaceCollectionCardVariant>;
+};
+
+export type CreateCalloutSpacesSettingsInput = {
+  /** The card variant (COMPACT or EXPANDED). Defaults to COMPACT when omitted. */
+  cardVariant?: InputMaybe<SpaceCollectionCardVariant>;
 };
 
 export type CreateCalloutTaskBoardData = {
@@ -9176,6 +9199,12 @@ export type SpaceAboutMembership = {
   roleSetID: Scalars['UUID']['output'];
 };
 
+/** The card variant of a Subspaces (SPACES) collection callout. COMPACT (default) shows the identity block only; EXPANDED adds the What/Why/Who excerpts. */
+export enum SpaceCollectionCardVariant {
+  Compact = 'COMPACT',
+  Expanded = 'EXPANDED',
+}
+
 export type SpaceFilterInput = {
   /** Return Spaces with a Visibility matching one of the provided types. */
   visibilities?: InputMaybe<Array<SpaceVisibility>>;
@@ -9929,6 +9958,8 @@ export type UpdateCalloutSettingsFramingInput = {
   contributors?: InputMaybe<UpdateCalloutContributorsSettingsInput>;
   /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Provide only when framing.type ∈ {CONTRIBUTORS, SPACES}. */
   selection?: InputMaybe<UpdateCalloutSelectionSettingsInput>;
+  /** Card-variant settings. Provide only when framing.type = SPACES. */
+  spaces?: InputMaybe<UpdateCalloutSpacesSettingsInput>;
 };
 
 export type UpdateCalloutSettingsInput = {
@@ -9936,6 +9967,11 @@ export type UpdateCalloutSettingsInput = {
   framing?: InputMaybe<UpdateCalloutSettingsFramingInput>;
   /** Visibility of the Callout. */
   visibility?: InputMaybe<CalloutVisibility>;
+};
+
+export type UpdateCalloutSpacesSettingsInput = {
+  /** The card variant (COMPACT or EXPANDED). When omitted, the stored value is unchanged. */
+  cardVariant?: InputMaybe<SpaceCollectionCardVariant>;
 };
 
 export type UpdateCalloutVisibilityInput = {
@@ -15601,6 +15637,7 @@ export type CalloutContentQuery = {
               selection?:
                 | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
                 | undefined;
+              spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
             };
           };
         }
@@ -16073,6 +16110,7 @@ export type UpdateCalloutContentMutation = {
         selection?:
           | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
           | undefined;
+        spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
       };
     };
     createdBy?:
@@ -16580,6 +16618,7 @@ export type UpdateCalloutVisibilityMutation = {
         selection?:
           | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
           | undefined;
+        spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
       };
     };
     createdBy?:
@@ -16655,6 +16694,7 @@ export type CalloutSettingsFullFragment = {
     selection?:
       | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
       | undefined;
+    spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
   };
 };
 
@@ -18499,6 +18539,7 @@ export type CreateCalloutMutation = {
         selection?:
           | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
           | undefined;
+        spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
       };
     };
     createdBy?:
@@ -19178,6 +19219,7 @@ export type CalloutDetailsQuery = {
               selection?:
                 | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
                 | undefined;
+              spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
             };
           };
           createdBy?:
@@ -19717,6 +19759,7 @@ export type CalloutDetailsFragment = {
       selection?:
         | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
         | undefined;
+      spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
     };
   };
   createdBy?:
@@ -35402,6 +35445,9 @@ export type TemplateContentQuery = {
                           selectedIds: Array<string>;
                         }
                       | undefined;
+                    spaces?:
+                      | { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant }
+                      | undefined;
                   };
                 };
                 contributionDefaults: {
@@ -36187,6 +36233,7 @@ export type CalloutTemplateContentFragment = {
       selection?:
         | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
         | undefined;
+      spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
     };
   };
   contributionDefaults: {
@@ -37112,6 +37159,7 @@ export type UpdateCalloutTemplateMutation = {
         selection?:
           | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
           | undefined;
+        spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
       };
     };
   };
@@ -39186,6 +39234,7 @@ export type ContributorCollectionByTypeQuery = {
 
 export type SpaceCollectionSubspacesQueryVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
+  expanded: Scalars['Boolean']['input'];
 }>;
 
 export type SpaceCollectionSubspacesQuery = {
@@ -39211,6 +39260,7 @@ export type SpaceCollectionSubspacesQuery = {
                 isContentPublic: boolean;
                 why?: string | undefined;
                 id: string;
+                who?: string | undefined;
                 metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
                 membership: {
                   __typename?: 'SpaceAboutMembership';
@@ -39262,6 +39312,7 @@ export type SpaceCollectionSubspacesQuery = {
                 profile: {
                   __typename?: 'Profile';
                   id: string;
+                  description?: string | undefined;
                   displayName: string;
                   url: string;
                   tagline?: string | undefined;
@@ -39299,6 +39350,18 @@ export type SpaceCollectionSubspacesQuery = {
           };
         }
       | undefined;
+  };
+};
+
+export type SubspaceCardAboutContextFragment = {
+  __typename?: 'Space';
+  id: string;
+  about: {
+    __typename?: 'SpaceAbout';
+    id: string;
+    why?: string | undefined;
+    who?: string | undefined;
+    profile: { __typename?: 'Profile'; id: string; description?: string | undefined };
   };
 };
 

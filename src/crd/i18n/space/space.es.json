@@ -375,6 +375,12 @@
       "title": "No se encontraron subespacios",
       "description": "Ningún subespacio coincide con tu búsqueda o filtro actual.",
       "clearFilters": "Borrar filtros"
+    },
+    "expandedCard": {
+      "what": "Qué",
+      "why": "Por qué",
+      "who": "Quién",
+      "open": "Abrir subespacio"
     }
   },
   "about": {
@@ -613,6 +619,10 @@
       "loadMore": "Cargando más…",
       "removeAriaLabel": "Eliminar {{name}}",
       "clearSearch": "Borrar búsqueda"
+    },
+    "cardVariant": {
+      "label": "Tarjeta ampliada",
+      "description": "Muestra la tarjeta completa con el Qué, Por qué y Quién del subespacio - más contexto, más altura."
     }
   },
   "contributionSettings": {

@@ -60,6 +60,7 @@ import { MemoFramingConnector } from './MemoFramingConnector';
 import { PostContributionAddConnector } from './PostContributionAddConnector';
 import { PostContributionConnector } from './PostContributionConnector';
 import { SpaceCollectionConnector } from './SpaceCollectionConnector';
+import { cardVariantFromServer } from './spaceCollectionCardVariant';
 import { WhiteboardContributionAddConnector } from './WhiteboardContributionAddConnector';
 import { WhiteboardContributionConnector } from './WhiteboardContributionConnector';
 import { WhiteboardFramingConnector } from './WhiteboardFramingConnector';
@@ -543,7 +544,12 @@ export function CalloutDetailDialogConnector({
   // Spaces-collection body (feature 013) — the host space's subspaces as cards.
   // Rendered in the detail dialog just like the inline feed card (LazyCalloutItem).
   const hasSpaces = callout.framing.type === CalloutFramingType.Spaces;
-  const spacesFramingSlot = hasSpaces ? <SpaceCollectionConnector calloutId={callout.id} /> : undefined;
+  const spacesFramingSlot = hasSpaces ? (
+    <SpaceCollectionConnector
+      calloutId={callout.id}
+      cardVariant={cardVariantFromServer(callout.settings.framing.spaces?.cardVariant)}
+    />
+  ) : undefined;
 
   // Omit the slot entirely when the callout has no reactions summary (the server
   // module may not be deployed), or when commenting is turned off for the callout —
