@@ -114,5 +114,58 @@ describe('ssoLogin', () => {
       expect(await fresh(LOCALPART, { signal: abort.signal })).toBe('timeout');
       expect(document.querySelector('iframe')).toBeNull();
     });
+
+    it('off the platform origin, targets the platform callback and announces this origin as parent', async () => {
+      setMatrixHomeserver(HOMESERVER);
+      const { attemptSilentSso: fresh } = await import('./ssoLogin');
+      const abort = new AbortController();
+      const attempt = fresh(LOCALPART, {
+        timeoutMs: 10_000,
+        pollIntervalMs: 20,
+        signal: abort.signal,
+        platformOrigin: 'https://alkem.io',
+      });
+      await vi.waitFor(() => {
+        expect(document.querySelector('iframe')).not.toBeNull();
+      });
+
+      const redirectUrl = new URL(document.querySelector('iframe')?.src ?? '').searchParams.get('redirectUrl');
+      expect(redirectUrl).toBe(`https://alkem.io/matrix-callback?parent=${encodeURIComponent(window.location.origin)}`);
+
+      abort.abort();
+      await attempt;
+    });
+
+    it('exchanges a token posted by the platform origin once, and ignores other origins', async () => {
+      setMatrixHomeserver(HOMESERVER);
+      const exchangeAndStore = vi.fn(async () => {
+        await storeCredentials({
+          userId: USER_ID,
+          deviceId: 'DEV1',
+          accessToken: 'syt_hub',
+          homeserverUrl: HOMESERVER,
+        });
+      });
+      vi.doMock('./matrixCallback', () => ({ exchangeAndStore }));
+      const { attemptSilentSso: fresh } = await import('./ssoLogin');
+      const attempt = fresh(LOCALPART, { timeoutMs: 2000, pollIntervalMs: 20, platformOrigin: 'https://alkem.io' });
+      await vi.waitFor(() => {
+        expect(document.querySelector('iframe')).not.toBeNull();
+      });
+
+      window.dispatchEvent(
+        new MessageEvent('message', { origin: 'https://evil.example.com', data: { loginToken: 'x' } })
+      );
+      window.dispatchEvent(new MessageEvent('message', { origin: 'https://alkem.io', data: { other: 'y' } }));
+      expect(exchangeAndStore).not.toHaveBeenCalled();
+
+      window.dispatchEvent(new MessageEvent('message', { origin: 'https://alkem.io', data: { loginToken: 'mlt_1' } }));
+      window.dispatchEvent(new MessageEvent('message', { origin: 'https://alkem.io', data: { loginToken: 'mlt_2' } }));
+
+      expect(await attempt).toBe('authenticated');
+      expect(exchangeAndStore).toHaveBeenCalledOnce();
+      expect(exchangeAndStore).toHaveBeenCalledWith(HOMESERVER, 'mlt_1');
+      vi.doUnmock('./matrixCallback');
+    });
   });
 });

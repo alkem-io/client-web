@@ -1,10 +1,11 @@
 import 'fake-indexeddb/auto';
 import { createClient } from 'matrix-js-sdk';
 import { afterEach, beforeEach, describe, expect, it, type MockedFunction, vi } from 'vitest';
+import { getActiveClient } from './activeClient';
 import { stopActiveSession } from './activeSession';
 import { establishSession, type MatrixClientLike } from './sessionController';
 import { attemptSilentSso } from './ssoLogin';
-import { clearNamespace, storeCredentials } from './storage';
+import { clearNamespace, loadActorCredentials, storeCredentials } from './storage';
 
 vi.mock('matrix-js-sdk', () => ({ createClient: vi.fn() }));
 vi.mock('./ssoLogin', () => ({ attemptSilentSso: vi.fn() }));
@@ -23,7 +24,19 @@ type CreateClientFn = (opts: {
 const mockedCreateClient = createClient as unknown as MockedFunction<CreateClientFn>;
 const mockedSilentSso = vi.mocked(attemptSilentSso);
 
-const makeClient = (): MatrixClientLike => ({ stopClient: vi.fn() });
+type FakeClient = MatrixClientLike & { emit: (event: string) => void };
+
+const makeClient = (): FakeClient => {
+  const handlers = new Map<string, () => void>();
+  return {
+    stopClient: vi.fn(),
+    startClient: vi.fn(async () => {}),
+    on: vi.fn((event: string, listener: () => void) => handlers.set(event, listener)),
+    emit: (event: string) => handlers.get(event)?.(),
+  };
+};
+
+const TOKEN_REJECTED = 'Session.logged_out';
 
 describe('establishSession', () => {
   const ACTOR = 'abc-123';
@@ -165,5 +178,96 @@ describe('establishSession', () => {
     } finally {
       await clearNamespace(otherUserId);
     }
+  });
+
+  it('starts the sync loop and publishes the client to read hooks until stopped', async () => {
+    await seedRecord();
+    const client = makeClient();
+    mockedCreateClient.mockReturnValue(client);
+
+    const handle = await establishSession(ACTOR);
+
+    expect(client.startClient).toHaveBeenCalledOnce();
+    expect(getActiveClient()).toBe(client);
+    handle.stop();
+    expect(getActiveClient()).toBeNull();
+  });
+
+  it('a rejected token clears the stored record, runs one silent SSO and restarts sync once', async () => {
+    await seedRecord({ accessToken: 'syt_expired' });
+    const first = makeClient();
+    const second = makeClient();
+    mockedCreateClient.mockReturnValueOnce(first).mockReturnValueOnce(second);
+    mockedSilentSso.mockImplementation(async () => {
+      await seedRecord({ accessToken: 'syt_fresh' });
+      return 'authenticated';
+    });
+    await establishSession(ACTOR);
+
+    first.emit(TOKEN_REJECTED);
+
+    await vi.waitFor(() => {
+      expect(mockedCreateClient).toHaveBeenCalledTimes(2);
+    });
+    expect(first.stopClient).toHaveBeenCalled();
+    expect(mockedSilentSso).toHaveBeenCalledOnce();
+    expect(mockedCreateClient.mock.calls[1][0].accessToken).toBe('syt_fresh');
+    expect(second.startClient).toHaveBeenCalledOnce();
+    expect(getActiveClient()).toBe(second);
+  });
+
+  it('a second rejection fails closed: record cleared, no further SSO, no client', async () => {
+    await seedRecord();
+    const first = makeClient();
+    const second = makeClient();
+    mockedCreateClient.mockReturnValueOnce(first).mockReturnValueOnce(second);
+    mockedSilentSso.mockImplementation(async () => {
+      await seedRecord({ accessToken: 'syt_fresh' });
+      return 'authenticated';
+    });
+    await establishSession(ACTOR);
+    first.emit(TOKEN_REJECTED);
+    await vi.waitFor(() => {
+      expect(mockedCreateClient).toHaveBeenCalledTimes(2);
+    });
+
+    second.emit(TOKEN_REJECTED);
+
+    await vi.waitFor(async () => {
+      expect(await loadActorCredentials(ACTOR)).toBeNull();
+    });
+    expect(mockedSilentSso).toHaveBeenCalledOnce();
+    expect(mockedCreateClient).toHaveBeenCalledTimes(2);
+    expect(getActiveClient()).toBeNull();
+  });
+
+  it('a failed recovery SSO leaves no client and no stored record', async () => {
+    await seedRecord();
+    const client = makeClient();
+    mockedCreateClient.mockReturnValue(client);
+    await establishSession(ACTOR);
+
+    client.emit(TOKEN_REJECTED);
+
+    await vi.waitFor(() => {
+      expect(mockedSilentSso).toHaveBeenCalledOnce();
+    });
+    expect(await loadActorCredentials(ACTOR)).toBeNull();
+    expect(mockedCreateClient).toHaveBeenCalledOnce();
+    expect(getActiveClient()).toBeNull();
+  });
+
+  it('a rejection after sign-out does not attempt recovery', async () => {
+    await seedRecord();
+    const client = makeClient();
+    mockedCreateClient.mockReturnValue(client);
+    const handle = await establishSession(ACTOR);
+    handle.stop();
+
+    client.emit(TOKEN_REJECTED);
+
+    await new Promise(resolve => setTimeout(resolve, 20));
+    expect(mockedSilentSso).not.toHaveBeenCalled();
+    expect(mockedCreateClient).toHaveBeenCalledOnce();
   });
 });

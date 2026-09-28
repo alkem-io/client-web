@@ -1,48 +1,77 @@
+import type { MatrixClient } from 'matrix-js-sdk';
+import { setActiveClient } from './activeClient';
 import { registerActiveSession, unregisterActiveSession } from './activeSession';
 import { attemptSilentSso } from './ssoLogin';
-import { loadActorCredentials } from './storage';
+import { type CredentialRecord, clearNamespace, loadActorCredentials } from './storage';
+
+// matrix-js-sdk's HttpApiEvent.SessionLoggedOut: emitted when the homeserver
+// rejects the access token (M_UNKNOWN_TOKEN). A string here keeps the SDK a
+// lazily loaded chunk.
+const SESSION_LOGGED_OUT = 'Session.logged_out';
+
+// Room timelines start from the sync response; history deeper than this is
+// paged in when a conversation is opened.
+const INITIAL_SYNC_LIMIT = 20;
 
 type MatrixClientLike = {
   stopClient(): void;
+  startClient(opts?: { initialSyncLimit?: number; lazyLoadMembers?: boolean }): Promise<void>;
+  on(event: string, listener: () => void): unknown;
 };
 
 type SessionHandle = {
   readonly stop: () => void;
 };
 
+type SessionOptions = {
+  readonly signal?: AbortSignal;
+  /** The platform origin the silent-SSO callback lives on. */
+  readonly platformOrigin?: string;
+};
+
 /**
- * Creates (but does not start syncing) a Matrix client for the given actor:
+ * Establishes and syncs the browser's Matrix session for the given actor:
  * resumes from a stored credential record, or runs one silent SSO round-trip
- * when none is usable. Registers the resulting client so an Alkemio sign-out
- * can stop it. Starting the sync loop and reacting to a dead session are a
- * later concern, once something actually reads from the client.
+ * when none is usable, then starts the sync loop and publishes the client to
+ * the read hooks. Registers the session so an Alkemio sign-out can stop it.
+ *
+ * A rejected token clears the stored record and gets exactly one silent SSO
+ * and restart; a second rejection leaves the session stopped.
  */
-const establishSession = async (actorId: string, { signal }: { signal?: AbortSignal } = {}): Promise<SessionHandle> => {
+const establishSession = async (
+  actorId: string,
+  { signal, platformOrigin }: SessionOptions = {}
+): Promise<SessionHandle> => {
   let activeClient: MatrixClientLike | null = null;
+  let recoveryUsed = false;
   // Cancels an in-flight silent SSO: its iframe would otherwise go on to
   // persist fresh credentials after this session has already been stopped.
   const abort = new AbortController();
 
+  const stopClient = (): void => {
+    activeClient?.stopClient();
+    activeClient = null;
+    setActiveClient(null);
+  };
+
   const stop = (): void => {
     abort.abort();
-    activeClient?.stopClient();
+    stopClient();
     unregisterActiveSession(stop);
   };
   registerActiveSession(stop);
   signal?.addEventListener('abort', stop);
 
-  try {
-    let record = await loadActorCredentials(actorId);
-    if (!record) {
-      const outcome = await attemptSilentSso(actorId, { signal: abort.signal });
-      if (outcome === 'authenticated') {
-        record = await loadActorCredentials(actorId);
-      }
+  const loadOrAcquireRecord = async (): Promise<CredentialRecord | null> => {
+    const record = await loadActorCredentials(actorId);
+    if (record) {
+      return record;
     }
-    if (abort.signal.aborted || !record) {
-      return { stop };
-    }
+    const outcome = await attemptSilentSso(actorId, { signal: abort.signal, platformOrigin });
+    return outcome === 'authenticated' ? loadActorCredentials(actorId) : null;
+  };
 
+  const start = async (record: CredentialRecord): Promise<void> => {
     const sdk = (await import('matrix-js-sdk')) as unknown as {
       createClient(opts: { baseUrl: string; userId: string; deviceId: string; accessToken: string }): MatrixClientLike;
     };
@@ -54,9 +83,44 @@ const establishSession = async (actorId: string, { signal }: { signal?: AbortSig
     });
     if (abort.signal.aborted) {
       client.stopClient();
-      return { stop };
+      return;
     }
+    client.on(SESSION_LOGGED_OUT, () => {
+      if (activeClient === client) {
+        void recover(record);
+      }
+    });
     activeClient = client;
+    setActiveClient(client as unknown as MatrixClient);
+    await client.startClient({ initialSyncLimit: INITIAL_SYNC_LIMIT, lazyLoadMembers: true });
+  };
+
+  const recover = async (rejected: CredentialRecord): Promise<void> => {
+    stopClient();
+    try {
+      await clearNamespace(rejected.userId);
+    } catch {
+      // The record is unusable either way; a failed delete must not block recovery.
+    }
+    if (abort.signal.aborted || recoveryUsed) {
+      return;
+    }
+    recoveryUsed = true;
+    try {
+      const record = await loadOrAcquireRecord();
+      if (!abort.signal.aborted && record) {
+        await start(record);
+      }
+    } catch {
+      // Fails closed: the session stays stopped until the next page load.
+    }
+  };
+
+  try {
+    const record = await loadOrAcquireRecord();
+    if (!abort.signal.aborted && record) {
+      await start(record);
+    }
   } catch {
     // Establishment failure leaves nothing to stop; the next load retries.
   }

@@ -13,6 +13,7 @@ const harness = vi.hoisted(() => {
       return new Promise(() => {});
     }),
     actorId: { value: 'actor-1' as string | undefined },
+    platformOrigin: { value: 'https://alkem.io' as string | undefined },
   };
   return harnessState;
 });
@@ -25,11 +26,27 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: harness.actorId.value ? { id: harness.actorId.value } : undefined }),
 }));
 
+vi.mock('@/domain/platform/routes/usePlatformOrigin', () => ({
+  default: () => harness.platformOrigin.value,
+}));
+
 describe('MatrixSession', () => {
   beforeEach(() => {
     harness.establishSession.mockClear();
     harness.signals = [];
     harness.actorId.value = 'actor-1';
+    harness.platformOrigin.value = 'https://alkem.io';
+  });
+
+  it('passes the platform origin to the session, and waits until it is known', () => {
+    harness.platformOrigin.value = undefined;
+    const { rerender } = render(<MatrixSession />);
+    expect(harness.establishSession).not.toHaveBeenCalled();
+
+    harness.platformOrigin.value = 'https://alkem.io';
+    rerender(<MatrixSession />);
+    expect(harness.establishSession).toHaveBeenCalledOnce();
+    expect(harness.establishSession.mock.calls[0][1]).toMatchObject({ platformOrigin: 'https://alkem.io' });
   });
 
   it('establishes a session for the signed-in actor', () => {

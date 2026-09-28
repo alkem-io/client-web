@@ -1,6 +1,6 @@
 import 'fake-indexeddb/auto';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { handleMatrixCallback } from './matrixCallback';
+import { handleMatrixCallback, isAcceptedParent } from './matrixCallback';
 import { clearNamespace, loadCredentials } from './storage';
 
 const HOMESERVER = 'https://matrix.dev-alkem.io';
@@ -61,6 +61,50 @@ describe('matrixCallback', () => {
       expect(stored).not.toBeNull();
       expect(stored?.accessToken).toBe(EXCHANGE_RESPONSE.access_token);
       expect(stored?.deviceId).toBe(EXCHANGE_RESPONSE.device_id);
+    });
+  });
+
+  describe('isAcceptedParent', () => {
+    it('accepts only an exact https origin on a subdomain of the own host', async () => {
+      expect(isAcceptedParent('https://hub.alkem.io', 'alkem.io')).toBe(true);
+      expect(isAcceptedParent('https://a.b.alkem.io', 'alkem.io')).toBe(true);
+
+      expect(isAcceptedParent('https://alkem.io', 'alkem.io')).toBe(false);
+      expect(isAcceptedParent('http://hub.alkem.io', 'alkem.io')).toBe(false);
+      expect(isAcceptedParent('https://evilalkem.io', 'alkem.io')).toBe(false);
+      expect(isAcceptedParent('https://alkem.io.evil.com', 'alkem.io')).toBe(false);
+      expect(isAcceptedParent('https://hub.alkem.io/path', 'alkem.io')).toBe(false);
+      expect(isAcceptedParent('https://user@hub.alkem.io', 'alkem.io')).toBe(false);
+      expect(isAcceptedParent('not a url', 'alkem.io')).toBe(false);
+    });
+  });
+
+  describe('handleMatrixCallback with a parent', () => {
+    it('posts the token to an accepted parent with that exact target origin, without exchanging or storing', async () => {
+      const parent = `https://hub.${window.location.host}`;
+      window.history.replaceState(null, '', `/matrix-callback?loginToken=mlt_hub&parent=${encodeURIComponent(parent)}`);
+      const fetchSpy = vi.spyOn(globalThis, 'fetch');
+      const postMessage = vi.spyOn(window.parent, 'postMessage').mockImplementation(() => {});
+
+      await handleMatrixCallback(HOMESERVER);
+
+      expect(postMessage).toHaveBeenCalledWith({ loginToken: 'mlt_hub' }, parent);
+      expect(fetchSpy).not.toHaveBeenCalled();
+    });
+
+    it('refuses a parent that is not a subdomain of its own host: nothing posted, nothing exchanged', async () => {
+      window.history.replaceState(
+        null,
+        '',
+        `/matrix-callback?loginToken=mlt_evil&parent=${encodeURIComponent('https://evil.example.com')}`
+      );
+      const fetchSpy = vi.spyOn(globalThis, 'fetch');
+      const postMessage = vi.spyOn(window.parent, 'postMessage').mockImplementation(() => {});
+
+      await handleMatrixCallback(HOMESERVER);
+
+      expect(postMessage).not.toHaveBeenCalled();
+      expect(fetchSpy).not.toHaveBeenCalled();
     });
   });
 });
