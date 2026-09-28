@@ -295,6 +295,32 @@ describe('LoginCrdRoute', () => {
     expect(notice.querySelector('a')).toHaveTextContent('appSignIn.action');
   });
 
+  // The user this landing exists for is signed in: the WebView holds a live
+  // `alkemio_session`, so `isAuthenticated` is true when Settings > Security
+  // bounces them back here. Without the route-level exemption
+  // `NotAuthenticatedRoute` navigates to /home and the notice never renders —
+  // the case the three tests above miss, because they all pin `false`.
+  it('an authenticated app_signin=required arrival still lands on the notice', () => {
+    mockIsAuthenticated.mockReturnValue(true);
+    mockSearch = 'app_signin=required';
+
+    renderRoute();
+
+    expect(replaceSpy).not.toHaveBeenCalled();
+    expect(screen.getByTestId('card-notice')).toHaveTextContent('appSignIn.required');
+  });
+
+  // The exemption is value-scoped too: an authenticated visitor on a crafted
+  // `?app_signin=<anything>` must still be bounced by the guard.
+  it('an authenticated unrecognised app_signin value is still bounced by the guard', () => {
+    mockIsAuthenticated.mockReturnValue(true);
+    mockSearch = 'app_signin=bogus';
+
+    renderRoute();
+
+    expect(screen.queryByTestId('crd-login-card')).not.toBeInTheDocument();
+  });
+
   // The disqualifier is value-scoped, not presence-scoped: an unrecognised value
   // must fall through to today's redirect. Scoping it to presence would let any
   // crafted `/login?app_signin=<anything>` park a visitor on a card with no

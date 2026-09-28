@@ -44,6 +44,13 @@ const PASSKEY_ERROR_MESSAGE_ID = -1;
 // OIDC entry rather than parking the visitor on a card with no way forward.
 const APP_SIGN_IN_VALUES = ['required', 'cancelled', 'failed'] as const;
 
+/** The recognised `?app_signin=` reason, or undefined for absent/unrecognised.
+ *  Read twice — once by the route to exempt the arrival from the
+ *  `NotAuthenticatedRoute` guard, once by the page to render the notice. */
+function readAppSignIn(params: URLSearchParams) {
+  return APP_SIGN_IN_VALUES.find(value => value === params.get('app_signin'));
+}
+
 /**
  * Absolute URL that restarts sign-in at the OIDC BFF, preserving the pending
  * destination.
@@ -103,7 +110,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   // back here with a reason; the server does the same when a hand-off fails.
   // Like a lockout arrival this is NOT an OIDC entry — redirecting would throw
   // the reason away before it could be read.
-  const appSignIn = APP_SIGN_IN_VALUES.find(value => value === params.get('app_signin'));
+  const appSignIn = readAppSignIn(params);
   const isOidcEntry = !flow && !isLockedOutArrival && !appSignIn;
 
   useLayoutEffect(() => {
@@ -311,6 +318,12 @@ function translatePasskeyError(t: TFunction, error: unknown): string {
 export function LoginCrdRoute() {
   const params = useQueryParams();
   const flow = params.get('flow') || undefined;
+  // A hand-off arrival carries no flow id but, like a Kratos refresh login, can
+  // legitimately reach this page while the user still holds an `alkemio_session`
+  // (Settings > Security re-auth is exactly that case). Exempt it from the guard
+  // alongside `flow`, or `NotAuthenticatedRoute` bounces it to the dashboard and
+  // the notice never renders.
+  const appSignIn = readAppSignIn(params);
   const returnUrl = params.get(PARAM_NAME_RETURN_URL);
   const { setReturnUrl } = useReturnUrl();
 
@@ -327,7 +340,10 @@ export function LoginCrdRoute() {
 
   return (
     <Routes>
-      <Route path="/" element={flow ? loginPage : <NotAuthenticatedRoute>{loginPage}</NotAuthenticatedRoute>} />
+      <Route
+        path="/"
+        element={flow || appSignIn ? loginPage : <NotAuthenticatedRoute>{loginPage}</NotAuthenticatedRoute>}
+      />
       <Route path="success" element={<LoginSuccessPage />} />
     </Routes>
   );
