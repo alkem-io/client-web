@@ -51,9 +51,11 @@ export function CalloutCollaboraPreview({
   const typeLabel = t(typeLabelKey[documentType] as 'callout.document');
   const openLabel = t(openLabelKey[documentType]);
   const compact = size === 'compact';
-  // Tracked by URL value (not a boolean) so a later `previewImageUrl` prop change
-  // — e.g. after a re-render generates a fresh image — starts in the correct
-  // not-yet-loaded/not-errored state without an extra effect to reset it.
+  // Tracked by URL value (not a boolean) so a later `previewImageUrl` prop
+  // change — this component being pointed at a different document — starts in
+  // the correct not-yet-loaded/not-errored state without an extra effect to
+  // reset it. A re-rendered preview does NOT change the URL: it carries the
+  // SOURCE file's id and the server refreshes the image in place behind it.
   const [loadedUrl, setLoadedUrl] = useState<string | undefined>(undefined);
   const [erroredUrl, setErroredUrl] = useState<string | undefined>(undefined);
   const showImage = Boolean(previewImageUrl) && previewImageUrl !== erroredUrl;
@@ -80,7 +82,10 @@ export function CalloutCollaboraPreview({
             // accessible name — this image is decorative, not a second label.
             alt=""
             loading="lazy"
-            className={cn('absolute inset-0 w-full h-full object-cover', !imageLoaded && 'invisible')}
+            // object-top, not the default centre: a document preview's content
+            // starts at the top of the page, so a centre crop on a short card
+            // can show nothing but the blank middle of page one.
+            className={cn('absolute inset-0 w-full h-full object-cover object-top', !imageLoaded && 'invisible')}
             onLoad={() => setLoadedUrl(previewImageUrl)}
             onError={() => setErroredUrl(previewImageUrl)}
           />

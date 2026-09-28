@@ -60,7 +60,10 @@ export function ContributionDocumentCard({
             // its accent color convey the document type.
             alt=""
             loading="lazy"
-            className={cn('absolute inset-0 w-full h-full object-cover', !imageLoaded && 'invisible')}
+            // object-top, not the default centre: a document preview's content
+            // starts at the top of the page, so a centre crop can show nothing
+            // but the blank middle of page one.
+            className={cn('absolute inset-0 w-full h-full object-cover object-top', !imageLoaded && 'invisible')}
             onLoad={() => setLoadedUrl(previewUrl)}
             onError={() => setErroredUrl(previewUrl)}
           />
