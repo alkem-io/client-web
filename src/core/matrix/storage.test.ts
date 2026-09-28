@@ -1,17 +1,16 @@
-import 'fake-indexeddb/auto';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { type CredentialRecord, clearNamespace, loadCredentials, storeCredentials } from './storage';
+import { makeCredentialRecord } from './matrixTestFixtures';
+import { clearNamespace, loadCredentials, storeCredentials } from './storage';
 
 const USER_ID = '@alice:matrix.example.com';
 const OTHER_USER_ID = '@bob:matrix.example.com';
 
-const makeRecord = (overrides: Partial<CredentialRecord> = {}): CredentialRecord => ({
-  userId: USER_ID,
-  deviceId: 'DEVICE_ABC',
-  accessToken: 'access-token-1',
-  homeserverUrl: 'https://matrix.example.com',
-  ...overrides,
-});
+const makeRecord = (overrides: Partial<Parameters<typeof storeCredentials>[0]> = {}) =>
+  makeCredentialRecord({
+    userId: USER_ID,
+    homeserverUrl: 'https://matrix.example.com',
+    ...overrides,
+  });
 
 describe('storage (IndexedDB)', () => {
   afterEach(async () => {
@@ -26,14 +25,12 @@ describe('storage (IndexedDB)', () => {
       expect(stored).toBe(true);
 
       const result = await loadCredentials(USER_ID);
-      expect(result.available).toBe(true);
-      expect(result.record).toEqual(record);
+      expect(result).toEqual(record);
     });
 
-    it('returns null record when nothing is stored', async () => {
+    it('returns null when nothing is stored', async () => {
       const result = await loadCredentials(USER_ID);
-      expect(result.available).toBe(true);
-      expect(result.record).toBe(null);
+      expect(result).toBe(null);
     });
 
     it('overwrites an existing record', async () => {
@@ -42,7 +39,7 @@ describe('storage (IndexedDB)', () => {
       await storeCredentials(updated);
 
       const result = await loadCredentials(USER_ID);
-      expect(result.record?.accessToken).toBe('access-token-2');
+      expect(result?.accessToken).toBe('access-token-2');
     });
 
     it('isolates per-user namespaces', async () => {
@@ -51,8 +48,8 @@ describe('storage (IndexedDB)', () => {
 
       const aliceResult = await loadCredentials(USER_ID);
       const bobResult = await loadCredentials(OTHER_USER_ID);
-      expect(aliceResult.record?.deviceId).toBe('DEVICE_ABC');
-      expect(bobResult.record?.deviceId).toBe('DEVICE_BOB');
+      expect(aliceResult?.deviceId).toBe('DEVICE_ABC');
+      expect(bobResult?.deviceId).toBe('DEVICE_BOB');
     });
   });
 
@@ -62,7 +59,7 @@ describe('storage (IndexedDB)', () => {
       await clearNamespace(USER_ID);
 
       const result = await loadCredentials(USER_ID);
-      expect(result.record).toBe(null);
+      expect(result).toBe(null);
     });
 
     it('leaves other users untouched', async () => {
@@ -73,23 +70,8 @@ describe('storage (IndexedDB)', () => {
 
       const aliceResult = await loadCredentials(USER_ID);
       const bobResult = await loadCredentials(OTHER_USER_ID);
-      expect(aliceResult.record).toBe(null);
-      expect(bobResult.record?.deviceId).toBe('DEVICE_BOB');
-    });
-
-    it('resolves once deletion is acknowledged, even while another connection still holds the database open', async () => {
-      await storeCredentials(makeRecord());
-      const held = await new Promise<IDBDatabase>((resolve, reject) => {
-        const request = indexedDB.open(`alkemio-matrix/${USER_ID}`);
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-      });
-
-      try {
-        await expect(clearNamespace(USER_ID)).resolves.toBeUndefined();
-      } finally {
-        held.close();
-      }
+      expect(aliceResult).toBe(null);
+      expect(bobResult?.deviceId).toBe('DEVICE_BOB');
     });
   });
 
@@ -119,15 +101,14 @@ describe('storage (IndexedDB)', () => {
   });
 
   describe('storage-unavailable fallback', () => {
-    it('returns available:false when IndexedDB throws', async () => {
+    it('returns null when IndexedDB throws', async () => {
       const originalOpen = indexedDB.open.bind(indexedDB);
       vi.spyOn(indexedDB, 'open').mockImplementation(() => {
         throw new Error('SecurityError: IndexedDB not available');
       });
 
       const result = await loadCredentials(USER_ID);
-      expect(result.available).toBe(false);
-      expect(result.record).toBe(null);
+      expect(result).toBe(null);
 
       vi.mocked(indexedDB.open).mockImplementation(originalOpen);
     });

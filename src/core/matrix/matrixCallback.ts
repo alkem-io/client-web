@@ -1,4 +1,3 @@
-import { getConfig } from './matrixConfig';
 import { storeCredentials } from './storage';
 
 type ExchangeResult = {
@@ -6,13 +5,6 @@ type ExchangeResult = {
   readonly device_id: string;
   readonly access_token: string;
 };
-
-type CallbackOutcome = {
-  readonly ok: boolean;
-  readonly error?: string;
-};
-
-const readLoginToken = (): string | null => new URLSearchParams(window.location.search).get('loginToken');
 
 const exchangeLoginToken = async (homeserverUrl: string, loginToken: string): Promise<ExchangeResult> => {
   const response = await fetch(`${homeserverUrl}/_matrix/client/v3/login`, {
@@ -39,41 +31,23 @@ const exchangeLoginToken = async (homeserverUrl: string, loginToken: string): Pr
  * The iframe URL never reaches the address bar, so there is no visible token
  * to scrub.
  */
-const handleMatrixCallback = async (): Promise<CallbackOutcome> => {
-  const loginToken = readLoginToken();
-
+const handleMatrixCallback = async (homeserverUrl: string): Promise<void> => {
+  const loginToken = new URLSearchParams(window.location.search).get('loginToken');
   if (!loginToken) {
-    return { ok: false, error: 'no loginToken' };
-  }
-
-  const config = getConfig();
-  if (config.homeserverUrl === '') {
-    return { ok: false, error: 'matrix not configured' };
+    return;
   }
 
   try {
-    const result = await exchangeLoginToken(config.homeserverUrl, loginToken);
-
-    if (!result.access_token || !result.user_id || !result.device_id) {
-      return { ok: false, error: 'incomplete exchange response' };
-    }
-
-    const stored = await storeCredentials({
+    const result = await exchangeLoginToken(homeserverUrl, loginToken);
+    await storeCredentials({
       userId: result.user_id,
       deviceId: result.device_id,
       accessToken: result.access_token,
-      homeserverUrl: config.homeserverUrl,
+      homeserverUrl,
     });
-
-    if (!stored) {
-      return { ok: false, error: 'failed to persist credentials' };
-    }
-
-    return { ok: true };
   } catch {
-    return { ok: false, error: 'exchange failed' };
+    // Fail closed: the initiating frame's poll times out.
   }
 };
 
 export { handleMatrixCallback, exchangeLoginToken };
-export type { CallbackOutcome, ExchangeResult };

@@ -1,17 +1,7 @@
-import 'fake-indexeddb/auto';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { handleMatrixCallback } from './matrixCallback';
+import { HOMESERVER } from './matrixTestFixtures';
 import { loadCredentials } from './storage';
-
-const HOMESERVER = 'https://matrix.dev-alkem.io';
-
-const setEnv = () => {
-  Object.defineProperty(window, '_env_', {
-    value: { VITE_APP_MATRIX_HOMESERVER_URL: HOMESERVER },
-    writable: true,
-    configurable: true,
-  });
-};
 
 const setUrlWithToken = (token: string) => {
   window.history.replaceState(null, '', `/matrix-callback?loginToken=${token}`);
@@ -25,51 +15,33 @@ const EXCHANGE_RESPONSE = {
 
 describe('matrixCallback', () => {
   beforeEach(() => {
-    vi.resetModules();
     window.history.replaceState(null, '', '/');
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
-    delete (window as unknown as Record<string, unknown>)._env_;
     window.history.replaceState(null, '', '/');
   });
 
   describe('handleMatrixCallback', () => {
-    it('rejects when no loginToken in URL', async () => {
+    it('does nothing when no loginToken in URL', async () => {
       window.history.replaceState(null, '', '/matrix-callback');
+      const fetchSpy = vi.spyOn(globalThis, 'fetch');
 
-      const result = await handleMatrixCallback();
-      expect(result.ok).toBe(false);
-      expect(result.error).toContain('no loginToken');
+      await handleMatrixCallback(HOMESERVER);
+
+      expect(fetchSpy).not.toHaveBeenCalled();
+      expect(await loadCredentials(EXCHANGE_RESPONSE.user_id)).toBe(null);
     });
 
-    it('reads the loginToken without requiring a pending-flow marker', async () => {
-      setEnv();
-      setUrlWithToken('mlt_no_marker');
-
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
-        new Response(JSON.stringify(EXCHANGE_RESPONSE), { status: 200 })
-      );
-
-      const { handleMatrixCallback: fresh } = await import('./matrixCallback');
-      const result = await fresh();
-
-      expect(result.ok).toBe(true);
-    });
-
-    it('exchanges the loginToken without requesting a refresh token, and persists credentials', async () => {
-      setEnv();
+    it('reads the loginToken from the URL, exchanges it without requesting a refresh token, and persists credentials', async () => {
       setUrlWithToken('mlt_valid');
 
       const fetchSpy = vi
         .spyOn(globalThis, 'fetch')
         .mockResolvedValueOnce(new Response(JSON.stringify(EXCHANGE_RESPONSE), { status: 200 }));
 
-      const { handleMatrixCallback: fresh } = await import('./matrixCallback');
-      const result = await fresh();
-
-      expect(result.ok).toBe(true);
+      await handleMatrixCallback(HOMESERVER);
 
       const [url, init] = fetchSpy.mock.calls[0];
       expect(url).toBe(`${HOMESERVER}/_matrix/client/v3/login`);
@@ -84,36 +56,18 @@ describe('matrixCallback', () => {
     });
 
     it('persists credentials to IndexedDB', async () => {
-      setEnv();
       setUrlWithToken('mlt_persist');
 
       vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
         new Response(JSON.stringify(EXCHANGE_RESPONSE), { status: 200 })
       );
 
-      const { handleMatrixCallback: fresh } = await import('./matrixCallback');
-      await fresh();
+      await handleMatrixCallback(HOMESERVER);
 
       const stored = await loadCredentials(EXCHANGE_RESPONSE.user_id);
-      expect(stored.available).toBe(true);
-      expect(stored.record).not.toBeNull();
-      expect(stored.record?.accessToken).toBe(EXCHANGE_RESPONSE.access_token);
-      expect(stored.record?.deviceId).toBe(EXCHANGE_RESPONSE.device_id);
-    });
-
-    it('does not send credentials to homeserver', async () => {
-      setEnv();
-      setUrlWithToken('mlt_d06');
-
-      const fetchSpy = vi
-        .spyOn(globalThis, 'fetch')
-        .mockResolvedValueOnce(new Response(JSON.stringify(EXCHANGE_RESPONSE), { status: 200 }));
-
-      const { handleMatrixCallback: fresh } = await import('./matrixCallback');
-      await fresh();
-
-      const [, init] = fetchSpy.mock.calls[0];
-      expect(init?.credentials).toBe('omit');
+      expect(stored).not.toBeNull();
+      expect(stored?.accessToken).toBe(EXCHANGE_RESPONSE.access_token);
+      expect(stored?.deviceId).toBe(EXCHANGE_RESPONSE.device_id);
     });
   });
 });

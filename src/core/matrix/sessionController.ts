@@ -1,28 +1,14 @@
 import { registerActiveSession, unregisterActiveSession } from './activeSession';
-import { attemptSilentSso, type SilentSsoOutcome } from './ssoLogin';
+import { attemptSilentSso } from './ssoLogin';
 import { type CredentialRecord, findStoredUserId, loadCredentials } from './storage';
 
 type MatrixClientLike = {
   stopClient(): void;
 };
 
-type MatrixSdkModule = {
-  createClient(opts: { baseUrl: string; userId: string; deviceId: string; accessToken: string }): MatrixClientLike;
-};
-
-type EstablishmentHooks = {
-  readonly loadSdk?: () => Promise<MatrixSdkModule>;
-  readonly silentSso?: (expectedLocalpart: string, signal: AbortSignal) => Promise<SilentSsoOutcome>;
-  /** Aborting stops establishment at any point, including mid-SSO. */
-  readonly signal?: AbortSignal;
-};
-
 type SessionHandle = {
   readonly stop: () => void;
 };
-
-const defaultLoadSdk = async (): Promise<MatrixSdkModule> =>
-  (await import('matrix-js-sdk')) as unknown as MatrixSdkModule;
 
 /**
  * Creates (but does not start syncing) a Matrix client for the given actor:
@@ -31,70 +17,57 @@ const defaultLoadSdk = async (): Promise<MatrixSdkModule> =>
  * can stop it. Starting the sync loop and reacting to a dead session are a
  * later concern, once something actually reads from the client.
  */
-const establishSession = async (actorId: string, hooks: EstablishmentHooks = {}): Promise<SessionHandle> => {
-  const loadSdk = hooks.loadSdk ?? defaultLoadSdk;
-  const silentSso =
-    hooks.silentSso ??
-    ((expectedLocalpart: string, signal: AbortSignal) => attemptSilentSso(expectedLocalpart, { signal }));
-
+const establishSession = async (actorId: string, { signal }: { signal?: AbortSignal } = {}): Promise<SessionHandle> => {
   let activeClient: MatrixClientLike | null = null;
-  let stopped = false;
   // Cancels an in-flight silent SSO: its iframe would otherwise go on to
   // persist fresh credentials after this session has already been stopped.
-  const ssoAbort = new AbortController();
+  const abort = new AbortController();
 
-  const shutdown = (): void => {
-    stopped = true;
-    ssoAbort.abort();
+  const stop = (): void => {
+    abort.abort();
     activeClient?.stopClient();
-    unregisterActiveSession(signOut);
+    unregisterActiveSession(stop);
   };
-  const handle: SessionHandle = { stop: shutdown };
-  const signOut = (): void => shutdown();
-  registerActiveSession(signOut);
-  if (hooks.signal?.aborted) {
-    handle.stop();
-  }
-  hooks.signal?.addEventListener('abort', () => handle.stop());
+  registerActiveSession(stop);
+  signal?.addEventListener('abort', stop);
 
   const loadRecordForActor = async (): Promise<CredentialRecord | null> => {
-    const storedUserId = await findStoredUserId(actorId);
-    if (!storedUserId) {
-      return null;
-    }
-    return (await loadCredentials(storedUserId)).record;
+    const id = await findStoredUserId(actorId);
+    return id ? loadCredentials(id) : null;
   };
 
   try {
     let record = await loadRecordForActor();
     if (!record) {
-      const outcome = await silentSso(actorId.toLowerCase(), ssoAbort.signal);
+      const outcome = await attemptSilentSso(actorId, { signal: abort.signal });
       if (outcome === 'authenticated') {
         record = await loadRecordForActor();
       }
     }
-    if (stopped || !record) {
-      return handle;
+    if (abort.signal.aborted || !record) {
+      return { stop };
     }
 
-    const sdk = await loadSdk();
+    const sdk = (await import('matrix-js-sdk')) as unknown as {
+      createClient(opts: { baseUrl: string; userId: string; deviceId: string; accessToken: string }): MatrixClientLike;
+    };
     const client = sdk.createClient({
       baseUrl: record.homeserverUrl,
       userId: record.userId,
       deviceId: record.deviceId,
       accessToken: record.accessToken,
     });
-    if (stopped) {
+    if (abort.signal.aborted) {
       client.stopClient();
-      return handle;
+      return { stop };
     }
     activeClient = client;
   } catch {
     // Establishment failure leaves nothing to stop; the next load retries.
   }
 
-  return handle;
+  return { stop };
 };
 
 export { establishSession };
-export type { EstablishmentHooks, SessionHandle, MatrixSdkModule, MatrixClientLike };
+export type { SessionHandle, MatrixClientLike };

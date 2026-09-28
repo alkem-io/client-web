@@ -34,9 +34,7 @@ export const useLogoutUrl = () => {
     // automatic re-login. (Logout also ends the Kratos SSO session below, which
     // alone stops recovery — this clears the per-tab loop guard belt-and-suspenders.)
     sessionStorage.removeItem(OIDC_RECOVERY_ATTEMPTED_KEY);
-    // Matrix session cleanup for this Alkemio logout: stop the local session
-    // (if one exists) and clear its stored credentials from IndexedDB. Skipped
-    // entirely when no session was ever established in this tab.
+    // Stop this tab's Matrix session and clear its stored credentials.
     await runMatrixLogoutCleanup();
     const postLogoutRedirectUri = `${window.location.origin}${AUTH_LOGOUT_PATH}`;
     try {

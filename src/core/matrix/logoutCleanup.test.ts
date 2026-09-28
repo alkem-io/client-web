@@ -1,10 +1,9 @@
-import 'fake-indexeddb/auto';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { registerActiveSession, stopActiveSession } from './activeSession';
-import { cleanupMatrixUser, runMatrixLogoutCleanup } from './logoutCleanup';
+import { runMatrixLogoutCleanup } from './logoutCleanup';
+import { HOMESERVER } from './matrixTestFixtures';
 import { clearNamespace, loadCredentials, storeCredentials } from './storage';
 
-const HOMESERVER = 'https://matrix.dev-alkem.io';
 const USER_ID = '@logout-user:matrix.dev-alkem.io';
 
 const seedRecord = () =>
@@ -28,18 +27,22 @@ describe('logoutCleanup', () => {
 
     await runMatrixLogoutCleanup();
 
-    expect((await loadCredentials(USER_ID)).record).toBe(null);
+    expect(await loadCredentials(USER_ID)).toBe(null);
   });
 
   it('stops the registered session before touching storage', async () => {
     await seedRecord();
     const order: string[] = [];
     registerActiveSession(() => order.push('stop'));
-    const databasesSpy = vi.spyOn(indexedDB, 'databases');
+    const original = indexedDB.databases.bind(indexedDB);
+    const databasesSpy = vi.spyOn(indexedDB, 'databases').mockImplementation(() => {
+      order.push('storage');
+      return original();
+    });
 
     await runMatrixLogoutCleanup();
 
-    expect(order[0]).toBe('stop');
+    expect(order).toEqual(['stop', 'storage']);
     expect(databasesSpy).toHaveBeenCalled();
   });
 
@@ -58,10 +61,5 @@ describe('logoutCleanup', () => {
     });
 
     await expect(runMatrixLogoutCleanup()).resolves.toBeUndefined();
-  });
-
-  it('cleanupMatrixUser clears even when no credential record exists', async () => {
-    await expect(cleanupMatrixUser(USER_ID)).resolves.toBeUndefined();
-    expect((await loadCredentials(USER_ID)).record).toBe(null);
   });
 });

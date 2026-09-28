@@ -9,42 +9,32 @@ type CredentialRecord = {
   readonly homeserverUrl: string;
 };
 
-type StorageResult = {
-  readonly available: boolean;
-  readonly record: CredentialRecord | null;
-};
-
 const dbName = (userId: string): string => `${DB_PREFIX}${userId}`;
 
 const openDb = (userId: string): Promise<IDBDatabase> =>
   new Promise((resolve, reject) => {
     const request = indexedDB.open(dbName(userId), 1);
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME);
-      }
-    };
+    request.onupgradeneeded = () => request.result.createObjectStore(STORE_NAME);
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
 
-const loadCredentials = async (userId: string): Promise<StorageResult> => {
+const loadCredentials = async (userId: string): Promise<CredentialRecord | null> => {
   try {
     const db = await openDb(userId);
     try {
-      return await new Promise<StorageResult>((resolve, reject) => {
+      return await new Promise<CredentialRecord | null>((resolve, reject) => {
         const tx = db.transaction(STORE_NAME, 'readonly');
         const store = tx.objectStore(STORE_NAME);
         const request = store.get(RECORD_KEY);
-        request.onsuccess = () => resolve({ available: true, record: (request.result as CredentialRecord) ?? null });
+        request.onsuccess = () => resolve((request.result as CredentialRecord) ?? null);
         request.onerror = () => reject(request.error);
       });
     } finally {
       db.close();
     }
   } catch {
-    return { available: false, record: null };
+    return null;
   }
 };
 
@@ -57,8 +47,7 @@ const storeCredentials = async (record: CredentialRecord): Promise<boolean> => {
         const store = tx.objectStore(STORE_NAME);
         store.put(record, RECORD_KEY);
         tx.oncomplete = () => resolve();
-        tx.onerror = () => reject(tx.error);
-        tx.onabort = () => reject(tx.error ?? new Error('Transaction aborted'));
+        tx.onabort = () => reject(tx.error);
       });
       return true;
     } finally {
@@ -72,28 +61,8 @@ const storeCredentials = async (record: CredentialRecord): Promise<boolean> => {
 // Every namespace lookup — resume, sign-out cleanup — runs through the
 // database listing. A browser without it can still store credentials, but
 // never finds or clears them again.
-const canEnumerateNamespaces = (): boolean =>
-  typeof indexedDB !== 'undefined' && typeof indexedDB.databases === 'function';
-
-const findStoredUserId = async (actorLocalpart: string): Promise<string | null> => {
-  try {
-    if (!canEnumerateNamespaces()) {
-      return null;
-    }
-    const databases = await indexedDB.databases();
-    const prefix = `${DB_PREFIX}@${actorLocalpart.toLowerCase()}:`;
-    const match = databases.find(db => db.name?.startsWith(prefix));
-    return match?.name ? match.name.slice(DB_PREFIX.length) : null;
-  } catch {
-    return null;
-  }
-};
-
 const listStoredUserIds = async (): Promise<string[]> => {
   try {
-    if (!canEnumerateNamespaces()) {
-      return [];
-    }
     const databases = await indexedDB.databases();
     return databases
       .map(db => db.name ?? '')
@@ -104,16 +73,16 @@ const listStoredUserIds = async (): Promise<string[]> => {
   }
 };
 
+const findStoredUserId = async (actorLocalpart: string): Promise<string | null> =>
+  (await listStoredUserIds()).find(id => id.startsWith(`@${actorLocalpart.toLowerCase()}:`)) ?? null;
+
 const clearNamespace = async (userId: string): Promise<void> => {
   await new Promise<void>((resolve, reject) => {
     const request = indexedDB.deleteDatabase(dbName(userId));
     request.onsuccess = () => resolve();
     request.onerror = () => reject(request.error);
-    // Another connection still has the database open. The deletion completes
-    // once it closes; the caller does not need to wait for that itself.
-    request.onblocked = () => resolve();
   });
 };
 
 export { loadCredentials, storeCredentials, clearNamespace, findStoredUserId, listStoredUserIds };
-export type { CredentialRecord, StorageResult };
+export type { CredentialRecord };

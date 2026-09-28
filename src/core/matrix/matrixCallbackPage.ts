@@ -8,8 +8,9 @@ import { getConfig } from './matrixConfig';
  * page opened top-level — has no business here and goes home.
  */
 const runMatrixCallbackPage = async (): Promise<void> => {
-  if (getConfig().homeserverUrl !== '' && window.self !== window.top) {
-    await handleMatrixCallback();
+  const { homeserverUrl } = getConfig();
+  if (homeserverUrl !== '' && window.self !== window.top) {
+    await handleMatrixCallback(homeserverUrl);
     return;
   }
   window.location.replace('/');

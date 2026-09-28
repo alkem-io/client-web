@@ -1,9 +1,7 @@
-import 'fake-indexeddb/auto';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { HOMESERVER, setMatrixHomeserver } from './matrixTestFixtures';
 import { CALLBACK_ROUTE } from './ssoLogin';
 import { clearNamespace, storeCredentials } from './storage';
-
-const HOMESERVER = 'https://matrix.dev-alkem.io';
 
 describe('ssoLogin', () => {
   beforeEach(() => {
@@ -16,13 +14,6 @@ describe('ssoLogin', () => {
   });
 
   describe('attemptSilentSso', () => {
-    const setEnv = () => {
-      Object.defineProperty(window, '_env_', {
-        value: { VITE_APP_MATRIX_HOMESERVER_URL: HOMESERVER },
-        writable: true,
-        configurable: true,
-      });
-    };
     const LOCALPART = 'silent-actor';
     const USER_ID = `@${LOCALPART}:matrix.dev-alkem.io`;
 
@@ -31,11 +22,7 @@ describe('ssoLogin', () => {
     });
 
     it('does not create an iframe when Matrix is not configured for this environment', async () => {
-      Object.defineProperty(window, '_env_', {
-        value: { VITE_APP_MATRIX_HOMESERVER_URL: '' },
-        writable: true,
-        configurable: true,
-      });
+      setMatrixHomeserver('');
 
       const { attemptSilentSso: fresh } = await import('./ssoLogin');
       const result = await fresh(LOCALPART, { timeoutMs: 200, pollIntervalMs: 20 });
@@ -45,7 +32,7 @@ describe('ssoLogin', () => {
     });
 
     it('resolves authenticated when the callback persists fresh credentials, then removes the iframe', async () => {
-      setEnv();
+      setMatrixHomeserver(HOMESERVER);
 
       const { attemptSilentSso: fresh } = await import('./ssoLogin');
       const attempt = fresh(LOCALPART, { timeoutMs: 2000, pollIntervalMs: 20 });
@@ -63,7 +50,7 @@ describe('ssoLogin', () => {
     });
 
     it('times out and resolves timeout when no credentials appear', async () => {
-      setEnv();
+      setMatrixHomeserver(HOMESERVER);
 
       const { attemptSilentSso: fresh } = await import('./ssoLogin');
       const result = await fresh(LOCALPART, { timeoutMs: 100, pollIntervalMs: 20 });
@@ -73,7 +60,7 @@ describe('ssoLogin', () => {
     });
 
     it('points the hidden iframe at the SSO redirect URL, with no idp id', async () => {
-      setEnv();
+      setMatrixHomeserver(HOMESERVER);
 
       const { attemptSilentSso: fresh } = await import('./ssoLogin');
       const abort = new AbortController();
@@ -93,7 +80,7 @@ describe('ssoLogin', () => {
     });
 
     it('an abort removes the iframe at once and resolves timeout', async () => {
-      setEnv();
+      setMatrixHomeserver(HOMESERVER);
 
       const { attemptSilentSso: fresh } = await import('./ssoLogin');
       const abort = new AbortController();
@@ -109,7 +96,7 @@ describe('ssoLogin', () => {
     });
 
     it('does nothing when already aborted — no iframe', async () => {
-      setEnv();
+      setMatrixHomeserver(HOMESERVER);
       const abort = new AbortController();
       abort.abort();
 

@@ -39,12 +39,9 @@ const attemptSilentSso = async (
   const timeoutMs = options.timeoutMs ?? 20_000;
   const pollIntervalMs = options.pollIntervalMs ?? 400;
 
-  const config = getConfig();
-  if (config.homeserverUrl === '') {
-    return 'timeout';
-  }
+  const { homeserverUrl } = getConfig();
   const { signal } = options;
-  if (signal?.aborted) {
+  if (homeserverUrl === '' || signal?.aborted) {
     return 'timeout';
   }
 
@@ -52,11 +49,10 @@ const attemptSilentSso = async (
   const iframe = document.createElement('iframe');
   iframe.style.display = 'none';
   iframe.setAttribute('aria-hidden', 'true');
-  iframe.src = buildSsoUrl(config.homeserverUrl);
+  iframe.src = buildSsoUrl(homeserverUrl);
   document.body.appendChild(iframe);
   // Removing the frame tears down its browsing context, callback included.
-  const removeFrame = () => iframe.remove();
-  signal?.addEventListener('abort', removeFrame);
+  signal?.addEventListener('abort', () => iframe.remove());
 
   try {
     while (Date.now() < deadline) {
@@ -65,19 +61,14 @@ const attemptSilentSso = async (
       }
       await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
       const userId = await findStoredUserId(expectedLocalpart);
-      if (userId) {
-        const { record } = await loadCredentials(userId);
-        if (record) {
-          return 'authenticated';
-        }
+      if (userId && (await loadCredentials(userId))) {
+        return 'authenticated';
       }
     }
     return 'timeout';
   } finally {
-    signal?.removeEventListener('abort', removeFrame);
     iframe.remove();
   }
 };
 
 export { CALLBACK_ROUTE, attemptSilentSso };
-export type { SilentSsoOptions, SilentSsoOutcome };

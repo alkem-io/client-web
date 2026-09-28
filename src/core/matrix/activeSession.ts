@@ -31,4 +31,3 @@ const stopActiveSession = (): boolean => {
 };
 
 export { registerActiveSession, unregisterActiveSession, stopActiveSession };
-export type { SignOut };
