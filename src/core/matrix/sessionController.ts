@@ -70,4 +70,4 @@ const establishSession = async (actorId: string, { signal }: { signal?: AbortSig
 };
 
 export { establishSession };
-export type { SessionHandle, MatrixClientLike };
+export type { MatrixClientLike };
