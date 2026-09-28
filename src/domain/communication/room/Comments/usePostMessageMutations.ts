@@ -88,7 +88,7 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
     },
   });
 
-  const handlePostMessage = (message: string) => {
+  const handlePostMessage = (message: string, attachments?: string[]) => {
     const requiredRoomId = ensurePresence(roomId, 'roomId');
 
     return postMessage({
@@ -96,6 +96,8 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
         messageData: {
           roomID: requiredRoomId,
           message,
+          // file-service document ids (feature 013); omitted when none staged.
+          attachments: attachments && attachments.length > 0 ? attachments : undefined,
         },
       },
     });

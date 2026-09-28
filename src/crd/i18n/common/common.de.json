@@ -8,8 +8,13 @@
       "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time.",
       "NOT_SUPPORTED": "Not supported: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
+      "UNSPECIFIED": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
       "generic": "Ein Fehler ist aufgetreten",
       "generic-with-code": "Ein Fehler ist aufgetreten mit Code {{code}}",
+      "network": {
+        "session_store_unavailable": "Der Dienst ist vorübergehend nicht verfügbar. Bitte versuchen Sie es in einem Moment erneut.",
+        "generic": "Es ist ein Verbindungsproblem aufgetreten. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut."
+      },
       "support": {
         "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
         "emailBodyGeneric": "Hello,\n\nI encountered an error while using Alkemio.\n\nPlease help me resolve this issue.\n\nThank you.",
@@ -526,6 +531,10 @@
       "ADMIN": "$t(common.Admin):$t(common.subspaces):$t(common.subspaces)",
       "ANONYMOUS": "Anonymous",
       "ASSOCIATE": "Associate",
+      "FEATURE_BETA_TESTER": "Feature Beta-Tester",
+      "FEATURE_ORGANIZATION_CREATOR": "Feature Organisationsersteller",
+      "FEATURE_VC_CAMPAIGN": "VC Early Access",
+      "FEATURE_VIRTUAL_ASSISTANT": "Feature Virtueller Assistent",
       "GLOBAL_ADMIN": "Global $t(common.Admin)",
       "GLOBAL_COMMUNITY_READER": "$t(common.Community) Manager",
       "GLOBAL_LICENSE_MANAGER": "License Manager",
@@ -538,7 +547,17 @@
       "LEAD": "Blei",
       "MEMBER": "$t(common.Member):$t(common.subspaces):$t(common.subspaces)",
       "OWNER": "Besitzer",
+      "PLATFORM_AUDIT_READER": "Platform Audit-Leser",
       "PLATFORM_BETA_TESTER": "Beta Tester",
+      "PLATFORM_CONTENT_FULL_ACCESS": "Platform Vollzugriff auf Inhalte",
+      "PLATFORM_LICENSE_MANAGER": "Platform Lizenzmanager",
+      "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin",
+      "PLATFORM_RESOURCE_ADMIN": "Platform Ressourcen-Administrator",
+      "PLATFORM_ROLES_ADMIN": "Platform Rollen-Administrator",
+      "PLATFORM_SETTINGS_ADMIN": "Platform Einstellungs-Administrator",
+      "PLATFORM_SPACES_READER": "Platform Spaces-Leser",
+      "PLATFORM_SUPPORT": "Platform Support",
+      "PLATFORM_USERS_ADMIN": "Platform Benutzer-Administrator",
       "PLATFORM_VC_CAMPAIGN": "VC Early Access",
       "REGISTERED": "Registriert"
     },
@@ -1288,7 +1307,10 @@
         "notL0Space": "Only L0 (top-level) spaces can be transferred",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space",
-        "urlNotUserOrOrg": "URL does not resolve to a user or organization"
+        "urlNotUserOrOrg": "URL does not resolve to a user or organization",
+        "accountNotAccessible": "Dieses Konto existiert, ist aber für Sie nicht zugänglich.",
+        "successMessage": "Space erfolgreich übertragen.",
+        "errorMessage": "Der Space konnte nicht übertragen werden."
       },
       "transferVc": {
         "confirmButton": "Transfer",
@@ -1561,5 +1583,13 @@
     "archived": "Archiviert",
     "demo": "Demo",
     "inactive": "Inaktiv"
+  },
+  "messageAttachments": {
+    "listLabel": "Anhänge",
+    "imageAlt": "Angehängtes Bild: {{name}}",
+    "download": "{{name}} herunterladen",
+    "unavailableHint": "Diese Datei konnte nicht geladen werden. Laden Sie sie zum Ansehen herunter.",
+    "unavailableNoDownload": "Diese Datei ist nicht verfügbar.",
+    "loading": "Anhang wird geladen"
   }
 }

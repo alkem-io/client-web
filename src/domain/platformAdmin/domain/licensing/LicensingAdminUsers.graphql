@@ -1,0 +1,27 @@
+# 027 R-F.3 — the Licensing section's Users list (account plans).
+# Deliberately NO `email`: it is READ_USER_PII, kept with Users Admin. The
+# License Manager finds a user by display name.
+query licensingAdminUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
+  platformAdmin {
+    users(first: $first, after: $after, filter: $filter) {
+      total
+      users {
+        id
+        account {
+          id
+          subscriptions {
+            name
+          }
+        }
+        profile {
+          id
+          url
+          displayName
+        }
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}

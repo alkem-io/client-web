@@ -13,6 +13,8 @@ type CountryComboboxProps = {
   countries: ReadonlyArray<CountryOption>;
   placeholder?: string;
   className?: string;
+  /** Renders the current value but refuses every interaction. */
+  disabled?: boolean;
 };
 
 export function CountryCombobox({
@@ -21,6 +23,7 @@ export function CountryCombobox({
   countries,
   placeholder = 'Country',
   className,
+  disabled = false,
 }: CountryComboboxProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -33,18 +36,19 @@ export function CountryCombobox({
     : countries;
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open && !disabled} onOpenChange={next => !disabled && setOpen(next)}>
       <PopoverTrigger asChild={true}>
         <Button
           type="button"
           variant="outline"
           role="combobox"
-          aria-expanded={open}
+          aria-expanded={open && !disabled}
+          disabled={disabled}
           className={cn('justify-between font-normal', !selected?.name && 'text-muted-foreground', className)}
         >
           <span className="truncate flex-1 text-left">{selected?.name ?? placeholder}</span>
           <span className="flex items-center gap-0.5 shrink-0 ml-1">
-            {value && (
+            {value && !disabled && (
               <button
                 type="button"
                 aria-label="Clear country"

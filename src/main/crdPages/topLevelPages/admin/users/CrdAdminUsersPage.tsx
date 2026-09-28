@@ -5,6 +5,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import { AdminSearchableTable } from '@/crd/components/admin/AdminSearchableTable';
 import { AccountLicensePlansDialog } from '@/crd/components/admin/licensePlans/AccountLicensePlansDialog';
 import { Button } from '@/crd/primitives/button';
+import useCanManageLicensePlans from '@/domain/platformAdmin/domain/licensing/useCanManageLicensePlans';
 import useAdminGlobalUserList from '@/domain/platformAdmin/domain/users/useAdminGlobalUserList';
 import { useAdminAccessGuard } from '../useAdminAccessGuard';
 import { UserChangeEmailDialog } from './UserChangeEmailDialog';
@@ -22,7 +23,10 @@ import { type AdminUserRow, mapUserToRow } from './userListMapper';
 const CrdAdminUsersPage = () => {
   const { t } = useTranslation('crd-admin');
   const navigate = useNavigate();
-  const { isPlatformAdmin } = useAdminAccessGuard();
+  // The email-change capability, not admin-area access: `adminUserEmailChange`
+  // is gated on PLATFORM_USERS_ADMIN at its own resolver (F8's defect shape).
+  const { canChangeUserEmail, canReadEmailChangeHistory } = useAdminAccessGuard();
+  const canManageLicensePlans = useCanManageLicensePlans();
   const {
     userList,
     loading,
@@ -39,7 +43,7 @@ const CrdAdminUsersPage = () => {
     revokeLicensePlan,
   } = useAdminGlobalUserList();
 
-  const rows = userList.map(item => mapUserToRow(item, isPlatformAdmin));
+  const rows = userList.map(item => mapUserToRow(item, canChangeUserEmail));
   const availablePlans = licensePlans.map(plan => ({ id: plan.id, name: plan.name }));
 
   const [licenseRowId, setLicenseRowId] = useState<string | null>(null);
@@ -80,15 +84,17 @@ const CrdAdminUsersPage = () => {
             >
               <Pencil aria-hidden="true" className="size-4" />
             </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label={t('users.history.action')}
-              onClick={() => setHistoryRowId(row.id)}
-            >
-              <History aria-hidden="true" className="size-4" />
-            </Button>
+            {canReadEmailChangeHistory && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label={t('users.history.action')}
+                onClick={() => setHistoryRowId(row.id)}
+              >
+                <History aria-hidden="true" className="size-4" />
+              </Button>
+            )}
             {row.canChangeEmail && (
               <Button
                 type="button"
@@ -100,16 +106,18 @@ const CrdAdminUsersPage = () => {
                 <Mail aria-hidden="true" className="size-4" />
               </Button>
             )}
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label={t('licensePlans.manage')}
-              disabled={!row.accountId}
-              onClick={() => setLicenseRowId(row.id)}
-            >
-              <SlidersHorizontal aria-hidden="true" className="size-4" />
-            </Button>
+            {canManageLicensePlans && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label={t('licensePlans.manage')}
+                disabled={!row.accountId}
+                onClick={() => setLicenseRowId(row.id)}
+              >
+                <SlidersHorizontal aria-hidden="true" className="size-4" />
+              </Button>
+            )}
           </>
         )}
         onDelete={row => onDelete({ id: row.id, value: row.name, url: row.url })}

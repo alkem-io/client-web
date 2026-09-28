@@ -1,19 +1,19 @@
-import type { ApolloError, DefaultContext } from '@apollo/client';
-import { useTranslation } from 'react-i18next';
+import type { DefaultContext } from '@apollo/client';
 import {
+  useAssignPlatformRoleToOrganizationMutation,
   useAssignPlatformRoleToUserMutation,
   useAssignRoleToOrganizationMutation,
   useAssignRoleToUserMutation,
   useAssignRoleToVirtualContributorMutation,
+  useRemovePlatformRoleFromOrganizationMutation,
   useRemovePlatformRoleFromUserMutation,
   useRemoveRoleFromOrganizationMutation,
   useRemoveRoleFromUserMutation,
   useRemoveRoleFromVirtualContributorMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import type { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { usePermissionDeniedNotifier } from '@/core/apollo/hooks/usePermissionDeniedNotifier';
 import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 
 type useRoleSetManagerRolesAssignmentParams = {
   roleSetId: string | undefined;
@@ -30,6 +30,8 @@ type useRoleSetManagerRolesAssignmentParams = {
 export type useRoleSetManagerRolesAssignmentProvided = {
   assignPlatformRoleToUser: (userId: string, roleName: RoleName) => Promise<unknown>;
   removePlatformRoleFromUser: (userId: string, roleName: RoleName) => Promise<unknown>;
+  assignPlatformRoleToOrganization: (organizationId: string, roleName: RoleName) => Promise<unknown>;
+  removePlatformRoleFromOrganization: (organizationId: string, roleName: RoleName) => Promise<unknown>;
   assignRoleToUser: (userId: string, roleName: RoleName) => Promise<unknown>;
   removeRoleFromUser: (userId: string, roleName: RoleName) => Promise<unknown>;
   assignRoleToOrganization: (organizationId: string, roleName: RoleName) => Promise<unknown>;
@@ -37,42 +39,6 @@ export type useRoleSetManagerRolesAssignmentProvided = {
   assignRoleToVirtualContributor: (vcId: string, roleName: RoleName) => Promise<unknown>;
   removeRoleFromVirtualContributor: (vcId: string, roleName: RoleName) => Promise<unknown>;
   loading: boolean;
-};
-
-const AUTHORIZATION_ERROR_CODES: string[] = [
-  AlkemioGraphqlErrorCode.FORBIDDEN,
-  AlkemioGraphqlErrorCode.FORBIDDEN_POLICY,
-];
-
-/**
- * True when the rejection consists of NOTHING BUT authorization errors.
- *
- * Deliberately whole-response, not "contains an authorization error". The global link
- * (`useErrorHandlerLink`) strips the authorization codes and forwards whatever remains to
- * `useApolloErrorHandler`, so it stays silent only when the filtered list is empty. If a
- * response mixes, say, FORBIDDEN with ENTITY_NOT_FOUND, the global handler already
- * notifies for the latter — notifying here as well would give the user two toasts for one
- * failure, which spec FR-006 forbids.
- *
- * The precedence is therefore: any non-authorization content in the response (a GraphQL
- * error with another code, a network error, or a client error) hands ownership to the
- * global handler and this wrapper says nothing.
- */
-const isExclusivelyAuthorizationError = (error: unknown): boolean => {
-  const apolloError = error as ApolloError | undefined;
-  const graphQLErrors = apolloError?.graphQLErrors;
-
-  if (!graphQLErrors?.length) {
-    return false;
-  }
-
-  if (apolloError?.networkError || apolloError?.clientErrors?.length) {
-    return false;
-  }
-
-  return graphQLErrors.every(graphqlError =>
-    AUTHORIZATION_ERROR_CODES.includes(graphqlError.extensions?.code as string)
-  );
 };
 
 /**
@@ -83,8 +49,7 @@ const useRoleSetManagerRolesAssignment = ({
   refetchRoleSetOnMutation = false,
   context,
 }: useRoleSetManagerRolesAssignmentParams): useRoleSetManagerRolesAssignmentProvided => {
-  const notify = useNotification();
-  const { t } = useTranslation('crd-common');
+  const guard = usePermissionDeniedNotifier();
 
   const refetchQueries = (cache: Parameters<typeof evictFromCache>[0]) => {
     if (refetchRoleSetOnMutation && roleSetId) {
@@ -92,11 +57,13 @@ const useRoleSetManagerRolesAssignment = ({
     }
   };
 
-  // Platform Roles:
+  // Platform Roles: the five assignment rules (contracts/graphql-contract.md) reject with
+  // distinct, rule-naming messages that the UI surfaces verbatim (FR-012) — skip the global
+  // error toast so the caller's own inline handling isn't shadowed by a generic translation.
   const [runAssignPlatformRoleToUser, { loading: assignPlatformRoleToUserLoading }] =
-    useAssignPlatformRoleToUserMutation();
+    useAssignPlatformRoleToUserMutation({ context: { skipGlobalErrorHandler: true } });
   const [runRemovePlatformRoleFromUser, { loading: removePlatformRoleFromUserLoading }] =
-    useRemovePlatformRoleFromUserMutation();
+    useRemovePlatformRoleFromUserMutation({ context: { skipGlobalErrorHandler: true } });
   const assignPlatformRoleToUser = (userId: string, role: RoleName) => {
     return runAssignPlatformRoleToUser({
       variables: {
@@ -116,6 +83,30 @@ const useRoleSetManagerRolesAssignment = ({
       },
       update: cache => refetchQueries(cache),
       context,
+    });
+  };
+
+  const [runAssignPlatformRoleToOrganization, { loading: assignPlatformRoleToOrganizationLoading }] =
+    useAssignPlatformRoleToOrganizationMutation({ context: { skipGlobalErrorHandler: true } });
+  const [runRemovePlatformRoleFromOrganization, { loading: removePlatformRoleFromOrganizationLoading }] =
+    useRemovePlatformRoleFromOrganizationMutation({ context: { skipGlobalErrorHandler: true } });
+  const assignPlatformRoleToOrganization = (organizationId: string, role: RoleName) => {
+    return runAssignPlatformRoleToOrganization({
+      variables: {
+        contributorId: organizationId,
+        role,
+      },
+      update: cache => refetchQueries(cache),
+    });
+  };
+
+  const removePlatformRoleFromOrganization = (organizationId: string, role: RoleName) => {
+    return runRemovePlatformRoleFromOrganization({
+      variables: {
+        contributorId: organizationId,
+        role,
+      },
+      update: cache => refetchQueries(cache),
     });
   };
 
@@ -210,6 +201,8 @@ const useRoleSetManagerRolesAssignment = ({
   const loading =
     assignPlatformRoleToUserLoading ||
     removePlatformRoleFromUserLoading ||
+    assignPlatformRoleToOrganizationLoading ||
+    removePlatformRoleFromOrganizationLoading ||
     assignRoleToUserLoading ||
     removeRoleFromUserLoading ||
     assignRoleToOrganizationLoading ||
@@ -218,30 +211,28 @@ const useRoleSetManagerRolesAssignment = ({
     removeRoleFromVirtualContributorLoading;
 
   /**
-   * Surfaces authorization failures that would otherwise be silent.
-   *
-   * Scoped deliberately to authorization codes only: every other failure class
-   * (validation, network, server) is already reported by the global error link,
-   * so notifying here as well would show the user two toasts for one failure.
-   * The rejection is always re-thrown so callers still see it.
+   * Surfaces authorization failures that would otherwise be silent, via the shared
+   * `usePermissionDeniedNotifier` guard. Scoped deliberately to authorization codes
+   * only: every other failure class (validation, network, server) is already
+   * reported by the global error link, so notifying here as well would show the
+   * user two toasts for one failure. The rejection is always re-thrown so callers
+   * still see it.
    */
   const withPermissionErrorNotification =
     <TArgs extends unknown[]>(run: (...args: TArgs) => Promise<unknown>) =>
-    async (...args: TArgs) => {
-      try {
-        return await run(...args);
-      } catch (error) {
-        if (isExclusivelyAuthorizationError(error)) {
-          notify(t('permissions.errorDenied'), 'error');
-        }
-        throw error;
-      }
-    };
+    (...args: TArgs) =>
+      guard(() => run(...args));
 
   const notReady = () => Promise.reject('roleSetId is not defined');
   return {
     assignPlatformRoleToUser: roleSetId ? withPermissionErrorNotification(assignPlatformRoleToUser) : notReady,
     removePlatformRoleFromUser: roleSetId ? withPermissionErrorNotification(removePlatformRoleFromUser) : notReady,
+    assignPlatformRoleToOrganization: roleSetId
+      ? withPermissionErrorNotification(assignPlatformRoleToOrganization)
+      : notReady,
+    removePlatformRoleFromOrganization: roleSetId
+      ? withPermissionErrorNotification(removePlatformRoleFromOrganization)
+      : notReady,
     assignRoleToUser: roleSetId ? withPermissionErrorNotification(assignRoleToUser) : notReady,
     removeRoleFromUser: roleSetId ? withPermissionErrorNotification(removeRoleFromUser) : notReady,
     assignRoleToOrganization: roleSetId ? withPermissionErrorNotification(assignRoleToOrganization) : notReady,

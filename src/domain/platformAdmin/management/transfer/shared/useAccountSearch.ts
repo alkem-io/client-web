@@ -5,21 +5,38 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import type { FormikSelectValue } from '@/core/ui/forms/FormikAutocomplete.model';
+import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 
 type AccountSearchResult = FormikSelectValue & {
   accountId: string;
   type: 'User' | 'Organization';
 };
 
+// client-1: the codes that mean "you may not search accounts" rather than a
+// generic failure — mirrors `isExclusivelyAuthorizationError` in
+// `@/core/apollo/hooks/usePermissionDeniedNotifier` (the L4 twin — keep this
+// list aligned with that one if it changes).
+const DENIED_ERROR_CODES: string[] = [AlkemioGraphqlErrorCode.FORBIDDEN, AlkemioGraphqlErrorCode.FORBIDDEN_POLICY];
+
 const useAccountSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const [searchUsers, { data: usersData, loading: usersLoading, called: usersCalled }] =
+  const [searchUsers, { data: usersData, loading: usersLoading, called: usersCalled, error: usersError }] =
     useAccountSearchUsersLazyQuery();
-  const [searchOrgs, { data: orgsData, loading: orgsLoading, called: orgsCalled }] =
+  const [searchOrgs, { data: orgsData, loading: orgsLoading, called: orgsCalled, error: orgsError }] =
     useAccountSearchOrganizationsLazyQuery();
 
   const loading = usersLoading || orgsLoading;
+
+  // client-1: denied only when EVERY error the two queries reported is an
+  // authorization code — a genuinely mixed/other failure is not "denied",
+  // it's a normal search failure the global error handler already covers.
+  const denied = useMemo(() => {
+    const codes = [usersError, orgsError]
+      .filter(error => error !== undefined)
+      .flatMap(error => error.graphQLErrors.map(graphQLError => graphQLError.extensions?.code as string));
+    return codes.length > 0 && codes.every(code => DENIED_ERROR_CODES.includes(code));
+  }, [usersError, orgsError]);
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
@@ -68,6 +85,7 @@ const useAccountSearch = () => {
     results,
     loading,
     hasSearched,
+    denied,
     handleSearch,
   };
 };

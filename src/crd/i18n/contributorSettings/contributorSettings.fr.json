@@ -849,8 +849,7 @@
         "cancel": "Annuler",
         "removeSuccess": "{{name}} a été retiré(e) de l’organisation",
         "removeError": "Impossible de retirer {{name}} — réessayez",
-        "saveError": "Impossible d’enregistrer les modifications — réessayez",
-        "selfAdminLocked": "Vous ne pouvez pas retirer votre propre rôle Admin ici."
+        "saveError": "Impossible d’enregistrer les modifications — réessayez"
       },
       "errors": {
         "limitAdmin": "Une organisation peut avoir au maximum 6 admins",

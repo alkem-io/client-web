@@ -6,17 +6,23 @@ import { AdminSearchableTable, type AdminTableColumn } from '@/crd/components/ad
 import { VisibilityChipCell } from '@/crd/components/admin/columns/VisibilityChipCell';
 import { AccountLicensePlansDialog } from '@/crd/components/admin/licensePlans/AccountLicensePlansDialog';
 import { Button } from '@/crd/primitives/button';
+import useCanManageLicensePlans from '@/domain/platformAdmin/domain/licensing/useCanManageLicensePlans';
 import usePlatformAdminOrganizationsList from '@/domain/platformAdmin/domain/organizations/usePlatformAdminOrganizationsList';
+import { useAdminAccessGuard } from '../useAdminAccessGuard';
 import { type AdminOrganizationRow, mapOrganizationToRow } from './orgListMapper';
 
 /**
  * CRD global-admin Organizations list. Reuses `usePlatformAdminOrganizationsList`
  * verbatim (search, server pagination, delete, verification toggle, license
- * assign/revoke). Create/edit open the dedicated organization form routes.
+ * assign/revoke). Create/edit open the dedicated organization form routes. Row
+ * actions and the New/License-plans affordances are gated on the viewer's own
+ * privileges (client-7), not on admin-area access.
  */
 const CrdAdminOrganizationsPage = () => {
   const { t } = useTranslation('crd-admin');
   const navigate = useNavigate();
+  const { canCreateOrganization } = useAdminAccessGuard();
+  const canManageLicensePlans = useCanManageLicensePlans();
   const {
     organizations,
     loading,
@@ -54,12 +60,14 @@ const CrdAdminOrganizationsPage = () => {
 
   return (
     <>
-      <div className="mb-4 flex justify-end">
-        <Button type="button" onClick={() => navigate('/admin/organizations/new')}>
-          <Plus aria-hidden="true" className="size-4" />
-          {t('organizations.new')}
-        </Button>
-      </div>
+      {canCreateOrganization && (
+        <div className="mb-4 flex justify-end">
+          <Button type="button" onClick={() => navigate('/admin/organizations/new')}>
+            <Plus aria-hidden="true" className="size-4" />
+            {t('organizations.new')}
+          </Button>
+        </div>
+      )}
 
       <AdminSearchableTable<AdminOrganizationRow>
         rows={rows}
@@ -77,42 +85,49 @@ const CrdAdminOrganizationsPage = () => {
         }}
         rowActions={row => (
           <>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label={t('organizations.edit')}
-              onClick={() => navigate(`/admin/organizations/${row.id}/edit`)}
-            >
-              <Pencil aria-hidden="true" className="size-4" />
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label={t('organizations.toggleVerification')}
-              onClick={() => {
-                void handleVerification({ id: row.id, value: row.name, url: row.url });
-              }}
-            >
-              <BadgeCheck
-                aria-hidden="true"
-                className={row.verified ? 'size-4 text-primary' : 'size-4 text-muted-foreground'}
-              />
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label={t('licensePlans.manage')}
-              disabled={!row.accountId}
-              onClick={() => setLicenseRowId(row.id)}
-            >
-              <SlidersHorizontal aria-hidden="true" className="size-4" />
-            </Button>
+            {row.canEdit && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label={t('organizations.edit')}
+                onClick={() => navigate(`/admin/organizations/${row.id}/edit`)}
+              >
+                <Pencil aria-hidden="true" className="size-4" />
+              </Button>
+            )}
+            {row.canVerify && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label={t('organizations.toggleVerification')}
+                onClick={() => {
+                  void handleVerification({ id: row.id, value: row.name, url: row.url });
+                }}
+              >
+                <BadgeCheck
+                  aria-hidden="true"
+                  className={row.verified ? 'size-4 text-primary' : 'size-4 text-muted-foreground'}
+                />
+              </Button>
+            )}
+            {canManageLicensePlans && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label={t('licensePlans.manage')}
+                disabled={!row.accountId}
+                onClick={() => setLicenseRowId(row.id)}
+              >
+                <SlidersHorizontal aria-hidden="true" className="size-4" />
+              </Button>
+            )}
           </>
         )}
         onDelete={row => onDelete({ id: row.id, value: row.name, url: row.url })}
+        canDelete={row => row.canDelete}
       />
 
       <AccountLicensePlansDialog

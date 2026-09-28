@@ -8,8 +8,13 @@
       "MESSAGING_NOT_ENABLED": "Този потребител е деактивирал директните съобщения. Не можете да им изпратите съобщение в момента.",
       "NOT_SUPPORTED": "Не се поддържа: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
+      "UNSPECIFIED": "Възникна неочаквана грешка. Моля, опитайте отново.",
       "generic": "Възникна грешка",
       "generic-with-code": "Възникна грешка с код {{code}}",
+      "network": {
+        "session_store_unavailable": "Услугата е временно недостъпна. Моля, опитайте отново след момент.",
+        "generic": "Възникна проблем с връзката. Моля, проверете връзката си и опитайте отново."
+      },
       "support": {
         "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
         "emailBodyGeneric": "Hello,\n\nI encountered an error while using Alkemio.\n\nPlease help me resolve this issue.\n\nThank you.",
@@ -526,6 +531,10 @@
       "ADMIN": "$t(common.Admin)",
       "ANONYMOUS": "Анонимен",
       "ASSOCIATE": "Асоцииран",
+      "FEATURE_BETA_TESTER": "Бета тестер (функция)",
+      "FEATURE_ORGANIZATION_CREATOR": "Създател на организации (функция)",
+      "FEATURE_VC_CAMPAIGN": "Ранен достъп до VC",
+      "FEATURE_VIRTUAL_ASSISTANT": "Виртуален асистент (функция)",
       "GLOBAL_ADMIN": "Глобален $t(common.Admin)",
       "GLOBAL_COMMUNITY_READER": "Мениджър на $t(common.community)",
       "GLOBAL_LICENSE_MANAGER": "Мениджър на лицензите",
@@ -538,7 +547,17 @@
       "LEAD": "Лидер",
       "MEMBER": "$t(common.Member)",
       "OWNER": "Собственик",
+      "PLATFORM_AUDIT_READER": "Четец на одитния дневник на платформата",
       "PLATFORM_BETA_TESTER": "Бета тестер",
+      "PLATFORM_CONTENT_FULL_ACCESS": "Пълен достъп до съдържанието на платформата",
+      "PLATFORM_LICENSE_MANAGER": "Мениджър на лицензи на платформата",
+      "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin",
+      "PLATFORM_RESOURCE_ADMIN": "Администратор на ресурси на платформата",
+      "PLATFORM_ROLES_ADMIN": "Администратор на платформени роли",
+      "PLATFORM_SETTINGS_ADMIN": "Администратор на настройките на платформата",
+      "PLATFORM_SPACES_READER": "Четец на пространства на платформата",
+      "PLATFORM_SUPPORT": "Поддръжка на платформата",
+      "PLATFORM_USERS_ADMIN": "Администратор на потребителите на платформата",
       "PLATFORM_VC_CAMPAIGN": "Ранен достъп до VC",
       "REGISTERED": "Регистриран"
     },
@@ -1288,7 +1307,10 @@
         "notL0Space": "Only L0 (top-level) spaces can be transferred",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space",
-        "urlNotUserOrOrg": "URL does not resolve to a user or organization"
+        "urlNotUserOrOrg": "URL does not resolve to a user or organization",
+        "accountNotAccessible": "Този акаунт съществува, но не е достъпен за вас.",
+        "successMessage": "Пространството е прехвърлено успешно.",
+        "errorMessage": "Прехвърлянето на пространството не бе успешно."
       },
       "transferVc": {
         "confirmButton": "Transfer",
@@ -1561,5 +1583,13 @@
     "archived": "Архивирано",
     "demo": "Демо",
     "inactive": "Неактивно"
+  },
+  "messageAttachments": {
+    "listLabel": "Прикачени файлове",
+    "imageAlt": "Прикачено изображение: {{name}}",
+    "download": "Изтегляне на {{name}}",
+    "unavailableHint": "Файлът не можа да се зареди. Изтеглете го, за да го видите.",
+    "unavailableNoDownload": "Файлът не е наличен.",
+    "loading": "Зареждане на прикачен файл"
   }
 }

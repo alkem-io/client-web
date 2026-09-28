@@ -30,6 +30,7 @@ import {
   mapFormToCalloutUpdateInput,
 } from '@/main/crdPages/space/callout/calloutFormMapper';
 import { contributorCollectionFromServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
+import { cardVariantFromServer } from '@/main/crdPages/space/callout/spaceCollectionCardVariant';
 import type { CalloutFormValues, FramingChip, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
 export type CalloutTemplateMapperFallbacks = {
@@ -38,6 +39,17 @@ export type CalloutTemplateMapperFallbacks = {
   /** i18n-resolved fallback used when a Collabora-document framing has no title. */
   collaboraFallbackDisplayName: string;
 };
+
+/**
+ * A template never has a host space, so it can never carry a manual (CUSTOM) collection selection —
+ * the server rejects the whole template input when it does ("Selection requires a host space…").
+ * Saving a Subspaces / Contributors callout with a manual selection as a template therefore resets
+ * the selection to AUTO with no ids (FR-006), while every other captured setting — the Subspaces
+ * card variant included — is kept.
+ */
+function templateSafeSelection(values: CalloutFormValues): CalloutFormValues {
+  return { ...values, selectionMode: 'auto', selectedIds: [] };
+}
 
 /**
  * `CalloutFormValues` → `CreateCalloutInput` for `createTemplate({ ..., calloutData })`.
@@ -54,7 +66,7 @@ export function calloutFormValuesToCreateCalloutInput(
   values: CalloutFormValues,
   fallbacks: CalloutTemplateMapperFallbacks
 ): CreateCalloutInput {
-  const { input } = mapFormToCalloutCreationInput(values, {
+  const { input } = mapFormToCalloutCreationInput(templateSafeSelection(values), {
     visibility: CalloutVisibility.Published,
     whiteboardFallbackDisplayName: fallbacks.whiteboardFallbackDisplayName,
     collaboraFallbackDisplayName: fallbacks.collaboraFallbackDisplayName,
@@ -81,7 +93,7 @@ export function calloutFormValuesToUpdateCalloutEntityInput(
   values: CalloutFormValues,
   calloutId: string
 ): UpdateCalloutEntityInput {
-  const { input } = mapFormToCalloutUpdateInput(values, { calloutId });
+  const { input } = mapFormToCalloutUpdateInput(templateSafeSelection(values), { calloutId });
   return input;
 }
 
@@ -158,6 +170,9 @@ export function calloutTemplateContentToFormValues(
     // captured types/default-type/default-view instead of falling back to the form
     // default. Yields the default (all types) for non-contributors framing.
     contributorCollection: contributorCollectionFromServer(settings.framing.contributors),
+    // Card variant — the variant travels with the
+    // template; absent `spaces` ⇒ compact.
+    cardVariant: cardVariantFromServer(settings.framing.spaces?.cardVariant),
     memoMarkdown: framing.memo?.markdown ?? '',
     linkUrl: framing.link?.uri ?? '',
     linkDisplayName: framing.link?.profile.displayName ?? '',
