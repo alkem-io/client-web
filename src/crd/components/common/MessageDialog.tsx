@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {
+  MessageComposerActions,
+  MessageComposerFields,
+  useMessageComposer,
+} from '@/crd/components/common/MessageComposer';
 import { useDialogCloseGuard } from '@/crd/components/dialogs/useDialogCloseGuard';
-import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
-import { Textarea } from '@/crd/primitives/textarea';
 
 export type MessageDialogProps = {
   open: boolean;
@@ -18,48 +19,20 @@ export type MessageDialogProps = {
 /**
  * Controlled compose dialog for a card menu's "Message" action against a
  * recipient that has no dedicated trigger of its own to bind a popover to
- * (an organisation). Reuses the existing `crd-profilePages`
- * `common.messagePopover.*` keys — no new copy — so the wording, the
- * discard-on-close behaviour and the error/success handling match
- * `MessagePopover` exactly; `MessagePopover` itself is untouched.
+ * (an organisation). Same composer as `MessagePopover`, plus the
+ * discard-on-close guard every CRD dialog has.
  */
 export function MessageDialog({ open, onOpenChange, onSendMessage, title, notice, placeholder }: MessageDialogProps) {
-  const { t } = useTranslation('crd-profilePages');
-  const [draft, setDraft] = useState('');
-  const [sending, setSending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const isDirty = draft.trim().length > 0;
-
-  const reset = () => {
-    setDraft('');
-    setError(null);
-    setSending(false);
-  };
+  const composer = useMessageComposer({ onSendMessage, onSent: () => onOpenChange(false) });
 
   const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
-    isDirty,
+    isDirty: composer.isDirty,
     onClose: () => {
-      reset();
+      composer.reset();
       onOpenChange(false);
     },
-    blockClose: sending,
+    blockClose: composer.sending,
   });
-
-  const handleSend = async () => {
-    const trimmed = draft.trim();
-    if (!trimmed || sending) return;
-    setSending(true);
-    setError(null);
-    try {
-      await onSendMessage(trimmed);
-      reset();
-      onOpenChange(false);
-    } catch (err) {
-      setSending(false);
-      setError(err instanceof Error ? err.message : t('common.messagePopover.errorTitle'));
-    }
-  };
 
   return (
     <>
@@ -68,34 +41,9 @@ export function MessageDialog({ open, onOpenChange, onSendMessage, title, notice
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
           </DialogHeader>
-          <Textarea
-            value={draft}
-            onChange={e => setDraft(e.target.value)}
-            onKeyDown={e => {
-              // Cmd+Enter (macOS) / Ctrl+Enter (elsewhere) sends — matches MessagePopover.
-              if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-                e.preventDefault();
-                handleSend();
-              }
-            }}
-            placeholder={placeholder}
-            className="min-h-24"
-            disabled={sending}
-            aria-label={t('common.messagePopover.ariaLabel')}
-          />
-          <p className="text-caption text-muted-foreground">{notice}</p>
-          {error ? (
-            <p role="alert" className="text-caption text-destructive">
-              {error}
-            </p>
-          ) : null}
+          <MessageComposerFields composer={composer} notice={notice} placeholder={placeholder} />
           <DialogFooter>
-            <Button type="button" variant="ghost" onClick={requestClose} disabled={sending}>
-              {t('common.messagePopover.cancel')}
-            </Button>
-            <Button type="button" onClick={handleSend} disabled={!isDirty || sending} aria-busy={sending}>
-              {sending ? t('common.messagePopover.sending') : t('common.messagePopover.send')}
-            </Button>
+            <MessageComposerActions composer={composer} onCancel={requestClose} />
           </DialogFooter>
         </DialogContent>
       </Dialog>

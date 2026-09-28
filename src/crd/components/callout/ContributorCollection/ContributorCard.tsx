@@ -105,17 +105,10 @@ export function ContributorCard({ contributor, onContributorClick, onMessage, cl
       <CardContent className="flex h-full flex-col p-0">
         <div className="p-4 flex items-start gap-3">
           {href ? (
-            // Clickable for pointer users, but out of the tab order and the
-            // accessibility tree — the name link below is the card's ONE
-            // profile link for keyboard and assistive-technology users. The
-            // biome `useAnchorContent` rule is scoped off for this file
-            // (biome.json) because it flags any aria-hidden anchor and its
-            // suggested fix (dropping aria-hidden) is exactly what this
-            // deliberately duplicate, hidden link must not do.
             <a
               href={href}
               onClick={handleClick}
-              aria-hidden="true"
+              aria-label={contributor.name}
               tabIndex={-1}
               className={cn('shrink-0', isOrg ? 'rounded-md' : 'rounded-full')}
             >

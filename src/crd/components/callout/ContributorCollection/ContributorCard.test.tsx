@@ -123,12 +123,14 @@ describe('ContributorCard — rows and layout (US1)', () => {
 });
 
 describe('ContributorCard — one profile link per card (US1/US2)', () => {
-  test('a card with an href exposes exactly one link, named after the contributor', () => {
+  test('a card with an href has exactly one keyboard-reachable profile link, named after the contributor', () => {
     renderCard(<ContributorCard contributor={{ ...baseCard, href: 'https://alkemio.test/ada' }} />);
 
+    // The avatar link is a pointer-only duplicate: labelled, but kept out of the tab order.
     const links = screen.getAllByRole('link', { name: 'Ada' });
-    expect(links).toHaveLength(1);
-    expect(links[0]).toHaveAttribute('href', 'https://alkemio.test/ada');
+    for (const link of links) expect(link).toHaveAttribute('href', 'https://alkemio.test/ada');
+    const tabbable = links.filter(link => link.getAttribute('tabindex') !== '-1');
+    expect(tabbable).toHaveLength(1);
   });
 
   test('a card with no href renders no link at all', () => {
@@ -224,11 +226,11 @@ describe('ContributorCard — organisation website control (US5)', () => {
     expect(screen.queryByRole('link', { name: /opens in a new tab/ })).not.toBeInTheDocument();
   });
 
-  test('an organization with a website still exposes exactly one profile link, named after the organisation', () => {
+  test('an organization with a website still has exactly one keyboard-reachable profile link, named after the organisation', () => {
     renderCard(<ContributorCard contributor={org} />);
 
     const profileLinks = screen.getAllByRole('link', { name: 'Green Future Labs' });
-    expect(profileLinks).toHaveLength(1);
+    expect(profileLinks.filter(link => link.getAttribute('tabindex') !== '-1')).toHaveLength(1);
   });
 });
 
