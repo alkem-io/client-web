@@ -1116,7 +1116,7 @@
     "expandMap": "Ampliar mapa",
     "closeMap": "Cerrar mapa",
     "card": {
-      "taglineFallback": "Este usuario no ha completado su subtítulo.",
+      "taglineFallback": "Este usuario no ha completado su tagline.",
       "associates_one": "{{count}} asociado en esta organización",
       "associates_other": "{{count}} asociados en esta organización",
       "actions": "Acciones para {{name}}",
