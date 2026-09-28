@@ -37,6 +37,14 @@ const ACCOUNT_LOCKOUT_MESSAGE_ID = 9000429;
 // Client-side message id for a passkey ceremony failure.
 const PASSKEY_ERROR_MESSAGE_ID = -1;
 
+// The closed set of `?app_signin=` reasons the native shell and the server's
+// /app-handoff route emit (FR-012). Written as quoted literals on purpose: this
+// is the consumer half of the cross-repo `app-signin-landing-params` contract.
+// Any other value is ignored, so a crafted link falls through to the ordinary
+// OIDC entry rather than parking the visitor on a card with no way forward.
+const APP_SIGN_IN_VALUES = ['required', 'cancelled', 'failed'] as const;
+type AppSignInReason = (typeof APP_SIGN_IN_VALUES)[number];
+
 /**
  * Absolute URL that restarts sign-in at the OIDC BFF, preserving the pending
  * destination.
@@ -63,6 +71,7 @@ function buildOidcRestartHref(rawReturnUrl: string, platformOrigin: string | und
 function CrdLoginPage({ flow }: { flow?: string }) {
   useTransactionScope({ type: 'authentication' });
   const { t, i18n } = useTranslation();
+  const { t: tAuth } = useTranslation('crd-auth');
   usePageTitle(t('pages.titles.signIn'));
 
   const navigate = useNavigate();
@@ -91,7 +100,15 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   // the lockout notice can render — so a lockout arrival is NOT an OIDC entry;
   // it renders the notice with a manual way back into sign-in instead.
   const isLockedOutArrival = params.get('lockout') === 'true';
-  const isOidcEntry = !flow && !isLockedOutArrival;
+  // The native app shell intercepts credential surfaces and sends the visitor
+  // back here with a reason; the server does the same when a hand-off fails.
+  // Like a lockout arrival this is NOT an OIDC entry — redirecting would throw
+  // the reason away before it could be read.
+  const rawAppSignIn = params.get('app_signin');
+  const appSignIn = APP_SIGN_IN_VALUES.includes(rawAppSignIn as AppSignInReason)
+    ? (rawAppSignIn as AppSignInReason)
+    : null;
+  const isOidcEntry = !flow && !isLockedOutArrival && !appSignIn;
 
   useLayoutEffect(() => {
     if (!isOidcEntry) return;
@@ -179,6 +196,29 @@ function CrdLoginPage({ flow }: { flow?: string }) {
             text: t('authentication.lockout', { duration: lockoutDuration }),
             actionLabel: t('authentication.lockoutRetry'),
             actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
+          }}
+          signUpHref={signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH}
+          forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
+        />
+      </AuthShellWrapper>
+    );
+  }
+
+  // App sign-in arrival (no flow): explain why sign-in stopped and offer the
+  // one action that restarts it. Nothing here knows or asks whether it is
+  // running in the app — the parameter is produced only by the shell and the
+  // server, and the card it renders is correct in a plain browser too.
+  if (!flow && appSignIn) {
+    return (
+      <AuthShellWrapper>
+        <LoginCard
+          descriptor={undefined}
+          isLoading={false}
+          notice={{
+            text: tAuth(`appSignIn.${appSignIn}`),
+            actionLabel: tAuth('appSignIn.action'),
+            actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
+            tone: appSignIn === 'failed' ? 'destructive' : 'info',
           }}
           signUpHref={signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH}
           forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
