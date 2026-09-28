@@ -57,7 +57,13 @@ const CrdUserNotificationsTab = () => {
   const serverSettings = extractServerSettings(data);
 
   const privileges: NotificationPrivileges = {
-    isPlatformAdmin: platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false,
+    // spec-clientweb-5 (2026-07-31): same re-anchoring as
+    // `useCanEditSettings` — administering another user's notification
+    // preferences is a user-record action, owned by PLATFORM_USERS_ADMIN.
+    // PLATFORM_ADMIN retained so legacy reach is not narrowed.
+    isPlatformAdmin: [AuthorizationPrivilege.PlatformUsersAdmin, AuthorizationPrivilege.PlatformAdmin].some(privilege =>
+      Boolean(platformPrivilegeWrapper?.hasPlatformPrivilege(privilege))
+    ),
     isOrganizationAdmin:
       platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsOrganizationAdmin) ??
       false,

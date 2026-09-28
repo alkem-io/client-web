@@ -931,6 +931,10 @@ export enum AuthorizationCredential {
   AccountAdmin = 'ACCOUNT_ADMIN',
   AssistantAccess = 'ASSISTANT_ACCESS',
   BetaTester = 'BETA_TESTER',
+  FeatureBetaTester = 'FEATURE_BETA_TESTER',
+  FeatureOrganizationCreator = 'FEATURE_ORGANIZATION_CREATOR',
+  FeatureVcCampaign = 'FEATURE_VC_CAMPAIGN',
+  FeatureVirtualAssistant = 'FEATURE_VIRTUAL_ASSISTANT',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
@@ -944,7 +948,16 @@ export enum AuthorizationCredential {
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
+  PlatformAuditReader = 'PLATFORM_AUDIT_READER',
+  PlatformContentFullAccess = 'PLATFORM_CONTENT_FULL_ACCESS',
+  PlatformLicenseManager = 'PLATFORM_LICENSE_MANAGER',
   PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
+  PlatformResourceAdmin = 'PLATFORM_RESOURCE_ADMIN',
+  PlatformRolesAdmin = 'PLATFORM_ROLES_ADMIN',
+  PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
+  PlatformSpacesReader = 'PLATFORM_SPACES_READER',
+  PlatformSupport = 'PLATFORM_SUPPORT',
+  PlatformUsersAdmin = 'PLATFORM_USERS_ADMIN',
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceLead = 'SPACE_LEAD',
   SpaceMember = 'SPACE_MEMBER',
@@ -1059,6 +1072,9 @@ export enum AuthorizationPrivilege {
   CreateVirtual = 'CREATE_VIRTUAL',
   CreateWhiteboard = 'CREATE_WHITEBOARD',
   Delete = 'DELETE',
+  DeleteOrganization = 'DELETE_ORGANIZATION',
+  FeatureRoleAssign = 'FEATURE_ROLE_ASSIGN',
+  FeatureRoleHoldersRead = 'FEATURE_ROLE_HOLDERS_READ',
   FileDelete = 'FILE_DELETE',
   FileUpload = 'FILE_UPLOAD',
   Grant = 'GRANT',
@@ -1068,8 +1084,16 @@ export enum AuthorizationPrivilege {
   MovePost = 'MOVE_POST',
   MoveTask = 'MOVE_TASK',
   PlatformAdmin = 'PLATFORM_ADMIN',
+  PlatformAuditRead = 'PLATFORM_AUDIT_READ',
+  PlatformContentFullAccess = 'PLATFORM_CONTENT_FULL_ACCESS',
+  PlatformForumManage = 'PLATFORM_FORUM_MANAGE',
+  PlatformLicensingListsRead = 'PLATFORM_LICENSING_LISTS_READ',
   PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
+  PlatformRoleHoldersRead = 'PLATFORM_ROLE_HOLDERS_READ',
   PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
+  PlatformSupportListsRead = 'PLATFORM_SUPPORT_LISTS_READ',
+  PlatformSupportOrgResources = 'PLATFORM_SUPPORT_ORG_RESOURCES',
+  PlatformUsersAdmin = 'PLATFORM_USERS_ADMIN',
   PublicShare = 'PUBLIC_SHARE',
   Read = 'READ',
   ReadAbout = 'READ_ABOUT',
@@ -1088,12 +1112,14 @@ export enum AuthorizationPrivilege {
   RolesetEntryRoleInvite = 'ROLESET_ENTRY_ROLE_INVITE',
   RolesetEntryRoleInviteAccept = 'ROLESET_ENTRY_ROLE_INVITE_ACCEPT',
   RolesetEntryRoleJoin = 'ROLESET_ENTRY_ROLE_JOIN',
+  SetServiceProfile = 'SET_SERVICE_PROFILE',
   TransferResourceAccept = 'TRANSFER_RESOURCE_ACCEPT',
   TransferResourceOffer = 'TRANSFER_RESOURCE_OFFER',
   Update = 'UPDATE',
   UpdateCalloutPublisher = 'UPDATE_CALLOUT_PUBLISHER',
   UpdateContent = 'UPDATE_CONTENT',
   UpdateInnovationFlow = 'UPDATE_INNOVATION_FLOW',
+  UpdateNameid = 'UPDATE_NAMEID',
 }
 
 export type Calendar = {
@@ -1450,6 +1476,14 @@ export type CalloutSettingsFraming = {
   contributors?: Maybe<CalloutContributorsSettings>;
   /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Absent / null ⇒ AUTO (full computed set). */
   selection?: Maybe<CalloutSelectionSettings>;
+  /** Card-variant settings for a Subspaces collection callout. Present only on SPACES callouts. Absent / null ⇒ COMPACT. */
+  spaces?: Maybe<CalloutSpacesSettings>;
+};
+
+export type CalloutSpacesSettings = {
+  __typename?: 'CalloutSpacesSettings';
+  /** The card variant to render for each subspace: COMPACT (default) or EXPANDED. */
+  cardVariant: SpaceCollectionCardVariant;
 };
 
 export enum CalloutVisibility {
@@ -2373,6 +2407,8 @@ export type CreateCalloutSettingsFramingData = {
   contributors?: Maybe<CreateCalloutContributorsSettingsData>;
   /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Provide only when framing.type ∈ {CONTRIBUTORS, SPACES}. */
   selection?: Maybe<CreateCalloutSelectionSettingsData>;
+  /** Card-variant settings. Provide only when framing.type = SPACES. */
+  spaces?: Maybe<CreateCalloutSpacesSettingsData>;
 };
 
 export type CreateCalloutSettingsFramingInput = {
@@ -2382,6 +2418,8 @@ export type CreateCalloutSettingsFramingInput = {
   contributors?: InputMaybe<CreateCalloutContributorsSettingsInput>;
   /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Provide only when framing.type ∈ {CONTRIBUTORS, SPACES}. */
   selection?: InputMaybe<CreateCalloutSelectionSettingsInput>;
+  /** Card-variant settings. Provide only when framing.type = SPACES. */
+  spaces?: InputMaybe<CreateCalloutSpacesSettingsInput>;
 };
 
 export type CreateCalloutSettingsInput = {
@@ -2389,6 +2427,17 @@ export type CreateCalloutSettingsInput = {
   framing?: InputMaybe<CreateCalloutSettingsFramingInput>;
   /** Visibility of the Callout. Defaults to PUBLISHED. */
   visibility?: InputMaybe<CalloutVisibility>;
+};
+
+export type CreateCalloutSpacesSettingsData = {
+  __typename?: 'CreateCalloutSpacesSettingsData';
+  /** The card variant (COMPACT or EXPANDED). Defaults to COMPACT when omitted. */
+  cardVariant?: Maybe<SpaceCollectionCardVariant>;
+};
+
+export type CreateCalloutSpacesSettingsInput = {
+  /** The card variant (COMPACT or EXPANDED). Defaults to COMPACT when omitted. */
+  cardVariant?: InputMaybe<SpaceCollectionCardVariant>;
 };
 
 export type CreateCalloutTaskBoardData = {
@@ -3099,6 +3148,10 @@ export enum CredentialType {
   AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
   AssistantAccess = 'ASSISTANT_ACCESS',
   BetaTester = 'BETA_TESTER',
+  FeatureBetaTester = 'FEATURE_BETA_TESTER',
+  FeatureOrganizationCreator = 'FEATURE_ORGANIZATION_CREATOR',
+  FeatureVcCampaign = 'FEATURE_VC_CAMPAIGN',
+  FeatureVirtualAssistant = 'FEATURE_VIRTUAL_ASSISTANT',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
@@ -3112,7 +3165,16 @@ export enum CredentialType {
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
+  PlatformAuditReader = 'PLATFORM_AUDIT_READER',
+  PlatformContentFullAccess = 'PLATFORM_CONTENT_FULL_ACCESS',
+  PlatformLicenseManager = 'PLATFORM_LICENSE_MANAGER',
   PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
+  PlatformResourceAdmin = 'PLATFORM_RESOURCE_ADMIN',
+  PlatformRolesAdmin = 'PLATFORM_ROLES_ADMIN',
+  PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
+  PlatformSpacesReader = 'PLATFORM_SPACES_READER',
+  PlatformSupport = 'PLATFORM_SUPPORT',
+  PlatformUsersAdmin = 'PLATFORM_USERS_ADMIN',
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceFeatureMemoMultiUser = 'SPACE_FEATURE_MEMO_MULTI_USER',
   SpaceFeatureMemoSigning = 'SPACE_FEATURE_MEMO_SIGNING',
@@ -5376,7 +5438,7 @@ export type Mutation = {
   adminCommunicationSyncSpaceHierarchy: Scalars['Boolean']['output'];
   /** Allow updating the state flags of a particular rule. */
   adminCommunicationUpdateRoomState: Scalars['Boolean']['output'];
-  /** Removes one category from the platform Forum's active discussionCategories list. Refuses while any Discussion still carries the category. Idempotent for an already-absent category. The enum member is never removed. Requires PLATFORM_ADMIN. Audited (PLATFORM_OPERATIONS). */
+  /** Removes one category from the platform Forum's active discussionCategories list. Refuses while any Discussion still carries the category. Idempotent for an already-absent category. The enum member is never removed. Requires PLATFORM_FORUM_MANAGE. Audited (PLATFORM_OPERATIONS). */
   adminForumRemoveDiscussionCategory: Forum;
   /** Delete a Kratos identity by ID. */
   adminIdentityDeleteKratosIdentity: Scalars['Boolean']['output'];
@@ -5388,7 +5450,7 @@ export type Mutation = {
   adminLicensePolicyDeleteCredentialRule: LicensingCredentialBasedPolicyCredentialRule;
   /** Updates a CredentialRule on the LicensePolicy. */
   adminLicensePolicyUpdateCredentialRule: LicensingCredentialBasedPolicyCredentialRule;
-  /** Platform admin: revoke a named user's MCP API key. Idempotent. */
+  /** Platform Users Admin: revoke a named user's MCP API key. Idempotent. */
   adminRevokeMcpApiKey: McpApiKey;
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
   adminSearchIngestFromScratch: Scalars['String']['output'];
@@ -5398,9 +5460,9 @@ export type Mutation = {
   adminUpdateGeoLocationData: Scalars['Boolean']['output'];
   /** Remove the Kratos account associated with the specified User. Note: the Users profile on the platform is not deleted. */
   adminUserAccountDelete: User;
-  /** Change a user's login email synchronously, acting as a platform administrator. The admin is responsible for verifying the subject user's identity out-of-band — the platform does NOT send a confirmation message to the new mailbox and does NOT require the new mailbox to prove ownership. Validates uniqueness, commits Kratos → Alkemio with bounded retry, invalidates the subject's existing sessions, and sends a security-signal notification to the old address. Requires PLATFORM_ADMIN. */
+  /** Change a user's login email synchronously, acting as a platform administrator. The admin is responsible for verifying the subject user's identity out-of-band — the platform does NOT send a confirmation message to the new mailbox and does NOT require the new mailbox to prove ownership. Validates uniqueness, commits Kratos → Alkemio with bounded retry, invalidates the subject's existing sessions, and sends a security-signal notification to the old address. Requires PLATFORM_USERS_ADMIN. */
   adminUserEmailChange: UserEmailChangeResult;
-  /** Reconcile an outstanding drift-detected state for a subject user by force-aligning Alkemio and Kratos to a canonical email chosen by the admin. Requires PLATFORM_ADMIN. */
+  /** Reconcile an outstanding drift-detected state for a subject user by force-aligning Alkemio and Kratos to a canonical email chosen by the admin. Requires PLATFORM_USERS_ADMIN. */
   adminUserEmailChangeDriftResolve: UserEmailChangeResult;
   /** Create a test customer on wingback. */
   adminWingbackCreateTestCustomer: Scalars['String']['output'];
@@ -5422,6 +5484,8 @@ export type Mutation = {
   assignLicensePlanToAccount: Account;
   /** Assign the specified LicensePlan to a Space. */
   assignLicensePlanToSpace: Space;
+  /** Assigns an Organization to a role on the Platform. */
+  assignPlatformRoleToOrganization: Organization;
   /** Assigns a User to a role on the Platform. */
   assignPlatformRoleToUser: User;
   /** Assigns an Actor (User, Organization, or Virtual Contributor) to a role in the specified RoleSet. */
@@ -5638,6 +5702,8 @@ export type Mutation = {
   removeMessageOnRoom: Scalars['MessageID']['output'];
   /** Removes an email address from the platform notification blacklist */
   removeNotificationEmailFromBlacklist: Array<Scalars['String']['output']>;
+  /** Removes an Organization from a Role on the Platform. */
+  removePlatformRoleFromOrganization: Organization;
   /** Removes a User from a Role on the Platform. */
   removePlatformRoleFromUser: User;
   /** Remove an option from a Poll. Requires UPDATE privilege. Poll must retain at least 2 options. Votes that selected this option are deleted and affected voters are notified. */
@@ -5954,6 +6020,10 @@ export type MutationAssignLicensePlanToAccountArgs = {
 
 export type MutationAssignLicensePlanToSpaceArgs = {
   planData: AssignLicensePlanToSpace;
+};
+
+export type MutationAssignPlatformRoleToOrganizationArgs = {
+  roleData: AssignPlatformRoleInput;
 };
 
 export type MutationAssignPlatformRoleToUserArgs = {
@@ -6362,6 +6432,10 @@ export type MutationRemoveMessageOnRoomArgs = {
 
 export type MutationRemoveNotificationEmailFromBlacklistArgs = {
   input: NotificationEmailAddressInput;
+};
+
+export type MutationRemovePlatformRoleFromOrganizationArgs = {
+  roleData: RemovePlatformRoleInput;
 };
 
 export type MutationRemovePlatformRoleFromUserArgs = {
@@ -7289,7 +7363,7 @@ export type PlatformAdminQueryResults = {
   innovationPacks: Array<InnovationPack>;
   /** The most recent email-change audit entry for the named subject user. Returns null if no audit entry exists. */
   latestUserEmailChangeAuditEntry?: Maybe<UserEmailChangeAuditEntry>;
-  /** MCP API keys belonging to the named user. Platform admins only. Keys bound to a system actor are never returned. */
+  /** MCP API keys belonging to the named user. Platform Users Admin only. Keys bound to a system actor are never returned. */
   mcpApiKeys: Array<McpApiKey>;
   /** Retrieve all Organizations on the Platform. This is only available to Platform Admins. */
   organizations: PaginatedOrganization;
@@ -7299,7 +7373,7 @@ export type PlatformAdminQueryResults = {
   userEmailChangeAuditEntries: UserEmailChangeAuditEntries;
   /** Retrieve all Users on the Platform. This is only available to Platform Admins. */
   users: PaginatedUsers;
-  /** The singleton virtual-assistant actor, including its current admin capability grant and ID. This is only available to Platform Admins, and is the discovery path for updateAssistantActorCapabilities. */
+  /** The singleton virtual-assistant actor, including its current admin capability grant and ID. Only available to Platform Operations Admins (and legacy holders); the discovery path for updateAssistantActorCapabilities. */
   virtualAssistant: VirtualAssistant;
   /** Retrieve all Virtual Contributors on the Platform. This is only available to Platform Admins. */
   virtualContributors: Array<VirtualContributor>;
@@ -8381,6 +8455,10 @@ export enum RoleName {
   Admin = 'ADMIN',
   Anonymous = 'ANONYMOUS',
   Associate = 'ASSOCIATE',
+  FeatureBetaTester = 'FEATURE_BETA_TESTER',
+  FeatureOrganizationCreator = 'FEATURE_ORGANIZATION_CREATOR',
+  FeatureVcCampaign = 'FEATURE_VC_CAMPAIGN',
+  FeatureVirtualAssistant = 'FEATURE_VIRTUAL_ASSISTANT',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalCommunityReader = 'GLOBAL_COMMUNITY_READER',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
@@ -8393,8 +8471,17 @@ export enum RoleName {
   Member = 'MEMBER',
   Owner = 'OWNER',
   PlatformAssistantAccess = 'PLATFORM_ASSISTANT_ACCESS',
+  PlatformAuditReader = 'PLATFORM_AUDIT_READER',
   PlatformBetaTester = 'PLATFORM_BETA_TESTER',
+  PlatformContentFullAccess = 'PLATFORM_CONTENT_FULL_ACCESS',
+  PlatformLicenseManager = 'PLATFORM_LICENSE_MANAGER',
   PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
+  PlatformResourceAdmin = 'PLATFORM_RESOURCE_ADMIN',
+  PlatformRolesAdmin = 'PLATFORM_ROLES_ADMIN',
+  PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
+  PlatformSpacesReader = 'PLATFORM_SPACES_READER',
+  PlatformSupport = 'PLATFORM_SUPPORT',
+  PlatformUsersAdmin = 'PLATFORM_USERS_ADMIN',
   PlatformVcCampaign = 'PLATFORM_VC_CAMPAIGN',
   Registered = 'REGISTERED',
 }
@@ -9178,6 +9265,12 @@ export type SpaceAboutMembership = {
   roleSetID: Scalars['UUID']['output'];
 };
 
+/** The card variant of a Subspaces (SPACES) collection callout. COMPACT (default) shows the identity block only; EXPANDED adds the What/Why/Who excerpts. */
+export enum SpaceCollectionCardVariant {
+  Compact = 'COMPACT',
+  Expanded = 'EXPANDED',
+}
+
 export type SpaceFilterInput = {
   /** Return Spaces with a Visibility matching one of the provided types. */
   visibilities?: InputMaybe<Array<SpaceVisibility>>;
@@ -9931,6 +10024,8 @@ export type UpdateCalloutSettingsFramingInput = {
   contributors?: InputMaybe<UpdateCalloutContributorsSettingsInput>;
   /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Provide only when framing.type ∈ {CONTRIBUTORS, SPACES}. */
   selection?: InputMaybe<UpdateCalloutSelectionSettingsInput>;
+  /** Card-variant settings. Provide only when framing.type = SPACES. */
+  spaces?: InputMaybe<UpdateCalloutSpacesSettingsInput>;
 };
 
 export type UpdateCalloutSettingsInput = {
@@ -9938,6 +10033,11 @@ export type UpdateCalloutSettingsInput = {
   framing?: InputMaybe<UpdateCalloutSettingsFramingInput>;
   /** Visibility of the Callout. */
   visibility?: InputMaybe<CalloutVisibility>;
+};
+
+export type UpdateCalloutSpacesSettingsInput = {
+  /** The card variant (COMPACT or EXPANDED). When omitted, the stored value is unchanged. */
+  cardVariant?: InputMaybe<SpaceCollectionCardVariant>;
 };
 
 export type UpdateCalloutVisibilityInput = {
@@ -11789,6 +11889,9 @@ export type AdminInnovationPackQuery = {
           id: string;
           listedInStore: boolean;
           searchVisibility: SearchVisibility;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           provider: {
             __typename?: 'Actor';
             id: string;
@@ -12720,6 +12823,16 @@ export type AssignPlatformRoleToUserMutation = {
   assignPlatformRoleToUser: { __typename?: 'User'; id: string };
 };
 
+export type AssignPlatformRoleToOrganizationMutationVariables = Exact<{
+  role: RoleName;
+  contributorId: Scalars['UUID']['input'];
+}>;
+
+export type AssignPlatformRoleToOrganizationMutation = {
+  __typename?: 'Mutation';
+  assignPlatformRoleToOrganization: { __typename?: 'Organization'; id: string };
+};
+
 export type AssignRoleToUserMutationVariables = Exact<{
   roleSetId: Scalars['UUID']['input'];
   role: RoleName;
@@ -12762,6 +12875,20 @@ export type RemovePlatformRoleFromUserMutation = {
   __typename?: 'Mutation';
   removePlatformRoleFromUser: {
     __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
+};
+
+export type RemovePlatformRoleFromOrganizationMutationVariables = Exact<{
+  role: RoleName;
+  contributorId: Scalars['UUID']['input'];
+}>;
+
+export type RemovePlatformRoleFromOrganizationMutation = {
+  __typename?: 'Mutation';
+  removePlatformRoleFromOrganization: {
+    __typename?: 'Organization';
     id: string;
     profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
   };
@@ -15604,6 +15731,7 @@ export type CalloutContentQuery = {
               selection?:
                 | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
                 | undefined;
+              spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
             };
           };
         }
@@ -16077,6 +16205,7 @@ export type UpdateCalloutContentMutation = {
         selection?:
           | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
           | undefined;
+        spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
       };
     };
     createdBy?:
@@ -16585,6 +16714,7 @@ export type UpdateCalloutVisibilityMutation = {
         selection?:
           | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
           | undefined;
+        spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
       };
     };
     createdBy?:
@@ -16660,6 +16790,7 @@ export type CalloutSettingsFullFragment = {
     selection?:
       | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
       | undefined;
+    spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
   };
 };
 
@@ -18510,6 +18641,7 @@ export type CreateCalloutMutation = {
         selection?:
           | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
           | undefined;
+        spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
       };
     };
     createdBy?:
@@ -19190,6 +19322,7 @@ export type CalloutDetailsQuery = {
               selection?:
                 | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
                 | undefined;
+              spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
             };
           };
           createdBy?:
@@ -19730,6 +19863,7 @@ export type CalloutDetailsFragment = {
       selection?:
         | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
         | undefined;
+      spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
     };
   };
   createdBy?:
@@ -25008,6 +25142,9 @@ export type UserQuery = {
           lastName: string;
           email: string;
           phone?: string | undefined;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           profile?:
             | {
                 __typename?: 'Profile';
@@ -28230,7 +28367,14 @@ export type PlatformLevelAuthorizationQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<RoleName> };
+    roleSet: {
+      __typename?: 'RoleSet';
+      id: string;
+      myRoles: Array<RoleName>;
+      authorization?:
+        | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
     authorization?:
       | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
@@ -28354,6 +28498,9 @@ export type PlatformLicensingPlansQuery = {
     licensingFramework: {
       __typename?: 'Licensing';
       id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
       plans: Array<{
         __typename?: 'LicensePlan';
         id: string;
@@ -28406,6 +28553,9 @@ export type PlatformAdminInnovationHubsQuery = {
       subdomain: string;
       listedInStore: boolean;
       searchVisibility: SearchVisibility;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
       account: {
         __typename?: 'Account';
         id: string;
@@ -28433,6 +28583,9 @@ export type PlatformAdminInnovationPacksQuery = {
       id: string;
       listedInStore: boolean;
       searchVisibility: SearchVisibility;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
       provider: {
         __typename?: 'Actor';
         id: string;
@@ -28441,6 +28594,119 @@ export type PlatformAdminInnovationPacksQuery = {
       profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     }>;
   };
+};
+
+export type LicensingAdminOrganizationsQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<OrganizationFilterInput>;
+}>;
+
+export type LicensingAdminOrganizationsQuery = {
+  __typename?: 'Query';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    organizations: {
+      __typename?: 'PaginatedOrganization';
+      total: number;
+      organization: Array<{
+        __typename?: 'Organization';
+        id: string;
+        account?:
+          | {
+              __typename?: 'Account';
+              id: string;
+              subscriptions: Array<{
+                __typename?: 'AccountSubscription';
+                name: LicensingCredentialBasedCredentialType;
+              }>;
+            }
+          | undefined;
+        profile?: { __typename?: 'Profile'; id: string; url: string; displayName: string } | undefined;
+      }>;
+      pageInfo: {
+        __typename?: 'PageInfo';
+        startCursor?: string | undefined;
+        endCursor?: string | undefined;
+        hasNextPage: boolean;
+      };
+    };
+  };
+};
+
+export type LicensingAdminSpacesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type LicensingAdminSpacesQuery = {
+  __typename?: 'Query';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    spaces: Array<{
+      __typename?: 'Space';
+      id: string;
+      visibility: SpaceVisibility;
+      subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
+      about: {
+        __typename?: 'SpaceAbout';
+        id: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+        provider?:
+          | {
+              __typename?: 'Actor';
+              id: string;
+              profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+            }
+          | undefined;
+      };
+    }>;
+  };
+};
+
+export type LicensingAdminUsersQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type LicensingAdminUsersQuery = {
+  __typename?: 'Query';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    users: {
+      __typename?: 'PaginatedUsers';
+      total: number;
+      users: Array<{
+        __typename?: 'User';
+        id: string;
+        account?:
+          | {
+              __typename?: 'Account';
+              id: string;
+              subscriptions: Array<{
+                __typename?: 'AccountSubscription';
+                name: LicensingCredentialBasedCredentialType;
+              }>;
+            }
+          | undefined;
+        profile?: { __typename?: 'Profile'; id: string; url: string; displayName: string } | undefined;
+      }>;
+      pageInfo: {
+        __typename?: 'PageInfo';
+        startCursor?: string | undefined;
+        endCursor?: string | undefined;
+        hasNextPage: boolean;
+      };
+    };
+  };
+};
+
+export type LicensingUpdateSpaceVisibilityMutationVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+  visibility: SpaceVisibility;
+}>;
+
+export type LicensingUpdateSpaceVisibilityMutation = {
+  __typename?: 'Mutation';
+  updateSpacePlatformSettings: { __typename?: 'Space'; id: string; visibility: SpaceVisibility };
 };
 
 export type AssignLicensePlanToAccountMutationVariables = Exact<{
@@ -28491,6 +28757,9 @@ export type PlatformAdminOrganizationsListQuery = {
               }>;
             }
           | undefined;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
         profile?:
           | {
               __typename?: 'Profile';
@@ -28500,7 +28769,14 @@ export type PlatformAdminOrganizationsListQuery = {
               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             }
           | undefined;
-        verification: { __typename?: 'OrganizationVerification'; id: string; state: string };
+        verification: {
+          __typename?: 'OrganizationVerification';
+          id: string;
+          state: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        };
       }>;
       pageInfo: {
         __typename?: 'PageInfo';
@@ -28556,7 +28832,7 @@ export type RevokeLicensePlanFromSpaceMutation = {
 
 export type UpdateSpacePlatformSettingsMutationVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
-  nameId: Scalars['NameID']['input'];
+  nameId?: InputMaybe<Scalars['NameID']['input']>;
   visibility: SpaceVisibility;
 }>;
 
@@ -29628,7 +29904,6 @@ export type SpaceAboutBaseQuery = {
           level: SpaceLevel;
           nameID: string;
           visibility: SpaceVisibility;
-          account: { __typename?: 'Account'; id: string };
           about: {
             __typename?: 'SpaceAbout';
             id: string;
@@ -30697,6 +30972,7 @@ export type SpaceEntitlementsQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          account: { __typename?: 'Account'; id: string };
           license: {
             __typename?: 'License';
             id: string;
@@ -35415,6 +35691,9 @@ export type TemplateContentQuery = {
                           selectedIds: Array<string>;
                         }
                       | undefined;
+                    spaces?:
+                      | { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant }
+                      | undefined;
                   };
                 };
                 contributionDefaults: {
@@ -36200,6 +36479,7 @@ export type CalloutTemplateContentFragment = {
       selection?:
         | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
         | undefined;
+      spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
     };
   };
   contributionDefaults: {
@@ -37125,6 +37405,7 @@ export type UpdateCalloutTemplateMutation = {
         selection?:
           | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
           | undefined;
+        spaces?: { __typename?: 'CalloutSpacesSettings'; cardVariant: SpaceCollectionCardVariant } | undefined;
       };
     };
   };
@@ -39199,6 +39480,7 @@ export type ContributorCollectionByTypeQuery = {
 
 export type SpaceCollectionSubspacesQueryVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
+  expanded: Scalars['Boolean']['input'];
 }>;
 
 export type SpaceCollectionSubspacesQuery = {
@@ -39224,6 +39506,7 @@ export type SpaceCollectionSubspacesQuery = {
                 isContentPublic: boolean;
                 why?: string | undefined;
                 id: string;
+                who?: string | undefined;
                 metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
                 membership: {
                   __typename?: 'SpaceAboutMembership';
@@ -39275,6 +39558,7 @@ export type SpaceCollectionSubspacesQuery = {
                 profile: {
                   __typename?: 'Profile';
                   id: string;
+                  description?: string | undefined;
                   displayName: string;
                   url: string;
                   tagline?: string | undefined;
@@ -39312,6 +39596,18 @@ export type SpaceCollectionSubspacesQuery = {
           };
         }
       | undefined;
+  };
+};
+
+export type SubspaceCardAboutContextFragment = {
+  __typename?: 'Space';
+  id: string;
+  about: {
+    __typename?: 'SpaceAbout';
+    id: string;
+    why?: string | undefined;
+    who?: string | undefined;
+    profile: { __typename?: 'Profile'; id: string; description?: string | undefined };
   };
 };
 

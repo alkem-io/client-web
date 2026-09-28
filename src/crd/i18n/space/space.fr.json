@@ -375,6 +375,12 @@
       "title": "Aucun sous-espace trouvé",
       "description": "Aucun sous-espace ne correspond à votre recherche ou filtre actuel.",
       "clearFilters": "Effacer les filtres"
+    },
+    "expandedCard": {
+      "what": "Quoi",
+      "why": "Pourquoi",
+      "who": "Qui",
+      "open": "Ouvrir le sous-espace"
     }
   },
   "about": {
@@ -613,6 +619,10 @@
       "loadMore": "Chargement de plus…",
       "removeAriaLabel": "Supprimer {{name}}",
       "clearSearch": "Effacer la recherche"
+    },
+    "cardVariant": {
+      "label": "Carte étendue",
+      "description": "Affiche la carte complète avec le Quoi, Pourquoi et Qui du sous-espace - plus de contexte, plus de hauteur."
     }
   },
   "contributionSettings": {

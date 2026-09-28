@@ -1,0 +1,9 @@
+# 027 R-F.3 — A14 from the Licensing section: visibility ONLY. The server
+# treats any call carrying `nameID` as a rename, which stays legacy-only
+# (corr-server-6), so the License Manager must never send the alias.
+mutation licensingUpdateSpaceVisibility($spaceId: UUID!, $visibility: SpaceVisibility!) {
+  updateSpacePlatformSettings(updateData: { spaceID: $spaceId, visibility: $visibility }) {
+    id
+    visibility
+  }
+}

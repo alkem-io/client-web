@@ -1,5 +1,6 @@
 import { Library, Package, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Navigate } from 'react-router-dom';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
@@ -50,11 +51,21 @@ const CrdInnovationPackAdminPageInner = () => {
   // template bucket yet → temporary against the pack bucket — mirrors MUI.
   const mdEdit = useMarkdownEditorIntegration();
   const mdCreate = useMarkdownEditorIntegration({ temporaryLocation: true });
-  const { loading, notFound, pack, tm, form, pendingAvatarCrop, onAvatarCropComplete, onAvatarCropCancel } =
-    useInnovationPackAdmin({
-      templatesMarkdownUpload: { create: mdCreate, edit: mdEdit },
-      descriptionUpload: mdEdit,
-    });
+  const {
+    loading,
+    notFound,
+    denied,
+    deniedRedirectTo,
+    pack,
+    tm,
+    form,
+    pendingAvatarCrop,
+    onAvatarCropComplete,
+    onAvatarCropCancel,
+  } = useInnovationPackAdmin({
+    templatesMarkdownUpload: { create: mdCreate, edit: mdEdit },
+    descriptionUpload: mdEdit,
+  });
   // "[Pack Name] | Template Library | Alkemio" — mirrors the MUI InnovationPackProfileLayout.
   const pageTitle = pack?.displayName
     ? `${pack.displayName}${tDefault('pages.titles.separator')}${tDefault('pages.titles.templateLibrary')}`
@@ -72,6 +83,13 @@ const CrdInnovationPackAdminPageInner = () => {
 
   if (notFound) {
     return <CrdNotFoundView />;
+  }
+
+  // 027 R-F.2 follow-up: the admin console links Platform Support here for every
+  // pack, but Support may edit only ORGANIZATION-owned ones — send it (and any
+  // other non-editor) to the public profile, as the hub settings guard does.
+  if (denied && deniedRedirectTo) {
+    return <Navigate to={deniedRedirectTo} replace={true} />;
   }
 
   const templatesManager: TemplatesManagerViewProps = {

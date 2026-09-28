@@ -849,8 +849,7 @@
         "cancel": "Annuleren",
         "removeSuccess": "{{name}} is verwijderd uit de organisatie",
         "removeError": "Kon {{name}} niet verwijderen — probeer opnieuw",
-        "saveError": "Kon wijzigingen niet opslaan — probeer opnieuw",
-        "selfAdminLocked": "Je kunt hier je eigen Admin-rol niet verwijderen."
+        "saveError": "Kon wijzigingen niet opslaan — probeer opnieuw"
       },
       "errors": {
         "limitAdmin": "Een organisatie kan maximaal 6 beheerders hebben",
