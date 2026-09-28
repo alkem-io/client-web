@@ -8,7 +8,6 @@ import {
 } from '@/crd/components/organization/settings/OrgAssociateSettingsDialog';
 import { OrgAssociatesTabView } from '@/crd/components/organization/settings/OrgAssociatesTabView';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import {
   MembershipDetailDialogConnector,
   type ViewingMembership,
@@ -50,7 +49,6 @@ const ROLE_LIMIT_KEY_BY_ERROR = {
 const CrdOrgAssociatesTab = () => {
   const { t } = useTranslation('crd-contributorSettings');
   const { roleSetId, displayName } = useOrganizationContext();
-  const { userModel } = useCurrentUserContext();
 
   usePageTitle(t('org.community.pageTitle'));
 
@@ -134,7 +132,6 @@ const CrdOrgAssociatesTab = () => {
         }}
         subject={editingSubject}
         saving={state.updating}
-        isSelf={Boolean(userModel?.id) && editingSubject?.id === userModel?.id}
         errorMessage={roleLimitErrorMessage}
         onSave={handleSave}
         onRemove={() => {
