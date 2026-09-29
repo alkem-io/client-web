@@ -204,15 +204,16 @@ describe('useConversationView — read receipts are gated on real presence (FR-0
   });
 });
 
+const dm = (counterpartType: ActorType | null): UserConversation => ({
+  ...conversation,
+  members: [
+    { id: 'me', type: ActorType.User, displayName: 'Me' },
+    ...(counterpartType ? [{ id: 'other', type: counterpartType, displayName: 'Other' }] : []),
+  ],
+});
+const contactable = (isContactable: boolean) => ({ data: { actor: { __typename: 'User', isContactable } } });
+
 describe('useConversationView — DM consent is checked per text send', () => {
-  const dm = (counterpartType: ActorType | null): UserConversation => ({
-    ...conversation,
-    members: [
-      { id: 'me', type: ActorType.User, displayName: 'Me' },
-      ...(counterpartType ? [{ id: 'other', type: counterpartType, displayName: 'Other' }] : []),
-    ],
-  });
-  const contactable = (isContactable: boolean) => ({ data: { actor: { __typename: 'User', isContactable } } });
   const send = async (target: UserConversation, text = 'hello', attachments?: string[]) => {
     const { result } = renderHook(() => useConversationView(target, []));
     let sent: boolean | undefined;
@@ -415,27 +416,30 @@ describe('useConversationView — local echoes on a real matrix-js-sdk Room', ()
     return { client, room };
   };
 
-  it('a rejected send cancels the NOT_SENT echo, leaves the live timeline empty and rethrows the original error', async () => {
+  it('a rejected consent-checked text send cancels the NOT_SENT echo, leaves the live timeline empty and resolves false', async () => {
     const { client, room } = realClient();
     session.client = client;
-    const { result } = renderHook(() => useConversationView(conversation, []));
+    actorDetailsMock.mockResolvedValue(contactable(true));
+    const { result } = renderHook(() => useConversationView(dm(ActorType.User), []));
 
-    let outcome: Promise<unknown> = Promise.resolve();
+    let outcome: Promise<boolean | undefined> = Promise.resolve(undefined);
     await act(async () => {
-      outcome =
-        result.current
-          .handleAddReaction('$msg')('👍')
-          ?.catch((error: unknown) => error) ?? Promise.resolve();
+      outcome = result.current.handleSendMessage('hello');
     });
     await vi.waitFor(() => expect(room.getLiveTimeline().getEvents()).toHaveLength(1));
-    expect(room.getLiveTimeline().getEvents()[0].status).toBe('sending');
+    const echo = room.getLiveTimeline().getEvents()[0];
+    expect(echo.status).toBe('sending');
+    expect(echo.getType()).toBe('m.room.message');
+    expect(echo.getContent().body).toBe('hello');
 
     await act(async () => {
       respond(403, { errcode: 'M_FORBIDDEN', error: 'no' });
       await outcome;
     });
 
-    expect(await outcome).toMatchObject({ errcode: 'M_FORBIDDEN' });
+    expect(await outcome).toBe(false);
+    expect(actorDetailsMock).toHaveBeenCalledTimes(1);
+    expect(actorDetailsMock).toHaveBeenCalledWith({ variables: { actorId: 'other' }, fetchPolicy: 'network-only' });
     expect(room.getLiveTimeline().getEvents()).toHaveLength(0);
   });
 
