@@ -107,6 +107,30 @@ describe('useConversationAttachments', () => {
     expect(result.current.attachments).toHaveLength(0);
   });
 
+  test('the attachment is uploaded only after the delayed text send resolves', async () => {
+    mockUploadFile.mockResolvedValue(uploadResult('first'));
+    let finishText!: (confirmed: boolean) => void;
+    const sendEvent = vi
+      .fn()
+      .mockReturnValueOnce(new Promise<boolean>(resolve => (finishText = resolve)))
+      .mockResolvedValue(true);
+    const { result } = renderHook(() => useConversationAttachments(bucketConfig));
+    act(() => result.current.attachFiles([file('a.png')]));
+    let sending!: Promise<boolean>;
+    act(() => {
+      sending = result.current.send('hello', sendEvent, vi.fn());
+    });
+    await act(async () => {});
+    expect(mockUploadFile).not.toHaveBeenCalled();
+    expect(sendEvent).toHaveBeenCalledTimes(1);
+    await act(async () => {
+      finishText(true);
+      await sending;
+    });
+    expect(mockUploadFile).toHaveBeenCalledTimes(1);
+    expect(sendEvent.mock.calls).toEqual([['hello'], ['', ['first']]]);
+  });
+
   test('second-file failure keeps it and remaining files; retry reuses its upload', async () => {
     mockUploadFile
       .mockResolvedValueOnce(uploadResult('first'))

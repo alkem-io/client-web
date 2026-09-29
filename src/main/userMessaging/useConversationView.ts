@@ -1,7 +1,15 @@
 import type { EventType, MatrixClient, MsgType, RelationType } from 'matrix-js-sdk';
 import { useEffect, useRef, useState } from 'react';
-import { useLeaveConversationMutation, useSendMessageToRoomMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useTranslation } from 'react-i18next';
+import {
+  useActorDetailsLazyQuery,
+  useLeaveConversationMutation,
+  useSendMessageToRoomMutation,
+} from '@/core/apollo/generated/apollo-hooks';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import { useMatrixClient } from '@/core/matrix/activeClient';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { resolveMatrixRoomId } from './matrix/matrixRooms';
 import type { UserConversation } from './models';
 import type { ConversationMessage } from './useConversationMessages';
@@ -21,7 +29,12 @@ export const useConversationView = (
 ) => {
   const [leaveConversation] = useLeaveConversationMutation();
   const [sendMessage, { loading: isSendingAttachments }] = useSendMessageToRoomMutation();
+  const [getActorDetails] = useActorDetailsLazyQuery();
   const [isSendingDirect, setIsSendingDirect] = useState(false);
+  const { userModel } = useCurrentUserContext();
+  const currentUserId = userModel?.id;
+  const notify = useNotification();
+  const { t } = useTranslation();
   const matrixClient = useMatrixClient();
   const lastMarkedRef = useRef<string | null>(null);
   const isDocumentActive = useIsDocumentActive();
@@ -120,6 +133,21 @@ export const useConversationView = (
         });
       } else {
         setIsSendingDirect(true);
+        // Direct messages honour the counterpart's "allow messages" setting, read fresh on every send.
+        const counterpart = conversation.isGroup
+          ? undefined
+          : conversation.members.find(member => member.id !== currentUserId);
+        if (counterpart?.type === ActorType.User) {
+          const { data, error } = await getActorDetails({
+            variables: { actorId: counterpart.id },
+            fetchPolicy: 'network-only',
+          });
+          if (error) return false;
+          if (data?.actor?.__typename === 'User' && data.actor.isContactable === false) {
+            notify(t('apollo.errors.MESSAGING_NOT_ENABLED'), 'error');
+            return false;
+          }
+        }
         await sendDirect(roomId, (client, matrixRoomId, txnId) =>
           client.sendEvent(matrixRoomId, ROOM_MESSAGE, { msgtype: TEXT, body: text }, txnId)
         );

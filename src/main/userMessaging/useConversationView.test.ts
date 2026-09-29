@@ -1,5 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import type { UserConversation } from './models';
 import type { ConversationMessage } from './useConversationMessages';
 import { useConversationView } from './useConversationView';
@@ -23,10 +24,20 @@ const matrixClient = {
 const session = vi.hoisted(() => ({ client: null as unknown }));
 const sendMessageMutationMock = vi.fn((..._args: unknown[]) => Promise.resolve({}));
 
+const actorDetailsMock = vi.fn((..._args: unknown[]): Promise<unknown> => Promise.resolve({ data: { actor: null } }));
+const notifyMock = vi.fn();
+
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useLeaveConversationMutation: () => [vi.fn(() => Promise.resolve({})), { loading: false }],
   useSendMessageToRoomMutation: () => [sendMessageMutationMock, { loading: false }],
+  useActorDetailsLazyQuery: () => [actorDetailsMock],
 }));
+
+vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notifyMock }));
+vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
+  useCurrentUserContext: () => ({ userModel: { id: 'me' } }),
+}));
+vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 
 vi.mock('@/core/matrix/activeClient', () => ({ useMatrixClient: () => session.client }));
 
@@ -80,6 +91,9 @@ beforeEach(() => {
   redactEventMock.mockClear();
   cancelPendingEventMock.mockClear();
   sendMessageMutationMock.mockClear();
+  actorDetailsMock.mockReset();
+  actorDetailsMock.mockResolvedValue({ data: { actor: null } });
+  notifyMock.mockClear();
   pendingEvents.length = 0;
   session.client = matrixClient;
 
@@ -186,6 +200,106 @@ describe('useConversationView — read receipts are gated on real presence (FR-0
 
     await flush();
     expect(readMarkersMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('useConversationView — DM consent is checked per text send', () => {
+  const dm = (counterpartType: ActorType | null): UserConversation => ({
+    ...conversation,
+    members: [
+      { id: 'me', type: ActorType.User, displayName: 'Me' },
+      ...(counterpartType ? [{ id: 'other', type: counterpartType, displayName: 'Other' }] : []),
+    ],
+  });
+  const contactable = (isContactable: boolean) => ({ data: { actor: { __typename: 'User', isContactable } } });
+  const send = async (target: UserConversation, text = 'hello', attachments?: string[]) => {
+    const { result } = renderHook(() => useConversationView(target, []));
+    let sent: boolean | undefined;
+    await act(async () => {
+      sent = await result.current.handleSendMessage(text, attachments);
+    });
+    return sent;
+  };
+
+  it('blocks a send to a non-contactable user, notifies, and resolves false', async () => {
+    actorDetailsMock.mockResolvedValue(contactable(false));
+
+    expect(await send(dm(ActorType.User))).toBe(false);
+    expect(sendEventMock).not.toHaveBeenCalled();
+    expect(notifyMock).toHaveBeenCalledWith('apollo.errors.MESSAGING_NOT_ENABLED', 'error');
+  });
+
+  it('sends to a contactable user', async () => {
+    actorDetailsMock.mockResolvedValue(contactable(true));
+
+    expect(await send(dm(ActorType.User))).toBe(true);
+    expect(sendEventMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('looks up on every send, network-only, so withdrawn consent blocks the next one', async () => {
+    actorDetailsMock.mockResolvedValueOnce(contactable(true)).mockResolvedValueOnce(contactable(false));
+    const { result } = renderHook(() => useConversationView(dm(ActorType.User), []));
+
+    let first: boolean | undefined;
+    let second: boolean | undefined;
+    await act(async () => {
+      first = await result.current.handleSendMessage('one');
+      second = await result.current.handleSendMessage('two');
+    });
+
+    expect([first, second]).toEqual([true, false]);
+    expect(actorDetailsMock).toHaveBeenCalledTimes(2);
+    expect(actorDetailsMock).toHaveBeenCalledWith({ variables: { actorId: 'other' }, fetchPolicy: 'network-only' });
+    expect(sendEventMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('starts no send before a delayed lookup resolves, and isSending is true meanwhile', async () => {
+    let resolveLookup: (value: unknown) => void = () => {};
+    actorDetailsMock.mockImplementationOnce(() => new Promise(resolve => (resolveLookup = resolve)));
+    const { result } = renderHook(() => useConversationView(dm(ActorType.User), []));
+
+    let sendPromise: Promise<boolean | undefined> = Promise.resolve(undefined);
+    await act(async () => {
+      sendPromise = result.current.handleSendMessage('hello');
+    });
+    expect(sendEventMock).not.toHaveBeenCalled();
+    expect(result.current.isSending).toBe(true);
+
+    await act(async () => {
+      resolveLookup(contactable(true));
+      await sendPromise;
+    });
+    expect(sendEventMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('a failed lookup makes no send and resolves false', async () => {
+    actorDetailsMock.mockResolvedValue({ error: new Error('boom') });
+
+    expect(await send(dm(ActorType.User))).toBe(false);
+    expect(sendEventMock).not.toHaveBeenCalled();
+  });
+
+  it('a null actor proceeds', async () => {
+    expect(await send(dm(ActorType.User))).toBe(true);
+    expect(sendEventMock).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    ['a virtual-contributor counterpart', dm(ActorType.VirtualContributor)],
+    ['no other member', dm(null)],
+    ['a group', { ...dm(ActorType.User), isGroup: true }],
+  ])('%s sends without a lookup', async (_name, target) => {
+    expect(await send(target)).toBe(true);
+    expect(actorDetailsMock).not.toHaveBeenCalled();
+    expect(sendEventMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('an attachment send in a DM with a user goes through sendMessageToRoom with no lookup', async () => {
+    await send(dm(ActorType.User), 'hello', ['doc-1']);
+
+    expect(actorDetailsMock).not.toHaveBeenCalled();
+    expect(sendMessageMutationMock).toHaveBeenCalledTimes(1);
+    expect(sendEventMock).not.toHaveBeenCalled();
   });
 });
 
