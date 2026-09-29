@@ -1,9 +1,10 @@
 /** @vitest-environment jsdom */
-import { ApolloClient, ApolloLink, ApolloProvider, gql, InMemoryCache, Observable, useQuery } from '@apollo/client';
+import { ApolloClient, ApolloLink, ApolloProvider, InMemoryCache, Observable } from '@apollo/client';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
+import { useCalloutContributionsQuery, useCalloutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { WhiteboardContributionAddConnector } from './WhiteboardContributionAddConnector';
 
 const state = vi.hoisted(() => ({
@@ -15,27 +16,15 @@ vi.mock('@/core/apollo/hooks/useApolloErrorHandler', () => ({
   useApolloErrorHandler: () => state.handleApolloError,
 }));
 
-type OperationCounts = Record<string, number>;
-
-const CalloutDetailsQuery = gql`
-  query CalloutDetails {
-    platform {
-      id
-    }
-  }
-`;
-
-const CalloutContributionsQuery = gql`
-  query CalloutContributions {
-    platform {
-      id
-    }
-  }
-`;
-
 function ActiveCalloutDetails() {
-  const { error, loading } = useQuery(CalloutDetailsQuery);
-  useQuery(CalloutContributionsQuery);
+  const details = useCalloutDetailsQuery({ variables: { calloutId: 'callout-1' }, fetchPolicy: 'no-cache' });
+  const contributions = useCalloutContributionsQuery({
+    variables: { calloutId: 'callout-1' },
+    fetchPolicy: 'no-cache',
+  });
+  const loading = details.loading || contributions.loading;
+  const error = details.error || contributions.error;
+
   return <div data-testid="callout-details-state">{loading ? 'loading' : error ? 'error' : 'ready'}</div>;
 }
 
@@ -60,6 +49,8 @@ function CreateWhiteboardHarness({ onCreated }: { onCreated: () => void }) {
   );
 }
 
+type OperationCounts = Record<string, number>;
+
 function createClient(counts: OperationCounts) {
   const link = new ApolloLink(operation => {
     counts[operation.operationName] = (counts[operation.operationName] ?? 0) + 1;
@@ -67,7 +58,14 @@ function createClient(counts: OperationCounts) {
     return new Observable(observer => {
       if (operation.operationName === 'CalloutDetails') {
         if (counts.CalloutDetails === 1) {
-          observer.next({ data: { platform: { __typename: 'Platform', id: 'platform-1' } } });
+          observer.next({
+            data: {
+              lookup: {
+                __typename: 'Lookup',
+                callout: { __typename: 'Callout', id: 'callout-1' },
+              },
+            },
+          });
           observer.complete();
           return;
         }
@@ -77,7 +75,14 @@ function createClient(counts: OperationCounts) {
       }
 
       if (operation.operationName === 'CalloutContributions') {
-        observer.next({ data: { platform: { __typename: 'Platform', id: 'platform-1' } } });
+        observer.next({
+          data: {
+            lookup: {
+              __typename: 'Lookup',
+              callout: { __typename: 'Callout', id: 'callout-1' },
+            },
+          },
+        });
         observer.complete();
         return;
       }
@@ -132,6 +137,7 @@ describe('WhiteboardContributionAddConnector Apollo boundary', () => {
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 
       await waitFor(() => expect(counts.CalloutDetails).toBe(2));
+      await waitFor(() => expect(counts.CalloutContributions).toBe(2));
       await waitFor(() => expect(screen.getByTestId('callout-details-state')).toHaveTextContent('error'));
       expect(unhandledRejection).not.toHaveBeenCalled();
     } finally {
