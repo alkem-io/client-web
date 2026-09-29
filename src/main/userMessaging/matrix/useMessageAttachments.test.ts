@@ -48,4 +48,40 @@ describe('useMessageAttachments', () => {
     expect(result.current.get('$7')).toEqual(expect.objectContaining({ id: 'doc-m7', url: 'https://doc/m7' }));
     expect(result.current.has('$999')).toBe(false);
   });
+
+  it('does not re-send media whose call is still in flight when the timeline grows', async () => {
+    let answer: (() => void) | undefined;
+    harness.query.mockReset();
+    harness.query.mockImplementation(
+      ({ variables }) =>
+        new Promise(resolve => {
+          answer = () =>
+            resolve({
+              data: {
+                lookup: {
+                  conversation: {
+                    room: {
+                      messageAttachments: variables.media.map((item: { mediaID: string }) => ({
+                        displayName: item.mediaID,
+                      })),
+                    },
+                  },
+                },
+              },
+            });
+        })
+    );
+    const { rerender } = renderHook(({ messages }) => useMessageAttachments('conv-2', messages), {
+      initialProps: { messages: [media(1, 'm1')] },
+    });
+    await waitFor(() => expect(harness.query).toHaveBeenCalledTimes(1));
+
+    rerender({ messages: [media(1, 'm1'), media(2, 'm2')] });
+    await waitFor(() => expect(harness.query).toHaveBeenCalledTimes(2));
+
+    expect(harness.query.mock.calls[1][0].variables.media.map((item: { mediaID: string }) => item.mediaID)).toEqual([
+      'm2',
+    ]);
+    answer?.();
+  });
 });

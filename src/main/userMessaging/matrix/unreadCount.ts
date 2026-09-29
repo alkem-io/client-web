@@ -16,7 +16,28 @@ type ScannedEvent = {
 
 type FetchBatch = (from: string | undefined, limit: number) => Promise<{ events: ScannedEvent[]; end?: string }>;
 
+// matrix-adapter's progressive backward batches (~285 events in all).
 const BATCH_SIZES = [5, 10, 20, 50, 200];
+const WINDOW = BATCH_SIZES.reduce((sum, size) => sum + size, 0);
+
+// Counts other people's message-like events until the marker, continuing a
+// count already started on newer events.
+const walk = (
+  events: readonly ScannedEvent[],
+  markerEventId: string,
+  ownUserId: string,
+  count = 0
+): { count: number; found: boolean } => {
+  for (const event of events) {
+    if (event.eventId === markerEventId) {
+      return { count, found: true };
+    }
+    if (isMessageLike(event.type) && event.sender !== ownUserId) {
+      count++;
+    }
+  }
+  return { count, found: false };
+};
 
 const countUnreadMessages = async (
   fetchBatch: FetchBatch,
@@ -28,17 +49,11 @@ const countUnreadMessages = async (
 
   for (const batchSize of BATCH_SIZES) {
     const { events, end } = await fetchBatch(from, batchSize);
-    for (const event of events) {
-      if (event.eventId === markerEventId) {
-        return { count, found: true };
-      }
-      if (isMessageLike(event.type) && event.sender !== ownUserId) {
-        count++;
-      }
+    const step = walk(events, markerEventId, ownUserId, count);
+    if (step.found || !end || events.length < batchSize) {
+      return { count: step.count, found: true };
     }
-    if (!end || events.length < batchSize) {
-      return { count, found: true };
-    }
+    count = step.count;
     from = end;
   }
 
@@ -48,6 +63,8 @@ const countUnreadMessages = async (
 type UnreadInputs = {
   readonly markerEventId: string | undefined;
   readonly ownUserId: string;
+  /** Events already held in memory, newest first; walked before any fetch. */
+  readonly loadedNewestFirst: readonly ScannedEvent[];
   readonly fetchBatch: FetchBatch;
   /** The homeserver's notification count for the room. */
   readonly notificationCount: () => number;
@@ -56,11 +73,18 @@ type UnreadInputs = {
 const computeUnreadCount = async ({
   markerEventId,
   ownUserId,
+  loadedNewestFirst,
   fetchBatch,
   notificationCount,
 }: UnreadInputs): Promise<number> => {
   if (!markerEventId) {
     return notificationCount();
+  }
+  // The events already in memory answer most recomputes without a fetch; the
+  // window matches the walk's own, so the result is the same either way.
+  const loaded = walk(loadedNewestFirst.slice(0, WINDOW), markerEventId, ownUserId);
+  if (loaded.found) {
+    return loaded.count;
   }
   try {
     const { count, found } = await countUnreadMessages(fetchBatch, markerEventId, ownUserId);
@@ -70,5 +94,5 @@ const computeUnreadCount = async ({
   }
 };
 
-export { computeUnreadCount, countUnreadMessages };
+export { BATCH_SIZES, computeUnreadCount, countUnreadMessages };
 export type { FetchBatch, ScannedEvent };

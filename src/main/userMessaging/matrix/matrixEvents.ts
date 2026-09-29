@@ -66,8 +66,13 @@ const localMediaId = (url: unknown, homeserver: string): string | undefined => {
   return server === homeserver && id !== '' && !id.includes('/') ? id : undefined;
 };
 
+// Event content is written by any room member; values the server's input
+// types would reject are dropped here so one bad event cannot fail a batch.
+const MAX_INT = 2_147_483_647;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 const positiveInt = (value: unknown): number | undefined =>
-  typeof value === 'number' && Number.isInteger(value) && value > 0 ? value : undefined;
+  typeof value === 'number' && Number.isInteger(value) && value > 0 && value <= MAX_INT ? value : undefined;
 
 // A string `filename` declares the event caption-shaped, making `body` a
 // caption; only without one is `body` the filename.
@@ -85,7 +90,7 @@ const extractMedia = (event: RawEvent, homeserver: string): MediaRef | undefined
   }
   const mediaID = localMediaId(content.url, homeserver);
   const documentID =
-    typeof content[DOCUMENT_ID_KEY] === 'string' && content[DOCUMENT_ID_KEY] !== ''
+    typeof content[DOCUMENT_ID_KEY] === 'string' && UUID.test(content[DOCUMENT_ID_KEY] as string)
       ? (content[DOCUMENT_ID_KEY] as string)
       : undefined;
   if (!mediaID && !documentID) {

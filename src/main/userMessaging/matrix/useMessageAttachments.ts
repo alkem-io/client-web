@@ -33,12 +33,14 @@ const useMessageAttachments = (
 ): ReadonlyMap<string, MessageAttachment> => {
   const client = useApolloClient();
   const [resolved, setResolved] = useState<ReadonlyMap<string, MessageAttachment>>(new Map());
+  // Events whose call is in flight; a later timeline change must not re-send them.
+  const [requested] = useState(() => new Set<string>());
 
   const resolvable: Resolvable[] = messages.flatMap(message =>
     message.media?.mediaID ? [{ eventId: message.eventId, media: message.media }] : []
   );
   const pendingKey = resolvable
-    .filter(item => !resolved.has(item.eventId))
+    .filter(item => !resolved.has(item.eventId) && !requested.has(item.eventId))
     .map(item => item.eventId)
     .join(',');
 
@@ -50,6 +52,9 @@ const useMessageAttachments = (
     const pending = resolvable.filter(item => pendingIds.has(item.eventId));
 
     for (const batch of chunk(pending, MAX_MEDIA_PER_CALL)) {
+      for (const item of batch) {
+        requested.add(item.eventId);
+      }
       client
         .query<RoomMessageAttachmentsQuery, RoomMessageAttachmentsQueryVariables>({
           query: RoomMessageAttachmentsDocument,
@@ -67,7 +72,7 @@ const useMessageAttachments = (
         .then(({ data }) => {
           const attachments = mapMessageAttachments(data?.lookup?.conversation?.room?.messageAttachments);
           if (attachments.length !== batch.length) {
-            return;
+            throw new Error('attachment count mismatch');
           }
           setResolved(previous => {
             const next = new Map(previous);
@@ -79,12 +84,15 @@ const useMessageAttachments = (
         })
         .catch(() => {
           // Stays filename-only; the next change in the conversation retries.
+          for (const item of batch) {
+            requested.delete(item.eventId);
+          }
         });
     }
     // Results are keyed by event id, so a response arriving after the
     // conversation changed is still correct to keep.
     // `resolvable` is derived from `messages`; `pendingKey` carries the part that matters.
-  }, [client, conversationId, pendingKey]);
+  }, [client, conversationId, pendingKey, requested]);
 
   return resolved;
 };

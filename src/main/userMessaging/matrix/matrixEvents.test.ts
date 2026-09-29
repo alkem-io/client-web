@@ -48,7 +48,7 @@ describe('projectMessages', () => {
           filename: 'photo.png',
           url: `mxc://${HS}/media-1`,
           info: { w: 40, h: 30, mimetype: 'image/png' },
-          'io.alkemio.document_id': 'doc-1',
+          'io.alkemio.document_id': '0b4f1c2e-7a3d-4e5f-8a9b-1c2d3e4f5a6b',
         }),
       ],
       HS
@@ -56,10 +56,32 @@ describe('projectMessages', () => {
     expect(message.body).toBe('look at this');
     expect(message.media).toEqual({
       mediaID: 'media-1',
-      documentID: 'doc-1',
+      documentID: '0b4f1c2e-7a3d-4e5f-8a9b-1c2d3e4f5a6b',
       displayName: 'photo.png',
       width: 40,
       height: 30,
+    });
+  });
+
+  it('drops member-written values the server would reject: a non-UUID document hint, out-of-range dimensions', () => {
+    const [message] = projectMessages(
+      [
+        event('m.room.message', {
+          msgtype: 'm.image',
+          body: 'x.png',
+          url: `mxc://${HS}/media-1`,
+          info: { w: 3_000_000_000, h: -1 },
+          'io.alkemio.document_id': 'not-a-uuid',
+        }),
+      ],
+      HS
+    );
+    expect(message.media).toEqual({
+      mediaID: 'media-1',
+      documentID: undefined,
+      displayName: 'x.png',
+      width: undefined,
+      height: undefined,
     });
   });
 

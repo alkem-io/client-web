@@ -17,7 +17,7 @@ import {
   ROOM_TIMELINE,
   resolveMatrixRoomId,
 } from './matrixRooms';
-import { computeUnreadCount } from './unreadCount';
+import { BATCH_SIZES, computeUnreadCount } from './unreadCount';
 
 type RoomSummary = {
   readonly lastMessage?: ParsedMessage;
@@ -28,8 +28,6 @@ type Summaries = ReadonlyMap<string, RoomSummary>;
 
 // matrix-adapter's batch unread lookup runs at most this many rooms at once.
 const MAX_CONCURRENT_ROOMS = 10;
-// matrix-adapter's GetLastMessage scans backward in these batches.
-const LAST_MESSAGE_BATCHES = [5, 10, 20, 50, 200];
 
 /**
  * Per-conversation latest message and unread count, computed from sync for
@@ -47,6 +45,8 @@ class ConversationSummaryStore {
   private readonly queued = new Set<string>();
   private readonly inFlight = new Set<string>();
   private readonly dirty = new Set<string>();
+  // Rooms that changed while nobody watched them.
+  private readonly stale = new Set<string>();
 
   constructor(private readonly client: MatrixClient) {
     client.on(
@@ -110,8 +110,15 @@ class ConversationSummaryStore {
     for (const alkemioRoomId of alkemioRoomIds) {
       const count = this.watchers.get(alkemioRoomId) ?? 0;
       this.watchers.set(alkemioRoomId, count + 1);
-      if (count === 0) {
+      if (count > 0) {
+        continue;
+      }
+      // Watchers re-subscribe whenever the conversation list changes; a room
+      // is computed again only if it is new or changed while unwatched.
+      if (!this.matrixByAlkemioId.has(alkemioRoomId)) {
         void this.resolve(alkemioRoomId);
+      } else if (!this.summaries.has(alkemioRoomId) || this.stale.has(alkemioRoomId)) {
+        this.schedule(alkemioRoomId);
       }
     }
     return () => {
@@ -138,8 +145,13 @@ class ConversationSummaryStore {
 
   private touchMatrixRoom(matrixRoomId: string): void {
     const alkemioRoomId = this.alkemioByMatrixId.get(matrixRoomId);
-    if (alkemioRoomId && this.watchers.has(alkemioRoomId)) {
+    if (!alkemioRoomId) {
+      return;
+    }
+    if (this.watchers.has(alkemioRoomId)) {
       this.schedule(alkemioRoomId);
+    } else {
+      this.stale.add(alkemioRoomId);
     }
   }
 
@@ -178,14 +190,17 @@ class ConversationSummaryStore {
     if (!matrixRoomId || !room) {
       return;
     }
+    this.stale.delete(alkemioRoomId);
     try {
       const homeserver = homeserverOf(this.client);
       const fetchBatch = fetchBackward(this.client, matrixRoomId);
+      const loaded = liveEvents(room);
       const [lastMessage, unreadCount] = await Promise.all([
-        this.findLastMessage(liveEvents(room), fetchBatch, homeserver),
+        this.findLastMessage(loaded, fetchBatch, homeserver),
         computeUnreadCount({
           markerEventId: fullyReadEventId(room),
           ownUserId: ownUserId(this.client),
+          loadedNewestFirst: [...loaded].reverse(),
           fetchBatch,
           notificationCount: () => notificationCount(room),
         }),
@@ -211,7 +226,7 @@ class ConversationSummaryStore {
       return local;
     }
     let from: string | undefined;
-    for (const batchSize of LAST_MESSAGE_BATCHES) {
+    for (const batchSize of BATCH_SIZES) {
       const { events, end } = await fetchBatch(from, batchSize);
       const found = lastMessageOf([...events].reverse(), homeserver);
       if (found) {
@@ -260,5 +275,16 @@ const useConversationSummaries = (alkemioRoomIds: readonly string[]): Summaries 
   return store ? summaries : undefined;
 };
 
-export { ConversationSummaryStore, storeFor, useConversationSummaries };
+/**
+ * A conversation's unread count as badges show it: the conversation being
+ * viewed counts as read, as it did before its count came from sync, so a new
+ * message there does not flash the badge before its read marker lands.
+ */
+const displayedUnreadCount = (
+  summaries: Summaries | undefined,
+  alkemioRoomId: string,
+  viewedRoomId: string | null | undefined
+): number => (alkemioRoomId === viewedRoomId ? 0 : (summaries?.get(alkemioRoomId)?.unreadCount ?? 0));
+
+export { ConversationSummaryStore, displayedUnreadCount, storeFor, useConversationSummaries };
 export type { RoomSummary, Summaries };

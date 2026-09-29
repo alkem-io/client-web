@@ -5,9 +5,13 @@ import { ConversationSummaryStore } from './conversationSummaryStore';
 const HS = 'hs.test';
 const ME = `@me:${HS}`;
 
+type FakeEvent = { eventId: string; type: string; sender: string; ts: number; content: Record<string, unknown> };
+
 type FakeRoom = {
   roomId: string;
-  events: { eventId: string; type: string; sender: string; ts: number; content: Record<string, unknown> }[];
+  events: FakeEvent[];
+  /** Older history the server has but memory does not. */
+  older?: FakeEvent[];
   marker?: string;
   notifications: number;
 };
@@ -19,7 +23,7 @@ const makeClient = (rooms: FakeRoom[], delaysMs: number[] = []) => {
   let call = 0;
   const createMessagesRequest = vi.fn(async (roomId: string) => {
     const room = rooms.find(candidate => candidate.roomId === roomId) as FakeRoom;
-    const chunk = [...room.events].reverse().map(event => ({
+    const chunk = [...(room.older ?? []), ...room.events].reverse().map(event => ({
       event_id: event.eventId,
       type: event.type,
       sender: event.sender,
@@ -108,7 +112,14 @@ describe('ConversationSummaryStore', () => {
   });
 
   it('a change during a slow computation is recomputed afterwards, so the newest state wins', async () => {
-    const room: FakeRoom = { roomId: '!a', events: [text('$1', 'first')], marker: '$1', notifications: 0 };
+    // The marker lies in history only the server holds, so every walk fetches.
+    const room: FakeRoom = {
+      roomId: '!a',
+      events: [text('$1', 'first')],
+      older: [text('$0', 'read')],
+      marker: '$0',
+      notifications: 0,
+    };
     // The first walk is slow, the second fast: unguarded, the stale first result would land last.
     const { client, emit, createMessagesRequest } = makeClient([room], [60, 1]);
     const store = new ConversationSummaryStore(client);
@@ -122,11 +133,11 @@ describe('ConversationSummaryStore', () => {
     room.events.push(text('$2', 'second'));
     emit('Room.timeline', {}, { roomId: '!a' }, false);
 
-    await vi.waitFor(() => expect(store.getSnapshot().get('a')?.unreadCount).toBe(1));
+    await vi.waitFor(() => expect(store.getSnapshot().get('a')?.unreadCount).toBe(2));
     await new Promise(resolve => setTimeout(resolve, 100));
     expect(store.getSnapshot().get('a')).toEqual({
       lastMessage: expect.objectContaining({ body: 'second' }),
-      unreadCount: 1,
+      unreadCount: 2,
     });
     expect(createMessagesRequest).toHaveBeenCalledTimes(2);
   });
@@ -163,5 +174,24 @@ describe('ConversationSummaryStore', () => {
     await settle();
 
     expect(store.getSnapshot()).toBe(snapshot);
+  });
+
+  it('re-watching after a list change recomputes only rooms that are new or changed meanwhile', async () => {
+    const roomA: FakeRoom = { roomId: '!a', events: [text('$a1', 'a')], notifications: 0 };
+    const roomB: FakeRoom = { roomId: '!b', events: [text('$b1', 'b')], notifications: 0 };
+    const { client, emit } = makeClient([roomA, roomB]);
+    const store = new ConversationSummaryStore(client);
+    const unwatch = store.watch(['a', 'b']);
+    await vi.waitFor(() => expect(store.getSnapshot().size).toBe(2));
+    const before = store.getSnapshot();
+
+    unwatch();
+    roomB.events.push(text('$b2', 'b while unwatched'));
+    emit('Room.timeline', {}, { roomId: '!b' }, false);
+    store.watch(['a', 'b']);
+
+    await vi.waitFor(() => expect(store.getSnapshot().get('b')?.lastMessage?.body).toBe('b while unwatched'));
+    expect(store.getSnapshot().get('a')).toBe(before.get('a'));
+    expect(client.getRoomIdForAlias).toHaveBeenCalledTimes(2);
   });
 });

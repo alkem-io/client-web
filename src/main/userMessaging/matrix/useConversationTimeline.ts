@@ -52,35 +52,34 @@ const useConversationTimeline = (alkemioRoomId: string | null): { messages: Pars
       return;
     }
     let cancelled = false;
+    let loading = true;
     let room: Room | null = null;
     const homeserver = homeserverOf(client);
 
-    const refresh = (isLoading: boolean) => {
+    const refresh = () => {
       if (!cancelled && room) {
-        setState({ roomKey, messages: projectMessages(liveEvents(room), homeserver), isLoading });
+        setState({ roomKey, messages: projectMessages(liveEvents(room), homeserver), isLoading: loading });
       }
     };
 
+    // Re-projects once per page rather than once per paginated event.
     const load = async () => {
       if (!room) {
         return;
       }
-      refresh(true);
+      loading = true;
+      refresh();
       try {
-        await backfill(
-          client,
-          room,
-          () => cancelled,
-          () => refresh(true)
-        );
+        await backfill(client, room, () => cancelled, refresh);
       } finally {
-        refresh(false);
+        loading = false;
+        refresh();
       }
     };
 
-    const onTimeline = (_event: MatrixEvent, eventRoom: Room | undefined) => {
-      if (room && eventRoom?.roomId === room.roomId) {
-        refresh(false);
+    const onTimeline = (_event: MatrixEvent, eventRoom: Room | undefined, toStartOfTimeline?: boolean) => {
+      if (room && eventRoom?.roomId === room.roomId && !toStartOfTimeline) {
+        refresh();
       }
     };
     // A gap in sync replaces the live timeline; page it back to depth again.
