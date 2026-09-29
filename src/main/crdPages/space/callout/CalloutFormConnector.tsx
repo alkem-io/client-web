@@ -15,6 +15,7 @@
  * payloads. Dirty tracking drives the `DiscardChangesDialog` + `useBeforeUnloadGuard`.
  */
 import { ApolloError } from '@apollo/client';
+import { isEqual } from 'lodash-es';
 import { Columns3, Hash } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -86,8 +87,9 @@ import { loadCalloutTemplateFormValues } from '@/main/crdPages/templates/loadCal
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
-import { referenceRowErrors, useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
+import { formQuestionErrors, referenceRowErrors, useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
 import { useCrdSpaceContributors } from '../hooks/useCrdSpaceContributors';
+import { formQuestionsFromServer, formSettingsFromServer } from './calloutFormDefinitionMapper';
 import { mapFormToCalloutCreationInput, mapFormToCalloutUpdateInput } from './calloutFormMapper';
 import { type CrdCalloutRestrictions, clampFormValuesToRestrictions } from './calloutRestrictions';
 import { healContributorCollection } from './contributorCollectionMapper';
@@ -95,6 +97,8 @@ import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsTo
 import { FramingEditorConnector } from './FramingEditorConnector';
 import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
 import { TemplateImportConnector } from './TemplateImportConnector';
+import { translateFormDefinitionError, useCalloutFormDefinitionSave } from './useCalloutFormDefinitionSave';
+import { useCalloutFormEditLocks } from './useCalloutFormEditLocks';
 import { omitIneligibleIds, useSelectionCandidates } from './useSelectionCandidates';
 
 /**
@@ -646,6 +650,20 @@ function CalloutFormConnectorInner({
     }
   };
 
+  // Form: what the existing responses forbid changing (edit mode only), and the dedicated definition save.
+  // The persisted form comes from the server payload, never from the editable form values.
+  const persistedForm = editData?.lookup.callout?.framing.form;
+  const { locks: formEditLocks, refetch: refetchFormLocks } = useCalloutFormEditLocks({
+    formId: persistedForm?.id,
+    questionIds: persistedForm?.questions.map(question => question.id) ?? [],
+    persisted: persistedForm ? formSettingsFromServer(persistedForm.settings) : values.formSettings,
+    skip: mode !== 'edit' || !open || values.framingChip !== 'form',
+  });
+  const { save: saveFormDefinition } = useCalloutFormDefinitionSave();
+  const formDefinitionDirty =
+    !isEqual(values.formQuestions, form.initialValues.formQuestions) ||
+    !isEqual(values.formSettings, form.initialValues.formSettings);
+
   const runPollOptionDiff = async () => {
     if (!pollId) return;
     const diff = diffPollOptions(originalPollOptions, values.pollOptions);
@@ -696,6 +714,30 @@ function CalloutFormConnectorInner({
     if (collaboraRename.editing) {
       const renamed = await collaboraRename.save();
       if (!renamed) return;
+    }
+
+    // The Form definition never rides `updateCallout`: it is saved through its own mutation, before
+    // anything else is persisted, so a rule rejection (widening, type lock, mode switch) keeps the dialog
+    // open with a localized reason instead of leaving the Post half-saved.
+    const formId = values.editMeta?.formId;
+    if (values.framingChip === 'form' && formId && formDefinitionDirty) {
+      const outcome = await saveFormDefinition(formId, values.formQuestions, values.formSettings);
+      if (!outcome.ok) {
+        logError(new Error('Form definition save failed', { cause: outcome.error as Error }));
+        notify(translateFormDefinitionError(outcome.code, t), 'error');
+        void refetchFormLocks();
+        return;
+      }
+      void refetchFormLocks();
+      // Adopt the ids the server assigned so a retry of a later step does not re-create new rows.
+      if (outcome.form) {
+        const saved = outcome.form;
+        setValues(current => ({
+          ...current,
+          formQuestions: formQuestionsFromServer(saved),
+          formSettings: formSettingsFromServer(saved.settings),
+        }));
+      }
     }
 
     // New references added in edit mode have no server id yet, so they can't
@@ -1035,6 +1077,12 @@ function CalloutFormConnectorInner({
                 // Only an existing poll has a status to toggle — a poll being created is
                 // always open, so the toggle stays hidden until there is a `pollId`.
                 pollStatus={pollStatus === PollStatus.Closed ? 'closed' : pollId ? 'open' : undefined}
+                formQuestions={values.formQuestions}
+                onFormQuestionsChange={v => setField('formQuestions', v)}
+                formQuestionsErrors={formQuestionErrors(errors)}
+                formSettings={values.formSettings}
+                onFormSettingsChange={v => setField('formSettings', v)}
+                formEditLocks={mode === 'edit' ? formEditLocks : undefined}
                 onPollStatusChange={handlePollStatusChange}
                 whiteboardConfigured={values.whiteboardConfigured}
                 whiteboardTitle={values.title.trim() || t('callout.whiteboard')}

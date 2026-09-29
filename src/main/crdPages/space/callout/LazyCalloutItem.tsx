@@ -22,6 +22,7 @@ import { useFlowStateLayout } from '../hooks/useFlowStateLayout';
 import { useMediaGalleryDirectUpload } from '../hooks/useMediaGalleryDirectUpload';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
+import { CalloutFramingFormConnector } from './CalloutFramingFormConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
 import { CalloutReactionsConnector } from './CalloutReactionsConnector';
 import { CalloutSettingsConnector } from './CalloutSettingsConnector';
@@ -329,6 +330,9 @@ function LazyCalloutItemContent({
   const pollPreview =
     callout.framing.type === CalloutFramingType.Poll ? <CalloutPollConnector callout={callout} /> : null;
 
+  const formPreview =
+    callout.framing.type === CalloutFramingType.Form ? <CalloutFramingFormConnector callout={callout} /> : null;
+
   // Contributor-collection callout body (feature 008): renders the self-updating
   // contributor cards/map for the active type. The callout accepts no
   // contributions, so it has no contributions-preview — only this body. The
@@ -402,6 +406,8 @@ function LazyCalloutItemContent({
               reactionsSlot={reactionsBar}
             >
               {pollPreview}
+              {formPreview}
+              {formPreview}
               {contributorsPreview}
               {spacesPreview}
             </PostCard>
@@ -437,6 +443,7 @@ function LazyCalloutItemContent({
           reactionsSlot={reactionsBar}
         >
           {pollPreview}
+          {formPreview}
           {contributorsPreview}
           {spacesPreview}
         </PostCard>

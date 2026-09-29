@@ -20,11 +20,14 @@ import {
   type ContributorCollectionConfigValue,
 } from '@/crd/forms/callout/ContributorCollectionConfigField';
 import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
+import { FormQuestionsEditor } from '@/crd/forms/callout/FormQuestionsEditor';
+import { FormSettingsDialog } from '@/crd/forms/callout/FormSettingsDialog';
 import { LinkFramingFields } from '@/crd/forms/callout/LinkFramingFields';
 import { MemoFramingEditor } from '@/crd/forms/callout/MemoFramingEditor';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollOptionsEditor } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollSettingsDialog } from '@/crd/forms/callout/PollSettingsDialog';
+import type { FormQuestionValue, FormSettingsValue } from '@/crd/forms/callout/types';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
 import { Button } from '@/crd/primitives/button';
@@ -43,6 +46,19 @@ import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
 import { MediaGalleryFormFieldConnector } from './MediaGalleryFormFieldConnector';
 import { useWhiteboardPreviewBlobUrl } from './useWhiteboardPreviewBlobUrl';
+
+/** What an existing Form's responses currently forbid changing (all true/empty for a new Form). */
+export type FormEditLocks = {
+  typeLockedQuestionIds: string[];
+  canWidenVisibility: boolean;
+  canSwitchToSingle: boolean;
+};
+
+const NO_FORM_EDIT_LOCKS: FormEditLocks = {
+  typeLockedQuestionIds: [],
+  canWidenVisibility: true,
+  canSwitchToSingle: true,
+};
 
 type EditWhiteboard = NonNullable<CalloutDetailsModelExtended['framing']['whiteboard']>;
 
@@ -150,6 +166,15 @@ type FramingEditorConnectorProps = {
   // Poll status (editing existing polls)
   pollStatus?: 'open' | 'closed';
   onPollStatusChange?: (status: 'open' | 'closed') => void;
+  // Form framing: the definition is bound to the form values in both modes. In edit mode it is saved
+  // through the dedicated form mutation by the parent, never with the Post.
+  formQuestions?: FormQuestionValue[];
+  onFormQuestionsChange?: (questions: FormQuestionValue[]) => void;
+  /** Builder errors in the `FormQuestionsEditor` contract (`questions`, `<index>.prompt`, …). */
+  formQuestionsErrors?: Record<string, string | undefined>;
+  formSettings?: FormSettingsValue;
+  onFormSettingsChange?: (settings: FormSettingsValue) => void;
+  formEditLocks?: FormEditLocks;
   // Whiteboard framing
   whiteboardConfigured?: boolean;
   /** Persisted live draft lifecycle for create mode. */
@@ -301,6 +326,12 @@ export function FramingEditorConnector({
   onPollShowVoterAvatarsChange,
   pollStatus,
   onPollStatusChange,
+  formQuestions = [],
+  onFormQuestionsChange,
+  formQuestionsErrors,
+  formSettings,
+  onFormSettingsChange,
+  formEditLocks = NO_FORM_EDIT_LOCKS,
   whiteboardTitle,
   whiteboardDraft,
   whiteboardPreviewImages,
@@ -603,6 +634,45 @@ export function FramingEditorConnector({
                 setStatusConfirmOpen(false);
                 setPendingStatus(null);
               }}
+            />
+          )}
+        </>
+      );
+
+    case 'form':
+      return (
+        <>
+          <FormQuestionsEditor
+            questions={formQuestions}
+            onChange={next => onFormQuestionsChange?.(next)}
+            errors={formQuestionsErrors}
+            typeLockedQuestionIds={formEditLocks.typeLockedQuestionIds}
+            settingsSlot={
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9"
+                onClick={() => setSettingsOpen(true)}
+                aria-label={t('formForm.settingsButton')}
+              >
+                <Settings className="w-4 h-4" aria-hidden="true" />
+              </Button>
+            }
+          />
+          {formSettings && (
+            <FormSettingsDialog
+              open={settingsOpen}
+              onOpenChange={setSettingsOpen}
+              visibility={formSettings.visibility}
+              onVisibilityChange={visibility => onFormSettingsChange?.({ ...formSettings, visibility })}
+              responseMode={formSettings.responseMode}
+              onResponseModeChange={responseMode => onFormSettingsChange?.({ ...formSettings, responseMode })}
+              state={formSettings.state}
+              onStateChange={state => onFormSettingsChange?.({ ...formSettings, state })}
+              canWidenVisibility={formEditLocks.canWidenVisibility}
+              widenDisabledReason={t('formForm.settings.widenDisabled')}
+              canSwitchToSingle={formEditLocks.canSwitchToSingle}
+              switchDisabledReason={t('formForm.settings.singleDisabled')}
             />
           )}
         </>
