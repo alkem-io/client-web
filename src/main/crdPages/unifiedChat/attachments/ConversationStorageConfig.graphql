@@ -1,0 +1,19 @@
+query ConversationStorageConfig($conversationId: UUID!) {
+  lookup {
+    conversation(ID: $conversationId) {
+      id
+      # The per-conversation attachment bucket (feature 013). READ-gated to
+      # conversation members and null when message attachments are disabled
+      # (server feature flag off), so the composer degrades to inert.
+      storageBucket {
+        id
+        allowedMimeTypes
+        maxFileSize
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+}

@@ -7,6 +7,8 @@ import {
 import {
   AuthorizationPrivilege,
   type CommunityGuidelinesSummaryFragment,
+  type OrgPendingApplicationDataFragment,
+  type OrgPendingInvitationDataFragment,
   type SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
@@ -33,6 +35,10 @@ export interface ApplicationWithMeta extends Identifiable {
 interface UsePendingMembershipsProvided {
   applications: PendingApplicationItem[] | undefined;
   invitations: PendingInvitationItem[] | undefined;
+  /** The user's own pending organization invitations (062) — never mixed into `invitations`, which stays Space-only. */
+  orgInvitations: OrgPendingInvitationDataFragment[] | undefined;
+  /** The user's own pending organization applications (062) — never mixed into `applications`, which stays Space-only. */
+  orgApplications: OrgPendingApplicationDataFragment[] | undefined;
   loading: boolean;
   refetch: () => void;
 }
@@ -50,6 +56,8 @@ export const usePendingMemberships = ({ skip = false }: PendingMembershipsProps)
   return {
     invitations: data?.me.communityInvitations,
     applications: data?.me.communityApplications,
+    orgInvitations: data?.me.organizationInvitations,
+    orgApplications: data?.me.organizationApplications,
     loading,
     refetch,
   };

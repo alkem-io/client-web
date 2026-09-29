@@ -14,12 +14,13 @@ import { ForumDiscussionDetailSkeleton } from '@/crd/components/forum/ForumDiscu
 import { ForumInitiateDiscussionDialog } from '@/crd/components/forum/ForumInitiateDiscussionDialog';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { useAuthorsDetails } from '@/domain/community/user/hooks/useAuthorsDetails';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { DiscussionCommentsConnector } from '@/main/crdPages/topLevelPages/forum/DiscussionCommentsConnector';
 import {
   ForumDiscussionFormConnector,
   type ForumDiscussionFormState,
 } from '@/main/crdPages/topLevelPages/forum/ForumDiscussionFormConnector';
-import { mapDiscussionToDetailData } from '@/main/crdPages/topLevelPages/forum/forumDataMapper';
+import { availableCategoriesFor, mapDiscussionToDetailData } from '@/main/crdPages/topLevelPages/forum/forumDataMapper';
 import { ALL_SLUG, slugFor } from '@/main/crdPages/topLevelPages/forum/useCategorySlug';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
@@ -43,6 +44,15 @@ const CrdDiscussionPage = () => {
   const messageSenderIds = rawDiscussion?.comments.messages?.map(m => m.sender?.id) ?? [];
   const authorIds = compact([rawDiscussion?.createdBy, ...messageSenderIds]);
   const { getAuthor } = useAuthorsDetails(authorIds);
+
+  const { platformPrivilegeWrapper } = useCurrentUserContext();
+  // 027-platform-role-redesign A15 (spec-clientweb-5): same disjunction as
+  // CrdForumPage — the forum family's own `PLATFORM_FORUM_MANAGE`, with the
+  // retiring `PLATFORM_ADMIN` kept alongside so legacy reach is not narrowed.
+  const canManageForum = [AuthorizationPrivilege.PlatformForumManage, AuthorizationPrivilege.PlatformAdmin].some(
+    privilege => Boolean(platformPrivilegeWrapper?.hasPlatformPrivilege(privilege))
+  );
+  const activeCategories = data?.platform.forum.discussionCategories ?? [];
 
   // Edit / delete dialog state. Always declared (no conditional hooks) — the
   // dialogs only render when we have a discussion and the right privileges.
@@ -79,8 +89,12 @@ const CrdDiscussionPage = () => {
   const backHref = activeSlug !== ALL_SLUG ? `/forum/${activeSlug}` : '/forum';
 
   const privileges = rawDiscussion.authorization?.myPrivileges ?? [];
-  const canEditDiscussion = privileges.includes(AuthorizationPrivilege.Update);
-  const canDeleteDiscussion = privileges.includes(AuthorizationPrivilege.Delete);
+  // 027-platform-role-redesign L6 (client-3): the server gates discussion
+  // edit/delete on PLATFORM_FORUM_MANAGE alone (the forum family's own
+  // privilege), not on the discussion's Update/Delete privileges.
+  const managesForum = privileges.includes(AuthorizationPrivilege.PlatformForumManage);
+  const canEditDiscussion = managesForum;
+  const canDeleteDiscussion = managesForum;
 
   const detailDataWithActions = {
     ...detailData,
@@ -130,7 +144,11 @@ const CrdDiscussionPage = () => {
               description: rawDiscussion.profile.description ?? '',
               category: rawDiscussion.category as ForumDiscussionCategory,
             }}
-            availableCategories={[rawDiscussion.category as ForumDiscussionCategory]}
+            availableCategories={availableCategoriesFor(
+              activeCategories,
+              canManageForum,
+              rawDiscussion.category as ForumDiscussionCategory
+            )}
             onStateChange={setEditFormState}
             onCompleted={() => setIsEditOpen(false)}
           />

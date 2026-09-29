@@ -160,7 +160,7 @@ const SpaceTransferPanel = () => {
         loading: ownerLoading,
         onResolve: handleAccountOwnerSubmit,
       }}
-      canTransfer={Boolean(space && accountOwner)}
+      canTransfer={Boolean(space?.id && accountOwner?.accountId)}
       transferLoading={transferLoading}
       onTransfer={() => {
         void handleTransfer();

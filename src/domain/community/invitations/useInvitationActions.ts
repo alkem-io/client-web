@@ -17,9 +17,14 @@ interface UseInvitationActionsParams {
 
 type UseInvitationActionsReturn = {
   updating: boolean;
-  acceptInvitation: (invitationId: string, spaceUrl: string) => void;
+  // Both return the underlying promise, which REJECTS when the mutation
+  // fails. Callers that need to surface the failure (FORBIDDEN /
+  // FORBIDDEN_POLICY are excluded from the global Apollo error handler, so
+  // nothing else will) must await and catch it; callers that don't care may
+  // keep ignoring the result.
+  acceptInvitation: (invitationId: string, spaceUrl: string) => Promise<void>;
   accepting: boolean;
-  rejectInvitation: (invitationId: string) => void;
+  rejectInvitation: (invitationId: string) => Promise<void>;
   rejecting: boolean;
 };
 

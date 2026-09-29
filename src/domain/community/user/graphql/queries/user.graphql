@@ -2,6 +2,14 @@ query user($id: UUID!) {
   lookup {
     user(ID: $id) {
       ...UserDetails
+      # 027: the admin user editor renders for any role admitted to /admin/users,
+      # but only UPDATE on THIS user's policy permits a save. Platform Users
+      # Admin holds READ + PII read and no UPDATE, so without this the form
+      # offered every field and the save 403'd.
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
 }

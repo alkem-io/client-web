@@ -15,9 +15,11 @@
 import type { TFunction } from 'i18next';
 import { Trans } from 'react-i18next';
 import {
+  ActorType,
   type ForumDiscussionCategory,
   NotificationEvent,
   type NotificationEventInAppState,
+  RoleName,
 } from '@/core/apollo/generated/graphql-schema';
 import { kebabToConstantCase } from '@/core/utils/string';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
@@ -25,6 +27,7 @@ import { glyphForSlug } from '@/crd/components/reactions/reactionEmoji';
 import type { CrdNotificationItemData } from '@/crd/layouts/types';
 import { getInitials } from '@/crd/lib/getInitials';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import { offeredRoleLabelKey } from '@/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper';
 import type { InAppNotificationModel } from '@/main/inAppNotifications/model/InAppNotificationModel';
 import type { InAppNotificationPayloadModel } from '@/main/inAppNotifications/model/InAppNotificationPayloadModel';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
@@ -53,7 +56,13 @@ function buildTranslationValues(
     triggeredByName: triggeredBy.profile.displayName,
     spaceName: payload.space?.about?.profile?.displayName,
     calloutName: payload.callout?.framing?.profile?.displayName,
-    organizationName: payload.organization?.profile?.displayName,
+    // organizationName: the organization payload field is present only on events that carry a
+    // dedicated `organization` relation (e.g. the org-invited event); the org-accepted/declined
+    // events instead carry the organization as the generic SpaceCommunityActor `actor`, so fall
+    // back to the actor's display name when it is typed as an organization.
+    organizationName:
+      payload.organization?.profile?.displayName ??
+      (payload.actor?.type === ActorType.Organization ? payload.actor.profile?.displayName : undefined),
     userName: payload.user?.profile?.displayName ?? payload.actor?.profile?.displayName,
     comment:
       payload.comment ??
@@ -63,7 +72,9 @@ function buildTranslationValues(
       payload.organizationMessage,
     discussionName: payload.discussion?.displayName,
     role: payload.role,
-    // memberName: used by SPACE_ADMIN_COMMUNITY_NEW_MEMBER — the new member is the actor
+    // memberName: used by SPACE_ADMIN_COMMUNITY_NEW_MEMBER and
+    // ORGANIZATION_ADMIN_ASSOCIATE_JOINED — the new member/associate is the actor, never the
+    // triggering user (who is the approving or granting admin on those paths)
     memberName: payload.actor?.profile?.displayName,
     // parentName: used by USER_COMMENT_REPLY — the parent message/thread name
     parentName: payload.messageDetails?.parent?.displayName,
@@ -94,6 +105,41 @@ function buildTranslationValues(
     // emoji: used by SPACE_COLLABORATION_CALLOUT_REACTION — slug resolved to glyph;
     // unknown slug yields undefined so the placeholder renders empty, never crashes
     emoji: payload.emoji ? glyphForSlug(payload.emoji) : undefined,
+    // invitationRole: used by ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION — "Member" or
+    // "Member + Lead", resolved from the offered extraRoles. Distinct from `role` above
+    // (a raw platform-role string) to avoid colliding with PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED.
+    invitationRole: payload.invitation
+      ? payload.invitation.extraRoles.includes(RoleName.Lead)
+        ? `${t('member')} + ${t('lead')}`
+        : t('member')
+      : undefined,
+    // spacesToJoin: used by ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION — an extra
+    // "Accepting joins: …" clause listing every Space accepting joins (the target
+    // included), shown only when that is more than the target Space itself.
+    spacesToJoin:
+      (payload.invitation?.spacesToJoinOnAccept?.length ?? 0) > 1
+        ? ` ${t('components.inAppNotifications.spacesToJoin', {
+            // biome-ignore lint/style/noNonNullAssertion: guarded by the length check above
+            spaces: payload.invitation!.spacesToJoinOnAccept!.map(s => s.displayName).join(', '),
+          })}`
+        : '',
+    // associateRole: used by the organization-associate events (062) — the offered/held extra
+    // role(s), pre-translated as "Associate" / "Associate + Admin" / "Associate + Owner".
+    associateRole: payload.invitation
+      ? t(`components.inAppNotifications.associateRole.${offeredRoleLabelKey(payload.invitation.extraRoles)}`)
+      : undefined,
+    // withheld: used by ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED — an extra clause naming
+    // the extra role(s) that could not be granted at accept time (the cap, or the offerer
+    // re-check; no cause is carried, so the copy is cause-neutral). Names the role alone
+    // ("Admin"), never the "Associate + Admin" combo label — the associate role WAS granted.
+    withheld:
+      payload.extraRolesWithheld && payload.extraRolesWithheld.length > 0
+        ? t('components.inAppNotifications.associateRoleWithheld', {
+            role: payload.extraRolesWithheld
+              .map(role => t(`components.inAppNotifications.withheldRole.${withheldRoleKey(role)}`))
+              .join(', '),
+          })
+        : '',
   };
 }
 
@@ -121,6 +167,32 @@ const URL_OVERRIDES_BY_TYPE: Partial<
   // Calendar payloads carry both the event and its space; the space must not win.
   [NotificationEvent.SpaceCommunityCalendarEventCreated]: payload => payload.calendarEvent?.profile?.url,
   [NotificationEvent.SpaceCommunityCalendarEventComment]: payload => payload.calendarEvent?.profile?.url,
+  // The org admin acts from the org's own Invitations tab, not the space (061, contract §4).
+  [NotificationEvent.OrganizationAdminSpaceCommunityInvitation]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'invitations'),
+  // Accepted/declined land the inviting space admin on the Community tab, same as a new application.
+  [NotificationEvent.SpaceAdminOrganizationCommunityInvitationAccepted]: payload =>
+    buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
+  [NotificationEvent.SpaceAdminOrganizationCommunityInvitationDeclined]: payload =>
+    buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
+  [NotificationEvent.SpaceAdminUserCommunityInvitationAccepted]: payload =>
+    buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
+  [NotificationEvent.SpaceAdminUserCommunityInvitationDeclined]: payload =>
+    buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
+  // Organization-associate events (062) — user-side call-to-actions lead to the organization's
+  // own profile (its hero action reflects the invitation/decision); organisation-side
+  // call-to-actions lead to the Associates tab, where the pending section and the list live.
+  [NotificationEvent.UserOrganizationAssociateInvitation]: payload => payload.organization?.profile?.url,
+  [NotificationEvent.UserOrganizationAssociateApplicationApproved]: payload => payload.organization?.profile?.url,
+  [NotificationEvent.UserOrganizationAssociateApplicationDeclined]: payload => payload.organization?.profile?.url,
+  [NotificationEvent.OrganizationAdminAssociateInvitationAccepted]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'community'),
+  [NotificationEvent.OrganizationAdminAssociateInvitationDeclined]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'community'),
+  [NotificationEvent.OrganizationAdminAssociateApplication]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'community'),
+  [NotificationEvent.OrganizationAdminAssociateJoined]: payload =>
+    buildSettingsTabUrl(payload.organization?.profile?.url, 'community'),
 };
 
 /**
@@ -176,12 +248,18 @@ const AVATAR_SUBJECT_BY_TYPE: Partial<
   // whoever performed the join: on the invitation and admin-adds-a-member paths that is a
   // lead, not the new member.
   [NotificationEvent.SpaceAdminCommunityNewMember]: payload => payload.actor?.profile,
+  // "<associate> joined <organization>" — same shape as above: the trigger is the admin who
+  // approved the application or granted the role, so the avatar must follow the payload actor.
+  [NotificationEvent.OrganizationAdminAssociateJoined]: payload => payload.actor?.profile,
 };
 
 /** Resolves the profile whose avatar and initials the item renders. */
 function resolveAvatarProfile(notification: InAppNotificationModel): NotificationAvatarProfile {
   return AVATAR_SUBJECT_BY_TYPE[notification.type]?.(notification.payload) ?? notification.triggeredBy.profile;
 }
+
+/** The i18n key of a withheld extra role, named on its own (never the associate combo). */
+const withheldRoleKey = (role: RoleName): 'admin' | 'owner' => (role === RoleName.Owner ? 'owner' : 'admin');
 
 export function mapNotificationToItemData(
   notification: InAppNotificationModel,

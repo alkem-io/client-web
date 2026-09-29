@@ -53,6 +53,17 @@ export const ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES = [
 ];
 
 /**
+ * Inviting an actor (user, organization or by email) to a role set —
+ * `inviteForEntryRoleOnRoleSet`.
+ *
+ * A distinct token from the assign privileges above: space admins hold the invite
+ * privilege while the direct-add privileges are reserved for platform admins, which is
+ * exactly why the invite and add controls beside each other can be gated differently.
+ * Mirrors `useCommunityAdmin.ts`'s `canInvite` / `canInviteOrganizations`.
+ */
+export const ROLE_SET_INVITE_PRIVILEGES = [AuthorizationPrivilege.RolesetEntryRoleInvite];
+
+/**
  * Platform role set — `assignPlatformRoleToUser` / `removePlatformRoleFromUser`.
  *
  * Confirmed against the running backend (2026-09-03). `PlatformRoleResolverMutations
@@ -67,6 +78,32 @@ export const ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES = [
  * `ROLESET_ENTRY_ROLE_ASSIGN` token used elsewhere does not apply.
  */
 export const PLATFORM_ROLE_ASSIGN_PRIVILEGES = [AuthorizationPrivilege.GrantGlobalAdmins];
+
+/**
+ * Platform role set, the 4 `Feature …` roles — `assignPlatformRoleToUser` /
+ * `assignPlatformRoleToOrganization` and their removals for `FEATURE_BETA_TESTER`,
+ * `FEATURE_VIRTUAL_ASSISTANT`, `FEATURE_ORGANIZATION_CREATOR` and `FEATURE_VC_CAMPAIGN`.
+ *
+ * The server's `assignerPrivilegeFor` (platform.role.assignment.rules.service.ts) gates the
+ * two role families on DISJOINT tokens: the 10 `Platform …` roles on `GRANT_GLOBAL_ADMINS`
+ * above, the 4 `Feature …` roles on `FEATURE_ROLE_ASSIGN` (held by a Platform Users Admin,
+ * NOT by a legacy global-admin). Gating a Feature role on `PLATFORM_ROLE_ASSIGN_PRIVILEGES`
+ * would lock its rightful assigner out; see `getOfferedPlatformRoles` in
+ * `useRoleSetManager.ts` for the matching offer-side split (workspace#027, corr-client-web-8).
+ */
+export const FEATURE_ROLE_ASSIGN_PRIVILEGES = [AuthorizationPrivilege.FeatureRoleAssign];
+
+/**
+ * Managing an organization's own Associates tab — `assignRoleToUser` /
+ * `removeRoleFromUser` on the organization's role set (Associate, Admin, Owner).
+ *
+ * Server-side, organization role assignment resolves through the ORGANIZATION branch
+ * of `authorizeAssignActorToRole`, which requires GRANT on the role set — held by
+ * ORGANIZATION_ADMIN and ORGANIZATION_OWNER (062, `role.set.resolver.mutations.ts`).
+ * Deliberately NOT `ROLE_SET_ASSIGN_PRIVILEGES` (`RolesetEntryRoleAssign`), which gates
+ * the Space-side entry-role assignment token only.
+ */
+export const ORG_ROLE_SET_MANAGE_PRIVILEGES = [AuthorizationPrivilege.Grant];
 
 /**
  * Adding a virtual contributor from the account, an alternative to

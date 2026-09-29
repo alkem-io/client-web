@@ -1,11 +1,11 @@
-query CommunityApplicationsInvitations($roleSetId: UUID!) {
+query CommunityApplicationsInvitations($roleSetId: UUID!, $includeApplications: Boolean = true) {
   lookup {
     roleSet(ID: $roleSetId) {
       id
       authorization {
         myPrivileges
       }
-      applications {
+      applications @include(if: $includeApplications) {
         ...AdminCommunityApplication
       }
       invitations {
@@ -44,6 +44,7 @@ fragment AdminCommunityInvitation on Invitation {
   updatedDate
   state
   nextEvents
+  extraRoles
   actor {
     ...AdminCommunityCandidateMember
   }

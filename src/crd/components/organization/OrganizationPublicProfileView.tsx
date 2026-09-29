@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import {
   ProfileResourceTabStrip,
   type ProfileResourceTabStripProps,
@@ -25,6 +26,8 @@ export type OrganizationPublicProfileViewProps = {
     hostedResources: string;
     memberships: string;
   };
+  /** Dialogs the page mounts alongside the view (e.g. the associate apply/invitation dialogs). */
+  children?: ReactNode;
 };
 
 export function OrganizationPublicProfileView({
@@ -34,6 +37,7 @@ export function OrganizationPublicProfileView({
   rightColumn,
   loading,
   loadingLabels,
+  children,
 }: OrganizationPublicProfileViewProps) {
   const sectionsLoading = rightColumn.activeTab === 'resourcesHosted' ? loading.hostedResources : loading.memberships;
   const sectionsLabel =
@@ -72,6 +76,7 @@ export function OrganizationPublicProfileView({
           </div>
         </div>
       </div>
+      {children}
     </div>
   );
 }

@@ -8,8 +8,13 @@
       "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time.",
       "NOT_SUPPORTED": "Not supported: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
+      "UNSPECIFIED": "An unexpected error occurred. Please try again.",
       "generic": "An error occurred",
       "generic-with-code": "An error occurred with code {{code}}",
+      "network": {
+        "session_store_unavailable": "The service is temporarily unavailable. Please try again in a moment.",
+        "generic": "A connection problem occurred. Please check your connection and try again."
+      },
       "support": {
         "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
         "emailBodyGeneric": "Hello,\n\nI encountered an error while using Alkemio.\n\nPlease help me resolve this issue.\n\nThank you.",
@@ -359,13 +364,15 @@
         "CHALLENGE_CENTRIC": "Working Challenge Centric",
         "COMMUNITY_BUILDING": "$t(common.Community) Building",
         "GENERAL": "General",
-        "HELP": "Need Help?",
+        "HELP": "Q&A",
         "IDEAS": "Ideas",
+        "NEWSLETTER": "Newsletter",
         "OTHER": "Other",
         "PLATFORM_FUNCTIONALITIES": "Platform Functionalities",
         "QUESTIONS": "Questions",
         "RELEASES": "Releases",
-        "SHARING": "Sharing"
+        "SHARING": "Sharing",
+        "TIPS_AND_TRICKS": "Tips & Tricks"
       },
       "edit-mode": {
         "edit": "Edit",
@@ -524,6 +531,10 @@
       "ADMIN": "$t(common.Admin)",
       "ANONYMOUS": "Anonymous",
       "ASSOCIATE": "Associate",
+      "FEATURE_BETA_TESTER": "Feature Beta Tester",
+      "FEATURE_ORGANIZATION_CREATOR": "Feature Organization Creator",
+      "FEATURE_VC_CAMPAIGN": "VC Early Access",
+      "FEATURE_VIRTUAL_ASSISTANT": "Feature Virtual Assistant",
       "GLOBAL_ADMIN": "Global $t(common.Admin)",
       "GLOBAL_COMMUNITY_READER": "$t(common.Community) Manager",
       "GLOBAL_LICENSE_MANAGER": "License Manager",
@@ -536,7 +547,17 @@
       "LEAD": "Lead",
       "MEMBER": "$t(common.Member)",
       "OWNER": "Owner",
+      "PLATFORM_AUDIT_READER": "Platform Audit Reader",
       "PLATFORM_BETA_TESTER": "Beta Tester",
+      "PLATFORM_CONTENT_FULL_ACCESS": "Platform Content Full Access",
+      "PLATFORM_LICENSE_MANAGER": "Platform License Manager",
+      "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin",
+      "PLATFORM_RESOURCE_ADMIN": "Platform Resource Admin",
+      "PLATFORM_ROLES_ADMIN": "Platform Roles Admin",
+      "PLATFORM_SETTINGS_ADMIN": "Platform Settings Admin",
+      "PLATFORM_SPACES_READER": "Platform Spaces Reader",
+      "PLATFORM_SUPPORT": "Platform Support",
+      "PLATFORM_USERS_ADMIN": "Platform Users Admin",
       "PLATFORM_VC_CAMPAIGN": "VC Early Access",
       "REGISTERED": "Registered"
     },
@@ -660,6 +681,7 @@
           "title": "Pending $t(common.virtualContributor) $t(common.membership): {{space}}"
         }
       },
+      "organization": "your organisation",
       "vc": "your $t(common.virtualContributor)",
       "you": "you"
     }
@@ -890,8 +912,71 @@
         "VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION": {
           "description": "",
           "subject": "{{triggeredByName}} has invited {{contributorName}} to {{spaceName}}, of which you're an $t(common.admin)"
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION": {
+          "subject": "Your $t(common.organization) {{organizationName}} was invited to join {{spaceName}}",
+          "description": "As {{invitationRole}}.{{spacesToJoin}}"
+        },
+        "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{organizationName}} accepted the invitation to join {{spaceName}}",
+          "description": "{{organizationName}} has joined {{spaceName}}, of which you are an $t(common.admin)."
+        },
+        "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{organizationName}} declined the invitation to join {{spaceName}}",
+          "description": ""
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_ACCEPTED": {
+          "subject": "{{userName}} accepted the invitation to join {{spaceName}}",
+          "description": "{{userName}} has joined {{spaceName}}, of which you are an $t(common.admin)."
+        },
+        "SPACE_ADMIN_USER_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{userName}} declined the invitation to join {{spaceName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
+          "subject": "Your $t(common.organization) {{organizationName}} has joined {{spaceName}}",
+          "description": "No further action is needed."
+        },
+        "USER_ORGANIZATION_ASSOCIATE_INVITATION": {
+          "subject": "{{triggeredByName}} invited you to associate with {{organizationName}}",
+          "description": "As {{associateRole}}."
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED": {
+          "subject": "{{triggeredByName}} accepted the invitation to associate with {{organizationName}}",
+          "description": "{{triggeredByName}} is now an associate of {{organizationName}}, of which you are an $t(common.admin).{{withheld}}"
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} declined the invitation to associate with {{organizationName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_APPLICATION": {
+          "subject": "{{triggeredByName}} applied to associate with {{organizationName}}",
+          "description": "Review the application on the $t(common.organization) $t(common.settings)"
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_APPROVED": {
+          "subject": "Your application to associate with {{organizationName}} was approved",
+          "description": ""
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_DECLINED": {
+          "subject": "Your application to associate with {{organizationName}} was declined",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
+          "subject": "\"{{memberName}}\" joined {{organizationName}} as an associate",
+          "description": "{{memberName}} has joined {{organizationName}}, of which you are an $t(common.admin)."
         }
-      }
+      },
+      "spacesToJoin": "Accepting joins: {{spaces}}",
+      "associateRole": {
+        "associate": "Associate",
+        "associateAdmin": "Associate + Admin",
+        "associateOwner": "Associate + Owner"
+      },
+      "withheldRole": {
+        "admin": "Admin",
+        "owner": "Owner"
+      },
+      "associateRoleWithheld": " The {{role}} role could not be granted."
     },
     "profile": {
       "fields": {
@@ -1222,7 +1307,10 @@
         "notL0Space": "Only L0 (top-level) spaces can be transferred",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space",
-        "urlNotUserOrOrg": "URL does not resolve to a user or organisation"
+        "urlNotUserOrOrg": "URL does not resolve to a user or organisation",
+        "accountNotAccessible": "This account exists but is not accessible to you.",
+        "successMessage": "Space transferred successfully.",
+        "errorMessage": "Failed to transfer the space."
       },
       "transferVc": {
         "confirmButton": "Transfer",
@@ -1495,5 +1583,13 @@
     "archived": "Archived",
     "demo": "Demo",
     "inactive": "Inactive"
+  },
+  "messageAttachments": {
+    "listLabel": "Attachments",
+    "imageAlt": "Attached image: {{name}}",
+    "download": "Download {{name}}",
+    "unavailableHint": "This file could not be loaded. Download it to view.",
+    "unavailableNoDownload": "This file is unavailable.",
+    "loading": "Loading attachment"
   }
 }

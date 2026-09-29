@@ -1,9 +1,13 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { type ReactNode, useState } from 'react';
 import { describe, expect, test, vi } from 'vitest';
+import type { ComposerAttachment } from './types';
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: () => ({
+    t: (key: string, opts?: { name?: string }) => (opts?.name ? `${key}:${opts.name}` : key),
+  }),
 }));
 
 // Radix only mounts AvatarPrimitive.Image once the browser reports the image as
@@ -81,5 +85,114 @@ describe('CommentInput refocusAfterSubmit', () => {
     fireEvent.click(sendButton);
 
     expect(getTextarea()).not.toHaveFocus();
+  });
+});
+
+const ready: ComposerAttachment = { id: 'a1', name: 'photo.png', status: 'ready', mimeType: 'image/png' };
+const uploading: ComposerAttachment = { id: 'a2', name: 'big.pdf', status: 'uploading', mimeType: 'application/pdf' };
+const failed: ComposerAttachment = { id: 'a3', name: 'broken.png', status: 'error', mimeType: 'image/png' };
+
+describe('CommentInput attachments', () => {
+  test('does not render the attach affordance unless attachments are enabled', () => {
+    render(<CommentInput onSubmit={vi.fn()} />);
+    expect(screen.queryByRole('button', { name: 'comments.attachments.attach' })).not.toBeInTheDocument();
+  });
+
+  test('picking files reports them to onAttachFiles', () => {
+    const onAttachFiles = vi.fn();
+    const { container } = render(
+      <CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} onAttachFiles={onAttachFiles} />
+    );
+    const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+    const file = new File(['x'], 'a.png', { type: 'image/png' });
+    fireEvent.change(fileInput, { target: { files: [file] } });
+    expect(onAttachFiles).toHaveBeenCalledWith([file]);
+  });
+
+  test('renders a chip per staged attachment and removes on click', async () => {
+    const onRemoveAttachment = vi.fn();
+    render(
+      <CommentInput
+        onSubmit={vi.fn()}
+        attachmentsEnabled={true}
+        attachments={[ready]}
+        onRemoveAttachment={onRemoveAttachment}
+      />
+    );
+    expect(screen.getByText('photo.png')).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'comments.attachments.removeAttachment:photo.png' }));
+    expect(onRemoveAttachment).toHaveBeenCalledWith('a1');
+  });
+
+  // The consumer snapshots the ready document ids BEFORE awaiting the send
+  // mutation, so a removal accepted mid-send drops the chip while the message
+  // still ships that attachment — the user sees one thing and the room gets
+  // another. `disabled` is the in-flight-send signal ChatThreadView passes down.
+  test('attachment removal is blocked while a send is in flight', async () => {
+    const onRemoveAttachment = vi.fn();
+    render(
+      <CommentInput
+        onSubmit={vi.fn()}
+        disabled={true}
+        attachmentsEnabled={true}
+        attachments={[ready]}
+        onRemoveAttachment={onRemoveAttachment}
+      />
+    );
+
+    const remove = screen.getByRole('button', { name: 'comments.attachments.removeAttachment:photo.png' });
+    expect(remove).toBeDisabled();
+    await userEvent.click(remove);
+    expect(onRemoveAttachment).not.toHaveBeenCalled();
+  });
+
+  // An aria-label describes the spinner but does not announce its insertion.
+  // `<output>` carries an implicit role="status" + aria-live="polite", so the
+  // chip appearing mid-upload is actually read out.
+  test('an in-flight upload is announced through a live region, not just labelled', () => {
+    render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachments={[uploading]} />);
+    expect(screen.getByRole('status', { name: 'comments.attachments.uploading' })).toBeInTheDocument();
+  });
+
+  test('send is enabled for an attachment-only message (no text) once ready', async () => {
+    const onSubmit = vi.fn();
+    render(<CommentInput onSubmit={onSubmit} attachmentsEnabled={true} attachments={[ready]} />);
+    const send = screen.getByRole('button', { name: 'comments.send' });
+    expect(send).toBeEnabled();
+    await userEvent.click(send);
+    expect(onSubmit).toHaveBeenCalledWith('');
+  });
+
+  test('send is blocked while an attachment is still uploading', () => {
+    render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachments={[uploading]} />);
+    expect(screen.getByRole('button', { name: 'comments.send' })).toBeDisabled();
+  });
+
+  test('surfaces a validation/upload error as an alert', () => {
+    render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachmentError="Too big" />);
+    expect(screen.getByRole('alert')).toHaveTextContent('Too big');
+  });
+
+  describe('a failed attachment remains available for explicit retry', () => {
+    test('Send submits with the failed file still selected', () => {
+      const onSubmit = vi.fn();
+      render(<CommentInput onSubmit={onSubmit} attachmentsEnabled={true} attachments={[ready, failed]} />);
+      fireEvent.click(screen.getByRole('button', { name: 'comments.send' }));
+      expect(onSubmit).toHaveBeenCalledWith('');
+      expect(screen.getByText('broken.png')).toBeInTheDocument();
+    });
+
+    test('Enter also allows an explicit retry', () => {
+      const onSubmit = vi.fn();
+      render(<CommentInput onSubmit={onSubmit} attachmentsEnabled={true} attachments={[failed]} value="here you go" />);
+      fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' });
+      expect(onSubmit).toHaveBeenCalledWith('here you go');
+    });
+
+    test('busy sending disables retry and removal', () => {
+      render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachments={[failed]} disabled={true} />);
+      expect(screen.getByRole('button', { name: 'comments.send' })).toBeDisabled();
+      expect(screen.getByRole('button', { name: /comments.attachments.removeAttachment/ })).toBeDisabled();
+    });
   });
 });

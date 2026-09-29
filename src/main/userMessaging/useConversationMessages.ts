@@ -1,11 +1,11 @@
 import { useConversationMessagesQuery } from '@/core/apollo/generated/apollo-hooks';
-import { mapMessageReactions, mapMessageSender } from './models';
+import { mapMessageAttachments, mapMessageReactions, mapMessageSender } from './models';
 
 export type { ConversationMessage } from './models';
 
 export const useConversationMessages = (conversationId: string | null) => {
   const { data, loading, error } = useConversationMessagesQuery({
-    variables: { conversationId: conversationId! },
+    variables: { conversationId: conversationId ?? '' },
     skip: !conversationId,
     fetchPolicy: 'cache-and-network',
   });
@@ -23,6 +23,7 @@ export const useConversationMessages = (conversationId: string | null) => {
         timestamp: msg.timestamp,
         sender: mapMessageSender(msg.sender),
         reactions: mapMessageReactions(msg.reactions),
+        attachments: mapMessageAttachments(msg.attachments),
       }))
       .sort((a, b) => a.timestamp - b.timestamp);
   })();

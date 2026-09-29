@@ -1,0 +1,30 @@
+# 027 R-F.3 — the Licensing section's Spaces list. Loaded under
+# PLATFORM_LICENSING_LISTS_READ; selects only what the rows show (name, owner,
+# visibility, active plans) — no authorization block, no settings affordances.
+# All four visibilities: a License Manager may need to bring an ARCHIVED space back.
+query licensingAdminSpaces {
+  platformAdmin {
+    spaces(filter: { visibilities: [ACTIVE, DEMO, INACTIVE, ARCHIVED] }) {
+      id
+      visibility
+      subscriptions {
+        name
+      }
+      about {
+        id
+        profile {
+          id
+          displayName
+          url
+        }
+        provider {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+    }
+  }
+}

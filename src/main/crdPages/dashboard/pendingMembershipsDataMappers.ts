@@ -1,11 +1,19 @@
 import { formatDistanceToNow } from 'date-fns';
 import type { TFunction } from 'i18next';
+import {
+  ActorType,
+  type OrgPendingApplicationDataFragment,
+  type OrgPendingInvitationDataFragment,
+} from '@/core/apollo/generated/graphql-schema';
+import type { OrgPendingApplicationCardData } from '@/crd/components/dashboard/OrgPendingApplicationCard';
+import type { OrgPendingInvitationCardData } from '@/crd/components/dashboard/OrgPendingInvitationCard';
 import type { PendingApplicationCardData } from '@/crd/components/dashboard/PendingApplicationCard';
 import type { PendingInvitationCardData } from '@/crd/components/dashboard/PendingInvitationCard';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import type { ApplicationWithMeta, InvitationWithMeta } from '@/domain/community/pendingMembership/PendingMemberships';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import { offeredRoleLabelKey } from '@/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper';
 
 type InvitationDetailData = {
   spaceName: string;
@@ -29,6 +37,10 @@ export const mapHydratedInvitationToCardData = (
   spaceName: hydrated.space.about.profile.displayName,
   spaceAvatarUrl: hydrated.space.about.profile.cardBanner?.uri,
   senderName: hydrated.userDisplayName ?? '',
+  organizationName:
+    hydrated.invitation.actor?.type === ActorType.Organization
+      ? hydrated.invitation.actor.profile?.displayName
+      : undefined,
   welcomeMessageExcerpt: hydrated.invitation.welcomeMessage
     ? truncate(hydrated.invitation.welcomeMessage, 100)
     : undefined,
@@ -63,3 +75,48 @@ export const mapHydratedInvitationToDetailData = (
 });
 
 export type { InvitationDetailData };
+
+const ORG_ROLE_LABEL_KEY = {
+  associate: 'pendingMemberships.orgAssociateCard.role.associate',
+  associateAdmin: 'pendingMemberships.orgAssociateCard.role.associateAdmin',
+  associateOwner: 'pendingMemberships.orgAssociateCard.role.associateOwner',
+} as const;
+
+/**
+ * Loosely-typed translator shape, deliberately NOT `TFunction`: the literal-key overload
+ * set i18next's strict typing builds (now grown further by this feature's own new keys)
+ * pushes TypeScript's generic instantiation past its depth limit on this call chain. The
+ * caller always passes a real `TFunction`, which is structurally a superset of this.
+ */
+type LooseTranslator = (key: string, options?: Record<string, unknown>) => string;
+
+/**
+ * `t` resolves this card's own `crd-dashboard` keys; `tCommon` resolves the shared
+ * `crd-common` ones. They are separate parameters because `formatTimeElapsed` reads
+ * `common.time.short.*`, which lives ONLY in `crd-common`, and i18next is configured
+ * without `fallbackNS` — passing the `crd-dashboard` translator for both renders the
+ * raw key instead of "3d ago" (the Space cards get this right by using the default
+ * namespace, see `HydratedInvitationCard`).
+ */
+export const mapOrgInvitationToCardData = (
+  item: OrgPendingInvitationDataFragment,
+  t: LooseTranslator,
+  tCommon: LooseTranslator
+): OrgPendingInvitationCardData => ({
+  id: item.id,
+  organizationName: item.organization.profile?.displayName ?? '',
+  organizationAvatarUrl: item.organization.profile?.avatar?.uri,
+  offeredRoleLabel: t(ORG_ROLE_LABEL_KEY[offeredRoleLabelKey(item.invitation.extraRoles)]),
+  timeElapsed: formatTimeElapsed(item.invitation.createdDate, tCommon as TFunction),
+  color: pickColorFromId(item.organization.id),
+});
+
+export const mapOrgApplicationToCardData = (
+  item: OrgPendingApplicationDataFragment
+): OrgPendingApplicationCardData => ({
+  id: item.id,
+  organizationName: item.organization.profile?.displayName ?? '',
+  organizationAvatarUrl: item.organization.profile?.avatar?.uri,
+  organizationHref: item.organization.profile?.url ?? '',
+  color: pickColorFromId(item.organization.id),
+});

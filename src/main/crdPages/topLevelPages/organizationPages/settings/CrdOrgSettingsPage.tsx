@@ -1,4 +1,4 @@
-import { Briefcase, Building2, Cog, Shield, Users } from 'lucide-react';
+import { Briefcase, Building2, Cog, Mail, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
 import { usePageTitle } from '@/core/routing/usePageTitle';
@@ -52,7 +52,7 @@ const CrdOrgSettingsPage = () => {
     { id: 'profile', label: t('shell.tabs.org.profile'), icon: Briefcase },
     { id: 'account', label: t('shell.tabs.org.account'), icon: Briefcase },
     { id: 'community', label: t('shell.tabs.org.community'), icon: Users },
-    { id: 'authorization', label: t('shell.tabs.org.authorization'), icon: Shield },
+    { id: 'invitations', label: t('shell.tabs.org.invitations'), icon: Mail },
     { id: 'settings', label: t('shell.tabs.org.settings'), icon: Cog },
   ];
 

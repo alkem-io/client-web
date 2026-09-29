@@ -6,6 +6,7 @@ import {
   CalloutContributionType,
   CalloutFramingType,
   ContributorCollectionView,
+  SpaceCollectionCardVariant,
 } from '@/core/apollo/generated/graphql-schema';
 import { mapCalloutDetailsToFormValues } from './mapCalloutDetailsToFormValues';
 
@@ -190,5 +191,45 @@ describe('mapCalloutDetailsToFormValues — taskBoard capture (FR-023)', () => {
     );
     expect(result.taskBoard).toBe(false);
     expect(result.taskBoardColumns).toEqual([]);
+  });
+});
+
+// Card-variant prefill.
+
+const makeSpacesCalloutData = (spaces: { cardVariant: SpaceCollectionCardVariant } | null | undefined) =>
+  ({
+    lookup: {
+      callout: {
+        framing: {
+          type: CalloutFramingType.Spaces,
+          profile: { displayName: 'Subspaces callout', description: '', tagsets: [], references: [] },
+        },
+        settings: {
+          contribution: { allowedTypes: [], canAddContributions: CalloutAllowedActors.None, commentsEnabled: false },
+          framing: { commentsEnabled: false, spaces },
+        },
+        contributionDefaults: {},
+      },
+    },
+  }) as unknown as CalloutContentQuery;
+
+describe('mapCalloutDetailsToFormValues — cardVariant prefill', () => {
+  it('EXPANDED ⇒ "expanded"', () => {
+    const result = mapCalloutDetailsToFormValues(
+      makeSpacesCalloutData({ cardVariant: SpaceCollectionCardVariant.Expanded })
+    );
+    expect(result.cardVariant).toBe('expanded');
+  });
+
+  it('COMPACT ⇒ "compact"', () => {
+    const result = mapCalloutDetailsToFormValues(
+      makeSpacesCalloutData({ cardVariant: SpaceCollectionCardVariant.Compact })
+    );
+    expect(result.cardVariant).toBe('compact');
+  });
+
+  it('spaces: null (pre-feature row) ⇒ "compact"', () => {
+    const result = mapCalloutDetailsToFormValues(makeSpacesCalloutData(null));
+    expect(result.cardVariant).toBe('compact');
   });
 });

@@ -85,6 +85,14 @@ type CalloutDetailDialogProps = {
    * `commentInputSlot`. Default `true`.
    */
   commentsEnabled?: boolean;
+  /**
+   * An edit form for this callout's content is open on top of the dialog (e.g. the
+   * post/task edit dialog). While it is, the discussion section is not rendered: the
+   * user is writing, not discussing, and the comment box only gets in the way. The
+   * comment surface is suppressed, not unmounted upstream, so the thread and its count
+   * come back unchanged the moment the form is saved or cancelled. Default `false`.
+   */
+  editing?: boolean;
   /** Escape hatch to raise the dialog above a custom overlay (e.g. the fullscreen task board at z-[100]). */
   overlayClassName?: string;
   contentClassName?: string;
@@ -119,12 +127,13 @@ export function CalloutDetailDialog({
   onShareClick,
   settingsSlot,
   commentsEnabled,
+  editing = false,
   overlayClassName,
   contentClassName,
   focusedPost = false,
 }: CalloutDetailDialogProps) {
   const { t } = useTranslation('crd-space');
-  const showDiscussion = commentsEnabled !== false || (callout.commentCount ?? 0) > 0;
+  const showDiscussion = !editing && (commentsEnabled !== false || (callout.commentCount ?? 0) > 0);
 
   const author = callout.author;
   const authorCluster = author ? (
@@ -292,7 +301,8 @@ export function CalloutDetailDialog({
 
             {/* Discussion section — hidden entirely when commenting is disabled and no messages exist
                 (mirrors MUI behavior); read-only thread shown when disabled but messages exist (the
-                consumer omits `commentInputSlot` in that case). */}
+                consumer omits `commentInputSlot` in that case). Also hidden for as long as an edit
+                form is open over the dialog (`editing`), returning untouched when it closes. */}
             {showDiscussion && (
               <div className="pt-8">
                 <div className="flex items-center gap-2 mb-4">

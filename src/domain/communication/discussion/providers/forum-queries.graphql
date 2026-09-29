@@ -74,6 +74,7 @@ query platformDiscussion($discussionId: UUID!) {
     id
     forum {
       id
+      discussionCategories
       authorization {
         id
         myPrivileges

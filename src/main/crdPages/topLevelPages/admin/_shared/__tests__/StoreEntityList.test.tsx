@@ -49,6 +49,26 @@ describe('StoreEntityList', () => {
     expect(onDelete).toHaveBeenCalledWith(expect.objectContaining({ id: 'p1' }));
   });
 
+  // 027 R-F.2 follow-up (2026-09-16, sandbox walk): Platform Support reads
+  // the pack/hub lists but holds neither DELETE nor PLATFORM_CONTENT_FULL_ACCESS
+  // on a pack, so the server refuses `deleteInnovationPack` — the button must
+  // not be offered on such a row (F9's defect shape: an action that can only
+  // fail). Rows that say nothing keep the action.
+  test('a row with canDelete=false renders no delete action; canDelete=true and undefined keep it', () => {
+    const gated: AdminStoreEntityRow[] = [
+      { ...rows[0], canDelete: false },
+      { ...rows[1], canDelete: true },
+      { id: 'p3', name: 'Pack Three', url: '/p3', listedInStore: true, searchVisibility: 'public', accountOwner: 'O' },
+    ];
+    render(<StoreEntityList rows={gated} loading={false} onDelete={vi.fn()} />);
+    const one = screen.getByRole('link', { name: 'Pack One' }).closest('tr')!;
+    const two = screen.getByRole('link', { name: 'Pack Two' }).closest('tr')!;
+    const three = screen.getByRole('link', { name: 'Pack Three' }).closest('tr')!;
+    expect(within(one).queryByRole('button', { name: 'table.delete' })).toBeNull();
+    expect(within(two).getByRole('button', { name: 'table.delete' })).toBeInTheDocument();
+    expect(within(three).getByRole('button', { name: 'table.delete' })).toBeInTheDocument();
+  });
+
   test('read-only lists (no onDelete) render no delete action', () => {
     render(<StoreEntityList rows={rows} loading={false} />);
     expect(screen.queryByRole('button', { name: 'table.delete' })).toBeNull();

@@ -238,6 +238,9 @@
       "email": "Correo electrónico",
       "date": "Fecha",
       "type": "Tipo",
+      "offeredRole": {
+        "column": "Rol ofrecido"
+      },
       "actions": "Acciones",
       "approve": "Aprobar",
       "reject": "Rechazar",
@@ -251,6 +254,7 @@
       "viewDialog": {
         "created": "Creada el {{date}}",
         "updated": "Actualizada el {{date}}",
+        "offeredRole": "Rol ofrecido: {{role}}",
         "welcomeMessage": "Mensaje de bienvenida",
         "noWelcomeMessage": "No se proporcionó ningún mensaje de bienvenida.",
         "noAnswers": "No se proporcionaron respuestas.",
@@ -266,9 +270,11 @@
       "status": {
         "column": "Estado",
         "applicationReceived": "Solicitud recibida",
+        "applicationApproving": "Aprobando…",
         "applicationApproved": "Solicitud aprobada",
         "applicationRejected": "Solicitud rechazada",
         "invited": "Invitado",
+        "invitationAccepting": "Aceptando…",
         "invitationAccepted": "Invitación aceptada",
         "invitationRejected": "Invitación rechazada",
         "invitedExternal": "Invitado (externo)"
@@ -336,7 +342,7 @@
       "actions": "Acciones",
       "empty": "No hay organizaciones.",
       "remove": "Eliminar organización",
-      "description": "Resumen de todas las organizaciones miembro y lead. Para añadir una organización, contacta al equipo de Alkemio en support@alkem.io.",
+      "description": "Resumen de todas las organizaciones miembro y lead. Invita a una organización a unirse, o añade una directamente.",
       "add": "Añadir organización",
       "dropdown": {
         "viewProfile": "Ver perfil",
@@ -348,6 +354,18 @@
         "description": "Estas organizaciones serán visibles como miembros en este Space y en su perfil de organización.",
         "search": "Buscar organizaciones…",
         "empty": "Ninguna organización coincide con tu búsqueda."
+      },
+      "invite": "Invitar organización",
+      "search": "Buscar organizaciones…",
+      "pendingInvitations": {
+        "title": "Invitaciones pendientes",
+        "empty": "No hay invitaciones de organización pendientes.",
+        "role": "Rol",
+        "date": "Fecha",
+        "revoke": "Revocar",
+        "revokeAriaLabel": "Revocar invitación a {{name}}",
+        "roleMember": "Miembro",
+        "roleMemberLead": "Miembro + Lead"
       }
     },
     "virtualContributors": {

@@ -11,12 +11,7 @@ import {
   useRecentSpacesQuery,
   useUpdateUserSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import {
-  ActivityEventType,
-  ActivityFeedRoles,
-  LicenseEntitlementType,
-  RoleName,
-} from '@/core/apollo/generated/graphql-schema';
+import { ActivityEventType, ActivityFeedRoles, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { ActivityDialog } from '@/crd/components/dashboard/ActivityDialog';
 import { ActivityFeed } from '@/crd/components/dashboard/ActivityFeed';
@@ -43,6 +38,7 @@ import {
   mapRecentSpacesToCompactCards,
   type RecentSpaceEntry,
 } from './dashboardDataMappers';
+import { isVcCampaignTargeted } from './isVcCampaignTargeted';
 import { NonActivityHomeSections } from './NonActivityHomeSections';
 import type { DashboardDialogType } from './useDashboardDialogs';
 import { useDashboardSidebar } from './useDashboardSidebar';
@@ -275,7 +271,7 @@ export default function DashboardWithMemberships({
 
   // Campaign
   const showCampaign =
-    platformRoles?.some(role => role === RoleName.PlatformVcCampaign) &&
+    isVcCampaignTargeted(platformRoles) &&
     accountEntitlements?.some(e => e === LicenseEntitlementType.AccountVirtualContributor);
 
   // Tips — from crd-dashboard namespace

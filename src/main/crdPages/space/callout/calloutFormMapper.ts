@@ -15,6 +15,7 @@ import type { CalloutCreationType } from '@/domain/collaboration/calloutsSet/use
 import type { MemoFieldSubmittedValues } from '@/domain/collaboration/memo/model/MemoFieldSubmittedValues';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { contributorCollectionToServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
+import { cardVariantToServer } from '@/main/crdPages/space/callout/spaceCollectionCardVariant';
 import type {
   AllowedActors,
   CalloutFormValues,
@@ -212,7 +213,9 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
           : {}),
         // Selection settings (feature 025) — sent for BOTH collection kinds.
         // AUTO is the server default, but sending it explicitly keeps payloads
-        // consistent. Template capture will strip selectedIds server-side (FR-017/S10).
+        // consistent. A template cannot hold a CUSTOM selection (the server rejects it:
+        // no host space), so the template mappers in `calloutTemplateMapper.ts` reset it
+        // to AUTO with no ids before calling this mapper (FR-006).
         ...(framingType === CalloutFramingType.Contributors || framingType === CalloutFramingType.Spaces
           ? {
               selection: {
@@ -220,6 +223,12 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
                 selectedIds: values.selectedIds,
               },
             }
+          : {}),
+        // Card variant — SPACES only. The server rejects this block on
+        // every other framing, Contributors included, so this does NOT reuse the
+        // `Contributors || Spaces` condition above.
+        ...(framingType === CalloutFramingType.Spaces
+          ? { spaces: { cardVariant: cardVariantToServer(values.cardVariant) } }
           : {}),
       },
       contribution: contributionSettings,
@@ -486,6 +495,10 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
               selectedIds: values.selectedIds,
             },
           }
+        : {}),
+      // Card variant — SPACES only, same rule as create.
+      ...(framingType === CalloutFramingType.Spaces
+        ? { spaces: { cardVariant: cardVariantToServer(values.cardVariant) } }
         : {}),
     },
   };
