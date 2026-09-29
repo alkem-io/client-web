@@ -11888,6 +11888,9 @@ export type AdminInnovationPackQuery = {
           id: string;
           listedInStore: boolean;
           searchVisibility: SearchVisibility;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           provider: {
             __typename?: 'Actor';
             id: string;
@@ -12819,6 +12822,16 @@ export type AssignPlatformRoleToUserMutation = {
   assignPlatformRoleToUser: { __typename?: 'User'; id: string };
 };
 
+export type AssignPlatformRoleToOrganizationMutationVariables = Exact<{
+  role: RoleName;
+  contributorId: Scalars['UUID']['input'];
+}>;
+
+export type AssignPlatformRoleToOrganizationMutation = {
+  __typename?: 'Mutation';
+  assignPlatformRoleToOrganization: { __typename?: 'Organization'; id: string };
+};
+
 export type AssignRoleToUserMutationVariables = Exact<{
   roleSetId: Scalars['UUID']['input'];
   role: RoleName;
@@ -12861,6 +12874,20 @@ export type RemovePlatformRoleFromUserMutation = {
   __typename?: 'Mutation';
   removePlatformRoleFromUser: {
     __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
+};
+
+export type RemovePlatformRoleFromOrganizationMutationVariables = Exact<{
+  role: RoleName;
+  contributorId: Scalars['UUID']['input'];
+}>;
+
+export type RemovePlatformRoleFromOrganizationMutation = {
+  __typename?: 'Mutation';
+  removePlatformRoleFromOrganization: {
+    __typename?: 'Organization';
     id: string;
     profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
   };
@@ -25103,6 +25130,9 @@ export type UserQuery = {
           lastName: string;
           email: string;
           phone?: string | undefined;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           profile?:
             | {
                 __typename?: 'Profile';
@@ -28325,7 +28355,14 @@ export type PlatformLevelAuthorizationQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<RoleName> };
+    roleSet: {
+      __typename?: 'RoleSet';
+      id: string;
+      myRoles: Array<RoleName>;
+      authorization?:
+        | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
     authorization?:
       | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
@@ -28449,6 +28486,9 @@ export type PlatformLicensingPlansQuery = {
     licensingFramework: {
       __typename?: 'Licensing';
       id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
       plans: Array<{
         __typename?: 'LicensePlan';
         id: string;
@@ -28501,6 +28541,9 @@ export type PlatformAdminInnovationHubsQuery = {
       subdomain: string;
       listedInStore: boolean;
       searchVisibility: SearchVisibility;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
       account: {
         __typename?: 'Account';
         id: string;
@@ -28528,6 +28571,9 @@ export type PlatformAdminInnovationPacksQuery = {
       id: string;
       listedInStore: boolean;
       searchVisibility: SearchVisibility;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
       provider: {
         __typename?: 'Actor';
         id: string;
@@ -28536,6 +28582,119 @@ export type PlatformAdminInnovationPacksQuery = {
       profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     }>;
   };
+};
+
+export type LicensingAdminOrganizationsQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<OrganizationFilterInput>;
+}>;
+
+export type LicensingAdminOrganizationsQuery = {
+  __typename?: 'Query';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    organizations: {
+      __typename?: 'PaginatedOrganization';
+      total: number;
+      organization: Array<{
+        __typename?: 'Organization';
+        id: string;
+        account?:
+          | {
+              __typename?: 'Account';
+              id: string;
+              subscriptions: Array<{
+                __typename?: 'AccountSubscription';
+                name: LicensingCredentialBasedCredentialType;
+              }>;
+            }
+          | undefined;
+        profile?: { __typename?: 'Profile'; id: string; url: string; displayName: string } | undefined;
+      }>;
+      pageInfo: {
+        __typename?: 'PageInfo';
+        startCursor?: string | undefined;
+        endCursor?: string | undefined;
+        hasNextPage: boolean;
+      };
+    };
+  };
+};
+
+export type LicensingAdminSpacesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type LicensingAdminSpacesQuery = {
+  __typename?: 'Query';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    spaces: Array<{
+      __typename?: 'Space';
+      id: string;
+      visibility: SpaceVisibility;
+      subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
+      about: {
+        __typename?: 'SpaceAbout';
+        id: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+        provider?:
+          | {
+              __typename?: 'Actor';
+              id: string;
+              profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+            }
+          | undefined;
+      };
+    }>;
+  };
+};
+
+export type LicensingAdminUsersQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type LicensingAdminUsersQuery = {
+  __typename?: 'Query';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    users: {
+      __typename?: 'PaginatedUsers';
+      total: number;
+      users: Array<{
+        __typename?: 'User';
+        id: string;
+        account?:
+          | {
+              __typename?: 'Account';
+              id: string;
+              subscriptions: Array<{
+                __typename?: 'AccountSubscription';
+                name: LicensingCredentialBasedCredentialType;
+              }>;
+            }
+          | undefined;
+        profile?: { __typename?: 'Profile'; id: string; url: string; displayName: string } | undefined;
+      }>;
+      pageInfo: {
+        __typename?: 'PageInfo';
+        startCursor?: string | undefined;
+        endCursor?: string | undefined;
+        hasNextPage: boolean;
+      };
+    };
+  };
+};
+
+export type LicensingUpdateSpaceVisibilityMutationVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+  visibility: SpaceVisibility;
+}>;
+
+export type LicensingUpdateSpaceVisibilityMutation = {
+  __typename?: 'Mutation';
+  updateSpacePlatformSettings: { __typename?: 'Space'; id: string; visibility: SpaceVisibility };
 };
 
 export type AssignLicensePlanToAccountMutationVariables = Exact<{
@@ -28586,6 +28745,9 @@ export type PlatformAdminOrganizationsListQuery = {
               }>;
             }
           | undefined;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
         profile?:
           | {
               __typename?: 'Profile';
@@ -28595,7 +28757,14 @@ export type PlatformAdminOrganizationsListQuery = {
               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             }
           | undefined;
-        verification: { __typename?: 'OrganizationVerification'; id: string; state: string };
+        verification: {
+          __typename?: 'OrganizationVerification';
+          id: string;
+          state: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        };
       }>;
       pageInfo: {
         __typename?: 'PageInfo';
@@ -28651,7 +28820,7 @@ export type RevokeLicensePlanFromSpaceMutation = {
 
 export type UpdateSpacePlatformSettingsMutationVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
-  nameId: Scalars['NameID']['input'];
+  nameId?: InputMaybe<Scalars['NameID']['input']>;
   visibility: SpaceVisibility;
 }>;
 
@@ -29723,7 +29892,6 @@ export type SpaceAboutBaseQuery = {
           level: SpaceLevel;
           nameID: string;
           visibility: SpaceVisibility;
-          account: { __typename?: 'Account'; id: string };
           about: {
             __typename?: 'SpaceAbout';
             id: string;
@@ -30792,6 +30960,7 @@ export type SpaceEntitlementsQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          account: { __typename?: 'Account'; id: string };
           license: {
             __typename?: 'License';
             id: string;

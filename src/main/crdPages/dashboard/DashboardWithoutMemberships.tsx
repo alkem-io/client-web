@@ -6,7 +6,7 @@ import {
   useDashboardWelcomeSpaceQuery,
   usePendingInvitationsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ActorType, LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { ApplicationsBlock } from '@/crd/components/dashboard/ApplicationsBlock';
 import { CampaignBanner } from '@/crd/components/dashboard/CampaignBanner';
@@ -24,6 +24,7 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import { CrdVCCreationWizardDialog } from '@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog';
 import { buildWelcomeSpaceUrl, URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
 import { mapApplicationsToCards, mapInvitationsToCards, mapMostActivitySection } from './dashboardDataMappers';
+import { isVcCampaignTargeted } from './isVcCampaignTargeted';
 import type { DashboardDialogType } from './useDashboardDialogs';
 import { useDashboardSidebar } from './useDashboardSidebar';
 
@@ -126,7 +127,7 @@ export default function DashboardWithoutMemberships({
 
   // Campaign
   const showCampaign =
-    platformRoles?.some(role => role === RoleName.PlatformVcCampaign) &&
+    isVcCampaignTargeted(platformRoles) &&
     accountEntitlements?.some(e => e === LicenseEntitlementType.AccountVirtualContributor);
 
   return (

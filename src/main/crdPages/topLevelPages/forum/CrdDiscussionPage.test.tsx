@@ -1,6 +1,6 @@
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeAll, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
 import { AuthorizationPrivilege, ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
 import CrdDiscussionPage from './CrdDiscussionPage';
 
@@ -32,9 +32,13 @@ vi.mock('@/domain/community/user/hooks/useAuthorsDetails', () => ({
   useAuthorsDetails: () => ({ getAuthor: () => undefined }),
 }));
 
+// Per-test platform privilege set. Default: none (an ordinary member).
+let heldPlatformPrivileges: AuthorizationPrivilege[] = [];
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({
-    platformPrivilegeWrapper: { hasPlatformPrivilege: () => false },
+    platformPrivilegeWrapper: {
+      hasPlatformPrivilege: (privilege: AuthorizationPrivilege) => heldPlatformPrivileges.includes(privilege),
+    },
   }),
 }));
 
@@ -74,8 +78,14 @@ const discussion = {
     authorization: { myPrivileges: [] },
     messages: [],
   },
-  authorization: { myPrivileges: [AuthorizationPrivilege.Update] },
+  // 027-platform-role-redesign L6 (client-3): edit/delete are gated on
+  // PLATFORM_FORUM_MANAGE only (the server's PFM-only gate), not Update/Delete.
+  authorization: { myPrivileges: [AuthorizationPrivilege.Read, AuthorizationPrivilege.PlatformForumManage] },
 };
+
+// Per-test active list (the forum's own `discussionCategories`). Default: the
+// three member categories above.
+let forumActiveCategories: ForumDiscussionCategory[] = activeCategories;
 
 const usePlatformDiscussionQuery = vi.fn(() => ({
   loading: false,
@@ -84,7 +94,7 @@ const usePlatformDiscussionQuery = vi.fn(() => ({
       id: 'platform-1',
       forum: {
         id: 'forum-1',
-        discussionCategories: activeCategories,
+        discussionCategories: forumActiveCategories,
         authorization: { id: 'forum-auth', myPrivileges: [] },
         discussion,
       },
@@ -109,7 +119,60 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 // again, or drops `discussionCategories` from the query so the active list
 // resolves empty, collapses the edit dialog back to a single-option selector
 // and this test catches it.
+const editorialCategories = [ForumDiscussionCategory.Releases, ForumDiscussionCategory.Newsletter];
+
+const openEditCategoryListbox = async () => {
+  const user = userEvent.setup();
+  render(<CrdDiscussionPage />);
+
+  const editButton = await screen.findByRole('button', { name: 'detail.edit' });
+  await user.click(editButton);
+
+  const categorySelect = await screen.findByRole('combobox');
+  await user.click(categorySelect);
+
+  return screen.findByRole('listbox');
+};
+
 describe('CrdDiscussionPage — edit dialog category wiring', () => {
+  afterEach(() => {
+    heldPlatformPrivileges = [];
+    forumActiveCategories = activeCategories;
+    discussion.authorization.myPrivileges = [AuthorizationPrivilege.Read, AuthorizationPrivilege.PlatformForumManage];
+  });
+
+  // 027-platform-role-redesign A15 (spec-clientweb-5): the forum is owned by
+  // `PLATFORM_FORUM_MANAGE`, the same disjunction CrdForumPage already uses.
+  // A Platform Support holder — who has that privilege and NOT the retiring
+  // `PLATFORM_ADMIN` catch-all — must be offered the editorial categories
+  // when re-categorising a post, exactly as on the forum page.
+  test('a PLATFORM_FORUM_MANAGE holder without PLATFORM_ADMIN is offered the editorial categories', async () => {
+    heldPlatformPrivileges = [AuthorizationPrivilege.PlatformForumManage];
+    forumActiveCategories = [...activeCategories, ...editorialCategories];
+
+    const listbox = await openEditCategoryListbox();
+
+    await waitFor(() => {
+      expect(within(listbox).getAllByRole('option')).toHaveLength(activeCategories.length + editorialCategories.length);
+    });
+    const optionValues = within(listbox)
+      .getAllByRole('option')
+      .map(option => option.textContent);
+    for (const category of editorialCategories) {
+      expect(optionValues).toContain(`common.enums.discussion-category.${category}`);
+    }
+  });
+
+  test('a member without any forum privilege is not offered the editorial categories, even when active', async () => {
+    forumActiveCategories = [...activeCategories, ...editorialCategories];
+
+    const listbox = await openEditCategoryListbox();
+
+    await waitFor(() => {
+      expect(within(listbox).getAllByRole('option')).toHaveLength(activeCategories.length);
+    });
+  });
+
   test('the edit dialog offers every active category, not just the post’s current one', async () => {
     const user = userEvent.setup();
     render(<CrdDiscussionPage />);
@@ -129,5 +192,39 @@ describe('CrdDiscussionPage — edit dialog category wiring', () => {
       .getAllByRole('option')
       .map(option => option.textContent);
     expect(optionValues).toEqual(activeCategories.map(category => `common.enums.discussion-category.${category}`));
+  });
+});
+
+describe('CrdDiscussionPage — edit/delete privilege gate', () => {
+  afterEach(() => {
+    heldPlatformPrivileges = [];
+    forumActiveCategories = activeCategories;
+    discussion.authorization.myPrivileges = [AuthorizationPrivilege.Read, AuthorizationPrivilege.PlatformForumManage];
+  });
+
+  // 027-platform-role-redesign L6 (client-3): the server gates discussion
+  // edit/delete on PLATFORM_FORUM_MANAGE alone — Update/Delete on the
+  // discussion itself are no longer sufficient (or necessary).
+  test('a discussion-level PLATFORM_FORUM_MANAGE holder sees the edit and delete actions', async () => {
+    discussion.authorization.myPrivileges = [AuthorizationPrivilege.Read, AuthorizationPrivilege.PlatformForumManage];
+
+    render(<CrdDiscussionPage />);
+
+    expect(await screen.findByRole('button', { name: 'detail.edit' })).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: 'detail.delete' })).toBeInTheDocument();
+  });
+
+  test('a holder of Update/Delete without PLATFORM_FORUM_MANAGE sees neither action', async () => {
+    discussion.authorization.myPrivileges = [
+      AuthorizationPrivilege.Read,
+      AuthorizationPrivilege.Update,
+      AuthorizationPrivilege.Delete,
+    ];
+
+    render(<CrdDiscussionPage />);
+
+    await screen.findByText(discussion.profile.displayName);
+    expect(screen.queryByRole('button', { name: 'detail.edit' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'detail.delete' })).not.toBeInTheDocument();
   });
 });
