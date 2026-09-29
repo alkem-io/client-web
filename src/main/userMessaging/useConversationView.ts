@@ -1,11 +1,18 @@
-import { useEffect, useRef } from 'react';
+import type { EventType, MatrixClient, MsgType, RelationType } from 'matrix-js-sdk';
+import { useEffect, useRef, useState } from 'react';
 import { useLeaveConversationMutation, useSendMessageToRoomMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useMatrixClient } from '@/core/matrix/activeClient';
-import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
 import { resolveMatrixRoomId } from './matrix/matrixRooms';
 import type { UserConversation } from './models';
 import type { ConversationMessage } from './useConversationMessages';
 import { useIsDocumentActive } from './useIsDocumentActive';
+
+// matrix-js-sdk enum values, as strings so the SDK stays a lazily loaded chunk.
+const NOT_SENT = 'not_sent';
+const ROOM_MESSAGE = 'm.room.message' as EventType.RoomMessage;
+const REACTION = 'm.reaction' as EventType.Reaction;
+const TEXT = 'm.text' as MsgType.Text;
+const ANNOTATION = 'm.annotation' as RelationType.Annotation;
 
 export const useConversationView = (
   conversation: UserConversation | null,
@@ -13,8 +20,8 @@ export const useConversationView = (
   onLeaveConversation?: () => void
 ) => {
   const [leaveConversation] = useLeaveConversationMutation();
-  const [sendMessage, { loading: isSending }] = useSendMessageToRoomMutation();
-  const { addReaction, removeReaction } = useCommentReactionsMutations(conversation?.roomId);
+  const [sendMessage, { loading: isSendingAttachments }] = useSendMessageToRoomMutation();
+  const [isSendingDirect, setIsSendingDirect] = useState(false);
   const matrixClient = useMatrixClient();
   const lastMarkedRef = useRef<string | null>(null);
   const isDocumentActive = useIsDocumentActive();
@@ -65,39 +72,89 @@ export const useConversationView = (
     onLeaveConversation?.();
   };
 
+  // Sends straight to Synapse and resolves once the server has accepted the
+  // event. A rejected send leaves no local echo behind in the timeline.
+  const sendDirect = async (
+    roomId: string,
+    send: (client: MatrixClient, matrixRoomId: string, txnId: string) => Promise<unknown>
+  ) => {
+    if (!matrixClient) {
+      throw new Error('No Matrix session');
+    }
+    const matrixRoomId = await resolveMatrixRoomId(matrixClient, roomId);
+    if (!matrixRoomId) {
+      throw new Error('No Matrix room for the conversation');
+    }
+    const txnId = matrixClient.makeTxnId();
+    try {
+      await send(matrixClient, matrixRoomId, txnId);
+    } catch (error) {
+      const echo = matrixClient
+        .getRoom(matrixRoomId)
+        ?.getPendingEvents()
+        .find(event => event.getTxnId() === txnId);
+      if (echo?.status === NOT_SENT) {
+        matrixClient.cancelPendingEvent(echo);
+      }
+      throw error;
+    }
+  };
+
   const handleSendMessage = async (message: string, attachments?: string[]) => {
     const hasAttachments = Boolean(attachments && attachments.length > 0);
-    if (!conversation?.roomId || (!message.trim() && !hasAttachments)) return;
+    const text = message.trim();
+    if (!conversation?.roomId || (!text && !hasAttachments)) return;
+    const roomId = conversation.roomId;
 
     try {
-      await sendMessage({
-        variables: {
-          messageData: {
-            roomID: conversation.roomId,
-            message: message.trim(),
-            // file-service document ids (feature 013); omitted when none staged.
-            attachments: hasAttachments ? attachments : undefined,
+      if (hasAttachments) {
+        await sendMessage({
+          variables: {
+            messageData: {
+              roomID: roomId,
+              message: text,
+              // file-service document ids (feature 013).
+              attachments,
+            },
           },
-        },
-      });
+        });
+      } else {
+        setIsSendingDirect(true);
+        await sendDirect(roomId, (client, matrixRoomId, txnId) =>
+          client.sendEvent(matrixRoomId, ROOM_MESSAGE, { msgtype: TEXT, body: text }, txnId)
+        );
+      }
       return true;
     } catch (_error) {
       return false;
+    } finally {
+      setIsSendingDirect(false);
     }
   };
 
   const handleAddReaction = (messageId: string) => (emoji: string) => {
     if (!conversation?.roomId) return;
-    return addReaction({ emoji, messageId });
+    return sendDirect(conversation.roomId, (client, matrixRoomId, txnId) =>
+      client.sendEvent(
+        matrixRoomId,
+        REACTION,
+        { 'm.relates_to': { rel_type: ANNOTATION, event_id: messageId, key: emoji } },
+        txnId
+      )
+    );
   };
 
+  // The reaction id is the Matrix reaction event id, and only the user's own
+  // reaction is ever removed, so this is a plain self-redaction.
   const handleRemoveReaction = (reactionId: string) => {
     if (!conversation?.roomId) return;
-    return removeReaction(reactionId);
+    return sendDirect(conversation.roomId, (client, matrixRoomId, txnId) =>
+      client.redactEvent(matrixRoomId, reactionId, txnId)
+    );
   };
 
   return {
-    isSending,
+    isSending: isSendingAttachments || isSendingDirect,
     handleLeaveGroup,
     handleSendMessage,
     handleAddReaction,
