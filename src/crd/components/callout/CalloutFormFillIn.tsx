@@ -1,5 +1,5 @@
 import { Lock } from 'lucide-react';
-import { type FormEvent, useState } from 'react';
+import { type FormEvent, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { FormAnswerInput, FormQuestionView } from '@/crd/components/callout/calloutFormTypes';
 import {
@@ -71,6 +71,9 @@ export function CalloutFormFillIn({
   className,
 }: CalloutFormFillInProps) {
   const { t } = useTranslation('crd-space');
+  // Every mounted copy of the form (feed card and detail dialog) needs its own
+  // element ids, otherwise label clicks and aria references hit the other copy.
+  const instanceId = useId();
   const [drafts, setDrafts] = useState<Record<string, DraftAnswer>>({});
   const [missing, setMissing] = useState<Record<string, boolean>>({});
 
@@ -125,7 +128,7 @@ export function CalloutFormFillIn({
       )}
 
       {questions.map(question => {
-        const idBase = `form-fill-${question.id}`;
+        const idBase = `form-fill-${instanceId}-${question.id}`;
         const labelId = `${idBase}-label`;
         const helpId = `${idBase}-help`;
         const errorId = `${idBase}-error`;

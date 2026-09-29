@@ -164,4 +164,32 @@ describe('CalloutFormFillIn', () => {
     expect(screen.getByRole('button', { name: 'formFillIn.submitting' })).toBeDisabled();
     expect(screen.getByRole('textbox', { name: /Your name/ })).toHaveAttribute('readonly');
   });
+
+  test('gives every mounted copy of the form its own element ids', async () => {
+    const user = userEvent.setup();
+    const props = {
+      questions,
+      visibility: 'ADMINS' as const,
+      spaceName: 'Garden',
+      state: 'OPEN' as const,
+      published: true,
+      canSubmit: true,
+      submitting: false,
+      onSubmit: vi.fn(),
+    };
+    const { container } = render(
+      <>
+        <CalloutFormFillIn {...props} />
+        <CalloutFormFillIn {...props} />
+      </>
+    );
+
+    const ids = [...container.querySelectorAll('[id]')].map(el => el.id);
+    expect(new Set(ids).size).toBe(ids.length);
+
+    const [, dialogRed] = screen.getAllByRole('radio', { name: 'Red' });
+    await user.click(screen.getAllByText('Red')[1]);
+    expect(dialogRed).toBeChecked();
+    expect(screen.getAllByRole('radio', { name: 'Red' })[0]).not.toBeChecked();
+  });
 });

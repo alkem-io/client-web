@@ -407,7 +407,6 @@ function LazyCalloutItemContent({
             >
               {pollPreview}
               {formPreview}
-              {formPreview}
               {contributorsPreview}
               {spacesPreview}
             </PostCard>

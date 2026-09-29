@@ -72,6 +72,7 @@ import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePo
 import { useWhiteboardDraft } from '@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft';
 import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import {
   StorageConfigContextProvider,
   useStorageConfigContext,
@@ -228,6 +229,7 @@ function CalloutFormConnectorInner({
   const { space, entitlements, permissions, loading: spaceContextLoading } = useSpace();
   const roleSetId = space.about.membership?.roleSetID;
   const { spaceId } = useUrlResolver();
+  const { subspace, permissions: subspacePermissions } = useSubSpace();
 
   // The "Contributors" (008) and "Subspaces" (013) framing chips are admin-only
   // (FR-004a) and offered only in space/community (collaboration) callout contexts
@@ -239,7 +241,10 @@ function CalloutFormConnectorInner({
   // level-restricted — both appear on L0 and L1 collaboration spaces (a Subspaces
   // callout on an L1 lists that space's subspaces); only auto-provisioning is
   // L0-only (server-side, FR-004e).
-  const isSpaceAdmin = permissions.canUpdate;
+  // Admin-ness is derived for the level the callout is created on: on a subspace
+  // page the space context is the level-zero space, whose UPDATE privilege says
+  // nothing about the subspace admin, so the subspace's own privilege decides.
+  const isSpaceAdmin = subspace.id ? subspacePermissions.canUpdate : permissions.canUpdate;
   const framingAllowList: FramingChipId[] | undefined = (() => {
     if (mode !== 'create') return undefined; // edit mode: never hide an existing type
     if (restrictions?.allowedFramingChips) return restrictions.allowedFramingChips;
