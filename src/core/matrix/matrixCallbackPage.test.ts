@@ -37,7 +37,7 @@ describe('matrixCallbackPage', () => {
   it('inside the silent-SSO frame: exchanges the token and never navigates', async () => {
     vi.spyOn(window, 'top', 'get').mockReturnValue({} as Window);
     await runMatrixCallbackPage();
-    expect(harness.handleMatrixCallback).toHaveBeenCalledOnce();
+    expect(harness.handleMatrixCallback).toHaveBeenCalledExactlyOnceWith('https://matrix.dev-alkem.io');
     expect(replace).not.toHaveBeenCalled();
   });
 

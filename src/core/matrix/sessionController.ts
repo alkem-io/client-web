@@ -62,6 +62,9 @@ const establishSession = async (
     unregisterActiveSession(stop);
   };
   registerActiveSession(stop);
+  if (signal?.aborted) {
+    stop();
+  }
   signal?.addEventListener('abort', stop);
 
   const loadOrAcquireRecord = async (): Promise<CredentialRecord | null> => {

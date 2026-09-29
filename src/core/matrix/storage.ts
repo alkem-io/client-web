@@ -85,6 +85,9 @@ const clearNamespace = async (userId: string): Promise<void> => {
     const request = indexedDB.deleteDatabase(dbName(userId));
     request.onsuccess = () => resolve();
     request.onerror = () => reject(request.error);
+    // Another connection still has the database open. The deletion completes
+    // once it closes; sign-out must not wait on another tab for that.
+    request.onblocked = () => resolve();
   });
 };
 
