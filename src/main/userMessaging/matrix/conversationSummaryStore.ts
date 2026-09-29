@@ -13,6 +13,7 @@ import {
   notificationCount,
   ownUserId,
   ROOM_ACCOUNT_DATA,
+  ROOM_LOCAL_ECHO_UPDATED,
   ROOM_REDACTION,
   ROOM_TIMELINE,
   resolveMatrixRoomId,
@@ -59,6 +60,12 @@ class ConversationSummaryStore {
     );
     client.on(
       ROOM_REDACTION as never,
+      ((_event: MatrixEvent, room: Room) => {
+        this.touchMatrixRoom(room.roomId);
+      }) as never
+    );
+    client.on(
+      ROOM_LOCAL_ECHO_UPDATED as never,
       ((_event: MatrixEvent, room: Room) => {
         this.touchMatrixRoom(room.roomId);
       }) as never

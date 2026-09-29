@@ -6,6 +6,7 @@ import { serverNameOf } from './matrixEvents';
 const ROOM_TIMELINE = 'Room.timeline';
 const ROOM_REDACTION = 'Room.redaction';
 const ROOM_ACCOUNT_DATA = 'Room.accountData';
+const ROOM_LOCAL_ECHO_UPDATED = 'Room.localEchoUpdated';
 const CLIENT_ROOM = 'Room';
 const CLIENT_SYNC = 'sync';
 const DIRECTION_BACKWARD = 'b';
@@ -20,7 +21,14 @@ const toRawEvent = (event: MatrixEvent): RawEvent => ({
   content: event.getOriginalContent() as Record<string, unknown>,
 });
 
-const liveEvents = (room: Room): RawEvent[] => room.getLiveTimeline().getEvents().map(toRawEvent);
+// The SDK puts our own unsent events (local echoes) into the live timeline
+// under a temporary id; only events the server has accepted are rendered.
+const liveEvents = (room: Room): RawEvent[] =>
+  room
+    .getLiveTimeline()
+    .getEvents()
+    .filter(event => !event.status)
+    .map(toRawEvent);
 
 const ownUserId = (client: MatrixClient): string => client.getUserId() ?? '';
 
@@ -86,6 +94,7 @@ export {
   CLIENT_SYNC,
   FULLY_READ,
   ROOM_ACCOUNT_DATA,
+  ROOM_LOCAL_ECHO_UPDATED,
   ROOM_REDACTION,
   ROOM_TIMELINE,
   fetchBackward,

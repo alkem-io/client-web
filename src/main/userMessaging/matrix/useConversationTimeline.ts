@@ -6,6 +6,7 @@ import {
   CLIENT_ROOM,
   homeserverOf,
   liveEvents,
+  ROOM_LOCAL_ECHO_UPDATED,
   ROOM_REDACTION,
   ROOM_TIMELINE,
   resolveMatrixRoomId,
@@ -82,6 +83,8 @@ const useConversationTimeline = (alkemioRoomId: string | null): { messages: Pars
         refresh();
       }
     };
+    // A sent event swaps its temporary id for the server's without a timeline event.
+    const onLocalEcho = (_event: MatrixEvent, echoRoom: Room) => onTimeline(_event, echoRoom);
     // A gap in sync replaces the live timeline; page it back to depth again.
     const onReset = (resetRoom: Room | undefined) => {
       if (room && resetRoom?.roomId === room.roomId) {
@@ -99,6 +102,7 @@ const useConversationTimeline = (alkemioRoomId: string | null): { messages: Pars
     setState({ roomKey, messages: [], isLoading: true });
     client.on(ROOM_TIMELINE as never, onTimeline as never);
     client.on(ROOM_REDACTION as never, onTimeline as never);
+    client.on(ROOM_LOCAL_ECHO_UPDATED as never, onLocalEcho as never);
     client.on(ROOM_TIMELINE_RESET as never, onReset as never);
     client.on(CLIENT_ROOM as never, onRoom as never);
 
@@ -119,6 +123,7 @@ const useConversationTimeline = (alkemioRoomId: string | null): { messages: Pars
       cancelled = true;
       client.removeListener(ROOM_TIMELINE as never, onTimeline as never);
       client.removeListener(ROOM_REDACTION as never, onTimeline as never);
+      client.removeListener(ROOM_LOCAL_ECHO_UPDATED as never, onLocalEcho as never);
       client.removeListener(ROOM_TIMELINE_RESET as never, onReset as never);
       client.removeListener(CLIENT_ROOM as never, onRoom as never);
     };
