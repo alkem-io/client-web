@@ -52,7 +52,6 @@ describe('WhiteboardContributionAddConnector', () => {
         whiteboard: { profile: { displayName: 'callout.defaultWhiteboardName' } },
       },
       refetchQueries: ['CalloutDetails', 'CalloutContributions'],
-      awaitRefetchQueries: true,
     });
     expect(onCreated).not.toHaveBeenCalled();
     expect(onOpenChange).not.toHaveBeenCalledWith(false);

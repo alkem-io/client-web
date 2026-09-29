@@ -75,7 +75,6 @@ export function WhiteboardContributionAddConnector({
         },
       },
       refetchQueries: ['CalloutDetails', 'CalloutContributions'],
-      awaitRefetchQueries: true,
     });
     onCreated?.();
     handleClose();
