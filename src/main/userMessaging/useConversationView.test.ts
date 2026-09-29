@@ -1,4 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
+import { createClient, MatrixEvent, Room, RoomEvent } from 'matrix-js-sdk';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import type { UserConversation } from './models';
@@ -19,7 +20,7 @@ const matrixClient = {
   redactEvent: redactEventMock,
   cancelPendingEvent: cancelPendingEventMock,
   makeTxnId: () => 'txn-1',
-  getRoom: () => ({ getPendingEvents: () => pendingEvents }),
+  getRoom: () => ({ getLiveTimeline: () => ({ getEvents: () => pendingEvents }) }),
 };
 const session = vi.hoisted(() => ({ client: null as unknown }));
 const sendMessageMutationMock = vi.fn((..._args: unknown[]) => Promise.resolve({}));
@@ -303,7 +304,7 @@ describe('useConversationView — DM consent is checked per text send', () => {
   });
 });
 
-describe('useConversationView — writes go straight to Synapse (075)', () => {
+describe('useConversationView — writes go straight to Synapse', () => {
   it('a text-only send makes a direct call and no sendMessageToRoom call', async () => {
     const { result } = renderHook(() => useConversationView(conversation, []));
 
@@ -388,5 +389,96 @@ describe('useConversationView — writes go straight to Synapse (075)', () => {
     );
     expect(redactEventMock).toHaveBeenCalledWith('!matrix-room-1', '$reaction', 'txn-1');
     expect(sendMessageMutationMock).not.toHaveBeenCalled();
+  });
+});
+
+// A real matrix-js-sdk Room (default chronological pending-event ordering, as the
+// session client uses) and a real client whose HTTP layer is a delayed fake.
+describe('useConversationView — local echoes on a real matrix-js-sdk Room', () => {
+  const MATRIX_ROOM_ID = '!matrix-room-1';
+  const USER_ID = '@me:hs';
+  let respond: (status: number, body: object) => void = () => {};
+
+  const realClient = () => {
+    const client = createClient({
+      baseUrl: 'http://synapse.test',
+      userId: USER_ID,
+      accessToken: 'token',
+      fetchFn: (() =>
+        new Promise<Response>(resolve => {
+          respond = (status, body) =>
+            resolve(new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } }));
+        })) as typeof fetch,
+    });
+    const room = new Room(MATRIX_ROOM_ID, client, USER_ID);
+    client.store.storeRoom(room);
+    return { client, room };
+  };
+
+  it('a rejected send cancels the NOT_SENT echo, leaves the live timeline empty and rethrows the original error', async () => {
+    const { client, room } = realClient();
+    session.client = client;
+    const { result } = renderHook(() => useConversationView(conversation, []));
+
+    let outcome: Promise<unknown> = Promise.resolve();
+    await act(async () => {
+      outcome =
+        result.current
+          .handleAddReaction('$msg')('👍')
+          ?.catch((error: unknown) => error) ?? Promise.resolve();
+    });
+    await vi.waitFor(() => expect(room.getLiveTimeline().getEvents()).toHaveLength(1));
+    expect(room.getLiveTimeline().getEvents()[0].status).toBe('sending');
+
+    await act(async () => {
+      respond(403, { errcode: 'M_FORBIDDEN', error: 'no' });
+      await outcome;
+    });
+
+    expect(await outcome).toMatchObject({ errcode: 'M_FORBIDDEN' });
+    expect(room.getLiveTimeline().getEvents()).toHaveLength(0);
+  });
+
+  it('the remote echo swaps the local echo in place and emits Room.localEchoUpdated, not Room.timeline', async () => {
+    const { client, room } = realClient();
+    session.client = client;
+    const { result } = renderHook(() => useConversationView(conversation, []));
+
+    let sent: Promise<boolean | undefined> = Promise.resolve(undefined);
+    await act(async () => {
+      sent = result.current.handleSendMessage('hello');
+    });
+    await vi.waitFor(() => expect(room.getLiveTimeline().getEvents()).toHaveLength(1));
+    const echo = room.getLiveTimeline().getEvents()[0];
+    expect(echo.status).toBe('sending');
+
+    const localEchoUpdated = vi.fn();
+    const timeline = vi.fn();
+    room.on(RoomEvent.LocalEchoUpdated, localEchoUpdated);
+    room.on(RoomEvent.Timeline, timeline);
+
+    const remote = new MatrixEvent({
+      event_id: '$server',
+      type: 'm.room.message',
+      sender: USER_ID,
+      room_id: MATRIX_ROOM_ID,
+      origin_server_ts: 1,
+      content: { msgtype: 'm.text', body: 'hello' },
+      unsigned: { transaction_id: echo.getTxnId() },
+    });
+    await act(async () => {
+      await room.addLiveEvents([remote], { addToState: false });
+    });
+
+    expect(localEchoUpdated).toHaveBeenCalledTimes(1);
+    expect(timeline).not.toHaveBeenCalled();
+    expect(room.getLiveTimeline().getEvents()).toHaveLength(1);
+    expect(room.getLiveTimeline().getEvents()[0].getId()).toBe('$server');
+    expect(room.getLiveTimeline().getEvents()[0].status).toBeNull();
+
+    await act(async () => {
+      respond(200, { event_id: '$server' });
+      expect(await sent).toBe(true);
+    });
   });
 });

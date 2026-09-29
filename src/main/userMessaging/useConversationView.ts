@@ -102,9 +102,12 @@ export const useConversationView = (
     try {
       await send(matrixClient, matrixRoomId, txnId);
     } catch (error) {
+      // The client runs with chronological pending-event ordering, so local
+      // echoes live in the live timeline (getPendingEvents would throw).
       const echo = matrixClient
         .getRoom(matrixRoomId)
-        ?.getPendingEvents()
+        ?.getLiveTimeline()
+        .getEvents()
         .find(event => event.getTxnId() === txnId);
       if (echo?.status === NOT_SENT) {
         matrixClient.cancelPendingEvent(echo);
