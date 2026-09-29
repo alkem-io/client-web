@@ -98,10 +98,9 @@ import { TemplateImportConnector } from './TemplateImportConnector';
 import { omitIneligibleIds, useSelectionCandidates } from './useSelectionCandidates';
 
 /**
- * The full create-mode framing chip set, in display order. `contributors`
- * (feature 008) and `spaces` (feature 013) are included here but admin-gated by
- * the connector before being passed to `FramingChipStrip` (FR-004a); a non-admin
- * gets every chip except those two.
+ * The full create-mode framing chip set, in display order. `contributors`,
+ * `spaces` and `form` are included here but admin-gated by the connector before
+ * being passed to `FramingChipStrip`; a non-admin gets every chip except those.
  */
 const DEFAULT_FRAMING_CHIPS: FramingChipId[] = [
   'whiteboard',
@@ -112,6 +111,7 @@ const DEFAULT_FRAMING_CHIPS: FramingChipId[] = [
   'poll',
   'contributors',
   'spaces',
+  'form',
 ];
 
 /**
@@ -120,7 +120,10 @@ const DEFAULT_FRAMING_CHIPS: FramingChipId[] = [
  * collaboration context — never a VC knowledge base, which passes its own
  * `allowedFramingChips`. Filtered out of the default allow-list for non-admins.
  */
-const ADMIN_ONLY_FRAMING_CHIPS: FramingChipId[] = ['contributors', 'spaces'];
+const ADMIN_ONLY_FRAMING_CHIPS: FramingChipId[] = ['contributors', 'spaces', 'form'];
+
+/** Framing kinds that cannot be cleared once the callout exists (a Form's responses would be lost). */
+const FIXED_KIND_FRAMING_CHIPS: FramingChipId[] = ['form'];
 
 /** The title counter stays hidden until the value gets this close to `SMALL_TEXT_LENGTH`. */
 const TITLE_COUNTER_THRESHOLD = SMALL_TEXT_LENGTH - 10;
@@ -994,6 +997,7 @@ function CalloutFormConnectorInner({
                   setField('framingChip', chip);
                 }}
                 editMode={mode === 'edit'}
+                fixedKindChips={FIXED_KIND_FRAMING_CHIPS}
                 disabledChips={disabledChips}
               />
               <FramingEditorConnector

@@ -62,7 +62,8 @@
     "image": "Gallery",
     "poll": "Poll",
     "contributors": "Contributors",
-    "spaces": "Subspaces"
+    "spaces": "Subspaces",
+    "form": "Form"
   },
   "contributionType": {
     "post": "Posts",

@@ -1,6 +1,7 @@
 import {
   BarChart3,
   ChevronDown,
+  ClipboardList,
   FileSignature,
   FileText,
   FolderTree,
@@ -48,7 +49,8 @@ export type PostType =
   | 'callToAction'
   | 'poll'
   | 'contributors'
-  | 'spaces';
+  | 'spaces'
+  | 'form';
 
 type PostTypeLabelKey =
   | 'callout.post'
@@ -59,7 +61,8 @@ type PostTypeLabelKey =
   | 'callout.mediaGallery'
   | 'callout.document'
   | 'callout.callToAction'
-  | 'callout.poll';
+  | 'callout.poll'
+  | 'callout.form';
 
 /**
  * Single source of truth for the icon and translation key per `PostType`.
@@ -79,6 +82,7 @@ export const POST_TYPE_DESCRIPTORS: Record<PostType, { icon: LucideIcon; labelKe
   poll: { icon: BarChart3, labelKey: 'callout.poll' },
   contributors: { icon: Users, labelKey: 'callout.contributors' },
   spaces: { icon: FolderTree, labelKey: 'callout.subspaces' },
+  form: { icon: ClipboardList, labelKey: 'callout.form' },
 };
 
 export type PostCardData = {

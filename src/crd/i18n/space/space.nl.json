@@ -313,7 +313,8 @@
     "referencesSaveFailed": "Een of meer nieuwe referenties konden niet worden opgeslagen. De overige wijzigingen zijn niet toegepast. Probeer het opnieuw.",
     "updateFailed": "De wijzigingen aan de $t(common.callout) konden niet worden opgeslagen. Probeer het opnieuw.",
     "contributors": "Contributors",
-    "subspaces": "Subspaces"
+    "subspaces": "Subspaces",
+    "form": "Formulier"
   },
   "contribution": {
     "edit": "Bewerken",
@@ -1173,5 +1174,19 @@
   },
   "parentStack": {
     "goTo": "Ga naar {{name}}"
+  },
+  "formForm": {
+    "validation": {
+      "questionsMin": "Minstens {{count}} vraag is vereist",
+      "questionsMax": "Maximaal {{count}} vragen zijn toegestaan",
+      "promptRequired": "De vraagtekst is verplicht",
+      "promptMax": "De vraagtekst is te lang",
+      "explanationMax": "De toelichting is te lang",
+      "optionsMin": "Minstens {{count}} opties zijn vereist",
+      "optionsMax": "Maximaal {{count}} opties zijn toegestaan",
+      "optionRequired": "Optietekst is verplicht",
+      "optionMax": "De optietekst is te lang",
+      "optionsDuplicate": "Opties moeten van elkaar verschillen"
+    }
   }
 }

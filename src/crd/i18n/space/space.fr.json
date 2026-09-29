@@ -313,7 +313,8 @@
     "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer.",
     "updateFailed": "Les modifications du $t(common.callout) n'ont pas pu être enregistrées. Veuillez réessayer.",
     "contributors": "Contributeurs",
-    "subspaces": "Sous-espaces"
+    "subspaces": "Sous-espaces",
+    "form": "Formulaire"
   },
   "contribution": {
     "edit": "Modifier",
@@ -1173,5 +1174,19 @@
   },
   "parentStack": {
     "goTo": "Aller à {{name}}"
+  },
+  "formForm": {
+    "validation": {
+      "questionsMin": "Au moins {{count}} question est requise",
+      "questionsMax": "Au maximum {{count}} questions sont autorisées",
+      "promptRequired": "Le texte de la question est obligatoire",
+      "promptMax": "Le texte de la question est trop long",
+      "explanationMax": "L'explication est trop longue",
+      "optionsMin": "Au moins {{count}} options sont requises",
+      "optionsMax": "Au maximum {{count}} options sont autorisées",
+      "optionRequired": "Le texte de l'option est obligatoire",
+      "optionMax": "Le texte de l'option est trop long",
+      "optionsDuplicate": "Les options doivent être différentes les unes des autres"
+    }
   }
 }

@@ -860,12 +860,109 @@ export type CalloutContributorsSettingsFieldPolicy = {
   defaultView?: FieldPolicy<any> | FieldReadFunction<any>;
   mapView?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CalloutFormKeySpecifier = (
+  | 'createdDate'
+  | 'id'
+  | 'questions'
+  | 'settings'
+  | 'updatedDate'
+  | CalloutFormKeySpecifier
+)[];
+export type CalloutFormFieldPolicy = {
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  questions?: FieldPolicy<any> | FieldReadFunction<any>;
+  settings?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutFormAnswerKeySpecifier = (
+  | 'prompt'
+  | 'questionID'
+  | 'selectedOptions'
+  | 'text'
+  | 'type'
+  | CalloutFormAnswerKeySpecifier
+)[];
+export type CalloutFormAnswerFieldPolicy = {
+  prompt?: FieldPolicy<any> | FieldReadFunction<any>;
+  questionID?: FieldPolicy<any> | FieldReadFunction<any>;
+  selectedOptions?: FieldPolicy<any> | FieldReadFunction<any>;
+  text?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutFormAnswerOptionKeySpecifier = ('id' | 'label' | CalloutFormAnswerOptionKeySpecifier)[];
+export type CalloutFormAnswerOptionFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  label?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutFormQuestionKeySpecifier = (
+  | 'explanation'
+  | 'id'
+  | 'options'
+  | 'prompt'
+  | 'required'
+  | 'type'
+  | CalloutFormQuestionKeySpecifier
+)[];
+export type CalloutFormQuestionFieldPolicy = {
+  explanation?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  options?: FieldPolicy<any> | FieldReadFunction<any>;
+  prompt?: FieldPolicy<any> | FieldReadFunction<any>;
+  required?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutFormQuestionOptionKeySpecifier = ('id' | 'label' | CalloutFormQuestionOptionKeySpecifier)[];
+export type CalloutFormQuestionOptionFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  label?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutFormResponseKeySpecifier = (
+  | 'answers'
+  | 'createdBy'
+  | 'createdDate'
+  | 'id'
+  | CalloutFormResponseKeySpecifier
+)[];
+export type CalloutFormResponseFieldPolicy = {
+  answers?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutFormResponsesKeySpecifier = (
+  | 'all'
+  | 'canModerate'
+  | 'canReadAll'
+  | 'formID'
+  | 'mine'
+  | CalloutFormResponsesKeySpecifier
+)[];
+export type CalloutFormResponsesFieldPolicy = {
+  all?: FieldPolicy<any> | FieldReadFunction<any>;
+  canModerate?: FieldPolicy<any> | FieldReadFunction<any>;
+  canReadAll?: FieldPolicy<any> | FieldReadFunction<any>;
+  formID?: FieldPolicy<any> | FieldReadFunction<any>;
+  mine?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutFormSettingsKeySpecifier = (
+  | 'responseMode'
+  | 'state'
+  | 'visibility'
+  | CalloutFormSettingsKeySpecifier
+)[];
+export type CalloutFormSettingsFieldPolicy = {
+  responseMode?: FieldPolicy<any> | FieldReadFunction<any>;
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
+  visibility?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CalloutFramingKeySpecifier = (
   | 'authorization'
   | 'collaboraDocument'
   | 'contributorCounts'
   | 'contributors'
   | 'createdDate'
+  | 'form'
   | 'id'
   | 'link'
   | 'mediaGallery'
@@ -884,6 +981,7 @@ export type CalloutFramingFieldPolicy = {
   contributorCounts?: FieldPolicy<any> | FieldReadFunction<any>;
   contributors?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  form?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
   mediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1579,8 +1677,47 @@ export type CreateCalloutDataFieldPolicy = {
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   taskBoard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CreateCalloutFormDataKeySpecifier = ('questions' | 'settings' | CreateCalloutFormDataKeySpecifier)[];
+export type CreateCalloutFormDataFieldPolicy = {
+  questions?: FieldPolicy<any> | FieldReadFunction<any>;
+  settings?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateCalloutFormQuestionDataKeySpecifier = (
+  | 'explanation'
+  | 'options'
+  | 'prompt'
+  | 'required'
+  | 'type'
+  | CreateCalloutFormQuestionDataKeySpecifier
+)[];
+export type CreateCalloutFormQuestionDataFieldPolicy = {
+  explanation?: FieldPolicy<any> | FieldReadFunction<any>;
+  options?: FieldPolicy<any> | FieldReadFunction<any>;
+  prompt?: FieldPolicy<any> | FieldReadFunction<any>;
+  required?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateCalloutFormQuestionOptionDataKeySpecifier = (
+  | 'label'
+  | CreateCalloutFormQuestionOptionDataKeySpecifier
+)[];
+export type CreateCalloutFormQuestionOptionDataFieldPolicy = {
+  label?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateCalloutFormSettingsDataKeySpecifier = (
+  | 'responseMode'
+  | 'state'
+  | 'visibility'
+  | CreateCalloutFormSettingsDataKeySpecifier
+)[];
+export type CreateCalloutFormSettingsDataFieldPolicy = {
+  responseMode?: FieldPolicy<any> | FieldReadFunction<any>;
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
+  visibility?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CreateCalloutFramingDataKeySpecifier = (
   | 'collaboraDocument'
+  | 'form'
   | 'link'
   | 'memo'
   | 'poll'
@@ -1592,6 +1729,7 @@ export type CreateCalloutFramingDataKeySpecifier = (
 )[];
 export type CreateCalloutFramingDataFieldPolicy = {
   collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
+  form?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
   poll?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2858,6 +2996,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'calendar'
   | 'calendarEvent'
   | 'callout'
+  | 'calloutFormResponses'
   | 'calloutsSet'
   | 'collaboration'
   | 'community'
@@ -2900,6 +3039,7 @@ export type LookupQueryResultsFieldPolicy = {
   calendar?: FieldPolicy<any> | FieldReadFunction<any>;
   calendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  calloutFormResponses?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3279,6 +3419,7 @@ export type MutationKeySpecifier = (
   | 'deleteApplication'
   | 'deleteCalendarEvent'
   | 'deleteCallout'
+  | 'deleteCalloutFormResponse'
   | 'deleteClassificationEntry'
   | 'deleteCollaboraDocument'
   | 'deleteContribution'
@@ -3368,6 +3509,7 @@ export type MutationKeySpecifier = (
   | 'sendMessageToUsers'
   | 'setDefaultCalloutTemplateOnInnovationFlowState'
   | 'setPlatformWellKnownVirtualContributor'
+  | 'submitCalloutFormResponse'
   | 'subscribeToPushNotifications'
   | 'transferCallout'
   | 'transferInnovationHubToAccount'
@@ -3380,6 +3522,7 @@ export type MutationKeySpecifier = (
   | 'updateBaselineLicensePlanOnAccount'
   | 'updateCalendarEvent'
   | 'updateCallout'
+  | 'updateCalloutForm'
   | 'updateCalloutPublishInfo'
   | 'updateCalloutVisibility'
   | 'updateCalloutsSortOrder'
@@ -3528,6 +3671,7 @@ export type MutationFieldPolicy = {
   deleteApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteCalloutFormResponse?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteClassificationEntry?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCollaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteContribution?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3617,6 +3761,7 @@ export type MutationFieldPolicy = {
   sendMessageToUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   setDefaultCalloutTemplateOnInnovationFlowState?: FieldPolicy<any> | FieldReadFunction<any>;
   setPlatformWellKnownVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  submitCalloutFormResponse?: FieldPolicy<any> | FieldReadFunction<any>;
   subscribeToPushNotifications?: FieldPolicy<any> | FieldReadFunction<any>;
   transferCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   transferInnovationHubToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3629,6 +3774,7 @@ export type MutationFieldPolicy = {
   updateBaselineLicensePlanOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCalloutForm?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutPublishInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3869,6 +4015,17 @@ export type PageInfoFieldPolicy = {
   hasNextPage?: FieldPolicy<any> | FieldReadFunction<any>;
   hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
   startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PaginatedCalloutFormResponsesKeySpecifier = (
+  | 'pageInfo'
+  | 'responses'
+  | 'total'
+  | PaginatedCalloutFormResponsesKeySpecifier
+)[];
+export type PaginatedCalloutFormResponsesFieldPolicy = {
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  responses?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PaginatedInAppNotificationsKeySpecifier = (
   | 'inAppNotifications'
@@ -6045,6 +6202,7 @@ export type UserSettingsNotificationSpaceFieldPolicy = {
 };
 export type UserSettingsNotificationSpaceAdminKeySpecifier = (
   | 'collaborationCalloutContributionCreated'
+  | 'collaborationCalloutFormResponseReceived'
   | 'communicationMessageReceived'
   | 'communityApplicationReceived'
   | 'communityInvitationResponse'
@@ -6054,6 +6212,7 @@ export type UserSettingsNotificationSpaceAdminKeySpecifier = (
 )[];
 export type UserSettingsNotificationSpaceAdminFieldPolicy = {
   collaborationCalloutContributionCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationCalloutFormResponseReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communityApplicationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communityInvitationResponse?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6602,6 +6761,41 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | CalloutContributorsSettingsKeySpecifier);
     fields?: CalloutContributorsSettingsFieldPolicy;
   };
+  CalloutForm?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutFormKeySpecifier | (() => undefined | CalloutFormKeySpecifier);
+    fields?: CalloutFormFieldPolicy;
+  };
+  CalloutFormAnswer?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutFormAnswerKeySpecifier | (() => undefined | CalloutFormAnswerKeySpecifier);
+    fields?: CalloutFormAnswerFieldPolicy;
+  };
+  CalloutFormAnswerOption?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutFormAnswerOptionKeySpecifier | (() => undefined | CalloutFormAnswerOptionKeySpecifier);
+    fields?: CalloutFormAnswerOptionFieldPolicy;
+  };
+  CalloutFormQuestion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutFormQuestionKeySpecifier | (() => undefined | CalloutFormQuestionKeySpecifier);
+    fields?: CalloutFormQuestionFieldPolicy;
+  };
+  CalloutFormQuestionOption?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CalloutFormQuestionOptionKeySpecifier
+      | (() => undefined | CalloutFormQuestionOptionKeySpecifier);
+    fields?: CalloutFormQuestionOptionFieldPolicy;
+  };
+  CalloutFormResponse?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutFormResponseKeySpecifier | (() => undefined | CalloutFormResponseKeySpecifier);
+    fields?: CalloutFormResponseFieldPolicy;
+  };
+  CalloutFormResponses?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutFormResponsesKeySpecifier | (() => undefined | CalloutFormResponsesKeySpecifier);
+    fields?: CalloutFormResponsesFieldPolicy;
+  };
+  CalloutFormSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutFormSettingsKeySpecifier | (() => undefined | CalloutFormSettingsKeySpecifier);
+    fields?: CalloutFormSettingsFieldPolicy;
+  };
   CalloutFraming?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutFramingKeySpecifier | (() => undefined | CalloutFramingKeySpecifier);
     fields?: CalloutFramingFieldPolicy;
@@ -6883,6 +7077,31 @@ export type StrictTypedTypePolicies = {
   CreateCalloutData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateCalloutDataKeySpecifier | (() => undefined | CreateCalloutDataKeySpecifier);
     fields?: CreateCalloutDataFieldPolicy;
+  };
+  CreateCalloutFormData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreateCalloutFormDataKeySpecifier | (() => undefined | CreateCalloutFormDataKeySpecifier);
+    fields?: CreateCalloutFormDataFieldPolicy;
+  };
+  CreateCalloutFormQuestionData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCalloutFormQuestionDataKeySpecifier
+      | (() => undefined | CreateCalloutFormQuestionDataKeySpecifier);
+    fields?: CreateCalloutFormQuestionDataFieldPolicy;
+  };
+  CreateCalloutFormQuestionOptionData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCalloutFormQuestionOptionDataKeySpecifier
+      | (() => undefined | CreateCalloutFormQuestionOptionDataKeySpecifier);
+    fields?: CreateCalloutFormQuestionOptionDataFieldPolicy;
+  };
+  CreateCalloutFormSettingsData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCalloutFormSettingsDataKeySpecifier
+      | (() => undefined | CreateCalloutFormSettingsDataKeySpecifier);
+    fields?: CreateCalloutFormSettingsDataFieldPolicy;
   };
   CreateCalloutFramingData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateCalloutFramingDataKeySpecifier | (() => undefined | CreateCalloutFramingDataKeySpecifier);
@@ -7563,6 +7782,13 @@ export type StrictTypedTypePolicies = {
   PageInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PageInfoKeySpecifier | (() => undefined | PageInfoKeySpecifier);
     fields?: PageInfoFieldPolicy;
+  };
+  PaginatedCalloutFormResponses?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PaginatedCalloutFormResponsesKeySpecifier
+      | (() => undefined | PaginatedCalloutFormResponsesKeySpecifier);
+    fields?: PaginatedCalloutFormResponsesFieldPolicy;
   };
   PaginatedInAppNotifications?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

@@ -10,15 +10,15 @@ vi.mock('react-i18next', () => ({
 }));
 
 describe('FramingChipStrip', () => {
-  test('renders as a radiogroup with 8 chips', () => {
+  test('renders as a radiogroup with 9 chips', () => {
     render(<FramingChipStrip value="none" onChange={vi.fn()} />);
     const group = screen.getByRole('radiogroup');
     expect(group).toBeInTheDocument();
     const chips = screen.getAllByRole('radio');
-    // 6 base framing chips + the admin-gated `contributors` (008) and `spaces` (013)
+    // 6 base framing chips + the admin-gated `contributors`, `spaces` and `form`
     // chips. The component renders all chips by default; the consumer
-    // (CalloutFormConnector) gates the two admin chips via `allowedChips`.
-    expect(chips).toHaveLength(8);
+    // (CalloutFormConnector) gates the admin chips via `allowedChips`.
+    expect(chips).toHaveLength(9);
     // Document chip is interactive (Collabora wired in 085-collabora-callout)
     const doc = screen.getByRole('radio', { name: /callout.document/i });
     expect(doc).not.toHaveAttribute('aria-disabled', 'true');
@@ -114,6 +114,34 @@ describe('FramingChipStrip', () => {
     expect(onChange).not.toHaveBeenCalled();
     await userEvent.click(screen.getByRole('button', { name: 'dialogs.deleteFraming.confirm' }));
     expect(onChange).toHaveBeenCalledWith('none');
+  });
+
+  test('edit mode: a fixed-kind active chip has no clear dialog and is aria-disabled', async () => {
+    const onChange = vi.fn();
+    render(<FramingChipStrip value="form" onChange={onChange} editMode={true} fixedKindChips={['form']} />);
+    const form = screen.getByRole('radio', { name: /callout.form/i });
+    expect(form).toHaveAttribute('aria-disabled', 'true');
+    expect(form).toHaveAttribute('title', 'forms.typeLockedHint');
+    await userEvent.click(form);
+    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.queryByRole('button', { name: 'dialogs.deleteFraming.confirm' })).toBeNull();
+  });
+
+  test('edit mode: other active chips stay clearable when fixedKindChips lists a different chip', async () => {
+    const onChange = vi.fn();
+    render(<FramingChipStrip value="poll" onChange={onChange} editMode={true} fixedKindChips={['form']} />);
+    const poll = screen.getByRole('radio', { name: /callout.poll/i });
+    expect(poll).not.toHaveAttribute('aria-disabled', 'true');
+    await userEvent.click(poll);
+    await userEvent.click(screen.getByRole('button', { name: 'dialogs.deleteFraming.confirm' }));
+    expect(onChange).toHaveBeenCalledWith('none');
+  });
+
+  test('create mode: the form chip selects and clears like any other chip', async () => {
+    const onChange = vi.fn();
+    render(<FramingChipStrip value="none" onChange={onChange} fixedKindChips={['form']} />);
+    await userEvent.click(screen.getByRole('radio', { name: /callout.form/i }));
+    expect(onChange).toHaveBeenCalledWith('form');
   });
 
   test('selected chip is aria-checked', () => {

@@ -313,7 +313,8 @@
     "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again.",
     "updateFailed": "Could not save changes to the $t(common.callout). Please try again.",
     "contributors": "Contributors",
-    "subspaces": "Subspaces"
+    "subspaces": "Subspaces",
+    "form": "Form"
   },
   "contribution": {
     "edit": "Edit",
@@ -1173,5 +1174,19 @@
   },
   "parentStack": {
     "goTo": "Go to {{name}}"
+  },
+  "formForm": {
+    "validation": {
+      "questionsMin": "At least {{count}} question is required",
+      "questionsMax": "At most {{count}} questions are allowed",
+      "promptRequired": "The question text is required",
+      "promptMax": "The question text is too long",
+      "explanationMax": "The explanation is too long",
+      "optionsMin": "At least {{count}} options are required",
+      "optionsMax": "At most {{count}} options are allowed",
+      "optionRequired": "Option text is required",
+      "optionMax": "The option text is too long",
+      "optionsDuplicate": "Options must be different from each other"
+    }
   }
 }

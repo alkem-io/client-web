@@ -23,7 +23,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useWhiteboardDetailsByIdQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
-import { FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
+import { type FramingChipId, FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
 import { ResponsePanel } from '@/crd/forms/callout/ResponsePanel';
 import { ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip';
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
@@ -35,6 +35,21 @@ import { healContributorCollection } from '@/main/crdPages/space/callout/contrib
 import { FramingEditorConnector } from '@/main/crdPages/space/callout/FramingEditorConnector';
 import { ResponseDefaultsConnector } from '@/main/crdPages/space/callout/ResponseDefaultsConnector';
 import { referenceRowErrors, type UseCrdCalloutFormResult } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
+
+/**
+ * Every framing chip except `form`: a template would carry a Form definition
+ * without its responses, so the template editor never offers it.
+ */
+const TEMPLATE_FRAMING_CHIPS: FramingChipId[] = [
+  'whiteboard',
+  'memo',
+  'document',
+  'cta',
+  'image',
+  'poll',
+  'contributors',
+  'spaces',
+];
 
 export type CalloutTemplateFormProps = {
   /** The `useCrdCalloutForm` instance owned by `useTemplateForms` (controlled). */
@@ -124,6 +139,7 @@ export function CalloutTemplateForm({
           value={values.framingChip}
           onChange={chip => setField('framingChip', chip)}
           editMode={editMode}
+          allowedChips={TEMPLATE_FRAMING_CHIPS}
         />
         <FramingEditorConnector
           mode={editMode ? 'edit' : 'create'}

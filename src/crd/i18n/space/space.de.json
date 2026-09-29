@@ -313,7 +313,8 @@
     "referencesSaveFailed": "Eine oder mehrere neue Referenzen konnten nicht gespeichert werden. Weitere Änderungen wurden nicht übernommen. Bitte versuchen Sie es erneut.",
     "updateFailed": "Die Änderungen am $t(common.callout) konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
     "contributors": "Mitwirkende",
-    "subspaces": "Unterbereiche"
+    "subspaces": "Unterbereiche",
+    "form": "Formular"
   },
   "contribution": {
     "edit": "Bearbeiten",
@@ -1173,5 +1174,19 @@
   },
   "parentStack": {
     "goTo": "Gehe zu {{name}}"
+  },
+  "formForm": {
+    "validation": {
+      "questionsMin": "Mindestens {{count}} Frage ist erforderlich",
+      "questionsMax": "Höchstens {{count}} Fragen sind erlaubt",
+      "promptRequired": "Der Fragetext ist erforderlich",
+      "promptMax": "Der Fragetext ist zu lang",
+      "explanationMax": "Die Erläuterung ist zu lang",
+      "optionsMin": "Mindestens {{count}} Optionen sind erforderlich",
+      "optionsMax": "Höchstens {{count}} Optionen sind erlaubt",
+      "optionRequired": "Der Optionstext ist erforderlich",
+      "optionMax": "Der Optionstext ist zu lang",
+      "optionsDuplicate": "Die Optionen müssen sich voneinander unterscheiden"
+    }
   }
 }

@@ -313,7 +313,8 @@
     "referencesSaveFailed": "No se pudieron guardar una o varias referencias nuevas. Los demás cambios no se aplicaron. Por favor, inténtalo de nuevo.",
     "updateFailed": "No se pudieron guardar los cambios en el $t(common.callout). Por favor, inténtalo de nuevo.",
     "contributors": "Colaboradores",
-    "subspaces": "Subespacios"
+    "subspaces": "Subespacios",
+    "form": "Formulario"
   },
   "contribution": {
     "edit": "Editar",
@@ -1173,5 +1174,19 @@
   },
   "parentStack": {
     "goTo": "Ir a {{name}}"
+  },
+  "formForm": {
+    "validation": {
+      "questionsMin": "Se requiere al menos {{count}} pregunta",
+      "questionsMax": "Se permiten como máximo {{count}} preguntas",
+      "promptRequired": "El texto de la pregunta es obligatorio",
+      "promptMax": "El texto de la pregunta es demasiado largo",
+      "explanationMax": "La explicación es demasiado larga",
+      "optionsMin": "Se requieren al menos {{count}} opciones",
+      "optionsMax": "Se permiten como máximo {{count}} opciones",
+      "optionRequired": "El texto de la opción es obligatorio",
+      "optionMax": "El texto de la opción es demasiado largo",
+      "optionsDuplicate": "Las opciones deben ser distintas entre sí"
+    }
   }
 }
