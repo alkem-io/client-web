@@ -1124,7 +1124,7 @@
       "message": "Nachricht",
       "website": "Website von {{name}} besuchen (öffnet in einem neuen Tab)",
       "opensInNewTab": "öffnet in einem neuen Tab",
-      "joined": "Diesem Space beigetreten seit {{date}}"
+      "joined": "Diesem Space im {{date}} beigetreten"
     },
     "types": {
       "user": "Personen",

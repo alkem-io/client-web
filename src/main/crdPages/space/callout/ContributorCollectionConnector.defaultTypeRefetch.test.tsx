@@ -16,7 +16,7 @@
  * `effectiveActiveType === activeType`), and the collection renders the
  * empty state under a non-zero count.
  */
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { ApolloClient, ApolloLink, ApolloProvider, InMemoryCache, Observable } from '@apollo/client';
 import { type MockedResponse, MockLink } from '@apollo/client/testing';
 import { render, waitFor } from '@testing-library/react';
 import i18next from 'i18next';
@@ -177,5 +177,36 @@ describe('ContributorCollectionConnector — config refetch changes the default 
     await waitFor(() => expect(document.body.textContent).toContain('Green Future Labs'));
     // And the stale empty state must not be what's left on screen.
     expect(document.body.textContent).not.toContain('No contributors');
+  });
+});
+
+describe('ContributorCollectionConnector — a failed by-type fetch', () => {
+  it('is not retried automatically: the failure waits for a user action', async () => {
+    let byTypeRequests = 0;
+    // Every by-type request fails; everything else goes to the mocks.
+    const failByType = new ApolloLink((operation, forward) => {
+      if (operation.operationName !== 'ContributorCollectionByType') return forward(operation);
+      byTypeRequests += 1;
+      return new Observable(observer => observer.error(new Error('network down')));
+    });
+    const client = new ApolloClient({
+      link: ApolloLink.from([failByType, new MockLink([configMock(ActorType.User, 1, 3)])]),
+      cache: new InMemoryCache({ typePolicies }),
+    });
+
+    render(
+      <MemoryRouter>
+        <I18nextProvider i18n={i18n}>
+          <ApolloProvider client={client}>
+            <ContributorCollectionConnector calloutId={CALLOUT_ID} />
+          </ApolloProvider>
+        </I18nextProvider>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(byTypeRequests).toBeGreaterThan(0));
+    // Give any re-render-driven retry loop time to show itself.
+    await new Promise(resolve => setTimeout(resolve, 200));
+    expect(byTypeRequests).toBe(1);
   });
 });

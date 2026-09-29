@@ -146,7 +146,12 @@ describe('formatJoinedMonth', () => {
   const ORIGINAL_TZ = process.env.TZ;
 
   afterEach(() => {
-    process.env.TZ = ORIGINAL_TZ;
+    // Assigning undefined to an env var stores the string "undefined".
+    if (ORIGINAL_TZ === undefined) {
+      delete process.env.TZ;
+    } else {
+      process.env.TZ = ORIGINAL_TZ;
+    }
   });
 
   test.each([

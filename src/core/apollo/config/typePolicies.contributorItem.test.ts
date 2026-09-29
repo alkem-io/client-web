@@ -55,9 +55,9 @@ describe('Apollo cache identity — ContributorCollectionItem', () => {
           },
         },
       },
-      // biome-ignore lint/suspicious/noExplicitAny: fixture models the raw
-      // network payload (explicit nulls), not the codegen's `| undefined` shape
-    }) as any;
+      // The fixture models the raw network payload (explicit nulls), not the
+      // codegen's `| undefined` shape.
+    }) as unknown as ContributorCollectionByTypeQuery;
 
   it("keeps each post's own roleLabel and joinedDate for the same contributor id", () => {
     const cache = new InMemoryCache({ typePolicies });
