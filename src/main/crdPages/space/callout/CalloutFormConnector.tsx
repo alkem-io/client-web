@@ -119,8 +119,8 @@ const DEFAULT_FRAMING_CHIPS: FramingChipId[] = [
 ];
 
 /**
- * Admin-only framing chips (feature 008 `contributors`, feature 013 `spaces`).
- * Both are offered only to space admins (`permissions.canUpdate`) and only in a
+ * Admin-only framing chips (`contributors`, `spaces` and `form`).
+ * They are offered only to space admins (`permissions.canUpdate`) and only in a
  * collaboration context — never a VC knowledge base, which passes its own
  * `allowedFramingChips`. Filtered out of the default allow-list for non-admins.
  */
