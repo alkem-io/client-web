@@ -8,6 +8,7 @@ import { type CredentialRecord, clearNamespace, loadActorCredentials } from './s
 // rejects the access token (M_UNKNOWN_TOKEN). A string here keeps the SDK a
 // lazily loaded chunk.
 const SESSION_LOGGED_OUT = 'Session.logged_out';
+const CLIENT_SYNC = 'sync';
 
 // Room timelines start from the sync response; history deeper than this is
 // paged in when a conversation is opened.
@@ -16,7 +17,7 @@ const INITIAL_SYNC_LIMIT = 20;
 type MatrixClientLike = {
   stopClient(): void;
   startClient(opts?: { initialSyncLimit?: number; lazyLoadMembers?: boolean }): Promise<void>;
-  on(event: string, listener: () => void): unknown;
+  on(event: string, listener: (state?: string) => void): unknown;
 };
 
 type SessionHandle = {
@@ -35,8 +36,9 @@ type SessionOptions = {
  * when none is usable, then starts the sync loop and publishes the client to
  * the read hooks. Registers the session so an Alkemio sign-out can stop it.
  *
- * A rejected token clears the stored record and gets exactly one silent SSO
- * and restart; a second rejection leaves the session stopped.
+ * A rejected token clears the stored record and gets one silent SSO and
+ * restart; if that restart is rejected before it has synced, the session stays
+ * stopped. A restart that syncs earns a fresh recovery for the next expiry.
  */
 const establishSession = async (
   actorId: string,
@@ -88,6 +90,11 @@ const establishSession = async (
     client.on(SESSION_LOGGED_OUT, () => {
       if (activeClient === client) {
         void recover(record);
+      }
+    });
+    client.on(CLIENT_SYNC, state => {
+      if (state === 'PREPARED') {
+        recoveryUsed = false;
       }
     });
     activeClient = client;

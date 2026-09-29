@@ -24,15 +24,15 @@ type CreateClientFn = (opts: {
 const mockedCreateClient = createClient as unknown as MockedFunction<CreateClientFn>;
 const mockedSilentSso = vi.mocked(attemptSilentSso);
 
-type FakeClient = MatrixClientLike & { emit: (event: string) => void };
+type FakeClient = MatrixClientLike & { emit: (event: string, state?: string) => void };
 
 const makeClient = (): FakeClient => {
-  const handlers = new Map<string, () => void>();
+  const handlers = new Map<string, (state?: string) => void>();
   return {
     stopClient: vi.fn(),
     startClient: vi.fn(async () => {}),
-    on: vi.fn((event: string, listener: () => void) => handlers.set(event, listener)),
-    emit: (event: string) => handlers.get(event)?.(),
+    on: vi.fn((event: string, listener: (state?: string) => void) => handlers.set(event, listener)),
+    emit: (event: string, state?: string) => handlers.get(event)?.(state),
   };
 };
 
@@ -269,5 +269,25 @@ describe('establishSession', () => {
     await new Promise(resolve => setTimeout(resolve, 20));
     expect(mockedSilentSso).not.toHaveBeenCalled();
     expect(mockedCreateClient).toHaveBeenCalledOnce();
+  });
+
+  it('a recovered session that synced recovers again at the next token expiry', async () => {
+    await seedRecord();
+    const clients = [makeClient(), makeClient(), makeClient()];
+    for (const next of clients) mockedCreateClient.mockReturnValueOnce(next);
+    mockedSilentSso.mockImplementation(async () => {
+      await seedRecord({ accessToken: 'syt_fresh' });
+      return 'authenticated';
+    });
+    await establishSession(ACTOR);
+
+    clients[0].emit(TOKEN_REJECTED);
+    await vi.waitFor(() => expect(mockedCreateClient).toHaveBeenCalledTimes(2));
+    clients[1].emit('sync', 'PREPARED');
+    clients[1].emit(TOKEN_REJECTED);
+
+    await vi.waitFor(() => expect(mockedCreateClient).toHaveBeenCalledTimes(3));
+    expect(mockedSilentSso).toHaveBeenCalledTimes(2);
+    expect(getActiveClient()).toBe(clients[2]);
   });
 });

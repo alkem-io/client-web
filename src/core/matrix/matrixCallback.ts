@@ -1,4 +1,4 @@
-import { storeCredentials } from './storage';
+import { clearNamespace, storeCredentials } from './storage';
 
 type ExchangeResult = {
   readonly user_id: string;
@@ -6,9 +6,14 @@ type ExchangeResult = {
   readonly access_token: string;
 };
 
-const exchangeLoginToken = async (homeserverUrl: string, loginToken: string): Promise<ExchangeResult> => {
+const exchangeLoginToken = async (
+  homeserverUrl: string,
+  loginToken: string,
+  signal?: AbortSignal
+): Promise<ExchangeResult> => {
   const response = await fetch(`${homeserverUrl}/_matrix/client/v3/login`, {
     method: 'POST',
+    signal,
     credentials: 'omit',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -27,17 +32,23 @@ const exchangeLoginToken = async (homeserverUrl: string, loginToken: string): Pr
 
 /**
  * Exchanges a loginToken for a device and access token and persists them in
- * this origin's IndexedDB.
+ * this origin's IndexedDB. Once `signal` aborts (sign-out, user switch),
+ * nothing stays persisted: the exchange is cancelled, or its record removed.
  */
-const exchangeAndStore = async (homeserverUrl: string, loginToken: string): Promise<void> => {
+const exchangeAndStore = async (homeserverUrl: string, loginToken: string, signal?: AbortSignal): Promise<void> => {
   try {
-    const result = await exchangeLoginToken(homeserverUrl, loginToken);
+    const result = await exchangeLoginToken(homeserverUrl, loginToken, signal);
     await storeCredentials({
       userId: result.user_id,
       deviceId: result.device_id,
       accessToken: result.access_token,
       homeserverUrl,
     });
+    // A sign-out during the write may already have listed and cleared the
+    // stored namespaces; remove what this write left behind.
+    if (signal?.aborted) {
+      await clearNamespace(result.user_id);
+    }
   } catch {
     // Fail closed: the initiating frame's poll times out.
   }

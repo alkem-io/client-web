@@ -164,7 +164,7 @@ describe('ssoLogin', () => {
 
       expect(await attempt).toBe('authenticated');
       expect(exchangeAndStore).toHaveBeenCalledOnce();
-      expect(exchangeAndStore).toHaveBeenCalledWith(HOMESERVER, 'mlt_1');
+      expect(exchangeAndStore).toHaveBeenCalledWith(HOMESERVER, 'mlt_1', undefined);
       vi.doUnmock('./matrixCallback');
     });
   });

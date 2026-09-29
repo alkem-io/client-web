@@ -1,6 +1,7 @@
 import 'fake-indexeddb/auto';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { handleMatrixCallback, isAcceptedParent } from './matrixCallback';
+import { exchangeAndStore, handleMatrixCallback, isAcceptedParent } from './matrixCallback';
+import * as storage from './storage';
 import { clearNamespace, loadCredentials } from './storage';
 
 const HOMESERVER = 'https://matrix.dev-alkem.io';
@@ -105,6 +106,35 @@ describe('matrixCallback', () => {
 
       expect(postMessage).not.toHaveBeenCalled();
       expect(fetchSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('exchangeAndStore', () => {
+    it('persists nothing when the session is aborted while the exchange is in flight', async () => {
+      const session = new AbortController();
+      vi.spyOn(globalThis, 'fetch').mockImplementation(async () => {
+        session.abort();
+        return new Response(JSON.stringify(EXCHANGE_RESPONSE), { status: 200 });
+      });
+
+      await exchangeAndStore(HOMESERVER, 'mlt_late', session.signal);
+
+      expect(await loadCredentials(EXCHANGE_RESPONSE.user_id)).toBe(null);
+    });
+
+    it('removes the record when the session is aborted during the write', async () => {
+      const session = new AbortController();
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify(EXCHANGE_RESPONSE), { status: 200 }));
+      const write = storage.storeCredentials;
+      vi.spyOn(storage, 'storeCredentials').mockImplementation(async record => {
+        const stored = await write(record);
+        session.abort();
+        return stored;
+      });
+
+      await exchangeAndStore(HOMESERVER, 'mlt_during_write', session.signal);
+
+      expect(await loadCredentials(EXCHANGE_RESPONSE.user_id)).toBe(null);
     });
   });
 });

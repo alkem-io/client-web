@@ -70,7 +70,7 @@ const attemptSilentSso = async (
       return;
     }
     tokenConsumed = true;
-    void exchangeAndStore(homeserverUrl, loginToken);
+    void exchangeAndStore(homeserverUrl, loginToken, signal);
   };
   window.addEventListener('message', onMessage);
 
