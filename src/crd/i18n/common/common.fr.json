@@ -964,6 +964,10 @@
         "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
           "subject": "« {{memberName}} » a rejoint {{organizationName}} en tant qu’associé",
           "description": "{{memberName}} a rejoint {{organizationName}}, dont vous êtes $t(common.admin)."
+        },
+        "SPACE_ADMIN_COLLABORATION_CALLOUT_FORM_RESPONSE": {
+          "subject": "{{triggeredByName}} a répondu au formulaire « {{calloutName}} »",
+          "description": "Dans <b>{{spaceName}}</b>, dont vous êtes $t(common.admin)."
         }
       },
       "spacesToJoin": "L'acceptation entraîne l'adhésion à : {{spaces}}",

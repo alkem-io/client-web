@@ -514,14 +514,19 @@
       "whiteboard": "The whiteboard",
       "memo": "The memo",
       "mediaGallery": "The media gallery",
-      "document": "The document"
+      "document": "The document",
+      "form": "The form"
     },
     "moreLinks_one": "and {{count}} more link",
     "moreLinks_other": "and {{count}} more links",
     "comments_one": "{{count}} comment will be deleted",
     "comments_other": "{{count}} comments will be deleted",
     "success": "$t(common.Callout) “{{title}}” was deleted.",
-    "saveFailed": "Could not delete the $t(common.callout). Please try again."
+    "saveFailed": "Could not delete the $t(common.callout). Please try again.",
+    "headerRichForm_one": "The form and its {{count}} response will be deleted",
+    "headerRichForm_other": "The form and its {{count}} responses will be deleted",
+    "headerRichFormContributions_one": "The form, its responses and {{count}} contribution will be deleted",
+    "headerRichFormContributions_other": "The form, its responses and {{count}} contributions will be deleted"
   },
   "deleteTask": {
     "title": "Delete this task?"

@@ -964,6 +964,10 @@
         "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
           "subject": "\"{{memberName}}\" joined {{organizationName}} as an associate",
           "description": "{{memberName}} has joined {{organizationName}}, of which you are an $t(common.admin)."
+        },
+        "SPACE_ADMIN_COLLABORATION_CALLOUT_FORM_RESPONSE": {
+          "subject": "{{triggeredByName}} responded to the form \"{{calloutName}}\"",
+          "description": "In <b>{{spaceName}}</b>, of which you are an $t(common.admin)."
         }
       },
       "spacesToJoin": "Accepting joins: {{spaces}}",

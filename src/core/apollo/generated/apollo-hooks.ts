@@ -1935,6 +1935,11 @@ export const UserSettingsFragmentFragmentDoc = gql`
           inApp
           push
         }
+        collaborationCalloutFormResponseReceived {
+          email
+          inApp
+          push
+        }
         communityNewMember {
           email
           inApp
@@ -16906,6 +16911,11 @@ export const UpdateUserSettingsDocument = gql`
               push
             }
             collaborationCalloutContributionCreated {
+              email
+              inApp
+              push
+            }
+            collaborationCalloutFormResponseReceived {
               email
               inApp
               push

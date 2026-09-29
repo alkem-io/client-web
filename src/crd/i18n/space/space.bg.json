@@ -514,14 +514,19 @@
       "whiteboard": "дъската",
       "memo": "бележката",
       "mediaGallery": "медийната галерия",
-      "document": "документа"
+      "document": "документа",
+      "form": "формуляра"
     },
     "moreLinks_one": "и още {{count}} връзка",
     "moreLinks_other": "и още {{count}} връзки",
     "comments_one": "Ще се изтрие {{count}} коментар",
     "comments_other": "Ще се изтрият {{count}} коментара",
     "success": "$t(common.Callout)-ът “{{title}}” беше изтрит.",
-    "saveFailed": "$t(common.Callout)-ът не можа да бъде изтрит. Опитайте отново."
+    "saveFailed": "$t(common.Callout)-ът не можа да бъде изтрит. Опитайте отново.",
+    "headerRichForm_one": "Ще се изтрият формулярът и неговият {{count}} отговор",
+    "headerRichForm_other": "Ще се изтрият формулярът и неговите {{count}} отговора",
+    "headerRichFormContributions_one": "Ще се изтрият формулярът, отговорите към него и {{count}} принос",
+    "headerRichFormContributions_other": "Ще се изтрият формулярът, отговорите към него и {{count}} приноса"
   },
   "deleteTask": {
     "title": "Да изтрия ли тази задача?"

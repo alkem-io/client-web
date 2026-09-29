@@ -514,14 +514,19 @@
       "whiteboard": "Das Whiteboard",
       "memo": "Die Notiz",
       "mediaGallery": "Die Mediengalerie",
-      "document": "Das Dokument"
+      "document": "Das Dokument",
+      "form": "Das Formular"
     },
     "moreLinks_one": "und {{count}} weiterer Link",
     "moreLinks_other": "und {{count}} weitere Links",
     "comments_one": "{{count}} Kommentar wird gelöscht",
     "comments_other": "{{count}} Kommentare werden gelöscht",
     "success": "Der $t(common.Callout) „{{title}}“ wurde gelöscht.",
-    "saveFailed": "Der $t(common.Callout) konnte nicht gelöscht werden. Bitte erneut versuchen."
+    "saveFailed": "Der $t(common.Callout) konnte nicht gelöscht werden. Bitte erneut versuchen.",
+    "headerRichForm_one": "Das Formular und seine {{count}} Antwort werden gelöscht",
+    "headerRichForm_other": "Das Formular und seine {{count}} Antworten werden gelöscht",
+    "headerRichFormContributions_one": "Das Formular, seine Antworten und {{count}} Beitrag werden gelöscht",
+    "headerRichFormContributions_other": "Das Formular, seine Antworten und {{count}} Beiträge werden gelöscht"
   },
   "deleteTask": {
     "title": "Diese Aufgabe löschen?"

@@ -514,14 +514,19 @@
       "whiteboard": "la pizarra",
       "memo": "la nota",
       "mediaGallery": "la galería multimedia",
-      "document": "el documento"
+      "document": "el documento",
+      "form": "el formulario"
     },
     "moreLinks_one": "y {{count}} enlace más",
     "moreLinks_other": "y {{count}} enlaces más",
     "comments_one": "Se eliminará {{count}} comentario",
     "comments_other": "Se eliminarán {{count}} comentarios",
     "success": "El aviso “{{title}}” se ha eliminado.",
-    "saveFailed": "No se pudo eliminar el aviso. Vuelve a intentarlo."
+    "saveFailed": "No se pudo eliminar el aviso. Vuelve a intentarlo.",
+    "headerRichForm_one": "Se eliminarán el formulario y su {{count}} respuesta",
+    "headerRichForm_other": "Se eliminarán el formulario y sus {{count}} respuestas",
+    "headerRichFormContributions_one": "Se eliminarán el formulario, sus respuestas y {{count}} contribución",
+    "headerRichFormContributions_other": "Se eliminarán el formulario, sus respuestas y {{count}} contribuciones"
   },
   "deleteTask": {
     "title": "¿Eliminar esta tarea?"

@@ -148,6 +148,7 @@ describe('templateContentMapper', () => {
   it('maps every framing-type enum to the CRD framing-kind union', () => {
     expect(mapGqlFramingType(CalloutFramingType.None)).toBe('none');
     expect(mapGqlFramingType(CalloutFramingType.Whiteboard)).toBe('whiteboard');
+    expect(mapGqlFramingType(CalloutFramingType.Form)).toBe('form');
     expect(mapGqlFramingType(CalloutFramingType.Memo)).toBe('memo');
     expect(mapGqlFramingType(CalloutFramingType.CollaboraDocument)).toBe('document');
     expect(mapGqlFramingType(CalloutFramingType.Link)).toBe('cta');

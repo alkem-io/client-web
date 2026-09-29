@@ -514,14 +514,19 @@
       "whiteboard": "Le tableau blanc",
       "memo": "Le mémo",
       "mediaGallery": "La galerie multimédia",
-      "document": "Le document"
+      "document": "Le document",
+      "form": "Le formulaire"
     },
     "moreLinks_one": "et {{count}} autre lien",
     "moreLinks_other": "et {{count}} autres liens",
     "comments_one": "{{count}} commentaire sera supprimé",
     "comments_other": "{{count}} commentaires seront supprimés",
     "success": "La $t(common.callout) « {{title}} » a été supprimée.",
-    "saveFailed": "Impossible de supprimer le $t(common.callout). Veuillez réessayer."
+    "saveFailed": "Impossible de supprimer le $t(common.callout). Veuillez réessayer.",
+    "headerRichForm_one": "Le formulaire et sa {{count}} réponse seront supprimés",
+    "headerRichForm_other": "Le formulaire et ses {{count}} réponses seront supprimés",
+    "headerRichFormContributions_one": "Le formulaire, ses réponses et {{count}} contribution seront supprimés",
+    "headerRichFormContributions_other": "Le formulaire, ses réponses et {{count}} contributions seront supprimés"
   },
   "deleteTask": {
     "title": "Supprimer cette tâche ?"
