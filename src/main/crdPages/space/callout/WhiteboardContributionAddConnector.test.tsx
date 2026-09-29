@@ -46,6 +46,7 @@ describe('WhiteboardContributionAddConnector', () => {
     await waitFor(() => expect(state.handleApolloError).toHaveBeenCalledWith(error));
     expect(state.createWhiteboard).toHaveBeenCalledOnce();
     expect(state.createWhiteboard).toHaveBeenCalledWith({
+      context: { skipGlobalErrorHandler: true },
       variables: {
         calloutId: 'callout-1',
         whiteboard: { profile: { displayName: 'callout.defaultWhiteboardName' } },

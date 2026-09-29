@@ -67,6 +67,7 @@ export function WhiteboardContributionAddConnector({
     const trimmed = whiteboardName.trim();
     if (!trimmed) return;
     const { data } = await createWhiteboard({
+      context: { skipGlobalErrorHandler: true },
       variables: {
         calloutId,
         whiteboard: {
