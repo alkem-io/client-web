@@ -45,6 +45,7 @@ describe('establishSession', () => {
   });
 
   afterEach(async () => {
+    stopActiveSession();
     await clearNamespace(USER_ID);
   });
 
@@ -104,6 +105,17 @@ describe('establishSession', () => {
     expect(client.stopClient).toHaveBeenCalled();
   });
 
+  it('an already-aborted signal stops the session at once', async () => {
+    await seedRecord();
+    const controller = new AbortController();
+    controller.abort();
+
+    await establishSession(ACTOR, { signal: controller.signal });
+
+    expect(mockedCreateClient).not.toHaveBeenCalled();
+    expect(stopActiveSession()).toBe(false);
+  });
+
   it('an aborted signal stops establishment before a client is created', async () => {
     let capturedSignal: AbortSignal | undefined;
     mockedSilentSso.mockImplementation(
@@ -161,7 +173,7 @@ describe('establishSession', () => {
       await establishSession('9f8e7d6c-5b4a-3210-9876-fedcba098765');
 
       expect(mockedSilentSso).toHaveBeenCalledOnce();
-      expect(mockedCreateClient).not.toHaveBeenCalledWith(expect.objectContaining({ userId: otherUserId }));
+      expect(mockedCreateClient).not.toHaveBeenCalled();
     } finally {
       await clearNamespace(otherUserId);
     }

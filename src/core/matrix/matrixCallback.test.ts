@@ -62,5 +62,15 @@ describe('matrixCallback', () => {
       expect(stored?.accessToken).toBe(EXCHANGE_RESPONSE.access_token);
       expect(stored?.deviceId).toBe(EXCHANGE_RESPONSE.device_id);
     });
+
+    it('stores nothing when the exchange response lacks the access token', async () => {
+      setUrlWithToken('mlt_valid');
+      const { access_token: _omitted, ...incomplete } = EXCHANGE_RESPONSE;
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response(JSON.stringify(incomplete), { status: 200 }));
+
+      await handleMatrixCallback(HOMESERVER);
+
+      expect(await loadCredentials(EXCHANGE_RESPONSE.user_id)).toBe(null);
+    });
   });
 });

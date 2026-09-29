@@ -56,6 +56,21 @@ describe('storage (IndexedDB)', () => {
   });
 
   describe('whole-namespace wipe', () => {
+    it('resolves while another connection still holds the database open', async () => {
+      await storeCredentials(makeRecord());
+      const held = await new Promise<IDBDatabase>((resolve, reject) => {
+        const request = indexedDB.open(`alkemio-matrix/${USER_ID}`);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+
+      try {
+        await expect(clearNamespace(USER_ID)).resolves.toBeUndefined();
+      } finally {
+        held.close();
+      }
+    });
+
     it('leaves other users untouched', async () => {
       await storeCredentials(makeRecord({ userId: USER_ID }));
       await storeCredentials(makeRecord({ userId: OTHER_USER_ID, deviceId: 'DEVICE_BOB' }));

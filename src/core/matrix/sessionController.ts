@@ -29,6 +29,9 @@ const establishSession = async (actorId: string, { signal }: { signal?: AbortSig
     unregisterActiveSession(stop);
   };
   registerActiveSession(stop);
+  if (signal?.aborted) {
+    stop();
+  }
   signal?.addEventListener('abort', stop);
 
   try {

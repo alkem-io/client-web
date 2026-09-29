@@ -39,6 +39,10 @@ const handleMatrixCallback = async (homeserverUrl: string): Promise<void> => {
 
   try {
     const result = await exchangeLoginToken(homeserverUrl, loginToken);
+    // A record missing any field would be resumed unchecked until sign-out.
+    if (!result.user_id || !result.device_id || !result.access_token) {
+      return;
+    }
     await storeCredentials({
       userId: result.user_id,
       deviceId: result.device_id,
