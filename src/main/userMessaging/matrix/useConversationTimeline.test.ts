@@ -57,6 +57,18 @@ describe('useConversationTimeline', () => {
     expect(result.current.messages).toHaveLength(130);
   });
 
+  it('renders nothing for a room that has no Matrix room behind it', async () => {
+    const { client, scrollback } = makeClient(10, 10);
+    client.getRoomIdForAlias.mockRejectedValue(new Error('M_NOT_FOUND'));
+    harness.client = client;
+
+    const { result } = renderHook(() => useConversationTimeline('unlisted-room'));
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.messages).toEqual([]);
+    expect(scrollback).not.toHaveBeenCalled();
+  });
+
   it('does nothing without an opened conversation or without a Matrix session', () => {
     const { client, scrollback } = makeClient(10, 10);
     harness.client = client;
