@@ -1452,7 +1452,7 @@ export type CalloutFormResponses = {
   /** Whether the viewer can read every response of the Form. */
   canReadAll: Scalars['Boolean']['output'];
   formID: Scalars['UUID']['output'];
-  /** The viewer's own responses. */
+  /** The viewer's own responses, oldest first; at most the 50 newest. */
   mine: Array<CalloutFormResponse>;
 };
 
