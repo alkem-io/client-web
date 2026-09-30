@@ -204,6 +204,65 @@ describe('mapInvitationResults', () => {
     expect(results).toEqual([{ invitee: invitees[0], outcome: 'error' }]);
   });
 
+  test('an interleaved batch keeps every outcome on its own chip and never lends a typed failure to an unmatched chip', () => {
+    const invitees: ContributorSelectorInvitee[] = [
+      { kind: 'email', email: 'new@example.com' },
+      { kind: 'user', userId: 'user-p', displayName: 'Pat' },
+      { kind: 'email', email: 'registered@example.com' },
+      { kind: 'email', email: 'pat@example.com' },
+      { kind: 'user', userId: 'user-q', displayName: 'Quinn' },
+    ];
+    const legacyResults: InvitationResultModel[] = [
+      {
+        type: RoleSetInvitationResultType.ExtraRoleLimitReached,
+        invitedActorID: 'user-q',
+      },
+      {
+        type: RoleSetInvitationResultType.InvitedToRoleSet,
+        invitedActorID: 'user-p',
+        invitedEmail: 'pat@example.com',
+        invitation: { id: 'inv-p', actor: { id: 'user-p' } },
+      },
+      {
+        type: RoleSetInvitationResultType.InvitedToRoleSet,
+        invitedActorID: 'user-r',
+        invitedEmail: 'registered@example.com',
+        invitation: { id: 'inv-r', actor: { id: 'user-r' } },
+      },
+      {
+        type: RoleSetInvitationResultType.InvitedToPlatformAndRoleSet,
+        invitedEmail: 'new@example.com',
+        platformInvitation: { id: 'pi-1', email: 'new@example.com' },
+      },
+    ];
+
+    const results = mapInvitationResults(invitees, legacyResults);
+
+    expect(results.map(r => r.outcome)).toEqual([
+      'sent',
+      'sent',
+      'sent',
+      // Pat's address typed again: the server de-duplicated it, so no result is left for this chip.
+      'error',
+      'extraRoleLimitReached',
+    ]);
+  });
+
+  test('identity-less legacy results are still consumed positionally', () => {
+    const invitees: ContributorSelectorInvitee[] = [
+      { kind: 'organization', id: 'org-1', displayName: 'Acme' },
+      { kind: 'organization', id: 'org-2', displayName: 'Beta' },
+    ];
+    const legacyResults: InvitationResultModel[] = [
+      { type: RoleSetInvitationResultType.OrganizationNotAcceptingInvitations },
+      { type: RoleSetInvitationResultType.OrganizationLeadRoleLimitReached },
+    ];
+    expect(mapInvitationResults(invitees, legacyResults).map(r => r.outcome)).toEqual([
+      'notAcceptingInvitations',
+      'leadLimitReached',
+    ]);
+  });
+
   test('user and email invitees keep their existing correlation and outcomes', () => {
     const invitees: ContributorSelectorInvitee[] = [
       { kind: 'user', userId: 'u1', displayName: 'Alice' },

@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import type {
   PendingMembership,
   PendingMembershipContributorType,
@@ -12,6 +14,10 @@ import type {
   CommunityOrg,
   CommunityVC,
 } from '@/crd/components/space/settings/SpaceSettingsCommunityView';
+import {
+  RESEND_FEEDBACK_TRANSLATION_KEY,
+  resolveResendFeedback,
+} from '@/domain/access/ApplicationsAndInvitations/resendPlatformInvitationFeedback';
 import type { ApplicationModel } from '@/domain/access/model/ApplicationModel';
 import {
   ApplicationEvent,
@@ -96,6 +102,9 @@ export type UseCommunityTabDataResult = {
   onPendingApprove: (id: string) => void;
   onPendingReject: (id: string) => void;
   onPendingDelete: (id: string) => void;
+  onPendingResend: (id: string) => void;
+  /** Id of the email invitation whose resend request is in flight. */
+  resendingId: string | undefined;
   loading: boolean;
   errored: boolean;
   pendingRemoval: CommunityPendingRemoval | null;
@@ -159,7 +168,10 @@ const mapInvitationState = (state: string): PendingMembershipState | null => {
 export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResult {
   const community = useCommunityAdmin({ roleSetId });
   const { userModel } = useCurrentUserContext();
+  const { t } = useTranslation('crd-spaceSettings');
+  const notify = useNotification();
   const [pendingRemoval, setPendingRemoval] = useState<CommunityPendingRemoval | null>(null);
+  const [resendingId, setResendingId] = useState<string | undefined>(undefined);
 
   const members: CommunityMember[] = community.userAdmin.members.map(u => {
     // Show every role the user actually holds — Admin AND Lead together when
@@ -215,6 +227,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
         canApprove: state === 'new',
         canReject: state === 'new',
         canDelete: state !== 'approved',
+        canResend: false,
       };
     })
     .filter((x): x is PendingMembership => x !== null);
@@ -240,6 +253,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
         canApprove: false,
         canReject: false,
         canDelete: true,
+        canResend: false,
       };
     })
     .filter((x): x is PendingMembership => x !== null);
@@ -281,6 +295,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     canApprove: false,
     canReject: false,
     canDelete: true,
+    canResend: true,
   }));
 
   const pendingMemberships: PendingMembership[] = [
@@ -340,6 +355,24 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
       membershipType: item.type,
       state: item.state,
     });
+  };
+
+  const onPendingResend = (id: string) => {
+    if (resendingId !== undefined) return;
+    setResendingId(id);
+    community.membershipAdmin
+      .onResendPlatformInvitation(id)
+      .then(
+        () => resolveResendFeedback(),
+        error => resolveResendFeedback(error)
+      )
+      .then(feedback => {
+        notify(
+          t(RESEND_FEEDBACK_TRANSLATION_KEY[feedback]),
+          feedback === 'success' ? 'success' : feedback === 'throttled' ? 'info' : 'error'
+        );
+      })
+      .finally(() => setResendingId(undefined));
   };
 
   const cancelRemoval = () => setPendingRemoval(null);
@@ -442,6 +475,8 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     onPendingApprove,
     onPendingReject,
     onPendingDelete,
+    onPendingResend,
+    resendingId,
     getMemberFirstName,
     viewerId: userModel?.id,
     loading: community.loading,

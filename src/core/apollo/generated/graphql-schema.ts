@@ -12,14 +12,23 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: Date; output: Date };
+  /** An Emoji. */
   Emoji: { input: string; output: string };
+  /** A representation of a Lifecycle Definition, based on XState. It is serialized JSON. */
   LifecycleDefinition: { input: string; output: string };
+  /** A markdown string. */
   Markdown: { input: string; output: string };
+  /** An identifier that originates from the underlying messaging platform. */
   MessageID: { input: string; output: string };
+  /** A human readable identifier, 3 <= length <= 28. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: { input: string; output: string };
+  /** Cursor used for paginating search results. */
   SearchCursor: { input: string; output: string };
+  /** A uuid identifier. Length 36 characters. */
   UUID: { input: string; output: string };
+  /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
 };
 
@@ -5731,6 +5740,8 @@ export type Mutation = {
   replaceCollaboraDocument: CollaboraDocument;
   /** Replace a Whiteboard from another Whiteboard through the live collaboration room. Content and media are copied server-side; snapshot bytes never pass through GraphQL. */
   replaceWhiteboardContentFromSource: Whiteboard;
+  /** Sends the invitation email of an open platform invitation again (Space or Organization role sets); throttled per invitation. */
+  resendPlatformInvitation: PlatformInvitation;
   /** Resets the interaction with the VC by recreating the room. */
   resetConversationVc: Conversation;
   /** Reset all license plans on Accounts */
@@ -6492,6 +6503,10 @@ export type MutationReplaceWhiteboardContentFromSourceArgs = {
   input: ReplaceWhiteboardContentFromSourceInput;
 };
 
+export type MutationResendPlatformInvitationArgs = {
+  resendData: ResendPlatformInvitationInput;
+};
+
 export type MutationResetConversationVcArgs = {
   input: ConversationVcResetInput;
 };
@@ -6880,6 +6895,7 @@ export enum NotificationEvent {
   OrganizationAdminMessage = 'ORGANIZATION_ADMIN_MESSAGE',
   OrganizationAdminSpaceCommunityInvitation = 'ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION',
   OrganizationAdminSpaceCommunityJoined = 'ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED',
+  OrganizationAssociateInvitationUserPlatform = 'ORGANIZATION_ASSOCIATE_INVITATION_USER_PLATFORM',
   OrganizationMessageSender = 'ORGANIZATION_MESSAGE_SENDER',
   PlatformAdminGlobalRoleChanged = 'PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED',
   PlatformAdminSpaceCreated = 'PLATFORM_ADMIN_SPACE_CREATED',
@@ -8388,6 +8404,11 @@ export type ReplaceWhiteboardContentFromSourceInput = {
   targetWhiteboardID: Scalars['UUID']['input'];
 };
 
+export type ResendPlatformInvitationInput = {
+  /** The open platform invitation whose email is sent again. */
+  ID: Scalars['UUID']['input'];
+};
+
 export type RevokeAuthorizationCredentialInput = {
   /** The resource to which access is being removed. */
   resourceID: Scalars['String']['input'];
@@ -8521,7 +8542,7 @@ export type RoleSet = {
   organizationsInRole: Array<Organization>;
   /** All organizations that have a role in this RoleSet in the specified Roles. */
   organizationsInRoles: Array<OrganizationsInRolesResponse>;
-  /** Invitations to join this RoleSet in an entry role for users not yet on the Alkemio platform. */
+  /** Open (not yet consumed) invitations to join this RoleSet in an entry role for people not yet on the Alkemio platform. */
   platformInvitations: Array<PlatformInvitation>;
   /** The Role Definitions from this RoleSet to return. */
   roleDefinition: Role;
@@ -12208,6 +12229,15 @@ export type DeletePlatformInvitationMutation = {
   deletePlatformInvitation: { __typename?: 'PlatformInvitation'; id: string };
 };
 
+export type ResendPlatformInvitationMutationVariables = Exact<{
+  invitationId: Scalars['UUID']['input'];
+}>;
+
+export type ResendPlatformInvitationMutation = {
+  __typename?: 'Mutation';
+  resendPlatformInvitation: { __typename?: 'PlatformInvitation'; id: string };
+};
+
 export type CommunityApplicationsInvitationsQueryVariables = Exact<{
   roleSetId: Scalars['UUID']['input'];
   includeApplications?: InputMaybe<Scalars['Boolean']['input']>;
@@ -12260,6 +12290,7 @@ export type CommunityApplicationsInvitationsQuery = {
             id: string;
             createdDate: Date;
             email: string;
+            roleSetExtraRoles: Array<RoleName>;
           }>;
         }
       | undefined;
@@ -12304,6 +12335,7 @@ export type AdminPlatformInvitationCommunityFragment = {
   id: string;
   createdDate: Date;
   email: string;
+  roleSetExtraRoles: Array<RoleName>;
 };
 
 export type AdminCommunityCandidateMemberFragment = {

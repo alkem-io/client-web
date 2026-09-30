@@ -60,9 +60,6 @@
       "resultsSummary_other": "{{count}} invitations traitées pour {{spaceName}}.",
       "associates": {
         "title": "Inviter des associés à « {{organizationName}} »",
-        "searchHint": "Rechercher un utilisateur inscrit à inviter en tant qu’associé",
-        "searchPlaceholder": "Nom d’utilisateur…",
-        "searchAriaLabel": "Rechercher des utilisateurs par nom",
         "noResultsLabel": "Aucun utilisateur correspondant",
         "loadingLabel": "Chargement des utilisateurs…",
         "defaultWelcomeMessage": "Bonjour, nous aimerions vous inviter à vous associer à {{organizationName}}. Cliquez ci-dessous pour accepter ou refuser l’invitation.",

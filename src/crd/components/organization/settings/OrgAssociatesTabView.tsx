@@ -35,6 +35,8 @@ export type OrgAssociatesTabViewProps = {
   onPendingApprove: (id: string) => void;
   onPendingReject: (id: string) => void;
   onPendingRevoke: (id: string) => void;
+  onPendingResend: (id: string) => void;
+  resendingId?: string;
   onPendingView: (id: string) => void;
 };
 
@@ -52,6 +54,8 @@ export function OrgAssociatesTabView({
   onPendingApprove,
   onPendingReject,
   onPendingRevoke,
+  onPendingResend,
+  resendingId,
   onPendingView,
 }: OrgAssociatesTabViewProps) {
   const { t } = useTranslation(NS);
@@ -72,6 +76,8 @@ export function OrgAssociatesTabView({
         onApprove={onPendingApprove}
         onReject={onPendingReject}
         onDelete={onPendingRevoke}
+        onResend={onPendingResend}
+        resendingId={resendingId}
       />
       <SettingsCard
         icon={Users}

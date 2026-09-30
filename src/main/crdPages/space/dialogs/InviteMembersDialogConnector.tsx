@@ -71,8 +71,13 @@ export type InviteMembersDialogConnectorProps = {
  * neither an `invitation` nor a `platformInvitation` to match on.
  *
  * The legacy fallbacks below (match on the created entity, then consume the
- * next id-less result positionally) are kept only for a server that predates
- * those fields; they are unreachable against a current server.
+ * next identity-less result positionally) are kept only for a server that
+ * predates those fields; they are unreachable against a current server. The
+ * positional fallback never claims a result that carries any identity or
+ * created entity: such a result belongs to the chip it names, so a chip that
+ * matched nothing (for example an address typed twice, which the server
+ * de-duplicates) reports an error instead of borrowing another invitee's
+ * outcome.
  * Exported for unit testing (T007).
  */
 export const mapInvitationResults = (
@@ -106,7 +111,8 @@ export const mapInvitationResults = (
           : invitee.kind === 'email'
             ? take(r => r.platformInvitation?.email?.toLowerCase() === invitee.email.toLowerCase())
             : undefined);
-    const legacyResult = matched ?? take(r => !r.invitation && !r.platformInvitation);
+    const legacyResult =
+      matched ?? take(r => !r.invitedActorID && !r.invitedEmail && !r.invitation && !r.platformInvitation);
     if (!legacyResult) {
       return { invitee, outcome: 'error' as const };
     }
@@ -127,7 +133,9 @@ export const mapInvitationResults = (
                   ? 'notAcceptingInvitations'
                   : legacyResult.type === RoleSetInvitationResultType.OrganizationLeadRoleLimitReached
                     ? 'leadLimitReached'
-                    : 'error';
+                    : legacyResult.type === RoleSetInvitationResultType.ExtraRoleLimitReached
+                      ? 'extraRoleLimitReached'
+                      : 'error';
     const notice: InvitationResult['notice'] =
       legacyResult.notice === RoleSetInvitationResultNotice.OrganizationHasNoAdministrators
         ? 'noAdministrators'

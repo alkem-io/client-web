@@ -1,7 +1,7 @@
 import { useEffect, useState, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInviteForEntryRoleOnRoleSetMutation } from '@/core/apollo/generated/apollo-hooks';
-import { RoleName, RoleSetInvitationResultType } from '@/core/apollo/generated/graphql-schema';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   type InvitationResult,
@@ -9,7 +9,12 @@ import {
   type InviteRole,
 } from '@/crd/components/community/InviteMembersDialog';
 import type { ContributorSelectorInvitee, ContributorSelectorUserResult } from '@/crd/forms/ContributorSelector';
+import { isValidEmail } from '@/crd/lib/validators';
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
+import type InvitationResultModel from '@/domain/access/model/InvitationResultModel';
+import emailParser from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/emailParser';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import { mapInvitationResults } from '@/main/crdPages/space/dialogs/InviteMembersDialogConnector';
 
 export type OrgInviteAssociatesDialogConnectorProps = {
   open: boolean;
@@ -33,7 +38,9 @@ const SEARCH_DEBOUNCE_MS = 300;
  * Wires `InviteMembersDialog` `target="organization"` to `inviteForEntryRoleOnRoleSet` —
  * a dedicated connector rather than a branch of the Space `InviteMembersDialogConnector`,
  * which resolves candidates and role-set id from the URL-scoped Space; the organization
- * target has neither (D16).
+ * target has neither. Pasted email addresses (people not yet on the platform) and the
+ * suggested invitation language go through the same mutation and the same result
+ * correlation as the Space dialog.
  */
 export function OrgInviteAssociatesDialogConnector({
   open,
@@ -44,13 +51,22 @@ export function OrgInviteAssociatesDialogConnector({
   onSent,
 }: OrgInviteAssociatesDialogConnectorProps) {
   const { t } = useTranslation('crd-community');
+  const { i18n } = useTranslation();
   const notify = useNotification();
+
+  const { language: languageConfig } = useConfig();
+  const eligibleLanguages = (languageConfig?.eligible ?? []).map(code => ({
+    code,
+    // biome-ignore lint/suspicious/noExplicitAny: dynamic key — code is an eligible language code from server config
+    label: String((i18n as any).t(`languages.${code}`)),
+  }));
 
   const [selectedContributors, setSelectedContributors] = useState<ContributorSelectorInvitee[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [welcomeMessage, setWelcomeMessage] = useState('');
   const [extraRoles, setExtraRoles] = useState<InviteRole[]>(['Associate']);
+  const [suggestedLanguage, setSuggestedLanguage] = useState<string | undefined>(undefined);
   const [results, setResults] = useState<InvitationResult[] | undefined>(undefined);
   const [isSending, startTransition] = useTransition();
 
@@ -96,6 +112,38 @@ export function OrgInviteAssociatesDialogConnector({
     ]);
     setSearchQuery('');
   };
+  const handleAddEmails = (rawText: string) => {
+    const parsed = emailParser(rawText);
+    if (parsed.length === 0) return;
+
+    const existingEmails = new Set(
+      selectedContributors
+        .filter(c => c.kind === 'email')
+        .map(c => (c as { kind: 'email'; email: string }).email.toLowerCase())
+    );
+
+    const additions: ContributorSelectorInvitee[] = [];
+    for (const entry of parsed) {
+      const email = entry.email.trim();
+      if (!email) continue;
+      const lowered = email.toLowerCase();
+      if (existingEmails.has(lowered)) {
+        additions.push({ kind: 'email', email, validationError: 'duplicate' });
+        continue;
+      }
+      if (!isValidEmail(email)) {
+        additions.push({ kind: 'email', email, validationError: 'invalid' });
+        continue;
+      }
+      existingEmails.add(lowered);
+      additions.push({ kind: 'email', email });
+    }
+    if (additions.length > 0) {
+      setSelectedContributors(prev => [...prev, ...additions]);
+    }
+    setSearchQuery('');
+  };
+
   const handleRemoveContributor = (index: number) => {
     setSelectedContributors(prev => prev.filter((_, i) => i !== index));
   };
@@ -115,10 +163,17 @@ export function OrgInviteAssociatesDialogConnector({
   const handleSend = () => {
     if (!roleSetId) return;
     if (!extraRoles.includes('Associate')) return;
-    const validInvitees = selectedContributors.filter(c => c.kind === 'user');
+    const validInvitees = selectedContributors.filter(
+      c => c.kind === 'user' || (c.kind === 'email' && c.validationError === undefined)
+    );
     if (validInvitees.length === 0) return;
 
-    const invitedContributorIds = validInvitees.map(c => (c as { kind: 'user'; userId: string }).userId);
+    const invitedContributorIds: string[] = [];
+    const invitedUserEmails: string[] = [];
+    for (const invitee of validInvitees) {
+      if (invitee.kind === 'user') invitedContributorIds.push(invitee.userId);
+      else if (invitee.kind === 'email') invitedUserEmails.push(invitee.email);
+    }
     const extraRoleNames = extraRoles.filter((r): r is 'Admin' | 'Owner' => r === 'Admin' || r === 'Owner');
 
     startTransition(async () => {
@@ -127,35 +182,18 @@ export function OrgInviteAssociatesDialogConnector({
           variables: {
             roleSetId,
             invitedActorIds: invitedContributorIds,
-            invitedUserEmails: [],
+            invitedUserEmails,
             welcomeMessage,
             extraRoles: extraRoleNames.map(r => ROLE_TO_NAME[r]),
+            // Only include a language when the host explicitly chose one.
+            suggestedLanguage,
           },
         });
-        const legacyResults = data?.inviteForEntryRoleOnRoleSet ?? [];
-        // Match positionally: the server returns one result per requested invitee, in request
-        // order (invitedContributorIds above). Several result types (EXTRA_ROLE_LIMIT_REACHED,
-        // ALREADY_MEMBER_OF_ROLE_SET, ORGANIZATION_NOT_ACCEPTING_INVITATIONS,
-        // ORGANIZATION_LEAD_ROLE_LIMIT_REACHED, ALREADY_HAS_OPEN_APPLICATION) leave `invitation`
-        // null, so matching by `invitation.actor.id` silently drops those rows to a generic error.
-        const built: InvitationResult[] = validInvitees.map((invitee, index) => {
-          const legacyResult = legacyResults[index];
-          if (!legacyResult) return { invitee, outcome: 'error' as const };
-          const outcome: InvitationResult['outcome'] =
-            legacyResult.type === RoleSetInvitationResultType.InvitedToRoleSet
-              ? 'sent'
-              : legacyResult.type === RoleSetInvitationResultType.AlreadyInvitedToRoleSet
-                ? 'alreadyInvited'
-                : legacyResult.type === RoleSetInvitationResultType.AlreadyMemberOfRoleSet
-                  ? 'alreadyMember'
-                  : legacyResult.type === RoleSetInvitationResultType.AlreadyHasOpenApplication
-                    ? 'alreadyHasApplication'
-                    : legacyResult.type === RoleSetInvitationResultType.ExtraRoleLimitReached
-                      ? 'extraRoleLimitReached'
-                      : 'error';
-          return { invitee, outcome };
-        });
-        setResults(built);
+        const legacyResults: InvitationResultModel[] = data?.inviteForEntryRoleOnRoleSet ?? [];
+        // Results are matched to chips by identity (invited actor id / invited email), never by
+        // position: the server moves an email that belongs to a registered user into the actor
+        // group, so result order does not follow the order chips were submitted in.
+        setResults(mapInvitationResults(validInvitees, legacyResults));
         onSent();
       } catch {
         notify(t('inviteMembers.errors.networkFailure'), 'error');
@@ -175,6 +213,7 @@ export function OrgInviteAssociatesDialogConnector({
       setDebouncedQuery('');
       setWelcomeMessage('');
       setExtraRoles(['Associate']);
+      setSuggestedLanguage(undefined);
       setResults(undefined);
       onClose();
     }
@@ -196,7 +235,11 @@ export function OrgInviteAssociatesDialogConnector({
       searchLoading={searchLoading}
       hasMoreSearchResults={hasMore}
       onLoadMoreSearchResults={() => fetchMore()}
-      allowEmailInvites={false}
+      onAddEmails={handleAddEmails}
+      allowEmailInvites={true}
+      availableLanguages={eligibleLanguages}
+      suggestedLanguage={suggestedLanguage}
+      onSuggestedLanguageChange={setSuggestedLanguage}
       welcomeMessage={welcomeMessage}
       onWelcomeMessageChange={setWelcomeMessage}
       extraRoles={extraRoles}
@@ -207,9 +250,9 @@ export function OrgInviteAssociatesDialogConnector({
       onBack={handleBack}
       labels={{
         title: t('inviteMembers.dialog.associates.title', { organizationName: organizationName || '…' }),
-        searchHint: t('inviteMembers.dialog.associates.searchHint'),
-        searchPlaceholder: t('inviteMembers.dialog.associates.searchPlaceholder'),
-        searchAriaLabel: t('inviteMembers.dialog.associates.searchAriaLabel'),
+        searchHint: t('inviteMembers.dialog.searchHint'),
+        searchPlaceholder: t('inviteMembers.dialog.searchPlaceholder'),
+        searchAriaLabel: t('inviteMembers.dialog.searchAriaLabel'),
         noResultsLabel: t('inviteMembers.dialog.associates.noResultsLabel'),
         loadingLabel: t('inviteMembers.dialog.associates.loadingLabel'),
         loadMoreLabel: t('inviteMembers.dialog.loadMoreLabel'),
@@ -234,6 +277,9 @@ export function OrgInviteAssociatesDialogConnector({
         resultsSummary: (count: number) =>
           t('inviteMembers.dialog.resultsSummary', { count, spaceName: organizationName || '…' }),
         resultOutcomeLabels,
+        suggestedLanguageLabel: t('inviteMembers.dialog.suggestedLanguageLabel'),
+        suggestedLanguagePlaceholder: t('inviteMembers.dialog.suggestedLanguagePlaceholder'),
+        suggestedLanguageNoPreferenceLabel: t('inviteMembers.dialog.suggestedLanguagePlaceholder'),
       }}
     />
   );

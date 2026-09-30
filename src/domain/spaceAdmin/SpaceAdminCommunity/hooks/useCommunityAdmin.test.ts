@@ -81,6 +81,7 @@ const baseApplicationsReturn = {
   invitationStateChange: vi.fn(),
   deleteInvitation: vi.fn(),
   deletePlatformInvitation: vi.fn(),
+  resendPlatformInvitation: vi.fn(),
 };
 
 describe('useCommunityAdmin errored propagation', () => {
