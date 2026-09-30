@@ -66,8 +66,8 @@ describe('CalloutCollaboraPreview', () => {
     ).not.toThrow();
   });
 
-  describe('previewImageUrl (forward-compatible real-thumbnail seam, workspace story #9872 P3)', () => {
-    it('renders the preview image in place of the centered fallback icon when previewImageUrl is present', () => {
+  describe('previewImageUrl', () => {
+    it('renders the preview image with native lazy loading and an empty alt, icon still mounted underneath', () => {
       const { container } = render(
         <CalloutCollaboraPreview
           documentType="text"
@@ -79,14 +79,35 @@ describe('CalloutCollaboraPreview', () => {
       const img = container.querySelector('img');
       expect(img).toBeInTheDocument();
       expect(img).toHaveAttribute('src', 'https://example.com/preview.png');
-      // alt text reuses the existing type-label key (no new i18n key, see research.md R4)
-      expect(img).toHaveAttribute('alt', 'callout.document');
+      expect(img).toHaveAttribute('loading', 'lazy');
+      // Empty alt: the badge label already names the type, and the containing
+      // card/dialog carries the accessible name — no second image name.
+      expect(img).toHaveAttribute('alt', '');
 
-      // Only the badge icon remains — the centered fallback icon is replaced by the image.
-      expect(container.querySelectorAll('svg').length).toBe(1);
+      // The type icon (centered fallback + badge) stays mounted regardless —
+      // it is what stays visible until the image's load event fires.
+      expect(container.querySelectorAll('svg').length).toBe(2);
     });
 
-    it('falls back to the type-icon treatment when the preview image fails to load', () => {
+    it('keeps the image hidden (icon showing through) until it actually loads, then reveals it', () => {
+      const { container } = render(
+        <CalloutCollaboraPreview
+          documentType="text"
+          onOpen={() => {}}
+          previewImageUrl="https://example.com/preview.png"
+        />
+      );
+
+      // biome-ignore lint/style/noNonNullAssertion: presence asserted by the previous test
+      const img = container.querySelector('img')!;
+      expect(img.className).toContain('invisible');
+
+      fireEvent.load(img);
+
+      expect(img.className).not.toContain('invisible');
+    });
+
+    it('falls back to the type-icon treatment (image unmounted) when the preview image fails to load', () => {
       const { container } = render(
         <CalloutCollaboraPreview
           documentType="spreadsheet"
@@ -108,7 +129,7 @@ describe('CalloutCollaboraPreview', () => {
       }
     });
 
-    it('renders a replacement preview image after a prior URL failed', () => {
+    it('renders a replacement preview image, hidden again until it loads, after a prior URL failed', () => {
       const { container, rerender } = render(
         <CalloutCollaboraPreview
           documentType="spreadsheet"
@@ -134,6 +155,22 @@ describe('CalloutCollaboraPreview', () => {
       const replacementImg = container.querySelector('img');
       expect(replacementImg).toBeInTheDocument();
       expect(replacementImg).toHaveAttribute('src', 'https://example.com/replacement.png');
+      expect(replacementImg?.className).toContain('invisible');
+    });
+
+    it('leaves the "Open Document" interaction usable while a preview image is present', () => {
+      const onOpen = vi.fn();
+      render(
+        <CalloutCollaboraPreview
+          documentType="text"
+          onOpen={onOpen}
+          previewImageUrl="https://example.com/preview.png"
+        />
+      );
+
+      fireEvent.click(screen.getByText('callout.openDocument'));
+
+      expect(onOpen).toHaveBeenCalledTimes(1);
     });
   });
 });
