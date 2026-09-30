@@ -188,6 +188,7 @@ function CalloutFramingFormConnectorInner({
           questions={questions}
           onWithdraw={id => void handleDelete(id, 'own')}
           withdrawing={deleting}
+          status={showFillIn ? undefined : !published ? 'DRAFT' : isOpen ? undefined : 'CLOSED'}
         />
       )}
       {showOwnResponses && showFillIn && <Separator />}

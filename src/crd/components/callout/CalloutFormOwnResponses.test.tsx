@@ -63,4 +63,28 @@ describe('CalloutFormOwnResponses', () => {
     await waitFor(() => expect(screen.queryByRole('alertdialog')).toBeNull());
     expect(onWithdraw).not.toHaveBeenCalled();
   });
+
+  test('announces a closed Form while still offering withdraw (US2-AS9)', () => {
+    render(
+      <CalloutFormOwnResponses responses={responses} questions={questions} onWithdraw={vi.fn()} status="CLOSED" />
+    );
+
+    expect(screen.getByText('formFillIn.closedBadge')).toBeInTheDocument();
+    expect(screen.getByText('formFillIn.closedNotice')).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: 'formFillIn.ownResponses.withdraw' })[0]).toBeEnabled();
+  });
+
+  test('announces an unpublished Post', () => {
+    render(<CalloutFormOwnResponses responses={responses} questions={questions} onWithdraw={vi.fn()} status="DRAFT" />);
+
+    expect(screen.getByText('formFillIn.draftBadge')).toBeInTheDocument();
+    expect(screen.getByText('formFillIn.draftNotice')).toBeInTheDocument();
+  });
+
+  test('shows no state notice for an open Form', () => {
+    render(<CalloutFormOwnResponses responses={responses} questions={questions} onWithdraw={vi.fn()} />);
+
+    expect(screen.queryByText('formFillIn.closedBadge')).toBeNull();
+    expect(screen.queryByText('formFillIn.draftBadge')).toBeNull();
+  });
 });

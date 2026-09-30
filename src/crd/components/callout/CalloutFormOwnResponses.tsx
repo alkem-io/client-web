@@ -5,6 +5,7 @@ import type { FormQuestionView, FormResponseView } from '@/crd/components/callou
 import { formatFormDate } from '@/crd/components/callout/formatFormDate';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { cn } from '@/crd/lib/utils';
+import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 
 type CalloutFormOwnResponsesProps = {
@@ -13,6 +14,11 @@ type CalloutFormOwnResponsesProps = {
   onWithdraw: (responseId: string) => void;
   /** True while a withdrawal is in flight. */
   withdrawing?: boolean;
+  /**
+   * Form state to announce when the fill-in is not rendered (single-response mode after responding):
+   * the viewer must still see that the Form is closed or unpublished.
+   */
+  status?: 'CLOSED' | 'DRAFT';
   className?: string;
 };
 
@@ -22,6 +28,7 @@ export function CalloutFormOwnResponses({
   questions,
   onWithdraw,
   withdrawing = false,
+  status,
   className,
 }: CalloutFormOwnResponsesProps) {
   const { t, i18n } = useTranslation('crd-space');
@@ -36,6 +43,16 @@ export function CalloutFormOwnResponses({
   return (
     <div className={cn('space-y-4', className)}>
       <h3 className="text-body-emphasis text-foreground">{t('formFillIn.ownResponses.heading')}</h3>
+      {status && (
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant="secondary">
+            {status === 'DRAFT' ? t('formFillIn.draftBadge') : t('formFillIn.closedBadge')}
+          </Badge>
+          <span className="text-caption text-muted-foreground">
+            {status === 'DRAFT' ? t('formFillIn.draftNotice') : t('formFillIn.closedNotice')}
+          </span>
+        </div>
+      )}
       {responses.map((response, index) => {
         const columns = deriveFormColumns(questions, [response]);
         return (
