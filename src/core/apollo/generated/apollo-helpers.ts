@@ -1052,6 +1052,7 @@ export type CollaboraDocumentKeySpecifier = (
   | 'createdDate'
   | 'documentType'
   | 'id'
+  | 'previewUrl'
   | 'profile'
   | 'updatedDate'
   | CollaboraDocumentKeySpecifier
@@ -1062,6 +1063,7 @@ export type CollaboraDocumentFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   documentType?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  previewUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
