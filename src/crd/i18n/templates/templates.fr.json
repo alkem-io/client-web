@@ -20,7 +20,7 @@
       },
       "callout": {
         "title": "Outils de collaboration",
-        "subtitle": "Callouts réutilisables pour ateliers, brainstormings et activités de groupe."
+        "subtitle": "Publications réutilisables pour ateliers, brainstormings et activités de groupe."
       },
       "whiteboard": {
         "title": "Modèles de tableau blanc",
@@ -263,8 +263,8 @@
   "setDefault": {
     "subspaceTitle": "Modèle de sous-espace par défaut",
     "subspaceSubtitle": "Sert à pré-remplir le formulaire lors de la création d’un sous-espace de cet espace.",
-    "flowStateTitle": "Modèle de callout par défaut",
-    "flowStateSubtitle": "Sert à pré-remplir le formulaire lors de l’ajout d’un callout à cette phase.",
+    "flowStateTitle": "Modèle de publication par défaut",
+    "flowStateSubtitle": "Sert à pré-remplir le formulaire lors de l’ajout d’une publication à cette phase.",
     "current": "Valeur par défaut actuelle",
     "none": "Aucune valeur par défaut",
     "noCandidates": "Il n’y a pas encore de modèles d’espace dans cet ensemble.",
@@ -274,7 +274,7 @@
     "cancel": "Annuler"
   },
   "saveAs": {
-    "fromCalloutTitle": "Enregistrer le callout comme modèle",
+    "fromCalloutTitle": "Enregistrer la publication comme modèle",
     "fromGuidelinesTitle": "Enregistrer les directives comme modèle",
     "fromSubspaceTitle": "Enregistrer le sous-espace comme modèle",
     "unsavedSourceTitle": "Enregistrez d’abord vos modifications",

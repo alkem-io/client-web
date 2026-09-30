@@ -12,23 +12,14 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: Date; output: Date };
-  /** An Emoji. */
   Emoji: { input: string; output: string };
-  /** A representation of a Lifecycle Definition, based on XState. It is serialized JSON. */
   LifecycleDefinition: { input: string; output: string };
-  /** A markdown string. */
   Markdown: { input: string; output: string };
-  /** An identifier that originates from the underlying messaging platform. */
   MessageID: { input: string; output: string };
-  /** A human readable identifier, 3 <= length <= 28. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: { input: string; output: string };
-  /** Cursor used for paginating search results. */
   SearchCursor: { input: string; output: string };
-  /** A uuid identifier. Length 36 characters. */
   UUID: { input: string; output: string };
-  /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
 };
 
@@ -1615,6 +1606,8 @@ export type CollaboraDocument = {
   documentType: CollaboraDocumentType;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** An authorized, same-origin preview image endpoint for the current saved document, or null when there is no backing file to preview. NOT a bearer URL: every request against it is independently authorized against the current document READ policy. */
+  previewUrl?: Maybe<Scalars['String']['output']>;
   /** The Profile for this CollaboraDocument. */
   profile: Profile;
   /** The date at which the entity was last updated. */
@@ -1959,15 +1952,25 @@ export type ContributorCollectionCounts = {
 
 export type ContributorCollectionItem = {
   __typename?: 'ContributorCollectionItem';
+  /** Organizations only. The count of platform-wide associates of the organization (distinct users holding its associate role) — the same number as the organization's 'associates' metric; NOT the number of members of this space. Null for Users and Virtual Contributors. */
+  associatesCount?: Maybe<Scalars['Int']['output']>;
   avatarUrl?: Maybe<Scalars['String']['output']>;
   displayName: Scalars['String']['output'];
   id: Scalars['UUID']['output'];
+  /** Users only. The calendar month in which the user's current membership of the space that owns this callout began ("member since"): the creation date of the member credential, truncated to the first day of the month, 00:00 UTC. Leaving and re-joining restarts it. Null for Organizations and Virtual Contributors, and for a user listed without the member role. */
+  joinedDate?: Maybe<Scalars['DateTime']['output']>;
   /** Location of the contributor; null for Virtual Contributors or when not readable. */
   location?: Maybe<ContributorLocation>;
   /** The role label for this contributor (lead/admin/member). */
   roleLabel?: Maybe<Scalars['String']['output']>;
+  /** All contributor types. The profile tagline, trimmed; null when empty. */
+  tagline?: Maybe<Scalars['String']['output']>;
+  /** All contributor types. The profile tagsets merged in order — Users: skills, then keywords; Organizations and Virtual Contributors: keywords, then capabilities. Blank tags removed; duplicates (ignoring case) kept once, first occurrence wins; never the default tagset. Empty list when none. Clients decide how many to show. */
+  tags?: Maybe<Array<Scalars['String']['output']>>;
   type: ActorType;
   url?: Maybe<Scalars['String']['output']>;
+  /** Organizations only. The organization's website, trimmed; null when empty or when it is not an absolute http/https URL. Null for Users and Virtual Contributors. */
+  website?: Maybe<Scalars['String']['output']>;
 };
 
 /** The default display mode for a contributor-collection callout framing. */
@@ -15674,6 +15677,7 @@ export type CalloutContentQuery = {
                   __typename?: 'CollaboraDocument';
                   id: string;
                   documentType: CollaboraDocumentType;
+                  previewUrl?: string | undefined;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -16029,6 +16033,7 @@ export type UpdateCalloutContentMutation = {
             __typename?: 'CollaboraDocument';
             id: string;
             documentType: CollaboraDocumentType;
+            previewUrl?: string | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -16537,6 +16542,7 @@ export type UpdateCalloutVisibilityMutation = {
             __typename?: 'CollaboraDocument';
             id: string;
             documentType: CollaboraDocumentType;
+            previewUrl?: string | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -16972,6 +16978,7 @@ export type CalloutContributionQuery = {
                 __typename?: 'CollaboraDocument';
                 id: string;
                 documentType: CollaboraDocumentType;
+                previewUrl?: string | undefined;
                 createdDate: Date;
                 profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
                 authorization?:
@@ -17076,6 +17083,7 @@ export type CollaboraDocumentGateFragment = {
   __typename?: 'CollaboraDocument';
   id: string;
   documentType: CollaboraDocumentType;
+  previewUrl?: string | undefined;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -17143,6 +17151,7 @@ export type ImportCollaboraDocumentMutation = {
           __typename?: 'CollaboraDocument';
           id: string;
           documentType: CollaboraDocumentType;
+          previewUrl?: string | undefined;
           createdDate: Date;
           profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
           authorization?:
@@ -17715,6 +17724,7 @@ export type CalloutContributionsQuery = {
                   __typename?: 'CollaboraDocument';
                   id: string;
                   documentType: CollaboraDocumentType;
+                  previewUrl?: string | undefined;
                   createdDate: Date;
                   profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
                   authorization?:
@@ -17921,6 +17931,7 @@ export type CalloutContributionsCollaboraDocumentCardFragment = {
   __typename?: 'CollaboraDocument';
   id: string;
   documentType: CollaboraDocumentType;
+  previewUrl?: string | undefined;
   createdDate: Date;
   profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   authorization?:
@@ -18458,6 +18469,7 @@ export type CreateCalloutMutation = {
             __typename?: 'CollaboraDocument';
             id: string;
             documentType: CollaboraDocumentType;
+            previewUrl?: string | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -19101,6 +19113,7 @@ export type CalloutDetailsQuery = {
                   __typename?: 'CollaboraDocument';
                   id: string;
                   documentType: CollaboraDocumentType;
+                  previewUrl?: string | undefined;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -19678,6 +19691,7 @@ export type CalloutDetailsFragment = {
           __typename?: 'CollaboraDocument';
           id: string;
           documentType: CollaboraDocumentType;
+          previewUrl?: string | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -39448,6 +39462,11 @@ export type ContributorCollectionByTypeQuery = {
               avatarUrl?: string | undefined;
               roleLabel?: string | undefined;
               url?: string | undefined;
+              tagline?: string | undefined;
+              tags?: Array<string> | undefined;
+              joinedDate?: Date | undefined;
+              website?: string | undefined;
+              associatesCount?: number | undefined;
               location?:
                 | {
                     __typename?: 'ContributorLocation';
