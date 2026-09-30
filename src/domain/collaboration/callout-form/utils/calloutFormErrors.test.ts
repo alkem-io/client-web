@@ -22,6 +22,14 @@ describe('getCalloutFormErrorCode', () => {
     expect(getCalloutFormErrorCode(undefined)).toBeUndefined();
   });
 
+  it('yields no reason code for a production-shaped error that carries no details', () => {
+    const error = new ApolloError({
+      graphQLErrors: [new GraphQLError('rejected', { extensions: { errorId: 'e-1', code: 'BAD_USER_INPUT' } })],
+    });
+    expect(getCalloutFormErrorCode(error)).toBeUndefined();
+    expect(getCalloutFormError(error)).toBeUndefined();
+  });
+
   it('takes the first coded error when several are present', () => {
     const error = new ApolloError({
       graphQLErrors: [

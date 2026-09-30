@@ -1,8 +1,14 @@
 import { ApolloError } from '@apollo/client';
 
 /**
- * Stable reason codes the server attaches to Form rejections, in `extensions.details.code`. Clients map
- * them to localized text; the server message is never shown.
+ * Stable reason codes the server attaches to Form rejections, in `extensions.details.code` (with the
+ * offending questions in `extensions.details.questionIDs`). Clients map them to localized text; the
+ * server message is never shown.
+ *
+ * Contract: the server's production exception filter rebuilds errors with only `{ errorId, code }`, so it
+ * must whitelist `details.code` and `details.questionIDs` (content-free by construction) for the Form
+ * reason codes to reach a deployed client. Without them this reader returns undefined and callers fall
+ * back to their generic message.
  */
 export const CalloutFormErrorCode = {
   CALLOUT_NOT_PUBLISHED: 'CALLOUT_NOT_PUBLISHED',
