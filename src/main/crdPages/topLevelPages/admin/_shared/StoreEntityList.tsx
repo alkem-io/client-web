@@ -41,6 +41,7 @@ export function StoreEntityList({ rows, loading, onDelete }: StoreEntityListProp
       paginationMode="client"
       pageSize={10}
       onDelete={onDelete}
+      canDelete={row => row.canDelete ?? true}
     />
   );
 }

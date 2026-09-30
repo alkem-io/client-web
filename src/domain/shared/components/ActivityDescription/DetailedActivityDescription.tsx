@@ -56,8 +56,19 @@ const DetailedActivityDescription = ({
 
   mergedValues.space = spaceDisplayName;
 
+  // An invitation addressed to an ORGANIZATION is not addressed to the viewer.
+  // Falling through to 'you' put "Jane invited you to <Space>" directly under a
+  // card titled "Pending invitation for <Organization>", on the surface whose
+  // Accept commits the organization (and every ancestor Space when
+  // invitedToParent) — two contradictory statements of who is joining. The
+  // VirtualContributor branch below exists for exactly this reason; the
+  // organization case was simply never added alongside it.
   mergedValues.invitedEntity =
-    type === ActorType.VirtualContributor ? t('community.pendingMembership.vc') : t('community.pendingMembership.you');
+    type === ActorType.VirtualContributor
+      ? t('community.pendingMembership.vc')
+      : type === ActorType.Organization
+        ? t('community.pendingMembership.organization')
+        : t('community.pendingMembership.you');
 
   const truncatedParentName =
     spaceDisplayName && spaceDisplayName.length > PARENT_NAME_MAX_LENGTH

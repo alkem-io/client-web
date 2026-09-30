@@ -5,6 +5,7 @@ import {
   usePlatformAdminInnovationHubsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { canDeleteOrgResource } from '@/main/crdPages/innovationPack/innovationPackAccess';
 import { StoreEntityList } from '../_shared/StoreEntityList';
 import { type AdminStoreEntityRow, toSearchVisibility } from '../_shared/storeEntityRow';
 
@@ -27,6 +28,8 @@ const CrdAdminInnovationHubsPage = () => {
     listedInStore: hub.listedInStore,
     searchVisibility: toSearchVisibility(hub.searchVisibility),
     accountOwner: hub.account?.host?.profile?.displayName || 'N/A',
+    // Platform Support reads this list (R-F.2) but may not delete the container (A8).
+    canDelete: canDeleteOrgResource(hub.authorization?.myPrivileges),
   }));
 
   return (

@@ -861,3 +861,76 @@ export const MOCK_SIDEBAR = {
     },
   ],
 };
+
+// Expanded-card design-review fixtures — one fully filled card, one
+// partial card, one all-empty card (falls back to the compact card in the list), and one
+// long-text card (the clamp must hold the same height at any length).
+const LONG_TEXT =
+  'This section repeats itself to demonstrate that the line clamp holds at any length, without the card growing taller or the layout shifting. '.repeat(
+    8
+  );
+
+export const MOCK_EXPANDED_SUBSPACES: SpaceCardData[] = [
+  {
+    id: 'exp-full',
+    name: 'Renewable Energy Transition',
+    description: 'Strategy and policy for 100% renewable energy by 2030',
+    bannerImageUrl: SUBSPACE_BANNERS[0],
+    initials: 'RE',
+    avatarColor: '#2563eb',
+    tags: ['energy', 'policy', 'strategy', 'grid', 'storage'],
+    isPrivate: false,
+    isMember: true,
+    leads: [
+      { name: 'Sarah Chen', avatarUrl: AVATARS.sarah, type: 'person' },
+      { name: 'Green Future Labs', avatarUrl: '', type: 'org' },
+    ],
+    href: '/space/green-energy/challenges/renewable-energy',
+    what: 'A cross-functional workstream defining the policy and technical roadmap to reach 100% renewable electricity generation by 2030, covering grid modernisation, storage incentives, and permitting reform.',
+    why: "Fossil-fuel dependence is this region's single largest source of emissions and price volatility — a coordinated transition plan is the fastest lever available to the community.",
+    who: 'Utility planners, municipal policy staff, grid engineers, and community organisers working on local energy resilience.',
+  },
+  {
+    id: 'exp-partial',
+    name: 'Urban Mobility Lab',
+    description: 'Sustainable transport and smart mobility solutions',
+    bannerImageUrl: SUBSPACE_BANNERS[1],
+    initials: 'UM',
+    avatarColor: '#7c3aed',
+    tags: ['mobility', 'transport'],
+    isPrivate: false,
+    isMember: true,
+    leads: [{ name: 'David Kim', avatarUrl: AVATARS.david, type: 'person' }],
+    href: '/space/green-energy/challenges/urban-mobility',
+    what: 'Piloting low-carbon transit options — e-bike shares, bus electrification, and car-free zones — across three neighbourhoods, only.',
+    // why and who intentionally left empty — this card shows partial-fields rendering.
+  },
+  {
+    id: 'exp-empty',
+    name: 'Green Infrastructure',
+    description: 'Nature-based solutions for urban resilience',
+    initials: 'GI',
+    avatarColor: '#16a34a',
+    tags: ['infrastructure'],
+    isPrivate: false,
+    isMember: false,
+    leads: [],
+    href: '/space/green-energy/challenges/green-infrastructure',
+    // No what/why/who at all — falls back to the plain compact card.
+  },
+  {
+    id: 'exp-long',
+    name: 'Circular Economy Network',
+    description: 'Closing material loops across the regional supply chain',
+    initials: 'CE',
+    avatarColor: '#ea580c',
+    tags: ['circular-economy', 'supply-chain', 'waste'],
+    isPrivate: true,
+    isMember: true,
+    leads: [{ name: 'Priya Patel', avatarUrl: '', type: 'person' }],
+    href: '/space/green-energy/challenges/circular-economy',
+    what: LONG_TEXT,
+    why: LONG_TEXT,
+    who: LONG_TEXT,
+  },
+];

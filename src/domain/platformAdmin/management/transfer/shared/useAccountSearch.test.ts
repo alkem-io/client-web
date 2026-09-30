@@ -1,5 +1,6 @@
+import { ApolloError } from '@apollo/client';
 import { act, renderHook } from '@testing-library/react';
-import { describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import useAccountSearch from './useAccountSearch';
 
@@ -8,11 +9,24 @@ const mockSearchOrgs = vi.fn();
 
 let mockUsersData: Record<string, unknown> | undefined;
 let mockOrgsData: Record<string, unknown> | undefined;
+let mockUsersError: ApolloError | undefined;
+let mockOrgsError: ApolloError | undefined;
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useAccountSearchUsersLazyQuery: () => [mockSearchUsers, { data: mockUsersData, loading: false }],
-  useAccountSearchOrganizationsLazyQuery: () => [mockSearchOrgs, { data: mockOrgsData, loading: false }],
+  useAccountSearchUsersLazyQuery: () => [
+    mockSearchUsers,
+    { data: mockUsersData, loading: false, error: mockUsersError },
+  ],
+  useAccountSearchOrganizationsLazyQuery: () => [
+    mockSearchOrgs,
+    { data: mockOrgsData, loading: false, error: mockOrgsError },
+  ],
 }));
+
+beforeEach(() => {
+  mockUsersError = undefined;
+  mockOrgsError = undefined;
+});
 
 describe('useAccountSearch', () => {
   test('returns empty results initially', () => {
@@ -135,5 +149,53 @@ describe('useAccountSearch', () => {
     mockOrgsData = { platformAdmin: { organizations: { organization: [], pageInfo: { hasNextPage: false } } } };
     const { result } = renderHook(() => useAccountSearch());
     expect(result.current.results).toEqual([]);
+  });
+
+  // client-1: `denied` distinguishes "you may not search accounts" from a
+  // generic search failure — used by AccountTargetTransfer to fall back to
+  // resolving the target owner directly by URL.
+  describe('denied (client-1)', () => {
+    test('is false when there is no error', () => {
+      mockUsersData = undefined;
+      mockOrgsData = undefined;
+      const { result } = renderHook(() => useAccountSearch());
+      expect(result.current.denied).toBe(false);
+    });
+
+    test('is true when the users query errors with FORBIDDEN_POLICY', () => {
+      mockUsersError = new ApolloError({
+        graphQLErrors: [{ message: 'denied', extensions: { code: 'FORBIDDEN_POLICY' } }],
+      });
+      const { result } = renderHook(() => useAccountSearch());
+      expect(result.current.denied).toBe(true);
+    });
+
+    test('is true when both queries error with an authorization code', () => {
+      mockUsersError = new ApolloError({ graphQLErrors: [{ message: 'denied', extensions: { code: 'FORBIDDEN' } }] });
+      mockOrgsError = new ApolloError({
+        graphQLErrors: [{ message: 'denied', extensions: { code: 'FORBIDDEN_POLICY' } }],
+      });
+      const { result } = renderHook(() => useAccountSearch());
+      expect(result.current.denied).toBe(true);
+    });
+
+    test('is false when the error is not an authorization code', () => {
+      mockUsersError = new ApolloError({
+        graphQLErrors: [{ message: 'boom', extensions: { code: 'ENTITY_NOT_FOUND' } }],
+      });
+      const { result } = renderHook(() => useAccountSearch());
+      expect(result.current.denied).toBe(false);
+    });
+
+    test('is false when only one of two queries errors with a mix of codes', () => {
+      mockUsersError = new ApolloError({
+        graphQLErrors: [{ message: 'denied', extensions: { code: 'FORBIDDEN_POLICY' } }],
+      });
+      mockOrgsError = new ApolloError({
+        graphQLErrors: [{ message: 'boom', extensions: { code: 'ENTITY_NOT_FOUND' } }],
+      });
+      const { result } = renderHook(() => useAccountSearch());
+      expect(result.current.denied).toBe(false);
+    });
   });
 });

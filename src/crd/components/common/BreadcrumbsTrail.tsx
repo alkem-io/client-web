@@ -26,6 +26,30 @@ type BreadcrumbsTrailProps = {
   className?: string;
 };
 
+type CrumbVisualProps = {
+  avatar?: BreadcrumbTrailItem['avatar'];
+  icon?: BreadcrumbTrailItem['icon'];
+  className?: string;
+};
+
+export function CrumbVisual({ avatar, icon: Icon, className }: CrumbVisualProps) {
+  if (avatar) {
+    return (
+      <span
+        aria-hidden="true"
+        className={cn(
+          'flex size-5 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border bg-primary/15 text-primary text-badge',
+          className
+        )}
+      >
+        {avatar.src ? <img src={avatar.src} alt="" className="size-full object-cover" /> : avatar.initials}
+      </span>
+    );
+  }
+
+  return Icon ? <Icon aria-hidden={true} className={cn('size-3.5 shrink-0', className)} /> : null;
+}
+
 export function BreadcrumbsTrail({ items, className }: BreadcrumbsTrailProps) {
   if (items.length === 0) return null;
 
@@ -34,26 +58,12 @@ export function BreadcrumbsTrail({ items, className }: BreadcrumbsTrailProps) {
       <BreadcrumbList>
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
-          const Icon = item.icon;
 
           return (
             <Fragment key={`${item.label}|${item.href ?? ''}`}>
               {index > 0 && <BreadcrumbSeparator />}
               <BreadcrumbItem>
-                {item.avatar ? (
-                  <span
-                    aria-hidden="true"
-                    className="flex size-5 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border bg-primary/15 text-primary text-badge"
-                  >
-                    {item.avatar.src ? (
-                      <img src={item.avatar.src} alt="" className="size-full object-cover" />
-                    ) : (
-                      item.avatar.initials
-                    )}
-                  </span>
-                ) : (
-                  Icon && <Icon aria-hidden={true} className="size-3.5 shrink-0" />
-                )}
+                <CrumbVisual avatar={item.avatar} icon={item.icon} />
                 {isLast ? (
                   <BreadcrumbPage className="font-medium">{item.label}</BreadcrumbPage>
                 ) : item.href ? (

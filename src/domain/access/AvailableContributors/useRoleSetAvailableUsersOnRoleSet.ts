@@ -1,6 +1,6 @@
 import { useAvailableUsersForElevatedRoleQuery } from '@/core/apollo/generated/apollo-hooks';
 import type { RoleName } from '@/core/apollo/generated/graphql-schema';
-import { AVAILABLE_USERS_PAGE_SIZE, type AvailableUsersResponse } from './common';
+import { AVAILABLE_USERS_PAGE_SIZE, type AvailableUsersResponse, resolvePageSize } from './common';
 
 type useRoleSetAvailableUsersParams = {
   roleSetId: string | undefined;
@@ -42,14 +42,14 @@ const useRoleSetAvailableUsersOnRoleSet = ({
   const pageInfo = data?.lookup.roleSet?.availableUsersForElevatedRole.pageInfo;
   const hasMore = pageInfo?.hasNextPage ?? false;
 
-  const fetchMore = async (itemsNumber = AVAILABLE_USERS_PAGE_SIZE) => {
+  const fetchMore = async (itemsNumber?: unknown) => {
     if (!data) {
       return;
     }
 
     await fetchMoreRaw({
       variables: {
-        first: itemsNumber,
+        first: resolvePageSize(itemsNumber, AVAILABLE_USERS_PAGE_SIZE),
         after: pageInfo?.endCursor,
         // biome-ignore lint/style/noNonNullAssertion: guarded by skip
         roleSetId: roleSetId!,

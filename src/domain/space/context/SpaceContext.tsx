@@ -133,7 +133,9 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
       nameID: spaceNameId,
       about: aboutModel,
       level: SpaceLevel.L0,
-      accountId: spaceData?.account?.id ?? '',
+      // From the entitlements query, not the About one: `Space.account` is
+      // READ-gated, and SpaceAboutBase must stay readable without READ.
+      accountId: spaceEntitlementsData?.lookup.space?.account?.id ?? '',
     };
   })();
 

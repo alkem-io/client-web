@@ -375,6 +375,12 @@
       "title": "No subspaces found",
       "description": "No subspaces match your current search or filter.",
       "clearFilters": "Clear filters"
+    },
+    "expandedCard": {
+      "what": "What",
+      "why": "Why",
+      "who": "Who",
+      "open": "Open subspace"
     }
   },
   "about": {
@@ -613,6 +619,10 @@
       "loadMore": "Loading more…",
       "removeAriaLabel": "Remove {{name}}",
       "clearSearch": "Clear search"
+    },
+    "cardVariant": {
+      "label": "Expanded card",
+      "description": "Shows the full card with the subspace's What, Why and Who - more context, more height."
     }
   },
   "contributionSettings": {
@@ -964,7 +974,18 @@
     "empty": "No comments yet",
     "unknownUser": "Unknown user",
     "signInToComment": "Sign in to comment, reply or react.",
-    "cantComment": "You don't have permission to comment, reply or react here."
+    "cantComment": "You don't have permission to comment, reply or react here.",
+    "attachments": {
+      "attach": "Attach files",
+      "stagedListLabel": "Files to send",
+      "removeAttachment": "Remove {{name}}",
+      "uploading": "Uploading…",
+      "uploadFailed": "Upload failed. Send again to retry, or remove the file.",
+      "sendUnconfirmed": "Send was not confirmed. Check the conversation before sending again.",
+      "errorTooMany": "You can attach up to {{max}} files.",
+      "errorTooLarge": "{{name}} is larger than {{max}} MB.",
+      "errorUnsupportedType": "{{name}} has an unsupported file type."
+    }
   },
   "dialogs": {
     "cancel": "Cancel",

@@ -5,9 +5,14 @@ query SpaceAboutBase($spaceId: UUID!) {
       id
       level
       nameID # Used for search in space
-      account {
-        id
-      }
+      # NOTE: do not add fields here that require READ on the Space.
+      # This query is issued for every space the user lands on, including
+      # private ones they are not a member of — it is what computes
+      # `canRead` in the first place. `Space.account` is READ-gated, and a
+      # non-nullable READ-gated field nulls the whole `space`, so adding it
+      # here (as #9499 did) broke the About page for every non-member of a
+      # private space. `account { id }` now lives on SpaceEntitlements,
+      # which is already skipped unless `canRead`.
       about {
         ...SpaceAboutLight
       }

@@ -153,6 +153,13 @@ const buildSpaceAdmin = (
     server?.communityApplicationReceived
   ),
   communityNewMember: channel(type, property, 'communityNewMember', value, server?.communityNewMember),
+  communityInvitationResponse: channel(
+    type,
+    property,
+    'communityInvitationResponse',
+    value,
+    server?.communityInvitationResponse
+  ),
   collaborationCalloutContributionCreated: channel(
     type,
     property,
@@ -208,6 +215,20 @@ const buildUser = (
       value,
       server?.membership?.spaceCommunityJoined
     ),
+    organizationAssociateInvitationReceived: channel(
+      type,
+      property,
+      'membership.organizationAssociateInvitationReceived',
+      value,
+      server?.membership?.organizationAssociateInvitationReceived
+    ),
+    organizationAssociateApplicationDecided: channel(
+      type,
+      property,
+      'membership.organizationAssociateApplicationDecided',
+      value,
+      server?.membership?.organizationAssociateApplicationDecided
+    ),
   },
 });
 
@@ -219,6 +240,28 @@ const buildOrganization = (
 ) => ({
   adminMentioned: channel(type, property, 'adminMentioned', value, server?.adminMentioned),
   adminMessageReceived: channel(type, property, 'adminMessageReceived', value, server?.adminMessageReceived),
+  adminSpaceCommunityInvitation: channel(
+    type,
+    property,
+    'adminSpaceCommunityInvitation',
+    value,
+    server?.adminSpaceCommunityInvitation
+  ),
+  adminAssociateInvitationResponse: channel(
+    type,
+    property,
+    'adminAssociateInvitationResponse',
+    value,
+    server?.adminAssociateInvitationResponse
+  ),
+  adminAssociateApplicationReceived: channel(
+    type,
+    property,
+    'adminAssociateApplicationReceived',
+    value,
+    server?.adminAssociateApplicationReceived
+  ),
+  adminAssociateJoined: channel(type, property, 'adminAssociateJoined', value, server?.adminAssociateJoined),
 });
 
 const buildPlatform = (

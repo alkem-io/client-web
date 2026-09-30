@@ -22,12 +22,59 @@
       "sendingButtonLabel": "Versturen…",
       "backButtonLabel": "Terug",
       "closeButtonLabel": "Sluiten",
-      "closeAriaLabel": "Uitnodigingsdialoog sluiten"
+      "closeAriaLabel": "Uitnodigingsdialoog sluiten",
+      "organization": {
+        "title": "Een organisatie uitnodigen voor \"{{spaceName}}\"",
+        "searchPlaceholder": "Organisatienaam…",
+        "searchHint": "Zoek naar een organisatie om uit te nodigen",
+        "defaultWelcomeMessage": "Hallo, we willen graag uw organisatie uitnodigen om deel te nemen aan {{spaceName}}. Bekijk de Space of klik op de knop hieronder om de uitnodiging te accepteren of af te wijzen.",
+        "searchAriaLabel": "Zoek organisaties op naam",
+        "noResultsLabel": "Geen overeenkomende organisaties",
+        "loadingLabel": "Organisaties laden…"
+      },
+      "virtualContributor": {
+        "title": "Virtual Contributor uitnodigen",
+        "description": "Voeg een Virtual Contributor van je account toe, of nodig er een uit de Alkemio-bibliotheek uit.",
+        "searchPlaceholder": "Virtual Contributors zoeken…",
+        "onAccount": "Op je account",
+        "onAccountEmpty": "Geen Virtual Contributors beschikbaar op je account.",
+        "inLibrary": "In de bibliotheek",
+        "inLibraryEmpty": "Geen Virtual Contributors in de bibliotheek komen overeen met je zoekopdracht.",
+        "add": "Toevoegen",
+        "invite": "Uitnodigen",
+        "addAriaLabel": "{{name}} toevoegen",
+        "inviteAriaLabel": "{{name}} uitnodigen",
+        "welcomeMessageLabel": "Welkomstbericht",
+        "welcomeMessagePlaceholder": "Voeg een bericht toe aan de uitnodiging…",
+        "sendInvite": "Uitnodiging versturen",
+        "defaultWelcomeMessage": "We willen je graag uitnodigen om bij te dragen aan {{space}}.",
+        "addedNotice": "Virtual Contributor toegevoegd.",
+        "invitedNotice": "Uitnodiging verzonden.",
+        "error": "Er ging iets mis. Probeer het opnieuw.",
+        "previewAriaLabel": "Voorbeeld van {{name}}",
+        "searchAriaLabel": "Zoek virtuele bijdragers op naam",
+        "noResultsLabel": "Geen overeenkomende virtuele bijdragers",
+        "loadingLabel": "Virtuele bijdragers laden…"
+      },
+      "resultsSummary_one": "{{count}} uitnodiging verwerkt voor {{spaceName}}.",
+      "resultsSummary_other": "{{count}} uitnodigingen verwerkt voor {{spaceName}}.",
+      "associates": {
+        "title": "Geassocieerden uitnodigen voor \"{{organizationName}}\"",
+        "searchHint": "Zoek een geregistreerde gebruiker om als geassocieerde uit te nodigen",
+        "searchPlaceholder": "Gebruikersnaam…",
+        "searchAriaLabel": "Zoek gebruikers op naam",
+        "noResultsLabel": "Geen overeenkomende gebruikers",
+        "loadingLabel": "Gebruikers laden…",
+        "defaultWelcomeMessage": "Hoi, we willen je graag uitnodigen om je te associëren met {{organizationName}}. Klik hieronder om de uitnodiging te accepteren of te weigeren.",
+        "rolePopoverHelper": "Geassocieerde wordt altijd toegekend bij het accepteren van de uitnodiging."
+      }
     },
     "roles": {
       "Member": "Member",
       "Lead": "Lead",
-      "Admin": "Admin"
+      "Admin": "Admin",
+      "Associate": "Geassocieerde",
+      "Owner": "Eigenaar"
     },
     "errors": {
       "invalidEmail": "Dit is geen geldig e-mailadres.",
@@ -40,7 +87,12 @@
       "alreadyMember": "Al lid van deze Space",
       "alreadyHasApplication": "Heeft al een openstaande aanvraag voor deze Space",
       "parentNotAuthorized": "Uitnodigen lukt niet — diegene zou ook lid moeten worden van de bovenliggende Space, en je hebt geen rechten om daar uit te nodigen.",
-      "error": "Uitnodiging mislukt."
+      "error": "Uitnodiging mislukt.",
+      "notAcceptingInvitations": "Deze organisatie accepteert geen Space-uitnodigingen",
+      "leadLimitReached": "De limiet voor de Lead-rol voor organisaties is bereikt",
+      "sentNoAdministrators": "Uitnodiging verzonden — deze organisatie heeft momenteel geen beheerders om te informeren, daarom is de platformondersteuning op de hoogte gebracht",
+      "extraRoleLimitReached": "De limiet voor de aangeboden rol is bereikt",
+      "alreadyAssociate": "Al geassocieerd"
     },
     "toast": {
       "someFailed": "{{count}} uitnodigingen konden niet worden verstuurd — bekijk de resultaten voor details."

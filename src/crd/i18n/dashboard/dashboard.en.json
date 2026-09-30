@@ -190,7 +190,26 @@
       "join": "Join",
       "joinAriaLabel": "Join {{spaceName}}"
     },
-    "applicationAriaLabel": "View pending application for {{spaceName}}"
+    "applicationAriaLabel": "View pending application for {{spaceName}}",
+    "orgInvitationsSection": "Organisation Invitations",
+    "orgInvitationDialog": {
+      "title": "Invitation for {{organizationName}}",
+      "accept": "Accept",
+      "role": "Role",
+      "spacesToJoin": "Accepting joins: {{spaces}}"
+    },
+    "orgAssociateInvitationsSection": "Associate Invitations",
+    "orgAssociateApplicationsSection": "Associate Applications",
+    "orgAssociateCard": {
+      "badge": "Organisation",
+      "role": {
+        "associate": "Associate",
+        "associateAdmin": "Associate + Admin",
+        "associateOwner": "Associate + Owner"
+      },
+      "pendingLabel": "Pending",
+      "invitedBy": "Invited by {{name}}"
+    }
   },
   "nonActivity": {
     "sections": {

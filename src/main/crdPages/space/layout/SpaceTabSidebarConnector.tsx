@@ -29,7 +29,6 @@ import { getInitials } from '../dataMappers/spacePageDataMapper';
 import { ContactLeadsDialogConnector } from '../dialogs/ContactLeadsDialogConnector';
 import { InviteMembersDialogConnector } from '../dialogs/InviteMembersDialogConnector';
 import { SubspacesDialogConnector } from '../dialogs/SubspacesDialogConnector';
-import { VirtualContributorInviteConnector } from '../dialogs/VirtualContributorInviteConnector';
 import { useCrdCalendarSidebar } from '../hooks/useCrdCalendarSidebar';
 import { useCrdCommunityUpdates } from '../hooks/useCrdCommunityUpdates';
 import { useCrdSpaceCommunity } from '../hooks/useCrdSpaceCommunity';
@@ -341,14 +340,12 @@ export function SpaceTabSidebarConnector({
         />
       )}
 
-      {canInviteVc && roleSetId && (
-        <VirtualContributorInviteConnector
+      {canInviteVc && (
+        <InviteMembersDialogConnector
           open={vcInviteOpen}
           onClose={() => setVcInviteOpen(false)}
-          roleSetId={roleSetId}
+          kind="virtualContributor"
           spaceId={space.id}
-          spaceLevel={space.level}
-          spaceName={space.about.profile.displayName}
         />
       )}
 

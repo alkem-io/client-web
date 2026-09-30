@@ -14,6 +14,13 @@ type PendingInvitationCardData = {
   /** Deterministic accent colour, shown as the avatar fallback when
    * `spaceAvatarUrl` is missing. */
   color?: string;
+  /**
+   * Set for an organization invitation — the invited organization's name.
+   * When present, the card leads with this (the decision-relevant fact for
+   * an org admin skimming several invitations) and demotes `spaceName` to
+   * the subtitle row `senderName` normally occupies.
+   */
+  organizationName?: string;
 };
 
 type PendingInvitationCardProps = {
@@ -23,6 +30,9 @@ type PendingInvitationCardProps = {
 };
 
 function PendingInvitationCard({ invitation, onClick, className }: PendingInvitationCardProps) {
+  const primaryLabel = invitation.organizationName ?? invitation.spaceName;
+  const secondaryLabel = invitation.organizationName ? invitation.spaceName : invitation.senderName;
+
   return (
     <button
       type="button"
@@ -33,6 +43,9 @@ function PendingInvitationCard({ invitation, onClick, className }: PendingInvita
         className
       )}
     >
+      {/* The avatar is always the Space's card banner, on both the Space and the
+          organization variant of this card — so it is described by the Space name, never
+          by `primaryLabel` (which is the organization on an org invitation). */}
       <Avatar className="size-10 shrink-0 rounded-lg">
         {invitation.spaceAvatarUrl ? (
           <AvatarImage src={invitation.spaceAvatarUrl} alt={invitation.spaceName} className="rounded-lg object-cover" />
@@ -41,13 +54,18 @@ function PendingInvitationCard({ invitation, onClick, className }: PendingInvita
           className={cn('rounded-lg text-caption', invitation.color && 'text-white')}
           color={invitation.color}
         >
+          {/* Same rule as the `alt` above: this slot stands in for the Space's
+              card banner when there isn't one, so it must carry the SPACE's
+              initials. Using `primaryLabel` made one widget show two different
+              identities for the same org invitation — the Space when the Space
+              had a banner, the organization when it did not. */}
           {getInitials(invitation.spaceName)}
         </AvatarFallback>
       </Avatar>
 
       <div className="flex-1 min-w-0">
-        <p className="text-card-title leading-tight truncate">{invitation.spaceName}</p>
-        <p className="text-caption text-muted-foreground mt-0.5 truncate">{invitation.senderName}</p>
+        <p className="text-card-title leading-tight truncate">{primaryLabel}</p>
+        <p className="text-caption text-muted-foreground mt-0.5 truncate">{secondaryLabel}</p>
         {invitation.welcomeMessageExcerpt && (
           <p className="text-caption text-muted-foreground mt-0.5 line-clamp-1">{invitation.welcomeMessageExcerpt}</p>
         )}

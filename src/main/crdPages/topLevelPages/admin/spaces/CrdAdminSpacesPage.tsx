@@ -8,12 +8,14 @@ import {
   useUpdateSpacePlatformSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { usePermissionDeniedNotifier } from '@/core/apollo/hooks/usePermissionDeniedNotifier';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { AdminSearchableTable, type AdminTableColumn } from '@/crd/components/admin/AdminSearchableTable';
 import { AccountOwnerCell } from '@/crd/components/admin/columns/AccountOwnerCell';
 import { VisibilityChipCell, type VisibilityChipTone } from '@/crd/components/admin/columns/VisibilityChipCell';
 import { SpaceSettingsDialog } from '@/crd/components/admin/spaces/SpaceSettingsDialog';
 import { Button } from '@/crd/primitives/button';
+import useCanManageLicensePlans from '@/domain/platformAdmin/domain/licensing/useCanManageLicensePlans';
 import { useAdminListSearch } from '../useAdminListSearch';
 import { SpaceLicensePlansDialog } from './SpaceLicensePlansDialog';
 import { type AdminSpaceRow, mapSpaceToRow } from './spaceListMapper';
@@ -29,6 +31,8 @@ const CrdAdminSpacesPage = () => {
   const { t } = useTranslation('crd-admin');
   const { t: tApp } = useTranslation();
   const notify = useNotification();
+  const guard = usePermissionDeniedNotifier();
+  const canManageLicensePlans = useCanManageLicensePlans();
   // `errorPolicy: 'all'` so one space with a corrupt server-side authorization
   // policy on its nested `about.provider` (AUTHORIZATION_INVALID_POLICY) doesn't
   // blank the whole list. GraphQL nulls just that field and returns partial
@@ -67,13 +71,20 @@ const CrdAdminSpacesPage = () => {
 
   const saveSettings = () => {
     if (!settingsSpace) return;
-    void updateSpaceSettings({
-      variables: {
-        spaceId: settingsSpace.id,
-        nameId: draftNameId.trim(),
-        visibility: draftVisibility as SpaceVisibility,
-      },
-    }).then(() => setSettingsSpaceId(null));
+    const trimmedNameId = draftNameId.trim();
+    void guard(() =>
+      updateSpaceSettings({
+        variables: {
+          spaceId: settingsSpace.id,
+          // Only send the alias when it actually changed — resending the current
+          // alias is read by the server as a rename attempt.
+          nameId: trimmedNameId !== settingsSpace.nameId ? trimmedNameId : undefined,
+          visibility: draftVisibility as SpaceVisibility,
+        },
+      })
+    )
+      .then(() => setSettingsSpaceId(null))
+      .catch(() => {});
   };
 
   const visibilityLabels: Record<SpaceVisibility, string> = {
@@ -112,31 +123,34 @@ const CrdAdminSpacesPage = () => {
         pageSize={10}
         rowActions={row => (
           <>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label={t('spaces.editSettings')}
-              disabled={!row.canUpdate}
-              onClick={() => openSettings(row)}
-            >
-              <Settings2 aria-hidden="true" className="size-4" />
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label={t('licensePlans.manage')}
-              onClick={() => setLicenseSpaceId(row.id)}
-            >
-              <SlidersHorizontal aria-hidden="true" className="size-4" />
-            </Button>
+            {row.canEditPlatformSettings && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label={t('spaces.editSettings')}
+                onClick={() => openSettings(row)}
+              >
+                <Settings2 aria-hidden="true" className="size-4" />
+              </Button>
+            )}
+            {canManageLicensePlans && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label={t('licensePlans.manage')}
+                onClick={() => setLicenseSpaceId(row.id)}
+              >
+                <SlidersHorizontal aria-hidden="true" className="size-4" />
+              </Button>
+            )}
           </>
         )}
         onDelete={row => {
           void deleteSpace({ variables: { spaceId: row.id } });
         }}
-        canDelete={row => row.canUpdate}
+        canDelete={row => row.canDelete}
       />
 
       <SpaceSettingsDialog
@@ -151,7 +165,7 @@ const CrdAdminSpacesPage = () => {
         onVisibilityChange={setDraftVisibility}
         onSave={saveSettings}
         saving={savingSettings}
-        canUpdate={settingsSpace?.canUpdate ?? false}
+        canUpdate={settingsSpace?.canEditPlatformSettings ?? false}
       />
 
       <SpaceLicensePlansDialog

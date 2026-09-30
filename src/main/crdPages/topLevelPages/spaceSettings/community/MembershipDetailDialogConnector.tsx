@@ -1,8 +1,10 @@
+import { useTranslation } from 'react-i18next';
 import { useCommunityApplicationQuery, useCommunityInvitationQuery } from '@/core/apollo/generated/apollo-hooks';
 import type { MembershipDetailDialogProps } from '@/crd/components/space/settings/MembershipDetailDialog';
 import { MembershipDetailDialog } from '@/crd/components/space/settings/MembershipDetailDialog';
 import type { PendingMembershipType } from '@/crd/components/space/settings/PendingMembershipsTable';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import { offeredRoleLabelKey } from '@/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper';
 
 export type ViewingMembership = { id: string; type: PendingMembershipType };
 
@@ -10,6 +12,10 @@ type MembershipDetailDialogConnectorProps = {
   /** The membership whose detail to view, or `null` when the dialog is closed. */
   membership: ViewingMembership | null;
   onOpenChange: (open: boolean) => void;
+  /** Renders the invitation's offered extra role (Associate / Associate+Admin / Associate+Owner).
+   * Only the organization Associates consumer sets this — Space invitations don't offer this
+   * role vocabulary, so the Space settings consumer leaves it unset. */
+  showOfferedRole?: boolean;
 };
 
 /**
@@ -18,7 +24,12 @@ type MembershipDetailDialogConnectorProps = {
  * MUI dialogs use (`CommunityApplication` / `CommunityInvitation`) — the list query never carries this
  * data, so it's fetched only when the admin opens the dialog.
  */
-export function MembershipDetailDialogConnector({ membership, onOpenChange }: MembershipDetailDialogConnectorProps) {
+export function MembershipDetailDialogConnector({
+  membership,
+  onOpenChange,
+  showOfferedRole,
+}: MembershipDetailDialogConnectorProps) {
+  const { t } = useTranslation('crd-contributorSettings');
   const open = membership !== null;
   const isApplication = membership?.type === 'application';
   const isPlatform = membership?.type === 'platformInvitation';
@@ -74,6 +85,10 @@ export function MembershipDetailDialogConnector({ membership, onOpenChange }: Me
       createdDate: invitation?.createdDate,
       updatedDate: invitation?.updatedDate,
       welcomeMessage: invitation?.welcomeMessage,
+      offeredRoleLabel:
+        showOfferedRole && invitation
+          ? t(`org.associates.pending.offeredRole.${offeredRoleLabelKey(invitation.extraRoles)}`)
+          : undefined,
     };
   })();
 

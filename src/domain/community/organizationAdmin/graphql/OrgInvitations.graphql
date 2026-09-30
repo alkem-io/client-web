@@ -1,0 +1,17 @@
+query OrgInvitations($organizationId: UUID!) {
+  lookup {
+    organization(ID: $organizationId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+  me {
+    id
+    communityInvitations(states: ["invited", "accepting"]) {
+      ...InvitationData
+    }
+  }
+}

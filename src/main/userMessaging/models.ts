@@ -1,4 +1,5 @@
 import type { ActorType } from '@/core/apollo/generated/graphql-schema';
+import type { MessageAttachment } from '@/crd/components/comment/types';
 /**
  * Shared types and utilities for user messaging
  */
@@ -44,6 +45,13 @@ export interface MessageReaction {
   };
 }
 
+// Attachment shape on a conversation message (feature 013). These values flow
+// straight through `mapMessageToChatMessage` into `ChatMessage.attachments`,
+// which is typed `MessageAttachment[]` — so the CRD render contract is the
+// single source of truth. Re-declaring the fields here lets optional ones drift
+// apart without a type error.
+export type MessageAttachmentModel = MessageAttachment;
+
 // Message type used for conversation messages
 export interface ConversationMessage {
   id: string;
@@ -51,6 +59,7 @@ export interface ConversationMessage {
   timestamp: number;
   sender?: MessageSender;
   reactions: MessageReaction[];
+  attachments: MessageAttachmentModel[];
 }
 
 // GraphQL sender type (from generated types)
@@ -65,6 +74,18 @@ type GraphQLSender =
     }
   | null
   | undefined;
+
+/** Minimal shape of a GraphQL `MessageAttachment` (feature 013) as selected by
+ *  the message documents. Width/height are present for images only. */
+type GraphQLMessageAttachment = {
+  id?: string | null;
+  url?: string | null;
+  displayName: string;
+  mimeType?: string | null;
+  size?: number | null;
+  width?: number | null;
+  height?: number | null;
+};
 
 type GraphQLReaction =
   | {
@@ -117,4 +138,28 @@ export const mapMessageReactions = (reactions: GraphQLReaction[] | null | undefi
           }
         : undefined,
     }));
+};
+
+/**
+ * Maps the GraphQL `Message.attachments` selection to the plain CRD
+ * `MessageAttachment[]` consumed by the render components. `url` is already an
+ * authorized Alkemio document URL (web- or Element-origin), so the mapping is a
+ * uniform field copy with no origin-specific handling.
+ */
+export const mapMessageAttachments = (
+  attachments: GraphQLMessageAttachment[] | null | undefined
+): MessageAttachment[] => {
+  if (!attachments?.length) {
+    return [];
+  }
+
+  return attachments.map(attachment => ({
+    id: attachment.id ?? undefined,
+    url: attachment.url ?? undefined,
+    displayName: attachment.displayName,
+    mimeType: attachment.mimeType ?? undefined,
+    size: attachment.size ?? undefined,
+    width: attachment.width ?? undefined,
+    height: attachment.height ?? undefined,
+  }));
 };
