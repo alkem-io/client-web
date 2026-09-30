@@ -56,7 +56,7 @@
           "userIdentity": "User identity not found."
         },
         "operations": {
-          "calloutClosed": "Callout is closed.",
+          "calloutClosed": "$t(common.Post) is closed.",
           "licenseEntitlementNotAvailable": "License entitlement not available.",
           "licenseEntitlementNotSupported": "License entitlement not supported.",
           "messagingNotEnabled": "Messaging not enabled.",
@@ -1379,12 +1379,12 @@
       },
       "vcConversion": {
         "alreadyConverted": "This virtual contributor is already knowledge-base-based. No conversion needed.",
-        "calloutCount": "Callouts to Migrate",
+        "calloutCount": "$t(common.Posts) to Migrate",
         "confirmTitle": "Convert Virtual Contributor?",
-        "confirmWarning": "This will convert the virtual contributor from space-based to knowledge-base-based. Callouts will be MOVED from the source space (not copied). This action cannot be undone.",
+        "confirmWarning": "This will convert the virtual contributor from space-based to knowledge-base-based. $t(common.Posts) will be MOVED from the source space (not copied). This action cannot be undone.",
         "convertButton": "Convert to Knowledge Base",
         "errorMessage": "Failed to convert virtual contributor.",
-        "sectionDescription": "Convert a space-based virtual contributor to use a knowledge base. Callouts will be moved from the source space — not copied.",
+        "sectionDescription": "Convert a space-based virtual contributor to use a knowledge base. $t(common.Posts) will be moved from the source space — not copied.",
         "sectionTitle": "Virtual Contributor Type Conversion",
         "sourceSpace": "Source Space",
         "successMessage": "Virtual contributor conversion completed successfully.",

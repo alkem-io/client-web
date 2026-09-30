@@ -1744,6 +1744,8 @@ export type CollaboraDocument = {
   documentType: CollaboraDocumentType;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** An authorized, same-origin preview image endpoint for the current saved document, or null when there is no backing file to preview. NOT a bearer URL: every request against it is independently authorized against the current document READ policy. */
+  previewUrl?: Maybe<Scalars['String']['output']>;
   /** The Profile for this CollaboraDocument. */
   profile: Profile;
   /** The date at which the entity was last updated. */
@@ -16196,6 +16198,7 @@ export type CalloutContentQuery = {
                   __typename?: 'CollaboraDocument';
                   id: string;
                   documentType: CollaboraDocumentType;
+                  previewUrl?: string | undefined;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -16572,6 +16575,7 @@ export type UpdateCalloutContentMutation = {
             __typename?: 'CollaboraDocument';
             id: string;
             documentType: CollaboraDocumentType;
+            previewUrl?: string | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -17101,6 +17105,7 @@ export type UpdateCalloutVisibilityMutation = {
             __typename?: 'CollaboraDocument';
             id: string;
             documentType: CollaboraDocumentType;
+            previewUrl?: string | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -17536,6 +17541,7 @@ export type CalloutContributionQuery = {
                 __typename?: 'CollaboraDocument';
                 id: string;
                 documentType: CollaboraDocumentType;
+                previewUrl?: string | undefined;
                 createdDate: Date;
                 profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
                 authorization?:
@@ -17640,6 +17646,7 @@ export type CollaboraDocumentGateFragment = {
   __typename?: 'CollaboraDocument';
   id: string;
   documentType: CollaboraDocumentType;
+  previewUrl?: string | undefined;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -17707,6 +17714,7 @@ export type ImportCollaboraDocumentMutation = {
           __typename?: 'CollaboraDocument';
           id: string;
           documentType: CollaboraDocumentType;
+          previewUrl?: string | undefined;
           createdDate: Date;
           profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
           authorization?:
@@ -18279,6 +18287,7 @@ export type CalloutContributionsQuery = {
                   __typename?: 'CollaboraDocument';
                   id: string;
                   documentType: CollaboraDocumentType;
+                  previewUrl?: string | undefined;
                   createdDate: Date;
                   profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
                   authorization?:
@@ -18485,6 +18494,7 @@ export type CalloutContributionsCollaboraDocumentCardFragment = {
   __typename?: 'CollaboraDocument';
   id: string;
   documentType: CollaboraDocumentType;
+  previewUrl?: string | undefined;
   createdDate: Date;
   profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   authorization?:
@@ -19043,6 +19053,7 @@ export type CreateCalloutMutation = {
             __typename?: 'CollaboraDocument';
             id: string;
             documentType: CollaboraDocumentType;
+            previewUrl?: string | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -19709,6 +19720,7 @@ export type CalloutDetailsQuery = {
                   __typename?: 'CollaboraDocument';
                   id: string;
                   documentType: CollaboraDocumentType;
+                  previewUrl?: string | undefined;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -20307,6 +20319,7 @@ export type CalloutDetailsFragment = {
           __typename?: 'CollaboraDocument';
           id: string;
           documentType: CollaboraDocumentType;
+          previewUrl?: string | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;

@@ -56,7 +56,7 @@
           "userIdentity": "User identity not found."
         },
         "operations": {
-          "calloutClosed": "Callout is closed.",
+          "calloutClosed": "La publication est fermée.",
           "licenseEntitlementNotAvailable": "License entitlement not available.",
           "licenseEntitlementNotSupported": "License entitlement not supported.",
           "messagingNotEnabled": "Messaging not enabled.",
@@ -244,8 +244,8 @@
     "Account": "Compte",
     "Admin": "Administrateur",
     "Admins": "Administrateurs",
-    "Callout": "$t(common.Post), $t(common.subspaces) & $t(common.opportunties)",
-    "Callouts": "$t(common.Posts), $t(common.subspaces) & $t(common.opportunties)",
+    "Callout": "$t(common.Post)",
+    "Callouts": "$t(common.Posts)",
     "Collection": "Collection",
     "Collections": "Collections",
     "Comment": "Commentaire",
@@ -299,17 +299,17 @@
       "users-contributing": "utilisateurs qui contribuent"
     },
     "calendar": "Calendrier",
-    "callout": "$t(common.post), $t(common.subspaces) & $t(common.opportunties)",
+    "callout": "$t(common.post)",
     "calloutType": {
       "COLLABORA_DOCUMENT": "Document",
-      "LINK": "$t(common.Link), $t(common.subspaces) & $t(common.opportunties)",
-      "MEMO": "$t(common.Memo), $t(common.subspaces) & $t(common.opportunties)",
-      "NONE": "$t(common.Post), $t(common.subspaces) & $t(common.opportunties)",
+      "LINK": "$t(common.Link)",
+      "MEMO": "$t(common.Memo)",
+      "NONE": "$t(common.Post)",
       "POLL": "$t(common.Poll)",
-      "POST": "$t(common.Post), $t(common.subspaces) & $t(common.opportunties)",
-      "WHITEBOARD": "$t(common.Whiteboard), $t(common.subspaces) & $t(common.opportunties)"
+      "POST": "$t(common.Post)",
+      "WHITEBOARD": "$t(common.Whiteboard)"
     },
-    "callouts": "$t(common.posts), $t(common.subspaces) & $t(common.opportunties)",
+    "callouts": "$t(common.posts)",
     "card": "Carte",
     "cards": "Cartes",
     "category": "Catégorie",
@@ -348,16 +348,16 @@
     "enums": {
       "calloutContributionType": {
         "COLLABORA_DOCUMENT": "Document",
-        "LINK": "$t(common.Link), $t(common.subspaces) & $t(common.opportunties)",
-        "MEMO": "$t(common.Memo), $t(common.subspaces) & $t(common.opportunties)",
-        "POST": "$t(common.Post), $t(common.subspaces) & $t(common.opportunties)",
-        "WHITEBOARD": "$t(common.Whiteboard), $t(common.subspaces) & $t(common.opportunties)"
+        "LINK": "$t(common.Link)",
+        "MEMO": "$t(common.Memo)",
+        "POST": "$t(common.Post)",
+        "WHITEBOARD": "$t(common.Whiteboard)"
       },
       "calloutType": {
         "LINK_COLLECTION": "Link $t(common.Collection)",
-        "POST": "$t(common.Post), $t(common.subspaces) & $t(common.opportunties)",
+        "POST": "$t(common.Post)",
         "POST_COLLECTION": "$t(common.Post) $t(common.Collection)",
-        "WHITEBOARD": "$t(common.Whiteboard), $t(common.subspaces) & $t(common.opportunties)",
+        "WHITEBOARD": "$t(common.Whiteboard)",
         "WHITEBOARD_COLLECTION": "$t(common.Whiteboard) $t(common.Collection)"
       },
       "discussion-category": {
@@ -402,13 +402,13 @@
       },
       "roleSetContributorType": {
         "ACCOUNT": "Account",
-        "ORGANIZATION": "$t(common.Organization), $t(common.subspaces) & $t(common.opportunties)",
+        "ORGANIZATION": "$t(common.Organization)",
         "SPACE": "$t(common.space)",
         "USER": "Utilisateur",
         "VIRTUAL_CONTRIBUTOR": "$t(common.virtualContributor)"
       },
       "searchVisibility": {
-        "ACCOUNT": "$t(common.Account), $t(common.subspaces) & $t(common.opportunties)",
+        "ACCOUNT": "$t(common.Account)",
         "HIDDEN": "Caché",
         "PUBLIC": "Publique"
       },
@@ -423,7 +423,7 @@
         "CALLOUT_plural": "Collaboration Tool $t(common.templates)",
         "COMMUNITY_GUIDELINES": "$t(common.Community) Guidelines $t(common.template)",
         "COMMUNITY_GUIDELINES_plural": "$t(common.Community) Guidelines $t(common.templates)",
-        "INNOVATION_FLOW": "$t(common.innovation-flow), $t(common.subspaces) & $t(common.opportunties)",
+        "INNOVATION_FLOW": "$t(common.innovation-flow)",
         "INNOVATION_FLOW_plural": "$t(common.innovation-flow) $t(common.templates)",
         "POST": "Post $t(common.template)",
         "POST_plural": "Post $t(common.templates)",
@@ -528,7 +528,7 @@
     "retrying": "Retrying...",
     "role": "Rôle",
     "roles": {
-      "ADMIN": "$t(common.Admin), $t(common.subspaces) & $t(common.opportunties)",
+      "ADMIN": "$t(common.Admin)",
       "ANONYMOUS": "Anonyme",
       "ASSOCIATE": "Associate",
       "FEATURE_BETA_TESTER": "Fonctionnalité : testeur bêta",
@@ -545,7 +545,7 @@
       "GUEST": "Guest",
       "HOST": "Hôte",
       "LEAD": "Référent",
-      "MEMBER": "$t(common.Member), $t(common.subspaces) & $t(common.opportunties)",
+      "MEMBER": "$t(common.Member)",
       "OWNER": "Propriétaire",
       "PLATFORM_AUDIT_READER": "Lecteur d'audit de la plateforme",
       "PLATFORM_BETA_TESTER": "Beta Tester",
@@ -572,21 +572,21 @@
     "space": "Espace",
     "space-level": {
       "L0": "$t(common.space)",
-      "L1": "$t(common.subspace), $t(common.subspaces) & $t(common.opportunties)",
+      "L1": "$t(common.subspace)",
       "L2": "Subsubspace"
     },
-    "space-settings": "$t(common.Settings), $t(common.subspaces) & $t(common.opportunties)",
+    "space-settings": "$t(common.Settings)",
     "spaceSubspace": "(Sub)Space",
     "spaceSubspaces": "(Sub)Spaces",
     "spaceTypes": {
-      "agreement": "$t(common.agreement), $t(common.subspaces) & $t(common.opportunties)",
+      "agreement": "$t(common.agreement)",
       "agreement_plural": "$t(common.agreements)",
       "space": "$t(common.space)",
-      "space_plural": "$t(common.spaces), $t(common.subspaces) & $t(common.opportunties)",
-      "subspace": "$t(common.subspace), $t(common.subspaces) & $t(common.opportunties)",
-      "subspace_plural": "$t(common.subspaces), $t(common.subspaces) & $t(common.opportunties)",
-      "subsubspace": "$t(common.subsubspace), $t(common.subspaces) & $t(common.opportunties)",
-      "subsubspace_plural": "$t(common.subsubspaces), $t(common.subspaces) & $t(common.opportunties)"
+      "space_plural": "$t(common.spaces)",
+      "subspace": "$t(common.subspace)",
+      "subspace_plural": "$t(common.subspaces)",
+      "subsubspace": "$t(common.subsubspace)",
+      "subsubspace_plural": "$t(common.subsubspaces)"
     },
     "spaces": "Espaces",
     "state": "État",
@@ -1379,12 +1379,12 @@
       },
       "vcConversion": {
         "alreadyConverted": "This virtual contributor is already knowledge-base-based. No conversion needed.",
-        "calloutCount": "Callouts to Migrate",
+        "calloutCount": "Publications à migrer",
         "confirmTitle": "Convert Virtual Contributor?",
-        "confirmWarning": "This will convert the virtual contributor from space-based to knowledge-base-based. Callouts will be MOVED from the source space (not copied). This action cannot be undone.",
+        "confirmWarning": "Cela convertira le contributeur virtuel d'un fonctionnement basé sur un espace à un fonctionnement basé sur une base de connaissances. Les publications seront DÉPLACÉES depuis l'espace source (et non copiées). Cette action est irréversible.",
         "convertButton": "Convert to Knowledge Base",
         "errorMessage": "Failed to convert virtual contributor.",
-        "sectionDescription": "Convert a space-based virtual contributor to use a knowledge base. Callouts will be moved from the source space — not copied.",
+        "sectionDescription": "Convertir un contributeur virtuel basé sur un espace pour qu'il utilise une base de connaissances. Les publications seront déplacées depuis l'espace source, et non copiées.",
         "sectionTitle": "Virtual Contributor Type Conversion",
         "sourceSpace": "Source Space",
         "successMessage": "Virtual contributor conversion completed successfully.",
@@ -1414,7 +1414,7 @@
       }
     },
     "innovationLibrary": {
-      "fullName": "$t(common.templateLibrary), $t(common.subspaces) & $t(common.opportunties)"
+      "fullName": "$t(common.templateLibrary)"
     },
     "logout": {
       "loading": "Déconnexion en cours..."
@@ -1525,8 +1525,8 @@
   },
   "share": {
     "alkemio": {
-      "defaultMessage": "Je pense que ce {{entity}} pourrait vous intéresser : {{url}}",
-      "description": "Envoyez un lien vers ce {{entity}} en message privé à d'autres utilisateurs d'Alkemio.",
+      "defaultMessage": "Je pense que ceci pourrait vous intéresser : {{url}}",
+      "description": "Envoyez ce lien en message privé à d'autres utilisateurs d'Alkemio.",
       "errors": {
         "atLeastOneUser": "Sélectionnez au moins un utilisateur.",
         "messageRequired": "Le message ne peut pas être vide.",
