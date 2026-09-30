@@ -1981,6 +1981,10 @@ export type CredentialDefinitionFieldPolicy = {
   resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type DeletedCalloutFormResponseKeySpecifier = ('id' | DeletedCalloutFormResponseKeySpecifier)[];
+export type DeletedCalloutFormResponseFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type DirectMessageDeliveryResultKeySpecifier = (
   | 'conversationID'
   | 'receiverID'
@@ -7250,6 +7254,13 @@ export type StrictTypedTypePolicies = {
   CredentialDefinition?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CredentialDefinitionKeySpecifier | (() => undefined | CredentialDefinitionKeySpecifier);
     fields?: CredentialDefinitionFieldPolicy;
+  };
+  DeletedCalloutFormResponse?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | DeletedCalloutFormResponseKeySpecifier
+      | (() => undefined | DeletedCalloutFormResponseKeySpecifier);
+    fields?: DeletedCalloutFormResponseFieldPolicy;
   };
   DirectMessageDeliveryResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

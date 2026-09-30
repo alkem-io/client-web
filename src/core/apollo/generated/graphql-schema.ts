@@ -3543,6 +3543,12 @@ export type DeleteWhiteboardInput = {
   ID: Scalars['UUID']['input'];
 };
 
+export type DeletedCalloutFormResponse = {
+  __typename?: 'DeletedCalloutFormResponse';
+  /** The id of the deleted Form response. */
+  id: Scalars['UUID']['output'];
+};
+
 export type DirectMessageDeliveryResult = {
   __typename?: 'DirectMessageDeliveryResult';
   /** Set when status = SENT — the (existing or newly created) 1:1 conversation the message was delivered to. */
@@ -5808,7 +5814,7 @@ export type Mutation = {
   /** Delete a Callout. */
   deleteCallout: Callout;
   /** Delete a Form response. The member who submitted it can always withdraw it (also on a closed Form); otherwise the privilege to create callouts on the collection the Post is in (space admin) is required. */
-  deleteCalloutFormResponse: CalloutFormResponse;
+  deleteCalloutFormResponse: DeletedCalloutFormResponse;
   /** Permanently removes a Classification from a Space. No template and no other Space is affected. */
   deleteClassificationEntry: ClassificationEntry;
   /** Deletes the specified CollaboraDocument. */
@@ -15919,7 +15925,7 @@ export type DeleteCalloutFormResponseMutationVariables = Exact<{
 
 export type DeleteCalloutFormResponseMutation = {
   __typename?: 'Mutation';
-  deleteCalloutFormResponse: { __typename?: 'CalloutFormResponse'; id: string };
+  deleteCalloutFormResponse: { __typename?: 'DeletedCalloutFormResponse'; id: string };
 };
 
 export type CalloutFormResponsesQueryVariables = Exact<{
