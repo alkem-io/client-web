@@ -20,7 +20,7 @@
       },
       "callout": {
         "title": "Kollaborationswerkzeuge",
-        "subtitle": "Wiederverwendbare Callouts für Workshops, Brainstormings und Gruppenaktivitäten."
+        "subtitle": "Wiederverwendbare Beiträge für Workshops, Brainstormings und Gruppenaktivitäten."
       },
       "whiteboard": {
         "title": "Whiteboard-Vorlagen",
@@ -263,8 +263,8 @@
   "setDefault": {
     "subspaceTitle": "Standard-Vorlage für Unterbereich",
     "subspaceSubtitle": "Wird verwendet, um das Formular beim Erstellen eines Unterbereichs dieses Bereichs vorauszufüllen.",
-    "flowStateTitle": "Standard-Callout-Vorlage",
-    "flowStateSubtitle": "Wird verwendet, um das Formular beim Hinzufügen eines Callouts zu dieser Phase vorauszufüllen.",
+    "flowStateTitle": "Standard-Beitragsvorlage",
+    "flowStateSubtitle": "Wird verwendet, um das Formular beim Hinzufügen eines Beitrags zu dieser Phase vorauszufüllen.",
     "current": "Aktueller Standard",
     "none": "Kein Standard",
     "noCandidates": "In dieser Sammlung gibt es noch keine Bereichsvorlagen.",
@@ -274,7 +274,7 @@
     "cancel": "Abbrechen"
   },
   "saveAs": {
-    "fromCalloutTitle": "Callout als Vorlage speichern",
+    "fromCalloutTitle": "Beitrag als Vorlage speichern",
     "fromGuidelinesTitle": "Richtlinien als Vorlage speichern",
     "fromSubspaceTitle": "Unterbereich als Vorlage speichern",
     "unsavedSourceTitle": "Speichere zuerst deine Änderungen",

@@ -56,7 +56,7 @@
           "userIdentity": "Gebruikersidentiteit niet gevonden."
         },
         "operations": {
-          "calloutClosed": "Callout is gesloten.",
+          "calloutClosed": "$t(common.Post) is gesloten.",
           "licenseEntitlementNotAvailable": "Licentierecht niet beschikbaar.",
           "licenseEntitlementNotSupported": "Licentierechten worden niet ondersteund.",
           "messagingNotEnabled": "Berichten niet ingeschakeld.",
@@ -1375,12 +1375,12 @@
       },
       "vcConversion": {
         "alreadyConverted": "Deze virtual contributor is al gebaseerd op een knowledge base. Er is geen conversie nodig.",
-        "calloutCount": "Te migreren Callouts",
+        "calloutCount": "Te migreren $t(common.Posts)",
         "confirmTitle": "Virtual Contributor converteren?",
-        "confirmWarning": "Dit zal de virtual contributor omzetten van space-gebaseerd naar knowledge-base-gebaseerd. Callouts worden VERPLAATST vanuit de bronspace (niet gekopieerd). Deze actie kan niet ongedaan worden gemaakt.",
+        "confirmWarning": "Dit zal de virtual contributor omzetten van space-gebaseerd naar knowledge-base-gebaseerd. $t(common.Posts) worden VERPLAATST vanuit de bronspace (niet gekopieerd). Deze actie kan niet ongedaan worden gemaakt.",
         "convertButton": "Converteren naar Knowledge Base",
         "errorMessage": "Omzetten van Virtual Contributor mislukt.",
-        "sectionDescription": "Zet een space-gebaseerde virtual contributor om naar het gebruik van een knowledge base. Callouts worden verplaatst vanuit de bronspace — niet gekopieerd.",
+        "sectionDescription": "Zet een space-gebaseerde virtual contributor om naar het gebruik van een knowledge base. $t(common.Posts) worden verplaatst vanuit de bronspace — niet gekopieerd.",
         "sectionTitle": "Virtual Contributor Type conversie",
         "sourceSpace": "Source Space",
         "successMessage": "Virtual Contributor conversie succesvol voltooid.",
