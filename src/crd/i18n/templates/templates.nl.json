@@ -20,7 +20,7 @@
       },
       "callout": {
         "title": "Samenwerkingstools",
-        "subtitle": "Herbruikbare callouts voor workshops, brainstorms en groepsactiviteiten."
+        "subtitle": "Herbruikbare Posts voor workshops, brainstorms en groepsactiviteiten."
       },
       "whiteboard": {
         "title": "Whiteboard-templates",
@@ -263,8 +263,8 @@
   "setDefault": {
     "subspaceTitle": "Standaard Subspace-template",
     "subspaceSubtitle": "Wordt gebruikt om het formulier vooraf in te vullen bij het maken van een Subspace van deze Space.",
-    "flowStateTitle": "Standaard callout-template",
-    "flowStateSubtitle": "Wordt gebruikt om het formulier vooraf in te vullen bij het toevoegen van een callout aan deze fase.",
+    "flowStateTitle": "Standaard Post-template",
+    "flowStateSubtitle": "Wordt gebruikt om het formulier vooraf in te vullen bij het toevoegen van een Post aan deze fase.",
     "current": "Huidige standaard",
     "none": "Geen standaard",
     "noCandidates": "Er zijn nog geen Space-templates in deze set.",
@@ -274,7 +274,7 @@
     "cancel": "Annuleren"
   },
   "saveAs": {
-    "fromCalloutTitle": "Callout opslaan als template",
+    "fromCalloutTitle": "Post opslaan als template",
     "fromGuidelinesTitle": "Richtlijnen opslaan als template",
     "fromSubspaceTitle": "Subspace opslaan als template",
     "unsavedSourceTitle": "Sla eerst je wijzigingen op",
