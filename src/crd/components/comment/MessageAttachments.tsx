@@ -202,6 +202,8 @@ function AttachmentFileChip({ attachment, hint }: { attachment: MessageAttachmen
   return (
     <a
       href={attachment.url}
+      target="_blank"
+      rel="noopener noreferrer"
       download={attachment.displayName}
       aria-label={t('messageAttachments.download', { name: attachment.displayName })}
       className={cn(
