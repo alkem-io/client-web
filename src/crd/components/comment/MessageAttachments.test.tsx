@@ -106,6 +106,32 @@ describe('MessageAttachments', () => {
     expect(player).not.toContainElement(download);
   });
 
+  test('video metadata without a picture falls back to the existing download chip', () => {
+    const unsupported = { ...video, displayName: 'unsupported.mov', mimeType: 'video/quicktime' };
+    render(<MessageAttachments attachments={[unsupported]} />);
+    const player = screen.getByLabelText(`messageAttachments.videoLabel:${unsupported.displayName}`);
+    Object.defineProperty(player, 'videoWidth', { value: 0 });
+
+    fireEvent.loadedMetadata(player);
+
+    expect(screen.queryByLabelText(`messageAttachments.videoLabel:${unsupported.displayName}`)).not.toBeInTheDocument();
+    expect(screen.getByText('messageAttachments.videoUnavailableHint')).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: `messageAttachments.download:${unsupported.displayName}` })
+    ).toHaveAttribute('download', unsupported.displayName);
+  });
+
+  test('video metadata with a picture keeps the native player', () => {
+    render(<MessageAttachments attachments={[video]} />);
+    const player = screen.getByLabelText(`messageAttachments.videoLabel:${video.displayName}`);
+    Object.defineProperty(player, 'videoWidth', { value: 640 });
+
+    fireEvent.loadedMetadata(player);
+
+    expect(player).toBeInTheDocument();
+    expect(screen.queryByText('messageAttachments.videoUnavailableHint')).not.toBeInTheDocument();
+  });
+
   test('video download activation does not activate playback', async () => {
     const user = userEvent.setup();
     render(<MessageAttachments attachments={[video]} />);
