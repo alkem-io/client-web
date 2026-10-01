@@ -142,6 +142,11 @@ function AttachmentVideo({ attachment }: { attachment: MessageAttachment }) {
         playsInline={true}
         preload="none"
         aria-label={t('messageAttachments.videoLabel', { name: attachment.displayName })}
+        onLoadedMetadata={event => {
+          if (event.currentTarget.videoWidth === 0) {
+            setFailed(true);
+          }
+        }}
         onError={() => setFailed(true)}
         className="block aspect-video max-h-80 w-80 max-w-full bg-black object-contain focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
       />
