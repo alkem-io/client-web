@@ -63,7 +63,7 @@ Run B stack. The follow-ups touch only `MessageAttachments`.
 |---|---|---|
 | No video request before user action | pass | pass |
 | H.264 / VP9 play inline with a picture | pass | pass |
-| HEVC `.mov` (no decodable picture) → hint + download | pass | pass (re-run on `6b46011fa`) |
+| HEVC `.mov` (no decodable picture) → hint + download | pass | pass (re-run on `6b46011fa`, finished 02:01:53Z; file-service recreated back to v0.3.1 at 02:02:08Z) |
 | Unavailable video (document 404) → hint + download | pass | pass |
 | Image download: exact persisted bytes, exact Unicode name, image not opened | pass | pass |
 | Image click still opens the image | pass | pass |

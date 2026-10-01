@@ -29,8 +29,10 @@
   limits and permissions. Failed-send retry and draft disposal are unchanged;
   the existing image-opening link is kept.
 - Drop and paste are active only where the composer accepts attachments
-  (`attachmentsEnabled` + `onAttachFiles`, i.e. chat). Comments are unaffected
-  (comment images are #10357).
+  (`attachmentsEnabled` + `onAttachFiles`, i.e. chat); comment composers do not
+  accept them (comment images are #10357). The renderer is shared:
+  `MessageAttachments` also renders existing comment attachments, which get the
+  same inline video and download controls.
 - Native `<video>` controls and browser-supported formats only: no transcoding,
   no fetching media into JavaScript memory, no storage or permission changes.
 - The download filename comes from the `download` attribute on a same-origin
@@ -47,12 +49,13 @@
 | Integration, real-browser QA, this record | Claude | — |
 | Design decisions and final gate | architect | — |
 
-## Delivery dependencies (not prerequisites of this change)
+## Deployment requirement and separate corrections
 
 - **file-service#99** (HTTP Range on the public document route) must be deployed
-  for video seeking in any browser and for iOS Safari playback. Without it
-  Chrome treats media as an unseekable stream and every seek returns to 0:00
-  (see [verification](verification.md)).
+  for video seeking: measured in Chrome, without it the media is treated as an
+  unseekable stream and every seek returns to 0:00 (see
+  [verification](verification.md)). It is also required for iOS Safari, which
+  needs byte-range responses for video (Apple's requirement; not measured here).
 - **server#6568** (quickstart pins + Synapse media directory) fixes the local
   dev stack only.
 - **server#6570** (classify conversation buckets by their direct owner) corrects
