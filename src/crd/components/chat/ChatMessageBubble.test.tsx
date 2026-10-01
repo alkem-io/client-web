@@ -128,6 +128,59 @@ describe('ChatMessageBubble', () => {
     });
   });
 
+  describe('add-reaction control placement', () => {
+    const attachment = {
+      id: 'att-1',
+      url: 'https://alkem.io/storage/document/doc-1',
+      displayName: 'photo.png',
+      mimeType: 'image/png',
+      size: 1024,
+    };
+    const follows = (earlier: Element, later: Element) =>
+      Boolean(earlier.compareDocumentPosition(later) & Node.DOCUMENT_POSITION_FOLLOWING);
+    const renderReactable = (message: ChatMessage) =>
+      render(<ChatMessageBubble message={message} canReact={true} onAddReaction={vi.fn()} />);
+
+    // The control used to share the text row, so an image message showed it above the image.
+    test.each([
+      ['an attachment-only', ''],
+      ['a captioned', 'look at this'],
+    ])('%s media message shows it after the media and its reactions', (_label, content) => {
+      const { container, getByRole } = renderReactable({
+        ...baseMessage,
+        content,
+        attachments: [attachment],
+        reactions: [{ emoji: '👍', count: 1, hasReacted: false }],
+      });
+      const trigger = getByRole('button', { name: 'thread.addReaction' });
+      const media = container.querySelector('img[alt]') as HTMLElement;
+      const reaction = Array.from(container.querySelectorAll('button')).find(b => b.textContent?.includes('👍'));
+      expect(follows(media, trigger)).toBe(true);
+      expect(reaction && follows(reaction, trigger)).toBe(true);
+    });
+
+    test.each([
+      [false, 'items-start'],
+      [true, 'items-end'],
+    ])('below the media it keeps the message side (own: %s)', (isOwn, side) => {
+      const { container, getByRole } = renderReactable({
+        ...baseMessage,
+        isOwn,
+        content: '',
+        attachments: [attachment],
+      });
+      const trigger = getByRole('button', { name: 'thread.addReaction' });
+      expect(trigger.parentElement).toBe(container.firstElementChild);
+      expect(container.firstElementChild).toHaveClass(side);
+    });
+
+    test('a text-only message keeps it beside the bubble', () => {
+      const { container, getByRole } = renderReactable(baseMessage);
+      const trigger = getByRole('button', { name: 'thread.addReaction' });
+      expect(trigger.parentElement).toBe(container.querySelector('.rounded-2xl')?.parentElement);
+    });
+  });
+
   test('reactions + timestamp render inside the gutter-offset column', () => {
     const messageWithExtras: ChatMessage = {
       ...baseMessage,
