@@ -1585,6 +1585,8 @@
     "inactive": "Неактивно"
   },
   "messageAttachments": {
+    "videoLabel": "Прикачен видеоклип: {{name}}",
+    "videoUnavailableHint": "Този видеоклип не може да се възпроизведе тук. Изтеглете го, за да го гледате.",
     "listLabel": "Прикачени файлове",
     "imageAlt": "Прикачено изображение: {{name}}",
     "download": "Изтегляне на {{name}}",
