@@ -5740,7 +5740,7 @@ export type Mutation = {
   replaceCollaboraDocument: CollaboraDocument;
   /** Replace a Whiteboard from another Whiteboard through the live collaboration room. Content and media are copied server-side; snapshot bytes never pass through GraphQL. */
   replaceWhiteboardContentFromSource: Whiteboard;
-  /** Sends the invitation email of an open platform invitation again (Space or Organization role sets); throttled per invitation. */
+  /** Sends the invitation email of an open platform invitation again (Space or Organization role sets); throttled per role set and address, and counted against an hourly email budget. */
   resendPlatformInvitation: PlatformInvitation;
   /** Resets the interaction with the VC by recreating the room. */
   resetConversationVc: Conversation;
