@@ -75,9 +75,10 @@ export type InviteMembersDialogConnectorProps = {
  * predates those fields; they are unreachable against a current server. The
  * positional fallback never claims a result that carries any identity or
  * created entity: such a result belongs to the chip it names, so a chip that
- * matched nothing (for example an address typed twice, which the server
- * de-duplicates) reports an error instead of borrowing another invitee's
- * outcome.
+ * matched nothing reports an error instead of borrowing another invitee's
+ * outcome. The server echoes one result per submitted chip, so an address
+ * typed for a person who is also picked gets its own result (sharing the same
+ * invitation) and reports the same outcome as the picked chip.
  * Exported for unit testing (T007).
  */
 export const mapInvitationResults = (

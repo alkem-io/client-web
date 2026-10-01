@@ -616,7 +616,7 @@ export default function CrdSpaceSettingsPage() {
                 onPendingReject={community.onPendingReject}
                 onPendingDelete={community.onPendingDelete}
                 onPendingResend={community.onPendingResend}
-                resendingId={community.resendingId}
+                resendingIds={community.resendingIds}
                 onInviteUsers={() => setInviteMembersOpen(true)}
                 onExportMembers={csvExport.exportMembers}
                 exportDisabled={csvExport.exportDisabled}

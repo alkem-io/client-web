@@ -33,7 +33,7 @@ const row = (
 
 const renderTable = (
   items: PendingMembership[],
-  extra: { onResend?: (id: string) => void; resendingId?: string } = {}
+  extra: { onResend?: (id: string) => void; resendingIds?: ReadonlySet<string> } = {}
 ) =>
   render(
     <I18nextProvider i18n={i18n}>
@@ -135,7 +135,7 @@ describe('PendingMembershipsTable — resend', () => {
   });
 
   it('disables the control while that row is in flight', () => {
-    renderTable([externalRow()], { onResend: vi.fn(), resendingId: 'pi-1' });
+    renderTable([externalRow()], { onResend: vi.fn(), resendingIds: new Set(['pi-1']) });
     expect(screen.getByRole('button', { name: 'Resend invitation email' })).toBeDisabled();
   });
 });

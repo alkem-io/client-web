@@ -9,10 +9,7 @@ import type {
   PendingMembershipContributorType,
   PendingMembershipState,
 } from '@/crd/components/space/settings/PendingMembershipsTable';
-import {
-  RESEND_FEEDBACK_TRANSLATION_KEY,
-  resolveResendFeedback,
-} from '@/domain/access/ApplicationsAndInvitations/resendPlatformInvitationFeedback';
+import { useResendPlatformInvitationAction } from '@/domain/access/ApplicationsAndInvitations/useResendPlatformInvitationAction';
 import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import useActionPermission from '@/domain/access/permissions/useActionPermission';
 import useRoleSetManagerRolesAssignment from '@/domain/access/RoleSetManager/RolesAssignment/useRoleSetManagerRolesAssignment';
@@ -119,8 +116,8 @@ export type UseOrgAssociatesTabDataResult = {
   onPendingReject: (id: string) => void;
   onPendingRevoke: (id: string) => void;
   onPendingResend: (id: string) => void;
-  /** Id of the email invitation whose resend request is in flight. */
-  resendingId: string | undefined;
+  /** Ids of the email invitations whose resend request is in flight. */
+  resendingIds: ReadonlySet<string>;
   refetchPending: () => void;
 
   inviteOpen: boolean;
@@ -162,7 +159,6 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
   const [roleLimitError, setRoleLimitError] = useState<'limitAdmin' | 'limitOwner' | 'minOwner' | undefined>(undefined);
   const [pendingConfirmation, setPendingConfirmation] = useState<OrgPendingConfirmation | null>(null);
   const [inviteOpen, setInviteOpen] = useState(false);
-  const [resendingId, setResendingId] = useState<string | undefined>(undefined);
 
   const ROLE_TO_NAME: Record<'Associate' | 'Admin' | 'Owner', RoleName> = {
     Associate: RoleName.Associate,
@@ -330,22 +326,7 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
     setPendingConfirmation({ kind, id, displayName: nameOfPendingRow(id) });
   };
 
-  const onPendingResend = (id: string) => {
-    if (resendingId !== undefined) return;
-    setResendingId(id);
-    resendPlatformInvitation(id)
-      .then(
-        () => resolveResendFeedback(),
-        error => resolveResendFeedback(error)
-      )
-      .then(feedback => {
-        notify(
-          t(RESEND_FEEDBACK_TRANSLATION_KEY[feedback], { ns: 'crd-spaceSettings' }),
-          feedback === 'success' ? 'success' : feedback === 'throttled' ? 'info' : 'error'
-        );
-      })
-      .finally(() => setResendingId(undefined));
-  };
+  const { onResend: onPendingResend, resendingIds } = useResendPlatformInvitationAction(resendPlatformInvitation);
 
   const onConfirm = async () => {
     const confirmation = pendingConfirmation;
@@ -391,7 +372,7 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
     onPendingReject,
     onPendingRevoke,
     onPendingResend,
-    resendingId,
+    resendingIds,
     refetchPending: () => void refetchApplicationsAndInvitations(),
     inviteOpen,
     openInvite: () => setInviteOpen(true),

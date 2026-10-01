@@ -375,7 +375,7 @@ describe('useOrgAssociatesTabData — email invitations (people not yet on the p
 
     await waitFor(() => expect(notify).toHaveBeenCalledWith('community.pendingMemberships.resendSuccess', 'success'));
     expect(resendPlatformInvitation).toHaveBeenCalledWith('pi-1');
-    await waitFor(() => expect(result.current.resendingId).toBeUndefined());
+    await waitFor(() => expect(result.current.resendingIds.size).toBe(0));
   });
 
   it('maps the throttled error code to the throttled toast', async () => {
@@ -390,7 +390,7 @@ describe('useOrgAssociatesTabData — email invitations (people not yet on the p
       result.current.onPendingResend('pi-1');
     });
 
-    await waitFor(() => expect(notify).toHaveBeenCalledWith('community.pendingMemberships.resendThrottled', 'info'));
+    await waitFor(() => expect(notify).toHaveBeenCalledWith('community.pendingMemberships.resendThrottled', 'error'));
   });
 
   it('toasts a generic error for any other failure', async () => {

@@ -242,6 +242,6 @@ describe('useCommunityTabData — email invitation resend', () => {
       result.current.onPendingResend('pi-1');
     });
 
-    await waitFor(() => expect(notify).toHaveBeenCalledWith('community.pendingMemberships.resendThrottled', 'info'));
+    await waitFor(() => expect(notify).toHaveBeenCalledWith('community.pendingMemberships.resendThrottled', 'error'));
   });
 });

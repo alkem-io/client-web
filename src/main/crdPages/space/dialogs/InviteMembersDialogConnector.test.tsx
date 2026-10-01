@@ -224,6 +224,14 @@ describe('mapInvitationResults', () => {
         invitation: { id: 'inv-p', actor: { id: 'user-p' } },
       },
       {
+        // The server echoes one result per typed chip: Pat's address typed again gets its own result,
+        // sharing the invitation created for the picked user.
+        type: RoleSetInvitationResultType.InvitedToRoleSet,
+        invitedActorID: 'user-p',
+        invitedEmail: 'pat@example.com',
+        invitation: { id: 'inv-p', actor: { id: 'user-p' } },
+      },
+      {
         type: RoleSetInvitationResultType.InvitedToRoleSet,
         invitedActorID: 'user-r',
         invitedEmail: 'registered@example.com',
@@ -242,8 +250,8 @@ describe('mapInvitationResults', () => {
       'sent',
       'sent',
       'sent',
-      // Pat's address typed again: the server de-duplicated it, so no result is left for this chip.
-      'error',
+      // Pat's address typed again: it has its own echoed result, so the typed chip reports sent too.
+      'sent',
       'extraRoleLimitReached',
     ]);
   });

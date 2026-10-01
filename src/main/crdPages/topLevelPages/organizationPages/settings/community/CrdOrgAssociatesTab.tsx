@@ -122,7 +122,7 @@ const CrdOrgAssociatesTab = () => {
         onPendingReject={state.onPendingReject}
         onPendingRevoke={state.onPendingRevoke}
         onPendingResend={state.onPendingResend}
-        resendingId={state.resendingId}
+        resendingIds={state.resendingIds}
         onPendingView={id => {
           const item = state.pendingMemberships.find(m => m.id === id);
           if (item) setViewingMembership({ id: item.id, type: item.type });

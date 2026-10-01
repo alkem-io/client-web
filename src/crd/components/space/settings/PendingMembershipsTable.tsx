@@ -61,7 +61,7 @@ export type PendingMembershipsTableProps = {
   /** Sends the invitation email of a row with `canResend` again. The control is hidden when omitted. */
   onResend?: (id: string) => void;
   /** Id of the row whose resend request is in flight — its control is disabled until it settles. */
-  resendingId?: string;
+  resendingIds?: ReadonlySet<string>;
   /** Overrides the built-in "Pending Memberships" heading — e.g. the organization Associates
    * tab, which renders its own "Pending applications & invitations" card title above this
    * table and would otherwise show the word "Memberships" twice, once in Space-flavoured
@@ -145,7 +145,7 @@ export function PendingMembershipsTable({
   onReject,
   onDelete,
   onResend,
-  resendingId,
+  resendingIds,
   title,
   className,
 }: PendingMembershipsTableProps) {
@@ -383,7 +383,7 @@ export function PendingMembershipsTable({
                               variant="ghost"
                               size="icon"
                               className="size-8"
-                              disabled={isTransient(row.state) || resendingId === row.id}
+                              disabled={isTransient(row.state) || resendingIds?.has(row.id)}
                               onClick={() => onResend(row.id)}
                               aria-label={t('community.pendingMemberships.resend')}
                             >

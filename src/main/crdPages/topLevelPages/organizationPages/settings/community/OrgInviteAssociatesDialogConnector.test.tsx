@@ -79,15 +79,14 @@ describe('OrgInviteAssociatesDialogConnector', () => {
       data: {
         inviteForEntryRoleOnRoleSet: [
           {
+            type: RoleSetInvitationResultType.ExtraRoleLimitReached,
+            invitedActorID: 'user-p',
+          },
+          {
             type: RoleSetInvitationResultType.InvitedToRoleSet,
             invitedActorID: 'user-r',
             invitedEmail: 'registered@example.com',
             invitation: { id: 'inv-r', actor: { id: 'user-r' } },
-          },
-          {
-            type: RoleSetInvitationResultType.InvitedToRoleSet,
-            invitedActorID: 'user-p',
-            invitation: { id: 'inv-p', actor: { id: 'user-p' } },
           },
           {
             type: RoleSetInvitationResultType.InvitedToPlatformAndRoleSet,
@@ -116,7 +115,14 @@ describe('OrgInviteAssociatesDialogConnector', () => {
     expect(variables.invitedActorIds).toEqual(['user-p']);
     expect(variables.invitedUserEmails).toEqual(['new@example.com', 'registered@example.com']);
     expect(variables.suggestedLanguage).toBeUndefined();
-    expect(dialogProps.results?.map(r => r.outcome)).toEqual(['sent', 'sent', 'sent']);
+    // The picked person's result comes back first and is a typed failure; positional matching would
+    // hand it to the first chip regardless of who that is, so assert each invitee's own outcome.
+    const outcomeOf = (predicate: (invitee: NonNullable<typeof dialogProps.results>[number]['invitee']) => boolean) =>
+      dialogProps.results?.find(r => predicate(r.invitee))?.outcome;
+    expect(dialogProps.results).toHaveLength(3);
+    expect(outcomeOf(i => i.kind === 'user' && i.userId === 'user-p')).toBe('extraRoleLimitReached');
+    expect(outcomeOf(i => i.kind === 'email' && i.email === 'registered@example.com')).toBe('sent');
+    expect(outcomeOf(i => i.kind === 'email' && i.email === 'new@example.com')).toBe('sent');
   });
 
   test('includes the suggested language only when one was chosen', async () => {
