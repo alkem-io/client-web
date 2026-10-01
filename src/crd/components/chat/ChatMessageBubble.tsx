@@ -64,6 +64,10 @@ export function ChatMessageBubble({
     />
   );
 
+  const timestamp = message.timestamp && (
+    <span className="px-1 text-caption text-muted-foreground">{message.timestamp}</span>
+  );
+
   const bubbleColumn = (
     <div className={cn('group flex flex-col gap-0.5', isOwn ? 'items-end' : 'items-start')}>
       {showAuthor && !isOwn && author && (
@@ -115,10 +119,16 @@ export function ChatMessageBubble({
           onRemove={emoji => onRemoveReaction?.(emoji)}
         />
       )}
-      {/* With media the trigger follows the attachments and their reactions,
-          on the same side as the rest of the message. */}
-      {hasAttachments && addReactionTrigger}
-      {message.timestamp && <span className="px-1 text-caption text-muted-foreground">{message.timestamp}</span>}
+      {/* With media the trigger shares the timestamp's line below the
+          attachments and their reactions; the timestamp keeps the outer edge. */}
+      {hasAttachments && addReactionTrigger ? (
+        <div className={cn('flex items-center gap-1', isOwn && 'flex-row-reverse')}>
+          {timestamp}
+          {addReactionTrigger}
+        </div>
+      ) : (
+        timestamp
+      )}
     </div>
   );
 

@@ -145,33 +145,47 @@ describe('ChatMessageBubble', () => {
     test.each([
       ['an attachment-only', ''],
       ['a captioned', 'look at this'],
-    ])('%s media message shows it after the media and its reactions', (_label, content) => {
-      const { container, getByRole } = renderReactable({
+    ])('%s media message shows it on the timestamp line, after the media and its reactions', (_label, content) => {
+      const { getByRole, getByText } = renderReactable({
         ...baseMessage,
         content,
         attachments: [attachment],
         reactions: [{ emoji: '👍', count: 1, hasReacted: false }],
       });
       const trigger = getByRole('button', { name: 'thread.addReaction' });
-      const media = container.querySelector('img[alt]') as HTMLElement;
-      const reaction = Array.from(container.querySelectorAll('button')).find(b => b.textContent?.includes('👍'));
-      expect(follows(media, trigger)).toBe(true);
-      expect(reaction && follows(reaction, trigger)).toBe(true);
+      expect(follows(getByRole('img', { name: 'messageAttachments.imageAlt' }), trigger)).toBe(true);
+      expect(follows(getByRole('button', { name: /👍/ }), trigger)).toBe(true);
+      const timestamp = getByText('2m ago');
+      expect(timestamp.parentElement).toBe(trigger.parentElement);
+      expect(follows(timestamp, trigger)).toBe(true);
     });
 
     test.each([
       [false, 'items-start'],
       [true, 'items-end'],
-    ])('below the media it keeps the message side (own: %s)', (isOwn, side) => {
+    ])('the timestamp line keeps the message side (own: %s)', (isOwn, side) => {
       const { container, getByRole } = renderReactable({
         ...baseMessage,
         isOwn,
         content: '',
         attachments: [attachment],
       });
-      const trigger = getByRole('button', { name: 'thread.addReaction' });
-      expect(trigger.parentElement).toBe(container.firstElementChild);
+      const row = getByRole('button', { name: 'thread.addReaction' }).parentElement;
+      expect(row?.parentElement).toBe(container.firstElementChild);
       expect(container.firstElementChild).toHaveClass(side);
+      // The timestamp stays on the outer edge, the control on the inner side.
+      expect(row?.classList.contains('flex-row-reverse')).toBe(isOwn);
+    });
+
+    test('without a timestamp the control still follows the media', () => {
+      const { getByRole } = renderReactable({
+        ...baseMessage,
+        timestamp: '',
+        content: '',
+        attachments: [attachment],
+      });
+      const trigger = getByRole('button', { name: 'thread.addReaction' });
+      expect(follows(getByRole('img', { name: 'messageAttachments.imageAlt' }), trigger)).toBe(true);
     });
 
     test('a text-only message keeps it beside the bubble', () => {
