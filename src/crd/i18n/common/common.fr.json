@@ -1585,6 +1585,8 @@
     "inactive": "Inactif"
   },
   "messageAttachments": {
+    "videoLabel": "Vidéo jointe : {{name}}",
+    "videoUnavailableHint": "Cette vidéo ne peut pas être lue ici. Téléchargez-la pour la regarder.",
     "listLabel": "Pièces jointes",
     "imageAlt": "Image jointe : {{name}}",
     "download": "Télécharger {{name}}",
