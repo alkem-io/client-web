@@ -151,7 +151,9 @@ const INVITE_PAGE_SIZE = 20;
 // Inlined here to avoid coupling the CRD connector to a Yup schema we don't otherwise use.
 const EMAIL_REGEX =
   /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9]{2,}(?:[a-z0-9-]*[a-z0-9])?$/i;
-const isValidEmail = (value: string): boolean => EMAIL_REGEX.test(value.trim().toLowerCase());
+// Shared with the organization invite connector so both dialogs accept exactly what the server's
+// @IsEmail accepts and flag the rest as invalid chips instead of failing the whole batch.
+export const isValidEmail = (value: string): boolean => EMAIL_REGEX.test(value.trim().toLowerCase());
 
 const ROLE_TO_NAME: Record<InviteRole, RoleName> = {
   Member: RoleName.Member,

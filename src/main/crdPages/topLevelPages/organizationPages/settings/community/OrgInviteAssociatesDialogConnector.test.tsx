@@ -147,4 +147,19 @@ describe('OrgInviteAssociatesDialogConnector', () => {
     });
     expect(runInviteMock).not.toHaveBeenCalled();
   });
+
+  test('flags addresses the server would reject as invalid and still sends the valid ones', async () => {
+    runInviteMock.mockResolvedValue({ data: { inviteForEntryRoleOnRoleSet: [] } });
+    await act(async () => {
+      renderConnector();
+    });
+    await act(async () => {
+      dialogProps.onAddEmails('new@example.com, a@b.c, jane..doe@example.com, jane@exa_mple.com');
+    });
+    await act(async () => {
+      dialogProps.onSend();
+    });
+    expect(runInviteMock).toHaveBeenCalledTimes(1);
+    expect(runInviteMock.mock.calls[0][0].variables.invitedUserEmails).toEqual(['new@example.com']);
+  });
 });

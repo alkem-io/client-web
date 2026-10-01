@@ -9,12 +9,11 @@ import {
   type InviteRole,
 } from '@/crd/components/community/InviteMembersDialog';
 import type { ContributorSelectorInvitee, ContributorSelectorUserResult } from '@/crd/forms/ContributorSelector';
-import { isValidEmail } from '@/crd/lib/validators';
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
 import type InvitationResultModel from '@/domain/access/model/InvitationResultModel';
 import emailParser from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/emailParser';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { mapInvitationResults } from '@/main/crdPages/space/dialogs/InviteMembersDialogConnector';
+import { isValidEmail, mapInvitationResults } from '@/main/crdPages/space/dialogs/InviteMembersDialogConnector';
 
 export type OrgInviteAssociatesDialogConnectorProps = {
   open: boolean;
