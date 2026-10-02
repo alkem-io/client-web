@@ -329,7 +329,7 @@ export const UnifiedChatPanelConnector = () => {
               return handleSendMessage(message, documents);
             }}
             onClearDraft={() => clearDraft(selectedConversationId)}
-            onRestoreDraft={text => setDraft(selectedConversationId, text)}
+            onRestoreDraft={() => setDraft(selectedConversationId, getDraft(selectedConversationId))}
             onAddReaction={onAddReaction}
             onRemoveReaction={onRemoveReaction}
           />

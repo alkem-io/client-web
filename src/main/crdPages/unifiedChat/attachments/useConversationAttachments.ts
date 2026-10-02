@@ -80,7 +80,7 @@ export function useConversationAttachments(storageConfig: StorageConfig | undefi
     text: string,
     sendEvent: SendEvent,
     clearText: () => void,
-    restoreText: (text: string) => void
+    restoreText: () => void
   ): Promise<boolean> => {
     const current = lifetime.current;
     if (current.busy || current.disposed || (draft.items.length > 0 && !enabled)) return false;
@@ -96,7 +96,7 @@ export function useConversationAttachments(storageConfig: StorageConfig | undefi
         try {
           confirmed = await sendEvent(text);
         } finally {
-          if (!confirmed) restoreText(text);
+          if (!confirmed) restoreText();
         }
         if (!confirmed) throw new Error('send unconfirmed');
         if (current.disposed) return false;

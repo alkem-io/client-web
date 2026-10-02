@@ -8,7 +8,7 @@ type Props = Omit<ComponentProps<typeof ChatThreadView>, 'onSendMessage'> & {
   attachmentsAllowed: boolean;
   sendEvent: SendEvent;
   onClearDraft: () => void;
-  onRestoreDraft: (text: string) => void;
+  onRestoreDraft: () => void;
 };
 
 /** The connector keys this component by conversation, giving each draft its own lifetime. */

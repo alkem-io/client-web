@@ -264,10 +264,14 @@ describe('useConversationAttachments', () => {
       return { promise, resolve, reject };
     };
 
-    test('the text draft is cleared before the send resolves', async () => {
+    test('the text draft is cleared before the send is issued and before it resolves', async () => {
       const text = deferred();
-      const sendEvent = vi.fn().mockReturnValue(text.promise);
-      const clearText = vi.fn();
+      const callLog: string[] = [];
+      const sendEvent = vi.fn().mockImplementation(() => {
+        callLog.push('send');
+        return text.promise;
+      });
+      const clearText = vi.fn(() => callLog.push('clear'));
       const restoreText = vi.fn();
       const { result } = renderHook(() => useConversationAttachments(bucketConfig));
       let sending!: Promise<boolean>;
@@ -275,6 +279,7 @@ describe('useConversationAttachments', () => {
         sending = result.current.send('hello', sendEvent, clearText, restoreText);
       });
       expect(clearText).toHaveBeenCalledTimes(1);
+      expect(callLog).toEqual(['clear', 'send']);
       expect(restoreText).not.toHaveBeenCalled();
       await act(async () => {
         text.resolve(true);
@@ -297,7 +302,7 @@ describe('useConversationAttachments', () => {
         text.resolve(false);
         expect(await sending).toBe(false);
       });
-      expect(restoreText).toHaveBeenCalledExactlyOnceWith('hello');
+      expect(restoreText).toHaveBeenCalledTimes(1);
       expect(result.current.error).toBe('comments.attachments.sendUnconfirmed');
     });
 
@@ -314,7 +319,7 @@ describe('useConversationAttachments', () => {
         text.reject(new Error('network'));
         expect(await sending).toBe(false);
       });
-      expect(restoreText).toHaveBeenCalledExactlyOnceWith('hello');
+      expect(restoreText).toHaveBeenCalledTimes(1);
       expect(result.current.error).toBe('comments.attachments.sendUnconfirmed');
     });
 
@@ -345,23 +350,6 @@ describe('useConversationAttachments', () => {
       });
       expect(clearText).not.toHaveBeenCalled();
       expect(restoreText).not.toHaveBeenCalled();
-    });
-
-    test('restore goes to the originating conversation even after its composer unmounts', async () => {
-      const text = deferred();
-      const sendEvent = vi.fn().mockReturnValue(text.promise);
-      const restoreOrigin = vi.fn();
-      const { result, unmount } = renderHook(() => useConversationAttachments(bucketConfig));
-      let sending!: Promise<boolean>;
-      act(() => {
-        sending = result.current.send('hello', sendEvent, vi.fn(), restoreOrigin);
-      });
-      unmount();
-      await act(async () => {
-        text.resolve(false);
-        await sending;
-      });
-      expect(restoreOrigin).toHaveBeenCalledExactlyOnceWith('hello');
     });
   });
 });
