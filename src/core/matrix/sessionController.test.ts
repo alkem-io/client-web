@@ -358,4 +358,15 @@ describe('establishSession', () => {
 
     expect(isSessionEstablishing()).toBe(true);
   });
+
+  it('stop() clears the establishing flag while silent SSO is still pending', async () => {
+    mockedSilentSso.mockImplementation(() => new Promise(() => {}));
+    void establishSession('actor-without-record');
+    await vi.waitFor(() => expect(mockedSilentSso).toHaveBeenCalled());
+    expect(isSessionEstablishing()).toBe(true);
+
+    expect(stopActiveSession()).toBe(true);
+
+    expect(isSessionEstablishing()).toBe(false);
+  });
 });
