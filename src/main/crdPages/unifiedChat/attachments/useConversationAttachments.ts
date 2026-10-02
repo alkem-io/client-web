@@ -76,7 +76,12 @@ export function useConversationAttachments(storageConfig: StorageConfig | undefi
     setDraft(previous => ({ items: previous.items.filter(item => item.id !== id) }));
   };
 
-  const send = async (text: string, sendEvent: SendEvent, textSent: () => void): Promise<boolean> => {
+  const send = async (
+    text: string,
+    sendEvent: SendEvent,
+    clearText: () => void,
+    restoreText: (text: string) => void
+  ): Promise<boolean> => {
     const current = lifetime.current;
     if (current.busy || current.disposed || (draft.items.length > 0 && !enabled)) return false;
     current.busy = true;
@@ -86,8 +91,14 @@ export function useConversationAttachments(storageConfig: StorageConfig | undefi
     let uploading = false;
     try {
       if (text.trim()) {
-        if (!(await sendEvent(text))) throw new Error('send unconfirmed');
-        textSent();
+        clearText();
+        let confirmed: boolean | undefined;
+        try {
+          confirmed = await sendEvent(text);
+        } finally {
+          if (!confirmed) restoreText(text);
+        }
+        if (!confirmed) throw new Error('send unconfirmed');
         if (current.disposed) return false;
       }
       for (const item of draft.items) {

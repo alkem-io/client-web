@@ -66,26 +66,28 @@ describe('useConversationAttachments', () => {
     expect(mockUploadFile).not.toHaveBeenCalled();
   });
 
-  test.each([true, false])('after unmount, clears text only when send is confirmed (%s)', async confirmed => {
+  test.each([true, false])('after unmount, restores text only when send is not confirmed (%s)', async confirmed => {
     let finish!: (confirmed: boolean) => void;
     const sendEvent = vi.fn().mockReturnValue(
       new Promise<boolean>(resolve => {
         finish = resolve;
       })
     );
-    const textSent = vi.fn();
+    const clearText = vi.fn();
+    const restoreText = vi.fn();
     const { result, unmount } = renderHook(() => useConversationAttachments(bucketConfig));
     act(() => result.current.attachFiles([file('a.png')]));
     let sending!: Promise<boolean>;
     act(() => {
-      sending = result.current.send('hello', sendEvent, textSent);
+      sending = result.current.send('hello', sendEvent, clearText, restoreText);
     });
     unmount();
     await act(async () => {
       finish(confirmed);
       expect(await sending).toBe(false);
     });
-    expect(textSent).toHaveBeenCalledTimes(confirmed ? 1 : 0);
+    expect(clearText).toHaveBeenCalledTimes(1);
+    expect(restoreText).toHaveBeenCalledTimes(confirmed ? 0 : 1);
     expect(sendEvent).toHaveBeenCalledExactlyOnceWith('hello');
     expect(mockUploadFile).not.toHaveBeenCalled();
   });
@@ -93,14 +95,16 @@ describe('useConversationAttachments', () => {
   test('sends text and each uploaded file separately, clearing only confirmed items', async () => {
     mockUploadFile.mockResolvedValueOnce(uploadResult('first')).mockResolvedValueOnce(uploadResult('second'));
     const sendEvent = vi.fn().mockResolvedValue(true);
-    const textSent = vi.fn();
+    const clearText = vi.fn();
+    const restoreText = vi.fn();
     const { result } = renderHook(() => useConversationAttachments(bucketConfig));
     act(() => result.current.attachFiles([file('a.png'), file('b.png')]));
     await act(async () => {
-      expect(await result.current.send('hello', sendEvent, textSent)).toBe(true);
+      expect(await result.current.send('hello', sendEvent, clearText, restoreText)).toBe(true);
     });
     expect(sendEvent.mock.calls).toEqual([['hello'], ['', ['first']], ['', ['second']]]);
-    expect(textSent).toHaveBeenCalledTimes(1);
+    expect(clearText).toHaveBeenCalledTimes(1);
+    expect(restoreText).not.toHaveBeenCalled();
     expect(mockUploadFile).toHaveBeenCalledWith({
       variables: { file: expect.any(File), uploadData: { storageBucketId: 'bucket', temporaryLocation: false } },
     });
@@ -118,7 +122,7 @@ describe('useConversationAttachments', () => {
     act(() => result.current.attachFiles([file('a.png')]));
     let sending!: Promise<boolean>;
     act(() => {
-      sending = result.current.send('hello', sendEvent, vi.fn());
+      sending = result.current.send('hello', sendEvent, vi.fn(), vi.fn());
     });
     await act(async () => {});
     expect(mockUploadFile).not.toHaveBeenCalled();
@@ -142,18 +146,20 @@ describe('useConversationAttachments', () => {
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(false)
       .mockResolvedValue(true);
-    const textSent = vi.fn();
+    const clearText = vi.fn();
+    const restoreText = vi.fn();
     const { result } = renderHook(() => useConversationAttachments(bucketConfig));
     act(() => result.current.attachFiles([file('a.png'), file('b.png'), file('c.png')]));
     await act(async () => {
-      expect(await result.current.send('hello', sendEvent, textSent)).toBe(false);
+      expect(await result.current.send('hello', sendEvent, clearText, restoreText)).toBe(false);
     });
     expect(result.current.attachments.map(item => item.name)).toEqual(['b.png', 'c.png']);
     expect(result.current.error).toBe('comments.attachments.sendUnconfirmed');
     expect(mockUploadFile).toHaveBeenCalledTimes(2);
-    expect(textSent).toHaveBeenCalledTimes(1);
+    expect(clearText).toHaveBeenCalledTimes(1);
+    expect(restoreText).not.toHaveBeenCalled();
     await act(async () => {
-      expect(await result.current.send('', sendEvent, textSent)).toBe(true);
+      expect(await result.current.send('', sendEvent, clearText, restoreText)).toBe(true);
     });
     expect(sendEvent.mock.calls).toEqual([
       ['hello'],
@@ -164,7 +170,8 @@ describe('useConversationAttachments', () => {
     ]);
     expect(mockUploadFile).toHaveBeenCalledTimes(3);
     expect(result.current.attachments).toHaveLength(0);
-    expect(textSent).toHaveBeenCalledTimes(1);
+    expect(clearText).toHaveBeenCalledTimes(1);
+    expect(restoreText).not.toHaveBeenCalled();
   });
 
   test('an upload failure stops before media publication and retains the files', async () => {
@@ -173,7 +180,7 @@ describe('useConversationAttachments', () => {
     const { result } = renderHook(() => useConversationAttachments(bucketConfig));
     act(() => result.current.attachFiles([file('a.png'), file('b.png')]));
     await act(async () => {
-      expect(await result.current.send('', sendEvent, vi.fn())).toBe(false);
+      expect(await result.current.send('', sendEvent, vi.fn(), vi.fn())).toBe(false);
     });
     expect(result.current.attachments.map(item => item.name)).toEqual(['a.png', 'b.png']);
     expect(result.current.error).toBe('comments.attachments.uploadFailed');
@@ -193,14 +200,14 @@ describe('useConversationAttachments', () => {
     act(() => result.current.attachFiles([file('a.png')]));
     let sending!: Promise<boolean>;
     act(() => {
-      sending = result.current.send('', sendEvent, vi.fn());
+      sending = result.current.send('', sendEvent, vi.fn(), vi.fn());
     });
     act(() => {
       result.current.removeAttachment(result.current.attachments[0].id);
       result.current.attachFiles([file('b.png')]);
     });
     expect(result.current.attachments.map(item => item.name)).toEqual(['a.png']);
-    expect(await result.current.send('', sendEvent, vi.fn())).toBe(false);
+    expect(await result.current.send('', sendEvent, vi.fn(), vi.fn())).toBe(false);
     await act(async () => {
       finish(uploadResult('first'));
       await sending;
@@ -233,7 +240,7 @@ describe('useConversationAttachments', () => {
     act(() => current.attachFiles([file('old-1.png'), file('old-2.png')]));
     let sending!: Promise<boolean>;
     act(() => {
-      sending = current.send('', sendEvent, vi.fn());
+      sending = current.send('', sendEvent, vi.fn(), vi.fn());
     });
     view.rerender(createElement(Draft, { key: 'conv-B' }));
     view.rerender(createElement(Draft, { key: 'conv-A' }));
@@ -244,5 +251,117 @@ describe('useConversationAttachments', () => {
     expect(current.attachments).toHaveLength(0);
     expect(mockUploadFile).toHaveBeenCalledTimes(1);
     expect(sendEvent).not.toHaveBeenCalled();
+  });
+
+  describe('draft handling', () => {
+    const deferred = () => {
+      let resolve!: (value: boolean) => void;
+      let reject!: (error: Error) => void;
+      const promise = new Promise<boolean>((res, rej) => {
+        resolve = res;
+        reject = rej;
+      });
+      return { promise, resolve, reject };
+    };
+
+    test('the text draft is cleared before the send resolves', async () => {
+      const text = deferred();
+      const sendEvent = vi.fn().mockReturnValue(text.promise);
+      const clearText = vi.fn();
+      const restoreText = vi.fn();
+      const { result } = renderHook(() => useConversationAttachments(bucketConfig));
+      let sending!: Promise<boolean>;
+      act(() => {
+        sending = result.current.send('hello', sendEvent, clearText, restoreText);
+      });
+      expect(clearText).toHaveBeenCalledTimes(1);
+      expect(restoreText).not.toHaveBeenCalled();
+      await act(async () => {
+        text.resolve(true);
+        await sending;
+      });
+      expect(restoreText).not.toHaveBeenCalled();
+    });
+
+    test('an unconfirmed text send restores the text', async () => {
+      const text = deferred();
+      const sendEvent = vi.fn().mockReturnValue(text.promise);
+      const restoreText = vi.fn();
+      const { result } = renderHook(() => useConversationAttachments(bucketConfig));
+      let sending!: Promise<boolean>;
+      act(() => {
+        sending = result.current.send('hello', sendEvent, vi.fn(), restoreText);
+      });
+      expect(restoreText).not.toHaveBeenCalled();
+      await act(async () => {
+        text.resolve(false);
+        expect(await sending).toBe(false);
+      });
+      expect(restoreText).toHaveBeenCalledExactlyOnceWith('hello');
+      expect(result.current.error).toBe('comments.attachments.sendUnconfirmed');
+    });
+
+    test('a rejected text send restores the text', async () => {
+      const text = deferred();
+      const sendEvent = vi.fn().mockReturnValue(text.promise);
+      const restoreText = vi.fn();
+      const { result } = renderHook(() => useConversationAttachments(bucketConfig));
+      let sending!: Promise<boolean>;
+      act(() => {
+        sending = result.current.send('hello', sendEvent, vi.fn(), restoreText);
+      });
+      await act(async () => {
+        text.reject(new Error('network'));
+        expect(await sending).toBe(false);
+      });
+      expect(restoreText).toHaveBeenCalledExactlyOnceWith('hello');
+      expect(result.current.error).toBe('comments.attachments.sendUnconfirmed');
+    });
+
+    test('a confirmed text with a failing attachment keeps the text cleared', async () => {
+      mockUploadFile.mockResolvedValue(uploadResult('first'));
+      const sendEvent = vi.fn().mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+      const clearText = vi.fn();
+      const restoreText = vi.fn();
+      const { result } = renderHook(() => useConversationAttachments(bucketConfig));
+      act(() => result.current.attachFiles([file('a.png')]));
+      await act(async () => {
+        expect(await result.current.send('hello', sendEvent, clearText, restoreText)).toBe(false);
+      });
+      expect(clearText).toHaveBeenCalledTimes(1);
+      expect(restoreText).not.toHaveBeenCalled();
+      expect(result.current.error).toBe('comments.attachments.sendUnconfirmed');
+    });
+
+    test('attachment-only sends neither clear nor restore text', async () => {
+      mockUploadFile.mockResolvedValue(uploadResult('first'));
+      const sendEvent = vi.fn().mockResolvedValue(false);
+      const clearText = vi.fn();
+      const restoreText = vi.fn();
+      const { result } = renderHook(() => useConversationAttachments(bucketConfig));
+      act(() => result.current.attachFiles([file('a.png')]));
+      await act(async () => {
+        await result.current.send('  ', sendEvent, clearText, restoreText);
+      });
+      expect(clearText).not.toHaveBeenCalled();
+      expect(restoreText).not.toHaveBeenCalled();
+    });
+
+    test('restore goes to the originating conversation even after its composer unmounts', async () => {
+      const text = deferred();
+      const sendEvent = vi.fn().mockReturnValue(text.promise);
+      const restoreOrigin = vi.fn();
+      const { result, unmount } = renderHook(() => useConversationAttachments(bucketConfig));
+      let sending!: Promise<boolean>;
+      act(() => {
+        sending = result.current.send('hello', sendEvent, vi.fn(), restoreOrigin);
+      });
+      unmount();
+      await act(async () => {
+        text.resolve(false);
+        await sending;
+      });
+      expect(restoreOrigin).toHaveBeenCalledExactlyOnceWith('hello');
+    });
   });
 });

@@ -328,9 +328,8 @@ export const UnifiedChatPanelConnector = () => {
               if (isGuidanceThread) guidanceResponse.markSent();
               return handleSendMessage(message, documents);
             }}
-            onTextSent={() => {
-              if (selectedConversationId) clearDraft(selectedConversationId);
-            }}
+            onClearDraft={() => clearDraft(selectedConversationId)}
+            onRestoreDraft={text => setDraft(selectedConversationId, text)}
             onAddReaction={onAddReaction}
             onRemoveReaction={onRemoveReaction}
           />
