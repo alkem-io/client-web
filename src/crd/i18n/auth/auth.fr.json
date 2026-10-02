@@ -9,6 +9,12 @@
     "signUp": "S'inscrire",
     "preparing": "Préparation de la connexion sécurisée…"
   },
+  "appSignIn": {
+    "required": "Connectez-vous pour continuer.",
+    "cancelled": "La connexion a été annulée.",
+    "failed": "La connexion n'a pas pu aboutir. Veuillez réessayer.",
+    "action": "Se connecter"
+  },
   "signUp": {
     "title": "S'inscrire",
     "haveAccount": "Vous avez un compte ?",
