@@ -12,7 +12,7 @@ type ConversationDraftsContextProps = {
   /** The draft for one conversation, `''` when there is none. */
   getDraft: (conversationId: string) => string;
   setDraft: (conversationId: string, value: string) => void;
-  /** Called once a message actually reached the server — never on a failed send. */
+  /** Called when a send starts; a send that is not confirmed restores the draft via `setDraft`. */
   clearDraft: (conversationId: string) => void;
 };
 

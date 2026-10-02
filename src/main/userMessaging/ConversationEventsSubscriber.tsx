@@ -1,17 +1,17 @@
+import { useSyncChatSound } from './matrix/useSyncChatSound';
 import { useConversationEventsSubscription } from './useConversationEventsSubscription';
 
 /**
- * Always-mounted, render-null subscriber for conversation events.
+ * Always-mounted, render-null subscriber for conversation events, so they
+ * arrive with the chat panel closed too.
  *
- * Previously the conversation-events subscription lived inside
- * `UnifiedChatPanelConnector`, which mounts only while the chat panel is open —
- * so no `messageReceived` event reached a closed panel, and neither the chat
- * sound (US1) nor the tab badge (US5) could fire. Hoisting it here (mounted in
- * `root.tsx` under the messaging provider) keeps exactly one subscription alive
- * for the whole session, panel open or closed. It also refreshes the launcher's
- * unread badge, which is otherwise a cache-first query with no polling.
+ * GraphQL carries the control events (conversations created, updated, deleted
+ * and membership changes); message content arrives through the browser's
+ * Matrix sync, which also drives the chat sound. The unread badges follow sync
+ * directly.
  */
 export const ConversationEventsSubscriber = () => {
   useConversationEventsSubscription();
+  useSyncChatSound();
   return null;
 };

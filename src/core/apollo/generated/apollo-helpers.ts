@@ -4840,6 +4840,7 @@ export type RoomKeySpecifier = (
   | 'displayName'
   | 'id'
   | 'lastMessage'
+  | 'messageAttachments'
   | 'messages'
   | 'messagesCount'
   | 'type'
@@ -4856,6 +4857,7 @@ export type RoomFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   lastMessage?: FieldPolicy<any> | FieldReadFunction<any>;
+  messageAttachments?: FieldPolicy<any> | FieldReadFunction<any>;
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
   messagesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
