@@ -16,10 +16,7 @@ const unregisterActiveSession = (signOut: SignOut): void => {
   }
 };
 
-/**
- * Stops the registered session, if any. Returns whether one was registered,
- * so a caller can skip further work (e.g. storage enumeration) when none was.
- */
+/** Stops the registered session, if any. Returns whether one was registered. */
 const stopActiveSession = (): boolean => {
   const signOut = current;
   current = null;

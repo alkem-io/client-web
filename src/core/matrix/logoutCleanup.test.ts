@@ -47,12 +47,12 @@ describe('logoutCleanup', () => {
     expect(databasesSpy).toHaveBeenCalled();
   });
 
-  it('when no session was ever established: no storage enumeration', async () => {
-    const databasesSpy = vi.spyOn(indexedDB, 'databases');
+  it('clears stored credentials even when no session is registered in this tab', async () => {
+    await seedRecord();
 
     await runMatrixLogoutCleanup();
 
-    expect(databasesSpy).not.toHaveBeenCalled();
+    expect(await loadCredentials(USER_ID)).toBe(null);
   });
 
   it('never rejects, even when storage enumeration throws', async () => {
