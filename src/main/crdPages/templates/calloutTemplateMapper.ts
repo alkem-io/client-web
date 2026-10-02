@@ -111,6 +111,7 @@ const FRAMING_TYPE_TO_CHIP: Record<CalloutFramingType, FramingChip> = {
   [CalloutFramingType.Poll]: 'poll',
   [CalloutFramingType.Contributors]: 'contributors',
   [CalloutFramingType.Spaces]: 'spaces',
+  [CalloutFramingType.Form]: 'form',
 };
 
 const CONTRIBUTION_TYPE_TO_RESPONSE: Record<CalloutContributionType, ResponseType | 'none'> = {

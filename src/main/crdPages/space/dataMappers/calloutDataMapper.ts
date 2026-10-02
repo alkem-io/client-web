@@ -37,6 +37,7 @@ const FRAMING_TYPE_TO_POST_TYPE: Record<CalloutFramingType, PostType> = {
   [CalloutFramingType.MediaGallery]: 'mediaGallery',
   [CalloutFramingType.Link]: 'callToAction',
   [CalloutFramingType.Poll]: 'poll',
+  [CalloutFramingType.Form]: 'form',
   [CalloutFramingType.Contributors]: 'contributors',
   [CalloutFramingType.Spaces]: 'spaces',
 };

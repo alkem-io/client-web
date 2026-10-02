@@ -55,6 +55,8 @@ type CalloutDetailDialogProps = {
   selectedContributionSlot?: ReactNode;
   /** Poll rendered between description and reactions bar */
   pollSlot?: ReactNode;
+  /** Form fill-in / own responses / review entry, rendered after the poll slot */
+  formFramingSlot?: ReactNode;
   /** Whiteboard framing preview rendered below description (e.g. CalloutWhiteboardPreview) */
   whiteboardFramingSlot?: ReactNode;
   /** Memo framing preview rendered below description (e.g. CalloutMemoPreview) */
@@ -116,6 +118,7 @@ export function CalloutDetailDialog({
   contributionsCount,
   selectedContributionSlot,
   pollSlot,
+  formFramingSlot,
   whiteboardFramingSlot,
   memoFramingSlot,
   mediaGalleryFramingSlot,
@@ -264,6 +267,7 @@ export function CalloutDetailDialog({
                 {contributorsFramingSlot && <div className="pt-2">{contributorsFramingSlot}</div>}
                 {spacesFramingSlot && <div className="pt-2">{spacesFramingSlot}</div>}
                 {pollSlot && <div className="pt-2">{pollSlot}</div>}
+                {formFramingSlot && <div className="pt-2">{formFramingSlot}</div>}
               </div>
             )}
 

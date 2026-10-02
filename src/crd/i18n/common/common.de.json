@@ -964,6 +964,10 @@
         "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
           "subject": "„{{memberName}}“ ist {{organizationName}} als Assoziierte(r) beigetreten",
           "description": "{{memberName}} ist {{organizationName}} beigetreten, dessen Admin du bist."
+        },
+        "SPACE_ADMIN_COLLABORATION_CALLOUT_FORM_RESPONSE": {
+          "subject": "{{triggeredByName}} hat auf das Formular „{{calloutName}}“ geantwortet",
+          "description": "In <b>{{spaceName}}</b>, dessen $t(common.admin) Sie sind."
         }
       },
       "spacesToJoin": "Bei Annahme wird beigetreten zu: {{spaces}}",

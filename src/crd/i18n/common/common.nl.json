@@ -964,6 +964,10 @@
         "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
           "subject": "\"{{memberName}}\" is toegetreden tot {{organizationName}} als geassocieerde",
           "description": "{{memberName}} is toegetreden tot {{organizationName}}, waarvan jij beheerder bent."
+        },
+        "SPACE_ADMIN_COLLABORATION_CALLOUT_FORM_RESPONSE": {
+          "subject": "{{triggeredByName}} heeft gereageerd op het formulier \"{{calloutName}}\"",
+          "description": "In <b>{{spaceName}}</b>, waarvan je $t(common.admin) bent."
         }
       },
       "spacesToJoin": "Bij accepteren wordt toegetreden tot: {{spaces}}",

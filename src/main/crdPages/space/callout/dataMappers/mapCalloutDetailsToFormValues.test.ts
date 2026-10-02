@@ -4,6 +4,10 @@ import {
   ActorType,
   CalloutAllowedActors,
   CalloutContributionType,
+  CalloutFormQuestionType,
+  CalloutFormResponseMode,
+  CalloutFormResponseVisibility,
+  CalloutFormState,
   CalloutFramingType,
   ContributorCollectionView,
   SpaceCollectionCardVariant,
@@ -231,5 +235,61 @@ describe('mapCalloutDetailsToFormValues — cardVariant prefill', () => {
   it('spaces: null (pre-feature row) ⇒ "compact"', () => {
     const result = mapCalloutDetailsToFormValues(makeSpacesCalloutData(null));
     expect(result.cardVariant).toBe('compact');
+  });
+});
+
+describe('mapCalloutDetailsToFormValues — form prefill', () => {
+  const formData = () => {
+    const data = baseData();
+    const callout = data.lookup.callout as unknown as { framing: Record<string, unknown> };
+    callout.framing = {
+      type: CalloutFramingType.Form,
+      profile: { displayName: 'Intake', description: '', tagsets: [], references: [] },
+      form: {
+        id: 'form-1',
+        questions: [
+          {
+            id: 'q1',
+            prompt: 'Pick',
+            explanation: 'One',
+            type: CalloutFormQuestionType.SingleChoice,
+            required: true,
+            options: [
+              { id: 'o1', label: 'A' },
+              { id: 'o2', label: 'B' },
+            ],
+          },
+        ],
+        settings: {
+          visibility: CalloutFormResponseVisibility.Members,
+          responseMode: CalloutFormResponseMode.Multiple,
+          state: CalloutFormState.Closed,
+        },
+      },
+    };
+    return data;
+  };
+
+  it('maps the definition, the settings and the form id from framing.form', () => {
+    const result = mapCalloutDetailsToFormValues(formData());
+
+    expect(result.framingChip).toBe('form');
+    expect(result.formQuestions).toHaveLength(1);
+    expect(result.formQuestions?.[0]).toMatchObject({
+      id: 'q1',
+      prompt: 'Pick',
+      explanation: 'One',
+      type: 'SINGLE_CHOICE',
+      required: true,
+    });
+    expect(result.formQuestions?.[0].options.map(o => o.id)).toEqual(['o1', 'o2']);
+    expect(result.formSettings).toEqual({ visibility: 'MEMBERS', responseMode: 'MULTIPLE', state: 'CLOSED' });
+    expect(result.editMeta?.formId).toBe('form-1');
+  });
+
+  it('leaves the form values untouched for a callout without a form', () => {
+    const result = mapCalloutDetailsToFormValues(baseData());
+    expect(result.formQuestions).toBeUndefined();
+    expect(result.editMeta?.formId).toBeUndefined();
   });
 });

@@ -964,6 +964,10 @@
         "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
           "subject": "„{{memberName}}“ се присъедини към {{organizationName}} като асоцииран",
           "description": "{{memberName}} се присъедини към {{organizationName}}, на която сте администратор."
+        },
+        "SPACE_ADMIN_COLLABORATION_CALLOUT_FORM_RESPONSE": {
+          "subject": "{{triggeredByName}} отговори на формуляра „{{calloutName}}“",
+          "description": "В <b>{{spaceName}}</b>, за което Вие сте $t(common.admin)."
         }
       },
       "spacesToJoin": "При приемане се присъединява към: {{spaces}}",
