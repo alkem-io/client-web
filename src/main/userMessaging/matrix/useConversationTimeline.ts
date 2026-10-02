@@ -72,6 +72,8 @@ const useConversationTimeline = (alkemioRoomId: string | null): { messages: Pars
       refresh();
       try {
         await backfill(client, room, () => cancelled, refresh);
+      } catch {
+        // A failed page leaves the history at the depth already loaded.
       } finally {
         loading = false;
         refresh();

@@ -57,6 +57,17 @@ describe('useConversationTimeline', () => {
     expect(result.current.messages).toHaveLength(130);
   });
 
+  it('keeps the history already loaded when a backfill page fails', async () => {
+    const { client, scrollback } = makeClient(5000, 20);
+    scrollback.mockRejectedValueOnce(new Error('M_LIMIT_EXCEEDED'));
+    harness.client = client;
+
+    const { result } = renderHook(() => useConversationTimeline('alk-room'));
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.messages).toHaveLength(20);
+  });
+
   it('renders nothing for a room that has no Matrix room behind it', async () => {
     const { client, scrollback } = makeClient(10, 10);
     client.getRoomIdForAlias.mockRejectedValue(new Error('M_NOT_FOUND'));
