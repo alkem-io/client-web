@@ -60,9 +60,6 @@
       "resultsSummary_other": "{{count}} uitnodigingen verwerkt voor {{spaceName}}.",
       "associates": {
         "title": "Geassocieerden uitnodigen voor \"{{organizationName}}\"",
-        "searchHint": "Zoek een geregistreerde gebruiker om als geassocieerde uit te nodigen",
-        "searchPlaceholder": "Gebruikersnaam…",
-        "searchAriaLabel": "Zoek gebruikers op naam",
         "noResultsLabel": "Geen overeenkomende gebruikers",
         "loadingLabel": "Gebruikers laden…",
         "defaultWelcomeMessage": "Hoi, we willen je graag uitnodigen om je te associëren met {{organizationName}}. Klik hieronder om de uitnodiging te accepteren of te weigeren.",

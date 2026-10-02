@@ -1589,6 +1589,8 @@
     "inactive": "Inactief"
   },
   "messageAttachments": {
+    "videoLabel": "Bijgevoegde video: {{name}}",
+    "videoUnavailableHint": "Deze video kan hier niet worden afgespeeld. Download de video om deze te bekijken.",
     "listLabel": "Bijlagen",
     "imageAlt": "Bijgevoegde afbeelding: {{name}}",
     "download": "{{name}} downloaden",

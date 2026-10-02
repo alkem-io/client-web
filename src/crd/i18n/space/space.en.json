@@ -983,6 +983,7 @@
     "cantComment": "You don't have permission to comment, reply or react here.",
     "attachments": {
       "attach": "Attach files",
+      "dropHint": "Drop files to attach",
       "stagedListLabel": "Files to send",
       "removeAttachment": "Remove {{name}}",
       "uploading": "Uploading…",

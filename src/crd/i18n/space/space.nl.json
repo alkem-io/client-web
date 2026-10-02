@@ -983,6 +983,7 @@
     "cantComment": "Je hebt geen toestemming om hier te reageren, antwoorden of een reactie te geven.",
     "attachments": {
       "attach": "Bestanden toevoegen",
+      "dropHint": "Laat los om bestanden toe te voegen",
       "stagedListLabel": "Te versturen bestanden",
       "removeAttachment": "{{name}} verwijderen",
       "uploading": "Uploaden…",

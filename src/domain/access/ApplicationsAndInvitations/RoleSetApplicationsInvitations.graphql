@@ -54,6 +54,7 @@ fragment AdminPlatformInvitationCommunity on PlatformInvitation {
   id
   createdDate
   email
+  roleSetExtraRoles
 }
 
 fragment AdminCommunityCandidateMember on Actor {

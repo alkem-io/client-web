@@ -1589,6 +1589,8 @@
     "inactive": "Inaktiv"
   },
   "messageAttachments": {
+    "videoLabel": "Angehängtes Video: {{name}}",
+    "videoUnavailableHint": "Dieses Video kann hier nicht abgespielt werden. Laden Sie es herunter, um es anzusehen.",
     "listLabel": "Anhänge",
     "imageAlt": "Angehängtes Bild: {{name}}",
     "download": "{{name}} herunterladen",

@@ -983,6 +983,7 @@
     "cantComment": "Du hast keine Berechtigung, hier zu kommentieren, antworten oder reagieren.",
     "attachments": {
       "attach": "Dateien anhängen",
+      "dropHint": "Dateien zum Anhängen hier ablegen",
       "stagedListLabel": "Zu sendende Dateien",
       "removeAttachment": "{{name}} entfernen",
       "uploading": "Wird hochgeladen…",
