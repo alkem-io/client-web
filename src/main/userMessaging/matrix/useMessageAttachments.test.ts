@@ -104,4 +104,24 @@ describe('useMessageAttachments', () => {
     rerender({ messages: [media(1, 'm1'), media(2, 'm2')] });
     await waitFor(() => expect(harness.query).toHaveBeenCalledTimes(2));
   });
+
+  it('retries a batch that fails after the conversation media already changed', async () => {
+    let rejectCall: (reason: Error) => void = () => {};
+    harness.query.mockReset();
+    harness.query.mockImplementation(() => new Promise((_, reject) => (rejectCall = reject)));
+    const { rerender } = renderHook(({ messages }) => useMessageAttachments('conv-4', messages), {
+      initialProps: { messages: [media(1, 'm1')] },
+    });
+    await waitFor(() => expect(harness.query).toHaveBeenCalledTimes(1));
+    const firstCall = rejectCall;
+
+    rerender({ messages: [media(1, 'm1'), media(2, 'm2')] });
+    await waitFor(() => expect(harness.query).toHaveBeenCalledTimes(2));
+    await act(async () => firstCall(new Error('boom')));
+
+    await waitFor(() => expect(harness.query).toHaveBeenCalledTimes(3));
+    expect(harness.query.mock.calls[2][0].variables.media.map((item: { mediaID: string }) => item.mediaID)).toEqual([
+      'm1',
+    ]);
+  });
 });
