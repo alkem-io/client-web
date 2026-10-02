@@ -146,6 +146,7 @@ export const AdminPlatformInvitationCommunityFragmentDoc = gql`
   id
   createdDate
   email
+  roleSetExtraRoles
 }
     `;
 export const OrgPendingInvitationDataFragmentDoc = gql`
@@ -741,6 +742,7 @@ export const CalloutContributionsCollaboraDocumentCardFragmentDoc = gql`
     fragment CalloutContributionsCollaboraDocumentCard on CollaboraDocument {
   id
   documentType
+  previewUrl
   profile {
     id
     url
@@ -1016,6 +1018,7 @@ export const CollaboraDocumentGateFragmentDoc = gql`
     fragment CollaboraDocumentGate on CollaboraDocument {
   id
   documentType
+  previewUrl
   authorization {
     id
     myPrivileges
@@ -5709,6 +5712,54 @@ export type DeletePlatformInvitationMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.DeletePlatformInvitationMutation,
   SchemaTypes.DeletePlatformInvitationMutationVariables
 >;
+export const ResendPlatformInvitationDocument = gql`
+    mutation ResendPlatformInvitation($invitationId: UUID!) {
+  resendPlatformInvitation(resendData: {ID: $invitationId}) {
+    id
+  }
+}
+    `;
+export type ResendPlatformInvitationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.ResendPlatformInvitationMutation,
+  SchemaTypes.ResendPlatformInvitationMutationVariables
+>;
+
+/**
+ * __useResendPlatformInvitationMutation__
+ *
+ * To run a mutation, you first call `useResendPlatformInvitationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResendPlatformInvitationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resendPlatformInvitationMutation, { data, loading, error }] = useResendPlatformInvitationMutation({
+ *   variables: {
+ *      invitationId: // value for 'invitationId'
+ *   },
+ * });
+ */
+export function useResendPlatformInvitationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.ResendPlatformInvitationMutation,
+    SchemaTypes.ResendPlatformInvitationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.ResendPlatformInvitationMutation,
+    SchemaTypes.ResendPlatformInvitationMutationVariables
+  >(ResendPlatformInvitationDocument, options);
+}
+export type ResendPlatformInvitationMutationHookResult = ReturnType<typeof useResendPlatformInvitationMutation>;
+export type ResendPlatformInvitationMutationResult =
+  Apollo.MutationResult<SchemaTypes.ResendPlatformInvitationMutation>;
+export type ResendPlatformInvitationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.ResendPlatformInvitationMutation,
+  SchemaTypes.ResendPlatformInvitationMutationVariables
+>;
 export const CommunityApplicationsInvitationsDocument = gql`
     query CommunityApplicationsInvitations($roleSetId: UUID!, $includeApplications: Boolean = true) {
   lookup {
@@ -8554,6 +8605,7 @@ export const CalloutContributionDocument = gql`
       collaboraDocument @include(if: $includeCollaboraDocument) {
         id
         documentType
+        previewUrl
         profile {
           id
           url
@@ -31485,6 +31537,11 @@ export const ContributorCollectionByTypeDocument = gql`
             longitude
             hasValidCoordinates
           }
+          tagline
+          tags
+          joinedDate
+          website
+          associatesCount
         }
       }
     }

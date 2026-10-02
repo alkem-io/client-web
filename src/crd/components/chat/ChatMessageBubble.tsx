@@ -49,6 +49,25 @@ export function ChatMessageBubble({
   // Shared with CommentItem — see `hasRenderableText` for the MSC2530 filename-echo rule.
   const hasText = hasRenderableText(message.content, message.attachments);
 
+  const addReactionTrigger = effectiveCanReact && onAddReaction && (
+    <EmojiPicker
+      onSelect={onAddReaction}
+      trigger={
+        <button
+          type="button"
+          aria-label={t('thread.addReaction')}
+          className="flex size-7 shrink-0 items-center justify-center rounded-full text-muted-foreground opacity-0 transition-opacity hover:bg-accent hover:text-foreground focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring group-hover:opacity-100"
+        >
+          <Smile aria-hidden="true" className="size-4" />
+        </button>
+      }
+    />
+  );
+
+  const timestamp = message.timestamp && (
+    <span className="px-1 text-caption text-muted-foreground">{message.timestamp}</span>
+  );
+
   const bubbleColumn = (
     <div className={cn('group flex flex-col gap-0.5', isOwn ? 'items-end' : 'items-start')}>
       {showAuthor && !isOwn && author && (
@@ -61,41 +80,30 @@ export function ChatMessageBubble({
           still reach assistive technology (FR-008). No new i18n key — author.name is
           business data, not UI copy (FR-016). */}
       {avatarGutter && !showAuthor && !isOwn && author && <span className="sr-only">{author.name}</span>}
-      <div className={cn('flex items-center gap-1', isOwn && 'flex-row-reverse')}>
-        {/* The bubble exists to hold TEXT. An attachment-only message renders
-            just its attachments below, and a message with neither text nor
-            attachments renders no bubble at all — the previous condition
-            (`hasText || !hasAttachments`) painted an empty bubble around an
-            empty MarkdownContent in that case. */}
-        {hasText && (
-          <div
-            className={cn(
-              'max-w-[85%] rounded-2xl px-3 py-2',
-              isOwn ? 'rounded-br-sm bg-primary/15' : 'rounded-bl-sm bg-muted',
-              message.isPending && 'opacity-60'
-            )}
-          >
-            <MarkdownContent
-              content={message.content}
-              className="text-body [&_p]:mb-1 [&_p]:text-foreground [&_p:last-child]:mb-0"
-            />
-          </div>
-        )}
-        {effectiveCanReact && onAddReaction && (
-          <EmojiPicker
-            onSelect={onAddReaction}
-            trigger={
-              <button
-                type="button"
-                aria-label={t('thread.addReaction')}
-                className="flex size-7 shrink-0 items-center justify-center rounded-full text-muted-foreground opacity-0 transition-opacity hover:bg-accent hover:text-foreground focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring group-hover:opacity-100"
-              >
-                <Smile aria-hidden="true" className="size-4" />
-              </button>
-            }
-          />
-        )}
-      </div>
+      {(hasText || !hasAttachments) && (
+        <div className={cn('flex items-center gap-1', isOwn && 'flex-row-reverse')}>
+          {/* The bubble exists to hold TEXT. An attachment-only message renders
+              just its attachments below, and a message with neither text nor
+              attachments renders no bubble at all — the previous condition
+              (`hasText || !hasAttachments`) painted an empty bubble around an
+              empty MarkdownContent in that case. */}
+          {hasText && (
+            <div
+              className={cn(
+                'max-w-[85%] rounded-2xl px-3 py-2',
+                isOwn ? 'rounded-br-sm bg-primary/15' : 'rounded-bl-sm bg-muted',
+                message.isPending && 'opacity-60'
+              )}
+            >
+              <MarkdownContent
+                content={message.content}
+                className="text-body [&_p]:mb-1 [&_p]:text-foreground [&_p:last-child]:mb-0"
+              />
+            </div>
+          )}
+          {!hasAttachments && addReactionTrigger}
+        </div>
+      )}
       {hasAttachments && (
         <MessageAttachments
           attachments={message.attachments ?? []}
@@ -111,7 +119,16 @@ export function ChatMessageBubble({
           onRemove={emoji => onRemoveReaction?.(emoji)}
         />
       )}
-      {message.timestamp && <span className="px-1 text-caption text-muted-foreground">{message.timestamp}</span>}
+      {/* With media the trigger shares the timestamp's line below the
+          attachments and their reactions; the timestamp keeps the outer edge. */}
+      {hasAttachments && addReactionTrigger ? (
+        <div className={cn('flex items-center gap-1', isOwn && 'flex-row-reverse')}>
+          {timestamp}
+          {addReactionTrigger}
+        </div>
+      ) : (
+        timestamp
+      )}
     </div>
   );
 

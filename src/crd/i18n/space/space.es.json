@@ -1,9 +1,9 @@
 {
   "common": {
-    "Callout": "Aviso",
-    "callout": "aviso",
-    "Callouts": "Avisos",
-    "callouts": "avisos"
+    "Callout": "Publicación",
+    "callout": "publicación",
+    "Callouts": "Publicaciones",
+    "callouts": "publicaciones"
   },
   "banner": {
     "homeSpace": "Espacio principal",
@@ -286,7 +286,7 @@
     "linkDeleteAriaLabel": "Eliminar enlace",
     "linkDelete": "Eliminar enlace",
     "linkDeleteConfirmTitle": "¿Eliminar este enlace?",
-    "linkDeleteConfirmDescription": "Esto eliminará el enlace de este $t(common.callout) de forma permanente. Esta acción no se puede deshacer.",
+    "linkDeleteConfirmDescription": "Esto eliminará el enlace de esta publicación de forma permanente. Esta acción no se puede deshacer.",
     "addPost": "Añadir publicación",
     "createPost": "Crear publicación",
     "editPost": "Editar publicación",
@@ -308,10 +308,10 @@
     "postUnsavedCloseDescription": "Tienes cambios sin guardar. Si cierras ahora, se perderán.",
     "postUnsavedCloseConfirm": "Descartar cambios",
     "postUnsavedCloseCancel": "Seguir editando",
-    "uploadAfterCreateFailed": "El aviso se creó, pero la carga de la imagen de vista previa falló. Puedes reintentarlo desde el diálogo de edición del aviso.",
+    "uploadAfterCreateFailed": "La publicación se creó, pero la carga de la imagen de vista previa falló. Puedes reintentarlo desde el diálogo de edición de la publicación.",
     "pollOptionsSaveFailed": "No se pudieron guardar uno o varios cambios de las opciones de la encuesta. Puedes reintentarlo desde este diálogo.",
     "referencesSaveFailed": "No se pudieron guardar una o varias referencias nuevas. Los demás cambios no se aplicaron. Por favor, inténtalo de nuevo.",
-    "updateFailed": "No se pudieron guardar los cambios en el $t(common.callout). Por favor, inténtalo de nuevo.",
+    "updateFailed": "No se pudieron guardar los cambios en la publicación. Por favor, inténtalo de nuevo.",
     "contributors": "Colaboradores",
     "subspaces": "Subespacios"
   },
@@ -475,11 +475,11 @@
     "moveFailed": "No se pudo reordenar. Vuelve a intentarlo."
   },
   "visibilityChange": {
-    "publishTitle": "¿Publicar este aviso?",
-    "publishDescription": "El aviso será visible para cada miembro del espacio.",
+    "publishTitle": "¿Hacer visible esta publicación?",
+    "publishDescription": "La publicación será visible para cada miembro del espacio.",
     "publishConfirm": "Publicar",
-    "unpublishTitle": "¿Mover este aviso a borrador?",
-    "unpublishDescription": "El aviso dejará de ser visible para los miembros del espacio.",
+    "unpublishTitle": "¿Mover esta publicación a borrador?",
+    "unpublishDescription": "La publicación dejará de ser visible para los miembros del espacio.",
     "unpublishConfirm": "Mover a borrador",
     "notifyMembers": "Notificar a los miembros del espacio",
     "saveFailed": "No se pudo cambiar la visibilidad. Vuelve a intentarlo."
@@ -487,16 +487,16 @@
   "sortContributions": {
     "title": "Ordenar contribuciones",
     "description": "Arrastra para reordenar. El nuevo orden se aplica al guardar.",
-    "empty": "Este aviso aún no tiene contribuciones para ordenar.",
+    "empty": "Esta publicación aún no tiene contribuciones para ordenar.",
     "confirm": "Guardar orden",
     "dragHandle": "Arrastra para reordenar",
     "saveFailed": "No se pudo guardar el nuevo orden. Vuelve a intentarlo."
   },
   "deleteCallout": {
-    "title": "¿Eliminar este aviso?",
+    "title": "¿Eliminar esta publicación?",
     "description": "“{{title}}” se eliminará de forma permanente. Esta acción no se puede deshacer.",
     "confirm": "Eliminar",
-    "confirmAll": "Eliminar el $t(common.callout) y todo su contenido",
+    "confirmAll": "Eliminar la publicación y todo su contenido",
     "headerContributions_one": "Se eliminará {{count}} contribución",
     "headerContributions_other": "Se eliminarán {{count}} contribuciones",
     "headerRich": "Se eliminará {{content}}",
@@ -519,8 +519,8 @@
     "moreLinks_other": "y {{count}} enlaces más",
     "comments_one": "Se eliminará {{count}} comentario",
     "comments_other": "Se eliminarán {{count}} comentarios",
-    "success": "El aviso “{{title}}” se ha eliminado.",
-    "saveFailed": "No se pudo eliminar el aviso. Vuelve a intentarlo."
+    "success": "La publicación “{{title}}” se ha eliminado.",
+    "saveFailed": "No se pudo eliminar la publicación. Vuelve a intentarlo."
   },
   "deleteTask": {
     "title": "¿Eliminar esta tarea?"
@@ -579,7 +579,7 @@
     "publishedLabel": "Publicado",
     "draftLabel": "Borrador",
     "notifyMembers": "Notificar a los miembros del espacio",
-    "titleRequiredHint": "Añade un título a tu $t(common.callout) para continuar",
+    "titleRequiredHint": "Añade un título a tu publicación para continuar",
     "saveDraft": "Guardar borrador",
     "save": "Guardar",
     "publish": "Publicar",
@@ -597,7 +597,7 @@
     "addOption": "Añadir opción",
     "removeOption": "Eliminar opción",
     "allowComments": "Permitir comentarios",
-    "allowCommentsDescription": "Los miembros pueden publicar comentarios en el encuadre del aviso.",
+    "allowCommentsDescription": "Los miembros pueden publicar comentarios en el encuadre de la publicación.",
     "titleCharacterCount": "{{current}}/{{max}}",
     "selection": {
       "label": "Selección manual",
@@ -643,7 +643,7 @@
     "setDefaults": "Configurar valores por defecto",
     "prePopulate": {
       "heading": "Precargar colección",
-      "description": "Añade enlaces que aparecerán en cuanto se cree este aviso.",
+      "description": "Añade enlaces que aparecerán en cuanto se cree esta publicación.",
       "empty": "Todavía no hay enlaces precargados.",
       "titleLabel": "Título",
       "titlePlaceholder": "Título del enlace",
@@ -657,7 +657,7 @@
     }
   },
   "responseDefaults": {
-    "srDescription": "Configura los valores por defecto para las nuevas contribuciones de este aviso.",
+    "srDescription": "Configura los valores por defecto para las nuevas contribuciones de esta publicación.",
     "title": {
       "post": "Valores por defecto de publicaciones",
       "memo": "Valores por defecto de notas",
@@ -977,6 +977,7 @@
     "cantComment": "No tienes permiso para comentar, responder o reaccionar aquí.",
     "attachments": {
       "attach": "Adjuntar archivos",
+      "dropHint": "Suelta los archivos para adjuntarlos",
       "stagedListLabel": "Archivos para enviar",
       "removeAttachment": "Quitar {{name}}",
       "uploading": "Subiendo…",
@@ -999,7 +1000,7 @@
     },
     "deleteFraming": {
       "title": "¿Eliminar el contenido de encuadre?",
-      "description": "El contenido de encuadre de esta llamada se eliminará. Esta acción no se puede deshacer.",
+      "description": "El contenido de encuadre de esta publicación se eliminará. Esta acción no se puede deshacer.",
       "confirm": "Eliminar",
       "cancel": "Conservar"
     },
@@ -1115,6 +1116,17 @@
     "viewMap": "Mapa",
     "expandMap": "Ampliar mapa",
     "closeMap": "Cerrar mapa",
+    "card": {
+      "taglineFallback": "Este usuario no ha completado su tagline.",
+      "associates_one": "{{count}} asociado en esta organización",
+      "associates_other": "{{count}} asociados en esta organización",
+      "actions": "Acciones para {{name}}",
+      "viewProfile": "Ver perfil",
+      "message": "Mensaje",
+      "website": "Visitar el sitio web de {{name}} (se abre en una pestaña nueva)",
+      "opensInNewTab": "se abre en una pestaña nueva",
+      "joined": "Se unió a este espacio en {{date}}"
+    },
     "types": {
       "user": "Personas",
       "organization": "Organizaciones",

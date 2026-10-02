@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { createEvent, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { type ReactNode, useState } from 'react';
 import { describe, expect, test, vi } from 'vitest';
@@ -194,5 +194,146 @@ describe('CommentInput attachments', () => {
       expect(screen.getByRole('button', { name: 'comments.send' })).toBeDisabled();
       expect(screen.getByRole('button', { name: /comments.attachments.removeAttachment/ })).toBeDisabled();
     });
+  });
+});
+
+describe('CommentInput drop and paste', () => {
+  const image = new File(['png'], 'image.png', { type: 'image/png' });
+  const fileTransfer = (files: File[]) => ({ types: ['Files'], files, dropEffect: 'none' });
+  const clipboard = (files: File[], types: string[] = files.length ? ['Files'] : []) => ({
+    files,
+    types,
+    getData: () => '',
+  });
+  // jsdom has no DragEvent, so relatedTarget can't come through the event init.
+  const dragLeaveTo = (relatedTarget: Element) => {
+    const event = createEvent.dragLeave(getTextarea(), { dataTransfer: fileTransfer([]) });
+    Object.defineProperty(event, 'relatedTarget', { value: relatedTarget });
+    fireEvent(getTextarea(), event);
+  };
+
+  test('dropping files feeds them to onAttachFiles without navigating away', () => {
+    const onAttachFiles = vi.fn();
+    render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} onAttachFiles={onAttachFiles} />);
+
+    const transfer = fileTransfer([image]);
+    expect(fireEvent.dragOver(getTextarea(), { dataTransfer: transfer })).toBe(false);
+    expect(transfer.dropEffect).toBe('copy');
+    expect(fireEvent.drop(getTextarea(), { dataTransfer: transfer })).toBe(false);
+
+    expect(onAttachFiles).toHaveBeenCalledTimes(1);
+    expect(onAttachFiles).toHaveBeenCalledWith([image]);
+  });
+
+  test('shows the drop target while files are dragged over the composer', () => {
+    render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} onAttachFiles={vi.fn()} />);
+
+    fireEvent.dragEnter(getTextarea(), { dataTransfer: fileTransfer([]) });
+    expect(screen.getByText('comments.attachments.dropHint')).toBeInTheDocument();
+
+    // Moving between the composer's own children keeps it.
+    dragLeaveTo(screen.getByRole('button', { name: 'comments.send' }));
+    expect(screen.getByText('comments.attachments.dropHint')).toBeInTheDocument();
+
+    dragLeaveTo(document.body);
+    expect(screen.queryByText('comments.attachments.dropHint')).not.toBeInTheDocument();
+
+    fireEvent.dragOver(getTextarea(), { dataTransfer: fileTransfer([]) });
+    fireEvent.drop(getTextarea(), { dataTransfer: fileTransfer([image]) });
+    expect(screen.queryByText('comments.attachments.dropHint')).not.toBeInTheDocument();
+  });
+
+  test('a text drag is left to the textarea', () => {
+    const onAttachFiles = vi.fn();
+    render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} onAttachFiles={onAttachFiles} />);
+
+    const transfer = { types: ['text/plain'], files: [], dropEffect: 'none' };
+    expect(fireEvent.dragOver(getTextarea(), { dataTransfer: transfer })).toBe(true);
+    expect(fireEvent.drop(getTextarea(), { dataTransfer: transfer })).toBe(true);
+    expect(onAttachFiles).not.toHaveBeenCalled();
+    expect(screen.queryByText('comments.attachments.dropHint')).not.toBeInTheDocument();
+  });
+
+  test('while a send is in flight a drop is refused, not swallowed', () => {
+    const onAttachFiles = vi.fn();
+    render(<CommentInput onSubmit={vi.fn()} disabled={true} attachmentsEnabled={true} onAttachFiles={onAttachFiles} />);
+
+    const transfer = fileTransfer([image]);
+    expect(fireEvent.dragOver(getTextarea(), { dataTransfer: transfer })).toBe(false);
+    expect(transfer.dropEffect).toBe('none');
+    expect(screen.queryByText('comments.attachments.dropHint')).not.toBeInTheDocument();
+    fireEvent.drop(getTextarea(), { dataTransfer: transfer });
+    expect(onAttachFiles).not.toHaveBeenCalled();
+  });
+
+  test('without attachments enabled the composer does not handle drops or file pastes', () => {
+    const onAttachFiles = vi.fn();
+    render(<CommentInput onSubmit={vi.fn()} onAttachFiles={onAttachFiles} />);
+
+    expect(fireEvent.dragOver(getTextarea(), { dataTransfer: fileTransfer([image]) })).toBe(true);
+    expect(fireEvent.drop(getTextarea(), { dataTransfer: fileTransfer([image]) })).toBe(true);
+    expect(fireEvent.paste(getTextarea(), { clipboardData: clipboard([image]) })).toBe(true);
+    expect(onAttachFiles).not.toHaveBeenCalled();
+  });
+
+  test('pasting a screenshot adds it once and keeps the draft text', () => {
+    const onAttachFiles = vi.fn();
+    const onValueChange = vi.fn();
+    render(
+      <CommentInput
+        onSubmit={vi.fn()}
+        attachmentsEnabled={true}
+        onAttachFiles={onAttachFiles}
+        value="look at this"
+        onValueChange={onValueChange}
+      />
+    );
+
+    expect(fireEvent.paste(getTextarea(), { clipboardData: clipboard([image]) })).toBe(false);
+
+    expect(onAttachFiles).toHaveBeenCalledTimes(1);
+    expect(onAttachFiles).toHaveBeenCalledWith([image]);
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(getTextarea()).toHaveValue('look at this');
+  });
+
+  test('an image paste does not reach document-level paste handlers (react-mentions)', () => {
+    const documentPaste = vi.fn();
+    document.addEventListener('paste', documentPaste);
+    try {
+      render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} onAttachFiles={vi.fn()} />);
+      fireEvent.paste(getTextarea(), { clipboardData: clipboard([image]) });
+      expect(documentPaste).not.toHaveBeenCalled();
+
+      fireEvent.paste(getTextarea(), { clipboardData: clipboard([], ['text/plain']) });
+      expect(documentPaste).toHaveBeenCalledTimes(1);
+    } finally {
+      document.removeEventListener('paste', documentPaste);
+    }
+  });
+
+  test('ordinary text paste is left to the textarea', () => {
+    const onAttachFiles = vi.fn();
+    render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} onAttachFiles={onAttachFiles} />);
+
+    expect(fireEvent.paste(getTextarea(), { clipboardData: clipboard([], ['text/plain', 'text/html']) })).toBe(true);
+    expect(onAttachFiles).not.toHaveBeenCalled();
+  });
+
+  test('rich text copied with a bitmap (Office) pastes as text', () => {
+    const onAttachFiles = vi.fn();
+    render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} onAttachFiles={onAttachFiles} />);
+
+    const officeClipboard = clipboard([image], ['text/plain', 'text/html', 'text/rtf', 'Files']);
+    expect(fireEvent.paste(getTextarea(), { clipboardData: officeClipboard })).toBe(true);
+    expect(onAttachFiles).not.toHaveBeenCalled();
+  });
+
+  test('while a send is in flight a pasted image is not consumed', () => {
+    const onAttachFiles = vi.fn();
+    render(<CommentInput onSubmit={vi.fn()} disabled={true} attachmentsEnabled={true} onAttachFiles={onAttachFiles} />);
+
+    expect(fireEvent.paste(getTextarea(), { clipboardData: clipboard([image]) })).toBe(true);
+    expect(onAttachFiles).not.toHaveBeenCalled();
   });
 });

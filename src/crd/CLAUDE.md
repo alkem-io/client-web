@@ -47,6 +47,22 @@ CRD components must **never implement behavior** in event handlers. All `onClick
 
 **Forbidden:** navigating programmatically (`window.location.href = ...`), calling APIs, dispatching actions, changing application-level state (e.g. `i18n.changeLanguage()`), or any logic beyond calling the prop callback.
 
+**Exception — native media lifecycle events.** `onLoad` and `onError` on a
+`<img>`, `<video>` or `<audio>` element report on *this component's own
+rendering*, not on a user interaction, and the state they set (has the image
+decoded? did it fail?) is a visual toggle of exactly the kind rule 2 permits.
+They may therefore be handled internally, provided the handler does nothing but
+set such local visual state. This is the rule's intent — the list of forbidden
+things above is about behaviour reaching outside the component — and it is what
+the layer already does: `ImageCropDialog.tsx` and `PreviewCropDialog.tsx` both
+handle `<img> onLoad` locally. Lifting these into consumers would force a
+per-item wrapper component wherever the media sits in a list, for no behavioural
+change.
+
+Still a prop, as always, if the *consumer* needs to know: a card that reports a
+broken preview upward takes an `onPreviewError` prop. The exception covers
+rendering state the component keeps to itself, nothing more.
+
 ```typescript
 // GOOD — handler is a prop, consumer decides what happens
 type SpaceCardProps = {
@@ -700,7 +716,9 @@ CRD translations live in per-feature directories in `src/crd/i18n/` (e.g., `layo
 - [ ] No domain/apollo/auth/routing imports
 - [ ] Props are plain TypeScript (no GraphQL types)
 - [ ] No barrel exports — explicit file paths only
-- [ ] Event handlers (`on*`) are props, not internal logic
+- [ ] Event handlers (`on*`) are props, not internal logic — except native media
+      lifecycle events (`<img>`/`<video>`/`<audio>` `onLoad`/`onError`) that only
+      set local visual state, per the exception in rule 3
 - [ ] No direct `i18n` API access — language state/changes come via props
 - [ ] State is visual only (open/close, hover, expanded)
 - [ ] Component works in both main app and standalone preview app
