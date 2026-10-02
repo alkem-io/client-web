@@ -168,7 +168,8 @@ export const UnifiedChatPanelConnector = () => {
   };
 
   const onAddReaction = (messageId: string, emoji: string) => {
-    handleAddReaction(messageId)(emoji);
+    // A failed reaction leaves the message unchanged; there is no error UI for it.
+    handleAddReaction(messageId)(emoji)?.catch(() => {});
   };
 
   // CommentReactions toggles by emoji; resolve the current user's reaction id for removal.
@@ -176,7 +177,7 @@ export const UnifiedChatPanelConnector = () => {
     const raw = rawMessages.find(message => message.id === messageId);
     const reaction = raw?.reactions.find(item => item.emoji === emoji && item.sender?.id === currentUserId);
     if (reaction) {
-      handleRemoveReaction(reaction.id);
+      handleRemoveReaction(reaction.id)?.catch(() => {});
     }
   };
 
