@@ -146,8 +146,10 @@ const projectMessages = (events: RawEvent[], homeserver: string): ParsedMessage[
 };
 
 const parseMessage = (event: RawEvent, homeserver: string): ParsedMessage | undefined => {
-  const body = typeof event.content.body === 'string' ? event.content.body : '';
   const media = extractMedia(event, homeserver);
+  // A sticker's body is alt-text for its image, never message text.
+  const isSticker = event.type === EVENT_STICKER;
+  const body = !isSticker && typeof event.content.body === 'string' ? event.content.body : '';
   if (body === '' && !media) {
     return undefined;
   }

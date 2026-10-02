@@ -111,6 +111,17 @@ describe('projectMessages', () => {
     expect(sticker.media?.mediaID).toBe('s1');
   });
 
+  it('never shows a sticker alt-text as message text, and drops a sticker without a usable url', () => {
+    const withUrl = event('m.sticker', { body: 'wave', url: `mxc://${HS}/s1` });
+    const withoutUrl = event('m.sticker', { body: 'wave' });
+    const messages = projectMessages([withUrl, withoutUrl], HS);
+    expect(messages).toHaveLength(1);
+    expect(messages[0].body).toBe('');
+    expect(messages[0].media?.mediaID).toBe('s1');
+    expect(lastMessageOf([withUrl, withoutUrl], HS)?.eventId).toBe(withUrl.eventId);
+    expect(lastMessageOf([withoutUrl], HS)).toBeUndefined();
+  });
+
   it('attaches reactions to their message; reactions without a target are dropped', () => {
     const message = event('m.room.message', { msgtype: 'm.text', body: 'hi' });
     const [projected] = projectMessages(
