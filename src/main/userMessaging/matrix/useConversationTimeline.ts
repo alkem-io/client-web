@@ -4,6 +4,7 @@ import { useMatrixClient, useMatrixSessionEstablishing } from '@/core/matrix/act
 import { type ParsedMessage, projectMessages } from './matrixEvents';
 import {
   CLIENT_ROOM,
+  CLIENT_SYNC,
   homeserverOf,
   liveEvents,
   ROOM_LOCAL_ECHO_UPDATED,
@@ -102,25 +103,39 @@ const useConversationTimeline = (alkemioRoomId: string | null): { messages: Pars
       }
     };
 
+    let lookupFailed = false;
+    const lookUp = () =>
+      resolveMatrixRoomId(client, roomKey).then(resolved => {
+        if (cancelled) {
+          return;
+        }
+        matrixRoomId = resolved;
+        lookupFailed = !resolved;
+        room = resolved ? client.getRoom(resolved) : null;
+        if (room) {
+          void load();
+        } else if (!resolved) {
+          setState({ roomKey, messages: [], isLoading: false });
+        }
+      });
+    // A lookup that failed before the first sync (homeserver not yet reachable)
+    // left the conversation empty; look it up again now.
+    const onSync = (syncState: string) => {
+      if (syncState === 'PREPARED' && lookupFailed) {
+        lookupFailed = false;
+        void lookUp();
+      }
+    };
+
     setState({ roomKey, messages: [], isLoading: true });
     client.on(ROOM_TIMELINE as never, onTimeline as never);
     client.on(ROOM_REDACTION as never, onTimeline as never);
     client.on(ROOM_LOCAL_ECHO_UPDATED as never, onLocalEcho as never);
     client.on(ROOM_TIMELINE_RESET as never, onReset as never);
     client.on(CLIENT_ROOM as never, onRoom as never);
+    client.on(CLIENT_SYNC as never, onSync as never);
 
-    void resolveMatrixRoomId(client, roomKey).then(resolved => {
-      if (cancelled) {
-        return;
-      }
-      matrixRoomId = resolved;
-      room = resolved ? client.getRoom(resolved) : null;
-      if (room) {
-        void load();
-      } else if (!resolved) {
-        setState({ roomKey, messages: [], isLoading: false });
-      }
-    });
+    void lookUp();
 
     return () => {
       cancelled = true;
@@ -129,6 +144,7 @@ const useConversationTimeline = (alkemioRoomId: string | null): { messages: Pars
       client.removeListener(ROOM_LOCAL_ECHO_UPDATED as never, onLocalEcho as never);
       client.removeListener(ROOM_TIMELINE_RESET as never, onReset as never);
       client.removeListener(CLIENT_ROOM as never, onRoom as never);
+      client.removeListener(CLIENT_SYNC as never, onSync as never);
     };
   }, [client, roomKey]);
 

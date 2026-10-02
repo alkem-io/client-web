@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 const harness = vi.hoisted(() => ({ client: null as unknown, establishing: false }));
@@ -81,6 +81,22 @@ describe('useConversationTimeline', () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.messages).toEqual([]);
     expect(scrollback).not.toHaveBeenCalled();
+  });
+
+  it('looks the room up again on the first sync when the lookup failed before it', async () => {
+    const { client } = makeClient(30, 30);
+    client.getRoomIdForAlias.mockRejectedValueOnce(new Error('network'));
+    harness.client = client;
+
+    const { result } = renderHook(() => useConversationTimeline('alk-room'));
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.messages).toEqual([]);
+
+    const onSync = client.on.mock.calls.find(([name]) => name === 'sync')?.[1] as (state: string) => void;
+    act(() => onSync('PREPARED'));
+
+    await waitFor(() => expect(result.current.messages).toHaveLength(30));
+    expect(client.getRoomIdForAlias).toHaveBeenCalledTimes(2);
   });
 
   it('does nothing without an opened conversation or without a Matrix session', () => {
