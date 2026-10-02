@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import type { ParsedMessage } from './matrixEvents';
 
@@ -83,5 +83,25 @@ describe('useMessageAttachments', () => {
       'm2',
     ]);
     answer?.();
+  });
+
+  it('retries a failed batch when the conversation media changes, not on unrelated re-renders', async () => {
+    let rejectCall: (reason: Error) => void = () => {};
+    harness.query.mockReset();
+    harness.query.mockImplementation(() => new Promise((_, reject) => (rejectCall = reject)));
+    const first = [media(1, 'm1')];
+    const { rerender } = renderHook(({ messages }) => useMessageAttachments('conv-3', messages), {
+      initialProps: { messages: first },
+    });
+    await waitFor(() => expect(harness.query).toHaveBeenCalledTimes(1));
+    await act(async () => rejectCall(new Error('boom')));
+
+    rerender({ messages: first });
+    rerender({ messages: [...first] });
+    await act(async () => {});
+    expect(harness.query).toHaveBeenCalledTimes(1);
+
+    rerender({ messages: [media(1, 'm1'), media(2, 'm2')] });
+    await waitFor(() => expect(harness.query).toHaveBeenCalledTimes(2));
   });
 });

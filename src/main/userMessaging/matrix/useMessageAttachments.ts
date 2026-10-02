@@ -35,12 +35,18 @@ const useMessageAttachments = (
   const [resolved, setResolved] = useState<ReadonlyMap<string, MessageAttachment>>(new Map());
   // Events whose call is in flight; a later timeline change must not re-send them.
   const [requested] = useState(() => new Set<string>());
+  // Events whose call failed, with the timeline they failed on; they are retried
+  // when the conversation's media changes, not on unrelated re-renders.
+  const [failed] = useState(() => new Map<string, string>());
 
   const resolvable: Resolvable[] = messages.flatMap(message =>
     message.media?.mediaID ? [{ eventId: message.eventId, media: message.media }] : []
   );
+  const timelineKey = `${conversationId}|${resolvable.map(item => item.eventId).join(',')}`;
   const pendingKey = resolvable
-    .filter(item => !resolved.has(item.eventId) && !requested.has(item.eventId))
+    .filter(
+      item => !resolved.has(item.eventId) && !requested.has(item.eventId) && failed.get(item.eventId) !== timelineKey
+    )
     .map(item => item.eventId)
     .join(',');
 
@@ -86,13 +92,14 @@ const useMessageAttachments = (
           // Stays filename-only; the next change in the conversation retries.
           for (const item of batch) {
             requested.delete(item.eventId);
+            failed.set(item.eventId, timelineKey);
           }
         });
     }
     // Results are keyed by event id, so a response arriving after the
     // conversation changed is still correct to keep.
     // `resolvable` is derived from `messages`; `pendingKey` carries the part that matters.
-  }, [client, conversationId, pendingKey, requested]);
+  }, [client, conversationId, pendingKey, requested, failed, timelineKey]);
 
   return resolved;
 };
