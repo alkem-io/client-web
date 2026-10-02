@@ -1194,7 +1194,8 @@
       "optionMax": "Der Optionstext ist zu lang",
       "optionsDuplicate": "Die Optionen müssen sich voneinander unterscheiden"
     },
-    "questionsHeading": "Fragen",
+    "questionsHeading": "Formular",
+    "questionsDescription": "Stelle Fragen und sammle die Antworten",
     "questionNumber": "Frage {{number}}",
     "promptLabel": "Frage",
     "promptPlaceholder": "Was möchten Sie fragen?",
@@ -1265,7 +1266,14 @@
     "requiredMarker": "Pflichtfrage",
     "noticeAdmins": "Nur die Administratoren von {{space}} können Ihre Antwort sehen",
     "noticeMembers": "Mitglieder von {{space}} können Ihre Antwort sehen",
-    "submit": "Antwort senden",
+    "submit": "Formular senden",
+    "answerPlaceholder": "Antwort eingeben...",
+    "reset": "Zurücksetzen",
+    "resetConfirm": {
+      "title": "Antworten zurücksetzen?",
+      "description": "Alle Eingaben in diesem Formular werden gelöscht.",
+      "confirm": "Zurücksetzen"
+    },
     "submitting": "Wird gesendet…",
     "closedBadge": "Geschlossen",
     "draftBadge": "Nicht veröffentlicht",

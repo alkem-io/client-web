@@ -1194,7 +1194,8 @@
       "optionMax": "The option text is too long",
       "optionsDuplicate": "Options must be different from each other"
     },
-    "questionsHeading": "Questions",
+    "questionsHeading": "Form",
+    "questionsDescription": "Ask questions and collect answers as responses",
     "questionNumber": "Question {{number}}",
     "promptLabel": "Question",
     "promptPlaceholder": "What would you like to ask?",
@@ -1265,7 +1266,14 @@
     "requiredMarker": "required",
     "noticeAdmins": "Only the admins of {{space}} can see your response",
     "noticeMembers": "Members of {{space}} can see your response",
-    "submit": "Submit response",
+    "submit": "Submit Form",
+    "answerPlaceholder": "Type your answer...",
+    "reset": "Reset",
+    "resetConfirm": {
+      "title": "Reset your answers?",
+      "description": "Everything you have entered in this form will be cleared.",
+      "confirm": "Reset"
+    },
     "submitting": "Submitting…",
     "closedBadge": "Closed",
     "draftBadge": "Not published",

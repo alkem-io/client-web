@@ -63,4 +63,22 @@ describe('CalloutFormResponseDialog', () => {
     renderDialog({ response: { ...response, respondent: null } });
     expect(screen.getAllByText('Deleted user').length).toBeGreaterThan(0);
   });
+
+  test('numbers the questions and lists each selected option of a choice answer', () => {
+    renderDialog({
+      columns: [...columns, { questionID: 'q3', prompt: 'Toppings', removed: false }],
+      response: {
+        ...response,
+        answers: [
+          ...response.answers,
+          { questionID: 'q3', prompt: 'Toppings', type: 'MULTIPLE_CHOICE', selectedLabels: ['Cheese', 'Ham'] },
+        ],
+      },
+    });
+
+    expect(screen.getByText('1.')).toBeInTheDocument();
+    expect(screen.getByText('3.')).toBeInTheDocument();
+    const options = screen.getAllByRole('listitem');
+    expect(options.map(option => option.textContent)).toEqual(['Cheese', 'Ham']);
+  });
 });

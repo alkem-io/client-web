@@ -192,4 +192,52 @@ describe('CalloutFormFillIn', () => {
     expect(dialogRed).toBeChecked();
     expect(screen.getAllByRole('radio', { name: 'Red' })[0]).not.toBeChecked();
   });
+
+  test('numbers each question in order', () => {
+    renderFillIn();
+
+    expect(screen.getByText('1.')).toBeInTheDocument();
+    expect(screen.getByText('4.')).toBeInTheDocument();
+  });
+
+  test('reset clears every answer only after it is confirmed', async () => {
+    const user = userEvent.setup();
+    renderFillIn();
+    const reset = screen.getByRole('button', { name: 'formFillIn.reset' });
+    expect(reset).toBeDisabled();
+
+    await user.type(screen.getByRole('textbox', { name: /Your name/ }), 'Ada');
+    await user.click(screen.getByRole('radio', { name: 'Red' }));
+    await user.click(reset);
+
+    await user.click(screen.getByRole('button', { name: 'formFillIn.resetConfirm.confirm' }));
+    expect(screen.getByRole('textbox', { name: /Your name/ })).toHaveValue('');
+    expect(screen.getByRole('radio', { name: 'Red' })).not.toBeChecked();
+    expect(screen.getByRole('button', { name: 'formFillIn.reset' })).toBeDisabled();
+  });
+
+  test('cancelling the reset keeps the answers', async () => {
+    const user = userEvent.setup();
+    renderFillIn();
+
+    await user.type(screen.getByRole('textbox', { name: /Your name/ }), 'Ada');
+    await user.click(screen.getByRole('button', { name: 'formFillIn.reset' }));
+    await user.keyboard('{Escape}');
+
+    expect(screen.getByRole('textbox', { name: /Your name/ })).toHaveValue('Ada');
+  });
+
+  test('the length counter appears only near the limit', async () => {
+    const user = userEvent.setup();
+    renderFillIn();
+    const name = screen.getByRole('textbox', { name: /Your name/ });
+
+    await user.type(name, 'Ada');
+    expect(screen.queryByText('3/512')).toBeNull();
+
+    await user.clear(name);
+    await user.click(name);
+    await user.paste('x'.repeat(420));
+    expect(screen.getByText('420/512')).toBeInTheDocument();
+  });
 });

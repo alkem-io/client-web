@@ -359,7 +359,8 @@ function SortableQuestionRow({
           aria-invalid={explanationError ? true : undefined}
           aria-describedby={explanationError ? `${idBase}-explanation-error` : undefined}
           disabled={disabled}
-          rows={2}
+          rows={1}
+          className="min-h-9"
         />
         {explanationError && (
           <p id={`${idBase}-explanation-error`} className="text-caption text-destructive">
@@ -466,8 +467,13 @@ export function FormQuestionsEditor({
     <div className={cn('space-y-3 p-4 border rounded-xl bg-muted/30', className)}>
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <ClipboardList className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
-          <span className="text-body-emphasis">{t('formForm.questionsHeading')}</span>
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted">
+            <ClipboardList className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+          </span>
+          <div className="flex flex-col">
+            <span className="text-card-title">{t('formForm.questionsHeading')}</span>
+            <span className="text-body text-muted-foreground">{t('formForm.questionsDescription')}</span>
+          </div>
         </div>
         {settingsSlot}
       </div>

@@ -1194,7 +1194,8 @@
       "optionMax": "Le texte de l'option est trop long",
       "optionsDuplicate": "Les options doivent être différentes les unes des autres"
     },
-    "questionsHeading": "Questions",
+    "questionsHeading": "Formulaire",
+    "questionsDescription": "Posez des questions et recueillez les réponses",
     "questionNumber": "Question {{number}}",
     "promptLabel": "Question",
     "promptPlaceholder": "Que souhaitez-vous demander ?",
@@ -1265,7 +1266,14 @@
     "requiredMarker": "obligatoire",
     "noticeAdmins": "Seuls les administrateurs de {{space}} peuvent voir votre réponse",
     "noticeMembers": "Les membres de {{space}} peuvent voir votre réponse",
-    "submit": "Envoyer la réponse",
+    "submit": "Envoyer le formulaire",
+    "answerPlaceholder": "Saisissez votre réponse...",
+    "reset": "Réinitialiser",
+    "resetConfirm": {
+      "title": "Réinitialiser vos réponses ?",
+      "description": "Tout ce que vous avez saisi dans ce formulaire sera effacé.",
+      "confirm": "Réinitialiser"
+    },
     "submitting": "Envoi…",
     "closedBadge": "Fermé",
     "draftBadge": "Non publié",

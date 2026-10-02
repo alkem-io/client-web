@@ -1,12 +1,17 @@
-import { Trash2 } from 'lucide-react';
+import { Check, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RespondentCell } from '@/crd/components/callout/CalloutFormResponsesTable';
 import { answerDisplayValue, type FormColumn } from '@/crd/components/callout/calloutFormColumns';
-import type { FormResponseView } from '@/crd/components/callout/calloutFormTypes';
+import type { FormAnswerView, FormResponseView } from '@/crd/components/callout/calloutFormTypes';
 import { formatFormDate } from '@/crd/components/callout/formatFormDate';
+import {
+  formOptionRowClass,
+  formQuestionCardClass,
+  formQuestionPromptClass,
+} from '@/crd/components/callout/formStyles';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
-import { cn } from '@/crd/lib/utils';
+import { isChoiceKind } from '@/crd/forms/callout/formValues';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
 import { Separator } from '@/crd/primitives/separator';
@@ -20,6 +25,43 @@ type CalloutFormResponseDialogProps = {
   onDelete: (responseId: string) => void;
   deletedUserLabel: string;
 };
+
+function AnswerValue({ answer }: { answer: FormAnswerView | undefined }) {
+  const { t } = useTranslation('crd-space');
+  const value = answerDisplayValue(answer);
+  if (!answer || !value) {
+    return <p className="text-body italic text-muted-foreground">{t('formResponses.noAnswer')}</p>;
+  }
+
+  if (isChoiceKind(answer.type)) {
+    const multiple = answer.type === 'MULTIPLE_CHOICE';
+    return (
+      <ul className="m-0 grid list-none gap-2 p-0">
+        {answer.selectedLabels.map(label => (
+          <li key={label} className={formOptionRowClass(true, false)}>
+            {multiple ? (
+              <span
+                aria-hidden="true"
+                className="flex size-4 shrink-0 items-center justify-center rounded-[4px] bg-primary text-primary-foreground"
+              >
+                <Check className="size-3.5" />
+              </span>
+            ) : (
+              <span aria-hidden="true" className="size-4 shrink-0 rounded-full border-[5px] border-primary bg-card" />
+            )}
+            {label}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  return (
+    <p className="rounded-[8px] border border-border bg-card px-3 py-2 text-body text-foreground whitespace-pre-wrap break-words">
+      {value}
+    </p>
+  );
+}
 
 /** One response in full: respondent, date and every answer against its question. */
 export function CalloutFormResponseDialog({
@@ -46,7 +88,7 @@ export function CalloutFormResponseDialog({
   return (
     <>
       <Dialog open={open && response !== null} onOpenChange={onOpenChange}>
-        <DialogContent aria-describedby={undefined} className="sm:max-w-xl max-h-[90vh] flex flex-col overflow-hidden">
+        <DialogContent aria-describedby={undefined} className="sm:max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
           <DialogTitle className="text-subsection-title shrink-0">
             {t('formResponses.singleTitle', { name: respondentName })}
           </DialogTitle>
@@ -59,22 +101,25 @@ export function CalloutFormResponseDialog({
                   {formatFormDate(response.createdDate, i18n?.language)}
                 </span>
               </div>
-              <dl className="space-y-3">
-                {columns.map(column => {
-                  const value = answerDisplayValue(response.answers.find(a => a.questionID === column.questionID));
+              <dl className="space-y-4">
+                {columns.map((column, index) => {
+                  const answer = response.answers.find(a => a.questionID === column.questionID);
                   return (
-                    <div key={column.questionID} className="space-y-0.5">
-                      <dt className="text-caption text-muted-foreground">
-                        {column.prompt}
-                        {column.removed && <> ({t('formResponses.removedQuestion')})</>}
+                    <div key={column.questionID} className={formQuestionCardClass}>
+                      <dt className={formQuestionPromptClass}>
+                        <span>{index + 1}.</span>
+                        <span>
+                          {column.prompt}
+                          {column.removed && (
+                            <span className="text-caption text-muted-foreground">
+                              {' '}
+                              ({t('formResponses.removedQuestion')})
+                            </span>
+                          )}
+                        </span>
                       </dt>
-                      <dd
-                        className={cn(
-                          'text-body whitespace-pre-wrap break-words',
-                          !value && 'italic text-muted-foreground'
-                        )}
-                      >
-                        {value ?? t('formResponses.noAnswer')}
+                      <dd className="m-0">
+                        <AnswerValue answer={answer} />
                       </dd>
                     </div>
                   );

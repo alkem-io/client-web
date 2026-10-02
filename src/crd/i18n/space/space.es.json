@@ -1194,7 +1194,8 @@
       "optionMax": "El texto de la opción es demasiado largo",
       "optionsDuplicate": "Las opciones deben ser distintas entre sí"
     },
-    "questionsHeading": "Preguntas",
+    "questionsHeading": "Formulario",
+    "questionsDescription": "Haz preguntas y recoge las respuestas",
     "questionNumber": "Pregunta {{number}}",
     "promptLabel": "Pregunta",
     "promptPlaceholder": "¿Qué te gustaría preguntar?",
@@ -1265,7 +1266,14 @@
     "requiredMarker": "obligatoria",
     "noticeAdmins": "Solo los administradores de {{space}} pueden ver tu respuesta",
     "noticeMembers": "Los miembros de {{space}} pueden ver tu respuesta",
-    "submit": "Enviar respuesta",
+    "submit": "Enviar formulario",
+    "answerPlaceholder": "Escribe tu respuesta...",
+    "reset": "Restablecer",
+    "resetConfirm": {
+      "title": "¿Restablecer tus respuestas?",
+      "description": "Se borrará todo lo que has introducido en este formulario.",
+      "confirm": "Restablecer"
+    },
     "submitting": "Enviando…",
     "closedBadge": "Cerrado",
     "draftBadge": "No publicado",

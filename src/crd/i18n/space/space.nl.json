@@ -1194,7 +1194,8 @@
       "optionMax": "De optietekst is te lang",
       "optionsDuplicate": "Opties moeten van elkaar verschillen"
     },
-    "questionsHeading": "Vragen",
+    "questionsHeading": "Formulier",
+    "questionsDescription": "Stel vragen en verzamel de antwoorden als reacties",
     "questionNumber": "Vraag {{number}}",
     "promptLabel": "Vraag",
     "promptPlaceholder": "Wat wil je vragen?",
@@ -1265,7 +1266,14 @@
     "requiredMarker": "verplicht",
     "noticeAdmins": "Alleen de beheerders van {{space}} kunnen je reactie zien",
     "noticeMembers": "Leden van {{space}} kunnen je reactie zien",
-    "submit": "Reactie verzenden",
+    "submit": "Formulier verzenden",
+    "answerPlaceholder": "Typ je antwoord...",
+    "reset": "Wissen",
+    "resetConfirm": {
+      "title": "Je antwoorden wissen?",
+      "description": "Alles wat je in dit formulier hebt ingevuld, wordt gewist.",
+      "confirm": "Wissen"
+    },
     "submitting": "Verzenden…",
     "closedBadge": "Gesloten",
     "draftBadge": "Niet gepubliceerd",

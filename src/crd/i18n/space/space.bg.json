@@ -1194,7 +1194,8 @@
       "optionMax": "Текстът на опцията е твърде дълъг",
       "optionsDuplicate": "Опциите трябва да се различават една от друга"
     },
-    "questionsHeading": "Въпроси",
+    "questionsHeading": "Формуляр",
+    "questionsDescription": "Задавайте въпроси и събирайте отговорите",
     "questionNumber": "Въпрос {{number}}",
     "promptLabel": "Въпрос",
     "promptPlaceholder": "Какво искате да попитате?",
@@ -1265,7 +1266,14 @@
     "requiredMarker": "задължителен",
     "noticeAdmins": "Само администраторите на {{space}} могат да виждат вашия отговор",
     "noticeMembers": "Членовете на {{space}} могат да виждат вашия отговор",
-    "submit": "Изпращане на отговор",
+    "submit": "Изпращане на формуляра",
+    "answerPlaceholder": "Въведете отговора си...",
+    "reset": "Изчистване",
+    "resetConfirm": {
+      "title": "Да се изчистят ли отговорите ви?",
+      "description": "Всичко, което сте въвели в този формуляр, ще бъде изчистено.",
+      "confirm": "Изчистване"
+    },
     "submitting": "Изпращане…",
     "closedBadge": "Затворен",
     "draftBadge": "Непубликуван",
