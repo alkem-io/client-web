@@ -211,7 +211,9 @@ const dm = (counterpartType: ActorType | null): UserConversation => ({
     ...(counterpartType ? [{ id: 'other', type: counterpartType, displayName: 'Other' }] : []),
   ],
 });
-const contactable = (isContactable: boolean) => ({ data: { actor: { __typename: 'User', isContactable } } });
+const contactable = (isContactable: boolean) => ({
+  data: { actor: { __typename: 'User', type: ActorType.User, isContactable } },
+});
 
 describe('useConversationView — DM consent is checked per text send', () => {
   const send = async (target: UserConversation, text = 'hello', attachments?: string[]) => {

@@ -146,7 +146,11 @@ export const useConversationView = (
             fetchPolicy: 'network-only',
           });
           if (error) return false;
-          if (data?.actor?.__typename === 'User' && data.actor.isContactable === false) {
+          if (
+            data?.actor?.type === ActorType.User &&
+            'isContactable' in data.actor &&
+            data.actor.isContactable === false
+          ) {
             notify(t('apollo.errors.MESSAGING_NOT_ENABLED'), 'error');
             return false;
           }
