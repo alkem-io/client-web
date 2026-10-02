@@ -94,6 +94,21 @@ describe('ConversationSummaryStore', () => {
     expect(store.alkemioRoomIdFor('!alk-1')).toBe('alk-1');
   });
 
+  it('looks a room up again on the first sync when its alias lookup failed before it', async () => {
+    const room: FakeRoom = { roomId: '!alk-1', events: [text('$1', 'hello')], notifications: 0 };
+    const { client, emit } = makeClient([room]);
+    vi.mocked(client.getRoomIdForAlias).mockRejectedValueOnce(new Error('network'));
+    const store = new ConversationSummaryStore(client);
+
+    store.watch(['alk-1']);
+    await settle();
+    expect(store.getSnapshot().get('alk-1')).toBeUndefined();
+
+    emit('sync', 'PREPARED');
+    await vi.waitFor(() => expect(store.getSnapshot().get('alk-1')?.lastMessage?.body).toBe('hello'));
+    expect(client.getRoomIdForAlias).toHaveBeenCalledTimes(2);
+  });
+
   it('recomputes only the room whose timeline changed', async () => {
     const roomA: FakeRoom = { roomId: '!a', events: [text('$a1', 'a')], notifications: 0 };
     const roomB: FakeRoom = { roomId: '!b', events: [text('$b1', 'b')], notifications: 0 };

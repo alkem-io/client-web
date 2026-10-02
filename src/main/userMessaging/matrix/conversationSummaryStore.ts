@@ -91,7 +91,13 @@ class ConversationSummaryStore {
       ((state: string) => {
         if (state === 'PREPARED') {
           for (const alkemioRoomId of this.watchers.keys()) {
-            this.schedule(alkemioRoomId);
+            // A lookup that failed before the first sync (homeserver not yet
+            // reachable) left no mapping; look it up again now.
+            if (this.matrixByAlkemioId.has(alkemioRoomId)) {
+              this.schedule(alkemioRoomId);
+            } else {
+              void this.resolve(alkemioRoomId);
+            }
           }
         }
       }) as never
