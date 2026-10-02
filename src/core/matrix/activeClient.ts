@@ -9,6 +9,7 @@ import { useSyncExternalStore } from 'react';
 type Listener = () => void;
 
 let current: MatrixClient | null = null;
+let establishing = false;
 const listeners = new Set<Listener>();
 
 const setActiveClient = (client: MatrixClient | null): void => {
@@ -20,6 +21,19 @@ const setActiveClient = (client: MatrixClient | null): void => {
     listener();
   }
 };
+
+/** True while the session controller is acquiring credentials or restarting; false once it is synced, stopped or gave up. */
+const setSessionEstablishing = (value: boolean): void => {
+  if (establishing === value) {
+    return;
+  }
+  establishing = value;
+  for (const listener of listeners) {
+    listener();
+  }
+};
+
+const isSessionEstablishing = (): boolean => establishing;
 
 const getActiveClient = (): MatrixClient | null => current;
 
@@ -33,4 +47,15 @@ const subscribeActiveClient = (listener: Listener): (() => void) => {
 const useMatrixClient = (): MatrixClient | null =>
   useSyncExternalStore(subscribeActiveClient, getActiveClient, () => null);
 
-export { getActiveClient, setActiveClient, subscribeActiveClient, useMatrixClient };
+const useMatrixSessionEstablishing = (): boolean =>
+  useSyncExternalStore(subscribeActiveClient, isSessionEstablishing, () => false);
+
+export {
+  getActiveClient,
+  isSessionEstablishing,
+  setActiveClient,
+  setSessionEstablishing,
+  subscribeActiveClient,
+  useMatrixClient,
+  useMatrixSessionEstablishing,
+};

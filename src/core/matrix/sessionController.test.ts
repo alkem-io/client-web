@@ -1,7 +1,7 @@
 import 'fake-indexeddb/auto';
 import { createClient } from 'matrix-js-sdk';
 import { afterEach, beforeEach, describe, expect, it, type MockedFunction, vi } from 'vitest';
-import { getActiveClient } from './activeClient';
+import { getActiveClient, isSessionEstablishing } from './activeClient';
 import { stopActiveSession } from './activeSession';
 import { establishSession, type MatrixClientLike } from './sessionController';
 import { attemptSilentSso } from './ssoLogin';
@@ -301,5 +301,61 @@ describe('establishSession', () => {
     await vi.waitFor(() => expect(mockedCreateClient).toHaveBeenCalledTimes(3));
     expect(mockedSilentSso).toHaveBeenCalledTimes(2);
     expect(getActiveClient()).toBe(clients[2]);
+  });
+
+  it('reports the session as establishing only while credentials are being acquired', async () => {
+    let finishSso: (outcome: 'timeout') => void = () => {};
+    mockedSilentSso.mockImplementation(() => new Promise(resolve => (finishSso = resolve)));
+
+    const pending = establishSession('actor-without-record');
+    await vi.waitFor(() => expect(mockedSilentSso).toHaveBeenCalled());
+    expect(isSessionEstablishing()).toBe(true);
+
+    finishSso('timeout');
+    await pending;
+    expect(isSessionEstablishing()).toBe(false);
+  });
+
+  it('stops reporting establishing when establishment throws', async () => {
+    mockedSilentSso.mockRejectedValue(new Error('network down'));
+
+    await establishSession('actor-without-record');
+
+    expect(isSessionEstablishing()).toBe(false);
+  });
+
+  it('reports establishing during recovery and clears it when the recovery fails closed', async () => {
+    await seedRecord();
+    const client = makeClient();
+    mockedCreateClient.mockReturnValue(client);
+    let finishSso: (outcome: 'timeout') => void = () => {};
+    mockedSilentSso.mockImplementation(() => new Promise(resolve => (finishSso = resolve)));
+    await establishSession(ACTOR);
+    expect(isSessionEstablishing()).toBe(false);
+
+    client.emit(TOKEN_REJECTED);
+    await vi.waitFor(() => expect(mockedSilentSso).toHaveBeenCalled());
+    expect(isSessionEstablishing()).toBe(true);
+
+    finishSso('timeout');
+    await vi.waitFor(() => expect(isSessionEstablishing()).toBe(false));
+    expect(getActiveClient()).toBeNull();
+  });
+
+  it('a stopped session does not clear the flag of the session that replaced it', async () => {
+    const first = new AbortController();
+    let finishFirst: (outcome: 'timeout') => void = () => {};
+    mockedSilentSso.mockImplementationOnce(() => new Promise(resolve => (finishFirst = resolve)));
+    const firstDone = establishSession('actor-a', { signal: first.signal });
+    await vi.waitFor(() => expect(mockedSilentSso).toHaveBeenCalledTimes(1));
+
+    first.abort();
+    mockedSilentSso.mockImplementationOnce(() => new Promise(() => {}));
+    void establishSession('actor-b');
+    await vi.waitFor(() => expect(mockedSilentSso).toHaveBeenCalledTimes(2));
+    finishFirst('timeout');
+    await firstDone;
+
+    expect(isSessionEstablishing()).toBe(true);
   });
 });

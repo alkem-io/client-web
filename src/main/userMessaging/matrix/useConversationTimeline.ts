@@ -1,6 +1,6 @@
 import type { MatrixClient, MatrixEvent, Room } from 'matrix-js-sdk';
 import { useEffect, useState } from 'react';
-import { useMatrixClient } from '@/core/matrix/activeClient';
+import { useMatrixClient, useMatrixSessionEstablishing } from '@/core/matrix/activeClient';
 import { type ParsedMessage, projectMessages } from './matrixEvents';
 import {
   CLIENT_ROOM,
@@ -45,6 +45,7 @@ const backfill = async (client: MatrixClient, room: Room, isCancelled: () => boo
  */
 const useConversationTimeline = (alkemioRoomId: string | null): { messages: ParsedMessage[]; isLoading: boolean } => {
   const client = useMatrixClient();
+  const establishing = useMatrixSessionEstablishing();
   const roomKey = client && alkemioRoomId ? alkemioRoomId : null;
   const [state, setState] = useState<TimelineState>({ roomKey: null, messages: [], isLoading: false });
 
@@ -131,6 +132,11 @@ const useConversationTimeline = (alkemioRoomId: string | null): { messages: Pars
     };
   }, [client, roomKey]);
 
+  if (!client) {
+    // Without a client the thread waits only while the session is being established
+    // (silent sign-in can take a while); not configured or failed shows the empty state.
+    return { messages: [], isLoading: Boolean(alkemioRoomId) && establishing };
+  }
   if (state.roomKey !== roomKey) {
     return { messages: [], isLoading: Boolean(roomKey) };
   }

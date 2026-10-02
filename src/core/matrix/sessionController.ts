@@ -1,5 +1,5 @@
 import type { MatrixClient } from 'matrix-js-sdk';
-import { setActiveClient } from './activeClient';
+import { setActiveClient, setSessionEstablishing } from './activeClient';
 import { registerActiveSession, unregisterActiveSession } from './activeSession';
 import { attemptSilentSso } from './ssoLogin';
 import { type CredentialRecord, clearNamespace, loadActorCredentials } from './storage';
@@ -56,8 +56,16 @@ const establishSession = async (
     setActiveClient(null);
   };
 
+  // A session that was stopped must not clear the flag a newer session has set.
+  const finishEstablishing = (): void => {
+    if (!abort.signal.aborted) {
+      setSessionEstablishing(false);
+    }
+  };
+
   const stop = (): void => {
     abort.abort();
+    setSessionEstablishing(false);
     stopClient();
     unregisterActiveSession(stop);
   };
@@ -116,6 +124,7 @@ const establishSession = async (
       return;
     }
     recoveryUsed = true;
+    setSessionEstablishing(true);
     try {
       const record = await loadOrAcquireRecord();
       if (!abort.signal.aborted && record) {
@@ -123,9 +132,14 @@ const establishSession = async (
       }
     } catch {
       // Fails closed: the session stays stopped until the next page load.
+    } finally {
+      finishEstablishing();
     }
   };
 
+  if (!abort.signal.aborted) {
+    setSessionEstablishing(true);
+  }
   try {
     const record = await loadOrAcquireRecord();
     if (!abort.signal.aborted && record) {
@@ -133,6 +147,8 @@ const establishSession = async (
     }
   } catch {
     // Establishment failure leaves nothing to stop; the next load retries.
+  } finally {
+    finishEstablishing();
   }
 
   return { stop };
