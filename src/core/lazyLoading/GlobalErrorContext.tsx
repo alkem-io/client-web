@@ -27,7 +27,7 @@ export const GlobalErrorProvider: React.FC<{ children: ReactNode }> = ({ childre
   // Permanent React Compiler exception: intentional singleton module-level mutation during render.
   // setGlobalError is a module-scoped variable that must be set synchronously during provider render
   // so that lazyWithGlobalErrorHandler can trigger error state from outside the React tree.
-  // eslint-disable-next-line react-compiler/react-compiler
+  // eslint-disable-next-line react-compiler/react-compiler -- intentional module-scoped singleton assignment during render (see comment above); lets lazyWithGlobalErrorHandler set error state from outside the React tree.
   setGlobalError = setError;
 
   return <GlobalErrorContext value={{ error, setError }}>{children}</GlobalErrorContext>;
