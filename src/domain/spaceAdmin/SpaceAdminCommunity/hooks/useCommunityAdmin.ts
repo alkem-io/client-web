@@ -70,6 +70,7 @@ export interface useCommunityAdminProvided {
     onInvitationStateChange: (invitationId: string, eventName: string) => Promise<unknown>;
     onDeleteInvitation: (invitationId: string) => Promise<unknown>;
     onDeletePlatformInvitation: (invitationId: string) => Promise<unknown>;
+    onResendPlatformInvitation: (invitationId: string) => Promise<unknown>;
   };
   permissions: {
     canAddUsers: boolean;
@@ -195,6 +196,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     invitationStateChange,
     deleteInvitation,
     deletePlatformInvitation,
+    resendPlatformInvitation,
     loading: loadingApplicationsAndInvitations,
     errored: erroredApplicationsAndInvitations,
   } = useRoleSetApplicationsAndInvitations({
@@ -261,6 +263,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
       onInvitationStateChange: invitationStateChange,
       onDeleteInvitation: deleteInvitation,
       onDeletePlatformInvitation: deletePlatformInvitation,
+      onResendPlatformInvitation: resendPlatformInvitation,
     },
     permissions,
     myPrivileges: authorizationPrivileges,

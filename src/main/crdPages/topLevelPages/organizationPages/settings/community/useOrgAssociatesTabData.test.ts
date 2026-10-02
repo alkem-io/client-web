@@ -8,6 +8,8 @@ const assignRoleToUser = vi.fn().mockResolvedValue(undefined);
 const removeRoleFromUser = vi.fn().mockResolvedValue(undefined);
 const applicationStateChange = vi.fn().mockResolvedValue(undefined);
 const deleteInvitation = vi.fn().mockResolvedValue(undefined);
+const deletePlatformInvitation = vi.fn().mockResolvedValue(undefined);
+const resendPlatformInvitation = vi.fn().mockResolvedValue(undefined);
 const refetchApplicationsAndInvitations = vi.fn().mockResolvedValue(undefined);
 const notify = vi.fn();
 
@@ -33,11 +35,15 @@ vi.mock('@/domain/access/RoleSetManager/RolesAssignment/useRoleSetManagerRolesAs
 
 let applications: unknown[] = [];
 let invitations: unknown[] = [];
+let platformInvitations: unknown[] = [];
 const useRoleSetApplicationsAndInvitationsMock = vi.fn((_params: unknown) => ({
   applications,
   invitations,
+  platformInvitations,
   applicationStateChange,
   deleteInvitation,
+  deletePlatformInvitation,
+  resendPlatformInvitation,
   refetch: refetchApplicationsAndInvitations,
 }));
 vi.mock('@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations', () => ({
@@ -77,6 +83,7 @@ beforeEach(() => {
   myPrivileges = ['GRANT', 'ROLESET_ENTRY_ROLE_INVITE'];
   applications = [];
   invitations = [];
+  platformInvitations = [];
 });
 
 describe('useOrgAssociatesTabData — removing every role (the R-13 mitigation)', () => {
@@ -318,6 +325,83 @@ describe('useOrgAssociatesTabData — pending rows dispatch on what the row IS',
     });
 
     expect(notify).toHaveBeenCalledWith('org.associates.pending.actionError', 'error');
+  });
+});
+
+describe('useOrgAssociatesTabData — email invitations (people not yet on the platform)', () => {
+  beforeEach(() => {
+    platformInvitations = [
+      { id: 'pi-1', email: 'new@example.com', createdDate: '2026-09-01T00:00:00.000Z', roleSetExtraRoles: ['ADMIN'] },
+    ];
+  });
+
+  it('lists each open email invitation with its offered role, removable and resendable', () => {
+    const { result } = render();
+    const row = result.current.pendingMemberships.find(m => m.id === 'pi-1');
+
+    expect(row).toMatchObject({
+      type: 'platformInvitation',
+      state: 'invited',
+      displayName: 'new@example.com',
+      email: 'new@example.com',
+      canDelete: true,
+      canResend: true,
+      canApprove: false,
+      canReject: false,
+      offeredRoleLabel: 'org.associates.pending.offeredRole.associateAdmin',
+    });
+  });
+
+  it('revokes an email invitation through deletePlatformInvitation, never deleteInvitation', async () => {
+    const { result } = render();
+
+    act(() => result.current.onPendingRevoke('pi-1'));
+    expect(result.current.pendingConfirmation).toMatchObject({ kind: 'revokePlatformInvitation', id: 'pi-1' });
+    await act(async () => {
+      await result.current.onConfirm();
+    });
+
+    expect(deletePlatformInvitation).toHaveBeenCalledWith('pi-1');
+    expect(deleteInvitation).not.toHaveBeenCalled();
+    expect(refetchApplicationsAndInvitations).toHaveBeenCalled();
+  });
+
+  it('resend toasts success', async () => {
+    const { result } = render();
+
+    await act(async () => {
+      result.current.onPendingResend('pi-1');
+    });
+
+    await waitFor(() => expect(notify).toHaveBeenCalledWith('community.pendingMemberships.resendSuccess', 'success'));
+    expect(resendPlatformInvitation).toHaveBeenCalledWith('pi-1');
+    await waitFor(() => expect(result.current.resendingIds.size).toBe(0));
+  });
+
+  it('maps the throttled error code to the throttled toast', async () => {
+    resendPlatformInvitation.mockRejectedValueOnce(
+      new ApolloError({
+        graphQLErrors: [{ message: 'slow down', extensions: { code: 'ROLESET_INVITATION_RESEND_THROTTLED' } } as never],
+      })
+    );
+    const { result } = render();
+
+    await act(async () => {
+      result.current.onPendingResend('pi-1');
+    });
+
+    await waitFor(() => expect(notify).toHaveBeenCalledWith('community.pendingMemberships.resendThrottled', 'error'));
+  });
+
+  it('toasts a generic error for any other failure', async () => {
+    resendPlatformInvitation.mockRejectedValueOnce(new Error('offline'));
+    const { result } = render();
+
+    await act(async () => {
+      result.current.onPendingResend('pi-1');
+    });
+
+    await waitFor(() => expect(notify).toHaveBeenCalledWith('community.pendingMemberships.resendError', 'error'));
   });
 });
 
