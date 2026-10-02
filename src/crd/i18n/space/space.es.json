@@ -977,6 +977,7 @@
     "cantComment": "No tienes permiso para comentar, responder o reaccionar aquí.",
     "attachments": {
       "attach": "Adjuntar archivos",
+      "dropHint": "Suelta los archivos para adjuntarlos",
       "stagedListLabel": "Archivos para enviar",
       "removeAttachment": "Quitar {{name}}",
       "uploading": "Subiendo…",

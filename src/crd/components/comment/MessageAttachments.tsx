@@ -14,6 +14,7 @@ type MessageAttachmentsProps = {
 };
 
 const isImage = (mimeType: string | undefined) => mimeType?.startsWith('image/');
+const isVideo = (mimeType: string | undefined) => mimeType?.startsWith('video/');
 
 /** Only ever use a server-issued attachment URL as an `href`/`src` when it is an
  *  http(s) URL — belt-and-suspenders against a `javascript:`/`data:` URL slipping
@@ -22,8 +23,9 @@ const isHttpUrl = (url: string | undefined): url is string => typeof url === 'st
 
 /**
  * Renders the media attachments on a message (feature 013). Images show an
- * inline preview that links to the full document; every other type renders a
- * downloadable file chip. `url` is an already-authorized Alkemio document URL,
+ * inline preview that links to the full document; videos use native controls
+ * without preloading the timeline. Other types render a downloadable file chip.
+ * `url` is an already-authorized Alkemio document URL,
  * so web- and Element-origin attachments render identically. Images that fail
  * to load degrade to the same downloadable chip with an "unavailable" hint.
  */
@@ -44,6 +46,8 @@ export function MessageAttachments({ attachments, align = 'start', className }: 
         <li key={attachment.id ?? `unavailable-${index}`} className="max-w-[min(320px,100%)]">
           {isImage(attachment.mimeType) ? (
             <AttachmentImage attachment={attachment} />
+          ) : isVideo(attachment.mimeType) ? (
+            <AttachmentVideo attachment={attachment} />
           ) : (
             <AttachmentFileChip attachment={attachment} />
           )}
@@ -79,36 +83,89 @@ function AttachmentImage({ attachment }: { attachment: MessageAttachment }) {
     attachment.width && attachment.height ? { aspectRatio: `${attachment.width} / ${attachment.height}` } : undefined;
 
   return (
+    <div className="group/media relative overflow-hidden rounded-lg border border-border">
+      <a
+        href={attachment.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+      >
+        {/* Overlays the image rather than replacing it — see the `img` note below. */}
+        {status === 'loading' && (
+          <output aria-label={t('messageAttachments.loading')} className="absolute inset-0 animate-pulse bg-muted" />
+        )}
+        <img
+          src={attachment.url}
+          alt={t('messageAttachments.imageAlt', { name: attachment.displayName })}
+          loading="lazy"
+          onLoad={() => setStatus('loaded')}
+          onError={() => setStatus('error')}
+          // Never take the image OUT of the layout while it loads. A
+          // `loading="lazy"` image that is `display: none` is never intersected by
+          // the browser's lazy-load observer, so it is never fetched, `onLoad`
+          // never fires, and the skeleton stays forever. Fade it in instead — it
+          // keeps its box (and therefore its reserved height) the whole time.
+          className={cn(
+            'block max-h-80 w-full object-cover transition-opacity duration-200',
+            // Without server dimensions there is no ratio to reserve, so fall back
+            // to a fixed placeholder height until the real image sizes itself.
+            !aspectStyle && status !== 'loaded' ? 'h-32' : 'h-auto',
+            status !== 'loaded' && 'opacity-0'
+          )}
+          style={aspectStyle}
+        />
+      </a>
+      <AttachmentDownload attachment={attachment} />
+    </div>
+  );
+}
+
+function AttachmentVideo({ attachment }: { attachment: MessageAttachment }) {
+  const { t } = useTranslation('crd-common');
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    setFailed(false);
+  }, [attachment.url]);
+
+  if (failed || !isHttpUrl(attachment.url)) {
+    return <AttachmentFileChip attachment={attachment} hint={t('messageAttachments.videoUnavailableHint')} />;
+  }
+
+  return (
+    <div className="group/media relative overflow-hidden rounded-lg border border-border">
+      {/* User-provided clips have no caption track supplied by the attachment API. */}
+      {/* biome-ignore lint/a11y/useMediaCaption: no caption track is available for uploaded attachments */}
+      <video
+        src={attachment.url}
+        controls={true}
+        playsInline={true}
+        preload="none"
+        aria-label={t('messageAttachments.videoLabel', { name: attachment.displayName })}
+        onLoadedMetadata={event => {
+          if (event.currentTarget.videoWidth === 0) {
+            setFailed(true);
+          }
+        }}
+        onError={() => setFailed(true)}
+        className="block aspect-video max-h-80 w-80 max-w-full bg-black object-contain focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+      />
+      <AttachmentDownload attachment={attachment} />
+    </div>
+  );
+}
+
+function AttachmentDownload({ attachment }: { attachment: MessageAttachment }) {
+  const { t } = useTranslation('crd-common');
+
+  return (
     <a
       href={attachment.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="relative block overflow-hidden rounded-lg border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      download={attachment.displayName}
+      aria-label={t('messageAttachments.download', { name: attachment.displayName })}
+      className="absolute right-2 top-2 z-10 flex size-8 items-center justify-center rounded-md border border-border bg-background text-foreground opacity-100 shadow-md transition-opacity hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background [@media(hover:hover)]:opacity-0 group-hover/media:opacity-100 group-focus-within/media:opacity-100 focus-visible:opacity-100"
     >
-      {/* Overlays the image rather than replacing it — see the `img` note below. */}
-      {status === 'loading' && (
-        <output aria-label={t('messageAttachments.loading')} className="absolute inset-0 animate-pulse bg-muted" />
-      )}
-      <img
-        src={attachment.url}
-        alt={t('messageAttachments.imageAlt', { name: attachment.displayName })}
-        loading="lazy"
-        onLoad={() => setStatus('loaded')}
-        onError={() => setStatus('error')}
-        // Never take the image OUT of the layout while it loads. A
-        // `loading="lazy"` image that is `display: none` is never intersected by
-        // the browser's lazy-load observer, so it is never fetched, `onLoad`
-        // never fires, and the skeleton stays forever. Fade it in instead — it
-        // keeps its box (and therefore its reserved height) the whole time.
-        className={cn(
-          'block max-h-80 w-full object-cover transition-opacity duration-200',
-          // Without server dimensions there is no ratio to reserve, so fall back
-          // to a fixed placeholder height until the real image sizes itself.
-          !aspectStyle && status !== 'loaded' ? 'h-32' : 'h-auto',
-          status !== 'loaded' && 'opacity-0'
-        )}
-        style={aspectStyle}
-      />
+      <Download aria-hidden="true" className="size-4" />
     </a>
   );
 }
