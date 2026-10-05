@@ -3,6 +3,7 @@ import {
   FolderTree,
   Image as ImageIcon,
   Megaphone,
+  MoreHorizontal,
   Presentation,
   StickyNote,
   Users,
@@ -13,6 +14,13 @@ import { type ComponentType, type SVGProps, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DeleteFramingDialog } from '@/crd/components/dialogs/DeleteFramingDialog';
 import { cn } from '@/crd/lib/utils';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from '@/crd/primitives/dropdown-menu';
 
 export type FramingChipId = 'whiteboard' | 'memo' | 'document' | 'cta' | 'image' | 'poll' | 'contributors' | 'spaces';
 
@@ -34,6 +42,30 @@ const CHIPS: Chip[] = [
   // CalloutFramingType.Spaces; the visible label is "Subspaces").
   { id: 'spaces', labelKey: 'callout.subspaces', icon: FolderTree },
 ];
+
+/**
+ * The chips kept on the surface; everything else moves behind the "More" menu.
+ *
+ * Chosen from usage (Sept 2026): whiteboard 162, memo 97, media gallery 73 —
+ * the next one down is an order of magnitude smaller. The row used to show all
+ * eight, which gave a framing type nobody picks the same share of the opening
+ * screen as the one most people do, and grew by a chip with every new framing
+ * type we shipped.
+ *
+ * The caveat on that data, from the analyst: the counts measure activity on a
+ * framing type rather than creation of one, and cannot separate "added to a
+ * post" from "asked for as a response". It is good enough to pick three; it is
+ * not good enough to order the menu, which stays in `CHIPS` order.
+ */
+const PRIMARY_CHIP_IDS: FramingChipId[] = ['whiteboard', 'memo', 'image'];
+
+/**
+ * Below this many available chips the menu is pointless — it would hold one or
+ * two items while the row has room for them. Consumers that narrow the list via
+ * `allowedChips` (a template form, a VC knowledge base) land here and keep the
+ * flat row they have today.
+ */
+const MIN_CHIPS_FOR_MENU = 5;
 
 export type DisabledChipMap = Partial<Record<FramingChipId, { tooltip?: string }>>;
 
@@ -81,6 +113,14 @@ export function FramingChipStrip({
 
   const chips = allowedChips ? CHIPS.filter(chip => allowedChips.includes(chip.id)) : CHIPS;
 
+  // With few enough chips available the row shows all of them, exactly as before.
+  const useMenu = chips.length >= MIN_CHIPS_FOR_MENU;
+  // The selected chip is always on the surface, even when it is one of the ones
+  // the menu normally holds: a choice you have already made must stay visible
+  // and clearable without reopening a menu to find it.
+  const rowChips = useMenu ? chips.filter(chip => PRIMARY_CHIP_IDS.includes(chip.id) || chip.id === value) : chips;
+  const menuChips = useMenu ? chips.filter(chip => !rowChips.includes(chip)) : [];
+
   const handleClick = (chip: Chip) => {
     if (editMode) {
       // Existing callout / template: the framing type can't be switched — only
@@ -105,49 +145,105 @@ export function FramingChipStrip({
     <>
       <div className="space-y-3">
         <span className="text-label text-muted-foreground uppercase">{t('forms.framingType')}</span>
-        <div
-          role="radiogroup"
-          aria-label={t('forms.framingType')}
-          className={cn('flex flex-wrap gap-2 overflow-x-auto', className)}
-        >
-          {chips.map(chip => {
-            const active = value === chip.id;
-            const disabledInfo = disabledChips?.[chip.id];
-            const isDisabled = Boolean(disabledInfo);
-            // In edit mode the active chip is always interactive (to clear the
-            // framing) even if its type is otherwise entitlement-disabled —
-            // clearing only reduces capability. Every other inactive chip is
-            // inert; in create mode all chips are live.
-            const activeClearable = editMode && active;
-            const isInert = !activeClearable && (isDisabled || (editMode && !active));
-            return (
-              // biome-ignore lint/a11y/useSemanticElements: the chip is a styled <button>, not an <input type="radio">
-              <button
-                key={chip.id}
-                type="button"
-                role="radio"
-                aria-checked={active}
-                aria-disabled={isInert ? 'true' : undefined}
-                aria-label={t(chip.labelKey as 'callout.whiteboard')}
-                title={disabledInfo?.tooltip ?? (editMode && !active ? t('forms.typeLockedHint') : undefined)}
-                onClick={() => handleClick(chip)}
+        {/* The menu trigger sits beside the radiogroup, not inside it: "More" is
+            not one of the choices, it is the way to reach the rest of them, and
+            a screen reader announcing it as the fourth option would be a lie. */}
+        <div className="flex flex-wrap items-center gap-2">
+          <div
+            role="radiogroup"
+            aria-label={t('forms.framingType')}
+            className={cn('flex flex-wrap gap-2 overflow-x-auto', className)}
+          >
+            {rowChips.map(chip => {
+              const active = value === chip.id;
+              const disabledInfo = disabledChips?.[chip.id];
+              const isDisabled = Boolean(disabledInfo);
+              // In edit mode the active chip is always interactive (to clear the
+              // framing) even if its type is otherwise entitlement-disabled —
+              // clearing only reduces capability. Every other inactive chip is
+              // inert; in create mode all chips are live.
+              const activeClearable = editMode && active;
+              const isInert = !activeClearable && (isDisabled || (editMode && !active));
+              return (
+                // biome-ignore lint/a11y/useSemanticElements: the chip is a styled <button>, not an <input type="radio">
+                <button
+                  key={chip.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={active}
+                  aria-disabled={isInert ? 'true' : undefined}
+                  aria-label={t(chip.labelKey as 'callout.whiteboard')}
+                  title={disabledInfo?.tooltip ?? (editMode && !active ? t('forms.typeLockedHint') : undefined)}
+                  onClick={() => handleClick(chip)}
+                  className={cn(
+                    'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                    active
+                      ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
+                      : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
+                    isDisabled && !activeClearable && 'opacity-50 cursor-not-allowed pointer-events-none',
+                    editMode && !active && !isDisabled && 'opacity-60 cursor-not-allowed'
+                  )}
+                >
+                  <chip.icon className="w-4 h-4" aria-hidden="true" />
+                  <span>{t(chip.labelKey as 'callout.whiteboard')}</span>
+                  {/* The X marks the active chip as removable; clicking the chip itself
+                    deselects (create) or asks to confirm clearing the framing (edit). */}
+                  {active && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
+                </button>
+              );
+            })}
+          </div>
+          {menuChips.length > 0 && (
+            <DropdownMenu>
+              {/* In edit mode the framing type is locked, so nothing in the menu
+                  can be chosen. The trigger is greyed and inert for the same
+                  reason the inactive chips are, and carries the same hint —
+                  hiding it would make the row change shape between create and
+                  edit for no reason the user can see. */}
+              <DropdownMenuTrigger
+                disabled={editMode}
+                aria-label={t('forms.moreFramingTypes')}
+                title={editMode ? t('forms.typeLockedHint') : undefined}
                 className={cn(
                   'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  active
-                    ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
-                    : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
-                  isDisabled && !activeClearable && 'opacity-50 cursor-not-allowed pointer-events-none',
-                  editMode && !active && !isDisabled && 'opacity-60 cursor-not-allowed'
+                  'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
+                  editMode && 'opacity-60 cursor-not-allowed'
                 )}
               >
-                <chip.icon className="w-4 h-4" aria-hidden="true" />
-                <span>{t(chip.labelKey as 'callout.whiteboard')}</span>
-                {/* The X marks the active chip as removable; clicking the chip itself
-                    deselects (create) or asks to confirm clearing the framing (edit). */}
-                {active && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
-              </button>
-            );
-          })}
+                <MoreHorizontal className="w-4 h-4" aria-hidden="true" />
+                <span>{t('forms.moreFramingTypes')}</span>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-64">
+                <DropdownMenuLabel>{t('forms.moreFramingTypesHeading')}</DropdownMenuLabel>
+                {menuChips.map(chip => {
+                  const disabledInfo = disabledChips?.[chip.id];
+                  const isDisabled = Boolean(disabledInfo);
+                  return (
+                    <DropdownMenuItem
+                      key={chip.id}
+                      // Not Radix's `disabled`: that sets `pointer-events: none`,
+                      // which would swallow the tooltip explaining *why* the type
+                      // is unavailable. Inert via aria + a prevented select keeps
+                      // the row hoverable so the reason can still be read.
+                      aria-disabled={isDisabled ? 'true' : undefined}
+                      title={disabledInfo?.tooltip}
+                      onSelect={event => {
+                        if (isDisabled) {
+                          event.preventDefault();
+                          return;
+                        }
+                        onChange(chip.id);
+                      }}
+                      className={cn(isDisabled && 'opacity-50 cursor-not-allowed')}
+                    >
+                      <chip.icon className="w-4 h-4" aria-hidden="true" />
+                      <span>{t(chip.labelKey as 'callout.whiteboard')}</span>
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
       </div>
       <DeleteFramingDialog

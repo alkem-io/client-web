@@ -623,7 +623,9 @@
     "cardVariant": {
       "label": "Carte étendue",
       "description": "Affiche la carte complète avec le Quoi, Pourquoi et Qui du sous-espace - plus de contexte, plus de hauteur."
-    }
+    },
+    "moreFramingTypes": "Plus",
+    "moreFramingTypesHeading": "Plus à ajouter"
   },
   "contributionSettings": {
     "heading": "Réponses",
@@ -654,7 +656,9 @@
       "addRow": "Ajouter un autre lien",
       "removeRow": "Supprimer le lien",
       "attachFile": "Joindre un fichier"
-    }
+    },
+    "moreTypes": "Plus",
+    "moreTypesHeading": "Plus de façons de répondre"
   },
   "responseDefaults": {
     "srDescription": "Configurez les valeurs par défaut des nouvelles contributions de cette publication.",

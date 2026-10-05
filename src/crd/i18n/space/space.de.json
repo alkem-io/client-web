@@ -623,7 +623,9 @@
     "cardVariant": {
       "label": "Erweiterte Karte",
       "description": "Zeigt die vollständige Karte mit dem Was, Warum und Wer des Unterbereichs - mehr Kontext, mehr Höhe."
-    }
+    },
+    "moreFramingTypes": "Mehr",
+    "moreFramingTypesHeading": "Mehr zum Hinzufügen"
   },
   "contributionSettings": {
     "heading": "Antworten",
@@ -654,7 +656,9 @@
       "addRow": "Weiteren Link hinzufügen",
       "removeRow": "Link entfernen",
       "attachFile": "Datei anhängen"
-    }
+    },
+    "moreTypes": "Mehr",
+    "moreTypesHeading": "Weitere Antwortmöglichkeiten"
   },
   "responseDefaults": {
     "srDescription": "Konfigurieren Sie die Standardwerte für neue Antworten in diesem Beitrag.",

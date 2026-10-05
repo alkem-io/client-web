@@ -1,7 +1,23 @@
-import { Columns3, FileText, Link as LinkIcon, MessageSquare, Presentation, StickyNote, X } from 'lucide-react';
+import {
+  Columns3,
+  FileText,
+  Link as LinkIcon,
+  MessageSquare,
+  MoreHorizontal,
+  Presentation,
+  StickyNote,
+  X,
+} from 'lucide-react';
 import type { ComponentType, SVGProps } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from '@/crd/primitives/dropdown-menu';
 
 export type ResponseTypeChipId = 'link' | 'post' | 'memo' | 'whiteboard' | 'document';
 
@@ -19,6 +35,26 @@ const CHIPS: Chip[] = [
   { id: 'whiteboard', labelKey: 'contributionSettings.types.whiteboard', icon: Presentation },
   { id: 'document', labelKey: 'contributionSettings.types.document', icon: FileText },
 ];
+
+/**
+ * The response types kept on the surface; the rest move behind "More".
+ *
+ * Links & Files is the most-used contribution type by a distance (324 vs
+ * whiteboard 162, memo 97, document 20), and Posts is the default way a space
+ * asks for anything back. The third surfaced slot belongs to the Tasks board
+ * when the consumer offers it — it is a create-only, flag-gated sibling of the
+ * response types, and burying it behind a menu would hide a whole callout shape.
+ */
+const PRIMARY_CHIP_IDS: ResponseTypeChipId[] = ['link', 'post'];
+
+/**
+ * When the consumer does not offer Tasks (edit mode, or the flag is off), this
+ * takes the third slot so the row still reads as three rather than two.
+ */
+const FALLBACK_PRIMARY_ID: ResponseTypeChipId = 'whiteboard';
+
+/** Mirrors FramingChipStrip: below this, a menu would hold one or two items. */
+const MIN_CHIPS_FOR_MENU = 5;
 
 export type DisabledResponseChipMap = Partial<Record<ResponseTypeChipId, { tooltip?: string }>>;
 
@@ -84,6 +120,14 @@ export function ResponseTypeChipStrip({
   // chip owns the selection — so a click on any response chip switches to it.
   const effectiveValue = tasksActive ? 'none' : value;
 
+  // Tasks counts towards the total: it occupies a slot in the row like any other.
+  const useMenu = chips.length + (showTasksChip ? 1 : 0) >= MIN_CHIPS_FOR_MENU;
+  const primaryIds = showTasksChip ? PRIMARY_CHIP_IDS : [...PRIMARY_CHIP_IDS, FALLBACK_PRIMARY_ID];
+  // The selected type is always on the surface, even when it is one the menu
+  // would normally hold — a choice already made must stay visible.
+  const rowChips = useMenu ? chips.filter(chip => primaryIds.includes(chip.id) || chip.id === effectiveValue) : chips;
+  const menuChips = useMenu ? chips.filter(chip => !rowChips.includes(chip)) : [];
+
   const handleClick = (chip: Chip) => {
     if (chip.disabled) return;
     // Edit-mode lock: the response type is fixed once the callout exists — the
@@ -103,80 +147,132 @@ export function ResponseTypeChipStrip({
   return (
     <div className="space-y-3">
       <span className="text-label text-muted-foreground uppercase">{t('contributionSettings.heading')}</span>
-      <div
-        role="radiogroup"
-        aria-label={t('contributionSettings.heading')}
-        className={cn('flex flex-wrap gap-2 overflow-x-auto', className)}
-      >
-        {chips.map(chip => {
-          const active = effectiveValue === chip.id;
-          const disabledInfo = disabledChips?.[chip.id];
-          // A chip is "disabled" when it is statically off (`chip.disabled`, e.g.
-          // "coming soon") or entitlement-gated by the consumer (`disabledInfo`).
-          const isDisabled = chip.disabled || Boolean(disabledInfo);
-          // When locked, every chip is inert — the active one too, since the
-          // response type can't be cleared (only fully fixed). Keep them all
-          // aria-disabled so assistive tech doesn't read the active chip as a
-          // live control that silently does nothing.
-          const isInert = isDisabled || locked;
-          return (
+      {/* The menu trigger sits beside the radiogroup, not inside it: "More" is a
+          way to reach the other options, not an option. */}
+      <div className="flex flex-wrap items-center gap-2">
+        <div
+          role="radiogroup"
+          aria-label={t('contributionSettings.heading')}
+          className={cn('flex flex-wrap gap-2 overflow-x-auto', className)}
+        >
+          {rowChips.map(chip => {
+            const active = effectiveValue === chip.id;
+            const disabledInfo = disabledChips?.[chip.id];
+            // A chip is "disabled" when it is statically off (`chip.disabled`, e.g.
+            // "coming soon") or entitlement-gated by the consumer (`disabledInfo`).
+            const isDisabled = chip.disabled || Boolean(disabledInfo);
+            // When locked, every chip is inert — the active one too, since the
+            // response type can't be cleared (only fully fixed). Keep them all
+            // aria-disabled so assistive tech doesn't read the active chip as a
+            // live control that silently does nothing.
+            const isInert = isDisabled || locked;
+            return (
+              // biome-ignore lint/a11y/useSemanticElements: styled <button>, not <input type="radio">
+              <button
+                key={chip.id}
+                type="button"
+                role="radio"
+                aria-checked={active}
+                aria-disabled={isInert ? 'true' : undefined}
+                aria-label={t(chip.labelKey as 'contributionSettings.types.link')}
+                title={
+                  disabledInfo?.tooltip ??
+                  (chip.disabled
+                    ? t('framing.comingSoon')
+                    : locked
+                      ? t('contributionSettings.typeLockedHint')
+                      : undefined)
+                }
+                onClick={() => handleClick(chip)}
+                className={cn(
+                  'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  active
+                    ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
+                    : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
+                  isDisabled && 'opacity-50 cursor-not-allowed pointer-events-none',
+                  locked && !active && !isDisabled && 'opacity-60 cursor-not-allowed',
+                  // The active locked chip keeps its selected (primary) styling so the
+                  // current type stays obvious, but signals it can't be acted on.
+                  locked && active && 'cursor-not-allowed'
+                )}
+              >
+                <chip.icon className="w-4 h-4" aria-hidden="true" />
+                <span>{t(chip.labelKey as 'contributionSettings.types.link')}</span>
+                {/* The X is a "remove" affordance — hide it when locked, since the type can't be cleared. */}
+                {active && !locked && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
+              </button>
+            );
+          })}
+          {/* Tasks board is a sibling of the response types, not a separate switch.
+            Selecting it makes the callout a board of columns for posts. */}
+          {showTasksChip && (
             // biome-ignore lint/a11y/useSemanticElements: styled <button>, not <input type="radio">
             <button
-              key={chip.id}
               type="button"
               role="radio"
-              aria-checked={active}
-              aria-disabled={isInert ? 'true' : undefined}
-              aria-label={t(chip.labelKey as 'contributionSettings.types.link')}
-              title={
-                disabledInfo?.tooltip ??
-                (chip.disabled
-                  ? t('framing.comingSoon')
-                  : locked
-                    ? t('contributionSettings.typeLockedHint')
-                    : undefined)
-              }
-              onClick={() => handleClick(chip)}
+              aria-checked={tasksActive}
+              aria-label={tasksLabel}
+              onClick={onSelectTasks}
               className={cn(
                 'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                active
+                tasksActive
                   ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
-                  : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
-                isDisabled && 'opacity-50 cursor-not-allowed pointer-events-none',
-                locked && !active && !isDisabled && 'opacity-60 cursor-not-allowed',
-                // The active locked chip keeps its selected (primary) styling so the
-                // current type stays obvious, but signals it can't be acted on.
-                locked && active && 'cursor-not-allowed'
+                  : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground'
               )}
             >
-              <chip.icon className="w-4 h-4" aria-hidden="true" />
-              <span>{t(chip.labelKey as 'contributionSettings.types.link')}</span>
-              {/* The X is a "remove" affordance — hide it when locked, since the type can't be cleared. */}
-              {active && !locked && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
+              <Columns3 className="w-4 h-4" aria-hidden="true" />
+              <span>{tasksLabel}</span>
+              {tasksActive && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
             </button>
-          );
-        })}
-        {/* Tasks board is a sibling of the response types, not a separate switch.
-            Selecting it makes the callout a board of columns for posts. */}
-        {showTasksChip && (
-          // biome-ignore lint/a11y/useSemanticElements: styled <button>, not <input type="radio">
-          <button
-            type="button"
-            role="radio"
-            aria-checked={tasksActive}
-            aria-label={tasksLabel}
-            onClick={onSelectTasks}
-            className={cn(
-              'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-              tasksActive
-                ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
-                : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground'
-            )}
-          >
-            <Columns3 className="w-4 h-4" aria-hidden="true" />
-            <span>{tasksLabel}</span>
-            {tasksActive && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
-          </button>
+          )}
+        </div>
+        {menuChips.length > 0 && (
+          <DropdownMenu>
+            {/* Locked (edit mode) the response type is fixed, so nothing in the
+                menu can be chosen. The trigger greys out for the same reason the
+                chips do, and carries the same hint. */}
+            <DropdownMenuTrigger
+              disabled={locked}
+              aria-label={t('contributionSettings.moreTypes')}
+              title={locked ? t('contributionSettings.typeLockedHint') : undefined}
+              className={cn(
+                'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
+                locked && 'opacity-60 cursor-not-allowed'
+              )}
+            >
+              <MoreHorizontal className="w-4 h-4" aria-hidden="true" />
+              <span>{t('contributionSettings.moreTypes')}</span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-64">
+              <DropdownMenuLabel>{t('contributionSettings.moreTypesHeading')}</DropdownMenuLabel>
+              {menuChips.map(chip => {
+                const disabledInfo = disabledChips?.[chip.id];
+                const isDisabled = chip.disabled || Boolean(disabledInfo);
+                return (
+                  <DropdownMenuItem
+                    key={chip.id}
+                    // Not Radix's `disabled`: that sets `pointer-events: none`,
+                    // which would swallow the tooltip explaining why the type is
+                    // unavailable. Inert via aria + a prevented select instead.
+                    aria-disabled={isDisabled ? 'true' : undefined}
+                    title={disabledInfo?.tooltip ?? (chip.disabled ? t('framing.comingSoon') : undefined)}
+                    onSelect={event => {
+                      if (isDisabled) {
+                        event.preventDefault();
+                        return;
+                      }
+                      onChange(chip.id);
+                    }}
+                    className={cn(isDisabled && 'opacity-50 cursor-not-allowed')}
+                  >
+                    <chip.icon className="w-4 h-4" aria-hidden="true" />
+                    <span>{t(chip.labelKey as 'contributionSettings.types.link')}</span>
+                  </DropdownMenuItem>
+                );
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
     </div>
