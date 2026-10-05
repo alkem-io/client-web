@@ -565,15 +565,17 @@ export function PostCard({
             className="mt-4"
           />
         )}
-
-        {/* Contribution previews — rendered by integration layer */}
-        {contributionsPreview}
       </CardContent>
 
-      {/* `children` arrives as an array of slots (poll/contributors/spaces previews) that are often
-          all null — a bare `children &&` check is always truthy then. Children.toArray strips
+      {/* `children` arrives as an array of framing slots (poll/form/contributors/spaces previews) that
+          are often all null — a bare `children &&` check is always truthy then. Children.toArray strips
           null/undefined/booleans, so the padded wrapper only renders when something is visible. */}
       {Children.toArray(children).length > 0 && <div className="px-6 pb-4">{children}</div>}
+
+      {/* Contribution previews — rendered by integration layer, after every framing (the CardContent
+          framings above and the slot framings in `children`) and before the comments footer.
+          `empty:hidden` drops the wrapper when the connector renders nothing. */}
+      {contributionsPreview && <div className="px-6 empty:hidden">{contributionsPreview}</div>}
 
       {/* Footer is hidden entirely when comments are disabled AND there are no existing messages —
           mirrors the MUI behavior. When messages exist, the thread stays visible (read-only via

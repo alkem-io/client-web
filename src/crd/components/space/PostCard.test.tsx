@@ -246,3 +246,26 @@ describe('PostCard reactionsSlot placement', () => {
     expect(footer?.contains(allReactions[0])).toBe(true);
   });
 });
+
+describe('PostCard section order', () => {
+  it('renders framing slots before contributions, and contributions before the footer', () => {
+    render(
+      <PostCard
+        post={{ ...basePost, type: 'whiteboard' }}
+        contributionsPreview={<div>contributions-preview</div>}
+        reactionsSlot={<div>footer-reactions</div>}
+      >
+        <div>form-framing</div>
+      </PostCard>
+    );
+    const whiteboardFraming = screen.getByRole('button', { name: /open whiteboard/i });
+    const framingSlot = screen.getByText('form-framing');
+    const contributions = screen.getByText('contributions-preview');
+    const footer = screen.getByText('footer-reactions');
+    const follows = (a: Element, b: Element) =>
+      Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(follows(whiteboardFraming, framingSlot)).toBe(true);
+    expect(follows(framingSlot, contributions)).toBe(true);
+    expect(follows(contributions, footer)).toBe(true);
+  });
+});
