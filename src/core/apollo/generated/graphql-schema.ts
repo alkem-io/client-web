@@ -1350,12 +1350,16 @@ export type CalloutForm = {
   __typename?: 'CalloutForm';
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
+  /** The optional plain-text description of the Form, at most 2048 characters. Null when not set. */
+  description?: Maybe<Scalars['String']['output']>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The ordered questions of the Form. */
   questions: Array<CalloutFormQuestion>;
   /** The settings of the Form. */
   settings: CalloutFormSettings;
+  /** The optional plain-text title of the Form, at most 512 characters. Null when not set. */
+  title?: Maybe<Scalars['String']['output']>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
@@ -1458,6 +1462,8 @@ export type CalloutFormResponses = {
 
 export type CalloutFormSettings = {
   __typename?: 'CalloutFormSettings';
+  /** Whether the Form box starts collapsed for every viewer. Presentation only. Defaults to false (expanded). */
+  defaultCollapsed: Scalars['Boolean']['output'];
   /** Whether a member can submit one or several responses. Defaults to SINGLE. */
   responseMode: CalloutFormResponseMode;
   /** Whether the Form accepts new responses. Defaults to OPEN. */
@@ -2430,17 +2436,25 @@ export type CreateCalloutData = {
 
 export type CreateCalloutFormData = {
   __typename?: 'CreateCalloutFormData';
+  /** The optional plain-text description of the Form, at most 2048 characters. Trimmed; empty or whitespace-only is stored as null. */
+  description?: Maybe<Scalars['String']['output']>;
   /** The ordered questions of the Form. Between 1 and 50; the count is enforced with a reason code. */
   questions: Array<CreateCalloutFormQuestionData>;
   /** The Form settings. Defaults: visibility ADMINS, responseMode SINGLE, state OPEN. */
   settings?: Maybe<CreateCalloutFormSettingsData>;
+  /** The optional plain-text title of the Form, at most 512 characters. Trimmed; empty or whitespace-only is stored as null. */
+  title?: Maybe<Scalars['String']['output']>;
 };
 
 export type CreateCalloutFormInput = {
+  /** The optional plain-text description of the Form, at most 2048 characters. Trimmed; empty or whitespace-only is stored as null. */
+  description?: InputMaybe<Scalars['String']['input']>;
   /** The ordered questions of the Form. Between 1 and 50; the count is enforced with a reason code. */
   questions: Array<CreateCalloutFormQuestionInput>;
   /** The Form settings. Defaults: visibility ADMINS, responseMode SINGLE, state OPEN. */
   settings?: InputMaybe<CreateCalloutFormSettingsInput>;
+  /** The optional plain-text title of the Form, at most 512 characters. Trimmed; empty or whitespace-only is stored as null. */
+  title?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateCalloutFormQuestionData = {
@@ -2481,6 +2495,8 @@ export type CreateCalloutFormQuestionOptionInput = {
 
 export type CreateCalloutFormSettingsData = {
   __typename?: 'CreateCalloutFormSettingsData';
+  /** Whether the Form box starts collapsed for every viewer. Defaults to false (expanded). */
+  defaultCollapsed?: Maybe<Scalars['Boolean']['output']>;
   /** One or several responses per member. Defaults to SINGLE. */
   responseMode?: Maybe<CalloutFormResponseMode>;
   /** Whether the Form accepts responses. Defaults to OPEN. */
@@ -2490,6 +2506,8 @@ export type CreateCalloutFormSettingsData = {
 };
 
 export type CreateCalloutFormSettingsInput = {
+  /** Whether the Form box starts collapsed for every viewer. Defaults to false (expanded). */
+  defaultCollapsed?: InputMaybe<Scalars['Boolean']['input']>;
   /** One or several responses per member. Defaults to SINGLE. */
   responseMode?: InputMaybe<CalloutFormResponseMode>;
   /** Whether the Form accepts responses. Defaults to OPEN. */
@@ -5997,7 +6015,7 @@ export type Mutation = {
   setDefaultCalloutTemplateOnInnovationFlowState: InnovationFlowState;
   /** Set the mapping of a well-known Virtual Contributor to a specific Virtual Contributor UUID. */
   setPlatformWellKnownVirtualContributor: PlatformWellKnownVirtualContributors;
-  /** Submit a response to a Form. Requires CONTRIBUTE on the Post. The Post must be published and the Form open; a single-response Form accepts one response per member. acknowledgedVisibility is the audience the respondent was shown. */
+  /** Submit a response to a Form. Requires CONTRIBUTE on the Post. The Post must be published and the Form open; a single-response Form rejects the submission while the member holds any response. acknowledgedVisibility is the audience the respondent was shown. */
   submitCalloutFormResponse: CalloutFormResponse;
   /** Subscribe the current user's device to push notifications. If the subscription endpoint already exists, it is updated. If the user has reached the maximum number of subscriptions (10), the oldest subscription is automatically replaced. */
   subscribeToPushNotifications: PushSubscription;
@@ -10252,10 +10270,14 @@ export type UpdateCalloutEntityInput = {
 };
 
 export type UpdateCalloutFormInput = {
+  /** The optional plain-text description of the Form, at most 2048 characters. Trimmed; empty or whitespace-only (or null) clears it; omit to leave it unchanged. */
+  description?: InputMaybe<Scalars['String']['input']>;
   formID: Scalars['UUID']['input'];
   /** The complete ordered list of questions. Omit to leave the questions unchanged. */
   questions?: InputMaybe<Array<UpdateCalloutFormQuestionInput>>;
   settings?: InputMaybe<UpdateCalloutFormSettingsInput>;
+  /** The optional plain-text title of the Form, at most 512 characters. Trimmed; empty or whitespace-only (or null) clears it; omit to leave it unchanged. */
+  title?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateCalloutFormQuestionInput = {
@@ -10275,6 +10297,8 @@ export type UpdateCalloutFormQuestionOptionInput = {
 };
 
 export type UpdateCalloutFormSettingsInput = {
+  /** Whether the Form box starts collapsed for every viewer. Omit (or null) to leave it unchanged. */
+  defaultCollapsed?: InputMaybe<Scalars['Boolean']['input']>;
   responseMode?: InputMaybe<CalloutFormResponseMode>;
   state?: InputMaybe<CalloutFormState>;
   visibility?: InputMaybe<CalloutFormResponseVisibility>;
@@ -15835,6 +15859,8 @@ export type ActivityLogOnCollaborationQuery = {
 export type CalloutFormDetailsFragment = {
   __typename?: 'CalloutForm';
   id: string;
+  title?: string | undefined;
+  description?: string | undefined;
   questions: Array<{
     __typename?: 'CalloutFormQuestion';
     id: string;
@@ -15849,6 +15875,7 @@ export type CalloutFormDetailsFragment = {
     visibility: CalloutFormResponseVisibility;
     responseMode: CalloutFormResponseMode;
     state: CalloutFormState;
+    defaultCollapsed: boolean;
   };
 };
 
@@ -15890,6 +15917,8 @@ export type UpdateCalloutFormMutation = {
   updateCalloutForm: {
     __typename?: 'CalloutForm';
     id: string;
+    title?: string | undefined;
+    description?: string | undefined;
     questions: Array<{
       __typename?: 'CalloutFormQuestion';
       id: string;
@@ -15904,6 +15933,7 @@ export type UpdateCalloutFormMutation = {
       visibility: CalloutFormResponseVisibility;
       responseMode: CalloutFormResponseMode;
       state: CalloutFormState;
+      defaultCollapsed: boolean;
     };
   };
 };
@@ -16197,6 +16227,8 @@ export type CalloutContentQuery = {
               | {
                   __typename?: 'CalloutForm';
                   id: string;
+                  title?: string | undefined;
+                  description?: string | undefined;
                   questions: Array<{
                     __typename?: 'CalloutFormQuestion';
                     id: string;
@@ -16213,6 +16245,7 @@ export type CalloutContentQuery = {
                     visibility: CalloutFormResponseVisibility;
                     responseMode: CalloutFormResponseMode;
                     state: CalloutFormState;
+                    defaultCollapsed: boolean;
                   };
                 }
               | undefined;
@@ -16576,6 +16609,8 @@ export type UpdateCalloutContentMutation = {
         | {
             __typename?: 'CalloutForm';
             id: string;
+            title?: string | undefined;
+            description?: string | undefined;
             questions: Array<{
               __typename?: 'CalloutFormQuestion';
               id: string;
@@ -16590,6 +16625,7 @@ export type UpdateCalloutContentMutation = {
               visibility: CalloutFormResponseVisibility;
               responseMode: CalloutFormResponseMode;
               state: CalloutFormState;
+              defaultCollapsed: boolean;
             };
           }
         | undefined;
@@ -17106,6 +17142,8 @@ export type UpdateCalloutVisibilityMutation = {
         | {
             __typename?: 'CalloutForm';
             id: string;
+            title?: string | undefined;
+            description?: string | undefined;
             questions: Array<{
               __typename?: 'CalloutFormQuestion';
               id: string;
@@ -17120,6 +17158,7 @@ export type UpdateCalloutVisibilityMutation = {
               visibility: CalloutFormResponseVisibility;
               responseMode: CalloutFormResponseMode;
               state: CalloutFormState;
+              defaultCollapsed: boolean;
             };
           }
         | undefined;
@@ -19054,6 +19093,8 @@ export type CreateCalloutMutation = {
         | {
             __typename?: 'CalloutForm';
             id: string;
+            title?: string | undefined;
+            description?: string | undefined;
             questions: Array<{
               __typename?: 'CalloutFormQuestion';
               id: string;
@@ -19068,6 +19109,7 @@ export type CreateCalloutMutation = {
               visibility: CalloutFormResponseVisibility;
               responseMode: CalloutFormResponseMode;
               state: CalloutFormState;
+              defaultCollapsed: boolean;
             };
           }
         | undefined;
@@ -19719,6 +19761,8 @@ export type CalloutDetailsQuery = {
               | {
                   __typename?: 'CalloutForm';
                   id: string;
+                  title?: string | undefined;
+                  description?: string | undefined;
                   questions: Array<{
                     __typename?: 'CalloutFormQuestion';
                     id: string;
@@ -19735,6 +19779,7 @@ export type CalloutDetailsQuery = {
                     visibility: CalloutFormResponseVisibility;
                     responseMode: CalloutFormResponseMode;
                     state: CalloutFormState;
+                    defaultCollapsed: boolean;
                   };
                 }
               | undefined;
@@ -20320,6 +20365,8 @@ export type CalloutDetailsFragment = {
       | {
           __typename?: 'CalloutForm';
           id: string;
+          title?: string | undefined;
+          description?: string | undefined;
           questions: Array<{
             __typename?: 'CalloutFormQuestion';
             id: string;
@@ -20334,6 +20381,7 @@ export type CalloutDetailsFragment = {
             visibility: CalloutFormResponseVisibility;
             responseMode: CalloutFormResponseMode;
             state: CalloutFormState;
+            defaultCollapsed: boolean;
           };
         }
       | undefined;

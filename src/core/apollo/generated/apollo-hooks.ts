@@ -1045,6 +1045,8 @@ ${PollVoteFieldsFragmentDoc}`;
 export const CalloutFormDetailsFragmentDoc = gql`
     fragment CalloutFormDetails on CalloutForm {
   id
+  title
+  description
   questions {
     id
     prompt
@@ -1060,6 +1062,7 @@ export const CalloutFormDetailsFragmentDoc = gql`
     visibility
     responseMode
     state
+    defaultCollapsed
   }
 }
     `;

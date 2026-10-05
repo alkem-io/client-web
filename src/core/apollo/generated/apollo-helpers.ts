@@ -862,17 +862,21 @@ export type CalloutContributorsSettingsFieldPolicy = {
 };
 export type CalloutFormKeySpecifier = (
   | 'createdDate'
+  | 'description'
   | 'id'
   | 'questions'
   | 'settings'
+  | 'title'
   | 'updatedDate'
   | CalloutFormKeySpecifier
 )[];
 export type CalloutFormFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   questions?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
+  title?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutFormAnswerKeySpecifier = (
@@ -946,12 +950,14 @@ export type CalloutFormResponsesFieldPolicy = {
   mine?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutFormSettingsKeySpecifier = (
+  | 'defaultCollapsed'
   | 'responseMode'
   | 'state'
   | 'visibility'
   | CalloutFormSettingsKeySpecifier
 )[];
 export type CalloutFormSettingsFieldPolicy = {
+  defaultCollapsed?: FieldPolicy<any> | FieldReadFunction<any>;
   responseMode?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1679,10 +1685,18 @@ export type CreateCalloutDataFieldPolicy = {
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   taskBoard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CreateCalloutFormDataKeySpecifier = ('questions' | 'settings' | CreateCalloutFormDataKeySpecifier)[];
+export type CreateCalloutFormDataKeySpecifier = (
+  | 'description'
+  | 'questions'
+  | 'settings'
+  | 'title'
+  | CreateCalloutFormDataKeySpecifier
+)[];
 export type CreateCalloutFormDataFieldPolicy = {
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
   questions?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
+  title?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutFormQuestionDataKeySpecifier = (
   | 'explanation'
@@ -1707,12 +1721,14 @@ export type CreateCalloutFormQuestionOptionDataFieldPolicy = {
   label?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutFormSettingsDataKeySpecifier = (
+  | 'defaultCollapsed'
   | 'responseMode'
   | 'state'
   | 'visibility'
   | CreateCalloutFormSettingsDataKeySpecifier
 )[];
 export type CreateCalloutFormSettingsDataFieldPolicy = {
+  defaultCollapsed?: FieldPolicy<any> | FieldReadFunction<any>;
   responseMode?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
