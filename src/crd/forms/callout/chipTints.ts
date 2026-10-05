@@ -1,6 +1,13 @@
 /**
  * One hue per kind of content, shared by both callout chip strips.
  *
+ * Light values only. `theme.css` defines a `.dark` block, but nothing in the
+ * app ever sets that class — there is no theme provider, toggle or media query
+ * behind it — so a `dark:` variant here would be a claim the product does not
+ * support. The `dark:` utilities elsewhere in `crd/primitives` are shadcn
+ * boilerplate, not a dark mode. If one ever ships, adding the variants back is
+ * mechanical.
+ *
  * The point of the colour is recognition: a kind of content should be findable
  * by its hue before its label is read, and should look the same wherever it
  * appears — in the row, in the More menu, selected or not. That only holds if
@@ -31,36 +38,36 @@ type Tint = {
 
 const TINTS = {
   blue: {
-    icon: 'text-blue-600 dark:text-blue-400',
-    surface: 'bg-blue-100 border-blue-300 dark:bg-blue-500/15 dark:border-blue-500/40',
+    icon: 'text-blue-600',
+    surface: 'bg-blue-100 border-blue-300',
   },
   purple: {
-    icon: 'text-purple-600 dark:text-purple-400',
-    surface: 'bg-purple-100 border-purple-300 dark:bg-purple-500/15 dark:border-purple-500/40',
+    icon: 'text-purple-600',
+    surface: 'bg-purple-100 border-purple-300',
   },
   teal: {
-    icon: 'text-teal-600 dark:text-teal-400',
-    surface: 'bg-teal-100 border-teal-300 dark:bg-teal-500/15 dark:border-teal-500/40',
+    icon: 'text-teal-600',
+    surface: 'bg-teal-100 border-teal-300',
   },
   rose: {
-    icon: 'text-rose-600 dark:text-rose-400',
-    surface: 'bg-rose-100 border-rose-300 dark:bg-rose-500/15 dark:border-rose-500/40',
+    icon: 'text-rose-600',
+    surface: 'bg-rose-100 border-rose-300',
   },
   orange: {
-    icon: 'text-orange-600 dark:text-orange-400',
-    surface: 'bg-orange-100 border-orange-300 dark:bg-orange-500/15 dark:border-orange-500/40',
+    icon: 'text-orange-600',
+    surface: 'bg-orange-100 border-orange-300',
   },
   amber: {
-    icon: 'text-amber-700 dark:text-amber-400',
-    surface: 'bg-amber-100 border-amber-300 dark:bg-amber-500/15 dark:border-amber-500/40',
+    icon: 'text-amber-700',
+    surface: 'bg-amber-100 border-amber-300',
   },
   emerald: {
-    icon: 'text-emerald-600 dark:text-emerald-400',
-    surface: 'bg-emerald-100 border-emerald-300 dark:bg-emerald-500/15 dark:border-emerald-500/40',
+    icon: 'text-emerald-600',
+    surface: 'bg-emerald-100 border-emerald-300',
   },
   indigo: {
-    icon: 'text-indigo-600 dark:text-indigo-400',
-    surface: 'bg-indigo-100 border-indigo-300 dark:bg-indigo-500/15 dark:border-indigo-500/40',
+    icon: 'text-indigo-600',
+    surface: 'bg-indigo-100 border-indigo-300',
   },
 } as const satisfies Record<string, Tint>;
 

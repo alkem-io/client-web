@@ -29,10 +29,12 @@ describe('chipTints', () => {
     expect(chipSurfaceTint(kind)).toBeTruthy();
   });
 
-  test('every kind has both a light and a dark value', () => {
+  test('no dark variants — the product has no dark mode to serve them', () => {
+    // theme.css defines `.dark`, but nothing in the app ever sets that class.
+    // Shipping `dark:` utilities here would assert support that does not exist.
     for (const kind of [...new Set([...FRAMING, ...RESPONSES])]) {
-      expect(chipIconTint(kind)).toMatch(/dark:/);
-      expect(chipSurfaceTint(kind)).toMatch(/dark:/);
+      expect(chipIconTint(kind)).not.toMatch(/dark:/);
+      expect(chipSurfaceTint(kind)).not.toMatch(/dark:/);
     }
   });
 
