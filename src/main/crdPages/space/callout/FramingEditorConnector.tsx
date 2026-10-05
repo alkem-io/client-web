@@ -47,17 +47,18 @@ import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
 import { MediaGalleryFormFieldConnector } from './MediaGalleryFormFieldConnector';
 import { useWhiteboardPreviewBlobUrl } from './useWhiteboardPreviewBlobUrl';
 
-/** What an existing Form's responses currently forbid changing (all true/empty for a new Form). */
-export type FormEditLocks = {
-  typeLockedQuestionIds: string[];
-  canWidenVisibility: boolean;
-  canSwitchToSingle: boolean;
-};
-
-const NO_FORM_EDIT_LOCKS: FormEditLocks = {
-  typeLockedQuestionIds: [],
-  canWidenVisibility: true,
-  canSwitchToSingle: true,
+/**
+ * What the editor knows about an existing Form's responses (edit mode only). Nothing is locked by them: they
+ * decide whether widening the visibility asks for confirmation and whether a type change shows its hint.
+ */
+export type FormEditContext = {
+  /** The visibility currently saved on the server. */
+  savedVisibility: FormSettingsValue['visibility'];
+  /** Whether this editor reads every response; when false the count says nothing about the Form. */
+  canReadAll: boolean;
+  responseCount: number;
+  /** The (sub)space whose members "Space members" refers to. */
+  spaceName: string;
 };
 
 type EditWhiteboard = NonNullable<CalloutDetailsModelExtended['framing']['whiteboard']>;
@@ -168,13 +169,18 @@ type FramingEditorConnectorProps = {
   onPollStatusChange?: (status: 'open' | 'closed') => void;
   // Form framing: the definition is bound to the form values in both modes. In edit mode it is saved
   // through the dedicated form mutation by the parent, never with the Post.
+  formTitle?: string;
+  onFormTitleChange?: (title: string) => void;
+  formDescription?: string;
+  onFormDescriptionChange?: (description: string) => void;
   formQuestions?: FormQuestionValue[];
   onFormQuestionsChange?: (questions: FormQuestionValue[]) => void;
-  /** Builder errors in the `FormQuestionsEditor` contract (`questions`, `<index>.prompt`, …). */
+  /** Builder errors in the `FormQuestionsEditor` contract (`title`, `description`, `questions`, `<index>.prompt`, …). */
   formQuestionsErrors?: Record<string, string | undefined>;
   formSettings?: FormSettingsValue;
   onFormSettingsChange?: (settings: FormSettingsValue) => void;
-  formEditLocks?: FormEditLocks;
+  /** Edit mode only; undefined for a Form being created. */
+  formEditContext?: FormEditContext;
   // Whiteboard framing
   whiteboardConfigured?: boolean;
   /** Persisted live draft lifecycle for create mode. */
@@ -326,12 +332,16 @@ export function FramingEditorConnector({
   onPollShowVoterAvatarsChange,
   pollStatus,
   onPollStatusChange,
+  formTitle = '',
+  onFormTitleChange,
+  formDescription = '',
+  onFormDescriptionChange,
   formQuestions = [],
   onFormQuestionsChange,
   formQuestionsErrors,
   formSettings,
   onFormSettingsChange,
-  formEditLocks = NO_FORM_EDIT_LOCKS,
+  formEditContext,
   whiteboardTitle,
   whiteboardDraft,
   whiteboardPreviewImages,
@@ -639,14 +649,25 @@ export function FramingEditorConnector({
         </>
       );
 
-    case 'form':
+    case 'form': {
+      // The Form has responses, or may have them because this editor cannot read the count.
+      const formMayHaveResponses = formEditContext
+        ? !formEditContext.canReadAll || formEditContext.responseCount > 0
+        : false;
       return (
         <>
           <FormQuestionsEditor
+            title={formTitle}
+            onTitleChange={next => onFormTitleChange?.(next)}
+            description={formDescription}
+            onDescriptionChange={next => onFormDescriptionChange?.(next)}
             questions={formQuestions}
             onChange={next => onFormQuestionsChange?.(next)}
             errors={formQuestionsErrors}
-            typeLockedQuestionIds={formEditLocks.typeLockedQuestionIds}
+            // Per-question answer presence is not loaded: every persisted question gets the hint.
+            answeredHintQuestionIds={
+              formMayHaveResponses ? formQuestions.flatMap(question => (question.id ? [question.id] : [])) : []
+            }
             settingsSlot={
               <Button
                 variant="ghost"
@@ -669,14 +690,18 @@ export function FramingEditorConnector({
               onResponseModeChange={responseMode => onFormSettingsChange?.({ ...formSettings, responseMode })}
               state={formSettings.state}
               onStateChange={state => onFormSettingsChange?.({ ...formSettings, state })}
-              canWidenVisibility={formEditLocks.canWidenVisibility}
-              widenDisabledReason={t('formForm.settings.widenDisabled')}
-              canSwitchToSingle={formEditLocks.canSwitchToSingle}
-              switchDisabledReason={t('formForm.settings.singleDisabled')}
+              defaultCollapsed={formSettings.defaultCollapsed}
+              onDefaultCollapsedChange={defaultCollapsed =>
+                onFormSettingsChange?.({ ...formSettings, defaultCollapsed })
+              }
+              confirmWidening={formEditContext?.savedVisibility === 'ADMINS' && formMayHaveResponses}
+              existingResponseCount={formEditContext?.canReadAll ? formEditContext.responseCount : undefined}
+              spaceName={formEditContext?.spaceName ?? ''}
             />
           )}
         </>
       );
+    }
 
     case 'contributors': {
       // Contributor-collection config (feature 008). Editable in both create and

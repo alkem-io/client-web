@@ -1197,7 +1197,6 @@
     "questionsHeading": "Formular",
     "questionsDescription": "Stelle Fragen und sammle die Antworten",
     "questionNumber": "Frage {{number}}",
-    "promptLabel": "Frage",
     "promptPlaceholder": "Was möchten Sie fragen?",
     "explanationLabel": "Erläuterung (optional)",
     "explanationPlaceholder": "Helfen Sie den Leuten, die Frage zu verstehen",
@@ -1208,7 +1207,6 @@
       "SINGLE_CHOICE": "Einfachauswahl",
       "MULTIPLE_CHOICE": "Mehrfachauswahl"
     },
-    "typeLocked": "Der Antworttyp kann nicht mehr geändert werden, sobald Antworten vorliegen",
     "required": "Pflichtfeld",
     "dragQuestion": "Frage {{number}} verschieben",
     "addQuestion": "Frage hinzufügen",
@@ -1240,27 +1238,38 @@
         "ADMINS": "Nur die Administratoren dieses Space können alle Antworten lesen. Alle anderen sehen nur ihre eigenen.",
         "MEMBERS": "Die Mitglieder dieses Space können alle Antworten lesen."
       },
-      "widenDisabled": "Der Kreis der Leseberechtigten kann nicht erweitert werden, sobald Antworten vorliegen",
       "responseModeHeading": "Antworten pro Person",
       "responseMode": {
         "SINGLE": "Eine Antwort pro Person",
         "MULTIPLE": "Mehrere Antworten pro Person"
       },
-      "singleDisabled": "Einige Mitglieder haben mehr als eine Antwort",
       "stateOpen": "Für Antworten geöffnet",
-      "stateHelp": "Geschlossene Formulare nehmen keine neuen Antworten an."
+      "stateHelp": "Geschlossene Formulare nehmen keine neuen Antworten an.",
+      "defaultCollapsed": "Formular standardmäßig eingeklappt anzeigen",
+      "defaultCollapsedHelp": "Betrachter können es weiterhin ausklappen",
+      "widenConfirm": {
+        "title": "Antworten für Mitglieder sichtbar machen?",
+        "description_one": "Mitglieder von {{space}} können die {{count}} bestehende Antwort lesen, auch wenn sie abgegeben wurde, als nur Admins sie sehen konnten.",
+        "description_other": "Mitglieder von {{space}} können alle {{count}} bestehenden Antworten lesen, auch die, die abgegeben wurden, als nur Admins sie sehen konnten.",
+        "descriptionNoCount": "Mitglieder von {{space}} können alle bestehenden Antworten lesen, auch die, die abgegeben wurden, als nur Admins sie sehen konnten.",
+        "confirm": "Antworten für Mitglieder sichtbar machen"
+      }
     },
     "errors": {
       "saveFailed": "Das Formular konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
-      "FORM_VISIBILITY_WIDENING_BLOCKED": "Der Kreis der Leseberechtigten kann nicht erweitert werden, sobald Antworten vorliegen.",
-      "FORM_RESPONSE_MODE_SWITCH_BLOCKED": "Das Formular kann nicht auf eine Antwort pro Person umgestellt werden, solange ein Mitglied mehrere hat.",
-      "FORM_QUESTION_TYPE_LOCKED": "Der Antworttyp einer Frage kann nicht mehr geändert werden, sobald Antworten vorliegen.",
       "FORM_UNKNOWN_QUESTION_ID": "Das Formular wurde inzwischen geändert. Bitte neu laden und erneut versuchen.",
       "FORM_UNKNOWN_OPTION_ID": "Das Formular wurde inzwischen geändert. Bitte neu laden und erneut versuchen.",
       "FORM_QUESTIONS_COUNT": "Ein Formular benötigt zwischen 1 und 50 Fragen.",
       "FORM_OPTIONS_COUNT": "Eine Auswahlfrage benötigt zwischen 2 und 20 Optionen.",
       "FORM_OPTIONS_DUPLICATE": "Die Optionen müssen sich voneinander unterscheiden."
-    }
+    },
+    "title": "Titel des Formulars (optional)",
+    "titlePlaceholder": "Geben Sie dem Formular einen Titel",
+    "description": "Beschreibung (optional)",
+    "descriptionPlaceholder": "Beschreiben Sie, worum es in diesem Formular geht",
+    "titleTooLong": "Der Titel des Formulars darf höchstens {{count}} Zeichen lang sein",
+    "descriptionTooLong": "Die Beschreibung des Formulars darf höchstens {{count}} Zeichen lang sein",
+    "typeChangeHint": "Bestehende Antworten behalten ihr ursprüngliches Format"
   },
   "formFillIn": {
     "requiredMarker": "Pflichtfrage",

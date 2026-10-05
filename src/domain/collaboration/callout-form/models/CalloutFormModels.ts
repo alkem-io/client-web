@@ -23,11 +23,14 @@ export type CalloutFormSettingsModel = {
   visibility: CalloutFormResponseVisibility;
   responseMode: CalloutFormResponseMode;
   state: CalloutFormState;
+  defaultCollapsed: boolean;
 };
 
 /** The form definition only; responses are read through the dedicated root lookup. */
 export type CalloutFormDetailsModel = {
   id: string;
+  title?: string | null;
+  description?: string | null;
   questions: CalloutFormQuestionModel[];
   settings: CalloutFormSettingsModel;
 };

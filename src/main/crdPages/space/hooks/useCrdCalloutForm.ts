@@ -7,10 +7,12 @@ import { LONG_MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@
 import {
   createFormQuestion,
   DEFAULT_FORM_SETTINGS,
+  FORM_DESCRIPTION_MAX_LENGTH,
   FORM_OPTIONS_MAX,
   FORM_OPTIONS_MIN,
   FORM_QUESTIONS_MAX,
   FORM_QUESTIONS_MIN,
+  FORM_TITLE_MAX_LENGTH,
 } from '@/crd/forms/callout/formValues';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { MAX_POLL_OPTIONS, MIN_POLL_OPTIONS } from '@/crd/forms/callout/PollOptionsEditor';
@@ -102,9 +104,13 @@ export type CalloutFormValues = {
   pollAllowCustomOptions: boolean;
   pollHideResultsUntilVoted: boolean;
   pollShowVoterAvatars: boolean;
+  /** Form framing: the optional plain-text title of the Form ('' when unset). */
+  formTitle: string;
+  /** Form framing: the optional plain-text description of the Form ('' when unset). */
+  formDescription: string;
   /** Form framing: the ordered question list. Only meaningful when `framingChip === 'form'`. */
   formQuestions: FormQuestionValue[];
-  /** Form framing: response visibility, mode and open/closed state. */
+  /** Form framing: response visibility, mode, open/closed state and initial collapse. */
   formSettings: FormSettingsValue;
   whiteboardContent: string;
   /**
@@ -199,14 +205,17 @@ export const referenceRowErrors = (errors: CalloutFormErrors): Record<string, st
 };
 
 /**
- * Form-builder errors in the `FormQuestionsEditor` contract: `questions` for the list-level rule and
- * `<index>.prompt|explanation|options|options.<optionIndex>` per question. `validate()` namespaces them
- * under `formQuestions`, so the connector strips the prefix here.
+ * Form-builder errors in the `FormQuestionsEditor` contract: `title` / `description` for the Form header,
+ * `questions` for the list-level rule and `<index>.prompt|explanation|options|options.<optionIndex>` per
+ * question. `validate()` namespaces them under `formTitle`, `formDescription` and `formQuestions`, so the
+ * connector strips the prefix here.
  */
 export const formQuestionErrors = (errors: CalloutFormErrors): Record<string, string | undefined> => {
   const out: Record<string, string | undefined> = {};
   for (const key of Object.keys(errors)) {
-    if (key === FORM_QUESTIONS_ERROR_KEY) out.questions = errors[key];
+    if (key === 'formTitle') out.title = errors[key];
+    else if (key === 'formDescription') out.description = errors[key];
+    else if (key === FORM_QUESTIONS_ERROR_KEY) out.questions = errors[key];
     else if (key.startsWith(FORM_QUESTION_ERROR_PREFIX))
       out[key.slice(FORM_QUESTION_ERROR_PREFIX.length)] = errors[key];
   }
@@ -244,6 +253,8 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   pollAllowCustomOptions: false,
   pollHideResultsUntilVoted: false,
   pollShowVoterAvatars: true,
+  formTitle: '',
+  formDescription: '',
   formQuestions: [createFormQuestion()],
   formSettings: DEFAULT_FORM_SETTINGS,
   whiteboardContent: EmptyWhiteboardString,
@@ -464,6 +475,13 @@ export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>)
 
   const validateForm = (v: CalloutFormValues, next: CalloutFormErrors) => {
     if (v.framingChip !== 'form') return;
+    // No server reason code exists for these two limits: the messages are local.
+    if (v.formTitle.trim().length > FORM_TITLE_MAX_LENGTH) {
+      next.formTitle = t('formForm.titleTooLong', { count: FORM_TITLE_MAX_LENGTH });
+    }
+    if (v.formDescription.trim().length > FORM_DESCRIPTION_MAX_LENGTH) {
+      next.formDescription = t('formForm.descriptionTooLong', { count: FORM_DESCRIPTION_MAX_LENGTH });
+    }
     for (const [key, code] of Object.entries(validateFormQuestions(v.formQuestions))) {
       next[key] = translateValidationMessage(`form.${code}`);
     }

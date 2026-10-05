@@ -57,14 +57,28 @@ const settingsToServer = (settings: FormSettingsValue) => ({
   visibility: VISIBILITY_TO_SERVER[settings.visibility],
   responseMode: RESPONSE_MODE_TO_SERVER[settings.responseMode],
   state: STATE_TO_SERVER[settings.state],
+  defaultCollapsed: settings.defaultCollapsed,
 });
+
+/** Everything an admin edits on a Form: its optional title and description, the questions and the settings. */
+export type FormDefinitionValue = {
+  title: string;
+  description: string;
+  questions: FormQuestionValue[];
+  settings: FormSettingsValue;
+};
 
 const trimmedExplanation = (question: FormQuestionValue) => question.explanation.trim() || undefined;
 
-export const mapFormValuesToCreateInput = (
-  questions: FormQuestionValue[],
-  settings: FormSettingsValue
-): CreateCalloutFormInput => ({
+export const mapFormValuesToCreateInput = ({
+  title,
+  description,
+  questions,
+  settings,
+}: FormDefinitionValue): CreateCalloutFormInput => ({
+  // Both are optional: an empty value is simply left out.
+  title: title.trim() || undefined,
+  description: description.trim() || undefined,
   questions: questions.map(question => ({
     prompt: question.prompt.trim(),
     explanation: trimmedExplanation(question),
@@ -89,21 +103,23 @@ const questionsToUpdateInput = (questions: FormQuestionValue[]) =>
   }));
 
 /**
- * Settings plus, when the definition changed, the complete ordered question list for `updateCalloutForm`.
- * The server treats `questions` as a full replacement and an omitted list as "unchanged", so when the mapped
- * questions equal the ones the editor was opened with they are left out — a settings-only save must not
- * overwrite questions another admin changed in the meantime.
+ * Title, description, settings plus, when the definition changed, the complete ordered question list for
+ * `updateCalloutForm`. The title and description are always sent: an empty value clears them. The server
+ * treats `questions` as a full replacement and an omitted list as "unchanged", so when the mapped questions
+ * equal the ones the editor was opened with they are left out — a settings-only save must not overwrite
+ * questions another admin changed in the meantime.
  */
 export const mapFormValuesToUpdateInput = (
   formID: string,
-  questions: FormQuestionValue[],
-  settings: FormSettingsValue,
+  { title, description, questions, settings }: FormDefinitionValue,
   initialQuestions?: FormQuestionValue[]
 ): UpdateCalloutFormInput => {
   const mapped = questionsToUpdateInput(questions);
   const unchanged = initialQuestions !== undefined && isEqual(mapped, questionsToUpdateInput(initialQuestions));
   return {
     formID,
+    title: title.trim(),
+    description: description.trim(),
     ...(unchanged ? {} : { questions: mapped }),
     settings: settingsToServer(settings),
   };
@@ -113,6 +129,13 @@ export const formSettingsFromServer = (settings: CalloutFormDetailsModel['settin
   visibility: settings.visibility === CalloutFormResponseVisibility.Members ? 'MEMBERS' : 'ADMINS',
   responseMode: settings.responseMode === CalloutFormResponseMode.Multiple ? 'MULTIPLE' : 'SINGLE',
   state: settings.state === CalloutFormState.Closed ? 'CLOSED' : 'OPEN',
+  defaultCollapsed: settings.defaultCollapsed,
+});
+
+/** The optional title and description as builder values; a missing value is an empty string. */
+export const formHeaderFromServer = (form: Pick<CalloutFormDetailsModel, 'title' | 'description'>) => ({
+  formTitle: form.title ?? '',
+  formDescription: form.description ?? '',
 });
 
 export const formQuestionsFromServer = (form: CalloutFormDetailsModel): FormQuestionValue[] =>

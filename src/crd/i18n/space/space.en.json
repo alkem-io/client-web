@@ -1197,7 +1197,6 @@
     "questionsHeading": "Form",
     "questionsDescription": "Ask questions and collect answers as responses",
     "questionNumber": "Question {{number}}",
-    "promptLabel": "Question",
     "promptPlaceholder": "What would you like to ask?",
     "explanationLabel": "Explanation (optional)",
     "explanationPlaceholder": "Help people understand the question",
@@ -1208,7 +1207,6 @@
       "SINGLE_CHOICE": "Single choice",
       "MULTIPLE_CHOICE": "Multiple choice"
     },
-    "typeLocked": "The answer type cannot be changed once responses exist",
     "required": "Required",
     "dragQuestion": "Reorder question {{number}}",
     "addQuestion": "Add question",
@@ -1240,27 +1238,38 @@
         "ADMINS": "Only the admins of this space can read every response. Everyone else sees only their own.",
         "MEMBERS": "The members of this space can read every response."
       },
-      "widenDisabled": "Cannot widen who can see responses once responses exist",
       "responseModeHeading": "Responses per person",
       "responseMode": {
         "SINGLE": "One response per person",
         "MULTIPLE": "Several responses per person"
       },
-      "singleDisabled": "Some members have more than one response",
       "stateOpen": "Open for responses",
-      "stateHelp": "Closed forms accept no new responses."
+      "stateHelp": "Closed forms accept no new responses.",
+      "defaultCollapsed": "Show the form collapsed by default",
+      "defaultCollapsedHelp": "Viewers can still expand it",
+      "widenConfirm": {
+        "title": "Show responses to members?",
+        "description_one": "Members of {{space}} will be able to read the {{count}} existing response, including one submitted when only admins could see it.",
+        "description_other": "Members of {{space}} will be able to read all {{count}} existing responses, including those submitted when only admins could see them.",
+        "descriptionNoCount": "Members of {{space}} will be able to read all existing responses, including those submitted when only admins could see them.",
+        "confirm": "Show responses to members"
+      }
     },
     "errors": {
       "saveFailed": "The form could not be saved. Please try again.",
-      "FORM_VISIBILITY_WIDENING_BLOCKED": "Who can see responses cannot be widened once responses exist.",
-      "FORM_RESPONSE_MODE_SWITCH_BLOCKED": "The form cannot switch to one response per person while a member has several.",
-      "FORM_QUESTION_TYPE_LOCKED": "The answer type of a question cannot change once responses exist.",
       "FORM_UNKNOWN_QUESTION_ID": "The form changed in the meantime. Reload and try again.",
       "FORM_UNKNOWN_OPTION_ID": "The form changed in the meantime. Reload and try again.",
       "FORM_QUESTIONS_COUNT": "A form needs between 1 and 50 questions.",
       "FORM_OPTIONS_COUNT": "A choice question needs between 2 and 20 options.",
       "FORM_OPTIONS_DUPLICATE": "Options must be different from each other."
-    }
+    },
+    "title": "Form title (optional)",
+    "titlePlaceholder": "Give the form a title",
+    "description": "Description (optional)",
+    "descriptionPlaceholder": "Tell people what this form is about",
+    "titleTooLong": "The form title can be at most {{count}} characters",
+    "descriptionTooLong": "The form description can be at most {{count}} characters",
+    "typeChangeHint": "Existing answers keep their original format"
   },
   "formFillIn": {
     "requiredMarker": "required",

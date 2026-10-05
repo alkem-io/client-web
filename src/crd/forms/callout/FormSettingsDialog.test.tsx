@@ -1,10 +1,13 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import { FormSettingsDialog } from './FormSettingsDialog';
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: () => ({
+    t: (key: string, params?: Record<string, unknown>) =>
+      params && 'count' in params ? `${key}#${params.count}` : key,
+  }),
 }));
 
 const renderDialog = (overrides: Partial<React.ComponentProps<typeof FormSettingsDialog>> = {}) => {
@@ -17,8 +20,8 @@ const renderDialog = (overrides: Partial<React.ComponentProps<typeof FormSetting
     onResponseModeChange: vi.fn(),
     state: 'OPEN' as const,
     onStateChange: vi.fn(),
-    canWidenVisibility: true,
-    canSwitchToSingle: true,
+    defaultCollapsed: false,
+    onDefaultCollapsedChange: vi.fn(),
     ...overrides,
   };
   render(<FormSettingsDialog {...props} />);
@@ -56,49 +59,80 @@ describe('FormSettingsDialog', () => {
     expect(props.onStateChange).toHaveBeenCalledWith('CLOSED');
   });
 
-  test('widening is disabled with a visible reason and does not fire', async () => {
-    const props = renderDialog({ canWidenVisibility: false, widenDisabledReason: 'cannot widen' });
-
-    const members = screen.getByRole('radio', { name: 'formForm.settings.visibility.MEMBERS' });
-    expect(members).toBeDisabled();
-    expect(screen.getByText('cannot widen')).toBeInTheDocument();
-    await userEvent.click(members);
-    expect(props.onVisibilityChange).not.toHaveBeenCalled();
-  });
-
-  test('switching to a single response is disabled with a visible reason', async () => {
-    const props = renderDialog({
-      responseMode: 'MULTIPLE',
-      canSwitchToSingle: false,
-      switchDisabledReason: 'someone has several',
-    });
-
-    const single = screen.getByRole('radio', { name: 'formForm.settings.responseMode.SINGLE' });
-    expect(single).toBeDisabled();
-    expect(screen.getByText('someone has several')).toBeInTheDocument();
-    await userEvent.click(single);
-    expect(props.onResponseModeChange).not.toHaveBeenCalled();
-  });
-
-  test('an enabled option is described only by its helper text, never by the absent disabled reason', () => {
-    renderDialog({ canWidenVisibility: true, widenDisabledReason: 'cannot widen' });
-
-    const members = screen.getByRole('radio', { name: 'formForm.settings.visibility.MEMBERS' });
-    expect(members).toHaveAttribute('aria-describedby', `${members.id}-description`);
-    expect(members).toHaveAccessibleDescription('formForm.settings.visibilityHelp.MEMBERS');
-  });
-
-  test('a disabled option is described by its helper text and its reason', () => {
-    renderDialog({ canWidenVisibility: false, widenDisabledReason: 'cannot widen' });
-
+  test('both directions of both settings are enabled, with no disabled reason', () => {
+    renderDialog({ confirmWidening: true, existingResponseCount: 4 });
+    for (const radio of screen.getAllByRole('radio')) expect(radio).toBeEnabled();
     expect(screen.getByRole('radio', { name: 'formForm.settings.visibility.MEMBERS' })).toHaveAccessibleDescription(
-      'formForm.settings.visibilityHelp.MEMBERS cannot widen'
+      'formForm.settings.visibilityHelp.MEMBERS'
     );
+  });
+
+  test('widening with confirmWidening asks first; cancel keeps Admins only', async () => {
+    const props = renderDialog({ confirmWidening: true, existingResponseCount: 4 });
+
+    await userEvent.click(screen.getByRole('radio', { name: 'formForm.settings.visibility.MEMBERS' }));
+    const dialog = await screen.findByRole('alertdialog');
+    expect(within(dialog).getByText('formForm.settings.widenConfirm.description#4')).toBeInTheDocument();
+    expect(props.onVisibilityChange).not.toHaveBeenCalled();
+
+    await userEvent.click(within(dialog).getByRole('button', { name: 'dialogs.cancel' }));
+    await waitFor(() => expect(screen.queryByRole('alertdialog')).toBeNull());
+    expect(props.onVisibilityChange).not.toHaveBeenCalled();
+    expect(screen.getByRole('radio', { name: 'formForm.settings.visibility.ADMINS' })).toBeChecked();
+  });
+
+  test('confirming the widening sets the pending value', async () => {
+    const props = renderDialog({ confirmWidening: true, existingResponseCount: 4 });
+
+    await userEvent.click(screen.getByRole('radio', { name: 'formForm.settings.visibility.MEMBERS' }));
+    await userEvent.click(await screen.findByRole('button', { name: 'formForm.settings.widenConfirm.confirm' }));
+
+    expect(props.onVisibilityChange).toHaveBeenCalledWith('MEMBERS');
+  });
+
+  test('without a known count the confirmation names no number', async () => {
+    renderDialog({ confirmWidening: true });
+
+    await userEvent.click(screen.getByRole('radio', { name: 'formForm.settings.visibility.MEMBERS' }));
+    expect(await screen.findByText('formForm.settings.widenConfirm.descriptionNoCount')).toBeInTheDocument();
+  });
+
+  test('widening without confirmWidening calls straight through', async () => {
+    const props = renderDialog({ confirmWidening: false });
+
+    await userEvent.click(screen.getByRole('radio', { name: 'formForm.settings.visibility.MEMBERS' }));
+    expect(screen.queryByRole('alertdialog')).toBeNull();
+    expect(props.onVisibilityChange).toHaveBeenCalledWith('MEMBERS');
+  });
+
+  test('narrowing never asks', async () => {
+    const props = renderDialog({ visibility: 'MEMBERS', confirmWidening: true, existingResponseCount: 4 });
+
+    await userEvent.click(screen.getByRole('radio', { name: 'formForm.settings.visibility.ADMINS' }));
+    expect(screen.queryByRole('alertdialog')).toBeNull();
+    expect(props.onVisibilityChange).toHaveBeenCalledWith('ADMINS');
+  });
+
+  test('switching multiple responses to one per person is allowed', async () => {
+    const props = renderDialog({ responseMode: 'MULTIPLE' });
+
+    await userEvent.click(screen.getByRole('radio', { name: 'formForm.settings.responseMode.SINGLE' }));
+    expect(props.onResponseModeChange).toHaveBeenCalledWith('SINGLE');
+  });
+
+  test('the collapsed-by-default switch shows the setting and fires its callback', async () => {
+    const props = renderDialog({ defaultCollapsed: false });
+
+    const toggle = screen.getByRole('switch', { name: 'formForm.settings.defaultCollapsed' });
+    expect(toggle).not.toBeChecked();
+    expect(toggle).toHaveAccessibleDescription('formForm.settings.defaultCollapsedHelp');
+    await userEvent.click(toggle);
+    expect(props.onDefaultCollapsedChange).toHaveBeenCalledWith(true);
   });
 
   test('read-only disables every control', () => {
     renderDialog({ readOnly: true });
     for (const radio of screen.getAllByRole('radio')) expect(radio).toBeDisabled();
-    expect(screen.getByRole('switch')).toBeDisabled();
+    for (const toggle of screen.getAllByRole('switch')) expect(toggle).toBeDisabled();
   });
 });

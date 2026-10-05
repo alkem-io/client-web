@@ -9,6 +9,7 @@ import {
 import { TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard';
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import {
+  formHeaderFromServer,
   formQuestionsFromServer,
   formSettingsFromServer,
 } from '@/main/crdPages/space/callout/calloutFormDefinitionMapper';
@@ -130,6 +131,7 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     // The Form definition is edited through `updateCalloutForm`; the callout save never sends it.
     ...(framing.form
       ? {
+          ...formHeaderFromServer(framing.form),
           formQuestions: formQuestionsFromServer(framing.form),
           formSettings: formSettingsFromServer(framing.form.settings),
         }

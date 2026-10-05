@@ -1197,7 +1197,6 @@
     "questionsHeading": "Formulier",
     "questionsDescription": "Stel vragen en verzamel de antwoorden als reacties",
     "questionNumber": "Vraag {{number}}",
-    "promptLabel": "Vraag",
     "promptPlaceholder": "Wat wil je vragen?",
     "explanationLabel": "Toelichting (optioneel)",
     "explanationPlaceholder": "Help mensen de vraag te begrijpen",
@@ -1208,7 +1207,6 @@
       "SINGLE_CHOICE": "Enkele keuze",
       "MULTIPLE_CHOICE": "Meerdere keuzes"
     },
-    "typeLocked": "Het antwoordtype kan niet meer worden gewijzigd zodra er reacties zijn",
     "required": "Verplicht",
     "dragQuestion": "Vraag {{number}} verplaatsen",
     "addQuestion": "Vraag toevoegen",
@@ -1240,27 +1238,38 @@
         "ADMINS": "Alleen de beheerders van deze space kunnen alle reacties lezen. Alle anderen zien alleen hun eigen reacties.",
         "MEMBERS": "De leden van deze space kunnen alle reacties lezen."
       },
-      "widenDisabled": "Kan niet worden verruimd zodra er reacties zijn",
       "responseModeHeading": "Reacties per persoon",
       "responseMode": {
         "SINGLE": "Eén reactie per persoon",
         "MULTIPLE": "Meerdere reacties per persoon"
       },
-      "singleDisabled": "Sommige leden hebben meer dan één reactie",
       "stateOpen": "Open voor reacties",
-      "stateHelp": "Gesloten formulieren accepteren geen nieuwe reacties."
+      "stateHelp": "Gesloten formulieren accepteren geen nieuwe reacties.",
+      "defaultCollapsed": "Formulier standaard ingeklapt tonen",
+      "defaultCollapsedHelp": "Kijkers kunnen het nog steeds uitklappen",
+      "widenConfirm": {
+        "title": "Reacties tonen aan leden?",
+        "description_one": "Leden van {{space}} kunnen de {{count}} bestaande reactie lezen, ook als die is ingediend toen alleen admins die konden zien.",
+        "description_other": "Leden van {{space}} kunnen alle {{count}} bestaande reacties lezen, ook die zijn ingediend toen alleen admins ze konden zien.",
+        "descriptionNoCount": "Leden van {{space}} kunnen alle bestaande reacties lezen, ook die zijn ingediend toen alleen admins ze konden zien.",
+        "confirm": "Reacties tonen aan leden"
+      }
     },
     "errors": {
       "saveFailed": "Het formulier kon niet worden opgeslagen. Probeer het opnieuw.",
-      "FORM_VISIBILITY_WIDENING_BLOCKED": "Wie de reacties kan zien kan niet worden verruimd zodra er reacties zijn.",
-      "FORM_RESPONSE_MODE_SWITCH_BLOCKED": "Het formulier kan niet overschakelen naar één reactie per persoon zolang een lid er meerdere heeft.",
-      "FORM_QUESTION_TYPE_LOCKED": "Het antwoordtype van een vraag kan niet meer wijzigen zodra er reacties zijn.",
       "FORM_UNKNOWN_QUESTION_ID": "Het formulier is intussen gewijzigd. Laad opnieuw en probeer het nog eens.",
       "FORM_UNKNOWN_OPTION_ID": "Het formulier is intussen gewijzigd. Laad opnieuw en probeer het nog eens.",
       "FORM_QUESTIONS_COUNT": "Een formulier heeft tussen 1 en 50 vragen nodig.",
       "FORM_OPTIONS_COUNT": "Een keuzevraag heeft tussen 2 en 20 opties nodig.",
       "FORM_OPTIONS_DUPLICATE": "Opties moeten van elkaar verschillen."
-    }
+    },
+    "title": "Titel van het formulier (optioneel)",
+    "titlePlaceholder": "Geef het formulier een titel",
+    "description": "Beschrijving (optioneel)",
+    "descriptionPlaceholder": "Vertel waar dit formulier over gaat",
+    "titleTooLong": "De titel van het formulier mag maximaal {{count}} tekens bevatten",
+    "descriptionTooLong": "De beschrijving van het formulier mag maximaal {{count}} tekens bevatten",
+    "typeChangeHint": "Bestaande antwoorden behouden hun oorspronkelijke vorm"
   },
   "formFillIn": {
     "requiredMarker": "verplicht",

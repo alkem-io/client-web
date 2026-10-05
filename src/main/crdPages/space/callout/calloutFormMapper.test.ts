@@ -1126,14 +1126,18 @@ describe('Form framing', () => {
     const result = mapFormToCalloutCreationInput(
       baseValues({
         framingChip: 'form',
+        formTitle: '  Q4 planning ',
+        formDescription: ' Tell us where to focus ',
         formQuestions: questions,
-        formSettings: { visibility: 'MEMBERS', responseMode: 'MULTIPLE', state: 'CLOSED' },
+        formSettings: { visibility: 'MEMBERS', responseMode: 'MULTIPLE', state: 'CLOSED', defaultCollapsed: true },
       }),
       createOptions
     );
 
     expect(result.input.framing.type).toBe(CalloutFramingType.Form);
     expect(result.input.framing.form).toEqual({
+      title: 'Q4 planning',
+      description: 'Tell us where to focus',
       questions: [
         { prompt: 'Your name', explanation: undefined, type: 'SHORT_TEXT', required: true, options: undefined },
         {
@@ -1145,9 +1149,20 @@ describe('Form framing', () => {
         },
         { prompt: 'Story', explanation: undefined, type: 'LONG_TEXT', required: false, options: undefined },
       ],
-      settings: { visibility: 'MEMBERS', responseMode: 'MULTIPLE', state: 'CLOSED' },
+      settings: { visibility: 'MEMBERS', responseMode: 'MULTIPLE', state: 'CLOSED', defaultCollapsed: true },
     });
     expect(JSON.stringify(result.input.framing.form)).not.toContain('key');
+  });
+
+  it('create leaves out an empty title and description and sends the default expanded state', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'form', formTitle: '   ', formDescription: '', formQuestions: questions }),
+      createOptions
+    );
+
+    expect(result.input.framing.form?.title).toBeUndefined();
+    expect(result.input.framing.form?.description).toBeUndefined();
+    expect(result.input.framing.form?.settings?.defaultCollapsed).toBe(false);
   });
 
   it('a non-form framing never carries framing.form', () => {

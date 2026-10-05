@@ -239,7 +239,7 @@ describe('mapCalloutDetailsToFormValues — cardVariant prefill', () => {
 });
 
 describe('mapCalloutDetailsToFormValues — form prefill', () => {
-  const formData = () => {
+  const formData = (header: { title?: string | null; description?: string | null } = {}) => {
     const data = baseData();
     const callout = data.lookup.callout as unknown as { framing: Record<string, unknown> };
     callout.framing = {
@@ -247,6 +247,8 @@ describe('mapCalloutDetailsToFormValues — form prefill', () => {
       profile: { displayName: 'Intake', description: '', tagsets: [], references: [] },
       form: {
         id: 'form-1',
+        title: header.title === undefined ? 'Intake form' : header.title,
+        description: header.description === undefined ? 'Tell us about you' : header.description,
         questions: [
           {
             id: 'q1',
@@ -264,6 +266,7 @@ describe('mapCalloutDetailsToFormValues — form prefill', () => {
           visibility: CalloutFormResponseVisibility.Members,
           responseMode: CalloutFormResponseMode.Multiple,
           state: CalloutFormState.Closed,
+          defaultCollapsed: true,
         },
       },
     };
@@ -283,8 +286,21 @@ describe('mapCalloutDetailsToFormValues — form prefill', () => {
       required: true,
     });
     expect(result.formQuestions?.[0].options.map(o => o.id)).toEqual(['o1', 'o2']);
-    expect(result.formSettings).toEqual({ visibility: 'MEMBERS', responseMode: 'MULTIPLE', state: 'CLOSED' });
+    expect(result.formSettings).toEqual({
+      visibility: 'MEMBERS',
+      responseMode: 'MULTIPLE',
+      state: 'CLOSED',
+      defaultCollapsed: true,
+    });
+    expect(result.formTitle).toBe('Intake form');
+    expect(result.formDescription).toBe('Tell us about you');
     expect(result.editMeta?.formId).toBe('form-1');
+  });
+
+  it('maps a null title and description to empty strings', () => {
+    const result = mapCalloutDetailsToFormValues(formData({ title: null, description: null }));
+    expect(result.formTitle).toBe('');
+    expect(result.formDescription).toBe('');
   });
 
   it('leaves the form values untouched for a callout without a form', () => {

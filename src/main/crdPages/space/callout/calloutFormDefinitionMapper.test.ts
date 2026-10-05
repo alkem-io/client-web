@@ -6,15 +6,20 @@ import {
   CalloutFormState,
 } from '@/core/apollo/generated/graphql-schema';
 import { createFormOption, createFormQuestion } from '@/crd/forms/callout/formValues';
+import type { FormQuestionValue, FormSettingsValue } from '@/crd/forms/callout/types';
 import type { CalloutFormDetailsModel } from '@/domain/collaboration/callout-form/models/CalloutFormModels';
 import {
+  formHeaderFromServer,
   formQuestionsFromServer,
   formSettingsFromServer,
+  mapFormValuesToCreateInput,
   mapFormValuesToUpdateInput,
 } from './calloutFormDefinitionMapper';
 
 const form: CalloutFormDetailsModel = {
   id: 'form-1',
+  title: 'Q4 planning',
+  description: null,
   questions: [
     {
       id: 'q1',
@@ -33,20 +38,34 @@ const form: CalloutFormDetailsModel = {
     visibility: CalloutFormResponseVisibility.Members,
     responseMode: CalloutFormResponseMode.Multiple,
     state: CalloutFormState.Closed,
+    defaultCollapsed: true,
   },
 };
+
+const definition = (
+  questions: FormQuestionValue[],
+  settings: FormSettingsValue,
+  header: { title?: string; description?: string } = {}
+) => ({ title: header.title ?? '', description: header.description ?? '', questions, settings });
 
 describe('calloutFormDefinitionMapper', () => {
   it('round-trips the server definition to builder values and back to an update input with ids preserved', () => {
     const questions = formQuestionsFromServer(form);
     const settings = formSettingsFromServer(form.settings);
 
-    expect(settings).toEqual({ visibility: 'MEMBERS', responseMode: 'MULTIPLE', state: 'CLOSED' });
+    expect(settings).toEqual({
+      visibility: 'MEMBERS',
+      responseMode: 'MULTIPLE',
+      state: 'CLOSED',
+      defaultCollapsed: true,
+    });
     expect(questions[0]).toMatchObject({ id: 'q1', key: 'q1', explanation: '', type: 'SINGLE_CHOICE', required: true });
     expect(questions[0].options.map(o => o.id)).toEqual(['o1', 'o2']);
 
-    expect(mapFormValuesToUpdateInput('form-1', questions, settings)).toEqual({
+    expect(mapFormValuesToUpdateInput('form-1', definition(questions, settings, { title: 'Q4 planning' }))).toEqual({
       formID: 'form-1',
+      title: 'Q4 planning',
+      description: '',
       questions: [
         {
           id: 'q1',
@@ -72,6 +91,7 @@ describe('calloutFormDefinitionMapper', () => {
         visibility: CalloutFormResponseVisibility.Members,
         responseMode: CalloutFormResponseMode.Multiple,
         state: CalloutFormState.Closed,
+        defaultCollapsed: true,
       },
     });
   });
@@ -79,15 +99,17 @@ describe('calloutFormDefinitionMapper', () => {
   it('new questions and options carry no id, so the server treats them as new', () => {
     const input = mapFormValuesToUpdateInput(
       'form-1',
-      [
-        ...formQuestionsFromServer(form),
-        createFormQuestion({
-          prompt: 'New',
-          type: 'MULTIPLE_CHOICE',
-          options: [createFormOption('x'), createFormOption('y')],
-        }),
-      ],
-      formSettingsFromServer(form.settings)
+      definition(
+        [
+          ...formQuestionsFromServer(form),
+          createFormQuestion({
+            prompt: 'New',
+            type: 'MULTIPLE_CHOICE',
+            options: [createFormOption('x'), createFormOption('y')],
+          }),
+        ],
+        formSettingsFromServer(form.settings)
+      )
     );
 
     const added = input.questions?.[2];
@@ -100,8 +122,12 @@ describe('calloutFormDefinitionMapper', () => {
     const initialQuestions = formQuestionsFromServer(form);
     const input = mapFormValuesToUpdateInput(
       'form-1',
-      formQuestionsFromServer(form),
-      { visibility: 'MEMBERS', responseMode: 'MULTIPLE', state: 'OPEN' },
+      definition(formQuestionsFromServer(form), {
+        visibility: 'MEMBERS',
+        responseMode: 'MULTIPLE',
+        state: 'OPEN',
+        defaultCollapsed: false,
+      }),
       initialQuestions
     );
 
@@ -114,7 +140,7 @@ describe('calloutFormDefinitionMapper', () => {
     const padded = initialQuestions.map(question => ({ ...question, prompt: `  ${question.prompt} ` }));
 
     expect(
-      mapFormValuesToUpdateInput('form-1', padded, formSettingsFromServer(form.settings), initialQuestions)
+      mapFormValuesToUpdateInput('form-1', definition(padded, formSettingsFromServer(form.settings)), initialQuestions)
     ).not.toHaveProperty('questions');
   });
 
@@ -124,11 +150,52 @@ describe('calloutFormDefinitionMapper', () => {
       index === 1 ? { ...question, required: true } : question
     );
 
-    const input = mapFormValuesToUpdateInput('form-1', edited, formSettingsFromServer(form.settings), initialQuestions);
+    const input = mapFormValuesToUpdateInput(
+      'form-1',
+      definition(edited, formSettingsFromServer(form.settings)),
+      initialQuestions
+    );
 
     expect(input.questions?.map(q => [q.id, q.required])).toEqual([
       ['q1', true],
       ['q2', true],
     ]);
+  });
+
+  it('round-trips the title, description and defaultCollapsed: null maps to an empty string and back', () => {
+    const header = formHeaderFromServer(form);
+    expect(header).toEqual({ formTitle: 'Q4 planning', formDescription: '' });
+    expect(formHeaderFromServer({ title: undefined, description: 'Tell us' })).toEqual({
+      formTitle: '',
+      formDescription: 'Tell us',
+    });
+
+    const input = mapFormValuesToUpdateInput(
+      'form-1',
+      definition(formQuestionsFromServer(form), formSettingsFromServer(form.settings), {
+        title: ` ${header.formTitle} `,
+        description: header.formDescription,
+      })
+    );
+    expect(input.title).toBe('Q4 planning');
+    // An empty value is sent, so clearing the title or description reaches the server.
+    expect(input.description).toBe('');
+    expect(input.settings?.defaultCollapsed).toBe(true);
+  });
+
+  it('create sends the trimmed title and description and leaves out empty ones', () => {
+    const settings = formSettingsFromServer(form.settings);
+    const withHeader = mapFormValuesToCreateInput(
+      definition(formQuestionsFromServer(form), settings, { title: '  Survey ', description: ' About us\n ' })
+    );
+    expect(withHeader).toMatchObject({
+      title: 'Survey',
+      description: 'About us',
+      settings: { defaultCollapsed: true },
+    });
+
+    const without = mapFormValuesToCreateInput(definition(formQuestionsFromServer(form), settings, { title: '  ' }));
+    expect(without.title).toBeUndefined();
+    expect(without.description).toBeUndefined();
   });
 });

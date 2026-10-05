@@ -1197,7 +1197,6 @@
     "questionsHeading": "Formulario",
     "questionsDescription": "Haz preguntas y recoge las respuestas",
     "questionNumber": "Pregunta {{number}}",
-    "promptLabel": "Pregunta",
     "promptPlaceholder": "¿Qué te gustaría preguntar?",
     "explanationLabel": "Explicación (opcional)",
     "explanationPlaceholder": "Ayuda a entender la pregunta",
@@ -1208,7 +1207,6 @@
       "SINGLE_CHOICE": "Opción única",
       "MULTIPLE_CHOICE": "Opción múltiple"
     },
-    "typeLocked": "El tipo de respuesta no se puede cambiar una vez que hay respuestas",
     "required": "Obligatoria",
     "dragQuestion": "Reordenar la pregunta {{number}}",
     "addQuestion": "Añadir pregunta",
@@ -1240,27 +1238,38 @@
         "ADMINS": "Solo los administradores de este espacio pueden leer todas las respuestas. Los demás solo ven las suyas.",
         "MEMBERS": "Los miembros de este espacio pueden leer todas las respuestas."
       },
-      "widenDisabled": "No se puede ampliar quién ve las respuestas una vez que existen respuestas",
       "responseModeHeading": "Respuestas por persona",
       "responseMode": {
         "SINGLE": "Una respuesta por persona",
         "MULTIPLE": "Varias respuestas por persona"
       },
-      "singleDisabled": "Algunos miembros tienen más de una respuesta",
       "stateOpen": "Abierto a respuestas",
-      "stateHelp": "Los formularios cerrados no aceptan nuevas respuestas."
+      "stateHelp": "Los formularios cerrados no aceptan nuevas respuestas.",
+      "defaultCollapsed": "Mostrar el formulario contraído por defecto",
+      "defaultCollapsedHelp": "Los usuarios pueden seguir expandiéndolo",
+      "widenConfirm": {
+        "title": "¿Mostrar las respuestas a los miembros?",
+        "description_one": "Los miembros de {{space}} podrán leer la {{count}} respuesta existente, incluso si se envió cuando solo los administradores podían verla.",
+        "description_other": "Los miembros de {{space}} podrán leer las {{count}} respuestas existentes, incluidas las enviadas cuando solo los administradores podían verlas.",
+        "descriptionNoCount": "Los miembros de {{space}} podrán leer todas las respuestas existentes, incluidas las enviadas cuando solo los administradores podían verlas.",
+        "confirm": "Mostrar las respuestas a los miembros"
+      }
     },
     "errors": {
       "saveFailed": "No se pudo guardar el formulario. Inténtalo de nuevo.",
-      "FORM_VISIBILITY_WIDENING_BLOCKED": "No se puede ampliar quién ve las respuestas una vez que existen respuestas.",
-      "FORM_RESPONSE_MODE_SWITCH_BLOCKED": "El formulario no puede pasar a una respuesta por persona mientras un miembro tenga varias.",
-      "FORM_QUESTION_TYPE_LOCKED": "El tipo de respuesta de una pregunta no puede cambiar una vez que existen respuestas.",
       "FORM_UNKNOWN_QUESTION_ID": "El formulario ha cambiado entretanto. Recarga e inténtalo de nuevo.",
       "FORM_UNKNOWN_OPTION_ID": "El formulario ha cambiado entretanto. Recarga e inténtalo de nuevo.",
       "FORM_QUESTIONS_COUNT": "Un formulario necesita entre 1 y 50 preguntas.",
       "FORM_OPTIONS_COUNT": "Una pregunta de opciones necesita entre 2 y 20 opciones.",
       "FORM_OPTIONS_DUPLICATE": "Las opciones deben ser distintas entre sí."
-    }
+    },
+    "title": "Título del formulario (opcional)",
+    "titlePlaceholder": "Ponle un título al formulario",
+    "description": "Descripción (opcional)",
+    "descriptionPlaceholder": "Explica de qué trata este formulario",
+    "titleTooLong": "El título del formulario puede tener como máximo {{count}} caracteres",
+    "descriptionTooLong": "La descripción del formulario puede tener como máximo {{count}} caracteres",
+    "typeChangeHint": "Las respuestas existentes conservan su formato original"
   },
   "formFillIn": {
     "requiredMarker": "obligatoria",

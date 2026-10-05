@@ -32,12 +32,18 @@ const choice = (labels: string[], prompt = 'Pick'): FormQuestionValue =>
     options: labels.map(label => createFormOption(label)),
   });
 
-const validateForm = (questions: FormQuestionValue[], framingChip: 'form' | 'none' = 'form') => {
+const validateForm = (
+  questions: FormQuestionValue[],
+  framingChip: 'form' | 'none' = 'form',
+  header: { title?: string; description?: string } = {}
+) => {
   const { result } = renderHook(() => useCrdCalloutForm(), { wrapper });
   act(() => {
     result.current.setField('title', 'A form');
     result.current.setField('framingChip', framingChip);
     result.current.setField('formQuestions', questions);
+    if (header.title !== undefined) result.current.setField('formTitle', header.title);
+    if (header.description !== undefined) result.current.setField('formDescription', header.description);
   });
   let errors: ReturnType<typeof result.current.validate> = {};
   act(() => {
@@ -55,7 +61,14 @@ describe('useCrdCalloutForm — form framing validation', () => {
     const { result } = renderHook(() => useCrdCalloutForm(), { wrapper });
     expect(result.current.values.formQuestions).toHaveLength(1);
     expect(result.current.values.formQuestions[0]).toMatchObject({ type: 'SHORT_TEXT', prompt: '', required: false });
-    expect(result.current.values.formSettings).toEqual({ visibility: 'ADMINS', responseMode: 'SINGLE', state: 'OPEN' });
+    expect(result.current.values.formSettings).toEqual({
+      visibility: 'ADMINS',
+      responseMode: 'SINGLE',
+      state: 'OPEN',
+      defaultCollapsed: false,
+    });
+    expect(result.current.values.formTitle).toBe('');
+    expect(result.current.values.formDescription).toBe('');
   });
 
   test('zero questions is rejected with the count message', () => {
@@ -81,6 +94,20 @@ describe('useCrdCalloutForm — form framing validation', () => {
   test('a 513-character prompt is rejected and 512 passes', () => {
     expect(validateForm([shortText('a'.repeat(513))])['formQuestions.0.prompt']).toBe('The question text is too long');
     expect(validateForm([shortText('a'.repeat(512))])).toEqual({});
+  });
+
+  test('a 513-character form title is rejected and 512 passes', () => {
+    expect(validateForm([shortText()], 'form', { title: 't'.repeat(513) }).formTitle).toBe(
+      'The form title can be at most 512 characters'
+    );
+    expect(validateForm([shortText()], 'form', { title: 't'.repeat(512) })).toEqual({});
+  });
+
+  test('a 2049-character form description is rejected and 2048 passes', () => {
+    expect(validateForm([shortText()], 'form', { description: 'd'.repeat(2049) }).formDescription).toBe(
+      'The form description can be at most 2048 characters'
+    );
+    expect(validateForm([shortText()], 'form', { description: 'd'.repeat(2048) })).toEqual({});
   });
 
   test('an over-long explanation is rejected', () => {
@@ -128,11 +155,13 @@ describe('useCrdCalloutForm — form framing validation', () => {
     expect(
       formQuestionErrors({
         title: 'x',
+        formTitle: 'ft',
+        formDescription: 'fd',
         formQuestions: 'count',
         'formQuestions.0.prompt': 'p',
         'formQuestions.1.options.0': 'o',
       })
-    ).toEqual({ questions: 'count', '0.prompt': 'p', '1.options.0': 'o' });
+    ).toEqual({ title: 'ft', description: 'fd', questions: 'count', '0.prompt': 'p', '1.options.0': 'o' });
   });
 
   test('editing the question list clears stale per-question errors', () => {

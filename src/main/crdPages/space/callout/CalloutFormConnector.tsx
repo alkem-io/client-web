@@ -22,6 +22,7 @@ import { useTranslation } from 'react-i18next';
 import {
   SpaceCollectionSubspacesDocument,
   useCalloutContentQuery,
+  useCalloutFormResponsesQuery,
   useCreateReferenceOnProfileMutation,
   useDeleteReferenceMutation,
   useSubspacesInSpaceQuery,
@@ -90,16 +91,15 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
 import { formQuestionErrors, referenceRowErrors, useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
 import { useCrdSpaceContributors } from '../hooks/useCrdSpaceContributors';
-import { formQuestionsFromServer, formSettingsFromServer } from './calloutFormDefinitionMapper';
+import { formHeaderFromServer, formQuestionsFromServer, formSettingsFromServer } from './calloutFormDefinitionMapper';
 import { mapFormToCalloutCreationInput, mapFormToCalloutUpdateInput } from './calloutFormMapper';
 import { type CrdCalloutRestrictions, clampFormValuesToRestrictions } from './calloutRestrictions';
 import { healContributorCollection } from './contributorCollectionMapper';
 import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
-import { FramingEditorConnector } from './FramingEditorConnector';
+import { type FormEditContext, FramingEditorConnector } from './FramingEditorConnector';
 import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
 import { TemplateImportConnector } from './TemplateImportConnector';
 import { translateFormDefinitionError, useCalloutFormDefinitionSave } from './useCalloutFormDefinitionSave';
-import { useCalloutFormEditLocks } from './useCalloutFormEditLocks';
 import { omitIneligibleIds, useSelectionCandidates } from './useSelectionCandidates';
 
 /**
@@ -655,17 +655,31 @@ function CalloutFormConnectorInner({
     }
   };
 
-  // Form: what the existing responses forbid changing (edit mode only), and the dedicated definition save.
-  // The persisted form comes from the server payload, never from the editable form values.
+  // Form (edit mode only): whether the persisted Form has — or, for an editor who cannot read every response,
+  // may have — responses. Nothing is locked by them; they drive the widening confirmation and the type-change
+  // hint. The persisted form comes from the server payload, never from the editable form values.
   const persistedForm = editData?.lookup.callout?.framing.form;
-  const { locks: formEditLocks, refetch: refetchFormLocks } = useCalloutFormEditLocks({
-    formId: persistedForm?.id,
-    questionIds: persistedForm?.questions.map(question => question.id) ?? [],
-    persisted: persistedForm ? formSettingsFromServer(persistedForm.settings) : values.formSettings,
-    skip: mode !== 'edit' || !open || values.framingChip !== 'form',
+  const { data: formResponsesData, refetch: refetchFormResponses } = useCalloutFormResponsesQuery({
+    variables: { formID: persistedForm?.id ?? '', first: 1 },
+    skip: mode !== 'edit' || !open || values.framingChip !== 'form' || !persistedForm,
+    fetchPolicy: 'network-only',
   });
+  const formResponsesScope = formResponsesData?.lookup.calloutFormResponses;
+  const formEditContext: FormEditContext | undefined =
+    mode === 'edit' && persistedForm
+      ? {
+          savedVisibility: formSettingsFromServer(persistedForm.settings).visibility,
+          // The (sub)space whose members the visibility setting refers to, as the fill-in notice names it.
+          spaceName: subspace?.about.profile.displayName || space?.about.profile.displayName || '',
+          // Until the lookup answers, the count is unknown: treat it like an editor who cannot read it.
+          canReadAll: formResponsesScope?.canReadAll ?? false,
+          responseCount: formResponsesScope?.all.total ?? 0,
+        }
+      : undefined;
   const { save: saveFormDefinition } = useCalloutFormDefinitionSave();
   const formDefinitionDirty =
+    values.formTitle !== form.initialValues.formTitle ||
+    values.formDescription !== form.initialValues.formDescription ||
     !isEqual(values.formQuestions, form.initialValues.formQuestions) ||
     !isEqual(values.formSettings, form.initialValues.formSettings);
 
@@ -722,28 +736,33 @@ function CalloutFormConnectorInner({
     }
 
     // The Form definition never rides `updateCallout`: it is saved through its own mutation, before
-    // anything else is persisted, so a rule rejection (widening, type lock, mode switch) keeps the dialog
-    // open with a localized reason instead of leaving the Post half-saved.
+    // anything else is persisted, so a rejection keeps the dialog open with a localized reason instead of
+    // leaving the Post half-saved.
     const formId = values.editMeta?.formId;
     if (values.framingChip === 'form' && formId && formDefinitionDirty) {
       const outcome = await saveFormDefinition(
         formId,
-        values.formQuestions,
-        values.formSettings,
+        {
+          title: values.formTitle,
+          description: values.formDescription,
+          questions: values.formQuestions,
+          settings: values.formSettings,
+        },
         form.initialValues.formQuestions
       );
       if (!outcome.ok) {
         logError(new Error('Form definition save failed', { cause: outcome.error as Error }));
         notify(translateFormDefinitionError(outcome.code, t), 'error');
-        void refetchFormLocks();
+        void refetchFormResponses();
         return;
       }
-      void refetchFormLocks();
+      void refetchFormResponses();
       // Adopt the ids the server assigned so a retry of a later step does not re-create new rows.
       if (outcome.form) {
         const saved = outcome.form;
         setValues(current => ({
           ...current,
+          ...formHeaderFromServer(saved),
           formQuestions: formQuestionsFromServer(saved),
           formSettings: formSettingsFromServer(saved.settings),
         }));
@@ -1087,12 +1106,16 @@ function CalloutFormConnectorInner({
                 // Only an existing poll has a status to toggle — a poll being created is
                 // always open, so the toggle stays hidden until there is a `pollId`.
                 pollStatus={pollStatus === PollStatus.Closed ? 'closed' : pollId ? 'open' : undefined}
+                formTitle={values.formTitle}
+                onFormTitleChange={v => setField('formTitle', v)}
+                formDescription={values.formDescription}
+                onFormDescriptionChange={v => setField('formDescription', v)}
                 formQuestions={values.formQuestions}
                 onFormQuestionsChange={v => setField('formQuestions', v)}
                 formQuestionsErrors={formQuestionErrors(errors)}
                 formSettings={values.formSettings}
                 onFormSettingsChange={v => setField('formSettings', v)}
-                formEditLocks={mode === 'edit' ? formEditLocks : undefined}
+                formEditContext={formEditContext}
                 onPollStatusChange={handlePollStatusChange}
                 whiteboardConfigured={values.whiteboardConfigured}
                 whiteboardTitle={values.title.trim() || t('callout.whiteboard')}

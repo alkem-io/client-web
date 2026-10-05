@@ -361,7 +361,12 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
   }
 
   if (framingType === CalloutFramingType.Form) {
-    callout.framing.form = mapFormValuesToCreateInput(values.formQuestions, values.formSettings);
+    callout.framing.form = mapFormValuesToCreateInput({
+      title: values.formTitle,
+      description: values.formDescription,
+      questions: values.formQuestions,
+      settings: values.formSettings,
+    });
   }
 
   return {

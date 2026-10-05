@@ -15,6 +15,8 @@ export const FORM_EXPLANATION_MAX_LENGTH = 2048;
 export const FORM_OPTION_MAX_LENGTH = 512;
 export const FORM_SHORT_ANSWER_MAX_LENGTH = 512;
 export const FORM_LONG_ANSWER_MAX_LENGTH = 2048;
+export const FORM_TITLE_MAX_LENGTH = 512;
+export const FORM_DESCRIPTION_MAX_LENGTH = 2048;
 
 export const FORM_QUESTION_KINDS: FormQuestionKind[] = ['SHORT_TEXT', 'LONG_TEXT', 'SINGLE_CHOICE', 'MULTIPLE_CHOICE'];
 
@@ -46,4 +48,5 @@ export const DEFAULT_FORM_SETTINGS: FormSettingsValue = {
   visibility: 'ADMINS',
   responseMode: 'SINGLE',
   state: 'OPEN',
+  defaultCollapsed: false,
 };

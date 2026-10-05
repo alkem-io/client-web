@@ -136,4 +136,6 @@ export type FormSettingsValue = {
   visibility: FormResponseVisibilityValue;
   responseMode: FormResponseModeValue;
   state: FormStateValue;
+  /** Whether the Form box starts collapsed for every viewer. Presentation only. */
+  defaultCollapsed: boolean;
 };

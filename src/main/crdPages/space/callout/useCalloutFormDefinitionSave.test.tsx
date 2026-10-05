@@ -20,9 +20,10 @@ describe('useCalloutFormDefinitionSave', () => {
     updateCalloutForm.mockResolvedValue({ data: { updateCalloutForm: { id: 'form-1' } } });
     const { result } = renderHook(() => useCalloutFormDefinitionSave());
 
-    const outcome = await result.current.save(
-      'form-1',
-      [
+    const outcome = await result.current.save('form-1', {
+      title: ' Survey ',
+      description: '',
+      questions: [
         createFormQuestion({
           id: 'q1',
           prompt: ' Pick ',
@@ -30,8 +31,8 @@ describe('useCalloutFormDefinitionSave', () => {
           options: [createFormOption('A', 'o1'), createFormOption('B')],
         }),
       ],
-      { ...DEFAULT_FORM_SETTINGS, state: 'CLOSED' }
-    );
+      settings: { ...DEFAULT_FORM_SETTINGS, state: 'CLOSED', defaultCollapsed: true },
+    });
 
     expect(outcome.ok).toBe(true);
     expect(updateCalloutForm).toHaveBeenCalledTimes(1);
@@ -39,6 +40,8 @@ describe('useCalloutFormDefinitionSave', () => {
     expect(call.context).toEqual({ skipGlobalErrorHandler: true });
     expect(call.variables.formData).toMatchObject({
       formID: 'form-1',
+      title: 'Survey',
+      description: '',
       questions: [
         {
           id: 'q1',
@@ -47,7 +50,7 @@ describe('useCalloutFormDefinitionSave', () => {
           options: [{ id: 'o1', label: 'A' }, { label: 'B' }],
         },
       ],
-      settings: { state: 'CLOSED' },
+      settings: { state: 'CLOSED', defaultCollapsed: true },
     });
   });
 
@@ -55,22 +58,32 @@ describe('useCalloutFormDefinitionSave', () => {
     updateCalloutForm.mockRejectedValue(
       new ApolloError({
         graphQLErrors: [
-          new GraphQLError('rejected', { extensions: { details: { code: 'FORM_VISIBILITY_WIDENING_BLOCKED' } } }),
+          new GraphQLError('rejected', { extensions: { details: { code: 'FORM_UNKNOWN_QUESTION_ID' } } }),
         ],
       })
     );
     const { result } = renderHook(() => useCalloutFormDefinitionSave());
 
-    const outcome = await result.current.save('form-1', [createFormQuestion({ prompt: 'x' })], DEFAULT_FORM_SETTINGS);
+    const outcome = await result.current.save('form-1', {
+      title: '',
+      description: '',
+      questions: [createFormQuestion({ prompt: 'x' })],
+      settings: DEFAULT_FORM_SETTINGS,
+    });
 
-    expect(outcome).toMatchObject({ ok: false, code: 'FORM_VISIBILITY_WIDENING_BLOCKED' });
+    expect(outcome).toMatchObject({ ok: false, code: 'FORM_UNKNOWN_QUESTION_ID' });
   });
 
   it('an error without a reason code still fails cleanly with no code', async () => {
     updateCalloutForm.mockRejectedValue(new Error('network'));
     const { result } = renderHook(() => useCalloutFormDefinitionSave());
 
-    const outcome = await result.current.save('form-1', [createFormQuestion({ prompt: 'x' })], DEFAULT_FORM_SETTINGS);
+    const outcome = await result.current.save('form-1', {
+      title: '',
+      description: '',
+      questions: [createFormQuestion({ prompt: 'x' })],
+      settings: DEFAULT_FORM_SETTINGS,
+    });
 
     expect(outcome).toMatchObject({ ok: false, code: undefined });
   });
@@ -81,9 +94,6 @@ describe('translateFormDefinitionError', () => {
 
   it('maps each definition reason code to its localized key', () => {
     for (const code of [
-      'FORM_VISIBILITY_WIDENING_BLOCKED',
-      'FORM_RESPONSE_MODE_SWITCH_BLOCKED',
-      'FORM_QUESTION_TYPE_LOCKED',
       'FORM_UNKNOWN_QUESTION_ID',
       'FORM_UNKNOWN_OPTION_ID',
       'FORM_QUESTIONS_COUNT',
@@ -96,6 +106,8 @@ describe('translateFormDefinitionError', () => {
 
   it('falls back to the generic message for an unknown or missing code', () => {
     expect(translateFormDefinitionError(undefined, t)).toBe('formForm.errors.saveFailed');
+    // The retired edit-lock codes are no longer recognised at all (R19).
+    expect(translateFormDefinitionError('FORM_QUESTION_TYPE_LOCKED' as never, t)).toBe('formForm.errors.saveFailed');
     expect(translateFormDefinitionError('FORM_CLOSED', t)).toBe('formForm.errors.saveFailed');
   });
 });
