@@ -5235,6 +5235,8 @@ export type MessageAttachment = {
   id?: Maybe<Scalars['UUID']['output']>;
   /** The MIME type of the attachment. */
   mimeType?: Maybe<Scalars['String']['output']>;
+  /** Set by Room.messageAttachments: true when the media is stored but not yet placed in this room, so resolving it again shortly can return the document; false otherwise. Null where not evaluated. */
+  pending?: Maybe<Scalars['Boolean']['output']>;
   /** The size of the attachment in bytes. */
   size?: Maybe<Scalars['Int']['output']>;
   /** The Alkemio document URL (authorized via conversation policy). */
@@ -51897,6 +51899,7 @@ export type RoomMessageAttachmentsQuery = {
               size?: number | undefined;
               width?: number | undefined;
               height?: number | undefined;
+              pending?: boolean | undefined;
             }>;
           };
         }

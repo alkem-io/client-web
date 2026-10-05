@@ -11,6 +11,8 @@ import type { ParsedMessage } from './matrixEvents';
 
 // The server resolves at most this many media events per call.
 const MAX_MEDIA_PER_CALL = 100;
+// Waits before each re-request of media the server reports as still pending.
+const PENDING_RETRY_DELAYS_MS = [1000, 2000, 4000, 8000];
 
 type Resolvable = { readonly eventId: string; readonly media: NonNullable<ParsedMessage['media']> };
 
@@ -58,10 +60,9 @@ const useMessageAttachments = (
     const pendingIds = new Set(pendingKey.split(','));
     const pending = resolvable.filter(item => pendingIds.has(item.eventId));
 
-    for (const batch of chunk(pending, MAX_MEDIA_PER_CALL)) {
-      for (const item of batch) {
-        requested.add(item.eventId);
-      }
+    // Media still being placed in the room resolves filename-only; it is asked
+    // for again, past the cache, on a bounded backoff.
+    const resolveBatch = (batch: Resolvable[], attempt: number): void => {
       client
         .query<RoomMessageAttachmentsQuery, RoomMessageAttachmentsQueryVariables>({
           query: RoomMessageAttachmentsDocument,
@@ -75,19 +76,31 @@ const useMessageAttachments = (
               height: media.height,
             })),
           },
+          fetchPolicy: attempt === 0 ? undefined : 'network-only',
         })
         .then(({ data }) => {
-          const attachments = mapMessageAttachments(data?.lookup?.conversation?.room?.messageAttachments);
+          const raw = data?.lookup?.conversation?.room?.messageAttachments;
+          const attachments = mapMessageAttachments(raw);
           if (attachments.length !== batch.length) {
             throw new Error('attachment count mismatch');
           }
+          const stillPending = batch.filter((_item, index) => raw?.[index]?.pending === true);
           setResolved(previous => {
             const next = new Map(previous);
             batch.forEach((item, index) => {
-              next.set(item.eventId, attachments[index]);
+              if (raw?.[index]?.pending !== true) {
+                next.set(item.eventId, attachments[index]);
+              }
             });
             return next;
           });
+          if (stillPending.length === 0) {
+            return;
+          }
+          if (attempt >= PENDING_RETRY_DELAYS_MS.length) {
+            throw new Error('attachment still pending');
+          }
+          setTimeout(() => resolveBatch(stillPending, attempt + 1), PENDING_RETRY_DELAYS_MS[attempt]);
         })
         .catch(() => {
           // Stays filename-only; the next change in the conversation retries.
@@ -102,6 +115,13 @@ const useMessageAttachments = (
             return next;
           });
         });
+    };
+
+    for (const batch of chunk(pending, MAX_MEDIA_PER_CALL)) {
+      for (const item of batch) {
+        requested.add(item.eventId);
+      }
+      resolveBatch(batch, 0);
     }
     // Results are keyed by event id, so a response arriving after the
     // conversation changed is still correct to keep.

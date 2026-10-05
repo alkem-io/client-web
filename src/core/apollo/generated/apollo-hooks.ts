@@ -35684,6 +35684,7 @@ export const RoomMessageAttachmentsDocument = gql`
           size
           width
           height
+          pending
         }
       }
     }

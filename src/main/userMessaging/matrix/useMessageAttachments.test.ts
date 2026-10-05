@@ -124,4 +124,72 @@ describe('useMessageAttachments', () => {
       'm1',
     ]);
   });
+
+  const answerWith = (pendingIds: (mediaID: string, call: number) => boolean) => {
+    let call = 0;
+    harness.query.mockReset();
+    harness.query.mockImplementation(async ({ variables }) => {
+      call++;
+      return {
+        data: {
+          lookup: {
+            conversation: {
+              room: {
+                messageAttachments: variables.media.map((item: { mediaID: string; displayName: string }) =>
+                  pendingIds(item.mediaID, call)
+                    ? { displayName: item.displayName, pending: true }
+                    : {
+                        id: `doc-${item.mediaID}`,
+                        url: `https://doc/${item.mediaID}`,
+                        displayName: item.displayName,
+                        pending: false,
+                      }
+                ),
+              },
+            },
+          },
+        },
+      };
+    });
+  };
+
+  it('asks again, past the cache, for media still being placed in the room', async () => {
+    vi.useFakeTimers();
+    try {
+      answerWith((mediaID, call) => mediaID === 'm1' && call === 1);
+      const { result } = renderHook(() => useMessageAttachments('conv-5', [media(1, 'm1'), media(2, 'm2')]));
+      await act(async () => {});
+
+      expect(result.current.has('$1')).toBe(false);
+      expect(result.current.get('$2')).toEqual(expect.objectContaining({ id: 'doc-m2' }));
+
+      await act(async () => vi.advanceTimersByTime(1000));
+
+      expect(harness.query).toHaveBeenCalledTimes(2);
+      expect(harness.query.mock.calls[1][0].fetchPolicy).toBe('network-only');
+      expect(harness.query.mock.calls[1][0].variables.media.map((item: { mediaID: string }) => item.mediaID)).toEqual([
+        'm1',
+      ]);
+      expect(result.current.get('$1')).toEqual(expect.objectContaining({ id: 'doc-m1', url: 'https://doc/m1' }));
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('stops asking for media that stays pending after five calls', async () => {
+    vi.useFakeTimers();
+    try {
+      answerWith(() => true);
+      const { result } = renderHook(() => useMessageAttachments('conv-6', [media(1, 'm1')]));
+      await act(async () => {});
+      for (const delay of [1000, 2000, 4000, 8000, 16000, 32000]) {
+        await act(async () => vi.advanceTimersByTime(delay));
+      }
+
+      expect(harness.query).toHaveBeenCalledTimes(5);
+      expect(result.current.has('$1')).toBe(false);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });

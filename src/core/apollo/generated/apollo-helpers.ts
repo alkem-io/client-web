@@ -3118,6 +3118,7 @@ export type MessageAttachmentKeySpecifier = (
   | 'height'
   | 'id'
   | 'mimeType'
+  | 'pending'
   | 'size'
   | 'url'
   | 'width'
@@ -3128,6 +3129,7 @@ export type MessageAttachmentFieldPolicy = {
   height?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   mimeType?: FieldPolicy<any> | FieldReadFunction<any>;
+  pending?: FieldPolicy<any> | FieldReadFunction<any>;
   size?: FieldPolicy<any> | FieldReadFunction<any>;
   url?: FieldPolicy<any> | FieldReadFunction<any>;
   width?: FieldPolicy<any> | FieldReadFunction<any>;

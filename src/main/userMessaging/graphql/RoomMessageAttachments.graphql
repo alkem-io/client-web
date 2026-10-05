@@ -12,6 +12,7 @@ query RoomMessageAttachments($conversationId: UUID!, $media: [MessageAttachmentM
           size
           width
           height
+          pending
         }
       }
     }
