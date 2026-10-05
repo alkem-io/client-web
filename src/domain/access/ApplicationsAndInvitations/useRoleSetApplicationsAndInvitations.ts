@@ -10,6 +10,7 @@ import {
   useEventOnApplicationMutation,
   useInvitationStateEventMutation,
   useInviteForEntryRoleOnRoleSetMutation,
+  useResendPlatformInvitationMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   type ActorDetailsQuery,
@@ -62,6 +63,11 @@ type useRoleSetApplicationsAndInvitationsProvided = {
   invitationStateChange: (invitationId: string, eventName: string) => Promise<unknown>;
   deleteInvitation: (invitationId: string) => Promise<unknown>;
   deletePlatformInvitation: (invitationId: string) => Promise<unknown>;
+  /**
+   * Sends the invitation email of an open platform invitation again. The caller renders the
+   * outcome (including the throttled error), so the global error handler is bypassed.
+   */
+  resendPlatformInvitation: (invitationId: string) => Promise<unknown>;
   refetch: () => Promise<unknown>;
   loading: boolean;
   errored: boolean;
@@ -225,6 +231,16 @@ const useRoleSetApplicationsAndInvitations = ({
       onCompleted: () => refetch(),
     });
 
+  // The record is unchanged by a resend, so nothing is refetched on completion.
+  const [resendPlatformInvitation] = useResendPlatformInvitationMutation();
+  const handleResendPlatformInvitation = (invitationId: string) =>
+    resendPlatformInvitation({
+      variables: {
+        invitationId,
+      },
+      context: { ...mutationContext, skipGlobalErrorHandler: true },
+    });
+
   const [inviteForEntryRoleOnRoleSet] = useInviteForEntryRoleOnRoleSetMutation();
   const handleInviteContributorsOnRoleSet = async ({
     roleSetId,
@@ -273,6 +289,7 @@ const useRoleSetApplicationsAndInvitations = ({
     invitationStateChange: handleInvitationStateChange,
     deleteInvitation: handleDeleteInvitation,
     deletePlatformInvitation: handleDeletePlatformInvitation,
+    resendPlatformInvitation: handleResendPlatformInvitation,
     isApplying,
   };
 };

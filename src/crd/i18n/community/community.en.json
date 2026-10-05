@@ -60,9 +60,6 @@
       "resultsSummary_other": "{{count}} invitations processed for {{spaceName}}.",
       "associates": {
         "title": "Invite associates to \"{{organizationName}}\"",
-        "searchHint": "Search for a registered user to invite as an associate",
-        "searchPlaceholder": "User name…",
-        "searchAriaLabel": "Search for users by name",
         "noResultsLabel": "No matching users",
         "loadingLabel": "Loading users…",
         "defaultWelcomeMessage": "Hi, we would like to invite you to associate with {{organizationName}}. Click the button below to accept or decline the invitation.",

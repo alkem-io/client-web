@@ -3354,6 +3354,7 @@ export type MutationKeySpecifier = (
   | 'reorderPollOptions'
   | 'replaceCollaboraDocument'
   | 'replaceWhiteboardContentFromSource'
+  | 'resendPlatformInvitation'
   | 'resetConversationVc'
   | 'resetLicenseOnAccounts'
   | 'revokeCredentialFromActor'
@@ -3603,6 +3604,7 @@ export type MutationFieldPolicy = {
   reorderPollOptions?: FieldPolicy<any> | FieldReadFunction<any>;
   replaceCollaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   replaceWhiteboardContentFromSource?: FieldPolicy<any> | FieldReadFunction<any>;
+  resendPlatformInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   resetConversationVc?: FieldPolicy<any> | FieldReadFunction<any>;
   resetLicenseOnAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromActor?: FieldPolicy<any> | FieldReadFunction<any>;

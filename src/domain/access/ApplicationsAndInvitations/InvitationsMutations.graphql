@@ -50,3 +50,9 @@ mutation DeletePlatformInvitation($invitationId: UUID!) {
     id
   }
 }
+
+mutation ResendPlatformInvitation($invitationId: UUID!) {
+  resendPlatformInvitation(resendData: { ID: $invitationId }) {
+    id
+  }
+}
