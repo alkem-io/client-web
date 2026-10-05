@@ -233,27 +233,85 @@ describe('FormQuestionsEditor', () => {
     expect(screen.getByRole('textbox', { name: 'formForm.questionNumber#2' })).toHaveValue('One');
   });
 
-  test('one row per question: handle, prompt, type, required, delete — then explanation and options', () => {
+  test('two columns per question: handle and delete on the left; prompt, type, required, explanation, options on the right (R21)', () => {
     render(
       <Harness
         initial={[q('Pick', { type: 'SINGLE_CHOICE', options: [createFormOption('A'), createFormOption('B')] })]}
       />
     );
 
+    const handle = screen.getByRole('button', { name: 'formForm.dragQuestion#1' });
+    const remove = screen.getByRole('button', { name: 'formForm.removeQuestion' });
     const ordered = [
-      screen.getByRole('button', { name: 'formForm.dragQuestion#1' }),
+      handle,
+      remove,
       screen.getByRole('textbox', { name: 'formForm.questionNumber#1' }),
       screen.getByRole('combobox', { name: 'formForm.typeLabel' }),
       screen.getByRole('switch'),
-      screen.getByRole('button', { name: 'formForm.removeQuestion' }),
       screen.getByLabelText('formForm.explanationLabel'),
       screen.getByLabelText('formForm.optionLabel#1'),
+      screen.getByRole('button', { name: 'formForm.addOption' }),
     ];
     for (let i = 1; i < ordered.length; i++) {
       expect(ordered[i - 1].compareDocumentPosition(ordered[i]) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     }
-    // The separate "Question N" title above the row is gone: the label is the only occurrence.
+
+    // The handle and the delete button share the left column; everything else is in the right column.
+    const leftColumn = handle.parentElement as HTMLElement;
+    expect(leftColumn).toContainElement(remove);
+    expect(leftColumn).not.toContainElement(screen.getByRole('textbox', { name: 'formForm.questionNumber#1' }));
+    const rightColumn = leftColumn.nextElementSibling as HTMLElement;
+    expect(rightColumn).toContainElement(screen.getByLabelText('formForm.explanationLabel'));
+    expect(rightColumn).toContainElement(screen.getByLabelText('formForm.optionLabel#1'));
+    // "Add option" is aligned right.
+    expect(screen.getByRole('button', { name: 'formForm.addOption' }).parentElement).toHaveClass('justify-end');
+    // "Required" uses the small field-label size.
+    expect(screen.getByText('formForm.required')).toHaveClass('text-caption');
+    // The separate "Question N" title is gone: the label is the only occurrence.
     expect(screen.getAllByText('formForm.questionNumber#1')).toHaveLength(1);
+  });
+
+  test('a text question renders no options editor', () => {
+    render(<Harness initial={[q('Name')]} />);
+    expect(screen.queryByRole('button', { name: 'formForm.addOption' })).toBeNull();
+    expect(screen.queryByText('formForm.optionsHeading')).toBeNull();
+  });
+
+  test('the delete button shows a "Remove question" tooltip', async () => {
+    render(<Harness initial={[q('One'), q('Two')]} />);
+    await userEvent.hover(screen.getAllByRole('button', { name: 'formForm.removeQuestion' })[0]);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('formForm.removeQuestion');
+  });
+
+  test('an empty question is removed without a confirmation', async () => {
+    const onChange = vi.fn();
+    render(<Harness initial={[q('One'), q('  ')]} onChangeSpy={onChange} />);
+
+    await userEvent.click(screen.getAllByRole('button', { name: 'formForm.removeQuestion' })[1]);
+
+    expect(screen.queryByRole('alertdialog')).toBeNull();
+    const next = onChange.mock.calls.at(-1)?.[0] as FormQuestionValue[];
+    expect(next.map(x => x.prompt)).toEqual(['One']);
+  });
+
+  test.each([
+    ['only an explanation', q('', { explanation: 'Why it matters' })],
+    [
+      'only an option label',
+      q('', { type: 'SINGLE_CHOICE', options: [createFormOption('Yes'), createFormOption('')] }),
+    ],
+  ])('a question with %s asks for confirmation; cancel keeps it', async (_label, filled) => {
+    const onChange = vi.fn();
+    render(<Harness initial={[q('One'), filled]} onChangeSpy={onChange} />);
+
+    await userEvent.click(screen.getAllByRole('button', { name: 'formForm.removeQuestion' })[1]);
+    const dialog = await screen.findByRole('alertdialog');
+    expect(within(dialog).getByText('formForm.removeQuestionConfirm.description')).toBeInTheDocument();
+    await userEvent.click(within(dialog).getByRole('button', { name: 'dialogs.cancel' }));
+
+    await waitFor(() => expect(screen.queryByRole('alertdialog')).toBeNull());
+    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.getByRole('textbox', { name: 'formForm.questionNumber#2' })).toBeInTheDocument();
   });
 
   test('the answer type stays changeable for a question that may have answers', () => {

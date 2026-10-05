@@ -33,6 +33,7 @@ import { Input } from '@/crd/primitives/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
 import { Switch } from '@/crd/primitives/switch';
 import { Textarea } from '@/crd/primitives/textarea';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 
 type FormQuestionsEditorProps = {
   questions: FormQuestionValue[];
@@ -67,6 +68,12 @@ const QUESTION_TYPE_KEY = {
   SINGLE_CHOICE: 'formForm.type.SINGLE_CHOICE',
   MULTIPLE_CHOICE: 'formForm.type.MULTIPLE_CHOICE',
 } as const;
+
+/** Whether removing the question would discard typed input: a prompt, an explanation or an option label. */
+const questionHasContent = (question: FormQuestionValue) =>
+  question.prompt.trim() !== '' ||
+  question.explanation.trim() !== '' ||
+  question.options.some(option => option.label.trim() !== '');
 
 /** One box of the builder: the Form header and each question share this look. */
 const formBuilderBoxClass = 'space-y-3 rounded-lg border bg-card p-4';
@@ -217,15 +224,17 @@ function OptionsEditor({
         </p>
       )}
       {!disabled && question.options.length < FORM_OPTIONS_MAX && (
-        <Button
-          variant="outline"
-          size="sm"
-          className="gap-2"
-          onClick={() => onChange([...question.options, createFormOption()])}
-        >
-          <Plus className="w-4 h-4" aria-hidden="true" />
-          {t('formForm.addOption')}
-        </Button>
+        <div className="flex justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-2"
+            onClick={() => onChange([...question.options, createFormOption()])}
+          >
+            <Plus className="w-4 h-4" aria-hidden="true" />
+            {t('formForm.addOption')}
+          </Button>
+        </div>
       )}
     </div>
   );
@@ -287,136 +296,153 @@ function SortableQuestionRow({
         transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
         transition,
       }}
-      className={cn(formBuilderBoxClass, isDragging && 'opacity-50 z-10')}
+      className={cn(
+        'grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 rounded-lg border bg-card p-4',
+        isDragging && 'opacity-50 z-10'
+      )}
     >
-      {/* One row: handle, prompt, answer type, required, delete. Wraps on narrow screens. */}
-      <div className="flex flex-wrap items-end gap-x-3 gap-y-2">
+      {/* Left column: the drag handle with the delete button beneath it. The top padding lines the
+          handle up with the prompt input, below the prompt's label line. */}
+      <div className="flex flex-col items-center gap-1 pt-5">
         <button
           type="button"
           {...listeners}
           {...attributes}
           disabled={disabled}
-          className="flex h-9 shrink-0 items-center text-muted-foreground hover:text-foreground cursor-grab disabled:cursor-default disabled:opacity-50 touch-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+          className="flex h-9 w-9 shrink-0 items-center justify-center text-muted-foreground hover:text-foreground cursor-grab disabled:cursor-default disabled:opacity-50 touch-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
           aria-label={t('formForm.dragQuestion', { number })}
         >
           <GripVertical className="w-4 h-4" aria-hidden="true" />
         </button>
-
-        <div className="min-w-48 flex-1 space-y-1">
-          <div className="flex items-center justify-between gap-2">
-            <label htmlFor={`${idBase}-prompt`} className="text-caption text-muted-foreground">
-              {t('formForm.questionNumber', { number })}
-            </label>
-            <CharacterCounter length={question.prompt.length} max={FORM_PROMPT_MAX_LENGTH} />
-          </div>
-          <Input
-            id={`${idBase}-prompt`}
-            value={question.prompt}
-            onChange={e => onChange({ ...question, prompt: e.target.value })}
-            placeholder={t('formForm.promptPlaceholder')}
-            aria-invalid={promptError ? true : undefined}
-            aria-describedby={promptError ? `${idBase}-prompt-error` : undefined}
-            disabled={disabled}
-          />
-        </div>
-
-        <Select
-          value={question.type}
-          onValueChange={value => handleTypeChange(value as FormQuestionKind)}
-          disabled={disabled}
-        >
-          <SelectTrigger
-            id={`${idBase}-type`}
-            aria-label={t('formForm.typeLabel')}
-            aria-describedby={typeChangeHint && typeChanged ? `${idBase}-type-hint` : undefined}
-            className="w-full sm:w-44"
-          >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {FORM_QUESTION_KINDS.map(kind => (
-              <SelectItem key={kind} value={kind}>
-                {t(QUESTION_TYPE_KEY[kind])}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <div className="flex h-9 items-center gap-2">
-          <Switch
-            id={`${idBase}-required`}
-            checked={question.required}
-            onCheckedChange={required => onChange({ ...question, required })}
-            disabled={disabled}
-          />
-          <label htmlFor={`${idBase}-required`} className="text-body">
-            {t('formForm.required')}
-          </label>
-        </div>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive"
-          onClick={onRequestRemove}
-          disabled={disabled || !canRemove}
-          aria-label={t('formForm.removeQuestion')}
-        >
-          <Trash2 className="w-4 h-4" aria-hidden="true" />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild={true}>
+            {/* The wrapper keeps the tooltip working while the button is disabled (last question). */}
+            <span className="inline-flex">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive"
+                onClick={onRequestRemove}
+                disabled={disabled || !canRemove}
+                aria-label={t('formForm.removeQuestion')}
+              >
+                <Trash2 className="w-4 h-4" aria-hidden="true" />
+              </Button>
+            </span>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">{t('formForm.removeQuestion')}</TooltipContent>
+        </Tooltip>
       </div>
 
-      {promptError && (
-        <p id={`${idBase}-prompt-error`} className="text-caption text-destructive">
-          {promptError}
-        </p>
-      )}
-      {typeChangeHint && (
-        <div aria-live="polite">
-          {typeChanged && (
-            <p id={`${idBase}-type-hint`} className="text-caption text-muted-foreground">
-              {t('formForm.typeChangeHint')}
+      {/* Right column: prompt, answer type and required on the first line (wraps on narrow screens),
+          then the explanation, then the options of a choice question. */}
+      <div className="min-w-0 space-y-3">
+        <div className="flex flex-wrap items-end gap-x-3 gap-y-2">
+          <div className="min-w-[min(12rem,100%)] flex-1 space-y-1">
+            <div className="flex items-center justify-between gap-2">
+              <label htmlFor={`${idBase}-prompt`} className="text-caption text-muted-foreground">
+                {t('formForm.questionNumber', { number })}
+              </label>
+              <CharacterCounter length={question.prompt.length} max={FORM_PROMPT_MAX_LENGTH} />
+            </div>
+            <Input
+              id={`${idBase}-prompt`}
+              value={question.prompt}
+              onChange={e => onChange({ ...question, prompt: e.target.value })}
+              placeholder={t('formForm.promptPlaceholder')}
+              aria-invalid={promptError ? true : undefined}
+              aria-describedby={promptError ? `${idBase}-prompt-error` : undefined}
+              disabled={disabled}
+            />
+          </div>
+
+          <Select
+            value={question.type}
+            onValueChange={value => handleTypeChange(value as FormQuestionKind)}
+            disabled={disabled}
+          >
+            <SelectTrigger
+              id={`${idBase}-type`}
+              aria-label={t('formForm.typeLabel')}
+              aria-describedby={typeChangeHint && typeChanged ? `${idBase}-type-hint` : undefined}
+              className="w-full sm:w-44"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {FORM_QUESTION_KINDS.map(kind => (
+                <SelectItem key={kind} value={kind}>
+                  {t(QUESTION_TYPE_KEY[kind])}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <div className="flex h-9 items-center gap-2">
+            <Switch
+              id={`${idBase}-required`}
+              checked={question.required}
+              onCheckedChange={required => onChange({ ...question, required })}
+              disabled={disabled}
+            />
+            <label htmlFor={`${idBase}-required`} className="text-caption text-muted-foreground">
+              {t('formForm.required')}
+            </label>
+          </div>
+        </div>
+
+        {promptError && (
+          <p id={`${idBase}-prompt-error`} className="text-caption text-destructive">
+            {promptError}
+          </p>
+        )}
+        {typeChangeHint && (
+          <div aria-live="polite">
+            {typeChanged && (
+              <p id={`${idBase}-type-hint`} className="text-caption text-muted-foreground">
+                {t('formForm.typeChangeHint')}
+              </p>
+            )}
+          </div>
+        )}
+
+        <div className="space-y-1">
+          <div className="flex items-center justify-between gap-2">
+            <label htmlFor={`${idBase}-explanation`} className="text-caption text-muted-foreground">
+              {t('formForm.explanationLabel')}
+            </label>
+            <CharacterCounter length={question.explanation.length} max={FORM_EXPLANATION_MAX_LENGTH} />
+          </div>
+          <Textarea
+            id={`${idBase}-explanation`}
+            value={question.explanation}
+            onChange={e => onChange({ ...question, explanation: e.target.value })}
+            placeholder={t('formForm.explanationPlaceholder')}
+            aria-invalid={explanationError ? true : undefined}
+            aria-describedby={explanationError ? `${idBase}-explanation-error` : undefined}
+            disabled={disabled}
+            rows={1}
+            className="min-h-9"
+          />
+          {explanationError && (
+            <p id={`${idBase}-explanation-error`} className="text-caption text-destructive">
+              {explanationError}
             </p>
           )}
         </div>
-      )}
 
-      <div className="space-y-1">
-        <div className="flex items-center justify-between gap-2">
-          <label htmlFor={`${idBase}-explanation`} className="text-caption text-muted-foreground">
-            {t('formForm.explanationLabel')}
-          </label>
-          <CharacterCounter length={question.explanation.length} max={FORM_EXPLANATION_MAX_LENGTH} />
-        </div>
-        <Textarea
-          id={`${idBase}-explanation`}
-          value={question.explanation}
-          onChange={e => onChange({ ...question, explanation: e.target.value })}
-          placeholder={t('formForm.explanationPlaceholder')}
-          aria-invalid={explanationError ? true : undefined}
-          aria-describedby={explanationError ? `${idBase}-explanation-error` : undefined}
-          disabled={disabled}
-          rows={1}
-          className="min-h-9"
-        />
-        {explanationError && (
-          <p id={`${idBase}-explanation-error`} className="text-caption text-destructive">
-            {explanationError}
-          </p>
+        {isChoiceKind(question.type) && (
+          <OptionsEditor
+            question={question}
+            questionNumber={number}
+            disabled={disabled}
+            errors={errors}
+            errorPrefix={errorPrefix}
+            onChange={options => onChange({ ...question, options })}
+            onRequestRemove={onRequestRemoveOption}
+          />
         )}
       </div>
-
-      {isChoiceKind(question.type) && (
-        <OptionsEditor
-          question={question}
-          questionNumber={number}
-          disabled={disabled}
-          errors={errors}
-          errorPrefix={errorPrefix}
-          onChange={options => onChange({ ...question, options })}
-          onRequestRemove={onRequestRemoveOption}
-        />
-      )}
     </div>
   );
 }
@@ -511,7 +537,8 @@ export function FormQuestionsEditor({
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
-  // Golden Rule 9: every deletion is confirmed. The trash icons only stage the target here.
+  // Golden Rule 9: a deletion that would discard typed input is confirmed; the trash icons only stage the
+  // target here. An option is always confirmed; a question only when it has content (R21).
   const [pendingDelete, setPendingDelete] = useState<PendingDelete | null>(null);
   const itemIds = questions.map(question => question.key);
 
@@ -524,13 +551,24 @@ export function FormQuestionsEditor({
     onChange(arrayMove(questions, from, to));
   };
 
+  const removeQuestion = (index: number) => onChange(questions.filter((_, i) => i !== index));
+
+  const requestRemoveQuestion = (index: number) => {
+    const question = questions[index];
+    if (question && questionHasContent(question)) {
+      setPendingDelete({ kind: 'question', index });
+    } else {
+      removeQuestion(index);
+    }
+  };
+
   const updateQuestion = (index: number, next: FormQuestionValue) =>
     onChange(questions.map((question, i) => (i === index ? next : question)));
 
   const confirmDelete = () => {
     if (!pendingDelete) return;
     if (pendingDelete.kind === 'question') {
-      onChange(questions.filter((_, i) => i !== pendingDelete.index));
+      removeQuestion(pendingDelete.index);
     } else {
       const target = questions[pendingDelete.index];
       if (target) {
@@ -588,7 +626,7 @@ export function FormQuestionsEditor({
                 typeChangeHint={Boolean(question.id && answeredHintQuestionIds.includes(question.id))}
                 errors={errors}
                 onChange={next => updateQuestion(index, next)}
-                onRequestRemove={() => setPendingDelete({ kind: 'question', index })}
+                onRequestRemove={() => requestRemoveQuestion(index)}
                 onRequestRemoveOption={optionIndex => setPendingDelete({ kind: 'option', index, optionIndex })}
               />
             ))}
