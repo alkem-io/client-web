@@ -80,6 +80,22 @@ describe('FormSettingsDialog', () => {
     expect(props.onResponseModeChange).not.toHaveBeenCalled();
   });
 
+  test('an enabled option is described only by its helper text, never by the absent disabled reason', () => {
+    renderDialog({ canWidenVisibility: true, widenDisabledReason: 'cannot widen' });
+
+    const members = screen.getByRole('radio', { name: 'formForm.settings.visibility.MEMBERS' });
+    expect(members).toHaveAttribute('aria-describedby', `${members.id}-description`);
+    expect(members).toHaveAccessibleDescription('formForm.settings.visibilityHelp.MEMBERS');
+  });
+
+  test('a disabled option is described by its helper text and its reason', () => {
+    renderDialog({ canWidenVisibility: false, widenDisabledReason: 'cannot widen' });
+
+    expect(screen.getByRole('radio', { name: 'formForm.settings.visibility.MEMBERS' })).toHaveAccessibleDescription(
+      'formForm.settings.visibilityHelp.MEMBERS cannot widen'
+    );
+  });
+
   test('read-only disables every control', () => {
     renderDialog({ readOnly: true });
     for (const radio of screen.getAllByRole('radio')) expect(radio).toBeDisabled();

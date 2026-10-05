@@ -48,8 +48,9 @@ function OptionRow({
         disabled={disabled}
         className="mt-1"
         aria-describedby={
-          [description ? descriptionId : undefined, disabledReason ? reasonId : undefined].filter(Boolean).join(' ') ||
-          undefined
+          [description ? descriptionId : undefined, disabled && disabledReason ? reasonId : undefined]
+            .filter(Boolean)
+            .join(' ') || undefined
         }
       />
       <div className="space-y-0.5">
