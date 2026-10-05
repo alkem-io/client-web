@@ -186,6 +186,21 @@ describe('useConversationView — read receipts are gated on real presence (FR-0
     expect(readMarkersMock).toHaveBeenCalledTimes(1);
   });
 
+  it('writes the marker again with the next client when the write failed', async () => {
+    readMarkersMock.mockRejectedValueOnce(new Error('M_UNKNOWN_TOKEN'));
+    const { rerender } = renderHook(() => useConversationView(conversation, 'msg-1'));
+    await flush();
+    expect(readMarkersMock).toHaveBeenCalledTimes(1);
+
+    // The session recovers with a fresh client; room, event and activity are unchanged.
+    session.client = { ...matrixClient };
+    rerender();
+
+    await flush();
+    expect(readMarkersMock).toHaveBeenCalledTimes(2);
+    expect(readMarkersMock).toHaveBeenLastCalledWith('!matrix-room-1', 'msg-1', 'msg-1');
+  });
+
   it('does not mark read with no conversation or no message', async () => {
     renderHook(() => useConversationView(null, null));
     renderHook(() => useConversationView(conversation, null));

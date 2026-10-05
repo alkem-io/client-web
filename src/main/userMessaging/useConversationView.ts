@@ -73,7 +73,13 @@ export const useConversationView = (
           return matrixClient.setRoomReadMarkersHttpRequest(matrixRoomId, readUpToEventId, readUpToEventId);
         }
       })
-      .catch(_error => {});
+      .catch(_error => {
+        // Not marked: the next run of this effect (a new client after a
+        // rejected token, among others) writes it again.
+        if (lastMarkedRef.current === key) {
+          lastMarkedRef.current = null;
+        }
+      });
   }, [conversation?.roomId, readUpToEventId, matrixClient, isDocumentActive]);
 
   const handleLeaveGroup = async () => {
