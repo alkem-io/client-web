@@ -64,6 +64,11 @@ const CrdUserNotificationsTab = () => {
     isPlatformAdmin: [AuthorizationPrivilege.PlatformUsersAdmin].some(privilege =>
       Boolean(platformPrivilegeWrapper?.hasPlatformPrivilege(privilege))
     ),
+    // T076 routing (2026-10-05): the server routes platform-admin events to
+    // Support / Users Admin / License Manager / Roles Admin — the holders of
+    // RECEIVE_NOTIFICATIONS_ADMIN — so each of them must reach the toggles.
+    isPlatformAdminRecipient:
+      platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsAdmin) ?? false,
     isOrganizationAdmin:
       platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsOrganizationAdmin) ??
       false,
