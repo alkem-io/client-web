@@ -1,5 +1,4 @@
 import { useResetConversationVcMutation } from '@/core/apollo/generated/apollo-hooks';
-import type { ConversationMessage } from '@/main/userMessaging/useConversationMessages';
 import { useConversationView } from '@/main/userMessaging/useConversationView';
 import type { UnifiedConversation } from './dataMapper';
 
@@ -11,10 +10,10 @@ import type { UnifiedConversation } from './dataMapper';
  */
 export const useUnifiedConversationView = (
   conversation: UnifiedConversation | null,
-  messages: ConversationMessage[],
+  readUpToEventId: string | null,
   onLeaveConversation?: () => void
 ) => {
-  const base = useConversationView(conversation, messages, onLeaveConversation);
+  const base = useConversationView(conversation, readUpToEventId, onLeaveConversation);
   const [resetConversationVc] = useResetConversationVcMutation();
 
   const clearGuidance = async (conversationId: string) => {

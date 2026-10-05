@@ -8,6 +8,7 @@ vi.mock('@/core/matrix/activeClient', () => ({
   useMatrixSessionEstablishing: () => harness.establishing,
 }));
 
+import { computeUnreadCount } from './unreadCount';
 import { useConversationTimeline } from './useConversationTimeline';
 
 const HS = 'hs.test';
@@ -99,17 +100,58 @@ describe('useConversationTimeline', () => {
     expect(client.getRoomIdForAlias).toHaveBeenCalledTimes(2);
   });
 
+  it('puts the read marker past a newest message that is not rendered, so it counts as read', async () => {
+    const event = (id: string, type: string, content: Record<string, unknown>) => ({
+      getId: () => id,
+      getType: () => type,
+      getSender: () => `@a:${HS}`,
+      getTs: () => 0,
+      getOriginalContent: () => content,
+    });
+    const events = [
+      event('$text', 'm.room.message', { msgtype: 'm.text', body: 'hello' }),
+      // Redacted, or sent blank by a member writing to Synapse directly.
+      event('$blank', 'm.room.message', {}),
+      event('$reaction', 'm.reaction', { 'm.relates_to': { rel_type: 'm.annotation', event_id: '$text', key: '👍' } }),
+    ];
+    const { client } = makeClient(0, 0);
+    harness.client = {
+      ...client,
+      getRoom: () => ({ roomId: '!r', getLiveTimeline: () => ({ getEvents: () => events }) }),
+    };
+
+    const { result } = renderHook(() => useConversationTimeline('alk-room'));
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    expect(result.current.messages.map(message => message.eventId)).toEqual(['$text']);
+    expect(result.current.readUpToEventId).toBe('$blank');
+
+    const unreadFrom = (markerEventId: string) =>
+      computeUnreadCount({
+        markerEventId,
+        ownUserId: `@me:${HS}`,
+        loadedNewestFirst: [...events]
+          .reverse()
+          .map(e => ({ eventId: e.getId(), type: e.getType(), sender: e.getSender() })),
+        fetchBatch: async () => ({ events: [] }),
+        notificationCount: () => 99,
+      });
+    expect(await unreadFrom(result.current.readUpToEventId as string)).toBe(0);
+    // Marking only the last rendered message would leave the blank one unread for good.
+    expect(await unreadFrom('$text')).toBe(1);
+  });
+
   it('does nothing without an opened conversation or without a Matrix session', () => {
     const { client, scrollback } = makeClient(10, 10);
     harness.client = client;
     const { result } = renderHook(() => useConversationTimeline(null));
-    expect(result.current).toEqual({ messages: [], isLoading: false });
+    expect(result.current).toEqual({ messages: [], readUpToEventId: null, isLoading: false });
     expect(client.getRoomIdForAlias).not.toHaveBeenCalled();
 
     harness.client = null;
     harness.establishing = false;
     const { result: noSession } = renderHook(() => useConversationTimeline('alk-room'));
-    expect(noSession.current).toEqual({ messages: [], isLoading: false });
+    expect(noSession.current).toEqual({ messages: [], readUpToEventId: null, isLoading: false });
     expect(scrollback).not.toHaveBeenCalled();
   });
 
@@ -117,18 +159,18 @@ describe('useConversationTimeline', () => {
     harness.client = null;
     harness.establishing = true;
     const { result, rerender } = renderHook(() => useConversationTimeline('alk-room'));
-    expect(result.current).toEqual({ messages: [], isLoading: true });
+    expect(result.current).toEqual({ messages: [], readUpToEventId: null, isLoading: true });
 
     harness.establishing = false;
     rerender();
-    expect(result.current).toEqual({ messages: [], isLoading: false });
+    expect(result.current).toEqual({ messages: [], readUpToEventId: null, isLoading: false });
   });
 
   it('shows no loading without an opened conversation even while establishing', () => {
     harness.client = null;
     harness.establishing = true;
     const { result } = renderHook(() => useConversationTimeline(null));
-    expect(result.current).toEqual({ messages: [], isLoading: false });
+    expect(result.current).toEqual({ messages: [], readUpToEventId: null, isLoading: false });
     harness.establishing = false;
   });
 });

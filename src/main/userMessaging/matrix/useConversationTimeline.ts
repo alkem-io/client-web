@@ -1,7 +1,7 @@
 import type { MatrixClient, MatrixEvent, Room } from 'matrix-js-sdk';
 import { useEffect, useState } from 'react';
 import { useMatrixClient, useMatrixSessionEstablishing } from '@/core/matrix/activeClient';
-import { type ParsedMessage, projectMessages } from './matrixEvents';
+import { newestMessageLikeId, type ParsedMessage, projectMessages } from './matrixEvents';
 import {
   CLIENT_ROOM,
   CLIENT_SYNC,
@@ -22,6 +22,8 @@ const ROOM_TIMELINE_RESET = 'Room.timelineReset';
 type TimelineState = {
   readonly roomKey: string | null;
   readonly messages: ParsedMessage[];
+  /** Where the read marker goes once the thread is seen. */
+  readonly readUpToEventId: string | null;
   readonly isLoading: boolean;
 };
 
@@ -44,11 +46,16 @@ const backfill = async (client: MatrixClient, room: Room, isCancelled: () => boo
  * to today's history depth when opened, then follows the live timeline,
  * including reactions and removals.
  */
-const useConversationTimeline = (alkemioRoomId: string | null): { messages: ParsedMessage[]; isLoading: boolean } => {
+const useConversationTimeline = (alkemioRoomId: string | null): Omit<TimelineState, 'roomKey'> => {
   const client = useMatrixClient();
   const establishing = useMatrixSessionEstablishing();
   const roomKey = client && alkemioRoomId ? alkemioRoomId : null;
-  const [state, setState] = useState<TimelineState>({ roomKey: null, messages: [], isLoading: false });
+  const [state, setState] = useState<TimelineState>({
+    roomKey: null,
+    messages: [],
+    readUpToEventId: null,
+    isLoading: false,
+  });
 
   useEffect(() => {
     if (!client || !roomKey) {
@@ -61,7 +68,13 @@ const useConversationTimeline = (alkemioRoomId: string | null): { messages: Pars
 
     const refresh = () => {
       if (!cancelled && room) {
-        setState({ roomKey, messages: projectMessages(liveEvents(room), homeserver), isLoading: loading });
+        const events = liveEvents(room);
+        setState({
+          roomKey,
+          messages: projectMessages(events, homeserver),
+          readUpToEventId: newestMessageLikeId(events),
+          isLoading: loading,
+        });
       }
     };
 
@@ -115,7 +128,7 @@ const useConversationTimeline = (alkemioRoomId: string | null): { messages: Pars
         if (room) {
           void load();
         } else if (!resolved) {
-          setState({ roomKey, messages: [], isLoading: false });
+          setState({ roomKey, messages: [], readUpToEventId: null, isLoading: false });
         }
       });
     // A lookup that failed before the first sync (homeserver not yet reachable)
@@ -127,7 +140,7 @@ const useConversationTimeline = (alkemioRoomId: string | null): { messages: Pars
       }
     };
 
-    setState({ roomKey, messages: [], isLoading: true });
+    setState({ roomKey, messages: [], readUpToEventId: null, isLoading: true });
     client.on(ROOM_TIMELINE as never, onTimeline as never);
     client.on(ROOM_REDACTION as never, onTimeline as never);
     client.on(ROOM_LOCAL_ECHO_UPDATED as never, onLocalEcho as never);
@@ -151,12 +164,12 @@ const useConversationTimeline = (alkemioRoomId: string | null): { messages: Pars
   if (!client) {
     // Without a client the thread waits only while the session is being established
     // (silent sign-in can take a while); not configured or failed shows the empty state.
-    return { messages: [], isLoading: Boolean(alkemioRoomId) && establishing };
+    return { messages: [], readUpToEventId: null, isLoading: Boolean(alkemioRoomId) && establishing };
   }
   if (state.roomKey !== roomKey) {
-    return { messages: [], isLoading: Boolean(roomKey) };
+    return { messages: [], readUpToEventId: null, isLoading: Boolean(roomKey) };
   }
-  return { messages: state.messages, isLoading: state.isLoading };
+  return { messages: state.messages, readUpToEventId: state.readUpToEventId, isLoading: state.isLoading };
 };
 
 export { HISTORY_DEPTH, useConversationTimeline };

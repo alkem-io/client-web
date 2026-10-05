@@ -170,10 +170,24 @@ const lastMessageOf = (events: RawEvent[], homeserver: string): ParsedMessage | 
   return undefined;
 };
 
+/**
+ * The newest message-like event among `events` (oldest first), rendered or
+ * not: the read marker must reach every event the unread count would count.
+ */
+const newestMessageLikeId = (events: RawEvent[]): string | null => {
+  for (let index = events.length - 1; index >= 0; index--) {
+    if (isMessageLike(events[index].type)) {
+      return events[index].eventId;
+    }
+  }
+  return null;
+};
+
 export {
   actorIdOf,
   isMessageLike,
   lastMessageOf,
+  newestMessageLikeId,
   localMediaId,
   projectMessages,
   serverNameOf,

@@ -72,14 +72,18 @@ export const UnifiedChatPanelConnector = () => {
   // of match (unknown/inaccessible id degrades to the default list, no error UI).
   useChatDeepLinkSelect(conversations, isLoading);
   const selectedConversation = conversations.find(conversation => conversation.id === selectedConversationId);
-  const { messages: rawMessages, isLoading: messagesLoading } = useConversationMessages(selectedConversation ?? null);
+  const {
+    messages: rawMessages,
+    readUpToEventId,
+    isLoading: messagesLoading,
+  } = useConversationMessages(selectedConversation ?? null);
   const isGuidanceThread = selectedConversation?.isGuidance ?? false;
 
   // Realtime conversation events are subscribed globally by
   // <ConversationEventsSubscriber /> (mounted in root.tsx) so they arrive with
   // the panel closed too. The selected room's message stream is inside the view hook.
   const { isSending, handleSendMessage, handleAddReaction, handleRemoveReaction, handleLeaveGroup, clearGuidance } =
-    useUnifiedConversationView(selectedConversation ?? null, rawMessages);
+    useUnifiedConversationView(selectedConversation ?? null, readUpToEventId);
 
   const groupSettings = useGroupSettings(selectedConversation?.id, selectedConversation?.members ?? [], {
     displayName: selectedConversation?.roomDisplayName ?? '',

@@ -3,12 +3,11 @@ import { createClient, MatrixEvent, Room, RoomEvent } from 'matrix-js-sdk';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import type { UserConversation } from './models';
-import type { ConversationMessage } from './useConversationMessages';
 import { useConversationView } from './useConversationView';
 
 // ---- Mocks ----
 
-// One /read_markers call per mark: m.fully_read and m.read, both on the last message.
+// One /read_markers call per mark: m.fully_read and m.read, both on the same event.
 const readMarkersMock = vi.fn((_roomId: string, _fullyRead: string, _read?: string) => Promise.resolve({}));
 const sendEventMock = vi.fn((..._args: unknown[]) => Promise.resolve({ event_id: '$sent' }));
 const redactEventMock = vi.fn((..._args: unknown[]) => Promise.resolve({ event_id: '$redaction' }));
@@ -76,14 +75,6 @@ const conversation: UserConversation = {
   members: [],
 };
 
-const message = (id: string): ConversationMessage => ({
-  id,
-  message: `body of ${id}`,
-  timestamp: 1,
-  reactions: [],
-  attachments: [],
-});
-
 beforeEach(() => {
   visibility = 'visible';
   focused = true;
@@ -116,7 +107,7 @@ afterEach(() => {
  */
 describe('useConversationView — read receipts are gated on real presence (FR-018b)', () => {
   it('marks read when the document is visible AND focused', async () => {
-    renderHook(() => useConversationView(conversation, [message('msg-1')]));
+    renderHook(() => useConversationView(conversation, 'msg-1'));
 
     await flush();
     expect(readMarkersMock).toHaveBeenCalledTimes(1);
@@ -126,7 +117,7 @@ describe('useConversationView — read receipts are gated on real presence (FR-0
   it('does NOT mark read while the tab is hidden', async () => {
     visibility = 'hidden';
 
-    renderHook(() => useConversationView(conversation, [message('msg-1')]));
+    renderHook(() => useConversationView(conversation, 'msg-1'));
 
     await flush();
     expect(readMarkersMock).not.toHaveBeenCalled();
@@ -135,15 +126,15 @@ describe('useConversationView — read receipts are gated on real presence (FR-0
   it('does NOT mark read while the window is blurred, even though the tab is visible', async () => {
     focused = false;
 
-    renderHook(() => useConversationView(conversation, [message('msg-1')]));
+    renderHook(() => useConversationView(conversation, 'msg-1'));
 
     await flush();
     expect(readMarkersMock).not.toHaveBeenCalled();
   });
 
   it('does NOT mark a message that arrives while the user is away', async () => {
-    const { rerender } = renderHook(({ messages }) => useConversationView(conversation, messages), {
-      initialProps: { messages: [message('msg-1')] },
+    const { rerender } = renderHook(({ readUpTo }) => useConversationView(conversation, readUpTo), {
+      initialProps: { readUpTo: 'msg-1' },
     });
     await flush();
     expect(readMarkersMock).toHaveBeenCalledTimes(1);
@@ -151,15 +142,15 @@ describe('useConversationView — read receipts are gated on real presence (FR-0
     setActivity({ focused: false });
     readMarkersMock.mockClear();
 
-    rerender({ messages: [message('msg-1'), message('msg-2')] });
+    rerender({ readUpTo: 'msg-2' });
 
     await flush();
     expect(readMarkersMock).not.toHaveBeenCalled();
   });
 
   it('marks read exactly once on returning to an already-open thread with no new message', async () => {
-    const { rerender } = renderHook(({ messages }) => useConversationView(conversation, messages), {
-      initialProps: { messages: [message('msg-1')] },
+    const { rerender } = renderHook(({ readUpTo }) => useConversationView(conversation, readUpTo), {
+      initialProps: { readUpTo: 'msg-1' },
     });
     await flush();
     expect(readMarkersMock).toHaveBeenCalledTimes(1);
@@ -174,15 +165,15 @@ describe('useConversationView — read receipts are gated on real presence (FR-0
     expect(readMarkersMock).toHaveBeenCalledWith('!matrix-room-1', 'msg-1', 'msg-1');
 
     // Re-renders after the return must not re-fire — the ref key blocks it.
-    rerender({ messages: [message('msg-1')] });
-    rerender({ messages: [message('msg-1')] });
+    rerender({ readUpTo: 'msg-1' });
+    rerender({ readUpTo: 'msg-1' });
 
     await flush();
     expect(readMarkersMock).toHaveBeenCalledTimes(1);
   });
 
   it('marks read on returning from a hidden tab too, not only from a blur', async () => {
-    renderHook(() => useConversationView(conversation, [message('msg-1')]));
+    renderHook(() => useConversationView(conversation, 'msg-1'));
     await flush();
     expect(readMarkersMock).toHaveBeenCalledTimes(1);
 
@@ -195,9 +186,9 @@ describe('useConversationView — read receipts are gated on real presence (FR-0
     expect(readMarkersMock).toHaveBeenCalledTimes(1);
   });
 
-  it('does not mark read with no conversation or no messages', async () => {
-    renderHook(() => useConversationView(null, []));
-    renderHook(() => useConversationView(conversation, []));
+  it('does not mark read with no conversation or no message', async () => {
+    renderHook(() => useConversationView(null, null));
+    renderHook(() => useConversationView(conversation, null));
 
     await flush();
     expect(readMarkersMock).not.toHaveBeenCalled();
@@ -217,7 +208,7 @@ const contactable = (isContactable: boolean) => ({
 
 describe('useConversationView — DM consent is checked per text send', () => {
   const send = async (target: UserConversation, text = 'hello', attachments?: string[]) => {
-    const { result } = renderHook(() => useConversationView(target, []));
+    const { result } = renderHook(() => useConversationView(target, null));
     let sent: boolean | undefined;
     await act(async () => {
       sent = await result.current.handleSendMessage(text, attachments);
@@ -242,7 +233,7 @@ describe('useConversationView — DM consent is checked per text send', () => {
 
   it('looks up on every send, network-only, so withdrawn consent blocks the next one', async () => {
     actorDetailsMock.mockResolvedValueOnce(contactable(true)).mockResolvedValueOnce(contactable(false));
-    const { result } = renderHook(() => useConversationView(dm(ActorType.User), []));
+    const { result } = renderHook(() => useConversationView(dm(ActorType.User), null));
 
     let first: boolean | undefined;
     let second: boolean | undefined;
@@ -260,7 +251,7 @@ describe('useConversationView — DM consent is checked per text send', () => {
   it('starts no send before a delayed lookup resolves, and isSending is true meanwhile', async () => {
     let resolveLookup: (value: unknown) => void = () => {};
     actorDetailsMock.mockImplementationOnce(() => new Promise(resolve => (resolveLookup = resolve)));
-    const { result } = renderHook(() => useConversationView(dm(ActorType.User), []));
+    const { result } = renderHook(() => useConversationView(dm(ActorType.User), null));
 
     let sendPromise: Promise<boolean | undefined> = Promise.resolve(undefined);
     await act(async () => {
@@ -309,7 +300,7 @@ describe('useConversationView — DM consent is checked per text send', () => {
 
 describe('useConversationView — writes go straight to Synapse', () => {
   it('a text-only send makes a direct call and no sendMessageToRoom call', async () => {
-    const { result } = renderHook(() => useConversationView(conversation, []));
+    const { result } = renderHook(() => useConversationView(conversation, null));
 
     let sent: boolean | undefined;
     await act(async () => {
@@ -327,7 +318,7 @@ describe('useConversationView — writes go straight to Synapse', () => {
   });
 
   it('a send with attachments calls sendMessageToRoom and makes no direct call', async () => {
-    const { result } = renderHook(() => useConversationView(conversation, []));
+    const { result } = renderHook(() => useConversationView(conversation, null));
 
     await act(async () => {
       await result.current.handleSendMessage('hello', ['doc-1']);
@@ -340,7 +331,7 @@ describe('useConversationView — writes go straight to Synapse', () => {
   it('resolves only after Synapse accepts the event, and keeps isSending true meanwhile', async () => {
     let accept: (value: { event_id: string }) => void = () => {};
     sendEventMock.mockImplementationOnce(() => new Promise(resolve => (accept = resolve)));
-    const { result } = renderHook(() => useConversationView(conversation, []));
+    const { result } = renderHook(() => useConversationView(conversation, null));
 
     let settled = false;
     let sendPromise: Promise<boolean | undefined> = Promise.resolve(undefined);
@@ -365,7 +356,7 @@ describe('useConversationView — writes go straight to Synapse', () => {
     sendEventMock.mockImplementationOnce(() => Promise.reject(new Error('M_FORBIDDEN')));
     const echo = { getTxnId: () => 'txn-1', status: 'not_sent' };
     pendingEvents.push(echo);
-    const { result } = renderHook(() => useConversationView(conversation, []));
+    const { result } = renderHook(() => useConversationView(conversation, null));
 
     let sent: boolean | undefined;
     await act(async () => {
@@ -377,7 +368,7 @@ describe('useConversationView — writes go straight to Synapse', () => {
   });
 
   it('react sends an m.reaction annotation and unreact redacts the reaction event, with no mutation', async () => {
-    const { result } = renderHook(() => useConversationView(conversation, []));
+    const { result } = renderHook(() => useConversationView(conversation, null));
 
     await act(async () => {
       await result.current.handleAddReaction('$msg')('👍');
@@ -422,7 +413,7 @@ describe('useConversationView — local echoes on a real matrix-js-sdk Room', ()
     const { client, room } = realClient();
     session.client = client;
     actorDetailsMock.mockResolvedValue(contactable(true));
-    const { result } = renderHook(() => useConversationView(dm(ActorType.User), []));
+    const { result } = renderHook(() => useConversationView(dm(ActorType.User), null));
 
     let outcome: Promise<boolean | undefined> = Promise.resolve(undefined);
     await act(async () => {
@@ -448,7 +439,7 @@ describe('useConversationView — local echoes on a real matrix-js-sdk Room', ()
   it('the remote echo swaps the local echo in place and emits Room.localEchoUpdated, not Room.timeline', async () => {
     const { client, room } = realClient();
     session.client = client;
-    const { result } = renderHook(() => useConversationView(conversation, []));
+    const { result } = renderHook(() => useConversationView(conversation, null));
 
     let sent: Promise<boolean | undefined> = Promise.resolve(undefined);
     await act(async () => {

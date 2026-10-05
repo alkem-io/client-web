@@ -12,7 +12,6 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { resolveMatrixRoomId } from './matrix/matrixRooms';
 import type { UserConversation } from './models';
-import type { ConversationMessage } from './useConversationMessages';
 import { useIsDocumentActive } from './useIsDocumentActive';
 
 // matrix-js-sdk enum values, as strings so the SDK stays a lazily loaded chunk.
@@ -24,7 +23,8 @@ const ANNOTATION = 'm.annotation' as RelationType.Annotation;
 
 export const useConversationView = (
   conversation: UserConversation | null,
-  messages: ConversationMessage[],
+  /** The newest message-like event of the open thread, rendered or not. */
+  readUpToEventId: string | null,
   onLeaveConversation?: () => void
 ) => {
   const [leaveConversation] = useLeaveConversationMutation();
@@ -53,17 +53,16 @@ export const useConversationView = (
     if (!isDocumentActive) {
       // Forget what was last reported so RETURNING to a conversation that is
       // still open, with no new message since, marks it read again — the key
-      // would otherwise still hold that same last message and block it.
+      // would otherwise still hold that same newest event and block it.
       lastMarkedRef.current = null;
       return;
     }
 
-    if (!matrixClient || !conversation?.roomId || !messages.length) return;
+    if (!matrixClient || !conversation?.roomId || !readUpToEventId) return;
 
-    const lastMessage = messages[messages.length - 1];
-    const key = `${conversation.roomId}:${lastMessage.id}`;
+    const key = `${conversation.roomId}:${readUpToEventId}`;
 
-    // Still keyed on the last message, so regaining activity marks the visible
+    // Still keyed on the newest event, so regaining activity marks the visible
     // thread read exactly once rather than on every subsequent re-render.
     if (lastMarkedRef.current === key) return;
     lastMarkedRef.current = key;
@@ -71,11 +70,11 @@ export const useConversationView = (
     void resolveMatrixRoomId(matrixClient, conversation.roomId)
       .then(matrixRoomId => {
         if (matrixRoomId) {
-          return matrixClient.setRoomReadMarkersHttpRequest(matrixRoomId, lastMessage.id, lastMessage.id);
+          return matrixClient.setRoomReadMarkersHttpRequest(matrixRoomId, readUpToEventId, readUpToEventId);
         }
       })
       .catch(_error => {});
-  }, [conversation?.roomId, messages, matrixClient, isDocumentActive]);
+  }, [conversation?.roomId, readUpToEventId, matrixClient, isDocumentActive]);
 
   const handleLeaveGroup = async () => {
     if (!conversation) return;

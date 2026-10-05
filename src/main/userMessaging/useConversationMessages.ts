@@ -14,7 +14,7 @@ type ConversationRef = {
 
 /** The open conversation's messages, read from the browser's Matrix sync. */
 export const useConversationMessages = (conversation: ConversationRef | null) => {
-  const { messages: parsed, isLoading } = useConversationTimeline(conversation?.roomId ?? null);
+  const { messages: parsed, readUpToEventId, isLoading } = useConversationTimeline(conversation?.roomId ?? null);
   const members = conversation?.members ?? [];
   const attachments = useMessageAttachments(conversation?.id, parsed);
   const otherProfiles = useActorProfiles(nonMemberActorIds(parsed, members));
@@ -25,6 +25,7 @@ export const useConversationMessages = (conversation: ConversationRef | null) =>
 
   return {
     messages,
+    readUpToEventId,
     roomId: conversation?.roomId ?? null,
     isLoading,
   };
