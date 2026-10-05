@@ -15,6 +15,12 @@ describe('getCalloutFormErrorCode', () => {
     );
   });
 
+  it('reads the placement codes (transfer, framing) the server raises outside the Form mutations', () => {
+    for (const code of ['FORM_TRANSFER_NOT_ALLOWED', 'FORM_FRAMING_NOT_ALLOWED', 'FORM_FRAMING_FIXED_KIND']) {
+      expect(getCalloutFormErrorCode(withDetails({ code }))).toBe(code);
+    }
+  });
+
   it('ignores unknown codes, missing details and non-Apollo errors', () => {
     expect(getCalloutFormErrorCode(withDetails({ code: 'SOMETHING_ELSE' }))).toBeUndefined();
     expect(getCalloutFormErrorCode(withDetails(undefined))).toBeUndefined();
