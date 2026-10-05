@@ -41,5 +41,26 @@ export const useAdminAccessGuard = () => {
    */
   const canChangeUserEmail = privileges.some(privilege => privilege === AuthorizationPrivilege.PlatformUsersAdmin);
 
-  return { loading, isPlatformAdmin, canChangeUserEmail };
+  /**
+   * May the viewer read a user's email-change history?
+   *
+   * A capability, not "is an admin". `UserEmailHistoryDialog`'s history read is
+   * gated on `PLATFORM_AUDIT_READ` at its own resolver, so deriving the
+   * affordance from admin-area access hands the History button to every other
+   * role that reaches the shell — including Platform Users Admin, which does
+   * not itself carry that privilege.
+   */
+  const canReadEmailChangeHistory = privileges.includes(AuthorizationPrivilege.PlatformAuditRead);
+
+  /**
+   * May the viewer create a new organization? (client-7)
+   *
+   * A capability, not "is an admin". `createOrganization` is gated on
+   * `CREATE_ORGANIZATION` at its own resolver, so every other role that
+   * reaches the shell — e.g. Platform Content Full Access — must not get the
+   * "New organization" action.
+   */
+  const canCreateOrganization = privileges.includes(AuthorizationPrivilege.CreateOrganization);
+
+  return { loading, isPlatformAdmin, canChangeUserEmail, canReadEmailChangeHistory, canCreateOrganization };
 };

@@ -8,8 +8,13 @@
       "MESSAGING_NOT_ENABLED": "Este usuario ha desactivado la mensajería directa. No puede enviarle un mensaje en este momento.",
       "NOT_SUPPORTED": "No soportado: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
+      "UNSPECIFIED": "Se produjo un error inesperado. Inténtelo de nuevo.",
       "generic": "Se ha producido un error",
       "generic-with-code": "Se ha producido un error con el código {{code}}",
+      "network": {
+        "session_store_unavailable": "El servicio no está disponible temporalmente. Inténtelo de nuevo en un momento.",
+        "generic": "Se produjo un problema de conexión. Compruebe su conexión e inténtelo de nuevo."
+      },
       "support": {
         "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
         "emailBodyGeneric": "Hello,\n\nI encountered an error while using Alkemio.\n\nPlease help me resolve this issue.\n\nThank you.",
@@ -51,7 +56,7 @@
           "userIdentity": "User identity not found."
         },
         "operations": {
-          "calloutClosed": "Callout is closed.",
+          "calloutClosed": "La $t(common.post) está cerrada.",
           "licenseEntitlementNotAvailable": "License entitlement not available.",
           "licenseEntitlementNotSupported": "License entitlement not supported.",
           "messagingNotEnabled": "Messaging not enabled.",
@@ -258,8 +263,8 @@
     "Organization": "Organización",
     "Organizations": "Organizaciones",
     "Poll": "Poll",
-    "Post": "Post",
-    "Posts": "Posts",
+    "Post": "Publicación",
+    "Posts": "Publicaciones",
     "Profile": "Perfil",
     "Response": "Respuesta",
     "Responses": "Respuestas",
@@ -506,8 +511,8 @@
     "permission": "Permiso",
     "permissions": "Permisos",
     "poll": "poll",
-    "post": "post",
-    "posts": "posts",
+    "post": "publicación",
+    "posts": "publicaciones",
     "preview": "Vista previa",
     "profile": "perfil",
     "project": "Proyecto",
@@ -829,8 +834,8 @@
           "subject": "{{triggeredByName}} comentó en {{contributionName}} (contribución) en {{spaceName}}"
         },
         "SPACE_COLLABORATION_CALLOUT_PUBLISHED": {
-          "description": "{{triggeredByName}} publicó un nuevo $t(common.post) en {{spaceLevel}}: {{spaceName}}, con el nombre: {{calloutName}}.",
-          "subject": "{{spaceName}} - Se ha publicado un nuevo $t(common.post) \"{{calloutName}}\", ¡échale un vistazo!"
+          "description": "{{triggeredByName}} publicó una nueva $t(common.post) en {{spaceLevel}}: {{spaceName}}, con el nombre: {{calloutName}}.",
+          "subject": "{{spaceName}} - Se ha publicado una nueva $t(common.post) \"{{calloutName}}\", ¡échale un vistazo!"
         },
         "SPACE_COLLABORATION_CALLOUT_REACTION": {
           "description": "",
@@ -1302,7 +1307,10 @@
         "notL0Space": "Only L0 (top-level) spaces can be transferred",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space",
-        "urlNotUserOrOrg": "URL does not resolve to a user or organization"
+        "urlNotUserOrOrg": "URL does not resolve to a user or organization",
+        "accountNotAccessible": "Esta cuenta existe pero no es accesible para usted.",
+        "successMessage": "Espacio transferido correctamente.",
+        "errorMessage": "No se pudo transferir el espacio."
       },
       "transferVc": {
         "confirmButton": "Transfer",
@@ -1367,12 +1375,12 @@
       },
       "vcConversion": {
         "alreadyConverted": "This virtual contributor is already knowledge-base-based. No conversion needed.",
-        "calloutCount": "Callouts to Migrate",
+        "calloutCount": "$t(common.Posts) a migrar",
         "confirmTitle": "Convert Virtual Contributor?",
-        "confirmWarning": "This will convert the virtual contributor from space-based to knowledge-base-based. Callouts will be MOVED from the source space (not copied). This action cannot be undone.",
+        "confirmWarning": "Esto convertirá el contribuidor virtual de basado en un espacio a basado en una base de conocimiento. Las $t(common.posts) se MOVERÁN desde el espacio de origen (no se copiarán). Esta acción no se puede deshacer.",
         "convertButton": "Convert to Knowledge Base",
         "errorMessage": "Failed to convert virtual contributor.",
-        "sectionDescription": "Convert a space-based virtual contributor to use a knowledge base. Callouts will be moved from the source space — not copied.",
+        "sectionDescription": "Convierte un contribuidor virtual basado en un espacio para que use una base de conocimiento. Las $t(common.posts) se moverán desde el espacio de origen, no se copiarán.",
         "sectionTitle": "Virtual Contributor Type Conversion",
         "sourceSpace": "Source Space",
         "successMessage": "Virtual contributor conversion completed successfully.",
@@ -1575,5 +1583,15 @@
     "archived": "Archivado",
     "demo": "Demo",
     "inactive": "Inactivo"
+  },
+  "messageAttachments": {
+    "videoLabel": "Vídeo adjunto: {{name}}",
+    "videoUnavailableHint": "Este vídeo no se puede reproducir aquí. Descárgalo para verlo.",
+    "listLabel": "Adjuntos",
+    "imageAlt": "Imagen adjunta: {{name}}",
+    "download": "Descargar {{name}}",
+    "unavailableHint": "No se pudo cargar este archivo. Descárgalo para verlo.",
+    "unavailableNoDownload": "Este archivo no está disponible.",
+    "loading": "Cargando adjunto"
   }
 }

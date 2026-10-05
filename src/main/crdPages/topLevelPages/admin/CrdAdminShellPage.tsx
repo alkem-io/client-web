@@ -30,6 +30,7 @@ const CrdAdminShellPage = () => {
     authorization: t('sections.authorization'),
     'authorization-policies': t('sections.authorization-policies'),
     transfer: t('sections.transfer'),
+    licensing: t('sections.licensing'),
   };
 
   // Only the sections this user can actually operate. A `platform-roles-admin`

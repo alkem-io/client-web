@@ -65,8 +65,17 @@ const RoomMessagesFragment = gql`
   }
 `;
 
-// Shared fragment for writing messages to cache
-const MessageCacheFragment = gql`
+// Shared fragment for writing messages to cache.
+//
+// This fragment defines the SHAPE of every realtime-delivered Message that lands
+// in the normalized cache. It must stay a superset of what the message-reading
+// documents select (`ConversationMessages`, `UserConversations.lastMessage`,
+// `ConversationDetails`) — a field selected by a reader but missing here writes
+// an INCOMPLETE `Message` entity, and that field is then simply absent from the
+// UI until something refetches. This is exactly what happened to `attachments`
+// when feature 013 added it to every reader but not here: realtime messages
+// arrived with their media stripped.
+export const MessageCacheFragment = gql`
   fragment MessageCache on Message {
     id
     message
@@ -87,8 +96,39 @@ const MessageCacheFragment = gql`
         }
       }
     }
+    attachments {
+      id
+      url
+      displayName
+      mimeType
+      size
+      width
+      height
+    }
   }
 `;
+
+/**
+ * Builds the normalized `Message` payload for an incoming realtime message.
+ *
+ * Kept next to `MessageCacheFragment` and exported so the pair can be
+ * round-tripped through a real `InMemoryCache` in a test: the fragment and this
+ * payload have to agree field-for-field, and a mismatch on either side is
+ * silent at runtime.
+ */
+export const toMessageCachePayload = (message: MessageReceivedEvent['message']) => ({
+  __typename: 'Message' as const,
+  id: message.id,
+  message: message.message,
+  timestamp: message.timestamp,
+  sender: message.sender,
+  reactions: [],
+  threadID: null,
+  // Media attachments (feature 013). The subscription selects them; without
+  // carrying them here the cached Message is incomplete and the attachments do
+  // not render until a refetch.
+  attachments: message.attachments ?? [],
+});
 
 export const useConversationEventsSubscription = () => {
   const { isEnabled, selectedRoomId, selectedConversationId, setSelectedConversationId, setSelectedRoomId } =
@@ -490,15 +530,7 @@ export const useConversationEventsSubscription = () => {
 
     // Write lastMessage to cache first to get a proper reference
     const lastMessageRef = client.cache.writeFragment({
-      data: {
-        __typename: 'Message',
-        id: event.message.id,
-        message: event.message.message,
-        timestamp: event.message.timestamp,
-        sender: event.message.sender,
-        reactions: [],
-        threadID: null,
-      },
+      data: toMessageCachePayload(event.message),
       fragment: MessageCacheFragment,
     });
 
@@ -549,15 +581,9 @@ export const useConversationEventsSubscription = () => {
             return existing;
           }
 
-          const newMessage = {
-            __typename: 'Message' as const,
-            id: event.message.id,
-            message: event.message.message,
-            timestamp: event.message.timestamp,
-            sender: event.message.sender,
-            reactions: [],
-            threadID: null,
-          };
+          // Same payload the `Room.messages` / `lastMessage` write uses, so both
+          // cache paths land an identically-shaped Message.
+          const newMessage = toMessageCachePayload(event.message);
 
           return {
             ...existing,

@@ -43,15 +43,15 @@
       "descriptionPlaceholder": "Describe this column…",
       "menu": "Column actions",
       "drag": "Drag to reorder phase",
-      "empty": "No callouts in this column yet.",
+      "empty": "No Posts in this column yet.",
       "activePhase": {
         "set": "Mark as active phase",
         "current": "Active phase (current)",
         "badge": "Active phase"
       },
       "defaultCalloutTemplate": {
-        "set": "Set default callout template…",
-        "clear": "Clear default callout template"
+        "set": "Set default Post template…",
+        "clear": "Clear default Post template"
       },
       "editDetails": {
         "menuLabel": "Edit Details",
@@ -70,7 +70,7 @@
         "menuLabel": "Delete phase",
         "confirm": {
           "title": "Delete this phase?",
-          "description": "Callouts currently tagged with this phase will lose the tag. This action cannot be undone.",
+          "description": "Posts currently tagged with this phase will lose the tag. This action cannot be undone.",
           "confirm": "Delete phase",
           "cancel": "Cancel"
         }
@@ -211,7 +211,7 @@
     },
     "row": {
       "drag": "Drag to reorder",
-      "menu": "Callout actions",
+      "menu": "Post actions",
       "moveTo": "Move to",
       "viewPost": "View Post",
       "noOtherColumns": "No other columns"
@@ -245,6 +245,10 @@
       "approve": "Approve",
       "reject": "Reject",
       "delete": "Delete",
+      "resend": "Resend invitation email",
+      "resendSuccess": "Invitation email sent again",
+      "resendThrottled": "Already resent recently — try again in a few minutes",
+      "resendError": "Couldn't resend the invitation email — try again",
       "empty": "No pending memberships.",
       "noMatch": "No pending memberships match the selected filters.",
       "filterLabel": "Filter by status",
@@ -566,8 +570,8 @@
       "preview": {
         "info": "Always included: About information & Settings",
         "states": "Phases",
-        "callouts": "Callouts",
-        "noCalloutsInState": "No callouts in this phase.",
+        "callouts": "Posts",
+        "noCalloutsInState": "No Posts in this phase.",
         "noCalloutDescription": "No description",
         "subspaces": "Includes these subspaces"
       },

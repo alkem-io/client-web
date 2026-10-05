@@ -416,6 +416,15 @@ describe('CrdAdminGlobalRolesPage', () => {
       expect(screen.queryByText('roleMembers.legacyRolesHeading')).toBeNull();
     });
 
+    // client-2: PLATFORM_ROLE_HOLDERS_READ alone (no FEATURE_ROLE_HOLDERS_READ)
+    // is also an additive admitter for the Feature roles' view-only offer.
+    test('a PLATFORM_ROLE_HOLDERS_READ-only holder gets all 14 roles read-only, no add-member button', () => {
+      mockMyPrivileges = [AuthorizationPrivilege.PlatformRoleHoldersRead];
+      render(<CrdAdminGlobalRolesPage />);
+      expect(within(screen.getByRole('navigation')).getAllByRole('button')).toHaveLength(14);
+      expect(screen.queryByRole('button', { name: 'roleMembers.add' })).toBeNull();
+    });
+
     test('a holder of PLATFORM_ROLES_ASSIGN never sees the read-only notice (manage mode, unchanged)', () => {
       render(<CrdAdminGlobalRolesPage />);
       expect(screen.queryByText('roleMembers.readOnlyNotice')).toBeNull();
@@ -454,6 +463,27 @@ describe('CrdAdminGlobalRolesPage', () => {
       render(<CrdAdminGlobalRolesPage />);
       expect(screen.queryByRole('status')).toBeNull();
       expect(screen.getByRole('navigation')).toBeInTheDocument();
+    });
+  });
+
+  // client-15: a URL naming a role the operator isn't offered (typo, stale
+  // link, or a role that doesn't exist) must show an explicit not-found
+  // state instead of silently falling back to the first offered role.
+  describe('unknown role in the URL (client-15)', () => {
+    test('shows roles.notFound and no add-member control for a role not in the offered set', () => {
+      mockPathname = '/admin/authorization/roles/does-not-exist';
+      render(<CrdAdminGlobalRolesPage />);
+      expect(screen.getByText('roles.notFound')).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'roleMembers.add' })).toBeNull();
+      // The role tabs themselves still render.
+      expect(screen.getByRole('navigation')).toBeInTheDocument();
+    });
+
+    test('keeps rendering the selected role editor for a known role in the URL', () => {
+      mockPathname = '/admin/authorization/roles/PLATFORM_ROLES_ADMIN';
+      render(<CrdAdminGlobalRolesPage />);
+      expect(screen.queryByText('roles.notFound')).toBeNull();
+      expect(screen.getByText('Alice (alice@x.io)')).toBeInTheDocument();
     });
   });
   // #9537 (authz admin guard), re-anchored onto the 027 assigner split: the

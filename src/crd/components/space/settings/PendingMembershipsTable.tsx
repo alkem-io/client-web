@@ -1,4 +1,15 @@
-import { Check, ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, ChevronUp, Eye, Trash2, X } from 'lucide-react';
+import {
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsUpDown,
+  ChevronUp,
+  Eye,
+  Send,
+  Trash2,
+  X,
+} from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
@@ -33,6 +44,8 @@ export type PendingMembership = {
   canApprove: boolean;
   canReject: boolean;
   canDelete: boolean;
+  /** Whether the invitation email can be sent again (an open email invitation for someone not yet on the platform). */
+  canResend: boolean;
   /** The extra role(s) offered alongside the entry role, pre-formatted for display (e.g. "Associate + Admin").
    * Only the organization Associates consumer populates this; the "Offered role" column renders only when
    * at least one row in `items` carries it, so other consumers (Space settings) are unaffected. */
@@ -45,6 +58,10 @@ export type PendingMembershipsTableProps = {
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
   onDelete: (id: string) => void;
+  /** Sends the invitation email of a row with `canResend` again. The control is hidden when omitted. */
+  onResend?: (id: string) => void;
+  /** Id of the row whose resend request is in flight — its control is disabled until it settles. */
+  resendingIds?: ReadonlySet<string>;
   /** Overrides the built-in "Pending Memberships" heading — e.g. the organization Associates
    * tab, which renders its own "Pending applications & invitations" card title above this
    * table and would otherwise show the word "Memberships" twice, once in Space-flavoured
@@ -127,6 +144,8 @@ export function PendingMembershipsTable({
   onApprove,
   onReject,
   onDelete,
+  onResend,
+  resendingIds,
   title,
   className,
 }: PendingMembershipsTableProps) {
@@ -254,7 +273,7 @@ export function PendingMembershipsTable({
               <SortableHead {...headProps('status', t('community.pendingMemberships.status.column'))} />
               <SortableHead {...headProps('type', t('community.pendingMemberships.type'))} />
               {hasOfferedRole && <TableHead>{t('community.pendingMemberships.offeredRole.column')}</TableHead>}
-              <TableHead className="w-[160px] text-right">{t('community.pendingMemberships.actions')}</TableHead>
+              <TableHead className="w-[200px] text-right">{t('community.pendingMemberships.actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -356,6 +375,24 @@ export function PendingMembershipsTable({
                             : t('community.pendingMemberships.viewInvitation')}
                         </TooltipContent>
                       </Tooltip>
+                      {row.canResend && onResend && (
+                        <Tooltip>
+                          <TooltipTrigger asChild={true}>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="size-8"
+                              disabled={isTransient(row.state) || resendingIds?.has(row.id)}
+                              onClick={() => onResend(row.id)}
+                              aria-label={t('community.pendingMemberships.resend')}
+                            >
+                              <Send aria-hidden="true" className="size-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>{t('community.pendingMemberships.resend')}</TooltipContent>
+                        </Tooltip>
+                      )}
                       {row.canDelete ? (
                         <Button
                           type="button"

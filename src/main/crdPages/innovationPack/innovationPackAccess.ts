@@ -11,7 +11,7 @@ import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 /** `updateInnovationPack` / hub update: the owner's `Update`, or Platform Support's
  * `PlatformSupportOrgResources` (cascaded from an ORGANIZATION account only — a
  * user-hosted pack reports neither to Support, by FR-008(b)). */
-export const canEditInnovationPack = (myPrivileges: readonly AuthorizationPrivilege[] | undefined): boolean =>
+export const canEditOrgResource = (myPrivileges: readonly AuthorizationPrivilege[] | undefined): boolean =>
   (myPrivileges ?? []).some(
     p => p === AuthorizationPrivilege.Update || p === AuthorizationPrivilege.PlatformSupportOrgResources
   );

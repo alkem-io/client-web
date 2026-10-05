@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 import CrdAdminSpacesPage from '../CrdAdminSpacesPage';
@@ -24,9 +24,14 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useAdminUpdateSpaceNameIdMutation: () => [updateSpaceNameIdMock, { loading: false }],
   refetchPlatformAdminSpacesListQuery: () => ({}),
 }));
-vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
+const notify = vi.fn();
+vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notify }));
 vi.mock('../SpaceLicensePlansDialog', () => ({
   SpaceLicensePlansDialog: ({ open }: { open: boolean }) => (open ? <div role="dialog">license dialog</div> : null),
+}));
+const canManageLicensePlansMock = vi.fn();
+vi.mock('@/domain/platformAdmin/domain/licensing/useCanManageLicensePlans', () => ({
+  default: () => canManageLicensePlansMock(),
 }));
 
 const spaces = [
@@ -39,20 +44,23 @@ const spaces = [
       profile: { displayName: 'Alpha', url: '/space/alpha' },
       provider: { profile: { displayName: 'Org A' } },
     },
-    authorization: { myPrivileges: [] },
+    authorization: { myPrivileges: ['ACCOUNT_LICENSE_MANAGE', 'DELETE'] },
   },
   {
     id: 's2',
     nameID: 's2',
     visibility: 'ARCHIVED',
     about: { id: 'a2', profile: { displayName: 'Beta', url: '/space/beta' }, provider: null },
-    authorization: { myPrivileges: [] },
+    authorization: { myPrivileges: ['ACCOUNT_LICENSE_MANAGE', 'DELETE'] },
   },
 ];
 
 beforeEach(() => {
   vi.clearAllMocks();
   useSpacesListMock.mockReturnValue({ data: { platformAdmin: { spaces } }, loading: false });
+  updateSpaceVisibilityMock.mockResolvedValue(undefined);
+  updateSpaceNameIdMock.mockResolvedValue(undefined);
+  canManageLicensePlansMock.mockReturnValue(true);
 });
 
 describe('CrdAdminSpacesPage', () => {
@@ -97,7 +105,8 @@ describe('CrdAdminSpacesPage', () => {
   });
 
   // 027-platform-role-redesign (T013, FR-020): alias and visibility are two
-  // mutations owned by different roles, each sent ONLY when its value changed.
+  // mutations owned by different roles, each sent ONLY when its value changed
+  // (client-8's "an unchanged alias is never sent" is the nothing-changed case).
   test('edit-settings opens the alias/visibility dialog; saving with nothing changed sends nothing', async () => {
     render(<CrdAdminSpacesPage />);
     await userEvent.click(screen.getAllByRole('button', { name: 'spaces.editSettings' })[0]);
@@ -108,7 +117,26 @@ describe('CrdAdminSpacesPage', () => {
     expect(updateSpaceNameIdMock).not.toHaveBeenCalled();
   });
 
-  test('changing only the alias sends the protected nameID update and not the visibility one', async () => {
+  test('changing only the alias sends the trimmed protected nameID update and not the visibility one', async () => {
+    render(<CrdAdminSpacesPage />);
+    await userEvent.click(screen.getAllByRole('button', { name: 'spaces.editSettings' })[0]);
+    const dialog = screen.getByRole('dialog');
+    const alias = within(dialog).getByDisplayValue('s1');
+    await userEvent.clear(alias);
+    await userEvent.type(alias, ' s1-renamed ');
+    await userEvent.click(within(dialog).getByRole('button', { name: 'spaces.save' }));
+    expect(updateSpaceNameIdMock).toHaveBeenCalledWith({
+      variables: { spaceId: 's1', nameId: 's1-renamed' },
+    });
+    expect(updateSpaceVisibilityMock).not.toHaveBeenCalled();
+  });
+
+  // client-8: a denied save must surface the standard toast and leave the dialog open
+  // so the admin can see the failure, instead of silently closing.
+  test('a FORBIDDEN_POLICY rejection notifies and keeps the dialog open', async () => {
+    updateSpaceNameIdMock.mockRejectedValueOnce({
+      graphQLErrors: [{ message: 'nope', extensions: { code: 'FORBIDDEN_POLICY' } }],
+    });
     render(<CrdAdminSpacesPage />);
     await userEvent.click(screen.getAllByRole('button', { name: 'spaces.editSettings' })[0]);
     const dialog = screen.getByRole('dialog');
@@ -116,9 +144,27 @@ describe('CrdAdminSpacesPage', () => {
     await userEvent.clear(alias);
     await userEvent.type(alias, 's1-renamed');
     await userEvent.click(within(dialog).getByRole('button', { name: 'spaces.save' }));
-    expect(updateSpaceNameIdMock).toHaveBeenCalledWith({
-      variables: { spaceId: 's1', nameId: 's1-renamed' },
+
+    await waitFor(() => expect(notify).toHaveBeenCalledWith('permissions.errorDenied', 'error'));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
+  test('license-plans action is absent without the manage-license-plans capability', () => {
+    canManageLicensePlansMock.mockReturnValue(false);
+    render(<CrdAdminSpacesPage />);
+    expect(screen.queryByRole('button', { name: 'licensePlans.manage' })).toBeNull();
+  });
+
+  test('edit-settings action is absent without canEditPlatformSettings', () => {
+    useSpacesListMock.mockReturnValue({
+      data: {
+        platformAdmin: {
+          spaces: [{ ...spaces[0], authorization: { myPrivileges: ['READ'] } }],
+        },
+      },
+      loading: false,
     });
-    expect(updateSpaceVisibilityMock).not.toHaveBeenCalled();
+    render(<CrdAdminSpacesPage />);
+    expect(screen.queryByRole('button', { name: 'spaces.editSettings' })).toBeNull();
   });
 });

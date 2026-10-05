@@ -1,5 +1,6 @@
 import { Upload, X } from 'lucide-react';
 import { type DragEvent, type KeyboardEvent, useId, useRef, useState } from 'react';
+import { formatBytes } from '@/crd/lib/formatBytes';
 import { cn } from '@/crd/lib/utils';
 
 export type DocumentImportError =
@@ -41,12 +42,6 @@ export type DocumentImportZoneProps = {
   labelRemoveFile: string;
   /** Pre-formatted error message to render. The consumer is responsible for picking the message that matches `error.kind`. */
   errorMessage: string | null;
-};
-
-const formatBytes = (bytes: number): string => {
-  if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  if (bytes >= 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${bytes} B`;
 };
 
 export function DocumentImportZone({

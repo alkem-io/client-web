@@ -8,8 +8,13 @@
       "MESSAGING_NOT_ENABLED": "Deze gebruiker heeft direct berichten uitgeschakeld. Je kunt hen op dit moment geen bericht sturen.",
       "NOT_SUPPORTED": "Niet ondersteund: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
+      "UNSPECIFIED": "Er is een onverwachte fout opgetreden. Probeer het opnieuw.",
       "generic": "Er is een fout opgetreden",
       "generic-with-code": "Er is een fout opgetreden met code {{code}}",
+      "network": {
+        "session_store_unavailable": "De dienst is tijdelijk niet beschikbaar. Probeer het over een moment opnieuw.",
+        "generic": "Er is een verbindingsprobleem opgetreden. Controleer je verbinding en probeer het opnieuw."
+      },
       "support": {
         "emailBody": "Hallo,\n\nIk ben een fout tegengekomen tijdens het gebruik van Alkemio.\n\nError Code: {{code}}\n\nHelp me dit probleem op te lossen.\n\nBedankt.",
         "emailBodyGeneric": "Hallo,\n\nIk ben een fout tegengekomen tijdens het gebruik van Alkemio.\n\nHelp me dit probleem op te lossen.\n\nBedankt.",
@@ -51,7 +56,7 @@
           "userIdentity": "Gebruikersidentiteit niet gevonden."
         },
         "operations": {
-          "calloutClosed": "Callout is gesloten.",
+          "calloutClosed": "$t(common.Post) is gesloten.",
           "licenseEntitlementNotAvailable": "Licentierecht niet beschikbaar.",
           "licenseEntitlementNotSupported": "Licentierechten worden niet ondersteund.",
           "messagingNotEnabled": "Berichten niet ingeschakeld.",
@@ -1302,7 +1307,10 @@
         "notL0Space": "Alleen L0 (hoogste niveau) spaces kunnen worden getransferd",
         "urlNotFound": "URL niet gevonden",
         "urlNotSpace": "URL leidt niet naar een space",
-        "urlNotUserOrOrg": "URL leidt niet naar een gebruiker of organisatie"
+        "urlNotUserOrOrg": "URL leidt niet naar een gebruiker of organisatie",
+        "accountNotAccessible": "Dit account bestaat, maar is niet toegankelijk voor u.",
+        "successMessage": "Space succesvol getransfereerd.",
+        "errorMessage": "De space kon niet worden getransfereerd."
       },
       "transferVc": {
         "confirmButton": "Transfer",
@@ -1367,12 +1375,12 @@
       },
       "vcConversion": {
         "alreadyConverted": "Deze virtual contributor is al gebaseerd op een knowledge base. Er is geen conversie nodig.",
-        "calloutCount": "Te migreren Callouts",
+        "calloutCount": "Te migreren $t(common.Posts)",
         "confirmTitle": "Virtual Contributor converteren?",
-        "confirmWarning": "Dit zal de virtual contributor omzetten van space-gebaseerd naar knowledge-base-gebaseerd. Callouts worden VERPLAATST vanuit de bronspace (niet gekopieerd). Deze actie kan niet ongedaan worden gemaakt.",
+        "confirmWarning": "Dit zal de virtual contributor omzetten van space-gebaseerd naar knowledge-base-gebaseerd. $t(common.Posts) worden VERPLAATST vanuit de bronspace (niet gekopieerd). Deze actie kan niet ongedaan worden gemaakt.",
         "convertButton": "Converteren naar Knowledge Base",
         "errorMessage": "Omzetten van Virtual Contributor mislukt.",
-        "sectionDescription": "Zet een space-gebaseerde virtual contributor om naar het gebruik van een knowledge base. Callouts worden verplaatst vanuit de bronspace — niet gekopieerd.",
+        "sectionDescription": "Zet een space-gebaseerde virtual contributor om naar het gebruik van een knowledge base. $t(common.Posts) worden verplaatst vanuit de bronspace — niet gekopieerd.",
         "sectionTitle": "Virtual Contributor Type conversie",
         "sourceSpace": "Source Space",
         "successMessage": "Virtual Contributor conversie succesvol voltooid.",
@@ -1575,5 +1583,15 @@
     "archived": "Gearchiveerd",
     "demo": "Demo",
     "inactive": "Inactief"
+  },
+  "messageAttachments": {
+    "videoLabel": "Bijgevoegde video: {{name}}",
+    "videoUnavailableHint": "Deze video kan hier niet worden afgespeeld. Download de video om deze te bekijken.",
+    "listLabel": "Bijlagen",
+    "imageAlt": "Bijgevoegde afbeelding: {{name}}",
+    "download": "{{name}} downloaden",
+    "unavailableHint": "Dit bestand kon niet worden geladen. Download het om te bekijken.",
+    "unavailableNoDownload": "Dit bestand is niet beschikbaar.",
+    "loading": "Bijlage laden"
   }
 }

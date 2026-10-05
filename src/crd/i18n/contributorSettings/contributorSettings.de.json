@@ -508,11 +508,11 @@
       "rows": {
         "space": {
           "communicationUpdates": "Benachrichtigung erhalten, wenn eine neue Mitteilung in einer Community geteilt wird",
-          "collaborationCalloutPublished": "Benachrichtigung erhalten, wenn ein Callout in einer Community veröffentlicht wird, in der ich Mitglied bin",
+          "collaborationCalloutPublished": "Benachrichtigung erhalten, wenn ein Beitrag in einer Community veröffentlicht wird, in der ich Mitglied bin",
           "collaborationCalloutReaction": "Benachrichtigung erhalten, wenn jemand auf meinen Post mit einem Emoji reagiert",
-          "collaborationCalloutPostContributionComment": "Benachrichtigung erhalten, wenn ein Beitrag, dem ich folge, kommentiert wird",
-          "collaborationCalloutContributionCreated": "Benachrichtigung erhalten, wenn ein neuer Beitrag zu einem Callout erstellt wird",
-          "collaborationCalloutComment": "Benachrichtigung erhalten, wenn ein neuer Kommentar zu einem Callout, dem ich folge, hinzugefügt wird",
+          "collaborationCalloutPostContributionComment": "Benachrichtigung erhalten, wenn jemand eine Antwort kommentiert, die ich erstellt habe",
+          "collaborationCalloutContributionCreated": "Benachrichtigung erhalten, wenn eine neue Antwort zu einem Beitrag hinzugefügt wird",
+          "collaborationCalloutComment": "Benachrichtigung erhalten, wenn ein neuer Kommentar zu einem Beitrag in einer Community hinzugefügt wird, in der ich Mitglied bin",
           "communityCalendarEvents": "Benachrichtigungen für Community-Kalenderereignisse erhalten",
           "collaborationPollVoteCastOnOwnPoll": "Benachrichtigung erhalten, wenn jemand in meiner Umfrage abstimmt",
           "collaborationPollVoteCastOnPollIVotedOn": "Benachrichtigung erhalten, wenn jemand in einer Umfrage abstimmt, in der ich abgestimmt habe",
@@ -523,7 +523,7 @@
           "communityApplicationReceived": "Benachrichtigung erhalten, wenn eine neue Community-Bewerbung eingeht",
           "communityNewMember": "Erhalten Sie eine Benachrichtigung, wenn ein neues Mitglied der Community beitritt",
           "communityInvitationResponse": "Erhalten Sie eine Benachrichtigung, wenn jemand eine Einladung zu einem von Ihnen verwalteten Space annimmt oder ablehnt",
-          "collaborationCalloutContributionCreated": "Benachrichtigung erhalten, wenn ein neuer Beitrag zu einem Callout erstellt wird",
+          "collaborationCalloutContributionCreated": "Benachrichtigung erhalten, wenn eine neue Antwort zu einem Beitrag hinzugefügt wird",
           "communicationMessageReceived": "Benachrichtigung erhalten, wenn eine Community-Nachricht empfangen wird",
           "userEmailChanged": "Benachrichtigung erhalten, wenn die Anmelde-E-Mail-Adresse eines Mitglieds eines von dir verwalteten Space geändert wird"
         },
@@ -539,7 +539,7 @@
           "membershipOrganizationAssociateApplicationDecided": "Benachrichtigung erhalten, wenn eine Organisation über meine Bewerbung entscheidet"
         },
         "platform": {
-          "forumDiscussionComment": "Benachrichtigung erhalten, wenn ein neuer Kommentar zu einer Diskussion, der ich folge, hinzugefügt wird",
+          "forumDiscussionComment": "Benachrichtigung erhalten, wenn jemand eine Diskussion kommentiert, die ich erstellt habe",
           "forumDiscussionCreated": "Benachrichtigung erhalten, wenn eine neue Plattform-Diskussion erstellt wird"
         },
         "platformAdmin": {
@@ -849,8 +849,7 @@
         "cancel": "Abbrechen",
         "removeSuccess": "{{name}} wurde aus der Organisation entfernt",
         "removeError": "{{name}} konnte nicht entfernt werden – bitte erneut versuchen",
-        "saveError": "Änderungen konnten nicht gespeichert werden – bitte erneut versuchen",
-        "selfAdminLocked": "Sie können Ihre eigene Admin-Rolle hier nicht entfernen."
+        "saveError": "Änderungen konnten nicht gespeichert werden – bitte erneut versuchen"
       },
       "errors": {
         "limitAdmin": "Eine Organisation kann höchstens 6 Admins haben",

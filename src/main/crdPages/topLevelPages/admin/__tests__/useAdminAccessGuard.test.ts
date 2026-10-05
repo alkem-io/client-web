@@ -85,6 +85,12 @@ describe('useAdminAccessGuard', () => {
     ).toBe(true);
   });
 
+  // R-F.3 (2026-09-18): the License Manager reports nothing of its own at
+  // platform level (F1); the server's dedicated list read is what admits it.
+  test('admits Platform License Manager via PlatformLicensingListsRead (R-F.3)', () => {
+    expect(guard({ platform: ['PLATFORM_LICENSING_LISTS_READ'] }).isPlatformAdmin).toBe(true);
+  });
+
   test('admits Platform Audit Reader for its view-only holder lists', () => {
     expect(guard({ platform: ['PLATFORM_AUDIT_READ'], roleSet: ['PLATFORM_ROLE_HOLDERS_READ'] }).isPlatformAdmin).toBe(
       true
@@ -111,7 +117,7 @@ describe('useAdminAccessGuard', () => {
    */
   test.each([
     ['Platform Settings Admin', { platform: ['PLATFORM_SETTINGS_ADMIN'] }],
-    ['Platform License Manager + Beta Tester', { myRoles: ['PLATFORM_LICENSE_MANAGER', 'FEATURE_BETA_TESTER'] }],
+    ['Feature Beta Tester', { myRoles: ['FEATURE_BETA_TESTER'] }],
   ])('denies %s — no usable section', (_role, fixture) => {
     expect(guard(fixture).isPlatformAdmin).toBe(false);
   });
@@ -140,6 +146,38 @@ describe('useAdminAccessGuard', () => {
     test('withheld from other admin-area roles that cannot perform it', () => {
       expect(guard({ roleSet: ['GRANT_GLOBAL_ADMINS'] }).canChangeUserEmail).toBe(false);
       expect(guard({ platform: ['PLATFORM_CONTENT_FULL_ACCESS'] }).canChangeUserEmail).toBe(false);
+    });
+  });
+
+  /**
+   * `canReadEmailChangeHistory` is a capability, not admin standing. The email
+   * change history is read-gated on `PLATFORM_AUDIT_READ` at its own resolver
+   * (client-6), so a role that reaches the shell without that privilege — e.g.
+   * Platform Users Admin itself — must not see the History button.
+   */
+  describe('canReadEmailChangeHistory', () => {
+    test('withheld from Platform Users Admin, which does not carry PlatformAuditRead', () => {
+      expect(guard({ platform: ['PLATFORM_USERS_ADMIN'] }).canReadEmailChangeHistory).toBe(false);
+    });
+
+    test('granted to Platform Audit Reader', () => {
+      expect(guard({ platform: ['PLATFORM_AUDIT_READ'] }).canReadEmailChangeHistory).toBe(true);
+    });
+  });
+
+  /**
+   * `canCreateOrganization` is a capability, not admin standing (client-7): the
+   * "New organization" action is gated on `CREATE_ORGANIZATION` at its own
+   * resolver, so a role that reaches the shell without it — e.g. Platform
+   * Content Full Access — must not see the button.
+   */
+  describe('canCreateOrganization', () => {
+    test('granted with CreateOrganization', () => {
+      expect(guard({ platform: ['CREATE_ORGANIZATION'] }).canCreateOrganization).toBe(true);
+    });
+
+    test('withheld without it', () => {
+      expect(guard({ platform: ['PLATFORM_CONTENT_FULL_ACCESS'] }).canCreateOrganization).toBe(false);
     });
   });
 });

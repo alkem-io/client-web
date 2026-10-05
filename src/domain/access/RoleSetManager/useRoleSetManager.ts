@@ -92,8 +92,9 @@ export const getOfferedPlatformRoles = (
 };
 
 /**
- * 027-platform-role-redesign (T013, Slice B): `isLegacyPlatformAdminEquivalent`
- * and `getOfferedLegacyPlatformRoles` are DELETED with the roles they offered.
+ * 027-platform-role-redesign (T013, Slice B): `isLegacyPlatformAdminEquivalent`,
+ * `getOfferedLegacyPlatformRoles` and client-14's per-role
+ * `canRevokeLegacyPlatformRole` are DELETED with the roles they offered.
  *
  * The gate was subtle and worth recording: sec-client-web-4/spec-clientweb-3
  * found that gating the legacy panel on `PLATFORM_ROLES_ASSIGN` offered a Remove
@@ -117,10 +118,15 @@ export const getOfferedPlatformRoles = (
  * them straight into `noAssignablePrivilege` withdraws that read visibility
  * with no server-side change behind it. This is a separate, narrower offer:
  * a role appears here only when the operator can actually have its holder
- * list read (mirrors the server's per-role-family read gate — plain `READ`
- * is the legacy additive admitter for both families, same as
- * `HOLDER_READ_PRIVILEGES` above), and the caller renders it read-only
- * (view only, no add/remove) rather than predicting a management rule.
+ * list read, and the caller renders it read-only (view only, no add/remove)
+ * rather than predicting a management rule.
+ *
+ * client-2: `PLATFORM_ROLE_HOLDERS_READ` is, like plain `READ`, an additive
+ * admitter for BOTH role families — not scoped to the 10 Platform roles
+ * only. A holder of just `PLATFORM_ROLE_HOLDERS_READ` still needs to see the
+ * 4 Feature roles' holders (e.g. to confirm nobody unexpected holds one), so
+ * it is included in both checks below; `FEATURE_ROLE_HOLDERS_READ` stays
+ * scoped to the Feature roles only.
  */
 export const getViewOnlyPlatformRoles = (
   myPrivileges: AuthorizationPrivilege[] | undefined
@@ -137,7 +143,8 @@ export const getViewOnlyPlatformRoles = (
   }
   if (
     myPrivileges.includes(AuthorizationPrivilege.Read) ||
-    myPrivileges.includes(AuthorizationPrivilege.FeatureRoleHoldersRead)
+    myPrivileges.includes(AuthorizationPrivilege.FeatureRoleHoldersRead) ||
+    myPrivileges.includes(AuthorizationPrivilege.PlatformRoleHoldersRead)
   ) {
     roles.push(...FEATURE_ROLES);
   }

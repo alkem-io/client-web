@@ -8,7 +8,6 @@ import {
 } from '@/crd/components/organization/settings/OrgAssociateSettingsDialog';
 import { OrgAssociatesTabView } from '@/crd/components/organization/settings/OrgAssociatesTabView';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import {
   MembershipDetailDialogConnector,
   type ViewingMembership,
@@ -16,7 +15,7 @@ import {
 import { OrgInviteAssociatesDialogConnector } from './OrgInviteAssociatesDialogConnector';
 import { useOrgAssociatesTabData } from './useOrgAssociatesTabData';
 
-/** One destructive confirmation serves all three actions; only the copy differs. */
+/** One destructive confirmation serves every action; only the copy differs. */
 const CONFIRMATION_COPY = {
   removeAll: {
     title: 'org.associates.editor.removeConfirmTitle',
@@ -29,6 +28,11 @@ const CONFIRMATION_COPY = {
     confirm: 'org.associates.pending.rejectConfirm',
   },
   revokeInvitation: {
+    title: 'org.associates.pending.revokeConfirmTitle',
+    body: 'org.associates.pending.revokeConfirmBody',
+    confirm: 'org.associates.pending.revokeConfirm',
+  },
+  revokePlatformInvitation: {
     title: 'org.associates.pending.revokeConfirmTitle',
     body: 'org.associates.pending.revokeConfirmBody',
     confirm: 'org.associates.pending.revokeConfirm',
@@ -50,7 +54,6 @@ const ROLE_LIMIT_KEY_BY_ERROR = {
 const CrdOrgAssociatesTab = () => {
   const { t } = useTranslation('crd-contributorSettings');
   const { roleSetId, displayName } = useOrganizationContext();
-  const { userModel } = useCurrentUserContext();
 
   usePageTitle(t('org.community.pageTitle'));
 
@@ -118,6 +121,8 @@ const CrdOrgAssociatesTab = () => {
         onPendingApprove={state.onPendingApprove}
         onPendingReject={state.onPendingReject}
         onPendingRevoke={state.onPendingRevoke}
+        onPendingResend={state.onPendingResend}
+        resendingIds={state.resendingIds}
         onPendingView={id => {
           const item = state.pendingMemberships.find(m => m.id === id);
           if (item) setViewingMembership({ id: item.id, type: item.type });
@@ -134,7 +139,6 @@ const CrdOrgAssociatesTab = () => {
         }}
         subject={editingSubject}
         saving={state.updating}
-        isSelf={Boolean(userModel?.id) && editingSubject?.id === userModel?.id}
         errorMessage={roleLimitErrorMessage}
         onSave={handleSave}
         onRemove={() => {

@@ -89,8 +89,12 @@ const CrdDiscussionPage = () => {
   const backHref = activeSlug !== ALL_SLUG ? `/forum/${activeSlug}` : '/forum';
 
   const privileges = rawDiscussion.authorization?.myPrivileges ?? [];
-  const canEditDiscussion = privileges.includes(AuthorizationPrivilege.Update);
-  const canDeleteDiscussion = privileges.includes(AuthorizationPrivilege.Delete);
+  // 027-platform-role-redesign L6 (client-3): the server gates discussion
+  // edit/delete on PLATFORM_FORUM_MANAGE alone (the forum family's own
+  // privilege), not on the discussion's Update/Delete privileges.
+  const managesForum = privileges.includes(AuthorizationPrivilege.PlatformForumManage);
+  const canEditDiscussion = managesForum;
+  const canDeleteDiscussion = managesForum;
 
   const detailDataWithActions = {
     ...detailData,

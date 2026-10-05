@@ -1,4 +1,5 @@
 import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { createInstance } from 'i18next';
 import { I18nextProvider } from 'react-i18next';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
@@ -26,10 +27,14 @@ const row = (
   canApprove: false,
   canReject: false,
   canDelete: false,
+  canResend: false,
   ...overrides,
 });
 
-const renderTable = (items: PendingMembership[]) =>
+const renderTable = (
+  items: PendingMembership[],
+  extra: { onResend?: (id: string) => void; resendingIds?: ReadonlySet<string> } = {}
+) =>
   render(
     <I18nextProvider i18n={i18n}>
       <TooltipProvider>
@@ -39,6 +44,7 @@ const renderTable = (items: PendingMembership[]) =>
           onApprove={vi.fn()}
           onReject={vi.fn()}
           onDelete={vi.fn()}
+          {...extra}
         />
       </TooltipProvider>
     </I18nextProvider>
@@ -88,5 +94,48 @@ describe('PendingMembershipsTable — transient rows', () => {
     renderTable([row({ id: 'app-1', displayName: 'Grace Hopper', state: 'approving' })]);
 
     expect(screen.getByRole('button', { name: 'Application received (1)' })).toBeInTheDocument();
+  });
+});
+
+describe('PendingMembershipsTable — resend', () => {
+  const externalRow = (overrides: Partial<PendingMembership> = {}) =>
+    row({
+      id: 'pi-1',
+      displayName: 'new@example.com',
+      email: 'new@example.com',
+      type: 'platformInvitation',
+      state: 'invited',
+      canDelete: true,
+      canResend: true,
+      ...overrides,
+    });
+
+  it('renders the resend control only for rows that can be resent', () => {
+    renderTable([externalRow(), row({ id: 'app-1', displayName: 'Grace Hopper', canDelete: true })], {
+      onResend: vi.fn(),
+    });
+    expect(
+      within(rowOf('new@example.com')).getByRole('button', { name: 'Resend invitation email' })
+    ).toBeInTheDocument();
+    expect(
+      within(rowOf('Grace Hopper')).queryByRole('button', { name: 'Resend invitation email' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('hides the control when no handler is supplied', () => {
+    renderTable([externalRow()]);
+    expect(screen.queryByRole('button', { name: 'Resend invitation email' })).not.toBeInTheDocument();
+  });
+
+  it('calls onResend with the row id', async () => {
+    const onResend = vi.fn();
+    renderTable([externalRow()], { onResend });
+    await userEvent.click(screen.getByRole('button', { name: 'Resend invitation email' }));
+    expect(onResend).toHaveBeenCalledWith('pi-1');
+  });
+
+  it('disables the control while that row is in flight', () => {
+    renderTable([externalRow()], { onResend: vi.fn(), resendingIds: new Set(['pi-1']) });
+    expect(screen.getByRole('button', { name: 'Resend invitation email' })).toBeDisabled();
   });
 });

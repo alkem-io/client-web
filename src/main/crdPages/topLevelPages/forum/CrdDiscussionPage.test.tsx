@@ -78,7 +78,9 @@ const discussion = {
     authorization: { myPrivileges: [] },
     messages: [],
   },
-  authorization: { myPrivileges: [AuthorizationPrivilege.Update] },
+  // 027-platform-role-redesign L6 (client-3): edit/delete are gated on
+  // PLATFORM_FORUM_MANAGE only (the server's PFM-only gate), not Update/Delete.
+  authorization: { myPrivileges: [AuthorizationPrivilege.Read, AuthorizationPrivilege.PlatformForumManage] },
 };
 
 // Per-test active list (the forum's own `discussionCategories`). Default: the
@@ -136,6 +138,7 @@ describe('CrdDiscussionPage — edit dialog category wiring', () => {
   afterEach(() => {
     heldPlatformPrivileges = [];
     forumActiveCategories = activeCategories;
+    discussion.authorization.myPrivileges = [AuthorizationPrivilege.Read, AuthorizationPrivilege.PlatformForumManage];
   });
 
   // 027-platform-role-redesign A15 (spec-clientweb-5): the forum is owned by
@@ -189,5 +192,39 @@ describe('CrdDiscussionPage — edit dialog category wiring', () => {
       .getAllByRole('option')
       .map(option => option.textContent);
     expect(optionValues).toEqual(activeCategories.map(category => `common.enums.discussion-category.${category}`));
+  });
+});
+
+describe('CrdDiscussionPage — edit/delete privilege gate', () => {
+  afterEach(() => {
+    heldPlatformPrivileges = [];
+    forumActiveCategories = activeCategories;
+    discussion.authorization.myPrivileges = [AuthorizationPrivilege.Read, AuthorizationPrivilege.PlatformForumManage];
+  });
+
+  // 027-platform-role-redesign L6 (client-3): the server gates discussion
+  // edit/delete on PLATFORM_FORUM_MANAGE alone — Update/Delete on the
+  // discussion itself are no longer sufficient (or necessary).
+  test('a discussion-level PLATFORM_FORUM_MANAGE holder sees the edit and delete actions', async () => {
+    discussion.authorization.myPrivileges = [AuthorizationPrivilege.Read, AuthorizationPrivilege.PlatformForumManage];
+
+    render(<CrdDiscussionPage />);
+
+    expect(await screen.findByRole('button', { name: 'detail.edit' })).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: 'detail.delete' })).toBeInTheDocument();
+  });
+
+  test('a holder of Update/Delete without PLATFORM_FORUM_MANAGE sees neither action', async () => {
+    discussion.authorization.myPrivileges = [
+      AuthorizationPrivilege.Read,
+      AuthorizationPrivilege.Update,
+      AuthorizationPrivilege.Delete,
+    ];
+
+    render(<CrdDiscussionPage />);
+
+    await screen.findByText(discussion.profile.displayName);
+    expect(screen.queryByRole('button', { name: 'detail.edit' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'detail.delete' })).not.toBeInTheDocument();
   });
 });

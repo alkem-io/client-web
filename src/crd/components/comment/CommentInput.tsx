@@ -1,5 +1,13 @@
-import { AtSign, Send, Smile } from 'lucide-react';
-import { type CSSProperties, type KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { AtSign, Loader2, Paperclip, Send, Smile, X } from 'lucide-react';
+import {
+  type ClipboardEvent,
+  type CSSProperties,
+  type DragEvent,
+  type KeyboardEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mention, MentionsInput, type SuggestionDataItem } from 'react-mentions';
 import { EmojiPicker } from '@/crd/components/common/EmojiPicker';
@@ -9,7 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { MentionSuggestionItem } from './MentionSuggestionItem';
 import { MENTION_MARKUP, mapPlainIndexToMarkupIndex } from './mentionMarkup';
-import type { CommentAuthor, CrdMentionSearch, CrdMentionSuggestion } from './types';
+import type { CommentAuthor, ComposerAttachment, CrdMentionSearch, CrdMentionSuggestion } from './types';
 
 type CommentInputProps = {
   currentUser?: CommentAuthor;
@@ -45,11 +53,32 @@ type CommentInputProps = {
    * clicking Send parks focus on a button that then disables itself.
    */
   refocusAfterSubmit?: boolean;
+  /**
+   * Enables the attach-file affordance (feature 013). Only the conversation
+   * composer opts in this round; comment/post composers leave it off and render
+   * exactly as before. When true a paperclip button + preview chips appear and
+   * the message can be sent with attachments only (no text required).
+   */
+  attachmentsEnabled?: boolean;
+  /** Currently staged attachments (with their upload lifecycle state). */
+  attachments?: ComposerAttachment[];
+  /** User picked, dropped or pasted one or more files. */
+  onAttachFiles?: (files: File[]) => void;
+  /** User removed a staged attachment chip. */
+  onRemoveAttachment?: (id: string) => void;
+  /** A localized validation / upload error to surface under the composer. */
+  attachmentError?: string;
+  /** `accept` attribute for the file picker, derived from the bucket policy. */
+  acceptMimeTypes?: string;
 };
 
 type EnrichedSuggestion = SuggestionDataItem & CrdMentionSuggestion;
 
 const MAX_ROWS = 5;
+
+const STAGED_LIST_CLASS = 'mb-1.5 flex flex-wrap gap-1.5';
+
+const carriesFiles = (transfer: DataTransfer) => Array.from(transfer.types).includes('Files');
 
 // react-mentions renders an overlay + textarea stack. These inline styles
 // neutralize its defaults so the textarea blends with the surrounding Tailwind
@@ -112,12 +141,20 @@ export function CommentInput({
   mentionSearch,
   autoFocus,
   refocusAfterSubmit,
+  attachmentsEnabled = false,
+  attachments = [],
+  onAttachFiles,
+  onRemoveAttachment,
+  attachmentError,
+  acceptMimeTypes,
 }: CommentInputProps) {
   const { t } = useTranslation('crd-space');
   const { isSmallScreen } = useScreenSize();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [pendingRefocus, setPendingRefocus] = useState(false);
   const [uncontrolledContent, setUncontrolledContent] = useState('');
+  const [isDraggingFiles, setIsDraggingFiles] = useState(false);
 
   const controlled = value !== undefined;
   const content = controlled ? value : uncontrolledContent;
@@ -130,9 +167,62 @@ export function CommentInput({
   };
 
   const trimmedContent = content.trim();
-  const canSend = !disabled && trimmedContent.length > 0;
+  const anyUploading = attachments.some(attachment => attachment.status === 'uploading');
+  // Failed files remain selected and can be retried explicitly with Send.
+  const canSend =
+    !disabled &&
+    !(attachmentsEnabled && anyUploading) &&
+    (trimmedContent.length > 0 || (attachmentsEnabled && attachments.length > 0));
   const showCharCount = content.length >= Math.floor(maxLength * 0.8);
   const mentionsEnabled = Boolean(mentionSearch);
+
+  const handleFilesPicked = (fileList: FileList | null) => {
+    if (!fileList || fileList.length === 0) return;
+    onAttachFiles?.(Array.from(fileList));
+    // Reset so picking the same file again re-triggers onChange.
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const acceptsFiles = attachmentsEnabled && Boolean(onAttachFiles);
+
+  // Cancelling dragenter/dragover is what makes the composer a drop target, so a
+  // file dropped here never navigates the tab away from the conversation. While
+  // a send is in flight the drop is refused visibly (dropEffect none), the same
+  // way the attach button is disabled.
+  const handleFileDragOver = (event: DragEvent<HTMLDivElement>) => {
+    if (!carriesFiles(event.dataTransfer)) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = disabled ? 'none' : 'copy';
+    setIsDraggingFiles(true);
+  };
+
+  // relatedTarget is null when the drag is cancelled or leaves the window.
+  const handleFileDragLeave = (event: DragEvent<HTMLDivElement>) => {
+    if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
+    setIsDraggingFiles(false);
+  };
+
+  const handleFileDrop = (event: DragEvent<HTMLDivElement>) => {
+    if (!carriesFiles(event.dataTransfer)) return;
+    event.preventDefault();
+    setIsDraggingFiles(false);
+    if (disabled || event.dataTransfer.files.length === 0) return;
+    onAttachFiles?.(Array.from(event.dataTransfer.files));
+  };
+
+  // Same rule as Element's composer: Office puts a bitmap of copied text next to
+  // its RTF, and that paste means the text. text/plain is no signal — a file
+  // copied from a file manager carries its name as text/plain.
+  const handlePaste = (event: ClipboardEvent<HTMLDivElement>) => {
+    const { files, types } = event.clipboardData;
+    if (disabled || files.length === 0 || Array.from(types).includes('text/rtf')) return;
+    event.preventDefault();
+    // react-mentions pastes text from its own document-level listener.
+    event.stopPropagation();
+    onAttachFiles?.(Array.from(files));
+  };
 
   const resizeTextarea = () => {
     const textarea = textareaRef.current;
@@ -250,8 +340,69 @@ export function CommentInput({
         <AvatarFallback className="text-caption">{currentUser?.name?.charAt(0) ?? '?'}</AvatarFallback>
       </Avatar>
 
-      <div className="min-w-0 flex-1">
-        <div className="flex items-end gap-1 rounded-md border border-border bg-input-background px-2 py-1.5 transition-colors focus-within:border-primary/50">
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: drop/paste wrapper — the keyboard path is the attach button, and pastes come from the textarea inside */}
+      <div
+        className="min-w-0 flex-1"
+        onDragEnter={acceptsFiles ? handleFileDragOver : undefined}
+        onDragOver={acceptsFiles ? handleFileDragOver : undefined}
+        onDragLeave={acceptsFiles ? handleFileDragLeave : undefined}
+        onDrop={acceptsFiles ? handleFileDrop : undefined}
+        onPaste={acceptsFiles ? handlePaste : undefined}
+      >
+        {/* The list label is distinct from the paperclip button's — sharing one makes a
+            screen reader announce "Attach files, list" then "Attach files, button". */}
+        {attachmentsEnabled && attachments.length > 0 && (
+          // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
+          // biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset
+          <ul role="list" aria-label={t('comments.attachments.stagedListLabel')} className={STAGED_LIST_CLASS}>
+            {attachments.map(attachment => (
+              <li
+                key={attachment.id}
+                className={cn(
+                  'flex max-w-[12rem] items-center gap-1.5 rounded-md border border-border bg-muted/40 py-1 pl-2 pr-1 text-caption',
+                  attachment.status === 'error' && 'border-destructive/50 text-destructive'
+                )}
+              >
+                {attachment.status === 'uploading' ? (
+                  // `<output>` is an implicit live region (role="status" +
+                  // aria-live="polite"), so the chip appearing mid-upload is
+                  // actually announced — an aria-label on the spinner alone
+                  // describes it but never announces its insertion. Mirrors the
+                  // loading skeleton in MessageAttachments.
+                  <output aria-label={t('comments.attachments.uploading')} className="flex shrink-0">
+                    <Loader2 aria-hidden="true" className="size-3.5 animate-spin" />
+                  </output>
+                ) : (
+                  <Paperclip aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" />
+                )}
+                <span className="min-w-0 flex-1 truncate">{attachment.name}</span>
+                <button
+                  type="button"
+                  // The consumer snapshots the ready document ids *before*
+                  // awaiting the send, so a removal accepted mid-send would drop
+                  // the chip while the message still ships that attachment. The
+                  // callback is guarded too: `disabled` only blocks pointer and
+                  // keyboard activation, not a programmatic call.
+                  disabled={disabled}
+                  onClick={() => {
+                    if (disabled) return;
+                    onRemoveAttachment?.(attachment.id);
+                  }}
+                  aria-label={t('comments.attachments.removeAttachment', { name: attachment.name })}
+                  className="flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+                >
+                  <X aria-hidden="true" className="size-3.5" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        <div className="relative flex items-end gap-1 rounded-md border border-border bg-input-background px-2 py-1.5 transition-colors focus-within:border-primary/50">
+          {acceptsFiles && isDraggingFiles && !disabled && (
+            <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-md border-2 border-dashed border-primary bg-background/90 text-caption text-primary">
+              {t('comments.attachments.dropHint')}
+            </div>
+          )}
           {mentionsEnabled ? (
             <div className="min-h-6 min-w-0 flex-1 text-body [&_textarea]:placeholder:text-muted-foreground">
               <MentionsInput
@@ -330,6 +481,29 @@ export function CommentInput({
           )}
 
           <div className="flex shrink-0 items-center gap-0.5 pb-0.5">
+            {attachmentsEnabled && (
+              <>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple={true}
+                  accept={acceptMimeTypes}
+                  className="hidden"
+                  onChange={event => handleFilesPicked(event.target.files)}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 text-muted-foreground hover:text-foreground md:h-7 md:w-7"
+                  disabled={disabled}
+                  onClick={() => fileInputRef.current?.click()}
+                  aria-label={t('comments.attachments.attach')}
+                >
+                  <Paperclip className="h-3.5 w-3.5 md:h-4 md:w-4" aria-hidden="true" />
+                </Button>
+              </>
+            )}
             {mentionsEnabled && (
               <Button
                 type="button"
@@ -375,6 +549,12 @@ export function CommentInput({
           <div className="mt-1 text-right text-caption text-muted-foreground">
             {t('comments.charCount', { count: content.length, max: maxLength })}
           </div>
+        )}
+
+        {attachmentsEnabled && attachmentError && (
+          <p role="alert" className="mt-1 text-caption text-destructive">
+            {attachmentError}
+          </p>
         )}
       </div>
     </div>

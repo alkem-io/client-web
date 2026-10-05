@@ -508,11 +508,11 @@
       "rows": {
         "space": {
           "communicationUpdates": "Recibir una notificación cuando se comparte una nueva comunicación en una comunidad",
-          "collaborationCalloutPublished": "Recibir una notificación cuando se publica una llamada en una comunidad de la que soy miembro",
+          "collaborationCalloutPublished": "Recibir una notificación cuando aparece una nueva publicación en una comunidad de la que soy miembro",
           "collaborationCalloutReaction": "Recibir una notificación cuando alguien reacciona a mi Post con un emoji",
-          "collaborationCalloutPostContributionComment": "Recibir una notificación cuando se comenta una publicación que sigo",
-          "collaborationCalloutContributionCreated": "Recibir una notificación cuando se crea una nueva contribución en una llamada",
-          "collaborationCalloutComment": "Recibir una notificación cuando se añade un nuevo comentario a una llamada que sigo",
+          "collaborationCalloutPostContributionComment": "Recibir una notificación cuando alguien comenta una contribución que he creado",
+          "collaborationCalloutContributionCreated": "Recibir una notificación cuando se añade una nueva contribución a una publicación",
+          "collaborationCalloutComment": "Recibir una notificación cuando se añade un nuevo comentario a una publicación en una comunidad de la que soy miembro",
           "communityCalendarEvents": "Recibir notificaciones de eventos del calendario de la comunidad",
           "collaborationPollVoteCastOnOwnPoll": "Recibir una notificación cuando alguien vota en mi encuesta",
           "collaborationPollVoteCastOnPollIVotedOn": "Recibir una notificación cuando alguien vota en una encuesta en la que voté",
@@ -523,7 +523,7 @@
           "communityApplicationReceived": "Recibir una notificación cuando se envía una nueva solicitud a la comunidad",
           "communityNewMember": "Recibir una notificación cuando un nuevo miembro se une a la comunidad",
           "communityInvitationResponse": "Recibir una notificación cuando alguien acepta o rechaza una invitación a un Space que administras",
-          "collaborationCalloutContributionCreated": "Recibir una notificación cuando se crea una nueva contribución en una llamada",
+          "collaborationCalloutContributionCreated": "Recibir una notificación cuando se añade una nueva contribución a una publicación",
           "communicationMessageReceived": "Recibir una notificación cuando se recibe un mensaje de la comunidad",
           "userEmailChanged": "Recibir una notificación cuando se cambia el correo electrónico de inicio de sesión de un miembro de un Space que administras"
         },
@@ -539,7 +539,7 @@
           "membershipOrganizationAssociateApplicationDecided": "Recibir una notificación cuando una organización decida sobre mi solicitud de asociación"
         },
         "platform": {
-          "forumDiscussionComment": "Recibir una notificación cuando se añade un nuevo comentario a una discusión que sigo",
+          "forumDiscussionComment": "Recibir una notificación cuando alguien comenta una discusión que he creado",
           "forumDiscussionCreated": "Recibir una notificación cuando se crea una nueva discusión en la plataforma"
         },
         "platformAdmin": {
@@ -849,8 +849,7 @@
         "cancel": "Cancelar",
         "removeSuccess": "Se quitó a {{name}} de la organización",
         "removeError": "No se pudo quitar a {{name}} — inténtalo de nuevo",
-        "saveError": "No se pudieron guardar los cambios — inténtalo de nuevo",
-        "selfAdminLocked": "Aquí no puedes quitarte tu propio rol de Admin."
+        "saveError": "No se pudieron guardar los cambios — inténtalo de nuevo"
       },
       "errors": {
         "limitAdmin": "Una organización puede tener como máximo 6 administradores",

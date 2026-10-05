@@ -7,6 +7,9 @@ mutation sendMessageToRoom($messageData: RoomSendMessageInput!) {
       type
     }
     timestamp
+    attachments {
+      ...MessageAttachmentDetails
+    }
   }
 }
 

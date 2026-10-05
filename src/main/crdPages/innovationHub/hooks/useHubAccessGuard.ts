@@ -1,5 +1,5 @@
 import { useInnovationHubByIdQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { canEditOrgResource } from '@/main/crdPages/innovationPack/innovationPackAccess';
 
 export type HubAccessGuardResult =
   | { state: 'loading' }
@@ -36,10 +36,12 @@ export const useHubAccessGuard = (innovationHubId: string | undefined): HubAcces
     return { state: 'denied', redirectTo: '/' };
   }
 
-  const myPrivileges = hub.authorization?.myPrivileges ?? [];
-  const canEdit =
-    myPrivileges.includes(AuthorizationPrivilege.Update) ||
-    myPrivileges.includes(AuthorizationPrivilege.PlatformSupportOrgResources);
+  // 027-platform-role-redesign L6 (client-9): the same dual-path gate as
+  // Innovation Packs (A7) — owner `Update`, or Platform Support's
+  // `PlatformSupportOrgResources`. Shared with `mapInnovationHubToHomeData` so
+  // the settings link offered on the home page and this settings-route guard
+  // cannot disagree.
+  const canEdit = canEditOrgResource(hub.authorization?.myPrivileges);
   if (canEdit) {
     return { state: 'allowed' };
   }

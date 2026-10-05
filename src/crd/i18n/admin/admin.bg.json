@@ -9,7 +9,8 @@
     "virtual-contributors": "Виртуални сътрудници",
     "authorization": "Оторизация",
     "authorization-policies": "Политики за оторизация",
-    "transfer": "Преобразувания и трансфери"
+    "transfer": "Преобразувания и трансфери",
+    "licensing": "Лицензи"
   },
   "placeholder": {
     "title": "Очаквайте скоро",
@@ -90,7 +91,8 @@
     "FEATURE_BETA_TESTER": "Бета тестер (функция)",
     "FEATURE_VIRTUAL_ASSISTANT": "Виртуален асистент (функция)",
     "FEATURE_ORGANIZATION_CREATOR": "Създател на организации (функция)",
-    "FEATURE_VC_CAMPAIGN": "Feature VC Campaign"
+    "FEATURE_VC_CAMPAIGN": "Feature VC Campaign",
+    "notFound": "Тази роля не бе намерена."
   },
   "roleDescriptions": {
     "GLOBAL_ADMIN": "Пълен административен контрол върху цялата платформа.",
@@ -138,6 +140,8 @@
     "organizations": "Организации",
     "currentOrganizations": "Текущи организации",
     "addOrganizations": "Добавяне на организации",
+    "searchOrganizationsPlaceholder": "Търсене на организации…",
+    "noOrganizationResults": "Не са намерени организации.",
     "legacyRolesHeading": "Остарели роли (само отнемане)",
     "legacyRolesDescription": "Тези роли са изведени от ролевия модел на платформата и вече не могат да бъдат предоставяни. Съществуващите притежатели са показани тук, за да могат да бъдат отнети — това е единственият начин в конзолата да се премахне остарял идентификационен данни, преди да бъде изтрит напълно.",
     "legacyRolesNoHolders": "В момента никой не притежава остаряла роля."
@@ -168,6 +172,8 @@
     "targetAccount": "Целеви акаунт",
     "accountSearchPlaceholder": "Търсене на потребители или организации…",
     "noAccounts": "Няма съвпадащи акаунти.",
+    "accountSearchDenied": "Нямате разрешение да търсите акаунти.",
+    "targetOwnerUrlLabel": "URL адрес на целевия собственик (потребител или организация)",
     "transfer": "Прехвърляне",
     "currentAccount": "Текущ акаунт: {{name}}",
     "confirmTitle": "Потвърждаване на прехвърлянето",
@@ -340,5 +346,18 @@
     "back": "Назад",
     "viewTitle": "Преглед на {{name}}",
     "readOnlyNotice": "Можете да прегледате този потребителски запис, но не и да го редактирате. Ролята ви позволява четене на лични данни, но не и промяната им."
+  },
+  "licensing": {
+    "tabs": {
+      "spaces": "Пространства",
+      "organizations": "Организации",
+      "users": "Потребители"
+    },
+    "columns": {
+      "plans": "Лицензионни планове"
+    },
+    "noPlans": "Без планове",
+    "visibilityOf": "Видимост на {{name}}",
+    "visibilityUpdated": "Видимостта е обновена"
   }
 }

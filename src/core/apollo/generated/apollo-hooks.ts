@@ -146,6 +146,7 @@ export const AdminPlatformInvitationCommunityFragmentDoc = gql`
   id
   createdDate
   email
+  roleSetExtraRoles
 }
     `;
 export const OrgPendingInvitationDataFragmentDoc = gql`
@@ -741,6 +742,7 @@ export const CalloutContributionsCollaboraDocumentCardFragmentDoc = gql`
     fragment CalloutContributionsCollaboraDocumentCard on CollaboraDocument {
   id
   documentType
+  previewUrl
   profile {
     id
     url
@@ -1016,6 +1018,7 @@ export const CollaboraDocumentGateFragmentDoc = gql`
     fragment CollaboraDocumentGate on CollaboraDocument {
   id
   documentType
+  previewUrl
   authorization {
     id
     myPrivileges
@@ -1080,6 +1083,17 @@ export const ContributorDetailsFragmentDoc = gql`
 }
     ${VisualModelFragmentDoc}
 ${TagsetDetailsFragmentDoc}`;
+export const MessageAttachmentDetailsFragmentDoc = gql`
+    fragment MessageAttachmentDetails on MessageAttachment {
+  id
+  url
+  displayName
+  mimeType
+  size
+  width
+  height
+}
+    `;
 export const MessageDetailsFragmentDoc = gql`
     fragment MessageDetails on Message {
   id
@@ -1092,9 +1106,13 @@ export const MessageDetailsFragmentDoc = gql`
   sender {
     ...ContributorDetails
   }
+  attachments {
+    ...MessageAttachmentDetails
+  }
 }
     ${ReactionDetailsFragmentDoc}
-${ContributorDetailsFragmentDoc}`;
+${ContributorDetailsFragmentDoc}
+${MessageAttachmentDetailsFragmentDoc}`;
 export const VcInteractionsDetailsFragmentDoc = gql`
     fragment VcInteractionsDetails on VcInteraction {
   threadID
@@ -1141,6 +1159,9 @@ export const CalloutSettingsFullFragmentDoc = gql`
     selection {
       mode
       selectedIds
+    }
+    spaces {
+      cardVariant
     }
   }
   visibility
@@ -3473,6 +3494,20 @@ export const CalloutReactionsSummaryFragmentDoc = gql`
   }
 }
     `;
+export const SubspaceCardAboutContextFragmentDoc = gql`
+    fragment SubspaceCardAboutContext on Space {
+  id
+  about {
+    id
+    why
+    who
+    profile {
+      id
+      description
+    }
+  }
+}
+    `;
 export const TaskBoardCalloutFragmentDoc = gql`
     fragment TaskBoardCallout on Callout {
   id
@@ -5676,6 +5711,54 @@ export type DeletePlatformInvitationMutationResult =
 export type DeletePlatformInvitationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeletePlatformInvitationMutation,
   SchemaTypes.DeletePlatformInvitationMutationVariables
+>;
+export const ResendPlatformInvitationDocument = gql`
+    mutation ResendPlatformInvitation($invitationId: UUID!) {
+  resendPlatformInvitation(resendData: {ID: $invitationId}) {
+    id
+  }
+}
+    `;
+export type ResendPlatformInvitationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.ResendPlatformInvitationMutation,
+  SchemaTypes.ResendPlatformInvitationMutationVariables
+>;
+
+/**
+ * __useResendPlatformInvitationMutation__
+ *
+ * To run a mutation, you first call `useResendPlatformInvitationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResendPlatformInvitationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resendPlatformInvitationMutation, { data, loading, error }] = useResendPlatformInvitationMutation({
+ *   variables: {
+ *      invitationId: // value for 'invitationId'
+ *   },
+ * });
+ */
+export function useResendPlatformInvitationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.ResendPlatformInvitationMutation,
+    SchemaTypes.ResendPlatformInvitationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.ResendPlatformInvitationMutation,
+    SchemaTypes.ResendPlatformInvitationMutationVariables
+  >(ResendPlatformInvitationDocument, options);
+}
+export type ResendPlatformInvitationMutationHookResult = ReturnType<typeof useResendPlatformInvitationMutation>;
+export type ResendPlatformInvitationMutationResult =
+  Apollo.MutationResult<SchemaTypes.ResendPlatformInvitationMutation>;
+export type ResendPlatformInvitationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.ResendPlatformInvitationMutation,
+  SchemaTypes.ResendPlatformInvitationMutationVariables
 >;
 export const CommunityApplicationsInvitationsDocument = gql`
     query CommunityApplicationsInvitations($roleSetId: UUID!, $includeApplications: Boolean = true) {
@@ -8522,6 +8605,7 @@ export const CalloutContributionDocument = gql`
       collaboraDocument @include(if: $includeCollaboraDocument) {
         id
         documentType
+        previewUrl
         profile {
           id
           url
@@ -9566,9 +9650,9 @@ export type CalloutPostCreatedSubscriptionHookResult = ReturnType<typeof useCall
 export type CalloutPostCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CalloutPostCreatedSubscription>;
 export const CreatePostOnCalloutDocument = gql`
-    mutation CreatePostOnCallout($calloutId: UUID!, $post: CreatePostInput!, $taskColumn: String) {
+    mutation CreatePostOnCallout($calloutId: UUID!, $post: CreatePostInput!, $taskColumn: String, $sendNotification: Boolean) {
   createContributionOnCallout(
-    contributionData: {calloutID: $calloutId, type: POST, post: $post, taskColumn: $taskColumn}
+    contributionData: {calloutID: $calloutId, type: POST, post: $post, taskColumn: $taskColumn, sendNotification: $sendNotification}
   ) {
     post {
       id
@@ -9601,6 +9685,7 @@ export type CreatePostOnCalloutMutationFn = Apollo.MutationFunction<
  *      calloutId: // value for 'calloutId'
  *      post: // value for 'post'
  *      taskColumn: // value for 'taskColumn'
+ *      sendNotification: // value for 'sendNotification'
  *   },
  * });
  */
@@ -13331,9 +13416,12 @@ export const ReplyToMessageDocument = gql`
       type
     }
     timestamp
+    attachments {
+      ...MessageAttachmentDetails
+    }
   }
 }
-    `;
+    ${MessageAttachmentDetailsFragmentDoc}`;
 export type ReplyToMessageMutationFn = Apollo.MutationFunction<
   SchemaTypes.ReplyToMessageMutation,
   SchemaTypes.ReplyToMessageMutationVariables
@@ -13480,9 +13568,12 @@ export const SendMessageToRoomDocument = gql`
       type
     }
     timestamp
+    attachments {
+      ...MessageAttachmentDetails
+    }
   }
 }
-    `;
+    ${MessageAttachmentDetailsFragmentDoc}`;
 export type SendMessageToRoomMutationFn = Apollo.MutationFunction<
   SchemaTypes.SendMessageToRoomMutation,
   SchemaTypes.SendMessageToRoomMutationVariables
@@ -19015,6 +19106,10 @@ export const PlatformLicensingPlansDocument = gql`
   platform {
     licensingFramework {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       plans {
         id
         type
@@ -19370,6 +19465,290 @@ export function refetchPlatformAdminInnovationPacksQuery(
 ) {
   return { query: PlatformAdminInnovationPacksDocument, variables: variables };
 }
+export const LicensingAdminOrganizationsDocument = gql`
+    query licensingAdminOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
+  platformAdmin {
+    organizations(first: $first, after: $after, filter: $filter) {
+      total
+      organization {
+        id
+        account {
+          id
+          subscriptions {
+            name
+          }
+        }
+        profile {
+          id
+          url
+          displayName
+        }
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}
+    ${PageInfoFragmentDoc}`;
+
+/**
+ * __useLicensingAdminOrganizationsQuery__
+ *
+ * To run a query within a React component, call `useLicensingAdminOrganizationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLicensingAdminOrganizationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLicensingAdminOrganizationsQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useLicensingAdminOrganizationsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.LicensingAdminOrganizationsQuery,
+    SchemaTypes.LicensingAdminOrganizationsQueryVariables
+  > &
+    ({ variables: SchemaTypes.LicensingAdminOrganizationsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.LicensingAdminOrganizationsQuery,
+    SchemaTypes.LicensingAdminOrganizationsQueryVariables
+  >(LicensingAdminOrganizationsDocument, options);
+}
+export function useLicensingAdminOrganizationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LicensingAdminOrganizationsQuery,
+    SchemaTypes.LicensingAdminOrganizationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.LicensingAdminOrganizationsQuery,
+    SchemaTypes.LicensingAdminOrganizationsQueryVariables
+  >(LicensingAdminOrganizationsDocument, options);
+}
+export function useLicensingAdminOrganizationsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.LicensingAdminOrganizationsQuery,
+        SchemaTypes.LicensingAdminOrganizationsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.LicensingAdminOrganizationsQuery,
+    SchemaTypes.LicensingAdminOrganizationsQueryVariables
+  >(LicensingAdminOrganizationsDocument, options);
+}
+export type LicensingAdminOrganizationsQueryHookResult = ReturnType<typeof useLicensingAdminOrganizationsQuery>;
+export type LicensingAdminOrganizationsLazyQueryHookResult = ReturnType<typeof useLicensingAdminOrganizationsLazyQuery>;
+export type LicensingAdminOrganizationsSuspenseQueryHookResult = ReturnType<
+  typeof useLicensingAdminOrganizationsSuspenseQuery
+>;
+export type LicensingAdminOrganizationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.LicensingAdminOrganizationsQuery,
+  SchemaTypes.LicensingAdminOrganizationsQueryVariables
+>;
+export function refetchLicensingAdminOrganizationsQuery(
+  variables: SchemaTypes.LicensingAdminOrganizationsQueryVariables
+) {
+  return { query: LicensingAdminOrganizationsDocument, variables: variables };
+}
+export const LicensingAdminSpacesDocument = gql`
+    query licensingAdminSpaces {
+  platformAdmin {
+    spaces(filter: {visibilities: [ACTIVE, DEMO, INACTIVE, ARCHIVED]}) {
+      id
+      visibility
+      subscriptions {
+        name
+      }
+      about {
+        id
+        profile {
+          id
+          displayName
+          url
+        }
+        provider {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useLicensingAdminSpacesQuery__
+ *
+ * To run a query within a React component, call `useLicensingAdminSpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLicensingAdminSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLicensingAdminSpacesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLicensingAdminSpacesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.LicensingAdminSpacesQuery,
+    SchemaTypes.LicensingAdminSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.LicensingAdminSpacesQuery, SchemaTypes.LicensingAdminSpacesQueryVariables>(
+    LicensingAdminSpacesDocument,
+    options
+  );
+}
+export function useLicensingAdminSpacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LicensingAdminSpacesQuery,
+    SchemaTypes.LicensingAdminSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.LicensingAdminSpacesQuery, SchemaTypes.LicensingAdminSpacesQueryVariables>(
+    LicensingAdminSpacesDocument,
+    options
+  );
+}
+export function useLicensingAdminSpacesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.LicensingAdminSpacesQuery,
+        SchemaTypes.LicensingAdminSpacesQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.LicensingAdminSpacesQuery, SchemaTypes.LicensingAdminSpacesQueryVariables>(
+    LicensingAdminSpacesDocument,
+    options
+  );
+}
+export type LicensingAdminSpacesQueryHookResult = ReturnType<typeof useLicensingAdminSpacesQuery>;
+export type LicensingAdminSpacesLazyQueryHookResult = ReturnType<typeof useLicensingAdminSpacesLazyQuery>;
+export type LicensingAdminSpacesSuspenseQueryHookResult = ReturnType<typeof useLicensingAdminSpacesSuspenseQuery>;
+export type LicensingAdminSpacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.LicensingAdminSpacesQuery,
+  SchemaTypes.LicensingAdminSpacesQueryVariables
+>;
+export function refetchLicensingAdminSpacesQuery(variables?: SchemaTypes.LicensingAdminSpacesQueryVariables) {
+  return { query: LicensingAdminSpacesDocument, variables: variables };
+}
+export const LicensingAdminUsersDocument = gql`
+    query licensingAdminUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
+  platformAdmin {
+    users(first: $first, after: $after, filter: $filter) {
+      total
+      users {
+        id
+        account {
+          id
+          subscriptions {
+            name
+          }
+        }
+        profile {
+          id
+          url
+          displayName
+        }
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}
+    ${PageInfoFragmentDoc}`;
+
+/**
+ * __useLicensingAdminUsersQuery__
+ *
+ * To run a query within a React component, call `useLicensingAdminUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLicensingAdminUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLicensingAdminUsersQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useLicensingAdminUsersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.LicensingAdminUsersQuery,
+    SchemaTypes.LicensingAdminUsersQueryVariables
+  > &
+    ({ variables: SchemaTypes.LicensingAdminUsersQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.LicensingAdminUsersQuery, SchemaTypes.LicensingAdminUsersQueryVariables>(
+    LicensingAdminUsersDocument,
+    options
+  );
+}
+export function useLicensingAdminUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LicensingAdminUsersQuery,
+    SchemaTypes.LicensingAdminUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.LicensingAdminUsersQuery, SchemaTypes.LicensingAdminUsersQueryVariables>(
+    LicensingAdminUsersDocument,
+    options
+  );
+}
+export function useLicensingAdminUsersSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.LicensingAdminUsersQuery,
+        SchemaTypes.LicensingAdminUsersQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.LicensingAdminUsersQuery, SchemaTypes.LicensingAdminUsersQueryVariables>(
+    LicensingAdminUsersDocument,
+    options
+  );
+}
+export type LicensingAdminUsersQueryHookResult = ReturnType<typeof useLicensingAdminUsersQuery>;
+export type LicensingAdminUsersLazyQueryHookResult = ReturnType<typeof useLicensingAdminUsersLazyQuery>;
+export type LicensingAdminUsersSuspenseQueryHookResult = ReturnType<typeof useLicensingAdminUsersSuspenseQuery>;
+export type LicensingAdminUsersQueryResult = Apollo.QueryResult<
+  SchemaTypes.LicensingAdminUsersQuery,
+  SchemaTypes.LicensingAdminUsersQueryVariables
+>;
+export function refetchLicensingAdminUsersQuery(variables: SchemaTypes.LicensingAdminUsersQueryVariables) {
+  return { query: LicensingAdminUsersDocument, variables: variables };
+}
 export const AssignLicensePlanToAccountDocument = gql`
     mutation AssignLicensePlanToAccount($licensePlanId: UUID!, $accountId: UUID!, $licensingId: UUID!) {
   assignLicensePlanToAccount(
@@ -19487,6 +19866,10 @@ export const PlatformAdminOrganizationsListDocument = gql`
             name
           }
         }
+        authorization {
+          id
+          myPrivileges
+        }
         profile {
           id
           url
@@ -19499,6 +19882,10 @@ export const PlatformAdminOrganizationsListDocument = gql`
         verification {
           id
           state
+          authorization {
+            id
+            myPrivileges
+          }
         }
       }
       pageInfo {
@@ -31098,6 +31485,11 @@ export const ContributorCollectionByTypeDocument = gql`
             longitude
             hasValidCoordinates
           }
+          tagline
+          tags
+          joinedDate
+          website
+          associatesCount
         }
       }
     }
@@ -31176,7 +31568,7 @@ export function refetchContributorCollectionByTypeQuery(
   return { query: ContributorCollectionByTypeDocument, variables: variables };
 }
 export const SpaceCollectionSubspacesDocument = gql`
-    query SpaceCollectionSubspaces($calloutId: UUID!) {
+    query SpaceCollectionSubspaces($calloutId: UUID!, $expanded: Boolean!) {
   lookup {
     callout(ID: $calloutId) {
       id
@@ -31184,12 +31576,14 @@ export const SpaceCollectionSubspacesDocument = gql`
         id
         subspaces {
           ...SubspaceCard
+          ...SubspaceCardAboutContext @include(if: $expanded)
         }
       }
     }
   }
 }
-    ${SubspaceCardFragmentDoc}`;
+    ${SubspaceCardFragmentDoc}
+${SubspaceCardAboutContextFragmentDoc}`;
 
 /**
  * __useSpaceCollectionSubspacesQuery__
@@ -31204,6 +31598,7 @@ export const SpaceCollectionSubspacesDocument = gql`
  * const { data, loading, error } = useSpaceCollectionSubspacesQuery({
  *   variables: {
  *      calloutId: // value for 'calloutId'
+ *      expanded: // value for 'expanded'
  *   },
  * });
  */
@@ -32392,6 +32787,92 @@ export function refetchUserSecurityAuthenticationMethodsQuery(
   variables?: SchemaTypes.UserSecurityAuthenticationMethodsQueryVariables
 ) {
   return { query: UserSecurityAuthenticationMethodsDocument, variables: variables };
+}
+export const ConversationStorageConfigDocument = gql`
+    query ConversationStorageConfig($conversationId: UUID!) {
+  lookup {
+    conversation(ID: $conversationId) {
+      id
+      storageBucket {
+        id
+        allowedMimeTypes
+        maxFileSize
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useConversationStorageConfigQuery__
+ *
+ * To run a query within a React component, call `useConversationStorageConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useConversationStorageConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useConversationStorageConfigQuery({
+ *   variables: {
+ *      conversationId: // value for 'conversationId'
+ *   },
+ * });
+ */
+export function useConversationStorageConfigQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ConversationStorageConfigQuery,
+    SchemaTypes.ConversationStorageConfigQueryVariables
+  > &
+    ({ variables: SchemaTypes.ConversationStorageConfigQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ConversationStorageConfigQuery,
+    SchemaTypes.ConversationStorageConfigQueryVariables
+  >(ConversationStorageConfigDocument, options);
+}
+export function useConversationStorageConfigLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ConversationStorageConfigQuery,
+    SchemaTypes.ConversationStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ConversationStorageConfigQuery,
+    SchemaTypes.ConversationStorageConfigQueryVariables
+  >(ConversationStorageConfigDocument, options);
+}
+export function useConversationStorageConfigSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.ConversationStorageConfigQuery,
+        SchemaTypes.ConversationStorageConfigQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.ConversationStorageConfigQuery,
+    SchemaTypes.ConversationStorageConfigQueryVariables
+  >(ConversationStorageConfigDocument, options);
+}
+export type ConversationStorageConfigQueryHookResult = ReturnType<typeof useConversationStorageConfigQuery>;
+export type ConversationStorageConfigLazyQueryHookResult = ReturnType<typeof useConversationStorageConfigLazyQuery>;
+export type ConversationStorageConfigSuspenseQueryHookResult = ReturnType<
+  typeof useConversationStorageConfigSuspenseQuery
+>;
+export type ConversationStorageConfigQueryResult = Apollo.QueryResult<
+  SchemaTypes.ConversationStorageConfigQuery,
+  SchemaTypes.ConversationStorageConfigQueryVariables
+>;
+export function refetchConversationStorageConfigQuery(variables: SchemaTypes.ConversationStorageConfigQueryVariables) {
+  return { query: ConversationStorageConfigDocument, variables: variables };
 }
 export const ResetConversationVcDocument = gql`
     mutation resetConversationVc($input: ConversationVcResetInput!) {
@@ -34751,6 +35232,15 @@ export const ConversationDetailsDocument = gql`
               }
             }
           }
+          attachments {
+            id
+            url
+            displayName
+            mimeType
+            size
+            width
+            height
+          }
         }
       }
       members {
@@ -34879,6 +35369,15 @@ export const ConversationEventsDocument = gql`
                 }
               }
             }
+            attachments {
+              id
+              url
+              displayName
+              mimeType
+              size
+              width
+              height
+            }
           }
         }
         members {
@@ -34922,6 +35421,15 @@ export const ConversationEventsDocument = gql`
               displayName
             }
           }
+        }
+        attachments {
+          id
+          url
+          displayName
+          mimeType
+          size
+          width
+          height
         }
       }
     }
@@ -34991,6 +35499,15 @@ export const ConversationEventsDocument = gql`
               displayName
             }
           }
+        }
+        attachments {
+          id
+          url
+          displayName
+          mimeType
+          size
+          width
+          height
         }
       }
     }
@@ -35070,6 +35587,15 @@ export const ConversationMessagesDocument = gql`
                 displayName
               }
             }
+          }
+          attachments {
+            id
+            url
+            displayName
+            mimeType
+            size
+            width
+            height
           }
         }
       }
@@ -35182,6 +35708,15 @@ export const CreateConversationDocument = gql`
               displayName
             }
           }
+        }
+        attachments {
+          id
+          url
+          displayName
+          mimeType
+          size
+          width
+          height
         }
       }
     }
@@ -35513,6 +36048,15 @@ export const UserConversationsDocument = gql`
                   displayName
                 }
               }
+            }
+            attachments {
+              id
+              url
+              displayName
+              mimeType
+              size
+              width
+              height
             }
           }
         }

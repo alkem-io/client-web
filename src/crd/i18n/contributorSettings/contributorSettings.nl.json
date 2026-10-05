@@ -508,11 +508,11 @@
       "rows": {
         "space": {
           "communicationUpdates": "Krijg een melding wanneer een nieuwe communicatie wordt gedeeld in een community",
-          "collaborationCalloutPublished": "Krijg een melding wanneer er een callout wordt gepubliceerd in een community waar ik lid van ben",
+          "collaborationCalloutPublished": "Krijg een melding wanneer er een Post wordt gepubliceerd in een community waar ik lid van ben",
           "collaborationCalloutReaction": "Ontvang een melding wanneer iemand op mijn Post reageert met een emoji",
-          "collaborationCalloutPostContributionComment": "Krijg een melding wanneer er een reactie wordt geplaatst op een Post die ik volg",
-          "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een callout wordt aangemaakt",
-          "collaborationCalloutComment": "Krijg een melding wanneer er een nieuwe reactie wordt toegevoegd aan een callout die ik volg",
+          "collaborationCalloutPostContributionComment": "Krijg een melding wanneer iemand reageert op een bijdrage die ik heb gemaakt",
+          "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een Post wordt toegevoegd",
+          "collaborationCalloutComment": "Krijg een melding wanneer er een nieuwe reactie wordt toegevoegd aan een Post in een community waar ik lid van ben",
           "communityCalendarEvents": "Krijg een melding voor community-agenda-evenementen",
           "collaborationPollVoteCastOnOwnPoll": "Krijg een melding wanneer iemand op mijn poll stemt",
           "collaborationPollVoteCastOnPollIVotedOn": "Krijg een melding wanneer iemand stemt op een poll waarop ik heb gestemd",
@@ -523,7 +523,7 @@
           "communityApplicationReceived": "Krijg een melding wanneer een nieuwe community-aanvraag wordt ingediend",
           "communityNewMember": "Ontvang een melding wanneer een nieuw lid zich bij de community voegt",
           "communityInvitationResponse": "Ontvang een melding wanneer iemand een uitnodiging accepteert of afwijst voor een Space die u beheert",
-          "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een callout wordt aangemaakt",
+          "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een Post wordt toegevoegd",
           "communicationMessageReceived": "Krijg een melding wanneer er een community-bericht wordt ontvangen",
           "userEmailChanged": "Krijg een melding wanneer het inloge-mailadres van een lid van een Space die je beheert wordt gewijzigd"
         },
@@ -539,7 +539,7 @@
           "membershipOrganizationAssociateApplicationDecided": "Ontvang een melding wanneer een organisatie beslist over mijn aanvraag om te associëren"
         },
         "platform": {
-          "forumDiscussionComment": "Krijg een melding wanneer er een nieuwe reactie wordt toegevoegd aan een discussie die ik volg",
+          "forumDiscussionComment": "Krijg een melding wanneer iemand reageert op een discussie die ik heb gestart",
           "forumDiscussionCreated": "Krijg een melding wanneer er een nieuwe platformdiscussie wordt aangemaakt"
         },
         "platformAdmin": {
@@ -849,8 +849,7 @@
         "cancel": "Annuleren",
         "removeSuccess": "{{name}} is verwijderd uit de organisatie",
         "removeError": "Kon {{name}} niet verwijderen — probeer opnieuw",
-        "saveError": "Kon wijzigingen niet opslaan — probeer opnieuw",
-        "selfAdminLocked": "Je kunt hier je eigen Admin-rol niet verwijderen."
+        "saveError": "Kon wijzigingen niet opslaan — probeer opnieuw"
       },
       "errors": {
         "limitAdmin": "Een organisatie kan maximaal 6 beheerders hebben",

@@ -6,7 +6,7 @@ import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useTemplatesManager } from '@/main/crdPages/templates/useTemplatesManager';
 import { buildInnovationPackSettingsUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { canEditInnovationPack } from './innovationPackAccess';
+import { canEditOrgResource } from './innovationPackAccess';
 
 type GqlProfilePack = NonNullable<InnovationPackProfilePageQuery['lookup']['innovationPack']>;
 
@@ -78,7 +78,7 @@ export function useInnovationPackProfile(): UseInnovationPackProfileResult {
   const gqlPack = data?.lookup.innovationPack;
   const pack = gqlPack ? mapProfilePackToCard(gqlPack) : undefined;
   const templatesSetId = gqlPack?.templatesSet?.id;
-  const canManage = canEditInnovationPack(gqlPack?.authorization?.myPrivileges);
+  const canManage = canEditOrgResource(gqlPack?.authorization?.myPrivileges);
   const adminHref = canManage && pack ? buildInnovationPackSettingsUrl(pack.url) : undefined;
   const shareUrl = pack?.url ?? '';
 

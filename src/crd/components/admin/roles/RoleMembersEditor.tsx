@@ -97,6 +97,12 @@ type MemberColumnsProps = {
   showMemberSearch?: boolean;
   searchTerm: string;
   onSearchTermChange: (term: string) => void;
+  /**
+   * client-13: the "add" search box's placeholder/accessible name — distinct
+   * per holder kind (user vs. organization) so the two search boxes that can
+   * render together on a Feature role have distinct accessible names.
+   */
+  searchPlaceholder: string;
   onAdd: (id: string) => void;
   onRequestRemove: (member: RoleMember) => void;
   addDisabledReason?: string;
@@ -108,6 +114,8 @@ type MemberColumnsProps = {
   onLoadMore?: () => void;
   holdersUnavailable?: boolean;
   readOnly?: boolean;
+  /** client-13: "no available candidates" text — distinct per holder kind. */
+  noResultsText: string;
 };
 
 /** Shared current-members / available-to-add column pair — reused for both the
@@ -122,6 +130,7 @@ function MemberColumns({
   showMemberSearch = false,
   searchTerm,
   onSearchTermChange,
+  searchPlaceholder,
   onAdd,
   onRequestRemove,
   addDisabledReason,
@@ -133,6 +142,7 @@ function MemberColumns({
   onLoadMore,
   holdersUnavailable = false,
   readOnly = false,
+  noResultsText,
 }: MemberColumnsProps) {
   const { t } = useTranslation('crd-admin');
 
@@ -189,14 +199,10 @@ function MemberColumns({
       {!readOnly && (
         <section className="flex flex-col gap-3">
           <h3 className="text-subheader font-semibold">{titleAdd}</h3>
-          <SearchField
-            value={searchTerm}
-            onValueChange={onSearchTermChange}
-            placeholder={t('roleMembers.searchPlaceholder')}
-          />
+          <SearchField value={searchTerm} onValueChange={onSearchTermChange} placeholder={searchPlaceholder} />
           {available.length === 0 ? (
             <p className="text-body text-muted-foreground">
-              {loadingAvailable ? t('roleMembers.loading') : t('roleMembers.noResults')}
+              {loadingAvailable ? t('roleMembers.loading') : noResultsText}
             </p>
           ) : (
             <ul className="flex flex-col gap-2">
@@ -304,6 +310,7 @@ export function RoleMembersEditor({
         showMemberSearch={showMemberSearch}
         searchTerm={searchTerm}
         onSearchTermChange={onSearchTermChange}
+        searchPlaceholder={t('roleMembers.searchPlaceholder')}
         onAdd={onAdd}
         onRequestRemove={member => setPendingRemove({ kind: 'user', member })}
         addDisabledReason={addDisabledReason}
@@ -315,6 +322,7 @@ export function RoleMembersEditor({
         onLoadMore={onLoadMore}
         holdersUnavailable={holdersUnavailable}
         readOnly={readOnly}
+        noResultsText={t('roleMembers.noResults')}
       />
 
       {organizationSection && (
@@ -327,6 +335,7 @@ export function RoleMembersEditor({
             available={organizationSection.availableOrganizations}
             searchTerm={organizationSection.searchTerm}
             onSearchTermChange={organizationSection.onSearchTermChange}
+            searchPlaceholder={t('roleMembers.searchOrganizationsPlaceholder')}
             onAdd={organizationSection.onAdd}
             onRequestRemove={member => setPendingRemove({ kind: 'organization', member })}
             addDisabledReason={addDisabledReason}
@@ -338,6 +347,7 @@ export function RoleMembersEditor({
             onLoadMore={organizationSection.onLoadMore}
             holdersUnavailable={holdersUnavailable}
             readOnly={readOnly}
+            noResultsText={t('roleMembers.noOrganizationResults')}
           />
         </>
       )}

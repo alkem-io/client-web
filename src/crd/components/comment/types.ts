@@ -19,6 +19,28 @@ export type CommentReaction = {
   senders?: CommentReactionSender[];
 };
 
+/**
+ * A single media attachment on a message (feature 013). Plain presentational
+ * shape mapped from the GraphQL `MessageAttachment` by the integration layer —
+ * `url` is an already-authorized Alkemio document URL (web- or Element-origin),
+ * so the render component treats every attachment uniformly. `width`/`height`
+ * are present for images only and let the renderer reserve aspect ratio.
+ */
+export type MessageAttachment = {
+  id?: string;
+  /** Authorized Alkemio document URL. */
+  url?: string;
+  /** Filename / display name. */
+  displayName: string;
+  mimeType?: string;
+  /** Size in bytes. */
+  size?: number;
+  /** Pixel width — images only. */
+  width?: number;
+  /** Pixel height — images only. */
+  height?: number;
+};
+
 export type CommentData = {
   id: string;
   author: CommentAuthor;
@@ -39,6 +61,9 @@ export type CommentData = {
   isDeleted?: boolean;
   reactions: CommentReaction[];
   canDelete: boolean;
+  /** Media attachments on this comment (feature 013). Empty/omitted when the
+   *  feature is off or the message has none. */
+  attachments?: MessageAttachment[];
 };
 
 export type CommentsContainerData = {
@@ -55,6 +80,19 @@ export type CommentsContainerData = {
   onDelete: (commentId: string) => void;
   onAddReaction: (commentId: string, emoji: string) => void;
   onRemoveReaction: (commentId: string, emoji: string) => void;
+};
+
+/**
+ * A staged attachment in the composer (feature 013) — its upload lifecycle is
+ * owned by the integration layer; the input only renders the chip + remove
+ * affordance and reports picks/removals via callbacks.
+ */
+export type ComposerAttachment = {
+  id: string;
+  name: string;
+  /** Upload lifecycle of the staged file. */
+  status: 'uploading' | 'ready' | 'error';
+  mimeType?: string;
 };
 
 /**

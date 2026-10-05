@@ -194,10 +194,13 @@ describe('getViewOnlyPlatformRoles — read-only offer (corr-client-web-7)', () 
     }
   });
 
-  test('PLATFORM_ROLE_HOLDERS_READ alone offers only the 10 admin roles, not the 4 feature roles', () => {
+  // client-2: PLATFORM_ROLE_HOLDERS_READ is also an additive admitter for the
+  // 4 Feature roles' view-only offer — mirrors the widening already applied
+  // to plain READ, so a Platform-roles-holder-read holder sees the full 14.
+  test('PLATFORM_ROLE_HOLDERS_READ alone offers the full 14 roles (both role families)', () => {
     const roles = getViewOnlyPlatformRoles([AuthorizationPrivilege.PlatformRoleHoldersRead]);
-    expect(roles).toEqual(expect.arrayContaining(RELEVANT_ROLES.Platform.slice(0, 10)));
-    expect(roles).not.toEqual(expect.arrayContaining([RELEVANT_ROLES.Platform[10]]));
+    expect(roles).toHaveLength(14);
+    expect(roles).toEqual(expect.arrayContaining(RELEVANT_ROLES.Platform.slice(10)));
   });
 
   test('FEATURE_ROLE_HOLDERS_READ alone offers only the 4 feature roles', () => {

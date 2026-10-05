@@ -508,11 +508,11 @@
       "rows": {
         "space": {
           "communicationUpdates": "Receive a notification when a new communication is shared on a community",
-          "collaborationCalloutPublished": "Receive a notification when a callout is published in a community I am a member of",
+          "collaborationCalloutPublished": "Receive a notification when a Post is published in a community I am a member of",
           "collaborationCalloutReaction": "Receive a notification when someone reacts to my Post with an emoji",
-          "collaborationCalloutPostContributionComment": "Receive a notification when a comment is made on a Post I follow",
-          "collaborationCalloutContributionCreated": "Receive a notification when a new contribution is created on a callout",
-          "collaborationCalloutComment": "Receive a notification when a new comment is added to a callout I follow",
+          "collaborationCalloutPostContributionComment": "Receive a notification when someone comments on a contribution I created",
+          "collaborationCalloutContributionCreated": "Receive a notification when a new contribution is added to a Post",
+          "collaborationCalloutComment": "Receive a notification when a new comment is added to a Post in a community I am a member of",
           "communityCalendarEvents": "Receive a notification for community calendar events",
           "collaborationPollVoteCastOnOwnPoll": "Receive a notification when someone votes on my poll",
           "collaborationPollVoteCastOnPollIVotedOn": "Receive a notification when someone votes on a poll I voted on",
@@ -523,7 +523,7 @@
           "communityApplicationReceived": "Receive a notification when a new community application is submitted",
           "communityNewMember": "Receive a notification when a new member joins the community",
           "communityInvitationResponse": "Receive a notification when someone accepts or declines an invitation to a Space you administer",
-          "collaborationCalloutContributionCreated": "Receive a notification when a new contribution is created on a callout",
+          "collaborationCalloutContributionCreated": "Receive a notification when a new contribution is added to a Post",
           "communicationMessageReceived": "Receive a notification when a community message is received",
           "userEmailChanged": "Receive a notification when the login email of a member of a space you administer is changed"
         },
@@ -539,7 +539,7 @@
           "membershipOrganizationAssociateApplicationDecided": "Receive a notification when an organisation decides on my application to associate"
         },
         "platform": {
-          "forumDiscussionComment": "Receive a notification when a new comment is added to a discussion I follow",
+          "forumDiscussionComment": "Receive a notification when someone comments on a discussion I created",
           "forumDiscussionCreated": "Receive a notification when a new platform discussion is created"
         },
         "platformAdmin": {
@@ -849,8 +849,7 @@
         "cancel": "Cancel",
         "removeSuccess": "{{name}} removed from the organisation",
         "removeError": "Couldn't remove {{name}} — try again",
-        "saveError": "Couldn't save changes — try again",
-        "selfAdminLocked": "You can't remove your own Admin role here."
+        "saveError": "Couldn't save changes — try again"
       },
       "errors": {
         "limitAdmin": "An organisation can have at most 6 admins",

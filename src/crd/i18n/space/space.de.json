@@ -1,9 +1,9 @@
 {
   "common": {
-    "Callout": "Aufruf",
-    "callout": "aufruf",
-    "Callouts": "Aufrufe",
-    "callouts": "aufrufe"
+    "Callout": "Beitrag",
+    "callout": "Beitrag",
+    "Callouts": "Beiträge",
+    "callouts": "Beiträge"
   },
   "banner": {
     "homeSpace": "Hauptbereich",
@@ -286,7 +286,7 @@
     "linkDeleteAriaLabel": "Link löschen",
     "linkDelete": "Link löschen",
     "linkDeleteConfirmTitle": "Diesen Link löschen?",
-    "linkDeleteConfirmDescription": "Dadurch wird der Link dauerhaft aus diesem $t(common.callout) entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
+    "linkDeleteConfirmDescription": "Dadurch wird der Link dauerhaft aus diesem Beitrag entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
     "addPost": "Beitrag hinzufügen",
     "createPost": "Beitrag erstellen",
     "editPost": "Beitrag bearbeiten",
@@ -308,10 +308,10 @@
     "postUnsavedCloseDescription": "Du hast nicht gespeicherte Änderungen. Wenn du jetzt schließt, gehen sie verloren.",
     "postUnsavedCloseConfirm": "Änderungen verwerfen",
     "postUnsavedCloseCancel": "Weiter bearbeiten",
-    "uploadAfterCreateFailed": "Der $t(common.Callout) wurde erstellt, aber das Hochladen des Vorschaubildes ist fehlgeschlagen. Sie können es im Bearbeitungsdialog des $t(common.callout)s erneut versuchen.",
+    "uploadAfterCreateFailed": "Der Beitrag wurde erstellt, aber das Hochladen des Vorschaubildes ist fehlgeschlagen. Sie können es im Bearbeitungsdialog des Beitrags erneut versuchen.",
     "pollOptionsSaveFailed": "Eine oder mehrere Änderungen an den Umfrageoptionen konnten nicht gespeichert werden. Sie können es in diesem Dialog erneut versuchen.",
     "referencesSaveFailed": "Eine oder mehrere neue Referenzen konnten nicht gespeichert werden. Weitere Änderungen wurden nicht übernommen. Bitte versuchen Sie es erneut.",
-    "updateFailed": "Die Änderungen am $t(common.callout) konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+    "updateFailed": "Die Änderungen am Beitrag konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
     "contributors": "Mitwirkende",
     "subspaces": "Unterbereiche"
   },
@@ -375,6 +375,12 @@
       "title": "Keine Unterbereiche gefunden",
       "description": "Keine Unterbereiche entsprechen Ihrer aktuellen Suche oder Ihrem Filter.",
       "clearFilters": "Filter zurücksetzen"
+    },
+    "expandedCard": {
+      "what": "Was",
+      "why": "Warum",
+      "who": "Wer",
+      "open": "Unterbereich öffnen"
     }
   },
   "about": {
@@ -469,11 +475,11 @@
     "moveFailed": "Neue Reihenfolge fehlgeschlagen. Bitte erneut versuchen."
   },
   "visibilityChange": {
-    "publishTitle": "Diesen $t(common.callout) veröffentlichen?",
-    "publishDescription": "Der $t(common.Callout) wird für alle Mitglieder des Space sichtbar.",
+    "publishTitle": "Diesen Beitrag veröffentlichen?",
+    "publishDescription": "Der Beitrag wird für alle Mitglieder des Space sichtbar.",
     "publishConfirm": "Veröffentlichen",
-    "unpublishTitle": "Diesen $t(common.callout) in den Entwurf zurücksetzen?",
-    "unpublishDescription": "Der $t(common.Callout) ist dann für Space-Mitglieder nicht mehr sichtbar.",
+    "unpublishTitle": "Diesen Beitrag in den Entwurf zurücksetzen?",
+    "unpublishDescription": "Der Beitrag ist dann für Space-Mitglieder nicht mehr sichtbar.",
     "unpublishConfirm": "In Entwurf verschieben",
     "notifyMembers": "Space-Mitglieder benachrichtigen",
     "saveFailed": "Die Sichtbarkeit konnte nicht geändert werden. Bitte erneut versuchen."
@@ -481,16 +487,16 @@
   "sortContributions": {
     "title": "Beiträge sortieren",
     "description": "Per Drag-and-Drop neu anordnen. Die neue Reihenfolge wird beim Speichern übernommen.",
-    "empty": "Dieser $t(common.Callout) hat noch keine Beiträge zum Sortieren.",
+    "empty": "Dieser Beitrag hat noch keine Antworten zum Sortieren.",
     "confirm": "Reihenfolge speichern",
     "dragHandle": "Ziehen zum Neuordnen",
     "saveFailed": "Die neue Reihenfolge konnte nicht gespeichert werden. Bitte erneut versuchen."
   },
   "deleteCallout": {
-    "title": "Diesen $t(common.Callout) löschen?",
+    "title": "Diesen Beitrag löschen?",
     "description": "„{{title}}“ wird dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
     "confirm": "Löschen",
-    "confirmAll": "$t(common.Callout) und alle Inhalte löschen",
+    "confirmAll": "Beitrag und alle Inhalte löschen",
     "headerContributions_one": "{{count}} Beitrag wird gelöscht",
     "headerContributions_other": "{{count}} Beiträge werden gelöscht",
     "headerRich": "{{content}} wird gelöscht",
@@ -513,8 +519,8 @@
     "moreLinks_other": "und {{count}} weitere Links",
     "comments_one": "{{count}} Kommentar wird gelöscht",
     "comments_other": "{{count}} Kommentare werden gelöscht",
-    "success": "Der $t(common.Callout) „{{title}}“ wurde gelöscht.",
-    "saveFailed": "Der $t(common.Callout) konnte nicht gelöscht werden. Bitte erneut versuchen."
+    "success": "Der Beitrag „{{title}}“ wurde gelöscht.",
+    "saveFailed": "Der Beitrag konnte nicht gelöscht werden. Bitte erneut versuchen."
   },
   "deleteTask": {
     "title": "Diese Aufgabe löschen?"
@@ -573,7 +579,7 @@
     "publishedLabel": "Veröffentlicht",
     "draftLabel": "Entwurf",
     "notifyMembers": "Bereichsmitglieder benachrichtigen",
-    "titleRequiredHint": "Fügen Sie Ihrem $t(common.callout) einen Titel hinzu, um fortzufahren",
+    "titleRequiredHint": "Fügen Sie Ihrem Beitrag einen Titel hinzu, um fortzufahren",
     "saveDraft": "Entwurf speichern",
     "save": "Speichern",
     "publish": "Veröffentlichen",
@@ -591,7 +597,7 @@
     "addOption": "Option hinzufügen",
     "removeOption": "Option entfernen",
     "allowComments": "Kommentare zulassen",
-    "allowCommentsDescription": "Mitglieder können Kommentare im $t(common.callout)-Rahmen veröffentlichen.",
+    "allowCommentsDescription": "Mitglieder können Kommentare zum Framing des Beitrags veröffentlichen.",
     "titleCharacterCount": "{{current}}/{{max}}",
     "selection": {
       "label": "Manuelle Auswahl",
@@ -613,6 +619,10 @@
       "loadMore": "Mehr laden…",
       "removeAriaLabel": "{{name}} entfernen",
       "clearSearch": "Suche löschen"
+    },
+    "cardVariant": {
+      "label": "Erweiterte Karte",
+      "description": "Zeigt die vollständige Karte mit dem Was, Warum und Wer des Unterbereichs - mehr Kontext, mehr Höhe."
     }
   },
   "contributionSettings": {
@@ -633,7 +643,7 @@
     "setDefaults": "Standardantwort festlegen",
     "prePopulate": {
       "heading": "Sammlung vorbefüllen",
-      "description": "Fügen Sie Links hinzu, die sofort sichtbar sind, sobald dieser $t(common.Callout) erstellt wird.",
+      "description": "Fügen Sie Links hinzu, die sofort sichtbar sind, sobald dieser Beitrag erstellt wird.",
       "empty": "Noch keine vorbefüllten Links.",
       "titleLabel": "Titel",
       "titlePlaceholder": "Link-Titel",
@@ -647,7 +657,7 @@
     }
   },
   "responseDefaults": {
-    "srDescription": "Konfigurieren Sie die Standardwerte für neue Beiträge in diesem $t(common.Callout).",
+    "srDescription": "Konfigurieren Sie die Standardwerte für neue Antworten in diesem Beitrag.",
     "title": {
       "post": "Standardwerte für Beiträge",
       "memo": "Standardwerte für Notizen",
@@ -964,7 +974,19 @@
     "empty": "Noch keine Kommentare",
     "unknownUser": "Unbekannter Benutzer",
     "signInToComment": "Melde dich an, um zu kommentieren, antworten oder reagieren.",
-    "cantComment": "Du hast keine Berechtigung, hier zu kommentieren, antworten oder reagieren."
+    "cantComment": "Du hast keine Berechtigung, hier zu kommentieren, antworten oder reagieren.",
+    "attachments": {
+      "attach": "Dateien anhängen",
+      "dropHint": "Dateien zum Anhängen hier ablegen",
+      "stagedListLabel": "Zu sendende Dateien",
+      "removeAttachment": "{{name}} entfernen",
+      "uploading": "Wird hochgeladen…",
+      "uploadFailed": "Hochladen fehlgeschlagen. Sende erneut, um es noch einmal zu versuchen, oder entferne die Datei.",
+      "sendUnconfirmed": "Das Senden wurde nicht bestätigt. Prüfe das Gespräch, bevor du erneut sendest.",
+      "errorTooMany": "Du kannst bis zu {{max}} Dateien anhängen.",
+      "errorTooLarge": "{{name}} ist größer als {{max}} MB.",
+      "errorUnsupportedType": "{{name}} hat einen nicht unterstützten Dateityp."
+    }
   },
   "dialogs": {
     "cancel": "Abbrechen",
@@ -978,7 +1000,7 @@
     },
     "deleteFraming": {
       "title": "Framing-Inhalt entfernen?",
-      "description": "Der Framing-Inhalt dieses $t(common.Callout)s wird entfernt. Dies kann nicht rückgängig gemacht werden.",
+      "description": "Der Framing-Inhalt dieses Beitrags wird entfernt. Dies kann nicht rückgängig gemacht werden.",
       "confirm": "Entfernen",
       "cancel": "Beibehalten"
     },
@@ -1094,6 +1116,17 @@
     "viewMap": "Karte",
     "expandMap": "Karte vergrößern",
     "closeMap": "Karte schließen",
+    "card": {
+      "taglineFallback": "Dieser Nutzer hat noch keinen Untertitel eingetragen.",
+      "associates_one": "{{count}} Zugehöriger in dieser Organisation",
+      "associates_other": "{{count}} Zugehörige in dieser Organisation",
+      "actions": "Aktionen für {{name}}",
+      "viewProfile": "Profil ansehen",
+      "message": "Nachricht",
+      "website": "Website von {{name}} besuchen (öffnet in einem neuen Tab)",
+      "opensInNewTab": "öffnet in einem neuen Tab",
+      "joined": "Diesem Space im {{date}} beigetreten"
+    },
     "types": {
       "user": "Personen",
       "organization": "Organisationen",
