@@ -1301,6 +1301,7 @@
     },
     "ownResponses": {
       "heading": "Vos réponses",
+      "loadEarlier": "Afficher les réponses précédentes",
       "responseNumber": "Réponse {{number}}",
       "submittedOn": "Envoyée le {{date}}",
       "withdraw": "Retirer",

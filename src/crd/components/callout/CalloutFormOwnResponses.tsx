@@ -8,8 +8,11 @@ import { cn } from '@/crd/lib/utils';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 
+/** An own response, with its 1-based position among all of the viewer's responses when not contiguous. */
+export type OwnFormResponseView = FormResponseView & { number?: number };
+
 type CalloutFormOwnResponsesProps = {
-  responses: FormResponseView[];
+  responses: OwnFormResponseView[];
   questions: FormQuestionView[];
   onWithdraw: (responseId: string) => void;
   /** True while a withdrawal is in flight. */
@@ -19,6 +22,9 @@ type CalloutFormOwnResponsesProps = {
    * the viewer must still see that the Form is closed or unpublished.
    */
   status?: 'CLOSED' | 'DRAFT';
+  /** Shown when the viewer has earlier responses than the ones listed; loads the next page of them. */
+  onLoadEarlier?: () => void;
+  loadingEarlier?: boolean;
   className?: string;
 };
 
@@ -29,6 +35,8 @@ export function CalloutFormOwnResponses({
   onWithdraw,
   withdrawing = false,
   status,
+  onLoadEarlier,
+  loadingEarlier = false,
   className,
 }: CalloutFormOwnResponsesProps) {
   const { t, i18n } = useTranslation('crd-space');
@@ -53,6 +61,17 @@ export function CalloutFormOwnResponses({
           </span>
         </div>
       )}
+      {onLoadEarlier && (
+        <Button
+          variant="ghost"
+          size="sm"
+          disabled={loadingEarlier}
+          aria-busy={loadingEarlier || undefined}
+          onClick={onLoadEarlier}
+        >
+          {t('formFillIn.ownResponses.loadEarlier')}
+        </Button>
+      )}
       {responses.map((response, index) => {
         const columns = deriveFormColumns(questions, [response]);
         return (
@@ -60,7 +79,7 @@ export function CalloutFormOwnResponses({
             <div className="flex items-center justify-between gap-2">
               <div className="space-y-0.5">
                 <p className="text-body-emphasis">
-                  {t('formFillIn.ownResponses.responseNumber', { number: index + 1 })}
+                  {t('formFillIn.ownResponses.responseNumber', { number: response.number ?? index + 1 })}
                 </p>
                 <p className="text-caption text-muted-foreground">
                   {t('formFillIn.ownResponses.submittedOn', {

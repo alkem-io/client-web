@@ -5,7 +5,11 @@ import type { FormQuestionView, FormResponseView } from '@/crd/components/callou
 import { CalloutFormOwnResponses } from './CalloutFormOwnResponses';
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
+  useTranslation: () => ({
+    t: (key: string, options?: { number?: number }) =>
+      options?.number === undefined ? key : `${key}:${options.number}`,
+    i18n: { language: 'en' },
+  }),
 }));
 
 const questions: FormQuestionView[] = [
@@ -35,6 +39,32 @@ describe('CalloutFormOwnResponses', () => {
     expect(screen.getByText('legacy')).toBeInTheDocument();
     expect(screen.getAllByText('formFillIn.noAnswer').length).toBeGreaterThan(0);
     expect(screen.queryByRole('textbox')).toBeNull();
+  });
+
+  test('numbers responses by their given position and offers loading earlier ones', async () => {
+    const onLoadEarlier = vi.fn();
+    render(
+      <CalloutFormOwnResponses
+        responses={[
+          { ...responses[0], number: 1 },
+          { ...responses[1], number: 60 },
+        ]}
+        questions={questions}
+        onWithdraw={vi.fn()}
+        onLoadEarlier={onLoadEarlier}
+      />
+    );
+
+    expect(screen.getByText('formFillIn.ownResponses.responseNumber:1')).toBeInTheDocument();
+    expect(screen.getByText('formFillIn.ownResponses.responseNumber:60')).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'formFillIn.ownResponses.loadEarlier' }));
+    expect(onLoadEarlier).toHaveBeenCalledTimes(1);
+  });
+
+  test('without a loader there is no earlier-responses action', () => {
+    render(<CalloutFormOwnResponses responses={responses} questions={questions} onWithdraw={vi.fn()} />);
+    expect(screen.queryByRole('button', { name: 'formFillIn.ownResponses.loadEarlier' })).toBeNull();
+    expect(screen.getByText('formFillIn.ownResponses.responseNumber:2')).toBeInTheDocument();
   });
 
   test('withdrawing asks for confirmation before calling back', async () => {

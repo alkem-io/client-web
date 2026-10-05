@@ -1301,6 +1301,7 @@
     },
     "ownResponses": {
       "heading": "Your responses",
+      "loadEarlier": "Show earlier responses",
       "responseNumber": "Response {{number}}",
       "submittedOn": "Submitted {{date}}",
       "withdraw": "Withdraw",

@@ -1301,6 +1301,7 @@
     },
     "ownResponses": {
       "heading": "Je reacties",
+      "loadEarlier": "Eerdere reacties tonen",
       "responseNumber": "Reactie {{number}}",
       "submittedOn": "Verzonden op {{date}}",
       "withdraw": "Intrekken",

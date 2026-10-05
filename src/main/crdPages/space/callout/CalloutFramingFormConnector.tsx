@@ -14,11 +14,11 @@ import {
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { CalloutFormFillIn } from '@/crd/components/callout/CalloutFormFillIn';
-import { CalloutFormOwnResponses } from '@/crd/components/callout/CalloutFormOwnResponses';
+import { CalloutFormOwnResponses, type OwnFormResponseView } from '@/crd/components/callout/CalloutFormOwnResponses';
 import { CalloutFormResponseDialog } from '@/crd/components/callout/CalloutFormResponseDialog';
 import { CalloutFormResponsesTable } from '@/crd/components/callout/CalloutFormResponsesTable';
 import { deriveFormColumns } from '@/crd/components/callout/calloutFormColumns';
-import type { FormAnswerInput, FormResponseView } from '@/crd/components/callout/calloutFormTypes';
+import type { FormAnswerInput } from '@/crd/components/callout/calloutFormTypes';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
@@ -81,7 +81,7 @@ function CalloutFramingFormConnectorInner({
 
   // One page is enough here: the count, the viewer's own responses and the scope flags. The review dialog
   // loads its own, larger pages.
-  const { data, error, refetch } = useCalloutFormResponsesQuery({
+  const { data, error, refetch, fetchMore } = useCalloutFormResponsesQuery({
     variables: { formID: form.id, first: 1 },
     fetchPolicy: 'cache-and-network',
   });
@@ -97,11 +97,52 @@ function CalloutFramingFormConnectorInner({
   const [reviewOpen, setReviewOpen] = useState(false);
   const [reviewRefreshKey, setReviewRefreshKey] = useState(0);
 
+  // Earlier own responses than `mine` carries (it holds only the newest page), paged from `all` oldest-first.
+  // Only for viewers whose `all` is scoped to their own responses; a reader of every response uses the review.
+  const [earlier, setEarlier] = useState<LoadedPage | null>(null);
+  const [loadingEarlier, setLoadingEarlier] = useState(false);
+
   const questions = mapFormQuestionsToViews(form);
-  const ownResponses: FormResponseView[] = (responses?.mine ?? []).map(mapFormResponseToView);
+  const mine = responses?.mine ?? [];
+  const ownScoped = responses ? !responses.canReadAll : false;
+  const ownTotal = ownScoped ? (responses?.all.total ?? 0) : mine.length;
+  const mineIds = new Set(mine.map(response => response.id));
+  const earlierResponses = ownScoped ? (earlier?.responses ?? []) : [];
+  // `mine` is the newest of the viewer's responses, so its first entry is number ownTotal - mine.length + 1.
+  const mineOffset = Math.max(ownTotal - mine.length, 0);
+  const ownResponses: OwnFormResponseView[] = [
+    ...earlierResponses
+      .map((response, index) => ({ ...mapFormResponseToView(response), number: index + 1 }))
+      .filter(response => !mineIds.has(response.id)),
+    ...mine.map((response, index) => ({ ...mapFormResponseToView(response), number: mineOffset + index + 1 })),
+  ];
+  const hasEarlier = ownScoped && ownResponses.length < ownTotal && (earlier?.hasNextPage ?? true);
+
+  const handleLoadEarlier = async () => {
+    if (loadingEarlier) return;
+    setLoadingEarlier(true);
+    try {
+      const result = await fetchMore({
+        variables: { formID: form.id, first: RESPONSES_PAGE_SIZE, after: earlier?.endCursor },
+      });
+      const page = result.data.lookup.calloutFormResponses.all;
+      setEarlier(previous => ({
+        responses: [...(previous?.responses ?? []), ...page.responses],
+        hasNextPage: page.pageInfo.hasNextPage,
+        endCursor: page.pageInfo.endCursor ?? undefined,
+      }));
+    } catch (err) {
+      logError(new Error('Own form responses page load failed', { cause: err as Error }));
+      notify(t('formResponses.loadFailed'), 'error');
+    } finally {
+      setLoadingEarlier(false);
+    }
+  };
 
   const refreshResponses = async () => {
     setReviewRefreshKey(key => key + 1);
+    // A submission or withdrawal shifts the pages: start the earlier list over.
+    setEarlier(null);
     await refetch();
   };
 
@@ -203,6 +244,8 @@ function CalloutFramingFormConnectorInner({
           onWithdraw={id => void handleDelete(id, 'own')}
           withdrawing={deleting}
           status={showFillIn ? undefined : !published ? 'DRAFT' : isOpen ? undefined : 'CLOSED'}
+          onLoadEarlier={hasEarlier ? () => void handleLoadEarlier() : undefined}
+          loadingEarlier={loadingEarlier}
         />
       )}
       {showOwnResponses && showFillIn && <Separator />}

@@ -19,14 +19,15 @@ const hoisted = vi.hoisted(() => ({
   submit: vi.fn(),
   remove: vi.fn(),
   refetchQueries: vi.fn(),
+  fetchMore: vi.fn(),
   notify: vi.fn(),
 }));
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useCalloutFormResponsesQuery: (options: { skip?: boolean }) =>
     options.skip
-      ? { data: undefined, loading: false, refetch: hoisted.refetch, fetchMore: vi.fn() }
-      : { data: hoisted.responses.current, loading: false, refetch: hoisted.refetch, fetchMore: vi.fn() },
+      ? { data: undefined, loading: false, refetch: hoisted.refetch, fetchMore: hoisted.fetchMore }
+      : { data: hoisted.responses.current, loading: false, refetch: hoisted.refetch, fetchMore: hoisted.fetchMore },
   useSubmitCalloutFormResponseMutation: () => [hoisted.submit, { loading: false }],
   useDeleteCalloutFormResponseMutation: () => [hoisted.remove, { loading: false }],
 }));
@@ -268,6 +269,59 @@ describe('CalloutFramingFormConnector', () => {
 
     await waitFor(() => expect(screen.queryByRole('button', { name: /formFillIn\.submit/ })).not.toBeInTheDocument());
     expect(screen.queryByRole('textbox', { name: /Your name/ })).not.toBeInTheDocument();
+  });
+
+  it('a member with more responses than `mine` holds can load the earlier ones and withdraw them', async () => {
+    const response = (id: string) => ({ ...ownResponse, id });
+    // `mine` carries only the newest responses; `all` (scoped to the member) counts three.
+    setResponses({ mine: [response('r2'), response('r3')], canReadAll: false, total: 3 });
+    hoisted.fetchMore.mockResolvedValue({
+      data: {
+        lookup: {
+          calloutFormResponses: {
+            all: {
+              total: 3,
+              pageInfo: { hasNextPage: true, endCursor: 'r2' },
+              responses: [response('r1'), response('r2')],
+            },
+          },
+        },
+      },
+    });
+    render(<CalloutFramingFormConnector callout={makeCallout({ responseMode: CalloutFormResponseMode.Multiple })} />);
+
+    expect(screen.getAllByRole('button', { name: 'formFillIn.ownResponses.withdraw' })).toHaveLength(2);
+    await userEvent.click(screen.getByRole('button', { name: 'formFillIn.ownResponses.loadEarlier' }));
+
+    expect(hoisted.fetchMore).toHaveBeenCalledWith({ variables: { formID: 'form-1', first: 50, after: undefined } });
+    // r2 arrives in both lists and is shown once; with all three loaded the affordance goes away.
+    await waitFor(() =>
+      expect(screen.getAllByRole('button', { name: 'formFillIn.ownResponses.withdraw' })).toHaveLength(3)
+    );
+    expect(screen.queryByRole('button', { name: 'formFillIn.ownResponses.loadEarlier' })).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getAllByRole('button', { name: 'formFillIn.ownResponses.withdraw' })[0]);
+    await userEvent.click(
+      await screen.findByRole('button', { name: 'formFillIn.ownResponses.withdrawConfirm.confirm' })
+    );
+    await waitFor(() =>
+      expect(hoisted.remove).toHaveBeenCalledWith(
+        expect.objectContaining({ variables: { deleteData: { responseID: 'r1' } } })
+      )
+    );
+  });
+
+  it('offers no earlier-responses paging when `mine` already holds every own response, or to a reader of all', () => {
+    setResponses({ mine: [ownResponse], canReadAll: false, total: 1 });
+    const { unmount } = render(
+      <CalloutFramingFormConnector callout={makeCallout({ responseMode: CalloutFormResponseMode.Multiple })} />
+    );
+    expect(screen.queryByRole('button', { name: 'formFillIn.ownResponses.loadEarlier' })).not.toBeInTheDocument();
+    unmount();
+
+    setResponses({ mine: [ownResponse], canReadAll: true, total: 120 });
+    render(<CalloutFramingFormConnector callout={makeCallout({ responseMode: CalloutFormResponseMode.Multiple })} />);
+    expect(screen.queryByRole('button', { name: 'formFillIn.ownResponses.loadEarlier' })).not.toBeInTheDocument();
   });
 
   it('withdrawing an own response deletes it and refetches', async () => {

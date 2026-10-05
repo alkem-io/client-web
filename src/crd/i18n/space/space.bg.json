@@ -1301,6 +1301,7 @@
     },
     "ownResponses": {
       "heading": "Вашите отговори",
+      "loadEarlier": "Покажи по-ранните отговори",
       "responseNumber": "Отговор {{number}}",
       "submittedOn": "Изпратен на {{date}}",
       "withdraw": "Оттегляне",
