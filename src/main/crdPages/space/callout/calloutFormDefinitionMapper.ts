@@ -102,25 +102,30 @@ const questionsToUpdateInput = (questions: FormQuestionValue[]) =>
       : undefined,
   }));
 
+/** What the editor was opened with; the parts of an update that still equal it are left out. */
+export type FormDefinitionInitialValue = Pick<FormDefinitionValue, 'title' | 'description' | 'questions'>;
+
 /**
- * Title, description, settings plus, when the definition changed, the complete ordered question list for
- * `updateCalloutForm`. The title and description are always sent: an empty value clears them. The server
- * treats `questions` as a full replacement and an omitted list as "unchanged", so when the mapped questions
- * equal the ones the editor was opened with they are left out — a settings-only save must not overwrite
- * questions another admin changed in the meantime.
+ * Settings plus, for `updateCalloutForm`, only the parts of the definition the admin changed. The server
+ * treats an omitted `title`, `description` or `questions` as "unchanged" (and `questions` as a full
+ * replacement), so a part that still equals what the editor was opened with is left out — a settings-only
+ * save must not overwrite a title, a description or questions another admin changed in the meantime. A
+ * changed title or description is sent trimmed; '' clears it. Without `initial`, everything is sent.
  */
 export const mapFormValuesToUpdateInput = (
   formID: string,
   { title, description, questions, settings }: FormDefinitionValue,
-  initialQuestions?: FormQuestionValue[]
+  initial?: FormDefinitionInitialValue
 ): UpdateCalloutFormInput => {
   const mapped = questionsToUpdateInput(questions);
-  const unchanged = initialQuestions !== undefined && isEqual(mapped, questionsToUpdateInput(initialQuestions));
+  const questionsUnchanged = initial !== undefined && isEqual(mapped, questionsToUpdateInput(initial.questions));
+  const titleUnchanged = initial !== undefined && title.trim() === initial.title.trim();
+  const descriptionUnchanged = initial !== undefined && description.trim() === initial.description.trim();
   return {
     formID,
-    title: title.trim(),
-    description: description.trim(),
-    ...(unchanged ? {} : { questions: mapped }),
+    ...(titleUnchanged ? {} : { title: title.trim() }),
+    ...(descriptionUnchanged ? {} : { description: description.trim() }),
+    ...(questionsUnchanged ? {} : { questions: mapped }),
     settings: settingsToServer(settings),
   };
 };

@@ -748,7 +748,11 @@ function CalloutFormConnectorInner({
           questions: values.formQuestions,
           settings: values.formSettings,
         },
-        form.initialValues.formQuestions
+        {
+          title: form.initialValues.formTitle,
+          description: form.initialValues.formDescription,
+          questions: form.initialValues.formQuestions,
+        }
       );
       if (!outcome.ok) {
         logError(new Error('Form definition save failed', { cause: outcome.error as Error }));

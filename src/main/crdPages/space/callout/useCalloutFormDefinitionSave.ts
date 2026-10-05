@@ -1,13 +1,16 @@
 import type { TFunction } from 'i18next';
 import { useUpdateCalloutFormMutation } from '@/core/apollo/generated/apollo-hooks';
-import type { FormQuestionValue } from '@/crd/forms/callout/types';
 import type { CalloutFormDetailsModel } from '@/domain/collaboration/callout-form/models/CalloutFormModels';
 import {
   CalloutFormErrorCode,
   type CalloutFormErrorCodeValue,
   getCalloutFormErrorCode,
 } from '@/domain/collaboration/callout-form/utils/calloutFormErrors';
-import { type FormDefinitionValue, mapFormValuesToUpdateInput } from './calloutFormDefinitionMapper';
+import {
+  type FormDefinitionInitialValue,
+  type FormDefinitionValue,
+  mapFormValuesToUpdateInput,
+} from './calloutFormDefinitionMapper';
 
 type CrdSpaceTranslator = TFunction<'crd-space'>;
 
@@ -44,11 +47,11 @@ export const useCalloutFormDefinitionSave = () => {
   const save = async (
     formId: string,
     definition: FormDefinitionValue,
-    initialQuestions?: FormQuestionValue[]
+    initial?: FormDefinitionInitialValue
   ): Promise<FormDefinitionSaveResult> => {
     try {
       const result = await updateCalloutForm({
-        variables: { formData: mapFormValuesToUpdateInput(formId, definition, initialQuestions) },
+        variables: { formData: mapFormValuesToUpdateInput(formId, definition, initial) },
         context: { skipGlobalErrorHandler: true },
       });
       return { ok: true, form: result.data?.updateCalloutForm };

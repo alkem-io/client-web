@@ -128,7 +128,7 @@ describe('calloutFormDefinitionMapper', () => {
         state: 'OPEN',
         defaultCollapsed: false,
       }),
-      initialQuestions
+      { title: '', description: '', questions: initialQuestions }
     );
 
     expect(input).not.toHaveProperty('questions');
@@ -140,7 +140,11 @@ describe('calloutFormDefinitionMapper', () => {
     const padded = initialQuestions.map(question => ({ ...question, prompt: `  ${question.prompt} ` }));
 
     expect(
-      mapFormValuesToUpdateInput('form-1', definition(padded, formSettingsFromServer(form.settings)), initialQuestions)
+      mapFormValuesToUpdateInput('form-1', definition(padded, formSettingsFromServer(form.settings)), {
+        title: '',
+        description: '',
+        questions: initialQuestions,
+      })
     ).not.toHaveProperty('questions');
   });
 
@@ -150,11 +154,11 @@ describe('calloutFormDefinitionMapper', () => {
       index === 1 ? { ...question, required: true } : question
     );
 
-    const input = mapFormValuesToUpdateInput(
-      'form-1',
-      definition(edited, formSettingsFromServer(form.settings)),
-      initialQuestions
-    );
+    const input = mapFormValuesToUpdateInput('form-1', definition(edited, formSettingsFromServer(form.settings)), {
+      title: '',
+      description: '',
+      questions: initialQuestions,
+    });
 
     expect(input.questions?.map(q => [q.id, q.required])).toEqual([
       ['q1', true],
@@ -197,5 +201,42 @@ describe('calloutFormDefinitionMapper', () => {
     const without = mapFormValuesToCreateInput(definition(formQuestionsFromServer(form), settings, { title: '  ' }));
     expect(without.title).toBeUndefined();
     expect(without.description).toBeUndefined();
+  });
+
+  it('omits an unchanged title and description, so a concurrent edit by another admin survives', () => {
+    const questions = formQuestionsFromServer(form);
+    const initial = { title: 'Q4 planning', description: 'About', questions };
+    const input = mapFormValuesToUpdateInput(
+      'form-1',
+      // Whitespace-only differences map to the same value: still unchanged.
+      definition(questions, formSettingsFromServer(form.settings), { title: ' Q4 planning ', description: 'About ' }),
+      initial
+    );
+
+    expect(input).not.toHaveProperty('title');
+    expect(input).not.toHaveProperty('description');
+    expect(input).not.toHaveProperty('questions');
+    expect(input.settings).toBeDefined();
+  });
+
+  it('sends only the changed header part; clearing sends an empty string', () => {
+    const questions = formQuestionsFromServer(form);
+    const initial = { title: 'Q4 planning', description: 'About', questions };
+
+    const renamed = mapFormValuesToUpdateInput(
+      'form-1',
+      definition(questions, formSettingsFromServer(form.settings), { title: ' Q1 planning ', description: 'About' }),
+      initial
+    );
+    expect(renamed.title).toBe('Q1 planning');
+    expect(renamed).not.toHaveProperty('description');
+
+    const cleared = mapFormValuesToUpdateInput(
+      'form-1',
+      definition(questions, formSettingsFromServer(form.settings), { title: 'Q4 planning', description: '  ' }),
+      initial
+    );
+    expect(cleared).not.toHaveProperty('title');
+    expect(cleared.description).toBe('');
   });
 });
