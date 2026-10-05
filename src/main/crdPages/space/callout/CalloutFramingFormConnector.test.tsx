@@ -192,7 +192,9 @@ describe('CalloutFramingFormConnector', () => {
     await userEvent.click(screen.getByRole('button', { name: 'formFillIn.submit' }));
 
     await waitFor(() => expect(hoisted.notify).toHaveBeenCalledWith('formFillIn.visibilityChanged', 'warning'));
-    expect(hoisted.refetchQueries).toHaveBeenCalledWith({ include: ['CalloutDetails'] });
+    expect(hoisted.refetchQueries).toHaveBeenCalledWith(
+      expect.objectContaining({ include: ['CalloutDetails'], onQueryUpdated: expect.any(Function) })
+    );
     expect(hoisted.refetch).toHaveBeenCalled();
     expect(screen.getByRole('textbox', { name: /Your name/ })).toHaveValue('Ada');
   });
@@ -221,6 +223,51 @@ describe('CalloutFramingFormConnector', () => {
     await waitFor(() => expect(hoisted.notify).toHaveBeenCalledWith('formFillIn.success', 'success'));
     expect(hoisted.refetch).toHaveBeenCalled();
     expect(screen.getByRole('textbox', { name: /Your name/ })).toHaveValue('');
+  });
+
+  it("a rejection refetches only this callout's details, not every callout on the page", async () => {
+    hoisted.submit.mockRejectedValue(
+      new ApolloError({
+        graphQLErrors: [new GraphQLError('rejected', { extensions: { details: { code: 'FORM_CLOSED' } } })],
+      })
+    );
+    render(<CalloutFramingFormConnector callout={makeCallout()} />);
+
+    await userEvent.type(screen.getByRole('textbox', { name: /Your name/ }), 'Ada');
+    await userEvent.click(screen.getByRole('button', { name: 'formFillIn.submit' }));
+
+    await waitFor(() => expect(hoisted.refetchQueries).toHaveBeenCalled());
+    const { onQueryUpdated } = hoisted.refetchQueries.mock.calls[0][0];
+    expect(onQueryUpdated({ variables: { calloutId: 'callout-1' } })).toBe(true);
+    expect(onQueryUpdated({ variables: { calloutId: 'callout-2' } })).toBe(false);
+  });
+
+  it('single mode: the fill-in stays locked until the own responses reload, then gives way to them', async () => {
+    let resolveRefetch: () => void = () => {};
+    hoisted.refetch.mockImplementation(
+      () =>
+        new Promise<void>(resolve => {
+          resolveRefetch = () => {
+            setResponses({ mine: [ownResponse] });
+            resolve();
+          };
+        })
+    );
+    render(<CalloutFramingFormConnector callout={makeCallout()} />);
+
+    await userEvent.type(screen.getByRole('textbox', { name: /Your name/ }), 'Ada');
+    await userEvent.click(screen.getByRole('button', { name: 'formFillIn.submit' }));
+
+    await waitFor(() => expect(hoisted.notify).toHaveBeenCalledWith('formFillIn.success', 'success'));
+    // The refetch of `mine` is still in flight: no empty, submittable fill-in in the meantime.
+    expect(screen.getByRole('button', { name: 'formFillIn.submitting' })).toBeDisabled();
+    expect(screen.queryByRole('button', { name: 'formFillIn.submit' })).not.toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: /Your name/ })).toHaveValue('Ada');
+
+    resolveRefetch();
+
+    await waitFor(() => expect(screen.queryByRole('button', { name: /formFillIn\.submit/ })).not.toBeInTheDocument());
+    expect(screen.queryByRole('textbox', { name: /Your name/ })).not.toBeInTheDocument();
   });
 
   it('withdrawing an own response deletes it and refetches', async () => {

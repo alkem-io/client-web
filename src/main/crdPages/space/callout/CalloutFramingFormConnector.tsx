@@ -90,6 +90,9 @@ function CalloutFramingFormConnectorInner({
   const [submitResponse, { loading: submitting }] = useSubmitCalloutFormResponseMutation();
   const [deleteResponse, { loading: deleting }] = useDeleteCalloutFormResponseMutation();
   const [fillInKey, setFillInKey] = useState(0);
+  // A submission has succeeded but `mine` has not been reloaded yet: the fill-in stays locked until it has,
+  // so a single-response form cannot be submitted a second time in that window.
+  const [settling, setSettling] = useState(false);
   const [serverErrors, setServerErrors] = useState<Record<string, string>>({});
   const [reviewOpen, setReviewOpen] = useState(false);
   const [reviewRefreshKey, setReviewRefreshKey] = useState(0);
@@ -102,9 +105,15 @@ function CalloutFramingFormConnectorInner({
     await refetch();
   };
 
-  /** The definition and settings live on the callout; refetch them so the rendered notice is current. */
+  /**
+   * The definition and settings live on the callout; refetch them so the rendered notice is current. Only
+   * this callout's details query is refetched — not every callout on the page.
+   */
   const refreshDefinition = async () => {
-    await client.refetchQueries({ include: ['CalloutDetails'] });
+    await client.refetchQueries({
+      include: ['CalloutDetails'],
+      onQueryUpdated: query => query.variables?.calloutId === callout.id,
+    });
   };
 
   const handleSubmit = async (answers: FormAnswerInput[]) => {
@@ -127,9 +136,6 @@ function CalloutFramingFormConnectorInner({
         },
         context: { skipGlobalErrorHandler: true },
       });
-      notify(t('formFillIn.success'), 'success');
-      setFillInKey(key => key + 1);
-      await refreshResponses();
     } catch (err) {
       const rejection = getCalloutFormError(err);
       logError(new Error('Form response submission failed', { cause: err as Error }));
@@ -145,7 +151,15 @@ function CalloutFramingFormConnectorInner({
         const message = translateFormSubmitError(rejection.code, t);
         setServerErrors(Object.fromEntries(rejection.questionIDs.map(id => [id, message])));
       }
+      return;
     }
+    notify(t('formFillIn.success'), 'success');
+    setSettling(true);
+    // Reload `mine` before the fill-in is reset: in single-response mode it then gives way to the response,
+    // instead of remounting empty and submittable for a second, rejected attempt.
+    await Promise.allSettled([refreshResponses()]);
+    setFillInKey(key => key + 1);
+    setSettling(false);
   };
 
   const handleDelete = async (responseId: string, ownership: 'own' | 'moderated') => {
@@ -201,7 +215,7 @@ function CalloutFramingFormConnectorInner({
           state={isOpen ? 'OPEN' : 'CLOSED'}
           published={published}
           canSubmit={canSubmit}
-          submitting={submitting}
+          submitting={submitting || settling}
           errors={serverErrors}
           onSubmit={answers => void handleSubmit(answers)}
         />
