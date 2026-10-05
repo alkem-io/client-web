@@ -13,6 +13,7 @@ import {
 import { type ComponentType, type SVGProps, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DeleteFramingDialog } from '@/crd/components/dialogs/DeleteFramingDialog';
+import { chipIconTint, chipSurfaceTint } from '@/crd/forms/callout/chipTints';
 import { cn } from '@/crd/lib/utils';
 import {
   DropdownMenu,
@@ -178,13 +179,13 @@ export function FramingChipStrip({
                   className={cn(
                     'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                     active
-                      ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
+                      ? cn(chipSurfaceTint(chip.id), 'text-foreground')
                       : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
                     isDisabled && !activeClearable && 'opacity-50 cursor-not-allowed pointer-events-none',
                     editMode && !active && !isDisabled && 'opacity-60 cursor-not-allowed'
                   )}
                 >
-                  <chip.icon className="w-4 h-4" aria-hidden="true" />
+                  <chip.icon className={cn('w-4 h-4', chipIconTint(chip.id))} aria-hidden="true" />
                   <span>{t(chip.labelKey as 'callout.whiteboard')}</span>
                   {/* The X marks the active chip as removable; clicking the chip itself
                     deselects (create) or asks to confirm clearing the framing (edit). */}
@@ -236,7 +237,7 @@ export function FramingChipStrip({
                       }}
                       className={cn(isDisabled && 'opacity-50 cursor-not-allowed')}
                     >
-                      <chip.icon className="w-4 h-4" aria-hidden="true" />
+                      <chip.icon className={cn('w-4 h-4', chipIconTint(chip.id))} aria-hidden="true" />
                       <span>{t(chip.labelKey as 'callout.whiteboard')}</span>
                     </DropdownMenuItem>
                   );

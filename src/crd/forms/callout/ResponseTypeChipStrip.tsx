@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import type { ComponentType, SVGProps } from 'react';
 import { useTranslation } from 'react-i18next';
+import { chipIconTint, chipSurfaceTint } from '@/crd/forms/callout/chipTints';
 import { cn } from '@/crd/lib/utils';
 import {
   DropdownMenu,
@@ -186,17 +187,20 @@ export function ResponseTypeChipStrip({
                 onClick={() => handleClick(chip)}
                 className={cn(
                   'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  // Selected fills with the chip's own hue rather than a flat
+                  // primary: a navy fill made every selection look identical and
+                  // threw away the association the colour exists to build.
                   active
-                    ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
+                    ? cn(chipSurfaceTint(chip.id), 'text-foreground')
                     : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
                   isDisabled && 'opacity-50 cursor-not-allowed pointer-events-none',
                   locked && !active && !isDisabled && 'opacity-60 cursor-not-allowed',
-                  // The active locked chip keeps its selected (primary) styling so the
+                  // The active locked chip keeps its selected styling so the
                   // current type stays obvious, but signals it can't be acted on.
                   locked && active && 'cursor-not-allowed'
                 )}
               >
-                <chip.icon className="w-4 h-4" aria-hidden="true" />
+                <chip.icon className={cn('w-4 h-4', chipIconTint(chip.id))} aria-hidden="true" />
                 <span>{t(chip.labelKey as 'contributionSettings.types.link')}</span>
                 {/* The X is a "remove" affordance — hide it when locked, since the type can't be cleared. */}
                 {active && !locked && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
@@ -216,11 +220,11 @@ export function ResponseTypeChipStrip({
               className={cn(
                 'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 tasksActive
-                  ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
+                  ? cn(chipSurfaceTint('tasks'), 'text-foreground')
                   : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground'
               )}
             >
-              <Columns3 className="w-4 h-4" aria-hidden="true" />
+              <Columns3 className={cn('w-4 h-4', chipIconTint('tasks'))} aria-hidden="true" />
               <span>{tasksLabel}</span>
               {tasksActive && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
             </button>
@@ -266,7 +270,7 @@ export function ResponseTypeChipStrip({
                     }}
                     className={cn(isDisabled && 'opacity-50 cursor-not-allowed')}
                   >
-                    <chip.icon className="w-4 h-4" aria-hidden="true" />
+                    <chip.icon className={cn('w-4 h-4', chipIconTint(chip.id))} aria-hidden="true" />
                     <span>{t(chip.labelKey as 'contributionSettings.types.link')}</span>
                   </DropdownMenuItem>
                 );
