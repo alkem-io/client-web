@@ -365,13 +365,13 @@ function SortableQuestionRow({
               id={`${idBase}-type`}
               aria-label={t('formForm.typeLabel')}
               aria-describedby={typeChangeHint && typeChanged ? `${idBase}-type-hint` : undefined}
-              className="w-full sm:w-44"
+              className="w-full normal-case! sm:w-44"
             >
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {FORM_QUESTION_KINDS.map(kind => (
-                <SelectItem key={kind} value={kind}>
+                <SelectItem key={kind} value={kind} className="normal-case!">
                   {t(QUESTION_TYPE_KEY[kind])}
                 </SelectItem>
               ))}
