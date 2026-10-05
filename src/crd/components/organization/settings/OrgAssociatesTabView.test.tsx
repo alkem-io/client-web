@@ -27,6 +27,7 @@ const pendingRow = (overrides: Partial<PendingMembership> = {}): PendingMembersh
   canApprove: true,
   canReject: true,
   canDelete: false,
+  canResend: false,
   ...overrides,
 });
 
@@ -41,6 +42,7 @@ const baseProps: OrgAssociatesTabViewProps = {
   onPendingApprove: vi.fn(),
   onPendingReject: vi.fn(),
   onPendingRevoke: vi.fn(),
+  onPendingResend: vi.fn(),
   onPendingView: vi.fn(),
 };
 

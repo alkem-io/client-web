@@ -977,6 +977,7 @@
     "cantComment": "Je hebt geen toestemming om hier te reageren, antwoorden of een reactie te geven.",
     "attachments": {
       "attach": "Bestanden toevoegen",
+      "dropHint": "Laat los om bestanden toe te voegen",
       "stagedListLabel": "Te versturen bestanden",
       "removeAttachment": "{{name}} verwijderen",
       "uploading": "Uploaden…",
@@ -1115,6 +1116,17 @@
     "viewMap": "Kaart",
     "expandMap": "Kaart vergroten",
     "closeMap": "Kaart sluiten",
+    "card": {
+      "taglineFallback": "Deze gebruiker heeft geen ondertitel ingevuld.",
+      "associates_one": "{{count}} geassocieerde in deze organisatie",
+      "associates_other": "{{count}} geassocieerden in deze organisatie",
+      "actions": "Acties voor {{name}}",
+      "viewProfile": "Profiel bekijken",
+      "message": "Bericht",
+      "website": "Bezoek de website van {{name}} (opent in een nieuw tabblad)",
+      "opensInNewTab": "opent in een nieuw tabblad",
+      "joined": "Lid geworden van deze Space {{date}}"
+    },
     "types": {
       "user": "Personen",
       "organization": "Organisaties",

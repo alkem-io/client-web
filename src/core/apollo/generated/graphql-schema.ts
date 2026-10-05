@@ -1615,6 +1615,8 @@ export type CollaboraDocument = {
   documentType: CollaboraDocumentType;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** An authorized, same-origin preview image endpoint for the current saved document, or null when there is no backing file to preview. NOT a bearer URL: every request against it is independently authorized against the current document READ policy. */
+  previewUrl?: Maybe<Scalars['String']['output']>;
   /** The Profile for this CollaboraDocument. */
   profile: Profile;
   /** The date at which the entity was last updated. */
@@ -1959,15 +1961,25 @@ export type ContributorCollectionCounts = {
 
 export type ContributorCollectionItem = {
   __typename?: 'ContributorCollectionItem';
+  /** Organizations only. The count of platform-wide associates of the organization (distinct users holding its associate role) — the same number as the organization's 'associates' metric; NOT the number of members of this space. Null for Users and Virtual Contributors. */
+  associatesCount?: Maybe<Scalars['Int']['output']>;
   avatarUrl?: Maybe<Scalars['String']['output']>;
   displayName: Scalars['String']['output'];
   id: Scalars['UUID']['output'];
+  /** Users only. The calendar month in which the user's current membership of the space that owns this callout began ("member since"): the creation date of the member credential, truncated to the first day of the month, 00:00 UTC. Leaving and re-joining restarts it. Null for Organizations and Virtual Contributors, and for a user listed without the member role. */
+  joinedDate?: Maybe<Scalars['DateTime']['output']>;
   /** Location of the contributor; null for Virtual Contributors or when not readable. */
   location?: Maybe<ContributorLocation>;
   /** The role label for this contributor (lead/admin/member). */
   roleLabel?: Maybe<Scalars['String']['output']>;
+  /** All contributor types. The profile tagline, trimmed; null when empty. */
+  tagline?: Maybe<Scalars['String']['output']>;
+  /** All contributor types. The profile tagsets merged in order — Users: skills, then keywords; Organizations and Virtual Contributors: keywords, then capabilities. Blank tags removed; duplicates (ignoring case) kept once, first occurrence wins; never the default tagset. Empty list when none. Clients decide how many to show. */
+  tags?: Maybe<Array<Scalars['String']['output']>>;
   type: ActorType;
   url?: Maybe<Scalars['String']['output']>;
+  /** Organizations only. The organization's website, trimmed; null when empty or when it is not an absolute http/https URL. Null for Users and Virtual Contributors. */
+  website?: Maybe<Scalars['String']['output']>;
 };
 
 /** The default display mode for a contributor-collection callout framing. */
@@ -5728,6 +5740,8 @@ export type Mutation = {
   replaceCollaboraDocument: CollaboraDocument;
   /** Replace a Whiteboard from another Whiteboard through the live collaboration room. Content and media are copied server-side; snapshot bytes never pass through GraphQL. */
   replaceWhiteboardContentFromSource: Whiteboard;
+  /** Sends the invitation email of an open platform invitation again (Space or Organization role sets); throttled per role set and address, and counted against an hourly email budget. */
+  resendPlatformInvitation: PlatformInvitation;
   /** Resets the interaction with the VC by recreating the room. */
   resetConversationVc: Conversation;
   /** Reset all license plans on Accounts */
@@ -6489,6 +6503,10 @@ export type MutationReplaceWhiteboardContentFromSourceArgs = {
   input: ReplaceWhiteboardContentFromSourceInput;
 };
 
+export type MutationResendPlatformInvitationArgs = {
+  resendData: ResendPlatformInvitationInput;
+};
+
 export type MutationResetConversationVcArgs = {
   input: ConversationVcResetInput;
 };
@@ -6877,6 +6895,7 @@ export enum NotificationEvent {
   OrganizationAdminMessage = 'ORGANIZATION_ADMIN_MESSAGE',
   OrganizationAdminSpaceCommunityInvitation = 'ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION',
   OrganizationAdminSpaceCommunityJoined = 'ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED',
+  OrganizationAssociateInvitationUserPlatform = 'ORGANIZATION_ASSOCIATE_INVITATION_USER_PLATFORM',
   OrganizationMessageSender = 'ORGANIZATION_MESSAGE_SENDER',
   PlatformAdminGlobalRoleChanged = 'PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED',
   PlatformAdminSpaceCreated = 'PLATFORM_ADMIN_SPACE_CREATED',
@@ -8385,6 +8404,11 @@ export type ReplaceWhiteboardContentFromSourceInput = {
   targetWhiteboardID: Scalars['UUID']['input'];
 };
 
+export type ResendPlatformInvitationInput = {
+  /** The open platform invitation whose email is sent again. */
+  ID: Scalars['UUID']['input'];
+};
+
 export type RevokeAuthorizationCredentialInput = {
   /** The resource to which access is being removed. */
   resourceID: Scalars['String']['input'];
@@ -8518,7 +8542,7 @@ export type RoleSet = {
   organizationsInRole: Array<Organization>;
   /** All organizations that have a role in this RoleSet in the specified Roles. */
   organizationsInRoles: Array<OrganizationsInRolesResponse>;
-  /** Invitations to join this RoleSet in an entry role for users not yet on the Alkemio platform. */
+  /** Open (not yet consumed) invitations to join this RoleSet in an entry role for people not yet on the Alkemio platform. */
   platformInvitations: Array<PlatformInvitation>;
   /** The Role Definitions from this RoleSet to return. */
   roleDefinition: Role;
@@ -12205,6 +12229,15 @@ export type DeletePlatformInvitationMutation = {
   deletePlatformInvitation: { __typename?: 'PlatformInvitation'; id: string };
 };
 
+export type ResendPlatformInvitationMutationVariables = Exact<{
+  invitationId: Scalars['UUID']['input'];
+}>;
+
+export type ResendPlatformInvitationMutation = {
+  __typename?: 'Mutation';
+  resendPlatformInvitation: { __typename?: 'PlatformInvitation'; id: string };
+};
+
 export type CommunityApplicationsInvitationsQueryVariables = Exact<{
   roleSetId: Scalars['UUID']['input'];
   includeApplications?: InputMaybe<Scalars['Boolean']['input']>;
@@ -12257,6 +12290,7 @@ export type CommunityApplicationsInvitationsQuery = {
             id: string;
             createdDate: Date;
             email: string;
+            roleSetExtraRoles: Array<RoleName>;
           }>;
         }
       | undefined;
@@ -12301,6 +12335,7 @@ export type AdminPlatformInvitationCommunityFragment = {
   id: string;
   createdDate: Date;
   email: string;
+  roleSetExtraRoles: Array<RoleName>;
 };
 
 export type AdminCommunityCandidateMemberFragment = {
@@ -15674,6 +15709,7 @@ export type CalloutContentQuery = {
                   __typename?: 'CollaboraDocument';
                   id: string;
                   documentType: CollaboraDocumentType;
+                  previewUrl?: string | undefined;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -16029,6 +16065,7 @@ export type UpdateCalloutContentMutation = {
             __typename?: 'CollaboraDocument';
             id: string;
             documentType: CollaboraDocumentType;
+            previewUrl?: string | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -16537,6 +16574,7 @@ export type UpdateCalloutVisibilityMutation = {
             __typename?: 'CollaboraDocument';
             id: string;
             documentType: CollaboraDocumentType;
+            previewUrl?: string | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -16972,6 +17010,7 @@ export type CalloutContributionQuery = {
                 __typename?: 'CollaboraDocument';
                 id: string;
                 documentType: CollaboraDocumentType;
+                previewUrl?: string | undefined;
                 createdDate: Date;
                 profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
                 authorization?:
@@ -17076,6 +17115,7 @@ export type CollaboraDocumentGateFragment = {
   __typename?: 'CollaboraDocument';
   id: string;
   documentType: CollaboraDocumentType;
+  previewUrl?: string | undefined;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -17143,6 +17183,7 @@ export type ImportCollaboraDocumentMutation = {
           __typename?: 'CollaboraDocument';
           id: string;
           documentType: CollaboraDocumentType;
+          previewUrl?: string | undefined;
           createdDate: Date;
           profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
           authorization?:
@@ -17715,6 +17756,7 @@ export type CalloutContributionsQuery = {
                   __typename?: 'CollaboraDocument';
                   id: string;
                   documentType: CollaboraDocumentType;
+                  previewUrl?: string | undefined;
                   createdDate: Date;
                   profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
                   authorization?:
@@ -17921,6 +17963,7 @@ export type CalloutContributionsCollaboraDocumentCardFragment = {
   __typename?: 'CollaboraDocument';
   id: string;
   documentType: CollaboraDocumentType;
+  previewUrl?: string | undefined;
   createdDate: Date;
   profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   authorization?:
@@ -18458,6 +18501,7 @@ export type CreateCalloutMutation = {
             __typename?: 'CollaboraDocument';
             id: string;
             documentType: CollaboraDocumentType;
+            previewUrl?: string | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -19101,6 +19145,7 @@ export type CalloutDetailsQuery = {
                   __typename?: 'CollaboraDocument';
                   id: string;
                   documentType: CollaboraDocumentType;
+                  previewUrl?: string | undefined;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -19678,6 +19723,7 @@ export type CalloutDetailsFragment = {
           __typename?: 'CollaboraDocument';
           id: string;
           documentType: CollaboraDocumentType;
+          previewUrl?: string | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -39448,6 +39494,11 @@ export type ContributorCollectionByTypeQuery = {
               avatarUrl?: string | undefined;
               roleLabel?: string | undefined;
               url?: string | undefined;
+              tagline?: string | undefined;
+              tags?: Array<string> | undefined;
+              joinedDate?: Date | undefined;
+              website?: string | undefined;
+              associatesCount?: number | undefined;
               location?:
                 | {
                     __typename?: 'ContributorLocation';

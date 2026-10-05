@@ -435,14 +435,46 @@ describe('InviteMembersDialog — organization target (062, T007)', () => {
     onAddEmails: undefined,
   };
 
-  test('offers no email-paste path', () => {
-    render(<InviteMembersDialog {...orgProps} />);
-    expect(screen.queryByText(/paste email/i)).not.toBeInTheDocument();
+  test('offers the email-paste path when the connector allows it', () => {
+    render(
+      <InviteMembersDialog {...orgProps} allowEmailInvites={true} onAddEmails={vi.fn()} searchQuery="new@example.com" />
+    );
+    expect(screen.getByRole('button', { name: 'Add' })).toBeInTheDocument();
   });
 
-  test('offers no suggested-language control', () => {
-    render(<InviteMembersDialog {...orgProps} availableLanguages={[{ code: 'en', label: 'English' }]} />);
-    expect(screen.queryByLabelText(/language/i)).not.toBeInTheDocument();
+  test('offers no email-paste path when the connector disallows it', () => {
+    render(
+      <InviteMembersDialog
+        {...orgProps}
+        allowEmailInvites={false}
+        onAddEmails={vi.fn()}
+        searchQuery="new@example.com"
+      />
+    );
+    expect(screen.queryByRole('button', { name: 'Add' })).not.toBeInTheDocument();
+  });
+
+  test('offers the suggested-language control when languages and a change handler are provided', () => {
+    render(
+      <InviteMembersDialog
+        {...orgProps}
+        labels={{ ...orgLabels, suggestedLanguageLabel: 'Invite language' }}
+        availableLanguages={[{ code: 'en', label: 'English' }]}
+        onSuggestedLanguageChange={vi.fn()}
+      />
+    );
+    expect(screen.getByLabelText('Invite language')).toBeInTheDocument();
+  });
+
+  test('offers no suggested-language control without a change handler', () => {
+    render(
+      <InviteMembersDialog
+        {...orgProps}
+        labels={{ ...orgLabels, suggestedLanguageLabel: 'Invite language' }}
+        availableLanguages={[{ code: 'en', label: 'English' }]}
+      />
+    );
+    expect(screen.queryByLabelText('Invite language')).not.toBeInTheDocument();
   });
 
   test('Associate is locked and the role picker offers Admin/Owner as extras', async () => {

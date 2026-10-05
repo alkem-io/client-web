@@ -43,15 +43,15 @@
       "descriptionPlaceholder": "Describe esta columna…",
       "menu": "Acciones de columna",
       "drag": "Arrastra para reordenar la fase",
-      "empty": "Aún no hay callouts en esta columna.",
+      "empty": "Aún no hay publicaciones en esta columna.",
       "activePhase": {
         "set": "Marcar como fase activa",
         "current": "Fase activa (actual)",
         "badge": "Fase activa"
       },
       "defaultCalloutTemplate": {
-        "set": "Establecer plantilla de callout predeterminada…",
-        "clear": "Quitar la plantilla de callout predeterminada"
+        "set": "Establecer plantilla de publicación predeterminada…",
+        "clear": "Quitar la plantilla de publicación predeterminada"
       },
       "editDetails": {
         "menuLabel": "Editar detalles",
@@ -70,7 +70,7 @@
         "menuLabel": "Eliminar fase",
         "confirm": {
           "title": "¿Eliminar esta fase?",
-          "description": "Los callouts etiquetados actualmente con esta fase perderán la etiqueta. Esta acción no se puede deshacer.",
+          "description": "Las publicaciones etiquetadas actualmente con esta fase perderán la etiqueta. Esta acción no se puede deshacer.",
           "confirm": "Eliminar fase",
           "cancel": "Cancelar"
         }
@@ -211,7 +211,7 @@
     },
     "row": {
       "drag": "Arrastra para reordenar",
-      "menu": "Acciones del callout",
+      "menu": "Acciones de la publicación",
       "moveTo": "Mover a",
       "viewPost": "Ver publicación",
       "noOtherColumns": "No hay otras columnas"
@@ -245,6 +245,10 @@
       "approve": "Aprobar",
       "reject": "Rechazar",
       "delete": "Eliminar",
+      "resend": "Reenviar el correo de invitación",
+      "resendSuccess": "Correo de invitación reenviado",
+      "resendThrottled": "Reenviado hace poco — inténtalo de nuevo en unos minutos",
+      "resendError": "No se pudo reenviar el correo de invitación — inténtalo de nuevo",
       "empty": "No hay membresías pendientes.",
       "noMatch": "Ninguna membresía pendiente coincide con los filtros seleccionados.",
       "filterLabel": "Filtrar por estado",
@@ -566,8 +570,8 @@
       "preview": {
         "info": "Siempre incluido: información Acerca de y Configuración",
         "states": "Fases",
-        "callouts": "Callouts",
-        "noCalloutsInState": "No hay callouts en esta fase.",
+        "callouts": "Publicaciones",
+        "noCalloutsInState": "No hay publicaciones en esta fase.",
         "noCalloutDescription": "Sin descripción",
         "subspaces": "Incluye estos subespacios"
       },

@@ -60,9 +60,6 @@
       "resultsSummary_other": "{{count}} покани са обработени за {{spaceName}}.",
       "associates": {
         "title": "Покана на асоциирани за „{{organizationName}}“",
-        "searchHint": "Търсене на регистриран потребител за покана като асоцииран",
-        "searchPlaceholder": "Потребителско име…",
-        "searchAriaLabel": "Търсене на потребители по име",
         "noResultsLabel": "Няма съвпадащи потребители",
         "loadingLabel": "Зареждане на потребители…",
         "defaultWelcomeMessage": "Здравейте, бихме искали да ви поканим да се асоциирате с {{organizationName}}. Натиснете бутона по-долу, за да приемете или откажете поканата.",
