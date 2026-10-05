@@ -1277,7 +1277,6 @@
     "noticeMembers": "Mitglieder von {{space}} können Ihre Antwort sehen",
     "submit": "Formular senden",
     "answerPlaceholder": "Antwort eingeben...",
-    "reset": "Zurücksetzen",
     "resetConfirm": {
       "title": "Antworten zurücksetzen?",
       "description": "Alle Eingaben in diesem Formular werden gelöscht.",
@@ -1319,7 +1318,13 @@
         "description": "Ihre Antwort wird gelöscht. Dies kann nicht rückgängig gemacht werden.",
         "confirm": "Zurückziehen"
       }
-    }
+    },
+    "untitled": "Formular",
+    "questionCount_one": "{{count}} Frage",
+    "questionCount_other": "{{count}} Fragen",
+    "expand": "Formular ausklappen",
+    "collapse": "Formular einklappen",
+    "cancel": "Abbrechen"
   },
   "formResponses": {
     "viewAction": "Antworten anzeigen ({{count}})",

@@ -38,8 +38,6 @@ const renderFillIn = (overrides: Partial<React.ComponentProps<typeof CalloutForm
   render(
     <CalloutFormFillIn
       questions={questions}
-      visibility="ADMINS"
-      spaceName="Garden"
       state="OPEN"
       published={true}
       canSubmit={true}
@@ -71,28 +69,6 @@ describe('CalloutFormFillIn', () => {
     expect(screen.getByRole('textbox', { name: /Your story/ })).toHaveAttribute('aria-required', 'false');
     expect(screen.getByRole('radiogroup', { name: /Favourite colour/ })).toHaveAttribute('aria-required', 'true');
     expect(screen.getAllByText('*')).toHaveLength(2);
-  });
-
-  test('shows the admins notice, or the members notice, per visibility', () => {
-    const { unmount } = render(
-      <CalloutFormFillIn
-        questions={questions}
-        visibility="ADMINS"
-        spaceName="Garden"
-        state="OPEN"
-        published={true}
-        canSubmit={true}
-        submitting={false}
-        onSubmit={vi.fn()}
-      />
-    );
-    expect(screen.getByText('formFillIn.noticeAdmins')).toBeInTheDocument();
-    expect(screen.queryByText('formFillIn.noticeMembers')).toBeNull();
-    unmount();
-
-    renderFillIn({ visibility: 'MEMBERS' });
-    expect(screen.getByText('formFillIn.noticeMembers')).toBeInTheDocument();
-    expect(screen.queryByText('formFillIn.noticeAdmins')).toBeNull();
   });
 
   test('a required question left empty blocks the submit and marks the question', async () => {
@@ -127,19 +103,19 @@ describe('CalloutFormFillIn', () => {
     ]);
   });
 
-  test('a closed form shows the badge, read-only inputs and no submit', () => {
+  test('a closed form explains it, shows read-only inputs and no footer', () => {
     renderFillIn({ state: 'CLOSED', canSubmit: false });
 
-    expect(screen.getByText('formFillIn.closedBadge')).toBeInTheDocument();
+    expect(screen.getByText('formFillIn.closedNotice')).toBeInTheDocument();
     expect(screen.getByRole('textbox', { name: /Your name/ })).toHaveAttribute('readonly');
     expect(screen.queryByRole('button', { name: 'formFillIn.submit' })).toBeNull();
-    expect(screen.queryByText('formFillIn.noticeAdmins')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'formFillIn.cancel' })).toBeNull();
     expect(screen.getByRole('radio', { name: 'Red' })).toBeDisabled();
   });
 
-  test('an unpublished form shows the not published badge', () => {
+  test('an unpublished form explains it and has no footer', () => {
     renderFillIn({ published: false, canSubmit: false });
-    expect(screen.getByText('formFillIn.draftBadge')).toBeInTheDocument();
+    expect(screen.getByText('formFillIn.draftNotice')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'formFillIn.submit' })).toBeNull();
   });
 
@@ -169,8 +145,6 @@ describe('CalloutFormFillIn', () => {
     const user = userEvent.setup();
     const props = {
       questions,
-      visibility: 'ADMINS' as const,
-      spaceName: 'Garden',
       state: 'OPEN' as const,
       published: true,
       canSubmit: true,
@@ -200,10 +174,10 @@ describe('CalloutFormFillIn', () => {
     expect(screen.getByText('4.')).toBeInTheDocument();
   });
 
-  test('reset clears every answer only after it is confirmed', async () => {
+  test('Cancel clears every answer only after it is confirmed', async () => {
     const user = userEvent.setup();
     renderFillIn();
-    const reset = screen.getByRole('button', { name: 'formFillIn.reset' });
+    const reset = screen.getByRole('button', { name: 'formFillIn.cancel' });
     expect(reset).toBeDisabled();
 
     await user.type(screen.getByRole('textbox', { name: /Your name/ }), 'Ada');
@@ -213,18 +187,24 @@ describe('CalloutFormFillIn', () => {
     await user.click(screen.getByRole('button', { name: 'formFillIn.resetConfirm.confirm' }));
     expect(screen.getByRole('textbox', { name: /Your name/ })).toHaveValue('');
     expect(screen.getByRole('radio', { name: 'Red' })).not.toBeChecked();
-    expect(screen.getByRole('button', { name: 'formFillIn.reset' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'formFillIn.cancel' })).toBeDisabled();
   });
 
-  test('cancelling the reset keeps the answers', async () => {
+  test('dismissing the Cancel confirmation keeps the answers', async () => {
     const user = userEvent.setup();
     renderFillIn();
 
     await user.type(screen.getByRole('textbox', { name: /Your name/ }), 'Ada');
-    await user.click(screen.getByRole('button', { name: 'formFillIn.reset' }));
+    await user.click(screen.getByRole('button', { name: 'formFillIn.cancel' }));
     await user.keyboard('{Escape}');
 
     expect(screen.getByRole('textbox', { name: /Your name/ })).toHaveValue('Ada');
+  });
+
+  test('the footer holds Cancel and Submit Form', () => {
+    renderFillIn();
+    expect(screen.getByRole('button', { name: 'formFillIn.cancel' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'formFillIn.submit' })).toHaveAttribute('type', 'submit');
   });
 
   test('the length counter appears only near the limit', async () => {

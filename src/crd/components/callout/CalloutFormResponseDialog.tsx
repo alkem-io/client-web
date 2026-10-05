@@ -20,6 +20,8 @@ type CalloutFormResponseDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   response: FormResponseView | null;
+  /** The Form's title (or the generic "Form"), shown as heading context. */
+  formTitle: string;
   columns: FormColumn[];
   canModerate: boolean;
   onDelete: (responseId: string) => void;
@@ -68,6 +70,7 @@ export function CalloutFormResponseDialog({
   open,
   onOpenChange,
   response,
+  formTitle,
   columns,
   canModerate,
   onDelete,
@@ -89,9 +92,12 @@ export function CalloutFormResponseDialog({
     <>
       <Dialog open={open && response !== null} onOpenChange={onOpenChange}>
         <DialogContent aria-describedby={undefined} className="sm:max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
-          <DialogTitle className="text-subsection-title shrink-0">
-            {t('formResponses.singleTitle', { name: respondentName })}
-          </DialogTitle>
+          <div className="shrink-0 space-y-0.5">
+            <p className="text-caption text-muted-foreground break-words">{formTitle}</p>
+            <DialogTitle className="text-subsection-title">
+              {t('formResponses.singleTitle', { name: respondentName })}
+            </DialogTitle>
+          </div>
           <Separator className="shrink-0" />
           {response && (
             <div className="flex-1 min-h-0 space-y-4 overflow-y-auto">

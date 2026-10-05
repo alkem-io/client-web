@@ -1277,7 +1277,6 @@
     "noticeMembers": "Les membres de {{space}} peuvent voir votre réponse",
     "submit": "Envoyer le formulaire",
     "answerPlaceholder": "Saisissez votre réponse...",
-    "reset": "Réinitialiser",
     "resetConfirm": {
       "title": "Réinitialiser vos réponses ?",
       "description": "Tout ce que vous avez saisi dans ce formulaire sera effacé.",
@@ -1319,7 +1318,13 @@
         "description": "Votre réponse sera supprimée. Cette action est irréversible.",
         "confirm": "Retirer"
       }
-    }
+    },
+    "untitled": "Formulaire",
+    "questionCount_one": "{{count}} question",
+    "questionCount_other": "{{count}} questions",
+    "expand": "Déplier le formulaire",
+    "collapse": "Replier le formulaire",
+    "cancel": "Annuler"
   },
   "formResponses": {
     "viewAction": "Voir les réponses ({{count}})",

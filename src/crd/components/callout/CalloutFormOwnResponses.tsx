@@ -5,7 +5,6 @@ import type { FormQuestionView, FormResponseView } from '@/crd/components/callou
 import { formatFormDate } from '@/crd/components/callout/formatFormDate';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { cn } from '@/crd/lib/utils';
-import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 
 /** An own response, with its 1-based position among all of the viewer's responses when not contiguous. */
@@ -18,8 +17,8 @@ type CalloutFormOwnResponsesProps = {
   /** True while a withdrawal is in flight. */
   withdrawing?: boolean;
   /**
-   * Form state to announce when the fill-in is not rendered (single-response mode after responding):
-   * the viewer must still see that the Form is closed or unpublished.
+   * Form state to explain when the fill-in is not rendered (single-response mode after responding); the
+   * Form box header carries the matching badge.
    */
   status?: 'CLOSED' | 'DRAFT';
   /** Shown when the viewer has earlier responses than the ones listed; loads the next page of them. */
@@ -52,14 +51,9 @@ export function CalloutFormOwnResponses({
     <div className={cn('space-y-4', className)}>
       <h3 className="text-body-emphasis text-foreground">{t('formFillIn.ownResponses.heading')}</h3>
       {status && (
-        <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="secondary">
-            {status === 'DRAFT' ? t('formFillIn.draftBadge') : t('formFillIn.closedBadge')}
-          </Badge>
-          <span className="text-caption text-muted-foreground">
-            {status === 'DRAFT' ? t('formFillIn.draftNotice') : t('formFillIn.closedNotice')}
-          </span>
-        </div>
+        <p className="text-caption text-muted-foreground">
+          {status === 'DRAFT' ? t('formFillIn.draftNotice') : t('formFillIn.closedNotice')}
+        </p>
       )}
       {onLoadEarlier && (
         <Button

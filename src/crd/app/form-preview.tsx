@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { initReactI18next } from 'react-i18next';
 import '@/crd/styles/crd.css';
 import { CalloutFormResponseDialog } from '@/crd/components/callout/CalloutFormResponseDialog';
+import { CalloutFormBox } from '@/crd/components/callout/CalloutFormBox';
 import { CalloutFormFillIn } from '@/crd/components/callout/CalloutFormFillIn';
 import crdCommonEN from '@/crd/i18n/common/common.en.json';
 import crdSpaceEN from '@/crd/i18n/space/space.en.json';
@@ -42,11 +43,13 @@ const columns = [...questions.map(q => ({ questionID: q.id, prompt: q.prompt, re
 
 createRoot(document.getElementById('root')!).render(
   location.search.includes('response') ? (
-    <div className="crd-root"><CalloutFormResponseDialog open={true} onOpenChange={() => {}} response={response} columns={columns} canModerate={true} onDelete={() => {}} deletedUserLabel="Deleted user" /></div>
+    <div className="crd-root"><CalloutFormResponseDialog open={true} onOpenChange={() => {}} response={response} formTitle="Q4 Planning — Tell Us Where to Focus" columns={columns} canModerate={true} onDelete={() => {}} deletedUserLabel="Deleted user" /></div>
   ) :
   <div className="crd-root min-h-screen bg-background p-8">
     <div id="callout" className="mx-auto w-[768px] rounded-xl border border-border bg-card p-6">
-      <CalloutFormFillIn questions={questions} visibility="ADMINS" spaceName="Q4 Space" state="OPEN" published={true} canSubmit={true} submitting={false} onSubmit={() => {}} />
+      <CalloutFormBox title="Q4 Planning — Tell Us Where to Focus" questionCount={questions.length} visibility="ADMINS" spaceName="Q4 Space" defaultCollapsed={location.search.includes('collapsed')}>
+        <CalloutFormFillIn questions={questions} state="OPEN" published={true} canSubmit={true} submitting={false} onSubmit={() => {}} />
+      </CalloutFormBox>
     </div>
   </div>
 );

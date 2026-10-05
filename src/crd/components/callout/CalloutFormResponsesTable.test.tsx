@@ -146,4 +146,21 @@ describe('CalloutFormResponsesTable', () => {
     expect(screen.getByText('formResponses.empty')).toBeInTheDocument();
     expect(screen.queryByRole('table')).toBeNull();
   });
+
+  test('one column can mix answer shapes: each answer renders by its own snapshot type', () => {
+    // q2 was a short text question when the first response came in and is a single choice now.
+    const responses = [
+      makeResponse(1, {
+        answers: [{ questionID: 'q2', prompt: 'Colour', type: 'SHORT_TEXT', text: 'Teal-ish', selectedLabels: [] }],
+      }),
+      makeResponse(2, {
+        answers: [{ questionID: 'q2', prompt: 'Colour', type: 'SINGLE_CHOICE', selectedLabels: ['Blue'] }],
+      }),
+    ];
+    renderTable(responses);
+
+    const rows = screen.getAllByRole('row').slice(1);
+    expect(within(rows[0]).getByText('Teal-ish')).toBeInTheDocument();
+    expect(within(rows[1]).getByText('Blue')).toBeInTheDocument();
+  });
 });

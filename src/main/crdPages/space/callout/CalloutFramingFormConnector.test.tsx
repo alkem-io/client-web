@@ -1,5 +1,5 @@
 import { ApolloError } from '@apollo/client';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -71,8 +71,14 @@ const makeCallout = (
     visibility: CalloutFormResponseVisibility;
     responseMode: CalloutFormResponseMode;
     state: CalloutFormState;
+    defaultCollapsed: boolean;
   }> = {},
-  overrides: { draft?: boolean; privileges?: AuthorizationPrivilege[] } = {}
+  overrides: {
+    draft?: boolean;
+    privileges?: AuthorizationPrivilege[];
+    title?: string | null;
+    description?: string | null;
+  } = {}
 ) =>
   ({
     id: 'callout-1',
@@ -83,11 +89,14 @@ const makeCallout = (
       profile: { displayName: 'Intake' },
       form: {
         id: 'form-1',
+        title: overrides.title ?? null,
+        description: overrides.description ?? null,
         questions,
         settings: {
           visibility: settings.visibility ?? CalloutFormResponseVisibility.Admins,
           responseMode: settings.responseMode ?? CalloutFormResponseMode.Single,
           state: settings.state ?? CalloutFormState.Open,
+          defaultCollapsed: settings.defaultCollapsed ?? false,
         },
       },
     },
@@ -389,5 +398,71 @@ describe('CalloutFramingFormConnector', () => {
     (callout.framing as { form?: unknown }).form = undefined;
     const { container } = render(<CalloutFramingFormConnector callout={callout} />);
     expect(container).toBeEmptyDOMElement();
+  });
+
+  it('SINGLE mode with several own responses lists every one with Withdraw and no fill-in', async () => {
+    const second = { ...ownResponse, id: 'r2', answers: [{ ...ownResponse.answers[0], text: 'Grace' }] };
+    setResponses({ mine: [ownResponse, second] });
+    const { rerender } = render(<CalloutFramingFormConnector callout={makeCallout()} />);
+
+    expect(screen.getByText('Ada')).toBeInTheDocument();
+    expect(screen.getByText('Grace')).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: 'formFillIn.ownResponses.withdraw' })).toHaveLength(2);
+    expect(screen.queryByRole('button', { name: 'formFillIn.submit' })).toBeNull();
+
+    // Withdraw the first; the refetch still holds the second: the fill-in stays away.
+    await userEvent.click(screen.getAllByRole('button', { name: 'formFillIn.ownResponses.withdraw' })[0]);
+    await userEvent.click(
+      await screen.findByRole('button', { name: 'formFillIn.ownResponses.withdrawConfirm.confirm' })
+    );
+    await waitFor(() => expect(hoisted.refetch).toHaveBeenCalledTimes(1));
+    setResponses({ mine: [second] });
+    rerender(<CalloutFramingFormConnector callout={makeCallout()} />);
+    expect(screen.queryByRole('button', { name: 'formFillIn.submit' })).toBeNull();
+
+    // Withdraw the last one: once the viewer holds none, the fill-in returns.
+    await userEvent.click(screen.getByRole('button', { name: 'formFillIn.ownResponses.withdraw' }));
+    await userEvent.click(
+      await screen.findByRole('button', { name: 'formFillIn.ownResponses.withdrawConfirm.confirm' })
+    );
+    await waitFor(() => expect(hoisted.refetch).toHaveBeenCalledTimes(2));
+    setResponses({ mine: [] });
+    rerender(<CalloutFramingFormConnector callout={makeCallout()} />);
+    expect(screen.getByRole('button', { name: 'formFillIn.submit' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'formFillIn.ownResponses.withdraw' })).toBeNull();
+  });
+
+  it('renders the Form box header from the definition: title, description and question count', () => {
+    render(
+      <CalloutFramingFormConnector
+        callout={makeCallout({}, { title: 'Q4 planning', description: 'Tell us where to focus' })}
+      />
+    );
+
+    expect(screen.getByRole('heading', { name: 'Q4 planning' })).toBeInTheDocument();
+    expect(screen.getByText('Tell us where to focus')).toBeInTheDocument();
+    expect(screen.getByText('formFillIn.questionCount')).toBeInTheDocument();
+  });
+
+  it('an untitled Form shows the generic heading', () => {
+    render(<CalloutFramingFormConnector callout={makeCallout()} />);
+    expect(screen.getByRole('heading', { name: 'formFillIn.untitled' })).toBeInTheDocument();
+  });
+
+  it('a Form collapsed by default starts with the header only', async () => {
+    render(<CalloutFramingFormConnector callout={makeCallout({ defaultCollapsed: true })} />);
+
+    expect(screen.queryByRole('button', { name: 'formFillIn.submit' })).toBeNull();
+    await userEvent.click(screen.getByRole('button', { name: 'formFillIn.expand' }));
+    expect(screen.getByRole('button', { name: 'formFillIn.submit' })).toBeInTheDocument();
+  });
+
+  it('the review dialog carries the Form title as heading context', async () => {
+    setResponses({ canReadAll: true, total: 1 });
+    render(<CalloutFramingFormConnector callout={makeCallout({}, { title: 'Q4 planning' })} />);
+
+    await userEvent.click(screen.getByRole('button', { name: 'formResponses.viewAction' }));
+    const dialog = await screen.findByRole('dialog');
+    expect(within(dialog).getByText('Q4 planning')).toBeInTheDocument();
   });
 });

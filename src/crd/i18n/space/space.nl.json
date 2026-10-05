@@ -1277,7 +1277,6 @@
     "noticeMembers": "Leden van {{space}} kunnen je reactie zien",
     "submit": "Formulier verzenden",
     "answerPlaceholder": "Typ je antwoord...",
-    "reset": "Wissen",
     "resetConfirm": {
       "title": "Je antwoorden wissen?",
       "description": "Alles wat je in dit formulier hebt ingevuld, wordt gewist.",
@@ -1319,7 +1318,13 @@
         "description": "Je reactie wordt verwijderd. Dit kan niet ongedaan worden gemaakt.",
         "confirm": "Intrekken"
       }
-    }
+    },
+    "untitled": "Formulier",
+    "questionCount_one": "{{count}} vraag",
+    "questionCount_other": "{{count}} vragen",
+    "expand": "Formulier uitklappen",
+    "collapse": "Formulier inklappen",
+    "cancel": "Annuleren"
   },
   "formResponses": {
     "viewAction": "Reacties bekijken ({{count}})",

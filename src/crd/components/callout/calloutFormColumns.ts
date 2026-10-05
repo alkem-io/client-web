@@ -1,4 +1,5 @@
 import type { FormAnswerView } from '@/crd/components/callout/calloutFormTypes';
+import { isChoiceKind } from '@/crd/forms/callout/formValues';
 
 export type FormColumn = {
   questionID: string;
@@ -33,10 +34,15 @@ export const deriveFormColumns = (
   return columns;
 };
 
-/** The displayed value of an answer: its text, or the selected option labels joined; undefined when empty. */
+/**
+ * The displayed value of an answer, by the answer's own snapshot type — never the live question's, which may
+ * have changed since: its text for a text answer, the selected option labels joined for a choice answer;
+ * undefined when empty.
+ */
 export const answerDisplayValue = (answer: FormAnswerView | undefined): string | undefined => {
   if (!answer) return undefined;
-  const text = answer.text?.trim();
-  if (text) return text;
-  return answer.selectedLabels.length > 0 ? answer.selectedLabels.join(', ') : undefined;
+  if (isChoiceKind(answer.type)) {
+    return answer.selectedLabels.length > 0 ? answer.selectedLabels.join(', ') : undefined;
+  }
+  return answer.text?.trim() || undefined;
 };

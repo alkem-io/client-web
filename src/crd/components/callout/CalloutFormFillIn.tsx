@@ -2,6 +2,7 @@ import { type FormEvent, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { FormAnswerInput, FormQuestionView } from '@/crd/components/callout/calloutFormTypes';
 import {
+  formBoxFooterClass,
   formOptionRowClass,
   formQuestionCardClass,
   formQuestionPromptClass,
@@ -12,20 +13,20 @@ import {
   FORM_SHORT_ANSWER_MAX_LENGTH,
   isChoiceKind,
 } from '@/crd/forms/callout/formValues';
-import type { FormResponseVisibilityValue, FormStateValue } from '@/crd/forms/callout/types';
+import type { FormStateValue } from '@/crd/forms/callout/types';
 import { cn } from '@/crd/lib/utils';
-import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Checkbox } from '@/crd/primitives/checkbox';
 import { Input } from '@/crd/primitives/input';
 import { RadioGroup, RadioGroupItem } from '@/crd/primitives/radio-group';
 import { Textarea } from '@/crd/primitives/textarea';
 
+/**
+ * The questions of a Form, as boxed cards, with the Cancel / Submit footer when the viewer can respond.
+ * Rendered inside `CalloutFormBox`, whose header carries the title, the visibility notice and the state badge.
+ */
 type CalloutFormFillInProps = {
   questions: FormQuestionView[];
-  /** Who can read every response; drives the privacy notice the respondent acknowledges. */
-  visibility: FormResponseVisibilityValue;
-  spaceName: string;
   state: FormStateValue;
   published: boolean;
   /** Contribute privilege ∧ published ∧ open. When false the questions are shown read-only. */
@@ -82,8 +83,6 @@ function LengthCounter({ length, max }: { length: number; max: number }) {
 
 export function CalloutFormFillIn({
   questions,
-  visibility,
-  spaceName,
   state,
   published,
   canSubmit,
@@ -137,11 +136,6 @@ export function CalloutFormFillIn({
     );
   };
 
-  const statusBadge = !published
-    ? t('formFillIn.draftBadge')
-    : state === 'CLOSED'
-      ? t('formFillIn.closedBadge')
-      : undefined;
   const statusMessage = !published
     ? t('formFillIn.draftNotice')
     : state === 'CLOSED'
@@ -151,19 +145,8 @@ export function CalloutFormFillIn({
   return (
     <>
       <form noValidate={true} onSubmit={handleSubmit} className={cn('space-y-5', className)}>
-        {(statusBadge || (!canSubmit && !statusMessage)) && (
-          <div className="flex flex-wrap items-center gap-2">
-            {statusBadge && <Badge variant="secondary">{statusBadge}</Badge>}
-            <span className="text-caption text-muted-foreground">{statusMessage ?? t('formFillIn.cannotRespond')}</span>
-          </div>
-        )}
-
-        {canSubmit && (
-          <p className="text-caption text-muted-foreground">
-            {visibility === 'ADMINS'
-              ? t('formFillIn.noticeAdmins', { space: spaceName })
-              : t('formFillIn.noticeMembers', { space: spaceName })}
-          </p>
+        {!canSubmit && (
+          <p className="text-caption text-muted-foreground">{statusMessage ?? t('formFillIn.cannotRespond')}</p>
         )}
 
         {questions.map((question, index) => {
@@ -307,7 +290,7 @@ export function CalloutFormFillIn({
         })}
 
         {canSubmit && (
-          <div className="flex items-center justify-end gap-2">
+          <div className={formBoxFooterClass}>
             <Button
               type="button"
               variant="ghost"
@@ -315,7 +298,7 @@ export function CalloutFormFillIn({
               disabled={submitting || !hasInput}
               onClick={() => setResetOpen(true)}
             >
-              {t('formFillIn.reset')}
+              {t('formFillIn.cancel')}
             </Button>
             <Button type="submit" className="normal-case!" disabled={submitting} aria-busy={submitting || undefined}>
               {submitting ? t('formFillIn.submitting') : t('formFillIn.submit')}

@@ -49,6 +49,14 @@ describe('deriveFormColumns', () => {
 });
 
 describe('answerDisplayValue', () => {
+  it('renders by the answer snapshot type: text for text answers, joined labels for choice answers', () => {
+    const base = { questionID: 'q', prompt: 'P', selectedLabels: [] as string[] };
+    // A stray text on a choice answer, or stray labels on a text answer, never leaks into the display.
+    expect(answerDisplayValue({ ...base, type: 'SINGLE_CHOICE', text: 'stray', selectedLabels: ['Red'] })).toBe('Red');
+    expect(answerDisplayValue({ ...base, type: 'LONG_TEXT', text: 'Story', selectedLabels: ['Red'] })).toBe('Story');
+    expect(answerDisplayValue({ ...base, type: 'MULTIPLE_CHOICE', selectedLabels: [] })).toBeUndefined();
+  });
+
   it('prefers text, then joined option labels, otherwise undefined', () => {
     const base = { questionID: 'q', prompt: 'P', type: 'SHORT_TEXT' as const, selectedLabels: [] as string[] };
     expect(answerDisplayValue({ ...base, text: ' hi ' })).toBe('hi');

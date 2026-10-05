@@ -1277,7 +1277,6 @@
     "noticeMembers": "Members of {{space}} can see your response",
     "submit": "Submit Form",
     "answerPlaceholder": "Type your answer...",
-    "reset": "Reset",
     "resetConfirm": {
       "title": "Reset your answers?",
       "description": "Everything you have entered in this form will be cleared.",
@@ -1319,7 +1318,13 @@
         "description": "Your response will be deleted. This cannot be undone.",
         "confirm": "Withdraw"
       }
-    }
+    },
+    "untitled": "Form",
+    "questionCount_one": "{{count}} question",
+    "questionCount_other": "{{count}} questions",
+    "expand": "Expand form",
+    "collapse": "Collapse form",
+    "cancel": "Cancel"
   },
   "formResponses": {
     "viewAction": "View responses ({{count}})",

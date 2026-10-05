@@ -1277,7 +1277,6 @@
     "noticeMembers": "Los miembros de {{space}} pueden ver tu respuesta",
     "submit": "Enviar formulario",
     "answerPlaceholder": "Escribe tu respuesta...",
-    "reset": "Restablecer",
     "resetConfirm": {
       "title": "¿Restablecer tus respuestas?",
       "description": "Se borrará todo lo que has introducido en este formulario.",
@@ -1319,7 +1318,13 @@
         "description": "Tu respuesta se eliminará. Esta acción no se puede deshacer.",
         "confirm": "Retirar"
       }
-    }
+    },
+    "untitled": "Formulario",
+    "questionCount_one": "{{count}} pregunta",
+    "questionCount_other": "{{count}} preguntas",
+    "expand": "Expandir formulario",
+    "collapse": "Contraer formulario",
+    "cancel": "Cancelar"
   },
   "formResponses": {
     "viewAction": "Ver respuestas ({{count}})",

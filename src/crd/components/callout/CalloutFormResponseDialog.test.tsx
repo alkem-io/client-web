@@ -28,6 +28,7 @@ const renderDialog = (props: Partial<React.ComponentProps<typeof CalloutFormResp
       open={true}
       onOpenChange={onOpenChange}
       response={response}
+      formTitle="Intake"
       columns={columns}
       canModerate={false}
       onDelete={onDelete}
@@ -80,5 +81,10 @@ describe('CalloutFormResponseDialog', () => {
     expect(screen.getByText('3.')).toBeInTheDocument();
     const options = screen.getAllByRole('listitem');
     expect(options.map(option => option.textContent)).toEqual(['Cheese', 'Ham']);
+  });
+
+  test('shows the Form title as heading context', () => {
+    renderDialog();
+    expect(screen.getByText('Intake')).toBeInTheDocument();
   });
 });

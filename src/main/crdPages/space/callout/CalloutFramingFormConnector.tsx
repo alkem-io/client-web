@@ -13,6 +13,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { CalloutFormBox } from '@/crd/components/callout/CalloutFormBox';
 import { CalloutFormFillIn } from '@/crd/components/callout/CalloutFormFillIn';
 import { CalloutFormOwnResponses, type OwnFormResponseView } from '@/crd/components/callout/CalloutFormOwnResponses';
 import { CalloutFormResponseDialog } from '@/crd/components/callout/CalloutFormResponseDialog';
@@ -20,7 +21,6 @@ import { CalloutFormResponsesTable } from '@/crd/components/callout/CalloutFormR
 import { deriveFormColumns } from '@/crd/components/callout/calloutFormColumns';
 import type { FormAnswerInput } from '@/crd/components/callout/calloutFormTypes';
 import { cn } from '@/crd/lib/utils';
-import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
 import { Separator } from '@/crd/primitives/separator';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -224,19 +224,24 @@ function CalloutFramingFormConnectorInner({
   }
 
   const showOwnResponses = ownResponses.length > 0;
-  // One response per person: once the viewer has responded, the fill-in gives way to their response.
+  // One response per person: once the viewer holds any response, the fill-in gives way to every one of them
+  // (a member may hold several after a switch from multiple responses); it returns once they hold none.
   const showFillIn = !(isSingle && showOwnResponses);
+  const formTitle = form.title?.trim() || t('formFillIn.untitled');
 
   return (
-    <div className={cn('space-y-4', className)}>
-      {responses.canReadAll && (
-        <div className="flex justify-end">
-          <Button variant="outline" size="sm" onClick={() => setReviewOpen(true)}>
-            {t('formResponses.viewAction', { count: responses.all.total })}
-          </Button>
-        </div>
-      )}
-
+    <CalloutFormBox
+      className={className}
+      title={form.title ?? undefined}
+      description={form.description ?? undefined}
+      questionCount={questions.length}
+      visibility={visibility}
+      spaceName={spaceName}
+      status={!published ? 'DRAFT' : isOpen ? undefined : 'CLOSED'}
+      defaultCollapsed={form.settings.defaultCollapsed}
+      onViewResponses={responses.canReadAll ? () => setReviewOpen(true) : undefined}
+      responseCount={responses.all.total}
+    >
       {showOwnResponses && (
         <CalloutFormOwnResponses
           responses={ownResponses}
@@ -253,8 +258,6 @@ function CalloutFramingFormConnectorInner({
         <CalloutFormFillIn
           key={`fill-in-${fillInKey}`}
           questions={questions}
-          visibility={visibility}
-          spaceName={spaceName}
           state={isOpen ? 'OPEN' : 'CLOSED'}
           published={published}
           canSubmit={canSubmit}
@@ -271,13 +274,14 @@ function CalloutFramingFormConnectorInner({
           open={reviewOpen}
           onOpenChange={setReviewOpen}
           formId={form.id}
+          formTitle={formTitle}
           questions={questions}
           canModerate={responses.canModerate}
           onDelete={id => handleDelete(id, 'moderated')}
           deletedUserLabel={t('formResponses.deletedUser')}
         />
       )}
-    </div>
+    </CalloutFormBox>
   );
 }
 
@@ -285,6 +289,8 @@ type FormResponsesReviewDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   formId: string;
+  /** The Form title (or the generic "Form"), shown as the heading context of the review. */
+  formTitle: string;
   questions: ReturnType<typeof mapFormQuestionsToViews>;
   canModerate: boolean;
   onDelete: (responseId: string) => Promise<void>;
@@ -301,6 +307,7 @@ function FormResponsesReviewDialog({
   open,
   onOpenChange,
   formId,
+  formTitle,
   questions,
   canModerate,
   onDelete,
@@ -355,7 +362,10 @@ function FormResponsesReviewDialog({
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent aria-describedby={undefined} className="sm:max-w-5xl max-h-[90vh] flex flex-col overflow-hidden">
-          <DialogTitle className="text-subsection-title shrink-0">{t('formResponses.dialogTitle')}</DialogTitle>
+          <div className="shrink-0 space-y-0.5">
+            <p className="text-caption text-muted-foreground break-words">{formTitle}</p>
+            <DialogTitle className="text-subsection-title">{t('formResponses.dialogTitle')}</DialogTitle>
+          </div>
           <Separator className="shrink-0" />
           <div className="flex-1 min-h-0 overflow-y-auto">
             {error && !firstPage ? (
@@ -383,6 +393,7 @@ function FormResponsesReviewDialog({
           if (!next) setOpenResponseId(null);
         }}
         response={openResponse}
+        formTitle={formTitle}
         columns={columns}
         canModerate={canModerate}
         onDelete={id => void onDelete(id)}

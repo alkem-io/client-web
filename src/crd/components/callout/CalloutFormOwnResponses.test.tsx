@@ -99,7 +99,8 @@ describe('CalloutFormOwnResponses', () => {
       <CalloutFormOwnResponses responses={responses} questions={questions} onWithdraw={vi.fn()} status="CLOSED" />
     );
 
-    expect(screen.getByText('formFillIn.closedBadge')).toBeInTheDocument();
+    // The badge lives in the Form box header; the list explains the state.
+    expect(screen.queryByText('formFillIn.closedBadge')).toBeNull();
     expect(screen.getByText('formFillIn.closedNotice')).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: 'formFillIn.ownResponses.withdraw' })[0]).toBeEnabled();
   });
@@ -107,7 +108,6 @@ describe('CalloutFormOwnResponses', () => {
   test('announces an unpublished Post', () => {
     render(<CalloutFormOwnResponses responses={responses} questions={questions} onWithdraw={vi.fn()} status="DRAFT" />);
 
-    expect(screen.getByText('formFillIn.draftBadge')).toBeInTheDocument();
     expect(screen.getByText('formFillIn.draftNotice')).toBeInTheDocument();
   });
 
