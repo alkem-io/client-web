@@ -94,4 +94,41 @@ describe('calloutFormDefinitionMapper', () => {
     expect(added?.id).toBeUndefined();
     expect(added?.options?.map(o => o.id)).toEqual([undefined, undefined]);
   });
+
+  it('omits the questions on a settings-only save, so a concurrent question edit by another admin survives', () => {
+    // The editor was opened with these questions; rebuilding them (new client keys) must still count as unchanged.
+    const initialQuestions = formQuestionsFromServer(form);
+    const input = mapFormValuesToUpdateInput(
+      'form-1',
+      formQuestionsFromServer(form),
+      { visibility: 'MEMBERS', responseMode: 'MULTIPLE', state: 'OPEN' },
+      initialQuestions
+    );
+
+    expect(input).not.toHaveProperty('questions');
+    expect(input.settings?.state).toBe(CalloutFormState.Open);
+  });
+
+  it('treats whitespace-only edits that map to the same input as unchanged', () => {
+    const initialQuestions = formQuestionsFromServer(form);
+    const padded = initialQuestions.map(question => ({ ...question, prompt: `  ${question.prompt} ` }));
+
+    expect(
+      mapFormValuesToUpdateInput('form-1', padded, formSettingsFromServer(form.settings), initialQuestions)
+    ).not.toHaveProperty('questions');
+  });
+
+  it('sends the full question list when any question changed', () => {
+    const initialQuestions = formQuestionsFromServer(form);
+    const edited = initialQuestions.map((question, index) =>
+      index === 1 ? { ...question, required: true } : question
+    );
+
+    const input = mapFormValuesToUpdateInput('form-1', edited, formSettingsFromServer(form.settings), initialQuestions);
+
+    expect(input.questions?.map(q => [q.id, q.required])).toEqual([
+      ['q1', true],
+      ['q2', true],
+    ]);
+  });
 });

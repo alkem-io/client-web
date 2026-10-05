@@ -726,7 +726,12 @@ function CalloutFormConnectorInner({
     // open with a localized reason instead of leaving the Post half-saved.
     const formId = values.editMeta?.formId;
     if (values.framingChip === 'form' && formId && formDefinitionDirty) {
-      const outcome = await saveFormDefinition(formId, values.formQuestions, values.formSettings);
+      const outcome = await saveFormDefinition(
+        formId,
+        values.formQuestions,
+        values.formSettings,
+        form.initialValues.formQuestions
+      );
       if (!outcome.ok) {
         logError(new Error('Form definition save failed', { cause: outcome.error as Error }));
         notify(translateFormDefinitionError(outcome.code, t), 'error');

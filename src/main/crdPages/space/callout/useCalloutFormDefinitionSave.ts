@@ -50,11 +50,12 @@ export const useCalloutFormDefinitionSave = () => {
   const save = async (
     formId: string,
     questions: FormQuestionValue[],
-    settings: FormSettingsValue
+    settings: FormSettingsValue,
+    initialQuestions?: FormQuestionValue[]
   ): Promise<FormDefinitionSaveResult> => {
     try {
       const result = await updateCalloutForm({
-        variables: { formData: mapFormValuesToUpdateInput(formId, questions, settings) },
+        variables: { formData: mapFormValuesToUpdateInput(formId, questions, settings, initialQuestions) },
         context: { skipGlobalErrorHandler: true },
       });
       return { ok: true, form: result.data?.updateCalloutForm };

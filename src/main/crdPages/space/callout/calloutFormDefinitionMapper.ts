@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash-es';
 import {
   CalloutFormQuestionType,
   CalloutFormResponseMode,
@@ -75,14 +76,8 @@ export const mapFormValuesToCreateInput = (
   settings: settingsToServer(settings),
 });
 
-/** The complete ordered question list plus settings, for `updateCalloutForm`. */
-export const mapFormValuesToUpdateInput = (
-  formID: string,
-  questions: FormQuestionValue[],
-  settings: FormSettingsValue
-): UpdateCalloutFormInput => ({
-  formID,
-  questions: questions.map(question => ({
+const questionsToUpdateInput = (questions: FormQuestionValue[]) =>
+  questions.map(question => ({
     id: question.id,
     prompt: question.prompt.trim(),
     explanation: trimmedExplanation(question),
@@ -91,9 +86,28 @@ export const mapFormValuesToUpdateInput = (
     options: isChoiceKind(question.type)
       ? question.options.map(option => ({ id: option.id, label: option.label.trim() }))
       : undefined,
-  })),
-  settings: settingsToServer(settings),
-});
+  }));
+
+/**
+ * Settings plus, when the definition changed, the complete ordered question list for `updateCalloutForm`.
+ * The server treats `questions` as a full replacement and an omitted list as "unchanged", so when the mapped
+ * questions equal the ones the editor was opened with they are left out — a settings-only save must not
+ * overwrite questions another admin changed in the meantime.
+ */
+export const mapFormValuesToUpdateInput = (
+  formID: string,
+  questions: FormQuestionValue[],
+  settings: FormSettingsValue,
+  initialQuestions?: FormQuestionValue[]
+): UpdateCalloutFormInput => {
+  const mapped = questionsToUpdateInput(questions);
+  const unchanged = initialQuestions !== undefined && isEqual(mapped, questionsToUpdateInput(initialQuestions));
+  return {
+    formID,
+    ...(unchanged ? {} : { questions: mapped }),
+    settings: settingsToServer(settings),
+  };
+};
 
 export const formSettingsFromServer = (settings: CalloutFormDetailsModel['settings']): FormSettingsValue => ({
   visibility: settings.visibility === CalloutFormResponseVisibility.Members ? 'MEMBERS' : 'ADMINS',
