@@ -964,6 +964,10 @@
         "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
           "subject": "„{{memberName}}“ ist {{organizationName}} als Assoziierte(r) beigetreten",
           "description": "{{memberName}} ist {{organizationName}} beigetreten, dessen Admin du bist."
+        },
+        "SPACE_ADMIN_COLLABORATION_CALLOUT_FORM_RESPONSE": {
+          "subject": "{{triggeredByName}} hat auf das Formular „{{calloutName}}“ geantwortet",
+          "description": "In <b>{{spaceName}}</b>, dessen $t(common.admin) Sie sind."
         }
       },
       "spacesToJoin": "Bei Annahme wird beigetreten zu: {{spaces}}",
@@ -1265,6 +1269,7 @@
         "urlRequired": "URL is required"
       },
       "transferCallout": {
+        "formNotAllowed": "Ein $t(common.post) mit einem Formular kann nicht übertragen werden: Die Antworten bleiben in dem Space, in dem sie gegeben wurden.",
         "urlNotCallout": "URL does not resolve to a $t(common.post)",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space"
@@ -1380,6 +1385,7 @@
         "confirmWarning": "Dadurch wird der Virtual Contributor von Space-basiert auf Wissensdatenbank-basiert umgestellt. Beiträge werden aus dem Quell-Space VERSCHOBEN (nicht kopiert). Diese Aktion kann nicht rückgängig gemacht werden.",
         "convertButton": "Convert to Knowledge Base",
         "errorMessage": "Failed to convert virtual contributor.",
+        "formNotAllowed": "Der Space dieses virtuellen Mitwirkenden enthält einen $t(common.post) mit einem Formular und kann daher nicht in eine Wissensdatenbank umgewandelt werden.",
         "sectionDescription": "Einen Space-basierten Virtual Contributor auf eine Wissensdatenbank umstellen. Beiträge werden aus dem Quell-Space verschoben – nicht kopiert.",
         "sectionTitle": "Virtual Contributor Type Conversion",
         "sourceSpace": "Source Space",

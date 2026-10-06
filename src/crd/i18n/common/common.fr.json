@@ -964,6 +964,10 @@
         "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
           "subject": "« {{memberName}} » a rejoint {{organizationName}} en tant qu’associé",
           "description": "{{memberName}} a rejoint {{organizationName}}, dont vous êtes $t(common.admin)."
+        },
+        "SPACE_ADMIN_COLLABORATION_CALLOUT_FORM_RESPONSE": {
+          "subject": "{{triggeredByName}} a répondu au formulaire « {{calloutName}} »",
+          "description": "Dans <b>{{spaceName}}</b>, dont vous êtes $t(common.admin)."
         }
       },
       "spacesToJoin": "L'acceptation entraîne l'adhésion à : {{spaces}}",
@@ -1265,6 +1269,7 @@
         "urlRequired": "URL is required"
       },
       "transferCallout": {
+        "formNotAllowed": "Une $t(common.post) avec un formulaire ne peut pas être transférée : ses réponses restent dans l'espace où elles ont été données.",
         "urlNotCallout": "URL does not resolve to a $t(common.post)",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space"
@@ -1380,6 +1385,7 @@
         "confirmWarning": "Cela convertira le contributeur virtuel d'un fonctionnement basé sur un espace à un fonctionnement basé sur une base de connaissances. Les publications seront DÉPLACÉES depuis l'espace source (et non copiées). Cette action est irréversible.",
         "convertButton": "Convert to Knowledge Base",
         "errorMessage": "Failed to convert virtual contributor.",
+        "formNotAllowed": "L'espace de ce contributeur virtuel contient une $t(common.post) avec un formulaire ; il ne peut donc pas être converti en base de connaissances.",
         "sectionDescription": "Convertir un contributeur virtuel basé sur un espace pour qu'il utilise une base de connaissances. Les publications seront déplacées depuis l'espace source, et non copiées.",
         "sectionTitle": "Virtual Contributor Type Conversion",
         "sourceSpace": "Source Space",

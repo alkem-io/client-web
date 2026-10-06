@@ -286,6 +286,16 @@ export const mapUserNotifications = (
           ),
         },
         {
+          property: 'collaborationCalloutFormResponseReceived',
+          label: t('user.notifications.rows.spaceAdmin.collaborationCalloutFormResponseReceived'),
+          channels: resolveChannels(
+            server.spaceAdmin?.collaborationCalloutFormResponseReceived,
+            overrides,
+            'spaceAdmin',
+            'collaborationCalloutFormResponseReceived'
+          ),
+        },
+        {
           property: 'communicationMessageReceived',
           label: t('user.notifications.rows.spaceAdmin.communicationMessageReceived'),
           channels: resolveChannels(

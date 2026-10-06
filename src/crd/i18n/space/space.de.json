@@ -313,7 +313,8 @@
     "referencesSaveFailed": "Eine oder mehrere neue Referenzen konnten nicht gespeichert werden. Weitere Änderungen wurden nicht übernommen. Bitte versuchen Sie es erneut.",
     "updateFailed": "Die Änderungen am Beitrag konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
     "contributors": "Mitwirkende",
-    "subspaces": "Unterbereiche"
+    "subspaces": "Unterbereiche",
+    "form": "Formular"
   },
   "contribution": {
     "edit": "Bearbeiten",
@@ -513,14 +514,19 @@
       "whiteboard": "Das Whiteboard",
       "memo": "Die Notiz",
       "mediaGallery": "Die Mediengalerie",
-      "document": "Das Dokument"
+      "document": "Das Dokument",
+      "form": "Das Formular"
     },
     "moreLinks_one": "und {{count}} weiterer Link",
     "moreLinks_other": "und {{count}} weitere Links",
     "comments_one": "{{count}} Kommentar wird gelöscht",
     "comments_other": "{{count}} Kommentare werden gelöscht",
     "success": "Der Beitrag „{{title}}“ wurde gelöscht.",
-    "saveFailed": "Der Beitrag konnte nicht gelöscht werden. Bitte erneut versuchen."
+    "saveFailed": "Der Beitrag konnte nicht gelöscht werden. Bitte erneut versuchen.",
+    "headerRichForm_one": "Das Formular und seine {{count}} Antwort werden gelöscht",
+    "headerRichForm_other": "Das Formular und seine {{count}} Antworten werden gelöscht",
+    "headerRichFormContributions_one": "Das Formular, seine Antworten und {{count}} Beitrag werden gelöscht",
+    "headerRichFormContributions_other": "Das Formular, seine Antworten und {{count}} Beiträge werden gelöscht"
   },
   "deleteTask": {
     "title": "Diese Aufgabe löschen?"
@@ -1174,5 +1180,174 @@
   },
   "parentStack": {
     "goTo": "Gehe zu {{name}}"
+  },
+  "formForm": {
+    "validation": {
+      "questionsMin": "Mindestens {{count}} Frage ist erforderlich",
+      "questionsMax": "Höchstens {{count}} Fragen sind erlaubt",
+      "promptRequired": "Der Fragetext ist erforderlich",
+      "promptMax": "Der Fragetext ist zu lang",
+      "explanationMax": "Die Erläuterung ist zu lang",
+      "optionsMin": "Mindestens {{count}} Optionen sind erforderlich",
+      "optionsMax": "Höchstens {{count}} Optionen sind erlaubt",
+      "optionRequired": "Der Optionstext ist erforderlich",
+      "optionMax": "Der Optionstext ist zu lang",
+      "optionsDuplicate": "Die Optionen müssen sich voneinander unterscheiden"
+    },
+    "questionsHeading": "Formular",
+    "questionsDescription": "Stelle Fragen und sammle die Antworten",
+    "questionNumber": "Frage {{number}}",
+    "promptPlaceholder": "Was möchten Sie fragen?",
+    "explanationLabel": "Erläuterung (optional)",
+    "explanationPlaceholder": "Helfen Sie den Leuten, die Frage zu verstehen",
+    "typeLabel": "Antworttyp",
+    "type": {
+      "SHORT_TEXT": "Kurzer Text",
+      "LONG_TEXT": "Langer Text",
+      "SINGLE_CHOICE": "Einfachauswahl",
+      "MULTIPLE_CHOICE": "Mehrfachauswahl"
+    },
+    "required": "Pflichtfeld",
+    "dragQuestion": "Frage {{number}} verschieben",
+    "addQuestion": "Frage hinzufügen",
+    "removeQuestion": "Frage entfernen",
+    "removeQuestionConfirm": {
+      "title": "Diese Frage entfernen?",
+      "description": "Die Frage wird aus dem Formular entfernt.",
+      "descriptionWithText": "„{{text}}“ wird aus dem Formular entfernt."
+    },
+    "optionsHeading": "Optionen",
+    "optionLabel": "Option {{number}}",
+    "addOption": "Option hinzufügen",
+    "removeOption": "Option entfernen",
+    "dragOption": "Option {{number}} verschieben",
+    "removeOptionConfirm": {
+      "title": "Diese Option entfernen?",
+      "description": "Die Option wird aus der Frage entfernt.",
+      "descriptionWithText": "„{{text}}“ wird aus der Frage entfernt."
+    },
+    "settingsButton": "Formulareinstellungen",
+    "settings": {
+      "title": "Formulareinstellungen",
+      "visibilityHeading": "Wer die Antworten sehen kann",
+      "visibility": {
+        "ADMINS": "Nur Administratoren",
+        "MEMBERS": "Mitglieder des Space"
+      },
+      "visibilityHelp": {
+        "ADMINS": "Nur die Administratoren dieses Space können alle Antworten lesen. Alle anderen sehen nur ihre eigenen.",
+        "MEMBERS": "Die Mitglieder dieses Space können alle Antworten lesen."
+      },
+      "responseModeHeading": "Antworten pro Person",
+      "responseMode": {
+        "SINGLE": "Eine Antwort pro Person",
+        "MULTIPLE": "Mehrere Antworten pro Person"
+      },
+      "stateOpen": "Für Antworten geöffnet",
+      "stateHelp": "Geschlossene Formulare nehmen keine neuen Antworten an.",
+      "defaultCollapsed": "Formular standardmäßig eingeklappt anzeigen",
+      "defaultCollapsedHelp": "Betrachter können es weiterhin ausklappen",
+      "widenConfirm": {
+        "title": "Antworten für Mitglieder sichtbar machen?",
+        "description_one": "Mitglieder von {{space}} können die {{count}} bestehende Antwort lesen, auch wenn sie abgegeben wurde, als nur Admins sie sehen konnten.",
+        "description_other": "Mitglieder von {{space}} können alle {{count}} bestehenden Antworten lesen, auch die, die abgegeben wurden, als nur Admins sie sehen konnten.",
+        "descriptionNoCount": "Mitglieder von {{space}} können alle bestehenden Antworten lesen, auch die, die abgegeben wurden, als nur Admins sie sehen konnten.",
+        "confirm": "Antworten für Mitglieder sichtbar machen"
+      }
+    },
+    "errors": {
+      "saveFailed": "Das Formular konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+      "FORM_UNKNOWN_QUESTION_ID": "Das Formular wurde inzwischen geändert. Bitte neu laden und erneut versuchen.",
+      "FORM_UNKNOWN_OPTION_ID": "Das Formular wurde inzwischen geändert. Bitte neu laden und erneut versuchen.",
+      "FORM_QUESTIONS_COUNT": "Ein Formular benötigt zwischen 1 und 50 Fragen.",
+      "FORM_OPTIONS_COUNT": "Eine Auswahlfrage benötigt zwischen 2 und 20 Optionen.",
+      "FORM_OPTIONS_DUPLICATE": "Die Optionen müssen sich voneinander unterscheiden."
+    },
+    "title": "Titel des Formulars (optional)",
+    "titlePlaceholder": "Geben Sie dem Formular einen Titel",
+    "description": "Beschreibung (optional)",
+    "descriptionPlaceholder": "Beschreiben Sie, worum es in diesem Formular geht",
+    "titleTooLong": "Der Titel des Formulars darf höchstens {{count}} Zeichen lang sein",
+    "descriptionTooLong": "Die Beschreibung des Formulars darf höchstens {{count}} Zeichen lang sein",
+    "typeChangeHint": "Bestehende Antworten behalten ihr ursprüngliches Format"
+  },
+  "formFillIn": {
+    "requiredMarker": "Pflichtfrage",
+    "noticeAdmins": "Nur die Administratoren von {{space}} können Ihre Antwort sehen",
+    "noticeMembers": "Mitglieder von {{space}} können Ihre Antwort sehen",
+    "submit": "Formular senden",
+    "answerPlaceholder": "Antwort eingeben...",
+    "resetConfirm": {
+      "title": "Antworten zurücksetzen?",
+      "description": "Alle Eingaben in diesem Formular werden gelöscht.",
+      "confirm": "Zurücksetzen"
+    },
+    "submitting": "Wird gesendet…",
+    "closedBadge": "Geschlossen",
+    "draftBadge": "Nicht veröffentlicht",
+    "closedNotice": "Dieses Formular ist geschlossen und nimmt keine Antworten mehr an.",
+    "draftNotice": "Sie können antworten, sobald dieser Beitrag veröffentlicht ist.",
+    "cannotRespond": "Sie haben keine Berechtigung, dieses Formular zu beantworten.",
+    "requiredError": "Diese Frage ist erforderlich",
+    "noAnswer": "Keine Antwort",
+    "success": "Ihre Antwort wurde gesendet.",
+    "withdrawn": "Ihre Antwort wurde zurückgezogen.",
+    "withdrawFailed": "Ihre Antwort konnte nicht zurückgezogen werden. Bitte versuchen Sie es erneut.",
+    "visibilityChanged": "Wer die Antworten sehen kann, hat sich geändert – bitte prüfen und erneut senden.",
+    "errors": {
+      "generic": "Ihre Antwort konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
+      "FORM_RESPONSE_ALREADY_EXISTS": "Sie haben dieses Formular bereits beantwortet.",
+      "FORM_CLOSED": "Dieses Formular ist geschlossen und nimmt keine Antworten mehr an.",
+      "CALLOUT_NOT_PUBLISHED": "Dieses Formular ist noch nicht veröffentlicht.",
+      "FORM_ANSWER_REQUIRED": "Bitte beantworten Sie alle Pflichtfragen.",
+      "FORM_ANSWER_TOO_LONG": "Eine Ihrer Antworten ist zu lang.",
+      "FORM_ANSWER_UNKNOWN_QUESTION": "Das Formular hat sich geändert, während Sie geantwortet haben. Bitte prüfen und erneut senden.",
+      "FORM_ANSWER_DUPLICATE_QUESTION": "Das Formular hat sich geändert, während Sie geantwortet haben. Bitte prüfen und erneut senden.",
+      "FORM_ANSWER_TYPE_MISMATCH": "Das Formular hat sich geändert, während Sie geantwortet haben. Bitte prüfen und erneut senden.",
+      "FORM_ANSWER_INVALID_OPTION": "Eine der gewählten Optionen existiert nicht mehr. Bitte prüfen und erneut senden.",
+      "FORM_ANSWER_SELECTION_COUNT": "Bitte wählen Sie eine gültige Anzahl an Optionen."
+    },
+    "ownResponses": {
+      "heading": "Ihre Antworten",
+      "loadEarlier": "Frühere Antworten anzeigen",
+      "responseNumber": "Antwort {{number}}",
+      "submittedOn": "Gesendet am {{date}}",
+      "withdraw": "Zurückziehen",
+      "withdrawConfirm": {
+        "title": "Diese Antwort zurückziehen?",
+        "description": "Ihre Antwort wird gelöscht. Dies kann nicht rückgängig gemacht werden.",
+        "confirm": "Zurückziehen"
+      }
+    },
+    "untitled": "Formular",
+    "questionCount_one": "{{count}} Frage",
+    "questionCount_other": "{{count}} Fragen",
+    "expand": "Formular ausklappen",
+    "collapse": "Formular einklappen",
+    "cancel": "Abbrechen"
+  },
+  "formResponses": {
+    "viewAction": "Antworten anzeigen ({{count}})",
+    "dialogTitle": "Formularantworten",
+    "respondent": "Antwortende Person",
+    "submitted": "Gesendet",
+    "actions": "Aktionen",
+    "noAnswer": "Keine Antwort",
+    "deletedUser": "Gelöschter Benutzer",
+    "removedQuestion": "entfernte Frage",
+    "loadMore": "Mehr laden",
+    "loadingMore": "Wird geladen…",
+    "empty": "Noch keine Antworten.",
+    "showing": "{{shown}} von {{total}} angezeigt",
+    "open": "Antwort öffnen",
+    "delete": "Antwort löschen",
+    "deleteConfirm": {
+      "title": "Diese Antwort löschen?",
+      "description": "Die Antwort wird dauerhaft gelöscht.",
+      "confirm": "Löschen"
+    },
+    "singleTitle": "Antwort von {{name}}",
+    "deleteFailed": "Die Antwort konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.",
+    "loadFailed": "Die Antworten konnten nicht geladen werden."
   }
 }

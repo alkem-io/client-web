@@ -964,6 +964,10 @@
         "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
           "subject": "\"{{memberName}}\" joined {{organizationName}} as an associate",
           "description": "{{memberName}} has joined {{organizationName}}, of which you are an $t(common.admin)."
+        },
+        "SPACE_ADMIN_COLLABORATION_CALLOUT_FORM_RESPONSE": {
+          "subject": "{{triggeredByName}} responded to the form \"{{calloutName}}\"",
+          "description": "In <b>{{spaceName}}</b>, of which you are an $t(common.admin)."
         }
       },
       "spacesToJoin": "Accepting joins: {{spaces}}",
@@ -1265,6 +1269,7 @@
         "urlRequired": "URL is required"
       },
       "transferCallout": {
+        "formNotAllowed": "A $t(common.post) with a form cannot be transferred: its responses stay in the space where they were given.",
         "urlNotCallout": "URL does not resolve to a $t(common.post)",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space"
@@ -1380,6 +1385,7 @@
         "confirmWarning": "This will convert the virtual contributor from space-based to knowledge-base-based. $t(common.Posts) will be MOVED from the source space (not copied). This action cannot be undone.",
         "convertButton": "Convert to Knowledge Base",
         "errorMessage": "Failed to convert virtual contributor.",
+        "formNotAllowed": "This virtual contributor's space has a $t(common.post) with a form, so it cannot be converted to a knowledge base.",
         "sectionDescription": "Convert a space-based virtual contributor to use a knowledge base. $t(common.Posts) will be moved from the source space — not copied.",
         "sectionTitle": "Virtual Contributor Type Conversion",
         "sourceSpace": "Source Space",

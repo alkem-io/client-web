@@ -313,7 +313,8 @@
     "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer.",
     "updateFailed": "Les modifications de la publication n'ont pas pu être enregistrées. Veuillez réessayer.",
     "contributors": "Contributeurs",
-    "subspaces": "Sous-espaces"
+    "subspaces": "Sous-espaces",
+    "form": "Formulaire"
   },
   "contribution": {
     "edit": "Modifier",
@@ -513,14 +514,19 @@
       "whiteboard": "Le tableau blanc",
       "memo": "Le mémo",
       "mediaGallery": "La galerie multimédia",
-      "document": "Le document"
+      "document": "Le document",
+      "form": "Le formulaire"
     },
     "moreLinks_one": "et {{count}} autre lien",
     "moreLinks_other": "et {{count}} autres liens",
     "comments_one": "{{count}} commentaire sera supprimé",
     "comments_other": "{{count}} commentaires seront supprimés",
     "success": "La publication « {{title}} » a été supprimée.",
-    "saveFailed": "Impossible de supprimer la publication. Veuillez réessayer."
+    "saveFailed": "Impossible de supprimer la publication. Veuillez réessayer.",
+    "headerRichForm_one": "Le formulaire et sa {{count}} réponse seront supprimés",
+    "headerRichForm_other": "Le formulaire et ses {{count}} réponses seront supprimés",
+    "headerRichFormContributions_one": "Le formulaire, ses réponses et {{count}} contribution seront supprimés",
+    "headerRichFormContributions_other": "Le formulaire, ses réponses et {{count}} contributions seront supprimés"
   },
   "deleteTask": {
     "title": "Supprimer cette tâche ?"
@@ -1174,5 +1180,174 @@
   },
   "parentStack": {
     "goTo": "Aller à {{name}}"
+  },
+  "formForm": {
+    "validation": {
+      "questionsMin": "Au moins {{count}} question est requise",
+      "questionsMax": "Au maximum {{count}} questions sont autorisées",
+      "promptRequired": "Le texte de la question est obligatoire",
+      "promptMax": "Le texte de la question est trop long",
+      "explanationMax": "L'explication est trop longue",
+      "optionsMin": "Au moins {{count}} options sont requises",
+      "optionsMax": "Au maximum {{count}} options sont autorisées",
+      "optionRequired": "Le texte de l'option est obligatoire",
+      "optionMax": "Le texte de l'option est trop long",
+      "optionsDuplicate": "Les options doivent être différentes les unes des autres"
+    },
+    "questionsHeading": "Formulaire",
+    "questionsDescription": "Posez des questions et recueillez les réponses",
+    "questionNumber": "Question {{number}}",
+    "promptPlaceholder": "Que souhaitez-vous demander ?",
+    "explanationLabel": "Explication (facultatif)",
+    "explanationPlaceholder": "Aidez les gens à comprendre la question",
+    "typeLabel": "Type de réponse",
+    "type": {
+      "SHORT_TEXT": "Texte court",
+      "LONG_TEXT": "Texte long",
+      "SINGLE_CHOICE": "Choix unique",
+      "MULTIPLE_CHOICE": "Choix multiple"
+    },
+    "required": "Obligatoire",
+    "dragQuestion": "Déplacer la question {{number}}",
+    "addQuestion": "Ajouter une question",
+    "removeQuestion": "Supprimer la question",
+    "removeQuestionConfirm": {
+      "title": "Supprimer cette question ?",
+      "description": "La question sera supprimée du formulaire.",
+      "descriptionWithText": "« {{text}} » sera supprimée du formulaire."
+    },
+    "optionsHeading": "Options",
+    "optionLabel": "Option {{number}}",
+    "addOption": "Ajouter une option",
+    "removeOption": "Supprimer l'option",
+    "dragOption": "Déplacer l'option {{number}}",
+    "removeOptionConfirm": {
+      "title": "Supprimer cette option ?",
+      "description": "L’option sera supprimée de la question.",
+      "descriptionWithText": "« {{text}} » sera supprimée de la question."
+    },
+    "settingsButton": "Paramètres du formulaire",
+    "settings": {
+      "title": "Paramètres du formulaire",
+      "visibilityHeading": "Qui peut voir les réponses",
+      "visibility": {
+        "ADMINS": "Administrateurs uniquement",
+        "MEMBERS": "Membres de l'espace"
+      },
+      "visibilityHelp": {
+        "ADMINS": "Seuls les administrateurs de cet espace peuvent lire toutes les réponses. Tous les autres ne voient que les leurs.",
+        "MEMBERS": "Les membres de cet espace peuvent lire toutes les réponses."
+      },
+      "responseModeHeading": "Réponses par personne",
+      "responseMode": {
+        "SINGLE": "Une réponse par personne",
+        "MULTIPLE": "Plusieurs réponses par personne"
+      },
+      "stateOpen": "Ouvert aux réponses",
+      "stateHelp": "Les formulaires fermés n’acceptent plus de nouvelles réponses.",
+      "defaultCollapsed": "Afficher le formulaire replié par défaut",
+      "defaultCollapsedHelp": "Les lecteurs peuvent toujours le déplier",
+      "widenConfirm": {
+        "title": "Afficher les réponses aux membres ?",
+        "description_one": "Les membres de {{space}} pourront lire la {{count}} réponse existante, même si elle a été envoyée lorsque seuls les administrateurs pouvaient la voir.",
+        "description_other": "Les membres de {{space}} pourront lire les {{count}} réponses existantes, y compris celles envoyées lorsque seuls les administrateurs pouvaient les voir.",
+        "descriptionNoCount": "Les membres de {{space}} pourront lire toutes les réponses existantes, y compris celles envoyées lorsque seuls les administrateurs pouvaient les voir.",
+        "confirm": "Afficher les réponses aux membres"
+      }
+    },
+    "errors": {
+      "saveFailed": "Le formulaire n'a pas pu être enregistré. Veuillez réessayer.",
+      "FORM_UNKNOWN_QUESTION_ID": "Le formulaire a changé entre-temps. Rechargez et réessayez.",
+      "FORM_UNKNOWN_OPTION_ID": "Le formulaire a changé entre-temps. Rechargez et réessayez.",
+      "FORM_QUESTIONS_COUNT": "Un formulaire nécessite entre 1 et 50 questions.",
+      "FORM_OPTIONS_COUNT": "Une question à choix nécessite entre 2 et 20 options.",
+      "FORM_OPTIONS_DUPLICATE": "Les options doivent être différentes les unes des autres."
+    },
+    "title": "Titre du formulaire (facultatif)",
+    "titlePlaceholder": "Donnez un titre au formulaire",
+    "description": "Description (facultatif)",
+    "descriptionPlaceholder": "Expliquez de quoi parle ce formulaire",
+    "titleTooLong": "Le titre du formulaire peut comporter au maximum {{count}} caractères",
+    "descriptionTooLong": "La description du formulaire peut comporter au maximum {{count}} caractères",
+    "typeChangeHint": "Les réponses existantes conservent leur format d’origine"
+  },
+  "formFillIn": {
+    "requiredMarker": "obligatoire",
+    "noticeAdmins": "Seuls les administrateurs de {{space}} peuvent voir votre réponse",
+    "noticeMembers": "Les membres de {{space}} peuvent voir votre réponse",
+    "submit": "Envoyer le formulaire",
+    "answerPlaceholder": "Saisissez votre réponse...",
+    "resetConfirm": {
+      "title": "Réinitialiser vos réponses ?",
+      "description": "Tout ce que vous avez saisi dans ce formulaire sera effacé.",
+      "confirm": "Réinitialiser"
+    },
+    "submitting": "Envoi…",
+    "closedBadge": "Fermé",
+    "draftBadge": "Non publié",
+    "closedNotice": "Ce formulaire est fermé et n'accepte plus de réponses.",
+    "draftNotice": "Vous pourrez répondre une fois cette publication publiée.",
+    "cannotRespond": "Vous n'avez pas l'autorisation de répondre à ce formulaire.",
+    "requiredError": "Cette question est obligatoire",
+    "noAnswer": "Pas de réponse",
+    "success": "Votre réponse a été envoyée.",
+    "withdrawn": "Votre réponse a été retirée.",
+    "withdrawFailed": "Votre réponse n'a pas pu être retirée. Veuillez réessayer.",
+    "visibilityChanged": "Les personnes pouvant voir les réponses ont changé — vérifiez et envoyez à nouveau.",
+    "errors": {
+      "generic": "Votre réponse n'a pas pu être envoyée. Veuillez réessayer.",
+      "FORM_RESPONSE_ALREADY_EXISTS": "Vous avez déjà répondu à ce formulaire.",
+      "FORM_CLOSED": "Ce formulaire est fermé et n'accepte plus de réponses.",
+      "CALLOUT_NOT_PUBLISHED": "Ce formulaire n'est pas encore publié.",
+      "FORM_ANSWER_REQUIRED": "Veuillez répondre à toutes les questions obligatoires.",
+      "FORM_ANSWER_TOO_LONG": "Une de vos réponses est trop longue.",
+      "FORM_ANSWER_UNKNOWN_QUESTION": "Le formulaire a changé pendant que vous répondiez. Vérifiez et envoyez à nouveau.",
+      "FORM_ANSWER_DUPLICATE_QUESTION": "Le formulaire a changé pendant que vous répondiez. Vérifiez et envoyez à nouveau.",
+      "FORM_ANSWER_TYPE_MISMATCH": "Le formulaire a changé pendant que vous répondiez. Vérifiez et envoyez à nouveau.",
+      "FORM_ANSWER_INVALID_OPTION": "Une des options choisies n'existe plus. Vérifiez et envoyez à nouveau.",
+      "FORM_ANSWER_SELECTION_COUNT": "Veuillez choisir un nombre valide d'options."
+    },
+    "ownResponses": {
+      "heading": "Vos réponses",
+      "loadEarlier": "Afficher les réponses précédentes",
+      "responseNumber": "Réponse {{number}}",
+      "submittedOn": "Envoyée le {{date}}",
+      "withdraw": "Retirer",
+      "withdrawConfirm": {
+        "title": "Retirer cette réponse ?",
+        "description": "Votre réponse sera supprimée. Cette action est irréversible.",
+        "confirm": "Retirer"
+      }
+    },
+    "untitled": "Formulaire",
+    "questionCount_one": "{{count}} question",
+    "questionCount_other": "{{count}} questions",
+    "expand": "Déplier le formulaire",
+    "collapse": "Replier le formulaire",
+    "cancel": "Annuler"
+  },
+  "formResponses": {
+    "viewAction": "Voir les réponses ({{count}})",
+    "dialogTitle": "Réponses au formulaire",
+    "respondent": "Répondant",
+    "submitted": "Envoyée",
+    "actions": "Actions",
+    "noAnswer": "Pas de réponse",
+    "deletedUser": "Utilisateur supprimé",
+    "removedQuestion": "question supprimée",
+    "loadMore": "Charger plus",
+    "loadingMore": "Chargement…",
+    "empty": "Aucune réponse pour le moment.",
+    "showing": "{{shown}} sur {{total}} affichées",
+    "open": "Ouvrir la réponse",
+    "delete": "Supprimer la réponse",
+    "deleteConfirm": {
+      "title": "Supprimer cette réponse ?",
+      "description": "La réponse sera définitivement supprimée.",
+      "confirm": "Supprimer"
+    },
+    "singleTitle": "Réponse de {{name}}",
+    "deleteFailed": "La réponse n'a pas pu être supprimée. Veuillez réessayer.",
+    "loadFailed": "Les réponses n'ont pas pu être chargées."
   }
 }

@@ -66,8 +66,12 @@ const useCalloutDetails = ({
       draft: calloutDetails.settings.visibility === CalloutVisibility.Draft,
       editable: calloutDetails.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false,
       movable: canMoveCallouts,
-      // TODO: temporary — disable "Save as template" for polls until poll template support is implemented
-      canBeSavedAsTemplate: canBeSavedAsTemplate && calloutDetails.framing.type !== CalloutFramingType.Poll,
+      // TODO: temporary — disable "Save as template" for polls until poll template support is implemented.
+      // Forms are never templatable: a template would carry a definition without its responses.
+      canBeSavedAsTemplate:
+        canBeSavedAsTemplate &&
+        calloutDetails.framing.type !== CalloutFramingType.Poll &&
+        calloutDetails.framing.type !== CalloutFramingType.Form,
       classificationTagsets: [],
       publishedDate: calloutDetails.publishedDate ? new Date(calloutDetails.publishedDate) : undefined,
       createdDate: calloutDetails.createdDate ? new Date(calloutDetails.createdDate) : undefined,

@@ -313,7 +313,8 @@
     "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again.",
     "updateFailed": "Could not save changes to the $t(common.callout). Please try again.",
     "contributors": "Contributors",
-    "subspaces": "Subspaces"
+    "subspaces": "Subspaces",
+    "form": "Form"
   },
   "contribution": {
     "edit": "Edit",
@@ -513,14 +514,19 @@
       "whiteboard": "The whiteboard",
       "memo": "The memo",
       "mediaGallery": "The media gallery",
-      "document": "The document"
+      "document": "The document",
+      "form": "The form"
     },
     "moreLinks_one": "and {{count}} more link",
     "moreLinks_other": "and {{count}} more links",
     "comments_one": "{{count}} comment will be deleted",
     "comments_other": "{{count}} comments will be deleted",
     "success": "$t(common.Callout) “{{title}}” was deleted.",
-    "saveFailed": "Could not delete the $t(common.callout). Please try again."
+    "saveFailed": "Could not delete the $t(common.callout). Please try again.",
+    "headerRichForm_one": "The form and its {{count}} response will be deleted",
+    "headerRichForm_other": "The form and its {{count}} responses will be deleted",
+    "headerRichFormContributions_one": "The form, its responses and {{count}} contribution will be deleted",
+    "headerRichFormContributions_other": "The form, its responses and {{count}} contributions will be deleted"
   },
   "deleteTask": {
     "title": "Delete this task?"
@@ -1174,5 +1180,174 @@
   },
   "parentStack": {
     "goTo": "Go to {{name}}"
+  },
+  "formForm": {
+    "validation": {
+      "questionsMin": "At least {{count}} question is required",
+      "questionsMax": "At most {{count}} questions are allowed",
+      "promptRequired": "The question text is required",
+      "promptMax": "The question text is too long",
+      "explanationMax": "The explanation is too long",
+      "optionsMin": "At least {{count}} options are required",
+      "optionsMax": "At most {{count}} options are allowed",
+      "optionRequired": "Option text is required",
+      "optionMax": "The option text is too long",
+      "optionsDuplicate": "Options must be different from each other"
+    },
+    "questionsHeading": "Form",
+    "questionsDescription": "Ask questions and collect answers as responses",
+    "questionNumber": "Question {{number}}",
+    "promptPlaceholder": "What would you like to ask?",
+    "explanationLabel": "Explanation (optional)",
+    "explanationPlaceholder": "Help people understand the question",
+    "typeLabel": "Answer type",
+    "type": {
+      "SHORT_TEXT": "Short text",
+      "LONG_TEXT": "Long text",
+      "SINGLE_CHOICE": "Single choice",
+      "MULTIPLE_CHOICE": "Multiple choice"
+    },
+    "required": "Required",
+    "dragQuestion": "Reorder question {{number}}",
+    "addQuestion": "Add question",
+    "removeQuestion": "Remove question",
+    "removeQuestionConfirm": {
+      "title": "Remove this question?",
+      "description": "The question will be removed from the form.",
+      "descriptionWithText": "“{{text}}” will be removed from the form."
+    },
+    "optionsHeading": "Options",
+    "optionLabel": "Option {{number}}",
+    "addOption": "Add option",
+    "removeOption": "Remove option",
+    "dragOption": "Reorder option {{number}}",
+    "removeOptionConfirm": {
+      "title": "Remove this option?",
+      "description": "The option will be removed from the question.",
+      "descriptionWithText": "“{{text}}” will be removed from the question."
+    },
+    "settingsButton": "Form settings",
+    "settings": {
+      "title": "Form settings",
+      "visibilityHeading": "Who can see the responses",
+      "visibility": {
+        "ADMINS": "Admins only",
+        "MEMBERS": "Space members"
+      },
+      "visibilityHelp": {
+        "ADMINS": "Only the admins of this space can read every response. Everyone else sees only their own.",
+        "MEMBERS": "The members of this space can read every response."
+      },
+      "responseModeHeading": "Responses per person",
+      "responseMode": {
+        "SINGLE": "One response per person",
+        "MULTIPLE": "Several responses per person"
+      },
+      "stateOpen": "Open for responses",
+      "stateHelp": "Closed forms accept no new responses.",
+      "defaultCollapsed": "Show the form collapsed by default",
+      "defaultCollapsedHelp": "Viewers can still expand it",
+      "widenConfirm": {
+        "title": "Show responses to members?",
+        "description_one": "Members of {{space}} will be able to read the {{count}} existing response, including one submitted when only admins could see it.",
+        "description_other": "Members of {{space}} will be able to read all {{count}} existing responses, including those submitted when only admins could see them.",
+        "descriptionNoCount": "Members of {{space}} will be able to read all existing responses, including those submitted when only admins could see them.",
+        "confirm": "Show responses to members"
+      }
+    },
+    "errors": {
+      "saveFailed": "The form could not be saved. Please try again.",
+      "FORM_UNKNOWN_QUESTION_ID": "The form changed in the meantime. Reload and try again.",
+      "FORM_UNKNOWN_OPTION_ID": "The form changed in the meantime. Reload and try again.",
+      "FORM_QUESTIONS_COUNT": "A form needs between 1 and 50 questions.",
+      "FORM_OPTIONS_COUNT": "A choice question needs between 2 and 20 options.",
+      "FORM_OPTIONS_DUPLICATE": "Options must be different from each other."
+    },
+    "title": "Form title (optional)",
+    "titlePlaceholder": "Give the form a title",
+    "description": "Description (optional)",
+    "descriptionPlaceholder": "Tell people what this form is about",
+    "titleTooLong": "The form title can be at most {{count}} characters",
+    "descriptionTooLong": "The form description can be at most {{count}} characters",
+    "typeChangeHint": "Existing answers keep their original format"
+  },
+  "formFillIn": {
+    "requiredMarker": "required",
+    "noticeAdmins": "Only the admins of {{space}} can see your response",
+    "noticeMembers": "Members of {{space}} can see your response",
+    "submit": "Submit Form",
+    "answerPlaceholder": "Type your answer...",
+    "resetConfirm": {
+      "title": "Reset your answers?",
+      "description": "Everything you have entered in this form will be cleared.",
+      "confirm": "Reset"
+    },
+    "submitting": "Submitting…",
+    "closedBadge": "Closed",
+    "draftBadge": "Not published",
+    "closedNotice": "This form is closed and no longer accepts responses.",
+    "draftNotice": "You can respond once this post is published.",
+    "cannotRespond": "You do not have permission to respond to this form.",
+    "requiredError": "This question is required",
+    "noAnswer": "No answer given",
+    "success": "Your response was submitted.",
+    "withdrawn": "Your response was withdrawn.",
+    "withdrawFailed": "Your response could not be withdrawn. Please try again.",
+    "visibilityChanged": "Who can see responses changed — please review and submit again.",
+    "errors": {
+      "generic": "Your response could not be submitted. Please try again.",
+      "FORM_RESPONSE_ALREADY_EXISTS": "You have already responded to this form.",
+      "FORM_CLOSED": "This form is closed and no longer accepts responses.",
+      "CALLOUT_NOT_PUBLISHED": "This form is not published yet.",
+      "FORM_ANSWER_REQUIRED": "Please answer all required questions.",
+      "FORM_ANSWER_TOO_LONG": "One of your answers is too long.",
+      "FORM_ANSWER_UNKNOWN_QUESTION": "The form changed while you were answering. Please review and submit again.",
+      "FORM_ANSWER_DUPLICATE_QUESTION": "The form changed while you were answering. Please review and submit again.",
+      "FORM_ANSWER_TYPE_MISMATCH": "The form changed while you were answering. Please review and submit again.",
+      "FORM_ANSWER_INVALID_OPTION": "One of the options you chose no longer exists. Please review and submit again.",
+      "FORM_ANSWER_SELECTION_COUNT": "Please choose a valid number of options."
+    },
+    "ownResponses": {
+      "heading": "Your responses",
+      "loadEarlier": "Show earlier responses",
+      "responseNumber": "Response {{number}}",
+      "submittedOn": "Submitted {{date}}",
+      "withdraw": "Withdraw",
+      "withdrawConfirm": {
+        "title": "Withdraw this response?",
+        "description": "Your response will be deleted. This cannot be undone.",
+        "confirm": "Withdraw"
+      }
+    },
+    "untitled": "Form",
+    "questionCount_one": "{{count}} question",
+    "questionCount_other": "{{count}} questions",
+    "expand": "Expand form",
+    "collapse": "Collapse form",
+    "cancel": "Cancel"
+  },
+  "formResponses": {
+    "viewAction": "View responses ({{count}})",
+    "dialogTitle": "Form responses",
+    "respondent": "Respondent",
+    "submitted": "Submitted",
+    "actions": "Actions",
+    "noAnswer": "No answer given",
+    "deletedUser": "Deleted user",
+    "removedQuestion": "removed question",
+    "loadMore": "Load more",
+    "loadingMore": "Loading…",
+    "empty": "No responses yet.",
+    "showing": "Showing {{shown}} of {{total}}",
+    "open": "Open response",
+    "delete": "Delete response",
+    "deleteConfirm": {
+      "title": "Delete this response?",
+      "description": "The response will be permanently deleted.",
+      "confirm": "Delete"
+    },
+    "singleTitle": "Response from {{name}}",
+    "deleteFailed": "The response could not be deleted. Please try again.",
+    "loadFailed": "The responses could not be loaded."
   }
 }

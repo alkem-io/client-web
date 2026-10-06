@@ -62,7 +62,8 @@
     "image": "Galerie",
     "poll": "Sondage",
     "contributors": "Contributeurs",
-    "spaces": "Sous-espaces"
+    "spaces": "Sous-espaces",
+    "form": "Formulaire"
   },
   "contributionType": {
     "post": "Publications",
