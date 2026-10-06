@@ -69,11 +69,14 @@ const QUESTION_TYPE_KEY = {
   MULTIPLE_CHOICE: 'formForm.type.MULTIPLE_CHOICE',
 } as const;
 
-/** Whether removing the question would discard typed input: a prompt, an explanation or an option label. */
+/**
+ * Whether removing the question would discard typed input: a prompt, an explanation or the label of a
+ * visible option. A text question keeps its options hidden in state, so they do not count.
+ */
 const questionHasContent = (question: FormQuestionValue) =>
   question.prompt.trim() !== '' ||
   question.explanation.trim() !== '' ||
-  question.options.some(option => option.label.trim() !== '');
+  (isChoiceKind(question.type) && question.options.some(option => option.label.trim() !== ''));
 
 /** One box of the builder: the Form header and each question share this look. */
 const formBuilderBoxClass = 'space-y-3 rounded-lg border bg-card p-4';
@@ -278,14 +281,14 @@ function SortableQuestionRow({
   const handleTypeChange = (next: FormQuestionKind) => {
     if (next === question.type) return;
     setTypeChanged(true);
+    // A text type keeps the options in state (hidden; the mapper drops them on save), so switching back to a
+    // choice type restores the typed labels and their option ids instead of discarding them unconfirmed.
     if (!isChoiceKind(next)) {
-      onChange({ ...question, type: next, options: [] });
+      onChange({ ...question, type: next });
       return;
     }
-    const options =
-      question.options.length >= FORM_OPTIONS_MIN
-        ? question.options
-        : Array.from({ length: FORM_OPTIONS_MIN }, () => createFormOption());
+    const missing = Math.max(0, FORM_OPTIONS_MIN - question.options.length);
+    const options = [...question.options, ...Array.from({ length: missing }, () => createFormOption())];
     onChange({ ...question, type: next, options });
   };
 

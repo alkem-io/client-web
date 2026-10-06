@@ -336,24 +336,41 @@ describe('FormQuestionsEditor', () => {
     expect(hint.parentElement).toHaveAttribute('aria-live', 'polite');
   });
 
-  test('switching a choice question to a text type clears its options; back to choice seeds two', async () => {
+  test('switching a choice question to a text type keeps its options; back to choice restores them', async () => {
     const onChange = vi.fn();
-    render(
-      <Harness
-        initial={[q('Pick', { type: 'MULTIPLE_CHOICE', options: [createFormOption('A'), createFormOption('B')] })]}
-        onChangeSpy={onChange}
-      />
-    );
+    const options = [createFormOption('A', 'opt-a'), createFormOption('B', 'opt-b')];
+    render(<Harness initial={[q('Pick', { type: 'MULTIPLE_CHOICE', options })]} onChangeSpy={onChange} />);
 
     await chooseType(0, 'formForm.type.SHORT_TEXT');
-    expect((onChange.mock.calls.at(-1)?.[0] as FormQuestionValue[])[0]).toMatchObject({
-      type: 'SHORT_TEXT',
-      options: [],
-    });
+    const asText = (onChange.mock.calls.at(-1)?.[0] as FormQuestionValue[])[0];
+    expect(asText.type).toBe('SHORT_TEXT');
+    expect(asText.options).toEqual(options);
+    expect(screen.queryByText('formForm.optionsHeading')).toBeNull();
+
+    await chooseType(0, 'formForm.type.SINGLE_CHOICE');
+    const back = (onChange.mock.calls.at(-1)?.[0] as FormQuestionValue[])[0];
+    expect(back.type).toBe('SINGLE_CHOICE');
+    expect(back.options).toEqual(options);
+  });
+
+  test('a text question switched to a choice type is seeded with two empty options', async () => {
+    const onChange = vi.fn();
+    render(<Harness initial={[q('Name')]} onChangeSpy={onChange} />);
 
     await chooseType(0, 'formForm.type.SINGLE_CHOICE');
     const next = (onChange.mock.calls.at(-1)?.[0] as FormQuestionValue[])[0];
     expect(next.type).toBe('SINGLE_CHOICE');
     expect(next.options.map(o => o.label)).toEqual(['', '']);
+  });
+
+  test('hidden options of a text question do not ask for confirmation on removal', async () => {
+    const onChange = vi.fn();
+    const hidden = q('', { type: 'SHORT_TEXT', options: [createFormOption('Yes'), createFormOption('No')] });
+    render(<Harness initial={[q('One'), hidden]} onChangeSpy={onChange} />);
+
+    await userEvent.click(screen.getAllByRole('button', { name: 'formForm.removeQuestion' })[1]);
+
+    expect(screen.queryByRole('alertdialog')).toBeNull();
+    expect((onChange.mock.calls.at(-1)?.[0] as FormQuestionValue[]).map(x => x.prompt)).toEqual(['One']);
   });
 });
