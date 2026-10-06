@@ -39,6 +39,7 @@ import {
   mapContributionToLinkItem,
 } from '../dataMappers/contributionDataMapper';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
+import { CalloutFramingFormConnector } from './CalloutFramingFormConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
 import { CalloutReactionsConnector } from './CalloutReactionsConnector';
 import { CalloutSettingsConnector } from './CalloutSettingsConnector';
@@ -492,6 +493,9 @@ export function CalloutDetailDialogConnector({
 
   const hasPoll = callout.framing.type === CalloutFramingType.Poll;
   const pollSlot = hasPoll ? <CalloutPollConnector callout={callout} /> : undefined;
+
+  const hasFormFraming = callout.framing.type === CalloutFramingType.Form && !!callout.framing.form;
+  const formFramingSlot = hasFormFraming ? <CalloutFramingFormConnector callout={callout} /> : undefined;
 
   const hasWhiteboardFraming = callout.framing.type === CalloutFramingType.Whiteboard && !!callout.framing.whiteboard;
   const whiteboardFramingSlot = hasWhiteboardFraming ? <WhiteboardFramingConnector callout={callout} /> : undefined;
@@ -989,6 +993,7 @@ export function CalloutDetailDialogConnector({
           commentsSlot={<p className="text-body text-muted-foreground">{t('comments.empty')}</p>}
           commentsEnabled={activeCommentsEnabled}
           pollSlot={pollSlot}
+          formFramingSlot={formFramingSlot}
           whiteboardFramingSlot={whiteboardFramingSlot}
           memoFramingSlot={memoFramingSlot}
           mediaGalleryFramingSlot={mediaGalleryFramingSlot}
@@ -1065,6 +1070,7 @@ export function CalloutDetailDialogConnector({
             contributionsCount={callout.contributions.length}
             selectedContributionSlot={selectedContributionSlot}
             pollSlot={pollSlot}
+            formFramingSlot={formFramingSlot}
             whiteboardFramingSlot={whiteboardFramingSlot}
             memoFramingSlot={memoFramingSlot}
             mediaGalleryFramingSlot={mediaGalleryFramingSlot}

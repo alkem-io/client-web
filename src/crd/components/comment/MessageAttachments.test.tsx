@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import { MessageAttachments } from './MessageAttachments';
 import type { MessageAttachment } from './types';
@@ -29,6 +30,14 @@ const file: MessageAttachment = {
   size: 2_500_000,
 };
 
+const video: MessageAttachment = {
+  id: 'att-video',
+  url: 'https://alkem.io/storage/document/video-1',
+  displayName: 'clip.mp4',
+  mimeType: 'video/mp4',
+  size: 5_000_000,
+};
+
 describe('MessageAttachments', () => {
   test('renders nothing when there are no attachments', () => {
     const { container } = render(<MessageAttachments attachments={[]} />);
@@ -55,6 +64,115 @@ describe('MessageAttachments', () => {
     // 2_500_000 bytes → ~2.4 MB (base-1024 steps, conventional MB/KB labels — the
     // same convention `comments.attachments.errorTooLarge` renders).
     expect(screen.getByText('2.4 MB')).toBeInTheDocument();
+  });
+
+  test('provides an independent image download without following the image-opening link', async () => {
+    const user = userEvent.setup();
+    render(<MessageAttachments attachments={[image]} />);
+    const img = screen.getByRole('img');
+    const openLink = img.closest('a');
+    const download = screen.getByRole('link', { name: `messageAttachments.download:${image.displayName}` });
+    const open = vi.fn();
+    openLink?.addEventListener('click', open);
+    // Prevent jsdom navigation while observing which link receives activation.
+    download.addEventListener('click', event => event.preventDefault());
+
+    expect(download).toHaveAttribute('href', image.url);
+    expect(download).toHaveAttribute('download', image.displayName);
+    expect(download).not.toHaveAttribute('target');
+    expect(openLink).not.toContainElement(download);
+    await user.tab();
+    expect(openLink).toHaveFocus();
+    await user.tab();
+    expect(download).toHaveFocus();
+    await user.keyboard('{Enter}');
+    expect(open).not.toHaveBeenCalled();
+  });
+
+  test('renders video with native inline controls and does not preload or autoplay', () => {
+    render(<MessageAttachments attachments={[video]} />);
+    const player = screen.getByLabelText(`messageAttachments.videoLabel:${video.displayName}`);
+    expect(player.tagName).toBe('VIDEO');
+    expect(player).toHaveAttribute('src', video.url);
+    expect(player).toHaveAttribute('controls');
+    expect(player).toHaveAttribute('playsinline');
+    expect(player).toHaveAttribute('preload', 'none');
+    expect(player).not.toHaveAttribute('autoplay');
+    expect(player.closest('a')).toBeNull();
+
+    const download = screen.getByRole('link', { name: `messageAttachments.download:${video.displayName}` });
+    expect(download).toHaveAttribute('href', video.url);
+    expect(download).toHaveAttribute('download', video.displayName);
+    expect(player).not.toContainElement(download);
+  });
+
+  test('video metadata without a picture falls back to the existing download chip', () => {
+    const unsupported = { ...video, displayName: 'unsupported.mov', mimeType: 'video/quicktime' };
+    render(<MessageAttachments attachments={[unsupported]} />);
+    const player = screen.getByLabelText(`messageAttachments.videoLabel:${unsupported.displayName}`);
+    Object.defineProperty(player, 'videoWidth', { value: 0 });
+
+    fireEvent.loadedMetadata(player);
+
+    expect(screen.queryByLabelText(`messageAttachments.videoLabel:${unsupported.displayName}`)).not.toBeInTheDocument();
+    expect(screen.getByText('messageAttachments.videoUnavailableHint')).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: `messageAttachments.download:${unsupported.displayName}` })
+    ).toHaveAttribute('download', unsupported.displayName);
+  });
+
+  test('video metadata with a picture keeps the native player', () => {
+    render(<MessageAttachments attachments={[video]} />);
+    const player = screen.getByLabelText(`messageAttachments.videoLabel:${video.displayName}`);
+    Object.defineProperty(player, 'videoWidth', { value: 640 });
+
+    fireEvent.loadedMetadata(player);
+
+    expect(player).toBeInTheDocument();
+    expect(screen.queryByText('messageAttachments.videoUnavailableHint')).not.toBeInTheDocument();
+  });
+
+  test('video download activation does not activate playback', async () => {
+    const user = userEvent.setup();
+    render(<MessageAttachments attachments={[video]} />);
+    const player = screen.getByLabelText(`messageAttachments.videoLabel:${video.displayName}`);
+    const play = vi.fn();
+    player.addEventListener('click', play);
+    const download = screen.getByRole('link', { name: `messageAttachments.download:${video.displayName}` });
+    download.addEventListener('click', event => event.preventDefault());
+    await user.click(download);
+    expect(play).not.toHaveBeenCalled();
+  });
+
+  test('an unsupported or broken video falls back to a download and retries a fresh URL', () => {
+    const { rerender } = render(<MessageAttachments attachments={[video]} />);
+    fireEvent.error(screen.getByLabelText(`messageAttachments.videoLabel:${video.displayName}`));
+    expect(screen.queryByLabelText(`messageAttachments.videoLabel:${video.displayName}`)).not.toBeInTheDocument();
+    expect(screen.getByText('messageAttachments.videoUnavailableHint')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: `messageAttachments.download:${video.displayName}` })).toHaveAttribute(
+      'href',
+      video.url
+    );
+
+    const rehomed = { ...video, url: `${video.url}-rehomed` };
+    rerender(<MessageAttachments attachments={[rehomed]} />);
+    expect(screen.getByLabelText(`messageAttachments.videoLabel:${video.displayName}`)).toHaveAttribute(
+      'src',
+      rehomed.url
+    );
+    expect(screen.queryByText('messageAttachments.videoUnavailableHint')).not.toBeInTheDocument();
+  });
+
+  test.each([
+    undefined,
+    'javascript:alert(1)',
+  ])('does not offer playback or download for unavailable video URL %s', url => {
+    render(<MessageAttachments attachments={[{ ...video, url }]} />);
+    expect(screen.queryByLabelText(`messageAttachments.videoLabel:${video.displayName}`)).not.toBeInTheDocument();
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
+    expect(screen.getByText(video.displayName)).toBeInTheDocument();
+    expect(screen.getByText('messageAttachments.unavailableNoDownload')).toBeInTheDocument();
+    expect(screen.queryByText('messageAttachments.videoUnavailableHint')).not.toBeInTheDocument();
   });
 
   test('renders a non-http(s) URL as a non-interactive unavailable chip', () => {

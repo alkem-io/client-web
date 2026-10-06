@@ -316,6 +316,18 @@ describe('notification types kept on the generic payload fallback', () => {
     expect(href).toBe('/my-space/callout');
   });
 
+  it('sends a form response to the callout that holds the form', () => {
+    const href = hrefOf(
+      notification(NotificationEvent.SpaceAdminCollaborationCalloutFormResponse, {
+        type: NotificationEventPayload.SpaceCollaborationCallout,
+        space: spacePayload(),
+        callout: { framing: { profile: { displayName: 'Intake form', url: '/my-space/collaboration/intake-form' } } },
+      })
+    );
+
+    expect(href).toBe('/my-space/collaboration/intake-form');
+  });
+
   it('keeps space-scoped notifications with no better destination on the space home page', () => {
     const update = hrefOf(
       notification(NotificationEvent.SpaceCommunicationUpdate, {
@@ -636,5 +648,31 @@ describe('organization-associate notifications (062)', () => {
       dataNoWithheld.description as ReactElement<{ values: Record<string, string | undefined> }>
     ).props.values;
     expect(valuesNoWithheld.withheld).toBe('');
+  });
+});
+
+describe('form response notification rendering', () => {
+  const formResponse = () =>
+    notification(NotificationEvent.SpaceAdminCollaborationCalloutFormResponse, {
+      type: NotificationEventPayload.SpaceCollaborationCallout,
+      space: spacePayload(),
+      callout: { framing: { profile: { displayName: 'Intake form', url: '/my-space/collaboration/intake-form' } } },
+    });
+
+  it('resolves the subject and description under the new event type keys', () => {
+    const item = mapNotificationToItemData(formResponse(), t, NotificationEventInAppState.Unread);
+
+    expect((item.title as ReactElement<{ i18nKey: string }>).props.i18nKey).toBe(
+      'components.inAppNotifications.type.SPACE_ADMIN_COLLABORATION_CALLOUT_FORM_RESPONSE.subject'
+    );
+    // The identity translator echoes the key, so a present description key renders an element.
+    expect((item.description as ReactElement<{ i18nKey: string }>).props.i18nKey).toBe(
+      'components.inAppNotifications.type.SPACE_ADMIN_COLLABORATION_CALLOUT_FORM_RESPONSE.description'
+    );
+  });
+
+  it('carries no comment text: the notification never surfaces an answer', () => {
+    const item = mapNotificationToItemData(formResponse(), t, NotificationEventInAppState.Unread);
+    expect(item.comment).toBeUndefined();
   });
 });

@@ -70,6 +70,15 @@ export function CalloutCommentsConnector({
       includePost: true,
     },
     skip: !contributionId || Boolean(roomData) || !effectiveInView,
+    // Revalidate every time this connector starts observing a response's
+    // thread. The live room subscription only carries messages published while
+    // it is active, and it is torn down with the dialog — so a comment posted
+    // between two opens of the same response exists nowhere in the client.
+    // Under Apollo's default `cache-first` the second open is served entirely
+    // from the normalized cache, no request goes out, and the thread silently
+    // omits that comment until a full page reload. `cache-and-network` keeps
+    // the cached messages on screen (no empty flash) while it refreshes them.
+    fetchPolicy: 'cache-and-network',
   });
 
   const room = roomData ?? data?.lookup.contribution?.post?.comments;

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { NotificationSettings } from '@/domain/community/userAdmin/tabs/model/NotificationSettings.model';
+import { buildNotificationUpdate } from '../notificationPayloadBuilders';
 import {
   type ContributorSettingsTranslator,
   mapUserNotifications,
@@ -256,6 +257,55 @@ describe('mapUserNotifications — organization-associate rows (062, US6)', () =
     expect(orgGroup?.rows.find(r => r.property === 'adminAssociateJoined')?.channels).toEqual({
       email: false,
       inApp: false,
+      push: true,
+    });
+  });
+});
+
+describe('mapUserNotifications — spaceAdmin.collaborationCalloutFormResponseReceived row', () => {
+  const spaceAdminPrivileges: NotificationPrivileges = { ...noPrivileges, isSpaceAdmin: true };
+  const server: NotificationSettings = {
+    spaceAdmin: {
+      collaborationCalloutContributionCreated: { email: true, inApp: true, push: true },
+      collaborationCalloutFormResponseReceived: { email: true, inApp: false, push: true },
+    },
+  };
+  const rowsOf = (overrides = new Map<string, boolean>()) => {
+    const group = mapUserNotifications(server, overrides, spaceAdminPrivileges, t).groups.find(
+      g => g.groupId === 'spaceAdmin'
+    );
+    if (!group) throw new Error('spaceAdmin group missing');
+    return group.rows;
+  };
+
+  it('is exposed right after the contribution-created row, with its own label and the three channels bound', () => {
+    const rows = rowsOf();
+    const properties = rows.map(row => row.property);
+    expect(properties.indexOf('collaborationCalloutFormResponseReceived')).toBe(
+      properties.indexOf('collaborationCalloutContributionCreated') + 1
+    );
+    const row = rows.find(r => r.property === 'collaborationCalloutFormResponseReceived');
+    expect(row?.label).toBe('user.notifications.rows.spaceAdmin.collaborationCalloutFormResponseReceived');
+    expect(row?.channels).toEqual({ email: true, inApp: false, push: true });
+  });
+
+  it('applies an optimistic override on the row', () => {
+    const rows = rowsOf(new Map([['spaceAdmin::collaborationCalloutFormResponseReceived::email', false]]));
+    expect(rows.find(r => r.property === 'collaborationCalloutFormResponseReceived')?.channels.email).toBe(false);
+  });
+
+  it('a toggle carries the new key in the update payload, flipping only the toggled channel', () => {
+    const payload = buildNotificationUpdate(
+      server,
+      'spaceAdmin',
+      'collaborationCalloutFormResponseReceived',
+      'inApp',
+      true
+    ) as { space: { admin: Record<string, unknown> } };
+
+    expect(payload.space.admin.collaborationCalloutFormResponseReceived).toEqual({
+      email: true,
+      inApp: true,
       push: true,
     });
   });
