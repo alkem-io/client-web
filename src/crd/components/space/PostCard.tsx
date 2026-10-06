@@ -245,6 +245,13 @@ export function PostCard({
   // goes with it; with nothing else to show, the footer row disappears too, so the card
   // looks exactly as it did before reactions existed.
   const showReactions = post.commentsEnabled !== false;
+  // The footer is hidden when comments are disabled AND there are no existing messages — mirrors the
+  // MUI behavior. When messages exist, the thread stays visible (read-only).
+  const showFooter = post.commentsEnabled !== false || (post.commentCount ?? 0) > 0;
+  // `children` arrives as an array of framing slots (poll/form/contributors/spaces previews) that are
+  // often all null — a bare `children &&` check is always truthy then. Children.toArray strips
+  // null/undefined/booleans.
+  const hasFramingSlots = Children.toArray(children).length > 0;
 
   const handleCommentsOpenChange = (open: boolean) => {
     setIsCommentsOpen(open);
@@ -263,6 +270,8 @@ export function PostCard({
       className={cn(
         'group hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 border-border/60',
         post.isDraft && 'border-l-4 border-l-amber-400',
+        // Without the footer the last section would sit on the card's bottom border.
+        !showFooter && 'pb-6',
         className
       )}
     >
@@ -565,24 +574,27 @@ export function PostCard({
             className="mt-4"
           />
         )}
+
+        {/* Contribution previews (integration layer) always follow every framing. Without framing
+            slots they close this body, spaced by their own header's `mt-4`. */}
+        {!hasFramingSlots && contributionsPreview}
       </CardContent>
 
-      {/* `children` arrives as an array of framing slots (poll/form/contributors/spaces previews) that
-          are often all null — a bare `children &&` check is always truthy then. Children.toArray strips
-          null/undefined/booleans, so the padded wrapper only renders when something is visible. */}
-      {Children.toArray(children).length > 0 && <div className="px-6 pb-4">{children}</div>}
+      {/* Framing slots, then the contribution previews in the SAME wrapper — a separate Card child would
+          add the Card's `gap-6` on top of the preview header's `mt-4`. The padded wrapper only renders
+          when a slot is visible. */}
+      {hasFramingSlots && (
+        <div className={cn('px-6', showFooter && 'pb-4')}>
+          {children}
+          {contributionsPreview}
+        </div>
+      )}
 
-      {/* Contribution previews — rendered by integration layer, after every framing (the CardContent
-          framings above and the slot framings in `children`) and before the comments footer.
-          `empty:hidden` drops the wrapper when the connector renders nothing. */}
-      {contributionsPreview && <div className="px-6 empty:hidden">{contributionsPreview}</div>}
-
-      {/* Footer is hidden entirely when comments are disabled AND there are no existing messages —
-          mirrors the MUI behavior. When messages exist, the thread stays visible (read-only via
-          consumer-gated `commentInputSlot`) even after the admin disables further commenting.
+      {/* Footer (see `showFooter`): when messages exist, the thread stays visible read-only via the
+          consumer-gated `commentInputSlot` even after the admin disables further commenting.
           The reactions widget lives here too, bottom-right of the footer — but only while
           commenting is enabled, so a comments-disabled card never keeps a reactions-only row. */}
-      {(post.commentsEnabled !== false || (post.commentCount ?? 0) > 0) &&
+      {showFooter &&
         (hasCollapsibleComments ? (
           <CardFooter className="!p-0 flex-col items-stretch gap-0 border-t bg-muted/5">
             <Collapsible open={isCommentsOpen} onOpenChange={handleCommentsOpenChange}>

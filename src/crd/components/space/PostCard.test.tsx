@@ -268,4 +268,41 @@ describe('PostCard section order', () => {
     expect(follows(framingSlot, contributions)).toBe(true);
     expect(follows(contributions, footer)).toBe(true);
   });
+
+  // Spacing guards: a separate Card child adds the Card's `gap-6` on top of the preview header's `mt-4`.
+  it('without framing slots, contributions close the card body (no extra Card gap)', () => {
+    const { container } = render(
+      <PostCard post={{ ...basePost, type: 'whiteboard' }} contributionsPreview={<div>contributions-preview</div>} />
+    );
+    const body = container.querySelector('[data-slot="card-content"]');
+    expect(body?.contains(screen.getByText('contributions-preview'))).toBe(true);
+  });
+
+  it('with framing slots, contributions share the slot wrapper', () => {
+    render(
+      <PostCard post={basePost} contributionsPreview={<div>contributions-preview</div>}>
+        <div>poll-framing</div>
+      </PostCard>
+    );
+    expect(screen.getByText('contributions-preview').parentElement).toBe(
+      screen.getByText('poll-framing').parentElement
+    );
+  });
+
+  it('pads the card bottom only when the footer is hidden', () => {
+    const { container, rerender } = render(
+      <PostCard post={{ ...basePost, commentsEnabled: false, commentCount: 0 }} contributionsPreview={<div>c</div>} />
+    );
+    const card = () => container.querySelector('[data-slot="card"]');
+    expect(container.querySelector('[data-slot="card-footer"]')).toBeNull();
+    expect(card()).toHaveClass('pb-6');
+
+    rerender(
+      <I18nextProvider i18n={i18n}>
+        <PostCard post={{ ...basePost, commentsEnabled: true }} contributionsPreview={<div>c</div>} />
+      </I18nextProvider>
+    );
+    expect(container.querySelector('[data-slot="card-footer"]')).not.toBeNull();
+    expect(card()).not.toHaveClass('pb-6');
+  });
 });
