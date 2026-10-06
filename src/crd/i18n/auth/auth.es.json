@@ -9,6 +9,12 @@
     "signUp": "Regístrate",
     "preparing": "Preparando inicio de sesión seguro…"
   },
+  "appSignIn": {
+    "required": "Inicia sesión para continuar.",
+    "cancelled": "Se canceló el inicio de sesión.",
+    "failed": "No se pudo completar el inicio de sesión. Inténtalo de nuevo.",
+    "action": "Iniciar sesión"
+  },
   "signUp": {
     "title": "Regístrate",
     "haveAccount": "¿Ya tienes cuenta?",

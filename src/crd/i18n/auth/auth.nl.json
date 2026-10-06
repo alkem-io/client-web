@@ -9,6 +9,12 @@
     "signUp": "Registreren",
     "preparing": "Veilige aanmelding voorbereiden…"
   },
+  "appSignIn": {
+    "required": "Log in om verder te gaan.",
+    "cancelled": "Het inloggen is geannuleerd.",
+    "failed": "Het inloggen kon niet worden voltooid. Probeer het opnieuw.",
+    "action": "Inloggen"
+  },
   "signUp": {
     "title": "Registreren",
     "haveAccount": "Heb je al een account?",
