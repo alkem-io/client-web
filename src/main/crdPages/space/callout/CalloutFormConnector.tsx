@@ -231,8 +231,8 @@ function CalloutFormConnectorInner({
   // (read further below). `spaceContextLoading` is the entitlements query flag.
   const { space, entitlements, permissions, loading: spaceContextLoading } = useSpace();
   const roleSetId = space.about.membership?.roleSetID;
-  const { spaceId } = useUrlResolver();
-  const { subspace, permissions: subspacePermissions } = useSubSpace();
+  const { spaceId, parentSpaceId } = useUrlResolver();
+  const { subspace, permissions: subspacePermissions, loading: subspaceContextLoading } = useSubSpace();
 
   // The "Contributors" (008) and "Subspaces" (013) framing chips are admin-only
   // (FR-004a) and offered only in space/community (collaboration) callout contexts
@@ -248,6 +248,11 @@ function CalloutFormConnectorInner({
   // page the space context is the level-zero space, whose UPDATE privilege says
   // nothing about the subspace admin, so the subspace's own privilege decides.
   const isSpaceAdmin = subspace.id ? subspacePermissions.canUpdate : permissions.canUpdate;
+  // Both permission contexts start at `canUpdate: false` and flip when their query resolves, so the
+  // admin-gated allow-list is only trustworthy once they have loaded. The subspace context stays
+  // in its loading default on a level-zero page (it has no subspace to load), so it counts only
+  // when the route actually resolves to a subspace (it has a parent space).
+  const permissionsLoaded = !spaceContextLoading && !(parentSpaceId && subspaceContextLoading);
   const framingAllowList: FramingChipId[] | undefined = (() => {
     if (mode !== 'create') return undefined; // edit mode: never hide an existing type
     if (restrictions?.allowedFramingChips) return restrictions.allowedFramingChips;
@@ -452,6 +457,10 @@ function CalloutFormConnectorInner({
       return;
     }
     if (mode !== 'create' || !defaultTemplateId) return;
+    // The clamp below depends on the admin-gated framing allow-list; loading the template before the
+    // permissions resolve would clear an admin's default Form/Contributors/Subspaces template to
+    // None, and the guard below would then keep it from being re-applied.
+    if (!permissionsLoaded) return;
     if (prefilledDefaultTemplateIdRef.current === defaultTemplateId) return;
     prefilledDefaultTemplateIdRef.current = defaultTemplateId;
     void loadCalloutTemplateFormValues(getTemplateContent, defaultTemplateId).then(values => {
@@ -461,7 +470,7 @@ function CalloutFormConnectorInner({
       // reintroduce a disallowed framing / response type or re-enable comments.
       prefill(clampFormValuesToRestrictions(values, pickedTemplateRestrictions));
     });
-  }, [open, mode, defaultTemplateId, getTemplateContent, prefill, pickedTemplateRestrictions]);
+  }, [open, mode, defaultTemplateId, permissionsLoaded, getTemplateContent, prefill, pickedTemplateRestrictions]);
 
   // --- Collabora import staging -----------------------------------------
   const setCollaboraImportFile = (file: File | null) => {
