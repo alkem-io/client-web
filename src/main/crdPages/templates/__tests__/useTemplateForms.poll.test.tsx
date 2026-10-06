@@ -168,4 +168,47 @@ describe('useTemplateForms — editing a Poll template', () => {
     await waitFor(() => expect(harness.notify).toHaveBeenCalledWith('callout.pollOptionsSaveFailed', 'error'));
     expect(screen.getByTestId('dialog-open')).toHaveTextContent('true');
   });
+
+  it('retries after a failed reorder without re-adding or re-removing what already succeeded', async () => {
+    harness.reorderPollOptions.mockRejectedValueOnce(new Error('reorder failed'));
+    render(<Harness />);
+    fireEvent.click(screen.getByRole('button', { name: 'Open poll template' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Edit options' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => expect(harness.notify).toHaveBeenCalledWith('callout.pollOptionsSaveFailed', 'error'));
+    expect(screen.getByTestId('dialog-open')).toHaveTextContent('true');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await waitFor(() => expect(screen.getByTestId('dialog-open')).toHaveTextContent('false'));
+
+    expect(harness.addPollOption).toHaveBeenCalledOnce();
+    expect(harness.removePollOption).toHaveBeenCalledOnce();
+    expect(harness.updatePollOption).toHaveBeenCalledOnce();
+    expect(harness.reorderPollOptions).toHaveBeenCalledTimes(2);
+    expect(harness.reorderPollOptions).toHaveBeenLastCalledWith({
+      variables: { optionData: { pollID: 'poll-1', optionIDs: ['o-d', 'o-a', 'o-c'] } },
+    });
+  });
+
+  it('retries after a failed rename, resuming from the rename', async () => {
+    harness.updatePollOption.mockRejectedValueOnce(new Error('update failed'));
+    render(<Harness />);
+    fireEvent.click(screen.getByRole('button', { name: 'Open poll template' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Edit options' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => expect(harness.notify).toHaveBeenCalledWith('callout.pollOptionsSaveFailed', 'error'));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await waitFor(() => expect(screen.getByTestId('dialog-open')).toHaveTextContent('false'));
+
+    expect(harness.addPollOption).toHaveBeenCalledOnce();
+    expect(harness.removePollOption).toHaveBeenCalledOnce();
+    expect(harness.updatePollOption).toHaveBeenCalledTimes(2);
+    expect(harness.reorderPollOptions).toHaveBeenCalledOnce();
+    expect(harness.reorderPollOptions).toHaveBeenCalledWith({
+      variables: { optionData: { pollID: 'poll-1', optionIDs: ['o-d', 'o-a', 'o-c'] } },
+    });
+  });
 });

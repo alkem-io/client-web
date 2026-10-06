@@ -92,21 +92,35 @@ export type PollOptionMutations = Pick<
 >;
 
 /**
+ * The poll as the server holds it after the mutations applied so far, plus the form options with the
+ * server ids of newly added options stamped in. Diffing `after` against `before` yields exactly the
+ * work that is still outstanding, so a retry after a partial failure resumes instead of repeating.
+ */
+export type PollOptionDiffProgress = { before: PollOptionBefore[]; after: PollOptionValue[] };
+
+/**
  * Persists the option edits of an existing poll through the dedicated poll-option
  * mutations, in the `diffPollOptions` order: adds → removes → updates → reorder
  * (added options are slotted into the reorder by the ids the server returned).
  * Shared by the live Post editor and the callout-template editor. Throws on the
- * first failing mutation; the caller decides how to surface it.
+ * first failing mutation; the caller decides how to surface it. `onProgress` fires
+ * after every mutation that succeeded, so a caller that retries can pick up from
+ * the poll's current state rather than the one it started with.
  */
 export const applyPollOptionDiff = async (
   mutations: PollOptionMutations,
   before: PollOptionBefore[],
-  after: PollOptionValue[]
+  after: PollOptionValue[],
+  onProgress?: (progress: PollOptionDiffProgress) => void
 ): Promise<void> => {
   const diff = diffPollOptions(before, after);
   if (!diff.toAdd.length && !diff.toRemove.length && !diff.toUpdate.length && !diff.orderedIds.length) {
     return;
   }
+
+  let current = before;
+  let desired = after;
+  const report = () => onProgress?.({ before: current, after: desired });
 
   // 1. Adds (before removes — never drop below the server's min).
   const addedIdsByIndex = new Map<number, string>();
@@ -119,13 +133,24 @@ export const applyPollOptionDiff = async (
       if (newOpt) {
         addedIdsByIndex.set(add.index, newOpt.id);
         knownIds.add(newOpt.id);
+        current = [...current, { id: newOpt.id, text: add.text }];
+        desired = desired.map((opt, index) => (index === add.index ? { ...opt, id: newOpt.id } : opt));
+        report();
       }
     }
   }
   // 2. Removes.
-  for (const id of diff.toRemove) await mutations.removeOption(id);
+  for (const id of diff.toRemove) {
+    await mutations.removeOption(id);
+    current = current.filter(o => o.id !== id);
+    report();
+  }
   // 3. Updates.
-  for (const upd of diff.toUpdate) await mutations.updateOption(upd.id, upd.text);
+  for (const upd of diff.toUpdate) {
+    await mutations.updateOption(upd.id, upd.text);
+    current = current.map(o => (o.id === upd.id ? { ...o, text: upd.text } : o));
+    report();
+  }
   // 4. Reorder — substitute sentinels with their resolved server ids.
   if (diff.orderedIds.length > 1) {
     const resolved = diff.orderedIds
