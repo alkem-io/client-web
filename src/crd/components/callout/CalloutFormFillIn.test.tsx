@@ -38,6 +38,8 @@ const renderFillIn = (overrides: Partial<React.ComponentProps<typeof CalloutForm
   render(
     <CalloutFormFillIn
       questions={questions}
+      visibility="ADMINS"
+      spaceName="Garden"
       state="OPEN"
       published={true}
       canSubmit={true}
@@ -145,6 +147,8 @@ describe('CalloutFormFillIn', () => {
     const user = userEvent.setup();
     const props = {
       questions,
+      visibility: 'ADMINS' as const,
+      spaceName: 'Garden',
       state: 'OPEN' as const,
       published: true,
       canSubmit: true,
@@ -219,5 +223,20 @@ describe('CalloutFormFillIn', () => {
     await user.click(name);
     await user.paste('x'.repeat(420));
     expect(screen.getByText('420/512')).toBeInTheDocument();
+  });
+
+  test('the footer row holds the visibility notice next to the buttons', () => {
+    renderFillIn();
+    const submit = screen.getByRole('button', { name: 'formFillIn.submit' });
+    expect(submit.closest('div')?.parentElement).toContainElement(screen.getByText('formFillIn.noticeAdmins'));
+  });
+
+  test('a closed form shows only the closed message in the footer row', () => {
+    renderFillIn({ state: 'CLOSED', canSubmit: false });
+    const closed = screen.getByText('formFillIn.closedNotice');
+    expect(closed).toHaveClass('ml-auto');
+    expect(screen.queryByText('formFillIn.noticeAdmins')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'formFillIn.submit' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'formFillIn.cancel' })).toBeNull();
   });
 });

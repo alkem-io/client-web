@@ -47,8 +47,8 @@ createRoot(document.getElementById('root')!).render(
   ) :
   <div className="crd-root min-h-screen bg-background p-8">
     <div id="callout" className="mx-auto w-[768px] rounded-xl border border-border bg-card p-6">
-      <CalloutFormBox title="Q4 Planning — Tell Us Where to Focus" questionCount={questions.length} visibility="ADMINS" spaceName="Q4 Space" defaultCollapsed={location.search.includes('collapsed')}>
-        <CalloutFormFillIn questions={questions} state="OPEN" published={true} canSubmit={true} submitting={false} onSubmit={() => {}} />
+      <CalloutFormBox title="Q4 Planning — Tell Us Where to Focus" questionCount={questions.length} defaultCollapsed={location.search.includes('collapsed')}>
+        <CalloutFormFillIn questions={questions} visibility="ADMINS" spaceName="Q4 Space" state={location.search.includes("closed") ? "CLOSED" : "OPEN"} published={true} canSubmit={!location.search.includes("closed")} submitting={false} onSubmit={() => {}} />
       </CalloutFormBox>
     </div>
   </div>

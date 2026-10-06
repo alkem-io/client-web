@@ -235,8 +235,6 @@ function CalloutFramingFormConnectorInner({
       title={form.title ?? undefined}
       description={form.description ?? undefined}
       questionCount={questions.length}
-      visibility={visibility}
-      spaceName={spaceName}
       status={!published ? 'DRAFT' : isOpen ? undefined : 'CLOSED'}
       defaultCollapsed={form.settings.defaultCollapsed}
       onViewResponses={responses.canReadAll ? () => setReviewOpen(true) : undefined}
@@ -258,6 +256,8 @@ function CalloutFramingFormConnectorInner({
         <CalloutFormFillIn
           key={`fill-in-${fillInKey}`}
           questions={questions}
+          visibility={visibility}
+          spaceName={spaceName}
           state={isOpen ? 'OPEN' : 'CLOSED'}
           published={published}
           canSubmit={canSubmit}
