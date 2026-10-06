@@ -31,6 +31,8 @@ export const CalloutFormErrorCode = {
   FORM_FRAMING_NOT_ALLOWED: 'FORM_FRAMING_NOT_ALLOWED',
   FORM_FRAMING_FIXED_KIND: 'FORM_FRAMING_FIXED_KIND',
   FORM_TRANSFER_NOT_ALLOWED: 'FORM_TRANSFER_NOT_ALLOWED',
+  // A template Form is a definition only; the client never offers a fill-in on a template.
+  FORM_TEMPLATE_NOT_RESPONDABLE: 'FORM_TEMPLATE_NOT_RESPONDABLE',
 } as const;
 
 export type CalloutFormErrorCodeValue = (typeof CalloutFormErrorCode)[keyof typeof CalloutFormErrorCode];

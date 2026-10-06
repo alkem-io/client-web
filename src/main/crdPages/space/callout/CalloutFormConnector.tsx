@@ -93,7 +93,11 @@ import { formQuestionErrors, referenceRowErrors, useCrdCalloutForm } from '../ho
 import { useCrdSpaceContributors } from '../hooks/useCrdSpaceContributors';
 import { formHeaderFromServer, formQuestionsFromServer, formSettingsFromServer } from './calloutFormDefinitionMapper';
 import { mapFormToCalloutCreationInput, mapFormToCalloutUpdateInput } from './calloutFormMapper';
-import { type CrdCalloutRestrictions, clampFormValuesToRestrictions } from './calloutRestrictions';
+import {
+  type CrdCalloutRestrictions,
+  clampFormValuesToRestrictions,
+  restrictionsForPickedTemplate,
+} from './calloutRestrictions';
 import { healContributorCollection } from './contributorCollectionMapper';
 import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
 import { type FormEditContext, FramingEditorConnector } from './FramingEditorConnector';
@@ -253,6 +257,9 @@ function CalloutFormConnectorInner({
       ? DEFAULT_FRAMING_CHIPS
       : DEFAULT_FRAMING_CHIPS.filter(chip => !ADMIN_ONLY_FRAMING_CHIPS.includes(chip));
   })();
+  // A picked or default template is clamped to what this viewer is offered, so a
+  // non-admin never receives an admin-only framing (a Form) from a template.
+  const pickedTemplateRestrictions = restrictionsForPickedTemplate(restrictions, framingAllowList);
   const hideFramingZone = mode === 'create' && Array.isArray(framingAllowList) && framingAllowList.length === 0;
   const responseAllowList = mode === 'create' ? restrictions?.allowedResponseChips : undefined;
   // Comment-visibility and rich-media restrictions are create-only too — in edit
@@ -453,9 +460,9 @@ function CalloutFormConnectorInner({
       if (!values || prefilledDefaultTemplateIdRef.current !== defaultTemplateId) return;
       // Clamp the template to the active restrictions so a default template can't
       // reintroduce a disallowed framing / response type or re-enable comments.
-      prefill(clampFormValuesToRestrictions(values, restrictions));
+      prefill(clampFormValuesToRestrictions(values, pickedTemplateRestrictions));
     });
-  }, [open, mode, defaultTemplateId, getTemplateContent, prefill, restrictions]);
+  }, [open, mode, defaultTemplateId, getTemplateContent, prefill, pickedTemplateRestrictions]);
 
   // --- Collabora import staging -----------------------------------------
   const setCollaboraImportFile = (file: File | null) => {
@@ -1310,7 +1317,7 @@ function CalloutFormConnectorInner({
           open={importTemplateOpen}
           onOpenChange={setImportTemplateOpen}
           isFormDirty={dirty}
-          onTemplateSelected={values => prefill(clampFormValuesToRestrictions(values, restrictions))}
+          onTemplateSelected={values => prefill(clampFormValuesToRestrictions(values, pickedTemplateRestrictions))}
         />
       )}
     </>

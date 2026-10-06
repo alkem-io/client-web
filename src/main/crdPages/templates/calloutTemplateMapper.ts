@@ -25,6 +25,11 @@ import { TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard'
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import {
+  formHeaderFromServer,
+  formQuestionsFromServer,
+  formSettingsFromServer,
+} from '@/main/crdPages/space/callout/calloutFormDefinitionMapper';
+import {
   allowedActorsFromServer,
   mapFormToCalloutCreationInput,
   mapFormToCalloutUpdateInput,
@@ -185,6 +190,16 @@ export function calloutTemplateContentToFormValues(
     pollAllowCustomOptions: framing.poll?.settings.allowContributorsAddOptions ?? false,
     pollHideResultsUntilVoted: framing.poll?.settings.resultsVisibility === PollResultsVisibility.Hidden,
     pollShowVoterAvatars: framing.poll?.settings.resultsDetail !== PollResultsDetail.Count,
+    // A Form template carries its definition only (title, description, questions, settings). The
+    // question/option ids are kept for editing the template; the create mapper drops them, so a Post
+    // started from the template mints its own.
+    ...(framing.form
+      ? {
+          ...formHeaderFromServer(framing.form),
+          formQuestions: formQuestionsFromServer(framing.form),
+          formSettings: formSettingsFromServer(framing.form.settings),
+        }
+      : {}),
     // #29: live whiteboard content is WS-only; the server copies it into the template on create.
     whiteboardContent: EmptyWhiteboardString,
     whiteboardPreviewImages: [],
@@ -226,6 +241,7 @@ export function calloutTemplateContentToFormValues(
       framingProfileTagsetId: findDefaultTagset(framing.profile.tagsets)?.id,
       framingLinkId: framing.link?.id,
       pollId: framing.poll?.id,
+      formId: framing.form?.id,
       memoId: framing.memo?.id,
       whiteboardId: framing.whiteboard?.id,
       mediaGalleryId: framing.mediaGallery?.id,
