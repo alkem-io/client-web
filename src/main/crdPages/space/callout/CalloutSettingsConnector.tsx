@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
   useCalloutContentLazyQuery,
   useCalloutContributionsSortOrderQuery,
+  useCalloutFormResponsesQuery,
   useSpaceTemplatesManagerQuery,
   useUpdateContributionsSortOrderMutation,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -107,6 +108,17 @@ export function CalloutSettingsConnector({
     fetchPolicy: 'cache-and-network',
   });
   const [updateContributionsSortOrder, { loading: updatingSort }] = useUpdateContributionsSortOrderMutation();
+
+  // Delete summary of a Form callout: the response total, fetched only while the dialog is open. It is
+  // shown only when the viewer reads every response; otherwise the count would be their own rows alone.
+  const formId = callout.framing.form?.id;
+  const { data: formResponsesData } = useCalloutFormResponsesQuery({
+    variables: { formID: formId ?? '', first: 1 },
+    skip: !deleteOpen || !formId,
+    fetchPolicy: 'cache-and-network',
+  });
+  const formResponses = formResponsesData?.lookup.calloutFormResponses;
+  const formResponseCount = formResponses?.canReadAll ? formResponses.all.total : undefined;
 
   const sortableContributions = [...(sortData?.lookup.callout?.contributions ?? [])]
     .sort((a, b) => a.sortOrder - b.sortOrder)
@@ -271,7 +283,7 @@ export function CalloutSettingsConnector({
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         calloutTitle={callout.framing.profile.displayName}
-        content={mapCalloutToDeletionSummary(callout)}
+        content={{ ...mapCalloutToDeletionSummary(callout), formResponseCount }}
         loading={mutating}
         onConfirm={handleDeleteConfirm}
       />

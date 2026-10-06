@@ -62,7 +62,8 @@
     "image": "Galerie",
     "poll": "Umfrage",
     "contributors": "Mitwirkende",
-    "spaces": "Unterbereiche"
+    "spaces": "Unterbereiche",
+    "form": "Formular"
   },
   "contributionType": {
     "post": "Beiträge",

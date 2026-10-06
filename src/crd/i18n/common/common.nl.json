@@ -964,6 +964,10 @@
         "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
           "subject": "\"{{memberName}}\" is toegetreden tot {{organizationName}} als geassocieerde",
           "description": "{{memberName}} is toegetreden tot {{organizationName}}, waarvan jij beheerder bent."
+        },
+        "SPACE_ADMIN_COLLABORATION_CALLOUT_FORM_RESPONSE": {
+          "subject": "{{triggeredByName}} heeft gereageerd op het formulier \"{{calloutName}}\"",
+          "description": "In <b>{{spaceName}}</b>, waarvan je $t(common.admin) bent."
         }
       },
       "spacesToJoin": "Bij accepteren wordt toegetreden tot: {{spaces}}",
@@ -1265,6 +1269,7 @@
         "urlRequired": "URL is vereist"
       },
       "transferCallout": {
+        "formNotAllowed": "Een $t(common.post) met een formulier kan niet worden overgedragen: de reacties blijven in de space waar ze zijn gegeven.",
         "urlNotCallout": "De URL verwijst niet naar een $t(common.post)",
         "urlNotFound": "URL niet gevonden",
         "urlNotSpace": "URL leidt niet naar een space"
@@ -1380,6 +1385,7 @@
         "confirmWarning": "Dit zal de virtual contributor omzetten van space-gebaseerd naar knowledge-base-gebaseerd. $t(common.Posts) worden VERPLAATST vanuit de bronspace (niet gekopieerd). Deze actie kan niet ongedaan worden gemaakt.",
         "convertButton": "Converteren naar Knowledge Base",
         "errorMessage": "Omzetten van Virtual Contributor mislukt.",
+        "formNotAllowed": "De space van deze Virtual Contributor bevat een $t(common.post) met een formulier en kan daarom niet worden omgezet naar een kennisbank.",
         "sectionDescription": "Zet een space-gebaseerde virtual contributor om naar het gebruik van een knowledge base. $t(common.Posts) worden verplaatst vanuit de bronspace — niet gekopieerd.",
         "sectionTitle": "Virtual Contributor Type conversie",
         "sourceSpace": "Source Space",

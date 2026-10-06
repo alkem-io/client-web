@@ -1,0 +1,17 @@
+mutation UpdateCalloutForm($formData: UpdateCalloutFormInput!) {
+  updateCalloutForm(formData: $formData) {
+    ...CalloutFormDetails
+  }
+}
+
+mutation SubmitCalloutFormResponse($responseData: SubmitCalloutFormResponseInput!) {
+  submitCalloutFormResponse(responseData: $responseData) {
+    ...CalloutFormResponseDetails
+  }
+}
+
+mutation DeleteCalloutFormResponse($deleteData: DeleteCalloutFormResponseInput!) {
+  deleteCalloutFormResponse(deleteData: $deleteData) {
+    id
+  }
+}

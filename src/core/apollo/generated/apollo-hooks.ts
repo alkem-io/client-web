@@ -655,6 +655,34 @@ ${ActivityLogCalloutDiscussionCommentFragmentDoc}
 ${ActivityLogSubspaceCreatedFragmentDoc}
 ${ActivityLogUpdateSentFragmentDoc}
 ${ActivityLogCalendarEventCreatedFragmentDoc}`;
+export const CalloutFormResponseDetailsFragmentDoc = gql`
+    fragment CalloutFormResponseDetails on CalloutFormResponse {
+  id
+  createdDate
+  createdBy {
+    id
+    profile {
+      id
+      displayName
+      url
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+  answers {
+    questionID
+    prompt
+    type
+    text
+    selectedOptions {
+      id
+      label
+    }
+  }
+}
+    `;
 export const ContributionAuthorFragmentDoc = gql`
     fragment ContributionAuthor on User {
   id
@@ -1014,6 +1042,30 @@ export const PollDetailsFragmentDoc = gql`
     ${PollSettingsFieldsFragmentDoc}
 ${PollOptionFieldsFragmentDoc}
 ${PollVoteFieldsFragmentDoc}`;
+export const CalloutFormDetailsFragmentDoc = gql`
+    fragment CalloutFormDetails on CalloutForm {
+  id
+  title
+  description
+  questions {
+    id
+    prompt
+    explanation
+    type
+    required
+    options {
+      id
+      label
+    }
+  }
+  settings {
+    visibility
+    responseMode
+    state
+    defaultCollapsed
+  }
+}
+    `;
 export const CollaboraDocumentGateFragmentDoc = gql`
     fragment CollaboraDocumentGate on CollaboraDocument {
   id
@@ -1209,6 +1261,9 @@ export const CalloutDetailsFragmentDoc = gql`
     poll {
       ...PollDetails
     }
+    form {
+      ...CalloutFormDetails
+    }
     collaboraDocument {
       ...CollaboraDocumentGate
     }
@@ -1310,6 +1365,7 @@ ${MemoDetailsFragmentDoc}
 ${LinkDetailsFragmentDoc}
 ${MediaGalleryVisualsFragmentDoc}
 ${PollDetailsFragmentDoc}
+${CalloutFormDetailsFragmentDoc}
 ${CollaboraDocumentGateFragmentDoc}
 ${LinkDetailsWithAuthorizationFragmentDoc}
 ${CommentsWithMessagesFragmentDoc}
@@ -1881,6 +1937,11 @@ export const UserSettingsFragmentFragmentDoc = gql`
           push
         }
         collaborationCalloutContributionCreated {
+          email
+          inApp
+          push
+        }
+        collaborationCalloutFormResponseReceived {
           email
           inApp
           push
@@ -8245,6 +8306,241 @@ export function refetchActivityLogOnCollaborationQuery(
 ) {
   return { query: ActivityLogOnCollaborationDocument, variables: variables };
 }
+export const UpdateCalloutFormDocument = gql`
+    mutation UpdateCalloutForm($formData: UpdateCalloutFormInput!) {
+  updateCalloutForm(formData: $formData) {
+    ...CalloutFormDetails
+  }
+}
+    ${CalloutFormDetailsFragmentDoc}`;
+export type UpdateCalloutFormMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCalloutFormMutation,
+  SchemaTypes.UpdateCalloutFormMutationVariables
+>;
+
+/**
+ * __useUpdateCalloutFormMutation__
+ *
+ * To run a mutation, you first call `useUpdateCalloutFormMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCalloutFormMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCalloutFormMutation, { data, loading, error }] = useUpdateCalloutFormMutation({
+ *   variables: {
+ *      formData: // value for 'formData'
+ *   },
+ * });
+ */
+export function useUpdateCalloutFormMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCalloutFormMutation,
+    SchemaTypes.UpdateCalloutFormMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateCalloutFormMutation, SchemaTypes.UpdateCalloutFormMutationVariables>(
+    UpdateCalloutFormDocument,
+    options
+  );
+}
+export type UpdateCalloutFormMutationHookResult = ReturnType<typeof useUpdateCalloutFormMutation>;
+export type UpdateCalloutFormMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutFormMutation>;
+export type UpdateCalloutFormMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCalloutFormMutation,
+  SchemaTypes.UpdateCalloutFormMutationVariables
+>;
+export const SubmitCalloutFormResponseDocument = gql`
+    mutation SubmitCalloutFormResponse($responseData: SubmitCalloutFormResponseInput!) {
+  submitCalloutFormResponse(responseData: $responseData) {
+    ...CalloutFormResponseDetails
+  }
+}
+    ${CalloutFormResponseDetailsFragmentDoc}`;
+export type SubmitCalloutFormResponseMutationFn = Apollo.MutationFunction<
+  SchemaTypes.SubmitCalloutFormResponseMutation,
+  SchemaTypes.SubmitCalloutFormResponseMutationVariables
+>;
+
+/**
+ * __useSubmitCalloutFormResponseMutation__
+ *
+ * To run a mutation, you first call `useSubmitCalloutFormResponseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubmitCalloutFormResponseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [submitCalloutFormResponseMutation, { data, loading, error }] = useSubmitCalloutFormResponseMutation({
+ *   variables: {
+ *      responseData: // value for 'responseData'
+ *   },
+ * });
+ */
+export function useSubmitCalloutFormResponseMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.SubmitCalloutFormResponseMutation,
+    SchemaTypes.SubmitCalloutFormResponseMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.SubmitCalloutFormResponseMutation,
+    SchemaTypes.SubmitCalloutFormResponseMutationVariables
+  >(SubmitCalloutFormResponseDocument, options);
+}
+export type SubmitCalloutFormResponseMutationHookResult = ReturnType<typeof useSubmitCalloutFormResponseMutation>;
+export type SubmitCalloutFormResponseMutationResult =
+  Apollo.MutationResult<SchemaTypes.SubmitCalloutFormResponseMutation>;
+export type SubmitCalloutFormResponseMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.SubmitCalloutFormResponseMutation,
+  SchemaTypes.SubmitCalloutFormResponseMutationVariables
+>;
+export const DeleteCalloutFormResponseDocument = gql`
+    mutation DeleteCalloutFormResponse($deleteData: DeleteCalloutFormResponseInput!) {
+  deleteCalloutFormResponse(deleteData: $deleteData) {
+    id
+  }
+}
+    `;
+export type DeleteCalloutFormResponseMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteCalloutFormResponseMutation,
+  SchemaTypes.DeleteCalloutFormResponseMutationVariables
+>;
+
+/**
+ * __useDeleteCalloutFormResponseMutation__
+ *
+ * To run a mutation, you first call `useDeleteCalloutFormResponseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCalloutFormResponseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCalloutFormResponseMutation, { data, loading, error }] = useDeleteCalloutFormResponseMutation({
+ *   variables: {
+ *      deleteData: // value for 'deleteData'
+ *   },
+ * });
+ */
+export function useDeleteCalloutFormResponseMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteCalloutFormResponseMutation,
+    SchemaTypes.DeleteCalloutFormResponseMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeleteCalloutFormResponseMutation,
+    SchemaTypes.DeleteCalloutFormResponseMutationVariables
+  >(DeleteCalloutFormResponseDocument, options);
+}
+export type DeleteCalloutFormResponseMutationHookResult = ReturnType<typeof useDeleteCalloutFormResponseMutation>;
+export type DeleteCalloutFormResponseMutationResult =
+  Apollo.MutationResult<SchemaTypes.DeleteCalloutFormResponseMutation>;
+export type DeleteCalloutFormResponseMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteCalloutFormResponseMutation,
+  SchemaTypes.DeleteCalloutFormResponseMutationVariables
+>;
+export const CalloutFormResponsesDocument = gql`
+    query CalloutFormResponses($formID: UUID!, $first: Int, $after: UUID) {
+  lookup {
+    calloutFormResponses(formID: $formID, first: $first, after: $after) {
+      formID
+      canReadAll
+      canModerate
+      mine {
+        ...CalloutFormResponseDetails
+      }
+      all {
+        total
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        responses {
+          ...CalloutFormResponseDetails
+        }
+      }
+    }
+  }
+}
+    ${CalloutFormResponseDetailsFragmentDoc}`;
+
+/**
+ * __useCalloutFormResponsesQuery__
+ *
+ * To run a query within a React component, call `useCalloutFormResponsesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutFormResponsesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutFormResponsesQuery({
+ *   variables: {
+ *      formID: // value for 'formID'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useCalloutFormResponsesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutFormResponsesQuery,
+    SchemaTypes.CalloutFormResponsesQueryVariables
+  > &
+    ({ variables: SchemaTypes.CalloutFormResponsesQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutFormResponsesQuery, SchemaTypes.CalloutFormResponsesQueryVariables>(
+    CalloutFormResponsesDocument,
+    options
+  );
+}
+export function useCalloutFormResponsesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutFormResponsesQuery,
+    SchemaTypes.CalloutFormResponsesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutFormResponsesQuery, SchemaTypes.CalloutFormResponsesQueryVariables>(
+    CalloutFormResponsesDocument,
+    options
+  );
+}
+export function useCalloutFormResponsesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CalloutFormResponsesQuery,
+        SchemaTypes.CalloutFormResponsesQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.CalloutFormResponsesQuery, SchemaTypes.CalloutFormResponsesQueryVariables>(
+    CalloutFormResponsesDocument,
+    options
+  );
+}
+export type CalloutFormResponsesQueryHookResult = ReturnType<typeof useCalloutFormResponsesQuery>;
+export type CalloutFormResponsesLazyQueryHookResult = ReturnType<typeof useCalloutFormResponsesLazyQuery>;
+export type CalloutFormResponsesSuspenseQueryHookResult = ReturnType<typeof useCalloutFormResponsesSuspenseQuery>;
+export type CalloutFormResponsesQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutFormResponsesQuery,
+  SchemaTypes.CalloutFormResponsesQueryVariables
+>;
+export function refetchCalloutFormResponsesQuery(variables: SchemaTypes.CalloutFormResponsesQueryVariables) {
+  return { query: CalloutFormResponsesDocument, variables: variables };
+}
 export const CalloutContentDocument = gql`
     query CalloutContent($calloutId: UUID!) {
   lookup {
@@ -8301,6 +8597,9 @@ export const CalloutContentDocument = gql`
         poll {
           ...PollDetails
         }
+        form {
+          ...CalloutFormDetails
+        }
         collaboraDocument {
           ...CollaboraDocumentGate
         }
@@ -8331,6 +8630,7 @@ ${WhiteboardPreviewSettingsFragmentDoc}
 ${LinkDetailsFragmentDoc}
 ${MediaGalleryVisualsFragmentDoc}
 ${PollDetailsFragmentDoc}
+${CalloutFormDetailsFragmentDoc}
 ${CollaboraDocumentGateFragmentDoc}
 ${CalloutSettingsFullFragmentDoc}`;
 
@@ -16621,6 +16921,11 @@ export const UpdateUserSettingsDocument = gql`
               push
             }
             collaborationCalloutContributionCreated {
+              email
+              inApp
+              push
+            }
+            collaborationCalloutFormResponseReceived {
               email
               inApp
               push

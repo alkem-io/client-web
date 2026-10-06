@@ -525,7 +525,8 @@
           "communityInvitationResponse": "Recevoir une notification lorsqu'une personne accepte ou refuse une invitation à un Space que vous administrez",
           "collaborationCalloutContributionCreated": "Recevoir une notification lorsqu'une nouvelle contribution est ajoutée à une publication",
           "communicationMessageReceived": "Recevoir une notification lorsqu'un message de la communauté est reçu",
-          "userEmailChanged": "Recevoir une notification lorsque l'adresse e-mail de connexion d'un membre d'un Space que vous administrez est modifiée"
+          "userEmailChanged": "Recevoir une notification lorsque l'adresse e-mail de connexion d'un membre d'un Space que vous administrez est modifiée",
+          "collaborationCalloutFormResponseReceived": "Recevoir une notification lorsque quelqu'un envoie une réponse à un formulaire dans un Espace que vous administrez"
         },
         "user": {
           "commentReply": "Recevoir une notification lorsque quelqu'un répond à mon commentaire",

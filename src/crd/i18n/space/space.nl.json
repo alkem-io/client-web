@@ -313,7 +313,8 @@
     "referencesSaveFailed": "Een of meer nieuwe referenties konden niet worden opgeslagen. De overige wijzigingen zijn niet toegepast. Probeer het opnieuw.",
     "updateFailed": "De wijzigingen aan de $t(common.callout) konden niet worden opgeslagen. Probeer het opnieuw.",
     "contributors": "Contributors",
-    "subspaces": "Subspaces"
+    "subspaces": "Subspaces",
+    "form": "Formulier"
   },
   "contribution": {
     "edit": "Bewerken",
@@ -513,14 +514,19 @@
       "whiteboard": "Het whiteboard",
       "memo": "De memo",
       "mediaGallery": "De mediagalerij",
-      "document": "Het document"
+      "document": "Het document",
+      "form": "Het formulier"
     },
     "moreLinks_one": "en nog {{count}} link",
     "moreLinks_other": "en nog {{count}} links",
     "comments_one": "{{count}} reactie wordt verwijderd",
     "comments_other": "{{count}} reacties worden verwijderd",
     "success": "$t(common.Callout) “{{title}}” is verwijderd.",
-    "saveFailed": "De $t(common.callout) kon niet worden verwijderd. Probeer het opnieuw."
+    "saveFailed": "De $t(common.callout) kon niet worden verwijderd. Probeer het opnieuw.",
+    "headerRichForm_one": "Het formulier en de {{count}} reactie worden verwijderd",
+    "headerRichForm_other": "Het formulier en de {{count}} reacties worden verwijderd",
+    "headerRichFormContributions_one": "Het formulier, de reacties en {{count}} bijdrage worden verwijderd",
+    "headerRichFormContributions_other": "Het formulier, de reacties en {{count}} bijdragen worden verwijderd"
   },
   "deleteTask": {
     "title": "Deze task verwijderen?"
@@ -1174,5 +1180,174 @@
   },
   "parentStack": {
     "goTo": "Ga naar {{name}}"
+  },
+  "formForm": {
+    "validation": {
+      "questionsMin": "Minstens {{count}} vraag is vereist",
+      "questionsMax": "Maximaal {{count}} vragen zijn toegestaan",
+      "promptRequired": "De vraagtekst is verplicht",
+      "promptMax": "De vraagtekst is te lang",
+      "explanationMax": "De toelichting is te lang",
+      "optionsMin": "Minstens {{count}} opties zijn vereist",
+      "optionsMax": "Maximaal {{count}} opties zijn toegestaan",
+      "optionRequired": "Optietekst is verplicht",
+      "optionMax": "De optietekst is te lang",
+      "optionsDuplicate": "Opties moeten van elkaar verschillen"
+    },
+    "questionsHeading": "Formulier",
+    "questionsDescription": "Stel vragen en verzamel de antwoorden als reacties",
+    "questionNumber": "Vraag {{number}}",
+    "promptPlaceholder": "Wat wil je vragen?",
+    "explanationLabel": "Toelichting (optioneel)",
+    "explanationPlaceholder": "Help mensen de vraag te begrijpen",
+    "typeLabel": "Antwoordtype",
+    "type": {
+      "SHORT_TEXT": "Korte tekst",
+      "LONG_TEXT": "Lange tekst",
+      "SINGLE_CHOICE": "Enkele keuze",
+      "MULTIPLE_CHOICE": "Meerdere keuzes"
+    },
+    "required": "Verplicht",
+    "dragQuestion": "Vraag {{number}} verplaatsen",
+    "addQuestion": "Vraag toevoegen",
+    "removeQuestion": "Vraag verwijderen",
+    "removeQuestionConfirm": {
+      "title": "Deze vraag verwijderen?",
+      "description": "De vraag wordt uit het formulier verwijderd.",
+      "descriptionWithText": "“{{text}}” wordt uit het formulier verwijderd."
+    },
+    "optionsHeading": "Opties",
+    "optionLabel": "Optie {{number}}",
+    "addOption": "Optie toevoegen",
+    "removeOption": "Optie verwijderen",
+    "dragOption": "Optie {{number}} verplaatsen",
+    "removeOptionConfirm": {
+      "title": "Deze optie verwijderen?",
+      "description": "De optie wordt uit de vraag verwijderd.",
+      "descriptionWithText": "“{{text}}” wordt uit de vraag verwijderd."
+    },
+    "settingsButton": "Formulierinstellingen",
+    "settings": {
+      "title": "Formulierinstellingen",
+      "visibilityHeading": "Wie kan de reacties zien",
+      "visibility": {
+        "ADMINS": "Alleen beheerders",
+        "MEMBERS": "Leden van de space"
+      },
+      "visibilityHelp": {
+        "ADMINS": "Alleen de beheerders van deze space kunnen alle reacties lezen. Alle anderen zien alleen hun eigen reacties.",
+        "MEMBERS": "De leden van deze space kunnen alle reacties lezen."
+      },
+      "responseModeHeading": "Reacties per persoon",
+      "responseMode": {
+        "SINGLE": "Eén reactie per persoon",
+        "MULTIPLE": "Meerdere reacties per persoon"
+      },
+      "stateOpen": "Open voor reacties",
+      "stateHelp": "Gesloten formulieren accepteren geen nieuwe reacties.",
+      "defaultCollapsed": "Formulier standaard ingeklapt tonen",
+      "defaultCollapsedHelp": "Kijkers kunnen het nog steeds uitklappen",
+      "widenConfirm": {
+        "title": "Reacties tonen aan leden?",
+        "description_one": "Leden van {{space}} kunnen de {{count}} bestaande reactie lezen, ook als die is ingediend toen alleen admins die konden zien.",
+        "description_other": "Leden van {{space}} kunnen alle {{count}} bestaande reacties lezen, ook die zijn ingediend toen alleen admins ze konden zien.",
+        "descriptionNoCount": "Leden van {{space}} kunnen alle bestaande reacties lezen, ook die zijn ingediend toen alleen admins ze konden zien.",
+        "confirm": "Reacties tonen aan leden"
+      }
+    },
+    "errors": {
+      "saveFailed": "Het formulier kon niet worden opgeslagen. Probeer het opnieuw.",
+      "FORM_UNKNOWN_QUESTION_ID": "Het formulier is intussen gewijzigd. Laad opnieuw en probeer het nog eens.",
+      "FORM_UNKNOWN_OPTION_ID": "Het formulier is intussen gewijzigd. Laad opnieuw en probeer het nog eens.",
+      "FORM_QUESTIONS_COUNT": "Een formulier heeft tussen 1 en 50 vragen nodig.",
+      "FORM_OPTIONS_COUNT": "Een keuzevraag heeft tussen 2 en 20 opties nodig.",
+      "FORM_OPTIONS_DUPLICATE": "Opties moeten van elkaar verschillen."
+    },
+    "title": "Titel van het formulier (optioneel)",
+    "titlePlaceholder": "Geef het formulier een titel",
+    "description": "Beschrijving (optioneel)",
+    "descriptionPlaceholder": "Vertel waar dit formulier over gaat",
+    "titleTooLong": "De titel van het formulier mag maximaal {{count}} tekens bevatten",
+    "descriptionTooLong": "De beschrijving van het formulier mag maximaal {{count}} tekens bevatten",
+    "typeChangeHint": "Bestaande antwoorden behouden hun oorspronkelijke vorm"
+  },
+  "formFillIn": {
+    "requiredMarker": "verplicht",
+    "noticeAdmins": "Alleen de beheerders van {{space}} kunnen je reactie zien",
+    "noticeMembers": "Leden van {{space}} kunnen je reactie zien",
+    "submit": "Formulier verzenden",
+    "answerPlaceholder": "Typ je antwoord...",
+    "resetConfirm": {
+      "title": "Je antwoorden wissen?",
+      "description": "Alles wat je in dit formulier hebt ingevuld, wordt gewist.",
+      "confirm": "Wissen"
+    },
+    "submitting": "Verzenden…",
+    "closedBadge": "Gesloten",
+    "draftBadge": "Niet gepubliceerd",
+    "closedNotice": "Dit formulier is gesloten en accepteert geen reacties meer.",
+    "draftNotice": "Je kunt reageren zodra deze Post is gepubliceerd.",
+    "cannotRespond": "Je hebt geen toestemming om op dit formulier te reageren.",
+    "requiredError": "Deze vraag is verplicht",
+    "noAnswer": "Geen antwoord gegeven",
+    "success": "Je reactie is verzonden.",
+    "withdrawn": "Je reactie is ingetrokken.",
+    "withdrawFailed": "Je reactie kon niet worden ingetrokken. Probeer het opnieuw.",
+    "visibilityChanged": "Wie de reacties kan zien is gewijzigd — controleer en verzend opnieuw.",
+    "errors": {
+      "generic": "Je reactie kon niet worden verzonden. Probeer het opnieuw.",
+      "FORM_RESPONSE_ALREADY_EXISTS": "Je hebt al op dit formulier gereageerd.",
+      "FORM_CLOSED": "Dit formulier is gesloten en accepteert geen reacties meer.",
+      "CALLOUT_NOT_PUBLISHED": "Dit formulier is nog niet gepubliceerd.",
+      "FORM_ANSWER_REQUIRED": "Beantwoord alle verplichte vragen.",
+      "FORM_ANSWER_TOO_LONG": "Een van je antwoorden is te lang.",
+      "FORM_ANSWER_UNKNOWN_QUESTION": "Het formulier is gewijzigd terwijl je antwoordde. Controleer en verzend opnieuw.",
+      "FORM_ANSWER_DUPLICATE_QUESTION": "Het formulier is gewijzigd terwijl je antwoordde. Controleer en verzend opnieuw.",
+      "FORM_ANSWER_TYPE_MISMATCH": "Het formulier is gewijzigd terwijl je antwoordde. Controleer en verzend opnieuw.",
+      "FORM_ANSWER_INVALID_OPTION": "Een van de gekozen opties bestaat niet meer. Controleer en verzend opnieuw.",
+      "FORM_ANSWER_SELECTION_COUNT": "Kies een geldig aantal opties."
+    },
+    "ownResponses": {
+      "heading": "Je reacties",
+      "loadEarlier": "Eerdere reacties tonen",
+      "responseNumber": "Reactie {{number}}",
+      "submittedOn": "Verzonden op {{date}}",
+      "withdraw": "Intrekken",
+      "withdrawConfirm": {
+        "title": "Deze reactie intrekken?",
+        "description": "Je reactie wordt verwijderd. Dit kan niet ongedaan worden gemaakt.",
+        "confirm": "Intrekken"
+      }
+    },
+    "untitled": "Formulier",
+    "questionCount_one": "{{count}} vraag",
+    "questionCount_other": "{{count}} vragen",
+    "expand": "Formulier uitklappen",
+    "collapse": "Formulier inklappen",
+    "cancel": "Annuleren"
+  },
+  "formResponses": {
+    "viewAction": "Reacties bekijken ({{count}})",
+    "dialogTitle": "Formulierreacties",
+    "respondent": "Respondent",
+    "submitted": "Verzonden",
+    "actions": "Acties",
+    "noAnswer": "Geen antwoord gegeven",
+    "deletedUser": "Verwijderde gebruiker",
+    "removedQuestion": "verwijderde vraag",
+    "loadMore": "Meer laden",
+    "loadingMore": "Laden…",
+    "empty": "Nog geen reacties.",
+    "showing": "{{shown}} van {{total}} getoond",
+    "open": "Reactie openen",
+    "delete": "Reactie verwijderen",
+    "deleteConfirm": {
+      "title": "Deze reactie verwijderen?",
+      "description": "De reactie wordt definitief verwijderd.",
+      "confirm": "Verwijderen"
+    },
+    "singleTitle": "Reactie van {{name}}",
+    "deleteFailed": "De reactie kon niet worden verwijderd. Probeer het opnieuw.",
+    "loadFailed": "De reacties konden niet worden geladen."
   }
 }

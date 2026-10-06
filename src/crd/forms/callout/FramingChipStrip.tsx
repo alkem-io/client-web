@@ -1,4 +1,5 @@
 import {
+  ClipboardList,
   FileText,
   FolderTree,
   Image as ImageIcon,
@@ -14,7 +15,16 @@ import { useTranslation } from 'react-i18next';
 import { DeleteFramingDialog } from '@/crd/components/dialogs/DeleteFramingDialog';
 import { cn } from '@/crd/lib/utils';
 
-export type FramingChipId = 'whiteboard' | 'memo' | 'document' | 'cta' | 'image' | 'poll' | 'contributors' | 'spaces';
+export type FramingChipId =
+  | 'whiteboard'
+  | 'memo'
+  | 'document'
+  | 'cta'
+  | 'image'
+  | 'poll'
+  | 'contributors'
+  | 'spaces'
+  | 'form';
 
 type Chip = {
   id: FramingChipId;
@@ -33,6 +43,7 @@ const CHIPS: Chip[] = [
   // Feature 013: the "Subspaces" framing (chip id stays `'spaces'` → maps to
   // CalloutFramingType.Spaces; the visible label is "Subspaces").
   { id: 'spaces', labelKey: 'callout.subspaces', icon: FolderTree },
+  { id: 'form', labelKey: 'callout.form', icon: ClipboardList },
 ];
 
 export type DisabledChipMap = Partial<Record<FramingChipId, { tooltip?: string }>>;
@@ -65,6 +76,12 @@ export type FramingChipStripProps = {
    * Contributor's knowledge base offers none. `undefined` renders all chips.
    */
   allowedChips?: FramingChipId[];
+  /**
+   * Chips whose framing kind is fixed once created. In edit mode an active chip
+   * listed here is inert: it cannot be cleared back to `'none'` (no confirmation
+   * dialog) and explains why through the type-locked hint.
+   */
+  fixedKindChips?: FramingChipId[];
   className?: string;
 };
 
@@ -74,6 +91,7 @@ export function FramingChipStrip({
   editMode = false,
   disabledChips,
   allowedChips,
+  fixedKindChips,
   className,
 }: FramingChipStripProps) {
   const { t } = useTranslation('crd-space');
@@ -90,7 +108,7 @@ export function FramingChipStrip({
       // became entitlement-disabled after creation (e.g. `document` once the
       // office-documents flag is revoked) must still be clearable — clearing only
       // ever reduces capability.
-      if (chip.id === value) setConfirmClearOpen(true);
+      if (chip.id === value && !fixedKindChips?.includes(chip.id)) setConfirmClearOpen(true);
       return;
     }
     if (disabledChips?.[chip.id]) return;
@@ -118,8 +136,9 @@ export function FramingChipStrip({
             // framing) even if its type is otherwise entitlement-disabled —
             // clearing only reduces capability. Every other inactive chip is
             // inert; in create mode all chips are live.
-            const activeClearable = editMode && active;
-            const isInert = !activeClearable && (isDisabled || (editMode && !active));
+            const fixedActive = editMode && active && Boolean(fixedKindChips?.includes(chip.id));
+            const activeClearable = editMode && active && !fixedActive;
+            const isInert = fixedActive || (!activeClearable && (isDisabled || (editMode && !active)));
             return (
               // biome-ignore lint/a11y/useSemanticElements: the chip is a styled <button>, not an <input type="radio">
               <button
@@ -129,7 +148,10 @@ export function FramingChipStrip({
                 aria-checked={active}
                 aria-disabled={isInert ? 'true' : undefined}
                 aria-label={t(chip.labelKey as 'callout.whiteboard')}
-                title={disabledInfo?.tooltip ?? (editMode && !active ? t('forms.typeLockedHint') : undefined)}
+                title={
+                  disabledInfo?.tooltip ??
+                  (fixedActive || (editMode && !active) ? t('forms.typeLockedHint') : undefined)
+                }
                 onClick={() => handleClick(chip)}
                 className={cn(
                   'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
@@ -137,7 +159,8 @@ export function FramingChipStrip({
                     ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
                     : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
                   isDisabled && !activeClearable && 'opacity-50 cursor-not-allowed pointer-events-none',
-                  editMode && !active && !isDisabled && 'opacity-60 cursor-not-allowed'
+                  editMode && !active && !isDisabled && 'opacity-60 cursor-not-allowed',
+                  fixedActive && 'cursor-not-allowed'
                 )}
               >
                 <chip.icon className="w-4 h-4" aria-hidden="true" />
