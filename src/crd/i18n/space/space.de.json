@@ -1348,6 +1348,13 @@
     },
     "singleTitle": "Antwort von {{name}}",
     "deleteFailed": "Die Antwort konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.",
-    "loadFailed": "Die Antworten konnten nicht geladen werden."
+    "loadFailed": "Die Antworten konnten nicht geladen werden.",
+    "exportCsv": "CSV exportieren",
+    "exporting": "Wird exportiert…",
+    "exportFailed": "Die Antworten konnten nicht exportiert werden. Bitte versuche es erneut.",
+    "csv": {
+      "submitter": "Eingereicht von",
+      "submittedDate": "Eingereicht am"
+    }
   }
 }

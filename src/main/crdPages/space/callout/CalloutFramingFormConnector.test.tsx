@@ -465,4 +465,19 @@ describe('CalloutFramingFormConnector', () => {
     const dialog = await screen.findByRole('dialog');
     expect(within(dialog).getByText('Q4 planning')).toBeInTheDocument();
   });
+
+  it('the review dialog offers Export CSV at the bottom, disabled while there is nothing to export', async () => {
+    setResponses({ canReadAll: true, total: 1 });
+    const { unmount } = render(<CalloutFramingFormConnector callout={makeCallout()} />);
+    await userEvent.click(screen.getByRole('button', { name: 'formResponses.viewAction' }));
+    const dialog = await screen.findByRole('dialog');
+    expect(within(dialog).getByRole('button', { name: 'formResponses.exportCsv' })).toBeEnabled();
+    unmount();
+
+    setResponses({ canReadAll: true, total: 0 });
+    render(<CalloutFramingFormConnector callout={makeCallout()} />);
+    await userEvent.click(screen.getByRole('button', { name: 'formResponses.viewAction' }));
+    const emptyDialog = await screen.findByRole('dialog');
+    expect(within(emptyDialog).getByRole('button', { name: 'formResponses.exportCsv' })).toBeDisabled();
+  });
 });

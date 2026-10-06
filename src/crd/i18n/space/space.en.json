@@ -1348,6 +1348,13 @@
     },
     "singleTitle": "Response from {{name}}",
     "deleteFailed": "The response could not be deleted. Please try again.",
-    "loadFailed": "The responses could not be loaded."
+    "loadFailed": "The responses could not be loaded.",
+    "exportCsv": "Export CSV",
+    "exporting": "Exporting…",
+    "exportFailed": "The responses could not be exported. Please try again.",
+    "csv": {
+      "submitter": "Submitted by",
+      "submittedDate": "Submitted on"
+    }
   }
 }
