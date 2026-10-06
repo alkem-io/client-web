@@ -16,7 +16,9 @@
  *  - Creating a template: framing/response chips are fully editable. Editing an existing template
  *    (`editMode`): both strips are locked like a live callout. The framing type can only be cleared
  *    back to "none" (with a confirmation); the response type is fully fixed — it can't be switched or
- *    cleared. This mirrors `CalloutFormConnector`'s edit mode.
+ *    cleared. This mirrors `CalloutFormConnector`'s edit mode. A Form framing cannot be cleared at all.
+ *  - A Form framing edits the definition only: no responses exist on a template, so the response-aware
+ *    edit context (widening confirmation, type-change hint) is never passed.
  */
 import { Hash } from 'lucide-react';
 import { useState } from 'react';
@@ -34,12 +36,13 @@ import type { WhiteboardDraftLifecycle } from '@/domain/collaboration/whiteboard
 import { healContributorCollection } from '@/main/crdPages/space/callout/contributorCollectionMapper';
 import { FramingEditorConnector } from '@/main/crdPages/space/callout/FramingEditorConnector';
 import { ResponseDefaultsConnector } from '@/main/crdPages/space/callout/ResponseDefaultsConnector';
-import { referenceRowErrors, type UseCrdCalloutFormResult } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
+import {
+  formQuestionErrors,
+  referenceRowErrors,
+  type UseCrdCalloutFormResult,
+} from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
-/**
- * Every framing chip except `form`: a template would carry a Form definition
- * without its responses, so the template editor never offers it.
- */
+/** Every framing chip. A Poll or Form template captures the definition only, never votes or responses. */
 const TEMPLATE_FRAMING_CHIPS: FramingChipId[] = [
   'whiteboard',
   'memo',
@@ -49,7 +52,11 @@ const TEMPLATE_FRAMING_CHIPS: FramingChipId[] = [
   'poll',
   'contributors',
   'spaces',
+  'form',
 ];
+
+/** Framing kinds that cannot be cleared once the template exists, as on a live Post. */
+const FIXED_KIND_FRAMING_CHIPS: FramingChipId[] = ['form'];
 
 export type CalloutTemplateFormProps = {
   /** The `useCrdCalloutForm` instance owned by `useTemplateForms` (controlled). */
@@ -140,6 +147,7 @@ export function CalloutTemplateForm({
           onChange={chip => setField('framingChip', chip)}
           editMode={editMode}
           allowedChips={TEMPLATE_FRAMING_CHIPS}
+          fixedKindChips={FIXED_KIND_FRAMING_CHIPS}
         />
         <FramingEditorConnector
           mode={editMode ? 'edit' : 'create'}
@@ -167,6 +175,15 @@ export function CalloutTemplateForm({
           onPollHideResultsUntilVotedChange={v => setField('pollHideResultsUntilVoted', v)}
           pollShowVoterAvatars={values.pollShowVoterAvatars}
           onPollShowVoterAvatarsChange={v => setField('pollShowVoterAvatars', v)}
+          formTitle={values.formTitle}
+          onFormTitleChange={v => setField('formTitle', v)}
+          formDescription={values.formDescription}
+          onFormDescriptionChange={v => setField('formDescription', v)}
+          formQuestions={values.formQuestions}
+          onFormQuestionsChange={v => setField('formQuestions', v)}
+          formQuestionsErrors={formQuestionErrors(errors)}
+          formSettings={values.formSettings}
+          onFormSettingsChange={v => setField('formSettings', v)}
           whiteboardPreviewImages={values.whiteboardPreviewImages}
           whiteboardPreviewServerUrl={values.whiteboardPreviewServerUrl}
           whiteboardConfigured={values.whiteboardConfigured}

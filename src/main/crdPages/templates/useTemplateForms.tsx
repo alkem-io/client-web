@@ -51,6 +51,7 @@ import {
   calloutFormValuesToCreateCalloutInput,
   calloutFormValuesToUpdateCalloutEntityInput,
 } from './calloutTemplateMapper';
+import { useCalloutTemplateFramingSave } from './useCalloutTemplateFramingSave';
 import { WhiteboardTemplateFormConnector } from './WhiteboardTemplateFormConnector';
 
 // ---------------------------------------------------------------------------
@@ -253,6 +254,7 @@ export function useTemplateForms({
   const [materializingWhiteboard, setMaterializingWhiteboard] = useState(false);
   const [materializedWhiteboardDraftId, setMaterializedWhiteboardDraftId] = useState<string | null>(null);
   const calloutForm = useCrdCalloutForm();
+  const calloutFramingSave = useCalloutTemplateFramingSave(calloutForm);
 
   // Space-template URL-paste source picker (mirrors legacy MUI `SpaceContentFromSpaceUrlForm`):
   // the user pastes a space URL, clicks "Use this space" → resolve URL → fetch space content →
@@ -873,6 +875,9 @@ export function useTemplateForms({
       }
       case 'callout': {
         if (!editCalloutId) throw new Error('Missing callout id for Callout template edit');
+        // The Form definition travels through its own mutation, first: a rejection keeps the
+        // dialog open with nothing else saved.
+        await calloutFramingSave.saveFormDefinition();
         await updateTemplate({ variables: { templateId, profile } });
 
         // References live on the callout's framing profile. The callout update mutation can only
@@ -924,6 +929,8 @@ export function useTemplateForms({
             originalSortOrders: editMeta.originalMediaGallerySortOrders,
           });
         }
+        // Poll options are not part of `updateCallout` (only the poll title is).
+        await calloutFramingSave.savePollOptions();
         return;
       }
     }

@@ -1,4 +1,5 @@
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
+import type { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
 
 export type PollOptionBefore = { id: string; text: string };
 
@@ -83,4 +84,57 @@ export const diffPollOptions = (before: PollOptionBefore[], after: PollOptionVal
     toUpdate,
     orderedIds: orderChanged && orderedIds.length > 1 ? orderedIds : [],
   };
+};
+
+export type PollOptionMutations = Pick<
+  ReturnType<typeof usePollOptionManagement>,
+  'addOption' | 'removeOption' | 'updateOption' | 'reorderOptions'
+>;
+
+/**
+ * Persists the option edits of an existing poll through the dedicated poll-option
+ * mutations, in the `diffPollOptions` order: adds → removes → updates → reorder
+ * (added options are slotted into the reorder by the ids the server returned).
+ * Shared by the live Post editor and the callout-template editor. Throws on the
+ * first failing mutation; the caller decides how to surface it.
+ */
+export const applyPollOptionDiff = async (
+  mutations: PollOptionMutations,
+  before: PollOptionBefore[],
+  after: PollOptionValue[]
+): Promise<void> => {
+  const diff = diffPollOptions(before, after);
+  if (!diff.toAdd.length && !diff.toRemove.length && !diff.toUpdate.length && !diff.orderedIds.length) {
+    return;
+  }
+
+  // 1. Adds (before removes — never drop below the server's min).
+  const addedIdsByIndex = new Map<number, string>();
+  const knownIds = new Set(before.map(o => o.id));
+  for (const add of diff.toAdd) {
+    const res = await mutations.addOption(add.text);
+    const addedPoll = res.data?.addPollOption;
+    if (addedPoll) {
+      const newOpt = addedPoll.options.find(o => !knownIds.has(o.id));
+      if (newOpt) {
+        addedIdsByIndex.set(add.index, newOpt.id);
+        knownIds.add(newOpt.id);
+      }
+    }
+  }
+  // 2. Removes.
+  for (const id of diff.toRemove) await mutations.removeOption(id);
+  // 3. Updates.
+  for (const upd of diff.toUpdate) await mutations.updateOption(upd.id, upd.text);
+  // 4. Reorder — substitute sentinels with their resolved server ids.
+  if (diff.orderedIds.length > 1) {
+    const resolved = diff.orderedIds
+      .map(id => {
+        if (!isAddedSentinel(id)) return id;
+        const idx = parseAddedSentinel(id);
+        return idx !== undefined ? addedIdsByIndex.get(idx) : undefined;
+      })
+      .filter((v): v is string => Boolean(v));
+    if (resolved.length > 1) await mutations.reorderOptions(resolved);
+  }
 };
