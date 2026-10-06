@@ -88,7 +88,15 @@
       "links": "Links",
       "gallery": "Galerij",
       "pollQuestion": "Vraag",
-      "pollOptions": "Opties"
+      "pollOptions": "Opties",
+      "formQuestions": "Vragen",
+      "formRequired": "Verplicht",
+      "formQuestionType": {
+        "SHORT_TEXT": "Korte tekst",
+        "LONG_TEXT": "Lange tekst",
+        "SINGLE_CHOICE": "Enkele keuze",
+        "MULTIPLE_CHOICE": "Meerdere keuzes"
+      }
     },
     "whiteboard": {
       "empty": "Dit whiteboard-template heeft geen tekening."

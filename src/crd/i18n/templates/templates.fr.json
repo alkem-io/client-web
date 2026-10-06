@@ -88,7 +88,15 @@
       "links": "Liens",
       "gallery": "Galerie",
       "pollQuestion": "Question",
-      "pollOptions": "Options"
+      "pollOptions": "Options",
+      "formQuestions": "Questions",
+      "formRequired": "Obligatoire",
+      "formQuestionType": {
+        "SHORT_TEXT": "Texte court",
+        "LONG_TEXT": "Texte long",
+        "SINGLE_CHOICE": "Choix unique",
+        "MULTIPLE_CHOICE": "Choix multiple"
+      }
     },
     "whiteboard": {
       "empty": "Ce modèle de tableau blanc ne contient pas de dessin."

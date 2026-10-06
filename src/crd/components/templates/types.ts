@@ -10,7 +10,7 @@
 
 import type { ReactNode } from 'react';
 import type { ClassificationCardinality, ClassificationValueData } from '@/crd/components/classification/types';
-import type { FramingChip } from '@/crd/forms/callout/types';
+import type { FormQuestionKind, FramingChip } from '@/crd/forms/callout/types';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 
 // ---------------------------------------------------------------------------
@@ -119,6 +119,20 @@ export type TemplatesManagerViewProps = {
 // Preview content (read-only, fully-loaded shape produced by templateContentMapper)
 // ---------------------------------------------------------------------------
 
+/** A Form template's definition as the read-only preview shows it. */
+export type TemplateFormPreview = {
+  title?: string;
+  description?: string;
+  questions: {
+    prompt: string;
+    explanation?: string;
+    type: FormQuestionKind;
+    required: boolean;
+    /** Option labels, in order; empty for the text kinds. */
+    options: string[];
+  }[];
+};
+
 export type TemplateContent =
   | {
       type: 'callout';
@@ -145,6 +159,8 @@ export type TemplateContent =
       framingMediaImages?: { uri: string; alt?: string }[];
       /** when framingKind === 'poll' — rendered read-only in the preview */
       framingPoll?: { question: string; options?: string[] };
+      /** when framingKind === 'form' — the definition only (a template never holds responses) */
+      framingForm?: TemplateFormPreview;
       /**
        * `framing.profile.references` — the *calloutReferences* the template editor produces
        * (distinct from `framingLinks`, which is the *cta* framing's single Link entity).
