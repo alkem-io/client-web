@@ -1260,6 +1260,10 @@ function CalloutFormConnectorInner({
         onSubmit={mode === 'create' ? handlePublish : handleSaveEdit}
         onSaveDraft={mode === 'create' ? handleSaveDraft : undefined}
         onFindTemplate={mode === 'create' ? handleFindTemplate : undefined}
+        // A pick is clamped to the admin-gated framing allow-list; that is only trustworthy once the
+        // permission contexts have loaded (they default to `canUpdate: false`), so the picker stays
+        // closed until then rather than silently clearing an admin's Form pick to None.
+        findTemplateDisabled={!permissionsLoaded}
       />
       <DiscardChangesDialog open={discardOpen} onOpenChange={setDiscardOpen} onConfirm={handleDiscardConfirm} />
       <TaskColumnsDraftDialog
