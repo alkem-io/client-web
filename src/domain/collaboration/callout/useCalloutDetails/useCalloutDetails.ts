@@ -2,7 +2,7 @@ import type { ApolloError } from '@apollo/client';
 import { useLocation } from 'react-router-dom';
 import { useDeepCompareMemoize } from 'use-deep-compare-effect';
 import { useCalloutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, CalloutFramingType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
 import { type LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/locationState';
 import { useCalloutsSetAuthorization } from '../../calloutsSet/authorization/useCalloutsSetAuthorization';
@@ -66,12 +66,9 @@ const useCalloutDetails = ({
       draft: calloutDetails.settings.visibility === CalloutVisibility.Draft,
       editable: calloutDetails.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false,
       movable: canMoveCallouts,
-      // TODO: temporary — disable "Save as template" for polls until poll template support is implemented.
-      // Forms are never templatable: a template would carry a definition without its responses.
-      canBeSavedAsTemplate:
-        canBeSavedAsTemplate &&
-        calloutDetails.framing.type !== CalloutFramingType.Poll &&
-        calloutDetails.framing.type !== CalloutFramingType.Form,
+      // Every framing is templatable, Poll and Form included: a template captures only their
+      // definition, never votes or responses.
+      canBeSavedAsTemplate,
       classificationTagsets: [],
       publishedDate: calloutDetails.publishedDate ? new Date(calloutDetails.publishedDate) : undefined,
       createdDate: calloutDetails.createdDate ? new Date(calloutDetails.createdDate) : undefined,

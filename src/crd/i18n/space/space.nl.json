@@ -1348,6 +1348,13 @@
     },
     "singleTitle": "Reactie van {{name}}",
     "deleteFailed": "De reactie kon niet worden verwijderd. Probeer het opnieuw.",
-    "loadFailed": "De reacties konden niet worden geladen."
+    "loadFailed": "De reacties konden niet worden geladen.",
+    "exportCsv": "CSV exporteren",
+    "exporting": "Exporteren…",
+    "exportFailed": "De reacties konden niet worden geëxporteerd. Probeer het opnieuw.",
+    "csv": {
+      "submitter": "Ingediend door",
+      "submittedDate": "Ingediend op"
+    }
   }
 }

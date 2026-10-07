@@ -1,4 +1,5 @@
 import { useApolloClient } from '@apollo/client';
+import { Download } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -21,6 +22,7 @@ import { CalloutFormResponsesTable } from '@/crd/components/callout/CalloutFormR
 import { deriveFormColumns } from '@/crd/components/callout/calloutFormColumns';
 import type { FormAnswerInput } from '@/crd/components/callout/calloutFormTypes';
 import { cn } from '@/crd/lib/utils';
+import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
 import { Separator } from '@/crd/primitives/separator';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -33,6 +35,7 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { mapFormQuestionsToViews, mapFormResponseToView } from './calloutFormResponseMapper';
 import { translateFormSubmitError } from './translateFormSubmitError';
+import { useFormResponsesCsvExport } from './useFormResponsesCsvExport';
 
 const RESPONSES_PAGE_SIZE = 50;
 
@@ -235,8 +238,6 @@ function CalloutFramingFormConnectorInner({
       title={form.title ?? undefined}
       description={form.description ?? undefined}
       questionCount={questions.length}
-      visibility={visibility}
-      spaceName={spaceName}
       status={!published ? 'DRAFT' : isOpen ? undefined : 'CLOSED'}
       defaultCollapsed={form.settings.defaultCollapsed}
       onViewResponses={responses.canReadAll ? () => setReviewOpen(true) : undefined}
@@ -258,6 +259,8 @@ function CalloutFramingFormConnectorInner({
         <CalloutFormFillIn
           key={`fill-in-${fillInKey}`}
           questions={questions}
+          visibility={visibility}
+          spaceName={spaceName}
           state={isOpen ? 'OPEN' : 'CLOSED'}
           published={published}
           canSubmit={canSubmit}
@@ -317,6 +320,7 @@ function FormResponsesReviewDialog({
   const [openResponseId, setOpenResponseId] = useState<string | null>(null);
   const [extraPages, setExtraPages] = useState<LoadedPage[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
+  const { exportCsv, exporting } = useFormResponsesCsvExport({ formId, formTitle, questions });
 
   const { data, loading, error, fetchMore } = useCalloutFormResponsesQuery({
     variables: { formID: formId, first: RESPONSES_PAGE_SIZE },
@@ -357,6 +361,7 @@ function FormResponsesReviewDialog({
   const responseViews = loadedResponses.map(mapFormResponseToView);
   const columns = deriveFormColumns(questions, responseViews);
   const openResponse = responseViews.find(response => response.id === openResponseId) ?? null;
+  const total = firstPage?.total ?? 0;
 
   return (
     <>
@@ -374,7 +379,7 @@ function FormResponsesReviewDialog({
               <CalloutFormResponsesTable
                 columns={columns}
                 responses={responseViews}
-                total={data?.lookup.calloutFormResponses.all.total ?? 0}
+                total={total}
                 hasMore={hasMore}
                 loadingMore={loadingMore}
                 onLoadMore={() => void handleLoadMore()}
@@ -385,6 +390,21 @@ function FormResponsesReviewDialog({
               />
             )}
           </div>
+          {firstPage && (
+            <div className="shrink-0 flex justify-end border-t pt-4">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                disabled={exporting || total === 0}
+                aria-busy={exporting || undefined}
+                onClick={() => void exportCsv()}
+              >
+                <Download className="size-4" aria-hidden="true" />
+                {exporting ? t('formResponses.exporting') : t('formResponses.exportCsv')}
+              </Button>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
       <CalloutFormResponseDialog

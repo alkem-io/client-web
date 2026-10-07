@@ -13,7 +13,7 @@ import {
   FORM_SHORT_ANSWER_MAX_LENGTH,
   isChoiceKind,
 } from '@/crd/forms/callout/formValues';
-import type { FormStateValue } from '@/crd/forms/callout/types';
+import type { FormResponseVisibilityValue, FormStateValue } from '@/crd/forms/callout/types';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Checkbox } from '@/crd/primitives/checkbox';
@@ -22,11 +22,15 @@ import { RadioGroup, RadioGroupItem } from '@/crd/primitives/radio-group';
 import { Textarea } from '@/crd/primitives/textarea';
 
 /**
- * The questions of a Form, as boxed cards, with the Cancel / Submit footer when the viewer can respond.
- * Rendered inside `CalloutFormBox`, whose header carries the title, the visibility notice and the state badge.
+ * The questions of a Form, as boxed cards, above a footer row: the visibility notice with the Cancel / Submit
+ * buttons when the viewer can respond, otherwise the reason they cannot (closed, not published, no permission).
+ * Rendered inside `CalloutFormBox`, whose header carries the title and the state badge.
  */
 type CalloutFormFillInProps = {
   questions: FormQuestionView[];
+  /** Who can read every response; the notice sits next to the submit button. */
+  visibility: FormResponseVisibilityValue;
+  spaceName: string;
   state: FormStateValue;
   published: boolean;
   /** Contribute privilege ∧ published ∧ open. When false the questions are shown read-only. */
@@ -83,6 +87,8 @@ function LengthCounter({ length, max }: { length: number; max: number }) {
 
 export function CalloutFormFillIn({
   questions,
+  visibility,
+  spaceName,
   state,
   published,
   canSubmit,
@@ -145,10 +151,6 @@ export function CalloutFormFillIn({
   return (
     <>
       <form noValidate={true} onSubmit={handleSubmit} className={cn('space-y-5', className)}>
-        {!canSubmit && (
-          <p className="text-caption text-muted-foreground">{statusMessage ?? t('formFillIn.cannotRespond')}</p>
-        )}
-
         {questions.map((question, index) => {
           const idBase = `form-fill-${instanceId}-${question.id}`;
           const labelId = `${idBase}-label`;
@@ -289,22 +291,40 @@ export function CalloutFormFillIn({
           );
         })}
 
-        {canSubmit && (
-          <div className={formBoxFooterClass}>
-            <Button
-              type="button"
-              variant="ghost"
-              className="normal-case!"
-              disabled={submitting || !hasInput}
-              onClick={() => setResetOpen(true)}
-            >
-              {t('formFillIn.cancel')}
-            </Button>
-            <Button type="submit" className="normal-case!" disabled={submitting} aria-busy={submitting || undefined}>
-              {submitting ? t('formFillIn.submitting') : t('formFillIn.submit')}
-            </Button>
-          </div>
-        )}
+        <div className={cn(formBoxFooterClass, 'flex-wrap justify-between')}>
+          {canSubmit ? (
+            <>
+              <p className="text-caption text-muted-foreground">
+                {visibility === 'ADMINS'
+                  ? t('formFillIn.noticeAdmins', { space: spaceName })
+                  : t('formFillIn.noticeMembers', { space: spaceName })}
+              </p>
+              <div className="ml-auto flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="normal-case!"
+                  disabled={submitting || !hasInput}
+                  onClick={() => setResetOpen(true)}
+                >
+                  {t('formFillIn.cancel')}
+                </Button>
+                <Button
+                  type="submit"
+                  className="normal-case!"
+                  disabled={submitting}
+                  aria-busy={submitting || undefined}
+                >
+                  {submitting ? t('formFillIn.submitting') : t('formFillIn.submit')}
+                </Button>
+              </div>
+            </>
+          ) : (
+            <p className="ml-auto text-caption text-muted-foreground">
+              {statusMessage ?? t('formFillIn.cannotRespond')}
+            </p>
+          )}
+        </div>
       </form>
 
       <ConfirmationDialog

@@ -2,7 +2,6 @@ import { ChevronDown, ChevronUp, ClipboardList } from 'lucide-react';
 import { type ReactNode, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formBoxBodyClass } from '@/crd/components/callout/formStyles';
-import type { FormResponseVisibilityValue } from '@/crd/forms/callout/types';
 import { cn } from '@/crd/lib/utils';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
@@ -13,9 +12,6 @@ type CalloutFormBoxProps = {
   /** The Form's own plain-text description. */
   description?: string;
   questionCount: number;
-  /** Who can read every response; the header names it to every viewer. */
-  visibility: FormResponseVisibilityValue;
-  spaceName: string;
   /** Closed or not published: shown as a badge in the header. */
   status?: 'CLOSED' | 'DRAFT';
   /** The initial state of the body; each mounted box then keeps its own state. */
@@ -30,15 +26,13 @@ type CalloutFormBoxProps = {
 
 /**
  * The bordered box that makes a Form recognisable inside a Post: a header that stays the same in every state
- * (icon, title, question count, visibility notice, description, state badge, review entry point and the
+ * (icon, title, question count, description, state badge, review entry point and the
  * expand/collapse chevron) above a collapsible body.
  */
 export function CalloutFormBox({
   title,
   description,
   questionCount,
-  visibility,
-  spaceName,
   status,
   defaultCollapsed,
   onViewResponses,
@@ -95,18 +89,13 @@ export function CalloutFormBox({
           </Button>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="text-caption text-muted-foreground">
-            {visibility === 'ADMINS'
-              ? t('formFillIn.noticeAdmins', { space: spaceName })
-              : t('formFillIn.noticeMembers', { space: spaceName })}
-          </p>
-          {onViewResponses && (
+        {onViewResponses && (
+          <div className="flex justify-end">
             <Button variant="outline" size="sm" onClick={onViewResponses}>
               {t('formResponses.viewAction', { count: responseCount })}
             </Button>
-          )}
-        </div>
+          </div>
+        )}
 
         {description?.trim() && (
           <p className="text-body whitespace-pre-line break-words text-foreground">{description}</p>
