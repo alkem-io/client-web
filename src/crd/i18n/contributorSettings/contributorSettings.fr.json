@@ -94,6 +94,7 @@
         "profile": "Profil",
         "account": "Compte",
         "community": "Associés",
+        "membership": "Adhésion",
         "settings": "Paramètres",
         "invitations": "Invitations",
         "authorization": "Autorisation"
@@ -784,6 +785,43 @@
       "removeConfirmAssociate": "Retirer {{name}} en tant qu'associé",
       "removeSuccess": "Associé retiré",
       "removeError": "Échec — réessayez"
+    },
+    "membership": {
+      "pageTitle": "Adhésion",
+      "title": "Adhésions aux Spaces",
+      "searchPlaceholder": "Rechercher des adhésions...",
+      "empty": "Cette organisation n'est encore membre d'aucun Space.",
+      "summary": "Affichage de {{shown}} adhésions sur {{total}}",
+      "filteredEmptyTitle": "Aucune adhésion trouvée",
+      "filteredEmptyDescription": "Essayez d'ajuster les filtres ou la recherche.",
+      "clearFilters": "Effacer les filtres",
+      "filter": {
+        "all": "Toutes",
+        "spaces": "Spaces",
+        "subspaces": "Subspaces"
+      },
+      "type": {
+        "space": "Space",
+        "subspace": "Subspace"
+      },
+      "role": {
+        "lead": "Lead",
+        "member": "Membre"
+      },
+      "menu": {
+        "viewByType": "Voir {{type}}"
+      },
+      "leave": {
+        "menuItemLabeled": "Quitter {{type}}",
+        "dialogTitle": "Quitter cette adhésion ?",
+        "dialogDescription": "Votre organisation est sur le point de quitter « {{spaceName}} ». Elle perdra l'accès aux contenus réservés aux membres et devrait être invitée à nouveau pour revenir.",
+        "dialogConfirm": "Quitter",
+        "success": "Adhésion quittée",
+        "error": "Échec — réessayez"
+      },
+      "ledBy": "Animé par :",
+      "ledByAria": "{{count}} animateurs de communauté",
+      "leadsMore": "et {{count}} de plus"
     },
     "settings": {
       "pageTitle": "Paramètres",

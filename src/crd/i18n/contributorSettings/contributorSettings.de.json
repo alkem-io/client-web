@@ -94,6 +94,7 @@
         "profile": "Profil",
         "account": "Konto",
         "community": "Assoziierte",
+        "membership": "Mitgliedschaft",
         "settings": "Einstellungen",
         "invitations": "Einladungen",
         "authorization": "Autorisierung"
@@ -784,6 +785,43 @@
       "removeConfirmAssociate": "{{name}} als Mitglied entfernen",
       "removeSuccess": "Mitglied entfernt",
       "removeError": "Entfernen fehlgeschlagen — bitte erneut versuchen"
+    },
+    "membership": {
+      "pageTitle": "Mitgliedschaft",
+      "title": "Space-Mitgliedschaften",
+      "searchPlaceholder": "Mitgliedschaften suchen...",
+      "empty": "Diese Organisation ist noch in keinem Space Mitglied.",
+      "summary": "{{shown}} von {{total}} Mitgliedschaften angezeigt",
+      "filteredEmptyTitle": "Keine Mitgliedschaften gefunden",
+      "filteredEmptyDescription": "Passen Sie die Filter oder die Suchanfrage an.",
+      "clearFilters": "Filter zurücksetzen",
+      "filter": {
+        "all": "Alle",
+        "spaces": "Spaces",
+        "subspaces": "Subspaces"
+      },
+      "type": {
+        "space": "Space",
+        "subspace": "Subspace"
+      },
+      "role": {
+        "lead": "Lead",
+        "member": "Mitglied"
+      },
+      "menu": {
+        "viewByType": "{{type}} ansehen"
+      },
+      "leave": {
+        "menuItemLabeled": "{{type}} verlassen",
+        "dialogTitle": "Diese Mitgliedschaft verlassen?",
+        "dialogDescription": "Ihre Organisation ist im Begriff, „{{spaceName}}“ zu verlassen. Sie verliert den Zugriff auf mitgliederexklusive Inhalte und müsste erneut eingeladen werden, um wieder beizutreten.",
+        "dialogConfirm": "Verlassen",
+        "success": "Mitgliedschaft verlassen",
+        "error": "Verlassen fehlgeschlagen — bitte erneut versuchen"
+      },
+      "ledBy": "Geleitet von:",
+      "ledByAria": "{{count}} Community-Leads",
+      "leadsMore": "und {{count}} weitere"
     },
     "settings": {
       "pageTitle": "Einstellungen",

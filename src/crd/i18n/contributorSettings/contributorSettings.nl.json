@@ -94,6 +94,7 @@
         "profile": "Profiel",
         "account": "Account",
         "community": "Geassocieerden",
+        "membership": "Lidmaatschap",
         "settings": "Instellingen",
         "invitations": "Uitnodigingen",
         "authorization": "Autorisatie"
@@ -784,6 +785,43 @@
       "removeConfirmAssociate": "{{name}} verwijderen als geassocieerde",
       "removeSuccess": "Geassocieerde verwijderd",
       "removeError": "Verwijderen mislukt — probeer opnieuw"
+    },
+    "membership": {
+      "pageTitle": "Lidmaatschap",
+      "title": "Space-lidmaatschappen",
+      "searchPlaceholder": "Zoek lidmaatschappen...",
+      "empty": "Deze organisatie is nog geen lid van een Space.",
+      "summary": "{{shown}} van {{total}} lidmaatschappen weergegeven",
+      "filteredEmptyTitle": "Geen lidmaatschappen gevonden",
+      "filteredEmptyDescription": "Pas de filters of zoekterm aan.",
+      "clearFilters": "Filters wissen",
+      "filter": {
+        "all": "Alle",
+        "spaces": "Spaces",
+        "subspaces": "Subspaces"
+      },
+      "type": {
+        "space": "Space",
+        "subspace": "Subspace"
+      },
+      "role": {
+        "lead": "Lead",
+        "member": "Lid"
+      },
+      "menu": {
+        "viewByType": "{{type}} bekijken"
+      },
+      "leave": {
+        "menuItemLabeled": "{{type}} verlaten",
+        "dialogTitle": "Dit lidmaatschap verlaten?",
+        "dialogDescription": "Uw organisatie staat op het punt om \"{{spaceName}}\" te verlaten. Ze verliest de toegang tot de inhoud voor leden en moet opnieuw worden uitgenodigd om terug te komen.",
+        "dialogConfirm": "Verlaten",
+        "success": "Lidmaatschap verlaten",
+        "error": "Verlaten mislukt — probeer opnieuw"
+      },
+      "ledBy": "Geleid door:",
+      "ledByAria": "{{count}} community-Leads",
+      "leadsMore": "en nog {{count}}"
     },
     "settings": {
       "pageTitle": "Instellingen",

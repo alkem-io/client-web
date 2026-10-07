@@ -94,6 +94,7 @@
         "profile": "Profile",
         "account": "Account",
         "community": "Associates",
+        "membership": "Membership",
         "settings": "Settings",
         "invitations": "Invitations",
         "authorization": "Authorisation"
@@ -784,6 +785,43 @@
       "removeConfirmAssociate": "Remove {{name}} as Associate",
       "removeSuccess": "Associate removed",
       "removeError": "Couldn't remove associate — try again"
+    },
+    "membership": {
+      "pageTitle": "Membership",
+      "title": "Space Memberships",
+      "searchPlaceholder": "Search memberships...",
+      "empty": "This organisation is not a member of any Space yet.",
+      "summary": "Showing {{shown}} of {{total}} memberships",
+      "filteredEmptyTitle": "No memberships found",
+      "filteredEmptyDescription": "Try adjusting your filters or search query.",
+      "clearFilters": "Clear Filters",
+      "filter": {
+        "all": "All",
+        "spaces": "Spaces",
+        "subspaces": "Subspaces"
+      },
+      "type": {
+        "space": "Space",
+        "subspace": "Subspace"
+      },
+      "role": {
+        "lead": "Lead",
+        "member": "Member"
+      },
+      "menu": {
+        "viewByType": "View {{type}}"
+      },
+      "leave": {
+        "menuItemLabeled": "Leave {{type}}",
+        "dialogTitle": "Leave this membership?",
+        "dialogDescription": "Your organisation is about to leave \"{{spaceName}}\". It will lose access to the members-only content there and would need to be invited again to rejoin.",
+        "dialogConfirm": "Leave",
+        "success": "Membership left",
+        "error": "Couldn't leave — try again"
+      },
+      "ledBy": "Led by:",
+      "ledByAria": "{{count}} community leads",
+      "leadsMore": "and {{count}} more"
     },
     "settings": {
       "pageTitle": "Settings",
