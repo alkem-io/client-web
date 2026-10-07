@@ -554,13 +554,14 @@ export function PostCard({
           </div>
         )}
 
-        {/* Collabora document framing preview — compact variant for the feed */}
+        {/* Collabora document framing preview — same 16:9 box as the whiteboard
+            framing preview above, so both read as previews rather than one of
+            them as a plain text post. */}
         {post.type === 'document' && post.framingDocumentType && (
           <CalloutCollaboraPreview
             documentType={post.framingDocumentType}
             onOpen={onOpenFramingDocument ?? onClick ?? (() => {})}
             previewImageUrl={post.framingDocumentPreviewUrl}
-            size="compact"
           />
         )}
 

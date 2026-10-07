@@ -31,9 +31,6 @@ type CalloutCollaboraPreviewProps = {
    * and again if the image fails to load.
    */
   previewImageUrl?: string;
-  /** `default` = aspect-video (used inside the callout detail dialog);
-   *  `compact` = shorter fixed height for the space feed card. */
-  size?: 'default' | 'compact';
   className?: string;
 };
 
@@ -42,7 +39,6 @@ export function CalloutCollaboraPreview({
   onOpen,
   onReplace,
   previewImageUrl,
-  size = 'default',
   className,
 }: CalloutCollaboraPreviewProps) {
   const { t } = useTranslation('crd-space');
@@ -50,7 +46,6 @@ export function CalloutCollaboraPreview({
   const accentColor = colorByType[documentType];
   const typeLabel = t(typeLabelKey[documentType] as 'callout.document');
   const openLabel = t(openLabelKey[documentType]);
-  const compact = size === 'compact';
   // Tracked by URL value (not a boolean) so a later `previewImageUrl` prop
   // change — this component being pointed at a different document — starts in
   // the correct not-yet-loaded/not-errored state without an extra effect to
@@ -64,8 +59,11 @@ export function CalloutCollaboraPreview({
   return (
     <div
       className={cn(
-        'rounded-lg overflow-hidden border border-border bg-muted/30 relative',
-        compact ? 'h-28' : 'aspect-video',
+        // One height everywhere: a document preview gets the same 16:9 room as a
+        // whiteboard preview, in the space feed card and in the callout detail
+        // dialog alike. A page preview squeezed into a short box reads as a plain
+        // text post and shows almost none of the document.
+        'rounded-lg overflow-hidden border border-border bg-muted/30 relative aspect-video',
         className
       )}
     >
@@ -73,7 +71,7 @@ export function CalloutCollaboraPreview({
         {/* Type icon stays mounted (and visible) until the preview image has
          * actually loaded, and again after a load error — it is never
          * replaced eagerly just because a URL was supplied. */}
-        <Icon className={cn(compact ? 'w-8 h-8' : 'w-12 h-12', accentColor)} aria-hidden="true" />
+        <Icon className={cn('w-12 h-12', accentColor)} aria-hidden="true" />
         {showImage && (
           <img
             src={previewImageUrl}
@@ -83,8 +81,8 @@ export function CalloutCollaboraPreview({
             alt=""
             loading="lazy"
             // object-top, not the default centre: a document preview's content
-            // starts at the top of the page, so a centre crop on a short card
-            // can show nothing but the blank middle of page one.
+            // starts at the top of the page, so a centre crop of a portrait page
+            // in a landscape box can show nothing but the blank middle of page one.
             className={cn('absolute inset-0 w-full h-full object-cover object-top', !imageLoaded && 'invisible')}
             onLoad={() => setLoadedUrl(previewImageUrl)}
             onError={() => setErroredUrl(previewImageUrl)}

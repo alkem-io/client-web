@@ -306,3 +306,28 @@ describe('PostCard section order', () => {
     expect(card()).not.toHaveClass('pb-6');
   });
 });
+
+describe('PostCard framing preview sizing', () => {
+  // The space feed used to render the document framing preview at a short fixed
+  // height, so a document callout looked like a plain text post next to a
+  // whiteboard callout in the same feed. Both framings are page/board previews
+  // and get the same room.
+  const previewBox = (container: HTMLElement) =>
+    container.querySelector('[data-slot="card-content"] > .overflow-hidden');
+
+  it('gives the document framing preview the same height as the whiteboard framing preview', () => {
+    const { container: documentContainer } = render(
+      <PostCard post={{ ...basePost, type: 'document', framingDocumentType: 'text' }} />
+    );
+    const { container: whiteboardContainer } = render(<PostCard post={{ ...basePost, type: 'whiteboard' }} />);
+
+    const documentBox = previewBox(documentContainer);
+    const whiteboardBox = previewBox(whiteboardContainer);
+
+    expect(whiteboardBox).not.toBeNull();
+    expect(documentBox).not.toBeNull();
+    expect(whiteboardBox).toHaveClass('aspect-video');
+    expect(documentBox).toHaveClass('aspect-video');
+    expect([...(documentBox?.classList ?? [])].filter(c => /^h-\d/.test(c))).toEqual([]);
+  });
+});
