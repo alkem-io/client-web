@@ -629,7 +629,9 @@
     "cardVariant": {
       "label": "Expanded card",
       "description": "Shows the full card with the subspace's What, Why and Who - more context, more height."
-    }
+    },
+    "moreFramingTypes": "More",
+    "moreFramingTypesHeading": "More to add"
   },
   "contributionSettings": {
     "heading": "Responses",
@@ -660,7 +662,9 @@
       "addRow": "Add another link",
       "removeRow": "Remove link",
       "attachFile": "Attach file"
-    }
+    },
+    "moreTypes": "More",
+    "moreTypesHeading": "More ways to respond"
   },
   "responseDefaults": {
     "srDescription": "Configure the default values for new contributions in this $t(common.callout).",

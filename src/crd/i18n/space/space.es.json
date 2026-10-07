@@ -629,7 +629,9 @@
     "cardVariant": {
       "label": "Tarjeta ampliada",
       "description": "Muestra la tarjeta completa con el Qué, Por qué y Quién del subespacio - más contexto, más altura."
-    }
+    },
+    "moreFramingTypes": "Más",
+    "moreFramingTypesHeading": "Más para añadir"
   },
   "contributionSettings": {
     "heading": "Respuestas",
@@ -660,7 +662,9 @@
       "addRow": "Añadir otro enlace",
       "removeRow": "Eliminar enlace",
       "attachFile": "Adjuntar archivo"
-    }
+    },
+    "moreTypes": "Más",
+    "moreTypesHeading": "Más formas de responder"
   },
   "responseDefaults": {
     "srDescription": "Configura los valores por defecto para las nuevas contribuciones de esta publicación.",

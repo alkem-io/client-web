@@ -4,6 +4,7 @@
  * space context is the level-zero space, so its UPDATE privilege cannot decide.
  */
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
@@ -128,7 +129,20 @@ const { CalloutFormConnector } = await import('./CalloutFormConnector');
 const openCreate = () =>
   render(<CalloutFormConnector open={true} onOpenChange={vi.fn()} mode="create" calloutsSetId="set-1" />);
 
-const hasChip = (labelKey: string) => screen.queryByRole('radio', { name: labelKey }) !== null;
+/**
+ * The framing chips the viewer is offered: the row's radios plus, when the strip
+ * groups the rest behind "More", the menu's items. Admin-only chips normally sit
+ * in the menu, so a row-only check would pass vacuously for a non-admin.
+ */
+const offeredChips = async (): Promise<string[]> => {
+  const row = screen.queryAllByRole('radio').map(chip => chip.getAttribute('aria-label') ?? '');
+  const more = screen.queryByRole('button', { name: 'forms.moreFramingTypesHeading' });
+  if (!more) return row;
+  await userEvent.click(more);
+  const menu = (await screen.findAllByRole('menuitem')).map(item => item.textContent ?? '');
+  await userEvent.keyboard('{Escape}');
+  return [...row, ...menu];
+};
 
 describe('CalloutFormConnector — admin-only framing chips follow the current level', () => {
   beforeEach(() => {
@@ -137,34 +151,40 @@ describe('CalloutFormConnector — admin-only framing chips follow the current l
     mocks.subspaceCanUpdate = false;
   });
 
-  test('a subspace admin without level-zero admin rights sees the admin-only chips', () => {
+  test('a subspace admin without level-zero admin rights sees the admin-only chips', async () => {
     mocks.subspaceId = 'sub-1';
     mocks.subspaceCanUpdate = true;
     openCreate();
 
-    expect(hasChip('callout.form')).toBe(true);
-    expect(hasChip('callout.contributors')).toBe(true);
-    expect(hasChip('callout.subspaces')).toBe(true);
+    const chips = await offeredChips();
+    expect(chips).toContain('callout.form');
+    expect(chips).toContain('callout.contributors');
+    expect(chips).toContain('callout.subspaces');
   });
 
-  test('a level-zero admin who is not a subspace admin does not see them on a subspace', () => {
+  test('a level-zero admin who is not a subspace admin does not see them on a subspace', async () => {
     mocks.spaceCanUpdate = true;
     mocks.subspaceId = 'sub-1';
     mocks.subspaceCanUpdate = false;
     openCreate();
 
-    expect(hasChip('callout.form')).toBe(false);
+    const chips = await offeredChips();
+    expect(chips).toContain('callout.whiteboard');
+    expect(chips).not.toContain('callout.form');
   });
 
-  test('on the level-zero space the space privilege decides', () => {
+  test('on the level-zero space the space privilege decides', async () => {
     mocks.spaceCanUpdate = true;
     openCreate();
-    expect(hasChip('callout.form')).toBe(true);
+    expect(await offeredChips()).toContain('callout.form');
   });
 
-  test('a non-admin sees none of them', () => {
+  test('a non-admin sees none of them', async () => {
     openCreate();
-    expect(hasChip('callout.form')).toBe(false);
-    expect(hasChip('callout.contributors')).toBe(false);
+    const chips = await offeredChips();
+    // Positive control: the menu is reachable and lists the non-admin chips.
+    expect(chips).toContain('callout.poll');
+    expect(chips).not.toContain('callout.form');
+    expect(chips).not.toContain('callout.contributors');
   });
 });

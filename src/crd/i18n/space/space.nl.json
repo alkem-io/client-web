@@ -629,7 +629,9 @@
     "cardVariant": {
       "label": "Uitgeklapte kaart",
       "description": "Toont de volledige kaart met de Wat, Waarom en Wie van de subspace - meer context, meer hoogte."
-    }
+    },
+    "moreFramingTypes": "Meer",
+    "moreFramingTypesHeading": "Meer om toe te voegen"
   },
   "contributionSettings": {
     "heading": "Reacties",
@@ -660,7 +662,9 @@
       "addRow": "Nog een link toevoegen",
       "removeRow": "Link verwijderen",
       "attachFile": "Bestand bijvoegen"
-    }
+    },
+    "moreTypes": "Meer",
+    "moreTypesHeading": "Meer manieren om te reageren"
   },
   "responseDefaults": {
     "srDescription": "Stel de standaardwaarden in voor nieuwe bijdragen in deze $t(common.callout).",
