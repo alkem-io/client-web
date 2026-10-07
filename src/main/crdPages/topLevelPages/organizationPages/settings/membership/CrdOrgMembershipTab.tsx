@@ -21,9 +21,11 @@ import useOrgMembershipTabData from './useOrgMembershipTabData';
 const CrdOrgMembershipTab = () => {
   const { t } = useTranslation('crd-contributorSettings');
   const notify = useNotification();
-  // Until the URL resolver settles, organizationId is '' and the roles query
-  // is skipped (loading:false, no data). Folding the context's own loading in
-  // keeps the skeleton up for that beat instead of the "no memberships" caption.
+  // Until the organization is resolved, organizationId is '' and the roles
+  // query is skipped (loading:false, no data). The context's loading flag can
+  // read false during that beat (the URL resolver may hand back a stale settled
+  // value while it fetches), so an unresolved organization counts as loading
+  // too: the skeleton stays up instead of the "no memberships" caption.
   const { organizationId, loading: resolvingOrganization } = useOrganizationContext();
 
   const {
@@ -76,7 +78,7 @@ const CrdOrgMembershipTab = () => {
   return (
     <>
       <OrgMembershipTabView
-        loading={resolvingOrganization || rolesLoading}
+        loading={resolvingOrganization || rolesLoading || !organizationId}
         title={t('org.membership.title')}
         rows={visible}
         totalShown={visible.length}

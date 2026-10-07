@@ -98,6 +98,18 @@ describe('CrdOrgMembershipTab', () => {
     expect(screen.queryByText(en.title)).not.toBeInTheDocument();
   });
 
+  it('shows the skeleton, never the empty caption, while the organization is unresolved even if the context reports not loading', () => {
+    mockOrganizationContext.mockReturnValue({ organizationId: '', loading: false });
+    mockRolesQuery.mockReturnValue({ data: undefined, loading: false, refetch: mockRefetch });
+
+    const { container } = renderTab();
+
+    expect(container.querySelector('[data-slot="skeleton"]')).not.toBeNull();
+    expect(mockRolesQuery).toHaveBeenCalledWith(expect.objectContaining({ skip: true }));
+    expect(screen.queryByText(en.empty)).not.toBeInTheDocument();
+    expect(screen.queryByText(en.title)).not.toBeInTheDocument();
+  });
+
   it('shows the empty caption once resolved with no memberships', () => {
     mockRolesQuery.mockReturnValue({
       data: { rolesOrganization: { id: 'roles-org-1', spaces: [] } },
