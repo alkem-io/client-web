@@ -878,6 +878,11 @@ export function useTemplateForms({
         // The Form definition travels through its own mutation, first: a rejection keeps the
         // dialog open with nothing else saved.
         await calloutFramingSave.saveFormDefinition();
+        // Poll options travel through their own mutations (updateCallout only carries the poll title).
+        // They save before the reference work below, which is not idempotent (it creates rows without
+        // ids and deletes removed ids): a failed option save then retries without replaying it, and
+        // the option save resumes from what already succeeded.
+        await calloutFramingSave.savePollOptions();
         await updateTemplate({ variables: { templateId, profile } });
 
         // References live on the callout's framing profile. The callout update mutation can only
@@ -929,8 +934,6 @@ export function useTemplateForms({
             originalSortOrders: editMeta.originalMediaGallerySortOrders,
           });
         }
-        // Poll options are not part of `updateCallout` (only the poll title is).
-        await calloutFramingSave.savePollOptions();
         return;
       }
     }

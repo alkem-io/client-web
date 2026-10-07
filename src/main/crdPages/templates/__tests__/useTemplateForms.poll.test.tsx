@@ -10,6 +10,8 @@ const harness = vi.hoisted(() => ({
   removePollOption: vi.fn(),
   updatePollOption: vi.fn(),
   reorderPollOptions: vi.fn(),
+  createReference: vi.fn(),
+  deleteReference: vi.fn(),
   notify: vi.fn(),
 }));
 
@@ -19,12 +21,12 @@ vi.mock('react-i18next', () => ({
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useAddPollOptionMutation: () => [harness.addPollOption, {}],
-  useCreateReferenceOnProfileMutation: () => [vi.fn()],
+  useCreateReferenceOnProfileMutation: () => [harness.createReference],
   useCreateTemplateFromSpaceMutation: () => [vi.fn()],
   useCreateTemplateMutation: () => [vi.fn()],
   useCreateWhiteboardDraftOnCalloutsSetMutation: () => [vi.fn()],
   useCreateWhiteboardDraftOnTemplatesSetMutation: () => [vi.fn()],
-  useDeleteReferenceMutation: () => [vi.fn()],
+  useDeleteReferenceMutation: () => [harness.deleteReference],
   useDeleteTemplateMutation: () => [vi.fn()],
   useDeleteWhiteboardDraftMutation: () => [vi.fn()],
   useRemovePollOptionMutation: () => [harness.removePollOption, {}],
@@ -65,7 +67,7 @@ vi.mock('@/main/crdPages/templates/CalloutTemplateForm', () => ({
 import { EMPTY_CALLOUT_FORM_VALUES } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 import { useTemplateForms } from '../useTemplateForms';
 
-function Harness() {
+function Harness({ withReferences = false }: { withReferences?: boolean }) {
   const forms = useTemplateForms({ templatesSetId: 'templates-set-1' });
   return (
     <>
@@ -86,7 +88,12 @@ function Harness() {
                 { id: 'o-b', text: 'B' },
                 { id: 'o-c', text: 'C' },
               ],
-              editMeta: { framingProfileId: 'profile-1', originalReferenceIds: [], pollId: 'poll-1' },
+              referenceRows: withReferences ? [{ name: 'Docs', uri: 'https://docs.example', description: '' }] : [],
+              editMeta: {
+                framingProfileId: 'profile-1',
+                originalReferenceIds: withReferences ? ['ref-old'] : [],
+                pollId: 'poll-1',
+              },
             }
           )
         }
@@ -117,6 +124,8 @@ describe('useTemplateForms — editing a Poll template', () => {
     harness.removePollOption.mockResolvedValue({});
     harness.updatePollOption.mockResolvedValue({});
     harness.reorderPollOptions.mockResolvedValue({});
+    harness.createReference.mockResolvedValue({});
+    harness.deleteReference.mockResolvedValue({});
   });
 
   it('saves added, removed, renamed and reordered options on the template poll', async () => {
@@ -140,9 +149,6 @@ describe('useTemplateForms — editing a Poll template', () => {
     expect(harness.updateCalloutTemplate.mock.calls[0][0].variables.calloutData.framing.poll).toEqual({
       title: 'Pick one',
     });
-    expect(harness.updateCalloutTemplate.mock.invocationCallOrder[0]).toBeLessThan(
-      harness.addPollOption.mock.invocationCallOrder[0]
-    );
   });
 
   it('sends no option mutation when the options are unchanged', async () => {
@@ -210,5 +216,29 @@ describe('useTemplateForms — editing a Poll template', () => {
     expect(harness.reorderPollOptions).toHaveBeenCalledWith({
       variables: { optionData: { pollID: 'poll-1', optionIDs: ['o-d', 'o-a', 'o-c'] } },
     });
+  });
+
+  it('retrying a failed option save never replays the non-idempotent reference create/delete', async () => {
+    harness.reorderPollOptions.mockRejectedValueOnce(new Error('reorder failed'));
+    render(<Harness withReferences={true} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Open poll template' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Edit options' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => expect(harness.notify).toHaveBeenCalledWith('callout.pollOptionsSaveFailed', 'error'));
+    expect(screen.getByTestId('dialog-open')).toHaveTextContent('true');
+    // The option save runs before the reference work, so a failure there leaves references untouched.
+    expect(harness.createReference).not.toHaveBeenCalled();
+    expect(harness.deleteReference).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await waitFor(() => expect(screen.getByTestId('dialog-open')).toHaveTextContent('false'));
+
+    expect(harness.createReference).toHaveBeenCalledOnce();
+    expect(harness.deleteReference).toHaveBeenCalledOnce();
+    expect(harness.addPollOption).toHaveBeenCalledOnce();
+    expect(harness.removePollOption).toHaveBeenCalledOnce();
+    expect(harness.updatePollOption).toHaveBeenCalledOnce();
+    expect(harness.reorderPollOptions).toHaveBeenCalledTimes(2);
   });
 });
