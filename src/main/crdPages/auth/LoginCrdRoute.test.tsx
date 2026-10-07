@@ -29,12 +29,12 @@ vi.mock('@/crd/components/auth/LoginCard', () => ({
     notice,
   }: {
     descriptor?: { flowType?: string };
-    notice?: { text: string; actionLabel: string; actionHref: string };
+    notice?: { text: string; actionLabel: string; actionHref: string; tone?: string };
   }) => (
     <div data-testid="crd-login-card">
       {descriptor?.flowType ?? 'no-descriptor'}
       {notice ? (
-        <div data-testid="card-notice">
+        <div data-testid="card-notice" data-tone={notice.tone ?? 'destructive'}>
           <span>{notice.text}</span>
           <a href={notice.actionHref}>{notice.actionLabel}</a>
         </div>
@@ -269,6 +269,88 @@ describe('LoginCrdRoute', () => {
     expect(screen.getByTestId('card-notice').querySelector('a')?.getAttribute('href')).toBe(
       'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2Fhome'
     );
+  });
+
+  // The native shell (and the server's /app-handoff route) bounce an interrupted
+  // sign-in back to a flow-less `/login?app_signin=<reason>`. Redirecting on
+  // arrival — today's OIDC-entry behaviour — would discard the reason before it
+  // could be read and put the app straight back into the loop it just left.
+  it.each([
+    ['required', 'info'],
+    ['cancelled', 'info'],
+    ['failed', 'destructive'],
+  ])('an app_signin=%s arrival lands instead of redirecting, in the %s tone', (reason, tone) => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = `app_signin=${reason}`;
+
+    renderRoute();
+
+    expect(replaceSpy).not.toHaveBeenCalled();
+    const notice = screen.getByTestId('card-notice');
+    expect(notice).toHaveTextContent(`appSignIn.${reason}`);
+    expect(notice).toHaveAttribute('data-tone', tone);
+    expect(notice.querySelector('a')?.getAttribute('href')).toBe(
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F'
+    );
+    expect(notice.querySelector('a')).toHaveTextContent('appSignIn.action');
+  });
+
+  // The user this landing exists for is signed in: the WebView holds a live
+  // `alkemio_session`, so `isAuthenticated` is true when Settings > Security
+  // bounces them back here. Without the route-level exemption
+  // `NotAuthenticatedRoute` navigates to /home and the notice never renders —
+  // the case the three tests above miss, because they all pin `false`.
+  it('an authenticated app_signin=required arrival still lands on the notice', () => {
+    mockIsAuthenticated.mockReturnValue(true);
+    mockSearch = 'app_signin=required';
+
+    renderRoute();
+
+    expect(replaceSpy).not.toHaveBeenCalled();
+    expect(screen.getByTestId('card-notice')).toHaveTextContent('appSignIn.required');
+  });
+
+  // The exemption is value-scoped too: an authenticated visitor on a crafted
+  // `?app_signin=<anything>` must still be bounced by the guard.
+  it('an authenticated unrecognised app_signin value is still bounced by the guard', () => {
+    mockIsAuthenticated.mockReturnValue(true);
+    mockSearch = 'app_signin=bogus';
+
+    renderRoute();
+
+    expect(screen.queryByTestId('crd-login-card')).not.toBeInTheDocument();
+  });
+
+  // The disqualifier is value-scoped, not presence-scoped: an unrecognised value
+  // must fall through to today's redirect. Scoping it to presence would let any
+  // crafted `/login?app_signin=<anything>` park a visitor on a card with no
+  // notice and no redirect — a dead sign-in screen.
+  it('an unrecognised app_signin value falls through to the ordinary OIDC entry', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'app_signin=bogus';
+
+    renderRoute();
+
+    expect(screen.queryByTestId('card-notice')).not.toBeInTheDocument();
+    expect(replaceSpy).toHaveBeenCalledWith('https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F');
+  });
+
+  it('a flow-less /login with no app_signin and no lockout still redirects', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+
+    renderRoute();
+
+    expect(screen.queryByTestId('card-notice')).not.toBeInTheDocument();
+    expect(replaceSpy).toHaveBeenCalledWith('https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F');
+  });
+
+  it('a lockout arrival keeps its destructive tone', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'lockout=true&retry_after=120';
+
+    renderRoute();
+
+    expect(screen.getByTestId('card-notice')).toHaveAttribute('data-tone', 'destructive');
   });
 
   it('still shows the loading state while the flow request is in flight', () => {
