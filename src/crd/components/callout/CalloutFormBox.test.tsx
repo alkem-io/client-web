@@ -35,6 +35,8 @@ type BoxProps = ComponentProps<typeof CalloutFormBox>;
 const fillIn = (overrides: Partial<ComponentProps<typeof CalloutFormFillIn>> = {}) => (
   <CalloutFormFillIn
     questions={questions}
+    visibility="ADMINS"
+    spaceName="Garden"
     state="OPEN"
     published={true}
     canSubmit={true}
@@ -50,8 +52,6 @@ const renderBox = (overrides: Partial<BoxProps> = {}, children = fillIn()) =>
       title="Q4 planning"
       description={'Tell us where to focus.\nSecond line.'}
       questionCount={questions.length}
-      visibility="ADMINS"
-      spaceName="Garden"
       defaultCollapsed={false}
       {...overrides}
     >
@@ -62,12 +62,11 @@ const renderBox = (overrides: Partial<BoxProps> = {}, children = fillIn()) =>
 const expectHeader = (title = 'Q4 planning') => {
   expect(screen.getByRole('heading', { name: title })).toBeInTheDocument();
   expect(screen.getByText('formFillIn.questionCount#3')).toBeInTheDocument();
-  expect(screen.getByText('formFillIn.noticeAdmins')).toBeInTheDocument();
   expect(screen.getByText(/Tell us where to focus\./)).toBeInTheDocument();
 };
 
 describe('CalloutFormBox', () => {
-  test('the header shows the title, the question count, the notice and the description', () => {
+  test('the header shows the title, the question count and the description', () => {
     renderBox();
     expectHeader();
     expect(screen.getByRole('region', { name: 'Q4 planning' })).toBeInTheDocument();
@@ -79,8 +78,14 @@ describe('CalloutFormBox', () => {
     expect(screen.getByRole('heading', { name: 'formFillIn.untitled' })).toBeInTheDocument();
   });
 
+  test('the visibility notice sits in the footer row, next to the submit button', () => {
+    renderBox({ defaultCollapsed: true });
+    expect(screen.getByText('formFillIn.noticeAdmins')).not.toBeVisible();
+    expect(screen.getByText('formFillIn.noticeAdmins').closest('[hidden]')).not.toBeNull();
+  });
+
   test('the members notice is shown for Space-members visibility', () => {
-    renderBox({ visibility: 'MEMBERS' });
+    renderBox({}, fillIn({ visibility: 'MEMBERS' }));
     expect(screen.getByText('formFillIn.noticeMembers')).toBeInTheDocument();
     expect(screen.queryByText('formFillIn.noticeAdmins')).toBeNull();
   });
@@ -104,6 +109,9 @@ describe('CalloutFormBox', () => {
     const { unmount: c } = renderBox({ status: 'CLOSED' }, fillIn({ state: 'CLOSED', canSubmit: false }));
     expectHeader();
     expect(screen.getByText('formFillIn.closedBadge')).toBeInTheDocument();
+    expect(screen.getByText('formFillIn.closedNotice')).toBeInTheDocument();
+    expect(screen.queryByText('formFillIn.noticeAdmins')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'formFillIn.submit' })).toBeNull();
     c();
 
     renderBox({}, fillIn({ canSubmit: false }));
@@ -158,10 +166,10 @@ describe('CalloutFormBox', () => {
   test('two mounted boxes keep independent collapse state', async () => {
     render(
       <>
-        <CalloutFormBox title="Inline" questionCount={3} visibility="ADMINS" spaceName="Garden" defaultCollapsed={true}>
+        <CalloutFormBox title="Inline" questionCount={3} defaultCollapsed={true}>
           {fillIn()}
         </CalloutFormBox>
-        <CalloutFormBox title="Dialog" questionCount={3} visibility="ADMINS" spaceName="Garden" defaultCollapsed={true}>
+        <CalloutFormBox title="Dialog" questionCount={3} defaultCollapsed={true}>
           {fillIn()}
         </CalloutFormBox>
       </>

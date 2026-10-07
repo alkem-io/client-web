@@ -102,6 +102,21 @@ const questionsToUpdateInput = (questions: FormQuestionValue[]) =>
       : undefined,
   }));
 
+/** The Form-definition slice of the callout form values. */
+type FormDefinitionFields = {
+  formTitle: string;
+  formDescription: string;
+  formQuestions: FormQuestionValue[];
+  formSettings: FormSettingsValue;
+};
+
+/** Whether any part of the Form definition (header, questions or settings) differs from what the editor opened with. */
+export const formDefinitionChanged = (current: FormDefinitionFields, initial: FormDefinitionFields): boolean =>
+  current.formTitle !== initial.formTitle ||
+  current.formDescription !== initial.formDescription ||
+  !isEqual(current.formQuestions, initial.formQuestions) ||
+  !isEqual(current.formSettings, initial.formSettings);
+
 /** What the editor was opened with; the parts of an update that still equal it are left out. */
 export type FormDefinitionInitialValue = Pick<FormDefinitionValue, 'title' | 'description' | 'questions'>;
 

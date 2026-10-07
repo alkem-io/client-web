@@ -88,7 +88,15 @@
       "links": "Links",
       "gallery": "Gallery",
       "pollQuestion": "Question",
-      "pollOptions": "Options"
+      "pollOptions": "Options",
+      "formQuestions": "Questions",
+      "formRequired": "Required",
+      "formQuestionType": {
+        "SHORT_TEXT": "Short text",
+        "LONG_TEXT": "Long text",
+        "SINGLE_CHOICE": "Single choice",
+        "MULTIPLE_CHOICE": "Multiple choice"
+      }
     },
     "whiteboard": {
       "empty": "This whiteboard template has no drawing."

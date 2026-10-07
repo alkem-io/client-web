@@ -88,7 +88,15 @@
       "links": "Връзки",
       "gallery": "Галерия",
       "pollQuestion": "Въпрос",
-      "pollOptions": "Опции"
+      "pollOptions": "Опции",
+      "formQuestions": "Въпроси",
+      "formRequired": "Задължителен",
+      "formQuestionType": {
+        "SHORT_TEXT": "Кратък текст",
+        "LONG_TEXT": "Дълъг текст",
+        "SINGLE_CHOICE": "Единичен избор",
+        "MULTIPLE_CHOICE": "Множествен избор"
+      }
     },
     "whiteboard": {
       "empty": "Този шаблон за бяла дъска няма рисунка."

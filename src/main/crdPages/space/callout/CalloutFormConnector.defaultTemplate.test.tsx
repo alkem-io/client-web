@@ -1,10 +1,10 @@
 /**
- * The admin-only framing chips (Contributors, Subspaces, Form) must follow the
- * admin privilege of the level the callout is created on. On a subspace page the
- * space context is the level-zero space, so its UPDATE privilege cannot decide.
+ * The default-template auto-load clamps the template to the framings the viewer is offered, and
+ * that depends on the admin privilege. It must therefore wait for the space / subspace permission
+ * contexts to finish loading — their loading default is `canUpdate: false`, which would clear an
+ * admin's default Form template to None for good.
  */
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
@@ -13,6 +13,10 @@ const mocks = vi.hoisted(() => ({
   spaceCanUpdate: false,
   subspaceId: '',
   subspaceCanUpdate: false,
+  spaceLoading: false,
+  subspaceLoading: false,
+  parentSpaceId: undefined as string | undefined,
+  loadTemplate: vi.fn(),
 }));
 
 vi.mock('react-i18next', () => ({
@@ -45,7 +49,7 @@ vi.mock('@/domain/space/context/useSpace', () => ({
     space: { about: { membership: { roleSetID: 'role-set-1' } } },
     entitlements: [],
     permissions: { canUpdate: mocks.spaceCanUpdate },
-    loading: false,
+    loading: mocks.spaceLoading,
   }),
 }));
 
@@ -53,11 +57,12 @@ vi.mock('@/domain/space/hooks/useSubSpace', () => ({
   useSubSpace: () => ({
     subspace: { id: mocks.subspaceId },
     permissions: { canUpdate: mocks.subspaceCanUpdate },
+    loading: mocks.subspaceLoading,
   }),
 }));
 
 vi.mock('@/main/routing/urlResolver/useUrlResolver', () => ({
-  default: () => ({ spaceId: 'space-1' }),
+  default: () => ({ spaceId: 'space-1', parentSpaceId: mocks.parentSpaceId }),
 }));
 
 vi.mock('@/domain/storage/StorageBucket/StorageConfigContext', () => ({
@@ -124,67 +129,77 @@ vi.mock('./FramingEditorConnector', () => ({ FramingEditorConnector: () => null 
 vi.mock('./ResponseDefaultsConnector', () => ({ ResponseDefaultsConnector: () => null }));
 vi.mock('./TemplateImportConnector', () => ({ TemplateImportConnector: () => null }));
 
+vi.mock('@/main/crdPages/templates/loadCalloutTemplateFormValues', () => ({
+  loadCalloutTemplateFormValues: (...args: unknown[]) => mocks.loadTemplate(...args),
+}));
+
 const { CalloutFormConnector } = await import('./CalloutFormConnector');
 
-const openCreate = () =>
-  render(<CalloutFormConnector open={true} onOpenChange={vi.fn()} mode="create" calloutsSetId="set-1" />);
+const ui = () => (
+  <CalloutFormConnector
+    open={true}
+    onOpenChange={vi.fn()}
+    mode="create"
+    calloutsSetId="set-1"
+    defaultTemplateId="template-form"
+  />
+);
 
-/**
- * The framing chips the viewer is offered: the row's radios plus, when the strip
- * groups the rest behind "More", the menu's items. Admin-only chips normally sit
- * in the menu, so a row-only check would pass vacuously for a non-admin.
- */
-const offeredChips = async (): Promise<string[]> => {
-  const row = screen.queryAllByRole('radio').map(chip => chip.getAttribute('aria-label') ?? '');
-  const more = screen.queryByRole('button', { name: 'forms.moreFramingTypesHeading' });
-  if (!more) return row;
-  await userEvent.click(more);
-  const menu = (await screen.findAllByRole('menuitem')).map(item => item.textContent ?? '');
-  await userEvent.keyboard('{Escape}');
-  return [...row, ...menu];
-};
+const hasChip = (labelKey: string) => screen.queryByRole('radio', { name: labelKey }) !== null;
 
-describe('CalloutFormConnector — admin-only framing chips follow the current level', () => {
+describe('CalloutFormConnector — default template waits for the permission contexts', () => {
   beforeEach(() => {
     mocks.spaceCanUpdate = false;
     mocks.subspaceId = '';
     mocks.subspaceCanUpdate = false;
+    mocks.spaceLoading = false;
+    mocks.subspaceLoading = false;
+    mocks.parentSpaceId = undefined;
+    mocks.loadTemplate.mockReset();
+    mocks.loadTemplate.mockResolvedValue({ framingChip: 'form', title: 'From template' });
   });
 
-  test('a subspace admin without level-zero admin rights sees the admin-only chips', async () => {
+  test('an admin keeps the default Form template when permissions finish loading after the dialog opens', async () => {
+    mocks.spaceLoading = true;
+    mocks.spaceCanUpdate = false;
+    const { rerender } = render(ui());
+    // Nothing is loaded (let alone clamped) while the permissions are at their loading default.
+    expect(mocks.loadTemplate).not.toHaveBeenCalled();
+
+    mocks.spaceLoading = false;
+    mocks.spaceCanUpdate = true;
+    rerender(ui());
+
+    await waitFor(() => expect(mocks.loadTemplate).toHaveBeenCalledOnce());
+    await waitFor(() => expect(screen.getByRole('radio', { name: 'callout.form' })).toBeChecked());
+  });
+
+  test('a non-admin is still clamped to None once permissions have loaded', async () => {
+    mocks.spaceLoading = true;
+    const { rerender } = render(ui());
+    expect(mocks.loadTemplate).not.toHaveBeenCalled();
+
+    mocks.spaceLoading = false;
+    rerender(ui());
+
+    await waitFor(() => expect(mocks.loadTemplate).toHaveBeenCalledOnce());
+    await waitFor(() => expect(screen.getByDisplayValue('From template')).toBeInTheDocument());
+    expect(hasChip('callout.form')).toBe(false);
+  });
+
+  test('on a subspace page it also waits for the subspace permissions', async () => {
+    mocks.parentSpaceId = 'space-1';
+    mocks.subspaceLoading = true;
+    mocks.spaceCanUpdate = true; // level-zero admin, not a subspace admin
+    const { rerender } = render(ui());
+    expect(mocks.loadTemplate).not.toHaveBeenCalled();
+
     mocks.subspaceId = 'sub-1';
     mocks.subspaceCanUpdate = true;
-    openCreate();
+    mocks.subspaceLoading = false;
+    rerender(ui());
 
-    const chips = await offeredChips();
-    expect(chips).toContain('callout.form');
-    expect(chips).toContain('callout.contributors');
-    expect(chips).toContain('callout.subspaces');
-  });
-
-  test('a level-zero admin who is not a subspace admin does not see them on a subspace', async () => {
-    mocks.spaceCanUpdate = true;
-    mocks.subspaceId = 'sub-1';
-    mocks.subspaceCanUpdate = false;
-    openCreate();
-
-    const chips = await offeredChips();
-    expect(chips).toContain('callout.whiteboard');
-    expect(chips).not.toContain('callout.form');
-  });
-
-  test('on the level-zero space the space privilege decides', async () => {
-    mocks.spaceCanUpdate = true;
-    openCreate();
-    expect(await offeredChips()).toContain('callout.form');
-  });
-
-  test('a non-admin sees none of them', async () => {
-    openCreate();
-    const chips = await offeredChips();
-    // Positive control: the menu is reachable and lists the non-admin chips.
-    expect(chips).toContain('callout.poll');
-    expect(chips).not.toContain('callout.form');
-    expect(chips).not.toContain('callout.contributors');
+    await waitFor(() => expect(mocks.loadTemplate).toHaveBeenCalledOnce());
+    await waitFor(() => expect(screen.getByRole('radio', { name: 'callout.form' })).toBeChecked());
   });
 });

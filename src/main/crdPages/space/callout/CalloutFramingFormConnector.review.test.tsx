@@ -62,6 +62,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
       fetchMore: hoisted.fetchMore,
     };
   },
+  useCalloutFormResponsesLazyQuery: () => [vi.fn()],
   useSubmitCalloutFormResponseMutation: () => [vi.fn(), { loading: false }],
   useDeleteCalloutFormResponseMutation: () => [hoisted.remove, { loading: false }],
 }));

@@ -629,7 +629,9 @@
     "cardVariant": {
       "label": "Carte étendue",
       "description": "Affiche la carte complète avec le Quoi, Pourquoi et Qui du sous-espace - plus de contexte, plus de hauteur."
-    }
+    },
+    "moreFramingTypes": "Plus",
+    "moreFramingTypesHeading": "Plus à ajouter"
   },
   "contributionSettings": {
     "heading": "Réponses",
@@ -660,7 +662,9 @@
       "addRow": "Ajouter un autre lien",
       "removeRow": "Supprimer le lien",
       "attachFile": "Joindre un fichier"
-    }
+    },
+    "moreTypes": "Plus",
+    "moreTypesHeading": "Plus de façons de répondre"
   },
   "responseDefaults": {
     "srDescription": "Configurez les valeurs par défaut des nouvelles contributions de cette publication.",
@@ -1348,6 +1352,13 @@
     },
     "singleTitle": "Réponse de {{name}}",
     "deleteFailed": "La réponse n'a pas pu être supprimée. Veuillez réessayer.",
-    "loadFailed": "Les réponses n'ont pas pu être chargées."
+    "loadFailed": "Les réponses n'ont pas pu être chargées.",
+    "exportCsv": "Exporter en CSV",
+    "exporting": "Exportation…",
+    "exportFailed": "Les réponses n’ont pas pu être exportées. Veuillez réessayer.",
+    "csv": {
+      "submitter": "Envoyé par",
+      "submittedDate": "Envoyé le"
+    }
   }
 }

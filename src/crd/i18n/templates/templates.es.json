@@ -88,7 +88,15 @@
       "links": "Enlaces",
       "gallery": "Galería",
       "pollQuestion": "Pregunta",
-      "pollOptions": "Opciones"
+      "pollOptions": "Opciones",
+      "formQuestions": "Preguntas",
+      "formRequired": "Obligatoria",
+      "formQuestionType": {
+        "SHORT_TEXT": "Texto corto",
+        "LONG_TEXT": "Texto largo",
+        "SINGLE_CHOICE": "Opción única",
+        "MULTIPLE_CHOICE": "Opción múltiple"
+      }
     },
     "whiteboard": {
       "empty": "Esta plantilla de pizarra no tiene dibujo."

@@ -36242,6 +36242,32 @@ export type TemplateContentQuery = {
                           | undefined;
                       }
                     | undefined;
+                  form?:
+                    | {
+                        __typename?: 'CalloutForm';
+                        id: string;
+                        title?: string | undefined;
+                        description?: string | undefined;
+                        questions: Array<{
+                          __typename?: 'CalloutFormQuestion';
+                          id: string;
+                          prompt: string;
+                          explanation?: string | undefined;
+                          type: CalloutFormQuestionType;
+                          required: boolean;
+                          options?:
+                            | Array<{ __typename?: 'CalloutFormQuestionOption'; id: string; label: string }>
+                            | undefined;
+                        }>;
+                        settings: {
+                          __typename?: 'CalloutFormSettings';
+                          visibility: CalloutFormResponseVisibility;
+                          responseMode: CalloutFormResponseMode;
+                          state: CalloutFormState;
+                          defaultCollapsed: boolean;
+                        };
+                      }
+                    | undefined;
                   collaboraDocument?:
                     | {
                         __typename?: 'CollaboraDocument';
@@ -37037,6 +37063,30 @@ export type CalloutTemplateContentFragment = {
                 selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
               }
             | undefined;
+        }
+      | undefined;
+    form?:
+      | {
+          __typename?: 'CalloutForm';
+          id: string;
+          title?: string | undefined;
+          description?: string | undefined;
+          questions: Array<{
+            __typename?: 'CalloutFormQuestion';
+            id: string;
+            prompt: string;
+            explanation?: string | undefined;
+            type: CalloutFormQuestionType;
+            required: boolean;
+            options?: Array<{ __typename?: 'CalloutFormQuestionOption'; id: string; label: string }> | undefined;
+          }>;
+          settings: {
+            __typename?: 'CalloutFormSettings';
+            visibility: CalloutFormResponseVisibility;
+            responseMode: CalloutFormResponseMode;
+            state: CalloutFormState;
+            defaultCollapsed: boolean;
+          };
         }
       | undefined;
     collaboraDocument?:
