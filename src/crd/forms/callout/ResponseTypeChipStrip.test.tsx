@@ -5,7 +5,7 @@ import { ResponseTypeChipStrip } from './ResponseTypeChipStrip';
 
 /** Opens the More menu and returns its items. */
 const openMore = async () => {
-  await userEvent.click(screen.getByRole('button', { name: 'contributionSettings.moreTypes' }));
+  await userEvent.click(screen.getByRole('button', { name: 'contributionSettings.moreTypesHeading' }));
   return screen.findAllByRole('menuitem');
 };
 const labels = (els: HTMLElement[]) => els.map(el => el.getAttribute('aria-label') ?? el.textContent);
@@ -55,7 +55,7 @@ describe('ResponseTypeChipStrip', () => {
 
   test('the More trigger is not one of the radio options', () => {
     render(<ResponseTypeChipStrip value="none" onChange={vi.fn()} />);
-    const more = screen.getByRole('button', { name: 'contributionSettings.moreTypes' });
+    const more = screen.getByRole('button', { name: 'contributionSettings.moreTypesHeading' });
     expect(more).not.toHaveAttribute('role', 'radio');
     expect(screen.getByRole('radiogroup')).not.toContainElement(more);
   });
@@ -79,12 +79,12 @@ describe('ResponseTypeChipStrip', () => {
   test('fewer than five available types renders them all with no More menu', () => {
     render(<ResponseTypeChipStrip value="none" onChange={vi.fn()} allowedChips={['link', 'post', 'memo']} />);
     expect(screen.getAllByRole('radio')).toHaveLength(3);
-    expect(screen.queryByRole('button', { name: 'contributionSettings.moreTypes' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'contributionSettings.moreTypesHeading' })).toBeNull();
   });
 
   test('locked mode: the More trigger is inert', () => {
     render(<ResponseTypeChipStrip value="post" onChange={vi.fn()} locked={true} />);
-    const more = screen.getByRole('button', { name: 'contributionSettings.moreTypes' });
+    const more = screen.getByRole('button', { name: 'contributionSettings.moreTypesHeading' });
     expect(more).toBeDisabled();
     expect(more).toHaveAttribute('title', 'contributionSettings.typeLockedHint');
   });
@@ -179,7 +179,7 @@ describe('ResponseTypeChipStrip', () => {
     render(<ResponseTypeChipStrip value="none" onChange={vi.fn()} allowedChips={['post', 'link']} />);
     const chips = screen.getAllByRole('radio');
     expect(chips).toHaveLength(2);
-    expect(screen.queryByRole('button', { name: 'contributionSettings.moreTypes' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'contributionSettings.moreTypesHeading' })).toBeNull();
     expect(screen.getByRole('radio', { name: /contributionSettings.types.post/i })).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: /contributionSettings.types.link/i })).toBeInTheDocument();
     expect(screen.queryByRole('radio', { name: /contributionSettings.types.memo/i })).toBeNull();

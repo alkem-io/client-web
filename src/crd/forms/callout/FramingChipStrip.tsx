@@ -228,7 +228,7 @@ export function FramingChipStrip({
                   edit for no reason the user can see. */}
               <DropdownMenuTrigger
                 disabled={editMode}
-                aria-label={t('forms.moreFramingTypes')}
+                aria-label={t('forms.moreFramingTypesHeading')}
                 title={editMode ? t('forms.typeLockedHint') : undefined}
                 className={cn(
                   'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',

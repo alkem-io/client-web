@@ -136,7 +136,7 @@ const openCreate = () =>
  */
 const offeredChips = async (): Promise<string[]> => {
   const row = screen.queryAllByRole('radio').map(chip => chip.getAttribute('aria-label') ?? '');
-  const more = screen.queryByRole('button', { name: 'forms.moreFramingTypes' });
+  const more = screen.queryByRole('button', { name: 'forms.moreFramingTypesHeading' });
   if (!more) return row;
   await userEvent.click(more);
   const menu = (await screen.findAllByRole('menuitem')).map(item => item.textContent ?? '');

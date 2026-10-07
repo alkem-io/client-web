@@ -237,7 +237,7 @@ export function ResponseTypeChipStrip({
                 chips do, and carries the same hint. */}
             <DropdownMenuTrigger
               disabled={locked}
-              aria-label={t('contributionSettings.moreTypes')}
+              aria-label={t('contributionSettings.moreTypesHeading')}
               title={locked ? t('contributionSettings.typeLockedHint') : undefined}
               className={cn(
                 'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',

@@ -8,7 +8,7 @@ const ROW_LABELS = ['callout.whiteboard', 'callout.memo', 'callout.mediaGallery'
 
 /** Opens the More menu and returns its items. */
 const openMore = async () => {
-  await userEvent.click(screen.getByRole('button', { name: 'forms.moreFramingTypes' }));
+  await userEvent.click(screen.getByRole('button', { name: 'forms.moreFramingTypesHeading' }));
   return screen.findAllByRole('menuitem');
 };
 
@@ -45,7 +45,7 @@ describe('FramingChipStrip', () => {
 
   test('the More trigger is not one of the radio options', () => {
     render(<FramingChipStrip value="none" onChange={vi.fn()} />);
-    const more = screen.getByRole('button', { name: 'forms.moreFramingTypes' });
+    const more = screen.getByRole('button', { name: 'forms.moreFramingTypesHeading' });
     // It sits beside the radiogroup, not inside it — it is a way to reach the
     // other options, not an option.
     expect(more).not.toHaveAttribute('role', 'radio');
@@ -65,12 +65,12 @@ describe('FramingChipStrip', () => {
   test('fewer than five available chips renders them all with no More menu', () => {
     render(<FramingChipStrip value="none" onChange={vi.fn()} allowedChips={['whiteboard', 'memo', 'poll', 'cta']} />);
     expect(screen.getAllByRole('radio')).toHaveLength(4);
-    expect(screen.queryByRole('button', { name: 'forms.moreFramingTypes' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'forms.moreFramingTypesHeading' })).toBeNull();
   });
 
   test('edit mode: the More trigger is inert — the framing type cannot be switched', () => {
     render(<FramingChipStrip value="poll" onChange={vi.fn()} editMode={true} />);
-    const more = screen.getByRole('button', { name: 'forms.moreFramingTypes' });
+    const more = screen.getByRole('button', { name: 'forms.moreFramingTypesHeading' });
     expect(more).toBeDisabled();
     expect(more).toHaveAttribute('title', 'forms.typeLockedHint');
   });
