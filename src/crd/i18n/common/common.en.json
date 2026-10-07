@@ -547,7 +547,6 @@
       "LEAD": "Lead",
       "MEMBER": "$t(common.Member)",
       "OWNER": "Owner",
-      "PLATFORM_ASSISTANT_ACCESS": "Platform Assistant Access",
       "PLATFORM_AUDIT_READER": "Platform Audit Reader",
       "PLATFORM_BETA_TESTER": "Beta Tester",
       "PLATFORM_CONTENT_FULL_ACCESS": "Platform Content Full Access",

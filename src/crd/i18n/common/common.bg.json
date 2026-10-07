@@ -547,7 +547,6 @@
       "LEAD": "Лидер",
       "MEMBER": "$t(common.Member)",
       "OWNER": "Собственик",
-      "PLATFORM_ASSISTANT_ACCESS": "Достъп до асистента на платформата",
       "PLATFORM_AUDIT_READER": "Четец на одитния дневник на платформата",
       "PLATFORM_BETA_TESTER": "Бета тестер",
       "PLATFORM_CONTENT_FULL_ACCESS": "Пълен достъп до съдържанието на платформата",

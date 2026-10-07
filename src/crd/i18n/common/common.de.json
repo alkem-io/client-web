@@ -547,7 +547,6 @@
       "LEAD": "Blei",
       "MEMBER": "$t(common.Member)",
       "OWNER": "Besitzer",
-      "PLATFORM_ASSISTANT_ACCESS": "Platform Assistenten-Zugriff",
       "PLATFORM_AUDIT_READER": "Platform Audit-Leser",
       "PLATFORM_BETA_TESTER": "Beta Tester",
       "PLATFORM_CONTENT_FULL_ACCESS": "Platform Vollzugriff auf Inhalte",

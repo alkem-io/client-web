@@ -43,8 +43,8 @@ const TRANS_COMPONENTS = {
 /**
  * Resolves a raw role slug (e.g. "platform-resource-admin") to its translated label via the
  * existing `common.roles.<KEY>` vocabulary. A slug with no matching key — a role added after
- * this list, or a legacy credential type emitted by the retiring credential mutations — falls
- * back to a humanized form of the slug, never the raw slug and never blank.
+ * this list, or a retired slug on a record written before 027 Slice B — falls back to a
+ * humanized form of the slug, never the raw slug and never blank.
  */
 function resolveRoleLabel(slug: string | undefined, t: TFunction): string | undefined {
   return slug ? t(`common.roles.${kebabToConstantCase(slug)}`, { defaultValue: humanizeRoleSlug(slug) }) : undefined;
