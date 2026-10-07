@@ -14,7 +14,7 @@ import useRoleSetManagerRolesAssignment, {
 } from './RolesAssignment/useRoleSetManagerRolesAssignment';
 
 // The 10 `Platform …` administration roles — assignable only by a holder of
-// `PLATFORM_ROLES_ASSIGN` (Slice A spelling of `PLATFORM_ROLES_ASSIGN`, FR-012).
+// `PLATFORM_ROLES_ASSIGN` (FR-012).
 const PLATFORM_ADMIN_ROLES = [
   RoleName.PlatformRolesAdmin,
   RoleName.PlatformContentFullAccess,
@@ -34,8 +34,7 @@ const FEATURE_ROLES = [
   RoleName.FeatureBetaTester,
   RoleName.FeatureVirtualAssistant,
   RoleName.FeatureOrganizationCreator,
-  // Additive successor of the legacy `PLATFORM_VC_CAMPAIGN` below; both are
-  // honoured until Slice B retires the legacy one.
+  // Successor of the retired legacy `PLATFORM_VC_CAMPAIGN`.
   RoleName.FeatureVcCampaign,
 ] as const;
 
@@ -66,14 +65,14 @@ export const RELEVANT_ROLES = {
  * role sets in one request (FR-032).
  *
  * corr-client-web-8: the two privileges gate DISJOINT role families server-side
- * (platform.role.assignment.rules.service.ts `assignerPrivilegeFor` — the 3
+ * (platform.role.assignment.rules.service.ts `assignerPrivilegeFor` — the 4
  * `Feature …` roles require `FEATURE_ROLE_ASSIGN`, the 10 `Platform …` roles
  * require `PLATFORM_ROLES_ASSIGN`) and must therefore be UNIONED, not
- * short-circuited. A legacy `global-admin` holds `PLATFORM_ROLES_ASSIGN` but not
- * `FEATURE_ROLE_ASSIGN` — short-circuiting on the first privilege used to offer
- * them all 13 roles including the 3 Feature roles, which the server then
+ * short-circuited. A holder of `PLATFORM_ROLES_ASSIGN` alone must not be offered
+ * the Feature roles — short-circuiting on the first privilege used to offer such
+ * an operator every role including the Feature ones, which the server then
  * rejected on every assign/revoke. `platform-roles-admin` holds both
- * privileges, so it still gets the full 13 (T005/SC-009 unaffected).
+ * privileges, so it still gets the full 14 (T005/SC-009 unaffected).
  */
 export const getOfferedPlatformRoles = (
   myPrivileges: AuthorizationPrivilege[] | undefined

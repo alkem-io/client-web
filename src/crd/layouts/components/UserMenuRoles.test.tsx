@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
-import { UserMenuRoles } from './UserMenuRoles';
+import { UserMenuRoles } from './UserMenu';
 
 /**
  * The caption under the user's name in the avatar menu. A holder of several
