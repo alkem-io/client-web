@@ -100,6 +100,11 @@ fragment userSettingsFragment on UserSettings {
           inApp
           push
         }
+        collaborationCalloutFormResponseReceived {
+          email
+          inApp
+          push
+        }
         communityNewMember {
           email
           inApp

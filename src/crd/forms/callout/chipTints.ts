@@ -69,6 +69,10 @@ const TINTS = {
     icon: 'text-indigo-600',
     surface: 'bg-indigo-100 border-indigo-300',
   },
+  slate: {
+    icon: 'text-slate-600',
+    surface: 'bg-slate-100 border-slate-300',
+  },
 } as const satisfies Record<string, Tint>;
 
 /**
@@ -91,6 +95,7 @@ const HUE_BY_KIND = {
   poll: 'amber',
   contributors: 'emerald',
   spaces: 'indigo',
+  form: 'slate',
   // Responses only.
   link: 'emerald',
   post: 'amber',

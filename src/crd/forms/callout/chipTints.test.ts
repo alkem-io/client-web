@@ -2,7 +2,17 @@ import { describe, expect, test } from 'vitest';
 import { chipIconTint, chipSurfaceTint, type TintedChipKind } from './chipTints';
 
 /** The kinds each strip can show at once — the sets uniqueness has to hold within. */
-const FRAMING: TintedChipKind[] = ['whiteboard', 'memo', 'document', 'cta', 'image', 'poll', 'contributors', 'spaces'];
+const FRAMING: TintedChipKind[] = [
+  'whiteboard',
+  'memo',
+  'document',
+  'cta',
+  'image',
+  'poll',
+  'contributors',
+  'spaces',
+  'form',
+];
 const RESPONSES: TintedChipKind[] = ['link', 'post', 'memo', 'whiteboard', 'document', 'tasks'];
 
 describe('chipTints', () => {

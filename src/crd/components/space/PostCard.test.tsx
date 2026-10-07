@@ -246,3 +246,63 @@ describe('PostCard reactionsSlot placement', () => {
     expect(footer?.contains(allReactions[0])).toBe(true);
   });
 });
+
+describe('PostCard section order', () => {
+  it('renders framing slots before contributions, and contributions before the footer', () => {
+    render(
+      <PostCard
+        post={{ ...basePost, type: 'whiteboard' }}
+        contributionsPreview={<div>contributions-preview</div>}
+        reactionsSlot={<div>footer-reactions</div>}
+      >
+        <div>form-framing</div>
+      </PostCard>
+    );
+    const whiteboardFraming = screen.getByRole('button', { name: /open whiteboard/i });
+    const framingSlot = screen.getByText('form-framing');
+    const contributions = screen.getByText('contributions-preview');
+    const footer = screen.getByText('footer-reactions');
+    const follows = (a: Element, b: Element) =>
+      Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(follows(whiteboardFraming, framingSlot)).toBe(true);
+    expect(follows(framingSlot, contributions)).toBe(true);
+    expect(follows(contributions, footer)).toBe(true);
+  });
+
+  // Spacing guards: a separate Card child adds the Card's `gap-6` on top of the preview header's `mt-4`.
+  it('without framing slots, contributions close the card body (no extra Card gap)', () => {
+    const { container } = render(
+      <PostCard post={{ ...basePost, type: 'whiteboard' }} contributionsPreview={<div>contributions-preview</div>} />
+    );
+    const body = container.querySelector('[data-slot="card-content"]');
+    expect(body?.contains(screen.getByText('contributions-preview'))).toBe(true);
+  });
+
+  it('with framing slots, contributions share the slot wrapper', () => {
+    render(
+      <PostCard post={basePost} contributionsPreview={<div>contributions-preview</div>}>
+        <div>poll-framing</div>
+      </PostCard>
+    );
+    expect(screen.getByText('contributions-preview').parentElement).toBe(
+      screen.getByText('poll-framing').parentElement
+    );
+  });
+
+  it('pads the card bottom only when the footer is hidden', () => {
+    const { container, rerender } = render(
+      <PostCard post={{ ...basePost, commentsEnabled: false, commentCount: 0 }} contributionsPreview={<div>c</div>} />
+    );
+    const card = () => container.querySelector('[data-slot="card"]');
+    expect(container.querySelector('[data-slot="card-footer"]')).toBeNull();
+    expect(card()).toHaveClass('pb-6');
+
+    rerender(
+      <I18nextProvider i18n={i18n}>
+        <PostCard post={{ ...basePost, commentsEnabled: true }} contributionsPreview={<div>c</div>} />
+      </I18nextProvider>
+    );
+    expect(container.querySelector('[data-slot="card-footer"]')).not.toBeNull();
+    expect(card()).not.toHaveClass('pb-6');
+  });
+});
