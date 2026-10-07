@@ -53,14 +53,26 @@ describe('useFormResponsesCsvExport', () => {
     expect(result.current.exporting).toBe(false);
   });
 
-  test('a cursor that does not advance stops the paging', async () => {
+  test('a cursor that does not advance fails the export instead of downloading a partial file', async () => {
     query.mockResolvedValue(page([response('r1', 'Ada')], true, 'same'));
     const { result } = renderHook(() => useFormResponsesCsvExport({ formId: 'f1', formTitle: 'Q4', questions }));
 
     await act(() => result.current.exportCsv());
 
     expect(query).toHaveBeenCalledTimes(2);
-    expect(downloadCsv).toHaveBeenCalledTimes(1);
+    expect(downloadCsv).not.toHaveBeenCalled();
+    expect(notify).toHaveBeenCalledWith('formResponses.exportFailed', 'error');
+  });
+
+  test('more pages announced without a cursor fails the export', async () => {
+    query.mockResolvedValueOnce(page([response('r1', 'Ada')], true, null));
+    const { result } = renderHook(() => useFormResponsesCsvExport({ formId: 'f1', formTitle: 'Q4', questions }));
+
+    await act(() => result.current.exportCsv());
+
+    expect(query).toHaveBeenCalledTimes(1);
+    expect(downloadCsv).not.toHaveBeenCalled();
+    expect(notify).toHaveBeenCalledWith('formResponses.exportFailed', 'error');
   });
 
   test('a failed read notifies and downloads nothing', async () => {

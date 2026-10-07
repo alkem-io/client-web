@@ -46,8 +46,11 @@ export function useFormResponsesCsvExport({ formId, formTitle, questions }: UseF
       const page = data.lookup.calloutFormResponses.all;
       responses.push(...page.responses);
       const next = page.pageInfo.hasNextPage ? (page.pageInfo.endCursor ?? undefined) : undefined;
-      // A cursor that does not advance would loop forever; stop with what was read.
-      after = next !== after ? next : undefined;
+      // More pages but no new cursor: never hand out a silently truncated export.
+      if (page.pageInfo.hasNextPage && (!next || next === after)) {
+        throw new Error('Form responses pagination cursor did not advance');
+      }
+      after = next;
     } while (after);
     return responses;
   };
