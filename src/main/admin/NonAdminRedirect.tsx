@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { type ClosestAncestor, NotAuthorizedError } from '@/core/40XErrorHandler/40XErrors';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import Loading from '@/core/ui/loading/Loading';
 
 interface NonAdminRedirectProps {
@@ -41,9 +41,14 @@ const NonAdminRedirect = ({
 
   const admitting = Array.isArray(adminPrivilege) ? adminPrivilege : [adminPrivilege];
 
-  const isAdmin =
-    admitted ||
-    privileges?.some(privilege => admitting.includes(privilege) || privilege === AuthorizationPrivilege.PlatformAdmin);
+  // 027-platform-role-redesign (T013, Slice B): the `|| privilege === PlatformAdmin`
+  // escape hatch is GONE with the privilege. It was the client-side twin of the
+  // server's catch-all — one privilege that admitted its holder to EVERY admin
+  // area regardless of which one `adminPrivilege` named — so leaving it in place
+  // would have kept a decomposed model on the server and a single god privilege
+  // in the console. Each area is now admitted by its own family's privilege, which
+  // is what the `adminPrivilege` array was widened to express.
+  const isAdmin = admitted || privileges?.some(privilege => admitting.includes(privilege));
 
   if (isAdmin) {
     return <>{children}</>;

@@ -77,7 +77,7 @@ export const ROLE_SET_INVITE_PRIVILEGES = [AuthorizationPrivilege.RolesetEntryRo
  * This is a different mutation pair from the role-set assignment above, which is why the
  * `ROLESET_ENTRY_ROLE_ASSIGN` token used elsewhere does not apply.
  */
-export const PLATFORM_ROLE_ASSIGN_PRIVILEGES = [AuthorizationPrivilege.GrantGlobalAdmins];
+export const PLATFORM_ROLE_ASSIGN_PRIVILEGES = [AuthorizationPrivilege.PlatformRolesAssign];
 
 /**
  * Platform role set, the 4 `Feature …` roles — `assignPlatformRoleToUser` /

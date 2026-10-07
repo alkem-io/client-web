@@ -15,11 +15,13 @@ vi.mock('react-i18next', () => ({
 
 const useSpacesListMock = vi.fn();
 const deleteSpaceMock = vi.fn();
-const updateSpaceSettingsMock = vi.fn(() => Promise.resolve());
+const updateSpaceVisibilityMock = vi.fn(() => Promise.resolve());
+const updateSpaceNameIdMock = vi.fn(() => Promise.resolve());
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   usePlatformAdminSpacesListQuery: () => useSpacesListMock(),
   useDeleteSpaceMutation: () => [deleteSpaceMock, { loading: false }],
-  useUpdateSpacePlatformSettingsMutation: () => [updateSpaceSettingsMock, { loading: false }],
+  useAdminUpdateSpaceVisibilityMutation: () => [updateSpaceVisibilityMock, { loading: false }],
+  useAdminUpdateSpaceNameIdMutation: () => [updateSpaceNameIdMock, { loading: false }],
   refetchPlatformAdminSpacesListQuery: () => ({}),
 }));
 const notify = vi.fn();
@@ -56,7 +58,8 @@ const spaces = [
 beforeEach(() => {
   vi.clearAllMocks();
   useSpacesListMock.mockReturnValue({ data: { platformAdmin: { spaces } }, loading: false });
-  updateSpaceSettingsMock.mockResolvedValue(undefined);
+  updateSpaceVisibilityMock.mockResolvedValue(undefined);
+  updateSpaceNameIdMock.mockResolvedValue(undefined);
   canManageLicensePlansMock.mockReturnValue(true);
 });
 
@@ -101,41 +104,45 @@ describe('CrdAdminSpacesPage', () => {
     expect(screen.getByRole('dialog')).toHaveTextContent('license dialog');
   });
 
-  // client-8: an unchanged alias must not be sent — the server treats a resend as a
-  // rename attempt. This fails on the head, which always sends the current alias.
-  test('saving an unchanged alias sends nameId: undefined', async () => {
+  // 027-platform-role-redesign (T013, FR-020): alias and visibility are two
+  // mutations owned by different roles, each sent ONLY when its value changed
+  // (client-8's "an unchanged alias is never sent" is the nothing-changed case).
+  test('edit-settings opens the alias/visibility dialog; saving with nothing changed sends nothing', async () => {
     render(<CrdAdminSpacesPage />);
     await userEvent.click(screen.getAllByRole('button', { name: 'spaces.editSettings' })[0]);
     const dialog = screen.getByRole('dialog');
     expect(within(dialog).getByDisplayValue('s1')).toBeInTheDocument(); // alias prefilled
     await userEvent.click(within(dialog).getByRole('button', { name: 'spaces.save' }));
-    expect(updateSpaceSettingsMock).toHaveBeenCalledWith({
-      variables: { spaceId: 's1', nameId: undefined, visibility: 'ACTIVE' },
-    });
+    expect(updateSpaceVisibilityMock).not.toHaveBeenCalled();
+    expect(updateSpaceNameIdMock).not.toHaveBeenCalled();
   });
 
-  test('saving a changed alias sends the trimmed value', async () => {
+  test('changing only the alias sends the trimmed protected nameID update and not the visibility one', async () => {
     render(<CrdAdminSpacesPage />);
     await userEvent.click(screen.getAllByRole('button', { name: 'spaces.editSettings' })[0]);
     const dialog = screen.getByRole('dialog');
-    const aliasInput = within(dialog).getByDisplayValue('s1');
-    await userEvent.clear(aliasInput);
-    await userEvent.type(aliasInput, ' new-alias ');
+    const alias = within(dialog).getByDisplayValue('s1');
+    await userEvent.clear(alias);
+    await userEvent.type(alias, ' s1-renamed ');
     await userEvent.click(within(dialog).getByRole('button', { name: 'spaces.save' }));
-    expect(updateSpaceSettingsMock).toHaveBeenCalledWith({
-      variables: { spaceId: 's1', nameId: 'new-alias', visibility: 'ACTIVE' },
+    expect(updateSpaceNameIdMock).toHaveBeenCalledWith({
+      variables: { spaceId: 's1', nameId: 's1-renamed' },
     });
+    expect(updateSpaceVisibilityMock).not.toHaveBeenCalled();
   });
 
   // client-8: a denied save must surface the standard toast and leave the dialog open
-  // so the admin can see the failure, instead of silently closing. Fails on the head.
+  // so the admin can see the failure, instead of silently closing.
   test('a FORBIDDEN_POLICY rejection notifies and keeps the dialog open', async () => {
-    updateSpaceSettingsMock.mockRejectedValueOnce({
+    updateSpaceNameIdMock.mockRejectedValueOnce({
       graphQLErrors: [{ message: 'nope', extensions: { code: 'FORBIDDEN_POLICY' } }],
     });
     render(<CrdAdminSpacesPage />);
     await userEvent.click(screen.getAllByRole('button', { name: 'spaces.editSettings' })[0]);
     const dialog = screen.getByRole('dialog');
+    const alias = within(dialog).getByDisplayValue('s1');
+    await userEvent.clear(alias);
+    await userEvent.type(alias, 's1-renamed');
     await userEvent.click(within(dialog).getByRole('button', { name: 'spaces.save' }));
 
     await waitFor(() => expect(notify).toHaveBeenCalledWith('permissions.errorDenied', 'error'));

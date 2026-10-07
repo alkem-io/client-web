@@ -3378,11 +3378,10 @@ export type MutationKeySpecifier = (
   | 'adminSearchIngestFromScratch'
   | 'adminUpdateContributorAvatars'
   | 'adminUpdateGeoLocationData'
+  | 'adminUpdateSpaceVisibility'
   | 'adminUserAccountDelete'
   | 'adminUserEmailChange'
   | 'adminUserEmailChangeDriftResolve'
-  | 'adminWingbackCreateTestCustomer'
-  | 'adminWingbackGetCustomerEntitlements'
   | 'aiServerAuthorizationPolicyReset'
   | 'aiServerCreateAiPersona'
   | 'aiServerDeleteAiPersona'
@@ -3437,7 +3436,6 @@ export type MutationKeySpecifier = (
   | 'createVirtualContributor'
   | 'createWhiteboardDraftOnCalloutsSet'
   | 'createWhiteboardDraftOnTemplatesSet'
-  | 'createWingbackAccount'
   | 'deleteApplication'
   | 'deleteCalendarEvent'
   | 'deleteCallout'
@@ -3474,8 +3472,6 @@ export type MutationKeySpecifier = (
   | 'eventOnInvitation'
   | 'eventOnOrganizationVerification'
   | 'grantCredentialToActor'
-  | 'grantCredentialToOrganization'
-  | 'grantCredentialToUser'
   | 'importCollaboraDocument'
   | 'inviteForEntryRoleOnRoleSet'
   | 'joinRoleSet'
@@ -3519,8 +3515,6 @@ export type MutationKeySpecifier = (
   | 'resetConversationVc'
   | 'resetLicenseOnAccounts'
   | 'revokeCredentialFromActor'
-  | 'revokeCredentialFromOrganization'
-  | 'revokeCredentialFromUser'
   | 'revokeLicensePlanFromAccount'
   | 'revokeLicensePlanFromSpace'
   | 'revokeMcpApiKey'
@@ -3540,6 +3534,7 @@ export type MutationKeySpecifier = (
   | 'transferSpaceToAccount'
   | 'transferVirtualContributorToAccount'
   | 'unsubscribeFromPushNotifications'
+  | 'updateActorNameID'
   | 'updateApplicationFormOnRoleSet'
   | 'updateAssistantActorCapabilities'
   | 'updateBaselineLicensePlanOnAccount'
@@ -3571,7 +3566,6 @@ export type MutationKeySpecifier = (
   | 'updateMemo'
   | 'updateNotificationState'
   | 'updateOrganization'
-  | 'updateOrganizationPlatformSettings'
   | 'updateOrganizationSettings'
   | 'updatePlatformSettings'
   | 'updatePollOption'
@@ -3580,7 +3574,6 @@ export type MutationKeySpecifier = (
   | 'updateProfile'
   | 'updateReference'
   | 'updateSpace'
-  | 'updateSpacePlatformSettings'
   | 'updateSpaceSettings'
   | 'updateSubspacePinned'
   | 'updateSubspacesSortOrder'
@@ -3593,7 +3586,6 @@ export type MutationKeySpecifier = (
   | 'updateTemplateFromSpace'
   | 'updateUser'
   | 'updateUserGroup'
-  | 'updateUserPlatformSettings'
   | 'updateUserSettings'
   | 'updateVirtualContributor'
   | 'updateVirtualContributorPlatformSettings'
@@ -3631,11 +3623,10 @@ export type MutationFieldPolicy = {
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateGeoLocationData?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUpdateSpaceVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserAccountDelete?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserEmailChange?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserEmailChangeDriftResolve?: FieldPolicy<any> | FieldReadFunction<any>;
-  adminWingbackCreateTestCustomer?: FieldPolicy<any> | FieldReadFunction<any>;
-  adminWingbackGetCustomerEntitlements?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerAuthorizationPolicyReset?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerCreateAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerDeleteAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3690,7 +3681,6 @@ export type MutationFieldPolicy = {
   createVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   createWhiteboardDraftOnCalloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
   createWhiteboardDraftOnTemplatesSet?: FieldPolicy<any> | FieldReadFunction<any>;
-  createWingbackAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCallout?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3727,8 +3717,6 @@ export type MutationFieldPolicy = {
   eventOnInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToActor?: FieldPolicy<any> | FieldReadFunction<any>;
-  grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
-  grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   importCollaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   joinRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3772,8 +3760,6 @@ export type MutationFieldPolicy = {
   resetConversationVc?: FieldPolicy<any> | FieldReadFunction<any>;
   resetLicenseOnAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromActor?: FieldPolicy<any> | FieldReadFunction<any>;
-  revokeCredentialFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
-  revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeLicensePlanFromAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeLicensePlanFromSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeMcpApiKey?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3793,6 +3779,7 @@ export type MutationFieldPolicy = {
   transferSpaceToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferVirtualContributorToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   unsubscribeFromPushNotifications?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateActorNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   updateApplicationFormOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAssistantActorCapabilities?: FieldPolicy<any> | FieldReadFunction<any>;
   updateBaselineLicensePlanOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3824,7 +3811,6 @@ export type MutationFieldPolicy = {
   updateMemo?: FieldPolicy<any> | FieldReadFunction<any>;
   updateNotificationState?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateOrganizationPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganizationSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePollOption?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3833,7 +3819,6 @@ export type MutationFieldPolicy = {
   updateProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   updateReference?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpace?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateSpacePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpaceSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSubspacePinned?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSubspacesSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3846,7 +3831,6 @@ export type MutationFieldPolicy = {
   updateTemplateFromSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateUserPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVirtualContributorPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;

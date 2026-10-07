@@ -105,10 +105,13 @@ describe('AdminSectionGuard', () => {
     expect(await screen.findByTestId('page-licensing')).toBeInTheDocument();
   });
 
-  test('a legacy PLATFORM_ADMIN holder reaches /admin/users', async () => {
+  // Slice B (T013): the retired PLATFORM_ADMIN catch-all admits no section — the
+  // admin-area guard turns the holder away before any section guard runs.
+  test('a holder of only the retired PLATFORM_ADMIN is redirected from /admin/users', async () => {
     arrange({ platform: ['PLATFORM_ADMIN'], path: '/admin/users' });
 
-    expect(await screen.findByTestId('page-users')).toBeInTheDocument();
+    expect(await screen.findByTestId('location')).toHaveTextContent(/^\/restricted\?origin=/);
+    expect(screen.queryByTestId('page-users')).not.toBeInTheDocument();
   });
 
   test('renders Loading while the privilege query is in flight', () => {

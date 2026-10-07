@@ -14,6 +14,7 @@ const t = ((key: string) => key) as ContributorSettingsTranslator;
 
 const noPrivileges: NotificationPrivileges = {
   isPlatformAdmin: false,
+  isPlatformAdminRecipient: false,
   isOrganizationAdmin: false,
   isSpaceAdmin: false,
   isSpaceLead: false,
@@ -259,6 +260,28 @@ describe('mapUserNotifications — organization-associate rows (062, US6)', () =
       inApp: false,
       push: true,
     });
+  });
+});
+
+describe('mapUserNotifications — platformAdmin group gating (T076 routing, 2026-10-05)', () => {
+  const server: NotificationSettings = {
+    platformAdmin: {
+      userGlobalRoleChanged: { email: false, inApp: false, push: false },
+    },
+  };
+  const hasPlatformAdminGroup = (privileges: NotificationPrivileges) =>
+    mapUserNotifications(server, new Map(), privileges, t).groups.some(g => g.groupId === 'platformAdmin');
+
+  it('is shown to a notification recipient who is not Users Admin (Roles Admin, License Manager, Support)', () => {
+    expect(hasPlatformAdminGroup({ ...noPrivileges, isPlatformAdminRecipient: true })).toBe(true);
+  });
+
+  it('is still shown to Users Admin', () => {
+    expect(hasPlatformAdminGroup({ ...noPrivileges, isPlatformAdmin: true })).toBe(true);
+  });
+
+  it('is hidden without either privilege', () => {
+    expect(hasPlatformAdminGroup(noPrivileges)).toBe(false);
   });
 });
 
