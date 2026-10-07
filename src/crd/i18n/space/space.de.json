@@ -629,7 +629,9 @@
     "cardVariant": {
       "label": "Erweiterte Karte",
       "description": "Zeigt die vollständige Karte mit dem Was, Warum und Wer des Unterbereichs - mehr Kontext, mehr Höhe."
-    }
+    },
+    "moreFramingTypes": "Mehr",
+    "moreFramingTypesHeading": "Mehr zum Hinzufügen"
   },
   "contributionSettings": {
     "heading": "Antworten",
@@ -660,7 +662,9 @@
       "addRow": "Weiteren Link hinzufügen",
       "removeRow": "Link entfernen",
       "attachFile": "Datei anhängen"
-    }
+    },
+    "moreTypes": "Mehr",
+    "moreTypesHeading": "Weitere Antwortmöglichkeiten"
   },
   "responseDefaults": {
     "srDescription": "Konfigurieren Sie die Standardwerte für neue Antworten in diesem Beitrag.",
@@ -1348,6 +1352,13 @@
     },
     "singleTitle": "Antwort von {{name}}",
     "deleteFailed": "Die Antwort konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.",
-    "loadFailed": "Die Antworten konnten nicht geladen werden."
+    "loadFailed": "Die Antworten konnten nicht geladen werden.",
+    "exportCsv": "CSV exportieren",
+    "exporting": "Wird exportiert…",
+    "exportFailed": "Die Antworten konnten nicht exportiert werden. Bitte versuche es erneut.",
+    "csv": {
+      "submitter": "Eingereicht von",
+      "submittedDate": "Eingereicht am"
+    }
   }
 }

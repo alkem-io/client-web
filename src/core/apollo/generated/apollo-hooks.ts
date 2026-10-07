@@ -3115,6 +3115,9 @@ export const CalloutTemplateContentFragmentDoc = gql`
     poll {
       ...PollDetails
     }
+    form {
+      ...CalloutFormDetails
+    }
     collaboraDocument {
       id
       documentType
@@ -3141,6 +3144,7 @@ ${LinkDetailsFragmentDoc}
 ${MemoTemplateDetailsFragmentDoc}
 ${MediaGalleryVisualsFragmentDoc}
 ${PollDetailsFragmentDoc}
+${CalloutFormDetailsFragmentDoc}
 ${CalloutSettingsFullFragmentDoc}`;
 export const CommunityGuidelinesTemplateContentFragmentDoc = gql`
     fragment CommunityGuidelinesTemplateContent on CommunityGuidelines {

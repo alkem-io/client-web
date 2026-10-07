@@ -158,11 +158,7 @@ describe('useRoleSetManager — holdersUnavailable (sec-client-web-2)', () => {
   });
 });
 
-// sec-client-web-4/spec-clientweb-3/corr-client-web-6: the legacy revoke
-// panel must be offered only to an operator the server's legacy resolver
-// branches actually let revoke — plain READ + GRANT, not PLATFORM_ROLES_ASSIGN
-// (which T034 also widens to PLATFORM_ROLES_ADMIN, who the legacy branches
-/// 027-platform-role-redesign (T013, Slice B): the `getOfferedLegacyPlatformRoles`
+// 027-platform-role-redesign (T013, Slice B): the `getOfferedLegacyPlatformRoles`
 // suite is deleted with the function and the ten roles it offered.
 //
 // Worth recording what it proved, because the subtlety is what made it necessary

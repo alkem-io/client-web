@@ -276,107 +276,105 @@ const CrdAdminGlobalRolesPage = () => {
         // `legacyRoles.length === 0` conjunct with the legacy panel.
         <p className="text-body text-muted-foreground">{t('roleMembers.noAssignablePrivilege')}</p>
       ) : (
-        offeredRoles.length > 0 && (
-          <>
-            <nav aria-label={t('roleMembers.roleLabel')} className="flex flex-wrap gap-2">
-              {offeredRoles.map(role => (
-                <Button
-                  key={role}
-                  type="button"
-                  variant={role === selectedRole ? 'default' : 'outline'}
-                  size="sm"
-                  aria-pressed={role === selectedRole}
-                  onClick={() => selectRole(role)}
-                >
-                  {roleLabels[role]}
-                </Button>
-              ))}
-            </nav>
+        <>
+          <nav aria-label={t('roleMembers.roleLabel')} className="flex flex-wrap gap-2">
+            {offeredRoles.map(role => (
+              <Button
+                key={role}
+                type="button"
+                variant={role === selectedRole ? 'default' : 'outline'}
+                size="sm"
+                aria-pressed={role === selectedRole}
+                onClick={() => selectRole(role)}
+              >
+                {roleLabels[role]}
+              </Button>
+            ))}
+          </nav>
 
-            {readOnly && (
-              // corr-client-web-7: a legacy holder-list-read privilege
-              // (GLOBAL_SUPPORT, GLOBAL_LICENSE_MANAGER) authorizes viewing
-              // these roles' holders, not managing them — say so rather
-              // than silently hiding the add/remove affordances.
-              <output className="text-body text-muted-foreground">{t('roleMembers.readOnlyNotice')}</output>
-            )}
+          {readOnly && (
+            // corr-client-web-7: a legacy holder-list-read privilege
+            // (GLOBAL_SUPPORT, GLOBAL_LICENSE_MANAGER) authorizes viewing
+            // these roles' holders, not managing them — say so rather
+            // than silently hiding the add/remove affordances.
+            <output className="text-body text-muted-foreground">{t('roleMembers.readOnlyNotice')}</output>
+          )}
 
-            {roleNotFound && <p className="text-body text-muted-foreground">{t('roles.notFound')}</p>}
+          {roleNotFound && <p className="text-body text-muted-foreground">{t('roles.notFound')}</p>}
 
-            {selectedRole && (
-              <RoleMembersEditor
-                roleLabel={roleLabels[selectedRole]}
-                roleDescription={roleDescriptions[selectedRole]}
-                errorMessage={assignmentError}
-                members={filteredMembers}
-                availableUsers={available}
-                memberSearchTerm={memberSearch}
-                onMemberSearchTermChange={setMemberSearch}
-                searchTerm={searchInput}
-                onSearchTermChange={setSearchInput}
-                onAdd={async userId => {
-                  setAssignmentError(undefined);
-                  try {
-                    await assignPlatformRoleToUser(userId, selectedRole);
-                  } catch (error) {
-                    setAssignmentError(extractErrorMessage(error));
-                  }
-                }}
-                onRemove={async userId => {
-                  setAssignmentError(undefined);
-                  try {
-                    await removePlatformRoleFromUser(userId, selectedRole);
-                  } catch (error) {
-                    setAssignmentError(extractErrorMessage(error));
-                  }
-                }}
-                addDisabledReason={assignDisabledReason}
-                removeDisabledReason={assignDisabledReason}
-                loadingMembers={loading}
-                loadingAvailable={loadingAvailable}
-                updating={updating}
-                holdersUnavailable={holdersUnavailable}
-                hasMore={hasMore}
-                readOnly={readOnly}
-                onLoadMore={() => {
-                  void fetchMore();
-                }}
-                organizationSection={
-                  showOrganizationSection
-                    ? {
-                        members: organizationMembers,
-                        availableOrganizations: availableOrganizationMembers,
-                        searchTerm: orgSearchInput,
-                        onSearchTermChange: setOrgSearchInput,
-                        onAdd: async organizationId => {
-                          setAssignmentError(undefined);
-                          try {
-                            await assignPlatformRoleToOrganization(organizationId, selectedRole);
-                          } catch (error) {
-                            setAssignmentError(extractErrorMessage(error));
-                          }
-                        },
-                        onRemove: async organizationId => {
-                          setAssignmentError(undefined);
-                          try {
-                            await removePlatformRoleFromOrganization(organizationId, selectedRole);
-                          } catch (error) {
-                            setAssignmentError(extractErrorMessage(error));
-                          }
-                        },
-                        loadingMembers: loading,
-                        loadingAvailable: loadingAvailableOrganizations,
-                        hasMore: hasMoreOrganizations,
-                        onLoadMore: () => {
-                          void fetchMoreOrganizations();
-                        },
-                      }
-                    : undefined
+          {selectedRole && (
+            <RoleMembersEditor
+              roleLabel={roleLabels[selectedRole]}
+              roleDescription={roleDescriptions[selectedRole]}
+              errorMessage={assignmentError}
+              members={filteredMembers}
+              availableUsers={available}
+              memberSearchTerm={memberSearch}
+              onMemberSearchTermChange={setMemberSearch}
+              searchTerm={searchInput}
+              onSearchTermChange={setSearchInput}
+              onAdd={async userId => {
+                setAssignmentError(undefined);
+                try {
+                  await assignPlatformRoleToUser(userId, selectedRole);
+                } catch (error) {
+                  setAssignmentError(extractErrorMessage(error));
                 }
-              />
-            )}
-          </>
-        )
+              }}
+              onRemove={async userId => {
+                setAssignmentError(undefined);
+                try {
+                  await removePlatformRoleFromUser(userId, selectedRole);
+                } catch (error) {
+                  setAssignmentError(extractErrorMessage(error));
+                }
+              }}
+              addDisabledReason={assignDisabledReason}
+              removeDisabledReason={assignDisabledReason}
+              loadingMembers={loading}
+              loadingAvailable={loadingAvailable}
+              updating={updating}
+              holdersUnavailable={holdersUnavailable}
+              hasMore={hasMore}
+              readOnly={readOnly}
+              onLoadMore={() => {
+                void fetchMore();
+              }}
+              organizationSection={
+                showOrganizationSection
+                  ? {
+                      members: organizationMembers,
+                      availableOrganizations: availableOrganizationMembers,
+                      searchTerm: orgSearchInput,
+                      onSearchTermChange: setOrgSearchInput,
+                      onAdd: async organizationId => {
+                        setAssignmentError(undefined);
+                        try {
+                          await assignPlatformRoleToOrganization(organizationId, selectedRole);
+                        } catch (error) {
+                          setAssignmentError(extractErrorMessage(error));
+                        }
+                      },
+                      onRemove: async organizationId => {
+                        setAssignmentError(undefined);
+                        try {
+                          await removePlatformRoleFromOrganization(organizationId, selectedRole);
+                        } catch (error) {
+                          setAssignmentError(extractErrorMessage(error));
+                        }
+                      },
+                      loadingMembers: loading,
+                      loadingAvailable: loadingAvailableOrganizations,
+                      hasMore: hasMoreOrganizations,
+                      onLoadMore: () => {
+                        void fetchMoreOrganizations();
+                      },
+                    }
+                  : undefined
+              }
+            />
+          )}
+        </>
       )}
     </div>
   );

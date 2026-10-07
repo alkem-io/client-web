@@ -629,7 +629,9 @@
     "cardVariant": {
       "label": "Tarjeta ampliada",
       "description": "Muestra la tarjeta completa con el Qué, Por qué y Quién del subespacio - más contexto, más altura."
-    }
+    },
+    "moreFramingTypes": "Más",
+    "moreFramingTypesHeading": "Más para añadir"
   },
   "contributionSettings": {
     "heading": "Respuestas",
@@ -660,7 +662,9 @@
       "addRow": "Añadir otro enlace",
       "removeRow": "Eliminar enlace",
       "attachFile": "Adjuntar archivo"
-    }
+    },
+    "moreTypes": "Más",
+    "moreTypesHeading": "Más formas de responder"
   },
   "responseDefaults": {
     "srDescription": "Configura los valores por defecto para las nuevas contribuciones de esta publicación.",
@@ -1348,6 +1352,13 @@
     },
     "singleTitle": "Respuesta de {{name}}",
     "deleteFailed": "No se pudo eliminar la respuesta. Inténtalo de nuevo.",
-    "loadFailed": "No se pudieron cargar las respuestas."
+    "loadFailed": "No se pudieron cargar las respuestas.",
+    "exportCsv": "Exportar CSV",
+    "exporting": "Exportando…",
+    "exportFailed": "No se han podido exportar las respuestas. Inténtalo de nuevo.",
+    "csv": {
+      "submitter": "Enviado por",
+      "submittedDate": "Enviado el"
+    }
   }
 }

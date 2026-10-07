@@ -88,7 +88,15 @@
       "links": "Links",
       "gallery": "Galerie",
       "pollQuestion": "Frage",
-      "pollOptions": "Optionen"
+      "pollOptions": "Optionen",
+      "formQuestions": "Fragen",
+      "formRequired": "Pflichtfeld",
+      "formQuestionType": {
+        "SHORT_TEXT": "Kurzer Text",
+        "LONG_TEXT": "Langer Text",
+        "SINGLE_CHOICE": "Einfachauswahl",
+        "MULTIPLE_CHOICE": "Mehrfachauswahl"
+      }
     },
     "whiteboard": {
       "empty": "Diese Whiteboard-Vorlage enthält keine Zeichnung."

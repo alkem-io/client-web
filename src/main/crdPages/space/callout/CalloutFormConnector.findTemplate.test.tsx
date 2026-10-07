@@ -1,10 +1,10 @@
 /**
- * The admin-only framing chips (Contributors, Subspaces, Form) must follow the
- * admin privilege of the level the callout is created on. On a subspace page the
- * space context is the level-zero space, so its UPDATE privilege cannot decide.
+ * A manually picked template ("Find Template") is clamped to the framings the viewer is offered,
+ * which depends on the admin privilege. The permission contexts default to `canUpdate: false` while
+ * loading, so the picker must not be openable until they have loaded — otherwise an admin's Form
+ * pick would be silently cleared to None.
  */
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
@@ -13,6 +13,10 @@ const mocks = vi.hoisted(() => ({
   spaceCanUpdate: false,
   subspaceId: '',
   subspaceCanUpdate: false,
+  spaceLoading: false,
+  subspaceLoading: false,
+  parentSpaceId: undefined as string | undefined,
+  pick: undefined as undefined | ((values: Record<string, unknown>) => void),
 }));
 
 vi.mock('react-i18next', () => ({
@@ -45,7 +49,7 @@ vi.mock('@/domain/space/context/useSpace', () => ({
     space: { about: { membership: { roleSetID: 'role-set-1' } } },
     entitlements: [],
     permissions: { canUpdate: mocks.spaceCanUpdate },
-    loading: false,
+    loading: mocks.spaceLoading,
   }),
 }));
 
@@ -53,11 +57,12 @@ vi.mock('@/domain/space/hooks/useSubSpace', () => ({
   useSubSpace: () => ({
     subspace: { id: mocks.subspaceId },
     permissions: { canUpdate: mocks.subspaceCanUpdate },
+    loading: mocks.subspaceLoading,
   }),
 }));
 
 vi.mock('@/main/routing/urlResolver/useUrlResolver', () => ({
-  default: () => ({ spaceId: 'space-1' }),
+  default: () => ({ spaceId: 'space-1', parentSpaceId: mocks.parentSpaceId }),
 }));
 
 vi.mock('@/domain/storage/StorageBucket/StorageConfigContext', () => ({
@@ -122,69 +127,77 @@ vi.mock('../hooks/useCrdSpaceContributors', () => ({
 
 vi.mock('./FramingEditorConnector', () => ({ FramingEditorConnector: () => null }));
 vi.mock('./ResponseDefaultsConnector', () => ({ ResponseDefaultsConnector: () => null }));
-vi.mock('./TemplateImportConnector', () => ({ TemplateImportConnector: () => null }));
+vi.mock('./TemplateImportConnector', () => ({
+  TemplateImportConnector: ({
+    open,
+    onTemplateSelected,
+  }: {
+    open: boolean;
+    onTemplateSelected: (values: Record<string, unknown>) => void;
+  }) => {
+    mocks.pick = onTemplateSelected;
+    return open ? <div data-testid="template-picker" /> : null;
+  },
+}));
 
 const { CalloutFormConnector } = await import('./CalloutFormConnector');
 
-const openCreate = () =>
-  render(<CalloutFormConnector open={true} onOpenChange={vi.fn()} mode="create" calloutsSetId="set-1" />);
+const ui = () => <CalloutFormConnector open={true} onOpenChange={vi.fn()} mode="create" calloutsSetId="set-1" />;
 
-/**
- * The framing chips the viewer is offered: the row's radios plus, when the strip
- * groups the rest behind "More", the menu's items. Admin-only chips normally sit
- * in the menu, so a row-only check would pass vacuously for a non-admin.
- */
-const offeredChips = async (): Promise<string[]> => {
-  const row = screen.queryAllByRole('radio').map(chip => chip.getAttribute('aria-label') ?? '');
-  const more = screen.queryByRole('button', { name: 'forms.moreFramingTypesHeading' });
-  if (!more) return row;
-  await userEvent.click(more);
-  const menu = (await screen.findAllByRole('menuitem')).map(item => item.textContent ?? '');
-  await userEvent.keyboard('{Escape}');
-  return [...row, ...menu];
-};
+const findTemplateButton = () => screen.getByRole('button', { name: 'forms.findTemplate' });
 
-describe('CalloutFormConnector — admin-only framing chips follow the current level', () => {
+describe('CalloutFormConnector — manual template pick waits for the permission contexts', () => {
   beforeEach(() => {
     mocks.spaceCanUpdate = false;
     mocks.subspaceId = '';
     mocks.subspaceCanUpdate = false;
+    mocks.spaceLoading = false;
+    mocks.subspaceLoading = false;
+    mocks.parentSpaceId = undefined;
+    mocks.pick = undefined;
   });
 
-  test('a subspace admin without level-zero admin rights sees the admin-only chips', async () => {
-    mocks.subspaceId = 'sub-1';
-    mocks.subspaceCanUpdate = true;
-    openCreate();
+  test('Find Template cannot be opened while the permissions are loading', () => {
+    mocks.spaceLoading = true;
+    render(ui());
 
-    const chips = await offeredChips();
-    expect(chips).toContain('callout.form');
-    expect(chips).toContain('callout.contributors');
-    expect(chips).toContain('callout.subspaces');
+    expect(findTemplateButton()).toBeDisabled();
+    fireEvent.click(findTemplateButton());
+    expect(screen.queryByTestId('template-picker')).not.toBeInTheDocument();
   });
 
-  test('a level-zero admin who is not a subspace admin does not see them on a subspace', async () => {
+  test('on a subspace page it also waits for the subspace permissions', () => {
+    mocks.parentSpaceId = 'space-1';
+    mocks.subspaceLoading = true;
+    render(ui());
+
+    expect(findTemplateButton()).toBeDisabled();
+  });
+
+  test('an admin who opens the picker once permissions loaded keeps a picked Form template', () => {
+    mocks.spaceLoading = true;
+    const { rerender } = render(ui());
+    expect(findTemplateButton()).toBeDisabled();
+
+    mocks.spaceLoading = false;
     mocks.spaceCanUpdate = true;
-    mocks.subspaceId = 'sub-1';
-    mocks.subspaceCanUpdate = false;
-    openCreate();
+    rerender(ui());
+    expect(findTemplateButton()).toBeEnabled();
+    fireEvent.click(findTemplateButton());
+    expect(screen.getByTestId('template-picker')).toBeInTheDocument();
 
-    const chips = await offeredChips();
-    expect(chips).toContain('callout.whiteboard');
-    expect(chips).not.toContain('callout.form');
+    act(() => mocks.pick?.({ framingChip: 'form', title: 'From template' }));
+
+    expect(screen.getByRole('radio', { name: 'callout.form' })).toBeChecked();
   });
 
-  test('on the level-zero space the space privilege decides', async () => {
-    mocks.spaceCanUpdate = true;
-    openCreate();
-    expect(await offeredChips()).toContain('callout.form');
-  });
+  test('a non-admin is still clamped to None once permissions have loaded', () => {
+    render(ui());
+    fireEvent.click(findTemplateButton());
 
-  test('a non-admin sees none of them', async () => {
-    openCreate();
-    const chips = await offeredChips();
-    // Positive control: the menu is reachable and lists the non-admin chips.
-    expect(chips).toContain('callout.poll');
-    expect(chips).not.toContain('callout.form');
-    expect(chips).not.toContain('callout.contributors');
+    act(() => mocks.pick?.({ framingChip: 'form', title: 'From template' }));
+
+    expect(screen.getByDisplayValue('From template')).toBeInTheDocument();
+    expect(screen.queryByRole('radio', { name: 'callout.form' })).not.toBeInTheDocument();
   });
 });
