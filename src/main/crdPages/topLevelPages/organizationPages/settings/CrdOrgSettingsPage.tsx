@@ -1,4 +1,4 @@
-import { Briefcase, Building2, Cog, Mail, Users } from 'lucide-react';
+import { Briefcase, Building2, Cog, Globe, Mail, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
 import { usePageTitle } from '@/core/routing/usePageTitle';
@@ -21,8 +21,8 @@ const computeFallback = (displayName: string | undefined): string => {
 };
 
 /**
- * Hosts the Org Settings shell — sticky header + 5-tab strip + outlet.
- * Access is gated by `useOrgSettingsAccessGuard` (FR-011).
+ * Hosts the Org Settings shell — sticky header + 6-tab strip + outlet.
+ * Access is gated by `useOrgSettingsAccessGuard`.
  */
 const CrdOrgSettingsPage = () => {
   const { t } = useTranslation('crd-contributorSettings');
@@ -52,6 +52,7 @@ const CrdOrgSettingsPage = () => {
     { id: 'profile', label: t('shell.tabs.org.profile'), icon: Briefcase },
     { id: 'account', label: t('shell.tabs.org.account'), icon: Briefcase },
     { id: 'community', label: t('shell.tabs.org.community'), icon: Users },
+    { id: 'membership', label: t('shell.tabs.org.membership'), icon: Globe },
     { id: 'invitations', label: t('shell.tabs.org.invitations'), icon: Mail },
     { id: 'settings', label: t('shell.tabs.org.settings'), icon: Cog },
   ];
