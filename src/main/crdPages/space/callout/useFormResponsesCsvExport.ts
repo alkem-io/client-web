@@ -1,11 +1,6 @@
-import { useApolloClient } from '@apollo/client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CalloutFormResponsesDocument } from '@/core/apollo/generated/apollo-hooks';
-import type {
-  CalloutFormResponsesQuery,
-  CalloutFormResponsesQueryVariables,
-} from '@/core/apollo/generated/graphql-schema';
+import { useCalloutFormResponsesLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { buildCsvFilename, buildFormResponsesCsv } from '@/core/utils/csv/csvExport';
@@ -30,7 +25,7 @@ type UseFormResponsesCsvExportParams = {
  */
 export function useFormResponsesCsvExport({ formId, formTitle, questions }: UseFormResponsesCsvExportParams) {
   const { t } = useTranslation('crd-space');
-  const client = useApolloClient();
+  const [fetchResponsesPage] = useCalloutFormResponsesLazyQuery();
   const notify = useNotification();
   const [exporting, setExporting] = useState(false);
 
@@ -38,11 +33,14 @@ export function useFormResponsesCsvExport({ formId, formTitle, questions }: UseF
     const responses: CalloutFormResponseModel[] = [];
     let after: string | undefined;
     do {
-      const { data } = await client.query<CalloutFormResponsesQuery, CalloutFormResponsesQueryVariables>({
-        query: CalloutFormResponsesDocument,
+      // The lazy execute promise resolves (rather than rejects) on a GraphQL/network error, so surface it explicitly.
+      const { data, error } = await fetchResponsesPage({
         variables: { formID: formId, first: EXPORT_PAGE_SIZE, after },
         fetchPolicy: 'no-cache',
       });
+      if (error || !data) {
+        throw error ?? new Error('Form responses page returned no data');
+      }
       const page = data.lookup.calloutFormResponses.all;
       responses.push(...page.responses);
       const next = page.pageInfo.hasNextPage ? (page.pageInfo.endCursor ?? undefined) : undefined;

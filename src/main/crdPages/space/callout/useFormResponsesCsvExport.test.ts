@@ -6,9 +6,8 @@ import { useFormResponsesCsvExport } from './useFormResponsesCsvExport';
 const query = vi.fn();
 const notify = vi.fn();
 
-vi.mock('@apollo/client', async importOriginal => ({
-  ...(await importOriginal<typeof import('@apollo/client')>()),
-  useApolloClient: () => ({ query }),
+vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
+  useCalloutFormResponsesLazyQuery: () => [query],
 }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notify }));
 vi.mock('@/core/logging/sentry/log', () => ({ error: vi.fn() }));
@@ -73,6 +72,17 @@ describe('useFormResponsesCsvExport', () => {
     expect(query).toHaveBeenCalledTimes(1);
     expect(downloadCsv).not.toHaveBeenCalled();
     expect(notify).toHaveBeenCalledWith('formResponses.exportFailed', 'error');
+  });
+
+  test('an Apollo error resolved on the result (not thrown) fails the export instead of downloading', async () => {
+    query.mockResolvedValueOnce({ data: undefined, error: new Error('graphql failure') });
+    const { result } = renderHook(() => useFormResponsesCsvExport({ formId: 'f1', formTitle: 'Q4', questions }));
+
+    await act(() => result.current.exportCsv());
+
+    expect(downloadCsv).not.toHaveBeenCalled();
+    expect(notify).toHaveBeenCalledWith('formResponses.exportFailed', 'error');
+    expect(result.current.exporting).toBe(false);
   });
 
   test('a failed read notifies and downloads nothing', async () => {

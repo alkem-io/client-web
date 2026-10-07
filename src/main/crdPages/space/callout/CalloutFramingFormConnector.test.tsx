@@ -28,6 +28,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
     options.skip
       ? { data: undefined, loading: false, refetch: hoisted.refetch, fetchMore: hoisted.fetchMore }
       : { data: hoisted.responses.current, loading: false, refetch: hoisted.refetch, fetchMore: hoisted.fetchMore },
+  useCalloutFormResponsesLazyQuery: () => [vi.fn()],
   useSubmitCalloutFormResponseMutation: () => [hoisted.submit, { loading: false }],
   useDeleteCalloutFormResponseMutation: () => [hoisted.remove, { loading: false }],
 }));
