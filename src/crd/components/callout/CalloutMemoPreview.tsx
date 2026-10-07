@@ -14,17 +14,22 @@ export function CalloutMemoPreview({ content, onOpen, className }: CalloutMemoPr
   // The whole preview is the click target (cursor-pointer everywhere), not just the footer label —
   // matching the contribution cards (which likewise nest CroppedMarkdown inside the button). The
   // "Open Memo" label is a non-interactive <span> so it doesn't nest a <button> inside this <button>.
+  //
+  // 16:9, the same box the whiteboard and document framing previews get in this dialog — a memo is
+  // a preview of a page, not a block of inline text. Column flow with a flex-1 body is what spends
+  // the box on the markdown: the footer bar keeps its intrinsic height and the markdown takes the
+  // rest, rather than the content deciding how tall the preview is.
   return (
     <button
       type="button"
       onClick={onOpen}
       className={cn(
-        'group block w-full cursor-pointer overflow-hidden rounded-lg border border-border bg-muted/30 text-left transition-all hover:ring-2 hover:ring-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        'group flex aspect-video w-full cursor-pointer flex-col overflow-hidden rounded-lg border border-border bg-muted/30 text-left transition-all hover:ring-2 hover:ring-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         className
       )}
     >
-      <div className="p-4">
-        <CroppedMarkdown content={content} maxHeight="16rem" />
+      <div className="p-4 flex-1 min-h-0">
+        <CroppedMarkdown content={content} maxHeight="100%" />
       </div>
       <div className="border-t border-border bg-muted/20 group-hover:bg-primary/10 transition-colors px-4 py-2 flex justify-end">
         <span className="inline-flex items-center justify-center rounded-md bg-secondary text-secondary-foreground shadow-sm h-8 px-3 text-control">

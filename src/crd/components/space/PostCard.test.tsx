@@ -308,26 +308,46 @@ describe('PostCard section order', () => {
 });
 
 describe('PostCard framing preview sizing', () => {
-  // The space feed used to render the document framing preview at a short fixed
-  // height, so a document callout looked like a plain text post next to a
-  // whiteboard callout in the same feed. Both framings are page/board previews
-  // and get the same room.
+  // The space feed used to render the memo and document framing previews at short
+  // fixed heights, so those callouts looked like plain text posts next to a
+  // whiteboard callout in the same feed. All three framings are previews of a
+  // board/page and get the same room.
   const previewBox = (container: HTMLElement) =>
-    container.querySelector('[data-slot="card-content"] > .overflow-hidden');
+    container.querySelector('[data-slot="card-content"] [class*="bg-muted/30"]');
 
-  it('gives the document framing preview the same height as the whiteboard framing preview', () => {
-    const { container: documentContainer } = render(
-      <PostCard post={{ ...basePost, type: 'document', framingDocumentType: 'text' }} />
+  const whiteboardBox = () => previewBox(render(<PostCard post={{ ...basePost, type: 'whiteboard' }} />).container);
+
+  it.each([
+    ['document', { type: 'document', framingDocumentType: 'text' }],
+    ['memo', { type: 'memo', framingMemoMarkdown: '# Heading\n\nSome memo body.' }],
+  ] as const)('gives the %s framing preview the same height as the whiteboard framing preview', (_name, overrides) => {
+    const box = previewBox(render(<PostCard post={{ ...basePost, ...overrides } as PostCardData} />).container);
+    const reference = whiteboardBox();
+
+    expect(reference).not.toBeNull();
+    expect(box).not.toBeNull();
+    expect(reference).toHaveClass('aspect-video');
+    expect(box).toHaveClass('aspect-video');
+    // No fixed-height class may co-exist with the aspect ratio — that is what
+    // flattened these previews before.
+    expect([...(box?.classList ?? [])].filter(c => /^h-\d/.test(c))).toEqual([]);
+  });
+
+  it('keeps the memo open affordance and the signed-copies action usable in the taller box', () => {
+    const onOpenFraming = vi.fn();
+    const onOpenMemoSignedCopies = vi.fn();
+    render(
+      <PostCard
+        post={{ ...basePost, type: 'memo', framingMemoMarkdown: 'body', memoSignedCopiesCount: 2 } as PostCardData}
+        onOpenFraming={onOpenFraming}
+        onOpenMemoSignedCopies={onOpenMemoSignedCopies}
+      />
     );
-    const { container: whiteboardContainer } = render(<PostCard post={{ ...basePost, type: 'whiteboard' }} />);
 
-    const documentBox = previewBox(documentContainer);
-    const whiteboardBox = previewBox(whiteboardContainer);
+    screen.getByText('Open Memo').click();
+    expect(onOpenFraming).toHaveBeenCalledTimes(1);
 
-    expect(whiteboardBox).not.toBeNull();
-    expect(documentBox).not.toBeNull();
-    expect(whiteboardBox).toHaveClass('aspect-video');
-    expect(documentBox).toHaveClass('aspect-video');
-    expect([...(documentBox?.classList ?? [])].filter(c => /^h-\d/.test(c))).toEqual([]);
+    screen.getByRole('button', { name: /Signed copies \(2\)/ }).click();
+    expect(onOpenMemoSignedCopies).toHaveBeenCalledTimes(1);
   });
 });
