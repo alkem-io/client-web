@@ -306,3 +306,48 @@ describe('PostCard section order', () => {
     expect(card()).not.toHaveClass('pb-6');
   });
 });
+
+describe('PostCard framing preview sizing', () => {
+  // The space feed used to render the memo and document framing previews at short
+  // fixed heights, so those callouts looked like plain text posts next to a
+  // whiteboard callout in the same feed. All three framings are previews of a
+  // board/page and get the same room.
+  const previewBox = (container: HTMLElement) =>
+    container.querySelector('[data-slot="card-content"] [class*="bg-muted/30"]');
+
+  const whiteboardBox = () => previewBox(render(<PostCard post={{ ...basePost, type: 'whiteboard' }} />).container);
+
+  it.each([
+    ['document', { type: 'document', framingDocumentType: 'text' }],
+    ['memo', { type: 'memo', framingMemoMarkdown: '# Heading\n\nSome memo body.' }],
+  ] as const)('gives the %s framing preview the same height as the whiteboard framing preview', (_name, overrides) => {
+    const box = previewBox(render(<PostCard post={{ ...basePost, ...overrides } as PostCardData} />).container);
+    const reference = whiteboardBox();
+
+    expect(reference).not.toBeNull();
+    expect(box).not.toBeNull();
+    expect(reference).toHaveClass('aspect-video');
+    expect(box).toHaveClass('aspect-video');
+    // No fixed-height class may co-exist with the aspect ratio — that is what
+    // flattened these previews before.
+    expect([...(box?.classList ?? [])].filter(c => /^h-\d/.test(c))).toEqual([]);
+  });
+
+  it('keeps the memo open affordance and the signed-copies action usable in the taller box', () => {
+    const onOpenFraming = vi.fn();
+    const onOpenMemoSignedCopies = vi.fn();
+    render(
+      <PostCard
+        post={{ ...basePost, type: 'memo', framingMemoMarkdown: 'body', memoSignedCopiesCount: 2 } as PostCardData}
+        onOpenFraming={onOpenFraming}
+        onOpenMemoSignedCopies={onOpenMemoSignedCopies}
+      />
+    );
+
+    screen.getByText('Open Memo').click();
+    expect(onOpenFraming).toHaveBeenCalledTimes(1);
+
+    screen.getByRole('button', { name: /Signed copies \(2\)/ }).click();
+    expect(onOpenMemoSignedCopies).toHaveBeenCalledTimes(1);
+  });
+});

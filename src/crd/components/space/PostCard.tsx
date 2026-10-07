@@ -472,9 +472,12 @@ export function PostCard({
           </button>
         )}
 
-        {/* Memo framing preview — fixed-height box; renders icon centred when empty.
-            Whole box is the click target (cursor-pointer everywhere); the label is a non-interactive
-            <span>. Mirrors the contribution cards, which likewise nest CroppedMarkdown in a button. */}
+        {/* Memo framing preview — same 16:9 box as the whiteboard framing preview above, so a memo
+            callout does not read as a plain text post in the feed; renders icon centred when empty.
+            The markdown fills the box (`maxHeight: 100%` against the `h-full` padding box) and keeps
+            fading out where it is clipped. Whole box is the click target (cursor-pointer everywhere);
+            the label is a non-interactive <span>. Mirrors the contribution cards, which likewise nest
+            CroppedMarkdown in a button. */}
         {post.type === 'memo' && (
           <div className="space-y-2">
             <button
@@ -483,7 +486,7 @@ export function PostCard({
                 event.stopPropagation();
                 (onOpenFraming ?? onClick)?.();
               }}
-              className="relative block w-full cursor-pointer overflow-hidden rounded-lg border border-border bg-muted/30 h-32 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="relative block w-full cursor-pointer overflow-hidden rounded-lg border border-border bg-muted/30 aspect-video text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {post.framingMemoMarkdown ? (
                 <div className="p-3 h-full">
@@ -554,13 +557,14 @@ export function PostCard({
           </div>
         )}
 
-        {/* Collabora document framing preview — compact variant for the feed */}
+        {/* Collabora document framing preview — same 16:9 box as the whiteboard
+            framing preview above, so both read as previews rather than one of
+            them as a plain text post. */}
         {post.type === 'document' && post.framingDocumentType && (
           <CalloutCollaboraPreview
             documentType={post.framingDocumentType}
             onOpen={onOpenFramingDocument ?? onClick ?? (() => {})}
             previewImageUrl={post.framingDocumentPreviewUrl}
-            size="compact"
           />
         )}
 
