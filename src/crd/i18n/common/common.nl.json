@@ -836,7 +836,7 @@
         },
         "SPACE_COLLABORATION_CALLOUT_PUBLISHED": {
           "description": "{{triggeredByName}} heeft een nieuwe $t(common.post) gepubliceerd in {{spaceLevel}}: {{spaceName}}, met naam: {{calloutName}}.",
-          "subject": "{{spaceName}} - Nieuwe $t(common.post) is gepubliceerd\"{{calloutName}}\", neem een kijke!"
+          "subject": "{{spaceName}} - Nieuwe $t(common.post) is gepubliceerd \"{{calloutName}}\", neem een kijkje!"
         },
         "SPACE_COLLABORATION_CALLOUT_REACTION": {
           "description": "",
