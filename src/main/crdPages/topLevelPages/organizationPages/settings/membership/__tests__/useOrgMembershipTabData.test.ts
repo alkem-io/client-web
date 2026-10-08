@@ -77,6 +77,76 @@ describe('useOrgMembershipTabData — Leave', () => {
     expect(result.current.pendingLeave).toBeNull();
   });
 
+  it('reports isLeaving for the whole sequence, from the role-set lookup until the list is refetched', async () => {
+    let settleLookup: (value: unknown) => void = () => {};
+    mockFetchSpaceDetails.mockReturnValue(
+      new Promise(resolve => {
+        settleLookup = resolve;
+      })
+    );
+    let settleRefetch: (value: unknown) => void = () => {};
+    const refetch = vi.fn().mockReturnValue(
+      new Promise(resolve => {
+        settleRefetch = resolve;
+      })
+    );
+    const { result } = renderHook(() => useOrgMembershipTabData('org-1', refetch));
+    act(() => {
+      result.current.onRequestLeave(SUBSPACE_LEAVE);
+    });
+    expect(result.current.isLeaving).toBe(false);
+
+    let confirming: Promise<void> = Promise.resolve();
+    act(() => {
+      confirming = result.current.onConfirmLeave();
+    });
+    expect(result.current.isLeaving).toBe(true);
+    expect(result.current.pendingLeave).toEqual(SUBSPACE_LEAVE);
+
+    await act(async () => {
+      settleLookup(roleSetResult('rs-sub'));
+    });
+    expect(mockRemoveRoleFromOrganization).toHaveBeenCalledTimes(1);
+    expect(result.current.isLeaving).toBe(true);
+    expect(result.current.pendingLeave).toEqual(SUBSPACE_LEAVE);
+
+    await act(async () => {
+      settleRefetch(undefined);
+      await confirming;
+    });
+    expect(result.current.isLeaving).toBe(false);
+    expect(result.current.pendingLeave).toBeNull();
+  });
+
+  it('never clears a leave requested for another card while an earlier one was settling', async () => {
+    let settleRemoval: (value: unknown) => void = () => {};
+    mockRemoveRoleFromOrganization.mockReturnValue(
+      new Promise(resolve => {
+        settleRemoval = resolve;
+      })
+    );
+    const OTHER_LEAVE = { membershipId: 'space-1', spaceId: 'space-1', displayName: 'Garden Space' };
+    const { result } = renderHook(() => useOrgMembershipTabData('org-1'));
+    act(() => {
+      result.current.onRequestLeave(SUBSPACE_LEAVE);
+    });
+
+    let confirming: Promise<void> = Promise.resolve();
+    await act(async () => {
+      confirming = result.current.onConfirmLeave();
+    });
+    act(() => {
+      result.current.onRequestLeave(OTHER_LEAVE);
+    });
+    await act(async () => {
+      settleRemoval({ data: {} });
+      await confirming;
+    });
+
+    expect(result.current.pendingLeave).toEqual(OTHER_LEAVE);
+    expect(result.current.isLeaving).toBe(false);
+  });
+
   it('rejects rather than resolving when nothing is pending', async () => {
     const { result } = renderHook(() => useOrgMembershipTabData('org-1'));
     await act(async () => {

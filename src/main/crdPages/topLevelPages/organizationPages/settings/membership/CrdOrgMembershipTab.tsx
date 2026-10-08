@@ -1,3 +1,4 @@
+import type { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRolesOrganizationQuery } from '@/core/apollo/generated/apollo-hooks';
 import { usePageTitle } from '@/core/routing/usePageTitle';
@@ -66,7 +67,10 @@ const CrdOrgMembershipTab = () => {
     leadsMore: count => t('org.membership.leadsMore', { count }),
   };
 
-  const handleConfirmLeave = async () => {
+  const handleConfirmLeave = async (event: MouseEvent<HTMLButtonElement>) => {
+    // Keep the dialog open, busy and non-interactive until the leave settles;
+    // the hook clears the pending leave once it does.
+    event.preventDefault();
     try {
       await state.onConfirmLeave();
       notify(t('org.membership.leave.success'), 'success');

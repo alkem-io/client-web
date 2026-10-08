@@ -17,6 +17,7 @@ export type UseOrgMembershipTabDataResult = {
   search: string;
   filter: MembershipFilter;
   pendingLeave: OrgPendingLeave | null;
+  /** True for the whole confirm sequence: role-set lookup, removal and memberships refetch. */
   isLeaving: boolean;
   onSearchChange: (term: string) => void;
   onFilterChange: (filter: MembershipFilter) => void;
@@ -36,8 +37,10 @@ export type UseOrgMembershipTabDataResult = {
  * subspace on the card, resolving its role set lazily at confirm time. A role
  * set that cannot be resolved is a failed leave, not a silent no-op, so the
  * caller can never report success for a request that was not sent. Whatever
- * the outcome, the dialog state is cleared and the memberships list refetched
- * so it reflects the organization's actual roles.
+ * the outcome, the memberships list is refetched so it reflects the
+ * organization's actual roles, and only then is the dialog state cleared:
+ * `isLeaving` covers the whole sequence, so the dialog stays busy and the card
+ * cannot be left a second time before the list has caught up.
  */
 export const useOrgMembershipTabData = (
   organizationId: string | undefined,
@@ -46,9 +49,10 @@ export const useOrgMembershipTabData = (
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<MembershipFilter>('all');
   const [pendingLeave, setPendingLeave] = useState<OrgPendingLeave | null>(null);
+  const [isLeaving, setIsLeaving] = useState(false);
 
   const [fetchSpaceDetails] = useSpaceContributionDetailsLazyQuery();
-  const [removeRoleFromOrganization, { loading: isLeaving }] = useRemoveRoleFromOrganizationMutation();
+  const [removeRoleFromOrganization] = useRemoveRoleFromOrganizationMutation();
 
   const onSearchChange = (term: string) => setSearch(term);
   const onFilterChange = (next: MembershipFilter) => setFilter(next);
@@ -61,11 +65,13 @@ export const useOrgMembershipTabData = (
   const onCancelLeave = () => setPendingLeave(null);
 
   const onConfirmLeave = async () => {
-    if (!pendingLeave || !organizationId) {
+    const leaving = pendingLeave;
+    if (!leaving || !organizationId) {
       throw new Error('No membership selected to leave');
     }
+    setIsLeaving(true);
     try {
-      const result = await fetchSpaceDetails({ variables: { spaceId: pendingLeave.spaceId } });
+      const result = await fetchSpaceDetails({ variables: { spaceId: leaving.spaceId } });
       const roleSetId = result.data?.lookup.space?.about.membership.roleSetID;
       if (!roleSetId) {
         throw new Error('Role set of the space could not be resolved');
@@ -75,8 +81,13 @@ export const useOrgMembershipTabData = (
         awaitRefetchQueries: true,
       });
     } finally {
-      setPendingLeave(null);
-      await refetchMemberships?.();
+      try {
+        await refetchMemberships?.();
+      } finally {
+        // Clear only the dialog this confirm belongs to, never one opened since.
+        setPendingLeave(current => (current === leaving ? null : current));
+        setIsLeaving(false);
+      }
     }
   };
 

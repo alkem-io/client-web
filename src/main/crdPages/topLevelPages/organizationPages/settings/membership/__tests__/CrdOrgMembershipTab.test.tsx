@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createInstance } from 'i18next';
 import { I18nextProvider } from 'react-i18next';
@@ -148,6 +148,62 @@ describe('CrdOrgMembershipTab', () => {
       awaitRefetchQueries: true,
     });
     expect(mockRefetch).toHaveBeenCalled();
+  });
+
+  it('keeps the dialog open and busy, its buttons disabled, while the removal is in flight', async () => {
+    let settleRemoval: (value: unknown) => void = () => {};
+    mockRemoveRoleFromOrganization.mockReturnValue(
+      new Promise(resolve => {
+        settleRemoval = resolve;
+      })
+    );
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    renderTab();
+
+    await openLeaveDialogFor(user, 1);
+    await user.click(screen.getByRole('button', { name: en.leave.dialogConfirm }));
+
+    await waitFor(() => expect(mockRemoveRoleFromOrganization).toHaveBeenCalledTimes(1));
+    const dialog = screen.getByRole('alertdialog');
+    const confirm = within(dialog).getByRole('button', { name: en.leave.dialogConfirm });
+    expect(confirm).toBeDisabled();
+    expect(confirm).toHaveAttribute('aria-busy', 'true');
+    expect(within(dialog).getByRole('button', { name: 'dialogs.cancel' })).toBeDisabled();
+
+    await user.keyboard('{Escape}');
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    expect(mockNotify).not.toHaveBeenCalled();
+
+    settleRemoval({ data: {} });
+
+    await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument());
+    expect(mockNotify).toHaveBeenCalledWith(en.leave.success, 'success');
+    expect(mockRemoveRoleFromOrganization).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps the dialog open and busy while the role set is still being resolved', async () => {
+    let settleLookup: (value: unknown) => void = () => {};
+    mockFetchSpaceDetails.mockReturnValue(
+      new Promise(resolve => {
+        settleLookup = resolve;
+      })
+    );
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    renderTab();
+
+    await openLeaveDialogFor(user, 1);
+    await user.click(screen.getByRole('button', { name: en.leave.dialogConfirm }));
+
+    const confirm = within(screen.getByRole('alertdialog')).getByRole('button', { name: en.leave.dialogConfirm });
+    expect(confirm).toBeDisabled();
+    expect(confirm).toHaveAttribute('aria-busy', 'true');
+    expect(mockRemoveRoleFromOrganization).not.toHaveBeenCalled();
+
+    settleLookup({ data: { lookup: { space: { about: { membership: { roleSetID: 'rs-sub' } } } } } });
+
+    await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument());
+    expect(mockRemoveRoleFromOrganization).toHaveBeenCalledTimes(1);
+    expect(mockNotify).toHaveBeenCalledWith(en.leave.success, 'success');
   });
 
   it('reports an error, never success, when the leave is rejected', async () => {
