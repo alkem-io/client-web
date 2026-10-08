@@ -8,7 +8,7 @@
     "url": "https://github.com/alkem-io/client-web.git"
   },
   "license": "EUPL-1.2",
-  "author": "Alkemio Foundation",
+  "author": "Alkemio",
   "scripts": {
     "analyze": "ANALYZE=true pnpm build",
     "analyze:dev": "ANALYZE=true pnpm build:dev",
