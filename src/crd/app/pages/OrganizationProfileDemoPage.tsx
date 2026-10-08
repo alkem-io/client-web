@@ -35,7 +35,7 @@ const TABS = [
 ];
 
 /**
- * Demo: Organization public profile (Alkemio Foundation).
+ * Demo: Organization public profile (Alkemio).
  * Renders Verified badge, Settings (admin viewer), Message button (signed-in
  * viewer), associates grid with the 12-cap "Show more / less" toggle, and a
  * 3-tab right column mirroring the User profile (Resources Hosted / Lead
