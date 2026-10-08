@@ -1,5 +1,13 @@
 import { AtSign, Loader2, Paperclip, Send, Smile, X } from 'lucide-react';
-import { type CSSProperties, type KeyboardEvent, useEffect, useRef, useState } from 'react';
+import {
+  type ClipboardEvent,
+  type CSSProperties,
+  type DragEvent,
+  type KeyboardEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mention, MentionsInput, type SuggestionDataItem } from 'react-mentions';
 import { EmojiPicker } from '@/crd/components/common/EmojiPicker';
@@ -54,7 +62,7 @@ type CommentInputProps = {
   attachmentsEnabled?: boolean;
   /** Currently staged attachments (with their upload lifecycle state). */
   attachments?: ComposerAttachment[];
-  /** User picked one or more files via the attach button. */
+  /** User picked, dropped or pasted one or more files. */
   onAttachFiles?: (files: File[]) => void;
   /** User removed a staged attachment chip. */
   onRemoveAttachment?: (id: string) => void;
@@ -69,6 +77,8 @@ type EnrichedSuggestion = SuggestionDataItem & CrdMentionSuggestion;
 const MAX_ROWS = 5;
 
 const STAGED_LIST_CLASS = 'mb-1.5 flex flex-wrap gap-1.5';
+
+const carriesFiles = (transfer: DataTransfer) => Array.from(transfer.types).includes('Files');
 
 // react-mentions renders an overlay + textarea stack. These inline styles
 // neutralize its defaults so the textarea blends with the surrounding Tailwind
@@ -144,6 +154,7 @@ export function CommentInput({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [pendingRefocus, setPendingRefocus] = useState(false);
   const [uncontrolledContent, setUncontrolledContent] = useState('');
+  const [isDraggingFiles, setIsDraggingFiles] = useState(false);
 
   const controlled = value !== undefined;
   const content = controlled ? value : uncontrolledContent;
@@ -172,6 +183,45 @@ export function CommentInput({
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+  };
+
+  const acceptsFiles = attachmentsEnabled && Boolean(onAttachFiles);
+
+  // Cancelling dragenter/dragover is what makes the composer a drop target, so a
+  // file dropped here never navigates the tab away from the conversation. While
+  // a send is in flight the drop is refused visibly (dropEffect none), the same
+  // way the attach button is disabled.
+  const handleFileDragOver = (event: DragEvent<HTMLDivElement>) => {
+    if (!carriesFiles(event.dataTransfer)) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = disabled ? 'none' : 'copy';
+    setIsDraggingFiles(true);
+  };
+
+  // relatedTarget is null when the drag is cancelled or leaves the window.
+  const handleFileDragLeave = (event: DragEvent<HTMLDivElement>) => {
+    if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
+    setIsDraggingFiles(false);
+  };
+
+  const handleFileDrop = (event: DragEvent<HTMLDivElement>) => {
+    if (!carriesFiles(event.dataTransfer)) return;
+    event.preventDefault();
+    setIsDraggingFiles(false);
+    if (disabled || event.dataTransfer.files.length === 0) return;
+    onAttachFiles?.(Array.from(event.dataTransfer.files));
+  };
+
+  // Same rule as Element's composer: Office puts a bitmap of copied text next to
+  // its RTF, and that paste means the text. text/plain is no signal — a file
+  // copied from a file manager carries its name as text/plain.
+  const handlePaste = (event: ClipboardEvent<HTMLDivElement>) => {
+    const { files, types } = event.clipboardData;
+    if (disabled || files.length === 0 || Array.from(types).includes('text/rtf')) return;
+    event.preventDefault();
+    // react-mentions pastes text from its own document-level listener.
+    event.stopPropagation();
+    onAttachFiles?.(Array.from(files));
   };
 
   const resizeTextarea = () => {
@@ -290,7 +340,15 @@ export function CommentInput({
         <AvatarFallback className="text-caption">{currentUser?.name?.charAt(0) ?? '?'}</AvatarFallback>
       </Avatar>
 
-      <div className="min-w-0 flex-1">
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: drop/paste wrapper — the keyboard path is the attach button, and pastes come from the textarea inside */}
+      <div
+        className="min-w-0 flex-1"
+        onDragEnter={acceptsFiles ? handleFileDragOver : undefined}
+        onDragOver={acceptsFiles ? handleFileDragOver : undefined}
+        onDragLeave={acceptsFiles ? handleFileDragLeave : undefined}
+        onDrop={acceptsFiles ? handleFileDrop : undefined}
+        onPaste={acceptsFiles ? handlePaste : undefined}
+      >
         {/* The list label is distinct from the paperclip button's — sharing one makes a
             screen reader announce "Attach files, list" then "Attach files, button". */}
         {attachmentsEnabled && attachments.length > 0 && (
@@ -339,7 +397,12 @@ export function CommentInput({
             ))}
           </ul>
         )}
-        <div className="flex items-end gap-1 rounded-md border border-border bg-input-background px-2 py-1.5 transition-colors focus-within:border-primary/50">
+        <div className="relative flex items-end gap-1 rounded-md border border-border bg-input-background px-2 py-1.5 transition-colors focus-within:border-primary/50">
+          {acceptsFiles && isDraggingFiles && !disabled && (
+            <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-md border-2 border-dashed border-primary bg-background/90 text-caption text-primary">
+              {t('comments.attachments.dropHint')}
+            </div>
+          )}
           {mentionsEnabled ? (
             <div className="min-h-6 min-w-0 flex-1 text-body [&_textarea]:placeholder:text-muted-foreground">
               <MentionsInput

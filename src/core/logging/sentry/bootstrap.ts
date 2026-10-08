@@ -12,8 +12,11 @@ const reactRouterV6BrowserTracingIntegration = Sentry.reactRouterV6BrowserTracin
   matchRoutes,
 });
 
+// Called from SentryErrorBoundaryProvider's render body, so it runs on every re-render. Each
+// Sentry.init adds another global fetch instrumentation handler, which records every request N
+// times and surfaces as bogus "N+1 API Call" issues — so initialise only once.
 const bootstrap = (sentryEnabled?: boolean, sentryEndpoint?: string, environment?: string) => {
-  if (sentryEnabled && sentryEndpoint) {
+  if (sentryEnabled && sentryEndpoint && !Sentry.isInitialized()) {
     Sentry.init({
       dsn: sentryEndpoint,
       integrations: [reactRouterV6BrowserTracingIntegration],

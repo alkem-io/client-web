@@ -15,24 +15,34 @@ export type StartDirectChatResult = {
  * `createConversation(type: DIRECT)` is dedup-or-create server-side: calling it
  * for a user the requester already has a 1:1 chat with returns the existing
  * conversation, so no duplicate is created (FR-002).
+ *
+ * `startDirectChat` accepts an optional recipient id that overrides the one
+ * captured when the hook was called — a list of cards (each with its own
+ * recipient) needs the id at click time, not at hook-call time. Backward
+ * compatible: every existing caller (the profile page, `useOpenDirectChatHandler`)
+ * calls it with no argument and keeps targeting the id it was constructed with.
  */
 export const useStartDirectChat = (userId: string | undefined) => {
   const [createConversation] = useCreateConversationMutation();
   const { setIsOpen, setSelectedConversationId, setSelectedRoomId, setNewlyCreatedConversationId } =
     useUserMessagingContext();
 
-  const startDirectChat = async (): Promise<StartDirectChatResult> => {
-    if (!userId) {
+  const startDirectChat = async (targetUserId: string | undefined = userId): Promise<StartDirectChatResult> => {
+    if (!targetUserId) {
       throw new Error('Recipient user not loaded.');
     }
 
     const result = await createConversation({
       variables: {
         conversationData: {
-          memberIDs: [userId],
+          memberIDs: [targetUserId],
           type: ConversationCreationType.Direct,
         },
       },
+      // Callers (e.g. ContributorCollectionConnector's `handleMessage`) map a
+      // failure — such as the recipient having messaging disabled — to their own
+      // friendly toast; the global error-handler link must not add a second, raw one.
+      context: { skipGlobalErrorHandler: true },
       update: (cache, { data }) => {
         const conversation = data?.createConversation;
         const room = conversation?.room;

@@ -69,3 +69,18 @@ describe('organization-associate events belong to the Space filter (062)', () =>
     }
   });
 });
+
+describe('the form-response admin event belongs to the Space filter', () => {
+  const event = NotificationEvent.SpaceAdminCollaborationCalloutFormResponse;
+
+  it('is listed under Space and All, and resolves to the Space category', () => {
+    expect(getNotificationTypesForFilter(NotificationFilterType.Space)).toContain(event);
+    expect(getNotificationTypesForFilter(NotificationFilterType.All)).toContain(event);
+    expect(getCategoryFilterForNotificationType(event)).toBe(NotificationFilterType.Space);
+  });
+
+  it('is absent from the Messages & Replies and Platform filters', () => {
+    expect(getNotificationTypesForFilter(NotificationFilterType.MessagesAndReplies)).not.toContain(event);
+    expect(getNotificationTypesForFilter(NotificationFilterType.Platform)).not.toContain(event);
+  });
+});

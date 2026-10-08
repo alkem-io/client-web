@@ -63,6 +63,11 @@ query ContributorCollectionByType($calloutId: UUID!, $type: ActorType!) {
             longitude
             hasValidCoordinates
           }
+          tagline
+          tags
+          joinedDate
+          website
+          associatesCount
         }
       }
     }

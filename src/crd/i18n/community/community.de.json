@@ -60,9 +60,6 @@
       "resultsSummary_other": "{{count}} Einladungen für {{spaceName}} verarbeitet.",
       "associates": {
         "title": "Assoziierte für „{{organizationName}}“ einladen",
-        "searchHint": "Nach einem registrierten Nutzer suchen, um ihn als Assoziierten einzuladen",
-        "searchPlaceholder": "Nutzername…",
-        "searchAriaLabel": "Nutzer nach Namen suchen",
         "noResultsLabel": "Keine passenden Nutzer",
         "loadingLabel": "Nutzer werden geladen…",
         "defaultWelcomeMessage": "Hallo, wir möchten dich einladen, dich {{organizationName}} anzuschließen. Klicke unten, um die Einladung anzunehmen oder abzulehnen.",

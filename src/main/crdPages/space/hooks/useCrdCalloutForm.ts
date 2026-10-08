@@ -4,12 +4,24 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
 import { LONG_MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import {
+  createFormQuestion,
+  DEFAULT_FORM_SETTINGS,
+  FORM_DESCRIPTION_MAX_LENGTH,
+  FORM_OPTIONS_MAX,
+  FORM_OPTIONS_MIN,
+  FORM_QUESTIONS_MAX,
+  FORM_QUESTIONS_MIN,
+  FORM_TITLE_MAX_LENGTH,
+} from '@/crd/forms/callout/formValues';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { MAX_POLL_OPTIONS, MIN_POLL_OPTIONS } from '@/crd/forms/callout/PollOptionsEditor';
 import type {
   AllowedActors,
   ContributionDefaults,
   ContributorCollectionConfig,
+  FormQuestionValue,
+  FormSettingsValue,
   FramingChip,
   LinkRow,
   ReferenceRow,
@@ -23,6 +35,12 @@ import {
 } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import {
+  FORM_QUESTION_ERROR_PREFIX,
+  FORM_QUESTIONS_ERROR_KEY,
+  type FormValidationCode,
+  validateFormQuestions,
+} from './formQuestionsValidation';
 
 // Re-export the form-shape types so existing `@/main/*` consumers can keep
 // importing them from this hook. New code should import directly from
@@ -31,6 +49,8 @@ export type {
   AllowedActors,
   ContributionDefaults,
   ContributorCollectionConfig,
+  FormQuestionValue,
+  FormSettingsValue,
   FramingChip,
   LinkRow,
   ReferenceRow,
@@ -84,6 +104,14 @@ export type CalloutFormValues = {
   pollAllowCustomOptions: boolean;
   pollHideResultsUntilVoted: boolean;
   pollShowVoterAvatars: boolean;
+  /** Form framing: the optional plain-text title of the Form ('' when unset). */
+  formTitle: string;
+  /** Form framing: the optional plain-text description of the Form ('' when unset). */
+  formDescription: string;
+  /** Form framing: the ordered question list. Only meaningful when `framingChip === 'form'`. */
+  formQuestions: FormQuestionValue[];
+  /** Form framing: response visibility, mode, open/closed state and initial collapse. */
+  formSettings: FormSettingsValue;
   whiteboardContent: string;
   /**
    * True once the user has opened the whiteboard editor and saved (drew OR deliberately
@@ -146,6 +174,8 @@ export type CalloutFormValues = {
     framingProfileTagsetId?: string;
     framingLinkId?: string;
     pollId?: string;
+    /** Server id of the Form definition; present only on a Form framing. */
+    formId?: string;
     memoId?: string;
     whiteboardId?: string;
     mediaGalleryId?: string;
@@ -170,6 +200,24 @@ export const referenceRowErrors = (errors: CalloutFormErrors): Record<string, st
   const out: Record<string, string | undefined> = {};
   for (const key of Object.keys(errors)) {
     if (key.startsWith('referenceRows.')) out[key.slice('referenceRows.'.length)] = errors[key];
+  }
+  return out;
+};
+
+/**
+ * Form-builder errors in the `FormQuestionsEditor` contract: `title` / `description` for the Form header,
+ * `questions` for the list-level rule and `<index>.prompt|explanation|options|options.<optionIndex>` per
+ * question. `validate()` namespaces them under `formTitle`, `formDescription` and `formQuestions`, so the
+ * connector strips the prefix here.
+ */
+export const formQuestionErrors = (errors: CalloutFormErrors): Record<string, string | undefined> => {
+  const out: Record<string, string | undefined> = {};
+  for (const key of Object.keys(errors)) {
+    if (key === 'formTitle') out.title = errors[key];
+    else if (key === 'formDescription') out.description = errors[key];
+    else if (key === FORM_QUESTIONS_ERROR_KEY) out.questions = errors[key];
+    else if (key.startsWith(FORM_QUESTION_ERROR_PREFIX))
+      out[key.slice(FORM_QUESTION_ERROR_PREFIX.length)] = errors[key];
   }
   return out;
 };
@@ -205,6 +253,10 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   pollAllowCustomOptions: false,
   pollHideResultsUntilVoted: false,
   pollShowVoterAvatars: true,
+  formTitle: '',
+  formDescription: '',
+  formQuestions: [createFormQuestion()],
+  formSettings: DEFAULT_FORM_SETTINGS,
   whiteboardContent: EmptyWhiteboardString,
   whiteboardEdited: false,
   whiteboardPreviewImages: [],
@@ -252,7 +304,8 @@ type ValidationCode =
   | 'referenceUrlInvalid'
   | 'linkRowTitleRequired'
   | 'linkRowUrlInvalid'
-  | 'contributorTypesRequired';
+  | 'contributorTypesRequired'
+  | `form.${FormValidationCode}`;
 
 export type UseCrdCalloutFormResult = {
   values: CalloutFormValues;
@@ -327,6 +380,34 @@ export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>)
       case 'contributorTypesRequired':
         return t('validation.contributorTypesRequired');
       default:
+        if (code.startsWith('form.')) return translateFormValidationMessage(code.slice('form.'.length));
+        return code;
+    }
+  };
+
+  const translateFormValidationMessage = (code: string): string => {
+    switch (code as FormValidationCode) {
+      case 'questionsMin':
+        return t('formForm.validation.questionsMin', { count: FORM_QUESTIONS_MIN });
+      case 'questionsMax':
+        return t('formForm.validation.questionsMax', { count: FORM_QUESTIONS_MAX });
+      case 'promptRequired':
+        return t('formForm.validation.promptRequired');
+      case 'promptMax':
+        return t('formForm.validation.promptMax');
+      case 'explanationMax':
+        return t('formForm.validation.explanationMax');
+      case 'optionsMin':
+        return t('formForm.validation.optionsMin', { count: FORM_OPTIONS_MIN });
+      case 'optionsMax':
+        return t('formForm.validation.optionsMax', { count: FORM_OPTIONS_MAX });
+      case 'optionRequired':
+        return t('formForm.validation.optionRequired');
+      case 'optionMax':
+        return t('formForm.validation.optionMax');
+      case 'optionsDuplicate':
+        return t('formForm.validation.optionsDuplicate');
+      default:
         return code;
     }
   };
@@ -392,6 +473,20 @@ export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>)
     }
   };
 
+  const validateForm = (v: CalloutFormValues, next: CalloutFormErrors) => {
+    if (v.framingChip !== 'form') return;
+    // No server reason code exists for these two limits: the messages are local.
+    if (v.formTitle.trim().length > FORM_TITLE_MAX_LENGTH) {
+      next.formTitle = t('formForm.titleTooLong', { count: FORM_TITLE_MAX_LENGTH });
+    }
+    if (v.formDescription.trim().length > FORM_DESCRIPTION_MAX_LENGTH) {
+      next.formDescription = t('formForm.descriptionTooLong', { count: FORM_DESCRIPTION_MAX_LENGTH });
+    }
+    for (const [key, code] of Object.entries(validateFormQuestions(v.formQuestions))) {
+      next[key] = translateValidationMessage(`form.${code}`);
+    }
+  };
+
   const validateReferences = (v: CalloutFormValues, next: CalloutFormErrors) => {
     v.referenceRows.forEach((row, idx) => {
       const uri = row.uri.trim();
@@ -433,6 +528,7 @@ export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>)
       }
     }
     validateFraming(values, next);
+    validateForm(values, next);
     validateReferences(values, next);
     validatePrePopulateLinks(values, next);
     setErrors(next);
@@ -441,10 +537,18 @@ export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>)
 
   const setField = <K extends keyof CalloutFormValues>(key: K, value: CalloutFormValues[K]) => {
     setValuesState(prev => ({ ...prev, [key]: value }));
-    if (errors[key]) {
+    // Form question errors are keyed by list index, so any edit of the list invalidates all of them.
+    const hasFormQuestionErrors =
+      key === 'formQuestions' && Object.keys(errors).some(k => k.startsWith(FORM_QUESTIONS_ERROR_KEY));
+    if (errors[key] || hasFormQuestionErrors) {
       setErrors(prev => {
         const copy: CalloutFormErrors = { ...prev };
         delete copy[key];
+        if (key === 'formQuestions') {
+          for (const k of Object.keys(copy)) {
+            if (k.startsWith(FORM_QUESTION_ERROR_PREFIX)) delete copy[k];
+          }
+        }
         return copy;
       });
     }

@@ -43,15 +43,15 @@
       "descriptionPlaceholder": "Beschrijf deze kolom…",
       "menu": "Kolomacties",
       "drag": "Sleep om de fase te herschikken",
-      "empty": "Nog geen callouts in deze kolom.",
+      "empty": "Nog geen Posts in deze kolom.",
       "activePhase": {
         "set": "Markeer als actieve fase",
         "current": "Actieve fase (huidige)",
         "badge": "Actieve fase"
       },
       "defaultCalloutTemplate": {
-        "set": "Standaard callout-template instellen…",
-        "clear": "Standaard callout-template wissen"
+        "set": "Standaard Post-template instellen…",
+        "clear": "Standaard Post-template wissen"
       },
       "editDetails": {
         "menuLabel": "Details bewerken",
@@ -70,7 +70,7 @@
         "menuLabel": "Fase verwijderen",
         "confirm": {
           "title": "Deze fase verwijderen?",
-          "description": "Callouts die nu met deze fase zijn getagd verliezen de tag. Deze actie kan niet ongedaan worden gemaakt.",
+          "description": "Posts die nu met deze fase zijn getagd verliezen de tag. Deze actie kan niet ongedaan worden gemaakt.",
           "confirm": "Fase verwijderen",
           "cancel": "Annuleren"
         }
@@ -211,7 +211,7 @@
     },
     "row": {
       "drag": "Sleep om te herordenen",
-      "menu": "Calloutacties",
+      "menu": "Post-acties",
       "moveTo": "Verplaatsen naar",
       "viewPost": "Post bekijken",
       "noOtherColumns": "Geen andere kolommen"
@@ -245,6 +245,10 @@
       "approve": "Goedkeuren",
       "reject": "Afwijzen",
       "delete": "Verwijderen",
+      "resend": "Uitnodigingsmail opnieuw versturen",
+      "resendSuccess": "Uitnodigingsmail opnieuw verstuurd",
+      "resendThrottled": "Onlangs al opnieuw verstuurd — probeer het over enkele minuten opnieuw",
+      "resendError": "De uitnodigingsmail kon niet opnieuw worden verstuurd — probeer het opnieuw",
       "empty": "Geen lopende lidmaatschappen.",
       "noMatch": "Geen lopende lidmaatschappen komen overeen met de geselecteerde filters.",
       "filterLabel": "Filteren op status",
@@ -566,8 +570,8 @@
       "preview": {
         "info": "Altijd inbegrepen: Over-informatie en instellingen",
         "states": "Fasen",
-        "callouts": "Callouts",
-        "noCalloutsInState": "Geen callouts in deze fase.",
+        "callouts": "Posts",
+        "noCalloutsInState": "Geen Posts in deze fase.",
         "noCalloutDescription": "Geen beschrijving",
         "subspaces": "Bevat deze subspaces"
       },

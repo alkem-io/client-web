@@ -123,7 +123,7 @@ export const MOCK_VC_PREVIEWS: Record<string, VcPreviewData> = {
     tags: ['Research', 'Summarization'],
     description:
       'A general-purpose research assistant that answers questions grounded in the space knowledge base.',
-    host: { id: 'host-alkemio', displayName: 'Alkemio Foundation', href: '/organization/alkemio' },
+    host: { id: 'host-alkemio', displayName: 'Alkemio', href: '/organization/alkemio' },
   },
   'vc-facilitator-bot': {
     id: 'vc-facilitator-bot',

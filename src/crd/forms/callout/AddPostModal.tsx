@@ -52,6 +52,8 @@ export type AddPostModalProps = {
   onSubmit: () => void;
   onSaveDraft?: () => void;
   onFindTemplate?: () => void;
+  /** Disables the Find Template action (e.g. while the data its result depends on is still loading). */
+  findTemplateDisabled?: boolean;
   submitLabel?: string;
   /**
    * False while the title is empty. The footer buttons are then only *visually*
@@ -79,6 +81,7 @@ export function AddPostModal({
   onSubmit,
   onSaveDraft,
   onFindTemplate,
+  findTemplateDisabled = false,
   submitLabel,
   canSubmit = true,
   className,
@@ -131,7 +134,12 @@ export function AddPostModal({
           <DialogTitle className="text-subsection-title">{headerTitle}</DialogTitle>
           <div className="flex items-center gap-2">
             {isCreate && onFindTemplate && (
-              <Button variant="outline" size="sm" onClick={onFindTemplate} disabled={submitting}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onFindTemplate}
+                disabled={submitting || findTemplateDisabled}
+              >
                 {t('forms.findTemplate')}
               </Button>
             )}

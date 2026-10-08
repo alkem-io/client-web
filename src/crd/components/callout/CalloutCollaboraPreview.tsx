@@ -24,16 +24,13 @@ type CalloutCollaboraPreviewProps = {
    */
   onReplace?: () => void;
   /**
-   * Real rendered preview image, when the backend eventually supplies one (no
-   * source exists yet — always `undefined` in production today, workspace
-   * story client-web#9872 P3). When present and loadable, replaces the
-   * type-icon treatment; falls back to the type-icon treatment if it fails to
-   * load.
+   * Authorized, same-origin preview image URL for the current saved
+   * document, or `undefined` when the backend has no backing file to
+   * preview. When present, the image loads lazily and, once it succeeds,
+   * replaces the type-icon treatment; the type-icon stays visible until then
+   * and again if the image fails to load.
    */
   previewImageUrl?: string;
-  /** `default` = aspect-video (used inside the callout detail dialog);
-   *  `compact` = shorter fixed height for the space feed card. */
-  size?: 'default' | 'compact';
   className?: string;
 };
 
@@ -42,7 +39,6 @@ export function CalloutCollaboraPreview({
   onOpen,
   onReplace,
   previewImageUrl,
-  size = 'default',
   className,
 }: CalloutCollaboraPreviewProps) {
   const { t } = useTranslation('crd-space');
@@ -50,28 +46,47 @@ export function CalloutCollaboraPreview({
   const accentColor = colorByType[documentType];
   const typeLabel = t(typeLabelKey[documentType] as 'callout.document');
   const openLabel = t(openLabelKey[documentType]);
-  const compact = size === 'compact';
+  // Tracked by URL value (not a boolean) so a later `previewImageUrl` prop
+  // change — this component being pointed at a different document — starts in
+  // the correct not-yet-loaded/not-errored state without an extra effect to
+  // reset it. A re-rendered preview does NOT change the URL: it carries the
+  // SOURCE file's id and the server refreshes the image in place behind it.
+  const [loadedUrl, setLoadedUrl] = useState<string | undefined>(undefined);
   const [erroredUrl, setErroredUrl] = useState<string | undefined>(undefined);
   const showImage = Boolean(previewImageUrl) && previewImageUrl !== erroredUrl;
+  const imageLoaded = showImage && previewImageUrl === loadedUrl;
 
   return (
     <div
       className={cn(
-        'rounded-lg overflow-hidden border border-border bg-muted/30 relative',
-        compact ? 'h-28' : 'aspect-video',
+        // One height everywhere: a document preview gets the same 16:9 room as a
+        // whiteboard preview, in the space feed card and in the callout detail
+        // dialog alike. A page preview squeezed into a short box reads as a plain
+        // text post and shows almost none of the document.
+        'rounded-lg overflow-hidden border border-border bg-muted/30 relative aspect-video',
         className
       )}
     >
-      <div className="w-full h-full flex items-center justify-center bg-muted">
-        {showImage ? (
+      <div className="w-full h-full flex items-center justify-center bg-muted relative">
+        {/* Type icon stays mounted (and visible) until the preview image has
+         * actually loaded, and again after a load error — it is never
+         * replaced eagerly just because a URL was supplied. */}
+        <Icon className={cn('w-12 h-12', accentColor)} aria-hidden="true" />
+        {showImage && (
           <img
             src={previewImageUrl}
-            alt={typeLabel}
-            className="w-full h-full object-cover"
+            // Empty alt: the type badge below already names the document type,
+            // and the card/dialog around this component carries its own
+            // accessible name — this image is decorative, not a second label.
+            alt=""
+            loading="lazy"
+            // object-top, not the default centre: a document preview's content
+            // starts at the top of the page, so a centre crop of a portrait page
+            // in a landscape box can show nothing but the blank middle of page one.
+            className={cn('absolute inset-0 w-full h-full object-cover object-top', !imageLoaded && 'invisible')}
+            onLoad={() => setLoadedUrl(previewImageUrl)}
             onError={() => setErroredUrl(previewImageUrl)}
           />
-        ) : (
-          <Icon className={cn(compact ? 'w-8 h-8' : 'w-12 h-12', accentColor)} aria-hidden="true" />
         )}
       </div>
       <div className="absolute top-3 right-3">

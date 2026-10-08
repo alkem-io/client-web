@@ -9,6 +9,7 @@ import type {
   PendingMembershipContributorType,
   PendingMembershipState,
 } from '@/crd/components/space/settings/PendingMembershipsTable';
+import { useResendPlatformInvitationAction } from '@/domain/access/ApplicationsAndInvitations/useResendPlatformInvitationAction';
 import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import useActionPermission from '@/domain/access/permissions/useActionPermission';
 import useRoleSetManagerRolesAssignment from '@/domain/access/RoleSetManager/RolesAssignment/useRoleSetManagerRolesAssignment';
@@ -37,7 +38,8 @@ export type PendingRoleRemoval = { contributorId: string; displayName: string };
 export type OrgPendingConfirmation =
   | { kind: 'removeAll'; id: string; displayName: string }
   | { kind: 'rejectApplication'; id: string; displayName: string }
-  | { kind: 'revokeInvitation'; id: string; displayName: string };
+  | { kind: 'revokeInvitation'; id: string; displayName: string }
+  | { kind: 'revokePlatformInvitation'; id: string; displayName: string };
 
 const graphQLErrorInfo = (error: unknown): { code?: string; message?: string } => {
   if (!(error instanceof ApolloError)) return {};
@@ -113,6 +115,9 @@ export type UseOrgAssociatesTabDataResult = {
   onPendingApprove: (id: string) => void;
   onPendingReject: (id: string) => void;
   onPendingRevoke: (id: string) => void;
+  onPendingResend: (id: string) => void;
+  /** Ids of the email invitations whose resend request is in flight. */
+  resendingIds: ReadonlySet<string>;
   refetchPending: () => void;
 
   inviteOpen: boolean;
@@ -212,8 +217,11 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
   const {
     applications,
     invitations,
+    platformInvitations,
     applicationStateChange,
     deleteInvitation,
+    deletePlatformInvitation,
+    resendPlatformInvitation,
     refetch: refetchApplicationsAndInvitations,
   } = useRoleSetApplicationsAndInvitations({
     // Wait for the privileges, then select `applications` only with GRANT: the server gates that
@@ -243,6 +251,7 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
         // it, which is the adjacent control; offering the trash here only fired
         // the invitation mutation with an application id.
         canDelete: false,
+        canResend: false,
       };
     })
     .filter((x): x is PendingMembership => x !== null);
@@ -271,12 +280,32 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
         // with no action anywhere in the product to clear the row. The one
         // exception is the transient 'accepting' row, whose answer is in flight.
         canDelete: state !== 'accepting',
+        canResend: false,
         offeredRoleLabel: t(`org.associates.pending.offeredRole.${offeredRoleLabelKey(inv.extraRoles)}`),
       };
     })
     .filter((x): x is PendingMembership => x !== null);
 
-  const pendingMemberships: PendingMembership[] = [...applicationRows, ...invitationRows];
+  // Invitations sent to an email address that is not yet on the platform. The server lists only
+  // the open ones (an address that has since registered is converted to a regular invitation),
+  // so there is nothing to filter here.
+  const platformInvitationRows: PendingMembership[] = platformInvitations.map(inv => ({
+    id: inv.id,
+    type: 'platformInvitation',
+    state: 'invited',
+    contributorType: 'user',
+    displayName: inv.email,
+    email: inv.email,
+    url: undefined,
+    createdDate: inv.createdDate ? new Date(inv.createdDate).toISOString() : '',
+    canApprove: false,
+    canReject: false,
+    canDelete: true,
+    canResend: true,
+    offeredRoleLabel: t(`org.associates.pending.offeredRole.${offeredRoleLabelKey(inv.roleSetExtraRoles)}`),
+  }));
+
+  const pendingMemberships: PendingMembership[] = [...applicationRows, ...invitationRows, ...platformInvitationRows];
 
   const onPendingApprove = (id: string) => {
     void applicationStateChange(id, ApplicationEvent.APPROVE)
@@ -287,8 +316,17 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
 
   const onPendingReject = (id: string) =>
     setPendingConfirmation({ kind: 'rejectApplication', id, displayName: nameOfPendingRow(id) });
-  const onPendingRevoke = (id: string) =>
-    setPendingConfirmation({ kind: 'revokeInvitation', id, displayName: nameOfPendingRow(id) });
+  const onPendingRevoke = (id: string) => {
+    // The row's type decides the mutation: an email invitation is a different record than an
+    // invitation to an existing user, and deleting one through the other's mutation fails.
+    const kind =
+      pendingMemberships.find(m => m.id === id)?.type === 'platformInvitation'
+        ? 'revokePlatformInvitation'
+        : 'revokeInvitation';
+    setPendingConfirmation({ kind, id, displayName: nameOfPendingRow(id) });
+  };
+
+  const { onResend: onPendingResend, resendingIds } = useResendPlatformInvitationAction(resendPlatformInvitation);
 
   const onConfirm = async () => {
     const confirmation = pendingConfirmation;
@@ -304,6 +342,8 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
       // again and again with nothing on screen changing.
       if (confirmation.kind === 'rejectApplication') {
         await applicationStateChange(confirmation.id, ApplicationEvent.REJECT);
+      } else if (confirmation.kind === 'revokePlatformInvitation') {
+        await deletePlatformInvitation(confirmation.id);
       } else {
         await deleteInvitation(confirmation.id);
       }
@@ -331,6 +371,8 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
     onPendingApprove,
     onPendingReject,
     onPendingRevoke,
+    onPendingResend,
+    resendingIds,
     refetchPending: () => void refetchApplicationsAndInvitations(),
     inviteOpen,
     openInvite: () => setInviteOpen(true),
