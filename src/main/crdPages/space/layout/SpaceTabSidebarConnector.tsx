@@ -6,7 +6,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import type { ContactLeadRecipient } from '@/crd/components/chat/ContactLeadsDialog';
 import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
 import { CommunityUpdatesDialog } from '@/crd/components/space/CommunityUpdatesDialog';
-import { isApplyUnavailable, SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
+import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { AboutButton } from '@/crd/components/space/sidebar/AboutButton';
 import { ContactLeadButton } from '@/crd/components/space/sidebar/ContactLeadButton';
@@ -23,6 +23,7 @@ import { VirtualContributorsSection } from '@/crd/components/space/sidebar/Virtu
 import { Skeleton } from '@/crd/primitives/skeleton';
 import type { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { isApplyUnavailable } from '@/main/crdPages/space/isApplyUnavailable';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { PostIndexDialogConnector } from '../callout/PostIndexDialogConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';

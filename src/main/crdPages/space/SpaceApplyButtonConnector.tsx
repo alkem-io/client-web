@@ -1,4 +1,5 @@
-import { isApplyUnavailable, SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
+import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
+import { isApplyUnavailable } from '@/main/crdPages/space/isApplyUnavailable';
 import { useSpaceApplyFlow } from './useSpaceApplyFlow';
 
 type SpaceApplyButtonConnectorProps = {

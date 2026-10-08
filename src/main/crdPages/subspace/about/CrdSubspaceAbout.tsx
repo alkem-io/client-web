@@ -4,10 +4,11 @@ import { useCommunityGuidelinesQuery, useSpaceAboutDetailsQuery } from '@/core/a
 import useNavigate from '@/core/routing/useNavigate';
 import { groupEntriesForDisplay, resolveSelectedValues } from '@/crd/components/classification/types';
 import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
-import { isApplyUnavailable, SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
+import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
 import { SpaceAboutDialog } from '@/crd/components/space/SpaceAboutDialog';
 import type { SpaceAboutData } from '@/crd/components/space/SpaceAboutView';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { isApplyUnavailable } from '@/main/crdPages/space/isApplyUnavailable';
 import { mapClassificationEntries } from '@/main/crdPages/topLevelPages/spaceSettings/about/aboutMapper';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { useSpaceApplyFlow } from '../../space/useSpaceApplyFlow';
