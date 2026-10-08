@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+# Forge phase-machine enforcement at the only place that cannot be spelled
+# around: git's own pre-push hook, installed into each feature worktree.
+#
+# The PreToolUse hooks in .claude/, .codex/ and .opencode/ inspect a *command
+# string* and the caller's cwd. That is inherently partial -- `/usr/bin/git
+# push`, `bash -c "git push"`, `git -C <worktree> push` from the workspace root
+# (the normal Forge topology), or a push issued by any non-Bash tool all miss.
+# This hook runs inside git after the refs are known, so it sees the real branch
+# regardless of how the push was invoked, from where, or by whom.
+#
+# Installed by .scripts/feature-worktree.sh. Refuses only feat/<id> branches
+# that have a specs/<id>/forge journal; everything else passes through.
+#
+# THIS IS DEFENCE IN DEPTH, NOT AN UNBYPASSABLE CONTROL. Anyone who can run
+# git locally can pass --no-verify or `-c core.hooksPath=`, and no client-side
+# hook can prevent that. The authoritative gate is server-side branch
+# protection with a required status check; see specs/028-forge-phase-machine/.
+# What this hook buys is that the *accidental* and *casual* paths -- the ones a
+# drifted agent actually takes -- are closed, and that a deliberate override is
+# a visible, attributable act rather than a silent one.
+
+set -euo pipefail
+
+# Derive the workspace from git, never from the environment alone: accepting
+# FORGE_WORKSPACE verbatim let `FORGE_WORKSPACE=/tmp/decoy git push` walk past
+# the gate by pointing it at a directory with no journal.
+TOPLEVEL=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
+WORKSPACE=$(git config --local --get forge.workspace 2>/dev/null || echo "")
+if [ -z "$WORKSPACE" ] && [ -n "$TOPLEVEL" ]; then
+  # worktrees/<feature-id>/<repo> -> workspace root is three levels up.
+  candidate=$(cd "$TOPLEVEL/../../.." 2>/dev/null && pwd || echo "")
+  [ -n "$candidate" ] && [ -f "$candidate/repos.yaml" ] && WORKSPACE="$candidate"
+fi
+# An override is honoured only when it is an ancestor of the derived path.
+if [ -n "${FORGE_WORKSPACE:-}" ]; then
+  case "$TOPLEVEL/" in
+    "${FORGE_WORKSPACE%/}"/*) WORKSPACE="${FORGE_WORKSPACE%/}" ;;
+    *)
+      echo "forge pre-push: FORGE_WORKSPACE is not an ancestor of this worktree; refusing." >&2
+      exit 1
+      ;;
+  esac
+fi
+[ -n "$WORKSPACE" ] && [ -f "$WORKSPACE/repos.yaml" ] || exit 0
+command -v python3 >/dev/null 2>&1 || {
+  echo "forge pre-push: python3 unavailable; refusing to push unverified." >&2
+  exit 1
+}
+
+# Each stdin line: <local ref> <local sha> <remote ref> <remote sha>
+deny=0
+while read -r local_ref _local_sha remote_ref _remote_sha; do
+  # `git push origin HEAD:refs/heads/feat/x` delivers HEAD as the local ref, so
+  # matching only the local side let that spelling through. Resolve symbolic
+  # refs and consider the remote side too.
+  resolved="$local_ref"
+  case "$local_ref" in
+    refs/*) ;;
+    *) resolved=$(git rev-parse --symbolic-full-name "$local_ref" 2>/dev/null || echo "$local_ref") ;;
+  esac
+  feature_id=""
+  for candidate in "$resolved" "$remote_ref"; do
+    case "$candidate" in
+      refs/heads/feat/*) feature_id="${candidate#refs/heads/feat/}"; break ;;
+    esac
+  done
+  [ -n "$feature_id" ] || continue
+
+  spec_dir="$WORKSPACE/specs/$feature_id"
+  [ -d "$spec_dir/forge" ] || continue
+
+  if ! verdict=$(python3 "$WORKSPACE/.scripts/forge-control.py" --workspace "$WORKSPACE" \
+      ship-gate --spec-dir "$spec_dir" --feature-id "$feature_id" 2>/dev/null); then
+    : # non-zero simply means denied; the JSON on stdout is authoritative
+  fi
+
+  if ! printf '%s' "$verdict" | python3 -c 'import json,sys; sys.exit(0 if json.load(sys.stdin).get("allowed") else 1)' 2>/dev/null; then
+    echo "" >&2
+    echo "  ✖ forge phase machine blocked this push: $feature_id" >&2
+    printf '%s' "$verdict" | python3 -c '
+import json, sys
+try:
+    for reason in json.load(sys.stdin).get("reasons", []):
+        print(f"      - {reason}", file=sys.stderr)
+except Exception:
+    print("      - ship-gate produced no verdict", file=sys.stderr)
+' 2>/dev/null || echo "      - ship-gate produced no verdict" >&2
+    echo "" >&2
+    echo "    Resolve the blocker, or have an operator run:" >&2
+    echo "      .scripts/forge-control.py phase-attest --spec-dir specs/$feature_id --operator <you>" >&2
+    echo "" >&2
+    deny=1
+  fi
+done
+
+exit "$deny"

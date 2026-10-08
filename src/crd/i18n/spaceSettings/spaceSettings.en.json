@@ -346,18 +346,11 @@
       "actions": "Actions",
       "empty": "No organisations.",
       "remove": "Remove organisation",
-      "description": "Overview of all member and lead organisations. Invite an organisation to join, or add one directly.",
-      "add": "Add Organisation",
+      "description": "Overview of all member and lead organisations. Invite an organisation to join.",
       "dropdown": {
         "viewProfile": "View Profile",
         "changeRole": "Change Role",
         "removeFromSpace": "Remove from Space"
-      },
-      "addDialog": {
-        "title": "Add Organisation",
-        "description": "These organizations will be visible as members in this Space and on their organization profile.",
-        "search": "Search organisations…",
-        "empty": "No organisations match your search."
       },
       "invite": "Invite Organisation",
       "search": "Search organisations…",
