@@ -346,7 +346,7 @@
       "actions": "Actions",
       "empty": "No organisations.",
       "remove": "Remove organisation",
-      "description": "Overview of all member and lead organisations. Invite an organisation to join, or add one directly.",
+      "description": "Overview of all member and lead organisations. Invite an organisation to join.",
       "dropdown": {
         "viewProfile": "View Profile",
         "changeRole": "Change Role",

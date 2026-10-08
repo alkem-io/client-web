@@ -346,7 +346,7 @@
       "actions": "Actions",
       "empty": "Aucune organisation.",
       "remove": "Retirer l'organisation",
-      "description": "Aperçu de toutes les organisations membres et lead. Invitez une organisation à rejoindre, ou ajoutez-en une directement.",
+      "description": "Aperçu de toutes les organisations membres et lead. Invitez une organisation à rejoindre l'espace.",
       "dropdown": {
         "viewProfile": "Voir le profil",
         "changeRole": "Changer le rôle",

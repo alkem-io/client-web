@@ -346,7 +346,7 @@
       "actions": "Acties",
       "empty": "Geen organisaties.",
       "remove": "Organisatie verwijderen",
-      "description": "Overzicht van alle leden- en Lead-organisaties. Nodig een organisatie uit om deel te nemen, of voeg er direct een toe.",
+      "description": "Overzicht van alle leden- en Lead-organisaties. Nodig een organisatie uit om deel te nemen.",
       "dropdown": {
         "viewProfile": "Profiel bekijken",
         "changeRole": "Rol wijzigen",

@@ -346,7 +346,7 @@
       "actions": "Acciones",
       "empty": "No hay organizaciones.",
       "remove": "Eliminar organización",
-      "description": "Resumen de todas las organizaciones miembro y lead. Invita a una organización a unirse, o añade una directamente.",
+      "description": "Resumen de todas las organizaciones miembro y lead. Invita a una organización a unirse.",
       "dropdown": {
         "viewProfile": "Ver perfil",
         "changeRole": "Cambiar rol",
