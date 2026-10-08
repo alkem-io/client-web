@@ -1163,6 +1163,9 @@
     "message": "Съобщение",
     "successfully-sent": "Съобщението е изпратено успешно"
   },
+  "notification": {
+    "close": "Затваряне на известието"
+  },
   "ok": "OK",
   "pages": {
     "admin": {

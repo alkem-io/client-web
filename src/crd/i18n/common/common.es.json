@@ -1163,6 +1163,9 @@
     "message": "Mensaje",
     "successfully-sent": "Mensaje enviado correctamente"
   },
+  "notification": {
+    "close": "Cerrar notificación"
+  },
   "ok": "Aceptar",
   "pages": {
     "admin": {
