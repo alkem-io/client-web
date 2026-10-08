@@ -323,9 +323,10 @@ export default function CrdSpaceSettingsPage() {
   const [activeMemberSubject, setActiveMemberSubject] = useState<MemberSettingsSubject | null>(null);
   const [removeOriginatedFromDialog, setRemoveOriginatedFromDialog] = useState(false);
 
-  // The organization lead toggle drives two different mutations with two different gates:
-  // assignRoleToOrganization needs the organization pair, while un-leading goes through
-  // removeRoleFromOrganization, which is gated on GRANT alone.
+  // The organization lead toggle drives two different mutations, each with its own reason:
+  // leading goes through assignRoleToOrganization and un-leading through
+  // removeRoleFromOrganization. Both need GRANT alone for an organization already in the
+  // Space (server ruling R32).
   const organizationLeadDisabledReason = activeMemberSubject?.isLead
     ? organizationRemoveReason
     : organizationLeadAssignReason;
