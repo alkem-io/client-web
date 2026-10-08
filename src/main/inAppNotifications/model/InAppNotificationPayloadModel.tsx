@@ -3,6 +3,7 @@ import type {
   CalendarEventType,
   ForumDiscussionCategory,
   NotificationEventPayload,
+  RoleChangeType,
   RoleName,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
@@ -90,6 +91,8 @@ export interface InAppNotificationPayloadModel {
   update?: string; // returning ID, todo: get the content of the update
   spaceCommunicationMessage?: string;
   role?: string;
+  /** Whether the role above was assigned or removed; absent on records written before this field existed. */
+  changeType?: RoleChangeType;
   discussion?: {
     id: string;
     displayName: string;

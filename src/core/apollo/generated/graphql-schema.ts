@@ -3954,6 +3954,8 @@ export type InAppNotificationPayloadPlatformForumDiscussion = InAppNotificationP
 
 export type InAppNotificationPayloadPlatformGlobalRoleChange = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
+  /** Whether the role was added or removed; absent on records written before this field existed. */
+  changeType?: Maybe<RoleChangeType>;
   /** The new role. */
   role: Scalars['String']['output'];
   /** The payload type. */
@@ -8648,6 +8650,12 @@ export type Role = {
   /** The role policy that applies for VirtualContributors in this Role. */
   virtualContributorPolicy: ActorRolePolicy;
 };
+
+/** Whether a role was added or removed. */
+export enum RoleChangeType {
+  Added = 'ADDED',
+  Removed = 'REMOVED',
+}
 
 export enum RoleName {
   Admin = 'ADMIN',
@@ -42058,6 +42066,7 @@ export type InAppNotificationReceivedSubscription = {
           __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
           type: NotificationEventPayload;
           role: string;
+          changeType?: RoleChangeType | undefined;
           user?:
             | {
                 __typename?: 'User';
@@ -43382,6 +43391,7 @@ export type InAppNotificationsQuery = {
               __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
               type: NotificationEventPayload;
               role: string;
+              changeType?: RoleChangeType | undefined;
               user?:
                 | {
                     __typename?: 'User';
@@ -44712,6 +44722,7 @@ export type InAppNotificationAllTypesFragment = {
         __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
         type: NotificationEventPayload;
         role: string;
+        changeType?: RoleChangeType | undefined;
         user?:
           | {
               __typename?: 'User';
@@ -46146,6 +46157,7 @@ export type InAppNotificationPayloadPlatformGlobalRoleChangeFragment = {
   __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
   type: NotificationEventPayload;
   role: string;
+  changeType?: RoleChangeType | undefined;
   user?:
     | {
         __typename?: 'User';
