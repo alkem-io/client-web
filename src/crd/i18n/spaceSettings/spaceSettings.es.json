@@ -346,18 +346,11 @@
       "actions": "Acciones",
       "empty": "No hay organizaciones.",
       "remove": "Eliminar organización",
-      "description": "Resumen de todas las organizaciones miembro y lead. Invita a una organización a unirse, o añade una directamente.",
-      "add": "Añadir organización",
+      "description": "Resumen de todas las organizaciones miembro y lead. Invita a una organización a unirse.",
       "dropdown": {
         "viewProfile": "Ver perfil",
         "changeRole": "Cambiar rol",
         "removeFromSpace": "Eliminar del Espacio"
-      },
-      "addDialog": {
-        "title": "Añadir organización",
-        "description": "Estas organizaciones serán visibles como miembros en este Space y en su perfil de organización.",
-        "search": "Buscar organizaciones…",
-        "empty": "Ninguna organización coincide con tu búsqueda."
       },
       "invite": "Invitar organización",
       "search": "Buscar organizaciones…",
