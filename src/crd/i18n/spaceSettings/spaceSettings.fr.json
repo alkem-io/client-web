@@ -347,17 +347,10 @@
       "empty": "Aucune organisation.",
       "remove": "Retirer l'organisation",
       "description": "Aperçu de toutes les organisations membres et lead. Invitez une organisation à rejoindre, ou ajoutez-en une directement.",
-      "add": "Ajouter une organisation",
       "dropdown": {
         "viewProfile": "Voir le profil",
         "changeRole": "Changer le rôle",
         "removeFromSpace": "Retirer de l'Espace"
-      },
-      "addDialog": {
-        "title": "Ajouter une organisation",
-        "description": "Ces organisations seront visibles en tant que membres dans ce Space et sur leur profil d'organisation.",
-        "search": "Rechercher des organisations…",
-        "empty": "Aucune organisation ne correspond à votre recherche."
       },
       "invite": "Inviter une organisation",
       "search": "Rechercher des organisations…",

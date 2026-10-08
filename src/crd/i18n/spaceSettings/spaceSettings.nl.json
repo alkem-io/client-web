@@ -347,17 +347,10 @@
       "empty": "Geen organisaties.",
       "remove": "Organisatie verwijderen",
       "description": "Overzicht van alle leden- en Lead-organisaties. Nodig een organisatie uit om deel te nemen, of voeg er direct een toe.",
-      "add": "Organisatie toevoegen",
       "dropdown": {
         "viewProfile": "Profiel bekijken",
         "changeRole": "Rol wijzigen",
         "removeFromSpace": "Uit Space verwijderen"
-      },
-      "addDialog": {
-        "title": "Organisatie toevoegen",
-        "description": "Deze organisaties worden zichtbaar als leden in deze Space en op hun organisatieprofiel.",
-        "search": "Organisaties zoeken…",
-        "empty": "Geen organisaties komen overeen met je zoekopdracht."
       },
       "invite": "Organisatie uitnodigen",
       "search": "Organisaties zoeken…",

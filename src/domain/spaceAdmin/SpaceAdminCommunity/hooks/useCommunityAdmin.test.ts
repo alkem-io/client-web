@@ -10,14 +10,6 @@ vi.mock('@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInv
   default: vi.fn(),
 }));
 
-vi.mock('@/domain/access/AvailableContributors/useRoleSetAvailableContributors', () => ({
-  default: vi.fn(() => ({
-    refetch: vi.fn(),
-    findAvailableUsersForRoleSetEntryRole: vi.fn(async () => ({ users: [] })),
-    findAvailableOrganizationsForRoleSet: vi.fn(async () => ({ organizations: [] })),
-  })),
-}));
-
 vi.mock('@/domain/access/RoleSetManager/RolesAssignment/useRoleSetManagerRolesAssignment', () => ({
   default: vi.fn(() => ({
     assignRoleToUser: vi.fn(),
