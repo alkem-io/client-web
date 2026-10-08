@@ -20,7 +20,7 @@
       },
       "callout": {
         "title": "Collaboration tools",
-        "subtitle": "Reusable callouts for workshops, brainstorming and group activities."
+        "subtitle": "Reusable Posts for workshops, brainstorming and group activities."
       },
       "whiteboard": {
         "title": "Whiteboard templates",
@@ -62,7 +62,8 @@
     "image": "Gallery",
     "poll": "Poll",
     "contributors": "Contributors",
-    "spaces": "Subspaces"
+    "spaces": "Subspaces",
+    "form": "Form"
   },
   "contributionType": {
     "post": "Posts",
@@ -87,7 +88,15 @@
       "links": "Links",
       "gallery": "Gallery",
       "pollQuestion": "Question",
-      "pollOptions": "Options"
+      "pollOptions": "Options",
+      "formQuestions": "Questions",
+      "formRequired": "Required",
+      "formQuestionType": {
+        "SHORT_TEXT": "Short text",
+        "LONG_TEXT": "Long text",
+        "SINGLE_CHOICE": "Single choice",
+        "MULTIPLE_CHOICE": "Multiple choice"
+      }
     },
     "whiteboard": {
       "empty": "This whiteboard template has no drawing."
@@ -263,8 +272,8 @@
   "setDefault": {
     "subspaceTitle": "Default subspace template",
     "subspaceSubtitle": "Used to pre-fill the form when creating a subspace of this space.",
-    "flowStateTitle": "Default callout template",
-    "flowStateSubtitle": "Used to pre-fill the form when adding a callout to this phase.",
+    "flowStateTitle": "Default Post template",
+    "flowStateSubtitle": "Used to pre-fill the form when adding a Post to this phase.",
     "current": "Current default",
     "none": "No default",
     "noCandidates": "There are no space templates in this set yet.",
@@ -274,7 +283,7 @@
     "cancel": "Cancel"
   },
   "saveAs": {
-    "fromCalloutTitle": "Save callout as a template",
+    "fromCalloutTitle": "Save Post as a template",
     "fromGuidelinesTitle": "Save guidelines as a template",
     "fromSubspaceTitle": "Save subspace as a template",
     "unsavedSourceTitle": "Save your changes first",

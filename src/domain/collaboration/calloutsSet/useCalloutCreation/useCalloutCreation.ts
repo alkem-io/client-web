@@ -8,6 +8,7 @@ import type {
   CollaboraDocumentType,
   CreateCalloutContributionInput,
   CreateCalloutContributorsSettingsInput,
+  CreateCalloutFormInput,
   CreateCalloutMutation,
   CreateCalloutOnCalloutsSetInput,
   CreateCalloutSelectionSettingsInput,
@@ -60,6 +61,7 @@ export interface CalloutCreationType {
       }[];
     };
     poll?: PollFormFieldSubmittedValues;
+    form?: CreateCalloutFormInput;
   };
   settings?: {
     framing?: {

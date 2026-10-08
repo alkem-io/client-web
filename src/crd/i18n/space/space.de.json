@@ -1,9 +1,9 @@
 {
   "common": {
-    "Callout": "Aufruf",
-    "callout": "aufruf",
-    "Callouts": "Aufrufe",
-    "callouts": "aufrufe"
+    "Callout": "Beitrag",
+    "callout": "Beitrag",
+    "Callouts": "Beiträge",
+    "callouts": "Beiträge"
   },
   "banner": {
     "homeSpace": "Hauptbereich",
@@ -286,7 +286,7 @@
     "linkDeleteAriaLabel": "Link löschen",
     "linkDelete": "Link löschen",
     "linkDeleteConfirmTitle": "Diesen Link löschen?",
-    "linkDeleteConfirmDescription": "Dadurch wird der Link dauerhaft aus diesem $t(common.callout) entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
+    "linkDeleteConfirmDescription": "Dadurch wird der Link dauerhaft aus diesem Beitrag entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
     "addPost": "Beitrag hinzufügen",
     "createPost": "Beitrag erstellen",
     "editPost": "Beitrag bearbeiten",
@@ -308,12 +308,13 @@
     "postUnsavedCloseDescription": "Du hast nicht gespeicherte Änderungen. Wenn du jetzt schließt, gehen sie verloren.",
     "postUnsavedCloseConfirm": "Änderungen verwerfen",
     "postUnsavedCloseCancel": "Weiter bearbeiten",
-    "uploadAfterCreateFailed": "Der $t(common.Callout) wurde erstellt, aber das Hochladen des Vorschaubildes ist fehlgeschlagen. Sie können es im Bearbeitungsdialog des $t(common.callout)s erneut versuchen.",
+    "uploadAfterCreateFailed": "Der Beitrag wurde erstellt, aber das Hochladen des Vorschaubildes ist fehlgeschlagen. Sie können es im Bearbeitungsdialog des Beitrags erneut versuchen.",
     "pollOptionsSaveFailed": "Eine oder mehrere Änderungen an den Umfrageoptionen konnten nicht gespeichert werden. Sie können es in diesem Dialog erneut versuchen.",
     "referencesSaveFailed": "Eine oder mehrere neue Referenzen konnten nicht gespeichert werden. Weitere Änderungen wurden nicht übernommen. Bitte versuchen Sie es erneut.",
-    "updateFailed": "Die Änderungen am $t(common.callout) konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+    "updateFailed": "Die Änderungen am Beitrag konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
     "contributors": "Mitwirkende",
-    "subspaces": "Unterbereiche"
+    "subspaces": "Unterbereiche",
+    "form": "Formular"
   },
   "contribution": {
     "edit": "Bearbeiten",
@@ -475,11 +476,11 @@
     "moveFailed": "Neue Reihenfolge fehlgeschlagen. Bitte erneut versuchen."
   },
   "visibilityChange": {
-    "publishTitle": "Diesen $t(common.callout) veröffentlichen?",
-    "publishDescription": "Der $t(common.Callout) wird für alle Mitglieder des Space sichtbar.",
+    "publishTitle": "Diesen Beitrag veröffentlichen?",
+    "publishDescription": "Der Beitrag wird für alle Mitglieder des Space sichtbar.",
     "publishConfirm": "Veröffentlichen",
-    "unpublishTitle": "Diesen $t(common.callout) in den Entwurf zurücksetzen?",
-    "unpublishDescription": "Der $t(common.Callout) ist dann für Space-Mitglieder nicht mehr sichtbar.",
+    "unpublishTitle": "Diesen Beitrag in den Entwurf zurücksetzen?",
+    "unpublishDescription": "Der Beitrag ist dann für Space-Mitglieder nicht mehr sichtbar.",
     "unpublishConfirm": "In Entwurf verschieben",
     "notifyMembers": "Space-Mitglieder benachrichtigen",
     "saveFailed": "Die Sichtbarkeit konnte nicht geändert werden. Bitte erneut versuchen."
@@ -487,16 +488,16 @@
   "sortContributions": {
     "title": "Beiträge sortieren",
     "description": "Per Drag-and-Drop neu anordnen. Die neue Reihenfolge wird beim Speichern übernommen.",
-    "empty": "Dieser $t(common.Callout) hat noch keine Beiträge zum Sortieren.",
+    "empty": "Dieser Beitrag hat noch keine Antworten zum Sortieren.",
     "confirm": "Reihenfolge speichern",
     "dragHandle": "Ziehen zum Neuordnen",
     "saveFailed": "Die neue Reihenfolge konnte nicht gespeichert werden. Bitte erneut versuchen."
   },
   "deleteCallout": {
-    "title": "Diesen $t(common.Callout) löschen?",
+    "title": "Diesen Beitrag löschen?",
     "description": "„{{title}}“ wird dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
     "confirm": "Löschen",
-    "confirmAll": "$t(common.Callout) und alle Inhalte löschen",
+    "confirmAll": "Beitrag und alle Inhalte löschen",
     "headerContributions_one": "{{count}} Beitrag wird gelöscht",
     "headerContributions_other": "{{count}} Beiträge werden gelöscht",
     "headerRich": "{{content}} wird gelöscht",
@@ -513,14 +514,19 @@
       "whiteboard": "Das Whiteboard",
       "memo": "Die Notiz",
       "mediaGallery": "Die Mediengalerie",
-      "document": "Das Dokument"
+      "document": "Das Dokument",
+      "form": "Das Formular"
     },
     "moreLinks_one": "und {{count}} weiterer Link",
     "moreLinks_other": "und {{count}} weitere Links",
     "comments_one": "{{count}} Kommentar wird gelöscht",
     "comments_other": "{{count}} Kommentare werden gelöscht",
-    "success": "Der $t(common.Callout) „{{title}}“ wurde gelöscht.",
-    "saveFailed": "Der $t(common.Callout) konnte nicht gelöscht werden. Bitte erneut versuchen."
+    "success": "Der Beitrag „{{title}}“ wurde gelöscht.",
+    "saveFailed": "Der Beitrag konnte nicht gelöscht werden. Bitte erneut versuchen.",
+    "headerRichForm_one": "Das Formular und seine {{count}} Antwort werden gelöscht",
+    "headerRichForm_other": "Das Formular und seine {{count}} Antworten werden gelöscht",
+    "headerRichFormContributions_one": "Das Formular, seine Antworten und {{count}} Beitrag werden gelöscht",
+    "headerRichFormContributions_other": "Das Formular, seine Antworten und {{count}} Beiträge werden gelöscht"
   },
   "deleteTask": {
     "title": "Diese Aufgabe löschen?"
@@ -579,7 +585,7 @@
     "publishedLabel": "Veröffentlicht",
     "draftLabel": "Entwurf",
     "notifyMembers": "Bereichsmitglieder benachrichtigen",
-    "titleRequiredHint": "Fügen Sie Ihrem $t(common.callout) einen Titel hinzu, um fortzufahren",
+    "titleRequiredHint": "Fügen Sie Ihrem Beitrag einen Titel hinzu, um fortzufahren",
     "saveDraft": "Entwurf speichern",
     "save": "Speichern",
     "publish": "Veröffentlichen",
@@ -597,7 +603,7 @@
     "addOption": "Option hinzufügen",
     "removeOption": "Option entfernen",
     "allowComments": "Kommentare zulassen",
-    "allowCommentsDescription": "Mitglieder können Kommentare im $t(common.callout)-Rahmen veröffentlichen.",
+    "allowCommentsDescription": "Mitglieder können Kommentare zum Framing des Beitrags veröffentlichen.",
     "titleCharacterCount": "{{current}}/{{max}}",
     "selection": {
       "label": "Manuelle Auswahl",
@@ -623,7 +629,9 @@
     "cardVariant": {
       "label": "Erweiterte Karte",
       "description": "Zeigt die vollständige Karte mit dem Was, Warum und Wer des Unterbereichs - mehr Kontext, mehr Höhe."
-    }
+    },
+    "moreFramingTypes": "Mehr",
+    "moreFramingTypesHeading": "Mehr zum Hinzufügen"
   },
   "contributionSettings": {
     "heading": "Antworten",
@@ -643,7 +651,7 @@
     "setDefaults": "Standardantwort festlegen",
     "prePopulate": {
       "heading": "Sammlung vorbefüllen",
-      "description": "Fügen Sie Links hinzu, die sofort sichtbar sind, sobald dieser $t(common.Callout) erstellt wird.",
+      "description": "Fügen Sie Links hinzu, die sofort sichtbar sind, sobald dieser Beitrag erstellt wird.",
       "empty": "Noch keine vorbefüllten Links.",
       "titleLabel": "Titel",
       "titlePlaceholder": "Link-Titel",
@@ -654,10 +662,12 @@
       "addRow": "Weiteren Link hinzufügen",
       "removeRow": "Link entfernen",
       "attachFile": "Datei anhängen"
-    }
+    },
+    "moreTypes": "Mehr",
+    "moreTypesHeading": "Weitere Antwortmöglichkeiten"
   },
   "responseDefaults": {
-    "srDescription": "Konfigurieren Sie die Standardwerte für neue Beiträge in diesem $t(common.Callout).",
+    "srDescription": "Konfigurieren Sie die Standardwerte für neue Antworten in diesem Beitrag.",
     "title": {
       "post": "Standardwerte für Beiträge",
       "memo": "Standardwerte für Notizen",
@@ -977,6 +987,7 @@
     "cantComment": "Du hast keine Berechtigung, hier zu kommentieren, antworten oder reagieren.",
     "attachments": {
       "attach": "Dateien anhängen",
+      "dropHint": "Dateien zum Anhängen hier ablegen",
       "stagedListLabel": "Zu sendende Dateien",
       "removeAttachment": "{{name}} entfernen",
       "uploading": "Wird hochgeladen…",
@@ -999,7 +1010,7 @@
     },
     "deleteFraming": {
       "title": "Framing-Inhalt entfernen?",
-      "description": "Der Framing-Inhalt dieses $t(common.Callout)s wird entfernt. Dies kann nicht rückgängig gemacht werden.",
+      "description": "Der Framing-Inhalt dieses Beitrags wird entfernt. Dies kann nicht rückgängig gemacht werden.",
       "confirm": "Entfernen",
       "cancel": "Beibehalten"
     },
@@ -1115,6 +1126,17 @@
     "viewMap": "Karte",
     "expandMap": "Karte vergrößern",
     "closeMap": "Karte schließen",
+    "card": {
+      "taglineFallback": "Dieser Nutzer hat noch keinen Untertitel eingetragen.",
+      "associates_one": "{{count}} Zugehöriger in dieser Organisation",
+      "associates_other": "{{count}} Zugehörige in dieser Organisation",
+      "actions": "Aktionen für {{name}}",
+      "viewProfile": "Profil ansehen",
+      "message": "Nachricht",
+      "website": "Website von {{name}} besuchen (öffnet in einem neuen Tab)",
+      "opensInNewTab": "öffnet in einem neuen Tab",
+      "joined": "Diesem Space im {{date}} beigetreten"
+    },
     "types": {
       "user": "Personen",
       "organization": "Organisationen",
@@ -1162,5 +1184,181 @@
   },
   "parentStack": {
     "goTo": "Gehe zu {{name}}"
+  },
+  "formForm": {
+    "validation": {
+      "questionsMin": "Mindestens {{count}} Frage ist erforderlich",
+      "questionsMax": "Höchstens {{count}} Fragen sind erlaubt",
+      "promptRequired": "Der Fragetext ist erforderlich",
+      "promptMax": "Der Fragetext ist zu lang",
+      "explanationMax": "Die Erläuterung ist zu lang",
+      "optionsMin": "Mindestens {{count}} Optionen sind erforderlich",
+      "optionsMax": "Höchstens {{count}} Optionen sind erlaubt",
+      "optionRequired": "Der Optionstext ist erforderlich",
+      "optionMax": "Der Optionstext ist zu lang",
+      "optionsDuplicate": "Die Optionen müssen sich voneinander unterscheiden"
+    },
+    "questionsHeading": "Formular",
+    "questionsDescription": "Stelle Fragen und sammle die Antworten",
+    "questionNumber": "Frage {{number}}",
+    "promptPlaceholder": "Was möchten Sie fragen?",
+    "explanationLabel": "Erläuterung (optional)",
+    "explanationPlaceholder": "Helfen Sie den Leuten, die Frage zu verstehen",
+    "typeLabel": "Antworttyp",
+    "type": {
+      "SHORT_TEXT": "Kurzer Text",
+      "LONG_TEXT": "Langer Text",
+      "SINGLE_CHOICE": "Einfachauswahl",
+      "MULTIPLE_CHOICE": "Mehrfachauswahl"
+    },
+    "required": "Pflichtfeld",
+    "dragQuestion": "Frage {{number}} verschieben",
+    "addQuestion": "Frage hinzufügen",
+    "removeQuestion": "Frage entfernen",
+    "removeQuestionConfirm": {
+      "title": "Diese Frage entfernen?",
+      "description": "Die Frage wird aus dem Formular entfernt.",
+      "descriptionWithText": "„{{text}}“ wird aus dem Formular entfernt."
+    },
+    "optionsHeading": "Optionen",
+    "optionLabel": "Option {{number}}",
+    "addOption": "Option hinzufügen",
+    "removeOption": "Option entfernen",
+    "dragOption": "Option {{number}} verschieben",
+    "removeOptionConfirm": {
+      "title": "Diese Option entfernen?",
+      "description": "Die Option wird aus der Frage entfernt.",
+      "descriptionWithText": "„{{text}}“ wird aus der Frage entfernt."
+    },
+    "settingsButton": "Formulareinstellungen",
+    "settings": {
+      "title": "Formulareinstellungen",
+      "visibilityHeading": "Wer die Antworten sehen kann",
+      "visibility": {
+        "ADMINS": "Nur Administratoren",
+        "MEMBERS": "Mitglieder des Space"
+      },
+      "visibilityHelp": {
+        "ADMINS": "Nur die Administratoren dieses Space können alle Antworten lesen. Alle anderen sehen nur ihre eigenen.",
+        "MEMBERS": "Die Mitglieder dieses Space können alle Antworten lesen."
+      },
+      "responseModeHeading": "Antworten pro Person",
+      "responseMode": {
+        "SINGLE": "Eine Antwort pro Person",
+        "MULTIPLE": "Mehrere Antworten pro Person"
+      },
+      "stateOpen": "Für Antworten geöffnet",
+      "stateHelp": "Geschlossene Formulare nehmen keine neuen Antworten an.",
+      "defaultCollapsed": "Formular standardmäßig eingeklappt anzeigen",
+      "defaultCollapsedHelp": "Betrachter können es weiterhin ausklappen",
+      "widenConfirm": {
+        "title": "Antworten für Mitglieder sichtbar machen?",
+        "description_one": "Mitglieder von {{space}} können die {{count}} bestehende Antwort lesen, auch wenn sie abgegeben wurde, als nur Admins sie sehen konnten.",
+        "description_other": "Mitglieder von {{space}} können alle {{count}} bestehenden Antworten lesen, auch die, die abgegeben wurden, als nur Admins sie sehen konnten.",
+        "descriptionNoCount": "Mitglieder von {{space}} können alle bestehenden Antworten lesen, auch die, die abgegeben wurden, als nur Admins sie sehen konnten.",
+        "confirm": "Antworten für Mitglieder sichtbar machen"
+      }
+    },
+    "errors": {
+      "saveFailed": "Das Formular konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+      "FORM_UNKNOWN_QUESTION_ID": "Das Formular wurde inzwischen geändert. Bitte neu laden und erneut versuchen.",
+      "FORM_UNKNOWN_OPTION_ID": "Das Formular wurde inzwischen geändert. Bitte neu laden und erneut versuchen.",
+      "FORM_QUESTIONS_COUNT": "Ein Formular benötigt zwischen 1 und 50 Fragen.",
+      "FORM_OPTIONS_COUNT": "Eine Auswahlfrage benötigt zwischen 2 und 20 Optionen.",
+      "FORM_OPTIONS_DUPLICATE": "Die Optionen müssen sich voneinander unterscheiden."
+    },
+    "title": "Titel des Formulars (optional)",
+    "titlePlaceholder": "Geben Sie dem Formular einen Titel",
+    "description": "Beschreibung (optional)",
+    "descriptionPlaceholder": "Beschreiben Sie, worum es in diesem Formular geht",
+    "titleTooLong": "Der Titel des Formulars darf höchstens {{count}} Zeichen lang sein",
+    "descriptionTooLong": "Die Beschreibung des Formulars darf höchstens {{count}} Zeichen lang sein",
+    "typeChangeHint": "Bestehende Antworten behalten ihr ursprüngliches Format"
+  },
+  "formFillIn": {
+    "requiredMarker": "Pflichtfrage",
+    "noticeAdmins": "Nur die Administratoren von {{space}} können Ihre Antwort sehen",
+    "noticeMembers": "Mitglieder von {{space}} können Ihre Antwort sehen",
+    "submit": "Formular senden",
+    "answerPlaceholder": "Antwort eingeben...",
+    "resetConfirm": {
+      "title": "Antworten zurücksetzen?",
+      "description": "Alle Eingaben in diesem Formular werden gelöscht.",
+      "confirm": "Zurücksetzen"
+    },
+    "submitting": "Wird gesendet…",
+    "closedBadge": "Geschlossen",
+    "draftBadge": "Nicht veröffentlicht",
+    "closedNotice": "Dieses Formular ist geschlossen und nimmt keine Antworten mehr an.",
+    "draftNotice": "Sie können antworten, sobald dieser Beitrag veröffentlicht ist.",
+    "cannotRespond": "Sie haben keine Berechtigung, dieses Formular zu beantworten.",
+    "requiredError": "Diese Frage ist erforderlich",
+    "noAnswer": "Keine Antwort",
+    "success": "Ihre Antwort wurde gesendet.",
+    "withdrawn": "Ihre Antwort wurde zurückgezogen.",
+    "withdrawFailed": "Ihre Antwort konnte nicht zurückgezogen werden. Bitte versuchen Sie es erneut.",
+    "visibilityChanged": "Wer die Antworten sehen kann, hat sich geändert – bitte prüfen und erneut senden.",
+    "errors": {
+      "generic": "Ihre Antwort konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
+      "FORM_RESPONSE_ALREADY_EXISTS": "Sie haben dieses Formular bereits beantwortet.",
+      "FORM_CLOSED": "Dieses Formular ist geschlossen und nimmt keine Antworten mehr an.",
+      "CALLOUT_NOT_PUBLISHED": "Dieses Formular ist noch nicht veröffentlicht.",
+      "FORM_ANSWER_REQUIRED": "Bitte beantworten Sie alle Pflichtfragen.",
+      "FORM_ANSWER_TOO_LONG": "Eine Ihrer Antworten ist zu lang.",
+      "FORM_ANSWER_UNKNOWN_QUESTION": "Das Formular hat sich geändert, während Sie geantwortet haben. Bitte prüfen und erneut senden.",
+      "FORM_ANSWER_DUPLICATE_QUESTION": "Das Formular hat sich geändert, während Sie geantwortet haben. Bitte prüfen und erneut senden.",
+      "FORM_ANSWER_TYPE_MISMATCH": "Das Formular hat sich geändert, während Sie geantwortet haben. Bitte prüfen und erneut senden.",
+      "FORM_ANSWER_INVALID_OPTION": "Eine der gewählten Optionen existiert nicht mehr. Bitte prüfen und erneut senden.",
+      "FORM_ANSWER_SELECTION_COUNT": "Bitte wählen Sie eine gültige Anzahl an Optionen."
+    },
+    "ownResponses": {
+      "heading": "Ihre Antworten",
+      "loadEarlier": "Frühere Antworten anzeigen",
+      "responseNumber": "Antwort {{number}}",
+      "submittedOn": "Gesendet am {{date}}",
+      "withdraw": "Zurückziehen",
+      "withdrawConfirm": {
+        "title": "Diese Antwort zurückziehen?",
+        "description": "Ihre Antwort wird gelöscht. Dies kann nicht rückgängig gemacht werden.",
+        "confirm": "Zurückziehen"
+      }
+    },
+    "untitled": "Formular",
+    "questionCount_one": "{{count}} Frage",
+    "questionCount_other": "{{count}} Fragen",
+    "expand": "Formular ausklappen",
+    "collapse": "Formular einklappen",
+    "cancel": "Abbrechen"
+  },
+  "formResponses": {
+    "viewAction": "Antworten anzeigen ({{count}})",
+    "dialogTitle": "Formularantworten",
+    "respondent": "Antwortende Person",
+    "submitted": "Gesendet",
+    "actions": "Aktionen",
+    "noAnswer": "Keine Antwort",
+    "deletedUser": "Gelöschter Benutzer",
+    "removedQuestion": "entfernte Frage",
+    "loadMore": "Mehr laden",
+    "loadingMore": "Wird geladen…",
+    "empty": "Noch keine Antworten.",
+    "showing": "{{shown}} von {{total}} angezeigt",
+    "open": "Antwort öffnen",
+    "delete": "Antwort löschen",
+    "deleteConfirm": {
+      "title": "Diese Antwort löschen?",
+      "description": "Die Antwort wird dauerhaft gelöscht.",
+      "confirm": "Löschen"
+    },
+    "singleTitle": "Antwort von {{name}}",
+    "deleteFailed": "Die Antwort konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.",
+    "loadFailed": "Die Antworten konnten nicht geladen werden.",
+    "exportCsv": "CSV exportieren",
+    "exporting": "Wird exportiert…",
+    "exportFailed": "Die Antworten konnten nicht exportiert werden. Bitte versuche es erneut.",
+    "csv": {
+      "submitter": "Eingereicht von",
+      "submittedDate": "Eingereicht am"
+    }
   }
 }

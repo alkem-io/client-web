@@ -31,6 +31,7 @@ export interface SpaceAdminNotificationSettings {
   communityNewMember?: NotificationChannels;
   communityInvitationResponse?: NotificationChannels;
   collaborationCalloutContributionCreated?: NotificationChannels;
+  collaborationCalloutFormResponseReceived?: NotificationChannels;
   communicationMessageReceived?: NotificationChannels;
   userEmailChanged?: NotificationChannels;
 }

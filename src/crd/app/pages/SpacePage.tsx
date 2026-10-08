@@ -134,7 +134,7 @@ export function SpacePage() {
     why: 'Cities account for 70% of global energy consumption. By working together across municipalities, we can share learnings, reduce costs, and accelerate the transition to clean energy. This space exists to break silos between local governments and foster peer-to-peer knowledge exchange.',
     who: 'Municipal sustainability officers, urban planners, energy researchers, community organizers, and technology providers working on the ground in European cities. We welcome anyone committed to practical climate action at the local level.',
     provider: {
-      name: 'Alkemio Foundation',
+      name: 'Alkemio',
       avatarUrl: undefined,
       type: 'organization',
       location: 'The Hague, Netherlands',

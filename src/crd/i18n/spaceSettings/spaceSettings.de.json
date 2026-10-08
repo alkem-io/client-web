@@ -43,15 +43,15 @@
       "descriptionPlaceholder": "Diese Spalte beschreiben…",
       "menu": "Spaltenaktionen",
       "drag": "Ziehen, um die Phase neu zu ordnen",
-      "empty": "Noch keine Callouts in dieser Spalte.",
+      "empty": "Noch keine Beiträge in dieser Spalte.",
       "activePhase": {
         "set": "Als aktive Phase markieren",
         "current": "Aktive Phase (aktuell)",
         "badge": "Aktive Phase"
       },
       "defaultCalloutTemplate": {
-        "set": "Standard-Callout-Vorlage festlegen…",
-        "clear": "Standard-Callout-Vorlage entfernen"
+        "set": "Standard-Beitragsvorlage festlegen…",
+        "clear": "Standard-Beitragsvorlage entfernen"
       },
       "editDetails": {
         "menuLabel": "Details bearbeiten",
@@ -70,7 +70,7 @@
         "menuLabel": "Phase löschen",
         "confirm": {
           "title": "Diese Phase löschen?",
-          "description": "Callouts, die derzeit mit dieser Phase getaggt sind, verlieren ihren Tag. Diese Aktion kann nicht rückgängig gemacht werden.",
+          "description": "Beiträge, die derzeit mit dieser Phase getaggt sind, verlieren ihren Tag. Diese Aktion kann nicht rückgängig gemacht werden.",
           "confirm": "Phase löschen",
           "cancel": "Abbrechen"
         }
@@ -211,7 +211,7 @@
     },
     "row": {
       "drag": "Ziehen, um neu anzuordnen",
-      "menu": "Callout-Aktionen",
+      "menu": "Beitragsaktionen",
       "moveTo": "Verschieben nach",
       "viewPost": "Beitrag anzeigen",
       "noOtherColumns": "Keine anderen Spalten"
@@ -245,6 +245,10 @@
       "approve": "Genehmigen",
       "reject": "Ablehnen",
       "delete": "Löschen",
+      "resend": "Einladungs-E-Mail erneut senden",
+      "resendSuccess": "Einladungs-E-Mail erneut gesendet",
+      "resendThrottled": "Erst kürzlich erneut gesendet — versuche es in ein paar Minuten noch einmal",
+      "resendError": "Die Einladungs-E-Mail konnte nicht erneut gesendet werden — versuche es erneut",
       "empty": "Keine ausstehenden Mitgliedschaften.",
       "noMatch": "Keine ausstehenden Mitgliedschaften entsprechen den gewählten Filtern.",
       "filterLabel": "Nach Status filtern",
@@ -566,8 +570,8 @@
       "preview": {
         "info": "Immer enthalten: Über-Informationen und Einstellungen",
         "states": "Phasen",
-        "callouts": "Callouts",
-        "noCalloutsInState": "Keine Callouts in dieser Phase.",
+        "callouts": "Beiträge",
+        "noCalloutsInState": "Keine Beiträge in dieser Phase.",
         "noCalloutDescription": "Keine Beschreibung",
         "subspaces": "Enthält diese Subspaces"
       },

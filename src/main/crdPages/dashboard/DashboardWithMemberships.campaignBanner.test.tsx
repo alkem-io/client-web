@@ -100,13 +100,13 @@ describe('DashboardWithMemberships — VC campaign banner gating (workspace#027 
     expect(screen.getByTestId('campaign-banner')).toBeTruthy();
   });
 
-  test('a holder of only the legacy PLATFORM_VC_CAMPAIGN with the VC entitlement still sees the banner (Slice A is additive)', () => {
+  test('the retired PLATFORM_VC_CAMPAIGN role no longer targets the banner (Slice B, T013)', () => {
     mockPlatformRoles = ['PLATFORM_VC_CAMPAIGN'];
     mockAccountEntitlements = ['ACCOUNT_VIRTUAL_CONTRIBUTOR'];
 
     renderDashboard();
 
-    expect(screen.getByTestId('campaign-banner')).toBeTruthy();
+    expect(screen.queryByTestId('campaign-banner')).toBeNull();
   });
 
   test('a viewer holding neither campaign role does not see the banner, entitlement or not', () => {

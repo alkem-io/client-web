@@ -5,6 +5,7 @@
 fragment CollaboraDocumentGate on CollaboraDocument {
   id
   documentType
+  previewUrl
   authorization {
     id
     myPrivileges

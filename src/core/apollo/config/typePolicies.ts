@@ -145,6 +145,22 @@ export const typePolicies: TypedTypePolicies = {
       },
     },
   },
+  // The item's `id` is the CONTRIBUTOR's id, but `roleLabel` and `joinedDate`
+  // depend on which callout (post) is listing them — the same person can be a
+  // lead of one space's Contributors post and a plain member of a subspace's,
+  // with a different join month in each. Normalizing by id alone would let the
+  // last-fetched post's values silently overwrite the other's on every card
+  // that lists the same contributor twice. Keeping the item un-normalized
+  // embeds it per callout instead, so each post keeps its own copy.
+  ContributorCollectionItem: {
+    keyFields: false,
+  },
+  // A Form answer's chosen option is a per-response snapshot (id + the label at the time of answering).
+  // The option id is stable across relabels, so the default `__typename:id` normalization would let
+  // one response's label overwrite another's; embedding it per answer keeps each snapshot as written.
+  CalloutFormAnswerOption: {
+    keyFields: false,
+  },
   PlatformAdminQueryResults: {
     merge: true,
     fields: {

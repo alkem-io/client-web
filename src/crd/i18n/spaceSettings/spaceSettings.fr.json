@@ -43,15 +43,15 @@
       "descriptionPlaceholder": "Décrivez cette colonne…",
       "menu": "Actions de la colonne",
       "drag": "Glisser pour réordonner la phase",
-      "empty": "Aucun callout dans cette colonne pour le moment.",
+      "empty": "Aucune publication dans cette colonne pour le moment.",
       "activePhase": {
         "set": "Marquer comme phase active",
         "current": "Phase active (actuelle)",
         "badge": "Phase active"
       },
       "defaultCalloutTemplate": {
-        "set": "Définir le modèle de callout par défaut…",
-        "clear": "Effacer le modèle de callout par défaut"
+        "set": "Définir le modèle de publication par défaut…",
+        "clear": "Effacer le modèle de publication par défaut"
       },
       "editDetails": {
         "menuLabel": "Modifier les détails",
@@ -70,7 +70,7 @@
         "menuLabel": "Supprimer la phase",
         "confirm": {
           "title": "Supprimer cette phase ?",
-          "description": "Les callouts actuellement étiquetés avec cette phase perdront leur étiquette. Cette action est irréversible.",
+          "description": "Les publications actuellement étiquetées avec cette phase perdront leur étiquette. Cette action est irréversible.",
           "confirm": "Supprimer la phase",
           "cancel": "Annuler"
         }
@@ -211,7 +211,7 @@
     },
     "row": {
       "drag": "Glisser pour réorganiser",
-      "menu": "Actions du callout",
+      "menu": "Actions de la publication",
       "moveTo": "Déplacer vers",
       "viewPost": "Voir la publication",
       "noOtherColumns": "Aucune autre colonne"
@@ -245,6 +245,10 @@
       "approve": "Approuver",
       "reject": "Rejeter",
       "delete": "Supprimer",
+      "resend": "Renvoyer l'e-mail d'invitation",
+      "resendSuccess": "E-mail d'invitation renvoyé",
+      "resendThrottled": "Déjà renvoyé récemment — réessayez dans quelques minutes",
+      "resendError": "Impossible de renvoyer l'e-mail d'invitation — réessayez",
       "empty": "Aucune adhésion en attente.",
       "noMatch": "Aucune adhésion en attente ne correspond aux filtres sélectionnés.",
       "filterLabel": "Filtrer par statut",
@@ -566,8 +570,8 @@
       "preview": {
         "info": "Toujours inclus : informations À propos et Paramètres",
         "states": "Phases",
-        "callouts": "Callouts",
-        "noCalloutsInState": "Aucun callout dans cette phase.",
+        "callouts": "Publications",
+        "noCalloutsInState": "Aucune publication dans cette phase.",
         "noCalloutDescription": "Aucune description",
         "subspaces": "Inclut ces sous-espaces"
       },

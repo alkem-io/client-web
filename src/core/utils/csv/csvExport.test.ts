@@ -3,6 +3,7 @@ import {
   type ApplicationExportRow,
   buildApplicationsCsv,
   buildCsvFilename,
+  buildFormResponsesCsv,
   buildMembersCsv,
   type MemberExportRow,
   normalizeEmailCell,
@@ -303,8 +304,59 @@ describe('buildCsvFilename', () => {
     expect(buildCsvFilename(undefined, 'members', d)).toBe('space-members-2026-08-17.csv');
   });
 
+  it('names a Form responses export after the Form, with its own fallback slug', () => {
+    const d = new Date('2026-08-17T00:00:00.000Z');
+    expect(buildCsvFilename('Q4 Planning — Focus', 'responses', d, 'form')).toBe(
+      'q4-planning-focus-responses-2026-08-17.csv'
+    );
+    expect(buildCsvFilename('Планиране', 'responses', d, 'form')).toBe('form-responses-2026-08-17.csv');
+  });
+
   it('C9: slug fallback to "space" when empty string after slugify', () => {
     const d = new Date('2026-08-17T00:00:00.000Z');
     expect(buildCsvFilename('!!!', 'members', d)).toBe('space-members-2026-08-17.csv');
+  });
+});
+
+describe('buildFormResponsesCsv', () => {
+  const header = { submitter: 'Submitted by', submittedDate: 'Submitted on', questions: ['Name', 'Story', 'Name'] };
+
+  it('one row per response: submitter, date, then one positional column per question', () => {
+    const csv = buildFormResponsesCsv(header, [
+      { submitter: 'Ada', submittedDate: '2026-10-01T09:30:00.000Z', answers: ['Ada L', 'Hi', 'second'] },
+    ]);
+    expect(parseCsv(csv)).toEqual([
+      ['Submitted by', 'Submitted on', 'Name', 'Story', 'Name'],
+      ['Ada', '2026-10-01T09:30:00.000Z', 'Ada L', 'Hi', 'second'],
+    ]);
+  });
+
+  it('fills missing answers with empty cells and ignores extra values', () => {
+    const csv = buildFormResponsesCsv(header, [
+      { submitter: 'Ada', submittedDate: 'd', answers: ['only first'] },
+      { submitter: 'Bob', submittedDate: 'd', answers: ['a', 'b', 'c', 'extra'] },
+    ]);
+    const parsed = parseCsv(csv);
+    expect(parsed[1]).toEqual(['Ada', 'd', 'only first', '', '']);
+    expect(parsed[2]).toEqual(['Bob', 'd', 'a', 'b', 'c']);
+  });
+
+  it('quotes commas, quotes and line breaks, and neutralizes formulas in answers, names and prompts', () => {
+    const csv = buildFormResponsesCsv(
+      { submitter: 'Submitted by', submittedDate: 'Submitted on', questions: ['=SUM(A1)', 'Choices'] },
+      [{ submitter: '@evil', submittedDate: 'd', answers: ['He said "hi", then\nleft', 'Red, Blue'] }]
+    );
+    expect(csv.startsWith('\uFEFF')).toBe(true);
+    expect(csv).toContain("'=SUM(A1)");
+    expect(csv).toContain('"He said ""hi"", then\nleft"');
+    expect(csv.endsWith('\r\n')).toBe(true);
+    const parsed = parseCsv(csv);
+    expect(parsed[1]).toEqual(["'@evil", 'd', 'He said "hi", then\nleft', 'Red, Blue']);
+  });
+
+  it('an empty export is the header only', () => {
+    expect(parseCsv(buildFormResponsesCsv(header, []))).toEqual([
+      ['Submitted by', 'Submitted on', 'Name', 'Story', 'Name'],
+    ]);
   });
 });
