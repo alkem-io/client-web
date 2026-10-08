@@ -2280,12 +2280,14 @@ export type InAppNotificationPayloadPlatformForumDiscussionFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadPlatformGlobalRoleChangeKeySpecifier = (
+  | 'changeType'
   | 'role'
   | 'type'
   | 'user'
   | InAppNotificationPayloadPlatformGlobalRoleChangeKeySpecifier
 )[];
 export type InAppNotificationPayloadPlatformGlobalRoleChangeFieldPolicy = {
+  changeType?: FieldPolicy<any> | FieldReadFunction<any>;
   role?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;

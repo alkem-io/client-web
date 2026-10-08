@@ -3791,6 +3791,7 @@ export const InAppNotificationPayloadPlatformGlobalRoleChangeFragmentDoc = gql`
     fragment InAppNotificationPayloadPlatformGlobalRoleChange on InAppNotificationPayloadPlatformGlobalRoleChange {
   type
   role
+  changeType
   user {
     id
     profile {

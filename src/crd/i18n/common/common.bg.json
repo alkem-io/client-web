@@ -779,7 +779,8 @@
         },
         "PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED": {
           "description": "",
-          "subject": "{{triggeredByName}} присвои {{role}} на {{userName}}"
+          "subject": "{{triggeredByName}} присвои {{role}} на {{userName}}",
+          "subjectRemoved": "{{triggeredByName}} премахна {{role}} от {{userName}}"
         },
         "PLATFORM_ADMIN_SPACE_CREATED": {
           "description": "{{spaceName}}",
