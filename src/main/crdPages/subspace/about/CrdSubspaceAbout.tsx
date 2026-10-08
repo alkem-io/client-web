@@ -4,7 +4,7 @@ import { useCommunityGuidelinesQuery, useSpaceAboutDetailsQuery } from '@/core/a
 import useNavigate from '@/core/routing/useNavigate';
 import { groupEntriesForDisplay, resolveSelectedValues } from '@/crd/components/classification/types';
 import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
-import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
+import { isApplyUnavailable, SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
 import { SpaceAboutDialog } from '@/crd/components/space/SpaceAboutDialog';
 import type { SpaceAboutData } from '@/crd/components/space/SpaceAboutView';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
@@ -147,7 +147,7 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
     </span>
   ) : undefined;
 
-  const showApplyButton = !isMember && !applyLoading;
+  const showApplyButton = !isMember && !applyLoading && !isApplyUnavailable(buttonProps);
   const joinSlot = showApplyButton ? <SpaceAboutApplyButton {...buttonProps} /> : undefined;
 
   const memberCount = aboutData.metrics.find(m => m.name === 'members')?.value;

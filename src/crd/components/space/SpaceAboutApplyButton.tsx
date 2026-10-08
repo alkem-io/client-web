@@ -33,6 +33,24 @@ export type SpaceAboutApplyButtonProps = {
 const PENDING_STATES = new Set(['new', 'archived']);
 const isApplicationPending = (state: ApplicationStateLike): boolean => !!state && PENDING_STATES.has(state);
 
+/**
+ * True when the button would only render the disabled "applications not available"
+ * state — i.e. the user is signed in but there is nothing to join, apply to or wait for
+ * (e.g. the community is invitation-only). Lets consumers hide the button entirely.
+ */
+export const isApplyUnavailable = (props: Omit<SpaceAboutApplyButtonProps, 'className'>): boolean =>
+  !props.loading &&
+  props.isAuthenticated &&
+  !props.isMember &&
+  !props.canAcceptInvitation &&
+  !props.canJoinCommunity &&
+  !isApplicationPending(props.applicationState) &&
+  !props.canApplyToCommunity &&
+  (props.isParentMember ||
+    (!isApplicationPending(props.parentApplicationState) &&
+      !props.canJoinParentCommunity &&
+      !props.canApplyToParentCommunity));
+
 export const SpaceAboutApplyButton = forwardRef<HTMLButtonElement, SpaceAboutApplyButtonProps>(
   function SpaceAboutApplyButton(
     {

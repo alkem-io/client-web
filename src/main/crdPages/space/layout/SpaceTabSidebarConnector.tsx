@@ -6,7 +6,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import type { ContactLeadRecipient } from '@/crd/components/chat/ContactLeadsDialog';
 import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
 import { CommunityUpdatesDialog } from '@/crd/components/space/CommunityUpdatesDialog';
-import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
+import { isApplyUnavailable, SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { AboutButton } from '@/crd/components/space/sidebar/AboutButton';
 import { ContactLeadButton } from '@/crd/components/space/sidebar/ContactLeadButton';
@@ -232,7 +232,10 @@ export function SpaceTabSidebarConnector({
       </output>
     ) : (
       !isKnownMember &&
-      !isSpaceMember && <SpaceAboutApplyButton key="applicationButton" {...applyButtonProps} className="w-full" />
+      !isSpaceMember &&
+      !isApplyUnavailable(applyButtonProps) && (
+        <SpaceAboutApplyButton key="applicationButton" {...applyButtonProps} className="w-full" />
+      )
     ),
     createSubspace: permissions.canCreateSubspaces && (
       <CreateSubspaceButton key="createSubspace" onClick={onCreateSubspace} />
