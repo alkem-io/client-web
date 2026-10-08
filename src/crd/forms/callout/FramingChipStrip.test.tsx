@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
 import { describe, expect, test, vi } from 'vitest';
-import { FramingChipStrip } from './FramingChipStrip';
+import { type FramingChipId, FramingChipStrip } from './FramingChipStrip';
 
 /** The three chips kept in the row; everything else is behind "More". */
 const ROW_LABELS = ['callout.whiteboard', 'callout.memo', 'callout.mediaGallery'];
@@ -17,6 +18,12 @@ vi.mock('react-i18next', () => ({
     t: (key: string) => key,
   }),
 }));
+
+/** Holds the selection, as the consumer does, so a clear actually re-renders the row. */
+const Controlled = ({ initial, editMode }: { initial: FramingChipId | 'none'; editMode?: boolean }) => {
+  const [value, setValue] = useState(initial);
+  return <FramingChipStrip value={value} onChange={setValue} editMode={editMode} />;
+};
 
 describe('FramingChipStrip', () => {
   test('renders the three most-used chips in the row, the rest behind More', async () => {
@@ -62,17 +69,40 @@ describe('FramingChipStrip', () => {
     expect(items.map(item => item.textContent)).not.toContain('callout.poll');
   });
 
-  test('fewer than five available chips renders them all with no More menu', () => {
-    render(<FramingChipStrip value="none" onChange={vi.fn()} allowedChips={['whiteboard', 'memo', 'poll', 'cta']} />);
+  test("with a single chip left over there is no More menu — that chip takes the trigger's slot", () => {
+    render(<FramingChipStrip value="none" onChange={vi.fn()} allowedChips={['whiteboard', 'memo', 'image', 'poll']} />);
     expect(screen.getAllByRole('radio')).toHaveLength(4);
     expect(screen.queryByRole('button', { name: 'forms.moreFramingTypesHeading' })).toBeNull();
   });
 
-  test('edit mode: the More trigger is inert — the framing type cannot be switched', () => {
+  test('clearing a chip picked from the menu keeps it in the row, so focus stays on it', async () => {
+    render(<Controlled initial="none" />);
+    const items = await openMore();
+    await userEvent.click(items.find(item => item.textContent === 'callout.poll') as HTMLElement);
+    const poll = screen.getByRole('radio', { name: 'callout.poll', checked: true });
+    await userEvent.click(poll);
+    expect(poll).toBeInTheDocument();
+    expect(poll).toHaveAttribute('aria-checked', 'false');
+    expect(poll).toHaveFocus();
+  });
+
+  test('edit mode: confirming the clear of a menu chip keeps it in the row for focus to return to', async () => {
+    render(<Controlled initial="poll" editMode={true} />);
+    const poll = screen.getByRole('radio', { name: 'callout.poll', checked: true });
+    await userEvent.click(poll);
+    await userEvent.click(await screen.findByRole('button', { name: 'dialogs.deleteFraming.confirm' }));
+    expect(poll).toBeInTheDocument();
+    expect(poll).toHaveAttribute('aria-checked', 'false');
+  });
+
+  test('edit mode: the More trigger stays focusable but inert, and carries the lock hint', async () => {
     render(<FramingChipStrip value="poll" onChange={vi.fn()} editMode={true} />);
     const more = screen.getByRole('button', { name: 'forms.moreFramingTypesHeading' });
-    expect(more).toBeDisabled();
+    expect(more).not.toBeDisabled();
+    expect(more).toHaveAttribute('aria-disabled', 'true');
     expect(more).toHaveAttribute('title', 'forms.typeLockedHint');
+    await userEvent.click(more);
+    expect(screen.queryByRole('menu')).toBeNull();
   });
 
   test('choosing contributors from the menu emits "contributors"', async () => {
@@ -231,11 +261,13 @@ describe('FramingChipStrip', () => {
       />
     );
     const items = await openMore();
-    const doc = items.find(item => item.textContent === 'callout.document') as HTMLElement;
+    const doc = items.find(item => item.textContent?.startsWith('callout.document')) as HTMLElement;
     expect(doc).toHaveAttribute('aria-disabled', 'true');
-    // The reason stays on the element — the item is inert via aria + a prevented
-    // select rather than Radix's `disabled`, which would kill the tooltip.
-    expect(doc).toHaveAttribute('title', 'Office documents not enabled');
+    // The reason is text in the item, so it is read with it when the arrow keys
+    // land there — not a `title` only a mouse can reach. The item stays in the
+    // roving focus because it is inert via aria rather than Radix's `disabled`.
+    expect(doc).toHaveTextContent('Office documents not enabled');
+    expect(doc).not.toHaveAttribute('data-disabled');
     await userEvent.click(doc);
     expect(onChange).not.toHaveBeenCalled();
   });
@@ -248,6 +280,8 @@ describe('FramingChipStrip', () => {
     const memo = screen.getByRole('radio', { name: /callout.memo/i });
     expect(memo).toHaveAttribute('aria-disabled', 'true');
     expect(memo).toHaveAttribute('title', 'Memos not enabled');
+    // pointer-events-none would swallow the hover that shows that title.
+    expect(memo).not.toHaveClass('pointer-events-none');
     await userEvent.click(memo);
     expect(onChange).not.toHaveBeenCalled();
   });

@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
 import { describe, expect, test, vi } from 'vitest';
-import { ResponseTypeChipStrip } from './ResponseTypeChipStrip';
+import { type ResponseTypeChipId, ResponseTypeChipStrip } from './ResponseTypeChipStrip';
 
 /** Opens the More menu and returns its items. */
 const openMore = async () => {
@@ -15,6 +16,12 @@ vi.mock('react-i18next', () => ({
     t: (key: string) => key,
   }),
 }));
+
+/** Holds the selection, as the consumer does, so a clear actually re-renders the row. */
+const Controlled = () => {
+  const [value, setValue] = useState<ResponseTypeChipId | 'none'>('none');
+  return <ResponseTypeChipStrip value={value} onChange={setValue} />;
+};
 
 describe('ResponseTypeChipStrip', () => {
   test('renders as a radiogroup with an accessible label', () => {
@@ -76,17 +83,31 @@ describe('ResponseTypeChipStrip', () => {
     expect(items.map(i => i.textContent)).not.toContain('contributionSettings.types.document');
   });
 
-  test('fewer than five available types renders them all with no More menu', () => {
+  test("with a single type left over there is no More menu — that type takes the trigger's slot", () => {
     render(<ResponseTypeChipStrip value="none" onChange={vi.fn()} allowedChips={['link', 'post', 'memo']} />);
     expect(screen.getAllByRole('radio')).toHaveLength(3);
     expect(screen.queryByRole('button', { name: 'contributionSettings.moreTypesHeading' })).toBeNull();
   });
 
-  test('locked mode: the More trigger is inert', () => {
+  test('clearing a type picked from the menu keeps it in the row, so focus stays on it', async () => {
+    render(<Controlled />);
+    const items = await openMore();
+    await userEvent.click(items.find(i => i.textContent === 'contributionSettings.types.memo') as HTMLElement);
+    const memo = screen.getByRole('radio', { name: 'contributionSettings.types.memo', checked: true });
+    await userEvent.click(memo);
+    expect(memo).toBeInTheDocument();
+    expect(memo).toHaveAttribute('aria-checked', 'false');
+    expect(memo).toHaveFocus();
+  });
+
+  test('locked mode: the More trigger stays focusable but inert, and carries the lock hint', async () => {
     render(<ResponseTypeChipStrip value="post" onChange={vi.fn()} locked={true} />);
     const more = screen.getByRole('button', { name: 'contributionSettings.moreTypesHeading' });
-    expect(more).toBeDisabled();
+    expect(more).not.toBeDisabled();
+    expect(more).toHaveAttribute('aria-disabled', 'true');
     expect(more).toHaveAttribute('title', 'contributionSettings.typeLockedHint');
+    await userEvent.click(more);
+    expect(screen.queryByRole('menu')).toBeNull();
   });
 
   test('Documents chip is not disabled and is excludable via allowedChips like any other chip', () => {
@@ -104,9 +125,10 @@ describe('ResponseTypeChipStrip', () => {
       />
     );
     const items = await openMore();
-    const document = items.find(i => i.textContent === 'contributionSettings.types.document') as HTMLElement;
+    const document = items.find(i => i.textContent?.startsWith('contributionSettings.types.document')) as HTMLElement;
     expect(document).toHaveAttribute('aria-disabled', 'true');
-    expect(document).toHaveAttribute('title', 'framing.officeDocumentsNotEnabled');
+    expect(document).toHaveTextContent('framing.officeDocumentsNotEnabled');
+    expect(document).not.toHaveAttribute('data-disabled');
     await userEvent.click(document);
     expect(onChange).not.toHaveBeenCalled();
   });
