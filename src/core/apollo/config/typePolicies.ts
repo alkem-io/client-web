@@ -155,6 +155,12 @@ export const typePolicies: TypedTypePolicies = {
   ContributorCollectionItem: {
     keyFields: false,
   },
+  // A Form answer's chosen option is a per-response snapshot (id + the label at the time of answering).
+  // The option id is stable across relabels, so the default `__typename:id` normalization would let
+  // one response's label overwrite another's; embedding it per answer keeps each snapshot as written.
+  CalloutFormAnswerOption: {
+    keyFields: false,
+  },
   PlatformAdminQueryResults: {
     merge: true,
     fields: {

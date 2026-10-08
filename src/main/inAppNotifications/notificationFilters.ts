@@ -24,6 +24,7 @@ const MESSAGES_AND_REPLIES_TYPES: NotificationEvent[] = [
 // application declined) which previously leaked into Messages & Replies.
 const SPACE_NOTIFICATION_TYPES: NotificationEvent[] = [
   NotificationEvent.SpaceAdminCollaborationCalloutContribution,
+  NotificationEvent.SpaceAdminCollaborationCalloutFormResponse,
   NotificationEvent.SpaceAdminCommunityApplication,
   NotificationEvent.SpaceAdminCommunityNewMember,
   NotificationEvent.SpaceAdminVirtualCommunityInvitationDeclined,

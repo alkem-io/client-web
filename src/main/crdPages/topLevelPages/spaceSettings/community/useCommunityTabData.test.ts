@@ -1,7 +1,15 @@
-import { act, renderHook } from '@testing-library/react';
+import { ApolloError } from '@apollo/client';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import type { InvitationModel } from '@/domain/access/model/InvitationModel';
+
+const notify = vi.fn();
+vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
+vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notify }));
+vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
+  useCurrentUserContext: () => ({ userModel: undefined }),
+}));
 
 vi.mock('@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin', () => ({
   default: vi.fn(),
@@ -38,17 +46,13 @@ const baseAdmin = (invitations: InvitationModel[]) => ({
     members: [],
     onLeadChange: vi.fn(),
     onAuthorizationChange: vi.fn(),
-    onAdd: vi.fn(),
     onRemove: vi.fn(),
-    getAvailable: vi.fn(async () => []),
     inviteContributors: vi.fn(),
   },
   organizationAdmin: {
     members: [],
     onLeadChange: vi.fn(),
-    onAdd: vi.fn(),
     onRemove: vi.fn(),
-    getAvailable: vi.fn(async () => []),
     inviteContributors: vi.fn(),
   },
   virtualContributorAdmin: { members: [], onAdd: vi.fn(), onRemove: vi.fn(), inviteContributors: vi.fn() },
@@ -62,12 +66,11 @@ const baseAdmin = (invitations: InvitationModel[]) => ({
     onInvitationStateChange: vi.fn(),
     onDeleteInvitation: vi.fn(),
     onDeletePlatformInvitation: vi.fn(),
+    onResendPlatformInvitation: vi.fn(),
   },
   permissions: {
-    canAddUsers: true,
     canInvite: true,
     canInviteOrganizations: true,
-    canAddOrganizations: false,
     canAddVirtualContributors: false,
     canAddVirtualContributorsFromAccount: false,
   },
@@ -175,5 +178,64 @@ describe('useCommunityTabData — organization invitations (T009)', () => {
     const { result } = renderHook(() => useCommunityTabData('rs1'));
 
     expect(result.current.permissions.canInviteOrganizations).toBe(true);
+  });
+});
+
+describe('useCommunityTabData — email invitation resend', () => {
+  beforeEach(() => {
+    vi.mocked(useCommunityAdmin).mockReset();
+    notify.mockReset();
+  });
+
+  const adminWithPlatformInvitation = () => {
+    const admin = baseAdmin([userInvitation()]);
+    admin.membershipAdmin.platformInvitations = [
+      {
+        id: 'pi-1',
+        email: 'new@example.com',
+        createdDate: new Date('2026-01-01T00:00:00.000Z'),
+        roleSetExtraRoles: [],
+      },
+    ] as never[];
+    return admin;
+  };
+
+  it('only email invitation rows can be resent', () => {
+    vi.mocked(useCommunityAdmin).mockReturnValue(adminWithPlatformInvitation() as ReturnType<typeof useCommunityAdmin>);
+    const { result } = renderHook(() => useCommunityTabData('rs1'));
+
+    expect(result.current.pendingMemberships.find(m => m.id === 'pi-1')?.canResend).toBe(true);
+    expect(result.current.pendingMemberships.find(m => m.id === 'inv-user-1')?.canResend).toBe(false);
+  });
+
+  it('resend calls the admin hook and toasts success', async () => {
+    const admin = adminWithPlatformInvitation();
+    admin.membershipAdmin.onResendPlatformInvitation.mockResolvedValue(undefined);
+    vi.mocked(useCommunityAdmin).mockReturnValue(admin as ReturnType<typeof useCommunityAdmin>);
+    const { result } = renderHook(() => useCommunityTabData('rs1'));
+
+    await act(async () => {
+      result.current.onPendingResend('pi-1');
+    });
+
+    expect(admin.membershipAdmin.onResendPlatformInvitation).toHaveBeenCalledWith('pi-1');
+    await waitFor(() => expect(notify).toHaveBeenCalledWith('community.pendingMemberships.resendSuccess', 'success'));
+  });
+
+  it('resend maps the throttled error code to the throttled toast', async () => {
+    const admin = adminWithPlatformInvitation();
+    admin.membershipAdmin.onResendPlatformInvitation.mockRejectedValue(
+      new ApolloError({
+        graphQLErrors: [{ message: 'slow down', extensions: { code: 'ROLESET_INVITATION_RESEND_THROTTLED' } } as never],
+      })
+    );
+    vi.mocked(useCommunityAdmin).mockReturnValue(admin as ReturnType<typeof useCommunityAdmin>);
+    const { result } = renderHook(() => useCommunityTabData('rs1'));
+
+    await act(async () => {
+      result.current.onPendingResend('pi-1');
+    });
+
+    await waitFor(() => expect(notify).toHaveBeenCalledWith('community.pendingMemberships.resendThrottled', 'error'));
   });
 });

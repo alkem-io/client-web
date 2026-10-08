@@ -417,14 +417,12 @@ function InviteMembersFormDialog({
 
   const isOrganizationTarget = target === 'organization';
 
-  // Email paste and the suggested-language control apply only to a Space-target user
-  // invitee — the organization target has neither (D16: existing Alkemio users only,
-  // no per-invitee language preference for an associate invitation).
-  const allowEmailInvites = kind === 'user' && !isOrganizationTarget && allowEmailInvitesProp;
+  // Email paste and the suggested-language control apply to a user invitee on both the
+  // Space and the organization target; the connector decides whether each is offered.
+  const allowEmailInvites = kind === 'user' && allowEmailInvitesProp;
   const lockedRoles: InviteRole[] = isOrganizationTarget ? ['Associate'] : LOCKED_ROLES;
   const optionalRoles: InviteRole[] = isOrganizationTarget ? ['Admin', 'Owner'] : OPTIONAL_ROLES_BY_KIND[kind];
-  const showLanguageControl =
-    kind === 'user' && !isOrganizationTarget && availableLanguages.length > 0 && Boolean(onSuggestedLanguageChange);
+  const showLanguageControl = kind === 'user' && availableLanguages.length > 0 && Boolean(onSuggestedLanguageChange);
 
   // The organization target offers Admin/Owner as a single-select: RoleMultiSelect's
   // checkbox group can technically select both, so the newly-toggled one wins.

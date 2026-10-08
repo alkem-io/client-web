@@ -1,5 +1,12 @@
-import { describe, expect, it } from 'vitest';
-import { addedSentinel, diffPollOptions, isAddedSentinel, parseAddedSentinel } from './useCrdCalloutPollOptionDiff';
+import { describe, expect, it, vi } from 'vitest';
+import {
+  addedSentinel,
+  applyPollOptionDiff,
+  diffPollOptions,
+  isAddedSentinel,
+  type PollOptionDiffProgress,
+  parseAddedSentinel,
+} from './useCrdCalloutPollOptionDiff';
 
 describe('diffPollOptions', () => {
   it('no changes → empty diff', () => {
@@ -97,5 +104,50 @@ describe('sentinel helpers', () => {
   it('real ids are not mistaken for sentinels', () => {
     expect(isAddedSentinel('abc-123')).toBe(false);
     expect(parseAddedSentinel('abc-123')).toBeUndefined();
+  });
+});
+
+describe('applyPollOptionDiff progress', () => {
+  it('reports the server state and the id-stamped form after each successful mutation, up to the failure', async () => {
+    const mutations = {
+      addOption: vi
+        .fn()
+        .mockResolvedValue({ data: { addPollOption: { options: [{ id: '1' }, { id: '2' }, { id: '3' }] } } }),
+      removeOption: vi.fn().mockResolvedValue({}),
+      updateOption: vi.fn().mockRejectedValue(new Error('update failed')),
+      reorderOptions: vi.fn(),
+    };
+    let last: PollOptionDiffProgress | undefined;
+
+    await expect(
+      applyPollOptionDiff(
+        mutations,
+        [
+          { id: '1', text: 'A' },
+          { id: '2', text: 'B' },
+        ],
+        [{ id: '1', text: 'A2' }, { text: 'C' }],
+        progress => {
+          last = progress;
+        }
+      )
+    ).rejects.toThrow('update failed');
+
+    expect(last).toEqual({
+      before: [
+        { id: '1', text: 'A' },
+        { id: '3', text: 'C' },
+      ],
+      after: [
+        { id: '1', text: 'A2' },
+        { id: '3', text: 'C' },
+      ],
+    });
+    // Diffing against the reported state leaves only the rename and the order outstanding.
+    expect(diffPollOptions(last?.before ?? [], last?.after ?? [])).toMatchObject({
+      toAdd: [],
+      toRemove: [],
+      toUpdate: [{ id: '1', text: 'A2' }],
+    });
   });
 });

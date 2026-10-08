@@ -12,6 +12,7 @@ import type {
   CommunityOrg,
   CommunityVC,
 } from '@/crd/components/space/settings/SpaceSettingsCommunityView';
+import { useResendPlatformInvitationAction } from '@/domain/access/ApplicationsAndInvitations/useResendPlatformInvitationAction';
 import type { ApplicationModel } from '@/domain/access/model/ApplicationModel';
 import {
   ApplicationEvent,
@@ -59,12 +60,6 @@ export type UseCommunityTabDataResult = {
   permissions: {
     canInvite: boolean;
     canInviteOrganizations: boolean;
-    /**
-     * Direct add of a member. Previously computed by `useCommunityAdmin` but never
-     * forwarded here, which left the add-member path entirely ungated.
-     */
-    canAddUsers: boolean;
-    canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
   };
   /**
@@ -96,6 +91,9 @@ export type UseCommunityTabDataResult = {
   onPendingApprove: (id: string) => void;
   onPendingReject: (id: string) => void;
   onPendingDelete: (id: string) => void;
+  onPendingResend: (id: string) => void;
+  /** Ids of the email invitations whose resend request is in flight. */
+  resendingIds: ReadonlySet<string>;
   loading: boolean;
   errored: boolean;
   pendingRemoval: CommunityPendingRemoval | null;
@@ -215,6 +213,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
         canApprove: state === 'new',
         canReject: state === 'new',
         canDelete: state !== 'approved',
+        canResend: false,
       };
     })
     .filter((x): x is PendingMembership => x !== null);
@@ -240,6 +239,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
         canApprove: false,
         canReject: false,
         canDelete: true,
+        canResend: false,
       };
     })
     .filter((x): x is PendingMembership => x !== null);
@@ -281,6 +281,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     canApprove: false,
     canReject: false,
     canDelete: true,
+    canResend: true,
   }));
 
   const pendingMemberships: PendingMembership[] = [
@@ -341,6 +342,10 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
       state: item.state,
     });
   };
+
+  const { onResend: onPendingResend, resendingIds } = useResendPlatformInvitationAction(
+    community.membershipAdmin.onResendPlatformInvitation
+  );
 
   const cancelRemoval = () => setPendingRemoval(null);
 
@@ -422,12 +427,10 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     permissions: {
       canInvite: community.permissions.canInvite,
       canInviteOrganizations: community.permissions.canInviteOrganizations,
-      canAddOrganizations: community.permissions.canAddOrganizations,
       // Mirror MUI (`SpaceAdminCommunityPage`): a space admin may add a VC via
       // EITHER the role-set assign privilege OR the account-assign privilege.
       // The CRD gate previously checked only the former, hiding the VC add
       // buttons for admins (e.g. space Admin/Lead) who only hold the latter.
-      canAddUsers: community.permissions.canAddUsers,
       canAddVirtualContributors:
         community.permissions.canAddVirtualContributors || community.permissions.canAddVirtualContributorsFromAccount,
     },
@@ -442,6 +445,8 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     onPendingApprove,
     onPendingReject,
     onPendingDelete,
+    onPendingResend,
+    resendingIds,
     getMemberFirstName,
     viewerId: userModel?.id,
     loading: community.loading,

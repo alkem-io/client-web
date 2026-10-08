@@ -525,7 +525,8 @@
           "communityInvitationResponse": "Ontvang een melding wanneer iemand een uitnodiging accepteert of afwijst voor een Space die u beheert",
           "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een Post wordt toegevoegd",
           "communicationMessageReceived": "Krijg een melding wanneer er een community-bericht wordt ontvangen",
-          "userEmailChanged": "Krijg een melding wanneer het inloge-mailadres van een lid van een Space die je beheert wordt gewijzigd"
+          "userEmailChanged": "Krijg een melding wanneer het inloge-mailadres van een lid van een Space die je beheert wordt gewijzigd",
+          "collaborationCalloutFormResponseReceived": "Krijg een melding wanneer iemand een reactie op een formulier verstuurt in een Space die je beheert"
         },
         "user": {
           "commentReply": "Krijg een melding wanneer iemand reageert op mijn reactie",

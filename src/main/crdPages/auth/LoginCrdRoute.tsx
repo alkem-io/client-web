@@ -22,7 +22,7 @@ import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { resolveInternalReturnPath } from '@/core/utils/links';
 import type { KratosFlowDescriptor, KratosMessage } from '@/crd/components/auth/flowDescriptor';
-import { LoginCard } from '@/crd/components/auth/LoginCard';
+import { LoginCard, type LoginCardNotice } from '@/crd/components/auth/LoginCard';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import { buildSignUpUrl } from '@/main/routing/urlBuilders';
@@ -36,6 +36,20 @@ const EMAIL_NOT_VERIFIED_MESSAGE_ID = 4000010;
 const ACCOUNT_LOCKOUT_MESSAGE_ID = 9000429;
 // Client-side message id for a passkey ceremony failure.
 const PASSKEY_ERROR_MESSAGE_ID = -1;
+
+// The closed set of `?app_signin=` reasons the native shell and the server's
+// /app-handoff route emit (FR-012). Written as quoted literals on purpose: this
+// is the consumer half of the cross-repo `app-signin-landing-params` contract.
+// Any other value is ignored, so a crafted link falls through to the ordinary
+// OIDC entry rather than parking the visitor on a card with no way forward.
+const APP_SIGN_IN_VALUES = ['required', 'cancelled', 'failed'] as const;
+
+/** The recognised `?app_signin=` reason, or undefined for absent/unrecognised.
+ *  Read twice — once by the route to exempt the arrival from the
+ *  `NotAuthenticatedRoute` guard, once by the page to render the notice. */
+function readAppSignIn(params: URLSearchParams) {
+  return APP_SIGN_IN_VALUES.find(value => value === params.get('app_signin'));
+}
 
 /**
  * Absolute URL that restarts sign-in at the OIDC BFF, preserving the pending
@@ -63,6 +77,7 @@ function buildOidcRestartHref(rawReturnUrl: string, platformOrigin: string | und
 function CrdLoginPage({ flow }: { flow?: string }) {
   useTransactionScope({ type: 'authentication' });
   const { t, i18n } = useTranslation();
+  const { t: tAuth } = useTranslation('crd-auth');
   usePageTitle(t('pages.titles.signIn'));
 
   const navigate = useNavigate();
@@ -91,7 +106,12 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   // the lockout notice can render — so a lockout arrival is NOT an OIDC entry;
   // it renders the notice with a manual way back into sign-in instead.
   const isLockedOutArrival = params.get('lockout') === 'true';
-  const isOidcEntry = !flow && !isLockedOutArrival;
+  // The native app shell intercepts credential surfaces and sends the visitor
+  // back here with a reason; the server does the same when a hand-off fails.
+  // Like a lockout arrival this is NOT an OIDC entry — redirecting would throw
+  // the reason away before it could be read.
+  const appSignIn = readAppSignIn(params);
+  const isOidcEntry = !flow && !isLockedOutArrival && !appSignIn;
 
   useLayoutEffect(() => {
     if (!isOidcEntry) return;
@@ -163,23 +183,36 @@ function CrdLoginPage({ flow }: { flow?: string }) {
     return { ...base, messages };
   })();
 
-  // Locked-out arrival (no flow): render the lockout notice with a manual
-  // re-entry into the OIDC sign-in. No Kratos form is offered — the flow the
-  // hook auto-provisioned is deliberately ignored, both because a Kratos-native
-  // login would bypass Hydra and because the backoff proxy would refuse the
-  // POST anyway. If still locked when the person retries, the proxy bounces
-  // them back here with fresh params.
-  if (!flow && isLockedOutArrival) {
+  // The two arrivals that carry their reason in the query string: the backoff
+  // proxy's lockout bounce, and the shell / server hand-off bounce. Neither may
+  // render a Kratos form — the auto-provisioned flow is deliberately ignored,
+  // both because a Kratos-native login would bypass Hydra and because the
+  // backoff proxy would refuse the POST anyway — so each renders its notice with
+  // a manual re-entry into the OIDC sign-in. Lockout wins when both are present:
+  // the account is blocked either way. Nothing here knows or asks whether it is
+  // running in the app; the card is correct in a plain browser too.
+  const arrivalNotice: LoginCardNotice | undefined = isLockedOutArrival
+    ? {
+        text: t('authentication.lockout', { duration: lockoutDuration }),
+        actionLabel: t('authentication.lockoutRetry'),
+        actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
+      }
+    : appSignIn
+      ? {
+          text: tAuth(`appSignIn.${appSignIn}`),
+          actionLabel: tAuth('appSignIn.action'),
+          actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
+          tone: appSignIn === 'failed' ? 'destructive' : 'info',
+        }
+      : undefined;
+
+  if (!flow && arrivalNotice) {
     return (
       <AuthShellWrapper>
         <LoginCard
           descriptor={undefined}
           isLoading={false}
-          notice={{
-            text: t('authentication.lockout', { duration: lockoutDuration }),
-            actionLabel: t('authentication.lockoutRetry'),
-            actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
-          }}
+          notice={arrivalNotice}
           signUpHref={signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH}
           forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
         />
@@ -285,6 +318,12 @@ function translatePasskeyError(t: TFunction, error: unknown): string {
 export function LoginCrdRoute() {
   const params = useQueryParams();
   const flow = params.get('flow') || undefined;
+  // A hand-off arrival carries no flow id but, like a Kratos refresh login, can
+  // legitimately reach this page while the user still holds an `alkemio_session`
+  // (Settings > Security re-auth is exactly that case). Exempt it from the guard
+  // alongside `flow`, or `NotAuthenticatedRoute` bounces it to the dashboard and
+  // the notice never renders.
+  const appSignIn = readAppSignIn(params);
   const returnUrl = params.get(PARAM_NAME_RETURN_URL);
   const { setReturnUrl } = useReturnUrl();
 
@@ -301,7 +340,10 @@ export function LoginCrdRoute() {
 
   return (
     <Routes>
-      <Route path="/" element={flow ? loginPage : <NotAuthenticatedRoute>{loginPage}</NotAuthenticatedRoute>} />
+      <Route
+        path="/"
+        element={flow || appSignIn ? loginPage : <NotAuthenticatedRoute>{loginPage}</NotAuthenticatedRoute>}
+      />
       <Route path="success" element={<LoginSuccessPage />} />
     </Routes>
   );

@@ -40,7 +40,7 @@ import { useAboutTabData } from './about/useAboutTabData';
 import { useClassificationPicker } from './about/useClassificationPicker';
 import { useAccountTabData } from './account/useAccountTabData';
 import { MembershipDetailDialogConnector, type ViewingMembership } from './community/MembershipDetailDialogConnector';
-import { useAddOrganizationDialog, useAddVirtualContributorDialog } from './community/useAddCommunityMemberDialog';
+import { useAddVirtualContributorDialog } from './community/useAddCommunityMemberDialog';
 import useCommunityActionPermissions from './community/useCommunityActionPermissions';
 import { useCommunityCsvExport } from './community/useCommunityCsvExport';
 import { useCommunityGuidelinesData } from './community/useCommunityGuidelinesData';
@@ -113,13 +113,6 @@ export default function CrdSpaceSettingsPage() {
   const organizationLeadAssignReason = reasonText(actionPermissions.organizationLeadAssign);
   const organizationRemoveReason = reasonText(actionPermissions.organizationRemove);
   const addVcReason = reasonText(actionPermissions.addVirtualContributor);
-  // The *Add Organisation* launch button is HIDDEN when the privilege is absent or still
-  // unknown (client-web#10292), so this reason is only for the dialog's own per-row Add
-  // buttons — defence in depth, matching the Virtual Contributor dialog beside it.
-  const addOrganizationReason = reasonText(actionPermissions.addOrganization);
-  // Inviting is a different token from adding — a space admin holds the invite privilege
-  // without the platform-admin direct-add pair — so the Invite organisation button gets
-  // its own reason rather than reusing `addOrganizationReason`.
   const inviteOrganizationsReason = reasonText(actionPermissions.invite);
   const subspacesTab = useSubspacesTabData(activeTab === 'subspaces' ? spaceId : '');
   const createSubspace = useCreateSubspace(spaceId, {
@@ -203,7 +196,6 @@ export default function CrdSpaceSettingsPage() {
     defaultCalloutTemplatePicker.openPicker();
   };
 
-  const addOrgDialog = useAddOrganizationDialog({ community: community._adminRef });
   const addVCDialog = useAddVirtualContributorDialog({
     community: community._adminRef,
     spaceId,
@@ -331,9 +323,10 @@ export default function CrdSpaceSettingsPage() {
   const [activeMemberSubject, setActiveMemberSubject] = useState<MemberSettingsSubject | null>(null);
   const [removeOriginatedFromDialog, setRemoveOriginatedFromDialog] = useState(false);
 
-  // The organization lead toggle drives two different mutations with two different gates:
-  // assignRoleToOrganization needs the organization pair, while un-leading goes through
-  // removeRoleFromOrganization, which is gated on GRANT alone.
+  // The organization lead toggle drives two different mutations, each with its own reason:
+  // leading goes through assignRoleToOrganization and un-leading through
+  // removeRoleFromOrganization. Both need GRANT alone for an organization already in the
+  // Space (server ruling R32).
   const organizationLeadDisabledReason = activeMemberSubject?.isLead
     ? organizationRemoveReason
     : organizationLeadAssignReason;
@@ -587,20 +580,13 @@ export default function CrdSpaceSettingsPage() {
                     />
                   ) : undefined
                 }
-                permissions={{
-                  ...community.permissions,
-                  // Single source of truth for the HIDDEN *Add Organisation* button
-                  // (client-web#10292): the same decision that feeds every tooltip here, so
-                  // `checking` and `unverifiable` both render nothing rather than a button.
-                  canAddOrganizations: actionPermissions.addOrganization.allowed,
-                }}
+                permissions={community.permissions}
                 addDisabledReasons={{
                   virtualContributors: addVcReason,
                 }}
                 inviteOrganizationsDisabledReason={inviteOrganizationsReason}
                 onUserRemove={community.onUserRemove}
                 onMemberChangeRole={member => setActiveMemberSubject(buildUserSubject(member))}
-                onOrgAdd={addOrgDialog.openDialog}
                 onInviteOrganizations={() => setInviteOrganizationsOpen(true)}
                 onOrgRemove={community.onOrgRemove}
                 onOrgChangeRole={org => setActiveMemberSubject(buildOrgSubject(org))}
@@ -615,6 +601,8 @@ export default function CrdSpaceSettingsPage() {
                 onPendingApprove={community.onPendingApprove}
                 onPendingReject={community.onPendingReject}
                 onPendingDelete={community.onPendingDelete}
+                onPendingResend={community.onPendingResend}
+                resendingIds={community.resendingIds}
                 onInviteUsers={() => setInviteMembersOpen(true)}
                 onExportMembers={csvExport.exportMembers}
                 exportDisabled={csvExport.exportDisabled}
@@ -939,25 +927,6 @@ export default function CrdSpaceSettingsPage() {
           removeDisabledReason={activeMemberSubject.type === 'user' ? userRoleChangeReason : organizationRemoveReason}
         />
       )}
-
-      <AddCommunityMemberDialog
-        open={addOrgDialog.open}
-        onOpenChange={open => {
-          if (!open) addOrgDialog.closeDialog();
-        }}
-        title={t('community.organizations.addDialog.title')}
-        description={t('community.organizations.addDialog.description')}
-        searchPlaceholder={t('community.organizations.addDialog.search')}
-        candidates={addOrgDialog.candidates}
-        loading={addOrgDialog.loading}
-        search={addOrgDialog.search}
-        addedIds={addOrgDialog.addedIds}
-        addingId={addOrgDialog.addingId}
-        emptyLabel={t('community.organizations.addDialog.empty')}
-        onSearchChange={addOrgDialog.onSearchChange}
-        onAdd={id => void addOrgDialog.onAdd(id)}
-        addDisabledReason={addOrganizationReason}
-      />
 
       <AddCommunityMemberDialog
         open={addVCDialog.open}

@@ -3,6 +3,15 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import { FramingChipStrip } from './FramingChipStrip';
 
+/** The three chips kept in the row; everything else is behind "More". */
+const ROW_LABELS = ['callout.whiteboard', 'callout.memo', 'callout.mediaGallery'];
+
+/** Opens the More menu and returns its items. */
+const openMore = async () => {
+  await userEvent.click(screen.getByRole('button', { name: 'forms.moreFramingTypesHeading' }));
+  return screen.findAllByRole('menuitem');
+};
+
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
@@ -10,36 +19,76 @@ vi.mock('react-i18next', () => ({
 }));
 
 describe('FramingChipStrip', () => {
-  test('renders as a radiogroup with 8 chips', () => {
+  test('renders the three most-used chips in the row, the rest behind More', async () => {
     render(<FramingChipStrip value="none" onChange={vi.fn()} />);
-    const group = screen.getByRole('radiogroup');
-    expect(group).toBeInTheDocument();
+    expect(screen.getByRole('radiogroup')).toBeInTheDocument();
     const chips = screen.getAllByRole('radio');
-    // 6 base framing chips + the admin-gated `contributors` (008) and `spaces` (013)
-    // chips. The component renders all chips by default; the consumer
-    // (CalloutFormConnector) gates the two admin chips via `allowedChips`.
-    expect(chips).toHaveLength(8);
-    // Document chip is interactive (Collabora wired in 085-collabora-callout)
-    const doc = screen.getByRole('radio', { name: /callout.document/i });
-    expect(doc).not.toHaveAttribute('aria-disabled', 'true');
+    expect(chips.map(chip => chip.getAttribute('aria-label'))).toEqual(ROW_LABELS);
+
+    // The remaining six — including the admin-gated `contributors` (008),
+    // `spaces` (013) and `form` (080) — are reachable from the menu, in CHIPS
+    // order. The component renders every chip by default; the consumer
+    // (CalloutFormConnector) leaves the admin chips out of `allowedChips` for
+    // anyone who is not a space admin.
+    const items = await openMore();
+    expect(items.map(item => item.textContent)).toEqual([
+      'callout.document',
+      'callout.callToAction',
+      'callout.poll',
+      'callout.contributors',
+      'callout.subspaces',
+      'callout.form',
+    ]);
+    // Document stays interactive (Collabora wired in 085-collabora-callout)
+    expect(items[0]).not.toHaveAttribute('aria-disabled', 'true');
   });
 
-  test('renders the contributors chip and selecting it emits "contributors"', async () => {
+  test('the More trigger is not one of the radio options', () => {
+    render(<FramingChipStrip value="none" onChange={vi.fn()} />);
+    const more = screen.getByRole('button', { name: 'forms.moreFramingTypesHeading' });
+    // It sits beside the radiogroup, not inside it — it is a way to reach the
+    // other options, not an option.
+    expect(more).not.toHaveAttribute('role', 'radio');
+    expect(screen.getByRole('radiogroup')).not.toContainElement(more);
+  });
+
+  test('a chip chosen from the menu joins the row and stays clearable', async () => {
+    render(<FramingChipStrip value="poll" onChange={vi.fn()} />);
+    const chips = screen.getAllByRole('radio');
+    expect(chips.map(chip => chip.getAttribute('aria-label'))).toEqual([...ROW_LABELS, 'callout.poll']);
+    expect(screen.getByRole('radio', { name: /callout.poll/i, checked: true })).toBeInTheDocument();
+    // ...and is no longer duplicated in the menu.
+    const items = await openMore();
+    expect(items.map(item => item.textContent)).not.toContain('callout.poll');
+  });
+
+  test('fewer than five available chips renders them all with no More menu', () => {
+    render(<FramingChipStrip value="none" onChange={vi.fn()} allowedChips={['whiteboard', 'memo', 'poll', 'cta']} />);
+    expect(screen.getAllByRole('radio')).toHaveLength(4);
+    expect(screen.queryByRole('button', { name: 'forms.moreFramingTypesHeading' })).toBeNull();
+  });
+
+  test('edit mode: the More trigger is inert — the framing type cannot be switched', () => {
+    render(<FramingChipStrip value="poll" onChange={vi.fn()} editMode={true} />);
+    const more = screen.getByRole('button', { name: 'forms.moreFramingTypesHeading' });
+    expect(more).toBeDisabled();
+    expect(more).toHaveAttribute('title', 'forms.typeLockedHint');
+  });
+
+  test('choosing contributors from the menu emits "contributors"', async () => {
     const onChange = vi.fn();
     render(<FramingChipStrip value="none" onChange={onChange} />);
-    const contributors = screen.getByRole('radio', { name: /callout.contributors/i });
-    expect(contributors).toBeInTheDocument();
-    await userEvent.click(contributors);
+    const items = await openMore();
+    await userEvent.click(items.find(item => item.textContent === 'callout.contributors') as HTMLElement);
     expect(onChange).toHaveBeenCalledWith('contributors');
   });
 
-  test('renders the Subspaces chip and selecting it emits "spaces" (feature 013)', async () => {
+  test('choosing Subspaces from the menu emits "spaces" (feature 013)', async () => {
     const onChange = vi.fn();
     render(<FramingChipStrip value="none" onChange={onChange} />);
     // The chip id is `spaces` but its label key is `callout.subspaces` → "Subspaces".
-    const spaces = screen.getByRole('radio', { name: /callout.subspaces/i });
-    expect(spaces).toBeInTheDocument();
-    await userEvent.click(spaces);
+    const items = await openMore();
+    await userEvent.click(items.find(item => item.textContent === 'callout.subspaces') as HTMLElement);
     expect(onChange).toHaveBeenCalledWith('spaces');
   });
 
@@ -59,11 +108,11 @@ describe('FramingChipStrip', () => {
     expect(onChange).toHaveBeenCalledWith('none');
   });
 
-  test('clicking the document chip selects it (Collabora framing)', async () => {
+  test('choosing document from the menu selects it (Collabora framing)', async () => {
     const onChange = vi.fn();
     render(<FramingChipStrip value="none" onChange={onChange} />);
-    const doc = screen.getByRole('radio', { name: /callout.document/i });
-    await userEvent.click(doc);
+    const items = await openMore();
+    await userEvent.click(items.find(item => item.textContent === 'callout.document') as HTMLElement);
     expect(onChange).toHaveBeenCalledWith('document');
   });
 
@@ -116,6 +165,38 @@ describe('FramingChipStrip', () => {
     expect(onChange).toHaveBeenCalledWith('none');
   });
 
+  test('edit mode: a fixed-kind active chip has no clear dialog and is aria-disabled', async () => {
+    const onChange = vi.fn();
+    render(<FramingChipStrip value="form" onChange={onChange} editMode={true} fixedKindChips={['form']} />);
+    const form = screen.getByRole('radio', { name: /callout.form/i });
+    expect(form).toHaveAttribute('aria-disabled', 'true');
+    expect(form).toHaveAttribute('title', 'forms.typeLockedHint');
+    await userEvent.click(form);
+    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.queryByRole('button', { name: 'dialogs.deleteFraming.confirm' })).toBeNull();
+  });
+
+  test('edit mode: other active chips stay clearable when fixedKindChips lists a different chip', async () => {
+    const onChange = vi.fn();
+    render(<FramingChipStrip value="poll" onChange={onChange} editMode={true} fixedKindChips={['form']} />);
+    const poll = screen.getByRole('radio', { name: /callout.poll/i });
+    expect(poll).not.toHaveAttribute('aria-disabled', 'true');
+    await userEvent.click(poll);
+    await userEvent.click(screen.getByRole('button', { name: 'dialogs.deleteFraming.confirm' }));
+    expect(onChange).toHaveBeenCalledWith('none');
+  });
+
+  test('create mode: the form chip selects and clears like any other chip', async () => {
+    const onChange = vi.fn();
+    render(<FramingChipStrip value="none" onChange={onChange} fixedKindChips={['form']} />);
+    // Form sits behind More; picking it there selects it like any other chip.
+    const items = await openMore();
+    const form = items.find(item => item.textContent === 'callout.form');
+    expect(form).toBeDefined();
+    if (form) await userEvent.click(form);
+    expect(onChange).toHaveBeenCalledWith('form');
+  });
+
   test('selected chip is aria-checked', () => {
     render(<FramingChipStrip value="whiteboard" onChange={vi.fn()} />);
     const whiteboard = screen.getByRole('radio', { name: /callout.whiteboard/i, checked: true });
@@ -140,7 +221,7 @@ describe('FramingChipStrip', () => {
     expect(screen.queryAllByRole('radio')).toHaveLength(0);
   });
 
-  test('disabledChips marks the listed chip as aria-disabled and ignores clicks', async () => {
+  test('disabledChips greys the menu item, keeps its reason readable, and ignores clicks', async () => {
     const onChange = vi.fn();
     render(
       <FramingChipStrip
@@ -149,10 +230,25 @@ describe('FramingChipStrip', () => {
         disabledChips={{ document: { tooltip: 'Office documents not enabled' } }}
       />
     );
-    const doc = screen.getByRole('radio', { name: /callout.document/i });
+    const items = await openMore();
+    const doc = items.find(item => item.textContent === 'callout.document') as HTMLElement;
     expect(doc).toHaveAttribute('aria-disabled', 'true');
+    // The reason stays on the element — the item is inert via aria + a prevented
+    // select rather than Radix's `disabled`, which would kill the tooltip.
     expect(doc).toHaveAttribute('title', 'Office documents not enabled');
     await userEvent.click(doc);
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  test('disabledChips still greys a chip that is in the row', async () => {
+    const onChange = vi.fn();
+    render(
+      <FramingChipStrip value="none" onChange={onChange} disabledChips={{ memo: { tooltip: 'Memos not enabled' } }} />
+    );
+    const memo = screen.getByRole('radio', { name: /callout.memo/i });
+    expect(memo).toHaveAttribute('aria-disabled', 'true');
+    expect(memo).toHaveAttribute('title', 'Memos not enabled');
+    await userEvent.click(memo);
     expect(onChange).not.toHaveBeenCalled();
   });
 });

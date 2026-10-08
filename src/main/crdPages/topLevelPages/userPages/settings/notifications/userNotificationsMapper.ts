@@ -44,6 +44,8 @@ export type NotificationViewData = {
 
 export type NotificationPrivileges = {
   isPlatformAdmin: boolean;
+  /** Gates the platformAdmin group only — visibility equals recipiency by construction. */
+  canReceivePlatformAdminNotifications: boolean;
   isOrganizationAdmin: boolean;
   isSpaceAdmin: boolean;
   isSpaceLead: boolean;
@@ -286,6 +288,16 @@ export const mapUserNotifications = (
           ),
         },
         {
+          property: 'collaborationCalloutFormResponseReceived',
+          label: t('user.notifications.rows.spaceAdmin.collaborationCalloutFormResponseReceived'),
+          channels: resolveChannels(
+            server.spaceAdmin?.collaborationCalloutFormResponseReceived,
+            overrides,
+            'spaceAdmin',
+            'collaborationCalloutFormResponseReceived'
+          ),
+        },
+        {
           property: 'communicationMessageReceived',
           label: t('user.notifications.rows.spaceAdmin.communicationMessageReceived'),
           channels: resolveChannels(
@@ -414,8 +426,8 @@ export const mapUserNotifications = (
     ],
   });
 
-  // ── Platform Admin (gated by isPlatformAdmin) ──
-  if (privileges.isPlatformAdmin) {
+  // ── Platform Admin (gated by canReceivePlatformAdminNotifications only) ──
+  if (privileges.canReceivePlatformAdminNotifications) {
     groups.push({
       groupId: 'platformAdmin',
       title: t('user.notifications.groups.platformAdmin.title'),
