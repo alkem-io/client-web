@@ -12,6 +12,7 @@ import useCommentReactionsMutations from '@/domain/communication/room/Comments/u
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { useAttachmentReadiness } from '@/main/userMessaging/useAttachmentReadiness';
 import { mapRoomToCommentData } from '../dataMappers/commentDataMapper';
 import { useMentionableContributors } from './useMentionableContributors';
 
@@ -20,7 +21,7 @@ type UseCrdRoomCommentsParams = {
   /** Pre-loaded room object. Either fetched lazily by the consumer
    *  (CalloutCommentsConnector with useInView gating) or eagerly available
    *  (CalendarCommentsConnector — already loaded by useCalendarEventDetail). */
-  room: Pick<CommentsWithMessagesModel, 'messages' | 'authorization'> | undefined;
+  room: Pick<CommentsWithMessagesModel, 'messages' | 'authorization' | 'attachmentBucketId'> | undefined;
   /** When true, do not subscribe to live room events. CalloutCommentsConnector
    *  forwards `!inView` here for lazy subscription; CalendarCommentsConnector
    *  omits to default to false (always subscribe). */
@@ -84,7 +85,10 @@ export function useCrdRoomComments({
   const privileges = room?.authorization?.myPrivileges ?? [];
   const canComment = isAuthenticated && privileges.includes(AuthorizationPrivilege.CreateMessage);
 
-  const comments = mapRoomToCommentData(room, { currentUserId: userModel?.id, t: tMain });
+  const comments = useAttachmentReadiness(
+    mapRoomToCommentData(room, { currentUserId: userModel?.id, t: tMain }),
+    roomId
+  );
 
   const currentUser = userModel
     ? {

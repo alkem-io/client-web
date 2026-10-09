@@ -307,6 +307,7 @@ export const UnifiedChatPanelConnector = () => {
           <ConversationThread
             key={selectedConversationId}
             conversationId={selectedConversationId}
+            roomId={selectedConversation?.roomId}
             attachmentsAllowed={!isGuidanceThread}
             conversation={threadHeader}
             messages={chatMessages}
@@ -325,9 +326,9 @@ export const UnifiedChatPanelConnector = () => {
                 setDraft(selectedConversationId, value);
               }
             }}
-            sendEvent={async (message, documents) => {
+            sendEvent={async (message, attachmentUpload) => {
               if (isGuidanceThread) guidanceResponse.markSent();
-              return handleSendMessage(message, documents);
+              return handleSendMessage(message, attachmentUpload);
             }}
             onTextSent={() => {
               if (selectedConversationId) clearDraft(selectedConversationId);

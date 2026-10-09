@@ -69,6 +69,7 @@ export const useUnifiedConversations = () => {
         return {
           id: conv.id,
           roomId: room.id,
+          attachmentBucketId: room.attachmentBucketId,
           isGroup,
           displayName,
           roomDisplayName,
@@ -85,7 +86,7 @@ export const useUnifiedConversations = () => {
                 reactions: mapMessageReactions(lastMessage.reactions),
                 // A media-only message has an empty body, so without these the
                 // conversation row would render a blank preview line.
-                attachments: mapMessageAttachments(lastMessage.attachments),
+                attachments: mapMessageAttachments(lastMessage.attachments, room.attachmentBucketId),
               }
             : undefined,
           members,

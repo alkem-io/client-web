@@ -16,7 +16,7 @@ type MessageAttachmentsProps = {
 const isImage = (mimeType: string | undefined) => mimeType?.startsWith('image/');
 const isVideo = (mimeType: string | undefined) => mimeType?.startsWith('video/');
 
-/** Only ever use a server-issued attachment URL as an `href`/`src` when it is an
+/** Only ever use an attachment URL as an `href`/`src` when it is an
  *  http(s) URL — belt-and-suspenders against a `javascript:`/`data:` URL slipping
  *  through. */
 const isHttpUrl = (url: string | undefined): url is string => typeof url === 'string' && /^https?:\/\//i.test(url);
@@ -25,7 +25,7 @@ const isHttpUrl = (url: string | undefined): url is string => typeof url === 'st
  * Renders the media attachments on a message (feature 013). Images show an
  * inline preview that links to the full document; videos use native controls
  * without preloading the timeline. Other types render a downloadable file chip.
- * `url` is an already-authorized Alkemio document URL,
+ * `url` is the integration-supplied media resource,
  * so web- and Element-origin attachments render identically. Images that fail
  * to load degrade to the same downloadable chip with an "unavailable" hint.
  */
@@ -43,7 +43,10 @@ export function MessageAttachments({ attachments, align = 'start', className }: 
     // biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset
     <ul role="list" aria-label={t('messageAttachments.listLabel')} className={listClassName}>
       {attachments.map((attachment, index) => (
-        <li key={attachment.id ?? `unavailable-${index}`} className="max-w-[min(320px,100%)]">
+        <li
+          key={`${attachment.id ?? `unavailable-${index}`}:${attachment.retryKey ?? 0}`}
+          className="max-w-[min(320px,100%)]"
+        >
           {isImage(attachment.mimeType) ? (
             <AttachmentImage attachment={attachment} />
           ) : isVideo(attachment.mimeType) ? (
@@ -99,7 +102,10 @@ function AttachmentImage({ attachment }: { attachment: MessageAttachment }) {
           alt={t('messageAttachments.imageAlt', { name: attachment.displayName })}
           loading="lazy"
           onLoad={() => setStatus('loaded')}
-          onError={() => setStatus('error')}
+          onError={() => {
+            setStatus('error');
+            attachment.onLoadError?.();
+          }}
           // Never take the image OUT of the layout while it loads. A
           // `loading="lazy"` image that is `display: none` is never intersected by
           // the browser's lazy-load observer, so it is never fetched, `onLoad`
@@ -147,7 +153,10 @@ function AttachmentVideo({ attachment }: { attachment: MessageAttachment }) {
             setFailed(true);
           }
         }}
-        onError={() => setFailed(true)}
+        onError={() => {
+          setFailed(true);
+          attachment.onLoadError?.();
+        }}
         className="block aspect-video max-h-80 w-80 max-w-full bg-black object-contain focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
       />
       <AttachmentDownload attachment={attachment} />
@@ -173,7 +182,7 @@ function AttachmentDownload({ attachment }: { attachment: MessageAttachment }) {
 function AttachmentFileChip({ attachment, hint }: { attachment: MessageAttachment; hint?: string }) {
   const { t } = useTranslation('crd-common');
   const formattedSize = attachment.size === undefined ? '' : formatBytes(attachment.size);
-  // Only treat a server-issued http(s) URL as downloadable; anything else is
+  // Only treat an http(s) URL as downloadable; anything else is
   // surfaced as an unavailable, non-interactive chip.
   const downloadable = isHttpUrl(attachment.url);
   // A non-downloadable chip renders as a non-interactive <span> with no link to

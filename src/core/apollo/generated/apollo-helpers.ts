@@ -3277,21 +3277,19 @@ export type MessageFieldPolicy = {
 };
 export type MessageAttachmentKeySpecifier = (
   | 'displayName'
+  | 'externalReference'
   | 'height'
-  | 'id'
   | 'mimeType'
   | 'size'
-  | 'url'
   | 'width'
   | MessageAttachmentKeySpecifier
 )[];
 export type MessageAttachmentFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  externalReference?: FieldPolicy<any> | FieldReadFunction<any>;
   height?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
   mimeType?: FieldPolicy<any> | FieldReadFunction<any>;
   size?: FieldPolicy<any> | FieldReadFunction<any>;
-  url?: FieldPolicy<any> | FieldReadFunction<any>;
   width?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageDetailsKeySpecifier = ('message' | 'parent' | 'room' | MessageDetailsKeySpecifier)[];
@@ -3599,6 +3597,7 @@ export type MutationKeySpecifier = (
   | 'uploadFileOnReference'
   | 'uploadFileOnStorageBucket'
   | 'uploadImageOnVisual'
+  | 'uploadRoomMessageAttachment'
   | MutationKeySpecifier
 )[];
 export type MutationFieldPolicy = {
@@ -3844,6 +3843,7 @@ export type MutationFieldPolicy = {
   uploadFileOnReference?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadImageOnVisual?: FieldPolicy<any> | FieldReadFunction<any>;
+  uploadRoomMessageAttachment?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MySpaceResultsKeySpecifier = ('latestActivity' | 'space' | MySpaceResultsKeySpecifier)[];
 export type MySpaceResultsFieldPolicy = {
@@ -4997,6 +4997,7 @@ export type RolesResultSpaceFieldPolicy = {
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RoomKeySpecifier = (
+  | 'attachmentBucketId'
   | 'authorization'
   | 'avatarUrl'
   | 'createdDate'
@@ -5013,6 +5014,7 @@ export type RoomKeySpecifier = (
   | RoomKeySpecifier
 )[];
 export type RoomFieldPolicy = {
+  attachmentBucketId?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   avatarUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5039,6 +5041,15 @@ export type RoomEventSubscriptionResultFieldPolicy = {
   reaction?: FieldPolicy<any> | FieldReadFunction<any>;
   room?: FieldPolicy<any> | FieldReadFunction<any>;
   roomID?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type RoomMessageAttachmentUploadResultKeySpecifier = (
+  | 'displayName'
+  | 'externalReference'
+  | RoomMessageAttachmentUploadResultKeySpecifier
+)[];
+export type RoomMessageAttachmentUploadResultFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  externalReference?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RoomMessageEventSubscriptionResultKeySpecifier = (
   | 'data'
@@ -8088,6 +8099,13 @@ export type StrictTypedTypePolicies = {
       | RoomEventSubscriptionResultKeySpecifier
       | (() => undefined | RoomEventSubscriptionResultKeySpecifier);
     fields?: RoomEventSubscriptionResultFieldPolicy;
+  };
+  RoomMessageAttachmentUploadResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | RoomMessageAttachmentUploadResultKeySpecifier
+      | (() => undefined | RoomMessageAttachmentUploadResultKeySpecifier);
+    fields?: RoomMessageAttachmentUploadResultFieldPolicy;
   };
   RoomMessageEventSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

@@ -1137,8 +1137,7 @@ export const ContributorDetailsFragmentDoc = gql`
 ${TagsetDetailsFragmentDoc}`;
 export const MessageAttachmentDetailsFragmentDoc = gql`
     fragment MessageAttachmentDetails on MessageAttachment {
-  id
-  url
+  externalReference
   displayName
   mimeType
   size
@@ -1174,6 +1173,7 @@ export const VcInteractionsDetailsFragmentDoc = gql`
 export const CommentsWithMessagesFragmentDoc = gql`
     fragment CommentsWithMessages on Room {
   id
+  attachmentBucketId
   messagesCount
   authorization {
     id
@@ -13710,9 +13710,9 @@ export type RemoveReactionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveReactionMutationVariables
 >;
 export const ReplyToMessageDocument = gql`
-    mutation ReplyToMessage($roomId: UUID!, $message: String!, $threadId: MessageID!) {
+    mutation ReplyToMessage($roomId: UUID!, $message: String!, $threadId: MessageID!, $attachmentUpload: RoomMessageAttachmentInput) {
   sendMessageReplyToRoom(
-    messageData: {roomID: $roomId, threadID: $threadId, message: $message}
+    messageData: {roomID: $roomId, threadID: $threadId, message: $message, attachmentUpload: $attachmentUpload}
   ) {
     id
     message
@@ -13748,6 +13748,7 @@ export type ReplyToMessageMutationFn = Apollo.MutationFunction<
  *      roomId: // value for 'roomId'
  *      message: // value for 'message'
  *      threadId: // value for 'threadId'
+ *      attachmentUpload: // value for 'attachmentUpload'
  *   },
  * });
  */
@@ -33184,6 +33185,56 @@ export type ConversationStorageConfigQueryResult = Apollo.QueryResult<
 export function refetchConversationStorageConfigQuery(variables: SchemaTypes.ConversationStorageConfigQueryVariables) {
   return { query: ConversationStorageConfigDocument, variables: variables };
 }
+export const UploadRoomMessageAttachmentDocument = gql`
+    mutation UploadRoomMessageAttachment($uploadData: RoomMessageAttachmentUploadInput!, $file: Upload!) {
+  uploadRoomMessageAttachment(uploadData: $uploadData, file: $file) {
+    externalReference
+    displayName
+  }
+}
+    `;
+export type UploadRoomMessageAttachmentMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UploadRoomMessageAttachmentMutation,
+  SchemaTypes.UploadRoomMessageAttachmentMutationVariables
+>;
+
+/**
+ * __useUploadRoomMessageAttachmentMutation__
+ *
+ * To run a mutation, you first call `useUploadRoomMessageAttachmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadRoomMessageAttachmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadRoomMessageAttachmentMutation, { data, loading, error }] = useUploadRoomMessageAttachmentMutation({
+ *   variables: {
+ *      uploadData: // value for 'uploadData'
+ *      file: // value for 'file'
+ *   },
+ * });
+ */
+export function useUploadRoomMessageAttachmentMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UploadRoomMessageAttachmentMutation,
+    SchemaTypes.UploadRoomMessageAttachmentMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UploadRoomMessageAttachmentMutation,
+    SchemaTypes.UploadRoomMessageAttachmentMutationVariables
+  >(UploadRoomMessageAttachmentDocument, options);
+}
+export type UploadRoomMessageAttachmentMutationHookResult = ReturnType<typeof useUploadRoomMessageAttachmentMutation>;
+export type UploadRoomMessageAttachmentMutationResult =
+  Apollo.MutationResult<SchemaTypes.UploadRoomMessageAttachmentMutation>;
+export type UploadRoomMessageAttachmentMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UploadRoomMessageAttachmentMutation,
+  SchemaTypes.UploadRoomMessageAttachmentMutationVariables
+>;
 export const ResetConversationVcDocument = gql`
     mutation resetConversationVc($input: ConversationVcResetInput!) {
   resetConversationVc(input: $input) {
@@ -35508,6 +35559,7 @@ export const ConversationDetailsDocument = gql`
       id
       room {
         id
+        attachmentBucketId
         type
         displayName
         avatarUrl
@@ -35543,8 +35595,7 @@ export const ConversationDetailsDocument = gql`
             }
           }
           attachments {
-            id
-            url
+            externalReference
             displayName
             mimeType
             size
@@ -35645,6 +35696,7 @@ export const ConversationEventsDocument = gql`
         id
         room {
           id
+          attachmentBucketId
           type
           displayName
           avatarUrl
@@ -35680,8 +35732,7 @@ export const ConversationEventsDocument = gql`
               }
             }
             attachments {
-              id
-              url
+              externalReference
               displayName
               mimeType
               size
@@ -35733,8 +35784,7 @@ export const ConversationEventsDocument = gql`
           }
         }
         attachments {
-          id
-          url
+          externalReference
           displayName
           mimeType
           size
@@ -35748,6 +35798,7 @@ export const ConversationEventsDocument = gql`
         id
         room {
           id
+          attachmentBucketId
           displayName
           avatarUrl
         }
@@ -35811,8 +35862,7 @@ export const ConversationEventsDocument = gql`
           }
         }
         attachments {
-          id
-          url
+          externalReference
           displayName
           mimeType
           size
@@ -35870,6 +35920,7 @@ export const ConversationMessagesDocument = gql`
       id
       room {
         id
+        attachmentBucketId
         messages {
           id
           message
@@ -35899,8 +35950,7 @@ export const ConversationMessagesDocument = gql`
             }
           }
           attachments {
-            id
-            url
+            externalReference
             displayName
             mimeType
             size
@@ -35985,6 +36035,7 @@ export const CreateConversationDocument = gql`
     id
     room {
       id
+      attachmentBucketId
       type
       displayName
       avatarUrl
@@ -36020,8 +36071,7 @@ export const CreateConversationDocument = gql`
           }
         }
         attachments {
-          id
-          url
+          externalReference
           displayName
           mimeType
           size
@@ -36325,6 +36375,7 @@ export const UserConversationsDocument = gql`
         id
         room {
           id
+          attachmentBucketId
           type
           displayName
           avatarUrl
@@ -36360,8 +36411,7 @@ export const UserConversationsDocument = gql`
               }
             }
             attachments {
-              id
-              url
+              externalReference
               displayName
               mimeType
               size

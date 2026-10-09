@@ -4,6 +4,7 @@ query ConversationMessages($conversationId: UUID!) {
       id
       room {
         id
+        attachmentBucketId
         messages {
           id
           message
@@ -33,8 +34,7 @@ query ConversationMessages($conversationId: UUID!) {
             }
           }
           attachments {
-            id
-            url
+            externalReference
             displayName
             mimeType
             size

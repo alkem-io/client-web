@@ -61,6 +61,23 @@ describe('mapRoomToCommentData', () => {
     vi.useRealTimers();
   });
 
+  it('uses owning room metadata for comment and reply attachment URLs', () => {
+    const media = { externalReference: 'shared-media', displayName: 'file.pdf', mimeType: 'application/pdf' };
+    const room = {
+      attachmentBucketId: 'space-bucket',
+      messages: [
+        baseMessage({ id: 'root', timestamp: Date.now(), attachments: [media] }),
+        baseMessage({ id: 'reply', threadID: 'root', timestamp: Date.now(), attachments: [media] }),
+      ],
+    };
+    const comments = mapRoomToCommentData(room, { t: tStub });
+    expect(comments.map(comment => comment.attachments?.[0].url)).toEqual([
+      `${window.location.origin}/api/private/rest/storage/file/by-reference?bucketId=space-bucket&ref=shared-media`,
+      `${window.location.origin}/api/private/rest/storage/file/by-reference?bucketId=space-bucket&ref=shared-media`,
+    ]);
+    expect(comments[1].parentId).toBe('root');
+  });
+
   it('returns an empty list when the room is undefined', () => {
     expect(mapRoomToCommentData(undefined, { t: tStub })).toEqual([]);
   });

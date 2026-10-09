@@ -15,8 +15,7 @@ fragment MessageDetails on Message {
 }
 
 fragment MessageAttachmentDetails on MessageAttachment {
-  id
-  url
+  externalReference
   displayName
   mimeType
   size
