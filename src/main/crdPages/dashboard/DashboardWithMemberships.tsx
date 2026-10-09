@@ -206,6 +206,7 @@ export default function DashboardWithMemberships({
     spaceIds: spaceActivitySpaceIds,
     roles: roleFilter === 'all' ? undefined : [roleFilter as ActivityFeedRoles],
     excludeTypes: EXCLUDED_ACTIVITY_TYPES,
+    excludeMyActivity: true,
   };
 
   const personalActivityFilter_ = {

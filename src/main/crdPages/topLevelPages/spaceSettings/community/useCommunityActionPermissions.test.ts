@@ -9,7 +9,7 @@ import useCommunityActionPermissions from './useCommunityActionPermissions';
  * privileges and the loading flag; this hook resolves one decision per control from them
  * and `CrdSpaceSettingsPage` renders each decision as a tooltip. These specs pin which
  * privilege gates which control, because the backend resolver enforces a different token
- * for adding a member than for changing an existing member's roles.
+ * for inviting a member than for changing an existing member's roles.
  */
 
 const {
@@ -20,21 +20,17 @@ const {
   Update,
   CommunityAssignVcFromAccount: FROM_ACCOUNT,
   RolesetEntryRoleAssign: ASSIGN,
-  RolesetEntryRoleAssignOrganization: ASSIGN_ORG,
   RolesetEntryRoleInvite: INVITE,
 } = AuthorizationPrivilege;
 
 /**
- * What an ordinary space admin actually holds on the space role set: the cascading
- * space-admin rule grants CREATE/READ/UPDATE/DELETE/GRANT, and the role set adds the
- * invite token. It does NOT grant `ROLESET_ENTRY_ROLE_ASSIGN` or
- * `ROLESET_ENTRY_ROLE_ASSIGN_ORGANIZATION` — those rules name the global admin, global
- * support and beta-tester credentials only.
+ * What an ordinary space admin holds on the space role set: the cascading space-admin rule
+ * grants CREATE/READ/UPDATE/DELETE/GRANT, and the role set adds the invite token.
  */
 const SPACE_ADMIN = [Create, Read, Update, Delete, Grant, INVITE];
 
-/** A platform admin additionally holds the direct-add tokens. */
-const PLATFORM_ADMIN = [...SPACE_ADMIN, ASSIGN, ASSIGN_ORG];
+/** Every token any control on this surface is gated on. */
+const EVERY_TOKEN = [...SPACE_ADMIN, FROM_ACCOUNT];
 
 /** A community member with no administrative rights. */
 const VIEWER = [Read];
@@ -55,18 +51,6 @@ describe('space community settings — a space admin may change an existing memb
     expect(permissions.organizationRemove).toEqual({ allowed: true, reason: 'allowed' });
   });
 
-  it('still withholds the direct add-member path, which stays a platform-admin action', () => {
-    const permissions = useCommunityActionPermissions(SPACE_ADMIN, false);
-
-    expect(permissions.addMember).toEqual({ allowed: false, reason: 'denied' });
-  });
-
-  it('still withholds adding an organization, which needs the organization token too', () => {
-    const permissions = useCommunityActionPermissions(SPACE_ADMIN, false);
-
-    expect(permissions.addOrganization.allowed).toBe(false);
-  });
-
   // BOTH directions of the organization lead toggle are a space admin's to make.
   //
   // This assertion was inverted before server ruling R32: ticking the toggle calls
@@ -78,8 +62,7 @@ describe('space community settings — a space admin may change an existing memb
   // `removeRoleFromOrganization` always has.
   //
   // So this is the organization-shaped twin of the user bug #10280 fixed, and the two
-  // directions no longer diverge. Adding a new organization is still gated separately —
-  // see the test above.
+  // directions no longer diverge.
   it('permits both directions of the organization lead toggle (R32)', () => {
     const permissions = useCommunityActionPermissions(SPACE_ADMIN, false);
 
@@ -97,8 +80,8 @@ describe('space community settings — the gates still hold for everyone else', 
     expect(permissions.organizationRemove).toEqual({ allowed: false, reason: 'denied' });
   });
 
-  it('permits every control to a platform admin', () => {
-    const permissions = useCommunityActionPermissions(PLATFORM_ADMIN, false);
+  it('permits every control to a holder of every gating token', () => {
+    const permissions = useCommunityActionPermissions(EVERY_TOKEN, false);
 
     expect(Object.values(permissions).every(permission => permission.allowed)).toBe(true);
   });
@@ -116,27 +99,6 @@ describe('space community settings — the gates still hold for everyone else', 
   });
 });
 
-describe('space community settings — organization rows need both tokens to be added', () => {
-  it('is denied with only the organization assign privilege', () => {
-    expect(useCommunityActionPermissions([ASSIGN_ORG], false).addOrganization.allowed).toBe(false);
-  });
-
-  it('is denied with only GRANT', () => {
-    expect(useCommunityActionPermissions([Grant], false).addOrganization.allowed).toBe(false);
-  });
-
-  it('is denied with the plain assign privilege, which does not cover organizations', () => {
-    expect(useCommunityActionPermissions([ASSIGN], false).addOrganization.allowed).toBe(false);
-  });
-
-  it('is permitted only with both tokens', () => {
-    expect(useCommunityActionPermissions([ASSIGN_ORG, Grant], false).addOrganization).toEqual({
-      allowed: true,
-      reason: 'allowed',
-    });
-  });
-});
-
 describe('space community settings — virtual contributors accept either privilege', () => {
   it('is permitted with the role-set assign privilege alone', () => {
     expect(useCommunityActionPermissions([ASSIGN], false).addVirtualContributor.allowed).toBe(true);
@@ -145,10 +107,7 @@ describe('space community settings — virtual contributors accept either privil
   // Regression guard: space admins may hold only the account-assign privilege. Gating on
   // the role-set assign privilege alone would lock them out of the VC add controls.
   it('is permitted with the account-assign privilege alone', () => {
-    const permissions = useCommunityActionPermissions([FROM_ACCOUNT], false);
-
-    expect(permissions.addMember.allowed).toBe(false);
-    expect(permissions.addVirtualContributor.allowed).toBe(true);
+    expect(useCommunityActionPermissions([FROM_ACCOUNT], false).addVirtualContributor.allowed).toBe(true);
   });
 
   it('is denied when neither privilege is held', () => {

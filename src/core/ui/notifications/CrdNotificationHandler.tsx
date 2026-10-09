@@ -68,5 +68,5 @@ export const CrdNotificationHandler = () => {
     });
   }, [notifications, notificationsDispatch, t]);
 
-  return <Toaster position="bottom-right" />;
+  return <Toaster position="bottom-right" toastOptions={{ closeButtonAriaLabel: t('notification.close') }} />;
 };

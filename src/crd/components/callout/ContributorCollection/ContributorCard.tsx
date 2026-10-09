@@ -94,10 +94,20 @@ export function ContributorCard({ contributor, onContributorClick, onMessage, cl
   // Organisation bottom line: shown whenever associatesCount is a number,
   // including zero — `typeof` distinguishes 0 from "not applicable".
   const showAssociatesLine = isOrg && typeof contributor.associatesCount === 'number';
+  const showJoinedLine = contributor.type === 'user' && Boolean(contributor.joinedMonthLabel);
+
+  const hasTags = Boolean(contributor.tags && contributor.tags.length > 0);
+  const hasLocation = !isVc && Boolean(contributor.locationLabel);
+  // With nothing between the tagline and the bottom line (joined date /
+  // associates), the tagline takes the free height and centres in it, instead
+  // of sitting under the header with the gap all above the bottom line.
+  const centerTagline = !hasTags && !hasLocation && (showJoinedLine || showAssociatesLine);
 
   return (
     <Card className={cn('h-full overflow-hidden hover:shadow-md transition-shadow', className)}>
-      <CardContent className="flex h-full flex-col p-0">
+      {/* `[&:last-child]:pb-0` too: `p-0` alone leaves the primitive's
+          `[&:last-child]:pb-6`, adding 24px under the bottom line. */}
+      <CardContent className="flex h-full flex-col p-0 [&:last-child]:pb-0">
         <div className="p-4 flex items-start gap-3">
           {href ? (
             <a
@@ -176,19 +186,22 @@ export function ContributorCard({ contributor, onContributorClick, onMessage, cl
           </div>
         </div>
         <div className="flex flex-1 flex-col px-4 pb-4">
-          {showTaglineRow &&
-            (hasTagline ? (
-              <p className="line-clamp-2 text-body text-muted-foreground">{contributor.tagline}</p>
-            ) : (
-              <p className="line-clamp-2 text-body text-muted-foreground italic">
-                {t('contributors.card.taglineFallback')}
-              </p>
-            ))}
-          {/* One row, in stored order; tags that don't fit collapse into a "+N" chip. */}
-          {contributor.tags && contributor.tags.length > 0 && (
-            <CollapsibleTagList tags={contributor.tags} maxRows={1} className="mt-3" />
+          {showTaglineRow && (
+            // pb-1 evens the gaps when centred: 16px header padding above,
+            // the bottom line's 12px pt-3 + 4px below.
+            <div className={cn(centerTagline && 'flex flex-1 flex-col justify-center pb-1')}>
+              {hasTagline ? (
+                <p className="line-clamp-2 text-body text-muted-foreground">{contributor.tagline}</p>
+              ) : (
+                <p className="line-clamp-2 text-body text-muted-foreground italic">
+                  {t('contributors.card.taglineFallback')}
+                </p>
+              )}
+            </div>
           )}
-          {!isVc && contributor.locationLabel && (
+          {/* One row, in stored order; tags that don't fit collapse into a "+N" chip. */}
+          {hasTags && <CollapsibleTagList tags={contributor.tags ?? []} maxRows={1} className="mt-3" />}
+          {hasLocation && (
             <div className="mt-3 flex items-center gap-1 text-caption text-muted-foreground">
               <MapPin className="w-3 h-3 shrink-0" aria-hidden="true" />
               <span className="truncate">{contributor.locationLabel}</span>
@@ -200,7 +213,7 @@ export function ContributorCard({ contributor, onContributorClick, onMessage, cl
               <span>{t('contributors.card.associates', { count: contributor.associatesCount })}</span>
             </div>
           )}
-          {contributor.type === 'user' && contributor.joinedMonthLabel && (
+          {showJoinedLine && (
             <div className="mt-auto pt-3 text-caption text-muted-foreground">
               {t('contributors.card.joined', { date: contributor.joinedMonthLabel })}
             </div>

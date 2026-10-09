@@ -197,6 +197,8 @@ export type ActivityFeed = {
 };
 
 export type ActivityFeedGroupedQueryArgs = {
+  /** Excludes events that the current user triggered; Includes all by default. Combined with myActivity both filters apply, composing to an empty result; that is not an error. */
+  excludeMyActivity?: InputMaybe<Scalars['Boolean']['input']>;
   /** What events to exclude. */
   excludeTypes?: InputMaybe<Array<ActivityEventType>>;
   /** Number of activities to return. */
@@ -212,6 +214,8 @@ export type ActivityFeedGroupedQueryArgs = {
 };
 
 export type ActivityFeedQueryArgs = {
+  /** Excludes events that the current user triggered; Includes all by default. Combined with myActivity both filters apply, composing to an empty result; that is not an error. */
+  excludeMyActivity?: InputMaybe<Scalars['Boolean']['input']>;
   /** What events to exclude. */
   excludeTypes?: InputMaybe<Array<ActivityEventType>>;
   /** Returns only events that the current user triggered; Includes all by default. */
@@ -3954,6 +3958,8 @@ export type InAppNotificationPayloadPlatformForumDiscussion = InAppNotificationP
 
 export type InAppNotificationPayloadPlatformGlobalRoleChange = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
+  /** Whether the role was added or removed; absent on records written before this field existed. */
+  changeType?: Maybe<RoleChangeType>;
   /** The new role. */
   role: Scalars['String']['output'];
   /** The payload type. */
@@ -8648,6 +8654,12 @@ export type Role = {
   /** The role policy that applies for VirtualContributors in this Role. */
   virtualContributorPolicy: ActorRolePolicy;
 };
+
+/** Whether a role was added or removed. */
+export enum RoleChangeType {
+  Added = 'ADDED',
+  Removed = 'REMOVED',
+}
 
 export enum RoleName {
   Admin = 'ADMIN',
@@ -42058,6 +42070,7 @@ export type InAppNotificationReceivedSubscription = {
           __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
           type: NotificationEventPayload;
           role: string;
+          changeType?: RoleChangeType | undefined;
           user?:
             | {
                 __typename?: 'User';
@@ -43382,6 +43395,7 @@ export type InAppNotificationsQuery = {
               __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
               type: NotificationEventPayload;
               role: string;
+              changeType?: RoleChangeType | undefined;
               user?:
                 | {
                     __typename?: 'User';
@@ -44712,6 +44726,7 @@ export type InAppNotificationAllTypesFragment = {
         __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
         type: NotificationEventPayload;
         role: string;
+        changeType?: RoleChangeType | undefined;
         user?:
           | {
               __typename?: 'User';
@@ -46146,6 +46161,7 @@ export type InAppNotificationPayloadPlatformGlobalRoleChangeFragment = {
   __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
   type: NotificationEventPayload;
   role: string;
+  changeType?: RoleChangeType | undefined;
   user?:
     | {
         __typename?: 'User';
