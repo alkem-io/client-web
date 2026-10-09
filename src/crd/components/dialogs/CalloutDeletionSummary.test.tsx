@@ -52,6 +52,35 @@ describe('CalloutDeletionSummary', () => {
     ).toBeInTheDocument();
   });
 
+  it('names the form and its response count in the header', () => {
+    render(<CalloutDeletionSummary summary={summary({ richContent: 'form', formResponseCount: 12 })} />);
+
+    expect(screen.getByText('deleteCallout.headerRichForm:12')).toBeInTheDocument();
+  });
+
+  it('names the form with its contributions when the callout also holds contributions', () => {
+    render(
+      <CalloutDeletionSummary
+        summary={summary({
+          richContent: 'form',
+          formResponseCount: 12,
+          contributionCount: 3,
+          contributions: items(['A']),
+        })}
+      />
+    );
+
+    expect(screen.getByText('deleteCallout.headerRichFormContributions:3')).toBeInTheDocument();
+  });
+
+  it('falls back to the composed "The form will be deleted" header when no response count is known', () => {
+    const { rerender } = render(<CalloutDeletionSummary summary={summary({ richContent: 'form' })} />);
+    expect(screen.getByText('deleteCallout.headerRich:deleteCallout.contentType.form')).toBeInTheDocument();
+
+    rerender(<CalloutDeletionSummary summary={summary({ richContent: 'form', formResponseCount: 0 })} />);
+    expect(screen.getByText('deleteCallout.headerRich:deleteCallout.contentType.form')).toBeInTheDocument();
+  });
+
   it('heads the table with "The <kind> will be deleted" when only framing content exists (FR-004, FR-006)', () => {
     render(<CalloutDeletionSummary summary={summary({ richContent: 'memo' })} />);
 

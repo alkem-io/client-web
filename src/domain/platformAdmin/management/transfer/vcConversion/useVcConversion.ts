@@ -1,3 +1,4 @@
+import { ApolloError } from '@apollo/client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -11,7 +12,12 @@ import {
   UrlType,
   VirtualContributorBodyOfKnowledgeType,
 } from '@/core/apollo/generated/graphql-schema';
+import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import {
+  CalloutFormErrorCode,
+  getCalloutFormErrorCode,
+} from '@/domain/collaboration/callout-form/utils/calloutFormErrors';
 import toFullUrl from '../toFullUrl';
 
 const T_PREFIX = 'pages.admin.vcConversion';
@@ -19,6 +25,7 @@ const T_PREFIX = 'pages.admin.vcConversion';
 const useVcConversion = () => {
   const { t } = useTranslation();
   const notify = useNotification();
+  const handleApolloError = useApolloErrorHandler();
   const [vcUrl, setVcUrl] = useState('');
   const [mutationCompleted, setMutationCompleted] = useState(false);
 
@@ -79,11 +86,21 @@ const useVcConversion = () => {
   const handleConvert = async () => {
     if (!vc?.id) return;
     try {
-      await convertMutation({ variables: { virtualContributorID: vc.id } });
+      await convertMutation({
+        variables: { virtualContributorID: vc.id },
+        // Handled below, so a Form rejection gets its own message instead of the generic one.
+        context: { skipGlobalErrorHandler: true },
+      });
       notify(t(`${T_PREFIX}.successMessage`), 'success');
       setVcUrl('');
       setMutationCompleted(true);
     } catch (error) {
+      // The source space holds a Form: nothing was moved, and the reason is specific.
+      if (getCalloutFormErrorCode(error) === CalloutFormErrorCode.FORM_TRANSFER_NOT_ALLOWED) {
+        notify(t(`${T_PREFIX}.formNotAllowed`), 'error');
+        return;
+      }
+      if (error instanceof ApolloError) handleApolloError(error);
       const message = error instanceof Error ? error.message : t(`${T_PREFIX}.errorMessage`);
       notify(message, 'error');
     }

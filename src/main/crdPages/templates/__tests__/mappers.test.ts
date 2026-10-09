@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   CalloutContributionType,
+  CalloutFormQuestionType,
   CalloutFramingType,
   TemplateType as GqlTemplateType,
 } from '@/core/apollo/generated/graphql-schema';
@@ -148,6 +149,7 @@ describe('templateContentMapper', () => {
   it('maps every framing-type enum to the CRD framing-kind union', () => {
     expect(mapGqlFramingType(CalloutFramingType.None)).toBe('none');
     expect(mapGqlFramingType(CalloutFramingType.Whiteboard)).toBe('whiteboard');
+    expect(mapGqlFramingType(CalloutFramingType.Form)).toBe('form');
     expect(mapGqlFramingType(CalloutFramingType.Memo)).toBe('memo');
     expect(mapGqlFramingType(CalloutFramingType.CollaboraDocument)).toBe('document');
     expect(mapGqlFramingType(CalloutFramingType.Link)).toBe('cta');
@@ -247,6 +249,74 @@ describe('templateContentMapper', () => {
     });
     // The Collabora preview is a read-only title/placeholder — the mapper carries the doc handle on
     // `framingCollaboraDoc` so the consumer can render `CalloutCollaboraPreview` without a live document service.
+  });
+
+  it('maps a Form-framed callout template to its read-only question list', () => {
+    const template = {
+      callout: {
+        framing: {
+          type: CalloutFramingType.Form,
+          profile: { displayName: 'Sign-up', description: '' },
+          form: {
+            id: 'form-1',
+            title: 'Join the session',
+            description: null,
+            questions: [
+              {
+                id: 'q-1',
+                prompt: 'Your name',
+                explanation: null,
+                type: CalloutFormQuestionType.ShortText,
+                required: true,
+                options: null,
+              },
+              {
+                id: 'q-2',
+                prompt: 'Track',
+                explanation: 'Pick one',
+                type: CalloutFormQuestionType.SingleChoice,
+                required: false,
+                options: [
+                  { id: 'o-1', label: 'Design' },
+                  { id: 'o-2', label: 'Build' },
+                ],
+              },
+            ],
+            settings: { visibility: 'ADMINS', responseMode: 'SINGLE', state: 'OPEN', defaultCollapsed: false },
+          },
+        },
+        settings: { contribution: { allowedTypes: [] }, framing: { commentsEnabled: false } },
+        contributionDefaults: {},
+      },
+    } as unknown as TemplateContentTemplate;
+    expect(mapTemplateContent(template, 'callout')).toMatchObject({
+      framingKind: 'form',
+      framingForm: {
+        title: 'Join the session',
+        description: undefined,
+        questions: [
+          { prompt: 'Your name', explanation: undefined, type: 'SHORT_TEXT', required: true, options: [] },
+          {
+            prompt: 'Track',
+            explanation: 'Pick one',
+            type: 'SINGLE_CHOICE',
+            required: false,
+            options: ['Design', 'Build'],
+          },
+        ],
+      },
+    });
+  });
+
+  it('leaves framingForm undefined for a non-Form callout template', () => {
+    const template = {
+      callout: {
+        framing: { type: CalloutFramingType.None, profile: { displayName: 'Plain' } },
+        settings: { contribution: { allowedTypes: [] }, framing: { commentsEnabled: false } },
+        contributionDefaults: {},
+      },
+    } as unknown as TemplateContentTemplate;
+    expect(mapTemplateContent(template, 'callout')).toMatchObject({ framingForm: undefined });
   });
 
   // D16, 2026-05-18 — when a Callout template's framing is a whiteboard with a server-rendered

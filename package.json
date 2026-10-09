@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.167.1",
+  "version": "0.168.0",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "type": "module",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "https://github.com/alkem-io/client-web.git"
   },
   "license": "EUPL-1.2",
-  "author": "Alkemio Foundation",
+  "author": "Alkemio",
   "scripts": {
     "analyze": "ANALYZE=true pnpm build",
     "analyze:dev": "ANALYZE=true pnpm build:dev",

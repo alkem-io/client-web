@@ -154,6 +154,8 @@ export type SpaceSettingsCommunityViewProps = {
   onPendingApprove: (id: string) => void;
   onPendingReject: (id: string) => void;
   onPendingDelete: (id: string) => void;
+  onPendingResend?: (id: string) => void;
+  resendingIds?: ReadonlySet<string>;
   onInviteUsers: () => void;
   onExportMembers?: () => void;
   exportDisabled?: boolean;
@@ -188,6 +190,8 @@ export function SpaceSettingsCommunityView({
   onPendingApprove,
   onPendingReject,
   onPendingDelete,
+  onPendingResend,
+  resendingIds,
   onInviteUsers,
   onExportMembers,
   exportDisabled,
@@ -248,6 +252,8 @@ export function SpaceSettingsCommunityView({
         onApprove={onPendingApprove}
         onReject={onPendingReject}
         onDelete={onPendingDelete}
+        onResend={onPendingResend}
+        resendingIds={resendingIds}
       />
 
       <Separator />

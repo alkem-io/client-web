@@ -20,7 +20,7 @@
       },
       "callout": {
         "title": "Herramientas de colaboración",
-        "subtitle": "Callouts reutilizables para talleres, sesiones de ideación y actividades grupales."
+        "subtitle": "Publicaciones reutilizables para talleres, sesiones de ideación y actividades grupales."
       },
       "whiteboard": {
         "title": "Plantillas de pizarra",
@@ -62,7 +62,8 @@
     "image": "Galería",
     "poll": "Encuesta",
     "contributors": "Colaboradores",
-    "spaces": "Subespacios"
+    "spaces": "Subespacios",
+    "form": "Formulario"
   },
   "contributionType": {
     "post": "Publicaciones",
@@ -87,7 +88,15 @@
       "links": "Enlaces",
       "gallery": "Galería",
       "pollQuestion": "Pregunta",
-      "pollOptions": "Opciones"
+      "pollOptions": "Opciones",
+      "formQuestions": "Preguntas",
+      "formRequired": "Obligatoria",
+      "formQuestionType": {
+        "SHORT_TEXT": "Texto corto",
+        "LONG_TEXT": "Texto largo",
+        "SINGLE_CHOICE": "Opción única",
+        "MULTIPLE_CHOICE": "Opción múltiple"
+      }
     },
     "whiteboard": {
       "empty": "Esta plantilla de pizarra no tiene dibujo."
@@ -263,8 +272,8 @@
   "setDefault": {
     "subspaceTitle": "Plantilla de subespacio predeterminada",
     "subspaceSubtitle": "Se usa para precargar el formulario al crear un subespacio de este espacio.",
-    "flowStateTitle": "Plantilla de callout predeterminada",
-    "flowStateSubtitle": "Se usa para precargar el formulario al añadir un callout a esta fase.",
+    "flowStateTitle": "Plantilla de publicación predeterminada",
+    "flowStateSubtitle": "Se usa para precargar el formulario al añadir una publicación a esta fase.",
     "current": "Predeterminada actual",
     "none": "Sin predeterminada",
     "noCandidates": "Aún no hay plantillas de espacio en este conjunto.",
@@ -274,7 +283,7 @@
     "cancel": "Cancelar"
   },
   "saveAs": {
-    "fromCalloutTitle": "Guardar callout como plantilla",
+    "fromCalloutTitle": "Guardar publicación como plantilla",
     "fromGuidelinesTitle": "Guardar pautas como plantilla",
     "fromSubspaceTitle": "Guardar subespacio como plantilla",
     "unsavedSourceTitle": "Guarda primero tus cambios",

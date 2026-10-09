@@ -127,6 +127,7 @@ fragment CalloutContributionsPostCard on Post {
 fragment CalloutContributionsCollaboraDocumentCard on CollaboraDocument {
   id
   documentType
+  previewUrl
   profile {
     id
     url

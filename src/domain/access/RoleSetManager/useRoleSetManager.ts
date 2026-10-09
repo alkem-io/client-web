@@ -14,7 +14,7 @@ import useRoleSetManagerRolesAssignment, {
 } from './RolesAssignment/useRoleSetManagerRolesAssignment';
 
 // The 10 `Platform …` administration roles — assignable only by a holder of
-// `GRANT_GLOBAL_ADMINS` (Slice A spelling of `PLATFORM_ROLES_ASSIGN`, FR-012).
+// `PLATFORM_ROLES_ASSIGN` (FR-012).
 const PLATFORM_ADMIN_ROLES = [
   RoleName.PlatformRolesAdmin,
   RoleName.PlatformContentFullAccess,
@@ -34,39 +34,25 @@ const FEATURE_ROLES = [
   RoleName.FeatureBetaTester,
   RoleName.FeatureVirtualAssistant,
   RoleName.FeatureOrganizationCreator,
-  // Additive successor of the legacy `PLATFORM_VC_CAMPAIGN` below; both are
-  // honoured until Slice B retires the legacy one.
+  // Successor of the retired legacy `PLATFORM_VC_CAMPAIGN`.
   RoleName.FeatureVcCampaign,
 ] as const;
 
-// sec-client-web-1: the ten legacy platform credentials remain the platform's
-// live, authoritative privileged access until Slice B retires them — Slice A
-// is strictly additive server-side. Dropping them from the offered set
-// entirely (T004) left no in-console way to revoke a compromised or
-// offboarded legacy holder during the Slice A -> Slice B window, forcing an
-// incident response onto hand-crafted GraphQL or direct DB access. Kept here
-// as a separate, clearly-labelled, remove-only group: offered only to a
-// GRANT_GLOBAL_ADMINS holder (the same capability that could grant them
-// originally), never rendered with an add affordance, and deleted in the same
-// commit that retires the credentials in Slice B.
-const LEGACY_PLATFORM_ROLES = [
-  RoleName.GlobalAdmin,
-  RoleName.GlobalSupport,
-  RoleName.GlobalLicenseManager,
-  RoleName.GlobalCommunityReader,
-  RoleName.GlobalSpacesReader,
-  RoleName.GlobalPlatformManager,
-  RoleName.GlobalSupportManager,
-  RoleName.PlatformBetaTester,
-  RoleName.PlatformVcCampaign,
-  RoleName.PlatformAssistantAccess,
-] as const;
-
+// 027-platform-role-redesign (T013/T014, Slice B): the `LEGACY_PLATFORM_ROLES`
+// array is DELETED, exactly as sec-client-web-1 said it would be — "deleted in
+// the same commit that retires the credentials in Slice B".
+//
+// It existed to keep a revoke-only affordance for the ten legacy platform
+// credentials through the additive window, so a compromised or offboarded legacy
+// holder could be removed from the console rather than by hand-crafted GraphQL.
+// The credentials are gone from `RoleName` and their stored rows are dropped by
+// the server's `DropLegacyPlatformRoles` migration, so there is nothing left to
+// revoke — and offering a role the schema no longer has would be a compile error
+// at best and an always-rejected button at worst.
 export const RELEVANT_ROLES = {
   Community: [RoleName.Admin, RoleName.Lead, RoleName.Member],
   Organization: [RoleName.Owner, RoleName.Admin, RoleName.Associate],
   Platform: [...PLATFORM_ADMIN_ROLES, ...FEATURE_ROLES],
-  LegacyPlatform: LEGACY_PLATFORM_ROLES,
 } as const;
 
 /**
@@ -79,14 +65,14 @@ export const RELEVANT_ROLES = {
  * role sets in one request (FR-032).
  *
  * corr-client-web-8: the two privileges gate DISJOINT role families server-side
- * (platform.role.assignment.rules.service.ts `assignerPrivilegeFor` — the 3
+ * (platform.role.assignment.rules.service.ts `assignerPrivilegeFor` — the 4
  * `Feature …` roles require `FEATURE_ROLE_ASSIGN`, the 10 `Platform …` roles
- * require `GRANT_GLOBAL_ADMINS`) and must therefore be UNIONED, not
- * short-circuited. A legacy `global-admin` holds `GRANT_GLOBAL_ADMINS` but not
- * `FEATURE_ROLE_ASSIGN` — short-circuiting on the first privilege used to offer
- * them all 13 roles including the 3 Feature roles, which the server then
+ * require `PLATFORM_ROLES_ASSIGN`) and must therefore be UNIONED, not
+ * short-circuited. A holder of `PLATFORM_ROLES_ASSIGN` alone must not be offered
+ * the Feature roles — short-circuiting on the first privilege used to offer such
+ * an operator every role including the Feature ones, which the server then
  * rejected on every assign/revoke. `platform-roles-admin` holds both
- * privileges, so it still gets the full 13 (T005/SC-009 unaffected).
+ * privileges, so it still gets the full 14 (T005/SC-009 unaffected).
  */
 export const getOfferedPlatformRoles = (
   myPrivileges: AuthorizationPrivilege[] | undefined
@@ -95,7 +81,7 @@ export const getOfferedPlatformRoles = (
     return [];
   }
   const roles: (typeof RELEVANT_ROLES.Platform)[number][] = [];
-  if (myPrivileges.includes(AuthorizationPrivilege.GrantGlobalAdmins)) {
+  if (myPrivileges.includes(AuthorizationPrivilege.PlatformRolesAssign)) {
     roles.push(...PLATFORM_ADMIN_ROLES);
   }
   if (myPrivileges.includes(AuthorizationPrivilege.FeatureRoleAssign)) {
@@ -105,65 +91,21 @@ export const getOfferedPlatformRoles = (
 };
 
 /**
- * sec-client-web-4/spec-clientweb-3: the legacy `global-*` revoke branch is
- * checked server-side against a resolver-local, hardcoded `[GLOBAL_ADMIN]`
- * policy for `GRANT_GLOBAL_ADMINS` — NOT against `roleSet.authorization`,
- * whose `GRANT_GLOBAL_ADMINS` credential rule T034 deliberately widens to
- * also admit `PLATFORM_ROLES_ADMIN`. Gating this panel on `GRANT_GLOBAL_ADMINS`
- * therefore offers a Remove button to an operator (a bare Platform Roles
- * Admin) whose click the server always rejects. Plain `READ` + `GRANT` on the
- * platform role-set is what the legacy resolver branches actually honour
- * (held by `GLOBAL_ADMIN` / `GLOBAL_SUPPORT`, not by `PLATFORM_ROLES_ADMIN`),
- * so gate on that pair instead — it is the closest client-observable signal
- * to "this operator is a legacy PlatformAdmin-equivalent holder".
+ * 027-platform-role-redesign (T013, Slice B): `isLegacyPlatformAdminEquivalent`,
+ * `getOfferedLegacyPlatformRoles` and client-14's per-role
+ * `canRevokeLegacyPlatformRole` are DELETED with the roles they offered.
+ *
+ * The gate was subtle and worth recording: sec-client-web-4/spec-clientweb-3
+ * found that gating the legacy panel on `PLATFORM_ROLES_ASSIGN` offered a Remove
+ * button to a bare Platform Roles Admin whose click the server always rejected —
+ * because the legacy branch checked a resolver-local `[GLOBAL_ADMIN]` policy, not
+ * the widened role-set rule. The fix was to gate on plain `READ` + `GRANT`, the
+ * closest client-observable signal for "legacy PlatformAdmin-equivalent".
+ *
+ * All of it is moot now: the server deleted that resolver-local pin (T077) and
+ * the roles it protected. Do not reintroduce a `READ` + `GRANT` gate here — after
+ * FR-007(c) split the broad `GRANT`, that pair no longer identifies any role.
  */
-const isLegacyPlatformAdminEquivalent = (myPrivileges: AuthorizationPrivilege[]): boolean =>
-  myPrivileges.includes(AuthorizationPrivilege.Read) && myPrivileges.includes(AuthorizationPrivilege.Grant);
-
-/**
- * sec-client-web-1: the legacy platform credentials, offered strictly for
- * revocation (never grant) and only to a legacy PlatformAdmin-equivalent
- * holder (plain `READ` + `GRANT` — see `isLegacyPlatformAdminEquivalent`) —
- * the incident-response surface for the Slice A -> Slice B window.
- * Deliberately mirrors `getOfferedPlatformRoles`'s single client-side
- * authorization decision (read `myPrivileges`, reimplement no server rule).
- */
-export const getOfferedLegacyPlatformRoles = (
-  myPrivileges: AuthorizationPrivilege[] | undefined
-): (typeof RELEVANT_ROLES.LegacyPlatform)[number][] => {
-  if (!myPrivileges) {
-    return [];
-  }
-  if (isLegacyPlatformAdminEquivalent(myPrivileges)) {
-    return [...RELEVANT_ROLES.LegacyPlatform];
-  }
-  return [];
-};
-
-/**
- * client-14: `getOfferedLegacyPlatformRoles` decides whether the legacy panel
- * is shown at all (READ + GRANT); this decides, PER ROLE, whether the
- * operator may revoke that specific holder. `PLATFORM_BETA_TESTER` and
- * `PLATFORM_VC_CAMPAIGN` are additive Feature-era credentials (not
- * PlatformAdmin-equivalent) — anyone who can see the legacy panel at all may
- * revoke them. The remaining legacy roles (`GLOBAL_ADMIN` and siblings) ARE
- * PlatformAdmin-equivalent; sec-client-web-4 already established that the
- * server's legacy resolver branches check `GRANT_GLOBAL_ADMINS` too narrowly
- * scoped a token for those to be revoked by a bare READ + GRANT holder, so
- * they additionally require `GRANT_GLOBAL_ADMINS`.
- */
-export const canRevokeLegacyPlatformRole = (
-  role: (typeof RELEVANT_ROLES.LegacyPlatform)[number],
-  myPrivileges: AuthorizationPrivilege[]
-): boolean => {
-  if (!isLegacyPlatformAdminEquivalent(myPrivileges)) {
-    return false;
-  }
-  if (role === RoleName.PlatformBetaTester || role === RoleName.PlatformVcCampaign) {
-    return true;
-  }
-  return myPrivileges.includes(AuthorizationPrivilege.GrantGlobalAdmins);
-};
 
 /**
  * corr-client-web-7: `getOfferedPlatformRoles` decides who may *manage*

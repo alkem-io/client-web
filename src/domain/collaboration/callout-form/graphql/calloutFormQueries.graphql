@@ -1,0 +1,22 @@
+query CalloutFormResponses($formID: UUID!, $first: Int, $after: UUID) {
+  lookup {
+    calloutFormResponses(formID: $formID, first: $first, after: $after) {
+      formID
+      canReadAll
+      canModerate
+      mine {
+        ...CalloutFormResponseDetails
+      }
+      all {
+        total
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        responses {
+          ...CalloutFormResponseDetails
+        }
+      }
+    }
+  }
+}

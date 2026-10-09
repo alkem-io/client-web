@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import {
   SpaceCollectionSubspacesDocument,
   useCalloutContentQuery,
+  useCalloutFormResponsesQuery,
   useCreateReferenceOnProfileMutation,
   useDeleteReferenceMutation,
   useSubspacesInSpaceQuery,
@@ -71,37 +72,43 @@ import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePo
 import { useWhiteboardDraft } from '@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft';
 import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import {
   StorageConfigContextProvider,
   useStorageConfigContext,
 } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
-import {
-  diffPollOptions,
-  isAddedSentinel,
-  type PollOptionBefore,
-  parseAddedSentinel,
-} from '@/main/crdPages/space/hooks/useCrdCalloutPollOptionDiff';
+import { applyPollOptionDiff, type PollOptionBefore } from '@/main/crdPages/space/hooks/useCrdCalloutPollOptionDiff';
 import { loadCalloutTemplateFormValues } from '@/main/crdPages/templates/loadCalloutTemplateFormValues';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
-import { referenceRowErrors, useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
+import { formQuestionErrors, referenceRowErrors, useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
 import { useCrdSpaceContributors } from '../hooks/useCrdSpaceContributors';
+import {
+  formDefinitionChanged,
+  formHeaderFromServer,
+  formQuestionsFromServer,
+  formSettingsFromServer,
+} from './calloutFormDefinitionMapper';
 import { mapFormToCalloutCreationInput, mapFormToCalloutUpdateInput } from './calloutFormMapper';
-import { type CrdCalloutRestrictions, clampFormValuesToRestrictions } from './calloutRestrictions';
+import {
+  type CrdCalloutRestrictions,
+  clampFormValuesToRestrictions,
+  restrictionsForPickedTemplate,
+} from './calloutRestrictions';
 import { healContributorCollection } from './contributorCollectionMapper';
 import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
-import { FramingEditorConnector } from './FramingEditorConnector';
+import { type FormEditContext, FramingEditorConnector } from './FramingEditorConnector';
 import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
 import { TemplateImportConnector } from './TemplateImportConnector';
+import { translateFormDefinitionError, useCalloutFormDefinitionSave } from './useCalloutFormDefinitionSave';
 import { omitIneligibleIds, useSelectionCandidates } from './useSelectionCandidates';
 
 /**
- * The full create-mode framing chip set, in display order. `contributors`
- * (feature 008) and `spaces` (feature 013) are included here but admin-gated by
- * the connector before being passed to `FramingChipStrip` (FR-004a); a non-admin
- * gets every chip except those two.
+ * The full create-mode framing chip set, in display order. `contributors`,
+ * `spaces` and `form` are included here but admin-gated by the connector before
+ * being passed to `FramingChipStrip`; a non-admin gets every chip except those.
  */
 const DEFAULT_FRAMING_CHIPS: FramingChipId[] = [
   'whiteboard',
@@ -112,15 +119,19 @@ const DEFAULT_FRAMING_CHIPS: FramingChipId[] = [
   'poll',
   'contributors',
   'spaces',
+  'form',
 ];
 
 /**
- * Admin-only framing chips (feature 008 `contributors`, feature 013 `spaces`).
- * Both are offered only to space admins (`permissions.canUpdate`) and only in a
+ * Admin-only framing chips (`contributors`, `spaces` and `form`).
+ * They are offered only to space admins (`permissions.canUpdate`) and only in a
  * collaboration context — never a VC knowledge base, which passes its own
  * `allowedFramingChips`. Filtered out of the default allow-list for non-admins.
  */
-const ADMIN_ONLY_FRAMING_CHIPS: FramingChipId[] = ['contributors', 'spaces'];
+const ADMIN_ONLY_FRAMING_CHIPS: FramingChipId[] = ['contributors', 'spaces', 'form'];
+
+/** Framing kinds that cannot be cleared once the callout exists (a Form's responses would be lost). */
+const FIXED_KIND_FRAMING_CHIPS: FramingChipId[] = ['form'];
 
 /** The title counter stays hidden until the value gets this close to `SMALL_TEXT_LENGTH`. */
 const TITLE_COUNTER_THRESHOLD = SMALL_TEXT_LENGTH - 10;
@@ -220,7 +231,8 @@ function CalloutFormConnectorInner({
   // (read further below). `spaceContextLoading` is the entitlements query flag.
   const { space, entitlements, permissions, loading: spaceContextLoading } = useSpace();
   const roleSetId = space.about.membership?.roleSetID;
-  const { spaceId } = useUrlResolver();
+  const { spaceId, parentSpaceId } = useUrlResolver();
+  const { subspace, permissions: subspacePermissions, loading: subspaceContextLoading } = useSubSpace();
 
   // The "Contributors" (008) and "Subspaces" (013) framing chips are admin-only
   // (FR-004a) and offered only in space/community (collaboration) callout contexts
@@ -232,7 +244,15 @@ function CalloutFormConnectorInner({
   // level-restricted — both appear on L0 and L1 collaboration spaces (a Subspaces
   // callout on an L1 lists that space's subspaces); only auto-provisioning is
   // L0-only (server-side, FR-004e).
-  const isSpaceAdmin = permissions.canUpdate;
+  // Admin-ness is derived for the level the callout is created on: on a subspace
+  // page the space context is the level-zero space, whose UPDATE privilege says
+  // nothing about the subspace admin, so the subspace's own privilege decides.
+  const isSpaceAdmin = subspace.id ? subspacePermissions.canUpdate : permissions.canUpdate;
+  // Both permission contexts start at `canUpdate: false` and flip when their query resolves, so the
+  // admin-gated allow-list is only trustworthy once they have loaded. The subspace context stays
+  // in its loading default on a level-zero page (it has no subspace to load), so it counts only
+  // when the route actually resolves to a subspace (it has a parent space).
+  const permissionsLoaded = !spaceContextLoading && !(parentSpaceId && subspaceContextLoading);
   const framingAllowList: FramingChipId[] | undefined = (() => {
     if (mode !== 'create') return undefined; // edit mode: never hide an existing type
     if (restrictions?.allowedFramingChips) return restrictions.allowedFramingChips;
@@ -241,6 +261,9 @@ function CalloutFormConnectorInner({
       ? DEFAULT_FRAMING_CHIPS
       : DEFAULT_FRAMING_CHIPS.filter(chip => !ADMIN_ONLY_FRAMING_CHIPS.includes(chip));
   })();
+  // A picked or default template is clamped to what this viewer is offered, so a
+  // non-admin never receives an admin-only framing (a Form) from a template.
+  const pickedTemplateRestrictions = restrictionsForPickedTemplate(restrictions, framingAllowList);
   const hideFramingZone = mode === 'create' && Array.isArray(framingAllowList) && framingAllowList.length === 0;
   const responseAllowList = mode === 'create' ? restrictions?.allowedResponseChips : undefined;
   // Comment-visibility and rich-media restrictions are create-only too — in edit
@@ -434,6 +457,10 @@ function CalloutFormConnectorInner({
       return;
     }
     if (mode !== 'create' || !defaultTemplateId) return;
+    // The clamp below depends on the admin-gated framing allow-list; loading the template before the
+    // permissions resolve would clear an admin's default Form/Contributors/Subspaces template to
+    // None, and the guard below would then keep it from being re-applied.
+    if (!permissionsLoaded) return;
     if (prefilledDefaultTemplateIdRef.current === defaultTemplateId) return;
     prefilledDefaultTemplateIdRef.current = defaultTemplateId;
     void loadCalloutTemplateFormValues(getTemplateContent, defaultTemplateId).then(values => {
@@ -441,9 +468,9 @@ function CalloutFormConnectorInner({
       if (!values || prefilledDefaultTemplateIdRef.current !== defaultTemplateId) return;
       // Clamp the template to the active restrictions so a default template can't
       // reintroduce a disallowed framing / response type or re-enable comments.
-      prefill(clampFormValuesToRestrictions(values, restrictions));
+      prefill(clampFormValuesToRestrictions(values, pickedTemplateRestrictions));
     });
-  }, [open, mode, defaultTemplateId, getTemplateContent, prefill, restrictions]);
+  }, [open, mode, defaultTemplateId, permissionsLoaded, getTemplateContent, prefill, pickedTemplateRestrictions]);
 
   // --- Collabora import staging -----------------------------------------
   const setCollaboraImportFile = (file: File | null) => {
@@ -643,42 +670,33 @@ function CalloutFormConnectorInner({
     }
   };
 
+  // Form (edit mode only): whether the persisted Form has — or, for an editor who cannot read every response,
+  // may have — responses. Nothing is locked by them; they drive the widening confirmation and the type-change
+  // hint. The persisted form comes from the server payload, never from the editable form values.
+  const persistedForm = editData?.lookup.callout?.framing.form;
+  const { data: formResponsesData, refetch: refetchFormResponses } = useCalloutFormResponsesQuery({
+    variables: { formID: persistedForm?.id ?? '', first: 1 },
+    skip: mode !== 'edit' || !open || values.framingChip !== 'form' || !persistedForm,
+    fetchPolicy: 'network-only',
+  });
+  const formResponsesScope = formResponsesData?.lookup.calloutFormResponses;
+  const formEditContext: FormEditContext | undefined =
+    mode === 'edit' && persistedForm
+      ? {
+          savedVisibility: formSettingsFromServer(persistedForm.settings).visibility,
+          // The (sub)space whose members the visibility setting refers to, as the fill-in notice names it.
+          spaceName: subspace?.about.profile.displayName || space?.about.profile.displayName || '',
+          // Until the lookup answers, the count is unknown: treat it like an editor who cannot read it.
+          canReadAll: formResponsesScope?.canReadAll ?? false,
+          responseCount: formResponsesScope?.all.total ?? 0,
+        }
+      : undefined;
+  const { save: saveFormDefinition } = useCalloutFormDefinitionSave();
+  const formDefinitionDirty = formDefinitionChanged(values, form.initialValues);
+
   const runPollOptionDiff = async () => {
     if (!pollId) return;
-    const diff = diffPollOptions(originalPollOptions, values.pollOptions);
-    if (!diff.toAdd.length && !diff.toRemove.length && !diff.toUpdate.length && !diff.orderedIds.length) {
-      return;
-    }
-
-    // 1. Adds (before removes — never drop below the server's min).
-    const addedIdsByIndex = new Map<number, string>();
-    const knownIds = new Set(originalPollOptions.map(o => o.id));
-    for (const add of diff.toAdd) {
-      const res = await pollMgmt.addOption(add.text);
-      const addedPoll = res.data?.addPollOption;
-      if (addedPoll) {
-        const newOpt = addedPoll.options.find(o => !knownIds.has(o.id));
-        if (newOpt) {
-          addedIdsByIndex.set(add.index, newOpt.id);
-          knownIds.add(newOpt.id);
-        }
-      }
-    }
-    // 2. Removes.
-    for (const id of diff.toRemove) await pollMgmt.removeOption(id);
-    // 3. Updates.
-    for (const upd of diff.toUpdate) await pollMgmt.updateOption(upd.id, upd.text);
-    // 4. Reorder — substitute sentinels with their resolved server ids.
-    if (diff.orderedIds.length > 1) {
-      const resolved = diff.orderedIds
-        .map(id => {
-          if (!isAddedSentinel(id)) return id;
-          const idx = parseAddedSentinel(id);
-          return idx !== undefined ? addedIdsByIndex.get(idx) : undefined;
-        })
-        .filter((v): v is string => Boolean(v));
-      if (resolved.length > 1) await pollMgmt.reorderOptions(resolved);
-    }
+    await applyPollOptionDiff(pollMgmt, originalPollOptions, values.pollOptions);
   };
 
   const saveEdit = async () => {
@@ -693,6 +711,44 @@ function CalloutFormConnectorInner({
     if (collaboraRename.editing) {
       const renamed = await collaboraRename.save();
       if (!renamed) return;
+    }
+
+    // The Form definition never rides `updateCallout`: it is saved through its own mutation, before
+    // anything else is persisted, so a rejection keeps the dialog open with a localized reason instead of
+    // leaving the Post half-saved.
+    const formId = values.editMeta?.formId;
+    if (values.framingChip === 'form' && formId && formDefinitionDirty) {
+      const outcome = await saveFormDefinition(
+        formId,
+        {
+          title: values.formTitle,
+          description: values.formDescription,
+          questions: values.formQuestions,
+          settings: values.formSettings,
+        },
+        {
+          title: form.initialValues.formTitle,
+          description: form.initialValues.formDescription,
+          questions: form.initialValues.formQuestions,
+        }
+      );
+      if (!outcome.ok) {
+        logError(new Error('Form definition save failed', { cause: outcome.error as Error }));
+        notify(translateFormDefinitionError(outcome.code, t), 'error');
+        void refetchFormResponses();
+        return;
+      }
+      void refetchFormResponses();
+      // Adopt the ids the server assigned so a retry of a later step does not re-create new rows.
+      if (outcome.form) {
+        const saved = outcome.form;
+        setValues(current => ({
+          ...current,
+          ...formHeaderFromServer(saved),
+          formQuestions: formQuestionsFromServer(saved),
+          formSettings: formSettingsFromServer(saved.settings),
+        }));
+      }
     }
 
     // New references added in edit mode have no server id yet, so they can't
@@ -994,6 +1050,7 @@ function CalloutFormConnectorInner({
                   setField('framingChip', chip);
                 }}
                 editMode={mode === 'edit'}
+                fixedKindChips={FIXED_KIND_FRAMING_CHIPS}
                 disabledChips={disabledChips}
               />
               <FramingEditorConnector
@@ -1031,6 +1088,16 @@ function CalloutFormConnectorInner({
                 // Only an existing poll has a status to toggle — a poll being created is
                 // always open, so the toggle stays hidden until there is a `pollId`.
                 pollStatus={pollStatus === PollStatus.Closed ? 'closed' : pollId ? 'open' : undefined}
+                formTitle={values.formTitle}
+                onFormTitleChange={v => setField('formTitle', v)}
+                formDescription={values.formDescription}
+                onFormDescriptionChange={v => setField('formDescription', v)}
+                formQuestions={values.formQuestions}
+                onFormQuestionsChange={v => setField('formQuestions', v)}
+                formQuestionsErrors={formQuestionErrors(errors)}
+                formSettings={values.formSettings}
+                onFormSettingsChange={v => setField('formSettings', v)}
+                formEditContext={formEditContext}
                 onPollStatusChange={handlePollStatusChange}
                 whiteboardConfigured={values.whiteboardConfigured}
                 whiteboardTitle={values.title.trim() || t('callout.whiteboard')}
@@ -1193,6 +1260,10 @@ function CalloutFormConnectorInner({
         onSubmit={mode === 'create' ? handlePublish : handleSaveEdit}
         onSaveDraft={mode === 'create' ? handleSaveDraft : undefined}
         onFindTemplate={mode === 'create' ? handleFindTemplate : undefined}
+        // A pick is clamped to the admin-gated framing allow-list; that is only trustworthy once the
+        // permission contexts have loaded (they default to `canUpdate: false`), so the picker stays
+        // closed until then rather than silently clearing an admin's Form pick to None.
+        findTemplateDisabled={!permissionsLoaded}
       />
       <DiscardChangesDialog open={discardOpen} onOpenChange={setDiscardOpen} onConfirm={handleDiscardConfirm} />
       <TaskColumnsDraftDialog
@@ -1221,7 +1292,7 @@ function CalloutFormConnectorInner({
           open={importTemplateOpen}
           onOpenChange={setImportTemplateOpen}
           isFormDirty={dirty}
-          onTemplateSelected={values => prefill(clampFormValuesToRestrictions(values, restrictions))}
+          onTemplateSelected={values => prefill(clampFormValuesToRestrictions(values, pickedTemplateRestrictions))}
         />
       )}
     </>

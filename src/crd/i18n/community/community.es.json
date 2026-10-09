@@ -60,9 +60,6 @@
       "resultsSummary_other": "{{count}} invitaciones procesadas para {{spaceName}}.",
       "associates": {
         "title": "Invitar asociados a \"{{organizationName}}\"",
-        "searchHint": "Buscar un usuario registrado para invitarlo como asociado",
-        "searchPlaceholder": "Nombre de usuario…",
-        "searchAriaLabel": "Buscar usuarios por nombre",
         "noResultsLabel": "No hay usuarios coincidentes",
         "loadingLabel": "Cargando usuarios…",
         "defaultWelcomeMessage": "Hola, nos gustaría invitarte a asociarte con {{organizationName}}. Haz clic abajo para aceptar o rechazar la invitación.",
