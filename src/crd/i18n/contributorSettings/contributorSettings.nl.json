@@ -814,10 +814,11 @@
       "leave": {
         "menuItemLabeled": "{{type}} verlaten",
         "dialogTitle": "Dit lidmaatschap verlaten?",
-        "dialogDescription": "Uw organisatie staat op het punt om \"{{spaceName}}\" te verlaten. Ze verliest de toegang tot de inhoud voor leden en moet opnieuw worden uitgenodigd om terug te komen.",
+        "dialogDescription": "Uw organisatie staat op het punt om \"{{spaceName}}\" en al zijn subspaces te verlaten, en geeft daar elke rol op, ook die van Lead. Ze verliest de toegang tot de inhoud voor leden en moet opnieuw worden uitgenodigd om terug te komen.",
         "dialogConfirm": "Verlaten",
         "success": "Lidmaatschap verlaten",
-        "error": "Verlaten mislukt — probeer opnieuw"
+        "error": "Verlaten mislukt — probeer opnieuw",
+        "forbidden": "Alleen beheerders en eigenaren van deze organisatie kunnen een space verlaten"
       },
       "ledBy": "Geleid door:",
       "ledByAria": "{{count}} community-Leads",

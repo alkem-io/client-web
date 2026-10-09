@@ -1,6 +1,7 @@
 import type { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRolesOrganizationQuery } from '@/core/apollo/generated/apollo-hooks';
+import { isExclusivelyAuthorizationError } from '@/core/apollo/hooks/usePermissionDeniedNotifier';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { MembershipsSectionLabels } from '@/crd/components/contributor/settings/MembershipsSection.types';
@@ -74,8 +75,13 @@ const CrdOrgMembershipTab = () => {
     try {
       await state.onConfirmLeave();
       notify(t('org.membership.leave.success'), 'success');
-    } catch {
-      notify(t('org.membership.leave.error'), 'error');
+    } catch (error) {
+      // Only the organization's own admins and owners (or the Space's admins)
+      // may remove it; retrying cannot fix a denial, so say so instead.
+      notify(
+        t(isExclusivelyAuthorizationError(error) ? 'org.membership.leave.forbidden' : 'org.membership.leave.error'),
+        'error'
+      );
     }
   };
 
@@ -95,7 +101,7 @@ const CrdOrgMembershipTab = () => {
         onLeave={row =>
           state.onRequestLeave({
             membershipId: row.id,
-            spaceId: rows.find(r => r.id === row.id)?.spaceId ?? row.id,
+            spaceId: row.id,
             displayName: row.displayName,
           })
         }

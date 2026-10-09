@@ -814,10 +814,11 @@
       "leave": {
         "menuItemLabeled": "Salir de {{type}}",
         "dialogTitle": "¿Salir de esta membresía?",
-        "dialogDescription": "Su organización está a punto de salir de «{{spaceName}}». Perderá el acceso al contenido exclusivo para miembros y tendría que ser invitada de nuevo para volver.",
+        "dialogDescription": "Su organización está a punto de salir de «{{spaceName}}» y de todos sus subespacios, renunciando a todos los roles que tiene allí, incluido el de Lead. Perderá el acceso al contenido exclusivo para miembros y tendría que ser invitada de nuevo para volver.",
         "dialogConfirm": "Salir",
         "success": "Se ha salido de la membresía",
-        "error": "No se pudo salir — inténtalo de nuevo"
+        "error": "No se pudo salir — inténtalo de nuevo",
+        "forbidden": "Solo los administradores y propietarios de esta organización pueden salir de un espacio"
       },
       "ledBy": "Liderado por:",
       "ledByAria": "{{count}} líderes de comunidad",

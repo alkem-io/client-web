@@ -814,10 +814,11 @@
       "leave": {
         "menuItemLabeled": "Leave {{type}}",
         "dialogTitle": "Leave this membership?",
-        "dialogDescription": "Your organisation is about to leave \"{{spaceName}}\". It will lose access to the members-only content there and would need to be invited again to rejoin.",
+        "dialogDescription": "Your organisation is about to leave \"{{spaceName}}\" and all of its subspaces, giving up every role it holds there, Lead included. It will lose access to the members-only content and would need to be invited again to rejoin.",
         "dialogConfirm": "Leave",
         "success": "Membership left",
-        "error": "Couldn't leave — try again"
+        "error": "Couldn't leave — try again",
+        "forbidden": "Only this organisation's admins and owners can leave a Space"
       },
       "ledBy": "Led by:",
       "ledByAria": "{{count}} community leads",

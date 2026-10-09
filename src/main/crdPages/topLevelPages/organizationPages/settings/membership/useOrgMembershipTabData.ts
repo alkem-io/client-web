@@ -33,12 +33,13 @@ export type UseOrgMembershipTabDataResult = {
  * memberships query lives in the integration page; this hook owns the
  * client-side search / filter and the pending-leave dialog state.
  *
- * Leave removes the organization's Member role from the exact space or
- * subspace on the card, resolving its role set lazily at confirm time. A role
- * set that cannot be resolved is a failed leave, not a silent no-op, so the
- * caller can never report success for a request that was not sent. Whatever
- * the outcome, the memberships list is refetched so it reflects the
- * organization's actual roles, and only then is the dialog state cleared:
+ * Leave removes the organization from the exact space or subspace on the card
+ * — every role it holds there and in all of its subspaces — resolving its role
+ * set lazily at confirm time. A role set that cannot be resolved is a failed
+ * leave, not a silent no-op, so the caller can never report success for a
+ * request that was not sent. Whatever
+ * the outcome, the memberships list is refetched (best effort) so it reflects
+ * the organization's actual roles, and only then is the dialog state cleared:
  * `isLeaving` covers the whole sequence, so the dialog stays busy and the card
  * cannot be left a second time before the list has caught up.
  */
@@ -76,18 +77,19 @@ export const useOrgMembershipTabData = (
       if (!roleSetId) {
         throw new Error('Role set of the space could not be resolved');
       }
+      // Removing MEMBER removes every role the organization holds in the
+      // space (Lead included) and in all of its subspaces — the server owns
+      // that cascade.
       await removeRoleFromOrganization({
         variables: { contributorId: organizationId, roleSetId, role: RoleName.Member },
-        awaitRefetchQueries: true,
       });
     } finally {
-      try {
-        await refetchMemberships?.();
-      } finally {
-        // Clear only the dialog this confirm belongs to, never one opened since.
-        setPendingLeave(current => (current === leaving ? null : current));
-        setIsLeaving(false);
-      }
+      // The leave's outcome is decided above: a failed refetch must neither
+      // turn a completed leave into an error nor mask why the leave failed.
+      await refetchMemberships?.().catch(() => undefined);
+      // Clear only the dialog this confirm belongs to, never one opened since.
+      setPendingLeave(current => (current === leaving ? null : current));
+      setIsLeaving(false);
     }
   };
 

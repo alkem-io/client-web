@@ -814,10 +814,11 @@
       "leave": {
         "menuItemLabeled": "Quitter {{type}}",
         "dialogTitle": "Quitter cette adhésion ?",
-        "dialogDescription": "Votre organisation est sur le point de quitter « {{spaceName}} ». Elle perdra l'accès aux contenus réservés aux membres et devrait être invitée à nouveau pour revenir.",
+        "dialogDescription": "Votre organisation est sur le point de quitter « {{spaceName}} » et tous ses sous-espaces, en renonçant à tous les rôles qu'elle y occupe, y compris celui de Lead. Elle perdra l'accès aux contenus réservés aux membres et devrait être invitée à nouveau pour revenir.",
         "dialogConfirm": "Quitter",
         "success": "Adhésion quittée",
-        "error": "Échec — réessayez"
+        "error": "Échec — réessayez",
+        "forbidden": "Seuls les administrateurs et propriétaires de cette organisation peuvent quitter un espace"
       },
       "ledBy": "Animé par :",
       "ledByAria": "{{count}} animateurs de communauté",

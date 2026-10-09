@@ -38,7 +38,6 @@ describe('useOrgMembershipTabData — Leave', () => {
     expect(mockFetchSpaceDetails).toHaveBeenCalledWith({ variables: { spaceId: 'sub-1' } });
     expect(mockRemoveRoleFromOrganization).toHaveBeenCalledWith({
       variables: { contributorId: 'org-1', roleSetId: 'rs-sub', role: RoleName.Member },
-      awaitRefetchQueries: true,
     });
     expect(refetch).toHaveBeenCalledTimes(1);
     expect(result.current.pendingLeave).toBeNull();
@@ -75,6 +74,35 @@ describe('useOrgMembershipTabData — Leave', () => {
 
     expect(refetch).toHaveBeenCalledTimes(1);
     expect(result.current.pendingLeave).toBeNull();
+  });
+
+  it('resolves when the leave succeeded even though the refetch failed', async () => {
+    const refetch = vi.fn().mockRejectedValue(new Error('Network blip'));
+    const { result } = renderHook(() => useOrgMembershipTabData('org-1', refetch));
+    act(() => {
+      result.current.onRequestLeave(SUBSPACE_LEAVE);
+    });
+
+    await act(async () => {
+      await expect(result.current.onConfirmLeave()).resolves.toBeUndefined();
+    });
+
+    expect(refetch).toHaveBeenCalledTimes(1);
+    expect(result.current.pendingLeave).toBeNull();
+    expect(result.current.isLeaving).toBe(false);
+  });
+
+  it('rejects with the leave error, not the refetch error, when both fail', async () => {
+    mockRemoveRoleFromOrganization.mockRejectedValue(new Error('Authorization: unable to grant'));
+    const refetch = vi.fn().mockRejectedValue(new Error('Network blip'));
+    const { result } = renderHook(() => useOrgMembershipTabData('org-1', refetch));
+    act(() => {
+      result.current.onRequestLeave(SUBSPACE_LEAVE);
+    });
+
+    await act(async () => {
+      await expect(result.current.onConfirmLeave()).rejects.toThrow('Authorization: unable to grant');
+    });
   });
 
   it('reports isLeaving for the whole sequence, from the role-set lookup until the list is refetched', async () => {

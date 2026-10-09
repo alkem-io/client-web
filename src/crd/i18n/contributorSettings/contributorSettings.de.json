@@ -814,10 +814,11 @@
       "leave": {
         "menuItemLabeled": "{{type}} verlassen",
         "dialogTitle": "Diese Mitgliedschaft verlassen?",
-        "dialogDescription": "Ihre Organisation ist im Begriff, „{{spaceName}}“ zu verlassen. Sie verliert den Zugriff auf mitgliederexklusive Inhalte und müsste erneut eingeladen werden, um wieder beizutreten.",
+        "dialogDescription": "Ihre Organisation ist im Begriff, „{{spaceName}}“ und alle seine Subspaces zu verlassen und gibt dort jede Rolle auf, auch die als Lead. Sie verliert den Zugriff auf mitgliederexklusive Inhalte und müsste erneut eingeladen werden, um wieder beizutreten.",
         "dialogConfirm": "Verlassen",
         "success": "Mitgliedschaft verlassen",
-        "error": "Verlassen fehlgeschlagen — bitte erneut versuchen"
+        "error": "Verlassen fehlgeschlagen — bitte erneut versuchen",
+        "forbidden": "Nur Admins und Eigentümer dieser Organisation können einen Space verlassen"
       },
       "ledBy": "Geleitet von:",
       "ledByAria": "{{count}} Community-Leads",

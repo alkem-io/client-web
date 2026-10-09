@@ -1,10 +1,13 @@
+import { ApolloError } from '@apollo/client';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { GraphQLError } from 'graphql';
 import { createInstance } from 'i18next';
 import { I18nextProvider } from 'react-i18next';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { RoleName, SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import contributorSettingsEn from '@/crd/i18n/contributorSettings/contributorSettings.en.json';
+import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 
 const mockOrganizationContext = vi.fn();
 const mockRolesQuery = vi.fn();
@@ -145,7 +148,6 @@ describe('CrdOrgMembershipTab', () => {
     expect(mockFetchSpaceDetails).toHaveBeenCalledWith({ variables: { spaceId: 'sub-a-1' } });
     expect(mockRemoveRoleFromOrganization).toHaveBeenCalledWith({
       variables: { contributorId: 'org-1', roleSetId: 'rs-sub', role: RoleName.Member },
-      awaitRefetchQueries: true,
     });
     expect(mockRefetch).toHaveBeenCalled();
   });
@@ -218,6 +220,32 @@ describe('CrdOrgMembershipTab', () => {
     expect(mockNotify).not.toHaveBeenCalledWith(en.leave.success, 'success');
     expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
     expect(mockRefetch).toHaveBeenCalled();
+  });
+
+  it('says only the organization’s admins and owners can leave when the server denies it', async () => {
+    mockRemoveRoleFromOrganization.mockRejectedValue(
+      new ApolloError({
+        graphQLErrors: [new GraphQLError('denied', { extensions: { code: AlkemioGraphqlErrorCode.FORBIDDEN_POLICY } })],
+      })
+    );
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    renderTab();
+
+    await openLeaveDialogFor(user, 1);
+    await user.click(screen.getByRole('button', { name: en.leave.dialogConfirm }));
+
+    await waitFor(() => expect(mockNotify).toHaveBeenCalledWith(en.leave.forbidden, 'error'));
+    expect(mockNotify).not.toHaveBeenCalledWith(en.leave.error, 'error');
+  });
+
+  it('warns that leaving also leaves every subspace and gives up Lead', async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    renderTab();
+
+    const dialog = await openLeaveDialogFor(user, 1);
+
+    expect(dialog).toHaveTextContent('all of its subspaces');
+    expect(dialog).toHaveTextContent('Lead included');
   });
 
   it('reports an error without sending the mutation when the role set cannot be resolved', async () => {
