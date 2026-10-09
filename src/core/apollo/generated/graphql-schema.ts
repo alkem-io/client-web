@@ -42070,6 +42070,7 @@ export type InAppNotificationReceivedSubscription = {
           __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
           type: NotificationEventPayload;
           role: string;
+          changeType?: RoleChangeType | undefined;
           user?:
             | {
                 __typename?: 'User';
@@ -43394,6 +43395,7 @@ export type InAppNotificationsQuery = {
               __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
               type: NotificationEventPayload;
               role: string;
+              changeType?: RoleChangeType | undefined;
               user?:
                 | {
                     __typename?: 'User';
@@ -44724,6 +44726,7 @@ export type InAppNotificationAllTypesFragment = {
         __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
         type: NotificationEventPayload;
         role: string;
+        changeType?: RoleChangeType | undefined;
         user?:
           | {
               __typename?: 'User';
@@ -46158,6 +46161,7 @@ export type InAppNotificationPayloadPlatformGlobalRoleChangeFragment = {
   __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
   type: NotificationEventPayload;
   role: string;
+  changeType?: RoleChangeType | undefined;
   user?:
     | {
         __typename?: 'User';

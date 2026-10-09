@@ -116,6 +116,16 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
       }
     }
 
+    // Reaching here means the request produced no server payload that could explain itself.
+    // While the browser reports itself offline that is expected, and it is already shown by the
+    // persistent online-status banner, so a generic error toast per failed operation only repeats
+    // what the user can see — in bursts, since every in-flight operation fails at once.
+    // A failure while the browser believes it is online is a different matter: the server may be
+    // unreachable with no other signal to the user, so that one is still surfaced.
+    if (!navigator.onLine) {
+      return;
+    }
+
     notify(t(NETWORK_ERROR_FALLBACK_KEY), severity);
   };
 
