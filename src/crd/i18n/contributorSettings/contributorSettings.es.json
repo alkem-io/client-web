@@ -94,6 +94,7 @@
         "profile": "Perfil",
         "account": "Cuenta",
         "community": "Asociados",
+        "membership": "Membresía",
         "settings": "Ajustes",
         "invitations": "Invitaciones",
         "authorization": "Autorización"
@@ -785,6 +786,44 @@
       "removeSuccess": "Asociado quitado",
       "removeError": "No se pudo quitar — inténtalo de nuevo"
     },
+    "membership": {
+      "pageTitle": "Membresía",
+      "title": "Membresías en Spaces",
+      "searchPlaceholder": "Buscar membresías...",
+      "empty": "Esta organización aún no es miembro de ningún Space.",
+      "summary": "Mostrando {{shown}} de {{total}} membresías",
+      "filteredEmptyTitle": "No se encontraron membresías",
+      "filteredEmptyDescription": "Prueba a ajustar los filtros o el término de búsqueda.",
+      "clearFilters": "Limpiar filtros",
+      "filter": {
+        "all": "Todas",
+        "spaces": "Spaces",
+        "subspaces": "Subspaces"
+      },
+      "type": {
+        "space": "Space",
+        "subspace": "Subspace"
+      },
+      "role": {
+        "lead": "Lead",
+        "member": "Miembro"
+      },
+      "menu": {
+        "viewByType": "Ver {{type}}"
+      },
+      "leave": {
+        "menuItemLabeled": "Salir de {{type}}",
+        "dialogTitle": "¿Salir de esta membresía?",
+        "dialogDescription": "Su organización está a punto de salir de «{{spaceName}}» y de todos sus subespacios, renunciando a todos los roles que tiene allí, incluido el de Lead. Perderá el acceso al contenido exclusivo para miembros y tendría que ser invitada de nuevo para volver.",
+        "dialogConfirm": "Salir",
+        "success": "Se ha salido de la membresía",
+        "error": "No se pudo salir — inténtalo de nuevo",
+        "forbidden": "Solo los administradores y propietarios de esta organización pueden salir de un espacio"
+      },
+      "ledBy": "Liderado por:",
+      "ledByAria": "{{count}} líderes de comunidad",
+      "leadsMore": "y {{count}} más"
+    },
     "settings": {
       "pageTitle": "Ajustes",
       "title": "Ajustes de la organización",
@@ -1071,6 +1110,7 @@
         "innovationHubsTooltip": "Has creado {{usage}} de las {{limit}} páginas de inicio personalizadas disponibles en tu cuenta."
       },
       "kebabAriaLabel": "Más acciones",
+      "kebabAriaLabelFor": "Más acciones para {{name}}",
       "createNewSpace": {
         "ariaLabel": "Crear nuevo espacio",
         "heading": "Crear nuevo espacio",

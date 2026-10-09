@@ -13,7 +13,7 @@ export type ContributorSettingsTranslator = TFunction<'crd-contributorSettings'>
 
 export type MembershipRow = {
   id: string;
-  /** L0 space id used by `useSpaceContributionDetailsLazyQuery` for the Leave flow. */
+  /** Id of the space or subspace whose role set the Leave flow acts on. */
   spaceId: string;
   displayName: string;
   /** Optional tagline, surfaced as the card body text when present. */
@@ -87,39 +87,7 @@ export const mapUserMembershipData = (
   const selectedSpaceId = settings?.lookup.user?.settings?.homeSpace?.spaceID ?? null;
   const autoRedirect = settings?.lookup.user?.settings?.homeSpace?.autoRedirect ?? false;
 
-  const rows: MembershipRow[] = [];
-  for (const space of l0Spaces) {
-    const enrich = enrichment.get(space.id);
-    rows.push({
-      id: space.id,
-      spaceId: space.id,
-      displayName: enrich?.displayName ?? space.displayName,
-      tagline: enrich?.tagline,
-      bannerUrl: enrich?.bannerUrl,
-      color: pickColorFromId(space.id),
-      type: 'Space',
-      role: resolveRole(space.roles),
-      spaceUrl: enrich?.spaceUrl ?? '',
-      leadUsers: enrich?.leadUsers ?? [],
-    });
-    for (const subspace of space.subspaces) {
-      const subEnrich = enrichment.get(subspace.id);
-      rows.push({
-        id: subspace.id,
-        // Leave is scoped to the SUBSPACE's own role-set (not the L0
-        // parent's) — each subspace has its own community / role-set.
-        spaceId: subspace.id,
-        displayName: subEnrich?.displayName ?? subspaceLabel(t, subspace.level, subspace.id),
-        tagline: subEnrich?.tagline,
-        bannerUrl: subEnrich?.bannerUrl,
-        color: pickColorFromId(subspace.id),
-        type: 'Subspace',
-        role: resolveRole(subspace.roles),
-        spaceUrl: subEnrich?.spaceUrl ?? '',
-        leadUsers: subEnrich?.leadUsers ?? [],
-      });
-    }
-  }
+  const rows = mapMembershipRows(l0Spaces, enrichment, subspace => subspaceLabel(t, subspace.level, subspace.id));
 
   const pendingApplications: PendingApplicationRow[] =
     pending?.me.communityApplications.map(app => ({
@@ -140,20 +108,64 @@ export const mapUserMembershipData = (
   };
 };
 
-/**
- * Helper: collect every L0 + subspace id from a contributions payload.
- * Used by the integration page to drive `useMembershipEnrichment`.
- */
-export const collectMembershipSpaceIds = (contributions: UserContributionsQuery | undefined): string[] => {
-  const ids: string[] = [];
-  for (const space of contributions?.rolesUser.spaces ?? []) {
-    ids.push(space.id);
-    for (const sub of space.subspaces) ids.push(sub.id);
-  }
-  return ids;
+type MembershipSpace<TSubspace> = {
+  id: string;
+  displayName: string;
+  roles: ReadonlyArray<string>;
+  subspaces: ReadonlyArray<TSubspace>;
 };
 
-const resolveRole = (roles: ReadonlyArray<string>): MembershipRow['role'] => {
+/**
+ * Shared row loop for the user and organization Membership tabs: each L0
+ * space yields a Space row followed by one Subspace row per subspace the
+ * contributor holds a role in. Leave is scoped to each row's own role set, so
+ * a subspace row's `spaceId` is the subspace's id, never its parent's.
+ */
+export const mapMembershipRows = <TSubspace extends { id: string; roles: ReadonlyArray<string> }>(
+  spaces: ReadonlyArray<MembershipSpace<TSubspace>>,
+  enrichment: Map<string, MembershipEnrichment>,
+  subspaceName: (subspace: TSubspace) => string
+): MembershipRow[] => {
+  const rows: MembershipRow[] = [];
+  for (const space of spaces) {
+    rows.push(toRow(space.id, space.displayName, space.roles, 'Space', enrichment));
+    for (const subspace of space.subspaces) {
+      rows.push(toRow(subspace.id, subspaceName(subspace), subspace.roles, 'Subspace', enrichment));
+    }
+  }
+  return rows;
+};
+
+/** Every L0 + subspace id, in display order — drives `useMembershipEnrichment`. */
+export const collectSpaceIds = (spaces: ReadonlyArray<MembershipSpace<{ id: string }>>): string[] =>
+  spaces.flatMap(space => [space.id, ...space.subspaces.map(subspace => subspace.id)]);
+
+export const collectMembershipSpaceIds = (contributions: UserContributionsQuery | undefined): string[] =>
+  collectSpaceIds(contributions?.rolesUser.spaces ?? []);
+
+const toRow = (
+  id: string,
+  fallbackName: string,
+  roles: ReadonlyArray<string>,
+  type: MembershipRow['type'],
+  enrichment: Map<string, MembershipEnrichment>
+): MembershipRow => {
+  const enrich = enrichment.get(id);
+  return {
+    id,
+    spaceId: id,
+    displayName: enrich?.displayName ?? fallbackName,
+    tagline: enrich?.tagline,
+    bannerUrl: enrich?.bannerUrl,
+    color: pickColorFromId(id),
+    type,
+    role: resolveRole(roles),
+    spaceUrl: enrich?.spaceUrl ?? '',
+    leadUsers: enrich?.leadUsers ?? [],
+  };
+};
+
+export const resolveRole = (roles: ReadonlyArray<string>): MembershipRow['role'] => {
   const lower = roles.map(r => r.toLowerCase());
   if (lower.includes(RoleName.Admin.toLowerCase())) return 'Admin';
   if (lower.includes(RoleName.Lead.toLowerCase())) return 'Lead';
