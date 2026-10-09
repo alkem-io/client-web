@@ -1,5 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import {
+  ActivityEventType,
+  type ActivityFeedQueryArgs,
+  type LatestContributionsQueryVariables,
+} from '@/core/apollo/generated/graphql-schema';
 
 // ---- Mocks ----
 // This test exercises the real wiring between `useCurrentUserContext` and the
@@ -32,11 +37,27 @@ vi.mock('@/domain/community/userCurrent/useHomeSpaceSettings', () => ({
 }));
 
 const updateUserSettingsMock = vi.fn().mockResolvedValue({});
+
+// `useLatestContributionsQuery` is called once per activity block with that block's
+// filter. Recording it is what makes the `excludeMyActivity` wiring falsifiable; the
+// space block also needs a cursor so its *Load more* path can actually run.
+const SPACE_END_CURSOR = 'space-cursor-1';
+const fetchMoreSpaceActivityMock = vi.fn().mockResolvedValue({});
+const useLatestContributionsQueryMock = vi.fn((options: { variables: LatestContributionsQueryVariables }) =>
+  options.variables.filter?.myActivity
+    ? { data: undefined, loading: false, fetchMore: vi.fn() }
+    : {
+        data: { activityFeed: { activityFeed: [], pageInfo: { hasNextPage: true, endCursor: SPACE_END_CURSOR } } },
+        loading: false,
+        fetchMore: fetchMoreSpaceActivityMock,
+      }
+);
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   refetchUserSettingsQuery: (v: unknown) => ({ query: 'UserSettings', variables: v }),
   useDashboardExploreSpacesQuery: () => ({ data: undefined }),
   useHomeSpaceLookupQuery: () => ({ data: undefined }),
-  useLatestContributionsQuery: () => ({ data: undefined, loading: false, fetchMore: vi.fn() }),
+  useLatestContributionsQuery: (options: { variables: LatestContributionsQueryVariables }) =>
+    useLatestContributionsQueryMock(options),
   useLatestContributionsSpacesFlatQuery: () => ({ data: undefined }),
   useMyMembershipsQuery: () => ({ data: undefined, loading: false }),
   useNonActivityHostedSpacesQuery: () => ({ data: undefined, loading: false }),
@@ -49,10 +70,15 @@ vi.mock('./useDashboardSidebar', () => ({
 }));
 
 vi.mock('@/crd/components/dashboard/ActivityDialog', () => ({
-  ActivityDialog: () => null,
+  ActivityDialog: ({ open, children }: { open: boolean; children: React.ReactNode }) =>
+    open ? <div>{children}</div> : null,
 }));
 vi.mock('@/crd/components/dashboard/ActivityFeed', () => ({
-  ActivityFeed: () => <div data-testid="activity-feed" />,
+  ActivityFeed: ({ feedId, onLoadMore }: { feedId: string; onLoadMore?: () => void }) => (
+    <div data-testid="activity-feed">
+      {onLoadMore && <button type="button" data-testid={`load-more-${feedId}`} onClick={onLoadMore} />}
+    </div>
+  ),
 }));
 vi.mock('@/crd/components/dashboard/CampaignBanner', () => ({
   CampaignBanner: () => null,
@@ -132,5 +158,73 @@ describe('DashboardWithMemberships — activity view preference wiring (corr-cli
 
     expect(screen.getAllByTestId('activity-feed').length).toBeGreaterThan(0);
     expect(screen.queryByTestId('non-activity-sections')).toBeNull();
+  });
+});
+
+// The filter object is shared by the initial query and the `fetchMore` call, which are
+// two separate call sites. An implementation that set the flag at the first one only
+// would pass every other check while each *Load more* page silently re-included the
+// user's own activity (AC3).
+describe('DashboardWithMemberships — own activity excluded from the spaces feed (AC1/AC2/AC3)', () => {
+  // Typed against the generated input, so a stale codegen fails this file at typecheck
+  // rather than at runtime (AC7).
+  const expectedSpaceFilter: ActivityFeedQueryArgs = {
+    spaceIds: [],
+    roles: undefined,
+    excludeTypes: [ActivityEventType.CalloutWhiteboardContentModified],
+    excludeMyActivity: true,
+  };
+
+  const renderDashboard = (openDialog: 'my-space-activity' | null) => {
+    mockUserModel = { id: 'user-1', settings: { dashboard: { activityView: true } } };
+    localStorage.setItem('dashboardViewSeeded', '1');
+    render(
+      <DashboardWithMemberships dialogState={{ ...dialogState, openDialog }} onPendingMembershipsClick={vi.fn()} />
+    );
+  };
+
+  afterEach(() => {
+    vi.clearAllMocks();
+    mockUserModel = undefined;
+    localStorage.clear();
+  });
+
+  test("the initial spaces-feed query excludes the user's own activity", () => {
+    renderDashboard(null);
+
+    const spaceFilters = useLatestContributionsQueryMock.mock.calls
+      .map(([options]) => options.variables.filter)
+      .filter(filter => !filter?.myActivity);
+
+    expect(spaceFilters.length).toBeGreaterThan(0);
+    expect(spaceFilters[0]).toEqual(expectedSpaceFilter);
+  });
+
+  test('the spaces-feed fetchMore carries the same exclusion', async () => {
+    renderDashboard('my-space-activity');
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('load-more-dialog-spaces'));
+    });
+
+    expect(fetchMoreSpaceActivityMock).toHaveBeenCalledTimes(1);
+    expect(fetchMoreSpaceActivityMock.mock.calls[0][0]).toEqual({
+      variables: { first: expect.any(Number), after: SPACE_END_CURSOR, filter: expectedSpaceFilter },
+    });
+  });
+
+  test('the My activity query is unchanged — myActivity only, no exclusion flag', () => {
+    renderDashboard(null);
+
+    const personalFilters = useLatestContributionsQueryMock.mock.calls
+      .map(([options]) => options.variables.filter)
+      .filter(filter => filter?.myActivity);
+
+    expect(personalFilters.length).toBeGreaterThan(0);
+    expect(personalFilters[0]).toEqual({
+      spaceIds: [],
+      myActivity: true,
+      excludeTypes: [ActivityEventType.CalloutWhiteboardContentModified],
+    });
   });
 });

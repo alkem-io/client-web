@@ -197,6 +197,8 @@ export type ActivityFeed = {
 };
 
 export type ActivityFeedGroupedQueryArgs = {
+  /** Excludes events that the current user triggered; Includes all by default. Combined with myActivity both filters apply, composing to an empty result; that is not an error. */
+  excludeMyActivity?: InputMaybe<Scalars['Boolean']['input']>;
   /** What events to exclude. */
   excludeTypes?: InputMaybe<Array<ActivityEventType>>;
   /** Number of activities to return. */
@@ -212,6 +214,8 @@ export type ActivityFeedGroupedQueryArgs = {
 };
 
 export type ActivityFeedQueryArgs = {
+  /** Excludes events that the current user triggered; Includes all by default. Combined with myActivity both filters apply, composing to an empty result; that is not an error. */
+  excludeMyActivity?: InputMaybe<Scalars['Boolean']['input']>;
   /** What events to exclude. */
   excludeTypes?: InputMaybe<Array<ActivityEventType>>;
   /** Returns only events that the current user triggered; Includes all by default. */
