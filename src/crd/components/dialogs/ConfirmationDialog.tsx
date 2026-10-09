@@ -1,5 +1,5 @@
 import { Loader2, XIcon } from 'lucide-react';
-import type { ReactNode } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import {
@@ -31,7 +31,11 @@ type ConfirmationDialogConfirmProps = {
   description: string;
   confirmLabel: string;
   cancelLabel?: string;
-  onConfirm: () => void;
+  /**
+   * Called with the confirm click. The dialog closes right after it returns, unless the handler calls
+   * `event.preventDefault()` — an async confirm does that to stay open (with `loading`) until it settles.
+   */
+  onConfirm: (event: MouseEvent<HTMLButtonElement>) => void;
   onCancel?: () => void;
   variant?: 'default' | 'destructive';
   loading?: boolean;
