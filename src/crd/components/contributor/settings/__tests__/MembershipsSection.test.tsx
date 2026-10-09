@@ -19,7 +19,7 @@ const buildLabels = (owner: 'user' | 'organisation'): MembershipsSectionLabels =
   roleLabel: role => `${owner} role ${role}`,
   viewLabel: type => `View ${type}`,
   leaveLabel: type => `Leave ${type}`,
-  menuTriggerAriaLabel: `${owner}: more actions`,
+  menuTriggerAriaLabel: name => `${owner}: more actions for ${name}`,
   ledBy: 'Led by:',
   ledByAria: count => `${count} leads`,
   leadsMore: count => `and ${count} more`,
@@ -84,9 +84,10 @@ describe('MembershipsSection', () => {
     expect(screen.getByText(`${owner}: showing 2 of 2`)).toBeInTheDocument();
   });
 
-  it('gives every card menu trigger the supplied accessible name', () => {
+  it('names each card menu trigger after the card it acts on', () => {
     renderSection();
-    expect(screen.getAllByRole('button', { name: 'organisation: more actions' })).toHaveLength(2);
+    expect(screen.getByRole('button', { name: 'organisation: more actions for Garden Space' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'organisation: more actions for Garden Patch' })).toBeInTheDocument();
   });
 
   it('exposes the pressed state on the filter segments and reports a segment click', () => {
@@ -104,7 +105,7 @@ describe('MembershipsSection', () => {
     const user = userEvent.setup({ pointerEventsCheck: 0 });
     const props = renderSection();
 
-    const [, subspaceTrigger] = screen.getAllByRole('button', { name: 'organisation: more actions' });
+    const subspaceTrigger = screen.getByRole('button', { name: 'organisation: more actions for Garden Patch' });
     await user.click(subspaceTrigger);
     expect(screen.queryByRole('menuitem', { name: 'View Subspace' })).toBeInTheDocument();
     await user.click(screen.getByRole('menuitem', { name: 'Leave Subspace' }));

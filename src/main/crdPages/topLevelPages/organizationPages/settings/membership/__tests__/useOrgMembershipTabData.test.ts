@@ -175,6 +175,24 @@ describe('useOrgMembershipTabData — Leave', () => {
     expect(result.current.isLeaving).toBe(false);
   });
 
+  it('removes the organization the leave was requested for, even if the page has moved to another', async () => {
+    const { result, rerender } = renderHook(({ orgId }) => useOrgMembershipTabData(orgId), {
+      initialProps: { orgId: 'org-1' },
+    });
+    act(() => {
+      result.current.onRequestLeave(SUBSPACE_LEAVE);
+    });
+    rerender({ orgId: 'org-2' });
+
+    await act(async () => {
+      await result.current.onConfirmLeave();
+    });
+
+    expect(mockRemoveRoleFromOrganization).toHaveBeenCalledWith({
+      variables: { contributorId: 'org-1', roleSetId: 'rs-sub', role: RoleName.Member },
+    });
+  });
+
   it('rejects rather than resolving when nothing is pending', async () => {
     const { result } = renderHook(() => useOrgMembershipTabData('org-1'));
     await act(async () => {

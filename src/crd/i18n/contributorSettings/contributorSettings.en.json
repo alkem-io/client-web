@@ -1110,6 +1110,7 @@
         "innovationHubsTooltip": "You have created {{usage}} out of your {{limit}} available Custom Homepages in your account."
       },
       "kebabAriaLabel": "More actions",
+      "kebabAriaLabelFor": "More actions for {{name}}",
       "createNewSpace": {
         "ariaLabel": "Create new space",
         "heading": "Create New Space",

@@ -5,7 +5,7 @@ import { GraphQLError } from 'graphql';
 import { createInstance } from 'i18next';
 import { I18nextProvider } from 'react-i18next';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { RoleName, SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import contributorSettingsEn from '@/crd/i18n/contributorSettings/contributorSettings.en.json';
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 
@@ -21,7 +21,7 @@ vi.mock('@/domain/community/organization/hooks/useOrganizationContext', () => ({
 }));
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useRolesOrganizationQuery: (options: unknown) => mockRolesQuery(options),
+  useOrganizationSettingsMembershipsQuery: (options: unknown) => mockRolesQuery(options),
   useSpaceContributionDetailsLazyQuery: () => [mockFetchSpaceDetails],
   useRemoveRoleFromOrganizationMutation: () => [mockRemoveRoleFromOrganization, { loading: false }],
 }));
@@ -56,7 +56,6 @@ const ROLES_DATA = {
         id: 'space-a',
         roles: [RoleName.Member],
         displayName: 'Garden Space',
-        visibility: SpaceVisibility.Active,
         subspaces: [{ id: 'sub-a-1', displayName: 'Garden Patch', roles: [RoleName.Member], level: SpaceLevel.L1 }],
       },
     ],
@@ -82,7 +81,7 @@ beforeEach(() => {
 });
 
 const openLeaveDialogFor = async (user: ReturnType<typeof userEvent.setup>, cardIndex: number) => {
-  const triggers = screen.getAllByRole('button', { name: contributorSettingsEn.shared.account.kebabAriaLabel });
+  const triggers = screen.getAllByRole('button', { name: /^More actions for / });
   await user.click(triggers[cardIndex]);
   await user.click(screen.getByRole('menuitem', { name: 'Leave Subspace' }));
   return screen.findByRole('alertdialog');

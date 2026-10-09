@@ -41734,6 +41734,31 @@ export type SpaceExplorerWelcomeSpaceQuery = {
   };
 };
 
+export type OrganizationSettingsMembershipsQueryVariables = Exact<{
+  organizationId: Scalars['UUID']['input'];
+}>;
+
+export type OrganizationSettingsMembershipsQuery = {
+  __typename?: 'Query';
+  rolesOrganization: {
+    __typename?: 'ActorRoles';
+    id: string;
+    spaces: Array<{
+      __typename?: 'RolesResultSpace';
+      id: string;
+      roles: Array<string>;
+      displayName: string;
+      subspaces: Array<{
+        __typename?: 'RolesResultCommunity';
+        id: string;
+        displayName: string;
+        roles: Array<string>;
+        level: SpaceLevel;
+      }>;
+    }>;
+  };
+};
+
 export type MyMcpApiKeysQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MyMcpApiKeysQuery = {

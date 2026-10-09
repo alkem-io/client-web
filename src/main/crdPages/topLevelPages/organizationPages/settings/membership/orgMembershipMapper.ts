@@ -1,4 +1,4 @@
-import type { RolesOrganizationQuery } from '@/core/apollo/generated/graphql-schema';
+import type { OrganizationSettingsMembershipsQuery } from '@/core/apollo/generated/graphql-schema';
 import type { MembershipEnrichment } from '../../../userPages/settings/membership/useMembershipEnrichment';
 import {
   collectSpaceIds,
@@ -15,11 +15,11 @@ export type OrgMembershipRow = MembershipRow;
  * rows fall back to the query's data while it is still resolving.
  */
 export const mapOrgMembershipRows = (
-  data: RolesOrganizationQuery | undefined,
+  data: OrganizationSettingsMembershipsQuery | undefined,
   enrichment: Map<string, MembershipEnrichment>
 ): OrgMembershipRow[] =>
   mapMembershipRows(data?.rolesOrganization.spaces ?? [], enrichment, subspace => subspace.displayName);
 
 /** Every L0 and subspace id in the payload, in display order — drives `useMembershipEnrichment`. */
-export const collectOrgMembershipSpaceIds = (data: RolesOrganizationQuery | undefined): string[] =>
+export const collectOrgMembershipSpaceIds = (data: OrganizationSettingsMembershipsQuery | undefined): string[] =>
   collectSpaceIds(data?.rolesOrganization.spaces ?? []);

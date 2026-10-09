@@ -1,6 +1,6 @@
 import type { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRolesOrganizationQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useOrganizationSettingsMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { isExclusivelyAuthorizationError } from '@/core/apollo/hooks/usePermissionDeniedNotifier';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -34,7 +34,7 @@ const CrdOrgMembershipTab = () => {
     data,
     loading: rolesLoading,
     refetch,
-  } = useRolesOrganizationQuery({
+  } = useOrganizationSettingsMembershipsQuery({
     variables: { organizationId },
     skip: !organizationId,
   });
@@ -62,7 +62,7 @@ const CrdOrgMembershipTab = () => {
     roleLabel: role => (role === 'Lead' ? t('org.membership.role.lead') : t('org.membership.role.member')),
     viewLabel: type => t('org.membership.menu.viewByType', { type }),
     leaveLabel: type => t('org.membership.leave.menuItemLabeled', { type }),
-    menuTriggerAriaLabel: t('shared.account.kebabAriaLabel'),
+    menuTriggerAriaLabel: name => t('shared.account.kebabAriaLabelFor', { name }),
     ledBy: t('org.membership.ledBy'),
     ledByAria: count => t('org.membership.ledByAria', { count }),
     leadsMore: count => t('org.membership.leadsMore', { count }),

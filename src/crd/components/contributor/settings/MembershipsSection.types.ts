@@ -48,7 +48,8 @@ export type MembershipsSectionLabels = {
   roleLabel: (role: MembershipRowData['role']) => string;
   viewLabel: (typeLabel: string) => string;
   leaveLabel: (typeLabel: string) => string;
-  menuTriggerAriaLabel: string;
+  /** Names the card the menu acts on, so screen-reader button lists tell the cards apart. */
+  menuTriggerAriaLabel: (displayName: string) => string;
   ledBy: string;
   ledByAria: (count: number) => string;
   leadsMore: (count: number) => string;

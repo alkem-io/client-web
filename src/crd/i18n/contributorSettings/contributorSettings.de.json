@@ -1110,6 +1110,7 @@
         "innovationHubsTooltip": "Du hast {{usage}} von {{limit}} verfügbaren eigenen Startseiten in deinem Konto erstellt."
       },
       "kebabAriaLabel": "Weitere Aktionen",
+      "kebabAriaLabelFor": "Weitere Aktionen für {{name}}",
       "createNewSpace": {
         "ariaLabel": "Neuen Space erstellen",
         "heading": "Neuen Space erstellen",

@@ -1110,6 +1110,7 @@
         "innovationHubsTooltip": "Създали сте {{usage}} от {{limit}} налични персонализирани начални страници във вашия акаунт."
       },
       "kebabAriaLabel": "Още действия",
+      "kebabAriaLabelFor": "Още действия за {{name}}",
       "createNewSpace": {
         "ariaLabel": "Създаване на нов Space",
         "heading": "Създаване на нов Space",

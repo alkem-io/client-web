@@ -160,7 +160,7 @@ function MembershipCard({
                 variant="secondary"
                 size="icon"
                 className="size-8 rounded-full bg-background/90 shadow-sm backdrop-blur-sm"
-                aria-label={labels.menuTriggerAriaLabel}
+                aria-label={labels.menuTriggerAriaLabel(row.displayName)}
               >
                 <MoreVertical aria-hidden="true" className="size-4" />
               </Button>

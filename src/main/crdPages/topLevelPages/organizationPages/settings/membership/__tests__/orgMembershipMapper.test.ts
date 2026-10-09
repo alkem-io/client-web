@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import type { RolesOrganizationQuery } from '@/core/apollo/generated/graphql-schema';
-import { RoleName, SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import type { OrganizationSettingsMembershipsQuery } from '@/core/apollo/generated/graphql-schema';
+import { RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import type { MembershipEnrichment } from '../../../../userPages/settings/membership/useMembershipEnrichment';
 import { filterMemberships } from '../../../../userPages/settings/membership/userMembershipMapper';
 import { collectOrgMembershipSpaceIds, mapOrgMembershipRows } from '../orgMembershipMapper';
 
-const buildData = (): RolesOrganizationQuery => ({
+const buildData = (): OrganizationSettingsMembershipsQuery => ({
   rolesOrganization: {
     id: 'roles-org-1',
     spaces: [
@@ -13,14 +13,12 @@ const buildData = (): RolesOrganizationQuery => ({
         id: 'space-a',
         roles: [RoleName.Member],
         displayName: 'Garden Space',
-        visibility: SpaceVisibility.Active,
         subspaces: [{ id: 'sub-a-1', displayName: 'Garden Patch', roles: [RoleName.Member], level: SpaceLevel.L1 }],
       },
       {
         id: 'space-b',
         roles: [RoleName.Member, RoleName.Lead],
         displayName: 'Lab',
-        visibility: SpaceVisibility.Demo,
         subspaces: [],
       },
     ],

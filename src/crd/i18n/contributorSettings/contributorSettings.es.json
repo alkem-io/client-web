@@ -1110,6 +1110,7 @@
         "innovationHubsTooltip": "Has creado {{usage}} de las {{limit}} páginas de inicio personalizadas disponibles en tu cuenta."
       },
       "kebabAriaLabel": "Más acciones",
+      "kebabAriaLabelFor": "Más acciones para {{name}}",
       "createNewSpace": {
         "ariaLabel": "Crear nuevo espacio",
         "heading": "Crear nuevo espacio",

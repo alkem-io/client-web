@@ -1110,6 +1110,7 @@
         "innovationHubsTooltip": "Je hebt {{usage}} van je {{limit}} beschikbare aangepaste startpagina's in je account aangemaakt."
       },
       "kebabAriaLabel": "Meer acties",
+      "kebabAriaLabelFor": "Meer acties voor {{name}}",
       "createNewSpace": {
         "ariaLabel": "Nieuwe Space aanmaken",
         "heading": "Nieuwe Space aanmaken",

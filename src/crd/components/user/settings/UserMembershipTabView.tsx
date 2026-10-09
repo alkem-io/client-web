@@ -84,7 +84,7 @@ export function UserMembershipTabView(props: UserMembershipTabViewProps) {
     roleLabel: role => t(`user.membership.role.${role.toLowerCase()}` as 'user.membership.role.admin'),
     viewLabel: type => t('user.membership.menu.viewByType', { type }),
     leaveLabel: type => t('user.membership.leave.menuItemLabeled', { type }),
-    menuTriggerAriaLabel: t('shared.account.kebabAriaLabel'),
+    menuTriggerAriaLabel: name => t('shared.account.kebabAriaLabelFor', { name }),
     ledBy: t('user.membership.ledBy'),
     ledByAria: count => t('user.membership.ledByAria', { count }),
     leadsMore: count => t('user.membership.leadsMore', { count }),
