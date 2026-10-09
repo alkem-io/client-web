@@ -19,9 +19,10 @@ import {
   type ForumDiscussionCategory,
   NotificationEvent,
   type NotificationEventInAppState,
+  RoleChangeType,
   RoleName,
 } from '@/core/apollo/generated/graphql-schema';
-import { kebabToConstantCase } from '@/core/utils/string';
+import { humanizeRoleSlug, kebabToConstantCase } from '@/core/utils/string';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import { glyphForSlug } from '@/crd/components/reactions/reactionEmoji';
 import type { CrdNotificationItemData } from '@/crd/layouts/types';
@@ -38,6 +39,16 @@ const TRANS_COMPONENTS = {
   pre: <pre />,
   i: <em />,
 };
+
+/**
+ * Resolves a raw role slug (e.g. "platform-resource-admin") to its translated label via the
+ * existing `common.roles.<KEY>` vocabulary. A slug with no matching key — a role added after
+ * this list, or a retired slug on a record written before 027 Slice B — falls back to a
+ * humanized form of the slug, never the raw slug and never blank.
+ */
+function resolveRoleLabel(slug: string | undefined, t: TFunction): string | undefined {
+  return slug ? t(`common.roles.${kebabToConstantCase(slug)}`, { defaultValue: humanizeRoleSlug(slug) }) : undefined;
+}
 
 /**
  * Builds the interpolation values for notification i18n keys.
@@ -71,7 +82,7 @@ function buildTranslationValues(
       payload.spaceCommunicationMessage ??
       payload.organizationMessage,
     discussionName: payload.discussion?.displayName,
-    role: payload.role,
+    role: resolveRoleLabel(payload.role, t),
     // memberName: used by SPACE_ADMIN_COMMUNITY_NEW_MEMBER and
     // ORGANIZATION_ADMIN_ASSOCIATE_JOINED — the new member/associate is the actor, never the
     // triggering user (who is the approving or granting admin on those paths)
@@ -269,7 +280,13 @@ export function mapNotificationToItemData(
   const values = buildTranslationValues(notification, t);
   const avatarProfile = resolveAvatarProfile(notification);
   const typeKey = `components.inAppNotifications.type.${notification.type}`;
-  const subjectKey = `${typeKey}.subject`;
+  // A removal renders distinct wording; records written before `changeType` existed (or an
+  // assignment) keep the original "assigned" subject.
+  const subjectKey =
+    notification.type === NotificationEvent.PlatformAdminGlobalRoleChanged &&
+    notification.payload.changeType === RoleChangeType.Removed
+      ? `${typeKey}.subjectRemoved`
+      : `${typeKey}.subject`;
   const descriptionKey = `${typeKey}.description`;
 
   const rawDescription = t(descriptionKey, '', values as Record<string, string>) as string;
