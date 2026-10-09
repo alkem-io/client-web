@@ -27,16 +27,15 @@ describe('chipTints', () => {
   });
 
   test.each([
-    'whiteboard',
-    'memo',
-    'document',
-  ] as const)('%s keeps one hue across both strips — the same kind must look the same in each', kind => {
+    ['whiteboard', 'blue'],
+    ['memo', 'purple'],
+    ['document', 'teal'],
+  ] as const)('%s keeps its %s hue in both strips — the same kind must look the same in each', (kind, hue) => {
     expect(FRAMING).toContain(kind);
     expect(RESPONSES).toContain(kind);
-    // Both strips resolve the kind through the same key, so this is the
-    // invariant that keeps them from drifting apart.
-    expect(chipIconTint(kind)).toBe(chipIconTint(kind));
-    expect(chipSurfaceTint(kind)).toBeTruthy();
+    // Both strips resolve the kind through this one key, so pinning it pins both.
+    expect(chipIconTint(kind)).toBe(`text-${hue}-600`);
+    expect(chipSurfaceTint(kind)).toBe(`bg-${hue}-100 border-${hue}-300`);
   });
 
   test('no dark variants — the product has no dark mode to serve them', () => {

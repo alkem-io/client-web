@@ -331,7 +331,6 @@
     "edit": "Bearbeiten",
     "memo": "Notiz",
     "richTextEditor": "Rich-Text-Editor",
-    "comingSoon": "Bald verfügbar",
     "memoPlaceholder": "Schreiben Sie Ihre Notiz…",
     "memoOpenHint": "Der Memo-Inhalt wird in einem eigenen Dialog bearbeitet.",
     "openMemo": "Memo öffnen",
@@ -664,7 +663,7 @@
       "attachFile": "Datei anhängen"
     },
     "moreTypes": "Mehr",
-    "moreTypesHeading": "Weitere Antwortmöglichkeiten"
+    "moreTypesHeading": "Mehr Antwortmöglichkeiten"
   },
   "responseDefaults": {
     "srDescription": "Konfigurieren Sie die Standardwerte für neue Antworten in diesem Beitrag.",
