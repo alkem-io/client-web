@@ -4,15 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 
-type ApplicationStateLike = string | undefined;
-
 export type SpaceAboutApplyButtonProps = {
   isAuthenticated: boolean;
   isMember: boolean;
   isParentMember: boolean;
-  applicationState?: ApplicationStateLike;
+  isApplicationPending: boolean;
   userInvitation?: { id: string };
-  parentApplicationState?: ApplicationStateLike;
+  isParentApplicationPending: boolean;
   canJoinCommunity: boolean;
   canAcceptInvitation: boolean;
   canApplyToCommunity: boolean;
@@ -30,22 +28,19 @@ export type SpaceAboutApplyButtonProps = {
   className?: string;
 };
 
-const PENDING_STATES = new Set(['new', 'archived']);
-export const isApplicationPending = (state: ApplicationStateLike): boolean => !!state && PENDING_STATES.has(state);
-
 export const SpaceAboutApplyButton = forwardRef<HTMLButtonElement, SpaceAboutApplyButtonProps>(
   function SpaceAboutApplyButton(
     {
       isAuthenticated,
       isMember,
       isParentMember,
-      applicationState,
+      isApplicationPending,
       canJoinCommunity,
       canAcceptInvitation,
       canApplyToCommunity,
       canJoinParentCommunity,
       canApplyToParentCommunity,
-      parentApplicationState,
+      isParentApplicationPending,
       loading,
       onLoginClick,
       onApplyClick,
@@ -103,7 +98,7 @@ export const SpaceAboutApplyButton = forwardRef<HTMLButtonElement, SpaceAboutApp
         );
       }
 
-      if (isApplicationPending(applicationState)) {
+      if (isApplicationPending) {
         return (
           <Button ref={ref} type="button" variant="outline" className="w-full" disabled={true} aria-disabled={true}>
             {t('about.applyPending')}
@@ -128,7 +123,7 @@ export const SpaceAboutApplyButton = forwardRef<HTMLButtonElement, SpaceAboutApp
         );
       }
 
-      if (isApplicationPending(parentApplicationState)) {
+      if (isParentApplicationPending) {
         return (
           <Button ref={ref} type="button" variant="outline" className="w-full" disabled={true} aria-disabled={true}>
             {t('about.parentPending')}

@@ -1,4 +1,4 @@
-import { isApplicationPending, type SpaceAboutApplyButtonProps } from '@/crd/components/space/SpaceAboutApplyButton';
+import type { SpaceAboutApplyButtonProps } from '@/crd/components/space/SpaceAboutApplyButton';
 
 /**
  * True when `SpaceAboutApplyButton` would only render its disabled "applications not
@@ -12,9 +12,7 @@ export const isApplyUnavailable = (props: Omit<SpaceAboutApplyButtonProps, 'clas
   !props.isMember &&
   !props.canAcceptInvitation &&
   !props.canJoinCommunity &&
-  !isApplicationPending(props.applicationState) &&
+  !props.isApplicationPending &&
   !props.canApplyToCommunity &&
   (props.isParentMember ||
-    (!isApplicationPending(props.parentApplicationState) &&
-      !props.canJoinParentCommunity &&
-      !props.canApplyToParentCommunity));
+    (!props.isParentApplicationPending && !props.canJoinParentCommunity && !props.canApplyToParentCommunity));

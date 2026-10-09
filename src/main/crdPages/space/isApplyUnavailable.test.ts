@@ -14,6 +14,8 @@ const invitationOnly: ButtonState = {
   canApplyToCommunity: false,
   canJoinParentCommunity: false,
   canApplyToParentCommunity: false,
+  isApplicationPending: false,
+  isParentApplicationPending: false,
   loading: false,
 };
 
@@ -36,17 +38,12 @@ describe('isApplyUnavailable', () => {
     ['already a member', { isMember: true }],
     ['has an invitation to accept', { canAcceptInvitation: true }],
     ['can join', { canJoinCommunity: true }],
-    ['application pending (new)', { applicationState: 'new' }],
-    ['application pending (archived)', { applicationState: 'archived' }],
+    ['application pending', { isApplicationPending: true }],
     ['can apply', { canApplyToCommunity: true }],
-    ['parent application pending', { parentApplicationState: 'new' }],
+    ['parent application pending', { isParentApplicationPending: true }],
     ['can join the parent', { canJoinParentCommunity: true }],
     ['can apply to the parent', { canApplyToParentCommunity: true }],
   ])('%s → stays visible', (_label, overrides) => {
     expect(isApplyUnavailable({ ...invitationOnly, ...overrides })).toBe(false);
-  });
-
-  test('a non-pending application state (e.g. rejected) does not keep the button visible', () => {
-    expect(isApplyUnavailable({ ...invitationOnly, applicationState: 'rejected' })).toBe(true);
   });
 });
