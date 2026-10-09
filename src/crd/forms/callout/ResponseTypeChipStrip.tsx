@@ -1,5 +1,5 @@
 import { Columns3, FileText, Link as LinkIcon, MessageSquare, Presentation, StickyNote, X } from 'lucide-react';
-import type { ComponentType, SVGProps } from 'react';
+import { type ComponentType, type SVGProps, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChipOverflowMenu, chipBaseClass, chipIdleClass, useChipOverflow } from '@/crd/forms/callout/ChipOverflowMenu';
 import { chipIconTint, chipSurfaceTint } from '@/crd/forms/callout/chipTints';
@@ -22,7 +22,8 @@ const CHIPS: Chip[] = [
 ];
 
 /**
- * The response types kept on the surface; the rest move behind "More".
+ * The response types kept on the surface beside Tasks; the rest move behind
+ * "More".
  *
  * Links & Files is the most-used contribution type by a distance (324 vs
  * whiteboard 162, memo 97, document 20), and Posts is the default way a space
@@ -31,12 +32,6 @@ const CHIPS: Chip[] = [
  * response types, and burying it behind a menu would hide a whole callout shape.
  */
 const PRIMARY_CHIP_IDS: ResponseTypeChipId[] = ['link', 'post'];
-
-/**
- * When the consumer does not offer Tasks (edit mode, or the flag is off), this
- * takes the third slot so the row still reads as three rather than two.
- */
-const FALLBACK_PRIMARY_ID: ResponseTypeChipId = 'whiteboard';
 
 export type DisabledResponseChipMap = Partial<Record<ResponseTypeChipId, { tooltip?: string }>>;
 
@@ -96,14 +91,18 @@ export function ResponseTypeChipStrip({
   className,
 }: ResponseTypeChipStripProps) {
   const { t } = useTranslation('crd-space');
+  const hintIdPrefix = useId();
 
   const chips = allowedChips ? CHIPS.filter(chip => allowedChips.includes(chip.id)) : CHIPS;
   // While the board is selected, no response chip reads as active — the Tasks
   // chip owns the selection — so a click on any response chip switches to it.
   const effectiveValue = tasksActive ? 'none' : value;
 
-  const primaryIds = showTasksChip ? PRIMARY_CHIP_IDS : [...PRIMARY_CHIP_IDS, FALLBACK_PRIMARY_ID];
-  const { rowChips, menuChips } = useChipOverflow(chips, primaryIds, effectiveValue);
+  // Without Tasks (edit mode, or the flag is off) the strip is five chips. A
+  // row of three would leave two behind More, and one of those in the row
+  // whenever it is selected — a menu of one — so every type stays on the row.
+  const primaryIds = showTasksChip ? PRIMARY_CHIP_IDS : chips.map(chip => chip.id);
+  const { rowChips, menuChips, keepInRow } = useChipOverflow(chips, primaryIds, effectiveValue);
 
   const handleClick = (chip: Chip) => {
     // Edit-mode lock: the response type is fixed once the callout exists — the
@@ -114,8 +113,10 @@ export function ResponseTypeChipStrip({
     // feature — is inert.
     if (disabledChips?.[chip.id]) return;
     if (chip.id === effectiveValue) {
+      keepInRow(chip.id);
       onChange('none');
     } else {
+      keepInRow(undefined);
       onChange(chip.id);
     }
   };
@@ -140,6 +141,8 @@ export function ResponseTypeChipStrip({
             // aria-disabled so assistive tech doesn't read the active chip as a
             // live control that silently does nothing.
             const isInert = isDisabled || locked;
+            const hint = disabledInfo?.tooltip ?? (locked ? t('contributionSettings.typeLockedHint') : undefined);
+            const hintId = `${hintIdPrefix}-${chip.id}-hint`;
             return (
               // biome-ignore lint/a11y/useSemanticElements: styled <button>, not <input type="radio">
               <button
@@ -149,7 +152,10 @@ export function ResponseTypeChipStrip({
                 aria-checked={active}
                 aria-disabled={isInert ? 'true' : undefined}
                 aria-label={t(chip.labelKey as 'contributionSettings.types.link')}
-                title={disabledInfo?.tooltip ?? (locked ? t('contributionSettings.typeLockedHint') : undefined)}
+                // The hint is the chip's description, as a menu item's reason
+                // is, not only a hover `title`.
+                title={hint}
+                aria-describedby={hint ? hintId : undefined}
                 onClick={() => handleClick(chip)}
                 className={cn(
                   chipBaseClass,
@@ -170,6 +176,11 @@ export function ResponseTypeChipStrip({
                 <span>{t(chip.labelKey as 'contributionSettings.types.link')}</span>
                 {/* The X is a "remove" affordance — hide it when locked, since the type can't be cleared. */}
                 {active && !locked && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
+                {hint && (
+                  <span id={hintId} className="sr-only">
+                    {hint}
+                  </span>
+                )}
               </button>
             );
           })}
@@ -182,7 +193,10 @@ export function ResponseTypeChipStrip({
               role="radio"
               aria-checked={tasksActive}
               aria-label={tasksLabel}
-              onClick={onSelectTasks}
+              onClick={() => {
+                keepInRow(undefined);
+                onSelectTasks?.();
+              }}
               className={cn(
                 chipBaseClass,
                 tasksActive ? cn(chipSurfaceTint('tasks'), 'text-foreground') : chipIdleClass(false)
@@ -209,7 +223,10 @@ export function ResponseTypeChipStrip({
             heading={t('contributionSettings.moreTypesHeading')}
             locked={locked}
             lockedHint={t('contributionSettings.typeLockedHint')}
-            onSelect={onChange}
+            onSelect={id => {
+              keepInRow(undefined);
+              onChange(id);
+            }}
           />
         )}
       </div>

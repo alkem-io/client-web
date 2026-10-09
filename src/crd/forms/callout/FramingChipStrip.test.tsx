@@ -75,6 +75,26 @@ describe('FramingChipStrip', () => {
     expect(screen.queryByRole('button', { name: 'forms.moreFramingTypesHeading' })).toBeNull();
   });
 
+  test('with two chips left over there is no More menu either — selecting one would leave a menu of one', () => {
+    render(<FramingChipStrip value="none" onChange={vi.fn()} allowedChips={['whiteboard', 'memo', 'poll', 'cta']} />);
+    expect(screen.getAllByRole('radio')).toHaveLength(4);
+    expect(screen.queryByRole('button', { name: 'forms.moreFramingTypesHeading' })).toBeNull();
+  });
+
+  test('with three chips left over they go behind More', async () => {
+    render(
+      <FramingChipStrip value="none" onChange={vi.fn()} allowedChips={['whiteboard', 'memo', 'poll', 'cta', 'form']} />
+    );
+    expect(screen.getAllByRole('radio')).toHaveLength(2);
+    expect(await openMore()).toHaveLength(3);
+  });
+
+  test('a chip set from outside does not linger in the row once the value moves on', () => {
+    const { rerender } = render(<FramingChipStrip value="poll" onChange={vi.fn()} />);
+    rerender(<FramingChipStrip value="whiteboard" onChange={vi.fn()} />);
+    expect(screen.queryByRole('radio', { name: 'callout.poll' })).toBeNull();
+  });
+
   test('clearing a chip picked from the menu keeps it in the row, so focus stays on it', async () => {
     render(<Controlled initial="none" />);
     const items = await openMore();

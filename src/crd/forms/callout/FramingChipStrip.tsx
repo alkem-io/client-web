@@ -10,7 +10,7 @@ import {
   Vote,
   X,
 } from 'lucide-react';
-import { type ComponentType, type SVGProps, useState } from 'react';
+import { type ComponentType, type SVGProps, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DeleteFramingDialog } from '@/crd/components/dialogs/DeleteFramingDialog';
 import { ChipOverflowMenu, chipBaseClass, chipIdleClass, useChipOverflow } from '@/crd/forms/callout/ChipOverflowMenu';
@@ -116,9 +116,10 @@ export function FramingChipStrip({
 }: FramingChipStripProps) {
   const { t } = useTranslation('crd-space');
   const [confirmClearOpen, setConfirmClearOpen] = useState(false);
+  const hintIdPrefix = useId();
 
   const chips = allowedChips ? CHIPS.filter(chip => allowedChips.includes(chip.id)) : CHIPS;
-  const { rowChips, menuChips } = useChipOverflow(chips, PRIMARY_CHIP_IDS, value);
+  const { rowChips, menuChips, keepInRow } = useChipOverflow(chips, PRIMARY_CHIP_IDS, value);
 
   const handleClick = (chip: Chip) => {
     if (editMode) {
@@ -134,8 +135,10 @@ export function FramingChipStrip({
     }
     if (disabledChips?.[chip.id]) return;
     if (chip.id === value) {
+      keepInRow(chip.id);
       onChange('none');
     } else {
+      keepInRow(undefined);
       onChange(chip.id);
     }
   };
@@ -164,6 +167,9 @@ export function FramingChipStrip({
               const fixedActive = editMode && active && Boolean(fixedKindChips?.includes(chip.id));
               const activeClearable = editMode && active && !fixedActive;
               const isInert = fixedActive || (!activeClearable && (isDisabled || (editMode && !active)));
+              const hint =
+                disabledInfo?.tooltip ?? (fixedActive || (editMode && !active) ? t('forms.typeLockedHint') : undefined);
+              const hintId = `${hintIdPrefix}-${chip.id}-hint`;
               return (
                 // biome-ignore lint/a11y/useSemanticElements: the chip is a styled <button>, not an <input type="radio">
                 <button
@@ -173,10 +179,10 @@ export function FramingChipStrip({
                   aria-checked={active}
                   aria-disabled={isInert ? 'true' : undefined}
                   aria-label={t(chip.labelKey as 'callout.whiteboard')}
-                  title={
-                    disabledInfo?.tooltip ??
-                    (fixedActive || (editMode && !active) ? t('forms.typeLockedHint') : undefined)
-                  }
+                  // The hint is the chip's description, as a menu item's reason
+                  // is, not only a hover `title`.
+                  title={hint}
+                  aria-describedby={hint ? hintId : undefined}
                   onClick={() => handleClick(chip)}
                   className={cn(
                     chipBaseClass,
@@ -193,6 +199,11 @@ export function FramingChipStrip({
                   {/* The X marks the active chip as removable; clicking the chip itself
                     deselects (create) or asks to confirm clearing the framing (edit). */}
                   {active && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
+                  {hint && (
+                    <span id={hintId} className="sr-only">
+                      {hint}
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -212,7 +223,10 @@ export function FramingChipStrip({
               heading={t('forms.moreFramingTypesHeading')}
               locked={editMode}
               lockedHint={t('forms.typeLockedHint')}
-              onSelect={onChange}
+              onSelect={id => {
+                keepInRow(undefined);
+                onChange(id);
+              }}
             />
           )}
         </div>
@@ -222,6 +236,7 @@ export function FramingChipStrip({
         onOpenChange={setConfirmClearOpen}
         onConfirm={() => {
           setConfirmClearOpen(false);
+          if (value !== 'none') keepInRow(value);
           onChange('none');
         }}
       />

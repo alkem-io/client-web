@@ -20,7 +20,7 @@ vi.mock('react-i18next', () => ({
 /** Holds the selection, as the consumer does, so a clear actually re-renders the row. */
 const Controlled = () => {
   const [value, setValue] = useState<ResponseTypeChipId | 'none'>('none');
-  return <ResponseTypeChipStrip value={value} onChange={setValue} />;
+  return <ResponseTypeChipStrip value={value} onChange={setValue} showTasksChip={true} tasksLabel="Tasks" />;
 };
 
 describe('ResponseTypeChipStrip', () => {
@@ -30,19 +30,18 @@ describe('ResponseTypeChipStrip', () => {
     expect(group).toBeInTheDocument();
   });
 
-  test('without Tasks, the row is Links, Posts and Whiteboards; the rest sit behind More', async () => {
-    render(<ResponseTypeChipStrip value="none" onChange={vi.fn()} />);
+  test('without Tasks every type is on the row, with no More menu', () => {
+    // A row of three would leave two types behind More, and selecting one of
+    // them would leave a menu of one.
+    render(<ResponseTypeChipStrip value="memo" onChange={vi.fn()} />);
     expect(labels(screen.getAllByRole('radio'))).toEqual([
       'contributionSettings.types.link',
       'contributionSettings.types.post',
-      'contributionSettings.types.whiteboard',
-    ]);
-    // Documents (story #10083) is still reachable, from the menu.
-    const items = await openMore();
-    expect(items.map(item => item.textContent)).toEqual([
       'contributionSettings.types.memo',
+      'contributionSettings.types.whiteboard',
       'contributionSettings.types.document',
     ]);
+    expect(screen.queryByRole('button', { name: 'contributionSettings.moreTypesHeading' })).toBeNull();
   });
 
   test('with Tasks enabled it takes the third slot and Whiteboards moves to the menu', async () => {
@@ -61,7 +60,7 @@ describe('ResponseTypeChipStrip', () => {
   });
 
   test('the More trigger is not one of the radio options', () => {
-    render(<ResponseTypeChipStrip value="none" onChange={vi.fn()} />);
+    render(<ResponseTypeChipStrip value="none" onChange={vi.fn()} showTasksChip={true} tasksLabel="Tasks" />);
     const more = screen.getByRole('button', { name: 'contributionSettings.moreTypesHeading' });
     expect(more).not.toHaveAttribute('role', 'radio');
     expect(screen.getByRole('radiogroup')).not.toContainElement(more);
@@ -69,23 +68,31 @@ describe('ResponseTypeChipStrip', () => {
 
   test('choosing Documents from the menu selects it', async () => {
     const onChange = vi.fn();
-    render(<ResponseTypeChipStrip value="none" onChange={onChange} />);
+    render(<ResponseTypeChipStrip value="none" onChange={onChange} showTasksChip={true} tasksLabel="Tasks" />);
     const items = await openMore();
     await userEvent.click(items.find(i => i.textContent === 'contributionSettings.types.document') as HTMLElement);
     expect(onChange).toHaveBeenCalledWith('document');
   });
 
   test('a type chosen from the menu joins the row and drops out of the menu', async () => {
-    render(<ResponseTypeChipStrip value="document" onChange={vi.fn()} />);
+    render(<ResponseTypeChipStrip value="document" onChange={vi.fn()} showTasksChip={true} tasksLabel="Tasks" />);
     expect(labels(screen.getAllByRole('radio'))).toContain('contributionSettings.types.document');
     expect(screen.getByRole('radio', { name: /types.document/i, checked: true })).toBeInTheDocument();
     const items = await openMore();
     expect(items.map(i => i.textContent)).not.toContain('contributionSettings.types.document');
   });
 
-  test("with a single type left over there is no More menu — that type takes the trigger's slot", () => {
-    render(<ResponseTypeChipStrip value="none" onChange={vi.fn()} allowedChips={['link', 'post', 'memo']} />);
-    expect(screen.getAllByRole('radio')).toHaveLength(3);
+  test('with only two types for the menu there is no More — selecting one would leave a menu of one', () => {
+    render(
+      <ResponseTypeChipStrip
+        value="none"
+        onChange={vi.fn()}
+        allowedChips={['link', 'post', 'memo', 'document']}
+        showTasksChip={true}
+        tasksLabel="Tasks"
+      />
+    );
+    expect(screen.getAllByRole('radio')).toHaveLength(5);
     expect(screen.queryByRole('button', { name: 'contributionSettings.moreTypesHeading' })).toBeNull();
   });
 
@@ -100,13 +107,34 @@ describe('ResponseTypeChipStrip', () => {
     expect(memo).toHaveFocus();
   });
 
-  test('locked mode: the More trigger stays focusable but inert, and carries the lock hint', async () => {
-    render(<ResponseTypeChipStrip value="post" onChange={vi.fn()} locked={true} />);
+  test('a cleared type goes back into the menu once another type is chosen', async () => {
+    render(<Controlled />);
+    const items = await openMore();
+    await userEvent.click(items.find(i => i.textContent === 'contributionSettings.types.memo') as HTMLElement);
+    await userEvent.click(screen.getByRole('radio', { name: 'contributionSettings.types.memo' }));
+    await userEvent.click(screen.getByRole('radio', { name: 'contributionSettings.types.post' }));
+    expect(screen.queryByRole('radio', { name: 'contributionSettings.types.memo' })).toBeNull();
+  });
+
+  test('locked mode: the More trigger stays focusable but inert, and describes the lock', async () => {
+    render(
+      <ResponseTypeChipStrip value="post" onChange={vi.fn()} locked={true} showTasksChip={true} tasksLabel="Tasks" />
+    );
     const more = screen.getByRole('button', { name: 'contributionSettings.moreTypesHeading' });
     expect(more).not.toBeDisabled();
     expect(more).toHaveAttribute('aria-disabled', 'true');
+    expect(more).not.toHaveAttribute('aria-haspopup');
     expect(more).toHaveAttribute('title', 'contributionSettings.typeLockedHint');
+    expect(more).toHaveAccessibleDescription('contributionSettings.typeLockedHint');
     await userEvent.click(more);
+    expect(screen.queryByRole('menu')).toBeNull();
+  });
+
+  test('a menu that is open when the strip locks closes', async () => {
+    const props = { value: 'none' as const, onChange: vi.fn(), showTasksChip: true, tasksLabel: 'Tasks' };
+    const { rerender } = render(<ResponseTypeChipStrip {...props} />);
+    await openMore();
+    rerender(<ResponseTypeChipStrip {...props} locked={true} />);
     expect(screen.queryByRole('menu')).toBeNull();
   });
 
@@ -122,12 +150,17 @@ describe('ResponseTypeChipStrip', () => {
         value="none"
         onChange={onChange}
         disabledChips={{ document: { tooltip: 'framing.officeDocumentsNotEnabled' } }}
+        showTasksChip={true}
+        tasksLabel="Tasks"
       />
     );
     const items = await openMore();
-    const document = items.find(i => i.textContent?.startsWith('contributionSettings.types.document')) as HTMLElement;
+    // The reason describes the item; it is not glued onto its name.
+    const document = screen.getByRole('menuitem', { name: 'contributionSettings.types.document' });
+    expect(items).toContain(document);
     expect(document).toHaveAttribute('aria-disabled', 'true');
     expect(document).toHaveTextContent('framing.officeDocumentsNotEnabled');
+    expect(document).toHaveAccessibleDescription('framing.officeDocumentsNotEnabled');
     expect(document).not.toHaveAttribute('data-disabled');
     await userEvent.click(document);
     expect(onChange).not.toHaveBeenCalled();
@@ -148,7 +181,19 @@ describe('ResponseTypeChipStrip', () => {
     expect(onChange).toHaveBeenCalledWith('post');
   });
 
-  test('locked mode: an active type from the menu joins the row and is inert there', async () => {
+  test('disabledChips: a disabled chip in the row is described by its reason', () => {
+    render(
+      <ResponseTypeChipStrip
+        value="none"
+        onChange={vi.fn()}
+        disabledChips={{ document: { tooltip: 'framing.officeDocumentsNotEnabled' } }}
+      />
+    );
+    const document = screen.getByRole('radio', { name: 'contributionSettings.types.document' });
+    expect(document).toHaveAccessibleDescription('framing.officeDocumentsNotEnabled');
+  });
+
+  test('locked mode: an active type that would sit in the menu is inert in the row', async () => {
     const onChange = vi.fn();
     render(<ResponseTypeChipStrip value="document" onChange={onChange} locked={true} />);
     const document = screen.getByRole('radio', { name: /contributionSettings.types.document/i, checked: true });
