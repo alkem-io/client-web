@@ -1,6 +1,0 @@
-mutation UploadRoomMessageAttachment($uploadData: RoomMessageAttachmentUploadInput!, $file: Upload!) {
-  uploadRoomMessageAttachment(uploadData: $uploadData, file: $file) {
-    externalReference
-    displayName
-  }
-}

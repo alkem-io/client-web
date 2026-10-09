@@ -33185,56 +33185,6 @@ export type ConversationStorageConfigQueryResult = Apollo.QueryResult<
 export function refetchConversationStorageConfigQuery(variables: SchemaTypes.ConversationStorageConfigQueryVariables) {
   return { query: ConversationStorageConfigDocument, variables: variables };
 }
-export const UploadRoomMessageAttachmentDocument = gql`
-    mutation UploadRoomMessageAttachment($uploadData: RoomMessageAttachmentUploadInput!, $file: Upload!) {
-  uploadRoomMessageAttachment(uploadData: $uploadData, file: $file) {
-    externalReference
-    displayName
-  }
-}
-    `;
-export type UploadRoomMessageAttachmentMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UploadRoomMessageAttachmentMutation,
-  SchemaTypes.UploadRoomMessageAttachmentMutationVariables
->;
-
-/**
- * __useUploadRoomMessageAttachmentMutation__
- *
- * To run a mutation, you first call `useUploadRoomMessageAttachmentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUploadRoomMessageAttachmentMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [uploadRoomMessageAttachmentMutation, { data, loading, error }] = useUploadRoomMessageAttachmentMutation({
- *   variables: {
- *      uploadData: // value for 'uploadData'
- *      file: // value for 'file'
- *   },
- * });
- */
-export function useUploadRoomMessageAttachmentMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UploadRoomMessageAttachmentMutation,
-    SchemaTypes.UploadRoomMessageAttachmentMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UploadRoomMessageAttachmentMutation,
-    SchemaTypes.UploadRoomMessageAttachmentMutationVariables
-  >(UploadRoomMessageAttachmentDocument, options);
-}
-export type UploadRoomMessageAttachmentMutationHookResult = ReturnType<typeof useUploadRoomMessageAttachmentMutation>;
-export type UploadRoomMessageAttachmentMutationResult =
-  Apollo.MutationResult<SchemaTypes.UploadRoomMessageAttachmentMutation>;
-export type UploadRoomMessageAttachmentMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UploadRoomMessageAttachmentMutation,
-  SchemaTypes.UploadRoomMessageAttachmentMutationVariables
->;
 export const ResetConversationVcDocument = gql`
     mutation resetConversationVc($input: ConversationVcResetInput!) {
   resetConversationVc(input: $input) {

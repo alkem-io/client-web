@@ -1,6 +1,5 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUploadRoomMessageAttachmentMutation } from '@/core/apollo/generated/apollo-hooks';
 import type { RoomMessageAttachmentInput } from '@/core/apollo/generated/graphql-schema';
 import type { ComposerAttachment } from '@/crd/components/comment/types';
 import type { StorageConfig } from '@/domain/storage/StorageBucket/useStorageConfig';
@@ -12,6 +11,8 @@ import {
   validateAttachments,
 } from './validateAttachments';
 
+type UploadLifetime = { disposed: boolean; busy: boolean; contextKey: string; upload?: AbortController };
+
 type SelectedFile = ComposerAttachment & { file: File; uploadedAttachment?: RoomMessageAttachmentInput };
 export type AttachmentContext = { roomID: string; threadID?: string };
 export type SendEvent = (text: string, attachmentUpload?: RoomMessageAttachmentInput) => Promise<boolean | undefined>;
@@ -22,14 +23,13 @@ export function useConversationAttachments(
   context: AttachmentContext | undefined
 ) {
   const { t } = useTranslation('crd-space');
-  const [uploadFile] = useUploadRoomMessageAttachmentMutation();
   const [draft, setDraft] = useState<{ items: SelectedFile[]; error?: string }>({ items: [] });
   const [isSending, setIsSending] = useState(false);
   const contextKey = JSON.stringify([context?.roomID, context?.threadID ?? null]);
-  const lifetime = useRef({ disposed: false, busy: false, contextKey });
+  const lifetime = useRef<UploadLifetime>({ disposed: false, busy: false, contextKey });
   useLayoutEffect(() => {
     const previous = lifetime.current;
-    const current = { disposed: false, busy: false, contextKey };
+    const current: UploadLifetime = { disposed: false, busy: false, contextKey };
     lifetime.current = current;
     if (previous.contextKey !== contextKey) {
       setDraft({ items: [] });
@@ -37,6 +37,7 @@ export function useConversationAttachments(
     }
     return () => {
       current.disposed = true;
+      current.upload?.abort();
     };
   }, [contextKey]);
 
@@ -112,16 +113,29 @@ export function useConversationAttachments(
             ...previous,
             items: previous.items.map(value => (value.id === item.id ? { ...value, status: 'uploading' } : value)),
           }));
-          const { data } = await uploadFile({
-            variables: {
-              file: item.file,
-              uploadData: context,
-            },
-          });
+          const controller = new AbortController();
+          current.upload = controller;
+          let upload: { mediaId?: unknown };
+          try {
+            const response = await fetch(
+              `/api/private/rest/messaging/media/upload?filename=${encodeURIComponent(item.file.name)}`,
+              {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': item.file.type || 'application/octet-stream' },
+                body: item.file,
+                signal: controller.signal,
+              }
+            );
+            if (!response.ok) throw new Error('Media upload failed');
+            upload = await response.json();
+          } finally {
+            current.upload = undefined;
+          }
           if (current.disposed) return false;
-          const upload = data?.uploadRoomMessageAttachment;
-          if (!upload?.externalReference) throw new Error('Upload returned no media reference');
-          uploadedAttachment = { externalReference: upload.externalReference, displayName: upload.displayName };
+          if (typeof upload.mediaId !== 'string' || !upload.mediaId)
+            throw new Error('Upload returned no media reference');
+          uploadedAttachment = { externalReference: upload.mediaId, displayName: item.file.name };
           uploading = false;
           setDraft(previous => ({
             ...previous,

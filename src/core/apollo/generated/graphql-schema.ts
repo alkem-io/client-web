@@ -6110,8 +6110,6 @@ export type Mutation = {
   uploadFileOnStorageBucket: StorageBucketUploadFileResult;
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
-  /** Uploads original room media into Synapse staging for a later authorized message. */
-  uploadRoomMessageAttachment: RoomMessageAttachmentUploadResult;
 };
 
 export type MutationAddClassificationEntryFromTemplateArgs = {
@@ -7035,11 +7033,6 @@ export type MutationUploadFileOnStorageBucketArgs = {
 export type MutationUploadImageOnVisualArgs = {
   file: Scalars['Upload']['input'];
   uploadData: VisualUploadImageInput;
-};
-
-export type MutationUploadRoomMessageAttachmentArgs = {
-  file: Scalars['Upload']['input'];
-  uploadData: RoomMessageAttachmentUploadInput;
 };
 
 export enum MutationType {
@@ -8986,21 +8979,6 @@ export type RoomMessageAttachmentInput = {
   displayName: Scalars['String']['input'];
   /** The completed local Matrix media reference. */
   externalReference: Scalars['String']['input'];
-};
-
-export type RoomMessageAttachmentUploadInput = {
-  /** The room receiving the attachment. */
-  roomID: Scalars['UUID']['input'];
-  /** The existing reply parent, when uploading for a reply. */
-  threadID?: InputMaybe<Scalars['MessageID']['input']>;
-};
-
-export type RoomMessageAttachmentUploadResult = {
-  __typename?: 'RoomMessageAttachmentUploadResult';
-  /** The sanitized filename. */
-  displayName: Scalars['String']['output'];
-  /** The uploaded Matrix media reference. */
-  externalReference: Scalars['String']['output'];
 };
 
 /** A message event happened in the subscribed room */
@@ -41852,20 +41830,6 @@ export type ConversationStorageConfigQuery = {
             | undefined;
         }
       | undefined;
-  };
-};
-
-export type UploadRoomMessageAttachmentMutationVariables = Exact<{
-  uploadData: RoomMessageAttachmentUploadInput;
-  file: Scalars['Upload']['input'];
-}>;
-
-export type UploadRoomMessageAttachmentMutation = {
-  __typename?: 'Mutation';
-  uploadRoomMessageAttachment: {
-    __typename?: 'RoomMessageAttachmentUploadResult';
-    externalReference: string;
-    displayName: string;
   };
 };
 

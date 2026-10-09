@@ -3597,7 +3597,6 @@ export type MutationKeySpecifier = (
   | 'uploadFileOnReference'
   | 'uploadFileOnStorageBucket'
   | 'uploadImageOnVisual'
-  | 'uploadRoomMessageAttachment'
   | MutationKeySpecifier
 )[];
 export type MutationFieldPolicy = {
@@ -3843,7 +3842,6 @@ export type MutationFieldPolicy = {
   uploadFileOnReference?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadImageOnVisual?: FieldPolicy<any> | FieldReadFunction<any>;
-  uploadRoomMessageAttachment?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MySpaceResultsKeySpecifier = ('latestActivity' | 'space' | MySpaceResultsKeySpecifier)[];
 export type MySpaceResultsFieldPolicy = {
@@ -5041,15 +5039,6 @@ export type RoomEventSubscriptionResultFieldPolicy = {
   reaction?: FieldPolicy<any> | FieldReadFunction<any>;
   room?: FieldPolicy<any> | FieldReadFunction<any>;
   roomID?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type RoomMessageAttachmentUploadResultKeySpecifier = (
-  | 'displayName'
-  | 'externalReference'
-  | RoomMessageAttachmentUploadResultKeySpecifier
-)[];
-export type RoomMessageAttachmentUploadResultFieldPolicy = {
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  externalReference?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RoomMessageEventSubscriptionResultKeySpecifier = (
   | 'data'
@@ -8099,13 +8088,6 @@ export type StrictTypedTypePolicies = {
       | RoomEventSubscriptionResultKeySpecifier
       | (() => undefined | RoomEventSubscriptionResultKeySpecifier);
     fields?: RoomEventSubscriptionResultFieldPolicy;
-  };
-  RoomMessageAttachmentUploadResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | RoomMessageAttachmentUploadResultKeySpecifier
-      | (() => undefined | RoomMessageAttachmentUploadResultKeySpecifier);
-    fields?: RoomMessageAttachmentUploadResultFieldPolicy;
   };
   RoomMessageEventSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
