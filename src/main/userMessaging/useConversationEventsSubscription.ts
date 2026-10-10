@@ -1,8 +1,7 @@
-import { gql, useApolloClient } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import { useEffect, useRef } from 'react';
 import {
   ConversationDetailsDocument,
-  ConversationMessagesDocument,
   UserConversationsDocument,
   UserConversationsUnreadCountDocument,
   useConversationEventsSubscription as useSubscription,
@@ -11,30 +10,17 @@ import {
   type ConversationDetailsQuery,
   type ConversationEventsSubscription,
   ConversationEventType,
-  type ConversationMessagesQuery,
   type UserConversationsQuery,
   type UserConversationsUnreadCountQuery,
-  type UserDetailsFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
-import { playSound } from '@/core/sound/soundPlayer';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { shouldPlayChatSound } from './shouldPlayChatSound';
 import { useUserMessagingContext } from './UserMessagingContext';
 
 type SelectionClearer = (conversationId: string) => void;
 
 type ConversationCreatedEvent = NonNullable<
   NonNullable<ConversationEventsSubscription['conversationEvents']>['conversationCreated']
->;
-type MessageReceivedEvent = NonNullable<
-  NonNullable<ConversationEventsSubscription['conversationEvents']>['messageReceived']
->;
-type MessageRemovedEvent = NonNullable<
-  NonNullable<ConversationEventsSubscription['conversationEvents']>['messageRemoved']
->;
-type ReadReceiptUpdatedEvent = NonNullable<
-  NonNullable<ConversationEventsSubscription['conversationEvents']>['readReceiptUpdated']
 >;
 type ConversationUpdatedEvent = NonNullable<
   NonNullable<ConversationEventsSubscription['conversationEvents']>['conversationUpdated']
@@ -47,116 +33,23 @@ type MemberRemovedEvent = NonNullable<
   NonNullable<ConversationEventsSubscription['conversationEvents']>['memberRemoved']
 >;
 
-// Fragment for reading lastMessage from cache
-const RoomLastMessageFragment = gql`
-  fragment RoomLastMessage on Room {
-    lastMessage {
-      id
-    }
-  }
-`;
-
-// Fragment for reading messages from cache
-const RoomMessagesFragment = gql`
-  fragment RoomMessages on Room {
-    messages {
-      id
-    }
-  }
-`;
-
-// Shared fragment for writing messages to cache.
-//
-// This fragment defines the SHAPE of every realtime-delivered Message that lands
-// in the normalized cache. It must stay a superset of what the message-reading
-// documents select (`ConversationMessages`, `UserConversations.lastMessage`,
-// `ConversationDetails`) — a field selected by a reader but missing here writes
-// an INCOMPLETE `Message` entity, and that field is then simply absent from the
-// UI until something refetches. This is exactly what happened to `attachments`
-// when feature 013 added it to every reader but not here: realtime messages
-// arrived with their media stripped.
-export const MessageCacheFragment = gql`
-  fragment MessageCache on Message {
-    id
-    message
-    timestamp
-    reactions {
-      id
-    }
-    threadID
-    sender {
-      id
-      type
-      profile {
-        id
-        displayName
-        avatar: visual(type: AVATAR) {
-          id
-          uri
-        }
-      }
-    }
-    attachments {
-      id
-      url
-      displayName
-      mimeType
-      size
-      width
-      height
-    }
-  }
-`;
-
-/**
- * Builds the normalized `Message` payload for an incoming realtime message.
- *
- * Kept next to `MessageCacheFragment` and exported so the pair can be
- * round-tripped through a real `InMemoryCache` in a test: the fragment and this
- * payload have to agree field-for-field, and a mismatch on either side is
- * silent at runtime.
- */
-export const toMessageCachePayload = (message: MessageReceivedEvent['message']) => ({
-  __typename: 'Message' as const,
-  id: message.id,
-  message: message.message,
-  timestamp: message.timestamp,
-  sender: message.sender,
-  reactions: [],
-  threadID: null,
-  // Media attachments (feature 013). The subscription selects them; without
-  // carrying them here the cached Message is incomplete and the attachments do
-  // not render until a refetch.
-  attachments: message.attachments ?? [],
-});
-
 export const useConversationEventsSubscription = () => {
-  const { isEnabled, selectedRoomId, selectedConversationId, setSelectedConversationId, setSelectedRoomId } =
-    useUserMessagingContext();
+  const { isEnabled, selectedConversationId, setSelectedConversationId, setSelectedRoomId } = useUserMessagingContext();
   const { isAuthenticated, userModel } = useCurrentUserContext();
   const client = useApolloClient();
   const currentUserId = userModel?.id;
 
-  // Use refs for values read inside the onData callback to avoid stale closures
-  // when the React Compiler memoizes the subscription options. The chat-sound
-  // preference rides along on the current user (UserDetails* fragments) and
-  // defaults to on (matches the server default) until loaded.
+  // Use a ref for the selection read inside the onData callback to avoid stale
+  // closures when the React Compiler memoizes the subscription options.
   //
-  // Refs are synced in a useEffect rather than during render (React 19
+  // The ref is synced in a useEffect rather than during render (React 19
   // concurrency hygiene). onData fires post-commit, so it always reads the
   // latest committed value.
-  const selectedRoomIdRef = useRef(selectedRoomId);
   const selectedConversationIdRef = useRef(selectedConversationId);
-  const chatSoundEnabledRef = useRef(true);
-
-  const chatSoundEnabled =
-    (userModel as UserDetailsFragment | undefined)?.settings?.notification?.sound?.chatMessage ?? true;
 
   useEffect(() => {
-    selectedRoomIdRef.current = selectedRoomId;
     selectedConversationIdRef.current = selectedConversationId;
-    chatSoundEnabledRef.current = chatSoundEnabled;
-  }, [selectedRoomId, selectedConversationId, chatSoundEnabled]);
+  }, [selectedConversationId]);
 
   const clearSelectionIfActive: SelectionClearer = (conversationId: string) => {
     if (selectedConversationIdRef.current === conversationId) {
@@ -192,9 +85,6 @@ export const useConversationEventsSubscription = () => {
           displayName: room.displayName,
           avatarUrl: room.avatarUrl,
           createdDate: room.createdDate,
-          unreadCount: room.unreadCount,
-          messagesCount: room.messagesCount,
-          lastMessage: room.lastMessage,
         },
         members: conversation.members,
       };
@@ -231,7 +121,7 @@ export const useConversationEventsSubscription = () => {
                 {
                   __typename: 'Conversation' as const,
                   id: conversation.id,
-                  room: { __typename: 'Room' as const, id: room.id, unreadCount: room.unreadCount },
+                  room: { __typename: 'Room' as const, id: room.id },
                 },
                 ...existing.me.conversations.conversations,
               ],
@@ -362,9 +252,6 @@ export const useConversationEventsSubscription = () => {
                       displayName: room.displayName,
                       avatarUrl: room.avatarUrl,
                       createdDate: room.createdDate,
-                      unreadCount: room.unreadCount,
-                      messagesCount: room.messagesCount,
-                      lastMessage: room.lastMessage,
                     },
                     members: conversation.members,
                   },
@@ -396,7 +283,7 @@ export const useConversationEventsSubscription = () => {
                     {
                       __typename: 'Conversation' as const,
                       id: conversation.id,
-                      room: { __typename: 'Room' as const, id: room.id, unreadCount: room.unreadCount },
+                      room: { __typename: 'Room' as const, id: room.id },
                     },
                     ...existing.me.conversations.conversations,
                   ],
@@ -493,225 +380,6 @@ export const useConversationEventsSubscription = () => {
     });
   };
 
-  const handleMessageReceived = (event: MessageReceivedEvent) => {
-    const roomCacheId = client.cache.identify({
-      __typename: 'Room',
-      id: event.roomId,
-    });
-
-    if (!roomCacheId) return;
-
-    // Check if currently viewing this conversation
-    const isViewing = event.roomId === selectedRoomIdRef.current;
-
-    // Check if message is from current user (don't increment unread for own messages)
-    const sender = event.message.sender;
-    const isOwnMessage = sender && 'id' in sender && sender.id === currentUserId;
-
-    // Play the chat sound (US1). Reuses the same isViewing/isOwnMessage signals
-    // that gate the unread increment, layering document.hasFocus() on for the
-    // SOUND (FR-010) — the unread increment below stays selection-based.
-    //
-    // The read RECEIPT is the signal that is now focus-gated, in
-    // useConversationView via useIsDocumentActive (FR-018b): the server cancels
-    // a pending digest on a zero unread count, so an unattended open tab must
-    // not report messages as read. That gate is reactive; this one-shot
-    // hasFocus() read is fine here because it only decides a sound.
-    if (
-      shouldPlayChatSound({
-        isOwnMessage: Boolean(isOwnMessage),
-        isViewing,
-        hasFocus: document.hasFocus(),
-        enabled: chatSoundEnabledRef.current,
-      })
-    ) {
-      playSound('chat');
-    }
-
-    // Write lastMessage to cache first to get a proper reference
-    const lastMessageRef = client.cache.writeFragment({
-      data: toMessageCachePayload(event.message),
-      fragment: MessageCacheFragment,
-    });
-
-    client.cache.modify({
-      id: roomCacheId,
-      fields: {
-        // Update lastMessage with proper cache reference
-        lastMessage: () => lastMessageRef,
-        // Increment messagesCount
-        messagesCount: (existing: number = 0) => existing + 1,
-        // Increment unreadCount ONLY if NOT viewing and NOT own message
-        unreadCount: (existing: number = 0) => (isViewing || isOwnMessage ? existing : existing + 1),
-        // Append to messages array (if loaded in cache)
-        messages: (existingMessages, { readField }) => {
-          // Handle case where messages might not be an array
-          if (!existingMessages || !Array.isArray(existingMessages)) {
-            return existingMessages;
-          }
-
-          // Check if message already exists
-          const messageId = event.message.id;
-          const exists = existingMessages.some(ref => readField('id', ref) === messageId);
-          if (exists) return existingMessages;
-
-          // Reuse lastMessageRef (already written to cache above)
-          return lastMessageRef ? [...existingMessages, lastMessageRef] : existingMessages;
-        },
-      },
-    });
-
-    // Also update the ConversationMessages query cache if it exists
-    const conversationsData = client.cache.readQuery<UserConversationsQuery>({
-      query: UserConversationsDocument,
-    });
-    const conversation = conversationsData?.me?.conversations?.conversations?.find(c => c.room?.id === event.roomId);
-
-    if (conversation) {
-      client.cache.updateQuery<ConversationMessagesQuery>(
-        {
-          query: ConversationMessagesDocument,
-          variables: { conversationId: conversation.id },
-        },
-        existing => {
-          if (!existing?.lookup?.conversation?.room?.messages) return existing;
-
-          // Check if message already exists
-          if (existing.lookup.conversation.room.messages.some(m => m.id === event.message.id)) {
-            return existing;
-          }
-
-          // Same payload the `Room.messages` / `lastMessage` write uses, so both
-          // cache paths land an identically-shaped Message.
-          const newMessage = toMessageCachePayload(event.message);
-
-          return {
-            ...existing,
-            lookup: {
-              ...existing.lookup,
-              conversation: {
-                ...existing.lookup.conversation,
-                room: {
-                  ...existing.lookup.conversation.room,
-                  messages: [...existing.lookup.conversation.room.messages, newMessage],
-                },
-              },
-            },
-          };
-        }
-      );
-    }
-  };
-
-  const handleMessageRemoved = (event: MessageRemovedEvent) => {
-    const roomCacheId = client.cache.identify({
-      __typename: 'Room',
-      id: event.roomId,
-    });
-
-    if (!roomCacheId) return;
-
-    // Remove message from room's messages array
-    client.cache.modify({
-      id: roomCacheId,
-      fields: {
-        messagesCount: (existing: number = 0) => Math.max(0, existing - 1),
-        messages: (existingMessages, { readField }) => {
-          if (!existingMessages || !Array.isArray(existingMessages)) {
-            return existingMessages;
-          }
-          return existingMessages.filter(ref => readField('id', ref) !== event.messageId);
-        },
-      },
-    });
-
-    // Also update the ConversationMessages query cache if it exists
-    const conversationsData = client.cache.readQuery<UserConversationsQuery>({
-      query: UserConversationsDocument,
-    });
-    const conversation = conversationsData?.me?.conversations?.conversations?.find(c => c.room?.id === event.roomId);
-
-    if (conversation) {
-      client.cache.updateQuery<ConversationMessagesQuery>(
-        {
-          query: ConversationMessagesDocument,
-          variables: { conversationId: conversation.id },
-        },
-        existing => {
-          if (!existing?.lookup?.conversation?.room?.messages) return existing;
-
-          return {
-            ...existing,
-            lookup: {
-              ...existing.lookup,
-              conversation: {
-                ...existing.lookup.conversation,
-                room: {
-                  ...existing.lookup.conversation.room,
-                  messages: existing.lookup.conversation.room.messages.filter(m => m.id !== event.messageId),
-                },
-              },
-            },
-          };
-        }
-      );
-    }
-
-    // Evict the message from cache entirely
-    evictFromCache(client.cache, event.messageId, 'Message');
-  };
-
-  const handleReadReceiptUpdated = (event: ReadReceiptUpdatedEvent) => {
-    const roomCacheId = client.cache.identify({
-      __typename: 'Room',
-      id: event.roomId,
-    });
-
-    if (!roomCacheId) {
-      return;
-    }
-
-    // Read current room data to check lastMessage
-    const roomData = client.cache.readFragment<{
-      lastMessage?: { id: string } | null;
-    }>({
-      id: roomCacheId,
-      fragment: RoomLastMessageFragment,
-    });
-
-    const lastMessageId = roomData?.lastMessage?.id;
-
-    if (event.lastReadEventId === lastMessageId) {
-      client.cache.modify({
-        id: roomCacheId,
-        fields: {
-          unreadCount: () => 0,
-        },
-      });
-    } else {
-      // Partial read - try to calculate from cached messages
-      const fullRoomData = client.cache.readFragment<{
-        messages?: { id: string }[];
-      }>({
-        id: roomCacheId,
-        fragment: RoomMessagesFragment,
-      });
-
-      if (fullRoomData?.messages) {
-        const readIndex = fullRoomData.messages.findIndex(m => m.id === event.lastReadEventId);
-        if (readIndex !== -1) {
-          const unreadCount = fullRoomData.messages.length - readIndex - 1;
-          client.cache.modify({
-            id: roomCacheId,
-            fields: {
-              unreadCount: () => unreadCount,
-            },
-          });
-        }
-      }
-    }
-  };
-
   useSubscription({
     skip: !isEnabled || !isAuthenticated,
     onData: ({ data }) => {
@@ -742,21 +410,6 @@ export const useConversationEventsSubscription = () => {
         case ConversationEventType.MemberRemoved:
           if (event.memberRemoved) {
             handleMemberRemoved(event.memberRemoved);
-          }
-          break;
-        case ConversationEventType.MessageReceived:
-          if (event.messageReceived) {
-            handleMessageReceived(event.messageReceived);
-          }
-          break;
-        case ConversationEventType.MessageRemoved:
-          if (event.messageRemoved) {
-            handleMessageRemoved(event.messageRemoved);
-          }
-          break;
-        case ConversationEventType.ReadReceiptUpdated:
-          if (event.readReceiptUpdated) {
-            handleReadReceiptUpdated(event.readReceiptUpdated);
           }
           break;
       }

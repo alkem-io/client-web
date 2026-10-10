@@ -3280,6 +3280,7 @@ export type MessageAttachmentKeySpecifier = (
   | 'height'
   | 'id'
   | 'mimeType'
+  | 'pending'
   | 'size'
   | 'url'
   | 'width'
@@ -3290,6 +3291,7 @@ export type MessageAttachmentFieldPolicy = {
   height?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   mimeType?: FieldPolicy<any> | FieldReadFunction<any>;
+  pending?: FieldPolicy<any> | FieldReadFunction<any>;
   size?: FieldPolicy<any> | FieldReadFunction<any>;
   url?: FieldPolicy<any> | FieldReadFunction<any>;
   width?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5003,6 +5005,7 @@ export type RoomKeySpecifier = (
   | 'displayName'
   | 'id'
   | 'lastMessage'
+  | 'messageAttachments'
   | 'messages'
   | 'messagesCount'
   | 'type'
@@ -5019,6 +5022,7 @@ export type RoomFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   lastMessage?: FieldPolicy<any> | FieldReadFunction<any>;
+  messageAttachments?: FieldPolicy<any> | FieldReadFunction<any>;
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
   messagesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;

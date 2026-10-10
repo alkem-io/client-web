@@ -5450,12 +5450,27 @@ export type MessageAttachment = {
   id?: Maybe<Scalars['UUID']['output']>;
   /** The MIME type of the attachment. */
   mimeType?: Maybe<Scalars['String']['output']>;
+  /** Set by Room.messageAttachments: true when the media is stored but not yet placed in this room, so resolving it again shortly can return the document; false otherwise. Null where not evaluated. */
+  pending?: Maybe<Scalars['Boolean']['output']>;
   /** The size of the attachment in bytes. */
   size?: Maybe<Scalars['Int']['output']>;
   /** The Alkemio document URL (authorized via conversation policy). */
   url?: Maybe<Scalars['String']['output']>;
   /** The pixel width of the attachment (images only). */
   width?: Maybe<Scalars['Int']['output']>;
+};
+
+export type MessageAttachmentMediaInput = {
+  /** The filename carried by the event. */
+  displayName?: InputMaybe<Scalars['String']['input']>;
+  /** The file-service document id hint carried by the event. */
+  documentID?: InputMaybe<Scalars['UUID']['input']>;
+  /** The pixel height carried by the event (images only). */
+  height?: InputMaybe<Scalars['Int']['input']>;
+  /** The Synapse media id of the event (the last path segment of its mxc:// URI on this homeserver). */
+  mediaID: Scalars['String']['input'];
+  /** The pixel width carried by the event (images only). */
+  width?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** Details about a message, including the room it was sent in and the parent entity that is using the room. */
@@ -8932,6 +8947,8 @@ export type Room = {
   id: Scalars['UUID']['output'];
   /** The last message sent to the Room. Useful for conversation previews. */
   lastMessage?: Maybe<Message>;
+  /** Resolves the attachments of media events read directly from Matrix, one entry per input in input order. Unavailable documents retain their event filename without a download URL. */
+  messageAttachments: Array<MessageAttachment>;
   /** Messages in this Room. */
   messages: Array<Message>;
   /** The number of messages in the Room. */
@@ -8946,6 +8963,10 @@ export type Room = {
   updatedDate: Scalars['DateTime']['output'];
   /** Virtual Contributor Interactions in this Room. */
   vcInteractions: Array<VcInteraction>;
+};
+
+export type RoomMessageAttachmentsArgs = {
+  media: Array<MessageAttachmentMediaInput>;
 };
 
 export type RoomUnreadCountsArgs = {
@@ -52236,6 +52257,107 @@ export type RecentSpacesQuery = {
   };
 };
 
+export type ActorProfileQueryVariables = Exact<{
+  actorId: Scalars['UUID']['input'];
+}>;
+
+export type ActorProfileQuery = {
+  __typename?: 'Query';
+  actor?:
+    | {
+        __typename?: 'Account';
+        id: string;
+        type: ActorType;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            }
+          | undefined;
+      }
+    | {
+        __typename?: 'Organization';
+        id: string;
+        type: ActorType;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            }
+          | undefined;
+      }
+    | {
+        __typename?: 'RelayPaginatedSpace';
+        id: string;
+        type: ActorType;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            }
+          | undefined;
+      }
+    | {
+        __typename?: 'Space';
+        id: string;
+        type: ActorType;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            }
+          | undefined;
+      }
+    | {
+        __typename?: 'User';
+        id: string;
+        type: ActorType;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            }
+          | undefined;
+      }
+    | {
+        __typename?: 'VirtualAssistant';
+        id: string;
+        type: ActorType;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            }
+          | undefined;
+      }
+    | {
+        __typename?: 'VirtualContributor';
+        id: string;
+        type: ActorType;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            }
+          | undefined;
+      }
+    | undefined;
+};
+
 export type AssignConversationMemberMutationVariables = Exact<{
   memberData: AssignConversationMemberInput;
 }>;
@@ -52261,54 +52383,6 @@ export type ConversationDetailsQuery = {
             displayName: string;
             avatarUrl?: string | undefined;
             createdDate: Date;
-            unreadCount: number;
-            messagesCount: number;
-            lastMessage?:
-              | {
-                  __typename?: 'Message';
-                  id: string;
-                  message: string;
-                  timestamp: number;
-                  sender?:
-                    | {
-                        __typename?: 'Actor';
-                        id: string;
-                        type: ActorType;
-                        profile?:
-                          | {
-                              __typename?: 'Profile';
-                              id: string;
-                              displayName: string;
-                              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                            }
-                          | undefined;
-                      }
-                    | undefined;
-                  reactions: Array<{
-                    __typename?: 'Reaction';
-                    id: string;
-                    emoji: string;
-                    timestamp: number;
-                    sender?:
-                      | {
-                          __typename?: 'User';
-                          id: string;
-                          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
-                        }
-                      | undefined;
-                  }>;
-                  attachments: Array<{
-                    __typename?: 'MessageAttachment';
-                    id?: string | undefined;
-                    url?: string | undefined;
-                    displayName: string;
-                    mimeType?: string | undefined;
-                    size?: number | undefined;
-                    width?: number | undefined;
-                    height?: number | undefined;
-                  }>;
-                }
-              | undefined;
           };
           members: Array<{
             __typename?: 'Actor';
@@ -52349,54 +52423,6 @@ export type ConversationEventsSubscription = {
               displayName: string;
               avatarUrl?: string | undefined;
               createdDate: Date;
-              unreadCount: number;
-              messagesCount: number;
-              lastMessage?:
-                | {
-                    __typename?: 'Message';
-                    id: string;
-                    message: string;
-                    timestamp: number;
-                    sender?:
-                      | {
-                          __typename?: 'Actor';
-                          id: string;
-                          type: ActorType;
-                          profile?:
-                            | {
-                                __typename?: 'Profile';
-                                id: string;
-                                displayName: string;
-                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                              }
-                            | undefined;
-                        }
-                      | undefined;
-                    reactions: Array<{
-                      __typename?: 'Reaction';
-                      id: string;
-                      emoji: string;
-                      timestamp: number;
-                      sender?:
-                        | {
-                            __typename?: 'User';
-                            id: string;
-                            profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
-                          }
-                        | undefined;
-                    }>;
-                    attachments: Array<{
-                      __typename?: 'MessageAttachment';
-                      id?: string | undefined;
-                      url?: string | undefined;
-                      displayName: string;
-                      mimeType?: string | undefined;
-                      size?: number | undefined;
-                      width?: number | undefined;
-                      height?: number | undefined;
-                    }>;
-                  }
-                | undefined;
             };
             members: Array<{
               __typename?: 'Actor';
@@ -52413,52 +52439,6 @@ export type ConversationEventsSubscription = {
                 | undefined;
             }>;
           };
-          message?:
-            | {
-                __typename?: 'Message';
-                id: string;
-                message: string;
-                timestamp: number;
-                sender?:
-                  | {
-                      __typename?: 'Actor';
-                      id: string;
-                      type: ActorType;
-                      profile?:
-                        | {
-                            __typename?: 'Profile';
-                            id: string;
-                            displayName: string;
-                            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                          }
-                        | undefined;
-                    }
-                  | undefined;
-                reactions: Array<{
-                  __typename?: 'Reaction';
-                  id: string;
-                  emoji: string;
-                  timestamp: number;
-                  sender?:
-                    | {
-                        __typename?: 'User';
-                        id: string;
-                        profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
-                      }
-                    | undefined;
-                }>;
-                attachments: Array<{
-                  __typename?: 'MessageAttachment';
-                  id?: string | undefined;
-                  url?: string | undefined;
-                  displayName: string;
-                  mimeType?: string | undefined;
-                  size?: number | undefined;
-                  width?: number | undefined;
-                  height?: number | undefined;
-                }>;
-              }
-            | undefined;
         }
       | undefined;
     conversationUpdated?:
@@ -52499,125 +52479,6 @@ export type ConversationEventsSubscription = {
           conversation: { __typename?: 'Conversation'; id: string };
         }
       | undefined;
-    messageReceived?:
-      | {
-          __typename?: 'ConversationMessageReceivedEvent';
-          roomId: string;
-          message: {
-            __typename?: 'Message';
-            id: string;
-            message: string;
-            timestamp: number;
-            sender?:
-              | {
-                  __typename?: 'Actor';
-                  id: string;
-                  type: ActorType;
-                  profile?:
-                    | {
-                        __typename?: 'Profile';
-                        id: string;
-                        displayName: string;
-                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                      }
-                    | undefined;
-                }
-              | undefined;
-            reactions: Array<{
-              __typename?: 'Reaction';
-              id: string;
-              emoji: string;
-              timestamp: number;
-              sender?:
-                | {
-                    __typename?: 'User';
-                    id: string;
-                    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
-                  }
-                | undefined;
-            }>;
-            attachments: Array<{
-              __typename?: 'MessageAttachment';
-              id?: string | undefined;
-              url?: string | undefined;
-              displayName: string;
-              mimeType?: string | undefined;
-              size?: number | undefined;
-              width?: number | undefined;
-              height?: number | undefined;
-            }>;
-          };
-        }
-      | undefined;
-    messageRemoved?: { __typename?: 'ConversationMessageRemovedEvent'; roomId: string; messageId: string } | undefined;
-    readReceiptUpdated?:
-      | { __typename?: 'ConversationReadReceiptUpdatedEvent'; roomId: string; lastReadEventId: string }
-      | undefined;
-  };
-};
-
-export type ConversationMessagesQueryVariables = Exact<{
-  conversationId: Scalars['UUID']['input'];
-}>;
-
-export type ConversationMessagesQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    conversation?:
-      | {
-          __typename?: 'Conversation';
-          id: string;
-          room: {
-            __typename?: 'Room';
-            id: string;
-            messages: Array<{
-              __typename?: 'Message';
-              id: string;
-              message: string;
-              timestamp: number;
-              sender?:
-                | {
-                    __typename?: 'Actor';
-                    id: string;
-                    type: ActorType;
-                    profile?:
-                      | {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        }
-                      | undefined;
-                  }
-                | undefined;
-              reactions: Array<{
-                __typename?: 'Reaction';
-                id: string;
-                emoji: string;
-                timestamp: number;
-                sender?:
-                  | {
-                      __typename?: 'User';
-                      id: string;
-                      profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
-                    }
-                  | undefined;
-              }>;
-              attachments: Array<{
-                __typename?: 'MessageAttachment';
-                id?: string | undefined;
-                url?: string | undefined;
-                displayName: string;
-                mimeType?: string | undefined;
-                size?: number | undefined;
-                width?: number | undefined;
-                height?: number | undefined;
-              }>;
-            }>;
-          };
-        }
-      | undefined;
   };
 };
 
@@ -52637,54 +52498,6 @@ export type CreateConversationMutation = {
       displayName: string;
       avatarUrl?: string | undefined;
       createdDate: Date;
-      unreadCount: number;
-      messagesCount: number;
-      lastMessage?:
-        | {
-            __typename?: 'Message';
-            id: string;
-            message: string;
-            timestamp: number;
-            sender?:
-              | {
-                  __typename?: 'Actor';
-                  id: string;
-                  type: ActorType;
-                  profile?:
-                    | {
-                        __typename?: 'Profile';
-                        id: string;
-                        displayName: string;
-                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                      }
-                    | undefined;
-                }
-              | undefined;
-            reactions: Array<{
-              __typename?: 'Reaction';
-              id: string;
-              emoji: string;
-              timestamp: number;
-              sender?:
-                | {
-                    __typename?: 'User';
-                    id: string;
-                    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
-                  }
-                | undefined;
-            }>;
-            attachments: Array<{
-              __typename?: 'MessageAttachment';
-              id?: string | undefined;
-              url?: string | undefined;
-              displayName: string;
-              mimeType?: string | undefined;
-              size?: number | undefined;
-              width?: number | undefined;
-              height?: number | undefined;
-            }>;
-          }
-        | undefined;
     };
     members: Array<{
       __typename?: 'Actor';
@@ -52709,17 +52522,44 @@ export type LeaveConversationMutationVariables = Exact<{
 
 export type LeaveConversationMutation = { __typename?: 'Mutation'; leaveConversation: boolean };
 
-export type MarkMessageAsReadMutationVariables = Exact<{
-  messageData: RoomMarkMessageReadInput;
-}>;
-
-export type MarkMessageAsReadMutation = { __typename?: 'Mutation'; markMessageAsReadInRoom: boolean };
-
 export type RemoveConversationMemberMutationVariables = Exact<{
   memberData: RemoveConversationMemberInput;
 }>;
 
 export type RemoveConversationMemberMutation = { __typename?: 'Mutation'; removeConversationMember: boolean };
+
+export type RoomMessageAttachmentsQueryVariables = Exact<{
+  conversationId: Scalars['UUID']['input'];
+  media: Array<MessageAttachmentMediaInput> | MessageAttachmentMediaInput;
+}>;
+
+export type RoomMessageAttachmentsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    conversation?:
+      | {
+          __typename?: 'Conversation';
+          id: string;
+          room: {
+            __typename?: 'Room';
+            id: string;
+            messageAttachments: Array<{
+              __typename?: 'MessageAttachment';
+              id?: string | undefined;
+              url?: string | undefined;
+              displayName: string;
+              mimeType?: string | undefined;
+              size?: number | undefined;
+              width?: number | undefined;
+              height?: number | undefined;
+              pending?: boolean | undefined;
+            }>;
+          };
+        }
+      | undefined;
+  };
+};
 
 export type SendDirectMessageToUsersMutationVariables = Exact<{
   messageData: SendDirectMessageToUsersInput;
@@ -52759,54 +52599,6 @@ export type UserConversationsQuery = {
           displayName: string;
           avatarUrl?: string | undefined;
           createdDate: Date;
-          unreadCount: number;
-          messagesCount: number;
-          lastMessage?:
-            | {
-                __typename?: 'Message';
-                id: string;
-                message: string;
-                timestamp: number;
-                sender?:
-                  | {
-                      __typename?: 'Actor';
-                      id: string;
-                      type: ActorType;
-                      profile?:
-                        | {
-                            __typename?: 'Profile';
-                            id: string;
-                            displayName: string;
-                            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                          }
-                        | undefined;
-                    }
-                  | undefined;
-                reactions: Array<{
-                  __typename?: 'Reaction';
-                  id: string;
-                  emoji: string;
-                  timestamp: number;
-                  sender?:
-                    | {
-                        __typename?: 'User';
-                        id: string;
-                        profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
-                      }
-                    | undefined;
-                }>;
-                attachments: Array<{
-                  __typename?: 'MessageAttachment';
-                  id?: string | undefined;
-                  url?: string | undefined;
-                  displayName: string;
-                  mimeType?: string | undefined;
-                  size?: number | undefined;
-                  width?: number | undefined;
-                  height?: number | undefined;
-                }>;
-              }
-            | undefined;
         };
         members: Array<{
           __typename?: 'Actor';
@@ -52835,11 +52627,7 @@ export type UserConversationsUnreadCountQuery = {
     __typename?: 'MeQueryResults';
     conversations: {
       __typename?: 'MeConversationsResult';
-      conversations: Array<{
-        __typename?: 'Conversation';
-        id: string;
-        room: { __typename?: 'Room'; id: string; unreadCount: number };
-      }>;
+      conversations: Array<{ __typename?: 'Conversation'; id: string; room: { __typename?: 'Room'; id: string } }>;
     };
   };
 };

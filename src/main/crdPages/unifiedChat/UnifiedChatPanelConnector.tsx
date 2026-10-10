@@ -3,6 +3,7 @@ import { Info, Loader2, Trash2, Users } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
 import { ChatPanel } from '@/crd/components/chat/ChatPanel';
 import { ConversationAvatar } from '@/crd/components/chat/ConversationAvatar';
@@ -46,6 +47,7 @@ export const UnifiedChatPanelConnector = () => {
   const { userModel } = useCurrentUserContext();
   const currentUserId = userModel?.id;
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const {
     isOpen,
@@ -69,16 +71,19 @@ export const UnifiedChatPanelConnector = () => {
   // conversation once this list resolves, then strips the param regardless
   // of match (unknown/inaccessible id degrades to the default list, no error UI).
   useChatDeepLinkSelect(conversations, isLoading);
-  const { messages: rawMessages, isLoading: messagesLoading } = useConversationMessages(selectedConversationId);
-
   const selectedConversation = conversations.find(conversation => conversation.id === selectedConversationId);
+  const {
+    messages: rawMessages,
+    readUpToEventId,
+    isLoading: messagesLoading,
+  } = useConversationMessages(selectedConversation ?? null);
   const isGuidanceThread = selectedConversation?.isGuidance ?? false;
 
   // Realtime conversation events are subscribed globally by
   // <ConversationEventsSubscriber /> (mounted in root.tsx) so they arrive with
   // the panel closed too. The selected room's message stream is inside the view hook.
   const { isSending, handleSendMessage, handleAddReaction, handleRemoveReaction, handleLeaveGroup, clearGuidance } =
-    useUnifiedConversationView(selectedConversation ?? null, rawMessages);
+    useUnifiedConversationView(selectedConversation ?? null, readUpToEventId);
 
   const groupSettings = useGroupSettings(selectedConversation?.id, selectedConversation?.members ?? [], {
     displayName: selectedConversation?.roomDisplayName ?? '',
@@ -168,8 +173,12 @@ export const UnifiedChatPanelConnector = () => {
     setSelectedRoomId(null);
   };
 
+  // The reaction hooks reject when Matrix refuses the event; the message stays unchanged,
+  // so surface the same generic error toast a failed GraphQL mutation shows.
+  const notifyReactionFailed = () => notify(t('apollo.errors.generic', { ns: 'crd-common' }), 'error');
+
   const onAddReaction = (messageId: string, emoji: string) => {
-    handleAddReaction(messageId)(emoji);
+    handleAddReaction(messageId)(emoji)?.catch(notifyReactionFailed);
   };
 
   // CommentReactions toggles by emoji; resolve the current user's reaction id for removal.
@@ -177,7 +186,7 @@ export const UnifiedChatPanelConnector = () => {
     const raw = rawMessages.find(message => message.id === messageId);
     const reaction = raw?.reactions.find(item => item.emoji === emoji && item.sender?.id === currentUserId);
     if (reaction) {
-      handleRemoveReaction(reaction.id);
+      handleRemoveReaction(reaction.id)?.catch(notifyReactionFailed);
     }
   };
 
@@ -329,9 +338,8 @@ export const UnifiedChatPanelConnector = () => {
               if (isGuidanceThread) guidanceResponse.markSent();
               return handleSendMessage(message, documents);
             }}
-            onTextSent={() => {
-              if (selectedConversationId) clearDraft(selectedConversationId);
-            }}
+            onClearDraft={() => clearDraft(selectedConversationId)}
+            onRestoreDraft={() => setDraft(selectedConversationId, getDraft(selectedConversationId))}
             onAddReaction={onAddReaction}
             onRemoveReaction={onRemoveReaction}
           />

@@ -52,7 +52,6 @@ const conversation = (overrides: Partial<UnifiedConversation> = {}): UnifiedConv
   roomId: 'room-1',
   isGroup: false,
   unreadCount: 0,
-  messagesCount: 0,
   createdDate: new Date(),
   members: [],
   isGuidance: false,

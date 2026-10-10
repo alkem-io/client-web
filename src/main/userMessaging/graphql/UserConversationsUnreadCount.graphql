@@ -5,7 +5,6 @@ query UserConversationsUnreadCount {
         id
         room {
           id
-          unreadCount
         }
       }
     }

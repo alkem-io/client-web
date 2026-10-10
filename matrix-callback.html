@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <!-- The URL carries a single-use loginToken: no request from this page may send it as Referer. -->
+    <meta name="referrer" content="no-referrer" />
+    <title>Alkemio</title>
+    <script src="/env-config.js"></script>
+  </head>
+  <body>
+    <!--
+      Matrix SSO callback: carries a single-use loginToken, so nothing that
+      reports URLs (APM, Sentry) may load here.
+    -->
+    <script type="module" src="/src/core/matrix/matrixCallbackEntry.ts"></script>
+  </body>
+</html>

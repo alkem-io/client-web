@@ -272,7 +272,7 @@ export function CommentInput({
       setPendingRefocus(true);
     }
     onSubmit(trimmedContent);
-    // Controlled: the consumer clears once the submit actually succeeded.
+    // Controlled: the consumer clears its draft on submit and restores it if the send is not confirmed.
     if (!controlled) {
       setContent('');
     }
