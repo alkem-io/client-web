@@ -38,8 +38,7 @@ const incomingMessage = {
   attachments: [
     {
       __typename: 'MessageAttachment' as const,
-      id: 'doc-1',
-      url: 'https://alkem.io/storage/document/doc-1',
+      externalReference: 'media-1',
       displayName: 'photo.png',
       mimeType: 'image/png',
       size: 2048,
@@ -54,7 +53,7 @@ const roundTrip = (message: typeof incomingMessage) => {
   cache.writeFragment({ data: toMessageCachePayload(message), fragment: MessageCacheFragment });
   return cache.readFragment<{
     id: string;
-    attachments: { id: string; url: string; mimeType: string; width?: number; height?: number }[];
+    attachments: { externalReference: string; mimeType: string; width?: number; height?: number }[];
   }>({
     id: cache.identify({ __typename: 'Message', id: message.id }) ?? '',
     fragment: MessageCacheFragment,
@@ -70,8 +69,7 @@ describe('realtime message cache write', () => {
     expect(cached).not.toBeNull();
     expect(cached?.attachments).toEqual([
       expect.objectContaining({
-        id: 'doc-1',
-        url: 'https://alkem.io/storage/document/doc-1',
+        externalReference: 'media-1',
         displayName: 'photo.png',
         mimeType: 'image/png',
         size: 2048,

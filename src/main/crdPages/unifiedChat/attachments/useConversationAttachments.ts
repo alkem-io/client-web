@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
+import type { RoomMessageAttachmentInput } from '@/core/apollo/generated/graphql-schema';
 import type { ComposerAttachment } from '@/crd/components/comment/types';
 import type { StorageConfig } from '@/domain/storage/StorageBucket/useStorageConfig';
 import { MIME_TO_EXT } from '@/main/crdPages/utils/mimeToExt';
@@ -11,25 +11,37 @@ import {
   validateAttachments,
 } from './validateAttachments';
 
-type SelectedFile = ComposerAttachment & { file: File; documentId?: string };
-export type SendEvent = (text: string, documentIds?: string[]) => Promise<boolean | undefined>;
+type UploadLifetime = { disposed: boolean; busy: boolean; contextKey: string; upload?: AbortController };
+
+type SelectedFile = ComposerAttachment & { file: File; uploadedAttachment?: RoomMessageAttachmentInput };
+export type AttachmentContext = { roomID: string; threadID?: string };
+export type SendEvent = (text: string, attachmentUpload?: RoomMessageAttachmentInput) => Promise<boolean | undefined>;
 
 /** Owned by one keyed composer instance. Selection is local; Send uploads each file. */
-export function useConversationAttachments(storageConfig: StorageConfig | undefined) {
+export function useConversationAttachments(
+  storageConfig: StorageConfig | undefined,
+  context: AttachmentContext | undefined
+) {
   const { t } = useTranslation('crd-space');
-  const [uploadFile] = useUploadFileMutation();
   const [draft, setDraft] = useState<{ items: SelectedFile[]; error?: string }>({ items: [] });
   const [isSending, setIsSending] = useState(false);
-  const lifetime = useRef({ disposed: false, busy: false });
+  const contextKey = JSON.stringify([context?.roomID, context?.threadID ?? null]);
+  const lifetime = useRef<UploadLifetime>({ disposed: false, busy: false, contextKey });
   useLayoutEffect(() => {
-    const current = { disposed: false, busy: false };
+    const previous = lifetime.current;
+    const current: UploadLifetime = { disposed: false, busy: false, contextKey };
     lifetime.current = current;
+    if (previous.contextKey !== contextKey) {
+      setDraft({ items: [] });
+      setIsSending(false);
+    }
     return () => {
       current.disposed = true;
+      current.upload?.abort();
     };
-  }, []);
+  }, [contextKey]);
 
-  const enabled = Boolean(storageConfig?.canUpload);
+  const enabled = Boolean(storageConfig?.canUpload && context?.roomID);
   const allowedMimeTypes = storageConfig?.allowedMimeTypes ?? DEFAULT_ALLOWED_ATTACHMENT_MIME_TYPES;
   const accept = storageConfig
     ? allowedMimeTypes.flatMap(mime => (MIME_TO_EXT[mime] ? [mime, MIME_TO_EXT[mime]] : [mime])).join(',')
@@ -93,32 +105,46 @@ export function useConversationAttachments(storageConfig: StorageConfig | undefi
       for (const item of draft.items) {
         if (current.disposed) return false;
         activeFile = item;
-        let documentId = item.documentId;
-        if (!documentId) {
-          if (!storageConfig) return false;
+        let uploadedAttachment = item.uploadedAttachment;
+        if (!uploadedAttachment) {
+          if (!context) return false;
           uploading = true;
           setDraft(previous => ({
             ...previous,
             items: previous.items.map(value => (value.id === item.id ? { ...value, status: 'uploading' } : value)),
           }));
-          const { data } = await uploadFile({
-            variables: {
-              file: item.file,
-              uploadData: { storageBucketId: storageConfig.storageBucketId, temporaryLocation: false },
-            },
-          });
+          const controller = new AbortController();
+          current.upload = controller;
+          let upload: { mediaId?: unknown };
+          try {
+            const response = await fetch(
+              `/api/private/rest/messaging/media/upload?filename=${encodeURIComponent(item.file.name)}`,
+              {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': item.file.type || 'application/octet-stream' },
+                body: item.file,
+                signal: controller.signal,
+              }
+            );
+            if (!response.ok) throw new Error('Media upload failed');
+            upload = await response.json();
+          } finally {
+            current.upload = undefined;
+          }
           if (current.disposed) return false;
-          documentId = data?.uploadFileOnStorageBucket.id;
-          if (!documentId) throw new Error('Upload returned no document id');
+          if (typeof upload.mediaId !== 'string' || !upload.mediaId)
+            throw new Error('Upload returned no media reference');
+          uploadedAttachment = { externalReference: upload.mediaId, displayName: item.file.name };
           uploading = false;
           setDraft(previous => ({
             ...previous,
             items: previous.items.map(value =>
-              value.id === item.id ? { ...value, status: 'ready', documentId } : value
+              value.id === item.id ? { ...value, status: 'ready', uploadedAttachment } : value
             ),
           }));
         }
-        if (!(await sendEvent('', [documentId]))) throw new Error('send unconfirmed');
+        if (!(await sendEvent('', uploadedAttachment))) throw new Error('send unconfirmed');
         if (current.disposed) return false;
         setDraft(previous => ({ ...previous, items: previous.items.filter(value => value.id !== item.id) }));
       }

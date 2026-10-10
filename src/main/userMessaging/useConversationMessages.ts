@@ -1,5 +1,6 @@
 import { useConversationMessagesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { mapMessageAttachments, mapMessageReactions, mapMessageSender } from './models';
+import { useAttachmentReadiness } from './useAttachmentReadiness';
 
 export type { ConversationMessage } from './models';
 
@@ -23,15 +24,17 @@ export const useConversationMessages = (conversationId: string | null) => {
         timestamp: msg.timestamp,
         sender: mapMessageSender(msg.sender),
         reactions: mapMessageReactions(msg.reactions),
-        attachments: mapMessageAttachments(msg.attachments),
+        attachments: mapMessageAttachments(msg.attachments, data?.lookup?.conversation?.room?.attachmentBucketId),
       }))
       .sort((a, b) => a.timestamp - b.timestamp);
   })();
 
   const roomId = data?.lookup?.conversation?.room?.id ?? null;
 
+  const readyMessages = useAttachmentReadiness(messages, roomId);
+
   return {
-    messages,
+    messages: readyMessages,
     roomId,
     isLoading: loading,
     error,

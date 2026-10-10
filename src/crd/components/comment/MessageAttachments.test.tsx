@@ -107,12 +107,14 @@ describe('MessageAttachments', () => {
   });
 
   test('video metadata without a picture falls back to the existing download chip', () => {
-    const unsupported = { ...video, displayName: 'unsupported.mov', mimeType: 'video/quicktime' };
+    const onLoadError = vi.fn();
+    const unsupported = { ...video, displayName: 'unsupported.mov', mimeType: 'video/quicktime', onLoadError };
     render(<MessageAttachments attachments={[unsupported]} />);
     const player = screen.getByLabelText(`messageAttachments.videoLabel:${unsupported.displayName}`);
     Object.defineProperty(player, 'videoWidth', { value: 0 });
 
     fireEvent.loadedMetadata(player);
+    expect(onLoadError).not.toHaveBeenCalled();
 
     expect(screen.queryByLabelText(`messageAttachments.videoLabel:${unsupported.displayName}`)).not.toBeInTheDocument();
     expect(screen.getByText('messageAttachments.videoUnavailableHint')).toBeInTheDocument();
@@ -228,6 +230,17 @@ describe('MessageAttachments', () => {
     const retried = screen.getByRole('img', { name: `messageAttachments.imageAlt:${image.displayName}` });
     expect(retried).toHaveAttribute('src', rehomed.url);
     expect(screen.queryByText('messageAttachments.unavailableHint')).not.toBeInTheDocument();
+  });
+
+  test('reports media load failure and retries the same URL only when its integration asks', () => {
+    const onLoadError = vi.fn();
+    const attachment = { ...image, onLoadError };
+    const { rerender } = render(<MessageAttachments attachments={[attachment]} />);
+    fireEvent.error(screen.getByRole('img'));
+    expect(onLoadError).toHaveBeenCalledOnce();
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    rerender(<MessageAttachments attachments={[{ ...attachment, retryKey: 1 }]} />);
+    expect(screen.getByRole('img')).toHaveAttribute('src', image.url);
   });
 
   test('shows a loading status until the image fires onLoad', () => {

@@ -6,6 +6,7 @@ subscription ConversationEvents {
         id
         room {
           id
+          attachmentBucketId
           type
           displayName
           avatarUrl
@@ -44,8 +45,7 @@ subscription ConversationEvents {
             # read so the normalized cache entity is never incomplete, and so a
             # media-only message gets a list preview instead of a blank row.
             attachments {
-              id
-              url
+              externalReference
               displayName
               mimeType
               size
@@ -97,8 +97,7 @@ subscription ConversationEvents {
           }
         }
         attachments {
-          id
-          url
+          externalReference
           displayName
           mimeType
           size
@@ -112,6 +111,7 @@ subscription ConversationEvents {
         id
         room {
           id
+          attachmentBucketId
           displayName
           avatarUrl
         }
@@ -175,8 +175,7 @@ subscription ConversationEvents {
           }
         }
         attachments {
-          id
-          url
+          externalReference
           displayName
           mimeType
           size

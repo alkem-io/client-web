@@ -97,8 +97,7 @@ export const MessageCacheFragment = gql`
       }
     }
     attachments {
-      id
-      url
+      externalReference
       displayName
       mimeType
       size
@@ -188,6 +187,7 @@ export const useConversationEventsSubscription = () => {
         room: {
           __typename: 'Room' as const,
           id: room.id,
+          attachmentBucketId: room.attachmentBucketId,
           type: room.type,
           displayName: room.displayName,
           avatarUrl: room.avatarUrl,
@@ -259,6 +259,7 @@ export const useConversationEventsSubscription = () => {
                 room: c.room
                   ? {
                       ...c.room,
+                      attachmentBucketId: event.conversation.room?.attachmentBucketId,
                       displayName: event.conversation.room?.displayName ?? c.room.displayName,
                       avatarUrl: event.conversation.room?.avatarUrl ?? c.room.avatarUrl,
                     }
@@ -358,6 +359,7 @@ export const useConversationEventsSubscription = () => {
                     room: {
                       __typename: 'Room' as const,
                       id: room.id,
+                      attachmentBucketId: room.attachmentBucketId,
                       type: room.type,
                       displayName: room.displayName,
                       avatarUrl: room.avatarUrl,

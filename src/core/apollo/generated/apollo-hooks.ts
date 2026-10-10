@@ -1137,8 +1137,7 @@ export const ContributorDetailsFragmentDoc = gql`
 ${TagsetDetailsFragmentDoc}`;
 export const MessageAttachmentDetailsFragmentDoc = gql`
     fragment MessageAttachmentDetails on MessageAttachment {
-  id
-  url
+  externalReference
   displayName
   mimeType
   size
@@ -1174,6 +1173,7 @@ export const VcInteractionsDetailsFragmentDoc = gql`
 export const CommentsWithMessagesFragmentDoc = gql`
     fragment CommentsWithMessages on Room {
   id
+  attachmentBucketId
   messagesCount
   authorization {
     id
@@ -13710,9 +13710,9 @@ export type RemoveReactionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveReactionMutationVariables
 >;
 export const ReplyToMessageDocument = gql`
-    mutation ReplyToMessage($roomId: UUID!, $message: String!, $threadId: MessageID!) {
+    mutation ReplyToMessage($roomId: UUID!, $message: String!, $threadId: MessageID!, $attachmentUpload: RoomMessageAttachmentInput) {
   sendMessageReplyToRoom(
-    messageData: {roomID: $roomId, threadID: $threadId, message: $message}
+    messageData: {roomID: $roomId, threadID: $threadId, message: $message, attachmentUpload: $attachmentUpload}
   ) {
     id
     message
@@ -13748,6 +13748,7 @@ export type ReplyToMessageMutationFn = Apollo.MutationFunction<
  *      roomId: // value for 'roomId'
  *      message: // value for 'message'
  *      threadId: // value for 'threadId'
+ *      attachmentUpload: // value for 'attachmentUpload'
  *   },
  * });
  */
@@ -35600,6 +35601,7 @@ export const ConversationDetailsDocument = gql`
       id
       room {
         id
+        attachmentBucketId
         type
         displayName
         avatarUrl
@@ -35635,8 +35637,7 @@ export const ConversationDetailsDocument = gql`
             }
           }
           attachments {
-            id
-            url
+            externalReference
             displayName
             mimeType
             size
@@ -35737,6 +35738,7 @@ export const ConversationEventsDocument = gql`
         id
         room {
           id
+          attachmentBucketId
           type
           displayName
           avatarUrl
@@ -35772,8 +35774,7 @@ export const ConversationEventsDocument = gql`
               }
             }
             attachments {
-              id
-              url
+              externalReference
               displayName
               mimeType
               size
@@ -35825,8 +35826,7 @@ export const ConversationEventsDocument = gql`
           }
         }
         attachments {
-          id
-          url
+          externalReference
           displayName
           mimeType
           size
@@ -35840,6 +35840,7 @@ export const ConversationEventsDocument = gql`
         id
         room {
           id
+          attachmentBucketId
           displayName
           avatarUrl
         }
@@ -35903,8 +35904,7 @@ export const ConversationEventsDocument = gql`
           }
         }
         attachments {
-          id
-          url
+          externalReference
           displayName
           mimeType
           size
@@ -35962,6 +35962,7 @@ export const ConversationMessagesDocument = gql`
       id
       room {
         id
+        attachmentBucketId
         messages {
           id
           message
@@ -35991,8 +35992,7 @@ export const ConversationMessagesDocument = gql`
             }
           }
           attachments {
-            id
-            url
+            externalReference
             displayName
             mimeType
             size
@@ -36077,6 +36077,7 @@ export const CreateConversationDocument = gql`
     id
     room {
       id
+      attachmentBucketId
       type
       displayName
       avatarUrl
@@ -36112,8 +36113,7 @@ export const CreateConversationDocument = gql`
           }
         }
         attachments {
-          id
-          url
+          externalReference
           displayName
           mimeType
           size
@@ -36417,6 +36417,7 @@ export const UserConversationsDocument = gql`
         id
         room {
           id
+          attachmentBucketId
           type
           displayName
           avatarUrl
@@ -36452,8 +36453,7 @@ export const UserConversationsDocument = gql`
               }
             }
             attachments {
-              id
-              url
+              externalReference
               displayName
               mimeType
               size

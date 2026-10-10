@@ -3277,21 +3277,19 @@ export type MessageFieldPolicy = {
 };
 export type MessageAttachmentKeySpecifier = (
   | 'displayName'
+  | 'externalReference'
   | 'height'
-  | 'id'
   | 'mimeType'
   | 'size'
-  | 'url'
   | 'width'
   | MessageAttachmentKeySpecifier
 )[];
 export type MessageAttachmentFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  externalReference?: FieldPolicy<any> | FieldReadFunction<any>;
   height?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
   mimeType?: FieldPolicy<any> | FieldReadFunction<any>;
   size?: FieldPolicy<any> | FieldReadFunction<any>;
-  url?: FieldPolicy<any> | FieldReadFunction<any>;
   width?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageDetailsKeySpecifier = ('message' | 'parent' | 'room' | MessageDetailsKeySpecifier)[];
@@ -4997,6 +4995,7 @@ export type RolesResultSpaceFieldPolicy = {
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RoomKeySpecifier = (
+  | 'attachmentBucketId'
   | 'authorization'
   | 'avatarUrl'
   | 'createdDate'
@@ -5013,6 +5012,7 @@ export type RoomKeySpecifier = (
   | RoomKeySpecifier
 )[];
 export type RoomFieldPolicy = {
+  attachmentBucketId?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   avatarUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;

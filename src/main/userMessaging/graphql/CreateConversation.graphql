@@ -3,6 +3,7 @@ mutation CreateConversation($conversationData: CreateConversationInput!) {
     id
     room {
       id
+      attachmentBucketId
       type
       displayName
       avatarUrl
@@ -41,8 +42,7 @@ mutation CreateConversation($conversationData: CreateConversationInput!) {
         # read so the normalized cache entity is never incomplete, and so a
         # media-only message gets a list preview instead of a blank row.
         attachments {
-          id
-          url
+          externalReference
           displayName
           mimeType
           size

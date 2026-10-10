@@ -5,7 +5,7 @@ import type { CommentsWithMessagesModel } from '@/domain/communication/room/mode
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { mapMessageAttachments } from '@/main/userMessaging/models';
 
-type RoomWithMessages = Pick<CommentsWithMessagesModel, 'messages' | 'authorization'>;
+type RoomWithMessages = Pick<CommentsWithMessagesModel, 'messages' | 'authorization' | 'attachmentBucketId'>;
 
 type MapRoomToCommentDataOptions = {
   currentUserId?: string;
@@ -47,7 +47,7 @@ export function mapRoomToCommentData(
       timestampMs: message.timestamp,
       parentId: message.threadID,
       reactions: mapReactions(message.reactions, currentUserId),
-      attachments: mapMessageAttachments(message.attachments),
+      attachments: mapMessageAttachments(message.attachments, room?.attachmentBucketId),
       canDelete,
     };
   });
