@@ -8,6 +8,7 @@ import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyBut
 import { SpaceAboutDialog } from '@/crd/components/space/SpaceAboutDialog';
 import type { SpaceAboutData } from '@/crd/components/space/SpaceAboutView';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { isApplyUnavailable } from '@/main/crdPages/space/isApplyUnavailable';
 import { mapClassificationEntries } from '@/main/crdPages/topLevelPages/spaceSettings/about/aboutMapper';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { useSpaceApplyFlow } from '../useSpaceApplyFlow';
@@ -149,7 +150,7 @@ export function CrdSpaceAbout({ open, onClose }: CrdSpaceAboutProps) {
     </span>
   ) : undefined;
 
-  const showApplyButton = !isMember && !applyLoading;
+  const showApplyButton = !isMember && !applyLoading && !isApplyUnavailable(buttonProps);
   const joinSlot = showApplyButton ? <SpaceAboutApplyButton {...buttonProps} /> : undefined;
   const memberCount = aboutData.metrics.find(m => m.name === 'members')?.value;
 

@@ -23,6 +23,7 @@ import { VirtualContributorsSection } from '@/crd/components/space/sidebar/Virtu
 import { Skeleton } from '@/crd/primitives/skeleton';
 import type { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { isApplyUnavailable } from '@/main/crdPages/space/isApplyUnavailable';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { PostIndexDialogConnector } from '../callout/PostIndexDialogConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
@@ -232,7 +233,10 @@ export function SpaceTabSidebarConnector({
       </output>
     ) : (
       !isKnownMember &&
-      !isSpaceMember && <SpaceAboutApplyButton key="applicationButton" {...applyButtonProps} className="w-full" />
+      !isSpaceMember &&
+      !isApplyUnavailable(applyButtonProps) && (
+        <SpaceAboutApplyButton key="applicationButton" {...applyButtonProps} className="w-full" />
+      )
     ),
     createSubspace: permissions.canCreateSubspaces && (
       <CreateSubspaceButton key="createSubspace" onClick={onCreateSubspace} />

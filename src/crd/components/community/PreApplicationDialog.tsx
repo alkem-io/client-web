@@ -5,9 +5,6 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } f
 
 export type PreApplicationDialogVariant = 'dialog-parent-app-pending' | 'dialog-apply-parent';
 
-const PENDING_STATES = new Set(['new', 'archived']);
-const isApplicationPending = (state?: string): boolean => !!state && PENDING_STATES.has(state);
-
 type PreApplicationDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -15,7 +12,7 @@ type PreApplicationDialogProps = {
   parentCommunitySpaceLevel?: 'L0' | 'L1' | 'L2';
   parentCommunityName?: string;
   subspaceName?: string;
-  parentApplicationState?: string;
+  isParentApplicationPending: boolean;
   applyUrl?: string;
   parentApplyUrl?: string;
   className?: string;
@@ -28,16 +25,15 @@ export function PreApplicationDialog({
   parentCommunitySpaceLevel,
   parentCommunityName,
   subspaceName,
-  parentApplicationState,
+  isParentApplicationPending,
   applyUrl,
   parentApplyUrl,
   className,
 }: PreApplicationDialogProps) {
   const { t } = useTranslation();
 
-  const pending = isApplicationPending(parentApplicationState);
-  const ctaHref = pending ? applyUrl : parentApplyUrl;
-  const ctaLabel = pending
+  const ctaHref = isParentApplicationPending ? applyUrl : parentApplyUrl;
+  const ctaLabel = isParentApplicationPending
     ? t('buttons.apply')
     : t(`components.application-button.${parentCommunitySpaceLevel === 'L0' ? 'goToSpace' : 'goToSubspace'}` as const);
 
