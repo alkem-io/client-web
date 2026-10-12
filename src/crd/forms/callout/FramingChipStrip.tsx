@@ -4,25 +4,18 @@ import {
   FolderTree,
   Image as ImageIcon,
   Megaphone,
-  MoreHorizontal,
   Presentation,
   StickyNote,
   Users,
   Vote,
   X,
 } from 'lucide-react';
-import { type ComponentType, type SVGProps, useState } from 'react';
+import { type ComponentType, type SVGProps, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DeleteFramingDialog } from '@/crd/components/dialogs/DeleteFramingDialog';
+import { ChipOverflowMenu, chipBaseClass, chipIdleClass, useChipOverflow } from '@/crd/forms/callout/ChipOverflowMenu';
 import { chipIconTint, chipSurfaceTint } from '@/crd/forms/callout/chipTints';
 import { cn } from '@/crd/lib/utils';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from '@/crd/primitives/dropdown-menu';
 
 export type FramingChipId =
   | 'whiteboard'
@@ -72,14 +65,6 @@ const CHIPS: Chip[] = [
  * not good enough to order the menu, which stays in `CHIPS` order.
  */
 const PRIMARY_CHIP_IDS: FramingChipId[] = ['whiteboard', 'memo', 'image'];
-
-/**
- * Below this many available chips the menu is pointless — it would hold one or
- * two items while the row has room for them. Consumers that narrow the list via
- * `allowedChips` (a template form, a VC knowledge base) land here and keep the
- * flat row they have today.
- */
-const MIN_CHIPS_FOR_MENU = 5;
 
 export type DisabledChipMap = Partial<Record<FramingChipId, { tooltip?: string }>>;
 
@@ -131,16 +116,10 @@ export function FramingChipStrip({
 }: FramingChipStripProps) {
   const { t } = useTranslation('crd-space');
   const [confirmClearOpen, setConfirmClearOpen] = useState(false);
+  const hintIdPrefix = useId();
 
   const chips = allowedChips ? CHIPS.filter(chip => allowedChips.includes(chip.id)) : CHIPS;
-
-  // With few enough chips available the row shows all of them, exactly as before.
-  const useMenu = chips.length >= MIN_CHIPS_FOR_MENU;
-  // The selected chip is always on the surface, even when it is one of the ones
-  // the menu normally holds: a choice you have already made must stay visible
-  // and clearable without reopening a menu to find it.
-  const rowChips = useMenu ? chips.filter(chip => PRIMARY_CHIP_IDS.includes(chip.id) || chip.id === value) : chips;
-  const menuChips = useMenu ? chips.filter(chip => !rowChips.includes(chip)) : [];
+  const { rowChips, menuChips, keepInRow } = useChipOverflow(chips, PRIMARY_CHIP_IDS, value);
 
   const handleClick = (chip: Chip) => {
     if (editMode) {
@@ -156,8 +135,10 @@ export function FramingChipStrip({
     }
     if (disabledChips?.[chip.id]) return;
     if (chip.id === value) {
+      keepInRow(chip.id);
       onChange('none');
     } else {
+      keepInRow(undefined);
       onChange(chip.id);
     }
   };
@@ -186,6 +167,9 @@ export function FramingChipStrip({
               const fixedActive = editMode && active && Boolean(fixedKindChips?.includes(chip.id));
               const activeClearable = editMode && active && !fixedActive;
               const isInert = fixedActive || (!activeClearable && (isDisabled || (editMode && !active)));
+              const hint =
+                disabledInfo?.tooltip ?? (fixedActive || (editMode && !active) ? t('forms.typeLockedHint') : undefined);
+              const hintId = `${hintIdPrefix}-${chip.id}-hint`;
               return (
                 // biome-ignore lint/a11y/useSemanticElements: the chip is a styled <button>, not an <input type="radio">
                 <button
@@ -195,17 +179,17 @@ export function FramingChipStrip({
                   aria-checked={active}
                   aria-disabled={isInert ? 'true' : undefined}
                   aria-label={t(chip.labelKey as 'callout.whiteboard')}
-                  title={
-                    disabledInfo?.tooltip ??
-                    (fixedActive || (editMode && !active) ? t('forms.typeLockedHint') : undefined)
-                  }
+                  // The hint is the chip's description, as a menu item's reason
+                  // is, not only a hover `title`.
+                  title={hint}
+                  aria-describedby={hint ? hintId : undefined}
                   onClick={() => handleClick(chip)}
                   className={cn(
-                    'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                    active
-                      ? cn(chipSurfaceTint(chip.id), 'text-foreground')
-                      : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
-                    isDisabled && !activeClearable && 'opacity-50 cursor-not-allowed pointer-events-none',
+                    chipBaseClass,
+                    active ? cn(chipSurfaceTint(chip.id), 'text-foreground') : chipIdleClass(isInert),
+                    // No pointer-events-none: it would swallow the `title` that
+                    // says why the chip is unavailable. `handleClick` ignores it.
+                    isDisabled && !activeClearable && 'opacity-50 cursor-not-allowed',
                     editMode && !active && !isDisabled && 'opacity-60 cursor-not-allowed',
                     fixedActive && 'cursor-not-allowed'
                   )}
@@ -215,60 +199,35 @@ export function FramingChipStrip({
                   {/* The X marks the active chip as removable; clicking the chip itself
                     deselects (create) or asks to confirm clearing the framing (edit). */}
                   {active && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
+                  {hint && (
+                    <span id={hintId} className="sr-only">
+                      {hint}
+                    </span>
+                  )}
                 </button>
               );
             })}
           </div>
           {menuChips.length > 0 && (
-            <DropdownMenu>
-              {/* In edit mode the framing type is locked, so nothing in the menu
-                  can be chosen. The trigger is greyed and inert for the same
-                  reason the inactive chips are, and carries the same hint —
-                  hiding it would make the row change shape between create and
-                  edit for no reason the user can see. */}
-              <DropdownMenuTrigger
-                disabled={editMode}
-                aria-label={t('forms.moreFramingTypesHeading')}
-                title={editMode ? t('forms.typeLockedHint') : undefined}
-                className={cn(
-                  'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
-                  editMode && 'opacity-60 cursor-not-allowed'
-                )}
-              >
-                <MoreHorizontal className="w-4 h-4" aria-hidden="true" />
-                <span>{t('forms.moreFramingTypes')}</span>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-64">
-                <DropdownMenuLabel>{t('forms.moreFramingTypesHeading')}</DropdownMenuLabel>
-                {menuChips.map(chip => {
-                  const disabledInfo = disabledChips?.[chip.id];
-                  const isDisabled = Boolean(disabledInfo);
-                  return (
-                    <DropdownMenuItem
-                      key={chip.id}
-                      // Not Radix's `disabled`: that sets `pointer-events: none`,
-                      // which would swallow the tooltip explaining *why* the type
-                      // is unavailable. Inert via aria + a prevented select keeps
-                      // the row hoverable so the reason can still be read.
-                      aria-disabled={isDisabled ? 'true' : undefined}
-                      title={disabledInfo?.tooltip}
-                      onSelect={event => {
-                        if (isDisabled) {
-                          event.preventDefault();
-                          return;
-                        }
-                        onChange(chip.id);
-                      }}
-                      className={cn(isDisabled && 'opacity-50 cursor-not-allowed')}
-                    >
-                      <chip.icon className={cn('w-4 h-4', chipIconTint(chip.id))} aria-hidden="true" />
-                      <span>{t(chip.labelKey as 'callout.whiteboard')}</span>
-                    </DropdownMenuItem>
-                  );
-                })}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <ChipOverflowMenu
+              chips={menuChips.map(chip => {
+                const disabledInfo = disabledChips?.[chip.id];
+                return {
+                  id: chip.id,
+                  label: t(chip.labelKey as 'callout.whiteboard'),
+                  icon: chip.icon,
+                  disabled: disabledInfo && { reason: disabledInfo.tooltip },
+                };
+              })}
+              label={t('forms.moreFramingTypes')}
+              heading={t('forms.moreFramingTypesHeading')}
+              locked={editMode}
+              lockedHint={t('forms.typeLockedHint')}
+              onSelect={id => {
+                keepInRow(undefined);
+                onChange(id);
+              }}
+            />
           )}
         </div>
       </div>
@@ -277,6 +236,7 @@ export function FramingChipStrip({
         onOpenChange={setConfirmClearOpen}
         onConfirm={() => {
           setConfirmClearOpen(false);
+          if (value !== 'none') keepInRow(value);
           onChange('none');
         }}
       />

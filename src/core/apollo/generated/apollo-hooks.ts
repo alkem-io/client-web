@@ -32832,6 +32832,98 @@ export type SpaceExplorerWelcomeSpaceQueryResult = Apollo.QueryResult<
 export function refetchSpaceExplorerWelcomeSpaceQuery(variables: SchemaTypes.SpaceExplorerWelcomeSpaceQueryVariables) {
   return { query: SpaceExplorerWelcomeSpaceDocument, variables: variables };
 }
+export const OrganizationSettingsMembershipsDocument = gql`
+    query OrganizationSettingsMemberships($organizationId: UUID!) {
+  rolesOrganization(
+    rolesData: {actorID: $organizationId, filter: {visibilities: [ACTIVE, DEMO, INACTIVE]}}
+  ) {
+    id
+    spaces {
+      id
+      roles
+      displayName
+      subspaces {
+        id
+        displayName
+        roles
+        level
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useOrganizationSettingsMembershipsQuery__
+ *
+ * To run a query within a React component, call `useOrganizationSettingsMembershipsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationSettingsMembershipsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationSettingsMembershipsQuery({
+ *   variables: {
+ *      organizationId: // value for 'organizationId'
+ *   },
+ * });
+ */
+export function useOrganizationSettingsMembershipsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OrganizationSettingsMembershipsQuery,
+    SchemaTypes.OrganizationSettingsMembershipsQueryVariables
+  > &
+    ({ variables: SchemaTypes.OrganizationSettingsMembershipsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.OrganizationSettingsMembershipsQuery,
+    SchemaTypes.OrganizationSettingsMembershipsQueryVariables
+  >(OrganizationSettingsMembershipsDocument, options);
+}
+export function useOrganizationSettingsMembershipsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrganizationSettingsMembershipsQuery,
+    SchemaTypes.OrganizationSettingsMembershipsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OrganizationSettingsMembershipsQuery,
+    SchemaTypes.OrganizationSettingsMembershipsQueryVariables
+  >(OrganizationSettingsMembershipsDocument, options);
+}
+export function useOrganizationSettingsMembershipsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.OrganizationSettingsMembershipsQuery,
+        SchemaTypes.OrganizationSettingsMembershipsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.OrganizationSettingsMembershipsQuery,
+    SchemaTypes.OrganizationSettingsMembershipsQueryVariables
+  >(OrganizationSettingsMembershipsDocument, options);
+}
+export type OrganizationSettingsMembershipsQueryHookResult = ReturnType<typeof useOrganizationSettingsMembershipsQuery>;
+export type OrganizationSettingsMembershipsLazyQueryHookResult = ReturnType<
+  typeof useOrganizationSettingsMembershipsLazyQuery
+>;
+export type OrganizationSettingsMembershipsSuspenseQueryHookResult = ReturnType<
+  typeof useOrganizationSettingsMembershipsSuspenseQuery
+>;
+export type OrganizationSettingsMembershipsQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrganizationSettingsMembershipsQuery,
+  SchemaTypes.OrganizationSettingsMembershipsQueryVariables
+>;
+export function refetchOrganizationSettingsMembershipsQuery(
+  variables: SchemaTypes.OrganizationSettingsMembershipsQueryVariables
+) {
+  return { query: OrganizationSettingsMembershipsDocument, variables: variables };
+}
 export const MyMcpApiKeysDocument = gql`
     query MyMcpApiKeys {
   me {

@@ -7,10 +7,20 @@ import { Input } from '@/crd/primitives/input';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 
 export type ContributorSelectorUserResult = {
+  /**
+   * The entity's id — a user, organization, virtual-contributor or subspace id
+   * depending on the consumer. (The field is named `userId` for historical
+   * reasons; renaming it is deferred as a standalone refactor.)
+   */
   userId: string;
   displayName: string;
   avatarUrl?: string;
   location?: string;
+  /**
+   * Optional type indication rendered beside the name (e.g. People /
+   * Organizations); omitted by the invite, chat and Spaces consumers.
+   */
+  typeLabel?: string;
 };
 
 /**
@@ -348,6 +358,9 @@ export function ContributorSelector({
                           <span className="text-caption text-muted-foreground truncate">{user.location}</span>
                         )}
                       </div>
+                      {user.typeLabel && (
+                        <span className="text-caption text-muted-foreground shrink-0">{user.typeLabel}</span>
+                      )}
                     </button>
                   </li>
                 ))}
