@@ -30,9 +30,8 @@
  *    testable here for the same reason.
  */
 import { describe, expect, test } from 'vitest';
-import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import type { ContributorSelectorInvitee } from '@/crd/forms/ContributorSelector';
-import { actorTypeToContributorTypeId, omitIneligibleIds } from './useSelectionCandidates';
+import { omitIneligibleIds } from './useSelectionCandidates';
 
 // ---------------------------------------------------------------------------
 // omitIneligibleIds
@@ -109,22 +108,5 @@ describe('omitIneligibleIds', () => {
       { kind: 'organization', id: 'o-gone', displayName: 'o-gone', eligible: false },
     ];
     expect(omitIneligibleIds(['u1', 'o-gone'], chips)).toEqual(['u1']);
-  });
-});
-
-// ---------------------------------------------------------------------------
-// actorTypeToContributorTypeId
-// ---------------------------------------------------------------------------
-describe('actorTypeToContributorTypeId', () => {
-  test('maps User → user', () => {
-    expect(actorTypeToContributorTypeId(ActorType.User)).toBe('user');
-  });
-
-  test('maps Organization → organization', () => {
-    expect(actorTypeToContributorTypeId(ActorType.Organization)).toBe('organization');
-  });
-
-  test('maps VirtualContributor → virtualContributor', () => {
-    expect(actorTypeToContributorTypeId(ActorType.VirtualContributor)).toBe('virtualContributor');
   });
 });

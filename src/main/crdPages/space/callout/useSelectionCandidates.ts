@@ -7,8 +7,11 @@
  * no new GraphQL documents, no platform-wide fetches.
  *
  * The hook returns:
- *  - `candidates`: the eligible set filtered to the callout's configured
- *    contributor types (for the picker display — FR-005).
+ *  - `candidates`: the eligible set, scoped to the callout's configured
+ *    contributor types INTERSECTED with the kinds this picker can select
+ *    (users and organizations — 084 D2).  That scoping is load-bearing, not
+ *    cosmetic: it is what keeps every selectable kind renderable by the
+ *    callout (084 FR-002 / INV-OFFER).
  *  - `loading`: whether the role-set data is still in flight.
  *  - `resolveChips`: given `selectedIds` (from form state), returns the
  *    corresponding chip entries (eligible + ineligible) against the FULL
@@ -17,8 +20,6 @@
  *    actors of that type to be marked ineligible on the next save (FR-011:
  *    the write-time scope guard checks space membership only, not type
  *    membership).
- *  - `filterCandidates(query)`: client-side name search over the candidate
- *    set (FR-008 pattern — search over the already-fetched set).
  *  - `refetch`: imperatively re-run the query (used on save failure to
  *    reload membership data so a departed member is removed from the
  *    candidate set and the next eligibility strip can succeed — spec Edge
@@ -29,7 +30,7 @@
  * mutations.
  */
 import { useRoleSetRoleAssignmentQuery } from '@/core/apollo/generated/apollo-hooks';
-import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import type { ContributorSelectorInvitee } from '@/crd/forms/ContributorSelector';
 import type { ContributorTypeId } from '@/crd/forms/callout/types';
 
@@ -46,10 +47,10 @@ type UseSelectionCandidatesOptions = {
   roleSetId: string | undefined;
   /**
    * Contributor types currently configured on the callout.
-   * Only members whose kind matches one of these types appear in `candidates`
-   * (picker display, FR-005).  The eligibility map used by `resolveChips`
-   * always covers all three types (FR-011: type-membership is a read-time
-   * concern, not an eligibility gate).
+   * `candidates` = these types ∩ SELECTABLE_KINDS, so the picker can never
+   * offer a kind the callout would not render (084 FR-002 / INV-OFFER).
+   * The eligibility map used by `resolveChips` always covers all three types
+   * (FR-011: type-membership is a read-time concern, not an eligibility gate).
    */
   contributorTypes: ContributorTypeId[];
   /** Skip all fetching (e.g. when the form is closed or the mode is 'auto'). */
@@ -71,11 +72,6 @@ type UseSelectionCandidatesResult = {
    */
   resolveChips: (selectedIds: string[]) => ContributorSelectorInvitee[];
   /**
-   * Returns the candidates whose `displayName` contains the given search
-   * query (case-insensitive).  Empty string → all candidates.
-   */
-  filterCandidates: (query: string) => SelectionCandidate[];
-  /**
    * Imperatively re-fetches the membership data.  Call this on save failure
    * (concurrent-churn recovery) so a departed member is removed from the
    * candidate set and the next eligibility strip in saveEdit can succeed.
@@ -84,6 +80,11 @@ type UseSelectionCandidatesResult = {
 };
 
 const ALL_ROLES: RoleName[] = [RoleName.Admin, RoleName.Lead, RoleName.Member];
+
+// Kinds the manual picker can select. Virtual contributors are out of scope for
+// manual selection (084 D2 / operator ruling O2) — whether to offer them is a
+// product decision with its own story.
+const SELECTABLE_KINDS: SelectionCandidate['kind'][] = ['user', 'organization'];
 
 export function useSelectionCandidates({
   roleSetId,
@@ -160,8 +161,11 @@ export function useSelectionCandidates({
     }
   }
 
-  // Filter to configured types for picker display (FR-005).
-  const candidates = Array.from(allMembersById.values()).filter(c => contributorTypes.includes(c.kind));
+  // The configured types ∩ the selectable kinds — the one owner of "which kinds
+  // are offered" (084 FR-002).
+  const candidates = Array.from(allMembersById.values()).filter(
+    c => SELECTABLE_KINDS.includes(c.kind) && contributorTypes.includes(c.kind)
+  );
 
   // resolveChips uses the full all-types map so that an id belonging to a
   // still-valid community member is never marked ineligible just because its
@@ -212,17 +216,11 @@ export function useSelectionCandidates({
     });
   };
 
-  const filterCandidates = (query: string): SelectionCandidate[] => {
-    if (!query.trim()) return candidates;
-    const lower = query.toLowerCase();
-    return candidates.filter(c => c.displayName.toLowerCase().includes(lower));
-  };
-
   const refetch = () => {
     void rawRefetch();
   };
 
-  return { candidates, loading, resolveChips, filterCandidates, refetch };
+  return { candidates, loading, resolveChips, refetch };
 }
 
 /**
@@ -242,12 +240,4 @@ export function omitIneligibleIds(selectedIds: string[], chips: ContributorSelec
     }
   }
   return selectedIds.filter(id => !ineligibleSet.has(id));
-}
-
-/** Map an ActorType → ContributorTypeId (used when restricting by configured types). */
-export function actorTypeToContributorTypeId(actor: ActorType): ContributorTypeId | undefined {
-  if (actor === ActorType.User) return 'user';
-  if (actor === ActorType.Organization) return 'organization';
-  if (actor === ActorType.VirtualContributor) return 'virtualContributor';
-  return undefined;
 }
