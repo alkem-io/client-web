@@ -49,9 +49,8 @@ const renderEditor = (props: ContributorProps) =>
  * rows would pass vacuously. Every candidate shares the substring 'Alpha'.
  */
 const renderWithQuery = async (props: ContributorProps) => {
-  const utils = renderEditor({ selectionMode: 'custom', ...props });
+  renderEditor({ selectionMode: 'custom', ...props });
   await userEvent.type(screen.getByLabelText('forms.selection.searchAriaLabel'), 'Alpha');
-  return utils;
 };
 
 const chip = (id: string, displayName: string, kind: 'user' | 'organization'): ContributorSelectorInvitee =>

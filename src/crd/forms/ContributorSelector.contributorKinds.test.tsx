@@ -36,12 +36,6 @@ const renderPicker = (
   );
 
 describe('ContributorSelector — contributor-type indication', () => {
-  test('renders a result row’s typeLabel', () => {
-    renderPicker([{ userId: 'org-1', displayName: 'Acme Org', typeLabel: 'Organizations' }]);
-
-    expect(screen.getByText('Organizations')).toBeInTheDocument();
-  });
-
   test('renders each row’s own typeLabel', () => {
     renderPicker([
       { userId: 'user-1', displayName: 'Alice Adams', typeLabel: 'People' },
