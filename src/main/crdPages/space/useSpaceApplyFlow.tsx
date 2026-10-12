@@ -6,7 +6,6 @@ import { PreJoinParentDialog } from '@/crd/components/community/PreJoinParentDia
 import type { SpaceAboutApplyButtonProps } from '@/crd/components/space/SpaceAboutApplyButton';
 import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
 import isApplicationPending from '@/domain/community/applicationButton/isApplicationPending';
-import { ApplicationState } from '@/domain/community/invitations/InvitationApplicationConstants';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import { ApplyDialogConnector } from './about/ApplyDialogConnector';
 import { InvitationDetailConnector } from './about/InvitationDetailConnector';
@@ -72,9 +71,15 @@ export function useSpaceApplyFlow({
     onJoin: onJoined ?? (() => navigate(spaceProfileUrl)),
   });
 
-  const preAppDialogVariant = isApplicationPending(applicationButtonProps.parentApplicationState)
-    ? 'dialog-parent-app-pending'
-    : 'dialog-apply-parent';
+  // Resolved once, here: `isApplicationPending` is domain logic, so the purely
+  // presentational CRD components receive the verdict rather than re-deriving it
+  // from a raw state string (they each used to, and disagreed with each other).
+  // `hasApplied` is the optimistic local flag — an application just submitted is
+  // pending even though the server state hasn't been refetched yet.
+  const isPending = hasApplied || isApplicationPending(applicationButtonProps.applicationState);
+  const isParentPending = isApplicationPending(applicationButtonProps.parentApplicationState);
+
+  const preAppDialogVariant = isParentPending ? 'dialog-parent-app-pending' : 'dialog-apply-parent';
 
   const parentCommunitySpaceLevel = applicationButtonProps.parentCommunitySpaceLevel as 'L0' | 'L1' | 'L2' | undefined;
 
@@ -82,9 +87,9 @@ export function useSpaceApplyFlow({
     isAuthenticated: applicationButtonProps.isAuthenticated,
     isMember: applicationButtonProps.isMember,
     isParentMember: applicationButtonProps.isParentMember,
-    applicationState: hasApplied ? ApplicationState.NEW : applicationButtonProps.applicationState,
+    isApplicationPending: isPending,
     userInvitation: applicationButtonProps.userInvitation,
-    parentApplicationState: applicationButtonProps.parentApplicationState,
+    isParentApplicationPending: isParentPending,
     canJoinCommunity: applicationButtonProps.canJoinCommunity,
     canAcceptInvitation: applicationButtonProps.canAcceptInvitation,
     canApplyToCommunity: applicationButtonProps.canApplyToCommunity,
@@ -132,7 +137,7 @@ export function useSpaceApplyFlow({
         parentCommunitySpaceLevel={parentCommunitySpaceLevel}
         parentCommunityName={applicationButtonProps.parentCommunityName}
         subspaceName={applicationButtonProps.subspaceName}
-        parentApplicationState={applicationButtonProps.parentApplicationState}
+        isParentApplicationPending={isParentPending}
         applyUrl={applicationButtonProps.applyUrl}
         parentApplyUrl={applicationButtonProps.parentUrl}
       />

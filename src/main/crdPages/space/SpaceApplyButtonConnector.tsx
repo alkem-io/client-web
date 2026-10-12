@@ -1,4 +1,5 @@
 import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
+import { isApplyUnavailable } from '@/main/crdPages/space/isApplyUnavailable';
 import { useSpaceApplyFlow } from './useSpaceApplyFlow';
 
 type SpaceApplyButtonConnectorProps = {
@@ -23,7 +24,7 @@ export function SpaceApplyButtonConnector({
     parentSpaceId,
   });
 
-  if (loading || isMember) {
+  if (loading || isMember || isApplyUnavailable(buttonProps)) {
     return null;
   }
 
