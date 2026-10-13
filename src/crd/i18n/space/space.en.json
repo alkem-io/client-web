@@ -585,6 +585,7 @@
     "draftLabel": "Draft",
     "notifyMembers": "Notify space members",
     "titleRequiredHint": "Add a title to your $t(common.callout) to continue",
+    "descriptionTooLongHint": "Shorten the description to continue — it is over the length limit",
     "saveDraft": "Save Draft",
     "save": "Save",
     "publish": "Post",

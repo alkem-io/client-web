@@ -585,6 +585,7 @@
     "draftLabel": "Entwurf",
     "notifyMembers": "Bereichsmitglieder benachrichtigen",
     "titleRequiredHint": "Fügen Sie Ihrem Beitrag einen Titel hinzu, um fortzufahren",
+    "descriptionTooLongHint": "Kürzen Sie die Beschreibung, um fortzufahren – sie überschreitet die zulässige Länge",
     "saveDraft": "Entwurf speichern",
     "save": "Speichern",
     "publish": "Veröffentlichen",

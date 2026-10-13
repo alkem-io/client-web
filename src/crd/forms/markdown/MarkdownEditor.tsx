@@ -30,7 +30,15 @@ type MarkdownEditorProps = MarkdownUploadProps & {
   /** Applied to the editor's root element so a sibling `<label htmlFor>` can reference it. */
   id?: string;
   placeholder?: string;
+  /**
+   * Turns on the character counter. It counts the markdown `value` — the string
+   * that is stored and validated — not the visible text, so formatting syntax and
+   * link / image URLs count too. That keeps the counter in agreement with any
+   * length validator applied to the same value.
+   */
   maxLength?: number;
+  /** When set, the counter stays hidden until `value` reaches this many characters. */
+  counterThreshold?: number;
   disabled?: boolean;
   className?: string;
   /** Hides image + embed toolbar buttons (e.g. inline comment composer). */
@@ -54,6 +62,7 @@ function MarkdownEditorLazy({
   id,
   placeholder,
   maxLength,
+  counterThreshold,
   disabled,
   className,
   onImageUpload,
@@ -80,8 +89,9 @@ function MarkdownEditorLazy({
 
   if (!editor) return null;
 
-  const charCount = editor.getText().length;
+  const charCount = value.length;
   const isOverLimit = maxLength != null && charCount > maxLength;
+  const showCounter = maxLength != null && charCount >= (counterThreshold ?? 0);
 
   return (
     <div
@@ -108,7 +118,7 @@ function MarkdownEditorLazy({
         {...(placeholder ? { 'data-placeholder': placeholder } : {})}
       />
 
-      {maxLength != null && (
+      {showCounter && (
         <div className="flex justify-end px-3 pb-2">
           <span className={cn('text-caption', isOverLimit ? 'text-destructive' : 'text-muted-foreground')}>
             {t('editor.charCount', { count: charCount, max: maxLength })}
