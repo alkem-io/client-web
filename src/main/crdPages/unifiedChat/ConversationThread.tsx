@@ -5,15 +5,26 @@ import { useConversationStorageConfig } from './attachments/useConversationStora
 
 type Props = Omit<ComponentProps<typeof ChatThreadView>, 'onSendMessage'> & {
   conversationId: string;
+  roomId: string | undefined;
   attachmentsAllowed: boolean;
   sendEvent: SendEvent;
   onTextSent: () => void;
 };
 
 /** The connector keys this component by conversation, giving each draft its own lifetime. */
-export function ConversationThread({ conversationId, attachmentsAllowed, sendEvent, onTextSent, ...view }: Props) {
+export function ConversationThread({
+  conversationId,
+  roomId,
+  attachmentsAllowed,
+  sendEvent,
+  onTextSent,
+  ...view
+}: Props) {
   const { storageConfig } = useConversationStorageConfig(conversationId);
-  const files = useConversationAttachments(attachmentsAllowed ? storageConfig : undefined);
+  const files = useConversationAttachments(
+    attachmentsAllowed ? storageConfig : undefined,
+    roomId ? { roomID: roomId } : undefined
+  );
   return (
     <ChatThreadView
       {...view}

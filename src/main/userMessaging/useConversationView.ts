@@ -4,6 +4,7 @@ import {
   useMarkMessageAsReadMutation,
   useSendMessageToRoomMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import type { RoomMessageAttachmentInput } from '@/core/apollo/generated/graphql-schema';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
 import type { UserConversation } from './models';
@@ -65,9 +66,8 @@ export const useConversationView = (
     onLeaveConversation?.();
   };
 
-  const handleSendMessage = async (message: string, attachments?: string[]) => {
-    const hasAttachments = Boolean(attachments && attachments.length > 0);
-    if (!conversation?.roomId || (!message.trim() && !hasAttachments)) return;
+  const handleSendMessage = async (message: string, attachmentUpload?: RoomMessageAttachmentInput) => {
+    if (!conversation?.roomId || (!message.trim() && !attachmentUpload)) return;
 
     try {
       await sendMessage({
@@ -75,8 +75,7 @@ export const useConversationView = (
           messageData: {
             roomID: conversation.roomId,
             message: message.trim(),
-            // file-service document ids (feature 013); omitted when none staged.
-            attachments: hasAttachments ? attachments : undefined,
+            ...(attachmentUpload ? { attachmentUpload } : {}),
           },
         },
       });

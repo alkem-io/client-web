@@ -5,6 +5,7 @@ query UserConversations {
         id
         room {
           id
+          attachmentBucketId
           type
           displayName
           avatarUrl
@@ -43,8 +44,7 @@ query UserConversations {
             # read so the normalized cache entity is never incomplete, and so a
             # media-only message gets a list preview instead of a blank row.
             attachments {
-              id
-              url
+              externalReference
               displayName
               mimeType
               size

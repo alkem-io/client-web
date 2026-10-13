@@ -1,5 +1,6 @@
 fragment CommentsWithMessages on Room {
   id
+  attachmentBucketId
   messagesCount
   authorization {
     id

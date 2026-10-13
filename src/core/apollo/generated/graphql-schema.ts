@@ -5424,7 +5424,7 @@ export type MemoSigningPrepareResult = {
 /** A message that was sent in a chat room */
 export type Message = {
   __typename?: 'Message';
-  /** Media attachments; unavailable documents retain their event filename without a download URL. */
+  /** Matrix media references and event metadata. */
   attachments: Array<MessageAttachment>;
   /** The id for the message event. */
   id: Scalars['MessageID']['output'];
@@ -5442,19 +5442,12 @@ export type Message = {
 
 export type MessageAttachment = {
   __typename?: 'MessageAttachment';
-  /** The filename / display name of the attachment. */
   displayName: Scalars['String']['output'];
-  /** The pixel height of the attachment (images only). */
+  /** The local Matrix media reference. */
+  externalReference?: Maybe<Scalars['String']['output']>;
   height?: Maybe<Scalars['Int']['output']>;
-  /** The file-service document id of the attachment. */
-  id?: Maybe<Scalars['UUID']['output']>;
-  /** The MIME type of the attachment. */
   mimeType?: Maybe<Scalars['String']['output']>;
-  /** The size of the attachment in bytes. */
   size?: Maybe<Scalars['Int']['output']>;
-  /** The Alkemio document URL (authorized via conversation policy). */
-  url?: Maybe<Scalars['String']['output']>;
-  /** The pixel width of the attachment (images only). */
   width?: Maybe<Scalars['Int']['output']>;
 };
 
@@ -8920,6 +8913,8 @@ export type RolesResultSpace = {
 
 export type Room = {
   __typename?: 'Room';
+  /** The owning bucket for reference-based attachments. */
+  attachmentBucketId?: Maybe<Scalars['UUID']['output']>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The avatar URL of the Room (mxc:// or https://). Fetched from Matrix. */
@@ -8983,6 +8978,13 @@ export type RoomMarkMessageReadInput = {
   threadID?: InputMaybe<Scalars['MessageID']['input']>;
 };
 
+export type RoomMessageAttachmentInput = {
+  /** The filename to use in this message. */
+  displayName: Scalars['String']['input'];
+  /** The completed local Matrix media reference. */
+  externalReference: Scalars['String']['input'];
+};
+
 /** A message event happened in the subscribed room */
 export type RoomMessageEventSubscriptionResult = {
   __typename?: 'RoomMessageEventSubscriptionResult';
@@ -9018,8 +9020,8 @@ export type RoomRemoveReactionToMessageInput = {
 };
 
 export type RoomSendMessageInput = {
-  /** The file-service document ids of attachments to send with the message (one per event). */
-  attachments?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  /** An already-uploaded Matrix media reference. */
+  attachmentUpload?: InputMaybe<RoomMessageAttachmentInput>;
   /** The message being sent */
   message: Scalars['String']['input'];
   /** The Room the message is being sent to */
@@ -9027,8 +9029,8 @@ export type RoomSendMessageInput = {
 };
 
 export type RoomSendMessageReplyInput = {
-  /** The file-service document ids of attachments to send with the message (one per event). */
-  attachments?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  /** An already-uploaded Matrix media reference. */
+  attachmentUpload?: InputMaybe<RoomMessageAttachmentInput>;
   /** The message being sent */
   message: Scalars['String']['input'];
   /** The Room the message is being sent to */
@@ -16594,6 +16596,7 @@ export type UpdateCalloutContentMutation = {
       | {
           __typename?: 'Room';
           id: string;
+          attachmentBucketId?: string | undefined;
           messagesCount: number;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -16662,8 +16665,7 @@ export type UpdateCalloutContentMutation = {
               | undefined;
             attachments: Array<{
               __typename?: 'MessageAttachment';
-              id?: string | undefined;
-              url?: string | undefined;
+              externalReference?: string | undefined;
               displayName: string;
               mimeType?: string | undefined;
               size?: number | undefined;
@@ -17127,6 +17129,7 @@ export type UpdateCalloutVisibilityMutation = {
       | {
           __typename?: 'Room';
           id: string;
+          attachmentBucketId?: string | undefined;
           messagesCount: number;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -17195,8 +17198,7 @@ export type UpdateCalloutVisibilityMutation = {
               | undefined;
             attachments: Array<{
               __typename?: 'MessageAttachment';
-              id?: string | undefined;
-              url?: string | undefined;
+              externalReference?: string | undefined;
               displayName: string;
               mimeType?: string | undefined;
               size?: number | undefined;
@@ -17754,6 +17756,7 @@ export type CalloutContributionCommentsQuery = {
                 comments: {
                   __typename?: 'Room';
                   id: string;
+                  attachmentBucketId?: string | undefined;
                   messagesCount: number;
                   authorization?:
                     | {
@@ -17826,8 +17829,7 @@ export type CalloutContributionCommentsQuery = {
                       | undefined;
                     attachments: Array<{
                       __typename?: 'MessageAttachment';
-                      id?: string | undefined;
-                      url?: string | undefined;
+                      externalReference?: string | undefined;
                       displayName: string;
                       mimeType?: string | undefined;
                       size?: number | undefined;
@@ -19078,6 +19080,7 @@ export type CreateCalloutMutation = {
       | {
           __typename?: 'Room';
           id: string;
+          attachmentBucketId?: string | undefined;
           messagesCount: number;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -19146,8 +19149,7 @@ export type CreateCalloutMutation = {
               | undefined;
             attachments: Array<{
               __typename?: 'MessageAttachment';
-              id?: string | undefined;
-              url?: string | undefined;
+              externalReference?: string | undefined;
               displayName: string;
               mimeType?: string | undefined;
               size?: number | undefined;
@@ -19781,6 +19783,7 @@ export type CalloutDetailsQuery = {
             | {
                 __typename?: 'Room';
                 id: string;
+                attachmentBucketId?: string | undefined;
                 messagesCount: number;
                 authorization?:
                   | {
@@ -19853,8 +19856,7 @@ export type CalloutDetailsQuery = {
                     | undefined;
                   attachments: Array<{
                     __typename?: 'MessageAttachment';
-                    id?: string | undefined;
-                    url?: string | undefined;
+                    externalReference?: string | undefined;
                     displayName: string;
                     mimeType?: string | undefined;
                     size?: number | undefined;
@@ -20350,6 +20352,7 @@ export type CalloutDetailsFragment = {
     | {
         __typename?: 'Room';
         id: string;
+        attachmentBucketId?: string | undefined;
         messagesCount: number;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -20418,8 +20421,7 @@ export type CalloutDetailsFragment = {
             | undefined;
           attachments: Array<{
             __typename?: 'MessageAttachment';
-            id?: string | undefined;
-            url?: string | undefined;
+            externalReference?: string | undefined;
             displayName: string;
             mimeType?: string | undefined;
             size?: number | undefined;
@@ -22683,8 +22685,7 @@ export type CreateDiscussionMutation = {
           | undefined;
         attachments: Array<{
           __typename?: 'MessageAttachment';
-          id?: string | undefined;
-          url?: string | undefined;
+          externalReference?: string | undefined;
           displayName: string;
           mimeType?: string | undefined;
           size?: number | undefined;
@@ -22778,8 +22779,7 @@ export type UpdateDiscussionMutation = {
           | undefined;
         attachments: Array<{
           __typename?: 'MessageAttachment';
-          id?: string | undefined;
-          url?: string | undefined;
+          externalReference?: string | undefined;
           displayName: string;
           mimeType?: string | undefined;
           size?: number | undefined;
@@ -22876,8 +22876,7 @@ export type DiscussionDetailsFragment = {
         | undefined;
       attachments: Array<{
         __typename?: 'MessageAttachment';
-        id?: string | undefined;
-        url?: string | undefined;
+        externalReference?: string | undefined;
         displayName: string;
         mimeType?: string | undefined;
         size?: number | undefined;
@@ -23077,8 +23076,7 @@ export type PlatformDiscussionQuery = {
                   | undefined;
                 attachments: Array<{
                   __typename?: 'MessageAttachment';
-                  id?: string | undefined;
-                  url?: string | undefined;
+                  externalReference?: string | undefined;
                   displayName: string;
                   mimeType?: string | undefined;
                   size?: number | undefined;
@@ -23219,8 +23217,7 @@ export type MessageDetailsFragment = {
     | undefined;
   attachments: Array<{
     __typename?: 'MessageAttachment';
-    id?: string | undefined;
-    url?: string | undefined;
+    externalReference?: string | undefined;
     displayName: string;
     mimeType?: string | undefined;
     size?: number | undefined;
@@ -23231,8 +23228,7 @@ export type MessageDetailsFragment = {
 
 export type MessageAttachmentDetailsFragment = {
   __typename?: 'MessageAttachment';
-  id?: string | undefined;
-  url?: string | undefined;
+  externalReference?: string | undefined;
   displayName: string;
   mimeType?: string | undefined;
   size?: number | undefined;
@@ -23257,6 +23253,7 @@ export type ReactionDetailsFragment = {
 export type CommentsWithMessagesFragment = {
   __typename?: 'Room';
   id: string;
+  attachmentBucketId?: string | undefined;
   messagesCount: number;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -23320,8 +23317,7 @@ export type CommentsWithMessagesFragment = {
       | undefined;
     attachments: Array<{
       __typename?: 'MessageAttachment';
-      id?: string | undefined;
-      url?: string | undefined;
+      externalReference?: string | undefined;
       displayName: string;
       mimeType?: string | undefined;
       size?: number | undefined;
@@ -23545,6 +23541,7 @@ export type ReplyToMessageMutationVariables = Exact<{
   roomId: Scalars['UUID']['input'];
   message: Scalars['String']['input'];
   threadId: Scalars['MessageID']['input'];
+  attachmentUpload?: InputMaybe<RoomMessageAttachmentInput>;
 }>;
 
 export type ReplyToMessageMutation = {
@@ -23557,8 +23554,7 @@ export type ReplyToMessageMutation = {
     sender?: { __typename?: 'Actor'; id: string; type: ActorType } | undefined;
     attachments: Array<{
       __typename?: 'MessageAttachment';
-      id?: string | undefined;
-      url?: string | undefined;
+      externalReference?: string | undefined;
       displayName: string;
       mimeType?: string | undefined;
       size?: number | undefined;
@@ -23825,8 +23821,7 @@ export type SendMessageToRoomMutation = {
     sender?: { __typename?: 'Actor'; id: string; type: ActorType } | undefined;
     attachments: Array<{
       __typename?: 'MessageAttachment';
-      id?: string | undefined;
-      url?: string | undefined;
+      externalReference?: string | undefined;
       displayName: string;
       mimeType?: string | undefined;
       size?: number | undefined;
@@ -23923,8 +23918,7 @@ export type RoomEventsSubscription = {
               | undefined;
             attachments: Array<{
               __typename?: 'MessageAttachment';
-              id?: string | undefined;
-              url?: string | undefined;
+              externalReference?: string | undefined;
               displayName: string;
               mimeType?: string | undefined;
               size?: number | undefined;
@@ -24040,8 +24034,7 @@ export type CommunityUpdatesQuery = {
                   | undefined;
                 attachments: Array<{
                   __typename?: 'MessageAttachment';
-                  id?: string | undefined;
-                  url?: string | undefined;
+                  externalReference?: string | undefined;
                   displayName: string;
                   mimeType?: string | undefined;
                   size?: number | undefined;
@@ -38706,6 +38699,7 @@ export type CalendarEventDetailsQuery = {
           comments: {
             __typename?: 'Room';
             id: string;
+            attachmentBucketId?: string | undefined;
             messagesCount: number;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -38774,8 +38768,7 @@ export type CalendarEventDetailsQuery = {
                 | undefined;
               attachments: Array<{
                 __typename?: 'MessageAttachment';
-                id?: string | undefined;
-                url?: string | undefined;
+                externalReference?: string | undefined;
                 displayName: string;
                 mimeType?: string | undefined;
                 size?: number | undefined;
@@ -38870,6 +38863,7 @@ export type CalendarEventDetailsFragment = {
   comments: {
     __typename?: 'Room';
     id: string;
+    attachmentBucketId?: string | undefined;
     messagesCount: number;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -38933,8 +38927,7 @@ export type CalendarEventDetailsFragment = {
         | undefined;
       attachments: Array<{
         __typename?: 'MessageAttachment';
-        id?: string | undefined;
-        url?: string | undefined;
+        externalReference?: string | undefined;
         displayName: string;
         mimeType?: string | undefined;
         size?: number | undefined;
@@ -39049,6 +39042,7 @@ export type CreateCalendarEventMutation = {
     comments: {
       __typename?: 'Room';
       id: string;
+      attachmentBucketId?: string | undefined;
       messagesCount: number;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -39112,8 +39106,7 @@ export type CreateCalendarEventMutation = {
           | undefined;
         attachments: Array<{
           __typename?: 'MessageAttachment';
-          id?: string | undefined;
-          url?: string | undefined;
+          externalReference?: string | undefined;
           displayName: string;
           mimeType?: string | undefined;
           size?: number | undefined;
@@ -39207,6 +39200,7 @@ export type UpdateCalendarEventMutation = {
     comments: {
       __typename?: 'Room';
       id: string;
+      attachmentBucketId?: string | undefined;
       messagesCount: number;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -39270,8 +39264,7 @@ export type UpdateCalendarEventMutation = {
           | undefined;
         attachments: Array<{
           __typename?: 'MessageAttachment';
-          id?: string | undefined;
-          url?: string | undefined;
+          externalReference?: string | undefined;
           displayName: string;
           mimeType?: string | undefined;
           size?: number | undefined;
@@ -52257,6 +52250,7 @@ export type ConversationDetailsQuery = {
           room: {
             __typename?: 'Room';
             id: string;
+            attachmentBucketId?: string | undefined;
             type: RoomType;
             displayName: string;
             avatarUrl?: string | undefined;
@@ -52299,8 +52293,7 @@ export type ConversationDetailsQuery = {
                   }>;
                   attachments: Array<{
                     __typename?: 'MessageAttachment';
-                    id?: string | undefined;
-                    url?: string | undefined;
+                    externalReference?: string | undefined;
                     displayName: string;
                     mimeType?: string | undefined;
                     size?: number | undefined;
@@ -52345,6 +52338,7 @@ export type ConversationEventsSubscription = {
             room: {
               __typename?: 'Room';
               id: string;
+              attachmentBucketId?: string | undefined;
               type: RoomType;
               displayName: string;
               avatarUrl?: string | undefined;
@@ -52387,8 +52381,7 @@ export type ConversationEventsSubscription = {
                     }>;
                     attachments: Array<{
                       __typename?: 'MessageAttachment';
-                      id?: string | undefined;
-                      url?: string | undefined;
+                      externalReference?: string | undefined;
                       displayName: string;
                       mimeType?: string | undefined;
                       size?: number | undefined;
@@ -52449,8 +52442,7 @@ export type ConversationEventsSubscription = {
                 }>;
                 attachments: Array<{
                   __typename?: 'MessageAttachment';
-                  id?: string | undefined;
-                  url?: string | undefined;
+                  externalReference?: string | undefined;
                   displayName: string;
                   mimeType?: string | undefined;
                   size?: number | undefined;
@@ -52467,7 +52459,13 @@ export type ConversationEventsSubscription = {
           conversation: {
             __typename?: 'Conversation';
             id: string;
-            room: { __typename?: 'Room'; id: string; displayName: string; avatarUrl?: string | undefined };
+            room: {
+              __typename?: 'Room';
+              id: string;
+              attachmentBucketId?: string | undefined;
+              displayName: string;
+              avatarUrl?: string | undefined;
+            };
           };
         }
       | undefined;
@@ -52538,8 +52536,7 @@ export type ConversationEventsSubscription = {
             }>;
             attachments: Array<{
               __typename?: 'MessageAttachment';
-              id?: string | undefined;
-              url?: string | undefined;
+              externalReference?: string | undefined;
               displayName: string;
               mimeType?: string | undefined;
               size?: number | undefined;
@@ -52571,6 +52568,7 @@ export type ConversationMessagesQuery = {
           room: {
             __typename?: 'Room';
             id: string;
+            attachmentBucketId?: string | undefined;
             messages: Array<{
               __typename?: 'Message';
               id: string;
@@ -52606,8 +52604,7 @@ export type ConversationMessagesQuery = {
               }>;
               attachments: Array<{
                 __typename?: 'MessageAttachment';
-                id?: string | undefined;
-                url?: string | undefined;
+                externalReference?: string | undefined;
                 displayName: string;
                 mimeType?: string | undefined;
                 size?: number | undefined;
@@ -52633,6 +52630,7 @@ export type CreateConversationMutation = {
     room: {
       __typename?: 'Room';
       id: string;
+      attachmentBucketId?: string | undefined;
       type: RoomType;
       displayName: string;
       avatarUrl?: string | undefined;
@@ -52675,8 +52673,7 @@ export type CreateConversationMutation = {
             }>;
             attachments: Array<{
               __typename?: 'MessageAttachment';
-              id?: string | undefined;
-              url?: string | undefined;
+              externalReference?: string | undefined;
               displayName: string;
               mimeType?: string | undefined;
               size?: number | undefined;
@@ -52755,6 +52752,7 @@ export type UserConversationsQuery = {
         room: {
           __typename?: 'Room';
           id: string;
+          attachmentBucketId?: string | undefined;
           type: RoomType;
           displayName: string;
           avatarUrl?: string | undefined;
@@ -52797,8 +52795,7 @@ export type UserConversationsQuery = {
                 }>;
                 attachments: Array<{
                   __typename?: 'MessageAttachment';
-                  id?: string | undefined;
-                  url?: string | undefined;
+                  externalReference?: string | undefined;
                   displayName: string;
                   mimeType?: string | undefined;
                   size?: number | undefined;

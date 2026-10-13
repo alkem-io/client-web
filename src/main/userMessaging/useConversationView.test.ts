@@ -7,11 +7,12 @@ import { useConversationView } from './useConversationView';
 // ---- Mocks ----
 
 const markAsReadMock = vi.fn(() => Promise.resolve({}));
+const sendMessageMock = vi.fn(() => Promise.resolve({}));
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useMarkMessageAsReadMutation: () => [markAsReadMock, { loading: false }],
   useLeaveConversationMutation: () => [vi.fn(() => Promise.resolve({})), { loading: false }],
-  useSendMessageToRoomMutation: () => [vi.fn(() => Promise.resolve({})), { loading: false }],
+  useSendMessageToRoomMutation: () => [sendMessageMock, { loading: false }],
 }));
 
 vi.mock('@/domain/collaboration/callout/useSubscribeOnRoomEvents', () => ({ default: () => undefined }));
@@ -60,6 +61,7 @@ beforeEach(() => {
   visibility = 'visible';
   focused = true;
   markAsReadMock.mockClear();
+  sendMessageMock.mockReset().mockResolvedValue({});
 
   Object.defineProperty(document, 'visibilityState', {
     configurable: true,
@@ -157,5 +159,36 @@ describe('useConversationView — read receipts are gated on real presence (FR-0
     renderHook(() => useConversationView(conversation, []));
 
     expect(markAsReadMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('useConversationView attachment send alternatives', () => {
+  it('passes a completed upload reference without document IDs', async () => {
+    const { result } = renderHook(() => useConversationView(conversation, []));
+    await act(async () => {
+      expect(
+        await result.current.handleSendMessage('', {
+          externalReference: 'completed-file',
+          displayName: 'original.png',
+        })
+      ).toBe(true);
+    });
+    expect(sendMessageMock).toHaveBeenCalledExactlyOnceWith({
+      variables: {
+        messageData: {
+          roomID: 'room-1',
+          message: '',
+          attachmentUpload: { externalReference: 'completed-file', displayName: 'original.png' },
+        },
+      },
+    });
+  });
+
+  it('does not submit an empty message without a reference', async () => {
+    const { result } = renderHook(() => useConversationView(conversation, []));
+    await act(async () => {
+      expect(await result.current.handleSendMessage('')).toBeUndefined();
+    });
+    expect(sendMessageMock).not.toHaveBeenCalled();
   });
 });

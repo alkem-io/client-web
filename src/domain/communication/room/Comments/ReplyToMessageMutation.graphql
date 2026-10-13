@@ -1,5 +1,5 @@
-mutation ReplyToMessage($roomId: UUID!, $message: String!, $threadId: MessageID!) {
-  sendMessageReplyToRoom(messageData: { roomID: $roomId, threadID: $threadId, message: $message }) {
+mutation ReplyToMessage($roomId: UUID!, $message: String!, $threadId: MessageID!, $attachmentUpload: RoomMessageAttachmentInput) {
+  sendMessageReplyToRoom(messageData: { roomID: $roomId, threadID: $threadId, message: $message, attachmentUpload: $attachmentUpload }) {
     id
     message
     sender {
