@@ -1,4 +1,5 @@
 import {
+  ClipboardList,
   FileText,
   FolderTree,
   Image as ImageIcon,
@@ -32,6 +33,7 @@ const FRAMING_ICON: Record<FramingKind, ComponentType<SVGProps<SVGSVGElement>>> 
   poll: Vote,
   contributors: Users,
   spaces: FolderTree,
+  form: ClipboardList,
 };
 
 /**

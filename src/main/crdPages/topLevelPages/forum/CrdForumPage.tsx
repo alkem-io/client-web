@@ -49,11 +49,12 @@ const CrdForumPage = () => {
 
   // spec-clientweb-5 (2026-07-31): re-anchored off the retiring
   // `PLATFORM_ADMIN` catch-all onto A15's own privilege,
-  // `PLATFORM_FORUM_MANAGE` (owner: platform-support). `PLATFORM_ADMIN` is
-  // kept alongside it so the legacy credentials that reach this today are
-  // not narrowed — Slice A is additive.
+  // `PLATFORM_FORUM_MANAGE` (owner: platform-support). T013 (Slice B): the
+  // `PLATFORM_ADMIN` companion is dropped with the privilege, leaving the forum
+  // exclusively Support's — which is the whole reason FR-007(e) gave it a
+  // non-CRUD privilege of its own rather than letting it ride plain `UPDATE`.
   const canManageForum =
-    [AuthorizationPrivilege.PlatformForumManage, AuthorizationPrivilege.PlatformAdmin].some(privilege =>
+    [AuthorizationPrivilege.PlatformForumManage].some(privilege =>
       Boolean(platformPrivilegeWrapper?.hasPlatformPrivilege(privilege))
     ) ?? false;
 

@@ -167,6 +167,13 @@ const buildSpaceAdmin = (
     value,
     server?.collaborationCalloutContributionCreated
   ),
+  collaborationCalloutFormResponseReceived: channel(
+    type,
+    property,
+    'collaborationCalloutFormResponseReceived',
+    value,
+    server?.collaborationCalloutFormResponseReceived
+  ),
   communicationMessageReceived: channel(
     type,
     property,

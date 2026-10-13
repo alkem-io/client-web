@@ -65,6 +65,7 @@ export const useStartDirectChat = (userId: string | undefined) => {
                     room: {
                       __typename: 'Room' as const,
                       id: room.id,
+                      attachmentBucketId: room.attachmentBucketId,
                       type: room.type,
                       displayName: room.displayName,
                       avatarUrl: room.avatarUrl,

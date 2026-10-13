@@ -13,11 +13,6 @@ import { useAdminAccessGuard } from '@/main/crdPages/topLevelPages/admin/useAdmi
  * so a template-built key does not type-check.
  */
 const ROLE_LABEL_KEYS = {
-  [RoleName.GlobalAdmin]: 'common.roles.GLOBAL_ADMIN',
-  [RoleName.GlobalSupport]: 'common.roles.GLOBAL_SUPPORT',
-  [RoleName.GlobalLicenseManager]: 'common.roles.GLOBAL_LICENSE_MANAGER',
-  [RoleName.PlatformBetaTester]: 'common.roles.PLATFORM_BETA_TESTER',
-  [RoleName.PlatformVcCampaign]: 'common.roles.PLATFORM_VC_CAMPAIGN',
   [RoleName.PlatformRolesAdmin]: 'common.roles.PLATFORM_ROLES_ADMIN',
   [RoleName.PlatformContentFullAccess]: 'common.roles.PLATFORM_CONTENT_FULL_ACCESS',
   [RoleName.PlatformResourceAdmin]: 'common.roles.PLATFORM_RESOURCE_ADMIN',
@@ -34,9 +29,17 @@ const ROLE_LABEL_KEYS = {
   [RoleName.FeatureVcCampaign]: 'common.roles.FEATURE_VC_CAMPAIGN',
 } as const;
 
-/** Most-privileged first — a holder of several roles is labelled by the strongest. */
+/**
+ * Most-privileged first — a holder of several roles is labelled by the strongest.
+ *
+ * 027-platform-role-redesign (T014, Slice B): the five legacy entries are gone
+ * from both this list and `ROLE_LABEL_KEYS`. The thirteen target roles are the
+ * whole vocabulary now, so "most privileged" is a total order over them rather
+ * than a mixed legacy/target ranking — which is what made the old order hard to
+ * read: `global-admin` outranked everything while `platform-roles-admin`, the
+ * role that actually replaced it, sat second.
+ */
 const ROLE_LABEL_PRECEDENCE: (keyof typeof ROLE_LABEL_KEYS)[] = [
-  RoleName.GlobalAdmin,
   RoleName.PlatformRolesAdmin,
   RoleName.PlatformUsersAdmin,
   RoleName.PlatformSettingsAdmin,
@@ -47,14 +50,10 @@ const ROLE_LABEL_PRECEDENCE: (keyof typeof ROLE_LABEL_KEYS)[] = [
   RoleName.PlatformSupport,
   RoleName.PlatformAuditReader,
   RoleName.PlatformSpacesReader,
-  RoleName.GlobalSupport,
-  RoleName.GlobalLicenseManager,
   RoleName.FeatureOrganizationCreator,
   RoleName.FeatureVirtualAssistant,
   RoleName.FeatureBetaTester,
   RoleName.FeatureVcCampaign,
-  RoleName.PlatformBetaTester,
-  RoleName.PlatformVcCampaign,
 ];
 
 export function useCrdUser() {
@@ -83,22 +82,18 @@ export function useCrdUser() {
   const { isPlatformAdmin } = useAdminAccessGuard();
   const isAdmin = isPlatformAdmin;
 
-  const role = (() => {
-    // Precedence, not server order. The previous form iterated `platformRoles`
-    // and returned the first match, which made the displayed label depend on
-    // the order the API happened to return roles in — invisible while only one
-    // role could realistically be held, ambiguous now that a user can hold
-    // several of the thirteen at once. Most-privileged wins.
-    //
-    // The thirteen were absent entirely (2026-08-05): a `platform-roles-admin`
-    // holder had NO label under their name while a legacy global admin did.
-    for (const platformRole of ROLE_LABEL_PRECEDENCE) {
-      if (platformRoles.includes(platformRole)) {
-        return t(ROLE_LABEL_KEYS[platformRole]);
-      }
-    }
-    return undefined;
-  })();
+  // Every held role, precedence-ordered — filter the precedence list rather
+  // than sort `platformRoles`, so the result never depends on the order the
+  // API happened to return roles in (the defect the single label fixed on
+  // 2026-08-05). Unmapped/retired roles simply do not survive the filter.
+  //
+  // The menu shows the head as the caption and the rest as a "+N" count: a
+  // holder of Roles Admin AND Content Full Access — the combination the role
+  // model exists to make visible — must not be silently collapsed to one.
+  const roles = ROLE_LABEL_PRECEDENCE.filter(platformRole => platformRoles.includes(platformRole)).map(platformRole =>
+    t(ROLE_LABEL_KEYS[platformRole])
+  );
+  const role: string | undefined = roles[0];
 
   const user = userModel?.profile
     ? {
@@ -106,6 +101,7 @@ export function useCrdUser() {
         avatarUrl: userModel.profile.avatar?.uri,
         initials: getInitials(userModel.profile.displayName),
         role,
+        roles,
       }
     : undefined;
 

@@ -287,7 +287,7 @@ export const MOCK_ORG_ALKEMIO = {
     { id: 's-linkedin', name: 'LinkedIn', uri: 'https://www.linkedin.com/company/alkemio', description: null },
     { id: 's-github', name: 'GitHub', uri: 'https://github.com/alkem-io', description: null },
     { id: 's-youtube', name: 'YouTube', uri: 'https://youtube.com/@alkemio', description: null },
-    { id: 's-bsky', name: 'bsky', uri: 'https://bsky.app/profile/alkemio.bsky.social', description: null },
+    { id: 's-bsky', name: 'bsky', uri: 'https://bsky.app/profile/alkem.io', description: null },
     { id: 's-email', name: 'email', uri: 'hello@alkem.io', description: null },
   ] satisfies ReferenceLink[],
   associates: [

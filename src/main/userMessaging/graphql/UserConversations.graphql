@@ -5,6 +5,7 @@ query UserConversations {
         id
         room {
           id
+          attachmentBucketId
           type
           displayName
           avatarUrl

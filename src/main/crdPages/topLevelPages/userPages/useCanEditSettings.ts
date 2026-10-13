@@ -21,8 +21,9 @@ const useCanEditSettings = (params: { profileUserId: string | undefined }): UseC
   // narrowed; Slice A is additive. The exported name is unchanged because
   // callers use it to mean "may act on someone else's settings", which is
   // still exactly what it means.
-  const isPlatformAdmin = [AuthorizationPrivilege.PlatformUsersAdmin, AuthorizationPrivilege.PlatformAdmin].some(
-    privilege => Boolean(platformPrivilegeWrapper?.hasPlatformPrivilege(privilege))
+  // T013 (Slice B): PLATFORM_ADMIN dropped — Users Admin owns it alone.
+  const isPlatformAdmin = [AuthorizationPrivilege.PlatformUsersAdmin].some(privilege =>
+    Boolean(platformPrivilegeWrapper?.hasPlatformPrivilege(privilege))
   );
 
   return {

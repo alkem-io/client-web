@@ -655,6 +655,34 @@ ${ActivityLogCalloutDiscussionCommentFragmentDoc}
 ${ActivityLogSubspaceCreatedFragmentDoc}
 ${ActivityLogUpdateSentFragmentDoc}
 ${ActivityLogCalendarEventCreatedFragmentDoc}`;
+export const CalloutFormResponseDetailsFragmentDoc = gql`
+    fragment CalloutFormResponseDetails on CalloutFormResponse {
+  id
+  createdDate
+  createdBy {
+    id
+    profile {
+      id
+      displayName
+      url
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+  answers {
+    questionID
+    prompt
+    type
+    text
+    selectedOptions {
+      id
+      label
+    }
+  }
+}
+    `;
 export const ContributionAuthorFragmentDoc = gql`
     fragment ContributionAuthor on User {
   id
@@ -1014,6 +1042,30 @@ export const PollDetailsFragmentDoc = gql`
     ${PollSettingsFieldsFragmentDoc}
 ${PollOptionFieldsFragmentDoc}
 ${PollVoteFieldsFragmentDoc}`;
+export const CalloutFormDetailsFragmentDoc = gql`
+    fragment CalloutFormDetails on CalloutForm {
+  id
+  title
+  description
+  questions {
+    id
+    prompt
+    explanation
+    type
+    required
+    options {
+      id
+      label
+    }
+  }
+  settings {
+    visibility
+    responseMode
+    state
+    defaultCollapsed
+  }
+}
+    `;
 export const CollaboraDocumentGateFragmentDoc = gql`
     fragment CollaboraDocumentGate on CollaboraDocument {
   id
@@ -1085,8 +1137,7 @@ export const ContributorDetailsFragmentDoc = gql`
 ${TagsetDetailsFragmentDoc}`;
 export const MessageAttachmentDetailsFragmentDoc = gql`
     fragment MessageAttachmentDetails on MessageAttachment {
-  id
-  url
+  externalReference
   displayName
   mimeType
   size
@@ -1122,6 +1173,7 @@ export const VcInteractionsDetailsFragmentDoc = gql`
 export const CommentsWithMessagesFragmentDoc = gql`
     fragment CommentsWithMessages on Room {
   id
+  attachmentBucketId
   messagesCount
   authorization {
     id
@@ -1208,6 +1260,9 @@ export const CalloutDetailsFragmentDoc = gql`
     }
     poll {
       ...PollDetails
+    }
+    form {
+      ...CalloutFormDetails
     }
     collaboraDocument {
       ...CollaboraDocumentGate
@@ -1310,6 +1365,7 @@ ${MemoDetailsFragmentDoc}
 ${LinkDetailsFragmentDoc}
 ${MediaGalleryVisualsFragmentDoc}
 ${PollDetailsFragmentDoc}
+${CalloutFormDetailsFragmentDoc}
 ${CollaboraDocumentGateFragmentDoc}
 ${LinkDetailsWithAuthorizationFragmentDoc}
 ${CommentsWithMessagesFragmentDoc}
@@ -1881,6 +1937,11 @@ export const UserSettingsFragmentFragmentDoc = gql`
           push
         }
         collaborationCalloutContributionCreated {
+          email
+          inApp
+          push
+        }
+        collaborationCalloutFormResponseReceived {
           email
           inApp
           push
@@ -3054,6 +3115,9 @@ export const CalloutTemplateContentFragmentDoc = gql`
     poll {
       ...PollDetails
     }
+    form {
+      ...CalloutFormDetails
+    }
     collaboraDocument {
       id
       documentType
@@ -3080,6 +3144,7 @@ ${LinkDetailsFragmentDoc}
 ${MemoTemplateDetailsFragmentDoc}
 ${MediaGalleryVisualsFragmentDoc}
 ${PollDetailsFragmentDoc}
+${CalloutFormDetailsFragmentDoc}
 ${CalloutSettingsFullFragmentDoc}`;
 export const CommunityGuidelinesTemplateContentFragmentDoc = gql`
     fragment CommunityGuidelinesTemplateContent on CommunityGuidelines {
@@ -3726,6 +3791,7 @@ export const InAppNotificationPayloadPlatformGlobalRoleChangeFragmentDoc = gql`
     fragment InAppNotificationPayloadPlatformGlobalRoleChange on InAppNotificationPayloadPlatformGlobalRoleChange {
   type
   role
+  changeType
   user {
     id
     profile {
@@ -8245,6 +8311,241 @@ export function refetchActivityLogOnCollaborationQuery(
 ) {
   return { query: ActivityLogOnCollaborationDocument, variables: variables };
 }
+export const UpdateCalloutFormDocument = gql`
+    mutation UpdateCalloutForm($formData: UpdateCalloutFormInput!) {
+  updateCalloutForm(formData: $formData) {
+    ...CalloutFormDetails
+  }
+}
+    ${CalloutFormDetailsFragmentDoc}`;
+export type UpdateCalloutFormMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCalloutFormMutation,
+  SchemaTypes.UpdateCalloutFormMutationVariables
+>;
+
+/**
+ * __useUpdateCalloutFormMutation__
+ *
+ * To run a mutation, you first call `useUpdateCalloutFormMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCalloutFormMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCalloutFormMutation, { data, loading, error }] = useUpdateCalloutFormMutation({
+ *   variables: {
+ *      formData: // value for 'formData'
+ *   },
+ * });
+ */
+export function useUpdateCalloutFormMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCalloutFormMutation,
+    SchemaTypes.UpdateCalloutFormMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateCalloutFormMutation, SchemaTypes.UpdateCalloutFormMutationVariables>(
+    UpdateCalloutFormDocument,
+    options
+  );
+}
+export type UpdateCalloutFormMutationHookResult = ReturnType<typeof useUpdateCalloutFormMutation>;
+export type UpdateCalloutFormMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutFormMutation>;
+export type UpdateCalloutFormMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCalloutFormMutation,
+  SchemaTypes.UpdateCalloutFormMutationVariables
+>;
+export const SubmitCalloutFormResponseDocument = gql`
+    mutation SubmitCalloutFormResponse($responseData: SubmitCalloutFormResponseInput!) {
+  submitCalloutFormResponse(responseData: $responseData) {
+    ...CalloutFormResponseDetails
+  }
+}
+    ${CalloutFormResponseDetailsFragmentDoc}`;
+export type SubmitCalloutFormResponseMutationFn = Apollo.MutationFunction<
+  SchemaTypes.SubmitCalloutFormResponseMutation,
+  SchemaTypes.SubmitCalloutFormResponseMutationVariables
+>;
+
+/**
+ * __useSubmitCalloutFormResponseMutation__
+ *
+ * To run a mutation, you first call `useSubmitCalloutFormResponseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubmitCalloutFormResponseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [submitCalloutFormResponseMutation, { data, loading, error }] = useSubmitCalloutFormResponseMutation({
+ *   variables: {
+ *      responseData: // value for 'responseData'
+ *   },
+ * });
+ */
+export function useSubmitCalloutFormResponseMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.SubmitCalloutFormResponseMutation,
+    SchemaTypes.SubmitCalloutFormResponseMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.SubmitCalloutFormResponseMutation,
+    SchemaTypes.SubmitCalloutFormResponseMutationVariables
+  >(SubmitCalloutFormResponseDocument, options);
+}
+export type SubmitCalloutFormResponseMutationHookResult = ReturnType<typeof useSubmitCalloutFormResponseMutation>;
+export type SubmitCalloutFormResponseMutationResult =
+  Apollo.MutationResult<SchemaTypes.SubmitCalloutFormResponseMutation>;
+export type SubmitCalloutFormResponseMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.SubmitCalloutFormResponseMutation,
+  SchemaTypes.SubmitCalloutFormResponseMutationVariables
+>;
+export const DeleteCalloutFormResponseDocument = gql`
+    mutation DeleteCalloutFormResponse($deleteData: DeleteCalloutFormResponseInput!) {
+  deleteCalloutFormResponse(deleteData: $deleteData) {
+    id
+  }
+}
+    `;
+export type DeleteCalloutFormResponseMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteCalloutFormResponseMutation,
+  SchemaTypes.DeleteCalloutFormResponseMutationVariables
+>;
+
+/**
+ * __useDeleteCalloutFormResponseMutation__
+ *
+ * To run a mutation, you first call `useDeleteCalloutFormResponseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCalloutFormResponseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCalloutFormResponseMutation, { data, loading, error }] = useDeleteCalloutFormResponseMutation({
+ *   variables: {
+ *      deleteData: // value for 'deleteData'
+ *   },
+ * });
+ */
+export function useDeleteCalloutFormResponseMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteCalloutFormResponseMutation,
+    SchemaTypes.DeleteCalloutFormResponseMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeleteCalloutFormResponseMutation,
+    SchemaTypes.DeleteCalloutFormResponseMutationVariables
+  >(DeleteCalloutFormResponseDocument, options);
+}
+export type DeleteCalloutFormResponseMutationHookResult = ReturnType<typeof useDeleteCalloutFormResponseMutation>;
+export type DeleteCalloutFormResponseMutationResult =
+  Apollo.MutationResult<SchemaTypes.DeleteCalloutFormResponseMutation>;
+export type DeleteCalloutFormResponseMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteCalloutFormResponseMutation,
+  SchemaTypes.DeleteCalloutFormResponseMutationVariables
+>;
+export const CalloutFormResponsesDocument = gql`
+    query CalloutFormResponses($formID: UUID!, $first: Int, $after: UUID) {
+  lookup {
+    calloutFormResponses(formID: $formID, first: $first, after: $after) {
+      formID
+      canReadAll
+      canModerate
+      mine {
+        ...CalloutFormResponseDetails
+      }
+      all {
+        total
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        responses {
+          ...CalloutFormResponseDetails
+        }
+      }
+    }
+  }
+}
+    ${CalloutFormResponseDetailsFragmentDoc}`;
+
+/**
+ * __useCalloutFormResponsesQuery__
+ *
+ * To run a query within a React component, call `useCalloutFormResponsesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutFormResponsesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutFormResponsesQuery({
+ *   variables: {
+ *      formID: // value for 'formID'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useCalloutFormResponsesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutFormResponsesQuery,
+    SchemaTypes.CalloutFormResponsesQueryVariables
+  > &
+    ({ variables: SchemaTypes.CalloutFormResponsesQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutFormResponsesQuery, SchemaTypes.CalloutFormResponsesQueryVariables>(
+    CalloutFormResponsesDocument,
+    options
+  );
+}
+export function useCalloutFormResponsesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutFormResponsesQuery,
+    SchemaTypes.CalloutFormResponsesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutFormResponsesQuery, SchemaTypes.CalloutFormResponsesQueryVariables>(
+    CalloutFormResponsesDocument,
+    options
+  );
+}
+export function useCalloutFormResponsesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CalloutFormResponsesQuery,
+        SchemaTypes.CalloutFormResponsesQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.CalloutFormResponsesQuery, SchemaTypes.CalloutFormResponsesQueryVariables>(
+    CalloutFormResponsesDocument,
+    options
+  );
+}
+export type CalloutFormResponsesQueryHookResult = ReturnType<typeof useCalloutFormResponsesQuery>;
+export type CalloutFormResponsesLazyQueryHookResult = ReturnType<typeof useCalloutFormResponsesLazyQuery>;
+export type CalloutFormResponsesSuspenseQueryHookResult = ReturnType<typeof useCalloutFormResponsesSuspenseQuery>;
+export type CalloutFormResponsesQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutFormResponsesQuery,
+  SchemaTypes.CalloutFormResponsesQueryVariables
+>;
+export function refetchCalloutFormResponsesQuery(variables: SchemaTypes.CalloutFormResponsesQueryVariables) {
+  return { query: CalloutFormResponsesDocument, variables: variables };
+}
 export const CalloutContentDocument = gql`
     query CalloutContent($calloutId: UUID!) {
   lookup {
@@ -8301,6 +8602,9 @@ export const CalloutContentDocument = gql`
         poll {
           ...PollDetails
         }
+        form {
+          ...CalloutFormDetails
+        }
         collaboraDocument {
           ...CollaboraDocumentGate
         }
@@ -8331,6 +8635,7 @@ ${WhiteboardPreviewSettingsFragmentDoc}
 ${LinkDetailsFragmentDoc}
 ${MediaGalleryVisualsFragmentDoc}
 ${PollDetailsFragmentDoc}
+${CalloutFormDetailsFragmentDoc}
 ${CollaboraDocumentGateFragmentDoc}
 ${CalloutSettingsFullFragmentDoc}`;
 
@@ -13405,9 +13710,9 @@ export type RemoveReactionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveReactionMutationVariables
 >;
 export const ReplyToMessageDocument = gql`
-    mutation ReplyToMessage($roomId: UUID!, $message: String!, $threadId: MessageID!) {
+    mutation ReplyToMessage($roomId: UUID!, $message: String!, $threadId: MessageID!, $attachmentUpload: RoomMessageAttachmentInput) {
   sendMessageReplyToRoom(
-    messageData: {roomID: $roomId, threadID: $threadId, message: $message}
+    messageData: {roomID: $roomId, threadID: $threadId, message: $message, attachmentUpload: $attachmentUpload}
   ) {
     id
     message
@@ -13443,6 +13748,7 @@ export type ReplyToMessageMutationFn = Apollo.MutationFunction<
  *      roomId: // value for 'roomId'
  *      message: // value for 'message'
  *      threadId: // value for 'threadId'
+ *      attachmentUpload: // value for 'attachmentUpload'
  *   },
  * });
  */
@@ -14197,51 +14503,6 @@ export type RemoveCommunityGuidelinesContentMutationResult =
 export type RemoveCommunityGuidelinesContentMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveCommunityGuidelinesContentMutation,
   SchemaTypes.RemoveCommunityGuidelinesContentMutationVariables
->;
-export const CreateWingbackAccountDocument = gql`
-    mutation createWingbackAccount($accountID: UUID!) {
-  createWingbackAccount(accountID: $accountID)
-}
-    `;
-export type CreateWingbackAccountMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateWingbackAccountMutation,
-  SchemaTypes.CreateWingbackAccountMutationVariables
->;
-
-/**
- * __useCreateWingbackAccountMutation__
- *
- * To run a mutation, you first call `useCreateWingbackAccountMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateWingbackAccountMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createWingbackAccountMutation, { data, loading, error }] = useCreateWingbackAccountMutation({
- *   variables: {
- *      accountID: // value for 'accountID'
- *   },
- * });
- */
-export function useCreateWingbackAccountMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateWingbackAccountMutation,
-    SchemaTypes.CreateWingbackAccountMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.CreateWingbackAccountMutation,
-    SchemaTypes.CreateWingbackAccountMutationVariables
-  >(CreateWingbackAccountDocument, options);
-}
-export type CreateWingbackAccountMutationHookResult = ReturnType<typeof useCreateWingbackAccountMutation>;
-export type CreateWingbackAccountMutationResult = Apollo.MutationResult<SchemaTypes.CreateWingbackAccountMutation>;
-export type CreateWingbackAccountMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateWingbackAccountMutation,
-  SchemaTypes.CreateWingbackAccountMutationVariables
 >;
 export const ActorDetailsDocument = gql`
     query ActorDetails($actorId: UUID!) {
@@ -16666,6 +16927,11 @@ export const UpdateUserSettingsDocument = gql`
               push
             }
             collaborationCalloutContributionCreated {
+              email
+              inApp
+              push
+            }
+            collaborationCalloutFormResponseReceived {
               email
               inApp
               push
@@ -19794,60 +20060,6 @@ export type LicensingAdminUsersQueryResult = Apollo.QueryResult<
 export function refetchLicensingAdminUsersQuery(variables: SchemaTypes.LicensingAdminUsersQueryVariables) {
   return { query: LicensingAdminUsersDocument, variables: variables };
 }
-export const LicensingUpdateSpaceVisibilityDocument = gql`
-    mutation licensingUpdateSpaceVisibility($spaceId: UUID!, $visibility: SpaceVisibility!) {
-  updateSpacePlatformSettings(
-    updateData: {spaceID: $spaceId, visibility: $visibility}
-  ) {
-    id
-    visibility
-  }
-}
-    `;
-export type LicensingUpdateSpaceVisibilityMutationFn = Apollo.MutationFunction<
-  SchemaTypes.LicensingUpdateSpaceVisibilityMutation,
-  SchemaTypes.LicensingUpdateSpaceVisibilityMutationVariables
->;
-
-/**
- * __useLicensingUpdateSpaceVisibilityMutation__
- *
- * To run a mutation, you first call `useLicensingUpdateSpaceVisibilityMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useLicensingUpdateSpaceVisibilityMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [licensingUpdateSpaceVisibilityMutation, { data, loading, error }] = useLicensingUpdateSpaceVisibilityMutation({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      visibility: // value for 'visibility'
- *   },
- * });
- */
-export function useLicensingUpdateSpaceVisibilityMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.LicensingUpdateSpaceVisibilityMutation,
-    SchemaTypes.LicensingUpdateSpaceVisibilityMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.LicensingUpdateSpaceVisibilityMutation,
-    SchemaTypes.LicensingUpdateSpaceVisibilityMutationVariables
-  >(LicensingUpdateSpaceVisibilityDocument, options);
-}
-export type LicensingUpdateSpaceVisibilityMutationHookResult = ReturnType<
-  typeof useLicensingUpdateSpaceVisibilityMutation
->;
-export type LicensingUpdateSpaceVisibilityMutationResult =
-  Apollo.MutationResult<SchemaTypes.LicensingUpdateSpaceVisibilityMutation>;
-export type LicensingUpdateSpaceVisibilityMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.LicensingUpdateSpaceVisibilityMutation,
-  SchemaTypes.LicensingUpdateSpaceVisibilityMutationVariables
->;
 export const AssignLicensePlanToAccountDocument = gql`
     mutation AssignLicensePlanToAccount($licensePlanId: UUID!, $accountId: UUID!, $licensingId: UUID!) {
   assignLicensePlanToAccount(
@@ -20117,6 +20329,107 @@ export type AdminOrganizationVerifyMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AdminOrganizationVerifyMutation,
   SchemaTypes.AdminOrganizationVerifyMutationVariables
 >;
+export const AdminUpdateSpaceNameIdDocument = gql`
+    mutation AdminUpdateSpaceNameId($spaceId: UUID!, $nameId: NameID!) {
+  updateSpace(spaceData: {ID: $spaceId, nameID: $nameId}) {
+    id
+    nameID
+  }
+}
+    `;
+export type AdminUpdateSpaceNameIdMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AdminUpdateSpaceNameIdMutation,
+  SchemaTypes.AdminUpdateSpaceNameIdMutationVariables
+>;
+
+/**
+ * __useAdminUpdateSpaceNameIdMutation__
+ *
+ * To run a mutation, you first call `useAdminUpdateSpaceNameIdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminUpdateSpaceNameIdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminUpdateSpaceNameIdMutation, { data, loading, error }] = useAdminUpdateSpaceNameIdMutation({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      nameId: // value for 'nameId'
+ *   },
+ * });
+ */
+export function useAdminUpdateSpaceNameIdMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AdminUpdateSpaceNameIdMutation,
+    SchemaTypes.AdminUpdateSpaceNameIdMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AdminUpdateSpaceNameIdMutation,
+    SchemaTypes.AdminUpdateSpaceNameIdMutationVariables
+  >(AdminUpdateSpaceNameIdDocument, options);
+}
+export type AdminUpdateSpaceNameIdMutationHookResult = ReturnType<typeof useAdminUpdateSpaceNameIdMutation>;
+export type AdminUpdateSpaceNameIdMutationResult = Apollo.MutationResult<SchemaTypes.AdminUpdateSpaceNameIdMutation>;
+export type AdminUpdateSpaceNameIdMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AdminUpdateSpaceNameIdMutation,
+  SchemaTypes.AdminUpdateSpaceNameIdMutationVariables
+>;
+export const AdminUpdateSpaceVisibilityDocument = gql`
+    mutation AdminUpdateSpaceVisibility($spaceId: UUID!, $visibility: SpaceVisibility!) {
+  adminUpdateSpaceVisibility(
+    updateData: {spaceID: $spaceId, visibility: $visibility}
+  ) {
+    id
+    visibility
+  }
+}
+    `;
+export type AdminUpdateSpaceVisibilityMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AdminUpdateSpaceVisibilityMutation,
+  SchemaTypes.AdminUpdateSpaceVisibilityMutationVariables
+>;
+
+/**
+ * __useAdminUpdateSpaceVisibilityMutation__
+ *
+ * To run a mutation, you first call `useAdminUpdateSpaceVisibilityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminUpdateSpaceVisibilityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminUpdateSpaceVisibilityMutation, { data, loading, error }] = useAdminUpdateSpaceVisibilityMutation({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      visibility: // value for 'visibility'
+ *   },
+ * });
+ */
+export function useAdminUpdateSpaceVisibilityMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AdminUpdateSpaceVisibilityMutation,
+    SchemaTypes.AdminUpdateSpaceVisibilityMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AdminUpdateSpaceVisibilityMutation,
+    SchemaTypes.AdminUpdateSpaceVisibilityMutationVariables
+  >(AdminUpdateSpaceVisibilityDocument, options);
+}
+export type AdminUpdateSpaceVisibilityMutationHookResult = ReturnType<typeof useAdminUpdateSpaceVisibilityMutation>;
+export type AdminUpdateSpaceVisibilityMutationResult =
+  Apollo.MutationResult<SchemaTypes.AdminUpdateSpaceVisibilityMutation>;
+export type AdminUpdateSpaceVisibilityMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AdminUpdateSpaceVisibilityMutation,
+  SchemaTypes.AdminUpdateSpaceVisibilityMutationVariables
+>;
 export const AssignLicensePlanToSpaceDocument = gql`
     mutation AssignLicensePlanToSpace($licensePlanId: UUID!, $spaceId: UUID!) {
   assignLicensePlanToSpace(
@@ -20224,60 +20537,6 @@ export type RevokeLicensePlanFromSpaceMutationResult =
 export type RevokeLicensePlanFromSpaceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RevokeLicensePlanFromSpaceMutation,
   SchemaTypes.RevokeLicensePlanFromSpaceMutationVariables
->;
-export const UpdateSpacePlatformSettingsDocument = gql`
-    mutation UpdateSpacePlatformSettings($spaceId: UUID!, $nameId: NameID, $visibility: SpaceVisibility!) {
-  updateSpacePlatformSettings(
-    updateData: {spaceID: $spaceId, nameID: $nameId, visibility: $visibility}
-  ) {
-    id
-    nameID
-    visibility
-  }
-}
-    `;
-export type UpdateSpacePlatformSettingsMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateSpacePlatformSettingsMutation,
-  SchemaTypes.UpdateSpacePlatformSettingsMutationVariables
->;
-
-/**
- * __useUpdateSpacePlatformSettingsMutation__
- *
- * To run a mutation, you first call `useUpdateSpacePlatformSettingsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateSpacePlatformSettingsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateSpacePlatformSettingsMutation, { data, loading, error }] = useUpdateSpacePlatformSettingsMutation({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      nameId: // value for 'nameId'
- *      visibility: // value for 'visibility'
- *   },
- * });
- */
-export function useUpdateSpacePlatformSettingsMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateSpacePlatformSettingsMutation,
-    SchemaTypes.UpdateSpacePlatformSettingsMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateSpacePlatformSettingsMutation,
-    SchemaTypes.UpdateSpacePlatformSettingsMutationVariables
-  >(UpdateSpacePlatformSettingsDocument, options);
-}
-export type UpdateSpacePlatformSettingsMutationHookResult = ReturnType<typeof useUpdateSpacePlatformSettingsMutation>;
-export type UpdateSpacePlatformSettingsMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateSpacePlatformSettingsMutation>;
-export type UpdateSpacePlatformSettingsMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateSpacePlatformSettingsMutation,
-  SchemaTypes.UpdateSpacePlatformSettingsMutationVariables
 >;
 export const PlatformAdminSpacesListDocument = gql`
     query platformAdminSpacesList {
@@ -32574,6 +32833,98 @@ export type SpaceExplorerWelcomeSpaceQueryResult = Apollo.QueryResult<
 export function refetchSpaceExplorerWelcomeSpaceQuery(variables: SchemaTypes.SpaceExplorerWelcomeSpaceQueryVariables) {
   return { query: SpaceExplorerWelcomeSpaceDocument, variables: variables };
 }
+export const OrganizationSettingsMembershipsDocument = gql`
+    query OrganizationSettingsMemberships($organizationId: UUID!) {
+  rolesOrganization(
+    rolesData: {actorID: $organizationId, filter: {visibilities: [ACTIVE, DEMO, INACTIVE]}}
+  ) {
+    id
+    spaces {
+      id
+      roles
+      displayName
+      subspaces {
+        id
+        displayName
+        roles
+        level
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useOrganizationSettingsMembershipsQuery__
+ *
+ * To run a query within a React component, call `useOrganizationSettingsMembershipsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationSettingsMembershipsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationSettingsMembershipsQuery({
+ *   variables: {
+ *      organizationId: // value for 'organizationId'
+ *   },
+ * });
+ */
+export function useOrganizationSettingsMembershipsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OrganizationSettingsMembershipsQuery,
+    SchemaTypes.OrganizationSettingsMembershipsQueryVariables
+  > &
+    ({ variables: SchemaTypes.OrganizationSettingsMembershipsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.OrganizationSettingsMembershipsQuery,
+    SchemaTypes.OrganizationSettingsMembershipsQueryVariables
+  >(OrganizationSettingsMembershipsDocument, options);
+}
+export function useOrganizationSettingsMembershipsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrganizationSettingsMembershipsQuery,
+    SchemaTypes.OrganizationSettingsMembershipsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OrganizationSettingsMembershipsQuery,
+    SchemaTypes.OrganizationSettingsMembershipsQueryVariables
+  >(OrganizationSettingsMembershipsDocument, options);
+}
+export function useOrganizationSettingsMembershipsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.OrganizationSettingsMembershipsQuery,
+        SchemaTypes.OrganizationSettingsMembershipsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.OrganizationSettingsMembershipsQuery,
+    SchemaTypes.OrganizationSettingsMembershipsQueryVariables
+  >(OrganizationSettingsMembershipsDocument, options);
+}
+export type OrganizationSettingsMembershipsQueryHookResult = ReturnType<typeof useOrganizationSettingsMembershipsQuery>;
+export type OrganizationSettingsMembershipsLazyQueryHookResult = ReturnType<
+  typeof useOrganizationSettingsMembershipsLazyQuery
+>;
+export type OrganizationSettingsMembershipsSuspenseQueryHookResult = ReturnType<
+  typeof useOrganizationSettingsMembershipsSuspenseQuery
+>;
+export type OrganizationSettingsMembershipsQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrganizationSettingsMembershipsQuery,
+  SchemaTypes.OrganizationSettingsMembershipsQueryVariables
+>;
+export function refetchOrganizationSettingsMembershipsQuery(
+  variables: SchemaTypes.OrganizationSettingsMembershipsQueryVariables
+) {
+  return { query: OrganizationSettingsMembershipsDocument, variables: variables };
+}
 export const MyMcpApiKeysDocument = gql`
     query MyMcpApiKeys {
   me {
@@ -35323,6 +35674,7 @@ export const ConversationDetailsDocument = gql`
       id
       room {
         id
+        attachmentBucketId
         type
         displayName
         avatarUrl
@@ -35420,6 +35772,7 @@ export const ConversationEventsDocument = gql`
         id
         room {
           id
+          attachmentBucketId
           type
           displayName
           avatarUrl
@@ -35445,6 +35798,7 @@ export const ConversationEventsDocument = gql`
         id
         room {
           id
+          attachmentBucketId
           displayName
           avatarUrl
         }
@@ -35517,6 +35871,7 @@ export const CreateConversationDocument = gql`
     id
     room {
       id
+      attachmentBucketId
       type
       displayName
       avatarUrl
@@ -35669,95 +36024,6 @@ export type RemoveConversationMemberMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.RemoveConversationMemberMutation,
   SchemaTypes.RemoveConversationMemberMutationVariables
 >;
-export const RoomMessageAttachmentsDocument = gql`
-    query RoomMessageAttachments($conversationId: UUID!, $media: [MessageAttachmentMediaInput!]!) {
-  lookup {
-    conversation(ID: $conversationId) {
-      id
-      room {
-        id
-        messageAttachments(media: $media) {
-          id
-          url
-          displayName
-          mimeType
-          size
-          width
-          height
-          pending
-        }
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useRoomMessageAttachmentsQuery__
- *
- * To run a query within a React component, call `useRoomMessageAttachmentsQuery` and pass it any options that fit your needs.
- * When your component renders, `useRoomMessageAttachmentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useRoomMessageAttachmentsQuery({
- *   variables: {
- *      conversationId: // value for 'conversationId'
- *      media: // value for 'media'
- *   },
- * });
- */
-export function useRoomMessageAttachmentsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.RoomMessageAttachmentsQuery,
-    SchemaTypes.RoomMessageAttachmentsQueryVariables
-  > &
-    ({ variables: SchemaTypes.RoomMessageAttachmentsQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.RoomMessageAttachmentsQuery, SchemaTypes.RoomMessageAttachmentsQueryVariables>(
-    RoomMessageAttachmentsDocument,
-    options
-  );
-}
-export function useRoomMessageAttachmentsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.RoomMessageAttachmentsQuery,
-    SchemaTypes.RoomMessageAttachmentsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.RoomMessageAttachmentsQuery, SchemaTypes.RoomMessageAttachmentsQueryVariables>(
-    RoomMessageAttachmentsDocument,
-    options
-  );
-}
-export function useRoomMessageAttachmentsSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.RoomMessageAttachmentsQuery,
-        SchemaTypes.RoomMessageAttachmentsQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SchemaTypes.RoomMessageAttachmentsQuery,
-    SchemaTypes.RoomMessageAttachmentsQueryVariables
-  >(RoomMessageAttachmentsDocument, options);
-}
-export type RoomMessageAttachmentsQueryHookResult = ReturnType<typeof useRoomMessageAttachmentsQuery>;
-export type RoomMessageAttachmentsLazyQueryHookResult = ReturnType<typeof useRoomMessageAttachmentsLazyQuery>;
-export type RoomMessageAttachmentsSuspenseQueryHookResult = ReturnType<typeof useRoomMessageAttachmentsSuspenseQuery>;
-export type RoomMessageAttachmentsQueryResult = Apollo.QueryResult<
-  SchemaTypes.RoomMessageAttachmentsQuery,
-  SchemaTypes.RoomMessageAttachmentsQueryVariables
->;
-export function refetchRoomMessageAttachmentsQuery(variables: SchemaTypes.RoomMessageAttachmentsQueryVariables) {
-  return { query: RoomMessageAttachmentsDocument, variables: variables };
-}
 export const SendDirectMessageToUsersDocument = gql`
     mutation SendDirectMessageToUsers($messageData: SendDirectMessageToUsersInput!) {
   sendDirectMessageToUsers(messageData: $messageData) {
@@ -35861,6 +36127,7 @@ export const UserConversationsDocument = gql`
         id
         room {
           id
+          attachmentBucketId
           type
           displayName
           avatarUrl

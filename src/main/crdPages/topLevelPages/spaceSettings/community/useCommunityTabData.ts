@@ -60,12 +60,6 @@ export type UseCommunityTabDataResult = {
   permissions: {
     canInvite: boolean;
     canInviteOrganizations: boolean;
-    /**
-     * Direct add of a member. Previously computed by `useCommunityAdmin` but never
-     * forwarded here, which left the add-member path entirely ungated.
-     */
-    canAddUsers: boolean;
-    canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
   };
   /**
@@ -433,12 +427,10 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     permissions: {
       canInvite: community.permissions.canInvite,
       canInviteOrganizations: community.permissions.canInviteOrganizations,
-      canAddOrganizations: community.permissions.canAddOrganizations,
       // Mirror MUI (`SpaceAdminCommunityPage`): a space admin may add a VC via
       // EITHER the role-set assign privilege OR the account-assign privilege.
       // The CRD gate previously checked only the former, hiding the VC add
       // buttons for admins (e.g. space Admin/Lead) who only hold the latter.
-      canAddUsers: community.permissions.canAddUsers,
       canAddVirtualContributors:
         community.permissions.canAddVirtualContributors || community.permissions.canAddVirtualContributorsFromAccount,
     },

@@ -4,6 +4,7 @@ query ConversationDetails($conversationId: UUID!) {
       id
       room {
         id
+        attachmentBucketId
         type
         displayName
         avatarUrl

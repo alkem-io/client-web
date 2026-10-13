@@ -11,6 +11,7 @@ import {
   VisualType,
   WhiteboardPreviewMode,
 } from '@/core/apollo/generated/graphql-schema';
+import { createFormOption, createFormQuestion } from '@/crd/forms/callout/formValues';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { type CalloutFormValues, EMPTY_CALLOUT_FORM_VALUES } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 import {
@@ -50,6 +51,7 @@ describe('framingChipToServer', () => {
     expect(framingChipToServer('cta')).toBe(CalloutFramingType.Link);
     expect(framingChipToServer('image')).toBe(CalloutFramingType.MediaGallery);
     expect(framingChipToServer('poll')).toBe(CalloutFramingType.Poll);
+    expect(framingChipToServer('form')).toBe(CalloutFramingType.Form);
     expect(framingChipToServer('document')).toBe(CalloutFramingType.CollaboraDocument);
   });
 });
@@ -1101,5 +1103,83 @@ describe('mapFormToCalloutUpdateInput — mapView', () => {
       updateOptions
     );
     expect(result.input.settings?.framing?.contributors).toBeUndefined();
+  });
+});
+
+describe('Form framing', () => {
+  const questions = [
+    createFormQuestion({ prompt: '  Your name ', explanation: '  ', required: true }),
+    createFormQuestion({
+      prompt: 'Pick',
+      explanation: 'Choose wisely',
+      type: 'MULTIPLE_CHOICE',
+      options: [createFormOption(' A '), createFormOption('B')],
+    }),
+    createFormQuestion({
+      prompt: 'Story',
+      type: 'LONG_TEXT',
+      options: [createFormOption('stale option')],
+    }),
+  ];
+
+  it('create sends framing.form with trimmed questions, no options on text kinds and no client keys', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({
+        framingChip: 'form',
+        formTitle: '  Q4 planning ',
+        formDescription: ' Tell us where to focus ',
+        formQuestions: questions,
+        formSettings: { visibility: 'MEMBERS', responseMode: 'MULTIPLE', state: 'CLOSED', defaultCollapsed: true },
+      }),
+      createOptions
+    );
+
+    expect(result.input.framing.type).toBe(CalloutFramingType.Form);
+    expect(result.input.framing.form).toEqual({
+      title: 'Q4 planning',
+      description: 'Tell us where to focus',
+      questions: [
+        { prompt: 'Your name', explanation: undefined, type: 'SHORT_TEXT', required: true, options: undefined },
+        {
+          prompt: 'Pick',
+          explanation: 'Choose wisely',
+          type: 'MULTIPLE_CHOICE',
+          required: false,
+          options: [{ label: 'A' }, { label: 'B' }],
+        },
+        { prompt: 'Story', explanation: undefined, type: 'LONG_TEXT', required: false, options: undefined },
+      ],
+      settings: { visibility: 'MEMBERS', responseMode: 'MULTIPLE', state: 'CLOSED', defaultCollapsed: true },
+    });
+    expect(JSON.stringify(result.input.framing.form)).not.toContain('key');
+  });
+
+  it('create leaves out an empty title and description and sends the default expanded state', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'form', formTitle: '   ', formDescription: '', formQuestions: questions }),
+      createOptions
+    );
+
+    expect(result.input.framing.form?.title).toBeUndefined();
+    expect(result.input.framing.form?.description).toBeUndefined();
+    expect(result.input.framing.form?.settings?.defaultCollapsed).toBe(false);
+  });
+
+  it('a non-form framing never carries framing.form', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'none', formQuestions: questions }),
+      createOptions
+    );
+    expect(result.input.framing.form).toBeUndefined();
+  });
+
+  it('update never sends the form definition through updateCallout', () => {
+    const result = mapFormToCalloutUpdateInput(
+      baseValues({ framingChip: 'form', formQuestions: questions }),
+      updateOptions
+    );
+    expect(result.input.framing?.type).toBe(CalloutFramingType.Form);
+    expect(result.input.framing).not.toHaveProperty('form');
+    expect(JSON.stringify(result.input)).not.toContain('questions');
   });
 });

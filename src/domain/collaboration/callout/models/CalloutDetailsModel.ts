@@ -3,6 +3,7 @@ import type { Identifiable } from '@/core/utils/Identifiable';
 import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
+import type { CalloutFormDetailsModel } from '../../callout-form/models/CalloutFormModels';
 import type { LinkDetails } from '../../calloutContributions/link/models/LinkDetails';
 import type { ClassificationTagsetWithAllowedValuesModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
 import type { MediaGalleryModel } from '../../mediaGallery/MediaGalleryModel';
@@ -39,6 +40,7 @@ export type CalloutDetailsModel = CalloutModelLight & {
     link?: LinkDetails;
     mediaGallery?: MediaGalleryModel;
     poll?: PollDetailsModel;
+    form?: CalloutFormDetailsModel;
     collaboraDocument?: {
       id: string;
       documentType: string;

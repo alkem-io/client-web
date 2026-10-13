@@ -1,6 +1,10 @@
-import type { MessageAttachment } from '@/crd/components/comment/types';
-import type { ConversationMember, ConversationMessage, MessageSender } from '../models';
-import { actorIdOf, type MediaRef, type ParsedMessage } from './matrixEvents';
+import {
+  type ConversationMember,
+  type ConversationMessage,
+  type MessageSender,
+  mapMessageAttachments,
+} from '../models';
+import { actorIdOf, type ParsedMessage } from './matrixEvents';
 
 type SenderProfile = { readonly displayName: string; readonly avatarUri?: string };
 
@@ -8,8 +12,7 @@ type MappingContext = {
   readonly members: readonly ConversationMember[];
   /** Profiles looked up for senders who are no longer members. */
   readonly otherProfiles: ReadonlyMap<string, SenderProfile>;
-  /** Resolved attachments by event id. */
-  readonly attachments: ReadonlyMap<string, MessageAttachment>;
+  readonly attachmentBucketId?: string | null;
 };
 
 const senderOf = (matrixUserId: string, context: MappingContext): MessageSender => {
@@ -21,11 +24,6 @@ const senderOf = (matrixUserId: string, context: MappingContext): MessageSender 
   const profile = context.otherProfiles.get(actorId);
   return { id: actorId, displayName: profile?.displayName ?? '', avatarUri: profile?.avatarUri };
 };
-
-// Until (or unless) the server resolves it, media shows as its filename only —
-// the same shape the server returns for an unavailable document.
-const attachmentOf = (eventId: string, media: MediaRef, context: MappingContext): MessageAttachment =>
-  context.attachments.get(eventId) ?? { displayName: media.displayName || 'attachment' };
 
 const toConversationMessage = (message: ParsedMessage, context: MappingContext): ConversationMessage => ({
   id: message.eventId,
@@ -41,7 +39,7 @@ const toConversationMessage = (message: ParsedMessage, context: MappingContext):
       sender: { id: sender.id, profile: { displayName: sender.displayName } },
     };
   }),
-  attachments: message.media ? [attachmentOf(message.eventId, message.media, context)] : [],
+  attachments: mapMessageAttachments(message.media ? [message.media] : [], context.attachmentBucketId),
 });
 
 /** Actor ids of senders (and reactors) who are not current members. */

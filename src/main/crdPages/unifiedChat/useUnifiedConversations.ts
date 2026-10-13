@@ -75,6 +75,7 @@ export const useUnifiedConversations = () => {
         return {
           id: conv.id,
           roomId: room.id,
+          attachmentBucketId: room.attachmentBucketId,
           isGroup,
           displayName,
           roomDisplayName,
@@ -85,7 +86,7 @@ export const useUnifiedConversations = () => {
             ? toConversationMessage(summary.lastMessage, {
                 members,
                 otherProfiles: new Map(),
-                attachments: new Map(),
+                attachmentBucketId: room.attachmentBucketId,
               })
             : undefined,
           members,

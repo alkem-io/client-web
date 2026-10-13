@@ -19,7 +19,8 @@ export type FramingChip =
   | 'image'
   | 'poll'
   | 'contributors'
-  | 'spaces';
+  | 'spaces'
+  | 'form';
 
 /**
  * Contributor-collection callout config (feature 008). Carried in the callout
@@ -101,4 +102,40 @@ export type ContributionDefaults = {
   clearWhiteboardContent?: boolean;
   /** Server-owned live draft used while authoring a default Whiteboard. */
   whiteboardDraft?: WhiteboardDraftRef;
+};
+
+/** Question kinds of a Form framing. Mirrors the server `CalloutFormQuestionType` enum. */
+export type FormQuestionKind = 'SHORT_TEXT' | 'LONG_TEXT' | 'SINGLE_CHOICE' | 'MULTIPLE_CHOICE';
+
+export type FormResponseVisibilityValue = 'ADMINS' | 'MEMBERS';
+export type FormResponseModeValue = 'SINGLE' | 'MULTIPLE';
+export type FormStateValue = 'OPEN' | 'CLOSED';
+
+export type FormOptionValue = {
+  /** Server id; absent for an option added during this edit. */
+  id?: string;
+  /** Stable client-side identity used for list keys and drag-and-drop; never sent to the server. */
+  key: string;
+  label: string;
+};
+
+export type FormQuestionValue = {
+  /** Server id; absent for a question added during this edit. */
+  id?: string;
+  /** Stable client-side identity used for list keys and drag-and-drop; never sent to the server. */
+  key: string;
+  prompt: string;
+  explanation: string;
+  type: FormQuestionKind;
+  required: boolean;
+  /** Only meaningful for the two choice kinds. */
+  options: FormOptionValue[];
+};
+
+export type FormSettingsValue = {
+  visibility: FormResponseVisibilityValue;
+  responseMode: FormResponseModeValue;
+  state: FormStateValue;
+  /** Whether the Form box starts collapsed for every viewer. Presentation only. */
+  defaultCollapsed: boolean;
 };

@@ -5,15 +5,17 @@ import { useConversationStorageConfig } from './attachments/useConversationStora
 
 type Props = Omit<ComponentProps<typeof ChatThreadView>, 'onSendMessage'> & {
   conversationId: string;
+  roomId: string | undefined;
   attachmentsAllowed: boolean;
   sendEvent: SendEvent;
   onClearDraft: () => void;
-  onRestoreDraft: () => void;
+  onRestoreDraft: (text: string) => void;
 };
 
 /** The connector keys this component by conversation, giving each draft its own lifetime. */
 export function ConversationThread({
   conversationId,
+  roomId,
   attachmentsAllowed,
   sendEvent,
   onClearDraft,
@@ -21,12 +23,26 @@ export function ConversationThread({
   ...view
 }: Props) {
   const { storageConfig } = useConversationStorageConfig(conversationId);
-  const files = useConversationAttachments(attachmentsAllowed ? storageConfig : undefined);
+  const files = useConversationAttachments(
+    attachmentsAllowed ? storageConfig : undefined,
+    roomId ? { roomID: roomId } : undefined
+  );
+  const sendWithDraft: SendEvent = async (text, attachmentUpload) => {
+    if (attachmentUpload) return sendEvent(text, attachmentUpload);
+    onClearDraft();
+    let confirmed: boolean | undefined;
+    try {
+      confirmed = await sendEvent(text);
+      return confirmed;
+    } finally {
+      if (!confirmed) onRestoreDraft(text);
+    }
+  };
   return (
     <ChatThreadView
       {...view}
       isSending={view.isSending || files.isSending}
-      onSendMessage={text => files.send(text, sendEvent, onClearDraft, onRestoreDraft)}
+      onSendMessage={text => files.send(text, sendWithDraft, () => {})}
       attachmentsEnabled={files.enabled}
       attachments={files.attachments}
       onAttachFiles={files.attachFiles}

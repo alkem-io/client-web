@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { lastMessageOf, localMediaId, projectMessages, type RawEvent } from './matrixEvents';
+import { lastMessageOf, projectMessages, type RawEvent } from './matrixEvents';
 
 const HS = 'matrix.alkem.io';
 const ALICE = `@alice-id:${HS}`;
@@ -15,17 +15,6 @@ const event = (type: string, content: Record<string, unknown>, overrides: Partia
   ...overrides,
 });
 
-describe('localMediaId', () => {
-  it('returns the media id only for this homeserver', () => {
-    expect(localMediaId(`mxc://${HS}/abc`, HS)).toBe('abc');
-    expect(localMediaId('mxc://other.org/abc', HS)).toBeUndefined();
-    expect(localMediaId(`mxc://${HS}/`, HS)).toBeUndefined();
-    expect(localMediaId(`mxc://${HS}/a/b`, HS)).toBeUndefined();
-    expect(localMediaId('https://example.com/abc', HS)).toBeUndefined();
-    expect(localMediaId(undefined, HS)).toBeUndefined();
-  });
-});
-
 describe('projectMessages', () => {
   it('keeps text messages verbatim and skips blank ones (e.g. redacted)', () => {
     const messages = projectMessages(
@@ -39,7 +28,7 @@ describe('projectMessages', () => {
     expect(messages.map(message => message.body)).toEqual(['**hi**']);
   });
 
-  it('surfaces own-homeserver media with the filename, dimensions and document hint', () => {
+  it('projects native media metadata and ignores an old document hint', () => {
     const [message] = projectMessages(
       [
         event('m.room.message', {
@@ -47,7 +36,7 @@ describe('projectMessages', () => {
           body: 'look at this',
           filename: 'photo.png',
           url: `mxc://${HS}/media-1`,
-          info: { w: 40, h: 30, mimetype: 'image/png' },
+          info: { w: 40, h: 30, mimetype: 'image/png', size: 123 },
           'io.alkemio.document_id': '0b4f1c2e-7a3d-4e5f-8a9b-1c2d3e4f5a6b',
         }),
       ],
@@ -55,15 +44,16 @@ describe('projectMessages', () => {
     );
     expect(message.body).toBe('look at this');
     expect(message.media).toEqual({
-      mediaID: 'media-1',
-      documentID: '0b4f1c2e-7a3d-4e5f-8a9b-1c2d3e4f5a6b',
+      externalReference: 'media-1',
       displayName: 'photo.png',
+      mimeType: 'image/png',
+      size: 123,
       width: 40,
       height: 30,
     });
   });
 
-  it('drops member-written values the server would reject: a non-UUID document hint, out-of-range dimensions', () => {
+  it('drops out-of-range event dimensions without a document lookup', () => {
     const [message] = projectMessages(
       [
         event('m.room.message', {
@@ -77,12 +67,33 @@ describe('projectMessages', () => {
       HS
     );
     expect(message.media).toEqual({
-      mediaID: 'media-1',
-      documentID: undefined,
+      externalReference: 'media-1',
       displayName: 'x.png',
+      mimeType: undefined,
+      size: undefined,
       width: undefined,
       height: undefined,
     });
+  });
+
+  it('a document hint cannot turn a foreign or missing media URI into an attachment', () => {
+    const messages = projectMessages(
+      [
+        event('m.room.message', {
+          msgtype: 'm.file',
+          body: 'foreign.pdf',
+          url: 'mxc://foreign.example/media',
+          'io.alkemio.document_id': '0b4f1c2e-7a3d-4e5f-8a9b-1c2d3e4f5a6b',
+        }),
+        event('m.room.message', {
+          msgtype: 'm.file',
+          body: 'missing.pdf',
+          'io.alkemio.document_id': '0b4f1c2e-7a3d-4e5f-8a9b-1c2d3e4f5a6b',
+        }),
+      ],
+      HS
+    );
+    expect(messages.map(message => message.media)).toEqual([undefined, undefined]);
   });
 
   it('uses the body as filename only when no filename is declared', () => {
@@ -97,7 +108,7 @@ describe('projectMessages', () => {
     expect(captioned.media?.displayName).toBe('');
   });
 
-  it('never surfaces a foreign-homeserver media id; without a document hint the event is text only', () => {
+  it('never surfaces a foreign-homeserver media reference', () => {
     const [foreign] = projectMessages(
       [event('m.room.message', { msgtype: 'm.image', body: 'x.png', url: 'mxc://evil.org/media-1' })],
       HS
@@ -108,7 +119,7 @@ describe('projectMessages', () => {
 
   it('treats stickers as media without a msgtype', () => {
     const [sticker] = projectMessages([event('m.sticker', { body: 'wave', url: `mxc://${HS}/s1` })], HS);
-    expect(sticker.media?.mediaID).toBe('s1');
+    expect(sticker.media?.externalReference).toBe('s1');
   });
 
   it('never shows a sticker alt-text as message text, and drops a sticker without a usable url', () => {
@@ -117,7 +128,7 @@ describe('projectMessages', () => {
     const messages = projectMessages([withUrl, withoutUrl], HS);
     expect(messages).toHaveLength(1);
     expect(messages[0].body).toBe('');
-    expect(messages[0].media?.mediaID).toBe('s1');
+    expect(messages[0].media?.externalReference).toBe('s1');
     expect(lastMessageOf([withUrl, withoutUrl], HS)?.eventId).toBe(withUrl.eventId);
     expect(lastMessageOf([withoutUrl], HS)).toBeUndefined();
   });

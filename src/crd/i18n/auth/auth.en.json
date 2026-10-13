@@ -9,6 +9,12 @@
     "signUp": "Sign up",
     "preparing": "Preparing secure sign-in…"
   },
+  "appSignIn": {
+    "required": "Sign in to continue.",
+    "cancelled": "Sign-in was cancelled.",
+    "failed": "Sign-in could not be completed. Please try again.",
+    "action": "Sign in"
+  },
   "signUp": {
     "title": "Sign up",
     "haveAccount": "Have an account?",

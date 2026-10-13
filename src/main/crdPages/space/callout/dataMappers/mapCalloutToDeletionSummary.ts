@@ -13,6 +13,7 @@ const resolveRichContent = (framing: CalloutDetailsModelExtended['framing']): Ca
   if (framing?.whiteboard) return 'whiteboard';
   if (framing?.memo) return 'memo';
   if (framing?.poll) return 'poll';
+  if (framing?.form) return 'form';
   if (framing?.mediaGallery) return 'mediaGallery';
   if (framing?.collaboraDocument) return 'document';
   return undefined;

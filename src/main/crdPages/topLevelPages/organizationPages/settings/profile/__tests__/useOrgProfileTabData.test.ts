@@ -362,13 +362,13 @@ describe('useOrgProfileTabData — references batch', () => {
     act(() => {
       result.current.onReferencesChange([
         { id: 'ref-2', name: 'Annual report', uri: 'https://alkemio.test/report-2026', description: 'PDF' },
-        { name: 'Bluesky', uri: 'https://bsky.app/profile/alkemio', description: '' },
+        { name: 'Bluesky', uri: 'https://bsky.app/profile/alkem.io', description: '' },
       ]);
     });
 
     // Edit the recognized LinkedIn row's URI (separate control, unchanged).
     act(() => {
-      result.current.onUpdateRecognizedReference('linkedin', 'https://linkedin.com/company/alkemio-foundation');
+      result.current.onUpdateRecognizedReference('linkedin', 'https://www.linkedin.com/company/alkemio');
     });
 
     await act(async () => {
@@ -388,7 +388,7 @@ describe('useOrgProfileTabData — references batch', () => {
         input: {
           profileID: 'profile-1',
           name: 'Bluesky',
-          uri: 'https://bsky.app/profile/alkemio',
+          uri: 'https://bsky.app/profile/alkem.io',
           description: '',
         },
       },

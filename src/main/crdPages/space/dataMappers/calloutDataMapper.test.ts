@@ -103,3 +103,16 @@ describe('mapCalloutDetailsToPostCard — CollaboraDocument framing', () => {
     expect(result.framingDocumentPreviewUrl).toBeUndefined();
   });
 });
+
+describe('mapCalloutDetailsToPostCard — Form framing', () => {
+  it('maps the Form framing type to the "form" post type', () => {
+    const result = mapCalloutDetailsToPostCard(
+      baseCallout({
+        framing: { type: CalloutFramingType.Form, profile: { displayName: 'Intake', references: [] } },
+      }),
+      t
+    );
+
+    expect(result.type).toBe('form');
+  });
+});

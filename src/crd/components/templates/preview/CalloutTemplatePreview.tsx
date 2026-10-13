@@ -1,11 +1,61 @@
 import { ExternalLink, FileText, ImageIcon, MessageSquare, MessageSquareOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import {
+  formOptionRowClass,
+  formQuestionCardClass,
+  formQuestionPromptClass,
+} from '@/crd/components/callout/formStyles';
 import { ReferencesAndTagsStrip } from '@/crd/components/callout/ReferencesAndTagsStrip';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { Badge } from '@/crd/primitives/badge';
-import type { TemplateContent } from '../types';
+import type { TemplateContent, TemplateFormPreview } from '../types';
 
 type CalloutContent = Extract<TemplateContent, { type: 'callout' }>;
+
+/** A Form template's questions, read-only: numbered prompt, answer type, required marker and choices. */
+function FormDefinitionPreview({ form }: { form: TemplateFormPreview }) {
+  const { t } = useTranslation('crd-templates');
+  return (
+    <div className="space-y-3">
+      {form.title && <p className="text-body-emphasis">{form.title}</p>}
+      {form.description && <p className="text-body text-muted-foreground whitespace-pre-line">{form.description}</p>}
+      <ol aria-label={t('preview.callout.formQuestions')} className="space-y-3">
+        {form.questions.map((question, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: read-only preview list, never reordered; prompts may repeat
+          <li key={`${question.prompt}-${i}`} className={formQuestionCardClass}>
+            <p className={formQuestionPromptClass}>
+              <span>{i + 1}.</span>
+              <span>{question.prompt}</span>
+            </p>
+            {question.explanation && (
+              <p className="text-caption text-muted-foreground whitespace-pre-line">{question.explanation}</p>
+            )}
+            <div className="flex flex-wrap items-center gap-1.5">
+              <Badge variant="outline" className="text-badge">
+                {t(`preview.callout.formQuestionType.${question.type}`)}
+              </Badge>
+              {question.required && (
+                <Badge variant="secondary" className="text-badge">
+                  {t('preview.callout.formRequired')}
+                </Badge>
+              )}
+            </div>
+            {question.options.length > 0 && (
+              <ul className="space-y-1.5">
+                {question.options.map((option, optionIndex) => (
+                  // biome-ignore lint/suspicious/noArrayIndexKey: read-only preview list, never reordered
+                  <li key={`${option}-${optionIndex}`} className={formOptionRowClass(false, false)}>
+                    {option}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
 
 function FramingBody({ content }: { content: CalloutContent }) {
   const { t } = useTranslation('crd-templates');
@@ -74,6 +124,8 @@ function FramingBody({ content }: { content: CalloutContent }) {
           )}
         </div>
       );
+    case 'form':
+      return content.framingForm ? <FormDefinitionPreview form={content.framingForm} /> : null;
     case 'whiteboard':
       // D16 (2026-05-18): render the server-stamped preview image when present, falling back to
       // the placeholder text only when the visual is genuinely missing.

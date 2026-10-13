@@ -246,3 +246,108 @@ describe('PostCard reactionsSlot placement', () => {
     expect(footer?.contains(allReactions[0])).toBe(true);
   });
 });
+
+describe('PostCard section order', () => {
+  it('renders framing slots before contributions, and contributions before the footer', () => {
+    render(
+      <PostCard
+        post={{ ...basePost, type: 'whiteboard' }}
+        contributionsPreview={<div>contributions-preview</div>}
+        reactionsSlot={<div>footer-reactions</div>}
+      >
+        <div>form-framing</div>
+      </PostCard>
+    );
+    const whiteboardFraming = screen.getByRole('button', { name: /open whiteboard/i });
+    const framingSlot = screen.getByText('form-framing');
+    const contributions = screen.getByText('contributions-preview');
+    const footer = screen.getByText('footer-reactions');
+    const follows = (a: Element, b: Element) =>
+      Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(follows(whiteboardFraming, framingSlot)).toBe(true);
+    expect(follows(framingSlot, contributions)).toBe(true);
+    expect(follows(contributions, footer)).toBe(true);
+  });
+
+  // Spacing guards: a separate Card child adds the Card's `gap-6` on top of the preview header's `mt-4`.
+  it('without framing slots, contributions close the card body (no extra Card gap)', () => {
+    const { container } = render(
+      <PostCard post={{ ...basePost, type: 'whiteboard' }} contributionsPreview={<div>contributions-preview</div>} />
+    );
+    const body = container.querySelector('[data-slot="card-content"]');
+    expect(body?.contains(screen.getByText('contributions-preview'))).toBe(true);
+  });
+
+  it('with framing slots, contributions share the slot wrapper', () => {
+    render(
+      <PostCard post={basePost} contributionsPreview={<div>contributions-preview</div>}>
+        <div>poll-framing</div>
+      </PostCard>
+    );
+    expect(screen.getByText('contributions-preview').parentElement).toBe(
+      screen.getByText('poll-framing').parentElement
+    );
+  });
+
+  it('pads the card bottom only when the footer is hidden', () => {
+    const { container, rerender } = render(
+      <PostCard post={{ ...basePost, commentsEnabled: false, commentCount: 0 }} contributionsPreview={<div>c</div>} />
+    );
+    const card = () => container.querySelector('[data-slot="card"]');
+    expect(container.querySelector('[data-slot="card-footer"]')).toBeNull();
+    expect(card()).toHaveClass('pb-6');
+
+    rerender(
+      <I18nextProvider i18n={i18n}>
+        <PostCard post={{ ...basePost, commentsEnabled: true }} contributionsPreview={<div>c</div>} />
+      </I18nextProvider>
+    );
+    expect(container.querySelector('[data-slot="card-footer"]')).not.toBeNull();
+    expect(card()).not.toHaveClass('pb-6');
+  });
+});
+
+describe('PostCard framing preview sizing', () => {
+  // The space feed used to render the memo and document framing previews at short
+  // fixed heights, so those callouts looked like plain text posts next to a
+  // whiteboard callout in the same feed. All three framings are previews of a
+  // board/page and get the same room.
+  const previewBox = (container: HTMLElement) =>
+    container.querySelector('[data-slot="card-content"] [class*="bg-muted/30"]');
+
+  const whiteboardBox = () => previewBox(render(<PostCard post={{ ...basePost, type: 'whiteboard' }} />).container);
+
+  it.each([
+    ['document', { type: 'document', framingDocumentType: 'text' }],
+    ['memo', { type: 'memo', framingMemoMarkdown: '# Heading\n\nSome memo body.' }],
+  ] as const)('gives the %s framing preview the same height as the whiteboard framing preview', (_name, overrides) => {
+    const box = previewBox(render(<PostCard post={{ ...basePost, ...overrides } as PostCardData} />).container);
+    const reference = whiteboardBox();
+
+    expect(reference).not.toBeNull();
+    expect(box).not.toBeNull();
+    expect(reference).toHaveClass('aspect-video');
+    expect(box).toHaveClass('aspect-video');
+    // No fixed-height class may co-exist with the aspect ratio — that is what
+    // flattened these previews before.
+    expect([...(box?.classList ?? [])].filter(c => /^h-\d/.test(c))).toEqual([]);
+  });
+
+  it('keeps the memo open affordance and the signed-copies action usable in the taller box', () => {
+    const onOpenFraming = vi.fn();
+    const onOpenMemoSignedCopies = vi.fn();
+    render(
+      <PostCard
+        post={{ ...basePost, type: 'memo', framingMemoMarkdown: 'body', memoSignedCopiesCount: 2 } as PostCardData}
+        onOpenFraming={onOpenFraming}
+        onOpenMemoSignedCopies={onOpenMemoSignedCopies}
+      />
+    );
+
+    screen.getByText('Open Memo').click();
+    expect(onOpenFraming).toHaveBeenCalledTimes(1);
+
+    screen.getByRole('button', { name: /Signed copies \(2\)/ }).click();
+    expect(onOpenMemoSignedCopies).toHaveBeenCalledTimes(1);
+  });
+});

@@ -9,6 +9,12 @@
     "signUp": "Registrieren",
     "preparing": "Sichere Anmeldung wird vorbereitet…"
   },
+  "appSignIn": {
+    "required": "Melde dich an, um fortzufahren.",
+    "cancelled": "Die Anmeldung wurde abgebrochen.",
+    "failed": "Die Anmeldung konnte nicht abgeschlossen werden. Bitte versuche es erneut.",
+    "action": "Anmelden"
+  },
   "signUp": {
     "title": "Registrieren",
     "haveAccount": "Schon ein Konto?",

@@ -94,6 +94,7 @@
         "profile": "Profiel",
         "account": "Account",
         "community": "Geassocieerden",
+        "membership": "Lidmaatschap",
         "settings": "Instellingen",
         "invitations": "Uitnodigingen",
         "authorization": "Autorisatie"
@@ -525,7 +526,8 @@
           "communityInvitationResponse": "Ontvang een melding wanneer iemand een uitnodiging accepteert of afwijst voor een Space die u beheert",
           "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een Post wordt toegevoegd",
           "communicationMessageReceived": "Krijg een melding wanneer er een community-bericht wordt ontvangen",
-          "userEmailChanged": "Krijg een melding wanneer het inloge-mailadres van een lid van een Space die je beheert wordt gewijzigd"
+          "userEmailChanged": "Krijg een melding wanneer het inloge-mailadres van een lid van een Space die je beheert wordt gewijzigd",
+          "collaborationCalloutFormResponseReceived": "Krijg een melding wanneer iemand een reactie op een formulier verstuurt in een Space die je beheert"
         },
         "user": {
           "commentReply": "Krijg een melding wanneer iemand reageert op mijn reactie",
@@ -783,6 +785,44 @@
       "removeConfirmAssociate": "{{name}} verwijderen als geassocieerde",
       "removeSuccess": "Geassocieerde verwijderd",
       "removeError": "Verwijderen mislukt — probeer opnieuw"
+    },
+    "membership": {
+      "pageTitle": "Lidmaatschap",
+      "title": "Space-lidmaatschappen",
+      "searchPlaceholder": "Zoek lidmaatschappen...",
+      "empty": "Deze organisatie is nog geen lid van een Space.",
+      "summary": "{{shown}} van {{total}} lidmaatschappen weergegeven",
+      "filteredEmptyTitle": "Geen lidmaatschappen gevonden",
+      "filteredEmptyDescription": "Pas de filters of zoekterm aan.",
+      "clearFilters": "Filters wissen",
+      "filter": {
+        "all": "Alle",
+        "spaces": "Spaces",
+        "subspaces": "Subspaces"
+      },
+      "type": {
+        "space": "Space",
+        "subspace": "Subspace"
+      },
+      "role": {
+        "lead": "Lead",
+        "member": "Lid"
+      },
+      "menu": {
+        "viewByType": "{{type}} bekijken"
+      },
+      "leave": {
+        "menuItemLabeled": "{{type}} verlaten",
+        "dialogTitle": "Dit lidmaatschap verlaten?",
+        "dialogDescription": "Uw organisatie staat op het punt om \"{{spaceName}}\" en al zijn subspaces te verlaten, en geeft daar elke rol op, ook die van Lead. Ze verliest de toegang tot de inhoud voor leden en moet opnieuw worden uitgenodigd om terug te komen.",
+        "dialogConfirm": "Verlaten",
+        "success": "Lidmaatschap verlaten",
+        "error": "Verlaten mislukt — probeer opnieuw",
+        "forbidden": "Alleen beheerders en eigenaren van deze organisatie kunnen een space verlaten"
+      },
+      "ledBy": "Geleid door:",
+      "ledByAria": "{{count}} community-Leads",
+      "leadsMore": "en nog {{count}}"
     },
     "settings": {
       "pageTitle": "Instellingen",
@@ -1070,6 +1110,7 @@
         "innovationHubsTooltip": "Je hebt {{usage}} van je {{limit}} beschikbare aangepaste startpagina's in je account aangemaakt."
       },
       "kebabAriaLabel": "Meer acties",
+      "kebabAriaLabelFor": "Meer acties voor {{name}}",
       "createNewSpace": {
         "ariaLabel": "Nieuwe Space aanmaken",
         "heading": "Nieuwe Space aanmaken",

@@ -1,4 +1,6 @@
-import { renderHook } from '@testing-library/react';
+import { ApolloError } from '@apollo/client';
+import { act, renderHook } from '@testing-library/react';
+import { GraphQLError } from 'graphql';
 import { describe, expect, test, vi } from 'vitest';
 import {
   UrlResolverResultState,
@@ -15,6 +17,12 @@ vi.mock('@/core/ui/notifications/useNotification', () => ({
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
+}));
+
+const mockHandleApolloError = vi.fn();
+
+vi.mock('@/core/apollo/hooks/useApolloErrorHandler', () => ({
+  useApolloErrorHandler: () => mockHandleApolloError,
 }));
 
 const mockConvertMutation = vi.fn().mockResolvedValue({ data: {} });
@@ -167,5 +175,49 @@ describe('useVcConversion', () => {
     expect(result.current.isSpaceBased).toBe(false);
     expect(result.current.isAlreadyConverted).toBe(false);
     expect(result.current.calloutCount).toBe(0);
+  });
+
+  test('a space holding a Form is rejected with its own translated reason, not the generic error', async () => {
+    mockResolveData = {
+      urlResolver: {
+        state: UrlResolverResultState.Resolved,
+        type: UrlType.VirtualContributor,
+        virtualContributor: { id: 'vc-1' },
+      },
+    };
+    mockVcData = {
+      lookup: {
+        virtualContributor: {
+          id: 'vc-1',
+          profile: { displayName: 'Space VC', url: '/vc' },
+          bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType.AlkemioSpace,
+          bodyOfKnowledgeID: 'source-space-1',
+          account: { id: 'acc-1', host: { profile: { displayName: 'Owner' } } },
+          authorization: { myPrivileges: [] },
+        },
+      },
+    };
+    mockSpaceData = undefined;
+    mockNotify.mockClear();
+    mockHandleApolloError.mockClear();
+    mockConvertMutation.mockRejectedValueOnce(
+      new ApolloError({
+        graphQLErrors: [
+          new GraphQLError('A space with a Form callout cannot be converted', {
+            extensions: { code: 'BAD_USER_INPUT', details: { code: 'FORM_TRANSFER_NOT_ALLOWED' } },
+          }),
+        ],
+      })
+    );
+    const { result } = renderHook(() => useVcConversion());
+
+    await act(() => result.current.handleConvert());
+
+    expect(mockConvertMutation).toHaveBeenLastCalledWith(
+      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
+    );
+    expect(mockNotify).toHaveBeenCalledTimes(1);
+    expect(mockNotify).toHaveBeenCalledWith('pages.admin.vcConversion.formNotAllowed', 'error');
+    expect(mockHandleApolloError).not.toHaveBeenCalled();
   });
 });

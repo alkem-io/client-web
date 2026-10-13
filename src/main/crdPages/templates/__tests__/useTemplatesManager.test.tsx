@@ -18,7 +18,7 @@ import { InMemoryCache } from '@apollo/client';
 import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import type { FC, PropsWithChildren } from 'react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   AllTemplatesInTemplatesSetDocument,
   DeleteTemplateDocument,
@@ -35,6 +35,9 @@ import {
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import { useTemplatesManager } from '../useTemplatesManager';
+
+// The template editor's notifications need the app's global state provider, which this hook test does not mount.
+vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
 
 // ---------------------------------------------------------------------------
 // Fixture builders

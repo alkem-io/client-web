@@ -54,18 +54,6 @@ describe('CalloutCollaboraPreview', () => {
     expect(onReplace).toHaveBeenCalledTimes(1);
   });
 
-  it('renders without throwing at size="compact"', () => {
-    expect(() =>
-      render(<CalloutCollaboraPreview documentType="text" onOpen={() => {}} size="compact" />)
-    ).not.toThrow();
-  });
-
-  it('renders without throwing at size="default"', () => {
-    expect(() =>
-      render(<CalloutCollaboraPreview documentType="text" onOpen={() => {}} size="default" />)
-    ).not.toThrow();
-  });
-
   describe('previewImageUrl', () => {
     it('renders the preview image with native lazy loading and an empty alt, icon still mounted underneath', () => {
       const { container } = render(

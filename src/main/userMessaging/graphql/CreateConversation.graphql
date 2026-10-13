@@ -3,6 +3,7 @@ mutation CreateConversation($conversationData: CreateConversationInput!) {
     id
     room {
       id
+      attachmentBucketId
       type
       displayName
       avatarUrl

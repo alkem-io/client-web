@@ -39,3 +39,12 @@ describe('useOrgSettingsTab — the removed Authorization tab (062, T010)', () =
     expect(result.current.activeTabId).toBe('profile');
   });
 });
+
+describe('useOrgSettingsTab — membership tab', () => {
+  it('resolves /organization/x/settings/membership to "membership"', () => {
+    const { result } = renderHook(() => useOrgSettingsTab({ profileUrl: '/organization/x' }), {
+      wrapper: wrapper('/organization/x/settings/membership'),
+    });
+    expect(result.current.activeTabId).toBe('membership');
+  });
+});

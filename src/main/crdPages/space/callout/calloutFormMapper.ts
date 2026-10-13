@@ -14,6 +14,7 @@ import { ensureHttps } from '@/crd/lib/ensureHttps';
 import type { CalloutCreationType } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import type { MemoFieldSubmittedValues } from '@/domain/collaboration/memo/model/MemoFieldSubmittedValues';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import { mapFormValuesToCreateInput } from '@/main/crdPages/space/callout/calloutFormDefinitionMapper';
 import { contributorCollectionToServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
 import { cardVariantToServer } from '@/main/crdPages/space/callout/spaceCollectionCardVariant';
 import type {
@@ -41,6 +42,7 @@ const FRAMING_CHIP_TO_SERVER: Record<FramingChip, CalloutFramingType> = {
   // Feature 013: the "Subspaces" chip. Config-free — the SPACES framing carries no
   // settings/config; only framing profile (name/description) is sent (FR-004b).
   spaces: CalloutFramingType.Spaces,
+  form: CalloutFramingType.Form,
 };
 
 const RESPONSE_TO_CONTRIBUTION_TYPE: Record<ResponseType, CalloutContributionType | undefined> = {
@@ -356,6 +358,15 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
         resultsDetail: values.pollShowVoterAvatars ? PollResultsDetail.Full : PollResultsDetail.Count,
       },
     };
+  }
+
+  if (framingType === CalloutFramingType.Form) {
+    callout.framing.form = mapFormValuesToCreateInput({
+      title: values.formTitle,
+      description: values.formDescription,
+      questions: values.formQuestions,
+      settings: values.formSettings,
+    });
   }
 
   return {

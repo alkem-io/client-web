@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   refetchPlatformAdminSpacesListQuery,
+  useAdminUpdateSpaceNameIdMutation,
+  useAdminUpdateSpaceVisibilityMutation,
   useDeleteSpaceMutation,
   usePlatformAdminSpacesListQuery,
-  useUpdateSpacePlatformSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { usePermissionDeniedNotifier } from '@/core/apollo/hooks/usePermissionDeniedNotifier';
@@ -46,10 +47,20 @@ const CrdAdminSpacesPage = () => {
     onCompleted: () => notify(tApp('pages.admin.space.notifications.space-removed'), 'success'),
   });
 
-  const [updateSpaceSettings, { loading: savingSettings }] = useUpdateSpacePlatformSettingsMutation({
+  // 027-platform-role-redesign (T013, FR-020): the single
+  // `updateSpacePlatformSettings` mutation is gone — visibility and alias are
+  // owned by different roles, so they are two calls now. Visibility is Platform
+  // License Manager's (spec row 8); the alias is a protected `nameID` update
+  // requiring `UPDATE_NAMEID`, which no global platform role holds (A17).
+  const [updateSpaceVisibility, { loading: savingVisibility }] = useAdminUpdateSpaceVisibilityMutation({
     refetchQueries: [refetchPlatformAdminSpacesListQuery()],
     awaitRefetchQueries: true,
   });
+  const [updateSpaceNameId, { loading: savingNameId }] = useAdminUpdateSpaceNameIdMutation({
+    refetchQueries: [refetchPlatformAdminSpacesListQuery()],
+    awaitRefetchQueries: true,
+  });
+  const savingSettings = savingVisibility || savingNameId;
 
   const rows = (data?.platformAdmin.spaces ?? []).map(mapSpaceToRow);
   const { searchTerm, onSearchTermChange, filteredRows } = useAdminListSearch(rows);
@@ -71,20 +82,37 @@ const CrdAdminSpacesPage = () => {
 
   const saveSettings = () => {
     if (!settingsSpace) return;
-    const trimmedNameId = draftNameId.trim();
-    void guard(() =>
-      updateSpaceSettings({
-        variables: {
-          spaceId: settingsSpace.id,
-          // Only send the alias when it actually changed — resending the current
-          // alias is read by the server as a rename attempt.
-          nameId: trimmedNameId !== settingsSpace.nameId ? trimmedNameId : undefined,
-          visibility: draftVisibility as SpaceVisibility,
-        },
-      })
-    )
-      .then(() => setSettingsSpaceId(null))
-      .catch(() => {});
+    const nextNameId = draftNameId.trim();
+    // Send the alias update ONLY when it actually changed. It requires a
+    // privilege the visibility change does not (A17's `UPDATE_NAMEID`), so an
+    // unconditional call would fail the whole save for a platform operator who
+    // is not also an admin of this space — and renaming repoints every inbound
+    // link, which is precisely why FR-020 made it a protected field.
+    const nameIdChanged = nextNameId !== settingsSpace.nameId;
+    const visibilityChanged = draftVisibility !== settingsSpace.visibility;
+
+    // Each call goes through `guard` so a permission-denied rejection gets its
+    // toast; the dialog closes only when every sent mutation succeeded.
+    void (async () => {
+      if (visibilityChanged) {
+        await guard(() =>
+          updateSpaceVisibility({
+            variables: {
+              spaceId: settingsSpace.id,
+              visibility: draftVisibility as SpaceVisibility,
+            },
+          })
+        );
+      }
+      if (nameIdChanged) {
+        await guard(() =>
+          updateSpaceNameId({
+            variables: { spaceId: settingsSpace.id, nameId: nextNameId },
+          })
+        );
+      }
+      setSettingsSpaceId(null);
+    })().catch(() => {});
   };
 
   const visibilityLabels: Record<SpaceVisibility, string> = {

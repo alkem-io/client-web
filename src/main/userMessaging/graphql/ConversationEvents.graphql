@@ -6,6 +6,7 @@ subscription ConversationEvents {
         id
         room {
           id
+          attachmentBucketId
           type
           displayName
           avatarUrl
@@ -31,6 +32,7 @@ subscription ConversationEvents {
         id
         room {
           id
+          attachmentBucketId
           displayName
           avatarUrl
         }

@@ -6,7 +6,7 @@ import {
   useLeaveConversationMutation,
   useSendMessageToRoomMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, type RoomMessageAttachmentInput } from '@/core/apollo/generated/graphql-schema';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -121,21 +121,19 @@ export const useConversationView = (
     }
   };
 
-  const handleSendMessage = async (message: string, attachments?: string[]) => {
-    const hasAttachments = Boolean(attachments && attachments.length > 0);
+  const handleSendMessage = async (message: string, attachmentUpload?: RoomMessageAttachmentInput) => {
     const text = message.trim();
-    if (!conversation?.roomId || (!text && !hasAttachments)) return;
+    if (!conversation?.roomId || (!text && !attachmentUpload)) return;
     const roomId = conversation.roomId;
 
     try {
-      if (hasAttachments) {
+      if (attachmentUpload) {
         await sendMessage({
           variables: {
             messageData: {
               roomID: roomId,
               message: text,
-              // file-service document ids (feature 013).
-              attachments,
+              attachmentUpload,
             },
           },
         });

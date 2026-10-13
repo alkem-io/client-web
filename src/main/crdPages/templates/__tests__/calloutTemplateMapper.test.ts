@@ -3,6 +3,10 @@ import {
   ActorType,
   CalloutAllowedActors,
   CalloutContributionType,
+  CalloutFormQuestionType,
+  CalloutFormResponseMode,
+  CalloutFormResponseVisibility,
+  CalloutFormState,
   CalloutFramingType,
   CalloutSelectionMode,
   type CalloutTemplateContentFragment,
@@ -15,6 +19,7 @@ import {
   TagsetType,
   WhiteboardPreviewMode,
 } from '@/core/apollo/generated/graphql-schema';
+import { createFormOption, createFormQuestion } from '@/crd/forms/callout/formValues';
 import { type CalloutFormValues, EMPTY_CALLOUT_FORM_VALUES } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
 import {
@@ -94,6 +99,57 @@ describe('calloutFormValuesToCreateCalloutInput', () => {
     );
     expect(input.framing.poll?.title).toBe('Pick one');
     expect(input.framing.poll?.options).toEqual(['A', 'B']);
+  });
+
+  it('carries the Form definition without question or option ids, settings as-is', () => {
+    const input = calloutFormValuesToCreateCalloutInput(
+      values({
+        framingChip: 'form',
+        formTitle: ' Sign-up ',
+        formDescription: 'Tell us',
+        formQuestions: [
+          createFormQuestion({ id: 'q-1', prompt: 'Name', type: 'SHORT_TEXT', required: true }),
+          createFormQuestion({
+            id: 'q-2',
+            prompt: 'Track',
+            type: 'SINGLE_CHOICE',
+            options: [createFormOption('A', 'o-1'), createFormOption('B', 'o-2')],
+          }),
+        ],
+        formSettings: { visibility: 'MEMBERS', responseMode: 'MULTIPLE', state: 'CLOSED', defaultCollapsed: true },
+        editMeta: { framingProfileId: 'fp-1', originalReferenceIds: [], formId: 'form-1' },
+      }),
+      fallbacks
+    );
+    expect(input.framing.type).toBe(CalloutFramingType.Form);
+    expect(input.framing.form).toEqual({
+      title: 'Sign-up',
+      description: 'Tell us',
+      questions: [
+        {
+          prompt: 'Name',
+          explanation: undefined,
+          type: CalloutFormQuestionType.ShortText,
+          required: true,
+          options: undefined,
+        },
+        {
+          prompt: 'Track',
+          explanation: undefined,
+          type: CalloutFormQuestionType.SingleChoice,
+          required: false,
+          options: [{ label: 'A' }, { label: 'B' }],
+        },
+      ],
+      settings: {
+        visibility: CalloutFormResponseVisibility.Members,
+        responseMode: CalloutFormResponseMode.Multiple,
+        state: CalloutFormState.Closed,
+        defaultCollapsed: true,
+      },
+    });
+    expect(JSON.stringify(input)).not.toContain('q-1');
+    expect(JSON.stringify(input)).not.toContain('o-1');
   });
 
   it('carries the Collabora blank-create document type for document framing', () => {
@@ -464,6 +520,63 @@ describe('calloutTemplateContentToFormValues', () => {
     expect(v.pollHideResultsUntilVoted).toBe(true);
     expect(v.pollShowVoterAvatars).toBe(false);
     expect(v.editMeta?.pollId).toBe('p-1');
+  });
+
+  it('reconstructs the Form definition, settings and form id', () => {
+    const v = calloutTemplateContentToFormValues(
+      baseFragment({
+        type: CalloutFramingType.Form,
+        form: {
+          __typename: 'CalloutForm',
+          id: 'form-1',
+          title: 'Sign-up',
+          description: undefined,
+          questions: [
+            {
+              __typename: 'CalloutFormQuestion',
+              id: 'q-1',
+              prompt: 'Track',
+              explanation: 'Pick one',
+              type: CalloutFormQuestionType.MultipleChoice,
+              required: true,
+              options: [{ __typename: 'CalloutFormQuestionOption', id: 'o-1', label: 'A' }],
+            },
+          ],
+          settings: {
+            __typename: 'CalloutFormSettings',
+            visibility: CalloutFormResponseVisibility.Members,
+            responseMode: CalloutFormResponseMode.Single,
+            state: CalloutFormState.Open,
+            defaultCollapsed: true,
+          },
+        },
+      })
+    );
+    expect(v.framingChip).toBe('form');
+    expect(v.formTitle).toBe('Sign-up');
+    expect(v.formDescription).toBe('');
+    expect(v.formQuestions).toHaveLength(1);
+    expect(v.formQuestions?.[0]).toMatchObject({
+      id: 'q-1',
+      prompt: 'Track',
+      explanation: 'Pick one',
+      type: 'MULTIPLE_CHOICE',
+      required: true,
+    });
+    expect(v.formQuestions?.[0].options.map(o => [o.id, o.label])).toEqual([['o-1', 'A']]);
+    expect(v.formSettings).toEqual({
+      visibility: 'MEMBERS',
+      responseMode: 'SINGLE',
+      state: 'OPEN',
+      defaultCollapsed: true,
+    });
+    expect(v.editMeta?.formId).toBe('form-1');
+  });
+
+  it('leaves the Form fields at their defaults for a non-Form template', () => {
+    const v = calloutTemplateContentToFormValues(baseFragment());
+    expect(v.formQuestions).toBeUndefined();
+    expect(v.editMeta?.formId).toBeUndefined();
   });
 
   it('reconstructs the Collabora document type', () => {

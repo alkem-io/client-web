@@ -139,6 +139,11 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
               inApp
               push
             }
+            collaborationCalloutFormResponseReceived {
+              email
+              inApp
+              push
+            }
             communicationMessageReceived {
               email
               inApp

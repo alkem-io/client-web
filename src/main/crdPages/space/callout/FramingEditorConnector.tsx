@@ -20,11 +20,14 @@ import {
   type ContributorCollectionConfigValue,
 } from '@/crd/forms/callout/ContributorCollectionConfigField';
 import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
+import { FormQuestionsEditor } from '@/crd/forms/callout/FormQuestionsEditor';
+import { FormSettingsDialog } from '@/crd/forms/callout/FormSettingsDialog';
 import { LinkFramingFields } from '@/crd/forms/callout/LinkFramingFields';
 import { MemoFramingEditor } from '@/crd/forms/callout/MemoFramingEditor';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollOptionsEditor } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollSettingsDialog } from '@/crd/forms/callout/PollSettingsDialog';
+import type { FormQuestionValue, FormSettingsValue } from '@/crd/forms/callout/types';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
 import { Button } from '@/crd/primitives/button';
@@ -43,6 +46,20 @@ import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
 import { MediaGalleryFormFieldConnector } from './MediaGalleryFormFieldConnector';
 import { useWhiteboardPreviewBlobUrl } from './useWhiteboardPreviewBlobUrl';
+
+/**
+ * What the editor knows about an existing Form's responses (edit mode only). Nothing is locked by them: they
+ * decide whether widening the visibility asks for confirmation and whether a type change shows its hint.
+ */
+export type FormEditContext = {
+  /** The visibility currently saved on the server. */
+  savedVisibility: FormSettingsValue['visibility'];
+  /** Whether this editor reads every response; when false the count says nothing about the Form. */
+  canReadAll: boolean;
+  responseCount: number;
+  /** The (sub)space whose members "Space members" refers to. */
+  spaceName: string;
+};
 
 type EditWhiteboard = NonNullable<CalloutDetailsModelExtended['framing']['whiteboard']>;
 
@@ -150,6 +167,20 @@ type FramingEditorConnectorProps = {
   // Poll status (editing existing polls)
   pollStatus?: 'open' | 'closed';
   onPollStatusChange?: (status: 'open' | 'closed') => void;
+  // Form framing: the definition is bound to the form values in both modes. In edit mode it is saved
+  // through the dedicated form mutation by the parent, never with the Post.
+  formTitle?: string;
+  onFormTitleChange?: (title: string) => void;
+  formDescription?: string;
+  onFormDescriptionChange?: (description: string) => void;
+  formQuestions?: FormQuestionValue[];
+  onFormQuestionsChange?: (questions: FormQuestionValue[]) => void;
+  /** Builder errors in the `FormQuestionsEditor` contract (`title`, `description`, `questions`, `<index>.prompt`, …). */
+  formQuestionsErrors?: Record<string, string | undefined>;
+  formSettings?: FormSettingsValue;
+  onFormSettingsChange?: (settings: FormSettingsValue) => void;
+  /** Edit mode only; undefined for a Form being created. */
+  formEditContext?: FormEditContext;
   // Whiteboard framing
   whiteboardConfigured?: boolean;
   /** Persisted live draft lifecycle for create mode. */
@@ -301,6 +332,16 @@ export function FramingEditorConnector({
   onPollShowVoterAvatarsChange,
   pollStatus,
   onPollStatusChange,
+  formTitle = '',
+  onFormTitleChange,
+  formDescription = '',
+  onFormDescriptionChange,
+  formQuestions = [],
+  onFormQuestionsChange,
+  formQuestionsErrors,
+  formSettings,
+  onFormSettingsChange,
+  formEditContext,
   whiteboardTitle,
   whiteboardDraft,
   whiteboardPreviewImages,
@@ -608,6 +649,60 @@ export function FramingEditorConnector({
         </>
       );
 
+    case 'form': {
+      // The Form has responses, or may have them because this editor cannot read the count.
+      const formMayHaveResponses = formEditContext
+        ? !formEditContext.canReadAll || formEditContext.responseCount > 0
+        : false;
+      return (
+        <>
+          <FormQuestionsEditor
+            title={formTitle}
+            onTitleChange={next => onFormTitleChange?.(next)}
+            description={formDescription}
+            onDescriptionChange={next => onFormDescriptionChange?.(next)}
+            questions={formQuestions}
+            onChange={next => onFormQuestionsChange?.(next)}
+            errors={formQuestionsErrors}
+            // Per-question answer presence is not loaded: every persisted question gets the hint.
+            answeredHintQuestionIds={
+              formMayHaveResponses ? formQuestions.flatMap(question => (question.id ? [question.id] : [])) : []
+            }
+            settingsSlot={
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9"
+                onClick={() => setSettingsOpen(true)}
+                aria-label={t('formForm.settingsButton')}
+              >
+                <Settings className="w-4 h-4" aria-hidden="true" />
+              </Button>
+            }
+          />
+          {formSettings && (
+            <FormSettingsDialog
+              open={settingsOpen}
+              onOpenChange={setSettingsOpen}
+              visibility={formSettings.visibility}
+              onVisibilityChange={visibility => onFormSettingsChange?.({ ...formSettings, visibility })}
+              responseMode={formSettings.responseMode}
+              onResponseModeChange={responseMode => onFormSettingsChange?.({ ...formSettings, responseMode })}
+              state={formSettings.state}
+              onStateChange={state => onFormSettingsChange?.({ ...formSettings, state })}
+              defaultCollapsed={formSettings.defaultCollapsed}
+              onDefaultCollapsedChange={defaultCollapsed =>
+                onFormSettingsChange?.({ ...formSettings, defaultCollapsed })
+              }
+              confirmWidening={formEditContext?.savedVisibility === 'ADMINS' && formMayHaveResponses}
+              existingResponseCount={formEditContext?.canReadAll ? formEditContext.responseCount : undefined}
+              spaceName={formEditContext?.spaceName ?? ''}
+            />
+          )}
+        </>
+      );
+    }
+
     case 'contributors': {
       // Contributor-collection config (feature 008). Editable in both create and
       // edit (FR-004d). The callout renders no framing body — only its config.
@@ -621,17 +716,28 @@ export function FramingEditorConnector({
 
       // Feature 025: build the ContributorSelector chip list from selectedIds
       // resolved against the candidate set (stale ids → eligible: false).
-      const contributorChips = resolveContributorChips ? resolveContributorChips(selectedIds) : [];
-      const selectedUserIds = new Set(
-        contributorChips.filter(c => c.kind === 'user').map(c => (c as { kind: 'user'; userId: string }).userId)
+      // An order-preserving map: `handleContributorRemove` indexes into this array
+      // positionally, so a stale entry is relabelled in place, never filtered out.
+      const contributorChips = (resolveContributorChips ? resolveContributorChips(selectedIds) : []).map(chip =>
+        chip.kind !== 'email' && chip.eligible === false
+          ? { ...chip, displayName: t('forms.selection.noLongerAvailable') }
+          : chip
+      );
+      const selectedContributorIds = new Set(
+        contributorChips.flatMap(c => (c.kind === 'email' ? [] : [c.kind === 'user' ? c.userId : c.id]))
       );
       const contributorSearchResults = contributorCandidates
         .filter(c => {
-          if (c.kind === 'user' && selectedUserIds.has(c.id)) return false;
+          if (selectedContributorIds.has(c.id)) return false;
           if (!contributorSearchQuery.trim()) return true;
           return c.displayName.toLowerCase().includes(contributorSearchQuery.toLowerCase());
         })
-        .map(c => ({ userId: c.id, displayName: c.displayName, avatarUrl: c.avatarUrl }));
+        .map(c => ({
+          userId: c.id,
+          displayName: c.displayName,
+          avatarUrl: c.avatarUrl,
+          typeLabel: t(`contributors.types.${c.kind}` as 'contributors.types.user'),
+        }));
 
       const handleContributorSelect = (userId: string) => {
         if (!selectedIds.includes(userId)) {
@@ -650,14 +756,7 @@ export function FramingEditorConnector({
         <div className="space-y-4">
           <CalloutSelectionField
             mode={selectionMode}
-            onModeChange={next => {
-              onSelectionModeChange?.(next);
-              // Manual contributor selection is users-only: force the config to Users so
-              // the picker offers only people and the type controls collapse (feature 025).
-              if (next === 'custom') {
-                onContributorCollectionChange({ ...contributorCollection, types: ['user'], defaultType: 'user' });
-              }
-            }}
+            onModeChange={next => onSelectionModeChange?.(next)}
             label={t('forms.selection.label')}
             autoDescription={t('forms.selection.contributors.autoDescription')}
             customDescription={t('forms.selection.contributors.customDescription')}
@@ -684,14 +783,12 @@ export function FramingEditorConnector({
               />
             }
           />
-          {/* Type config. In custom mode the callout is users-only: the contributor-
-              types filter + default-type are hidden and only the default display
-              (list/map) remains, still editable. */}
+          {/* Type config, shown in both selection modes: in custom mode the configured
+              types are what bounds the picker's candidates (084 FR-002/FR-004). */}
           <ContributorCollectionConfigField
             value={contributorCollection}
             onChange={onContributorCollectionChange}
             error={contributorCollectionError}
-            restrictToUsers={selectionMode === 'custom'}
           />
           {/* Map-view capture control. Only shown when the config has
               at least one locatable type. Virtual contributors are

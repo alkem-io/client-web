@@ -1,5 +1,9 @@
 import { describe, expect, test } from 'vitest';
-import { clampFormValuesToRestrictions, VC_KNOWLEDGE_BASE_CALLOUT_RESTRICTIONS } from './calloutRestrictions';
+import {
+  clampFormValuesToRestrictions,
+  restrictionsForPickedTemplate,
+  VC_KNOWLEDGE_BASE_CALLOUT_RESTRICTIONS,
+} from './calloutRestrictions';
 
 describe('clampFormValuesToRestrictions', () => {
   test('returns values unchanged when no restrictions are supplied', () => {
@@ -48,5 +52,51 @@ describe('clampFormValuesToRestrictions', () => {
     expect(result.framingChip).toBe('whiteboard');
     expect(result.framingCommentsEnabled).toBe(true);
     expect(result.responseType).toBe('none');
+  });
+});
+
+describe('restrictionsForPickedTemplate', () => {
+  // What the create dialog offers a non-admin in the default collaboration flow.
+  const NON_ADMIN_FRAMINGS = ['whiteboard', 'memo', 'document', 'cta', 'image', 'poll'] as const;
+
+  test('a non-admin picking a Form template never gets the Form framing', () => {
+    const clamped = clampFormValuesToRestrictions(
+      { framingChip: 'form', responseType: 'none' },
+      restrictionsForPickedTemplate(undefined, [...NON_ADMIN_FRAMINGS])
+    );
+    expect(clamped.framingChip).toBe('none');
+  });
+
+  test('a non-admin keeps a Poll template framing', () => {
+    const clamped = clampFormValuesToRestrictions(
+      { framingChip: 'poll' },
+      restrictionsForPickedTemplate(undefined, [...NON_ADMIN_FRAMINGS])
+    );
+    expect(clamped.framingChip).toBe('poll');
+  });
+
+  test('an admin keeps the Form framing', () => {
+    const clamped = clampFormValuesToRestrictions(
+      { framingChip: 'form' },
+      restrictionsForPickedTemplate(undefined, [...NON_ADMIN_FRAMINGS, 'contributors', 'spaces', 'form'])
+    );
+    expect(clamped.framingChip).toBe('form');
+  });
+
+  test('keeps the caller restrictions and only replaces the framing allow-list', () => {
+    expect(restrictionsForPickedTemplate(VC_KNOWLEDGE_BASE_CALLOUT_RESTRICTIONS, [])).toEqual(
+      VC_KNOWLEDGE_BASE_CALLOUT_RESTRICTIONS
+    );
+    expect(restrictionsForPickedTemplate({ disableRichMedia: true }, ['poll'])).toEqual({
+      disableRichMedia: true,
+      allowedFramingChips: ['poll'],
+    });
+  });
+
+  test('without an allow-list (edit mode) the restrictions pass through unchanged', () => {
+    expect(restrictionsForPickedTemplate(undefined, undefined)).toBeUndefined();
+    expect(restrictionsForPickedTemplate(VC_KNOWLEDGE_BASE_CALLOUT_RESTRICTIONS, undefined)).toBe(
+      VC_KNOWLEDGE_BASE_CALLOUT_RESTRICTIONS
+    );
   });
 });

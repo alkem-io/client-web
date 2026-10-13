@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import { createClient, MatrixEvent, Room, RoomEvent } from 'matrix-js-sdk';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, type RoomMessageAttachmentInput } from '@/core/apollo/generated/graphql-schema';
 import type { UserConversation } from './models';
 import { useConversationView } from './useConversationView';
 
@@ -222,11 +222,11 @@ const contactable = (isContactable: boolean) => ({
 });
 
 describe('useConversationView — DM consent is checked per text send', () => {
-  const send = async (target: UserConversation, text = 'hello', attachments?: string[]) => {
+  const send = async (target: UserConversation, text = 'hello', attachmentUpload?: RoomMessageAttachmentInput) => {
     const { result } = renderHook(() => useConversationView(target, null));
     let sent: boolean | undefined;
     await act(async () => {
-      sent = await result.current.handleSendMessage(text, attachments);
+      sent = await result.current.handleSendMessage(text, attachmentUpload);
     });
     return sent;
   };
@@ -305,7 +305,7 @@ describe('useConversationView — DM consent is checked per text send', () => {
   });
 
   it('an attachment send in a DM with a user goes through sendMessageToRoom with no lookup', async () => {
-    await send(dm(ActorType.User), 'hello', ['doc-1']);
+    await send(dm(ActorType.User), 'hello', { externalReference: 'media-1', displayName: 'photo.png' });
 
     expect(actorDetailsMock).not.toHaveBeenCalled();
     expect(sendMessageMutationMock).toHaveBeenCalledTimes(1);
@@ -332,14 +332,23 @@ describe('useConversationView — writes go straight to Synapse', () => {
     expect(sendMessageMutationMock).not.toHaveBeenCalled();
   });
 
-  it('a send with attachments calls sendMessageToRoom and makes no direct call', async () => {
+  it('an uploaded reference goes to the existing destination-checked send without another byte upload', async () => {
     const { result } = renderHook(() => useConversationView(conversation, null));
 
     await act(async () => {
-      await result.current.handleSendMessage('hello', ['doc-1']);
+      await result.current.handleSendMessage('', { externalReference: 'media-1', displayName: 'photo.png' });
     });
 
     expect(sendMessageMutationMock).toHaveBeenCalledTimes(1);
+    expect(sendMessageMutationMock).toHaveBeenCalledWith({
+      variables: {
+        messageData: {
+          roomID: 'room-1',
+          message: '',
+          attachmentUpload: { externalReference: 'media-1', displayName: 'photo.png' },
+        },
+      },
+    });
     expect(sendEventMock).not.toHaveBeenCalled();
   });
 

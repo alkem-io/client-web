@@ -31,64 +31,6 @@ const toCandidate = (entity: EntityLike): AddCommunityMemberCandidate => ({
 });
 
 /**
- * Drives the CRD "Add Organization" dialog. Wraps
- * `useCommunityAdmin().organizationAdmin.getAvailable` + `onAdd`, mirroring the
- * MUI `CommunityOrganizations` / `CommunityAddMembersDialog` flow.
- */
-export function useAddOrganizationDialog({
-  community,
-}: {
-  community: ReturnType<typeof useCommunityAdmin>;
-}): AddCommunityMemberDialogState {
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState('');
-  const [candidates, setCandidates] = useState<AddCommunityMemberCandidate[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [addedIds, setAddedIds] = useState<Set<string>>(new Set());
-  const [addingId, setAddingId] = useState<string | null>(null);
-
-  const loadCandidates = async (filter: string | undefined) => {
-    setLoading(true);
-    try {
-      const available = await community.organizationAdmin.getAvailable(filter);
-      setCandidates(available.map(toCandidate));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (!open) return;
-    void loadCandidates(search.trim() || undefined);
-  }, [open, search]);
-
-  const openDialog = () => {
-    setAddedIds(new Set());
-    setSearch('');
-    setOpen(true);
-  };
-  const closeDialog = () => setOpen(false);
-  const onSearchChange = (next: string) => setSearch(next);
-
-  const onAdd = async (id: string) => {
-    setAddingId(id);
-    try {
-      await community.organizationAdmin.onAdd(id);
-      setAddedIds(prev => {
-        const next = new Set(prev);
-        next.add(id);
-        return next;
-      });
-      await loadCandidates(search.trim() || undefined);
-    } finally {
-      setAddingId(null);
-    }
-  };
-
-  return { open, search, candidates, loading, addedIds, addingId, openDialog, closeDialog, onSearchChange, onAdd };
-}
-
-/**
  * Drives the CRD "Add Virtual Contributor" dialog. Uses
  * `useVirtualContributorsAdmin.virtualContributorAdmin.getAvailable`
  * (account-scoped) for candidates and `community.virtualContributorAdmin.onAdd`

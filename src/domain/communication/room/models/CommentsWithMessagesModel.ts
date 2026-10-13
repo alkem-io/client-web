@@ -23,6 +23,7 @@ type ContributorModel = {
 export type CommentsWithMessagesModel = {
   id: string;
   messagesCount: number;
+  attachmentBucketId?: string | null;
   authorization?: { myPrivileges?: AuthorizationPrivilege[] };
   messages: {
     id: string;
@@ -36,8 +37,7 @@ export type CommentsWithMessagesModel = {
       sender?: { id: string; profile?: { displayName: string } };
     }[];
     attachments?: {
-      id?: string;
-      url?: string;
+      externalReference?: string | null;
       displayName: string;
       mimeType?: string;
       size?: number;

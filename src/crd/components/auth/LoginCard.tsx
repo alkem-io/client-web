@@ -3,6 +3,7 @@ import { AuthCard } from '@/crd/components/auth/AuthCard';
 import { AuthCardHeader } from '@/crd/components/auth/AuthCardHeader';
 import { CrdKratosFlow } from '@/crd/components/auth/CrdKratosFlow';
 import type { KratosFlowDescriptor, KratosPasskeyTrigger } from '@/crd/components/auth/flowDescriptor';
+import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 
 export type LoginCardNotice = {
@@ -11,6 +12,12 @@ export type LoginCardNotice = {
   /** Already-translated label for the action that re-enters sign-in. */
   actionLabel: string;
   actionHref: string;
+  /**
+   * `'destructive'` (the default) announces assertively — sign-in failed or is
+   * blocked. `'info'` is for a notice that is part of the happy path, where red
+   * text in an assertive live region would misreport a normal prompt as an error.
+   */
+  tone?: 'info' | 'destructive';
 };
 
 export type LoginCardProps = {
@@ -53,7 +60,13 @@ export function LoginCard({
         }
       >
         <div className="flex flex-col gap-5">
-          <div role="alert" className="text-body rounded-md bg-destructive/10 px-3 py-2.5 text-destructive">
+          <div
+            role={notice.tone === 'info' ? 'status' : 'alert'}
+            className={cn(
+              'text-body rounded-md px-3 py-2.5',
+              notice.tone === 'info' ? 'bg-muted text-muted-foreground' : 'bg-destructive/10 text-destructive'
+            )}
+          >
             {notice.text}
           </div>
           <Button asChild={true} className="text-control h-12 w-full font-semibold uppercase tracking-wider">

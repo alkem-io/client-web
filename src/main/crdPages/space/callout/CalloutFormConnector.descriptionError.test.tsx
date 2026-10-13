@@ -31,12 +31,14 @@ vi.mock('@/crd/forms/markdown/MarkdownEditor', () => ({
 }));
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
+  useCalloutFormResponsesQuery: () => ({ data: undefined, refetch: vi.fn() }),
   useCalloutContentQuery: () => ({ data: undefined, loading: false }),
   useCreateReferenceOnProfileMutation: () => [vi.fn()],
   useDeleteReferenceMutation: () => [vi.fn()],
   useSubspacesInSpaceQuery: () => ({ data: undefined, loading: false, refetch: vi.fn() }),
   useTemplateContentLazyQuery: () => [vi.fn()],
   useUpdateCalloutContentMutation: () => [vi.fn(), { loading: false }],
+  useUpdateCalloutFormMutation: () => [vi.fn()],
   useUpdatePollStatusMutation: () => [vi.fn()],
 }));
 

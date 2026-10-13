@@ -1,3 +1,5 @@
+import { mapMatrixMessageAttachments } from '../models';
+
 /**
  * Pure projections of raw Matrix events into conversation messages, following
  * the same rules matrix-adapter applies when it serves conversation history,
@@ -8,7 +10,6 @@ const EVENT_MESSAGE = 'm.room.message';
 const EVENT_STICKER = 'm.sticker';
 const EVENT_REACTION = 'm.reaction';
 const MEDIA_MSGTYPES = new Set(['m.image', 'm.file', 'm.video', 'm.audio']);
-const DOCUMENT_ID_KEY = 'io.alkemio.document_id';
 
 type RawEvent = {
   readonly eventId: string;
@@ -21,9 +22,10 @@ type RawEvent = {
 /** A media reference as the event carries it; resolved to an attachment elsewhere. */
 type MediaRef = {
   /** Present only for media hosted on this homeserver. */
-  readonly mediaID?: string;
-  readonly documentID?: string;
+  readonly externalReference?: string;
   readonly displayName: string;
+  readonly mimeType?: string;
+  readonly size?: number;
   readonly width?: number;
   readonly height?: number;
 };
@@ -51,58 +53,28 @@ const serverNameOf = (userId: string): string => userId.slice(userId.indexOf(':'
 /** The Alkemio actor id is the Matrix localpart. */
 const actorIdOf = (userId: string): string => userId.slice(1, userId.indexOf(':'));
 
-/** `mxc://<server>/<id>` → `<id>`, only when `<server>` is this homeserver. */
-const localMediaId = (url: unknown, homeserver: string): string | undefined => {
-  if (typeof url !== 'string' || !url.startsWith('mxc://')) {
-    return undefined;
-  }
-  const rest = url.slice('mxc://'.length);
-  const slash = rest.indexOf('/');
-  if (slash <= 0) {
-    return undefined;
-  }
-  const server = rest.slice(0, slash);
-  const id = rest.slice(slash + 1);
-  return server === homeserver && id !== '' && !id.includes('/') ? id : undefined;
-};
-
-// Event content is written by any room member; values the server's input
-// types would reject are dropped here so one bad event cannot fail a batch.
+// Event metadata is written by room members; retain only usable dimensions.
 const MAX_INT = 2_147_483_647;
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const positiveInt = (value: unknown): number | undefined =>
   typeof value === 'number' && Number.isInteger(value) && value > 0 && value <= MAX_INT ? value : undefined;
-
-// A string `filename` declares the event caption-shaped, making `body` a
-// caption; only without one is `body` the filename.
-const mediaDisplayName = (content: Record<string, unknown>): string => {
-  if (typeof content.filename === 'string') {
-    return content.filename;
-  }
-  return typeof content.body === 'string' ? content.body : '';
-};
 
 const extractMedia = (event: RawEvent, homeserver: string): MediaRef | undefined => {
   const { content } = event;
   if (event.type !== EVENT_STICKER && !MEDIA_MSGTYPES.has(content.msgtype as string)) {
     return undefined;
   }
-  const mediaID = localMediaId(content.url, homeserver);
-  const documentID =
-    typeof content[DOCUMENT_ID_KEY] === 'string' && UUID.test(content[DOCUMENT_ID_KEY] as string)
-      ? (content[DOCUMENT_ID_KEY] as string)
-      : undefined;
-  if (!mediaID && !documentID) {
+  const [attachment] = mapMatrixMessageAttachments(content, homeserver, undefined, event.type);
+  if (!attachment?.id) {
     return undefined;
   }
-  const info = (content.info ?? {}) as Record<string, unknown>;
   return {
-    mediaID,
-    documentID,
-    displayName: mediaDisplayName(content),
-    width: positiveInt(info.w),
-    height: positiveInt(info.h),
+    externalReference: attachment.id,
+    displayName: attachment.displayName,
+    mimeType: attachment.mimeType,
+    size: positiveInt(attachment.size),
+    width: positiveInt(attachment.width),
+    height: positiveInt(attachment.height),
   };
 };
 
@@ -188,7 +160,6 @@ export {
   isMessageLike,
   lastMessageOf,
   newestMessageLikeId,
-  localMediaId,
   projectMessages,
   serverNameOf,
   EVENT_MESSAGE,
