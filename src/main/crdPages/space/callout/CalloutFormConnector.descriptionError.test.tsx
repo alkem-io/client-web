@@ -32,10 +32,14 @@ vi.mock('@/crd/forms/markdown/MarkdownEditor', () => ({
     onChange: (next: string) => void;
     maxLength?: number;
     counterThreshold?: number;
+    error?: string;
   }) => {
     markdownEditorProps(props);
     return (
-      <textarea aria-label="description-editor" value={props.value} onChange={e => props.onChange(e.target.value)} />
+      <>
+        <textarea aria-label="description-editor" value={props.value} onChange={e => props.onChange(e.target.value)} />
+        {props.error && <p aria-live="polite">{props.error}</p>}
+      </>
     );
   },
 }));

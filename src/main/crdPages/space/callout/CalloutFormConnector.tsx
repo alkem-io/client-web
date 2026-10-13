@@ -1034,12 +1034,8 @@ function CalloutFormConnectorInner({
               hideImageOptions={disableRichMedia}
               maxLength={LONG_MARKDOWN_TEXT_LENGTH}
               counterThreshold={DESCRIPTION_COUNTER_THRESHOLD}
+              error={descriptionError}
             />
-            {descriptionError && (
-              <p className="text-caption text-destructive" aria-live="polite">
-                {descriptionError}
-              </p>
-            )}
           </div>
         }
         framingZoneSlot={

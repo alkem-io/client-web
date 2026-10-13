@@ -1,17 +1,18 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import { MarkdownEditor } from './MarkdownEditor';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string, params?: { count?: number; max?: number }) =>
-      params && 'count' in params ? `${key}:${params.count}/${params.max}` : key,
+    t: (key: string, params?: { current?: string; max?: string }) =>
+      params && 'current' in params ? `${key}:${params.current}/${params.max}` : key,
   }),
 }));
 
 const COUNTER_KEY = 'editor.charCount';
 
-const renderEditor = (value: string, extra: { maxLength?: number; counterThreshold?: number } = {}) =>
+const renderEditor = (value: string, extra: { maxLength?: number; counterThreshold?: number; error?: string } = {}) =>
   render(<MarkdownEditor value={value} onChange={vi.fn()} {...extra} />);
 
 describe('MarkdownEditor — character counter', () => {
@@ -44,5 +45,26 @@ describe('MarkdownEditor — character counter', () => {
   test('without a threshold the counter is always shown when maxLength is set', async () => {
     renderEditor('', { maxLength: 100 });
     expect(await screen.findByText(`${COUNTER_KEY}:0/100`)).toBeInTheDocument();
+  });
+
+  test('renders below the editor box, on the same row as the validation error', async () => {
+    renderEditor('a'.repeat(101), { maxLength: 100, error: 'Too long' });
+    const counter = await screen.findByText(`${COUNTER_KEY}:101/100`);
+    const error = screen.getByText('Too long');
+    expect(counter.parentElement).toBe(error.parentElement);
+    expect(counter.closest('.crd-markdown-editor')).toBeNull();
+  });
+
+  test('groups thousands using the browser locale', async () => {
+    renderEditor('a'.repeat(1234), { maxLength: 48000 });
+    expect(
+      await screen.findByText(`${COUNTER_KEY}:${(1234).toLocaleString()}/${(48000).toLocaleString()}`)
+    ).toBeInTheDocument();
+  });
+
+  test('explains on hover that formatting counts toward the limit', async () => {
+    renderEditor('abc', { maxLength: 100 });
+    await userEvent.hover(await screen.findByText(`${COUNTER_KEY}:3/100`));
+    expect((await screen.findAllByText('editor.charCountHint')).length).toBeGreaterThan(0);
   });
 });

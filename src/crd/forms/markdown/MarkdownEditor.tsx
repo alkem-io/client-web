@@ -7,6 +7,7 @@ import { useMarkdownEditorState } from './useMarkdownEditorState';
 import './styles.css';
 import { Suspense } from 'react';
 import { Loading } from '@/crd/components/common/Loading';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 
 /**
  * The image-upload wiring a `MarkdownEditor` needs to enable copy/paste and the
@@ -39,6 +40,8 @@ type MarkdownEditorProps = MarkdownUploadProps & {
   maxLength?: number;
   /** When set, the counter stays hidden until `value` reaches this many characters. */
   counterThreshold?: number;
+  /** Validation message shown below the editor, on the same line as the counter. */
+  error?: string;
   disabled?: boolean;
   className?: string;
   /** Hides image + embed toolbar buttons (e.g. inline comment composer). */
@@ -63,6 +66,7 @@ function MarkdownEditorLazy({
   placeholder,
   maxLength,
   counterThreshold,
+  error,
   disabled,
   className,
   onImageUpload,
@@ -94,37 +98,58 @@ function MarkdownEditorLazy({
   const showCounter = maxLength != null && charCount >= (counterThreshold ?? 0);
 
   return (
-    <div
-      id={id}
-      className={cn(
-        'crd-markdown-editor flex flex-col border border-border rounded-lg overflow-hidden bg-input-background transition-shadow focus-within:ring-2 focus-within:ring-primary/20',
-        disabled && 'opacity-60',
-        className
-      )}
-    >
-      <MarkdownToolbar
-        editor={editor}
-        className="border-b border-border bg-muted/30"
-        onImageUpload={onImageUpload}
-        iframeAllowedUrls={iframeAllowedUrls}
-        onError={onError}
-        hideImageOptions={hideImageOptions}
-        hideEmbedOption={hideEmbedOption}
-      />
+    <>
+      <div
+        id={id}
+        className={cn(
+          'crd-markdown-editor flex flex-col border border-border rounded-lg overflow-hidden bg-input-background transition-shadow focus-within:ring-2 focus-within:ring-primary/20',
+          disabled && 'opacity-60',
+          className
+        )}
+      >
+        <MarkdownToolbar
+          editor={editor}
+          className="border-b border-border bg-muted/30"
+          onImageUpload={onImageUpload}
+          iframeAllowedUrls={iframeAllowedUrls}
+          onError={onError}
+          hideImageOptions={hideImageOptions}
+          hideEmbedOption={hideEmbedOption}
+        />
 
-      <EditorContent
-        editor={editor}
-        className="flex flex-col flex-1 min-h-0"
-        {...(placeholder ? { 'data-placeholder': placeholder } : {})}
-      />
+        <EditorContent
+          editor={editor}
+          className="flex flex-col flex-1 min-h-0"
+          {...(placeholder ? { 'data-placeholder': placeholder } : {})}
+        />
+      </div>
 
-      {showCounter && (
-        <div className="flex justify-end px-3 pb-2">
-          <span className={cn('text-caption', isOverLimit ? 'text-destructive' : 'text-muted-foreground')}>
-            {t('editor.charCount', { count: charCount, max: maxLength })}
-          </span>
+      {(error || showCounter) && (
+        <div className="flex items-start gap-3">
+          {error && (
+            <p className="text-caption text-destructive" aria-live="polite">
+              {error}
+            </p>
+          )}
+          {showCounter && (
+            <Tooltip>
+              <TooltipTrigger
+                type="button"
+                className={cn(
+                  'ml-auto shrink-0 cursor-help rounded-sm text-caption focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  isOverLimit ? 'text-destructive' : 'text-muted-foreground'
+                )}
+              >
+                {t('editor.charCount', {
+                  current: charCount.toLocaleString(),
+                  max: maxLength?.toLocaleString(),
+                })}
+              </TooltipTrigger>
+              <TooltipContent>{t('editor.charCountHint')}</TooltipContent>
+            </Tooltip>
+          )}
         </div>
       )}
-    </div>
+    </>
   );
 }
