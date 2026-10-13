@@ -129,7 +129,7 @@ Available from `@/core/ui/forms/field-length.constants`:
 - `MID_TEXT_LENGTH = 512` - For taglines, short descriptions
 - `LONG_TEXT_LENGTH = 2048` - For longer descriptions, bios
 - `MARKDOWN_TEXT_LENGTH = 8000` - For markdown content
-- `LONG_MARKDOWN_TEXT_LENGTH = 48000` - For extended markdown content
+- `LONG_MARKDOWN_TEXT_LENGTH = 50000` - For extended markdown content
 - `COMMENTS_TEXT_LENGTH = 8000` - For comment fields
 
 The markdown limits are measured against the raw markdown source, not the rendered
