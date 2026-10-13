@@ -1,0 +1,18 @@
+# The settings tab lists every membership an organization can leave, so unlike
+# the public profile's rolesOrganization it includes INACTIVE spaces.
+query OrganizationSettingsMemberships($organizationId: UUID!) {
+  rolesOrganization(rolesData: { actorID: $organizationId, filter: { visibilities: [ACTIVE, DEMO, INACTIVE] } }) {
+    id
+    spaces {
+      id
+      roles
+      displayName
+      subspaces {
+        id
+        displayName
+        roles
+        level
+      }
+    }
+  }
+}

@@ -51,8 +51,23 @@ describe('attachment readiness after a media error', () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
-  it('bounds retries and cancels when room or event leaves the timeline', async () => {
-    fetchMock.mockResolvedValue({ status: 404, ok: false });
+  it('recovers from temporary service unavailability within the existing retry budget', async () => {
+    fetchMock.mockResolvedValueOnce({ status: 503, ok: false }).mockResolvedValueOnce({ status: 200, ok: true });
+    const { result } = renderHook(() => useAttachmentReadiness(messages, 'room'));
+    act(() => result.current[0].attachments[0].onLoadError?.());
+    await act(() => vi.advanceTimersByTimeAsync(1000));
+    expect(result.current[0].attachments[0].retryKey).toBe(0);
+    await act(() => vi.advanceTimersByTimeAsync(2000));
+    expect(result.current[0].attachments[0].retryKey).toBe(1);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      messages[0].attachments[0].url,
+      expect.objectContaining({ method: 'HEAD', credentials: 'include' })
+    );
+  });
+
+  it.each([404, 503])('bounds retries and cancels when room or event leaves the timeline (%s)', async status => {
+    fetchMock.mockResolvedValue({ status, ok: false });
     const { result, rerender } = renderHook(({ room }) => useAttachmentReadiness(messages, room), {
       initialProps: { room: 'room' },
     });

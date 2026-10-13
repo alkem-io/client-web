@@ -1164,6 +1164,9 @@
     "message": "Bericht",
     "successfully-sent": "Bericht succesvol verstuurd"
   },
+  "notification": {
+    "close": "Melding sluiten"
+  },
   "ok": "OK",
   "pages": {
     "admin": {

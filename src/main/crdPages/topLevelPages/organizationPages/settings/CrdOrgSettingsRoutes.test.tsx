@@ -9,6 +9,7 @@ vi.mock('./CrdOrgSettingsPage', () => ({ default: () => <Outlet /> }));
 vi.mock('./profile/CrdOrgProfileTab', () => ({ default: () => <div>PROFILE_TAB</div> }));
 vi.mock('./account/CrdOrgAccountTab', () => ({ default: () => <div>ACCOUNT_TAB</div> }));
 vi.mock('./community/CrdOrgAssociatesTab', () => ({ default: () => <div>ASSOCIATES_TAB</div> }));
+vi.mock('./membership/CrdOrgMembershipTab', () => ({ default: () => <div>MEMBERSHIP_TAB</div> }));
 vi.mock('./invitations/CrdOrgInvitationsTab', () => ({ default: () => <div>INVITATIONS_TAB</div> }));
 vi.mock('./settings/CrdOrgSettingsTab', () => ({ default: () => <div>SETTINGS_TAB</div> }));
 
@@ -46,5 +47,18 @@ describe('CrdOrgSettingsRoutes — the retired Authorization tab', () => {
   it('leaves /settings/community on the Associates tab', async () => {
     renderAt('/organization/acme/settings/community');
     expect(await screen.findByText('ASSOCIATES_TAB')).toBeInTheDocument();
+  });
+});
+
+describe('CrdOrgSettingsRoutes — the Membership tab', () => {
+  it('leaves /settings/membership on the Membership tab', async () => {
+    renderAt('/organization/acme/settings/membership');
+    expect(await screen.findByText('MEMBERSHIP_TAB')).toBeInTheDocument();
+  });
+
+  it('still redirects /settings/authorization to the Associates tab, not to Membership', async () => {
+    renderAt('/organization/acme/settings/authorization');
+    expect(await screen.findByText('ASSOCIATES_TAB')).toBeInTheDocument();
+    expect(screen.queryByText('MEMBERSHIP_TAB')).not.toBeInTheDocument();
   });
 });

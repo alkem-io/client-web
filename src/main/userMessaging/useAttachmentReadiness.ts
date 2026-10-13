@@ -63,7 +63,7 @@ export function useAttachmentReadiness<T extends { id: string; attachments?: Mes
           setRetryKeys(previous => ({ ...previous, [key]: 1 }));
           return;
         }
-        if (response.status !== 404) return;
+        if (response.status !== 404 && (response.status < 500 || response.status >= 600)) return;
       } catch {
         // Network failure is unavailable too; keep the same bounded budget.
         if (signal.aborted) return;

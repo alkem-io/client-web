@@ -1164,6 +1164,9 @@
     "message": "Nachricht",
     "successfully-sent": "Nachricht erfolgreich gesendet"
   },
+  "notification": {
+    "close": "Benachrichtigung schließen"
+  },
   "ok": "OK",
   "pages": {
     "admin": {
