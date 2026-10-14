@@ -1,12 +1,9 @@
-import type { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import type {
   ReferenceLink,
   SimpleResourceCardItem,
   TagsetGroup,
   VirtualContributorCardItem,
 } from '@/crd/components/common/profileTypes';
-import type { SpaceGridCardData } from '@/crd/components/user/SpaceGridCard';
-import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 
 export type RawReference = {
   id: string;
@@ -33,18 +30,12 @@ type AccountResourceProfileLike =
       url: string;
       tagline?: string | null;
       avatar?: { uri: string } | null;
-      cardBanner?: { uri: string } | null;
     }
   | null
   | undefined;
 
 export type AccountResourcesShape =
   | {
-      spaces?: Array<{
-        id: string;
-        visibility?: SpaceVisibility;
-        about?: { profile?: AccountResourceProfileLike; isContentPublic?: boolean };
-      }>;
       virtualContributors?: Array<{ id: string; profile?: AccountResourceProfileLike }>;
       innovationPacks?: Array<{ id: string; profile?: AccountResourceProfileLike }>;
       innovationHubs?: Array<{ id: string; profile?: AccountResourceProfileLike; nameID?: string }>;
@@ -53,7 +44,6 @@ export type AccountResourcesShape =
   | undefined;
 
 export type AccountHostedResources = {
-  hostedSpaces: SpaceGridCardData[];
   hostedVirtualContributors: VirtualContributorCardItem[];
   hostedInnovationPacks: SimpleResourceCardItem[];
   hostedInnovationHubs: SimpleResourceCardItem[];
@@ -74,28 +64,13 @@ const toSimpleResourceCard = (item: {
 };
 
 /**
- * Shared mapper for the User and Organization profile "Resources Hosted" tab.
+ * Shared mapper for the User and Organization profile "Other Resources" tab.
  * The `useAccountResources` payload shape is identical regardless of account
- * owner, so the four sub-section arrays (Spaces, Virtual Contributors, Template
- * Packs, Custom Homepages) are produced from one helper.
+ * owner, so the three sub-section arrays (Virtual Contributors, Template Packs,
+ * Custom Homepages) are produced from one helper. Hosted Spaces are deliberately
+ * not shown — the Leading / Member of tabs cover a profile's Spaces.
  */
 export const mapAccountHostedResources = (input: AccountResourcesShape, vcType: string): AccountHostedResources => {
-  const hostedSpaces: SpaceGridCardData[] = (input?.spaces ?? []).flatMap(s => {
-    const profile = s.about?.profile;
-    if (!profile) return [];
-    return [
-      {
-        id: s.id,
-        title: profile.displayName,
-        description: profile.tagline ?? null,
-        href: profile.url,
-        imageUrl: profile.cardBanner?.uri,
-        color: pickColorFromId(s.id),
-        isPrivate: s.about?.isContentPublic === false,
-      },
-    ];
-  });
-
   const hostedVirtualContributors: VirtualContributorCardItem[] = (input?.virtualContributors ?? []).flatMap(v => {
     const profile = v.profile;
     if (!profile) return [];
@@ -126,5 +101,5 @@ export const mapAccountHostedResources = (input: AccountResourcesShape, vcType: 
     })
     .filter((card): card is SimpleResourceCardItem => card !== null);
 
-  return { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs };
+  return { hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs };
 };

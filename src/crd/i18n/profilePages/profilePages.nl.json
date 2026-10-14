@@ -43,12 +43,11 @@
       "settingsAriaLabel": "Gebruikersinstellingen openen"
     },
     "tabs": {
-      "resourcesHosted": "Gehoste bronnen",
       "leading": "Leiding",
-      "memberOf": "Lid van"
+      "memberOf": "Lid van",
+      "otherResources": "Overige bronnen"
     },
     "sections": {
-      "spacesSubsection": "Spaces",
       "virtualContributorsSubsection": "Virtual Contributors",
       "spacesLeading": "Spaces onder leiding",
       "memberOf": "Lid van"
@@ -64,8 +63,6 @@
       "memberCountLine_other": "{{count}} leden"
     },
     "empty": {
-      "resourcesHosted": "Nog geen gehoste bronnen.",
-      "leading": "Nog geen leiding over spaces.",
       "membership": "Nog geen lidmaatschappen."
     },
     "vcType": "Virtual Contributor"
@@ -93,20 +90,16 @@
       "socialLinksTitle": "Sociaal"
     },
     "tabs": {
-      "resourcesHosted": "Gehoste bronnen",
       "leading": "Spaces onder leiding",
-      "memberOf": "Alle lidmaatschappen"
+      "memberOf": "Alle lidmaatschappen",
+      "otherResources": "Overige bronnen"
     },
     "sections": {
-      "spacesSubsection": "Spaces",
       "virtualContributorsSubsection": "Virtual Contributors",
       "spacesLeading": "Spaces onder leiding",
       "memberOf": "Alle lidmaatschappen"
     },
-    "empty": {
-      "resourcesHosted": "Nog geen gehoste bronnen.",
-      "leading": "Nog geen leiding over spaces."
-    },
+    "empty": {},
     "vcType": "Virtual Contributor",
     "associate": {
       "join": "Word geassocieerde",

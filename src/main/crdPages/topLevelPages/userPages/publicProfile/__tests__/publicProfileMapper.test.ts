@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
-import { type AccountResourcesShape, buildUserProfileTagsets, mapHostedSpacesToCardData } from '../publicProfileMapper';
+import {
+  type AccountResourcesShape,
+  mapAccountHostedResources,
+} from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
+import { buildUserProfileTagsets } from '../publicProfileMapper';
 
 const tagsetLabels = { keywords: 'Keywords', skills: 'Skills' };
 
@@ -46,113 +49,25 @@ describe('buildUserProfileTagsets', () => {
   });
 });
 
-describe('mapHostedSpacesToCardData', () => {
+describe('mapAccountHostedResources', () => {
   const vcType = 'Virtual Contributor';
 
-  it('returns four empty buckets when accountResources is null/undefined', () => {
+  it('returns three empty buckets when accountResources is null/undefined', () => {
     const empty = {
-      hostedSpaces: [],
       hostedVirtualContributors: [],
       hostedInnovationPacks: [],
       hostedInnovationHubs: [],
     };
-    expect(mapHostedSpacesToCardData(undefined, vcType)).toEqual(empty);
-    expect(mapHostedSpacesToCardData(null, vcType)).toEqual(empty);
+    expect(mapAccountHostedResources(undefined, vcType)).toEqual(empty);
+    expect(mapAccountHostedResources(null, vcType)).toEqual(empty);
   });
 
-  it('returns four empty buckets when collections are missing', () => {
-    expect(mapHostedSpacesToCardData({}, vcType)).toEqual({
-      hostedSpaces: [],
+  it('returns three empty buckets when collections are missing', () => {
+    expect(mapAccountHostedResources({}, vcType)).toEqual({
       hostedVirtualContributors: [],
       hostedInnovationPacks: [],
       hostedInnovationHubs: [],
     });
-  });
-
-  it('drops spaces whose `about.profile` is missing rather than crashing', () => {
-    const resources: AccountResourcesShape = {
-      spaces: [
-        { id: 's-1', about: { profile: null, isContentPublic: true } },
-        {
-          id: 's-2',
-          about: {
-            profile: { displayName: 'Real Space', url: '/s/real' },
-            isContentPublic: true,
-          },
-        },
-      ],
-    };
-    const result = mapHostedSpacesToCardData(resources, vcType);
-    expect(result.hostedSpaces).toHaveLength(1);
-    expect(result.hostedSpaces[0].id).toBe('s-2');
-  });
-
-  it('keeps inactive spaces — visibility filtering is org-profile-only', () => {
-    const resources: AccountResourcesShape = {
-      spaces: [
-        { id: 'active', visibility: SpaceVisibility.Active, about: { profile: { displayName: 'A', url: '/a' } } },
-        { id: 'inactive', visibility: SpaceVisibility.Inactive, about: { profile: { displayName: 'I', url: '/i' } } },
-      ],
-    };
-    expect(mapHostedSpacesToCardData(resources, vcType).hostedSpaces.map(s => s.id)).toEqual(['active', 'inactive']);
-  });
-
-  it('maps a space with a banner — uses real banner over gradient fallback', () => {
-    const resources: AccountResourcesShape = {
-      spaces: [
-        {
-          id: 's-1',
-          about: {
-            profile: {
-              displayName: 'Space One',
-              url: '/s/one',
-              tagline: 'A short tagline',
-              cardBanner: { uri: 'https://cdn.example/banner.jpg' },
-            },
-            isContentPublic: true,
-          },
-        },
-      ],
-    };
-    const result = mapHostedSpacesToCardData(resources, vcType);
-    expect(result.hostedSpaces[0]).toMatchObject({
-      id: 's-1',
-      title: 'Space One',
-      description: 'A short tagline',
-      href: '/s/one',
-      imageUrl: 'https://cdn.example/banner.jpg',
-      isPrivate: false,
-    });
-    // Deterministic colour is always populated (fallback when banner is absent).
-    expect(typeof result.hostedSpaces[0].color).toBe('string');
-    expect(result.hostedSpaces[0].color.length).toBeGreaterThan(0);
-  });
-
-  it('marks isPrivate=true only when isContentPublic === false', () => {
-    const make = (isContentPublic: boolean | undefined) => ({
-      spaces: [
-        {
-          id: 's',
-          about: {
-            profile: { displayName: 'S', url: '/s' },
-            isContentPublic,
-          },
-        },
-      ],
-    });
-    expect(mapHostedSpacesToCardData(make(false), vcType).hostedSpaces[0].isPrivate).toBe(true);
-    expect(mapHostedSpacesToCardData(make(true), vcType).hostedSpaces[0].isPrivate).toBe(false);
-    // Undefined should NOT be treated as private — the public-default contract.
-    expect(mapHostedSpacesToCardData(make(undefined), vcType).hostedSpaces[0].isPrivate).toBe(false);
-  });
-
-  it('produces a deterministic accent colour from the space id (`pickColorFromId` consistency)', () => {
-    const resources: AccountResourcesShape = {
-      spaces: [{ id: 'stable-id', about: { profile: { displayName: 'A', url: '/a' }, isContentPublic: true } }],
-    };
-    const c1 = mapHostedSpacesToCardData(resources, vcType).hostedSpaces[0].color;
-    const c2 = mapHostedSpacesToCardData(resources, vcType).hostedSpaces[0].color;
-    expect(c1).toBe(c2);
   });
 
   it('maps hosted virtual contributors with the provided vcType label', () => {
@@ -173,7 +88,7 @@ describe('mapHostedSpacesToCardData', () => {
         },
       ],
     };
-    const result = mapHostedSpacesToCardData(resources, vcType);
+    const result = mapAccountHostedResources(resources, vcType);
     expect(result.hostedVirtualContributors).toEqual([
       {
         id: 'vc-1',
@@ -201,7 +116,7 @@ describe('mapHostedSpacesToCardData', () => {
         { id: 'vc-2', profile: { displayName: 'OK', url: '/ok' } },
       ],
     };
-    expect(mapHostedSpacesToCardData(resources, vcType).hostedVirtualContributors).toHaveLength(1);
+    expect(mapAccountHostedResources(resources, vcType).hostedVirtualContributors).toHaveLength(1);
   });
 
   it('maps innovation packs and hubs into SimpleResourceCardItem shape', () => {
@@ -224,7 +139,7 @@ describe('mapHostedSpacesToCardData', () => {
         },
       ],
     };
-    const result = mapHostedSpacesToCardData(resources, vcType);
+    const result = mapAccountHostedResources(resources, vcType);
     expect(result.hostedInnovationPacks).toEqual([
       {
         id: 'p-1',
@@ -247,7 +162,7 @@ describe('mapHostedSpacesToCardData', () => {
       ],
       innovationHubs: [{ id: 'h-1', profile: null }],
     };
-    const result = mapHostedSpacesToCardData(resources, vcType);
+    const result = mapAccountHostedResources(resources, vcType);
     expect(result.hostedInnovationPacks).toHaveLength(1);
     expect(result.hostedInnovationPacks[0].id).toBe('p-2');
     expect(result.hostedInnovationHubs).toHaveLength(0);

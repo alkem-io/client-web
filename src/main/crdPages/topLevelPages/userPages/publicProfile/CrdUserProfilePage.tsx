@@ -2,14 +2,17 @@ import { User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
-import type { ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
+import type { ProfileResourceTab } from '@/crd/components/common/ProfileResourceTabStrip';
 import { UserPublicProfileView } from '@/crd/components/user/UserPublicProfileView';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMemberships';
 import { CrdNotFoundView } from '@/main/crdPages/error/CrdNotFoundView';
 import { MembershipCardConnector } from '@/main/crdPages/topLevelPages/common/MembershipCardConnector';
-import { normaliseReferences } from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
+import {
+  mapAccountHostedResources,
+  normaliseReferences,
+} from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
 import useResourceTabs from '@/main/crdPages/topLevelPages/common/useResourceTabs';
 import {
   useOpenDirectChatHandler,
@@ -20,7 +23,7 @@ import {
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { AssociatedOrganizationCardConnector } from './AssociatedOrganizationCardConnector';
-import { buildUserProfileTagsets, mapHostedSpacesToCardData } from './publicProfileMapper';
+import { buildUserProfileTagsets } from './publicProfileMapper';
 import { useCrdUserProfilePageData } from './useCrdUserProfilePageData';
 
 export const CrdUserProfilePage = () => {
@@ -40,20 +43,12 @@ export const CrdUserProfilePage = () => {
   } = data;
   usePageTitle(userModel?.profile?.displayName);
 
-  const { activeTab, onSelectTab } = useResourceTabs('memberOf');
-
   const { onOpenChat } = useOpenDirectChatHandler({ recipientUserId: userId });
   // Email-to-user contact route temporarily DISABLED client-side — chat only.
   // To re-enable: restore the `useSendEmailToUserHandler` import, this handler,
   // the `isContactableViaEmail` destructure, `showEmail`, and the `onSendEmail`
   // wiring below. The server transport/setting are unchanged.
   // const { onSendMessage: onSendEmailMessage } = useSendEmailToUserHandler({ recipientUserId: userId });
-
-  const tabs = [
-    { key: 'memberOf' as ResourceTabKey, label: t('userProfile.tabs.memberOf') },
-    { key: 'leading' as ResourceTabKey, label: t('userProfile.tabs.leading') },
-    { key: 'resourcesHosted' as ResourceTabKey, label: t('userProfile.tabs.resourcesHosted') },
-  ];
 
   const heroLoading = loading.route || !userModel;
   const orgsLoading = loading.organizations;
@@ -62,6 +57,23 @@ export const CrdUserProfilePage = () => {
 
   const safeContributions = contributions ?? [];
   const [leadingItems, memberItems] = useFilteredMemberships(safeContributions, [RoleType.Lead, RoleType.Admin]);
+
+  const { hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs } = mapAccountHostedResources(
+    accountResources,
+    t('userProfile.vcType')
+  );
+  const hasOtherResources =
+    hostedVirtualContributors.length > 0 || hostedInnovationPacks.length > 0 || hostedInnovationHubs.length > 0;
+
+  const tabs: ProfileResourceTab[] = [
+    ...(leadingItems.length > 0 ? [{ key: 'leading' as const, label: t('userProfile.tabs.leading') }] : []),
+    { key: 'memberOf', label: t('userProfile.tabs.memberOf') },
+    ...(hasOtherResources ? [{ key: 'otherResources' as const, label: t('userProfile.tabs.otherResources') }] : []),
+  ];
+  const { activeTab, onSelectTab } = useResourceTabs(
+    tabs.map(tab => tab.key),
+    userId
+  );
 
   const breadcrumbDisplayName = userModel?.profile?.displayName ?? '';
   const breadcrumbItems: BreadcrumbTrailItem[] = breadcrumbDisplayName
@@ -103,9 +115,6 @@ export const CrdUserProfilePage = () => {
   const showCannotBeReached = viewerCanContact && !isContactable;
 
   const settingsHref = profile?.url ? buildSettingsTabUrl(profile.url, 'profile') : undefined;
-
-  const { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs } =
-    mapHostedSpacesToCardData(accountResources, t('userProfile.vcType'));
 
   const spacesLeading = leadingItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
   const spacesMember = memberItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
@@ -157,26 +166,18 @@ export const CrdUserProfilePage = () => {
       }}
       sections={{
         activeTab,
-        hostedSpaces,
         hostedVirtualContributors,
         hostedInnovationPacks,
         hostedInnovationHubs,
         spacesLeading,
         spacesMember,
         labels: {
-          spacesSubsection: t('userProfile.sections.spacesSubsection'),
           virtualContributorsSubsection: t('userProfile.sections.virtualContributorsSubsection'),
           templatePacksSubsection: t('common.innovation-packs', { ns: 'crd-common' }),
           customHomepagesSubsection: t('common.customHomepages', { ns: 'crd-common' }),
           spacesLeading: t('userProfile.sections.spacesLeading'),
           memberOf: t('userProfile.sections.memberOf'),
-          emptyResourcesHosted: t('userProfile.empty.resourcesHosted'),
-          emptyLeading: t('userProfile.empty.leading'),
           emptyMembership: t('userProfile.empty.membership'),
-          spacePrivacy: {
-            privacyPrivate: t('common.spacePrivacy.private'),
-            privacyPublic: t('common.spacePrivacy.public'),
-          },
         },
       }}
       loading={{
