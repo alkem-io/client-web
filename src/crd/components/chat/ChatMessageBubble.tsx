@@ -49,9 +49,19 @@ export function ChatMessageBubble({
   // Shared with CommentItem — see `hasRenderableText` for the MSC2530 filename-echo rule.
   const hasText = hasRenderableText(message.content, message.attachments);
 
+  // Picking an emoji the user already reacted with takes the reaction back,
+  // exactly as clicking its pill does — the server refuses a second identical one.
+  const handlePick = (emoji: string) => {
+    if (message.reactions.some(reaction => reaction.emoji === emoji && reaction.hasReacted)) {
+      onRemoveReaction?.(emoji);
+    } else {
+      onAddReaction?.(emoji);
+    }
+  };
+
   const addReactionTrigger = effectiveCanReact && onAddReaction && (
     <EmojiPicker
-      onSelect={onAddReaction}
+      onSelect={handlePick}
       trigger={
         <button
           type="button"

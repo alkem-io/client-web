@@ -1,4 +1,5 @@
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
+import type { ReactNode } from 'react';
 import { describe, expect, test, vi } from 'vitest';
 import type { ChatMessage } from './types';
 
@@ -8,6 +9,18 @@ vi.mock('react-i18next', () => ({
 
 // Shared jsdom-safe avatar double from src/crd/primitives/__mocks__/avatar.tsx.
 vi.mock('@/crd/primitives/avatar');
+
+// The real picker is a lazy-loaded emoji grid; this double exposes one pick per emoji.
+vi.mock('@/crd/components/common/EmojiPicker', () => ({
+  EmojiPicker: ({ onSelect, trigger }: { onSelect: (emoji: string) => void; trigger: ReactNode }) => (
+    <>
+      {trigger}
+      <button type="button" onClick={() => onSelect('👍')}>
+        pick 👍
+      </button>
+    </>
+  ),
+}));
 
 const { ChatMessageBubble } = await import('./ChatMessageBubble');
 
@@ -154,7 +167,7 @@ describe('ChatMessageBubble', () => {
       });
       const trigger = getByRole('button', { name: 'thread.addReaction' });
       expect(follows(getByRole('img', { name: 'messageAttachments.imageAlt' }), trigger)).toBe(true);
-      expect(follows(getByRole('button', { name: /👍/ }), trigger)).toBe(true);
+      expect(follows(getByRole('button', { name: /^👍/ }), trigger)).toBe(true);
       const timestamp = getByText('2m ago');
       expect(timestamp.parentElement).toBe(trigger.parentElement);
       expect(follows(timestamp, trigger)).toBe(true);
@@ -255,6 +268,40 @@ describe('ChatMessageBubble', () => {
         <ChatMessageBubble message={{ ...baseMessage, content: '<https://alkem.io/path>' }} />
       );
       expect(container.querySelector('.rounded-2xl a')).toHaveAttribute('href', 'https://alkem.io/path');
+    });
+  });
+
+  describe('picking an emoji', () => {
+    const renderPickable = (reactions: ChatMessage['reactions']) => {
+      const onAddReaction = vi.fn();
+      const onRemoveReaction = vi.fn();
+      const utils = render(
+        <ChatMessageBubble
+          message={{ ...baseMessage, reactions }}
+          canReact={true}
+          onAddReaction={onAddReaction}
+          onRemoveReaction={onRemoveReaction}
+        />
+      );
+      fireEvent.click(utils.getByRole('button', { name: 'pick 👍' }));
+      return { onAddReaction, onRemoveReaction };
+    };
+
+    test('adds a reaction the user has not made yet', () => {
+      const { onAddReaction, onRemoveReaction } = renderPickable([{ emoji: '👍', count: 2, hasReacted: false }]);
+      expect(onAddReaction).toHaveBeenCalledWith('👍');
+      expect(onRemoveReaction).not.toHaveBeenCalled();
+    });
+
+    test('removes the reaction when the user already reacted with that emoji, like its pill does', () => {
+      const { onAddReaction, onRemoveReaction } = renderPickable([{ emoji: '👍', count: 1, hasReacted: true }]);
+      expect(onAddReaction).not.toHaveBeenCalled();
+      expect(onRemoveReaction).toHaveBeenCalledWith('👍');
+    });
+
+    test('adds when the only matching reaction is a different key', () => {
+      const { onAddReaction } = renderPickable([{ emoji: '👍🏽', count: 1, hasReacted: true }]);
+      expect(onAddReaction).toHaveBeenCalledWith('👍');
     });
   });
 });
