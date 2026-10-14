@@ -277,12 +277,20 @@ type FramingEditorConnectorProps = {
   ) => import('@/crd/forms/ContributorSelector').ContributorSelectorInvitee[];
   contributorCandidatesLoading?: boolean;
   /**
-   * Subspace candidates for the spaces chip (feature 025, T006).
-   * Derived by `useCrdSpaceSubspaces` in `CalloutFormConnector` (the same data
-   * the collection renderer already has) — no new query.
+   * The account-scoped space candidate model for the spaces chip (feature 084,
+   * T102). Derived by `useAccountSpaceCandidates` in `CalloutFormConnector` so
+   * this connector stays free of Apollo hooks (CRD connector rules).
    */
-  subspaceCandidates?: { id: string; displayName: string; avatarUrl?: string }[];
-  subspaceCandidatesLoading?: boolean;
+  spaceCandidates?: import('./useAccountSpaceCandidates').UseAccountSpaceCandidatesResult;
+  /**
+   * Whether this editor may change the spaces chip's manual selection — i.e. is
+   * a space admin of the host space, which is the privilege the candidate query
+   * is gated on. False only in EDIT mode, for a callout creator who has since
+   * been demoted and still holds UPDATE on the callout itself; the whole
+   * manual-selection block is then not rendered (084 FR-009a), and the stored
+   * selection is still submitted unchanged on save (084 FR-014).
+   */
+  canEditSpaceSelection?: boolean;
   /**
    * Map pins for the map-view capture control.
    * In edit mode: the default-type contributor cards derived by `CalloutFormConnector`.
@@ -369,8 +377,8 @@ export function FramingEditorConnector({
   contributorCandidates = [],
   resolveContributorChips,
   contributorCandidatesLoading = false,
-  subspaceCandidates = [],
-  subspaceCandidatesLoading = false,
+  spaceCandidates,
+  canEditSpaceSelection = true,
   contributorMapPins = [],
   contributorMapView = null,
   onContributorMapViewChange,
@@ -869,30 +877,32 @@ export function FramingEditorConnector({
     }
 
     case 'spaces': {
-      // Feature 025: custom subspace selection for a Spaces-collection callout.
-      // Candidates come from the existing `SubspacesInSpace` query data
-      // (already-shipped host-scoped query — R-6 compliant).
-      const subspaceChips = selectedIds.map(id => {
-        const found = subspaceCandidates.find(c => c.id === id);
+      // Feature 084: manual selection over every space of the host space's
+      // account the editor may READ (T102), replacing 025's host-only subspace
+      // source. `canEditSpaceSelection` decides whether the block renders at all
+      // (FR-009a) — not which of its parts do.
+      const candidates = spaceCandidates?.candidates ?? [];
+      const spaceChips = selectedIds.map(id => {
+        const found = spaceCandidates?.byId.get(id);
         if (found) {
           return {
             kind: 'subspace' as const,
             id: found.id,
             displayName: found.displayName,
-            avatarUrl: found.avatarUrl,
             eligible: true,
           };
         }
         return { kind: 'subspace' as const, id, displayName: id, eligible: false };
       });
 
-      const subspaceSearchResults = subspaceCandidates
+      const spaceSearchResults = candidates
         .filter(c => {
+          if (c.isHost) return false;
           if (selectedIds.includes(c.id)) return false;
           if (!subspaceSearchQuery.trim()) return true;
           return c.displayName.toLowerCase().includes(subspaceSearchQuery.toLowerCase());
         })
-        .map(c => ({ userId: c.id, displayName: c.displayName, avatarUrl: c.avatarUrl }));
+        .map(c => ({ userId: c.id, displayName: c.displayName }));
 
       const handleSubspaceSelect = (id: string) => {
         if (!selectedIds.includes(id)) {
@@ -900,42 +910,44 @@ export function FramingEditorConnector({
         }
       };
       const handleSubspaceRemove = (index: number) => {
-        const chip = subspaceChips[index];
+        const chip = spaceChips[index];
         if (!chip) return;
         onSelectedIdsChange?.(selectedIds.filter(id => id !== chip.id));
       };
 
       return (
         <div className="space-y-4">
-          <CalloutSelectionField
-            mode={selectionMode}
-            onModeChange={next => onSelectionModeChange?.(next)}
-            label={t('forms.selection.label')}
-            autoDescription={t('forms.selection.spaces.autoDescription')}
-            customDescription={t('forms.selection.spaces.customDescription')}
-            pickerSlot={
-              <ContributorSelector
-                selectedContributors={subspaceChips}
-                searchResults={subspaceSearchResults}
-                searchQuery={subspaceSearchQuery}
-                onSearchChange={setSubspaceSearchQuery}
-                onSelectUser={handleSubspaceSelect}
-                onRemoveContributor={handleSubspaceRemove}
-                loading={subspaceCandidatesLoading}
-                allowEmailInvites={false}
-                chipsPosition="above"
-                clearSearchAriaLabel={t('forms.selection.clearSearch')}
-                ineligibleLabel={t('forms.selection.noLongerAvailable')}
-                placeholder={t('forms.selection.searchSubspacePlaceholder')}
-                searchAriaLabel={t('forms.selection.searchSubspaceAriaLabel')}
-                noResultsLabel={t('forms.selection.noResults')}
-                loadingLabel={t('forms.selection.loading')}
-                loadMoreLabel={t('forms.selection.loadMore')}
-                removeAriaLabel={name => t('forms.selection.removeAriaLabel', { name })}
-                validationErrorLabel={() => ''}
-              />
-            }
-          />
+          {canEditSpaceSelection && (
+            <CalloutSelectionField
+              mode={selectionMode}
+              onModeChange={next => onSelectionModeChange?.(next)}
+              label={t('forms.selection.label')}
+              autoDescription={t('forms.selection.spaces.autoDescription')}
+              customDescription={t('forms.selection.spaces.customDescription')}
+              pickerSlot={
+                <ContributorSelector
+                  selectedContributors={spaceChips}
+                  searchResults={spaceSearchResults}
+                  searchQuery={subspaceSearchQuery}
+                  onSearchChange={setSubspaceSearchQuery}
+                  onSelectUser={handleSubspaceSelect}
+                  onRemoveContributor={handleSubspaceRemove}
+                  loading={spaceCandidates?.loading ?? false}
+                  allowEmailInvites={false}
+                  chipsPosition="above"
+                  clearSearchAriaLabel={t('forms.selection.clearSearch')}
+                  ineligibleLabel={t('forms.selection.noLongerAvailable')}
+                  placeholder={t('forms.selection.searchSubspacePlaceholder')}
+                  searchAriaLabel={t('forms.selection.searchSubspaceAriaLabel')}
+                  noResultsLabel={t('forms.selection.noResults')}
+                  loadingLabel={t('forms.selection.loading')}
+                  loadMoreLabel={t('forms.selection.loadMore')}
+                  removeAriaLabel={name => t('forms.selection.removeAriaLabel', { name })}
+                  validationErrorLabel={() => ''}
+                />
+              }
+            />
+          )}
           {/* "Expanded card" switch — placed immediately after the
               complete Manual selection block (its switch, description and, when
               on, its picker). */}

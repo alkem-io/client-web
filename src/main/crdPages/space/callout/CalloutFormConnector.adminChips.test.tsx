@@ -33,7 +33,6 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useCalloutContentQuery: () => ({ data: undefined, loading: false }),
   useCreateReferenceOnProfileMutation: () => [vi.fn()],
   useDeleteReferenceMutation: () => [vi.fn()],
-  useSubspacesInSpaceQuery: () => ({ data: undefined, loading: false, refetch: vi.fn() }),
   useTemplateContentLazyQuery: () => [vi.fn()],
   useUpdateCalloutContentMutation: () => [vi.fn(), { loading: false }],
   useUpdateCalloutFormMutation: () => [vi.fn()],
@@ -101,6 +100,17 @@ vi.mock('@/domain/collaboration/poll/hooks/usePollOptionManagement', () => ({
 
 vi.mock('@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument', () => ({
   useRenameCollaboraDocument: () => ({ rename: vi.fn() }),
+}));
+
+vi.mock('./useAccountSpaceCandidates', () => ({
+  useAccountSpaceCandidates: () => ({
+    candidates: [],
+    byId: new Map(),
+    loading: false,
+    error: undefined,
+    refetch: vi.fn(),
+    unresolved: () => [],
+  }),
 }));
 
 vi.mock('./useSelectionCandidates', async importOriginal => {
