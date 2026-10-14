@@ -22,13 +22,17 @@ export type CommentReaction = {
 /**
  * A single media attachment on a message (feature 013). Plain presentational
  * shape mapped from the GraphQL `MessageAttachment` by the integration layer —
- * `url` is an already-authorized Alkemio document URL (web- or Element-origin),
+ * `url` identifies the media resource protected by the destination policy,
  * so the render component treats every attachment uniformly. `width`/`height`
  * are present for images only and let the renderer reserve aspect ratio.
  */
 export type MessageAttachment = {
+  /** Presentation key, not an Alkemio file ID. */
   id?: string;
-  /** Authorized Alkemio document URL. */
+  /** Integration requests a fresh presentation after the same resource becomes ready. */
+  retryKey?: number;
+  onLoadError?: () => void;
+  /** Authorized bucket/reference resource URL. */
   url?: string;
   /** Filename / display name. */
   displayName: string;
