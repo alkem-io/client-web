@@ -117,6 +117,16 @@ describe('EmojiPicker on narrow screens', () => {
     expect(captured.contentProps.collisionPadding).toBe(8);
   });
 
+  // Measured on a 360x640 phone: the 450px-tall picker ran 134px past the bottom
+  // of the screen (and 69px past the top at 375x667) when neither side of the
+  // trigger had room for it.
+  it('never grows taller than the room the popover has on its side', () => {
+    renderPicker();
+    expect(captured.pickerProps.height).toBe(
+      'min(450px, calc(var(--radix-popover-content-available-height, 450px) - 2px))'
+    );
+  });
+
   it('never grows wider than the screen minus that margin', () => {
     renderPicker();
     expect(captured.pickerProps.width).toBe('min(350px, calc(100vw - 16px))');

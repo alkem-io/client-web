@@ -64,8 +64,11 @@ export function EmojiPicker({ onSelect, trigger }: EmojiPickerProps) {
             emojiStyle={EmojiStyle.NATIVE}
             autoFocusSearch={false}
             lazyLoadEmojis={true}
-            // The library's natural width, capped so it fits a phone screen with the margin on both sides.
+            // The library's natural size, capped so it fits a phone screen: the width
+            // with the margin on both sides, the height to the room Radix reports on
+            // the side it opened (less the popover's 1px borders).
             width={`min(350px, calc(100vw - ${2 * SCREEN_EDGE_MARGIN_PX}px))`}
+            height="min(450px, calc(var(--radix-popover-content-available-height, 450px) - 2px))"
           />
         </div>
       </PopoverContent>
