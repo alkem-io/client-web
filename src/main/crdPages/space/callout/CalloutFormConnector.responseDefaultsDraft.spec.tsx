@@ -98,14 +98,7 @@ vi.mock('../hooks/useCrdSpaceContributors', () => ({
   useCrdSpaceContributors: () => ({ defaultType: undefined, getCards: () => [] }),
 }));
 vi.mock('./useAccountSpaceCandidates', () => ({
-  useAccountSpaceCandidates: () => ({
-    candidates: [],
-    byId: new Map(),
-    loading: false,
-    error: undefined,
-    refetch: vi.fn(),
-    unresolved: () => [],
-  }),
+  useAccountSpaceCandidates: () => ({ candidates: [], loading: false, error: undefined, refetch: vi.fn() }),
 }));
 
 vi.mock('./useSelectionCandidates', async importOriginal => {

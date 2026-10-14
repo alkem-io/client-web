@@ -186,11 +186,9 @@ vi.mock('./useAccountSpaceCandidates', () => ({
           ];
     return {
       candidates: resolved,
-      byId: new Map(resolved.map(c => [c.id, c])),
       loading: harness.candidatesLoading,
       error: harness.candidatesError,
       refetch: harness.candidateRefetch,
-      unresolved: (ids: string[]) => ids.filter(id => !resolved.some(c => c.id === id)),
     };
   },
 }));

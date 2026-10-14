@@ -3,8 +3,8 @@
  *
  * Everything asserted here is computed on the client from ONE fetched set of
  * four scalars, so these are the only assertions anywhere that the ancestor
- * chain, the host row, the "in this space" predicate and the single unresolved
- * state are built correctly — the server exposes none of them (spec FR-012b).
+ * chain, the host row and the "in this space" predicate are built correctly —
+ * the server exposes none of them (spec FR-012b).
  */
 import { renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
@@ -65,7 +65,7 @@ const renderFor = (hostSpaceId: string | undefined, skip?: boolean) =>
 const byId = (hostSpaceId: string) => {
   const model = renderFor(hostSpaceId);
   return (id: string) => {
-    const found = model.byId.get(id);
+    const found = model.candidates.find(candidate => candidate.id === id);
     if (!found) throw new Error(`no candidate ${id}`);
     return found;
   };
@@ -165,15 +165,6 @@ describe('useAccountSpaceCandidates — the derived model', () => {
       'sibling-l0',
       'sibling-child',
     ]);
-  });
-
-  // FR-014: there is exactly ONE unresolved state, over the CURRENT selection —
-  // not only over what was stored when the picker opened.
-  test('reports as unresolved only the ids with no candidate entry', () => {
-    const model = renderFor(HOST);
-
-    expect(model.unresolved(['host-child', 'departed-1', 'unreadable-l0'])).toEqual(['departed-1', 'unreadable-l0']);
-    expect(model.unresolved([])).toEqual([]);
   });
 });
 

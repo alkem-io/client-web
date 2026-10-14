@@ -108,14 +108,7 @@ vi.mock('@/domain/collaboration/calloutContributions/collaboraDocument/useRename
 }));
 
 vi.mock('./useAccountSpaceCandidates', () => ({
-  useAccountSpaceCandidates: () => ({
-    candidates: [],
-    byId: new Map(),
-    loading: false,
-    error: undefined,
-    refetch: vi.fn(),
-    unresolved: () => [],
-  }),
+  useAccountSpaceCandidates: () => ({ candidates: [], loading: false, error: undefined, refetch: vi.fn() }),
 }));
 
 vi.mock('./useSelectionCandidates', async importOriginal => {

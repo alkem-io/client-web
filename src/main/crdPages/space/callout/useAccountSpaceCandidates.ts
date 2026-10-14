@@ -37,12 +37,12 @@ import type { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 const PATH_SEPARATOR = '\u001f';
 
 /** A readable ancestor of a candidate, as the path sub-line renders it. */
-export type AccountSpaceAncestor = {
+type AccountSpaceAncestor = {
   id: string;
   displayName: string;
 };
 
-export type AccountSpaceCandidate = {
+type AccountSpaceCandidate = {
   id: string;
   displayName: string;
   /** L0 / L1 / L2 — the picker maps it to a label; this hook has no translator. */
@@ -76,7 +76,6 @@ export type UseAccountSpaceCandidatesResult = {
    * order, and must not re-sort it.
    */
   candidates: AccountSpaceCandidate[];
-  byId: Map<string, AccountSpaceCandidate>;
   loading: boolean;
   /**
    * An errored query must be distinguishable from a resolved empty one: a
@@ -91,11 +90,6 @@ export type UseAccountSpaceCandidatesResult = {
    * recovery: 025's client-side strip is deleted (FR-014, residual R-I).
    */
   refetch: () => void;
-  /**
-   * Of the ids passed in — the CURRENT selection, not only what was stored when
-   * the picker opened — those with no candidate entry. One state, not three.
-   */
-  unresolved: (ids: string[]) => string[];
 };
 
 const sortKey = (candidate: AccountSpaceCandidate): string =>
@@ -145,16 +139,12 @@ export function useAccountSpaceCandidates({
     })
     .sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
 
-  const byId = new Map(candidates.map(candidate => [candidate.id, candidate]));
-
   return {
     candidates,
-    byId,
     loading,
     error,
     refetch: () => {
       void refetch();
     },
-    unresolved: (ids: string[]) => ids.filter(id => !byId.has(id)),
   };
 }
