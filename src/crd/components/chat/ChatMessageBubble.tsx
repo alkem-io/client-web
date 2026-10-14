@@ -69,7 +69,13 @@ export function ChatMessageBubble({
   );
 
   const bubbleColumn = (
-    <div className={cn('group flex flex-col gap-0.5', isOwn ? 'items-end' : 'items-start')}>
+    <div
+      className={cn(
+        'group flex flex-col gap-0.5',
+        isOwn ? 'items-end' : 'items-start',
+        avatarGutter && !isOwn && 'min-w-0 flex-1'
+      )}
+    >
       {showAuthor && !isOwn && author && (
         <span className="flex items-center gap-1 px-1 text-caption text-muted-foreground">
           <span className="truncate">{author.name}</span>
@@ -81,7 +87,9 @@ export function ChatMessageBubble({
           business data, not UI copy (FR-016). */}
       {avatarGutter && !showAuthor && !isOwn && author && <span className="sr-only">{author.name}</span>}
       {(hasText || !hasAttachments) && (
-        <div className={cn('flex items-center gap-1', isOwn && 'flex-row-reverse')}>
+        // Full width, so the bubble's 85% cap is taken of the thread rather than
+        // of a row that shrinks to fit the text and wraps short messages early.
+        <div className={cn('flex w-full items-center gap-1', isOwn && 'flex-row-reverse')}>
           {/* The bubble exists to hold TEXT. An attachment-only message renders
               just its attachments below, and a message with neither text nor
               attachments renders no bubble at all — the previous condition
@@ -90,7 +98,10 @@ export function ChatMessageBubble({
           {hasText && (
             <div
               className={cn(
-                'max-w-[85%] rounded-2xl px-3 py-2',
+                // `overflow-wrap:anywhere` lets an unbroken token (a long URL) wrap
+                // and, unlike `break-words`, also shrinks the bubble's minimum
+                // width, so the token cannot push the bubble past its cap.
+                'min-w-0 max-w-[85%] rounded-2xl px-3 py-2 [overflow-wrap:anywhere]',
                 isOwn ? 'rounded-br-sm bg-primary/15' : 'rounded-bl-sm bg-muted',
                 message.isPending && 'opacity-60'
               )}

@@ -211,6 +211,29 @@ describe('ChatMessageBubble', () => {
     expect(bubbleColumn?.textContent).toContain('2m ago');
     expect(bubbleColumn?.textContent).toContain('👍');
   });
+
+  // jsdom has no layout, so these pin the classes the browser check relies on:
+  // a long unbroken token must be allowed to break, and the 85% cap must be
+  // taken of the thread width rather than of a shrink-to-fit box.
+  describe('text wrapping', () => {
+    const bubbleOf = (container: HTMLElement) => container.querySelector('.rounded-2xl') as HTMLElement;
+
+    test('the bubble lets an unbroken token wrap anywhere and may shrink below it', () => {
+      const { container } = render(<ChatMessageBubble message={{ ...baseMessage, content: 'x'.repeat(300) }} />);
+      expect(bubbleOf(container)).toHaveClass('[overflow-wrap:anywhere]', 'min-w-0', 'max-w-[85%]');
+    });
+
+    test.each([false, true])('the bubble row spans the column so the cap is taken of the thread (own: %s)', isOwn => {
+      const { container } = render(<ChatMessageBubble message={{ ...baseMessage, isOwn }} />);
+      expect(bubbleOf(container).parentElement).toHaveClass('w-full');
+    });
+
+    test('in a group the bubble column fills the space beside the avatar gutter', () => {
+      const { container } = render(<ChatMessageBubble message={baseMessage} avatarGutter={true} showAvatar={true} />);
+      expect(container.querySelector('.w-8')?.nextElementSibling).toHaveClass('min-w-0', 'flex-1');
+    });
+  });
+
   describe('text is shown as typed', () => {
     test.each([
       ['an angle-bracketed word', 'see <this> here', 'see <this> here'],
