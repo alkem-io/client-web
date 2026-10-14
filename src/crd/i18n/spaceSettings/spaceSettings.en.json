@@ -918,12 +918,14 @@
     "name": {
       "title": "Space Name",
       "description": "The public name of your space.",
-      "ariaLabel": "Space name"
+      "ariaLabel": "Space name",
+      "editAriaLabel": "Edit space name"
     },
     "tagline": {
       "title": "Tagline",
       "description": "A short subtitle shown next to the space name.",
-      "ariaLabel": "Tagline"
+      "ariaLabel": "Tagline",
+      "editAriaLabel": "Edit tagline"
     },
     "branding": {
       "title": "Space Branding",
@@ -966,7 +968,9 @@
       "title": "Location",
       "description": "The city and country of this space.",
       "city": "City",
-      "country": "Country (ISO code)"
+      "country": "Country (ISO code)",
+      "editCityAriaLabel": "Edit city",
+      "countryPlaceholder": "Country"
     },
     "what": {
       "title": "What",

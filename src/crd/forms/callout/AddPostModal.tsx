@@ -10,6 +10,9 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/toolti
 
 export type AddPostModalMode = 'create' | 'edit';
 
+/** Why the footer actions are currently blocked: the title is missing, or the description is over its limit. */
+export type AddPostModalBlockedReason = 'titleRequired' | 'descriptionTooLong';
+
 export type AddPostModalProps = {
   open: boolean;
   /**
@@ -56,13 +59,14 @@ export type AddPostModalProps = {
   findTemplateDisabled?: boolean;
   submitLabel?: string;
   /**
-   * False while the title is empty. The footer buttons are then only *visually*
-   * dimmed and carry a tooltip / `aria-describedby` hint, but stay fully
-   * operable — clicking still runs the consumer's validation, which surfaces the
-   * title error and focuses the field. They are deliberately not `aria-disabled`
-   * (that would announce an operable control as disabled to assistive tech).
+   * Set while the form cannot be submitted, naming why. The footer buttons are
+   * then only *visually* dimmed and carry a tooltip / `aria-describedby` hint
+   * explaining the reason, but stay fully operable — clicking still runs the
+   * consumer's validation, which surfaces the error (and, for a missing title,
+   * focuses the field). They are deliberately not `aria-disabled` (that would
+   * announce an operable control as disabled to assistive tech).
    */
-  canSubmit?: boolean;
+  blockedReason?: AddPostModalBlockedReason;
   className?: string;
 };
 
@@ -83,18 +87,20 @@ export function AddPostModal({
   onFindTemplate,
   findTemplateDisabled = false,
   submitLabel,
-  canSubmit = true,
+  blockedReason,
   className,
 }: AddPostModalProps) {
   const { t } = useTranslation('crd-space');
   const [moreOpen, setMoreOpen] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
-  const titleHintId = useId();
+  const blockedHintId = useId();
 
   const isCreate = mode === 'create';
   const headerTitle = isCreate ? t('forms.createPost') : t('forms.editPost');
   const primaryLabel = submitLabel ?? (isCreate ? t('forms.publish') : t('forms.save'));
-  const blockedByTitle = !submitting && !canSubmit;
+  const blocked = !submitting && blockedReason !== undefined;
+  const blockedHint =
+    blockedReason === 'descriptionTooLong' ? t('forms.descriptionTooLongHint') : t('forms.titleRequiredHint');
 
   const { maxLength: titleMaxLength, counterThreshold } = title;
   const titleLength = title.value.length;
@@ -104,18 +110,18 @@ export function AddPostModal({
   // the gap before the user has tried to submit.
   const titleError = title.error ?? (titleOverLimit ? t('validation.maxSmall', { count: titleMaxLength }) : undefined);
 
-  // While the title is missing the button is only *visually* disabled: the click
-  // still reaches the consumer, whose validation sets `title.error`.
+  // While blocked the button is only *visually* disabled: the click still
+  // reaches the consumer, whose validation sets the matching error.
   const runAction = (action: () => void) => () => {
     action();
-    if (blockedByTitle) titleInputRef.current?.focus();
+    if (blocked && blockedReason === 'titleRequired') titleInputRef.current?.focus();
   };
 
   const actionButton = (node: ReactNode) =>
-    blockedByTitle ? (
+    blocked ? (
       <Tooltip>
         <TooltipTrigger asChild={true}>{node}</TooltipTrigger>
-        <TooltipContent>{t('forms.titleRequiredHint')}</TooltipContent>
+        <TooltipContent>{blockedHint}</TooltipContent>
       </Tooltip>
     ) : (
       node
@@ -252,9 +258,9 @@ export function AddPostModal({
 
         {/* Footer */}
         <DialogFooter className="px-6 py-4 border-t bg-muted/10 flex items-center">
-          {blockedByTitle && (
-            <span id={titleHintId} className="sr-only">
-              {t('forms.titleRequiredHint')}
+          {blocked && (
+            <span id={blockedHintId} className="sr-only">
+              {blockedHint}
             </span>
           )}
           <div className="ml-auto flex items-center gap-3">
@@ -267,9 +273,9 @@ export function AddPostModal({
                       variant="ghost"
                       onClick={runAction(onSaveDraft)}
                       disabled={submitting}
-                      aria-describedby={blockedByTitle ? titleHintId : undefined}
+                      aria-describedby={blocked ? blockedHintId : undefined}
                       aria-busy={submitting}
-                      className={cn(blockedByTitle && 'opacity-50')}
+                      className={cn(blocked && 'opacity-50')}
                     >
                       {t('forms.saveDraft')}
                     </Button>
@@ -277,9 +283,9 @@ export function AddPostModal({
                 {actionButton(
                   <Button
                     onClick={runAction(onSubmit)}
-                    className={cn('px-8', blockedByTitle && 'opacity-50')}
+                    className={cn('px-8', blocked && 'opacity-50')}
                     disabled={submitting}
-                    aria-describedby={blockedByTitle ? titleHintId : undefined}
+                    aria-describedby={blocked ? blockedHintId : undefined}
                     aria-busy={submitting}
                   >
                     {primaryLabel}
@@ -294,9 +300,9 @@ export function AddPostModal({
                 {actionButton(
                   <Button
                     onClick={runAction(onSubmit)}
-                    className={cn('px-8', blockedByTitle && 'opacity-50')}
+                    className={cn('px-8', blocked && 'opacity-50')}
                     disabled={submitting}
-                    aria-describedby={blockedByTitle ? titleHintId : undefined}
+                    aria-describedby={blocked ? blockedHintId : undefined}
                     aria-busy={submitting}
                   >
                     {primaryLabel}
