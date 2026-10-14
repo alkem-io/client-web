@@ -29,6 +29,11 @@ export default defineConfig({
     emptyOutDir: true,
     outDir: 'build',
     rollupOptions: {
+      // The Matrix SSO callback is its own page so it never loads the app bundle.
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        matrixCallback: path.resolve(__dirname, 'matrix-callback.html'),
+      },
       output: {
         entryFileNames: 'assets/[name][hash].js',
         chunkFileNames: 'assets/[name][hash].js',

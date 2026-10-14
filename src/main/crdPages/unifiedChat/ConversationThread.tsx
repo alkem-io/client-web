@@ -8,7 +8,8 @@ type Props = Omit<ComponentProps<typeof ChatThreadView>, 'onSendMessage'> & {
   roomId: string | undefined;
   attachmentsAllowed: boolean;
   sendEvent: SendEvent;
-  onTextSent: () => void;
+  onClearDraft: () => void;
+  onRestoreDraft: (text: string) => void;
 };
 
 /** The connector keys this component by conversation, giving each draft its own lifetime. */
@@ -17,7 +18,8 @@ export function ConversationThread({
   roomId,
   attachmentsAllowed,
   sendEvent,
-  onTextSent,
+  onClearDraft,
+  onRestoreDraft,
   ...view
 }: Props) {
   const { storageConfig } = useConversationStorageConfig(conversationId);
@@ -25,11 +27,22 @@ export function ConversationThread({
     attachmentsAllowed ? storageConfig : undefined,
     roomId ? { roomID: roomId } : undefined
   );
+  const sendWithDraft: SendEvent = async (text, attachmentUpload) => {
+    if (attachmentUpload) return sendEvent(text, attachmentUpload);
+    onClearDraft();
+    let confirmed: boolean | undefined;
+    try {
+      confirmed = await sendEvent(text);
+      return confirmed;
+    } finally {
+      if (!confirmed) onRestoreDraft(text);
+    }
+  };
   return (
     <ChatThreadView
       {...view}
       isSending={view.isSending || files.isSending}
-      onSendMessage={text => files.send(text, sendEvent, onTextSent)}
+      onSendMessage={text => files.send(text, sendWithDraft, () => {})}
       attachmentsEnabled={files.enabled}
       attachments={files.attachments}
       onAttachFiles={files.attachFiles}

@@ -35548,6 +35548,79 @@ export type RecentSpacesQueryResult = Apollo.QueryResult<
 export function refetchRecentSpacesQuery(variables?: SchemaTypes.RecentSpacesQueryVariables) {
   return { query: RecentSpacesDocument, variables: variables };
 }
+export const ActorProfileDocument = gql`
+    query ActorProfile($actorId: UUID!) {
+  actor(id: $actorId) {
+    id
+    type
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useActorProfileQuery__
+ *
+ * To run a query within a React component, call `useActorProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useActorProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useActorProfileQuery({
+ *   variables: {
+ *      actorId: // value for 'actorId'
+ *   },
+ * });
+ */
+export function useActorProfileQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ActorProfileQuery, SchemaTypes.ActorProfileQueryVariables> &
+    ({ variables: SchemaTypes.ActorProfileQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ActorProfileQuery, SchemaTypes.ActorProfileQueryVariables>(
+    ActorProfileDocument,
+    options
+  );
+}
+export function useActorProfileLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ActorProfileQuery, SchemaTypes.ActorProfileQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ActorProfileQuery, SchemaTypes.ActorProfileQueryVariables>(
+    ActorProfileDocument,
+    options
+  );
+}
+export function useActorProfileSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.ActorProfileQuery, SchemaTypes.ActorProfileQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.ActorProfileQuery, SchemaTypes.ActorProfileQueryVariables>(
+    ActorProfileDocument,
+    options
+  );
+}
+export type ActorProfileQueryHookResult = ReturnType<typeof useActorProfileQuery>;
+export type ActorProfileLazyQueryHookResult = ReturnType<typeof useActorProfileLazyQuery>;
+export type ActorProfileSuspenseQueryHookResult = ReturnType<typeof useActorProfileSuspenseQuery>;
+export type ActorProfileQueryResult = Apollo.QueryResult<
+  SchemaTypes.ActorProfileQuery,
+  SchemaTypes.ActorProfileQueryVariables
+>;
+export function refetchActorProfileQuery(variables: SchemaTypes.ActorProfileQueryVariables) {
+  return { query: ActorProfileDocument, variables: variables };
+}
 export const AssignConversationMemberDocument = gql`
     mutation AssignConversationMember($memberData: AssignConversationMemberInput!) {
   assignConversationMember(memberData: $memberData)
@@ -35606,45 +35679,6 @@ export const ConversationDetailsDocument = gql`
         displayName
         avatarUrl
         createdDate
-        unreadCount
-        messagesCount
-        lastMessage {
-          id
-          message
-          timestamp
-          sender {
-            id
-            type
-            profile {
-              id
-              displayName
-              avatar: visual(type: AVATAR) {
-                id
-                uri
-              }
-            }
-          }
-          reactions {
-            id
-            emoji
-            timestamp
-            sender {
-              id
-              profile {
-                id
-                displayName
-              }
-            }
-          }
-          attachments {
-            externalReference
-            displayName
-            mimeType
-            size
-            width
-            height
-          }
-        }
       }
       members {
         id
@@ -35743,45 +35777,6 @@ export const ConversationEventsDocument = gql`
           displayName
           avatarUrl
           createdDate
-          unreadCount
-          messagesCount
-          lastMessage {
-            id
-            message
-            timestamp
-            sender {
-              id
-              type
-              profile {
-                id
-                displayName
-                avatar: visual(type: AVATAR) {
-                  id
-                  uri
-                }
-              }
-            }
-            reactions {
-              id
-              emoji
-              timestamp
-              sender {
-                id
-                profile {
-                  id
-                  displayName
-                }
-              }
-            }
-            attachments {
-              externalReference
-              displayName
-              mimeType
-              size
-              width
-              height
-            }
-          }
         }
         members {
           id
@@ -35795,43 +35790,6 @@ export const ConversationEventsDocument = gql`
               uri
             }
           }
-        }
-      }
-      message {
-        id
-        message
-        timestamp
-        sender {
-          id
-          type
-          profile {
-            id
-            displayName
-            avatar: visual(type: AVATAR) {
-              id
-              uri
-            }
-          }
-        }
-        reactions {
-          id
-          emoji
-          timestamp
-          sender {
-            id
-            profile {
-              id
-              displayName
-            }
-          }
-        }
-        attachments {
-          externalReference
-          displayName
-          mimeType
-          size
-          width
-          height
         }
       }
     }
@@ -35873,54 +35831,6 @@ export const ConversationEventsDocument = gql`
       }
       removedMemberID
     }
-    messageReceived {
-      roomId
-      message {
-        id
-        message
-        timestamp
-        sender {
-          id
-          type
-          profile {
-            id
-            displayName
-            avatar: visual(type: AVATAR) {
-              id
-              uri
-            }
-          }
-        }
-        reactions {
-          id
-          emoji
-          timestamp
-          sender {
-            id
-            profile {
-              id
-              displayName
-            }
-          }
-        }
-        attachments {
-          externalReference
-          displayName
-          mimeType
-          size
-          width
-          height
-        }
-      }
-    }
-    messageRemoved {
-      roomId
-      messageId
-    }
-    readReceiptUpdated {
-      roomId
-      lastReadEventId
-    }
   }
 }
     `;
@@ -35955,122 +35865,6 @@ export function useConversationEventsSubscription(
 export type ConversationEventsSubscriptionHookResult = ReturnType<typeof useConversationEventsSubscription>;
 export type ConversationEventsSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.ConversationEventsSubscription>;
-export const ConversationMessagesDocument = gql`
-    query ConversationMessages($conversationId: UUID!) {
-  lookup {
-    conversation(ID: $conversationId) {
-      id
-      room {
-        id
-        attachmentBucketId
-        messages {
-          id
-          message
-          timestamp
-          sender {
-            id
-            type
-            profile {
-              id
-              displayName
-              avatar: visual(type: AVATAR) {
-                id
-                uri
-              }
-            }
-          }
-          reactions {
-            id
-            emoji
-            timestamp
-            sender {
-              id
-              profile {
-                id
-                displayName
-              }
-            }
-          }
-          attachments {
-            externalReference
-            displayName
-            mimeType
-            size
-            width
-            height
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useConversationMessagesQuery__
- *
- * To run a query within a React component, call `useConversationMessagesQuery` and pass it any options that fit your needs.
- * When your component renders, `useConversationMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useConversationMessagesQuery({
- *   variables: {
- *      conversationId: // value for 'conversationId'
- *   },
- * });
- */
-export function useConversationMessagesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ConversationMessagesQuery,
-    SchemaTypes.ConversationMessagesQueryVariables
-  > &
-    ({ variables: SchemaTypes.ConversationMessagesQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ConversationMessagesQuery, SchemaTypes.ConversationMessagesQueryVariables>(
-    ConversationMessagesDocument,
-    options
-  );
-}
-export function useConversationMessagesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ConversationMessagesQuery,
-    SchemaTypes.ConversationMessagesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ConversationMessagesQuery, SchemaTypes.ConversationMessagesQueryVariables>(
-    ConversationMessagesDocument,
-    options
-  );
-}
-export function useConversationMessagesSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.ConversationMessagesQuery,
-        SchemaTypes.ConversationMessagesQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<SchemaTypes.ConversationMessagesQuery, SchemaTypes.ConversationMessagesQueryVariables>(
-    ConversationMessagesDocument,
-    options
-  );
-}
-export type ConversationMessagesQueryHookResult = ReturnType<typeof useConversationMessagesQuery>;
-export type ConversationMessagesLazyQueryHookResult = ReturnType<typeof useConversationMessagesLazyQuery>;
-export type ConversationMessagesSuspenseQueryHookResult = ReturnType<typeof useConversationMessagesSuspenseQuery>;
-export type ConversationMessagesQueryResult = Apollo.QueryResult<
-  SchemaTypes.ConversationMessagesQuery,
-  SchemaTypes.ConversationMessagesQueryVariables
->;
-export function refetchConversationMessagesQuery(variables: SchemaTypes.ConversationMessagesQueryVariables) {
-  return { query: ConversationMessagesDocument, variables: variables };
-}
 export const CreateConversationDocument = gql`
     mutation CreateConversation($conversationData: CreateConversationInput!) {
   createConversation(conversationData: $conversationData) {
@@ -36082,45 +35876,6 @@ export const CreateConversationDocument = gql`
       displayName
       avatarUrl
       createdDate
-      unreadCount
-      messagesCount
-      lastMessage {
-        id
-        message
-        timestamp
-        sender {
-          id
-          type
-          profile {
-            id
-            displayName
-            avatar: visual(type: AVATAR) {
-              id
-              uri
-            }
-          }
-        }
-        reactions {
-          id
-          emoji
-          timestamp
-          sender {
-            id
-            profile {
-              id
-              displayName
-            }
-          }
-        }
-        attachments {
-          externalReference
-          displayName
-          mimeType
-          size
-          width
-          height
-        }
-      }
     }
     members {
       id
@@ -36222,51 +35977,6 @@ export type LeaveConversationMutationResult = Apollo.MutationResult<SchemaTypes.
 export type LeaveConversationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.LeaveConversationMutation,
   SchemaTypes.LeaveConversationMutationVariables
->;
-export const MarkMessageAsReadDocument = gql`
-    mutation MarkMessageAsRead($messageData: RoomMarkMessageReadInput!) {
-  markMessageAsReadInRoom(messageData: $messageData)
-}
-    `;
-export type MarkMessageAsReadMutationFn = Apollo.MutationFunction<
-  SchemaTypes.MarkMessageAsReadMutation,
-  SchemaTypes.MarkMessageAsReadMutationVariables
->;
-
-/**
- * __useMarkMessageAsReadMutation__
- *
- * To run a mutation, you first call `useMarkMessageAsReadMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useMarkMessageAsReadMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [markMessageAsReadMutation, { data, loading, error }] = useMarkMessageAsReadMutation({
- *   variables: {
- *      messageData: // value for 'messageData'
- *   },
- * });
- */
-export function useMarkMessageAsReadMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.MarkMessageAsReadMutation,
-    SchemaTypes.MarkMessageAsReadMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.MarkMessageAsReadMutation, SchemaTypes.MarkMessageAsReadMutationVariables>(
-    MarkMessageAsReadDocument,
-    options
-  );
-}
-export type MarkMessageAsReadMutationHookResult = ReturnType<typeof useMarkMessageAsReadMutation>;
-export type MarkMessageAsReadMutationResult = Apollo.MutationResult<SchemaTypes.MarkMessageAsReadMutation>;
-export type MarkMessageAsReadMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.MarkMessageAsReadMutation,
-  SchemaTypes.MarkMessageAsReadMutationVariables
 >;
 export const RemoveConversationMemberDocument = gql`
     mutation RemoveConversationMember($memberData: RemoveConversationMemberInput!) {
@@ -36422,45 +36132,6 @@ export const UserConversationsDocument = gql`
           displayName
           avatarUrl
           createdDate
-          unreadCount
-          messagesCount
-          lastMessage {
-            id
-            message
-            timestamp
-            sender {
-              id
-              type
-              profile {
-                id
-                displayName
-                avatar: visual(type: AVATAR) {
-                  id
-                  uri
-                }
-              }
-            }
-            reactions {
-              id
-              emoji
-              timestamp
-              sender {
-                id
-                profile {
-                  id
-                  displayName
-                }
-              }
-            }
-            attachments {
-              externalReference
-              displayName
-              mimeType
-              size
-              width
-              height
-            }
-          }
         }
         members {
           id
@@ -36546,7 +36217,6 @@ export const UserConversationsUnreadCountDocument = gql`
         id
         room {
           id
-          unreadCount
         }
       }
     }
