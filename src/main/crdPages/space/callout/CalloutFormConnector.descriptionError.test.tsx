@@ -27,14 +27,7 @@ vi.mock('react-i18next', () => ({
 const markdownEditorProps = vi.fn();
 
 vi.mock('@/crd/forms/markdown/MarkdownEditor', () => ({
-  MarkdownEditor: (props: {
-    value: string;
-    onChange: (next: string) => void;
-    maxLength?: number;
-    counterThreshold?: number;
-    counterHintThreshold?: number;
-    error?: string;
-  }) => {
+  MarkdownEditor: (props: { value: string; onChange: (next: string) => void; maxLength?: number; error?: string }) => {
     markdownEditorProps(props);
     return (
       <>
@@ -187,14 +180,10 @@ describe('CalloutFormConnector — over-long description feedback', () => {
     expect(handleCreateCallout).not.toHaveBeenCalled();
   });
 
-  test('the editor counter is bounded by the same limit the validator enforces, shown near it', () => {
+  test('the editor counter is bounded by the same limit the validator enforces', () => {
     openForm();
     const props = markdownEditorProps.mock.calls[markdownEditorProps.mock.calls.length - 1][0];
     expect(props.maxLength).toBe(LONG_MARKDOWN_TEXT_LENGTH);
-    expect(props.counterThreshold).toBeGreaterThan(0);
-    expect(props.counterThreshold).toBeLessThan(LONG_MARKDOWN_TEXT_LENGTH);
-    expect(props.counterHintThreshold).toBeGreaterThan(props.counterThreshold);
-    expect(props.counterHintThreshold).toBeLessThan(LONG_MARKDOWN_TEXT_LENGTH);
   });
 
   test('renders the description error instead of failing silently', () => {

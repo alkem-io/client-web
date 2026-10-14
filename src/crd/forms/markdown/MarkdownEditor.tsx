@@ -35,16 +35,10 @@ type MarkdownEditorProps = MarkdownUploadProps & {
    * Turns on the character counter. It counts the markdown `value` — the string
    * that is stored and validated — not the visible text, so formatting syntax and
    * link / image URLs count too. That keeps the counter in agreement with any
-   * length validator applied to the same value.
+   * length validator applied to the same value. The counter shows from 20% of
+   * `maxLength`, and its tooltip adds the "formatting counts too" hint from 90%.
    */
   maxLength?: number;
-  /** The counter stays hidden until `value` reaches this many characters. Defaults to 80% of `maxLength`. */
-  counterThreshold?: number;
-  /**
-   * The counter's tooltip adds the "formatting counts too" hint once `value`
-   * reaches this many characters. Defaults to the counter threshold.
-   */
-  counterHintThreshold?: number;
   /** Validation message shown below the editor, on the same line as the counter. */
   error?: string;
   disabled?: boolean;
@@ -70,8 +64,6 @@ function MarkdownEditorLazy({
   id,
   placeholder,
   maxLength,
-  counterThreshold,
-  counterHintThreshold,
   error,
   disabled,
   className,
@@ -100,9 +92,8 @@ function MarkdownEditorLazy({
   if (!editor) return null;
 
   const charCount = value.length;
-  const effectiveCounterThreshold = counterThreshold ?? (maxLength != null ? Math.floor(maxLength * 0.8) : 0);
-  const showCounter = maxLength != null && charCount >= effectiveCounterThreshold;
-  const showCounterHint = charCount >= (counterHintThreshold ?? effectiveCounterThreshold);
+  const showCounter = maxLength != null && charCount >= maxLength * COUNTER_THRESHOLD;
+  const showCounterHint = maxLength != null && charCount >= maxLength * COUNTER_HINT_THRESHOLD;
 
   return (
     <>
@@ -166,6 +157,9 @@ function MarkdownEditorLazy({
     </>
   );
 }
+
+const COUNTER_THRESHOLD = 0.2;
+const COUNTER_HINT_THRESHOLD = 0.9;
 
 // The viewBox matches the rendered 16px, so stroke widths are in pixels.
 const RING_RADIUS = 6.5;

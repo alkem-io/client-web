@@ -42,5 +42,7 @@ export const MARKDOWN_TEXT_LENGTH = 8000;
 // profile.description (65568) so client validation still fires first.
 export const LONG_MARKDOWN_TEXT_LENGTH = 50000;
 export const COMMENTS_TEXT_LENGTH = 8000;
+// Kept below the server's limit on a Space's `about.why` / `about.who` (32784).
+export const SPACE_ABOUT_TEXT_LENGTH = 32000;
 
 export type MarkdownTextMaxLength = typeof MARKDOWN_TEXT_LENGTH | typeof LONG_MARKDOWN_TEXT_LENGTH;
