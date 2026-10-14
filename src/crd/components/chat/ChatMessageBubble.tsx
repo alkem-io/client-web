@@ -9,7 +9,29 @@ import { VirtualContributorBadge } from '@/crd/components/common/VirtualContribu
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { initials } from './initials';
+import type { GroupPosition } from './messageRuns';
 import type { ChatMessage } from './types';
+
+/**
+ * Bubble corners per position in a group. The tail corner (small, on the
+ * sender's side) sits at the bottom of a lone bubble; inside a group the
+ * corners where bubbles meet go small so the group reads as one block, and the
+ * last bubble gets its round bottom corner back.
+ */
+const GROUP_CORNERS: Record<'own' | 'other', Record<GroupPosition, string>> = {
+  other: {
+    single: 'rounded-bl-sm',
+    first: 'rounded-bl-sm',
+    middle: 'rounded-tl-sm rounded-bl-sm',
+    last: 'rounded-tl-sm',
+  },
+  own: {
+    single: 'rounded-br-sm',
+    first: 'rounded-br-sm',
+    middle: 'rounded-tr-sm rounded-br-sm',
+    last: 'rounded-tr-sm',
+  },
+};
 
 type ChatMessageBubbleProps = {
   message: ChatMessage;
@@ -19,6 +41,8 @@ type ChatMessageBubbleProps = {
   showAvatar?: boolean;
   /** Reserve the left avatar gutter (group conversations only — indents run continuations). */
   avatarGutter?: boolean;
+  /** Where this message sits in a group of consecutive messages — sets the corners. */
+  groupPosition?: GroupPosition;
   canReact?: boolean;
   onAddReaction?: (emoji: string) => void;
   onRemoveReaction?: (emoji: string) => void;
@@ -37,6 +61,7 @@ export function ChatMessageBubble({
   showAuthor,
   showAvatar,
   avatarGutter,
+  groupPosition = 'single',
   canReact = false,
   onAddReaction,
   onRemoveReaction,
@@ -74,10 +99,6 @@ export function ChatMessageBubble({
     />
   );
 
-  const timestamp = message.timestamp && (
-    <span className="px-1 text-caption text-muted-foreground">{message.timestamp}</span>
-  );
-
   const bubbleColumn = (
     <div
       className={cn(
@@ -112,7 +133,8 @@ export function ChatMessageBubble({
                 // and, unlike `break-words`, also shrinks the bubble's minimum
                 // width, so the token cannot push the bubble past its cap.
                 'min-w-0 max-w-[85%] rounded-2xl px-3 py-2 [overflow-wrap:anywhere]',
-                isOwn ? 'rounded-br-sm bg-primary/15' : 'rounded-bl-sm bg-muted',
+                isOwn ? 'bg-primary/15' : 'bg-muted',
+                GROUP_CORNERS[isOwn ? 'own' : 'other'][groupPosition],
                 message.isPending && 'opacity-60'
               )}
             >
@@ -141,16 +163,8 @@ export function ChatMessageBubble({
           onRemove={emoji => onRemoveReaction?.(emoji)}
         />
       )}
-      {/* With media the trigger shares the timestamp's line below the
-          attachments and their reactions; the timestamp keeps the outer edge. */}
-      {hasAttachments && addReactionTrigger ? (
-        <div className={cn('flex items-center gap-1', isOwn && 'flex-row-reverse')}>
-          {timestamp}
-          {addReactionTrigger}
-        </div>
-      ) : (
-        timestamp
-      )}
+      {/* With media the trigger sits below the attachments and their reactions. */}
+      {hasAttachments && addReactionTrigger}
     </div>
   );
 

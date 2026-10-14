@@ -28,7 +28,6 @@ const baseMessage: ChatMessage = {
   id: 'm1',
   author: { id: 'u1', name: 'Alice Smith', avatarUrl: 'https://example.com/alice.png' },
   content: 'hello',
-  timestamp: '2m ago',
   timestampMs: 1000,
   reactions: [],
   isOwn: false,
@@ -154,12 +153,11 @@ describe('ChatMessageBubble', () => {
     const renderReactable = (message: ChatMessage) =>
       render(<ChatMessageBubble message={message} canReact={true} onAddReaction={vi.fn()} />);
 
-    // The control used to share the text row, so an image message showed it above the image.
     test.each([
       ['an attachment-only', ''],
       ['a captioned', 'look at this'],
-    ])('%s media message shows it on the timestamp line, after the media and its reactions', (_label, content) => {
-      const { getByRole, getByText } = renderReactable({
+    ])('%s media message shows it after the media and its reactions', (_label, content) => {
+      const { getByRole } = renderReactable({
         ...baseMessage,
         content,
         attachments: [attachment],
@@ -168,37 +166,6 @@ describe('ChatMessageBubble', () => {
       const trigger = getByRole('button', { name: 'thread.addReaction' });
       expect(follows(getByRole('img', { name: 'messageAttachments.imageAlt' }), trigger)).toBe(true);
       expect(follows(getByRole('button', { name: /^👍/ }), trigger)).toBe(true);
-      const timestamp = getByText('2m ago');
-      expect(timestamp.parentElement).toBe(trigger.parentElement);
-      expect(follows(timestamp, trigger)).toBe(true);
-    });
-
-    test.each([
-      [false, 'items-start'],
-      [true, 'items-end'],
-    ])('the timestamp line keeps the message side (own: %s)', (isOwn, side) => {
-      const { container, getByRole } = renderReactable({
-        ...baseMessage,
-        isOwn,
-        content: '',
-        attachments: [attachment],
-      });
-      const row = getByRole('button', { name: 'thread.addReaction' }).parentElement;
-      expect(row?.parentElement).toBe(container.firstElementChild);
-      expect(container.firstElementChild).toHaveClass(side);
-      // The timestamp stays on the outer edge, the control on the inner side.
-      expect(row?.classList.contains('flex-row-reverse')).toBe(isOwn);
-    });
-
-    test('without a timestamp the control still follows the media', () => {
-      const { getByRole } = renderReactable({
-        ...baseMessage,
-        timestamp: '',
-        content: '',
-        attachments: [attachment],
-      });
-      const trigger = getByRole('button', { name: 'thread.addReaction' });
-      expect(follows(getByRole('img', { name: 'messageAttachments.imageAlt' }), trigger)).toBe(true);
     });
 
     test('a text-only message keeps it beside the bubble', () => {
@@ -208,21 +175,16 @@ describe('ChatMessageBubble', () => {
     });
   });
 
-  test('reactions + timestamp render inside the gutter-offset column', () => {
+  test('reactions render inside the gutter-offset column', () => {
     const messageWithExtras: ChatMessage = {
       ...baseMessage,
       reactions: [{ emoji: '👍', count: 1, hasReacted: false }],
     };
-    const { container, getByText } = render(
+    const { container } = render(
       <ChatMessageBubble message={messageWithExtras} avatarGutter={true} showAvatar={true} showAuthor={true} />
     );
-    expect(getByText('2m ago')).toBeInTheDocument();
-    expect(container.textContent).toContain('👍');
-    // Both live inside the right-hand bubble column, a sibling of the w-8 gutter.
     const gutter = container.querySelector('.w-8');
-    const bubbleColumn = gutter?.nextElementSibling;
-    expect(bubbleColumn?.textContent).toContain('2m ago');
-    expect(bubbleColumn?.textContent).toContain('👍');
+    expect(gutter?.nextElementSibling?.textContent).toContain('👍');
   });
 
   // jsdom has no layout, so these pin the classes the browser check relies on:
@@ -302,6 +264,32 @@ describe('ChatMessageBubble', () => {
     test('adds when the only matching reaction is a different key', () => {
       const { onAddReaction } = renderPickable([{ emoji: '👍🏽', count: 1, hasReacted: true }]);
       expect(onAddReaction).toHaveBeenCalledWith('👍');
+    });
+  });
+
+  describe('group position corners', () => {
+    const cornersOf = (groupPosition: 'single' | 'first' | 'middle' | 'last', isOwn = false) =>
+      render(<ChatMessageBubble message={{ ...baseMessage, isOwn }} groupPosition={groupPosition} />)
+        .container.querySelector('.rounded-2xl')
+        ?.getAttribute('class');
+
+    test.each([
+      ['single', ['rounded-bl-sm'], ['rounded-tl-sm']],
+      ['first', ['rounded-bl-sm'], ['rounded-tl-sm']],
+      ['middle', ['rounded-tl-sm', 'rounded-bl-sm'], []],
+      ['last', ['rounded-tl-sm'], ['rounded-bl-sm']],
+    ] as const)('incoming %s', (position, present, absent) => {
+      const classes = cornersOf(position)?.split(' ') ?? [];
+      for (const c of present) expect(classes).toContain(c);
+      for (const c of absent) expect(classes).not.toContain(c);
+    });
+
+    test.each([
+      ['middle', ['rounded-tr-sm', 'rounded-br-sm']],
+      ['last', ['rounded-tr-sm']],
+    ] as const)('own %s mirrors to the right', (position, present) => {
+      const classes = cornersOf(position, true)?.split(' ') ?? [];
+      for (const c of present) expect(classes).toContain(c);
     });
   });
 });
