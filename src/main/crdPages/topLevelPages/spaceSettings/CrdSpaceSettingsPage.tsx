@@ -3,6 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import {
+  LONG_MARKDOWN_TEXT_LENGTH,
+  LONG_TEXT_LENGTH,
+  SPACE_ABOUT_TEXT_LENGTH,
+} from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ClassificationPickerDialog } from '@/crd/components/classification/ClassificationPickerDialog';
 import { ClassificationRemoveConfirm } from '@/crd/components/classification/ClassificationRemoveConfirm';
@@ -61,6 +66,12 @@ import { useSettingsScope } from './useSettingsScope';
 import { useSpaceSettingsAccessGuard } from './useSpaceSettingsAccessGuard';
 import { useSpaceSettingsTab } from './useSpaceSettingsTab';
 import { getVisibleSettingsTabs } from './useVisibleSettingsTabs';
+
+const ABOUT_MARKDOWN_MAX_LENGTH = {
+  what: LONG_MARKDOWN_TEXT_LENGTH,
+  why: SPACE_ABOUT_TEXT_LENGTH,
+  who: SPACE_ABOUT_TEXT_LENGTH,
+};
 
 /**
  * CrdSpaceSettingsPage — route entry for the CRD Space Settings area.
@@ -444,6 +455,7 @@ export default function CrdSpaceSettingsPage() {
                   countries={COUNTRIES}
                   dirtyByField={about.dirtyByField}
                   saveStatusByField={about.saveStatusByField}
+                  markdownMaxLengthByField={ABOUT_MARKDOWN_MAX_LENGTH}
                   onChange={about.onChange}
                   onUploadAvatar={about.onUploadAvatar}
                   onUploadPageBanner={about.onUploadPageBanner}
@@ -507,6 +519,7 @@ export default function CrdSpaceSettingsPage() {
                 maximumNumberOfStates={layout.maximumNumberOfStates}
                 isStructureMutating={layout.isStructureMutating}
                 isReplacingFlow={isReplacingFlow}
+                columnDescriptionMaxLength={LONG_TEXT_LENGTH}
                 onImageUpload={md.onImageUpload}
                 iframeAllowedUrls={md.iframeAllowedUrls}
                 onError={md.onError}

@@ -918,12 +918,14 @@
     "name": {
       "title": "Nombre del espacio",
       "description": "El nombre público de tu espacio.",
-      "ariaLabel": "Nombre del espacio"
+      "ariaLabel": "Nombre del espacio",
+      "editAriaLabel": "Editar el nombre del espacio"
     },
     "tagline": {
       "title": "Subtítulo",
       "description": "Un subtítulo corto que se muestra junto al nombre del espacio.",
-      "ariaLabel": "Subtítulo"
+      "ariaLabel": "Subtítulo",
+      "editAriaLabel": "Editar el subtítulo"
     },
     "branding": {
       "title": "Branding del espacio",
@@ -966,7 +968,9 @@
       "title": "Ubicación",
       "description": "La ciudad y el país de este espacio.",
       "city": "Ciudad",
-      "country": "País (código ISO)"
+      "country": "País (código ISO)",
+      "editCityAriaLabel": "Editar la ciudad",
+      "countryPlaceholder": "País"
     },
     "what": {
       "title": "Qué",

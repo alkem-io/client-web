@@ -359,9 +359,9 @@ export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>)
         return t('validation.maxMid', { count: MID_TEXT_LENGTH, ...params });
       case 'maxMarkdown':
         // Deliberately no figure: the rule measures the raw markdown source, so any
-        // number quoted here would not match the text length the author perceives,
-        // and there is no live counter to reconcile the two against. This is the same
-        // count-free message the Post description already shows.
+        // number quoted here would not match the text length the author perceives;
+        // the editor's own counter (which also counts the markdown) shows the figure.
+        // This is the same count-free message the Post description already shows.
         return t('crd-common:components.wysiwyg-editor.validation.maxLength');
       case 'minPollOptions':
         return t('validation.minPollOptions', { count: MIN_POLL_OPTIONS, ...params });

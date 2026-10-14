@@ -678,7 +678,7 @@ export function SpacePage() {
         onOpenChange={setAddPostOpen}
         mode="create"
         title={{ value: postTitle, onChange: setPostTitle }}
-        canSubmit={postTitle.trim().length > 0}
+        blockedReason={postTitle.trim().length > 0 ? undefined : 'titleRequired'}
         onSubmit={() => {
           console.log('Publish post:', { postTitle, postDescription, framingChip, responseType, memoContent });
           setAddPostOpen(false);

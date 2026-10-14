@@ -59,8 +59,8 @@ describe('AddPostModal — FR-73 aria-busy during submission', () => {
     expect(publish).not.toBeDisabled();
   });
 
-  test('Publish stays operable (not aria-disabled) but describes the blocked reason while canSubmit is false (empty title)', () => {
-    render(<AddPostModal {...baseProps} canSubmit={false} title={{ value: '', onChange: vi.fn() }} />);
+  test('Publish stays operable (not aria-disabled) but describes the blocked reason while blocked by a missing title (empty title)', () => {
+    render(<AddPostModal {...baseProps} blockedReason="titleRequired" title={{ value: '', onChange: vi.fn() }} />);
     const publish = screen.getByRole('button', { name: /forms.publish/i });
     // The button is only visually dimmed — it must NOT announce as disabled to
     // assistive tech, because clicking still runs the consumer's validation.
@@ -72,27 +72,69 @@ describe('AddPostModal — FR-73 aria-busy during submission', () => {
     expect(document.getElementById(describedBy as string)).toHaveTextContent('forms.titleRequiredHint');
   });
 
-  test('Publish still calls onSubmit while canSubmit is false, so the consumer can surface the title error', async () => {
+  test('Publish still calls onSubmit while blocked by a missing title, so the consumer can surface the title error', async () => {
     const onSubmit = vi.fn();
     render(
-      <AddPostModal {...baseProps} onSubmit={onSubmit} canSubmit={false} title={{ value: '', onChange: vi.fn() }} />
+      <AddPostModal
+        {...baseProps}
+        onSubmit={onSubmit}
+        blockedReason="titleRequired"
+        title={{ value: '', onChange: vi.fn() }}
+      />
     );
     await userEvent.click(screen.getByRole('button', { name: /forms.publish/i }));
     expect(onSubmit).toHaveBeenCalledTimes(1);
   });
 
-  test('Save Draft still calls onSaveDraft while canSubmit is false', async () => {
+  test('Save Draft still calls onSaveDraft while blocked by a missing title', async () => {
     const onSaveDraft = vi.fn();
     render(
       <AddPostModal
         {...baseProps}
         onSaveDraft={onSaveDraft}
-        canSubmit={false}
+        blockedReason="titleRequired"
         title={{ value: '', onChange: vi.fn() }}
       />
     );
     await userEvent.click(screen.getByRole('button', { name: /forms.saveDraft/i }));
     expect(onSaveDraft).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('AddPostModal — blocked by an over-long description', () => {
+  test('every footer action describes the description-too-long reason', () => {
+    render(<AddPostModal {...baseProps} onSaveDraft={vi.fn()} blockedReason="descriptionTooLong" />);
+    for (const name of [/forms.publish/i, /forms.saveDraft/i]) {
+      const button = screen.getByRole('button', { name });
+      expect(button).not.toHaveAttribute('aria-disabled');
+      const describedBy = button.getAttribute('aria-describedby');
+      expect(document.getElementById(describedBy as string)).toHaveTextContent('forms.descriptionTooLongHint');
+    }
+  });
+
+  test('edit-mode Save describes the description-too-long reason', () => {
+    render(<AddPostModal {...baseProps} mode="edit" blockedReason="descriptionTooLong" />);
+    const save = screen.getByRole('button', { name: /^forms.save$/i });
+    const describedBy = save.getAttribute('aria-describedby');
+    expect(document.getElementById(describedBy as string)).toHaveTextContent('forms.descriptionTooLongHint');
+  });
+
+  test('hovering the blocked Publish button shows the reason in a tooltip', async () => {
+    render(<AddPostModal {...baseProps} blockedReason="descriptionTooLong" />);
+    await userEvent.hover(screen.getByRole('button', { name: /forms.publish/i }));
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('forms.descriptionTooLongHint');
+  });
+
+  test('clicking still runs the consumer action so its validation can surface the error', async () => {
+    const onSubmit = vi.fn();
+    render(<AddPostModal {...baseProps} onSubmit={onSubmit} blockedReason="descriptionTooLong" />);
+    await userEvent.click(screen.getByRole('button', { name: /forms.publish/i }));
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+  });
+
+  test('no blocked hint is rendered when nothing blocks the form', () => {
+    render(<AddPostModal {...baseProps} />);
+    expect(screen.getByRole('button', { name: /forms.publish/i })).not.toHaveAttribute('aria-describedby');
   });
 });
 

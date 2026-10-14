@@ -918,12 +918,14 @@
     "name": {
       "title": "Naam van de Space",
       "description": "De openbare naam van je Space.",
-      "ariaLabel": "Naam van de Space"
+      "ariaLabel": "Naam van de Space",
+      "editAriaLabel": "Naam van de Space bewerken"
     },
     "tagline": {
       "title": "Ondertitel",
       "description": "Een korte ondertitel die naast de Space-naam wordt weergegeven.",
-      "ariaLabel": "Ondertitel"
+      "ariaLabel": "Ondertitel",
+      "editAriaLabel": "Ondertitel bewerken"
     },
     "branding": {
       "title": "Branding van de Space",
@@ -966,7 +968,9 @@
       "title": "Locatie",
       "description": "De stad en het land van deze Space.",
       "city": "Stad",
-      "country": "Land (ISO-code)"
+      "country": "Land (ISO-code)",
+      "editCityAriaLabel": "Stad bewerken",
+      "countryPlaceholder": "Land"
     },
     "what": {
       "title": "Wat",

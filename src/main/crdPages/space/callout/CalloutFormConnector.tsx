@@ -36,7 +36,7 @@ import {
   PollStatus,
 } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
-import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { LONG_MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { TaskColumnsDraftDialog } from '@/crd/components/callout/task-board/TaskColumnsDraftDialog';
 import { isTaskBoardEnabled } from '@/crd/components/callout/task-board/taskBoard';
@@ -212,7 +212,7 @@ function CalloutFormConnectorInner({
   onFindTemplate,
   restrictions,
 }: CalloutFormConnectorProps) {
-  const { t } = useTranslation('crd-space');
+  const { t } = useTranslation(['crd-space', 'crd-common']);
   const { t: tTaskBoard } = useTranslation('crd-taskBoard');
 
   // Restriction-driven create-mode defaults: any comment toggle that is hidden
@@ -973,6 +973,14 @@ function CalloutFormConnectorInner({
   const handleFindTemplate = onFindTemplate ?? (() => setImportTemplateOpen(true));
 
   const canSubmit = values.title.trim().length > 0;
+  // Same measure as the form's `description` rule, so the counter, the live
+  // message and the blocked footer can never disagree with the validator.
+  const descriptionOverLimit = values.description.length > LONG_MARKDOWN_TEXT_LENGTH;
+  // Submit-time errors win; the live length message fills the gap before a submit.
+  const descriptionError =
+    errors.description ??
+    (descriptionOverLimit ? t('crd-common:components.wysiwyg-editor.validation.maxLength') : undefined);
+  const blockedReason = !canSubmit ? 'titleRequired' : descriptionOverLimit ? 'descriptionTooLong' : undefined;
   const notifySwitch =
     mode === 'create' && canSubmit ? (
       <div className="flex items-center gap-2">
@@ -999,7 +1007,7 @@ function CalloutFormConnectorInner({
         mode={mode}
         dirty={dirty}
         submitting={submitting || loadingCallout}
-        canSubmit={canSubmit}
+        blockedReason={blockedReason}
         title={{
           value: values.title,
           onChange: v => setField('title', v),
@@ -1017,14 +1025,9 @@ function CalloutFormConnectorInner({
               iframeAllowedUrls={editorMarkdownUpload.iframeAllowedUrls}
               onError={editorMarkdownUpload.onError}
               hideImageOptions={disableRichMedia}
+              maxLength={LONG_MARKDOWN_TEXT_LENGTH}
+              error={descriptionError}
             />
-            {/* Submit-time validation only: without this the description error had no
-                rendering path, so an over-long body aborted Save with no feedback. */}
-            {errors.description && (
-              <p className="text-caption text-destructive" aria-live="polite">
-                {errors.description}
-              </p>
-            )}
           </div>
         }
         framingZoneSlot={
