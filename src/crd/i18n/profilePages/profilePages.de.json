@@ -43,12 +43,11 @@
       "settingsAriaLabel": "Benutzereinstellungen öffnen"
     },
     "tabs": {
-      "resourcesHosted": "Gehostete Ressourcen",
       "leading": "Leitend",
-      "memberOf": "Mitglied von"
+      "memberOf": "Mitglied von",
+      "otherResources": "Weitere Ressourcen"
     },
     "sections": {
-      "spacesSubsection": "Spaces",
       "virtualContributorsSubsection": "Virtuelle Mitwirkende",
       "spacesLeading": "Geleitete Spaces",
       "memberOf": "Mitglied von"
@@ -64,8 +63,6 @@
       "memberCountLine_other": "{{count}} Mitglieder"
     },
     "empty": {
-      "resourcesHosted": "Noch keine gehosteten Ressourcen.",
-      "leading": "Leitet noch keine Spaces.",
       "membership": "Noch keine Mitgliedschaften."
     },
     "vcType": "Virtueller Mitwirkender"
@@ -93,20 +90,16 @@
       "socialLinksTitle": "Soziale Links"
     },
     "tabs": {
-      "resourcesHosted": "Gehostete Ressourcen",
       "leading": "Geleitete Spaces",
-      "memberOf": "Alle Mitgliedschaften"
+      "memberOf": "Alle Mitgliedschaften",
+      "otherResources": "Weitere Ressourcen"
     },
     "sections": {
-      "spacesSubsection": "Spaces",
       "virtualContributorsSubsection": "Virtuelle Mitwirkende",
       "spacesLeading": "Geleitete Spaces",
       "memberOf": "Alle Mitgliedschaften"
     },
-    "empty": {
-      "resourcesHosted": "Noch keine gehosteten Ressourcen.",
-      "leading": "Leitet noch keine Spaces."
-    },
+    "empty": {},
     "vcType": "Virtueller Mitwirkender",
     "associate": {
       "join": "Als Assoziierter beitreten",

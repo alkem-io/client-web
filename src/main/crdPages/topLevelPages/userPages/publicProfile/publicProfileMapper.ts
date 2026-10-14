@@ -1,10 +1,6 @@
 import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import type { TagsetGroup } from '@/crd/components/common/profileTypes';
-import {
-  type AccountResourcesShape,
-  buildTagsetGroups,
-  mapAccountHostedResources,
-} from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
+import { buildTagsetGroups } from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
 
 type ProfileTagsetLike = { name: string; tags: string[] };
 
@@ -30,7 +26,3 @@ export const buildUserProfileTagsets = (
     },
     { key: TagsetReservedName.Skills, name: labels.skills, tags: findTagsetTags(tagsets, TagsetReservedName.Skills) },
   ]);
-
-export type { AccountResourcesShape };
-
-export const mapHostedSpacesToCardData = mapAccountHostedResources;

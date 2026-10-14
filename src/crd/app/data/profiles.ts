@@ -93,27 +93,6 @@ export const MOCK_ALEX_RIVERA = {
       memberCount: 2400,
     },
   ] satisfies Array<CompactContributorCardItem & { memberCount: number }>,
-  hostedSpaces: [
-    {
-      id: 'space-renewable-energy-grid',
-      title: 'Renewable Energy Grid',
-      description:
-        'Collaborating on the future of distributed energy resources and microgrid implementation.',
-      href: '/space/renewable-energy-grid',
-      imageUrl: SPACE_BANNER_URL,
-      color: pickColorFromId('space-renewable-energy-grid'),
-      isPrivate: false,
-    },
-    {
-      id: 'space-smart-traffic',
-      title: 'Smart Traffic Systems',
-      description: 'AI-driven traffic management solutions for mid-sized cities.',
-      href: '/space/smart-traffic',
-      imageUrl: SPACE_BANNER_TRAFFIC,
-      color: pickColorFromId('space-smart-traffic'),
-      isPrivate: true,
-    },
-  ] satisfies SpaceGridCardData[],
   hostedVirtualContributors: [
     {
       id: 'vc-datasynth',
@@ -311,44 +290,6 @@ export const MOCK_ORG_ALKEMIO = {
   // Template Packs (`innovationPacks`), Custom Homepages (`innovationHubs`) —
   // matching the User profile. Organisations CAN host VCs (rare in production
   // today, included here to exercise the sub-section).
-  hostedSpaces: [
-    {
-      id: 'space-renewable-energy-grid',
-      title: 'Renewable Energy Grid',
-      description: 'Distributed energy resources and microgrid implementation.',
-      href: '/space/renewable-energy-grid',
-      imageUrl: SPACE_BANNER_URL,
-      color: pickColorFromId('space-renewable-energy-grid'),
-      isPrivate: false,
-    },
-    {
-      id: 'space-smart-traffic',
-      title: 'Smart Traffic Systems',
-      description: 'AI-driven traffic management solutions.',
-      href: '/space/smart-traffic',
-      imageUrl: SPACE_BANNER_TRAFFIC,
-      color: pickColorFromId('space-smart-traffic'),
-      isPrivate: true,
-    },
-    {
-      id: 'space-urban-green',
-      title: 'Urban Green Spaces',
-      description: 'Accessible parks and recreational areas in dense urban environments.',
-      href: '/space/urban-green-spaces',
-      imageUrl: SPACE_BANNER_GREEN,
-      color: pickColorFromId('space-urban-green'),
-      isPrivate: false,
-    },
-    {
-      id: 'space-public-transit',
-      title: 'Public Transit Data',
-      description: 'Open data standards for transportation systems.',
-      href: '/space/public-transit',
-      imageUrl: SPACE_BANNER_TRANSIT,
-      color: pickColorFromId('space-public-transit'),
-      isPrivate: false,
-    },
-  ] satisfies SpaceGridCardData[],
   hostedVirtualContributors: [
     {
       id: 'vc-org-policyscanner',

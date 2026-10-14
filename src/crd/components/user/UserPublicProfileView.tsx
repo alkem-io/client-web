@@ -35,9 +35,11 @@ export function UserPublicProfileView({
   loading,
   loadingLabels,
 }: UserPublicProfileViewProps) {
-  const sectionsLoading = sections.activeTab === 'resourcesHosted' ? loading.hostedResources : loading.memberships;
-  const sectionsLabel =
-    sections.activeTab === 'resourcesHosted' ? loadingLabels.hostedResources : loadingLabels.memberships;
+  // The tab set depends on both memberships (Leading) and hosted resources
+  // (Other Resources), so the whole column waits for both before rendering —
+  // otherwise tabs would appear and the landing tab shift under the visitor.
+  const sectionsLoading = loading.memberships || loading.hostedResources;
+  const sectionsLabel = loading.memberships ? loadingLabels.memberships : loadingLabels.hostedResources;
 
   return (
     <div className="min-h-screen bg-background pb-12">
@@ -62,13 +64,15 @@ export function UserPublicProfileView({
           </div>
 
           <div className="lg:col-span-9 flex flex-col min-w-0">
-            <ProfileResourceTabStrip {...tabStrip} />
             {sectionsLoading ? (
               <output aria-label={sectionsLabel}>
                 <SectionsSkeleton />
               </output>
             ) : (
-              <UserResourceSections {...sections} />
+              <>
+                <ProfileResourceTabStrip {...tabStrip} />
+                <UserResourceSections {...sections} />
+              </>
             )}
           </div>
         </div>

@@ -16,22 +16,18 @@ const SIDEBAR_LABELS = {
 };
 
 const SECTIONS_LABELS = {
-  spacesSubsection: 'Spaces',
   virtualContributorsSubsection: 'Virtual Contributors',
   templatePacksSubsection: 'Template Packs',
   customHomepagesSubsection: 'Custom Homepages',
   spacesLeading: 'Lead Spaces',
   memberOf: 'All Memberships',
-  emptyResourcesHosted: 'No resources hosted yet.',
-  emptyLeading: 'Not leading any spaces yet.',
   emptyMembership: 'No memberships yet.',
-  spacePrivacy: { privacyPrivate: 'Private space', privacyPublic: 'Public space' },
 };
 
 const TABS = [
-  { key: 'resourcesHosted' as ResourceTabKey, label: 'Resources Hosted' },
   { key: 'leading' as ResourceTabKey, label: 'Lead Spaces' },
   { key: 'memberOf' as ResourceTabKey, label: 'All Memberships' },
+  { key: 'otherResources' as ResourceTabKey, label: 'Other Resources' },
 ];
 
 /**
@@ -42,7 +38,7 @@ const TABS = [
  * Spaces / All Memberships).
  */
 export function OrganizationProfileDemoPage() {
-  const [activeTab, setActiveTab] = useState<ResourceTabKey>('resourcesHosted');
+  const [activeTab, setActiveTab] = useState<ResourceTabKey>('leading');
   const org = MOCK_ORG_ALKEMIO;
 
   const handleSendMessage = (text: string) =>
@@ -82,7 +78,6 @@ export function OrganizationProfileDemoPage() {
       }}
       rightColumn={{
         activeTab,
-        hostedSpaces: org.hostedSpaces,
         hostedVirtualContributors: org.hostedVirtualContributors,
         hostedInnovationPacks: org.hostedInnovationPacks,
         hostedInnovationHubs: org.hostedInnovationHubs,
