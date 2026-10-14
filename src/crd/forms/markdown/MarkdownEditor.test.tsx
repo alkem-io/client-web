@@ -12,8 +12,17 @@ vi.mock('react-i18next', () => ({
 
 const COUNTER_KEY = 'editor.charCount';
 
-const renderEditor = (value: string, extra: { maxLength?: number; counterThreshold?: number; error?: string } = {}) =>
+type EditorExtras = { maxLength?: number; counterThreshold?: number; counterHintThreshold?: number; error?: string };
+
+const renderEditor = (value: string, extra: EditorExtras = {}) =>
   render(<MarkdownEditor value={value} onChange={vi.fn()} {...extra} />);
+
+const counterLabel = (current: number, max: number) =>
+  `${COUNTER_KEY}:${current.toLocaleString()}/${max.toLocaleString()}`;
+
+const findCounter = (current: number, max: number) => screen.findByRole('button', { name: counterLabel(current, max) });
+
+const ringProgress = (counter: HTMLElement) => counter.querySelectorAll('circle')[1];
 
 describe('MarkdownEditor — character counter', () => {
   // The validators applied to this value measure the markdown string, so the
@@ -21,50 +30,54 @@ describe('MarkdownEditor — character counter', () => {
   test('counts the markdown source, not the visible text', async () => {
     const value = '[docs](https://example.com/a/very/long/path)';
     renderEditor(value, { maxLength: 100 });
-    expect(await screen.findByText(`${COUNTER_KEY}:${value.length}/100`)).toBeInTheDocument();
+    expect(await findCounter(value.length, 100)).toBeInTheDocument();
   });
 
   test('is hidden below the threshold', async () => {
     renderEditor('a'.repeat(89), { maxLength: 100, counterThreshold: 90 });
     await screen.findByRole('toolbar');
-    expect(screen.queryByText(new RegExp(COUNTER_KEY))).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: new RegExp(COUNTER_KEY) })).not.toBeInTheDocument();
   });
 
-  test('appears at the threshold in the muted style', async () => {
+  test('appears at the threshold as a ring in the primary style', async () => {
     renderEditor('a'.repeat(90), { maxLength: 100, counterThreshold: 90 });
-    const counter = await screen.findByText(`${COUNTER_KEY}:90/100`);
-    expect(counter).toHaveClass('text-muted-foreground');
-    expect(counter).not.toHaveClass('text-destructive');
+    expect(ringProgress(await findCounter(90, 100))).toHaveClass('stroke-primary');
   });
 
-  test('turns destructive once the limit is exceeded', async () => {
-    renderEditor('a'.repeat(101), { maxLength: 100, counterThreshold: 90 });
-    expect(await screen.findByText(`${COUNTER_KEY}:101/100`)).toHaveClass('text-destructive');
+  test('turns destructive once the ring is full', async () => {
+    renderEditor('a'.repeat(100), { maxLength: 100, counterThreshold: 90 });
+    expect(ringProgress(await findCounter(100, 100))).toHaveClass('stroke-destructive');
   });
 
   test('without a threshold the counter is always shown when maxLength is set', async () => {
     renderEditor('', { maxLength: 100 });
-    expect(await screen.findByText(`${COUNTER_KEY}:0/100`)).toBeInTheDocument();
+    expect(await findCounter(0, 100)).toBeInTheDocument();
   });
 
   test('renders below the editor box, on the same row as the validation error', async () => {
     renderEditor('a'.repeat(101), { maxLength: 100, error: 'Too long' });
-    const counter = await screen.findByText(`${COUNTER_KEY}:101/100`);
+    const counter = await findCounter(101, 100);
     const error = screen.getByText('Too long');
     expect(counter.parentElement).toBe(error.parentElement);
     expect(counter.closest('.crd-markdown-editor')).toBeNull();
   });
 
-  test('groups thousands using the browser locale', async () => {
-    renderEditor('a'.repeat(1234), { maxLength: 48000 });
-    expect(
-      await screen.findByText(`${COUNTER_KEY}:${(1234).toLocaleString()}/${(48000).toLocaleString()}`)
-    ).toBeInTheDocument();
+  test('the tooltip shows the count grouped using the browser locale', async () => {
+    renderEditor('a'.repeat(1234), { maxLength: 50000 });
+    await userEvent.hover(await findCounter(1234, 50000));
+    expect((await screen.findAllByText(counterLabel(1234, 50000))).length).toBeGreaterThan(0);
   });
 
-  test('explains on hover that formatting counts toward the limit', async () => {
-    renderEditor('abc', { maxLength: 100 });
-    await userEvent.hover(await screen.findByText(`${COUNTER_KEY}:3/100`));
+  test('the tooltip omits the formatting hint below the hint threshold', async () => {
+    renderEditor('a'.repeat(50), { maxLength: 100, counterHintThreshold: 90 });
+    await userEvent.hover(await findCounter(50, 100));
+    await screen.findAllByText(counterLabel(50, 100));
+    expect(screen.queryByText('editor.charCountHint')).not.toBeInTheDocument();
+  });
+
+  test('the tooltip adds the formatting hint from the hint threshold', async () => {
+    renderEditor('a'.repeat(90), { maxLength: 100, counterHintThreshold: 90 });
+    await userEvent.hover(await findCounter(90, 100));
     expect((await screen.findAllByText('editor.charCountHint')).length).toBeGreaterThan(0);
   });
 });

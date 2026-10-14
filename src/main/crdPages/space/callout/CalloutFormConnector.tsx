@@ -137,11 +137,13 @@ const FIXED_KIND_FRAMING_CHIPS: FramingChipId[] = ['form'];
 const TITLE_COUNTER_THRESHOLD = SMALL_TEXT_LENGTH - 10;
 
 /**
- * The description counter stays hidden until the markdown reaches 90% of
- * `LONG_MARKDOWN_TEXT_LENGTH`. Like the validator, it measures the stored
- * markdown source, not the visible text.
+ * The description counter stays hidden until the markdown reaches this many
+ * characters, and its tooltip adds the "formatting counts too" hint near the
+ * limit. Like the validator, both measure the stored markdown source, not the
+ * visible text.
  */
-const DESCRIPTION_COUNTER_THRESHOLD = Math.floor(LONG_MARKDOWN_TEXT_LENGTH * 0.9);
+const DESCRIPTION_COUNTER_THRESHOLD = 10000;
+const DESCRIPTION_COUNTER_HINT_THRESHOLD = LONG_MARKDOWN_TEXT_LENGTH - 10000;
 
 type CalloutFormConnectorProps = {
   open: boolean;
@@ -1034,6 +1036,7 @@ function CalloutFormConnectorInner({
               hideImageOptions={disableRichMedia}
               maxLength={LONG_MARKDOWN_TEXT_LENGTH}
               counterThreshold={DESCRIPTION_COUNTER_THRESHOLD}
+              counterHintThreshold={DESCRIPTION_COUNTER_HINT_THRESHOLD}
               error={descriptionError}
             />
           </div>

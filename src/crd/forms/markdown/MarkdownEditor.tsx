@@ -40,6 +40,11 @@ type MarkdownEditorProps = MarkdownUploadProps & {
   maxLength?: number;
   /** When set, the counter stays hidden until `value` reaches this many characters. */
   counterThreshold?: number;
+  /**
+   * When set, the counter's tooltip only adds the "formatting counts too" hint
+   * once `value` reaches this many characters; otherwise it is always shown.
+   */
+  counterHintThreshold?: number;
   /** Validation message shown below the editor, on the same line as the counter. */
   error?: string;
   disabled?: boolean;
@@ -66,6 +71,7 @@ function MarkdownEditorLazy({
   placeholder,
   maxLength,
   counterThreshold,
+  counterHintThreshold,
   error,
   disabled,
   className,
@@ -94,8 +100,8 @@ function MarkdownEditorLazy({
   if (!editor) return null;
 
   const charCount = value.length;
-  const isOverLimit = maxLength != null && charCount > maxLength;
   const showCounter = maxLength != null && charCount >= (counterThreshold ?? 0);
+  const showCounterHint = charCount >= (counterHintThreshold ?? 0);
 
   return (
     <>
@@ -131,25 +137,57 @@ function MarkdownEditorLazy({
               {error}
             </p>
           )}
-          {showCounter && (
+          {showCounter && maxLength != null && (
             <Tooltip>
               <TooltipTrigger
                 type="button"
-                className={cn(
-                  'ml-auto shrink-0 cursor-help rounded-sm text-caption focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                  isOverLimit ? 'text-destructive' : 'text-muted-foreground'
-                )}
-              >
-                {t('editor.charCount', {
+                aria-label={t('editor.charCount', {
                   current: charCount.toLocaleString(),
-                  max: maxLength?.toLocaleString(),
+                  max: maxLength.toLocaleString(),
                 })}
+                className="ml-auto shrink-0 cursor-help rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <CharCountRing count={charCount} max={maxLength} />
               </TooltipTrigger>
-              <TooltipContent>{t('editor.charCountHint')}</TooltipContent>
+              <TooltipContent>
+                <p>
+                  {t('editor.charCount', {
+                    current: charCount.toLocaleString(),
+                    max: maxLength.toLocaleString(),
+                  })}
+                </p>
+                {showCounterHint && <p className="mt-1">{t('editor.charCountHint')}</p>}
+              </TooltipContent>
             </Tooltip>
           )}
         </div>
       )}
     </>
+  );
+}
+
+// The viewBox matches the rendered 16px, so stroke widths are in pixels.
+const RING_RADIUS = 6.5;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+
+/** Tiny circular progress of `count` towards `max`; turns destructive once full. */
+function CharCountRing({ count, max }: { count: number; max: number }) {
+  const progress = Math.min(count / max, 1);
+  const isFull = count >= max;
+  return (
+    <svg viewBox="0 0 16 16" className="size-4 -rotate-90" aria-hidden="true">
+      <circle cx="8" cy="8" r={RING_RADIUS} fill="none" strokeWidth="3" className="stroke-muted" />
+      <circle
+        cx="8"
+        cy="8"
+        r={RING_RADIUS}
+        fill="none"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeDasharray={RING_CIRCUMFERENCE}
+        strokeDashoffset={RING_CIRCUMFERENCE * (1 - progress)}
+        className={isFull ? 'stroke-destructive' : 'stroke-primary'}
+      />
+    </svg>
   );
 }

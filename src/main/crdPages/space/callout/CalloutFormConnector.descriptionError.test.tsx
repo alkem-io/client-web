@@ -32,6 +32,7 @@ vi.mock('@/crd/forms/markdown/MarkdownEditor', () => ({
     onChange: (next: string) => void;
     maxLength?: number;
     counterThreshold?: number;
+    counterHintThreshold?: number;
     error?: string;
   }) => {
     markdownEditorProps(props);
@@ -192,6 +193,8 @@ describe('CalloutFormConnector — over-long description feedback', () => {
     expect(props.maxLength).toBe(LONG_MARKDOWN_TEXT_LENGTH);
     expect(props.counterThreshold).toBeGreaterThan(0);
     expect(props.counterThreshold).toBeLessThan(LONG_MARKDOWN_TEXT_LENGTH);
+    expect(props.counterHintThreshold).toBeGreaterThan(props.counterThreshold);
+    expect(props.counterHintThreshold).toBeLessThan(LONG_MARKDOWN_TEXT_LENGTH);
   });
 
   test('renders the description error instead of failing silently', () => {
