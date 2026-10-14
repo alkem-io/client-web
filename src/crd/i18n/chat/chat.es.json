@@ -6,7 +6,9 @@
   },
   "panel": {
     "title": "Chat",
-    "settings": "Configuración de notificaciones"
+    "settings": "Configuración de notificaciones",
+    "expand": "Ampliar chat",
+    "collapse": "Reducir chat"
   },
   "actions": {
     "cancel": "Cancelar"

@@ -6,7 +6,9 @@
   },
   "panel": {
     "title": "Chat",
-    "settings": "Meldingsinstellingen"
+    "settings": "Meldingsinstellingen",
+    "expand": "Chat vergroten",
+    "collapse": "Chat verkleinen"
   },
   "actions": {
     "cancel": "Annuleren"

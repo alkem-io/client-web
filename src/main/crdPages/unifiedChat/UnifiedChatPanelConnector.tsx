@@ -314,6 +314,8 @@ export const UnifiedChatPanelConnector = () => {
             : undefined
         }
         settingsLabel={t('panel.settings')}
+        expandLabel={t('panel.expand')}
+        collapseLabel={t('panel.collapse')}
         titleAvatar={titleAvatar}
         onTitleClick={isGroupThread ? groupSettings.openDialog : undefined}
         titleActionLabel={isGroupThread ? t('group.settings') : undefined}

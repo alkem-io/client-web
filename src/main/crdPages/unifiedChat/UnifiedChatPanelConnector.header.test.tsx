@@ -68,6 +68,8 @@ type PanelProps = {
   onGoToSettings?: () => void;
   onTitleClick?: () => void;
   titleActionLabel?: string;
+  expandLabel: string;
+  collapseLabel: string;
   headerActions?: ReactNode;
   children: ReactNode;
 };
@@ -154,6 +156,12 @@ describe('UnifiedChatPanelConnector header', () => {
   it('keeps the notification-settings gear in the conversation list header', () => {
     render(<UnifiedChatPanelConnector />);
     expect(panelProps.onGoToSettings).toBeTypeOf('function');
+  });
+
+  it('passes translated expand / collapse labels to the panel', () => {
+    render(<UnifiedChatPanelConnector />);
+    expect(panelProps.expandLabel).toBe('panel.expand');
+    expect(panelProps.collapseLabel).toBe('panel.collapse');
   });
 
   it('a 1:1 chat header has no gear, no options menu and no title action', () => {
