@@ -611,14 +611,33 @@
         "customDescription": "Показва само сътрудниците, които изберете."
       },
       "spaces": {
+        "fieldTitle": "Пространства, показани в тази $t(common.callout)",
+        "switchLabel": "Ръчен избор на пространства",
         "autoDescription": "Автоматично показва всички подпространства и се обновява, когато се добавят или премахнат.",
-        "customDescription": "Показва само подпространствата, които изберете по-долу."
+        "customDescription": "Показва само пространствата, които изберете по-долу."
+      },
+      "spacePicker": {
+        "searchPlaceholder": "Търсене на пространства в този акаунт…",
+        "searchAriaLabel": "Търсене на пространства в този акаунт",
+        "noMatches": "Няма пространства в този акаунт, които да съвпадат с търсенето.",
+        "accountEmpty": "Този акаунт няма други пространства.",
+        "loadFailed": "Списъкът с пространства не можа да бъде зареден.",
+        "chipsEmpty": "Още няма избрани пространства. Потърсете по-долу, за да добавите.",
+        "chipContext": "в {{parentName}}",
+        "badgeInThisSpace": "В това пространство",
+        "badgeCalloutIsHere": "$t(common.Callout) е тук",
+        "noneSelected": "Няма избрани пространства",
+        "selectedCount_one": "{{count}} избрано пространство",
+        "selectedCount_other": "{{count}} избрани пространства",
+        "clearSelection": "Изчистване на избора",
+        "levelSpace": "Пространство",
+        "levelSubspace": "Подпространство",
+        "levelSubsubspace": "Под-подпространство",
+        "pathSubLine": "{{level}} в {{path}}"
       },
       "noLongerAvailable": "Вече не е налично",
       "searchPlaceholder": "Търсене на членове…",
       "searchAriaLabel": "Търсене на членове",
-      "searchSubspacePlaceholder": "Търсене на подпространства…",
-      "searchSubspaceAriaLabel": "Търсене на подпространства",
       "noResults": "Няма съвпадащи резултати",
       "loading": "Зареждане…",
       "loadMore": "Зареждане на още…",

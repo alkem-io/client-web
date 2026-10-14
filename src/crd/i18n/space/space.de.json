@@ -611,14 +611,33 @@
         "customDescription": "Zeigt nur die von Ihnen ausgewählten Mitwirkenden an."
       },
       "spaces": {
+        "fieldTitle": "Spaces in diesem $t(common.callout)",
+        "switchLabel": "Spaces manuell auswählen",
         "autoDescription": "Zeigt automatisch alle Subspaces an und aktualisiert sich, wenn sie hinzugefügt oder entfernt werden.",
-        "customDescription": "Zeigt nur die unten ausgewählten Subspaces an."
+        "customDescription": "Zeigt nur die unten ausgewählten Spaces an."
+      },
+      "spacePicker": {
+        "searchPlaceholder": "Spaces in diesem Konto suchen…",
+        "searchAriaLabel": "Spaces in diesem Konto suchen",
+        "noMatches": "Keine Spaces in diesem Konto passen zu deiner Suche.",
+        "accountEmpty": "Dieses Konto hat keine weiteren Spaces.",
+        "loadFailed": "Die Liste der Spaces konnte nicht geladen werden.",
+        "chipsEmpty": "Noch keine Spaces ausgewählt. Suche unten, um welche hinzuzufügen.",
+        "chipContext": "in {{parentName}}",
+        "badgeInThisSpace": "In diesem Space",
+        "badgeCalloutIsHere": "$t(common.Callout) ist hier",
+        "noneSelected": "Keine Spaces ausgewählt",
+        "selectedCount_one": "{{count}} Space ausgewählt",
+        "selectedCount_other": "{{count}} Spaces ausgewählt",
+        "clearSelection": "Auswahl löschen",
+        "levelSpace": "Space",
+        "levelSubspace": "Subspace",
+        "levelSubsubspace": "Sub-Subspace",
+        "pathSubLine": "{{level}} in {{path}}"
       },
       "noLongerAvailable": "Nicht mehr verfügbar",
       "searchPlaceholder": "Mitglieder suchen…",
       "searchAriaLabel": "Mitglieder suchen",
-      "searchSubspacePlaceholder": "Unterräume suchen…",
-      "searchSubspaceAriaLabel": "Unterräume suchen",
       "noResults": "Keine passenden Ergebnisse",
       "loading": "Laden…",
       "loadMore": "Mehr laden…",
