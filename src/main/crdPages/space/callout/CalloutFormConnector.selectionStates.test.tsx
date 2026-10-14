@@ -230,7 +230,9 @@ vi.mock('./TemplateImportConnector', () => ({ TemplateImportConnector: () => nul
 
 const { CalloutFormConnector } = await import('./CalloutFormConnector');
 
-const MANUAL_SELECTION_SWITCH = 'forms.selection.label';
+// The spaces kind carries its own switch label since 084 T106; the
+// contributors kind keeps `forms.selection.label` (FR-021).
+const MANUAL_SELECTION_SWITCH = 'forms.selection.spaces.switchLabel';
 
 const renderEdit = async () => {
   render(
