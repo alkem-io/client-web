@@ -78,7 +78,8 @@
   "thread": {
     "back": "Zurück zu den Unterhaltungen",
     "loading": "Nachrichten werden geladen",
-    "addReaction": "Reaktion hinzufügen"
+    "addReaction": "Reaktion hinzufügen",
+    "options": "Chat-Optionen"
   },
   "sendConfirmation": {
     "title": "Nachricht gesendet",

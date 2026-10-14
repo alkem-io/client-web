@@ -18,10 +18,17 @@ type ChatPanelProps = {
   settingsLabel: string;
   /** Conversation identity (avatar) rendered between the back affordance and the title. */
   titleAvatar?: ReactNode;
+  /** When provided, the avatar and title become one button that calls this (e.g. open the chat's settings). */
+  onTitleClick?: () => void;
+  /** What the title button does, appended to its accessible name after the title. */
+  titleActionLabel?: string;
   /** Conversation-specific actions (e.g. group/guidance menu) shown in the header. */
   headerActions?: ReactNode;
   children: ReactNode;
 };
+
+const ICON_BUTTON_CLASS =
+  'flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 
 /**
  * The floating card shell for the unified chat. Anchored above the launcher on
@@ -39,6 +46,8 @@ export function ChatPanel({
   onGoToSettings,
   settingsLabel,
   titleAvatar,
+  onTitleClick,
+  titleActionLabel,
   headerActions,
   children,
 }: ChatPanelProps) {
@@ -47,6 +56,17 @@ export function ChatPanel({
   if (!open) {
     return null;
   }
+
+  const titleContent = (
+    <>
+      {titleAvatar && (
+        <span aria-hidden="true" className="shrink-0">
+          {titleAvatar}
+        </span>
+      )}
+      <span className="text-subsection-title min-w-0 flex-1 truncate px-1">{title}</span>
+    </>
+  );
 
   return (
     <div
@@ -61,38 +81,29 @@ export function ChatPanel({
     >
       <header className="flex shrink-0 items-center gap-1 border-b border-border px-2 py-2">
         {onBack && (
-          <button
-            type="button"
-            onClick={onBack}
-            aria-label={backLabel}
-            className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
+          <button type="button" onClick={onBack} aria-label={backLabel} className={ICON_BUTTON_CLASS}>
             <ChevronLeft aria-hidden="true" className="size-5" />
           </button>
         )}
-        {titleAvatar && (
-          <span aria-hidden="true" className="shrink-0">
-            {titleAvatar}
-          </span>
-        )}
-        <span className="text-subsection-title min-w-0 flex-1 truncate px-1">{title}</span>
-        {headerActions}
-        {onGoToSettings && (
+        {onTitleClick ? (
           <button
             type="button"
-            onClick={onGoToSettings}
-            aria-label={settingsLabel}
-            className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            onClick={onTitleClick}
+            className="flex min-w-0 flex-1 items-center gap-1 rounded-md text-left hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
+            {titleContent}
+            {titleActionLabel && <span className="sr-only">, {titleActionLabel}</span>}
+          </button>
+        ) : (
+          titleContent
+        )}
+        {headerActions}
+        {onGoToSettings && (
+          <button type="button" onClick={onGoToSettings} aria-label={settingsLabel} className={ICON_BUTTON_CLASS}>
             <Settings aria-hidden="true" className="size-5" />
           </button>
         )}
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label={closeLabel}
-          className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
+        <button type="button" onClick={onClose} aria-label={closeLabel} className={ICON_BUTTON_CLASS}>
           <X aria-hidden="true" className="size-5" />
         </button>
       </header>

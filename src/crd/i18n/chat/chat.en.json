@@ -78,7 +78,8 @@
   "thread": {
     "back": "Back to conversations",
     "loading": "Loading messages",
-    "addReaction": "Add reaction"
+    "addReaction": "Add reaction",
+    "options": "Chat options"
   },
   "sendConfirmation": {
     "title": "Message sent",

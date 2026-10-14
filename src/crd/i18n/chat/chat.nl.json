@@ -78,7 +78,8 @@
   "thread": {
     "back": "Terug naar gesprekken",
     "loading": "Berichten laden",
-    "addReaction": "Reactie toevoegen"
+    "addReaction": "Reactie toevoegen",
+    "options": "Chatopties"
   },
   "sendConfirmation": {
     "title": "Bericht verzonden",
