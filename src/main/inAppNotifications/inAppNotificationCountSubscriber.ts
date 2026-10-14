@@ -5,6 +5,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import type { UserDetailsFragment } from '@/core/apollo/generated/graphql-schema';
 import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
+import { createBrowserSoundOwnerTab, type SoundOwnerTab } from '@/core/sound/soundOwnerTab';
 import { playSound } from '@/core/sound/soundPlayer';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
@@ -40,6 +41,18 @@ export const InAppNotificationCountSubscriber = () => {
     }
   }, [soundEnabled, isEnabled]);
 
+  // Every open tab receives each count change; only the tab the user saw last
+  // plays the sound, so it sounds once and is not replayed on a tab switch.
+  const soundOwnerTabRef = useRef<SoundOwnerTab | null>(null);
+  useEffect(() => {
+    const soundOwnerTab = createBrowserSoundOwnerTab();
+    soundOwnerTabRef.current = soundOwnerTab;
+    return () => {
+      soundOwnerTabRef.current = null;
+      soundOwnerTab.stop();
+    };
+  }, []);
+
   useNotificationsUnreadCountSubscription({
     skip: !isEnabled,
     onData: ({ client, data: subscriptionData }) => {
@@ -57,7 +70,10 @@ export const InAppNotificationCountSubscriber = () => {
 
       // Play the notification sound on a strict increase only (US2). This adds
       // no new subscription — it reuses the already-global count subscriber.
-      if (shouldPlayNotificationSound(previousCountRef.current, notificationsUnreadCount, soundEnabledRef.current)) {
+      if (
+        shouldPlayNotificationSound(previousCountRef.current, notificationsUnreadCount, soundEnabledRef.current) &&
+        soundOwnerTabRef.current?.isOwner()
+      ) {
         playSound('notification');
       }
       previousCountRef.current = notificationsUnreadCount;
