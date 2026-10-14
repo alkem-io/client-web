@@ -314,6 +314,7 @@
     "updateFailed": "De wijzigingen aan de $t(common.callout) konden niet worden opgeslagen. Probeer het opnieuw.",
     "contributors": "Contributors",
     "subspaces": "Subspaces",
+    "spacesHidden": "Sommige Spaces in dit overzicht worden niet weergegeven omdat je er geen toegang tot hebt.",
     "form": "Formulier"
   },
   "contribution": {

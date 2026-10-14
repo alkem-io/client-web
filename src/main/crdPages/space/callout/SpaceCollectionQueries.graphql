@@ -12,10 +12,23 @@
 # post's response carries no more About text than before this feature —
 # `why` is the one exception, already selected unconditionally by the shared
 # `SubspaceCard` fragment (pre-existing).
+#
+# `hasHiddenSpaces` and `settings.framing.selection.mode` are both on the CALLOUT
+# (not on `framing`), and both read off the callout row this query already fetches, so
+# neither adds a round trip. The mode drives the pin indicator: in CUSTOM mode the
+# selection spans parents, where `pinned` — a parent-relative field — has no meaning.
 query SpaceCollectionSubspaces($calloutId: UUID!, $expanded: Boolean!) {
   lookup {
     callout(ID: $calloutId) {
       id
+      hasHiddenSpaces
+      settings {
+        framing {
+          selection {
+            mode
+          }
+        }
+      }
       framing {
         id
         subspaces {

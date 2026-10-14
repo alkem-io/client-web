@@ -314,6 +314,7 @@
     "updateFailed": "Les modifications de la publication n'ont pas pu être enregistrées. Veuillez réessayer.",
     "contributors": "Contributeurs",
     "subspaces": "Sous-espaces",
+    "spacesHidden": "Certains espaces de cet aperçu ne sont pas affichés car vous n’y avez pas accès.",
     "form": "Formulaire"
   },
   "contribution": {

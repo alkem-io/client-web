@@ -314,6 +314,7 @@
     "updateFailed": "No se pudieron guardar los cambios en la publicación. Por favor, inténtalo de nuevo.",
     "contributors": "Colaboradores",
     "subspaces": "Subespacios",
+    "spacesHidden": "Algunos espacios de esta vista no se muestran porque no tienes acceso a ellos.",
     "form": "Formulario"
   },
   "contribution": {

@@ -314,6 +314,7 @@
     "updateFailed": "Die Änderungen am Beitrag konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
     "contributors": "Mitwirkende",
     "subspaces": "Unterbereiche",
+    "spacesHidden": "Einige Spaces in dieser Übersicht werden nicht angezeigt, weil du keinen Zugriff darauf hast.",
     "form": "Formular"
   },
   "contribution": {

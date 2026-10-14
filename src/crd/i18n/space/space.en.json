@@ -314,6 +314,7 @@
     "updateFailed": "Could not save changes to the $t(common.callout). Please try again.",
     "contributors": "Contributors",
     "subspaces": "Subspaces",
+    "spacesHidden": "Some spaces in this overview are not shown because you don't have access to them.",
     "form": "Form"
   },
   "contribution": {

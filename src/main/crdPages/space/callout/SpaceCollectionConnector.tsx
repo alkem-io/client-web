@@ -29,7 +29,7 @@ export function SpaceCollectionConnector({ calloutId, cardVariant, className }: 
   // for its skeleton. Pull the namespace in here, while the card's boundary is still
   // showing the skeleton anyway (issue #10043).
   useTranslation('crd-exploreSpaces');
-  const { subspaces, loading } = useCrdSpaceSubspaces(calloutId, cardVariant === 'expanded');
+  const { subspaces, hasHiddenSpaces, loading } = useCrdSpaceSubspaces(calloutId, cardVariant === 'expanded');
 
   const handleSubspaceClick = (space: SpaceCardData) => navigate(space.href);
 
@@ -37,6 +37,7 @@ export function SpaceCollectionConnector({ calloutId, cardVariant, className }: 
     <SpaceCollection
       className={className}
       subspaces={subspaces}
+      hasHiddenSpaces={hasHiddenSpaces}
       loading={loading}
       variant={cardVariant}
       onSubspaceClick={handleSubspaceClick}

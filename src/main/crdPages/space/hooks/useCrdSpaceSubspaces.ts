@@ -1,5 +1,5 @@
 import { useSpaceCollectionSubspacesQuery } from '@/core/apollo/generated/apollo-hooks';
-import { SpaceSortMode } from '@/core/apollo/generated/graphql-schema';
+import { CalloutSelectionMode, SpaceSortMode } from '@/core/apollo/generated/graphql-schema';
 import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
 import { sortSubspaces } from '@/domain/space/hooks/useSubspacesSorted';
 import { mapSubspacesToCardDataList } from '@/main/crdPages/space/dataMappers/subspaceCardDataMapper';
@@ -8,12 +8,12 @@ import { mapSubspacesToCardDataList } from '@/main/crdPages/space/dataMappers/su
  * Data layer for a Spaces-collection callout, including the `expanded` arg that
  * drives the rich (expanded) card variant.
  *
- * Fetches the host space's subspaces for a SPACES callout via `framing.subspaces`
- * (the server returns the FULL authorized set, already ordered pinned-first then
- * the space's sortOrder/displayName — no server-side pagination/search) and maps
+ * Fetches the collection's spaces for a SPACES callout via `framing.subspaces`
+ * (the server returns the FULL authorized set — no server-side pagination/search;
+ * in AUTO mode already ordered pinned-first then sortOrder/displayName) and maps
  * them through the existing `subspaceCardDataMapper` + `sortSubspaces` so the
- * card shape, order, and pin styling match the hard-coded `SpaceSubspacesList`
- * block this callout replaces (reuse, don't reinvent).
+ * card shape and order match the hard-coded `SpaceSubspacesList` block this
+ * callout replaces (reuse, don't reinvent).
  *
  * Both are plain functions on purpose: the React Compiler memoizes them on the
  * query data, so the mapped cards (and the excerpt visibility the mapper decides
@@ -22,11 +22,17 @@ import { mapSubspacesToCardDataList } from '@/main/crdPages/space/dataMappers/su
  * The client name-searches + paginates client-side over the returned set inside
  * the reused `SpaceSubspacesList` (via the `SpaceCollection` renderer).
  *
- * Ordering: the server is authoritative (pinned-first). We still pass the set
- * through `sortSubspaces` in ALPHABETICAL mode — the mode under which the
- * subspaces tab shows pins — so the client re-sort is a no-op over the server
- * order and the pin indicator (`isPinned`, shown only for alphabetical sort)
- * renders exactly as it did on the replaced block.
+ * Ordering: this pass is the single ordering authority. In AUTO mode the server
+ * order (pinned-first) is already alphabetical-compatible so the re-sort is a
+ * no-op; in CUSTOM mode (feature 084) the server does not order the result at
+ * all, so the same pass is what orders it.
+ *
+ * Pin indicator: `mapSubspacesToCardDataList` turns `isPinned` on only when it is
+ * given `SpaceSortMode.Alphabetical`, whose documented meaning is "the PARENT
+ * space's sort mode". In CUSTOM mode the selection spans parents, so there is no
+ * parent space whose sort mode could apply and `pinned` — a parent-relative field
+ * — has no meaning in this collection; we therefore pass no sort mode and the
+ * badge is suppressed. AUTO is unchanged.
  *
  * `expanded` drives the `$expanded` query variable that gates the
  * `SubspaceCardAboutContext` fragment (What/Why/Who) — a compact post never asks
@@ -37,8 +43,14 @@ import { mapSubspacesToCardDataList } from '@/main/crdPages/space/dataMappers/su
  * to expanded, or vice versa.
  */
 export type UseCrdSpaceSubspacesResult = {
-  /** Mapped subspace cards in server order (pinned-first). Empty while `loading`. */
+  /** Mapped subspace cards, alphabetically sorted. Empty while `loading`. */
   subspaces: SpaceCardData[];
+  /**
+   * Whether the server withheld at least one still-in-account manually selected
+   * space from THIS viewer (feature 084, AC6). Always `false` in AUTO mode and
+   * while `loading`.
+   */
+  hasHiddenSpaces: boolean;
   /** Query loading state. */
   loading: boolean;
 };
@@ -49,9 +61,10 @@ export function useCrdSpaceSubspaces(calloutId: string | undefined, expanded: bo
     skip: !calloutId,
   });
 
-  const rawSubspaces = loading ? [] : (data?.lookup.callout?.framing.subspaces ?? []);
-  const sortedSubspaces = sortSubspaces(rawSubspaces, SpaceSortMode.Alphabetical);
-  const subspaces = mapSubspacesToCardDataList(sortedSubspaces, SpaceSortMode.Alphabetical);
+  const callout = loading ? undefined : data?.lookup.callout;
+  const isCustom = callout?.settings.framing.selection?.mode === CalloutSelectionMode.Custom;
+  const sortedSubspaces = sortSubspaces(callout?.framing.subspaces ?? [], SpaceSortMode.Alphabetical);
+  const subspaces = mapSubspacesToCardDataList(sortedSubspaces, isCustom ? undefined : SpaceSortMode.Alphabetical);
 
-  return { subspaces, loading };
+  return { subspaces, hasHiddenSpaces: callout?.hasHiddenSpaces ?? false, loading };
 }
