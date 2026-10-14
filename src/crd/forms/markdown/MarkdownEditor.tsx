@@ -38,11 +38,11 @@ type MarkdownEditorProps = MarkdownUploadProps & {
    * length validator applied to the same value.
    */
   maxLength?: number;
-  /** When set, the counter stays hidden until `value` reaches this many characters. */
+  /** The counter stays hidden until `value` reaches this many characters. Defaults to 80% of `maxLength`. */
   counterThreshold?: number;
   /**
-   * When set, the counter's tooltip only adds the "formatting counts too" hint
-   * once `value` reaches this many characters; otherwise it is always shown.
+   * The counter's tooltip adds the "formatting counts too" hint once `value`
+   * reaches this many characters. Defaults to the counter threshold.
    */
   counterHintThreshold?: number;
   /** Validation message shown below the editor, on the same line as the counter. */
@@ -100,8 +100,9 @@ function MarkdownEditorLazy({
   if (!editor) return null;
 
   const charCount = value.length;
-  const showCounter = maxLength != null && charCount >= (counterThreshold ?? 0);
-  const showCounterHint = charCount >= (counterHintThreshold ?? 0);
+  const effectiveCounterThreshold = counterThreshold ?? (maxLength != null ? Math.floor(maxLength * 0.8) : 0);
+  const showCounter = maxLength != null && charCount >= effectiveCounterThreshold;
+  const showCounterHint = charCount >= (counterHintThreshold ?? effectiveCounterThreshold);
 
   return (
     <>

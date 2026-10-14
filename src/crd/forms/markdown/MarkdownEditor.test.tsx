@@ -29,7 +29,7 @@ describe('MarkdownEditor — character counter', () => {
   // counter must too — a link's URL counts even though only its text is visible.
   test('counts the markdown source, not the visible text', async () => {
     const value = '[docs](https://example.com/a/very/long/path)';
-    renderEditor(value, { maxLength: 100 });
+    renderEditor(value, { maxLength: 100, counterThreshold: 0 });
     expect(await findCounter(value.length, 100)).toBeInTheDocument();
   });
 
@@ -49,9 +49,20 @@ describe('MarkdownEditor — character counter', () => {
     expect(ringProgress(await findCounter(100, 100))).toHaveClass('stroke-destructive');
   });
 
-  test('without a threshold the counter is always shown when maxLength is set', async () => {
-    renderEditor('', { maxLength: 100 });
-    expect(await findCounter(0, 100)).toBeInTheDocument();
+  test('without a threshold the counter appears from 80% of maxLength', async () => {
+    const { unmount } = renderEditor('a'.repeat(79), { maxLength: 100 });
+    await screen.findByRole('toolbar');
+    expect(screen.queryByRole('button', { name: new RegExp(COUNTER_KEY) })).not.toBeInTheDocument();
+    unmount();
+
+    renderEditor('a'.repeat(80), { maxLength: 100 });
+    expect(await findCounter(80, 100)).toBeInTheDocument();
+  });
+
+  test('without a hint threshold the hint shows together with the counter', async () => {
+    renderEditor('a'.repeat(80), { maxLength: 100 });
+    await userEvent.hover(await findCounter(80, 100));
+    expect((await screen.findAllByText('editor.charCountHint')).length).toBeGreaterThan(0);
   });
 
   test('renders below the editor box, on the same row as the validation error', async () => {
@@ -63,13 +74,13 @@ describe('MarkdownEditor — character counter', () => {
   });
 
   test('the tooltip shows the count grouped using the browser locale', async () => {
-    renderEditor('a'.repeat(1234), { maxLength: 50000 });
+    renderEditor('a'.repeat(1234), { maxLength: 50000, counterThreshold: 0 });
     await userEvent.hover(await findCounter(1234, 50000));
     expect((await screen.findAllByText(counterLabel(1234, 50000))).length).toBeGreaterThan(0);
   });
 
   test('the tooltip omits the formatting hint below the hint threshold', async () => {
-    renderEditor('a'.repeat(50), { maxLength: 100, counterHintThreshold: 90 });
+    renderEditor('a'.repeat(50), { maxLength: 100, counterThreshold: 0, counterHintThreshold: 90 });
     await userEvent.hover(await findCounter(50, 100));
     await screen.findAllByText(counterLabel(50, 100));
     expect(screen.queryByText('editor.charCountHint')).not.toBeInTheDocument();
