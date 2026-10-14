@@ -118,6 +118,7 @@ export function ChatThreadView({
                 showAvatar={flags.showAvatar}
                 avatarGutter={flags.avatarGutter}
                 groupPosition={flags.groupPosition}
+                revealed={isRevealed}
                 canReact={canReact}
                 onAddReaction={onAddReaction ? emoji => onAddReaction(message.id, emoji) : undefined}
                 onRemoveReaction={onRemoveReaction ? emoji => onRemoveReaction(message.id, emoji) : undefined}

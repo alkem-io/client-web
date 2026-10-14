@@ -43,6 +43,11 @@ type ChatMessageBubbleProps = {
   avatarGutter?: boolean;
   /** Where this message sits in a group of consecutive messages — sets the corners. */
   groupPosition?: GroupPosition;
+  /**
+   * The message was tapped open on a touch screen. Without hover the add-reaction
+   * trigger stays hidden until then, so a calm thread is not one smiley per bubble.
+   */
+  revealed?: boolean;
   canReact?: boolean;
   onAddReaction?: (emoji: string) => void;
   onRemoveReaction?: (emoji: string) => void;
@@ -62,6 +67,7 @@ export function ChatMessageBubble({
   showAvatar,
   avatarGutter,
   groupPosition = 'single',
+  revealed = false,
   canReact = false,
   onAddReaction,
   onRemoveReaction,
@@ -91,7 +97,12 @@ export function ChatMessageBubble({
         <button
           type="button"
           aria-label={t('thread.addReaction')}
-          className="flex size-7 shrink-0 items-center justify-center rounded-full text-muted-foreground opacity-0 transition-opacity hover:bg-accent hover:text-foreground focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring group-hover:opacity-100"
+          className={cn(
+            'flex size-7 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-opacity hover:bg-accent hover:text-foreground focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+            // `group-hover` only applies where the device can hover, so without
+            // hover the trigger is hidden outright until the message is tapped open.
+            revealed ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 [@media(hover:none)]:hidden'
+          )}
         >
           <Smile aria-hidden="true" className="size-4" />
         </button>

@@ -267,6 +267,30 @@ describe('ChatMessageBubble', () => {
     });
   });
 
+  describe('add-reaction trigger on touch screens', () => {
+    const triggerOf = (revealed?: boolean) =>
+      render(
+        <ChatMessageBubble message={baseMessage} canReact={true} onAddReaction={vi.fn()} revealed={revealed} />
+      ).getByRole('button', { name: 'thread.addReaction' });
+
+    test('without hover it stays out of the way until the message is tapped', () => {
+      const trigger = triggerOf(false);
+      expect(trigger).toHaveClass('[@media(hover:none)]:hidden');
+    });
+
+    test('a tapped (revealed) message shows the trigger', () => {
+      const trigger = triggerOf(true);
+      expect(trigger).toHaveClass('opacity-100');
+      expect(trigger).not.toHaveClass('[@media(hover:none)]:hidden');
+      expect(trigger).not.toHaveClass('opacity-0');
+    });
+
+    test('with hover it still appears on hover and on keyboard focus', () => {
+      const trigger = triggerOf(false);
+      expect(trigger).toHaveClass('opacity-0', 'group-hover:opacity-100', 'focus-visible:opacity-100');
+    });
+  });
+
   describe('group position corners', () => {
     const cornersOf = (groupPosition: 'single' | 'first' | 'middle' | 'last', isOwn = false) =>
       render(<ChatMessageBubble message={{ ...baseMessage, isOwn }} groupPosition={groupPosition} />)

@@ -120,15 +120,18 @@ describe('ChatThreadView — exact time on demand', () => {
     expect(await screen.findByRole('tooltip')).toHaveTextContent('Today, 09:12');
   });
 
-  test('tapping a message opens its time underneath; tapping again closes', () => {
+  test('tapping a message opens its time underneath and shows the reaction trigger; tapping again closes', () => {
     renderThread([msg(at(14, 9, 12))]);
     const row = rowFor('message 1');
+    const trigger = () => within(row).getByRole('button', { name: 'thread.addReaction' });
     const revealedTime = () => row.querySelector('[data-testid="chat-revealed-time"]');
 
     expect(revealedTime()).toBeNull();
+    expect(trigger()).toHaveClass('[@media(hover:none)]:hidden');
 
     fireEvent.pointerUp(row, { pointerType: 'touch' });
     expect(revealedTime()).toHaveTextContent('Today, 09:12');
+    expect(trigger()).not.toHaveClass('[@media(hover:none)]:hidden');
 
     fireEvent.pointerUp(row, { pointerType: 'touch' });
     expect(revealedTime()).toBeNull();
