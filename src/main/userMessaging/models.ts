@@ -21,7 +21,6 @@ export interface UserConversation {
   roomDisplayName?: string;
   avatarUri?: string;
   unreadCount: number;
-  messagesCount: number;
   createdDate: Date;
   lastMessage?: ConversationMessage;
   members: ConversationMember[];
@@ -186,14 +185,20 @@ export const mapMatrixMessageAttachments = (
 ): MessageAttachment[] => {
   if (!['m.image', 'm.video', 'm.audio', 'm.file', 'm.sticker'].includes(content.msgtype ?? eventType ?? '')) return [];
   const prefix = `mxc://${homeserver}/`;
-  const mediaId = content.url?.startsWith(prefix) ? content.url.slice(prefix.length) : undefined;
+  const mediaId =
+    typeof content.url === 'string' && content.url.startsWith(prefix) ? content.url.slice(prefix.length) : undefined;
   const externalReference = mediaId && /^[A-Za-z0-9_-]+$/.test(mediaId) ? mediaId : undefined;
   return mapMessageAttachments(
     [
       {
         externalReference,
-        displayName: content.filename ?? content.body ?? '',
-        mimeType: content.info?.mimetype,
+        displayName:
+          typeof content.filename === 'string'
+            ? content.filename
+            : typeof content.body === 'string'
+              ? content.body
+              : '',
+        mimeType: typeof content.info?.mimetype === 'string' ? content.info.mimetype : undefined,
         size: content.info?.size,
         width: content.info?.w,
         height: content.info?.h,

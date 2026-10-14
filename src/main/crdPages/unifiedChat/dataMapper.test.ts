@@ -21,7 +21,6 @@ const makeConversation = (overrides: Partial<UnifiedConversation> = {}): Unified
   displayName: 'Conversation',
   avatarUri: undefined,
   unreadCount: 0,
-  messagesCount: 0,
   createdDate: new Date(0),
   lastMessage: undefined,
   members: [],
