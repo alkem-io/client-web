@@ -96,6 +96,7 @@ export function ChatMessageBubble({
               )}
             >
               <MarkdownContent
+                allowHtml={false}
                 content={message.content}
                 className="text-body [&_p]:mb-1 [&_p]:text-foreground [&_p:last-child]:mb-0"
               />

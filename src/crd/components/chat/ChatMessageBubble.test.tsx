@@ -211,4 +211,27 @@ describe('ChatMessageBubble', () => {
     expect(bubbleColumn?.textContent).toContain('2m ago');
     expect(bubbleColumn?.textContent).toContain('👍');
   });
+  describe('text is shown as typed', () => {
+    test.each([
+      ['an angle-bracketed word', 'see <this> here', 'see <this> here'],
+      ['a message that is only a tag-like token', '<hello>', '<hello>'],
+      ['an HTML-looking tag pair', '<b>bold</b>', '<b>bold</b>'],
+    ])('%s stays visible as literal text', (_label, content, expected) => {
+      const { container } = render(<ChatMessageBubble message={{ ...baseMessage, content }} />);
+      expect(container.querySelector('.rounded-2xl')?.textContent).toBe(expected);
+      expect(container.querySelector('.rounded-2xl b')).not.toBeInTheDocument();
+    });
+
+    test('markdown formatting still renders', () => {
+      const { container } = render(<ChatMessageBubble message={{ ...baseMessage, content: 'a **b** c' }} />);
+      expect(container.querySelector('.rounded-2xl strong')?.textContent).toBe('b');
+    });
+
+    test('an autolinked URL still renders as a link', () => {
+      const { container } = render(
+        <ChatMessageBubble message={{ ...baseMessage, content: '<https://alkem.io/path>' }} />
+      );
+      expect(container.querySelector('.rounded-2xl a')).toHaveAttribute('href', 'https://alkem.io/path');
+    });
+  });
 });
