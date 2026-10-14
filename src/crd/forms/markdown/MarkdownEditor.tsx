@@ -36,7 +36,7 @@ type MarkdownEditorProps = MarkdownUploadProps & {
    * that is stored and validated — not the visible text, so formatting syntax and
    * link / image URLs count too. That keeps the counter in agreement with any
    * length validator applied to the same value. The counter shows from 20% of
-   * `maxLength`, and its tooltip adds the "formatting counts too" hint from 90%.
+   * `maxLength`, and its tooltip adds the "formatting counts too" hint from 80%.
    */
   maxLength?: number;
   /** Validation message shown below the editor, on the same line as the counter. */
@@ -159,7 +159,7 @@ function MarkdownEditorLazy({
 }
 
 const COUNTER_THRESHOLD = 0.2;
-const COUNTER_HINT_THRESHOLD = 0.9;
+const COUNTER_HINT_THRESHOLD = 0.8;
 
 // The viewBox matches the rendered 16px, so stroke widths are in pixels.
 const RING_RADIUS = 6.5;

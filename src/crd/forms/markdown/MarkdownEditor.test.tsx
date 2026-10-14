@@ -63,16 +63,16 @@ describe('MarkdownEditor — character counter', () => {
     expect((await screen.findAllByText(counterLabel(12345, 50000))).length).toBeGreaterThan(0);
   });
 
-  test('the tooltip omits the formatting hint below 90% of maxLength', async () => {
-    renderEditor('a'.repeat(89), { maxLength: 100 });
-    await userEvent.hover(await findCounter(89, 100));
-    await screen.findAllByText(counterLabel(89, 100));
+  test('the tooltip omits the formatting hint below 80% of maxLength', async () => {
+    renderEditor('a'.repeat(79), { maxLength: 100 });
+    await userEvent.hover(await findCounter(79, 100));
+    await screen.findAllByText(counterLabel(79, 100));
     expect(screen.queryByText('editor.charCountHint')).not.toBeInTheDocument();
   });
 
-  test('the tooltip adds the formatting hint from 90% of maxLength', async () => {
-    renderEditor('a'.repeat(90), { maxLength: 100 });
-    await userEvent.hover(await findCounter(90, 100));
+  test('the tooltip adds the formatting hint from 80% of maxLength', async () => {
+    renderEditor('a'.repeat(80), { maxLength: 100 });
+    await userEvent.hover(await findCounter(80, 100));
     expect((await screen.findAllByText('editor.charCountHint')).length).toBeGreaterThan(0);
   });
 });
