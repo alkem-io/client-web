@@ -1,8 +1,8 @@
 import type { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { fetchPreviewImageBlob } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/fetchPreviewImageBlob';
 import type { CalloutFormValues } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 import { calloutTemplateContentToFormValues } from './calloutTemplateMapper';
-import { fetchPreviewImageBlob } from './fetchPreviewImageBlob';
 
 type GetTemplateContent = ReturnType<typeof useTemplateContentLazyQuery>[0];
 

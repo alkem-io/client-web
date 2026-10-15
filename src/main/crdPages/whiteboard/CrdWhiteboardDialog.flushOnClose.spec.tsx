@@ -25,61 +25,70 @@ describe('acceptWhiteboardCloseIntent', () => {
 });
 
 describe('closeCollaborativeWhiteboard', () => {
-  it('joins the ordinary durability owner before best-effort metadata and teardown', async () => {
+  it('joins the durability owner, captures the preview, closes, then uploads in the background', async () => {
     const order: string[] = [];
+    let finishUpload: (ok: boolean) => void = () => undefined;
     const result = await closeCollaborativeWhiteboard({
-      hadLocalEdits: true,
-      saveMetadata: async () => {
-        order.push('metadata');
-        return true;
-      },
       requestDurability: async () => void order.push('durability'),
+      capturePreview: async () => {
+        order.push('capture');
+        return () => {
+          order.push('upload');
+          return new Promise<boolean>(resolve => {
+            finishUpload = resolve;
+          });
+        };
+      },
       teardown: () => order.push('teardown'),
     });
     expect(result).toBe(true);
-    expect(order).toEqual(['durability', 'metadata', 'teardown']);
+    expect(order).toEqual(['durability', 'capture', 'teardown', 'upload']);
+    finishUpload(true);
   });
 
-  it('skips preview and metadata work for a look-only writer session', async () => {
-    const saveMetadata = vi.fn();
+  it('closes without uploading when there is no preview work', async () => {
     const teardown = vi.fn();
-
     await expect(
       closeCollaborativeWhiteboard({
-        hadLocalEdits: false,
-        saveMetadata,
         requestDurability: vi.fn(),
+        capturePreview: async () => undefined,
         teardown,
       })
     ).resolves.toBe(true);
-
-    expect(saveMetadata).not.toHaveBeenCalled();
     expect(teardown).toHaveBeenCalledOnce();
   });
 
-  it('reports a metadata failure and closes after content durability succeeds', async () => {
+  it('reports a failed background upload after the dialog has closed', async () => {
     const metadataFailed = vi.fn();
     const teardown = vi.fn();
     await expect(
       closeCollaborativeWhiteboard({
-        hadLocalEdits: true,
-        saveMetadata: async () => false,
         requestDurability: vi.fn(),
+        capturePreview: async () => async () => false,
         onMetadataFailed: metadataFailed,
         teardown,
       })
     ).resolves.toBe(true);
-    expect(metadataFailed).toHaveBeenCalledOnce();
     expect(teardown).toHaveBeenCalledOnce();
+    await vi.waitFor(() => expect(metadataFailed).toHaveBeenCalledOnce());
   });
 
-  it('reports a thrown metadata failure and still closes', async () => {
+  it('reports a rejected background upload', async () => {
+    const metadataFailed = vi.fn();
+    await closeCollaborativeWhiteboard({
+      capturePreview: async () => () => Promise.reject(new Error('upload failed')),
+      onMetadataFailed: metadataFailed,
+      teardown: vi.fn(),
+    });
+    await vi.waitFor(() => expect(metadataFailed).toHaveBeenCalledOnce());
+  });
+
+  it('reports a failed capture and still closes', async () => {
     const metadataFailed = vi.fn();
     const teardown = vi.fn();
     await expect(
       closeCollaborativeWhiteboard({
-        hadLocalEdits: true,
-        saveMetadata: async () => Promise.reject(new Error('metadata unavailable')),
+        capturePreview: async () => Promise.reject(new Error('export failed')),
         onMetadataFailed: metadataFailed,
         teardown,
       })
@@ -91,16 +100,17 @@ describe('closeCollaborativeWhiteboard', () => {
   it('keeps the mounted editor open and reports a failed durability operation', async () => {
     const failed = vi.fn();
     const teardown = vi.fn();
+    const capturePreview = vi.fn();
     await expect(
       closeCollaborativeWhiteboard({
-        hadLocalEdits: true,
-        saveMetadata: async () => true,
+        capturePreview,
         requestDurability: async () => Promise.reject(new Error('offline')),
         onDurabilityFailed: failed,
         teardown,
       })
     ).resolves.toBe(false);
     expect(failed).toHaveBeenCalledOnce();
+    expect(capturePreview).not.toHaveBeenCalled();
     expect(teardown).not.toHaveBeenCalled();
   });
 
@@ -109,8 +119,7 @@ describe('closeCollaborativeWhiteboard', () => {
     const teardown = vi.fn();
     await expect(
       closeCollaborativeWhiteboard({
-        hadLocalEdits: true,
-        saveMetadata: async () => true,
+        capturePreview: vi.fn(),
         requireDurability: true,
         onDurabilityFailed: failed,
         teardown,

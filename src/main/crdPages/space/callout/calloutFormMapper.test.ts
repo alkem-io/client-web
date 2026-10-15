@@ -664,6 +664,16 @@ describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
       createOptions
     );
     expect(wbWithBlob.whiteboardPreviewImages).toEqual([previewBlob]);
+
+    const wbDraftWithBlob = mapFormToCalloutCreationInput(
+      baseValues({
+        framingChip: 'whiteboard',
+        whiteboardPreviewImages: [previewBlob],
+        framingWhiteboardDraft: { whiteboardID: 'draft-wb', sourceKey: 'template' },
+      }),
+      createOptions
+    );
+    expect(wbDraftWithBlob.whiteboardPreviewImages).toBeUndefined();
   });
 });
 

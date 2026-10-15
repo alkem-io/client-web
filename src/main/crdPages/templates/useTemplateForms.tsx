@@ -563,6 +563,8 @@ export function useTemplateForms({
     | undefined;
   const uploadCalloutWhiteboardPreview = async (cv: CalloutFormValues, whiteboard: WhiteboardUploadHandle) => {
     if (cv.framingChip !== 'whiteboard') return;
+    // A draft carries its own preview; the prefilled one would overwrite it with the pre-edit image.
+    if (cv.framingWhiteboardDraft) return;
     if (!cv.whiteboardPreviewImages || cv.whiteboardPreviewImages.length === 0) return;
     const previewVisualId = whiteboard?.profile?.previewVisual?.id;
     if (!previewVisualId) return;

@@ -381,8 +381,12 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
 
   return {
     input: callout,
+    // A draft carries its own preview (generated when its editor closes, copied by the server on create);
+    // re-uploading the prefilled template preview would overwrite it with the pre-edit image.
     whiteboardPreviewImages:
-      framingType === CalloutFramingType.Whiteboard && values.whiteboardPreviewImages.length > 0
+      framingType === CalloutFramingType.Whiteboard &&
+      !values.framingWhiteboardDraft &&
+      values.whiteboardPreviewImages.length > 0
         ? values.whiteboardPreviewImages
         : undefined,
     collaboraUploadFile:
