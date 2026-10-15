@@ -635,7 +635,8 @@
         "levelSpace": "Пространство",
         "levelSubspace": "Подпространство",
         "levelSubsubspace": "Под-подпространство",
-        "pathSubLine": "{{level}} в {{path}}"
+        "pathSubLine": "{{level}} в {{path}}",
+        "removeInParentAriaLabel": "Премахване на {{name}}, в {{parentName}}"
       },
       "noLongerAvailable": "Вече не е налично",
       "searchPlaceholder": "Търсене на членове…",

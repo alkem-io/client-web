@@ -31,7 +31,8 @@ const copy = {
   inThisSpaceLabel: 'In this space',
   calloutIsHereLabel: 'Callout is here',
   pathLabel: (level: string, path: string) => `${level} in ${path}`,
-  removeAriaLabel: (name: string) => `Remove ${name}`,
+  removeAriaLabel: (name: string, parentName?: string) =>
+    parentName ? `Remove ${name}, in ${parentName}` : `Remove ${name}`,
   selectedCountLabel: (count: number) => (count === 0 ? 'No spaces selected' : `${count} spaces selected`),
   clearSelectionLabel: 'Clear selection',
 };
@@ -338,6 +339,24 @@ describe('SpaceSelector — the three non-list states', () => {
     expect(screen.queryByText(copy.accountEmptyLabel)).toBeNull();
     expect(rowNames()).toHaveLength(1);
     expect(row('Energy Transition')).not.toBeDisabled();
+  });
+
+  // `aria-label` OVERRIDES the chip's visible content, so the `in <parent>`
+  // context beside a clashing name is never announced. Without the parent in the
+  // label, two chips named "Community of practice" are two buttons called
+  // "Remove Community of practice" — in exactly the case this picker exists for.
+  test('distinguishes the remove buttons of two same-named chips', () => {
+    renderPicker({ selectedIds: ['cop-heat', 'cop-bikes'] });
+
+    expect(screen.getByLabelText('Remove Community of practice, in Heat networks')).toBeInTheDocument();
+    expect(screen.getByLabelText('Remove Community of practice, in Shared bikes')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Remove Community of practice')).toBeNull();
+  });
+
+  test('leaves a unique name unqualified', () => {
+    renderPicker({ selectedIds: ['mobility'] });
+
+    expect(screen.getByLabelText('Remove Mobility Lab')).toBeInTheDocument();
   });
 
   test('the empty state is for a genuinely empty candidate set', () => {

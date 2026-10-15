@@ -635,7 +635,8 @@
         "levelSpace": "Space",
         "levelSubspace": "Subspace",
         "levelSubsubspace": "Sub-Subspace",
-        "pathSubLine": "{{level}} in {{path}}"
+        "pathSubLine": "{{level}} in {{path}}",
+        "removeInParentAriaLabel": "{{name}} entfernen, in {{parentName}}"
       },
       "noLongerAvailable": "Nicht mehr verfügbar",
       "searchPlaceholder": "Mitglieder suchen…",

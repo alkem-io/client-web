@@ -635,7 +635,8 @@
         "levelSpace": "Space",
         "levelSubspace": "Subspace",
         "levelSubsubspace": "Sub-subspace",
-        "pathSubLine": "{{level}} in {{path}}"
+        "pathSubLine": "{{level}} in {{path}}",
+        "removeInParentAriaLabel": "{{name}} verwijderen, in {{parentName}}"
       },
       "noLongerAvailable": "Niet meer beschikbaar",
       "searchPlaceholder": "Leden zoeken…",

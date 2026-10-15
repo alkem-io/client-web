@@ -79,7 +79,15 @@ export type SpaceSelectorProps = {
   calloutIsHereLabel: string;
   /** Row sub-line for a candidate that has readable ancestors. */
   pathLabel: (level: string, path: string) => string;
-  removeAriaLabel: (name: string) => string;
+  /**
+   * Accessible name for a chip's remove button. Takes the disambiguating parent
+   * because `aria-label` OVERRIDES the chip's visible content: the `in <parent>`
+   * context beside a clashing name is simply not announced, so without it two
+   * chips named "Community of practice" give a screen reader two buttons called
+   * "Remove Community of practice" and no way to tell them apart — in the very
+   * case this picker exists to handle.
+   */
+  removeAriaLabel: (name: string, parentName?: string) => string;
   /** Footer count — the consumer supplies the plural and the none form. */
   selectedCountLabel: (count: number) => string;
   clearSelectionLabel: string;
@@ -337,7 +345,7 @@ export function SpaceSelector({
                     type="button"
                     data-chip-remove={id}
                     onClick={() => handleChipRemove(id, index)}
-                    aria-label={removeAriaLabel(label)}
+                    aria-label={removeAriaLabel(label, parentName)}
                     className="rounded-full p-0.5 hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
                   >
                     <X className="size-3" aria-hidden="true" />

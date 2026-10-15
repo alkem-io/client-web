@@ -939,7 +939,11 @@ export function FramingEditorConnector({
                     inThisSpaceLabel={t('forms.selection.spacePicker.badgeInThisSpace')}
                     calloutIsHereLabel={t('forms.selection.spacePicker.badgeCalloutIsHere')}
                     pathLabel={(level, path) => t('forms.selection.spacePicker.pathSubLine', { level, path })}
-                    removeAriaLabel={name => t('forms.selection.removeAriaLabel', { name })}
+                    removeAriaLabel={(name, parentName) =>
+                      parentName
+                        ? t('forms.selection.spacePicker.removeInParentAriaLabel', { name, parentName })
+                        : t('forms.selection.removeAriaLabel', { name })
+                    }
                     selectedCountLabel={count =>
                       count === 0
                         ? t('forms.selection.spacePicker.noneSelected')
