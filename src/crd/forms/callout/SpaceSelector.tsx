@@ -130,6 +130,8 @@ export function SpaceSelector({
 
   const query = searchQuery.trim().toLowerCase();
   const byId = new Map(items.map(item => [item.id, item]));
+  // No candidate has arrived yet, so no selected id is KNOWN to be unresolved.
+  const candidatesPending = loading && items.length === 0;
   const selectable = items.filter(item => !item.isHost);
   const visible = query ? items.filter(item => item.displayName.toLowerCase().includes(query)) : items;
 
@@ -243,6 +245,14 @@ export function SpaceSelector({
     <div className={cn('flex flex-col gap-2', className)}>
       {selectedIds.length === 0 ? (
         <p className="text-caption text-muted-foreground">{chipsEmptyLabel}</p>
+      ) : candidatesPending ? (
+        // Naming every selected id "no longer available" for the length of a
+        // plain candidate round trip reports a lost selection that is not lost
+        // (FR-026). Until the set arrives the chips say only that they are
+        // loading; the footer still counts the selection.
+        <output aria-label={loadingLabel} className="block text-caption text-muted-foreground">
+          {loadingLabel}
+        </output>
       ) : (
         <ul ref={chipsRef} className="flex list-none flex-wrap gap-2">
           {selectedIds.map((id, index) => {

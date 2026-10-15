@@ -309,6 +309,16 @@ describe('SpaceSelector — the chips', () => {
     expect(screen.getByLabelText(`Remove ${copy.unresolvedLabel}`)).toBeInTheDocument();
   });
 
+  test('does NOT call a selected id unavailable while the candidate set is still loading', () => {
+    renderPicker({ items: [], loading: true, selectedIds: ['heat', 'mobility'] });
+
+    // RED against reading `byId` without `loading`: a cold cache would report
+    // the admin's whole curated selection as gone for the round trip (FR-026).
+    expect(screen.queryByText(copy.unresolvedLabel)).toBeNull();
+    expect(screen.queryByLabelText(`Remove ${copy.unresolvedLabel}`)).toBeNull();
+    expect(screen.getByText('2 spaces selected')).toBeInTheDocument();
+  });
+
   test('removing a chip reports the id and moves focus to the neighbouring chip', async () => {
     function Harness() {
       const [selectedIds, setSelectedIds] = useState(['heat', 'mobility']);
