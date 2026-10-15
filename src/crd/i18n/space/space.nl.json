@@ -586,6 +586,7 @@
     "draftLabel": "Concept",
     "notifyMembers": "Space-leden informeren",
     "titleRequiredHint": "Voeg een titel toe aan je $t(common.callout) om verder te gaan",
+    "descriptionTooLongHint": "Maak de beschrijving korter om verder te gaan — deze is langer dan toegestaan",
     "saveDraft": "Concept opslaan",
     "save": "Opslaan",
     "publish": "Post",

@@ -73,6 +73,8 @@ type LayoutPoolColumnProps = {
   draggable?: boolean;
   /** Whether the Layout dialog shows the sidebar-widgets section (hidden on subspaces for now). */
   sidebarSettingsEnabled?: boolean;
+  /** Character limit of a column description; turns on the editor's progress ring and blocks Save past it. */
+  descriptionMaxLength?: number;
   className?: string;
 } & MarkdownUploadProps;
 
@@ -86,6 +88,7 @@ export function LayoutPoolColumn({
   entityNoun = 'phase',
   draggable = false,
   sidebarSettingsEnabled = true,
+  descriptionMaxLength,
   className,
   onImageUpload,
   iframeAllowedUrls,
@@ -224,6 +227,7 @@ export function LayoutPoolColumn({
           setEditDetailsOpen(false);
         }}
         onCancel={() => setEditDetailsOpen(false)}
+        descriptionMaxLength={descriptionMaxLength}
         onImageUpload={onImageUpload}
         iframeAllowedUrls={iframeAllowedUrls}
         onError={onError}
@@ -414,6 +418,7 @@ type EditDetailsDialogProps = {
   otherTitles: string[];
   onSave: (title: string, description: string) => void | Promise<void>;
   onCancel: () => void;
+  descriptionMaxLength?: number;
 } & MarkdownUploadProps;
 
 function EditDetailsDialog({
@@ -423,11 +428,13 @@ function EditDetailsDialog({
   otherTitles,
   onSave,
   onCancel,
+  descriptionMaxLength,
   onImageUpload,
   iframeAllowedUrls,
   onError,
 }: EditDetailsDialogProps) {
   const { t } = useTranslation('crd-spaceSettings');
+  const { t: tCommon } = useTranslation('crd-common');
   const [title, setTitle] = useState(initialTitle);
   const [description, setDescription] = useState(initialDescription);
   const [saving, setSaving] = useState(false);
@@ -441,6 +448,8 @@ function EditDetailsDialog({
   const titleDuplicate =
     trimmedTitle.length > 0 && otherTitles.some(n => n.toLowerCase() === trimmedTitle.toLowerCase());
   const titleInvalid = titleTooShort || titleDuplicate;
+  // Measured on the markdown the server stores, like the editor's progress ring.
+  const descriptionTooLong = descriptionMaxLength !== undefined && description.length > descriptionMaxLength;
 
   const isDirty = title !== initialTitle || description !== initialDescription;
   const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
@@ -450,7 +459,7 @@ function EditDetailsDialog({
   });
 
   const handleSave = async () => {
-    if (titleInvalid) return;
+    if (titleInvalid || descriptionTooLong) return;
     setSaving(true);
     try {
       await onSave(title.trim(), description);
@@ -507,6 +516,8 @@ function EditDetailsDialog({
               <MarkdownEditor
                 value={description}
                 onChange={setDescription}
+                maxLength={descriptionMaxLength}
+                error={descriptionTooLong ? tCommon('components.wysiwyg-editor.validation.maxLength') : undefined}
                 placeholder={t('layout.column.editDetails.descriptionPlaceholder')}
                 onImageUpload={onImageUpload}
                 iframeAllowedUrls={iframeAllowedUrls}
@@ -519,7 +530,7 @@ function EditDetailsDialog({
             <Button type="button" variant="ghost" onClick={requestClose} disabled={saving}>
               {t('layout.column.editDetails.cancel')}
             </Button>
-            <Button type="button" onClick={handleSave} disabled={saving || titleInvalid}>
+            <Button type="button" onClick={handleSave} disabled={saving || titleInvalid || descriptionTooLong}>
               {saving ? t('layout.column.editDetails.saving') : t('layout.column.editDetails.save')}
             </Button>
           </DialogFooter>

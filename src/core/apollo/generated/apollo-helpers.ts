@@ -1894,11 +1894,13 @@ export type CreateClassificationDataFieldPolicy = {
 export type CreateCollaboraDocumentDataKeySpecifier = (
   | 'displayName'
   | 'documentType'
+  | 'sourceCollaboraDocumentID'
   | CreateCollaboraDocumentDataKeySpecifier
 )[];
 export type CreateCollaboraDocumentDataFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   documentType?: FieldPolicy<any> | FieldReadFunction<any>;
+  sourceCollaboraDocumentID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCollaborationDataKeySpecifier = (
   | 'calloutsSetData'

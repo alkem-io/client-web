@@ -7,7 +7,7 @@ import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-sc
 import useNavigate from '@/core/routing/useNavigate';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
-import type { ProfileResourceTab, ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
+import type { ProfileResourceTab } from '@/crd/components/common/ProfileResourceTabStrip';
 import { OrganizationAssociateAction } from '@/crd/components/organization/OrganizationAssociateAction';
 import { OrganizationPublicProfileView } from '@/crd/components/organization/OrganizationPublicProfileView';
 import { OrgInvitationDetailDialog } from '@/crd/components/organization/OrgInvitationDetailDialog';
@@ -18,13 +18,17 @@ import { MetricType } from '@/domain/platform/metrics/MetricType';
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
 import { CrdNotFoundView } from '@/main/crdPages/error/CrdNotFoundView';
 import { MembershipCardConnector } from '@/main/crdPages/topLevelPages/common/MembershipCardConnector';
-import { buildTagsetGroups, normaliseReferences } from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
+import {
+  buildTagsetGroups,
+  mapAccountHostedResources,
+  normaliseReferences,
+} from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
 import useResourceTabs from '@/main/crdPages/topLevelPages/common/useResourceTabs';
 import { useSendMessageToOrganizationHandler } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 import { buildLoginUrl, buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { OrgApplyDialogConnector } from './OrgApplyDialogConnector';
-import { mapAssociates, mapOrgHostedResources, offeredRoleLabelKey } from './organizationProfileMapper';
+import { mapAssociates, offeredRoleLabelKey } from './organizationProfileMapper';
 import { useCrdOrganizationProfilePageData } from './useCrdOrganizationProfilePageData';
 import { useOrganizationAssociateAction } from './useOrganizationAssociateAction';
 import { useOrgInvitationResponse } from './useOrgInvitationResponse';
@@ -66,15 +70,24 @@ export const CrdOrganizationProfilePage = () => {
     refreshOrganization();
   }, associateAction.pendingInvitation?.invitation.id);
 
-  const { activeTab, onSelectTab } = useResourceTabs('memberOf');
+  const [leadItems, memberItems] = useFilteredMemberships(provided.contributions ?? [], [RoleType.Lead]);
+
+  const { hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs } = mapAccountHostedResources(
+    accountResources,
+    t('orgProfile.vcType')
+  );
+  const hasOtherResources =
+    hostedVirtualContributors.length > 0 || hostedInnovationPacks.length > 0 || hostedInnovationHubs.length > 0;
 
   const tabs: ProfileResourceTab[] = [
-    { key: 'memberOf' as ResourceTabKey, label: t('orgProfile.tabs.memberOf') },
-    { key: 'leading' as ResourceTabKey, label: t('orgProfile.tabs.leading') },
-    { key: 'resourcesHosted' as ResourceTabKey, label: t('orgProfile.tabs.resourcesHosted') },
+    ...(leadItems.length > 0 ? [{ key: 'leading' as const, label: t('orgProfile.tabs.leading') }] : []),
+    { key: 'memberOf', label: t('orgProfile.tabs.memberOf') },
+    ...(hasOtherResources ? [{ key: 'otherResources' as const, label: t('orgProfile.tabs.otherResources') }] : []),
   ];
-
-  const [leadItems, memberItems] = useFilteredMemberships(provided.contributions ?? [], [RoleType.Lead]);
+  const { activeTab, onSelectTab } = useResourceTabs(
+    tabs.map(tab => tab.key),
+    organization?.id
+  );
 
   const breadcrumbDisplayName = organization?.profile?.displayName ?? '';
   const breadcrumbItems: BreadcrumbTrailItem[] = breadcrumbDisplayName
@@ -126,8 +139,6 @@ export const CrdOrganizationProfilePage = () => {
     }))
   );
 
-  const { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs } =
-    mapOrgHostedResources(accountResources, t('orgProfile.vcType'));
   const leadSpaces = leadItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
   const memberOf = memberItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
 
@@ -191,26 +202,18 @@ export const CrdOrganizationProfilePage = () => {
       }}
       rightColumn={{
         activeTab,
-        hostedSpaces,
         hostedVirtualContributors,
         hostedInnovationPacks,
         hostedInnovationHubs,
         leadSpaces,
         memberOf,
         labels: {
-          spacesSubsection: t('orgProfile.sections.spacesSubsection'),
           virtualContributorsSubsection: t('orgProfile.sections.virtualContributorsSubsection'),
           templatePacksSubsection: t('common.innovation-packs', { ns: 'crd-common' }),
           customHomepagesSubsection: t('common.customHomepages', { ns: 'crd-common' }),
           spacesLeading: t('orgProfile.sections.spacesLeading'),
           memberOf: t('orgProfile.sections.memberOf'),
-          emptyResourcesHosted: t('orgProfile.empty.resourcesHosted'),
-          emptyLeading: t('orgProfile.empty.leading'),
           emptyMembership: t('pages.user-profile.communities.noMembership', { ns: 'crd-common' }),
-          spacePrivacy: {
-            privacyPrivate: t('common.spacePrivacy.private'),
-            privacyPublic: t('common.spacePrivacy.public'),
-          },
         },
       }}
       loading={{

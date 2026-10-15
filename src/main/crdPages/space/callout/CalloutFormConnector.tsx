@@ -35,7 +35,7 @@ import {
   PollStatus,
 } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
-import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { LONG_MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { TaskColumnsDraftDialog } from '@/crd/components/callout/task-board/TaskColumnsDraftDialog';
 import { isTaskBoardEnabled } from '@/crd/components/callout/task-board/taskBoard';
@@ -212,7 +212,7 @@ function CalloutFormConnectorInner({
   onFindTemplate,
   restrictions,
 }: CalloutFormConnectorProps) {
-  const { t } = useTranslation('crd-space');
+  const { t } = useTranslation(['crd-space', 'crd-common']);
   const { t: tTaskBoard } = useTranslation('crd-taskBoard');
 
   // Restriction-driven create-mode defaults: any comment toggle that is hidden
@@ -473,6 +473,17 @@ function CalloutFormConnectorInner({
   }, [open, mode, defaultTemplateId, permissionsLoaded, getTemplateContent, prefill, pickedTemplateRestrictions]);
 
   // --- Collabora import staging -----------------------------------------
+  // A Collabora source carried in by an applied Callout template
+  // (`editMeta.collaboraDocumentId`) is the copy path in
+  // `mapFormToCalloutCreationInput`, and it has no control of its own on screen.
+  // It therefore has to die with the two gestures that abandon it: leaving the
+  // 'document' framing, and picking a blank-create type card — the same two
+  // moments that already clear the staged upload it competes with.
+  const clearCarriedCollaboraSource = () => {
+    if (!values.editMeta?.collaboraDocumentId) return;
+    setField('editMeta', { ...values.editMeta, collaboraDocumentId: undefined });
+  };
+
   const setCollaboraImportFile = (file: File | null) => {
     if (!file) {
       setField('collaboraUploadFile', null);
@@ -979,6 +990,14 @@ function CalloutFormConnectorInner({
   const handleFindTemplate = onFindTemplate ?? (() => setImportTemplateOpen(true));
 
   const canSubmit = values.title.trim().length > 0;
+  // Same measure as the form's `description` rule, so the counter, the live
+  // message and the blocked footer can never disagree with the validator.
+  const descriptionOverLimit = values.description.length > LONG_MARKDOWN_TEXT_LENGTH;
+  // Submit-time errors win; the live length message fills the gap before a submit.
+  const descriptionError =
+    errors.description ??
+    (descriptionOverLimit ? t('crd-common:components.wysiwyg-editor.validation.maxLength') : undefined);
+  const blockedReason = !canSubmit ? 'titleRequired' : descriptionOverLimit ? 'descriptionTooLong' : undefined;
   const notifySwitch =
     mode === 'create' && canSubmit ? (
       <div className="flex items-center gap-2">
@@ -1005,7 +1024,7 @@ function CalloutFormConnectorInner({
         mode={mode}
         dirty={dirty}
         submitting={submitting || loadingCallout}
-        canSubmit={canSubmit}
+        blockedReason={blockedReason}
         title={{
           value: values.title,
           onChange: v => setField('title', v),
@@ -1023,14 +1042,9 @@ function CalloutFormConnectorInner({
               iframeAllowedUrls={editorMarkdownUpload.iframeAllowedUrls}
               onError={editorMarkdownUpload.onError}
               hideImageOptions={disableRichMedia}
+              maxLength={LONG_MARKDOWN_TEXT_LENGTH}
+              error={descriptionError}
             />
-            {/* Submit-time validation only: without this the description error had no
-                rendering path, so an over-long body aborted Save with no feedback. */}
-            {errors.description && (
-              <p className="text-caption text-destructive" aria-live="polite">
-                {errors.description}
-              </p>
-            )}
           </div>
         }
         framingZoneSlot={
@@ -1049,6 +1063,7 @@ function CalloutFormConnectorInner({
                   if (chip !== 'document' && values.framingChip === 'document') {
                     setField('collaboraUploadFile', null);
                     setCollaboraImportError(null);
+                    clearCarriedCollaboraSource();
                   }
                   if (chip !== 'whiteboard' && values.framingChip === 'whiteboard') {
                     void framingWhiteboardDraft.discard();
@@ -1116,7 +1131,12 @@ function CalloutFormConnectorInner({
                 mediaGalleryVisuals={values.mediaGalleryVisuals}
                 onMediaGalleryVisualsChange={v => setField('mediaGalleryVisuals', v)}
                 collaboraDocumentType={values.collaboraDocumentType}
-                onCollaboraDocumentTypeChange={v => setField('collaboraDocumentType', v)}
+                onCollaboraDocumentTypeChange={v => {
+                  // Picking a blank-create card abandons a template-carried source the
+                  // same way the picker's own handler drops a staged file.
+                  clearCarriedCollaboraSource();
+                  setField('collaboraDocumentType', v);
+                }}
                 collaboraUpload={
                   mode === 'create'
                     ? {

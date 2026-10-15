@@ -80,6 +80,8 @@ export type SpaceSettingsLayoutViewProps = {
    * The page header (buttons) stays visible so the user still has context.
    */
   isReplacingFlow?: boolean;
+  /** Character limit of a column (phase / tab) description. */
+  columnDescriptionMaxLength?: number;
   className?: string;
 } & MarkdownUploadProps;
 
@@ -114,6 +116,7 @@ export function SpaceSettingsLayoutView({
   headerActionsSlot,
   isReplacingFlow = false,
   className,
+  columnDescriptionMaxLength,
   onImageUpload,
   iframeAllowedUrls,
   onError,
@@ -290,6 +293,7 @@ export function SpaceSettingsLayoutView({
                     // Sidebar widget configuration is L0-only for now — subspace phases
                     // hide the section in the Layout dialog (stored values untouched).
                     sidebarSettingsEnabled={level === 'L0'}
+                    descriptionMaxLength={columnDescriptionMaxLength}
                     onImageUpload={onImageUpload}
                     iframeAllowedUrls={iframeAllowedUrls}
                     onError={onError}

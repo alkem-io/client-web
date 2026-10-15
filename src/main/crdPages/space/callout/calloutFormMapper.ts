@@ -323,19 +323,29 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     };
   }
 
-  // Collabora document framing has two creation paths:
-  //   - Blank-create: send `{ displayName, documentType }` and no `file`.
+  // Collabora document framing has three creation paths. The branch order below IS the
+  // mutual-exclusion rule when two of them hold a value at once (spec 085 §6 D13) —
+  // precedence, not clearing. Abandoning a path is the connector's job: it drops the
+  // staged file and the carried source id when the framing chip leaves 'document' or a
+  // blank-create card is picked, because an unreachable value here would otherwise win
+  // silently over what the user last chose. The three paths:
   //   - Upload: always send `{}` plus the `file` separately to
   //     `handleCreateCallout`. The post title and the document's own name
   //     are independent — the server always derives the document's name
   //     from the uploaded file. `documentType` is server-derived from the
   //     file's sniffed MIME and MUST NOT be sent.
-  // There is no edit-time counterpart on either branch; the document body is
+  //   - Copy: `editMeta.collaboraDocumentId` is set by `loadCalloutTemplateFormValues` when a
+  //     Callout template is applied. Send only `sourceCollaboraDocumentID`; displayName,
+  //     documentType and MIME are inherited from the source server-side.
+  //   - Blank-create: send `{ displayName, documentType }` and no `file`.
+  // There is no edit-time counterpart on any branch; the document body is
   // edited through the Collabora overlay against the already-created document.
   if (framingType === CalloutFramingType.CollaboraDocument) {
     const postTitle = values.title.trim() || options.collaboraFallbackDisplayName;
     if (values.collaboraUploadFile) {
       callout.framing.collaboraDocument = {};
+    } else if (values.editMeta?.collaboraDocumentId) {
+      callout.framing.collaboraDocument = { sourceCollaboraDocumentID: values.editMeta.collaboraDocumentId };
     } else {
       callout.framing.collaboraDocument = {
         displayName: postTitle,

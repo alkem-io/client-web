@@ -37,6 +37,8 @@ export type SpaceSettingsAboutViewProps = AboutFormValues & {
   dirtyByField: Partial<Record<AboutSectionKey, boolean>>;
   /** Per-section save status (idle / saving / saved / error). */
   saveStatusByField: Partial<Record<AboutSectionKey, AboutSectionSaveStatus>>;
+  /** Character limits of the markdown sections; each turns on that editor's progress ring. */
+  markdownMaxLengthByField?: Partial<Record<'what' | 'why' | 'who', number>>;
   onChange: (patch: Partial<AboutFormValues>) => void;
   onUploadAvatar: (file: File) => void;
   onUploadPageBanner: (file: File) => void;
@@ -85,6 +87,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     previewCard,
     dirtyByField,
     saveStatusByField,
+    markdownMaxLengthByField,
     onChange,
     onUploadAvatar,
     onUploadPageBanner,
@@ -131,9 +134,9 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
             <InlineEditText
               value={name}
               onChange={next => onChange({ name: next })}
-              ariaLabel="Space name"
-              editAriaLabel="Edit space name"
-              placeholder="Space Name"
+              ariaLabel={t('about.name.ariaLabel')}
+              editAriaLabel={t('about.name.editAriaLabel')}
+              placeholder={t('about.name.title')}
               className="mt-2 text-subheader font-normal"
             />
             <FieldFooter
@@ -153,9 +156,9 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
             <InlineEditText
               value={tagline}
               onChange={next => onChange({ tagline: next })}
-              ariaLabel="Tagline"
-              editAriaLabel="Edit tagline"
-              placeholder="Tagline"
+              ariaLabel={t('about.tagline.ariaLabel')}
+              editAriaLabel={t('about.tagline.editAriaLabel')}
+              placeholder={t('about.tagline.title')}
               className="mt-2 text-subheader font-normal"
             />
             <FieldFooter
@@ -225,15 +228,17 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
           {/* What */}
           <FieldSection id="description">
             <FieldLabel>{t('about.what.title')}</FieldLabel>
-            <MarkdownEditor
-              value={what}
-              onChange={next => onChange({ what: next })}
-              placeholder="What's this space about…"
-              className="mt-2"
-              onImageUpload={onImageUpload}
-              iframeAllowedUrls={iframeAllowedUrls}
-              onError={onError}
-            />
+            <div className="mt-2 space-y-1.5">
+              <MarkdownEditor
+                value={what}
+                onChange={next => onChange({ what: next })}
+                maxLength={markdownMaxLengthByField?.what}
+                placeholder={t('about.what.placeholder')}
+                onImageUpload={onImageUpload}
+                iframeAllowedUrls={iframeAllowedUrls}
+                onError={onError}
+              />
+            </div>
             <FieldFooter
               hint={t('about.what.description')}
               dirty={!!dirtyByField.what}
@@ -248,15 +253,17 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
           {/* Why */}
           <FieldSection id="why">
             <FieldLabel>{t('about.why.title')}</FieldLabel>
-            <MarkdownEditor
-              value={why}
-              onChange={next => onChange({ why: next })}
-              placeholder="Why does this space exist…"
-              className="mt-2"
-              onImageUpload={onImageUpload}
-              iframeAllowedUrls={iframeAllowedUrls}
-              onError={onError}
-            />
+            <div className="mt-2 space-y-1.5">
+              <MarkdownEditor
+                value={why}
+                onChange={next => onChange({ why: next })}
+                maxLength={markdownMaxLengthByField?.why}
+                placeholder={t('about.why.placeholder')}
+                onImageUpload={onImageUpload}
+                iframeAllowedUrls={iframeAllowedUrls}
+                onError={onError}
+              />
+            </div>
             <FieldFooter
               hint={t('about.why.description')}
               dirty={!!dirtyByField.why}
@@ -271,15 +278,17 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
           {/* Who */}
           <FieldSection id="who">
             <FieldLabel>{t('about.who.title')}</FieldLabel>
-            <MarkdownEditor
-              value={who}
-              onChange={next => onChange({ who: next })}
-              placeholder="Who is this space for…"
-              className="mt-2"
-              onImageUpload={onImageUpload}
-              iframeAllowedUrls={iframeAllowedUrls}
-              onError={onError}
-            />
+            <div className="mt-2 space-y-1.5">
+              <MarkdownEditor
+                value={who}
+                onChange={next => onChange({ who: next })}
+                maxLength={markdownMaxLengthByField?.who}
+                placeholder={t('about.who.placeholder')}
+                onImageUpload={onImageUpload}
+                iframeAllowedUrls={iframeAllowedUrls}
+                onError={onError}
+              />
+            </div>
             <FieldFooter
               hint={t('about.who.description')}
               dirty={!!dirtyByField.who}
@@ -298,15 +307,15 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               <InlineEditText
                 value={city}
                 onChange={next => onChange({ city: next })}
-                ariaLabel="City"
-                editAriaLabel="Edit city"
-                placeholder="City"
+                ariaLabel={t('about.location.city')}
+                editAriaLabel={t('about.location.editCityAriaLabel')}
+                placeholder={t('about.location.city')}
               />
               <CountryCombobox
                 value={country}
                 onChange={next => onChange({ country: next })}
                 countries={props.countries}
-                placeholder="Country"
+                placeholder={t('about.location.countryPlaceholder')}
                 className="w-full"
               />
             </div>
@@ -327,7 +336,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
             <TagsInput
               value={tags}
               onChange={next => onChange({ tags: next })}
-              placeholder="Add a tag and press Enter"
+              placeholder={t('about.tags.placeholder')}
               className="mt-2"
             />
             <FieldFooter

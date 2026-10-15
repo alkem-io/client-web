@@ -2786,6 +2786,8 @@ export type CreateCollaboraDocumentData = {
   displayName?: Maybe<Scalars['String']['output']>;
   /** Type of document to create. Required for blank-create. On the upload path, ignored — the type is derived from the uploaded file's sniffed MIME by file-service-go. */
   documentType?: Maybe<CollaboraDocumentType>;
+  /** Copy an existing CollaboraDocument's current content into the new document. The copy owns its own backing file from the moment it is created: editing it never changes the source, and editing the source never changes it. Mutually exclusive with the upload path. documentType, originalMimeType and displayName are inherited from the source. READ on the source is authorized server-side. */
+  sourceCollaboraDocumentID?: Maybe<Scalars['UUID']['output']>;
 };
 
 export type CreateCollaboraDocumentInput = {
@@ -2793,6 +2795,8 @@ export type CreateCollaboraDocumentInput = {
   displayName?: InputMaybe<Scalars['String']['input']>;
   /** Type of document to create. Required for blank-create. On the upload path, ignored — the type is derived from the uploaded file's sniffed MIME by file-service-go. */
   documentType?: InputMaybe<CollaboraDocumentType>;
+  /** Copy an existing CollaboraDocument's current content into the new document. The copy owns its own backing file from the moment it is created: editing it never changes the source, and editing the source never changes it. Mutually exclusive with the upload path. documentType, originalMimeType and displayName are inherited from the source. READ on the source is authorized server-side. */
+  sourceCollaboraDocumentID?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type CreateCollaborationData = {
@@ -5837,7 +5841,7 @@ export type Mutation = {
   createTagsetOnProfile: Tagset;
   /** Add a column to a Tasks board Callout. */
   createTaskColumnOnCallout: Callout;
-  /** Creates a new Template on the specified TemplatesSet. */
+  /** Creates a new Template on the specified TemplatesSet. When `file` is supplied alongside a COLLABORA_DOCUMENT callout framing, the template is framed with a Collabora document populated from the uploaded bytes (file-service-go sniffs MIME, validates format and size, and derives the document type; any documentType in the input is ignored on the upload path; displayName defaults from the filename when absent). When `file` is omitted, the existing behaviour applies. */
   createTemplate: Template;
   /** Creates a new Template on the specified TemplatesSet using the provided ContentSpace as content. */
   createTemplateFromContentSpace: Template;
@@ -6437,6 +6441,7 @@ export type MutationCreateTaskColumnOnCalloutArgs = {
 };
 
 export type MutationCreateTemplateArgs = {
+  file?: InputMaybe<Scalars['Upload']['input']>;
   templateData: CreateTemplateOnTemplatesSetInput;
 };
 
@@ -37964,6 +37969,7 @@ export type CreateTemplateMutationVariables = Exact<{
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
   classificationData?: InputMaybe<CreateClassificationTemplateContentInput>;
   includeProfileVisuals?: InputMaybe<Scalars['Boolean']['input']>;
+  file?: InputMaybe<Scalars['Upload']['input']>;
 }>;
 
 export type CreateTemplateMutation = {

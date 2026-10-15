@@ -43,12 +43,11 @@
       "settingsAriaLabel": "Ouvrir les paramètres utilisateur"
     },
     "tabs": {
-      "resourcesHosted": "Ressources hébergées",
       "leading": "Animation",
-      "memberOf": "Membre de"
+      "memberOf": "Membre de",
+      "otherResources": "Autres ressources"
     },
     "sections": {
-      "spacesSubsection": "Espaces",
       "virtualContributorsSubsection": "Contributeurs virtuels",
       "spacesLeading": "Espaces animés",
       "memberOf": "Membre de"
@@ -64,8 +63,6 @@
       "memberCountLine_other": "{{count}} membres"
     },
     "empty": {
-      "resourcesHosted": "Aucune ressource hébergée pour le moment.",
-      "leading": "N'anime aucun espace pour le moment.",
       "membership": "Pas encore d'adhésions."
     },
     "vcType": "Contributeur virtuel"
@@ -93,20 +90,16 @@
       "socialLinksTitle": "Réseaux sociaux"
     },
     "tabs": {
-      "resourcesHosted": "Ressources hébergées",
       "leading": "Espaces animés",
-      "memberOf": "Toutes les adhésions"
+      "memberOf": "Toutes les adhésions",
+      "otherResources": "Autres ressources"
     },
     "sections": {
-      "spacesSubsection": "Espaces",
       "virtualContributorsSubsection": "Contributeurs virtuels",
       "spacesLeading": "Espaces animés",
       "memberOf": "Toutes les adhésions"
     },
-    "empty": {
-      "resourcesHosted": "Aucune ressource hébergée pour le moment.",
-      "leading": "N'anime aucun espace pour le moment."
-    },
+    "empty": {},
     "vcType": "Contributeur virtuel",
     "associate": {
       "join": "Rejoindre en tant qu’associé",

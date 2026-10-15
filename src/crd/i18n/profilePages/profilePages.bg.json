@@ -43,12 +43,11 @@
       "settingsAriaLabel": "Отвори потребителските настройки"
     },
     "tabs": {
-      "resourcesHosted": "Хоствани ресурси",
       "leading": "Водещ",
-      "memberOf": "Член на"
+      "memberOf": "Член на",
+      "otherResources": "Други ресурси"
     },
     "sections": {
-      "spacesSubsection": "Пространства",
       "virtualContributorsSubsection": "Виртуални сътрудници",
       "spacesLeading": "Пространства, които водя",
       "memberOf": "Член на"
@@ -64,8 +63,6 @@
       "memberCountLine_other": "{{count}} члена"
     },
     "empty": {
-      "resourcesHosted": "Все още няма хоствани ресурси.",
-      "leading": "Все още не води пространства.",
       "membership": "Все още няма членства."
     },
     "vcType": "Виртуален сътрудник"
@@ -93,20 +90,16 @@
       "socialLinksTitle": "Социални"
     },
     "tabs": {
-      "resourcesHosted": "Хоствани ресурси",
       "leading": "Пространства, които водя",
-      "memberOf": "Всички членства"
+      "memberOf": "Всички членства",
+      "otherResources": "Други ресурси"
     },
     "sections": {
-      "spacesSubsection": "Пространства",
       "virtualContributorsSubsection": "Виртуални сътрудници",
       "spacesLeading": "Пространства, които водя",
       "memberOf": "Всички членства"
     },
-    "empty": {
-      "resourcesHosted": "Все още няма хоствани ресурси.",
-      "leading": "Все още не води пространства."
-    },
+    "empty": {},
     "vcType": "Виртуален сътрудник",
     "associate": {
       "join": "Присъединяване като асоцииран",
