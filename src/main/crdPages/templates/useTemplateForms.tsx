@@ -672,8 +672,17 @@ export function useTemplateForms({
         return;
       case 'callout': {
         const calloutData = calloutFormValuesToCreateCalloutInput(calloutForm.values, calloutFallbacks);
+        // Same gate `mapFormToCalloutCreationInput` applies on the live create path;
+        // `calloutFormValuesToCreateCalloutInput` destructures only `{ input }` and discards the
+        // gated file, so it is re-applied here. Without it, staging a file and then switching the
+        // chip to Post sends a file the server rejects with a ValidationException the user cannot
+        // explain.
+        const file =
+          calloutForm.values.framingChip === 'document'
+            ? (calloutForm.values.collaboraUploadFile ?? undefined)
+            : undefined;
         const result = await createTemplate({
-          variables: { templatesSetId: setId, type: GqlTemplateType.Callout, profileData, tags, calloutData },
+          variables: { templatesSetId: setId, type: GqlTemplateType.Callout, profileData, tags, calloutData, file },
         });
         // Best-effort post-create uploads: the template already exists, so an upload failure must not
         // bubble and keep the dialog open — that invites a retry and a duplicate template. Mirror the
