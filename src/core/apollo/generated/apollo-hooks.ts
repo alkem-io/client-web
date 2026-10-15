@@ -29130,8 +29130,9 @@ export function refetchSpaceTemplateContentQuery(variables: SchemaTypes.SpaceTem
   return { query: SpaceTemplateContentDocument, variables: variables };
 }
 export const CreateTemplateDocument = gql`
-    mutation CreateTemplate($templatesSetId: UUID!, $profileData: CreateProfileInput!, $type: TemplateType!, $tags: [String!], $calloutData: CreateCalloutInput, $communityGuidelinesData: CreateCommunityGuidelinesInput, $contentSpaceData: CreateTemplateContentSpaceInput, $postDefaultDescription: Markdown, $whiteboard: CreateWhiteboardInput, $classificationData: CreateClassificationTemplateContentInput, $includeProfileVisuals: Boolean = false) {
+    mutation CreateTemplate($templatesSetId: UUID!, $profileData: CreateProfileInput!, $type: TemplateType!, $tags: [String!], $calloutData: CreateCalloutInput, $communityGuidelinesData: CreateCommunityGuidelinesInput, $contentSpaceData: CreateTemplateContentSpaceInput, $postDefaultDescription: Markdown, $whiteboard: CreateWhiteboardInput, $classificationData: CreateClassificationTemplateContentInput, $includeProfileVisuals: Boolean = false, $file: Upload) {
   createTemplate(
+    file: $file
     templateData: {templatesSetID: $templatesSetId, profileData: $profileData, tags: $tags, type: $type, calloutData: $calloutData, communityGuidelinesData: $communityGuidelinesData, postDefaultDescription: $postDefaultDescription, contentSpaceData: $contentSpaceData, whiteboard: $whiteboard, classificationData: $classificationData}
   ) {
     id
@@ -29202,6 +29203,7 @@ export type CreateTemplateMutationFn = Apollo.MutationFunction<
  *      whiteboard: // value for 'whiteboard'
  *      classificationData: // value for 'classificationData'
  *      includeProfileVisuals: // value for 'includeProfileVisuals'
+ *      file: // value for 'file'
  *   },
  * });
  */
