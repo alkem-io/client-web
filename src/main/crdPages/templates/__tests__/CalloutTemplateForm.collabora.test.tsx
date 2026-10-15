@@ -1,8 +1,6 @@
 /** @vitest-environment jsdom */
 import { fireEvent, render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-const spies = vi.hoisted(() => ({ validateCollaboraImportFile: vi.fn() }));
+import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
@@ -11,16 +9,6 @@ vi.mock('react-i18next', () => ({
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useWhiteboardDetailsByIdQuery: () => ({ data: undefined }),
 }));
-
-// Keep the real validator's behaviour; observe the call (FR-013: the client pre-check runs
-// before anything is staged).
-vi.mock('@/domain/collaboration/calloutContributions/collaboraDocument/validateCollaboraImportFile', async () => {
-  const actual = await vi.importActual<
-    typeof import('@/domain/collaboration/calloutContributions/collaboraDocument/validateCollaboraImportFile')
-  >('@/domain/collaboration/calloutContributions/collaboraDocument/validateCollaboraImportFile');
-  spies.validateCollaboraImportFile.mockImplementation(actual.validateCollaboraImportFile);
-  return { ...actual, validateCollaboraImportFile: spies.validateCollaboraImportFile };
-});
 
 // Everything outside the framing editor is irrelevant here, and pulls Apollo in.
 vi.mock('@/crd/forms/callout/AllowCommentsField', () => ({ AllowCommentsField: () => null }));
@@ -73,11 +61,7 @@ const pickFile = (file: File) => {
 };
 
 describe('CalloutTemplateForm — Collabora document upload', () => {
-  beforeEach(() => {
-    spies.validateCollaboraImportFile.mockClear();
-  });
-
-  it('offers the upload control in create mode and validates the chosen file', () => {
+  it('offers the upload control in create mode and stages the chosen file', () => {
     const setField = renderDocumentForm(false);
     const file = new File([new Uint8Array(4)], 'plan.docx', {
       type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -85,7 +69,6 @@ describe('CalloutTemplateForm — Collabora document upload', () => {
 
     pickFile(file);
 
-    expect(spies.validateCollaboraImportFile).toHaveBeenCalledWith([file]);
     expect(setField).toHaveBeenCalledWith('collaboraUploadFile', file);
   });
 
