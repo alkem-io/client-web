@@ -299,6 +299,45 @@ describe('mapFormToCalloutCreationInput — framing branches', () => {
     expect(result.collaboraUploadFile).toBe(stagedFile);
   });
 
+  it('"document" chip with editMeta.collaboraDocumentId and no staged file copies the source document (085 FR-017)', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({
+        framingChip: 'document',
+        title: 'From template',
+        collaboraDocumentType: CollaboraDocumentType.Spreadsheet,
+        editMeta: {
+          framingProfileId: 'profile-1',
+          originalReferenceIds: [],
+          collaboraDocumentId: 'source-doc-1',
+        },
+      }),
+      createOptions
+    );
+    expect(result.input.framing.collaboraDocument).toEqual({ sourceCollaboraDocumentID: 'source-doc-1' });
+    expect(result.collaboraUploadFile).toBeUndefined();
+  });
+
+  it('a staged file wins over editMeta.collaboraDocumentId — branch order is the whole mutual-exclusion rule, nothing is cleared (085 §6 D13)', () => {
+    const stagedFile = new File([new Uint8Array(10)], 'override.docx', {
+      type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    });
+    const result = mapFormToCalloutCreationInput(
+      baseValues({
+        framingChip: 'document',
+        title: 'From template',
+        collaboraUploadFile: stagedFile,
+        editMeta: {
+          framingProfileId: 'profile-1',
+          originalReferenceIds: [],
+          collaboraDocumentId: 'source-doc-1',
+        },
+      }),
+      createOptions
+    );
+    expect(result.input.framing.collaboraDocument).toEqual({});
+    expect(result.collaboraUploadFile).toBe(stagedFile);
+  });
+
   it('"document" chip without uploadFile but with a wiped framing-type-switch leaves no orphan file (regression — Edge Case)', () => {
     // Simulating the state after the connector cleared `collaboraUploadFile` on chip-switch.
     const result = mapFormToCalloutCreationInput(
