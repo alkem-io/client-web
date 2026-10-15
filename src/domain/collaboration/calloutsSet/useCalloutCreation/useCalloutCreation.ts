@@ -37,13 +37,16 @@ export interface CalloutCreationType {
     };
     whiteboard?: WhiteboardFieldSubmittedValues;
     /**
-     * Collabora-document framing input. On the blank-create path, both fields are sent.
-     * On the upload path, both are omitted (server derives `documentType` from the
-     * uploaded file's MIME and defaults `displayName` from the filename when absent).
+     * Collabora-document framing input, with one field per creation path. On blank-create,
+     * `displayName` + `documentType` are sent. On the upload path all are omitted (server derives
+     * `documentType` from the uploaded file's MIME and defaults `displayName` from the filename).
+     * On the copy path only `sourceCollaboraDocumentID` is sent — the rest is inherited from the
+     * source document server-side.
      */
     collaboraDocument?: {
       displayName?: string;
       documentType?: CollaboraDocumentType;
+      sourceCollaboraDocumentID?: string;
     };
     tags?: string[];
     link?: LinkFramingFieldSubmittedValues;

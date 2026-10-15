@@ -9,8 +9,9 @@
  * (whose result is threaded in as the `form` prop); this component never owns the lifecycle.
  *
  * Differences vs the live callout editor (`CalloutFormConnector`):
- *  - No Collabora **upload** path — a template captures a *blank-create* Collabora document
- *    (`collaboraDocumentType` only); the file-upload zone is create-callout-only.
+ *  - A Collabora document template is captured either blank (`collaboraDocumentType` only) or
+ *    from an uploaded file, staged here and sent with the create mutation (FR-013). The upload
+ *    zone is create-only: once the template exists, replacing its document's bytes is out of scope.
  *  - No publish/draft visibility, no "notify members" switch, no pre-populate link contributions —
  *    those are properties of a concrete callout, not of a template.
  *  - Creating a template: framing/response chips are fully editable. Editing an existing template
@@ -25,6 +26,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useWhiteboardDetailsByIdQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
+import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
 import { type FramingChipId, FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
 import { ResponsePanel } from '@/crd/forms/callout/ResponsePanel';
 import { ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip';
@@ -32,6 +34,13 @@ import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/M
 import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { Label } from '@/crd/primitives/label';
+import {
+  COLLABORA_IMPORT_ACCEPT_ATTR,
+  COLLABORA_IMPORT_EXTENSIONS_P1,
+  COLLABORA_IMPORT_MAX_BYTES,
+} from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraImportFormats';
+import { deriveCollaboraImportErrorMessage } from '@/domain/collaboration/calloutContributions/collaboraDocument/deriveCollaboraImportErrorMessage';
+import { validateCollaboraImportFile } from '@/domain/collaboration/calloutContributions/collaboraDocument/validateCollaboraImportFile';
 import type { WhiteboardDraftLifecycle } from '@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft';
 import { healContributorCollection } from '@/main/crdPages/space/callout/contributorCollectionMapper';
 import { FramingEditorConnector } from '@/main/crdPages/space/callout/FramingEditorConnector';
@@ -98,6 +107,7 @@ export function CalloutTemplateForm({
   const { t } = useTranslation('crd-space');
   const { values, errors, setField } = form;
   const [defaultsOpen, setDefaultsOpen] = useState(false);
+  const [importError, setImportError] = useState<DocumentImportError | null>(null);
   const editableWhiteboardId = editMode ? values.editMeta?.whiteboardId : undefined;
   const { data: whiteboardData } = useWhiteboardDetailsByIdQuery({
     variables: { whiteboardId: editableWhiteboardId ?? '' },
@@ -107,6 +117,42 @@ export function CalloutTemplateForm({
 
   const responseTypeSupportsDefaults =
     values.responseType === 'post' || values.responseType === 'memo' || values.responseType === 'whiteboard';
+
+  // Collabora upload staging, copied from the third shipped consumer of these primitives
+  // (`DocumentContributionAddConnector`). The file is held on the form values and sent with the
+  // create-template mutation by `useTemplateForms`.
+  const collaboraFormatList = COLLABORA_IMPORT_EXTENSIONS_P1.join(', ');
+  const collaboraCapMb = Math.round(COLLABORA_IMPORT_MAX_BYTES / (1024 * 1024));
+  const collaboraErrorMessage = deriveCollaboraImportErrorMessage(importError, t, collaboraFormatList, collaboraCapMb);
+
+  const handleCollaboraFileChange = (next: File | null) => {
+    if (!next) {
+      setField('collaboraUploadFile', null);
+      return;
+    }
+    // Client-side pre-check BEFORE any network call.
+    const validation = validateCollaboraImportFile([next]);
+    if (!validation.ok) {
+      setImportError(validation.error);
+      setField('collaboraUploadFile', null);
+      return;
+    }
+    setImportError(null);
+    setField('collaboraUploadFile', next);
+  };
+
+  // Leaving the 'document' chip abandons the staged file, exactly as
+  // CalloutFormConnector's chip-switch guard does on the live-callout side.
+  // Without this the file survives a chip round-trip and `useTemplateForms`
+  // still sends it with the template — a template editor cannot replace a
+  // created template's document bytes, so the wrong file would be permanent.
+  const handleFramingChipChange = (chip: typeof values.framingChip) => {
+    if (chip !== 'document' && values.framingChip === 'document') {
+      setField('collaboraUploadFile', null);
+      setImportError(null);
+    }
+    setField('framingChip', chip);
+  };
 
   return (
     <div className="space-y-6">
@@ -144,7 +190,7 @@ export function CalloutTemplateForm({
       <div className="space-y-4">
         <FramingChipStrip
           value={values.framingChip}
-          onChange={chip => setField('framingChip', chip)}
+          onChange={handleFramingChipChange}
           editMode={editMode}
           allowedChips={TEMPLATE_FRAMING_CHIPS}
           fixedKindChips={FIXED_KIND_FRAMING_CHIPS}
@@ -196,6 +242,23 @@ export function CalloutTemplateForm({
           onMediaGalleryVisualsChange={v => setField('mediaGalleryVisuals', v)}
           collaboraDocumentType={values.collaboraDocumentType}
           onCollaboraDocumentTypeChange={v => setField('collaboraDocumentType', v)}
+          collaboraUpload={
+            editMode
+              ? undefined
+              : {
+                  acceptAttr: COLLABORA_IMPORT_ACCEPT_ATTR,
+                  file: values.collaboraUploadFile,
+                  onFileChange: handleCollaboraFileChange,
+                  onError: setImportError,
+                  error: importError,
+                  errorMessage: collaboraErrorMessage,
+                  busy: disabled,
+                  labelHint: t('callout.documentImportHint'),
+                  labelMaxSize: t('callout.documentImportMaxSize', { cap: collaboraCapMb }),
+                  labelRemoveFile: t('callout.documentImportRemoveFile'),
+                  labelOr: t('callout.documentImportOr'),
+                }
+          }
           contributorCollection={values.contributorCollection}
           onContributorCollectionChange={v =>
             setField(

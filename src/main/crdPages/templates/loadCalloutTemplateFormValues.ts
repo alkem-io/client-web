@@ -29,6 +29,13 @@ export async function loadCalloutTemplateFormValues(
   if (!callout) return null;
 
   const values = calloutTemplateContentToFormValues(callout);
+  // Apply-only: carry the template's Collabora document id so the create mapper emits
+  // `sourceCollaboraDocumentID` and the new callout starts from a copy of the template's content.
+  // Deliberately here and not in the shared mapper, whose other consumers (template Duplicate and
+  // import-from-library) must keep producing a blank document (spec 085 §6 D15).
+  if (values.editMeta) {
+    values.editMeta.collaboraDocumentId = callout.framing.collaboraDocument?.id;
+  }
   if (values.whiteboardPreviewServerUrl) {
     const blob = await fetchPreviewImageBlob(values.whiteboardPreviewServerUrl);
     if (blob) {

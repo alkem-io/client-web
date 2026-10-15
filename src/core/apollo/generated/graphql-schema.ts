@@ -694,6 +694,61 @@ export type AdminRevokeMcpApiKeyInput = {
   userID: Scalars['UUID']['input'];
 };
 
+export type AdminTemplateFileRepairInput = {
+  /** List the references without copying anything. Set to false to copy the files the template's owner can read. */
+  dryRun?: Scalars['Boolean']['input'];
+  /** The templates to process. When omitted, every template is processed. */
+  templateIDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
+};
+
+export type AdminTemplateFileRepairIssue = {
+  __typename?: 'AdminTemplateFileRepairIssue';
+  entityID: Scalars['String']['output'];
+  location: Scalars['String']['output'];
+  reason: Scalars['String']['output'];
+  templateID: Scalars['String']['output'];
+};
+
+export type AdminTemplateFileRepairResult = {
+  __typename?: 'AdminTemplateFileRepairResult';
+  copiedReferences: Scalars['Int']['output'];
+  dryRun: Scalars['Boolean']['output'];
+  failed: Array<AdminTemplateFileRepairIssue>;
+  missingFiles: Array<AdminTemplateMissingFileReference>;
+  references: Array<AdminTemplateForeignFileReference>;
+  templatesScanned: Scalars['Int']['output'];
+  templatesWithForeignFiles: Scalars['Int']['output'];
+};
+
+/** A file a template references that is stored outside the template entity referencing it. */
+export type AdminTemplateForeignFileReference = {
+  __typename?: 'AdminTemplateForeignFileReference';
+  /** Whether this run copied the file into the template. */
+  copied: Scalars['Boolean']['output'];
+  /** The entity holding the reference. */
+  entityID: Scalars['String']['output'];
+  fileID: Scalars['String']['output'];
+  /** Where in the template the reference sits, e.g. profileDescription, visualUri, linkUri, whiteboard. */
+  location: Scalars['String']['output'];
+  /** Whether the template's owner can read the file. Only such files are copied; any other stays referenced as written. */
+  ownerCanRead: Scalars['Boolean']['output'];
+  /** The bucket the file is stored in today. */
+  storageBucketID: Scalars['String']['output'];
+  templateID: Scalars['String']['output'];
+  templateName: Scalars['String']['output'];
+};
+
+/** A reference in a template to a file that no longer exists. It cannot be repaired. */
+export type AdminTemplateMissingFileReference = {
+  __typename?: 'AdminTemplateMissingFileReference';
+  /** The entity holding the reference. */
+  entityID: Scalars['String']['output'];
+  fileID: Scalars['String']['output'];
+  location: Scalars['String']['output'];
+  templateID: Scalars['String']['output'];
+  templateName: Scalars['String']['output'];
+};
+
 export type AdminUpdateSpaceVisibilityInput = {
   /** The Space whose visibility is to be updated. */
   spaceID: Scalars['UUID']['input'];
@@ -2729,6 +2784,8 @@ export type CreateCollaboraDocumentData = {
   displayName?: Maybe<Scalars['String']['output']>;
   /** Type of document to create. Required for blank-create. On the upload path, ignored — the type is derived from the uploaded file's sniffed MIME by file-service-go. */
   documentType?: Maybe<CollaboraDocumentType>;
+  /** Copy an existing CollaboraDocument's current content into the new document. The copy owns its own backing file from the moment it is created: editing it never changes the source, and editing the source never changes it. Mutually exclusive with the upload path. documentType, originalMimeType and displayName are inherited from the source. READ on the source is authorized server-side. */
+  sourceCollaboraDocumentID?: Maybe<Scalars['UUID']['output']>;
 };
 
 export type CreateCollaboraDocumentInput = {
@@ -2736,6 +2793,8 @@ export type CreateCollaboraDocumentInput = {
   displayName?: InputMaybe<Scalars['String']['input']>;
   /** Type of document to create. Required for blank-create. On the upload path, ignored — the type is derived from the uploaded file's sniffed MIME by file-service-go. */
   documentType?: InputMaybe<CollaboraDocumentType>;
+  /** Copy an existing CollaboraDocument's current content into the new document. The copy owns its own backing file from the moment it is created: editing it never changes the source, and editing the source never changes it. Mutually exclusive with the upload path. documentType, originalMimeType and displayName are inherited from the source. READ on the source is authorized server-side. */
+  sourceCollaboraDocumentID?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type CreateCollaborationData = {
@@ -5668,6 +5727,8 @@ export type Mutation = {
   adminLicensePolicyDeleteCredentialRule: LicensingCredentialBasedPolicyCredentialRule;
   /** Updates a CredentialRule on the LicensePolicy. */
   adminLicensePolicyUpdateCredentialRule: LicensingCredentialBasedPolicyCredentialRule;
+  /** Lists, and on request copies, the files templates reference but do not store. A file is copied only when the template's owner can read it. A dry run by default. */
+  adminRepairTemplateFiles: AdminTemplateFileRepairResult;
   /** Platform Users Admin: revoke a named user's MCP API key. Idempotent. */
   adminRevokeMcpApiKey: McpApiKey;
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
@@ -5778,7 +5839,7 @@ export type Mutation = {
   createTagsetOnProfile: Tagset;
   /** Add a column to a Tasks board Callout. */
   createTaskColumnOnCallout: Callout;
-  /** Creates a new Template on the specified TemplatesSet. */
+  /** Creates a new Template on the specified TemplatesSet. When `file` is supplied alongside a COLLABORA_DOCUMENT callout framing, the template is framed with a Collabora document populated from the uploaded bytes (file-service-go sniffs MIME, validates format and size, and derives the document type; any documentType in the input is ignored on the upload path; displayName defaults from the filename when absent). When `file` is omitted, the existing behaviour applies. */
   createTemplate: Template;
   /** Creates a new Template on the specified TemplatesSet using the provided ContentSpace as content. */
   createTemplateFromContentSpace: Template;
@@ -5870,7 +5931,7 @@ export type Mutation = {
   inviteForEntryRoleOnRoleSet: Array<RoleSetInvitationResult>;
   /** Join the specified RoleSet using the entry Role, without going through an approval process. */
   joinRoleSet: RoleSet;
-  /** Leave a group conversation. Awaits the Matrix kick rather than reporting success merely because the RPC was sent: true means the kick was accepted, and the membership is then removed asynchronously — observe MEMBER_REMOVED for completion. If Matrix rejects the kick this still returns true, because Alkemio is authoritative for its own membership and applies the removal locally instead; on that path the Matrix-side room membership may diverge until an operator reconciles it. If the last member leaves, the conversation is auto-deleted and a CONVERSATION_DELETED event follows. */
+  /** Leave a group conversation. Awaits the Matrix removal rather than reporting success merely because the RPC was sent: true means Matrix accepted it (the member leaves the room), and the membership is then removed asynchronously — observe MEMBER_REMOVED for completion. If the Matrix removal fails (rejected — e.g. the member is no longer in the Matrix room — or the RPC times out) this still returns true, because Alkemio is authoritative for its own membership and applies the removal locally instead; on that path the Matrix-side room membership may diverge until an operator reconciles it. If the last member leaves, the conversation is auto-deleted and a CONVERSATION_DELETED event follows. */
   leaveConversation: Scalars['Boolean']['output'];
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
@@ -5904,7 +5965,7 @@ export type Mutation = {
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean']['output'];
   /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
-  /** Remove a member from a group conversation. Awaits the Matrix kick rather than reporting success merely because the RPC was sent: true means the kick was accepted, and the membership is then removed asynchronously — observe MEMBER_REMOVED for completion. If Matrix rejects the kick (e.g. insufficient permissions) this still returns true, because Alkemio is authoritative for its own membership and applies the removal locally instead; on that path the Matrix-side room membership may diverge until an operator reconciles it. */
+  /** Remove a member from a group conversation. Awaits the Matrix removal rather than reporting success merely because the RPC was sent: true means Matrix accepted it (the member leaves the room), and the membership is then removed asynchronously — observe MEMBER_REMOVED for completion. If the Matrix removal fails (rejected — e.g. the member is no longer in the Matrix room — or the RPC times out) this still returns true, because Alkemio is authoritative for its own membership and applies the removal locally instead; on that path the Matrix-side room membership may diverge until an operator reconciles it. */
   removeConversationMember: Scalars['Boolean']['output'];
   /** Remove the default callout template from an InnovationFlowState. */
   removeDefaultCalloutTemplateOnInnovationFlowState: InnovationFlowState;
@@ -6180,6 +6241,10 @@ export type MutationAdminLicensePolicyUpdateCredentialRuleArgs = {
   updateData: UpdateLicensePolicyCredentialRuleInput;
 };
 
+export type MutationAdminRepairTemplateFilesArgs = {
+  repairData: AdminTemplateFileRepairInput;
+};
+
 export type MutationAdminRevokeMcpApiKeyArgs = {
   revokeData: AdminRevokeMcpApiKeyInput;
 };
@@ -6374,6 +6439,7 @@ export type MutationCreateTaskColumnOnCalloutArgs = {
 };
 
 export type MutationCreateTemplateArgs = {
+  file?: InputMaybe<Scalars['Upload']['input']>;
   templateData: CreateTemplateOnTemplatesSetInput;
 };
 
@@ -37884,6 +37950,7 @@ export type CreateTemplateMutationVariables = Exact<{
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
   classificationData?: InputMaybe<CreateClassificationTemplateContentInput>;
   includeProfileVisuals?: InputMaybe<Scalars['Boolean']['input']>;
+  file?: InputMaybe<Scalars['Upload']['input']>;
 }>;
 
 export type CreateTemplateMutation = {
