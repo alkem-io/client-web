@@ -324,7 +324,11 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
   }
 
   // Collabora document framing has three creation paths. The branch order below IS the
-  // mutual-exclusion rule — nothing clears anything (spec 085 §6 D13):
+  // mutual-exclusion rule when two of them hold a value at once (spec 085 §6 D13) —
+  // precedence, not clearing. Abandoning a path is the connector's job: it drops the
+  // staged file and the carried source id when the framing chip leaves 'document' or a
+  // blank-create card is picked, because an unreachable value here would otherwise win
+  // silently over what the user last chose. The three paths:
   //   - Upload: always send `{}` plus the `file` separately to
   //     `handleCreateCallout`. The post title and the document's own name
   //     are independent — the server always derives the document's name

@@ -473,6 +473,17 @@ function CalloutFormConnectorInner({
   }, [open, mode, defaultTemplateId, permissionsLoaded, getTemplateContent, prefill, pickedTemplateRestrictions]);
 
   // --- Collabora import staging -----------------------------------------
+  // A Collabora source carried in by an applied Callout template
+  // (`editMeta.collaboraDocumentId`) is the copy path in
+  // `mapFormToCalloutCreationInput`, and it has no control of its own on screen.
+  // It therefore has to die with the two gestures that abandon it: leaving the
+  // 'document' framing, and picking a blank-create type card — the same two
+  // moments that already clear the staged upload it competes with.
+  const clearCarriedCollaboraSource = () => {
+    if (!values.editMeta?.collaboraDocumentId) return;
+    setField('editMeta', { ...values.editMeta, collaboraDocumentId: undefined });
+  };
+
   const setCollaboraImportFile = (file: File | null) => {
     if (!file) {
       setField('collaboraUploadFile', null);
@@ -1046,6 +1057,7 @@ function CalloutFormConnectorInner({
                   if (chip !== 'document' && values.framingChip === 'document') {
                     setField('collaboraUploadFile', null);
                     setCollaboraImportError(null);
+                    clearCarriedCollaboraSource();
                   }
                   if (chip !== 'whiteboard' && values.framingChip === 'whiteboard') {
                     void framingWhiteboardDraft.discard();
@@ -1113,7 +1125,12 @@ function CalloutFormConnectorInner({
                 mediaGalleryVisuals={values.mediaGalleryVisuals}
                 onMediaGalleryVisualsChange={v => setField('mediaGalleryVisuals', v)}
                 collaboraDocumentType={values.collaboraDocumentType}
-                onCollaboraDocumentTypeChange={v => setField('collaboraDocumentType', v)}
+                onCollaboraDocumentTypeChange={v => {
+                  // Picking a blank-create card abandons a template-carried source the
+                  // same way the picker's own handler drops a staged file.
+                  clearCarriedCollaboraSource();
+                  setField('collaboraDocumentType', v);
+                }}
                 collaboraUpload={
                   mode === 'create'
                     ? {
