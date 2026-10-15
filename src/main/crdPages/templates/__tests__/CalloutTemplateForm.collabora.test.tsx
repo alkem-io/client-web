@@ -12,7 +12,13 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 
 // Everything outside the framing editor is irrelevant here, and pulls Apollo in.
 vi.mock('@/crd/forms/callout/AllowCommentsField', () => ({ AllowCommentsField: () => null }));
-vi.mock('@/crd/forms/callout/FramingChipStrip', () => ({ FramingChipStrip: () => null }));
+// Rendered as a real button so the chip-switch handler is genuinely exercised;
+// the component itself is not under test here.
+vi.mock('@/crd/forms/callout/FramingChipStrip', () => ({
+  FramingChipStrip: ({ onChange }: { onChange: (chip: string) => void }) => (
+    <button type="button" data-testid="chip-whiteboard" onClick={() => onChange('whiteboard')} />
+  ),
+}));
 vi.mock('@/crd/forms/callout/ResponseTypeChipStrip', () => ({ ResponseTypeChipStrip: () => null }));
 vi.mock('@/crd/forms/callout/ResponsePanel', () => ({ ResponsePanel: () => null }));
 vi.mock('@/crd/forms/markdown/MarkdownEditor', () => ({ MarkdownEditor: () => null }));
@@ -25,7 +31,7 @@ vi.mock('@/main/crdPages/space/callout/ResponseDefaultsConnector', () => ({
 import { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
 import { CalloutTemplateForm } from '@/main/crdPages/templates/CalloutTemplateForm';
 
-const renderDocumentForm = (editMode: boolean, setField = vi.fn()) => {
+const renderDocumentForm = (editMode: boolean, setField = vi.fn(), stagedFile: File | null = null) => {
   render(
     <CalloutTemplateForm
       editMode={editMode}
@@ -36,7 +42,7 @@ const renderDocumentForm = (editMode: boolean, setField = vi.fn()) => {
             description: '',
             framingChip: 'document',
             collaboraDocumentType: CollaboraDocumentType.Wordprocessing,
-            collaboraUploadFile: null,
+            collaboraUploadFile: stagedFile,
             responseType: 'none',
             contributionDefaults: {},
             contributorCollection: {},
@@ -80,6 +86,23 @@ describe('CalloutTemplateForm — Collabora document upload', () => {
     expect(setField).toHaveBeenCalledWith('collaboraUploadFile', null);
     expect(setField).not.toHaveBeenCalledWith('collaboraUploadFile', expect.any(File));
     expect(screen.getByRole('alert')).toHaveTextContent('callout.documentImportErrorUnsupported');
+  });
+
+  // CodeRabbit, PR #10429: the chip handler only set `framingChip`, so a file
+  // staged before switching away from 'document' survived the round-trip and
+  // `useTemplateForms` still submitted it. A created template cannot replace
+  // its document bytes through this editor, so the wrong file is permanent.
+  it('clears a staged file when the framing chip leaves document', () => {
+    const setField = vi.fn();
+    const staged = new File([new Uint8Array(4)], 'contract.docx', {
+      type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    });
+    renderDocumentForm(false, setField, staged);
+
+    fireEvent.click(screen.getByTestId('chip-whiteboard'));
+
+    expect(setField).toHaveBeenCalledWith('collaboraUploadFile', null);
+    expect(setField).toHaveBeenCalledWith('framingChip', 'whiteboard');
   });
 
   it('renders no upload zone and no file input in edit mode (FR-014)', () => {

@@ -141,6 +141,19 @@ export function CalloutTemplateForm({
     setField('collaboraUploadFile', next);
   };
 
+  // Leaving the 'document' chip abandons the staged file, exactly as
+  // CalloutFormConnector's chip-switch guard does on the live-callout side.
+  // Without this the file survives a chip round-trip and `useTemplateForms`
+  // still sends it with the template — a template editor cannot replace a
+  // created template's document bytes, so the wrong file would be permanent.
+  const handleFramingChipChange = (chip: typeof values.framingChip) => {
+    if (chip !== 'document' && values.framingChip === 'document') {
+      setField('collaboraUploadFile', null);
+      setImportError(null);
+    }
+    setField('framingChip', chip);
+  };
+
   return (
     <div className="space-y-6">
       {/* Framing title — the callout's framing.profile.displayName (distinct from the template name). */}
@@ -177,7 +190,7 @@ export function CalloutTemplateForm({
       <div className="space-y-4">
         <FramingChipStrip
           value={values.framingChip}
-          onChange={chip => setField('framingChip', chip)}
+          onChange={handleFramingChipChange}
           editMode={editMode}
           allowedChips={TEMPLATE_FRAMING_CHIPS}
           fixedKindChips={FIXED_KIND_FRAMING_CHIPS}
