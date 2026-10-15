@@ -32,7 +32,10 @@ import { mapSubspacesToCardDataList } from '@/main/crdPages/space/dataMappers/su
  * space's sort mode". In CUSTOM mode the selection spans parents, so there is no
  * parent space whose sort mode could apply and `pinned` — a parent-relative field
  * — has no meaning in this collection; we therefore pass no sort mode and the
- * badge is suppressed. AUTO is unchanged.
+ * badge is suppressed. AUTO is unchanged. `selectionMode` comes in as an argument
+ * rather than being selected here: the callout's settings have one owner (the
+ * `CalloutSettingsFull` selection of the mount site's own query), and a second,
+ * partial `settings` write from this query would evict it from the cache.
  *
  * `expanded` drives the `$expanded` query variable that gates the
  * `SubspaceCardAboutContext` fragment (What/Why/Who) — a compact post never asks
@@ -55,14 +58,18 @@ export type UseCrdSpaceSubspacesResult = {
   loading: boolean;
 };
 
-export function useCrdSpaceSubspaces(calloutId: string | undefined, expanded: boolean): UseCrdSpaceSubspacesResult {
+export function useCrdSpaceSubspaces(
+  calloutId: string | undefined,
+  expanded: boolean,
+  selectionMode: CalloutSelectionMode | undefined
+): UseCrdSpaceSubspacesResult {
   const { data, loading } = useSpaceCollectionSubspacesQuery({
     variables: { calloutId: calloutId ?? '', expanded },
     skip: !calloutId,
   });
 
   const callout = loading ? undefined : data?.lookup.callout;
-  const isCustom = callout?.settings.framing.selection?.mode === CalloutSelectionMode.Custom;
+  const isCustom = selectionMode === CalloutSelectionMode.Custom;
   const sortedSubspaces = sortSubspaces(callout?.framing.subspaces ?? [], SpaceSortMode.Alphabetical);
   const subspaces = mapSubspacesToCardDataList(sortedSubspaces, isCustom ? undefined : SpaceSortMode.Alphabetical);
 

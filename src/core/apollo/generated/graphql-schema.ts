@@ -40252,13 +40252,6 @@ export type SpaceCollectionSubspacesQuery = {
           __typename?: 'Callout';
           id: string;
           hasHiddenSpaces: boolean;
-          settings: {
-            __typename?: 'CalloutSettings';
-            framing: {
-              __typename?: 'CalloutSettingsFraming';
-              selection?: { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode } | undefined;
-            };
-          };
           framing: {
             __typename?: 'CalloutFraming';
             id: string;

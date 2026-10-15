@@ -31965,13 +31965,6 @@ export const SpaceCollectionSubspacesDocument = gql`
     callout(ID: $calloutId) {
       id
       hasHiddenSpaces
-      settings {
-        framing {
-          selection {
-            mode
-          }
-        }
-      }
       framing {
         id
         subspaces {

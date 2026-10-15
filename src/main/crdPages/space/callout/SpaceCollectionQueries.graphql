@@ -13,22 +13,18 @@
 # `why` is the one exception, already selected unconditionally by the shared
 # `SubspaceCard` fragment (pre-existing).
 #
-# `hasHiddenSpaces` and `settings.framing.selection.mode` are both on the CALLOUT
-# (not on `framing`), and both read off the callout row this query already fetches, so
-# neither adds a round trip. The mode drives the pin indicator: in CUSTOM mode the
-# selection spans parents, where `pinned` — a parent-relative field — has no meaning.
+# `hasHiddenSpaces` reads off the callout row this query already fetches, so it adds no
+# round trip. The callout's SETTINGS are deliberately NOT selected here: the feed's
+# `CalloutDetails` query already owns them in full (`CalloutSettingsFull`), and
+# `CalloutSettings`/`CalloutSettingsFraming` are non-normalized objects merged shallowly,
+# so a partial `settings` write from this query would replace the complete cached
+# `framing` and send that watch query back to the network. The selection mode the pin
+# indicator needs therefore arrives as a prop, from the mount site that already has it.
 query SpaceCollectionSubspaces($calloutId: UUID!, $expanded: Boolean!) {
   lookup {
     callout(ID: $calloutId) {
       id
       hasHiddenSpaces
-      settings {
-        framing {
-          selection {
-            mode
-          }
-        }
-      }
       framing {
         id
         subspaces {
