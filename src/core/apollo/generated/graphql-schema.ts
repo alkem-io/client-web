@@ -1270,6 +1270,8 @@ export type Callout = {
   createdDate: Scalars['DateTime']['output'];
   /** The Callout Framing associated with this Callout. */
   framing: CalloutFraming;
+  /** Whether this Callout's SPACES collection is hiding at least one manually selected space from the requesting actor because they may not READ it. Always false for a SPACES collection in AUTO mode and for every other callout kind. A selection entry that has left the host space's account is stale, not hidden, and does NOT raise this flag; no count is exposed. */
+  hasHiddenSpaces: Scalars['Boolean']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** Whether this callout is a Template or not. */
@@ -1286,7 +1288,7 @@ export type Callout = {
   reactions: Array<CalloutReaction>;
   /** Cheap always-shown summary (tier-1). Dataloader-batched; safe to select on feeds. */
   reactionsSummary: CalloutReactionsSummary;
-  /** The Callout Settings associated with this Callout. */
+  /** The Callout Settings associated with this Callout. `framing.selection.selectedIds` is returned EMPTY to actors without UPDATE on the Callout, so an empty list is AMBIGUOUS by design: it means either that nothing is selected or that the selection is withheld from you, and the two are deliberately indistinguishable (workspace#084 AC6: a viewer must not learn which or how many spaces are hidden from them). Hold UPDATE and the list is exact. `framing.selection.mode` is always accurate. */
   settings: CalloutSettings;
   /** The sorting order for this Callout. */
   sortOrder: Scalars['Float']['output'];
@@ -1559,7 +1561,7 @@ export type CalloutFraming = {
   poll?: Maybe<Poll>;
   /** The Profile for framing the associated Callout. */
   profile: Profile;
-  /** The host space's subspaces for a SPACES framing, ordered pinned-first then the space's sortOrder/displayName. Returns the existing Space type (no new item type). No server-side pagination/search: the client name-searches and paginates client-side over this set. Empty for non-SPACES framings, for a callout not attached to a space, or for a host with no subspaces. */
+  /** The spaces shown by a SPACES framing's collection, filtered to what the requesting actor may READ. In AUTO mode these are the host space's direct subspaces, ordered pinned-first then the space's sortOrder/displayName. In CUSTOM mode the list is the admin's stored selection, which may contain spaces that are NOT subspaces of the host (any space of the host space's account, at any level) and whose ORDER IS NOT MEANINGFUL — pinned/sortOrder are parent-relative, so the client is authoritative for ordering. Returns the existing Space type (no new item type). No server-side pagination/search: the client name-searches and paginates client-side over this set. Empty for non-SPACES framings, for a callout not attached to a space, for a host with no subspaces, and for a CUSTOM selection that is empty or wholly unreadable. */
   subspaces: Array<Space>;
   /** The type of the Callout Framing, the additional content attached to this callout */
   type: CalloutFramingType;
@@ -8502,6 +8504,8 @@ export type RelayPaginatedSpace = ActorFull & {
   about: SpaceAbout;
   /** The Account that this Space is part of. */
   account: Account;
+  /** Spaces of THIS Space's account, at any level, on which the current actor holds READ - candidates for a Spaces callout's manual selection. READ, not READ_ABOUT: for a level-zero Space READ_ABOUT is granted to every actor including anonymous, so a READ_ABOUT filter would return the account's whole level-zero set to anyone. Capped at 500 as an unordered resource bound - no order is guaranteed and the picker sorts by ancestor path. Requires UPDATE on this Space. */
+  accountSpaces: Array<SpaceSelectionCandidate>;
   /** The "highest" subscription active for this Space. */
   activeSubscription?: Maybe<SpaceSubscription>;
   /** Count of visible activity events on this Space over the last 7 days, across all actors (excludes whiteboard-content-modified). Used to rank Spaces on the dashboard. */
@@ -9409,6 +9413,8 @@ export type Space = ActorFull & {
   about: SpaceAbout;
   /** The Account that this Space is part of. */
   account: Account;
+  /** Spaces of THIS Space's account, at any level, on which the current actor holds READ - candidates for a Spaces callout's manual selection. READ, not READ_ABOUT: for a level-zero Space READ_ABOUT is granted to every actor including anonymous, so a READ_ABOUT filter would return the account's whole level-zero set to anyone. Capped at 500 as an unordered resource bound - no order is guaranteed and the picker sorts by ancestor path. Requires UPDATE on this Space. */
+  accountSpaces: Array<SpaceSelectionCandidate>;
   /** The "highest" subscription active for this Space. */
   activeSubscription?: Maybe<SpaceSubscription>;
   /** Count of visible activity events on this Space over the last 7 days, across all actors (excludes whiteboard-content-modified). Used to rank Spaces on the dashboard. */
@@ -9576,6 +9582,19 @@ export enum SpacePrivacyMode {
   Private = 'PRIVATE',
   Public = 'PUBLIC',
 }
+
+/** A space of an account, reduced to what the Spaces-callout selection picker needs. */
+export type SpaceSelectionCandidate = {
+  __typename?: 'SpaceSelectionCandidate';
+  /** This Space's current display name, from its About profile (never the actor-level profile, which is a creation-time snapshot that is not re-synced on rename). */
+  displayName: Scalars['String']['output'];
+  /** The unique identifier of this Space. */
+  id: Scalars['UUID']['output'];
+  /** The level of this Space (L0, L1 or L2). */
+  level: SpaceLevel;
+  /** The parent Space's id; NULL for a level-zero Space. */
+  parentSpaceID?: Maybe<Scalars['UUID']['output']>;
+};
 
 export type SpaceSettings = {
   __typename?: 'SpaceSettings';
@@ -39968,6 +39987,30 @@ export type VerifyMemoSignatureQueryVariables = Exact<{
 
 export type VerifyMemoSignatureQuery = { __typename?: 'Query'; verifyMemoSignature: MemoSignatureVerificationStatus };
 
+export type AccountSpaceCandidatesQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type AccountSpaceCandidatesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          accountSpaces: Array<{
+            __typename?: 'SpaceSelectionCandidate';
+            id: string;
+            displayName: string;
+            level: SpaceLevel;
+            parentSpaceID?: string | undefined;
+          }>;
+        }
+      | undefined;
+  };
+};
+
 export type CalloutsListForFeedQueryVariables = Exact<{
   calloutsSetId: Scalars['UUID']['input'];
   classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
@@ -40214,6 +40257,7 @@ export type SpaceCollectionSubspacesQuery = {
       | {
           __typename?: 'Callout';
           id: string;
+          hasHiddenSpaces: boolean;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;

@@ -51,7 +51,6 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useCalloutContentQuery: () => ({ data: editedCallout, loading: false }),
   useCreateReferenceOnProfileMutation: () => [vi.fn()],
   useDeleteReferenceMutation: () => [vi.fn()],
-  useSubspacesInSpaceQuery: () => ({ data: undefined, loading: false, refetch: vi.fn() }),
   useTemplateContentLazyQuery: () => [vi.fn()],
   useUpdateCalloutContentMutation: () => [harness.updateCallout, { loading: false }],
   useUpdateCalloutFormMutation: () => [vi.fn()],
@@ -98,6 +97,10 @@ vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () 
 vi.mock('../hooks/useCrdSpaceContributors', () => ({
   useCrdSpaceContributors: () => ({ defaultType: undefined, getCards: () => [] }),
 }));
+vi.mock('./useAccountSpaceCandidates', () => ({
+  useAccountSpaceCandidates: () => ({ candidates: [], loading: false, error: undefined, refetch: vi.fn() }),
+}));
+
 vi.mock('./useSelectionCandidates', async importOriginal => {
   const actual = await importOriginal<typeof import('./useSelectionCandidates')>();
   return {

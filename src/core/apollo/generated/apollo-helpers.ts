@@ -805,6 +805,7 @@ export type CalloutKeySpecifier = (
   | 'createdBy'
   | 'createdDate'
   | 'framing'
+  | 'hasHiddenSpaces'
   | 'id'
   | 'isTemplate'
   | 'nameID'
@@ -830,6 +831,7 @@ export type CalloutFieldPolicy = {
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   framing?: FieldPolicy<any> | FieldReadFunction<any>;
+  hasHiddenSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4820,6 +4822,7 @@ export type ReferenceFieldPolicy = {
 export type RelayPaginatedSpaceKeySpecifier = (
   | 'about'
   | 'account'
+  | 'accountSpaces'
   | 'activeSubscription'
   | 'activityScore'
   | 'actor'
@@ -4854,6 +4857,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
 export type RelayPaginatedSpaceFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
   account?: FieldPolicy<any> | FieldReadFunction<any>;
+  accountSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
   activityScore?: FieldPolicy<any> | FieldReadFunction<any>;
   actor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5310,6 +5314,7 @@ export type ServiceMetadataFieldPolicy = {
 export type SpaceKeySpecifier = (
   | 'about'
   | 'account'
+  | 'accountSpaces'
   | 'activeSubscription'
   | 'activityScore'
   | 'actor'
@@ -5344,6 +5349,7 @@ export type SpaceKeySpecifier = (
 export type SpaceFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
   account?: FieldPolicy<any> | FieldReadFunction<any>;
+  accountSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
   activityScore?: FieldPolicy<any> | FieldReadFunction<any>;
   actor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5442,6 +5448,19 @@ export type SpacePendingMembershipInfoFieldPolicy = {
   communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SpaceSelectionCandidateKeySpecifier = (
+  | 'displayName'
+  | 'id'
+  | 'level'
+  | 'parentSpaceID'
+  | SpaceSelectionCandidateKeySpecifier
+)[];
+export type SpaceSelectionCandidateFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceSettingsKeySpecifier = (
   | 'collaboration'
@@ -8280,6 +8299,10 @@ export type StrictTypedTypePolicies = {
       | SpacePendingMembershipInfoKeySpecifier
       | (() => undefined | SpacePendingMembershipInfoKeySpecifier);
     fields?: SpacePendingMembershipInfoFieldPolicy;
+  };
+  SpaceSelectionCandidate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SpaceSelectionCandidateKeySpecifier | (() => undefined | SpaceSelectionCandidateKeySpecifier);
+    fields?: SpaceSelectionCandidateFieldPolicy;
   };
   SpaceSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceSettingsKeySpecifier | (() => undefined | SpaceSettingsKeySpecifier);

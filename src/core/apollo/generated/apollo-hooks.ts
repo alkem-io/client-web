@@ -31306,6 +31306,87 @@ export type VerifyMemoSignatureQueryResult = Apollo.QueryResult<
 export function refetchVerifyMemoSignatureQuery(variables: SchemaTypes.VerifyMemoSignatureQueryVariables) {
   return { query: VerifyMemoSignatureDocument, variables: variables };
 }
+export const AccountSpaceCandidatesDocument = gql`
+    query AccountSpaceCandidates($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      accountSpaces {
+        id
+        displayName
+        level
+        parentSpaceID
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useAccountSpaceCandidatesQuery__
+ *
+ * To run a query within a React component, call `useAccountSpaceCandidatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountSpaceCandidatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountSpaceCandidatesQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useAccountSpaceCandidatesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AccountSpaceCandidatesQuery,
+    SchemaTypes.AccountSpaceCandidatesQueryVariables
+  > &
+    ({ variables: SchemaTypes.AccountSpaceCandidatesQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AccountSpaceCandidatesQuery, SchemaTypes.AccountSpaceCandidatesQueryVariables>(
+    AccountSpaceCandidatesDocument,
+    options
+  );
+}
+export function useAccountSpaceCandidatesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AccountSpaceCandidatesQuery,
+    SchemaTypes.AccountSpaceCandidatesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AccountSpaceCandidatesQuery, SchemaTypes.AccountSpaceCandidatesQueryVariables>(
+    AccountSpaceCandidatesDocument,
+    options
+  );
+}
+export function useAccountSpaceCandidatesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.AccountSpaceCandidatesQuery,
+        SchemaTypes.AccountSpaceCandidatesQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.AccountSpaceCandidatesQuery,
+    SchemaTypes.AccountSpaceCandidatesQueryVariables
+  >(AccountSpaceCandidatesDocument, options);
+}
+export type AccountSpaceCandidatesQueryHookResult = ReturnType<typeof useAccountSpaceCandidatesQuery>;
+export type AccountSpaceCandidatesLazyQueryHookResult = ReturnType<typeof useAccountSpaceCandidatesLazyQuery>;
+export type AccountSpaceCandidatesSuspenseQueryHookResult = ReturnType<typeof useAccountSpaceCandidatesSuspenseQuery>;
+export type AccountSpaceCandidatesQueryResult = Apollo.QueryResult<
+  SchemaTypes.AccountSpaceCandidatesQuery,
+  SchemaTypes.AccountSpaceCandidatesQueryVariables
+>;
+export function refetchAccountSpaceCandidatesQuery(variables: SchemaTypes.AccountSpaceCandidatesQueryVariables) {
+  return { query: AccountSpaceCandidatesDocument, variables: variables };
+}
 export const CalloutsListForFeedDocument = gql`
     query CalloutsListForFeed($calloutsSetId: UUID!, $classificationTagsets: [TagsetArgs!] = []) {
   lookup {
@@ -31885,6 +31966,7 @@ export const SpaceCollectionSubspacesDocument = gql`
   lookup {
     callout(ID: $calloutId) {
       id
+      hasHiddenSpaces
       framing {
         id
         subspaces {
