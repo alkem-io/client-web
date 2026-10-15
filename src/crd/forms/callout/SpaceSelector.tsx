@@ -152,7 +152,14 @@ export function SpaceSelector({
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Escape' && searchQuery.length > 0) {
+      // stopPropagation is load-bearing, not defensive: Radix's dismiss handler
+      // listens on `document`, so preventDefault on the React bubble path does
+      // not suppress it. Without this, clearing the query also closed the
+      // callout editor and raised "Discard your changes?" over an unsaved
+      // selection. Found by the 084 acceptance walk. Escape on an EMPTY query
+      // still falls through to the dialog, which is the expected gesture.
       event.preventDefault();
+      event.stopPropagation();
       setSearchQuery('');
     }
   };

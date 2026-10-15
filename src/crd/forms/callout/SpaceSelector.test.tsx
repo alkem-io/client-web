@@ -221,6 +221,35 @@ describe('SpaceSelector — searching', () => {
     expect(rowNames()).toHaveLength(items.length);
   });
 
+  // RED without `event.stopPropagation()` in handleKeyDown. Radix's dismiss
+  // handler listens on `document`, so a query-clearing Escape that keeps
+  // bubbling also closes the callout editor and raises "Discard your changes?"
+  // over an unsaved selection. Found by the 084 acceptance walk, not by review.
+  test('Escape that clears the query does not reach a document-level dismiss handler', async () => {
+    const documentEscapes: string[] = [];
+    const listener = (event: globalThis.KeyboardEvent) => {
+      if (event.key === 'Escape') documentEscapes.push('escape');
+    };
+    document.addEventListener('keydown', listener);
+
+    try {
+      renderPicker();
+      const input = screen.getByLabelText(copy.searchAriaLabel);
+
+      await userEvent.type(input, 'mobility');
+      await userEvent.type(input, '{Escape}');
+      expect(input).toHaveValue('');
+      expect(documentEscapes).toHaveLength(0);
+
+      // With an empty query the key is deliberately left alone, so the dialog
+      // can still be dismissed by it.
+      await userEvent.type(input, '{Escape}');
+      expect(documentEscapes).toHaveLength(1);
+    } finally {
+      document.removeEventListener('keydown', listener);
+    }
+  });
+
   test('the clear affordance is hidden while the query is empty', async () => {
     renderPicker();
     expect(screen.queryByLabelText('Clear search')).toBeNull();
