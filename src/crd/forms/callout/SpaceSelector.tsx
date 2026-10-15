@@ -15,6 +15,20 @@ export type SpaceSelectorItem = {
   /** Translated level label ("Space" / "Subspace" / "Sub-subspace") — consumer-supplied. */
   levelLabel: string;
   /**
+   * How deep this space sits: 0 = Space, 1 = Subspace, 2 = Sub-subspace. The
+   * TRUE level, deliberately NOT `ancestorPath.length`.
+   *
+   * The two differ, and that is why this is its own field. The ancestor chain is
+   * the READABLE one — it stops at the innermost ancestor this editor may see
+   * and never substitutes a placeholder, because a placeholder would itself
+   * disclose that a hidden ancestor exists (contract S3). So a sub-subspace
+   * beneath a private level-zero space has a ONE-element chain. The depth
+   * markers are an absolute claim about level and must agree with `levelLabel`,
+   * which comes from the true level too; deriving them from the chain would
+   * render a single dash beside the words "Sub-subspace".
+   */
+  depth: 0 | 1 | 2;
+  /**
    * Display names of the READABLE ancestors, outermost first. Already truncated
    * to the readable prefix by the consumer: an ancestor this editor cannot read
    * is absent, never a placeholder.
@@ -143,6 +157,7 @@ export function SpaceSelector({
   // other spaces" is now simply an empty candidate set.
   const visible = query ? items.filter(item => item.displayName.toLowerCase().includes(query)) : items;
 
+
   useEffect(() => {
     const index = removedChipIndex.current;
     if (index === null) return;
@@ -209,6 +224,18 @@ export function SpaceSelector({
                   'hover:bg-accent focus-visible:bg-accent'
                 )}
               >
+                {item.depth > 0 && (
+                  // aria-hidden: depth is already stated in words on the
+                  // sub-line ("Sub-subspace in A › B"), which is what a screen
+                  // reader should get. Reading out "dash dash" would be noise.
+                  <span aria-hidden="true" className="flex shrink-0 items-center gap-1.5 text-muted-foreground">
+                    {Array.from({ length: item.depth }, (_, step) => (
+                      <span key={step} className="text-caption leading-none">
+                        &ndash;
+                      </span>
+                    ))}
+                  </span>
+                )}
                 <Avatar className="size-6">
                   <AvatarFallback className="text-badge">{getInitials(item.displayName)}</AvatarFallback>
                 </Avatar>

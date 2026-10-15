@@ -44,6 +44,7 @@ const copy = {
 const items: SpaceSelectorItem[] = [
   {
     id: 'energy',
+    depth: 0,
     displayName: 'Energy Transition',
     levelLabel: 'Space',
     ancestorPath: [],
@@ -53,6 +54,7 @@ const items: SpaceSelectorItem[] = [
   },
   {
     id: 'heat',
+    depth: 1,
     displayName: 'Heat networks',
     levelLabel: 'Subspace',
     ancestorPath: ['Energy Transition'],
@@ -62,6 +64,7 @@ const items: SpaceSelectorItem[] = [
   },
   {
     id: 'cop-heat',
+    depth: 2,
     displayName: 'Community of practice',
     levelLabel: 'Sub-subspace',
     ancestorPath: ['Energy Transition', 'Heat networks'],
@@ -71,6 +74,7 @@ const items: SpaceSelectorItem[] = [
   },
   {
     id: 'mobility',
+    depth: 0,
     displayName: 'Mobility Lab',
     levelLabel: 'Space',
     ancestorPath: [],
@@ -80,6 +84,7 @@ const items: SpaceSelectorItem[] = [
   },
   {
     id: 'cop-bikes',
+    depth: 2,
     displayName: 'Community of practice',
     levelLabel: 'Sub-subspace',
     ancestorPath: ['Shared bikes'],
@@ -136,6 +141,46 @@ describe('SpaceSelector — the list', () => {
     // Nothing is highlighted while there is no query, so no rendered row's name
     // is wrapped in a mark.
     expect(document.querySelectorAll('mark')).toHaveLength(0);
+  });
+
+  // Depth markers: one dash per level below the top, so a row states its own
+  // level even when no ancestor of it is on screen — the case a search for
+  // sub-subspaces produces, where indentation would say nothing (or, normalised
+  // against the shallowest visible row, would imply a parent that is not there).
+  test('marks depth with one dash per level below the top, and none on a Space', () => {
+    renderPicker();
+
+    const dashes = (name: string) => row(name).querySelectorAll('[aria-hidden="true"] span').length;
+
+    expect(dashes('Energy Transition')).toBe(0);
+    expect(dashes('Heat networks')).toBe(1);
+    expect(dashes('Sub-subspace in Energy Transition › Heat networks')).toBe(2);
+    expect(dashes('Mobility Lab')).toBe(0);
+  });
+
+  // The discriminating case for depth being its own field. `cop-bikes` is a
+  // Sub-subspace whose level-zero ancestor is unreadable, so its readable chain
+  // has ONE element. Deriving the markers from `ancestorPath.length` would show
+  // a single dash next to the words "Sub-subspace".
+  test('marks TRUE depth, not the length of the readable ancestor chain', () => {
+    renderPicker();
+
+    const bikes = row('Sub-subspace in Shared bikes');
+    expect(bikes.querySelectorAll('[aria-hidden="true"] span')).toHaveLength(2);
+    expect(bikes.textContent).toContain('Sub-subspace');
+  });
+
+  // A search returning only sub-subspaces: every row still carries two dashes,
+  // so depth survives with no parent on screen.
+  test('keeps depth legible when a filtered set contains no shallower row', async () => {
+    renderPicker();
+    await userEvent.type(screen.getByLabelText(copy.searchAriaLabel), 'community');
+
+    const names = rowNames();
+    expect(names).toHaveLength(2);
+    for (const name of ['Sub-subspace in Energy Transition › Heat networks', 'Sub-subspace in Shared bikes']) {
+      expect(row(name).querySelectorAll('[aria-hidden="true"] span')).toHaveLength(2);
+    }
   });
 
   test('renders each row sub-line as "<level> in <path>", and the level alone at the top level', () => {
