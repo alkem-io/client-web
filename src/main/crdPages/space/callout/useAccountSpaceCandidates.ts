@@ -37,6 +37,9 @@ import type { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 const PATH_SEPARATOR = '\u001f';
 
 /** A readable ancestor of a candidate, as the path sub-line renders it. */
+/** L0 -> L1 -> L2: a Space has at most two ancestors. */
+const MAX_SPACE_ANCESTORS = 2;
+
 type AccountSpaceAncestor = {
   id: string;
   displayName: string;
@@ -118,9 +121,18 @@ export function useAccountSpaceCandidates({
       // of the host is in the response — space UPDATE grants READ with
       // `cascade: true` and cascading rules are copied into every child policy —
       // so the only gap the walk can hit is an ancestor outside the host's tree.
+      // Bounded by the platform's own shape, not by a visited set: a Space tree
+      // is L0/L1/L2, so a candidate has AT MOST two ancestors and a correct
+      // walk never takes a third step. Writing that invariant into the loop is
+      // the more faithful expression of the domain, and termination follows from
+      // it — an unbounded `while (parentId)` over a self-referencing or cyclic
+      // `parentSpaceID` would spin forever and freeze the render thread. Note
+      // this is a limit, not a guard against an unproven producer: no cycle is
+      // reachable through the supported topology, and nothing here pretends one
+      // is (workspace CLAUDE.md, hardening gate).
       const ancestorPath: AccountSpaceAncestor[] = [];
       let parentId = space.parentSpaceID;
-      while (parentId) {
+      for (let step = 0; step < MAX_SPACE_ANCESTORS && parentId; step++) {
         const parent = fetchedById.get(parentId);
         if (!parent) break;
         ancestorPath.unshift({ id: parent.id, displayName: parent.displayName });

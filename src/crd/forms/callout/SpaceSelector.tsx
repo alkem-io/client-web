@@ -6,6 +6,12 @@ import { Avatar, AvatarFallback } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import { Input } from '@/crd/primitives/input';
 
+/**
+ * Stable keys for the depth markers — two is the whole range (L1, L2). Named
+ * rather than indexed so the list carries no array-index keys.
+ */
+const DEPTH_MARKER_KEYS = ['depth-1', 'depth-2'] as const;
+
 /** How the path sub-line joins ancestor names, as the design draws it. */
 const PATH_JOINER = ' › ';
 
@@ -157,7 +163,6 @@ export function SpaceSelector({
   // other spaces" is now simply an empty candidate set.
   const visible = query ? items.filter(item => item.displayName.toLowerCase().includes(query)) : items;
 
-
   useEffect(() => {
     const index = removedChipIndex.current;
     if (index === null) return;
@@ -206,7 +211,9 @@ export function SpaceSelector({
     listBody = message(noMatchesLabel);
   } else {
     listBody = (
-      <ul className="list-none py-1">
+      // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
+      // biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset
+      <ul role="list" className="list-none py-1">
         {visible.map(item => {
           const selected = selectedIds.includes(item.id);
           const subLine = item.ancestorPath.length
@@ -229,8 +236,8 @@ export function SpaceSelector({
                   // sub-line ("Sub-subspace in A › B"), which is what a screen
                   // reader should get. Reading out "dash dash" would be noise.
                   <span aria-hidden="true" className="flex shrink-0 items-center gap-1.5 text-muted-foreground">
-                    {Array.from({ length: item.depth }, (_, step) => (
-                      <span key={step} className="text-caption leading-none">
+                    {DEPTH_MARKER_KEYS.slice(0, item.depth).map(key => (
+                      <span key={key} className="text-caption leading-none">
                         &ndash;
                       </span>
                     ))}
@@ -285,7 +292,9 @@ export function SpaceSelector({
           {loadingLabel}
         </output>
       ) : (
-        <ul ref={chipsRef} className="flex list-none flex-wrap gap-2">
+        // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
+        // biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset
+        <ul ref={chipsRef} role="list" className="flex list-none flex-wrap gap-2">
           {selectedIds.map((id, index) => {
             const item = byId.get(id);
             // An id with no candidate entry is unnamed — the raw uuid says
