@@ -77,16 +77,6 @@ const spaceLevelLabelKeyByLevel = {
   [SpaceLevel.L1]: 'forms.selection.spacePicker.levelSubspace',
   [SpaceLevel.L2]: 'forms.selection.spacePicker.levelSubsubspace',
 } as const;
-// The picker's depth markers (one dash per level below the top) come from the
-// SAME source as the label above, so the two can never disagree. Derived from
-// the true level and NOT from the readable ancestor chain, which is truncated at
-// the innermost ancestor the editor may see (contract S3) and would under-report
-// depth for a space beneath a private level-zero parent.
-const spaceDepthByLevel = {
-  [SpaceLevel.L0]: 0,
-  [SpaceLevel.L1]: 1,
-  [SpaceLevel.L2]: 2,
-} as const;
 
 const collaboraDocLabelKeyByType: Record<
   CollaboraDocumentTypeValue,
@@ -906,7 +896,6 @@ export function FramingEditorConnector({
         id: candidate.id,
         displayName: candidate.displayName,
         levelLabel: t(spaceLevelLabelKeyByLevel[candidate.level]),
-        depth: spaceDepthByLevel[candidate.level],
         ancestorPath: candidate.ancestorPath.map(ancestor => ancestor.displayName),
         isHost: candidate.isHost,
         inHostTree: candidate.inHostTree,

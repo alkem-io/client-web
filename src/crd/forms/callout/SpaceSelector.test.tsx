@@ -44,7 +44,6 @@ const copy = {
 const items: SpaceSelectorItem[] = [
   {
     id: 'energy',
-    depth: 0,
     displayName: 'Energy Transition',
     levelLabel: 'Space',
     ancestorPath: [],
@@ -54,7 +53,6 @@ const items: SpaceSelectorItem[] = [
   },
   {
     id: 'heat',
-    depth: 1,
     displayName: 'Heat networks',
     levelLabel: 'Subspace',
     ancestorPath: ['Energy Transition'],
@@ -64,7 +62,6 @@ const items: SpaceSelectorItem[] = [
   },
   {
     id: 'cop-heat',
-    depth: 2,
     displayName: 'Community of practice',
     levelLabel: 'Sub-subspace',
     ancestorPath: ['Energy Transition', 'Heat networks'],
@@ -74,7 +71,6 @@ const items: SpaceSelectorItem[] = [
   },
   {
     id: 'mobility',
-    depth: 0,
     displayName: 'Mobility Lab',
     levelLabel: 'Space',
     ancestorPath: [],
@@ -84,7 +80,6 @@ const items: SpaceSelectorItem[] = [
   },
   {
     id: 'cop-bikes',
-    depth: 2,
     displayName: 'Community of practice',
     levelLabel: 'Sub-subspace',
     ancestorPath: ['Shared bikes'],
@@ -143,44 +138,48 @@ describe('SpaceSelector — the list', () => {
     expect(document.querySelectorAll('mark')).toHaveLength(0);
   });
 
-  // Depth markers: one dash per level below the top, so a row states its own
-  // level even when no ancestor of it is on screen — the case a search for
-  // sub-subspaces produces, where indentation would say nothing (or, normalised
-  // against the shallowest visible row, would imply a parent that is not there).
-  test('marks depth with one dash per level below the top, and none on a Space', () => {
+  // Indentation is relative to the shallowest row ON SCREEN. `pl-3` is the base
+  // step, `pl-9` one in, `pl-15` two in.
+  const indentClass = (name: string) => {
+    const cls = row(name).className;
+    return ['pl-3', 'pl-9', 'pl-15'].find(c => cls.includes(c));
+  };
+
+  test('indents by visible depth when the level-zero rows are on screen', () => {
     renderPicker();
 
-    const dashes = (name: string) => row(name).querySelectorAll('[aria-hidden="true"] span').length;
-
-    expect(dashes('Energy Transition')).toBe(0);
-    expect(dashes('Heat networks')).toBe(1);
-    expect(dashes('Sub-subspace in Energy Transition › Heat networks')).toBe(2);
-    expect(dashes('Mobility Lab')).toBe(0);
+    expect(indentClass('Energy Transition')).toBe('pl-3');
+    expect(indentClass('Heat networks')).toBe('pl-9');
+    expect(indentClass('Sub-subspace in Energy Transition › Heat networks')).toBe('pl-15');
+    expect(indentClass('Mobility Lab')).toBe('pl-3');
+    // Its readable chain has ONE element even though it is a Sub-subspace, so
+    // it indents one step — the indent tracks what the row shows.
+    expect(indentClass('Sub-subspace in Shared bikes')).toBe('pl-9');
   });
 
-  // The discriminating case for depth being its own field. `cop-bikes` is a
-  // Sub-subspace whose level-zero ancestor is unreadable, so its readable chain
-  // has ONE element. Deriving the markers from `ancestorPath.length` would show
-  // a single dash next to the words "Sub-subspace".
-  test('marks TRUE depth, not the length of the readable ancestor chain', () => {
+  // The case that killed absolute indentation: a query matching only deep rows
+  // would push every result two steps in with nothing to its left.
+  test('renders a filtered set of one depth FLAT, not pushed inward', async () => {
     renderPicker();
+    await userEvent.type(screen.getByLabelText(copy.searchAriaLabel), 'heat');
 
-    const bikes = row('Sub-subspace in Shared bikes');
-    expect(bikes.querySelectorAll('[aria-hidden="true"] span')).toHaveLength(2);
-    expect(bikes.textContent).toContain('Sub-subspace');
+    expect(rowNames()).toHaveLength(1);
+    expect(indentClass('Heat networks')).toBe('pl-3');
   });
 
-  // A search returning only sub-subspaces: every row still carries two dashes,
-  // so depth survives with no parent on screen.
-  test('keeps depth legible when a filtered set contains no shallower row', async () => {
+  // Two depths on screen keep exactly one step between them. This is also the
+  // accepted limit: these two spaces are in DIFFERENT trees, so the step is a
+  // scanning aid and not a claim of parentage — the sub-line is what says where
+  // each one actually lives.
+  test('keeps one step between two visible depths, shallowest at the base', async () => {
     renderPicker();
     await userEvent.type(screen.getByLabelText(copy.searchAriaLabel), 'community');
 
-    const names = rowNames();
-    expect(names).toHaveLength(2);
-    for (const name of ['Sub-subspace in Energy Transition › Heat networks', 'Sub-subspace in Shared bikes']) {
-      expect(row(name).querySelectorAll('[aria-hidden="true"] span')).toHaveLength(2);
-    }
+    expect(rowNames()).toHaveLength(2);
+    // chain length 1 -> the shallowest on screen -> base step
+    expect(indentClass('Sub-subspace in Shared bikes')).toBe('pl-3');
+    // chain length 2 -> one step in, relative to it
+    expect(indentClass('Sub-subspace in Energy Transition › Heat networks')).toBe('pl-9');
   });
 
   test('renders each row sub-line as "<level> in <path>", and the level alone at the top level', () => {

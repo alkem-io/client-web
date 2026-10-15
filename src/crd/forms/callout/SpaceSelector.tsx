@@ -7,10 +7,11 @@ import { Badge } from '@/crd/primitives/badge';
 import { Input } from '@/crd/primitives/input';
 
 /**
- * Stable keys for the depth markers — two is the whole range (L1, L2). Named
- * rather than indexed so the list carries no array-index keys.
+ * Indent per step of VISIBLE depth. Three entries is the whole range: a Space
+ * tree is L0/L1/L2, so after the normalisation below a row is never more than
+ * two steps in.
  */
-const DEPTH_MARKER_KEYS = ['depth-1', 'depth-2'] as const;
+const DEPTH_INDENT = ['pl-3', 'pl-9', 'pl-15'] as const;
 
 /** How the path sub-line joins ancestor names, as the design draws it. */
 const PATH_JOINER = ' › ';
@@ -20,20 +21,6 @@ export type SpaceSelectorItem = {
   displayName: string;
   /** Translated level label ("Space" / "Subspace" / "Sub-subspace") — consumer-supplied. */
   levelLabel: string;
-  /**
-   * How deep this space sits: 0 = Space, 1 = Subspace, 2 = Sub-subspace. The
-   * TRUE level, deliberately NOT `ancestorPath.length`.
-   *
-   * The two differ, and that is why this is its own field. The ancestor chain is
-   * the READABLE one — it stops at the innermost ancestor this editor may see
-   * and never substitutes a placeholder, because a placeholder would itself
-   * disclose that a hidden ancestor exists (contract S3). So a sub-subspace
-   * beneath a private level-zero space has a ONE-element chain. The depth
-   * markers are an absolute claim about level and must agree with `levelLabel`,
-   * which comes from the true level too; deriving them from the chain would
-   * render a single dash beside the words "Sub-subspace".
-   */
-  depth: 0 | 1 | 2;
   /**
    * Display names of the READABLE ancestors, outermost first. Already truncated
    * to the readable prefix by the consumer: an ancestor this editor cannot read
@@ -163,6 +150,30 @@ export function SpaceSelector({
   // other spaces" is now simply an empty candidate set.
   const visible = query ? items.filter(item => item.displayName.toLowerCase().includes(query)) : items;
 
+  /**
+   * Indentation is RELATIVE to the shallowest row on screen, not absolute.
+   *
+   * Absolute indentation reads true while browsing the whole account, where the
+   * level-zero rows are present, and is actively bad while filtering: a query
+   * matching only sub-subspaces would push every result two steps in with
+   * nothing to its left — wasted width, and on a narrow picker it truncates the
+   * names being read. Normalising means a result set that is all one depth
+   * renders FLAT, and one spanning two depths shows that single step.
+   *
+   * Depth is `ancestorPath.length`, the READABLE chain, deliberately not the
+   * true level: the chain stops at the innermost ancestor this editor may see
+   * (contract S3), and indenting by true level would strand a row under a parent
+   * that is not on screen. Nothing is lost either way — each row's sub-line
+   * states the absolute position ("Sub-subspace in A › B") whatever the indent.
+   *
+   * KNOWN LIMIT, accepted: in a filtered set the row above a given row need not
+   * be its parent, so one step of indent can suggest a relationship that is not
+   * there. The sub-line is what disambiguates; the indent is a scanning aid.
+   */
+  const shallowest = visible.length ? Math.min(...visible.map(item => item.ancestorPath.length)) : 0;
+  const indentOf = (item: SpaceSelectorItem) =>
+    DEPTH_INDENT[Math.min(item.ancestorPath.length - shallowest, DEPTH_INDENT.length - 1)];
+
   useEffect(() => {
     const index = removedChipIndex.current;
     if (index === null) return;
@@ -227,22 +238,11 @@ export function SpaceSelector({
                 aria-pressed={selected}
                 onClick={() => onToggle(item.id)}
                 className={cn(
-                  'flex w-full items-center gap-3 px-3 py-2 text-left outline-none',
-                  'hover:bg-accent focus-visible:bg-accent'
+                  'flex w-full items-center gap-3 py-2 pr-3 text-left outline-none',
+                  'hover:bg-accent focus-visible:bg-accent',
+                  indentOf(item)
                 )}
               >
-                {item.depth > 0 && (
-                  // aria-hidden: depth is already stated in words on the
-                  // sub-line ("Sub-subspace in A › B"), which is what a screen
-                  // reader should get. Reading out "dash dash" would be noise.
-                  <span aria-hidden="true" className="flex shrink-0 items-center gap-1.5 text-muted-foreground">
-                    {DEPTH_MARKER_KEYS.slice(0, item.depth).map(key => (
-                      <span key={key} className="text-caption leading-none">
-                        &ndash;
-                      </span>
-                    ))}
-                  </span>
-                )}
                 <Avatar className="size-6">
                   <AvatarFallback className="text-badge">{getInitials(item.displayName)}</AvatarFallback>
                 </Avatar>
