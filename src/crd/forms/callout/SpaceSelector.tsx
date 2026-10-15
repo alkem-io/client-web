@@ -20,7 +20,14 @@ export type SpaceSelectorItem = {
    * is absent, never a placeholder.
    */
   ancestorPath: string[];
-  /** The space the callout is hosted on: listed, badged and NOT selectable. */
+  /**
+   * The space the callout is hosted on. Listed, badged for orientation, and
+   * SELECTABLE like any other candidate (operator request, 2026-10-15): a
+   * collection that means "our related initiatives" may legitimately include
+   * the space you are standing in. The server already accepted this id — the
+   * write guard scopes to the host's ACCOUNT, and a space belongs to its own
+   * account — so this was only ever a client-side gate.
+   */
   isHost: boolean;
   /** A descendant of the host space — drives the "in this space" badge. */
   inHostTree: boolean;
@@ -132,7 +139,8 @@ export function SpaceSelector({
   const byId = new Map(items.map(item => [item.id, item]));
   // No candidate has arrived yet, so no selected id is KNOWN to be unresolved.
   const candidatesPending = loading && items.length === 0;
-  const selectable = items.filter(item => !item.isHost);
+  // Every candidate is selectable, the host included, so "this account has no
+  // other spaces" is now simply an empty candidate set.
   const visible = query ? items.filter(item => item.displayName.toLowerCase().includes(query)) : items;
 
   useEffect(() => {
@@ -177,7 +185,7 @@ export function SpaceSelector({
         {loadingLabel}
       </output>
     );
-  } else if (selectable.length === 0) {
+  } else if (items.length === 0) {
     listBody = message(accountEmptyLabel);
   } else if (visible.length === 0) {
     listBody = message(noMatchesLabel);
@@ -194,20 +202,18 @@ export function SpaceSelector({
             <li key={item.id}>
               <button
                 type="button"
-                disabled={item.isHost}
-                aria-pressed={item.isHost ? undefined : selected}
+                aria-pressed={selected}
                 onClick={() => onToggle(item.id)}
                 className={cn(
                   'flex w-full items-center gap-3 px-3 py-2 text-left outline-none',
-                  'hover:bg-accent focus-visible:bg-accent',
-                  item.isHost && 'pointer-events-none'
+                  'hover:bg-accent focus-visible:bg-accent'
                 )}
               >
                 <Avatar className="size-6">
                   <AvatarFallback className="text-badge">{getInitials(item.displayName)}</AvatarFallback>
                 </Avatar>
                 <span className="flex min-w-0 flex-1 flex-col">
-                  <span className={cn('truncate text-control', item.isHost && 'text-muted-foreground')}>
+                  <span className="truncate text-control">
                     <HighlightedName name={item.displayName} query={query} />
                   </span>
                   <span className="truncate text-caption text-muted-foreground">{subLine}</span>
@@ -222,17 +228,15 @@ export function SpaceSelector({
                     {inThisSpaceLabel}
                   </Badge>
                 )}
-                {!item.isHost && (
-                  <span
-                    aria-hidden="true"
-                    className={cn(
-                      'inline-grid size-[18px] shrink-0 place-items-center rounded border border-border',
-                      selected && 'border-primary bg-primary text-primary-foreground'
-                    )}
-                  >
-                    {selected && <Check className="size-3" />}
-                  </span>
-                )}
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    'inline-grid size-[18px] shrink-0 place-items-center rounded border border-border',
+                    selected && 'border-primary bg-primary text-primary-foreground'
+                  )}
+                >
+                  {selected && <Check className="size-3" />}
+                </span>
               </button>
             </li>
           );

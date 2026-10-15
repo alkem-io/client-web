@@ -157,17 +157,30 @@ describe('SpaceSelector — the list', () => {
     expect(screen.queryByText(/…|\.\.\./)).toBeNull();
   });
 
-  test('shows the host row, badged and NOT selectable, and never ticks it', async () => {
+  // The host used to be listed-but-disabled, with the badge explaining why it
+  // could not be picked. It is now SELECTABLE like any other candidate
+  // (operator request 2026-10-15): a collection meaning "our related
+  // initiatives" may legitimately include the space you are standing in, and
+  // the server always accepted the id — the write guard scopes to the host's
+  // ACCOUNT, and a space belongs to its own account. The badge stays, now as
+  // pure orientation.
+  test('shows the host row badged AND selectable, reporting its pressed state', async () => {
     const onToggle = vi.fn();
     renderPicker({ onToggle });
 
     const hostRow = row('Energy Transition');
-    expect(hostRow).toBeDisabled();
+    expect(hostRow).not.toBeDisabled();
     expect(hostRow).toContainElement(screen.getByText('Callout is here'));
-    expect(hostRow).not.toHaveAttribute('aria-pressed');
+    expect(hostRow).toHaveAttribute('aria-pressed', 'false');
 
     await userEvent.click(hostRow);
-    expect(onToggle).not.toHaveBeenCalled();
+    expect(onToggle).toHaveBeenCalledWith('energy');
+  });
+
+  test('ticks the host row when it is in the selection, like any other row', () => {
+    renderPicker({ selectedIds: ['energy'] });
+
+    expect(row('Energy Transition')).toHaveAttribute('aria-pressed', 'true');
   });
 
   test('badges exactly the rows the model marks as being in the host tree', () => {
@@ -271,8 +284,20 @@ describe('SpaceSelector — the three non-list states', () => {
     expect(rowNames()).toHaveLength(0);
   });
 
-  test('the account holds no space other than the host', () => {
+  // Was "the account holds no space other than the host" and asserted the empty
+  // state. Now that the host is selectable, a host-only account is NOT empty —
+  // it offers exactly one pickable row, and claiming emptiness over a row the
+  // user can click would be the defect.
+  test('a host-only account offers the host, not the empty state', () => {
     renderPicker({ items: [items[0]] });
+
+    expect(screen.queryByText(copy.accountEmptyLabel)).toBeNull();
+    expect(rowNames()).toHaveLength(1);
+    expect(row('Energy Transition')).not.toBeDisabled();
+  });
+
+  test('the empty state is for a genuinely empty candidate set', () => {
+    renderPicker({ items: [] });
 
     expect(screen.getByText(copy.accountEmptyLabel)).toBeInTheDocument();
   });

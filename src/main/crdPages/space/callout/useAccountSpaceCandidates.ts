@@ -11,7 +11,7 @@
  * `useUrlResolver().spaceId`, which already resolves "the current Space *or*
  * Subspace id, whichever the URL points at" — so a second parameter would only
  * create a way for the two to diverge, and a divergence makes `isHost` match no
- * row (the disabled "callout is here" row silently disappears) and computes the
+ * row (the "callout is here" badge silently disappears) and computes the
  * badge set from the wrong root, with no gate able to see it.
  *
  * The query is gated `UPDATE` on the space (server T009), while the edit surface
@@ -54,7 +54,7 @@ type AccountSpaceCandidate = {
    * disclose that it exists (contract S3).
    */
   ancestorPath: AccountSpaceAncestor[];
-  /** The space the callout is hosted on — present, labelled, never selectable. */
+  /** The space the callout is hosted on — present, labelled, and selectable. */
   isHost: boolean;
   /** A descendant of the host space. False for the host's own row (spec FR-012b). */
   inHostTree: boolean;
