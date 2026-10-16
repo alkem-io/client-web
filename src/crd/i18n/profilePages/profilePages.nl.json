@@ -84,9 +84,9 @@
       "tagsetKeywords": "Trefwoorden",
       "tagsetCapabilities": "Capaciteiten",
       "referencesTitle": "Links",
-      "associatesTitle": "Geassocieerden",
-      "associatesCount_one": "{{count}} geassocieerde",
-      "associatesCount_other": "{{count}} geassocieerden",
+      "associatesTitle": "Betrokkenen",
+      "associatesCount_one": "{{count}} betrokkene",
+      "associatesCount_other": "{{count}} betrokkenen",
       "socialLinksTitle": "Sociaal"
     },
     "tabs": {
@@ -102,33 +102,33 @@
     "empty": {},
     "vcType": "Virtual Contributor",
     "associate": {
-      "join": "Word geassocieerde",
-      "joinCaption": "Je e-maildomein komt overeen met deze geverifieerde organisatie, dus je kunt toetreden zonder te solliciteren.",
-      "apply": "Solliciteer om te associëren",
-      "applyLogin": "Solliciteer om te associëren",
+      "join": "Word betrokkene",
+      "joinCaption": "Je e-maildomein komt overeen met deze geverifieerde organisatie, dus je kunt direct toetreden, zonder aanmelding.",
+      "apply": "Meld je aan als betrokkene",
+      "applyLogin": "Meld je aan als betrokkene",
       "respond": "Reageer op uitnodiging",
       "pending": "Aanvraag in behandeling",
       "closed": "Deze organisatie accepteert momenteel geen aanvragen.",
-      "joinNotEligible": "Je komt op dit moment niet in aanmerking om toe te treden — probeer in plaats daarvan te solliciteren.",
+      "joinNotEligible": "Je komt op dit moment niet in aanmerking om toe te treden — meld je in plaats daarvan aan.",
       "joinError": "Toetreden mislukt — probeer opnieuw"
     },
     "applyDialog": {
-      "title": "Solliciteren om te associëren met {{organizationName}}",
+      "title": "Aanmelden als betrokkene bij {{organizationName}}",
       "messageLabel": "Bericht (optioneel)",
-      "messageOptional": "Vertel de organisatie waarom je je wilt associëren — optioneel.",
+      "messageOptional": "Vertel de organisatie waarom je betrokkene wilt worden — optioneel.",
       "submit": "Aanvraag indienen",
       "submitted": "Aanvraag ingediend",
-      "submittedBody": "Je aanvraag om te associëren met {{organizationName}} is ingediend.",
-      "submittedReview": "De beheerders van de organisatie beoordelen deze. Zodra deze is goedgekeurd, krijg je een melding <bell/> en word je vermeld als geassocieerde.",
+      "submittedBody": "Je aanvraag om betrokkene te worden bij {{organizationName}} is ingediend.",
+      "submittedReview": "De beheerders van de organisatie beoordelen deze. Zodra deze is goedgekeurd, krijg je een melding <bell/> en word je vermeld als betrokkene.",
       "error": "Verzenden mislukt — probeer opnieuw"
     },
     "invitationDialog": {
-      "title": "Uitnodiging om te associëren met {{organizationName}}",
+      "title": "Uitnodiging om betrokkene te worden bij {{organizationName}}",
       "role": "Aangeboden rol",
       "invitedBy": "Uitgenodigd door {{name}}",
       "accept": "Accepteren",
       "decline": "Weigeren",
-      "withheld": "De rol {{role}} kon niet worden toegekend. Je bent geassocieerde.",
+      "withheld": "De rol {{role}} kon niet worden toegekend. Je bent betrokkene.",
       "roleName": {
         "admin": "Beheerder",
         "owner": "Eigenaar"
@@ -136,9 +136,9 @@
       "acceptError": "Accepteren mislukt — probeer opnieuw",
       "declineError": "Weigeren mislukt — probeer opnieuw",
       "offeredRole": {
-        "associate": "Geassocieerde",
-        "associateAdmin": "Geassocieerde + Beheerder",
-        "associateOwner": "Geassocieerde + Eigenaar"
+        "associate": "Betrokkene",
+        "associateAdmin": "Betrokkene + Beheerder",
+        "associateOwner": "Betrokkene + Eigenaar"
       }
     }
   },

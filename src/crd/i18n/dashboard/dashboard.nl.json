@@ -196,16 +196,16 @@
       "title": "Uitnodiging voor {{organizationName}}",
       "accept": "Accepteren",
       "role": "Rol",
-      "spacesToJoin": "Bij accepteren wordt toegetreden tot: {{spaces}}"
+      "spacesToJoin": "Bij acceptatie wordt de organisatie lid van: {{spaces}}"
     },
-    "orgAssociateInvitationsSection": "Uitnodigingen als Geassocieerde",
-    "orgAssociateApplicationsSection": "Aanvragen als Geassocieerde",
+    "orgAssociateInvitationsSection": "Uitnodigingen als betrokkene",
+    "orgAssociateApplicationsSection": "Aanvragen als betrokkene",
     "orgAssociateCard": {
       "badge": "Organisatie",
       "role": {
-        "associate": "Geassocieerde",
-        "associateAdmin": "Geassocieerde + Beheerder",
-        "associateOwner": "Geassocieerde + Eigenaar"
+        "associate": "Betrokkene",
+        "associateAdmin": "Betrokkene + Beheerder",
+        "associateOwner": "Betrokkene + Eigenaar"
       },
       "pendingLabel": "In behandeling",
       "invitedBy": "Uitgenodigd door {{name}}"
