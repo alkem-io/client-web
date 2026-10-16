@@ -441,16 +441,8 @@ export default function CrdSpaceSettingsPage() {
 
   return (
     <div className="flex flex-col gap-4 pt-2">
-      {/* Tabs restyled with SettingsSection cards lay out their own cards; the rest still sit in one shared card. */}
-      <div
-        className={
-          activeTab === 'about' || activeTab === 'community' || activeTab === 'updates' || activeTab === 'subspaces'
-            ? 'pb-12'
-            : activeTab === 'layout'
-              ? 'pb-24'
-              : 'rounded-xl border bg-card p-6 pb-24'
-        }
-      >
+      {/* Every tab lays out its own SettingsSection cards; Layout keeps extra room for its sticky Save bar. */}
+      <div className={activeTab === 'layout' ? 'pb-24' : 'pb-12'}>
         {bootstrapping ? (
           <LoadingSpinner />
         ) : (

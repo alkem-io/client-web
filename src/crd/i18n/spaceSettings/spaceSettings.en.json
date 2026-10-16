@@ -759,13 +759,8 @@
     }
   },
   "settings": {
-    "pageHeader": {
-      "title": "Settings",
-      "subtitle": "Configure your space's visibility, membership policies, and allowed member actions."
-    },
     "visibility": {
       "title": "Visibility",
-      "description": "Control who can see and access this space",
       "public": "Public",
       "publicDescription": "This Space and its contents are visible to everyone on the platform. Users can only contribute if they are a member.",
       "private": "Private",
@@ -774,7 +769,6 @@
     },
     "membership": {
       "title": "Membership",
-      "description": "Choose how users join your space",
       "open": "No Application Required",
       "openDescription": "All Space members can directly join, without you having to review their applications.",
       "openHint": "Best for public, open collaboration spaces",
@@ -810,7 +804,6 @@
     },
     "allowedActions": {
       "title": "Allowed Actions",
-      "description": "Choose which actions members can perform in this space",
       "subspaceAdminInvitations": "Subspace Membership",
       "memberCreatePosts": "Create Posts",
       "videoCalls": "Video Calls",
@@ -848,9 +841,8 @@
     }
   },
   "storage": {
-    "pageHeader": {
-      "title": "Storage",
-      "subtitle": "Browse and manage documents stored in this space."
+    "sections": {
+      "documents": "Documents"
     },
     "empty": "No documents stored yet.",
     "columns": {
@@ -869,12 +861,8 @@
     }
   },
   "account": {
-    "pageHeader": {
-      "title": "Account",
-      "subtitle": "Here you find all your Spaces, Virtual Contributors, and other hosted resources. If you have any questions, feel free to reach out to the Alkemio team."
-    },
     "url": {
-      "title": "URL",
+      "title": "Space URL",
       "hint": "The unique URL for this space. Contact Alkemio to change this.",
       "copy": "Copy URL",
       "copied": "URL copied"
@@ -886,12 +874,10 @@
       "contact": "For status changes, contact the Alkemio team."
     },
     "host": {
-      "title": "Host Information",
-      "description": "The host is the person or organisation that owns this space."
+      "title": "Host Information"
     },
     "plan": {
       "title": "License",
-      "description": "Your current space subscription details",
       "featuresHeading": "Included Features",
       "daysLeft": "{{count}} days remaining",
       "changeLicense": "Change License"

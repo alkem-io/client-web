@@ -759,13 +759,8 @@
     }
   },
   "settings": {
-    "pageHeader": {
-      "title": "Configuración",
-      "subtitle": "Configura la visibilidad de tu espacio, las políticas de membresía y las acciones permitidas a los miembros."
-    },
     "visibility": {
       "title": "Visibilidad",
-      "description": "Controla quién puede ver y acceder a este espacio",
       "public": "Público",
       "publicDescription": "Este espacio y su contenido son visibles para todos en la plataforma. Los usuarios solo pueden contribuir si son miembros.",
       "private": "Privado",
@@ -774,7 +769,6 @@
     },
     "membership": {
       "title": "Membresía",
-      "description": "Elige cómo se unen los usuarios a tu espacio",
       "open": "No se requiere solicitud",
       "openDescription": "Todos los miembros del espacio pueden unirse directamente, sin que tengas que revisar sus solicitudes.",
       "openHint": "Ideal para espacios públicos y abiertos de colaboración",
@@ -810,7 +804,6 @@
     },
     "allowedActions": {
       "title": "Acciones permitidas",
-      "description": "Elige qué acciones pueden realizar los miembros en este espacio",
       "subspaceAdminInvitations": "Membresía de Subspace",
       "memberCreatePosts": "Crear publicaciones",
       "videoCalls": "Videollamadas",
@@ -848,9 +841,8 @@
     }
   },
   "storage": {
-    "pageHeader": {
-      "title": "Almacenamiento",
-      "subtitle": "Explora y gestiona los documentos almacenados en este espacio."
+    "sections": {
+      "documents": "Documentos"
     },
     "empty": "Aún no hay documentos almacenados.",
     "columns": {
@@ -869,12 +861,8 @@
     }
   },
   "account": {
-    "pageHeader": {
-      "title": "Cuenta",
-      "subtitle": "Aquí encontrarás todos tus espacios, contribuidores virtuales y otros recursos alojados. Si tienes alguna pregunta, no dudes en contactar con el equipo de Alkemio."
-    },
     "url": {
-      "title": "URL",
+      "title": "URL del espacio",
       "hint": "La URL única de este espacio. Contacta con Alkemio para cambiarla.",
       "copy": "Copiar URL",
       "copied": "URL copiada"
@@ -886,12 +874,10 @@
       "contact": "Para cambios de estado, contacta con el equipo de Alkemio."
     },
     "host": {
-      "title": "Información del anfitrión",
-      "description": "El anfitrión es la persona u organización propietaria de este espacio."
+      "title": "Información del anfitrión"
     },
     "plan": {
       "title": "Licencia",
-      "description": "Detalles de tu suscripción actual al espacio",
       "featuresHeading": "Funciones incluidas",
       "daysLeft": "{{count}} días restantes",
       "changeLicense": "Cambiar licencia"

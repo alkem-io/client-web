@@ -759,13 +759,8 @@
     }
   },
   "settings": {
-    "pageHeader": {
-      "title": "Instellingen",
-      "subtitle": "Configureer de zichtbaarheid van je Space, lidmaatschapsbeleid en toegestane ledenacties."
-    },
     "visibility": {
       "title": "Zichtbaarheid",
-      "description": "Bepaal wie deze Space kan zien en openen",
       "public": "Openbaar",
       "publicDescription": "Deze Space en de inhoud ervan zijn zichtbaar voor iedereen op het platform. Gebruikers kunnen alleen bijdragen als ze lid zijn.",
       "private": "Privé",
@@ -774,7 +769,6 @@
     },
     "membership": {
       "title": "Lidmaatschap",
-      "description": "Kies hoe gebruikers lid worden van je Space",
       "open": "Geen aanvraag vereist",
       "openDescription": "Alle Space-leden kunnen direct lid worden, zonder dat je hun aanvragen hoeft te beoordelen.",
       "openHint": "Het beste voor openbare, open samenwerkings-Spaces",
@@ -810,7 +804,6 @@
     },
     "allowedActions": {
       "title": "Toegestane acties",
-      "description": "Kies welke acties leden in deze Space kunnen uitvoeren",
       "subspaceAdminInvitations": "Subspace-lidmaatschap",
       "memberCreatePosts": "Posts maken",
       "videoCalls": "Videogesprekken",
@@ -848,9 +841,8 @@
     }
   },
   "storage": {
-    "pageHeader": {
-      "title": "Opslag",
-      "subtitle": "Bekijk en beheer documenten die in deze Space zijn opgeslagen."
+    "sections": {
+      "documents": "Documenten"
     },
     "empty": "Nog geen documenten opgeslagen.",
     "columns": {
@@ -869,12 +861,8 @@
     }
   },
   "account": {
-    "pageHeader": {
-      "title": "Account",
-      "subtitle": "Hier vind je al je Spaces, Virtual Contributors en andere gehoste bronnen. Als je vragen hebt, neem dan gerust contact op met het Alkemio-team."
-    },
     "url": {
-      "title": "URL",
+      "title": "Space-URL",
       "hint": "De unieke URL voor deze Space. Neem contact op met Alkemio om dit te wijzigen.",
       "copy": "URL kopiëren",
       "copied": "URL gekopieerd"
@@ -886,12 +874,10 @@
       "contact": "Voor statuswijzigingen neem je contact op met het Alkemio-team."
     },
     "host": {
-      "title": "Hostinformatie",
-      "description": "De host is de persoon of organisatie die eigenaar is van deze Space."
+      "title": "Hostinformatie"
     },
     "plan": {
       "title": "Licentie",
-      "description": "Details van je huidige Space-abonnement",
       "featuresHeading": "Inbegrepen functies",
       "daysLeft": "Nog {{count}} dagen",
       "changeLicense": "Licentie wijzigen"

@@ -759,13 +759,8 @@
     }
   },
   "settings": {
-    "pageHeader": {
-      "title": "Einstellungen",
-      "subtitle": "Konfigurieren Sie die Sichtbarkeit Ihres Spaces, die Mitgliedschaftsrichtlinien und die für Mitglieder erlaubten Aktionen."
-    },
     "visibility": {
       "title": "Sichtbarkeit",
-      "description": "Steuern Sie, wer diesen Space sehen und darauf zugreifen kann",
       "public": "Öffentlich",
       "publicDescription": "Dieser Space und seine Inhalte sind für alle auf der Plattform sichtbar. Benutzer können nur beitragen, wenn sie Mitglied sind.",
       "private": "Privat",
@@ -774,7 +769,6 @@
     },
     "membership": {
       "title": "Mitgliedschaft",
-      "description": "Wählen Sie, wie Benutzer Ihrem Space beitreten",
       "open": "Kein Antrag erforderlich",
       "openDescription": "Alle Space-Mitglieder können direkt beitreten, ohne dass Sie ihre Anträge prüfen müssen.",
       "openHint": "Am besten für öffentliche, offene Kollaborationsspaces",
@@ -810,7 +804,6 @@
     },
     "allowedActions": {
       "title": "Erlaubte Aktionen",
-      "description": "Wählen Sie, welche Aktionen Mitglieder in diesem Space ausführen können",
       "subspaceAdminInvitations": "Subspace-Mitgliedschaft",
       "memberCreatePosts": "Beiträge erstellen",
       "videoCalls": "Videoanrufe",
@@ -848,9 +841,8 @@
     }
   },
   "storage": {
-    "pageHeader": {
-      "title": "Speicher",
-      "subtitle": "Durchsuchen und verwalten Sie die in diesem Space gespeicherten Dokumente."
+    "sections": {
+      "documents": "Dokumente"
     },
     "empty": "Noch keine Dokumente gespeichert.",
     "columns": {
@@ -869,12 +861,8 @@
     }
   },
   "account": {
-    "pageHeader": {
-      "title": "Konto",
-      "subtitle": "Hier finden Sie alle Ihre Spaces, virtuellen Mitwirkenden und andere gehostete Ressourcen. Wenn Sie Fragen haben, wenden Sie sich gerne an das Alkemio-Team."
-    },
     "url": {
-      "title": "URL",
+      "title": "Space-URL",
       "hint": "Die eindeutige URL für diesen Space. Wenden Sie sich an Alkemio, um sie zu ändern.",
       "copy": "URL kopieren",
       "copied": "URL kopiert"
@@ -886,12 +874,10 @@
       "contact": "Wenden Sie sich für Statusänderungen an das Alkemio-Team."
     },
     "host": {
-      "title": "Host-Informationen",
-      "description": "Der Host ist die Person oder Organisation, der dieser Space gehört."
+      "title": "Host-Informationen"
     },
     "plan": {
       "title": "Lizenz",
-      "description": "Details zu Ihrem aktuellen Space-Abonnement",
       "featuresHeading": "Enthaltene Funktionen",
       "daysLeft": "Noch {{count}} Tage",
       "changeLicense": "Lizenz ändern"
