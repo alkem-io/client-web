@@ -144,6 +144,18 @@ describe('ChatThreadView — exact time on demand', () => {
     expect(row.querySelector('[data-testid="chat-revealed-time"]')).toBeNull();
   });
 
+  test('a tap inside the emoji picker, which is portalled out of the message, keeps the message revealed', () => {
+    renderThread([msg(at(14, 9, 12))]);
+    const row = rowFor('message 1');
+    fireEvent.pointerUp(row, { pointerType: 'touch' });
+    fireEvent.click(within(row).getByRole('button', { name: 'thread.addReaction' }));
+    const picker = screen.getByRole('dialog');
+    expect(row).not.toContainElement(picker);
+
+    fireEvent.pointerUp(picker, { pointerType: 'touch' });
+    expect(row.querySelector('[data-testid="chat-revealed-time"]')).toHaveTextContent('Today, 09:12');
+  });
+
   test("a tap on the message's own buttons does not toggle the time", () => {
     renderThread([msg(at(14, 9, 12), { reactions: [{ emoji: '👍', count: 1, hasReacted: false }] })]);
     const row = rowFor('message 1');

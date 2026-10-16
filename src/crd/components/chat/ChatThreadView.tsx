@@ -84,6 +84,9 @@ export function ChatThreadView({
   // closed. Taps on the message's own controls — reactions, links, media — pass.
   const toggleRevealedOnTap = (id: string) => (event: PointerEvent<HTMLDivElement>) => {
     if (event.pointerType === 'mouse') return;
+    // React bubbles events from portalled popovers (the emoji picker) through the
+    // message; only a tap on the message itself toggles it.
+    if (!event.currentTarget.contains(event.target as Node)) return;
     if ((event.target as HTMLElement).closest('button, a')) return;
     setRevealedIds(previous => {
       const next = new Set(previous);

@@ -225,6 +225,15 @@ describe('ChatMessageBubble', () => {
       expect(container.querySelector('.rounded-2xl strong')?.textContent).toBe('b');
     });
 
+    test('a line that starts with a tag does not swallow the markdown on the lines after it', () => {
+      const content = '<note>\n**Important**: read this\n- item one\n- item two';
+      const { container } = render(<ChatMessageBubble message={{ ...baseMessage, content }} />);
+      const bubble = container.querySelector('.rounded-2xl');
+      expect(bubble?.textContent).toContain('<note>');
+      expect(bubble?.querySelector('strong')?.textContent).toBe('Important');
+      expect(bubble?.querySelectorAll('li')).toHaveLength(2);
+    });
+
     test('an autolinked URL still renders as a link', () => {
       const { container } = render(
         <ChatMessageBubble message={{ ...baseMessage, content: '<https://alkem.io/path>' }} />
