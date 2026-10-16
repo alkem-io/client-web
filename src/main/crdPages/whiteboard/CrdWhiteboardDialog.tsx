@@ -283,10 +283,10 @@ const CrdWhiteboardDialog = ({
       canUpload: !!(wb.profile.visual?.id || wb.profile.preview?.id),
     });
     if (work === 'none') return undefined;
+    // An unreadable stored preview would otherwise leave the CARD missing on every close; re-render both instead.
     const previewImages =
-      work === 'card-from-preview' && previewUri
-        ? await generateCardFromPreview(previewUri)
-        : await generateWhiteboardVisuals(wb, true);
+      (work === 'card-from-preview' && previewUri ? await generateCardFromPreview(previewUri) : undefined) ??
+      (await generateWhiteboardVisuals(wb, true));
     if (!previewImages?.length) return undefined;
     return async () => (await actions.onUpdate(wb, previewImages)).success;
   };
