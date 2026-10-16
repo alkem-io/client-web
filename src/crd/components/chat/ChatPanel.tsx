@@ -70,11 +70,13 @@ export function ChatPanel({
     if (!coversPage) {
       return;
     }
-    const root = document.documentElement;
-    const previousOverflow = root.style.overflow;
-    root.style.overflow = 'hidden';
+    // Lock on <body>, as Radix overlays do: a lock on <html> stops body overflow
+    // reaching the viewport, so a dialog's own body lock would reset the page scroll.
+    const { body } = document;
+    const previousOverflow = body.style.overflow;
+    body.style.overflow = 'hidden';
     return () => {
-      root.style.overflow = previousOverflow;
+      body.style.overflow = previousOverflow;
     };
   }, [coversPage]);
 
@@ -131,6 +133,7 @@ export function ChatPanel({
             type="button"
             onClick={() => setExpanded(!expanded)}
             aria-label={isExpanded ? collapseLabel : expandLabel}
+            aria-expanded={isExpanded}
             className={ICON_BUTTON_CLASS}
           >
             {isExpanded ? (

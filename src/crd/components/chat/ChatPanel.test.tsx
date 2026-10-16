@@ -25,10 +25,10 @@ const renderPanel = (props: Partial<ComponentProps<typeof ChatPanel>> = {}) =>
 describe('ChatPanel', () => {
   beforeEach(() => {
     screenSize.isSmallScreen = false;
-    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
   });
   afterEach(() => {
-    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
   });
 
   describe('header', () => {
@@ -81,6 +81,14 @@ describe('ChatPanel', () => {
       expect(toggle).toHaveAccessibleName('Expand chat');
     });
 
+    test('tells assistive technology whether the panel is expanded', async () => {
+      renderPanel();
+      const toggle = screen.getByRole('button', { name: 'Expand chat' });
+      expect(toggle).toHaveAttribute('aria-expanded', 'false');
+      await userEvent.setup().click(toggle);
+      expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    });
+
     test('keeps the same body element across the toggle, so the open thread and its state survive', async () => {
       renderPanel({ children: <input aria-label="draft" defaultValue="unsent text" /> });
       const input = screen.getByRole('textbox', { name: 'draft' });
@@ -99,24 +107,30 @@ describe('ChatPanel', () => {
   describe('page scroll behind the panel', () => {
     test('leaves the page scrollable while the panel is the small floating window', () => {
       renderPanel();
-      expect(document.documentElement.style.overflow).toBe('');
+      expect(document.body.style.overflow).toBe('');
     });
 
     test('locks page scroll while expanded and restores the previous value on collapse', async () => {
-      document.documentElement.style.overflow = 'scroll';
+      document.body.style.overflow = 'scroll';
       const user = userEvent.setup();
       renderPanel();
       await user.click(screen.getByRole('button', { name: 'Expand chat' }));
-      expect(document.documentElement.style.overflow).toBe('hidden');
+      expect(document.body.style.overflow).toBe('hidden');
       await user.click(screen.getByRole('button', { name: 'Collapse chat' }));
-      expect(document.documentElement.style.overflow).toBe('scroll');
+      expect(document.body.style.overflow).toBe('scroll');
     });
 
     test('locks page scroll while the panel covers a small screen and releases it on close', () => {
       screenSize.isSmallScreen = true;
       const { rerender } = renderPanel();
-      expect(document.documentElement.style.overflow).toBe('hidden');
+      expect(document.body.style.overflow).toBe('hidden');
       rerender(<ChatPanel {...baseProps} open={false} />);
+      expect(document.body.style.overflow).toBe('');
+    });
+
+    test('leaves <html> alone, so a dialog that locks <body> does not reset the page scroll', async () => {
+      renderPanel();
+      await userEvent.setup().click(screen.getByRole('button', { name: 'Expand chat' }));
       expect(document.documentElement.style.overflow).toBe('');
     });
 
@@ -124,7 +138,7 @@ describe('ChatPanel', () => {
       const { unmount } = renderPanel();
       await userEvent.setup().click(screen.getByRole('button', { name: 'Expand chat' }));
       unmount();
-      expect(document.documentElement.style.overflow).toBe('');
+      expect(document.body.style.overflow).toBe('');
     });
   });
 });
