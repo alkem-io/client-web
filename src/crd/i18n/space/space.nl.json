@@ -888,10 +888,10 @@
         },
         "warning": {
           "reconnectTitle": "Editor opnieuw verbinden?",
-          "reconnectBody": "Hiermee wordt de huidige bewerkingssessie beëindigd en het document ter plekke opnieuw geopend — de pagina wordt niet opnieuw geladen. Wijzigingen sinds de laatste keer opslaan kunnen verloren gaan; kopieer eerst wat u nodig hebt.",
+          "reconnectBody": "Hiermee wordt de huidige bewerkingssessie beëindigd en het document ter plekke opnieuw geopend — de pagina wordt niet opnieuw geladen. Wijzigingen sinds de laatste keer opslaan kunnen verloren gaan; kopieer eerst wat je nodig hebt.",
           "reconnectConfirm": "Opnieuw verbinden",
           "reloadTitle": "Pagina opnieuw laden?",
-          "reloadBody": "Hiermee wordt de hele pagina opnieuw geladen en het document helemaal opnieuw geopend. Wijzigingen sinds de laatste keer opslaan kunnen verloren gaan; kopieer eerst wat u nodig hebt.",
+          "reloadBody": "Hiermee wordt de hele pagina opnieuw geladen en het document helemaal opnieuw geopend. Wijzigingen sinds de laatste keer opslaan kunnen verloren gaan; kopieer eerst wat je nodig hebt.",
           "reloadConfirm": "Pagina opnieuw laden",
           "cancel": "Annuleren"
         },
@@ -1128,14 +1128,14 @@
     "closeMap": "Kaart sluiten",
     "card": {
       "taglineFallback": "Deze gebruiker heeft geen ondertitel ingevuld.",
-      "associates_one": "{{count}} geassocieerde in deze organisatie",
-      "associates_other": "{{count}} geassocieerden in deze organisatie",
+      "associates_one": "{{count}} betrokkene bij deze organisatie",
+      "associates_other": "{{count}} betrokkenen bij deze organisatie",
       "actions": "Acties voor {{name}}",
       "viewProfile": "Profiel bekijken",
       "message": "Bericht",
       "website": "Bezoek de website van {{name}} (opent in een nieuw tabblad)",
       "opensInNewTab": "opent in een nieuw tabblad",
-      "joined": "Lid geworden van deze Space {{date}}"
+      "joined": "Lid van deze Space sinds {{date}}"
     },
     "types": {
       "user": "Personen",
@@ -1208,8 +1208,8 @@
     "type": {
       "SHORT_TEXT": "Korte tekst",
       "LONG_TEXT": "Lange tekst",
-      "SINGLE_CHOICE": "Enkele keuze",
-      "MULTIPLE_CHOICE": "Meerdere keuzes"
+      "SINGLE_CHOICE": "Eén antwoord",
+      "MULTIPLE_CHOICE": "Meerdere antwoorden mogelijk"
     },
     "required": "Verplicht",
     "dragQuestion": "Vraag {{number}} verplaatsen",
@@ -1250,7 +1250,7 @@
       "stateOpen": "Open voor reacties",
       "stateHelp": "Gesloten formulieren accepteren geen nieuwe reacties.",
       "defaultCollapsed": "Formulier standaard ingeklapt tonen",
-      "defaultCollapsedHelp": "Kijkers kunnen het nog steeds uitklappen",
+      "defaultCollapsedHelp": "Bezoekers kunnen het nog steeds uitklappen",
       "widenConfirm": {
         "title": "Reacties tonen aan leden?",
         "description_one": "Leden van {{space}} kunnen de {{count}} bestaande reactie lezen, ook als die is ingediend toen alleen admins die konden zien.",
