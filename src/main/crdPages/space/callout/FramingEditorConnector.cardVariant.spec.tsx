@@ -32,9 +32,10 @@ describe('FramingEditorConnector — card variant switch placement', () => {
   it('follows the selection switch in DOM order when Manual selection is off', () => {
     render(<FramingEditorConnector {...baseProps} framingType="spaces" />);
     const switches = screen.getAllByRole('switch');
-    // First switch = Manual selection ("forms.selection.label"), second = Expanded card.
+    // First switch = Manual selection (the spaces kind's own switch label, 084
+    // T106), second = Expanded card.
     expect(switches).toHaveLength(2);
-    expect(switches[0]).toHaveAccessibleName('forms.selection.label');
+    expect(switches[0]).toHaveAccessibleName('forms.selection.spaces.switchLabel');
     expect(switches[1]).toHaveAccessibleName('forms.cardVariant.label');
   });
 
@@ -44,7 +45,7 @@ describe('FramingEditorConnector — card variant switch placement', () => {
     expect(switches).toHaveLength(2);
     expect(switches[1]).toHaveAccessibleName('forms.cardVariant.label');
     // The picker's search box (rendered only in custom mode) precedes the card-variant switch.
-    const searchBox = screen.getByRole('textbox', { name: 'forms.selection.searchSubspaceAriaLabel' });
+    const searchBox = screen.getByRole('textbox', { name: 'forms.selection.spacePicker.searchAriaLabel' });
     expect(searchBox.compareDocumentPosition(switches[1]) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 

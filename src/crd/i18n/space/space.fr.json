@@ -314,6 +314,7 @@
     "updateFailed": "Les modifications de la publication n'ont pas pu être enregistrées. Veuillez réessayer.",
     "contributors": "Contributeurs",
     "subspaces": "Sous-espaces",
+    "spacesHidden": "Certains espaces de cet aperçu ne sont pas affichés car vous n’y avez pas accès.",
     "form": "Formulaire"
   },
   "contribution": {
@@ -612,14 +613,34 @@
         "customDescription": "Affiche uniquement les contributeurs que vous sélectionnez."
       },
       "spaces": {
+        "fieldTitle": "Espaces affichés dans cette $t(common.callout)",
+        "switchLabel": "Choisir les espaces manuellement",
         "autoDescription": "Affiche automatiquement tous les sous-espaces et se met à jour lorsqu’ils sont ajoutés ou supprimés.",
-        "customDescription": "Affiche uniquement les sous-espaces que vous sélectionnez ci-dessous."
+        "customDescription": "Affiche uniquement les espaces que vous sélectionnez ci-dessous."
+      },
+      "spacePicker": {
+        "searchPlaceholder": "Rechercher des espaces dans ce compte…",
+        "searchAriaLabel": "Rechercher des espaces dans ce compte",
+        "noMatches": "Aucun espace de ce compte ne correspond à votre recherche.",
+        "accountEmpty": "Ce compte n’a aucun autre espace.",
+        "loadFailed": "La liste des espaces n’a pas pu être chargée.",
+        "chipsEmpty": "Aucun espace sélectionné pour l’instant. Recherchez ci-dessous pour en ajouter.",
+        "chipContext": "dans {{parentName}}",
+        "badgeInThisSpace": "Dans cet espace",
+        "badgeCalloutIsHere": "La $t(common.callout) est ici",
+        "noneSelected": "Aucun espace sélectionné",
+        "selectedCount_one": "{{count}} espace sélectionné",
+        "selectedCount_other": "{{count}} espaces sélectionnés",
+        "clearSelection": "Effacer la sélection",
+        "levelSpace": "Espace",
+        "levelSubspace": "Sous-espace",
+        "levelSubsubspace": "Sous-sous-espace",
+        "pathSubLine": "{{level}} dans {{path}}",
+        "removeInParentAriaLabel": "Supprimer {{name}}, dans {{parentName}}"
       },
       "noLongerAvailable": "Plus disponible",
       "searchPlaceholder": "Rechercher des membres…",
       "searchAriaLabel": "Rechercher des membres",
-      "searchSubspacePlaceholder": "Rechercher des sous-espaces…",
-      "searchSubspaceAriaLabel": "Rechercher des sous-espaces",
       "noResults": "Aucun résultat correspondant",
       "loading": "Chargement…",
       "loadMore": "Chargement de plus…",

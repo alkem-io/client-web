@@ -213,7 +213,7 @@ describe('ContributorSelector', () => {
     expect(onRemoveContributor).toHaveBeenCalledWith(1);
   });
 
-  // --- feature 025: organization, virtualContributor, subspace chip kinds ---
+  // --- feature 025: organization and virtualContributor chip kinds ---
 
   test('organization chip renders displayName and remove button', () => {
     const selected: ContributorSelectorInvitee[] = [{ kind: 'organization', id: 'org-1', displayName: 'Acme Corp' }];
@@ -248,22 +248,6 @@ describe('ContributorSelector', () => {
       />
     );
     expect(screen.getByText('Virtual Assistant')).toBeInTheDocument();
-  });
-
-  test('subspace chip renders displayName', () => {
-    const selected: ContributorSelectorInvitee[] = [{ kind: 'subspace', id: 'space-1', displayName: 'Challenge A' }];
-    render(
-      <ContributorSelector
-        selectedContributors={selected}
-        searchResults={[]}
-        searchQuery=""
-        onSearchChange={vi.fn()}
-        onSelectUser={vi.fn()}
-        onRemoveContributor={vi.fn()}
-        {...baseLabels}
-      />
-    );
-    expect(screen.getByText('Challenge A')).toBeInTheDocument();
   });
 
   test('ineligible entry renders with line-through style and shows ineligibleLabel tooltip', () => {

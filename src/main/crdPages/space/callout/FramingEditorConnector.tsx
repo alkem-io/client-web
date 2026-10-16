@@ -1,7 +1,7 @@
 import { Crop, FileText, Presentation, Settings, Sheet, StickyNote, Wand2 } from 'lucide-react';
 import { lazy, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
+import { type CollaboraDocumentType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { InlineWhiteboardPreview } from '@/crd/components/callout/InlineWhiteboardPreview';
 import { CollaboraDocumentDisplayName } from '@/crd/components/collabora/CollaboraDocumentDisplayName';
 import { Loading } from '@/crd/components/common/Loading';
@@ -27,6 +27,7 @@ import { MemoFramingEditor } from '@/crd/forms/callout/MemoFramingEditor';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollOptionsEditor } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollSettingsDialog } from '@/crd/forms/callout/PollSettingsDialog';
+import { SpaceSelector } from '@/crd/forms/callout/SpaceSelector';
 import type { FormQuestionValue, FormSettingsValue } from '@/crd/forms/callout/types';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
@@ -70,6 +71,14 @@ const collaboraDocIconByType: Record<CollaboraDocumentTypeValue, typeof FileText
   SPREADSHEET: Sheet,
   PRESENTATION: Presentation,
 };
+// The picker's row sub-line names the candidate's level (084 FR-028): the
+// platform's three levels, one key each.
+const spaceLevelLabelKeyByLevel = {
+  [SpaceLevel.L0]: 'forms.selection.spacePicker.levelSpace',
+  [SpaceLevel.L1]: 'forms.selection.spacePicker.levelSubspace',
+  [SpaceLevel.L2]: 'forms.selection.spacePicker.levelSubsubspace',
+} as const;
+
 const collaboraDocLabelKeyByType: Record<
   CollaboraDocumentTypeValue,
   'callout.documentText' | 'callout.documentSpreadsheet' | 'callout.documentPresentation'
@@ -278,12 +287,20 @@ type FramingEditorConnectorProps = {
   ) => import('@/crd/forms/ContributorSelector').ContributorSelectorInvitee[];
   contributorCandidatesLoading?: boolean;
   /**
-   * Subspace candidates for the spaces chip (feature 025, T006).
-   * Derived by `useCrdSpaceSubspaces` in `CalloutFormConnector` (the same data
-   * the collection renderer already has) — no new query.
+   * The account-scoped space candidate model for the spaces chip (feature 084,
+   * T102). Derived by `useAccountSpaceCandidates` in `CalloutFormConnector` so
+   * this connector stays free of Apollo hooks (CRD connector rules).
    */
-  subspaceCandidates?: { id: string; displayName: string; avatarUrl?: string }[];
-  subspaceCandidatesLoading?: boolean;
+  spaceCandidates?: import('./useAccountSpaceCandidates').UseAccountSpaceCandidatesResult;
+  /**
+   * Whether this editor may change the spaces chip's manual selection — i.e. is
+   * a space admin of the host space, which is the privilege the candidate query
+   * is gated on. False only in EDIT mode, for a callout creator who has since
+   * been demoted and still holds UPDATE on the callout itself; the whole
+   * manual-selection block is then not rendered (084 FR-009a), and the stored
+   * selection is still submitted unchanged on save (084 FR-014).
+   */
+  canEditSpaceSelection?: boolean;
   /**
    * Map pins for the map-view capture control.
    * In edit mode: the default-type contributor cards derived by `CalloutFormConnector`.
@@ -404,8 +421,8 @@ export function FramingEditorConnector({
   contributorCandidates = [],
   resolveContributorChips,
   contributorCandidatesLoading = false,
-  subspaceCandidates = [],
-  subspaceCandidatesLoading = false,
+  spaceCandidates,
+  canEditSpaceSelection = true,
   contributorMapPins = [],
   contributorMapView = null,
   onContributorMapViewChange,
@@ -416,10 +433,10 @@ export function FramingEditorConnector({
   const [pendingStatus, setPendingStatus] = useState<'open' | 'closed' | null>(null);
   const [whiteboardEditorOpen, setWhiteboardEditorOpen] = useState(false);
   const [memoDialogOpen, setMemoDialogOpen] = useState(false);
-  // Feature 025: search query state for the contributor and subspace pickers.
-  // Must live at function top-level (Rules of Hooks — no hooks inside switch cases).
+  // Feature 025: search query state for the contributor picker. Must live at
+  // function top-level (Rules of Hooks — no hooks inside switch cases). The
+  // spaces picker holds its own query (084 T105).
   const [contributorSearchQuery, setContributorSearchQuery] = useState('');
-  const [subspaceSearchQuery, setSubspaceSearchQuery] = useState('');
   // Map-view capture control state.
   // Must live at function top-level (Rules of Hooks — no state inside switch cases).
   const [mapViewControlOpen, setMapViewControlOpen] = useState(false);
@@ -905,73 +922,75 @@ export function FramingEditorConnector({
     }
 
     case 'spaces': {
-      // Feature 025: custom subspace selection for a Spaces-collection callout.
-      // Candidates come from the existing `SubspacesInSpace` query data
-      // (already-shipped host-scoped query — R-6 compliant).
-      const subspaceChips = selectedIds.map(id => {
-        const found = subspaceCandidates.find(c => c.id === id);
-        if (found) {
-          return {
-            kind: 'subspace' as const,
-            id: found.id,
-            displayName: found.displayName,
-            avatarUrl: found.avatarUrl,
-            eligible: true,
-          };
-        }
-        return { kind: 'subspace' as const, id, displayName: id, eligible: false };
-      });
+      // Feature 084: manual selection over every space of the host space's
+      // account the editor may READ (T102), replacing 025's host-only subspace
+      // source. `canEditSpaceSelection` decides whether the block renders at all
+      // (FR-009a) — not which of its parts do.
+      // The picker takes plain values only (CRD rule 4), so the level label is
+      // translated and the ancestor chain flattened to names here.
+      const spaceItems = (spaceCandidates?.candidates ?? []).map(candidate => ({
+        id: candidate.id,
+        displayName: candidate.displayName,
+        levelLabel: t(spaceLevelLabelKeyByLevel[candidate.level]),
+        ancestorPath: candidate.ancestorPath.map(ancestor => ancestor.displayName),
+        isHost: candidate.isHost,
+        inHostTree: candidate.inHostTree,
+        hasNameClash: candidate.hasNameClash,
+      }));
 
-      const subspaceSearchResults = subspaceCandidates
-        .filter(c => {
-          if (selectedIds.includes(c.id)) return false;
-          if (!subspaceSearchQuery.trim()) return true;
-          return c.displayName.toLowerCase().includes(subspaceSearchQuery.toLowerCase());
-        })
-        .map(c => ({ userId: c.id, displayName: c.displayName, avatarUrl: c.avatarUrl }));
-
-      const handleSubspaceSelect = (id: string) => {
-        if (!selectedIds.includes(id)) {
-          onSelectedIdsChange?.([...selectedIds, id]);
-        }
-      };
-      const handleSubspaceRemove = (index: number) => {
-        const chip = subspaceChips[index];
-        if (!chip) return;
-        onSelectedIdsChange?.(selectedIds.filter(id => id !== chip.id));
-      };
+      const handleSpaceToggle = (id: string) =>
+        onSelectedIdsChange?.(
+          selectedIds.includes(id) ? selectedIds.filter(entry => entry !== id) : [...selectedIds, id]
+        );
 
       return (
         <div className="space-y-4">
-          <CalloutSelectionField
-            mode={selectionMode}
-            onModeChange={next => onSelectionModeChange?.(next)}
-            label={t('forms.selection.label')}
-            autoDescription={t('forms.selection.spaces.autoDescription')}
-            customDescription={t('forms.selection.spaces.customDescription')}
-            pickerSlot={
-              <ContributorSelector
-                selectedContributors={subspaceChips}
-                searchResults={subspaceSearchResults}
-                searchQuery={subspaceSearchQuery}
-                onSearchChange={setSubspaceSearchQuery}
-                onSelectUser={handleSubspaceSelect}
-                onRemoveContributor={handleSubspaceRemove}
-                loading={subspaceCandidatesLoading}
-                allowEmailInvites={false}
-                chipsPosition="above"
-                clearSearchAriaLabel={t('forms.selection.clearSearch')}
-                ineligibleLabel={t('forms.selection.noLongerAvailable')}
-                placeholder={t('forms.selection.searchSubspacePlaceholder')}
-                searchAriaLabel={t('forms.selection.searchSubspaceAriaLabel')}
-                noResultsLabel={t('forms.selection.noResults')}
-                loadingLabel={t('forms.selection.loading')}
-                loadMoreLabel={t('forms.selection.loadMore')}
-                removeAriaLabel={name => t('forms.selection.removeAriaLabel', { name })}
-                validationErrorLabel={() => ''}
+          {canEditSpaceSelection && (
+            <div className="space-y-2">
+              <p className="text-body-emphasis text-foreground">{t('forms.selection.spaces.fieldTitle')}</p>
+              <CalloutSelectionField
+                mode={selectionMode}
+                onModeChange={next => onSelectionModeChange?.(next)}
+                label={t('forms.selection.spaces.switchLabel')}
+                autoDescription={t('forms.selection.spaces.autoDescription')}
+                customDescription={t('forms.selection.spaces.customDescription')}
+                pickerSlot={
+                  <SpaceSelector
+                    items={spaceItems}
+                    selectedIds={selectedIds}
+                    onToggle={handleSpaceToggle}
+                    onClearSelection={() => onSelectedIdsChange?.([])}
+                    loading={spaceCandidates?.loading ?? false}
+                    loadFailed={Boolean(spaceCandidates?.error)}
+                    searchPlaceholder={t('forms.selection.spacePicker.searchPlaceholder')}
+                    searchAriaLabel={t('forms.selection.spacePicker.searchAriaLabel')}
+                    clearSearchAriaLabel={t('forms.selection.clearSearch')}
+                    loadingLabel={t('forms.selection.loading')}
+                    noMatchesLabel={t('forms.selection.spacePicker.noMatches')}
+                    accountEmptyLabel={t('forms.selection.spacePicker.accountEmpty')}
+                    loadFailedLabel={t('forms.selection.spacePicker.loadFailed')}
+                    chipsEmptyLabel={t('forms.selection.spacePicker.chipsEmpty')}
+                    unresolvedLabel={t('forms.selection.noLongerAvailable')}
+                    chipContextLabel={parentName => t('forms.selection.spacePicker.chipContext', { parentName })}
+                    inThisSpaceLabel={t('forms.selection.spacePicker.badgeInThisSpace')}
+                    calloutIsHereLabel={t('forms.selection.spacePicker.badgeCalloutIsHere')}
+                    pathLabel={(level, path) => t('forms.selection.spacePicker.pathSubLine', { level, path })}
+                    removeAriaLabel={(name, parentName) =>
+                      parentName
+                        ? t('forms.selection.spacePicker.removeInParentAriaLabel', { name, parentName })
+                        : t('forms.selection.removeAriaLabel', { name })
+                    }
+                    selectedCountLabel={count =>
+                      count === 0
+                        ? t('forms.selection.spacePicker.noneSelected')
+                        : t('forms.selection.spacePicker.selectedCount', { count })
+                    }
+                    clearSelectionLabel={t('forms.selection.spacePicker.clearSelection')}
+                  />
+                }
               />
-            }
-          />
+            </div>
+          )}
           {/* "Expanded card" switch — placed immediately after the
               complete Manual selection block (its switch, description and, when
               on, its picker). */}

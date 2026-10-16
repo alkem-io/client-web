@@ -62,6 +62,33 @@ describe('SpaceCollection', () => {
     expect(onSubspaceClick).toHaveBeenCalledWith(expect.objectContaining({ id: 'a' }));
   });
 
+  // ─── AC6 — the hidden-spaces notice (feature 084) ───────────────────────
+  test('hasHiddenSpaces renders the notice alongside the cards', () => {
+    render(<SpaceCollection subspaces={[card('a', 'Alpha')]} hasHiddenSpaces={true} />);
+
+    expect(screen.getByText('callout.spacesHidden')).toBeInTheDocument();
+    expect(screen.getByText('Alpha')).toBeInTheDocument();
+  });
+
+  test('hasHiddenSpaces renders the notice alongside the empty state (US2-AS3)', () => {
+    render(<SpaceCollection subspaces={[]} hasHiddenSpaces={true} />);
+
+    expect(screen.getByText('subspaces.empty.title')).toBeInTheDocument();
+    expect(screen.getByText('callout.spacesHidden')).toBeInTheDocument();
+  });
+
+  test('no notice when the flag is false — AUTO mode and the unwithheld case', () => {
+    render(<SpaceCollection subspaces={[card('a', 'Alpha')]} />);
+
+    expect(screen.queryByText('callout.spacesHidden')).not.toBeInTheDocument();
+  });
+
+  test('no notice while loading', () => {
+    render(<SpaceCollection subspaces={[]} loading={true} hasHiddenSpaces={true} />);
+
+    expect(screen.queryByText('callout.spacesHidden')).not.toBeInTheDocument();
+  });
+
   test('default renders compact (3-up grid, SpaceCard) — regression net for existing consumers', () => {
     const { container } = render(<SpaceCollection subspaces={[card('a', 'Alpha')]} />);
     expect(container.querySelector('.md\\:grid-cols-2.lg\\:grid-cols-3')).not.toBeNull();

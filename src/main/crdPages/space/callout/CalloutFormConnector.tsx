@@ -24,7 +24,6 @@ import {
   useCalloutFormResponsesQuery,
   useCreateReferenceOnProfileMutation,
   useDeleteReferenceMutation,
-  useSubspacesInSpaceQuery,
   useTemplateContentLazyQuery,
   useUpdateCalloutContentMutation,
   useUpdatePollStatusMutation,
@@ -102,6 +101,7 @@ import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsTo
 import { type FormEditContext, FramingEditorConnector } from './FramingEditorConnector';
 import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
 import { TemplateImportConnector } from './TemplateImportConnector';
+import { useAccountSpaceCandidates } from './useAccountSpaceCandidates';
 import { translateFormDefinitionError, useCalloutFormDefinitionSave } from './useCalloutFormDefinitionSave';
 import { omitIneligibleIds, useSelectionCandidates } from './useSelectionCandidates';
 
@@ -310,21 +310,21 @@ function CalloutFormConnectorInner({
     skip: !open || !isContributorsChip || !roleSetId,
   });
 
-  // Feature 025: subspace candidates for the spaces chip (T006).
-  // Reuses `useSubspacesInSpaceQuery` (already-shipped, host-scoped — R-6).
-  const {
-    data: subspacesData,
-    loading: subspaceCandidatesLoading,
-    refetch: refetchSubspaceCandidates,
-  } = useSubspacesInSpaceQuery({
-    variables: { spaceId: spaceId ?? '' },
-    skip: !open || !isSpacesChip || !spaceId,
+  // Feature 084: the space candidates for the spaces chip — every space of the
+  // host space's ACCOUNT the editor may READ, not just the host's own subspaces
+  // (T102, FR-010). `spaceId` is the one host id: it is the query variable and
+  // the row the callout lives on.
+  //
+  // `isSpaceAdmin` is the fourth skip condition and it is load-bearing:
+  // `accountSpaces` is gated UPDATE on the SPACE, while this edit dialog is
+  // reachable with UPDATE on the CALLOUT alone (a demoted creator keeps it via
+  // USER_SELF_MANAGEMENT). Issuing the query for that editor throws Forbidden,
+  // which the picker could only present as a transient load failure on a path
+  // where retrying can never work.
+  const accountSpaceCandidates = useAccountSpaceCandidates({
+    hostSpaceId: spaceId,
+    skip: !open || !isSpacesChip || !isSpaceAdmin,
   });
-  const subspaceCandidates = (subspacesData?.lookup.space?.subspaces ?? []).map(s => ({
-    id: s.id,
-    displayName: s.about.profile?.displayName ?? s.id,
-    avatarUrl: s.about.profile?.avatar?.uri ?? undefined,
-  }));
 
   // Contributor map pins for the map-view capture control.
   // Edit mode only: derive from the default-type contributor cards. In create mode
@@ -561,18 +561,18 @@ function CalloutFormConnectorInner({
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) return;
 
-    // Strip ineligible (stale) selectedIds before serialising — mirrors the update
-    // path (tasks T005/T006; the server rejects out-of-scope ids on create too).
+    // Strip ineligible (stale) selectedIds before serialising — contributors only
+    // (025 T005). The SPACES chip submits `values.selectedIds` unchanged: the
+    // server decides what survives (084 FR-014/A11), so nothing the editor cannot
+    // see is removed by saving and an errored or still-loading candidate set
+    // cannot destroy a selection.
     // Same loading guard as in saveEdit: if candidates aren't loaded yet, skip
     // the strip and let the server be the authority (corr-client-3 / qual-client-1).
-    const isCollectionChipForCreate = values.framingChip === 'contributors' || values.framingChip === 'spaces';
     // Unresolved = still loading OR skipped for a missing id (see saveEdit).
     const candidatesUnresolvedForCreate =
-      isCollectionChipForCreate &&
+      values.framingChip === 'contributors' &&
       values.selectionMode === 'custom' &&
-      (values.framingChip === 'contributors'
-        ? contributorCandidatesLoading || !roleSetId
-        : subspaceCandidatesLoading || !spaceId);
+      (contributorCandidatesLoading || !roleSetId);
 
     const eligibleSelectedIdsForCreate = (() => {
       if (values.selectionMode !== 'custom') return values.selectedIds;
@@ -580,10 +580,6 @@ function CalloutFormConnectorInner({
       if (values.framingChip === 'contributors') {
         const chips = resolveContributorChips(values.selectedIds);
         return omitIneligibleIds(values.selectedIds, chips);
-      }
-      if (values.framingChip === 'spaces') {
-        const candidateIds = new Set(subspaceCandidates.map(c => c.id));
-        return values.selectedIds.filter(id => candidateIds.has(id));
       }
       return values.selectedIds;
     })();
@@ -797,28 +793,32 @@ function CalloutFormConnectorInner({
       }
     }
 
-    // Strip ineligible (stale) selectedIds before serialising — the server strictly
-    // rejects out-of-scope ids (spec FR-006/SC-005, tasks T005/T006).
-    // For Contributors framing: resolve chips against the live candidate set so
-    // ids whose member has since left the community are filtered out.
-    // For Spaces framing: any id not present in subspaceCandidates is stale.
+    // Strip ineligible (stale) selectedIds before serialising — CONTRIBUTORS only
+    // (025 T005): resolve chips against the live candidate set so ids whose member
+    // has since left the community are filtered out, because the server strictly
+    // rejects out-of-scope contributor ids (025 FR-006/SC-005).
     //
-    // SAFETY GUARD (corr-client-3 / qual-client-1): if the relevant candidate
+    // The SPACES chip has no strip. It submits `values.selectedIds` unchanged and
+    // the server decides what survives — rejecting newly added out-of-account ids
+    // and silently dropping carried-over ids that have left the account (084
+    // FR-014, spec A11). That is what closes 084 R-C: a space the editor cannot
+    // READ is not a candidate, so a client-side strip would delete it from the
+    // stored selection on any save, and a still-loading or errored candidate set
+    // would delete all of them.
+    //
+    // SAFETY GUARD (corr-client-3 / qual-client-1): if the contributor candidate
     // query is still in flight (cache miss, slow network) the candidate set is
     // empty and stripping against it would wipe every stored id — silently
     // destroying the admin's curated list.  When candidates are not yet loaded
     // we skip the strip and let the server be the authority (server rejects
     // foreign / non-member ids on every write anyway — FR-006).
-    const isCollectionChip = values.framingChip === 'contributors' || values.framingChip === 'spaces';
     // The candidate set is "unresolved" while it is still loading OR while its query
-    // was skipped for a missing id (roleSetId / spaceId) — in that state the candidate
-    // list is empty, so stripping would wrongly erase the whole custom selection.
+    // was skipped for a missing roleSetId — in that state the candidate list is
+    // empty, so stripping would wrongly erase the whole custom selection.
     const candidatesUnresolved =
-      isCollectionChip &&
+      values.framingChip === 'contributors' &&
       values.selectionMode === 'custom' &&
-      (values.framingChip === 'contributors'
-        ? contributorCandidatesLoading || !roleSetId
-        : subspaceCandidatesLoading || !spaceId);
+      (contributorCandidatesLoading || !roleSetId);
 
     const eligibleSelectedIds = (() => {
       if (values.selectionMode !== 'custom') return values.selectedIds;
@@ -827,10 +827,6 @@ function CalloutFormConnectorInner({
       if (values.framingChip === 'contributors') {
         const chips = resolveContributorChips(values.selectedIds);
         return omitIneligibleIds(values.selectedIds, chips);
-      }
-      if (values.framingChip === 'spaces') {
-        const candidateIds = new Set(subspaceCandidates.map(c => c.id));
-        return values.selectedIds.filter(id => candidateIds.has(id));
       }
       return values.selectedIds;
     })();
@@ -870,15 +866,25 @@ function CalloutFormConnectorInner({
       // Surface the failure so the admin knows the save did not go through (T005
       // mid-race rejection recovery / spec Edge Case 'Concurrent churn').
       notify(t('callout.updateFailed'), 'error');
-      // Reload membership/subspace data so any concurrent change (e.g. a member
-      // who left between load and save) is reflected.  On the next save attempt
-      // the updated candidate set will strip the now-departed entry and the re-
-      // save can succeed (corr-client-2 / T005 concurrent-churn recovery).
+      // Reload the candidate data so any concurrent change (e.g. a member who
+      // left, or a space moved out of the account, between load and save) is
+      // reflected.
+      //
+      // For CONTRIBUTORS this is 025's automatic recovery: the updated candidate
+      // set strips the now-departed entry and the re-save can succeed
+      // (corr-client-2 / 025 T005 concurrent-churn recovery).
+      //
+      // For SPACES it is NOT automatic — 084 T103 deletes that strip. What the
+      // refetch buys is that the rejected id loses its candidate entry and so
+      // renders as the unnamed "no longer available" chip, which the admin removes
+      // with one explicit act before re-saving (084 FR-014/FR-022, residual R-I).
+      // Dropping it for them would re-introduce the strip whose deletion closed
+      // R-C (rejected alternative A24) — do not add it.
       if (values.selectionMode === 'custom') {
         if (values.framingChip === 'contributors') {
           refetchContributorCandidates();
         } else if (values.framingChip === 'spaces') {
-          void refetchSubspaceCandidates();
+          accountSpaceCandidates.refetch();
         }
       }
       return;
@@ -1154,8 +1160,8 @@ function CalloutFormConnectorInner({
                 contributorCandidates={contributorCandidates}
                 resolveContributorChips={resolveContributorChips}
                 contributorCandidatesLoading={contributorCandidatesLoading}
-                subspaceCandidates={subspaceCandidates}
-                subspaceCandidatesLoading={subspaceCandidatesLoading}
+                spaceCandidates={accountSpaceCandidates}
+                canEditSpaceSelection={mode === 'create' || isSpaceAdmin}
                 contributorMapPins={contributorMapPins}
                 contributorMapView={values.contributorCollection.mapView}
                 onContributorMapViewChange={view =>

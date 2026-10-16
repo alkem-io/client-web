@@ -352,6 +352,7 @@ function LazyCalloutItemContent({
       <SpaceCollectionConnector
         calloutId={callout.id}
         cardVariant={cardVariantFromServer(callout.settings.framing.spaces?.cardVariant)}
+        selectionMode={callout.settings.framing.selection?.mode}
         className="mt-2"
       />
     ) : null;
