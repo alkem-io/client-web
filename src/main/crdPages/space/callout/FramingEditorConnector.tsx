@@ -41,6 +41,7 @@ import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout
 import type { UseRenameCollaboraDocumentResult } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import type { WhiteboardDraftLifecycle } from '@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft';
+import { useWhiteboardDraftPreviewUrl } from '@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraftPreviewUrl';
 import { WhiteboardDraftEditor } from '@/domain/collaboration/whiteboard/WhiteboardDraft/WhiteboardDraftEditor';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
@@ -320,6 +321,40 @@ type FramingEditorConnectorProps = {
   onContributorMapViewChange?: (view: ContributorMapFixedView | null) => void;
 };
 
+type DraftInlineWhiteboardPreviewProps = {
+  draftWhiteboardID: string | undefined;
+  onEdit: () => void;
+  editLabel: string;
+  previewImageUrl: string | undefined;
+  imageAlt: string;
+  disabled: boolean;
+};
+
+/** Prefers the draft's own stored preview once a draft exists. */
+const DraftInlineWhiteboardPreview = ({
+  draftWhiteboardID,
+  previewImageUrl,
+  ...props
+}: DraftInlineWhiteboardPreviewProps) =>
+  draftWhiteboardID ? (
+    <StoredDraftInlineWhiteboardPreview
+      draftWhiteboardID={draftWhiteboardID}
+      previewImageUrl={previewImageUrl}
+      {...props}
+    />
+  ) : (
+    <InlineWhiteboardPreview previewImageUrl={previewImageUrl} {...props} />
+  );
+
+const StoredDraftInlineWhiteboardPreview = ({
+  draftWhiteboardID,
+  previewImageUrl,
+  ...props
+}: DraftInlineWhiteboardPreviewProps & { draftWhiteboardID: string }) => {
+  const draftPreviewUrl = useWhiteboardDraftPreviewUrl(draftWhiteboardID);
+  return <InlineWhiteboardPreview previewImageUrl={draftPreviewUrl ?? previewImageUrl} {...props} />;
+};
+
 export function FramingEditorConnector({
   mode = 'create',
   calloutId,
@@ -459,7 +494,8 @@ export function FramingEditorConnector({
       };
       return (
         <>
-          <InlineWhiteboardPreview
+          <DraftInlineWhiteboardPreview
+            draftWhiteboardID={whiteboardDraft?.handle?.whiteboardID}
             onEdit={() => void openDraft()}
             editLabel={t('framing.edit')}
             previewImageUrl={whiteboardPreviewUrl ?? whiteboardPreviewServerUrl}

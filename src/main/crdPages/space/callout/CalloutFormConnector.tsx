@@ -588,7 +588,7 @@ function CalloutFormConnectorInner({
         ? { ...values, selectedIds: eligibleSelectedIdsForCreate }
         : values;
 
-    const { input, whiteboardPreviewImages, collaboraUploadFile } = mapFormToCalloutCreationInput(valuesForCreate, {
+    const { input, collaboraUploadFile } = mapFormToCalloutCreationInput(valuesForCreate, {
       visibility,
       whiteboardFallbackDisplayName: t('callout.whiteboard'),
       collaboraFallbackDisplayName: t('callout.defaultDocumentName'),
@@ -615,20 +615,6 @@ function CalloutFormConnectorInner({
     if (!result) return;
 
     try {
-      if (input.framing.type === CalloutFramingType.Whiteboard && whiteboardPreviewImages) {
-        const whiteboard = result.framing.whiteboard;
-        if (whiteboard?.profile) {
-          await uploadWhiteboardVisuals(
-            whiteboardPreviewImages,
-            {
-              cardVisualId: whiteboard.profile.visual?.id,
-              previewVisualId: whiteboard.profile.preview?.id,
-            },
-            result.nameID
-          );
-        }
-      }
-
       if (input.framing.type === CalloutFramingType.MediaGallery) {
         const mediaGalleryId = result.framing.mediaGallery?.id;
         if (mediaGalleryId && values.mediaGalleryVisuals.length > 0) {

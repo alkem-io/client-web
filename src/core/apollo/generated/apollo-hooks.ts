@@ -12068,6 +12068,12 @@ export const WhiteboardDraftDetailsByIdDocument = gql`
           allowedMimeTypes
           maxFileSize
         }
+        visual(type: CARD) {
+          ...VisualModelFull
+        }
+        preview: visual(type: WHITEBOARD_PREVIEW) {
+          ...VisualModelFull
+        }
       }
       previewSettings {
         ...whiteboardPreviewSettings
@@ -12075,7 +12081,8 @@ export const WhiteboardDraftDetailsByIdDocument = gql`
     }
   }
 }
-    ${WhiteboardPreviewSettingsFragmentDoc}`;
+    ${VisualModelFullFragmentDoc}
+${WhiteboardPreviewSettingsFragmentDoc}`;
 
 /**
  * __useWhiteboardDraftDetailsByIdQuery__
