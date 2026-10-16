@@ -31,12 +31,8 @@ declare global {
     /**
      * Injected by the native shell — never by this bundle. Only the members the
      * page actually reads are declared, and this is their one declaration site,
-     * which is what makes a wrong access path a `typecheck:native` error.
-     *
-     * Note there is deliberately **no `registerPlugin`**: that function exists
-     * only in the `@capacitor/core` npm bundle, which this page does not load.
-     * The shell injects one concrete proxy per registered native plugin at
-     * `Capacitor.Plugins['<jsName>']` instead.
+     * which is what makes a wrong access path a `typecheck:native` error. Why
+     * there is no `registerPlugin` member: see `nativePushPlugin.ts`.
      */
     Capacitor?: {
       isNativePlatform?: () => boolean;
@@ -47,5 +43,4 @@ declare global {
   }
 }
 
-export const isAppMode = (): boolean =>
-  typeof window !== 'undefined' && window.Capacitor?.isNativePlatform?.() === true;
+export const isAppMode = (): boolean => window.Capacitor?.isNativePlatform?.() === true;

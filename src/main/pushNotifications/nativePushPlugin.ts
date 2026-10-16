@@ -27,13 +27,9 @@
  * R-9.
  */
 
-/** `PermissionStatus` — an **object**, not a bare permission string. */
-export type NativePushPermissionStatus = {
-  receive: 'prompt' | 'prompt-with-rationale' | 'granted' | 'denied';
-};
-
 export type NativePushPlugin = {
-  requestPermissions(): Promise<NativePushPermissionStatus>;
+  /** `PermissionStatus` resolves an **object**, not a bare permission string. */
+  requestPermissions(): Promise<{ receive: 'prompt' | 'prompt-with-rationale' | 'granted' | 'denied' }>;
   register(): Promise<void>;
   /**
    * Typed `unknown` deliberately: the injected implementation returns a plain
