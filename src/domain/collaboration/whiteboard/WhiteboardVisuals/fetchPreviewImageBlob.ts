@@ -14,10 +14,13 @@ import { error as logError } from '@/core/logging/sentry/log';
  * preview image. Failures are logged via the project logger so
  * they're discoverable in Sentry but don't surface to the user.
  */
+// Bounds the wait: the whiteboard close awaits this fetch while the editor is still open.
+const FETCH_TIMEOUT_MS = 5000;
+
 export async function fetchPreviewImageBlob(url: string | undefined): Promise<Blob | undefined> {
   if (!url) return undefined;
   try {
-    const response = await fetch(url, { credentials: 'include' });
+    const response = await fetch(url, { credentials: 'include', signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
     if (!response.ok) {
       logError(new Error(`fetchPreviewImageBlob: HTTP ${response.status} ${response.statusText} for ${url}`));
       return undefined;

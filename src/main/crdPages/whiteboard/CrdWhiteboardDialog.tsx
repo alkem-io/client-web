@@ -137,7 +137,8 @@ interface CrdWhiteboardDialogProps {
 type CollaborativeCloseParams = {
   /**
    * Renders the preview images while the editor is still mounted, after content is durable.
-   * Resolves to the upload, which runs in the background once the dialog has closed.
+   * Resolves to the upload, which runs in the background once the dialog has closed — except
+   * for a durable (draft) close, which waits for it.
    */
   capturePreview?: () => Promise<(() => Promise<boolean | undefined>) | undefined>;
   /** Join the provider's one save owner. It publishes assets before its barrier. */
@@ -191,13 +192,18 @@ export async function closeCollaborativeWhiteboard({
       onMetadataFailed?.();
     }
   }
+  const settle = (pending: Promise<boolean | undefined>) =>
+    pending.then(
+      succeeded => {
+        if (succeeded === false) onMetadataFailed?.();
+      },
+      () => onMetadataFailed?.()
+    );
+  // A draft is consumed by the next create, which copies its visuals: upload before closing so an
+  // immediate publish cannot copy missing or stale ones.
+  if (upload && requireDurability) await settle(upload());
   teardown();
-  upload?.().then(
-    succeeded => {
-      if (succeeded === false) onMetadataFailed?.();
-    },
-    () => onMetadataFailed?.()
-  );
+  if (upload && !requireDurability) void settle(upload());
   return true;
 }
 
@@ -288,7 +294,8 @@ const CrdWhiteboardDialog = ({
       (work === 'card-from-preview' && previewUri ? await generateCardFromPreview(previewUri) : undefined) ??
       (await generateWhiteboardVisuals(wb, true));
     if (!previewImages?.length) return undefined;
-    return async () => (await actions.onUpdate(wb, previewImages)).success;
+    const upload = async () => (await actions.onUpdate(wb, previewImages)).success;
+    return options.requireDurableClose ? () => withCloseFinalizing(setCloseFinalizing, upload) : upload;
   };
 
   const onClose = async () => {

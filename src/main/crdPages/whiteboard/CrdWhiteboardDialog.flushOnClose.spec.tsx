@@ -46,6 +46,41 @@ describe('closeCollaborativeWhiteboard', () => {
     finishUpload(true);
   });
 
+  it('waits for the upload before closing a draft, so an immediate publish copies the new visuals', async () => {
+    const order: string[] = [];
+    const result = await closeCollaborativeWhiteboard({
+      requestDurability: async () => void order.push('durability'),
+      requireDurability: true,
+      capturePreview: async () => {
+        order.push('capture');
+        return async () => {
+          await Promise.resolve();
+          order.push('upload done');
+          return true;
+        };
+      },
+      teardown: () => order.push('teardown'),
+    });
+    expect(result).toBe(true);
+    expect(order).toEqual(['durability', 'capture', 'upload done', 'teardown']);
+  });
+
+  it('still closes a draft when its upload fails, reporting the failure', async () => {
+    const onMetadataFailed = vi.fn();
+    const teardown = vi.fn();
+    await expect(
+      closeCollaborativeWhiteboard({
+        requestDurability: vi.fn(),
+        requireDurability: true,
+        capturePreview: async () => async () => false,
+        onMetadataFailed,
+        teardown,
+      })
+    ).resolves.toBe(true);
+    expect(onMetadataFailed).toHaveBeenCalledOnce();
+    expect(teardown).toHaveBeenCalledOnce();
+  });
+
   it('closes without uploading when there is no preview work', async () => {
     const teardown = vi.fn();
     await expect(
