@@ -23,6 +23,7 @@ const baseProps = {
   pushLoading: false,
   pushPermissionDenied: false,
   pushRequiresPwa: false,
+  appMode: false,
   onPushMasterToggle: vi.fn(),
   soundGroup,
   onToggleSound: vi.fn(),
@@ -109,5 +110,52 @@ describe('UserNotificationsTabView — locked in-app cell (US3, contract C-5)', 
 
     await userEvent.click(inAppSwitch);
     expect(onToggle).toHaveBeenCalledWith('user', 'commentReply', 'inApp', false);
+  });
+});
+
+describe('UserNotificationsTabView — the push column in app mode (SC-009, US4)', () => {
+  const groups: NotificationGroupData[] = [
+    {
+      groupId: 'user',
+      title: 'User',
+      description: 'User notifications',
+      rows: [
+        {
+          property: 'commentReply',
+          label: 'Comment replies',
+          channels: { inApp: true, email: false, push: true },
+        },
+      ],
+    },
+  ];
+
+  const pushColumnHeader = () => screen.queryByText('user.notifications.columns.push');
+  const masterSwitchLabel = () => screen.queryByText('user.notifications.push.masterToggle');
+  const unavailableBanner = () => screen.queryByText('user.notifications.push.unavailable');
+
+  it('in app mode: renders the per-event push column and no master card, even though browser push is unavailable', () => {
+    render(<UserNotificationsTabView {...baseProps} appMode={true} groups={groups} onToggle={vi.fn()} />);
+
+    // The column is the only way to see or change which events push on the
+    // phone — hiding it would mean push arriving with no preference surface.
+    expect(pushColumnHeader()).toBeInTheDocument();
+    // The master card is the browser-subscription switch; in the app the OS owns
+    // permission, so it states nothing at all (neither switch nor banner).
+    expect(masterSwitchLabel()).not.toBeInTheDocument();
+    expect(unavailableBanner()).not.toBeInTheDocument();
+  });
+
+  it('outside app mode with push unavailable: unchanged — no column, the not-available banner', () => {
+    render(<UserNotificationsTabView {...baseProps} groups={groups} onToggle={vi.fn()} />);
+
+    expect(pushColumnHeader()).not.toBeInTheDocument();
+    expect(unavailableBanner()).toBeInTheDocument();
+  });
+
+  it('outside app mode with push available: unchanged — the column and the master switch', () => {
+    render(<UserNotificationsTabView {...baseProps} pushAvailable={true} groups={groups} onToggle={vi.fn()} />);
+
+    expect(pushColumnHeader()).toBeInTheDocument();
+    expect(masterSwitchLabel()).toBeInTheDocument();
   });
 });
