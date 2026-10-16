@@ -49,7 +49,7 @@ Behaviour at L1 / L2:
 
 | Tab | Save bar? | Commit model |
 |---|---|---|
-| About | No | **Per-field autosave** — 2s debounce on text fields, immediate on file uploads. Spinner / "Saved!" / error indicator next to each field label. |
+| About | No | **Per-section Save** *(amended 2026-10-16 — was "per-field autosave, 2s debounce"; never shipped)* — each section's `FieldFooter` shows Save while dirty, then spinner / "Saved!" / error + Retry. Visual uploads commit on file pick; classifications per action. Unsaved sections trigger the dirty-tab dialog. |
 | Layout | **Yes** | Local buffer + Save Changes / Reset. Zero mutations before Save. |
 | Community | No | Per action (confirm → mutation) |
 | Subspaces | No | Per action (confirm → mutation) |
@@ -77,6 +77,8 @@ All eight tabs are P1 and ship together. You may implement them in any order aft
 8. Seed `src/crd/i18n/spaceSettings/spaceSettings.en.json` with tab labels and the generic Save / Reset / Cancel / confirmation strings.
 
 ### Step 2 — About tab (US1)
+
+> *(Amended 2026-10-16: steps 1–3 are superseded where they conflict. The view is a stack of collapsible `SettingsSection` cards — all open by default, collapsing purely visual — in the order **Identity** (Name, Tagline — boxed `Input`s) · **Visuals** (renamed from "Space Branding") · **Location** (City `Input`, Country) · **Context** (What / Why / Who) · **Tags** · **Classifications** · **References & Links**; no in-card "About" heading, no `Separator`s; the Preview column sits beside the stack, outside the cards. Saving is per section via the shared `FieldFooter`; the hook exposes `dirtyByField` / `saveStatusByField` / `onSaveSection` and `isDirty` / `onSaveAll` / `onResetAll` for the dirty-tab guard — there is no debounce and no `flushPending`.)*
 
 1. Implement `SpaceSettingsAboutView.tsx` composing (exact parity with MUI — no phantom fields): Name `input`, Tagline `input`, **Space Branding** card grouping avatar + page banner (≥1536 wide, 6:1–10:1, 10:1 default; *was 1536×256*) + card banner (416×256) uploads via the existing `VisualUpload` + `CropDialog` flow, Location (country + city), `MarkdownEditor` for What / Why / Who, `tags-input` for tags, References list with full CRUD (title + URL + description per row, Add Reference button). The Preview is the shared `SpaceCard` on the right. Render per-field spinner / "Saved!" / error indicator next to each field label driven by `autosaveState[field]`. **Render NO Save Changes or Reset button. NO email, NO pronouns, NO standalone "visuals gallery" — those fields do not exist on Space profile.**
 2. Implement `about/useAboutTabData.ts` + `aboutMapper.ts`. The hook maintains local form state + per-field debounce timer map; text fields autosave after 2s idle, file uploads / references / visuals fire immediately. Expose `flushPending()`. Call `pickColorFromId(space.id)` in the mapper for the Preview color. Wrap every mutation in `useTransition`.
@@ -137,7 +139,7 @@ pnpm vitest run src/crd/components/space/settings
 ```
 
 - Mapper unit tests per tab.
-- Component tests for tab strip arrow-nav, Layout grab-mode, save-bar state transitions (Layout), About per-field autosave indicator transitions (`pending` → `saving` → `saved` → `idle`), and inline-edit flow on column headers.
+- Component tests for tab strip arrow-nav, Layout grab-mode, save-bar state transitions (Layout), About per-section save indicator transitions (*amended 2026-10-16:* Save → `saving` → `saved` / `error`+Retry; was `pending` → `saving` → `saved` → `idle`), and inline-edit flow on column headers.
 - Integration test: `useDirtyTabGuard` blocks tab switch while dirty on About or Layout; no-op on other tabs.
 - Integration test: `useColumnMenu` exercises both per-column `onChangeActivePhase(columnId, phaseId)` and `onSetAsDefaultPostTemplate(columnId, templateId)` against mocked Apollo responses.
 
@@ -151,7 +153,8 @@ pnpm vitest run
 ### Manual test checklist
 
 - [ ] Tab strip renders all 8 tabs in the correct order; icons match the design.
-- [ ] About: edit name → Preview updates live → wait 2 seconds → spinner next to Name label → "Saved!" after mutation returns. Banner / avatar uploads fire autosave immediately on upload completion. **Verify there is NO Save Changes or Reset button anywhere on this tab.** Edit a field then switch to another tab inside the 2s window → pending autosave flushes immediately; nothing is lost.
+- [ ] About *(amended 2026-10-16)*: sections render as collapsible cards, all open, in the order Identity · Visuals · Location · Context · Tags · Classifications · References & Links; Name / Tagline / City are boxed inputs (no pencil). Edit name → Preview updates live → a Save button appears in the Identity footer → click → spinner → "Saved!". Banner / avatar uploads commit immediately after crop. **Verify there is NO tab-wide Save Changes / Reset bar.** Edit a field then switch tabs without saving → the Save / Discard & leave / Cancel dialog appears; nothing is lost silently.
+- [ ] Settings header *(added 2026-10-16)*: a 48px square rounded identity tile sits left of the title — L0 shows the card banner cropped square, L1/L2 the avatar, initials when no image.
 - [ ] Layout: drag a callout Home → Community. Don't save. Reset reverts. Drag again, rename a **column** title inline (not a callout — callouts are read-only on this tab), flip Post description display, click Save Changes — all persist together.
 - [ ] Layout per-callout kebab: Move to → pick another column → callout moves in the buffer. View Post → if clean, navigate; if dirty, discard-confirm dialog blocks. Kebab has exactly two entries; no "Remove from Tab".
 - [ ] Layout zero-mutations invariant: open Network devtools, make moves and removals, Reset. Confirm zero GraphQL mutation requests left the client before the Save Changes click.

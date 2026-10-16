@@ -21,6 +21,9 @@ import type { ReactNode } from 'react';
  * className? }` — no banner, no avatar, no member avatars (the interim
  * subspace-settings avatar was removed 2026-08-21; `titleHref` links the title
  * back to the space/subspace home). Kept for the historical record.
+ *
+ * Amended 2026-10-16: the header gains an optional square identity tile — see
+ * `SpaceSettingsHeaderProps.visual` below.
  */
 export type SpaceHeroProps = {
   spaceName: string;
@@ -32,6 +35,30 @@ export type SpaceHeroProps = {
     avatarUrl: string | null;
   }>;
   memberCount: number;
+};
+
+/**
+ * Compact settings header (FR-001, amended 2026-10-16).
+ *
+ * `visual` renders a 48px SQUARE identity tile with rounded corners
+ * (`rounded-lg` — never a circle; circles are reserved for people) left of the
+ * title + tagline. The integration passes:
+ *   - L1 / L2: the space `avatar` visual;
+ *   - L0: the `cardBanner`, cropped square (`object-cover`) — L0 has no avatar
+ *     visual. This is an owner-approved exception to spec 100's "no cardBanner
+ *     as avatar" rule, scoped to identity tiles in navigation chrome (this
+ *     tile and the breadcrumbs). The public Space/Subspace page header still
+ *     shows no avatar.
+ *   - no image: `src` omitted → the tile shows `initials`.
+ * The tile is decorative (`aria-hidden`) — the title carries the name.
+ */
+export type SpaceSettingsHeaderProps = {
+  title: string;
+  titleHref?: string;
+  tagline?: string | null;
+  visual?: { src?: string; initials: string };
+  fullWidth?: boolean;
+  className?: string;
 };
 
 export type TabId =
@@ -74,7 +101,8 @@ export type GetVisibleSettingsTabs = (level: SettingsScopeLevel) => readonly Tab
 
 /**
  * SaveBarState — used ONLY by the Layout tab.
- * About uses per-field autosave (FR-005a).
+ * About saves per section via `FieldFooter` (FR-005a, amended 2026-10-16 —
+ * was "per-field autosave"); it has no tab-wide save bar.
  * All other tabs commit per action.
  */
 export type SaveBarState =
