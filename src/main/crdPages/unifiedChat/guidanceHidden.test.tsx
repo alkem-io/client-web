@@ -198,3 +198,50 @@ describe('the ?chat= deep link cannot open the guidance conversation', () => {
     expect(setSelectedRoomIdMock).toHaveBeenCalledWith('room-group');
   });
 });
+
+// ─── Before the guidance VC id has resolved ───────────────────────────────
+
+/**
+ * The well-known guidance VC id arrives from a separate platform query, so it is
+ * `null` for the renders before that query resolves — while the conversation list
+ * (`cache-and-network`) can already have rendered. The hide must not depend on it.
+ */
+describe('the guidance conversation stays hidden before the guidance VC id resolves', () => {
+  beforeEach(() => {
+    mocks.guidanceVcId = null;
+  });
+
+  it('drops the guidance row with no resolved guidance VC id', () => {
+    const { result } = renderListWithDeepLink();
+
+    const ids = result.current.conversations.map(conv => conv.id);
+    expect(ids).toHaveLength(2);
+    expect(ids).not.toContain('conv-guidance');
+    expect(ids).toContain('conv-direct');
+    expect(ids).toContain('conv-group');
+  });
+
+  it('still refuses the guidance deep link with no resolved guidance VC id', () => {
+    mockSearch = '?chat=conv-guidance';
+
+    renderListWithDeepLink();
+
+    expect(setSelectedConversationIdMock).not.toHaveBeenCalled();
+    expect(setSelectedRoomIdMock).not.toHaveBeenCalled();
+  });
+
+  it('does not over-hide: a multi-member group including the assistant stays', () => {
+    mocks.conversations = [
+      conversation('conv-group-vc', 'room-group-vc', RoomType.ConversationGroup, [
+        user('me', 'Me'),
+        user('a', 'A'),
+        guidanceVc(),
+      ]),
+      directConversation,
+    ];
+
+    const { result } = renderListWithDeepLink();
+
+    expect(result.current.conversations.map(conv => conv.id).sort()).toEqual(['conv-direct', 'conv-group-vc']);
+  });
+});

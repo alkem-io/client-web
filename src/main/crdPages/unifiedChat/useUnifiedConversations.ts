@@ -4,7 +4,12 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import { displayedUnreadCount, useConversationSummaries } from '@/main/userMessaging/matrix/conversationSummaryStore';
 import { toConversationMessage } from '@/main/userMessaging/matrix/toConversationMessage';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
-import { isGuidanceConversation, sortUnifiedConversations, type UnifiedConversation } from './dataMapper';
+import {
+  isGuidanceConversation,
+  isVirtualContributorChat,
+  sortUnifiedConversations,
+  type UnifiedConversation,
+} from './dataMapper';
 import { useUnifiedChatContext } from './UnifiedChatProvider';
 
 // Server auto-generates names like "conversation-..." or "group-conversation-..." — ignore these
@@ -100,9 +105,18 @@ export const useUnifiedConversations = () => {
     // beta badge, the synthetic intro message, the info/clear header buttons, its
     // contribution to the unread count, and the `?chat=<id>` deep link (which
     // resolves ids against this list and degrades to the default list on a miss).
+    //
+    // The hide keys off the member type, not `isGuidance`: the well-known
+    // guidance VC id comes from a separate platform query and is null while that
+    // query is in flight, which would let the row through for those renders.
+    // `isGuidance` is kept in the predicate so the row is still dropped if the
+    // server ever reports that VC under a different actor type.
+    //
     // The detection and rendering code is all kept: deleting this filter brings
     // guidance back.
-    const visible = mapped.filter(conversation => !conversation.isGuidance);
+    const visible = mapped.filter(
+      conversation => !conversation.isGuidance && !isVirtualContributorChat(conversation.members, currentUser?.id)
+    );
 
     return sortUnifiedConversations(visible, newlyCreatedConversationId);
   })();
