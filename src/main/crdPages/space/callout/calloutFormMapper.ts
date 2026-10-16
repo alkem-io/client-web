@@ -112,8 +112,8 @@ export type MapFormOptions = {
  * that the server supports but the domain's base interface omits. The server
  * accepts this shape — `CalloutCreationTypeWithPreviewImages.framing.memo` is
  * the canonical model — but we cannot use the "WithPreviewImages" alias here
- * because it *requires* `whiteboard.previewImages`, and we pass preview blobs
- * out-of-band via `MapFormResult.whiteboardPreviewImages`.
+ * because it *requires* `whiteboard.previewImages`, and the create input carries
+ * none: the server copies the source or draft whiteboard's visuals.
  */
 export type CalloutCreationInput = Omit<CalloutCreationType, 'framing'> & {
   framing: CalloutCreationType['framing'] & {
@@ -129,13 +129,6 @@ export type CalloutCreationInput = Omit<CalloutCreationType, 'framing'> & {
 
 export type MapFormResult = {
   input: CalloutCreationInput;
-  /**
-   * Whiteboard preview blobs, set only when the framing is Whiteboard and the
-   * user saved a whiteboard in the single-user dialog. The connector uploads
-   * these against the newly-created whiteboard's visual IDs after the create
-   * mutation resolves.
-   */
-  whiteboardPreviewImages?: WhiteboardPreviewImage[];
   /**
    * File staged for upload as the Collabora document framing's bytes. Set only
    * when `framingChip === 'document'` AND `values.collaboraUploadFile` is non-null.
@@ -286,10 +279,9 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     if (rows.length > 0) callout.contributions = rows;
   }
 
-  // Framing-specific branches. Note: `whiteboard.previewImages` is NOT
-  // included here — preview blobs travel out-of-band via the returned
-  // `whiteboardPreviewImages` field so the connector can upload them after
-  // the mutation resolves.
+  // Framing-specific branches. The new whiteboard always starts from a draft or a
+  // source whiteboard, and the server copies that whiteboard's CARD and PREVIEW
+  // visuals, so no preview is uploaded after create.
   if (framingType === CalloutFramingType.Whiteboard) {
     callout.framing.whiteboard = {
       draftWhiteboardID: values.framingWhiteboardDraft?.whiteboardID,
@@ -381,14 +373,6 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
 
   return {
     input: callout,
-    // A draft carries its own preview (generated when its editor closes, copied by the server on create);
-    // re-uploading the prefilled template preview would overwrite it with the pre-edit image.
-    whiteboardPreviewImages:
-      framingType === CalloutFramingType.Whiteboard &&
-      !values.framingWhiteboardDraft &&
-      values.whiteboardPreviewImages.length > 0
-        ? values.whiteboardPreviewImages
-        : undefined,
     collaboraUploadFile:
       framingType === CalloutFramingType.CollaboraDocument && values.collaboraUploadFile
         ? values.collaboraUploadFile

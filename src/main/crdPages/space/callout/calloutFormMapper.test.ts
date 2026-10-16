@@ -114,8 +114,8 @@ describe('mapFormToCalloutCreationInput — framing branches', () => {
     expect((result.input.framing.whiteboard as { content?: unknown }).content).toBeUndefined();
     expect(result.input.framing.whiteboard?.profile.displayName).toBe('My callout');
     expect(result.input.framing.whiteboard?.previewSettings).toEqual(previewSettings);
-    // Preview blobs travel out-of-band, never on the input
-    expect(result.whiteboardPreviewImages).toEqual([previewBlob]);
+    // The server copies the source's visuals; no preview travels with or after the create
+    expect(result).not.toHaveProperty('whiteboardPreviewImages');
     expect((result.input.framing.whiteboard as { previewImages?: unknown }).previewImages).toBeUndefined();
   });
 
@@ -646,34 +646,17 @@ describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
     expect(optedOut.input.sendNotification).toBe(false);
   });
 
-  it('whiteboardPreviewImages: emitted only when framing=Whiteboard AND blobs exist', () => {
-    const memoWithBlob = mapFormToCalloutCreationInput(
-      baseValues({ framingChip: 'memo', whiteboardPreviewImages: [previewBlob] }),
-      createOptions
-    );
-    expect(memoWithBlob.whiteboardPreviewImages).toBeUndefined();
-
-    const wbNoBlob = mapFormToCalloutCreationInput(
-      baseValues({ framingChip: 'whiteboard', whiteboardPreviewImages: [] }),
-      createOptions
-    );
-    expect(wbNoBlob.whiteboardPreviewImages).toBeUndefined();
-
-    const wbWithBlob = mapFormToCalloutCreationInput(
+  it('never returns preview images on create: the server copies the draft or source visuals', () => {
+    for (const values of [
       baseValues({ framingChip: 'whiteboard', whiteboardPreviewImages: [previewBlob] }),
-      createOptions
-    );
-    expect(wbWithBlob.whiteboardPreviewImages).toEqual([previewBlob]);
-
-    const wbDraftWithBlob = mapFormToCalloutCreationInput(
       baseValues({
         framingChip: 'whiteboard',
         whiteboardPreviewImages: [previewBlob],
         framingWhiteboardDraft: { whiteboardID: 'draft-wb', sourceKey: 'template' },
       }),
-      createOptions
-    );
-    expect(wbDraftWithBlob.whiteboardPreviewImages).toBeUndefined();
+    ]) {
+      expect(mapFormToCalloutCreationInput(values, createOptions)).not.toHaveProperty('whiteboardPreviewImages');
+    }
   });
 });
 

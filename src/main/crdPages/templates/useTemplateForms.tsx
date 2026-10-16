@@ -688,15 +688,8 @@ export function useTemplateForms({
         });
         // Best-effort post-create uploads: the template already exists, so an upload failure must not
         // bubble and keep the dialog open — that invites a retry and a duplicate template. Mirror the
-        // copy path; upload errors surface via the Apollo error link / global handler.
-        try {
-          await uploadCalloutWhiteboardPreview(
-            calloutForm.values,
-            result.data?.createTemplate?.callout?.framing?.whiteboard
-          );
-        } catch {
-          // Intentionally swallowed — see comment above.
-        }
+        // copy path; upload errors surface via the Apollo error link / global handler. No whiteboard
+        // preview upload: the server copies the draft or source whiteboard's visuals on create.
         try {
           await uploadCalloutMediaGallery(
             calloutForm.values,
@@ -764,10 +757,8 @@ export function useTemplateForms({
         calloutData,
       },
     });
-    // Carries the freshly-generated inline-editor blobs through when present (typical no-op for
-    // Duplicate, but Save-As-from-an-edited-source can land here with non-empty blobs).
+    // No whiteboard preview upload: the server copies the source whiteboard's visuals on create.
     try {
-      await uploadCalloutWhiteboardPreview(merged, result.data?.createTemplate?.callout?.framing?.whiteboard);
       await uploadCalloutMediaGallery(merged, result.data?.createTemplate?.callout?.framing?.mediaGallery?.id);
     } catch {
       // Errors are surfaced by the Apollo error link / global handler; don't fail the copy after create.
