@@ -476,13 +476,8 @@
     }
   },
   "subspaces": {
-    "pageHeader": {
-      "title": "Subspaces",
-      "subtitle": "Edit the Subspaces in this Space. Configure default templates and view all existing subspaces."
-    },
     "defaultTemplate": {
       "title": "Default Subspace Template",
-      "description": "Choose the default settings that will apply when creating a new Subspace within this Space.",
       "change": "Change Default Template",
       "dialog": {
         "title": "Change Default Subspace Template",
@@ -657,13 +652,12 @@
     }
   },
   "updates": {
-    "pageHeader": {
-      "title": "Updates from the Leads",
-      "subtitle": "Post announcements, milestones, and progress updates visible to all space members."
+    "sections": {
+      "post": "Post an Update",
+      "published": "Published Updates"
     },
     "composer": {
       "new": "New Update",
-      "title": "New update",
       "placeholder": "Write your update…",
       "publish": "Publish",
       "submitting": "Publishing…",

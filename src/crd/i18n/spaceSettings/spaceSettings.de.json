@@ -476,13 +476,8 @@
     }
   },
   "subspaces": {
-    "pageHeader": {
-      "title": "Subspaces",
-      "subtitle": "Bearbeiten Sie die Subspaces in diesem Space. Konfigurieren Sie Standardvorlagen und sehen Sie alle vorhandenen Subspaces."
-    },
     "defaultTemplate": {
       "title": "Standard-Subspace-Vorlage",
-      "description": "Wählen Sie die Standardeinstellungen, die beim Erstellen eines neuen Subspaces in diesem Space angewendet werden.",
       "change": "Standardvorlage ändern",
       "dialog": {
         "title": "Standard-Subspace-Vorlage ändern",
@@ -657,13 +652,12 @@
     }
   },
   "updates": {
-    "pageHeader": {
-      "title": "Updates der Leads",
-      "subtitle": "Veröffentlichen Sie Ankündigungen, Meilensteine und Fortschrittsupdates, die für alle Mitglieder des Spaces sichtbar sind."
+    "sections": {
+      "post": "Update veröffentlichen",
+      "published": "Veröffentlichte Updates"
     },
     "composer": {
       "new": "Neues Update",
-      "title": "Neues Update",
       "placeholder": "Schreiben Sie Ihr Update…",
       "publish": "Veröffentlichen",
       "submitting": "Veröffentlichen…",

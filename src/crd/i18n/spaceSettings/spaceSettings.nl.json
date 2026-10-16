@@ -476,13 +476,8 @@
     }
   },
   "subspaces": {
-    "pageHeader": {
-      "title": "Subspaces",
-      "subtitle": "Bewerk de Subspaces in deze Space. Configureer standaardtemplates en bekijk alle bestaande subspaces."
-    },
     "defaultTemplate": {
       "title": "Standaard subspace-template",
-      "description": "Kies de standaardinstellingen die worden toegepast bij het maken van een nieuwe Subspace binnen deze Space.",
       "change": "Standaardtemplate wijzigen",
       "dialog": {
         "title": "Standaard subspace-template wijzigen",
@@ -657,13 +652,12 @@
     }
   },
   "updates": {
-    "pageHeader": {
-      "title": "Updates van de Leads",
-      "subtitle": "Plaats aankondigingen, mijlpalen en voortgangsupdates die zichtbaar zijn voor alle leden van de Space."
+    "sections": {
+      "post": "Een update plaatsen",
+      "published": "Gepubliceerde updates"
     },
     "composer": {
       "new": "Nieuwe update",
-      "title": "Nieuwe update",
       "placeholder": "Schrijf je update…",
       "publish": "Publiceren",
       "submitting": "Publiceren…",

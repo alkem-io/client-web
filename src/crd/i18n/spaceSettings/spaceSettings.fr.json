@@ -476,13 +476,8 @@
     }
   },
   "subspaces": {
-    "pageHeader": {
-      "title": "Sous-espaces",
-      "subtitle": "Modifiez les sous-espaces de cet espace. Configurez les modèles par défaut et consultez tous les sous-espaces existants."
-    },
     "defaultTemplate": {
       "title": "Modèle de sous-espace par défaut",
-      "description": "Choisissez les paramètres par défaut qui s'appliqueront lors de la création d'un nouveau sous-espace dans cet espace.",
       "change": "Changer le modèle par défaut",
       "dialog": {
         "title": "Changer le modèle de sous-espace par défaut",
@@ -657,13 +652,12 @@
     }
   },
   "updates": {
-    "pageHeader": {
-      "title": "Actualités des leads",
-      "subtitle": "Publiez des annonces, des étapes clés et des mises à jour de progression visibles par tous les membres de l'espace."
+    "sections": {
+      "post": "Publier une mise à jour",
+      "published": "Mises à jour publiées"
     },
     "composer": {
       "new": "Nouvelle actualité",
-      "title": "Nouvelle actualité",
       "placeholder": "Écrivez votre actualité…",
       "publish": "Publier",
       "submitting": "Publication…",

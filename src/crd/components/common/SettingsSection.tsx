@@ -31,6 +31,8 @@ type SettingsSectionProps = {
    * whose content is expensive and starts collapsed.
    */
   keepMounted?: boolean;
+  /** False renders a fixed section: no chevron, always open (e.g. an action-only section). */
+  collapsible?: boolean;
   /** Anchor id for deep links / scroll targets. */
   id?: string;
   children: ReactNode;
@@ -51,11 +53,41 @@ export function SettingsSection({
   defaultOpen = true,
   badge,
   keepMounted = true,
+  collapsible = true,
   id,
   children,
   className,
 }: SettingsSectionProps) {
   const [open, setOpen] = useState(defaultOpen);
+
+  const heading = (
+    <>
+      {icon && (
+        <span
+          aria-hidden="true"
+          className={cn('flex size-9 shrink-0 items-center justify-center rounded-lg', ICON_COLORS[iconColor])}
+        >
+          {icon}
+        </span>
+      )}
+      <span className="min-w-0 flex-1">
+        <span className="flex items-center gap-2">
+          <span className="text-subsection-title">{title}</span>
+          {badge}
+        </span>
+        {description && <span className="mt-0.5 block text-body text-muted-foreground">{description}</span>}
+      </span>
+    </>
+  );
+
+  if (!collapsible) {
+    return (
+      <section id={id} className={cn('scroll-mt-32 rounded-lg border bg-card', className)}>
+        <h3 className="flex items-center gap-3 px-6 py-5">{heading}</h3>
+        <div className="px-6 pb-6">{children}</div>
+      </section>
+    );
+  }
 
   return (
     <Collapsible
@@ -71,21 +103,7 @@ export function SettingsSection({
             'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset'
           )}
         >
-          {icon && (
-            <span
-              aria-hidden="true"
-              className={cn('flex size-9 shrink-0 items-center justify-center rounded-lg', ICON_COLORS[iconColor])}
-            >
-              {icon}
-            </span>
-          )}
-          <span className="min-w-0 flex-1">
-            <span className="flex items-center gap-2">
-              <span className="text-subsection-title">{title}</span>
-              {badge}
-            </span>
-            {description && <span className="mt-0.5 block text-body text-muted-foreground">{description}</span>}
-          </span>
+          {heading}
           <ChevronDown
             aria-hidden="true"
             className={cn(

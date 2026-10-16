@@ -476,13 +476,8 @@
     }
   },
   "subspaces": {
-    "pageHeader": {
-      "title": "Subespacios",
-      "subtitle": "Edita los subespacios de este espacio. Configura plantillas predeterminadas y consulta todos los subespacios existentes."
-    },
     "defaultTemplate": {
       "title": "Plantilla de subespacio predeterminada",
-      "description": "Elige la configuración predeterminada que se aplicará al crear un nuevo subespacio dentro de este espacio.",
       "change": "Cambiar plantilla predeterminada",
       "dialog": {
         "title": "Cambiar plantilla de subespacio predeterminada",
@@ -657,13 +652,12 @@
     }
   },
   "updates": {
-    "pageHeader": {
-      "title": "Actualizaciones de los leads",
-      "subtitle": "Publica anuncios, hitos y actualizaciones de progreso visibles para todos los miembros del espacio."
+    "sections": {
+      "post": "Publicar una actualización",
+      "published": "Actualizaciones publicadas"
     },
     "composer": {
       "new": "Nueva actualización",
-      "title": "Nueva actualización",
       "placeholder": "Escribe tu actualización…",
       "publish": "Publicar",
       "submitting": "Publicando…",
