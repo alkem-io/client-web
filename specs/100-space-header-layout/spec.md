@@ -7,28 +7,29 @@
 
 ## Visual fields — canonical usage (project-wide rule)
 
-The platform stores up to **three separate visual fields** on a space/subspace profile, each with a **distinct semantic role**. They MUST NEVER be substituted for each other (no "show cardBanner where avatar would go" fallbacks, no "show avatar where cardBanner would go" inversions).
+The platform stores up to **three separate visual fields** on a space/subspace profile, each with a **distinct semantic role**. They MUST NEVER be substituted for each other (no "show cardBanner where avatar would go" fallbacks, no "show avatar where cardBanner would go" inversions) — with one scoped exception, see Hard rule 1a.
 
 **Critical: L0 has no avatar concept.** L0 spaces have only a page banner and a card banner — there is no L0 avatar, and L0 cards display **title + cardBanner**, never an avatar. L1 and L2 subspaces have an avatar and a card banner; they have no settable page banner and inherit the L0 root's.
 
 | Field | Settable on | Used for |
 |-------|-------------|----------|
 | `banner` (Visual type `BANNER`, ≥1536px wide at an admin-chosen 6:1–10:1 ratio, 10:1 default — *was ~1920×320 fixed 6:1*) | **L0 only** | The full-width page banner on a space's page layout — on top of the L0 page, **and** on top of L1/L2 pages (which inherit it from the L0 root of their ancestry chain). |
-| `cardBanner` (Visual type `CARD`, ~416×256) | **L0, L1, L2** | The big banner image on every space/subspace **card** display (explorer cards, subspace grid cards, hierarchy cards). |
+| `cardBanner` (Visual type `CARD`, ~416×256) | **L0, L1, L2** | The big banner image on every space/subspace **card** display (explorer cards, subspace grid cards, hierarchy cards). *(Amended 2026-10-16: for an **L0** it is also the image of the square identity tile in navigation chrome — breadcrumbs and the Space Settings header — see Hard rule 1a.)* |
 | `avatar` (Visual type `AVATAR`) | **L1 and L2 only** | The small inset image for an L1/L2. Used in any list-style display of an L1/L2 (sidebar lists, admin Subspaces rows, notification icons, activity-item icons) and in the breadcrumb trail. *(Amended 2026-08-21: no longer rendered inline in the L1/L2 page header — the header avatar tile was removed; breadcrumbs gained space/subspace identity images instead.)* |
 
 **Canonical compositions:**
 
 - **L0 page header** → `banner` + title (no avatar).
 - **L0 card** (everywhere an L0 is shown as a card) → `cardBanner` + title (no avatar).
-- **L0 in a list/small entry** → title only (no avatar, no cardBanner thumbnail). L0 is a top-level space — its small-entry representation is text-only.
-- **L1/L2 page header** → `banner` (inherited from the **L0 root**, not the immediate parent for L2) + title. *(Amended 2026-08-21: the inline `avatar` was removed from the page header.)*
+- **L0 in a list/small entry** → title only (no avatar, no cardBanner thumbnail). L0 is a top-level space — its small-entry representation is text-only. *(Amended 2026-10-16: except identity tiles in navigation chrome — Hard rule 1a.)*
+- **L1/L2 page header** → `banner` (inherited from the **L0 root**, not the immediate parent for L2) + title. *(Amended 2026-08-21: the inline `avatar` was removed from the page header.)* *(2026-10-16: still true — the identity tile of Hard rule 1a lives on the **settings** header and breadcrumbs, never on the public Space/Subspace page header.)*
 - **L1/L2 card** → `cardBanner` + `avatar` + title.
 - **L1/L2 in a list/small entry** → `avatar` + title.
 
 **Hard rules:**
 
 1. Do not use `cardBanner` as a fallback for `avatar` (and vice versa). They have different aspect ratios, different sizes, and different semantics. A missing `avatar` falls back to the deterministic default-avatar visual (`getDefaultSpaceVisualUrl(VisualType.Avatar, spaceId)` in MUI, or the colour-from-id gradient in CRD) — **never** to `cardBanner`.
+1a. **Scoped exception — identity tiles in navigation chrome** *(added 2026-10-16, owner-approved)*. A small square, rounded-corner identity tile (`rounded-lg`, never a circle — circles are reserved for people) that identifies a space inside navigation chrome uses the L1/L2 `avatar` and, for an **L0** (which has no avatar), the L0 `cardBanner` cropped square (`object-cover`); initials when no image exists. This covers exactly two surfaces: the **breadcrumb trail** hops (already shipped 2026-08-21, spec 045 data-model § breadcrumbs) and the 48px tile in the **Space Settings header** (spec 045 FR-001). It is not a general `avatar` ⇄ `cardBanner` fallback: an L1/L2 with a missing `avatar` still never falls back to its `cardBanner`, and cards, lists and the public page headers are unaffected.
 2. Do not source the L1/L2 page banner from the immediate parent when L0 differs. For an L2, the immediate parent is L1 (which does not have a settable page banner); the page banner MUST come from the L0 root.
 3. L0 settings UI MUST expose uploaders for `banner` (page) and `cardBanner` only — **not** avatar. L1/L2 settings UI MUST expose `avatar` and `cardBanner` only — **not** the page banner.
 4. List/small-entry renderers that may be passed an L0 should suppress the avatar slot for L0. Components that currently render a generic placeholder for "L0 without avatar" are acceptable for now but should ideally hide the avatar entirely when the entity is an L0.

@@ -3,6 +3,7 @@ import {
   Bookmark,
   Calendar,
   Edit3,
+  Eye,
   Globe,
   Layout,
   Loader2,
@@ -13,10 +14,11 @@ import {
   Trash2,
   UserPlus,
   Video,
+  Zap,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { SettingsSection } from '@/crd/components/common/SettingsSection';
 import { cn } from '@/crd/lib/utils';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/crd/primitives/accordion';
 import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
 import { RadioGroup, RadioGroupItem } from '@/crd/primitives/radio-group';
@@ -184,323 +186,279 @@ export function SpaceSettingsSettingsView({
   const visibleActions = allowedActions.filter(action => isActionVisibleAtLevel(level, action.key));
 
   return (
-    <div className={cn('space-y-6 max-w-4xl mx-auto', className)}>
-      <div>
-        <h2 className="text-page-title">{t('settings.pageHeader.title')}</h2>
-        <p className="text-muted-foreground mt-2">{t('settings.pageHeader.subtitle')}</p>
-      </div>
-
-      <Separator />
-
-      <Accordion
-        type="multiple"
-        defaultValue={['visibility', 'membership', 'applicationForm', 'actions']}
-        className="w-full space-y-4"
-      >
-        {/* Visibility */}
-        <AccordionItem value="visibility" className="border rounded-lg bg-card px-6">
-          <AccordionTrigger className="hover:no-underline py-6">
-            <div className="flex flex-col items-start gap-1">
-              <h3 className="text-subsection-title">{t('settings.visibility.title')}</h3>
-              <p className="text-body text-muted-foreground text-left">{t('settings.visibility.description')}</p>
+    <div className={cn('flex flex-col gap-4', className)}>
+      <SettingsSection title={t('settings.visibility.title')} icon={<Eye className="size-4" />} iconColor="blue">
+        <RadioGroup
+          value={privacy}
+          onValueChange={v => onPrivacyChange(v as SpacePrivacy)}
+          className="space-y-4"
+          disabled={privacyBusy}
+        >
+          <label
+            htmlFor="visibility-public"
+            className={cn(
+              'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
+              privacyBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
+            )}
+          >
+            {updatingKeys.has('privacy:public') ? (
+              <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
+            ) : (
+              <RadioGroupItem value="public" id="visibility-public" className="mt-1" />
+            )}
+            <div className="space-y-1">
+              <span className="text-card-title flex items-center gap-2">
+                <Globe className="size-4 text-primary" />
+                {t('settings.visibility.public')}
+              </span>
+              <p className="text-body text-muted-foreground">{t('settings.visibility.publicDescription')}</p>
             </div>
-          </AccordionTrigger>
-          <AccordionContent className="pb-6 pt-0">
-            <RadioGroup
-              value={privacy}
-              onValueChange={v => onPrivacyChange(v as SpacePrivacy)}
-              className="space-y-4"
-              disabled={privacyBusy}
-            >
-              <label
-                htmlFor="visibility-public"
-                className={cn(
-                  'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
-                  privacyBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
-                )}
-              >
-                {updatingKeys.has('privacy:public') ? (
-                  <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
-                ) : (
-                  <RadioGroupItem value="public" id="visibility-public" className="mt-1" />
-                )}
-                <div className="space-y-1">
-                  <span className="text-card-title flex items-center gap-2">
-                    <Globe className="size-4 text-primary" />
-                    {t('settings.visibility.public')}
-                  </span>
-                  <p className="text-body text-muted-foreground">{t('settings.visibility.publicDescription')}</p>
-                </div>
-              </label>
-              <label
-                htmlFor="visibility-private"
-                className={cn(
-                  'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
-                  privacyBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
-                )}
-              >
-                {updatingKeys.has('privacy:private') ? (
-                  <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
-                ) : (
-                  <RadioGroupItem value="private" id="visibility-private" className="mt-1" />
-                )}
-                <div className="space-y-1">
-                  <span className="text-card-title flex items-center gap-2">
-                    <Lock className="size-4 text-muted-foreground" />
-                    {t('settings.visibility.private')}
-                  </span>
-                  <p className="text-body text-muted-foreground">{t('settings.visibility.privateDescription')}</p>
-                </div>
-              </label>
-            </RadioGroup>
-            <p className="text-caption text-muted-foreground mt-4 italic">{t('settings.visibility.hint')}</p>
+          </label>
+          <label
+            htmlFor="visibility-private"
+            className={cn(
+              'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
+              privacyBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
+            )}
+          >
+            {updatingKeys.has('privacy:private') ? (
+              <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
+            ) : (
+              <RadioGroupItem value="private" id="visibility-private" className="mt-1" />
+            )}
+            <div className="space-y-1">
+              <span className="text-card-title flex items-center gap-2">
+                <Lock className="size-4 text-muted-foreground" />
+                {t('settings.visibility.private')}
+              </span>
+              <p className="text-body text-muted-foreground">{t('settings.visibility.privateDescription')}</p>
+            </div>
+          </label>
+        </RadioGroup>
+        <p className="text-caption text-muted-foreground mt-4 italic">{t('settings.visibility.hint')}</p>
 
-            {/* User-information visibility (feature 008). Enforcement is
+        {/* User-information visibility (feature 008). Enforcement is
                 server-side; this only configures + reflects the setting. */}
-            <Separator className="my-4" />
-            <div className="space-y-3">
-              <div className="space-y-1">
-                <h4 className="text-card-title">{t('settings.userInfoVisibility.title')}</h4>
-                <p className="text-body text-muted-foreground">{t('settings.userInfoVisibility.description')}</p>
-              </div>
-              <RadioGroup
-                value={userInfoVisibility}
-                onValueChange={v => onUserInfoVisibilityChange(v as UserInfoVisibility)}
-                className="space-y-3"
-                disabled={userInfoBusy}
-              >
-                {(['followSpace', 'membersOnly'] as const).map(option => {
-                  const inputId = `user-info-${option}`;
-                  return (
-                    <label
-                      key={option}
-                      htmlFor={inputId}
-                      className={cn(
-                        'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
-                        userInfoBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
-                      )}
-                    >
-                      {updatingKeys.has(`userInfo:${option}`) ? (
-                        <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
-                      ) : (
-                        <RadioGroupItem value={option} id={inputId} className="mt-1" />
-                      )}
-                      <div className="space-y-1">
-                        <span className="text-card-title flex items-center gap-2">
-                          {option === 'membersOnly' ? (
-                            <Lock className="size-4 text-muted-foreground" aria-hidden="true" />
-                          ) : (
-                            <Globe className="size-4 text-primary" aria-hidden="true" />
-                          )}
-                          {t(`settings.userInfoVisibility.${option}` as 'settings.userInfoVisibility.followSpace')}
-                        </span>
-                        <p className="text-body text-muted-foreground">
-                          {t(
-                            `settings.userInfoVisibility.${option}Description` as 'settings.userInfoVisibility.followSpaceDescription'
-                          )}
-                        </p>
-                      </div>
-                    </label>
-                  );
-                })}
-              </RadioGroup>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
-        {/* Membership */}
-        <AccordionItem value="membership" className="border rounded-lg bg-card px-6">
-          <AccordionTrigger className="hover:no-underline py-6">
-            <div className="flex flex-col items-start gap-1">
-              <h3 className="text-subsection-title">{t('settings.membership.title')}</h3>
-              <p className="text-body text-muted-foreground text-left">{t('settings.membership.description')}</p>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="pb-6 pt-0">
-            <RadioGroup
-              value={membershipPolicy}
-              onValueChange={v => onMembershipPolicyChange(v as MembershipPolicy)}
-              className="space-y-4"
-              disabled={membershipBusy}
-            >
-              <label
-                htmlFor="membership-open"
-                className={cn(
-                  'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
-                  membershipBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
-                )}
-              >
-                {updatingKeys.has('membership:open') ? (
-                  <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
-                ) : (
-                  <RadioGroupItem value="open" id="membership-open" className="mt-1" />
-                )}
-                <div className="space-y-1">
-                  <span className="text-card-title flex items-center gap-2">
-                    <UserPlus className="size-4 text-primary" />
-                    {t('settings.membership.open')}
-                  </span>
-                  <p className="text-body text-muted-foreground">{t('settings.membership.openDescription')}</p>
-                  <p className="text-caption text-muted-foreground italic mt-1">{t('settings.membership.openHint')}</p>
-                </div>
-              </label>
-              <label
-                htmlFor="membership-application"
-                className={cn(
-                  'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
-                  membershipBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
-                )}
-              >
-                {updatingKeys.has('membership:application') ? (
-                  <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
-                ) : (
-                  <RadioGroupItem value="application" id="membership-application" className="mt-1" />
-                )}
-                <div className="space-y-1">
-                  <span className="text-card-title flex items-center gap-2">
-                    <Edit3 className="size-4 text-primary" />
-                    {t('settings.membership.application')}
-                  </span>
-                  <p className="text-body text-muted-foreground">{t('settings.membership.applicationDescription')}</p>
-                  <p className="text-caption text-muted-foreground italic mt-1">
-                    {t('settings.membership.applicationHint')}
-                  </p>
-                </div>
-              </label>
-              <label
-                htmlFor="membership-invitation"
-                className={cn(
-                  'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
-                  membershipBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
-                )}
-              >
-                {updatingKeys.has('membership:invitation') ? (
-                  <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
-                ) : (
-                  <RadioGroupItem value="invitation" id="membership-invitation" className="mt-1" />
-                )}
-                <div className="space-y-1">
-                  <span className="text-card-title flex items-center gap-2">
-                    <Mail className="size-4 text-primary" />
-                    {t('settings.membership.invitation')}
-                  </span>
-                  <p className="text-body text-muted-foreground">{t('settings.membership.invitationDescription')}</p>
-                  <p className="text-caption text-muted-foreground italic mt-1">
-                    {t('settings.membership.invitationHint')}
-                  </p>
-                </div>
-              </label>
-            </RadioGroup>
-
-            {/* Trust host organization toggle */}
-            {providerDisplayName && (
-              <>
-                <Separator className="my-4" />
-                <div className="flex items-center justify-between space-x-4">
+        <Separator className="my-4" />
+        <div className="space-y-3">
+          <div className="space-y-1">
+            <h4 className="text-card-title">{t('settings.userInfoVisibility.title')}</h4>
+            <p className="text-body text-muted-foreground">{t('settings.userInfoVisibility.description')}</p>
+          </div>
+          <RadioGroup
+            value={userInfoVisibility}
+            onValueChange={v => onUserInfoVisibilityChange(v as UserInfoVisibility)}
+            className="space-y-3"
+            disabled={userInfoBusy}
+          >
+            {(['followSpace', 'membersOnly'] as const).map(option => {
+              const inputId = `user-info-${option}`;
+              return (
+                <label
+                  key={option}
+                  htmlFor={inputId}
+                  className={cn(
+                    'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
+                    userInfoBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
+                  )}
+                >
+                  {updatingKeys.has(`userInfo:${option}`) ? (
+                    <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
+                  ) : (
+                    <RadioGroupItem value={option} id={inputId} className="mt-1" />
+                  )}
                   <div className="space-y-1">
-                    <Label htmlFor="host-org-trust" className="text-body-emphasis">
-                      {t('settings.membership.trustedApplicants')}
-                    </Label>
-                    <p className="text-caption text-muted-foreground max-w-md">
-                      {t('settings.membership.hostOrgTrust', { host: providerDisplayName })}
+                    <span className="text-card-title flex items-center gap-2">
+                      {option === 'membersOnly' ? (
+                        <Lock className="size-4 text-muted-foreground" aria-hidden="true" />
+                      ) : (
+                        <Globe className="size-4 text-primary" aria-hidden="true" />
+                      )}
+                      {t(`settings.userInfoVisibility.${option}` as 'settings.userInfoVisibility.followSpace')}
+                    </span>
+                    <p className="text-body text-muted-foreground">
+                      {t(
+                        `settings.userInfoVisibility.${option}Description` as 'settings.userInfoVisibility.followSpaceDescription'
+                      )}
                     </p>
                   </div>
-                  {updatingKeys.has('membership:hostTrust') ? (
-                    <Loader2 className="size-5 animate-spin text-primary shrink-0" />
-                  ) : (
-                    <Switch
-                      id="host-org-trust"
-                      checked={hostOrganizationTrusted}
-                      onCheckedChange={onHostOrgTrustChange}
-                    />
-                  )}
-                </div>
-              </>
-            )}
-          </AccordionContent>
-        </AccordionItem>
+                </label>
+              );
+            })}
+          </RadioGroup>
+        </div>
+      </SettingsSection>
 
-        {/* Allowed Actions */}
-        <AccordionItem value="actions" className="border rounded-lg bg-card px-6">
-          <AccordionTrigger className="hover:no-underline py-6">
-            <div className="flex flex-col items-start gap-1">
-              <h3 className="text-subsection-title">{t('settings.allowedActions.title')}</h3>
-              <p className="text-body text-muted-foreground text-left">{t('settings.allowedActions.description')}</p>
+      <SettingsSection title={t('settings.membership.title')} icon={<UserPlus className="size-4" />} iconColor="green">
+        <RadioGroup
+          value={membershipPolicy}
+          onValueChange={v => onMembershipPolicyChange(v as MembershipPolicy)}
+          className="space-y-4"
+          disabled={membershipBusy}
+        >
+          <label
+            htmlFor="membership-open"
+            className={cn(
+              'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
+              membershipBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
+            )}
+          >
+            {updatingKeys.has('membership:open') ? (
+              <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
+            ) : (
+              <RadioGroupItem value="open" id="membership-open" className="mt-1" />
+            )}
+            <div className="space-y-1">
+              <span className="text-card-title flex items-center gap-2">
+                <UserPlus className="size-4 text-primary" />
+                {t('settings.membership.open')}
+              </span>
+              <p className="text-body text-muted-foreground">{t('settings.membership.openDescription')}</p>
+              <p className="text-caption text-muted-foreground italic mt-1">{t('settings.membership.openHint')}</p>
             </div>
-          </AccordionTrigger>
-          <AccordionContent className="pb-6 pt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {visibleActions.map(action => {
-                const meta = ACTION_META[action.key];
-                if (!meta) return null;
-                const ActionIcon = meta.icon;
-                const isBusy = updatingKeys.has(`action:${action.key}`);
-                return (
-                  <div
-                    key={action.key}
-                    className={cn(
-                      'flex items-start justify-between space-x-4 p-3 rounded-lg border bg-muted/20',
-                      isBusy && 'opacity-70'
-                    )}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="mt-1 text-muted-foreground">
-                        <ActionIcon className="size-5" />
-                      </div>
-                      <div className="space-y-0.5">
-                        <Label htmlFor={`action-${action.key}`} className="text-control cursor-pointer">
-                          {t(`settings.allowedActions.${action.key}`)}
-                        </Label>
-                        <p className="text-caption text-muted-foreground leading-snug max-w-[200px] sm:max-w-xs">
-                          {t(`settings.allowedActions.${action.key}Description`, { defaultValue: meta.description })}
-                        </p>
-                      </div>
-                    </div>
-                    {isBusy ? (
-                      <Loader2 className="size-5 animate-spin text-primary shrink-0 mt-0.5" />
-                    ) : (
-                      <Switch
-                        id={`action-${action.key}`}
-                        checked={action.enabled}
-                        onCheckedChange={checked => onToggleAllowedAction(action.key, checked)}
-                      />
-                    )}
+          </label>
+          <label
+            htmlFor="membership-application"
+            className={cn(
+              'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
+              membershipBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
+            )}
+          >
+            {updatingKeys.has('membership:application') ? (
+              <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
+            ) : (
+              <RadioGroupItem value="application" id="membership-application" className="mt-1" />
+            )}
+            <div className="space-y-1">
+              <span className="text-card-title flex items-center gap-2">
+                <Edit3 className="size-4 text-primary" />
+                {t('settings.membership.application')}
+              </span>
+              <p className="text-body text-muted-foreground">{t('settings.membership.applicationDescription')}</p>
+              <p className="text-caption text-muted-foreground italic mt-1">
+                {t('settings.membership.applicationHint')}
+              </p>
+            </div>
+          </label>
+          <label
+            htmlFor="membership-invitation"
+            className={cn(
+              'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
+              membershipBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
+            )}
+          >
+            {updatingKeys.has('membership:invitation') ? (
+              <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
+            ) : (
+              <RadioGroupItem value="invitation" id="membership-invitation" className="mt-1" />
+            )}
+            <div className="space-y-1">
+              <span className="text-card-title flex items-center gap-2">
+                <Mail className="size-4 text-primary" />
+                {t('settings.membership.invitation')}
+              </span>
+              <p className="text-body text-muted-foreground">{t('settings.membership.invitationDescription')}</p>
+              <p className="text-caption text-muted-foreground italic mt-1">
+                {t('settings.membership.invitationHint')}
+              </p>
+            </div>
+          </label>
+        </RadioGroup>
+
+        {/* Trust host organization toggle */}
+        {providerDisplayName && (
+          <div className="mt-4 flex items-center justify-between gap-4 rounded-md border p-4">
+            <div className="space-y-1">
+              <Label htmlFor="host-org-trust" className="text-body-emphasis">
+                {t('settings.membership.trustedApplicants')}
+              </Label>
+              <p className="text-caption text-muted-foreground">
+                {t('settings.membership.hostOrgTrust', { host: providerDisplayName })}
+              </p>
+            </div>
+            {updatingKeys.has('membership:hostTrust') ? (
+              <Loader2 className="size-5 animate-spin text-primary shrink-0" />
+            ) : (
+              <Switch id="host-org-trust" checked={hostOrganizationTrusted} onCheckedChange={onHostOrgTrustChange} />
+            )}
+          </div>
+        )}
+      </SettingsSection>
+
+      <SettingsSection title={t('settings.allowedActions.title')} icon={<Zap className="size-4" />} iconColor="amber">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {visibleActions.map(action => {
+            const meta = ACTION_META[action.key];
+            if (!meta) return null;
+            const ActionIcon = meta.icon;
+            const isBusy = updatingKeys.has(`action:${action.key}`);
+            return (
+              <div
+                key={action.key}
+                className={cn(
+                  'flex items-start justify-between space-x-4 p-3 rounded-lg border bg-muted/20',
+                  isBusy && 'opacity-70'
+                )}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="mt-1 text-muted-foreground">
+                    <ActionIcon className="size-5" />
                   </div>
-                );
-              })}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+                  <div className="space-y-0.5">
+                    <Label htmlFor={`action-${action.key}`} className="text-body-emphasis cursor-pointer">
+                      {t(`settings.allowedActions.${action.key}`)}
+                    </Label>
+                    <p className="text-caption text-muted-foreground leading-snug">
+                      {t(`settings.allowedActions.${action.key}Description`, { defaultValue: meta.description })}
+                    </p>
+                  </div>
+                </div>
+                {isBusy ? (
+                  <Loader2 className="size-5 animate-spin text-primary shrink-0 mt-0.5" />
+                ) : (
+                  <Switch
+                    id={`action-${action.key}`}
+                    checked={action.enabled}
+                    onCheckedChange={checked => onToggleAllowedAction(action.key, checked)}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </SettingsSection>
 
       {/* Save as a template — subspaces (L1/L2) only; the consumer omits the handler at L0. */}
       {onSaveAsTemplate && (
-        <div className="rounded-xl border p-4">
-          <h3 className="text-card-title flex items-center gap-2">
-            <Bookmark aria-hidden="true" className="size-4 text-primary" />
-            {t('settings.saveAsTemplate.title')}
-          </h3>
-          <p className="text-body text-muted-foreground mt-1">{t('settings.saveAsTemplate.description')}</p>
+        <SettingsSection
+          title={t('settings.saveAsTemplate.title')}
+          icon={<Bookmark className="size-4" />}
+          iconColor="purple"
+          collapsible={false}
+        >
+          <p className="text-body text-muted-foreground">{t('settings.saveAsTemplate.description')}</p>
           <Button type="button" variant="default" size="sm" className="mt-3" onClick={onSaveAsTemplate}>
             <Bookmark aria-hidden="true" className="mr-1.5 size-3.5" />
             {t('settings.saveAsTemplate.button')}
           </Button>
-        </div>
+        </SettingsSection>
       )}
 
       {/* Danger zone (delete subspace) — subspaces (L1/L2) only; the consumer omits the handler at L0. */}
       {onDeleteSpace && (
-        <div className="rounded-xl border border-destructive/50 p-4">
-          <h3 className="text-card-title text-destructive flex items-center gap-2">
-            <AlertTriangle aria-hidden="true" className="size-4" />
-            {t('settings.dangerZone.title')}
-          </h3>
-          <p className="text-body text-muted-foreground mt-1">{t('settings.dangerZone.description')}</p>
+        <SettingsSection
+          title={t('settings.dangerZone.title')}
+          icon={<AlertTriangle className="size-4" />}
+          iconColor="rose"
+          defaultOpen={false}
+          className="border-destructive/40"
+        >
+          <p className="text-body text-muted-foreground">{t('settings.dangerZone.description')}</p>
           <Button type="button" variant="destructive" size="sm" className="mt-3" onClick={onDeleteSpace}>
             <Trash2 aria-hidden="true" className="mr-1.5 size-3.5" />
             {t('settings.dangerZone.delete')}
           </Button>
-        </div>
+        </SettingsSection>
       )}
     </div>
   );

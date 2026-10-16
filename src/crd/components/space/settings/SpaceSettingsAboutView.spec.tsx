@@ -125,9 +125,37 @@ describe('SpaceSettingsAboutView — Classifications block', () => {
     expect(onSelectClassificationValues).toHaveBeenCalledWith('entry-1', ['sdg-14']);
   });
 
-  it('an entry with no selection opens the value selector as a prompting group (FR-012a)', async () => {
+  it('an entry with no selection prompts with every value as a "+" chip (FR-012a)', async () => {
     render(<SpaceSettingsAboutView {...baseProps({ classifications: [{ ...ENTRY, selectedValueIDs: [] }] })} />);
-    expect(await screen.findAllByRole('checkbox')).toHaveLength(2);
+    expect(await screen.findByRole('button', { name: 'Select 13 · Climate Action' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Select 14 · Life Below Water' })).toBeInTheDocument();
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
+  });
+
+  it('a "+" chip adds to a multi-select in authored order, and replaces a single-select (FR-012, FR-002b)', async () => {
+    const onSelectClassificationValues = vi.fn();
+    const { unmount } = render(
+      <SpaceSettingsAboutView
+        {...baseProps({
+          classifications: [{ ...ENTRY, selectedValueIDs: ['sdg-14'] }],
+          onSelectClassificationValues,
+        })}
+      />
+    );
+    await userEvent.click(await screen.findByRole('button', { name: 'Select 13 · Climate Action' }));
+    expect(onSelectClassificationValues).toHaveBeenLastCalledWith('entry-1', ['sdg-13', 'sdg-14']);
+    unmount();
+
+    render(
+      <SpaceSettingsAboutView
+        {...baseProps({
+          classifications: [{ ...ENTRY, cardinality: 'SINGLE_SELECT', selectedValueIDs: ['sdg-14'] }],
+          onSelectClassificationValues,
+        })}
+      />
+    );
+    await userEvent.click(await screen.findByRole('button', { name: 'Select 13 · Climate Action' }));
+    expect(onSelectClassificationValues).toHaveBeenLastCalledWith('entry-1', ['sdg-13']);
   });
 
   it('"Select values…" in the kebab expands the selector; a pending write disables it', async () => {

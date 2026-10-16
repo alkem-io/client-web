@@ -21,6 +21,7 @@ import {
   Filter,
   Grid,
   GripVertical,
+  Layers,
   LayoutTemplate,
   List as ListIcon,
   MoreVertical,
@@ -33,6 +34,7 @@ import {
 } from 'lucide-react';
 import { type CSSProperties, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SettingsSection } from '@/crd/components/common/SettingsSection';
 import { isSubspaceDragDisabled, type SubspaceSortMode } from '@/crd/lib/subspaceDrag';
 import { cn } from '@/crd/lib/utils';
 import { Badge } from '@/crd/primitives/badge';
@@ -45,7 +47,6 @@ import {
   DropdownMenuTrigger,
 } from '@/crd/primitives/dropdown-menu';
 import { Input } from '@/crd/primitives/input';
-import { Separator } from '@/crd/primitives/separator';
 
 export type SubspaceFilter = 'all' | 'active' | 'archived';
 export type SubspaceViewMode = 'grid' | 'list';
@@ -216,158 +217,144 @@ export function SpaceSettingsSubspacesView({
   );
 
   return (
-    <div className={cn('space-y-8', className)}>
-      {/* Header */}
-      <div>
-        <h2 className="text-page-title">{t('subspaces.pageHeader.title')}</h2>
-        <p className="text-muted-foreground mt-2">{t('subspaces.pageHeader.subtitle')}</p>
-      </div>
-
-      <Separator />
-
+    <div className={cn('flex flex-col gap-5', className)}>
       {/* Default Subspace Template — L0 only (subspace templates are managed at the top-level space). */}
       {onChangeDefaultTemplate && (
-        <>
-          <div className="bg-muted/30 border border-border rounded-xl p-6">
-            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-              <div className="space-y-2 flex-1">
-                <h3 className="text-subsection-title flex items-center gap-2">
-                  <LayoutTemplate aria-hidden="true" className="size-5 text-primary" />
-                  {t('subspaces.defaultTemplate.title')}
-                </h3>
-                <p className="text-muted-foreground text-body">{t('subspaces.defaultTemplate.description')}</p>
-              </div>
-              <Button type="button" onClick={onChangeDefaultTemplate}>
-                {t('subspaces.defaultTemplate.change')}
-              </Button>
-            </div>
-          </div>
-
-          <Separator />
-        </>
+        <SettingsSection
+          title={t('subspaces.defaultTemplate.title')}
+          icon={<LayoutTemplate className="size-4" />}
+          iconColor="purple"
+          collapsible={false}
+        >
+          <Button type="button" size="sm" onClick={onChangeDefaultTemplate}>
+            {t('subspaces.defaultTemplate.change')}
+          </Button>
+        </SettingsSection>
       )}
 
       {/* Subspaces List */}
-      <div className="space-y-4">
-        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <h3 className="text-subsection-title flex shrink-0 items-center gap-2">
-            {t('subspaces.listTitle')}
-            <Badge variant="secondary" className="rounded-full">
-              {filtered.length}
-            </Badge>
-          </h3>
+      <SettingsSection title={t('subspaces.listTitle')} icon={<Layers className="size-4" />} iconColor="blue">
+        <div className="space-y-4">
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <h3 className="text-subsection-title flex shrink-0 items-center gap-2">
+              {t('subspaces.listTitle')}
+              <Badge variant="secondary" className="rounded-full">
+                {filtered.length}
+              </Badge>
+            </h3>
 
-          {/* Wrapping, width-bounded controls — buttons flow onto extra rows on
+            {/* Wrapping, width-bounded controls — buttons flow onto extra rows on
               narrow widths instead of overflowing the panel. */}
-          <div className="flex w-full flex-wrap items-center gap-2 md:flex-1 md:justify-end">
-            <div className="relative w-full sm:w-64">
-              <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-              <Input
-                placeholder={t('subspaces.search')}
-                className="pl-9 h-9"
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-              />
-            </div>
+            <div className="flex w-full flex-wrap items-center gap-2 md:flex-1 md:justify-end">
+              <div className="relative w-full sm:w-64">
+                <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+                <Input
+                  placeholder={t('subspaces.search')}
+                  className="pl-9 h-9"
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                />
+              </div>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild={true}>
-                <Button variant="outline" size="sm" className="h-9 gap-2">
-                  <ArrowDownAZ className="size-4" />
-                  {t('subspaces.sortMode.label')}{' '}
-                  {sortMode === 'manual' ? t('subspaces.sortMode.custom') : t('subspaces.sortMode.alphabetical')}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild={true}>
+                  <Button variant="outline" size="sm" className="h-9 gap-2">
+                    <ArrowDownAZ className="size-4" />
+                    {t('subspaces.sortMode.label')}{' '}
+                    {sortMode === 'manual' ? t('subspaces.sortMode.custom') : t('subspaces.sortMode.alphabetical')}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => onSortModeChange('alphabetical')}>
+                    {t('subspaces.sortMode.alphabetical')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onSortModeChange('manual')}>
+                    {t('subspaces.sortMode.custom')}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild={true}>
+                  <Button variant="outline" size="sm" className="h-9 gap-2">
+                    <Filter className="size-4" />
+                    {t('subspaces.filterLabel')}{' '}
+                    {filter === 'all'
+                      ? t('subspaces.filter.all')
+                      : filter === 'active'
+                        ? t('subspaces.filter.active')
+                        : t('subspaces.filter.archived')}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => setFilter('all')}>{t('subspaces.filter.all')}</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setFilter('active')}>
+                    {t('subspaces.filter.activeOnly')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setFilter('archived')}>
+                    {t('subspaces.filter.archivedOnly')}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <div className="border rounded-md flex items-center h-9 p-0.5 bg-muted/20">
+                <Button
+                  variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+                  size="icon"
+                  className="h-8 w-8 rounded-sm"
+                  onClick={() => setViewMode('grid')}
+                  aria-label={t('subspaces.viewMode.grid')}
+                  aria-pressed={viewMode === 'grid'}
+                >
+                  <Grid className="size-4" />
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => onSortModeChange('alphabetical')}>
-                  {t('subspaces.sortMode.alphabetical')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onSortModeChange('manual')}>
-                  {t('subspaces.sortMode.custom')}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild={true}>
-                <Button variant="outline" size="sm" className="h-9 gap-2">
-                  <Filter className="size-4" />
-                  {t('subspaces.filterLabel')}{' '}
-                  {filter === 'all'
-                    ? t('subspaces.filter.all')
-                    : filter === 'active'
-                      ? t('subspaces.filter.active')
-                      : t('subspaces.filter.archived')}
+                <Button
+                  variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+                  size="icon"
+                  className="h-8 w-8 rounded-sm"
+                  onClick={() => setViewMode('list')}
+                  aria-label={t('subspaces.viewMode.list')}
+                  aria-pressed={viewMode === 'list'}
+                >
+                  <ListIcon className="size-4" />
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setFilter('all')}>{t('subspaces.filter.all')}</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setFilter('active')}>
-                  {t('subspaces.filter.activeOnly')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setFilter('archived')}>
-                  {t('subspaces.filter.archivedOnly')}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </div>
 
-            <div className="border rounded-md flex items-center h-9 p-0.5 bg-muted/20">
-              <Button
-                variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
-                size="icon"
-                className="h-8 w-8 rounded-sm"
-                onClick={() => setViewMode('grid')}
-                aria-label={t('subspaces.viewMode.grid')}
-                aria-pressed={viewMode === 'grid'}
-              >
-                <Grid className="size-4" />
-              </Button>
-              <Button
-                variant={viewMode === 'list' ? 'secondary' : 'ghost'}
-                size="icon"
-                className="h-8 w-8 rounded-sm"
-                onClick={() => setViewMode('list')}
-                aria-label={t('subspaces.viewMode.list')}
-                aria-pressed={viewMode === 'list'}
-              >
-                <ListIcon className="size-4" />
-              </Button>
+              {canCreate && (
+                <Button size="sm" className="h-9 gap-2" onClick={onCreate}>
+                  <Plus className="size-4" />
+                  {t('subspaces.create')}
+                </Button>
+              )}
             </div>
-
-            {canCreate && (
-              <Button size="sm" className="h-9 gap-2" onClick={onCreate}>
-                <Plus className="size-4" />
-                {t('subspaces.create')}
-              </Button>
-            )}
           </div>
+
+          {loading ? (
+            <SubspacesSkeletons viewMode={viewMode} />
+          ) : filtered.length === 0 ? (
+            <div className="col-span-full py-12 flex flex-col items-center justify-center text-muted-foreground border-2 border-dashed border-border rounded-xl bg-muted/10">
+              <div className="size-12 bg-muted rounded-full flex items-center justify-center mb-4">
+                <Search className="size-6 opacity-50" />
+              </div>
+              <h3 className="text-subsection-title text-foreground">{t('subspaces.noResults')}</h3>
+              <p className="text-body mt-1">{t('subspaces.noResultsHint')}</p>
+            </div>
+          ) : reorderable ? (
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              <SortableContext
+                items={filtered.map(s => s.id)}
+                strategy={viewMode === 'grid' ? rectSortingStrategy : verticalListSortingStrategy}
+              >
+                {viewMode === 'grid' ? renderGrid : renderList}
+              </SortableContext>
+            </DndContext>
+          ) : viewMode === 'grid' ? (
+            renderGrid
+          ) : (
+            renderList
+          )}
         </div>
-
-        {loading ? (
-          <SubspacesSkeletons viewMode={viewMode} />
-        ) : filtered.length === 0 ? (
-          <div className="col-span-full py-12 flex flex-col items-center justify-center text-muted-foreground border-2 border-dashed border-border rounded-xl bg-muted/10">
-            <div className="size-12 bg-muted rounded-full flex items-center justify-center mb-4">
-              <Search className="size-6 opacity-50" />
-            </div>
-            <h3 className="text-subsection-title text-foreground">{t('subspaces.noResults')}</h3>
-            <p className="text-body mt-1">{t('subspaces.noResultsHint')}</p>
-          </div>
-        ) : reorderable ? (
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext
-              items={filtered.map(s => s.id)}
-              strategy={viewMode === 'grid' ? rectSortingStrategy : verticalListSortingStrategy}
-            >
-              {viewMode === 'grid' ? renderGrid : renderList}
-            </SortableContext>
-          </DndContext>
-        ) : viewMode === 'grid' ? (
-          renderGrid
-        ) : (
-          renderList
-        )}
-      </div>
+      </SettingsSection>
     </div>
   );
 }

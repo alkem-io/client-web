@@ -1,5 +1,5 @@
 /**
- * About tab — view + autosave contracts.
+ * About tab — view + per-section save contracts.
  *
  * Exact parity with the current MUI Space Admin About page. Every field
  * below binds to a real, existing mutation surface:
@@ -12,7 +12,19 @@
  *
  * The spec intentionally does NOT include email or pronouns (user-only
  * fields) or a separate "visuals gallery" (the three visuals are the only
- * images; grouped in a single Space Branding region in the prototype).
+ * images; grouped in the "Visuals" section — formerly "Space Branding").
+ *
+ * Layout (amended 2026-10-16, prototype parity): the view body is a stack of
+ * collapsible `SettingsSection` cards (`@/crd/components/common/SettingsSection`
+ * — coloured icon tile, `<h3>` title, optional description, chevron; ALL open
+ * by default; collapsing is purely visual), in this order:
+ *   Identity (name, tagline) · Visuals (avatar, page banner [L0 only], card
+ *   banner) · Location (city, country) · Context (what, why, who) · Tags ·
+ *   Classifications · References & Links.
+ * Name, tagline and city are plain boxed `Input`s — no `InlineEditText` on
+ * About. Each field keeps its hint + `FieldFooter` inside its section. The
+ * Preview (SpaceCard + Live Preview note) sits beside the stack, outside the
+ * cards.
  */
 
 export type AboutVisual = {
@@ -49,47 +61,41 @@ export type AboutFormValues = {
 };
 
 /**
- * Per-field autosave state. FR-005a requires a per-field indicator:
- *   - `idle`    : field has no in-flight save and no recent success feedback.
- *   - `pending` : user has edited the field; 2-second debounce timer is running.
- *   - `saving`  : mutation is in flight; view shows a spinner next to the field label.
- *   - `saved`   : mutation just succeeded; view shows a grayed "Saved!" indicator
- *                 for exactly 2 seconds before the hook transitions the state
- *                 back to `idle`. No auto-retry on error.
- *   - `error`   : mutation failed; view shows an inline error next to the field label;
- *                 the error persists until the next `onChange` for that field
- *                 clears it and restarts the autosave cycle (no auto-retry).
+ * Per-section save model (FR-005a — amended 2026-10-16).
  *
- * Indicator slots in the view MUST be rendered as `role="status"` with
- * `aria-live="polite"` and a descriptive `aria-label` (screen-reader users
- * must hear the transition `saving → saved` or the error message).
+ * The original contract here was a 2-second debounced per-field autosave
+ * (`FieldAutosaveState` with a `pending` state, `AboutAutosaveStateMap`,
+ * `flushPending()`). It never shipped and is removed. What ships:
+ *
+ *   - Each section renders the shared `FieldFooter`
+ *     (`@/crd/components/common/FieldFooter`): hint on the left; on the right
+ *     a Save button while the section is dirty and idle, a spinner +
+ *     "Saving…" (`aria-busy`) while saving, "Saved!" (`aria-live="polite"`)
+ *     for `SAVED_FLASH_MS` (1800 ms) after success, and the error message
+ *     (`role="alert"`) + a Retry button after failure.
+ *   - Save sends ONLY that section's patch.
+ *   - Visual uploads (avatar / pageBanner / cardBanner) are not sections:
+ *     the file pick (through the crop step) IS the commit.
+ *   - Classifications commit immediately per action (workspace spec 024
+ *     FR-006a); their section footer only reports status.
  */
-export type FieldAutosaveState =
+export type SectionSaveStatus =
   | { kind: 'idle' }
-  | { kind: 'pending' }
   | { kind: 'saving' }
-  | { kind: 'saved'; at: number }
+  | { kind: 'saved'; at?: number }
   | { kind: 'error'; message: string };
 
-/**
- * Keys used by the indicator map. Scalar form-fields map 1:1; compound fields
- * (avatar / pageBanner / cardBanner / references / tags) share one indicator
- * slot per group since they commit as a unit.
- */
-export type AboutFieldKey =
+/** One key per independently saved section. */
+export type AboutSectionKey =
   | 'name'
   | 'tagline'
-  | 'location' // groups country + city
-  | 'avatar'
-  | 'pageBanner'
-  | 'cardBanner'
-  | 'tags'
-  | 'references'
+  | 'location' // groups city + country
   | 'what'
   | 'why'
-  | 'who';
-
-export type AboutAutosaveStateMap = Partial<Record<AboutFieldKey, FieldAutosaveState>>;
+  | 'who'
+  | 'tags'
+  | 'references'
+  | 'classifications';
 
 /**
  * Props for the live Preview card on the About tab. The Preview renders the
@@ -115,19 +121,28 @@ export type SpaceCardPreview = {
 /**
  * AboutViewProps
  *
- * No Save Changes button and no Reset button (FR-005a). Each field autosaves
- * after a 2-second idle debounce. File-upload fields autosave immediately on
- * upload completion — the act of choosing a file IS the commit. Reference
- * add / remove and tag changes also autosave immediately.
+ * No tab-wide Save Changes / Reset bar (FR-005a). `onChange` only updates the
+ * local buffer; each section commits on its own Save (`onSaveSection`). File
+ * uploads commit immediately on file pick — choosing a file IS the commit.
+ * References are edited in the shared `ReferencesEditor` and committed by the
+ * References & Links section's Save (create new + patch edited + delete removed).
+ * (Amended 2026-10-16 — replaces the never-shipped `autosaveState` contract.)
  */
 export type AboutViewProps = AboutFormValues & {
   previewCard: SpaceCardPreview;
-  autosaveState: AboutAutosaveStateMap;
+  /** Which sections differ from the server value. */
+  dirtyByField: Partial<Record<AboutSectionKey, boolean>>;
+  /** Per-section save status. */
+  saveStatusByField: Partial<Record<AboutSectionKey, SectionSaveStatus>>;
+  onSaveSection: (section: AboutSectionKey) => void;
   onChange: (patch: Partial<AboutFormValues>) => void;
   onUploadAvatar: (file: File) => void;
   onUploadPageBanner: (file: File) => void;
   onUploadCardBanner: (file: File) => void;
-  onAddReference: () => void;
-  onUpdateReference: (id: string, patch: Partial<Omit<AboutReference, 'id'>>) => void;
-  onRemoveReference: (id: string) => void;
+  /**
+   * Replaces the whole references list — the shared `ReferencesEditor` owns
+   * add / edit / remove + delete-confirm (Session 2026-05-20; replaced the
+   * granular onAdd/onUpdate/onRemoveReference handlers).
+   */
+  onReferencesChange: (rows: ReadonlyArray<{ id?: string; name: string; uri: string; description?: string }>) => void;
 };

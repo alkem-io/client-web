@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import type { SpaceSettingsTabId } from './useSpaceSettingsTab';
 
 /**
- * useDirtyTabGuard — centralizes Layout's dirty-buffer protection.
+ * useDirtyTabGuard — centralizes the Settings dirty-buffer protection.
  *
- * Only the Layout tab can enter a dirty state (About uses per-field autosave
- * with `flushPending()` instead — see Decision 3a). The guard covers:
+ * Layout (its Save bar buffer) and About (sections with unsaved edits, saved
+ * per section via FieldFooter) can enter a dirty state. The guard covers:
  *
  *   1. Tab switches within Settings via `requestSwitch(next)`, which suspends
  *      until the consumer resolves it (typically after a confirm dialog).

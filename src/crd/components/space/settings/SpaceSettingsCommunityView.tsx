@@ -1,10 +1,9 @@
 import {
   Bot,
   Building,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
-  ChevronUp,
+  Clock,
   Download,
   FileText,
   MoreHorizontal,
@@ -13,11 +12,13 @@ import {
   Shield,
   Trash2,
   UserPlus,
+  Users,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GatedAction } from '@/crd/components/common/GatedAction';
+import { SettingsSection } from '@/crd/components/common/SettingsSection';
 import type { PendingMembership } from '@/crd/components/space/settings/PendingMembershipsTable';
 import { PendingMembershipsTable } from '@/crd/components/space/settings/PendingMembershipsTable';
 import type { PendingOrganizationInvitationItem } from '@/crd/components/space/settings/PendingOrganizationInvitationsList';
@@ -36,7 +37,6 @@ import {
   DropdownMenuTrigger,
 } from '@/crd/primitives/dropdown-menu';
 import { Input } from '@/crd/primitives/input';
-import { Separator } from '@/crd/primitives/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/crd/primitives/table';
 
 export type CommunityMember = {
@@ -218,37 +218,36 @@ export function SpaceSettingsCommunityView({
   };
 
   return (
-    <div className={cn('flex flex-col gap-8', className)}>
-      <div>
-        <h2 className="text-section-title tracking-tight">{t('community.pageHeader.title')}</h2>
-        <p className="text-body text-muted-foreground mt-2">{t('community.pageHeader.subtitle')}</p>
-      </div>
-
-      <Separator />
-
-      <PendingMembershipsTable
-        items={pendingMemberships}
-        onView={onPendingView}
-        onApprove={onPendingApprove}
-        onReject={onPendingReject}
-        onDelete={onPendingDelete}
-        onResend={onPendingResend}
-        resendingIds={resendingIds}
-      />
-
-      <Separator />
+    <div className={cn('flex flex-col gap-5', className)}>
+      <SettingsSection
+        title={t('community.pendingMemberships.title')}
+        icon={<Clock className="size-4" />}
+        iconColor="amber"
+        badge={<CountBadge count={pendingMemberships.length} />}
+      >
+        <PendingMembershipsTable
+          hideHeading={true}
+          items={pendingMemberships}
+          onView={onPendingView}
+          onApprove={onPendingApprove}
+          onReject={onPendingReject}
+          onDelete={onPendingDelete}
+          onResend={onPendingResend}
+          resendingIds={resendingIds}
+        />
+      </SettingsSection>
 
       {/* Space Members table */}
-      <div id="members" className="flex flex-col gap-4 scroll-mt-32">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <h3 className="text-subsection-title flex items-center gap-2">
-            {t('community.members.title')}
-            <Badge variant="secondary" className="rounded-full">
-              {filtered.length}
-            </Badge>
-          </h3>
-          <div className="flex items-center gap-2 flex-wrap">
-            <div className="relative">
+      <SettingsSection
+        id="members"
+        title={t('community.members.title')}
+        icon={<Users className="size-4" />}
+        iconColor="blue"
+        badge={<CountBadge count={filtered.length} />}
+      >
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <div className="relative flex-1">
               <Search
                 aria-hidden="true"
                 className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
@@ -258,193 +257,203 @@ export function SpaceSettingsCommunityView({
                 placeholder={t('community.members.search')}
                 value={search}
                 onChange={e => handleSearchChange(e.target.value)}
-                className="h-9 w-[220px] pl-9 text-control"
+                className="h-9 w-full pl-9 text-control"
               />
             </div>
-            {permissions.canInvite && (
-              <Button type="button" size="sm" className="gap-2" onClick={onInviteUsers}>
-                <UserPlus aria-hidden="true" className="size-4" />
-                {t('community.members.invite')}
-              </Button>
-            )}
-            {onExportMembers && (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="gap-2"
-                onClick={onExportMembers}
-                disabled={exportDisabled}
-              >
-                <Download aria-hidden="true" className="size-4" />
-                {t('community.members.export')}
-              </Button>
-            )}
-          </div>
-        </div>
-        <div className="rounded-lg border bg-card overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[320px]">{t('community.members.name')}</TableHead>
-                <TableHead>{t('community.members.roleColumn')}</TableHead>
-                <TableHead>{t('community.members.joined')}</TableHead>
-                <TableHead className="w-[140px] text-right">{t('community.members.actions')}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginated.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
-                    {t('community.members.empty')}
-                  </TableCell>
-                </TableRow>
+            <div className="flex items-center gap-2 flex-wrap">
+              {permissions.canInvite && (
+                <Button type="button" size="sm" className="gap-2" onClick={onInviteUsers}>
+                  <UserPlus aria-hidden="true" className="size-4" />
+                  {t('community.members.invite')}
+                </Button>
               )}
-              {paginated.map((m, index) => (
-                <TableRow key={m.id} className={cn(index % 2 === 1 && 'bg-muted/30')}>
-                  <TableCell>
-                    <div className="flex items-center gap-3 min-w-0">
-                      <Avatar className="size-8 border border-border shrink-0">
-                        {m.avatarUrl ? <AvatarImage src={m.avatarUrl} alt="" /> : null}
-                        <AvatarFallback className="text-caption">
-                          {m.displayName.slice(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="min-w-0">
-                        {m.url ? (
-                          <a href={m.url} className="block text-body-emphasis truncate hover:underline">
-                            {m.displayName}
-                          </a>
-                        ) : (
-                          <span className="block text-body-emphasis truncate">{m.displayName}</span>
-                        )}
-                        {m.email && (
-                          <span className="block text-caption text-muted-foreground truncate">{m.email}</span>
-                        )}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-body-emphasis text-foreground">{m.roleLabel}</span>
-                  </TableCell>
-                  <TableCell className="text-caption text-muted-foreground">{m.joinedDate || '—'}</TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild={true}>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="size-8"
-                          aria-label={t('community.members.actions')}
-                        >
-                          <MoreHorizontal aria-hidden="true" className="size-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        {(() => {
-                          const hasViewProfile = !!m.url;
-                          const showChangeRole = !!onMemberChangeRole;
-                          const showRemove = !!onUserRemove;
-                          const hasManageActions = showChangeRole;
-                          return (
-                            <>
-                              {hasViewProfile && (
-                                <DropdownMenuItem asChild={true}>
-                                  <a href={m.url}>{t('community.members.dropdown.viewProfile')}</a>
-                                </DropdownMenuItem>
-                              )}
-                              {showChangeRole && (
-                                <DropdownMenuItem onClick={() => onMemberChangeRole?.(m)}>
-                                  {t('community.members.dropdown.changeRole')}
-                                </DropdownMenuItem>
-                              )}
-                              {showRemove && (hasViewProfile || hasManageActions) && <DropdownMenuSeparator />}
-                              {showRemove && (
-                                <DropdownMenuItem
-                                  className="text-destructive focus:text-destructive"
-                                  onClick={() => onUserRemove?.(m.id)}
-                                >
-                                  <Trash2 aria-hidden="true" className="mr-2 size-4" />
-                                  {t('community.members.dropdown.removeFromSpace')}
-                                </DropdownMenuItem>
-                              )}
-                            </>
-                          );
-                        })()}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-
-        {filtered.length > MEMBERS_PAGE_SIZE && (
-          <div className="flex items-center justify-between py-2">
-            <p className="text-caption text-muted-foreground">
-              {t('community.members.pagination.showing', { from: pageStart + 1, to: pageEnd, total: filtered.length })}
-            </p>
-            <div className="flex items-center gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="size-8"
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={safePage === 1}
-                aria-label={t('community.members.pagination.previous')}
-              >
-                <ChevronLeft aria-hidden="true" className="size-4" />
-              </Button>
-              <span className="text-caption text-body-emphasis">
-                {t('community.members.pagination.page', { page: safePage, total: totalPages })}
-              </span>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="size-8"
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                disabled={safePage === totalPages}
-                aria-label={t('community.members.pagination.next')}
-              >
-                <ChevronRight aria-hidden="true" className="size-4" />
-              </Button>
+              {onExportMembers && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={onExportMembers}
+                  disabled={exportDisabled}
+                >
+                  <Download aria-hidden="true" className="size-4" />
+                  {t('community.members.export')}
+                </Button>
+              )}
             </div>
           </div>
-        )}
-      </div>
+          <div className="rounded-lg border bg-card overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[320px]">{t('community.members.name')}</TableHead>
+                  <TableHead>{t('community.members.roleColumn')}</TableHead>
+                  <TableHead>{t('community.members.joined')}</TableHead>
+                  <TableHead className="w-[140px] text-right">{t('community.members.actions')}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {paginated.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                      {t('community.members.empty')}
+                    </TableCell>
+                  </TableRow>
+                )}
+                {paginated.map((m, index) => (
+                  <TableRow key={m.id} className={cn(index % 2 === 1 && 'bg-muted/30')}>
+                    <TableCell>
+                      <div className="flex items-center gap-3 min-w-0">
+                        <Avatar className="size-8 border border-border shrink-0">
+                          {m.avatarUrl ? <AvatarImage src={m.avatarUrl} alt="" /> : null}
+                          <AvatarFallback className="text-caption">
+                            {m.displayName.slice(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0">
+                          {m.url ? (
+                            <a href={m.url} className="block text-body-emphasis truncate hover:underline">
+                              {m.displayName}
+                            </a>
+                          ) : (
+                            <span className="block text-body-emphasis truncate">{m.displayName}</span>
+                          )}
+                          {m.email && (
+                            <span className="block text-caption text-muted-foreground truncate">{m.email}</span>
+                          )}
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-body-emphasis text-foreground">{m.roleLabel}</span>
+                    </TableCell>
+                    <TableCell className="text-caption text-muted-foreground">{m.joinedDate || '—'}</TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild={true}>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="size-8"
+                            aria-label={t('community.members.actions')}
+                          >
+                            <MoreHorizontal aria-hidden="true" className="size-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          {(() => {
+                            const hasViewProfile = !!m.url;
+                            const showChangeRole = !!onMemberChangeRole;
+                            const showRemove = !!onUserRemove;
+                            const hasManageActions = showChangeRole;
+                            return (
+                              <>
+                                {hasViewProfile && (
+                                  <DropdownMenuItem asChild={true}>
+                                    <a href={m.url}>{t('community.members.dropdown.viewProfile')}</a>
+                                  </DropdownMenuItem>
+                                )}
+                                {showChangeRole && (
+                                  <DropdownMenuItem onClick={() => onMemberChangeRole?.(m)}>
+                                    {t('community.members.dropdown.changeRole')}
+                                  </DropdownMenuItem>
+                                )}
+                                {showRemove && (hasViewProfile || hasManageActions) && <DropdownMenuSeparator />}
+                                {showRemove && (
+                                  <DropdownMenuItem
+                                    className="text-destructive focus:text-destructive"
+                                    onClick={() => onUserRemove?.(m.id)}
+                                  >
+                                    <Trash2 aria-hidden="true" className="mr-2 size-4" />
+                                    {t('community.members.dropdown.removeFromSpace')}
+                                  </DropdownMenuItem>
+                                )}
+                              </>
+                            );
+                          })()}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
 
-      <Separator />
+          {filtered.length > MEMBERS_PAGE_SIZE && (
+            <div className="flex items-center justify-between py-2">
+              <p className="text-caption text-muted-foreground">
+                {t('community.members.pagination.showing', {
+                  from: pageStart + 1,
+                  to: pageEnd,
+                  total: filtered.length,
+                })}
+              </p>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="size-8"
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={safePage === 1}
+                  aria-label={t('community.members.pagination.previous')}
+                >
+                  <ChevronLeft aria-hidden="true" className="size-4" />
+                </Button>
+                <span className="text-caption text-body-emphasis">
+                  {t('community.members.pagination.page', { page: safePage, total: totalPages })}
+                </span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="size-8"
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={safePage === totalPages}
+                  aria-label={t('community.members.pagination.next')}
+                >
+                  <ChevronRight aria-hidden="true" className="size-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </SettingsSection>
 
       {applicationFormSlot && (
-        <SectionCard
-          icon={FileText}
+        <SettingsSection
           title={t('community.applicationForm.title')}
-          description={t('community.applicationForm.description')}
+          icon={<FileText className="size-4" />}
+          iconColor="purple"
+          defaultOpen={false}
+          keepMounted={false}
         >
           {applicationFormSlot}
-        </SectionCard>
+        </SettingsSection>
       )}
 
       {communityGuidelinesSlot && (
-        <SectionCard
+        <SettingsSection
           id="guidelines"
-          icon={Shield}
           title={t('community.guidelines.title')}
-          description={t('community.guidelines.description')}
+          icon={<Shield className="size-4" />}
+          iconColor="green"
+          defaultOpen={hashIs('guidelines')}
+          keepMounted={false}
         >
           {communityGuidelinesSlot}
-        </SectionCard>
+        </SettingsSection>
       )}
 
-      <SectionCard
-        icon={Building}
+      <SettingsSection
         title={t('community.organizations.title')}
-        description={t('community.organizations.description')}
-        count={filteredOrganizations.length}
+        icon={<Building className="size-4" />}
+        iconColor="orange"
+        badge={<CountBadge count={filteredOrganizations.length} />}
+        defaultOpen={false}
+        keepMounted={false}
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <div className="relative">
@@ -577,14 +586,16 @@ export function SpaceSettingsCommunityView({
           revokeAriaLabel={name => t('community.organizations.pendingInvitations.revokeAriaLabel', { name })}
           onRevoke={onOrgInvitationRevoke}
         />
-      </SectionCard>
+      </SettingsSection>
 
       {level === 'L0' && (
-        <SectionCard
-          icon={Bot}
+        <SettingsSection
           title={t('community.virtualContributors.title')}
-          description={t('community.virtualContributors.description')}
-          count={virtualContributors.length}
+          icon={<Bot className="size-4" />}
+          iconColor="rose"
+          badge={<CountBadge count={virtualContributors.length} />}
+          defaultOpen={false}
+          keepMounted={false}
         >
           <div className="rounded-lg border bg-card overflow-hidden">
             <Table>
@@ -651,63 +662,21 @@ export function SpaceSettingsCommunityView({
               </GatedAction>
             )}
           </div>
-        </SectionCard>
+        </SettingsSection>
       )}
     </div>
   );
 }
 
-function SectionCard({
-  id,
-  icon: Icon,
-  title,
-  description,
-  count,
-  defaultOpen = false,
-  children,
-}: {
-  /** Anchor id — when the URL hash matches `#${id}`, the card mounts open. */
-  id?: string;
-  icon: React.ComponentType<{ className?: string; 'aria-hidden'?: boolean | 'true' | 'false' }>;
-  title: string;
-  description: string;
-  count?: number;
-  defaultOpen?: boolean;
-  children: ReactNode;
-}) {
-  const hashMatches = typeof window !== 'undefined' && !!id && window.location.hash === `#${id}`;
-  const [open, setOpen] = useState(defaultOpen || hashMatches);
+/** True when the URL hash targets this section — a deep link (e.g. `#guidelines`) mounts it open. */
+function hashIs(id: string): boolean {
+  return typeof window !== 'undefined' && window.location.hash === `#${id}`;
+}
+
+function CountBadge({ count }: { count: number }) {
   return (
-    <section id={id} className="rounded-xl border border-border bg-card p-6 scroll-mt-32">
-      <button
-        type="button"
-        className="flex w-full items-start gap-4 text-left group rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2"
-        onClick={() => setOpen(prev => !prev)}
-        aria-expanded={open}
-      >
-        <div className="mt-1 p-2 bg-muted rounded-md shrink-0 group-hover:bg-muted/80 transition-colors">
-          <Icon aria-hidden="true" className="size-5 text-muted-foreground" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="text-subsection-title flex items-center gap-2">
-              {title}
-              {typeof count === 'number' && (
-                <Badge variant="secondary" className="rounded-full">
-                  {count}
-                </Badge>
-              )}
-            </h3>
-            {open ? (
-              <ChevronUp aria-hidden="true" className="size-4 shrink-0" />
-            ) : (
-              <ChevronDown aria-hidden="true" className="size-4 shrink-0" />
-            )}
-          </div>
-          <p className="mt-1 text-body text-muted-foreground pr-8">{description}</p>
-        </div>
-      </button>
-      {open && <div className="mt-6 pl-[52px]">{children}</div>}
-    </section>
+    <Badge variant="secondary" className="rounded-full">
+      {count}
+    </Badge>
   );
 }

@@ -1,11 +1,11 @@
-import { CropIcon, ImageIcon, Plus } from 'lucide-react';
+import { CropIcon, FileText, ImageIcon, Link2, MapPin, Plus, Tag, Tags, Type } from 'lucide-react';
 import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ClassificationEntryCard } from '@/crd/components/classification/ClassificationEntryCard';
 import type { ClassificationEntryData } from '@/crd/components/classification/types';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
 import { type SectionSaveStatus, FieldFooter as SharedFieldFooter } from '@/crd/components/common/FieldFooter';
-import { InlineEditText } from '@/crd/components/common/InlineEditText';
+import { SettingsSection } from '@/crd/components/common/SettingsSection';
 import { SpaceCard, type SpaceCardData } from '@/crd/components/space/SpaceCard';
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { type ReferenceRow, ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
@@ -13,7 +13,8 @@ import { TagsInput } from '@/crd/forms/tags-input';
 import { resolveBannerAspectRatio } from '@/crd/lib/bannerAspectRatio';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
-import { Separator } from '@/crd/primitives/separator';
+import { Input } from '@/crd/primitives/input';
+import { Label } from '@/crd/primitives/label';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 import type {
   AboutFormValues,
@@ -81,9 +82,6 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     cardBanner,
     tags,
     references,
-    what,
-    why,
-    who,
     previewCard,
     dirtyByField,
     saveStatusByField,
@@ -113,6 +111,9 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
   //   - L1/L2: avatar + cardBanner — L1/L2 have NO settable page banner (they inherit L0 root's)
   const showPageBanner = level === 'L0';
   const showAvatar = level !== 'L0';
+  const nameId = useId();
+  const taglineId = useId();
+  const cityId = useId();
 
   // The shape is chosen in the crop dialog, not here — this only sizes the
   // preview box to whatever the visual currently is (default shape until an
@@ -120,70 +121,57 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
   const pageBannerRatio = resolveBannerAspectRatio(pageBanner);
 
   return (
-    <div className={cn('flex flex-col gap-0', className)}>
-      <div className="mb-6">
-        <h2 className="text-page-title">{t('about.pageHeader.title')}</h2>
-        <p className="text-body text-muted-foreground mt-1">{t('about.pageHeader.subtitle')}</p>
-      </div>
+    <div className={cn('grid grid-cols-1 gap-8 xl:grid-cols-[1fr_320px]', className)}>
+      <div className="flex min-w-0 flex-col gap-5">
+        <SettingsSection title={t('about.sections.identity')} icon={<Type className="size-4" />} iconColor="blue">
+          <div className="space-y-4">
+            <div>
+              <FieldLabel htmlFor={nameId}>{t('about.name.title')}</FieldLabel>
+              <Input
+                id={nameId}
+                value={name}
+                onChange={e => onChange({ name: e.target.value })}
+                placeholder={t('about.name.title')}
+                className="mt-2"
+              />
+              <FieldFooter
+                hint={t('about.name.description')}
+                dirty={!!dirtyByField.name}
+                status={saveStatusByField.name ?? { kind: 'idle' }}
+                onSave={() => onSaveSection('name')}
+                t={t}
+              />
+            </div>
+            <div>
+              <FieldLabel htmlFor={taglineId}>{t('about.tagline.title')}</FieldLabel>
+              <Input
+                id={taglineId}
+                value={tagline}
+                onChange={e => onChange({ tagline: e.target.value })}
+                placeholder={t('about.tagline.title')}
+                className="mt-2"
+              />
+              <FieldFooter
+                hint={t('about.tagline.description')}
+                dirty={!!dirtyByField.tagline}
+                status={saveStatusByField.tagline ?? { kind: 'idle' }}
+                onSave={() => onSaveSection('tagline')}
+                t={t}
+              />
+            </div>
+          </div>
+        </SettingsSection>
 
-      <div className="grid gap-0 lg:grid-cols-[2fr_1fr] lg:gap-8">
-        <div className="flex flex-col min-w-0">
-          {/* Space Name */}
-          <FieldSection>
-            <FieldLabel>{t('about.name.title')}</FieldLabel>
-            <InlineEditText
-              value={name}
-              onChange={next => onChange({ name: next })}
-              ariaLabel={t('about.name.ariaLabel')}
-              editAriaLabel={t('about.name.editAriaLabel')}
-              placeholder={t('about.name.title')}
-              className="mt-2 text-subheader font-normal"
-            />
-            <FieldFooter
-              hint={t('about.name.description')}
-              dirty={!!dirtyByField.name}
-              status={saveStatusByField.name ?? { kind: 'idle' }}
-              onSave={() => onSaveSection('name')}
-              t={t}
-            />
-          </FieldSection>
-
-          <Separator />
-
-          {/* Tagline */}
-          <FieldSection>
-            <FieldLabel>{t('about.tagline.title')}</FieldLabel>
-            <InlineEditText
-              value={tagline}
-              onChange={next => onChange({ tagline: next })}
-              ariaLabel={t('about.tagline.ariaLabel')}
-              editAriaLabel={t('about.tagline.editAriaLabel')}
-              placeholder={t('about.tagline.title')}
-              className="mt-2 text-subheader font-normal"
-            />
-            <FieldFooter
-              hint={t('about.tagline.description')}
-              dirty={!!dirtyByField.tagline}
-              status={saveStatusByField.tagline ?? { kind: 'idle' }}
-              onSave={() => onSaveSection('tagline')}
-              t={t}
-            />
-          </FieldSection>
-
-          <Separator />
-
-          {/* Space Branding */}
-          <div className="py-6">
-            <h3 className="text-card-title">{t('about.branding.title')}</h3>
-
+        <SettingsSection title={t('about.sections.visuals')} icon={<ImageIcon className="size-4" />} iconColor="purple">
+          {/* One row of true shapes (stacked on narrow screens): avatar (L1/L2) → card banner → page banner (L0, fills the rest). */}
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
             {showAvatar && (
-              <div className="mt-4">
+              <div className="w-40 shrink-0">
                 <FieldLabel>{t('about.branding.avatar.title')}</FieldLabel>
                 <BannerUpload
                   visual={avatar}
                   onUpload={onUploadAvatar}
                   aspectRatio={1}
-                  widthClass="max-w-[160px]"
                   t={t}
                   onRecrop={() => onRecropVisual?.('avatar')}
                   recropLabel={t('about.branding.avatar.recrop')}
@@ -192,8 +180,21 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               </div>
             )}
 
+            <div className="w-full max-w-[260px] shrink-0">
+              <FieldLabel>{t('about.branding.cardBanner.title')}</FieldLabel>
+              <BannerUpload
+                visual={cardBanner}
+                onUpload={onUploadCardBanner}
+                aspectRatio={1.6}
+                t={t}
+                onRecrop={() => onRecropVisual?.('cardBanner')}
+                recropLabel={t('about.branding.cardBanner.recrop')}
+              />
+              <FieldHint>{t('about.branding.cardBanner.hint')}</FieldHint>
+            </div>
+
             {showPageBanner && (
-              <div className="mt-4">
+              <div className="min-w-0 flex-1">
                 <FieldLabel>{t('about.branding.pageBanner.title')}</FieldLabel>
                 <BannerUpload
                   visual={pageBanner}
@@ -207,221 +208,166 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                 <FieldHint>{t('about.branding.pageBanner.hint')}</FieldHint>
               </div>
             )}
-
-            <div className="mt-6">
-              <FieldLabel>{t('about.branding.cardBanner.title')}</FieldLabel>
-              <BannerUpload
-                visual={cardBanner}
-                onUpload={onUploadCardBanner}
-                aspectRatio={1.6}
-                widthClass="max-w-[260px]"
-                t={t}
-                onRecrop={() => onRecropVisual?.('cardBanner')}
-                recropLabel={t('about.branding.cardBanner.recrop')}
-              />
-              <FieldHint>{t('about.branding.cardBanner.hint')}</FieldHint>
-            </div>
           </div>
+        </SettingsSection>
 
-          <Separator />
-
-          {/* What */}
-          <FieldSection id="description">
-            <FieldLabel>{t('about.what.title')}</FieldLabel>
-            <div className="mt-2 space-y-1.5">
-              <MarkdownEditor
-                value={what}
-                onChange={next => onChange({ what: next })}
-                maxLength={markdownMaxLengthByField?.what}
-                placeholder={t('about.what.placeholder')}
-                onImageUpload={onImageUpload}
-                iframeAllowedUrls={iframeAllowedUrls}
-                onError={onError}
-              />
-            </div>
-            <FieldFooter
-              hint={t('about.what.description')}
-              dirty={!!dirtyByField.what}
-              status={saveStatusByField.what ?? { kind: 'idle' }}
-              onSave={() => onSaveSection('what')}
-              t={t}
-            />
-          </FieldSection>
-
-          <Separator />
-
-          {/* Why */}
-          <FieldSection id="why">
-            <FieldLabel>{t('about.why.title')}</FieldLabel>
-            <div className="mt-2 space-y-1.5">
-              <MarkdownEditor
-                value={why}
-                onChange={next => onChange({ why: next })}
-                maxLength={markdownMaxLengthByField?.why}
-                placeholder={t('about.why.placeholder')}
-                onImageUpload={onImageUpload}
-                iframeAllowedUrls={iframeAllowedUrls}
-                onError={onError}
-              />
-            </div>
-            <FieldFooter
-              hint={t('about.why.description')}
-              dirty={!!dirtyByField.why}
-              status={saveStatusByField.why ?? { kind: 'idle' }}
-              onSave={() => onSaveSection('why')}
-              t={t}
-            />
-          </FieldSection>
-
-          <Separator />
-
-          {/* Who */}
-          <FieldSection id="who">
-            <FieldLabel>{t('about.who.title')}</FieldLabel>
-            <div className="mt-2 space-y-1.5">
-              <MarkdownEditor
-                value={who}
-                onChange={next => onChange({ who: next })}
-                maxLength={markdownMaxLengthByField?.who}
-                placeholder={t('about.who.placeholder')}
-                onImageUpload={onImageUpload}
-                iframeAllowedUrls={iframeAllowedUrls}
-                onError={onError}
-              />
-            </div>
-            <FieldFooter
-              hint={t('about.who.description')}
-              dirty={!!dirtyByField.who}
-              status={saveStatusByField.who ?? { kind: 'idle' }}
-              onSave={() => onSaveSection('who')}
-              t={t}
-            />
-          </FieldSection>
-
-          <Separator />
-
-          {/* Location */}
-          <FieldSection>
-            <FieldLabel>{t('about.location.title')}</FieldLabel>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 mt-2">
-              <InlineEditText
+        <SettingsSection title={t('about.location.title')} icon={<MapPin className="size-4" />} iconColor="green">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div>
+              <FieldLabel htmlFor={cityId}>{t('about.location.city')}</FieldLabel>
+              <Input
+                id={cityId}
                 value={city}
-                onChange={next => onChange({ city: next })}
-                ariaLabel={t('about.location.city')}
-                editAriaLabel={t('about.location.editCityAriaLabel')}
+                onChange={e => onChange({ city: e.target.value })}
                 placeholder={t('about.location.city')}
+                className="mt-2"
               />
+            </div>
+            <div>
+              <FieldLabel>{t('about.location.countryPlaceholder')}</FieldLabel>
               <CountryCombobox
                 value={country}
                 onChange={next => onChange({ country: next })}
                 countries={props.countries}
                 placeholder={t('about.location.countryPlaceholder')}
-                className="w-full"
+                className="mt-2 w-full bg-input-background"
               />
             </div>
-            <FieldFooter
-              hint={t('about.location.description')}
-              dirty={!!dirtyByField.location}
-              status={saveStatusByField.location ?? { kind: 'idle' }}
-              onSave={() => onSaveSection('location')}
-              t={t}
-            />
-          </FieldSection>
+          </div>
+          <FieldFooter
+            hint={t('about.location.description')}
+            dirty={!!dirtyByField.location}
+            status={saveStatusByField.location ?? { kind: 'idle' }}
+            onSave={() => onSaveSection('location')}
+            t={t}
+          />
+        </SettingsSection>
 
-          <Separator />
-
-          {/* Tags */}
-          <FieldSection>
-            <FieldLabel>{t('about.tags.title')}</FieldLabel>
-            <TagsInput
-              value={tags}
-              onChange={next => onChange({ tags: next })}
-              placeholder={t('about.tags.placeholder')}
-              className="mt-2"
-            />
-            <FieldFooter
-              hint={t('about.tags.description')}
-              dirty={!!dirtyByField.tags}
-              status={saveStatusByField.tags ?? { kind: 'idle' }}
-              onSave={() => onSaveSection('tags')}
-              t={t}
-            />
-          </FieldSection>
-
-          <Separator />
-
-          {/* Classifications (D1, product#2161 design 01) */}
-          <FieldSection id="classifications">
-            <FieldLabel>{t('classifications.sectionTitle')}</FieldLabel>
-            {classifications.length > 0 && (
-              <div className="mt-4 space-y-4">
-                {classifications.map(entry => (
-                  <ClassificationEntryCard
-                    key={entry.id}
-                    entry={entry}
-                    selectionPending={classificationSelectionPendingIds.includes(entry.id)}
-                    onSelectValues={onSelectClassificationValues}
-                    onToggleDisplay={onToggleClassificationDisplay}
-                    onRequestRemove={onRequestRemoveClassification}
+        <SettingsSection
+          id="description"
+          title={t('about.sections.context')}
+          icon={<FileText className="size-4" />}
+          iconColor="orange"
+        >
+          <div className="space-y-6">
+            {(['what', 'why', 'who'] as const).map(field => (
+              <div key={field} id={field === 'what' ? undefined : field} className="scroll-mt-32">
+                <FieldLabel>{t(`about.${field}.title`)}</FieldLabel>
+                <div className="mt-2">
+                  <MarkdownEditor
+                    value={props[field]}
+                    onChange={next => onChange({ [field]: next })}
+                    maxLength={markdownMaxLengthByField?.[field]}
+                    placeholder={t(`about.${field}.placeholder`)}
+                    onImageUpload={onImageUpload}
+                    iframeAllowedUrls={iframeAllowedUrls}
+                    onError={onError}
                   />
-                ))}
+                </div>
+                <FieldFooter
+                  hint={t(`about.${field}.description`)}
+                  dirty={!!dirtyByField[field]}
+                  status={saveStatusByField[field] ?? { kind: 'idle' }}
+                  onSave={() => onSaveSection(field)}
+                  t={t}
+                />
               </div>
-            )}
-            {/* Below the list, per design 01 — Step A entry point. */}
-            <Button type="button" variant="outline" size="sm" className="mt-4" onClick={onAddClassification}>
-              <Plus className="size-3.5 mr-1.5" aria-hidden="true" />
-              {t('classifications.addButton')}
-            </Button>
+            ))}
+          </div>
+        </SettingsSection>
 
-            {/*
-             * Never dirty — each classification action commits on its own, immediately (FR-006a),
-             * so there is nothing to buffer and no manual Save button to show. Reusing FieldFooter
-             * here only surfaces the transient saving/saved feedback for the in-flight selection
-             * write (see `classificationSelectionPendingIds` above), the same status shape every
-             * other About section already uses.
-             */}
-            <FieldFooter
-              hint={t('classifications.sectionDescription')}
-              dirty={false}
-              status={saveStatusByField.classifications ?? { kind: 'idle' }}
-              onSave={() => {}}
-              t={t}
-            />
-          </FieldSection>
+        <SettingsSection title={t('about.tags.title')} icon={<Tag className="size-4" />} iconColor="amber">
+          <TagsInput
+            value={tags}
+            onChange={next => onChange({ tags: next })}
+            placeholder={t('about.tags.placeholder')}
+          />
+          <FieldFooter
+            hint={t('about.tags.description')}
+            dirty={!!dirtyByField.tags}
+            status={saveStatusByField.tags ?? { kind: 'idle' }}
+            onSave={() => onSaveSection('tags')}
+            t={t}
+          />
+        </SettingsSection>
 
-          <Separator />
+        {/* Classifications (D1, product#2161 design 01) */}
+        <SettingsSection
+          id="classifications"
+          title={t('classifications.sectionTitle')}
+          icon={<Tags className="size-4" />}
+          iconColor="purple"
+        >
+          <p className="text-caption text-muted-foreground">{t('classifications.sectionDescription')}</p>
+          {classifications.length > 0 && (
+            <div className="mt-4 space-y-3">
+              {classifications.map(entry => (
+                <ClassificationEntryCard
+                  key={entry.id}
+                  entry={entry}
+                  selectionPending={classificationSelectionPendingIds.includes(entry.id)}
+                  onSelectValues={onSelectClassificationValues}
+                  onToggleDisplay={onToggleClassificationDisplay}
+                  onRequestRemove={onRequestRemoveClassification}
+                />
+              ))}
+            </div>
+          )}
+          {/* Below the list, per design 01 — Step A entry point. */}
+          <Button type="button" variant="outline" size="sm" className="mt-4" onClick={onAddClassification}>
+            <Plus className="size-3.5 mr-1.5" aria-hidden="true" />
+            {t('classifications.addButton')}
+          </Button>
 
-          {/* References */}
-          <FieldSection id="references">
-            <ReferencesEditor
-              label={t('about.references.title')}
-              rows={references.map(r => ({ id: r.id, name: r.title, uri: r.uri, description: r.description }))}
-              onChange={onReferencesChange}
-              onFileUpload={onReferenceFileUpload}
-              uploadAccept={referenceUploadAccept}
-            />
-            <FieldFooter
-              hint={t('about.references.description')}
-              dirty={!!dirtyByField.references}
-              status={saveStatusByField.references ?? { kind: 'idle' }}
-              onSave={() => onSaveSection('references')}
-              t={t}
-            />
-          </FieldSection>
-        </div>
+          {/*
+           * Never dirty — each classification action commits on its own, immediately (FR-006a),
+           * so there is nothing to buffer and no manual Save button to show. Reusing FieldFooter
+           * here only surfaces the transient saving/saved feedback for the in-flight selection
+           * write (see `classificationSelectionPendingIds` above), the same status shape every
+           * other About section already uses.
+           */}
+          <FieldFooter
+            dirty={false}
+            status={saveStatusByField.classifications ?? { kind: 'idle' }}
+            onSave={() => {}}
+            t={t}
+          />
+        </SettingsSection>
 
-        {/* Preview */}
-        <div className="hidden min-w-0 lg:block">
-          <div className="sticky top-6">
-            <p className="text-label uppercase text-muted-foreground mb-3">{t('about.preview.label')}</p>
-            <SpaceCard space={previewCardToSpaceCardData(previewCard, level)} />
-            {/* Live Preview info */}
-            <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-border bg-muted/30 px-5 py-4">
-              <span className="mt-0.5 text-muted-foreground">ⓘ</span>
-              <div>
-                <p className="text-card-title text-foreground">{t('about.preview.livePreview.title')}</p>
-                <p className="text-body text-muted-foreground mt-1">{t('about.preview.livePreview.description')}</p>
-              </div>
+        <SettingsSection
+          id="references"
+          title={t('about.references.title')}
+          icon={<Link2 className="size-4" />}
+          iconColor="rose"
+        >
+          <ReferencesEditor
+            hideLabel={true}
+            rows={references.map(r => ({ id: r.id, name: r.title, uri: r.uri, description: r.description }))}
+            onChange={onReferencesChange}
+            onFileUpload={onReferenceFileUpload}
+            uploadAccept={referenceUploadAccept}
+          />
+          <FieldFooter
+            hint={t('about.references.description')}
+            dirty={!!dirtyByField.references}
+            status={saveStatusByField.references ?? { kind: 'idle' }}
+            onSave={() => onSaveSection('references')}
+            t={t}
+          />
+        </SettingsSection>
+      </div>
+
+      {/* Preview */}
+      <div className="hidden min-w-0 xl:block">
+        <div className="sticky top-32">
+          <p className="text-label uppercase text-muted-foreground mb-3">{t('about.preview.label')}</p>
+          <SpaceCard space={previewCardToSpaceCardData(previewCard, level)} />
+          {/* Live Preview info */}
+          <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-border bg-muted/30 px-5 py-4">
+            <span className="mt-0.5 text-muted-foreground">ⓘ</span>
+            <div>
+              <p className="text-card-title text-foreground">{t('about.preview.livePreview.title')}</p>
+              <p className="text-body text-muted-foreground mt-1">{t('about.preview.livePreview.description')}</p>
             </div>
           </div>
         </div>
@@ -449,16 +395,12 @@ function previewCardToSpaceCardData(preview: SpaceCardPreview, level: SpaceSetti
   };
 }
 
-function FieldSection({ id, children }: { id?: string; children: React.ReactNode }) {
-  return (
-    <div id={id} className="py-6 scroll-mt-32">
-      {children}
-    </div>
+function FieldLabel({ htmlFor, children }: { htmlFor?: string; children: React.ReactNode }) {
+  return htmlFor ? (
+    <Label htmlFor={htmlFor}>{children}</Label>
+  ) : (
+    <h4 className="text-body-emphasis leading-none">{children}</h4>
   );
-}
-
-function FieldLabel({ children }: { children: React.ReactNode }) {
-  return <h3 className="text-card-title">{children}</h3>;
 }
 
 function FieldHint({ children }: { children: React.ReactNode }) {
@@ -481,7 +423,7 @@ function FieldFooter({
   onSave,
   t,
 }: {
-  hint: string;
+  hint?: string;
   dirty: boolean;
   status: AboutSectionSaveStatus;
   onSave: () => void;

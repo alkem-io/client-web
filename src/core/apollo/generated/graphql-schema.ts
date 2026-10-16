@@ -12561,7 +12561,15 @@ export type CommunityApplicationsInvitationsQuery = {
               __typename?: 'Actor';
               id: string;
               type: ActorType;
-              profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  }
+                | undefined;
             };
             questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
             user?: { __typename?: 'User'; id: string; email: string } | undefined;
@@ -12578,7 +12586,15 @@ export type CommunityApplicationsInvitationsQuery = {
               __typename?: 'Actor';
               id: string;
               type: ActorType;
-              profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  }
+                | undefined;
             };
           }>;
           platformInvitations: Array<{
@@ -12604,7 +12620,15 @@ export type AdminCommunityApplicationFragment = {
     __typename?: 'Actor';
     id: string;
     type: ActorType;
-    profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        }
+      | undefined;
   };
   questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
   user?: { __typename?: 'User'; id: string; email: string } | undefined;
@@ -12622,7 +12646,15 @@ export type AdminCommunityInvitationFragment = {
     __typename?: 'Actor';
     id: string;
     type: ActorType;
-    profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -12638,7 +12670,15 @@ export type AdminCommunityCandidateMemberFragment = {
   __typename?: 'Actor';
   id: string;
   type: ActorType;
-  profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+  profile?:
+    | {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      }
+    | undefined;
 };
 
 export type UserPendingMembershipsQueryVariables = Exact<{ [key: string]: never }>;

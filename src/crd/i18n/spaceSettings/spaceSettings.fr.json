@@ -33,6 +33,7 @@
       "title": "Mise en page",
       "subtitle": "Personnalisez les onglets de navigation de votre Espace. Renommez, réorganisez et gérez les affectations de publications."
     },
+    "loading": "Chargement de la mise en page…",
     "discardChangesDialog": {
       "title": "Abandonner les modifications ?",
       "description": "Vos modifications de mise en page non enregistrées seront ramenées au dernier état enregistré. Cette action ne peut pas être annulée.",
@@ -44,6 +45,8 @@
       "menu": "Actions de la colonne",
       "drag": "Glisser pour réordonner la phase",
       "empty": "Aucune publication dans cette colonne pour le moment.",
+      "postCount_one": "{{count}} publication",
+      "postCount_other": "{{count}} publications",
       "activePhase": {
         "set": "Marquer comme phase active",
         "current": "Phase active (actuelle)",
@@ -218,10 +221,6 @@
     }
   },
   "community": {
-    "pageHeader": {
-      "title": "Communauté",
-      "subtitle": "Gérez les membres, les organisations et les contributeurs virtuels dans cet espace."
-    },
     "applications": {
       "title": "Candidatures en attente",
       "approve": "Approuver",
@@ -346,7 +345,6 @@
       "actions": "Actions",
       "empty": "Aucune organisation.",
       "remove": "Retirer l'organisation",
-      "description": "Aperçu de toutes les organisations membres et lead. Invitez une organisation à rejoindre l'espace.",
       "dropdown": {
         "viewProfile": "Voir le profil",
         "changeRole": "Changer le rôle",
@@ -371,7 +369,6 @@
       "actions": "Actions",
       "empty": "Aucun contributeur virtuel.",
       "remove": "Retirer le contributeur virtuel",
-      "description": "Gérez les agents IA et les bots participant à cet espace.",
       "add": "Ajouter un contributeur virtuel",
       "addExternal": "Inviter un contributeur virtuel externe",
       "addDialog": {
@@ -392,11 +389,12 @@
     },
     "applicationForm": {
       "title": "Formulaire de candidature",
-      "description": "Personnalisez les questions auxquelles les utilisateurs doivent répondre lorsqu'ils demandent à rejoindre cet espace."
+      "edit": "Modifier le formulaire de candidature",
+      "optional": "Facultatif",
+      "questionNumber": "Q{{number}}"
     },
     "guidelines": {
       "title": "Règles de la communauté",
-      "description": "Établissez des règles et des attentes concernant le comportement des membres.",
       "hint": "Affichées aux nouveaux membres lors de leur adhésion.",
       "placeholder": "Décrivez le code de conduite de votre espace…",
       "titleLabel": "Titre",
@@ -411,7 +409,9 @@
         "cancel": "Annuler"
       },
       "save": "Enregistrer les règles",
-      "saving": "Enregistrement…"
+      "saving": "Enregistrement…",
+      "edit": "Modifier les règles",
+      "empty": "Aucune règle de la communauté pour le moment."
     },
     "confirmRemove": {
       "confirm": "Confirmer",
@@ -469,16 +469,15 @@
         "invited": "Invité",
         "invite": "Inviter"
       }
+    },
+    "editDialog": {
+      "save": "Enregistrer",
+      "saving": "Enregistrement…"
     }
   },
   "subspaces": {
-    "pageHeader": {
-      "title": "Sous-espaces",
-      "subtitle": "Modifiez les sous-espaces de cet espace. Configurez les modèles par défaut et consultez tous les sous-espaces existants."
-    },
     "defaultTemplate": {
       "title": "Modèle de sous-espace par défaut",
-      "description": "Choisissez les paramètres par défaut qui s'appliqueront lors de la création d'un nouveau sous-espace dans cet espace.",
       "change": "Changer le modèle par défaut",
       "dialog": {
         "title": "Changer le modèle de sous-espace par défaut",
@@ -653,13 +652,12 @@
     }
   },
   "updates": {
-    "pageHeader": {
-      "title": "Actualités des leads",
-      "subtitle": "Publiez des annonces, des étapes clés et des mises à jour de progression visibles par tous les membres de l'espace."
+    "sections": {
+      "post": "Publier une mise à jour",
+      "published": "Mises à jour publiées"
     },
     "composer": {
       "new": "Nouvelle actualité",
-      "title": "Nouvelle actualité",
       "placeholder": "Écrivez votre actualité…",
       "publish": "Publier",
       "submitting": "Publication…",
@@ -761,13 +759,8 @@
     }
   },
   "settings": {
-    "pageHeader": {
-      "title": "Paramètres",
-      "subtitle": "Configurez la visibilité de votre espace, les politiques d'adhésion et les actions autorisées aux membres."
-    },
     "visibility": {
       "title": "Visibilité",
-      "description": "Contrôlez qui peut voir et accéder à cet espace",
       "public": "Public",
       "publicDescription": "Cet espace et son contenu sont visibles par tous sur la plateforme. Les utilisateurs ne peuvent contribuer que s'ils sont membres.",
       "private": "Privé",
@@ -776,7 +769,6 @@
     },
     "membership": {
       "title": "Adhésion",
-      "description": "Choisissez comment les utilisateurs rejoignent votre espace",
       "open": "Aucune candidature requise",
       "openDescription": "Tous les membres de l'espace peuvent rejoindre directement, sans que vous ayez à examiner leurs candidatures.",
       "openHint": "Idéal pour les espaces de collaboration publics et ouverts",
@@ -812,7 +804,6 @@
     },
     "allowedActions": {
       "title": "Actions autorisées",
-      "description": "Choisissez quelles actions les membres peuvent effectuer dans cet espace",
       "subspaceAdminInvitations": "Adhésion aux Subspaces",
       "memberCreatePosts": "Créer des publications",
       "videoCalls": "Appels vidéo",
@@ -850,9 +841,8 @@
     }
   },
   "storage": {
-    "pageHeader": {
-      "title": "Stockage",
-      "subtitle": "Parcourez et gérez les documents stockés dans cet espace."
+    "sections": {
+      "documents": "Documents"
     },
     "empty": "Aucun document stocké pour le moment.",
     "columns": {
@@ -871,12 +861,8 @@
     }
   },
   "account": {
-    "pageHeader": {
-      "title": "Compte",
-      "subtitle": "Vous trouvez ici tous vos espaces, contributeurs virtuels et autres ressources hébergées. Si vous avez des questions, n'hésitez pas à contacter l'équipe Alkemio."
-    },
     "url": {
-      "title": "URL",
+      "title": "URL de l'espace",
       "hint": "L'URL unique de cet espace. Contactez Alkemio pour la modifier.",
       "copy": "Copier l'URL",
       "copied": "URL copiée"
@@ -888,12 +874,10 @@
       "contact": "Pour les changements de statut, contactez l'équipe Alkemio."
     },
     "host": {
-      "title": "Informations sur l'hôte",
-      "description": "L'hôte est la personne ou l'organisation propriétaire de cet espace."
+      "title": "Informations sur l'hôte"
     },
     "plan": {
       "title": "Licence",
-      "description": "Détails de votre abonnement actuel à l'espace",
       "featuresHeading": "Fonctionnalités incluses",
       "daysLeft": "{{count}} jours restants",
       "changeLicense": "Changer de licence"
@@ -915,21 +899,20 @@
     }
   },
   "about": {
+    "sections": {
+      "identity": "Identité",
+      "visuals": "Visuels",
+      "context": "Contexte"
+    },
     "name": {
       "title": "Nom de l'espace",
-      "description": "Le nom public de votre espace.",
-      "ariaLabel": "Nom de l'espace",
-      "editAriaLabel": "Modifier le nom de l'espace"
+      "description": "Le nom public de votre espace."
     },
     "tagline": {
       "title": "Sous-titre",
-      "description": "Un court sous-titre affiché à côté du nom de l'espace.",
-      "ariaLabel": "Sous-titre",
-      "editAriaLabel": "Modifier le sous-titre"
+      "description": "Un court sous-titre affiché à côté du nom de l'espace."
     },
     "branding": {
-      "title": "Identité visuelle de l'espace",
-      "description": "Téléversez un avatar, une bannière de page (3840px) et une bannière de carte (416×256).",
       "noImage": "Aucune image",
       "upload": "Téléverser",
       "avatar": {
@@ -969,7 +952,6 @@
       "description": "La ville et le pays de cet espace.",
       "city": "Ville",
       "country": "Pays (code ISO)",
-      "editCityAriaLabel": "Modifier la ville",
       "countryPlaceholder": "Pays"
     },
     "what": {
@@ -1026,10 +1008,6 @@
       "saving": "Enregistrement…",
       "saved": "Enregistré",
       "retry": "Réessayer"
-    },
-    "pageHeader": {
-      "title": "À propos",
-      "subtitle": "Définissez l'objectif, la motivation et le public cible de votre espace."
     }
   },
   "classifications": {
@@ -1078,6 +1056,7 @@
       "selectedCount_other": "{{count}} sélectionnées",
       "actions": "Actions de classification : {{label}}",
       "selectValues": "Sélectionner des valeurs…",
+      "selectValue": "Sélectionner {{label}}",
       "deselectValue": "Désélectionner {{label}}"
     },
     "removedConcurrently": "Cette classification a été supprimée par quelqu'un d'autre. La liste a été actualisée."

@@ -25,7 +25,7 @@ Resolve every "how exactly does this work today?" question that the spec leaves 
 
 ## Decision 2 — Per-section save model (used by User Profile + Org Profile) — REWRITTEN per spec clarification Q4 (2026-05-06)
 
-**Decision**: Adopt the **045 About per-section explicit-save model verbatim**. Source of truth: `src/main/crdPages/topLevelPages/spaceSettings/about/useAboutTabData.ts` + `src/crd/components/space/settings/SpaceSettingsAboutView.tsx` + `@/crd/components/common/InlineEditText`. The earlier 5-state per-field state machine (pencil → check / × per field, `idle | editing | pending | idle-saved | editing-error`) is superseded.
+**Decision**: Adopt the **045 About per-section explicit-save model verbatim**. Source of truth: `src/main/crdPages/topLevelPages/spaceSettings/about/useAboutTabData.ts` + `src/crd/components/space/settings/SpaceSettingsAboutView.tsx` + ~~`@/crd/components/common/InlineEditText`~~ *(amended 2026-10-16: boxed `Input`s inside collapsible `SettingsSection` cards, following 045 About's redesign — implementation pending)*. The earlier 5-state per-field state machine (pencil → check / × per field, `idle | editing | pending | idle-saved | editing-error`) is superseded.
 
 **Section-level state** (held in the per-tab integration hook — `useUserProfileTabData` / `useOrgProfileTabData`):
 
@@ -64,9 +64,10 @@ type SectionState = {
 Avatar / logo upload is NOT a section — it commits IMMEDIATELY on upload completion (the file picker IS the commit, FR-024 / FR-093).
 
 **View binding** (per section):
-- `<InlineEditText value={values[k]} onChange={next => onChange({[k]: next})} />` (single-line) OR `<MarkdownEditor>` for Bio / Description OR `<CountryCombobox>` for Country OR one `<TagsField>` instance per profile tagset (User: `Skills` + `Keywords`; Org: `Keywords` + `Capabilities`) — never a single unified "Tags" input.
+- ~~`<InlineEditText value={values[k]} onChange={next => onChange({[k]: next})} />`~~ `<Input value={values[k]} onChange={e => onChange({[k]: e.target.value})} />` (single-line; *amended 2026-10-16 — boxed input, implementation pending*) OR `<MarkdownEditor>` for Bio / Description OR `<CountryCombobox>` for Country OR one `<TagsField>` instance per profile tagset (User: `Skills` + `Keywords`; Org: `Keywords` + `Capabilities`) — never a single unified "Tags" input.
 - `<FieldFooter dirty={dirtyByField[k]} status={saveStatusByField[k] ?? {kind:'idle'}} onSave={() => onSaveSection(k)} />`.
 - The `FieldFooter` is the only commit affordance — there is no per-field pencil / check / × icon.
+- *(Added 2026-10-16 — implementation pending)* Sections are wrapped in collapsible `SettingsSection` cards (all open by default, collapsing purely visual), as on 045 About.
 
 **State transitions** (per section):
 - (any) → `saving` on `onSaveSection` invocation.

@@ -11,7 +11,7 @@ Migrate the Space Settings area from MUI (`src/domain/spaceAdmin/*`) to the CRD 
 
 Per-tab save semantics:
 
-- **About** — per-field autosave. 2-second idle debounce on text fields; file uploads autosave immediately. Per-field spinner / "Saved!" / error indicator next to each field label. No Save button, no Reset button.
+- **About** — ~~per-field autosave. 2-second idle debounce on text fields; file uploads autosave immediately. Per-field spinner / "Saved!" / error indicator next to each field label. No Save button, no Reset button.~~ *(Amended 2026-10-16 — the autosave never shipped:)* per-section Save via the shared `FieldFooter` (Save while dirty → saving → "Saved!" / error + Retry); visual uploads commit on file pick, classifications per action; no tab-wide Save / Reset bar; unsaved sections participate in the dirty-tab guard. The body is a stack of collapsible `SettingsSection` cards (all open) with boxed inputs — research Decision 4b.
 - **Layout** — local dirty buffer with a sticky Save Changes / Reset action bar. Reset reverts to the last backend-known state. Zero mutations before Save is clicked.
 - **Community / Subspaces / Templates / Storage / Settings / Account** — per-action commit (no tab-wide save bar).
 
@@ -25,7 +25,7 @@ Layout specifics: items are **callouts/posts** (never "pages"); they can only be
 **Testing**: Vitest with jsdom (`pnpm vitest run`)
 **Target Platform**: Web SPA (Vite dev server on localhost:3001)
 **Project Type**: Web application (frontend only — no backend changes)
-**Performance Goals**: Layout Save Changes round-trip under 60s; About per-field autosave (last keystroke → "Saved!" indicator) under 3s (both SC-001); tab switch under 200ms; Layout drag response under 100ms
+**Performance Goals**: Layout Save Changes round-trip under 60s; About per-section save (Save click → "Saved!" indicator; *amended 2026-10-16 — was per-field autosave from last keystroke*) under 3s (both SC-001); tab switch under 200ms; Layout drag response under 100ms
 **Constraints**: Zero MUI / Emotion imports in `src/crd/` and `src/main/crdPages/`; parity with MUI Space Admin for every action (SC-004); all 8 tabs must ship together; CRD components MUST NOT import the GraphQL `SpaceLevel` enum — every level prop is a `'L0' | 'L1' | 'L2'` string union per `src/crd/CLAUDE.md` Rule 4
 **Scale/Scope**: 1 settings shell, 8 tabs (each its own P1 user story), 3 levels (L0 / L1 / L2) sharing the same shell, ~30 new CRD components, 8 data mappers, 2 new shared helpers (`useSettingsScope`, `useVisibleSettingsTabs`), 1 new dialog (`AddPhaseDialog`), 1 new i18n namespace (`crd-spaceSettings`), ~25 existing Apollo mutations/queries reused (including `useInnovationFlowSettings`, `useCommunityAdmin`, `useCommunityPolicyChecker` for L1 / L2 capabilities)
 
@@ -88,7 +88,8 @@ src/
 │   │   ├── dialogs/
 │   │   │   └── ConfirmationDialog.tsx            # EXISTING — extended, not duplicated, to cover delete + discard variants
 │   │   ├── common/
-│   │   │   ├── InlineEditText.tsx                # NEW — shared inline-edit primitive used by Layout column titles and column descriptions only (callouts are read-only here)
+│   │   │   ├── InlineEditText.tsx                # NEW — shared inline-edit primitive used by Layout column titles and column descriptions only (callouts are read-only here; never on About)
+│   │   │   ├── SettingsSection.tsx               # NEW (2026-10-16) — collapsible section card (icon tile, h3 title, description, chevron; open by default) for the About tab
 │   │   │   └── MarkdownContent.tsx               # EXISTING — reused for read-only guidelines
 │   │   └── space/
 │   │       └── settings/                         # NEW — per-tab presentational components
@@ -126,7 +127,7 @@ src/
 │               ├── useSpaceSettingsTab.ts        # URL <-> active tab sync; clamps to visible tabs and redirects hidden tabs to 'about'
 │               ├── useSettingsScope.ts           # NEW — level-aware ID resolution (L0 → useSpace; L1/L2 → useSubSpace); returns 'L0' | 'L1' | 'L2' string union per CRD Rule 4
 │               ├── useVisibleSettingsTabs.ts     # NEW — getVisibleSettingsTabs(level) + useSettingsTabDescriptors(level)
-│               ├── useDirtyTabGuard.ts           # Blocks tab switch + page nav while Layout is dirty; also flushes About's pending debounced autosaves on tab switch
+│               ├── useDirtyTabGuard.ts           # Blocks tab switch + page nav while Layout or About (unsaved section) is dirty — amended 2026-10-16, there is no About flush
 │               ├── about/
 │               │   ├── useAboutTabData.ts        # Form buffer + mutations
 │               │   └── aboutMapper.ts

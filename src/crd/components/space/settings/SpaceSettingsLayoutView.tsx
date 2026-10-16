@@ -20,6 +20,7 @@ import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { AddPhaseDialog } from './AddPhaseDialog';
 import { LayoutCalloutRowPreview } from './LayoutCalloutRow';
+import { LayoutColumnsSkeleton } from './LayoutColumnsSkeleton';
 import { LayoutPoolColumn } from './LayoutPoolColumn';
 import type {
   ColumnMenuActions,
@@ -80,6 +81,8 @@ export type SpaceSettingsLayoutViewProps = {
    * The page header (buttons) stays visible so the user still has context.
    */
   isReplacingFlow?: boolean;
+  /** True until the innovation flow (states + their callouts) has loaded — renders skeleton columns. */
+  loading?: boolean;
   /** Character limit of a column (phase / tab) description. */
   columnDescriptionMaxLength?: number;
   className?: string;
@@ -115,6 +118,7 @@ export function SpaceSettingsLayoutView({
   isStructureMutating = false,
   headerActionsSlot,
   isReplacingFlow = false,
+  loading = false,
   className,
   columnDescriptionMaxLength,
   onImageUpload,
@@ -140,6 +144,10 @@ export function SpaceSettingsLayoutView({
   const canAddPhase =
     canManagePhases && columns.length < maximumNumberOfStates && !isStructureMutating && !isReplacingFlow;
   const canReorderColumns = level !== 'L0' && !!onReorderColumns;
+  // While anything is writing the layout, the buffer must not change: Save computes its
+  // mutations from the buffer as it was when clicked and then marks that buffer clean, so a
+  // drag or Move-to landing mid-save would be silently treated as saved.
+  const locked = saveBar.kind === 'saving' || isStructureMutating || isReplacingFlow;
   // Sortable column items are prefixed so they don't collide with the per-column
   // droppable zones (those keep `column.id` as their droppable id — see
   // LayoutPoolColumn — so the existing callout cross-column move handler keeps
@@ -246,7 +254,7 @@ export function SpaceSettingsLayoutView({
               variant="outline"
               size="sm"
               className="gap-2 shrink-0"
-              disabled={!canAddPhase}
+              disabled={loading || !canAddPhase}
               onClick={() => setAddPhaseOpen(true)}
             >
               <Plus aria-hidden="true" className="size-4" />
@@ -257,7 +265,7 @@ export function SpaceSettingsLayoutView({
       </div>
 
       {/* Columns + Save bar inside a bordered container */}
-      <div className="rounded-xl border p-4 relative">
+      <div className="relative">
         {isReplacingFlow && (
           <output
             aria-live="polite"
@@ -267,58 +275,65 @@ export function SpaceSettingsLayoutView({
             <p className="text-body-emphasis">{t('layout.replaceFlow.loading')}</p>
           </output>
         )}
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragStart={handleDragStart}
-          onDragOver={handleDragOver}
-          onDragEnd={handleDragEnd}
-          onDragCancel={handleDragCancel}
-        >
-          <SortableContext items={sortableColumnIds} strategy={rectSortingStrategy}>
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 items-start">
-              {columns.map(column => {
-                const otherColumns = columns.filter(c => c.id !== column.id).map(c => ({ id: c.id, title: c.title }));
-                return (
-                  <LayoutPoolColumn
-                    key={column.id}
-                    column={column}
-                    otherColumns={otherColumns}
-                    showDescription={true}
-                    onMoveToColumn={onMoveToColumn}
-                    onViewPost={onViewPost}
-                    columnMenuActions={columnMenuActions}
-                    entityNoun={entityNoun}
-                    draggable={canReorderColumns}
-                    // Sidebar widget configuration is L0-only for now — subspace phases
-                    // hide the section in the Layout dialog (stored values untouched).
-                    sidebarSettingsEnabled={level === 'L0'}
-                    descriptionMaxLength={columnDescriptionMaxLength}
-                    onImageUpload={onImageUpload}
-                    iframeAllowedUrls={iframeAllowedUrls}
-                    onError={onError}
-                  />
-                );
-              })}
-            </div>
-          </SortableContext>
-          <DragOverlay dropAnimation={null}>
-            {activeCallout ? <LayoutCalloutRowPreview callout={activeCallout} showDescription={true} /> : null}
-          </DragOverlay>
-        </DndContext>
+        {loading ? (
+          <LayoutColumnsSkeleton label={t('layout.loading')} className="min-h-[60vh]" />
+        ) : (
+          <DndContext
+            sensors={locked ? [] : sensors}
+            collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
+            onDragOver={handleDragOver}
+            onDragEnd={handleDragEnd}
+            onDragCancel={handleDragCancel}
+          >
+            <SortableContext items={sortableColumnIds} strategy={rectSortingStrategy}>
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 items-start">
+                {columns.map(column => {
+                  const otherColumns = columns.filter(c => c.id !== column.id).map(c => ({ id: c.id, title: c.title }));
+                  return (
+                    <LayoutPoolColumn
+                      key={column.id}
+                      column={column}
+                      otherColumns={otherColumns}
+                      showDescription={true}
+                      onMoveToColumn={onMoveToColumn}
+                      onViewPost={onViewPost}
+                      columnMenuActions={columnMenuActions}
+                      entityNoun={entityNoun}
+                      draggable={canReorderColumns}
+                      locked={locked}
+                      // Sidebar widget configuration is L0-only for now — subspace phases
+                      // hide the section in the Layout dialog (stored values untouched).
+                      sidebarSettingsEnabled={level === 'L0'}
+                      descriptionMaxLength={columnDescriptionMaxLength}
+                      onImageUpload={onImageUpload}
+                      iframeAllowedUrls={iframeAllowedUrls}
+                      onError={onError}
+                    />
+                  );
+                })}
+              </div>
+            </SortableContext>
+            <DragOverlay dropAnimation={null}>
+              {activeCallout ? <LayoutCalloutRowPreview callout={activeCallout} showDescription={true} /> : null}
+            </DragOverlay>
+          </DndContext>
+        )}
 
-        <SpaceSettingsSaveBar
-          // Lock both Save and Reset while a structural mutation (phase
-          // create/delete) or a flow replacement is in flight: the snapshot is
-          // being reseeded and a Save click in that window would race against
-          // the refetch.
-          state={isStructureMutating || isReplacingFlow ? { kind: 'saving' } : saveBar}
-          onSave={onSave}
-          onDiscard={onDiscardChanges}
-          saveLabel={t('saveBar.save')}
-          discardLabel={t('saveBar.discard')}
-          savingLabel={t('saveBar.saving')}
-        />
+        {!loading && (
+          <SpaceSettingsSaveBar
+            // Lock both Save and Reset while a structural mutation (phase
+            // create/delete) or a flow replacement is in flight: the snapshot is
+            // being reseeded and a Save click in that window would race against
+            // the refetch.
+            state={isStructureMutating || isReplacingFlow ? { kind: 'saving' } : saveBar}
+            onSave={onSave}
+            onDiscard={onDiscardChanges}
+            saveLabel={t('saveBar.save')}
+            discardLabel={t('saveBar.discard')}
+            savingLabel={t('saveBar.saving')}
+          />
+        )}
       </div>
 
       {canManagePhases && onCreatePhase && (
