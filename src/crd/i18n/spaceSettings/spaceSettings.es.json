@@ -33,6 +33,7 @@
       "title": "Diseño",
       "subtitle": "Personaliza las pestañas de navegación de tu Espacio. Cambia el nombre, reordena y gestiona las asignaciones de publicaciones."
     },
+    "loading": "Cargando el diseño…",
     "discardChangesDialog": {
       "title": "¿Descartar cambios?",
       "description": "Tus cambios de Diseño no guardados se revertirán al último estado guardado. Esta acción no se puede deshacer.",
@@ -44,6 +45,8 @@
       "menu": "Acciones de columna",
       "drag": "Arrastra para reordenar la fase",
       "empty": "Aún no hay publicaciones en esta columna.",
+      "postCount_one": "{{count}} publicación",
+      "postCount_other": "{{count}} publicaciones",
       "activePhase": {
         "set": "Marcar como fase activa",
         "current": "Fase activa (actual)",
@@ -218,10 +221,6 @@
     }
   },
   "community": {
-    "pageHeader": {
-      "title": "Comunidad",
-      "subtitle": "Gestiona miembros, organizaciones y contribuidores virtuales en este espacio."
-    },
     "applications": {
       "title": "Solicitudes pendientes",
       "approve": "Aprobar",
@@ -346,7 +345,6 @@
       "actions": "Acciones",
       "empty": "No hay organizaciones.",
       "remove": "Eliminar organización",
-      "description": "Resumen de todas las organizaciones miembro y lead. Invita a una organización a unirse.",
       "dropdown": {
         "viewProfile": "Ver perfil",
         "changeRole": "Cambiar rol",
@@ -371,7 +369,6 @@
       "actions": "Acciones",
       "empty": "No hay contribuidores virtuales.",
       "remove": "Eliminar contribuidor virtual",
-      "description": "Gestiona los agentes y bots de IA que participan en este espacio.",
       "add": "Añadir contribuidor virtual",
       "addExternal": "Invitar contribuidor virtual externo",
       "addDialog": {
@@ -392,11 +389,12 @@
     },
     "applicationForm": {
       "title": "Formulario de solicitud",
-      "description": "Personaliza las preguntas que los usuarios deben responder al solicitar unirse a este espacio."
+      "edit": "Editar formulario de solicitud",
+      "optional": "Opcional",
+      "questionNumber": "P{{number}}"
     },
     "guidelines": {
       "title": "Normas de la comunidad",
-      "description": "Establece reglas y expectativas sobre el comportamiento de los miembros.",
       "hint": "Se muestran a los nuevos miembros al unirse.",
       "placeholder": "Describe el código de conducta de tu espacio…",
       "titleLabel": "Título",
@@ -411,7 +409,9 @@
         "cancel": "Cancelar"
       },
       "save": "Guardar normas",
-      "saving": "Guardando…"
+      "saving": "Guardando…",
+      "edit": "Editar normas",
+      "empty": "Todavía no hay normas de la comunidad."
     },
     "confirmRemove": {
       "confirm": "Confirmar",
@@ -469,6 +469,10 @@
         "invited": "Invitado",
         "invite": "Invitar"
       }
+    },
+    "editDialog": {
+      "save": "Guardar",
+      "saving": "Guardando…"
     }
   },
   "subspaces": {
@@ -915,21 +919,20 @@
     }
   },
   "about": {
+    "sections": {
+      "identity": "Identidad",
+      "visuals": "Elementos visuales",
+      "context": "Contexto"
+    },
     "name": {
       "title": "Nombre del espacio",
-      "description": "El nombre público de tu espacio.",
-      "ariaLabel": "Nombre del espacio",
-      "editAriaLabel": "Editar el nombre del espacio"
+      "description": "El nombre público de tu espacio."
     },
     "tagline": {
       "title": "Subtítulo",
-      "description": "Un subtítulo corto que se muestra junto al nombre del espacio.",
-      "ariaLabel": "Subtítulo",
-      "editAriaLabel": "Editar el subtítulo"
+      "description": "Un subtítulo corto que se muestra junto al nombre del espacio."
     },
     "branding": {
-      "title": "Branding del espacio",
-      "description": "Sube un avatar, un banner de página (3840px) y un banner de tarjeta (416×256).",
       "noImage": "Sin imagen",
       "upload": "Subir",
       "avatar": {
@@ -969,7 +972,6 @@
       "description": "La ciudad y el país de este espacio.",
       "city": "Ciudad",
       "country": "País (código ISO)",
-      "editCityAriaLabel": "Editar la ciudad",
       "countryPlaceholder": "País"
     },
     "what": {
@@ -1026,10 +1028,6 @@
       "saving": "Guardando…",
       "saved": "Guardado",
       "retry": "Reintentar"
-    },
-    "pageHeader": {
-      "title": "Acerca de",
-      "subtitle": "Define el propósito, la motivación y el público objetivo de tu espacio."
     }
   },
   "classifications": {
@@ -1078,6 +1076,7 @@
       "selectedCount_other": "{{count}} seleccionados",
       "actions": "Acciones de clasificación: {{label}}",
       "selectValues": "Seleccionar valores…",
+      "selectValue": "Seleccionar {{label}}",
       "deselectValue": "Deseleccionar {{label}}"
     },
     "removedConcurrently": "Esta clasificación fue eliminada por otra persona. La lista se ha actualizado."

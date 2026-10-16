@@ -36,6 +36,11 @@ export type CommunityGuidelinesEditorProps = {
   onReferenceFileUpload?: (file: File) => Promise<string | null>;
   /** `accept` attribute for the references file picker. */
   referenceUploadAccept?: string;
+  /**
+   * Omit the built-in template buttons and the hint + Save row — for hosts that provide their own
+   * (e.g. a dialog with template actions in its header and Save in its footer).
+   */
+  hideActions?: boolean;
 } & MarkdownUploadProps;
 
 /**
@@ -54,6 +59,7 @@ export function CommunityGuidelinesEditor({
   onSaveAsTemplate,
   onReferenceFileUpload,
   referenceUploadAccept,
+  hideActions = false,
   onImageUpload,
   iframeAllowedUrls,
   onError,
@@ -70,7 +76,7 @@ export function CommunityGuidelinesEditor({
 
   return (
     <div className="flex flex-col gap-4">
-      {(onApplyTemplate || onSaveAsTemplate) && (
+      {!hideActions && (onApplyTemplate || onSaveAsTemplate) && (
         <div className="flex flex-wrap items-center justify-end gap-2">
           {onApplyTemplate && (
             <Button type="button" variant="outline" size="sm" onClick={onApplyTemplate} disabled={submitting}>
@@ -113,22 +119,24 @@ export function CommunityGuidelinesEditor({
         uploadAccept={referenceUploadAccept}
       />
 
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-caption text-muted-foreground">{t('community.guidelines.hint')}</p>
-        <Button type="button" size="sm" onClick={onSave} disabled={!canSave} aria-busy={submitting}>
-          {submitting ? (
-            <>
-              <Loader2 aria-hidden="true" className="mr-1.5 size-4 animate-spin" />
-              {t('community.guidelines.saving')}
-            </>
-          ) : (
-            <>
-              <Save aria-hidden="true" className="mr-1.5 size-4" />
-              {t('community.guidelines.save')}
-            </>
-          )}
-        </Button>
-      </div>
+      {!hideActions && (
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-caption text-muted-foreground">{t('community.guidelines.hint')}</p>
+          <Button type="button" size="sm" onClick={onSave} disabled={!canSave} aria-busy={submitting}>
+            {submitting ? (
+              <>
+                <Loader2 aria-hidden="true" className="mr-1.5 size-4 animate-spin" />
+                {t('community.guidelines.saving')}
+              </>
+            ) : (
+              <>
+                <Save aria-hidden="true" className="mr-1.5 size-4" />
+                {t('community.guidelines.save')}
+              </>
+            )}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

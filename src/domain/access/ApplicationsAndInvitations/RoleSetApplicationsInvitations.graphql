@@ -64,5 +64,9 @@ fragment AdminCommunityCandidateMember on Actor {
     id
     displayName
     url
+    avatar: visual(type: AVATAR) {
+      id
+      uri
+    }
   }
 }

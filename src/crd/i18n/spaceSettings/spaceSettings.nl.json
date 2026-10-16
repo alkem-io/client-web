@@ -33,6 +33,7 @@
       "title": "Layout",
       "subtitle": "Pas de navigatietabbladen van je Space aan. Hernoem, herorden en beheer toewijzingen van Posts."
     },
+    "loading": "Layout laden…",
     "discardChangesDialog": {
       "title": "Wijzigingen verwerpen?",
       "description": "Je niet-opgeslagen Layout-wijzigingen worden teruggezet naar de laatst opgeslagen staat. Dit kan niet ongedaan worden gemaakt.",
@@ -44,6 +45,8 @@
       "menu": "Kolomacties",
       "drag": "Sleep om de fase te herschikken",
       "empty": "Nog geen Posts in deze kolom.",
+      "postCount_one": "{{count}} Post",
+      "postCount_other": "{{count}} Posts",
       "activePhase": {
         "set": "Markeer als actieve fase",
         "current": "Actieve fase (huidige)",
@@ -218,10 +221,6 @@
     }
   },
   "community": {
-    "pageHeader": {
-      "title": "Community",
-      "subtitle": "Beheer leden, organisaties en Virtual Contributors in deze Space."
-    },
     "applications": {
       "title": "Lopende aanvragen",
       "approve": "Goedkeuren",
@@ -346,7 +345,6 @@
       "actions": "Acties",
       "empty": "Geen organisaties.",
       "remove": "Organisatie verwijderen",
-      "description": "Overzicht van alle leden- en Lead-organisaties. Nodig een organisatie uit om deel te nemen.",
       "dropdown": {
         "viewProfile": "Profiel bekijken",
         "changeRole": "Rol wijzigen",
@@ -371,7 +369,6 @@
       "actions": "Acties",
       "empty": "Geen Virtual Contributors.",
       "remove": "Virtual Contributor verwijderen",
-      "description": "Beheer AI-agents en bots die deelnemen aan deze Space.",
       "add": "Virtual Contributor toevoegen",
       "addExternal": "Externe Virtual Contributor uitnodigen",
       "addDialog": {
@@ -392,11 +389,12 @@
     },
     "applicationForm": {
       "title": "Aanvraagformulier",
-      "description": "Pas de vragen aan die gebruikers moeten beantwoorden wanneer ze lid willen worden van deze Space."
+      "edit": "Aanvraagformulier bewerken",
+      "optional": "Optioneel",
+      "questionNumber": "V{{number}}"
     },
     "guidelines": {
       "title": "Communityrichtlijnen",
-      "description": "Stel regels en verwachtingen voor het gedrag van leden op.",
       "hint": "Wordt aan nieuwe leden getoond bij hun lidmaatschap.",
       "placeholder": "Beschrijf de gedragscode van je Space…",
       "titleLabel": "Titel",
@@ -411,7 +409,9 @@
         "cancel": "Annuleren"
       },
       "save": "Richtlijnen opslaan",
-      "saving": "Opslaan…"
+      "saving": "Opslaan…",
+      "edit": "Richtlijnen bewerken",
+      "empty": "Nog geen communityrichtlijnen."
     },
     "confirmRemove": {
       "confirm": "Bevestigen",
@@ -469,6 +469,10 @@
         "invited": "Uitgenodigd",
         "invite": "Uitnodigen"
       }
+    },
+    "editDialog": {
+      "save": "Opslaan",
+      "saving": "Opslaan…"
     }
   },
   "subspaces": {
@@ -915,21 +919,20 @@
     }
   },
   "about": {
+    "sections": {
+      "identity": "Identiteit",
+      "visuals": "Visuele elementen",
+      "context": "Context"
+    },
     "name": {
       "title": "Naam van de Space",
-      "description": "De openbare naam van je Space.",
-      "ariaLabel": "Naam van de Space",
-      "editAriaLabel": "Naam van de Space bewerken"
+      "description": "De openbare naam van je Space."
     },
     "tagline": {
       "title": "Ondertitel",
-      "description": "Een korte ondertitel die naast de Space-naam wordt weergegeven.",
-      "ariaLabel": "Ondertitel",
-      "editAriaLabel": "Ondertitel bewerken"
+      "description": "Een korte ondertitel die naast de Space-naam wordt weergegeven."
     },
     "branding": {
-      "title": "Branding van de Space",
-      "description": "Upload een avatar, een paginabanner (3840px breed) en een kaartbanner (416×256).",
       "noImage": "Geen afbeelding",
       "upload": "Uploaden",
       "avatar": {
@@ -969,7 +972,6 @@
       "description": "De stad en het land van deze Space.",
       "city": "Stad",
       "country": "Land (ISO-code)",
-      "editCityAriaLabel": "Stad bewerken",
       "countryPlaceholder": "Land"
     },
     "what": {
@@ -1026,10 +1028,6 @@
       "saving": "Opslaan…",
       "saved": "Opgeslagen",
       "retry": "Opnieuw proberen"
-    },
-    "pageHeader": {
-      "title": "Over",
-      "subtitle": "Definieer het doel, de motivatie en het doelpubliek van je Space."
     }
   },
   "classifications": {
@@ -1078,6 +1076,7 @@
       "selectedCount_other": "{{count}} geselecteerd",
       "actions": "Classificatie-acties: {{label}}",
       "selectValues": "Waarden selecteren…",
+      "selectValue": "{{label}} selecteren",
       "deselectValue": "{{label}} deselecteren"
     },
     "removedConcurrently": "Deze classificatie is door iemand anders verwijderd. De lijst is vernieuwd."

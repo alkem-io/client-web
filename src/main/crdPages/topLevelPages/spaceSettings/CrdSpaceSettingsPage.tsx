@@ -15,9 +15,7 @@ import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { AddCommunityMemberDialog } from '@/crd/components/space/settings/AddCommunityMemberDialog';
-import { ApplicationFormEditor } from '@/crd/components/space/settings/ApplicationFormEditor';
 import { ChangeDefaultSubspaceTemplateDialog } from '@/crd/components/space/settings/ChangeDefaultSubspaceTemplateDialog';
-import { CommunityGuidelinesEditor } from '@/crd/components/space/settings/CommunityGuidelinesEditor';
 import { MemberSettingsDialog } from '@/crd/components/space/settings/MemberSettingsDialog';
 import type { MemberSettingsSubject } from '@/crd/components/space/settings/memberSettingsTypes';
 import { SpaceSettingsAboutView } from '@/crd/components/space/settings/SpaceSettingsAboutView';
@@ -44,6 +42,8 @@ import { LayoutReplaceFlowConnector } from '../../space/innovationFlow/LayoutRep
 import { useAboutTabData } from './about/useAboutTabData';
 import { useClassificationPicker } from './about/useClassificationPicker';
 import { useAccountTabData } from './account/useAccountTabData';
+import { ApplicationFormSection } from './community/ApplicationFormSection';
+import { CommunityGuidelinesSection } from './community/CommunityGuidelinesSection';
 import { MembershipDetailDialogConnector, type ViewingMembership } from './community/MembershipDetailDialogConnector';
 import { useAddVirtualContributorDialog } from './community/useAddCommunityMemberDialog';
 import useCommunityActionPermissions from './community/useCommunityActionPermissions';
@@ -399,7 +399,7 @@ export default function CrdSpaceSettingsPage() {
     try {
       if (about.isDirty) await about.onSaveAll();
       if (layout.isDirty) await layout.onSave();
-      if (applicationForm.isDirty) applicationForm.onSave();
+      if (applicationForm.isDirty) void applicationForm.onSave();
       if (updatesTab.isDirty) await updatesTab.onSubmit();
     } catch {
       // A save failed — keep the dialog open so the user can retry or discard.
@@ -440,8 +440,17 @@ export default function CrdSpaceSettingsPage() {
   const bootstrapping = scopeLoading || !spaceId;
 
   return (
-    <div className="flex flex-col gap-4 pt-6">
-      <div className="rounded-xl border bg-card p-6 pb-24">
+    <div className="flex flex-col gap-4 pt-2">
+      {/* About, Layout and Community lay out their own cards; the other tabs still sit in one shared card. */}
+      <div
+        className={
+          activeTab === 'about' || activeTab === 'community'
+            ? 'pb-12'
+            : activeTab === 'layout'
+              ? 'pb-24'
+              : 'rounded-xl border bg-card p-6 pb-24'
+        }
+      >
         {bootstrapping ? (
           <LoadingSpinner />
         ) : (
@@ -492,6 +501,9 @@ export default function CrdSpaceSettingsPage() {
                 canManageTabs={true}
                 entityNoun={level === 'L0' ? 'tab' : 'phase'}
                 columns={layout.columns}
+                // The buffer seeds a render after the query settles, so an empty, error-free
+                // column list is still loading (a flow always has at least one state).
+                loading={layout.loading || (layout.columns.length === 0 && !layout.error)}
                 saveBar={layout.saveBar}
                 onReorder={layout.onReorder}
                 onReorderColumns={layout.onReorderColumns}
@@ -546,36 +558,18 @@ export default function CrdSpaceSettingsPage() {
                 pendingOrganizationInvitations={community.pendingOrganizationInvitations}
                 applicationFormSlot={
                   roleSetId ? (
-                    <ApplicationFormEditor
-                      description={applicationForm.description}
-                      questions={applicationForm.questions}
-                      loading={applicationForm.loading}
-                      canSave={applicationForm.canSave}
-                      onDescriptionChange={applicationForm.onDescriptionChange}
-                      onQuestionChange={applicationForm.onQuestionChange}
-                      onQuestionRequiredChange={applicationForm.onQuestionRequiredChange}
-                      onQuestionAdd={applicationForm.onQuestionAdd}
-                      onQuestionDelete={applicationForm.onQuestionDelete}
-                      onQuestionMoveUp={applicationForm.onQuestionMoveUp}
-                      onQuestionMoveDown={applicationForm.onQuestionMoveDown}
-                      onSave={applicationForm.onSave}
+                    <ApplicationFormSection
+                      form={applicationForm}
                       onExportApplications={csvExport.exportApplications}
                       exportDisabled={csvExport.exportDisabled}
-                      onImageUpload={md.onImageUpload}
-                      iframeAllowedUrls={md.iframeAllowedUrls}
-                      onError={md.onError}
+                      markdown={md}
                     />
                   ) : undefined
                 }
                 communityGuidelinesSlot={
                   communityGuidelinesId ? (
-                    <CommunityGuidelinesEditor
-                      value={communityGuidelines.value}
-                      loading={communityGuidelines.loading}
-                      submitting={communityGuidelines.submitting}
-                      canSave={communityGuidelines.canSave}
-                      onChange={communityGuidelines.onChange}
-                      onSave={() => void communityGuidelines.onSave()}
+                    <CommunityGuidelinesSection
+                      guidelines={communityGuidelines}
                       onApplyTemplate={openGuidelinesTemplatePicker}
                       onSaveAsTemplate={() =>
                         saveAs.openSaveAs({
@@ -585,11 +579,7 @@ export default function CrdSpaceSettingsPage() {
                           references: communityGuidelines.value.references,
                         })
                       }
-                      onImageUpload={md.onImageUpload}
-                      iframeAllowedUrls={md.iframeAllowedUrls}
-                      onError={md.onError}
-                      onReferenceFileUpload={communityGuidelines.onReferenceFileUpload}
-                      referenceUploadAccept={communityGuidelines.referenceUploadAccept}
+                      markdown={md}
                     />
                   ) : undefined
                 }
