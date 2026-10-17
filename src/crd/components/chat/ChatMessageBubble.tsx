@@ -9,7 +9,29 @@ import { VirtualContributorBadge } from '@/crd/components/common/VirtualContribu
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { initials } from './initials';
+import type { GroupPosition } from './messageRuns';
 import type { ChatMessage } from './types';
+
+/**
+ * Bubble corners per position in a group. The tail corner (small, on the
+ * sender's side) sits at the bottom of a lone bubble; inside a group the
+ * corners where bubbles meet go small so the group reads as one block, and the
+ * last bubble gets its round bottom corner back.
+ */
+const GROUP_CORNERS: Record<'own' | 'other', Record<GroupPosition, string>> = {
+  other: {
+    single: 'rounded-bl-sm',
+    first: 'rounded-bl-sm',
+    middle: 'rounded-tl-sm rounded-bl-sm',
+    last: 'rounded-tl-sm',
+  },
+  own: {
+    single: 'rounded-br-sm',
+    first: 'rounded-br-sm',
+    middle: 'rounded-tr-sm rounded-br-sm',
+    last: 'rounded-tr-sm',
+  },
+};
 
 type ChatMessageBubbleProps = {
   message: ChatMessage;
@@ -19,6 +41,13 @@ type ChatMessageBubbleProps = {
   showAvatar?: boolean;
   /** Reserve the left avatar gutter (group conversations only — indents run continuations). */
   avatarGutter?: boolean;
+  /** Where this message sits in a group of consecutive messages — sets the corners. */
+  groupPosition?: GroupPosition;
+  /**
+   * The message was tapped open on a touch screen. Without hover the add-reaction
+   * trigger stays hidden until then, so a calm thread is not one smiley per bubble.
+   */
+  revealed?: boolean;
   canReact?: boolean;
   onAddReaction?: (emoji: string) => void;
   onRemoveReaction?: (emoji: string) => void;
@@ -37,6 +66,8 @@ export function ChatMessageBubble({
   showAuthor,
   showAvatar,
   avatarGutter,
+  groupPosition = 'single',
+  revealed = false,
   canReact = false,
   onAddReaction,
   onRemoveReaction,
@@ -49,14 +80,29 @@ export function ChatMessageBubble({
   // Shared with CommentItem — see `hasRenderableText` for the MSC2530 filename-echo rule.
   const hasText = hasRenderableText(message.content, message.attachments);
 
+  // Picking an emoji the user already reacted with takes the reaction back,
+  // exactly as clicking its pill does — the server refuses a second identical one.
+  const handlePick = (emoji: string) => {
+    if (message.reactions.some(reaction => reaction.emoji === emoji && reaction.hasReacted)) {
+      onRemoveReaction?.(emoji);
+    } else {
+      onAddReaction?.(emoji);
+    }
+  };
+
   const addReactionTrigger = effectiveCanReact && onAddReaction && (
     <EmojiPicker
-      onSelect={onAddReaction}
+      onSelect={handlePick}
       trigger={
         <button
           type="button"
           aria-label={t('thread.addReaction')}
-          className="flex size-7 shrink-0 items-center justify-center rounded-full text-muted-foreground opacity-0 transition-opacity hover:bg-accent hover:text-foreground focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring group-hover:opacity-100"
+          className={cn(
+            'flex size-7 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-opacity hover:bg-accent hover:text-foreground focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+            // `group-hover` only applies where the device can hover, so without
+            // hover the trigger is hidden outright until the message is tapped open.
+            revealed ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 [@media(hover:none)]:hidden'
+          )}
         >
           <Smile aria-hidden="true" className="size-4" />
         </button>
@@ -64,12 +110,14 @@ export function ChatMessageBubble({
     />
   );
 
-  const timestamp = message.timestamp && (
-    <span className="px-1 text-caption text-muted-foreground">{message.timestamp}</span>
-  );
-
   const bubbleColumn = (
-    <div className={cn('group flex flex-col gap-0.5', isOwn ? 'items-end' : 'items-start')}>
+    <div
+      className={cn(
+        'group flex flex-col gap-0.5',
+        isOwn ? 'items-end' : 'items-start',
+        avatarGutter && !isOwn && 'min-w-0 flex-1'
+      )}
+    >
       {showAuthor && !isOwn && author && (
         <span className="flex items-center gap-1 px-1 text-caption text-muted-foreground">
           <span className="truncate">{author.name}</span>
@@ -81,7 +129,9 @@ export function ChatMessageBubble({
           business data, not UI copy (FR-016). */}
       {avatarGutter && !showAuthor && !isOwn && author && <span className="sr-only">{author.name}</span>}
       {(hasText || !hasAttachments) && (
-        <div className={cn('flex items-center gap-1', isOwn && 'flex-row-reverse')}>
+        // Full width, so the bubble's 85% cap is taken of the thread rather than
+        // of a row that shrinks to fit the text and wraps short messages early.
+        <div className={cn('flex w-full items-center gap-1', isOwn && 'flex-row-reverse')}>
           {/* The bubble exists to hold TEXT. An attachment-only message renders
               just its attachments below, and a message with neither text nor
               attachments renders no bubble at all — the previous condition
@@ -90,12 +140,17 @@ export function ChatMessageBubble({
           {hasText && (
             <div
               className={cn(
-                'max-w-[85%] rounded-2xl px-3 py-2',
-                isOwn ? 'rounded-br-sm bg-primary/15' : 'rounded-bl-sm bg-muted',
+                // `overflow-wrap:anywhere` lets an unbroken token (a long URL) wrap
+                // and, unlike `break-words`, also shrinks the bubble's minimum
+                // width, so the token cannot push the bubble past its cap.
+                'min-w-0 max-w-[85%] rounded-2xl px-3 py-2 [overflow-wrap:anywhere]',
+                isOwn ? 'bg-primary/15' : 'bg-muted',
+                GROUP_CORNERS[isOwn ? 'own' : 'other'][groupPosition],
                 message.isPending && 'opacity-60'
               )}
             >
               <MarkdownContent
+                allowHtml={false}
                 content={message.content}
                 className="text-body [&_p]:mb-1 [&_p]:text-foreground [&_p:last-child]:mb-0"
               />
@@ -119,16 +174,8 @@ export function ChatMessageBubble({
           onRemove={emoji => onRemoveReaction?.(emoji)}
         />
       )}
-      {/* With media the trigger shares the timestamp's line below the
-          attachments and their reactions; the timestamp keeps the outer edge. */}
-      {hasAttachments && addReactionTrigger ? (
-        <div className={cn('flex items-center gap-1', isOwn && 'flex-row-reverse')}>
-          {timestamp}
-          {addReactionTrigger}
-        </div>
-      ) : (
-        timestamp
-      )}
+      {/* With media the trigger sits below the attachments and their reactions. */}
+      {hasAttachments && addReactionTrigger}
     </div>
   );
 
