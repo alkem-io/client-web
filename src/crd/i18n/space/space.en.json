@@ -314,6 +314,7 @@
     "updateFailed": "Could not save changes to the $t(common.callout). Please try again.",
     "contributors": "Contributors",
     "subspaces": "Subspaces",
+    "spacesHidden": "Some spaces in this overview are not shown because you don't have access to them.",
     "form": "Form"
   },
   "contribution": {
@@ -612,14 +613,34 @@
         "customDescription": "Shows only the contributors you select."
       },
       "spaces": {
+        "fieldTitle": "Spaces shown in this $t(common.callout)",
+        "switchLabel": "Pick spaces manually",
         "autoDescription": "Automatically shows all subspaces and updates as they are added or removed.",
-        "customDescription": "Shows only the subspaces you select below."
+        "customDescription": "Shows only the spaces you select below."
+      },
+      "spacePicker": {
+        "searchPlaceholder": "Search spaces in this account…",
+        "searchAriaLabel": "Search spaces in this account",
+        "noMatches": "No spaces in this account match your search.",
+        "accountEmpty": "This account has no other spaces.",
+        "loadFailed": "The list of spaces could not be loaded.",
+        "chipsEmpty": "No spaces picked yet. Search below to add some.",
+        "chipContext": "in {{parentName}}",
+        "badgeInThisSpace": "In this space",
+        "badgeCalloutIsHere": "$t(common.Callout) is here",
+        "noneSelected": "No spaces selected",
+        "selectedCount_one": "{{count}} space selected",
+        "selectedCount_other": "{{count}} spaces selected",
+        "clearSelection": "Clear selection",
+        "levelSpace": "Space",
+        "levelSubspace": "Subspace",
+        "levelSubsubspace": "Sub-subspace",
+        "pathSubLine": "{{level}} in {{path}}",
+        "removeInParentAriaLabel": "Remove {{name}}, in {{parentName}}"
       },
       "noLongerAvailable": "No longer available",
       "searchPlaceholder": "Search members…",
       "searchAriaLabel": "Search members",
-      "searchSubspacePlaceholder": "Search subspaces…",
-      "searchSubspaceAriaLabel": "Search subspaces",
       "noResults": "No matching results",
       "loading": "Loading…",
       "loadMore": "Loading more…",

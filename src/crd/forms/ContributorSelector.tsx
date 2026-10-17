@@ -8,7 +8,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/toolti
 
 export type ContributorSelectorUserResult = {
   /**
-   * The entity's id — a user, organization, virtual-contributor or subspace id
+   * The entity's id — a user, organization or virtual-contributor id
    * depending on the consumer. (The field is named `userId` for historical
    * reasons; renaming it is deferred as a standalone refactor.)
    */
@@ -25,16 +25,19 @@ export type ContributorSelectorUserResult = {
 
 /**
  * A selected entry in the picker — supports users (existing invite flow),
- * organizations, virtual contributors, and subspaces (feature 025 collection
- * selection picker). Entries that are no longer eligible (member left, subspace
- * deleted) carry `eligible: false` so the consumer can display a "no longer
- * available" chip state and omit them on save.
+ * organizations and virtual contributors. Entries that are no longer eligible
+ * (e.g. a member who left) carry `eligible: false` so the consumer can display
+ * a "no longer available" chip state and omit them on save.
+ *
+ * The `subspace` kind feature 025 added was deleted by 084: the Spaces
+ * collection's picker is `@/crd/forms/callout/SpaceSelector`, which owns the
+ * path sub-lines, badges and disabled host row that this selector has no shape
+ * for.
  */
 export type ContributorSelectorInvitee =
   | { kind: 'user'; userId: string; displayName: string; avatarUrl?: string; location?: string; eligible?: boolean }
   | { kind: 'organization'; id: string; displayName: string; avatarUrl?: string; eligible?: boolean }
   | { kind: 'virtualContributor'; id: string; displayName: string; avatarUrl?: string; eligible?: boolean }
-  | { kind: 'subspace'; id: string; displayName: string; avatarUrl?: string; eligible?: boolean }
   | { kind: 'email'; email: string; validationError?: 'invalid' | 'duplicate' };
 
 type ValidationErrorKind = 'invalid' | 'duplicate';
@@ -67,8 +70,8 @@ export type ContributorSelectorProps = {
   validationErrorLabel: (kind: ValidationErrorKind) => string;
   /**
    * Label shown in the tooltip on entries with `eligible: false`
-   * (feature 025 — member left, subspace deleted). Only required when the
-   * component is used as the collection selection picker (not invite flow).
+   * (feature 025 — e.g. a member who left). Only required when the component
+   * is used as a collection selection picker (not the invite flow).
    */
   ineligibleLabel?: string;
 
@@ -136,7 +139,7 @@ export function ContributorSelector({
   // A clear "✕" button for the collection picker (the invite flow keeps its "Add"
   // button in that corner instead). Enabled once a clear-label is supplied.
   const showClear = !allowEmailInvites && trimmedQuery.length > 0 && Boolean(clearSearchAriaLabel);
-  // Exclude users already selected — covers user/org/vc/subspace picks that
+  // Exclude users already selected — covers user/org/vc picks that
   // overlap with the userId-keyed result set.
   const selectedUserIds = new Set(
     selectedContributors.filter(c => c.kind === 'user').map(c => (c as { kind: 'user'; userId: string }).userId)
@@ -208,11 +211,6 @@ export function ContributorSelector({
             labelText = contributor.displayName;
             avatarUrl = contributor.avatarUrl;
             chipKey = `vc-${contributor.id}`;
-            ineligible = contributor.eligible === false;
-          } else if (contributor.kind === 'subspace') {
-            labelText = contributor.displayName;
-            avatarUrl = contributor.avatarUrl;
-            chipKey = `subspace-${contributor.id}`;
             ineligible = contributor.eligible === false;
           } else {
             // email

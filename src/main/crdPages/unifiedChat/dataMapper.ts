@@ -30,6 +30,24 @@ export const isGuidanceConversation = (
 };
 
 /**
+ * TEMP: guidance disabled — identifies a 1:1 chat with a virtual contributor,
+ * so such chats can be hidden while virtual contributors are off.
+ *
+ * Deliberately NOT expressed in terms of the well-known guidance VC id: that id
+ * is resolved by a separate platform query, and is `null` while that query is in
+ * flight. The conversation list is `cache-and-network` and can render first, so
+ * an id-based check lets the row through for those renders. The member `type`
+ * ships in the same payload as the row itself, so this cannot be raced.
+ *
+ * Delete together with the filter in `useUnifiedConversations`.
+ */
+export const isVirtualContributorChat = (
+  members: Pick<ConversationMember, 'id' | 'type'>[],
+  currentUserId: string | undefined
+): boolean =>
+  members.length <= 2 && members.some(m => m.id !== currentUserId && m.type === ActorType.VirtualContributor);
+
+/**
  * Sorts unified conversations: pinned (guidance) first, then the newly-created
  * conversation, then by most-recent activity (last message, else created date).
  */
