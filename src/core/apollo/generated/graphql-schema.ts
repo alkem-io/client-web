@@ -9381,11 +9381,13 @@ export type SetPlatformWellKnownVirtualContributorInput = {
   wellKnown: VirtualContributorWellKnown;
 };
 
-/** The widgets available for the Space sidepanel, per InnovationFlow state (tab). */
+/** The widgets available for the Space sidepanel, per InnovationFlow state (tab/phase). */
 export enum SidebarWidget {
   About = 'ABOUT',
+  Activity = 'ACTIVITY',
   AddUser = 'ADD_USER',
   ApplicationButton = 'APPLICATION_BUTTON',
+  Community = 'COMMUNITY',
   ContactLeads = 'CONTACT_LEADS',
   CreatePost = 'CREATE_POST',
   CreateSubspace = 'CREATE_SUBSPACE',
