@@ -14306,7 +14306,14 @@ export type UpdateInnovationFlowStatesSortOrderMutation = {
     __typename?: 'InnovationFlowState';
     id: string;
     sortOrder: number;
-    settings: { __typename?: 'InnovationFlowStateSettings'; sidebar: Array<SidebarWidget> };
+    settings: {
+      __typename?: 'InnovationFlowStateSettings';
+      allowNewCallouts: boolean;
+      visible: boolean;
+      descriptionDisplayMode: CalloutDescriptionDisplayMode;
+      showPublishDetails: boolean;
+      sidebar: Array<SidebarWidget>;
+    };
   }>;
 };
 

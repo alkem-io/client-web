@@ -8072,6 +8072,10 @@ export const UpdateInnovationFlowStatesSortOrderDocument = gql`
     id
     sortOrder
     settings {
+      allowNewCallouts
+      visible
+      descriptionDisplayMode
+      showPublishDetails
       sidebar
     }
   }
