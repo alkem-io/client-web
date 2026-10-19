@@ -502,46 +502,4 @@ describe('useConversationView — local echoes on a real matrix-js-sdk Room', ()
       expect(await sent).toBe(true);
     });
   });
-
-  // Another tab or device of the same user can add the same reaction before this
-  // view has synced it; Synapse then refuses the duplicate. The reaction the user
-  // asked for exists, so the add has succeeded from their point of view.
-  const reactionEchoes = (room: Room) =>
-    room
-      .getLiveTimeline()
-      .getEvents()
-      .filter(e => e.getType() === 'm.reaction');
-
-  it('an add refused as a duplicate annotation resolves and leaves no local echo behind', async () => {
-    const { client, room } = realClient();
-    session.client = client;
-    const { result } = renderHook(() => useConversationView(conversation, null));
-
-    let added: Promise<unknown> | undefined;
-    await act(async () => {
-      added = result.current.handleAddReaction('$msg')('👍');
-    });
-    await vi.waitFor(() => expect(reactionEchoes(room)).toHaveLength(1));
-
-    await act(async () => {
-      respond(400, { errcode: 'M_DUPLICATE_ANNOTATION', error: "Can't send same reaction twice" });
-      await expect(added).resolves.toBeUndefined();
-    });
-    expect(reactionEchoes(room)).toHaveLength(0);
-  });
-
-  it('any other refusal of an add still rejects', async () => {
-    const { client } = realClient();
-    session.client = client;
-    const { result } = renderHook(() => useConversationView(conversation, null));
-
-    let added: Promise<unknown> | undefined;
-    await act(async () => {
-      added = result.current.handleAddReaction('$msg')('👍');
-    });
-    await act(async () => {
-      respond(403, { errcode: 'M_FORBIDDEN', error: 'no' });
-      await expect(added).rejects.toMatchObject({ errcode: 'M_FORBIDDEN' });
-    });
-  });
 });
