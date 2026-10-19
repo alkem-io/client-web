@@ -23,6 +23,8 @@ const WIRE_TO_WIDGET_ID: Record<string, SidebarWidgetId> = {
   [SidebarWidget.Guidelines]: 'guidelines',
   [SidebarWidget.Index]: 'index',
   [SidebarWidget.Search]: 'search',
+  [SidebarWidget.Community]: 'community',
+  [SidebarWidget.Activity]: 'activity',
 };
 
 const WIDGET_ID_TO_WIRE: Record<SidebarWidgetId, SidebarWidget> = {
@@ -40,24 +42,45 @@ const WIDGET_ID_TO_WIRE: Record<SidebarWidgetId, SidebarWidget> = {
   guidelines: SidebarWidget.Guidelines,
   index: SidebarWidget.Index,
   search: SidebarWidget.Search,
+  community: SidebarWidget.Community,
+  activity: SidebarWidget.Activity,
+};
+
+/**
+ * The widget id a stored wire value renders as at a level whose vocabulary is
+ * `vocabulary`, or `undefined` when it does not render there. A value this
+ * bundle does not know, a value meaningless at this level (e.g. Create
+ * Subspace on an L2) and a top-level-only value on a subspace are all handled
+ * by this one rule: not rendered, not offered, carried back on save.
+ */
+const toLevelWidgetId = (wireValue: string, vocabulary: readonly SidebarWidgetId[]): SidebarWidgetId | undefined => {
+  const widgetId = WIRE_TO_WIDGET_ID[wireValue];
+  return widgetId && vocabulary.includes(widgetId) ? widgetId : undefined;
 };
 
 /**
  * Resolves a state's stored `sidebar` (wire enum values) into the ordered,
- * CRD-safe widget plan: unrecognized values are silently dropped (FR-013 —
- * forward compatibility with a newer server vocabulary) and duplicates are
- * removed, first occurrence wins (defensive; the server already dedupes on
- * read per FR-006). `null`/`undefined` resolves to an empty plan — the
- * server contract guarantees NonNull, so this is a defensive fallback only.
+ * CRD-safe widget plan: values outside `vocabulary` (unknown to this bundle —
+ * forward compatibility with a newer server vocabulary — or not applicable
+ * at the rendering level) are silently dropped, and duplicates are removed,
+ * first occurrence wins (defensive; the server already dedupes on read).
+ * `null`/`undefined` resolves to an empty plan — the server contract
+ * guarantees NonNull, so this is a defensive fallback only.
+ *
+ * `vocabulary` defaults to the full top-level list; subspaces pass their
+ * level's list from `SIDEBAR_WIDGET_IDS_BY_LEVEL`.
  */
-export function resolveSidebarPlan(sidebar: readonly string[] | null | undefined): SidebarWidgetId[] {
+export function resolveSidebarPlan(
+  sidebar: readonly string[] | null | undefined,
+  vocabulary: readonly SidebarWidgetId[] = SIDEBAR_WIDGET_IDS
+): SidebarWidgetId[] {
   if (!sidebar) return [];
 
   const plan: SidebarWidgetId[] = [];
   const seen = new Set<SidebarWidgetId>();
 
   for (const wireValue of sidebar) {
-    const widgetId = WIRE_TO_WIDGET_ID[wireValue];
+    const widgetId = toLevelWidgetId(wireValue, vocabulary);
     if (!widgetId || seen.has(widgetId)) continue;
     seen.add(widgetId);
     plan.push(widgetId);
@@ -74,13 +97,17 @@ export function resolveSidebarPlan(sidebar: readonly string[] | null | undefined
  *  list would permanently delete the unknown widget for everyone. */
 export type UnknownSidebarEntry = { index: number; value: string };
 
-/** Collects the wire values `resolveSidebarPlan` would drop as out-of-vocabulary,
- *  keeping their original indices so `toWireSidebar` can re-insert them. */
-export function extractUnknownSidebarEntries(sidebar: readonly string[] | null | undefined): UnknownSidebarEntry[] {
+/** Collects the wire values `resolveSidebarPlan` would drop as out-of-vocabulary
+ *  (for the same `vocabulary`), keeping their original indices so
+ *  `toWireSidebar` can re-insert them. */
+export function extractUnknownSidebarEntries(
+  sidebar: readonly string[] | null | undefined,
+  vocabulary: readonly SidebarWidgetId[] = SIDEBAR_WIDGET_IDS
+): UnknownSidebarEntry[] {
   if (!sidebar) return [];
   const unknown: UnknownSidebarEntry[] = [];
   sidebar.forEach((value, index) => {
-    if (!WIRE_TO_WIDGET_ID[value]) unknown.push({ index, value });
+    if (!toLevelWidgetId(value, vocabulary)) unknown.push({ index, value });
   });
   return unknown;
 }

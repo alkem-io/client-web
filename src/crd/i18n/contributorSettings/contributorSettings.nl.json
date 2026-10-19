@@ -93,7 +93,7 @@
       "org": {
         "profile": "Profiel",
         "account": "Account",
-        "community": "Geassocieerden",
+        "community": "Betrokkenen",
         "membership": "Lidmaatschap",
         "settings": "Instellingen",
         "invitations": "Uitnodigingen",
@@ -353,7 +353,7 @@
         },
         "confirmDisconnect": {
           "title": "{{provider}} ontkoppelen?",
-          "description": "U kunt niet meer inloggen met {{provider}}. Als u later opnieuw koppelt en de provider uw identificatie inmiddels heeft gewijzigd, komt deze exacte koppeling mogelijk niet meer terug.",
+          "description": "Je kunt niet meer inloggen met {{provider}}. Als je later opnieuw koppelt en de provider je identificatie inmiddels heeft gewijzigd, komt deze exacte koppeling mogelijk niet meer terug.",
           "confirm": "Ontkoppelen"
         },
         "locked": {
@@ -508,59 +508,59 @@
       },
       "rows": {
         "space": {
-          "communicationUpdates": "Krijg een melding wanneer een nieuwe communicatie wordt gedeeld in een community",
-          "collaborationCalloutPublished": "Krijg een melding wanneer er een Post wordt gepubliceerd in een community waar ik lid van ben",
+          "communicationUpdates": "Ontvang een melding wanneer een nieuwe communicatie wordt gedeeld in een community",
+          "collaborationCalloutPublished": "Ontvang een melding wanneer er een Post wordt gepubliceerd in een community waar ik lid van ben",
           "collaborationCalloutReaction": "Ontvang een melding wanneer iemand op mijn Post reageert met een emoji",
-          "collaborationCalloutPostContributionComment": "Krijg een melding wanneer iemand reageert op een bijdrage die ik heb gemaakt",
-          "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een Post wordt toegevoegd",
-          "collaborationCalloutComment": "Krijg een melding wanneer er een nieuwe reactie wordt toegevoegd aan een Post in een community waar ik lid van ben",
-          "communityCalendarEvents": "Krijg een melding voor community-agenda-evenementen",
-          "collaborationPollVoteCastOnOwnPoll": "Krijg een melding wanneer iemand op mijn poll stemt",
-          "collaborationPollVoteCastOnPollIVotedOn": "Krijg een melding wanneer iemand stemt op een poll waarop ik heb gestemd",
-          "collaborationPollModifiedOnPollIVotedOn": "Krijg een melding wanneer een poll waarop ik heb gestemd wordt gewijzigd",
-          "collaborationPollVoteAffectedByOptionChange": "Krijg een melding wanneer mijn stem wordt beïnvloed door een wijziging in een poll-optie"
+          "collaborationCalloutPostContributionComment": "Ontvang een melding wanneer iemand reageert op een bijdrage die ik heb gemaakt",
+          "collaborationCalloutContributionCreated": "Ontvang een melding wanneer er een nieuwe bijdrage aan een Post wordt toegevoegd",
+          "collaborationCalloutComment": "Ontvang een melding wanneer er een nieuwe reactie wordt toegevoegd aan een Post in een community waar ik lid van ben",
+          "communityCalendarEvents": "Ontvang een melding voor community-agenda-evenementen",
+          "collaborationPollVoteCastOnOwnPoll": "Ontvang een melding wanneer iemand op mijn poll stemt",
+          "collaborationPollVoteCastOnPollIVotedOn": "Ontvang een melding wanneer iemand stemt op een poll waarop ik heb gestemd",
+          "collaborationPollModifiedOnPollIVotedOn": "Ontvang een melding wanneer een poll waarop ik heb gestemd wordt gewijzigd",
+          "collaborationPollVoteAffectedByOptionChange": "Ontvang een melding wanneer mijn stem wordt beïnvloed door een wijziging in een poll-optie"
         },
         "spaceAdmin": {
-          "communityApplicationReceived": "Krijg een melding wanneer een nieuwe community-aanvraag wordt ingediend",
+          "communityApplicationReceived": "Ontvang een melding wanneer een nieuwe community-aanvraag wordt ingediend",
           "communityNewMember": "Ontvang een melding wanneer een nieuw lid zich bij de community voegt",
-          "communityInvitationResponse": "Ontvang een melding wanneer iemand een uitnodiging accepteert of afwijst voor een Space die u beheert",
-          "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een Post wordt toegevoegd",
-          "communicationMessageReceived": "Krijg een melding wanneer er een community-bericht wordt ontvangen",
-          "userEmailChanged": "Krijg een melding wanneer het inloge-mailadres van een lid van een Space die je beheert wordt gewijzigd",
-          "collaborationCalloutFormResponseReceived": "Krijg een melding wanneer iemand een reactie op een formulier verstuurt in een Space die je beheert"
+          "communityInvitationResponse": "Ontvang een melding wanneer iemand een uitnodiging accepteert of afwijst voor een Space die je beheert",
+          "collaborationCalloutContributionCreated": "Ontvang een melding wanneer er een nieuwe bijdrage aan een Post wordt toegevoegd",
+          "communicationMessageReceived": "Ontvang een melding wanneer er een community-bericht wordt ontvangen",
+          "userEmailChanged": "Ontvang een melding wanneer het inloge-mailadres van een lid van een Space die je beheert wordt gewijzigd",
+          "collaborationCalloutFormResponseReceived": "Ontvang een melding wanneer iemand een reactie op een formulier verstuurt in een Space die je beheert"
         },
         "user": {
-          "commentReply": "Krijg een melding wanneer iemand reageert op mijn reactie",
-          "mentioned": "Krijg een melding wanneer ik word vermeld",
-          "messageReceived": "Krijg een melding wanneer iemand mij een direct bericht stuurt",
-          "conversationMessageDirect": "Krijg een melding wanneer iemand mij een direct (1-op-1) chatbericht stuurt",
-          "conversationMessageGroup": "Krijg een melding wanneer iemand een bericht plaatst in een groepschat waarvan ik lid ben",
-          "membershipInvitationReceived": "Krijg een melding wanneer iemand mij uitnodigt om lid te worden van een community",
-          "membershipCommunityJoined": "Krijg een melding wanneer ik lid word van een nieuwe Space",
-          "membershipOrganizationAssociateInvitationReceived": "Ontvang een melding wanneer ik word uitgenodigd om me te associëren met een organisatie",
-          "membershipOrganizationAssociateApplicationDecided": "Ontvang een melding wanneer een organisatie beslist over mijn aanvraag om te associëren"
+          "commentReply": "Ontvang een melding wanneer iemand reageert op mijn reactie",
+          "mentioned": "Ontvang een melding wanneer ik word vermeld",
+          "messageReceived": "Ontvang een melding wanneer iemand mij een direct bericht stuurt",
+          "conversationMessageDirect": "Ontvang een melding wanneer iemand mij een direct (1-op-1) chatbericht stuurt",
+          "conversationMessageGroup": "Ontvang een melding wanneer iemand een bericht plaatst in een groepschat waarvan ik lid ben",
+          "membershipInvitationReceived": "Ontvang een melding wanneer iemand mij uitnodigt om lid te worden van een community",
+          "membershipCommunityJoined": "Ontvang een melding wanneer ik lid word van een nieuwe Space",
+          "membershipOrganizationAssociateInvitationReceived": "Ontvang een melding wanneer ik word uitgenodigd om betrokkene te worden bij een organisatie",
+          "membershipOrganizationAssociateApplicationDecided": "Ontvang een melding wanneer een organisatie beslist over mijn aanvraag om betrokkene te worden"
         },
         "platform": {
-          "forumDiscussionComment": "Krijg een melding wanneer iemand reageert op een discussie die ik heb gestart",
-          "forumDiscussionCreated": "Krijg een melding wanneer er een nieuwe platformdiscussie wordt aangemaakt"
+          "forumDiscussionComment": "Ontvang een melding wanneer iemand reageert op een discussie die ik heb gestart",
+          "forumDiscussionCreated": "Ontvang een melding wanneer er een nieuwe platformdiscussie wordt aangemaakt"
         },
         "platformAdmin": {
-          "userProfileCreated": "Krijg een melding wanneer er een nieuw gebruikersprofiel wordt aangemaakt",
-          "userProfileRemoved": "Krijg een melding wanneer een gebruikersprofiel wordt verwijderd",
-          "userGlobalRoleChanged": "Krijg een melding wanneer de globale rol van een gebruiker verandert",
-          "userEmailChanged": "Krijg een melding wanneer het e-mailadres van een gebruiker verandert",
-          "spaceCreated": "Krijg een melding wanneer er een nieuwe Space wordt aangemaakt"
+          "userProfileCreated": "Ontvang een melding wanneer er een nieuw gebruikersprofiel wordt aangemaakt",
+          "userProfileRemoved": "Ontvang een melding wanneer een gebruikersprofiel wordt verwijderd",
+          "userGlobalRoleChanged": "Ontvang een melding wanneer de globale rol van een gebruiker verandert",
+          "userEmailChanged": "Ontvang een melding wanneer het e-mailadres van een gebruiker verandert",
+          "spaceCreated": "Ontvang een melding wanneer er een nieuwe Space wordt aangemaakt"
         },
         "organization": {
-          "adminMentioned": "Krijg een melding wanneer mijn organisatie wordt vermeld",
+          "adminMentioned": "Ontvang een melding wanneer mijn organisatie wordt vermeld",
           "adminMessageReceived": "Ontvang directe berichten gericht aan mijn organisatie",
           "adminSpaceCommunityInvitation": "Ontvang een melding wanneer een organisatie die ik beheer wordt uitgenodigd om lid te worden van een Space, en wanneer deze lid wordt",
-          "adminAssociateInvitationResponse": "Ontvang een melding wanneer iemand reageert op een uitnodiging om zich te associëren met een organisatie die ik beheer",
-          "adminAssociateApplicationReceived": "Ontvang een melding wanneer iemand solliciteert om zich te associëren met een organisatie die ik beheer",
-          "adminAssociateJoined": "Ontvang een melding wanneer iemand als geassocieerde toetreedt tot een organisatie die ik beheer"
+          "adminAssociateInvitationResponse": "Ontvang een melding wanneer iemand reageert op een uitnodiging om betrokkene te worden bij een organisatie die ik beheer",
+          "adminAssociateApplicationReceived": "Ontvang een melding wanneer iemand zich aanmeldt als betrokkene bij een organisatie die ik beheer",
+          "adminAssociateJoined": "Ontvang een melding wanneer iemand als betrokkene toetreedt tot een organisatie die ik beheer"
         },
         "virtualContributor": {
-          "adminSpaceCommunityInvitation": "Krijg een melding wanneer een VC-beheerder wordt uitgenodigd om lid te worden van een community"
+          "adminSpaceCommunityInvitation": "Ontvang een melding wanneer een VC-beheerder wordt uitgenodigd om lid te worden van een community"
         },
         "sound": {
           "chatMessage": "Speel een geluid af wanneer een chatbericht wordt ontvangen",
@@ -578,11 +578,11 @@
       "filteredEmptyDescription": "Probeer een andere naam of locatie te zoeken.",
       "clearSearch": "Zoekopdracht wissen",
       "verified": "Geverifieerd",
-      "associates": "Geassocieerden",
-      "associatesCount": "{{count}} geassocieerden",
+      "associates": "Betrokkenen",
+      "associatesCount": "{{count}} betrokkenen",
       "role": {
         "admin": "Beheerder",
-        "associate": "Geassocieerd"
+        "associate": "Betrokkene"
       },
       "menu": {
         "viewProfile": "Profiel bekijken",
@@ -590,7 +590,7 @@
       },
       "disassociate": {
         "dialogTitle": "Ontkoppelen van deze organisatie?",
-        "dialogDescription": "Je staat op het punt om \"{{name}}\" te verlaten. Je verliest je rol als geassocieerde en alle bijbehorende rechten.",
+        "dialogDescription": "Je staat op het punt om \"{{name}}\" te verlaten. Je verliest je rol als betrokkene en alle bijbehorende rechten.",
         "dialogConfirm": "Ontkoppelen",
         "success": "Succesvol ontkoppeld",
         "error": "Ontkoppelen mislukt — probeer opnieuw"
@@ -769,21 +769,21 @@
       }
     },
     "community": {
-      "pageTitle": "Geassocieerden",
-      "title": "Geassocieerden",
-      "description": "Beheer wie aan deze organisatie verbonden is. Voeg nieuwe geassocieerden toe uit de lijst met beschikbare gebruikers; het verwijderen van een geassocieerde trekt hun organisatierol in.",
-      "currentAssociatesTitle": "Huidige geassocieerden",
+      "pageTitle": "Betrokkenen",
+      "title": "Betrokkenen",
+      "description": "Beheer wie bij deze organisatie betrokken is. Voeg nieuwe betrokkenen toe uit de lijst met beschikbare gebruikers; het verwijderen van een betrokkene trekt hun organisatierol in.",
+      "currentAssociatesTitle": "Huidige betrokkenen",
       "availableUsersTitle": "Beschikbare gebruikers",
       "searchPlaceholder": "Zoek gebruikers op naam…",
-      "addAriaLabel": "{name} toevoegen als geassocieerde",
-      "removeAriaLabel": "{name} verwijderen als geassocieerde",
+      "addAriaLabel": "{name} toevoegen als betrokkene",
+      "removeAriaLabel": "{name} verwijderen als betrokkene",
       "loadMore": "Meer laden",
-      "emptyCurrent": "Nog geen geassocieerden.",
+      "emptyCurrent": "Nog geen betrokkenen.",
       "emptyAvailable": "Geen overeenkomende gebruikers gevonden.",
-      "removeDialogTitle": "Deze geassocieerde verwijderen?",
-      "removeDialogDescription": "{{name}} verliest de rol van geassocieerde en alle bijbehorende rechten.",
-      "removeConfirmAssociate": "{{name}} verwijderen als geassocieerde",
-      "removeSuccess": "Geassocieerde verwijderd",
+      "removeDialogTitle": "Deze betrokkene verwijderen?",
+      "removeDialogDescription": "{{name}} verliest de rol van betrokkene en alle bijbehorende rechten.",
+      "removeConfirmAssociate": "{{name}} verwijderen als betrokkene",
+      "removeSuccess": "Betrokkene verwijderd",
       "removeError": "Verwijderen mislukt — probeer opnieuw"
     },
     "membership": {
@@ -814,7 +814,7 @@
       "leave": {
         "menuItemLabeled": "{{type}} verlaten",
         "dialogTitle": "Dit lidmaatschap verlaten?",
-        "dialogDescription": "Uw organisatie staat op het punt om \"{{spaceName}}\" en al zijn subspaces te verlaten, en geeft daar elke rol op, ook die van Lead. Ze verliest de toegang tot de inhoud voor leden en moet opnieuw worden uitgenodigd om terug te komen.",
+        "dialogDescription": "Je organisatie staat op het punt om \"{{spaceName}}\" en al zijn subspaces te verlaten, en geeft daar elke rol op, ook die van Lead. Ze verliest de toegang tot de inhoud voor leden en moet opnieuw worden uitgenodigd om terug te komen.",
         "dialogConfirm": "Verlaten",
         "success": "Lidmaatschap verlaten",
         "error": "Verlaten mislukt — probeer opnieuw",
@@ -832,14 +832,14 @@
         "allowSpaceInvitationsLabel": "Spaces toestaan om deze organisatie uit te nodigen",
         "allowSpaceInvitationsCaption": "Indien ingeschakeld, kunnen Space-beheerders deze organisatie uitnodigen om lid te worden van hun Space-community.",
         "allowDomainLabel": "Gebruikers met dit domein toestaan om toe te treden",
-        "allowDomainCaption": "Gebruikers van wie het e-maildomein overeenkomt met het geverifieerde domein van deze organisatie, kunnen met één klik als geassocieerde toetreden.",
-        "allowApplicationsLabel": "Gebruikers toestaan om te solliciteren als geassocieerde",
-        "allowApplicationsCaption": "Indien uit, biedt het openbare profiel van de organisatie geen sollicitatieactie; openstaande aanvragen blijven zichtbaar en beslisbaar."
+        "allowDomainCaption": "Gebruikers van wie het e-maildomein overeenkomt met het geverifieerde domein van deze organisatie, kunnen met één klik als betrokkene toetreden.",
+        "allowApplicationsLabel": "Gebruikers toestaan zich aan te melden als betrokkene",
+        "allowApplicationsCaption": "Als dit uit staat, kunnen gebruikers zich via het openbare profiel niet aanmelden als betrokkene. Openstaande aanvragen blijven zichtbaar en kunnen nog worden beoordeeld."
       },
       "privacy": {
         "title": "Privacy",
         "contributionRolesLabel": "Toon bijdragerollen openbaar",
-        "contributionRolesCaption": "Wanneer ingeschakeld, zijn de roltoewijzingen van de organisatie (Beheerder, Eigenaar, Geassocieerde) zichtbaar op het openbare profiel."
+        "contributionRolesCaption": "Wanneer ingeschakeld, zijn de roltoewijzingen van de organisatie (Beheerder, Eigenaar, Betrokkene) zichtbaar op het openbare profiel."
       },
       "errorToast": "Voorkeur opslaan mislukt — probeer opnieuw"
     },
@@ -853,24 +853,24 @@
       "role": "Rol",
       "roleMember": "Lid",
       "roleMemberLead": "Lid + Lead",
-      "spacesToJoin": "Bij accepteren wordt toegetreden tot: {{spaces}}",
+      "spacesToJoin": "Bij acceptatie wordt de organisatie lid van: {{spaces}}",
       "accept": "Accepteren",
       "decline": "Afwijzen",
       "acceptConfirmTitle": "Deze uitnodiging accepteren?",
-      "acceptConfirmBody": "Uw organisatie treedt toe tot {{spaceName}} als {{role}}.",
+      "acceptConfirmBody": "Je organisatie treedt toe tot {{spaceName}} als {{role}}.",
       "acceptConfirmAction": "Uitnodiging accepteren",
       "declineConfirmTitle": "Deze uitnodiging afwijzen?",
-      "declineConfirmBody": "{{spaceName}} krijgt te horen dat uw organisatie heeft afgewezen. Dit kan niet ongedaan worden gemaakt — een Space-beheerder moet dan een nieuwe uitnodiging sturen.",
+      "declineConfirmBody": "{{spaceName}} krijgt te horen dat je organisatie de uitnodiging heeft afgewezen. Dit kan niet ongedaan worden gemaakt — een Space-beheerder moet dan een nieuwe uitnodiging sturen.",
       "declineConfirmAction": "Uitnodiging afwijzen",
       "errorToast": "De uitnodiging kon niet worden bijgewerkt — probeer het opnieuw"
     },
     "associates": {
-      "title": "Geassocieerden",
-      "description": "Iedereen die aan deze organisatie verbonden is — geassocieerden, beheerders en eigenaren — met de mogelijkheid om rollen te bewerken, nieuwe geassocieerden uit te nodigen en openstaande aanvragen en uitnodigingen te beheren.",
+      "title": "Betrokkenen",
+      "description": "Iedereen die met deze organisatie verbonden is — betrokkenen, beheerders en eigenaren — met de mogelijkheid om rollen te bewerken, nieuwe betrokkenen uit te nodigen en openstaande aanvragen en uitnodigingen te beheren.",
       "invite": "Uitnodigen",
-      "empty": "Nog geen geassocieerden.",
+      "empty": "Nog geen betrokkenen.",
       "badge": {
-        "associate": "Geassocieerde",
+        "associate": "Betrokkene",
         "admin": "Beheerder",
         "owner": "Eigenaar"
       },
@@ -878,7 +878,7 @@
       "editor": {
         "title": "{{name}} bewerken",
         "description": "Wijzig welke rollen {{name}} heeft in deze organisatie, of verwijder deze persoon eruit.",
-        "associateLabel": "Geassocieerde",
+        "associateLabel": "Betrokkene",
         "associateCaption": "De basisrol — vereist om ook Beheerder of Eigenaar te zijn.",
         "adminLabel": "Beheerder",
         "ownerLabel": "Eigenaar",
@@ -901,9 +901,9 @@
         "title": "Openstaande aanvragen en uitnodigingen",
         "empty": "Geen openstaande aanvragen of uitnodigingen.",
         "offeredRole": {
-          "associate": "Geassocieerde",
-          "associateAdmin": "Geassocieerde + Beheerder",
-          "associateOwner": "Geassocieerde + Eigenaar"
+          "associate": "Betrokkene",
+          "associateAdmin": "Betrokkene + Beheerder",
+          "associateOwner": "Betrokkene + Eigenaar"
         },
         "rejectConfirmTitle": "Aanvraag van {{name}} afwijzen?",
         "rejectConfirmBody": "{{name}} krijgt bericht dat de aanvraag is afgewezen en kan later opnieuw aanvragen.",
@@ -1008,7 +1008,7 @@
         "empty": "Nog geen referenties.",
         "deleteDialog": {
           "title": "Referentie verwijderen?",
-          "description": "Deze referentie wordt verwijderd wanneer u de sectie opslaat. U kunt dit ongedaan maken voordat u opslaat.",
+          "description": "Deze referentie wordt verwijderd wanneer je de sectie opslaat. Je kunt dit ongedaan maken voordat je opslaat.",
           "confirm": "Verwijderen"
         }
       },

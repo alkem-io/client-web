@@ -27,7 +27,7 @@
         "title": "Een organisatie uitnodigen voor \"{{spaceName}}\"",
         "searchPlaceholder": "Organisatienaam…",
         "searchHint": "Zoek naar een organisatie om uit te nodigen",
-        "defaultWelcomeMessage": "Hallo, we willen graag uw organisatie uitnodigen om deel te nemen aan {{spaceName}}. Bekijk de Space of klik op de knop hieronder om de uitnodiging te accepteren of af te wijzen.",
+        "defaultWelcomeMessage": "Hallo, we willen graag je organisatie uitnodigen om deel te nemen aan {{spaceName}}. Bekijk de Space of klik op de knop hieronder om de uitnodiging te accepteren of af te wijzen.",
         "searchAriaLabel": "Zoek organisaties op naam",
         "noResultsLabel": "Geen overeenkomende organisaties",
         "loadingLabel": "Organisaties laden…"
@@ -59,18 +59,18 @@
       "resultsSummary_one": "{{count}} uitnodiging verwerkt voor {{spaceName}}.",
       "resultsSummary_other": "{{count}} uitnodigingen verwerkt voor {{spaceName}}.",
       "associates": {
-        "title": "Geassocieerden uitnodigen voor \"{{organizationName}}\"",
+        "title": "Betrokkenen uitnodigen voor \"{{organizationName}}\"",
         "noResultsLabel": "Geen overeenkomende gebruikers",
         "loadingLabel": "Gebruikers laden…",
-        "defaultWelcomeMessage": "Hoi, we willen je graag uitnodigen om je te associëren met {{organizationName}}. Klik hieronder om de uitnodiging te accepteren of te weigeren.",
-        "rolePopoverHelper": "Geassocieerde wordt altijd toegekend bij het accepteren van de uitnodiging."
+        "defaultWelcomeMessage": "Hoi, we willen je graag uitnodigen om betrokkene te worden bij {{organizationName}}. Klik hieronder om de uitnodiging te accepteren of te weigeren.",
+        "rolePopoverHelper": "Wie de uitnodiging accepteert, wordt altijd betrokkene."
       }
     },
     "roles": {
       "Member": "Member",
       "Lead": "Lead",
       "Admin": "Admin",
-      "Associate": "Geassocieerde",
+      "Associate": "Betrokkene",
       "Owner": "Eigenaar"
     },
     "errors": {
@@ -89,7 +89,7 @@
       "leadLimitReached": "De limiet voor de Lead-rol voor organisaties is bereikt",
       "sentNoAdministrators": "Uitnodiging verzonden — deze organisatie heeft momenteel geen beheerders om te informeren, daarom is de platformondersteuning op de hoogte gebracht",
       "extraRoleLimitReached": "De limiet voor de aangeboden rol is bereikt",
-      "alreadyAssociate": "Al geassocieerd"
+      "alreadyAssociate": "Al betrokken"
     },
     "toast": {
       "someFailed": "{{count}} uitnodigingen konden niet worden verstuurd — bekijk de resultaten voor details."

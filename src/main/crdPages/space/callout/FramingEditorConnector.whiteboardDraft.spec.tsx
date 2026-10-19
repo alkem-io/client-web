@@ -6,6 +6,7 @@ import { useMemoSigningFlow } from '@/main/crdPages/memo/useMemoSigningFlow';
 import { FramingEditorConnector } from './FramingEditorConnector';
 
 const memoDialogState = vi.hoisted(() => ({ props: undefined as Record<string, unknown> | undefined }));
+const draftPreview = vi.hoisted(() => ({ url: undefined as string | undefined, ids: [] as string[] }));
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
@@ -14,6 +15,12 @@ vi.mock('react-i18next', () => ({
 vi.mock('@/domain/collaboration/whiteboard/WhiteboardDraft/WhiteboardDraftEditor', () => ({
   WhiteboardDraftEditor: () => null,
 }));
+vi.mock('@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraftPreviewUrl', () => ({
+  useWhiteboardDraftPreviewUrl: (whiteboardID: string) => {
+    draftPreview.ids.push(whiteboardID);
+    return draftPreview.url;
+  },
+}));
 vi.mock('@/main/crdPages/memo/CrdMemoDialog', () => ({
   CrdMemoDialog: (props: Record<string, unknown>) => {
     memoDialogState.props = props;
@@ -21,7 +28,10 @@ vi.mock('@/main/crdPages/memo/CrdMemoDialog', () => ({
   },
 }));
 
-const renderWhiteboardFraming = (materialize: () => Promise<undefined>) =>
+const renderWhiteboardFraming = (
+  materialize: () => Promise<undefined>,
+  extra: { handle?: { whiteboardID: string; sourceKey: string }; whiteboardPreviewServerUrl?: string } = {}
+) =>
   render(
     <FramingEditorConnector
       framingType="whiteboard"
@@ -37,8 +47,9 @@ const renderWhiteboardFraming = (materialize: () => Promise<undefined>) =>
       onMediaGalleryVisualsChange={vi.fn()}
       collaboraDocumentType={CollaboraDocumentType.Wordprocessing}
       onCollaboraDocumentTypeChange={vi.fn()}
+      whiteboardPreviewServerUrl={extra.whiteboardPreviewServerUrl}
       whiteboardDraft={{
-        handle: undefined,
+        handle: extra.handle,
         loading: false,
         materialize,
         discard: vi.fn().mockResolvedValue(true),
@@ -58,6 +69,17 @@ describe('FramingEditorConnector whiteboard draft UX', () => {
 
     fireEvent.click(editTargets[0]);
     expect(materialize).toHaveBeenCalledOnce();
+  });
+
+  it("shows the draft's own stored preview over the template preview", () => {
+    draftPreview.url = 'https://files/draft-preview.png';
+    renderWhiteboardFraming(vi.fn().mockResolvedValue(undefined), {
+      handle: { whiteboardID: 'draft-1', sourceKey: ':' },
+      whiteboardPreviewServerUrl: 'https://files/template-preview.png',
+    });
+
+    expect(draftPreview.ids).toContain('draft-1');
+    expect(screen.getByRole('img')).toHaveAttribute('src', 'https://files/draft-preview.png');
   });
 
   it('carries the exact framing origin through continuation, one allowlisted store, and navigation', async () => {
