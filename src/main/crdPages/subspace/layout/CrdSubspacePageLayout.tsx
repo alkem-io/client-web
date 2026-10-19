@@ -2,11 +2,14 @@ import { Layout as LayoutIcon, Plus } from 'lucide-react';
 import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation } from 'react-router-dom';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { useCalloutsSetTagsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import useNavigate from '@/core/routing/useNavigate';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { ShareDialog } from '@/crd/components/common/ShareDialog';
+import type { FlowStateSearchStatus } from '@/crd/components/search/FlowStateSearchResults';
 import { CommunityUpdatesDialog } from '@/crd/components/space/CommunityUpdatesDialog';
 import { HeaderActionIcons } from '@/crd/components/space/HeaderActionIcons';
 import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNotice';
@@ -14,6 +17,7 @@ import { SubspaceHeader } from '@/crd/components/space/SubspaceHeader';
 import { type SubspaceQuickActionId, SubspaceSidebar } from '@/crd/components/space/SubspaceSidebar';
 import { SpaceSettingsHeader } from '@/crd/components/space/settings/SpaceSettingsHeader';
 import { SpaceSettingsTabStrip } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
+import type { SearchSectionProps } from '@/crd/components/space/sidebar/SearchSection';
 import { UpdatesSection } from '@/crd/components/space/sidebar/UpdatesSection';
 import { useEdgeSwipe } from '@/crd/hooks/useEdgeSwipe';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
@@ -35,6 +39,7 @@ import {
   getVisibleSettingsTabs,
   useSettingsTabDescriptors,
 } from '@/main/crdPages/topLevelPages/spaceSettings/useVisibleSettingsTabs';
+import { useDebouncedValue } from '@/main/crdPages/utils/useDebouncedValue';
 import { buildSettingsTabUrl, buildSubspaceSettingsUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
@@ -44,11 +49,18 @@ import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
 import { CalloutFormConnector } from '../../space/callout/CalloutFormConnector';
 import { CalloutShareOnAlkemioForm } from '../../space/callout/CalloutShareOnAlkemioForm';
+import {
+  buildFlowStateSearchTerms,
+  mapFlowStateSearchCalloutIds,
+} from '../../space/dataMappers/flowStateSearchDataMapper';
 import { CrdSpaceCommunityDialogConnector } from '../../space/dialogs/CrdSpaceCommunityDialogConnector';
+import { InviteMembersDialogConnector } from '../../space/dialogs/InviteMembersDialogConnector';
 import { SubspacesDialogConnector } from '../../space/dialogs/SubspacesDialogConnector';
 import { useCrdCommunityUpdates } from '../../space/hooks/useCrdCommunityUpdates';
 import { useCrdSpaceLocale } from '../../space/hooks/useCrdSpaceLocale';
+import { useFlowStateSearch } from '../../space/hooks/useFlowStateSearch';
 import { SpaceApplyButtonConnector } from '../../space/SpaceApplyButtonConnector';
+import { useCrdCalendarUrlState } from '../../space/timeline/useCrdCalendarUrlState';
 import { CrdSubspaceAbout } from '../about/CrdSubspaceAbout';
 import { CrdSubspaceActivityDialogConnector } from '../dialogs/CrdSubspaceActivityDialogConnector';
 import { CrdSubspaceEventsDialogConnector } from '../dialogs/CrdSubspaceEventsDialogConnector';
@@ -63,13 +75,31 @@ export type SubspaceMobileMenu = {
   content: ReactNode;
 };
 
+/** The sidebar search of the active phase — state and fetching live in the layout (the
+ *  sidebar renders twice: desktop column and mobile drawer); the callouts page renders the
+ *  results in place of the feed while `isSearching`. */
+export type SubspaceSearchOutlet = {
+  isSearching: boolean;
+  status: FlowStateSearchStatus;
+  appending: boolean;
+  hasMore: boolean;
+  sentinelRef: (node?: Element | null) => void;
+  retry: () => void;
+  calloutIds: string[];
+};
+
 export type SubspaceOutletContext = {
   data: ReturnType<typeof useCrdSubspace>;
   mobileMenu: SubspaceMobileMenu;
   /** The gray header action icons — the page renders them on the sticky
    *  flow-tabs row (desktop) so they stay visible on scroll. */
   headerActionIcons?: ReactNode;
+  search?: SubspaceSearchOutlet;
 };
+
+/** Debounce window between a keystroke and the search it drives — same as the top-level tabs. */
+const SEARCH_DEBOUNCE_MS = 300;
+const isEmptySearchText = (text: string) => text === '';
 
 export default function CrdSubspacePageLayout() {
   const data = useCrdSubspace();
@@ -89,13 +119,83 @@ export default function CrdSubspacePageLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [updatesOpen, setUpdatesOpen] = useState(false);
   const [createPostOpen, setCreatePostOpen] = useState(false);
+  const [inviteOpen, setInviteOpen] = useState(false);
   // Active flow phase (URL-driven, shared with the callouts page) — the Add Post
   // dialog pre-selects it, exactly as the old flow-tabs button did.
   const { activePhaseId } = useCrdSubspaceFlow(data.phases, data.currentPhaseId);
   const activePhase = data.phases.find(phase => phase.id === activePhaseId);
   const { collapsed: sidebarCollapsed, toggle: toggleSidebarCollapsed } = useSubspaceSidebarCollapsed();
   const locale = useCrdSpaceLocale();
-  const communityUpdates = useCrdCommunityUpdates(data.communityId);
+  const skips = data.sidebarSkips;
+  // Recent Activity needs a signed-in viewer: the activity query is gated on the platform
+  // read-users right, so for anonymous viewers the widget would only produce an error.
+  const { isAuthenticated } = useAuthenticationContext();
+  const communityUpdates = useCrdCommunityUpdates(data.communityId, skips.updates);
+  // Calendar deep links (/calendar, /calendar/:eventId) must keep opening the events dialog
+  // even when the `events` widget is not configured.
+  const { isAnyCalendarRoute } = useCrdCalendarUrlState();
+
+  // Sidebar search over the ACTIVE phase. Indexed callout documents carry the ROOT space id
+  // (and the globally unique flow-state id), so the scope is the level-zero space — the
+  // subspace's own id would match nothing. State resets whenever the active phase changes,
+  // so a search never leaks across phases.
+  const hasSearchWidget = data.sidebarPlan.includes('search');
+  const [searchPhaseId, setSearchPhaseId] = useState(activePhaseId);
+  const [searchText, setSearchText] = useState('');
+  const [tagsFilter, setTagsFilter] = useState<string[]>([]);
+  if (searchPhaseId !== activePhaseId) {
+    setSearchPhaseId(activePhaseId);
+    setSearchText('');
+    setTagsFilter([]);
+  }
+  const appliedText = useDebouncedValue(searchText, SEARCH_DEBOUNCE_MS, { immediate: isEmptySearchText }).trim();
+  const { data: tagsData, loading: tagsLoading } = useCalloutsSetTagsQuery({
+    variables: {
+      // biome-ignore lint/style/noNonNullAssertion: ensured by skip
+      calloutsSetId: data.calloutsSetId!,
+      classificationTagsets: activePhase ? [{ name: TagsetReservedName.FlowState, tags: [activePhase.label] }] : [],
+    },
+    skip: !hasSearchWidget || !data.calloutsSetId || !activePhase,
+  });
+  const searchTerms = buildFlowStateSearchTerms(appliedText, tagsFilter);
+  const isSearching = hasSearchWidget && searchTerms.length > 0;
+  const flowStateSearch = useFlowStateSearch({
+    flowStateID: activePhaseId,
+    spaceID: data.levelZeroSpaceId,
+    terms: searchTerms,
+    skip: !isSearching,
+  });
+  const searchCalloutIds = mapFlowStateSearchCalloutIds(flowStateSearch.results);
+  const searchProps: SearchSectionProps | undefined = hasSearchWidget
+    ? {
+        text: searchText,
+        onTextChange: setSearchText,
+        appliedText,
+        allTags: tagsData?.lookup.calloutsSet?.tags ?? [],
+        tagsLoading,
+        selectedTags: tagsFilter,
+        onToggleTag: (tag: string) =>
+          setTagsFilter(prev => (prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag])),
+        matchCount:
+          flowStateSearch.status === 'results' || flowStateSearch.status === 'empty'
+            ? searchCalloutIds.length
+            : undefined,
+        hasMore: flowStateSearch.hasMore,
+        onClear: () => {
+          setSearchText('');
+          setTagsFilter([]);
+        },
+      }
+    : undefined;
+  const searchOutlet: SubspaceSearchOutlet = {
+    isSearching,
+    status: flowStateSearch.status,
+    appending: flowStateSearch.appending,
+    hasMore: flowStateSearch.hasMore,
+    sentinelRef: flowStateSearch.sentinelRef,
+    retry: flowStateSearch.retry,
+    calloutIds: searchCalloutIds,
+  };
   // Wire the Create-Subspace template picker with this subspace's own templates
   // set + default subspace template (D21 / FR-031), matching the Settings flow.
   // Account stays undefined at L1/L2 — the same as the Settings scope.
@@ -211,8 +311,21 @@ export default function CrdSubspacePageLayout() {
       }
     : undefined;
 
+  // Invite follows the same right as the top-level sidebar's Invite widget: update on the space.
+  const canInvite = data.canUpdate;
+
   const sidebarCommonProps = {
     ...data.sidebar,
+    widgets: data.sidebarPlan,
+    search: searchProps,
+    activityEnabled: isAuthenticated,
+    onInviteClick:
+      !skips.addUser && canInvite
+        ? () => {
+            setMobileMenuOpen(false);
+            setInviteOpen(true);
+          }
+        : undefined,
     parentSpaces: data.parentSpaceStack,
     // Only offer the edit pencil to users with Update on the subspace — otherwise it just lands
     // on the access-restricted page.
@@ -409,24 +522,30 @@ export default function CrdSubspacePageLayout() {
               />
 
               <Suspense fallback={<LoadingSpinner />}>
-                <Outlet context={{ data, mobileMenu, headerActionIcons }} />
+                <Outlet context={{ data, mobileMenu, headerActionIcons, search: searchOutlet }} />
               </Suspense>
             </div>
           </div>
         </main>
       </div>
 
-      {/* Community dialog — opened from banner avatar stack OR sidebar Quick Action */}
-      <CrdSpaceCommunityDialogConnector
-        open={activeDialog === 'community'}
-        onOpenChange={open => setActiveDialog(open ? 'community' : null)}
-        roleSetId={data.roleSetId}
-      />
+      {/* Quick-action dialogs are mounted only when their widget is configured, so an
+          unconfigured widget fetches nothing. Exceptions: the activity dialog is also
+          opened from the header icon, and the events dialog serves calendar deep links. */}
+      {!skips.community && (
+        <CrdSpaceCommunityDialogConnector
+          open={activeDialog === 'community'}
+          onOpenChange={open => setActiveDialog(open ? 'community' : null)}
+          roleSetId={data.roleSetId}
+        />
+      )}
 
-      <CrdSubspaceEventsDialogConnector
-        open={activeDialog === 'events'}
-        onOpenChange={open => setActiveDialog(open ? 'events' : null)}
-      />
+      {(!skips.events || isAnyCalendarRoute) && (
+        <CrdSubspaceEventsDialogConnector
+          open={activeDialog === 'events'}
+          onOpenChange={open => setActiveDialog(open ? 'events' : null)}
+        />
+      )}
 
       <CrdSubspaceActivityDialogConnector
         open={activeDialog === 'activity'}
@@ -434,12 +553,23 @@ export default function CrdSubspacePageLayout() {
         collaborationId={data.collaborationId}
       />
 
-      <CrdSubspaceIndexDialogConnector
-        open={activeDialog === 'index'}
-        onOpenChange={open => setActiveDialog(open ? 'index' : null)}
-        calloutsSetId={data.calloutsSetId}
-        phaseNames={data.phases.map(phase => phase.label)}
-      />
+      {!skips.index && (
+        <CrdSubspaceIndexDialogConnector
+          open={activeDialog === 'index'}
+          onOpenChange={open => setActiveDialog(open ? 'index' : null)}
+          calloutsSetId={data.calloutsSetId}
+          phaseNames={data.phases.map(phase => phase.label)}
+        />
+      )}
+
+      {!skips.addUser && canInvite && (
+        <InviteMembersDialogConnector
+          open={inviteOpen}
+          onClose={() => setInviteOpen(false)}
+          spaceId={data.subspaceId}
+          onlyFromParentCommunity={data.level === 'L2'}
+        />
+      )}
 
       {/* Add Post — opened from the sidebar actions slot; pre-selects the active phase. */}
       {canCreatePost && data.calloutsSetId && (
@@ -452,13 +582,15 @@ export default function CrdSubspacePageLayout() {
         />
       )}
 
-      <SubspacesDialogConnector
-        open={activeDialog === 'subspaces'}
-        onOpenChange={open => setActiveDialog(open ? 'subspaces' : null)}
-        spaceId={data.subspaceId}
-        emptyText={t('crd-subspace:subspaces.empty')}
-        onCreateSubspace={handleCreateSubspace}
-      />
+      {!skips.subspaceLinks && (
+        <SubspacesDialogConnector
+          open={activeDialog === 'subspaces'}
+          onOpenChange={open => setActiveDialog(open ? 'subspaces' : null)}
+          spaceId={data.subspaceId}
+          emptyText={t('crd-subspace:subspaces.empty')}
+          onCreateSubspace={handleCreateSubspace}
+        />
+      )}
 
       <CrdSubspaceAbout open={aboutOpen} onClose={() => setAboutOpen(false)} />
 
