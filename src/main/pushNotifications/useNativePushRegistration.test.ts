@@ -134,6 +134,34 @@ describe('useNativePushRegistration (SC-020)', () => {
     expect(localStorage.getItem(DEVICE_PUSH_TOKEN_KEY)).toBe('fcm-token-1');
   });
 
+  it('adds no listener and sends no bind when the OS prompt resolves after unmount', async () => {
+    // The provider unmounts the moment `isAuthenticated` turns false, which can
+    // happen while the OS dialog is still open. A listener added after cleanup
+    // is one `removeAllListeners()` has already run past, so it would survive to
+    // bind a token outside the session that asked for the permission.
+    isAppMode.mockReturnValue(true);
+    let grantPermission: () => void = () => {};
+    const late = makePlugin('granted');
+    late.requestPermissions = vi.fn(
+      () =>
+        new Promise<{ receive: 'granted' }>(resolve => {
+          grantPermission = () => resolve({ receive: 'granted' });
+        })
+    );
+    getNativePushPlugin.mockReturnValue(late);
+
+    const { unmount } = renderHook(() => useNativePushRegistration());
+    await waitFor(() => expect(late.requestPermissions).toHaveBeenCalled());
+
+    unmount();
+    grantPermission();
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    expect(calls).not.toContain('addListener:registration');
+    expect(late.register).not.toHaveBeenCalled();
+    expect(registerDevicePushToken).not.toHaveBeenCalled();
+  });
+
   it('returns nothing and exposes no imperative API', async () => {
     isAppMode.mockReturnValue(true);
     getNativePushPlugin.mockReturnValue(plugin);
