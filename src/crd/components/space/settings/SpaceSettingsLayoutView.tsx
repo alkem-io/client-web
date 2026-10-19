@@ -290,8 +290,8 @@ export function SpaceSettingsLayoutView({
                     columnMenuActions={columnMenuActions}
                     entityNoun={entityNoun}
                     draggable={canReorderColumns}
-                    // Sidebar widget configuration is L0-only for now — subspace phases
-                    // hide the section in the Layout dialog (stored values untouched).
+                    // The per-phase sidebar section is hidden on subspaces (stored values
+                    // untouched): a subspace has one sidebar, edited through Customize Sidebar.
                     sidebarSettingsEnabled={level === 'L0'}
                     descriptionMaxLength={columnDescriptionMaxLength}
                     onImageUpload={onImageUpload}
