@@ -155,7 +155,8 @@
     "customizeSidebar": {
       "button": "Sidebar aanpassen",
       "title": "Lay-out: Sidebar",
-      "help": "Kies welke widgets in de sidebar van deze subspace verschijnen en in welke volgorde. Dit geldt voor de hele subspace — elke fase toont dezelfde set."
+      "help": "Kies welke widgets in de sidebar van deze subspace verschijnen en in welke volgorde. Dit geldt voor de hele subspace — elke fase toont dezelfde set.",
+      "emptyNote": "Geen widgets geselecteerd — de sidebar is leeg in deze hele subspace, in elke fase."
     },
     "addPhase": {
       "button": "Fase toevoegen",

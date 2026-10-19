@@ -155,7 +155,8 @@
     "customizeSidebar": {
       "button": "Customize Sidebar",
       "title": "Layout: Sidebar",
-      "help": "Choose which widgets appear in this subspace's sidebar, and in what order. This applies to the whole subspace — every phase shows the same set."
+      "help": "Choose which widgets appear in this subspace's sidebar, and in what order. This applies to the whole subspace — every phase shows the same set.",
+      "emptyNote": "No widgets selected — the sidebar will be empty across this whole subspace, in every phase."
     },
     "addPhase": {
       "button": "Add phase",

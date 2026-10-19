@@ -155,7 +155,8 @@
     "customizeSidebar": {
       "button": "Personnaliser la barre latérale",
       "title": "Mise en page : Barre latérale",
-      "help": "Choisissez les widgets à afficher dans la barre latérale de ce sous-espace, et dans quel ordre. Cela s'applique à tout le sous-espace — chaque phase affiche le même ensemble."
+      "help": "Choisissez les widgets à afficher dans la barre latérale de ce sous-espace, et dans quel ordre. Cela s'applique à tout le sous-espace — chaque phase affiche le même ensemble.",
+      "emptyNote": "Aucun widget sélectionné — la barre latérale sera vide dans tout ce sous-espace, à chaque phase."
     },
     "addPhase": {
       "button": "Ajouter une phase",

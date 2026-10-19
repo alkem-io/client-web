@@ -155,7 +155,8 @@
     "customizeSidebar": {
       "button": "Seitenleiste anpassen",
       "title": "Layout: Seitenleiste",
-      "help": "Wähle aus, welche Widgets in der Seitenleiste dieses Unterbereichs erscheinen und in welcher Reihenfolge. Das gilt für den gesamten Unterbereich — jede Phase zeigt dieselbe Auswahl."
+      "help": "Wähle aus, welche Widgets in der Seitenleiste dieses Unterbereichs erscheinen und in welcher Reihenfolge. Das gilt für den gesamten Unterbereich — jede Phase zeigt dieselbe Auswahl.",
+      "emptyNote": "Keine Widgets ausgewählt — die Seitenleiste bleibt im gesamten Unterbereich leer, in jeder Phase."
     },
     "addPhase": {
       "button": "Phase hinzufügen",

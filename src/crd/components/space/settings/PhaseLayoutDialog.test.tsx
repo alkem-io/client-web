@@ -337,12 +337,6 @@ describe('PhaseLayoutDialog sidebar-only mode', () => {
     expect(screen.queryByText('layout.column.sidebarDialog.title')).not.toBeInTheDocument();
   });
 
-  test('uses a custom title and help text when given', () => {
-    renderSidebarOnly({ title: 'Custom title', helpText: 'Custom help' });
-    expect(screen.getByText('Custom title')).toBeInTheDocument();
-    expect(screen.getByText('Custom help')).toBeInTheDocument();
-  });
-
   test('offers only the available widgets (no Create Subspace or Subspaces on L2)', () => {
     renderSidebarOnly({ availableWidgets: L2_WIDGETS });
     const offered = screen.getAllByRole('checkbox').map(checkbox => checkbox.getAttribute('aria-label'));
@@ -358,7 +352,7 @@ describe('PhaseLayoutDialog sidebar-only mode', () => {
     );
   });
 
-  test('never renders a selected id outside the available widgets, keeps it, and passes sidebarUnknown through', async () => {
+  test('passes sidebarUnknown through untouched while the offered widgets are edited', async () => {
     const onSave = vi.fn();
     renderSidebarOnly({
       availableWidgets: L2_WIDGETS,
@@ -366,15 +360,10 @@ describe('PhaseLayoutDialog sidebar-only mode', () => {
       values: {
         descriptionCollapsed: false,
         showPublishDetails: true,
-        sidebar: ['intent', 'createSubspace'],
+        sidebar: ['intent'],
         sidebarUnknown: [{ index: 1, value: 'SUBSPACE_LINKS' }],
       },
     });
-    expect(
-      screen.queryByRole('checkbox', {
-        name: 'layout.column.sidebarDialog.toggleAriaLabel:layout.column.sidebarDialog.widgets.createSubspace',
-      })
-    ).not.toBeInTheDocument();
 
     await userEvent.click(
       screen.getByRole('checkbox', {
@@ -386,12 +375,12 @@ describe('PhaseLayoutDialog sidebar-only mode', () => {
     expect(onSave).toHaveBeenCalledWith({
       descriptionCollapsed: false,
       showPublishDetails: true,
-      sidebar: ['intent', 'createSubspace', 'search'],
+      sidebar: ['intent', 'search'],
       sidebarUnknown: [{ index: 1, value: 'SUBSPACE_LINKS' }],
     });
   });
 
-  test('deselecting everything shows the empty note and saves an empty list', async () => {
+  test('deselecting everything shows the whole-subspace empty note and saves an empty list', async () => {
     const onSave = vi.fn();
     renderSidebarOnly({
       onSave,
@@ -402,7 +391,8 @@ describe('PhaseLayoutDialog sidebar-only mode', () => {
         name: 'layout.column.sidebarDialog.toggleAriaLabel:layout.column.sidebarDialog.widgets.intent',
       })
     );
-    expect(screen.getByText('layout.column.sidebarDialog.emptyNote')).toBeInTheDocument();
+    expect(screen.getByText('layout.customizeSidebar.emptyNote')).toBeInTheDocument();
+    expect(screen.queryByText('layout.column.sidebarDialog.emptyNote')).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'layout.column.phaseLayout.save' }));
     expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ sidebar: [] }));
   });
@@ -412,14 +402,10 @@ function renderSidebarOnly({
   values = defaultValues,
   onSave = vi.fn(),
   availableWidgets,
-  title,
-  helpText,
 }: {
   values?: PhaseLayoutValues;
   onSave?: (values: PhaseLayoutValues) => void;
   availableWidgets?: readonly SidebarWidgetId[];
-  title?: string;
-  helpText?: string;
 } = {}) {
   return render(
     <PhaseLayoutDialog
@@ -431,8 +417,6 @@ function renderSidebarOnly({
       sidebarSettingsEnabled={false}
       sidebarOnly={true}
       availableWidgets={availableWidgets}
-      title={title}
-      helpText={helpText}
     />
   );
 }

@@ -59,18 +59,15 @@ type PhaseLayoutDialogProps = {
    */
   sidebarSettingsEnabled?: boolean;
   /**
-   * Sidebar-only mode: the dialog shows only the widget section (no description-height or
-   * publisher switches), with `title`/`helpText` (or the Customize Sidebar defaults). The
-   * switch values in `values` pass through `onSave` untouched.
+   * Sidebar-only mode (Customize Sidebar): the dialog shows only the widget section (no
+   * description-height or publisher switches) under the Customize Sidebar title and help.
+   * The switch values in `values` pass through `onSave` untouched.
    */
   sidebarOnly?: boolean;
   /** The widgets the editor may offer, in offering order (default: the full vocabulary).
-   *  A selected id outside this list is neither shown nor dropped — it is saved as-is. */
+   *  `values.sidebar` must stay within this list; the consumer moves any other stored value
+   *  into `sidebarUnknown`, which round-trips untouched. */
   availableWidgets?: readonly SidebarWidgetId[];
-  /** Sidebar-only mode title; defaults to the Customize Sidebar title. */
-  title?: string;
-  /** Sidebar-only mode help text; defaults to the Customize Sidebar help. */
-  helpText?: string;
 };
 
 /**
@@ -91,8 +88,6 @@ export function PhaseLayoutDialog({
   sidebarSettingsEnabled = true,
   sidebarOnly = false,
   availableWidgets = SIDEBAR_WIDGET_IDS,
-  title,
-  helpText,
 }: PhaseLayoutDialogProps) {
   const { t } = useTranslation('crd-spaceSettings');
 
@@ -121,7 +116,6 @@ export function PhaseLayoutDialog({
     });
   };
 
-  const selectedWidgets = sidebar.filter(widgetId => availableWidgets.includes(widgetId));
   const unselectedWidgets = availableWidgets.filter(widgetId => !sidebar.includes(widgetId));
   const showSidebarSection = sidebarOnly || sidebarSettingsEnabled;
 
@@ -156,7 +150,7 @@ export function PhaseLayoutDialog({
           <DialogTitle className="flex items-center gap-2">
             <LayoutDashboard aria-hidden="true" className="size-4" />
             {sidebarOnly
-              ? (title ?? t('layout.customizeSidebar.title'))
+              ? t('layout.customizeSidebar.title')
               : t('layout.column.phaseLayout.dialogTitle', { phaseName })}
           </DialogTitle>
         </DialogHeader>
@@ -213,7 +207,7 @@ export function PhaseLayoutDialog({
           {showSidebarSection && (
             <div className="flex flex-col gap-2">
               {sidebarOnly ? (
-                <p className="text-caption text-muted-foreground">{helpText ?? t('layout.customizeSidebar.help')}</p>
+                <p className="text-caption text-muted-foreground">{t('layout.customizeSidebar.help')}</p>
               ) : (
                 <div className="flex flex-col gap-0.5">
                   <Label className="text-body-emphasis">{t('layout.column.sidebarDialog.title')}</Label>
@@ -221,18 +215,21 @@ export function PhaseLayoutDialog({
                 </div>
               )}
 
-              {selectedWidgets.length === 0 && (
-                <p className="text-caption text-muted-foreground">{t('layout.column.sidebarDialog.emptyNote')}</p>
+              {/* Customize Sidebar edits one sidebar for the whole subspace, so its note says so. */}
+              {sidebar.length === 0 && (
+                <p className="text-caption text-muted-foreground">
+                  {sidebarOnly ? t('layout.customizeSidebar.emptyNote') : t('layout.column.sidebarDialog.emptyNote')}
+                </p>
               )}
 
               <div className="flex flex-col gap-1 max-h-64 overflow-y-auto">
                 {/* Selected widgets — drag the handle to reorder (FR-011). */}
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                  <SortableContext items={selectedWidgets} strategy={verticalListSortingStrategy}>
+                  <SortableContext items={sidebar} strategy={verticalListSortingStrategy}>
                     {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
                     {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
                     <ul role="list" className="flex flex-col gap-1">
-                      {selectedWidgets.map(widgetId => {
+                      {sidebar.map(widgetId => {
                         const widgetLabel = t(`layout.column.sidebarDialog.widgets.${widgetId}`);
                         return (
                           <SortableWidgetRow
