@@ -838,6 +838,12 @@
         "continue-error": "No se pudo iniciar la sesión de firma. Prepare una copia nueva e inténtelo de nuevo.",
         "return-error": "No se pudo cargar el resultado de la firma"
       }
+    },
+    "downloadPdf": {
+      "button": "Descargar PDF",
+      "busy": "El servicio de PDF está ocupado, inténtalo de nuevo en un momento.",
+      "tooLarge": "Este memo es demasiado grande o contiene contenido que no se puede exportar como PDF.",
+      "failed": "No se pudo descargar el PDF."
     }
   },
   "callToAction": {

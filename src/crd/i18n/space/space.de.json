@@ -838,6 +838,12 @@
         "continue-error": "Der Signiervorgang konnte nicht gestartet werden. Bereiten Sie eine neue Kopie vor und versuchen Sie es erneut.",
         "return-error": "Das Signierergebnis konnte nicht geladen werden"
       }
+    },
+    "downloadPdf": {
+      "button": "PDF herunterladen",
+      "busy": "Der PDF-Dienst ist ausgelastet, bitte versuchen Sie es gleich noch einmal.",
+      "tooLarge": "Dieses Memo ist zu groß oder enthält Inhalte, die nicht als PDF exportiert werden können.",
+      "failed": "Das Herunterladen der PDF ist fehlgeschlagen."
     }
   },
   "callToAction": {

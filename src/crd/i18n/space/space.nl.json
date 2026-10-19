@@ -838,6 +838,12 @@
         "continue-error": "De ondertekeningssessie kon niet worden gestart. Bereid een nieuwe kopie voor en probeer het opnieuw.",
         "return-error": "Het ondertekeningsresultaat kon niet worden geladen"
       }
+    },
+    "downloadPdf": {
+      "button": "PDF downloaden",
+      "busy": "De PDF-service is bezet, probeer het zo opnieuw.",
+      "tooLarge": "Deze memo is te groot of bevat inhoud die niet als PDF kan worden geëxporteerd.",
+      "failed": "Het downloaden van de PDF is mislukt."
     }
   },
   "callToAction": {
