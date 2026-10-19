@@ -2,7 +2,6 @@ import { Layout as LayoutIcon, Plus } from 'lucide-react';
 import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation } from 'react-router-dom';
-import { useCalloutsSetTagsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import useNavigate from '@/core/routing/useNavigate';
@@ -39,7 +38,6 @@ import {
   getVisibleSettingsTabs,
   useSettingsTabDescriptors,
 } from '@/main/crdPages/topLevelPages/spaceSettings/useVisibleSettingsTabs';
-import { useDebouncedValue } from '@/main/crdPages/utils/useDebouncedValue';
 import { buildSettingsTabUrl, buildSubspaceSettingsUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
@@ -49,16 +47,12 @@ import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
 import { CalloutFormConnector } from '../../space/callout/CalloutFormConnector';
 import { CalloutShareOnAlkemioForm } from '../../space/callout/CalloutShareOnAlkemioForm';
-import {
-  buildFlowStateSearchTerms,
-  mapFlowStateSearchCalloutIds,
-} from '../../space/dataMappers/flowStateSearchDataMapper';
 import { CrdSpaceCommunityDialogConnector } from '../../space/dialogs/CrdSpaceCommunityDialogConnector';
 import { InviteMembersDialogConnector } from '../../space/dialogs/InviteMembersDialogConnector';
 import { SubspacesDialogConnector } from '../../space/dialogs/SubspacesDialogConnector';
 import { useCrdCommunityUpdates } from '../../space/hooks/useCrdCommunityUpdates';
 import { useCrdSpaceLocale } from '../../space/hooks/useCrdSpaceLocale';
-import { useFlowStateSearch } from '../../space/hooks/useFlowStateSearch';
+import { useSidebarFlowStateSearch } from '../../space/hooks/useSidebarFlowStateSearch';
 import { SpaceApplyButtonConnector } from '../../space/SpaceApplyButtonConnector';
 import { useCrdCalendarUrlState } from '../../space/timeline/useCrdCalendarUrlState';
 import { CrdSubspaceAbout } from '../about/CrdSubspaceAbout';
@@ -97,10 +91,6 @@ export type SubspaceOutletContext = {
   search?: SubspaceSearchOutlet;
 };
 
-/** Debounce window between a keystroke and the search it drives — same as the top-level tabs. */
-const SEARCH_DEBOUNCE_MS = 300;
-const isEmptySearchText = (text: string) => text === '';
-
 export default function CrdSubspacePageLayout() {
   const data = useCrdSubspace();
 
@@ -137,65 +127,16 @@ export default function CrdSubspacePageLayout() {
 
   // Sidebar search over the ACTIVE phase. Indexed callout documents carry the ROOT space id
   // (and the globally unique flow-state id), so the scope is the level-zero space — the
-  // subspace's own id would match nothing. State resets whenever the active phase changes,
-  // so a search never leaks across phases.
+  // subspace's own id would match nothing. The tag chips wait for an active phase.
   const hasSearchWidget = data.sidebarPlan.includes('search');
-  const [searchPhaseId, setSearchPhaseId] = useState(activePhaseId);
-  const [searchText, setSearchText] = useState('');
-  const [tagsFilter, setTagsFilter] = useState<string[]>([]);
-  if (searchPhaseId !== activePhaseId) {
-    setSearchPhaseId(activePhaseId);
-    setSearchText('');
-    setTagsFilter([]);
-  }
-  const appliedText = useDebouncedValue(searchText, SEARCH_DEBOUNCE_MS, { immediate: isEmptySearchText }).trim();
-  const { data: tagsData, loading: tagsLoading } = useCalloutsSetTagsQuery({
-    variables: {
-      // biome-ignore lint/style/noNonNullAssertion: ensured by skip
-      calloutsSetId: data.calloutsSetId!,
-      classificationTagsets: activePhase ? [{ name: TagsetReservedName.FlowState, tags: [activePhase.label] }] : [],
-    },
-    skip: !hasSearchWidget || !data.calloutsSetId || !activePhase,
+  const { section: searchSection, ...searchOutlet } = useSidebarFlowStateSearch({
+    enabled: hasSearchWidget,
+    spaceId: data.levelZeroSpaceId,
+    flowStateId: activePhaseId,
+    calloutsSetId: activePhase ? data.calloutsSetId : undefined,
+    classificationTagsets: activePhase ? [{ name: TagsetReservedName.FlowState, tags: [activePhase.label] }] : [],
   });
-  const searchTerms = buildFlowStateSearchTerms(appliedText, tagsFilter);
-  const isSearching = hasSearchWidget && searchTerms.length > 0;
-  const flowStateSearch = useFlowStateSearch({
-    flowStateID: activePhaseId,
-    spaceID: data.levelZeroSpaceId,
-    terms: searchTerms,
-    skip: !isSearching,
-  });
-  const searchCalloutIds = mapFlowStateSearchCalloutIds(flowStateSearch.results);
-  const searchProps: SearchSectionProps | undefined = hasSearchWidget
-    ? {
-        text: searchText,
-        onTextChange: setSearchText,
-        appliedText,
-        allTags: tagsData?.lookup.calloutsSet?.tags ?? [],
-        tagsLoading,
-        selectedTags: tagsFilter,
-        onToggleTag: (tag: string) =>
-          setTagsFilter(prev => (prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag])),
-        matchCount:
-          flowStateSearch.status === 'results' || flowStateSearch.status === 'empty'
-            ? searchCalloutIds.length
-            : undefined,
-        hasMore: flowStateSearch.hasMore,
-        onClear: () => {
-          setSearchText('');
-          setTagsFilter([]);
-        },
-      }
-    : undefined;
-  const searchOutlet: SubspaceSearchOutlet = {
-    isSearching,
-    status: flowStateSearch.status,
-    appending: flowStateSearch.appending,
-    hasMore: flowStateSearch.hasMore,
-    sentinelRef: flowStateSearch.sentinelRef,
-    retry: flowStateSearch.retry,
-    calloutIds: searchCalloutIds,
-  };
+  const searchProps: SearchSectionProps | undefined = hasSearchWidget ? searchSection : undefined;
   // Wire the Create-Subspace template picker with this subspace's own templates
   // set + default subspace template (D21 / FR-031), matching the Settings flow.
   // Account stays undefined at L1/L2 — the same as the Settings scope.
