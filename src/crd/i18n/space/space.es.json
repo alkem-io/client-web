@@ -314,6 +314,7 @@
     "updateFailed": "No se pudieron guardar los cambios en la publicación. Por favor, inténtalo de nuevo.",
     "contributors": "Colaboradores",
     "subspaces": "Subespacios",
+    "spacesHidden": "Algunos espacios de esta vista no se muestran porque no tienes acceso a ellos.",
     "form": "Formulario"
   },
   "contribution": {
@@ -612,14 +613,34 @@
         "customDescription": "Muestra solo los colaboradores que selecciones."
       },
       "spaces": {
+        "fieldTitle": "Espacios mostrados en esta $t(common.callout)",
+        "switchLabel": "Elegir espacios manualmente",
         "autoDescription": "Muestra automáticamente todos los subespacios y se actualiza cuando se añaden o se eliminan.",
-        "customDescription": "Muestra solo los subespacios que selecciones a continuación."
+        "customDescription": "Muestra solo los espacios que selecciones a continuación."
+      },
+      "spacePicker": {
+        "searchPlaceholder": "Buscar espacios en esta cuenta…",
+        "searchAriaLabel": "Buscar espacios en esta cuenta",
+        "noMatches": "Ningún espacio de esta cuenta coincide con tu búsqueda.",
+        "accountEmpty": "Esta cuenta no tiene otros espacios.",
+        "loadFailed": "No se pudo cargar la lista de espacios.",
+        "chipsEmpty": "Aún no has elegido ningún espacio. Busca a continuación para añadirlos.",
+        "chipContext": "en {{parentName}}",
+        "badgeInThisSpace": "En este espacio",
+        "badgeCalloutIsHere": "La $t(common.callout) está aquí",
+        "noneSelected": "Ningún espacio seleccionado",
+        "selectedCount_one": "{{count}} espacio seleccionado",
+        "selectedCount_other": "{{count}} espacios seleccionados",
+        "clearSelection": "Borrar selección",
+        "levelSpace": "Espacio",
+        "levelSubspace": "Subespacio",
+        "levelSubsubspace": "Sub-subespacio",
+        "pathSubLine": "{{level}} en {{path}}",
+        "removeInParentAriaLabel": "Eliminar {{name}}, en {{parentName}}"
       },
       "noLongerAvailable": "Ya no disponible",
       "searchPlaceholder": "Buscar miembros…",
       "searchAriaLabel": "Buscar miembros",
-      "searchSubspacePlaceholder": "Buscar subespacios…",
-      "searchSubspaceAriaLabel": "Buscar subespacios",
       "noResults": "Sin resultados coincidentes",
       "loading": "Cargando…",
       "loadMore": "Cargando más…",

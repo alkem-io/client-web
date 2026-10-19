@@ -14,6 +14,13 @@ export type SpaceCollectionProps = {
   /** Whether the subspace set is still loading (renders a spinner, not the empty state). */
   loading?: boolean;
   /**
+   * Whether at least one manually selected space was withheld from THIS viewer for
+   * lack of read access (feature 084, AC6). Renders a short, non-actionable note —
+   * no name, no count, no link — beside whatever the collection shows, cards or
+   * empty state alike. Never while `loading`.
+   */
+  hasHiddenSpaces?: boolean;
+  /**
    * Card variant. `'compact'` (default) is today's 3-up grid;
    * `'expanded'` renders one rich card per row with What/Why/Who excerpts.
    */
@@ -39,6 +46,7 @@ export type SpaceCollectionProps = {
 export function SpaceCollection({
   subspaces,
   loading = false,
+  hasHiddenSpaces = false,
   variant = 'compact',
   onSubspaceClick,
   className,
@@ -56,11 +64,16 @@ export function SpaceCollection({
   }
 
   return (
-    <SpaceSubspacesList
-      subspaces={subspaces}
-      variant={variant}
-      onSubspaceClick={onSubspaceClick}
-      className={className}
-    />
+    <>
+      <SpaceSubspacesList
+        subspaces={subspaces}
+        variant={variant}
+        onSubspaceClick={onSubspaceClick}
+        className={className}
+      />
+      {/* An empty collection with no explanation is misleading, so the note sits
+          outside the list and renders beside the empty state too (US2-AS3). */}
+      {hasHiddenSpaces && <p className="mt-4 text-caption text-muted-foreground">{t('callout.spacesHidden')}</p>}
+    </>
   );
 }

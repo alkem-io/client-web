@@ -552,6 +552,7 @@ export function CalloutDetailDialogConnector({
     <SpaceCollectionConnector
       calloutId={callout.id}
       cardVariant={cardVariantFromServer(callout.settings.framing.spaces?.cardVariant)}
+      selectionMode={callout.settings.framing.selection?.mode}
     />
   ) : undefined;
 

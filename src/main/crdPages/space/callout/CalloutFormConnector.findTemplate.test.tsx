@@ -7,6 +7,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { CollaboraDocumentType, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 
 const mocks = vi.hoisted(() => ({
   handleCreateCallout: vi.fn(),
@@ -16,6 +17,7 @@ const mocks = vi.hoisted(() => ({
   spaceLoading: false,
   subspaceLoading: false,
   parentSpaceId: undefined as string | undefined,
+  entitlements: [] as string[],
   pick: undefined as undefined | ((values: Record<string, unknown>) => void),
 }));
 
@@ -37,7 +39,6 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useCalloutContentQuery: () => ({ data: undefined, loading: false }),
   useCreateReferenceOnProfileMutation: () => [vi.fn()],
   useDeleteReferenceMutation: () => [vi.fn()],
-  useSubspacesInSpaceQuery: () => ({ data: undefined, loading: false, refetch: vi.fn() }),
   useTemplateContentLazyQuery: () => [vi.fn()],
   useUpdateCalloutContentMutation: () => [vi.fn(), { loading: false }],
   useUpdateCalloutFormMutation: () => [vi.fn()],
@@ -47,7 +48,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 vi.mock('@/domain/space/context/useSpace', () => ({
   useSpace: () => ({
     space: { about: { membership: { roleSetID: 'role-set-1' } } },
-    entitlements: [],
+    entitlements: mocks.entitlements,
     permissions: { canUpdate: mocks.spaceCanUpdate },
     loading: mocks.spaceLoading,
   }),
@@ -108,6 +109,10 @@ vi.mock('@/domain/collaboration/calloutContributions/collaboraDocument/useRename
   useRenameCollaboraDocument: () => ({ rename: vi.fn() }),
 }));
 
+vi.mock('./useAccountSpaceCandidates', () => ({
+  useAccountSpaceCandidates: () => ({ candidates: [], loading: false, error: undefined, refetch: vi.fn() }),
+}));
+
 vi.mock('./useSelectionCandidates', async importOriginal => {
   const actual = await importOriginal<typeof import('./useSelectionCandidates')>();
   return {
@@ -146,17 +151,20 @@ const ui = () => <CalloutFormConnector open={true} onOpenChange={vi.fn()} mode="
 
 const findTemplateButton = () => screen.getByRole('button', { name: 'forms.findTemplate' });
 
-describe('CalloutFormConnector — manual template pick waits for the permission contexts', () => {
-  beforeEach(() => {
-    mocks.spaceCanUpdate = false;
-    mocks.subspaceId = '';
-    mocks.subspaceCanUpdate = false;
-    mocks.spaceLoading = false;
-    mocks.subspaceLoading = false;
-    mocks.parentSpaceId = undefined;
-    mocks.pick = undefined;
-  });
+// File-scoped so both suites below start from the same mock state.
+beforeEach(() => {
+  mocks.spaceCanUpdate = false;
+  mocks.subspaceId = '';
+  mocks.subspaceCanUpdate = false;
+  mocks.spaceLoading = false;
+  mocks.subspaceLoading = false;
+  mocks.parentSpaceId = undefined;
+  mocks.entitlements = [];
+  mocks.pick = undefined;
+  mocks.handleCreateCallout.mockReset();
+});
 
+describe('CalloutFormConnector — manual template pick waits for the permission contexts', () => {
   test('Find Template cannot be opened while the permissions are loading', () => {
     mocks.spaceLoading = true;
     render(ui());
@@ -199,5 +207,57 @@ describe('CalloutFormConnector — manual template pick waits for the permission
 
     expect(screen.getByDisplayValue('From template')).toBeInTheDocument();
     expect(screen.queryByRole('radio', { name: 'callout.form' })).not.toBeInTheDocument();
+  });
+});
+
+/**
+ * An applied Callout template carries the id of its Collabora document in
+ * `editMeta.collaboraDocumentId`, which the create mapper turns into
+ * `sourceCollaboraDocumentID` — a byte copy of the template's document. That id has no
+ * control of its own on screen, so abandoning the document framing has to drop it;
+ * otherwise it outlives the only visible trace of the template and silently copies the
+ * template's content into a document the author believes they created blank.
+ */
+describe('CalloutFormConnector — a template-carried Collabora source dies with the framing', () => {
+  beforeEach(() => {
+    mocks.entitlements = [LicenseEntitlementType.SpaceFlagOfficeDocuments];
+  });
+
+  const applyDocumentTemplate = () => {
+    render(ui());
+    fireEvent.click(findTemplateButton());
+    act(() =>
+      mocks.pick?.({
+        framingChip: 'document',
+        title: 'From template',
+        editMeta: { framingProfileId: 'fp-1', originalReferenceIds: [], collaboraDocumentId: 'doc-T' },
+      })
+    );
+  };
+
+  const documentChip = () => screen.getByRole('radio', { name: 'callout.document' });
+
+  const publishedFraming = async () => {
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'forms.publish' }));
+    });
+    return mocks.handleCreateCallout.mock.calls[0][0].framing;
+  };
+
+  test('publishing straight after the pick copies the template document', async () => {
+    applyDocumentTemplate();
+
+    expect((await publishedFraming()).collaboraDocument).toEqual({ sourceCollaboraDocumentID: 'doc-T' });
+  });
+
+  test('leaving the document framing and returning to it creates a blank document, not a copy', async () => {
+    applyDocumentTemplate();
+    fireEvent.click(documentChip()); // deselect → 'none'
+    fireEvent.click(documentChip()); // back to 'document', now without a source
+
+    expect((await publishedFraming()).collaboraDocument).toEqual({
+      displayName: 'From template',
+      documentType: CollaboraDocumentType.Wordprocessing,
+    });
   });
 });

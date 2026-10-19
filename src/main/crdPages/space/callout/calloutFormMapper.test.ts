@@ -114,8 +114,8 @@ describe('mapFormToCalloutCreationInput — framing branches', () => {
     expect((result.input.framing.whiteboard as { content?: unknown }).content).toBeUndefined();
     expect(result.input.framing.whiteboard?.profile.displayName).toBe('My callout');
     expect(result.input.framing.whiteboard?.previewSettings).toEqual(previewSettings);
-    // Preview blobs travel out-of-band, never on the input
-    expect(result.whiteboardPreviewImages).toEqual([previewBlob]);
+    // The server copies the source's visuals; no preview travels with or after the create
+    expect(result).not.toHaveProperty('whiteboardPreviewImages');
     expect((result.input.framing.whiteboard as { previewImages?: unknown }).previewImages).toBeUndefined();
   });
 
@@ -292,6 +292,45 @@ describe('mapFormToCalloutCreationInput — framing branches', () => {
         framingChip: 'document',
         title: 'My Q3 Doc', // author typed a title before/after staging the file — irrelevant to the document's own name
         collaboraUploadFile: stagedFile,
+      }),
+      createOptions
+    );
+    expect(result.input.framing.collaboraDocument).toEqual({});
+    expect(result.collaboraUploadFile).toBe(stagedFile);
+  });
+
+  it('"document" chip with editMeta.collaboraDocumentId and no staged file copies the source document (085 FR-017)', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({
+        framingChip: 'document',
+        title: 'From template',
+        collaboraDocumentType: CollaboraDocumentType.Spreadsheet,
+        editMeta: {
+          framingProfileId: 'profile-1',
+          originalReferenceIds: [],
+          collaboraDocumentId: 'source-doc-1',
+        },
+      }),
+      createOptions
+    );
+    expect(result.input.framing.collaboraDocument).toEqual({ sourceCollaboraDocumentID: 'source-doc-1' });
+    expect(result.collaboraUploadFile).toBeUndefined();
+  });
+
+  it('a staged file wins over editMeta.collaboraDocumentId — branch order is the whole mutual-exclusion rule, nothing is cleared (085 §6 D13)', () => {
+    const stagedFile = new File([new Uint8Array(10)], 'override.docx', {
+      type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    });
+    const result = mapFormToCalloutCreationInput(
+      baseValues({
+        framingChip: 'document',
+        title: 'From template',
+        collaboraUploadFile: stagedFile,
+        editMeta: {
+          framingProfileId: 'profile-1',
+          originalReferenceIds: [],
+          collaboraDocumentId: 'source-doc-1',
+        },
       }),
       createOptions
     );
@@ -607,24 +646,17 @@ describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
     expect(optedOut.input.sendNotification).toBe(false);
   });
 
-  it('whiteboardPreviewImages: emitted only when framing=Whiteboard AND blobs exist', () => {
-    const memoWithBlob = mapFormToCalloutCreationInput(
-      baseValues({ framingChip: 'memo', whiteboardPreviewImages: [previewBlob] }),
-      createOptions
-    );
-    expect(memoWithBlob.whiteboardPreviewImages).toBeUndefined();
-
-    const wbNoBlob = mapFormToCalloutCreationInput(
-      baseValues({ framingChip: 'whiteboard', whiteboardPreviewImages: [] }),
-      createOptions
-    );
-    expect(wbNoBlob.whiteboardPreviewImages).toBeUndefined();
-
-    const wbWithBlob = mapFormToCalloutCreationInput(
+  it('never returns preview images on create: the server copies the draft or source visuals', () => {
+    for (const values of [
       baseValues({ framingChip: 'whiteboard', whiteboardPreviewImages: [previewBlob] }),
-      createOptions
-    );
-    expect(wbWithBlob.whiteboardPreviewImages).toEqual([previewBlob]);
+      baseValues({
+        framingChip: 'whiteboard',
+        whiteboardPreviewImages: [previewBlob],
+        framingWhiteboardDraft: { whiteboardID: 'draft-wb', sourceKey: 'template' },
+      }),
+    ]) {
+      expect(mapFormToCalloutCreationInput(values, createOptions)).not.toHaveProperty('whiteboardPreviewImages');
+    }
   });
 });
 
