@@ -42,25 +42,6 @@ export type SubspaceVirtualContributorData = {
 
 export type SubspaceQuickActionId = 'community' | 'events' | 'activity' | 'index' | 'subspaces';
 
-/** The widgets a subspace sidebar can render. Any other widget id in `widgets` (a top-level-only
- *  widget) renders nothing — the consumer's plan resolver already drops those. */
-export type SubspaceSidebarWidgetId = Extract<
-  SidebarWidgetId,
-  | 'intent'
-  | 'about'
-  | 'createPost'
-  | 'addUser'
-  | 'createSubspace'
-  | 'search'
-  | 'subspaceLinks'
-  | 'community'
-  | 'events'
-  | 'activity'
-  | 'index'
-  | 'updates'
-  | 'virtualContributors'
->;
-
 export type SubspaceSidebarData = {
   description: string;
   leads: SubspaceLeadData[];
