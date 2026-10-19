@@ -79,7 +79,7 @@ export function ChatConversationList({
       ) : (
         // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
         // biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset
-        <ul role="list" className="min-h-0 flex-1 list-none overflow-y-auto px-1 pb-2">
+        <ul role="list" className="min-h-0 flex-1 list-none overflow-y-auto overscroll-contain px-1 pb-2">
           {filtered.map(item => {
             const selected = item.id === selectedConversationId;
             const hasUnread = item.unreadCount > 0;

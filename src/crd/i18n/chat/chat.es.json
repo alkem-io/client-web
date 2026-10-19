@@ -6,7 +6,9 @@
   },
   "panel": {
     "title": "Chat",
-    "settings": "Configuración de notificaciones"
+    "settings": "Configuración de notificaciones",
+    "expand": "Ampliar chat",
+    "collapse": "Reducir chat"
   },
   "actions": {
     "cancel": "Cancelar"
@@ -78,7 +80,8 @@
   "thread": {
     "back": "Volver a las conversaciones",
     "loading": "Cargando mensajes",
-    "addReaction": "Añadir reacción"
+    "addReaction": "Añadir reacción",
+    "options": "Opciones del chat"
   },
   "sendConfirmation": {
     "title": "Mensaje enviado",

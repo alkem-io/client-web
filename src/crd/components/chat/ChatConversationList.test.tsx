@@ -68,3 +68,10 @@ describe('ChatConversationList draft preview', () => {
     expect(names[1]).toContain('Grace Hopper');
   });
 });
+
+describe('ChatConversationList scrolling', () => {
+  test('contains overscroll, so scrolling past either end of the list does not scroll the page behind', () => {
+    renderList([conversation({})]);
+    expect(screen.getByRole('list').className).toContain('overscroll-contain');
+  });
+});
