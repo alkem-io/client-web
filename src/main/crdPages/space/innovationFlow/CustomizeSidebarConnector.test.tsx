@@ -124,6 +124,36 @@ describe('CustomizeSidebarConnector', () => {
     expect(screen.getAllByRole('checkbox')).toHaveLength(13);
   });
 
+  test('saves to the state that is first when saving, not the one that was first when opened', async () => {
+    const { rerender } = renderConnector([state(A1, 1, [SidebarWidget.Intent]), state(B2, 2, [SidebarWidget.Index])]);
+    await openDialog();
+    // A reorder that was already in flight lands while the dialog is open: B2 is now first and,
+    // because subspace lists follow their position, carries the first list.
+    rerender(
+      <CustomizeSidebarConnector
+        collaborationId="collab-1"
+        innovationFlowStates={[state(A1, 2, [SidebarWidget.Index]), state(B2, 1, [SidebarWidget.Intent])]}
+        level="L1"
+      />
+    );
+    await save();
+
+    await waitFor(() => expect(updateFlowStateSettings).toHaveBeenCalledOnce());
+    expect(savedVariables().innovationFlowStateId).toBe(B2);
+  });
+
+  test('is disabled while a structural change is in flight', () => {
+    render(
+      <CustomizeSidebarConnector
+        collaborationId="collab-1"
+        innovationFlowStates={[state(A1, 1, [])]}
+        level="L1"
+        busy={true}
+      />
+    );
+    expect(screen.getByRole('button', { name: 'layout.customizeSidebar.button' })).toBeDisabled();
+  });
+
   test('is enabled whenever states are loaded and disabled only without states', () => {
     const { unmount } = renderConnector([state(A1, 1, [])]);
     expect(screen.getByRole('button', { name: 'layout.customizeSidebar.button' })).not.toBeDisabled();

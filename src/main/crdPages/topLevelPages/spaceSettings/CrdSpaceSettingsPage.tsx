@@ -532,6 +532,7 @@ export default function CrdSpaceSettingsPage() {
                         collaborationId={layout.collaborationId}
                         innovationFlowStates={layout.innovationFlowStates}
                         level={level}
+                        busy={layout.saveBar.kind === 'saving' || layout.isStructureMutating || isReplacingFlow}
                       />
                       <LayoutReplaceFlowConnector
                         collaborationId={layout.collaborationId}

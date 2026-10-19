@@ -18,6 +18,9 @@ export type CustomizeSidebarConnectorProps = {
     | ReadonlyArray<{ id: string; sortOrder: number; settings: { sidebar: readonly string[] } }>
     | undefined;
   level: 'L1' | 'L2';
+  /** True while the Layout tab's structural save, a phase delete or a flow replacement is in
+   *  flight — the first phase may be about to change, so the dialog cannot be opened. */
+  busy?: boolean;
 };
 
 const EMPTY_VALUES: PhaseLayoutValues = { descriptionCollapsed: false, showPublishDetails: true, sidebar: [] };
@@ -28,7 +31,10 @@ const EMPTY_VALUES: PhaseLayoutValues = { descriptionCollapsed: false, showPubli
  * hidden phases included). The dialog pre-fills from that persisted state and saves ONLY its
  * `sidebar` key, immediately, through the settings-only phase update — independent of the
  * Layout tab's Save bar, so it stays enabled while the column buffer is dirty. A pending phase
- * reorder is safe: subspace sidebar lists stay attached to their position on reorder.
+ * reorder is safe: subspace sidebar lists stay attached to their position on reorder. The
+ * target phase is resolved when saving, from the latest persisted states, so a structural
+ * change that lands while the dialog is open never sends the list to a phase that is no
+ * longer first.
  *
  * Values outside the level's vocabulary (a top-level-only widget, Create Subspace on an L2, or
  * a value this bundle does not know) are neither shown nor offered, and are re-inserted at
@@ -38,39 +44,39 @@ export function CustomizeSidebarConnector({
   collaborationId,
   innovationFlowStates,
   level,
+  busy = false,
 }: CustomizeSidebarConnectorProps) {
   const { t } = useTranslation('crd-spaceSettings');
   const [updateFlowStateSettings] = useUpdateInnovationFlowStateSettingsMutation();
   const [open, setOpen] = useState(false);
   const [openCount, setOpenCount] = useState(0);
-  const [target, setTarget] = useState<{ stateId: string; values: PhaseLayoutValues } | undefined>(undefined);
+  const [values, setValues] = useState<PhaseLayoutValues>(EMPTY_VALUES);
 
   const vocabulary = SIDEBAR_WIDGET_IDS_BY_LEVEL[level];
 
   const handleOpen = () => {
     const first = selectFirstFlowState(innovationFlowStates);
     if (!first) return;
-    setTarget({
-      stateId: first.id,
-      values: {
-        descriptionCollapsed: false,
-        showPublishDetails: true,
-        sidebar: resolveSidebarPlan(first.settings.sidebar, vocabulary),
-        sidebarUnknown: extractUnknownSidebarEntries(first.settings.sidebar, vocabulary),
-      },
+    setValues({
+      descriptionCollapsed: false,
+      showPublishDetails: true,
+      sidebar: resolveSidebarPlan(first.settings.sidebar, vocabulary),
+      sidebarUnknown: extractUnknownSidebarEntries(first.settings.sidebar, vocabulary),
     });
     // Remount the dialog per open so it re-seeds from the latest persisted list.
     setOpenCount(count => count + 1);
     setOpen(true);
   };
 
-  const handleSave = async (values: PhaseLayoutValues) => {
-    if (!target) return;
+  const handleSave = async (edited: PhaseLayoutValues) => {
+    // The list sits at the first position, so it belongs to whichever state is first now.
+    const first = selectFirstFlowState(innovationFlowStates);
+    if (!first) return;
     await updateFlowStateSettings({
       variables: {
-        innovationFlowStateId: target.stateId,
+        innovationFlowStateId: first.id,
         // Sidebar only: omitting every other key leaves the phase's other settings untouched.
-        settings: { sidebar: toWireSidebar(values.sidebar, values.sidebarUnknown) },
+        settings: { sidebar: toWireSidebar(edited.sidebar, edited.sidebarUnknown) },
       },
       // The mutation selects settings.sidebar, so the normalized cache updates the subspace
       // page directly; the Layout tab's settings query is refetched to stay in step.
@@ -86,7 +92,7 @@ export function CustomizeSidebarConnector({
         size="sm"
         className="gap-2 shrink-0"
         onClick={handleOpen}
-        disabled={!innovationFlowStates || innovationFlowStates.length === 0}
+        disabled={busy || !innovationFlowStates || innovationFlowStates.length === 0}
       >
         <PanelLeft aria-hidden="true" className="size-4" />
         {t('layout.customizeSidebar.button')}
@@ -97,7 +103,7 @@ export function CustomizeSidebarConnector({
         open={open}
         onOpenChange={setOpen}
         phaseName=""
-        values={target?.values ?? EMPTY_VALUES}
+        values={values}
         onSave={handleSave}
         sidebarOnly={true}
         availableWidgets={vocabulary}
