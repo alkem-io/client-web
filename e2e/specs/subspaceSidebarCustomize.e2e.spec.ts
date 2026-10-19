@@ -400,9 +400,10 @@ test.describe('subspace sidebar — admin customizes once for every phase (US1)'
     for (const m of sent) expect(JSON.stringify(m.variables).toLowerCase()).not.toContain('sidebar');
   });
 
-  test('US1-AS7 — an empty sidebar renders no widgets (rail: expand only; drawer: edit-flow link only)', async ({
+  test('US1-AS7 — an empty sidebar hides the sidebar; only admins keep the drawer (edit-flow link)', async ({
     authedPage: page,
     request,
+    readonlyUser,
   }) => {
     await settingsLayout(page, L1_URL);
     const dialog = await openCustomizeSidebar(page);
@@ -415,16 +416,27 @@ test.describe('subspace sidebar — admin customizes once for every phase (US1)'
     expect((await readPhases(request, l1Id)).phases[0].settings.sidebar).toEqual([]);
 
     await spaNavigate(page, L1_URL);
-    await expect(sidebar(page)).toBeVisible();
-    expect(await sidebarItems(sidebar(page))).toEqual(['BUTTON:Collapse']);
-    await page.getByRole('button', { name: 'Collapse', exact: true }).click();
-    expect(await sidebarItems(sidebar(page))).toEqual(['BUTTON:Expand']);
-    await page.getByRole('button', { name: 'Expand', exact: true }).click();
+    await expect(page.getByRole('main')).toBeVisible();
+    await expect(sidebar(page)).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Collapse', exact: true })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Expand', exact: true })).toHaveCount(0);
+
     await page.setViewportSize({ width: 390, height: 800 });
     await page.getByRole('button', { name: 'Open menu' }).click();
     const drawer = page.getByRole('dialog', { name: 'Menu' });
-    expect(await sidebarItems(drawer.getByRole('complementary'))).toEqual([]);
+    await expect(drawer.getByRole('complementary')).toHaveCount(0);
     await expect(drawer.getByRole('link', { name: 'Edit innovation flow' })).toBeVisible();
+
+    if (missingReadonlyUser) return; // the member half needs the read-only persona
+    const member = await readonlyUser();
+    try {
+      await member.page.setViewportSize({ width: 390, height: 800 });
+      await member.page.goto(L1_URL);
+      await expect(member.page.getByRole('main')).toBeVisible();
+      await expect(member.page.getByRole('button', { name: 'Open menu' })).toHaveCount(0);
+    } finally {
+      await member.close();
+    }
   });
 
   test('US1-AS8 — customizing with a pending reorder lands on the phase at position 1', async ({
