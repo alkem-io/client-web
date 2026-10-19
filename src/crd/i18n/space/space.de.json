@@ -67,6 +67,8 @@
   },
   "sidebar": {
     "aboutSpace": "Über diesen Bereich",
+    "community": "Community",
+    "recentActivity": "Letzte Aktivitäten",
     "subspaces": "Unterbereiche",
     "showAll": "Alle anzeigen",
     "create": "Erstellen",

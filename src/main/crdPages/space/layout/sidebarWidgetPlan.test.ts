@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { SidebarWidget } from '@/core/apollo/generated/graphql-schema';
+import { SIDEBAR_WIDGET_IDS_BY_LEVEL } from '@/crd/components/space/settings/SpaceSettingsLayoutView.types';
 import {
   deriveWidgetSkips,
   extractUnknownSidebarEntries,
@@ -115,6 +116,94 @@ describe('deriveWidgetSkips', () => {
     const skips = deriveWidgetSkips(SIDEBAR_WIDGET_IDS);
     for (const widgetId of SIDEBAR_WIDGET_IDS) {
       expect(skips[widgetId]).toBe(false);
+    }
+  });
+});
+
+describe('per-level vocabulary', () => {
+  // The server's subspace first-phase default and its top-level tab-1 default.
+  const SUBSPACE_DEFAULT = [
+    SidebarWidget.Intent,
+    SidebarWidget.About,
+    SidebarWidget.CreatePost,
+    SidebarWidget.Community,
+    SidebarWidget.Events,
+    SidebarWidget.Activity,
+    SidebarWidget.Index,
+    SidebarWidget.SubspaceLinks,
+    SidebarWidget.VirtualContributors,
+    SidebarWidget.Updates,
+  ];
+  const L0_TAB_1 = [
+    SidebarWidget.Intent,
+    SidebarWidget.About,
+    SidebarWidget.CreatePost,
+    SidebarWidget.Search,
+    SidebarWidget.ApplicationButton,
+    SidebarWidget.SubspaceLinks,
+    SidebarWidget.Events,
+    SidebarWidget.Updates,
+  ];
+
+  it('both wire maps round-trip all sixteen widgets', () => {
+    expect(SIDEBAR_WIDGET_IDS).toHaveLength(16);
+    expect(new Set(toWireSidebar(SIDEBAR_WIDGET_IDS)).size).toBe(16);
+    expect(resolveSidebarPlan(toWireSidebar(SIDEBAR_WIDGET_IDS))).toEqual(SIDEBAR_WIDGET_IDS);
+    expect(toWireSidebar(['community', 'activity'])).toEqual([SidebarWidget.Community, SidebarWidget.Activity]);
+  });
+
+  it('L2 drops Create Subspace, Subspaces and unknown values, and carries all of them back on save', () => {
+    const stored = [SidebarWidget.Intent, SidebarWidget.CreateSubspace, SidebarWidget.SubspaceLinks, 'ZZZ'];
+    const vocabulary = SIDEBAR_WIDGET_IDS_BY_LEVEL.L2;
+    expect(resolveSidebarPlan(stored, vocabulary)).toEqual(['intent']);
+    const carried = extractUnknownSidebarEntries(stored, vocabulary);
+    expect(carried).toEqual([
+      { index: 1, value: SidebarWidget.CreateSubspace },
+      { index: 2, value: SidebarWidget.SubspaceLinks },
+      { index: 3, value: 'ZZZ' },
+    ]);
+    expect(toWireSidebar(['intent', 'search'], carried)).toEqual([
+      SidebarWidget.Intent,
+      SidebarWidget.CreateSubspace,
+      SidebarWidget.SubspaceLinks,
+      'ZZZ',
+      SidebarWidget.Search,
+    ]);
+  });
+
+  it('L1 given the top-level tab-1 list carries applicationButton at index 4', () => {
+    const vocabulary = SIDEBAR_WIDGET_IDS_BY_LEVEL.L1;
+    expect(resolveSidebarPlan(L0_TAB_1, vocabulary)).toEqual([
+      'intent',
+      'about',
+      'createPost',
+      'search',
+      'subspaceLinks',
+      'events',
+      'updates',
+    ]);
+    expect(extractUnknownSidebarEntries(L0_TAB_1, vocabulary)).toEqual([
+      { index: 4, value: SidebarWidget.ApplicationButton },
+    ]);
+  });
+
+  it('L0 given the subspace default renders all ten widgets', () => {
+    expect(resolveSidebarPlan(SUBSPACE_DEFAULT, SIDEBAR_WIDGET_IDS_BY_LEVEL.L0)).toHaveLength(10);
+    expect(extractUnknownSidebarEntries(SUBSPACE_DEFAULT, SIDEBAR_WIDGET_IDS_BY_LEVEL.L0)).toEqual([]);
+  });
+
+  it('the default vocabulary is the full top-level list', () => {
+    expect(SIDEBAR_WIDGET_IDS_BY_LEVEL.L0).toBe(SIDEBAR_WIDGET_IDS);
+    expect(resolveSidebarPlan(L0_TAB_1)).toEqual(resolveSidebarPlan(L0_TAB_1, SIDEBAR_WIDGET_IDS));
+  });
+
+  it('the subspace vocabularies list the thirteen (L1) and eleven (L2) subspace widgets', () => {
+    expect(SIDEBAR_WIDGET_IDS_BY_LEVEL.L1).toHaveLength(13);
+    expect(SIDEBAR_WIDGET_IDS_BY_LEVEL.L2).toEqual(
+      SIDEBAR_WIDGET_IDS_BY_LEVEL.L1.filter(id => id !== 'createSubspace' && id !== 'subspaceLinks')
+    );
+    for (const topLevelOnly of ['applicationButton', 'contactLeads', 'guidelines'] as const) {
+      expect(SIDEBAR_WIDGET_IDS_BY_LEVEL.L1).not.toContain(topLevelOnly);
     }
   });
 });
