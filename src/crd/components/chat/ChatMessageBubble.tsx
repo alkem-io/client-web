@@ -149,10 +149,12 @@ export function ChatMessageBubble({
                 message.isPending && 'opacity-60'
               )}
             >
+              {/* Markdown joins a single line break into a space; a chat line break
+                  (Shift+Enter) should stay one, so paragraphs keep their newlines. */}
               <MarkdownContent
                 allowHtml={false}
                 content={message.content}
-                className="text-body [&_p]:mb-1 [&_p]:text-foreground [&_p:last-child]:mb-0"
+                className="text-body [&_p]:mb-1 [&_p]:whitespace-pre-line [&_p]:text-foreground [&_p:last-child]:mb-0"
               />
             </div>
           )}

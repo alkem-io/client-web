@@ -234,6 +234,15 @@ describe('ChatMessageBubble', () => {
       expect(bubble?.querySelectorAll('li')).toHaveLength(2);
     });
 
+    test('a single line break, as typed with Shift+Enter, stays a line break', () => {
+      const { container } = render(
+        <ChatMessageBubble message={{ ...baseMessage, content: 'first line\nsecond line' }} />
+      );
+      const paragraph = container.querySelector('.rounded-2xl p');
+      expect(paragraph?.textContent).toBe('first line\nsecond line');
+      expect(paragraph?.closest('.\\[\\&_p\\]\\:whitespace-pre-line')).not.toBeNull();
+    });
+
     test('an autolinked URL still renders as a link', () => {
       const { container } = render(
         <ChatMessageBubble message={{ ...baseMessage, content: '<https://alkem.io/path>' }} />
