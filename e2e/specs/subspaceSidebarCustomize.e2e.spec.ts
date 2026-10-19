@@ -1,5 +1,16 @@
-import { type APIRequestContext, expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import { test } from '../fixtures/authFixture';
+import {
+  FIXTURE_URLS,
+  missingFixture,
+  missingReadonlyUser,
+  type Phase,
+  readPhases,
+  resolveFixtureIds,
+  SUBSPACE_DEFAULT as POSITIONAL_DEFAULT,
+  setPhaseOrder,
+  updatePhaseSettings,
+} from '../fixtures/subspaceSidebarFixture';
 
 /**
  * @forge-acceptance
@@ -10,24 +21,12 @@ import { test } from '../fixtures/authFixture';
  * Reproduces, as a durable live-stack walk, the acceptance scenarios /forge
  * verified headlessly (evidence lives in the forge run's evidence folder).
  *
- * Fixture (see the feature quickstart in the agents-hq workspace) — every URL is a
- * path or absolute URL on ALKEMIO_BASE_URL:
- *   E2E_SUBSPACE_L0_URL  — a top-level Space (default `/us1-sidebar-space`).
- *   E2E_SUBSPACE_L1_URL  — an L1 subspace created from the platform subspace
- *                          template AFTER the positional-defaults migration, so it
- *                          has five phases (default `<L0>/challenges/us1-alpha`).
- *   E2E_SUBSPACE_L2_URL  — an L2 under that L1 (default
- *                          `<L1>/opportunities/us1-alpha-2`).
- *   AUTH_TEST_HARNESS_EMAIL / AUTH_TEST_HARNESS_PASSWORD — an admin of the L0,
- *                          L1 and L2 (UPDATE right on every one of them).
- *   E2E_READONLY_USER_EMAIL — a member of the L1 WITHOUT update rights (the
- *                          no-entry-point scenario;
- *                          it is skipped when absent, never silently passed).
- *
- * The API probes (stored-list read-backs, the deliberate preconditions of the L2
- * and hidden-first-phase scenarios) go through the non-interactive login endpoint
- * (`POST /api/auth/non-interactive-login`) + the private non-interactive GraphQL
- * endpoint, so the stack must have ENABLE_NON_INTERACTIVE_LOGIN=true.
+ * Fixture and environment: see `e2e/fixtures/subspaceSidebarFixture.ts` (Alpha is the L1, Alpha-2
+ * the L2; the admin needs the update right on the Space, Alpha and Alpha-2). Without credentials
+ * or fixture the walk skips with the reason; the no-entry-point scenario also needs the member
+ * persona and is skipped when it is absent, never silently passed. The API probes (stored-list
+ * read-backs, the deliberate preconditions of the L2 and hidden-first-phase scenarios) go through
+ * the shared non-interactive GraphQL helper.
  *
  * Each test resets the first-phase list / visibility / phase order it depends on
  * through the API first, so the walk is order-independent. Not part of
@@ -35,33 +34,14 @@ import { test } from '../fixtures/authFixture';
  * e2e/README.md).
  */
 
-const BASE_URL = process.env.ALKEMIO_BASE_URL || 'http://localhost:3000';
-const L0_URL = absolute(process.env.E2E_SUBSPACE_L0_URL || '/us1-sidebar-space');
-const L1_URL = absolute(process.env.E2E_SUBSPACE_L1_URL || `${L0_URL}/challenges/us1-alpha`);
-const L2_URL = absolute(process.env.E2E_SUBSPACE_L2_URL || `${L1_URL}/opportunities/us1-alpha-2`);
-const ADMIN_EMAIL = process.env.AUTH_TEST_HARNESS_EMAIL || 'admin@alkem.io';
-const PASSWORD = process.env.AUTH_TEST_HARNESS_PASSWORD || 'change_me';
-const READONLY_EMAIL = process.env.E2E_READONLY_USER_EMAIL;
+const L0_URL = FIXTURE_URLS.l0;
+const L1_URL = FIXTURE_URLS.alpha;
+const L2_URL = FIXTURE_URLS.alpha2;
 
-const GRAPHQL = `${BASE_URL}/api/private/non-interactive/graphql`;
 const SIDEBAR_NAME = 'SubSpace sidebar';
 const PHASES_NAV_NAME = 'Innovation flow phases';
 const HELP_TEXT =
   "Choose which widgets appear in this subspace's sidebar, and in what order. This applies to the whole subspace — every phase shows the same set.";
-
-/** The platform subspace template's first-phase default after the positional migration. */
-const POSITIONAL_DEFAULT = [
-  'INTENT',
-  'ABOUT',
-  'CREATE_POST',
-  'COMMUNITY',
-  'EVENTS',
-  'ACTIVITY',
-  'INDEX',
-  'SUBSPACE_LINKS',
-  'VIRTUAL_CONTRIBUTORS',
-  'UPDATES',
-];
 
 /** Dialog label per stored widget value (existing editor labels). */
 const LABEL: Record<string, string> = {
@@ -79,95 +59,6 @@ const LABEL: Record<string, string> = {
   VIRTUAL_CONTRIBUTORS: 'Virtual Contributors',
   ACTIVITY: 'Recent Activity',
 };
-
-function absolute(url: string): string {
-  return url.startsWith('http') ? url : `${BASE_URL}${url}`;
-}
-
-// ---------------------------------------------------------------------------
-// API probes
-// ---------------------------------------------------------------------------
-
-type Phase = {
-  id: string;
-  displayName: string;
-  sortOrder: number;
-  settings: { visible: boolean; sidebar: string[]; descriptionDisplayMode: string };
-};
-
-async function gql<T>(
-  request: APIRequestContext,
-  query: string,
-  variables: Record<string, unknown> = {}
-): Promise<T> {
-  const login = await request.post(`${BASE_URL}/api/auth/non-interactive-login`, {
-    data: { email: ADMIN_EMAIL, password: PASSWORD },
-  });
-  expect(login.ok(), 'non-interactive login').toBeTruthy();
-  const { api_token: token } = await login.json();
-  const response = await request.post(GRAPHQL, {
-    headers: { authorization: `Bearer ${token}` },
-    data: { query, variables },
-  });
-  const body = await response.json();
-  expect(body.errors, JSON.stringify(body.errors)).toBeUndefined();
-  return body.data as T;
-}
-
-/** Resolves subspace ids from the fixture URLs (`/<l0>/challenges/<l1>[/opportunities/<l2>]`). */
-async function resolveSubspaceIds(request: APIRequestContext) {
-  const [l0, l1, l2] = [
-    new URL(L0_URL).pathname.split('/')[1],
-    new URL(L1_URL).pathname.split('/')[3],
-    new URL(L2_URL).pathname.split('/')[5],
-  ];
-  const data = await gql<{
-    lookupByName: { space: { subspaces: { id: string; nameID: string; subspaces: { id: string; nameID: string }[] }[] } };
-  }>(
-    request,
-    `query($l0: NameID!) { lookupByName { space(NAMEID: $l0) { subspaces { id nameID subspaces { id nameID } } } } }`,
-    { l0 }
-  );
-  const alpha = data.lookupByName.space.subspaces.find(s => s.nameID === l1);
-  const alpha2 = alpha?.subspaces.find(s => s.nameID === l2);
-  expect(alpha, `L1 ${l1} under ${l0}`).toBeTruthy();
-  expect(alpha2, `L2 ${l2} under ${l1}`).toBeTruthy();
-  return { l1: alpha?.id as string, l2: alpha2?.id as string };
-}
-
-async function readPhases(request: APIRequestContext, spaceId: string) {
-  const data = await gql<{
-    lookup: { space: { collaboration: { innovationFlow: { id: string; states: Phase[] } } } };
-  }>(
-    request,
-    `query($id: UUID!) { lookup { space(ID: $id) { collaboration { innovationFlow { id states {
-      id displayName sortOrder settings { visible sidebar descriptionDisplayMode } } } } } } }`,
-    { id: spaceId }
-  );
-  const flow = data.lookup.space.collaboration.innovationFlow;
-  return { flowId: flow.id, phases: [...flow.states].sort((a, b) => a.sortOrder - b.sortOrder) };
-}
-
-async function updatePhaseSettings(
-  request: APIRequestContext,
-  stateId: string,
-  settings: Record<string, unknown>
-) {
-  await gql(
-    request,
-    `mutation($id: UUID!, $s: UpdateInnovationFlowStateSettingsInput) {
-      updateInnovationFlowState(stateData: { innovationFlowStateID: $id, settings: $s }) { id } }`,
-    { id: stateId, s: settings }
-  );
-}
-
-async function setPhaseOrder(request: APIRequestContext, flowId: string, stateIds: string[]) {
-  await gql(
-    request,
-    `mutation($d: UpdateInnovationFlowStatesSortOrderInput!) { updateInnovationFlowStatesSortOrder(sortOrderData: $d) { id } }`,
-    { d: { innovationFlowID: flowId, stateIDs: stateIds } }
-  );
-}
 
 // ---------------------------------------------------------------------------
 // UI helpers
@@ -289,6 +180,7 @@ async function openPhaseLayoutDialog(page: Page, phaseName: string): Promise<Loc
 
 test.describe('subspace sidebar — admin customizes once for every phase (US1)', () => {
   test.describe.configure({ mode: 'serial' });
+  test.skip(!!missingFixture, missingFixture);
 
   let l1Id: string;
   let l2Id: string;
@@ -296,7 +188,7 @@ test.describe('subspace sidebar — admin customizes once for every phase (US1)'
   let flowId = '';
 
   test.beforeAll(async ({ request }) => {
-    ({ l1: l1Id, l2: l2Id } = await resolveSubspaceIds(request));
+    ({ alpha: l1Id, alpha2: l2Id } = await resolveFixtureIds(request));
     const { flowId: id, phases } = await readPhases(request, l1Id);
     flowId = id;
     // The platform subspace template ships Explore, Define, Brainstorm, Validate, Evaluate; a previous
@@ -576,7 +468,7 @@ test.describe('subspace sidebar — admin customizes once for every phase (US1)'
   test('US1-AS9 — a member without update rights has no entry point and no settings route', async ({
     readonlyUser,
   }) => {
-    test.skip(!READONLY_EMAIL, 'E2E_READONLY_USER_EMAIL not set — member persona required for US1-AS9');
+    test.skip(!!missingReadonlyUser, missingReadonlyUser);
     const { page, close } = await readonlyUser();
     try {
       await page.goto(L1_URL);

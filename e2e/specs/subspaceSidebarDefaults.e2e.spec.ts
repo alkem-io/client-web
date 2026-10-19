@@ -1,5 +1,15 @@
-import type { APIRequestContext, Locator, Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { expect, test } from '../fixtures/authFixture';
+import {
+  FIXTURE_URLS,
+  gql,
+  missingBeta,
+  missingCredentials,
+  missingFixture,
+  missingReadonlyUser,
+  rankStates as rank,
+  resolveFixtureIds,
+} from '../fixtures/subspaceSidebarFixture';
 
 /**
  * @forge-acceptance
@@ -12,30 +22,14 @@ import { expect, test } from '../fixtures/authFixture';
  * scenarios (null/missing key, idempotency, orphans) are proven by the
  * throwaway-Postgres migration fixture run (see the forge evidence), not here.
  *
- * Fixture (the feature quickstart in the agents-hq workspace), all via env:
- *   E2E_ALPHA_URL           — an L1 subspace created from the platform subspace template
- *                             (post-migration => positional lists), with at least one nested L2 and
- *                             one posted community update; admin is a lead/admin.
- *   E2E_ALPHA2_URL          — an L2 subspace under it.
- *   E2E_BETA_SUBSPACE_ID    — (optional) an L1 whose phase 2 list was customized.
- *   E2E_BETA_URL            — the page URL of that same L1 (required with E2E_BETA_SUBSPACE_ID:
- *                             the stored-lists scenario asserts what the page renders).
- *   E2E_L0_SPACE_ID         — (optional) the parent L0 space id (lists must equal the top-level Space defaults).
- * Actors: primary (admin, authedPage), secondary member (AUTH_TEST_HARNESS_EMAIL_2, a member of the
- * subspace without update rights) and an anonymous context (the L0/subspace must be PUBLIC).
- *
- * The API probes log in through `POST /api/auth/non-interactive-login`, so the stack must have
- * ENABLE_NON_INTERACTIVE_LOGIN=true; a failed login is a red test, never a skip.
+ * Fixture and environment: see `e2e/fixtures/subspaceSidebarFixture.ts`. Alpha must be untouched
+ * (its positional lists), have at least one nested L2 and one posted community update; Beta is the
+ * customized L1. Actors: the admin (authedPage), the member without update rights (readonlyUser)
+ * and an anonymous context. Without credentials or fixture the walks skip with the reason; a
+ * failed login is a red test, never a skip.
  *
  * Not part of `pnpm test` (vitest) — live-stack only, `pnpm test:e2e`.
  */
-
-const ALPHA_URL = process.env.E2E_ALPHA_URL;
-const ALPHA2_URL = process.env.E2E_ALPHA2_URL;
-const BETA_ID = process.env.E2E_BETA_SUBSPACE_ID;
-const BETA_URL = process.env.E2E_BETA_URL;
-const L0_ID = process.env.E2E_L0_SPACE_ID;
-const BASE_URL = process.env.ALKEMIO_BASE_URL || 'http://localhost:3000';
 
 const SIDEBAR_NAME = 'SubSpace sidebar';
 const QUICK_ACTIONS = ['Community', 'Events', 'Recent Activity', 'Post Index'] as const;
@@ -93,34 +87,8 @@ async function gotoSubspace(page: Page, url: string) {
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 }
 
-async function gql(request: APIRequestContext, query: string, variables: Record<string, unknown> = {}) {
-  const login = await request.post(`${BASE_URL}/api/auth/non-interactive-login`, {
-    data: {
-      email: process.env.AUTH_TEST_HARNESS_EMAIL || 'admin@alkem.io',
-      password: process.env.AUTH_TEST_HARNESS_PASSWORD || 'change_me',
-    },
-  });
-  expect(login.ok(), 'non-interactive login (needs ENABLE_NON_INTERACTIVE_LOGIN=true)').toBeTruthy();
-  const { api_token: token } = await login.json();
-  const res = await request.post(`${BASE_URL}/api/private/non-interactive/graphql`, {
-    headers: { authorization: `Bearer ${token}` },
-    data: { query, variables },
-  });
-  expect(res.ok()).toBe(true);
-  const body = await res.json();
-  expect(body.errors, JSON.stringify(body.errors)).toBeUndefined();
-  return body.data;
-}
-
 const STATES = `states { id displayName sortOrder settings { sidebar } }`;
-/** Lowest sortOrder first, ties broken by id (plain code-unit compare) — the client's and server's first-state rule. */
-const rank = <T extends { sortOrder: number; id?: string }>(states: T[]) =>
-  [...states].sort((a, b) => {
-    if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
-    const [x, y] = [(a.id ?? '').toLowerCase(), (b.id ?? '').toLowerCase()];
-    return x < y ? -1 : x > y ? 1 : 0;
-  });
-
+type StoredState = { id: string; sortOrder: number; settings: { sidebar: string[] } };
 const SUBSPACE_DEFAULT = [
   'INTENT', 'ABOUT', 'CREATE_POST', 'COMMUNITY', 'EVENTS', 'ACTIVITY', 'INDEX', 'SUBSPACE_LINKS', 'VIRTUAL_CONTRIBUTORS', 'UPDATES',
 ];
@@ -177,10 +145,10 @@ async function expectRenderedList(root: Locator, stored: string[]) {
 }
 
 test.describe('subspace sidebar — untouched subspaces look as before (US2)', () => {
-  test.skip(!ALPHA_URL, 'E2E_ALPHA_URL not set — no L1 fixture to walk');
+  test.skip(!!missingFixture, missingFixture);
 
   test('US2-AS1 — admin: expanded, collapsed rail and 400px drawer show today\'s widgets, no search', async ({ authedPage }) => {
-    await gotoSubspace(authedPage, ALPHA_URL!);
+    await gotoSubspace(authedPage, FIXTURE_URLS.alpha);
     await expectTodaysSidebar(sidebar(authedPage), { addPost: true, recentActivity: true, nested: true });
 
     // Collapsed rail: Add Post icon + the four quick-action icons (+ nested-subspace tiles).
@@ -195,16 +163,17 @@ test.describe('subspace sidebar — untouched subspaces look as before (US2)', (
 
     // Mobile drawer.
     await authedPage.setViewportSize({ width: 400, height: 800 });
-    await gotoSubspace(authedPage, ALPHA_URL!);
+    await gotoSubspace(authedPage, FIXTURE_URLS.alpha);
     await authedPage.getByRole('button', { name: 'Open menu' }).click();
     const drawer = authedPage.getByRole('dialog', { name: 'Menu' });
     await expectTodaysSidebar(drawer, { addPost: true, recentActivity: true, nested: true });
   });
 
-  test('US2-AS1 — member (no update rights): same widgets, no editing entry points', async ({ secondUser }) => {
-    const { page, close } = await secondUser();
+  test('US2-AS1 — member (no update rights): same widgets, no editing entry points', async ({ readonlyUser }) => {
+    test.skip(!!missingReadonlyUser, missingReadonlyUser);
+    const { page, close } = await readonlyUser();
     try {
-      await gotoSubspace(page, ALPHA_URL!);
+      await gotoSubspace(page, FIXTURE_URLS.alpha);
       await expectTodaysSidebar(sidebar(page), { addPost: true, recentActivity: true, nested: true });
       await expect(sidebar(page).getByRole('button', { name: 'Edit description' })).toHaveCount(0);
     } finally {
@@ -213,8 +182,7 @@ test.describe('subspace sidebar — untouched subspaces look as before (US2)', (
   });
 
   test('US2-AS1 — an L2 subspace renders today\'s sidebar too (no nested-subspaces section)', async ({ authedPage }) => {
-    test.skip(!ALPHA2_URL, 'E2E_ALPHA2_URL not set');
-    await gotoSubspace(authedPage, ALPHA2_URL!);
+    await gotoSubspace(authedPage, FIXTURE_URLS.alpha2);
     await expectTodaysSidebar(sidebar(authedPage), { addPost: true, recentActivity: true, nested: false });
   });
 
@@ -228,7 +196,7 @@ test.describe('subspace sidebar — untouched subspaces look as before (US2)', (
       }
     });
     try {
-      await gotoSubspace(page, ALPHA_URL!);
+      await gotoSubspace(page, FIXTURE_URLS.alpha);
       await expectTodaysSidebar(sidebar(page), { addPost: false, recentActivity: false, nested: true });
       await expect(page.getByRole('alert')).toHaveCount(0);
       expect(operations.filter(o => /activityLogOnCollaboration/i.test(o))).toEqual([]);
@@ -239,15 +207,18 @@ test.describe('subspace sidebar — untouched subspaces look as before (US2)', (
 });
 
 test.describe('subspace sidebar — stored lists (US2 data reads)', () => {
+  test.skip(!!missingCredentials, missingCredentials);
+
   test('US2-AS8/AS4 — the platform subspace template carries the positional lists in positions 1-5', async ({ request }) => {
-    const data = await gql(
+    type TemplateDefault = {
+      type: string;
+      template: { contentSpace: { level: string; collaboration: { innovationFlow: { states: StoredState[] } } } };
+    };
+    const data = await gql<{ platform: { templatesManager: { templateDefaults: TemplateDefault[] } } }>(
       request,
       `{ platform { templatesManager { templateDefaults { type template { contentSpace { level collaboration { innovationFlow { ${STATES} } } } } } } } }`
     );
-    const defaults = data.platform.templatesManager.templateDefaults as Array<{
-      type: string;
-      template: { contentSpace: { level: string; collaboration: { innovationFlow: { states: Array<{ sortOrder: number; settings: { sidebar: string[] } }> } } } };
-    }>;
+    const defaults = data.platform.templatesManager.templateDefaults;
     const subspaceTemplate = defaults.find(d => d.type === 'PLATFORM_SUBSPACE')!.template.contentSpace;
     expect(subspaceTemplate.level).toBe('L1');
     const lists = rank(subspaceTemplate.collaboration.innovationFlow.states).map(s => s.settings.sidebar);
@@ -266,25 +237,30 @@ test.describe('subspace sidebar — stored lists (US2 data reads)', () => {
   });
 
   test('US2-AS3 — the L0 space flow keeps the 055 default lists', async ({ request }) => {
-    test.skip(!L0_ID, 'E2E_L0_SPACE_ID not set');
-    const data = await gql(request, `query($id: UUID!) { lookup { space(ID: $id) { collaboration { innovationFlow { ${STATES} } } } } }`, {
-      id: L0_ID,
-    });
-    const lists = rank(data.lookup.space.collaboration.innovationFlow.states as Array<{ sortOrder: number; settings: { sidebar: string[] } }>).map(
-      s => s.settings.sidebar
+    test.skip(!!missingFixture, missingFixture);
+    const { l0 } = await resolveFixtureIds(request);
+    const data = await gql<{ lookup: { space: { collaboration: { innovationFlow: { states: StoredState[] } } } } }>(
+      request,
+      `query($id: UUID!) { lookup { space(ID: $id) { collaboration { innovationFlow { ${STATES} } } } } }`,
+      { id: l0 }
     );
+    const lists = rank(data.lookup.space.collaboration.innovationFlow.states).map(s => s.settings.sidebar);
     expect(lists.slice(0, 4)).toEqual([L0_TAB_1, TAB_2, TAB_3, GENERIC]);
   });
 
   test('US2-AS2 — a customized L1 keeps its stored lists and renders its stored first list', async ({ request, authedPage }) => {
-    test.skip(!BETA_ID || !BETA_URL, 'E2E_BETA_SUBSPACE_ID and E2E_BETA_URL (the same customized L1) not set');
-    type Flow = { states: Array<{ id: string; sortOrder: number; settings: { sidebar: string[] } }> };
+    const missing = missingFixture ?? missingBeta;
+    test.skip(!!missing, missing);
+    const { beta } = await resolveFixtureIds(request);
+    type Beta = { nameID: string; collaboration: { innovationFlow: { states: StoredState[] } } };
     const read = async () =>
       (
-        await gql(request, `query($id: UUID!) { lookup { space(ID: $id) { nameID collaboration { innovationFlow { ${STATES} } } } } }`, {
-          id: BETA_ID,
-        })
-      ).lookup.space as { nameID: string; collaboration: { innovationFlow: Flow } };
+        await gql<{ lookup: { space: Beta } }>(
+          request,
+          `query($id: UUID!) { lookup { space(ID: $id) { nameID collaboration { innovationFlow { ${STATES} } } } } }`,
+          { id: beta }
+        )
+      ).lookup.space;
     const before = await read();
     const phases = rank(before.collaboration.innovationFlow.states);
     const first = phases[0].settings.sidebar;
@@ -300,7 +276,7 @@ test.describe('subspace sidebar — stored lists (US2 data reads)', () => {
       );
     }
 
-    await gotoSubspace(authedPage, BETA_URL!);
+    await gotoSubspace(authedPage, FIXTURE_URLS.beta as string);
     await expectRenderedList(sidebar(authedPage), first);
 
     // Reading/opening the subspace never rewrites a stored list.

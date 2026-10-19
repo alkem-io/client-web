@@ -1,4 +1,16 @@
-import { type Browser, type BrowserContext, expect, type Page, test } from '@playwright/test';
+import { type APIRequestContext, type Browser, type BrowserContext, expect, type Page, test } from '@playwright/test';
+import {
+  FIXTURE_URLS,
+  missingFixture,
+  missingReadonlyUser,
+  type Phase,
+  READONLY_EMAIL,
+  readPhases,
+  resolveFixtureIds,
+  SUBSPACE_DEFAULT,
+  signIn,
+  updatePhaseSettings,
+} from '../fixtures/subspaceSidebarFixture';
 
 /**
  * @forge-acceptance
@@ -15,27 +27,18 @@ import { type Browser, type BrowserContext, expect, type Page, test } from '@pla
  * Customize Sidebar dialog performs) and restores today's default list in
  * `afterAll`. It never touches the database.
  *
- * Fixture (the feature quickstart, "Fixture for the walks"):
- *   E2E_L0_NAMEID      — top-level Space nameID, PUBLIC privacy      (default us3-sidebar-space)
- *   E2E_ALPHA_NAMEID   — an L1 under it, created from the platform subspace
- *                        template; members may NOT create subspaces
- *                        (allowMembersToCreateSubspaces = false); its first
- *                        (active) phase holds a post containing "climate"
- *                        tagged Policy plus a post tagged Solar, and its
- *                        second phase has a name that differs from every
- *                        other phase                               (default alpha)
- *   E2E_ALPHA2_NAMEID  — an L2 under Alpha; its first (active) phase holds a
- *                        post containing "delta-unique-4471", its second phase
- *                        holds a different post                    (default alpha2)
- *   the L0's own phase named like Alpha's first phase holds a post containing
- *   "zebra-unique-9271" (search must not leak it into the subspace).
- *   Search ingest (`adminSearchIngestFromScratch`) must have run after seeding.
- *
- * Accounts (env, defaults for the forge stack):
- *   E2E_ADMIN_EMAIL / E2E_ADMIN_PASSWORD     — Space admin (also drives the API writes)
- *   E2E_MEMBER_EMAIL / E2E_MEMBER_PASSWORD   — a member of the L0, Alpha and Alpha-2
- *                                              without update rights
- *   E2E_SERVER_URL                           — server direct URL for the token mint (default http://localhost:4000)
+ * Fixture and environment: see `e2e/fixtures/subspaceSidebarFixture.ts` (the feature
+ * quickstart's "Fixture for the walks"). This walk also needs, on that fixture:
+ *   - Alpha: members may NOT create subspaces (allowMembersToCreateSubspaces = false); its first
+ *     (active) phase holds a post containing "climate" tagged Policy plus a post tagged Solar, and
+ *     its second phase has a name that differs from every other phase;
+ *   - Alpha-2: its first (active) phase holds a post containing "delta-unique-4471", its second
+ *     phase holds a different post;
+ *   - the Space's own phase named like Alpha's first phase holds a post containing
+ *     "zebra-unique-9271" (search must not leak it into the subspace);
+ *   - search ingest (`adminSearchIngestFromScratch`) has run after seeding.
+ * Actors: the admin (also drives the API writes), the member without update rights and an
+ * anonymous context. Without credentials, fixture or member the walk skips with the reason.
  *
  * Deviation recorded for the unknown-widget scenario: the "unknown value" leg is exercised by
  * injecting a wire-valid-but-client-unknown value into the GraphQL *response*
@@ -46,35 +49,8 @@ import { type Browser, type BrowserContext, expect, type Page, test } from '@pla
  * Not part of `pnpm test` (vitest) — live-stack only, run via `pnpm test:e2e`.
  */
 
-const BASE_URL = process.env.ALKEMIO_BASE_URL || 'http://localhost:3000';
-const SERVER_URL = process.env.E2E_SERVER_URL || 'http://localhost:4000';
-const GRAPHQL_URL = `${BASE_URL}/api/private/non-interactive/graphql`;
-
-const L0_NAMEID = process.env.E2E_L0_NAMEID || 'us3-sidebar-space';
-const ALPHA_NAMEID = process.env.E2E_ALPHA_NAMEID || 'alpha';
-const ALPHA2_NAMEID = process.env.E2E_ALPHA2_NAMEID || 'alpha2';
-
-const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL || process.env.AUTH_TEST_HARNESS_EMAIL || 'admin@alkem.io';
-const ADMIN_PASSWORD = process.env.E2E_ADMIN_PASSWORD || process.env.AUTH_TEST_HARNESS_PASSWORD || 'password';
-const MEMBER_EMAIL = process.env.E2E_MEMBER_EMAIL || 'us3member@alkem.io';
-const MEMBER_PASSWORD = process.env.E2E_MEMBER_PASSWORD || 'Us3-Sidebar-Test-9271!';
-
-const ALPHA_URL = `${BASE_URL}/${L0_NAMEID}/challenges/${ALPHA_NAMEID}`;
-const ALPHA2_URL = `${ALPHA_URL}/opportunities/${ALPHA2_NAMEID}`;
-
-/** Today's subspace default list — restored after the walk. */
-const SUBSPACE_DEFAULT = [
-  'INTENT',
-  'ABOUT',
-  'CREATE_POST',
-  'COMMUNITY',
-  'EVENTS',
-  'ACTIVITY',
-  'INDEX',
-  'SUBSPACE_LINKS',
-  'VIRTUAL_CONTRIBUTORS',
-  'UPDATES',
-];
+const ALPHA_URL = FIXTURE_URLS.alpha;
+const ALPHA2_URL = FIXTURE_URLS.alpha2;
 
 const SIDEBAR_NAME = 'SubSpace sidebar';
 
@@ -82,101 +58,27 @@ const SIDEBAR_NAME = 'SubSpace sidebar';
 // API helpers
 // ---------------------------------------------------------------------------
 
-type FlowState = { id: string; displayName: string; sortOrder: number };
-type FlowFixture = { states: FlowState[] };
-type Fixture = { alpha: FlowFixture; alpha2: FlowFixture };
+type Fixture = { alphaId: string; alpha: { states: Phase[] }; alpha2: { states: Phase[] } };
 
-async function mintToken(email: string, password: string): Promise<string> {
-  const res = await fetch(`${SERVER_URL}/api/auth/non-interactive-login`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ email, password }),
-  });
-  if (!res.ok) throw new Error(`non-interactive login failed for ${email}: ${res.status}`);
-  return ((await res.json()) as { api_token: string }).api_token;
+async function resolveFixture(request: APIRequestContext): Promise<Fixture> {
+  const ids = await resolveFixtureIds(request);
+  const [alpha, alpha2] = await Promise.all([readPhases(request, ids.alpha), readPhases(request, ids.alpha2)]);
+  return { alphaId: ids.alpha, alpha: { states: alpha.phases }, alpha2: { states: alpha2.phases } };
 }
 
-let adminToken = '';
-
-async function gql<T>(query: string, variables: Record<string, unknown> = {}): Promise<T> {
-  const res = await fetch(GRAPHQL_URL, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', authorization: `Bearer ${adminToken}` },
-    body: JSON.stringify({ query, variables }),
-  });
-  const body = (await res.json()) as { data?: T; errors?: { message: string }[] };
-  if (body.errors?.length) throw new Error(body.errors.map(e => e.message).join('; '));
-  return body.data as T;
+function setSidebar(request: APIRequestContext, stateId: string, sidebar: string[]): Promise<void> {
+  return updatePhaseSettings(request, stateId, { sidebar });
 }
 
-const sortStates = (states: FlowState[]) =>
-  [...states].sort((a, b) => a.sortOrder - b.sortOrder || a.id.localeCompare(b.id));
-
-async function resolveFixture(): Promise<Fixture> {
-  const flow = 'collaboration { innovationFlow { states { id displayName sortOrder } } }';
-  const data = await gql<{
-    spaces: {
-      nameID: string;
-      subspaces: { nameID: string; collaboration: { innovationFlow: { states: FlowState[] } }; subspaces: any[] }[];
-    }[];
-  }>(`{ spaces { nameID subspaces { nameID ${flow} subspaces { nameID ${flow} } } } }`);
-  const l0 = data.spaces.find(s => s.nameID === L0_NAMEID);
-  const alpha = l0?.subspaces.find(s => s.nameID === ALPHA_NAMEID);
-  const alpha2 = alpha?.subspaces.find((s: { nameID: string }) => s.nameID === ALPHA2_NAMEID);
-  if (!alpha || !alpha2) throw new Error('fixture subspaces not found — see the spec header');
-  return {
-    alpha: { states: sortStates(alpha.collaboration.innovationFlow.states) },
-    alpha2: { states: sortStates(alpha2.collaboration.innovationFlow.states) },
-  };
-}
-
-async function setSidebar(stateId: string, sidebar: string[]): Promise<void> {
-  await gql(
-    `mutation($d: UpdateInnovationFlowStateInput!) { updateInnovationFlowState(stateData: $d) { id settings { sidebar } } }`,
-    { d: { innovationFlowStateID: stateId, settings: { sidebar } } }
-  );
-}
-
-async function readSidebar(stateId: string, flowOwner: 'alpha' | 'alpha2'): Promise<string[]> {
-  const data = await gql<{
-    spaces: {
-      nameID: string;
-      subspaces: {
-        nameID: string;
-        collaboration: { innovationFlow: { states: { id: string; settings: { sidebar: string[] } }[] } };
-        subspaces: {
-          nameID: string;
-          collaboration: { innovationFlow: { states: { id: string; settings: { sidebar: string[] } }[] } };
-        }[];
-      }[];
-    }[];
-  }>(`{ spaces { nameID subspaces { nameID collaboration { innovationFlow { states { id settings { sidebar } } } }
-      subspaces { nameID collaboration { innovationFlow { states { id settings { sidebar } } } } } } } }`);
-  const l0 = data.spaces.find(s => s.nameID === L0_NAMEID);
-  const alpha = l0?.subspaces.find(s => s.nameID === ALPHA_NAMEID);
-  const owner = flowOwner === 'alpha' ? alpha : alpha?.subspaces.find(s => s.nameID === ALPHA2_NAMEID);
-  const state = owner?.collaboration.innovationFlow.states.find(s => s.id === stateId);
-  if (!state) throw new Error('state not found for read-back');
-  return state.settings.sidebar;
+async function readSidebar(request: APIRequestContext, spaceId: string, stateId: string): Promise<string[]> {
+  const state = (await readPhases(request, spaceId)).phases.find(phase => phase.id === stateId);
+  expect(state, 'state for read-back').toBeTruthy();
+  return state?.settings.sidebar ?? [];
 }
 
 // ---------------------------------------------------------------------------
 // UI helpers
 // ---------------------------------------------------------------------------
-
-async function signIn(page: Page, email: string, password: string): Promise<void> {
-  await page.goto(BASE_URL);
-  await acceptCookies(page);
-  await page
-    .getByRole('link', { name: /log ?in|sign ?in/i })
-    .first()
-    .click();
-  await page.waitForURL(/.*login.*/);
-  await page.getByRole('textbox', { name: /E-Mail/i }).fill(email);
-  await page.getByRole('textbox', { name: /Password/i }).fill(password);
-  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-  await page.waitForURL(/.*home.*/);
-}
 
 /** The consent banner may or may not show; `click` (unlike `isVisible`) honours its timeout. */
 async function acceptCookies(page: Page): Promise<void> {
@@ -208,19 +110,21 @@ async function openSubspace(page: Page, url: string): Promise<void> {
 test.describe.configure({ mode: 'serial' });
 
 test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
+  const missing = missingFixture ?? missingReadonlyUser;
+  test.skip(!!missing, missing);
+
   let browserRef: Browser;
   let admin: BrowserContext;
   let member: BrowserContext;
   let anonymous: BrowserContext;
   let fx: Fixture;
   let alphaFirst: string;
-  let alphaSecond: FlowState;
+  let alphaSecond: Phase;
   let alpha2First: string;
 
-  test.beforeAll(async ({ browser }) => {
+  test.beforeAll(async ({ browser, request }) => {
     browserRef = browser;
-    adminToken = await mintToken(ADMIN_EMAIL, ADMIN_PASSWORD);
-    fx = await resolveFixture();
+    fx = await resolveFixture(request);
     alphaFirst = fx.alpha.states[0].id;
     alphaSecond = fx.alpha.states[1];
     alpha2First = fx.alpha2.states[0].id;
@@ -229,21 +133,21 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
     member = await browserRef.newContext({ viewport: { width: 1440, height: 1000 } });
     anonymous = await browserRef.newContext({ viewport: { width: 1440, height: 1000 } });
     const adminPage = await admin.newPage();
-    await signIn(adminPage, ADMIN_EMAIL, ADMIN_PASSWORD);
+    await signIn(adminPage);
     await adminPage.close();
     const memberPage = await member.newPage();
-    await signIn(memberPage, MEMBER_EMAIL, MEMBER_PASSWORD);
+    await signIn(memberPage, READONLY_EMAIL);
     await memberPage.close();
   });
 
-  test.afterAll(async () => {
-    if (alphaFirst) await setSidebar(alphaFirst, SUBSPACE_DEFAULT);
-    if (alpha2First) await setSidebar(alpha2First, SUBSPACE_DEFAULT);
+  test.afterAll(async ({ request }) => {
+    if (alphaFirst) await setSidebar(request, alphaFirst, SUBSPACE_DEFAULT);
+    if (alpha2First) await setSidebar(request, alpha2First, SUBSPACE_DEFAULT);
     await Promise.all([admin?.close(), member?.close(), anonymous?.close()]);
   });
 
-  test('US3-AS1 search filters the active phase of the subspace, never the parent’s phase', async () => {
-    await setSidebar(alphaFirst, ['INTENT', 'ABOUT', 'CREATE_POST', 'SEARCH', 'COMMUNITY', 'INDEX']);
+  test('US3-AS1 search filters the active phase of the subspace, never the parent’s phase', async ({ request }) => {
+    await setSidebar(request, alphaFirst, ['INTENT', 'ABOUT', 'CREATE_POST', 'SEARCH', 'COMMUNITY', 'INDEX']);
     const page = await member.newPage();
     await openSubspace(page, ALPHA_URL);
 
@@ -260,8 +164,8 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
     await page.close();
   });
 
-  test('US3-AS2 L2 search finds its phase post and a phase switch resets the search', async () => {
-    await setSidebar(alpha2First, ['INTENT', 'ABOUT', 'SEARCH', 'COMMUNITY', 'INDEX']);
+  test('US3-AS2 L2 search finds its phase post and a phase switch resets the search', async ({ request }) => {
+    await setSidebar(request, alpha2First, ['INTENT', 'ABOUT', 'SEARCH', 'COMMUNITY', 'INDEX']);
     const page = await member.newPage();
     await openSubspace(page, ALPHA2_URL);
 
@@ -277,8 +181,8 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
     await page.close();
   });
 
-  test('US3-AS3 permission gates are never granted by configuration', async () => {
-    await setSidebar(alphaFirst, ['CREATE_POST', 'CREATE_SUBSPACE', 'ADD_USER', 'ACTIVITY']);
+  test('US3-AS3 permission gates are never granted by configuration', async ({ request }) => {
+    await setSidebar(request, alphaFirst, ['CREATE_POST', 'CREATE_SUBSPACE', 'ADD_USER', 'ACTIVITY']);
     const names = ['Add Post', 'Create Subspace', 'Invite', 'Recent Activity'];
 
     const anon = await anonymous.newPage();
@@ -301,8 +205,8 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
     await adm.close();
   });
 
-  test('US3-AS4 collapsed rail and mobile drawer follow the configuration', async () => {
-    await setSidebar(alphaFirst, ['COMMUNITY', 'INDEX', 'SEARCH']);
+  test('US3-AS4 collapsed rail and mobile drawer follow the configuration', async ({ request }) => {
+    await setSidebar(request, alphaFirst, ['COMMUNITY', 'INDEX', 'SEARCH']);
     const page = await admin.newPage();
     await openSubspace(page, ALPHA_URL);
 
@@ -325,15 +229,15 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
     await page.close();
   });
 
-  test('US3-AS5 Quick Actions grouping follows list adjacency', async () => {
+  test('US3-AS5 Quick Actions grouping follows list adjacency', async ({ request }) => {
     const page = await member.newPage();
-    await setSidebar(alphaFirst, ['COMMUNITY', 'EVENTS', 'ACTIVITY', 'INDEX']);
+    await setSidebar(request, alphaFirst, ['COMMUNITY', 'EVENTS', 'ACTIVITY', 'INDEX']);
     await openSubspace(page, ALPHA_URL);
     const groups = sidebar(page).getByRole('navigation', { name: 'Quick Actions' });
     await expect(groups).toHaveCount(1);
     await expect(groups.getByRole('button')).toHaveText(['Community', 'Events', 'Recent Activity', 'Post Index']);
 
-    await setSidebar(alphaFirst, ['COMMUNITY', 'SEARCH', 'INDEX']);
+    await setSidebar(request, alphaFirst, ['COMMUNITY', 'SEARCH', 'INDEX']);
     await openSubspace(page, ALPHA_URL);
     await expect(groups).toHaveCount(2);
     await expect(groups.nth(0).getByRole('button')).toHaveText(['Community']);
@@ -347,10 +251,10 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
     await page.close();
   });
 
-  test('US3-AS6 top-level-only and unknown widgets are skipped on render and preserved on save', async () => {
+  test('US3-AS6 top-level-only and unknown widgets are skipped on render and preserved on save', async ({ request }) => {
     // (a) the L0 tab-1 list carries applicationButton, which is not subspace vocabulary.
     const l0Tab1 = ['INTENT', 'ABOUT', 'CREATE_POST', 'SEARCH', 'APPLICATION_BUTTON', 'SUBSPACE_LINKS', 'EVENTS', 'UPDATES'];
-    await setSidebar(alphaFirst, l0Tab1);
+    await setSidebar(request, alphaFirst, l0Tab1);
     const mem = await member.newPage();
     await openSubspace(mem, ALPHA_URL);
     await expect(sidebar(mem).getByRole('button', { name: 'About this Subspace' })).toBeVisible();
@@ -366,7 +270,7 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
     await expect(dialog.getByRole('checkbox', { name: /apply/i })).toHaveCount(0);
     await dialog.getByRole('button', { name: /^Save$/ }).click();
     await expect(dialog).toHaveCount(0);
-    expect(await readSidebar(alphaFirst, 'alpha')).toEqual(l0Tab1);
+    expect(await readSidebar(request, fx.alphaId, alphaFirst)).toEqual(l0Tab1);
 
     // (b) a value this client does not know, served by the API, is skipped and carried at its index.
     const writes: { settings?: { sidebar?: string[] } }[] = [];
@@ -404,7 +308,7 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
     await adm.close();
   });
 
-  test('US3-AS7 fetch parity: only configured widgets issue requests', async () => {
+  test('US3-AS7 fetch parity: only configured widgets issue requests', async ({ request }) => {
     const collect = (page: Page, bag: string[]) =>
       page.on('request', r => {
         if (r.method() !== 'POST' || !r.url().includes('graphql')) return;
@@ -412,7 +316,7 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
         for (const x of Array.isArray(body) ? body : [body]) bag.push(x.operationName ?? '?');
       });
 
-    await setSidebar(alphaFirst, ['INTENT', 'ABOUT']);
+    await setSidebar(request, alphaFirst, ['INTENT', 'ABOUT']);
     const bare: string[] = [];
     const page = await member.newPage();
     collect(page, bare);
@@ -423,7 +327,7 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
       expect(bare, `unexpected ${op}`).not.toContain(op);
     await page.close();
 
-    await setSidebar(alphaFirst, ['INTENT', 'ABOUT', 'SEARCH']);
+    await setSidebar(request, alphaFirst, ['INTENT', 'ABOUT', 'SEARCH']);
     const withSearch: string[] = [];
     const page2 = await member.newPage();
     collect(page2, withSearch);
@@ -435,8 +339,8 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
     await page2.close();
   });
 
-  test('US3-AS8 no flash of a default widget set while the flow loads', async () => {
-    await setSidebar(alphaFirst, ['ABOUT', 'COMMUNITY', 'SEARCH']);
+  test('US3-AS8 no flash of a default widget set while the flow loads', async ({ request }) => {
+    await setSidebar(request, alphaFirst, ['ABOUT', 'COMMUNITY', 'SEARCH']);
     const page = await member.newPage();
     await page.addInitScript(() => {
       const w = window as unknown as { __sets: string[] };
@@ -469,8 +373,8 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
     await page.close();
   });
 
-  test('US3-AS9 Add Post from the sidebar pre-selects the active phase (expanded and rail)', async () => {
-    await setSidebar(alphaFirst, ['INTENT', 'CREATE_POST', 'COMMUNITY', 'INDEX']);
+  test('US3-AS9 Add Post from the sidebar pre-selects the active phase (expanded and rail)', async ({ request }) => {
+    await setSidebar(request, alphaFirst, ['INTENT', 'CREATE_POST', 'COMMUNITY', 'INDEX']);
     const page = await member.newPage();
     await openSubspace(page, `${ALPHA_URL}?phase=${alphaSecond.id}`);
     await expect(page.getByRole('button', { name: `Switch to phase ${alphaSecond.displayName}` })).toBeVisible();
