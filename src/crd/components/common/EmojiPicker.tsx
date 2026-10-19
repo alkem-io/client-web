@@ -15,6 +15,9 @@ const containScrollGesture = (event: Event) => event.stopPropagation();
 
 const CONTAINED_SCROLL_EVENTS = ['wheel', 'touchmove'] as const;
 
+/** Space kept between the picker and the screen edges on narrow screens. */
+const SCREEN_EDGE_MARGIN_PX = 8;
+
 const attachScrollContainment = (node: HTMLDivElement | null) => {
   if (!node) return;
   for (const type of CONTAINED_SCROLL_EVENTS) {
@@ -43,7 +46,12 @@ export function EmojiPicker({ onSelect, trigger }: EmojiPickerProps) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild={true}>{trigger}</PopoverTrigger>
-      <PopoverContent side="top" align="start" className="z-[130] w-auto border p-0 shadow-lg">
+      <PopoverContent
+        side="top"
+        align="start"
+        collisionPadding={SCREEN_EDGE_MARGIN_PX}
+        className="z-[130] w-auto border p-0 shadow-lg"
+      >
         {/* `overscroll-contain` keeps a gesture that runs past either end of the
             emoji list from scrolling whatever sits behind the picker. */}
         <div
@@ -56,6 +64,11 @@ export function EmojiPicker({ onSelect, trigger }: EmojiPickerProps) {
             emojiStyle={EmojiStyle.NATIVE}
             autoFocusSearch={false}
             lazyLoadEmojis={true}
+            // The library's natural size, capped so it fits a phone screen: the width
+            // with the margin on both sides, the height to the room Radix reports on
+            // the side it opened (less the popover's 1px borders).
+            width={`min(350px, calc(100vw - ${2 * SCREEN_EDGE_MARGIN_PX}px))`}
+            height="min(450px, calc(var(--radix-popover-content-available-height, 450px) - 2px))"
           />
         </div>
       </PopoverContent>

@@ -24,6 +24,7 @@ import { useConversationDrafts } from '@/main/userMessaging/ConversationDraftsCo
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
 import { ConversationThread } from './ConversationThread';
+import { resolveChatLocale } from './chatLocale';
 import {
   injectGuidanceIntro,
   mapConversationToListItem,
@@ -151,7 +152,7 @@ export const UnifiedChatPanelConnector = () => {
       }
     : undefined;
 
-  let chatMessages = rawMessages.map(message => mapMessageToChatMessage(message, { currentUserId, formatTimestamp }));
+  let chatMessages = rawMessages.map(message => mapMessageToChatMessage(message, { currentUserId }));
   if (isGuidanceThread && selectedConversation) {
     const vcMember = selectedConversation.members.find(member => member.id === guidanceVcId);
     const author: CommentAuthor = vcMember
@@ -330,6 +331,7 @@ export const UnifiedChatPanelConnector = () => {
             conversation={threadHeader}
             messages={chatMessages}
             messagesLoading={messagesLoading}
+            locale={resolveChatLocale(i18n.language, navigator.languages)}
             currentUser={currentUser}
             isSending={isSending}
             // No reactions on the AI assistant thread (incl. the synthetic intro) — FR-016a.

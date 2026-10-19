@@ -1,9 +1,12 @@
 import { Loader2 } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { type PointerEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CommentInput } from '@/crd/components/comment/CommentInput';
 import type { CommentAuthor, ComposerAttachment } from '@/crd/components/comment/types';
+import { cn } from '@/crd/lib/utils';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 import { ChatMessageBubble } from './ChatMessageBubble';
+import { createChatTimeFormat } from './chatTime';
 import { computeMessageRunFlags } from './messageRuns';
 import type { ChatMessage, ChatThreadHeader } from './types';
 
@@ -11,6 +14,8 @@ type ChatThreadViewProps = {
   conversation?: ChatThreadHeader;
   messages: ChatMessage[];
   messagesLoading: boolean;
+  /** BCP 47 locale for the times shown in the thread; undefined = browser default. */
+  locale?: string;
   currentUser?: CommentAuthor;
   isSending?: boolean;
   canReact?: boolean;
@@ -39,11 +44,18 @@ type ChatThreadViewProps = {
  * The message thread for a selected conversation. The back affordance and the
  * conversation title live in the panel header; this view owns the scrollable
  * message list and the composer. Auto-scrolls to the latest message.
+ *
+ * Time is shown only where it tells the reader something: a separator opens
+ * each day with the time its conversation started, and a small time marks
+ * where the conversation continues after an hour of quiet. A single message's
+ * exact time is in a tooltip on hover or keyboard focus, opens under the
+ * message on a tap (touch has no hover), and is always there for screen readers.
  */
 export function ChatThreadView({
   conversation,
   messages,
   messagesLoading,
+  locale,
   currentUser,
   isSending,
   canReact,
@@ -62,9 +74,26 @@ export function ChatThreadView({
 }: ChatThreadViewProps) {
   const { t } = useTranslation('crd-chat');
   const bottomRef = useRef<HTMLDivElement>(null);
+  const [revealedIds, setRevealedIds] = useState<ReadonlySet<string>>(() => new Set());
 
   const lastMessageId = messages.length > 0 ? messages[messages.length - 1].id : null;
   const runFlags = computeMessageRunFlags(messages, conversation?.isGroup ?? false);
+  const time = createChatTimeFormat(locale);
+
+  // A tap (any pointer that cannot hover) toggles the message's time open and
+  // closed. Taps on the message's own controls — reactions, links, media — pass.
+  const toggleRevealedOnTap = (id: string) => (event: PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === 'mouse') return;
+    // React bubbles events from portalled popovers (the emoji picker) through the
+    // message; only a tap on the message itself toggles it.
+    if (!event.currentTarget.contains(event.target as Node)) return;
+    if ((event.target as HTMLElement).closest('button, a')) return;
+    setRevealedIds(previous => {
+      const next = new Set(previous);
+      if (!next.delete(id)) next.add(id);
+      return next;
+    });
+  };
 
   // Keep the latest message in view as the thread loads / receives messages.
   useEffect(() => {
@@ -73,28 +102,97 @@ export function ChatThreadView({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overscroll-contain px-3 py-3">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-3 pt-1 pb-3">
         {messagesLoading && messages.length === 0 ? (
           <output className="m-auto text-caption text-muted-foreground" aria-label={t('thread.loading')}>
             {t('thread.loading')}
           </output>
         ) : (
-          messages.map((message, index) => (
-            <ChatMessageBubble
-              key={message.id}
-              message={message}
-              showAuthor={runFlags[index].showAuthor}
-              showAvatar={runFlags[index].showAvatar}
-              avatarGutter={runFlags[index].avatarGutter}
-              canReact={canReact}
-              onAddReaction={onAddReaction ? emoji => onAddReaction(message.id, emoji) : undefined}
-              onRemoveReaction={onRemoveReaction ? emoji => onRemoveReaction(message.id, emoji) : undefined}
-            />
-          ))
+          messages.map((message, index) => {
+            const flags = runFlags[index];
+            const ms = message.timestampMs;
+            const hasTime = ms > 0;
+            const isRevealed = hasTime && revealedIds.has(message.id);
+            const isFirstOfGroup = flags.groupPosition === 'single' || flags.groupPosition === 'first';
+            const bubble = (
+              <ChatMessageBubble
+                message={message}
+                showAuthor={flags.showAuthor}
+                showAvatar={flags.showAvatar}
+                avatarGutter={flags.avatarGutter}
+                groupPosition={flags.groupPosition}
+                revealed={isRevealed}
+                canReact={canReact}
+                onAddReaction={onAddReaction ? emoji => onAddReaction(message.id, emoji) : undefined}
+                onRemoveReaction={onRemoveReaction ? emoji => onRemoveReaction(message.id, emoji) : undefined}
+              />
+            );
+            return (
+              <div key={message.id} className="flex flex-col">
+                {flags.dayStart && (
+                  <div
+                    data-testid="chat-day-separator"
+                    className="mt-3 mb-1 self-center rounded-full bg-muted px-2.5 py-0.5 text-caption text-muted-foreground"
+                  >
+                    {time.day(ms)} {time.clock(ms)}
+                  </div>
+                )}
+                {flags.afterPause && (
+                  <div data-testid="chat-pause-time" className="mt-3 self-center text-caption text-muted-foreground">
+                    {time.clock(ms)}
+                  </div>
+                )}
+                {hasTime ? (
+                  <Tooltip delayDuration={300}>
+                    <TooltipTrigger asChild={true}>
+                      <div
+                        data-chat-message={true}
+                        // biome-ignore lint/a11y/noNoninteractiveTabindex: keyboard focus is how the exact time is reached without hover
+                        tabIndex={0}
+                        onPointerUp={toggleRevealedOnTap(message.id)}
+                        className={cn(
+                          'flex flex-col rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                          isFirstOfGroup ? 'mt-3' : 'mt-0.5'
+                        )}
+                      >
+                        <span className="sr-only">{time.exact(ms)}</span>
+                        {bubble}
+                        {isRevealed && (
+                          <span
+                            data-testid="chat-revealed-time"
+                            aria-hidden="true"
+                            className={cn(
+                              'px-1 pt-0.5 text-caption text-muted-foreground',
+                              message.isOwn ? 'self-end' : 'self-start',
+                              flags.avatarGutter && 'pl-11'
+                            )}
+                          >
+                            {time.exact(ms)}
+                          </span>
+                        )}
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="top"
+                      align={message.isOwn ? 'end' : 'start'}
+                      // Line up with the bubble rather than the avatar gutter.
+                      alignOffset={flags.avatarGutter ? 40 : 0}
+                    >
+                      {time.exact(ms)}
+                    </TooltipContent>
+                  </Tooltip>
+                ) : (
+                  <div data-chat-message={true} className={cn('flex flex-col', isFirstOfGroup ? 'mt-3' : 'mt-0.5')}>
+                    {bubble}
+                  </div>
+                )}
+              </div>
+            );
+          })
         )}
         {isAwaitingGuidanceResponse && (
           <output
-            className="flex items-center gap-2 self-start rounded-2xl rounded-bl-sm bg-muted px-3 py-2 text-caption text-muted-foreground"
+            className="mt-3 flex items-center gap-2 self-start rounded-2xl rounded-bl-sm bg-muted px-3 py-2 text-caption text-muted-foreground"
             aria-label={t('guidance.thinking')}
           >
             <Loader2 aria-hidden="true" className="size-4 animate-spin" />
