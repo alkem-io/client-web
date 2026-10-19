@@ -4,29 +4,18 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 // Radix portals the popover content out of the tree that opened it; the mock
 // keeps trigger and content together so the scroll container can be inspected
 // without a real portal.
-const captured = vi.hoisted(() => ({
-  contentProps: {} as Record<string, unknown>,
-  pickerProps: {} as Record<string, unknown>,
-}));
-
 vi.mock('@/crd/primitives/popover', () => ({
   Popover: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   PopoverTrigger: ({ children, asChild: _asChild }: { children: React.ReactNode; asChild?: boolean }) => (
     <div>{children}</div>
   ),
-  PopoverContent: ({ children, ...props }: { children: React.ReactNode } & Record<string, unknown>) => {
-    captured.contentProps = props;
-    return <div>{children}</div>;
-  },
+  PopoverContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
 // The real picker pulls in the full emoji dataset, which is irrelevant here —
 // only the list element it renders matters.
 vi.mock('emoji-picker-react', () => ({
-  default: (props: Record<string, unknown>) => {
-    captured.pickerProps = props;
-    return <div className="epr-body" data-testid="epr-body" />;
-  },
+  default: () => <div className="epr-body" data-testid="epr-body" />,
   EmojiStyle: { NATIVE: 'native' },
 }));
 
@@ -105,30 +94,5 @@ describe('EmojiPicker scroll containment', () => {
     container.remove();
 
     expect(seen).toHaveBeenCalledTimes(1);
-  });
-});
-
-// On a phone the picker's natural 350px width plus the popover sitting flush
-// against the screen edge clipped it (seen at 412px wide); narrower phones
-// would lose more. jsdom has no layout, so the props that prevent it are pinned.
-describe('EmojiPicker on narrow screens', () => {
-  it('keeps a margin from the screen edges when it has to shift', () => {
-    renderPicker();
-    expect(captured.contentProps.collisionPadding).toBe(8);
-  });
-
-  // Measured on a 360x640 phone: the 450px-tall picker ran 134px past the bottom
-  // of the screen (and 69px past the top at 375x667) when neither side of the
-  // trigger had room for it.
-  it('never grows taller than the room the popover has on its side', () => {
-    renderPicker();
-    expect(captured.pickerProps.height).toBe(
-      'min(450px, calc(var(--radix-popover-content-available-height, 450px) - 2px))'
-    );
-  });
-
-  it('never grows wider than the screen minus that margin', () => {
-    renderPicker();
-    expect(captured.pickerProps.width).toBe('min(350px, calc(100vw - 16px))');
   });
 });

@@ -20,8 +20,6 @@ const ROOM_MESSAGE = 'm.room.message' as EventType.RoomMessage;
 const REACTION = 'm.reaction' as EventType.Reaction;
 const TEXT = 'm.text' as MsgType.Text;
 const ANNOTATION = 'm.annotation' as RelationType.Annotation;
-// Synapse's answer to a second identical reaction from the same user.
-const DUPLICATE_ANNOTATION = 'M_DUPLICATE_ANNOTATION';
 
 export const useConversationView = (
   conversation: UserConversation | null,
@@ -181,14 +179,7 @@ export const useConversationView = (
         { 'm.relates_to': { rel_type: ANNOTATION, event_id: messageId, key: emoji } },
         txnId
       )
-    ).catch((error: unknown) => {
-      // The user's own identical reaction already exists — added from another
-      // tab or device before this view synced it. What they asked for is in
-      // place (sendDirect has dropped this attempt's local echo), and the
-      // existing reaction reaches this view with the next sync.
-      if ((error as { errcode?: string } | undefined)?.errcode === DUPLICATE_ANNOTATION) return;
-      throw error;
-    });
+    );
   };
 
   // The reaction id is the Matrix reaction event id, and only the user's own

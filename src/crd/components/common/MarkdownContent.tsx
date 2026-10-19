@@ -6,7 +6,6 @@ import rehypeSanitize from 'rehype-sanitize';
 import remarkGfm from 'remark-gfm';
 import { useMarkdownConfig } from '@/crd/lib/markdownConfig';
 import { rehypeSanitizeStyles } from '@/crd/lib/rehypeSanitizeStyles';
-import { remarkHtmlAsText } from '@/crd/lib/remarkHtmlAsText';
 import { remarkVerifyIframe } from '@/crd/lib/remarkVerifyIframe';
 import { cn } from '@/crd/lib/utils';
 
@@ -38,12 +37,6 @@ export type MarkdownContentProps = {
   /** Raw markdown string — rendered via react-markdown, not dangerouslySetInnerHTML */
   content: string;
   className?: string;
-  /**
-   * Whether HTML inside the markdown is rendered (sanitised) as HTML. Defaults to
-   * true. Turn it off for text typed in a plain-text field, so `<word>` shows as
-   * typed instead of disappearing.
-   */
-  allowHtml?: boolean;
 };
 
 /**
@@ -61,7 +54,7 @@ export type MarkdownContentProps = {
  * Does NOT depend on @tailwindcss/typography (prose classes). Typography is applied
  * via Tailwind's `[&_element]` descendant selector pattern.
  */
-export function MarkdownContent({ content, className, allowHtml = true }: MarkdownContentProps) {
+export function MarkdownContent({ content, className }: MarkdownContentProps) {
   const { iframeAllowedUrls } = useMarkdownConfig();
 
   return (
@@ -107,16 +100,12 @@ export function MarkdownContent({ content, className, allowHtml = true }: Markdo
       )}
     >
       <Markdown
-        remarkPlugins={
-          allowHtml
-            ? [remarkGfm, [remarkVerifyIframe, { allowedIFrameOrigins: iframeAllowedUrls }]]
-            : [remarkGfm, remarkHtmlAsText]
-        }
-        rehypePlugins={
-          allowHtml
-            ? [[rehypeRaw, { passThrough: ['iframe'] }], [rehypeSanitize, sanitizeSchema], rehypeSanitizeStyles]
-            : [[rehypeSanitize, sanitizeSchema], rehypeSanitizeStyles]
-        }
+        remarkPlugins={[remarkGfm, [remarkVerifyIframe, { allowedIFrameOrigins: iframeAllowedUrls }]]}
+        rehypePlugins={[
+          [rehypeRaw, { passThrough: ['iframe'] }],
+          [rehypeSanitize, sanitizeSchema],
+          rehypeSanitizeStyles,
+        ]}
         components={{ iframe: IframeRenderer }}
       >
         {content}
