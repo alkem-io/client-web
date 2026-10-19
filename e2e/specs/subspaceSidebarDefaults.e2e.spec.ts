@@ -18,9 +18,14 @@ import { expect, test } from '../fixtures/authFixture';
  *                             one posted community update; admin is a lead/admin.
  *   E2E_ALPHA2_URL          — an L2 subspace under it.
  *   E2E_BETA_SUBSPACE_ID    — (optional) an L1 whose phase 2 list was customized.
+ *   E2E_BETA_URL            — the page URL of that same L1 (required with E2E_BETA_SUBSPACE_ID:
+ *                             the stored-lists scenario asserts what the page renders).
  *   E2E_L0_SPACE_ID         — (optional) the parent L0 space id (lists must equal the top-level Space defaults).
  * Actors: primary (admin, authedPage), secondary member (AUTH_TEST_HARNESS_EMAIL_2, a member of the
  * subspace without update rights) and an anonymous context (the L0/subspace must be PUBLIC).
+ *
+ * The API probes log in through `POST /api/auth/non-interactive-login`, so the stack must have
+ * ENABLE_NON_INTERACTIVE_LOGIN=true; a failed login is a red test, never a skip.
  *
  * Not part of `pnpm test` (vitest) — live-stack only, `pnpm test:e2e`.
  */
@@ -28,6 +33,7 @@ import { expect, test } from '../fixtures/authFixture';
 const ALPHA_URL = process.env.E2E_ALPHA_URL;
 const ALPHA2_URL = process.env.E2E_ALPHA2_URL;
 const BETA_ID = process.env.E2E_BETA_SUBSPACE_ID;
+const BETA_URL = process.env.E2E_BETA_URL;
 const L0_ID = process.env.E2E_L0_SPACE_ID;
 const BASE_URL = process.env.ALKEMIO_BASE_URL || 'http://localhost:3000';
 
@@ -91,10 +97,10 @@ async function gql(request: APIRequestContext, query: string, variables: Record<
   const login = await request.post(`${BASE_URL}/api/auth/non-interactive-login`, {
     data: {
       email: process.env.AUTH_TEST_HARNESS_EMAIL || 'admin@alkem.io',
-      password: process.env.AUTH_TEST_HARNESS_PASSWORD || 'password',
+      password: process.env.AUTH_TEST_HARNESS_PASSWORD || 'change_me',
     },
   });
-  test.skip(!login.ok(), 'non-interactive login unavailable on this stack — API probes skipped');
+  expect(login.ok(), 'non-interactive login (needs ENABLE_NON_INTERACTIVE_LOGIN=true)').toBeTruthy();
   const { api_token: token } = await login.json();
   const res = await request.post(`${BASE_URL}/api/private/non-interactive/graphql`, {
     headers: { authorization: `Bearer ${token}` },
@@ -106,8 +112,14 @@ async function gql(request: APIRequestContext, query: string, variables: Record<
   return body.data;
 }
 
-const STATES = `states { displayName sortOrder settings { sidebar } }`;
-const rank = <T extends { sortOrder: number }>(states: T[]) => [...states].sort((a, b) => a.sortOrder - b.sortOrder);
+const STATES = `states { id displayName sortOrder settings { sidebar } }`;
+/** Lowest sortOrder first, ties broken by id (plain code-unit compare) — the client's and server's first-state rule. */
+const rank = <T extends { sortOrder: number; id?: string }>(states: T[]) =>
+  [...states].sort((a, b) => {
+    if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
+    const [x, y] = [(a.id ?? '').toLowerCase(), (b.id ?? '').toLowerCase()];
+    return x < y ? -1 : x > y ? 1 : 0;
+  });
 
 const SUBSPACE_DEFAULT = [
   'INTENT', 'ABOUT', 'CREATE_POST', 'COMMUNITY', 'EVENTS', 'ACTIVITY', 'INDEX', 'SUBSPACE_LINKS', 'VIRTUAL_CONTRIBUTORS', 'UPDATES',
@@ -116,6 +128,53 @@ const TAB_2 = ['INTENT', 'CREATE_POST', 'SEARCH', 'APPLICATION_BUTTON', 'CONTACT
 const TAB_3 = ['INTENT', 'CREATE_SUBSPACE', 'CREATE_POST', 'SEARCH', 'APPLICATION_BUTTON'];
 const GENERIC = ['INTENT', 'CREATE_POST', 'APPLICATION_BUTTON', 'SEARCH', 'INDEX'];
 const L0_TAB_1 = ['INTENT', 'ABOUT', 'CREATE_POST', 'SEARCH', 'APPLICATION_BUTTON', 'SUBSPACE_LINKS', 'EVENTS', 'UPDATES'];
+
+/**
+ * How each widget of the L1 subspace vocabulary shows up in the expanded sidebar of an admin
+ * (lead/admin of the subspace). `always` widgets render whenever they are configured; the others
+ * also depend on data (a description or leads, nested subspaces, a posted update, a VC), so they
+ * are only checked for order when present and for absence when not configured. Stored values
+ * outside the L1 vocabulary never render and have no marker.
+ */
+const L1_MARKERS: Record<string, { marker: (root: Locator) => Locator; always: boolean }> = {
+  INTENT: { marker: r => r.getByRole('button', { name: 'Edit description', exact: true }), always: false },
+  ABOUT: { marker: r => r.getByRole('button', { name: 'About this Subspace', exact: true }), always: true },
+  CREATE_POST: { marker: r => r.getByRole('button', { name: 'Add Post', exact: true }), always: true },
+  ADD_USER: { marker: r => r.getByRole('button', { name: 'Invite', exact: true }), always: true },
+  CREATE_SUBSPACE: { marker: r => r.getByRole('button', { name: 'Create Subspace', exact: true }), always: true },
+  SEARCH: { marker: r => r.getByLabel('Search posts', { exact: true }), always: true },
+  SUBSPACE_LINKS: { marker: r => r.getByRole('heading', { name: 'Subspaces', exact: true }), always: false },
+  COMMUNITY: { marker: r => r.getByRole('button', { name: 'Community', exact: true }), always: true },
+  EVENTS: { marker: r => r.getByRole('button', { name: 'Events', exact: true }), always: true },
+  INDEX: { marker: r => r.getByRole('button', { name: 'Post Index', exact: true }), always: true },
+  UPDATES: { marker: r => r.getByRole('heading', { name: 'Updates', exact: true }), always: false },
+  VIRTUAL_CONTRIBUTORS: { marker: r => r.getByText('Virtual Contributor', { exact: true }), always: false },
+  ACTIVITY: { marker: r => r.getByRole('button', { name: 'Recent Activity', exact: true }), always: true },
+};
+
+/** A stored list as the L1 sidebar renders it: in-vocabulary values only, first occurrence wins. */
+const resolveL1 = (stored: string[]) => [...new Set(stored.filter(v => v in L1_MARKERS))];
+const alwaysRendered = (stored: string[]) => resolveL1(stored).filter(v => L1_MARKERS[v].always);
+
+/** The sidebar shows exactly `stored` (resolved at L1): every configured widget that must render
+ *  is there, every widget not configured is absent, and the present ones follow the stored order. */
+async function expectRenderedList(root: Locator, stored: string[]) {
+  const expected = resolveL1(stored);
+  for (const value of alwaysRendered(stored)) {
+    await expect(L1_MARKERS[value].marker(root), `${value} is configured, so it renders`).toBeVisible();
+  }
+  for (const value of Object.keys(L1_MARKERS).filter(v => !expected.includes(v))) {
+    await expect(L1_MARKERS[value].marker(root), `${value} is not configured, so it does not render`).toHaveCount(0);
+  }
+  const present: Locator[] = [];
+  for (const value of expected) {
+    const marker = L1_MARKERS[value].marker(root);
+    if ((await marker.count()) > 0) present.push(marker.first());
+  }
+  for (let i = 1; i < present.length; i++) {
+    await expectBefore(present[i - 1], present[i]);
+  }
+}
 
 test.describe('subspace sidebar — untouched subspaces look as before (US2)', () => {
   test.skip(!ALPHA_URL, 'E2E_ALPHA_URL not set — no L1 fixture to walk');
@@ -218,22 +277,32 @@ test.describe('subspace sidebar — stored lists (US2 data reads)', () => {
   });
 
   test('US2-AS2 — a customized L1 keeps its stored lists and renders its stored first list', async ({ request, authedPage }) => {
-    test.skip(!BETA_ID, 'E2E_BETA_SUBSPACE_ID not set');
+    test.skip(!BETA_ID || !BETA_URL, 'E2E_BETA_SUBSPACE_ID and E2E_BETA_URL (the same customized L1) not set');
+    type Flow = { states: Array<{ id: string; sortOrder: number; settings: { sidebar: string[] } }> };
     const read = async () =>
       (
         await gql(request, `query($id: UUID!) { lookup { space(ID: $id) { nameID collaboration { innovationFlow { ${STATES} } } } } }`, {
           id: BETA_ID,
         })
-      ).lookup.space as { nameID: string; collaboration: { innovationFlow: { states: Array<{ sortOrder: number; settings: { sidebar: string[] } }> } } };
+      ).lookup.space as { nameID: string; collaboration: { innovationFlow: Flow } };
     const before = await read();
     const phases = rank(before.collaboration.innovationFlow.states);
+    const first = phases[0].settings.sidebar;
     expect(phases[1].settings.sidebar, 'phase 2 is the customized one').not.toEqual(TAB_2);
-
-    const parent = process.env.E2E_BETA_URL;
-    if (parent) {
-      await gotoSubspace(authedPage, parent);
-      await expect(sidebar(authedPage)).toBeVisible();
+    // The walk only proves something when the first list is told apart from the lists a wrong
+    // resolution would render: phase 2's list and the generic tab list.
+    for (const [name, other] of [
+      ['phase 2', phases[1].settings.sidebar],
+      ['generic', GENERIC],
+    ] as const) {
+      expect(alwaysRendered(first), `fixture: the first list must render differently from the ${name} list`).not.toEqual(
+        alwaysRendered(other)
+      );
     }
+
+    await gotoSubspace(authedPage, BETA_URL!);
+    await expectRenderedList(sidebar(authedPage), first);
+
     // Reading/opening the subspace never rewrites a stored list.
     expect(JSON.stringify(await read())).toBe(JSON.stringify(before));
   });
