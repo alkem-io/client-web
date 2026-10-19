@@ -8071,6 +8071,9 @@ export const UpdateInnovationFlowStatesSortOrderDocument = gql`
   ) {
     id
     sortOrder
+    settings {
+      sidebar
+    }
   }
 }
     `;

@@ -14302,7 +14302,12 @@ export type UpdateInnovationFlowStatesSortOrderMutationVariables = Exact<{
 
 export type UpdateInnovationFlowStatesSortOrderMutation = {
   __typename?: 'Mutation';
-  updateInnovationFlowStatesSortOrder: Array<{ __typename?: 'InnovationFlowState'; id: string; sortOrder: number }>;
+  updateInnovationFlowStatesSortOrder: Array<{
+    __typename?: 'InnovationFlowState';
+    id: string;
+    sortOrder: number;
+    settings: { __typename?: 'InnovationFlowStateSettings'; sidebar: Array<SidebarWidget> };
+  }>;
 };
 
 export type ActivityLogMemberJoinedFragment = {

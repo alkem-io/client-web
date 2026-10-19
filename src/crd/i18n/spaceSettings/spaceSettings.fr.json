@@ -134,7 +134,9 @@
           "virtualContributors": "Contributeurs virtuels",
           "guidelines": "Directives de la communauté",
           "index": "Index des publications",
-          "search": "Recherche"
+          "search": "Recherche",
+          "community": "Communauté",
+          "activity": "Activité récente"
         }
       },
       "postTemplate": {
@@ -149,6 +151,11 @@
           "cancel": "Annuler"
         }
       }
+    },
+    "customizeSidebar": {
+      "button": "Personnaliser la barre latérale",
+      "title": "Mise en page : Barre latérale",
+      "help": "Choisissez les widgets à afficher dans la barre latérale de ce sous-espace, et dans quel ordre. Cela s'applique à tout le sous-espace — chaque phase affiche le même ensemble."
     },
     "addPhase": {
       "button": "Ajouter une phase",
@@ -187,6 +194,7 @@
       "applyDialog": {
         "title": "Appliquer un nouveau modèle",
         "description": "Vous êtes sur le point d'appliquer un nouveau modèle. Cette action supprimera définitivement votre flux d'innovation actuel. Cependant, les publications existantes liées aux différentes phases seront conservées et regroupées sous la première phase de la nouvelle configuration.<br/><br/>Veuillez choisir l'une des options suivantes :",
+        "sidebarNote": "La barre latérale du sous-espace sera remplacée par celle du modèle.",
         "option1": {
           "label": "Remplacer par le nouveau flux",
           "description": "Cela supprimera votre flux d'innovation actuel avec toutes les publications existantes et le remplacera par le nouveau flux, y compris les publications du modèle."

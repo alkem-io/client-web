@@ -82,9 +82,11 @@ export type SidebarWidgetId =
   | 'virtualContributors'
   | 'guidelines'
   | 'index'
-  | 'search';
+  | 'search'
+  | 'community'
+  | 'activity';
 
-/** The full vocabulary (fourteen widgets), in the platform's canonical order. */
+/** The full vocabulary (sixteen widgets), in the platform's canonical order. */
 export const SIDEBAR_WIDGET_IDS: readonly SidebarWidgetId[] = [
   'intent',
   'about',
@@ -100,7 +102,42 @@ export const SIDEBAR_WIDGET_IDS: readonly SidebarWidgetId[] = [
   'guidelines',
   'index',
   'search',
+  'community',
+  'activity',
 ];
+
+/**
+ * The widgets each space level renders and offers in its sidebar editor, in
+ * that level's editor order. Top-level Spaces use the full vocabulary; a
+ * subspace has no Apply/Join, Contact Leads or Guidelines widget, and an L2
+ * (which cannot have children) also drops Create Subspace and Subspaces.
+ *
+ * The server stores any widget at any level, so a stored value outside the
+ * level's vocabulary (a top-level template applied to a subspace, an L1
+ * template applied to an L2) is neither rendered nor offered — and is carried
+ * back verbatim at its original index on save, never deleted.
+ */
+const SUBSPACE_L1_WIDGET_IDS: readonly SidebarWidgetId[] = [
+  'intent',
+  'about',
+  'createPost',
+  'addUser',
+  'createSubspace',
+  'search',
+  'subspaceLinks',
+  'community',
+  'events',
+  'index',
+  'updates',
+  'virtualContributors',
+  'activity',
+];
+
+export const SIDEBAR_WIDGET_IDS_BY_LEVEL: Record<'L0' | 'L1' | 'L2', readonly SidebarWidgetId[]> = {
+  L0: SIDEBAR_WIDGET_IDS,
+  L1: SUBSPACE_L1_WIDGET_IDS,
+  L2: SUBSPACE_L1_WIDGET_IDS.filter(id => id !== 'createSubspace' && id !== 'subspaceLinks'),
+};
 
 /** Per-phase layout settings passed from the Layout modal to the column menu handler. */
 export type PhaseLayoutInput = {

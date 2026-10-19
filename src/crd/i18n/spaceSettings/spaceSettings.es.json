@@ -134,7 +134,9 @@
           "virtualContributors": "Contribuidores virtuales",
           "guidelines": "Directrices de la comunidad",
           "index": "Índice de publicaciones",
-          "search": "Buscar"
+          "search": "Buscar",
+          "community": "Comunidad",
+          "activity": "Actividad reciente"
         }
       },
       "postTemplate": {
@@ -149,6 +151,11 @@
           "cancel": "Cancelar"
         }
       }
+    },
+    "customizeSidebar": {
+      "button": "Personalizar barra lateral",
+      "title": "Diseño: Barra lateral",
+      "help": "Elige qué widgets aparecen en la barra lateral de este subespacio y en qué orden. Se aplica a todo el subespacio: todas las fases muestran el mismo conjunto."
     },
     "addPhase": {
       "button": "Añadir fase",
@@ -187,6 +194,7 @@
       "applyDialog": {
         "title": "Aplicar nueva plantilla",
         "description": "Estás a punto de aplicar una nueva plantilla. Esta acción eliminará permanentemente tu flujo de innovación actual. Sin embargo, las publicaciones existentes vinculadas a distintas fases se conservarán y se agruparán en la primera fase de la nueva configuración.<br/><br/>Elige una de las siguientes opciones:",
+        "sidebarNote": "La barra lateral del subespacio se reemplazará por la de la plantilla.",
         "option1": {
           "label": "Reemplazar con el nuevo flujo",
           "description": "Esto eliminará tu flujo de innovación actual con todas las publicaciones existentes y lo reemplazará con el nuevo flujo, incluidas las publicaciones de la plantilla."

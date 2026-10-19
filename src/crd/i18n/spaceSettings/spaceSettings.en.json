@@ -134,7 +134,9 @@
           "virtualContributors": "Virtual Contributors",
           "guidelines": "Community Guidelines",
           "index": "Post Index",
-          "search": "Search"
+          "search": "Search",
+          "community": "Community",
+          "activity": "Recent Activity"
         }
       },
       "postTemplate": {
@@ -149,6 +151,11 @@
           "cancel": "Cancel"
         }
       }
+    },
+    "customizeSidebar": {
+      "button": "Customize Sidebar",
+      "title": "Layout: Sidebar",
+      "help": "Choose which widgets appear in this subspace's sidebar, and in what order. This applies to the whole subspace — every phase shows the same set."
     },
     "addPhase": {
       "button": "Add phase",
@@ -187,6 +194,7 @@
       "applyDialog": {
         "title": "Apply new template",
         "description": "You are about to apply a new template. This action will permanently delete your current innovation flow. However, the existing Posts linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+        "sidebarNote": "The subspace sidebar will be replaced by the template's.",
         "option1": {
           "label": "Replace with new flow",
           "description": "This will delete your current innovation flow with all existing Posts and replace it with the new flow including the template Posts."

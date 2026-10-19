@@ -76,8 +76,15 @@ mutation UpdateInnovationFlowStateSettings($innovationFlowStateId: UUID!, $setti
 }
 
 mutation UpdateInnovationFlowStatesSortOrder($innovationFlowID: UUID!, $stateIDs: [UUID!]!) {
+  # The server returns ALL states and, on subspace (L1/L2) flows, keeps sidebar lists attached
+  # to their position — a reorder moves the lists between states. Selecting settings.sidebar
+  # lets the normalized cache update every InnovationFlowState by id, so the subspace page and
+  # Customize Sidebar are current without a refetch.
   updateInnovationFlowStatesSortOrder(sortOrderData: { innovationFlowID: $innovationFlowID, stateIDs: $stateIDs }) {
     id
     sortOrder
+    settings {
+      sidebar
+    }
   }
 }
