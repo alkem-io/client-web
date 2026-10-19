@@ -143,12 +143,11 @@ export const mapConversationToListItem = (
 
 type MessageOptions = {
   currentUserId: string | undefined;
-  formatTimestamp: (timestampMs: number) => string;
 };
 
 export const mapMessageToChatMessage = (
   message: ConversationMessage,
-  { currentUserId, formatTimestamp }: MessageOptions
+  { currentUserId }: MessageOptions
 ): ChatMessage => ({
   id: message.id,
   author: message.sender
@@ -159,7 +158,6 @@ export const mapMessageToChatMessage = (
       }
     : undefined,
   content: message.message,
-  timestamp: formatTimestamp(message.timestamp),
   timestampMs: message.timestamp,
   reactions: mapReactionsToCommentReactions(message.reactions, currentUserId),
   attachments: message.attachments,
@@ -183,7 +181,6 @@ export const injectGuidanceIntro = (
     id: GUIDANCE_INTRO_ID,
     author: intro.author,
     content: intro.text,
-    timestamp: '',
     timestampMs: 0,
     reactions: [],
     isOwn: false,
