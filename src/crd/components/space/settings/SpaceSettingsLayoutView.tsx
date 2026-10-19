@@ -1,5 +1,4 @@
 import {
-  closestCenter,
   DndContext,
   type DragEndEvent,
   type DragOverEvent,
@@ -14,6 +13,7 @@ import { rectSortingStrategy, SortableContext, sortableKeyboardCoordinates } fro
 import { Loader2, Plus } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { layoutCollisionDetection } from '@/crd/components/space/settings/layoutCollisionDetection';
 import { SpaceSettingsSaveBar } from '@/crd/components/space/settings/SpaceSettingsSaveBar';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { cn } from '@/crd/lib/utils';
@@ -269,7 +269,7 @@ export function SpaceSettingsLayoutView({
         )}
         <DndContext
           sensors={sensors}
-          collisionDetection={closestCenter}
+          collisionDetection={layoutCollisionDetection}
           onDragStart={handleDragStart}
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
