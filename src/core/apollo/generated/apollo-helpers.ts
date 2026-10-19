@@ -511,6 +511,74 @@ export type ActorRolesFieldPolicy = {
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AdminTemplateFileRepairIssueKeySpecifier = (
+  | 'entityID'
+  | 'location'
+  | 'reason'
+  | 'templateID'
+  | AdminTemplateFileRepairIssueKeySpecifier
+)[];
+export type AdminTemplateFileRepairIssueFieldPolicy = {
+  entityID?: FieldPolicy<any> | FieldReadFunction<any>;
+  location?: FieldPolicy<any> | FieldReadFunction<any>;
+  reason?: FieldPolicy<any> | FieldReadFunction<any>;
+  templateID?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AdminTemplateFileRepairResultKeySpecifier = (
+  | 'copiedReferences'
+  | 'dryRun'
+  | 'failed'
+  | 'missingFiles'
+  | 'references'
+  | 'templatesScanned'
+  | 'templatesWithForeignFiles'
+  | AdminTemplateFileRepairResultKeySpecifier
+)[];
+export type AdminTemplateFileRepairResultFieldPolicy = {
+  copiedReferences?: FieldPolicy<any> | FieldReadFunction<any>;
+  dryRun?: FieldPolicy<any> | FieldReadFunction<any>;
+  failed?: FieldPolicy<any> | FieldReadFunction<any>;
+  missingFiles?: FieldPolicy<any> | FieldReadFunction<any>;
+  references?: FieldPolicy<any> | FieldReadFunction<any>;
+  templatesScanned?: FieldPolicy<any> | FieldReadFunction<any>;
+  templatesWithForeignFiles?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AdminTemplateForeignFileReferenceKeySpecifier = (
+  | 'copied'
+  | 'entityID'
+  | 'fileID'
+  | 'location'
+  | 'ownerCanRead'
+  | 'storageBucketID'
+  | 'templateID'
+  | 'templateName'
+  | AdminTemplateForeignFileReferenceKeySpecifier
+)[];
+export type AdminTemplateForeignFileReferenceFieldPolicy = {
+  copied?: FieldPolicy<any> | FieldReadFunction<any>;
+  entityID?: FieldPolicy<any> | FieldReadFunction<any>;
+  fileID?: FieldPolicy<any> | FieldReadFunction<any>;
+  location?: FieldPolicy<any> | FieldReadFunction<any>;
+  ownerCanRead?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBucketID?: FieldPolicy<any> | FieldReadFunction<any>;
+  templateID?: FieldPolicy<any> | FieldReadFunction<any>;
+  templateName?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AdminTemplateMissingFileReferenceKeySpecifier = (
+  | 'entityID'
+  | 'fileID'
+  | 'location'
+  | 'templateID'
+  | 'templateName'
+  | AdminTemplateMissingFileReferenceKeySpecifier
+)[];
+export type AdminTemplateMissingFileReferenceFieldPolicy = {
+  entityID?: FieldPolicy<any> | FieldReadFunction<any>;
+  fileID?: FieldPolicy<any> | FieldReadFunction<any>;
+  location?: FieldPolicy<any> | FieldReadFunction<any>;
+  templateID?: FieldPolicy<any> | FieldReadFunction<any>;
+  templateName?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type AiPersonaKeySpecifier = (
   | 'authorization'
   | 'bodyOfKnowledgeLastUpdated'
@@ -737,6 +805,7 @@ export type CalloutKeySpecifier = (
   | 'createdBy'
   | 'createdDate'
   | 'framing'
+  | 'hasHiddenSpaces'
   | 'id'
   | 'isTemplate'
   | 'nameID'
@@ -762,6 +831,7 @@ export type CalloutFieldPolicy = {
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   framing?: FieldPolicy<any> | FieldReadFunction<any>;
+  hasHiddenSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1824,11 +1894,13 @@ export type CreateClassificationDataFieldPolicy = {
 export type CreateCollaboraDocumentDataKeySpecifier = (
   | 'displayName'
   | 'documentType'
+  | 'sourceCollaboraDocumentID'
   | CreateCollaboraDocumentDataKeySpecifier
 )[];
 export type CreateCollaboraDocumentDataFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   documentType?: FieldPolicy<any> | FieldReadFunction<any>;
+  sourceCollaboraDocumentID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCollaborationDataKeySpecifier = (
   | 'calloutsSetData'
@@ -2280,12 +2352,14 @@ export type InAppNotificationPayloadPlatformForumDiscussionFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadPlatformGlobalRoleChangeKeySpecifier = (
+  | 'changeType'
   | 'role'
   | 'type'
   | 'user'
   | InAppNotificationPayloadPlatformGlobalRoleChangeKeySpecifier
 )[];
 export type InAppNotificationPayloadPlatformGlobalRoleChangeFieldPolicy = {
+  changeType?: FieldPolicy<any> | FieldReadFunction<any>;
   role?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3275,21 +3349,19 @@ export type MessageFieldPolicy = {
 };
 export type MessageAttachmentKeySpecifier = (
   | 'displayName'
+  | 'externalReference'
   | 'height'
-  | 'id'
   | 'mimeType'
   | 'size'
-  | 'url'
   | 'width'
   | MessageAttachmentKeySpecifier
 )[];
 export type MessageAttachmentFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  externalReference?: FieldPolicy<any> | FieldReadFunction<any>;
   height?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
   mimeType?: FieldPolicy<any> | FieldReadFunction<any>;
   size?: FieldPolicy<any> | FieldReadFunction<any>;
-  url?: FieldPolicy<any> | FieldReadFunction<any>;
   width?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageDetailsKeySpecifier = ('message' | 'parent' | 'room' | MessageDetailsKeySpecifier)[];
@@ -3374,6 +3446,7 @@ export type MutationKeySpecifier = (
   | 'adminLicensePolicyCreateCredentialRule'
   | 'adminLicensePolicyDeleteCredentialRule'
   | 'adminLicensePolicyUpdateCredentialRule'
+  | 'adminRepairTemplateFiles'
   | 'adminRevokeMcpApiKey'
   | 'adminSearchIngestFromScratch'
   | 'adminUpdateContributorAvatars'
@@ -3619,6 +3692,7 @@ export type MutationFieldPolicy = {
   adminLicensePolicyCreateCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
   adminLicensePolicyDeleteCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
   adminLicensePolicyUpdateCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminRepairTemplateFiles?: FieldPolicy<any> | FieldReadFunction<any>;
   adminRevokeMcpApiKey?: FieldPolicy<any> | FieldReadFunction<any>;
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4748,6 +4822,7 @@ export type ReferenceFieldPolicy = {
 export type RelayPaginatedSpaceKeySpecifier = (
   | 'about'
   | 'account'
+  | 'accountSpaces'
   | 'activeSubscription'
   | 'activityScore'
   | 'actor'
@@ -4782,6 +4857,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
 export type RelayPaginatedSpaceFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
   account?: FieldPolicy<any> | FieldReadFunction<any>;
+  accountSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
   activityScore?: FieldPolicy<any> | FieldReadFunction<any>;
   actor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4995,6 +5071,7 @@ export type RolesResultSpaceFieldPolicy = {
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RoomKeySpecifier = (
+  | 'attachmentBucketId'
   | 'authorization'
   | 'avatarUrl'
   | 'createdDate'
@@ -5011,6 +5088,7 @@ export type RoomKeySpecifier = (
   | RoomKeySpecifier
 )[];
 export type RoomFieldPolicy = {
+  attachmentBucketId?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   avatarUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5236,6 +5314,7 @@ export type ServiceMetadataFieldPolicy = {
 export type SpaceKeySpecifier = (
   | 'about'
   | 'account'
+  | 'accountSpaces'
   | 'activeSubscription'
   | 'activityScore'
   | 'actor'
@@ -5270,6 +5349,7 @@ export type SpaceKeySpecifier = (
 export type SpaceFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
   account?: FieldPolicy<any> | FieldReadFunction<any>;
+  accountSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
   activityScore?: FieldPolicy<any> | FieldReadFunction<any>;
   actor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5368,6 +5448,19 @@ export type SpacePendingMembershipInfoFieldPolicy = {
   communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SpaceSelectionCandidateKeySpecifier = (
+  | 'displayName'
+  | 'id'
+  | 'level'
+  | 'parentSpaceID'
+  | SpaceSelectionCandidateKeySpecifier
+)[];
+export type SpaceSelectionCandidateFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceSettingsKeySpecifier = (
   | 'collaboration'
@@ -6672,6 +6765,34 @@ export type StrictTypedTypePolicies = {
   ActorRoles?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ActorRolesKeySpecifier | (() => undefined | ActorRolesKeySpecifier);
     fields?: ActorRolesFieldPolicy;
+  };
+  AdminTemplateFileRepairIssue?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AdminTemplateFileRepairIssueKeySpecifier
+      | (() => undefined | AdminTemplateFileRepairIssueKeySpecifier);
+    fields?: AdminTemplateFileRepairIssueFieldPolicy;
+  };
+  AdminTemplateFileRepairResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AdminTemplateFileRepairResultKeySpecifier
+      | (() => undefined | AdminTemplateFileRepairResultKeySpecifier);
+    fields?: AdminTemplateFileRepairResultFieldPolicy;
+  };
+  AdminTemplateForeignFileReference?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AdminTemplateForeignFileReferenceKeySpecifier
+      | (() => undefined | AdminTemplateForeignFileReferenceKeySpecifier);
+    fields?: AdminTemplateForeignFileReferenceFieldPolicy;
+  };
+  AdminTemplateMissingFileReference?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AdminTemplateMissingFileReferenceKeySpecifier
+      | (() => undefined | AdminTemplateMissingFileReferenceKeySpecifier);
+    fields?: AdminTemplateMissingFileReferenceFieldPolicy;
   };
   AiPersona?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AiPersonaKeySpecifier | (() => undefined | AiPersonaKeySpecifier);
@@ -8178,6 +8299,10 @@ export type StrictTypedTypePolicies = {
       | SpacePendingMembershipInfoKeySpecifier
       | (() => undefined | SpacePendingMembershipInfoKeySpecifier);
     fields?: SpacePendingMembershipInfoFieldPolicy;
+  };
+  SpaceSelectionCandidate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SpaceSelectionCandidateKeySpecifier | (() => undefined | SpaceSelectionCandidateKeySpecifier);
+    fields?: SpaceSelectionCandidateFieldPolicy;
   };
   SpaceSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceSettingsKeySpecifier | (() => undefined | SpaceSettingsKeySpecifier);

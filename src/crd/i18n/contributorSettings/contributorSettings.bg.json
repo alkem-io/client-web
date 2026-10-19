@@ -94,6 +94,7 @@
         "profile": "Профил",
         "account": "Акаунт",
         "community": "Асоциирани",
+        "membership": "Членство",
         "settings": "Настройки",
         "invitations": "Покани",
         "authorization": "Оторизация"
@@ -785,6 +786,44 @@
       "removeSuccess": "Асоциираният е премахнат",
       "removeError": "Премахването не успя — опитайте отново"
     },
+    "membership": {
+      "pageTitle": "Членство",
+      "title": "Членства в Spaces",
+      "searchPlaceholder": "Търсене на членства...",
+      "empty": "Тази организация все още не е член на нито един Space.",
+      "summary": "Показани са {{shown}} от {{total}} членства",
+      "filteredEmptyTitle": "Не са намерени членства",
+      "filteredEmptyDescription": "Опитайте да промените филтрите или думите за търсене.",
+      "clearFilters": "Изчистване на филтрите",
+      "filter": {
+        "all": "Всички",
+        "spaces": "Spaces",
+        "subspaces": "Subspaces"
+      },
+      "type": {
+        "space": "Space",
+        "subspace": "Subspace"
+      },
+      "role": {
+        "lead": "Лидер",
+        "member": "Член"
+      },
+      "menu": {
+        "viewByType": "Преглед на {{type}}"
+      },
+      "leave": {
+        "menuItemLabeled": "Напускане на {{type}}",
+        "dialogTitle": "Напускане на това членство?",
+        "dialogDescription": "Вашата организация е на път да напусне „{{spaceName}}“ и всички негови подпространства, като се откаже от всяка роля, която има там, включително Лидер. Тя ще загуби достъп до съдържанието само за членове и ще трябва да бъде поканена отново, за да се присъедини.",
+        "dialogConfirm": "Напускане",
+        "success": "Членството е прекратено",
+        "error": "Напускането не успя — опитайте отново",
+        "forbidden": "Само администраторите и собствениците на тази организация могат да напуснат пространство"
+      },
+      "ledBy": "Ръководи се от:",
+      "ledByAria": "{{count}} ръководители на общност",
+      "leadsMore": "и още {{count}}"
+    },
     "settings": {
       "pageTitle": "Настройки",
       "title": "Настройки на организацията",
@@ -1071,6 +1110,7 @@
         "innovationHubsTooltip": "Създали сте {{usage}} от {{limit}} налични персонализирани начални страници във вашия акаунт."
       },
       "kebabAriaLabel": "Още действия",
+      "kebabAriaLabelFor": "Още действия за {{name}}",
       "createNewSpace": {
         "ariaLabel": "Създаване на нов Space",
         "heading": "Създаване на нов Space",

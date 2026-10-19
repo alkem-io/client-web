@@ -1,0 +1,372 @@
+import 'fake-indexeddb/auto';
+import { createClient } from 'matrix-js-sdk';
+import { afterEach, beforeEach, describe, expect, it, type MockedFunction, vi } from 'vitest';
+import { getActiveClient, isSessionEstablishing } from './activeClient';
+import { stopActiveSession } from './activeSession';
+import { establishSession, type MatrixClientLike } from './sessionController';
+import { attemptSilentSso } from './ssoLogin';
+import { clearNamespace, loadActorCredentials, storeCredentials } from './storage';
+
+vi.mock('matrix-js-sdk', () => ({ createClient: vi.fn() }));
+vi.mock('./ssoLogin', () => ({ attemptSilentSso: vi.fn() }));
+
+const HOMESERVER = 'https://matrix.dev-alkem.io';
+
+// Cast to the same narrow shape sessionController.ts itself casts the dynamic
+// `import('matrix-js-sdk')` to — the real ICreateClientOpts/MatrixClient types
+// don't line up with the minimal MatrixClientLike test double.
+type CreateClientFn = (opts: {
+  baseUrl: string;
+  userId: string;
+  deviceId: string;
+  accessToken: string;
+}) => MatrixClientLike;
+const mockedCreateClient = createClient as unknown as MockedFunction<CreateClientFn>;
+const mockedSilentSso = vi.mocked(attemptSilentSso);
+
+type FakeClient = MatrixClientLike & { emit: (event: string, state?: string) => void };
+
+const makeClient = (): FakeClient => {
+  const handlers = new Map<string, (state?: string) => void>();
+  return {
+    stopClient: vi.fn(),
+    startClient: vi.fn(async () => {}),
+    on: vi.fn((event: string, listener: (state?: string) => void) => handlers.set(event, listener)),
+    emit: (event: string, state?: string) => handlers.get(event)?.(state),
+  };
+};
+
+const TOKEN_REJECTED = 'Session.logged_out';
+
+describe('establishSession', () => {
+  const ACTOR = 'abc-123';
+  const USER_ID = `@${ACTOR}:matrix.dev-alkem.io`;
+
+  const seedRecord = (overrides: Partial<Parameters<typeof storeCredentials>[0]> = {}) =>
+    storeCredentials({
+      userId: USER_ID,
+      deviceId: 'DEV1',
+      accessToken: 'syt_stored_access',
+      homeserverUrl: HOMESERVER,
+      ...overrides,
+    });
+
+  beforeEach(() => {
+    mockedCreateClient.mockReset();
+    mockedSilentSso.mockReset();
+    mockedSilentSso.mockResolvedValue('timeout');
+  });
+
+  afterEach(async () => {
+    stopActiveSession();
+    await clearNamespace(USER_ID);
+  });
+
+  it('resumes from a valid stored record without any SSO round-trip', async () => {
+    await seedRecord();
+    const client = makeClient();
+    mockedCreateClient.mockReturnValue(client);
+
+    await establishSession(ACTOR);
+
+    expect(mockedSilentSso).not.toHaveBeenCalled();
+    expect(mockedCreateClient).toHaveBeenCalledOnce();
+    const opts = mockedCreateClient.mock.calls[0][0];
+    expect(opts.baseUrl).toBe(HOMESERVER);
+    expect(opts.userId).toBe(USER_ID);
+    expect(opts.deviceId).toBe('DEV1');
+    expect(opts.accessToken).toBe('syt_stored_access');
+  });
+
+  it('attempts one silent SSO when no stored record exists, and creates the client from the fresh credentials', async () => {
+    mockedSilentSso.mockImplementation(async () => {
+      await seedRecord();
+      return 'authenticated';
+    });
+    const client = makeClient();
+    mockedCreateClient.mockReturnValue(client);
+
+    await establishSession(ACTOR);
+
+    expect(mockedSilentSso).toHaveBeenCalledOnce();
+    expect(mockedCreateClient).toHaveBeenCalledOnce();
+    expect(mockedCreateClient.mock.calls[0][0].accessToken).toBe('syt_stored_access');
+  });
+
+  it('does not create a client when silent SSO fails, and stop() is still safe to call', async () => {
+    const handle = await establishSession('actor-without-record');
+
+    expect(mockedSilentSso).toHaveBeenCalledOnce();
+    expect(mockedCreateClient).not.toHaveBeenCalled();
+    expect(() => handle.stop()).not.toThrow();
+  });
+
+  it('resolves without throwing when silent SSO rejects', async () => {
+    mockedSilentSso.mockRejectedValue(new Error('network down'));
+
+    await expect(establishSession('actor-without-record')).resolves.toBeDefined();
+  });
+
+  it('stop() stops the active client', async () => {
+    await seedRecord();
+    const client = makeClient();
+    mockedCreateClient.mockReturnValue(client);
+
+    const handle = await establishSession(ACTOR);
+    handle.stop();
+
+    expect(client.stopClient).toHaveBeenCalled();
+  });
+
+  it('an already-aborted signal stops the session at once', async () => {
+    await seedRecord();
+    const controller = new AbortController();
+    controller.abort();
+
+    await establishSession(ACTOR, { signal: controller.signal });
+
+    expect(mockedCreateClient).not.toHaveBeenCalled();
+    expect(stopActiveSession()).toBe(false);
+  });
+
+  it('an aborted signal stops establishment before a client is created', async () => {
+    let capturedSignal: AbortSignal | undefined;
+    mockedSilentSso.mockImplementation(
+      (_localpart, options) =>
+        new Promise(resolve => {
+          capturedSignal = options?.signal;
+          options?.signal?.addEventListener('abort', () => resolve('timeout'));
+        })
+    );
+    const session = new AbortController();
+
+    const pending = establishSession(ACTOR, { signal: session.signal });
+    await vi.waitFor(() => {
+      expect(capturedSignal).toBeDefined();
+    });
+    session.abort();
+
+    await pending;
+    expect(capturedSignal?.aborted).toBe(true);
+    expect(mockedCreateClient).not.toHaveBeenCalled();
+  });
+
+  it('stopping via the Alkemio sign-out hook aborts an in-flight silent SSO', async () => {
+    let capturedSignal: AbortSignal | undefined;
+    mockedSilentSso.mockImplementation(
+      (_localpart, options) =>
+        new Promise(resolve => {
+          capturedSignal = options?.signal;
+          options?.signal?.addEventListener('abort', () => resolve('timeout'));
+        })
+    );
+
+    const pending = establishSession(ACTOR);
+    await vi.waitFor(() => {
+      expect(capturedSignal).toBeDefined();
+    });
+
+    stopActiveSession();
+    expect(capturedSignal?.aborted).toBe(true);
+
+    await pending;
+    expect(mockedCreateClient).not.toHaveBeenCalled();
+  });
+
+  it("never resumes with another actor's stored record", async () => {
+    const otherUserId = '@2b3c4d5e-6f70-4a1b-8c9d-1234567890ab:matrix.dev-alkem.io';
+    await storeCredentials({
+      userId: otherUserId,
+      deviceId: 'DEV_OTHER',
+      accessToken: 'syt_other_access',
+      homeserverUrl: HOMESERVER,
+    });
+
+    try {
+      await establishSession('9f8e7d6c-5b4a-3210-9876-fedcba098765');
+
+      expect(mockedSilentSso).toHaveBeenCalledOnce();
+      expect(mockedCreateClient).not.toHaveBeenCalled();
+    } finally {
+      await clearNamespace(otherUserId);
+    }
+  });
+
+  it('starts the sync loop and publishes the client to read hooks until stopped', async () => {
+    await seedRecord();
+    const client = makeClient();
+    mockedCreateClient.mockReturnValue(client);
+
+    const handle = await establishSession(ACTOR);
+
+    expect(client.startClient).toHaveBeenCalledOnce();
+    expect(getActiveClient()).toBe(client);
+    handle.stop();
+    expect(getActiveClient()).toBeNull();
+  });
+
+  it('a rejected token clears the stored record, runs one silent SSO and restarts sync once', async () => {
+    await seedRecord({ accessToken: 'syt_expired' });
+    const first = makeClient();
+    const second = makeClient();
+    mockedCreateClient.mockReturnValueOnce(first).mockReturnValueOnce(second);
+    mockedSilentSso.mockImplementation(async () => {
+      await seedRecord({ accessToken: 'syt_fresh' });
+      return 'authenticated';
+    });
+    await establishSession(ACTOR);
+
+    first.emit(TOKEN_REJECTED);
+
+    await vi.waitFor(() => {
+      expect(mockedCreateClient).toHaveBeenCalledTimes(2);
+    });
+    expect(first.stopClient).toHaveBeenCalled();
+    expect(mockedSilentSso).toHaveBeenCalledOnce();
+    expect(mockedCreateClient.mock.calls[1][0].accessToken).toBe('syt_fresh');
+    expect(second.startClient).toHaveBeenCalledOnce();
+    expect(getActiveClient()).toBe(second);
+  });
+
+  it('a second rejection fails closed: record cleared, no further SSO, no client', async () => {
+    await seedRecord();
+    const first = makeClient();
+    const second = makeClient();
+    mockedCreateClient.mockReturnValueOnce(first).mockReturnValueOnce(second);
+    mockedSilentSso.mockImplementation(async () => {
+      await seedRecord({ accessToken: 'syt_fresh' });
+      return 'authenticated';
+    });
+    await establishSession(ACTOR);
+    first.emit(TOKEN_REJECTED);
+    await vi.waitFor(() => {
+      expect(mockedCreateClient).toHaveBeenCalledTimes(2);
+    });
+
+    second.emit(TOKEN_REJECTED);
+
+    await vi.waitFor(async () => {
+      expect(await loadActorCredentials(ACTOR)).toBeNull();
+    });
+    expect(mockedSilentSso).toHaveBeenCalledOnce();
+    expect(mockedCreateClient).toHaveBeenCalledTimes(2);
+    expect(getActiveClient()).toBeNull();
+  });
+
+  it('a failed recovery SSO leaves no client and no stored record', async () => {
+    await seedRecord();
+    const client = makeClient();
+    mockedCreateClient.mockReturnValue(client);
+    await establishSession(ACTOR);
+
+    client.emit(TOKEN_REJECTED);
+
+    await vi.waitFor(() => {
+      expect(mockedSilentSso).toHaveBeenCalledOnce();
+    });
+    expect(await loadActorCredentials(ACTOR)).toBeNull();
+    expect(mockedCreateClient).toHaveBeenCalledOnce();
+    expect(getActiveClient()).toBeNull();
+  });
+
+  it('a rejection after sign-out does not attempt recovery', async () => {
+    await seedRecord();
+    const client = makeClient();
+    mockedCreateClient.mockReturnValue(client);
+    const handle = await establishSession(ACTOR);
+    handle.stop();
+
+    client.emit(TOKEN_REJECTED);
+
+    await new Promise(resolve => setTimeout(resolve, 20));
+    expect(mockedSilentSso).not.toHaveBeenCalled();
+    expect(mockedCreateClient).toHaveBeenCalledOnce();
+  });
+
+  it('a recovered session that synced recovers again at the next token expiry', async () => {
+    await seedRecord();
+    const clients = [makeClient(), makeClient(), makeClient()];
+    for (const next of clients) mockedCreateClient.mockReturnValueOnce(next);
+    mockedSilentSso.mockImplementation(async () => {
+      await seedRecord({ accessToken: 'syt_fresh' });
+      return 'authenticated';
+    });
+    await establishSession(ACTOR);
+
+    clients[0].emit(TOKEN_REJECTED);
+    await vi.waitFor(() => expect(mockedCreateClient).toHaveBeenCalledTimes(2));
+    clients[1].emit('sync', 'PREPARED');
+    clients[1].emit(TOKEN_REJECTED);
+
+    await vi.waitFor(() => expect(mockedCreateClient).toHaveBeenCalledTimes(3));
+    expect(mockedSilentSso).toHaveBeenCalledTimes(2);
+    expect(getActiveClient()).toBe(clients[2]);
+  });
+
+  it('reports the session as establishing only while credentials are being acquired', async () => {
+    let finishSso: (outcome: 'timeout') => void = () => {};
+    mockedSilentSso.mockImplementation(() => new Promise(resolve => (finishSso = resolve)));
+
+    const pending = establishSession('actor-without-record');
+    await vi.waitFor(() => expect(mockedSilentSso).toHaveBeenCalled());
+    expect(isSessionEstablishing()).toBe(true);
+
+    finishSso('timeout');
+    await pending;
+    expect(isSessionEstablishing()).toBe(false);
+  });
+
+  it('stops reporting establishing when establishment throws', async () => {
+    mockedSilentSso.mockRejectedValue(new Error('network down'));
+
+    await establishSession('actor-without-record');
+
+    expect(isSessionEstablishing()).toBe(false);
+  });
+
+  it('reports establishing during recovery and clears it when the recovery fails closed', async () => {
+    await seedRecord();
+    const client = makeClient();
+    mockedCreateClient.mockReturnValue(client);
+    let finishSso: (outcome: 'timeout') => void = () => {};
+    mockedSilentSso.mockImplementation(() => new Promise(resolve => (finishSso = resolve)));
+    await establishSession(ACTOR);
+    expect(isSessionEstablishing()).toBe(false);
+
+    client.emit(TOKEN_REJECTED);
+    await vi.waitFor(() => expect(mockedSilentSso).toHaveBeenCalled());
+    expect(isSessionEstablishing()).toBe(true);
+
+    finishSso('timeout');
+    await vi.waitFor(() => expect(isSessionEstablishing()).toBe(false));
+    expect(getActiveClient()).toBeNull();
+  });
+
+  it('a stopped session does not clear the flag of the session that replaced it', async () => {
+    const first = new AbortController();
+    let finishFirst: (outcome: 'timeout') => void = () => {};
+    mockedSilentSso.mockImplementationOnce(() => new Promise(resolve => (finishFirst = resolve)));
+    const firstDone = establishSession('actor-a', { signal: first.signal });
+    await vi.waitFor(() => expect(mockedSilentSso).toHaveBeenCalledTimes(1));
+
+    first.abort();
+    mockedSilentSso.mockImplementationOnce(() => new Promise(() => {}));
+    void establishSession('actor-b');
+    await vi.waitFor(() => expect(mockedSilentSso).toHaveBeenCalledTimes(2));
+    finishFirst('timeout');
+    await firstDone;
+
+    expect(isSessionEstablishing()).toBe(true);
+  });
+
+  it('stop() clears the establishing flag while silent SSO is still pending', async () => {
+    mockedSilentSso.mockImplementation(() => new Promise(() => {}));
+    void establishSession('actor-without-record');
+    await vi.waitFor(() => expect(mockedSilentSso).toHaveBeenCalled());
+    expect(isSessionEstablishing()).toBe(true);
+
+    expect(stopActiveSession()).toBe(true);
+
+    expect(isSessionEstablishing()).toBe(false);
+  });
+});

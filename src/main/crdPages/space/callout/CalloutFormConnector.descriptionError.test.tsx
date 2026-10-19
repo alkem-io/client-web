@@ -24,10 +24,18 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
+const markdownEditorProps = vi.fn();
+
 vi.mock('@/crd/forms/markdown/MarkdownEditor', () => ({
-  MarkdownEditor: ({ value, onChange }: { value: string; onChange: (next: string) => void }) => (
-    <textarea aria-label="description-editor" value={value} onChange={e => onChange(e.target.value)} />
-  ),
+  MarkdownEditor: (props: { value: string; onChange: (next: string) => void; maxLength?: number; error?: string }) => {
+    markdownEditorProps(props);
+    return (
+      <>
+        <textarea aria-label="description-editor" value={props.value} onChange={e => props.onChange(e.target.value)} />
+        {props.error && <p aria-live="polite">{props.error}</p>}
+      </>
+    );
+  },
 }));
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
@@ -35,7 +43,6 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useCalloutContentQuery: () => ({ data: undefined, loading: false }),
   useCreateReferenceOnProfileMutation: () => [vi.fn()],
   useDeleteReferenceMutation: () => [vi.fn()],
-  useSubspacesInSpaceQuery: () => ({ data: undefined, loading: false, refetch: vi.fn() }),
   useTemplateContentLazyQuery: () => [vi.fn()],
   useUpdateCalloutContentMutation: () => [vi.fn(), { loading: false }],
   useUpdateCalloutFormMutation: () => [vi.fn()],
@@ -98,6 +105,10 @@ vi.mock('@/domain/collaboration/calloutContributions/collaboraDocument/useRename
   useRenameCollaboraDocument: () => ({ rename: vi.fn() }),
 }));
 
+vi.mock('./useAccountSpaceCandidates', () => ({
+  useAccountSpaceCandidates: () => ({ candidates: [], loading: false, error: undefined, refetch: vi.fn() }),
+}));
+
 vi.mock('./useSelectionCandidates', async importOriginal => {
   const actual = await importOriginal<typeof import('./useSelectionCandidates')>();
   return {
@@ -134,6 +145,48 @@ const openForm = () => {
 describe('CalloutFormConnector — over-long description feedback', () => {
   beforeEach(() => {
     handleCreateCallout.mockClear();
+    markdownEditorProps.mockClear();
+  });
+
+  test('the error appears live as soon as the limit is crossed, before any submit', () => {
+    const form = openForm();
+    form.typeDescription('a'.repeat(LONG_MARKDOWN_TEXT_LENGTH));
+    expect(screen.queryByText(MAX_LENGTH_MESSAGE)).not.toBeInTheDocument();
+
+    form.typeDescription('a'.repeat(LONG_MARKDOWN_TEXT_LENGTH + 1));
+    expect(screen.getByText(MAX_LENGTH_MESSAGE)).toBeInTheDocument();
+  });
+
+  test('the footer is blocked with the description-too-long hint while over the limit', () => {
+    const form = openForm();
+    expect(screen.getByRole('button', { name: /forms\.publish/i })).not.toHaveAttribute('aria-describedby');
+
+    form.typeDescription('a'.repeat(LONG_MARKDOWN_TEXT_LENGTH + 1));
+    const describedBy = screen.getByRole('button', { name: /forms\.publish/i }).getAttribute('aria-describedby');
+    expect(document.getElementById(describedBy as string)).toHaveTextContent('forms.descriptionTooLongHint');
+  });
+
+  test('a missing title takes priority over the description hint', () => {
+    const form = openForm();
+    form.typeDescription('a'.repeat(LONG_MARKDOWN_TEXT_LENGTH + 1));
+    fireEvent.change(screen.getByLabelText('forms.titleLabel'), { target: { value: '' } });
+
+    const publish = screen.getByRole('button', { name: /forms\.publish/i });
+    const describedBy = publish.getAttribute('aria-describedby');
+    expect(document.getElementById(describedBy as string)).toHaveTextContent('forms.titleRequiredHint');
+  });
+
+  test('clicking a blocked Publish does not submit', () => {
+    const form = openForm();
+    form.typeDescription('a'.repeat(LONG_MARKDOWN_TEXT_LENGTH + 1));
+    form.publish();
+    expect(handleCreateCallout).not.toHaveBeenCalled();
+  });
+
+  test('the editor counter is bounded by the same limit the validator enforces', () => {
+    openForm();
+    const props = markdownEditorProps.mock.calls[markdownEditorProps.mock.calls.length - 1][0];
+    expect(props.maxLength).toBe(LONG_MARKDOWN_TEXT_LENGTH);
   });
 
   test('renders the description error instead of failing silently', () => {

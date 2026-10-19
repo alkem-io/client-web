@@ -346,18 +346,11 @@
       "actions": "Actions",
       "empty": "No organisations.",
       "remove": "Remove organisation",
-      "description": "Overview of all member and lead organisations. Invite an organisation to join, or add one directly.",
-      "add": "Add Organisation",
+      "description": "Overview of all member and lead organisations. Invite an organisation to join.",
       "dropdown": {
         "viewProfile": "View Profile",
         "changeRole": "Change Role",
         "removeFromSpace": "Remove from Space"
-      },
-      "addDialog": {
-        "title": "Add Organisation",
-        "description": "These organizations will be visible as members in this Space and on their organization profile.",
-        "search": "Search organisations…",
-        "empty": "No organisations match your search."
       },
       "invite": "Invite Organisation",
       "search": "Search organisations…",
@@ -925,12 +918,14 @@
     "name": {
       "title": "Space Name",
       "description": "The public name of your space.",
-      "ariaLabel": "Space name"
+      "ariaLabel": "Space name",
+      "editAriaLabel": "Edit space name"
     },
     "tagline": {
       "title": "Tagline",
       "description": "A short subtitle shown next to the space name.",
-      "ariaLabel": "Tagline"
+      "ariaLabel": "Tagline",
+      "editAriaLabel": "Edit tagline"
     },
     "branding": {
       "title": "Space Branding",
@@ -973,7 +968,9 @@
       "title": "Location",
       "description": "The city and country of this space.",
       "city": "City",
-      "country": "Country (ISO code)"
+      "country": "Country (ISO code)",
+      "editCityAriaLabel": "Edit city",
+      "countryPlaceholder": "Country"
     },
     "what": {
       "title": "What",

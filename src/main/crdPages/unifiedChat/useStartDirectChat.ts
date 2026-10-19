@@ -65,18 +65,11 @@ export const useStartDirectChat = (userId: string | undefined) => {
                     room: {
                       __typename: 'Room' as const,
                       id: room.id,
+                      attachmentBucketId: room.attachmentBucketId,
                       type: room.type,
                       displayName: room.displayName,
                       avatarUrl: room.avatarUrl,
                       createdDate: room.createdDate,
-                      // Write the real values through from the createConversation
-                      // result (its `room` selection matches UserConversations).
-                      // Previously these were hard-coded 0/0 and `lastMessage:
-                      // undefined`, which left `lastMessage` missing from the cache
-                      // and risked incomplete-cache reads.
-                      unreadCount: room.unreadCount,
-                      messagesCount: room.messagesCount,
-                      lastMessage: room.lastMessage,
                     },
                     members: conversation.members,
                   },

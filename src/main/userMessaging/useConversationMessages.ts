@@ -1,39 +1,35 @@
-import { useConversationMessagesQuery } from '@/core/apollo/generated/apollo-hooks';
-import { mapMessageAttachments, mapMessageReactions, mapMessageSender } from './models';
+import { nonMemberActorIds, toConversationMessage } from './matrix/toConversationMessage';
+import { useActorProfiles } from './matrix/useActorProfiles';
+import { useConversationTimeline } from './matrix/useConversationTimeline';
+import type { ConversationMember } from './models';
+import { useAttachmentReadiness } from './useAttachmentReadiness';
 
 export type { ConversationMessage } from './models';
 
-export const useConversationMessages = (conversationId: string | null) => {
-  const { data, loading, error } = useConversationMessagesQuery({
-    variables: { conversationId: conversationId ?? '' },
-    skip: !conversationId,
-    fetchPolicy: 'cache-and-network',
-  });
+type ConversationRef = {
+  readonly id: string;
+  readonly roomId: string;
+  readonly attachmentBucketId?: string | null;
+  readonly members: readonly ConversationMember[];
+};
 
-  const messages = (() => {
-    const roomMessages = data?.lookup?.conversation?.room?.messages;
-    if (!roomMessages) {
-      return [];
-    }
+/** The open conversation's messages, read from the browser's Matrix sync. */
+export const useConversationMessages = (conversation: ConversationRef | null) => {
+  const { messages: parsed, readUpToEventId, isLoading } = useConversationTimeline(conversation?.roomId ?? null);
+  const members = conversation?.members ?? [];
+  const otherProfiles = useActorProfiles(nonMemberActorIds(parsed, members));
 
-    return roomMessages
-      .map(msg => ({
-        id: msg.id,
-        message: msg.message,
-        timestamp: msg.timestamp,
-        sender: mapMessageSender(msg.sender),
-        reactions: mapMessageReactions(msg.reactions),
-        attachments: mapMessageAttachments(msg.attachments),
-      }))
-      .sort((a, b) => a.timestamp - b.timestamp);
-  })();
-
-  const roomId = data?.lookup?.conversation?.room?.id ?? null;
+  const messages = parsed
+    .map(message =>
+      toConversationMessage(message, { members, otherProfiles, attachmentBucketId: conversation?.attachmentBucketId })
+    )
+    .sort((a, b) => a.timestamp - b.timestamp);
+  const readyMessages = useAttachmentReadiness(messages, conversation?.roomId);
 
   return {
-    messages,
-    roomId,
-    isLoading: loading,
-    error,
+    messages: readyMessages,
+    readUpToEventId,
+    roomId: conversation?.roomId ?? null,
+    isLoading,
   };
 };

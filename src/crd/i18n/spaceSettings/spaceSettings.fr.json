@@ -346,18 +346,11 @@
       "actions": "Actions",
       "empty": "Aucune organisation.",
       "remove": "Retirer l'organisation",
-      "description": "Aperçu de toutes les organisations membres et lead. Invitez une organisation à rejoindre, ou ajoutez-en une directement.",
-      "add": "Ajouter une organisation",
+      "description": "Aperçu de toutes les organisations membres et lead. Invitez une organisation à rejoindre l'espace.",
       "dropdown": {
         "viewProfile": "Voir le profil",
         "changeRole": "Changer le rôle",
         "removeFromSpace": "Retirer de l'Espace"
-      },
-      "addDialog": {
-        "title": "Ajouter une organisation",
-        "description": "Ces organisations seront visibles en tant que membres dans ce Space et sur leur profil d'organisation.",
-        "search": "Rechercher des organisations…",
-        "empty": "Aucune organisation ne correspond à votre recherche."
       },
       "invite": "Inviter une organisation",
       "search": "Rechercher des organisations…",
@@ -925,12 +918,14 @@
     "name": {
       "title": "Nom de l'espace",
       "description": "Le nom public de votre espace.",
-      "ariaLabel": "Nom de l'espace"
+      "ariaLabel": "Nom de l'espace",
+      "editAriaLabel": "Modifier le nom de l'espace"
     },
     "tagline": {
       "title": "Sous-titre",
       "description": "Un court sous-titre affiché à côté du nom de l'espace.",
-      "ariaLabel": "Sous-titre"
+      "ariaLabel": "Sous-titre",
+      "editAriaLabel": "Modifier le sous-titre"
     },
     "branding": {
       "title": "Identité visuelle de l'espace",
@@ -973,7 +968,9 @@
       "title": "Localisation",
       "description": "La ville et le pays de cet espace.",
       "city": "Ville",
-      "country": "Pays (code ISO)"
+      "country": "Pays (code ISO)",
+      "editCityAriaLabel": "Modifier la ville",
+      "countryPlaceholder": "Pays"
     },
     "what": {
       "title": "Quoi",

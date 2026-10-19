@@ -11,6 +11,7 @@ import { CookiesProvider } from 'react-cookie';
 import { BrowserRouter, useLocation } from 'react-router-dom';
 import { Error40XBoundary } from '@/core/40XErrorHandler/ErrorBoundary';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { MatrixSession } from '@/core/matrix/MatrixSessionProvider';
 import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
 import ScrollToTop from '@/core/routing/ScrollToTop';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
@@ -112,6 +113,7 @@ const Root: FC = () => {
                                         <NotificationsGate />
                                         <InAppNotificationCountSubscriber />
                                         <ConversationEventsSubscriber />
+                                        <MatrixSession />
                                         <UnreadTabBadge />
                                         <Suspense fallback={null}>
                                           <AssistantDialog />

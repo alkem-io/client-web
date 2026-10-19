@@ -6,14 +6,15 @@ import CrdOrgSettingsPage from './CrdOrgSettingsPage';
 const CrdOrgProfileTab = lazy(() => import('./profile/CrdOrgProfileTab'));
 const CrdOrgAccountTab = lazy(() => import('./account/CrdOrgAccountTab'));
 const CrdOrgAssociatesTab = lazy(() => import('./community/CrdOrgAssociatesTab'));
+const CrdOrgMembershipTab = lazy(() => import('./membership/CrdOrgMembershipTab'));
 const CrdOrgInvitationsTab = lazy(() => import('./invitations/CrdOrgInvitationsTab'));
 const CrdOrgSettingsTab = lazy(() => import('./settings/CrdOrgSettingsTab'));
 
 /**
  * Routes the Org settings sub-tree (`/organization/<orgSlug>/settings/*`).
  *
- * Five tabs (Profile, Account, Associates, Invitations, Settings) are wired
- * with their CRD per-tab components. The Authorization tab is gone (D14):
+ * Six tabs (Profile, Account, Associates, Membership, Invitations, Settings)
+ * are wired with their CRD per-tab components. The Authorization tab is gone:
  * the Associates tab editor now covers Admin/Owner add-remove, and the old
  * `/settings/authorization` URL redirects explicitly to `../community`
  * rather than falling through to the generic catch-all (which would land on
@@ -45,6 +46,14 @@ export const CrdOrgSettingsRoutes = () => (
         element={
           <Suspense fallback={<Loading />}>
             <CrdOrgAssociatesTab />
+          </Suspense>
+        }
+      />
+      <Route
+        path="membership"
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdOrgMembershipTab />
           </Suspense>
         }
       />

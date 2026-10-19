@@ -779,7 +779,8 @@
         },
         "PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED": {
           "description": "",
-          "subject": "{{triggeredByName}} has assigned {{role}} to {{userName}}"
+          "subject": "{{triggeredByName}} has assigned {{role}} to {{userName}}",
+          "subjectRemoved": "{{triggeredByName}} hat {{role}} von {{userName}} entfernt"
         },
         "PLATFORM_ADMIN_SPACE_CREATED": {
           "description": "{{spaceName}}",
@@ -1162,6 +1163,9 @@
   "messaging": {
     "message": "Nachricht",
     "successfully-sent": "Nachricht erfolgreich gesendet"
+  },
+  "notification": {
+    "close": "Benachrichtigung schließen"
   },
   "ok": "OK",
   "pages": {

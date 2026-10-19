@@ -1,16 +1,6 @@
-import {
-  useAvailableOrganizationsLazyQuery,
-  useAvailableUsersForElevatedRoleLazyQuery,
-  useAvailableUsersForEntryRoleLazyQuery,
-  usePlatformRoleAvailableUsersLazyQuery,
-} from '@/core/apollo/generated/apollo-hooks';
-import type { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { useAvailableOrganizationsLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import type { Identifiable } from '@/core/utils/Identifiable';
-import {
-  AVAILABLE_CONTRIBUTORS_PAGE_SIZE,
-  type AvailableOrganizationsResponse,
-  type AvailableUsersResponse,
-} from './common';
+import { AVAILABLE_CONTRIBUTORS_PAGE_SIZE, type AvailableOrganizationsResponse } from './common';
 
 type useRoleSetAvailableContributorsParams = {
   roleSetId: string | undefined;
@@ -18,21 +8,8 @@ type useRoleSetAvailableContributorsParams = {
 };
 
 interface useRoleSetAvailableContributorsProvided {
-  findAvailableUsersForRoleSetEntryRole: (filter?: string) => Promise<AvailableUsersResponse>;
-  findAvailableUsersForRoleSetElevatedRole: (role: RoleName, filter?: string) => Promise<AvailableUsersResponse>;
-  findAvailableUsersForPlatformRoleSet: (filter?: string) => Promise<AvailableUsersResponse>;
   findAvailableOrganizationsForRoleSet: (filter?: string) => Promise<AvailableOrganizationsResponse>;
-  refetch: () => Promise<unknown>;
-  loading: boolean;
 }
-
-const buildUserFilterObject = (filter: string | undefined) =>
-  filter
-    ? {
-        email: filter,
-        displayName: filter,
-      }
-    : undefined;
 
 const buildOrganizationFilterObject = (filter: string | undefined) =>
   filter
@@ -48,109 +25,7 @@ const useRoleSetAvailableContributors = ({
   roleSetId,
   filterCurrentMembers = [],
 }: useRoleSetAvailableContributorsParams): useRoleSetAvailableContributorsProvided => {
-  const [
-    fetchAvailableUsersForRoleSetEntryRole,
-    { loading: loadingAvailableUsersForRoleSetEntryRole, refetch: refetchAvailableUsersForRoleSetEntryRole },
-  ] = useAvailableUsersForEntryRoleLazyQuery();
-  const findAvailableUsersForRoleSetEntryRole = async (filterString: string | undefined) => {
-    if (!roleSetId) {
-      throw new Error('roleSetId is required');
-    }
-    const filter = buildUserFilterObject(filterString);
-    const { data, fetchMore, refetch, loading } = await fetchAvailableUsersForRoleSetEntryRole({
-      variables: {
-        roleSetId: roleSetId!,
-        first: AVAILABLE_CONTRIBUTORS_PAGE_SIZE,
-        filter,
-      },
-    });
-    return {
-      users: data?.lookup.roleSet?.availableUsersForEntryRole.users ?? [],
-      hasMore: data?.lookup.roleSet?.availableUsersForEntryRole.pageInfo.hasNextPage ?? false,
-      refetch,
-      loading,
-      fetchMore: () =>
-        fetchMore({
-          variables: {
-            roleSetId,
-            first: AVAILABLE_CONTRIBUTORS_PAGE_SIZE,
-            after: data?.lookup.roleSet?.availableUsersForEntryRole.pageInfo.endCursor,
-            filter,
-          },
-        }),
-    };
-  };
-
-  const [
-    fetchAvailableUsersForRoleSetElevatedRole,
-    { loading: loadingAvailableUsersForRoleSetElevatedRole, refetch: refetchAvailableUsersForRoleSetElevatedRole },
-  ] = useAvailableUsersForElevatedRoleLazyQuery();
-  const findAvailableUsersForRoleSetElevatedRole = async (role: RoleName, filterString: string | undefined) => {
-    if (!roleSetId) {
-      throw new Error('roleSetId is required');
-    }
-    const filter = buildUserFilterObject(filterString);
-    const { data, fetchMore, refetch, loading } = await fetchAvailableUsersForRoleSetElevatedRole({
-      variables: {
-        roleSetId: roleSetId!,
-        role: role,
-        first: AVAILABLE_CONTRIBUTORS_PAGE_SIZE,
-        filter,
-      },
-    });
-    return {
-      users: data?.lookup.roleSet?.availableUsersForElevatedRole.users ?? [],
-      hasMore: data?.lookup.roleSet?.availableUsersForElevatedRole.pageInfo.hasNextPage ?? false,
-      refetch,
-      loading,
-      fetchMore: () =>
-        fetchMore({
-          variables: {
-            roleSetId,
-            first: AVAILABLE_CONTRIBUTORS_PAGE_SIZE,
-            after: data?.lookup.roleSet?.availableUsersForElevatedRole.pageInfo.endCursor,
-            filter,
-          },
-        }),
-    };
-  };
-
-  const [
-    fetchAvailableUsersForPlatformRoleSet,
-    { loading: loadingAvailableUsersForPlatformRoleSet, refetch: refetchAvailableUsersForPlatformRoleSet },
-  ] = usePlatformRoleAvailableUsersLazyQuery();
-  const findAvailableUsersForPlatformRoleSet = async (filterString: string | undefined) => {
-    if (!roleSetId) {
-      throw new Error('roleSetId is required');
-    }
-    const filter = buildUserFilterObject(filterString);
-    const { data, fetchMore, refetch, loading } = await fetchAvailableUsersForPlatformRoleSet({
-      variables: {
-        first: AVAILABLE_CONTRIBUTORS_PAGE_SIZE,
-        filter: filter,
-      },
-    });
-    return {
-      users: data?.usersPaginated.users ?? [],
-      hasMore: data?.usersPaginated.pageInfo.hasNextPage ?? false,
-      refetch,
-      loading,
-      fetchMore: () =>
-        fetchMore({
-          variables: {
-            roleSetId,
-            first: AVAILABLE_CONTRIBUTORS_PAGE_SIZE,
-            after: data?.usersPaginated.pageInfo.endCursor,
-            filter,
-          },
-        }),
-    };
-  };
-
-  const [
-    fetchAvailableOrganizationsForRoleSet,
-    { loading: loadingAvailableOrganizationsForRoleSet, refetch: refetchAvailableOrganizationsForRoleSet },
-  ] = useAvailableOrganizationsLazyQuery();
+  const [fetchAvailableOrganizationsForRoleSet] = useAvailableOrganizationsLazyQuery();
   const findAvailableOrganizationsForRoleSet = async (filterString: string | undefined) => {
     if (!roleSetId) {
       throw new Error('roleSetId is required');
@@ -179,24 +54,7 @@ const useRoleSetAvailableContributors = ({
     };
   };
 
-  return {
-    loading:
-      loadingAvailableOrganizationsForRoleSet ||
-      loadingAvailableUsersForRoleSetEntryRole ||
-      loadingAvailableUsersForRoleSetElevatedRole ||
-      loadingAvailableUsersForPlatformRoleSet,
-    refetch: () =>
-      Promise.all([
-        () => refetchAvailableUsersForRoleSetEntryRole(),
-        () => refetchAvailableUsersForRoleSetElevatedRole(),
-        () => refetchAvailableUsersForPlatformRoleSet(),
-        () => refetchAvailableOrganizationsForRoleSet(),
-      ]),
-    findAvailableUsersForRoleSetEntryRole,
-    findAvailableUsersForRoleSetElevatedRole,
-    findAvailableUsersForPlatformRoleSet,
-    findAvailableOrganizationsForRoleSet,
-  };
+  return { findAvailableOrganizationsForRoleSet };
 };
 
 export default useRoleSetAvailableContributors;

@@ -44,7 +44,8 @@ export type NotificationViewData = {
 
 export type NotificationPrivileges = {
   isPlatformAdmin: boolean;
-  isPlatformAdminRecipient: boolean;
+  /** Gates the platformAdmin group only — visibility equals recipiency by construction. */
+  canReceivePlatformAdminNotifications: boolean;
   isOrganizationAdmin: boolean;
   isSpaceAdmin: boolean;
   isSpaceLead: boolean;
@@ -425,8 +426,8 @@ export const mapUserNotifications = (
     ],
   });
 
-  // ── Platform Admin (gated by isPlatformAdmin OR isPlatformAdminRecipient) ──
-  if (privileges.isPlatformAdmin || privileges.isPlatformAdminRecipient) {
+  // ── Platform Admin (gated by canReceivePlatformAdminNotifications only) ──
+  if (privileges.canReceivePlatformAdminNotifications) {
     groups.push({
       groupId: 'platformAdmin',
       title: t('user.notifications.groups.platformAdmin.title'),
