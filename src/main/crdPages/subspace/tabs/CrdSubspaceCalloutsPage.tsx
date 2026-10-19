@@ -47,7 +47,7 @@ export default function CrdSubspaceCalloutsPage() {
       editFlowHref={editFlowHref}
       action={headerActionIcons}
       mobileMenuOpen={mobileMenu.open}
-      onMobileMenuOpenChange={mobileMenu.onOpenChange}
+      onMobileMenuOpenChange={mobileMenu.available ? mobileMenu.onOpenChange : undefined}
       mobileMenuContent={mobileMenu.content}
     />
   );

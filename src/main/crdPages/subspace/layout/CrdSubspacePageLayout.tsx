@@ -62,11 +62,14 @@ import { CrdSubspaceIndexDialogConnector } from '../dialogs/CrdSubspaceIndexDial
 import { useCrdSubspace } from '../hooks/useCrdSubspace';
 import { useCrdSubspaceFlow } from '../hooks/useCrdSubspaceFlow';
 import { useSubspaceSidebarCollapsed } from '../hooks/useSubspaceSidebarCollapsed';
+import { subspaceHomeColumns } from './subspaceHomeColumns';
 
 export type SubspaceMobileMenu = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   content: ReactNode;
+  /** False when the drawer would be empty — no sidebar widgets and no edit-flow link — so no trigger is shown. */
+  available: boolean;
 };
 
 /** The sidebar search of the active phase — state and fetching live in the layout (the
@@ -159,7 +162,11 @@ export default function CrdSubspacePageLayout() {
   // SubspaceFlowTabs, whose open state lives here). Only armed while a drawer
   // trigger exists: below lg (desktop sidebar takes over) and off settings.
   const belowLg = useMediaQuery('(max-width: 1023px)');
-  useEdgeSwipe(() => setMobileMenuOpen(true), { enabled: belowLg && !isOnSettings });
+  // An empty sidebar list renders no sidebar at all; the drawer then only exists for
+  // admins, to carry the edit-flow link.
+  const hasSidebar = data.sidebarPlan.length > 0;
+  const hasMobileMenu = hasSidebar || (data.canEditFlow && !!data.subspaceUrl);
+  useEdgeSwipe(() => setMobileMenuOpen(true), { enabled: belowLg && !isOnSettings && hasMobileMenu });
 
   const settingsLevel: 'L1' | 'L2' = spaceLevel === SpaceLevel.L2 ? 'L2' : 'L1';
   const visibleSettingsTabs = getVisibleSettingsTabs(settingsLevel);
@@ -337,7 +344,7 @@ export default function CrdSubspacePageLayout() {
     onActivityClick: () => setActiveDialog('activity'),
     onShareClick: () => setShareDialogOpen(true),
     onToggleFullWidth: toggleFullWidth,
-    onMenuClick: () => setMobileMenuOpen(true),
+    onMenuClick: hasMobileMenu ? () => setMobileMenuOpen(true) : undefined,
   };
   // At sm+ the gray icons ride the sticky flow-tabs row (rendered by the
   // callouts page via outlet context) so they stay visible on scroll; below sm
@@ -353,11 +360,14 @@ export default function CrdSubspacePageLayout() {
 
   const mobileMenuContent = (
     <div className="flex flex-col gap-4">
-      {mobileSidebar}
+      {hasSidebar && mobileSidebar}
       {data.canEditFlow && editFlowHref && (
         <a
           href={editFlowHref}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-md text-control font-medium text-foreground border-t border-border pt-4 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className={cn(
+            'flex items-center gap-3 px-3 py-2.5 rounded-md text-control font-medium text-foreground hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+            hasSidebar && 'border-t border-border pt-4'
+          )}
           onClick={() => setMobileMenuOpen(false)}
         >
           <LayoutIcon className="w-4 h-4 shrink-0 text-muted-foreground" aria-hidden="true" />
@@ -371,6 +381,7 @@ export default function CrdSubspacePageLayout() {
     open: mobileMenuOpen,
     onOpenChange: setMobileMenuOpen,
     content: mobileMenuContent,
+    available: hasMobileMenu,
   };
 
   if (isOnSettings) {
@@ -428,7 +439,7 @@ export default function CrdSubspacePageLayout() {
   // Sidebar + content share one 12-col track. Two orthogonal toggles move the
   // column boundaries: `sidebarCollapsed` (2-col sidebar → 1-col rail) and
   // `fullWidth` (drop the empty edge gutter columns). See `subspaceHomeColumns`.
-  const homeGrid = subspaceHomeColumns(fullWidth, sidebarCollapsed);
+  const homeGrid = subspaceHomeColumns(fullWidth, sidebarCollapsed, hasSidebar);
 
   return (
     <StorageConfigContextProvider locationType="space" spaceId={data.subspaceId}>
@@ -450,7 +461,9 @@ export default function CrdSubspacePageLayout() {
           <div className="grid grid-cols-12 gap-6 items-start">
             {/* Left sidebar — collapsible 1-col rail; `fullWidth` drops the
                 empty edge gutter so it starts at col 1 instead of col 2. */}
-            <div className={cn('hidden lg:block sticky top-24 self-start', homeGrid.sidebar)}>{desktopSidebar}</div>
+            {hasSidebar && (
+              <div className={cn('hidden lg:block sticky top-24 self-start', homeGrid.sidebar)}>{desktopSidebar}</div>
+            )}
 
             {/* Main content — fills the remaining columns; widens when the
                 sidebar is collapsed and/or full-width removes the gutters. */}
@@ -578,25 +591,4 @@ function EnableBannerOverlay() {
 function EnableSpaceFullWidth() {
   useEnableSpaceFullWidth();
   return null;
-}
-
-/**
- * Grid placement for the subspace home's sidebar + content track, composing the
- * two orthogonal toggles. Literal class strings (one per combination) so the
- * Tailwind scanner emits them — never build `lg:col-start-${n}` dynamically.
- *
- * - `fullWidth`: removes the empty edge gutter column on each side
- *   (sidebar shifts col 2 → col 1; content extends to the last column).
- * - `collapsed`: shrinks the sidebar from 2 columns to a 1-column rail; the
- *   freed column goes to the content area.
- */
-function subspaceHomeColumns(fullWidth: boolean, collapsed: boolean): { sidebar: string; main: string } {
-  if (fullWidth) {
-    return collapsed
-      ? { sidebar: 'lg:col-start-1 lg:col-span-1', main: 'lg:col-start-2 lg:col-span-11' }
-      : { sidebar: 'lg:col-start-1 lg:col-span-2', main: 'lg:col-start-3 lg:col-span-10' };
-  }
-  return collapsed
-    ? { sidebar: 'lg:col-start-2 lg:col-span-1', main: 'lg:col-start-3 lg:col-span-9' }
-    : { sidebar: 'lg:col-start-2 lg:col-span-2', main: 'lg:col-start-4 lg:col-span-8' };
 }
