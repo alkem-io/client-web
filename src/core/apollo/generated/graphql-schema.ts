@@ -694,6 +694,61 @@ export type AdminRevokeMcpApiKeyInput = {
   userID: Scalars['UUID']['input'];
 };
 
+export type AdminTemplateFileRepairInput = {
+  /** List the references without copying anything. Set to false to copy the files the template's owner can read. */
+  dryRun?: Scalars['Boolean']['input'];
+  /** The templates to process. When omitted, every template is processed. */
+  templateIDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
+};
+
+export type AdminTemplateFileRepairIssue = {
+  __typename?: 'AdminTemplateFileRepairIssue';
+  entityID: Scalars['String']['output'];
+  location: Scalars['String']['output'];
+  reason: Scalars['String']['output'];
+  templateID: Scalars['String']['output'];
+};
+
+export type AdminTemplateFileRepairResult = {
+  __typename?: 'AdminTemplateFileRepairResult';
+  copiedReferences: Scalars['Int']['output'];
+  dryRun: Scalars['Boolean']['output'];
+  failed: Array<AdminTemplateFileRepairIssue>;
+  missingFiles: Array<AdminTemplateMissingFileReference>;
+  references: Array<AdminTemplateForeignFileReference>;
+  templatesScanned: Scalars['Int']['output'];
+  templatesWithForeignFiles: Scalars['Int']['output'];
+};
+
+/** A file a template references that is stored outside the template entity referencing it. */
+export type AdminTemplateForeignFileReference = {
+  __typename?: 'AdminTemplateForeignFileReference';
+  /** Whether this run copied the file into the template. */
+  copied: Scalars['Boolean']['output'];
+  /** The entity holding the reference. */
+  entityID: Scalars['String']['output'];
+  fileID: Scalars['String']['output'];
+  /** Where in the template the reference sits, e.g. profileDescription, visualUri, linkUri, whiteboard. */
+  location: Scalars['String']['output'];
+  /** Whether the template's owner can read the file. Only such files are copied; any other stays referenced as written. */
+  ownerCanRead: Scalars['Boolean']['output'];
+  /** The bucket the file is stored in today. */
+  storageBucketID: Scalars['String']['output'];
+  templateID: Scalars['String']['output'];
+  templateName: Scalars['String']['output'];
+};
+
+/** A reference in a template to a file that no longer exists. It cannot be repaired. */
+export type AdminTemplateMissingFileReference = {
+  __typename?: 'AdminTemplateMissingFileReference';
+  /** The entity holding the reference. */
+  entityID: Scalars['String']['output'];
+  fileID: Scalars['String']['output'];
+  location: Scalars['String']['output'];
+  templateID: Scalars['String']['output'];
+  templateName: Scalars['String']['output'];
+};
+
 export type AdminUpdateSpaceVisibilityInput = {
   /** The Space whose visibility is to be updated. */
   spaceID: Scalars['UUID']['input'];
@@ -1215,6 +1270,8 @@ export type Callout = {
   createdDate: Scalars['DateTime']['output'];
   /** The Callout Framing associated with this Callout. */
   framing: CalloutFraming;
+  /** Whether this Callout's SPACES collection is hiding at least one manually selected space from the requesting actor because they may not READ it. Always false for a SPACES collection in AUTO mode and for every other callout kind. A selection entry that has left the host space's account is stale, not hidden, and does NOT raise this flag; no count is exposed. */
+  hasHiddenSpaces: Scalars['Boolean']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** Whether this callout is a Template or not. */
@@ -1231,7 +1288,7 @@ export type Callout = {
   reactions: Array<CalloutReaction>;
   /** Cheap always-shown summary (tier-1). Dataloader-batched; safe to select on feeds. */
   reactionsSummary: CalloutReactionsSummary;
-  /** The Callout Settings associated with this Callout. */
+  /** The Callout Settings associated with this Callout. `framing.selection.selectedIds` is returned EMPTY to actors without UPDATE on the Callout, so an empty list is AMBIGUOUS by design: it means either that nothing is selected or that the selection is withheld from you, and the two are deliberately indistinguishable (workspace#084 AC6: a viewer must not learn which or how many spaces are hidden from them). Hold UPDATE and the list is exact. `framing.selection.mode` is always accurate. */
   settings: CalloutSettings;
   /** The sorting order for this Callout. */
   sortOrder: Scalars['Float']['output'];
@@ -1504,7 +1561,7 @@ export type CalloutFraming = {
   poll?: Maybe<Poll>;
   /** The Profile for framing the associated Callout. */
   profile: Profile;
-  /** The host space's subspaces for a SPACES framing, ordered pinned-first then the space's sortOrder/displayName. Returns the existing Space type (no new item type). No server-side pagination/search: the client name-searches and paginates client-side over this set. Empty for non-SPACES framings, for a callout not attached to a space, or for a host with no subspaces. */
+  /** The spaces shown by a SPACES framing's collection, filtered to what the requesting actor may READ. In AUTO mode these are the host space's direct subspaces, ordered pinned-first then the space's sortOrder/displayName. In CUSTOM mode the list is the admin's stored selection, which may contain spaces that are NOT subspaces of the host (any space of the host space's account, at any level) and whose ORDER IS NOT MEANINGFUL — pinned/sortOrder are parent-relative, so the client is authoritative for ordering. Returns the existing Space type (no new item type). No server-side pagination/search: the client name-searches and paginates client-side over this set. Empty for non-SPACES framings, for a callout not attached to a space, for a host with no subspaces, and for a CUSTOM selection that is empty or wholly unreadable. */
   subspaces: Array<Space>;
   /** The type of the Callout Framing, the additional content attached to this callout */
   type: CalloutFramingType;
@@ -2729,6 +2786,8 @@ export type CreateCollaboraDocumentData = {
   displayName?: Maybe<Scalars['String']['output']>;
   /** Type of document to create. Required for blank-create. On the upload path, ignored — the type is derived from the uploaded file's sniffed MIME by file-service-go. */
   documentType?: Maybe<CollaboraDocumentType>;
+  /** Copy an existing CollaboraDocument's current content into the new document. The copy owns its own backing file from the moment it is created: editing it never changes the source, and editing the source never changes it. Mutually exclusive with the upload path. documentType, originalMimeType and displayName are inherited from the source. READ on the source is authorized server-side. */
+  sourceCollaboraDocumentID?: Maybe<Scalars['UUID']['output']>;
 };
 
 export type CreateCollaboraDocumentInput = {
@@ -2736,6 +2795,8 @@ export type CreateCollaboraDocumentInput = {
   displayName?: InputMaybe<Scalars['String']['input']>;
   /** Type of document to create. Required for blank-create. On the upload path, ignored — the type is derived from the uploaded file's sniffed MIME by file-service-go. */
   documentType?: InputMaybe<CollaboraDocumentType>;
+  /** Copy an existing CollaboraDocument's current content into the new document. The copy owns its own backing file from the moment it is created: editing it never changes the source, and editing the source never changes it. Mutually exclusive with the upload path. documentType, originalMimeType and displayName are inherited from the source. READ on the source is authorized server-side. */
+  sourceCollaboraDocumentID?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type CreateCollaborationData = {
@@ -5668,6 +5729,8 @@ export type Mutation = {
   adminLicensePolicyDeleteCredentialRule: LicensingCredentialBasedPolicyCredentialRule;
   /** Updates a CredentialRule on the LicensePolicy. */
   adminLicensePolicyUpdateCredentialRule: LicensingCredentialBasedPolicyCredentialRule;
+  /** Lists, and on request copies, the files templates reference but do not store. A file is copied only when the template's owner can read it. A dry run by default. */
+  adminRepairTemplateFiles: AdminTemplateFileRepairResult;
   /** Platform Users Admin: revoke a named user's MCP API key. Idempotent. */
   adminRevokeMcpApiKey: McpApiKey;
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
@@ -5778,7 +5841,7 @@ export type Mutation = {
   createTagsetOnProfile: Tagset;
   /** Add a column to a Tasks board Callout. */
   createTaskColumnOnCallout: Callout;
-  /** Creates a new Template on the specified TemplatesSet. */
+  /** Creates a new Template on the specified TemplatesSet. When `file` is supplied alongside a COLLABORA_DOCUMENT callout framing, the template is framed with a Collabora document populated from the uploaded bytes (file-service-go sniffs MIME, validates format and size, and derives the document type; any documentType in the input is ignored on the upload path; displayName defaults from the filename when absent). When `file` is omitted, the existing behaviour applies. */
   createTemplate: Template;
   /** Creates a new Template on the specified TemplatesSet using the provided ContentSpace as content. */
   createTemplateFromContentSpace: Template;
@@ -5870,7 +5933,7 @@ export type Mutation = {
   inviteForEntryRoleOnRoleSet: Array<RoleSetInvitationResult>;
   /** Join the specified RoleSet using the entry Role, without going through an approval process. */
   joinRoleSet: RoleSet;
-  /** Leave a group conversation. Awaits the Matrix kick rather than reporting success merely because the RPC was sent: true means the kick was accepted, and the membership is then removed asynchronously — observe MEMBER_REMOVED for completion. If Matrix rejects the kick this still returns true, because Alkemio is authoritative for its own membership and applies the removal locally instead; on that path the Matrix-side room membership may diverge until an operator reconciles it. If the last member leaves, the conversation is auto-deleted and a CONVERSATION_DELETED event follows. */
+  /** Leave a group conversation. Awaits the Matrix removal rather than reporting success merely because the RPC was sent: true means Matrix accepted it (the member leaves the room), and the membership is then removed asynchronously — observe MEMBER_REMOVED for completion. If the Matrix removal fails (rejected — e.g. the member is no longer in the Matrix room — or the RPC times out) this still returns true, because Alkemio is authoritative for its own membership and applies the removal locally instead; on that path the Matrix-side room membership may diverge until an operator reconciles it. If the last member leaves, the conversation is auto-deleted and a CONVERSATION_DELETED event follows. */
   leaveConversation: Scalars['Boolean']['output'];
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
@@ -5904,7 +5967,7 @@ export type Mutation = {
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean']['output'];
   /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
-  /** Remove a member from a group conversation. Awaits the Matrix kick rather than reporting success merely because the RPC was sent: true means the kick was accepted, and the membership is then removed asynchronously — observe MEMBER_REMOVED for completion. If Matrix rejects the kick (e.g. insufficient permissions) this still returns true, because Alkemio is authoritative for its own membership and applies the removal locally instead; on that path the Matrix-side room membership may diverge until an operator reconciles it. */
+  /** Remove a member from a group conversation. Awaits the Matrix removal rather than reporting success merely because the RPC was sent: true means Matrix accepted it (the member leaves the room), and the membership is then removed asynchronously — observe MEMBER_REMOVED for completion. If the Matrix removal fails (rejected — e.g. the member is no longer in the Matrix room — or the RPC times out) this still returns true, because Alkemio is authoritative for its own membership and applies the removal locally instead; on that path the Matrix-side room membership may diverge until an operator reconciles it. */
   removeConversationMember: Scalars['Boolean']['output'];
   /** Remove the default callout template from an InnovationFlowState. */
   removeDefaultCalloutTemplateOnInnovationFlowState: InnovationFlowState;
@@ -6180,6 +6243,10 @@ export type MutationAdminLicensePolicyUpdateCredentialRuleArgs = {
   updateData: UpdateLicensePolicyCredentialRuleInput;
 };
 
+export type MutationAdminRepairTemplateFilesArgs = {
+  repairData: AdminTemplateFileRepairInput;
+};
+
 export type MutationAdminRevokeMcpApiKeyArgs = {
   revokeData: AdminRevokeMcpApiKeyInput;
 };
@@ -6374,6 +6441,7 @@ export type MutationCreateTaskColumnOnCalloutArgs = {
 };
 
 export type MutationCreateTemplateArgs = {
+  file?: InputMaybe<Scalars['Upload']['input']>;
   templateData: CreateTemplateOnTemplatesSetInput;
 };
 
@@ -8436,6 +8504,8 @@ export type RelayPaginatedSpace = ActorFull & {
   about: SpaceAbout;
   /** The Account that this Space is part of. */
   account: Account;
+  /** Spaces of THIS Space's account, at any level, on which the current actor holds READ - candidates for a Spaces callout's manual selection. READ, not READ_ABOUT: for a level-zero Space READ_ABOUT is granted to every actor including anonymous, so a READ_ABOUT filter would return the account's whole level-zero set to anyone. Capped at 500 as an unordered resource bound - no order is guaranteed and the picker sorts by ancestor path. Requires UPDATE on this Space. */
+  accountSpaces: Array<SpaceSelectionCandidate>;
   /** The "highest" subscription active for this Space. */
   activeSubscription?: Maybe<SpaceSubscription>;
   /** Count of visible activity events on this Space over the last 7 days, across all actors (excludes whiteboard-content-modified). Used to rank Spaces on the dashboard. */
@@ -9343,6 +9413,8 @@ export type Space = ActorFull & {
   about: SpaceAbout;
   /** The Account that this Space is part of. */
   account: Account;
+  /** Spaces of THIS Space's account, at any level, on which the current actor holds READ - candidates for a Spaces callout's manual selection. READ, not READ_ABOUT: for a level-zero Space READ_ABOUT is granted to every actor including anonymous, so a READ_ABOUT filter would return the account's whole level-zero set to anyone. Capped at 500 as an unordered resource bound - no order is guaranteed and the picker sorts by ancestor path. Requires UPDATE on this Space. */
+  accountSpaces: Array<SpaceSelectionCandidate>;
   /** The "highest" subscription active for this Space. */
   activeSubscription?: Maybe<SpaceSubscription>;
   /** Count of visible activity events on this Space over the last 7 days, across all actors (excludes whiteboard-content-modified). Used to rank Spaces on the dashboard. */
@@ -9510,6 +9582,19 @@ export enum SpacePrivacyMode {
   Private = 'PRIVATE',
   Public = 'PUBLIC',
 }
+
+/** A space of an account, reduced to what the Spaces-callout selection picker needs. */
+export type SpaceSelectionCandidate = {
+  __typename?: 'SpaceSelectionCandidate';
+  /** This Space's current display name, from its About profile (never the actor-level profile, which is a creation-time snapshot that is not re-synced on rename). */
+  displayName: Scalars['String']['output'];
+  /** The unique identifier of this Space. */
+  id: Scalars['UUID']['output'];
+  /** The level of this Space (L0, L1 or L2). */
+  level: SpaceLevel;
+  /** The parent Space's id; NULL for a level-zero Space. */
+  parentSpaceID?: Maybe<Scalars['UUID']['output']>;
+};
 
 export type SpaceSettings = {
   __typename?: 'SpaceSettings';
@@ -21692,6 +21777,36 @@ export type WhiteboardDraftDetailsByIdQuery = {
               allowedMimeTypes: Array<string>;
               maxFileSize: number;
             };
+            visual?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            preview?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
           };
           previewSettings: {
             __typename?: 'WhiteboardPreviewSettings';
@@ -37884,6 +37999,7 @@ export type CreateTemplateMutationVariables = Exact<{
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
   classificationData?: InputMaybe<CreateClassificationTemplateContentInput>;
   includeProfileVisuals?: InputMaybe<Scalars['Boolean']['input']>;
+  file?: InputMaybe<Scalars['Upload']['input']>;
 }>;
 
 export type CreateTemplateMutation = {
@@ -39901,6 +40017,30 @@ export type VerifyMemoSignatureQueryVariables = Exact<{
 
 export type VerifyMemoSignatureQuery = { __typename?: 'Query'; verifyMemoSignature: MemoSignatureVerificationStatus };
 
+export type AccountSpaceCandidatesQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type AccountSpaceCandidatesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          accountSpaces: Array<{
+            __typename?: 'SpaceSelectionCandidate';
+            id: string;
+            displayName: string;
+            level: SpaceLevel;
+            parentSpaceID?: string | undefined;
+          }>;
+        }
+      | undefined;
+  };
+};
+
 export type CalloutsListForFeedQueryVariables = Exact<{
   calloutsSetId: Scalars['UUID']['input'];
   classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
@@ -40147,6 +40287,7 @@ export type SpaceCollectionSubspacesQuery = {
       | {
           __typename?: 'Callout';
           id: string;
+          hasHiddenSpaces: boolean;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
