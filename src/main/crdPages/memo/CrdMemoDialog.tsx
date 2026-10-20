@@ -386,7 +386,7 @@ export function CrdMemoDialog({
           }}
         >
           <FileSignature aria-hidden="true" />
-          {t('memo.signing.title')}
+          <span className="sr-only sm:not-sr-only">{t('memo.signing.title')}</span>
         </Button>
       )}
       {showCleverbaseGuidance && (
@@ -416,7 +416,9 @@ export function CrdMemoDialog({
           onClick={() => void downloadMemoPdf()}
         >
           {downloadingPdf ? <Loader2 aria-hidden="true" className="animate-spin" /> : <Download aria-hidden="true" />}
-          {t('memo.downloadPdf.button')}
+          {/* Icon-only below `sm` so the non-wrapping header row keeps Share/Close on screen on phones;
+              the sr-only label keeps the accessible name. */}
+          <span className="sr-only sm:not-sr-only">{t('memo.downloadPdf.button')}</span>
         </Button>
       )}
       {/* Share dropdown. For users who can update the memo, it also hosts the content-update-policy
