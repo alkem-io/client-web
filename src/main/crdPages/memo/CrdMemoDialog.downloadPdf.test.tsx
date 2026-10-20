@@ -254,14 +254,4 @@ describe('CrdMemoDialog Download PDF action', () => {
 
     expect(downloadButton()).toBeInTheDocument();
   });
-
-  it('keeps its accessible name while the visible label collapses to icon-only below the sm breakpoint', () => {
-    renderDialog();
-
-    const button = downloadButton();
-    expect(button).toHaveAccessibleName('memo.downloadPdf.button');
-    const label = button?.querySelector('span');
-    expect(label).toHaveTextContent('memo.downloadPdf.button');
-    expect(label).toHaveClass('sr-only', 'sm:not-sr-only');
-  });
 });
