@@ -124,7 +124,10 @@ export function CrdMemoDialog({
     connectedUsers,
     user,
   } = useCrdMemoProvider({ collaborationId: memoId });
-  const { download: downloadMemoPdf, downloading: downloadingPdf } = useMemoPdfDownload(memo?.id);
+  const { download: downloadMemoPdf, downloading: downloadingPdf } = useMemoPdfDownload(
+    memo?.id,
+    provider ? () => provider.requestDurability() : undefined
+  );
 
   // Memo images upload into the memo's own storage bucket (where collaborators have FileUpload),
   // not the ambient space bucket. Mirrors the legacy MUI `MemoDialog`, which passed the memo's

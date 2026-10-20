@@ -44,7 +44,10 @@ describe('useMemoPdfDownload', () => {
     await act(() => result.current.download());
 
     expect(mocks.downloadPdf).toHaveBeenCalledOnce();
-    expect(mocks.downloadPdf).toHaveBeenCalledWith({ url: '/api/private/rest/memo/memo-1/pdf' });
+    expect(mocks.downloadPdf).toHaveBeenCalledWith({
+      url: '/api/private/rest/memo/memo-1/pdf',
+      signal: expect.any(AbortSignal),
+    });
     expect(mocks.notify).not.toHaveBeenCalled();
   });
 
@@ -71,6 +74,70 @@ describe('useMemoPdfDownload', () => {
       resolve?.();
       await first;
     });
+    expect(result.current.downloading).toBe(false);
+  });
+
+  it('aborts the in-flight download on unmount without a toast', async () => {
+    let signal: AbortSignal | undefined;
+    mocks.downloadPdf.mockImplementation(
+      (args: { signal: AbortSignal }) =>
+        new Promise<void>((_resolve, reject) => {
+          signal = args.signal;
+          args.signal.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError')));
+        })
+    );
+    const { result, unmount } = renderHook(() => useMemoPdfDownload('memo-1'));
+
+    let pending: Promise<void> | undefined;
+    act(() => {
+      pending = result.current.download();
+    });
+    await waitFor(() => expect(signal).toBeDefined());
+    expect(signal?.aborted).toBe(false);
+
+    unmount();
+    await pending;
+
+    expect(signal?.aborted).toBe(true);
+    expect(mocks.notify).not.toHaveBeenCalled();
+  });
+
+  it('awaits durability before fetching', async () => {
+    let flush: (() => void) | undefined;
+    const requestDurability = vi.fn(
+      () =>
+        new Promise<void>(r => {
+          flush = r;
+        })
+    );
+    mocks.downloadPdf.mockResolvedValue(undefined);
+    const { result } = renderHook(() => useMemoPdfDownload('memo-1', requestDurability));
+
+    let pending: Promise<void> | undefined;
+    act(() => {
+      pending = result.current.download();
+    });
+    await waitFor(() => expect(requestDurability).toHaveBeenCalledOnce());
+    expect(result.current.downloading).toBe(true);
+    expect(mocks.downloadPdf).not.toHaveBeenCalled();
+
+    await act(async () => {
+      flush?.();
+      await pending;
+    });
+    expect(mocks.downloadPdf).toHaveBeenCalledOnce();
+    expect(result.current.downloading).toBe(false);
+  });
+
+  it('shows the failed toast and does not fetch when durability rejects', async () => {
+    const requestDurability = vi.fn().mockRejectedValue(new Error('offline'));
+    const { result } = renderHook(() => useMemoPdfDownload('memo-1', requestDurability));
+
+    await act(() => result.current.download());
+
+    expect(mocks.downloadPdf).not.toHaveBeenCalled();
+    expect(mocks.notify).toHaveBeenCalledOnce();
+    expect(mocks.notify).toHaveBeenCalledWith('memo.downloadPdf.failed', 'error');
     expect(result.current.downloading).toBe(false);
   });
 

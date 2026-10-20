@@ -122,6 +122,19 @@ describe('downloadPdf', () => {
     expect(anchor.download).toBe('memo.pdf');
   });
 
+  it('passes the abort signal to fetch', async () => {
+    const fetch = vi.fn().mockResolvedValue({ ok: false, status: 500 });
+    vi.stubGlobal('fetch', fetch);
+    const controller = new AbortController();
+
+    await expect(downloadPdf({ url: '/api/private/memo/pdf', signal: controller.signal })).rejects.toThrow();
+
+    expect(fetch).toHaveBeenCalledWith('/api/private/memo/pdf', {
+      credentials: 'include',
+      signal: controller.signal,
+    });
+  });
+
   it('rejects with the status', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 429 }));
 

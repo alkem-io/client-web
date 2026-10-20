@@ -20,10 +20,12 @@ type PdfDownload = {
   url: string;
   // When omitted, the name comes from the response's Content-Disposition header.
   filename?: string;
+  // Aborting releases the server-side render slot and skips the save.
+  signal?: AbortSignal;
 };
 
-export async function downloadPdf({ url, filename }: PdfDownload): Promise<void> {
-  const response = await fetch(url, { credentials: 'include' });
+export async function downloadPdf({ url, filename, signal }: PdfDownload): Promise<void> {
+  const response = await fetch(url, { credentials: 'include', signal });
   if (!response.ok) {
     throw new PdfDownloadError(response.status);
   }

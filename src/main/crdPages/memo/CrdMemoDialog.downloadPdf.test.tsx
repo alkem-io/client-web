@@ -19,6 +19,7 @@ const mocks = vi.hoisted(() => ({
   currentUserLoading: false,
   currentUserModel: { id: 'user-1' } as { id: string } | undefined,
   download: vi.fn(),
+  downloadHookArgs: vi.fn(),
   downloading: false,
   lastHistoryDialogProps: undefined as
     | { open: boolean; memoId: string; onOpenChange: (open: boolean) => void }
@@ -150,7 +151,10 @@ vi.mock('@/crd/forms/markdown/CollaborativeMarkdownEditor', () => ({ Collaborati
 vi.mock('@/main/crdPages/whiteboard/CrdCollaborationSettings', () => ({ CrdCollaborationSettings: () => null }));
 
 vi.mock('./useMemoPdfDownload', () => ({
-  useMemoPdfDownload: () => ({ download: mocks.download, downloading: mocks.downloading }),
+  useMemoPdfDownload: (...args: unknown[]) => {
+    mocks.downloadHookArgs(...args);
+    return { download: mocks.download, downloading: mocks.downloading };
+  },
 }));
 
 const readerMemo = () => ({
@@ -231,6 +235,16 @@ describe('CrdMemoDialog Download PDF action', () => {
     await user.click(downloadButton() as HTMLElement);
 
     expect(mocks.download).toHaveBeenCalledOnce();
+  });
+
+  it('flushes the memo provider before downloading', async () => {
+    renderDialog();
+
+    const requestDurability = mocks.downloadHookArgs.mock.lastCall?.[1] as (() => Promise<void>) | undefined;
+    await requestDurability?.();
+
+    expect(requestDurability).toBeDefined();
+    expect((mocks.provider?.provider as { requestDurability: () => void }).requestDurability).toHaveBeenCalledOnce();
   });
 
   it('is present on small screens', () => {
