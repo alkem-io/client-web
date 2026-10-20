@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useVerifyMemoSignatureLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { MemoSignatureDocument, MemoSignatureView } from '@/crd/components/memo/MemoSigningDialog';
-import { downloadMemoSignaturePdf } from './downloadMemoSignaturePdf';
+import { downloadPdf } from './downloadPdf';
 
 export function useMemoSignatureActions() {
   const { t } = useTranslation('crd-space');
@@ -27,7 +27,7 @@ export function useMemoSignatureActions() {
   const download = async (document: MemoSignatureDocument) => {
     setDownloadingDocumentIds(current => new Set(current).add(document.id));
     try {
-      await downloadMemoSignaturePdf(document);
+      await downloadPdf({ url: document.url, filename: document.displayName?.trim() || 'signed-copy' });
     } catch {
       notify(t('memo.signing.downloadFailed'), 'error');
     } finally {

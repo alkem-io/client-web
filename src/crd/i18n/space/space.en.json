@@ -840,6 +840,12 @@
         "continue-error": "The signing session could not be started. Prepare a fresh copy and try again.",
         "return-error": "The signing result could not be loaded"
       }
+    },
+    "downloadPdf": {
+      "button": "Download PDF",
+      "busy": "The PDF service is busy, please try again in a moment.",
+      "tooLarge": "This memo is too large or contains content that cannot be exported as PDF.",
+      "failed": "Downloading the PDF failed."
     }
   },
   "collabora": {
