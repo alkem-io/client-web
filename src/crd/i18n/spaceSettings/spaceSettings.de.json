@@ -134,7 +134,9 @@
           "virtualContributors": "Virtuelle Mitwirkende",
           "guidelines": "Gemeinschaftsrichtlinien",
           "index": "Beitragsindex",
-          "search": "Suche"
+          "search": "Suche",
+          "community": "Community",
+          "activity": "Letzte Aktivitäten"
         }
       },
       "postTemplate": {
@@ -149,6 +151,12 @@
           "cancel": "Abbrechen"
         }
       }
+    },
+    "customizeSidebar": {
+      "button": "Seitenleiste anpassen",
+      "title": "Layout: Seitenleiste",
+      "help": "Wähle aus, welche Widgets in der Seitenleiste dieses Unterbereichs erscheinen und in welcher Reihenfolge. Das gilt für den gesamten Unterbereich — jede Phase zeigt dieselbe Auswahl.",
+      "emptyNote": "Keine Widgets ausgewählt — die Seitenleiste bleibt im gesamten Unterbereich leer, in jeder Phase."
     },
     "addPhase": {
       "button": "Phase hinzufügen",
@@ -187,6 +195,7 @@
       "applyDialog": {
         "title": "Neue Vorlage anwenden",
         "description": "Sie sind dabei, eine neue Vorlage anzuwenden. Diese Aktion löscht Ihren aktuellen Innovationsfluss dauerhaft. Die vorhandenen Beiträge, die mit verschiedenen Phasen verknüpft sind, bleiben jedoch erhalten und werden unter der ersten Phase der neuen Einrichtung gruppiert.<br/><br/>Bitte wählen Sie eine der folgenden Optionen:",
+        "sidebarNote": "Die Seitenleiste des Unterbereichs wird durch die der Vorlage ersetzt.",
         "option1": {
           "label": "Durch neuen Fluss ersetzen",
           "description": "Dadurch wird Ihr aktueller Innovationsfluss mit allen vorhandenen Beiträgen gelöscht und durch den neuen Fluss einschließlich der Vorlagen-Beiträge ersetzt."

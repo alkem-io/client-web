@@ -81,6 +81,8 @@ export function LayoutReplaceFlowConnector({
         onClose={replaceFlow.onApplyDialogClose}
         onConfirm={replaceFlow.onApplyConfirm}
         existingCalloutsCount={existingCalloutsCount}
+        // Rendered only on subspaces, whose single sidebar comes from the replaced flow.
+        showSidebarNote={true}
       />
     </>
   );

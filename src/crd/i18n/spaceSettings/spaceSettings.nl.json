@@ -134,7 +134,9 @@
           "virtualContributors": "Virtual Contributors",
           "guidelines": "Communityrichtlijnen",
           "index": "Post-index",
-          "search": "Zoeken"
+          "search": "Zoeken",
+          "community": "Community",
+          "activity": "Recente activiteit"
         }
       },
       "postTemplate": {
@@ -149,6 +151,12 @@
           "cancel": "Annuleren"
         }
       }
+    },
+    "customizeSidebar": {
+      "button": "Sidebar aanpassen",
+      "title": "Lay-out: Sidebar",
+      "help": "Kies welke widgets in de sidebar van deze subspace verschijnen en in welke volgorde. Dit geldt voor de hele subspace — elke fase toont dezelfde set.",
+      "emptyNote": "Geen widgets geselecteerd — de sidebar is leeg in deze hele subspace, in elke fase."
     },
     "addPhase": {
       "button": "Fase toevoegen",
@@ -187,6 +195,7 @@
       "applyDialog": {
         "title": "Nieuwe template toepassen",
         "description": "Je staat op het punt een nieuwe template toe te passen. Deze actie verwijdert je huidige innovation flow permanent. De bestaande Posts die aan verschillende fasen zijn gekoppeld, blijven echter behouden en worden gegroepeerd onder de eerste fase van de nieuwe opzet.<br/><br/>Kies een van de volgende opties:",
+        "sidebarNote": "De sidebar van de subspace wordt vervangen door die van de template.",
         "option1": {
           "label": "Vervangen door nieuwe flow",
           "description": "Hiermee wordt je huidige innovation flow met alle bestaande Posts verwijderd en vervangen door de nieuwe flow inclusief de template-Posts."

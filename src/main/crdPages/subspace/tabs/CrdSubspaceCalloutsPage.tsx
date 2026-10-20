@@ -1,16 +1,20 @@
+import { useTranslation } from 'react-i18next';
 import { useOutletContext } from 'react-router-dom';
 import { AuthorizationPrivilege, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import { FlowStateSearchResults } from '@/crd/components/search/FlowStateSearchResults';
 import { SubspaceFlowTabs } from '@/crd/components/space/SubspaceFlowTabs';
 import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { CalloutListConnector } from '../../space/callout/CalloutListConnector';
+import { LazyCalloutItem } from '../../space/callout/LazyCalloutItem';
 import { useCrdSubspaceFlow } from '../hooks/useCrdSubspaceFlow';
 import type { SubspaceOutletContext } from '../layout/CrdSubspacePageLayout';
 
 export default function CrdSubspaceCalloutsPage() {
-  const { data, mobileMenu, headerActionIcons } = useOutletContext<SubspaceOutletContext>();
+  const { t } = useTranslation('crd-space');
+  const { data, mobileMenu, headerActionIcons, search } = useOutletContext<SubspaceOutletContext>();
   const { phases, currentPhaseId, calloutsSetId, canEditFlow, subspaceUrl } = data;
   const { activePhaseId, setActivePhaseId } = useCrdSubspaceFlow(phases, currentPhaseId);
   const isSmallScreen = useMediaQuery('(max-width: 639px)');
@@ -43,7 +47,7 @@ export default function CrdSubspaceCalloutsPage() {
       editFlowHref={editFlowHref}
       action={headerActionIcons}
       mobileMenuOpen={mobileMenu.open}
-      onMobileMenuOpenChange={mobileMenu.onOpenChange}
+      onMobileMenuOpenChange={mobileMenu.available ? mobileMenu.onOpenChange : undefined}
       mobileMenuContent={mobileMenu.content}
     />
   );
@@ -61,15 +65,44 @@ export default function CrdSubspaceCalloutsPage() {
           flow-state description. */}
       {activePhase?.description && <TabStateHeader description={activePhase.description} />}
 
-      {phases.length > 0 && (
-        <CalloutListConnector
-          callouts={callouts ?? []}
-          calloutsSetId={calloutsSetId}
-          canCreate={false}
-          canReorder={canReorderCallouts}
-          loading={calloutsLoading}
-        />
-      )}
+      {/* While the sidebar search is active, its matches (active phase only) replace the feed. */}
+      {phases.length > 0 &&
+        (search?.isSearching ? (
+          <FlowStateSearchResults
+            status={search.status}
+            appending={search.appending}
+            hasMore={search.hasMore}
+            sentinelRef={search.sentinelRef}
+            onRetry={search.retry}
+            labels={{
+              emptyTitle: t('knowledge.search.emptyTitle'),
+              emptyDescription: t('knowledge.search.emptyDescription'),
+              errorTitle: t('knowledge.search.errorTitle'),
+              errorDescription: t('knowledge.search.errorDescription'),
+              retry: t('knowledge.search.retry'),
+              loadingLabel: t('knowledge.search.loadingLabel'),
+              appendingLabel: t('knowledge.search.appendingLabel'),
+            }}
+          >
+            {search.calloutIds.map(id => (
+              <LazyCalloutItem
+                key={id}
+                calloutId={id}
+                calloutsSetId={calloutsSetId}
+                canReorder={false}
+                forceDescriptionCollapsed={true}
+              />
+            ))}
+          </FlowStateSearchResults>
+        ) : (
+          <CalloutListConnector
+            callouts={callouts ?? []}
+            calloutsSetId={calloutsSetId}
+            canCreate={false}
+            canReorder={canReorderCallouts}
+            loading={calloutsLoading}
+          />
+        ))}
 
       {/* Clearance for the fixed h-14 mobile bottom bar (always rendered below sm). */}
       <div className="h-20 sm:hidden" aria-hidden="true" />

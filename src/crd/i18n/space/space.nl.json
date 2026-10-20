@@ -67,6 +67,8 @@
   },
   "sidebar": {
     "aboutSpace": "Over deze Space",
+    "community": "Community",
+    "recentActivity": "Recente activiteit",
     "subspaces": "Subspaces",
     "showAll": "Alles tonen",
     "create": "Aanmaken",

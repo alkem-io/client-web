@@ -30,6 +30,7 @@ export type SubspaceFlowTabsProps = {
   action?: ReactNode;
   /** Controlled drawer open state for the mobile hamburger menu. */
   mobileMenuOpen?: boolean;
+  /** Omit to hide the bottom-bar hamburger (nothing to show in the drawer). */
   onMobileMenuOpenChange?: (open: boolean) => void;
   /** Drawer body — sidebar items, edit-flow link, etc. Composed by the consumer. */
   mobileMenuContent?: ReactNode;
@@ -282,17 +283,21 @@ function MobileFlowBar({
           aria-label={t('a11y.bottomBar')}
         >
           <div className="flex items-center h-14">
-            <button
-              type="button"
-              onClick={() => onMobileMenuOpenChange?.(true)}
-              className="shrink-0 px-4 h-full flex items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
-              aria-label={t('a11y.openMenu')}
-              aria-haspopup="dialog"
-              aria-expanded={mobileMenuOpen ?? false}
-            >
-              <Menu className="w-5 h-5" aria-hidden="true" />
-            </button>
-            <div className="w-px h-6 bg-border" aria-hidden="true" />
+            {onMobileMenuOpenChange && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => onMobileMenuOpenChange(true)}
+                  className="shrink-0 px-4 h-full flex items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+                  aria-label={t('a11y.openMenu')}
+                  aria-haspopup="dialog"
+                  aria-expanded={mobileMenuOpen ?? false}
+                >
+                  <Menu className="w-5 h-5" aria-hidden="true" />
+                </button>
+                <div className="w-px h-6 bg-border" aria-hidden="true" />
+              </>
+            )}
             {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
             {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
             <ul role="list" className={cn(TAB_LIST_CLASSES, 'flex-1 min-w-0 px-3')}>
