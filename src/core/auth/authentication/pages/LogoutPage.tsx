@@ -1,14 +1,24 @@
+import { useMutation } from '@apollo/client';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUnsubscribeFromPushNotificationsMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useLogoutUrl } from '@/core/auth/authentication/hooks/useLogoutUrl';
 import { useReturnUrl, useSignUpRoundTrip } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
 import Loading from '@/core/ui/loading/Loading';
-import { PUSH_SUBSCRIPTION_ID_KEY, PUSH_USER_DISABLED_KEY } from '@/main/pushNotifications/constants';
+import {
+  DEVICE_PUSH_TOKEN_KEY,
+  PUSH_SUBSCRIPTION_ID_KEY,
+  PUSH_USER_DISABLED_KEY,
+} from '@/main/pushNotifications/constants';
+import {
+  UnregisterDevicePushTokenDocument,
+  type UnregisterDevicePushTokenVariables,
+} from '@/main/pushNotifications/devicePushTokenMutations';
 import { clearMessagingDrafts } from '@/main/userMessaging/messagingDrafts';
 
 async function cleanupPushSubscription(
-  unsubscribeMutation: ReturnType<typeof useUnsubscribeFromPushNotificationsMutation>[0]
+  unsubscribeMutation: ReturnType<typeof useUnsubscribeFromPushNotificationsMutation>[0],
+  unregisterDeviceToken: (options: { variables: UnregisterDevicePushTokenVariables }) => Promise<unknown>
 ) {
   try {
     const subscriptionId = localStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY);
@@ -17,6 +27,16 @@ async function cleanupPushSubscription(
       await unsubscribeMutation({
         variables: { subscriptionData: { subscriptionID: subscriptionId } },
       }).catch(() => {});
+    }
+
+    // The native device binding (app mode only — in a browser the key is never
+    // written, so this leg is a no-op by construction). This is the
+    // cross-user-leak control: an unbound token keeps delivering this user's
+    // notifications to a device the next person signs in on.
+    const deviceToken = localStorage.getItem(DEVICE_PUSH_TOKEN_KEY);
+
+    if (deviceToken) {
+      await unregisterDeviceToken({ variables: { token: deviceToken } }).catch(() => {});
     }
 
     if ('serviceWorker' in navigator) {
@@ -35,6 +55,7 @@ async function cleanupPushSubscription(
     // Always clear cached state, even if cleanup partially fails
     localStorage.removeItem(PUSH_SUBSCRIPTION_ID_KEY);
     localStorage.removeItem(PUSH_USER_DISABLED_KEY);
+    localStorage.removeItem(DEVICE_PUSH_TOKEN_KEY);
   }
 }
 
@@ -45,6 +66,10 @@ const LogoutPage = () => {
   const { clearReturnUrl } = useReturnUrl();
   const { clearArmed } = useSignUpRoundTrip();
   const [unsubscribeMutation] = useUnsubscribeFromPushNotificationsMutation();
+  const [unregisterDeviceToken] = useMutation<
+    { unregisterDevicePushToken: boolean },
+    UnregisterDevicePushTokenVariables
+  >(UnregisterDevicePushTokenDocument);
 
   useEffect(() => {
     if (!outcome) {
@@ -55,7 +80,7 @@ const LogoutPage = () => {
       // Wait for push cleanup before redirecting to avoid leaving stale subscriptions.
       // The target is whichever logout leg useLogoutUrl picked next — the Hydra
       // end_session URL or the Kratos SSO logout URL.
-      cleanupPushSubscription(unsubscribeMutation).finally(() => {
+      cleanupPushSubscription(unsubscribeMutation, unregisterDeviceToken).finally(() => {
         clearReturnUrl();
         clearArmed();
         clearMessagingDrafts();
@@ -65,7 +90,7 @@ const LogoutPage = () => {
     }
     // outcome.kind === 'cleared' — nothing left to end (no BFF session, no Kratos
     // session). Land on the public home page instead of the bare placeholder.
-    cleanupPushSubscription(unsubscribeMutation).finally(() => {
+    cleanupPushSubscription(unsubscribeMutation, unregisterDeviceToken).finally(() => {
       clearReturnUrl();
       clearArmed();
       clearMessagingDrafts();
