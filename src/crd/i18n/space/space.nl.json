@@ -843,6 +843,7 @@
     },
     "downloadPdf": {
       "button": "PDF downloaden",
+      "tooltip": "Downloaden als PDF",
       "busy": "De PDF-service is bezet, probeer het zo opnieuw.",
       "tooLarge": "Deze memo is te groot of bevat inhoud die niet als PDF kan worden geëxporteerd.",
       "failed": "Het downloaden van de PDF is mislukt."

@@ -843,6 +843,7 @@
     },
     "downloadPdf": {
       "button": "Download PDF",
+      "tooltip": "Download as PDF",
       "busy": "The PDF service is busy, please try again in a moment.",
       "tooLarge": "This memo is too large or contains content that cannot be exported as PDF.",
       "failed": "Downloading the PDF failed."

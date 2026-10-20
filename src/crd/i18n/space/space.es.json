@@ -843,6 +843,7 @@
     },
     "downloadPdf": {
       "button": "Descargar PDF",
+      "tooltip": "Descargar como PDF",
       "busy": "El servicio de PDF está ocupado, inténtalo de nuevo en un momento.",
       "tooLarge": "Este memo es demasiado grande o contiene contenido que no se puede exportar como PDF.",
       "failed": "No se pudo descargar el PDF."
