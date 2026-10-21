@@ -8,6 +8,7 @@ import {
   NotificationEventCategory,
   NotificationEventInAppState,
   NotificationEventPayload,
+  RoleChangeType,
   RoleName,
 } from '@/core/apollo/generated/graphql-schema';
 import type { InAppNotificationModel } from '@/main/inAppNotifications/model/InAppNotificationModel';
@@ -15,6 +16,13 @@ import type { InAppNotificationPayloadModel } from '@/main/inAppNotifications/mo
 import { mapNotificationToItemData } from './notificationDataMapper';
 
 const t = ((key: string) => key) as unknown as TFunction;
+
+// Mirrors i18next's real behaviour for the one key this suite resolves: a known key
+// round-trips as itself (identity translator), a missing key falls back to `defaultValue`.
+const roleAwareT = ((key: string, options?: { defaultValue?: string }) => {
+  const KNOWN_ROLE_KEYS = new Set(['common.roles.PLATFORM_RESOURCE_ADMIN']);
+  return KNOWN_ROLE_KEYS.has(key) ? key : (options?.defaultValue ?? key);
+}) as unknown as TFunction;
 
 const spacePayload = (url = '/my-space'): InAppNotificationPayloadModel['space'] => ({
   id: 'space-1',
@@ -674,5 +682,75 @@ describe('form response notification rendering', () => {
   it('carries no comment text: the notification never surfaces an answer', () => {
     const item = mapNotificationToItemData(formResponse(), t, NotificationEventInAppState.Unread);
     expect(item.comment).toBeUndefined();
+  });
+});
+
+describe('platform-admin role-change notification (065)', () => {
+  const roleChangeNotification = (payload: Partial<InAppNotificationPayloadModel>) =>
+    notification(
+      NotificationEvent.PlatformAdminGlobalRoleChanged,
+      { type: NotificationEventPayload.PlatformGlobalRoleChange, ...payload },
+      NotificationEventCategory.Platform
+    );
+
+  it('resolves a known role slug through the role translations, never the raw slug', () => {
+    const data = mapNotificationToItemData(
+      roleChangeNotification({ role: 'platform-resource-admin' }),
+      roleAwareT,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.role).toBe('common.roles.PLATFORM_RESOURCE_ADMIN');
+  });
+
+  it('humanizes a role slug unknown to the translations, never blank and never an error', () => {
+    const data = mapNotificationToItemData(
+      roleChangeNotification({ role: 'some-future-role' }),
+      roleAwareT,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.role).toBe('Some Future Role');
+  });
+
+  it('does not throw when role is undefined', () => {
+    expect(() =>
+      mapNotificationToItemData(roleChangeNotification({}), roleAwareT, NotificationEventInAppState.Unread)
+    ).not.toThrow();
+    const data = mapNotificationToItemData(roleChangeNotification({}), roleAwareT, NotificationEventInAppState.Unread);
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.role).toBeUndefined();
+  });
+
+  it('uses the subjectRemoved key when changeType is Removed', () => {
+    const data = mapNotificationToItemData(
+      roleChangeNotification({ role: 'platform-resource-admin', changeType: RoleChangeType.Removed }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ i18nKey: string }>;
+    expect(title.props.i18nKey).toBe(
+      'components.inAppNotifications.type.PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED.subjectRemoved'
+    );
+  });
+
+  it('uses the subject key when changeType is Added', () => {
+    const data = mapNotificationToItemData(
+      roleChangeNotification({ role: 'platform-resource-admin', changeType: RoleChangeType.Added }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ i18nKey: string }>;
+    expect(title.props.i18nKey).toBe('components.inAppNotifications.type.PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED.subject');
+  });
+
+  it('uses the subject key when changeType is absent (a pre-feature record)', () => {
+    const data = mapNotificationToItemData(
+      roleChangeNotification({ role: 'platform-resource-admin' }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ i18nKey: string }>;
+    expect(title.props.i18nKey).toBe('components.inAppNotifications.type.PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED.subject');
   });
 });

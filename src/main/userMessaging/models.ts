@@ -14,13 +14,13 @@ export interface ConversationMember {
 export interface UserConversation {
   id: string;
   roomId: string;
+  attachmentBucketId?: string | null;
   isGroup: boolean;
   displayName?: string;
   /** Raw room displayName from server (undefined when auto-generated). Use for editing, not display. */
   roomDisplayName?: string;
   avatarUri?: string;
   unreadCount: number;
-  messagesCount: number;
   createdDate: Date;
   lastMessage?: ConversationMessage;
   members: ConversationMember[];
@@ -78,8 +78,7 @@ type GraphQLSender =
 /** Minimal shape of a GraphQL `MessageAttachment` (feature 013) as selected by
  *  the message documents. Width/height are present for images only. */
 type GraphQLMessageAttachment = {
-  id?: string | null;
-  url?: string | null;
+  externalReference?: string | null;
   displayName: string;
   mimeType?: string | null;
   size?: number | null;
@@ -140,26 +139,71 @@ export const mapMessageReactions = (reactions: GraphQLReaction[] | null | undefi
     }));
 };
 
-/**
- * Maps the GraphQL `Message.attachments` selection to the plain CRD
- * `MessageAttachment[]` consumed by the render components. `url` is already an
- * authorized Alkemio document URL (web- or Element-origin), so the mapping is a
- * uniform field copy with no origin-specific handling.
- */
-export const mapMessageAttachments = (
-  attachments: GraphQLMessageAttachment[] | null | undefined
-): MessageAttachment[] => {
-  if (!attachments?.length) {
-    return [];
-  }
+/** One resource identity for both GraphQL event projections and native Matrix events. */
+export const attachmentReferenceUrl = (bucketId: string, externalReference: string): string => {
+  const url = new URL('/api/private/rest/storage/file/by-reference', window.location.origin);
+  url.searchParams.set('bucketId', bucketId);
+  url.searchParams.set('ref', externalReference);
+  return url.href;
+};
 
-  return attachments.map(attachment => ({
-    id: attachment.id ?? undefined,
-    url: attachment.url ?? undefined,
+export const mapMessageAttachments = (
+  attachments: GraphQLMessageAttachment[] | null | undefined,
+  bucketId?: string | null
+): MessageAttachment[] =>
+  (attachments ?? []).map(attachment => ({
+    // A presentation key, never an Alkemio document ID.
+    id: attachment.externalReference ?? undefined,
+    url:
+      bucketId && attachment.externalReference
+        ? attachmentReferenceUrl(bucketId, attachment.externalReference)
+        : undefined,
     displayName: attachment.displayName,
     mimeType: attachment.mimeType ?? undefined,
     size: attachment.size ?? undefined,
     width: attachment.width ?? undefined,
     height: attachment.height ?? undefined,
   }));
+
+/**
+ * Integration seam for the separate native-read transport. This client still
+ * reads messages through GraphQL. The native-read branch must replace its
+ * per-attachment resolver hook with this mapper and the loaded room bucket ID;
+ * providing this mapper does not activate native sync in the current client.
+ */
+export const mapMatrixMessageAttachments = (
+  content: {
+    msgtype?: string;
+    url?: string;
+    body?: string;
+    filename?: string;
+    info?: { mimetype?: string; size?: number; w?: number; h?: number };
+  },
+  homeserver: string,
+  bucketId?: string | null,
+  eventType?: string
+): MessageAttachment[] => {
+  if (!['m.image', 'm.video', 'm.audio', 'm.file', 'm.sticker'].includes(content.msgtype ?? eventType ?? '')) return [];
+  const prefix = `mxc://${homeserver}/`;
+  const mediaId =
+    typeof content.url === 'string' && content.url.startsWith(prefix) ? content.url.slice(prefix.length) : undefined;
+  const externalReference = mediaId && /^[A-Za-z0-9_-]+$/.test(mediaId) ? mediaId : undefined;
+  return mapMessageAttachments(
+    [
+      {
+        externalReference,
+        displayName:
+          typeof content.filename === 'string'
+            ? content.filename
+            : typeof content.body === 'string'
+              ? content.body
+              : '',
+        mimeType: typeof content.info?.mimetype === 'string' ? content.info.mimetype : undefined,
+        size: content.info?.size,
+        width: content.info?.w,
+        height: content.info?.h,
+      },
+    ],
+    bucketId
+  );
 };

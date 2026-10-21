@@ -314,6 +314,7 @@
     "updateFailed": "De wijzigingen aan de $t(common.callout) konden niet worden opgeslagen. Probeer het opnieuw.",
     "contributors": "Contributors",
     "subspaces": "Subspaces",
+    "spacesHidden": "Sommige Spaces in dit overzicht worden niet weergegeven omdat je er geen toegang tot hebt.",
     "form": "Formulier"
   },
   "contribution": {
@@ -331,7 +332,6 @@
     "edit": "Bewerken",
     "memo": "Memo",
     "richTextEditor": "Teksteditor met opmaak",
-    "comingSoon": "Binnenkort beschikbaar",
     "memoPlaceholder": "Schrijf je memo…",
     "memoOpenHint": "Memo-inhoud wordt in een eigen venster bewerkt.",
     "openMemo": "Memo openen",
@@ -586,6 +586,7 @@
     "draftLabel": "Concept",
     "notifyMembers": "Space-leden informeren",
     "titleRequiredHint": "Voeg een titel toe aan je $t(common.callout) om verder te gaan",
+    "descriptionTooLongHint": "Maak de beschrijving korter om verder te gaan — deze is langer dan toegestaan",
     "saveDraft": "Concept opslaan",
     "save": "Opslaan",
     "publish": "Post",
@@ -612,14 +613,34 @@
         "customDescription": "Toont alleen de contributors die je selecteert."
       },
       "spaces": {
+        "fieldTitle": "Spaces in deze $t(common.callout)",
+        "switchLabel": "Spaces handmatig kiezen",
         "autoDescription": "Toont automatisch alle subspaces en wordt bijgewerkt wanneer ze worden toegevoegd of verwijderd.",
-        "customDescription": "Toont alleen de subspaces die je hieronder selecteert."
+        "customDescription": "Toont alleen de Spaces die je hieronder selecteert."
+      },
+      "spacePicker": {
+        "searchPlaceholder": "Spaces in dit account zoeken…",
+        "searchAriaLabel": "Spaces in dit account zoeken",
+        "noMatches": "Geen Spaces in dit account komen overeen met je zoekopdracht.",
+        "accountEmpty": "Dit account heeft geen andere Spaces.",
+        "loadFailed": "De lijst met Spaces kon niet worden geladen.",
+        "chipsEmpty": "Nog geen Spaces gekozen. Zoek hieronder om ze toe te voegen.",
+        "chipContext": "in {{parentName}}",
+        "badgeInThisSpace": "In deze Space",
+        "badgeCalloutIsHere": "$t(common.Callout) staat hier",
+        "noneSelected": "Geen Spaces geselecteerd",
+        "selectedCount_one": "{{count}} Space geselecteerd",
+        "selectedCount_other": "{{count}} Spaces geselecteerd",
+        "clearSelection": "Selectie wissen",
+        "levelSpace": "Space",
+        "levelSubspace": "Subspace",
+        "levelSubsubspace": "Sub-subspace",
+        "pathSubLine": "{{level}} in {{path}}",
+        "removeInParentAriaLabel": "{{name}} verwijderen, in {{parentName}}"
       },
       "noLongerAvailable": "Niet meer beschikbaar",
       "searchPlaceholder": "Leden zoeken…",
       "searchAriaLabel": "Leden zoeken",
-      "searchSubspacePlaceholder": "Subspaces zoeken…",
-      "searchSubspaceAriaLabel": "Subspaces zoeken",
       "noResults": "Geen overeenkomende resultaten",
       "loading": "Laden…",
       "loadMore": "Meer laden…",

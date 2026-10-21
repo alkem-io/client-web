@@ -346,18 +346,11 @@
       "actions": "Acties",
       "empty": "Geen organisaties.",
       "remove": "Organisatie verwijderen",
-      "description": "Overzicht van alle leden- en Lead-organisaties. Nodig een organisatie uit om deel te nemen, of voeg er direct een toe.",
-      "add": "Organisatie toevoegen",
+      "description": "Overzicht van alle leden- en Lead-organisaties. Nodig een organisatie uit om deel te nemen.",
       "dropdown": {
         "viewProfile": "Profiel bekijken",
         "changeRole": "Rol wijzigen",
         "removeFromSpace": "Uit Space verwijderen"
-      },
-      "addDialog": {
-        "title": "Organisatie toevoegen",
-        "description": "Deze organisaties worden zichtbaar als leden in deze Space en op hun organisatieprofiel.",
-        "search": "Organisaties zoeken…",
-        "empty": "Geen organisaties komen overeen met je zoekopdracht."
       },
       "invite": "Organisatie uitnodigen",
       "search": "Organisaties zoeken…",
@@ -925,12 +918,14 @@
     "name": {
       "title": "Naam van de Space",
       "description": "De openbare naam van je Space.",
-      "ariaLabel": "Naam van de Space"
+      "ariaLabel": "Naam van de Space",
+      "editAriaLabel": "Naam van de Space bewerken"
     },
     "tagline": {
       "title": "Ondertitel",
       "description": "Een korte ondertitel die naast de Space-naam wordt weergegeven.",
-      "ariaLabel": "Ondertitel"
+      "ariaLabel": "Ondertitel",
+      "editAriaLabel": "Ondertitel bewerken"
     },
     "branding": {
       "title": "Branding van de Space",
@@ -973,7 +968,9 @@
       "title": "Locatie",
       "description": "De stad en het land van deze Space.",
       "city": "Stad",
-      "country": "Land (ISO-code)"
+      "country": "Land (ISO-code)",
+      "editCityAriaLabel": "Stad bewerken",
+      "countryPlaceholder": "Land"
     },
     "what": {
       "title": "Wat",

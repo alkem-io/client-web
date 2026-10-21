@@ -43,12 +43,11 @@
       "settingsAriaLabel": "Open user settings"
     },
     "tabs": {
-      "resourcesHosted": "Resources Hosted",
       "leading": "Leading",
-      "memberOf": "Member Of"
+      "memberOf": "Member Of",
+      "otherResources": "Other Resources"
     },
     "sections": {
-      "spacesSubsection": "Spaces",
       "virtualContributorsSubsection": "Virtual Contributors",
       "spacesLeading": "Spaces Leading",
       "memberOf": "Member of"
@@ -64,8 +63,6 @@
       "memberCountLine_other": "{{count}} members"
     },
     "empty": {
-      "resourcesHosted": "No resources hosted yet.",
-      "leading": "Not leading any spaces yet.",
       "membership": "No memberships yet."
     },
     "vcType": "Virtual Contributor"
@@ -93,20 +90,16 @@
       "socialLinksTitle": "Social"
     },
     "tabs": {
-      "resourcesHosted": "Resources Hosted",
       "leading": "Lead Spaces",
-      "memberOf": "All Memberships"
+      "memberOf": "All Memberships",
+      "otherResources": "Other Resources"
     },
     "sections": {
-      "spacesSubsection": "Spaces",
       "virtualContributorsSubsection": "Virtual Contributors",
       "spacesLeading": "Lead Spaces",
       "memberOf": "All Memberships"
     },
-    "empty": {
-      "resourcesHosted": "No resources hosted yet.",
-      "leading": "Not leading any spaces yet."
-    },
+    "empty": {},
     "vcType": "Virtual Contributor",
     "associate": {
       "join": "Join as an associate",

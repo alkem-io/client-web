@@ -1,0 +1,19 @@
+import { handleMatrixCallback } from './matrixCallback';
+import { getConfig } from './matrixConfig';
+
+/**
+ * The only legitimate visitor is the hidden silent-SSO frame: it exchanges the
+ * token and persists the credentials, and the parent page detects success via
+ * storage. Anything else — Matrix not configured for this environment, or the
+ * page opened top-level — has no business here and goes home.
+ */
+const runMatrixCallbackPage = async (): Promise<void> => {
+  const { homeserverUrl } = getConfig();
+  if (homeserverUrl !== '' && window.self !== window.top) {
+    await handleMatrixCallback(homeserverUrl);
+    return;
+  }
+  window.location.replace('/');
+};
+
+export { runMatrixCallbackPage };

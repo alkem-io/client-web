@@ -11,7 +11,7 @@ import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 /**
  * Adding a USER to the member role of a SPACE role set — `assignRoleToUser`.
  *
- * This is the ONLY branch of `RoleSetResolverMutations` that enforces this token:
+ * The `assignRoleToUser` branch of `RoleSetResolverMutations` that enforces this token:
  *
  *   case RoleSetType.SPACE:
  *     privilegeRequired = AuthorizationPrivilege.GRANT;
@@ -19,11 +19,14 @@ import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
  *       privilegeRequired = AuthorizationPrivilege.ROLESET_ENTRY_ROLE_ASSIGN;
  *     }
  *
- * The backend grants `ROLESET_ENTRY_ROLE_ASSIGN` on a role set to global admins and
- * global support only, so it is the direct-add token reserved for platform admins — an
- * ordinary space admin never holds it. Applying it to any other action gates that action
- * shut for every space admin. Use `ROLE_SET_GRANT_PRIVILEGES` for those; mirrors
- * `useCommunityAdmin.ts`'s `canAddUsers`, which gates only the direct-add path on it.
+ * The backend grants `ROLESET_ENTRY_ROLE_ASSIGN` only on SUBSPACE role sets — to the admins
+ * of that subspace or an ancestor, and to platform roles holding GRANT there — and never on
+ * a top-level (L0) role set. Applying it to any other action gates that action shut for
+ * every space admin; use `ROLE_SET_GRANT_PRIVILEGES` for those. There is no direct
+ * add-member control on the Community settings surface (invitation only,
+ * alkem-io/server#6623); the remaining consumer is the virtual-contributor fallback in
+ * `useCommunityActionPermissions` (`assignRoleToVirtualContributor` asks for this token
+ * when the VC belongs to a different account than the Space).
  */
 export const ROLE_SET_ASSIGN_PRIVILEGES = [AuthorizationPrivilege.RolesetEntryRoleAssign];
 
@@ -41,25 +44,13 @@ export const ROLE_SET_ASSIGN_PRIVILEGES = [AuthorizationPrivilege.RolesetEntryRo
 export const ROLE_SET_GRANT_PRIVILEGES = [AuthorizationPrivilege.Grant];
 
 /**
- * Adding an organization to a role set — `assignRoleToOrganization`.
- *
- * Both tokens are required; mirrors `useCommunityAdmin.ts`'s `canAddOrganizations`. The
- * matching removal is NOT gated on this pair — `removeRoleFromOrganization` asks for
- * `GRANT` only, so it uses `ROLE_SET_GRANT_PRIVILEGES`.
- */
-export const ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES = [
-  AuthorizationPrivilege.RolesetEntryRoleAssignOrganization,
-  AuthorizationPrivilege.Grant,
-];
-
-/**
  * Inviting an actor (user, organization or by email) to a role set —
  * `inviteForEntryRoleOnRoleSet`.
  *
- * A distinct token from the assign privileges above: space admins hold the invite
- * privilege while the direct-add privileges are reserved for platform admins, which is
- * exactly why the invite and add controls beside each other can be gated differently.
- * Mirrors `useCommunityAdmin.ts`'s `canInvite` / `canInviteOrganizations`.
+ * A distinct token from the assign privilege above, and the one space admins hold:
+ * invitation is the only way a user or organization joins a Space from the Community
+ * settings surface (alkem-io/server#6623). Mirrors `useCommunityAdmin.ts`'s `canInvite` /
+ * `canInviteOrganizations`.
  */
 export const ROLE_SET_INVITE_PRIVILEGES = [AuthorizationPrivilege.RolesetEntryRoleInvite];
 

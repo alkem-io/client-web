@@ -6,16 +6,12 @@ import { CompactContributorCard } from '@/crd/components/common/CompactContribut
 import { MOCK_ME_USER } from '../data/profiles';
 
 const SECTIONS_LABELS = {
-  spacesSubsection: 'Spaces',
   virtualContributorsSubsection: 'Virtual Contributors',
   templatePacksSubsection: 'Template Packs',
   customHomepagesSubsection: 'Custom Homepages',
   spacesLeading: 'Spaces Leading',
   memberOf: 'Member of',
-  emptyResourcesHosted: 'No resources hosted yet.',
-  emptyLeading: 'Not leading any spaces yet.',
   emptyMembership: 'No memberships yet.',
-  spacePrivacy: { privacyPrivate: 'Private space', privacyPublic: 'Public space' },
 };
 
 const SIDEBAR_LABELS = {
@@ -28,9 +24,9 @@ const SIDEBAR_LABELS = {
 };
 
 const TABS = [
-  { key: 'resourcesHosted' as ResourceTabKey, label: 'Resources Hosted' },
   { key: 'leading' as ResourceTabKey, label: 'Leading' },
   { key: 'memberOf' as ResourceTabKey, label: 'Member Of' },
+  { key: 'otherResources' as ResourceTabKey, label: 'Other Resources' },
 ];
 
 /**
@@ -38,7 +34,7 @@ const TABS = [
  * Settings icon visible, Message button hidden — matches FR-011 / FR-012.
  */
 export function UserProfileSelfDemoPage() {
-  const [activeTab, setActiveTab] = useState<ResourceTabKey>('resourcesHosted');
+  const [activeTab, setActiveTab] = useState<ResourceTabKey>('leading');
   const me = MOCK_ME_USER;
 
   const organizationsSlot = me.organizations.map(org => (
@@ -83,7 +79,6 @@ export function UserProfileSelfDemoPage() {
       }}
       sections={{
         activeTab,
-        hostedSpaces: me.hostedSpaces,
         hostedVirtualContributors: me.hostedVirtualContributors,
         hostedInnovationPacks: me.hostedInnovationPacks,
         hostedInnovationHubs: me.hostedInnovationHubs,

@@ -166,9 +166,10 @@ export type CalloutFormValues = {
   // Footer
   notifyMembers: boolean;
   /**
-   * Edit-mode only: server id of the `default` tagset on the framing profile,
-   * captured at prefill time. Used by the update mapper to emit the correct
-   * `UpdateTagsetInput`. `undefined` on create.
+   * Server ids captured at prefill time — the `default` tagset on the framing profile (used by
+   * the update mapper to emit the correct `UpdateTagsetInput`), the framing sub-entities, and
+   * `collaboraDocumentId`, which the apply-a-template path carries into a *create*. `undefined`
+   * on a blank create.
    */
   editMeta?: {
     framingProfileTagsetId?: string;
@@ -178,6 +179,12 @@ export type CalloutFormValues = {
     formId?: string;
     memoId?: string;
     whiteboardId?: string;
+    /**
+     * Server id of an existing Collabora document to copy content from. Set only by
+     * `loadCalloutTemplateFormValues` (applying a Callout template), and read by
+     * `mapFormToCalloutCreationInput` to emit `sourceCollaboraDocumentID`.
+     */
+    collaboraDocumentId?: string;
     mediaGalleryId?: string;
     originalMediaGalleryVisualIds?: string[];
     originalMediaGallerySortOrders?: Record<string, number>;
@@ -359,9 +366,9 @@ export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>)
         return t('validation.maxMid', { count: MID_TEXT_LENGTH, ...params });
       case 'maxMarkdown':
         // Deliberately no figure: the rule measures the raw markdown source, so any
-        // number quoted here would not match the text length the author perceives,
-        // and there is no live counter to reconcile the two against. This is the same
-        // count-free message the Post description already shows.
+        // number quoted here would not match the text length the author perceives;
+        // the editor's own counter (which also counts the markdown) shows the figure.
+        // This is the same count-free message the Post description already shows.
         return t('crd-common:components.wysiwyg-editor.validation.maxLength');
       case 'minPollOptions':
         return t('validation.minPollOptions', { count: MIN_POLL_OPTIONS, ...params });

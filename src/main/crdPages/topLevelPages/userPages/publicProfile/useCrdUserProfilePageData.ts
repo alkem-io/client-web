@@ -16,7 +16,9 @@ export const useCrdUserProfilePageData = () => {
     variables: { userId: userId! },
     skip: !userId,
   });
-  const accountResources = useAccountResources(userAccountData?.lookup.user?.account?.id) ?? undefined;
+  const { accountResources, loading: loadingAccountResources } = useAccountResources(
+    userAccountData?.lookup.user?.account?.id
+  );
 
   const contributions = useUserContributions(userId);
   const organizationIds = useUserOrganizationIds(userId);
@@ -32,7 +34,7 @@ export const useCrdUserProfilePageData = () => {
     // and the dependent queries firing.
     loading: {
       route: routeLoading,
-      userAccount: routeLoading || loadingUserAccount,
+      userAccount: routeLoading || loadingUserAccount || loadingAccountResources,
       organizations: routeLoading || (userId !== undefined && organizationIds === undefined),
       memberships: routeLoading || (userId !== undefined && contributions === undefined),
     },

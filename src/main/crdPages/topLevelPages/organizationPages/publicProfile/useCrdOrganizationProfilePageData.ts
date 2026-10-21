@@ -23,7 +23,9 @@ export const useCrdOrganizationProfilePageData = () => {
     variables: { organizationId: organization?.id ?? '' },
     skip: !organization?.id,
   });
-  const accountResources = useAccountResources(organizationAccountData?.lookup.organization?.account?.id) ?? undefined;
+  const { accountResources, loading: loadingAccountResources } = useAccountResources(
+    organizationAccountData?.lookup.organization?.account?.id
+  );
 
   return {
     organization,
@@ -33,7 +35,7 @@ export const useCrdOrganizationProfilePageData = () => {
     loading: {
       context: contextLoading,
       provider: provided.loading,
-      account: loadingAccount,
+      account: loadingAccount || loadingAccountResources,
     },
   };
 };

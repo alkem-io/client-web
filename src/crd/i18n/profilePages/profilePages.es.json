@@ -43,12 +43,11 @@
       "settingsAriaLabel": "Abrir configuración de usuario"
     },
     "tabs": {
-      "resourcesHosted": "Recursos alojados",
       "leading": "Liderando",
-      "memberOf": "Miembro de"
+      "memberOf": "Miembro de",
+      "otherResources": "Otros recursos"
     },
     "sections": {
-      "spacesSubsection": "Espacios",
       "virtualContributorsSubsection": "Colaboradores virtuales",
       "spacesLeading": "Espacios liderando",
       "memberOf": "Miembro de"
@@ -64,8 +63,6 @@
       "memberCountLine_other": "{{count}} miembros"
     },
     "empty": {
-      "resourcesHosted": "Aún no aloja ningún recurso.",
-      "leading": "Aún no lidera ningún espacio.",
       "membership": "Aún sin afiliaciones."
     },
     "vcType": "Colaborador virtual"
@@ -93,20 +90,16 @@
       "socialLinksTitle": "Social"
     },
     "tabs": {
-      "resourcesHosted": "Recursos alojados",
       "leading": "Espacios liderando",
-      "memberOf": "Todas las afiliaciones"
+      "memberOf": "Todas las afiliaciones",
+      "otherResources": "Otros recursos"
     },
     "sections": {
-      "spacesSubsection": "Espacios",
       "virtualContributorsSubsection": "Colaboradores virtuales",
       "spacesLeading": "Espacios liderando",
       "memberOf": "Todas las afiliaciones"
     },
-    "empty": {
-      "resourcesHosted": "Aún no aloja ningún recurso.",
-      "leading": "Aún no lidera ningún espacio."
-    },
+    "empty": {},
     "vcType": "Colaborador virtual",
     "associate": {
       "join": "Unirse como asociado",

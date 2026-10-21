@@ -1,9 +1,11 @@
 import { formatDistanceToNowStrict } from 'date-fns';
-import { Info, Loader2, Trash2, Users } from 'lucide-react';
+import { Info, Loader2, Trash2 } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
+import { ChatOptionsMenu } from '@/crd/components/chat/ChatOptionsMenu';
 import { ChatPanel } from '@/crd/components/chat/ChatPanel';
 import { ConversationAvatar } from '@/crd/components/chat/ConversationAvatar';
 import { GroupAvatar } from '@/crd/components/chat/GroupAvatar';
@@ -22,6 +24,7 @@ import { useConversationDrafts } from '@/main/userMessaging/ConversationDraftsCo
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
 import { ConversationThread } from './ConversationThread';
+import { resolveChatLocale } from './chatLocale';
 import {
   injectGuidanceIntro,
   mapConversationToListItem,
@@ -46,6 +49,7 @@ export const UnifiedChatPanelConnector = () => {
   const { userModel } = useCurrentUserContext();
   const currentUserId = userModel?.id;
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const {
     isOpen,
@@ -69,16 +73,19 @@ export const UnifiedChatPanelConnector = () => {
   // conversation once this list resolves, then strips the param regardless
   // of match (unknown/inaccessible id degrades to the default list, no error UI).
   useChatDeepLinkSelect(conversations, isLoading);
-  const { messages: rawMessages, isLoading: messagesLoading } = useConversationMessages(selectedConversationId);
-
   const selectedConversation = conversations.find(conversation => conversation.id === selectedConversationId);
+  const {
+    messages: rawMessages,
+    readUpToEventId,
+    isLoading: messagesLoading,
+  } = useConversationMessages(selectedConversation ?? null);
   const isGuidanceThread = selectedConversation?.isGuidance ?? false;
 
   // Realtime conversation events are subscribed globally by
   // <ConversationEventsSubscriber /> (mounted in root.tsx) so they arrive with
   // the panel closed too. The selected room's message stream is inside the view hook.
   const { isSending, handleSendMessage, handleAddReaction, handleRemoveReaction, handleLeaveGroup, clearGuidance } =
-    useUnifiedConversationView(selectedConversation ?? null, rawMessages);
+    useUnifiedConversationView(selectedConversation ?? null, readUpToEventId);
 
   const groupSettings = useGroupSettings(selectedConversation?.id, selectedConversation?.members ?? [], {
     displayName: selectedConversation?.roomDisplayName ?? '',
@@ -88,6 +95,7 @@ export const UnifiedChatPanelConnector = () => {
 
   const [infoOpen, setInfoOpen] = useState(false);
   const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
+  const [leaveConfirmOpen, setLeaveConfirmOpen] = useState(false);
   const [clearing, setClearing] = useState(false);
   const justClearedRef = useRef(false);
 
@@ -144,7 +152,7 @@ export const UnifiedChatPanelConnector = () => {
       }
     : undefined;
 
-  let chatMessages = rawMessages.map(message => mapMessageToChatMessage(message, { currentUserId, formatTimestamp }));
+  let chatMessages = rawMessages.map(message => mapMessageToChatMessage(message, { currentUserId }));
   if (isGuidanceThread && selectedConversation) {
     const vcMember = selectedConversation.members.find(member => member.id === guidanceVcId);
     const author: CommentAuthor = vcMember
@@ -168,8 +176,12 @@ export const UnifiedChatPanelConnector = () => {
     setSelectedRoomId(null);
   };
 
+  // The reaction hooks reject when Matrix refuses the event; the message stays unchanged,
+  // so surface the same generic error toast a failed GraphQL mutation shows.
+  const notifyReactionFailed = () => notify(t('apollo.errors.generic', { ns: 'crd-common' }), 'error');
+
   const onAddReaction = (messageId: string, emoji: string) => {
-    handleAddReaction(messageId)(emoji);
+    handleAddReaction(messageId)(emoji)?.catch(notifyReactionFailed);
   };
 
   // CommentReactions toggles by emoji; resolve the current user's reaction id for removal.
@@ -177,7 +189,7 @@ export const UnifiedChatPanelConnector = () => {
     const raw = rawMessages.find(message => message.id === messageId);
     const reaction = raw?.reactions.find(item => item.emoji === emoji && item.sender?.id === currentUserId);
     if (reaction) {
-      handleRemoveReaction(reaction.id);
+      handleRemoveReaction(reaction.id)?.catch(notifyReactionFailed);
     }
   };
 
@@ -222,16 +234,16 @@ export const UnifiedChatPanelConnector = () => {
     );
   } else if (selectedConversation?.isGroup) {
     headerActions = (
-      <button
-        type="button"
-        onClick={groupSettings.openDialog}
-        aria-label={t('group.settings')}
-        className={iconButtonClass}
-      >
-        <Users aria-hidden="true" className="size-4" />
-      </button>
+      <ChatOptionsMenu
+        label={t('thread.options')}
+        settingsLabel={t('group.settings')}
+        onOpenSettings={groupSettings.openDialog}
+        leaveLabel={t('group.leave')}
+        onLeave={() => setLeaveConfirmOpen(true)}
+      />
     );
   }
+  const isGroupThread = view === 'thread' && Boolean(selectedConversation?.isGroup);
 
   const groupMembers = selectedConversation
     ? mapMembersToGroupMembers(selectedConversation.members, currentUserId)
@@ -260,10 +272,7 @@ export const UnifiedChatPanelConnector = () => {
             <AvatarImage src={groupSettings.avatarUrl} alt="" />
           </Avatar>
         ) : (
-          <GroupAvatar
-            members={groupMembers.map(m => ({ id: m.id, name: m.name, avatarUrl: m.avatarUrl }))}
-            size="lg"
-          />
+          <GroupAvatar members={selectedListItem?.memberAvatars ?? []} size="lg" />
         )}
         <span className="text-control text-muted-foreground">{t('group.avatar.edit')}</span>
       </button>
@@ -292,25 +301,37 @@ export const UnifiedChatPanelConnector = () => {
         closeLabel={t('launcher.close')}
         onBack={view === 'thread' ? handleBack : undefined}
         backLabel={t('thread.back')}
-        onGoToSettings={() => {
-          // Close first: the panel lives outside <Routes> and the messaging context has
-          // no route listener, so navigating alone leaves it mounted. On a small screen
-          // it is `fixed inset-0`, which would cover the settings page it just opened.
-          setIsOpen(false);
-          navigate(buildUserNotificationSettingsUrl());
-        }}
+        // The gear is about chat in general, so it lives in the list header only; a
+        // conversation's own options are in its header menu.
+        onGoToSettings={
+          view === 'list'
+            ? () => {
+                // Close first: the panel lives outside <Routes> and the messaging context has
+                // no route listener, so navigating alone leaves it mounted. On a small screen
+                // it is `fixed inset-0`, which would cover the settings page it just opened.
+                setIsOpen(false);
+                navigate(buildUserNotificationSettingsUrl());
+              }
+            : undefined
+        }
         settingsLabel={t('panel.settings')}
+        expandLabel={t('panel.expand')}
+        collapseLabel={t('panel.collapse')}
         titleAvatar={titleAvatar}
+        onTitleClick={isGroupThread ? groupSettings.openDialog : undefined}
+        titleActionLabel={isGroupThread ? t('group.settings') : undefined}
         headerActions={view === 'thread' ? headerActions : undefined}
       >
         {view === 'thread' && selectedConversationId ? (
           <ConversationThread
             key={selectedConversationId}
             conversationId={selectedConversationId}
+            roomId={selectedConversation?.roomId}
             attachmentsAllowed={!isGuidanceThread}
             conversation={threadHeader}
             messages={chatMessages}
             messagesLoading={messagesLoading}
+            locale={resolveChatLocale(i18n.language, navigator.languages)}
             currentUser={currentUser}
             isSending={isSending}
             // No reactions on the AI assistant thread (incl. the synthetic intro) — FR-016a.
@@ -325,13 +346,12 @@ export const UnifiedChatPanelConnector = () => {
                 setDraft(selectedConversationId, value);
               }
             }}
-            sendEvent={async (message, documents) => {
+            sendEvent={async (message, attachmentUpload) => {
               if (isGuidanceThread) guidanceResponse.markSent();
-              return handleSendMessage(message, documents);
+              return handleSendMessage(message, attachmentUpload);
             }}
-            onTextSent={() => {
-              if (selectedConversationId) clearDraft(selectedConversationId);
-            }}
+            onClearDraft={() => clearDraft(selectedConversationId)}
+            onRestoreDraft={text => setDraft(selectedConversationId, text)}
             onAddReaction={onAddReaction}
             onRemoveReaction={onRemoveReaction}
           />
@@ -388,6 +408,18 @@ export const UnifiedChatPanelConnector = () => {
         cancelLabel={t('actions.cancel')}
         altTextLabel={t('group.avatar.altLabel')}
         altTextPlaceholder={t('group.avatar.altPlaceholder')}
+      />
+      <ConfirmationDialog
+        open={leaveConfirmOpen}
+        onOpenChange={setLeaveConfirmOpen}
+        title={t('group.leaveConfirm.title')}
+        description={t('group.leaveConfirm.description')}
+        confirmLabel={t('group.leaveConfirm.confirm')}
+        variant="destructive"
+        onConfirm={() => {
+          setLeaveConfirmOpen(false);
+          return handleLeaveGroupConfirmed();
+        }}
       />
       <GuidanceInfoDialog open={infoOpen} onOpenChange={setInfoOpen} />
       <ConfirmationDialog
