@@ -69,6 +69,17 @@ export type AccountDeletionBlockerTotalFieldPolicy = {
   kind?: FieldPolicy<any> | FieldReadFunction<any>;
   total?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AccountHostedInnovationHubKeySpecifier = (
+  | 'id'
+  | 'nameID'
+  | 'profile'
+  | AccountHostedInnovationHubKeySpecifier
+)[];
+export type AccountHostedInnovationHubFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type AccountHostedResourcesKeySpecifier = (
   | 'innovationHubs'
   | 'innovationPacks'
@@ -6670,6 +6681,13 @@ export type StrictTypedTypePolicies = {
       | AccountDeletionBlockerTotalKeySpecifier
       | (() => undefined | AccountDeletionBlockerTotalKeySpecifier);
     fields?: AccountDeletionBlockerTotalFieldPolicy;
+  };
+  AccountHostedInnovationHub?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AccountHostedInnovationHubKeySpecifier
+      | (() => undefined | AccountHostedInnovationHubKeySpecifier);
+    fields?: AccountHostedInnovationHubFieldPolicy;
   };
   AccountHostedResources?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AccountHostedResourcesKeySpecifier | (() => undefined | AccountHostedResourcesKeySpecifier);

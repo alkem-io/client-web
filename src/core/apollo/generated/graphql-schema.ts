@@ -125,11 +125,22 @@ export type AccountDeletionBlockerTotal = {
   total: Scalars['Int']['output'];
 };
 
+/** A hosted Innovation Hub card: its identity, nameID and profile only. */
+export type AccountHostedInnovationHub = {
+  __typename?: 'AccountHostedInnovationHub';
+  /** The ID of the Innovation Hub. */
+  id: Scalars['UUID']['output'];
+  /** The nameID of the Innovation Hub. */
+  nameID: Scalars['NameID']['output'];
+  /** The profile of this Innovation Hub. */
+  profile: Profile;
+};
+
 /** Resources hosted by an Account, as the current viewer may see them. */
 export type AccountHostedResources = {
   __typename?: 'AccountHostedResources';
   /** The Innovation Hubs hosted by the Account. */
-  innovationHubs: Array<InnovationHub>;
+  innovationHubs: Array<AccountHostedInnovationHub>;
   /** Innovation Packs of the Account that the current viewer may see. */
   innovationPacks: Array<InnovationPack>;
   /** Virtual Contributors of the Account that the current viewer may see. */
@@ -24594,7 +24605,7 @@ export type AccountHostedResourcesFieldsFragment = {
     };
   }>;
   innovationHubs: Array<{
-    __typename?: 'InnovationHub';
+    __typename?: 'AccountHostedInnovationHub';
     id: string;
     nameID: string;
     profile: {
@@ -24666,7 +24677,7 @@ export type UserHostedResourcesQuery = {
                   };
                 }>;
                 innovationHubs: Array<{
-                  __typename?: 'InnovationHub';
+                  __typename?: 'AccountHostedInnovationHub';
                   id: string;
                   nameID: string;
                   profile: {
@@ -24749,7 +24760,7 @@ export type OrganizationHostedResourcesQuery = {
                   };
                 }>;
                 innovationHubs: Array<{
-                  __typename?: 'InnovationHub';
+                  __typename?: 'AccountHostedInnovationHub';
                   id: string;
                   nameID: string;
                   profile: {
