@@ -46,6 +46,25 @@ describe('ContributorSelector — contributor-type indication', () => {
     expect(screen.getByText('Acme Org').closest('button')).toHaveTextContent('Organizations');
   });
 
+  test('the typeLabel is the caption beneath the name, not trailing text', () => {
+    renderPicker([{ userId: 'user-1', displayName: 'Alice Adams', typeLabel: 'People' }]);
+
+    // The name column — the flex-col that holds the name — must carry the label
+    // too. Before 088 it sat outside the column as trailing muted text, so this
+    // parent read "Alice Adams" alone.
+    expect(screen.getByText('Alice Adams').parentElement).toHaveTextContent('People');
+  });
+
+  test('a location wins the single caption line over a typeLabel', () => {
+    // Disjoint in practice, so the component picks one rather than stacking two
+    // muted captions.
+    renderPicker([{ userId: 'user-1', displayName: 'Alice Adams', location: 'Amsterdam', typeLabel: 'People' }]);
+
+    const row = screen.getByText('Alice Adams').closest('button');
+    expect(row).toHaveTextContent('Amsterdam');
+    expect(row).not.toHaveTextContent('People');
+  });
+
   test('a result without a typeLabel keeps today’s row shape', () => {
     renderPicker([{ userId: 'user-1', displayName: 'Bob Brown' }]);
 
