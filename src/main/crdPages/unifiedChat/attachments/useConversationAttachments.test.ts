@@ -7,7 +7,10 @@ import { useConversationAttachments } from './useConversationAttachments';
 const mockFetch = vi.fn();
 const mockLegacyUpload = vi.fn();
 const roomContext = { roomID: 'room-A' };
-vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
+const identityT = (key: string) => key;
+const mockT = vi.hoisted(() => vi.fn());
+vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: mockT }) }));
+beforeEach(() => mockT.mockImplementation(identityT));
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useUploadFileMutation: () => [mockLegacyUpload, { loading: false }],
   useUploadRoomMessageAttachmentMutation: () => [mockLegacyUpload, { loading: false }],
@@ -452,6 +455,101 @@ describe('completed upload lifetime', () => {
     });
     expect(mockFetch).toHaveBeenCalledTimes(1);
     expect(sendEvent).toHaveBeenCalledTimes(1);
+    expect(result.current.error).toBe('comments.attachments.sendUnconfirmed');
+  });
+});
+
+describe('composer options', () => {
+  const countingT = (key: string, opts?: { count?: number }) =>
+    opts?.count !== undefined ? `${key}:${opts.count}` : key;
+
+  beforeEach(() => {
+    mockFetch.mockReset();
+    vi.stubGlobal('fetch', mockFetch);
+    mockT.mockImplementation(countingT);
+  });
+
+  test('defaults unchanged: text is sent before the images and the 11th file is refused with count 10', async () => {
+    mockFetch.mockResolvedValueOnce(uploadResult('img1')).mockResolvedValueOnce(uploadResult('img2'));
+    const sendEvent = vi.fn().mockResolvedValue(true);
+    const { result } = renderHook(() => useConversationAttachments(bucketConfig, roomContext));
+    act(() => result.current.attachFiles([file('a.png'), file('b.png')]));
+    await act(async () => {
+      expect(await result.current.send('hello', sendEvent, vi.fn())).toBe(true);
+    });
+    expect(sendEvent.mock.calls).toEqual([
+      ['hello'],
+      ['', uploadedAttachment('img1')],
+      ['', uploadedAttachment('img2', 'b.png')],
+    ]);
+    act(() => result.current.attachFiles(Array.from({ length: 11 }, (_, i) => file(`c${i}.png`))));
+    expect(result.current.attachments).toHaveLength(10);
+    expect(result.current.error).toBe('comments.attachments.errorTooMany:10');
+  });
+
+  test('maxAttachments: 1 refuses the second file and reports count 1', () => {
+    const { result } = renderHook(() => useConversationAttachments(bucketConfig, roomContext, { maxAttachments: 1 }));
+    act(() => result.current.attachFiles([file('a.png')]));
+    expect(result.current.error).toBeUndefined();
+    act(() => result.current.attachFiles([file('b.png')]));
+    expect(result.current.attachments.map(item => item.name)).toEqual(['a.png']);
+    expect(result.current.error).toBe('comments.attachments.errorTooMany:1');
+    act(() => result.current.removeAttachment(result.current.attachments[0].id));
+    act(() => result.current.attachFiles([file('c.png'), file('d.png')]));
+    expect(result.current.attachments.map(item => item.name)).toEqual(['c.png']);
+    expect(result.current.error).toBe('comments.attachments.errorTooMany:1');
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
+
+  test('textLast: true sends images in reverse staged order, then the text, and calls textSent after the text', async () => {
+    mockFetch.mockResolvedValueOnce(uploadResult('second')).mockResolvedValueOnce(uploadResult('first'));
+    const order: string[] = [];
+    const sendEvent = vi.fn(async (text: string) => {
+      order.push(text ? `text:${text}` : 'image');
+      return true;
+    });
+    const textSent = vi.fn(() => order.push('textSent'));
+    const { result } = renderHook(() => useConversationAttachments(bucketConfig, roomContext, { textLast: true }));
+    act(() => result.current.attachFiles([file('a.png'), file('b.png')]));
+    await act(async () => {
+      expect(await result.current.send('hello', sendEvent, textSent)).toBe(true);
+    });
+    expect(sendEvent.mock.calls).toEqual([
+      ['', uploadedAttachment('second', 'b.png')],
+      ['', uploadedAttachment('first', 'a.png')],
+      ['hello'],
+    ]);
+    expect(order).toEqual(['image', 'image', 'text:hello', 'textSent']);
+    expect(result.current.attachments).toHaveLength(0);
+  });
+
+  test('textLast: true — a failed second upload leaves the text unsent, textSent not called, the failed chip marked error', async () => {
+    mockFetch.mockResolvedValueOnce(uploadResult('second')).mockResolvedValueOnce({ ok: false, status: 500 });
+    const sendEvent = vi.fn().mockResolvedValue(true);
+    const textSent = vi.fn();
+    const { result } = renderHook(() => useConversationAttachments(bucketConfig, roomContext, { textLast: true }));
+    act(() => result.current.attachFiles([file('a.png'), file('b.png')]));
+    await act(async () => {
+      expect(await result.current.send('hello', sendEvent, textSent)).toBe(false);
+    });
+    expect(sendEvent.mock.calls).toEqual([['', uploadedAttachment('second', 'b.png')]]);
+    expect(textSent).not.toHaveBeenCalled();
+    expect(result.current.attachments).toEqual([expect.objectContaining({ name: 'a.png', status: 'error' })]);
+    expect(result.current.error).toBe('comments.attachments.uploadFailed');
+  });
+
+  test('textLast: true — a failed text send after all images reports sendUnconfirmed with no chip marked', async () => {
+    mockFetch.mockResolvedValueOnce(uploadResult('only'));
+    const sendEvent = vi.fn().mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+    const textSent = vi.fn();
+    const { result } = renderHook(() => useConversationAttachments(bucketConfig, roomContext, { textLast: true }));
+    act(() => result.current.attachFiles([file('a.png')]));
+    await act(async () => {
+      expect(await result.current.send('hello', sendEvent, textSent)).toBe(false);
+    });
+    expect(sendEvent.mock.calls).toEqual([['', uploadedAttachment('only')], ['hello']]);
+    expect(textSent).not.toHaveBeenCalled();
+    expect(result.current.attachments).toHaveLength(0);
     expect(result.current.error).toBe('comments.attachments.sendUnconfirmed');
   });
 });

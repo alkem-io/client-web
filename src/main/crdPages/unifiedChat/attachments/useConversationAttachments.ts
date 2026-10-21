@@ -8,6 +8,7 @@ import {
   type AttachmentRejection,
   DEFAULT_ALLOWED_ATTACHMENT_MIME_TYPES,
   MAX_ATTACHMENT_SIZE_BYTES,
+  MAX_ATTACHMENTS_PER_MESSAGE,
   validateAttachments,
 } from './validateAttachments';
 
@@ -16,11 +17,21 @@ type UploadLifetime = { disposed: boolean; busy: boolean; contextKey: string; up
 type SelectedFile = ComposerAttachment & { file: File; uploadedAttachment?: RoomMessageAttachmentInput };
 export type AttachmentContext = { roomID: string; threadID?: string };
 export type SendEvent = (text: string, attachmentUpload?: RoomMessageAttachmentInput) => Promise<boolean | undefined>;
+/**
+ * Optional per-composer behaviour. Omitting both keeps the chat defaults: up to
+ * MAX_ATTACHMENTS_PER_MESSAGE files, and the text is sent before the files.
+ * - maxAttachments: how many files one send may carry.
+ * - textLast: send the files first (in reverse staged order) and the text last,
+ *   for threads shown newest first, so the text ends up above its files. The text
+ *   is only sent once every file is posted, so a failed file never loses it.
+ */
+export type AttachmentOptions = { maxAttachments?: number; textLast?: boolean };
 
 /** Owned by one keyed composer instance. Selection is local; Send uploads each file. */
 export function useConversationAttachments(
   storageConfig: StorageConfig | undefined,
-  context: AttachmentContext | undefined
+  context: AttachmentContext | undefined,
+  options: AttachmentOptions = {}
 ) {
   const { t } = useTranslation('crd-space');
   const [draft, setDraft] = useState<{ items: SelectedFile[]; error?: string }>({ items: [] });
@@ -41,6 +52,7 @@ export function useConversationAttachments(
     };
   }, [contextKey]);
 
+  const maxAttachments = options.maxAttachments ?? MAX_ATTACHMENTS_PER_MESSAGE;
   const enabled = Boolean(storageConfig?.canUpload && context?.roomID);
   const allowedMimeTypes = storageConfig?.allowedMimeTypes ?? DEFAULT_ALLOWED_ATTACHMENT_MIME_TYPES;
   const accept = storageConfig
@@ -50,7 +62,7 @@ export function useConversationAttachments(
   const describeRejection = (rejection: AttachmentRejection) => {
     switch (rejection.reason) {
       case 'tooMany':
-        return t('comments.attachments.errorTooMany', { max: 10 });
+        return t('comments.attachments.errorTooMany', { count: maxAttachments });
       case 'tooLarge':
         return t('comments.attachments.errorTooLarge', {
           name: rejection.fileName,
@@ -75,6 +87,7 @@ export function useConversationAttachments(
         existingCount: previous.items.length,
         allowedMimeTypes,
         maxFileSizeBytes: storageConfig?.maxFileSize || undefined,
+        maxAttachments,
       });
       return {
         items: [...previous.items, ...selected.filter(item => accepted.includes(item.file))],
@@ -96,13 +109,19 @@ export function useConversationAttachments(
     setDraft(previous => ({ ...previous, error: undefined }));
     let activeFile: SelectedFile | undefined;
     let uploading = false;
+    // Only called when there is text, so an image-only send starts its first
+    // upload synchronously, with no extra await in front of it.
+    const hasText = Boolean(text.trim());
+    const sendText = async (): Promise<boolean> => {
+      activeFile = undefined;
+      if (!(await sendEvent(text))) throw new Error('send unconfirmed');
+      textSent();
+      return !current.disposed;
+    };
+    const items = options.textLast ? [...draft.items].reverse() : draft.items;
     try {
-      if (text.trim()) {
-        if (!(await sendEvent(text))) throw new Error('send unconfirmed');
-        textSent();
-        if (current.disposed) return false;
-      }
-      for (const item of draft.items) {
+      if (hasText && !options.textLast && !(await sendText())) return false;
+      for (const item of items) {
         if (current.disposed) return false;
         activeFile = item;
         let uploadedAttachment = item.uploadedAttachment;
@@ -148,6 +167,7 @@ export function useConversationAttachments(
         if (current.disposed) return false;
         setDraft(previous => ({ ...previous, items: previous.items.filter(value => value.id !== item.id) }));
       }
+      if (hasText && options.textLast && !(await sendText())) return false;
       return true;
     } catch {
       if (!current.disposed)

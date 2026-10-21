@@ -1,4 +1,4 @@
-import { AtSign, Loader2, Paperclip, Send, Smile, X } from 'lucide-react';
+import { AtSign, Image as ImageIcon, ImagePlus, Loader2, Paperclip, Send, Smile, X } from 'lucide-react';
 import {
   type ClipboardEvent,
   type CSSProperties,
@@ -54,10 +54,9 @@ type CommentInputProps = {
    */
   refocusAfterSubmit?: boolean;
   /**
-   * Enables the attach-file affordance (feature 013). Only the conversation
-   * composer opts in this round; comment/post composers leave it off and render
-   * exactly as before. When true a paperclip button + preview chips appear and
-   * the message can be sent with attachments only (no text required).
+   * Enables the attach-file affordance. When true an attach button + preview
+   * chips appear and the message can be sent with attachments only (no text
+   * required). Composers that leave it off render exactly as before.
    */
   attachmentsEnabled?: boolean;
   /** Currently staged attachments (with their upload lifecycle state). */
@@ -70,6 +69,12 @@ type CommentInputProps = {
   attachmentError?: string;
   /** `accept` attribute for the file picker, derived from the bucket policy. */
   acceptMimeTypes?: string;
+  /**
+   * Image-only composers show an image button and image chips instead of the
+   * paperclip metaphor, which reads as "any file". Behaviour is unchanged; the
+   * accepted types still come from `acceptMimeTypes`.
+   */
+  imagesOnly?: boolean;
 };
 
 type EnrichedSuggestion = SuggestionDataItem & CrdMentionSuggestion;
@@ -147,8 +152,11 @@ export function CommentInput({
   onRemoveAttachment,
   attachmentError,
   acceptMimeTypes,
+  imagesOnly = false,
 }: CommentInputProps) {
   const { t } = useTranslation('crd-space');
+  const AttachIcon = imagesOnly ? ImagePlus : Paperclip;
+  const ChipIcon = imagesOnly ? ImageIcon : Paperclip;
   const { isSmallScreen } = useScreenSize();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -373,7 +381,7 @@ export function CommentInput({
                     <Loader2 aria-hidden="true" className="size-3.5 animate-spin" />
                   </output>
                 ) : (
-                  <Paperclip aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" />
+                  <ChipIcon aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" />
                 )}
                 <span className="min-w-0 flex-1 truncate">{attachment.name}</span>
                 <button
@@ -498,9 +506,9 @@ export function CommentInput({
                   className="h-6 w-6 text-muted-foreground hover:text-foreground md:h-7 md:w-7"
                   disabled={disabled}
                   onClick={() => fileInputRef.current?.click()}
-                  aria-label={t('comments.attachments.attach')}
+                  aria-label={t(imagesOnly ? 'comments.attachments.addImage' : 'comments.attachments.attach')}
                 >
-                  <Paperclip className="h-3.5 w-3.5 md:h-4 md:w-4" aria-hidden="true" />
+                  <AttachIcon className="h-3.5 w-3.5 md:h-4 md:w-4" aria-hidden="true" />
                 </Button>
               </>
             )}
