@@ -20,9 +20,12 @@ export const useCrdOrganizationProfilePageData = () => {
   const provided = useOrganizationProvider();
   const { isAuthenticated, loadingMe } = useCurrentUserContext();
 
+  // A failed read only hides the Other Resources tab, so it opts out of the
+  // global error toast.
   const { data, loading: loadingHosted } = useOrganizationHostedResourcesQuery({
     variables: { organizationId: organization?.id ?? '' },
     skip: !organization?.id || !isAuthenticated,
+    context: { skipGlobalErrorHandler: true },
   });
   const accountResources = data?.lookup.organization?.hostedResources ?? undefined;
 
@@ -35,7 +38,9 @@ export const useCrdOrganizationProfilePageData = () => {
     loading: {
       context: contextLoading,
       provider: provided.loading,
-      account: loadingHosted,
+      // The query stays skipped until auth resolves, so `loadingMe` keeps the
+      // tab strip from settling without Other Resources and then changing.
+      account: loadingMe || loadingHosted,
     },
   };
 };
