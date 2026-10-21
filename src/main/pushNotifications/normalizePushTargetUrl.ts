@@ -9,9 +9,10 @@
  *
  * `undefined` is the documented **"stay on the start route"** outcome: the tap
  * still opens the app, it just does not route anywhere. That covers a target on
- * a different origin, a protocol-relative `//evil.example`, a non-http(s)
- * scheme, a non-string and an empty string — the payload crosses APNs/FCM, so
- * it is normalised, never trusted.
+ * a different origin, a protocol-relative `//evil.example` (bare, or hidden in
+ * the path of an origin-rooted url), a non-http(s) scheme, a non-string and an
+ * empty string — the payload crosses APNs/FCM, so it is normalised, never
+ * trusted.
  *
  * `origin` is a parameter rather than a read of `window.location.origin` so the
  * function stays pure; the caller passes the serving origin. Only that one
@@ -38,6 +39,14 @@ export const normalizePushTargetUrl = (raw: unknown, origin: string): string | u
   }
 
   if (target.origin !== origin) {
+    return undefined;
+  }
+
+  // `new URL('<origin>//evil.example/x', origin)` is same-origin with pathname
+  // `'//evil.example/x'`, which react-router keeps verbatim and `pushState`
+  // then rejects as cross-origin — falling back to `location.assign()` on the
+  // attacker's authority. The origin check alone does not cover this shape.
+  if (target.pathname.startsWith('//')) {
     return undefined;
   }
 

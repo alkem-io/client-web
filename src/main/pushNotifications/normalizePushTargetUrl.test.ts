@@ -33,6 +33,10 @@ describe('normalizePushTargetUrl', () => {
       expect(normalizePushTargetUrl('//evil.example/spaces/my-space', ORIGIN)).toBeUndefined();
     });
 
+    test('an origin-rooted url whose path is protocol-relative', () => {
+      expect(normalizePushTargetUrl(`${ORIGIN}//evil.example/spaces/my-space`, ORIGIN)).toBeUndefined();
+    });
+
     test('a non-http(s) scheme', () => {
       expect(normalizePushTargetUrl('javascript:alert(1)', ORIGIN)).toBeUndefined();
       expect(normalizePushTargetUrl('data:text/html,<script>alert(1)</script>', ORIGIN)).toBeUndefined();
