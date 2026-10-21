@@ -778,11 +778,13 @@ export function FramingEditorConnector({
       // positionally, so a stale entry is relabelled in place, never filtered out.
       const contributorChips = (resolveContributorChips ? resolveContributorChips(selectedIds) : []).map(chip => {
         if (chip.kind === 'email' || chip.eligible !== false) return chip;
-        // While pending, keep the chip's own identity and drop the ineligible
-        // marker — the strike-through and its tooltip read "no longer available"
-        // just as loudly as the label would.
+        // An unresolved chip carries the raw uuid as its displayName, so "keep
+        // its own identity" would print the uuid. While pending the chip must
+        // claim nothing in either direction: a neutral "loading" label, and no
+        // ineligible marker to alarm with. Same semantics as SpaceSelector's
+        // pending branch (`SpaceSelector.tsx:294-301`).
         return candidatesPending
-          ? { ...chip, eligible: true }
+          ? { ...chip, displayName: t('forms.selection.loading'), eligible: true }
           : { ...chip, displayName: t('forms.selection.noLongerAvailable') };
       });
       // Selected entries stay in the results as ticked toggle rows (088,

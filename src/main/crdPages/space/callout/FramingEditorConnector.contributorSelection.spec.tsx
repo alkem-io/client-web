@@ -183,21 +183,23 @@ describe('FramingEditorConnector — contributor selection', () => {
   });
 
   // #10418: the chip was relabelled before the candidate set arrived, so every
-  // selected entry briefly read "No longer available". The mocked `t` collapses
-  // interpolation to the bare key, so identity is asserted on the chip's own
-  // display name — which is what the relabel overwrote.
-  it('keeps chip identity while the candidate set is still loading', () => {
+  // selected entry briefly read "No longer available". The fixture is the shape
+  // `useSelectionCandidates.resolveChips` really returns for an id it cannot
+  // resolve — `displayName === id` — so the pending chip must read neither that
+  // raw uuid nor the stale label.
+  it('labels a chip "loading" while the candidate set is still loading', () => {
     renderEditor({
       selectionMode: 'custom',
       selectedIds: ['user-1'],
       contributorCandidates: [],
       contributorCandidatesLoading: true,
       resolveContributorChips: () => [
-        { kind: 'virtualContributor', id: 'user-1', displayName: 'Alpha Person', eligible: false },
+        { kind: 'virtualContributor', id: 'user-1', displayName: 'user-1', eligible: false },
       ],
     });
 
-    expect(screen.getByText('Alpha Person')).toBeInTheDocument();
+    expect(screen.getByText('forms.selection.loading')).toBeInTheDocument();
+    expect(screen.queryByText('user-1')).not.toBeInTheDocument();
     expect(screen.queryByText('forms.selection.noLongerAvailable')).not.toBeInTheDocument();
   });
 
