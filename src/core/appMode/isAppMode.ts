@@ -36,6 +36,21 @@
  * (`normalizePushTargetUrl`) and the route it lands on is still gated by the
  * app's existing route-level auth and per-route authorization. No identity or
  * entitlement decision is taken from this signal.
+ *
+ * **The tap event is also forgeable on Android, and confinement is the control.**
+ * Correcting the paragraph above, which only considered browser forgery: the
+ * feature's own working path is FCM relaunching the exported `MainActivity`
+ * (`ACTION_MAIN`/`LAUNCHER`) with the payload as intent extras, which Capacitor
+ * fans out to every plugin — and an exported activity cannot tell that apart
+ * from a local app's `startActivity`. So any installed app can synthesise a
+ * `pushNotificationActionPerformed`. What that buys is "bring the app forward
+ * and steer it to an arbitrary **same-origin** route", bounded by
+ * `normalizePushTargetUrl` rejecting every off-origin and authority-confusable
+ * target; no read access, and every route keeps its own authorization. The
+ * residual (UI redress / nuisance navigation of a live session) is owned by
+ * `client-appstore` — the exported launcher activity is the untrusted boundary —
+ * and is not closable with a client-web guard, which would be hardening a
+ * signal this file already declares non-authoritative.
  */
 
 declare global {
