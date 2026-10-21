@@ -1,12 +1,24 @@
 import { Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CommentInput } from './CommentInput';
 import { CommentItem } from './CommentItem';
-import type { CommentData, CommentsContainerData, CrdMentionSearch } from './types';
+import type { CommentData, CommentsContainerData, CrdMentionSearch, ReplyComposerProps } from './types';
 
 type CommentThreadProps = CommentsContainerData & {
   mentionSearch?: CrdMentionSearch;
+  /**
+   * Reports which comment's reply box is open (undefined when none). The
+   * integration keys the reply's attachment draft to it, so files staged for
+   * one reply are never carried over to another.
+   */
+  onReplyTargetChange?: (commentId: string | undefined) => void;
+  /**
+   * Attachment props for the reply input. Because the draft is keyed to the
+   * open reply and discarded when the box closes, the box stays open until
+   * onReply settles instead of closing on submit.
+   */
+  replyInputProps?: ReplyComposerProps;
 };
 
 /**
@@ -29,6 +41,8 @@ export function CommentThread({
   onAddReaction,
   onRemoveReaction,
   mentionSearch,
+  onReplyTargetChange,
+  replyInputProps,
 }: CommentThreadProps) {
   const { t } = useTranslation('crd-space');
 
@@ -36,6 +50,10 @@ export function CommentThread({
   // each CommentItem) so the reply input renders at the bottom of the parent's
   // reply group — matching where the new reply lands after posting.
   const [replyingToCommentId, setReplyingToCommentId] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    onReplyTargetChange?.(replyingToCommentId);
+  }, [replyingToCommentId, onReplyTargetChange]);
 
   const topLevel = comments.filter(comment => !comment.parentId);
   const repliesByParent = new Map<string, CommentData[]>();
@@ -133,9 +151,15 @@ export function CommentThread({
                       currentUser={currentUser}
                       mentionSearch={mentionSearch}
                       autoFocus={true}
+                      {...replyInputProps}
                       onSubmit={content => {
-                        onReply(comment.id, content);
-                        setReplyingToCommentId(undefined);
+                        // A rejection keeps the box open; the integration reports the error.
+                        void Promise.resolve(onReply(comment.id, content)).then(
+                          sent => {
+                            if (sent !== false) setReplyingToCommentId(undefined);
+                          },
+                          () => {}
+                        );
                       }}
                     />
                   </div>
