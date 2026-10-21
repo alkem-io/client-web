@@ -3564,6 +3564,7 @@ export type MutationKeySpecifier = (
   | 'prepareMemoSigning'
   | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
+  | 'registerDevicePushToken'
   | 'removeCommunityGuidelinesContent'
   | 'removeConversationMember'
   | 'removeDefaultCalloutTemplateOnInnovationFlowState'
@@ -3606,6 +3607,7 @@ export type MutationKeySpecifier = (
   | 'transferInnovationPackToAccount'
   | 'transferSpaceToAccount'
   | 'transferVirtualContributorToAccount'
+  | 'unregisterDevicePushToken'
   | 'unsubscribeFromPushNotifications'
   | 'updateActorNameID'
   | 'updateApplicationFormOnRoleSet'
@@ -3810,6 +3812,7 @@ export type MutationFieldPolicy = {
   prepareMemoSigning?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
+  registerDevicePushToken?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
   removeConversationMember?: FieldPolicy<any> | FieldReadFunction<any>;
   removeDefaultCalloutTemplateOnInnovationFlowState?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3852,6 +3855,7 @@ export type MutationFieldPolicy = {
   transferInnovationPackToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferSpaceToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferVirtualContributorToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
+  unregisterDevicePushToken?: FieldPolicy<any> | FieldReadFunction<any>;
   unsubscribeFromPushNotifications?: FieldPolicy<any> | FieldReadFunction<any>;
   updateActorNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   updateApplicationFormOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;

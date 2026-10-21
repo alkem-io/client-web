@@ -5965,6 +5965,8 @@ export type Mutation = {
   refreshAllBodiesOfKnowledge: Scalars['Boolean']['output'];
   /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean']['output'];
+  /** Bind a native device push token (FCM on Android, APNs on iOS) to the current user. If the token is already bound to another user, it is rebound to the caller. */
+  registerDevicePushToken: Scalars['Boolean']['output'];
   /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
   /** Remove a member from a group conversation. Awaits the Matrix removal rather than reporting success merely because the RPC was sent: true means Matrix accepted it (the member leaves the room), and the membership is then removed asynchronously — observe MEMBER_REMOVED for completion. If the Matrix removal fails (rejected — e.g. the member is no longer in the Matrix room — or the RPC times out) this still returns true, because Alkemio is authoritative for its own membership and applies the removal locally instead; on that path the Matrix-side room membership may diverge until an operator reconciles it. */
@@ -6049,6 +6051,8 @@ export type Mutation = {
   transferSpaceToAccount: Space;
   /** Transfer the specified Virtual Contributor to another Account. */
   transferVirtualContributorToAccount: InnovationPack;
+  /** Unbind a native device push token from the current user. Unknown tokens, and tokens bound to another user, are no-ops. */
+  unregisterDevicePushToken: Scalars['Boolean']['output'];
   /** Disable a push notification subscription for the current user. The subscription is retained but will not receive notifications until re-enabled. */
   unsubscribeFromPushNotifications: PushSubscription;
   /** Update the nameID (URL path) of the specified Actor. A protected update: renaming repoints every inbound link to the entity. */
@@ -6680,6 +6684,10 @@ export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
   refreshData: RefreshVirtualContributorBodyOfKnowledgeInput;
 };
 
+export type MutationRegisterDevicePushTokenArgs = {
+  registrationData: RegisterDevicePushTokenInput;
+};
+
 export type MutationRemoveCommunityGuidelinesContentArgs = {
   communityGuidelinesData: RemoveCommunityGuidelinesContentInput;
 };
@@ -6845,6 +6853,10 @@ export type MutationTransferSpaceToAccountArgs = {
 
 export type MutationTransferVirtualContributorToAccountArgs = {
   transferData: TransferAccountVirtualContributorInput;
+};
+
+export type MutationUnregisterDevicePushTokenArgs = {
+  registrationData: UnregisterDevicePushTokenInput;
 };
 
 export type MutationUnsubscribeFromPushNotificationsArgs = {
@@ -8496,6 +8508,13 @@ export type Reference = {
 export type RefreshVirtualContributorBodyOfKnowledgeInput = {
   /** The ID of the Virtual Contributor to update. */
   virtualContributorID: Scalars['UUID']['input'];
+};
+
+export type RegisterDevicePushTokenInput = {
+  /** The native platform of the device: 'ios' or 'android'. */
+  platform: Scalars['String']['input'];
+  /** The native push token for this device (FCM registration token on Android, APNs device token on iOS). */
+  token: Scalars['String']['input'];
 };
 
 export type RelayPaginatedSpace = ActorFull & {
@@ -10172,6 +10191,11 @@ export type TransferCalloutInput = {
   calloutID: Scalars['UUID']['input'];
   /** The target CalloutsSet to which the Callout will be transferred. */
   targetCalloutsSetID: Scalars['UUID']['input'];
+};
+
+export type UnregisterDevicePushTokenInput = {
+  /** The native push token to unbind from the current user. */
+  token: Scalars['String']['input'];
 };
 
 export type UnsubscribeFromPushNotificationsInput = {
