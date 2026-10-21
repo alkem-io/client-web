@@ -34,6 +34,7 @@ import { CrdAssistantButtonGate } from './main/assistant/CrdAssistantButtonGate'
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { OnlineStatusNotification } from './main/onlineStatus/OnlineStatusNotification';
 import { PushNotificationProvider } from './main/pushNotifications/PushNotificationProvider';
+import { useNativePushTapRouting } from './main/pushNotifications/useNativePushTapRouting';
 import { VersionHandling } from './main/versionHandling';
 
 const CrdGlobalErrorDialog = lazyWithGlobalErrorHandler(() => import('./main/crdPages/error/CrdGlobalErrorDialog'));
@@ -59,6 +60,21 @@ function GlobalErrorDialogGate() {
       <CrdGlobalErrorDialog />
     </Suspense>
   );
+}
+
+/**
+ * Routes a tapped native push notification to its target.
+ *
+ * Mounted here — inside `BrowserRouter`, above `PushNotificationProvider` —
+ * rather than beside the web-push leg, because the listener must be live on
+ * **every** app start: the platform retains a cold-start tap until JS consumes
+ * it, and a tap arriving with no session must still route.
+ * `PushNotificationProvider` short-circuits while unauthenticated, so anything
+ * below it is unmounted exactly when a signed-out tap needs handling.
+ */
+function NativePushTapRouter() {
+  useNativePushTapRouting();
+  return null;
 }
 
 /** Top-level path segments owned by the auth flow — the unified chat is hidden on all of them. */
@@ -97,6 +113,7 @@ const Root: FC = () => {
               <GlobalErrorProvider>
                 <AuthenticationProvider>
                   <BrowserRouter>
+                    <NativePushTapRouter />
                     <UserGeoProvider>
                       <ApmProvider>
                         <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>

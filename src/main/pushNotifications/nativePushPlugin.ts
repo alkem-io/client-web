@@ -25,6 +25,19 @@
  * `:267` `RegistrationError { error }`) and `@capacitor/core@8.4.2`
  * `types/definitions.d.ts:66` (`PermissionState`). It is unversioned — residual
  * R-9.
+ *
+ * **`pushNotificationActionPerformed` carries no line citation, deliberately.**
+ * That `.d.ts` is not present anywhere in this workspace (the plugin is never
+ * installed here), so the event shape below is transcribed from the plugin's
+ * *documented* `ActionPerformed` / `PushNotificationSchema` contract rather than
+ * from a file that can be quoted. Inventing line numbers next to the honest
+ * ones above would make the whole docblock unverifiable, so the overload states
+ * only what the tap handler reads: `notification.data`, a loose per-platform
+ * bag. It is **not** declared as a symmetric shape — the iOS APNs dictionary and
+ * the Android FCM data map are different objects that happen to agree on `url`
+ * (server `native.push.sender.service.ts:206` and `:313`), which is why the one
+ * field the handler needs is read by name off `Record<string, unknown>` and
+ * normalised before use.
  */
 
 export type NativePushPlugin = {
@@ -35,11 +48,22 @@ export type NativePushPlugin = {
    * Typed `unknown` deliberately: the injected implementation returns a plain
    * `{ remove }` object *synchronously* (`native-bridge.js:183-195`), not the
    * `Promise<PluginListenerHandle>` the plugin's own `.d.ts` declares, so no
-   * caller may rely on the handle. Teardown goes through `removeAllListeners`.
+   * caller may rely on the handle.
+   *
+   * There is therefore **no per-consumer teardown at all**, and the plugin's
+   * global `removeAllListeners()` is deliberately not declared here: it is the
+   * wrong instrument, because one consumer calling it silently removes every
+   * other consumer's listener. Both listening consumers
+   * (`useNativePushRegistration`, `useNativePushTapRouting`) instead register
+   * once and stay registered for the page's lifetime, guarding their own
+   * handlers where a stale event would matter.
    */
   addListener(eventName: 'registration', listenerFunc: (token: { value: string }) => void): unknown;
   addListener(eventName: 'registrationError', listenerFunc: (error: { error: string }) => void): unknown;
-  removeAllListeners(): Promise<void>;
+  addListener(
+    eventName: 'pushNotificationActionPerformed',
+    listenerFunc: (event: { notification: { data?: Record<string, unknown> } }) => void
+  ): unknown;
 };
 
 export const getNativePushPlugin = (): NativePushPlugin | undefined => {

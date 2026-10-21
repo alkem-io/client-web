@@ -24,6 +24,18 @@
  * (`usePushNotifications`) and the decision to register a native token
  * (`useNativePushRegistration`); a third consumer needs a ruling, and a consumer
  * on an authorization path is a hard stop.
+ *
+ * **Third consumer, ruled in (088).** `useNativePushTapRouting` — the handler
+ * that routes a tapped native notification to its target — is admitted as the
+ * third legitimate consumer. It is **not** on an authorization path: all the
+ * predicate decides is whether to register a plugin listener that can only ever
+ * exist in the app shell. Forging it in a browser subscribes the forger to an
+ * event no browser emits; what the handler would then navigate to is a
+ * same-origin path the forger could type into the address bar anyway, because
+ * the target is normalised against the serving origin
+ * (`normalizePushTargetUrl`) and the route it lands on is still gated by the
+ * app's existing route-level auth and per-route authorization. No identity or
+ * entitlement decision is taken from this signal.
  */
 
 declare global {
