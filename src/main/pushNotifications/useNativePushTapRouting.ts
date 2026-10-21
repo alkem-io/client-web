@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { isAppMode } from '@/core/appMode/isAppMode';
 import { getNativePushPlugin } from '@/main/pushNotifications/nativePushPlugin';
@@ -25,20 +25,14 @@ import { normalizePushTargetUrl } from '@/main/pushNotifications/normalizePushTa
  * **Registered once, never torn down.** `addListener`'s handle is unusable
  * (`nativePushPlugin.ts`) and the plugin's `removeAllListeners()` is global, so
  * there is no way to remove just this listener — and no need: this consumer is
- * mounted for the page's lifetime. `useNavigate()` is the reason for the ref:
- * under `<BrowserRouter>` it re-memoizes on every location change, so depending
- * on it would re-register the listener on each navigation, and with no teardown
- * those would accumulate and fire one navigation per past route.
+ * mounted for the page's lifetime. Hence the empty dependency array: `navigate`
+ * re-memoizes on every location change, and a dependency on it would accumulate
+ * listeners that fire one navigation per past route. The first render's
+ * `navigate` stays correct because `normalizePushTargetUrl` only ever returns an
+ * absolute path, which react-router resolves without the captured location.
  */
 export const useNativePushTapRouting = () => {
   const navigate = useNavigate();
-  const navigateRef = useRef(navigate);
-
-  // Written in an effect, not during render: React may discard a render, and a
-  // ref must not be mutated in one.
-  useEffect(() => {
-    navigateRef.current = navigate;
-  }, [navigate]);
 
   useEffect(() => {
     if (!isAppMode()) return;
@@ -54,7 +48,7 @@ export const useNativePushTapRouting = () => {
       const target = normalizePushTargetUrl(event.notification.data?.url, window.location.origin);
       // `undefined` is the documented "stay on the start route" outcome.
       if (target) {
-        navigateRef.current(target);
+        navigate(target);
       }
     });
   }, []);

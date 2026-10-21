@@ -63,14 +63,9 @@ function GlobalErrorDialogGate() {
 }
 
 /**
- * Routes a tapped native push notification to its target.
- *
- * Mounted here — inside `BrowserRouter`, above `PushNotificationProvider` —
- * rather than beside the web-push leg, because the listener must be live on
- * **every** app start: the platform retains a cold-start tap until JS consumes
- * it, and a tap arriving with no session must still route.
- * `PushNotificationProvider` short-circuits while unauthenticated, so anything
- * below it is unmounted exactly when a signed-out tap needs handling.
+ * Mounted inside `BrowserRouter` and above `PushNotificationProvider` (which
+ * short-circuits while unauthenticated) because the tap listener must be live on
+ * every app start, signed in or not — see the hook for why.
  */
 function NativePushTapRouter() {
   useNativePushTapRouting();

@@ -27,17 +27,12 @@
  * R-9.
  *
  * **`pushNotificationActionPerformed` carries no line citation, deliberately.**
- * That `.d.ts` is not present anywhere in this workspace (the plugin is never
- * installed here), so the event shape below is transcribed from the plugin's
- * *documented* `ActionPerformed` / `PushNotificationSchema` contract rather than
- * from a file that can be quoted. Inventing line numbers next to the honest
- * ones above would make the whole docblock unverifiable, so the overload states
- * only what the tap handler reads: `notification.data`, a loose per-platform
- * bag. It is **not** declared as a symmetric shape — the iOS APNs dictionary and
- * the Android FCM data map are different objects that happen to agree on `url`
- * (server `native.push.sender.service.ts:206` and `:313`), which is why the one
- * field the handler needs is read by name off `Record<string, unknown>` and
- * normalised before use.
+ * That `.d.ts` is absent from this workspace, so inventing line numbers beside
+ * the honest ones above would make the whole docblock unverifiable. The overload
+ * therefore declares only what the tap handler reads: `notification.data`, a
+ * loose per-platform bag — not a symmetric shape, because the iOS APNs
+ * dictionary and the Android FCM data map are different objects that merely
+ * agree on `url` (server `native.push.sender.service.ts:206` and `:313`).
  */
 
 export type NativePushPlugin = {
@@ -50,13 +45,11 @@ export type NativePushPlugin = {
    * `Promise<PluginListenerHandle>` the plugin's own `.d.ts` declares, so no
    * caller may rely on the handle.
    *
-   * There is therefore **no per-consumer teardown at all**, and the plugin's
-   * global `removeAllListeners()` is deliberately not declared here: it is the
-   * wrong instrument, because one consumer calling it silently removes every
-   * other consumer's listener. Both listening consumers
-   * (`useNativePushRegistration`, `useNativePushTapRouting`) instead register
-   * once and stay registered for the page's lifetime, guarding their own
-   * handlers where a stale event would matter.
+   * There is therefore no per-consumer teardown at all, and the plugin's global
+   * `removeAllListeners()` is deliberately not declared: one consumer calling it
+   * silently removes every other consumer's listener. Both listening consumers
+   * (`useNativePushRegistration`, `useNativePushTapRouting`) register once and
+   * stay registered for the page's lifetime instead.
    */
   addListener(eventName: 'registration', listenerFunc: (token: { value: string }) => void): unknown;
   addListener(eventName: 'registrationError', listenerFunc: (error: { error: string }) => void): unknown;

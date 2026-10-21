@@ -85,17 +85,15 @@ export const useNativePushRegistration = () => {
       })
       .catch(error => logNativePushFailure(String(error)));
 
-    // No `plugin.removeAllListeners()` here. It is plugin-GLOBAL, so this
-    // hook's sign-out would also remove `useNativePushTapRouting`'s tap
-    // listener — which is mounted above the auth gate precisely so it survives
-    // sign-out and still consumes the platform's retained cold-start tap. The
-    // handle `addListener` returns is unusable (`nativePushPlugin.ts`), so
-    // there is no narrower removal to call instead; `active` already provides
-    // every guarantee the global call did, and it provided them *better*,
-    // because `removeAllListeners()` is async and an event could land while
-    // removal was in flight. Consequence, accepted: this hook's two listeners
-    // outlive their session, inert (`registration` is `active`-guarded; a stale
-    // `registrationError` only logs a still-accurate line).
+    // No `plugin.removeAllListeners()` here: it is plugin-GLOBAL, so this hook's
+    // sign-out would also remove `useNativePushTapRouting`'s tap listener, which
+    // is mounted above the auth gate precisely so it survives sign-out. There is
+    // no narrower removal (the `addListener` handle is unusable), and `active`
+    // already covers everything the global call did — better, since that call is
+    // async and an event could land while removal was in flight. Accepted
+    // consequence: this hook's two listeners outlive their session, inert
+    // (`registration` is `active`-guarded, a stale `registrationError` only logs
+    // a still-accurate line).
     return () => {
       active = false;
     };
