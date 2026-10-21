@@ -1,6 +1,7 @@
 import type { MatrixClient } from 'matrix-js-sdk';
 import { setActiveClient, setSessionEstablishing } from './activeClient';
 import { registerActiveSession, unregisterActiveSession } from './activeSession';
+import { quietSdkLogging } from './sdkLogging';
 import { attemptSilentSso } from './ssoLogin';
 import { type CredentialRecord, clearNamespace, loadActorCredentials } from './storage';
 
@@ -18,33 +19,6 @@ type MatrixClientLike = {
   stopClient(): void;
   startClient(opts?: { initialSyncLimit?: number; lazyLoadMembers?: boolean }): Promise<void>;
   on(event: string, listener: (state?: string) => void): unknown;
-};
-
-// The loglevel-backed shape behind matrix-js-sdk's exported root logger; its
-// public Logger type does not expose these.
-type SdkRootLogger = {
-  methodFactory: (methodName: string, level: number, loggerName: string | symbol) => (...msg: unknown[]) => void;
-  rebuild(): void;
-};
-
-const SILENCED_LOG_METHODS = new Set(['trace', 'debug', 'info', 'log']);
-const discard = (): void => {};
-let sdkLoggingQuieted = false;
-
-// The SDK resets every logger it creates to DEBUG, so a level cannot keep its
-// per-request and per-sync chatter out of the console. Every logger inherits the
-// root's methodFactory when created, including the per-room ones made after the
-// client starts, so swapping the factory on the root mutes them all while
-// warnings and errors still reach the console.
-const quietSdkLogging = (root: SdkRootLogger): void => {
-  if (sdkLoggingQuieted) {
-    return;
-  }
-  sdkLoggingQuieted = true;
-  const consoleFactory = root.methodFactory;
-  root.methodFactory = (methodName, level, loggerName) =>
-    SILENCED_LOG_METHODS.has(methodName) ? discard : consoleFactory(methodName, level, loggerName);
-  root.rebuild();
 };
 
 type SessionHandle = {
@@ -112,18 +86,10 @@ const establishSession = async (
   };
 
   const start = async (record: CredentialRecord): Promise<void> => {
-    const [sdk, sdkLogger] = await Promise.all([
-      import('matrix-js-sdk') as unknown as Promise<{
-        createClient(opts: {
-          baseUrl: string;
-          userId: string;
-          deviceId: string;
-          accessToken: string;
-        }): MatrixClientLike;
-      }>,
-      import('matrix-js-sdk/lib/logger'),
-    ]);
-    quietSdkLogging(sdkLogger.logger as unknown as SdkRootLogger);
+    await quietSdkLogging();
+    const sdk = (await import('matrix-js-sdk')) as unknown as {
+      createClient(opts: { baseUrl: string; userId: string; deviceId: string; accessToken: string }): MatrixClientLike;
+    };
     const client = sdk.createClient({
       baseUrl: record.homeserverUrl,
       userId: record.userId,

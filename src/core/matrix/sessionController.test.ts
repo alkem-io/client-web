@@ -1,6 +1,5 @@
 import 'fake-indexeddb/auto';
 import { createClient } from 'matrix-js-sdk';
-import { logger as sdkLogger } from 'matrix-js-sdk/lib/logger';
 import { afterEach, beforeEach, describe, expect, it, type MockedFunction, vi } from 'vitest';
 import { getActiveClient, isSessionEstablishing } from './activeClient';
 import { stopActiveSession } from './activeSession';
@@ -369,38 +368,5 @@ describe('establishSession', () => {
     expect(stopActiveSession()).toBe(true);
 
     expect(isSessionEstablishing()).toBe(false);
-  });
-
-  it('keeps SDK debug and info output out of the console, including loggers created after the client starts, but not warnings or errors', async () => {
-    await seedRecord();
-    mockedCreateClient.mockReturnValue(makeClient());
-    const spies = (['trace', 'debug', 'info', 'log', 'warn', 'error'] as const).map(method =>
-      vi.spyOn(console, method).mockImplementation(() => {})
-    );
-    const [trace, debug, info, log, warn, error] = spies;
-
-    try {
-      await establishSession(ACTOR);
-
-      sdkLogger.log('log line');
-      // Loggers like the per-room MatrixRTC ones are derived from the root at runtime.
-      for (const target of [sdkLogger, sdkLogger.getChild('[room]')]) {
-        target.trace('trace line');
-        target.debug('debug line');
-        target.info('info line');
-        target.warn('warn line');
-        target.error('error line');
-      }
-
-      expect(trace).not.toHaveBeenCalled();
-      expect(debug).not.toHaveBeenCalled();
-      expect(info).not.toHaveBeenCalled();
-      expect(log).not.toHaveBeenCalled();
-      expect(warn).toHaveBeenCalledTimes(2);
-      expect(error).toHaveBeenCalledTimes(2);
-      expect(warn).toHaveBeenLastCalledWith('[room]', 'warn line');
-    } finally {
-      for (const spy of spies) spy.mockRestore();
-    }
   });
 });
