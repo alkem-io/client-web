@@ -12,8 +12,13 @@ import useCommentReactionsMutations from '@/domain/communication/room/Comments/u
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import {
+  type SendEvent,
+  useConversationAttachments,
+} from '@/main/crdPages/unifiedChat/attachments/useConversationAttachments';
 import { useAttachmentReadiness } from '@/main/userMessaging/useAttachmentReadiness';
 import { mapRoomToCommentData } from '../dataMappers/commentDataMapper';
+import { useCommentImageStorageConfig } from './useCommentImageStorageConfig';
 import { useMentionableContributors } from './useMentionableContributors';
 
 type UseCrdRoomCommentsParams = {
@@ -85,6 +90,30 @@ export function useCrdRoomComments({
   const privileges = room?.authorization?.myPrivileges ?? [];
   const canComment = isAuthenticated && privileges.includes(AuthorizationPrivilege.CreateMessage);
 
+  // Image attachments for the comment and reply composers. The policy comes
+  // from the room's own attachment bucket; without one (or without the right to
+  // upload) the composers stay text-only and send the text alone, so one code
+  // path serves every room. Each send carries at most one image.
+  //
+  // The top-level field is controlled: comments are shown newest first, so the
+  // image is posted before the text (text ends up on top), and the field is
+  // cleared only once the text is confirmed — a failed image never loses it.
+  // The reply draft is keyed to the open reply, so files staged for one reply
+  // are discarded when another reply is opened or the box closes.
+  const storageConfig = useCommentImageStorageConfig(room?.attachmentBucketId, !canComment);
+  const [draft, setDraft] = useState('');
+  const [replyTarget, setReplyTarget] = useState<string | undefined>(undefined);
+  const topLevelFiles = useConversationAttachments(
+    storageConfig,
+    { roomID: roomId },
+    { maxAttachments: 1, textLast: true }
+  );
+  const replyFiles = useConversationAttachments(
+    storageConfig,
+    replyTarget ? { roomID: roomId, threadID: replyTarget } : undefined,
+    { maxAttachments: 1 }
+  );
+
   const comments = useAttachmentReadiness(
     mapRoomToCommentData(room, { currentUserId: userModel?.id, t: tMain }),
     roomId
@@ -107,6 +136,13 @@ export function useCrdRoomComments({
   // is reloading. Existing comments must stay visible; the new one snaps
   // in via the cache update / subscription when the mutation resolves.
   const inputBusy = postingMessage || postingReply || deletingMessage;
+
+  const sendTopLevel: SendEvent = async (text, attachmentUpload) =>
+    Boolean((await postMessage(text, attachmentUpload)).data?.sendMessageToRoom);
+  const sendReply =
+    (threadId: string): SendEvent =>
+    async (text, attachmentUpload) =>
+      Boolean((await postReply({ threadId, messageText: text, attachmentUpload })).data?.sendMessageReplyToRoom);
 
   // MUI parity (CommentsComponent → ConfirmationDialog): the user confirms the
   // delete in a separate dialog before the mutation fires. `pendingDeleteId`
@@ -137,8 +173,17 @@ export function useCrdRoomComments({
         currentUser={currentUser}
         canComment={canComment}
         mentionSearch={mentionSearch}
-        onReply={(parentId, content) => {
-          void postReply({ messageText: content, threadId: parentId });
+        onReply={(parentId, content) => replyFiles.send(content, sendReply(parentId), () => {})}
+        onReplyTargetChange={setReplyTarget}
+        replyInputProps={{
+          attachmentsEnabled: replyFiles.enabled,
+          attachments: replyFiles.attachments,
+          onAttachFiles: replyFiles.attachFiles,
+          onRemoveAttachment: replyFiles.removeAttachment,
+          attachmentError: replyFiles.error,
+          acceptMimeTypes: replyFiles.accept,
+          imagesOnly: true,
+          disabled: inputBusy || replyFiles.isSending,
         }}
         onDelete={commentId => {
           setPendingDeleteId(commentId);
@@ -190,11 +235,20 @@ export function useCrdRoomComments({
   const commentInput = canComment ? (
     <CommentInput
       currentUser={currentUser}
-      disabled={inputBusy}
+      value={draft}
+      onValueChange={setDraft}
+      disabled={inputBusy || topLevelFiles.isSending}
       mentionSearch={mentionSearch}
       onSubmit={content => {
-        void postMessage(content);
+        void topLevelFiles.send(content, sendTopLevel, () => setDraft(''));
       }}
+      attachmentsEnabled={topLevelFiles.enabled}
+      attachments={topLevelFiles.attachments}
+      onAttachFiles={topLevelFiles.attachFiles}
+      onRemoveAttachment={topLevelFiles.removeAttachment}
+      attachmentError={topLevelFiles.error}
+      acceptMimeTypes={topLevelFiles.accept}
+      imagesOnly={true}
     />
   ) : cantCommentNotice ? (
     <p className="rounded-md border border-dashed border-border bg-muted/30 px-4 py-3 text-center text-body text-muted-foreground">
