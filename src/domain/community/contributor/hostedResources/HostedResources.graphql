@@ -1,0 +1,43 @@
+fragment AccountHostedResourcesFields on AccountHostedResources {
+  virtualContributors {
+    id
+    profile {
+      ...AccountResourceProfile
+    }
+  }
+  innovationPacks {
+    id
+    profile {
+      ...AccountResourceProfile
+    }
+  }
+  innovationHubs {
+    id
+    nameID
+    profile {
+      ...AccountResourceProfile
+    }
+  }
+}
+
+query UserHostedResources($userId: UUID!) {
+  lookup {
+    user(ID: $userId) {
+      id
+      hostedResources {
+        ...AccountHostedResourcesFields
+      }
+    }
+  }
+}
+
+query OrganizationHostedResources($organizationId: UUID!) {
+  lookup {
+    organization(ID: $organizationId) {
+      id
+      hostedResources {
+        ...AccountHostedResourcesFields
+      }
+    }
+  }
+}

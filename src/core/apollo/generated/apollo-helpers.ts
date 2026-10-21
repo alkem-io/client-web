@@ -69,6 +69,26 @@ export type AccountDeletionBlockerTotalFieldPolicy = {
   kind?: FieldPolicy<any> | FieldReadFunction<any>;
   total?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AccountHostedResourcesKeySpecifier = (
+  | 'innovationHubs'
+  | 'innovationPacks'
+  | 'virtualContributors'
+  | AccountHostedResourcesKeySpecifier
+)[];
+export type AccountHostedResourcesFieldPolicy = {
+  innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AccountHostedVirtualContributorKeySpecifier = (
+  | 'id'
+  | 'profile'
+  | AccountHostedVirtualContributorKeySpecifier
+)[];
+export type AccountHostedVirtualContributorFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type AccountLicensePlanKeySpecifier = (
   | 'innovationPacks'
   | 'spaceFree'
@@ -3564,6 +3584,7 @@ export type MutationKeySpecifier = (
   | 'prepareMemoSigning'
   | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
+  | 'registerDevicePushToken'
   | 'removeCommunityGuidelinesContent'
   | 'removeConversationMember'
   | 'removeDefaultCalloutTemplateOnInnovationFlowState'
@@ -3606,6 +3627,7 @@ export type MutationKeySpecifier = (
   | 'transferInnovationPackToAccount'
   | 'transferSpaceToAccount'
   | 'transferVirtualContributorToAccount'
+  | 'unregisterDevicePushToken'
   | 'unsubscribeFromPushNotifications'
   | 'updateActorNameID'
   | 'updateApplicationFormOnRoleSet'
@@ -3810,6 +3832,7 @@ export type MutationFieldPolicy = {
   prepareMemoSigning?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
+  registerDevicePushToken?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
   removeConversationMember?: FieldPolicy<any> | FieldReadFunction<any>;
   removeDefaultCalloutTemplateOnInnovationFlowState?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3852,6 +3875,7 @@ export type MutationFieldPolicy = {
   transferInnovationPackToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferSpaceToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferVirtualContributorToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
+  unregisterDevicePushToken?: FieldPolicy<any> | FieldReadFunction<any>;
   unsubscribeFromPushNotifications?: FieldPolicy<any> | FieldReadFunction<any>;
   updateActorNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   updateApplicationFormOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3953,6 +3977,7 @@ export type OrganizationKeySpecifier = (
   | 'domain'
   | 'group'
   | 'groups'
+  | 'hostedResources'
   | 'id'
   | 'legalEntityName'
   | 'metrics'
@@ -3978,6 +4003,7 @@ export type OrganizationFieldPolicy = {
   domain?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
+  hostedResources?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   legalEntityName?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6014,6 +6040,7 @@ export type UserKeySpecifier = (
   | 'credentials'
   | 'email'
   | 'firstName'
+  | 'hostedResources'
   | 'id'
   | 'isContactable'
   | 'isContactableViaEmail'
@@ -6036,6 +6063,7 @@ export type UserFieldPolicy = {
   credentials?: FieldPolicy<any> | FieldReadFunction<any>;
   email?: FieldPolicy<any> | FieldReadFunction<any>;
   firstName?: FieldPolicy<any> | FieldReadFunction<any>;
+  hostedResources?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isContactable?: FieldPolicy<any> | FieldReadFunction<any>;
   isContactableViaEmail?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6642,6 +6670,17 @@ export type StrictTypedTypePolicies = {
       | AccountDeletionBlockerTotalKeySpecifier
       | (() => undefined | AccountDeletionBlockerTotalKeySpecifier);
     fields?: AccountDeletionBlockerTotalFieldPolicy;
+  };
+  AccountHostedResources?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AccountHostedResourcesKeySpecifier | (() => undefined | AccountHostedResourcesKeySpecifier);
+    fields?: AccountHostedResourcesFieldPolicy;
+  };
+  AccountHostedVirtualContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AccountHostedVirtualContributorKeySpecifier
+      | (() => undefined | AccountHostedVirtualContributorKeySpecifier);
+    fields?: AccountHostedVirtualContributorFieldPolicy;
   };
   AccountLicensePlan?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AccountLicensePlanKeySpecifier | (() => undefined | AccountLicensePlanKeySpecifier);
