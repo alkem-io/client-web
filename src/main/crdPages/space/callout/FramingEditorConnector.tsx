@@ -767,21 +767,29 @@ export function FramingEditorConnector({
         );
       }
 
+      // #10418: an `eligible: false` chip only means "not in the candidate set",
+      // and before the candidate set has arrived that is "not loaded yet", not
+      // "no longer a member" — relabelling then collapses every chip to the same
+      // "No longer available" string. Mirrors `SpaceSelector.tsx:156`.
+      const candidatesPending = contributorCandidatesLoading && contributorCandidates.length === 0;
       // Feature 025: build the ContributorSelector chip list from selectedIds
       // resolved against the candidate set (stale ids → eligible: false).
       // An order-preserving map: `handleContributorRemove` indexes into this array
       // positionally, so a stale entry is relabelled in place, never filtered out.
-      const contributorChips = (resolveContributorChips ? resolveContributorChips(selectedIds) : []).map(chip =>
-        chip.kind !== 'email' && chip.eligible === false
-          ? { ...chip, displayName: t('forms.selection.noLongerAvailable') }
-          : chip
-      );
-      const selectedContributorIds = new Set(
-        contributorChips.flatMap(c => (c.kind === 'email' ? [] : [c.kind === 'user' ? c.userId : c.id]))
-      );
+      const contributorChips = (resolveContributorChips ? resolveContributorChips(selectedIds) : []).map(chip => {
+        if (chip.kind === 'email' || chip.eligible !== false) return chip;
+        // While pending, keep the chip's own identity and drop the ineligible
+        // marker — the strike-through and its tooltip read "no longer available"
+        // just as loudly as the label would.
+        return candidatesPending
+          ? { ...chip, eligible: true }
+          : { ...chip, displayName: t('forms.selection.noLongerAvailable') };
+      });
+      // Selected entries stay in the results as ticked toggle rows (088,
+      // superseding 084 FR-006), so no already-selected filter here — only the
+      // query filter, because results show on search alone (operator ruling).
       const contributorSearchResults = contributorCandidates
         .filter(c => {
-          if (selectedContributorIds.has(c.id)) return false;
           if (!contributorSearchQuery.trim()) return true;
           return c.displayName.toLowerCase().includes(contributorSearchQuery.toLowerCase());
         })
@@ -792,10 +800,12 @@ export function FramingEditorConnector({
           typeLabel: t(`contributors.types.${c.kind}` as 'contributors.types.user'),
         }));
 
+      // A result row is a toggle: clicking a ticked row deselects it, which is
+      // the same end state as removing its chip.
       const handleContributorSelect = (userId: string) => {
-        if (!selectedIds.includes(userId)) {
-          onSelectedIdsChange?.([...selectedIds, userId]);
-        }
+        onSelectedIdsChange?.(
+          selectedIds.includes(userId) ? selectedIds.filter(id => id !== userId) : [...selectedIds, userId]
+        );
       };
       const handleContributorRemove = (index: number) => {
         const chip = contributorChips[index];
@@ -824,6 +834,7 @@ export function FramingEditorConnector({
                 loading={contributorCandidatesLoading}
                 allowEmailInvites={false}
                 chipsPosition="above"
+                rowSelection="toggle"
                 clearSearchAriaLabel={t('forms.selection.clearSearch')}
                 ineligibleLabel={t('forms.selection.noLongerAvailable')}
                 placeholder={t('forms.selection.searchPlaceholder')}

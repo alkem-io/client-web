@@ -117,16 +117,102 @@ describe('FramingEditorConnector — contributor selection', () => {
     expect(onSelectedIdsChange).toHaveBeenCalledWith(['user-9', 'org-1']);
   });
 
-  it('excludes an already-selected organization from the results', async () => {
+  // Inverts 084 FR-006 (the selected entry used to be filtered out of the
+  // results): feature 088 keeps it listed as a ticked toggle instead. Both
+  // kinds the old de-dupe covered are asserted.
+  it('keeps an already-selected organization listed as a ticked row that untoggles', async () => {
+    const onSelectedIdsChange = vi.fn();
     await renderWithQuery({
       contributorCandidates: [PERSON, ORG],
       selectedIds: ['org-1'],
+      onSelectedIdsChange,
       // A different display name, so each assertion can only match a result row.
       resolveContributorChips: () => [chip('org-1', 'Chip Org', 'organization')],
     });
 
-    expect(screen.queryByText('Alpha Org')).not.toBeInTheDocument();
+    const row = screen.getByText('Alpha Org').closest('button');
+    expect(row).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByText('Alpha Person').closest('button')).toHaveAttribute('aria-pressed', 'false');
+
+    await userEvent.click(screen.getByText('Alpha Org'));
+
+    expect(onSelectedIdsChange).toHaveBeenCalledWith([]);
+  });
+
+  it('keeps an already-selected user listed as a ticked row that untoggles', async () => {
+    const onSelectedIdsChange = vi.fn();
+    await renderWithQuery({
+      contributorCandidates: [PERSON, ORG],
+      selectedIds: ['user-1'],
+      onSelectedIdsChange,
+      resolveContributorChips: () => [chip('user-1', 'Chip Person', 'user')],
+    });
+
+    expect(screen.getByText('Alpha Person').closest('button')).toHaveAttribute('aria-pressed', 'true');
+
+    await userEvent.click(screen.getByText('Alpha Person'));
+
+    expect(onSelectedIdsChange).toHaveBeenCalledWith([]);
+  });
+
+  it('leaves selectedIds unchanged whether the chip is removed or the row untoggled', async () => {
+    const viaRow = vi.fn();
+    const { unmount } = renderEditor({
+      selectionMode: 'custom',
+      selectedIds: ['user-1', 'org-1'],
+      contributorCandidates: [PERSON, ORG],
+      onSelectedIdsChange: viaRow,
+      resolveContributorChips: () => [chip('user-1', 'Chip Person', 'user'), chip('org-1', 'Chip Org', 'organization')],
+    });
+    await userEvent.type(screen.getByLabelText('forms.selection.searchAriaLabel'), 'Alpha Person');
+    await userEvent.click(screen.getByText('Alpha Person'));
+    unmount();
+
+    const viaChip = vi.fn();
+    renderEditor({
+      selectionMode: 'custom',
+      selectedIds: ['user-1', 'org-1'],
+      contributorCandidates: [PERSON, ORG],
+      onSelectedIdsChange: viaChip,
+      resolveContributorChips: () => [chip('user-1', 'Chip Person', 'user'), chip('org-1', 'Chip Org', 'organization')],
+    });
+    await userEvent.click(screen.getAllByLabelText('forms.selection.removeAriaLabel')[0]);
+
+    expect(viaRow).toHaveBeenCalledWith(['org-1']);
+    expect(viaChip).toHaveBeenCalledWith(['org-1']);
+  });
+
+  // #10418: the chip was relabelled before the candidate set arrived, so every
+  // selected entry briefly read "No longer available". The mocked `t` collapses
+  // interpolation to the bare key, so identity is asserted on the chip's own
+  // display name — which is what the relabel overwrote.
+  it('keeps chip identity while the candidate set is still loading', () => {
+    renderEditor({
+      selectionMode: 'custom',
+      selectedIds: ['user-1'],
+      contributorCandidates: [],
+      contributorCandidatesLoading: true,
+      resolveContributorChips: () => [
+        { kind: 'virtualContributor', id: 'user-1', displayName: 'Alpha Person', eligible: false },
+      ],
+    });
+
     expect(screen.getByText('Alpha Person')).toBeInTheDocument();
+    expect(screen.queryByText('forms.selection.noLongerAvailable')).not.toBeInTheDocument();
+  });
+
+  it('labels a stale chip once the candidate set has arrived', () => {
+    renderEditor({
+      selectionMode: 'custom',
+      selectedIds: ['stale-1'],
+      contributorCandidates: [PERSON],
+      contributorCandidatesLoading: true,
+      resolveContributorChips: () => [
+        { kind: 'virtualContributor', id: 'stale-1', displayName: 'stale-1', eligible: false },
+      ],
+    });
+
+    expect(screen.getByText('forms.selection.noLongerAvailable')).toBeInTheDocument();
   });
 
   it('labels a stale chip instead of showing its raw id', () => {
@@ -150,7 +236,7 @@ describe('FramingEditorConnector — contributor selection', () => {
       onSelectedIdsChange,
       resolveContributorChips: () => [
         chip('user-1', 'Alpha Person', 'user'),
-        chip('org-1', 'Alpha Org', 'organization'),
+        chip('org-1', 'Chip Org', 'organization'),
       ],
     });
 
