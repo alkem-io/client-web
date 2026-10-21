@@ -154,22 +154,22 @@ export function ContributorSelector({
   // A clear "✕" button for the collection picker (the invite flow keeps its "Add"
   // button in that corner instead). Enabled once a clear-label is supplied.
   const showClear = !allowEmailInvites && trimmedQuery.length > 0 && Boolean(clearSearchAriaLabel);
-  // Exclude users already selected — covers user/org/vc picks that
-  // overlap with the userId-keyed result set.
-  const selectedUserIds = new Set(
-    selectedContributors.filter(c => c.kind === 'user').map(c => (c as { kind: 'user'; userId: string }).userId)
+  // Selected ids keyed the way a result row is — its `userId` carries a user,
+  // organization or virtual-contributor id. Add mode de-dupes user picks only;
+  // de-duplicating the other kinds is the consumer's job (spec D8). Toggle mode
+  // ticks every kind instead, and never filters.
+  const selectedRowIds = new Set(
+    selectedContributors.flatMap(c => {
+      if (c.kind === 'email') return [];
+      if (c.kind === 'user') return [c.userId];
+      return toggleRows ? [c.id] : [];
+    })
   );
   // An add-mode row vanishes once picked: its only gesture is "add", so a
   // selected row has nothing left to do. A toggle row stays listed — the ticked
   // row IS the selected state, and filtering it out would make that state
   // unreachable (feature 088, superseding 084 FR-006).
-  const visibleResults = toggleRows ? searchResults : searchResults.filter(user => !selectedUserIds.has(user.userId));
-  // Ids of the selected non-email entries, keyed the way a result row is — the
-  // result's `userId` carries a user, organization or virtual-contributor id.
-  // Only toggle rows read it; an add-mode row is never drawn as selected.
-  const selectedEntityIds = new Set(
-    selectedContributors.flatMap(c => (c.kind === 'email' ? [] : [c.kind === 'user' ? c.userId : c.id]))
-  );
+  const visibleResults = toggleRows ? searchResults : searchResults.filter(user => !selectedRowIds.has(user.userId));
   const showLoadMore = hasMore && !loading && visibleResults.length > 0 && onLoadMore;
 
   const sentinelRef = useRef<HTMLLIElement | null>(null);
@@ -367,7 +367,7 @@ export function ContributorSelector({
             ) : (
               <ul className="py-1">
                 {visibleResults.map(user => {
-                  const selected = toggleRows && selectedEntityIds.has(user.userId);
+                  const selected = toggleRows && selectedRowIds.has(user.userId);
                   // ONE caption line beneath the name, never two stacked muted
                   // lines. `location` and `typeLabel` are disjoint in practice —
                   // the invite consumers supply a location, the contributors
