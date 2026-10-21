@@ -1,5 +1,4 @@
 import {
-  closestCenter,
   DndContext,
   type DragEndEvent,
   type DragOverEvent,
@@ -14,6 +13,7 @@ import { rectSortingStrategy, SortableContext, sortableKeyboardCoordinates } fro
 import { Loader2, Plus } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { layoutCollisionDetection } from '@/crd/components/space/settings/layoutCollisionDetection';
 import { SpaceSettingsSaveBar } from '@/crd/components/space/settings/SpaceSettingsSaveBar';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { cn } from '@/crd/lib/utils';
@@ -269,7 +269,7 @@ export function SpaceSettingsLayoutView({
         )}
         <DndContext
           sensors={sensors}
-          collisionDetection={closestCenter}
+          collisionDetection={layoutCollisionDetection}
           onDragStart={handleDragStart}
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
@@ -290,8 +290,8 @@ export function SpaceSettingsLayoutView({
                     columnMenuActions={columnMenuActions}
                     entityNoun={entityNoun}
                     draggable={canReorderColumns}
-                    // Sidebar widget configuration is L0-only for now — subspace phases
-                    // hide the section in the Layout dialog (stored values untouched).
+                    // The per-phase sidebar section is hidden on subspaces (stored values
+                    // untouched): a subspace has one sidebar, edited through Customize Sidebar.
                     sidebarSettingsEnabled={level === 'L0'}
                     descriptionMaxLength={columnDescriptionMaxLength}
                     onImageUpload={onImageUpload}

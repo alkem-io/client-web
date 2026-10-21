@@ -69,8 +69,8 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
 }));
 
-vi.mock('./downloadMemoSignaturePdf', () => ({
-  downloadMemoSignaturePdf: mocks.download,
+vi.mock('./downloadPdf', () => ({
+  downloadPdf: mocks.download,
 }));
 
 vi.mock('@/crd/components/memo/MemoSigningDialog', () => ({
@@ -227,9 +227,8 @@ describe('MemoSignedCopiesDialogConnector', () => {
     await user.click(screen.getByRole('button', { name: 'download document-1' }));
 
     expect(mocks.download).toHaveBeenCalledWith({
-      id: 'document-1',
       url: '/api/private/document-1',
-      displayName: 'Decision.pdf',
+      filename: 'Decision.pdf',
     });
     await waitFor(() => expect(mocks.notify).toHaveBeenCalledWith('memo.signing.downloadFailed', 'error'));
   });
@@ -265,7 +264,9 @@ describe('MemoSignedCopiesDialogConnector', () => {
       error: undefined,
       loading: false,
     };
-    mocks.download.mockImplementation((document: { id: string }) => (document.id === 'document-1' ? first : second));
+    mocks.download.mockImplementation(({ url }: { url: string }) =>
+      url === '/api/private/document-1' ? first : second
+    );
     const user = userEvent.setup();
     render(<MemoSignedCopiesDialogConnector open={true} memoId="memo-1" onOpenChange={vi.fn()} />);
 

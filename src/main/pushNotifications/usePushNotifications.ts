@@ -4,6 +4,7 @@ import {
   useUnsubscribeFromPushNotificationsMutation,
   useVapidPublicKeyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import { isAppMode } from '@/core/appMode/isAppMode';
 import { PUSH_SUBSCRIPTION_ID_KEY, PUSH_USER_DISABLED_KEY } from '@/main/pushNotifications/constants';
 import { urlBase64ToUint8Array } from '@/main/pushNotifications/urlBase64ToUint8Array';
 
@@ -28,7 +29,8 @@ function detectIOSNonPWA(): boolean {
 }
 
 export function usePushNotifications(): PushNotificationState {
-  const isSupported = 'PushManager' in window && 'serviceWorker' in navigator && 'Notification' in window;
+  const isSupported =
+    !isAppMode() && 'PushManager' in window && 'serviceWorker' in navigator && 'Notification' in window;
 
   const { data: vapidData, loading: vapidLoading } = useVapidPublicKeyQuery({ skip: !isSupported });
   const vapidPublicKey = vapidData?.vapidPublicKey ?? null;

@@ -67,6 +67,8 @@
   },
   "sidebar": {
     "aboutSpace": "À propos de cet Espace",
+    "community": "Communauté",
+    "recentActivity": "Activité récente",
     "subspaces": "Sous-espaces",
     "showAll": "Tout afficher",
     "create": "Créer",
@@ -838,6 +840,13 @@
         "continue-error": "La session de signature n’a pas pu démarrer. Préparez une nouvelle copie et réessayez.",
         "return-error": "Le résultat de la signature n’a pas pu être chargé"
       }
+    },
+    "downloadPdf": {
+      "button": "Télécharger le PDF",
+      "tooltip": "Télécharger en PDF",
+      "busy": "Le service PDF est occupé, veuillez réessayer dans un instant.",
+      "tooLarge": "Ce mémo est trop volumineux ou contient du contenu qui ne peut pas être exporté en PDF.",
+      "failed": "Le téléchargement du PDF a échoué."
     }
   },
   "callToAction": {

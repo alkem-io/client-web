@@ -1,6 +1,6 @@
 import { useApolloClient } from '@apollo/client';
 import type { Editor } from '@tiptap/react';
-import { FileSignature } from 'lucide-react';
+import { Download, FileSignature, Loader2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -32,6 +32,7 @@ import type { CollabProviderLike, YDocLike } from '@/crd/forms/markdown/collabPr
 import { htmlToMarkdown } from '@/crd/forms/markdown/markdownConverter';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import { Button } from '@/crd/primitives/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 import useMemoManager from '@/domain/collaboration/memo/MemoManager/useMemoManager';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -41,6 +42,7 @@ import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdo
 import { MemoSignedCopiesDialogConnector } from '@/main/crdPages/memo/MemoSignedCopiesDialogConnector';
 import { mapMemoFooterProps } from '@/main/crdPages/memo/memoFooterMapper';
 import { useCrdMemoProvider } from '@/main/crdPages/memo/useCrdMemoProvider';
+import { useMemoPdfDownload } from '@/main/crdPages/memo/useMemoPdfDownload';
 import { useMemoSigningFlow } from '@/main/crdPages/memo/useMemoSigningFlow';
 import { CrdCollaborationSettings } from '@/main/crdPages/whiteboard/CrdCollaborationSettings';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
@@ -123,6 +125,10 @@ export function CrdMemoDialog({
     connectedUsers,
     user,
   } = useCrdMemoProvider({ collaborationId: memoId });
+  const { download: downloadMemoPdf, downloading: downloadingPdf } = useMemoPdfDownload(
+    memo?.id,
+    provider ? () => provider.requestDurability() : undefined
+  );
 
   // Memo images upload into the memo's own storage bucket (where collaborators have FileUpload),
   // not the ambient space bucket. Mirrors the legacy MUI `MemoDialog`, which passed the memo's
@@ -374,6 +380,7 @@ export function CrdMemoDialog({
           type="button"
           variant="outline"
           size="sm"
+          className="mr-2"
           disabled={!provider || !signingIdentityReady || signingFlow.stage === 'preparing'}
           onClick={() => {
             setSigningDialogOpen(true);
@@ -381,7 +388,7 @@ export function CrdMemoDialog({
           }}
         >
           <FileSignature aria-hidden="true" />
-          {t('memo.signing.title')}
+          <span className="sr-only sm:not-sr-only">{t('memo.signing.title')}</span>
         </Button>
       )}
       {showCleverbaseGuidance && (
@@ -400,6 +407,30 @@ export function CrdMemoDialog({
             {t('memo.signing.connectCleverbase')}
           </a>
         </div>
+      )}
+      {isAuthenticated && memo?.id && (
+        <Tooltip>
+          <TooltipTrigger asChild={true}>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={downloadingPdf}
+              aria-busy={downloadingPdf}
+              onClick={() => void downloadMemoPdf()}
+            >
+              {downloadingPdf ? (
+                <Loader2 aria-hidden="true" className="animate-spin" />
+              ) : (
+                <Download aria-hidden="true" />
+              )}
+              {/* Icon-only so the non-wrapping header row keeps Share/Close on screen;
+                  the sr-only label keeps the accessible name and the tooltip names it visually. */}
+              <span className="sr-only">{t('memo.downloadPdf.button')}</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent className="z-[80]">{t('memo.downloadPdf.tooltip')}</TooltipContent>
+        </Tooltip>
       )}
       {/* Share dropdown. For users who can update the memo, it also hosts the content-update-policy
           control (Owner / Admins / Contributors) — parity with the CRD whiteboard and the legacy MUI

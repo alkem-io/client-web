@@ -58,6 +58,16 @@ type PhaseLayoutDialogProps = {
    * through `onSave` untouched so hiding the controls never wipes the configuration.
    */
   sidebarSettingsEnabled?: boolean;
+  /**
+   * Sidebar-only mode (Customize Sidebar): the dialog shows only the widget section (no
+   * description-height or publisher switches) under the Customize Sidebar title and help.
+   * The switch values in `values` pass through `onSave` untouched.
+   */
+  sidebarOnly?: boolean;
+  /** The widgets the editor may offer, in offering order (default: the full vocabulary).
+   *  `values.sidebar` must stay within this list; the consumer moves any other stored value
+   *  into `sidebarUnknown`, which round-trips untouched. */
+  availableWidgets?: readonly SidebarWidgetId[];
 };
 
 /**
@@ -76,6 +86,8 @@ export function PhaseLayoutDialog({
   values,
   onSave,
   sidebarSettingsEnabled = true,
+  sidebarOnly = false,
+  availableWidgets = SIDEBAR_WIDGET_IDS,
 }: PhaseLayoutDialogProps) {
   const { t } = useTranslation('crd-spaceSettings');
 
@@ -104,7 +116,8 @@ export function PhaseLayoutDialog({
     });
   };
 
-  const unselectedWidgets = SIDEBAR_WIDGET_IDS.filter(widgetId => !sidebar.includes(widgetId));
+  const unselectedWidgets = availableWidgets.filter(widgetId => !sidebar.includes(widgetId));
+  const showSidebarSection = sidebarOnly || sidebarSettingsEnabled;
 
   const handleSave = async () => {
     setSaving(true);
@@ -136,63 +149,77 @@ export function PhaseLayoutDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <LayoutDashboard aria-hidden="true" className="size-4" />
-            {t('layout.column.phaseLayout.dialogTitle', { phaseName })}
+            {sidebarOnly
+              ? t('layout.customizeSidebar.title')
+              : t('layout.column.phaseLayout.dialogTitle', { phaseName })}
           </DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col gap-6 py-2">
-          {/* Description height control */}
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex flex-col gap-0.5">
-              <Label htmlFor="phase-description-height" className="text-body-emphasis cursor-pointer">
-                {t('layout.column.phaseLayout.descriptionHeight.label')}
-              </Label>
-              <p className="text-caption text-muted-foreground">
-                {descriptionCollapsed
-                  ? t('layout.column.phaseLayout.descriptionHeight.collapsedHint')
-                  : t('layout.column.phaseLayout.descriptionHeight.expandedHint')}
-              </p>
-            </div>
-            <Switch
-              id="phase-description-height"
-              checked={descriptionCollapsed}
-              onCheckedChange={setDescriptionCollapsed}
-              aria-label={t('layout.column.phaseLayout.descriptionHeight.switchLabel')}
-            />
-          </div>
-
-          {/* Publisher & Date control */}
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex flex-col gap-0.5">
-              <Label htmlFor="phase-show-publish-details" className="text-body-emphasis cursor-pointer">
-                {t('layout.column.phaseLayout.publishDetails.label')}
-              </Label>
-              <p className="text-caption text-muted-foreground">
-                {showPublishDetails
-                  ? t('layout.column.phaseLayout.publishDetails.onHint')
-                  : t('layout.column.phaseLayout.publishDetails.offHint')}
-              </p>
-            </div>
-            <Switch
-              id="phase-show-publish-details"
-              checked={showPublishDetails}
-              onCheckedChange={setShowPublishDetails}
-              aria-label={t('layout.column.phaseLayout.publishDetails.switchLabel')}
-            />
-          </div>
-
-          {/* Sidebar widgets — full vocabulary, selected first in saved order.
-              Hidden on subspaces for now (sidebarSettingsEnabled=false); the stored
-              values still round-trip through onSave untouched. */}
-          {sidebarSettingsEnabled && (
-            <div className="flex flex-col gap-2">
-              <div className="flex flex-col gap-0.5">
-                <Label className="text-body-emphasis">{t('layout.column.sidebarDialog.title')}</Label>
-                <p className="text-caption text-muted-foreground">{t('layout.column.sidebarDialog.help')}</p>
+          {!sidebarOnly && (
+            <>
+              {/* Description height control */}
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex flex-col gap-0.5">
+                  <Label htmlFor="phase-description-height" className="text-body-emphasis cursor-pointer">
+                    {t('layout.column.phaseLayout.descriptionHeight.label')}
+                  </Label>
+                  <p className="text-caption text-muted-foreground">
+                    {descriptionCollapsed
+                      ? t('layout.column.phaseLayout.descriptionHeight.collapsedHint')
+                      : t('layout.column.phaseLayout.descriptionHeight.expandedHint')}
+                  </p>
+                </div>
+                <Switch
+                  id="phase-description-height"
+                  checked={descriptionCollapsed}
+                  onCheckedChange={setDescriptionCollapsed}
+                  aria-label={t('layout.column.phaseLayout.descriptionHeight.switchLabel')}
+                />
               </div>
 
+              {/* Publisher & Date control */}
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex flex-col gap-0.5">
+                  <Label htmlFor="phase-show-publish-details" className="text-body-emphasis cursor-pointer">
+                    {t('layout.column.phaseLayout.publishDetails.label')}
+                  </Label>
+                  <p className="text-caption text-muted-foreground">
+                    {showPublishDetails
+                      ? t('layout.column.phaseLayout.publishDetails.onHint')
+                      : t('layout.column.phaseLayout.publishDetails.offHint')}
+                  </p>
+                </div>
+                <Switch
+                  id="phase-show-publish-details"
+                  checked={showPublishDetails}
+                  onCheckedChange={setShowPublishDetails}
+                  aria-label={t('layout.column.phaseLayout.publishDetails.switchLabel')}
+                />
+              </div>
+            </>
+          )}
+
+          {/* Sidebar widgets — the offered vocabulary, selected first in saved order. The
+              per-phase section is hidden on subspaces (sidebarSettingsEnabled=false; the
+              subspace sidebar is edited through Customize Sidebar, i.e. sidebarOnly), and
+              the stored values still round-trip through onSave untouched. */}
+          {showSidebarSection && (
+            <div className="flex flex-col gap-2">
+              {sidebarOnly ? (
+                <p className="text-caption text-muted-foreground">{t('layout.customizeSidebar.help')}</p>
+              ) : (
+                <div className="flex flex-col gap-0.5">
+                  <Label className="text-body-emphasis">{t('layout.column.sidebarDialog.title')}</Label>
+                  <p className="text-caption text-muted-foreground">{t('layout.column.sidebarDialog.help')}</p>
+                </div>
+              )}
+
+              {/* Customize Sidebar edits one sidebar for the whole subspace, so its note says so. */}
               {sidebar.length === 0 && (
-                <p className="text-caption text-muted-foreground">{t('layout.column.sidebarDialog.emptyNote')}</p>
+                <p className="text-caption text-muted-foreground">
+                  {sidebarOnly ? t('layout.customizeSidebar.emptyNote') : t('layout.column.sidebarDialog.emptyNote')}
+                </p>
               )}
 
               <div className="flex flex-col gap-1 max-h-64 overflow-y-auto">

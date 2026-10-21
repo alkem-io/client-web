@@ -271,7 +271,7 @@ vi.mock('@/main/crdPages/space/callout/CalloutDetailDialogConnector', () => ({
     );
   },
 }));
-vi.mock('@/main/crdPages/memo/downloadMemoSignaturePdf', () => ({ downloadMemoSignaturePdf: vi.fn() }));
+vi.mock('@/main/crdPages/memo/downloadPdf', () => ({ downloadPdf: vi.fn() }));
 
 const storeContext = (
   kind: 'framing' | 'contribution',
