@@ -23311,6 +23311,28 @@ export type AddReactionMutation = {
   };
 };
 
+export type CommentRoomStorageBucketQueryVariables = Exact<{
+  bucketId: Scalars['UUID']['input'];
+}>;
+
+export type CommentRoomStorageBucketQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    storageBucket?:
+      | {
+          __typename?: 'StorageBucket';
+          id: string;
+          allowedMimeTypes: Array<string>;
+          maxFileSize: number;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type MessageDetailsFragment = {
   __typename?: 'Message';
   id: string;
