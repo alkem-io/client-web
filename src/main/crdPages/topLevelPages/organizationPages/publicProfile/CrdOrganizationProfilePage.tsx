@@ -33,6 +33,44 @@ import { useCrdOrganizationProfilePageData } from './useCrdOrganizationProfilePa
 import { useOrganizationAssociateAction } from './useOrganizationAssociateAction';
 import { useOrgInvitationResponse } from './useOrgInvitationResponse';
 
+type OrganizationGuestResourcesNoticeProps = {
+  organizationName: string;
+  signUpHref: string;
+};
+
+/**
+ * The organization display name is controlled by its admins, and interpolation
+ * escaping is off globally, so without per-call escaping any markup in the name
+ * would be parsed as Trans component tags. Escaping the value and unescaping the
+ * resulting text nodes renders the name strictly as literal text.
+ */
+export const OrganizationGuestResourcesNotice = ({
+  organizationName,
+  signUpHref,
+}: OrganizationGuestResourcesNoticeProps) => {
+  const { t } = useTranslation('crd-profilePages');
+  return (
+    <p className="text-body text-muted-foreground mb-4">
+      <Trans
+        t={t}
+        i18nKey="orgProfile.guestResourcesNotice"
+        values={{ organization: organizationName }}
+        tOptions={{ interpolation: { escapeValue: true } }}
+        shouldUnescape={true}
+        components={{
+          signUp: (
+            // biome-ignore lint/a11y/useAnchorContent: content is injected by Trans
+            <a
+              href={signUpHref}
+              className="text-primary underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            />
+          ),
+        }}
+      />
+    </p>
+  );
+};
+
 export const CrdOrganizationProfilePage = () => {
   const { t } = useTranslation('crd-profilePages');
   const navigate = useNavigate();
@@ -152,22 +190,10 @@ export const CrdOrganizationProfilePage = () => {
   // it, so it never reveals whether the organization hosts anything.
   const guestNotice =
     !loadingMe && !isAuthenticated ? (
-      <p className="text-body text-muted-foreground mb-4">
-        <Trans
-          t={t}
-          i18nKey="orgProfile.guestResourcesNotice"
-          values={{ organization: profile?.displayName ?? '' }}
-          components={{
-            signUp: (
-              // biome-ignore lint/a11y/useAnchorContent: content is injected by Trans
-              <a
-                href={buildSignUpUrl(profile?.url)}
-                className="text-primary underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              />
-            ),
-          }}
-        />
-      </p>
+      <OrganizationGuestResourcesNotice
+        organizationName={profile?.displayName ?? ''}
+        signUpHref={buildSignUpUrl(profile?.url)}
+      />
     ) : undefined;
 
   return (
