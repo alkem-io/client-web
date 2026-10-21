@@ -1,7 +1,7 @@
 import { useApolloClient } from '@apollo/client';
 import { Building2 } from 'lucide-react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { OrganizationInfoDocument } from '@/core/apollo/generated/apollo-hooks';
 import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
@@ -25,7 +25,7 @@ import {
 } from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
 import useResourceTabs from '@/main/crdPages/topLevelPages/common/useResourceTabs';
 import { useSendMessageToOrganizationHandler } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
-import { buildLoginUrl, buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { buildLoginUrl, buildSettingsUrl, buildSignUpUrl } from '@/main/routing/urlBuilders';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { OrgApplyDialogConnector } from './OrgApplyDialogConnector';
 import { mapAssociates, offeredRoleLabelKey } from './organizationProfileMapper';
@@ -36,7 +36,8 @@ import { useOrgInvitationResponse } from './useOrgInvitationResponse';
 export const CrdOrganizationProfilePage = () => {
   const { t } = useTranslation('crd-profilePages');
   const navigate = useNavigate();
-  const { organization, provided, isAuthenticated, accountResources, loading } = useCrdOrganizationProfilePageData();
+  const { organization, provided, isAuthenticated, loadingMe, accountResources, loading } =
+    useCrdOrganizationProfilePageData();
 
   usePageTitle(organization?.profile?.displayName);
 
@@ -147,6 +148,28 @@ export const CrdOrganizationProfilePage = () => {
   const pendingInvitation = associateAction.pendingInvitation;
   const inviterName = pendingInvitation?.invitation.createdBy?.profile?.displayName;
 
+  // Driven by auth state only, never by the resource data: a guest always sees
+  // it, so it never reveals whether the organization hosts anything.
+  const guestNotice =
+    !loadingMe && !isAuthenticated ? (
+      <p className="text-body text-muted-foreground mb-4">
+        <Trans
+          t={t}
+          i18nKey="orgProfile.guestResourcesNotice"
+          values={{ organization: profile?.displayName ?? '' }}
+          components={{
+            signUp: (
+              // biome-ignore lint/a11y/useAnchorContent: content is injected by Trans
+              <a
+                href={buildSignUpUrl(profile?.url)}
+                className="text-primary underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              />
+            ),
+          }}
+        />
+      </p>
+    ) : undefined;
+
   return (
     <OrganizationPublicProfileView
       hero={{
@@ -228,6 +251,7 @@ export const CrdOrganizationProfilePage = () => {
         hostedResources: t('common.loading.hostedResources'),
         memberships: t('common.loading.memberships'),
       }}
+      guestNotice={guestNotice}
     >
       {organization && (
         <OrgApplyDialogConnector

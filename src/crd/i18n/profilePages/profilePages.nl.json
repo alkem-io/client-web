@@ -68,6 +68,7 @@
     "vcType": "Virtual Contributor"
   },
   "orgProfile": {
+    "guestResourcesNotice": "<signUp>Meld je aan</signUp> op Alkemio om de bronnen te zien die {{organization}} aanbiedt",
     "hero": {
       "settingsTooltip": "Organisatie-instellingen",
       "settingsAriaLabel": "Organisatie-instellingen openen",
