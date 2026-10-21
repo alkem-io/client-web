@@ -310,6 +310,16 @@ function CalloutFormConnectorInner({
     skip: !open || !isContributorsChip || !roleSetId,
   });
 
+  // THE single definition of "the contributor candidate set cannot be trusted yet".
+  // Two terms, because the query has two ways of not having answered: it is in
+  // flight, or it was skipped for a missing roleSetId — and a skipped Apollo query
+  // reports `loading: false`, so the second term is not implied by the first.
+  // Both the save paths (which must not strip a selection they cannot check) and
+  // the editor's chip labels (which must not call a selection "no longer available"
+  // on the strength of an empty set) depend on exactly this fact, so it is derived
+  // here once and passed down rather than restated per consumer (088).
+  const contributorCandidatesUnresolved = contributorCandidatesLoading || !roleSetId;
+
   // Feature 084: the space candidates for the spaces chip — every space of the
   // host space's ACCOUNT the editor may READ, not just the host's own subspaces
   // (T102, FR-010). `spaceId` is the one host id: it is the query variable and
@@ -570,9 +580,7 @@ function CalloutFormConnectorInner({
     // the strip and let the server be the authority (corr-client-3 / qual-client-1).
     // Unresolved = still loading OR skipped for a missing id (see saveEdit).
     const candidatesUnresolvedForCreate =
-      values.framingChip === 'contributors' &&
-      values.selectionMode === 'custom' &&
-      (contributorCandidatesLoading || !roleSetId);
+      values.framingChip === 'contributors' && values.selectionMode === 'custom' && contributorCandidatesUnresolved;
 
     const eligibleSelectedIdsForCreate = (() => {
       if (values.selectionMode !== 'custom') return values.selectedIds;
@@ -816,9 +824,7 @@ function CalloutFormConnectorInner({
     // was skipped for a missing roleSetId — in that state the candidate list is
     // empty, so stripping would wrongly erase the whole custom selection.
     const candidatesUnresolved =
-      values.framingChip === 'contributors' &&
-      values.selectionMode === 'custom' &&
-      (contributorCandidatesLoading || !roleSetId);
+      values.framingChip === 'contributors' && values.selectionMode === 'custom' && contributorCandidatesUnresolved;
 
     const eligibleSelectedIds = (() => {
       if (values.selectionMode !== 'custom') return values.selectedIds;
@@ -1160,6 +1166,7 @@ function CalloutFormConnectorInner({
                 contributorCandidates={contributorCandidates}
                 resolveContributorChips={resolveContributorChips}
                 contributorCandidatesLoading={contributorCandidatesLoading}
+                contributorCandidatesUnresolved={contributorCandidatesUnresolved}
                 spaceCandidates={accountSpaceCandidates}
                 canEditSpaceSelection={mode === 'create' || isSpaceAdmin}
                 contributorMapPins={contributorMapPins}

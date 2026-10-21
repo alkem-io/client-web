@@ -193,6 +193,7 @@ describe('FramingEditorConnector — contributor selection', () => {
       selectedIds: ['user-1'],
       contributorCandidates: [],
       contributorCandidatesLoading: true,
+      contributorCandidatesUnresolved: true,
       resolveContributorChips: () => [
         { kind: 'virtualContributor', id: 'user-1', displayName: 'user-1', eligible: false },
       ],
@@ -203,12 +204,38 @@ describe('FramingEditorConnector — contributor selection', () => {
     expect(screen.queryByText('forms.selection.noLongerAvailable')).not.toBeInTheDocument();
   });
 
+  // The state the 088 review held on: the candidate query is SKIPPED (no
+  // roleSetId), and a skipped Apollo query reports `loading: false`. Deriving the
+  // chip label from `loading` alone therefore read the empty candidate set as
+  // "everyone left" and relabelled every chip — the exact #10418 symptom, through
+  // a second door. The form connector owns one `unresolved` predicate for this
+  // (`loading || !roleSetId`) and the save paths already depend on it; this case
+  // is what fails if the editor ever goes back to deriving it from `loading`.
+  it('labels a chip "loading" when the candidate query was skipped, not just when it is in flight', () => {
+    renderEditor({
+      selectionMode: 'custom',
+      selectedIds: ['user-1'],
+      contributorCandidates: [],
+      // A skipped query is NOT loading — this is the whole point of the case.
+      contributorCandidatesLoading: false,
+      contributorCandidatesUnresolved: true,
+      resolveContributorChips: () => [
+        { kind: 'virtualContributor', id: 'user-1', displayName: 'user-1', eligible: false },
+      ],
+    });
+
+    expect(screen.getByText('forms.selection.loading')).toBeInTheDocument();
+    expect(screen.queryByText('forms.selection.noLongerAvailable')).not.toBeInTheDocument();
+    expect(screen.queryByText('user-1')).not.toBeInTheDocument();
+  });
+
   it('labels a stale chip once the candidate set has arrived', () => {
     renderEditor({
       selectionMode: 'custom',
       selectedIds: ['stale-1'],
       contributorCandidates: [PERSON],
       contributorCandidatesLoading: true,
+      contributorCandidatesUnresolved: true,
       resolveContributorChips: () => [
         { kind: 'virtualContributor', id: 'stale-1', displayName: 'stale-1', eligible: false },
       ],

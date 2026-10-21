@@ -287,6 +287,15 @@ type FramingEditorConnectorProps = {
   ) => import('@/crd/forms/ContributorSelector').ContributorSelectorInvitee[];
   contributorCandidatesLoading?: boolean;
   /**
+   * Whether the contributor candidate set cannot be trusted yet — in flight OR
+   * skipped for a missing roleSetId. Derived ONCE by the form connector, which
+   * owns both inputs, and shared with the save paths that must not strip a
+   * selection they cannot check. Distinct from `contributorCandidatesLoading`,
+   * which answers only "is a fetch in flight" and drives the dropdown spinner:
+   * a skipped query is not loading but is still unresolved (088).
+   */
+  contributorCandidatesUnresolved?: boolean;
+  /**
    * The account-scoped space candidate model for the spaces chip (feature 084,
    * T102). Derived by `useAccountSpaceCandidates` in `CalloutFormConnector` so
    * this connector stays free of Apollo hooks (CRD connector rules).
@@ -421,6 +430,7 @@ export function FramingEditorConnector({
   contributorCandidates = [],
   resolveContributorChips,
   contributorCandidatesLoading = false,
+  contributorCandidatesUnresolved = false,
   spaceCandidates,
   canEditSpaceSelection = true,
   contributorMapPins = [],
@@ -771,7 +781,7 @@ export function FramingEditorConnector({
       // and before the candidate set has arrived that is "not loaded yet", not
       // "no longer a member" — relabelling then collapses every chip to the same
       // "No longer available" string. Mirrors `SpaceSelector.tsx:156`.
-      const candidatesPending = contributorCandidatesLoading && contributorCandidates.length === 0;
+      const candidatesPending = contributorCandidatesUnresolved && contributorCandidates.length === 0;
       // Feature 025: build the ContributorSelector chip list from selectedIds
       // resolved against the candidate set (stale ids → eligible: false).
       // An order-preserving map: `handleContributorRemove` indexes into this array
