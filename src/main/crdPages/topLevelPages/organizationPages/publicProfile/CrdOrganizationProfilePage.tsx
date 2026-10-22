@@ -1,8 +1,6 @@
-import { useApolloClient } from '@apollo/client';
 import { Building2 } from 'lucide-react';
 import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { OrganizationInfoDocument } from '@/core/apollo/generated/apollo-hooks';
 import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { usePageTitle } from '@/core/routing/usePageTitle';
@@ -94,7 +92,7 @@ export const buildOrganizationGuestNotice = ({ organization, isAuthenticated, lo
 export const CrdOrganizationProfilePage = () => {
   const { t } = useTranslation('crd-profilePages');
   const navigate = useNavigate();
-  const { organization, provided, isAuthenticated, loadingMe, accountResources, loading } =
+  const { organization, provided, isAuthenticated, loadingMe, accountResources, loading, refreshOrganization } =
     useCrdOrganizationProfilePageData();
 
   usePageTitle(organization?.profile?.displayName);
@@ -109,11 +107,6 @@ export const CrdOrganizationProfilePage = () => {
   // reused across organizations, so a plain boolean would carry "pending" onto
   // the next organization's profile (e.g. via the pending-memberships dialog).
   const [applicationJustSubmittedFor, setApplicationJustSubmittedFor] = useState<string | null>(null);
-
-  const apolloClient = useApolloClient();
-  const refreshOrganization = () => {
-    void apolloClient.refetchQueries({ include: [OrganizationInfoDocument] });
-  };
 
   const associateAction = useOrganizationAssociateAction({
     organizationId: organization?.id,

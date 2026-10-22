@@ -13,6 +13,7 @@ vi.mock('react-i18next', () => ({
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notify }));
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   OrganizationInfoDocument: 'OrganizationInfoDocument',
+  OrganizationHostedResourcesDocument: 'OrganizationHostedResourcesDocument',
   useInvitationStateEventMutation: () => [runEvent, { loading: false }],
   refetchUserPendingMembershipsQuery: () => ({ query: 'UserPendingMemberships' }),
   refetchPendingInvitationsCountQuery: () => ({ query: 'PendingInvitationsCount' }),
@@ -107,6 +108,18 @@ describe('useOrgInvitationResponse — every surface showing the invitation is r
 
     expect(runEvent).toHaveBeenCalledWith(
       expect.objectContaining({ refetchQueries: expect.arrayContaining(['OrganizationInfoDocument']) })
+    );
+  });
+
+  it('refetches the hosted resources, so a new associate sees the resources now visible to them', async () => {
+    const { result } = renderHook(() => useOrgInvitationResponse(vi.fn()));
+
+    await act(async () => {
+      await result.current.onAccept('inv-a');
+    });
+
+    expect(runEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ refetchQueries: expect.arrayContaining(['OrganizationHostedResourcesDocument']) })
     );
   });
 });

@@ -5,10 +5,17 @@ import { useCrdOrganizationProfilePageData } from '../useCrdOrganizationProfileP
 const mocks = vi.hoisted(() => ({
   hostedQuery: vi.fn(),
   currentUser: vi.fn(),
+  refetchQueries: vi.fn(),
+}));
+
+vi.mock('@apollo/client', () => ({
+  useApolloClient: () => ({ refetchQueries: mocks.refetchQueries }),
 }));
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useOrganizationHostedResourcesQuery: mocks.hostedQuery,
+  OrganizationInfoDocument: 'OrganizationInfoDocument',
+  OrganizationHostedResourcesDocument: 'OrganizationHostedResourcesDocument',
 }));
 vi.mock('@/domain/community/organization/hooks/useOrganizationContext', () => ({
   useOrganizationContext: () => ({ organization: { id: 'org-1' }, loading: false }),
@@ -50,5 +57,16 @@ describe('useCrdOrganizationProfilePageData', () => {
     expect(result.current.loading.account).toBe(false);
     expect(result.current.loadingMe).toBe(false);
     expect(result.current.isAuthenticated).toBe(false);
+  });
+
+  test('refreshing after a membership change refetches the hosted resources with the organization', () => {
+    mocks.currentUser.mockReturnValue({ isAuthenticated: true, loadingMe: false });
+    const { result } = renderHook(() => useCrdOrganizationProfilePageData());
+
+    result.current.refreshOrganization();
+
+    expect(mocks.refetchQueries).toHaveBeenCalledWith({
+      include: expect.arrayContaining(['OrganizationInfoDocument', 'OrganizationHostedResourcesDocument']),
+    });
   });
 });

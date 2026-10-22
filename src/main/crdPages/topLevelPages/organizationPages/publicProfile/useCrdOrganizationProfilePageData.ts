@@ -1,4 +1,9 @@
-import { useOrganizationHostedResourcesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useApolloClient } from '@apollo/client';
+import {
+  OrganizationHostedResourcesDocument,
+  OrganizationInfoDocument,
+  useOrganizationHostedResourcesQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 import useOrganizationProvider from '@/domain/community/organization/useOrganization/useOrganization';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -12,7 +17,8 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
  * Returns the resolved organization context + provider data, the org's hosted
  * resources as the server scoped them for the current viewer (not fetched for
  * guests), the viewer's auth state (`isAuthenticated`, `loadingMe`), and
- * per-region loading flags. The page reads from the returned view model and
+ * per-region loading flags, plus `refreshOrganization` for after a membership
+ * change. The page reads from the returned view model and
  * never touches Apollo or the domain hooks directly.
  */
 export const useCrdOrganizationProfilePageData = () => {
@@ -29,6 +35,13 @@ export const useCrdOrganizationProfilePageData = () => {
   });
   const accountResources = data?.lookup.organization?.hostedResources ?? undefined;
 
+  const apolloClient = useApolloClient();
+  // Hosted resources too: becoming an associate can widen the viewer-scoped
+  // list, and the cached result would otherwise keep the pre-membership one.
+  const refreshOrganization = () => {
+    void apolloClient.refetchQueries({ include: [OrganizationInfoDocument, OrganizationHostedResourcesDocument] });
+  };
+
   return {
     organization,
     provided,
@@ -42,5 +55,6 @@ export const useCrdOrganizationProfilePageData = () => {
       // tab strip from settling without Other Resources and then changing.
       account: loadingMe || loadingHosted,
     },
+    refreshOrganization,
   };
 };
