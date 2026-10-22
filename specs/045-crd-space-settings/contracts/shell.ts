@@ -164,6 +164,9 @@ export type UnsavedChangesBarState =
 
 /**
  * `src/crd/components/space/settings/SpaceSettingsUnsavedChangesBar.tsx`.
+ * Amended 2026-10-22 (later): moved to `src/crd/components/common/UnsavedChangesBar.tsx`
+ * (`UnsavedChangesBar`, strings in `crd-common` `unsavedChanges.*`) and shared with the
+ * User / Org / VC Profile tabs — spec 097 Session 2026-10-22.
  * Left: filled circle with `count` + "1 unsaved change" / "N unsaved changes".
  * Right: Discard (ghost) + Save changes (primary). `aria-live="polite"`.
  * `onDiscard` opens the page-owned confirmation (FR-025c); the bar never
