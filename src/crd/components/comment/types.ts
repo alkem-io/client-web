@@ -89,8 +89,11 @@ export type CommentsContainerData = {
   onRemoveReaction: (commentId: string, emoji: string) => void;
 };
 
-/** Attachment-related props the integration layer passes to the reply input. */
+/** Props the integration layer passes to the reply input. */
 export type ReplyComposerProps = {
+  /** Controlled reply text, so a send that fails leaves the typed reply in place. */
+  value?: string;
+  onValueChange?: (value: string) => void;
   attachmentsEnabled?: boolean;
   attachments?: ComposerAttachment[];
   onAttachFiles?: (files: File[]) => void;

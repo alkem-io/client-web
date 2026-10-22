@@ -226,6 +226,49 @@ describe('useCrdRoomComments composers', () => {
     expect(document.getElementById('comment-reply-input-c1')).toBeNull();
   });
 
+  test('a reply whose text is not confirmed stays open with the typed text, and a confirmed retry clears it', async () => {
+    mockBucketQuery.mockReturnValue(readableBucket);
+    mockReply
+      .mockResolvedValueOnce({ data: undefined })
+      .mockResolvedValueOnce({ data: { sendMessageReplyToRoom: { id: 'r1' } } });
+    render(<Harness value={withComment} />);
+    fireEvent.click(screen.getByRole('button', { name: 'comments.reply' }));
+    const replyBox = () => document.getElementById('comment-reply-input-c1') as HTMLElement;
+    typeInto(within(replyBox()).getByRole('textbox'), 'my reply');
+    await act(async () => {
+      fireEvent.click(within(replyBox()).getByRole('button', { name: 'comments.send' }));
+    });
+    expect(within(replyBox()).getByRole('textbox')).toHaveValue('my reply');
+    expect(within(replyBox()).getByText('comments.attachments.sendUnconfirmed')).toBeInTheDocument();
+    await act(async () => {
+      fireEvent.click(within(replyBox()).getByRole('button', { name: 'comments.send' }));
+    });
+    expect(mockReply).toHaveBeenCalledTimes(2);
+    expect(mockReply).toHaveBeenLastCalledWith({
+      variables: { roomId: 'room-1', message: 'my reply', threadId: 'c1', attachmentUpload: undefined },
+    });
+    expect(replyBox()).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'comments.reply' }));
+    expect(within(replyBox()).getByRole('textbox')).toHaveValue('');
+  });
+
+  test('a reply whose text is sent but whose image upload fails stays open with the text cleared', async () => {
+    mockBucketQuery.mockReturnValue(readableBucket);
+    mockFetch.mockResolvedValue({ ok: false, status: 500 });
+    mockReply.mockResolvedValue({ data: { sendMessageReplyToRoom: { id: 'r1' } } });
+    render(<Harness value={withComment} />);
+    fireEvent.click(screen.getByRole('button', { name: 'comments.reply' }));
+    const replyBox = () => document.getElementById('comment-reply-input-c1') as HTMLElement;
+    typeInto(within(replyBox()).getByRole('textbox'), 'my reply');
+    fireEvent.change(fileInputIn(replyBox()), { target: { files: [png('reply.png')] } });
+    await act(async () => {
+      fireEvent.click(within(replyBox()).getByRole('button', { name: 'comments.send' }));
+    });
+    expect(mockReply).toHaveBeenCalledOnce();
+    expect(within(replyBox()).getByRole('textbox')).toHaveValue('');
+    expect(within(replyBox()).getByText('comments.attachments.uploadFailed')).toBeInTheDocument();
+  });
+
   test('the bucket policy is not queried when the viewer cannot comment', () => {
     mockBucketQuery.mockReturnValue(noBucket);
     render(<Harness value={room({ authorization: { myPrivileges: [AuthorizationPrivilege.Read] } })} />);

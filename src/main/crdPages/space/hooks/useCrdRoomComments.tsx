@@ -100,11 +100,19 @@ export function useCrdRoomComments({
   // The top-level field is controlled: comments are shown newest first, so the
   // image is posted before the text (text ends up on top), and the field is
   // cleared only once the text is confirmed — a failed image never loses it.
-  // The reply draft is keyed to the open reply, so files staged for one reply
-  // are discarded when another reply is opened or the box closes.
+  // The reply draft is keyed to the open reply, so text and files staged for one
+  // reply are discarded when another reply is opened or the box closes. Its text
+  // is controlled too and cleared only once the reply text is confirmed, so the
+  // box, which stays open after a failed send, still holds the reply to retry.
   const storageConfigs = useCommentImageStorageConfig(room?.attachmentBucketId, privileges, !canComment);
   const [draft, setDraft] = useState('');
   const [replyTarget, setReplyTarget] = useState<string | undefined>(undefined);
+  const [replyDraft, setReplyDraft] = useState('');
+  const [replyDraftTarget, setReplyDraftTarget] = useState<string | undefined>(undefined);
+  if (replyDraftTarget !== replyTarget) {
+    setReplyDraftTarget(replyTarget);
+    setReplyDraft('');
+  }
   const topLevelFiles = useConversationAttachments(
     storageConfigs.comment,
     { roomID: roomId },
@@ -175,9 +183,11 @@ export function useCrdRoomComments({
         currentUser={currentUser}
         canComment={canComment}
         mentionSearch={mentionSearch}
-        onReply={(parentId, content) => replyFiles.send(content, sendReply(parentId), () => {})}
+        onReply={(parentId, content) => replyFiles.send(content, sendReply(parentId), () => setReplyDraft(''))}
         onReplyTargetChange={setReplyTarget}
         replyInputProps={{
+          value: replyDraft,
+          onValueChange: setReplyDraft,
           attachmentsEnabled: replyFiles.enabled,
           attachments: replyFiles.attachments,
           onAttachFiles: replyFiles.attachFiles,

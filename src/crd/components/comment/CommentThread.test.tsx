@@ -108,6 +108,20 @@ describe('CommentThread reply composer', () => {
     expect(replyBox()).toBeInTheDocument();
   });
 
+  test('a controlled reply value survives a failed send', async () => {
+    const pending = deferred<boolean>();
+    const onValueChange = vi.fn();
+    renderThread({ onReply: () => pending.promise, replyInputProps: { value: 'typed reply', onValueChange } });
+    openReply();
+    fireEvent.keyDown(replyBox() as HTMLTextAreaElement, { key: 'Enter' });
+    await act(async () => {
+      pending.resolve(false);
+      await pending.promise;
+    });
+    expect(replyBox()).toHaveValue('typed reply');
+    expect(onValueChange).not.toHaveBeenCalledWith('');
+  });
+
   test('synchronous void onReply still closes the box', async () => {
     const onReply = vi.fn();
     renderThread({ onReply });
