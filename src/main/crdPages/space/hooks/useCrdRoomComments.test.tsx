@@ -111,27 +111,54 @@ describe('useCrdRoomComments composers', () => {
 
   afterEach(() => vi.unstubAllGlobals());
 
-  test('no image button when the bucket policy is unavailable, and a text comment still posts with message only', async () => {
+  test('a room without a bucket keeps the plain text composer: the comment field clears on submit and the post is not awaited', async () => {
     mockBucketQuery.mockReturnValue(noBucket);
-    mockSendMessage.mockResolvedValue(sent);
-    render(<Harness value={room()} />);
+    const pending = deferred<typeof sent>();
+    mockSendMessage.mockReturnValue(pending.promise);
+    render(<Harness value={room({ attachmentBucketId: undefined })} />);
     expect(screen.queryByRole('button', { name: 'comments.attachments.addImage' })).not.toBeInTheDocument();
     typeInto(topLevel().getByRole('textbox'), 'hello');
-    await act(async () => {
-      fireEvent.click(topLevel().getByRole('button', { name: 'comments.send' }));
-    });
+    fireEvent.click(topLevel().getByRole('button', { name: 'comments.send' }));
     expect(mockSendMessage).toHaveBeenCalledExactlyOnceWith({
       variables: { messageData: { roomID: 'room-1', message: 'hello', attachmentUpload: undefined } },
     });
-    expect(mockFetch).not.toHaveBeenCalled();
+    // Cleared while the post is still in flight, and the field stays editable.
     expect(topLevel().getByRole('textbox')).toHaveValue('');
+    expect(topLevel().getByRole('textbox')).not.toBeDisabled();
+    expect(mockFetch).not.toHaveBeenCalled();
+    await act(async () => {
+      pending.resolve(sent);
+      await pending.promise;
+    });
   });
 
-  test('a member with only READ on the bucket and CREATE_MESSAGE on the room: staging one image and text calls sendMessageToRoom twice: image then text, and clears the field only after the text', async () => {
+  test('a room without a bucket keeps the plain reply box: it closes on submit without waiting for the reply', async () => {
+    mockBucketQuery.mockReturnValue(noBucket);
+    const pending = deferred<{ data: { sendMessageReplyToRoom: { id: string } } }>();
+    mockReply.mockReturnValue(pending.promise);
+    render(<Harness value={{ ...withComment, attachmentBucketId: undefined }} />);
+    fireEvent.click(screen.getByRole('button', { name: 'comments.reply' }));
+    const replyBox = () => document.getElementById('comment-reply-input-c1');
+    expect(
+      within(replyBox() as HTMLElement).queryByRole('button', { name: 'comments.attachments.addImage' })
+    ).not.toBeInTheDocument();
+    typeInto(within(replyBox() as HTMLElement).getByRole('textbox'), 'my reply');
+    fireEvent.click(within(replyBox() as HTMLElement).getByRole('button', { name: 'comments.send' }));
+    expect(mockReply).toHaveBeenCalledExactlyOnceWith({
+      variables: { roomId: 'room-1', message: 'my reply', threadId: 'c1', attachmentUpload: undefined },
+    });
+    expect(replyBox()).toBeNull();
+    await act(async () => {
+      pending.resolve({ data: { sendMessageReplyToRoom: { id: 'r1' } } });
+      await pending.promise;
+    });
+  });
+
+  test('a member with only READ on the bucket and CREATE_MESSAGE on the room: text and one image go in one sendMessageToRoom, and the field clears only once it is confirmed', async () => {
     mockBucketQuery.mockReturnValue(readableBucket);
     mockFetch.mockResolvedValue(uploadOk('media-1'));
-    const textSend = deferred<typeof sent>();
-    mockSendMessage.mockResolvedValueOnce(sent).mockReturnValueOnce(textSend.promise);
+    const send = deferred<typeof sent>();
+    mockSendMessage.mockReturnValueOnce(send.promise);
     render(<Harness value={room()} />);
     const box = topLevel().getByRole('textbox');
     typeInto(box, 'see this');
@@ -140,14 +167,19 @@ describe('useCrdRoomComments composers', () => {
     await act(async () => {
       fireEvent.click(topLevel().getByRole('button', { name: 'comments.send' }));
     });
-    expect(mockSendMessage.mock.calls.map(([options]) => options.variables.messageData)).toEqual([
-      { roomID: 'room-1', message: '', attachmentUpload: { externalReference: 'media-1', displayName: 'shot.png' } },
-      { roomID: 'room-1', message: 'see this', attachmentUpload: undefined },
-    ]);
+    expect(mockSendMessage).toHaveBeenCalledExactlyOnceWith({
+      variables: {
+        messageData: {
+          roomID: 'room-1',
+          message: 'see this',
+          attachmentUpload: { externalReference: 'media-1', displayName: 'shot.png' },
+        },
+      },
+    });
     expect(box).toHaveValue('see this');
     await act(async () => {
-      textSend.resolve(sent);
-      await textSend.promise;
+      send.resolve(sent);
+      await send.promise;
     });
     expect(box).toHaveValue('');
     expect(topLevel().queryByText('shot.png')).not.toBeInTheDocument();
@@ -252,9 +284,9 @@ describe('useCrdRoomComments composers', () => {
     expect(within(replyBox()).getByRole('textbox')).toHaveValue('');
   });
 
-  test('a reply whose text is sent but whose image upload fails stays open with the text cleared', async () => {
+  test('a reply whose image upload fails posts nothing and stays open with the text, and the retry sends text and image in one reply', async () => {
     mockBucketQuery.mockReturnValue(readableBucket);
-    mockFetch.mockResolvedValue({ ok: false, status: 500 });
+    mockFetch.mockResolvedValueOnce({ ok: false, status: 500 }).mockResolvedValueOnce(uploadOk('media-r'));
     mockReply.mockResolvedValue({ data: { sendMessageReplyToRoom: { id: 'r1' } } });
     render(<Harness value={withComment} />);
     fireEvent.click(screen.getByRole('button', { name: 'comments.reply' }));
@@ -264,9 +296,47 @@ describe('useCrdRoomComments composers', () => {
     await act(async () => {
       fireEvent.click(within(replyBox()).getByRole('button', { name: 'comments.send' }));
     });
-    expect(mockReply).toHaveBeenCalledOnce();
-    expect(within(replyBox()).getByRole('textbox')).toHaveValue('');
+    expect(mockReply).not.toHaveBeenCalled();
+    expect(within(replyBox()).getByRole('textbox')).toHaveValue('my reply');
+    expect(within(replyBox()).getByText('reply.png').closest('li')).toHaveClass('text-destructive');
     expect(within(replyBox()).getByText('comments.attachments.uploadFailed')).toBeInTheDocument();
+    await act(async () => {
+      fireEvent.click(within(replyBox()).getByRole('button', { name: 'comments.send' }));
+    });
+    expect(mockReply).toHaveBeenCalledExactlyOnceWith({
+      variables: {
+        roomId: 'room-1',
+        message: 'my reply',
+        threadId: 'c1',
+        attachmentUpload: { externalReference: 'media-r', displayName: 'reply.png' },
+      },
+    });
+    expect(replyBox()).toBeNull();
+  });
+
+  test('a captioned image message renders its text and the picture in one comment', () => {
+    mockBucketQuery.mockReturnValue(readableBucket);
+    render(
+      <Harness
+        value={room({
+          messages: [
+            {
+              id: 'c1',
+              message: 'see this',
+              timestamp: Date.now(),
+              reactions: [],
+              sender: { id: 'u2', profile: { id: 'p2', displayName: 'Other', url: '/u/other' } },
+              attachments: [{ externalReference: 'media-1', displayName: 'shot.png', mimeType: 'image/png' }],
+            },
+          ],
+        })}
+      />
+    );
+    const caption = screen.getAllByText('see this');
+    expect(caption).toHaveLength(1);
+    const row = caption[0].closest('.group\\/comment') as HTMLElement;
+    expect(row.querySelector('img')).toBeInTheDocument();
+    expect(document.querySelectorAll('.group\\/comment')).toHaveLength(1);
   });
 
   test('the bucket policy is not queried when the viewer cannot comment', () => {

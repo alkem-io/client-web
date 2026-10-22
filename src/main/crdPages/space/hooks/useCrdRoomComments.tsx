@@ -93,18 +93,19 @@ export function useCrdRoomComments({
   // Image attachments for the comment and reply composers. The accepted types
   // and size come from the room's own attachment bucket; the right to attach is
   // the right to post (CREATE_MESSAGE) or reply (CREATE_MESSAGE_REPLY) in the
-  // room. Without a bucket or that right the composer stays text-only and sends
-  // the text alone, so one code path serves every room. Each send carries at
-  // most one image.
+  // room. A composer without a bucket or that right is the plain text composer:
+  // its field clears on submit and the post is fired without waiting.
   //
-  // The top-level field is controlled: comments are shown newest first, so the
-  // image is posted before the text (text ends up on top), and the field is
-  // cleared only once the text is confirmed — a failed image never loses it.
-  // The reply draft is keyed to the open reply, so text and files staged for one
-  // reply are discarded when another reply is opened or the box closes. Its text
-  // is controlled too and cleared only once the reply text is confirmed, so the
-  // box, which stays open after a failed send, still holds the reply to retry.
+  // An image-enabled composer carries at most one image, sent together with the
+  // text in a single message, so text and image form one comment. Its field is
+  // controlled and cleared only once that message is confirmed: a failed upload
+  // posts nothing and keeps the text for a retry. The reply draft is keyed to the
+  // open reply, so text and files staged for one reply are discarded when
+  // another reply is opened or the box closes; the box stays open after a failed
+  // send so the reply can be retried.
   const storageConfigs = useCommentImageStorageConfig(room?.attachmentBucketId, privileges, !canComment);
+  const commentImagesEnabled = Boolean(storageConfigs.comment?.canUpload);
+  const replyImagesEnabled = Boolean(storageConfigs.reply?.canUpload);
   const [draft, setDraft] = useState('');
   const [replyTarget, setReplyTarget] = useState<string | undefined>(undefined);
   const [replyDraft, setReplyDraft] = useState('');
@@ -113,15 +114,12 @@ export function useCrdRoomComments({
     setReplyDraftTarget(replyTarget);
     setReplyDraft('');
   }
-  const topLevelFiles = useConversationAttachments(
-    storageConfigs.comment,
-    { roomID: roomId },
-    { maxAttachments: 1, textLast: true }
-  );
+  const imageOptions = { maxAttachments: 1, textWithAttachment: true };
+  const topLevelFiles = useConversationAttachments(storageConfigs.comment, { roomID: roomId }, imageOptions);
   const replyFiles = useConversationAttachments(
     storageConfigs.reply,
     replyTarget ? { roomID: roomId, threadID: replyTarget } : undefined,
-    { maxAttachments: 1 }
+    imageOptions
   );
 
   const comments = useAttachmentReadiness(
@@ -183,20 +181,27 @@ export function useCrdRoomComments({
         currentUser={currentUser}
         canComment={canComment}
         mentionSearch={mentionSearch}
-        onReply={(parentId, content) => replyFiles.send(content, sendReply(parentId), () => setReplyDraft(''))}
-        onReplyTargetChange={setReplyTarget}
-        replyInputProps={{
-          value: replyDraft,
-          onValueChange: setReplyDraft,
-          attachmentsEnabled: replyFiles.enabled,
-          attachments: replyFiles.attachments,
-          onAttachFiles: replyFiles.attachFiles,
-          onRemoveAttachment: replyFiles.removeAttachment,
-          attachmentError: replyFiles.error,
-          acceptMimeTypes: replyFiles.accept,
-          imagesOnly: true,
-          disabled: inputBusy || replyFiles.isSending,
+        onReply={(parentId, content) => {
+          if (replyImagesEnabled) return replyFiles.send(content, sendReply(parentId), () => setReplyDraft(''));
+          void postReply({ messageText: content, threadId: parentId });
         }}
+        onReplyTargetChange={replyImagesEnabled ? setReplyTarget : undefined}
+        replyInputProps={
+          replyImagesEnabled
+            ? {
+                value: replyDraft,
+                onValueChange: setReplyDraft,
+                attachmentsEnabled: replyFiles.enabled,
+                attachments: replyFiles.attachments,
+                onAttachFiles: replyFiles.attachFiles,
+                onRemoveAttachment: replyFiles.removeAttachment,
+                attachmentError: replyFiles.error,
+                acceptMimeTypes: replyFiles.accept,
+                imagesOnly: true,
+                disabled: inputBusy || replyFiles.isSending,
+              }
+            : undefined
+        }
         onDelete={commentId => {
           setPendingDeleteId(commentId);
         }}
@@ -245,23 +250,34 @@ export function useCrdRoomComments({
       : undefined;
 
   const commentInput = canComment ? (
-    <CommentInput
-      currentUser={currentUser}
-      value={draft}
-      onValueChange={setDraft}
-      disabled={inputBusy || topLevelFiles.isSending}
-      mentionSearch={mentionSearch}
-      onSubmit={content => {
-        void topLevelFiles.send(content, sendTopLevel, () => setDraft(''));
-      }}
-      attachmentsEnabled={topLevelFiles.enabled}
-      attachments={topLevelFiles.attachments}
-      onAttachFiles={topLevelFiles.attachFiles}
-      onRemoveAttachment={topLevelFiles.removeAttachment}
-      attachmentError={topLevelFiles.error}
-      acceptMimeTypes={topLevelFiles.accept}
-      imagesOnly={true}
-    />
+    commentImagesEnabled ? (
+      <CommentInput
+        currentUser={currentUser}
+        value={draft}
+        onValueChange={setDraft}
+        disabled={inputBusy || topLevelFiles.isSending}
+        mentionSearch={mentionSearch}
+        onSubmit={content => {
+          void topLevelFiles.send(content, sendTopLevel, () => setDraft(''));
+        }}
+        attachmentsEnabled={topLevelFiles.enabled}
+        attachments={topLevelFiles.attachments}
+        onAttachFiles={topLevelFiles.attachFiles}
+        onRemoveAttachment={topLevelFiles.removeAttachment}
+        attachmentError={topLevelFiles.error}
+        acceptMimeTypes={topLevelFiles.accept}
+        imagesOnly={true}
+      />
+    ) : (
+      <CommentInput
+        currentUser={currentUser}
+        disabled={inputBusy}
+        mentionSearch={mentionSearch}
+        onSubmit={content => {
+          void postMessage(content);
+        }}
+      />
+    )
   ) : cantCommentNotice ? (
     <p className="rounded-md border border-dashed border-border bg-muted/30 px-4 py-3 text-center text-body text-muted-foreground">
       {cantCommentNotice}

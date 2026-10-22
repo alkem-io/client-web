@@ -19,13 +19,14 @@ export type AttachmentContext = { roomID: string; threadID?: string };
 export type SendEvent = (text: string, attachmentUpload?: RoomMessageAttachmentInput) => Promise<boolean | undefined>;
 /**
  * Optional per-composer behaviour. Omitting both keeps the chat defaults: up to
- * MAX_ATTACHMENTS_PER_MESSAGE files, and the text is sent before the files.
+ * MAX_ATTACHMENTS_PER_MESSAGE files, and the text is sent as its own message
+ * before the files.
  * - maxAttachments: how many files one send may carry.
- * - textLast: send the files first (in reverse staged order) and the text last,
- *   for threads shown newest first, so the text ends up above its files. The text
- *   is only sent once every file is posted, so a failed file never loses it.
+ * - textWithAttachment: when a file is staged, the text is sent together with
+ *   the first file in one message (as its caption) instead of on its own. Nothing
+ *   is posted until that file is uploaded, so a failed upload never loses the text.
  */
-export type AttachmentOptions = { maxAttachments?: number; textLast?: boolean };
+export type AttachmentOptions = { maxAttachments?: number; textWithAttachment?: boolean };
 
 /** Owned by one keyed composer instance. Selection is local; Send uploads each file. */
 export function useConversationAttachments(
@@ -109,19 +110,15 @@ export function useConversationAttachments(
     setDraft(previous => ({ ...previous, error: undefined }));
     let activeFile: SelectedFile | undefined;
     let uploading = false;
-    // Only called when there is text, so an image-only send starts its first
-    // upload synchronously, with no extra await in front of it.
-    const hasText = Boolean(text.trim());
-    const sendText = async (): Promise<boolean> => {
-      activeFile = undefined;
-      if (!(await sendEvent(text))) throw new Error('send unconfirmed');
-      textSent();
-      return !current.disposed;
-    };
-    const items = options.textLast ? [...draft.items].reverse() : draft.items;
+    // The text still to be sent with the next file; empty unless textWithAttachment.
+    let caption = options.textWithAttachment && draft.items.length > 0 && text.trim() ? text : '';
     try {
-      if (hasText && !options.textLast && !(await sendText())) return false;
-      for (const item of items) {
+      if (text.trim() && !caption) {
+        if (!(await sendEvent(text))) throw new Error('send unconfirmed');
+        textSent();
+        if (current.disposed) return false;
+      }
+      for (const item of draft.items) {
         if (current.disposed) return false;
         activeFile = item;
         let uploadedAttachment = item.uploadedAttachment;
@@ -163,11 +160,14 @@ export function useConversationAttachments(
             ),
           }));
         }
-        if (!(await sendEvent('', uploadedAttachment))) throw new Error('send unconfirmed');
+        if (!(await sendEvent(caption, uploadedAttachment))) throw new Error('send unconfirmed');
+        if (caption) {
+          caption = '';
+          textSent();
+        }
         if (current.disposed) return false;
         setDraft(previous => ({ ...previous, items: previous.items.filter(value => value.id !== item.id) }));
       }
-      if (hasText && options.textLast && !(await sendText())) return false;
       return true;
     } catch {
       if (!current.disposed)
