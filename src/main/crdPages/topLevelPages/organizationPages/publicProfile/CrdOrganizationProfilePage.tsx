@@ -1,8 +1,6 @@
-import { useApolloClient } from '@apollo/client';
 import { Building2 } from 'lucide-react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { OrganizationInfoDocument } from '@/core/apollo/generated/apollo-hooks';
+import { Trans, useTranslation } from 'react-i18next';
 import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { usePageTitle } from '@/core/routing/usePageTitle';
@@ -25,7 +23,7 @@ import {
 } from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
 import useResourceTabs from '@/main/crdPages/topLevelPages/common/useResourceTabs';
 import { useSendMessageToOrganizationHandler } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
-import { buildLoginUrl, buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { buildLoginUrl, buildSettingsUrl, buildSignUpUrl } from '@/main/routing/urlBuilders';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { OrgApplyDialogConnector } from './OrgApplyDialogConnector';
 import { mapAssociates, offeredRoleLabelKey } from './organizationProfileMapper';
@@ -33,10 +31,69 @@ import { useCrdOrganizationProfilePageData } from './useCrdOrganizationProfilePa
 import { useOrganizationAssociateAction } from './useOrganizationAssociateAction';
 import { useOrgInvitationResponse } from './useOrgInvitationResponse';
 
+type OrganizationGuestResourcesNoticeProps = {
+  organizationName: string;
+  signUpHref: string;
+};
+
+/**
+ * The organization display name is controlled by its admins, and interpolation
+ * escaping is off globally, so without per-call escaping any markup in the name
+ * would be parsed as Trans component tags. Escaping the value and unescaping the
+ * resulting text nodes renders the name strictly as literal text.
+ */
+export const OrganizationGuestResourcesNotice = ({
+  organizationName,
+  signUpHref,
+}: OrganizationGuestResourcesNoticeProps) => {
+  const { t } = useTranslation('crd-profilePages');
+  return (
+    <p className="text-body text-muted-foreground mb-4">
+      <Trans
+        t={t}
+        i18nKey="orgProfile.guestResourcesNotice"
+        values={{ organization: organizationName }}
+        tOptions={{ interpolation: { escapeValue: true } }}
+        shouldUnescape={true}
+        components={{
+          signUp: (
+            // biome-ignore lint/a11y/useAnchorContent: content is injected by Trans
+            <a
+              href={signUpHref}
+              className="text-primary underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            />
+          ),
+        }}
+      />
+    </p>
+  );
+};
+
+type GuestNoticeInput = {
+  organization: { profile?: { displayName?: string; url?: string } } | undefined;
+  isAuthenticated: boolean;
+  loadingMe: boolean;
+};
+
+/**
+ * Driven by auth state and the organization's identity only, never by the
+ * resource data: once the organization is known a guest always sees it, so it
+ * never reveals whether the organization hosts anything. Withheld while the
+ * organization loads, so the name and the sign-up return URL are never blank.
+ */
+export const buildOrganizationGuestNotice = ({ organization, isAuthenticated, loadingMe }: GuestNoticeInput) =>
+  organization && !loadingMe && !isAuthenticated ? (
+    <OrganizationGuestResourcesNotice
+      organizationName={organization.profile?.displayName ?? ''}
+      signUpHref={buildSignUpUrl(organization.profile?.url)}
+    />
+  ) : undefined;
+
 export const CrdOrganizationProfilePage = () => {
   const { t } = useTranslation('crd-profilePages');
   const navigate = useNavigate();
-  const { organization, provided, isAuthenticated, accountResources, loading } = useCrdOrganizationProfilePageData();
+  const { organization, provided, isAuthenticated, loadingMe, accountResources, loading, refreshOrganization } =
+    useCrdOrganizationProfilePageData();
 
   usePageTitle(organization?.profile?.displayName);
 
@@ -50,11 +107,6 @@ export const CrdOrganizationProfilePage = () => {
   // reused across organizations, so a plain boolean would carry "pending" onto
   // the next organization's profile (e.g. via the pending-memberships dialog).
   const [applicationJustSubmittedFor, setApplicationJustSubmittedFor] = useState<string | null>(null);
-
-  const apolloClient = useApolloClient();
-  const refreshOrganization = () => {
-    void apolloClient.refetchQueries({ include: [OrganizationInfoDocument] });
-  };
 
   const associateAction = useOrganizationAssociateAction({
     organizationId: organization?.id,
@@ -147,6 +199,8 @@ export const CrdOrganizationProfilePage = () => {
   const pendingInvitation = associateAction.pendingInvitation;
   const inviterName = pendingInvitation?.invitation.createdBy?.profile?.displayName;
 
+  const guestNotice = buildOrganizationGuestNotice({ organization, isAuthenticated, loadingMe });
+
   return (
     <OrganizationPublicProfileView
       hero={{
@@ -228,6 +282,7 @@ export const CrdOrganizationProfilePage = () => {
         hostedResources: t('common.loading.hostedResources'),
         memberships: t('common.loading.memberships'),
       }}
+      guestNotice={guestNotice}
     >
       {organization && (
         <OrgApplyDialogConnector

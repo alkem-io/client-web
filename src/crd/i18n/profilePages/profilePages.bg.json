@@ -68,6 +68,7 @@
     "vcType": "Виртуален сътрудник"
   },
   "orgProfile": {
+    "guestResourcesNotice": "<signUp>Регистрирайте се</signUp> в Alkemio, за да видите ресурсите, хоствани от {{organization}}",
     "hero": {
       "settingsTooltip": "Настройки на организацията",
       "settingsAriaLabel": "Отвори настройките на организацията",

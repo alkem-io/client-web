@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  OrganizationHostedResourcesDocument,
   OrganizationInfoDocument,
   refetchPendingInvitationsCountQuery,
   refetchUserPendingMembershipsQuery,
@@ -55,11 +56,13 @@ export const useOrgInvitationResponse = (
 
   // OrganizationInfo too: the profile's associate action ("Respond to invitation") comes from
   // it, so answering from the top-bar pending dialog would otherwise leave that button stale,
-  // pointing at an invitation the refetched pending list no longer has.
+  // pointing at an invitation the refetched pending list no longer has. Hosted resources
+  // too: accepting can widen the viewer-scoped list the profile's Other Resources tab shows.
   const refetchQueries = [
     refetchUserPendingMembershipsQuery(),
     refetchPendingInvitationsCountQuery(),
     OrganizationInfoDocument,
+    OrganizationHostedResourcesDocument,
   ];
 
   const respond = async (invitationId: string, eventName: InvitationEvent, action: 'accept' | 'decline') => {

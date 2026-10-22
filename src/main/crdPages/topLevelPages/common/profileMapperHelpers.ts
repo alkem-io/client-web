@@ -65,9 +65,10 @@ const toSimpleResourceCard = (item: {
 
 /**
  * Shared mapper for the User and Organization profile "Other Resources" tab.
- * The `useAccountResources` payload shape is identical regardless of account
- * owner, so the three sub-section arrays (Virtual Contributors, Template Packs,
- * Custom Homepages) are produced from one helper. Hosted Spaces are deliberately
+ * The `hostedResources` payload shape is identical for user and organization
+ * accounts, so the three sub-section arrays (Virtual Contributors, Template
+ * Packs, Custom Homepages) are produced from one helper. The server has already
+ * applied the viewer's visibility — no filtering here. Hosted Spaces are deliberately
  * not shown — the Leading / Member of tabs cover a profile's Spaces.
  */
 export const mapAccountHostedResources = (input: AccountResourcesShape, vcType: string): AccountHostedResources => {
