@@ -326,6 +326,46 @@ describe('useCrdRoomComments composers', () => {
     expect(replyBox()).toBeNull();
   });
 
+  test('the reply text is cleared when another reply opens or the box is closed by hand', () => {
+    mockBucketQuery.mockReturnValue(readableBucket);
+    const sender = { id: 'u2', profile: { id: 'p2', displayName: 'Other', url: '/u/other' } };
+    render(
+      <Harness
+        value={room({
+          messages: [
+            { id: 'cA', message: 'comment A', timestamp: Date.now(), reactions: [], sender },
+            { id: 'cB', message: 'comment B', timestamp: Date.now(), reactions: [], sender },
+          ],
+        })}
+      />
+    );
+    const toggleReplyOn = (text: string) =>
+      fireEvent.click(
+        within(screen.getByText(text).closest('.group\\/comment') as HTMLElement).getByRole('button', {
+          name: 'comments.reply',
+        })
+      );
+    const replyField = (id: string) =>
+      within(document.getElementById(`comment-reply-input-${id}`) as HTMLElement).getByRole('textbox');
+
+    toggleReplyOn('comment A');
+    typeInto(replyField('cA'), 'draft for A');
+    expect(replyField('cA')).toHaveValue('draft for A');
+
+    toggleReplyOn('comment B');
+    expect(document.getElementById('comment-reply-input-cA')).toBeNull();
+    expect(replyField('cB')).toHaveValue('');
+
+    toggleReplyOn('comment A');
+    expect(replyField('cA')).toHaveValue('');
+
+    typeInto(replyField('cA'), 'typed then closed');
+    toggleReplyOn('comment A');
+    expect(document.getElementById('comment-reply-input-cA')).toBeNull();
+    toggleReplyOn('comment A');
+    expect(replyField('cA')).toHaveValue('');
+  });
+
   test('a captioned image message renders its text and the picture in one comment', () => {
     mockBucketQuery.mockReturnValue(readableBucket);
     render(
