@@ -26,6 +26,8 @@ export type OrganizationPublicProfileViewProps = {
     hostedResources: string;
     memberships: string;
   };
+  /** Rendered above the resource tab strip; the page passes it only for signed-out viewers once auth state is known. */
+  guestNotice?: ReactNode;
   /** Dialogs the page mounts alongside the view (e.g. the associate apply/invitation dialogs). */
   children?: ReactNode;
 };
@@ -37,6 +39,7 @@ export function OrganizationPublicProfileView({
   rightColumn,
   loading,
   loadingLabels,
+  guestNotice,
   children,
 }: OrganizationPublicProfileViewProps) {
   // The tab set depends on both memberships (Leading) and hosted resources
@@ -67,6 +70,7 @@ export function OrganizationPublicProfileView({
             )}
           </div>
           <div className="lg:col-span-9 flex flex-col min-w-0">
+            {guestNotice}
             {sectionsLoading ? (
               <output aria-label={sectionsLabel}>
                 <SectionsSkeleton />

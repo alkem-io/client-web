@@ -83,8 +83,6 @@ describe('mapReactionsToCommentReactions', () => {
 });
 
 describe('mapMessageToChatMessage', () => {
-  const formatTimestamp = (ms: number) => `t:${ms}`;
-
   it('marks own messages and maps sender to an author', () => {
     const msg: ConversationMessage = {
       id: 'm1',
@@ -94,8 +92,8 @@ describe('mapMessageToChatMessage', () => {
       reactions: [],
       attachments: [],
     };
-    const result = mapMessageToChatMessage(msg, { currentUserId: ME, formatTimestamp });
-    expect(result).toMatchObject({ id: 'm1', isOwn: true, timestamp: 't:500', timestampMs: 500 });
+    const result = mapMessageToChatMessage(msg, { currentUserId: ME });
+    expect(result).toMatchObject({ id: 'm1', isOwn: true, timestampMs: 500 });
     expect(result.author).toMatchObject({ id: ME, name: 'Me' });
   });
 
@@ -108,7 +106,7 @@ describe('mapMessageToChatMessage', () => {
       reactions: [],
       attachments: [],
     };
-    expect(mapMessageToChatMessage(msg, { currentUserId: ME, formatTimestamp }).isOwn).toBe(false);
+    expect(mapMessageToChatMessage(msg, { currentUserId: ME }).isOwn).toBe(false);
   });
 });
 
@@ -122,7 +120,7 @@ describe('injectGuidanceIntro', () => {
   });
 
   it('prepends the intro before existing messages', () => {
-    const existing = [{ id: 'm1', content: 'hi', timestamp: 't', timestampMs: 1, reactions: [], isOwn: false }];
+    const existing = [{ id: 'm1', content: 'hi', timestampMs: 1, reactions: [], isOwn: false }];
     const result = injectGuidanceIntro(existing, { text: 'Welcome', author });
     expect(result.map(m => m.id)).toEqual([GUIDANCE_INTRO_ID, 'm1']);
   });

@@ -1,5 +1,4 @@
 import {
-  closestCenter,
   DndContext,
   type DragEndEvent,
   type DragOverEvent,
@@ -14,6 +13,7 @@ import { rectSortingStrategy, SortableContext, sortableKeyboardCoordinates } fro
 import { Loader2, Plus } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { layoutCollisionDetection } from '@/crd/components/space/settings/layoutCollisionDetection';
 import { SpaceSettingsSaveBar } from '@/crd/components/space/settings/SpaceSettingsSaveBar';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { cn } from '@/crd/lib/utils';
@@ -279,15 +279,15 @@ export function SpaceSettingsLayoutView({
           <LayoutColumnsSkeleton label={t('layout.loading')} className="min-h-[60vh]" />
         ) : (
           <DndContext
-            sensors={locked ? [] : sensors}
-            collisionDetection={closestCenter}
+            sensors={sensors}
+            collisionDetection={layoutCollisionDetection}
             onDragStart={handleDragStart}
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
             onDragCancel={handleDragCancel}
           >
             <SortableContext items={sortableColumnIds} strategy={rectSortingStrategy}>
-              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 items-start">
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 items-start">
                 {columns.map(column => {
                   const otherColumns = columns.filter(c => c.id !== column.id).map(c => ({ id: c.id, title: c.title }));
                   return (
@@ -301,9 +301,8 @@ export function SpaceSettingsLayoutView({
                       columnMenuActions={columnMenuActions}
                       entityNoun={entityNoun}
                       draggable={canReorderColumns}
-                      locked={locked}
-                      // Sidebar widget configuration is L0-only for now — subspace phases
-                      // hide the section in the Layout dialog (stored values untouched).
+                      // The per-phase sidebar section is hidden on subspaces (stored values
+                      // untouched): a subspace has one sidebar, edited through Customize Sidebar.
                       sidebarSettingsEnabled={level === 'L0'}
                       descriptionMaxLength={columnDescriptionMaxLength}
                       onImageUpload={onImageUpload}

@@ -29,6 +29,7 @@
  * new query hook, or new server field.  It is read-only; it owns zero
  * mutations.
  */
+import type { ApolloError } from '@apollo/client';
 import { useRoleSetRoleAssignmentQuery } from '@/core/apollo/generated/apollo-hooks';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import type { ContributorSelectorInvitee } from '@/crd/forms/ContributorSelector';
@@ -60,6 +61,14 @@ type UseSelectionCandidatesOptions = {
 type UseSelectionCandidatesResult = {
   candidates: SelectionCandidate[];
   loading: boolean;
+  /**
+   * An errored query must be distinguishable from a resolved empty one: a
+   * consumer that destructures only `{ data, loading }` reads a failure as "this
+   * space has no members", and a consumer that strips a stored selection against
+   * `candidates` then deletes all of it. Mirrors `useAccountSpaceCandidates`,
+   * which surfaces it for the same reason on the spaces side (088).
+   */
+  error: ApolloError | undefined;
   /**
    * Given the currently-saved `selectedIds` array, return the chip entries
    * for the picker.  Ids still present in the all-types membership set are
@@ -98,6 +107,7 @@ export function useSelectionCandidates({
   const {
     data,
     loading,
+    error,
     refetch: rawRefetch,
   } = useRoleSetRoleAssignmentQuery({
     variables: {
@@ -220,7 +230,7 @@ export function useSelectionCandidates({
     void rawRefetch();
   };
 
-  return { candidates, loading, resolveChips, refetch };
+  return { candidates, loading, error, resolveChips, refetch };
 }
 
 /**

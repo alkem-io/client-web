@@ -29,12 +29,20 @@ const RESOLVABLE = 'space-resolvable';
 const UNRESOLVABLE = 'space-departed';
 const STORED = [RESOLVABLE, UNRESOLVABLE];
 
+/** The same pair for the contributors chip: one still a member, one departed. */
+const MEMBER = 'user-member';
+const DEPARTED = 'user-departed';
+const STORED_CONTRIBUTORS = [MEMBER, DEPARTED];
+
 const harness = vi.hoisted(() => ({
   spaceCanUpdate: true,
   candidateOptions: [] as { hostSpaceId: string | undefined; skip?: boolean }[],
   candidatesLoading: false,
   candidatesError: undefined as Error | undefined,
   candidateRefetch: vi.fn(),
+  /** Which callout the edit dialog loads — the Spaces fixture by default. */
+  editedCallout: undefined as unknown,
+  contributorCandidatesError: undefined as Error | undefined,
   updateCallout: vi.fn(),
   createCallout: vi.fn(),
   submittedUpdates: [] as Partial<CalloutFormValues>[],
@@ -84,9 +92,29 @@ const editedCallout = {
   },
 };
 
+/** The same callout as a Contributors collection, whose CUSTOM selection holds both ids. */
+const editedContributorsCallout = {
+  lookup: {
+    callout: {
+      ...editedCallout.lookup.callout,
+      framing: {
+        type: CalloutFramingType.Contributors,
+        profile: { id: 'profile-1', displayName: 'Our people', description: '', tagsets: [], references: [] },
+      },
+      settings: {
+        ...editedCallout.lookup.callout.settings,
+        framing: {
+          commentsEnabled: false,
+          selection: { mode: CalloutSelectionMode.Custom, selectedIds: STORED_CONTRIBUTORS },
+        },
+      },
+    },
+  },
+};
+
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useCalloutFormResponsesQuery: () => ({ data: undefined, refetch: vi.fn() }),
-  useCalloutContentQuery: () => ({ data: editedCallout, loading: false }),
+  useCalloutContentQuery: () => ({ data: harness.editedCallout, loading: false }),
   useCreateReferenceOnProfileMutation: () => [vi.fn()],
   useDeleteReferenceMutation: () => [vi.fn()],
   useTemplateContentLazyQuery: () => [vi.fn()],
@@ -155,11 +183,31 @@ vi.mock('../hooks/useCrdSpaceContributors', () => ({
   useCrdSpaceContributors: () => ({ defaultType: undefined, getCards: () => [] }),
 }));
 
+/**
+ * Mirrors the real hook's shape where it matters here: a failed query reports
+ * `loading: false` with NO data, so its membership map is empty and every stored
+ * id resolves ineligible — which is exactly the state in which the save path's
+ * strip deletes the whole curated selection.
+ */
 vi.mock('./useSelectionCandidates', async importOriginal => {
   const actual = await importOriginal<typeof import('./useSelectionCandidates')>();
   return {
     ...actual,
-    useSelectionCandidates: () => ({ candidates: [], loading: false, resolveChips: () => [], refetch: vi.fn() }),
+    useSelectionCandidates: () => {
+      const members = harness.contributorCandidatesError ? [] : [MEMBER];
+      return {
+        candidates: members.map(id => ({ id, displayName: id, kind: 'user' as const })),
+        loading: false,
+        error: harness.contributorCandidatesError,
+        resolveChips: (selectedIds: string[]) =>
+          selectedIds.map(id =>
+            members.includes(id)
+              ? { kind: 'user' as const, userId: id, displayName: id, eligible: true }
+              : { kind: 'virtualContributor' as const, id, displayName: id, eligible: false }
+          ),
+        refetch: vi.fn(),
+      };
+    },
   };
 });
 
@@ -232,11 +280,11 @@ const { CalloutFormConnector } = await import('./CalloutFormConnector');
 // contributors kind keeps `forms.selection.label` (FR-021).
 const MANUAL_SELECTION_SWITCH = 'forms.selection.spaces.switchLabel';
 
-const renderEdit = async () => {
+const renderEdit = async (title = 'Our spaces') => {
   render(
     <CalloutFormConnector open={true} onOpenChange={vi.fn()} mode="edit" calloutId="callout-1" calloutsSetId="set-1" />
   );
-  await waitFor(() => expect(screen.getByLabelText('forms.titleLabel')).toHaveValue('Our spaces'));
+  await waitFor(() => expect(screen.getByLabelText('forms.titleLabel')).toHaveValue(title));
 };
 
 const renderCreate = async () => {
@@ -265,6 +313,8 @@ beforeEach(() => {
   harness.candidateOptions = [];
   harness.candidatesLoading = false;
   harness.candidatesError = undefined;
+  harness.editedCallout = editedCallout;
+  harness.contributorCandidatesError = undefined;
   harness.candidateRefetch = vi.fn();
   harness.submittedUpdates = [];
   harness.submittedCreations = [];
@@ -334,6 +384,37 @@ describe('CalloutFormConnector — the spaces selection is submitted unchanged (
 
     expect(harness.submittedUpdates).toHaveLength(2);
     expect(harness.submittedUpdates[1].selectedIds).toEqual(STORED);
+  });
+});
+
+/**
+ * The contributors chip keeps its client-side strip (the spaces one was deleted
+ * outright by 084 T103), so for contributors the "unresolved" predicate is the
+ * ONLY thing standing between a failed candidate query and a wiped selection:
+ * an errored Apollo query reports `loading: false` with no data, every stored id
+ * resolves ineligible against the empty membership map, and the strip submits
+ * `[]`. The pair below is the discriminating case — the first test proves the
+ * strip is genuinely live (so the second cannot pass by the strip being absent),
+ * the second proves it is skipped when the query failed.
+ */
+describe('CalloutFormConnector — the contributor selection and a failed candidate query', () => {
+  test('a departed contributor IS stripped once the candidate set has resolved', async () => {
+    harness.editedCallout = editedContributorsCallout;
+    await renderEdit('Our people');
+    await save();
+
+    expect(harness.submittedUpdates).toHaveLength(1);
+    expect(harness.submittedUpdates[0].selectedIds).toEqual([MEMBER]);
+  });
+
+  test('but nothing is stripped when the candidate query has errored', async () => {
+    harness.editedCallout = editedContributorsCallout;
+    harness.contributorCandidatesError = new Error('Forbidden');
+    await renderEdit('Our people');
+    await save();
+
+    expect(harness.submittedUpdates).toHaveLength(1);
+    expect(harness.submittedUpdates[0].selectedIds).toEqual(STORED_CONTRIBUTORS);
   });
 });
 

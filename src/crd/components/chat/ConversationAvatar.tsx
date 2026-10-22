@@ -24,7 +24,7 @@ export type ConversationAvatarProps = {
 
 /**
  * Shared conversation-identity branch: the Guidance bot circle, a group's
- * custom photo or 4-avatar composite, or a single 1:1 avatar. Used by both
+ * custom photo or member composite, or a single 1:1 avatar. Used by both
  * the conversation list rows and the thread header, so the two surfaces can
  * never disagree (research D2/D4).
  *

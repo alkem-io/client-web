@@ -1,4 +1,4 @@
-import { AlertCircle, Mail, Plus, Search, X } from 'lucide-react';
+import { AlertCircle, Check, Mail, Plus, Search, X } from 'lucide-react';
 import { type KeyboardEvent, useEffect, useRef } from 'react';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -17,8 +17,8 @@ export type ContributorSelectorUserResult = {
   avatarUrl?: string;
   location?: string;
   /**
-   * Optional type indication rendered beside the name (e.g. People /
-   * Organizations); omitted by the invite, chat and Spaces consumers.
+   * Optional type indication (e.g. People / Organizations), rendered as the
+   * caption beneath the name; omitted by the invite, chat and Spaces consumers.
    */
   typeLabel?: string;
 };
@@ -90,6 +90,19 @@ export type ContributorSelectorProps = {
    */
   chipsPosition?: 'above' | 'below';
 
+  /**
+   * What clicking a result row means.
+   *
+   * `'add'` (default) — the invite flow: the row adds the entry, then drops out
+   * of the results and the query clears.
+   * `'toggle'` — the collection selection picker (feature 088): the row is a
+   * two-state toggle carrying `aria-pressed` and a check box, it keeps its place
+   * once selected, and the query survives the click so the ticked row stays on
+   * screen to be untoggled. `onSelectUser` is then "toggle this id" and the
+   * consumer owns both directions.
+   */
+  rowSelection?: 'add' | 'toggle';
+
   className?: string;
 };
 
@@ -132,19 +145,31 @@ export function ContributorSelector({
   ineligibleLabel,
   clearSearchAriaLabel,
   chipsPosition = 'below',
+  rowSelection = 'add',
   className,
 }: ContributorSelectorProps) {
+  const toggleRows = rowSelection === 'toggle';
   const trimmedQuery = searchQuery.trim();
   const showResults = trimmedQuery.length > 0;
   // A clear "✕" button for the collection picker (the invite flow keeps its "Add"
   // button in that corner instead). Enabled once a clear-label is supplied.
   const showClear = !allowEmailInvites && trimmedQuery.length > 0 && Boolean(clearSearchAriaLabel);
-  // Exclude users already selected — covers user/org/vc picks that
-  // overlap with the userId-keyed result set.
-  const selectedUserIds = new Set(
-    selectedContributors.filter(c => c.kind === 'user').map(c => (c as { kind: 'user'; userId: string }).userId)
+  // Selected ids keyed the way a result row is — its `userId` carries a user,
+  // organization or virtual-contributor id. Add mode de-dupes user picks only;
+  // de-duplicating the other kinds is the consumer's job (spec D8). Toggle mode
+  // ticks every kind instead, and never filters.
+  const selectedRowIds = new Set(
+    selectedContributors.flatMap(c => {
+      if (c.kind === 'email') return [];
+      if (c.kind === 'user') return [c.userId];
+      return toggleRows ? [c.id] : [];
+    })
   );
-  const visibleResults = searchResults.filter(user => !selectedUserIds.has(user.userId));
+  // An add-mode row vanishes once picked: its only gesture is "add", so a
+  // selected row has nothing left to do. A toggle row stays listed — the ticked
+  // row IS the selected state, and filtering it out would make that state
+  // unreachable (feature 088, superseding 084 FR-006).
+  const visibleResults = toggleRows ? searchResults : searchResults.filter(user => !selectedRowIds.has(user.userId));
   const showLoadMore = hasMore && !loading && visibleResults.length > 0 && onLoadMore;
 
   const sentinelRef = useRef<HTMLLIElement | null>(null);
@@ -181,9 +206,11 @@ export function ContributorSelector({
 
   // Selecting a result clears the query so the next search starts fresh and a
   // fully-picked set doesn't leave a stale "no matching results" dropdown open.
+  // A toggle row keeps the query instead: the ticked row has to stay on screen
+  // for a second click to untoggle it.
   const handleResultSelect = (userId: string) => {
     onSelectUser(userId);
-    onSearchChange('');
+    if (!toggleRows) onSearchChange('');
   };
 
   const chipsBlock =
@@ -339,29 +366,46 @@ export function ContributorSelector({
               <p className="p-3 text-control text-muted-foreground">{noResultsLabel}</p>
             ) : (
               <ul className="py-1">
-                {visibleResults.map(user => (
-                  <li key={user.userId}>
-                    <button
-                      type="button"
-                      onClick={() => handleResultSelect(user.userId)}
-                      className="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
-                    >
-                      <Avatar className="size-8">
-                        {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
-                        <AvatarFallback className="text-badge">{getInitials(user.displayName)}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-col min-w-0 flex-1">
-                        <span className="text-control truncate">{user.displayName}</span>
-                        {user.location && (
-                          <span className="text-caption text-muted-foreground truncate">{user.location}</span>
+                {visibleResults.map(user => {
+                  const selected = toggleRows && selectedRowIds.has(user.userId);
+                  // ONE caption line beneath the name, never two stacked muted
+                  // lines. `location` and `typeLabel` are disjoint in practice —
+                  // the invite consumers supply a location, the contributors
+                  // collection picker supplies a type label — so when a consumer
+                  // supplies both, the location wins.
+                  const caption = user.location ?? user.typeLabel;
+
+                  return (
+                    <li key={user.userId}>
+                      <button
+                        type="button"
+                        aria-pressed={toggleRows ? selected : undefined}
+                        onClick={() => handleResultSelect(user.userId)}
+                        className="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
+                      >
+                        <Avatar className="size-8">
+                          {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
+                          <AvatarFallback className="text-badge">{getInitials(user.displayName)}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col min-w-0 flex-1">
+                          <span className="text-control truncate">{user.displayName}</span>
+                          {caption && <span className="text-caption text-muted-foreground truncate">{caption}</span>}
+                        </div>
+                        {toggleRows && (
+                          <span
+                            aria-hidden="true"
+                            className={cn(
+                              'inline-grid size-[18px] shrink-0 place-items-center rounded border border-border',
+                              selected && 'border-primary bg-primary text-primary-foreground'
+                            )}
+                          >
+                            {selected && <Check className="size-3" />}
+                          </span>
                         )}
-                      </div>
-                      {user.typeLabel && (
-                        <span className="text-caption text-muted-foreground shrink-0">{user.typeLabel}</span>
-                      )}
-                    </button>
-                  </li>
-                ))}
+                      </button>
+                    </li>
+                  );
+                })}
                 {showLoadMore && (
                   <li ref={sentinelRef} className="p-2 text-center text-caption text-muted-foreground">
                     {loadMoreLabel}

@@ -38,6 +38,7 @@ import { InviteMembersDialogConnector } from '@/main/crdPages/space/dialogs/Invi
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
+import { CustomizeSidebarConnector } from '../../space/innovationFlow/CustomizeSidebarConnector';
 import { LayoutReplaceFlowConnector } from '../../space/innovationFlow/LayoutReplaceFlowConnector';
 import { useAboutTabData } from './about/useAboutTabData';
 import { useClassificationPicker } from './about/useClassificationPicker';
@@ -264,6 +265,7 @@ export default function CrdSpaceSettingsPage() {
       : undefined;
   const columnMenu = useColumnMenu({
     innovationFlowId: layout.innovationFlowId,
+    includeSidebar: level === 'L0',
     collaborationId: layout.collaborationId,
     onOpenDefaultCalloutTemplatePicker: openDefaultCalloutTemplatePicker,
     callouts: layout.columns.flatMap(col =>
@@ -529,13 +531,21 @@ export default function CrdSpaceSettingsPage() {
                 onError={md.onError}
                 headerActionsSlot={
                   level !== 'L0' ? (
-                    <LayoutReplaceFlowConnector
-                      collaborationId={layout.collaborationId}
-                      existingCalloutsCount={layout.existingCalloutsCount}
-                      disabled={layout.isDirty}
-                      onApplyComplete={layout.reseedFromServer}
-                      onImportingChange={setIsReplacingFlow}
-                    />
+                    <>
+                      <CustomizeSidebarConnector
+                        collaborationId={layout.collaborationId}
+                        innovationFlowStates={layout.innovationFlowStates}
+                        level={level}
+                        busy={layout.saveBar.kind === 'saving' || layout.isStructureMutating || isReplacingFlow}
+                      />
+                      <LayoutReplaceFlowConnector
+                        collaborationId={layout.collaborationId}
+                        existingCalloutsCount={layout.existingCalloutsCount}
+                        disabled={layout.isDirty}
+                        onApplyComplete={layout.reseedFromServer}
+                        onImportingChange={setIsReplacingFlow}
+                      />
+                    </>
                   ) : undefined
                 }
               />

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useUserSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { isAppMode } from '@/core/appMode/isAppMode';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   type SoundSettingKey,
@@ -126,6 +127,7 @@ const CrdUserNotificationsTab = () => {
       pushLoading={Boolean(pushLoading)}
       pushPermissionDenied={pushPermissionState === 'denied'}
       pushRequiresPwa={Boolean(requiresPWAMode)}
+      appMode={isAppMode()}
       onPushMasterToggle={handlePushMasterToggle}
       groups={groups}
       soundGroup={soundGroup}

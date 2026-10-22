@@ -1,10 +1,11 @@
 import { formatDistanceToNowStrict } from 'date-fns';
-import { Info, Loader2, Trash2, Users } from 'lucide-react';
+import { Info, Loader2, Trash2 } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
+import { ChatOptionsMenu } from '@/crd/components/chat/ChatOptionsMenu';
 import { ChatPanel } from '@/crd/components/chat/ChatPanel';
 import { ConversationAvatar } from '@/crd/components/chat/ConversationAvatar';
 import { GroupAvatar } from '@/crd/components/chat/GroupAvatar';
@@ -23,6 +24,7 @@ import { useConversationDrafts } from '@/main/userMessaging/ConversationDraftsCo
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
 import { ConversationThread } from './ConversationThread';
+import { resolveChatLocale } from './chatLocale';
 import {
   injectGuidanceIntro,
   mapConversationToListItem,
@@ -93,6 +95,7 @@ export const UnifiedChatPanelConnector = () => {
 
   const [infoOpen, setInfoOpen] = useState(false);
   const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
+  const [leaveConfirmOpen, setLeaveConfirmOpen] = useState(false);
   const [clearing, setClearing] = useState(false);
   const justClearedRef = useRef(false);
 
@@ -149,7 +152,7 @@ export const UnifiedChatPanelConnector = () => {
       }
     : undefined;
 
-  let chatMessages = rawMessages.map(message => mapMessageToChatMessage(message, { currentUserId, formatTimestamp }));
+  let chatMessages = rawMessages.map(message => mapMessageToChatMessage(message, { currentUserId }));
   if (isGuidanceThread && selectedConversation) {
     const vcMember = selectedConversation.members.find(member => member.id === guidanceVcId);
     const author: CommentAuthor = vcMember
@@ -231,16 +234,16 @@ export const UnifiedChatPanelConnector = () => {
     );
   } else if (selectedConversation?.isGroup) {
     headerActions = (
-      <button
-        type="button"
-        onClick={groupSettings.openDialog}
-        aria-label={t('group.settings')}
-        className={iconButtonClass}
-      >
-        <Users aria-hidden="true" className="size-4" />
-      </button>
+      <ChatOptionsMenu
+        label={t('thread.options')}
+        settingsLabel={t('group.settings')}
+        onOpenSettings={groupSettings.openDialog}
+        leaveLabel={t('group.leave')}
+        onLeave={() => setLeaveConfirmOpen(true)}
+      />
     );
   }
+  const isGroupThread = view === 'thread' && Boolean(selectedConversation?.isGroup);
 
   const groupMembers = selectedConversation
     ? mapMembersToGroupMembers(selectedConversation.members, currentUserId)
@@ -269,10 +272,7 @@ export const UnifiedChatPanelConnector = () => {
             <AvatarImage src={groupSettings.avatarUrl} alt="" />
           </Avatar>
         ) : (
-          <GroupAvatar
-            members={groupMembers.map(m => ({ id: m.id, name: m.name, avatarUrl: m.avatarUrl }))}
-            size="lg"
-          />
+          <GroupAvatar members={selectedListItem?.memberAvatars ?? []} size="lg" />
         )}
         <span className="text-control text-muted-foreground">{t('group.avatar.edit')}</span>
       </button>
@@ -301,15 +301,25 @@ export const UnifiedChatPanelConnector = () => {
         closeLabel={t('launcher.close')}
         onBack={view === 'thread' ? handleBack : undefined}
         backLabel={t('thread.back')}
-        onGoToSettings={() => {
-          // Close first: the panel lives outside <Routes> and the messaging context has
-          // no route listener, so navigating alone leaves it mounted. On a small screen
-          // it is `fixed inset-0`, which would cover the settings page it just opened.
-          setIsOpen(false);
-          navigate(buildUserNotificationSettingsUrl());
-        }}
+        // The gear is about chat in general, so it lives in the list header only; a
+        // conversation's own options are in its header menu.
+        onGoToSettings={
+          view === 'list'
+            ? () => {
+                // Close first: the panel lives outside <Routes> and the messaging context has
+                // no route listener, so navigating alone leaves it mounted. On a small screen
+                // it is `fixed inset-0`, which would cover the settings page it just opened.
+                setIsOpen(false);
+                navigate(buildUserNotificationSettingsUrl());
+              }
+            : undefined
+        }
         settingsLabel={t('panel.settings')}
+        expandLabel={t('panel.expand')}
+        collapseLabel={t('panel.collapse')}
         titleAvatar={titleAvatar}
+        onTitleClick={isGroupThread ? groupSettings.openDialog : undefined}
+        titleActionLabel={isGroupThread ? t('group.settings') : undefined}
         headerActions={view === 'thread' ? headerActions : undefined}
       >
         {view === 'thread' && selectedConversationId ? (
@@ -321,6 +331,7 @@ export const UnifiedChatPanelConnector = () => {
             conversation={threadHeader}
             messages={chatMessages}
             messagesLoading={messagesLoading}
+            locale={resolveChatLocale(i18n.language, navigator.languages)}
             currentUser={currentUser}
             isSending={isSending}
             // No reactions on the AI assistant thread (incl. the synthetic intro) — FR-016a.
@@ -397,6 +408,18 @@ export const UnifiedChatPanelConnector = () => {
         cancelLabel={t('actions.cancel')}
         altTextLabel={t('group.avatar.altLabel')}
         altTextPlaceholder={t('group.avatar.altPlaceholder')}
+      />
+      <ConfirmationDialog
+        open={leaveConfirmOpen}
+        onOpenChange={setLeaveConfirmOpen}
+        title={t('group.leaveConfirm.title')}
+        description={t('group.leaveConfirm.description')}
+        confirmLabel={t('group.leaveConfirm.confirm')}
+        variant="destructive"
+        onConfirm={() => {
+          setLeaveConfirmOpen(false);
+          return handleLeaveGroupConfirmed();
+        }}
       />
       <GuidanceInfoDialog open={infoOpen} onOpenChange={setInfoOpen} />
       <ConfirmationDialog
