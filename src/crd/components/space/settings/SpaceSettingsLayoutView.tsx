@@ -13,8 +13,8 @@ import { rectSortingStrategy, SortableContext, sortableKeyboardCoordinates } fro
 import { Loader2, Plus } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { GatedAction } from '@/crd/components/common/GatedAction';
 import { layoutCollisionDetection } from '@/crd/components/space/settings/layoutCollisionDetection';
-import { SpaceSettingsSaveBar } from '@/crd/components/space/settings/SpaceSettingsSaveBar';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -60,8 +60,12 @@ export type SpaceSettingsLayoutViewProps = {
   onReorderColumns?: (orderedColumnIds: LayoutColumnId[]) => void;
   onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
   onViewPost: (calloutId: string) => void;
-  onSave: () => void;
-  onDiscardChanges: () => void;
+  /**
+   * True while the layout buffer has unsaved changes. Disables Add and every column's Delete —
+   * both reseed the board from the server and would drop the unsaved changes (FR-026b). Saving
+   * and discarding happen in the page's unsaved-changes bar.
+   */
+  hasUnsavedChanges?: boolean;
   columnMenuActions: ColumnMenuActions;
   /** Phase add — only invoked when `level !== 'L0'` and `columns.length < maximumNumberOfStates`. */
   onCreatePhase?: (input: { displayName: string; description: string }) => Promise<void>;
@@ -98,7 +102,7 @@ export type SpaceSettingsLayoutViewProps = {
  *  - Three-dot per-column menu: Active phase + Default post template.
  *  - Per-callout kebab (two entries: Move to + View Post).
  *  - Per-phase Layout modal (description collapse + publish details) via column menu.
- *  - Save Changes / Discard Changes action bar at the bottom-right.
+ *  - Saved / discarded through the page's unsaved-changes bar (no in-view action row).
  */
 export function SpaceSettingsLayoutView({
   level,
@@ -110,8 +114,7 @@ export function SpaceSettingsLayoutView({
   onReorderColumns,
   onMoveToColumn,
   onViewPost,
-  onSave,
-  onDiscardChanges,
+  hasUnsavedChanges = false,
   columnMenuActions,
   onCreatePhase,
   maximumNumberOfStates = Number.POSITIVE_INFINITY,
@@ -148,6 +151,7 @@ export function SpaceSettingsLayoutView({
   // mutations from the buffer as it was when clicked and then marks that buffer clean, so a
   // drag or Move-to landing mid-save would be silently treated as saved.
   const locked = saveBar.kind === 'saving' || isStructureMutating || isReplacingFlow;
+  const structuralDisabledReason = hasUnsavedChanges ? t('saveBar.lockedReason') : undefined;
   // Sortable column items are prefixed so they don't collide with the per-column
   // droppable zones (those keep `column.id` as their droppable id — see
   // LayoutPoolColumn — so the existing callout cross-column move handler keeps
@@ -249,22 +253,24 @@ export function SpaceSettingsLayoutView({
         <div className="flex items-center gap-2 shrink-0">
           {headerActionsSlot}
           {canManagePhases && (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="gap-2 shrink-0"
-              disabled={loading || !canAddPhase}
-              onClick={() => setAddPhaseOpen(true)}
-            >
-              <Plus aria-hidden="true" className="size-4" />
-              {addButtonLabel}
-            </Button>
+            <GatedAction disabledReason={structuralDisabledReason}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="gap-2 shrink-0"
+                disabled={loading || !canAddPhase}
+                onClick={() => setAddPhaseOpen(true)}
+              >
+                <Plus aria-hidden="true" className="size-4" />
+                {addButtonLabel}
+              </Button>
+            </GatedAction>
           )}
         </div>
       </div>
 
-      {/* Columns + Save bar inside a bordered container */}
+      {/* Columns */}
       <div className="relative">
         {isReplacingFlow && (
           <output
@@ -279,7 +285,7 @@ export function SpaceSettingsLayoutView({
           <LayoutColumnsSkeleton label={t('layout.loading')} className="min-h-[60vh]" />
         ) : (
           <DndContext
-            sensors={sensors}
+            sensors={locked ? [] : sensors}
             collisionDetection={layoutCollisionDetection}
             onDragStart={handleDragStart}
             onDragOver={handleDragOver}
@@ -287,7 +293,7 @@ export function SpaceSettingsLayoutView({
             onDragCancel={handleDragCancel}
           >
             <SortableContext items={sortableColumnIds} strategy={rectSortingStrategy}>
-              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 items-start">
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 items-start">
                 {columns.map(column => {
                   const otherColumns = columns.filter(c => c.id !== column.id).map(c => ({ id: c.id, title: c.title }));
                   return (
@@ -301,6 +307,8 @@ export function SpaceSettingsLayoutView({
                       columnMenuActions={columnMenuActions}
                       entityNoun={entityNoun}
                       draggable={canReorderColumns}
+                      locked={locked}
+                      deleteDisabledReason={structuralDisabledReason}
                       // The per-phase sidebar section is hidden on subspaces (stored values
                       // untouched): a subspace has one sidebar, edited through Customize Sidebar.
                       sidebarSettingsEnabled={level === 'L0'}
@@ -317,21 +325,6 @@ export function SpaceSettingsLayoutView({
               {activeCallout ? <LayoutCalloutRowPreview callout={activeCallout} showDescription={true} /> : null}
             </DragOverlay>
           </DndContext>
-        )}
-
-        {!loading && (
-          <SpaceSettingsSaveBar
-            // Lock both Save and Reset while a structural mutation (phase
-            // create/delete) or a flow replacement is in flight: the snapshot is
-            // being reseeded and a Save click in that window would race against
-            // the refetch.
-            state={isStructureMutating || isReplacingFlow ? { kind: 'saving' } : saveBar}
-            onSave={onSave}
-            onDiscard={onDiscardChanges}
-            saveLabel={t('saveBar.save')}
-            discardLabel={t('saveBar.discard')}
-            savingLabel={t('saveBar.saving')}
-          />
         )}
       </div>
 

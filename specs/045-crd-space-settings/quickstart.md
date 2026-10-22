@@ -165,7 +165,8 @@ pnpm vitest run
 - [ ] Subspaces: Default Subspace Template selector works. Pin / Save as Template / Delete via kebab. No Edit Details / Archive / View entries visible. Title click navigates. Search / Filter / Grid-List toggle work.
 - [ ] Templates: five categories collapsible. Global search filters. Preview / Duplicate / Edit / Delete per card.
 - [ ] Storage: hierarchical tree renders. Open-in-new-tab works. Delete with confirm.
-- [ ] Settings: every toggle fires immediately. Danger Zone Delete Space shows confirmation listing what will be deleted.
+- [ ] *(Added 2026-10-22)* Unsaved-changes bar on About, Layout and Settings: editing shows the bar at the bottom with the count ("1 unsaved change" / "N unsaved changes"); putting a value back lowers it; Discard asks first and resets in place; Save changes saves the whole tab, hides the bar and toasts "Changes saved"; a failed part stays counted with the error in red. Switching tabs with changes opens Save / Discard & leave / Cancel; Layout's View Post asks too. On Layout, Add tab/phase, Delete and Replace flow are disabled while there are changes. A classification added from a template shows "Unsaved" until saved; removing one needs no confirm.
+- [ ] Settings: every toggle fires immediately. *(Amended 2026-10-22: superseded — every toggle is buffered and saved with the bar.)* Danger Zone Delete Space shows confirmation listing what will be deleted.
 - [ ] Account: URL Copy works. No Change Host button. Support link opens. Delete Space (if permitted) runs existing flow.
 - [ ] Dirty tab (About or Layout) + tab switch → confirm dialog blocks. Cancel keeps state.
 - [ ] CRD toggle off → old MUI Space Settings renders unchanged.

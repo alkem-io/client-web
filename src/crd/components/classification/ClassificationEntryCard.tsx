@@ -19,6 +19,8 @@ export type ClassificationEntryCardProps = {
   entry: ClassificationEntryData;
   /** True while this entry's selection write is in flight — the selector renders disabled. */
   selectionPending?: boolean;
+  /** True for an entry added locally and not saved yet — shows an "Unsaved" badge. */
+  unsaved?: boolean;
   /** Step B — full-replacement selection write (FR-012d). */
   onSelectValues: (entryId: string, selectedValueIDs: string[]) => void;
   /** The shown/hidden toggle (FR-010b/FR-010d) — worded "not shown on the Space page", never "private". */
@@ -36,13 +38,14 @@ export type ClassificationEntryCardProps = {
  * checkbox/radio selector, kept as an alternative), the shown/hidden switch
  * and Remove.
  *
- * Each action commits immediately (FR-006a) — nothing here is buffered. An
- * entry with no selection shows only dashed chips — that is FR-012a's
- * "empty/prompting group".
+ * Every action is a callback — whether it commits at once or is staged until
+ * the consumer saves is the consumer's call. An entry with no selection shows
+ * only dashed chips — that is FR-012a's "empty/prompting group".
  */
 export function ClassificationEntryCard({
   entry,
   selectionPending,
+  unsaved,
   onSelectValues,
   onToggleDisplay,
   onRequestRemove,
@@ -82,6 +85,11 @@ export function ClassificationEntryCard({
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <h4 className="text-body-emphasis text-foreground truncate">{entry.displayLabel}</h4>
+              {unsaved && (
+                <Badge variant="outline" className="shrink-0 border-primary/40 text-primary">
+                  {t('classifications.entry.unsaved')}
+                </Badge>
+              )}
               {!entry.display && (
                 <Badge variant="outline" className="gap-1 shrink-0">
                   <EyeOff className="size-3" aria-hidden="true" />

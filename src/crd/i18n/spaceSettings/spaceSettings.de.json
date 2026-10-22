@@ -24,9 +24,20 @@
     }
   },
   "saveBar": {
+    "count_one": "{{count}} ungespeicherte Änderung",
+    "count_other": "{{count}} ungespeicherte Änderungen",
     "save": "Änderungen speichern",
-    "discard": "Änderungen verwerfen",
-    "saving": "Speichern…"
+    "discard": "Verwerfen",
+    "saving": "Speichern…",
+    "saved": "Änderungen gespeichert",
+    "regionLabel": "Ungespeicherte Änderungen",
+    "lockedReason": "Speichere oder verwirf zuerst deine Änderungen",
+    "discardDialog": {
+      "title_one": "1 ungespeicherte Änderung verwerfen?",
+      "title_other": "{{count}} ungespeicherte Änderungen verwerfen?",
+      "description": "Jedes geänderte Feld auf diesem Tab erhält wieder seinen gespeicherten Wert.",
+      "confirm": "Verwerfen"
+    }
   },
   "layout": {
     "pageHeader": {
@@ -34,11 +45,6 @@
       "subtitle": "Passen Sie die Navigations-Tabs Ihres Spaces an. Benennen Sie um, ordnen Sie neu an und verwalten Sie Beitragszuweisungen."
     },
     "loading": "Layout wird geladen…",
-    "discardChangesDialog": {
-      "title": "Änderungen verwerfen?",
-      "description": "Ihre nicht gespeicherten Layout-Änderungen werden auf den zuletzt gespeicherten Stand zurückgesetzt. Dies kann nicht rückgängig gemacht werden.",
-      "confirm": "Änderungen verwerfen"
-    },
     "column": {
       "titlePlaceholder": "Spaltentitel",
       "descriptionPlaceholder": "Diese Spalte beschreiben…",
@@ -1011,12 +1017,6 @@
         "title": "Live-Vorschau",
         "description": "Diese Vorschau zeigt, wie Ihre Space-Karte im Verzeichnis \"Spaces erkunden\" angezeigt wird."
       }
-    },
-    "inlineSave": {
-      "save": "Speichern",
-      "saving": "Speichern…",
-      "saved": "Gespeichert",
-      "retry": "Erneut versuchen"
     }
   },
   "classifications": {
@@ -1052,12 +1052,8 @@
       "hiddenHint": "Not shown on the Space page"
     },
     "remove": {
-      "menuLabel": "Remove classification",
-      "confirmTitle": "Remove this classification?",
-      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
-      "confirmButton": "Remove"
+      "menuLabel": "Remove classification"
     },
-    "removedEntryError": "This classification was removed — refreshing the page.",
     "entry": {
       "multiSelect": "Mehrfachauswahl",
       "singleSelect": "Einzelauswahl",
@@ -1066,8 +1062,8 @@
       "actions": "Klassifikations-Aktionen: {{label}}",
       "selectValues": "Werte auswählen…",
       "selectValue": "{{label}} auswählen",
-      "deselectValue": "{{label}} abwählen"
-    },
-    "removedConcurrently": "Diese Klassifikation wurde von jemand anderem entfernt. Die Liste wurde aktualisiert."
+      "deselectValue": "{{label}} abwählen",
+      "unsaved": "Nicht gespeichert"
+    }
   }
 }

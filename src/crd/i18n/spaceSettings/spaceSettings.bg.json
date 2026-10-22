@@ -24,9 +24,20 @@
     }
   },
   "saveBar": {
+    "count_one": "{{count}} незапазена промяна",
+    "count_other": "{{count}} незапазени промени",
     "save": "Запази промените",
-    "discard": "Отхвърли промените",
-    "saving": "Записване…"
+    "discard": "Отхвърли",
+    "saving": "Записване…",
+    "saved": "Промените са запазени",
+    "regionLabel": "Незапазени промени",
+    "lockedReason": "Първо запазете или отхвърлете промените си",
+    "discardDialog": {
+      "title_one": "Да се отхвърли ли 1 незапазена промяна?",
+      "title_other": "Да се отхвърлят ли {{count}} незапазени промени?",
+      "description": "Всяко променено поле в този раздел се връща към запазената си стойност.",
+      "confirm": "Отхвърли"
+    }
   },
   "layout": {
     "pageHeader": {
@@ -34,11 +45,6 @@
       "subtitle": "Персонализирайте навигационните раздели на вашето Пространство. Преименувайте, пренареждайте и управлявайте присвояванията на публикациите."
     },
     "loading": "Зареждане на оформлението…",
-    "discardChangesDialog": {
-      "title": "Да се отхвърлят ли промените?",
-      "description": "Незапазените промени в Оформлението ще бъдат върнати към последното запазено състояние. Това не може да бъде отменено.",
-      "confirm": "Отхвърли промените"
-    },
     "column": {
       "titlePlaceholder": "Заглавие на колоната",
       "descriptionPlaceholder": "Опишете тази колона…",
@@ -1011,12 +1017,6 @@
         "title": "Преглед на живо",
         "description": "Този преглед показва как ще изглежда картата на вашето пространство в директорията \"Разгледай пространствата\"."
       }
-    },
-    "inlineSave": {
-      "save": "Запази",
-      "saving": "Записване…",
-      "saved": "Запазено",
-      "retry": "Опитай отново"
     }
   },
   "classifications": {
@@ -1052,12 +1052,8 @@
       "hiddenHint": "Not shown on the Space page"
     },
     "remove": {
-      "menuLabel": "Remove classification",
-      "confirmTitle": "Remove this classification?",
-      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
-      "confirmButton": "Remove"
+      "menuLabel": "Remove classification"
     },
-    "removedEntryError": "This classification was removed — refreshing the page.",
     "entry": {
       "multiSelect": "Множествен избор",
       "singleSelect": "Единичен избор",
@@ -1066,8 +1062,8 @@
       "actions": "Действия по класификацията: {{label}}",
       "selectValues": "Избери стойности…",
       "selectValue": "Избери {{label}}",
-      "deselectValue": "Премахни избора на {{label}}"
-    },
-    "removedConcurrently": "Тази класификация беше премахната от друг потребител. Списъкът е обновен."
+      "deselectValue": "Премахни избора на {{label}}",
+      "unsaved": "Незапазено"
+    }
   }
 }

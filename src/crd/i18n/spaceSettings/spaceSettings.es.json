@@ -24,9 +24,20 @@
     }
   },
   "saveBar": {
+    "count_one": "{{count}} cambio sin guardar",
+    "count_other": "{{count}} cambios sin guardar",
     "save": "Guardar cambios",
-    "discard": "Descartar cambios",
-    "saving": "Guardando…"
+    "discard": "Descartar",
+    "saving": "Guardando…",
+    "saved": "Cambios guardados",
+    "regionLabel": "Cambios sin guardar",
+    "lockedReason": "Guarda o descarta tus cambios primero",
+    "discardDialog": {
+      "title_one": "¿Descartar 1 cambio sin guardar?",
+      "title_other": "¿Descartar {{count}} cambios sin guardar?",
+      "description": "Cada campo modificado en esta pestaña vuelve a su valor guardado.",
+      "confirm": "Descartar"
+    }
   },
   "layout": {
     "pageHeader": {
@@ -34,11 +45,6 @@
       "subtitle": "Personaliza las pestañas de navegación de tu Espacio. Cambia el nombre, reordena y gestiona las asignaciones de publicaciones."
     },
     "loading": "Cargando el diseño…",
-    "discardChangesDialog": {
-      "title": "¿Descartar cambios?",
-      "description": "Tus cambios de Diseño no guardados se revertirán al último estado guardado. Esta acción no se puede deshacer.",
-      "confirm": "Descartar cambios"
-    },
     "column": {
       "titlePlaceholder": "Título de la columna",
       "descriptionPlaceholder": "Describe esta columna…",
@@ -1011,12 +1017,6 @@
         "title": "Vista previa en vivo",
         "description": "Esta vista previa muestra cómo aparecerá tu tarjeta de espacio en el directorio \"Explorar espacios\"."
       }
-    },
-    "inlineSave": {
-      "save": "Guardar",
-      "saving": "Guardando…",
-      "saved": "Guardado",
-      "retry": "Reintentar"
     }
   },
   "classifications": {
@@ -1052,12 +1052,8 @@
       "hiddenHint": "Not shown on the Space page"
     },
     "remove": {
-      "menuLabel": "Remove classification",
-      "confirmTitle": "Remove this classification?",
-      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
-      "confirmButton": "Remove"
+      "menuLabel": "Remove classification"
     },
-    "removedEntryError": "This classification was removed — refreshing the page.",
     "entry": {
       "multiSelect": "Selección múltiple",
       "singleSelect": "Selección única",
@@ -1066,8 +1062,8 @@
       "actions": "Acciones de clasificación: {{label}}",
       "selectValues": "Seleccionar valores…",
       "selectValue": "Seleccionar {{label}}",
-      "deselectValue": "Deseleccionar {{label}}"
-    },
-    "removedConcurrently": "Esta clasificación fue eliminada por otra persona. La lista se ha actualizado."
+      "deselectValue": "Deseleccionar {{label}}",
+      "unsaved": "Sin guardar"
+    }
   }
 }

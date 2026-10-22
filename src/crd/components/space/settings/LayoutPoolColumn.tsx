@@ -73,6 +73,8 @@ type LayoutPoolColumnProps = {
   draggable?: boolean;
   /** Freezes the column and its rows while the layout is being saved: no drag, no drop, no Move to. */
   locked?: boolean;
+  /** When set, Delete is disabled and this reason is shown under it (unsaved layout changes — FR-026b). */
+  deleteDisabledReason?: string;
   /** Whether the Layout dialog shows the sidebar-widgets section (hidden on subspaces for now). */
   sidebarSettingsEnabled?: boolean;
   /** Character limit of a column description; turns on the editor's progress ring and blocks Save past it. */
@@ -90,6 +92,7 @@ export function LayoutPoolColumn({
   entityNoun = 'phase',
   draggable = false,
   locked = false,
+  deleteDisabledReason,
   sidebarSettingsEnabled = true,
   descriptionMaxLength,
   className,
@@ -181,6 +184,7 @@ export function LayoutPoolColumn({
               column={column}
               actions={columnMenuActions}
               deleteKeys={deleteKeys}
+              deleteDisabledReason={deleteDisabledReason}
               onEditDetails={() => setEditDetailsOpen(true)}
               onRequestLayout={() => setLayoutDialogOpen(true)}
               onRequestPostTemplate={() => setPostTemplateDialogOpen(true)}
@@ -327,6 +331,7 @@ type ColumnOverflowMenuProps = {
   actions: ColumnMenuActions;
   /** Literal i18n keys for the Delete entry — the tab set (L0) or the phase set (subspaces). */
   deleteKeys: DeleteKeySet;
+  deleteDisabledReason?: string;
   onEditDetails: () => void;
   onRequestLayout: () => void;
   onRequestPostTemplate: () => void;
@@ -356,6 +361,7 @@ function ColumnOverflowMenu({
   column,
   actions,
   deleteKeys,
+  deleteDisabledReason,
   onEditDetails,
   onRequestLayout,
   onRequestPostTemplate,
@@ -429,9 +435,18 @@ function ColumnOverflowMenu({
         {actions.onDeletePhase && column.isDeletable !== false && (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={onRequestDeletePhase}>
-              <Trash2 aria-hidden="true" className="mr-2 size-3.5" />
-              {t(deleteKeys.menuLabel)}
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
+              onClick={onRequestDeletePhase}
+              disabled={!!deleteDisabledReason}
+            >
+              <Trash2 aria-hidden="true" className="mr-2 size-3.5 self-start mt-0.5" />
+              <span className="flex flex-col">
+                {t(deleteKeys.menuLabel)}
+                {deleteDisabledReason && (
+                  <span className="text-caption text-muted-foreground">{deleteDisabledReason}</span>
+                )}
+              </span>
             </DropdownMenuItem>
           </>
         )}

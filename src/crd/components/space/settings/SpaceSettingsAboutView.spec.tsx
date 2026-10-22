@@ -62,20 +62,17 @@ const baseProps = (overrides?: Partial<SpaceSettingsAboutViewProps>): SpaceSetti
     href: '/space/my-space',
   },
   countries: [],
-  dirtyByField: {},
-  saveStatusByField: {},
   onChange: vi.fn(),
   onUploadAvatar: vi.fn(),
   onUploadPageBanner: vi.fn(),
   onUploadCardBanner: vi.fn(),
   onReferencesChange: vi.fn(),
-  onSaveSection: vi.fn(),
   classifications: [ENTRY],
-  classificationSelectionPendingIds: [],
+  unsavedClassificationIds: [],
   onAddClassification: vi.fn(),
   onSelectClassificationValues: vi.fn(),
   onToggleClassificationDisplay: vi.fn(),
-  onRequestRemoveClassification: vi.fn(),
+  onRemoveClassification: vi.fn(),
   ...overrides,
 });
 
@@ -158,31 +155,34 @@ describe('SpaceSettingsAboutView — Classifications block', () => {
     expect(onSelectClassificationValues).toHaveBeenLastCalledWith('entry-1', ['sdg-13']);
   });
 
-  it('"Select values…" in the kebab expands the selector; a pending write disables it', async () => {
-    render(
-      <SpaceSettingsAboutView
-        {...baseProps({ classifications: [ENTRY], classificationSelectionPendingIds: ['entry-1'] })}
-      />
-    );
+  it('"Select values…" in the kebab expands the selector', async () => {
+    render(<SpaceSettingsAboutView {...baseProps({ classifications: [ENTRY] })} />);
     // Selection exists → selector starts collapsed.
     expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
     await openEntryMenu();
     await userEvent.click(await screen.findByRole('menuitem', { name: 'Select values…' }));
     expect(await screen.findAllByRole('checkbox')).toHaveLength(2);
-    for (const checkbox of screen.getAllByRole('checkbox')) {
-      expect(checkbox).toBeDisabled();
-    }
   });
 
-  it('Remove in the kebab requests removal via onRequestRemoveClassification, never removes directly', async () => {
-    const onRequestRemoveClassification = vi.fn();
-    render(<SpaceSettingsAboutView {...baseProps({ classifications: [ENTRY], onRequestRemoveClassification })} />);
+  it('marks a classification added locally and not saved yet as Unsaved', async () => {
+    render(
+      <SpaceSettingsAboutView {...baseProps({ classifications: [ENTRY], unsavedClassificationIds: ['entry-1'] })} />
+    );
+    expect(await screen.findByText('Unsaved')).toBeInTheDocument();
+  });
+
+  it('Remove in the kebab hands the removal to onRemoveClassification (staged by the consumer, no confirm)', async () => {
+    const onRemoveClassification = vi.fn();
+    render(<SpaceSettingsAboutView {...baseProps({ classifications: [ENTRY], onRemoveClassification })} />);
     await openEntryMenu();
     await userEvent.click(await screen.findByRole('menuitem', { name: 'Remove classification' }));
-    expect(onRequestRemoveClassification).toHaveBeenCalledWith('entry-1');
-    expect(onRequestRemoveClassification).toHaveBeenCalledTimes(1);
-    // Removing is the connector's job (owns the confirm dialog + mutation) — the
-    // view has no other classification-removal callback to fall back to.
+    expect(onRemoveClassification).toHaveBeenCalledWith('entry-1');
+    expect(onRemoveClassification).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders no per-section Save button — saving is the unsaved-changes bar', async () => {
+    render(<SpaceSettingsAboutView {...baseProps({ name: 'Renamed' })} />);
+    expect(screen.queryByRole('button', { name: /^save$/i })).not.toBeInTheDocument();
   });
 
   it('the Add Classification button sits below the entry list (design 01)', async () => {

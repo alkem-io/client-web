@@ -24,9 +24,20 @@
     }
   },
   "saveBar": {
+    "count_one": "{{count}} niet-opgeslagen wijziging",
+    "count_other": "{{count}} niet-opgeslagen wijzigingen",
     "save": "Wijzigingen opslaan",
-    "discard": "Wijzigingen verwerpen",
-    "saving": "Opslaan…"
+    "discard": "Verwerpen",
+    "saving": "Opslaan…",
+    "saved": "Wijzigingen opgeslagen",
+    "regionLabel": "Niet-opgeslagen wijzigingen",
+    "lockedReason": "Sla je wijzigingen eerst op of verwerp ze",
+    "discardDialog": {
+      "title_one": "1 niet-opgeslagen wijziging verwerpen?",
+      "title_other": "{{count}} niet-opgeslagen wijzigingen verwerpen?",
+      "description": "Elk gewijzigd veld op dit tabblad krijgt weer zijn opgeslagen waarde.",
+      "confirm": "Verwerpen"
+    }
   },
   "layout": {
     "pageHeader": {
@@ -34,11 +45,6 @@
       "subtitle": "Pas de navigatietabbladen van je Space aan. Hernoem, herorden en beheer toewijzingen van Posts."
     },
     "loading": "Layout laden…",
-    "discardChangesDialog": {
-      "title": "Wijzigingen verwerpen?",
-      "description": "Je niet-opgeslagen Layout-wijzigingen worden teruggezet naar de laatst opgeslagen staat. Dit kan niet ongedaan worden gemaakt.",
-      "confirm": "Wijzigingen verwerpen"
-    },
     "column": {
       "titlePlaceholder": "Kolomtitel",
       "descriptionPlaceholder": "Beschrijf deze kolom…",
@@ -1011,12 +1017,6 @@
         "title": "Live voorbeeld",
         "description": "Dit voorbeeld toont hoe je Space-kaart wordt weergegeven in de \"Explore Spaces\"-directory."
       }
-    },
-    "inlineSave": {
-      "save": "Opslaan",
-      "saving": "Opslaan…",
-      "saved": "Opgeslagen",
-      "retry": "Opnieuw proberen"
     }
   },
   "classifications": {
@@ -1052,12 +1052,8 @@
       "hiddenHint": "Not shown on the Space page"
     },
     "remove": {
-      "menuLabel": "Remove classification",
-      "confirmTitle": "Remove this classification?",
-      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
-      "confirmButton": "Remove"
+      "menuLabel": "Remove classification"
     },
-    "removedEntryError": "This classification was removed — refreshing the page.",
     "entry": {
       "multiSelect": "Meerkeuze",
       "singleSelect": "Eén keuze",
@@ -1066,8 +1062,8 @@
       "actions": "Classificatie-acties: {{label}}",
       "selectValues": "Waarden selecteren…",
       "selectValue": "{{label}} selecteren",
-      "deselectValue": "{{label}} deselecteren"
-    },
-    "removedConcurrently": "Deze classificatie is door iemand anders verwijderd. De lijst is vernieuwd."
+      "deselectValue": "{{label}} deselecteren",
+      "unsaved": "Niet opgeslagen"
+    }
   }
 }

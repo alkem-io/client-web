@@ -4,8 +4,9 @@ import type { SpaceSettingsTabId } from './useSpaceSettingsTab';
 /**
  * useDirtyTabGuard — centralizes the Settings dirty-buffer protection.
  *
- * Layout (its Save bar buffer) and About (sections with unsaved edits, saved
- * per section via FieldFooter) can enter a dirty state. The guard covers:
+ * A tab is dirty while its unsaved-changes bar counts any change (About,
+ * Layout, Settings), or while an Updates draft or an Application Form edit is
+ * pending. The guard covers:
  *
  *   1. Tab switches within Settings via `requestSwitch(next)`, which suspends
  *      until the consumer resolves it (typically after a confirm dialog).

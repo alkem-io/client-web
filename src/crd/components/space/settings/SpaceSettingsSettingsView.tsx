@@ -6,7 +6,6 @@ import {
   Eye,
   Globe,
   Layout,
-  Loader2,
   Lock,
   Mail,
   Share2,
@@ -95,7 +94,8 @@ export type SpaceSettingsSettingsViewProps = {
   hostOrganizationTrusted: boolean;
   providerDisplayName: string;
   loading?: boolean;
-  updatingKeys: ReadonlySet<string>;
+  /** Locks every control while the tab's changes are being saved (FR-025d). */
+  disabled?: boolean;
   onPrivacyChange: (next: SpacePrivacy) => void;
   onMembershipPolicyChange: (next: MembershipPolicy) => void;
   onToggleAllowedAction: (key: AllowedActionKey, next: boolean) => void;
@@ -169,7 +169,7 @@ export function SpaceSettingsSettingsView({
   allowedActions,
   hostOrganizationTrusted,
   providerDisplayName,
-  updatingKeys,
+  disabled = false,
   onPrivacyChange,
   onMembershipPolicyChange,
   onToggleAllowedAction,
@@ -179,10 +179,6 @@ export function SpaceSettingsSettingsView({
   className,
 }: SpaceSettingsSettingsViewProps) {
   const { t } = useTranslation('crd-spaceSettings');
-  const hasPrefix = (prefix: string) => [...updatingKeys].some(k => k.startsWith(prefix));
-  const privacyBusy = hasPrefix('privacy:');
-  const userInfoBusy = hasPrefix('userInfo:');
-  const membershipBusy = hasPrefix('membership:');
   const visibleActions = allowedActions.filter(action => isActionVisibleAtLevel(level, action.key));
 
   return (
@@ -192,20 +188,16 @@ export function SpaceSettingsSettingsView({
           value={privacy}
           onValueChange={v => onPrivacyChange(v as SpacePrivacy)}
           className="space-y-4"
-          disabled={privacyBusy}
+          disabled={disabled}
         >
           <label
             htmlFor="visibility-public"
             className={cn(
               'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
-              privacyBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
+              disabled ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
             )}
           >
-            {updatingKeys.has('privacy:public') ? (
-              <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
-            ) : (
-              <RadioGroupItem value="public" id="visibility-public" className="mt-1" />
-            )}
+            <RadioGroupItem value="public" id="visibility-public" className="mt-1" />
             <div className="space-y-1">
               <span className="text-card-title flex items-center gap-2">
                 <Globe className="size-4 text-primary" />
@@ -218,14 +210,10 @@ export function SpaceSettingsSettingsView({
             htmlFor="visibility-private"
             className={cn(
               'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
-              privacyBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
+              disabled ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
             )}
           >
-            {updatingKeys.has('privacy:private') ? (
-              <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
-            ) : (
-              <RadioGroupItem value="private" id="visibility-private" className="mt-1" />
-            )}
+            <RadioGroupItem value="private" id="visibility-private" className="mt-1" />
             <div className="space-y-1">
               <span className="text-card-title flex items-center gap-2">
                 <Lock className="size-4 text-muted-foreground" />
@@ -249,7 +237,7 @@ export function SpaceSettingsSettingsView({
             value={userInfoVisibility}
             onValueChange={v => onUserInfoVisibilityChange(v as UserInfoVisibility)}
             className="space-y-3"
-            disabled={userInfoBusy}
+            disabled={disabled}
           >
             {(['followSpace', 'membersOnly'] as const).map(option => {
               const inputId = `user-info-${option}`;
@@ -259,14 +247,10 @@ export function SpaceSettingsSettingsView({
                   htmlFor={inputId}
                   className={cn(
                     'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
-                    userInfoBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
+                    disabled ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
                   )}
                 >
-                  {updatingKeys.has(`userInfo:${option}`) ? (
-                    <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
-                  ) : (
-                    <RadioGroupItem value={option} id={inputId} className="mt-1" />
-                  )}
+                  <RadioGroupItem value={option} id={inputId} className="mt-1" />
                   <div className="space-y-1">
                     <span className="text-card-title flex items-center gap-2">
                       {option === 'membersOnly' ? (
@@ -294,20 +278,16 @@ export function SpaceSettingsSettingsView({
           value={membershipPolicy}
           onValueChange={v => onMembershipPolicyChange(v as MembershipPolicy)}
           className="space-y-4"
-          disabled={membershipBusy}
+          disabled={disabled}
         >
           <label
             htmlFor="membership-open"
             className={cn(
               'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
-              membershipBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
+              disabled ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
             )}
           >
-            {updatingKeys.has('membership:open') ? (
-              <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
-            ) : (
-              <RadioGroupItem value="open" id="membership-open" className="mt-1" />
-            )}
+            <RadioGroupItem value="open" id="membership-open" className="mt-1" />
             <div className="space-y-1">
               <span className="text-card-title flex items-center gap-2">
                 <UserPlus className="size-4 text-primary" />
@@ -321,14 +301,10 @@ export function SpaceSettingsSettingsView({
             htmlFor="membership-application"
             className={cn(
               'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
-              membershipBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
+              disabled ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
             )}
           >
-            {updatingKeys.has('membership:application') ? (
-              <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
-            ) : (
-              <RadioGroupItem value="application" id="membership-application" className="mt-1" />
-            )}
+            <RadioGroupItem value="application" id="membership-application" className="mt-1" />
             <div className="space-y-1">
               <span className="text-card-title flex items-center gap-2">
                 <Edit3 className="size-4 text-primary" />
@@ -344,14 +320,10 @@ export function SpaceSettingsSettingsView({
             htmlFor="membership-invitation"
             className={cn(
               'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
-              membershipBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
+              disabled ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
             )}
           >
-            {updatingKeys.has('membership:invitation') ? (
-              <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
-            ) : (
-              <RadioGroupItem value="invitation" id="membership-invitation" className="mt-1" />
-            )}
+            <RadioGroupItem value="invitation" id="membership-invitation" className="mt-1" />
             <div className="space-y-1">
               <span className="text-card-title flex items-center gap-2">
                 <Mail className="size-4 text-primary" />
@@ -376,11 +348,12 @@ export function SpaceSettingsSettingsView({
                 {t('settings.membership.hostOrgTrust', { host: providerDisplayName })}
               </p>
             </div>
-            {updatingKeys.has('membership:hostTrust') ? (
-              <Loader2 className="size-5 animate-spin text-primary shrink-0" />
-            ) : (
-              <Switch id="host-org-trust" checked={hostOrganizationTrusted} onCheckedChange={onHostOrgTrustChange} />
-            )}
+            <Switch
+              id="host-org-trust"
+              checked={hostOrganizationTrusted}
+              onCheckedChange={onHostOrgTrustChange}
+              disabled={disabled}
+            />
           </div>
         )}
       </SettingsSection>
@@ -391,13 +364,12 @@ export function SpaceSettingsSettingsView({
             const meta = ACTION_META[action.key];
             if (!meta) return null;
             const ActionIcon = meta.icon;
-            const isBusy = updatingKeys.has(`action:${action.key}`);
             return (
               <div
                 key={action.key}
                 className={cn(
                   'flex items-start justify-between space-x-4 p-3 rounded-lg border bg-muted/20',
-                  isBusy && 'opacity-70'
+                  disabled && 'opacity-70'
                 )}
               >
                 <div className="flex items-start gap-3">
@@ -413,15 +385,12 @@ export function SpaceSettingsSettingsView({
                     </p>
                   </div>
                 </div>
-                {isBusy ? (
-                  <Loader2 className="size-5 animate-spin text-primary shrink-0 mt-0.5" />
-                ) : (
-                  <Switch
-                    id={`action-${action.key}`}
-                    checked={action.enabled}
-                    onCheckedChange={checked => onToggleAllowedAction(action.key, checked)}
-                  />
-                )}
+                <Switch
+                  id={`action-${action.key}`}
+                  checked={action.enabled}
+                  onCheckedChange={checked => onToggleAllowedAction(action.key, checked)}
+                  disabled={disabled}
+                />
               </div>
             );
           })}

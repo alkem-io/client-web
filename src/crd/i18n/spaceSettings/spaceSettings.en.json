@@ -24,9 +24,20 @@
     }
   },
   "saveBar": {
-    "save": "Save Changes",
-    "discard": "Discard Changes",
-    "saving": "Saving…"
+    "count_one": "{{count}} unsaved change",
+    "count_other": "{{count}} unsaved changes",
+    "save": "Save changes",
+    "discard": "Discard",
+    "saving": "Saving…",
+    "saved": "Changes saved",
+    "regionLabel": "Unsaved changes",
+    "lockedReason": "Save or discard your changes first",
+    "discardDialog": {
+      "title_one": "Discard 1 unsaved change?",
+      "title_other": "Discard {{count}} unsaved changes?",
+      "description": "Every changed field on this tab goes back to its saved value.",
+      "confirm": "Discard"
+    }
   },
   "layout": {
     "pageHeader": {
@@ -34,11 +45,6 @@
       "subtitle": "Customise your Space's navigation tabs. Rename, reorder, and manage Post assignments."
     },
     "loading": "Loading layout…",
-    "discardChangesDialog": {
-      "title": "Discard changes?",
-      "description": "Your unsaved Layout changes will be reverted to the last saved state. This cannot be undone.",
-      "confirm": "Discard Changes"
-    },
     "column": {
       "titlePlaceholder": "Column title",
       "descriptionPlaceholder": "Describe this column…",
@@ -1011,12 +1017,6 @@
         "title": "Live Preview",
         "description": "This preview shows how your space card will appear in the \"Explore Spaces\" directory."
       }
-    },
-    "inlineSave": {
-      "save": "Save",
-      "saving": "Saving…",
-      "saved": "Saved",
-      "retry": "Retry"
     }
   },
   "classifications": {
@@ -1052,12 +1052,8 @@
       "hiddenHint": "Not shown on the Space page"
     },
     "remove": {
-      "menuLabel": "Remove classification",
-      "confirmTitle": "Remove this classification?",
-      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
-      "confirmButton": "Remove"
+      "menuLabel": "Remove classification"
     },
-    "removedEntryError": "This classification was removed — refreshing the page.",
     "entry": {
       "multiSelect": "Multi-select",
       "singleSelect": "Single-select",
@@ -1066,8 +1062,8 @@
       "actions": "Classification actions: {{label}}",
       "selectValues": "Select values…",
       "selectValue": "Select {{label}}",
-      "deselectValue": "Deselect {{label}}"
-    },
-    "removedConcurrently": "This classification was removed by someone else. The list has been refreshed."
+      "deselectValue": "Deselect {{label}}",
+      "unsaved": "Unsaved"
+    }
   }
 }

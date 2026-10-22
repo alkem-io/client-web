@@ -10,7 +10,6 @@ import {
 } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ClassificationPickerDialog } from '@/crd/components/classification/ClassificationPickerDialog';
-import { ClassificationRemoveConfirm } from '@/crd/components/classification/ClassificationRemoveConfirm';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -26,6 +25,7 @@ import { SpaceSettingsLayoutView } from '@/crd/components/space/settings/SpaceSe
 import { SpaceSettingsSettingsView } from '@/crd/components/space/settings/SpaceSettingsSettingsView';
 import { SpaceSettingsStorageView } from '@/crd/components/space/settings/SpaceSettingsStorageView';
 import { SpaceSettingsSubspacesView } from '@/crd/components/space/settings/SpaceSettingsSubspacesView';
+import { SpaceSettingsUnsavedChangesBar } from '@/crd/components/space/settings/SpaceSettingsUnsavedChangesBar';
 import { SpaceSettingsUpdatesView } from '@/crd/components/space/settings/SpaceSettingsUpdatesView';
 import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
@@ -61,6 +61,7 @@ import { useStorageTabData } from './storage/useStorageTabData';
 import { CreateSubspaceDialogs } from './subspaces/CreateSubspaceDialogs';
 import { useCreateSubspace } from './subspaces/useCreateSubspace';
 import { useSubspacesTabData } from './subspaces/useSubspacesTabData';
+import { NO_UNSAVED_CHANGES, type TabUnsavedChanges, toUnsavedChangesBarState } from './tabUnsavedChanges';
 import { CrdSpaceTemplatesTab } from './templates/CrdSpaceTemplatesTab';
 import { useUpdatesTabData } from './updates/useUpdatesTabData';
 import { useSettingsScope } from './useSettingsScope';
@@ -222,17 +223,11 @@ export default function CrdSpaceSettingsPage() {
   // current route's depth, so its id IS the FR-007a "top-level Space's
   // Template Library" target — never the immediate parent's.
   const classificationPicker = useClassificationPicker(spaceContext.id);
-  const [pendingRemoveClassificationId, setPendingRemoveClassificationId] = useState<string | null>(null);
-
-  // A selection write that lost to a concurrent removal refetches silently in
-  // the hook; surface the outcome once as a toast (house pattern) and reset
-  // the flag so the next occurrence toasts again.
-  useEffect(() => {
-    if (about.classificationRemovedError) {
-      notify(t('classifications.removedConcurrently'), 'error');
-      about.dismissClassificationRemovedError();
-    }
-  }, [about.classificationRemovedError]);
+  // Staging an add needs the picked template's vocabulary, which the picker already holds.
+  const stageClassificationAdd = (templateId: string, displayLabel?: string) => {
+    const template = classificationPicker.sources.flatMap(source => source.templates).find(t => t.id === templateId);
+    if (template && about.addClassificationFromTemplate(template, displayLabel)) classificationPicker.closePicker();
+  };
 
   const csvExport = useCommunityCsvExport({
     members: community.members,
@@ -305,19 +300,36 @@ export default function CrdSpaceSettingsPage() {
     defaultCalloutTemplatePicker.clearSelection();
   }, [selectedDefaultCalloutTemplateId, defaultCalloutTemplateColumnId, columnMenu, defaultCalloutTemplatePicker]);
 
-  // About uses per-section inline Save, but its edits still live in a local
-  // buffer that survives a tab switch. Without the guard the admin can wander
-  // off and never notice they never hit Save, so About participates too —
-  // alongside Layout, the Application Form, and an unpublished Updates draft.
+  // The active tab's buffered fields, as the unsaved-changes bar sees them (spec 045 FR-025).
+  // Only About, Layout and Settings buffer fields; the guard forces a save or discard before a
+  // tab switch, so no other tab can still hold changes.
+  const activeUnsaved: TabUnsavedChanges =
+    activeTab === 'about'
+      ? about.unsaved
+      : activeTab === 'layout'
+        ? layout.unsaved
+        : activeTab === 'settings'
+          ? settingsTab.unsaved
+          : NO_UNSAVED_CHANGES;
+
+  // Besides the bar's count, an unsent Updates draft and an open Application Form edit keep the
+  // tab-switch guard armed, as before.
+  const hasUnsavedChanges = activeUnsaved.count > 0 || applicationForm.isDirty || updatesTab.isDirty;
   useEffect(() => {
-    if (about.isDirty || layout.isDirty || applicationForm.isDirty || updatesTab.isDirty) {
+    if (hasUnsavedChanges) {
       guard.markDirty();
     } else {
       guard.clearDirty();
     }
-  }, [guard, about.isDirty, layout.isDirty, applicationForm.isDirty, updatesTab.isDirty]);
+  }, [guard, hasUnsavedChanges]);
 
-  const [layoutDiscardOpen, setLayoutDiscardOpen] = useState(false);
+  const [discardOpen, setDiscardOpen] = useState(false);
+  // Layout's View Post leaves the page; with unsaved changes it waits behind the same dialog.
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
+
+  const saveActiveTab = async () => {
+    if (await activeUnsaved.saveAll()) notify(t('saveBar.saved'), 'success');
+  };
   // Save-and-switch is async; disable the dialog while it runs so a double
   // click can't fire duplicate saves, and keep it open if a save rejects.
   const [switchingSave, setSwitchingSave] = useState(false);
@@ -395,56 +407,55 @@ export default function CrdSpaceSettingsPage() {
     return () => cancelAnimationFrame(raf);
   }, [activeTab]);
 
+  // Leave once the changes are saved or discarded: either the pending tab switch or View Post.
+  const proceedAfterGuard = () => {
+    guard.clearDirty();
+    if (pendingNavigation) {
+      const path = pendingNavigation;
+      setPendingNavigation(null);
+      navigate(path);
+      return;
+    }
+    const target = guard.pendingSwitch;
+    guard.resolvePendingSwitch(true);
+    if (target) {
+      setActiveTab(target);
+    }
+  };
+
   const handleConfirmSwitchSave = async () => {
     if (switchingSave) return;
     setSwitchingSave(true);
     try {
-      if (about.isDirty) await about.onSaveAll();
-      if (layout.isDirty) await layout.onSave();
-      if (applicationForm.isDirty) void applicationForm.onSave();
+      // A failed save keeps the dialog open (and nothing switches) so the admin can retry or
+      // discard; the bar shows what failed.
+      if (activeUnsaved.count > 0 && !(await activeUnsaved.saveAll())) return;
+      if (applicationForm.isDirty) await applicationForm.onSave();
       if (updatesTab.isDirty) await updatesTab.onSubmit();
     } catch {
-      // A save failed — keep the dialog open so the user can retry or discard.
-      // The pending switch stays unresolved; per-section error status surfaces
-      // the failure in the tab itself.
-      setSwitchingSave(false);
       return;
+    } finally {
+      setSwitchingSave(false);
     }
-    guard.clearDirty();
-    const target = guard.pendingSwitch;
-    guard.resolvePendingSwitch(true);
-    if (target) {
-      setActiveTab(target);
-    }
-    setSwitchingSave(false);
+    proceedAfterGuard();
   };
   const handleConfirmSwitchDiscard = () => {
-    about.onResetAll();
-    layout.onReset();
+    activeUnsaved.reset();
     applicationForm.onReset();
     updatesTab.onResetDraft();
-    guard.clearDirty();
-    const target = guard.pendingSwitch;
-    guard.resolvePendingSwitch(true);
-    if (target) {
-      setActiveTab(target);
-    }
+    proceedAfterGuard();
   };
   const handleConfirmSwitchCancel = () => {
-    guard.resolvePendingSwitch(false);
-  };
-
-  const handleLayoutDiscardConfirm = () => {
-    layout.onReset();
-    setLayoutDiscardOpen(false);
+    setPendingNavigation(null);
+    if (guard.pendingSwitch) guard.resolvePendingSwitch(false);
   };
 
   const bootstrapping = scopeLoading || !spaceId;
 
   return (
     <div className="flex flex-col gap-4 pt-2">
-      {/* Every tab lays out its own SettingsSection cards; Layout keeps extra room for its sticky Save bar. */}
-      <div className={activeTab === 'layout' ? 'pb-24' : 'pb-12'}>
+      {/* Every tab lays out its own SettingsSection cards; extra room keeps the unsaved-changes bar off the last control. */}
+      <div className={activeUnsaved.count > 0 ? 'pb-24' : 'pb-12'}>
         {bootstrapping ? (
           <LoadingSpinner />
         ) : (
@@ -456,8 +467,7 @@ export default function CrdSpaceSettingsPage() {
                   level={level}
                   previewCard={about.previewCard}
                   countries={COUNTRIES}
-                  dirtyByField={about.dirtyByField}
-                  saveStatusByField={about.saveStatusByField}
+                  disabled={about.unsaved.saving}
                   markdownMaxLengthByField={ABOUT_MARKDOWN_MAX_LENGTH}
                   onChange={about.onChange}
                   onUploadAvatar={about.onUploadAvatar}
@@ -467,20 +477,15 @@ export default function CrdSpaceSettingsPage() {
                   onReferencesChange={about.onReferencesChange}
                   onReferenceFileUpload={about.onReferenceFileUpload}
                   referenceUploadAccept={about.referenceUploadAccept}
-                  onSaveSection={section => void about.onSaveSection(section)}
                   onImageUpload={md.onImageUpload}
                   iframeAllowedUrls={md.iframeAllowedUrls}
                   onError={md.onError}
                   classifications={about.classifications}
-                  classificationSelectionPendingIds={about.classificationSelectionPendingIds}
+                  unsavedClassificationIds={about.unsavedClassificationIds}
                   onAddClassification={classificationPicker.openPicker}
-                  onSelectClassificationValues={(entryId, selectedValueIDs) =>
-                    void about.updateClassificationSelection(entryId, selectedValueIDs)
-                  }
-                  onToggleClassificationDisplay={(entryId, display) =>
-                    void about.updateClassificationDisplay(entryId, display)
-                  }
-                  onRequestRemoveClassification={setPendingRemoveClassificationId}
+                  onSelectClassificationValues={about.updateClassificationSelection}
+                  onToggleClassificationDisplay={about.updateClassificationDisplay}
+                  onRemoveClassification={about.removeClassification}
                 />
               ) : (
                 <LoadingSpinner />
@@ -516,10 +521,10 @@ export default function CrdSpaceSettingsPage() {
                   } catch {
                     // already a relative path — use as-is
                   }
-                  navigate(path);
+                  if (hasUnsavedChanges) setPendingNavigation(path);
+                  else navigate(path);
                 }}
-                onSave={layout.onSave}
-                onDiscardChanges={() => setLayoutDiscardOpen(true)}
+                hasUnsavedChanges={layout.isDirty}
                 columnMenuActions={columnMenu}
                 onCreatePhase={layout.onCreateState}
                 maximumNumberOfStates={layout.maximumNumberOfStates}
@@ -541,7 +546,7 @@ export default function CrdSpaceSettingsPage() {
                       <LayoutReplaceFlowConnector
                         collaborationId={layout.collaborationId}
                         existingCalloutsCount={layout.existingCalloutsCount}
-                        disabled={layout.isDirty}
+                        disabledReason={layout.isDirty ? t('saveBar.lockedReason') : undefined}
                         onApplyComplete={layout.reseedFromServer}
                         onImportingChange={setIsReplacingFlow}
                       />
@@ -668,7 +673,7 @@ export default function CrdSpaceSettingsPage() {
                 hostOrganizationTrusted={settingsTab.hostOrganizationTrusted}
                 providerDisplayName={settingsTab.providerDisplayName}
                 loading={settingsTab.loading}
-                updatingKeys={settingsTab.updatingKeys}
+                disabled={settingsTab.unsaved.saving}
                 onPrivacyChange={settingsTab.onPrivacyChange}
                 onMembershipPolicyChange={settingsTab.onMembershipPolicyChange}
                 onToggleAllowedAction={settingsTab.onToggleAllowedAction}
@@ -694,6 +699,14 @@ export default function CrdSpaceSettingsPage() {
           </>
         )}
       </div>
+
+      {!bootstrapping && (
+        <SpaceSettingsUnsavedChangesBar
+          state={toUnsavedChangesBarState(activeUnsaved)}
+          onSave={() => void saveActiveTab()}
+          onDiscard={() => setDiscardOpen(true)}
+        />
+      )}
 
       <ConfirmationDialog
         open={updatesTab.pendingRemoveMessage !== null}
@@ -755,34 +768,10 @@ export default function CrdSpaceSettingsPage() {
           if (!open) classificationPicker.closePicker();
         }}
         sources={classificationPicker.sources}
-        onSelectTemplate={(templateId, displayLabel) => {
-          void about.addClassificationFromTemplate(templateId, displayLabel).then(ok => {
-            if (ok) classificationPicker.closePicker();
-          });
-        }}
+        onSelectTemplate={stageClassificationAdd}
         conflict={about.classificationConflict}
-        onRetryWithLabel={(templateId, displayLabel) => {
-          void about.addClassificationFromTemplate(templateId, displayLabel).then(ok => {
-            if (ok) classificationPicker.closePicker();
-          });
-        }}
+        onRetryWithLabel={stageClassificationAdd}
         onDismissConflict={about.dismissClassificationConflict}
-        submitting={about.classificationSubmitting}
-      />
-
-      <ClassificationRemoveConfirm
-        open={pendingRemoveClassificationId !== null}
-        onOpenChange={open => {
-          if (!open) setPendingRemoveClassificationId(null);
-        }}
-        displayLabel={
-          about.classifications.find(entry => entry.id === pendingRemoveClassificationId)?.displayLabel ?? ''
-        }
-        onConfirm={() => {
-          if (!pendingRemoveClassificationId) return;
-          void about.removeClassification(pendingRemoveClassificationId);
-          setPendingRemoveClassificationId(null);
-        }}
       />
 
       <ConfirmationDialog
@@ -1018,19 +1007,22 @@ export default function CrdSpaceSettingsPage() {
       />
 
       <ConfirmationDialog
-        open={layoutDiscardOpen}
-        onOpenChange={setLayoutDiscardOpen}
+        open={discardOpen}
+        onOpenChange={setDiscardOpen}
         variant="destructive"
-        title={t('layout.discardChangesDialog.title')}
-        description={t('layout.discardChangesDialog.description')}
-        confirmLabel={t('layout.discardChangesDialog.confirm')}
+        title={t('saveBar.discardDialog.title', { count: activeUnsaved.count })}
+        description={t('saveBar.discardDialog.description')}
+        confirmLabel={t('saveBar.discardDialog.confirm')}
         cancelLabel={t('dirtyGuard.cancel')}
-        onConfirm={handleLayoutDiscardConfirm}
-        onCancel={() => setLayoutDiscardOpen(false)}
+        onConfirm={() => {
+          activeUnsaved.reset();
+          setDiscardOpen(false);
+        }}
+        onCancel={() => setDiscardOpen(false)}
       />
 
       <ConfirmationDialog
-        open={guard.pendingSwitch !== null}
+        open={guard.pendingSwitch !== null || pendingNavigation !== null}
         onOpenChange={open => {
           if (!open) handleConfirmSwitchCancel();
         }}

@@ -24,9 +24,20 @@
     }
   },
   "saveBar": {
+    "count_one": "{{count}} modification non enregistrée",
+    "count_other": "{{count}} modifications non enregistrées",
     "save": "Enregistrer les modifications",
-    "discard": "Abandonner les modifications",
-    "saving": "Enregistrement…"
+    "discard": "Abandonner",
+    "saving": "Enregistrement…",
+    "saved": "Modifications enregistrées",
+    "regionLabel": "Modifications non enregistrées",
+    "lockedReason": "Enregistrez ou abandonnez d’abord vos modifications",
+    "discardDialog": {
+      "title_one": "Abandonner 1 modification non enregistrée ?",
+      "title_other": "Abandonner {{count}} modifications non enregistrées ?",
+      "description": "Chaque champ modifié dans cet onglet reprend sa valeur enregistrée.",
+      "confirm": "Abandonner"
+    }
   },
   "layout": {
     "pageHeader": {
@@ -34,11 +45,6 @@
       "subtitle": "Personnalisez les onglets de navigation de votre Espace. Renommez, réorganisez et gérez les affectations de publications."
     },
     "loading": "Chargement de la mise en page…",
-    "discardChangesDialog": {
-      "title": "Abandonner les modifications ?",
-      "description": "Vos modifications de mise en page non enregistrées seront ramenées au dernier état enregistré. Cette action ne peut pas être annulée.",
-      "confirm": "Abandonner les modifications"
-    },
     "column": {
       "titlePlaceholder": "Titre de la colonne",
       "descriptionPlaceholder": "Décrivez cette colonne…",
@@ -1011,12 +1017,6 @@
         "title": "Aperçu en direct",
         "description": "Cet aperçu montre comment votre carte d'espace apparaîtra dans le répertoire \"Explorer les espaces\"."
       }
-    },
-    "inlineSave": {
-      "save": "Enregistrer",
-      "saving": "Enregistrement…",
-      "saved": "Enregistré",
-      "retry": "Réessayer"
     }
   },
   "classifications": {
@@ -1052,12 +1052,8 @@
       "hiddenHint": "Not shown on the Space page"
     },
     "remove": {
-      "menuLabel": "Remove classification",
-      "confirmTitle": "Remove this classification?",
-      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
-      "confirmButton": "Remove"
+      "menuLabel": "Remove classification"
     },
-    "removedEntryError": "This classification was removed — refreshing the page.",
     "entry": {
       "multiSelect": "Sélection multiple",
       "singleSelect": "Sélection unique",
@@ -1066,8 +1062,8 @@
       "actions": "Actions de classification : {{label}}",
       "selectValues": "Sélectionner des valeurs…",
       "selectValue": "Sélectionner {{label}}",
-      "deselectValue": "Désélectionner {{label}}"
-    },
-    "removedConcurrently": "Cette classification a été supprimée par quelqu'un d'autre. La liste a été actualisée."
+      "deselectValue": "Désélectionner {{label}}",
+      "unsaved": "Non enregistré"
+    }
   }
 }

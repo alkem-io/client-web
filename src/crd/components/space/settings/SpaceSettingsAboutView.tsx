@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { ClassificationEntryCard } from '@/crd/components/classification/ClassificationEntryCard';
 import type { ClassificationEntryData } from '@/crd/components/classification/types';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
-import { type SectionSaveStatus, FieldFooter as SharedFieldFooter } from '@/crd/components/common/FieldFooter';
 import { SettingsSection } from '@/crd/components/common/SettingsSection';
 import { SpaceCard, type SpaceCardData } from '@/crd/components/space/SpaceCard';
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
@@ -18,8 +17,6 @@ import { Label } from '@/crd/primitives/label';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 import type {
   AboutFormValues,
-  AboutSectionKey,
-  AboutSectionSaveStatus,
   AboutVisual,
   SpaceCardPreview,
   SpaceSettingsLevel,
@@ -34,10 +31,8 @@ export type SpaceSettingsAboutViewProps = AboutFormValues & {
   level: SpaceSettingsLevel;
   previewCard: SpaceCardPreview;
   countries: ReadonlyArray<{ name: string; code: string }>;
-  /** Which sections differ from the server value. */
-  dirtyByField: Partial<Record<AboutSectionKey, boolean>>;
-  /** Per-section save status (idle / saving / saved / error). */
-  saveStatusByField: Partial<Record<AboutSectionKey, AboutSectionSaveStatus>>;
+  /** Locks every field while the tab's changes are being saved (spec 045 FR-025d). */
+  disabled?: boolean;
   /** Character limits of the markdown sections; each turns on that editor's progress ring. */
   markdownMaxLengthByField?: Partial<Record<'what' | 'why' | 'who', number>>;
   onChange: (patch: Partial<AboutFormValues>) => void;
@@ -46,27 +41,25 @@ export type SpaceSettingsAboutViewProps = AboutFormValues & {
   onUploadCardBanner: (file: File) => void;
   /** Re-crop an already-uploaded visual. */
   onRecropVisual?: (key: 'avatar' | 'pageBanner' | 'cardBanner') => void;
-  /**
   /** Replace the whole references list — the shared ReferencesEditor owns add/edit/remove + delete-confirm. */
   onReferencesChange: (rows: ReferenceRow[]) => void;
   /** Reference file-upload (paperclip) — passed through to the shared editor. */
   onReferenceFileUpload?: (file: File) => Promise<string | null>;
   referenceUploadAccept?: string;
-  onSaveSection: (section: AboutSectionKey) => void;
   className?: string;
 
-  // ── Classifications (D1) — each action commits immediately, FR-006a; never buffered ──
+  // ── Classifications (D1) — staged with the rest of the tab and saved by the unsaved-changes bar ──
   classifications: ClassificationEntryData[];
-  /** Entry ids with a selection write in flight — the entry's value selector renders disabled. */
-  classificationSelectionPendingIds: string[];
+  /** Entries added locally and not saved yet — marked "Unsaved". */
+  unsavedClassificationIds: string[];
   /** Step A — opens the template picker (owned by the connector). */
   onAddClassification: () => void;
   /** Step B — full-replacement selection write. */
   onSelectClassificationValues: (entryId: string, selectedValueIDs: string[]) => void;
   /** The shown/hidden toggle (FR-010b/FR-010d) — worded "not shown on the Space page", never "private". */
   onToggleClassificationDisplay: (entryId: string, display: boolean) => void;
-  /** Opens the removal confirmation (owned by the connector, FR-014b). */
-  onRequestRemoveClassification: (entryId: string) => void;
+  /** Stages the removal — undone by Discard, so there is no confirmation. */
+  onRemoveClassification: (entryId: string) => void;
 } & MarkdownUploadProps;
 
 export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
@@ -83,8 +76,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     tags,
     references,
     previewCard,
-    dirtyByField,
-    saveStatusByField,
+    disabled = false,
     markdownMaxLengthByField,
     onChange,
     onUploadAvatar,
@@ -94,17 +86,16 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     onReferencesChange,
     onReferenceFileUpload,
     referenceUploadAccept,
-    onSaveSection,
     className,
     onImageUpload,
     iframeAllowedUrls,
     onError,
     classifications,
-    classificationSelectionPendingIds,
+    unsavedClassificationIds,
     onAddClassification,
     onSelectClassificationValues,
     onToggleClassificationDisplay,
-    onRequestRemoveClassification,
+    onRemoveClassification,
   } = props;
   // Canonical visual fields (see spec 100-space-header-layout § "Visual fields — canonical usage"):
   //   - L0: page banner + cardBanner only — L0 has NO avatar concept (L0 cards show title + cardBanner)
@@ -122,7 +113,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
 
   return (
     <div className={cn('grid grid-cols-1 gap-8 xl:grid-cols-[1fr_320px]', className)}>
-      <div className="flex min-w-0 flex-col gap-5">
+      <div inert={disabled} aria-busy={disabled} className="flex min-w-0 flex-col gap-5">
         <SettingsSection title={t('about.sections.identity')} icon={<Type className="size-4" />} iconColor="blue">
           <div className="space-y-4">
             <div>
@@ -134,13 +125,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                 placeholder={t('about.name.title')}
                 className="mt-2"
               />
-              <FieldFooter
-                hint={t('about.name.description')}
-                dirty={!!dirtyByField.name}
-                status={saveStatusByField.name ?? { kind: 'idle' }}
-                onSave={() => onSaveSection('name')}
-                t={t}
-              />
+              <FieldHint>{t('about.name.description')}</FieldHint>
             </div>
             <div>
               <FieldLabel htmlFor={taglineId}>{t('about.tagline.title')}</FieldLabel>
@@ -151,13 +136,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                 placeholder={t('about.tagline.title')}
                 className="mt-2"
               />
-              <FieldFooter
-                hint={t('about.tagline.description')}
-                dirty={!!dirtyByField.tagline}
-                status={saveStatusByField.tagline ?? { kind: 'idle' }}
-                onSave={() => onSaveSection('tagline')}
-                t={t}
-              />
+              <FieldHint>{t('about.tagline.description')}</FieldHint>
             </div>
           </div>
         </SettingsSection>
@@ -234,13 +213,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               />
             </div>
           </div>
-          <FieldFooter
-            hint={t('about.location.description')}
-            dirty={!!dirtyByField.location}
-            status={saveStatusByField.location ?? { kind: 'idle' }}
-            onSave={() => onSaveSection('location')}
-            t={t}
-          />
+          <FieldHint>{t('about.location.description')}</FieldHint>
         </SettingsSection>
 
         <SettingsSection
@@ -264,13 +237,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                     onError={onError}
                   />
                 </div>
-                <FieldFooter
-                  hint={t(`about.${field}.description`)}
-                  dirty={!!dirtyByField[field]}
-                  status={saveStatusByField[field] ?? { kind: 'idle' }}
-                  onSave={() => onSaveSection(field)}
-                  t={t}
-                />
+                <FieldHint>{t(`about.${field}.description`)}</FieldHint>
               </div>
             ))}
           </div>
@@ -282,13 +249,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
             onChange={next => onChange({ tags: next })}
             placeholder={t('about.tags.placeholder')}
           />
-          <FieldFooter
-            hint={t('about.tags.description')}
-            dirty={!!dirtyByField.tags}
-            status={saveStatusByField.tags ?? { kind: 'idle' }}
-            onSave={() => onSaveSection('tags')}
-            t={t}
-          />
+          <FieldHint>{t('about.tags.description')}</FieldHint>
         </SettingsSection>
 
         {/* Classifications (D1, product#2161 design 01) */}
@@ -305,10 +266,10 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                 <ClassificationEntryCard
                   key={entry.id}
                   entry={entry}
-                  selectionPending={classificationSelectionPendingIds.includes(entry.id)}
+                  unsaved={unsavedClassificationIds.includes(entry.id)}
                   onSelectValues={onSelectClassificationValues}
                   onToggleDisplay={onToggleClassificationDisplay}
-                  onRequestRemove={onRequestRemoveClassification}
+                  onRequestRemove={onRemoveClassification}
                 />
               ))}
             </div>
@@ -318,20 +279,6 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
             <Plus className="size-3.5 mr-1.5" aria-hidden="true" />
             {t('classifications.addButton')}
           </Button>
-
-          {/*
-           * Never dirty — each classification action commits on its own, immediately (FR-006a),
-           * so there is nothing to buffer and no manual Save button to show. Reusing FieldFooter
-           * here only surfaces the transient saving/saved feedback for the in-flight selection
-           * write (see `classificationSelectionPendingIds` above), the same status shape every
-           * other About section already uses.
-           */}
-          <FieldFooter
-            dirty={false}
-            status={saveStatusByField.classifications ?? { kind: 'idle' }}
-            onSave={() => {}}
-            t={t}
-          />
         </SettingsSection>
 
         <SettingsSection
@@ -347,13 +294,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
             onFileUpload={onReferenceFileUpload}
             uploadAccept={referenceUploadAccept}
           />
-          <FieldFooter
-            hint={t('about.references.description')}
-            dirty={!!dirtyByField.references}
-            status={saveStatusByField.references ?? { kind: 'idle' }}
-            onSave={() => onSaveSection('references')}
-            t={t}
-          />
+          <FieldHint>{t('about.references.description')}</FieldHint>
         </SettingsSection>
       </div>
 
@@ -408,42 +349,6 @@ function FieldHint({ children }: { children: React.ReactNode }) {
 }
 
 type TFn = ReturnType<typeof useTranslation<'crd-spaceSettings'>>['t'];
-
-/**
- * Thin wrapper around the shared `FieldFooter` (extracted to
- * `@/crd/components/common/FieldFooter.tsx` for cross-feature reuse). Keeps
- * the local `t`-based call sites unchanged. The shared status type
- * (`SectionSaveStatus`) is structurally compatible with 045's
- * `AboutSectionSaveStatus` (the `at` field is now optional).
- */
-function FieldFooter({
-  hint,
-  dirty,
-  status,
-  onSave,
-  t,
-}: {
-  hint?: string;
-  dirty: boolean;
-  status: AboutSectionSaveStatus;
-  onSave: () => void;
-  t: TFn;
-}) {
-  return (
-    <SharedFieldFooter
-      hint={hint}
-      dirty={dirty}
-      status={status as SectionSaveStatus}
-      onSave={onSave}
-      labels={{
-        save: t('about.inlineSave.save'),
-        saving: t('about.inlineSave.saving'),
-        saved: t('about.inlineSave.saved'),
-        retry: t('about.inlineSave.retry'),
-      }}
-    />
-  );
-}
 
 function BannerUpload({
   visual,
