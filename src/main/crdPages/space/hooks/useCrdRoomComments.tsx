@@ -193,6 +193,7 @@ export function useCrdRoomComments({
             ? id => {
                 setReplyTarget(id);
                 setReplyDraft('');
+                for (const file of replyFiles.attachments) replyFiles.removeAttachment(file.id);
               }
             : undefined
         }

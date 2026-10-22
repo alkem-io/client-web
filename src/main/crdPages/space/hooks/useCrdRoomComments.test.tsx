@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { useState } from 'react';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
@@ -387,6 +388,33 @@ describe('useCrdRoomComments composers', () => {
     expect(document.getElementById('comment-reply-input-cA')).toBeNull();
     toggleReplyOn('comment A');
     expect(replyField('cA')).toHaveValue('');
+  });
+
+  test('a reply box opens empty even after the thread was collapsed with a file staged', () => {
+    mockBucketQuery.mockReturnValue(readableBucket);
+    function Collapsible() {
+      const { thread } = useCrdRoomComments({ roomId: 'room-1', room: withComment });
+      const [shown, setShown] = useState(true);
+      return (
+        <>
+          <button type="button" onClick={() => setShown(value => !value)}>
+            collapse
+          </button>
+          {shown && thread}
+        </>
+      );
+    }
+    render(<Collapsible />);
+    const replyBox = () => document.getElementById('comment-reply-input-c1') as HTMLElement;
+
+    fireEvent.click(screen.getByRole('button', { name: 'comments.reply' }));
+    fireEvent.change(fileInputIn(replyBox()), { target: { files: [png('reply.png')] } });
+    expect(within(replyBox()).getByText('reply.png')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'collapse' }));
+    fireEvent.click(screen.getByRole('button', { name: 'collapse' }));
+    fireEvent.click(screen.getByRole('button', { name: 'comments.reply' }));
+    expect(within(replyBox()).queryByText('reply.png')).toBeNull();
   });
 
   test('the bucket policy is not queried when the viewer cannot comment', () => {
