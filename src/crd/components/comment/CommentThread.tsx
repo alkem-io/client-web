@@ -50,6 +50,14 @@ export function CommentThread({
   // each CommentItem) so the reply input renders at the bottom of the parent's
   // reply group — matching where the new reply lands after posting.
   const [replyingToCommentId, setReplyingToCommentId] = useState<string | undefined>(undefined);
+  // True while a reply is being sent. Opening or closing a reply box then would
+  // drop the draft being sent and cancel its upload, so the toggles wait.
+  const [replySending, setReplySending] = useState(false);
+
+  const toggleReply = (commentId: string) => {
+    if (replySending) return;
+    setReplyingToCommentId(current => (current === commentId ? undefined : commentId));
+  };
 
   useEffect(() => {
     onReplyTargetChange?.(replyingToCommentId);
@@ -102,11 +110,7 @@ export function CommentThread({
                   canComment={canComment}
                   isReplyOpen={isReplyOpen}
                   replyInputId={replyInputId}
-                  onToggleReply={
-                    canComment
-                      ? () => setReplyingToCommentId(current => (current === comment.id ? undefined : comment.id))
-                      : undefined
-                  }
+                  onToggleReply={canComment ? () => toggleReply(comment.id) : undefined}
                   onDelete={onDelete}
                   onAddReaction={onAddReaction}
                   onRemoveReaction={onRemoveReaction}
@@ -129,12 +133,7 @@ export function CommentThread({
                             isReply={true}
                             isReplyOpen={isLastReply ? isReplyOpen : undefined}
                             replyInputId={isLastReply ? replyInputId : undefined}
-                            onToggleReply={
-                              isLastReply && canComment
-                                ? () =>
-                                    setReplyingToCommentId(current => (current === comment.id ? undefined : comment.id))
-                                : undefined
-                            }
+                            onToggleReply={isLastReply && canComment ? () => toggleReply(comment.id) : undefined}
                             onDelete={onDelete}
                             onAddReaction={onAddReaction}
                             onRemoveReaction={onRemoveReaction}
@@ -154,12 +153,15 @@ export function CommentThread({
                       {...replyInputProps}
                       onSubmit={content => {
                         // A rejection keeps the box open; the integration reports the error.
-                        void Promise.resolve(onReply(comment.id, content)).then(
-                          sent => {
-                            if (sent !== false) setReplyingToCommentId(undefined);
-                          },
-                          () => {}
-                        );
+                        setReplySending(true);
+                        void Promise.resolve(onReply(comment.id, content))
+                          .then(
+                            sent => {
+                              if (sent !== false) setReplyingToCommentId(undefined);
+                            },
+                            () => {}
+                          )
+                          .finally(() => setReplySending(false));
                       }}
                     />
                   </div>
