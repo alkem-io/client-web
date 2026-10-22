@@ -3,8 +3,9 @@ import type { StorageConfig } from '@/domain/storage/StorageBucket/useStorageCon
 
 /**
  * Comments accept JPEG, PNG, GIF and WebP images only — the types every
- * browser renders inline and whose uploads carry no location or device
- * metadata. HEIC, HEIF and AVIF are left out. The server enforces the same set.
+ * browser renders inline and whose location and device metadata the upload
+ * route strips on the server (GIF carries none). HEIC, HEIF and AVIF are left
+ * out. The server enforces the same set.
  */
 const COMMENT_IMAGE_MIME_TYPES: ReadonlySet<string> = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
 
