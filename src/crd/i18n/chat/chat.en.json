@@ -6,7 +6,9 @@
   },
   "panel": {
     "title": "Chat",
-    "settings": "Notification settings"
+    "settings": "Notification settings",
+    "expand": "Expand chat",
+    "collapse": "Collapse chat"
   },
   "actions": {
     "cancel": "Cancel"
@@ -78,7 +80,8 @@
   "thread": {
     "back": "Back to conversations",
     "loading": "Loading messages",
-    "addReaction": "Add reaction"
+    "addReaction": "Add reaction",
+    "options": "Chat options"
   },
   "sendConfirmation": {
     "title": "Message sent",

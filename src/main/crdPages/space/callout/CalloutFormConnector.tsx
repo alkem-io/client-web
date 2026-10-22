@@ -300,6 +300,7 @@ function CalloutFormConnectorInner({
   const {
     candidates: contributorCandidates,
     loading: contributorCandidatesLoading,
+    error: contributorCandidatesError,
     resolveChips: resolveContributorChips,
     refetch: refetchContributorCandidates,
   } = useSelectionCandidates({
@@ -309,6 +310,24 @@ function CalloutFormConnectorInner({
     contributorTypes: values.contributorCollection.types,
     skip: !open || !isContributorsChip || !roleSetId,
   });
+
+  // THE single definition of "the contributor candidate set cannot be trusted yet".
+  // Three terms, because the query has three ways of not having answered: it is in
+  // flight, it was skipped for a missing roleSetId, or it failed. A skipped AND a
+  // failed Apollo query both report `loading: false` with no data, so neither is
+  // implied by the first term — and in all three states `candidates` is empty,
+  // which is indistinguishable from "this space has no members" to anyone reading
+  // the set alone. The `error` term is what keeps a single failed fetch (5xx, a
+  // network blip, or a Forbidden for an editor who holds UPDATE on the callout but
+  // cannot read the role set) from turning the next save into a wipe of the whole
+  // curated selection; the spaces side is immune because its strip was deleted
+  // outright (084 FR-014), while this one still strips and so must be guarded.
+  // Both the save paths (which must not strip a selection they cannot check) and
+  // the editor's chip labels (which must not call a selection "no longer available"
+  // on the strength of an empty set) depend on exactly this fact, so it is derived
+  // here once and passed down rather than restated per consumer (088).
+  const contributorCandidatesUnresolved =
+    contributorCandidatesLoading || !roleSetId || Boolean(contributorCandidatesError);
 
   // Feature 084: the space candidates for the spaces chip — every space of the
   // host space's ACCOUNT the editor may READ, not just the host's own subspaces
@@ -568,11 +587,9 @@ function CalloutFormConnectorInner({
     // cannot destroy a selection.
     // Same loading guard as in saveEdit: if candidates aren't loaded yet, skip
     // the strip and let the server be the authority (corr-client-3 / qual-client-1).
-    // Unresolved = still loading OR skipped for a missing id (see saveEdit).
+    // Unresolved = still loading, skipped for a missing id, OR errored (see saveEdit).
     const candidatesUnresolvedForCreate =
-      values.framingChip === 'contributors' &&
-      values.selectionMode === 'custom' &&
-      (contributorCandidatesLoading || !roleSetId);
+      values.framingChip === 'contributors' && values.selectionMode === 'custom' && contributorCandidatesUnresolved;
 
     const eligibleSelectedIdsForCreate = (() => {
       if (values.selectionMode !== 'custom') return values.selectedIds;
@@ -812,13 +829,12 @@ function CalloutFormConnectorInner({
     // destroying the admin's curated list.  When candidates are not yet loaded
     // we skip the strip and let the server be the authority (server rejects
     // foreign / non-member ids on every write anyway — FR-006).
-    // The candidate set is "unresolved" while it is still loading OR while its query
-    // was skipped for a missing roleSetId — in that state the candidate list is
-    // empty, so stripping would wrongly erase the whole custom selection.
+    // The candidate set is "unresolved" while it is still loading, while its query
+    // was skipped for a missing roleSetId, OR after that query failed — in all three
+    // states the candidate list is empty, so stripping would wrongly erase the whole
+    // custom selection.
     const candidatesUnresolved =
-      values.framingChip === 'contributors' &&
-      values.selectionMode === 'custom' &&
-      (contributorCandidatesLoading || !roleSetId);
+      values.framingChip === 'contributors' && values.selectionMode === 'custom' && contributorCandidatesUnresolved;
 
     const eligibleSelectedIds = (() => {
       if (values.selectionMode !== 'custom') return values.selectedIds;
@@ -1160,6 +1176,7 @@ function CalloutFormConnectorInner({
                 contributorCandidates={contributorCandidates}
                 resolveContributorChips={resolveContributorChips}
                 contributorCandidatesLoading={contributorCandidatesLoading}
+                contributorCandidatesUnresolved={contributorCandidatesUnresolved}
                 spaceCandidates={accountSpaceCandidates}
                 canEditSpaceSelection={mode === 'create' || isSpaceAdmin}
                 contributorMapPins={contributorMapPins}
