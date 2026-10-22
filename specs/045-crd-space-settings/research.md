@@ -143,14 +143,14 @@ Implementation:
 
 **Decision**: Align with the prototype (`alkem-io/client-web-prototype` — `SpaceSettingsPage.tsx`, `SpaceSettingsAbout.tsx`, `shared/SettingsSection.tsx`):
 
-- A new reusable CRD `src/crd/components/common/SettingsSection.tsx` — a card with a coloured icon tile, an `<h3>` title, an optional description and a chevron. Every section is open by default; collapsing is purely visual (no data or save effect).
+- A new reusable CRD `src/crd/components/common/SettingsSection.tsx` — a card with a coloured icon tile, an `<h3>` title, an optional description and a chevron. Every section is open by default; collapsing is purely visual (no data or save effect). *(Amended 2026-10-22: on About only Identity is open by default; the other sections start collapsed — `defaultOpen={false}`.)*
 - The About body is a stack of these sections, in order: Identity (name, tagline) · Visuals (renamed from "Space Branding") · Location (city, country) · Context (What, Why, Who) · Tags · Classifications · References & Links. The in-card "About" heading and the flat `Separator`-divided list are removed; the Preview column sits beside the stack, outside the cards; each field keeps its hint + `FieldFooter` in its section.
 - Name, Tagline and City are boxed `Input`s; `InlineEditText` is Layout-only (Decision 4a).
 - `SpaceSettingsHeader` shows a 48px square `rounded-lg` identity tile (circles are reserved for people) left of title + tagline: L1/L2 `avatar`; L0 `cardBanner` cropped square (`object-cover`); initials tile when no image. Using the L0 `cardBanner` here is an owner-approved exception to spec 100's "no `cardBanner` as avatar" rule, scoped to identity tiles in navigation chrome (this tile and the breadcrumbs, data-model.md § breadcrumbs). The public page header keeps no avatar.
 
 **Rationale**: Product-owner decision 2026-10-16 (prototype parity). Grouping long forms into labelled sections makes the tab scannable; boxed inputs make the editable fields obvious; an L0 has no `avatar` visual, so its card banner is the only identity image available.
 
-**Alternatives considered**: sections collapsed by default (rejected — hides fields and save state); keeping inline-edit text for Name/Tagline/City (rejected — inconsistent with the boxed markdown and tag editors in the same tab); a circular tile (rejected — circles mean people).
+**Alternatives considered**: sections collapsed by default (rejected — hides fields and save state; *amended 2026-10-22: adopted for every About section except Identity — save state now lives in the tab-wide bar, so a collapsed section no longer hides it*); keeping inline-edit text for Name/Tagline/City (rejected — inconsistent with the boxed markdown and tag editors in the same tab); a circular tile (rejected — circles mean people).
 
 ---
 

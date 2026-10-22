@@ -16,8 +16,9 @@
  *
  * Layout (amended 2026-10-16, prototype parity): the view body is a stack of
  * collapsible `SettingsSection` cards (`@/crd/components/common/SettingsSection`
- * — coloured icon tile, `<h3>` title, optional description, chevron; ALL open
- * by default; collapsing is purely visual), in this order:
+ * — coloured icon tile, `<h3>` title, optional description, chevron; only
+ * Identity is open by default, the rest start collapsed (amended 2026-10-22);
+ * collapsing is purely visual), in this order:
  *   Identity (name, tagline) · Visuals (avatar, page banner [L0 only], card
  *   banner) · Location (city, country) · Context (what, why, who) · Tags ·
  *   Classifications · References & Links.

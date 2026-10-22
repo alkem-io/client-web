@@ -11,7 +11,7 @@ Migrate the Space Settings area from MUI (`src/domain/spaceAdmin/*`) to the CRD 
 
 Per-tab save semantics:
 
-- **About** — ~~per-field autosave. 2-second idle debounce on text fields; file uploads autosave immediately. Per-field spinner / "Saved!" / error indicator next to each field label. No Save button, no Reset button.~~ *(Amended 2026-10-16 — the autosave never shipped:)* per-section Save via the shared `FieldFooter` (Save while dirty → saving → "Saved!" / error + Retry); visual uploads commit on file pick, classifications per action; no tab-wide Save / Reset bar; unsaved sections participate in the dirty-tab guard. The body is a stack of collapsible `SettingsSection` cards (all open) with boxed inputs — research Decision 4b.
+- **About** — ~~per-field autosave. 2-second idle debounce on text fields; file uploads autosave immediately. Per-field spinner / "Saved!" / error indicator next to each field label. No Save button, no Reset button.~~ *(Amended 2026-10-16 — the autosave never shipped:)* per-section Save via the shared `FieldFooter` (Save while dirty → saving → "Saved!" / error + Retry); visual uploads commit on file pick, classifications per action; no tab-wide Save / Reset bar; unsaved sections participate in the dirty-tab guard. The body is a stack of collapsible `SettingsSection` cards (~~all open~~ only Identity open by default — amended 2026-10-22) with boxed inputs — research Decision 4b.
 - **Layout** — local dirty buffer with a sticky Save Changes / Reset action bar. Reset reverts to the last backend-known state. Zero mutations before Save is clicked.
 - **Community / Subspaces / Templates / Storage / Settings / Account** — per-action commit (no tab-wide save bar).
 
