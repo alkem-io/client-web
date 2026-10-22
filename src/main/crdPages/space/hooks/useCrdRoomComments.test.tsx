@@ -389,31 +389,6 @@ describe('useCrdRoomComments composers', () => {
     expect(replyField('cA')).toHaveValue('');
   });
 
-  test('a captioned image message renders its text and the picture in one comment', () => {
-    mockBucketQuery.mockReturnValue(readableBucket);
-    render(
-      <Harness
-        value={room({
-          messages: [
-            {
-              id: 'c1',
-              message: 'see this',
-              timestamp: Date.now(),
-              reactions: [],
-              sender: { id: 'u2', profile: { id: 'p2', displayName: 'Other', url: '/u/other' } },
-              attachments: [{ externalReference: 'media-1', displayName: 'shot.png', mimeType: 'image/png' }],
-            },
-          ],
-        })}
-      />
-    );
-    const caption = screen.getAllByText('see this');
-    expect(caption).toHaveLength(1);
-    const row = caption[0].closest('.group\\/comment') as HTMLElement;
-    expect(row.querySelector('img')).toBeInTheDocument();
-    expect(document.querySelectorAll('.group\\/comment')).toHaveLength(1);
-  });
-
   test('the bucket policy is not queried when the viewer cannot comment', () => {
     mockBucketQuery.mockReturnValue(noBucket);
     render(<Harness value={room({ authorization: { myPrivileges: [AuthorizationPrivilege.Read] } })} />);

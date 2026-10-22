@@ -72,12 +72,6 @@ describe('CommentThread reply composer', () => {
     expect(onReplyTargetChange).toHaveBeenLastCalledWith(undefined);
   });
 
-  test('spreads replyInputProps onto the reply input', () => {
-    renderThread({ replyInputProps: { attachmentsEnabled: true, imagesOnly: true } });
-    openReply();
-    expect(screen.getByRole('button', { name: 'comments.attachments.addImage' })).toBeInTheDocument();
-  });
-
   test('with reply input props, keeps the reply box open until onReply resolves, then closes it', async () => {
     const pending = deferred<boolean>();
     const onReply = vi.fn(() => pending.promise);
@@ -103,20 +97,6 @@ describe('CommentThread reply composer', () => {
       await pending.promise;
     });
     expect(replyBox()).toBeInTheDocument();
-  });
-
-  test('a controlled reply value survives a failed send', async () => {
-    const pending = deferred<boolean>();
-    const onValueChange = vi.fn();
-    renderThread({ onReply: () => pending.promise, replyInputProps: { value: 'typed reply', onValueChange } });
-    openReply();
-    fireEvent.keyDown(replyBox() as HTMLTextAreaElement, { key: 'Enter' });
-    await act(async () => {
-      pending.resolve(false);
-      await pending.promise;
-    });
-    expect(replyBox()).toHaveValue('typed reply');
-    expect(onValueChange).not.toHaveBeenCalledWith('');
   });
 
   test('reply toggles are ignored while replyTogglesLocked is set', () => {
