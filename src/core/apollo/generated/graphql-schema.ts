@@ -125,6 +125,37 @@ export type AccountDeletionBlockerTotal = {
   total: Scalars['Int']['output'];
 };
 
+/** A hosted Innovation Hub card: its identity, nameID and profile only. */
+export type AccountHostedInnovationHub = {
+  __typename?: 'AccountHostedInnovationHub';
+  /** The ID of the Innovation Hub. */
+  id: Scalars['UUID']['output'];
+  /** The nameID of the Innovation Hub. */
+  nameID: Scalars['NameID']['output'];
+  /** The profile of this Innovation Hub. */
+  profile: Profile;
+};
+
+/** Resources hosted by an Account, as the current viewer may see them. */
+export type AccountHostedResources = {
+  __typename?: 'AccountHostedResources';
+  /** The Innovation Hubs hosted by the Account. */
+  innovationHubs: Array<AccountHostedInnovationHub>;
+  /** Innovation Packs of the Account that the current viewer may see. */
+  innovationPacks: Array<InnovationPack>;
+  /** Virtual Contributors of the Account that the current viewer may see. */
+  virtualContributors: Array<AccountHostedVirtualContributor>;
+};
+
+/** A hosted Virtual Contributor card: its identity and profile only. */
+export type AccountHostedVirtualContributor = {
+  __typename?: 'AccountHostedVirtualContributor';
+  /** The ID of the Virtual Contributor. */
+  id: Scalars['UUID']['output'];
+  /** The public profile of this Virtual Contributor. */
+  profile: Profile;
+};
+
 export type AccountLicensePlan = {
   __typename?: 'AccountLicensePlan';
   /** The number of Innovation Packs allowed. */
@@ -7341,6 +7372,8 @@ export type Organization = ActorFull &
     group?: Maybe<UserGroup>;
     /** Groups defined on this organization. */
     groups?: Maybe<Array<UserGroup>>;
+    /** Viewer-scoped hosted resources, null if anonymous. Single-profile use. */
+    hostedResources?: Maybe<AccountHostedResources>;
     /** The ID of the Actor */
     id: Scalars['UUID']['output'];
     /** Legal name - required if hosting an Space */
@@ -11347,6 +11380,8 @@ export type User = ActorFull & {
   /** The email address for this User. */
   email: Scalars['String']['output'];
   firstName: Scalars['String']['output'];
+  /** Viewer-scoped hosted resources, null if anonymous. Single-profile use. */
+  hostedResources?: Maybe<AccountHostedResources>;
   /** The ID of the Actor */
   id: Scalars['UUID']['output'];
   /** Can a message be sent to this User. */
@@ -24551,6 +24586,219 @@ export type ContributorDetailsFragment = {
           | undefined;
       }
     | undefined;
+};
+
+export type AccountHostedResourcesFieldsFragment = {
+  __typename?: 'AccountHostedResources';
+  virtualContributors: Array<{
+    __typename?: 'AccountHostedVirtualContributor';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      tagline?: string | undefined;
+      url: string;
+      avatar?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | undefined;
+    };
+  }>;
+  innovationPacks: Array<{
+    __typename?: 'InnovationPack';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      tagline?: string | undefined;
+      url: string;
+      avatar?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | undefined;
+    };
+  }>;
+  innovationHubs: Array<{
+    __typename?: 'AccountHostedInnovationHub';
+    id: string;
+    nameID: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      tagline?: string | undefined;
+      url: string;
+      avatar?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | undefined;
+    };
+  }>;
+};
+
+export type UserHostedResourcesQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+}>;
+
+export type UserHostedResourcesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          hostedResources?:
+            | {
+                __typename?: 'AccountHostedResources';
+                virtualContributors: Array<{
+                  __typename?: 'AccountHostedVirtualContributor';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    tagline?: string | undefined;
+                    url: string;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }>;
+                innovationPacks: Array<{
+                  __typename?: 'InnovationPack';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    tagline?: string | undefined;
+                    url: string;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }>;
+                innovationHubs: Array<{
+                  __typename?: 'AccountHostedInnovationHub';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    tagline?: string | undefined;
+                    url: string;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }>;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type OrganizationHostedResourcesQueryVariables = Exact<{
+  organizationId: Scalars['UUID']['input'];
+}>;
+
+export type OrganizationHostedResourcesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    organization?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          hostedResources?:
+            | {
+                __typename?: 'AccountHostedResources';
+                virtualContributors: Array<{
+                  __typename?: 'AccountHostedVirtualContributor';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    tagline?: string | undefined;
+                    url: string;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }>;
+                innovationPacks: Array<{
+                  __typename?: 'InnovationPack';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    tagline?: string | undefined;
+                    url: string;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }>;
+                innovationHubs: Array<{
+                  __typename?: 'AccountHostedInnovationHub';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    tagline?: string | undefined;
+                    url: string;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }>;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
 };
 
 export type AccountResourcesInfoQueryVariables = Exact<{

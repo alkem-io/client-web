@@ -69,6 +69,37 @@ export type AccountDeletionBlockerTotalFieldPolicy = {
   kind?: FieldPolicy<any> | FieldReadFunction<any>;
   total?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AccountHostedInnovationHubKeySpecifier = (
+  | 'id'
+  | 'nameID'
+  | 'profile'
+  | AccountHostedInnovationHubKeySpecifier
+)[];
+export type AccountHostedInnovationHubFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AccountHostedResourcesKeySpecifier = (
+  | 'innovationHubs'
+  | 'innovationPacks'
+  | 'virtualContributors'
+  | AccountHostedResourcesKeySpecifier
+)[];
+export type AccountHostedResourcesFieldPolicy = {
+  innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AccountHostedVirtualContributorKeySpecifier = (
+  | 'id'
+  | 'profile'
+  | AccountHostedVirtualContributorKeySpecifier
+)[];
+export type AccountHostedVirtualContributorFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type AccountLicensePlanKeySpecifier = (
   | 'innovationPacks'
   | 'spaceFree'
@@ -3957,6 +3988,7 @@ export type OrganizationKeySpecifier = (
   | 'domain'
   | 'group'
   | 'groups'
+  | 'hostedResources'
   | 'id'
   | 'legalEntityName'
   | 'metrics'
@@ -3982,6 +4014,7 @@ export type OrganizationFieldPolicy = {
   domain?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
+  hostedResources?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   legalEntityName?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6018,6 +6051,7 @@ export type UserKeySpecifier = (
   | 'credentials'
   | 'email'
   | 'firstName'
+  | 'hostedResources'
   | 'id'
   | 'isContactable'
   | 'isContactableViaEmail'
@@ -6040,6 +6074,7 @@ export type UserFieldPolicy = {
   credentials?: FieldPolicy<any> | FieldReadFunction<any>;
   email?: FieldPolicy<any> | FieldReadFunction<any>;
   firstName?: FieldPolicy<any> | FieldReadFunction<any>;
+  hostedResources?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isContactable?: FieldPolicy<any> | FieldReadFunction<any>;
   isContactableViaEmail?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6646,6 +6681,24 @@ export type StrictTypedTypePolicies = {
       | AccountDeletionBlockerTotalKeySpecifier
       | (() => undefined | AccountDeletionBlockerTotalKeySpecifier);
     fields?: AccountDeletionBlockerTotalFieldPolicy;
+  };
+  AccountHostedInnovationHub?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AccountHostedInnovationHubKeySpecifier
+      | (() => undefined | AccountHostedInnovationHubKeySpecifier);
+    fields?: AccountHostedInnovationHubFieldPolicy;
+  };
+  AccountHostedResources?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AccountHostedResourcesKeySpecifier | (() => undefined | AccountHostedResourcesKeySpecifier);
+    fields?: AccountHostedResourcesFieldPolicy;
+  };
+  AccountHostedVirtualContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AccountHostedVirtualContributorKeySpecifier
+      | (() => undefined | AccountHostedVirtualContributorKeySpecifier);
+    fields?: AccountHostedVirtualContributorFieldPolicy;
   };
   AccountLicensePlan?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AccountLicensePlanKeySpecifier | (() => undefined | AccountLicensePlanKeySpecifier);
