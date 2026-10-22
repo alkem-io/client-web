@@ -289,3 +289,76 @@ describe('ContributorSelector', () => {
     expect(screen.queryByLabelText('No longer available')).not.toBeInTheDocument();
   });
 });
+
+// --- feature 088: rowSelection="toggle" (the collection selection picker) ---
+describe('ContributorSelector — toggle row mode', () => {
+  // The dropdown is query-gated, so every case passes a non-empty query —
+  // otherwise no row renders and the assertions would pass vacuously.
+  const renderToggle = (
+    searchResults: ContributorSelectorUserResult[],
+    selectedContributors: ContributorSelectorInvitee[],
+    overrides: { onSelectUser?: () => void; onSearchChange?: () => void } = {}
+  ) =>
+    render(
+      <ContributorSelector
+        selectedContributors={selectedContributors}
+        searchResults={searchResults}
+        searchQuery="a"
+        onSearchChange={overrides.onSearchChange ?? vi.fn()}
+        onSelectUser={overrides.onSelectUser ?? vi.fn()}
+        onRemoveContributor={vi.fn()}
+        allowEmailInvites={false}
+        rowSelection="toggle"
+        {...baseLabels}
+      />
+    );
+
+  test('a selected row stays listed and reports aria-pressed=true', () => {
+    // The chip carries a different display name from the result row, so each
+    // assertion below can only match a row in the dropdown.
+    renderToggle([aliceRow, bobRow], [{ kind: 'user', userId: 'user-alice', displayName: 'Selected Alice' }]);
+
+    // Add-mode would have filtered Alice out of the dropdown entirely.
+    expect(screen.getByText('Alice Adams').closest('button')).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByText('Bob Brown').closest('button')).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  test('an organization selection ticks its row too', () => {
+    renderToggle(
+      [{ userId: 'org-1', displayName: 'Acme Org', typeLabel: 'Organizations' }],
+      [{ kind: 'organization', id: 'org-1', displayName: 'Selected Acme' }]
+    );
+
+    expect(screen.getByText('Acme Org').closest('button')).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('clicking a ticked row toggles it and keeps the query', async () => {
+    const onSelectUser = vi.fn();
+    const onSearchChange = vi.fn();
+    renderToggle([aliceRow], [{ kind: 'user', userId: 'user-alice', displayName: 'Selected Alice' }], {
+      onSelectUser,
+      onSearchChange,
+    });
+
+    await userEvent.click(screen.getByText('Alice Adams'));
+    expect(onSelectUser).toHaveBeenCalledWith('user-alice');
+    // The query survives, so the row the admin just unticked is still on screen.
+    expect(onSearchChange).not.toHaveBeenCalled();
+  });
+
+  test('the invite default leaves rows un-pressed', () => {
+    render(
+      <ContributorSelector
+        selectedContributors={[]}
+        searchResults={[aliceRow]}
+        searchQuery="a"
+        onSearchChange={vi.fn()}
+        onSelectUser={vi.fn()}
+        onRemoveContributor={vi.fn()}
+        {...baseLabels}
+      />
+    );
+
+    expect(screen.getByText('Alice Adams').closest('button')).not.toHaveAttribute('aria-pressed');
+  });
+});
