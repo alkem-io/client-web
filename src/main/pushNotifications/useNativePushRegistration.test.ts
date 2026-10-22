@@ -44,9 +44,6 @@ const makePlugin = (receive: 'granted' | 'denied'): NativePushPlugin =>
       listeners[eventName] = listenerFunc;
       return { remove: vi.fn() };
     }),
-    removeAllListeners: vi.fn(async () => {
-      calls.push('removeAllListeners');
-    }),
   }) as unknown as NativePushPlugin;
 
 describe('useNativePushRegistration (SC-020)', () => {
@@ -136,9 +133,10 @@ describe('useNativePushRegistration (SC-020)', () => {
 
   it('adds no listener and sends no bind when the OS prompt resolves after unmount', async () => {
     // The provider unmounts the moment `isAuthenticated` turns false, which can
-    // happen while the OS dialog is still open. A listener added after cleanup
-    // is one `removeAllListeners()` has already run past, so it would survive to
-    // bind a token outside the session that asked for the permission.
+    // happen while the OS dialog is still open. There is no listener removal to
+    // fall back on (see the hook's cleanup), so a listener added after cleanup
+    // would survive to bind a token outside the session that asked for the
+    // permission — `active` is what prevents it being added at all.
     isAppMode.mockReturnValue(true);
     let grantPermission: () => void = () => {};
     const late = makePlugin('granted');
@@ -166,11 +164,8 @@ describe('useNativePushRegistration (SC-020)', () => {
     isAppMode.mockReturnValue(true);
     getNativePushPlugin.mockReturnValue(plugin);
 
-    const { result, unmount } = renderHook(() => useNativePushRegistration());
+    const { result } = renderHook(() => useNativePushRegistration());
 
     expect(result.current).toBeUndefined();
-
-    unmount();
-    expect(plugin.removeAllListeners).toHaveBeenCalled();
   });
 });
