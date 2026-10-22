@@ -8,21 +8,21 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useCommentRoomStorageBucketQuery: (options: unknown) => mockQuery(options),
 }));
 
-const bucket = (
-  allowedMimeTypes: string[],
-  myPrivileges: AuthorizationPrivilege[] = [AuthorizationPrivilege.FileUpload]
-) => ({
+const bucket = (allowedMimeTypes: string[]) => ({
   data: {
     lookup: {
       storageBucket: {
         id: 'bucket-1',
         allowedMimeTypes,
         maxFileSize: 5 * 1024 * 1024,
-        authorization: { id: 'auth-1', myPrivileges },
       },
     },
   },
 });
+
+const { CreateMessage, CreateMessageReply, Read, FileUpload } = AuthorizationPrivilege;
+const member = [Read, CreateMessage, CreateMessageReply];
+const imagesOff = { comment: undefined, reply: undefined };
 
 describe('rasterImageMimeTypes', () => {
   test('keeps raster images and drops SVG and non-images', () => {
@@ -47,57 +47,74 @@ describe('useCommentImageStorageConfig', () => {
     mockQuery.mockReset();
   });
 
-  test('narrows the bucket policy to raster images and grants upload with FILE_UPLOAD', () => {
+  test('a member with only READ on the bucket may attach to comments and replies: the right to post grants it', () => {
     mockQuery.mockReturnValue(bucket(['image/png', 'image/svg+xml', 'application/pdf']));
-    const { result } = renderHook(() => useCommentImageStorageConfig('bucket-1', false));
-    expect(result.current).toEqual({
+    const { result } = renderHook(() => useCommentImageStorageConfig('bucket-1', member, false));
+    const policy = {
       storageBucketId: 'bucket-1',
       allowedMimeTypes: ['image/png'],
       maxFileSize: 5 * 1024 * 1024,
       canUpload: true,
       temporaryLocation: false,
-    });
+    };
+    expect(result.current).toEqual({ comment: policy, reply: policy });
     expect(mockQuery).toHaveBeenCalledWith({ variables: { bucketId: 'bucket-1' }, skip: false });
   });
 
-  test('canUpload is false without FILE_UPLOAD', () => {
-    mockQuery.mockReturnValue(bucket(['image/png'], [AuthorizationPrivilege.Read]));
-    const { result } = renderHook(() => useCommentImageStorageConfig('bucket-1', false));
-    expect(result.current?.canUpload).toBe(false);
+  test('each composer follows its own room right: CREATE_MESSAGE for comments, CREATE_MESSAGE_REPLY for replies', () => {
+    mockQuery.mockReturnValue(bucket(['image/png']));
+    const { result, rerender } = renderHook(
+      ({ privileges }: { privileges: AuthorizationPrivilege[] }) =>
+        useCommentImageStorageConfig('bucket-1', privileges, false),
+      { initialProps: { privileges: [Read, CreateMessage] } }
+    );
+    expect(result.current.comment?.canUpload).toBe(true);
+    expect(result.current.reply?.canUpload).toBe(false);
+    rerender({ privileges: [Read, CreateMessageReply] });
+    expect(result.current.comment?.canUpload).toBe(false);
+    expect(result.current.reply?.canUpload).toBe(true);
   });
 
-  test('is skipped and undefined when the caller skips', () => {
+  test('FILE_UPLOAD alone (bucket-level right, no room right) does not enable images, and the bucket is not queried', () => {
+    mockQuery.mockReturnValue(bucket(['image/png']));
+    const { result } = renderHook(() => useCommentImageStorageConfig('bucket-1', [Read, FileUpload], false));
+    expect(mockQuery).toHaveBeenCalledWith({ variables: { bucketId: 'bucket-1' }, skip: true });
+    expect(result.current.comment?.canUpload ?? false).toBe(false);
+    expect(result.current.reply?.canUpload ?? false).toBe(false);
+  });
+
+  test('is skipped and off when the caller skips', () => {
     mockQuery.mockReturnValue({ data: undefined });
-    const { result } = renderHook(() => useCommentImageStorageConfig('bucket-1', true));
-    expect(result.current).toBeUndefined();
+    const { result } = renderHook(() => useCommentImageStorageConfig('bucket-1', member, true));
+    expect(result.current).toEqual(imagesOff);
     expect(mockQuery).toHaveBeenCalledWith({ variables: { bucketId: 'bucket-1' }, skip: true });
   });
 
-  test.each([null, undefined])('is skipped and undefined without a bucket id (%s)', bucketId => {
+  test.each([null, undefined])('is skipped and off without a bucket id (%s)', bucketId => {
     mockQuery.mockReturnValue({ data: undefined });
-    const { result } = renderHook(() => useCommentImageStorageConfig(bucketId, false));
-    expect(result.current).toBeUndefined();
+    const { result } = renderHook(() => useCommentImageStorageConfig(bucketId, member, false));
+    expect(result.current).toEqual(imagesOff);
     expect(mockQuery).toHaveBeenCalledWith({ variables: { bucketId: '' }, skip: true });
   });
 
-  test('is undefined while loading and on error', () => {
+  test('is off while loading and on error', () => {
     mockQuery.mockReturnValue({ data: undefined, loading: true });
-    const { result, rerender } = renderHook(() => useCommentImageStorageConfig('bucket-1', false));
-    expect(result.current).toBeUndefined();
+    const { result, rerender } = renderHook(() => useCommentImageStorageConfig('bucket-1', member, false));
+    expect(result.current).toEqual(imagesOff);
     mockQuery.mockReturnValue({ data: undefined, loading: false, error: new Error('forbidden') });
     rerender();
-    expect(result.current).toBeUndefined();
+    expect(result.current).toEqual(imagesOff);
   });
 
-  test('is undefined when the bucket is not readable', () => {
+  test('is off when the bucket is not readable', () => {
     mockQuery.mockReturnValue({ data: { lookup: { storageBucket: null } } });
-    const { result } = renderHook(() => useCommentImageStorageConfig('bucket-1', false));
-    expect(result.current).toBeUndefined();
+    const { result } = renderHook(() => useCommentImageStorageConfig('bucket-1', member, false));
+    expect(result.current).toEqual(imagesOff);
   });
 
-  test('is undefined when the bucket allows no raster image type', () => {
+  test('is off when the bucket allows no raster image type', () => {
     mockQuery.mockReturnValue(bucket(['image/svg+xml', 'application/pdf']));
-    const { result } = renderHook(() => useCommentImageStorageConfig('bucket-1', false));
-    expect(result.current).toBeUndefined();
+    const { result } = renderHook(() => useCommentImageStorageConfig('bucket-1', member, false));
+    expect(result.current).toEqual(imagesOff);
   });
 });

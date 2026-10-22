@@ -23320,15 +23320,7 @@ export type CommentRoomStorageBucketQuery = {
   lookup: {
     __typename?: 'LookupQueryResults';
     storageBucket?:
-      | {
-          __typename?: 'StorageBucket';
-          id: string;
-          allowedMimeTypes: Array<string>;
-          maxFileSize: number;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        }
+      | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
       | undefined;
   };
 };

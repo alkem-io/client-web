@@ -90,26 +90,28 @@ export function useCrdRoomComments({
   const privileges = room?.authorization?.myPrivileges ?? [];
   const canComment = isAuthenticated && privileges.includes(AuthorizationPrivilege.CreateMessage);
 
-  // Image attachments for the comment and reply composers. The policy comes
-  // from the room's own attachment bucket; without one (or without the right to
-  // upload) the composers stay text-only and send the text alone, so one code
-  // path serves every room. Each send carries at most one image.
+  // Image attachments for the comment and reply composers. The accepted types
+  // and size come from the room's own attachment bucket; the right to attach is
+  // the right to post (CREATE_MESSAGE) or reply (CREATE_MESSAGE_REPLY) in the
+  // room. Without a bucket or that right the composer stays text-only and sends
+  // the text alone, so one code path serves every room. Each send carries at
+  // most one image.
   //
   // The top-level field is controlled: comments are shown newest first, so the
   // image is posted before the text (text ends up on top), and the field is
   // cleared only once the text is confirmed — a failed image never loses it.
   // The reply draft is keyed to the open reply, so files staged for one reply
   // are discarded when another reply is opened or the box closes.
-  const storageConfig = useCommentImageStorageConfig(room?.attachmentBucketId, !canComment);
+  const storageConfigs = useCommentImageStorageConfig(room?.attachmentBucketId, privileges, !canComment);
   const [draft, setDraft] = useState('');
   const [replyTarget, setReplyTarget] = useState<string | undefined>(undefined);
   const topLevelFiles = useConversationAttachments(
-    storageConfig,
+    storageConfigs.comment,
     { roomID: roomId },
     { maxAttachments: 1, textLast: true }
   );
   const replyFiles = useConversationAttachments(
-    storageConfig,
+    storageConfigs.reply,
     replyTarget ? { roomID: roomId, threadID: replyTarget } : undefined,
     { maxAttachments: 1 }
   );

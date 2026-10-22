@@ -13580,10 +13580,6 @@ export const CommentRoomStorageBucketDocument = gql`
       id
       allowedMimeTypes
       maxFileSize
-      authorization {
-        id
-        myPrivileges
-      }
     }
   }
 }

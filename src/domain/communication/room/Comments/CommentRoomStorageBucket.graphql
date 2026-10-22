@@ -4,10 +4,6 @@ query CommentRoomStorageBucket($bucketId: UUID!) {
       id
       allowedMimeTypes
       maxFileSize
-      authorization {
-        id
-        myPrivileges
-      }
     }
   }
 }

@@ -2,12 +2,11 @@ import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
-import type { StorageConfig } from '@/domain/storage/StorageBucket/useStorageConfig';
 
 const mockSendMessage = vi.fn();
 const mockReply = vi.fn();
 const mockFetch = vi.fn();
-const mockStorageConfig = vi.fn<(bucketId: string | null | undefined, skip: boolean) => StorageConfig | undefined>();
+const mockBucketQuery = vi.fn();
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -18,6 +17,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useRemoveMessageOnRoomMutation: () => [vi.fn(), { loading: false }],
   useSendMessageToRoomMutation: () => [mockSendMessage, { loading: false }],
   useReplyToMessageMutation: () => [mockReply, { loading: false }],
+  useCommentRoomStorageBucketQuery: (options: unknown) => mockBucketQuery(options),
 }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
 vi.mock('@/domain/collaboration/callout/useSubscribeOnRoomEvents', () => ({ default: () => true }));
@@ -31,10 +31,6 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   }),
 }));
 vi.mock('./useMentionableContributors', () => ({ useMentionableContributors: () => undefined }));
-vi.mock('./useCommentImageStorageConfig', () => ({
-  useCommentImageStorageConfig: (bucketId: string | null | undefined, skip: boolean) =>
-    mockStorageConfig(bucketId, skip),
-}));
 vi.mock('@/main/userMessaging/useAttachmentReadiness', () => ({
   useAttachmentReadiness: <T,>(messages: T[]) => messages,
 }));
@@ -42,18 +38,25 @@ vi.mock('@/crd/primitives/avatar');
 
 const { useCrdRoomComments } = await import('./useCrdRoomComments');
 
-const policy: StorageConfig = {
-  storageBucketId: 'bucket-1',
-  allowedMimeTypes: ['image/png'],
-  maxFileSize: 5 * 1024 * 1024,
-  canUpload: true,
-  temporaryLocation: false,
+// The space's shared bucket as an ordinary member reads it: types and size only.
+// Upload rights on it are not fetched; the room's privileges decide.
+const readableBucket = {
+  data: {
+    lookup: { storageBucket: { id: 'bucket-1', allowedMimeTypes: ['image/png'], maxFileSize: 5 * 1024 * 1024 } },
+  },
 };
+const noBucket = { data: undefined };
 
 type Room = Pick<CommentsWithMessagesModel, 'messages' | 'authorization' | 'attachmentBucketId'>;
 const room = (overrides: Partial<Room> = {}): Room => ({
   attachmentBucketId: 'bucket-1',
-  authorization: { myPrivileges: [AuthorizationPrivilege.CreateMessage] },
+  authorization: {
+    myPrivileges: [
+      AuthorizationPrivilege.Read,
+      AuthorizationPrivilege.CreateMessage,
+      AuthorizationPrivilege.CreateMessageReply,
+    ],
+  },
   messages: [],
   ...overrides,
 });
@@ -102,14 +105,14 @@ describe('useCrdRoomComments composers', () => {
     mockSendMessage.mockReset();
     mockReply.mockReset();
     mockFetch.mockReset();
-    mockStorageConfig.mockReset();
+    mockBucketQuery.mockReset();
     vi.stubGlobal('fetch', mockFetch);
   });
 
   afterEach(() => vi.unstubAllGlobals());
 
-  test('no image button when the policy hook returns undefined, and a text comment still posts with message only', async () => {
-    mockStorageConfig.mockReturnValue(undefined);
+  test('no image button when the bucket policy is unavailable, and a text comment still posts with message only', async () => {
+    mockBucketQuery.mockReturnValue(noBucket);
     mockSendMessage.mockResolvedValue(sent);
     render(<Harness value={room()} />);
     expect(screen.queryByRole('button', { name: 'comments.attachments.addImage' })).not.toBeInTheDocument();
@@ -124,8 +127,8 @@ describe('useCrdRoomComments composers', () => {
     expect(topLevel().getByRole('textbox')).toHaveValue('');
   });
 
-  test('with a policy, staging one image and text calls sendMessageToRoom twice: image then text, and clears the field only after the text', async () => {
-    mockStorageConfig.mockReturnValue(policy);
+  test('a member with only READ on the bucket and CREATE_MESSAGE on the room: staging one image and text calls sendMessageToRoom twice: image then text, and clears the field only after the text', async () => {
+    mockBucketQuery.mockReturnValue(readableBucket);
     mockFetch.mockResolvedValue(uploadOk('media-1'));
     const textSend = deferred<typeof sent>();
     mockSendMessage.mockResolvedValueOnce(sent).mockReturnValueOnce(textSend.promise);
@@ -151,7 +154,7 @@ describe('useCrdRoomComments composers', () => {
   });
 
   test('a second staged image is refused and the first stays', () => {
-    mockStorageConfig.mockReturnValue(policy);
+    mockBucketQuery.mockReturnValue(readableBucket);
     render(<Harness value={room()} />);
     const input = fileInputIn(screen.getByTestId('top-level'));
     fireEvent.change(input, { target: { files: [png('a.png')] } });
@@ -163,7 +166,7 @@ describe('useCrdRoomComments composers', () => {
   });
 
   test('a failed upload keeps the typed text in the field and marks the chip', async () => {
-    mockStorageConfig.mockReturnValue(policy);
+    mockBucketQuery.mockReturnValue(readableBucket);
     mockFetch.mockResolvedValue({ ok: false, status: 500 });
     render(<Harness value={room()} />);
     const box = topLevel().getByRole('textbox');
@@ -179,7 +182,7 @@ describe('useCrdRoomComments composers', () => {
   });
 
   test('the field and the image button are disabled while a send is in flight', async () => {
-    mockStorageConfig.mockReturnValue(policy);
+    mockBucketQuery.mockReturnValue(readableBucket);
     const upload = deferred<ReturnType<typeof uploadOk>>();
     mockFetch.mockReturnValue(upload.promise);
     mockSendMessage.mockResolvedValue(sent);
@@ -198,7 +201,7 @@ describe('useCrdRoomComments composers', () => {
   });
 
   test('opening a reply keys a separate draft: files staged in the reply are not in the top-level list, and the reply posts with its threadId', async () => {
-    mockStorageConfig.mockReturnValue(policy);
+    mockBucketQuery.mockReturnValue(readableBucket);
     mockFetch.mockResolvedValue(uploadOk('media-r'));
     mockReply.mockResolvedValue({ data: { sendMessageReplyToRoom: { id: 'r1' } } });
     render(<Harness value={withComment} />);
@@ -223,10 +226,26 @@ describe('useCrdRoomComments composers', () => {
     expect(document.getElementById('comment-reply-input-c1')).toBeNull();
   });
 
-  test('the policy hook is skipped when the viewer cannot comment', () => {
-    mockStorageConfig.mockReturnValue(undefined);
+  test('the bucket policy is not queried when the viewer cannot comment', () => {
+    mockBucketQuery.mockReturnValue(noBucket);
     render(<Harness value={room({ authorization: { myPrivileges: [AuthorizationPrivilege.Read] } })} />);
-    expect(mockStorageConfig).toHaveBeenCalledWith('bucket-1', true);
-    expect(mockStorageConfig).not.toHaveBeenCalledWith('bucket-1', false);
+    expect(mockBucketQuery).toHaveBeenCalledWith({ variables: { bucketId: 'bucket-1' }, skip: true });
+    expect(mockBucketQuery).not.toHaveBeenCalledWith({ variables: { bucketId: 'bucket-1' }, skip: false });
+  });
+
+  test('a member who may comment but not reply gets the image button on the comment field only', () => {
+    mockBucketQuery.mockReturnValue(readableBucket);
+    render(
+      <Harness
+        value={{
+          ...withComment,
+          authorization: { myPrivileges: [AuthorizationPrivilege.Read, AuthorizationPrivilege.CreateMessage] },
+        }}
+      />
+    );
+    expect(topLevel().getByRole('button', { name: 'comments.attachments.addImage' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'comments.reply' }));
+    const replyBox = document.getElementById('comment-reply-input-c1') as HTMLElement;
+    expect(within(replyBox).queryByRole('button', { name: 'comments.attachments.addImage' })).not.toBeInTheDocument();
   });
 });
