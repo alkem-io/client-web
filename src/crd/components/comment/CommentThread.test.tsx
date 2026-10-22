@@ -124,32 +124,36 @@ describe('CommentThread reply composer', () => {
     expect(onValueChange).not.toHaveBeenCalledWith('');
   });
 
-  test('with reply input props, reply toggles are ignored while a reply is being sent', async () => {
-    const pending = deferred<boolean>();
+  test('reply toggles are ignored while replyTogglesLocked is set', () => {
     const onReplyTargetChange = vi.fn();
     const older: CommentData = { ...comment, id: 'c0', content: 'older', timestampMs: 500 };
-    renderThread({
-      comments: [comment, older],
-      onReply: () => pending.promise,
-      onReplyTargetChange,
-      replyInputProps: imageReply,
-    });
+    const props: ThreadProps = { comments: [comment, older], onReplyTargetChange, replyInputProps: imageReply };
+    const { rerender } = renderThread(props);
+    const rerenderThread = (replyTogglesLocked: boolean) =>
+      rerender(
+        <CommentThread
+          comments={[comment]}
+          onReply={noop}
+          onDelete={noop}
+          onAddReaction={noop}
+          onRemoveReaction={noop}
+          {...props}
+          replyTogglesLocked={replyTogglesLocked}
+        />
+      );
     const replyButtons = () => screen.getAllByRole('button', { name: 'comments.reply' });
     // Newest first: c1, then c0.
     fireEvent.click(replyButtons()[0]);
-    submitReply('a reply');
-    // Opening another comment's reply mid-send is ignored...
+    rerenderThread(true);
+    // Opening another comment's reply while locked is ignored...
     fireEvent.click(replyButtons()[1]);
     expect(onReplyTargetChange).toHaveBeenLastCalledWith('c1');
     expect(document.getElementById('comment-reply-input-c0')).toBeNull();
-    // ...and so is closing the box being sent.
+    // ...and so is closing the open box.
     fireEvent.click(replyButtons()[0]);
     expect(onReplyTargetChange).toHaveBeenLastCalledWith('c1');
     expect(document.getElementById('comment-reply-input-c1')).toBeInTheDocument();
-    await act(async () => {
-      pending.resolve(false);
-      await pending.promise;
-    });
+    rerenderThread(false);
     fireEvent.click(replyButtons()[1]);
     expect(onReplyTargetChange).toHaveBeenLastCalledWith('c0');
     expect(document.getElementById('comment-reply-input-c0')).toBeInTheDocument();

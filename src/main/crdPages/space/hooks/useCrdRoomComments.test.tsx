@@ -270,6 +270,29 @@ describe('useCrdRoomComments composers', () => {
     expect(document.getElementById('comment-reply-input-c1')).toBeNull();
   });
 
+  test('the reply box cannot be closed while its reply is being sent', async () => {
+    mockBucketQuery.mockReturnValue(readableBucket);
+    const upload = deferred<ReturnType<typeof uploadOk>>();
+    mockFetch.mockReturnValue(upload.promise);
+    mockReply.mockResolvedValue({ data: { sendMessageReplyToRoom: { id: 'r1' } } });
+    render(<Harness value={withComment} />);
+    const toggleReply = () => fireEvent.click(screen.getByRole('button', { name: 'comments.reply' }));
+    const replyBox = () => document.getElementById('comment-reply-input-c1');
+    toggleReply();
+    fireEvent.change(fileInputIn(replyBox() as HTMLElement), { target: { files: [png('reply.png')] } });
+    await act(async () => {
+      fireEvent.click(within(replyBox() as HTMLElement).getByRole('button', { name: 'comments.send' }));
+    });
+    toggleReply();
+    expect(replyBox()).toBeInTheDocument();
+    await act(async () => {
+      upload.resolve(uploadOk('media-r'));
+      await upload.promise;
+    });
+    expect(mockReply).toHaveBeenCalledOnce();
+    expect(replyBox()).toBeNull();
+  });
+
   test('a reply whose text is not confirmed stays open with the typed text, and a confirmed retry clears it', async () => {
     mockBucketQuery.mockReturnValue(readableBucket);
     mockReply

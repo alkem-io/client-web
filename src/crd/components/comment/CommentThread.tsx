@@ -20,6 +20,11 @@ type CommentThreadProps = CommentsContainerData & {
    * is a plain text field that closes as soon as the reply is submitted.
    */
   replyInputProps?: ReplyComposerProps;
+  /**
+   * True while a reply is being sent. Opening or closing a reply box then would
+   * drop the draft being sent and cancel its upload, so the toggles are ignored.
+   */
+  replyTogglesLocked?: boolean;
 };
 
 /**
@@ -44,6 +49,7 @@ export function CommentThread({
   mentionSearch,
   onReplyTargetChange,
   replyInputProps,
+  replyTogglesLocked = false,
 }: CommentThreadProps) {
   const { t } = useTranslation('crd-space');
 
@@ -51,12 +57,9 @@ export function CommentThread({
   // each CommentItem) so the reply input renders at the bottom of the parent's
   // reply group — matching where the new reply lands after posting.
   const [replyingToCommentId, setReplyingToCommentId] = useState<string | undefined>(undefined);
-  // True while a reply is being sent. Opening or closing a reply box then would
-  // drop the draft being sent and cancel its upload, so the toggles wait.
-  const [replySending, setReplySending] = useState(false);
 
   const toggleReply = (commentId: string) => {
-    if (replySending) return;
+    if (replyTogglesLocked) return;
     setReplyingToCommentId(current => (current === commentId ? undefined : commentId));
   };
 
@@ -159,15 +162,12 @@ export function CommentThread({
                           return;
                         }
                         // A rejection keeps the box open; the integration reports the error.
-                        setReplySending(true);
-                        void Promise.resolve(onReply(comment.id, content))
-                          .then(
-                            sent => {
-                              if (sent !== false) setReplyingToCommentId(undefined);
-                            },
-                            () => {}
-                          )
-                          .finally(() => setReplySending(false));
+                        void Promise.resolve(onReply(comment.id, content)).then(
+                          sent => {
+                            if (sent !== false) setReplyingToCommentId(undefined);
+                          },
+                          () => {}
+                        );
                       }}
                     />
                   </div>

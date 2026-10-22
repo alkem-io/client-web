@@ -206,6 +206,7 @@ export function useCrdRoomComments({
               }
             : undefined
         }
+        replyTogglesLocked={replyFiles.isSending}
         onDelete={commentId => {
           setPendingDeleteId(commentId);
         }}
