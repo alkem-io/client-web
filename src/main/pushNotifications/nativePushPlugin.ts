@@ -25,6 +25,14 @@
  * `:267` `RegistrationError { error }`) and `@capacitor/core@8.4.2`
  * `types/definitions.d.ts:66` (`PermissionState`). It is unversioned — residual
  * R-9.
+ *
+ * **`pushNotificationActionPerformed` carries no line citation, deliberately.**
+ * That `.d.ts` is absent from this workspace, so inventing line numbers beside
+ * the honest ones above would make the whole docblock unverifiable. The overload
+ * therefore declares only what the tap handler reads: `notification.data`, a
+ * loose per-platform bag — not a symmetric shape, because the iOS APNs
+ * dictionary and the Android FCM data map are different objects that merely
+ * agree on `url` (server `native.push.sender.service.ts:206` and `:313`).
  */
 
 export type NativePushPlugin = {
@@ -35,11 +43,20 @@ export type NativePushPlugin = {
    * Typed `unknown` deliberately: the injected implementation returns a plain
    * `{ remove }` object *synchronously* (`native-bridge.js:183-195`), not the
    * `Promise<PluginListenerHandle>` the plugin's own `.d.ts` declares, so no
-   * caller may rely on the handle. Teardown goes through `removeAllListeners`.
+   * caller may rely on the handle.
+   *
+   * There is therefore no per-consumer teardown at all, and the plugin's global
+   * `removeAllListeners()` is deliberately not declared: one consumer calling it
+   * silently removes every other consumer's listener. Both listening consumers
+   * (`useNativePushRegistration`, `useNativePushTapRouting`) register once and
+   * stay registered for the page's lifetime instead.
    */
   addListener(eventName: 'registration', listenerFunc: (token: { value: string }) => void): unknown;
   addListener(eventName: 'registrationError', listenerFunc: (error: { error: string }) => void): unknown;
-  removeAllListeners(): Promise<void>;
+  addListener(
+    eventName: 'pushNotificationActionPerformed',
+    listenerFunc: (event: { notification: { data?: Record<string, unknown> } }) => void
+  ): unknown;
 };
 
 export const getNativePushPlugin = (): NativePushPlugin | undefined => {

@@ -24,6 +24,33 @@
  * (`usePushNotifications`) and the decision to register a native token
  * (`useNativePushRegistration`); a third consumer needs a ruling, and a consumer
  * on an authorization path is a hard stop.
+ *
+ * **Third consumer, ruled in (088).** `useNativePushTapRouting` — the handler
+ * that routes a tapped native notification to its target — is admitted as the
+ * third legitimate consumer. It is **not** on an authorization path: all the
+ * predicate decides is whether to register a plugin listener that can only ever
+ * exist in the app shell. Forging it in a browser subscribes the forger to an
+ * event no browser emits; what the handler would then navigate to is a
+ * same-origin path the forger could type into the address bar anyway, because
+ * the target is normalised against the serving origin
+ * (`normalizePushTargetUrl`) and the route it lands on is still gated by the
+ * app's existing route-level auth and per-route authorization. No identity or
+ * entitlement decision is taken from this signal.
+ *
+ * **The tap event is also forgeable on Android, and confinement is the control.**
+ * Correcting the paragraph above, which only considered browser forgery: the
+ * feature's own working path is FCM relaunching the exported `MainActivity`
+ * (`ACTION_MAIN`/`LAUNCHER`) with the payload as intent extras, which Capacitor
+ * fans out to every plugin — and an exported activity cannot tell that apart
+ * from a local app's `startActivity`. So any installed app can synthesise a
+ * `pushNotificationActionPerformed`. What that buys is "bring the app forward
+ * and steer it to an arbitrary **same-origin** route", bounded by
+ * `normalizePushTargetUrl` rejecting every off-origin and authority-confusable
+ * target; no read access, and every route keeps its own authorization. The
+ * residual (UI redress / nuisance navigation of a live session) is owned by
+ * `client-appstore` — the exported launcher activity is the untrusted boundary —
+ * and is not closable with a client-web guard, which would be hardening a
+ * signal this file already declares non-authoritative.
  */
 
 declare global {
