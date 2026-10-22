@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { rasterImageMimeTypes, useCommentImageStorageConfig } from './useCommentImageStorageConfig';
+import { commentImageMimeTypes, useCommentImageStorageConfig } from './useCommentImageStorageConfig';
 
 const mockQuery = vi.fn();
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
@@ -24,21 +24,27 @@ const { CreateMessage, CreateMessageReply, Read, FileUpload } = AuthorizationPri
 const member = [Read, CreateMessage, CreateMessageReply];
 const imagesOff = { comment: undefined, reply: undefined };
 
-describe('rasterImageMimeTypes', () => {
-  test('keeps raster images and drops SVG and non-images', () => {
+describe('commentImageMimeTypes', () => {
+  test('keeps JPEG, PNG, GIF and WebP, in bucket order, and drops HEIC, HEIF, AVIF, SVG and non-images', () => {
     expect(
-      rasterImageMimeTypes([
+      commentImageMimeTypes([
         'image/png',
+        'image/heic',
         'image/jpeg',
+        'image/heif',
         'image/gif',
-        'image/webp',
         'image/avif',
+        'image/webp',
         'image/svg+xml',
         'application/pdf',
         'video/mp4',
         'text/plain',
       ])
-    ).toEqual(['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/avif']);
+    ).toEqual(['image/png', 'image/jpeg', 'image/gif', 'image/webp']);
+  });
+
+  test('keeps only what the bucket allows', () => {
+    expect(commentImageMimeTypes(['image/webp', 'image/heic'])).toEqual(['image/webp']);
   });
 });
 
@@ -48,7 +54,7 @@ describe('useCommentImageStorageConfig', () => {
   });
 
   test('a member with only READ on the bucket may attach to comments and replies: the right to post grants it', () => {
-    mockQuery.mockReturnValue(bucket(['image/png', 'image/svg+xml', 'application/pdf']));
+    mockQuery.mockReturnValue(bucket(['image/png', 'image/heic', 'image/svg+xml', 'application/pdf']));
     const { result } = renderHook(() => useCommentImageStorageConfig('bucket-1', member, false));
     const policy = {
       storageBucketId: 'bucket-1',
@@ -112,8 +118,8 @@ describe('useCommentImageStorageConfig', () => {
     expect(result.current).toEqual(imagesOff);
   });
 
-  test('is off when the bucket allows no raster image type', () => {
-    mockQuery.mockReturnValue(bucket(['image/svg+xml', 'application/pdf']));
+  test('is off when the bucket allows no JPEG, PNG, GIF or WebP type', () => {
+    mockQuery.mockReturnValue(bucket(['image/heic', 'image/heif', 'image/avif', 'image/svg+xml', 'application/pdf']));
     const { result } = renderHook(() => useCommentImageStorageConfig('bucket-1', member, false));
     expect(result.current).toEqual(imagesOff);
   });
