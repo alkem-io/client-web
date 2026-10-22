@@ -929,21 +929,26 @@
     },
     "branding": {
       "noImage": "No image",
-      "upload": "Upload",
       "avatar": {
         "title": "Avatar",
+        "size": "410 × 410px",
         "hint": "The space logo.",
-        "recrop": "Crop current avatar"
+        "recrop": "Crop current avatar",
+        "upload": "Upload avatar"
       },
       "pageBanner": {
         "title": "Page Banner",
-        "hint": "Shown at the top of the Space page. Use an image at least 1200 × 120px.",
-        "recrop": "Crop current page banner"
+        "size": "Min. 1200 × 120px",
+        "hint": "Shown at the top of the Space page.",
+        "recrop": "Crop current page banner",
+        "upload": "Upload page banner"
       },
       "cardBanner": {
-        "title": "Card Banner (416 × 256px)",
+        "title": "Card Banner",
+        "size": "416 × 256px",
         "hint": "Shown in search results and space cards.",
-        "recrop": "Crop current card banner"
+        "recrop": "Crop current card banner",
+        "upload": "Upload card banner"
       },
       "cropDialog": {
         "save": "Save",

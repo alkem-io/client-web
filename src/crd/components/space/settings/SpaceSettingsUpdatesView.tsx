@@ -127,7 +127,10 @@ export function SpaceSettingsUpdatesView({
                 iframeAllowedUrls={iframeAllowedUrls}
                 onError={onError}
               />
-              <div className="flex items-center gap-3">
+              <div className="flex items-center justify-end gap-3">
+                <Button type="button" variant="outline" size="sm" onClick={handleCancelComposer} disabled={submitting}>
+                  {t('updates.composer.cancel')}
+                </Button>
                 <Button
                   type="button"
                   size="sm"
@@ -147,9 +150,6 @@ export function SpaceSettingsUpdatesView({
                       {t('updates.composer.publish')}
                     </>
                   )}
-                </Button>
-                <Button type="button" variant="outline" size="sm" onClick={handleCancelComposer} disabled={submitting}>
-                  {t('updates.composer.cancel')}
                 </Button>
               </div>
             </div>

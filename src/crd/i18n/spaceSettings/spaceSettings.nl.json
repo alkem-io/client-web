@@ -929,21 +929,26 @@
     },
     "branding": {
       "noImage": "Geen afbeelding",
-      "upload": "Uploaden",
       "avatar": {
         "title": "Avatar",
+        "size": "410 × 410px",
         "hint": "Het logo van de Space.",
-        "recrop": "Huidige avatar bijsnijden"
+        "recrop": "Huidige avatar bijsnijden",
+        "upload": "Avatar uploaden"
       },
       "pageBanner": {
         "title": "Paginabanner",
-        "hint": "Wordt bovenaan de Space-pagina getoond. Gebruik een afbeelding van minimaal 1200 × 120px.",
-        "recrop": "Huidige paginabanner bijsnijden"
+        "size": "Min. 1200 × 120px",
+        "hint": "Wordt bovenaan de Space-pagina getoond.",
+        "recrop": "Huidige paginabanner bijsnijden",
+        "upload": "Paginabanner uploaden"
       },
       "cardBanner": {
-        "title": "Kaartbanner (416 × 256px)",
+        "title": "Kaartbanner",
+        "size": "416 × 256px",
         "hint": "Wordt weergegeven in zoekresultaten en Space-kaarten.",
-        "recrop": "Huidige kaartbanner bijsnijden"
+        "recrop": "Huidige kaartbanner bijsnijden",
+        "upload": "Kaartbanner uploaden"
       },
       "cropDialog": {
         "save": "Opslaan",

@@ -161,7 +161,7 @@ export function SpaceSettingsAccountView({
                   ) : (
                     <User aria-hidden="true" className="size-3" />
                   )}
-                  {host.type}
+                  {formatHostType(host.type)}
                 </span>
               </div>
             </div>
@@ -238,4 +238,10 @@ function AccountSkeletons() {
       ))}
     </div>
   );
+}
+
+/** `USER` → `User`, `VIRTUAL_CONTRIBUTOR` → `Virtual contributor`. */
+function formatHostType(type: string) {
+  const words = type.toLowerCase().replaceAll('_', ' ');
+  return words.charAt(0).toUpperCase() + words.slice(1);
 }

@@ -193,3 +193,15 @@ describe('SpaceSettingsAboutView — Classifications block', () => {
     expect(addButton.compareDocumentPosition(card as Element) & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
   });
 });
+
+describe('SpaceSettingsAboutView — section defaults (spec 045 Session 2026-10-22)', () => {
+  it('opens only Identity; every other section starts collapsed', async () => {
+    render(<SpaceSettingsAboutView {...baseProps()} />);
+    const toggles = await screen.findAllByRole('button', { expanded: false });
+    const open = screen.getAllByRole('button', { expanded: true });
+    expect(open.map(b => b.textContent)).toEqual(['Identity']);
+    expect(toggles.map(b => b.textContent)).toEqual(
+      expect.arrayContaining(['Visuals', 'Location', 'Context', 'Tags', 'References & Links'])
+    );
+  });
+});

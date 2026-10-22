@@ -929,21 +929,26 @@
     },
     "branding": {
       "noImage": "Aucune image",
-      "upload": "Téléverser",
       "avatar": {
         "title": "Avatar",
+        "size": "410 × 410px",
         "hint": "Le logo de l'espace.",
-        "recrop": "Recadrer l'avatar actuel"
+        "recrop": "Recadrer l'avatar actuel",
+        "upload": "Téléverser l’avatar"
       },
       "pageBanner": {
         "title": "Bannière de page",
-        "hint": "Affichée en haut de la page du Space. Utilisez une image d'au moins 1200 × 120px.",
-        "recrop": "Recadrer la bannière de page actuelle"
+        "size": "Min. 1200 × 120px",
+        "hint": "Affichée en haut de la page du Space.",
+        "recrop": "Recadrer la bannière de page actuelle",
+        "upload": "Téléverser la bannière de page"
       },
       "cardBanner": {
-        "title": "Bannière de carte (416 × 256px)",
+        "title": "Bannière de carte",
+        "size": "416 × 256px",
         "hint": "Affichée dans les résultats de recherche et les cartes d'espace.",
-        "recrop": "Recadrer la bannière de carte actuelle"
+        "recrop": "Recadrer la bannière de carte actuelle",
+        "upload": "Téléverser la bannière de carte"
       },
       "cropDialog": {
         "save": "Enregistrer",

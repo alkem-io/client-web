@@ -929,21 +929,26 @@
     },
     "branding": {
       "noImage": "Kein Bild",
-      "upload": "Hochladen",
       "avatar": {
         "title": "Avatar",
+        "size": "410 × 410px",
         "hint": "Das Logo des Spaces.",
-        "recrop": "Aktuellen Avatar zuschneiden"
+        "recrop": "Aktuellen Avatar zuschneiden",
+        "upload": "Avatar hochladen"
       },
       "pageBanner": {
         "title": "Seiten-Banner",
-        "hint": "Wird oben auf der Space-Seite angezeigt. Verwenden Sie ein Bild von mindestens 1200 × 120px.",
-        "recrop": "Aktuelles Seitenbanner zuschneiden"
+        "size": "Min. 1200 × 120px",
+        "hint": "Wird oben auf der Space-Seite angezeigt.",
+        "recrop": "Aktuelles Seitenbanner zuschneiden",
+        "upload": "Seiten-Banner hochladen"
       },
       "cardBanner": {
-        "title": "Karten-Banner (416 × 256px)",
+        "title": "Karten-Banner",
+        "size": "416 × 256px",
         "hint": "Wird in Suchergebnissen und Space-Karten angezeigt.",
-        "recrop": "Aktuelles Kartenbanner zuschneiden"
+        "recrop": "Aktuelles Kartenbanner zuschneiden",
+        "upload": "Karten-Banner hochladen"
       },
       "cropDialog": {
         "save": "Speichern",

@@ -929,21 +929,26 @@
     },
     "branding": {
       "noImage": "Sin imagen",
-      "upload": "Subir",
       "avatar": {
         "title": "Avatar",
+        "size": "410 × 410px",
         "hint": "El logo del espacio.",
-        "recrop": "Recortar el avatar actual"
+        "recrop": "Recortar el avatar actual",
+        "upload": "Subir avatar"
       },
       "pageBanner": {
         "title": "Banner de página",
-        "hint": "Se muestra en la parte superior de la página del Space. Usa una imagen de al menos 1200 × 120px.",
-        "recrop": "Recortar el banner de página actual"
+        "size": "Mín. 1200 × 120px",
+        "hint": "Se muestra en la parte superior de la página del Space.",
+        "recrop": "Recortar el banner de página actual",
+        "upload": "Subir banner de página"
       },
       "cardBanner": {
-        "title": "Banner de tarjeta (416 × 256px)",
+        "title": "Banner de tarjeta",
+        "size": "416 × 256px",
         "hint": "Se muestra en los resultados de búsqueda y las tarjetas de espacio.",
-        "recrop": "Recortar el banner de tarjeta actual"
+        "recrop": "Recortar el banner de tarjeta actual",
+        "upload": "Subir banner de tarjeta"
       },
       "cropDialog": {
         "save": "Guardar",

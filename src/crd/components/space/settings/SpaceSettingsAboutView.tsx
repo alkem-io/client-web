@@ -141,7 +141,12 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
           </div>
         </SettingsSection>
 
-        <SettingsSection title={t('about.sections.visuals')} icon={<ImageIcon className="size-4" />} iconColor="purple">
+        <SettingsSection
+          defaultOpen={false}
+          title={t('about.sections.visuals')}
+          icon={<ImageIcon className="size-4" />}
+          iconColor="purple"
+        >
           {/* One row of true shapes (stacked on narrow screens): avatar (L1/L2) → card banner → page banner (L0, fills the rest). */}
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
             {showAvatar && (
@@ -154,6 +159,8 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                   t={t}
                   onRecrop={() => onRecropVisual?.('avatar')}
                   recropLabel={t('about.branding.avatar.recrop')}
+                  uploadLabel={t('about.branding.avatar.upload')}
+                  sizeLabel={t('about.branding.avatar.size')}
                 />
                 <FieldHint>{t('about.branding.avatar.hint')}</FieldHint>
               </div>
@@ -168,6 +175,8 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                 t={t}
                 onRecrop={() => onRecropVisual?.('cardBanner')}
                 recropLabel={t('about.branding.cardBanner.recrop')}
+                uploadLabel={t('about.branding.cardBanner.upload')}
+                sizeLabel={t('about.branding.cardBanner.size')}
               />
               <FieldHint>{t('about.branding.cardBanner.hint')}</FieldHint>
             </div>
@@ -183,6 +192,8 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                   t={t}
                   onRecrop={() => onRecropVisual?.('pageBanner')}
                   recropLabel={t('about.branding.pageBanner.recrop')}
+                  uploadLabel={t('about.branding.pageBanner.upload')}
+                  sizeLabel={t('about.branding.pageBanner.size')}
                 />
                 <FieldHint>{t('about.branding.pageBanner.hint')}</FieldHint>
               </div>
@@ -190,7 +201,12 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
           </div>
         </SettingsSection>
 
-        <SettingsSection title={t('about.location.title')} icon={<MapPin className="size-4" />} iconColor="green">
+        <SettingsSection
+          defaultOpen={false}
+          title={t('about.location.title')}
+          icon={<MapPin className="size-4" />}
+          iconColor="green"
+        >
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <FieldLabel htmlFor={cityId}>{t('about.location.city')}</FieldLabel>
@@ -217,6 +233,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
         </SettingsSection>
 
         <SettingsSection
+          defaultOpen={false}
           id="description"
           title={t('about.sections.context')}
           icon={<FileText className="size-4" />}
@@ -243,7 +260,12 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
           </div>
         </SettingsSection>
 
-        <SettingsSection title={t('about.tags.title')} icon={<Tag className="size-4" />} iconColor="amber">
+        <SettingsSection
+          defaultOpen={false}
+          title={t('about.tags.title')}
+          icon={<Tag className="size-4" />}
+          iconColor="amber"
+        >
           <TagsInput
             value={tags}
             onChange={next => onChange({ tags: next })}
@@ -254,6 +276,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
 
         {/* Classifications (D1, product#2161 design 01) */}
         <SettingsSection
+          defaultOpen={false}
           id="classifications"
           title={t('classifications.sectionTitle')}
           icon={<Tags className="size-4" />}
@@ -282,6 +305,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
         </SettingsSection>
 
         <SettingsSection
+          defaultOpen={false}
           id="references"
           title={t('about.references.title')}
           icon={<Link2 className="size-4" />}
@@ -359,6 +383,8 @@ function BannerUpload({
   t,
   onRecrop,
   recropLabel,
+  uploadLabel,
+  sizeLabel,
 }: {
   visual: AboutVisual;
   onUpload: (file: File) => void;
@@ -377,6 +403,10 @@ function BannerUpload({
   onRecrop?: () => void;
   /** Accessible name + tooltip for the re-crop button, named per visual by the caller. */
   recropLabel?: string;
+  /** Accessible name of the empty upload tile, named per visual by the caller. */
+  uploadLabel: string;
+  /** Recommended size shown inside the empty upload tile, e.g. "416 × 256px". */
+  sizeLabel?: string;
 }) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -435,10 +465,11 @@ function BannerUpload({
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="flex h-full w-full items-center justify-center border border-dashed rounded-md bg-muted text-muted-foreground hover:bg-muted/80 transition-colors cursor-pointer"
+          aria-label={uploadLabel}
+          className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-muted-foreground/25 bg-muted/20 text-muted-foreground transition-colors cursor-pointer hover:border-primary/40 hover:bg-primary/5 outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <ImageIcon aria-hidden="true" className="mr-2 size-4" />
-          <span className="text-control">{t('about.branding.upload')}</span>
+          <ImageIcon aria-hidden="true" className="size-10 text-muted-foreground/50" />
+          {sizeLabel && <span className="text-caption text-muted-foreground/70">{sizeLabel}</span>}
         </button>
       )}
       <input ref={inputRef} id={inputId} type="file" accept="image/*" className="hidden" onChange={handlePick} />
