@@ -5,7 +5,7 @@ import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 
 /**
- * State of the tab-wide unsaved-changes bar (spec 045 FR-025 – FR-025d).
+ * State of the tab-wide unsaved-changes bar (spec 045 FR-025 – FR-025d, spec 097 Session 2026-10-22).
  * `count` is the number of changed fields on the active tab (FR-025b).
  */
 export type UnsavedChangesBarState =
@@ -14,7 +14,7 @@ export type UnsavedChangesBarState =
   | { kind: 'saving'; count: number }
   | { kind: 'saveError'; count: number; message: string };
 
-type SpaceSettingsUnsavedChangesBarProps = {
+type UnsavedChangesBarProps = {
   state: UnsavedChangesBarState;
   onSave: () => void;
   /** Opens the consumer-owned Discard confirmation — the bar never resets anything itself. */
@@ -24,10 +24,10 @@ type SpaceSettingsUnsavedChangesBarProps = {
 /**
  * Bar fixed to the bottom of the viewport while the active settings tab has
  * unsaved changes: the count on the left, Discard + Save changes on the right.
- * Mirrors the prototype's `SaveBar`, aligned to the space page's content column.
+ * Mirrors the prototype's `SaveBar`, aligned to the settings page's content column.
  */
-export function SpaceSettingsUnsavedChangesBar({ state, onSave, onDiscard }: SpaceSettingsUnsavedChangesBarProps) {
-  const { t } = useTranslation('crd-spaceSettings');
+export function UnsavedChangesBar({ state, onSave, onDiscard }: UnsavedChangesBarProps) {
+  const { t } = useTranslation('crd-common');
   const visible = state.kind !== 'clean';
   // Keep showing the last count while the bar slides out, instead of flashing "0 unsaved changes".
   const [shownCount, setShownCount] = useState(0);
@@ -38,7 +38,7 @@ export function SpaceSettingsUnsavedChangesBar({ state, onSave, onDiscard }: Spa
 
   return (
     <section
-      aria-label={t('saveBar.regionLabel')}
+      aria-label={t('unsavedChanges.regionLabel')}
       aria-hidden={!visible}
       inert={!visible}
       className={cn(
@@ -55,7 +55,7 @@ export function SpaceSettingsUnsavedChangesBar({ state, onSave, onDiscard }: Spa
               {saving ? (
                 <>
                   <Loader2 aria-hidden="true" className="size-4 animate-spin text-primary" />
-                  <p className="text-body text-foreground/70">{t('saveBar.saving')}</p>
+                  <p className="text-body text-foreground/70">{t('unsavedChanges.saving')}</p>
                 </>
               ) : (
                 <>
@@ -65,7 +65,7 @@ export function SpaceSettingsUnsavedChangesBar({ state, onSave, onDiscard }: Spa
                   >
                     {count}
                   </span>
-                  <p className="text-body text-foreground/70">{t('saveBar.count', { count })}</p>
+                  <p className="text-body text-foreground/70">{t('unsavedChanges.count', { count })}</p>
                 </>
               )}
               {state.kind === 'saveError' && (
@@ -77,7 +77,7 @@ export function SpaceSettingsUnsavedChangesBar({ state, onSave, onDiscard }: Spa
             </div>
             <div className="flex items-center gap-3">
               <Button type="button" variant="ghost" size="sm" onClick={onDiscard} disabled={saving}>
-                {t('saveBar.discard')}
+                {t('unsavedChanges.discard')}
               </Button>
               <Button
                 type="button"
@@ -87,7 +87,7 @@ export function SpaceSettingsUnsavedChangesBar({ state, onSave, onDiscard }: Spa
                 className="min-w-[120px] shadow-md transition-shadow hover:shadow-lg"
               >
                 {saving && <Loader2 aria-hidden="true" className="mr-2 size-4 animate-spin" />}
-                {t('saveBar.save')}
+                {t('unsavedChanges.save')}
               </Button>
             </div>
           </div>

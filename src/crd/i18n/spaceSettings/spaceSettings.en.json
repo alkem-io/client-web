@@ -11,33 +11,14 @@
     "account": "Account"
   },
   "dirtyGuard": {
-    "save": "Save",
-    "discard": "Discard & leave",
     "cancel": "Cancel",
-    "tabSwitch": {
-      "title": "Unsaved changes",
-      "description": "You have unsaved changes on this tab. Save them, discard them, or stay on this tab?"
-    },
     "navAway": {
       "title": "Unsaved changes",
       "description": "Leaving this page will discard your unsaved changes."
     }
   },
   "saveBar": {
-    "count_one": "{{count}} unsaved change",
-    "count_other": "{{count}} unsaved changes",
-    "save": "Save changes",
-    "discard": "Discard",
-    "saving": "Saving…",
-    "saved": "Changes saved",
-    "regionLabel": "Unsaved changes",
-    "lockedReason": "Save or discard your changes first",
-    "discardDialog": {
-      "title_one": "Discard 1 unsaved change?",
-      "title_other": "Discard {{count}} unsaved changes?",
-      "description": "Every changed field on this tab goes back to its saved value.",
-      "confirm": "Discard"
-    }
+    "lockedReason": "Save or discard your changes first"
   },
   "layout": {
     "pageHeader": {

@@ -17,7 +17,7 @@ import type {
   PhaseLayoutInput,
 } from '@/crd/components/space/settings/SpaceSettingsLayoutView.types';
 import useInnovationFlowSettings from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings';
-import { errorMessage, type TabUnsavedChanges } from '../tabUnsavedChanges';
+import { errorMessage, type TabUnsavedChanges } from '@/main/crdPages/utils/tabUnsavedChanges';
 import { mapCollaborationToLayoutColumns, type SpaceLevelTag } from './layoutMapper';
 
 export type {

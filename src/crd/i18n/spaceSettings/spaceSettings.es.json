@@ -11,33 +11,14 @@
     "account": "Cuenta"
   },
   "dirtyGuard": {
-    "save": "Guardar",
-    "discard": "Descartar y salir",
     "cancel": "Cancelar",
-    "tabSwitch": {
-      "title": "Cambios sin guardar",
-      "description": "Tienes cambios sin guardar en esta pestaña. ¿Quieres guardarlos, descartarlos o quedarte en esta pestaña?"
-    },
     "navAway": {
       "title": "Cambios sin guardar",
       "description": "Si sales de esta página, se descartarán tus cambios sin guardar."
     }
   },
   "saveBar": {
-    "count_one": "{{count}} cambio sin guardar",
-    "count_other": "{{count}} cambios sin guardar",
-    "save": "Guardar cambios",
-    "discard": "Descartar",
-    "saving": "Guardando…",
-    "saved": "Cambios guardados",
-    "regionLabel": "Cambios sin guardar",
-    "lockedReason": "Guarda o descarta tus cambios primero",
-    "discardDialog": {
-      "title_one": "¿Descartar 1 cambio sin guardar?",
-      "title_other": "¿Descartar {{count}} cambios sin guardar?",
-      "description": "Cada campo modificado en esta pestaña vuelve a su valor guardado.",
-      "confirm": "Descartar"
-    }
+    "lockedReason": "Guarda o descarta tus cambios primero"
   },
   "layout": {
     "pageHeader": {

@@ -11,33 +11,14 @@
     "account": "Account"
   },
   "dirtyGuard": {
-    "save": "Opslaan",
-    "discard": "Verwerpen en verlaten",
     "cancel": "Annuleren",
-    "tabSwitch": {
-      "title": "Niet-opgeslagen wijzigingen",
-      "description": "Je hebt niet-opgeslagen wijzigingen op dit tabblad. Sla ze op, verwerp ze of blijf op dit tabblad?"
-    },
     "navAway": {
       "title": "Niet-opgeslagen wijzigingen",
       "description": "Als je deze pagina verlaat, worden je niet-opgeslagen wijzigingen verworpen."
     }
   },
   "saveBar": {
-    "count_one": "{{count}} niet-opgeslagen wijziging",
-    "count_other": "{{count}} niet-opgeslagen wijzigingen",
-    "save": "Wijzigingen opslaan",
-    "discard": "Verwerpen",
-    "saving": "Opslaan…",
-    "saved": "Wijzigingen opgeslagen",
-    "regionLabel": "Niet-opgeslagen wijzigingen",
-    "lockedReason": "Sla je wijzigingen eerst op of verwerp ze",
-    "discardDialog": {
-      "title_one": "1 niet-opgeslagen wijziging verwerpen?",
-      "title_other": "{{count}} niet-opgeslagen wijzigingen verwerpen?",
-      "description": "Elk gewijzigd veld op dit tabblad krijgt weer zijn opgeslagen waarde.",
-      "confirm": "Verwerpen"
-    }
+    "lockedReason": "Sla je wijzigingen eerst op of verwerp ze"
   },
   "layout": {
     "pageHeader": {

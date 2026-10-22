@@ -1,6 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { SAVED_FLASH_MS } from '@/crd/components/common/FieldFooter';
 import { EMAIL_REGEX, isValidUrlOrEmpty } from '../orgProfileMapper';
 
 // ─── Apollo hook mocks ────────────────────────────────────────────────────
@@ -103,8 +102,7 @@ describe('useOrgProfileTabData — initial state', () => {
     expect(result.current.values?.displayName).toBe('Alkemio');
     expect(result.current.values?.contactEmail).toBe('hello@alkemio.test');
     expect(result.current.values?.domain).toBe('alkemio.test');
-    // Initial dirty map: nothing dirty.
-    expect(Object.values(result.current.dirtyByField).every(v => v === false)).toBe(true);
+    expect(result.current.unsaved.count).toBe(0);
   });
 
   it('extracts Keywords and Capabilities tagsets into separate slots by case-insensitive name', () => {
@@ -123,291 +121,147 @@ describe('useOrgProfileTabData — initial state', () => {
   });
 });
 
-describe('useOrgProfileTabData — onChange + dirty tracking', () => {
-  it('flips dirtyByField for the changed Identity section', () => {
+describe('useOrgProfileTabData — unsaved changes', () => {
+  it('counts one change per changed field across Identity, About and Contact & Legal', () => {
     const { result } = renderHook(() => useOrgProfileTabData('org-1'));
-
-    act(() => result.current.onChange({ displayName: 'Alkemio Foundation' }));
-
-    expect(result.current.dirtyByField.displayName).toBe(true);
-    expect(result.current.dirtyByField.tagline).toBe(false);
+    act(() => result.current.onChange({ tagline: 'New tagline', city: 'Utrecht', domain: 'alkemio.org' }));
+    expect(result.current.unsaved.count).toBe(3);
   });
 
-  it('treats city/country edits as the compound location section', () => {
+  it('cannot save with an empty Display Name, a malformed contact email or website', () => {
     const { result } = renderHook(() => useOrgProfileTabData('org-1'));
+    expect(result.current.unsaved.canSave).toBe(true);
 
-    act(() => result.current.onChange({ city: 'The Hague' }));
+    act(() => result.current.onChange({ displayName: '' }));
+    expect(result.current.unsaved.canSave).toBe(false);
 
-    expect(result.current.dirtyByField.location).toBe(true);
+    act(() => result.current.onChange({ displayName: 'Alkemio', contactEmail: 'press.alkemio.test' }));
+    expect(result.current.unsaved.canSave).toBe(false);
+
+    act(() => result.current.onChange({ contactEmail: 'press@alkemio.test', website: 'alkemio test' }));
+    expect(result.current.unsaved.canSave).toBe(false);
   });
 
-  it('tracks Contact & Legal fields as independent dirty sections', () => {
+  it('reset puts every field back to its saved value', () => {
     const { result } = renderHook(() => useOrgProfileTabData('org-1'));
-
-    act(() => result.current.onChange({ contactEmail: 'press@alkemio.test' }));
-    expect(result.current.dirtyByField.contactEmail).toBe(true);
-    expect(result.current.dirtyByField.domain).toBe(false);
-    expect(result.current.dirtyByField.website).toBe(false);
-
-    act(() => result.current.onChange({ website: 'https://alkemio.test/about' }));
-    expect(result.current.dirtyByField.website).toBe(true);
-  });
-});
-
-describe('useOrgProfileTabData — onSaveSection (idle → saving → saved → idle)', () => {
-  it('flashes "Saved" then clears after SAVED_FLASH_MS for Display Name', async () => {
-    vi.useFakeTimers();
-    const { result } = renderHook(() => useOrgProfileTabData('org-1'));
-
-    act(() => result.current.onChange({ displayName: 'Alkemio Foundation' }));
-
-    let savePromise: Promise<void> = Promise.resolve();
-    act(() => {
-      savePromise = result.current.onSaveSection('displayName');
-    });
-
-    expect(result.current.saveStatusByField.displayName?.kind).toBe('saving');
-
-    await act(async () => {
-      await savePromise;
-    });
-
-    expect(mockUpdateOrganization).toHaveBeenCalledWith({
-      variables: { input: { ID: 'org-1', profileData: { displayName: 'Alkemio Foundation' } } },
-    });
-    expect(result.current.saveStatusByField.displayName?.kind).toBe('saved');
-
-    act(() => vi.advanceTimersByTime(SAVED_FLASH_MS + 10));
-    expect(result.current.saveStatusByField.displayName).toBeUndefined();
-  });
-
-  it('fires updateOrganization with `domain` for the domain section (Contact & Legal)', async () => {
-    const { result } = renderHook(() => useOrgProfileTabData('org-1'));
-
-    act(() => result.current.onChange({ domain: 'alkemio.io' }));
-
-    await act(async () => {
-      await result.current.onSaveSection('domain');
-    });
-
-    expect(mockUpdateOrganization).toHaveBeenCalledWith({
-      variables: { input: { ID: 'org-1', domain: 'alkemio.io' } },
-    });
-  });
-
-  it('fires updateOrganization with `contactEmail` for the contactEmail section', async () => {
-    const { result } = renderHook(() => useOrgProfileTabData('org-1'));
-
-    act(() => result.current.onChange({ contactEmail: 'press@alkemio.test' }));
-
-    await act(async () => {
-      await result.current.onSaveSection('contactEmail');
-    });
-
-    expect(mockUpdateOrganization).toHaveBeenCalledWith({
-      variables: { input: { ID: 'org-1', contactEmail: 'press@alkemio.test' } },
-    });
+    act(() => result.current.onChange({ legalEntityName: 'Other', keywords: { id: 'tagset-keywords', tags: [] } }));
+    act(() => result.current.unsaved.reset());
+    expect(result.current.values?.legalEntityName).toBe('Alkemio Foundation');
+    expect(result.current.unsaved.count).toBe(0);
   });
 });
 
-describe('useOrgProfileTabData — onSaveSection (saving → error)', () => {
-  it('captures an error status when the mutation rejects, preserving the typed value', async () => {
-    mockUpdateOrganization.mockRejectedValueOnce(new Error('Network down'));
+describe('useOrgProfileTabData — saveAll', () => {
+  it('sends organization and profile fields in ONE updateOrganization call', async () => {
     const { result } = renderHook(() => useOrgProfileTabData('org-1'));
-
-    act(() => result.current.onChange({ tagline: 'New tagline' }));
-
-    await act(async () => {
-      await result.current.onSaveSection('tagline');
-    });
-
-    expect(result.current.saveStatusByField.tagline).toEqual({ kind: 'error', message: 'Network down' });
-    // Dirty stays — user's typed values preserved.
-    expect(result.current.dirtyByField.tagline).toBe(true);
-    expect(result.current.values?.tagline).toBe('New tagline');
-  });
-});
-
-describe('useOrgProfileTabData — error → idle on next edit', () => {
-  it('clears the section error when the user edits the same section again', async () => {
-    mockUpdateOrganization.mockRejectedValueOnce(new Error('Boom'));
-    const { result } = renderHook(() => useOrgProfileTabData('org-1'));
-
-    act(() => result.current.onChange({ description: 'First attempt' }));
-    await act(async () => {
-      await result.current.onSaveSection('description');
-    });
-    expect(result.current.saveStatusByField.description?.kind).toBe('error');
-
-    act(() => result.current.onChange({ description: 'Second attempt' }));
-    expect(result.current.saveStatusByField.description).toBeUndefined();
-  });
-});
-
-describe('useOrgProfileTabData — Keywords / Capabilities independence', () => {
-  it('tracks keywords and capabilities dirty flags independently', () => {
-    const { result } = renderHook(() => useOrgProfileTabData('org-1'));
-
-    act(() => {
+    act(() =>
       result.current.onChange({
-        keywords: { ...result.current.values?.keywords, tags: ['governance', 'open-source', 'climate'] },
-      });
-    });
+        displayName: 'Alkemio B.V.',
+        contactEmail: 'press@alkemio.test',
+        domain: 'alkemio.org',
+      })
+    );
 
-    expect(result.current.dirtyByField.keywords).toBe(true);
-    expect(result.current.dirtyByField.capabilities).toBe(false);
-  });
-
-  it('saves Keywords with a patch targeting ONLY the Keywords tagset id', async () => {
-    const { result } = renderHook(() => useOrgProfileTabData('org-1'));
-
-    act(() => {
-      result.current.onChange({
-        keywords: { ...result.current.values?.keywords, tags: ['governance', 'open-source', 'climate'] },
-      });
-    });
-
+    let ok = false;
     await act(async () => {
-      await result.current.onSaveSection('keywords');
+      ok = await result.current.unsaved.saveAll();
     });
 
+    expect(ok).toBe(true);
     expect(mockUpdateOrganization).toHaveBeenCalledTimes(1);
     expect(mockUpdateOrganization).toHaveBeenCalledWith({
       variables: {
         input: {
           ID: 'org-1',
-          profileData: { tagsets: [{ ID: 'tagset-keywords', tags: ['governance', 'open-source', 'climate'] }] },
+          contactEmail: 'press@alkemio.test',
+          domain: 'alkemio.org',
+          profileData: { displayName: 'Alkemio B.V.' },
         },
       },
     });
-    expect(mockCreateTagset).not.toHaveBeenCalled();
   });
 
-  it('saves Capabilities without touching the Keywords tagset', async () => {
+  it('keeps the typed values and reports the error when the update fails', async () => {
+    mockUpdateOrganization.mockRejectedValueOnce(new Error('Server says no'));
     const { result } = renderHook(() => useOrgProfileTabData('org-1'));
+    act(() => result.current.onChange({ website: 'https://alkemio.org' }));
 
-    act(() => {
-      result.current.onChange({
-        capabilities: { ...result.current.values?.capabilities, tags: ['research', 'training'] },
-      });
+    let ok = true;
+    await act(async () => {
+      ok = await result.current.unsaved.saveAll();
     });
+
+    expect(ok).toBe(false);
+    expect(result.current.unsaved.error).toBe('Server says no');
+    expect(result.current.values?.website).toBe('https://alkemio.org');
+    expect(result.current.unsaved.count).toBe(1);
+  });
+
+  it('patches only the changed tagset, leaving the other one alone', async () => {
+    const { result } = renderHook(() => useOrgProfileTabData('org-1'));
+    act(() => result.current.onChange({ capabilities: { id: 'tagset-capabilities', tags: ['research'] } }));
 
     await act(async () => {
-      await result.current.onSaveSection('capabilities');
+      await result.current.unsaved.saveAll();
     });
 
-    expect(mockUpdateOrganization).toHaveBeenCalledTimes(1);
     expect(mockUpdateOrganization).toHaveBeenCalledWith({
       variables: {
-        input: {
-          ID: 'org-1',
-          profileData: { tagsets: [{ ID: 'tagset-capabilities', tags: ['research', 'training'] }] },
-        },
+        input: { ID: 'org-1', profileData: { tagsets: [{ ID: 'tagset-capabilities', tags: ['research'] }] } },
       },
     });
   });
 
-  it('lazy-creates the Capabilities tagset on first save when the profile has none', async () => {
-    const orgWithoutTagsets = {
-      ...buildOrg(),
-      profile: { ...buildOrg().profile, tagsets: [] },
+  it('lazy-creates the Capabilities tagset when the profile has none', async () => {
+    mockOrgData = {
+      lookup: {
+        organization: {
+          ...buildOrg(),
+          profile: { ...buildOrg().profile, tagsets: [buildOrg().profile.tagsets[0]] },
+        },
+      },
     };
-    mockOrgData = { lookup: { organization: orgWithoutTagsets } };
+    const { result } = renderHook(() => useOrgProfileTabData('org-1'));
+    act(() => result.current.onChange({ capabilities: { tags: ['training'] } }));
 
-    mockCreateTagset.mockResolvedValueOnce({
-      data: { createTagsetOnProfile: { id: 'tagset-capabilities-new' } },
+    await act(async () => {
+      await result.current.unsaved.saveAll();
     });
-    mockRefetch.mockResolvedValueOnce({
-      data: {
-        lookup: {
-          organization: {
-            ...orgWithoutTagsets,
-            profile: {
-              ...orgWithoutTagsets.profile,
-              tagsets: [{ id: 'tagset-capabilities-new', name: 'Capabilities', tags: ['research'] }],
-            },
+
+    expect(mockCreateTagset).toHaveBeenCalledWith({
+      variables: { input: { profileID: 'profile-1', name: 'CAPABILITIES', tags: ['training'] } },
+    });
+    expect(mockUpdateOrganization).not.toHaveBeenCalled();
+  });
+
+  it('patches edited references and creates and deletes the others', async () => {
+    const { result } = renderHook(() => useOrgProfileTabData('org-1'));
+    act(() => {
+      result.current.onUpdateRecognizedReference('linkedin', 'https://linkedin.com/company/alkemio-io');
+      result.current.onReferencesChange([{ name: 'Press kit', uri: 'https://alkemio.test/press', description: '' }]);
+    });
+
+    await act(async () => {
+      await result.current.unsaved.saveAll();
+    });
+
+    expect(mockUpdateOrganization).toHaveBeenCalledWith({
+      variables: {
+        input: {
+          ID: 'org-1',
+          profileData: {
+            references: [
+              { ID: 'ref-1', name: 'LinkedIn', uri: 'https://linkedin.com/company/alkemio-io', description: '' },
+            ],
           },
         },
       },
     });
-
-    const { result } = renderHook(() => useOrgProfileTabData('org-1'));
-
-    act(() => {
-      result.current.onChange({
-        capabilities: { ...result.current.values?.capabilities, tags: ['research'] },
-      });
-    });
-
-    await act(async () => {
-      await result.current.onSaveSection('capabilities');
-    });
-
-    expect(mockCreateTagset).toHaveBeenCalledWith({
-      variables: { input: { profileID: 'profile-1', name: 'CAPABILITIES', tags: ['research'] } },
-    });
-    // updateOrganization must NOT be called when lazy-creating — the create
-    // mutation already persists the initial tags in one round-trip.
-    expect(mockUpdateOrganization).not.toHaveBeenCalled();
-    // After the post-save refetch, the buffer reflects the newly-created id.
-    expect(result.current.values?.capabilities.id).toBe('tagset-capabilities-new');
-  });
-});
-
-describe('useOrgProfileTabData — references batch', () => {
-  it('patches existing rows + creates new ones via the References-section Save', async () => {
-    const { result } = renderHook(() => useOrgProfileTabData('org-1'));
-
-    // The shared ReferencesEditor emits the full arbitrary list: edit "Annual report" + append a new row.
-    act(() => {
-      result.current.onReferencesChange([
-        { id: 'ref-2', name: 'Annual report', uri: 'https://alkemio.test/report-2026', description: 'PDF' },
-        { name: 'Bluesky', uri: 'https://bsky.app/profile/alkem.io', description: '' },
-      ]);
-    });
-
-    // Edit the recognized LinkedIn row's URI (separate control, unchanged).
-    act(() => {
-      result.current.onUpdateRecognizedReference('linkedin', 'https://www.linkedin.com/company/alkemio');
-    });
-
-    await act(async () => {
-      await result.current.onSaveSection('references');
-    });
-
-    // updateOrganization fires once with all existing-row patches.
-    expect(mockUpdateOrganization).toHaveBeenCalledTimes(1);
-    const updateCall = mockUpdateOrganization.mock.calls[0][0];
-    expect(updateCall.variables.input.ID).toBe('org-1');
-    expect(updateCall.variables.input.profileData.references).toHaveLength(2);
-
-    // createReference fires once for the new arbitrary row.
-    expect(mockCreateReference).toHaveBeenCalledTimes(1);
     expect(mockCreateReference).toHaveBeenCalledWith({
       variables: {
-        input: {
-          profileID: 'profile-1',
-          name: 'Bluesky',
-          uri: 'https://bsky.app/profile/alkem.io',
-          description: '',
-        },
+        input: { profileID: 'profile-1', name: 'Press kit', uri: 'https://alkemio.test/press', description: '' },
       },
     });
-
-    expect(mockDeleteReference).not.toHaveBeenCalled();
-  });
-
-  it('fires deleteReference for an existing row removed via the editor', async () => {
-    const { result } = renderHook(() => useOrgProfileTabData('org-1'));
-
-    // The editor emits the trimmed list (the only arbitrary row, ref-2, removed).
-    act(() => result.current.onReferencesChange([]));
-    expect(result.current.values?.references.find(r => r.id === 'ref-2')).toBeUndefined();
-
-    await act(async () => {
-      await result.current.onSaveSection('references');
-    });
-
     expect(mockDeleteReference).toHaveBeenCalledWith({ variables: { input: { ID: 'ref-2' } } });
   });
 });
@@ -460,7 +314,7 @@ describe('useOrgProfileTabData — logo upload (FR-093, crop-then-commit)', () =
 
 // ─── Format validators (pure helpers from orgProfileMapper) ───────────────
 
-describe('orgProfileMapper — EMAIL_REGEX (live validation)', () => {
+describe('orgProfileMapper — EMAIL_REGEX', () => {
   it('accepts a typical address', () => {
     expect(EMAIL_REGEX.test('press@alkemio.test')).toBe(true);
   });
@@ -478,7 +332,7 @@ describe('orgProfileMapper — EMAIL_REGEX (live validation)', () => {
   });
 });
 
-describe('orgProfileMapper — isValidUrlOrEmpty (live validation, Website section)', () => {
+describe('orgProfileMapper — isValidUrlOrEmpty', () => {
   it('accepts an empty string (Website is optional)', () => {
     expect(isValidUrlOrEmpty('')).toBe(true);
   });

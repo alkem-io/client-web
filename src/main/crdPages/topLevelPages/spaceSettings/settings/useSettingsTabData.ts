@@ -13,7 +13,7 @@ import type {
   UserInfoVisibility,
 } from '@/crd/components/space/settings/SpaceSettingsSettingsView';
 import { defaultSpaceSettings } from '@/domain/spaceAdmin/SpaceAdminSettings/SpaceDefaultSettings';
-import { errorMessage, type TabUnsavedChanges } from '../tabUnsavedChanges';
+import { errorMessage, type TabUnsavedChanges } from '@/main/crdPages/utils/tabUnsavedChanges';
 import {
   mapAllowedActions,
   mapMembershipPolicy,

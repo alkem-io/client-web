@@ -1603,5 +1603,26 @@
     "unavailableHint": "Dit bestand kon niet worden geladen. Download het om te bekijken.",
     "unavailableNoDownload": "Dit bestand is niet beschikbaar.",
     "loading": "Bijlage laden"
+  },
+  "unsavedChanges": {
+    "count_one": "{{count}} niet-opgeslagen wijziging",
+    "count_other": "{{count}} niet-opgeslagen wijzigingen",
+    "save": "Wijzigingen opslaan",
+    "discard": "Verwerpen",
+    "saving": "Opslaan…",
+    "saved": "Wijzigingen opgeslagen",
+    "regionLabel": "Niet-opgeslagen wijzigingen",
+    "discardDialog": {
+      "title_one": "1 niet-opgeslagen wijziging verwerpen?",
+      "title_other": "{{count}} niet-opgeslagen wijzigingen verwerpen?",
+      "description": "Elk gewijzigd veld op dit tabblad krijgt weer zijn opgeslagen waarde.",
+      "confirm": "Verwerpen"
+    },
+    "leaveDialog": {
+      "title": "Niet-opgeslagen wijzigingen",
+      "description": "Je hebt niet-opgeslagen wijzigingen op dit tabblad. Sla ze op, verwerp ze of blijf op dit tabblad?",
+      "save": "Opslaan",
+      "discard": "Verwerpen en verlaten"
+    }
   }
 }

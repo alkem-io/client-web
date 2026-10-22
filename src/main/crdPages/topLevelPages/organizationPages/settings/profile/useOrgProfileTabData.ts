@@ -9,17 +9,22 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import type { UpdateOrganizationInput, UpdateProfileInput } from '@/core/apollo/generated/graphql-schema';
 import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
-import { SAVED_FLASH_MS, type SectionSaveStatus } from '@/crd/components/common/FieldFooter';
+import { SOCIAL_LINK_KINDS } from '@/crd/components/contributor/settings/ProfileFormFields';
 import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
+import { isValidEmailOrEmpty, isValidUrlOrEmpty } from '@/crd/lib/validators';
+import type { TabUnsavedChanges } from '@/main/crdPages/utils/tabUnsavedChanges';
+import {
+  countReferenceChanges,
+  diffProfileReferences,
+  newReferenceId,
+  rebaseReferences,
+  saveProfileChanges,
+} from '../../../common/profileChanges';
 import {
   mapOrganizationToProfileFormValues,
   type OrgProfileFormValues,
   type OrgProfileReference,
-  type OrgProfileSectionKey,
 } from './orgProfileMapper';
-
-const TEMP_PREFIX = 'temp-';
-const isTempId = (id: string) => id.startsWith(TEMP_PREFIX);
 
 export type AvatarCropConfig = {
   aspectRatio?: number;
@@ -38,8 +43,6 @@ export type UseOrgProfileTabDataResult = {
   values: OrgProfileFormValues | null;
   loading: boolean;
   error: Error | null;
-  dirtyByField: Partial<Record<OrgProfileSectionKey, boolean>>;
-  saveStatusByField: Partial<Record<OrgProfileSectionKey, SectionSaveStatus>>;
   uploadingAvatar: boolean;
   pendingAvatarCrop: PendingAvatarCrop | null;
 
@@ -50,31 +53,27 @@ export type UseOrgProfileTabDataResult = {
   onUploadAvatar: (file: File) => void;
   onAvatarCropComplete: (croppedFile: File, altText: string) => void;
   onAvatarCropCancel: () => void;
-  onSaveSection: (section: OrgProfileSectionKey) => Promise<void>;
+  /** Every field is buffered and saved through the unsaved-changes bar (spec 097 Session 2026-10-22). */
+  unsaved: TabUnsavedChanges;
 };
 
+const PROFILE_FIELDS = ['displayName', 'tagline', 'description', 'city', 'country'] as const;
+const ORG_FIELDS = ['contactEmail', 'domain', 'legalEntityName', 'website'] as const;
+const SCALAR_FIELDS = [...PROFILE_FIELDS, ...ORG_FIELDS] as const;
+const TAGSET_FIELDS = ['keywords', 'capabilities'] as const;
+
+const allReferences = (values: OrgProfileFormValues) => [
+  ...values.references,
+  ...SOCIAL_LINK_KINDS.map(kind => values.recognizedReferences[kind]),
+];
+
 /**
- * Per-section save hook for the Org Profile tab — parallel to
- * `useUserProfileTabData` (User Profile / 045 About). Holds local form
- * values + per-section status; each `onSaveSection(k)` fires ONE targeted
- * mutation (only that section's fields), then merges the freshly-saved
- * slice back into the local buffer to preserve unsaved edits in OTHER
- * sections.
- *
- * Tagsets (Q-rename / Skills→Keywords for User; Keywords + Capabilities
- * for Org): each named tagset is its own per-section save — saving
- * Keywords MUST NOT touch Capabilities and vice versa. Lazy-create the
- * tagset on first save when the org doesn't yet have it.
- *
- * Failure semantics (FR-022 / FR-092):
- * - `saving` → `error` on hard failure. The section stays dirty + an
- *   inline error persists until any field in the section is edited again.
- *
- * References (FR-025 / Rule #9):
- * - Trash sets `pendingReferenceDelete`; only the dialog's Confirm queues
- *   the row for deletion in the local buffer.
- * - The actual `deleteReference` fires only on the References-section
- *   Save (in the same batch as create / update).
+ * Org Profile tab data hook — saved through the tab-wide unsaved-changes bar,
+ * like `useUserProfileTabData`. Every field lives in a local buffer over the
+ * cache-derived server values (`saved`); `unsaved` counts the changed fields,
+ * `saveAll` writes them all and `reset` drops the buffer back to `saved`.
+ * Keywords and Capabilities are separate named tagsets, lazily created on the
+ * first Save. Logo uploads stay immediate (the crop dialog's Save IS the commit).
  */
 export const useOrgProfileTabData = (organizationId: string | undefined): UseOrgProfileTabDataResult => {
   const {
@@ -92,11 +91,8 @@ export const useOrgProfileTabData = (organizationId: string | undefined): UseOrg
 
   const [values, setValues] = useState<OrgProfileFormValues | null>(null);
   const valuesRef = useRef<OrgProfileFormValues | null>(null);
-
-  const [saveStatusByField, setSaveStatusByField] = useState<Partial<Record<OrgProfileSectionKey, SectionSaveStatus>>>(
-    {}
-  );
-  const savedFlashTimers = useRef<Partial<Record<OrgProfileSectionKey, ReturnType<typeof setTimeout>>>>({});
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [pendingAvatarCrop, setPendingAvatarCrop] = useState<PendingAvatarCrop | null>(null);
@@ -114,102 +110,34 @@ export const useOrgProfileTabData = (organizationId: string | undefined): UseOrg
     }
   }, [saved]);
 
-  useEffect(
-    () => () => {
-      for (const timer of Object.values(savedFlashTimers.current)) {
-        if (timer) clearTimeout(timer);
-      }
-    },
-    []
-  );
-
-  const arrayEq = <T>(a: ReadonlyArray<T>, b: ReadonlyArray<T>) => JSON.stringify(a) === JSON.stringify(b);
-
-  const referencesEqual = (a: OrgProfileFormValues | null, b: OrgProfileFormValues | null): boolean => {
-    if (!a || !b) return true;
-    if (a.references.length !== b.references.length) return false;
-    if (!arrayEq(a.references, b.references)) return false;
-    const recognizedKinds = ['linkedin', 'bsky', 'github'] as const;
-    return recognizedKinds.every(k => {
-      const aRef = a.recognizedReferences[k];
-      const bRef = b.recognizedReferences[k];
-      return (aRef?.uri ?? '') === (bRef?.uri ?? '');
-    });
-  };
-
-  const dirtyByField: Partial<Record<OrgProfileSectionKey, boolean>> = (() => {
-    if (!values || !saved) return {};
-    return {
-      displayName: values.displayName !== saved.displayName,
-      tagline: values.tagline !== saved.tagline,
-      description: values.description !== saved.description,
-      location: values.city !== saved.city || values.country !== saved.country,
-      keywords: !arrayEq(values.keywords.tags, saved.keywords.tags),
-      capabilities: !arrayEq(values.capabilities.tags, saved.capabilities.tags),
-      contactEmail: values.contactEmail !== saved.contactEmail,
-      domain: values.domain !== saved.domain,
-      legalEntityName: values.legalEntityName !== saved.legalEntityName,
-      website: values.website !== saved.website,
-      references: !referencesEqual(values, saved),
-    };
-  })();
-
-  const clearSectionErrorIfPresent = (section: OrgProfileSectionKey) => {
-    setSaveStatusByField(prev => {
-      const current = prev[section];
-      if (!current || current.kind !== 'error') return prev;
-      const next = { ...prev };
-      delete next[section];
-      return next;
-    });
-  };
-
-  const onChange = (patch: Partial<OrgProfileFormValues>) => {
+  const update = (apply: (base: OrgProfileFormValues) => OrgProfileFormValues) => {
     setValues(prev => {
       const base = prev ?? valuesRef.current;
       if (!base) return prev;
-      const next = { ...base, ...patch };
+      const next = apply(base);
       valuesRef.current = next;
       return next;
     });
-    if ('displayName' in patch) clearSectionErrorIfPresent('displayName');
-    if ('tagline' in patch) clearSectionErrorIfPresent('tagline');
-    if ('description' in patch) clearSectionErrorIfPresent('description');
-    if ('city' in patch || 'country' in patch) clearSectionErrorIfPresent('location');
-    if ('keywords' in patch) clearSectionErrorIfPresent('keywords');
-    if ('capabilities' in patch) clearSectionErrorIfPresent('capabilities');
-    if ('contactEmail' in patch) clearSectionErrorIfPresent('contactEmail');
-    if ('domain' in patch) clearSectionErrorIfPresent('domain');
-    if ('legalEntityName' in patch) clearSectionErrorIfPresent('legalEntityName');
-    if ('website' in patch) clearSectionErrorIfPresent('website');
-    if ('references' in patch || 'recognizedReferences' in patch) clearSectionErrorIfPresent('references');
   };
 
+  const onChange = (patch: Partial<OrgProfileFormValues>) => update(base => ({ ...base, ...patch }));
+
   // The shared ReferencesEditor manages the arbitrary references list (+ its own delete-confirm) and
-  // emits the full list. New rows arrive without an `id`; assign a temp id so the per-section save
-  // diffs them as creates. Recognized social links are handled separately (onUpdateRecognizedReference).
-  const onReferencesChange = (rows: ReferenceRow[]) => {
-    setValues(prev => {
-      const base = prev ?? valuesRef.current;
-      if (!base) return prev;
-      const mapped: OrgProfileReference[] = rows.map((r, i) => ({
-        id: r.id ?? `${TEMP_PREFIX}${Date.now()}-${i}`,
+  // emits the full list. New rows arrive without an `id`; a temp id marks them as creates.
+  const onReferencesChange = (rows: ReferenceRow[]) =>
+    update(base => ({
+      ...base,
+      references: rows.map((r, i) => ({
+        id: r.id ?? newReferenceId(i),
         name: r.name,
         uri: r.uri,
         description: r.description ?? '',
         recognized: false,
-      }));
-      const next = { ...base, references: mapped };
-      valuesRef.current = next;
-      return next;
-    });
-    clearSectionErrorIfPresent('references');
-  };
+      })),
+    }));
 
-  const onUpdateRecognizedReference = (kind: 'linkedin' | 'bsky' | 'github', uri: string) => {
-    setValues(prev => {
-      const base = prev ?? valuesRef.current;
-      if (!base) return prev;
+  const onUpdateRecognizedReference = (kind: 'linkedin' | 'bsky' | 'github', uri: string) =>
+    update(base => {
       const current = base.recognizedReferences[kind] ?? {
         id: '',
         name: kind,
@@ -217,18 +145,8 @@ export const useOrgProfileTabData = (organizationId: string | undefined): UseOrg
         description: '',
         recognized: true,
       };
-      const next = {
-        ...base,
-        recognizedReferences: {
-          ...base.recognizedReferences,
-          [kind]: { ...current, uri },
-        },
-      };
-      valuesRef.current = next;
-      return next;
+      return { ...base, recognizedReferences: { ...base.recognizedReferences, [kind]: { ...current, uri } } };
     });
-    clearSectionErrorIfPresent('references');
-  };
 
   /**
    * Avatar upload (FR-093). Picking a file does NOT commit immediately —
@@ -265,13 +183,7 @@ export const useOrgProfileTabData = (organizationId: string | undefined): UseOrg
     const visualId = current.avatar.id;
     setPendingAvatarCrop(null);
     // Optimistically reflect the user-provided alt text in the local buffer.
-    setValues(prev => {
-      const base = prev ?? valuesRef.current;
-      if (!base) return prev;
-      const next = { ...base, avatar: { ...base.avatar, altText } };
-      valuesRef.current = next;
-      return next;
-    });
+    update(base => ({ ...base, avatar: { ...base.avatar, altText } }));
     setUploadingAvatar(true);
     void uploadVisual({
       variables: {
@@ -285,234 +197,141 @@ export const useOrgProfileTabData = (organizationId: string | undefined): UseOrg
       .then(result => {
         const uploaded = result.data?.uploadImageOnVisual;
         if (uploaded) {
-          setValues(prev => {
-            const base = prev ?? valuesRef.current;
-            if (!base) return prev;
-            const next = {
-              ...base,
-              avatar: {
-                ...base.avatar,
-                uri: uploaded.uri ?? null,
-                altText: uploaded.alternativeText ?? null,
-              },
-            };
-            valuesRef.current = next;
-            return next;
-          });
+          update(base => ({
+            ...base,
+            avatar: { ...base.avatar, uri: uploaded.uri ?? null, altText: uploaded.alternativeText ?? null },
+          }));
         }
       })
       .finally(() => setUploadingAvatar(false));
   };
 
-  const setSectionStatus = (section: OrgProfileSectionKey, status: SectionSaveStatus) => {
-    setSaveStatusByField(prev => ({ ...prev, [section]: status }));
-  };
+  // ────────────────── Save / Discard (the unsaved-changes bar) ──────────────────
 
-  const flashSaved = (section: OrgProfileSectionKey) => {
-    setSectionStatus(section, { kind: 'saved', at: Date.now() });
-    const existing = savedFlashTimers.current[section];
-    if (existing) clearTimeout(existing);
-    savedFlashTimers.current[section] = setTimeout(() => {
-      setSaveStatusByField(prev => {
-        const next = { ...prev };
-        delete next[section];
-        return next;
-      });
-      delete savedFlashTimers.current[section];
-    }, SAVED_FLASH_MS);
-  };
+  const changedScalars = values && saved ? SCALAR_FIELDS.filter(f => values[f] !== saved[f]) : [];
+  const changedTagsets =
+    values && saved ? TAGSET_FIELDS.filter(f => JSON.stringify(values[f].tags) !== JSON.stringify(saved[f].tags)) : [];
+  const referenceChanges =
+    values && saved
+      ? diffProfileReferences<OrgProfileReference>(allReferences(values), allReferences(saved))
+      : { created: [], edited: [], removed: [] };
+  const unsavedCount = changedScalars.length + changedTagsets.length + countReferenceChanges(referenceChanges);
 
-  /**
-   * Build the `updateOrganization` mutation input for a single non-tagset
-   * non-references section. Tagsets + references take their own paths.
-   */
-  const buildOrgPatch = (
-    section: OrgProfileSectionKey,
-    current: OrgProfileFormValues
-  ): UpdateOrganizationInput | null => {
-    if (!organizationId) return null;
-    const base: UpdateOrganizationInput = { ID: organizationId };
-    switch (section) {
-      case 'displayName':
-        return { ...base, profileData: { displayName: current.displayName } };
-      case 'tagline':
-        return { ...base, profileData: { tagline: current.tagline } };
-      case 'description':
-        return { ...base, profileData: { description: current.description } };
-      case 'location':
-        return {
-          ...base,
-          profileData: { location: { city: current.city, country: current.country } },
-        };
-      case 'contactEmail':
-        return { ...base, contactEmail: current.contactEmail };
-      case 'domain':
-        return { ...base, domain: current.domain };
-      case 'legalEntityName':
-        return { ...base, legalEntityName: current.legalEntityName };
-      case 'website':
-        return { ...base, website: current.website };
-      case 'keywords':
-      case 'capabilities':
-      case 'references':
-        return null;
-    }
-  };
+  const canSave =
+    values !== null &&
+    Boolean(values.displayName.trim()) &&
+    isValidEmailOrEmpty(values.contactEmail) &&
+    isValidUrlOrEmpty(values.website);
 
-  const saveTagsetSection = async (
-    section: 'keywords' | 'capabilities',
-    current: OrgProfileFormValues
-  ): Promise<void> => {
-    if (!organizationId) return;
-    const tagset = current[section];
-    const reservedName = section === 'keywords' ? TagsetReservedName.Keywords : TagsetReservedName.Capabilities;
-
-    if (!tagset.id) {
-      if (!current.profileId) return;
-      const result = await createTagset({
-        variables: { input: { profileID: current.profileId, name: reservedName, tags: tagset.tags } },
-      });
-      const newId = result.data?.createTagsetOnProfile?.id;
-      if (newId) {
-        setValues(prev => {
-          const base = prev ?? valuesRef.current;
-          if (!base) return prev;
-          const next = { ...base, [section]: { ...base[section], id: newId } };
-          valuesRef.current = next;
-          return next;
-        });
-      }
-      return;
-    }
-
-    await updateOrganization({
-      variables: {
-        input: {
-          ID: organizationId,
-          profileData: { tagsets: [{ ID: tagset.id, tags: tagset.tags }] },
-        },
-      },
-    });
-  };
-
-  const collectExistingReferencePatches = (current: OrgProfileFormValues): UpdateProfileInput['references'] => {
-    const all = [
-      ...(['linkedin', 'bsky', 'github'] as const)
-        .map(kind => current.recognizedReferences[kind])
-        .filter((r): r is OrgProfileReference => Boolean(r) && Boolean(r?.id)),
-      ...current.references.filter(r => !isTempId(r.id) && r.id),
-    ];
-    return all.map(r => ({
-      ID: r.id,
-      name: r.name,
-      uri: r.uri,
-      description: r.description,
-    }));
-  };
-
-  const collectNewReferences = (current: OrgProfileFormValues): Array<OrgProfileReference> => {
-    const recognizedRefs = (['linkedin', 'bsky', 'github'] as const)
-      .map(kind => current.recognizedReferences[kind])
-      .filter((r): r is OrgProfileReference => r !== null);
-    const newRecognized = recognizedRefs
-      .filter(r => r.id === '' && r.uri.trim() !== '')
-      .map(r => ({ ...r, name: r.name || r.id }));
-    const newArbitrary = current.references.filter(r => isTempId(r.id) && r.name.trim());
-    return [...newRecognized, ...newArbitrary];
-  };
-
-  const collectRemovedReferenceIds = (current: OrgProfileFormValues, savedNow: OrgProfileFormValues): string[] => {
-    const currentIds = new Set([
-      ...current.references.map(r => r.id),
-      ...(['linkedin', 'bsky', 'github'] as const)
-        .map(kind => current.recognizedReferences[kind]?.id)
-        .filter((id): id is string => Boolean(id)),
-    ]);
-    const savedAll = [
-      ...savedNow.references,
-      ...(['linkedin', 'bsky', 'github'] as const)
-        .map(kind => savedNow.recognizedReferences[kind])
-        .filter((r): r is OrgProfileReference => Boolean(r) && Boolean(r?.id)),
-    ];
-    return savedAll.filter(r => r.id && !isTempId(r.id) && !currentIds.has(r.id)).map(r => r.id);
-  };
-
-  const saveReferencesSection = async (current: OrgProfileFormValues, savedNow: OrgProfileFormValues) => {
-    if (!organizationId) return;
-
-    const existingPatches = collectExistingReferencePatches(current);
-    if (existingPatches && existingPatches.length > 0) {
-      await updateOrganization({
-        variables: { input: { ID: organizationId, profileData: { references: existingPatches } } },
-      });
-    }
-
-    const toCreate = collectNewReferences(current);
-    for (const ref of toCreate) {
-      await createReference({
-        variables: {
-          input: {
-            profileID: current.profileId,
-            name: ref.name || 'reference',
-            uri: ref.uri,
-            description: ref.description,
-          },
-        },
-      });
-    }
-
-    const removedIds = collectRemovedReferenceIds(current, savedNow);
-    for (const id of removedIds) {
-      await deleteReference({ variables: { input: { ID: id } } });
-    }
-  };
-
-  const onSaveSection = async (section: OrgProfileSectionKey) => {
+  const saveAll = async (): Promise<boolean> => {
     const current = valuesRef.current;
-    const savedNow = saved;
-    if (!current || !savedNow || !organizationId) return;
+    if (!current || !saved || !organizationId || unsavedCount === 0) return true;
+    setSaving(true);
+    setSaveError(null);
 
-    setSectionStatus(section, { kind: 'saving' });
-
-    try {
-      if (section === 'keywords' || section === 'capabilities') {
-        await saveTagsetSection(section, current);
-      } else if (section === 'references') {
-        await saveReferencesSection(current, savedNow);
-      } else {
-        const patch = buildOrgPatch(section, current);
-        if (patch) {
-          await updateOrganization({ variables: { input: patch } });
-        }
-      }
-
-      const fresh = await refetch();
-      const freshOrg = fresh.data?.lookup.organization;
-      if (freshOrg) {
-        const freshValues = mapOrganizationToProfileFormValues(freshOrg);
-        setValues(prev => {
-          const base = prev ?? valuesRef.current;
-          const merged = base ? mergeSavedSection(base, freshValues, section) : freshValues;
-          valuesRef.current = merged;
-          return merged;
-        });
-      }
-
-      flashSaved(section);
-    } catch (err) {
-      setSectionStatus(section, {
-        kind: 'error',
-        message: err instanceof Error ? err.message : 'Save failed',
-      });
+    // One updateOrganization for every changed field, existing tagset and edited reference.
+    const input: UpdateOrganizationInput = { ID: organizationId };
+    const profileData: UpdateProfileInput = {};
+    for (const f of ORG_FIELDS) {
+      if (current[f] !== saved[f]) input[f] = current[f];
     }
+    if (current.displayName !== saved.displayName) profileData.displayName = current.displayName;
+    if (current.tagline !== saved.tagline) profileData.tagline = current.tagline;
+    if (current.description !== saved.description) profileData.description = current.description;
+    if (current.city !== saved.city || current.country !== saved.country) {
+      profileData.location = { city: current.city, country: current.country };
+    }
+    const existingTagsets = changedTagsets.filter(f => current[f].id);
+    if (existingTagsets.length) {
+      profileData.tagsets = existingTagsets.map(f => ({ ID: current[f].id ?? '', tags: current[f].tags }));
+    }
+    if (referenceChanges.edited.length) {
+      profileData.references = referenceChanges.edited.map(r => ({
+        ID: r.id,
+        name: r.name,
+        uri: r.uri,
+        description: r.description,
+      }));
+    }
+    if (Object.keys(profileData).length) input.profileData = profileData;
+
+    const result = await saveProfileChanges({
+      updateCore: Object.keys(input).length > 1 ? () => updateOrganization({ variables: { input } }) : null,
+      tagsetsToCreate: changedTagsets
+        .filter(f => !current[f].id)
+        .map(field => ({
+          field,
+          create: () =>
+            createTagset({
+              variables: {
+                input: {
+                  profileID: current.profileId,
+                  name: field === 'keywords' ? TagsetReservedName.Keywords : TagsetReservedName.Capabilities,
+                  tags: current[field].tags,
+                },
+              },
+            }),
+        })),
+      references: referenceChanges,
+      createReference: ref =>
+        createReference({
+          variables: {
+            input: {
+              profileID: current.profileId,
+              name: ref.name || 'reference',
+              uri: ref.uri,
+              description: ref.description,
+            },
+          },
+        }),
+      deleteReference: ref => deleteReference({ variables: { input: { ID: ref.id } } }),
+    });
+
+    // Rebase the buffer on the fresh server values: what saved now matches the server, what
+    // failed stays buffered so it stays counted and Save retries it.
+    const freshOrg = (await refetch().catch(() => null))?.data?.lookup.organization;
+    if (freshOrg) {
+      const fresh = mapOrganizationToProfileFormValues(freshOrg);
+      const next: OrgProfileFormValues = { ...fresh, avatar: current.avatar };
+      if (result.coreFailed) {
+        for (const f of SCALAR_FIELDS) next[f] = current[f];
+      }
+      for (const f of TAGSET_FIELDS) {
+        if ((result.coreFailed && current[f].id) || result.failedTagsets.includes(f)) next[f] = current[f];
+      }
+      const rows = rebaseReferences(
+        allReferences(fresh).filter((r): r is OrgProfileReference => Boolean(r?.id)),
+        referenceChanges,
+        result
+      );
+      next.references = rows.filter(r => !r.recognized);
+      next.recognizedReferences = { ...fresh.recognizedReferences };
+      for (const kind of SOCIAL_LINK_KINDS) {
+        const row = rows.find(r => r.recognized && r.name.toLowerCase() === kind);
+        if (row) next.recognizedReferences[kind] = row;
+      }
+      valuesRef.current = next;
+      setValues(next);
+    }
+
+    setSaving(false);
+    setSaveError(result.firstError);
+    return result.firstError === null;
+  };
+
+  const reset = () => {
+    if (saved) {
+      const next = { ...saved, avatar: valuesRef.current?.avatar ?? saved.avatar };
+      valuesRef.current = next;
+      setValues(next);
+    }
+    setSaveError(null);
   };
 
   return {
     values,
     loading: queryLoading,
     error: queryError ?? null,
-    dirtyByField,
-    saveStatusByField,
     uploadingAvatar,
     pendingAvatarCrop,
     onChange,
@@ -521,43 +340,8 @@ export const useOrgProfileTabData = (organizationId: string | undefined): UseOrg
     onUploadAvatar,
     onAvatarCropComplete,
     onAvatarCropCancel,
-    onSaveSection,
+    unsaved: { count: unsavedCount, canSave, saving, error: saveError, saveAll, reset },
   };
-};
-
-const mergeSavedSection = (
-  buffer: OrgProfileFormValues,
-  fresh: OrgProfileFormValues,
-  section: OrgProfileSectionKey
-): OrgProfileFormValues => {
-  switch (section) {
-    case 'displayName':
-      return { ...buffer, displayName: fresh.displayName };
-    case 'tagline':
-      return { ...buffer, tagline: fresh.tagline };
-    case 'description':
-      return { ...buffer, description: fresh.description };
-    case 'location':
-      return { ...buffer, city: fresh.city, country: fresh.country };
-    case 'keywords':
-      return { ...buffer, keywords: fresh.keywords };
-    case 'capabilities':
-      return { ...buffer, capabilities: fresh.capabilities };
-    case 'contactEmail':
-      return { ...buffer, contactEmail: fresh.contactEmail };
-    case 'domain':
-      return { ...buffer, domain: fresh.domain };
-    case 'legalEntityName':
-      return { ...buffer, legalEntityName: fresh.legalEntityName };
-    case 'website':
-      return { ...buffer, website: fresh.website };
-    case 'references':
-      return {
-        ...buffer,
-        references: fresh.references,
-        recognizedReferences: fresh.recognizedReferences,
-      };
-  }
 };
 
 export default useOrgProfileTabData;

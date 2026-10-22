@@ -3,23 +3,23 @@ import userEvent from '@testing-library/user-event';
 import { I18nextProvider } from 'react-i18next';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import i18n from '@/core/i18n/config';
-import { SpaceSettingsUnsavedChangesBar, type UnsavedChangesBarState } from './SpaceSettingsUnsavedChangesBar';
+import { UnsavedChangesBar, type UnsavedChangesBarState } from './UnsavedChangesBar';
 
 beforeAll(async () => {
   await i18n.changeLanguage('en');
-  await i18n.loadNamespaces('crd-spaceSettings');
+  await i18n.loadNamespaces('crd-common');
 });
 
 const renderBar = (state: UnsavedChangesBarState, handlers = { onSave: vi.fn(), onDiscard: vi.fn() }) => {
   render(
     <I18nextProvider i18n={i18n}>
-      <SpaceSettingsUnsavedChangesBar state={state} {...handlers} />
+      <UnsavedChangesBar state={state} {...handlers} />
     </I18nextProvider>
   );
   return handlers;
 };
 
-describe('SpaceSettingsUnsavedChangesBar', () => {
+describe('UnsavedChangesBar', () => {
   it('shows the count in the circle and a pluralised label', () => {
     renderBar({ kind: 'dirty', count: 1, canSave: true });
     expect(screen.getByText('1 unsaved change')).toBeInTheDocument();

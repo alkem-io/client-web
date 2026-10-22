@@ -7,11 +7,8 @@
  */
 
 import type { ReactNode } from 'react';
-import type { SectionSaveStatus } from '@/crd/components/common/FieldFooter';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
-
-export type { SectionSaveStatus };
 
 /**
  * Logical sections of the VC Profile tab. Each maps to ONE Save button and
@@ -19,7 +16,6 @@ export type { SectionSaveStatus };
  * `lastName` / `email` / `phone` / `location` / `bio` / `skills` — VC has a
  * single Keywords tagset only.
  */
-export type VcProfileSectionKey = 'displayName' | 'tagline' | 'description' | 'keywords' | 'references';
 
 export type VcProfileTagset = {
   id?: string;
@@ -70,11 +66,6 @@ export type VcProfileViewProps = {
   values: VcProfileFormValues;
   loading: boolean;
 
-  /** Per-section dirty flags (true when draft differs from server). */
-  dirtyByField: Partial<Record<VcProfileSectionKey, boolean>>;
-  /** Per-section save status. Absent → idle. */
-  saveStatusByField: Partial<Record<VcProfileSectionKey, SectionSaveStatus>>;
-
   /** Patch the local buffer for any single field. */
   onChange: (patch: Partial<VcProfileFormValues>) => void;
 
@@ -87,9 +78,6 @@ export type VcProfileViewProps = {
   /** Avatar upload — opens the CRD `ImageCropDialog` first (Decision #10). */
   onUploadAvatar: (file: File) => void;
   uploadingAvatar: boolean;
-
-  /** Save a single section (only that section's fields are persisted). */
-  onSaveSection: (section: VcProfileSectionKey) => void;
 
   /**
    * Read-only metadata rendered under the form: host organization (link) +

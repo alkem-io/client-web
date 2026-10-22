@@ -12,6 +12,7 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ClassificationPickerDialog } from '@/crd/components/classification/ClassificationPickerDialog';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
+import { UnsavedChangesBar } from '@/crd/components/common/UnsavedChangesBar';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { AddCommunityMemberDialog } from '@/crd/components/space/settings/AddCommunityMemberDialog';
 import { ChangeDefaultSubspaceTemplateDialog } from '@/crd/components/space/settings/ChangeDefaultSubspaceTemplateDialog';
@@ -25,7 +26,6 @@ import { SpaceSettingsLayoutView } from '@/crd/components/space/settings/SpaceSe
 import { SpaceSettingsSettingsView } from '@/crd/components/space/settings/SpaceSettingsSettingsView';
 import { SpaceSettingsStorageView } from '@/crd/components/space/settings/SpaceSettingsStorageView';
 import { SpaceSettingsSubspacesView } from '@/crd/components/space/settings/SpaceSettingsSubspacesView';
-import { SpaceSettingsUnsavedChangesBar } from '@/crd/components/space/settings/SpaceSettingsUnsavedChangesBar';
 import { SpaceSettingsUpdatesView } from '@/crd/components/space/settings/SpaceSettingsUpdatesView';
 import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
@@ -37,6 +37,11 @@ import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionRe
 import { InviteMembersDialogConnector } from '@/main/crdPages/space/dialogs/InviteMembersDialogConnector';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
+import {
+  NO_UNSAVED_CHANGES,
+  type TabUnsavedChanges,
+  toUnsavedChangesBarState,
+} from '@/main/crdPages/utils/tabUnsavedChanges';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { CustomizeSidebarConnector } from '../../space/innovationFlow/CustomizeSidebarConnector';
 import { LayoutReplaceFlowConnector } from '../../space/innovationFlow/LayoutReplaceFlowConnector';
@@ -61,7 +66,6 @@ import { useStorageTabData } from './storage/useStorageTabData';
 import { CreateSubspaceDialogs } from './subspaces/CreateSubspaceDialogs';
 import { useCreateSubspace } from './subspaces/useCreateSubspace';
 import { useSubspacesTabData } from './subspaces/useSubspacesTabData';
-import { NO_UNSAVED_CHANGES, type TabUnsavedChanges, toUnsavedChangesBarState } from './tabUnsavedChanges';
 import { CrdSpaceTemplatesTab } from './templates/CrdSpaceTemplatesTab';
 import { useUpdatesTabData } from './updates/useUpdatesTabData';
 import { useSettingsScope } from './useSettingsScope';
@@ -84,6 +88,7 @@ const ABOUT_MARKDOWN_MAX_LENGTH = {
  */
 export default function CrdSpaceSettingsPage() {
   const { t, i18n } = useTranslation('crd-spaceSettings');
+  const { t: tCommon } = useTranslation('crd-common');
   const notify = useNotification();
   const scope = useSettingsScope();
   const { id: spaceId, level, url: spaceUrl, roleSetId, communityId, accountId, loading: scopeLoading } = scope;
@@ -328,7 +333,7 @@ export default function CrdSpaceSettingsPage() {
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
 
   const saveActiveTab = async () => {
-    if (await activeUnsaved.saveAll()) notify(t('saveBar.saved'), 'success');
+    if (await activeUnsaved.saveAll()) notify(tCommon('unsavedChanges.saved'), 'success');
   };
   // Save-and-switch is async; disable the dialog while it runs so a double
   // click can't fire duplicate saves, and keep it open if a save rejects.
@@ -701,7 +706,7 @@ export default function CrdSpaceSettingsPage() {
       </div>
 
       {!bootstrapping && (
-        <SpaceSettingsUnsavedChangesBar
+        <UnsavedChangesBar
           state={toUnsavedChangesBarState(activeUnsaved)}
           onSave={() => void saveActiveTab()}
           onDiscard={() => setDiscardOpen(true)}
@@ -1010,9 +1015,9 @@ export default function CrdSpaceSettingsPage() {
         open={discardOpen}
         onOpenChange={setDiscardOpen}
         variant="destructive"
-        title={t('saveBar.discardDialog.title', { count: activeUnsaved.count })}
-        description={t('saveBar.discardDialog.description')}
-        confirmLabel={t('saveBar.discardDialog.confirm')}
+        title={tCommon('unsavedChanges.discardDialog.title', { count: activeUnsaved.count })}
+        description={tCommon('unsavedChanges.discardDialog.description')}
+        confirmLabel={tCommon('unsavedChanges.discardDialog.confirm')}
         cancelLabel={t('dirtyGuard.cancel')}
         onConfirm={() => {
           activeUnsaved.reset();
@@ -1027,10 +1032,10 @@ export default function CrdSpaceSettingsPage() {
           if (!open) handleConfirmSwitchCancel();
         }}
         variant="discard"
-        title={t('dirtyGuard.tabSwitch.title')}
-        description={t('dirtyGuard.tabSwitch.description')}
-        saveLabel={t('dirtyGuard.save')}
-        discardLabel={t('dirtyGuard.discard')}
+        title={tCommon('unsavedChanges.leaveDialog.title')}
+        description={tCommon('unsavedChanges.leaveDialog.description')}
+        saveLabel={tCommon('unsavedChanges.leaveDialog.save')}
+        discardLabel={tCommon('unsavedChanges.leaveDialog.discard')}
         cancelLabel={t('dirtyGuard.cancel')}
         loading={switchingSave}
         onSave={handleConfirmSwitchSave}

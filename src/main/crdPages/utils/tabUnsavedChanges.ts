@@ -1,4 +1,4 @@
-import type { UnsavedChangesBarState } from '@/crd/components/space/settings/SpaceSettingsUnsavedChangesBar';
+import type { UnsavedChangesBarState } from '@/crd/components/common/UnsavedChangesBar';
 
 /**
  * What every settings tab with buffered fields exposes to the page, so the

@@ -11,33 +11,14 @@
     "account": "Compte"
   },
   "dirtyGuard": {
-    "save": "Enregistrer",
-    "discard": "Abandonner et quitter",
     "cancel": "Annuler",
-    "tabSwitch": {
-      "title": "Modifications non enregistrées",
-      "description": "Vous avez des modifications non enregistrées sur cet onglet. Voulez-vous les enregistrer, les abandonner ou rester sur cet onglet ?"
-    },
     "navAway": {
       "title": "Modifications non enregistrées",
       "description": "Quitter cette page abandonnera vos modifications non enregistrées."
     }
   },
   "saveBar": {
-    "count_one": "{{count}} modification non enregistrée",
-    "count_other": "{{count}} modifications non enregistrées",
-    "save": "Enregistrer les modifications",
-    "discard": "Abandonner",
-    "saving": "Enregistrement…",
-    "saved": "Modifications enregistrées",
-    "regionLabel": "Modifications non enregistrées",
-    "lockedReason": "Enregistrez ou abandonnez d’abord vos modifications",
-    "discardDialog": {
-      "title_one": "Abandonner 1 modification non enregistrée ?",
-      "title_other": "Abandonner {{count}} modifications non enregistrées ?",
-      "description": "Chaque champ modifié dans cet onglet reprend sa valeur enregistrée.",
-      "confirm": "Abandonner"
-    }
+    "lockedReason": "Enregistrez ou abandonnez d’abord vos modifications"
   },
   "layout": {
     "pageHeader": {

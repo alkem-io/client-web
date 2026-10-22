@@ -179,6 +179,9 @@
           "confirm": "Referentie verwijderen"
         }
       },
+      "references": {
+        "title": "Referenties"
+      },
       "avatar": {
         "title": "Profielfoto",
         "changeButton": "Avatar wijzigen",
@@ -724,6 +727,9 @@
           "description": "Het verwijderen van deze referentie verwijdert ook de vermelding op het openbare profiel na opslaan.",
           "confirm": "Referentie verwijderen"
         }
+      },
+      "references": {
+        "title": "Referenties"
       },
       "logo": {
         "title": "Logo",

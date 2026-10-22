@@ -11,33 +11,14 @@
     "account": "Konto"
   },
   "dirtyGuard": {
-    "save": "Speichern",
-    "discard": "Verwerfen und verlassen",
     "cancel": "Abbrechen",
-    "tabSwitch": {
-      "title": "Nicht gespeicherte Änderungen",
-      "description": "Sie haben nicht gespeicherte Änderungen auf diesem Tab. Möchten Sie sie speichern, verwerfen oder auf diesem Tab bleiben?"
-    },
     "navAway": {
       "title": "Nicht gespeicherte Änderungen",
       "description": "Wenn Sie diese Seite verlassen, werden Ihre nicht gespeicherten Änderungen verworfen."
     }
   },
   "saveBar": {
-    "count_one": "{{count}} ungespeicherte Änderung",
-    "count_other": "{{count}} ungespeicherte Änderungen",
-    "save": "Änderungen speichern",
-    "discard": "Verwerfen",
-    "saving": "Speichern…",
-    "saved": "Änderungen gespeichert",
-    "regionLabel": "Ungespeicherte Änderungen",
-    "lockedReason": "Speichere oder verwirf zuerst deine Änderungen",
-    "discardDialog": {
-      "title_one": "1 ungespeicherte Änderung verwerfen?",
-      "title_other": "{{count}} ungespeicherte Änderungen verwerfen?",
-      "description": "Jedes geänderte Feld auf diesem Tab erhält wieder seinen gespeicherten Wert.",
-      "confirm": "Verwerfen"
-    }
+    "lockedReason": "Speichere oder verwirf zuerst deine Änderungen"
   },
   "layout": {
     "pageHeader": {
