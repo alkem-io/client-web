@@ -1023,6 +1023,7 @@
       "removeAttachment": "{{name}} verwijderen",
       "uploading": "Uploaden…",
       "uploadFailed": "Uploaden mislukt. Verstuur opnieuw om het nogmaals te proberen, of verwijder het bestand.",
+      "failed": "Uploaden mislukt",
       "sendUnconfirmed": "Verzenden is niet bevestigd. Controleer het gesprek voordat je opnieuw verzendt.",
       "errorTooMany_one": "Je kunt maar één bestand toevoegen.",
       "errorTooMany_other": "Je kunt maximaal {{count}} bestanden toevoegen.",

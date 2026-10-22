@@ -210,6 +210,13 @@ describe('CommentInput attachments', () => {
       expect(onSubmit).toHaveBeenCalledWith('here you go');
     });
 
+    test('the failed file is marked failed in text, not by colour alone', () => {
+      render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachments={[ready, failed]} />);
+      const [readyChip, failedChip] = screen.getAllByRole('listitem');
+      expect(failedChip).toHaveTextContent('comments.attachments.failed');
+      expect(readyChip).not.toHaveTextContent('comments.attachments.failed');
+    });
+
     test('busy sending disables retry and removal', () => {
       render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachments={[failed]} disabled={true} />);
       expect(screen.getByRole('button', { name: 'comments.send' })).toBeDisabled();

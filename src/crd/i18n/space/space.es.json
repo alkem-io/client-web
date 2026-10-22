@@ -1023,6 +1023,7 @@
       "removeAttachment": "Quitar {{name}}",
       "uploading": "Subiendo…",
       "uploadFailed": "Error al subir. Envía de nuevo para reintentarlo o elimina el archivo.",
+      "failed": "Error al subir",
       "sendUnconfirmed": "El envío no se ha confirmado. Revisa la conversación antes de volver a enviar.",
       "errorTooMany_one": "Solo puedes adjuntar un archivo.",
       "errorTooMany_other": "Puedes adjuntar hasta {{count}} archivos.",

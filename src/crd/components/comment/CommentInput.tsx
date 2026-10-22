@@ -1,4 +1,4 @@
-import { AtSign, Image as ImageIcon, ImagePlus, Loader2, Paperclip, Send, Smile, X } from 'lucide-react';
+import { AtSign, CircleAlert, Image as ImageIcon, ImagePlus, Loader2, Paperclip, Send, Smile, X } from 'lucide-react';
 import {
   type ClipboardEvent,
   type CSSProperties,
@@ -380,10 +380,13 @@ export function CommentInput({
                   <output aria-label={t('comments.attachments.uploading')} className="flex shrink-0">
                     <Loader2 aria-hidden="true" className="size-3.5 animate-spin" />
                   </output>
+                ) : attachment.status === 'error' ? (
+                  <CircleAlert aria-hidden="true" className="size-3.5 shrink-0" />
                 ) : (
                   <ChipIcon aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" />
                 )}
                 <span className="min-w-0 flex-1 truncate">{attachment.name}</span>
+                {attachment.status === 'error' && <span className="sr-only">{t('comments.attachments.failed')}</span>}
                 <button
                   type="button"
                   // The consumer snapshots the ready document ids *before*

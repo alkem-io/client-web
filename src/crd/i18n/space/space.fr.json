@@ -1023,6 +1023,7 @@
       "removeAttachment": "Retirer {{name}}",
       "uploading": "Téléversement…",
       "uploadFailed": "Échec du téléversement. Envoyez à nouveau pour réessayer, ou supprimez le fichier.",
+      "failed": "Échec du téléversement",
       "sendUnconfirmed": "L’envoi n’a pas été confirmé. Vérifiez la conversation avant d’envoyer à nouveau.",
       "errorTooMany_one": "Vous ne pouvez joindre qu’un seul fichier.",
       "errorTooMany_other": "Vous pouvez joindre jusqu’à {{count}} fichiers.",

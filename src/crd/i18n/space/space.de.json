@@ -1023,6 +1023,7 @@
       "removeAttachment": "{{name}} entfernen",
       "uploading": "Wird hochgeladen…",
       "uploadFailed": "Hochladen fehlgeschlagen. Sende erneut, um es noch einmal zu versuchen, oder entferne die Datei.",
+      "failed": "Hochladen fehlgeschlagen",
       "sendUnconfirmed": "Das Senden wurde nicht bestätigt. Prüfe das Gespräch, bevor du erneut sendest.",
       "errorTooMany_one": "Du kannst nur eine Datei anhängen.",
       "errorTooMany_other": "Du kannst bis zu {{count}} Dateien anhängen.",
