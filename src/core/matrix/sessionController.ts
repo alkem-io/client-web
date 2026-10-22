@@ -1,6 +1,7 @@
 import type { MatrixClient } from 'matrix-js-sdk';
 import { setActiveClient, setSessionEstablishing } from './activeClient';
 import { registerActiveSession, unregisterActiveSession } from './activeSession';
+import { quietSdkLogging } from './sdkLogging';
 import { attemptSilentSso } from './ssoLogin';
 import { type CredentialRecord, clearNamespace, loadActorCredentials } from './storage';
 
@@ -85,6 +86,7 @@ const establishSession = async (
   };
 
   const start = async (record: CredentialRecord): Promise<void> => {
+    await quietSdkLogging();
     const sdk = (await import('matrix-js-sdk')) as unknown as {
       createClient(opts: { baseUrl: string; userId: string; deviceId: string; accessToken: string }): MatrixClientLike;
     };
