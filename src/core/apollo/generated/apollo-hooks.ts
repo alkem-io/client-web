@@ -1589,6 +1589,10 @@ export const OrganizationInfoFragmentDoc = gql`
   }
   roleSet {
     id
+    authorization {
+      id
+      myPrivileges
+    }
     myMembershipStatus
     applicationForm {
       id
