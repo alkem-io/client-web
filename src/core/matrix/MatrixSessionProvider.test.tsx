@@ -129,6 +129,22 @@ describe('MatrixSession', () => {
       expect(harness.establishSession.mock.calls[0][1]).toMatchObject({ platformOrigin: APEX });
     });
 
+    it('uses the CONFIGURED identity origin, not an `identity.` naming convention', () => {
+      // Without this case the guard can be written as a hardcoded
+      // `origin.startsWith('https://identity.')` and the whole suite stays
+      // green, because every other fixture happens to sit outside that prefix.
+      // The identity origin is whatever the platform config says it is, so a
+      // deployment that does not follow the subdomain convention must still be
+      // recognised — otherwise chat breaks there in exactly the way this fix
+      // exists to repair, and no test would notice.
+      harness.identityOrigin.value = 'https://auth.partner.example';
+      servedFrom('https://auth.partner.example');
+
+      render(<MatrixSession />);
+
+      expect(harness.establishSession).not.toHaveBeenCalled();
+    });
+
     it('starts when the identity origin is not configured, so an unconfigured provider cannot block chat', () => {
       harness.identityOrigin.value = undefined;
       servedFrom(APEX);

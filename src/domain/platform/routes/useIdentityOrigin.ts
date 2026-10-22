@@ -11,7 +11,10 @@ import { useConfig } from '../config/useConfig';
 const useIdentityOrigin = () => {
   const { authentication } = useConfig();
 
-  return authentication?.providers[0].config.issuer;
+  // `providers[0]` is optional-chained too: the array can be present but empty
+  // (no provider configured). This hook is called from `NonIdentity`, which
+  // renders on every route, so a throw here is a white screen.
+  return authentication?.providers[0]?.config.issuer;
 };
 
 export default useIdentityOrigin;

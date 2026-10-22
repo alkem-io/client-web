@@ -25,6 +25,18 @@ describe('useIdentityOrigin', () => {
     expect(result.current).toBe('https://identity.alkem.io');
   });
 
+  it('is undefined when the config carries no provider at all', () => {
+    // The array can arrive empty. `providers[0]` is then undefined, and reading
+    // `.config` off it threw before this case existed — in a hook `NonIdentity`
+    // calls on every route, so the symptom was a white screen rather than a
+    // missing Matrix session.
+    harness.authentication.value = { providers: [] };
+
+    const { result } = renderHook(() => useIdentityOrigin());
+
+    expect(result.current).toBeUndefined();
+  });
+
   it('is undefined while the platform config has not arrived', () => {
     // `useConfig` exposes `authentication` as optional: it is absent until the
     // config query resolves. Callers compare it against an origin, so undefined
