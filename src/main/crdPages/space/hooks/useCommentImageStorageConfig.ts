@@ -1,5 +1,4 @@
 import { useCommentRoomStorageBucketQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import type { StorageConfig } from '@/domain/storage/StorageBucket/useStorageConfig';
 
 /**
@@ -8,10 +7,6 @@ import type { StorageConfig } from '@/domain/storage/StorageBucket/useStorageCon
  * metadata. HEIC, HEIF and AVIF are left out. The server enforces the same set.
  */
 const COMMENT_IMAGE_MIME_TYPES: ReadonlySet<string> = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
-
-export const isCommentImageMimeType = (mime: string) => COMMENT_IMAGE_MIME_TYPES.has(mime);
-
-export const commentImageMimeTypes = (types: readonly string[]) => types.filter(isCommentImageMimeType);
 
 /** Upload policy for each comment-room composer; undefined means images are off for it. */
 export type CommentImageStorageConfigs = {
@@ -31,22 +26,21 @@ const IMAGES_OFF: CommentImageStorageConfigs = { comment: undefined, reply: unde
  * FILE_UPLOAD privilege says nothing about whether a member may attach.
  *
  * Both policies are undefined — images off — while loading, on error, when the
- * room has no bucket, or when the bucket allows none of those types.
+ * viewer cannot comment, when the room has no bucket, or when the bucket allows
+ * none of those types.
  */
 export function useCommentImageStorageConfig(
   bucketId: string | null | undefined,
-  roomPrivileges: readonly AuthorizationPrivilege[],
-  skip: boolean
+  canComment: boolean,
+  canReply: boolean
 ): CommentImageStorageConfigs {
-  const canComment = roomPrivileges.includes(AuthorizationPrivilege.CreateMessage);
-  const canReply = roomPrivileges.includes(AuthorizationPrivilege.CreateMessageReply);
   const { data } = useCommentRoomStorageBucketQuery({
     variables: { bucketId: bucketId ?? '' },
-    skip: skip || !bucketId || !(canComment || canReply),
+    skip: !canComment || !bucketId,
   });
 
   const bucket = data?.lookup.storageBucket;
-  const allowed = bucket ? commentImageMimeTypes(bucket.allowedMimeTypes) : [];
+  const allowed = bucket?.allowedMimeTypes.filter(mime => COMMENT_IMAGE_MIME_TYPES.has(mime)) ?? [];
   if (!bucket || allowed.length === 0) return IMAGES_OFF;
 
   const policy = (canUpload: boolean): StorageConfig => ({

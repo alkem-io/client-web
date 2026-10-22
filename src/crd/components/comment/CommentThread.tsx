@@ -1,29 +1,18 @@
 import { Loader2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { type ComponentProps, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CommentInput } from './CommentInput';
 import { CommentItem } from './CommentItem';
-import type { CommentData, CommentsContainerData, CrdMentionSearch, ReplyComposerProps } from './types';
+import type { CommentData, CommentsContainerData, CrdMentionSearch } from './types';
 
 type CommentThreadProps = CommentsContainerData & {
   mentionSearch?: CrdMentionSearch;
-  /**
-   * Reports which comment's reply box is open (undefined when none). The
-   * integration keys the reply's attachment draft to it, so files staged for
-   * one reply are never carried over to another.
-   */
+  /** Called when a reply box opens or closes, with the open comment's id or undefined. */
   onReplyTargetChange?: (commentId: string | undefined) => void;
-  /**
-   * Attachment props for the reply input. Because the draft is keyed to the
-   * open reply and discarded when the box closes, the box stays open until
-   * onReply settles instead of closing on submit. Without them the reply box
-   * is a plain text field that closes as soon as the reply is submitted.
-   */
-  replyInputProps?: ReplyComposerProps;
-  /**
-   * True while a reply is being sent. Opening or closing a reply box then would
-   * drop the draft being sent and cancel its upload, so the toggles are ignored.
-   */
+  /** Extra reply-input props. When set, the box stays open until onReply settles,
+   *  so a failed send can be retried; otherwise it closes on submit. */
+  replyInputProps?: Partial<ComponentProps<typeof CommentInput>>;
+  /** Ignores reply open/close toggles, e.g. while a reply is being sent. */
   replyTogglesLocked?: boolean;
 };
 
@@ -58,14 +47,15 @@ export function CommentThread({
   // reply group — matching where the new reply lands after posting.
   const [replyingToCommentId, setReplyingToCommentId] = useState<string | undefined>(undefined);
 
-  const toggleReply = (commentId: string) => {
-    if (replyTogglesLocked) return;
-    setReplyingToCommentId(current => (current === commentId ? undefined : commentId));
+  const setReplyTarget = (commentId: string | undefined) => {
+    setReplyingToCommentId(commentId);
+    onReplyTargetChange?.(commentId);
   };
 
-  useEffect(() => {
-    onReplyTargetChange?.(replyingToCommentId);
-  }, [replyingToCommentId, onReplyTargetChange]);
+  const toggleReply = (commentId: string) => {
+    if (replyTogglesLocked) return;
+    setReplyTarget(replyingToCommentId === commentId ? undefined : commentId);
+  };
 
   const topLevel = comments.filter(comment => !comment.parentId);
   const repliesByParent = new Map<string, CommentData[]>();
@@ -158,16 +148,12 @@ export function CommentThread({
                       onSubmit={content => {
                         if (!replyInputProps) {
                           onReply(comment.id, content);
-                          setReplyingToCommentId(undefined);
+                          setReplyTarget(undefined);
                           return;
                         }
-                        // A rejection keeps the box open; the integration reports the error.
-                        void Promise.resolve(onReply(comment.id, content)).then(
-                          sent => {
-                            if (sent !== false) setReplyingToCommentId(undefined);
-                          },
-                          () => {}
-                        );
+                        void Promise.resolve(onReply(comment.id, content)).then(sent => {
+                          if (sent !== false) setReplyTarget(undefined);
+                        });
                       }}
                     />
                   </div>

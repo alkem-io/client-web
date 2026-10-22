@@ -80,28 +80,13 @@ export type CommentsContainerData = {
    *  per-comment Delete (gated separately by `comment.canDelete`) remain
    *  visible. Defaults to true for backwards compatibility. */
   canComment?: boolean;
-  /** The reply box stays open until a returned promise settles, and stays open
-   *  when it resolves `false` or rejects, so a failed send can be retried. */
+  /** A returned promise keeps the reply box open until it resolves, and open
+   *  when it resolves `false`, so a failed send can be retried. */
   // biome-ignore lint/suspicious/noConfusingVoidType: existing callers return nothing, so void must stay accepted
-  onReply: (parentId: string, content: string) => void | boolean | Promise<void | boolean>;
+  onReply: (parentId: string, content: string) => void | Promise<boolean>;
   onDelete: (commentId: string) => void;
   onAddReaction: (commentId: string, emoji: string) => void;
   onRemoveReaction: (commentId: string, emoji: string) => void;
-};
-
-/** Props the integration layer passes to the reply input. */
-export type ReplyComposerProps = {
-  /** Controlled reply text, so a send that fails leaves the typed reply in place. */
-  value?: string;
-  onValueChange?: (value: string) => void;
-  attachmentsEnabled?: boolean;
-  attachments?: ComposerAttachment[];
-  onAttachFiles?: (files: File[]) => void;
-  onRemoveAttachment?: (id: string) => void;
-  attachmentError?: string;
-  acceptMimeTypes?: string;
-  imagesOnly?: boolean;
-  disabled?: boolean;
 };
 
 /**

@@ -90,34 +90,16 @@ export function useCrdRoomComments({
   const privileges = room?.authorization?.myPrivileges ?? [];
   const canComment = isAuthenticated && privileges.includes(AuthorizationPrivilege.CreateMessage);
 
-  // Image attachments for the comment and reply composers. The accepted types
-  // and size come from the room's own attachment bucket; the right to attach is
-  // the right to post (CREATE_MESSAGE) or reply (CREATE_MESSAGE_REPLY) in the
-  // room. A room without a bucket (calendar events, forums, updates) keeps the
-  // plain text composers: the field clears on submit and the post is fired
-  // without waiting.
-  //
-  // In a room with a bucket the composers are the image-capable ones from the
-  // first render, whatever the policy says; the image button only appears once
-  // the policy allows uploads. Choosing on the bucket rather than on the policy,
-  // which loads later, means the field never switches mode under typed text.
-  // Such a composer carries at most one image, sent together with the text in a
-  // single message, so text and image form one comment. Its field is
-  // controlled and cleared only once that message is confirmed: a failed upload
-  // posts nothing and keeps the text for a retry. The reply draft is keyed to the
-  // open reply, so text and files staged for one reply are discarded when
-  // another reply is opened or the box closes; the box stays open after a failed
-  // send so the reply can be retried.
-  const storageConfigs = useCommentImageStorageConfig(room?.attachmentBucketId, privileges, !canComment);
+  // A room with a bucket gets image-capable composers from the first render, so
+  // the field never switches mode under typed text; the image button appears
+  // once the bucket policy allows uploads. Text and image go in one message, and
+  // the controlled field clears only once that message is confirmed.
+  const canReply = privileges.includes(AuthorizationPrivilege.CreateMessageReply);
+  const storageConfigs = useCommentImageStorageConfig(room?.attachmentBucketId, canComment, canReply);
   const imageComposers = Boolean(room?.attachmentBucketId);
   const [draft, setDraft] = useState('');
   const [replyTarget, setReplyTarget] = useState<string | undefined>(undefined);
   const [replyDraft, setReplyDraft] = useState('');
-  const [replyDraftTarget, setReplyDraftTarget] = useState<string | undefined>(undefined);
-  if (replyDraftTarget !== replyTarget) {
-    setReplyDraftTarget(replyTarget);
-    setReplyDraft('');
-  }
   const imageOptions = { maxAttachments: 1, textWithAttachment: true };
   const topLevelFiles = useConversationAttachments(storageConfigs.comment, { roomID: roomId }, imageOptions);
   const replyFiles = useConversationAttachments(
@@ -148,6 +130,23 @@ export function useCrdRoomComments({
   // is reloading. Existing comments must stay visible; the new one snaps
   // in via the cache update / subscription when the mutation resolves.
   const inputBusy = postingMessage || postingReply || deletingMessage;
+
+  const imageComposerProps = (
+    files: ReturnType<typeof useConversationAttachments>,
+    value: string,
+    onValueChange: (value: string) => void
+  ) => ({
+    value,
+    onValueChange,
+    attachmentsEnabled: files.enabled,
+    attachments: files.attachments,
+    onAttachFiles: files.attachFiles,
+    onRemoveAttachment: files.removeAttachment,
+    attachmentError: files.error,
+    acceptMimeTypes: files.accept,
+    imagesOnly: true,
+    disabled: inputBusy || files.isSending,
+  });
 
   const sendTopLevel: SendEvent = async (text, attachmentUpload) =>
     Boolean((await postMessage(text, attachmentUpload)).data?.sendMessageToRoom);
@@ -189,23 +188,15 @@ export function useCrdRoomComments({
           if (imageComposers) return replyFiles.send(content, sendReply(parentId), () => setReplyDraft(''));
           void postReply({ messageText: content, threadId: parentId });
         }}
-        onReplyTargetChange={imageComposers ? setReplyTarget : undefined}
-        replyInputProps={
+        onReplyTargetChange={
           imageComposers
-            ? {
-                value: replyDraft,
-                onValueChange: setReplyDraft,
-                attachmentsEnabled: replyFiles.enabled,
-                attachments: replyFiles.attachments,
-                onAttachFiles: replyFiles.attachFiles,
-                onRemoveAttachment: replyFiles.removeAttachment,
-                attachmentError: replyFiles.error,
-                acceptMimeTypes: replyFiles.accept,
-                imagesOnly: true,
-                disabled: inputBusy || replyFiles.isSending,
+            ? id => {
+                setReplyTarget(id);
+                setReplyDraft('');
               }
             : undefined
         }
+        replyInputProps={imageComposers ? imageComposerProps(replyFiles, replyDraft, setReplyDraft) : undefined}
         replyTogglesLocked={replyFiles.isSending}
         onDelete={commentId => {
           setPendingDeleteId(commentId);
@@ -255,34 +246,16 @@ export function useCrdRoomComments({
       : undefined;
 
   const commentInput = canComment ? (
-    imageComposers ? (
-      <CommentInput
-        currentUser={currentUser}
-        value={draft}
-        onValueChange={setDraft}
-        disabled={inputBusy || topLevelFiles.isSending}
-        mentionSearch={mentionSearch}
-        onSubmit={content => {
-          void topLevelFiles.send(content, sendTopLevel, () => setDraft(''));
-        }}
-        attachmentsEnabled={topLevelFiles.enabled}
-        attachments={topLevelFiles.attachments}
-        onAttachFiles={topLevelFiles.attachFiles}
-        onRemoveAttachment={topLevelFiles.removeAttachment}
-        attachmentError={topLevelFiles.error}
-        acceptMimeTypes={topLevelFiles.accept}
-        imagesOnly={true}
-      />
-    ) : (
-      <CommentInput
-        currentUser={currentUser}
-        disabled={inputBusy}
-        mentionSearch={mentionSearch}
-        onSubmit={content => {
-          void postMessage(content);
-        }}
-      />
-    )
+    <CommentInput
+      currentUser={currentUser}
+      disabled={inputBusy}
+      mentionSearch={mentionSearch}
+      {...(imageComposers ? imageComposerProps(topLevelFiles, draft, setDraft) : undefined)}
+      onSubmit={content => {
+        if (imageComposers) void topLevelFiles.send(content, sendTopLevel, () => setDraft(''));
+        else void postMessage(content);
+      }}
+    />
   ) : cantCommentNotice ? (
     <p className="rounded-md border border-dashed border-border bg-muted/30 px-4 py-3 text-center text-body text-muted-foreground">
       {cantCommentNotice}
