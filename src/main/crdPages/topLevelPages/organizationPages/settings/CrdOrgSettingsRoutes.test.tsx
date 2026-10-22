@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Outlet, Route, Routes } from 'react-router-dom';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { OrgSettingsAccessMode } from '../useCanEditOrganizationSettings';
 
 // This test is about which route wins for a given URL. The settings shell and the
 // tab pages are heavy integration components (Apollo, organization context), so
@@ -13,6 +14,12 @@ vi.mock('./membership/CrdOrgMembershipTab', () => ({ default: () => <div>MEMBERS
 vi.mock('./invitations/CrdOrgInvitationsTab', () => ({ default: () => <div>INVITATIONS_TAB</div> }));
 vi.mock('./settings/CrdOrgSettingsTab', () => ({ default: () => <div>SETTINGS_TAB</div> }));
 
+let accessMode: OrgSettingsAccessMode = 'full';
+let loading = false;
+vi.mock('../useCanEditOrganizationSettings', () => ({
+  default: () => ({ accessMode, loading, canEditSettings: accessMode !== 'none', hasUpdatePrivilege: false }),
+}));
+
 import CrdOrgSettingsRoutes from './CrdOrgSettingsRoutes';
 
 const renderAt = (path: string) =>
@@ -23,6 +30,11 @@ const renderAt = (path: string) =>
       </Routes>
     </MemoryRouter>
   );
+
+beforeEach(() => {
+  accessMode = 'full';
+  loading = false;
+});
 
 describe('CrdOrgSettingsRoutes — the retired Authorization tab', () => {
   it('redirects /settings/authorization to the Associates tab', async () => {
@@ -60,5 +72,69 @@ describe('CrdOrgSettingsRoutes — the Membership tab', () => {
     renderAt('/organization/acme/settings/authorization');
     expect(await screen.findByText('ASSOCIATES_TAB')).toBeInTheDocument();
     expect(screen.queryByText('MEMBERSHIP_TAB')).not.toBeInTheDocument();
+  });
+});
+
+const TAB_MARKERS = [
+  'PROFILE_TAB',
+  'ACCOUNT_TAB',
+  'ASSOCIATES_TAB',
+  'MEMBERSHIP_TAB',
+  'INVITATIONS_TAB',
+  'SETTINGS_TAB',
+] as const;
+
+const expectOnlyTab = async (marker: (typeof TAB_MARKERS)[number]) => {
+  expect(await screen.findByText(marker)).toBeInTheDocument();
+  for (const other of TAB_MARKERS.filter(m => m !== marker)) {
+    expect(screen.queryByText(other)).not.toBeInTheDocument();
+  }
+};
+
+describe('CrdOrgSettingsRoutes — full access is unchanged', () => {
+  it.each([
+    ['', 'PROFILE_TAB'],
+    ['/profile', 'PROFILE_TAB'],
+    ['/account', 'ACCOUNT_TAB'],
+    ['/community', 'ASSOCIATES_TAB'],
+    ['/membership', 'MEMBERSHIP_TAB'],
+    ['/invitations', 'INVITATIONS_TAB'],
+    ['/settings', 'SETTINGS_TAB'],
+    ['/authorization', 'ASSOCIATES_TAB'],
+    ['/no-such-tab', 'PROFILE_TAB'],
+    ['/no/such/tab', 'PROFILE_TAB'],
+  ] as const)('/settings%s → %s', async (suffix, marker) => {
+    renderAt(`/organization/acme/settings${suffix}`);
+    await expectOnlyTab(marker);
+  });
+});
+
+describe('CrdOrgSettingsRoutes — a community-only viewer reaches the Community tab alone', () => {
+  beforeEach(() => {
+    accessMode = 'community-only';
+  });
+
+  it.each([
+    [''],
+    ['/profile'],
+    ['/account'],
+    ['/community'],
+    ['/membership'],
+    ['/invitations'],
+    ['/settings'],
+    ['/authorization'],
+    ['/no-such-tab'],
+    ['/no/such/tab'],
+  ] as const)('/settings%s → the Community tab', async suffix => {
+    renderAt(`/organization/acme/settings${suffix}`);
+    await expectOnlyTab('ASSOCIATES_TAB');
+  });
+
+  it('mounts no tab while the privileges are still loading', () => {
+    loading = true;
+    renderAt('/organization/acme/settings/profile');
+    for (const marker of TAB_MARKERS) {
+      expect(screen.queryByText(marker)).not.toBeInTheDocument();
+    }
   });
 });
