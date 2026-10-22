@@ -16,7 +16,8 @@ type CommentThreadProps = CommentsContainerData & {
   /**
    * Attachment props for the reply input. Because the draft is keyed to the
    * open reply and discarded when the box closes, the box stays open until
-   * onReply settles instead of closing on submit.
+   * onReply settles instead of closing on submit. Without them the reply box
+   * is a plain text field that closes as soon as the reply is submitted.
    */
   replyInputProps?: ReplyComposerProps;
 };
@@ -152,6 +153,11 @@ export function CommentThread({
                       autoFocus={true}
                       {...replyInputProps}
                       onSubmit={content => {
+                        if (!replyInputProps) {
+                          onReply(comment.id, content);
+                          setReplyingToCommentId(undefined);
+                          return;
+                        }
                         // A rejection keeps the box open; the integration reports the error.
                         setReplySending(true);
                         void Promise.resolve(onReply(comment.id, content))

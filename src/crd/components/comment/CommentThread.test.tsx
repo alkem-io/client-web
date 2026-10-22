@@ -56,6 +56,8 @@ const deferred = <T,>() => {
   return { promise, resolve, reject };
 };
 
+const imageReply = { attachmentsEnabled: true, imagesOnly: true };
+
 describe('CommentThread reply composer', () => {
   // The reply input scrolls itself into view on open; jsdom has no layout.
   beforeAll(() => {
@@ -78,10 +80,10 @@ describe('CommentThread reply composer', () => {
     expect(screen.getByRole('button', { name: 'comments.attachments.addImage' })).toBeInTheDocument();
   });
 
-  test('keeps the reply box open until onReply resolves, then closes it', async () => {
+  test('with reply input props, keeps the reply box open until onReply resolves, then closes it', async () => {
     const pending = deferred<boolean>();
     const onReply = vi.fn(() => pending.promise);
-    renderThread({ onReply });
+    renderThread({ onReply, replyInputProps: imageReply });
     openReply();
     submitReply('a reply');
     expect(onReply).toHaveBeenCalledWith('c1', 'a reply');
@@ -96,9 +98,9 @@ describe('CommentThread reply composer', () => {
   test.each([
     ['resolves false', (d: ReturnType<typeof deferred<boolean>>) => d.resolve(false)],
     ['rejects', (d: ReturnType<typeof deferred<boolean>>) => d.reject(new Error('send failed'))],
-  ])('keeps the box open when onReply %s', async (_label, settle) => {
+  ])('with reply input props, keeps the box open when onReply %s', async (_label, settle) => {
     const pending = deferred<boolean>();
-    renderThread({ onReply: () => pending.promise });
+    renderThread({ onReply: () => pending.promise, replyInputProps: imageReply });
     openReply();
     submitReply('a reply');
     await act(async () => {
@@ -122,11 +124,16 @@ describe('CommentThread reply composer', () => {
     expect(onValueChange).not.toHaveBeenCalledWith('');
   });
 
-  test('reply toggles are ignored while a reply is being sent', async () => {
+  test('with reply input props, reply toggles are ignored while a reply is being sent', async () => {
     const pending = deferred<boolean>();
     const onReplyTargetChange = vi.fn();
     const older: CommentData = { ...comment, id: 'c0', content: 'older', timestampMs: 500 };
-    renderThread({ comments: [comment, older], onReply: () => pending.promise, onReplyTargetChange });
+    renderThread({
+      comments: [comment, older],
+      onReply: () => pending.promise,
+      onReplyTargetChange,
+      replyInputProps: imageReply,
+    });
     const replyButtons = () => screen.getAllByRole('button', { name: 'comments.reply' });
     // Newest first: c1, then c0.
     fireEvent.click(replyButtons()[0]);
@@ -148,9 +155,9 @@ describe('CommentThread reply composer', () => {
     expect(document.getElementById('comment-reply-input-c0')).toBeInTheDocument();
   });
 
-  test('synchronous void onReply still closes the box', async () => {
+  test('with reply input props, a synchronous void onReply still closes the box', async () => {
     const onReply = vi.fn();
-    renderThread({ onReply });
+    renderThread({ onReply, replyInputProps: imageReply });
     openReply();
     submitReply('a reply');
     await act(async () => {
@@ -158,5 +165,18 @@ describe('CommentThread reply composer', () => {
     });
     expect(onReply).toHaveBeenCalledWith('c1', 'a reply');
     expect(replyBox()).not.toBeInTheDocument();
+  });
+
+  test('without reply input props the box closes on submit, without waiting for onReply', () => {
+    const pending = deferred<boolean>();
+    const onReply = vi.fn(() => pending.promise);
+    renderThread({ onReply });
+    openReply();
+    submitReply('a reply');
+    expect(onReply).toHaveBeenCalledExactlyOnceWith('c1', 'a reply');
+    expect(replyBox()).not.toBeInTheDocument();
+    // Toggles are never held back, and a reopened box starts empty.
+    openReply();
+    expect(replyBox()).toHaveValue('');
   });
 });
