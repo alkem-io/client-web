@@ -93,19 +93,23 @@ export function useCrdRoomComments({
   // Image attachments for the comment and reply composers. The accepted types
   // and size come from the room's own attachment bucket; the right to attach is
   // the right to post (CREATE_MESSAGE) or reply (CREATE_MESSAGE_REPLY) in the
-  // room. A composer without a bucket or that right is the plain text composer:
-  // its field clears on submit and the post is fired without waiting.
+  // room. A room without a bucket (calendar events, forums, updates) keeps the
+  // plain text composers: the field clears on submit and the post is fired
+  // without waiting.
   //
-  // An image-enabled composer carries at most one image, sent together with the
-  // text in a single message, so text and image form one comment. Its field is
+  // In a room with a bucket the composers are the image-capable ones from the
+  // first render, whatever the policy says; the image button only appears once
+  // the policy allows uploads. Choosing on the bucket rather than on the policy,
+  // which loads later, means the field never switches mode under typed text.
+  // Such a composer carries at most one image, sent together with the text in a
+  // single message, so text and image form one comment. Its field is
   // controlled and cleared only once that message is confirmed: a failed upload
   // posts nothing and keeps the text for a retry. The reply draft is keyed to the
   // open reply, so text and files staged for one reply are discarded when
   // another reply is opened or the box closes; the box stays open after a failed
   // send so the reply can be retried.
   const storageConfigs = useCommentImageStorageConfig(room?.attachmentBucketId, privileges, !canComment);
-  const commentImagesEnabled = Boolean(storageConfigs.comment?.canUpload);
-  const replyImagesEnabled = Boolean(storageConfigs.reply?.canUpload);
+  const imageComposers = Boolean(room?.attachmentBucketId);
   const [draft, setDraft] = useState('');
   const [replyTarget, setReplyTarget] = useState<string | undefined>(undefined);
   const [replyDraft, setReplyDraft] = useState('');
@@ -182,12 +186,12 @@ export function useCrdRoomComments({
         canComment={canComment}
         mentionSearch={mentionSearch}
         onReply={(parentId, content) => {
-          if (replyImagesEnabled) return replyFiles.send(content, sendReply(parentId), () => setReplyDraft(''));
+          if (imageComposers) return replyFiles.send(content, sendReply(parentId), () => setReplyDraft(''));
           void postReply({ messageText: content, threadId: parentId });
         }}
-        onReplyTargetChange={replyImagesEnabled ? setReplyTarget : undefined}
+        onReplyTargetChange={imageComposers ? setReplyTarget : undefined}
         replyInputProps={
-          replyImagesEnabled
+          imageComposers
             ? {
                 value: replyDraft,
                 onValueChange: setReplyDraft,
@@ -250,7 +254,7 @@ export function useCrdRoomComments({
       : undefined;
 
   const commentInput = canComment ? (
-    commentImagesEnabled ? (
+    imageComposers ? (
       <CommentInput
         currentUser={currentUser}
         value={draft}

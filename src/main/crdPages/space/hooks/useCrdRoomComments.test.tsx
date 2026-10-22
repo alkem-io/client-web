@@ -185,6 +185,18 @@ describe('useCrdRoomComments composers', () => {
     expect(topLevel().queryByText('shot.png')).not.toBeInTheDocument();
   });
 
+  test('text typed while the image policy is still loading stays in the field once uploads are allowed', () => {
+    let bucketResult: typeof readableBucket | typeof noBucket = noBucket;
+    mockBucketQuery.mockImplementation(() => bucketResult);
+    const { rerender } = render(<Harness value={room()} />);
+    expect(topLevel().queryByRole('button', { name: 'comments.attachments.addImage' })).not.toBeInTheDocument();
+    typeInto(topLevel().getByRole('textbox'), 'typed early');
+    bucketResult = readableBucket;
+    rerender(<Harness value={room()} />);
+    expect(topLevel().getByRole('button', { name: 'comments.attachments.addImage' })).toBeInTheDocument();
+    expect(topLevel().getByRole('textbox')).toHaveValue('typed early');
+  });
+
   test('a second staged image is refused and the first stays', () => {
     mockBucketQuery.mockReturnValue(readableBucket);
     render(<Harness value={room()} />);
