@@ -1,6 +1,10 @@
 import { render } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MatrixSession } from './MatrixSessionProvider';
+
+const APEX = 'https://alkem.io';
+const IDENTITY_ORIGIN = 'https://identity.alkem.io';
+const HUB_ORIGIN = 'https://hub.example.org';
 
 const harness = vi.hoisted(() => {
   const harnessState = {
@@ -14,6 +18,7 @@ const harness = vi.hoisted(() => {
     }),
     actorId: { value: 'actor-1' as string | undefined },
     platformOrigin: { value: 'https://alkem.io' as string | undefined },
+    identityOrigin: { value: 'https://identity.alkem.io' as string | undefined },
   };
   return harnessState;
 });
@@ -30,12 +35,24 @@ vi.mock('@/domain/platform/routes/usePlatformOrigin', () => ({
   default: () => harness.platformOrigin.value,
 }));
 
+vi.mock('@/domain/platform/routes/useIdentityOrigin', () => ({
+  default: () => harness.identityOrigin.value,
+}));
+
+const servedFrom = (origin: string) => vi.stubGlobal('location', { origin, pathname: '/', search: '' });
+
 describe('MatrixSession', () => {
   beforeEach(() => {
     harness.establishSession.mockClear();
     harness.signals = [];
     harness.actorId.value = 'actor-1';
-    harness.platformOrigin.value = 'https://alkem.io';
+    harness.platformOrigin.value = APEX;
+    harness.identityOrigin.value = IDENTITY_ORIGIN;
+    servedFrom(APEX);
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it('passes the platform origin to the session, and waits until it is known', () => {
@@ -43,10 +60,10 @@ describe('MatrixSession', () => {
     const { rerender } = render(<MatrixSession />);
     expect(harness.establishSession).not.toHaveBeenCalled();
 
-    harness.platformOrigin.value = 'https://alkem.io';
+    harness.platformOrigin.value = APEX;
     rerender(<MatrixSession />);
     expect(harness.establishSession).toHaveBeenCalledOnce();
-    expect(harness.establishSession.mock.calls[0][1]).toMatchObject({ platformOrigin: 'https://alkem.io' });
+    expect(harness.establishSession.mock.calls[0][1]).toMatchObject({ platformOrigin: APEX });
   });
 
   it('establishes a session for the signed-in actor', () => {
@@ -79,5 +96,46 @@ describe('MatrixSession', () => {
     expect(harness.signals[1]?.aborted).toBe(false);
     expect(harness.establishSession).toHaveBeenCalledTimes(2);
     expect(harness.establishSession.mock.calls[1][0]).toBe('actor-2');
+  });
+
+  describe('origin the page is served from', () => {
+    // This provider is mounted above the routes, so sign-in runs it once on the
+    // identity origin before `NonIdentity` replaces the location with the apex.
+    it('does not start on the identity origin: the credentials would land in storage the apex never reads', () => {
+      servedFrom(IDENTITY_ORIGIN);
+
+      render(<MatrixSession />);
+
+      expect(harness.establishSession).not.toHaveBeenCalled();
+    });
+
+    it('starts on the platform origin, where the callback persists the credentials itself', () => {
+      servedFrom(APEX);
+
+      render(<MatrixSession />);
+
+      expect(harness.establishSession).toHaveBeenCalledOnce();
+    });
+
+    // The regression a `window.location.origin === platformOrigin` gate would
+    // cause: a hub is a legitimate third origin served the same app, and the
+    // callback's `parent` handoff posts it the token.
+    it('starts on an innovation-hub origin, which is neither the apex nor the identity origin', () => {
+      servedFrom(HUB_ORIGIN);
+
+      render(<MatrixSession />);
+
+      expect(harness.establishSession).toHaveBeenCalledOnce();
+      expect(harness.establishSession.mock.calls[0][1]).toMatchObject({ platformOrigin: APEX });
+    });
+
+    it('starts when the identity origin is not configured, so an unconfigured provider cannot block chat', () => {
+      harness.identityOrigin.value = undefined;
+      servedFrom(APEX);
+
+      render(<MatrixSession />);
+
+      expect(harness.establishSession).toHaveBeenCalledOnce();
+    });
   });
 });
