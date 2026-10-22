@@ -84,6 +84,29 @@ type SaveBarState =
 
 **Used only by the Layout tab.** About uses per-section Save in each section's `FieldFooter` (FR-005a; *amended 2026-10-16 — was "per-field autosave"*); every other tab commits per action.
 
+> *(Amended 2026-10-22: superseded by `UnsavedChangesBarState` + `TabUnsavedChanges` below — FR-025 – FR-025d.)*
+
+### `TabUnsavedChanges` / `UnsavedChangesBarState` *(added 2026-10-22)*
+
+```
+type TabUnsavedChanges = {
+  count: number;            // FR-025b — one per changed field, 0 = clean
+  canSave: boolean;         // false while any buffered edit is invalid
+  saving: boolean;
+  error: string | null;     // last Save failure; failed parts stay counted
+  saveAll: () => Promise<boolean>; // true when everything saved
+  reset: () => void;        // back to the server values, in place
+};
+
+type UnsavedChangesBarState =
+  | { kind: 'clean' }
+  | { kind: 'dirty'; count: number; canSave: boolean }
+  | { kind: 'saving'; count: number }
+  | { kind: 'saveError'; count: number; message: string };
+```
+
+Exposed by `useAboutTabData`, `useLayoutTabData` and `useSettingsTabData` as `unsaved`. The page maps the **active** tab's `TabUnsavedChanges` to the bar state; tabs without one never show the bar. About's buffer additionally holds the staged classification changes: `stagedAdds` (template id, display label, cardinality, value set, selected ids, display), `stagedRemovals` (entry ids) and per-entry `selection` / `display` overrides.
+
 ---
 
 ## About tab

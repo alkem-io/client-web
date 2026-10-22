@@ -61,6 +61,15 @@ export type AboutFormValues = {
 };
 
 /**
+ * Amended 2026-10-22 (spec Session 2026-10-22, FR-005a / FR-025): the
+ * per-section model below is SUPERSEDED. About saves through the tab-wide
+ * unsaved-changes bar — `useAboutTabData` exposes `unsaved: TabUnsavedChanges`
+ * (see `./shell`), there is no `FieldFooter` Save / Saved! / Retry, and every
+ * Classifications action (add from template, pick values, show-on-space
+ * toggle, remove) is staged in the same buffer. Visual uploads still commit on
+ * file pick. `SectionSaveStatus`, `onSaveSection` and `saveStatusByField` are
+ * removed from the view contract.
+ *
  * Per-section save model (FR-005a — amended 2026-10-16).
  *
  * The original contract here was a 2-second debounced per-field autosave

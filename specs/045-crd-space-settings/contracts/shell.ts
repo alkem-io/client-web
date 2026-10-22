@@ -135,6 +135,47 @@ export type SpaceSettingsSaveBarProps = {
 };
 
 /**
+ * Added 2026-10-22 (spec Session 2026-10-22, FR-025 – FR-026c). Supersedes
+ * `SaveBarState` / `SpaceSettingsSaveBarProps` above, which were Layout-only.
+ *
+ * One tab-wide bar, fixed to the bottom of the viewport, shared by About,
+ * Layout and Settings. Every participating data hook exposes a
+ * `TabUnsavedChanges`; the page maps the ACTIVE tab's one to the bar.
+ */
+export type TabUnsavedChanges = {
+  /** FR-025b — one per changed field; 0 = clean. */
+  count: number;
+  /** False while any buffered edit is invalid. */
+  canSave: boolean;
+  saving: boolean;
+  /** Last Save failure; the failed parts stay counted. */
+  error: string | null;
+  /** Saves every change on the tab; resolves `true` when everything saved. */
+  saveAll: () => Promise<boolean>;
+  /** Puts every changed field back to its server value, in place. */
+  reset: () => void;
+};
+
+export type UnsavedChangesBarState =
+  | { kind: 'clean' }
+  | { kind: 'dirty'; count: number; canSave: boolean }
+  | { kind: 'saving'; count: number }
+  | { kind: 'saveError'; count: number; message: string };
+
+/**
+ * `src/crd/components/space/settings/SpaceSettingsUnsavedChangesBar.tsx`.
+ * Left: filled circle with `count` + "1 unsaved change" / "N unsaved changes".
+ * Right: Discard (ghost) + Save changes (primary). `aria-live="polite"`.
+ * `onDiscard` opens the page-owned confirmation (FR-025c); the bar never
+ * resets anything itself.
+ */
+export type SpaceSettingsUnsavedChangesBarProps = {
+  state: UnsavedChangesBarState;
+  onSave: () => void;
+  onDiscard: () => void;
+};
+
+/**
  * Single confirmation primitive (delete + discard variants) — reused, not duplicated.
  * Backed by src/crd/components/dialogs/ConfirmationDialog.tsx.
  */

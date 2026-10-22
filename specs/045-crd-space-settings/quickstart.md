@@ -56,6 +56,8 @@ Behaviour at L1 / L2:
 | Templates | No | Per action (confirm → mutation) |
 | Storage | No | Per action (confirm → mutation) |
 | Settings | No | Per toggle (immediate mutation) |
+
+> *(Amended 2026-10-22 — FR-025 – FR-026c:)* **About**, **Layout** and **Settings** now save through the shared unsaved-changes bar fixed to the bottom of the viewport (count + "N unsaved changes", Discard with confirm, Save changes). About stages every field and every Classifications action (Visuals still commit on file pick); Settings sends one `updateSpaceSettings` on Save. Community, Updates, Subspaces, Templates, Storage and Account are unchanged (per action, no bar).
 | Account | No | Read-only + single destructive action |
 
 ## Implementation walkthrough
