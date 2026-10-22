@@ -71,6 +71,26 @@ export const OrganizationGuestResourcesNotice = ({
   );
 };
 
+type GuestNoticeInput = {
+  organization: { profile?: { displayName?: string; url?: string } } | undefined;
+  isAuthenticated: boolean;
+  loadingMe: boolean;
+};
+
+/**
+ * Driven by auth state and the organization's identity only, never by the
+ * resource data: once the organization is known a guest always sees it, so it
+ * never reveals whether the organization hosts anything. Withheld while the
+ * organization loads, so the name and the sign-up return URL are never blank.
+ */
+export const buildOrganizationGuestNotice = ({ organization, isAuthenticated, loadingMe }: GuestNoticeInput) =>
+  organization && !loadingMe && !isAuthenticated ? (
+    <OrganizationGuestResourcesNotice
+      organizationName={organization.profile?.displayName ?? ''}
+      signUpHref={buildSignUpUrl(organization.profile?.url)}
+    />
+  ) : undefined;
+
 export const CrdOrganizationProfilePage = () => {
   const { t } = useTranslation('crd-profilePages');
   const navigate = useNavigate();
@@ -186,15 +206,7 @@ export const CrdOrganizationProfilePage = () => {
   const pendingInvitation = associateAction.pendingInvitation;
   const inviterName = pendingInvitation?.invitation.createdBy?.profile?.displayName;
 
-  // Driven by auth state only, never by the resource data: a guest always sees
-  // it, so it never reveals whether the organization hosts anything.
-  const guestNotice =
-    !loadingMe && !isAuthenticated ? (
-      <OrganizationGuestResourcesNotice
-        organizationName={profile?.displayName ?? ''}
-        signUpHref={buildSignUpUrl(profile?.url)}
-      />
-    ) : undefined;
+  const guestNotice = buildOrganizationGuestNotice({ organization, isAuthenticated, loadingMe });
 
   return (
     <OrganizationPublicProfileView

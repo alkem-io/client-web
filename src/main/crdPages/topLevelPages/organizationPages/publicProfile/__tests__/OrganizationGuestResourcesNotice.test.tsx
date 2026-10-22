@@ -3,7 +3,7 @@ import i18next from 'i18next';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
 import { beforeAll, describe, expect, test } from 'vitest';
 import profilePagesEnJson from '@/crd/i18n/profilePages/profilePages.en.json';
-import { OrganizationGuestResourcesNotice } from '../CrdOrganizationProfilePage';
+import { buildOrganizationGuestNotice, OrganizationGuestResourcesNotice } from '../CrdOrganizationProfilePage';
 
 const i18n = i18next.createInstance();
 
@@ -51,5 +51,33 @@ describe('OrganizationGuestResourcesNotice', () => {
     const { container } = renderNotice('Smith &amp; Sons');
 
     expect(container.textContent).toBe('Sign up on Alkemio to see the resources hosted by Smith &amp; Sons');
+  });
+});
+
+describe('buildOrganizationGuestNotice', () => {
+  const organization = { profile: { displayName: 'Acme Foundation', url: '/organization/acme' } };
+  const renderSlot = (notice: ReturnType<typeof buildOrganizationGuestNotice>) =>
+    render(<I18nextProvider i18n={i18n}>{notice}</I18nextProvider>);
+
+  test('no notice while the organization is still loading', () => {
+    expect(buildOrganizationGuestNotice({ organization: undefined, isAuthenticated: false, loadingMe: false })).toBe(
+      undefined
+    );
+  });
+
+  test('no notice while auth is resolving, nor for a signed-in viewer', () => {
+    expect(buildOrganizationGuestNotice({ organization, isAuthenticated: false, loadingMe: true })).toBe(undefined);
+    expect(buildOrganizationGuestNotice({ organization, isAuthenticated: true, loadingMe: false })).toBe(undefined);
+  });
+
+  test('once the organization is known a guest sees its name and a sign-up link back to it', () => {
+    const { container } = renderSlot(
+      buildOrganizationGuestNotice({ organization, isAuthenticated: false, loadingMe: false })
+    );
+
+    expect(container.textContent).toBe('Sign up on Alkemio to see the resources hosted by Acme Foundation');
+    const href = screen.getByRole('link', { name: 'Sign up' }).getAttribute('href') ?? '';
+    expect(href).toContain('returnUrl=');
+    expect(decodeURIComponent(href)).toContain('/organization/acme');
   });
 });
