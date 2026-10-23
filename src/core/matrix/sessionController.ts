@@ -83,20 +83,20 @@ const establishSession = async (
     if (record) {
       return record;
     }
-    // In the app the SSO iframe cannot complete — no identity-origin cookie
-    // exists in this WebView's jar — and on Android the attempt is actively
-    // harmful: the shell intercepts the iframe's hop through
-    // identity.<host>/login and navigates the MAIN WebView to a "Sign in to
-    // continue" landing. See workspace#091 spec FR-014.
-    if (isAppMode()) {
-      return mintAndStore(abort.signal);
+    // The app skips silent SSO entirely: no identity-origin cookie exists in
+    // this WebView's jar, so the iframe cannot complete — and on Android the
+    // attempt is actively harmful, because the shell intercepts the iframe's
+    // hop through identity.<host>/login and navigates the MAIN WebView to a
+    // "Sign in to continue" landing. See workspace#091 spec FR-014.
+    if (!isAppMode()) {
+      const outcome = await attemptSilentSso(actorId, { signal: abort.signal, platformOrigin });
+      if (outcome === 'authenticated') {
+        return loadActorCredentials(actorId);
+      }
     }
-    const outcome = await attemptSilentSso(actorId, { signal: abort.signal, platformOrigin });
-    if (outcome === 'authenticated') {
-      return loadActorCredentials(actorId);
-    }
-    // M3 mandates this leg. It is the one place this feature gives a BROWSER a
-    // credential-issuance path it does not have today — spec R-7(b).
+    // M3 mandates this leg for the app; reached in a BROWSER only after SSO
+    // fails, which is the one credential-issuance path this feature adds
+    // there — spec R-7(b).
     return mintAndStore(abort.signal);
   };
 

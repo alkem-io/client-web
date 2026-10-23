@@ -56,16 +56,12 @@ const mintAndStore = async (signal?: AbortSignal): Promise<CredentialRecord | nu
       return null;
     }
 
-    const record: CredentialRecord = {
-      userId: credentials.userId,
-      deviceId: credentials.deviceId,
-      accessToken: credentials.accessToken,
-      homeserverUrl,
-    };
+    const { userId, deviceId, accessToken } = credentials;
     // A record missing any field would be resumed unchecked until sign-out.
-    if (!record.userId || !record.deviceId || !record.accessToken) {
+    if (!userId || !deviceId || !accessToken) {
       return null;
     }
+    const record: CredentialRecord = { userId, deviceId, accessToken, homeserverUrl };
     // storeCredentials returns false on ANY IndexedDB failure (storage.ts:41-59).
     // Reporting a failed write as a persisted credential is worse than failing
     // closed: start() would run a session the next launch cannot resume, so the
