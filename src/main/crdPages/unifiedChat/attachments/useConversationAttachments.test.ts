@@ -7,7 +7,10 @@ import { useConversationAttachments } from './useConversationAttachments';
 const mockFetch = vi.fn();
 const mockLegacyUpload = vi.fn();
 const roomContext = { roomID: 'room-A' };
-vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
+const identityT = (key: string) => key;
+const mockT = vi.hoisted(() => vi.fn());
+vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: mockT }) }));
+beforeEach(() => mockT.mockImplementation(identityT));
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useUploadFileMutation: () => [mockLegacyUpload, { loading: false }],
   useUploadRoomMessageAttachmentMutation: () => [mockLegacyUpload, { loading: false }],
@@ -453,5 +456,125 @@ describe('completed upload lifetime', () => {
     expect(mockFetch).toHaveBeenCalledTimes(1);
     expect(sendEvent).toHaveBeenCalledTimes(1);
     expect(result.current.error).toBe('comments.attachments.sendUnconfirmed');
+  });
+});
+
+describe('composer options', () => {
+  const countingT = (key: string, opts?: { count?: number }) =>
+    opts?.count !== undefined ? `${key}:${opts.count}` : key;
+
+  beforeEach(() => {
+    mockFetch.mockReset();
+    vi.stubGlobal('fetch', mockFetch);
+    mockT.mockImplementation(countingT);
+  });
+
+  test('defaults unchanged: text is sent before the images and the 11th file is refused with count 10', async () => {
+    mockFetch.mockResolvedValueOnce(uploadResult('img1')).mockResolvedValueOnce(uploadResult('img2'));
+    const sendEvent = vi.fn().mockResolvedValue(true);
+    const { result } = renderHook(() => useConversationAttachments(bucketConfig, roomContext));
+    act(() => result.current.attachFiles([file('a.png'), file('b.png')]));
+    await act(async () => {
+      expect(await result.current.send('hello', sendEvent, vi.fn())).toBe(true);
+    });
+    expect(sendEvent.mock.calls).toEqual([
+      ['hello'],
+      ['', uploadedAttachment('img1')],
+      ['', uploadedAttachment('img2', 'b.png')],
+    ]);
+    act(() => result.current.attachFiles(Array.from({ length: 11 }, (_, i) => file(`c${i}.png`))));
+    expect(result.current.attachments).toHaveLength(10);
+    expect(result.current.error).toBe('comments.attachments.errorTooMany:10');
+  });
+
+  test('maxAttachments: 1 refuses the second file and reports count 1', () => {
+    const { result } = renderHook(() => useConversationAttachments(bucketConfig, roomContext, { maxAttachments: 1 }));
+    act(() => result.current.attachFiles([file('a.png')]));
+    expect(result.current.error).toBeUndefined();
+    act(() => result.current.attachFiles([file('b.png')]));
+    expect(result.current.attachments.map(item => item.name)).toEqual(['a.png']);
+    expect(result.current.error).toBe('comments.attachments.errorTooMany:1');
+    act(() => result.current.removeAttachment(result.current.attachments[0].id));
+    act(() => result.current.attachFiles([file('c.png'), file('d.png')]));
+    expect(result.current.attachments.map(item => item.name)).toEqual(['c.png']);
+    expect(result.current.error).toBe('comments.attachments.errorTooMany:1');
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
+
+  test('textWithAttachment: the text and the image go in one send, and textSent runs after it is confirmed', async () => {
+    mockFetch.mockResolvedValueOnce(uploadResult('img1'));
+    const order: string[] = [];
+    const sendEvent = vi.fn(async () => {
+      order.push('send');
+      return true;
+    });
+    const textSent = vi.fn(() => order.push('textSent'));
+    const { result } = renderHook(() =>
+      useConversationAttachments(bucketConfig, roomContext, { maxAttachments: 1, textWithAttachment: true })
+    );
+    act(() => result.current.attachFiles([file('a.png')]));
+    await act(async () => {
+      expect(await result.current.send('hello', sendEvent, textSent)).toBe(true);
+    });
+    expect(sendEvent.mock.calls).toEqual([['hello', uploadedAttachment('img1')]]);
+    expect(order).toEqual(['send', 'textSent']);
+    expect(result.current.attachments).toHaveLength(0);
+  });
+
+  test('textWithAttachment: with no staged file the text is sent alone', async () => {
+    const sendEvent = vi.fn().mockResolvedValue(true);
+    const textSent = vi.fn();
+    const { result } = renderHook(() =>
+      useConversationAttachments(bucketConfig, roomContext, { maxAttachments: 1, textWithAttachment: true })
+    );
+    await act(async () => {
+      expect(await result.current.send('hello', sendEvent, textSent)).toBe(true);
+    });
+    expect(sendEvent.mock.calls).toEqual([['hello']]);
+    expect(textSent).toHaveBeenCalledOnce();
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
+
+  test('textWithAttachment: a failed upload posts nothing, keeps the text unsent and marks the chip', async () => {
+    mockFetch.mockResolvedValueOnce({ ok: false, status: 500 });
+    const sendEvent = vi.fn().mockResolvedValue(true);
+    const textSent = vi.fn();
+    const { result } = renderHook(() =>
+      useConversationAttachments(bucketConfig, roomContext, { maxAttachments: 1, textWithAttachment: true })
+    );
+    act(() => result.current.attachFiles([file('a.png')]));
+    await act(async () => {
+      expect(await result.current.send('hello', sendEvent, textSent)).toBe(false);
+    });
+    expect(sendEvent).not.toHaveBeenCalled();
+    expect(textSent).not.toHaveBeenCalled();
+    expect(result.current.attachments).toEqual([expect.objectContaining({ name: 'a.png', status: 'error' })]);
+    expect(result.current.error).toBe('comments.attachments.uploadFailed');
+  });
+
+  test('textWithAttachment: an unconfirmed send keeps the text, and the retry sends both again in one call without re-uploading', async () => {
+    mockFetch.mockResolvedValueOnce(uploadResult('img1'));
+    const sendEvent = vi.fn().mockResolvedValueOnce(false).mockResolvedValueOnce(true);
+    const textSent = vi.fn();
+    const { result } = renderHook(() =>
+      useConversationAttachments(bucketConfig, roomContext, { maxAttachments: 1, textWithAttachment: true })
+    );
+    act(() => result.current.attachFiles([file('a.png')]));
+    await act(async () => {
+      expect(await result.current.send('hello', sendEvent, textSent)).toBe(false);
+    });
+    expect(textSent).not.toHaveBeenCalled();
+    expect(result.current.attachments).toEqual([expect.objectContaining({ name: 'a.png', status: 'error' })]);
+    expect(result.current.error).toBe('comments.attachments.sendUnconfirmed');
+    await act(async () => {
+      expect(await result.current.send('hello', sendEvent, textSent)).toBe(true);
+    });
+    expect(sendEvent.mock.calls).toEqual([
+      ['hello', uploadedAttachment('img1')],
+      ['hello', uploadedAttachment('img1')],
+    ]);
+    expect(mockFetch).toHaveBeenCalledOnce();
+    expect(textSent).toHaveBeenCalledOnce();
+    expect(result.current.attachments).toHaveLength(0);
   });
 });
