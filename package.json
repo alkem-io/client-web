@@ -68,6 +68,7 @@
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@elastic/apm-rum": "^5.12.0",
+    "@element-hq/element-call-embedded": "0.28.0",
     "@excalidraw-yjs/excalidraw": "0.5.3",
     "@ory/kratos-client": "26.2.0",
     "@radix-ui/react-accordion": "^1.2.12",
@@ -142,6 +143,7 @@
     "markdown-it-sanitizer": "^0.4.3",
     "markdown-it-sup": "^2.0.0",
     "matrix-js-sdk": "^42.2.0",
+    "matrix-widget-api": "1.19.0",
     "mdast-util-to-hast": "^13.2.1",
     "prosemirror-state": "^1.4.4",
     "react": "19.2.1",
@@ -217,6 +219,7 @@
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "unplugin-swc": "^1.5.9",
     "vite": "^7.3.0",
+    "vite-plugin-static-copy": "^4.1.1",
     "vite-plugin-svgr": "^4.2.0",
     "vite-tsconfig-paths": "^4.2.0",
     "vitest": "^4.0.16"
