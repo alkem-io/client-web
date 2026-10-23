@@ -47,7 +47,7 @@ RUN if [ "$ARG_BUILD_ENVIRONMENT" = "development" ]; then \
 # below 1024), and relocates the pid/temp paths to writable locations. The
 # Service's external port stays 80; only its targetPort follows to 8080
 # (dev-orchestration, same feature — the manifest and image MUST ship together).
-FROM nginxinc/nginx-unprivileged:1.30-alpine@sha256:44e36330f74d4f3a1d4e222acca9e23b401fb87811a7597024502bb759c4dd49 as production-build
+FROM ghcr.io/nginx/nginx-unprivileged:1.30.6-alpine@sha256:517607ae849a46afbd400616a783e4ead0290f52d20ccc0618ccea1a49362474 as production-build
 ARG ARG_BUILD_ENVIRONMENT=development
 
 # Root is needed only to lay down files and hand ownership to UID 101; the
