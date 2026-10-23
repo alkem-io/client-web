@@ -33,20 +33,10 @@ export function mapUserAccountToViewProps(
     account,
     loading,
     {
-      helpBanner: t('user.account.helpBanner'),
-      spaces: { title: t('user.account.spaces.title'), createButton: t('user.account.spaces.createButton') },
-      virtualContributors: {
-        title: t('user.account.virtualContributors.title'),
-        createButton: t('user.account.virtualContributors.createButton'),
-      },
-      innovationPacks: {
-        title: t('user.account.innovationPacks.title'),
-        createButton: t('user.account.innovationPacks.createButton'),
-      },
-      innovationHubs: {
-        title: t('user.account.innovationHubs.title'),
-        createButton: t('user.account.innovationHubs.createButton'),
-      },
+      spaces: { title: t('user.account.spaces.title') },
+      virtualContributors: { title: t('user.account.virtualContributors.title') },
+      innovationPacks: { title: t('user.account.innovationPacks.title') },
+      innovationHubs: { title: t('user.account.innovationHubs.title') },
       actions: { manage: t('user.account.actions.manage'), delete: t('user.account.actions.delete') },
     },
     callbacks

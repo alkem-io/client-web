@@ -11,7 +11,7 @@ export type OrgMembershipRow = MembershipRow;
 
 /**
  * Pure mapper: `rolesOrganization` payload + per-space enrichment → card rows.
- * Enrichment (banner, tagline, URL, leads, richer display name) is optional —
+ * Enrichment (avatar, URL, leads, richer display name) is optional —
  * rows fall back to the query's data while it is still resolving.
  */
 export const mapOrgMembershipRows = (

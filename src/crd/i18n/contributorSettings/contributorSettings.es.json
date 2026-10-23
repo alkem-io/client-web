@@ -208,17 +208,10 @@
         "filteredEmptyDescription": "Prueba a ajustar los filtros o el término de búsqueda.",
         "clearFilters": "Limpiar filtros"
       },
-      "menu": {
-        "viewByType": "Ver {{type}}"
-      },
       "filter": {
         "all": "Todas",
         "spaces": "Spaces",
         "subspaces": "Subspaces"
-      },
-      "type": {
-        "space": "Space",
-        "subspace": "Subspace"
       },
       "role": {
         "admin": "Administrador",
@@ -226,8 +219,8 @@
         "member": "Miembro"
       },
       "leave": {
-        "menuItem": "Salir",
-        "menuItemLabeled": "Salir de {{type}}",
+        "button": "Salir",
+        "buttonAria": "Salir de {{name}}",
         "dialogTitle": "¿Salir de esta membresía?",
         "dialogDescription": "Estás a punto de salir de «{{spaceName}}». Perderás acceso al contenido exclusivo para miembros y tendrás que volver a solicitar la incorporación.",
         "dialogConfirm": "Salir",
@@ -573,25 +566,25 @@
     },
     "organizations": {
       "pageTitle": "Organizaciones",
+      "myOrganizations": "Mis organizaciones",
       "searchPlaceholder": "Buscar organizaciones...",
       "createButton": "Crear organización",
+      "createDescription": "Crea una nueva organización para colaborar con tu equipo.",
+      "newOrganization": "Nueva organización",
       "summary": "Mostrando {{shown}} de {{total}} organizaciones",
       "empty": "Aún no estás asociado a ninguna organización.",
       "filteredEmptyTitle": "No se encontraron organizaciones",
       "filteredEmptyDescription": "Prueba a buscar con un nombre o ubicación distintos.",
       "clearSearch": "Limpiar búsqueda",
       "verified": "Verificada",
-      "associates": "Asociados",
       "associatesCount": "{{count}} asociados",
       "role": {
         "admin": "Administrador",
         "associate": "Asociado"
       },
-      "menu": {
-        "viewProfile": "Ver perfil",
-        "disassociate": "Desasociar"
-      },
       "disassociate": {
+        "button": "Desasociar",
+        "buttonAria": "Desasociarse de {{name}}",
         "dialogTitle": "¿Desasociarse de esta organización?",
         "dialogDescription": "Estás a punto de dejar «{{name}}». Perderás tu rol de asociado y los permisos asociados.",
         "dialogConfirm": "Desasociar",
@@ -601,22 +594,17 @@
     },
     "account": {
       "pageTitle": "Cuenta",
-      "helpBanner": "Aquí puedes ver tus recursos activos y gestionar los límites de asignación de tu cuenta.",
       "spaces": {
-        "title": "Espacios anfitriones",
-        "createButton": "Crear espacio"
+        "title": "Espacios anfitriones"
       },
       "virtualContributors": {
-        "title": "Contribuidores virtuales",
-        "createButton": "Añadir contribuidor"
+        "title": "Contribuidores virtuales"
       },
       "innovationPacks": {
-        "title": "Paquetes de plantillas",
-        "createButton": "Nuevo paquete"
+        "title": "Paquetes de plantillas"
       },
       "innovationHubs": {
-        "title": "Páginas de inicio personalizadas",
-        "createButton": "Nueva página"
+        "title": "Páginas de inicio personalizadas"
       },
       "actions": {
         "view": "Ver",
@@ -628,6 +616,9 @@
         "title": "¿Eliminar este recurso?",
         "description": "Esto eliminará permanentemente «{{name}}». Esta acción no se puede deshacer.",
         "confirm": "Eliminar"
+      },
+      "dangerZone": {
+        "title": "Zona de peligro"
       }
     },
     "assistant": {
@@ -745,22 +736,17 @@
     },
     "account": {
       "pageTitle": "Cuenta",
-      "helpBanner": "Aquí puedes ver los recursos activos de tu organización y gestionar los límites de asignación.",
       "spaces": {
-        "title": "Espacios anfitriones",
-        "createButton": "Crear espacio"
+        "title": "Espacios anfitriones"
       },
       "virtualContributors": {
-        "title": "Contribuidores virtuales",
-        "createButton": "Añadir contribuidor"
+        "title": "Contribuidores virtuales"
       },
       "innovationPacks": {
-        "title": "Paquetes de plantillas",
-        "createButton": "Nuevo paquete"
+        "title": "Paquetes de plantillas"
       },
       "innovationHubs": {
-        "title": "Páginas de inicio personalizadas",
-        "createButton": "Nueva página"
+        "title": "Páginas de inicio personalizadas"
       },
       "actions": {
         "view": "Ver",
@@ -806,19 +792,13 @@
         "spaces": "Spaces",
         "subspaces": "Subspaces"
       },
-      "type": {
-        "space": "Space",
-        "subspace": "Subspace"
-      },
       "role": {
         "lead": "Lead",
         "member": "Miembro"
       },
-      "menu": {
-        "viewByType": "Ver {{type}}"
-      },
       "leave": {
-        "menuItemLabeled": "Salir de {{type}}",
+        "button": "Salir",
+        "buttonAria": "Salir de {{name}}",
         "dialogTitle": "¿Salir de esta membresía?",
         "dialogDescription": "Su organización está a punto de salir de «{{spaceName}}» y de todos sus subespacios, renunciando a todos los roles que tiene allí, incluido el de Lead. Perderá el acceso al contenido exclusivo para miembros y tendría que ser invitada de nuevo para volver.",
         "dialogConfirm": "Salir",
@@ -1115,8 +1095,8 @@
         "innovationPacksTooltip": "Has creado {{usage}} de los {{limit}} Template Packs disponibles en tu cuenta.",
         "innovationHubsTooltip": "Has creado {{usage}} de las {{limit}} páginas de inicio personalizadas disponibles en tu cuenta."
       },
+      "empty": "Todavía no hay nada aquí.",
       "kebabAriaLabel": "Más acciones",
-      "kebabAriaLabelFor": "Más acciones para {{name}}",
       "createNewSpace": {
         "ariaLabel": "Crear nuevo espacio",
         "heading": "Crear nuevo espacio",

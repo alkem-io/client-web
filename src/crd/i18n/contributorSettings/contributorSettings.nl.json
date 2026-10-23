@@ -208,17 +208,10 @@
         "filteredEmptyDescription": "Pas de filters of zoekterm aan.",
         "clearFilters": "Filters wissen"
       },
-      "menu": {
-        "viewByType": "{{type}} bekijken"
-      },
       "filter": {
         "all": "Alle",
         "spaces": "Spaces",
         "subspaces": "Subspaces"
-      },
-      "type": {
-        "space": "Space",
-        "subspace": "Subspace"
       },
       "role": {
         "admin": "Beheerder",
@@ -226,8 +219,8 @@
         "member": "Lid"
       },
       "leave": {
-        "menuItem": "Verlaten",
-        "menuItemLabeled": "{{type}} verlaten",
+        "button": "Verlaten",
+        "buttonAria": "{{name}} verlaten",
         "dialogTitle": "Dit lidmaatschap verlaten?",
         "dialogDescription": "Je staat op het punt om \"{{spaceName}}\" te verlaten. Je verliest toegang tot inhoud voor leden en moet opnieuw aanmelden om terug te komen.",
         "dialogConfirm": "Verlaten",
@@ -573,25 +566,25 @@
     },
     "organizations": {
       "pageTitle": "Organisaties",
+      "myOrganizations": "Mijn organisaties",
       "searchPlaceholder": "Zoek organisaties...",
       "createButton": "Organisatie aanmaken",
+      "createDescription": "Maak een nieuwe organisatie aan om met je team samen te werken.",
+      "newOrganization": "Nieuwe organisatie",
       "summary": "{{shown}} van {{total}} organisaties weergegeven",
       "empty": "Je bent nog niet gelinkt aan een organisatie.",
       "filteredEmptyTitle": "Geen organisaties gevonden",
       "filteredEmptyDescription": "Probeer een andere naam of locatie te zoeken.",
       "clearSearch": "Zoekopdracht wissen",
       "verified": "Geverifieerd",
-      "associates": "Betrokkenen",
       "associatesCount": "{{count}} betrokkenen",
       "role": {
         "admin": "Beheerder",
         "associate": "Betrokkene"
       },
-      "menu": {
-        "viewProfile": "Profiel bekijken",
-        "disassociate": "Ontkoppelen"
-      },
       "disassociate": {
+        "button": "Ontkoppelen",
+        "buttonAria": "{{name}} ontkoppelen",
         "dialogTitle": "Ontkoppelen van deze organisatie?",
         "dialogDescription": "Je staat op het punt om \"{{name}}\" te verlaten. Je verliest je rol als betrokkene en alle bijbehorende rechten.",
         "dialogConfirm": "Ontkoppelen",
@@ -601,22 +594,17 @@
     },
     "account": {
       "pageTitle": "Account",
-      "helpBanner": "Hier kun je je actieve resources bekijken en je accountlimieten beheren.",
       "spaces": {
-        "title": "Gehoste Spaces",
-        "createButton": "Space aanmaken"
+        "title": "Gehoste Spaces"
       },
       "virtualContributors": {
-        "title": "Virtual Contributors",
-        "createButton": "Bijdrager toevoegen"
+        "title": "Virtual Contributors"
       },
       "innovationPacks": {
-        "title": "Template Packs",
-        "createButton": "Nieuw pakket"
+        "title": "Template Packs"
       },
       "innovationHubs": {
-        "title": "Aangepaste startpagina's",
-        "createButton": "Nieuwe pagina"
+        "title": "Aangepaste startpagina's"
       },
       "actions": {
         "view": "Bekijken",
@@ -628,6 +616,9 @@
         "title": "Deze resource verwijderen?",
         "description": "Hiermee wordt \"{{name}}\" definitief verwijderd. Dit kan niet ongedaan worden gemaakt.",
         "confirm": "Verwijderen"
+      },
+      "dangerZone": {
+        "title": "Gevarenzone"
       }
     },
     "assistant": {
@@ -745,22 +736,17 @@
     },
     "account": {
       "pageTitle": "Account",
-      "helpBanner": "Hier kun je de actieve resources van je organisatie bekijken en de accountlimieten beheren.",
       "spaces": {
-        "title": "Gehoste Spaces",
-        "createButton": "Space aanmaken"
+        "title": "Gehoste Spaces"
       },
       "virtualContributors": {
-        "title": "Virtual Contributors",
-        "createButton": "Bijdrager toevoegen"
+        "title": "Virtual Contributors"
       },
       "innovationPacks": {
-        "title": "Template Packs",
-        "createButton": "Nieuw pakket"
+        "title": "Template Packs"
       },
       "innovationHubs": {
-        "title": "Aangepaste startpagina's",
-        "createButton": "Nieuwe pagina"
+        "title": "Aangepaste startpagina's"
       },
       "actions": {
         "view": "Bekijken",
@@ -806,19 +792,13 @@
         "spaces": "Spaces",
         "subspaces": "Subspaces"
       },
-      "type": {
-        "space": "Space",
-        "subspace": "Subspace"
-      },
       "role": {
         "lead": "Lead",
         "member": "Lid"
       },
-      "menu": {
-        "viewByType": "{{type}} bekijken"
-      },
       "leave": {
-        "menuItemLabeled": "{{type}} verlaten",
+        "button": "Verlaten",
+        "buttonAria": "{{name}} verlaten",
         "dialogTitle": "Dit lidmaatschap verlaten?",
         "dialogDescription": "Je organisatie staat op het punt om \"{{spaceName}}\" en al zijn subspaces te verlaten, en geeft daar elke rol op, ook die van Lead. Ze verliest de toegang tot de inhoud voor leden en moet opnieuw worden uitgenodigd om terug te komen.",
         "dialogConfirm": "Verlaten",
@@ -1115,8 +1095,8 @@
         "innovationPacksTooltip": "Je hebt {{usage}} van je {{limit}} beschikbare Template Packs in je account aangemaakt.",
         "innovationHubsTooltip": "Je hebt {{usage}} van je {{limit}} beschikbare aangepaste startpagina's in je account aangemaakt."
       },
+      "empty": "Hier staat nog niets.",
       "kebabAriaLabel": "Meer acties",
-      "kebabAriaLabelFor": "Meer acties voor {{name}}",
       "createNewSpace": {
         "ariaLabel": "Nieuwe Space aanmaken",
         "heading": "Nieuwe Space aanmaken",

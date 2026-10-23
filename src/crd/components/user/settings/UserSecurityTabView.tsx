@@ -1,7 +1,7 @@
-import { Info, KeyRound, Link2, Plug, ShieldAlert, ShieldCheck, Trash2 } from 'lucide-react';
+import { Info, KeyRound, Link2, Plug, ShieldAlert, ShieldCheck } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
+import { SettingsSection } from '@/crd/components/common/SettingsSection';
 import { Button } from '@/crd/primitives/button';
 import { Skeleton } from '@/crd/primitives/skeleton';
 
@@ -56,21 +56,14 @@ export type UserSecurityTabViewProps = {
    * renders whenever `state.kind === 'ready'` alongside the other cards.
    */
   connectedAccountsSection: ReactNode;
-  /**
-   * Slot for the Delete-account card (054). Provided by the integration page
-   * so the CRD view stays free of Apollo/GraphQL imports; the card owns its
-   * own pre-flight read and dialog state, so — like `connectedAccountsSection`
-   * — it renders in every branch (`loading`, `error`, `ready`), never only
-   * when the unrelated Kratos settings flow this tab otherwise gates on has
-   * finished loading (FR-001).
-   */
-  deleteAccountCard: ReactNode;
 };
 
 /**
- * User Security tab — presentational chrome only. The CRD layer wraps the
- * Kratos password and passkey forms in two `SettingsCard`s; the form
- * fields themselves are NOT restyled (FR-080 — out of scope).
+ * User Security tab — presentational chrome only. Each block (Connected
+ * Accounts, Change Password, Passkeys, MCP API keys) is a `SettingsSection`
+ * with a coloured icon tile (spec 097 Session 2026-10-23), all open: the
+ * Connected Accounts live region must stay visible to announce outcomes. The
+ * Kratos form fields themselves are NOT restyled (FR-080 — out of scope).
  */
 export function UserSecurityTabView({
   state,
@@ -78,24 +71,8 @@ export function UserSecurityTabView({
   webauthnForm,
   mcpApiKeysCard,
   connectedAccountsSection,
-  deleteAccountCard,
 }: UserSecurityTabViewProps) {
   const { t } = useTranslation(NS);
-
-  // The Delete-account card is self-contained — its own pre-flight read, its own dialogs — and has
-  // no dependency on the Kratos settings flow this tab otherwise gates on. It renders in every
-  // branch below, not just 'ready' (FR-001): the app-store-mandated deletion entry point must stay
-  // reachable even while an unrelated Kratos settings-flow failure or a slow initial load would
-  // otherwise hide it, exactly like `connectedAccountsSection` already does for the same reason.
-  const deleteAccountSection = (
-    <SettingsCard
-      icon={Trash2}
-      title={t('user.security.deleteAccount.title')}
-      description={t('user.security.deleteAccount.description')}
-    >
-      {deleteAccountCard}
-    </SettingsCard>
-  );
 
   if (state.kind === 'loading') {
     // The Connected Accounts card — and the outcome live region inside it — renders here too,
@@ -108,15 +85,15 @@ export function UserSecurityTabView({
     // render even before it has anything to show.
     return (
       <div className="space-y-6">
-        <SettingsCard
-          icon={Link2}
+        <SettingsSection
           title={t('user.security.connectedAccounts.title')}
           description={t('user.security.connectedAccounts.description')}
+          icon={<Link2 className="size-4" />}
+          iconColor="blue"
         >
           {connectedAccountsSection}
-        </SettingsCard>
+        </SettingsSection>
         <Skeleton className="h-64 w-full" />
-        {deleteAccountSection}
       </div>
     );
   }
@@ -132,14 +109,15 @@ export function UserSecurityTabView({
     // copy points at the action below rather than repeating it.
     return (
       <div className="space-y-6">
-        <SettingsCard
-          icon={Link2}
+        <SettingsSection
           title={t('user.security.connectedAccounts.title')}
           description={t('user.security.connectedAccounts.description')}
+          icon={<Link2 className="size-4" />}
+          iconColor="blue"
         >
           {connectedAccountsSection}
-        </SettingsCard>
-        <SettingsCard icon={ShieldAlert} title={t('user.security.title')}>
+        </SettingsSection>
+        <SettingsSection title={t('user.security.title')} icon={<ShieldAlert className="size-4" />} iconColor="rose">
           <div className="flex flex-col gap-3">
             <div className="flex items-start gap-2 rounded-md border bg-muted/30 p-4 text-body text-muted-foreground">
               <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
@@ -149,7 +127,7 @@ export function UserSecurityTabView({
               <a href={state.reauthHref}>{t('user.security.sessionExpired.action')}</a>
             </Button>
           </div>
-        </SettingsCard>
+        </SettingsSection>
       </div>
     );
   }
@@ -163,40 +141,42 @@ export function UserSecurityTabView({
     // silently swallow the one actionable recovery path this tab has for a flow-load failure.
     return (
       <div className="space-y-6">
-        <SettingsCard
-          icon={Link2}
+        <SettingsSection
           title={t('user.security.connectedAccounts.title')}
           description={t('user.security.connectedAccounts.description')}
+          icon={<Link2 className="size-4" />}
+          iconColor="blue"
         >
           {connectedAccountsSection}
-        </SettingsCard>
-        <SettingsCard icon={ShieldAlert} title={t('user.security.title')}>
+        </SettingsSection>
+        <SettingsSection title={t('user.security.title')} icon={<ShieldAlert className="size-4" />} iconColor="rose">
           <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-4 text-body text-destructive">
             <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
             <p>{t('user.security.errorDescription')}</p>
           </div>
-        </SettingsCard>
-        {deleteAccountSection}
+        </SettingsSection>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <SettingsCard
-        icon={Link2}
+      <SettingsSection
         title={t('user.security.connectedAccounts.title')}
         description={t('user.security.connectedAccounts.description')}
+        icon={<Link2 className="size-4" />}
+        iconColor="blue"
       >
         {connectedAccountsSection}
-      </SettingsCard>
+      </SettingsSection>
       {/* scroll-mt offsets in-page anchor jumps (#password / #passkeys) below the sticky
           chrome: the h-16 app header + the SettingsShell header band (~147px). */}
       <div id="password" className="scroll-mt-60">
-        <SettingsCard
-          icon={KeyRound}
+        <SettingsSection
           title={t('user.security.password.title')}
           description={t('user.security.password.description')}
+          icon={<KeyRound className="size-4" />}
+          iconColor="amber"
         >
           {state.hasPassword ? (
             <div className="mt-2">{passwordForm}</div>
@@ -206,10 +186,15 @@ export function UserSecurityTabView({
               <p>{t('user.security.password.notEnabled')}</p>
             </div>
           )}
-        </SettingsCard>
+        </SettingsSection>
       </div>
       <div id="passkeys" className="scroll-mt-60">
-        <SettingsCard icon={ShieldCheck} title={t('user.security.title')} description={t('user.security.description')}>
+        <SettingsSection
+          title={t('user.security.title')}
+          description={t('user.security.description')}
+          icon={<ShieldCheck className="size-4" />}
+          iconColor="purple"
+        >
           {state.hasWebauthn ? (
             <div className="mt-2">{webauthnForm}</div>
           ) : (
@@ -218,16 +203,16 @@ export function UserSecurityTabView({
               <p>{t('user.security.notEnabled')}</p>
             </div>
           )}
-        </SettingsCard>
+        </SettingsSection>
       </div>
-      <SettingsCard
-        icon={Plug}
+      <SettingsSection
         title={t('user.security.mcpApiKeys.title')}
         description={t('user.security.mcpApiKeys.description')}
+        icon={<Plug className="size-4" />}
+        iconColor="green"
       >
         {mcpApiKeysCard}
-      </SettingsCard>
-      {deleteAccountSection}
+      </SettingsSection>
     </div>
   );
 }
