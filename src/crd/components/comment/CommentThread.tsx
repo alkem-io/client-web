@@ -1,5 +1,5 @@
 import { Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { type ComponentProps, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CommentInput } from './CommentInput';
 import { CommentItem } from './CommentItem';
@@ -7,6 +7,13 @@ import type { CommentData, CommentsContainerData, CrdMentionSearch } from './typ
 
 type CommentThreadProps = CommentsContainerData & {
   mentionSearch?: CrdMentionSearch;
+  /** Called when a reply box opens or closes, with the open comment's id or undefined. */
+  onReplyTargetChange?: (commentId: string | undefined) => void;
+  /** Extra reply-input props. When set, the box stays open until onReply settles,
+   *  so a failed send can be retried; otherwise it closes on submit. */
+  replyInputProps?: Partial<ComponentProps<typeof CommentInput>>;
+  /** Ignores reply open/close toggles, e.g. while a reply is being sent. */
+  replyTogglesLocked?: boolean;
 };
 
 /**
@@ -29,6 +36,9 @@ export function CommentThread({
   onAddReaction,
   onRemoveReaction,
   mentionSearch,
+  onReplyTargetChange,
+  replyInputProps,
+  replyTogglesLocked = false,
 }: CommentThreadProps) {
   const { t } = useTranslation('crd-space');
 
@@ -36,6 +46,16 @@ export function CommentThread({
   // each CommentItem) so the reply input renders at the bottom of the parent's
   // reply group — matching where the new reply lands after posting.
   const [replyingToCommentId, setReplyingToCommentId] = useState<string | undefined>(undefined);
+
+  const setReplyTarget = (commentId: string | undefined) => {
+    setReplyingToCommentId(commentId);
+    onReplyTargetChange?.(commentId);
+  };
+
+  const toggleReply = (commentId: string) => {
+    if (replyTogglesLocked) return;
+    setReplyTarget(replyingToCommentId === commentId ? undefined : commentId);
+  };
 
   const topLevel = comments.filter(comment => !comment.parentId);
   const repliesByParent = new Map<string, CommentData[]>();
@@ -84,11 +104,7 @@ export function CommentThread({
                   canComment={canComment}
                   isReplyOpen={isReplyOpen}
                   replyInputId={replyInputId}
-                  onToggleReply={
-                    canComment
-                      ? () => setReplyingToCommentId(current => (current === comment.id ? undefined : comment.id))
-                      : undefined
-                  }
+                  onToggleReply={canComment ? () => toggleReply(comment.id) : undefined}
                   onDelete={onDelete}
                   onAddReaction={onAddReaction}
                   onRemoveReaction={onRemoveReaction}
@@ -111,12 +127,7 @@ export function CommentThread({
                             isReply={true}
                             isReplyOpen={isLastReply ? isReplyOpen : undefined}
                             replyInputId={isLastReply ? replyInputId : undefined}
-                            onToggleReply={
-                              isLastReply && canComment
-                                ? () =>
-                                    setReplyingToCommentId(current => (current === comment.id ? undefined : comment.id))
-                                : undefined
-                            }
+                            onToggleReply={isLastReply && canComment ? () => toggleReply(comment.id) : undefined}
                             onDelete={onDelete}
                             onAddReaction={onAddReaction}
                             onRemoveReaction={onRemoveReaction}
@@ -133,9 +144,16 @@ export function CommentThread({
                       currentUser={currentUser}
                       mentionSearch={mentionSearch}
                       autoFocus={true}
+                      {...replyInputProps}
                       onSubmit={content => {
-                        onReply(comment.id, content);
-                        setReplyingToCommentId(undefined);
+                        if (!replyInputProps) {
+                          onReply(comment.id, content);
+                          setReplyTarget(undefined);
+                          return;
+                        }
+                        void Promise.resolve(onReply(comment.id, content)).then(sent => {
+                          if (sent !== false) setReplyTarget(undefined);
+                        });
                       }}
                     />
                   </div>
