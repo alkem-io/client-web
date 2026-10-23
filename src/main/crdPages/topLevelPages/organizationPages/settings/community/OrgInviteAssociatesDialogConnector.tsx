@@ -1,7 +1,9 @@
+import { ApolloError } from '@apollo/client';
 import { useEffect, useState, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInviteForEntryRoleOnRoleSetMutation } from '@/core/apollo/generated/apollo-hooks';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { getTranslationForCode } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   type InvitationResult,
@@ -51,7 +53,7 @@ export function OrgInviteAssociatesDialogConnector({
   onSent,
 }: OrgInviteAssociatesDialogConnectorProps) {
   const { t } = useTranslation('crd-community');
-  const { i18n } = useTranslation();
+  const { t: tDefault, i18n } = useTranslation();
   const { t: tCommon } = useTranslation('crd-common');
   const notify = useNotification();
 
@@ -198,7 +200,11 @@ export function OrgInviteAssociatesDialogConnector({
         setResults(mapInvitationResults(validInvitees, legacyResults));
         onSent();
       } catch (error) {
+        // One message per failure: the specific self-target refusal, else the server's own
+        // translated reason, and the connectivity message only when no server reply came back.
+        const [graphQLError] = error instanceof ApolloError ? error.graphQLErrors : [];
         if (isSelfTargetRefusal(error)) notify(tCommon(SELF_TARGET_REFUSAL_MESSAGE_KEY), 'error');
+        else if (graphQLError) notify(getTranslationForCode(graphQLError, tDefault, i18n), 'error');
         else notify(t('inviteMembers.errors.networkFailure'), 'error');
       }
     });

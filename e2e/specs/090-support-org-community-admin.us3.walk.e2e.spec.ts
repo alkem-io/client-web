@@ -228,7 +228,10 @@ test.describe('@forge-acceptance 090 US3 — nothing beyond the Community tab, n
       'query($id: UUID!) { lookup { roleSet(ID: $id) { owners: usersInRole(role: OWNER) { id } } } }',
       { id: managed.roleSetID }
     );
-    expect(owners.data?.lookup.roleSet.owners.map(o => o.id) ?? []).not.toContain(supportUserID);
+    expect(owners.errors).toBeUndefined();
+    const ownerIDs = owners.data?.lookup.roleSet.owners.map(o => o.id);
+    expect(ownerIDs).toBeDefined();
+    expect(ownerIDs).not.toContain(supportUserID);
   });
 
   test('US3-AS5 Content Full Access alone gains no invite/resend/assign/remove/approve; settings shell unchanged', async () => {

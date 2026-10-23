@@ -184,10 +184,10 @@ test.describe('@forge-acceptance 090 US1 — Support repairs an orphaned organis
   test('US1-AS1 Support lands on the Community tab with Invite enabled', async () => {
     await support.goto(`${BASE}/organization/${ORPHAN_NAMEID}/settings`);
     await expect(support).toHaveURL(new RegExp(`/organization/${ORPHAN_NAMEID}/settings/community$`));
-    await expect(support.getByRole('heading', { name: 'Pending applications & invitations' })).toBeVisible();
+    await expect(support.getByRole('heading', { name: 'Pending applications & invitations', exact: true })).toBeVisible();
     await expect(support.getByRole('button', { name: /Invited \(0\)/ })).toBeVisible();
-    await expect(support.getByText('No pending memberships.')).toBeVisible();
-    await expect(support.getByText('No associates yet.')).toBeVisible();
+    await expect(support.getByText('No pending memberships.', { exact: true })).toBeVisible();
+    await expect(support.getByText('No associates yet.', { exact: true })).toBeVisible();
     await expect(support.getByRole('button', { name: /^Invite$/i })).toBeEnabled();
   });
 
@@ -214,16 +214,18 @@ test.describe('@forge-acceptance 090 US1 — Support repairs an orphaned organis
     await expect(support.getByRole('row').filter({ hasText: INVITEEB_NAME })).toContainText('Associate + Admin');
 
     await gql(admin, PLATFORM_ROLE('remove'), { a: supportId, r: 'PLATFORM_SUPPORT' });
-    await acceptFromProfile(inviteeb, ORPHAN_NAMEID);
+    try {
+      await acceptFromProfile(inviteeb, ORPHAN_NAMEID);
 
-    // Invitee b is an Associate; the previous admin (invitee) can still see the member list.
-    await invitee.goto(communityUrl(ORPHAN_NAMEID));
-    const me = memberItem(invitee, INVITEEB_NAME);
-    await expect(me).toContainText('Associate');
-    await expect(me).not.toContainText('Admin');
-
-    // Restore Support for the remaining scenarios.
-    await gql(admin, PLATFORM_ROLE('assign'), { a: supportId, r: 'PLATFORM_SUPPORT' });
+      // Invitee b is an Associate; the previous admin (invitee) can still see the member list.
+      await invitee.goto(communityUrl(ORPHAN_NAMEID));
+      const me = memberItem(invitee, INVITEEB_NAME);
+      await expect(me).toContainText('Associate');
+      await expect(me).not.toContainText('Admin');
+    } finally {
+      // Restore Support for the remaining scenarios, even when a check above failed.
+      await gql(admin, PLATFORM_ROLE('assign'), { a: supportId, r: 'PLATFORM_SUPPORT' });
+    }
   });
 
   test('US1-AS5 Owner offer withheld (role_limits) when three Owners exist at accept', async () => {
@@ -254,7 +256,7 @@ test.describe('@forge-acceptance 090 US1 — Support repairs an orphaned organis
     await expect(row).toContainText('Invited (external)');
 
     await row.getByRole('button', { name: 'Resend invitation email' }).click();
-    await expect(support.getByText('Invitation email sent again')).toBeVisible();
+    await expect(support.getByText('Invitation email sent again', { exact: true })).toBeVisible();
 
     await row.getByRole('button', { name: 'Delete' }).click();
     await support
