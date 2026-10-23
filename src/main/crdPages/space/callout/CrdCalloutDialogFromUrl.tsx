@@ -30,6 +30,15 @@ export function CrdCalloutDialogFromUrl({ onClose }: CrdCalloutDialogFromUrlProp
     withClassification: true,
     skip: !calloutId,
     overrideCalloutSettings: { movable: true },
+    // Revalidate on every open. With no post selected, the dialog's comment
+    // thread is fed straight from this callout's `comments` (the comments
+    // connector then skips its own query), and the live room subscription only
+    // carries messages posted while the dialog is open. Under `cache-first` a
+    // callout opened earlier in the session is served from the cache with no
+    // request, so a comment added in between (e.g. the one a notification points
+    // at) stays missing until a full reload. `cache-and-network` keeps the cached
+    // callout on screen while it refreshes, so there is no spinner or flash.
+    fetchPolicy: 'cache-and-network',
   });
 
   useEffect(() => {
