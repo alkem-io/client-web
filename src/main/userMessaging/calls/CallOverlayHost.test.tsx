@@ -97,6 +97,34 @@ describe('CallOverlayHost', () => {
     expect(api.setViewedRoomId).toHaveBeenCalledWith('!room:hs.example');
   });
 
+  it('forwards the call room’s live events and state updates to the call UI, and nothing else', async () => {
+    const client = harness.client as EventEmitter;
+    render(<CallOverlayHost />);
+    const api = (await startCall()) as unknown as {
+      feedEvent: ReturnType<typeof vi.fn>;
+      feedStateUpdate: ReturnType<typeof vi.fn>;
+    };
+    const event = (id: string, roomId: string, status: string | null = null) => ({
+      status,
+      getRoomId: () => roomId,
+      getEffectiveEvent: () => ({ event_id: id, room_id: roomId }),
+    });
+
+    client.emit('Room.timeline', event('$live', '!room:hs.example'), { roomId: '!room:hs.example' }, false);
+    client.emit('Room.timeline', event('$old', '!room:hs.example'), { roomId: '!room:hs.example' }, true);
+    client.emit('Room.timeline', event('~echo', '!room:hs.example', 'sending'), { roomId: '!room:hs.example' }, false);
+    client.emit('Room.timeline', event('$other', '!other:hs.example'), { roomId: '!other:hs.example' }, false);
+    client.emit('RoomState.events', event('$state', '!room:hs.example'));
+    client.emit('RoomState.events', event('$otherState', '!other:hs.example'));
+
+    expect(api.feedEvent.mock.calls).toEqual([[{ event_id: '$live', room_id: '!room:hs.example' }]]);
+    expect(api.feedStateUpdate.mock.calls).toEqual([[{ event_id: '$state', room_id: '!room:hs.example' }]]);
+
+    act(() => closeCall());
+    expect(client.listenerCount('Room.timeline')).toBe(0);
+    expect(client.listenerCount('RoomState.events')).toBe(0);
+  });
+
   it.each(['im.vector.hangup', 'io.element.close'])('closes when the call UI sends %s', async action => {
     render(<CallOverlayHost />);
     const api = await startCall();

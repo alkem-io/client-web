@@ -76,7 +76,8 @@ export default function CallWidgetFrame({
     api.on(`action:${CLOSE_ACTION}`, onWidgetLeft);
 
     const onTimeline = (event: MatrixEvent, room: Room | undefined, toStartOfTimeline: boolean) => {
-      if (room?.roomId === matrixRoomId && !toStartOfTimeline) {
+      // Local echoes carry a temporary id; the call UI already knows its own sends by their real one.
+      if (room?.roomId === matrixRoomId && !toStartOfTimeline && !event.status) {
         api.feedEvent(toRoomEvent(event)).catch(() => {
           // The call UI may not be listening yet; it reads the room state itself once it is.
         });
