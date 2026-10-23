@@ -10,6 +10,7 @@
     "deleting": "Deleting…",
     "noTemplates": "No templates yet",
     "noTemplatesHint": "Create one, or import one from the library.",
+    "browseLibrary": "Browse General Library",
     "noTemplatesReadOnly": "No templates yet.",
     "sectionList": "Template sections",
     "templateList": "Templates",

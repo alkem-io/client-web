@@ -11,39 +11,29 @@
     "account": "Account"
   },
   "dirtyGuard": {
-    "save": "Save",
-    "discard": "Discard & leave",
     "cancel": "Cancel",
-    "tabSwitch": {
-      "title": "Unsaved changes",
-      "description": "You have unsaved changes on this tab. Save them, discard them, or stay on this tab?"
-    },
     "navAway": {
       "title": "Unsaved changes",
       "description": "Leaving this page will discard your unsaved changes."
     }
   },
   "saveBar": {
-    "save": "Save Changes",
-    "discard": "Discard Changes",
-    "saving": "Saving…"
+    "lockedReason": "Save or discard your changes first"
   },
   "layout": {
     "pageHeader": {
       "title": "Layout",
       "subtitle": "Customise your Space's navigation tabs. Rename, reorder, and manage Post assignments."
     },
-    "discardChangesDialog": {
-      "title": "Discard changes?",
-      "description": "Your unsaved Layout changes will be reverted to the last saved state. This cannot be undone.",
-      "confirm": "Discard Changes"
-    },
+    "loading": "Loading layout…",
     "column": {
       "titlePlaceholder": "Column title",
       "descriptionPlaceholder": "Describe this column…",
       "menu": "Column actions",
       "drag": "Drag to reorder phase",
       "empty": "No Posts in this column yet.",
+      "postCount_one": "{{count}} Post",
+      "postCount_other": "{{count}} Posts",
       "activePhase": {
         "set": "Mark as active phase",
         "current": "Active phase (current)",
@@ -227,10 +217,6 @@
     }
   },
   "community": {
-    "pageHeader": {
-      "title": "Community",
-      "subtitle": "Manage members, organisations, and virtual contributors in this space."
-    },
     "applications": {
       "title": "Pending Applications",
       "approve": "Approve",
@@ -355,7 +341,6 @@
       "actions": "Actions",
       "empty": "No organisations.",
       "remove": "Remove organisation",
-      "description": "Overview of all member and lead organisations. Invite an organisation to join.",
       "dropdown": {
         "viewProfile": "View Profile",
         "changeRole": "Change Role",
@@ -380,7 +365,6 @@
       "actions": "Actions",
       "empty": "No virtual contributors.",
       "remove": "Remove virtual contributor",
-      "description": "Manage AI agents and bots participating in this space.",
       "add": "Add Virtual Contributor",
       "addExternal": "Invite External Virtual Contributor",
       "addDialog": {
@@ -401,11 +385,12 @@
     },
     "applicationForm": {
       "title": "Application Form",
-      "description": "Customise the questions users must answer when applying to join this space."
+      "edit": "Edit Application Form",
+      "optional": "Optional",
+      "questionNumber": "Q{{number}}"
     },
     "guidelines": {
       "title": "Community Guidelines",
-      "description": "Establish rules and expectations for member behaviour.",
       "hint": "Displayed to new members upon joining.",
       "placeholder": "Describe your space's code of conduct…",
       "titleLabel": "Title",
@@ -420,7 +405,9 @@
         "cancel": "Cancel"
       },
       "save": "Save Guidelines",
-      "saving": "Saving…"
+      "saving": "Saving…",
+      "edit": "Edit Guidelines",
+      "empty": "No community guidelines yet."
     },
     "confirmRemove": {
       "confirm": "Confirm",
@@ -478,16 +465,15 @@
         "invited": "Invited",
         "invite": "Invite"
       }
+    },
+    "editDialog": {
+      "save": "Save",
+      "saving": "Saving…"
     }
   },
   "subspaces": {
-    "pageHeader": {
-      "title": "Subspaces",
-      "subtitle": "Edit the Subspaces in this Space. Configure default templates and view all existing subspaces."
-    },
     "defaultTemplate": {
       "title": "Default Subspace Template",
-      "description": "Choose the default settings that will apply when creating a new Subspace within this Space.",
       "change": "Change Default Template",
       "dialog": {
         "title": "Change Default Subspace Template",
@@ -662,13 +648,12 @@
     }
   },
   "updates": {
-    "pageHeader": {
-      "title": "Updates from the Leads",
-      "subtitle": "Post announcements, milestones, and progress updates visible to all space members."
+    "sections": {
+      "post": "Post an Update",
+      "published": "Published Updates"
     },
     "composer": {
       "new": "New Update",
-      "title": "New update",
       "placeholder": "Write your update…",
       "publish": "Publish",
       "submitting": "Publishing…",
@@ -770,13 +755,8 @@
     }
   },
   "settings": {
-    "pageHeader": {
-      "title": "Settings",
-      "subtitle": "Configure your space's visibility, membership policies, and allowed member actions."
-    },
     "visibility": {
       "title": "Visibility",
-      "description": "Control who can see and access this space",
       "public": "Public",
       "publicDescription": "This Space and its contents are visible to everyone on the platform. Users can only contribute if they are a member.",
       "private": "Private",
@@ -785,7 +765,6 @@
     },
     "membership": {
       "title": "Membership",
-      "description": "Choose how users join your space",
       "open": "No Application Required",
       "openDescription": "All Space members can directly join, without you having to review their applications.",
       "openHint": "Best for public, open collaboration spaces",
@@ -821,7 +800,6 @@
     },
     "allowedActions": {
       "title": "Allowed Actions",
-      "description": "Choose which actions members can perform in this space",
       "subspaceAdminInvitations": "Subspace Membership",
       "memberCreatePosts": "Create Posts",
       "videoCalls": "Video Calls",
@@ -859,9 +837,8 @@
     }
   },
   "storage": {
-    "pageHeader": {
-      "title": "Storage",
-      "subtitle": "Browse and manage documents stored in this space."
+    "sections": {
+      "documents": "Documents"
     },
     "empty": "No documents stored yet.",
     "columns": {
@@ -880,12 +857,8 @@
     }
   },
   "account": {
-    "pageHeader": {
-      "title": "Account",
-      "subtitle": "Here you find all your Spaces, Virtual Contributors, and other hosted resources. If you have any questions, feel free to reach out to the Alkemio team."
-    },
     "url": {
-      "title": "URL",
+      "title": "Space URL",
       "hint": "The unique URL for this space. Contact Alkemio to change this.",
       "copy": "Copy URL",
       "copied": "URL copied"
@@ -897,12 +870,10 @@
       "contact": "For status changes, contact the Alkemio team."
     },
     "host": {
-      "title": "Host Information",
-      "description": "The host is the person or organisation that owns this space."
+      "title": "Host Information"
     },
     "plan": {
       "title": "License",
-      "description": "Your current space subscription details",
       "featuresHeading": "Included Features",
       "daysLeft": "{{count}} days remaining",
       "changeLicense": "Change License"
@@ -924,37 +895,41 @@
     }
   },
   "about": {
+    "sections": {
+      "identity": "Identity",
+      "visuals": "Visuals",
+      "context": "Context"
+    },
     "name": {
       "title": "Space Name",
-      "description": "The public name of your space.",
-      "ariaLabel": "Space name",
-      "editAriaLabel": "Edit space name"
+      "description": "The public name of your space."
     },
     "tagline": {
       "title": "Tagline",
-      "description": "A short subtitle shown next to the space name.",
-      "ariaLabel": "Tagline",
-      "editAriaLabel": "Edit tagline"
+      "description": "A short subtitle shown next to the space name."
     },
     "branding": {
-      "title": "Space Branding",
-      "description": "Upload an avatar, a page banner (3840px), and a card banner (416×256).",
       "noImage": "No image",
-      "upload": "Upload",
       "avatar": {
         "title": "Avatar",
+        "size": "410 × 410px",
         "hint": "The space logo.",
-        "recrop": "Crop current avatar"
+        "recrop": "Crop current avatar",
+        "upload": "Upload avatar"
       },
       "pageBanner": {
         "title": "Page Banner",
-        "hint": "Shown at the top of the Space page. Use an image at least 1200 × 120px.",
-        "recrop": "Crop current page banner"
+        "size": "Min. 1200 × 120px",
+        "hint": "Shown at the top of the Space page.",
+        "recrop": "Crop current page banner",
+        "upload": "Upload page banner"
       },
       "cardBanner": {
-        "title": "Card Banner (416 × 256px)",
+        "title": "Card Banner",
+        "size": "416 × 256px",
         "hint": "Shown in search results and space cards.",
-        "recrop": "Crop current card banner"
+        "recrop": "Crop current card banner",
+        "upload": "Upload card banner"
       },
       "cropDialog": {
         "save": "Save",
@@ -978,7 +953,6 @@
       "description": "The city and country of this space.",
       "city": "City",
       "country": "Country (ISO code)",
-      "editCityAriaLabel": "Edit city",
       "countryPlaceholder": "Country"
     },
     "what": {
@@ -1029,16 +1003,6 @@
         "title": "Live Preview",
         "description": "This preview shows how your space card will appear in the \"Explore Spaces\" directory."
       }
-    },
-    "inlineSave": {
-      "save": "Save",
-      "saving": "Saving…",
-      "saved": "Saved",
-      "retry": "Retry"
-    },
-    "pageHeader": {
-      "title": "About",
-      "subtitle": "Define your space's purpose, motivation, and target audience."
     }
   },
   "classifications": {
@@ -1074,12 +1038,8 @@
       "hiddenHint": "Not shown on the Space page"
     },
     "remove": {
-      "menuLabel": "Remove classification",
-      "confirmTitle": "Remove this classification?",
-      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
-      "confirmButton": "Remove"
+      "menuLabel": "Remove classification"
     },
-    "removedEntryError": "This classification was removed — refreshing the page.",
     "entry": {
       "multiSelect": "Multi-select",
       "singleSelect": "Single-select",
@@ -1087,8 +1047,9 @@
       "selectedCount_other": "{{count}} selected",
       "actions": "Classification actions: {{label}}",
       "selectValues": "Select values…",
-      "deselectValue": "Deselect {{label}}"
-    },
-    "removedConcurrently": "This classification was removed by someone else. The list has been refreshed."
+      "selectValue": "Select {{label}}",
+      "deselectValue": "Deselect {{label}}",
+      "unsaved": "Unsaved"
+    }
   }
 }

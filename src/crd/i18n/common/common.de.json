@@ -1604,5 +1604,26 @@
     "unavailableHint": "Diese Datei konnte nicht geladen werden. Laden Sie sie zum Ansehen herunter.",
     "unavailableNoDownload": "Diese Datei ist nicht verfügbar.",
     "loading": "Anhang wird geladen"
+  },
+  "unsavedChanges": {
+    "count_one": "{{count}} ungespeicherte Änderung",
+    "count_other": "{{count}} ungespeicherte Änderungen",
+    "save": "Änderungen speichern",
+    "discard": "Verwerfen",
+    "saving": "Speichern…",
+    "saved": "Änderungen gespeichert",
+    "regionLabel": "Ungespeicherte Änderungen",
+    "discardDialog": {
+      "title_one": "1 ungespeicherte Änderung verwerfen?",
+      "title_other": "{{count}} ungespeicherte Änderungen verwerfen?",
+      "description": "Jedes geänderte Feld auf diesem Tab erhält wieder seinen gespeicherten Wert.",
+      "confirm": "Verwerfen"
+    },
+    "leaveDialog": {
+      "title": "Nicht gespeicherte Änderungen",
+      "description": "Sie haben nicht gespeicherte Änderungen auf diesem Tab. Möchten Sie sie speichern, verwerfen oder auf diesem Tab bleiben?",
+      "save": "Speichern",
+      "discard": "Verwerfen und verlassen"
+    }
   }
 }

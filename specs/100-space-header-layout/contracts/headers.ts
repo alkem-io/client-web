@@ -72,6 +72,9 @@ export type SubspaceHeaderProps = {
   // The single 56px avatar tile inline with the title was dropped — the header
   // renders the bare title (matching L0); subspace identity images moved to the
   // breadcrumb trail (`BreadcrumbTrailItem.avatar`).
+  // (2026-10-16: unchanged for this public header. The separate
+  // `SpaceSettingsHeader` — spec 045 FR-001 — has a 48px square identity tile;
+  // see spec.md Hard rule 1a.)
 
   /**
    * Parent banner image — renders as the banner background.

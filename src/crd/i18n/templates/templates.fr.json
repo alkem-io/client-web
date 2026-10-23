@@ -10,6 +10,7 @@
     "deleting": "Suppression…",
     "noTemplates": "Aucun modèle pour l’instant",
     "noTemplatesHint": "Créez-en un ou importez-en un depuis la bibliothèque.",
+    "browseLibrary": "Parcourir la bibliothèque générale",
     "noTemplatesReadOnly": "Aucun modèle pour l’instant.",
     "sectionList": "Sections de modèles",
     "templateList": "Modèles",

@@ -104,6 +104,10 @@ export const AdminCommunityCandidateMemberFragmentDoc = gql`
     id
     displayName
     url
+    avatar: visual(type: AVATAR) {
+      id
+      uri
+    }
   }
 }
     `;

@@ -16,6 +16,8 @@ export type UseCommunityGuidelinesDataResult = {
   canSave: boolean;
   onChange: (patch: Partial<CommunityGuidelinesEditorValue>) => void;
   onSave: () => Promise<void>;
+  /** Drops unsaved edits, back to the server value. */
+  onReset: () => void;
   /** Apply a community-guidelines template (id) to the live guidelines — overwrites title/body/references on the server. */
   onApplyTemplate: (templateId: string) => Promise<void>;
   /** True when there is any user-authored content (title / body / a link) — used to gate the apply-template confirm. */
@@ -146,6 +148,7 @@ export function useCommunityGuidelinesData(
     canSave: !!communityGuidelinesId && isDirty && !submitting,
     onChange,
     onSave,
+    onReset: () => setLocalValue(null),
     onApplyTemplate,
     hasContent,
     onReferenceFileUpload,

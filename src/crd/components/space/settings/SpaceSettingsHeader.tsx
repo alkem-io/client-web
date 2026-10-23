@@ -11,6 +11,11 @@ export type SpaceSettingsHeaderProps = {
   titleHref?: string;
   tagline?: string | null;
   /**
+   * Square identity tile left of the title — the L1/L2 avatar, or the L0
+   * cardBanner (L0 has no avatar visual). Initials when there is no image.
+   */
+  visual?: { src?: string; initials: string };
+  /**
    * When true, the title block fills all 12 grid columns instead of the
    * default `lg:col-start-2 lg:col-span-10` inset, aligning with a
    * full-width `SpaceShell` body.
@@ -20,8 +25,8 @@ export type SpaceSettingsHeaderProps = {
 };
 
 /**
- * Compact header for the Space Settings area: a title block (space name +
- * tagline) aligned to the shell's col-start-2 / col-span-10 grid.
+ * Compact header for the Space Settings area: an optional square identity
+ * tile plus a title block (space name + tagline) aligned to the shell's col-start-2 / col-span-10 grid.
  * The settings tab strip is NOT part of this header — consumers render
  * `SpaceSettingsTabStrip` in a sticky row below it (e.g. the `SpaceShell`
  * tabs slot) so the tabs stay pinned under the platform header on scroll.
@@ -30,6 +35,7 @@ export function SpaceSettingsHeader({
   title,
   titleHref,
   tagline,
+  visual,
   fullWidth = false,
   className,
 }: SpaceSettingsHeaderProps) {
@@ -40,20 +46,30 @@ export function SpaceSettingsHeader({
       <div className="w-full px-6 md:px-8 pt-8 pb-4">
         <div className="grid grid-cols-12 gap-6">
           <div className={innerColClass}>
-            <div className="min-w-0">
-              <h1 className="text-page-title truncate">
-                {titleHref ? (
-                  <a
-                    href={titleHref}
-                    className="hover:underline rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    {title}
-                  </a>
-                ) : (
-                  title
-                )}
-              </h1>
-              {tagline && <p className="mt-0.5 text-body text-muted-foreground">{tagline}</p>}
+            <div className="flex items-center gap-4">
+              {visual && (
+                <div
+                  aria-hidden="true"
+                  className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-border bg-muted text-card-title text-muted-foreground"
+                >
+                  {visual.src ? <img src={visual.src} alt="" className="size-full object-cover" /> : visual.initials}
+                </div>
+              )}
+              <div className="min-w-0">
+                <h1 className="text-page-title truncate">
+                  {titleHref ? (
+                    <a
+                      href={titleHref}
+                      className="hover:underline rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      {title}
+                    </a>
+                  ) : (
+                    title
+                  )}
+                </h1>
+                {tagline && <p className="mt-0.5 text-body text-muted-foreground">{tagline}</p>}
+              </div>
             </div>
           </div>
         </div>

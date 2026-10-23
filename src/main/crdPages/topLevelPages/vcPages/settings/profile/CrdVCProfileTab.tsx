@@ -11,12 +11,13 @@ import useStorageConfig from '@/domain/storage/StorageBucket/useStorageConfig';
 import { MarkdownUploadScope } from '@/main/crdPages/markdown/MarkdownUploadScope';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useSettingsTabUnsavedChanges } from '../../../common/settingsUnsavedChanges';
 import useVcProfileTabData from './useVcProfileTabData';
 
 /**
  * Integration page for the VC Profile tab. Wires `useUrlResolver().vcId` →
- * `useVcProfileTabData` (per-section save hook) → `VCProfileTabView`
- * (presentational).
+ * `useVcProfileTabData` (buffered edits, saved through the settings page's
+ * unsaved-changes bar) → `VCProfileTabView` (presentational).
  *
  * The settings shell mounts no ambient `StorageConfigContextProvider`, so
  * `MarkdownUploadScope` mounts a `virtualContributor`-scoped one (description
@@ -24,8 +25,7 @@ import useVcProfileTabData from './useVcProfileTabData';
  * upload wiring; before the id resolves it yields `undefined`.
  *
  * Mounts `ImageCropDialog` driven by `pendingAvatarCrop` (Decision #10 /
- * FR-163) and `ConfirmationDialog` driven by `pendingReferenceDelete`
- * (Rule #9 / FR-025 — handled inside the view component).
+ * FR-163); reference deletion is confirmed inside the shared ReferencesEditor.
  */
 const CrdVCProfileTab = () => {
   const { vcId } = useUrlResolver();
@@ -42,6 +42,7 @@ const CrdVCProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUplo
   const { t } = useTranslation('crd-contributorSettings');
   const { vcId } = useUrlResolver();
   const data = useVcProfileTabData(vcId);
+  useSettingsTabUnsavedChanges(data.unsaved);
 
   // Reference file upload (paperclip) — uploads to the VC's storage bucket.
   const { storageConfig } = useStorageConfig({
@@ -87,15 +88,12 @@ const CrdVCProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUplo
       <VCProfileTabView
         values={data.values ?? EMPTY_VALUES}
         loading={data.loading}
-        dirtyByField={data.dirtyByField}
-        saveStatusByField={data.saveStatusByField}
         onChange={data.onChange}
         onReferencesChange={data.onReferencesChange}
         onReferenceFileUpload={referenceUpload.onFileUpload}
         referenceUploadAccept={referenceUpload.accept}
         onUploadAvatar={data.onUploadAvatar}
         uploadingAvatar={data.uploadingAvatar}
-        onSaveSection={data.onSaveSection}
         metadata={{ host, bodyOfKnowledge }}
         {...markdownUpload}
       />

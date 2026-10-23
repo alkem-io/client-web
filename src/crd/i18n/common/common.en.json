@@ -1604,5 +1604,26 @@
     "unavailableHint": "This file could not be loaded. Download it to view.",
     "unavailableNoDownload": "This file is unavailable.",
     "loading": "Loading attachment"
+  },
+  "unsavedChanges": {
+    "count_one": "{{count}} unsaved change",
+    "count_other": "{{count}} unsaved changes",
+    "save": "Save changes",
+    "discard": "Discard",
+    "saving": "Saving…",
+    "saved": "Changes saved",
+    "regionLabel": "Unsaved changes",
+    "discardDialog": {
+      "title_one": "Discard 1 unsaved change?",
+      "title_other": "Discard {{count}} unsaved changes?",
+      "description": "Every changed field on this tab goes back to its saved value.",
+      "confirm": "Discard"
+    },
+    "leaveDialog": {
+      "title": "Unsaved changes",
+      "description": "You have unsaved changes on this tab. Save them, discard them, or stay on this tab?",
+      "save": "Save",
+      "discard": "Discard & leave"
+    }
   }
 }

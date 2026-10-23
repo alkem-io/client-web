@@ -179,6 +179,9 @@
           "confirm": "Supprimer la référence"
         }
       },
+      "references": {
+        "title": "Références"
+      },
       "avatar": {
         "title": "Photo de profil",
         "changeButton": "Changer l'avatar",
@@ -724,6 +727,9 @@
           "description": "La suppression de cette référence l'enlèvera également du profil public après l'enregistrement.",
           "confirm": "Supprimer la référence"
         }
+      },
+      "references": {
+        "title": "Références"
       },
       "logo": {
         "title": "Logo",

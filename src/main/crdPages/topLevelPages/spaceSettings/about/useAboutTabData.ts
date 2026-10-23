@@ -15,19 +15,18 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { type UpdateSpaceInput, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import type { ClassificationEntryData } from '@/crd/components/classification/types';
+import type { ClassificationEntryData, ClassificationTemplateOptionData } from '@/crd/components/classification/types';
 import type { ImageCropConfig } from '@/crd/components/common/ImageCropDialog';
 import type {
   AboutFormValues,
   AboutReference,
-  AboutSectionKey,
-  AboutSectionSaveStatus,
   AboutVisualAspectRatioBounds,
   SpaceSettingsLevel,
 } from '@/crd/components/space/settings/SpaceSettingsAboutView.types';
 import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
 import { MAX_BANNER_ASPECT_RATIO, MIN_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { errorMessage, type TabUnsavedChanges } from '@/main/crdPages/utils/tabUnsavedChanges';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { buildPreviewCard, mapClassificationEntries, mapSpaceToAboutFormValues } from './aboutMapper';
 
@@ -38,10 +37,6 @@ export type UseAboutTabDataResult = {
   previewCard: ReturnType<typeof buildPreviewCard> | null;
   loading: boolean;
   error: Error | null;
-  /** Which sections differ from the server-saved value. */
-  dirtyByField: Partial<Record<AboutSectionKey, boolean>>;
-  /** Per-section ephemeral save status (saving / saved / error). */
-  saveStatusByField: Partial<Record<AboutSectionKey, AboutSectionSaveStatus>>;
   onChange: (patch: Partial<AboutFormValues>) => void;
   onUploadAvatar: (file: File) => void;
   onUploadPageBanner: (file: File) => void;
@@ -62,34 +57,36 @@ export type UseAboutTabDataResult = {
   /** Reference file-upload (paperclip) — uploads to the space's storage bucket. */
   onReferenceFileUpload?: (file: File) => Promise<string | null>;
   referenceUploadAccept?: string;
-  /** Save a single section — only that section's fields are persisted. */
-  onSaveSection: (section: AboutSectionKey) => Promise<void>;
-  /** True when any section differs from the server-saved value. */
-  isDirty: boolean;
-  /** Persist every dirty section (used by the tab-switch guard's "Save"). */
-  onSaveAll: () => Promise<void>;
-  /** Discard all local edits back to the server-saved snapshot (guard's "Discard"). */
-  onResetAll: () => void;
+  /** Every field except the visuals is buffered and saved through the unsaved-changes bar (spec 045 FR-005a). */
+  unsaved: TabUnsavedChanges;
 
-  // ── Classifications (D1) — each action commits on its own (FR-006a) ──
+  // ── Classifications (D1) — staged with the rest of the tab (spec 024 Session 2026-10-22) ──
+  /** Displayed entries — server entries with the staged changes applied, staged adds last. */
   classifications: ClassificationEntryData[];
-  /** Entry ids with a selection write in flight — pass through as `disabled` on their value selector. */
-  classificationSelectionPendingIds: string[];
-  /** Step A — add from a template. Resolves `false` (and sets `classificationConflict`) on a display-label collision. */
-  addClassificationFromTemplate: (templateId: string, displayLabel?: string) => Promise<boolean>;
-  /** Step B — full-replacement selection write (FR-012d). */
-  updateClassificationSelection: (entryId: string, selectedValueIDs: string[]) => Promise<void>;
-  /** The shown/hidden toggle (FR-010b) — render-only, not an access control. */
-  updateClassificationDisplay: (entryId: string, display: boolean) => Promise<void>;
-  /** Permanent removal (FR-014b) — the caller is expected to have already confirmed. */
-  removeClassification: (entryId: string) => Promise<void>;
-  /** Set after a failed add whose server error was a display-label conflict (FR-011b). */
+  /** Ids of entries added locally and not saved yet. */
+  unsavedClassificationIds: string[];
+  /** Step A — stages an add. Returns `false` (and sets `classificationConflict`) on a display-label collision. */
+  addClassificationFromTemplate: (template: ClassificationTemplateOptionData, displayLabel?: string) => boolean;
+  /** Step B — stages the full replacement selection (FR-012d). */
+  updateClassificationSelection: (entryId: string, selectedValueIDs: string[]) => void;
+  /** Stages the shown/hidden toggle (FR-010b) — render-only, not an access control. */
+  updateClassificationDisplay: (entryId: string, display: boolean) => void;
+  /** Stages the removal; a staged add is simply dropped. Undone by Discard. */
+  removeClassification: (entryId: string) => void;
+  /** Set after a pick whose display label collides with an existing or staged entry (FR-011b/c). */
   classificationConflict: { templateId: string; attemptedLabel: string } | null;
   dismissClassificationConflict: () => void;
-  classificationSubmitting: boolean;
-  /** True right after a selection write failed against a concurrently-removed entry. */
-  classificationRemovedError: boolean;
-  dismissClassificationRemovedError: () => void;
+};
+
+/** A classification added from a template locally, written on Save. */
+type StagedClassificationAdd = {
+  tempId: string;
+  templateId: string;
+  displayLabel: string;
+  cardinality: ClassificationEntryData['cardinality'];
+  values: ClassificationEntryData['values'];
+  selectedValueIDs: string[];
+  display: boolean;
 };
 
 /**
@@ -108,21 +105,24 @@ function isTempId(id: string) {
   return id.startsWith(TEMP_PREFIX);
 }
 
-/** How long the "Saved" confirmation lingers next to a section's Save button. */
-const SAVED_FLASH_MS = 1800;
+/** FR-011c — trim, collapse whitespace runs, NFC, case-fold. Comparison only; never stored. */
+function normalizeDisplayLabel(label: string) {
+  return label.trim().replace(/\s+/g, ' ').normalize('NFC').toLowerCase();
+}
+
+const sameIds = (a: readonly string[], b: readonly string[]) =>
+  a.length === b.length && [...a].sort().join('\u0000') === [...b].sort().join('\u0000');
+
+const TEXT_FIELDS = ['name', 'tagline', 'what', 'why', 'who', 'city', 'country'] as const;
 
 /**
- * CRD About tab data hook — per-section save model.
+ * CRD About tab data hook — saved through the tab-wide unsaved-changes bar.
  *
- * Each editable section (name, tagline, what, why, who, location, tags,
- * references) exposes its own Save handler. The handler sends ONLY that
- * section's patch via updateSpace. Branding uploads remain immediate
- * (the file picker IS the commit).
- *
- * Dirty is derived from the Apollo cache and each section clears itself when
- * saved. `onSaveAll` / `onResetAll` exist for the tab-switch guard: switching
- * away with unsaved edits prompts the discard dialog, which either persists
- * every dirty section or drops the local buffer back to the cached snapshot.
+ * Every field except the visuals lives in a local buffer over the cache-derived
+ * server values (`saved`); `unsaved` counts the changed fields (spec 045
+ * FR-025b), `saveAll` writes them all, `reset` drops the buffer back to `saved`.
+ * Classification adds / removals / selections / display toggles are staged in
+ * the same way. Visual uploads stay immediate (the file pick IS the commit).
  */
 export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceSettingsLevel): UseAboutTabDataResult {
   const {
@@ -139,11 +139,8 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   const [values, setValues] = useState<AboutFormValues | null>(null);
   const valuesRef = useRef<AboutFormValues | null>(null);
   const [, startTransition] = useTransition();
-
-  const [saveStatusByField, setSaveStatusByField] = useState<Partial<Record<AboutSectionKey, AboutSectionSaveStatus>>>(
-    {}
-  );
-  const savedFlashTimers = useRef<Partial<Record<AboutSectionKey, ReturnType<typeof setTimeout>>>>({});
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const { t } = useTranslation('crd-spaceSettings');
   const notify = useNotification();
@@ -191,33 +188,29 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     }
   }, [saved]);
 
-  useEffect(() => {
-    return () => {
-      for (const timer of Object.values(savedFlashTimers.current)) {
-        if (timer) clearTimeout(timer);
-      }
-    };
-  }, []);
+  // ────────────────── Changed fields (FR-025b) ──────────────────
 
-  // ────────────────── Dirty map (per section) ──────────────────
-
-  const dirtyByField: Partial<Record<AboutSectionKey, boolean>> = (() => {
-    if (!values || !saved) return {};
+  const changedTextFields = values && saved ? TEXT_FIELDS.filter(field => values[field] !== saved[field]) : [];
+  const tagsChanged = !!values && !!saved && JSON.stringify(values.tags) !== JSON.stringify(saved.tags);
+  const referenceChanges = (() => {
+    if (!values || !saved) return { created: [], edited: [], removed: [] };
+    const savedById = new Map(saved.references.map(r => [r.id, r] as const));
+    const currentIds = new Set(values.references.map(r => r.id));
     return {
-      name: values.name !== saved.name,
-      tagline: values.tagline !== saved.tagline,
-      what: values.what !== saved.what,
-      why: values.why !== saved.why,
-      who: values.who !== saved.who,
-      location: values.city !== saved.city || values.country !== saved.country,
-      tags: JSON.stringify(values.tags) !== JSON.stringify(saved.tags),
-      references: JSON.stringify(values.references) !== JSON.stringify(saved.references),
+      // A new row is only created once it has a title — same rule the save has always applied.
+      created: values.references.filter(r => isTempId(r.id) && r.title.trim()),
+      edited: values.references.filter(r => {
+        const prior = savedById.get(r.id);
+        return !!prior && (prior.title !== r.title || prior.uri !== r.uri || prior.description !== r.description);
+      }),
+      removed: saved.references.filter(r => !currentIds.has(r.id)),
     };
   })();
 
   // ────────────────── Local changes ──────────────────
 
   const onChange = (patch: Partial<AboutFormValues>) => {
+    setSaveError(null);
     setValues(prev => {
       const base = prev ?? valuesRef.current;
       if (!base) return prev;
@@ -230,6 +223,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   // The shared ReferencesEditor manages rows + its own delete-confirm and emits the full list.
   // New rows arrive without an `id`; assign a temp id so the per-section save diffs them as creates.
   const onReferencesChange = (rows: ReferenceRow[]) => {
+    setSaveError(null);
     setValues(prev => {
       const base = prev ?? valuesRef.current;
       if (!base) return prev;
@@ -423,282 +417,310 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     setPendingRecropSave(null);
   };
 
-  // ────────────────── Per-section save ──────────────────
+  const previewCard = values ? buildPreviewCard(spaceId, values, spaceUrl, level) : null;
 
-  const setSectionStatus = (section: AboutSectionKey, status: AboutSectionSaveStatus) => {
-    setSaveStatusByField(prev => ({ ...prev, [section]: status }));
+  // ────────────────── Classifications (D1: about.classifications[].values[]) ──────────────────
+  // Staged like every other About field (spec 024 Session 2026-10-22): nothing is written until
+  // Save, Discard drops it all. Value ids are copied verbatim from the template (FR-010c), so a
+  // staged add can be rendered — and its values picked — from the template the picker returned.
+
+  const [stagedAdds, setStagedAdds] = useState<StagedClassificationAdd[]>([]);
+  const [stagedRemovals, setStagedRemovals] = useState<string[]>([]);
+  const [selectionOverrides, setSelectionOverrides] = useState<Record<string, string[]>>({});
+  const [displayOverrides, setDisplayOverrides] = useState<Record<string, boolean>>({});
+  const [classificationConflict, setClassificationConflict] = useState<{
+    templateId: string;
+    attemptedLabel: string;
+  } | null>(null);
+
+  const serverClassifications = space ? mapClassificationEntries(space) : [];
+  const keptClassifications = serverClassifications.filter(entry => !stagedRemovals.includes(entry.id));
+  const lastSortOrder = serverClassifications.reduce((max, entry) => Math.max(max, entry.sortOrder), 0);
+  const classifications: ClassificationEntryData[] = [
+    ...keptClassifications.map(entry => ({
+      ...entry,
+      selectedValueIDs: selectionOverrides[entry.id] ?? entry.selectedValueIDs,
+      display: displayOverrides[entry.id] ?? entry.display,
+    })),
+    ...stagedAdds.map((add, index) => ({
+      id: add.tempId,
+      displayLabel: add.displayLabel,
+      cardinality: add.cardinality,
+      values: add.values,
+      selectedValueIDs: add.selectedValueIDs,
+      display: add.display,
+      sortOrder: lastSortOrder + index + 1,
+    })),
+  ];
+  const changedClassifications = keptClassifications.filter(
+    entry =>
+      (entry.id in selectionOverrides && !sameIds(selectionOverrides[entry.id], entry.selectedValueIDs)) ||
+      (entry.id in displayOverrides && displayOverrides[entry.id] !== entry.display)
+  );
+
+  const addClassificationFromTemplate = (template: ClassificationTemplateOptionData, displayLabel?: string) => {
+    const label = displayLabel ?? template.displayLabel;
+    const normalized = normalizeDisplayLabel(label);
+    // FR-011a/b checked at pick time against what the Space will hold after Save; the server
+    // re-checks when the add is written.
+    const taken = [...keptClassifications.map(entry => entry.displayLabel), ...stagedAdds.map(add => add.displayLabel)];
+    if (taken.some(existing => normalizeDisplayLabel(existing) === normalized)) {
+      setClassificationConflict({ templateId: template.id, attemptedLabel: label });
+      return false;
+    }
+    setSaveError(null);
+    setClassificationConflict(null);
+    setStagedAdds(prev => [
+      ...prev,
+      {
+        tempId: `${TEMP_PREFIX}classification-${Date.now()}`,
+        templateId: template.id,
+        displayLabel: label,
+        cardinality: template.cardinality,
+        values: template.values,
+        selectedValueIDs: [],
+        display: true,
+      },
+    ]);
+    return true;
   };
 
-  const flashSaved = (section: AboutSectionKey) => {
-    setSectionStatus(section, { kind: 'saved', at: Date.now() });
-    const existing = savedFlashTimers.current[section];
-    if (existing) clearTimeout(existing);
-    savedFlashTimers.current[section] = setTimeout(() => {
-      setSaveStatusByField(prev => {
-        const next = { ...prev };
-        delete next[section];
-        return next;
-      });
-      delete savedFlashTimers.current[section];
-    }, SAVED_FLASH_MS);
-  };
-
-  /** Build a narrow UpdateSpaceInput that carries only the fields for a single section. */
-  const buildSectionPatch = (section: AboutSectionKey, current: AboutFormValues): UpdateSpaceInput | null => {
-    switch (section) {
-      case 'name':
-        return { ID: spaceId, about: { profile: { displayName: current.name } } };
-      case 'tagline':
-        return { ID: spaceId, about: { profile: { tagline: current.tagline } } };
-      case 'what':
-        return { ID: spaceId, about: { profile: { description: current.what } } };
-      case 'why':
-        return { ID: spaceId, about: { why: current.why } };
-      case 'who':
-        return { ID: spaceId, about: { who: current.who } };
-      case 'location':
-        return {
-          ID: spaceId,
-          about: { profile: { location: { country: current.country, city: current.city } } },
-        };
-      case 'tags':
-        if (!current.tagsetId) return null;
-        return {
-          ID: spaceId,
-          about: { profile: { tagsets: [{ ID: current.tagsetId, tags: current.tags }] } },
-        };
-      case 'references':
-        return null; // handled via dedicated create/delete/patch flow below
-      case 'classifications':
-        // Never buffered: each classification action commits on its own via its own mutation
-        // (FR-006a) — `onSaveSection('classifications')` is never called, but the key still
-        // needs an exhaustive case here.
-        return null;
+  const updateClassificationSelection = (entryId: string, selectedValueIDs: string[]) => {
+    setSaveError(null);
+    if (isTempId(entryId)) {
+      setStagedAdds(prev => prev.map(add => (add.tempId === entryId ? { ...add, selectedValueIDs } : add)));
+    } else {
+      setSelectionOverrides(prev => ({ ...prev, [entryId]: selectedValueIDs }));
     }
   };
 
-  const saveReferencesSection = async (current: AboutFormValues, savedRefs: AboutReference[]) => {
-    // 1) Patch existing (non-temp) references.
-    const existing = current.references.filter(r => !isTempId(r.id));
-    if (existing.length) {
-      await updateSpace({
-        variables: {
-          input: {
-            ID: spaceId,
-            about: {
-              profile: {
-                references: existing.map(r => ({
-                  ID: r.id,
-                  name: r.title,
-                  uri: r.uri,
-                  description: r.description,
-                })),
-              },
-            },
+  const updateClassificationDisplay = (entryId: string, display: boolean) => {
+    setSaveError(null);
+    if (isTempId(entryId)) {
+      setStagedAdds(prev => prev.map(add => (add.tempId === entryId ? { ...add, display } : add)));
+    } else {
+      setDisplayOverrides(prev => ({ ...prev, [entryId]: display }));
+    }
+  };
+
+  const removeClassification = (entryId: string) => {
+    setSaveError(null);
+    if (isTempId(entryId)) {
+      setStagedAdds(prev => prev.filter(add => add.tempId !== entryId));
+    } else {
+      setStagedRemovals(prev => [...prev, entryId]);
+    }
+  };
+
+  const resetClassifications = () => {
+    setStagedAdds([]);
+    setStagedRemovals([]);
+    setSelectionOverrides({});
+    setDisplayOverrides({});
+    setClassificationConflict(null);
+  };
+
+  /** Writes the staged classification changes; returns the error of the first failure, if any. */
+  const saveClassifications = async (): Promise<string | null> => {
+    let firstError: string | null = null;
+    const fail = (err: unknown) => {
+      firstError ??= isDisplayLabelConflictError(err) ? t('classifications.picker.conflict.title') : errorMessage(err);
+    };
+
+    // Removals first, so a label freed by a removal is free for an add in the same Save.
+    const failedRemovals: string[] = [];
+    for (const entryId of stagedRemovals) {
+      try {
+        await deleteClassificationEntry({ variables: { classificationData: { ID: entryId } } });
+      } catch (err) {
+        failedRemovals.push(entryId);
+        fail(err);
+      }
+    }
+
+    const failedAdds: StagedClassificationAdd[] = [];
+    for (const add of stagedAdds) {
+      try {
+        const result = await addClassificationEntryFromTemplate({
+          variables: {
+            classificationData: { spaceID: spaceId, templateID: add.templateId, displayLabel: add.displayLabel },
           },
-        },
-      });
+        });
+        const createdId = result.data?.addClassificationEntryFromTemplate.id;
+        // The entry now exists; a failed follow-up write is retried as an ordinary override.
+        if (createdId && add.selectedValueIDs.length > 0) {
+          await updateClassificationEntrySelection({
+            variables: {
+              classificationData: { classificationEntryID: createdId, selectedValueIDs: add.selectedValueIDs },
+            },
+          }).catch(err => {
+            setSelectionOverrides(prev => ({ ...prev, [createdId]: add.selectedValueIDs }));
+            fail(err);
+          });
+        }
+        if (createdId && !add.display) {
+          await updateClassificationEntryDisplay({
+            variables: { classificationData: { classificationEntryID: createdId, display: false } },
+          }).catch(err => {
+            setDisplayOverrides(prev => ({ ...prev, [createdId]: false }));
+            fail(err);
+          });
+        }
+      } catch (err) {
+        failedAdds.push(add);
+        fail(err);
+      }
     }
 
-    // 2) Create new references (temp IDs with a title).
-    for (const ref of current.references) {
-      if (isTempId(ref.id) && ref.title.trim()) {
+    const failedSelections: Record<string, string[]> = {};
+    const failedDisplays: Record<string, boolean> = {};
+    for (const entry of changedClassifications) {
+      const selection = selectionOverrides[entry.id];
+      if (selection && !sameIds(selection, entry.selectedValueIDs)) {
+        try {
+          await updateClassificationEntrySelection({
+            variables: { classificationData: { classificationEntryID: entry.id, selectedValueIDs: selection } },
+          });
+        } catch (err) {
+          failedSelections[entry.id] = selection;
+          fail(err);
+        }
+      }
+      const display = displayOverrides[entry.id];
+      if (display !== undefined && display !== entry.display) {
+        try {
+          await updateClassificationEntryDisplay({
+            variables: { classificationData: { classificationEntryID: entry.id, display } },
+          });
+        } catch (err) {
+          failedDisplays[entry.id] = display;
+          fail(err);
+        }
+      }
+    }
+
+    setStagedRemovals(failedRemovals);
+    setStagedAdds(failedAdds);
+    setSelectionOverrides(prev => ({ ...failedSelections, ...pickCreatedIds(prev, serverClassifications) }));
+    setDisplayOverrides(prev => ({ ...failedDisplays, ...pickCreatedIds(prev, serverClassifications) }));
+    return firstError;
+  };
+
+  // ────────────────── Save / Discard (the unsaved-changes bar) ──────────────────
+
+  const unsavedCount =
+    changedTextFields.length +
+    (tagsChanged ? 1 : 0) +
+    referenceChanges.created.length +
+    referenceChanges.edited.length +
+    referenceChanges.removed.length +
+    stagedAdds.length +
+    stagedRemovals.length +
+    changedClassifications.length;
+
+  const saveAll = async (): Promise<boolean> => {
+    const current = valuesRef.current;
+    if (!current || !saved || unsavedCount === 0) return true;
+    const { created, edited, removed } = referenceChanges;
+    setSaving(true);
+    setSaveError(null);
+    let firstError: string | null = null;
+
+    // 1) One updateSpace for every changed text / location / tag field and every edited reference.
+    let coreFailed = false;
+    const profile: NonNullable<NonNullable<UpdateSpaceInput['about']>['profile']> = {};
+    const about: NonNullable<UpdateSpaceInput['about']> = {};
+    if (current.name !== saved.name) profile.displayName = current.name;
+    if (current.tagline !== saved.tagline) profile.tagline = current.tagline;
+    if (current.what !== saved.what) profile.description = current.what;
+    if (current.city !== saved.city || current.country !== saved.country) {
+      profile.location = { country: current.country, city: current.city };
+    }
+    if (tagsChanged && current.tagsetId) profile.tagsets = [{ ID: current.tagsetId, tags: current.tags }];
+    if (edited.length) {
+      profile.references = edited.map(r => ({ ID: r.id, name: r.title, uri: r.uri, description: r.description }));
+    }
+    if (current.why !== saved.why) about.why = current.why;
+    if (current.who !== saved.who) about.who = current.who;
+    if (Object.keys(profile).length) about.profile = profile;
+    if (Object.keys(about).length) {
+      try {
+        await updateSpace({ variables: { input: { ID: spaceId, about } } });
+      } catch (err) {
+        coreFailed = true;
+        firstError ??= errorMessage(err);
+      }
+    }
+
+    // 2) New and removed references — each its own mutation.
+    const failedCreates: AboutReference[] = [];
+    for (const ref of created) {
+      try {
         await createReference({
           variables: {
             input: { profileID: current.profileId, name: ref.title, uri: ref.uri, description: ref.description },
           },
         });
+      } catch (err) {
+        failedCreates.push(ref);
+        firstError ??= errorMessage(err);
       }
     }
-
-    // 3) Delete removed references (present in saved snapshot but missing now).
-    const currentIds = new Set(current.references.map(r => r.id));
-    const removed = savedRefs.filter(r => !isTempId(r.id) && !currentIds.has(r.id));
     for (const ref of removed) {
-      await deleteReference({ variables: { input: { ID: ref.id } } });
-    }
-  };
-
-  const onSaveSection = async (section: AboutSectionKey) => {
-    const current = valuesRef.current;
-    const savedNow = saved;
-    if (!current || !savedNow) return;
-
-    setSectionStatus(section, { kind: 'saving' });
-
-    try {
-      if (section === 'references') {
-        await saveReferencesSection(current, savedNow.references);
-      } else {
-        const patch = buildSectionPatch(section, current);
-        if (patch) {
-          await updateSpace({ variables: { input: patch } });
-        }
+      try {
+        await deleteReference({ variables: { input: { ID: ref.id } } });
+      } catch (err) {
+        firstError ??= errorMessage(err);
       }
-
-      // Sync local buffer with the server. Refetch so the cache has the
-      // canonical state (and so newly-created references get their real IDs
-      // in place of temp ones).
-      const fresh = await refetch();
-      const freshSpace = fresh.data?.lookup.space;
-      if (freshSpace) {
-        const freshValues = mapSpaceToAboutFormValues(freshSpace);
-        setValues(prev => {
-          const base = prev ?? valuesRef.current;
-          if (!base) return freshValues;
-          // Keep edits on OTHER sections, overwrite just the section we saved.
-          const next = mergeSavedSection(base, freshValues, section);
-          valuesRef.current = next;
-          return next;
-        });
-      }
-
-      flashSaved(section);
-    } catch (err) {
-      setSectionStatus(section, {
-        kind: 'error',
-        message: err instanceof Error ? err.message : 'Save failed',
-      });
     }
-  };
 
-  const isDirty = Object.values(dirtyByField).some(Boolean);
+    // 3) Classifications.
+    const classificationError = await saveClassifications();
+    firstError ??= classificationError;
 
-  const onSaveAll = async () => {
-    const sections = (Object.keys(dirtyByField) as AboutSectionKey[]).filter(section => dirtyByField[section]);
-    for (const section of sections) {
-      await onSaveSection(section);
+    // Rebase the buffer on the fresh server values: what saved now matches the server, what
+    // failed stays buffered so it stays counted and Save retries it.
+    const fresh = (await refetch().catch(() => null))?.data?.lookup.space;
+    if (fresh) {
+      const freshValues = mapSpaceToAboutFormValues(fresh);
+      const removedIds = new Set(removed.map(r => r.id));
+      const editedById = new Map(edited.map(r => [r.id, r] as const));
+      const next: AboutFormValues = {
+        ...current,
+        ...(coreFailed ? {} : pickSavedFields(freshValues)),
+        references: [
+          ...freshValues.references
+            // A removal that failed stays removed in the buffer.
+            .filter(r => !removedIds.has(r.id))
+            .map(r => (coreFailed ? (editedById.get(r.id) ?? r) : r)),
+          ...failedCreates,
+        ],
+      };
+      valuesRef.current = next;
+      setValues(next);
     }
-  };
 
-  // The per-section model has no global reset — discarding means dropping the
-  // local buffer back to the cache-derived snapshot. Temp (unsaved) references
-  // disappear because they only exist in the buffer.
-  const onResetAll = () => {
-    if (!saved) return;
-    setValues(saved);
-    valuesRef.current = saved;
-    // Drop any pending saved-flash timers and per-section status so the UI
-    // doesn't keep showing stale "saved"/"error" chips after a discard.
-    for (const timer of Object.values(savedFlashTimers.current)) {
-      if (timer) clearTimeout(timer);
-    }
-    savedFlashTimers.current = {};
-    setSaveStatusByField({});
-  };
-
-  const previewCard = values ? buildPreviewCard(spaceId, values, spaceUrl, level) : null;
-
-  // ────────────────── Classifications (D1: about.classifications[].values[]) ──────────────────
-  // Each action commits on its own, immediately (FR-006a) — never buffered with the rest of the
-  // About form. Cache normalization keeps single-entry updates in sync for free; add/remove change
-  // the array's membership, which normalization can't do on its own, so those two refetch.
-  //
-  // A selection write is a full-replacement mutation (FR-012d): the checkbox only visually ticks
-  // once the mutation round trip resolves and the cache updates. Without buffering the in-flight
-  // intent locally, two clicks inside one round trip would both compute their "next selection" off
-  // the same stale `entry.selectedValueIDs`, so the second write would silently clobber the first.
-  // `classificationSelectionOverrides` holds the latest locally-applied selection per entry while
-  // its write is in flight, so consecutive toggles compose off the last user intent, not the last
-  // server response.
-  const [classificationSelectionOverrides, setClassificationSelectionOverrides] = useState<Record<string, string[]>>(
-    {}
-  );
-
-  const classifications = space
-    ? mapClassificationEntries(space).map(entry =>
-        entry.id in classificationSelectionOverrides
-          ? { ...entry, selectedValueIDs: classificationSelectionOverrides[entry.id] }
-          : entry
-      )
-    : [];
-
-  /** Entries with a selection write currently in flight (drives the value selector's `disabled`). */
-  const classificationSelectionPendingIds = Object.keys(classificationSelectionOverrides);
-
-  const [classificationConflict, setClassificationConflict] = useState<{
-    templateId: string;
-    attemptedLabel: string;
-  } | null>(null);
-  const [classificationSubmitting, setClassificationSubmitting] = useState(false);
-  const [classificationRemovedError, setClassificationRemovedError] = useState(false);
-
-  /** Returns `true` on success (the caller may close the picker); `false` on a display-label conflict. */
-  const addClassificationFromTemplate = async (templateId: string, displayLabel?: string): Promise<boolean> => {
-    setClassificationSubmitting(true);
-    try {
-      await addClassificationEntryFromTemplate({
-        variables: { classificationData: { spaceID: spaceId, templateID: templateId, displayLabel } },
-      });
-      await refetch();
-      setClassificationConflict(null);
-      return true;
-    } catch (err) {
-      if (isDisplayLabelConflictError(err)) {
-        setClassificationConflict({ templateId, attemptedLabel: displayLabel ?? '' });
-        return false;
-      }
-      // Any other failure surfaces via the Apollo error link / global handler.
-      return false;
-    } finally {
-      setClassificationSubmitting(false);
-    }
-  };
-
-  const updateClassificationSelection = async (entryId: string, selectedValueIDs: string[]) => {
-    // Apply the intended selection locally right away — see the `classificationSelectionOverrides`
-    // comment above the `classifications` derivation for why this has to happen before the mutation
-    // is awaited, not after it resolves.
-    setClassificationSelectionOverrides(prev => ({ ...prev, [entryId]: selectedValueIDs }));
-    setSectionStatus('classifications', { kind: 'saving' });
-    try {
-      await updateClassificationEntrySelection({
-        variables: { classificationData: { classificationEntryID: entryId, selectedValueIDs } },
-      });
-      flashSaved('classifications');
-    } catch (err) {
-      setSectionStatus('classifications', { kind: 'idle' });
-      // A concurrently-removed entry fails the write against a now-deleted id — refetch so the UI
-      // drops the stale entry instead of silently re-creating it (Edge Cases: concurrent removal).
-      if (err instanceof ApolloError) {
-        setClassificationRemovedError(true);
-        await refetch();
-      }
-    } finally {
-      // Only clear the override if it is still the one THIS call set. A slower, earlier write
-      // resolving after a faster, later one must not wipe out the newer local selection while the
-      // later write is still in flight — array identity (not a deep-equal) is enough here because
-      // `selectedValueIDs` is the exact reference each call closed over above.
-      setClassificationSelectionOverrides(prev => {
-        if (prev[entryId] !== selectedValueIDs) return prev;
-        const next = { ...prev };
-        delete next[entryId];
-        return next;
-      });
-    }
-  };
-
-  const updateClassificationDisplay = async (entryId: string, display: boolean) => {
-    await updateClassificationEntryDisplay({
-      variables: { classificationData: { classificationEntryID: entryId, display } },
-    });
-  };
-
-  const removeClassification = async (entryId: string) => {
-    await deleteClassificationEntry({ variables: { classificationData: { ID: entryId } } });
-    await refetch();
+    setSaving(false);
+    setSaveError(firstError);
+    return firstError === null;
   };
 
   const dismissClassificationConflict = () => setClassificationConflict(null);
-  const dismissClassificationRemovedError = () => setClassificationRemovedError(false);
+
+  const reset = () => {
+    if (saved) {
+      setValues(saved);
+      valuesRef.current = saved;
+    }
+    resetClassifications();
+    setSaveError(null);
+  };
 
   return {
     values,
     previewCard,
     loading: queryLoading,
     error: queryError ?? null,
-    dirtyByField,
-    saveStatusByField,
     onChange,
     onUploadAvatar: onUploadAvatarWithCrop,
     onUploadPageBanner: onUploadPageBannerWithCrop,
@@ -714,51 +736,35 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     onReferencesChange,
     onReferenceFileUpload,
     referenceUploadAccept,
-    onSaveSection,
-    isDirty,
-    onSaveAll,
-    onResetAll,
+    unsaved: {
+      count: unsavedCount,
+      canSave: true,
+      saving,
+      error: saveError,
+      saveAll,
+      reset,
+    },
     classifications,
-    classificationSelectionPendingIds,
+    unsavedClassificationIds: stagedAdds.map(add => add.tempId),
     addClassificationFromTemplate,
     updateClassificationSelection,
     updateClassificationDisplay,
     removeClassification,
     classificationConflict,
     dismissClassificationConflict,
-    classificationSubmitting,
-    classificationRemovedError,
-    dismissClassificationRemovedError,
   };
 }
 
-/**
- * Overlay the freshly-saved section's values onto the current buffer, so the
- * user's unsaved edits in other sections are preserved after a per-section save.
- */
-function mergeSavedSection(buffer: AboutFormValues, fresh: AboutFormValues, section: AboutSectionKey): AboutFormValues {
-  switch (section) {
-    case 'name':
-      return { ...buffer, name: fresh.name };
-    case 'tagline':
-      return { ...buffer, tagline: fresh.tagline };
-    case 'what':
-      return { ...buffer, what: fresh.what };
-    case 'why':
-      return { ...buffer, why: fresh.why };
-    case 'who':
-      return { ...buffer, who: fresh.who };
-    case 'location':
-      return { ...buffer, city: fresh.city, country: fresh.country };
-    case 'tags':
-      return { ...buffer, tags: fresh.tags, tagsetId: fresh.tagsetId };
-    case 'references':
-      return { ...buffer, references: fresh.references };
-    case 'classifications':
-      // `onSaveSection` never runs for this key (see `buildSectionPatch`) — `AboutFormValues`
-      // doesn't even carry a classifications field to merge. Exhaustive case only.
-      return buffer;
-  }
+/** The fields the single `updateSpace` call writes — taken from the server once it succeeded. */
+function pickSavedFields(fresh: AboutFormValues): Partial<AboutFormValues> {
+  const { name, tagline, what, why, who, city, country, tags, tagsetId } = fresh;
+  return { name, tagline, what, why, who, city, country, tags, tagsetId };
+}
+
+/** Keeps only the overrides queued during Save for entries that did not exist before it (just created). */
+function pickCreatedIds<T>(overrides: Record<string, T>, existing: ClassificationEntryData[]): Record<string, T> {
+  const existingIds = new Set(existing.map(entry => entry.id));
+  return Object.fromEntries(Object.entries(overrides).filter(([id]) => !existingIds.has(id)));
 }
 
 /**

@@ -11,39 +11,29 @@
     "account": "Cuenta"
   },
   "dirtyGuard": {
-    "save": "Guardar",
-    "discard": "Descartar y salir",
     "cancel": "Cancelar",
-    "tabSwitch": {
-      "title": "Cambios sin guardar",
-      "description": "Tienes cambios sin guardar en esta pestaña. ¿Quieres guardarlos, descartarlos o quedarte en esta pestaña?"
-    },
     "navAway": {
       "title": "Cambios sin guardar",
       "description": "Si sales de esta página, se descartarán tus cambios sin guardar."
     }
   },
   "saveBar": {
-    "save": "Guardar cambios",
-    "discard": "Descartar cambios",
-    "saving": "Guardando…"
+    "lockedReason": "Guarda o descarta tus cambios primero"
   },
   "layout": {
     "pageHeader": {
       "title": "Diseño",
       "subtitle": "Personaliza las pestañas de navegación de tu Espacio. Cambia el nombre, reordena y gestiona las asignaciones de publicaciones."
     },
-    "discardChangesDialog": {
-      "title": "¿Descartar cambios?",
-      "description": "Tus cambios de Diseño no guardados se revertirán al último estado guardado. Esta acción no se puede deshacer.",
-      "confirm": "Descartar cambios"
-    },
+    "loading": "Cargando el diseño…",
     "column": {
       "titlePlaceholder": "Título de la columna",
       "descriptionPlaceholder": "Describe esta columna…",
       "menu": "Acciones de columna",
       "drag": "Arrastra para reordenar la fase",
       "empty": "Aún no hay publicaciones en esta columna.",
+      "postCount_one": "{{count}} publicación",
+      "postCount_other": "{{count}} publicaciones",
       "activePhase": {
         "set": "Marcar como fase activa",
         "current": "Fase activa (actual)",
@@ -227,10 +217,6 @@
     }
   },
   "community": {
-    "pageHeader": {
-      "title": "Comunidad",
-      "subtitle": "Gestiona miembros, organizaciones y contribuidores virtuales en este espacio."
-    },
     "applications": {
       "title": "Solicitudes pendientes",
       "approve": "Aprobar",
@@ -355,7 +341,6 @@
       "actions": "Acciones",
       "empty": "No hay organizaciones.",
       "remove": "Eliminar organización",
-      "description": "Resumen de todas las organizaciones miembro y lead. Invita a una organización a unirse.",
       "dropdown": {
         "viewProfile": "Ver perfil",
         "changeRole": "Cambiar rol",
@@ -380,7 +365,6 @@
       "actions": "Acciones",
       "empty": "No hay contribuidores virtuales.",
       "remove": "Eliminar contribuidor virtual",
-      "description": "Gestiona los agentes y bots de IA que participan en este espacio.",
       "add": "Añadir contribuidor virtual",
       "addExternal": "Invitar contribuidor virtual externo",
       "addDialog": {
@@ -401,11 +385,12 @@
     },
     "applicationForm": {
       "title": "Formulario de solicitud",
-      "description": "Personaliza las preguntas que los usuarios deben responder al solicitar unirse a este espacio."
+      "edit": "Editar formulario de solicitud",
+      "optional": "Opcional",
+      "questionNumber": "P{{number}}"
     },
     "guidelines": {
       "title": "Normas de la comunidad",
-      "description": "Establece reglas y expectativas sobre el comportamiento de los miembros.",
       "hint": "Se muestran a los nuevos miembros al unirse.",
       "placeholder": "Describe el código de conducta de tu espacio…",
       "titleLabel": "Título",
@@ -420,7 +405,9 @@
         "cancel": "Cancelar"
       },
       "save": "Guardar normas",
-      "saving": "Guardando…"
+      "saving": "Guardando…",
+      "edit": "Editar normas",
+      "empty": "Todavía no hay normas de la comunidad."
     },
     "confirmRemove": {
       "confirm": "Confirmar",
@@ -478,16 +465,15 @@
         "invited": "Invitado",
         "invite": "Invitar"
       }
+    },
+    "editDialog": {
+      "save": "Guardar",
+      "saving": "Guardando…"
     }
   },
   "subspaces": {
-    "pageHeader": {
-      "title": "Subespacios",
-      "subtitle": "Edita los subespacios de este espacio. Configura plantillas predeterminadas y consulta todos los subespacios existentes."
-    },
     "defaultTemplate": {
       "title": "Plantilla de subespacio predeterminada",
-      "description": "Elige la configuración predeterminada que se aplicará al crear un nuevo subespacio dentro de este espacio.",
       "change": "Cambiar plantilla predeterminada",
       "dialog": {
         "title": "Cambiar plantilla de subespacio predeterminada",
@@ -662,13 +648,12 @@
     }
   },
   "updates": {
-    "pageHeader": {
-      "title": "Actualizaciones de los leads",
-      "subtitle": "Publica anuncios, hitos y actualizaciones de progreso visibles para todos los miembros del espacio."
+    "sections": {
+      "post": "Publicar una actualización",
+      "published": "Actualizaciones publicadas"
     },
     "composer": {
       "new": "Nueva actualización",
-      "title": "Nueva actualización",
       "placeholder": "Escribe tu actualización…",
       "publish": "Publicar",
       "submitting": "Publicando…",
@@ -770,13 +755,8 @@
     }
   },
   "settings": {
-    "pageHeader": {
-      "title": "Configuración",
-      "subtitle": "Configura la visibilidad de tu espacio, las políticas de membresía y las acciones permitidas a los miembros."
-    },
     "visibility": {
       "title": "Visibilidad",
-      "description": "Controla quién puede ver y acceder a este espacio",
       "public": "Público",
       "publicDescription": "Este espacio y su contenido son visibles para todos en la plataforma. Los usuarios solo pueden contribuir si son miembros.",
       "private": "Privado",
@@ -785,7 +765,6 @@
     },
     "membership": {
       "title": "Membresía",
-      "description": "Elige cómo se unen los usuarios a tu espacio",
       "open": "No se requiere solicitud",
       "openDescription": "Todos los miembros del espacio pueden unirse directamente, sin que tengas que revisar sus solicitudes.",
       "openHint": "Ideal para espacios públicos y abiertos de colaboración",
@@ -821,7 +800,6 @@
     },
     "allowedActions": {
       "title": "Acciones permitidas",
-      "description": "Elige qué acciones pueden realizar los miembros en este espacio",
       "subspaceAdminInvitations": "Membresía de Subspace",
       "memberCreatePosts": "Crear publicaciones",
       "videoCalls": "Videollamadas",
@@ -859,9 +837,8 @@
     }
   },
   "storage": {
-    "pageHeader": {
-      "title": "Almacenamiento",
-      "subtitle": "Explora y gestiona los documentos almacenados en este espacio."
+    "sections": {
+      "documents": "Documentos"
     },
     "empty": "Aún no hay documentos almacenados.",
     "columns": {
@@ -880,12 +857,8 @@
     }
   },
   "account": {
-    "pageHeader": {
-      "title": "Cuenta",
-      "subtitle": "Aquí encontrarás todos tus espacios, contribuidores virtuales y otros recursos alojados. Si tienes alguna pregunta, no dudes en contactar con el equipo de Alkemio."
-    },
     "url": {
-      "title": "URL",
+      "title": "URL del espacio",
       "hint": "La URL única de este espacio. Contacta con Alkemio para cambiarla.",
       "copy": "Copiar URL",
       "copied": "URL copiada"
@@ -897,12 +870,10 @@
       "contact": "Para cambios de estado, contacta con el equipo de Alkemio."
     },
     "host": {
-      "title": "Información del anfitrión",
-      "description": "El anfitrión es la persona u organización propietaria de este espacio."
+      "title": "Información del anfitrión"
     },
     "plan": {
       "title": "Licencia",
-      "description": "Detalles de tu suscripción actual al espacio",
       "featuresHeading": "Funciones incluidas",
       "daysLeft": "{{count}} días restantes",
       "changeLicense": "Cambiar licencia"
@@ -924,37 +895,41 @@
     }
   },
   "about": {
+    "sections": {
+      "identity": "Identidad",
+      "visuals": "Elementos visuales",
+      "context": "Contexto"
+    },
     "name": {
       "title": "Nombre del espacio",
-      "description": "El nombre público de tu espacio.",
-      "ariaLabel": "Nombre del espacio",
-      "editAriaLabel": "Editar el nombre del espacio"
+      "description": "El nombre público de tu espacio."
     },
     "tagline": {
       "title": "Subtítulo",
-      "description": "Un subtítulo corto que se muestra junto al nombre del espacio.",
-      "ariaLabel": "Subtítulo",
-      "editAriaLabel": "Editar el subtítulo"
+      "description": "Un subtítulo corto que se muestra junto al nombre del espacio."
     },
     "branding": {
-      "title": "Branding del espacio",
-      "description": "Sube un avatar, un banner de página (3840px) y un banner de tarjeta (416×256).",
       "noImage": "Sin imagen",
-      "upload": "Subir",
       "avatar": {
         "title": "Avatar",
+        "size": "410 × 410px",
         "hint": "El logo del espacio.",
-        "recrop": "Recortar el avatar actual"
+        "recrop": "Recortar el avatar actual",
+        "upload": "Subir avatar"
       },
       "pageBanner": {
         "title": "Banner de página",
-        "hint": "Se muestra en la parte superior de la página del Space. Usa una imagen de al menos 1200 × 120px.",
-        "recrop": "Recortar el banner de página actual"
+        "size": "Mín. 1200 × 120px",
+        "hint": "Se muestra en la parte superior de la página del Space.",
+        "recrop": "Recortar el banner de página actual",
+        "upload": "Subir banner de página"
       },
       "cardBanner": {
-        "title": "Banner de tarjeta (416 × 256px)",
+        "title": "Banner de tarjeta",
+        "size": "416 × 256px",
         "hint": "Se muestra en los resultados de búsqueda y las tarjetas de espacio.",
-        "recrop": "Recortar el banner de tarjeta actual"
+        "recrop": "Recortar el banner de tarjeta actual",
+        "upload": "Subir banner de tarjeta"
       },
       "cropDialog": {
         "save": "Guardar",
@@ -978,7 +953,6 @@
       "description": "La ciudad y el país de este espacio.",
       "city": "Ciudad",
       "country": "País (código ISO)",
-      "editCityAriaLabel": "Editar la ciudad",
       "countryPlaceholder": "País"
     },
     "what": {
@@ -1029,16 +1003,6 @@
         "title": "Vista previa en vivo",
         "description": "Esta vista previa muestra cómo aparecerá tu tarjeta de espacio en el directorio \"Explorar espacios\"."
       }
-    },
-    "inlineSave": {
-      "save": "Guardar",
-      "saving": "Guardando…",
-      "saved": "Guardado",
-      "retry": "Reintentar"
-    },
-    "pageHeader": {
-      "title": "Acerca de",
-      "subtitle": "Define el propósito, la motivación y el público objetivo de tu espacio."
     }
   },
   "classifications": {
@@ -1074,12 +1038,8 @@
       "hiddenHint": "Not shown on the Space page"
     },
     "remove": {
-      "menuLabel": "Remove classification",
-      "confirmTitle": "Remove this classification?",
-      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
-      "confirmButton": "Remove"
+      "menuLabel": "Remove classification"
     },
-    "removedEntryError": "This classification was removed — refreshing the page.",
     "entry": {
       "multiSelect": "Selección múltiple",
       "singleSelect": "Selección única",
@@ -1087,8 +1047,9 @@
       "selectedCount_other": "{{count}} seleccionados",
       "actions": "Acciones de clasificación: {{label}}",
       "selectValues": "Seleccionar valores…",
-      "deselectValue": "Deseleccionar {{label}}"
-    },
-    "removedConcurrently": "Esta clasificación fue eliminada por otra persona. La lista se ha actualizado."
+      "selectValue": "Seleccionar {{label}}",
+      "deselectValue": "Deseleccionar {{label}}",
+      "unsaved": "Sin guardar"
+    }
   }
 }

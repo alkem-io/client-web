@@ -11,39 +11,29 @@
     "account": "Konto"
   },
   "dirtyGuard": {
-    "save": "Speichern",
-    "discard": "Verwerfen und verlassen",
     "cancel": "Abbrechen",
-    "tabSwitch": {
-      "title": "Nicht gespeicherte Änderungen",
-      "description": "Sie haben nicht gespeicherte Änderungen auf diesem Tab. Möchten Sie sie speichern, verwerfen oder auf diesem Tab bleiben?"
-    },
     "navAway": {
       "title": "Nicht gespeicherte Änderungen",
       "description": "Wenn Sie diese Seite verlassen, werden Ihre nicht gespeicherten Änderungen verworfen."
     }
   },
   "saveBar": {
-    "save": "Änderungen speichern",
-    "discard": "Änderungen verwerfen",
-    "saving": "Speichern…"
+    "lockedReason": "Speichere oder verwirf zuerst deine Änderungen"
   },
   "layout": {
     "pageHeader": {
       "title": "Layout",
       "subtitle": "Passen Sie die Navigations-Tabs Ihres Spaces an. Benennen Sie um, ordnen Sie neu an und verwalten Sie Beitragszuweisungen."
     },
-    "discardChangesDialog": {
-      "title": "Änderungen verwerfen?",
-      "description": "Ihre nicht gespeicherten Layout-Änderungen werden auf den zuletzt gespeicherten Stand zurückgesetzt. Dies kann nicht rückgängig gemacht werden.",
-      "confirm": "Änderungen verwerfen"
-    },
+    "loading": "Layout wird geladen…",
     "column": {
       "titlePlaceholder": "Spaltentitel",
       "descriptionPlaceholder": "Diese Spalte beschreiben…",
       "menu": "Spaltenaktionen",
       "drag": "Ziehen, um die Phase neu zu ordnen",
       "empty": "Noch keine Beiträge in dieser Spalte.",
+      "postCount_one": "{{count}} Beitrag",
+      "postCount_other": "{{count}} Beiträge",
       "activePhase": {
         "set": "Als aktive Phase markieren",
         "current": "Aktive Phase (aktuell)",
@@ -227,10 +217,6 @@
     }
   },
   "community": {
-    "pageHeader": {
-      "title": "Community",
-      "subtitle": "Verwalten Sie Mitglieder, Organisationen und virtuelle Mitwirkende in diesem Space."
-    },
     "applications": {
       "title": "Ausstehende Anträge",
       "approve": "Genehmigen",
@@ -355,7 +341,6 @@
       "actions": "Aktionen",
       "empty": "Keine Organisationen.",
       "remove": "Organisation entfernen",
-      "description": "Übersicht aller Mitglieds- und Lead-Organisationen. Laden Sie eine Organisation ein beizutreten.",
       "dropdown": {
         "viewProfile": "Profil anzeigen",
         "changeRole": "Rolle ändern",
@@ -380,7 +365,6 @@
       "actions": "Aktionen",
       "empty": "Keine virtuellen Mitwirkenden.",
       "remove": "Virtuellen Mitwirkenden entfernen",
-      "description": "Verwalten Sie KI-Agenten und Bots, die an diesem Space teilnehmen.",
       "add": "Virtuellen Mitwirkenden hinzufügen",
       "addExternal": "Externen virtuellen Mitwirkenden einladen",
       "addDialog": {
@@ -401,11 +385,12 @@
     },
     "applicationForm": {
       "title": "Antragsformular",
-      "description": "Passen Sie die Fragen an, die Benutzer beantworten müssen, wenn sie diesem Space beitreten möchten."
+      "edit": "Antragsformular bearbeiten",
+      "optional": "Optional",
+      "questionNumber": "F{{number}}"
     },
     "guidelines": {
       "title": "Community-Richtlinien",
-      "description": "Legen Sie Regeln und Erwartungen für das Verhalten der Mitglieder fest.",
       "hint": "Werden neuen Mitgliedern beim Beitritt angezeigt.",
       "placeholder": "Beschreiben Sie den Verhaltenskodex Ihres Spaces…",
       "titleLabel": "Titel",
@@ -420,7 +405,9 @@
         "cancel": "Abbrechen"
       },
       "save": "Richtlinien speichern",
-      "saving": "Speichern…"
+      "saving": "Speichern…",
+      "edit": "Richtlinien bearbeiten",
+      "empty": "Noch keine Community-Richtlinien."
     },
     "confirmRemove": {
       "confirm": "Bestätigen",
@@ -478,16 +465,15 @@
         "invited": "Eingeladen",
         "invite": "Einladen"
       }
+    },
+    "editDialog": {
+      "save": "Speichern",
+      "saving": "Speichern…"
     }
   },
   "subspaces": {
-    "pageHeader": {
-      "title": "Subspaces",
-      "subtitle": "Bearbeiten Sie die Subspaces in diesem Space. Konfigurieren Sie Standardvorlagen und sehen Sie alle vorhandenen Subspaces."
-    },
     "defaultTemplate": {
       "title": "Standard-Subspace-Vorlage",
-      "description": "Wählen Sie die Standardeinstellungen, die beim Erstellen eines neuen Subspaces in diesem Space angewendet werden.",
       "change": "Standardvorlage ändern",
       "dialog": {
         "title": "Standard-Subspace-Vorlage ändern",
@@ -662,13 +648,12 @@
     }
   },
   "updates": {
-    "pageHeader": {
-      "title": "Updates der Leads",
-      "subtitle": "Veröffentlichen Sie Ankündigungen, Meilensteine und Fortschrittsupdates, die für alle Mitglieder des Spaces sichtbar sind."
+    "sections": {
+      "post": "Update veröffentlichen",
+      "published": "Veröffentlichte Updates"
     },
     "composer": {
       "new": "Neues Update",
-      "title": "Neues Update",
       "placeholder": "Schreiben Sie Ihr Update…",
       "publish": "Veröffentlichen",
       "submitting": "Veröffentlichen…",
@@ -770,13 +755,8 @@
     }
   },
   "settings": {
-    "pageHeader": {
-      "title": "Einstellungen",
-      "subtitle": "Konfigurieren Sie die Sichtbarkeit Ihres Spaces, die Mitgliedschaftsrichtlinien und die für Mitglieder erlaubten Aktionen."
-    },
     "visibility": {
       "title": "Sichtbarkeit",
-      "description": "Steuern Sie, wer diesen Space sehen und darauf zugreifen kann",
       "public": "Öffentlich",
       "publicDescription": "Dieser Space und seine Inhalte sind für alle auf der Plattform sichtbar. Benutzer können nur beitragen, wenn sie Mitglied sind.",
       "private": "Privat",
@@ -785,7 +765,6 @@
     },
     "membership": {
       "title": "Mitgliedschaft",
-      "description": "Wählen Sie, wie Benutzer Ihrem Space beitreten",
       "open": "Kein Antrag erforderlich",
       "openDescription": "Alle Space-Mitglieder können direkt beitreten, ohne dass Sie ihre Anträge prüfen müssen.",
       "openHint": "Am besten für öffentliche, offene Kollaborationsspaces",
@@ -821,7 +800,6 @@
     },
     "allowedActions": {
       "title": "Erlaubte Aktionen",
-      "description": "Wählen Sie, welche Aktionen Mitglieder in diesem Space ausführen können",
       "subspaceAdminInvitations": "Subspace-Mitgliedschaft",
       "memberCreatePosts": "Beiträge erstellen",
       "videoCalls": "Videoanrufe",
@@ -859,9 +837,8 @@
     }
   },
   "storage": {
-    "pageHeader": {
-      "title": "Speicher",
-      "subtitle": "Durchsuchen und verwalten Sie die in diesem Space gespeicherten Dokumente."
+    "sections": {
+      "documents": "Dokumente"
     },
     "empty": "Noch keine Dokumente gespeichert.",
     "columns": {
@@ -880,12 +857,8 @@
     }
   },
   "account": {
-    "pageHeader": {
-      "title": "Konto",
-      "subtitle": "Hier finden Sie alle Ihre Spaces, virtuellen Mitwirkenden und andere gehostete Ressourcen. Wenn Sie Fragen haben, wenden Sie sich gerne an das Alkemio-Team."
-    },
     "url": {
-      "title": "URL",
+      "title": "Space-URL",
       "hint": "Die eindeutige URL für diesen Space. Wenden Sie sich an Alkemio, um sie zu ändern.",
       "copy": "URL kopieren",
       "copied": "URL kopiert"
@@ -897,12 +870,10 @@
       "contact": "Wenden Sie sich für Statusänderungen an das Alkemio-Team."
     },
     "host": {
-      "title": "Host-Informationen",
-      "description": "Der Host ist die Person oder Organisation, der dieser Space gehört."
+      "title": "Host-Informationen"
     },
     "plan": {
       "title": "Lizenz",
-      "description": "Details zu Ihrem aktuellen Space-Abonnement",
       "featuresHeading": "Enthaltene Funktionen",
       "daysLeft": "Noch {{count}} Tage",
       "changeLicense": "Lizenz ändern"
@@ -924,37 +895,41 @@
     }
   },
   "about": {
+    "sections": {
+      "identity": "Identität",
+      "visuals": "Visuelle Elemente",
+      "context": "Kontext"
+    },
     "name": {
       "title": "Space-Name",
-      "description": "Der öffentliche Name Ihres Spaces.",
-      "ariaLabel": "Space-Name",
-      "editAriaLabel": "Space-Namen bearbeiten"
+      "description": "Der öffentliche Name Ihres Spaces."
     },
     "tagline": {
       "title": "Untertitel",
-      "description": "Ein kurzer Untertitel, der neben dem Space-Namen angezeigt wird.",
-      "ariaLabel": "Untertitel",
-      "editAriaLabel": "Untertitel bearbeiten"
+      "description": "Ein kurzer Untertitel, der neben dem Space-Namen angezeigt wird."
     },
     "branding": {
-      "title": "Space-Branding",
-      "description": "Laden Sie einen Avatar, einen Seiten-Banner (3840px) und einen Karten-Banner (416×256) hoch.",
       "noImage": "Kein Bild",
-      "upload": "Hochladen",
       "avatar": {
         "title": "Avatar",
+        "size": "410 × 410px",
         "hint": "Das Logo des Spaces.",
-        "recrop": "Aktuellen Avatar zuschneiden"
+        "recrop": "Aktuellen Avatar zuschneiden",
+        "upload": "Avatar hochladen"
       },
       "pageBanner": {
         "title": "Seiten-Banner",
-        "hint": "Wird oben auf der Space-Seite angezeigt. Verwenden Sie ein Bild von mindestens 1200 × 120px.",
-        "recrop": "Aktuelles Seitenbanner zuschneiden"
+        "size": "Min. 1200 × 120px",
+        "hint": "Wird oben auf der Space-Seite angezeigt.",
+        "recrop": "Aktuelles Seitenbanner zuschneiden",
+        "upload": "Seiten-Banner hochladen"
       },
       "cardBanner": {
-        "title": "Karten-Banner (416 × 256px)",
+        "title": "Karten-Banner",
+        "size": "416 × 256px",
         "hint": "Wird in Suchergebnissen und Space-Karten angezeigt.",
-        "recrop": "Aktuelles Kartenbanner zuschneiden"
+        "recrop": "Aktuelles Kartenbanner zuschneiden",
+        "upload": "Karten-Banner hochladen"
       },
       "cropDialog": {
         "save": "Speichern",
@@ -978,7 +953,6 @@
       "description": "Stadt und Land dieses Spaces.",
       "city": "Stadt",
       "country": "Land (ISO-Code)",
-      "editCityAriaLabel": "Stadt bearbeiten",
       "countryPlaceholder": "Land"
     },
     "what": {
@@ -1029,16 +1003,6 @@
         "title": "Live-Vorschau",
         "description": "Diese Vorschau zeigt, wie Ihre Space-Karte im Verzeichnis \"Spaces erkunden\" angezeigt wird."
       }
-    },
-    "inlineSave": {
-      "save": "Speichern",
-      "saving": "Speichern…",
-      "saved": "Gespeichert",
-      "retry": "Erneut versuchen"
-    },
-    "pageHeader": {
-      "title": "Über",
-      "subtitle": "Definieren Sie den Zweck, die Motivation und das Zielpublikum Ihres Spaces."
     }
   },
   "classifications": {
@@ -1074,12 +1038,8 @@
       "hiddenHint": "Not shown on the Space page"
     },
     "remove": {
-      "menuLabel": "Remove classification",
-      "confirmTitle": "Remove this classification?",
-      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
-      "confirmButton": "Remove"
+      "menuLabel": "Remove classification"
     },
-    "removedEntryError": "This classification was removed — refreshing the page.",
     "entry": {
       "multiSelect": "Mehrfachauswahl",
       "singleSelect": "Einzelauswahl",
@@ -1087,8 +1047,9 @@
       "selectedCount_other": "{{count}} ausgewählt",
       "actions": "Klassifikations-Aktionen: {{label}}",
       "selectValues": "Werte auswählen…",
-      "deselectValue": "{{label}} abwählen"
-    },
-    "removedConcurrently": "Diese Klassifikation wurde von jemand anderem entfernt. Die Liste wurde aktualisiert."
+      "selectValue": "{{label}} auswählen",
+      "deselectValue": "{{label}} abwählen",
+      "unsaved": "Nicht gespeichert"
+    }
   }
 }

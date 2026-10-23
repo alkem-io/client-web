@@ -13,6 +13,7 @@ export type ApplicationModel = {
       displayName: string;
       email?: string;
       url: string;
+      avatar?: { uri: string };
     };
   };
   questions?: Array<{ id: string; name: string; value: string }>;

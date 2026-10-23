@@ -9,6 +9,7 @@ import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
+import { SettingsUnsavedChangesContext, useSettingsUnsavedChanges } from '../../common/settingsUnsavedChanges';
 import useOrgSettingsAccessGuard from './useOrgSettingsAccessGuard';
 import useOrgSettingsTab, { type OrgSettingsTabId } from './useOrgSettingsTab';
 
@@ -32,6 +33,7 @@ const CrdOrgSettingsPage = () => {
 
   const { accessMode } = useOrgSettingsAccessGuard({ profileUrl });
   const { activeTabId, onTabSelect } = useOrgSettingsTab({ profileUrl });
+  const unsavedChanges = useSettingsUnsavedChanges(onTabSelect);
 
   usePageTitle(t('org.profile.pageTitle'));
 
@@ -61,19 +63,22 @@ const CrdOrgSettingsPage = () => {
   const tabs = accessMode === 'community-only' ? allTabs.filter(tab => tab.id === 'community') : allTabs;
 
   return (
-    <SettingsShell
-      header={{
-        avatarUrl,
-        avatarFallback: computeFallback(displayName),
-        avatarColor,
-        displayName: displayName || t('shared.loading'),
-      }}
-      tabs={tabs}
-      activeTab={activeTabId}
-      onTabChange={onTabSelect}
-    >
-      <Outlet />
-    </SettingsShell>
+    <SettingsUnsavedChangesContext value={unsavedChanges.context}>
+      <SettingsShell
+        header={{
+          avatarUrl,
+          avatarFallback: computeFallback(displayName),
+          avatarColor,
+          displayName: displayName || t('shared.loading'),
+        }}
+        tabs={tabs}
+        activeTab={activeTabId}
+        onTabChange={unsavedChanges.onTabChange}
+      >
+        <Outlet />
+      </SettingsShell>
+      {unsavedChanges.element}
+    </SettingsUnsavedChangesContext>
   );
 };
 

@@ -18,7 +18,13 @@ export type AccountVisibilityStatus = {
 export type AccountHost = {
   displayName: string;
   avatarUrl: string | null;
-  organizationName: string;
+  /** ~~organizationName: string;~~ (Amended 2026-10-22: never shipped — the card shows the provider type instead.) */
+  /**
+   * The provider's `type` enum (`USER`, `ORGANIZATION`, …), rendered in
+   * sentence case — `User`, `Organization` — never the raw upper-case value
+   * (amended 2026-10-22).
+   */
+  type: string;
 };
 
 export type AccountViewProps = {

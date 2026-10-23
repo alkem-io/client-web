@@ -11,39 +11,29 @@
     "account": "Account"
   },
   "dirtyGuard": {
-    "save": "Opslaan",
-    "discard": "Verwerpen en verlaten",
     "cancel": "Annuleren",
-    "tabSwitch": {
-      "title": "Niet-opgeslagen wijzigingen",
-      "description": "Je hebt niet-opgeslagen wijzigingen op dit tabblad. Sla ze op, verwerp ze of blijf op dit tabblad?"
-    },
     "navAway": {
       "title": "Niet-opgeslagen wijzigingen",
       "description": "Als je deze pagina verlaat, worden je niet-opgeslagen wijzigingen verworpen."
     }
   },
   "saveBar": {
-    "save": "Wijzigingen opslaan",
-    "discard": "Wijzigingen verwerpen",
-    "saving": "Opslaan…"
+    "lockedReason": "Sla je wijzigingen eerst op of verwerp ze"
   },
   "layout": {
     "pageHeader": {
       "title": "Layout",
       "subtitle": "Pas de navigatietabbladen van je Space aan. Hernoem, herorden en beheer toewijzingen van Posts."
     },
-    "discardChangesDialog": {
-      "title": "Wijzigingen verwerpen?",
-      "description": "Je niet-opgeslagen Layout-wijzigingen worden teruggezet naar de laatst opgeslagen staat. Dit kan niet ongedaan worden gemaakt.",
-      "confirm": "Wijzigingen verwerpen"
-    },
+    "loading": "Layout laden…",
     "column": {
       "titlePlaceholder": "Kolomtitel",
       "descriptionPlaceholder": "Beschrijf deze kolom…",
       "menu": "Kolomacties",
       "drag": "Sleep om de fase te herschikken",
       "empty": "Nog geen Posts in deze kolom.",
+      "postCount_one": "{{count}} Post",
+      "postCount_other": "{{count}} Posts",
       "activePhase": {
         "set": "Markeer als actieve fase",
         "current": "Actieve fase (huidige)",
@@ -227,10 +217,6 @@
     }
   },
   "community": {
-    "pageHeader": {
-      "title": "Community",
-      "subtitle": "Beheer leden, organisaties en Virtual Contributors in deze Space."
-    },
     "applications": {
       "title": "Lopende aanvragen",
       "approve": "Goedkeuren",
@@ -355,7 +341,6 @@
       "actions": "Acties",
       "empty": "Geen organisaties.",
       "remove": "Organisatie verwijderen",
-      "description": "Overzicht van alle leden- en Lead-organisaties. Nodig een organisatie uit om deel te nemen.",
       "dropdown": {
         "viewProfile": "Profiel bekijken",
         "changeRole": "Rol wijzigen",
@@ -380,7 +365,6 @@
       "actions": "Acties",
       "empty": "Geen Virtual Contributors.",
       "remove": "Virtual Contributor verwijderen",
-      "description": "Beheer AI-agents en bots die deelnemen aan deze Space.",
       "add": "Virtual Contributor toevoegen",
       "addExternal": "Externe Virtual Contributor uitnodigen",
       "addDialog": {
@@ -401,11 +385,12 @@
     },
     "applicationForm": {
       "title": "Aanvraagformulier",
-      "description": "Pas de vragen aan die gebruikers moeten beantwoorden wanneer ze lid willen worden van deze Space."
+      "edit": "Aanvraagformulier bewerken",
+      "optional": "Optioneel",
+      "questionNumber": "V{{number}}"
     },
     "guidelines": {
       "title": "Communityrichtlijnen",
-      "description": "Stel regels en verwachtingen voor het gedrag van leden op.",
       "hint": "Wordt aan nieuwe leden getoond bij hun lidmaatschap.",
       "placeholder": "Beschrijf de gedragscode van je Space…",
       "titleLabel": "Titel",
@@ -420,7 +405,9 @@
         "cancel": "Annuleren"
       },
       "save": "Richtlijnen opslaan",
-      "saving": "Opslaan…"
+      "saving": "Opslaan…",
+      "edit": "Richtlijnen bewerken",
+      "empty": "Nog geen communityrichtlijnen."
     },
     "confirmRemove": {
       "confirm": "Bevestigen",
@@ -478,16 +465,15 @@
         "invited": "Uitgenodigd",
         "invite": "Uitnodigen"
       }
+    },
+    "editDialog": {
+      "save": "Opslaan",
+      "saving": "Opslaan…"
     }
   },
   "subspaces": {
-    "pageHeader": {
-      "title": "Subspaces",
-      "subtitle": "Bewerk de Subspaces in deze Space. Configureer standaardtemplates en bekijk alle bestaande subspaces."
-    },
     "defaultTemplate": {
       "title": "Standaard subspace-template",
-      "description": "Kies de standaardinstellingen die worden toegepast bij het maken van een nieuwe Subspace binnen deze Space.",
       "change": "Standaardtemplate wijzigen",
       "dialog": {
         "title": "Standaard subspace-template wijzigen",
@@ -662,13 +648,12 @@
     }
   },
   "updates": {
-    "pageHeader": {
-      "title": "Updates van de Leads",
-      "subtitle": "Plaats aankondigingen, mijlpalen en voortgangsupdates die zichtbaar zijn voor alle leden van de Space."
+    "sections": {
+      "post": "Een update plaatsen",
+      "published": "Gepubliceerde updates"
     },
     "composer": {
       "new": "Nieuwe update",
-      "title": "Nieuwe update",
       "placeholder": "Schrijf je update…",
       "publish": "Publiceren",
       "submitting": "Publiceren…",
@@ -770,13 +755,8 @@
     }
   },
   "settings": {
-    "pageHeader": {
-      "title": "Instellingen",
-      "subtitle": "Configureer de zichtbaarheid van je Space, lidmaatschapsbeleid en toegestane ledenacties."
-    },
     "visibility": {
       "title": "Zichtbaarheid",
-      "description": "Bepaal wie deze Space kan zien en openen",
       "public": "Openbaar",
       "publicDescription": "Deze Space en de inhoud ervan zijn zichtbaar voor iedereen op het platform. Gebruikers kunnen alleen bijdragen als ze lid zijn.",
       "private": "Privé",
@@ -785,7 +765,6 @@
     },
     "membership": {
       "title": "Lidmaatschap",
-      "description": "Kies hoe gebruikers lid worden van je Space",
       "open": "Geen aanvraag vereist",
       "openDescription": "Alle Space-leden kunnen direct lid worden, zonder dat je hun aanvragen hoeft te beoordelen.",
       "openHint": "Het beste voor openbare, open samenwerkings-Spaces",
@@ -821,7 +800,6 @@
     },
     "allowedActions": {
       "title": "Toegestane acties",
-      "description": "Kies welke acties leden in deze Space kunnen uitvoeren",
       "subspaceAdminInvitations": "Subspace-lidmaatschap",
       "memberCreatePosts": "Posts maken",
       "videoCalls": "Videogesprekken",
@@ -859,9 +837,8 @@
     }
   },
   "storage": {
-    "pageHeader": {
-      "title": "Opslag",
-      "subtitle": "Bekijk en beheer documenten die in deze Space zijn opgeslagen."
+    "sections": {
+      "documents": "Documenten"
     },
     "empty": "Nog geen documenten opgeslagen.",
     "columns": {
@@ -880,12 +857,8 @@
     }
   },
   "account": {
-    "pageHeader": {
-      "title": "Account",
-      "subtitle": "Hier vind je al je Spaces, Virtual Contributors en andere gehoste bronnen. Als je vragen hebt, neem dan gerust contact op met het Alkemio-team."
-    },
     "url": {
-      "title": "URL",
+      "title": "Space-URL",
       "hint": "De unieke URL voor deze Space. Neem contact op met Alkemio om dit te wijzigen.",
       "copy": "URL kopiëren",
       "copied": "URL gekopieerd"
@@ -897,12 +870,10 @@
       "contact": "Voor statuswijzigingen neem je contact op met het Alkemio-team."
     },
     "host": {
-      "title": "Hostinformatie",
-      "description": "De host is de persoon of organisatie die eigenaar is van deze Space."
+      "title": "Hostinformatie"
     },
     "plan": {
       "title": "Licentie",
-      "description": "Details van je huidige Space-abonnement",
       "featuresHeading": "Inbegrepen functies",
       "daysLeft": "Nog {{count}} dagen",
       "changeLicense": "Licentie wijzigen"
@@ -924,37 +895,41 @@
     }
   },
   "about": {
+    "sections": {
+      "identity": "Identiteit",
+      "visuals": "Visuele elementen",
+      "context": "Context"
+    },
     "name": {
       "title": "Naam van de Space",
-      "description": "De openbare naam van je Space.",
-      "ariaLabel": "Naam van de Space",
-      "editAriaLabel": "Naam van de Space bewerken"
+      "description": "De openbare naam van je Space."
     },
     "tagline": {
       "title": "Ondertitel",
-      "description": "Een korte ondertitel die naast de Space-naam wordt weergegeven.",
-      "ariaLabel": "Ondertitel",
-      "editAriaLabel": "Ondertitel bewerken"
+      "description": "Een korte ondertitel die naast de Space-naam wordt weergegeven."
     },
     "branding": {
-      "title": "Branding van de Space",
-      "description": "Upload een avatar, een paginabanner (3840px breed) en een kaartbanner (416×256).",
       "noImage": "Geen afbeelding",
-      "upload": "Uploaden",
       "avatar": {
         "title": "Avatar",
+        "size": "410 × 410px",
         "hint": "Het logo van de Space.",
-        "recrop": "Huidige avatar bijsnijden"
+        "recrop": "Huidige avatar bijsnijden",
+        "upload": "Avatar uploaden"
       },
       "pageBanner": {
         "title": "Paginabanner",
-        "hint": "Wordt bovenaan de Space-pagina getoond. Gebruik een afbeelding van minimaal 1200 × 120px.",
-        "recrop": "Huidige paginabanner bijsnijden"
+        "size": "Min. 1200 × 120px",
+        "hint": "Wordt bovenaan de Space-pagina getoond.",
+        "recrop": "Huidige paginabanner bijsnijden",
+        "upload": "Paginabanner uploaden"
       },
       "cardBanner": {
-        "title": "Kaartbanner (416 × 256px)",
+        "title": "Kaartbanner",
+        "size": "416 × 256px",
         "hint": "Wordt weergegeven in zoekresultaten en Space-kaarten.",
-        "recrop": "Huidige kaartbanner bijsnijden"
+        "recrop": "Huidige kaartbanner bijsnijden",
+        "upload": "Kaartbanner uploaden"
       },
       "cropDialog": {
         "save": "Opslaan",
@@ -978,7 +953,6 @@
       "description": "De stad en het land van deze Space.",
       "city": "Stad",
       "country": "Land (ISO-code)",
-      "editCityAriaLabel": "Stad bewerken",
       "countryPlaceholder": "Land"
     },
     "what": {
@@ -1029,16 +1003,6 @@
         "title": "Live voorbeeld",
         "description": "Dit voorbeeld toont hoe je Space-kaart wordt weergegeven in de \"Explore Spaces\"-directory."
       }
-    },
-    "inlineSave": {
-      "save": "Opslaan",
-      "saving": "Opslaan…",
-      "saved": "Opgeslagen",
-      "retry": "Opnieuw proberen"
-    },
-    "pageHeader": {
-      "title": "Over",
-      "subtitle": "Definieer het doel, de motivatie en het doelpubliek van je Space."
     }
   },
   "classifications": {
@@ -1074,12 +1038,8 @@
       "hiddenHint": "Not shown on the Space page"
     },
     "remove": {
-      "menuLabel": "Remove classification",
-      "confirmTitle": "Remove this classification?",
-      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
-      "confirmButton": "Remove"
+      "menuLabel": "Remove classification"
     },
-    "removedEntryError": "This classification was removed — refreshing the page.",
     "entry": {
       "multiSelect": "Meerkeuze",
       "singleSelect": "Eén keuze",
@@ -1087,8 +1047,9 @@
       "selectedCount_other": "{{count}} geselecteerd",
       "actions": "Classificatie-acties: {{label}}",
       "selectValues": "Waarden selecteren…",
-      "deselectValue": "{{label}} deselecteren"
-    },
-    "removedConcurrently": "Deze classificatie is door iemand anders verwijderd. De lijst is vernieuwd."
+      "selectValue": "{{label}} selecteren",
+      "deselectValue": "{{label}} deselecteren",
+      "unsaved": "Niet opgeslagen"
+    }
   }
 }

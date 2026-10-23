@@ -1604,5 +1604,26 @@
     "unavailableHint": "No se pudo cargar este archivo. Descárgalo para verlo.",
     "unavailableNoDownload": "Este archivo no está disponible.",
     "loading": "Cargando adjunto"
+  },
+  "unsavedChanges": {
+    "count_one": "{{count}} cambio sin guardar",
+    "count_other": "{{count}} cambios sin guardar",
+    "save": "Guardar cambios",
+    "discard": "Descartar",
+    "saving": "Guardando…",
+    "saved": "Cambios guardados",
+    "regionLabel": "Cambios sin guardar",
+    "discardDialog": {
+      "title_one": "¿Descartar 1 cambio sin guardar?",
+      "title_other": "¿Descartar {{count}} cambios sin guardar?",
+      "description": "Cada campo modificado en esta pestaña vuelve a su valor guardado.",
+      "confirm": "Descartar"
+    },
+    "leaveDialog": {
+      "title": "Cambios sin guardar",
+      "description": "Tienes cambios sin guardar en esta pestaña. ¿Quieres guardarlos, descartarlos o quedarte en esta pestaña?",
+      "save": "Guardar",
+      "discard": "Descartar y salir"
+    }
   }
 }

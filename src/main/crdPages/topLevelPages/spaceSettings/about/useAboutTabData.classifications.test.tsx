@@ -1,11 +1,10 @@
 /**
  * @vitest-environment jsdom
  *
- * Classifications integration coverage for `useAboutTabData` (024-classifications). The rest of
- * the hook (branding uploads, per-section About save) is covered elsewhere; this file exercises
- * the classification handlers against a mocked Apollo layer — the layer that shipped with zero
- * tests (qual-cw-2) and hid both a display-label-conflict labelling bug (corr-client-1) and a
- * multi-select selection race (corr-client-3 / spec-client-1).
+ * `useAboutTabData` against a mocked Apollo layer: the unsaved-changes buffer (spec 045 FR-005a /
+ * FR-025) — text fields and the staged classification actions of workspace spec 024 Session
+ * 2026-10-22. Nothing is written until `unsaved.saveAll()`; `unsaved.reset()` restores the server
+ * values; a failed write keeps only that change counted.
  */
 import { InMemoryCache } from '@apollo/client';
 import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
@@ -15,8 +14,10 @@ import { I18nextProvider } from 'react-i18next';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import {
   AddClassificationEntryFromTemplateDocument,
+  DeleteClassificationEntryDocument,
   SpaceAboutDetailsDocument,
   UpdateClassificationEntrySelectionDocument,
+  UpdateSpaceDocument,
 } from '@/core/apollo/generated/apollo-hooks';
 import type {
   AddClassificationEntryFromTemplateMutation,
@@ -25,6 +26,7 @@ import type {
 } from '@/core/apollo/generated/graphql-schema';
 import i18n from '@/core/i18n/config';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
+import type { ClassificationTemplateOptionData } from '@/crd/components/classification/types';
 import { useAboutTabData } from './useAboutTabData';
 
 // `useStorageConfigContext` throws outside a `StorageConfigContextProvider`, and standing one up
@@ -93,7 +95,8 @@ const classificationEntry = (
  * refetch on a successful selection write" assertions below.
  */
 const spaceAboutDetailsMock = (
-  classifications: ReturnType<typeof classificationEntry>[]
+  classifications: ReturnType<typeof classificationEntry>[],
+  profile: Partial<typeof emptyProfile> = {}
 ): MockedResponse<SpaceAboutDetailsQuery> => ({
   request: { query: SpaceAboutDetailsDocument, variables: { spaceId: SPACE_ID } },
   result: {
@@ -123,7 +126,7 @@ const spaceAboutDetailsMock = (
               leadUsers: [],
             },
             provider: null,
-            profile: emptyProfile,
+            profile: { ...emptyProfile, ...profile },
             guidelines: { __typename: 'CommunityGuidelines', id: 'guidelines-1' },
             metrics: [],
             classifications,
@@ -179,88 +182,188 @@ const makeWrapper = (mocks: MockedResponse[]): FC<PropsWithChildren> => {
   );
 };
 
-describe('useAboutTabData — classifications (US1)', () => {
-  it('adding a template persists with zero selected values and refetches (FR-012a, US1-AS2)', async () => {
-    const added = classificationEntry('entry-1', { selectedValueIDs: [] });
-    const wrapper = makeWrapper([
+const SDGS_TEMPLATE: ClassificationTemplateOptionData = {
+  id: 'tpl-sdgs',
+  displayLabel: 'SDGs',
+  description: '',
+  cardinality: 'MULTI_SELECT',
+  values: [
+    { id: 'v-climate', label: 'Climate Action' },
+    { id: 'v-life-below-water', label: 'Life Below Water' },
+  ],
+};
+
+const deleteEntryMock = (entryId: string): MockedResponse => ({
+  request: { query: DeleteClassificationEntryDocument, variables: { classificationData: { ID: entryId } } },
+  result: { data: { deleteClassificationEntry: { __typename: 'ClassificationEntry', id: entryId } } },
+});
+
+const renderAbout = (mocks: MockedResponse[]) =>
+  renderHook(() => useAboutTabData(SPACE_ID, '/space-1', 'L1'), { wrapper: makeWrapper(mocks) });
+
+describe('useAboutTabData — unsaved-changes buffer', () => {
+  it('counts each changed text field and drops a field from the count when it is put back', async () => {
+    const { result } = renderAbout([spaceAboutDetailsMock([])]);
+    await waitFor(() => expect(result.current.values).not.toBeNull());
+    expect(result.current.unsaved.count).toBe(0);
+
+    act(() => result.current.onChange({ name: 'Renamed', tagline: 'New tagline' }));
+    expect(result.current.unsaved.count).toBe(2);
+
+    act(() => result.current.onChange({ name: 'Test Space' }));
+    expect(result.current.unsaved.count).toBe(1);
+  });
+
+  it('saves every changed field in one updateSpace and rebases on the refetched values', async () => {
+    const updateSpace = vi.fn(() => ({ data: { updateSpace: { __typename: 'Space', id: SPACE_ID } } }));
+    const { result } = renderAbout([
       spaceAboutDetailsMock([]),
-      addClassificationMock('tpl-sdgs', 'SDGs', added),
-      // The add path refetches SpaceAboutDetails to pick up the new entry.
-      spaceAboutDetailsMock([added]),
+      {
+        request: {
+          query: UpdateSpaceDocument,
+          variables: {
+            input: { ID: SPACE_ID, about: { profile: { displayName: 'Renamed', tagline: 'New tagline' } } },
+          },
+        },
+        result: updateSpace,
+      },
+      spaceAboutDetailsMock([], { displayName: 'Renamed', tagline: 'New tagline' }),
     ]);
-    const { result } = renderHook(() => useAboutTabData(SPACE_ID, '/space-1', 'L1'), { wrapper });
+    await waitFor(() => expect(result.current.values).not.toBeNull());
 
-    await waitFor(() => expect(result.current.loading).toBe(false));
-    expect(result.current.classifications).toHaveLength(0);
-
+    act(() => result.current.onChange({ name: 'Renamed', tagline: 'New tagline' }));
     let ok: boolean | undefined;
     await act(async () => {
-      ok = await result.current.addClassificationFromTemplate('tpl-sdgs', 'SDGs');
+      ok = await result.current.unsaved.saveAll();
     });
 
     expect(ok).toBe(true);
+    expect(updateSpace).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(result.current.unsaved.count).toBe(0));
+    expect(result.current.values?.name).toBe('Renamed');
+  });
+
+  it('reset puts the changed fields back without a request', async () => {
+    const { result } = renderAbout([spaceAboutDetailsMock([])]);
+    await waitFor(() => expect(result.current.values).not.toBeNull());
+
+    act(() => result.current.onChange({ name: 'Renamed' }));
+    act(() => result.current.unsaved.reset());
+
+    expect(result.current.values?.name).toBe('Test Space');
+    expect(result.current.unsaved.count).toBe(0);
+  });
+});
+
+describe('useAboutTabData — staged classifications (spec 024 Session 2026-10-22)', () => {
+  it('stages an add from the template, then writes the add and its selection on Save', async () => {
+    const created = classificationEntry('entry-1');
+    const { result } = renderAbout([
+      spaceAboutDetailsMock([]),
+      addClassificationMock('tpl-sdgs', 'SDGs', created),
+      updateSelectionMock(
+        'entry-1',
+        ['v-climate'],
+        classificationEntry('entry-1', { selectedValueIDs: ['v-climate'] })
+      ),
+      spaceAboutDetailsMock([classificationEntry('entry-1', { selectedValueIDs: ['v-climate'] })]),
+    ]);
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    act(() => {
+      result.current.addClassificationFromTemplate(SDGS_TEMPLATE);
+    });
+    const tempId = result.current.unsavedClassificationIds[0];
+    expect(result.current.classifications).toHaveLength(1);
+    expect(result.current.classifications[0]).toMatchObject({ id: tempId, displayLabel: 'SDGs' });
+
+    act(() => result.current.updateClassificationSelection(tempId, ['v-climate']));
+    // The add and its values are one staged classification.
+    expect(result.current.unsaved.count).toBe(1);
+
+    let ok: boolean | undefined;
+    await act(async () => {
+      ok = await result.current.unsaved.saveAll();
+    });
+
+    expect(ok).toBe(true);
+    await waitFor(() =>
+      expect(result.current.classifications).toEqual([
+        expect.objectContaining({ id: 'entry-1', selectedValueIDs: ['v-climate'] }),
+      ])
+    );
+    expect(result.current.unsavedClassificationIds).toEqual([]);
+    expect(result.current.unsaved.count).toBe(0);
+  });
+
+  it('rejects a pick whose label collides with an existing classification after FR-011c normalisation', async () => {
+    const { result } = renderAbout([spaceAboutDetailsMock([classificationEntry('entry-1', { displayLabel: 'SDGs' })])]);
     await waitFor(() => expect(result.current.classifications).toHaveLength(1));
-    expect(result.current.classifications[0]).toMatchObject({ id: 'entry-1', selectedValueIDs: [] });
-  });
 
-  it('a selection write against a concurrently-removed entry refetches instead of re-creating it (FR-014b, S-15)', async () => {
-    const wrapper = makeWrapper([
-      spaceAboutDetailsMock([]),
-      updateSelectionMock('gone', ['v-climate'], classificationEntry('gone'), {
-        error: new Error('Classification entry not found'),
-      }),
-      // The catch refetches — the entry is gone server-side, so the list comes back empty.
-      spaceAboutDetailsMock([]),
-    ]);
-    const { result } = renderHook(() => useAboutTabData(SPACE_ID, '/space-1', 'L1'), { wrapper });
-
-    await waitFor(() => expect(result.current.loading).toBe(false));
-    expect(result.current.classificationRemovedError).toBe(false);
-
-    await act(async () => {
-      await result.current.updateClassificationSelection('gone', ['v-climate']);
+    let ok: boolean | undefined;
+    act(() => {
+      ok = result.current.addClassificationFromTemplate(SDGS_TEMPLATE, '  sdgs ');
     });
 
-    expect(result.current.classificationRemovedError).toBe(true);
+    expect(ok).toBe(false);
+    expect(result.current.classificationConflict).toEqual({ templateId: 'tpl-sdgs', attemptedLabel: '  sdgs ' });
+    expect(result.current.unsaved.count).toBe(0);
+  });
+
+  it('stages a removal without a request and Discard brings the classification back', async () => {
+    const { result } = renderAbout([spaceAboutDetailsMock([classificationEntry('entry-1')])]);
+    await waitFor(() => expect(result.current.classifications).toHaveLength(1));
+
+    act(() => result.current.removeClassification('entry-1'));
     expect(result.current.classifications).toHaveLength(0);
+    expect(result.current.unsaved.count).toBe(1);
+
+    act(() => result.current.unsaved.reset());
+    expect(result.current.classifications).toHaveLength(1);
+    expect(result.current.unsaved.count).toBe(0);
   });
 
-  it('composes a second rapid selection write off the first locally-applied one, not the stale cache (corr-client-3 / spec-client-1)', async () => {
-    const initial = classificationEntry('entry-1', { selectedValueIDs: [] });
-    // The server round trip for the FIRST write only ever reports `['v-climate']` back — if the
-    // second write were built from that stale response instead of the locally-applied selection,
-    // the assertion on the second mutation's variables below would fail.
-    const afterFirst = classificationEntry('entry-1', { selectedValueIDs: ['v-climate'] });
-    const afterSecond = classificationEntry('entry-1', { selectedValueIDs: ['v-climate', 'v-life-below-water'] });
-    const wrapper = makeWrapper([
-      spaceAboutDetailsMock([initial]),
-      updateSelectionMock('entry-1', ['v-climate'], afterFirst),
-      updateSelectionMock('entry-1', ['v-climate', 'v-life-below-water'], afterSecond),
-    ]);
-    const { result } = renderHook(() => useAboutTabData(SPACE_ID, '/space-1', 'L1'), { wrapper });
-
+  it('a classification added and removed before Save simply disappears', async () => {
+    const { result } = renderAbout([spaceAboutDetailsMock([])]);
     await waitFor(() => expect(result.current.loading).toBe(false));
 
-    // Fire both writes back-to-back, before either mutation round trip resolves — this is the
-    // window in which the reported bug silently dropped the first click's selection.
-    let firstWrite!: Promise<void>;
     act(() => {
-      firstWrite = result.current.updateClassificationSelection('entry-1', ['v-climate']);
+      result.current.addClassificationFromTemplate(SDGS_TEMPLATE);
     });
-    // The entry the View reads for its NEXT toggle must already reflect the first click locally.
-    expect(result.current.classifications[0].selectedValueIDs).toEqual(['v-climate']);
-    expect(result.current.classificationSelectionPendingIds).toContain('entry-1');
+    act(() => result.current.removeClassification(result.current.unsavedClassificationIds[0]));
 
-    let secondWrite!: Promise<void>;
-    act(() => {
-      secondWrite = result.current.updateClassificationSelection('entry-1', ['v-climate', 'v-life-below-water']);
-    });
+    expect(result.current.classifications).toHaveLength(0);
+    expect(result.current.unsaved.count).toBe(0);
+  });
 
+  it('keeps only the failed change counted when part of the Save fails', async () => {
+    const { result } = renderAbout([
+      spaceAboutDetailsMock([
+        classificationEntry('entry-1'),
+        classificationEntry('entry-2', { displayLabel: 'Sector' }),
+      ]),
+      deleteEntryMock('entry-2'),
+      updateSelectionMock('entry-1', ['v-climate'], classificationEntry('entry-1'), {
+        error: new Error('Selection rejected'),
+      }),
+      spaceAboutDetailsMock([classificationEntry('entry-1')]),
+    ]);
+    await waitFor(() => expect(result.current.classifications).toHaveLength(2));
+
+    act(() => result.current.removeClassification('entry-2'));
+    act(() => result.current.updateClassificationSelection('entry-1', ['v-climate']));
+    expect(result.current.unsaved.count).toBe(2);
+
+    let ok: boolean | undefined;
     await act(async () => {
-      await Promise.all([firstWrite, secondWrite]);
+      ok = await result.current.unsaved.saveAll();
     });
 
-    expect(result.current.classifications[0].selectedValueIDs).toEqual(['v-climate', 'v-life-below-water']);
-    expect(result.current.classificationSelectionPendingIds).toEqual([]);
+    expect(ok).toBe(false);
+    expect(result.current.unsaved.error).toMatch(/Selection rejected/);
+    await waitFor(() => expect(result.current.unsaved.count).toBe(1));
+    expect(result.current.classifications).toEqual([
+      expect.objectContaining({ id: 'entry-1', selectedValueIDs: ['v-climate'] }),
+    ]);
   });
 });
