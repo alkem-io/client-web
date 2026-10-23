@@ -50,7 +50,11 @@ export const stripIdsFromMessage = (message: string): string =>
     .replace(/\s{2,}/g, ' ')
     .trim();
 
-const getTranslationForCode = (error: GraphQLFormattedError, t: TFunction, i18n: i18n) => {
+/**
+ * The translated user-facing message for one GraphQL error — the same text the global error
+ * handler shows for it. For a caller that handles an operation's errors itself.
+ */
+export const getTranslationForCode = (error: GraphQLFormattedError, t: TFunction, i18n: i18n) => {
   const { message } = error;
   const code = error.extensions?.code as string;
   const userMessage = error.extensions?.userMessage as string | undefined;

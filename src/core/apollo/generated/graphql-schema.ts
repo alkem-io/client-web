@@ -1178,6 +1178,7 @@ export enum AuthorizationPrivilege {
   PlatformRoleHoldersRead = 'PLATFORM_ROLE_HOLDERS_READ',
   PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
   PlatformSupportListsRead = 'PLATFORM_SUPPORT_LISTS_READ',
+  PlatformSupportOrgMembership = 'PLATFORM_SUPPORT_ORG_MEMBERSHIP',
   PlatformSupportOrgResources = 'PLATFORM_SUPPORT_ORG_RESOURCES',
   PlatformUsersAdmin = 'PLATFORM_USERS_ADMIN',
   PublicShare = 'PUBLIC_SHARE',
@@ -25028,6 +25029,9 @@ export type OrganizationInfoFragment = {
     __typename?: 'RoleSet';
     id: string;
     myMembershipStatus?: CommunityMembershipStatus | undefined;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
     applicationForm: {
       __typename?: 'Form';
       id: string;
@@ -25120,6 +25124,9 @@ export type OrganizationInfoQuery = {
             __typename?: 'RoleSet';
             id: string;
             myMembershipStatus?: CommunityMembershipStatus | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             applicationForm: {
               __typename?: 'Form';
               id: string;

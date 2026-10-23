@@ -8,6 +8,10 @@ fragment OrganizationInfo on Organization {
   }
   roleSet {
     id
+    authorization {
+      id
+      myPrivileges
+    }
     myMembershipStatus
     applicationForm {
       id
