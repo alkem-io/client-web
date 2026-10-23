@@ -28,6 +28,7 @@ import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAp
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
 import { UnreadTabBadge } from '@/main/tabBadge/UnreadTabBadge';
 import { ConversationEventsSubscriber } from '@/main/userMessaging/ConversationEventsSubscriber';
+import { CallOverlayHost } from '@/main/userMessaging/calls/CallOverlayHost';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { AssistantProvider } from './main/assistant/AssistantContext';
 import { CrdAssistantButtonGate } from './main/assistant/CrdAssistantButtonGate';
@@ -93,6 +94,8 @@ function UnifiedChatGate() {
   return (
     <>
       <UnifiedChatLauncher hidden={hidden} />
+      {/* Not subject to `hidden`: a running call outlives every route and editor. */}
+      <CallOverlayHost />
       {!hidden && <CrdAssistantButtonGate />}
     </>
   );

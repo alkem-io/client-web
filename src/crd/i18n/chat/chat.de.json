@@ -105,5 +105,22 @@
       "messageTooLong": "Die Nachricht darf höchstens {{max}} Zeichen lang sein.",
       "sendFailed": "Die Nachricht konnte nicht gesendet werden. Bitte versuche es erneut."
     }
+  },
+  "call": {
+    "startAudio": "Audioanruf starten",
+    "startVideo": "Videoanruf starten",
+    "active": "Anruf aktiv",
+    "join": "Beitreten",
+    "joinVideo": "Mit Video beitreten",
+    "joinAudio": "Nur mit Audio beitreten",
+    "overlayLabel": "Anruf",
+    "close": "Anruf schließen",
+    "leaveConfirm": {
+      "title": "Anruf verlassen?",
+      "description": "Du verlässt den Anruf. Die anderen können ohne dich weitermachen.",
+      "confirm": "Anruf verlassen",
+      "cancel": "Im Anruf bleiben"
+    },
+    "listBadge": "Anruf aktiv"
   }
 }
