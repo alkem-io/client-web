@@ -31584,6 +31584,86 @@ export type AccountSpaceCandidatesQueryResult = Apollo.QueryResult<
 export function refetchAccountSpaceCandidatesQuery(variables: SchemaTypes.AccountSpaceCandidatesQueryVariables) {
   return { query: AccountSpaceCandidatesDocument, variables: variables };
 }
+export const CalloutCommentsRevalidateDocument = gql`
+    query CalloutCommentsRevalidate($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      comments {
+        ...CommentsWithMessages
+      }
+    }
+  }
+}
+    ${CommentsWithMessagesFragmentDoc}`;
+
+/**
+ * __useCalloutCommentsRevalidateQuery__
+ *
+ * To run a query within a React component, call `useCalloutCommentsRevalidateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutCommentsRevalidateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutCommentsRevalidateQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useCalloutCommentsRevalidateQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutCommentsRevalidateQuery,
+    SchemaTypes.CalloutCommentsRevalidateQueryVariables
+  > &
+    ({ variables: SchemaTypes.CalloutCommentsRevalidateQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CalloutCommentsRevalidateQuery,
+    SchemaTypes.CalloutCommentsRevalidateQueryVariables
+  >(CalloutCommentsRevalidateDocument, options);
+}
+export function useCalloutCommentsRevalidateLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutCommentsRevalidateQuery,
+    SchemaTypes.CalloutCommentsRevalidateQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CalloutCommentsRevalidateQuery,
+    SchemaTypes.CalloutCommentsRevalidateQueryVariables
+  >(CalloutCommentsRevalidateDocument, options);
+}
+export function useCalloutCommentsRevalidateSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CalloutCommentsRevalidateQuery,
+        SchemaTypes.CalloutCommentsRevalidateQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.CalloutCommentsRevalidateQuery,
+    SchemaTypes.CalloutCommentsRevalidateQueryVariables
+  >(CalloutCommentsRevalidateDocument, options);
+}
+export type CalloutCommentsRevalidateQueryHookResult = ReturnType<typeof useCalloutCommentsRevalidateQuery>;
+export type CalloutCommentsRevalidateLazyQueryHookResult = ReturnType<typeof useCalloutCommentsRevalidateLazyQuery>;
+export type CalloutCommentsRevalidateSuspenseQueryHookResult = ReturnType<
+  typeof useCalloutCommentsRevalidateSuspenseQuery
+>;
+export type CalloutCommentsRevalidateQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutCommentsRevalidateQuery,
+  SchemaTypes.CalloutCommentsRevalidateQueryVariables
+>;
+export function refetchCalloutCommentsRevalidateQuery(variables: SchemaTypes.CalloutCommentsRevalidateQueryVariables) {
+  return { query: CalloutCommentsRevalidateDocument, variables: variables };
+}
 export const CalloutsListForFeedDocument = gql`
     query CalloutsListForFeed($calloutsSetId: UUID!, $classificationTagsets: [TagsetArgs!] = []) {
   lookup {

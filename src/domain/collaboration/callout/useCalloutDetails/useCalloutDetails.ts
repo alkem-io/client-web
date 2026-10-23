@@ -1,4 +1,4 @@
-import type { ApolloError, WatchQueryFetchPolicy } from '@apollo/client';
+import type { ApolloError } from '@apollo/client';
 import { useLocation } from 'react-router-dom';
 import { useDeepCompareMemoize } from 'use-deep-compare-effect';
 import { useCalloutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -22,12 +22,6 @@ export interface useCalloutDetailsProps {
   withClassification: boolean;
   overrideCalloutSettings?: Partial<CalloutModelExtension<{}>>;
   skip?: boolean;
-  /**
-   * Defaults to Apollo's `cache-first`. Surfaces that open a single callout pass
-   * `cache-and-network` so a callout already cached earlier in the session is
-   * revalidated on open instead of being served as-is.
-   */
-  fetchPolicy?: WatchQueryFetchPolicy;
 }
 
 const useCalloutDetails = ({
@@ -36,7 +30,6 @@ const useCalloutDetails = ({
   withClassification,
   overrideCalloutSettings,
   skip,
-  fetchPolicy,
 }: useCalloutDetailsProps): useCalloutDetailsProvided => {
   const { entitlements, permissions } = useSpacePermissionsAndEntitlements();
   const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
@@ -50,7 +43,6 @@ const useCalloutDetails = ({
       withClassification,
     },
     skip: skip || !calloutId,
-    fetchPolicy,
   });
 
   // Use deep comparison for overrideCalloutSettings to avoid unnecessary rerenders

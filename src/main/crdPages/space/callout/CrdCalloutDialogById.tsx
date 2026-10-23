@@ -27,12 +27,6 @@ export function CrdCalloutDialogById({ calloutId, calloutsSetId, onLoaded, onClo
     calloutsSetId,
     withClassification: true,
     skip: !calloutId,
-    // Revalidate on every open, like the deep-link route: the dialog's own
-    // comment thread is read from this callout's `comments`, so under
-    // `cache-first` a callout opened earlier in the session would omit comments
-    // added since. `cache-and-network` keeps the cached callout on screen while
-    // it refreshes.
-    fetchPolicy: 'cache-and-network',
   });
 
   // Fire `onLoaded` exactly once per callout — when *the requested* callout's
