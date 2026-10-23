@@ -27,6 +27,7 @@ import {
 import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionReasonText';
 import { offeredRoleLabelKey } from '@/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper';
 import { mapRoleLimitError, mapUsersInRolesToAssociateRows, type OrgAssociateRow } from './orgAssociatesMapper';
+import { isSelfTargetRefusal, SELF_TARGET_REFUSAL_MESSAGE_KEY } from './selfTargetRefusal';
 
 export type PendingRoleRemoval = { contributorId: string; displayName: string };
 
@@ -128,6 +129,8 @@ export type UseOrgAssociatesTabDataResult = {
 
 export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAssociatesTabDataResult => {
   const { t } = useTranslation('crd-contributorSettings');
+  const { t: tCommon } = useTranslation('crd-common');
+  const notifySelfTargetRefusal = () => notify(tCommon(SELF_TARGET_REFUSAL_MESSAGE_KEY), 'error');
   const notify = useNotification();
 
   const { data, loading, refetch } = useOrgAssociatesTabQuery({
@@ -182,6 +185,8 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
       const limit = code === AlkemioGraphqlErrorCode.ROLESET_POLICY_ROLE_LIMITS_VIOLATED && mapRoleLimitError(message);
       if (limit) {
         setRoleLimitError(limit);
+      } else if (isSelfTargetRefusal(error)) {
+        notifySelfTargetRefusal();
       } else if (!isAuthorizationCode(code)) {
         notify(t('org.associates.errors.generic'), 'error');
       }
@@ -210,6 +215,8 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
       if (limit) {
         // Removing the last owner is refused by the role policy: say which limit, not "couldn't remove".
         notify(t(`org.associates.errors.${limit}`), 'error');
+      } else if (isSelfTargetRefusal(error)) {
+        notifySelfTargetRefusal();
       } else if (!isAuthorizationCode(code)) {
         notify(t('org.associates.editor.removeError', { name: row.displayName }), 'error');
       }
@@ -314,7 +321,11 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
   const onPendingApprove = (id: string) => {
     void applicationStateChange(id, ApplicationEvent.APPROVE)
       .then(() => refetchApplicationsAndInvitations())
-      .catch(() => notify(t('org.associates.pending.actionError'), 'error'));
+      .catch(error =>
+        isSelfTargetRefusal(error)
+          ? notifySelfTargetRefusal()
+          : notify(t('org.associates.pending.actionError'), 'error')
+      );
   };
   const nameOfPendingRow = (id: string) => pendingMemberships.find(m => m.id === id)?.displayName ?? '';
 
@@ -352,8 +363,9 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
         await deleteInvitation(confirmation.id);
       }
       await refetchApplicationsAndInvitations();
-    } catch {
-      notify(t('org.associates.pending.actionError'), 'error');
+    } catch (error) {
+      if (isSelfTargetRefusal(error)) notifySelfTargetRefusal();
+      else notify(t('org.associates.pending.actionError'), 'error');
     }
   };
 

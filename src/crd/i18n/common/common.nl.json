@@ -35,6 +35,7 @@
           "invalidToken": "Ongeldig token.",
           "loginFlow": "Login flow error.",
           "loginFlowInit": "Kan de login-flow niet initialiseren.",
+          "platformSupportSelfTarget": "Je kunt dit niet voor je eigen account doen. Vraag een andere Platform Support-gebruiker of een beheerder van de organisatie.",
           "sessionExpired": "Sessie verlopen.",
           "sessionExtend": "Kan sessie niet verlengen.",
           "subscriptionNotAuthenticated": "Abonnement vereist authenticatie.",
