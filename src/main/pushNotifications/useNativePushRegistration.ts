@@ -42,11 +42,10 @@ export const useNativePushRegistration = () => {
 
     // `requestPermissions()` resolves on the OS dialog, which can outlive this
     // effect: the provider unmounts the instant `isAuthenticated` turns false,
-    // and on iOS that dialog can sit open indefinitely. Listeners added after
-    // the cleanup has run are listeners the cleanup cannot remove, so they
-    // survive to bind a token outside the session that asked for it — and
-    // `removeAllListeners()` is itself async, so an event can still land while
-    // removal is in flight. Both checks below exist for those two windows.
+    // and on iOS that dialog can sit open indefinitely. `active` is the whole
+    // teardown — it is what keeps a late grant from adding a listener, and a
+    // late `registration` event from binding a token outside the session that
+    // asked for the permission. Both checks below exist for those two windows.
     let active = true;
 
     const plugin = getNativePushPlugin();
@@ -86,9 +85,17 @@ export const useNativePushRegistration = () => {
       })
       .catch(error => logNativePushFailure(String(error)));
 
+    // No `plugin.removeAllListeners()` here: it is plugin-GLOBAL, so this hook's
+    // sign-out would also remove `useNativePushTapRouting`'s tap listener, which
+    // is mounted above the auth gate precisely so it survives sign-out. There is
+    // no narrower removal (the `addListener` handle is unusable), and `active`
+    // already covers everything the global call did — better, since that call is
+    // async and an event could land while removal was in flight. Accepted
+    // consequence: this hook's two listeners outlive their session, inert
+    // (`registration` is `active`-guarded, a stale `registrationError` only logs
+    // a still-accurate line).
     return () => {
       active = false;
-      plugin.removeAllListeners();
     };
   }, [registerDevicePushToken]);
 };

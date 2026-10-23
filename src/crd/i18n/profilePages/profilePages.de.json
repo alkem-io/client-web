@@ -68,6 +68,7 @@
     "vcType": "Virtueller Mitwirkender"
   },
   "orgProfile": {
+    "guestResourcesNotice": "<signUp>Registrieren Sie sich</signUp> bei Alkemio, um die von {{organization}} gehosteten Ressourcen zu sehen",
     "hero": {
       "settingsTooltip": "Organisationseinstellungen",
       "settingsAriaLabel": "Organisationseinstellungen öffnen",
