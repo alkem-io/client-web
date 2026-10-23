@@ -1,4 +1,4 @@
-import { Paperclip, Search, SquarePen } from 'lucide-react';
+import { Paperclip, Phone, Search, SquarePen } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -117,6 +117,14 @@ export function ChatConversationList({
                           <Badge variant="secondary" className="shrink-0 px-1.5 py-0 text-badge">
                             {t('guidance.beta')}
                           </Badge>
+                        )}
+                        {item.hasActiveCall && (
+                          <Phone
+                            role="img"
+                            aria-label={t('call.listBadge')}
+                            data-testid="call-list-badge"
+                            className="size-3.5 shrink-0 text-primary"
+                          />
                         )}
                       </span>
                       {item.lastMessageTimestamp && (

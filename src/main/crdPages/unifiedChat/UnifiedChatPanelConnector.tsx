@@ -4,6 +4,8 @@ import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { ActiveCallIndicator } from '@/crd/components/chat/ActiveCallIndicator';
+import { CallControls } from '@/crd/components/chat/CallControls';
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
 import { ChatOptionsMenu } from '@/crd/components/chat/ChatOptionsMenu';
 import { ChatPanel } from '@/crd/components/chat/ChatPanel';
@@ -21,6 +23,11 @@ import { Avatar, AvatarImage } from '@/crd/primitives/avatar';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { buildUserNotificationSettingsUrl } from '@/main/routing/urlBuilders';
 import { useConversationDrafts } from '@/main/userMessaging/ConversationDraftsContext';
+import { openCall } from '@/main/userMessaging/calls/callOverlayStore';
+import { useActiveCallRooms } from '@/main/userMessaging/calls/useActiveCallRooms';
+import { useCallEligibility } from '@/main/userMessaging/calls/useCallEligibility';
+import { useRoomCallSession } from '@/main/userMessaging/calls/useRoomCallSession';
+import type { CallIntent } from '@/main/userMessaging/calls/widgetUrl';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
 import { ConversationThread } from './ConversationThread';
@@ -81,6 +88,11 @@ export const UnifiedChatPanelConnector = () => {
   } = useConversationMessages(selectedConversation ?? null);
   const isGuidanceThread = selectedConversation?.isGuidance ?? false;
 
+  // Group calls: shown only to beta testers, in a synced session, where the environment has calls.
+  const callEligibility = useCallEligibility(selectedConversation ?? null);
+  const callSession = useRoomCallSession(callEligibility.matrixRoomId);
+  const activeCallRooms = useActiveCallRooms(conversations);
+
   // Realtime conversation events are subscribed globally by
   // <ConversationEventsSubscriber /> (mounted in root.tsx) so they arrive with
   // the panel closed too. The selected room's message stream is inside the view hook.
@@ -116,7 +128,8 @@ export const UnifiedChatPanelConnector = () => {
     formatDistanceToNowStrict(new Date(timestampMs), { addSuffix: true, locale });
 
   const listItems = conversations.map(conversation => {
-    const item = mapConversationToListItem(conversation, { currentUserId, formatTimestamp });
+    const mapped = mapConversationToListItem(conversation, { currentUserId, formatTimestamp });
+    const item = activeCallRooms.has(conversation.roomId) ? { ...mapped, hasActiveCall: true } : mapped;
     const draft = drafts[conversation.id];
     // A draft replaces the last-message preview but leaves the ordering and the
     // timestamp alone — the conversation does not jump the list for it.
@@ -233,14 +246,51 @@ export const UnifiedChatPanelConnector = () => {
       </>
     );
   } else if (selectedConversation?.isGroup) {
+    const { matrixRoomId } = callEligibility;
+    const startCall = (intent: CallIntent) => {
+      if (matrixRoomId) {
+        openCall({ alkemioRoomId: selectedConversation.roomId, matrixRoomId, intent });
+      }
+    };
+    let callActions: ReactNode = null;
+    if (callEligibility.eligible) {
+      callActions =
+        callSession.participantCount > 0 ? (
+          <ActiveCallIndicator
+            activeLabel={t('call.active')}
+            count={callSession.participantCount}
+            join={
+              callSession.isJoinedHere
+                ? undefined
+                : {
+                    joinLabel: t('call.join'),
+                    joinVideoLabel: t('call.joinVideo'),
+                    joinAudioLabel: t('call.joinAudio'),
+                    onJoinVideo: () => startCall('join_existing'),
+                    onJoinAudio: () => startCall('join_existing_voice'),
+                  }
+            }
+          />
+        ) : (
+          <CallControls
+            startAudioLabel={t('call.startAudio')}
+            startVideoLabel={t('call.startVideo')}
+            onStartAudio={() => startCall('start_call_voice')}
+            onStartVideo={() => startCall('start_call')}
+          />
+        );
+    }
     headerActions = (
-      <ChatOptionsMenu
-        label={t('thread.options')}
-        settingsLabel={t('group.settings')}
-        onOpenSettings={groupSettings.openDialog}
-        leaveLabel={t('group.leave')}
-        onLeave={() => setLeaveConfirmOpen(true)}
-      />
+      <div className="flex items-center gap-1">
+        {callActions}
+        <ChatOptionsMenu
+          label={t('thread.options')}
+          settingsLabel={t('group.settings')}
+          onOpenSettings={groupSettings.openDialog}
+          leaveLabel={t('group.leave')}
+          onLeave={() => setLeaveConfirmOpen(true)}
+        />
+      </div>
     );
   }
   const isGroupThread = view === 'thread' && Boolean(selectedConversation?.isGroup);
