@@ -37,6 +37,25 @@
  * app's existing route-level auth and per-route authorization. No identity or
  * entitlement decision is taken from this signal.
  *
+ * **Fourth consumer, ruled in (091).** `sessionController.loadOrAcquireRecord`
+ * — which decides how the browser's Matrix session acquires credentials when
+ * none are stored — is admitted as the fourth legitimate consumer. It is **not**
+ * on an authorization path: all the predicate decides is *which acquisition path
+ * to try first*. The mutation it selects (`mintMatrixSession`) takes no
+ * arguments and mints for `actorContext.actorID` on the caller's own
+ * authenticated request, so forging the predicate in a browser mints a session
+ * for the forger's **own** actor — a credential that browser can already obtain
+ * through silent SSO one iframe away. And the branch the predicate selects is
+ * reachable in a browser regardless, through the SSO-timeout leg beneath it. So
+ * there is no privilege, no subject and no entitlement decided here, and
+ * nothing a forger gains that they did not already have.
+ *
+ * **The census, corrected.** The three paragraphs above rule on three
+ * consumers; a fifth call site has existed unruled since before 091 —
+ * `CrdUserNotificationsTab.tsx:130`, which reads the predicate to choose what
+ * the notifications tab offers. It is noted here so the count is honest: 091's
+ * mint is the **fourth ruling and the fifth call site**.
+ *
  * **The tap event is also forgeable on Android, and confinement is the control.**
  * Correcting the paragraph above, which only considered browser forgery: the
  * feature's own working path is FCM relaunching the exported `MainActivity`
