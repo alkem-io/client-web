@@ -92,8 +92,9 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 
 // Stub the presentational dialog — this test exercises the connector's data
 // wiring only, not the CRD component's rendering.
+const inviteMembersDialogMock = vi.fn((_props: Record<string, unknown>) => null);
 vi.mock('@/crd/components/community/InviteMembersDialog', () => ({
-  InviteMembersDialog: () => null,
+  InviteMembersDialog: (props: Record<string, unknown>) => inviteMembersDialogMock(props),
 }));
 
 /**
@@ -341,6 +342,36 @@ describe('InviteMembersDialogConnector — virtualContributor fetch waits for th
     const lastCallArgs = calls[calls.length - 1][0];
     expect(lastCallArgs.level).toBe(SpaceLevel.L1);
     expect(lastCallArgs.currentMembers).toEqual([{ id: 'vc-existing' }]);
+  });
+});
+
+describe('InviteMembersDialogConnector — virtualContributor rows carry the VC avatar', () => {
+  test('passes each VC profile avatar through to the account and library rows', async () => {
+    inviteUsersDialogQueryReturn = {
+      data: {
+        lookup: {
+          space: {
+            about: { profile: { displayName: 'My Space' }, membership: { roleSetID: 'rs-1' } },
+            level: SpaceLevel.L0,
+          },
+        },
+      },
+      loading: false,
+    };
+    const vc = (id: string, uri: string) => ({ id, profile: { displayName: id, avatar: { uri } } });
+    getAvailableMock.mockResolvedValueOnce([vc('vc-account', 'https://img/account.png')] as never);
+    getAvailableInLibraryMock.mockResolvedValueOnce([vc('vc-library', 'https://img/library.png')] as never);
+
+    await act(async () => {
+      render(
+        <InviteMembersDialogConnector open={true} kind="virtualContributor" spaceId="space-1" onClose={vi.fn()} />
+      );
+    });
+
+    const calls = inviteMembersDialogMock.mock.calls;
+    const props = calls[calls.length - 1][0];
+    expect(props.vcAccountItems).toEqual([expect.objectContaining({ avatarUrl: 'https://img/account.png' })]);
+    expect(props.vcLibraryItems).toEqual([expect.objectContaining({ avatarUrl: 'https://img/library.png' })]);
   });
 });
 

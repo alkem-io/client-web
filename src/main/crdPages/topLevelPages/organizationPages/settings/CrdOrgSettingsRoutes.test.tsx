@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Outlet, Route, Routes } from 'react-router-dom';
+import { MemoryRouter, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { OrgSettingsAccessMode } from '../useCanEditOrganizationSettings';
 
@@ -22,12 +22,15 @@ vi.mock('../useCanEditOrganizationSettings', () => ({
 
 import CrdOrgSettingsRoutes from './CrdOrgSettingsRoutes';
 
+const LocationProbe = () => <div data-testid="location">{useLocation().pathname}</div>;
+
 const renderAt = (path: string) =>
   render(
     <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route path="/organization/:organizationNameId/settings/*" element={<CrdOrgSettingsRoutes />} />
       </Routes>
+      <LocationProbe />
     </MemoryRouter>
   );
 
@@ -40,6 +43,7 @@ describe('CrdOrgSettingsRoutes — the retired Authorization tab', () => {
   it('redirects /settings/authorization to the Associates tab', async () => {
     renderAt('/organization/acme/settings/authorization');
     expect(await screen.findByText('ASSOCIATES_TAB')).toBeInTheDocument();
+    expect(screen.getByTestId('location')).toHaveTextContent('/organization/acme/settings/associates');
   });
 
   it('does not render the Invitations tab for that segment', async () => {
@@ -56,9 +60,16 @@ describe('CrdOrgSettingsRoutes — the retired Authorization tab', () => {
     expect(await screen.findByText('INVITATIONS_TAB')).toBeInTheDocument();
   });
 
-  it('leaves /settings/community on the Associates tab', async () => {
+  it('leaves /settings/associates on the Associates tab', async () => {
+    renderAt('/organization/acme/settings/associates');
+    expect(await screen.findByText('ASSOCIATES_TAB')).toBeInTheDocument();
+    expect(screen.getByTestId('location')).toHaveTextContent('/organization/acme/settings/associates');
+  });
+
+  it('redirects the pre-#1897 /settings/community URL to /settings/associates', async () => {
     renderAt('/organization/acme/settings/community');
     expect(await screen.findByText('ASSOCIATES_TAB')).toBeInTheDocument();
+    expect(screen.getByTestId('location')).toHaveTextContent('/organization/acme/settings/associates');
   });
 });
 
@@ -96,6 +107,7 @@ describe('CrdOrgSettingsRoutes — full access is unchanged', () => {
     ['', 'PROFILE_TAB'],
     ['/profile', 'PROFILE_TAB'],
     ['/account', 'ACCOUNT_TAB'],
+    ['/associates', 'ASSOCIATES_TAB'],
     ['/community', 'ASSOCIATES_TAB'],
     ['/membership', 'MEMBERSHIP_TAB'],
     ['/invitations', 'INVITATIONS_TAB'],
@@ -109,7 +121,7 @@ describe('CrdOrgSettingsRoutes — full access is unchanged', () => {
   });
 });
 
-describe('CrdOrgSettingsRoutes — a community-only viewer reaches the Community tab alone', () => {
+describe('CrdOrgSettingsRoutes — a community-only viewer reaches the Associates tab alone', () => {
   beforeEach(() => {
     accessMode = 'community-only';
   });
@@ -118,6 +130,7 @@ describe('CrdOrgSettingsRoutes — a community-only viewer reaches the Community
     [''],
     ['/profile'],
     ['/account'],
+    ['/associates'],
     ['/community'],
     ['/membership'],
     ['/invitations'],
@@ -125,7 +138,7 @@ describe('CrdOrgSettingsRoutes — a community-only viewer reaches the Community
     ['/authorization'],
     ['/no-such-tab'],
     ['/no/such/tab'],
-  ] as const)('/settings%s → the Community tab', async suffix => {
+  ] as const)('/settings%s → the Associates tab', async suffix => {
     renderAt(`/organization/acme/settings${suffix}`);
     await expectOnlyTab('ASSOCIATES_TAB');
   });

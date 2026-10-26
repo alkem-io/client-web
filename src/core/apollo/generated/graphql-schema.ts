@@ -34547,6 +34547,7 @@ export type SpaceSettingsQuery = {
               | {
                   __typename?: 'Actor';
                   id: string;
+                  type: ActorType;
                   profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
                 }
               | undefined;

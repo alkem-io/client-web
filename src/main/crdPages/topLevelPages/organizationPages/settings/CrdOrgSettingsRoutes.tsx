@@ -13,23 +13,23 @@ const CrdOrgSettingsTab = lazy(() => import('./settings/CrdOrgSettingsTab'));
 
 /**
  * The landing tab for the index (and so, via the catch-all, for any unknown segment): Profile for a viewer
- * with full access, Community for a viewer confined to it. Waits for the privileges
+ * with full access, Associates for a viewer confined to it. Waits for the privileges
  * so a confined viewer never mounts a tab they cannot use.
  */
 const OrgSettingsIndexRedirect = () => {
   const { accessMode, loading } = useCanEditOrganizationSettings();
   if (loading) return <Loading />;
-  return <Navigate to={accessMode === 'community-only' ? 'community' : 'profile'} replace={true} />;
+  return <Navigate to={accessMode === 'community-only' ? 'associates' : 'profile'} replace={true} />;
 };
 
 /**
- * Wraps every tab other than Community: a viewer confined to the Community tab is
+ * Wraps every tab other than Associates: a viewer confined to the Associates tab is
  * sent there instead of seeing (and querying) a tab the server would refuse them.
  */
 const CommunityOnlyGuard = ({ children }: { children: ReactNode }) => {
   const { accessMode, loading } = useCanEditOrganizationSettings();
   if (loading) return <Loading />;
-  if (accessMode === 'community-only') return <Navigate to="../community" replace={true} />;
+  if (accessMode === 'community-only') return <Navigate to="../associates" replace={true} />;
   return children;
 };
 
@@ -39,13 +39,13 @@ const CommunityOnlyGuard = ({ children }: { children: ReactNode }) => {
  * Six tabs (Profile, Account, Associates, Membership, Invitations, Settings)
  * are wired with their CRD per-tab components. The Authorization tab is gone:
  * the Associates tab editor now covers Admin/Owner add-remove, and the old
- * `/settings/authorization` URL redirects explicitly to `../community`
+ * `/settings/authorization` URL redirects explicitly to `../associates`
  * rather than falling through to the generic catch-all (which would land on
  * Profile — a worse destination than a 404 for a bookmarked/shared link).
  * The shell + tab strip live in `CrdOrgSettingsPage`.
  *
  * A viewer whose access mode is `community-only` (Platform Support without
- * `Update` on the organization) reaches the Community tab alone: the index, the
+ * `Update` on the organization) reaches the Associates tab alone: the index, the
  * catch-all and every other tab redirect there.
  */
 export const CrdOrgSettingsRoutes = () => (
@@ -73,13 +73,16 @@ export const CrdOrgSettingsRoutes = () => (
         }
       />
       <Route
-        path="community"
+        path="associates"
         element={
           <Suspense fallback={<Loading />}>
             <CrdOrgAssociatesTab />
           </Suspense>
         }
       />
+      {/* The tab was renamed from Community to Associates as part of #1897; keep the old
+          /settings/community URL working for bookmarked and shared links. */}
+      <Route path="community" element={<Navigate to="../associates" replace={true} />} />
       <Route
         path="membership"
         element={
@@ -105,7 +108,7 @@ export const CrdOrgSettingsRoutes = () => (
           Exactly ONE route may declare this path: react-router resolves a tie between
           siblings to the earlier one, so a second declaration silently wins and this
           redirect never runs. */}
-      <Route path="authorization" element={<Navigate to="../community" replace={true} />} />
+      <Route path="authorization" element={<Navigate to="../associates" replace={true} />} />
       <Route
         path="settings"
         element={
