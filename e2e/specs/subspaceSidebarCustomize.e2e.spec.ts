@@ -40,6 +40,8 @@ const L2_URL = FIXTURE_URLS.alpha2;
 
 const SIDEBAR_NAME = 'SubSpace sidebar';
 const PHASES_NAV_NAME = 'Innovation flow phases';
+/** The page's main landmark by id: subspace pages render a nested second <main>, so the role alone is ambiguous. */
+const MAIN_CONTENT = '#crd-main-content';
 const HELP_TEXT =
   "Choose which widgets appear in this subspace's sidebar, and in what order. This applies to the whole subspace — every phase shows the same set.";
 
@@ -436,7 +438,7 @@ test.describe('subspace sidebar — admin customizes once for every phase (US1)'
     expect((await readPhases(request, l1Id)).phases[0].settings.sidebar).toEqual([]);
 
     await spaNavigate(page, L1_URL);
-    await expect(page.getByRole('main')).toBeVisible();
+    await expect(page.locator(MAIN_CONTENT)).toBeVisible();
     await expect(sidebar(page)).toHaveCount(0);
     await expect(page.getByRole('button', { name: 'Collapse', exact: true })).toHaveCount(0);
     await expect(page.getByRole('button', { name: 'Expand', exact: true })).toHaveCount(0);
@@ -452,7 +454,7 @@ test.describe('subspace sidebar — admin customizes once for every phase (US1)'
     try {
       await member.page.setViewportSize({ width: 390, height: 800 });
       await member.page.goto(L1_URL);
-      await expect(member.page.getByRole('main')).toBeVisible();
+      await expect(member.page.locator(MAIN_CONTENT)).toBeVisible();
       await expect(member.page.getByRole('button', { name: 'Open menu' })).toHaveCount(0);
     } finally {
       await member.close();
