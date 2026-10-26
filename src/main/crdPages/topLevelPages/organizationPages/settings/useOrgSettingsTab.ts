@@ -5,7 +5,7 @@ import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 export const ORG_SETTINGS_TAB_IDS = [
   'profile',
   'account',
-  'community',
+  'associates',
   'membership',
   'invitations',
   'settings',

@@ -130,9 +130,9 @@ describe('useCommunityTabData — organization invitations (T009)', () => {
   });
 
   it.each([
-    'accepted',
-    'rejected',
-  ] as const)('moves a %s organization invitation out of pendingOrganizationInvitations and into the generic table, deletable', state => {
+    ['accepted', false],
+    ['rejected', true],
+  ] as const)('moves a %s organization invitation out of pendingOrganizationInvitations and into the generic table (deletable: %s)', (state, canDelete) => {
     vi.mocked(useCommunityAdmin).mockReturnValue(
       baseAdmin([orgInvitation({ state })]) as ReturnType<typeof useCommunityAdmin>
     );
@@ -140,16 +140,16 @@ describe('useCommunityTabData — organization invitations (T009)', () => {
 
     // No longer presented as outstanding ...
     expect(result.current.pendingOrganizationInvitations).toHaveLength(0);
-    // ... but the row still exists server-side, so it must remain visible and
-    // removable exactly like the equivalent user invitation — otherwise a
-    // declined organization invitation is invisible AND undeletable forever.
+    // ... but the row still exists server-side, so it must remain visible —
+    // otherwise a declined organization invitation is invisible AND undeletable
+    // forever. An accepted one cannot be deleted (the server rejects it).
     expect(result.current.pendingMemberships).toEqual([
       expect.objectContaining({
         id: 'inv-org-1',
         type: 'invitation',
         state,
         contributorType: 'organization',
-        canDelete: true,
+        canDelete,
       }),
     ]);
   });

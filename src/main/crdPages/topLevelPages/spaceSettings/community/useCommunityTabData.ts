@@ -221,7 +221,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
 
   // Open organization invitations get their own section (Member Organisations →
   // Pending invitations), not the generic pending-memberships table — excluded
-  // here. Resolved ones fall through and are listed (and deletable) exactly
+  // here. Resolved ones fall through and are listed (rejected ones deletable) exactly
   // like a resolved user invitation.
   const invitationMemberships: PendingMembership[] = community.membershipAdmin.invitations
     .filter(inv => !isOpenOrganizationInvitation(inv))
@@ -240,7 +240,8 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
         createdDate: toIsoString(inv.createdDate),
         canApprove: false,
         canReject: false,
-        canDelete: true,
+        // Deleting an accepted invitation fails server-side — hidden like an approved application.
+        canDelete: state !== 'accepted',
         canResend: false,
       };
     })

@@ -27080,6 +27080,7 @@ export const SpaceSettingsDocument = gql`
         id
         provider {
           id
+          type
           profile {
             id
             displayName
