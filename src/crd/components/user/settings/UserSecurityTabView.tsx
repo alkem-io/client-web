@@ -50,19 +50,19 @@ export type UserSecurityTabViewProps = {
    */
   mcpApiKeysCard: ReactNode;
   /**
-   * Slot for the Connected Accounts section (051) — every way to sign in:
-   * each identity provider plus password/passkey state rows. Provided by
-   * the integration page; carries its own loading/unavailable states, so it
-   * renders whenever `state.kind === 'ready'` alongside the other cards.
+   * Slot for the Connected Accounts section — every way to sign in: each
+   * identity provider plus password/passkey state rows. Provided by the
+   * integration page; carries its own loading/unavailable/lapsed-session
+   * states, so it renders in every view state rather than waiting for the
+   * Kratos settings flow the rest of this tab gates on.
    */
   connectedAccountsSection: ReactNode;
   /**
-   * Slot for the Delete-account card (054). Provided by the integration page
-   * so the CRD view stays free of Apollo/GraphQL imports; the card owns its
-   * own pre-flight read and dialog state, so — like `connectedAccountsSection`
-   * — it renders in every branch (`loading`, `error`, `ready`), never only
-   * when the unrelated Kratos settings flow this tab otherwise gates on has
-   * finished loading (FR-001).
+   * Slot for the Delete-account card. Provided by the integration page so the
+   * CRD view stays free of Apollo/GraphQL imports; the card owns its own
+   * pre-flight read and dialog state, so — like `connectedAccountsSection`
+   * — it renders in every view state, never only once the unrelated Kratos
+   * settings flow this tab otherwise gates on has finished loading.
    */
   deleteAccountCard: ReactNode;
 };
@@ -82,102 +82,107 @@ export function UserSecurityTabView({
 }: UserSecurityTabViewProps) {
   const { t } = useTranslation(NS);
 
-  // The Delete-account card is self-contained — its own pre-flight read, its own dialogs — and has
-  // no dependency on the Kratos settings flow this tab otherwise gates on. It renders in every
-  // branch below, not just 'ready' (FR-001): the app-store-mandated deletion entry point must stay
-  // reachable even while an unrelated Kratos settings-flow failure or a slow initial load would
-  // otherwise hide it, exactly like `connectedAccountsSection` already does for the same reason.
-  const deleteAccountSection = (
-    <SettingsCard
-      icon={Trash2}
-      title={t('user.security.deleteAccount.title')}
-      description={t('user.security.deleteAccount.description')}
-    >
-      {deleteAccountCard}
-    </SettingsCard>
-  );
+  // Only the middle of this tab varies by state. Connected Accounts and Delete-account are both
+  // self-contained — each owns its own read, its own status/skeleton and its own dialogs, and
+  // neither depends on the Kratos settings flow the rest of the tab gates on — so both render from
+  // the single site at the bottom of this component, in every state:
+  //
+  //   - The app-store-mandated deletion entry point has to be reachable whatever that settings flow
+  //     is doing, a lapsed identity-provider session included. The server gates deletion on the
+  //     freshness of the platform session, never on the identity provider's, so a deletion started
+  //     from the lapsed state still goes through. That matters most in the mobile app shell, where
+  //     the WebView holds no identity-provider session at all and this tab is therefore always in
+  //     the lapsed state — withholding the card there left no way to delete an account.
+  //   - Connected Accounts holds the Kratos outcome live region. A link/unlink redirect can land
+  //     while this tab is still on its own loading gate, and a live region only announces mutations
+  //     that happen after it exists in the DOM, so a state that dropped the section would insert the
+  //     region already populated and announce nothing. It also fails closed on its own terms: its
+  //     unavailable state carries the reason and the retry that re-initializes the flow, which is
+  //     the only recovery path this tab offers for a flow-load failure.
+  //
+  // Repeating them per state is what cost the deletion entry point once already — a state added
+  // later simply did not carry the card forward — so there is deliberately nothing to repeat.
+  let stateBody: ReactNode;
 
   if (state.kind === 'loading') {
-    // The Connected Accounts card — and the outcome live region inside it — renders here too,
-    // not just in the 'ready' branch below. Kratos's redirect back from a link/unlink attempt can
-    // land while this tab is still on its own loading gate (the flow/auth-methods query hasn't
-    // resolved yet); a live region only announces mutations that happen after it exists in the DOM,
-    // so if this branch dropped the section entirely, the very first commit that carries a Kratos
-    // outcome message would insert the region already populated and announce nothing (FR-012).
-    // `connectedAccountsSection` carries its own 'loading' status/skeleton, so this is safe to
-    // render even before it has anything to show.
-    return (
-      <div className="space-y-6">
-        <SettingsCard
-          icon={Link2}
-          title={t('user.security.connectedAccounts.title')}
-          description={t('user.security.connectedAccounts.description')}
-        >
-          {connectedAccountsSection}
-        </SettingsCard>
-        <Skeleton className="h-64 w-full" />
-        {deleteAccountSection}
-      </div>
-    );
-  }
-
-  if (state.kind === 'sessionExpired') {
-    // Same shape as the generic error branch below, and the card names the actual
-    // cause and offers the only action that resolves it. Sending someone to refresh
-    // here would strand them: the platform session that keeps every other page
-    // working renews itself without ever consulting the identity provider, so
-    // no number of reloads will produce the session this tab needs. Connected
-    // Accounts still renders above, in its own `sessionExpired` state — it withholds
-    // the retry its `unavailable` state offers, for the same reason, and its reason
-    // copy points at the action below rather than repeating it.
-    return (
-      <div className="space-y-6">
-        <SettingsCard
-          icon={Link2}
-          title={t('user.security.connectedAccounts.title')}
-          description={t('user.security.connectedAccounts.description')}
-        >
-          {connectedAccountsSection}
-        </SettingsCard>
-        <SettingsCard icon={ShieldAlert} title={t('user.security.title')}>
-          <div className="flex flex-col gap-3">
-            <div className="flex items-start gap-2 rounded-md border bg-muted/30 p-4 text-body text-muted-foreground">
-              <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-              <p>{t('user.security.sessionExpired.description')}</p>
-            </div>
-            <Button asChild={true} className="self-start">
-              <a href={state.reauthHref}>{t('user.security.sessionExpired.action')}</a>
-            </Button>
-          </div>
-        </SettingsCard>
-      </div>
-    );
-  }
-
-  if (state.kind === 'error') {
-    // The Kratos settings flow itself failed to load (network/5xx) — the Change Password, Passkey,
-    // and MCP API Keys cards genuinely have nothing to render, so the generic error card below still
-    // covers those. But Connected Accounts fails closed on its own (FR-024): `connectedAccountsSection`
-    // already carries an 'unavailable' status with a plain-language reason and a retry button that
-    // re-initializes the settings flow, so dropping it here — as the bare error card alone did — would
-    // silently swallow the one actionable recovery path this tab has for a flow-load failure.
-    return (
-      <div className="space-y-6">
-        <SettingsCard
-          icon={Link2}
-          title={t('user.security.connectedAccounts.title')}
-          description={t('user.security.connectedAccounts.description')}
-        >
-          {connectedAccountsSection}
-        </SettingsCard>
-        <SettingsCard icon={ShieldAlert} title={t('user.security.title')}>
-          <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-4 text-body text-destructive">
+    stateBody = <Skeleton className="h-64 w-full" />;
+  } else if (state.kind === 'sessionExpired') {
+    // Same shape as the generic error state below, but this card names the actual cause and offers
+    // the only action that resolves it. Sending someone to refresh here would strand them: the
+    // platform session that keeps every other page working renews itself without ever consulting
+    // the identity provider, so no number of reloads will produce the session this tab needs.
+    // Connected Accounts renders above in its own lapsed-session state, which withholds the retry
+    // its unavailable state offers for the same reason and points at the action here instead of
+    // repeating it.
+    stateBody = (
+      <SettingsCard icon={ShieldAlert} title={t('user.security.title')}>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-start gap-2 rounded-md border bg-muted/30 p-4 text-body text-muted-foreground">
             <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-            <p>{t('user.security.errorDescription')}</p>
+            <p>{t('user.security.sessionExpired.description')}</p>
           </div>
+          <Button asChild={true} className="self-start">
+            <a href={state.reauthHref}>{t('user.security.sessionExpired.action')}</a>
+          </Button>
+        </div>
+      </SettingsCard>
+    );
+  } else if (state.kind === 'error') {
+    // The Kratos settings flow itself failed to load (network/5xx), so the Change Password, Passkey
+    // and MCP API Keys cards genuinely have nothing to render and one generic card covers all three.
+    stateBody = (
+      <SettingsCard icon={ShieldAlert} title={t('user.security.title')}>
+        <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-4 text-body text-destructive">
+          <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+          <p>{t('user.security.errorDescription')}</p>
+        </div>
+      </SettingsCard>
+    );
+  } else {
+    stateBody = (
+      <>
+        {/* scroll-mt offsets in-page anchor jumps (#password / #passkeys) below the sticky
+            chrome: the h-16 app header + the SettingsShell header band (~147px). */}
+        <div id="password" className="scroll-mt-60">
+          <SettingsCard
+            icon={KeyRound}
+            title={t('user.security.password.title')}
+            description={t('user.security.password.description')}
+          >
+            {state.hasPassword ? (
+              <div className="mt-2">{passwordForm}</div>
+            ) : (
+              <div className="flex items-start gap-2 rounded-md border bg-muted/30 p-4 text-body text-muted-foreground">
+                <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+                <p>{t('user.security.password.notEnabled')}</p>
+              </div>
+            )}
+          </SettingsCard>
+        </div>
+        <div id="passkeys" className="scroll-mt-60">
+          <SettingsCard
+            icon={ShieldCheck}
+            title={t('user.security.title')}
+            description={t('user.security.description')}
+          >
+            {state.hasWebauthn ? (
+              <div className="mt-2">{webauthnForm}</div>
+            ) : (
+              <div className="flex items-start gap-2 rounded-md border bg-muted/30 p-4 text-body text-muted-foreground">
+                <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+                <p>{t('user.security.notEnabled')}</p>
+              </div>
+            )}
+          </SettingsCard>
+        </div>
+        <SettingsCard
+          icon={Plug}
+          title={t('user.security.mcpApiKeys.title')}
+          description={t('user.security.mcpApiKeys.description')}
+        >
+          {mcpApiKeysCard}
         </SettingsCard>
-        {deleteAccountSection}
-      </div>
+      </>
     );
   }
 
@@ -190,44 +195,14 @@ export function UserSecurityTabView({
       >
         {connectedAccountsSection}
       </SettingsCard>
-      {/* scroll-mt offsets in-page anchor jumps (#password / #passkeys) below the sticky
-          chrome: the h-16 app header + the SettingsShell header band (~147px). */}
-      <div id="password" className="scroll-mt-60">
-        <SettingsCard
-          icon={KeyRound}
-          title={t('user.security.password.title')}
-          description={t('user.security.password.description')}
-        >
-          {state.hasPassword ? (
-            <div className="mt-2">{passwordForm}</div>
-          ) : (
-            <div className="flex items-start gap-2 rounded-md border bg-muted/30 p-4 text-body text-muted-foreground">
-              <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-              <p>{t('user.security.password.notEnabled')}</p>
-            </div>
-          )}
-        </SettingsCard>
-      </div>
-      <div id="passkeys" className="scroll-mt-60">
-        <SettingsCard icon={ShieldCheck} title={t('user.security.title')} description={t('user.security.description')}>
-          {state.hasWebauthn ? (
-            <div className="mt-2">{webauthnForm}</div>
-          ) : (
-            <div className="flex items-start gap-2 rounded-md border bg-muted/30 p-4 text-body text-muted-foreground">
-              <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-              <p>{t('user.security.notEnabled')}</p>
-            </div>
-          )}
-        </SettingsCard>
-      </div>
+      {stateBody}
       <SettingsCard
-        icon={Plug}
-        title={t('user.security.mcpApiKeys.title')}
-        description={t('user.security.mcpApiKeys.description')}
+        icon={Trash2}
+        title={t('user.security.deleteAccount.title')}
+        description={t('user.security.deleteAccount.description')}
       >
-        {mcpApiKeysCard}
+        {deleteAccountCard}
       </SettingsCard>
-      {deleteAccountSection}
     </div>
   );
 }

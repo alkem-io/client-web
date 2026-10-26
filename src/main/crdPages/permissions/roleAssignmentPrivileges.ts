@@ -97,6 +97,18 @@ export const FEATURE_ROLE_ASSIGN_PRIVILEGES = [AuthorizationPrivilege.FeatureRol
 export const ORG_ROLE_SET_MANAGE_PRIVILEGES = [AuthorizationPrivilege.Grant];
 
 /**
+ * Platform Support's path to the same Associates-tab management actions — promote,
+ * demote, remove, approve/reject applications and read them — on any organization's
+ * role set, without GRANT.
+ *
+ * An alternative to `ORG_ROLE_SET_MANAGE_PRIVILEGES`, not an addition to it: the caller
+ * evaluates the two separately and ORs the results, because `useActionPermission`
+ * requires every listed privilege. The server never lets this path add someone who is
+ * not already an Associate, so it unlocks no direct-add control.
+ */
+export const ORG_ROLE_SET_SUPPORT_MANAGE_PRIVILEGES = [AuthorizationPrivilege.PlatformSupportOrgMembership];
+
+/**
  * Adding a virtual contributor from the account, an alternative to
  * `ROLE_SET_ASSIGN_PRIVILEGES` rather than an addition to it.
  *

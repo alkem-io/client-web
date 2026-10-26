@@ -80,7 +80,10 @@ export type CommentsContainerData = {
    *  per-comment Delete (gated separately by `comment.canDelete`) remain
    *  visible. Defaults to true for backwards compatibility. */
   canComment?: boolean;
-  onReply: (parentId: string, content: string) => void;
+  /** A returned promise keeps the reply box open until it resolves, and open
+   *  when it resolves `false`, so a failed send can be retried. */
+  // biome-ignore lint/suspicious/noConfusingVoidType: existing callers return nothing, so void must stay accepted
+  onReply: (parentId: string, content: string) => void | Promise<boolean>;
   onDelete: (commentId: string) => void;
   onAddReaction: (commentId: string, emoji: string) => void;
   onRemoveReaction: (commentId: string, emoji: string) => void;

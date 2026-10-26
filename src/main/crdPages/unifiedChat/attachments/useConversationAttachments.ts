@@ -8,6 +8,7 @@ import {
   type AttachmentRejection,
   DEFAULT_ALLOWED_ATTACHMENT_MIME_TYPES,
   MAX_ATTACHMENT_SIZE_BYTES,
+  MAX_ATTACHMENTS_PER_MESSAGE,
   validateAttachments,
 } from './validateAttachments';
 
@@ -16,11 +17,22 @@ type UploadLifetime = { disposed: boolean; busy: boolean; contextKey: string; up
 type SelectedFile = ComposerAttachment & { file: File; uploadedAttachment?: RoomMessageAttachmentInput };
 export type AttachmentContext = { roomID: string; threadID?: string };
 export type SendEvent = (text: string, attachmentUpload?: RoomMessageAttachmentInput) => Promise<boolean | undefined>;
+/**
+ * Optional per-composer behaviour. Omitting both keeps the chat defaults: up to
+ * MAX_ATTACHMENTS_PER_MESSAGE files, and the text is sent as its own message
+ * before the files.
+ * - maxAttachments: how many files one send may carry.
+ * - textWithAttachment: when a file is staged, the text is sent together with
+ *   the first file in one message (as its caption) instead of on its own. Nothing
+ *   is posted until that file is uploaded, so a failed upload never loses the text.
+ */
+export type AttachmentOptions = { maxAttachments?: number; textWithAttachment?: boolean };
 
 /** Owned by one keyed composer instance. Selection is local; Send uploads each file. */
 export function useConversationAttachments(
   storageConfig: StorageConfig | undefined,
-  context: AttachmentContext | undefined
+  context: AttachmentContext | undefined,
+  options: AttachmentOptions = {}
 ) {
   const { t } = useTranslation('crd-space');
   const [draft, setDraft] = useState<{ items: SelectedFile[]; error?: string }>({ items: [] });
@@ -41,6 +53,7 @@ export function useConversationAttachments(
     };
   }, [contextKey]);
 
+  const maxAttachments = options.maxAttachments ?? MAX_ATTACHMENTS_PER_MESSAGE;
   const enabled = Boolean(storageConfig?.canUpload && context?.roomID);
   const allowedMimeTypes = storageConfig?.allowedMimeTypes ?? DEFAULT_ALLOWED_ATTACHMENT_MIME_TYPES;
   const accept = storageConfig
@@ -50,7 +63,7 @@ export function useConversationAttachments(
   const describeRejection = (rejection: AttachmentRejection) => {
     switch (rejection.reason) {
       case 'tooMany':
-        return t('comments.attachments.errorTooMany', { max: 10 });
+        return t('comments.attachments.errorTooMany', { count: maxAttachments });
       case 'tooLarge':
         return t('comments.attachments.errorTooLarge', {
           name: rejection.fileName,
@@ -75,6 +88,7 @@ export function useConversationAttachments(
         existingCount: previous.items.length,
         allowedMimeTypes,
         maxFileSizeBytes: storageConfig?.maxFileSize || undefined,
+        maxAttachments,
       });
       return {
         items: [...previous.items, ...selected.filter(item => accepted.includes(item.file))],
@@ -96,8 +110,10 @@ export function useConversationAttachments(
     setDraft(previous => ({ ...previous, error: undefined }));
     let activeFile: SelectedFile | undefined;
     let uploading = false;
+    // The text still to be sent with the next file; empty unless textWithAttachment.
+    let caption = options.textWithAttachment && draft.items.length > 0 && text.trim() ? text : '';
     try {
-      if (text.trim()) {
+      if (text.trim() && !caption) {
         if (!(await sendEvent(text))) throw new Error('send unconfirmed');
         textSent();
         if (current.disposed) return false;
@@ -144,7 +160,11 @@ export function useConversationAttachments(
             ),
           }));
         }
-        if (!(await sendEvent('', uploadedAttachment))) throw new Error('send unconfirmed');
+        if (!(await sendEvent(caption, uploadedAttachment))) throw new Error('send unconfirmed');
+        if (caption) {
+          caption = '';
+          textSent();
+        }
         if (current.disposed) return false;
         setDraft(previous => ({ ...previous, items: previous.items.filter(value => value.id !== item.id) }));
       }

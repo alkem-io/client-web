@@ -1,6 +1,7 @@
-import { lazy, Suspense } from 'react';
+import { lazy, type ReactNode, Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Loading from '@/core/ui/loading/Loading';
+import useCanEditOrganizationSettings from '../useCanEditOrganizationSettings';
 import CrdOrgSettingsPage from './CrdOrgSettingsPage';
 
 const CrdOrgProfileTab = lazy(() => import('./profile/CrdOrgProfileTab'));
@@ -9,6 +10,28 @@ const CrdOrgAssociatesTab = lazy(() => import('./community/CrdOrgAssociatesTab')
 const CrdOrgMembershipTab = lazy(() => import('./membership/CrdOrgMembershipTab'));
 const CrdOrgInvitationsTab = lazy(() => import('./invitations/CrdOrgInvitationsTab'));
 const CrdOrgSettingsTab = lazy(() => import('./settings/CrdOrgSettingsTab'));
+
+/**
+ * The landing tab for the index (and so, via the catch-all, for any unknown segment): Profile for a viewer
+ * with full access, Community for a viewer confined to it. Waits for the privileges
+ * so a confined viewer never mounts a tab they cannot use.
+ */
+const OrgSettingsIndexRedirect = () => {
+  const { accessMode, loading } = useCanEditOrganizationSettings();
+  if (loading) return <Loading />;
+  return <Navigate to={accessMode === 'community-only' ? 'community' : 'profile'} replace={true} />;
+};
+
+/**
+ * Wraps every tab other than Community: a viewer confined to the Community tab is
+ * sent there instead of seeing (and querying) a tab the server would refuse them.
+ */
+const CommunityOnlyGuard = ({ children }: { children: ReactNode }) => {
+  const { accessMode, loading } = useCanEditOrganizationSettings();
+  if (loading) return <Loading />;
+  if (accessMode === 'community-only') return <Navigate to="../community" replace={true} />;
+  return children;
+};
 
 /**
  * Routes the Org settings sub-tree (`/organization/<orgSlug>/settings/*`).
@@ -20,25 +43,33 @@ const CrdOrgSettingsTab = lazy(() => import('./settings/CrdOrgSettingsTab'));
  * rather than falling through to the generic catch-all (which would land on
  * Profile — a worse destination than a 404 for a bookmarked/shared link).
  * The shell + tab strip live in `CrdOrgSettingsPage`.
+ *
+ * A viewer whose access mode is `community-only` (Platform Support without
+ * `Update` on the organization) reaches the Community tab alone: the index, the
+ * catch-all and every other tab redirect there.
  */
 export const CrdOrgSettingsRoutes = () => (
   <Routes>
     <Route path="" element={<CrdOrgSettingsPage />}>
-      <Route index={true} element={<Navigate to="profile" replace={true} />} />
+      <Route index={true} element={<OrgSettingsIndexRedirect />} />
       <Route
         path="profile"
         element={
-          <Suspense fallback={<Loading />}>
-            <CrdOrgProfileTab />
-          </Suspense>
+          <CommunityOnlyGuard>
+            <Suspense fallback={<Loading />}>
+              <CrdOrgProfileTab />
+            </Suspense>
+          </CommunityOnlyGuard>
         }
       />
       <Route
         path="account"
         element={
-          <Suspense fallback={<Loading />}>
-            <CrdOrgAccountTab />
-          </Suspense>
+          <CommunityOnlyGuard>
+            <Suspense fallback={<Loading />}>
+              <CrdOrgAccountTab />
+            </Suspense>
+          </CommunityOnlyGuard>
         }
       />
       <Route
@@ -52,21 +83,25 @@ export const CrdOrgSettingsRoutes = () => (
       <Route
         path="membership"
         element={
-          <Suspense fallback={<Loading />}>
-            <CrdOrgMembershipTab />
-          </Suspense>
+          <CommunityOnlyGuard>
+            <Suspense fallback={<Loading />}>
+              <CrdOrgMembershipTab />
+            </Suspense>
+          </CommunityOnlyGuard>
         }
       />
       <Route
         path="invitations"
         element={
-          <Suspense fallback={<Loading />}>
-            <CrdOrgInvitationsTab />
-          </Suspense>
+          <CommunityOnlyGuard>
+            <Suspense fallback={<Loading />}>
+              <CrdOrgInvitationsTab />
+            </Suspense>
+          </CommunityOnlyGuard>
         }
       />
       {/* Must precede the catch-all below so a matched "authorization" segment redirects
-          explicitly rather than falling through to the generic Navigate to="profile".
+          explicitly rather than falling through to the generic index redirect.
           Exactly ONE route may declare this path: react-router resolves a tie between
           siblings to the earlier one, so a second declaration silently wins and this
           redirect never runs. */}
@@ -74,12 +109,17 @@ export const CrdOrgSettingsRoutes = () => (
       <Route
         path="settings"
         element={
-          <Suspense fallback={<Loading />}>
-            <CrdOrgSettingsTab />
-          </Suspense>
+          <CommunityOnlyGuard>
+            <Suspense fallback={<Loading />}>
+              <CrdOrgSettingsTab />
+            </Suspense>
+          </CommunityOnlyGuard>
         }
       />
-      <Route path="*" element={<Navigate to="profile" replace={true} />} />
+      {/* Climb back to the index, which picks the landing tab. A splat route resolves a
+          relative target against the whole URL, so "profile" here would append to the unknown
+          segment and match this route again, forever. */}
+      <Route path="*" element={<Navigate to=".." replace={true} />} />
     </Route>
   </Routes>
 );

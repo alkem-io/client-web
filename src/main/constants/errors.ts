@@ -14,4 +14,6 @@ export enum AlkemioGraphqlErrorCode {
   ROLESET_POLICY_ROLE_LIMITS_VIOLATED = 'ROLESET_POLICY_ROLE_LIMITS_VIOLATED',
   // Resending the same platform invitation email again inside its cool-down window.
   ROLESET_INVITATION_RESEND_THROTTLED = 'ROLESET_INVITATION_RESEND_THROTTLED',
+  // A Platform Support user acting on their own account on an organization's Community tab.
+  PLATFORM_SUPPORT_SELF_TARGET = 'PLATFORM_SUPPORT_SELF_TARGET',
 }

@@ -1,0 +1,9 @@
+query CommentRoomStorageBucket($bucketId: UUID!) {
+  lookup {
+    storageBucket(ID: $bucketId) {
+      id
+      allowedMimeTypes
+      maxFileSize
+    }
+  }
+}
