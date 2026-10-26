@@ -17,6 +17,7 @@ import type {
   PhaseLayoutInput,
 } from '@/crd/components/space/settings/SpaceSettingsLayoutView.types';
 import useInnovationFlowSettings from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings';
+import { errorMessage, type TabUnsavedChanges } from '@/main/crdPages/utils/tabUnsavedChanges';
 import { mapCollaborationToLayoutColumns, type SpaceLevelTag } from './layoutMapper';
 
 export type {
@@ -32,9 +33,11 @@ export type UseLayoutTabDataResult = {
   onReorder: (calloutId: string, target: LayoutReorderTarget) => void;
   onReorderColumns: (orderedColumnIds: LayoutColumnId[]) => void;
   onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
-  onSave: () => void;
+  onSave: () => Promise<boolean>;
   onReset: () => void;
   isDirty: boolean;
+  /** The buffer as seen by the unsaved-changes bar (spec 045 FR-025b). */
+  unsaved: TabUnsavedChanges;
   /** Update both buffer AND snapshot for a column saved via the Edit Details dialog. */
   markColumnSaved: (columnId: LayoutColumnId, title: string, description: string) => void;
   /**
@@ -118,6 +121,35 @@ function toSnapshot(columns: LayoutPoolColumn[]): Snapshot {
       callouts: c.callouts.map(cb => ({ ...cb })),
     })),
   };
+}
+
+/**
+ * FR-025b — 1 per post moved to another column, 1 per column whose post order changed
+ * (judged on the posts it had before and still has, so a post moved in or out is not counted
+ * twice), 1 if the column order changed.
+ */
+export function countLayoutChanges(snapshot: LayoutPoolColumn[], columns: LayoutPoolColumn[]): number {
+  const priorColumnOf = new Map<string, string>();
+  for (const col of snapshot) for (const callout of col.callouts) priorColumnOf.set(callout.id, col.id);
+
+  let count = 0;
+  for (const col of columns) {
+    for (const callout of col.callouts) {
+      const prior = priorColumnOf.get(callout.id);
+      if (prior !== undefined && prior !== col.id) count++;
+    }
+    const priorCol = snapshot.find(p => p.id === col.id);
+    if (!priorCol) continue;
+    const currentIds = new Set(col.callouts.map(c => c.id));
+    const priorIds = new Set(priorCol.callouts.map(c => c.id));
+    const keptBefore = priorCol.callouts.map(c => c.id).filter(id => currentIds.has(id));
+    const keptNow = col.callouts.map(c => c.id).filter(id => priorIds.has(id));
+    if (keptBefore.some((id, i) => id !== keptNow[i])) count++;
+  }
+
+  const priorOrder = snapshot.map(c => c.id);
+  if (priorOrder.length === columns.length && priorOrder.some((id, i) => id !== columns[i].id)) count++;
+  return count;
 }
 
 function columnsEqual(a: LayoutPoolColumn[], b: LayoutPoolColumn[]): boolean {
@@ -393,9 +425,9 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
     }
   };
 
-  const onSave = async () => {
+  const onSave = async (): Promise<boolean> => {
     const snap = snapshotRef.current;
-    if (!snap) return;
+    if (!snap) return true;
     setSaveBar({ kind: 'saving' });
 
     try {
@@ -489,11 +521,13 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
       snapshotRef.current = toSnapshot(columns);
       setIsDirty(false);
       setSaveBar({ kind: 'clean' });
+      return true;
     } catch (err) {
       setSaveBar({
         kind: 'saveError',
-        message: err instanceof Error ? err.message : 'Save failed',
+        message: errorMessage(err),
       });
+      return false;
     }
   };
 
@@ -573,6 +607,14 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
     onSave,
     onReset,
     isDirty,
+    unsaved: {
+      count: snapshotRef.current && isDirty ? countLayoutChanges(snapshotRef.current.columns, columns) : 0,
+      canSave: true,
+      saving: saveBar.kind === 'saving',
+      error: saveBar.kind === 'saveError' ? saveBar.message : null,
+      saveAll: onSave,
+      reset: onReset,
+    },
     markColumnSaved,
     markLayoutSaved,
     markTemplateSaved,

@@ -1,5 +1,5 @@
 /**
- * Public types for `MembershipsSection` — the membership card grid shared by
+ * Public types for `MembershipsSection` — the membership list shared by
  * the user and organization Membership tabs. Plain TypeScript — no GraphQL
  * types, no Apollo imports.
  */
@@ -13,16 +13,15 @@ export type MembershipLeadUserData = {
 export type MembershipRowData = {
   id: string;
   displayName: string;
-  /** Optional tagline rendered as the card body description. */
-  tagline?: string;
-  /** Banner image URL when available; falls back to a gradient from `color`. */
-  bannerUrl?: string;
+  /** Space avatar; the row falls back to an initials tile in `color`. */
+  avatarUrl?: string;
+  /** Deterministic accent colour (`pickColorFromId`) for the initials fallback. */
   color: string;
   type: 'Space' | 'Subspace';
   role: 'Admin' | 'Lead' | 'Member';
-  /** Public space URL — used by the row name link and "View {{type}}" menu item (when non-empty). */
+  /** Public space URL — the row's name links to it when non-empty. */
   spaceUrl: string;
-  /** Users who lead this space — rendered in the card footer. Empty array hides the footer. */
+  /** Users who lead this space — the row's "Led by:" avatars. Empty array hides the line. */
   leadUsers: MembershipLeadUserData[];
 };
 
@@ -43,13 +42,10 @@ export type MembershipsSectionLabels = {
   clearFilters: string;
   /** Muted caption shown when there are no memberships at all. */
   emptyCaption: string;
-  typeSpace: string;
-  typeSubspace: string;
   roleLabel: (role: MembershipRowData['role']) => string;
-  viewLabel: (typeLabel: string) => string;
-  leaveLabel: (typeLabel: string) => string;
-  /** Names the card the menu acts on, so screen-reader button lists tell the cards apart. */
-  menuTriggerAriaLabel: (displayName: string) => string;
+  leave: string;
+  /** Names the space the Leave button acts on, so screen-reader button lists tell the rows apart. */
+  leaveAriaLabel: (displayName: string) => string;
   ledBy: string;
   ledByAria: (count: number) => string;
   leadsMore: (count: number) => string;

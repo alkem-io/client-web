@@ -1,6 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { SAVED_FLASH_MS } from '@/crd/components/common/FieldFooter';
 
 // ─── Apollo hook mocks ────────────────────────────────────────────────────
 
@@ -83,12 +82,11 @@ afterEach(() => {
 // ─── Tests ────────────────────────────────────────────────────────────────
 
 describe('useUserProfileTabData — initial state', () => {
-  it('seeds the local buffer from the user query', () => {
+  it('seeds the local buffer from the user query with nothing to save', () => {
     const { result } = renderHook(() => useUserProfileTabData('user-1'));
     expect(result.current.values?.displayName).toBe('Ada');
     expect(result.current.values?.email).toBe('ada@example.test');
-    // Initial dirty map: nothing dirty.
-    expect(Object.values(result.current.dirtyByField).every(v => v === false)).toBe(true);
+    expect(result.current.unsaved.count).toBe(0);
   });
 
   it('returns null values when userId is undefined', () => {
@@ -98,168 +96,181 @@ describe('useUserProfileTabData — initial state', () => {
   });
 });
 
-describe('useUserProfileTabData — onChange + dirty tracking', () => {
-  it('flips dirtyByField for the changed section', () => {
+describe('useUserProfileTabData — unsaved changes', () => {
+  it('counts one change per changed field, and none once a field is back to its saved value', () => {
     const { result } = renderHook(() => useUserProfileTabData('user-1'));
 
-    act(() => {
-      result.current.onChange({ displayName: 'Ada Lovelace' });
-    });
+    act(() => result.current.onChange({ displayName: 'Ada L.', city: 'Paris', country: 'FR' }));
+    expect(result.current.unsaved.count).toBe(3);
 
-    expect(result.current.dirtyByField.displayName).toBe(true);
-    expect(result.current.dirtyByField.firstName).toBe(false);
+    act(() => result.current.onChange({ displayName: 'Ada' }));
+    expect(result.current.unsaved.count).toBe(2);
   });
 
-  it('treats city/country edits as the compound location section', () => {
+  it('counts each tagset, social link and reference change once', () => {
     const { result } = renderHook(() => useUserProfileTabData('user-1'));
 
     act(() => {
-      result.current.onChange({ city: 'Cambridge' });
+      result.current.onChange({ skills: { id: 'tagset-skills', tags: ['typescript'] } });
+      result.current.onUpdateRecognizedReference('github', 'https://github.com/ada');
+      result.current.onReferencesChange([{ name: 'Twitter', uri: 'https://x.com/ada', description: '' }]);
     });
-
-    expect(result.current.dirtyByField.location).toBe(true);
+    // Skills + new GitHub link + new Twitter row + removed "Personal" row.
+    expect(result.current.unsaved.count).toBe(4);
   });
-});
 
-describe('useUserProfileTabData — onSaveSection (idle → saving → saved → idle)', () => {
-  it('flashes "Saved" then clears after SAVED_FLASH_MS', async () => {
-    vi.useFakeTimers();
+  it('cannot save while a required name is empty or the phone is malformed', () => {
     const { result } = renderHook(() => useUserProfileTabData('user-1'));
+    expect(result.current.unsaved.canSave).toBe(true);
 
-    act(() => {
-      result.current.onChange({ displayName: 'Ada L.' });
-    });
+    act(() => result.current.onChange({ lastName: ' ' }));
+    expect(result.current.unsaved.canSave).toBe(false);
 
-    let savePromise: Promise<void> = Promise.resolve();
-    act(() => {
-      savePromise = result.current.onSaveSection('displayName');
-    });
+    act(() => result.current.onChange({ lastName: 'Lovelace', phone: 'not a phone' }));
+    expect(result.current.unsaved.canSave).toBe(false);
+  });
 
-    // Synchronously, the section is in `saving`.
-    expect(result.current.saveStatusByField.displayName?.kind).toBe('saving');
-
-    await act(async () => {
-      await savePromise;
-    });
-
-    expect(mockUpdateUser).toHaveBeenCalledWith({
-      variables: { input: { ID: 'user-1', profileData: { displayName: 'Ada L.' } } },
-    });
-    expect(result.current.saveStatusByField.displayName?.kind).toBe('saved');
-
-    // Advance past the flash window — the saved indicator clears.
-    act(() => {
-      vi.advanceTimersByTime(SAVED_FLASH_MS + 10);
-    });
-    expect(result.current.saveStatusByField.displayName).toBeUndefined();
+  it('reset puts every field back to its saved value', () => {
+    const { result } = renderHook(() => useUserProfileTabData('user-1'));
+    act(() => result.current.onChange({ tagline: 'Poet', bio: 'New bio' }));
+    act(() => result.current.unsaved.reset());
+    expect(result.current.values?.tagline).toBe('Mathematician');
+    expect(result.current.unsaved.count).toBe(0);
   });
 });
 
-describe('useUserProfileTabData — onSaveSection (saving → error)', () => {
-  it('captures an error status when the mutation rejects', async () => {
-    mockUpdateUser.mockRejectedValueOnce(new Error('Network down'));
+describe('useUserProfileTabData — saveAll', () => {
+  it('sends every changed field in ONE updateUser call', async () => {
     const { result } = renderHook(() => useUserProfileTabData('user-1'));
+    act(() => result.current.onChange({ firstName: 'Augusta', tagline: 'Poet', city: 'Paris' }));
 
-    act(() => {
-      result.current.onChange({ firstName: 'Augusta' });
-    });
-
+    let ok = false;
     await act(async () => {
-      await result.current.onSaveSection('firstName');
+      ok = await result.current.unsaved.saveAll();
     });
 
-    expect(result.current.saveStatusByField.firstName).toEqual({
-      kind: 'error',
-      message: 'Network down',
-    });
-    // Dirty stays — user's typed values preserved.
-    expect(result.current.dirtyByField.firstName).toBe(true);
-    expect(result.current.values?.firstName).toBe('Augusta');
-  });
-});
-
-describe('useUserProfileTabData — error → idle on next edit', () => {
-  it('clears the section error when the user edits the same section again', async () => {
-    mockUpdateUser.mockRejectedValueOnce(new Error('Boom'));
-    const { result } = renderHook(() => useUserProfileTabData('user-1'));
-
-    act(() => {
-      result.current.onChange({ firstName: 'Augusta' });
-    });
-    await act(async () => {
-      await result.current.onSaveSection('firstName');
-    });
-    expect(result.current.saveStatusByField.firstName?.kind).toBe('error');
-
-    act(() => {
-      result.current.onChange({ firstName: 'Augusta Ada' });
-    });
-
-    expect(result.current.saveStatusByField.firstName).toBeUndefined();
-  });
-});
-
-describe('useUserProfileTabData — references batch', () => {
-  it('combines patch existing + create new into ONE Save call', async () => {
-    const { result } = renderHook(() => useUserProfileTabData('user-1'));
-
-    // Capture the saved snapshot's arbitrary "Personal" id before edits.
-    const personalId = result.current.values?.references[0].id;
-
-    // The shared ReferencesEditor emits the full arbitrary list: edit "Personal" + append a new row.
-    act(() => {
-      result.current.onReferencesChange([
-        { id: personalId, name: 'Personal', uri: 'https://ada.io', description: 'Blog' },
-        { name: 'Twitter', uri: 'https://x.com/ada', description: '' },
-      ]);
-    });
-
-    // Edit the recognized LinkedIn row's URI (separate control, unchanged).
-    act(() => {
-      result.current.onUpdateRecognizedReference('linkedin', 'https://linkedin.com/in/lovelace');
-    });
-
-    await act(async () => {
-      await result.current.onSaveSection('references');
-    });
-
-    // updateUser fires once with all existing-row patches (recognized LinkedIn + arbitrary Personal).
+    expect(ok).toBe(true);
     expect(mockUpdateUser).toHaveBeenCalledTimes(1);
-    const updateCall = mockUpdateUser.mock.calls[0][0];
-    expect(updateCall.variables.input.ID).toBe('user-1');
-    expect(updateCall.variables.input.profileData.references).toHaveLength(2);
-
-    // createReference fires once for the new arbitrary row.
-    expect(mockCreateReference).toHaveBeenCalledTimes(1);
-    expect(mockCreateReference).toHaveBeenCalledWith({
+    expect(mockUpdateUser).toHaveBeenCalledWith({
       variables: {
         input: {
-          profileID: 'profile-1',
-          name: 'Twitter',
-          uri: 'https://x.com/ada',
-          description: '',
+          ID: 'user-1',
+          firstName: 'Augusta',
+          profileData: { tagline: 'Poet', location: { city: 'Paris', country: 'GB' } },
         },
       },
     });
-
-    // No deletes queued — never called.
-    expect(mockDeleteReference).not.toHaveBeenCalled();
+    expect(result.current.unsaved.error).toBeNull();
   });
 
-  it('fires deleteReference for an arbitrary row removed via the editor', async () => {
+  it('keeps the typed values and reports the error when the update fails', async () => {
+    mockUpdateUser.mockRejectedValueOnce(new Error('Server says no'));
+    const { result } = renderHook(() => useUserProfileTabData('user-1'));
+    act(() => result.current.onChange({ displayName: 'Ada L.' }));
+
+    let ok = true;
+    await act(async () => {
+      ok = await result.current.unsaved.saveAll();
+    });
+
+    expect(ok).toBe(false);
+    expect(result.current.unsaved.error).toBe('Server says no');
+    expect(result.current.values?.displayName).toBe('Ada L.');
+    expect(result.current.unsaved.count).toBe(1);
+  });
+
+  it('reports the Save as failed when the refresh afterwards fails, so a retry cannot create the references twice', async () => {
+    mockRefetch.mockRejectedValueOnce(new Error('Network down'));
+    const { result } = renderHook(() => useUserProfileTabData('user-1'));
+    act(() => result.current.onReferencesChange([{ name: 'Blog', uri: 'https://blog.test', description: '' }]));
+
+    let ok = true;
+    await act(async () => {
+      ok = await result.current.unsaved.saveAll();
+    });
+
+    expect(mockCreateReference).toHaveBeenCalledTimes(1);
+    expect(ok).toBe(false);
+    expect(result.current.unsaved.error).toBe('Network down');
+  });
+
+  it('patches edited references and creates and deletes the others', async () => {
     const { result } = renderHook(() => useUserProfileTabData('user-1'));
 
-    // The editor emits the trimmed list (the only arbitrary row, ref-2, removed).
     act(() => {
-      result.current.onReferencesChange([]);
+      result.current.onUpdateRecognizedReference('linkedin', 'https://linkedin.com/in/lovelace');
+      result.current.onUpdateRecognizedReference('github', 'https://github.com/ada');
+      // The shared editor emits the full arbitrary list: "Personal" removed, "Twitter" added.
+      result.current.onReferencesChange([{ name: 'Twitter', uri: 'https://x.com/ada', description: '' }]);
     });
-    expect(result.current.values?.references.find(r => r.id === 'ref-2')).toBeUndefined();
 
     await act(async () => {
-      await result.current.onSaveSection('references');
+      await result.current.unsaved.saveAll();
     });
 
+    expect(mockUpdateUser).toHaveBeenCalledWith({
+      variables: {
+        input: {
+          ID: 'user-1',
+          profileData: {
+            references: [{ ID: 'ref-1', name: 'LinkedIn', uri: 'https://linkedin.com/in/lovelace', description: '' }],
+          },
+        },
+      },
+    });
+    expect(mockCreateReference).toHaveBeenCalledTimes(2);
+    expect(mockCreateReference).toHaveBeenCalledWith({
+      variables: { input: { profileID: 'profile-1', name: 'Twitter', uri: 'https://x.com/ada', description: '' } },
+    });
+    expect(mockCreateReference).toHaveBeenCalledWith({
+      variables: { input: { profileID: 'profile-1', name: 'github', uri: 'https://github.com/ada', description: '' } },
+    });
     expect(mockDeleteReference).toHaveBeenCalledWith({ variables: { input: { ID: 'ref-2' } } });
+  });
+
+  it('patches only the changed tagset', async () => {
+    const { result } = renderHook(() => useUserProfileTabData('user-1'));
+    act(() => result.current.onChange({ keywords: { id: 'tagset-keywords', tags: ['math'] } }));
+
+    await act(async () => {
+      await result.current.unsaved.saveAll();
+    });
+
+    expect(mockUpdateUser).toHaveBeenCalledWith({
+      variables: { input: { ID: 'user-1', profileData: { tagsets: [{ ID: 'tagset-keywords', tags: ['math'] }] } } },
+    });
+  });
+
+  it('lazy-creates the Skills tagset when the profile has none', async () => {
+    const userWithoutTagsets = { ...buildUser(), profile: { ...buildUser().profile, tagsets: [] } };
+    const userWithSkills = {
+      ...userWithoutTagsets,
+      profile: {
+        ...userWithoutTagsets.profile,
+        tagsets: [{ id: 'tagset-skills-new', name: 'Skills', tags: ['typescript'] }],
+      },
+    };
+    mockUserData = { lookup: { user: userWithoutTagsets } };
+    mockRefetch.mockImplementationOnce(async () => {
+      mockUserData = { lookup: { user: userWithSkills } };
+      return { data: mockUserData };
+    });
+
+    const { result, rerender } = renderHook(() => useUserProfileTabData('user-1'));
+    act(() => result.current.onChange({ skills: { tags: ['typescript'] } }));
+
+    await act(async () => {
+      await result.current.unsaved.saveAll();
+    });
+    rerender();
+
+    expect(mockCreateTagset).toHaveBeenCalledWith({
+      variables: { input: { profileID: 'profile-1', name: 'SKILLS', tags: ['typescript'] } },
+    });
+    // The create persists the tags itself; no updateUser is needed.
+    expect(mockUpdateUser).not.toHaveBeenCalled();
+    expect(result.current.values?.skills.id).toBe('tagset-skills-new');
+    expect(result.current.unsaved.count).toBe(0);
   });
 });
 
@@ -306,118 +317,5 @@ describe('useUserProfileTabData — avatar (FR-024, crop-then-commit)', () => {
       },
     });
     expect(result.current.values?.avatar.uri).toBe('https://example.test/new-avatar.png');
-  });
-});
-
-describe('useUserProfileTabData — Skills / Keywords independence', () => {
-  it('tracks skills and keywords dirty flags independently', () => {
-    const { result } = renderHook(() => useUserProfileTabData('user-1'));
-
-    act(() => {
-      result.current.onChange({
-        skills: { ...result.current.values?.skills, tags: ['typescript', 'react', 'node'] },
-      });
-    });
-
-    expect(result.current.dirtyByField.skills).toBe(true);
-    expect(result.current.dirtyByField.keywords).toBe(false);
-  });
-
-  it('saves Skills with a patch targeting ONLY the Skills tagset id', async () => {
-    const { result } = renderHook(() => useUserProfileTabData('user-1'));
-
-    act(() => {
-      result.current.onChange({
-        skills: { ...result.current.values?.skills, tags: ['typescript', 'react', 'node'] },
-      });
-    });
-
-    await act(async () => {
-      await result.current.onSaveSection('skills');
-    });
-
-    expect(mockUpdateUser).toHaveBeenCalledTimes(1);
-    expect(mockUpdateUser).toHaveBeenCalledWith({
-      variables: {
-        input: {
-          ID: 'user-1',
-          profileData: { tagsets: [{ ID: 'tagset-skills', tags: ['typescript', 'react', 'node'] }] },
-        },
-      },
-    });
-    // Keywords tagset id is NOT mentioned in the patch.
-    expect(mockCreateTagset).not.toHaveBeenCalled();
-  });
-
-  it('saves Keywords without touching the Skills tagset', async () => {
-    const { result } = renderHook(() => useUserProfileTabData('user-1'));
-
-    act(() => {
-      result.current.onChange({
-        keywords: { ...result.current.values?.keywords, tags: ['governance'] },
-      });
-    });
-
-    await act(async () => {
-      await result.current.onSaveSection('keywords');
-    });
-
-    expect(mockUpdateUser).toHaveBeenCalledTimes(1);
-    expect(mockUpdateUser).toHaveBeenCalledWith({
-      variables: {
-        input: {
-          ID: 'user-1',
-          profileData: { tagsets: [{ ID: 'tagset-keywords', tags: ['governance'] }] },
-        },
-      },
-    });
-  });
-
-  it('lazy-creates the Skills tagset on first save when the profile has none', async () => {
-    // Server returns a user whose profile has no tagsets at all initially.
-    const userWithoutTagsets = {
-      ...buildUser(),
-      profile: { ...buildUser().profile, tagsets: [] },
-    };
-    mockUserData = { lookup: { user: userWithoutTagsets } };
-
-    // After createTagsetOnProfile fires, refetch sees the newly-created
-    // tagset on the profile.
-    mockCreateTagset.mockResolvedValueOnce({ data: { createTagsetOnProfile: { id: 'tagset-skills-new' } } });
-    mockRefetch.mockResolvedValueOnce({
-      data: {
-        lookup: {
-          user: {
-            ...userWithoutTagsets,
-            profile: {
-              ...userWithoutTagsets.profile,
-              tagsets: [{ id: 'tagset-skills-new', name: 'Skills', tags: ['typescript'] }],
-            },
-          },
-        },
-      },
-    });
-
-    const { result } = renderHook(() => useUserProfileTabData('user-1'));
-
-    act(() => {
-      result.current.onChange({
-        skills: { ...result.current.values?.skills, tags: ['typescript'] },
-      });
-    });
-
-    await act(async () => {
-      await result.current.onSaveSection('skills');
-    });
-
-    expect(mockCreateTagset).toHaveBeenCalledWith({
-      variables: { input: { profileID: 'profile-1', name: 'SKILLS', tags: ['typescript'] } },
-    });
-    // updateUser MUST NOT be called when lazy-creating — the create mutation
-    // already persists the initial tags in one round-trip.
-    expect(mockUpdateUser).not.toHaveBeenCalled();
-    // After the post-save refetch, the buffer reflects the newly-created
-    // tagset id (so a subsequent save patches via updateUser, not create).
-    expect(result.current.values?.skills.id).toBe('tagset-skills-new');
   });
 });

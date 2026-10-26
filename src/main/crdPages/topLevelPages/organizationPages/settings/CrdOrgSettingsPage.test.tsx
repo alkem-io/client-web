@@ -10,6 +10,7 @@ vi.mock('react-i18next', () => ({
 }));
 vi.mock('@/core/routing/usePageTitle', () => ({ usePageTitle: () => {} }));
 vi.mock('@/main/ui/breadcrumbs/BreadcrumbsContext', () => ({ useSetBreadcrumbs: () => {} }));
+vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => () => {} }));
 vi.mock('@/domain/community/organization/hooks/useOrganizationContext', () => ({
   useOrganizationContext: () => ({
     organizationId: 'org-1',

@@ -40,7 +40,6 @@ describe('UserSecurityTabView', () => {
           webauthnForm={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
-          deleteAccountCard={null}
         />
       );
 
@@ -54,7 +53,6 @@ describe('UserSecurityTabView', () => {
           webauthnForm={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
-          deleteAccountCard={null}
         />
       );
 
@@ -94,7 +92,6 @@ describe('UserSecurityTabView', () => {
           webauthnForm={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
-          deleteAccountCard={null}
         />
       );
 
@@ -112,39 +109,6 @@ describe('UserSecurityTabView', () => {
     }
   );
 
-  // Keyed on the state union itself, so a fifth `kind` cannot be added without extending this
-  // fixture — adding one fails typecheck here rather than silently dropping the deletion entry
-  // point from the new state. That is not hypothetical: the tab grew from three states to four,
-  // and the state added last shipped without the card.
-  const VIEW_STATES: Record<UserSecurityViewState['kind'], UserSecurityViewState> = {
-    loading: { kind: 'loading' },
-    sessionExpired: { kind: 'sessionExpired', reauthHref: '/logout' },
-    error: { kind: 'error' },
-    ready: { kind: 'ready', hasPassword: true, hasWebauthn: false },
-  };
-
-  it.each<[string, UserSecurityViewState]>(Object.entries(VIEW_STATES))(
-    "renders the Delete-account slot in the '%s' state — the app-store-mandated deletion entry " +
-      'point is self-contained and must never disappear because an unrelated Kratos settings-flow ' +
-      'load is slow, failed, or met a lapsed identity-provider session. A lapsed identity-provider ' +
-      "session is no exception: the server's deletion freshness gate reads the platform session, " +
-      'not the identity-provider one, so deletion started from that state still succeeds.',
-    (_label, state) => {
-      render(
-        <UserSecurityTabView
-          state={state}
-          passwordForm={null}
-          webauthnForm={null}
-          mcpApiKeysCard={null}
-          connectedAccountsSection={null}
-          deleteAccountCard={<div data-testid="delete-account-card-probe">delete card</div>}
-        />
-      );
-
-      expect(screen.getByTestId('delete-account-card-probe')).toBeInTheDocument();
-    }
-  );
-
   it(
     'renders the lapsed-identity-provider-session state with a way out rather than the generic ' +
       "'try refreshing' card — refreshing provably cannot mint a new identity-provider session, " +
@@ -159,7 +123,6 @@ describe('UserSecurityTabView', () => {
           webauthnForm={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={null}
-          deleteAccountCard={null}
         />
       );
 

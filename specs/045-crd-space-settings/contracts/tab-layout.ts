@@ -63,6 +63,13 @@ export type LayoutViewProps = {
   /** Dynamic count and order — driven by backend `innovationFlow.states`. */
   columns: LayoutPoolColumn[];
   postDescriptionDisplay: 'collapsed' | 'expanded';
+  /**
+   * Amended 2026-10-22: the view no longer renders a Save / Reset row — the page
+   * renders the shared unsaved-changes bar from `useLayoutTabData().unsaved`
+   * (`TabUnsavedChanges`, FR-025). The view still needs the state to lock the
+   * buffer while saving and to disable Add phase / Delete phase / Replace flow
+   * while dirty (FR-026b).
+   */
   saveBar: SaveBarState;
   onReorder: (calloutId: string, target: LayoutReorderTarget) => void;
   onRenameColumn: (

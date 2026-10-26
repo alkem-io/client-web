@@ -31,11 +31,10 @@ export type ContributorAccountCallbacks = {
  * calls `t()`, keeping it actor-agnostic.
  */
 export type ContributorAccountLabels = {
-  helpBanner: string;
-  spaces: { title: string; createButton: string };
-  virtualContributors: { title: string; createButton: string };
-  innovationPacks: { title: string; createButton: string };
-  innovationHubs: { title: string; createButton: string };
+  spaces: { title: string };
+  virtualContributors: { title: string };
+  innovationPacks: { title: string };
+  innovationHubs: { title: string };
   actions: { manage: string; delete: string };
 };
 
@@ -148,7 +147,6 @@ export function mapAccountToViewProps(
     title: labels.spaces.title,
     canCreate: canCreateSpace,
     isEntitled: isEntitledToCreateSpace,
-    createButtonLabel: labels.spaces.createButton,
     onCreate: callbacks.onCreateSpace,
     capacity: spacesCapacity,
     items:
@@ -171,7 +169,6 @@ export function mapAccountToViewProps(
     title: labels.virtualContributors.title,
     canCreate: canCreateVc,
     isEntitled: isEntitledToCreateVc,
-    createButtonLabel: labels.virtualContributors.createButton,
     onCreate: callbacks.onCreateVc,
     capacity: vcCapacity,
     items:
@@ -194,7 +191,6 @@ export function mapAccountToViewProps(
     title: labels.innovationPacks.title,
     canCreate: canCreateInnovationPack,
     isEntitled: isEntitledToCreateInnovationPack,
-    createButtonLabel: labels.innovationPacks.createButton,
     onCreate: callbacks.onCreateInnovationPack,
     capacity: packCapacity,
     items:
@@ -214,7 +210,6 @@ export function mapAccountToViewProps(
     title: labels.innovationHubs.title,
     canCreate: canCreateInnovationHub,
     isEntitled: isEntitledToCreateInnovationHub,
-    createButtonLabel: labels.innovationHubs.createButton,
     onCreate: callbacks.onCreateInnovationHub,
     capacity: hubCapacity,
     items:
@@ -240,7 +235,6 @@ export function mapAccountToViewProps(
   };
 
   return {
-    helpBannerLabel: labels.helpBanner,
     groups: [spacesGroup, vcGroup, packGroup, hubGroup],
     loading,
   };

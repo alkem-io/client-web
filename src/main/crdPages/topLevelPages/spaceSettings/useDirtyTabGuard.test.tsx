@@ -98,4 +98,25 @@ describe('useDirtyTabGuard', () => {
     };
     expect(() => render(<Probe />)).not.toThrow();
   });
+
+  it('refuses a switch outright while a save is running, without opening the leave dialog', async () => {
+    const { result } = renderHook(() => useDirtyTabGuard());
+    act(() => {
+      result.current.markDirty();
+      result.current.setSaving(true);
+    });
+
+    let allowed: boolean | null = null;
+    await act(async () => {
+      allowed = await result.current.requestSwitch('about');
+    });
+    expect(allowed).toBe(false);
+    expect(result.current.pendingSwitch).toBeNull();
+
+    act(() => result.current.setSaving(false));
+    act(() => {
+      void result.current.requestSwitch('about');
+    });
+    expect(result.current.pendingSwitch).toBe('about');
+  });
 });

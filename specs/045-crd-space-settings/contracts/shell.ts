@@ -21,6 +21,9 @@ import type { ReactNode } from 'react';
  * className? }` — no banner, no avatar, no member avatars (the interim
  * subspace-settings avatar was removed 2026-08-21; `titleHref` links the title
  * back to the space/subspace home). Kept for the historical record.
+ *
+ * Amended 2026-10-16: the header gains an optional square identity tile — see
+ * `SpaceSettingsHeaderProps.visual` below.
  */
 export type SpaceHeroProps = {
   spaceName: string;
@@ -32,6 +35,30 @@ export type SpaceHeroProps = {
     avatarUrl: string | null;
   }>;
   memberCount: number;
+};
+
+/**
+ * Compact settings header (FR-001, amended 2026-10-16).
+ *
+ * `visual` renders a 48px SQUARE identity tile with rounded corners
+ * (`rounded-lg` — never a circle; circles are reserved for people) left of the
+ * title + tagline. The integration passes:
+ *   - L1 / L2: the space `avatar` visual;
+ *   - L0: the `cardBanner`, cropped square (`object-cover`) — L0 has no avatar
+ *     visual. This is an owner-approved exception to spec 100's "no cardBanner
+ *     as avatar" rule, scoped to identity tiles in navigation chrome (this
+ *     tile and the breadcrumbs). The public Space/Subspace page header still
+ *     shows no avatar.
+ *   - no image: `src` omitted → the tile shows `initials`.
+ * The tile is decorative (`aria-hidden`) — the title carries the name.
+ */
+export type SpaceSettingsHeaderProps = {
+  title: string;
+  titleHref?: string;
+  tagline?: string | null;
+  visual?: { src?: string; initials: string };
+  fullWidth?: boolean;
+  className?: string;
 };
 
 export type TabId =
@@ -74,7 +101,8 @@ export type GetVisibleSettingsTabs = (level: SettingsScopeLevel) => readonly Tab
 
 /**
  * SaveBarState — used ONLY by the Layout tab.
- * About uses per-field autosave (FR-005a).
+ * About saves per section via `FieldFooter` (FR-005a, amended 2026-10-16 —
+ * was "per-field autosave"); it has no tab-wide save bar.
  * All other tabs commit per action.
  */
 export type SaveBarState =
@@ -104,6 +132,50 @@ export type SpaceSettingsSaveBarProps = {
   state: SaveBarState;
   onSave: () => void;
   onReset: () => void;
+};
+
+/**
+ * Added 2026-10-22 (spec Session 2026-10-22, FR-025 – FR-026c). Supersedes
+ * `SaveBarState` / `SpaceSettingsSaveBarProps` above, which were Layout-only.
+ *
+ * One tab-wide bar, fixed to the bottom of the viewport, shared by About,
+ * Layout and Settings. Every participating data hook exposes a
+ * `TabUnsavedChanges`; the page maps the ACTIVE tab's one to the bar.
+ */
+export type TabUnsavedChanges = {
+  /** FR-025b — one per changed field; 0 = clean. */
+  count: number;
+  /** False while any buffered edit is invalid. */
+  canSave: boolean;
+  saving: boolean;
+  /** Last Save failure; the failed parts stay counted. */
+  error: string | null;
+  /** Saves every change on the tab; resolves `true` when everything saved. */
+  saveAll: () => Promise<boolean>;
+  /** Puts every changed field back to its server value, in place. */
+  reset: () => void;
+};
+
+export type UnsavedChangesBarState =
+  | { kind: 'clean' }
+  | { kind: 'dirty'; count: number; canSave: boolean }
+  | { kind: 'saving'; count: number }
+  | { kind: 'saveError'; count: number; message: string };
+
+/**
+ * `src/crd/components/space/settings/SpaceSettingsUnsavedChangesBar.tsx`.
+ * Amended 2026-10-22 (later): moved to `src/crd/components/common/UnsavedChangesBar.tsx`
+ * (`UnsavedChangesBar`, strings in `crd-common` `unsavedChanges.*`) and shared with the
+ * User / Org / VC Profile tabs — spec 097 Session 2026-10-22.
+ * Left: filled circle with `count` + "1 unsaved change" / "N unsaved changes".
+ * Right: Discard (ghost) + Save changes (primary). `aria-live="polite"`.
+ * `onDiscard` opens the page-owned confirmation (FR-025c); the bar never
+ * resets anything itself.
+ */
+export type SpaceSettingsUnsavedChangesBarProps = {
+  state: UnsavedChangesBarState;
+  onSave: () => void;
+  onDiscard: () => void;
 };
 
 /**

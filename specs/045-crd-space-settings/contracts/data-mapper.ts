@@ -40,17 +40,22 @@ export type UseImmediateTabDataResult<Props> = {
 };
 
 /**
- * About tab uses per-field autosave (FR-005a).
- * No buffer, no isDirty, no Save / Reset — `flushPending()` is exposed so
- * `useDirtyTabGuard` can flush any in-flight debounce when the admin
- * navigates away.
+ * About tab saves per section (FR-005a, amended 2026-10-16 — the original
+ * "per-field autosave + `flushPending()`" contract never shipped).
+ * The hook keeps a local buffer; `isDirty` is true while any section differs
+ * from the server. `onSaveAll` / `onResetAll` back the dirty-tab guard's
+ * Save / Discard choices. There is no debounce and no flush.
  */
 export type UseAboutTabDataResult = {
   props: AboutViewProps | null;
   loading: boolean;
   error: Error | null;
-  /** Fire any pending debounced autosaves immediately (tab switch / navigation). */
-  flushPending: () => Promise<void>;
+  /** True while any section has unsaved edits — drives `useDirtyTabGuard`. */
+  isDirty: boolean;
+  /** Persist every dirty section (the guard dialog's "Save"). */
+  onSaveAll: () => Promise<void>;
+  /** Drop the local buffer back to the server values (the guard dialog's "Discard"). */
+  onResetAll: () => void;
 };
 
 export type UseAboutTabData = (spaceId: string) => UseAboutTabDataResult;
@@ -91,9 +96,10 @@ export type UseColumnMenu = (options: {
 /**
  * Dirty-state guard — single instance per settings page.
  * Enforces the "at most one dirty tab" invariant (Clarification Q2).
- * Only the Layout tab can enter a dirty state. About uses per-field autosave
- * (Decision 3a) — when the admin leaves the About tab the guard instead calls
- * `useAboutTabData().flushPending()` to commit any in-flight debounce.
+ * Layout and (amended 2026-10-16) About can enter a dirty state — About while
+ * any section is unsaved; the guard dialog's Save / Discard call
+ * `useAboutTabData().onSaveAll()` / `onResetAll()`. (Decision 3a's
+ * `flushPending()` never shipped.)
  */
 export type UseDirtyTabGuard = () => {
   isDirty: boolean;

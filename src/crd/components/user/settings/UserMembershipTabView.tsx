@@ -1,14 +1,13 @@
-import { Home, Users } from 'lucide-react';
+import { Clock, Home, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { SettingsSection } from '@/crd/components/common/SettingsSection';
 import { MembershipsSection } from '@/crd/components/contributor/settings/MembershipsSection';
 import type {
   MembershipFilter,
   MembershipRowData,
   MembershipsSectionLabels,
 } from '@/crd/components/contributor/settings/MembershipsSection.types';
-import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
 import { Badge } from '@/crd/primitives/badge';
-import { Card } from '@/crd/primitives/card';
 import { Checkbox } from '@/crd/primitives/checkbox';
 import { Label } from '@/crd/primitives/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
@@ -54,12 +53,12 @@ export type UserMembershipTabViewProps = {
 };
 
 /**
- * User Membership tab — presentational view. Three stacked sections:
- * 1. **Home Space** — single-select + Auto-redirect checkbox.
- * 2. **My Memberships** — search input + Spaces/Subspaces filter +
- *    responsive card grid (matches `client-web-prototype/src/app/pages/UserMembershipPage.tsx`).
- *    Per-card kebab: View Details + Leave (parent owns the dialog).
- * 3. **Pending Applications** — read-only compact card list.
+ * User Membership tab — presentational view. Three collapsible
+ * `SettingsSection`s (spec 097 Session 2026-10-23):
+ * 1. **Home Space** (open) — single-select + Auto-redirect checkbox.
+ * 2. **My Memberships** (open) — full-width search, Spaces/Subspaces filter +
+ *    summary, then one row per membership with a Leave button (parent owns the dialog).
+ * 3. **Pending Applications** (collapsed) — read-only compact rows.
  *
  * Empty state for the memberships grid uses the prototype's centered
  * dashed-border block with "Clear Filters" CTA. Per FR-018 the
@@ -79,12 +78,9 @@ export function UserMembershipTabView(props: UserMembershipTabViewProps) {
     filteredEmptyDescription: t('user.membership.myMemberships.filteredEmptyDescription'),
     clearFilters: t('user.membership.myMemberships.clearFilters'),
     emptyCaption: t('user.membership.myMemberships.empty'),
-    typeSpace: t('user.membership.type.space'),
-    typeSubspace: t('user.membership.type.subspace'),
     roleLabel: role => t(`user.membership.role.${role.toLowerCase()}` as 'user.membership.role.admin'),
-    viewLabel: type => t('user.membership.menu.viewByType', { type }),
-    leaveLabel: type => t('user.membership.leave.menuItemLabeled', { type }),
-    menuTriggerAriaLabel: name => t('shared.account.kebabAriaLabelFor', { name }),
+    leave: t('user.membership.leave.button'),
+    leaveAriaLabel: name => t('user.membership.leave.buttonAria', { name }),
     ledBy: t('user.membership.ledBy'),
     ledByAria: count => t('user.membership.ledByAria', { count }),
     leadsMore: count => t('user.membership.leadsMore', { count }),
@@ -102,10 +98,11 @@ export function UserMembershipTabView(props: UserMembershipTabViewProps) {
 
   return (
     <div className="space-y-6">
-      <SettingsCard
-        icon={Home}
+      <SettingsSection
         title={t('user.membership.homeSpace.title')}
         description={t('user.membership.homeSpace.description')}
+        icon={<Home className="size-4" />}
+        iconColor="purple"
       >
         <HomeSpaceSection
           options={props.homeSpaceOptions}
@@ -115,9 +112,13 @@ export function UserMembershipTabView(props: UserMembershipTabViewProps) {
           onSelect={props.onSelectHomeSpace}
           onToggleAutoRedirect={props.onToggleAutoRedirect}
         />
-      </SettingsCard>
+      </SettingsSection>
 
-      <SettingsCard icon={Users} title={t('user.membership.myMemberships.title')}>
+      <SettingsSection
+        title={t('user.membership.myMemberships.title')}
+        icon={<Users className="size-4" />}
+        iconColor="blue"
+      >
         <MembershipsSection
           rows={props.memberships}
           totalShown={props.totalMemberships}
@@ -130,11 +131,16 @@ export function UserMembershipTabView(props: UserMembershipTabViewProps) {
           onLeave={props.onLeave}
           labels={membershipLabels}
         />
-      </SettingsCard>
+      </SettingsSection>
 
-      <SettingsCard icon={Users} title={t('user.membership.pendingApplications.title')}>
+      <SettingsSection
+        title={t('user.membership.pendingApplications.title')}
+        icon={<Clock className="size-4" />}
+        iconColor="amber"
+        defaultOpen={false}
+      >
         <PendingApplicationsSection rows={props.pendingApplications} />
-      </SettingsCard>
+      </SettingsSection>
     </div>
   );
 }
@@ -231,7 +237,7 @@ function PendingApplicationsSection({ rows }: { rows: PendingApplicationRowData[
     <ul className="space-y-2">
       {rows.map(row => (
         <li key={row.id}>
-          <Card className="flex items-center justify-between gap-4 px-4 py-3">
+          <div className="flex items-center justify-between gap-3 rounded-lg border bg-muted/10 p-3">
             {row.spaceUrl ? (
               <a href={row.spaceUrl} className="text-body-emphasis hover:text-primary">
                 {row.displayName}
@@ -239,10 +245,8 @@ function PendingApplicationsSection({ rows }: { rows: PendingApplicationRowData[
             ) : (
               <span className="text-body-emphasis">{row.displayName}</span>
             )}
-            <Badge variant="secondary" className="font-normal text-caption">
-              {t('user.membership.pendingApplications.statusPending')}
-            </Badge>
-          </Card>
+            <Badge variant="outline">{t('user.membership.pendingApplications.statusPending')}</Badge>
+          </div>
         </li>
       ))}
     </ul>

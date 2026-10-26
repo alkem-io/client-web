@@ -22,7 +22,9 @@ import { CrdCreateInnovationPackDialog } from '@/main/crdPages/innovationPack/Cr
 import { CrdCreateSpaceDialog } from '@/main/crdPages/topLevelPages/createSpace/CrdCreateSpaceDialog';
 import { CrdVCCreationWizardDialog } from '@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog';
 import type { UserAccountProps } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/virtualContributorProps';
+import useCanEditUserSettings from '../../useCanEditUserSettings';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
+import AccountDangerZone from './AccountDangerZone';
 import {
   type AccountResourceKind,
   mapUserAccountToViewProps,
@@ -35,7 +37,8 @@ const CONTACT_URL = 'https://welcome.alkem.io/contact/';
 
 /**
  * Integration page for the User Account tab. Wires data → mapper →
- * `ContributorAccountView`. Owns the `pendingDelete` state and renders
+ * `ContributorAccountView`, followed by the owner-only Danger Zone (Delete
+ * Account, spec 054). Owns the `pendingDelete` state and renders
  * the destructive `ConfirmationDialog` at the page level (Rule #9).
  *
  * Create flows use CRD dialogs (Create Space — spec 105; Create Innovation
@@ -46,7 +49,8 @@ const CrdUserAccountTab = () => {
   const { t } = useTranslation('crd-contributorSettings');
   const navigate = useNavigate();
   const notify = useNotification();
-  const { userId } = useUserPageRouteContext();
+  const { userId, userModel, profileUrl } = useUserPageRouteContext();
+  const { isOwner } = useCanEditUserSettings({ profileUserId: userId });
   const [, startTransition] = useTransition();
   const [pendingDelete, setPendingDelete] = useState<PendingDelete | null>(null);
   const [noEntitlementResource, setNoEntitlementResource] = useState<AccountResourceGroupId | null>(null);
@@ -171,7 +175,16 @@ const CrdUserAccountTab = () => {
 
   return (
     <>
-      <ContributorAccountView {...props} />
+      <div className="space-y-6">
+        <ContributorAccountView {...props} />
+        {isOwner && userId && profileUrl && (
+          <AccountDangerZone
+            userId={userId}
+            displayName={userModel?.profile?.displayName ?? ''}
+            profileUrl={profileUrl}
+          />
+        )}
+      </div>
       <ConfirmationDialog
         open={Boolean(pendingDelete)}
         onOpenChange={open => {

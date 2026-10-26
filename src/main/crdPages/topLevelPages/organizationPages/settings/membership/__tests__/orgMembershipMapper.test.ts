@@ -49,8 +49,7 @@ describe('mapOrgMembershipRows', () => {
     expect(bare[0]).toMatchObject({
       displayName: 'Garden Space',
       spaceUrl: '',
-      tagline: undefined,
-      bannerUrl: undefined,
+      avatarUrl: undefined,
     });
     expect(bare[0].leadUsers).toEqual([]);
 
@@ -60,7 +59,7 @@ describe('mapOrgMembershipRows', () => {
         {
           displayName: 'Garden Patch (rich)',
           tagline: 'Daily plantings',
-          bannerUrl: 'https://cdn/patch.jpg',
+          avatarUrl: 'https://cdn/patch.jpg',
           spaceUrl: '/space/garden/patch',
           leadUsers: [{ id: 'u1', displayName: 'Ada', profileUrl: '/user/ada' }],
         },
@@ -69,8 +68,7 @@ describe('mapOrgMembershipRows', () => {
     const enriched = mapOrgMembershipRows(buildData(), enrichment);
     expect(enriched[1]).toMatchObject({
       displayName: 'Garden Patch (rich)',
-      tagline: 'Daily plantings',
-      bannerUrl: 'https://cdn/patch.jpg',
+      avatarUrl: 'https://cdn/patch.jpg',
       spaceUrl: '/space/garden/patch',
     });
     expect(enriched[1].leadUsers).toHaveLength(1);
