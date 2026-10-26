@@ -693,6 +693,7 @@ export default function CrdSpaceSettingsPage() {
                 membershipPolicy={settingsTab.membershipPolicy}
                 allowedActions={settingsTab.allowedActions}
                 hostOrganizationTrusted={settingsTab.hostOrganizationTrusted}
+                hostIsOrganization={settingsTab.hostIsOrganization}
                 providerDisplayName={settingsTab.providerDisplayName}
                 loading={settingsTab.loading}
                 disabled={settingsTab.unsaved.saving}

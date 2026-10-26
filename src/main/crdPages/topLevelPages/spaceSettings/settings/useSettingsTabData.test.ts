@@ -1,6 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  ActorType,
   CommunityMembershipPolicy,
   SpacePrivacyMode,
   UserInformationVisibility,
@@ -8,6 +9,7 @@ import {
 import { useSettingsTabData } from './useSettingsTabData';
 
 const updateSpaceSettings = vi.fn();
+const host = vi.hoisted(() => ({ type: 'organization' as string }));
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useSpaceSettingsQuery: () => ({
@@ -15,7 +17,10 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
     data: {
       lookup: {
         space: {
-          about: { provider: { id: 'host-1', profile: { displayName: 'Host Org' } }, membership: { roleSetID: 'rs' } },
+          about: {
+            provider: { id: 'host-1', type: host.type, profile: { displayName: 'Host Org' } },
+            membership: { roleSetID: 'rs' },
+          },
           settings: {
             privacy: {
               mode: SpacePrivacyMode.Public,
@@ -47,6 +52,16 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 describe('useSettingsTabData — buffered through the unsaved-changes bar (spec 045 FR-023)', () => {
   beforeEach(() => {
     updateSpaceSettings.mockReset();
+    host.type = ActorType.Organization;
+  });
+
+  it.each([
+    [ActorType.Organization, true],
+    [ActorType.User, false],
+  ])('flags whether the host is an organization (host %s → %s) so Trusted applicants shows only then', (type, expected) => {
+    host.type = type;
+    const { result } = renderHook(() => useSettingsTabData('space-1'));
+    expect(result.current.hostIsOrganization).toBe(expected);
   });
 
   it('shows a change at once, sends nothing, and counts one per control', () => {

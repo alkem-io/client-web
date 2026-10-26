@@ -54,13 +54,13 @@ const CrdOrgSettingsPage = () => {
   const allTabs: ReadonlyArray<SettingsTabDescriptor<OrgSettingsTabId>> = [
     { id: 'profile', label: t('shell.tabs.org.profile'), icon: Briefcase },
     { id: 'account', label: t('shell.tabs.org.account'), icon: Briefcase },
-    { id: 'community', label: t('shell.tabs.org.community'), icon: Users },
+    { id: 'associates', label: t('shell.tabs.org.associates'), icon: Users },
     { id: 'membership', label: t('shell.tabs.org.membership'), icon: Globe },
     { id: 'invitations', label: t('shell.tabs.org.invitations'), icon: Mail },
     { id: 'settings', label: t('shell.tabs.org.settings'), icon: Cog },
   ];
-  // A viewer confined to the Community tab sees no other tab to click into.
-  const tabs = accessMode === 'community-only' ? allTabs.filter(tab => tab.id === 'community') : allTabs;
+  // A viewer confined to the Associates tab sees no other tab to click into.
+  const tabs = accessMode === 'community-only' ? allTabs.filter(tab => tab.id === 'associates') : allTabs;
 
   return (
     <SettingsUnsavedChangesContext value={unsavedChanges.context}>
