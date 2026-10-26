@@ -101,28 +101,48 @@ function unselectedWidgets(dialog: Locator): Promise<string[]> {
     .evaluateAll(els => els.map(e => (e.getAttribute('aria-label') ?? '').replace('Toggle ', '')));
 }
 
+/** The live-region text of every DndContext on the page, joined — the helper is context-agnostic. */
+const dndAnnouncements = (page: Page) => async () =>
+  (await page.locator('[id^="DndLiveRegion"]').allTextContents()).join('|');
+
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 /**
- * dnd-kit keyboard drag: Space lifts, the arrow key is pressed until the polite live region
- * announces the item is over `targetId` (the first / left-most sortable, so it cannot overshoot),
- * Space drops. Awaiting the announcements replaces any fixed sleep.
+ * dnd-kit keyboard drag: Space lifts, the arrow key is pressed one step at a time until the
+ * polite live region announces the item is over `targetId` (the first / left-most sortable, so
+ * it cannot overshoot), Space drops.
+ *
+ * The sortable drops a press that arrives in the same tick as the previous one, and while the
+ * rows / columns are still sliding into place it computes the next step from mid-transition
+ * rects (the reorder-phase columns then land on a neighbour instead of the target). So every
+ * press waits for the live region to acknowledge the step, then lets dnd-kit's sortable
+ * transition finish before the next one. A press the sortable swallows (it measures its
+ * droppables just after pick-up) goes unacknowledged and is simply re-pressed on the next turn;
+ * the bound on presses keeps a stuck drag finite.
  */
+const MAX_KEYBOARD_STEPS = 40; // > the longest list (13 widgets, 5 phases) with room for swallowed presses
+const SORTABLE_TRANSITION_MS = 250; // dnd-kit's default 200 ms sortable transition, plus a frame
+
 async function keyboardDrag(page: Page, handle: Locator, key: 'ArrowUp' | 'ArrowLeft', targetId: string) {
-  // Each DndContext renders its own live region; read them all so the helper is context-agnostic.
-  const announcements = async () => (await page.locator('[id^="DndLiveRegion"]').allTextContents()).join('|');
+  const announcements = dndAnnouncements(page);
+  const overTarget = new RegExp(`droppable area ${escapeRegExp(targetId)}\\.$`);
   const idle = await announcements();
   await handle.focus();
   await page.keyboard.press('Space');
-  await expect.poll(announcements).not.toBe(idle); // lifted
-  await expect
-    .poll(async () => {
-      const current = await announcements();
-      if (!current.endsWith(`droppable area ${targetId}.`)) {
-        // dnd-kit measures droppable rects just after pick-up; an early arrow press is a no-op, so re-press.
-        await page.keyboard.press(key);
-      }
-      return announcements();
-    })
-    .toMatch(new RegExp(`droppable area ${targetId}\\.$`));
+  await expect.poll(announcements, { message: 'the sortable announces the lift' }).not.toBe(idle);
+
+  for (let presses = 0; presses < MAX_KEYBOARD_STEPS; presses++) {
+    const before = await announcements();
+    if (overTarget.test(before)) break;
+    await page.keyboard.press(key);
+    await expect
+      .poll(announcements, { intervals: [50], timeout: 750 })
+      .not.toBe(before)
+      .catch(() => undefined); // swallowed press: re-press on the next turn
+    await page.waitForTimeout(SORTABLE_TRANSITION_MS);
+  }
+  expect(await announcements(), `keyboard drag reaches droppable area ${targetId}`).toMatch(overTarget);
+
   await page.keyboard.press('Space');
   await expect.poll(announcements).toMatch(/dropped/i);
 }
@@ -444,6 +464,11 @@ test.describe('subspace sidebar — admin customizes once for every phase (US1)'
     request,
   }) => {
     const before = (await readPhases(request, l1Id)).phases;
+    // The phase columns wrap into a grid; in dnd-kit's rect sorting a keyboard step "left" from
+    // the third column of a three-per-row grid (the 1280 px default) lands on the next row, so
+    // phase 3 never reaches position 1. At full-HD width the first four columns share one row
+    // and ArrowLeft walks a line — a layout precondition, not a looser assertion.
+    await page.setViewportSize({ width: 1920, height: 1080 });
     await settingsLayout(page, L1_URL);
     await keyboardDrag(
       page,
