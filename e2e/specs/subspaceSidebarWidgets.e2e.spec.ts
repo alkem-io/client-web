@@ -5,9 +5,12 @@ import {
   missingReadonlyUser,
   type Phase,
   READONLY_EMAIL,
+  readAllowMembersToCreateSubspaces,
+  readMyPrivileges,
   readPhases,
   resolveFixtureIds,
   searchHits,
+  setAllowMembersToCreateSubspaces,
   SUBSPACE_DEFAULT,
   signIn,
   updatePhaseSettings,
@@ -30,9 +33,11 @@ import {
  *
  * Fixture and environment: see `e2e/fixtures/subspaceSidebarFixture.ts` (the feature
  * quickstart's "Fixture for the walks"). This walk also needs, on that fixture:
- *   - Alpha: members may NOT create subspaces (allowMembersToCreateSubspaces = false); its first
- *     (active) phase holds a post containing "climate" tagged Policy plus a post tagged Solar, and
- *     its second phase has a name that differs from every other phase;
+ *   - Alpha: its first (active) phase holds a post containing "climate" tagged Policy plus a post
+ *     tagged Solar, and its second phase has a name that differs from every other phase. Members
+ *     must NOT be able to create subspaces there: an L1 created from the platform subspace template
+ *     allows it, so `beforeAll` pins allowMembersToCreateSubspaces to false (the server re-applies
+ *     the authorization policy at once) and `afterAll` puts the stored value back;
  *   - Alpha-2: its first (active) phase holds a post containing "delta-unique-4471", its second
  *     phase holds a different post;
  *   - the Space's own phase named like Alpha's first phase holds a post containing
@@ -130,6 +135,8 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
   let alpha2First: string;
   /** Why the search scenarios cannot run on this stack, or undefined when they can. */
   let searchUnavailable: string | undefined;
+  /** Alpha's allowMembersToCreateSubspaces before the walk pinned it, restored in afterAll. */
+  let membersCouldCreateSubspaces: boolean | undefined;
 
   test.beforeAll(async ({ browser, request }) => {
     browserRef = browser;
@@ -137,6 +144,9 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
     alphaFirst = fx.alpha.states[0].id;
     alphaSecond = fx.alpha.states[1];
     alpha2First = fx.alpha2.states[0].id;
+
+    membersCouldCreateSubspaces = await readAllowMembersToCreateSubspaces(request, fx.alphaId);
+    if (membersCouldCreateSubspaces) await setAllowMembersToCreateSubspaces(request, fx.alphaId, false);
 
     const hits = await searchHits(request, fx.alphaId, alphaFirst, 'climate');
     if (hits === 0 && !process.env.E2E_SEARCH_AVAILABLE) {
@@ -159,6 +169,7 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
   test.afterAll(async ({ request }) => {
     if (alphaFirst) await setSidebar(request, alphaFirst, SUBSPACE_DEFAULT);
     if (alpha2First) await setSidebar(request, alpha2First, SUBSPACE_DEFAULT);
+    if (membersCouldCreateSubspaces) await setAllowMembersToCreateSubspaces(request, fx.alphaId, true);
     await Promise.all([admin?.close(), member?.close(), anonymous?.close()]);
   });
 
@@ -202,6 +213,14 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
   test('US3-AS3 permission gates are never granted by configuration', async ({ request }) => {
     await setSidebar(request, alphaFirst, ['CREATE_POST', 'CREATE_SUBSPACE', 'ADD_USER', 'ACTIVITY']);
     const names = ['Add Post', 'Create Subspace', 'Invite', 'Recent Activity'];
+    // The member arm proves something only while the member lacks the privileges behind the two
+    // gates (Create Subspace ← CREATE_SUBSPACE, Invite ← UPDATE) — read them back rather than
+    // assume them, so a drifted fixture reads as such and not as a product red.
+    const memberPrivileges = await readMyPrivileges(request, fx.alphaId, READONLY_EMAIL as string);
+    expect(memberPrivileges, 'the member must not hold CREATE_SUBSPACE (pinned in beforeAll)').not.toContain(
+      'CREATE_SUBSPACE'
+    );
+    expect(memberPrivileges, 'the member must not hold UPDATE').not.toContain('UPDATE');
 
     const anon = await anonymous.newPage();
     await openSubspace(anon, ALPHA_URL);

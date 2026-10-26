@@ -87,16 +87,20 @@ export async function signIn(page: Page, email: string = ADMIN_EMAIL): Promise<v
   await new LoginPage(page, BASE_URL).login(email, password());
 }
 
-/** Runs a GraphQL operation as the admin through the private non-interactive endpoint. */
+/**
+ * Runs a GraphQL operation through the private non-interactive endpoint — as the admin unless
+ * `email` names another fixture account (every account shares the harness password).
+ */
 export async function gql<T>(
   request: APIRequestContext,
   query: string,
-  variables: Record<string, unknown> = {}
+  variables: Record<string, unknown> = {},
+  email: string = ADMIN_EMAIL
 ): Promise<T> {
   const login = await request.post(`${BASE_URL}/api/auth/non-interactive-login`, {
-    data: { email: ADMIN_EMAIL, password: password() },
+    data: { email, password: password() },
   });
-  expect(login.ok(), `non-interactive login as ${ADMIN_EMAIL} (needs ENABLE_NON_INTERACTIVE_LOGIN=true)`).toBe(true);
+  expect(login.ok(), `non-interactive login as ${email} (needs ENABLE_NON_INTERACTIVE_LOGIN=true)`).toBe(true);
   const { api_token: token } = (await login.json()) as { api_token: string };
   const response = await request.post(`${BASE_URL}/api/private/non-interactive/graphql`, {
     headers: { authorization: `Bearer ${token}` },
@@ -139,6 +143,40 @@ export async function resolveFixtureIds(request: APIRequestContext): Promise<Fix
   expect(alpha2, `L2 ${NAMEIDS.E2E_SIDEBAR_ALPHA2_NAMEID} under ${alphaNameId}`).toBeTruthy();
   if (BETA_NAMEID) expect(beta, `L1 ${BETA_NAMEID} under ${l0NameId}`).toBeTruthy();
   return { l0: l0?.id as string, alpha: alpha?.id as string, alpha2: alpha2?.id as string, beta: beta?.id };
+}
+
+/** The privileges `email` holds on a space — what gates the sidebar's Create Subspace / Invite. */
+export async function readMyPrivileges(request: APIRequestContext, spaceId: string, email: string): Promise<string[]> {
+  const data = await gql<{ lookup: { space: { authorization: { myPrivileges: string[] } } } }>(
+    request,
+    `query($id: UUID!) { lookup { space(ID: $id) { authorization { myPrivileges } } } }`,
+    { id: spaceId },
+    email
+  );
+  return data.lookup.space.authorization.myPrivileges;
+}
+
+/** Whether members of `spaceId` may create subspaces — the setting that grants CREATE_SUBSPACE to them. */
+export async function readAllowMembersToCreateSubspaces(request: APIRequestContext, spaceId: string): Promise<boolean> {
+  const data = await gql<{ lookup: { space: { settings: { collaboration: { allowMembersToCreateSubspaces: boolean } } } } }>(
+    request,
+    `query($id: UUID!) { lookup { space(ID: $id) { settings { collaboration { allowMembersToCreateSubspaces } } } } }`,
+    { id: spaceId }
+  );
+  return data.lookup.space.settings.collaboration.allowMembersToCreateSubspaces;
+}
+
+/** Sets that setting; the server re-applies the space's authorization policy in the same request. */
+export async function setAllowMembersToCreateSubspaces(
+  request: APIRequestContext,
+  spaceId: string,
+  value: boolean
+): Promise<void> {
+  await gql(
+    request,
+    `mutation($d: UpdateSpaceSettingsInput!) { updateSpaceSettings(settingsData: $d) { id } }`,
+    { d: { spaceID: spaceId, settings: { collaboration: { allowMembersToCreateSubspaces: value } } } }
+  );
 }
 
 export type Phase = {
