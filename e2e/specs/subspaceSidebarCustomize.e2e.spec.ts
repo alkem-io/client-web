@@ -1,4 +1,4 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { type APIRequestContext, expect, type Locator, type Page } from '@playwright/test';
 import { test } from '../fixtures/authFixture';
 import {
   FIXTURE_URLS,
@@ -221,8 +221,8 @@ test.describe('subspace sidebar — admin customizes once for every phase (US1)'
     originalOrder = (canonical.every(Boolean) ? (canonical as Phase[]) : phases).map(p => p.id);
   });
 
-  /** Order-independence: restore phase order, visibility and the positional first-phase list. */
-  test.beforeEach(async ({ request }) => {
+  /** Phase order, per-phase display settings, first-phase visibility and the positional first lists of both subspaces. */
+  async function restoreFixture(request: APIRequestContext) {
     await setPhaseOrder(request, flowId, originalOrder);
     const { phases } = await readPhases(request, l1Id);
     for (const phase of phases) {
@@ -231,6 +231,20 @@ test.describe('subspace sidebar — admin customizes once for every phase (US1)'
     await updatePhaseSettings(request, phases[0].id, { visible: true, sidebar: POSITIONAL_DEFAULT });
     const l2 = await readPhases(request, l2Id);
     await updatePhaseSettings(request, l2.phases[0].id, { visible: true, sidebar: POSITIONAL_DEFAULT });
+  }
+
+  /** Order-independence: every scenario starts from the restored fixture. */
+  test.beforeEach(async ({ request }) => {
+    await restoreFixture(request);
+  });
+
+  /**
+   * A red scenario must not cascade: in serial mode its followers are skipped, so nothing else in
+   * this file would put the fixture back, and the Defaults walks that run next expect Alpha's
+   * positional first list (US1-AS7 leaves it empty). Restore it here, whatever happened.
+   */
+  test.afterAll(async ({ request }) => {
+    if (flowId) await restoreFixture(request);
   });
 
   test('US1-AS1 — Customize Sidebar sits beside Add Phase / Replace flow on L1 and L2, absent on the L0', async ({
