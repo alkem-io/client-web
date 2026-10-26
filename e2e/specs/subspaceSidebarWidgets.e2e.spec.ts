@@ -7,6 +7,7 @@ import {
   READONLY_EMAIL,
   readPhases,
   resolveFixtureIds,
+  searchHits,
   SUBSPACE_DEFAULT,
   signIn,
   updatePhaseSettings,
@@ -39,6 +40,12 @@ import {
  *   - search ingest (`adminSearchIngestFromScratch`) has run after seeding.
  * Actors: the admin (also drives the API writes), the member without update rights and an
  * anonymous context. Without credentials, fixture or member the walk skips with the reason.
+ *
+ * The two search scenarios (US3-AS1, US3-AS2) need Elasticsearch behind the stack. `beforeAll`
+ * probes it once with the sidebar's own search for the "climate" post in Alpha's first phase;
+ * no hit (no Elasticsearch, or the posts not ingested) skips those two with that reason — never
+ * a silent pass. Set E2E_SEARCH_AVAILABLE=1 where search is expected to work: the probe then
+ * skips nothing and a broken search is a red walk.
  *
  * Deviation recorded for the unknown-widget scenario: the "unknown value" leg is exercised by
  * injecting a wire-valid-but-client-unknown value into the GraphQL *response*
@@ -121,6 +128,8 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
   let alphaFirst: string;
   let alphaSecond: Phase;
   let alpha2First: string;
+  /** Why the search scenarios cannot run on this stack, or undefined when they can. */
+  let searchUnavailable: string | undefined;
 
   test.beforeAll(async ({ browser, request }) => {
     browserRef = browser;
@@ -128,6 +137,13 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
     alphaFirst = fx.alpha.states[0].id;
     alphaSecond = fx.alpha.states[1];
     alpha2First = fx.alpha2.states[0].id;
+
+    const hits = await searchHits(request, fx.alphaId, alphaFirst, 'climate');
+    if (hits === 0 && !process.env.E2E_SEARCH_AVAILABLE) {
+      searchUnavailable =
+        'search for "climate" in Alpha\'s first phase found nothing — Elasticsearch is not available on this stack ' +
+        '(or the fixture posts are not ingested); set E2E_SEARCH_AVAILABLE=1 to fail instead of skipping';
+    }
 
     admin = await browserRef.newContext({ viewport: { width: 1440, height: 1000 } });
     member = await browserRef.newContext({ viewport: { width: 1440, height: 1000 } });
@@ -147,6 +163,7 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
   });
 
   test('US3-AS1 search filters the active phase of the subspace, never the parent’s phase', async ({ request }) => {
+    test.skip(!!searchUnavailable, searchUnavailable);
     await setSidebar(request, alphaFirst, ['INTENT', 'ABOUT', 'CREATE_POST', 'SEARCH', 'COMMUNITY', 'INDEX']);
     const page = await member.newPage();
     await openSubspace(page, ALPHA_URL);
@@ -165,6 +182,7 @@ test.describe('@forge-acceptance US3 — configured subspace sidebar', () => {
   });
 
   test('US3-AS2 L2 search finds its phase post and a phase switch resets the search', async ({ request }) => {
+    test.skip(!!searchUnavailable, searchUnavailable);
     await setSidebar(request, alpha2First, ['INTENT', 'ABOUT', 'SEARCH', 'COMMUNITY', 'INDEX']);
     const page = await member.newPage();
     await openSubspace(page, ALPHA2_URL);

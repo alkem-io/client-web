@@ -184,6 +184,33 @@ export async function setPhaseOrder(request: APIRequestContext, flowId: string, 
   );
 }
 
+/**
+ * How many callouts the sidebar search finds for `term` in `spaceId`, phase `flowStateId` — the
+ * exact search the sidebar issues (same filter, same folding). A stack without Elasticsearch
+ * answers an empty list, not an error, so an availability probe must ask for a known term.
+ */
+export async function searchHits(
+  request: APIRequestContext,
+  spaceId: string,
+  flowStateId: string,
+  term: string
+): Promise<number> {
+  const data = await gql<{ search: { calloutResults: { results: { id: string }[] } } }>(
+    request,
+    `query($d: SearchInput!) { search(searchData: $d) { calloutResults { results { id } } } }`,
+    {
+      d: {
+        terms: [term],
+        searchInFlowStateFilter: flowStateId,
+        searchInSpaceFilter: spaceId,
+        foldCalloutResources: true,
+        filters: [{ category: 'COLLABORATION_TOOLS', size: 20, types: ['CALLOUT'] }],
+      },
+    }
+  );
+  return data.search.calloutResults.results.length;
+}
+
 /** The platform subspace template's first-phase list after the positional migration. */
 export const SUBSPACE_DEFAULT = [
   'INTENT',
