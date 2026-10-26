@@ -83,4 +83,7 @@ export type TemplatesManagerViewProps = {
  * Section visibility rule (FR-015):
  *   render section S ⟺ categories[S].templates.length > 0 || canCreate(S) || canImport(S)
  * An empty-but-addable section renders an empty state plus the available add affordance(s).
+ * Amended 2026-10-22: an empty section (no templates, or none matching the search)
+ * with canImport(S) also renders a link-style "Browse General Library" button that
+ * calls onImport(S) — the same handler as the section's "Select from library" item.
  */

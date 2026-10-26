@@ -203,3 +203,38 @@ describe('isColumnTitleTooShort — Edit Details title minimum', () => {
     expect(isColumnTitleTooShort(title)).toBe(true);
   });
 });
+
+describe('LayoutPoolColumn — locked while the layout is saving', () => {
+  const callout = { id: 'c-1', title: 'Post', description: '', flowStateTagsetId: 't-1', profileUrl: '' };
+  const renderLocked = (locked: boolean) =>
+    render(
+      <DndContext>
+        <LayoutPoolColumn
+          column={baseColumn({ callouts: [callout] })}
+          otherColumns={[{ id: 'col-2', title: 'Other' }]}
+          showDescription={false}
+          onMoveToColumn={vi.fn()}
+          onViewPost={vi.fn()}
+          columnMenuActions={baseActions()}
+          draggable={true}
+          locked={locked}
+        />
+      </DndContext>
+    );
+
+  test('locked: the column and row drag handles and "Move to" are disabled', async () => {
+    renderLocked(true);
+    expect(screen.getByRole('button', { name: 'layout.column.drag' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'layout.row.drag' })).toBeDisabled();
+    await userEvent.click(screen.getByRole('button', { name: 'layout.row.menu' }));
+    expect(await screen.findByRole('menuitem', { name: 'layout.row.moveTo' })).toHaveAttribute('data-disabled');
+  });
+
+  test('unlocked: the drag handles and "Move to" are enabled', async () => {
+    renderLocked(false);
+    expect(screen.getByRole('button', { name: 'layout.column.drag' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'layout.row.drag' })).toBeEnabled();
+    await userEvent.click(screen.getByRole('button', { name: 'layout.row.menu' }));
+    expect(await screen.findByRole('menuitem', { name: 'layout.row.moveTo' })).not.toHaveAttribute('data-disabled');
+  });
+});

@@ -9,11 +9,9 @@ export type OrgRow = {
   displayName: string;
   /** Org logo URL. Falls back to a deterministic accent color initials tile when absent. */
   avatarUrl?: string;
-  /** Tagline shown as the card body description (`line-clamp-2`). */
-  tagline?: string;
   /** Concatenated "City, Country" when present. */
   location?: string;
-  /** Deterministic accent colour. Used as the banner-area gradient and avatar fallback bg. */
+  /** Deterministic accent colour — the avatar fallback background. */
   color: string;
   role: OrgRowRole;
   verified: boolean;
@@ -42,7 +40,6 @@ export const mapUserOrganizations = (
       id,
       displayName: enrich?.displayName ?? '',
       avatarUrl: enrich?.avatarUrl,
-      tagline: enrich?.tagline,
       location: enrich?.location,
       color: pickColorFromId(id),
       role,

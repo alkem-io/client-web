@@ -9,18 +9,22 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import type { UpdateProfileInput, UpdateUserInput } from '@/core/apollo/generated/graphql-schema';
 import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
-import { SAVED_FLASH_MS } from '@/crd/components/common/FieldFooter';
+import { SOCIAL_LINK_KINDS } from '@/crd/components/contributor/settings/ProfileFormFields';
 import type {
-  SectionSaveStatus,
   UserProfileFormValues,
   UserProfileReference,
-  UserProfileSectionKey,
 } from '@/crd/components/user/settings/UserProfileTabView.types';
 import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
+import { isValidPhoneOrEmpty } from '@/crd/lib/validators';
+import type { TabUnsavedChanges } from '@/main/crdPages/utils/tabUnsavedChanges';
+import {
+  countReferenceChanges,
+  diffProfileReferences,
+  newReferenceId,
+  rebaseReferences,
+  saveProfileChanges,
+} from '../../../common/profileChanges';
 import { mapUserToProfileFormValues } from './userProfileMapper';
-
-const TEMP_PREFIX = 'temp-';
-const isTempId = (id: string) => id.startsWith(TEMP_PREFIX);
 
 export type AvatarCropConfig = {
   aspectRatio?: number;
@@ -39,8 +43,6 @@ export type UseUserProfileTabDataResult = {
   values: UserProfileFormValues | null;
   loading: boolean;
   error: Error | null;
-  dirtyByField: Partial<Record<UserProfileSectionKey, boolean>>;
-  saveStatusByField: Partial<Record<UserProfileSectionKey, SectionSaveStatus>>;
   uploadingAvatar: boolean;
   pendingAvatarCrop: PendingAvatarCrop | null;
 
@@ -51,27 +53,25 @@ export type UseUserProfileTabDataResult = {
   onUploadAvatar: (file: File) => void;
   onAvatarCropComplete: (croppedFile: File, altText: string) => void;
   onAvatarCropCancel: () => void;
-  onSaveSection: (section: UserProfileSectionKey) => Promise<void>;
+  /** Every field is buffered and saved through the unsaved-changes bar (spec 097 Session 2026-10-22). */
+  unsaved: TabUnsavedChanges;
 };
 
+const SCALAR_FIELDS = ['displayName', 'firstName', 'lastName', 'phone', 'tagline', 'city', 'country', 'bio'] as const;
+const TAGSET_FIELDS = ['skills', 'keywords'] as const;
+
+const allReferences = (values: UserProfileFormValues) => [
+  ...values.references,
+  ...SOCIAL_LINK_KINDS.map(kind => values.recognizedReferences[kind]),
+];
+
 /**
- * Per-section save hook for the User Profile tab — parallel to 045's
- * `useAboutTabData`. Holds local form values + per-section status; each
- * `onSaveSection(k)` fires ONE targeted mutation (only that section's
- * fields), then merges the freshly-saved slice back into the local buffer
- * to preserve unsaved edits in OTHER sections.
+ * User Profile tab data hook — saved through the tab-wide unsaved-changes bar.
  *
- * Failure semantics (FR-022):
- * - `saving` → `error` on hard failure. The section stays dirty with the
- *   user's typed values preserved + an inline error message. The error
- *   persists until the admin edits any field in the section again, at
- *   which point `onChange` clears the error and re-enables Save.
- *
- * References (FR-025 / Rule #9):
- * - Trash sets `pendingReferenceDelete`; only the dialog's Confirm queues
- *   the row for deletion in the local buffer.
- * - The actual `deleteReference` mutation fires only on the
- *   References-section Save (in the same batch as create / update).
+ * Every field lives in a local buffer over the cache-derived server values
+ * (`saved`); `unsaved` counts the changed fields, `saveAll` writes them all
+ * and `reset` drops the buffer back to `saved`. Avatar uploads stay immediate
+ * (the crop dialog's Save IS the commit).
  */
 export const useUserProfileTabData = (userId: string | undefined): UseUserProfileTabDataResult => {
   const {
@@ -86,11 +86,8 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
 
   const [values, setValues] = useState<UserProfileFormValues | null>(null);
   const valuesRef = useRef<UserProfileFormValues | null>(null);
-
-  const [saveStatusByField, setSaveStatusByField] = useState<Partial<Record<UserProfileSectionKey, SectionSaveStatus>>>(
-    {}
-  );
-  const savedFlashTimers = useRef<Partial<Record<UserProfileSectionKey, ReturnType<typeof setTimeout>>>>({});
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [pendingAvatarCrop, setPendingAvatarCrop] = useState<PendingAvatarCrop | null>(null);
@@ -102,7 +99,7 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
   const [uploadVisual] = useUploadVisualMutation();
 
   // Seed the local buffer once when the query first resolves. Subsequent
-  // cache updates flow through `saved` for dirty detection, but never
+  // cache updates flow through `saved` for change detection, but never
   // overwrite the user's edits.
   useEffect(() => {
     if (saved && valuesRef.current === null) {
@@ -111,106 +108,34 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
     }
   }, [saved]);
 
-  useEffect(
-    () => () => {
-      for (const timer of Object.values(savedFlashTimers.current)) {
-        if (timer) clearTimeout(timer);
-      }
-    },
-    []
-  );
-
-  // ────────────────── Dirty map (per section) ──────────────────
-
-  const arrayEq = <T>(a: ReadonlyArray<T>, b: ReadonlyArray<T>) => JSON.stringify(a) === JSON.stringify(b);
-
-  const referencesEqual = (a: UserProfileFormValues | null, b: UserProfileFormValues | null): boolean => {
-    if (!a || !b) return true;
-    if (a.references.length !== b.references.length) return false;
-    if (!arrayEq(a.references, b.references)) return false;
-    const recognizedKinds = ['linkedin', 'bsky', 'github'] as const;
-    return recognizedKinds.every(k => {
-      const aRef = a.recognizedReferences[k];
-      const bRef = b.recognizedReferences[k];
-      return (aRef?.uri ?? '') === (bRef?.uri ?? '');
-    });
-  };
-
-  const dirtyByField: Partial<Record<UserProfileSectionKey, boolean>> = (() => {
-    if (!values || !saved) return {};
-    return {
-      displayName: values.displayName !== saved.displayName,
-      firstName: values.firstName !== saved.firstName,
-      lastName: values.lastName !== saved.lastName,
-      phone: values.phone !== saved.phone,
-      tagline: values.tagline !== saved.tagline,
-      location: values.city !== saved.city || values.country !== saved.country,
-      bio: values.bio !== saved.bio,
-      skills: !arrayEq(values.skills.tags, saved.skills.tags),
-      keywords: !arrayEq(values.keywords.tags, saved.keywords.tags),
-      references: !referencesEqual(values, saved),
-    };
-  })();
-
-  // ────────────────── Local mutations ──────────────────
-
-  /** Clear the section's error status when the user edits it again. */
-  const clearSectionErrorIfPresent = (section: UserProfileSectionKey) => {
-    setSaveStatusByField(prev => {
-      const current = prev[section];
-      if (!current || current.kind !== 'error') return prev;
-      const next = { ...prev };
-      delete next[section];
-      return next;
-    });
-  };
-
-  const onChange = (patch: Partial<UserProfileFormValues>) => {
+  const update = (apply: (base: UserProfileFormValues) => UserProfileFormValues) => {
     setValues(prev => {
       const base = prev ?? valuesRef.current;
       if (!base) return prev;
-      const next = { ...base, ...patch };
+      const next = apply(base);
       valuesRef.current = next;
       return next;
     });
-    // Heuristic: any single-field change clears that field's error.
-    if ('displayName' in patch) clearSectionErrorIfPresent('displayName');
-    if ('firstName' in patch) clearSectionErrorIfPresent('firstName');
-    if ('lastName' in patch) clearSectionErrorIfPresent('lastName');
-    if ('phone' in patch) clearSectionErrorIfPresent('phone');
-    if ('tagline' in patch) clearSectionErrorIfPresent('tagline');
-    if ('city' in patch || 'country' in patch) clearSectionErrorIfPresent('location');
-    if ('bio' in patch) clearSectionErrorIfPresent('bio');
-    if ('skills' in patch) clearSectionErrorIfPresent('skills');
-    if ('keywords' in patch) clearSectionErrorIfPresent('keywords');
-    if ('references' in patch || 'recognizedReferences' in patch) clearSectionErrorIfPresent('references');
   };
 
+  const onChange = (patch: Partial<UserProfileFormValues>) => update(base => ({ ...base, ...patch }));
+
   // The shared ReferencesEditor manages the arbitrary references list (+ its own delete-confirm) and
-  // emits the full list. New rows arrive without an `id`; assign a temp id so the per-section save
-  // diffs them as creates. Recognized social links are handled separately (onUpdateRecognizedReference).
-  const onReferencesChange = (rows: ReferenceRow[]) => {
-    setValues(prev => {
-      const base = prev ?? valuesRef.current;
-      if (!base) return prev;
-      const mapped: UserProfileReference[] = rows.map((r, i) => ({
-        id: r.id ?? `${TEMP_PREFIX}${Date.now()}-${i}`,
+  // emits the full list. New rows arrive without an `id`; a temp id marks them as creates.
+  const onReferencesChange = (rows: ReferenceRow[]) =>
+    update(base => ({
+      ...base,
+      references: rows.map((r, i) => ({
+        id: r.id ?? newReferenceId(i),
         name: r.name,
         uri: r.uri,
         description: r.description ?? '',
         recognized: false,
-      }));
-      const next = { ...base, references: mapped };
-      valuesRef.current = next;
-      return next;
-    });
-    clearSectionErrorIfPresent('references');
-  };
+      })),
+    }));
 
-  const onUpdateRecognizedReference = (kind: 'linkedin' | 'bsky' | 'github', uri: string) => {
-    setValues(prev => {
-      const base = prev ?? valuesRef.current;
-      if (!base) return prev;
+  const onUpdateRecognizedReference = (kind: 'linkedin' | 'bsky' | 'github', uri: string) =>
+    update(base => {
       const current = base.recognizedReferences[kind] ?? {
         id: '',
         name: kind,
@@ -218,18 +143,8 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
         description: '',
         recognized: true,
       };
-      const next = {
-        ...base,
-        recognizedReferences: {
-          ...base.recognizedReferences,
-          [kind]: { ...current, uri },
-        },
-      };
-      valuesRef.current = next;
-      return next;
+      return { ...base, recognizedReferences: { ...base.recognizedReferences, [kind]: { ...current, uri } } };
     });
-    clearSectionErrorIfPresent('references');
-  };
 
   // ────────────────── Avatar (FR-024 — crop + commit) ──────────────────
   // Picking a file opens the CRD `ImageCropDialog` first. Only the dialog's
@@ -264,13 +179,7 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
     const visualId = current.avatar.id;
     setPendingAvatarCrop(null);
     // Optimistically reflect the user-provided alt text in the local buffer.
-    setValues(prev => {
-      const base = prev ?? valuesRef.current;
-      if (!base) return prev;
-      const next = { ...base, avatar: { ...base.avatar, altText } };
-      valuesRef.current = next;
-      return next;
-    });
+    update(base => ({ ...base, avatar: { ...base.avatar, altText } }));
     setUploadingAvatar(true);
     void uploadVisual({
       variables: {
@@ -284,236 +193,149 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
       .then(result => {
         const uploaded = result.data?.uploadImageOnVisual;
         if (uploaded) {
-          setValues(prev => {
-            const base = prev ?? valuesRef.current;
-            if (!base) return prev;
-            const next = {
-              ...base,
-              avatar: {
-                ...base.avatar,
-                uri: uploaded.uri ?? null,
-                altText: uploaded.alternativeText ?? null,
-              },
-            };
-            valuesRef.current = next;
-            return next;
-          });
+          update(base => ({
+            ...base,
+            avatar: { ...base.avatar, uri: uploaded.uri ?? null, altText: uploaded.alternativeText ?? null },
+          }));
         }
       })
       .finally(() => setUploadingAvatar(false));
   };
 
-  // ────────────────── Per-section save ──────────────────
+  // ────────────────── Save / Discard (the unsaved-changes bar) ──────────────────
 
-  const setSectionStatus = (section: UserProfileSectionKey, status: SectionSaveStatus) => {
-    setSaveStatusByField(prev => ({ ...prev, [section]: status }));
-  };
+  const changedScalars = values && saved ? SCALAR_FIELDS.filter(f => values[f] !== saved[f]) : [];
+  const changedTagsets =
+    values && saved ? TAGSET_FIELDS.filter(f => JSON.stringify(values[f].tags) !== JSON.stringify(saved[f].tags)) : [];
+  const referenceChanges =
+    values && saved
+      ? diffProfileReferences<UserProfileReference>(allReferences(values), allReferences(saved))
+      : { created: [], edited: [], removed: [] };
+  const unsavedCount = changedScalars.length + changedTagsets.length + countReferenceChanges(referenceChanges);
 
-  const flashSaved = (section: UserProfileSectionKey) => {
-    setSectionStatus(section, { kind: 'saved', at: Date.now() });
-    const existing = savedFlashTimers.current[section];
-    if (existing) clearTimeout(existing);
-    savedFlashTimers.current[section] = setTimeout(() => {
-      setSaveStatusByField(prev => {
-        const next = { ...prev };
-        delete next[section];
-        return next;
-      });
-      delete savedFlashTimers.current[section];
-    }, SAVED_FLASH_MS);
-  };
+  const canSave =
+    values !== null &&
+    Boolean(values.displayName.trim() && values.firstName.trim() && values.lastName.trim()) &&
+    isValidPhoneOrEmpty(values.phone);
 
-  const buildUserPatch = (section: UserProfileSectionKey, current: UserProfileFormValues): UpdateUserInput | null => {
-    if (!userId) return null;
-    const base: UpdateUserInput = { ID: userId };
-    switch (section) {
-      case 'displayName':
-        return { ...base, profileData: { displayName: current.displayName } };
-      case 'firstName':
-        return { ...base, firstName: current.firstName };
-      case 'lastName':
-        return { ...base, lastName: current.lastName };
-      case 'phone':
-        return { ...base, phone: current.phone };
-      case 'tagline':
-        return { ...base, profileData: { tagline: current.tagline } };
-      case 'location':
-        return {
-          ...base,
-          profileData: { location: { city: current.city, country: current.country } },
-        };
-      case 'bio':
-        return { ...base, profileData: { description: current.bio } };
-      case 'skills':
-      case 'keywords':
-        // Tagset sections take a separate path — they may need to lazy-create
-        // the tagset before the patch can be issued. See `saveTagsetSection`.
-        return null;
-      case 'references':
-        return null; // handled via the dedicated batch path
-    }
-  };
-
-  /**
-   * Save one named profile tagset (`Skills` / `Keywords`). When the tagset
-   * doesn't yet exist on the profile, fires `createTagsetOnProfile` first
-   * and adopts the returned id into the buffer; otherwise patches the
-   * tagset entry in `profileData.tagsets` via `updateUser`.
-   */
-  const saveTagsetSection = async (section: 'skills' | 'keywords', current: UserProfileFormValues): Promise<void> => {
-    if (!userId) return;
-    const tagset = current[section];
-    const reservedName = section === 'skills' ? TagsetReservedName.Skills : TagsetReservedName.Keywords;
-
-    if (!tagset.id) {
-      if (!current.profileId) return;
-      const result = await createTagset({
-        variables: { input: { profileID: current.profileId, name: reservedName, tags: tagset.tags } },
-      });
-      const newId = result.data?.createTagsetOnProfile?.id;
-      if (newId) {
-        // Adopt the newly-created id so future saves on this section patch
-        // the existing tagset rather than re-creating it.
-        setValues(prev => {
-          const base = prev ?? valuesRef.current;
-          if (!base) return prev;
-          const next = { ...base, [section]: { ...base[section], id: newId } };
-          valuesRef.current = next;
-          return next;
-        });
-      }
-      return;
-    }
-
-    await updateUser({
-      variables: { input: { ID: userId, profileData: { tagsets: [{ ID: tagset.id, tags: tagset.tags }] } } },
-    });
-  };
-
-  const collectExistingReferencePatches = (current: UserProfileFormValues): UpdateProfileInput['references'] => {
-    const all = [
-      ...(['linkedin', 'bsky', 'github'] as const)
-        .map(kind => current.recognizedReferences[kind])
-        .filter((r): r is UserProfileReference => Boolean(r) && Boolean(r?.id)),
-      ...current.references.filter(r => !isTempId(r.id) && r.id),
-    ];
-    return all.map(r => ({
-      ID: r.id,
-      name: r.name,
-      uri: r.uri,
-      description: r.description,
-    }));
-  };
-
-  const collectNewReferences = (current: UserProfileFormValues): Array<UserProfileReference> => {
-    const recognizedRefs = (['linkedin', 'bsky', 'github'] as const)
-      .map(kind => current.recognizedReferences[kind])
-      .filter((r): r is UserProfileReference => r !== null);
-    const newRecognized = recognizedRefs
-      .filter(r => r.id === '' && r.uri.trim() !== '')
-      .map(r => ({ ...r, name: r.name || r.id }));
-    const newArbitrary = current.references.filter(r => isTempId(r.id) && r.name.trim());
-    return [...newRecognized, ...newArbitrary];
-  };
-
-  const collectRemovedReferenceIds = (current: UserProfileFormValues, savedNow: UserProfileFormValues): string[] => {
-    const currentIds = new Set([
-      ...current.references.map(r => r.id),
-      ...(['linkedin', 'bsky', 'github'] as const)
-        .map(kind => current.recognizedReferences[kind]?.id)
-        .filter((id): id is string => Boolean(id)),
-    ]);
-    const savedAll = [
-      ...savedNow.references,
-      ...(['linkedin', 'bsky', 'github'] as const)
-        .map(kind => savedNow.recognizedReferences[kind])
-        .filter((r): r is UserProfileReference => Boolean(r) && Boolean(r?.id)),
-    ];
-    return savedAll.filter(r => r.id && !isTempId(r.id) && !currentIds.has(r.id)).map(r => r.id);
-  };
-
-  const saveReferencesSection = async (current: UserProfileFormValues, savedNow: UserProfileFormValues) => {
-    if (!userId) return;
-
-    // 1) Patch existing.
-    const existingPatches = collectExistingReferencePatches(current);
-    if (existingPatches && existingPatches.length > 0) {
-      await updateUser({
-        variables: { input: { ID: userId, profileData: { references: existingPatches } } },
-      });
-    }
-
-    // 2) Create new.
-    const toCreate = collectNewReferences(current);
-    for (const ref of toCreate) {
-      await createReference({
-        variables: {
-          input: {
-            profileID: current.profileId,
-            name: ref.name || 'reference',
-            uri: ref.uri,
-            description: ref.description,
-          },
-        },
-      });
-    }
-
-    // 3) Delete removed.
-    const removedIds = collectRemovedReferenceIds(current, savedNow);
-    for (const id of removedIds) {
-      await deleteReference({ variables: { input: { ID: id } } });
-    }
-  };
-
-  const onSaveSection = async (section: UserProfileSectionKey) => {
+  const saveAll = async (): Promise<boolean> => {
     const current = valuesRef.current;
-    const savedNow = saved;
-    if (!current || !savedNow || !userId) return;
+    if (!current || !saved || !userId || unsavedCount === 0) return true;
+    setSaving(true);
+    setSaveError(null);
 
-    setSectionStatus(section, { kind: 'saving' });
-
-    try {
-      if (section === 'skills' || section === 'keywords') {
-        await saveTagsetSection(section, current);
-      } else if (section === 'references') {
-        await saveReferencesSection(current, savedNow);
-      } else {
-        const patch = buildUserPatch(section, current);
-        if (patch) {
-          await updateUser({ variables: { input: patch } });
-        }
-      }
-
-      // Resync the local buffer with the server. The freshly-fetched values
-      // overwrite ONLY the section we just saved; unsaved edits in other
-      // sections are preserved.
-      const fresh = await refetch();
-      const freshUser = fresh.data?.lookup.user;
-      if (freshUser) {
-        const freshValues = mapUserToProfileFormValues(freshUser);
-        setValues(prev => {
-          const base = prev ?? valuesRef.current;
-          const merged = base ? mergeSavedSection(base, freshValues, section) : freshValues;
-          valuesRef.current = merged;
-          return merged;
-        });
-      }
-
-      flashSaved(section);
-    } catch (err) {
-      setSectionStatus(section, {
-        kind: 'error',
-        message: err instanceof Error ? err.message : 'Save failed',
-      });
+    // One updateUser for every changed field, existing tagset and edited reference.
+    const input: UpdateUserInput = { ID: userId };
+    const profileData: UpdateProfileInput = {};
+    if (current.firstName !== saved.firstName) input.firstName = current.firstName;
+    if (current.lastName !== saved.lastName) input.lastName = current.lastName;
+    if (current.phone !== saved.phone) input.phone = current.phone;
+    if (current.displayName !== saved.displayName) profileData.displayName = current.displayName;
+    if (current.tagline !== saved.tagline) profileData.tagline = current.tagline;
+    if (current.bio !== saved.bio) profileData.description = current.bio;
+    if (current.city !== saved.city || current.country !== saved.country) {
+      profileData.location = { city: current.city, country: current.country };
     }
+    const existingTagsets = changedTagsets.filter(f => current[f].id);
+    if (existingTagsets.length) {
+      profileData.tagsets = existingTagsets.map(f => ({ ID: current[f].id ?? '', tags: current[f].tags }));
+    }
+    if (referenceChanges.edited.length) {
+      profileData.references = referenceChanges.edited.map(r => ({
+        ID: r.id,
+        name: r.name,
+        uri: r.uri,
+        description: r.description,
+      }));
+    }
+    if (Object.keys(profileData).length) input.profileData = profileData;
+
+    const result = await saveProfileChanges({
+      updateCore: Object.keys(input).length > 1 ? () => updateUser({ variables: { input } }) : null,
+      tagsetsToCreate: changedTagsets
+        .filter(f => !current[f].id)
+        .map(field => ({
+          field,
+          create: () =>
+            createTagset({
+              variables: {
+                input: {
+                  profileID: current.profileId,
+                  name: field === 'skills' ? TagsetReservedName.Skills : TagsetReservedName.Keywords,
+                  tags: current[field].tags,
+                },
+              },
+            }),
+        })),
+      references: referenceChanges,
+      createReference: ref =>
+        createReference({
+          variables: {
+            input: {
+              profileID: current.profileId,
+              name: ref.name || 'reference',
+              uri: ref.uri,
+              description: ref.description,
+            },
+          },
+        }),
+      deleteReference: ref => deleteReference({ variables: { input: { ID: ref.id } } }),
+    });
+
+    // Rebase the buffer on the fresh server values: what saved now matches the server, what
+    // failed stays buffered so it stays counted and Save retries it.
+    // A failed refresh leaves the buffer out of step with the server (references just created would
+    // be created again on retry), so it fails the Save and the page offers a reload.
+    let refreshError: string | null = null;
+    const freshUser = (
+      await refetch().catch(err => {
+        refreshError = err instanceof Error ? err.message : String(err);
+        return null;
+      })
+    )?.data?.lookup.user;
+    if (freshUser) {
+      const fresh = mapUserToProfileFormValues(freshUser);
+      const next: UserProfileFormValues = { ...fresh, avatar: current.avatar };
+      if (result.coreFailed) {
+        for (const f of SCALAR_FIELDS) next[f] = current[f];
+      }
+      for (const f of TAGSET_FIELDS) {
+        if ((result.coreFailed && current[f].id) || result.failedTagsets.includes(f)) next[f] = current[f];
+      }
+      const rows = rebaseReferences(
+        allReferences(fresh).filter((r): r is UserProfileReference => Boolean(r?.id)),
+        referenceChanges,
+        result
+      );
+      next.references = rows.filter(r => !r.recognized);
+      next.recognizedReferences = { ...fresh.recognizedReferences };
+      for (const kind of SOCIAL_LINK_KINDS) {
+        const row = rows.find(r => r.recognized && r.name.toLowerCase() === kind);
+        if (row) next.recognizedReferences[kind] = row;
+      }
+      valuesRef.current = next;
+      setValues(next);
+    }
+
+    setSaving(false);
+    const firstError = result.firstError ?? refreshError;
+    setSaveError(firstError);
+    return firstError === null;
+  };
+
+  const reset = () => {
+    if (saved) {
+      const next = { ...saved, avatar: valuesRef.current?.avatar ?? saved.avatar };
+      valuesRef.current = next;
+      setValues(next);
+    }
+    setSaveError(null);
   };
 
   return {
     values,
     loading: queryLoading,
     error: queryError ?? null,
-    dirtyByField,
-    saveStatusByField,
     uploadingAvatar,
     pendingAvatarCrop,
     onChange,
@@ -522,46 +344,8 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
     onUploadAvatar,
     onAvatarCropComplete,
     onAvatarCropCancel,
-    onSaveSection,
+    unsaved: { count: unsavedCount, canSave, saving, error: saveError, saveAll, reset },
   };
-};
-
-/**
- * Overlay the freshly-saved section's values onto the current buffer, so
- * the user's unsaved edits in other sections are preserved after a
- * per-section save (mirrors 045's `mergeSavedSection`).
- */
-const mergeSavedSection = (
-  buffer: UserProfileFormValues,
-  fresh: UserProfileFormValues,
-  section: UserProfileSectionKey
-): UserProfileFormValues => {
-  switch (section) {
-    case 'displayName':
-      return { ...buffer, displayName: fresh.displayName };
-    case 'firstName':
-      return { ...buffer, firstName: fresh.firstName };
-    case 'lastName':
-      return { ...buffer, lastName: fresh.lastName };
-    case 'phone':
-      return { ...buffer, phone: fresh.phone };
-    case 'tagline':
-      return { ...buffer, tagline: fresh.tagline };
-    case 'location':
-      return { ...buffer, city: fresh.city, country: fresh.country };
-    case 'bio':
-      return { ...buffer, bio: fresh.bio };
-    case 'skills':
-      return { ...buffer, skills: fresh.skills };
-    case 'keywords':
-      return { ...buffer, keywords: fresh.keywords };
-    case 'references':
-      return {
-        ...buffer,
-        references: fresh.references,
-        recognizedReferences: fresh.recognizedReferences,
-      };
-  }
 };
 
 export default useUserProfileTabData;

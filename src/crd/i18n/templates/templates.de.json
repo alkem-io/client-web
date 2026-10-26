@@ -10,6 +10,7 @@
     "deleting": "Wird gelöscht…",
     "noTemplates": "Noch keine Vorlagen",
     "noTemplatesHint": "Erstelle eine oder importiere eine aus der Bibliothek.",
+    "browseLibrary": "Allgemeine Bibliothek durchsuchen",
     "noTemplatesReadOnly": "Noch keine Vorlagen.",
     "sectionList": "Vorlagen-Abschnitte",
     "templateList": "Vorlagen",

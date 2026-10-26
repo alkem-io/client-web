@@ -32,20 +32,10 @@ export function mapOrgAccountToViewProps(
     account,
     loading,
     {
-      helpBanner: t('org.account.helpBanner'),
-      spaces: { title: t('org.account.spaces.title'), createButton: t('org.account.spaces.createButton') },
-      virtualContributors: {
-        title: t('org.account.virtualContributors.title'),
-        createButton: t('org.account.virtualContributors.createButton'),
-      },
-      innovationPacks: {
-        title: t('org.account.innovationPacks.title'),
-        createButton: t('org.account.innovationPacks.createButton'),
-      },
-      innovationHubs: {
-        title: t('org.account.innovationHubs.title'),
-        createButton: t('org.account.innovationHubs.createButton'),
-      },
+      spaces: { title: t('org.account.spaces.title') },
+      virtualContributors: { title: t('org.account.virtualContributors.title') },
+      innovationPacks: { title: t('org.account.innovationPacks.title') },
+      innovationHubs: { title: t('org.account.innovationHubs.title') },
       actions: { manage: t('org.account.actions.manage'), delete: t('org.account.actions.delete') },
     },
     callbacks

@@ -6,37 +6,13 @@
  * `specs/097-crd-user-settings/contracts/tab-userProfile.ts`.
  */
 
-import type { SectionSaveStatus } from '@/crd/components/common/FieldFooter';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
-
-export type { SectionSaveStatus };
-
-/**
- * Logical "sections" of the User Profile tab. Each maps to ONE Save button
- * and ONE targeted mutation. `email` is read-only and not a section.
- *
- * `skills` and `keywords` are two **independent** tagset sections — each
- * writes to its own named profile tagset (`Skills` / `Keywords`). There is
- * no unified `tags` section; saving Skills MUST NOT touch Keywords and
- * vice versa (parity with the existing MUI `UserForm` + `TagsetSegment`).
- */
-export type UserProfileSectionKey =
-  | 'displayName'
-  | 'firstName'
-  | 'lastName'
-  | 'phone'
-  | 'tagline'
-  | 'location'
-  | 'bio'
-  | 'skills'
-  | 'keywords'
-  | 'references';
 
 /**
  * One named profile tagset (Skills / Keywords for User; Keywords /
  * Capabilities for Org). `id` is `undefined` when the tagset doesn't yet
- * exist on the profile — the section's first Save lazy-creates it via
+ * exist on the profile — the first Save lazy-creates it via
  * `createTagsetOnProfile`.
  */
 export type UserProfileTagset = {
@@ -71,8 +47,8 @@ export type UserProfileCountryOption = {
 
 /**
  * The canonical form values shape — both the user's draft (`values`) and
- * the last server-known snapshot (`saved`) inhabit this type, and dirty is
- * derived per-section by comparison.
+ * the last server-known snapshot (`saved`) inhabit this type; the changes
+ * are derived per field by comparison.
  */
 export type UserProfileFormValues = {
   /** GraphQL profile id — used by reference create / tagset create mutations. */
@@ -107,11 +83,8 @@ export type UserProfileViewProps = {
   /** Static list of countries for the Location combobox. */
   countries: ReadonlyArray<UserProfileCountryOption>;
   loading: boolean;
-
-  /** Per-section dirty flags (true when draft differs from server). */
-  dirtyByField: Partial<Record<UserProfileSectionKey, boolean>>;
-  /** Per-section save status. Absent → idle. */
-  saveStatusByField: Partial<Record<UserProfileSectionKey, SectionSaveStatus>>;
+  /** True while a Save runs: the form is frozen, so nothing typed is lost to the post-save rebase. */
+  disabled?: boolean;
 
   /** Patch the local buffer for any single field. */
   onChange: (patch: Partial<UserProfileFormValues>) => void;
@@ -128,7 +101,4 @@ export type UserProfileViewProps = {
   /** Avatar upload commits IMMEDIATELY (FR-024). */
   onUploadAvatar: (file: File) => void;
   uploadingAvatar: boolean;
-
-  /** Save a single section (only that section's fields are persisted). */
-  onSaveSection: (section: UserProfileSectionKey) => void;
 } & MarkdownUploadProps;

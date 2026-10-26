@@ -1,6 +1,8 @@
 import type { MatrixClient } from 'matrix-js-sdk';
+import { isAppMode } from '@/core/appMode/isAppMode';
 import { setActiveClient, setSessionEstablishing } from './activeClient';
 import { registerActiveSession, unregisterActiveSession } from './activeSession';
+import { mintAndStore } from './mintSession';
 import { quietSdkLogging } from './sdkLogging';
 import { attemptSilentSso } from './ssoLogin';
 import { type CredentialRecord, clearNamespace, loadActorCredentials } from './storage';
@@ -81,8 +83,21 @@ const establishSession = async (
     if (record) {
       return record;
     }
-    const outcome = await attemptSilentSso(actorId, { signal: abort.signal, platformOrigin });
-    return outcome === 'authenticated' ? loadActorCredentials(actorId) : null;
+    // The app skips silent SSO entirely: no identity-origin cookie exists in
+    // this WebView's jar, so the iframe cannot complete — and on Android the
+    // attempt is actively harmful, because the shell intercepts the iframe's
+    // hop through identity.<host>/login and navigates the MAIN WebView to a
+    // "Sign in to continue" landing. See workspace#091 spec FR-014.
+    if (!isAppMode()) {
+      const outcome = await attemptSilentSso(actorId, { signal: abort.signal, platformOrigin });
+      if (outcome === 'authenticated') {
+        return loadActorCredentials(actorId);
+      }
+    }
+    // M3 mandates this leg for the app; reached in a BROWSER only after SSO
+    // fails, which is the one credential-issuance path this feature adds
+    // there — spec R-7(b).
+    return mintAndStore(abort.signal);
   };
 
   const start = async (record: CredentialRecord): Promise<void> => {

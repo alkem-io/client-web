@@ -397,6 +397,7 @@ export default function CrdSubspacePageLayout() {
               title={data.banner.title}
               titleHref={data.subspaceUrl || undefined}
               tagline={data.banner.tagline ?? null}
+              visual={{ src: data.subspaceAvatarUrl, initials: getInitials(data.subspaceName) }}
               fullWidth={fullWidth}
             />
             {/* Sticky settings tab row — mirrors SpaceShell's tabs slot so the

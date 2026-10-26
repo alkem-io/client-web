@@ -1,6 +1,25 @@
 import 'fake-indexeddb/auto';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { type CredentialRecord, clearNamespace, listStoredUserIds, loadCredentials, storeCredentials } from './storage';
+import {
+  type CredentialRecord,
+  clearNamespace,
+  listStoredUserIds,
+  loadActorCredentials,
+  loadCredentials,
+  storeCredentials,
+} from './storage';
+
+/** Runs `body` on a browser that never implemented indexedDB.databases(). */
+const withoutDatabasesApi = async (body: () => Promise<void>): Promise<void> => {
+  const original = indexedDB.databases;
+  // @ts-expect-error — simulate a browser without indexedDB.databases()
+  indexedDB.databases = undefined;
+  try {
+    await body();
+  } finally {
+    indexedDB.databases = original;
+  }
+};
 
 const USER_ID = '@alice:matrix.example.com';
 const OTHER_USER_ID = '@bob:matrix.example.com';
@@ -95,14 +114,63 @@ describe('storage (IndexedDB)', () => {
       expect(ids).toContain(OTHER_USER_ID);
     });
 
-    it('returns an empty list when enumeration is unsupported', async () => {
-      const original = indexedDB.databases;
-      // @ts-expect-error — simulate a browser without indexedDB.databases()
-      indexedDB.databases = undefined;
+    it('still lists a stored namespace when enumeration is unsupported', async () => {
+      // Firefox has never implemented indexedDB.databases(). Before the
+      // localStorage mirror this returned [] forever, so a stored credential
+      // could never be resumed and sign-out could never find one to delete.
+      await storeCredentials(makeRecord({ userId: USER_ID }));
+
+      await withoutDatabasesApi(async () => {
+        expect(await listStoredUserIds()).toContain(USER_ID);
+      });
+    });
+
+    it('resumes the actor record when enumeration is unsupported', async () => {
+      await storeCredentials(makeRecord({ userId: USER_ID }));
+
+      await withoutDatabasesApi(async () => {
+        expect(await loadActorCredentials('alice')).toEqual(makeRecord({ userId: USER_ID }));
+      });
+    });
+
+    it('forgets the namespace on clear, so sign-out leaves nothing listed', async () => {
+      await storeCredentials(makeRecord({ userId: USER_ID }));
+      await clearNamespace(USER_ID);
+
+      await withoutDatabasesApi(async () => {
+        expect(await listStoredUserIds()).not.toContain(USER_ID);
+      });
+    });
+
+    it('skips a mirrored namespace whose database is gone', async () => {
+      // The mirror can outlive its database — deleted by the browser, or by a
+      // clearNamespace that resolved early because another tab held it open.
+      // One stale entry must not mask a live record for the same actor.
+      await storeCredentials(makeRecord({ userId: '@alice:stale.example.com' }));
+      await storeCredentials(makeRecord({ userId: USER_ID }));
+      await new Promise<void>(resolve => {
+        const request = indexedDB.deleteDatabase('alkemio-matrix/@alice:stale.example.com');
+        request.onsuccess = () => resolve();
+        request.onerror = () => resolve();
+      });
+
+      await withoutDatabasesApi(async () => {
+        expect(await loadActorCredentials('alice')).toEqual(makeRecord({ userId: USER_ID }));
+      });
+      await clearNamespace('@alice:stale.example.com');
+    });
+
+    it('returns an empty list when neither enumeration nor the mirror is available', async () => {
+      await storeCredentials(makeRecord({ userId: USER_ID }));
+      const getItem = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+        throw new Error('blocked');
+      });
       try {
-        expect(await listStoredUserIds()).toEqual([]);
+        await withoutDatabasesApi(async () => {
+          expect(await listStoredUserIds()).toEqual([]);
+        });
       } finally {
-        indexedDB.databases = original;
+        getItem.mockRestore();
       }
     });
   });
