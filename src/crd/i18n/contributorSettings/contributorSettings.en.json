@@ -93,7 +93,7 @@
       "org": {
         "profile": "Profile",
         "account": "Account",
-        "community": "Associates",
+        "associates": "Associates",
         "membership": "Membership",
         "settings": "Settings",
         "invitations": "Invitations",

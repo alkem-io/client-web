@@ -21,7 +21,7 @@ vi.mock('./useOrgSettingsAccessGuard', () => ({
   default: () => ({ accessMode, loading: false, canEditSettings: accessMode !== 'none', hasUpdatePrivilege: false }),
 }));
 vi.mock('./useOrgSettingsTab', () => ({
-  default: () => ({ activeTabId: 'community', onTabSelect: () => {} }),
+  default: () => ({ activeTabId: 'associates', onTabSelect: () => {} }),
 }));
 
 import CrdOrgSettingsPage from './CrdOrgSettingsPage';
@@ -45,16 +45,16 @@ describe('CrdOrgSettingsPage — tab strip', () => {
     expect(screen.getAllByRole('tab').map(tab => tab.textContent)).toEqual([
       'shell.tabs.org.profile',
       'shell.tabs.org.account',
-      'shell.tabs.org.community',
+      'shell.tabs.org.associates',
       'shell.tabs.org.membership',
       'shell.tabs.org.invitations',
       'shell.tabs.org.settings',
     ]);
   });
 
-  it('shows only the Community tab to a community-only viewer', () => {
+  it('shows only the Associates tab to a community-only viewer', () => {
     accessMode = 'community-only';
     renderPage();
-    expect(screen.getAllByRole('tab').map(tab => tab.textContent)).toEqual(['shell.tabs.org.community']);
+    expect(screen.getAllByRole('tab').map(tab => tab.textContent)).toEqual(['shell.tabs.org.associates']);
   });
 });
