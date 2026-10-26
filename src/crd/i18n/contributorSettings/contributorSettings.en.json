@@ -179,6 +179,9 @@
           "confirm": "Remove reference"
         }
       },
+      "references": {
+        "title": "References"
+      },
       "avatar": {
         "title": "Profile Picture",
         "changeButton": "Change Avatar",
@@ -205,17 +208,10 @@
         "filteredEmptyDescription": "Try adjusting your filters or search query.",
         "clearFilters": "Clear Filters"
       },
-      "menu": {
-        "viewByType": "View {{type}}"
-      },
       "filter": {
         "all": "All",
         "spaces": "Spaces",
         "subspaces": "Subspaces"
-      },
-      "type": {
-        "space": "Space",
-        "subspace": "Subspace"
       },
       "role": {
         "admin": "Admin",
@@ -223,8 +219,8 @@
         "member": "Member"
       },
       "leave": {
-        "menuItem": "Leave",
-        "menuItemLabeled": "Leave {{type}}",
+        "button": "Leave",
+        "buttonAria": "Leave {{name}}",
         "dialogTitle": "Leave this membership?",
         "dialogDescription": "You're about to leave \"{{spaceName}}\". You'll lose access to its members-only content and will need to re-apply to rejoin.",
         "dialogConfirm": "Leave",
@@ -570,25 +566,25 @@
     },
     "organizations": {
       "pageTitle": "Organisations",
+      "myOrganizations": "My Organisations",
       "searchPlaceholder": "Search organisations...",
       "createButton": "Create Organisation",
+      "createDescription": "Create a new organisation to collaborate with your team.",
+      "newOrganization": "New Organisation",
       "summary": "Showing {{shown}} of {{total}} organisations",
       "empty": "You're not associated with any organisations yet.",
       "filteredEmptyTitle": "No organisations found",
       "filteredEmptyDescription": "Try searching for a different name or location.",
       "clearSearch": "Clear Search",
       "verified": "Verified",
-      "associates": "Associates",
       "associatesCount": "{{count}} Associates",
       "role": {
         "admin": "Admin",
         "associate": "Associate"
       },
-      "menu": {
-        "viewProfile": "View Profile",
-        "disassociate": "Disassociate"
-      },
       "disassociate": {
+        "button": "Disassociate",
+        "buttonAria": "Disassociate {{name}}",
         "dialogTitle": "Disassociate from this organisation?",
         "dialogDescription": "You're about to leave \"{{name}}\". You'll lose your associate role and any related permissions.",
         "dialogConfirm": "Disassociate",
@@ -598,22 +594,17 @@
     },
     "account": {
       "pageTitle": "Account",
-      "helpBanner": "Here you can view your active resources and manage your account allocation limits.",
       "spaces": {
-        "title": "Hosted Spaces",
-        "createButton": "Create Space"
+        "title": "Hosted Spaces"
       },
       "virtualContributors": {
-        "title": "Virtual Contributors",
-        "createButton": "Add Contributor"
+        "title": "Virtual Contributors"
       },
       "innovationPacks": {
-        "title": "Template Packs",
-        "createButton": "New Pack"
+        "title": "Template Packs"
       },
       "innovationHubs": {
-        "title": "Custom Homepages",
-        "createButton": "New Page"
+        "title": "Custom Homepages"
       },
       "actions": {
         "view": "View",
@@ -625,6 +616,9 @@
         "title": "Delete this resource?",
         "description": "This will permanently remove \"{{name}}\". This cannot be undone.",
         "confirm": "Delete"
+      },
+      "dangerZone": {
+        "title": "Danger Zone"
       }
     },
     "assistant": {
@@ -725,6 +719,9 @@
           "confirm": "Remove reference"
         }
       },
+      "references": {
+        "title": "References"
+      },
       "logo": {
         "title": "Logo",
         "changeButton": "Change Logo",
@@ -739,22 +736,17 @@
     },
     "account": {
       "pageTitle": "Account",
-      "helpBanner": "Here you can view your organisation's active resources and manage account allocation limits.",
       "spaces": {
-        "title": "Hosted Spaces",
-        "createButton": "Create Space"
+        "title": "Hosted Spaces"
       },
       "virtualContributors": {
-        "title": "Virtual Contributors",
-        "createButton": "Add Contributor"
+        "title": "Virtual Contributors"
       },
       "innovationPacks": {
-        "title": "Template Packs",
-        "createButton": "New Pack"
+        "title": "Template Packs"
       },
       "innovationHubs": {
-        "title": "Custom Homepages",
-        "createButton": "New Page"
+        "title": "Custom Homepages"
       },
       "actions": {
         "view": "View",
@@ -800,19 +792,13 @@
         "spaces": "Spaces",
         "subspaces": "Subspaces"
       },
-      "type": {
-        "space": "Space",
-        "subspace": "Subspace"
-      },
       "role": {
         "lead": "Lead",
         "member": "Member"
       },
-      "menu": {
-        "viewByType": "View {{type}}"
-      },
       "leave": {
-        "menuItemLabeled": "Leave {{type}}",
+        "button": "Leave",
+        "buttonAria": "Leave {{name}}",
         "dialogTitle": "Leave this membership?",
         "dialogDescription": "Your organisation is about to leave \"{{spaceName}}\" and all of its subspaces, giving up every role it holds there, Lead included. It will lose access to the members-only content and would need to be invited again to rejoin.",
         "dialogConfirm": "Leave",
@@ -1109,8 +1095,8 @@
         "innovationPacksTooltip": "You have created {{usage}} out of your {{limit}} available Template Packs in your account.",
         "innovationHubsTooltip": "You have created {{usage}} out of your {{limit}} available Custom Homepages in your account."
       },
+      "empty": "Nothing here yet.",
       "kebabAriaLabel": "More actions",
-      "kebabAriaLabelFor": "More actions for {{name}}",
       "createNewSpace": {
         "ariaLabel": "Create new space",
         "heading": "Create New Space",

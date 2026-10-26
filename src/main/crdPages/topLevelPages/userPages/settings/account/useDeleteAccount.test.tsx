@@ -27,8 +27,8 @@ const wrapperWithUrl =
   (url: string) =>
   ({ children }: PropsWithChildren) => <MemoryRouter initialEntries={[url]}>{children}</MemoryRouter>;
 
-const useHarness = (userId: string | undefined, securityTabUrl: string) => {
-  const result = useDeleteAccount(userId, securityTabUrl);
+const useHarness = (userId: string | undefined, returnTabUrl: string) => {
+  const result = useDeleteAccount(userId, returnTabUrl);
   const [searchParams] = useSearchParams();
   return { result, resumeParam: searchParams.get('resume') };
 };
@@ -84,8 +84,8 @@ describe('useDeleteAccount', () => {
 
   it('opens the confirm dialog when the session is fresh and nothing blocks deletion', async () => {
     mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: freshCanDelete } } });
-    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
-      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/account'), {
+      wrapper: wrapperWithUrl('/user/me/settings/account'),
     });
 
     await act(async () => result.current.result.onOpen());
@@ -96,8 +96,8 @@ describe('useDeleteAccount', () => {
 
   it('routes to the blocked dialog with the itemized answer when blockers exist', async () => {
     mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: freshBlocked } } });
-    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
-      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/account'), {
+      wrapper: wrapperWithUrl('/user/me/settings/account'),
     });
 
     await act(async () => result.current.result.onOpen());
@@ -110,8 +110,8 @@ describe('useDeleteAccount', () => {
 
   it('routes a stale session to the OIDC BFF login BEFORE any dialog opens — never showing confirm on stale state', async () => {
     mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: stale } } });
-    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
-      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/account'), {
+      wrapper: wrapperWithUrl('/user/me/settings/account'),
     });
 
     await act(async () => result.current.result.onOpen());
@@ -134,8 +134,8 @@ describe('useDeleteAccount', () => {
   it('ends a live Kratos SSO session before the BFF redirect, so the round trip cannot silently ride it', async () => {
     mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: stale } } });
     mockEndKratosSsoSession.mockResolvedValue('ended');
-    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
-      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/account'), {
+      wrapper: wrapperWithUrl('/user/me/settings/account'),
     });
 
     await act(async () => result.current.result.onOpen());
@@ -148,8 +148,8 @@ describe('useDeleteAccount', () => {
   it('fails CLOSED — never falls through to the BFF redirect — when the Kratos SSO session cannot be confirmed ended', async () => {
     mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: stale } } });
     mockEndKratosSsoSession.mockResolvedValue('failed');
-    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
-      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/account'), {
+      wrapper: wrapperWithUrl('/user/me/settings/account'),
     });
 
     await act(async () => result.current.result.onOpen());
@@ -165,8 +165,8 @@ describe('useDeleteAccount', () => {
   it('proceeds to the BFF redirect when there is no live Kratos session to end', async () => {
     mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: stale } } });
     mockEndKratosSsoSession.mockResolvedValue('no-session');
-    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
-      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/account'), {
+      wrapper: wrapperWithUrl('/user/me/settings/account'),
     });
 
     await act(async () => result.current.result.onOpen());
@@ -177,8 +177,8 @@ describe('useDeleteAccount', () => {
   it('a retry after a failed session-termination attempt tries again rather than being stuck on reauth-failed', async () => {
     mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: stale } } });
     mockEndKratosSsoSession.mockResolvedValueOnce('failed').mockResolvedValueOnce('ended');
-    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
-      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/account'), {
+      wrapper: wrapperWithUrl('/user/me/settings/account'),
     });
 
     await act(async () => result.current.result.onOpen());
@@ -194,8 +194,8 @@ describe('useDeleteAccount', () => {
   it("resumes on mount from a `?resume=delete-account` URL carrying this tab's marker, then strips the flag", async () => {
     sessionStorage.setItem(REAUTH_ATTEMPTED_KEY, '1');
     mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: freshCanDelete } } });
-    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
-      wrapper: wrapperWithUrl('/user/me/settings/security?resume=delete-account'),
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/account'), {
+      wrapper: wrapperWithUrl('/user/me/settings/account?resume=delete-account'),
     });
 
     await waitFor(() => expect(mockRunPreflight).toHaveBeenCalledTimes(1));
@@ -209,8 +209,8 @@ describe('useDeleteAccount', () => {
     // No REAUTH_ATTEMPTED_KEY set: this simulates a link supplied some other
     // way than this tab's own redirectToReauth (e.g. sent to a signed-in
     // victim), which must not be able to kick off a forced re-login.
-    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
-      wrapper: wrapperWithUrl('/user/me/settings/security?resume=delete-account'),
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/account'), {
+      wrapper: wrapperWithUrl('/user/me/settings/account?resume=delete-account'),
     });
 
     await waitFor(() => expect(result.current.resumeParam).toBeNull());
@@ -222,8 +222,8 @@ describe('useDeleteAccount', () => {
   it('a resumed pre-flight that is STILL stale stops instead of redirecting again — no infinite loop', async () => {
     sessionStorage.setItem(REAUTH_ATTEMPTED_KEY, '1');
     mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: stale } } });
-    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
-      wrapper: wrapperWithUrl('/user/me/settings/security?resume=delete-account'),
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/account'), {
+      wrapper: wrapperWithUrl('/user/me/settings/account?resume=delete-account'),
     });
 
     await waitFor(() => expect(mockRunPreflight).toHaveBeenCalledTimes(1));
@@ -238,8 +238,8 @@ describe('useDeleteAccount', () => {
     // `?resume=` URL) — the pre-flight succeeding must clear the guard.
     sessionStorage.setItem(REAUTH_ATTEMPTED_KEY, '1');
     mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: freshCanDelete } } });
-    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
-      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/account'), {
+      wrapper: wrapperWithUrl('/user/me/settings/account'),
     });
 
     await act(async () => result.current.result.onOpen());
@@ -255,8 +255,8 @@ describe('useDeleteAccount', () => {
         graphQLErrors: [{ message: 'stale', extensions: { code: 'SESSION_REFRESH_REQUIRED' } } as never],
       })
     );
-    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
-      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/account'), {
+      wrapper: wrapperWithUrl('/user/me/settings/account'),
     });
 
     await act(async () => result.current.result.onOpen());
@@ -275,8 +275,8 @@ describe('useDeleteAccount', () => {
         graphQLErrors: [{ message: 'blocked', extensions: { code: 'ACCOUNT_DELETION_BLOCKED' } } as never],
       })
     );
-    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
-      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/account'), {
+      wrapper: wrapperWithUrl('/user/me/settings/account'),
     });
 
     await act(async () => result.current.result.onOpen());
@@ -289,8 +289,8 @@ describe('useDeleteAccount', () => {
   it('on success, deletes and navigates to the logout path', async () => {
     mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: freshCanDelete } } });
     mockDeleteUserMutation.mockResolvedValue({ data: { deleteUser: { id: 'user-1' } } });
-    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
-      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/account'), {
+      wrapper: wrapperWithUrl('/user/me/settings/account'),
     });
 
     await act(async () => result.current.result.onOpen());
@@ -308,8 +308,8 @@ describe('useDeleteAccount', () => {
     mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: freshCanDelete } } });
     let rejectMutation: (error: unknown) => void = () => {};
     mockDeleteUserMutation.mockReturnValue(new Promise((_resolve, reject) => (rejectMutation = reject)));
-    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
-      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/account'), {
+      wrapper: wrapperWithUrl('/user/me/settings/account'),
     });
 
     await act(async () => result.current.result.onOpen());
@@ -332,8 +332,8 @@ describe('useDeleteAccount', () => {
 
   it('cancelling closes the dialog without ever calling the mutation', async () => {
     mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: freshCanDelete } } });
-    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
-      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/account'), {
+      wrapper: wrapperWithUrl('/user/me/settings/account'),
     });
 
     await act(async () => result.current.result.onOpen());

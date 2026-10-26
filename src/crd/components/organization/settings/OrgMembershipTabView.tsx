@@ -1,12 +1,12 @@
 import { Users } from 'lucide-react';
+import { SettingsSection } from '@/crd/components/common/SettingsSection';
 import { MembershipsSection } from '@/crd/components/contributor/settings/MembershipsSection';
-import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
 import { Skeleton } from '@/crd/primitives/skeleton';
 import type { OrgMembershipTabViewProps } from './OrgMembershipTabView.types';
 
 /**
  * Presentational view for the organization Membership tab: the shared
- * membership card grid inside one `SettingsCard`. No Home Space and no
+ * membership list inside one `SettingsSection` card. No Home Space and no
  * pending-applications section — the organization's pending invitations
  * live on the Invitations tab. Pure — the connector resolves every label
  * and owns the Leave confirmation dialog.
@@ -30,7 +30,7 @@ export function OrgMembershipTabView({
   }
 
   return (
-    <SettingsCard icon={Users} title={title}>
+    <SettingsSection title={title} icon={<Users className="size-4" />} iconColor="blue">
       <MembershipsSection
         rows={rows}
         totalShown={totalShown}
@@ -43,6 +43,6 @@ export function OrgMembershipTabView({
         onLeave={onLeave}
         labels={labels}
       />
-    </SettingsCard>
+    </SettingsSection>
   );
 }

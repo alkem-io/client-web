@@ -45,20 +45,17 @@ const baseProps: SpaceSettingsAboutViewProps = {
     href: '/space',
   },
   countries: [],
-  dirtyByField: {},
-  saveStatusByField: {},
   onChange: vi.fn(),
   onUploadAvatar: vi.fn(),
   onUploadPageBanner: vi.fn(),
   onUploadCardBanner: vi.fn(),
   onReferencesChange: vi.fn(),
-  onSaveSection: vi.fn(),
   classifications: [],
-  classificationSelectionPendingIds: [],
+  unsavedClassificationIds: [],
   onAddClassification: vi.fn(),
   onSelectClassificationValues: vi.fn(),
   onToggleClassificationDisplay: vi.fn(),
-  onRequestRemoveClassification: vi.fn(),
+  onRemoveClassification: vi.fn(),
 };
 
 const editorFor = (value: string) =>

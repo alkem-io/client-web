@@ -1,15 +1,9 @@
-import { ExternalLink, Folder, LogOut, MoreVertical, Search } from 'lucide-react';
+import { Folder, Search } from 'lucide-react';
 import { StackedPersonAvatars } from '@/crd/components/common/StackedPersonAvatars';
 import { cn } from '@/crd/lib/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
-import { Card, CardContent, CardFooter, CardHeader } from '@/crd/primitives/card';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/crd/primitives/dropdown-menu';
 import { Input } from '@/crd/primitives/input';
 import type {
   MembershipFilter,
@@ -21,9 +15,10 @@ import type {
 const MAX_VISIBLE_LEADS = 3;
 
 /**
- * Membership card grid shared by the user and organization Membership tabs:
- * search input + Spaces/Subspaces filter + responsive card grid with a
- * per-card kebab (View + Leave). Label-free — every string arrives through
+ * Membership list shared by the user and organization Membership tabs: a
+ * full-width search, a Spaces/Subspaces filter + summary row, then one row
+ * per membership — space avatar, linked name, "Led by:" lead avatars, role
+ * badge and a Leave button (spec 097 Session 2026-10-23). Label-free — every string arrives through
  * `labels`; the Leave confirmation dialog is owned by the consuming page.
  *
  * With no memberships at all the grid collapses to a single muted caption;
@@ -47,8 +42,8 @@ export function MembershipsSection({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div className="relative w-full md:w-96">
+      <div className="space-y-3">
+        <div className="relative w-full">
           <Search
             aria-hidden="true"
             className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
@@ -61,19 +56,20 @@ export function MembershipsSection({
             className="pl-9"
           />
         </div>
-        <SegmentedFilter value={filter} onChange={onFilterChange} labels={labels} />
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <SegmentedFilter value={filter} onChange={onFilterChange} labels={labels} />
+          <p className="text-caption text-muted-foreground">{labels.summary(totalShown, totalUnfiltered)}</p>
+        </div>
       </div>
-
-      <p className="text-caption text-muted-foreground">{labels.summary(totalShown, totalUnfiltered)}</p>
 
       {rows.length === 0 ? (
         <FilteredEmptyState onClear={onClearFilters} labels={labels} />
       ) : (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <ul className="space-y-2">
           {rows.map(row => (
-            <MembershipCard key={row.id} row={row} onLeave={() => onLeave(row)} labels={labels} />
+            <MembershipRow key={row.id} row={row} onLeave={() => onLeave(row)} labels={labels} />
           ))}
-        </div>
+        </ul>
       )}
     </div>
   );
@@ -115,7 +111,7 @@ function SegmentedFilter({
   );
 }
 
-function MembershipCard({
+function MembershipRow({
   row,
   onLeave,
   labels,
@@ -124,111 +120,58 @@ function MembershipCard({
   onLeave: () => void;
   labels: MembershipsSectionLabels;
 }) {
-  const typeLabel = row.type === 'Space' ? labels.typeSpace : labels.typeSubspace;
-  const viewLabel = labels.viewLabel(typeLabel);
-  const leaveLabel = labels.leaveLabel(typeLabel);
-  const showRowLink = row.spaceUrl.length > 0;
-
   return (
-    <Card className="group flex h-full flex-col overflow-hidden border-border transition-colors hover:border-primary/50">
-      {/* Banner area is a plain div (no whole-card link) — navigation is via the kebab's "View Details" item, matching the prototype. */}
-      <div
-        className="relative aspect-video overflow-hidden bg-muted"
-        style={
-          row.bannerUrl
-            ? undefined
-            : { background: `linear-gradient(135deg, ${row.color}, color-mix(in srgb, ${row.color} 70%, black))` }
-        }
-      >
-        {row.bannerUrl ? (
-          <img
-            src={row.bannerUrl}
-            alt={row.displayName}
-            className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : null}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-        <div className="absolute bottom-3 left-3">
-          <Badge variant="secondary" className="border-0 bg-background/80 text-foreground backdrop-blur-md">
-            {typeLabel}
-          </Badge>
-        </div>
-        <div className="absolute right-3 top-3">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild={true}>
-              <Button
-                variant="secondary"
-                size="icon"
-                className="size-8 rounded-full bg-background/90 shadow-sm backdrop-blur-sm"
-                aria-label={labels.menuTriggerAriaLabel(row.displayName)}
-              >
-                <MoreVertical aria-hidden="true" className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {showRowLink ? (
-                <DropdownMenuItem asChild={true}>
-                  <a href={row.spaceUrl}>
-                    <ExternalLink aria-hidden="true" className="mr-2 size-4" />
-                    {viewLabel}
-                  </a>
-                </DropdownMenuItem>
-              ) : null}
-              <DropdownMenuItem variant="destructive" onClick={onLeave}>
-                <LogOut aria-hidden="true" className="mr-2 size-4" />
-                {leaveLabel}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
-
-      <CardHeader className="p-4 pb-2">
-        <div className="flex items-start justify-between gap-2">
-          {showRowLink ? (
-            <a
-              href={row.spaceUrl}
-              className="line-clamp-1 text-subsection-title leading-tight transition-colors hover:text-primary group-hover:text-primary"
-            >
+    <li className="flex items-center justify-between gap-3 rounded-lg border bg-muted/10 p-3">
+      <div className="flex min-w-0 items-center gap-3">
+        <Avatar className="size-9 shrink-0 rounded-lg">
+          {row.avatarUrl ? <AvatarImage src={row.avatarUrl} alt="" className="object-cover" /> : null}
+          <AvatarFallback color={row.color} className="rounded-lg text-caption font-bold text-white">
+            {row.displayName.slice(0, 2).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+        <div className="min-w-0">
+          {row.spaceUrl ? (
+            <a href={row.spaceUrl} className="block truncate text-body-emphasis transition-colors hover:text-primary">
               {row.displayName}
             </a>
           ) : (
-            <h3 className="line-clamp-1 text-subsection-title leading-tight">{row.displayName}</h3>
+            <p className="truncate text-body-emphasis">{row.displayName}</p>
           )}
+          {row.leadUsers.length > 0 ? (
+            <div className="mt-0.5 flex items-center gap-2 text-caption text-muted-foreground">
+              <span>{labels.ledBy}</span>
+              <StackedPersonAvatars
+                people={row.leadUsers.map(lead => ({
+                  id: lead.id,
+                  name: lead.displayName,
+                  avatarUrl: lead.avatarUrl,
+                }))}
+                maxVisible={MAX_VISIBLE_LEADS}
+                sizeClass="5"
+                groupAriaLabel={labels.ledByAria(row.leadUsers.length)}
+                overflowTooltipLabel={
+                  row.leadUsers.length > MAX_VISIBLE_LEADS
+                    ? labels.leadsMore(row.leadUsers.length - MAX_VISIBLE_LEADS)
+                    : undefined
+                }
+              />
+            </div>
+          ) : null}
         </div>
-        <div className="mt-1 flex items-center gap-2">
-          <Badge
-            variant="outline"
-            className="h-5 border-primary/20 bg-primary/5 px-1.5 py-0 font-normal text-badge text-primary"
-          >
-            {labels.roleLabel(row.role)}
-          </Badge>
-        </div>
-      </CardHeader>
-      <CardContent className="flex-grow p-4 pt-2">
-        {row.tagline ? <p className="line-clamp-2 text-body text-muted-foreground">{row.tagline}</p> : null}
-      </CardContent>
-      {row.leadUsers.length > 0 ? (
-        <CardFooter className="mt-auto flex items-center justify-between gap-3 border-t bg-muted/30 p-4 text-caption text-muted-foreground">
-          <span>{labels.ledBy}</span>
-          <StackedPersonAvatars
-            people={row.leadUsers.map(lead => ({
-              id: lead.id,
-              name: lead.displayName,
-              avatarUrl: lead.avatarUrl,
-            }))}
-            maxVisible={MAX_VISIBLE_LEADS}
-            sizeClass="6"
-            groupAriaLabel={labels.ledByAria(row.leadUsers.length)}
-            overflowTooltipLabel={
-              row.leadUsers.length > MAX_VISIBLE_LEADS
-                ? labels.leadsMore(row.leadUsers.length - MAX_VISIBLE_LEADS)
-                : undefined
-            }
-          />
-        </CardFooter>
-      ) : null}
-    </Card>
+      </div>
+      <div className="flex shrink-0 items-center gap-2">
+        <Badge variant="secondary">{labels.roleLabel(row.role)}</Badge>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-muted-foreground hover:text-destructive"
+          onClick={onLeave}
+          aria-label={labels.leaveAriaLabel(row.displayName)}
+        >
+          {labels.leave}
+        </Button>
+      </div>
+    </li>
   );
 }
 

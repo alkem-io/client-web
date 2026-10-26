@@ -10,6 +10,7 @@
     "deleting": "Изтриване…",
     "noTemplates": "Все още няма шаблони",
     "noTemplatesHint": "Създайте нов или импортирайте от библиотеката.",
+    "browseLibrary": "Разгледай общата библиотека",
     "noTemplatesReadOnly": "Все още няма шаблони.",
     "sectionList": "Секции с шаблони",
     "templateList": "Шаблони",
