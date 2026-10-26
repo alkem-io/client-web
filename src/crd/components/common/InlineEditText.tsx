@@ -74,12 +74,12 @@ export function InlineEditText({
     []
   );
 
-  const commit = () => {
+  const commit = (next: string = draft) => {
     if (idleTimerRef.current) {
       clearTimeout(idleTimerRef.current);
       idleTimerRef.current = undefined;
     }
-    const trimmed = draft.trim();
+    const trimmed = next.trim();
     if (trimmed !== value.trim()) {
       onChange(trimmed);
     }
@@ -95,16 +95,18 @@ export function InlineEditText({
     setIsEditing(false);
   };
 
-  const scheduleIdleCommit = () => {
+  // The timer's closure belongs to the render before `setDraft(next)` lands,
+  // so its `draft` lacks the latest keystroke — pass the new text explicitly.
+  const scheduleIdleCommit = (next: string) => {
     if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
     idleTimerRef.current = setTimeout(() => {
-      commit();
+      commit(next);
     }, IDLE_DEBOUNCE_MS);
   };
 
   const handleChange = (next: string) => {
     setDraft(next);
-    scheduleIdleCommit();
+    scheduleIdleCommit(next);
   };
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -162,7 +164,7 @@ export function InlineEditText({
           value={draft}
           onChange={event => handleChange(event.target.value)}
           onKeyDown={onKeyDown}
-          onBlur={commit}
+          onBlur={() => commit()}
           placeholder={placeholder}
           disabled={disabled}
           className="flex-1"
@@ -174,7 +176,7 @@ export function InlineEditText({
           value={draft}
           onChange={event => handleChange(event.target.value)}
           onKeyDown={onKeyDown}
-          onBlur={commit}
+          onBlur={() => commit()}
           placeholder={placeholder}
           disabled={disabled}
           className="flex-1"
