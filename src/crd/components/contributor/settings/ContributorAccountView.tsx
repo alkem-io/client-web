@@ -1,5 +1,6 @@
-import { Bot, FileBox, Layout, type LucideIcon, MoreVertical, Plus } from 'lucide-react';
+import { Bot, FileBox, Home, Layers, type LucideIcon, MoreVertical, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { SettingsSection, type SettingsSectionIconColor } from '@/crd/components/common/SettingsSection';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -27,8 +28,10 @@ const NS = 'crd-contributorSettings';
 
 /**
  * Shared 4-card-group view consumed by User Account (US2) and Org Account
- * (US9). All four groups now render as a 3-up card grid with a dashed
- * "Create New" inline tile as the last cell when `canCreate`:
+ * (US9). Each group is a collapsible `SettingsSection` card (Hosted Spaces
+ * open, the rest collapsed — spec 097 Session 2026-10-23) with the capacity
+ * badge beside its title, holding a 3-up card grid whose last cell is the
+ * dashed "Create New" tile when `canCreate` — the only create affordance:
  *
  * - **Hosted Spaces**: banner cards (image with deterministic-color gradient
  *   fallback) + tall "+" tile with heading and blurb.
@@ -39,14 +42,13 @@ const NS = 'crd-contributorSettings';
  * the view never imports `react-router-dom` (FR-007). Pure presentational —
  * owns no fetch/mutation/state beyond visual concerns.
  */
-export function ContributorAccountView({ helpBannerLabel, groups, loading }: ContributorAccountViewProps) {
+export function ContributorAccountView({ groups, loading }: ContributorAccountViewProps) {
   if (loading) {
     return <AccountLoadingSkeleton />;
   }
 
   return (
-    <div className="space-y-12">
-      <HelpBanner label={helpBannerLabel} />
+    <div className="space-y-6">
       {groups.map(group => (
         <AccountGroupSection key={group.groupId} group={group} />
       ))}
@@ -54,33 +56,21 @@ export function ContributorAccountView({ helpBannerLabel, groups, loading }: Con
   );
 }
 
-// ─── Help Banner ──────────────────────────────────────────────────────────
-
-function HelpBanner({ label }: { label: string }) {
-  return (
-    <div className="flex max-w-3xl items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-4 text-body text-primary/80">
-      <Layout aria-hidden="true" className="size-4 shrink-0" />
-      <p>{label}</p>
-    </div>
-  );
-}
-
 // ─── Per-group dispatch ───────────────────────────────────────────────────
 
-// Hosted Spaces is the only group whose top-right Create button uses the
-// primary-filled variant; VCs / Packs / Hubs use outline.
-const CREATE_BUTTON_VARIANT: Record<CardVariant, 'default' | 'outline'> = {
-  space: 'default',
-  vc: 'outline',
-  pack: 'outline',
-  hub: 'outline',
+// Section icon tile per group — the prototype's colour identity.
+const SECTION_ICON: Record<CardVariant, { icon: LucideIcon; color: SettingsSectionIconColor }> = {
+  space: { icon: Layers, color: 'purple' },
+  vc: { icon: Bot, color: 'green' },
+  pack: { icon: FileBox, color: 'amber' },
+  hub: { icon: Home, color: 'orange' },
 };
 
 // Icon used by the compact card variants (pack/hub/vc). Spaces use a banner image instead.
 const ICON_BY_VARIANT: Record<Exclude<CardVariant, 'space'>, LucideIcon> = {
   vc: Bot,
   pack: FileBox,
-  hub: Layout,
+  hub: Home,
 };
 
 // Icon-wrapper tint per compact variant — matches the prototype's existing
@@ -105,33 +95,42 @@ function AccountGroupSection({ group }: { group: AccountResourceGroup }) {
 }
 
 function ResourceCardGroup({ group, variant }: { group: AccountResourceGroup; variant: CardVariant }) {
+  const { t } = useTranslation(NS);
+  const { icon: Icon, color } = SECTION_ICON[variant];
+  // Nothing to list and nothing the actor may create: say so instead of opening onto an empty card.
+  const isEmpty = group.items.length === 0 && !group.canCreate;
+  const emptyMessage =
+    group.capacity && !group.capacity.isAvailable
+      ? t('shared.account.capacity.notAvailableTooltip')
+      : t('shared.account.empty');
   return (
-    <section>
-      <SectionHeader
-        title={group.title}
-        groupId={group.groupId}
-        capacity={group.capacity}
-        canCreate={group.canCreate}
-        createButtonLabel={group.createButtonLabel}
-        onCreate={group.onCreate}
-        createVariant={CREATE_BUTTON_VARIANT[variant]}
-      />
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {group.items.map(item =>
-          variant === 'space' ? (
-            <SpaceResourceCard key={item.id} item={item} />
-          ) : (
-            <IconResourceCard
-              key={item.id}
-              item={item}
-              icon={ICON_BY_VARIANT[variant]}
-              iconWrapperClass={ICON_WRAPPER_CLASS[variant]}
-            />
-          )
-        )}
-        {group.canCreate ? <InlineCreateCard variant={variant} onClick={group.onCreate} /> : null}
-      </div>
-    </section>
+    <SettingsSection
+      title={group.title}
+      icon={<Icon className="size-4" />}
+      iconColor={color}
+      defaultOpen={variant === 'space'}
+      badge={<CapacityBadge groupId={group.groupId} capacity={group.capacity} />}
+    >
+      {isEmpty ? (
+        <p className="text-body text-muted-foreground">{emptyMessage}</p>
+      ) : (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {group.items.map(item =>
+            variant === 'space' ? (
+              <SpaceResourceCard key={item.id} item={item} />
+            ) : (
+              <IconResourceCard
+                key={item.id}
+                item={item}
+                icon={ICON_BY_VARIANT[variant]}
+                iconWrapperClass={ICON_WRAPPER_CLASS[variant]}
+              />
+            )
+          )}
+          {group.canCreate ? <InlineCreateCard variant={variant} onClick={group.onCreate} /> : null}
+        </div>
+      )}
+    </SettingsSection>
   );
 }
 
@@ -288,39 +287,6 @@ function InlineCreateCard({ variant, onClick }: { variant: CardVariant; onClick:
 
 // ─── Shared bits ─────────────────────────────────────────────────────────
 
-function SectionHeader({
-  title,
-  groupId,
-  capacity,
-  canCreate,
-  createButtonLabel,
-  onCreate,
-  createVariant = 'outline',
-}: {
-  title: string;
-  groupId: AccountResourceGroup['groupId'];
-  capacity?: AccountCapacity;
-  canCreate: boolean;
-  createButtonLabel: string;
-  onCreate: () => void;
-  createVariant?: 'default' | 'outline';
-}) {
-  return (
-    <div className="mb-6 flex items-center justify-between">
-      <h2 className="flex items-center gap-2 text-section-title">
-        {title}
-        <CapacityBadge groupId={groupId} capacity={capacity} />
-      </h2>
-      {canCreate ? (
-        <Button size="sm" variant={createVariant} onClick={onCreate}>
-          <Plus aria-hidden="true" className="mr-2 size-4" />
-          {createButtonLabel}
-        </Button>
-      ) : null}
-    </div>
-  );
-}
-
 function CapacityBadge({
   groupId,
   capacity,
@@ -339,7 +305,7 @@ function CapacityBadge({
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild={true}>
-            <Badge variant="secondary" className="ml-2 cursor-help font-normal text-caption">
+            <Badge variant="secondary" className="cursor-help font-normal text-caption">
               {t('shared.account.capacity.notAvailable')}
             </Badge>
           </TooltipTrigger>
@@ -366,7 +332,7 @@ function CapacityBadge({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild={true}>
-          <Badge variant="secondary" className="ml-2 cursor-help font-normal text-caption">
+          <Badge variant="secondary" className="cursor-help font-normal text-caption">
             {t('shared.account.capacity.label', { usage: capacity.usage, limit: capacity.limit })}
           </Badge>
         </TooltipTrigger>
@@ -420,19 +386,11 @@ function ResourceCardKebab({
 
 function AccountLoadingSkeleton() {
   return (
-    <div className="space-y-12">
-      <Skeleton className="h-12 w-full max-w-3xl" />
-      {Array.from({ length: 2 }).map((_, sectionIdx) => (
+    <div className="space-y-6">
+      <Skeleton className="h-[360px] w-full rounded-lg" />
+      {Array.from({ length: 3 }).map((_, idx) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders are interchangeable
-        <section key={sectionIdx}>
-          <Skeleton className="mb-6 h-8 w-1/3" />
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 3 }).map((_, cardIdx) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders are interchangeable
-              <Skeleton key={cardIdx} className="h-[280px] rounded-xl" />
-            ))}
-          </div>
-        </section>
+        <Skeleton key={idx} className="h-[76px] w-full rounded-lg" />
       ))}
     </div>
   );

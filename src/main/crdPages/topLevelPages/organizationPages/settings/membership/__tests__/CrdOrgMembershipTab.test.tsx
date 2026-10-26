@@ -81,9 +81,8 @@ beforeEach(() => {
 });
 
 const openLeaveDialogFor = async (user: ReturnType<typeof userEvent.setup>, cardIndex: number) => {
-  const triggers = screen.getAllByRole('button', { name: /^More actions for / });
-  await user.click(triggers[cardIndex]);
-  await user.click(screen.getByRole('menuitem', { name: 'Leave Subspace' }));
+  const leaveButtons = screen.getAllByRole('button', { name: /^Leave / });
+  await user.click(leaveButtons[cardIndex]);
   return screen.findByRole('alertdialog');
 };
 

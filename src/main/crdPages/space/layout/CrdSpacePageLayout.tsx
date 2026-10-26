@@ -229,6 +229,11 @@ export default function CrdSpacePageLayout() {
                 title={space.about.profile.displayName}
                 titleHref={space.about.profile.url ?? undefined}
                 tagline={space.about.profile.tagline ?? null}
+                visual={{
+                  // L0 has no avatar visual — the cardBanner stands in as the identity image.
+                  src: space.about.profile.cardBanner?.uri || undefined,
+                  initials: getInitials(space.about.profile.displayName),
+                }}
                 fullWidth={fullWidth}
               />
             ) : (

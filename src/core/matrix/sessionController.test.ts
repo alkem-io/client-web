@@ -3,12 +3,14 @@ import { createClient } from 'matrix-js-sdk';
 import { afterEach, beforeEach, describe, expect, it, type MockedFunction, vi } from 'vitest';
 import { getActiveClient, isSessionEstablishing } from './activeClient';
 import { stopActiveSession } from './activeSession';
+import { mintAndStore } from './mintSession';
 import { establishSession, type MatrixClientLike } from './sessionController';
 import { attemptSilentSso } from './ssoLogin';
 import { clearNamespace, loadActorCredentials, storeCredentials } from './storage';
 
 vi.mock('matrix-js-sdk', () => ({ createClient: vi.fn() }));
 vi.mock('./ssoLogin', () => ({ attemptSilentSso: vi.fn() }));
+vi.mock('./mintSession', () => ({ mintAndStore: vi.fn() }));
 
 const HOMESERVER = 'https://matrix.dev-alkem.io';
 
@@ -23,6 +25,13 @@ type CreateClientFn = (opts: {
 }) => MatrixClientLike;
 const mockedCreateClient = createClient as unknown as MockedFunction<CreateClientFn>;
 const mockedSilentSso = vi.mocked(attemptSilentSso);
+const mockedMint = vi.mocked(mintAndStore);
+
+// The native shell's own signal; `isAppMode` reads it on every call, so no
+// module reset is needed to enter or leave app mode.
+const enterAppMode = (): void => {
+  window.Capacitor = { isNativePlatform: () => true };
+};
 
 type FakeClient = MatrixClientLike & { emit: (event: string, state?: string) => void };
 
@@ -51,14 +60,24 @@ describe('establishSession', () => {
       ...overrides,
     });
 
+  const MINTED_RECORD = {
+    userId: USER_ID,
+    deviceId: 'DEV_MINT',
+    accessToken: 'syt_minted_access',
+    homeserverUrl: HOMESERVER,
+  };
+
   beforeEach(() => {
     mockedCreateClient.mockReset();
     mockedSilentSso.mockReset();
     mockedSilentSso.mockResolvedValue('timeout');
+    mockedMint.mockReset();
+    mockedMint.mockResolvedValue(null);
   });
 
   afterEach(async () => {
     stopActiveSession();
+    Reflect.deleteProperty(window, 'Capacitor');
     await clearNamespace(USER_ID);
   });
 
@@ -368,5 +387,88 @@ describe('establishSession', () => {
     expect(stopActiveSession()).toBe(true);
 
     expect(isSessionEstablishing()).toBe(false);
+  });
+
+  it('in the app, mints once for an actor with no stored record and never attempts silent SSO', async () => {
+    enterAppMode();
+    mockedMint.mockResolvedValue(MINTED_RECORD);
+    mockedCreateClient.mockReturnValue(makeClient());
+
+    await establishSession(ACTOR);
+
+    expect(mockedMint).toHaveBeenCalledOnce();
+    expect(mockedSilentSso).not.toHaveBeenCalled();
+    expect(mockedCreateClient).toHaveBeenCalledOnce();
+    expect(mockedCreateClient.mock.calls[0][0].accessToken).toBe('syt_minted_access');
+  });
+
+  it('in the app, a stored record resumes without minting', async () => {
+    enterAppMode();
+    await seedRecord();
+    mockedCreateClient.mockReturnValue(makeClient());
+
+    await establishSession(ACTOR);
+
+    expect(mockedMint).not.toHaveBeenCalled();
+    expect(mockedSilentSso).not.toHaveBeenCalled();
+    expect(mockedCreateClient).toHaveBeenCalledOnce();
+  });
+
+  it('in a browser, a silent SSO that authenticates never mints', async () => {
+    mockedSilentSso.mockImplementation(async () => {
+      await seedRecord();
+      return 'authenticated';
+    });
+    mockedCreateClient.mockReturnValue(makeClient());
+
+    await establishSession(ACTOR);
+
+    expect(mockedSilentSso).toHaveBeenCalledOnce();
+    expect(mockedMint).not.toHaveBeenCalled();
+    expect(mockedCreateClient.mock.calls[0][0].accessToken).toBe('syt_stored_access');
+  });
+
+  it('in a browser, a timed-out silent SSO mints once', async () => {
+    mockedMint.mockResolvedValue(MINTED_RECORD);
+    mockedCreateClient.mockReturnValue(makeClient());
+
+    await establishSession(ACTOR);
+
+    expect(mockedSilentSso).toHaveBeenCalledOnce();
+    expect(mockedMint).toHaveBeenCalledOnce();
+    expect(mockedCreateClient.mock.calls[0][0].accessToken).toBe('syt_minted_access');
+  });
+
+  it('a mint that acquires nothing leaves the session stopped and no longer establishing', async () => {
+    enterAppMode();
+
+    const handle = await establishSession(ACTOR);
+
+    expect(mockedMint).toHaveBeenCalledOnce();
+    expect(mockedCreateClient).not.toHaveBeenCalled();
+    expect(getActiveClient()).toBeNull();
+    expect(isSessionEstablishing()).toBe(false);
+    expect(() => handle.stop()).not.toThrow();
+  });
+
+  it('in the app, a rejected token clears the stored record and mints a replacement', async () => {
+    enterAppMode();
+    await seedRecord({ accessToken: 'syt_expired' });
+    const first = makeClient();
+    const second = makeClient();
+    mockedCreateClient.mockReturnValueOnce(first).mockReturnValueOnce(second);
+    mockedMint.mockResolvedValue(MINTED_RECORD);
+    await establishSession(ACTOR);
+
+    first.emit(TOKEN_REJECTED);
+
+    await vi.waitFor(() => {
+      expect(mockedCreateClient).toHaveBeenCalledTimes(2);
+    });
+    expect(await loadActorCredentials(ACTOR)).toBeNull();
+    expect(mockedMint).toHaveBeenCalledOnce();
+    expect(mockedSilentSso).not.toHaveBeenCalled();
+    expect(mockedCreateClient.mock.calls[1][0].accessToken).toBe('syt_minted_access');
+    expect(second.startClient).toHaveBeenCalledOnce();
   });
 });

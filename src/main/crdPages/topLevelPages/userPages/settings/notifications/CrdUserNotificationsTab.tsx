@@ -1,8 +1,10 @@
+import { Bot, Building2, Globe, Layers, type LucideIcon, Shield, ShieldCheck, User, Volume2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useUserSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { isAppMode } from '@/core/appMode/isAppMode';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import type { SettingsSectionIconColor } from '@/crd/components/common/SettingsSection';
 import {
   type SoundSettingKey,
   UserNotificationsTabView,
@@ -10,6 +12,7 @@ import {
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { usePushNotificationContext } from '@/main/pushNotifications/PushNotificationProvider';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
+import type { NotificationGroupId } from './notificationPayloadBuilders';
 import { extractServerSettings, mapUserNotifications, type NotificationPrivileges } from './userNotificationsMapper';
 import useUserNotificationsTabData from './useUserNotificationsTabData';
 
@@ -129,12 +132,29 @@ const CrdUserNotificationsTab = () => {
       pushRequiresPwa={Boolean(requiresPWAMode)}
       appMode={isAppMode()}
       onPushMasterToggle={handlePushMasterToggle}
-      groups={groups}
-      soundGroup={soundGroup}
+      groups={groups.map(group => withSectionIcon(group, group.groupId))}
+      soundGroup={withSectionIcon(soundGroup, 'sound')}
       onToggle={handleToggle}
       onToggleSound={handleToggleSound}
     />
   );
+};
+
+// Section icon tile per group (spec 097 Session 2026-10-23).
+const GROUP_ICON: Record<NotificationGroupId | 'sound', { icon: LucideIcon; color: SettingsSectionIconColor }> = {
+  sound: { icon: Volume2, color: 'blue' },
+  space: { icon: Layers, color: 'purple' },
+  spaceAdmin: { icon: ShieldCheck, color: 'amber' },
+  user: { icon: User, color: 'blue' },
+  platform: { icon: Globe, color: 'green' },
+  platformAdmin: { icon: Shield, color: 'rose' },
+  organization: { icon: Building2, color: 'orange' },
+  virtualContributor: { icon: Bot, color: 'green' },
+};
+
+const withSectionIcon = <T extends object>(group: T, groupId: NotificationGroupId | 'sound') => {
+  const { icon: Icon, color } = GROUP_ICON[groupId];
+  return { ...group, icon: <Icon className="size-4" />, iconColor: color };
 };
 
 export default CrdUserNotificationsTab;

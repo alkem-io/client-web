@@ -14,7 +14,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { formatAbsoluteDateTime, formatRelativeFromNow } from '@/crd/lib/dateTimeFormat';
+import { getInitials } from '@/crd/lib/getInitials';
 import { cn } from '@/crd/lib/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/crd/primitives/table';
@@ -37,6 +39,8 @@ export type PendingMembership = {
   state: PendingMembershipState;
   contributorType: PendingMembershipContributorType;
   displayName: string;
+  /** Profile avatar of the applicant / invitee; initials are shown when absent. */
+  avatarUrl?: string;
   email?: string;
   url?: string;
   /** Raw ISO date string. The table formats both the display value and the tooltip timestamp. */
@@ -67,6 +71,8 @@ export type PendingMembershipsTableProps = {
    * table and would otherwise show the word "Memberships" twice, once in Space-flavoured
    * copy the P5 wording rule forbids on an organization surface. */
   title?: string;
+  /** Omit the built-in heading + count — for hosts that title the table themselves (e.g. a settings section card). */
+  hideHeading?: boolean;
   className?: string;
 };
 
@@ -126,15 +132,15 @@ function statusId(type: PendingMembershipType, state: PendingMembershipState): S
 function statusVariantClass(id: StatusId): string {
   switch (id) {
     case 'applicationReceived':
-      return 'bg-primary/10 text-primary border-primary/20 font-bold';
+      return 'bg-amber-500/10 text-amber-700 border-amber-500/30 dark:text-amber-400';
     case 'applicationApproved':
     case 'invitationAccepted':
-      return 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20';
+      return 'bg-emerald-500/10 text-emerald-700 border-emerald-500/30 dark:text-emerald-400';
     case 'applicationRejected':
     case 'invitationRejected':
-      return 'bg-destructive/10 text-destructive border-destructive/20';
+      return 'bg-destructive/10 text-destructive border-destructive/30';
     default:
-      return 'bg-primary/10 text-primary border-primary/20';
+      return 'bg-muted text-muted-foreground border-border';
   }
 }
 
@@ -147,6 +153,7 @@ export function PendingMembershipsTable({
   onResend,
   resendingIds,
   title,
+  hideHeading = false,
   className,
 }: PendingMembershipsTableProps) {
   const { t, i18n } = useTranslation('crd-spaceSettings');
@@ -232,12 +239,14 @@ export function PendingMembershipsTable({
 
   return (
     <div className={cn('flex flex-col gap-4', className)}>
-      <div className="flex items-center gap-2">
-        <h3 className="text-subsection-title">{title ?? t('community.pendingMemberships.title')}</h3>
-        <Badge variant="secondary" className="rounded-full">
-          {items.length}
-        </Badge>
-      </div>
+      {!hideHeading && (
+        <div className="flex items-center gap-2">
+          <h3 className="text-subsection-title">{title ?? t('community.pendingMemberships.title')}</h3>
+          <Badge variant="secondary" className="rounded-full">
+            {items.length}
+          </Badge>
+        </div>
+      )}
 
       <fieldset className="m-0 flex flex-wrap gap-2 border-0 p-0">
         <legend className="sr-only">{t('community.pendingMemberships.filterLabel')}</legend>
@@ -295,12 +304,38 @@ export function PendingMembershipsTable({
                   <TableCell>
                     {row.type === 'platformInvitation' ? (
                       <span className="text-muted-foreground">—</span>
-                    ) : row.url ? (
-                      <a href={row.url} target="_blank" rel="noreferrer" className="text-body-emphasis hover:underline">
-                        {row.displayName}
-                      </a>
                     ) : (
-                      <span className="text-body-emphasis">{row.displayName}</span>
+                      <div className="flex min-w-0 items-center gap-2.5">
+                        <Avatar
+                          className={cn(
+                            'size-8 shrink-0 border border-border',
+                            // Circles are for people; organizations and VCs get a rounded square.
+                            row.contributorType === 'user' ? 'rounded-full' : 'rounded-md'
+                          )}
+                        >
+                          {row.avatarUrl ? <AvatarImage src={row.avatarUrl} alt="" /> : null}
+                          <AvatarFallback
+                            className={cn(
+                              'bg-muted text-badge text-muted-foreground',
+                              row.contributorType === 'user' ? 'rounded-full' : 'rounded-md'
+                            )}
+                          >
+                            {getInitials(row.displayName)}
+                          </AvatarFallback>
+                        </Avatar>
+                        {row.url ? (
+                          <a
+                            href={row.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="truncate text-body-emphasis hover:underline"
+                          >
+                            {row.displayName}
+                          </a>
+                        ) : (
+                          <span className="truncate text-body-emphasis">{row.displayName}</span>
+                        )}
+                      </div>
                     )}
                   </TableCell>
                   <TableCell className="text-body text-muted-foreground">{row.email || '—'}</TableCell>

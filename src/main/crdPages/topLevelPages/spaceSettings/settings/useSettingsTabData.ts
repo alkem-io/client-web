@@ -13,6 +13,7 @@ import type {
   UserInfoVisibility,
 } from '@/crd/components/space/settings/SpaceSettingsSettingsView';
 import { defaultSpaceSettings } from '@/domain/spaceAdmin/SpaceAdminSettings/SpaceDefaultSettings';
+import { errorMessage, type TabUnsavedChanges } from '@/main/crdPages/utils/tabUnsavedChanges';
 import {
   mapAllowedActions,
   mapMembershipPolicy,
@@ -23,7 +24,26 @@ import {
   mapUserInfoVisibilityToBackend,
 } from './settingsMapper';
 
+/** Buffered (unsaved) Settings values — a key is present only while it differs from the server. */
+type SettingsDraft = {
+  privacy?: SpacePrivacy;
+  userInfoVisibility?: UserInfoVisibility;
+  membershipPolicy?: MembershipPolicy;
+  hostOrganizationTrusted?: boolean;
+  allowedActions?: Partial<Record<AllowedActionKey, boolean>>;
+};
+
+const COLLABORATION_KEY_MAP: Partial<Record<AllowedActionKey, string>> = {
+  memberCreatePosts: 'allowMembersToCreateCallouts',
+  videoCalls: 'allowMembersToVideoCall',
+  guestContributions: 'allowGuestContributions',
+  memberCreateSubspaces: 'allowMembersToCreateSubspaces',
+  inheritMembershipRights: 'inheritMembershipRights',
+  subspaceEvents: 'allowEventsFromSubspaces',
+};
+
 export type UseSettingsTabDataResult = {
+  /** Displayed values — the buffered value where one exists, else the server value. */
   privacy: SpacePrivacy;
   userInfoVisibility: UserInfoVisibility;
   membershipPolicy: MembershipPolicy;
@@ -32,12 +52,13 @@ export type UseSettingsTabDataResult = {
   providerDisplayName: string;
   roleSetId: string | undefined;
   loading: boolean;
-  updatingKeys: ReadonlySet<string>;
   onPrivacyChange: (next: SpacePrivacy) => void;
   onUserInfoVisibilityChange: (next: UserInfoVisibility) => void;
   onMembershipPolicyChange: (next: MembershipPolicy) => void;
   onToggleAllowedAction: (key: AllowedActionKey, next: boolean) => void;
   onHostOrgTrustChange: (next: boolean) => void;
+  /** Every radio / toggle is buffered and saved together through the unsaved-changes bar (FR-023). */
+  unsaved: TabUnsavedChanges;
 };
 
 export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
@@ -55,12 +76,23 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
   const hostOrganizationTrusted = (!!hostId && settings?.membership?.trustedOrganizations?.includes(hostId)) ?? false;
 
   const [updateSpaceSettings] = useUpdateSpaceSettingsMutation();
-  const [updatingKeys, setUpdatingKeys] = useState<Set<string>>(new Set());
+  const [draft, setDraft] = useState<SettingsDraft>({});
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const privacy = mapPrivacy(settings?.privacy);
-  const userInfoVisibility = mapUserInfoVisibility(settings?.privacy?.userInformationVisibility);
-  const membershipPolicy = mapMembershipPolicy(settings?.membership);
-  const allowedActions = mapAllowedActions(settings?.collaboration, settings?.membership, settings?.privacy);
+  const serverPrivacy = mapPrivacy(settings?.privacy);
+  const serverUserInfoVisibility = mapUserInfoVisibility(settings?.privacy?.userInformationVisibility);
+  const serverMembershipPolicy = mapMembershipPolicy(settings?.membership);
+  const serverAllowedActions = mapAllowedActions(settings?.collaboration, settings?.membership, settings?.privacy);
+
+  const privacy = draft.privacy ?? serverPrivacy;
+  const userInfoVisibility = draft.userInfoVisibility ?? serverUserInfoVisibility;
+  const membershipPolicy = draft.membershipPolicy ?? serverMembershipPolicy;
+  const allowedActions = serverAllowedActions.map(action => ({
+    ...action,
+    enabled: draft.allowedActions?.[action.key] ?? action.enabled,
+  }));
+  const displayedHostOrganizationTrusted = draft.hostOrganizationTrusted ?? hostOrganizationTrusted;
 
   const buildFullSettings = (overrides: {
     privacyMode?: SpacePrivacyMode;
@@ -135,107 +167,90 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
     };
   };
 
-  const addKey = (k: string) => setUpdatingKeys(prev => new Set(prev).add(k));
-  const removeKey = (k: string) =>
-    setUpdatingKeys(prev => {
-      const next = new Set(prev);
-      next.delete(k);
-      return next;
+  // Each setter keeps a key in the draft only while it differs from the server, so
+  // flipping a control back to its saved value drops it from the count (FR-025b).
+  const setField = <K extends Exclude<keyof SettingsDraft, 'allowedActions'>>(
+    key: K,
+    next: NonNullable<SettingsDraft[K]>,
+    serverValue: NonNullable<SettingsDraft[K]>
+  ) => {
+    setError(null);
+    setDraft(prev => {
+      const updated: Partial<Record<keyof SettingsDraft, unknown>> = { ...prev };
+      if (next === serverValue) delete updated[key];
+      else updated[key] = next;
+      return updated as SettingsDraft;
     });
-  const hasPrefix = (prefix: string) => [...updatingKeys].some(k => k.startsWith(prefix));
-
-  const onPrivacyChange = (next: SpacePrivacy) => {
-    if (next === privacy || hasPrefix('privacy:')) return;
-    const key = `privacy:${next}`;
-    addKey(key);
-    updateSpaceSettings({
-      variables: {
-        settingsData: {
-          spaceID: spaceId,
-          settings: buildFullSettings({ privacyMode: mapPrivacyToBackend(next) }),
-        },
-      },
-    }).finally(() => removeKey(key));
   };
 
-  const onUserInfoVisibilityChange = (next: UserInfoVisibility) => {
-    if (next === userInfoVisibility || hasPrefix('userInfo:')) return;
-    const key = `userInfo:${next}`;
-    addKey(key);
-    updateSpaceSettings({
-      variables: {
-        settingsData: {
-          spaceID: spaceId,
-          settings: buildFullSettings({ userInformationVisibility: mapUserInfoVisibilityToBackend(next) }),
-        },
-      },
-    }).finally(() => removeKey(key));
-  };
-
-  const onMembershipPolicyChange = (next: MembershipPolicy) => {
-    if (next === membershipPolicy || hasPrefix('membership:')) return;
-    const key = `membership:${next}`;
-    addKey(key);
-    updateSpaceSettings({
-      variables: {
-        settingsData: {
-          spaceID: spaceId,
-          settings: buildFullSettings({ membershipPolicy: mapMembershipPolicyToBackend(next) }),
-        },
-      },
-    }).finally(() => removeKey(key));
-  };
-
-  const onHostOrgTrustChange = (next: boolean) => {
-    const key = 'membership:hostTrust';
-    if (updatingKeys.has(key)) return;
-    addKey(key);
-    updateSpaceSettings({
-      variables: {
-        settingsData: {
-          spaceID: spaceId,
-          settings: buildFullSettings({ hostOrganizationTrusted: next }),
-        },
-      },
-    }).finally(() => removeKey(key));
-  };
+  const onPrivacyChange = (next: SpacePrivacy) => setField('privacy', next, serverPrivacy);
+  const onUserInfoVisibilityChange = (next: UserInfoVisibility) =>
+    setField('userInfoVisibility', next, serverUserInfoVisibility);
+  const onMembershipPolicyChange = (next: MembershipPolicy) =>
+    setField('membershipPolicy', next, serverMembershipPolicy);
+  const onHostOrgTrustChange = (next: boolean) => setField('hostOrganizationTrusted', next, hostOrganizationTrusted);
 
   const onToggleAllowedAction = (key: AllowedActionKey, next: boolean) => {
-    const actionKey = `action:${key}`;
-    if (updatingKeys.has(actionKey)) return;
-    addKey(actionKey);
+    const serverValue = serverAllowedActions.find(action => action.key === key)?.enabled;
+    setError(null);
+    setDraft(prev => {
+      const actions = { ...prev.allowedActions };
+      if (next === serverValue) delete actions[key];
+      else actions[key] = next;
+      const { allowedActions: _previous, ...rest } = prev;
+      return Object.keys(actions).length === 0 ? rest : { ...rest, allowedActions: actions };
+    });
+  };
 
-    let settingsPayload: ReturnType<typeof buildFullSettings>;
-    switch (key) {
-      case 'alkemioSupportAccess':
-        settingsPayload = buildFullSettings({ allowPlatformSupportAsAdmin: next });
-        break;
-      case 'subspaceAdminInvitations':
-        settingsPayload = buildFullSettings({ allowSubspaceAdminsToInviteMembers: next });
-        break;
-      default: {
-        const collaborationKeyMap: Record<string, string> = {
-          memberCreatePosts: 'allowMembersToCreateCallouts',
-          videoCalls: 'allowMembersToVideoCall',
-          guestContributions: 'allowGuestContributions',
-          memberCreateSubspaces: 'allowMembersToCreateSubspaces',
-          inheritMembershipRights: 'inheritMembershipRights',
-          subspaceEvents: 'allowEventsFromSubspaces',
-        };
-        const backendKey = collaborationKeyMap[key];
-        if (!backendKey) {
-          removeKey(actionKey);
-          return;
-        }
-        settingsPayload = buildFullSettings({ collaboration: { [backendKey]: next } });
-      }
+  const count =
+    (draft.privacy !== undefined ? 1 : 0) +
+    (draft.userInfoVisibility !== undefined ? 1 : 0) +
+    (draft.membershipPolicy !== undefined ? 1 : 0) +
+    (draft.hostOrganizationTrusted !== undefined ? 1 : 0) +
+    Object.keys(draft.allowedActions ?? {}).length;
+
+  const saveAll = async (): Promise<boolean> => {
+    if (count === 0) return true;
+    const actions = draft.allowedActions ?? {};
+    const collaboration: Record<string, boolean> = {};
+    for (const [key, value] of Object.entries(actions) as [AllowedActionKey, boolean][]) {
+      const backendKey = COLLABORATION_KEY_MAP[key];
+      if (backendKey) collaboration[backendKey] = value;
     }
+    setSaving(true);
+    setError(null);
+    try {
+      // The mutation takes the whole settings object, so every buffered change goes in one call.
+      await updateSpaceSettings({
+        variables: {
+          settingsData: {
+            spaceID: spaceId,
+            settings: buildFullSettings({
+              privacyMode: draft.privacy && mapPrivacyToBackend(draft.privacy),
+              userInformationVisibility:
+                draft.userInfoVisibility && mapUserInfoVisibilityToBackend(draft.userInfoVisibility),
+              membershipPolicy: draft.membershipPolicy && mapMembershipPolicyToBackend(draft.membershipPolicy),
+              allowPlatformSupportAsAdmin: actions.alkemioSupportAccess,
+              allowSubspaceAdminsToInviteMembers: actions.subspaceAdminInvitations,
+              collaboration,
+              hostOrganizationTrusted: draft.hostOrganizationTrusted,
+            }),
+          },
+        },
+      });
+      setDraft({});
+      setSaving(false);
+      return true;
+    } catch (err) {
+      setError(errorMessage(err));
+      setSaving(false);
+      return false;
+    }
+  };
 
-    updateSpaceSettings({
-      variables: {
-        settingsData: { spaceID: spaceId, settings: settingsPayload },
-      },
-    }).finally(() => removeKey(actionKey));
+  const reset = () => {
+    setDraft({});
+    setError(null);
   };
 
   return {
@@ -243,15 +258,15 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
     userInfoVisibility,
     membershipPolicy,
     allowedActions,
-    hostOrganizationTrusted,
+    hostOrganizationTrusted: displayedHostOrganizationTrusted,
     providerDisplayName,
     roleSetId,
     loading,
-    updatingKeys,
     onPrivacyChange,
     onUserInfoVisibilityChange,
     onMembershipPolicyChange,
     onToggleAllowedAction,
     onHostOrgTrustChange,
+    unsaved: { count, canSave: true, saving, error, saveAll, reset },
   };
 }

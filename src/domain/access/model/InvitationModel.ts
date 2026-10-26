@@ -15,6 +15,7 @@ export type InvitationModel = {
       displayName: string;
       email?: string;
       url: string;
+      avatar?: { uri: string };
     };
   };
 };

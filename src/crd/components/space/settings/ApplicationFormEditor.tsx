@@ -30,6 +30,8 @@ export type ApplicationFormEditorProps = {
   onSave: () => void;
   onExportApplications?: () => void;
   exportDisabled?: boolean;
+  /** Omit the built-in Save button — for hosts that provide their own (e.g. a dialog footer). */
+  hideSaveButton?: boolean;
   className?: string;
 } & MarkdownUploadProps;
 
@@ -48,6 +50,7 @@ export function ApplicationFormEditor({
   onSave,
   onExportApplications,
   exportDisabled,
+  hideSaveButton = false,
   className,
   onImageUpload,
   iframeAllowedUrls,
@@ -172,12 +175,13 @@ export function ApplicationFormEditor({
         ))}
       </div>
 
-      {/* Save button */}
-      <div className="flex justify-end">
-        <Button type="button" onClick={onSave} disabled={!canSave}>
-          {t('settings.applicationForm.save')}
-        </Button>
-      </div>
+      {!hideSaveButton && (
+        <div className="flex justify-end">
+          <Button type="button" onClick={onSave} disabled={!canSave}>
+            {t('settings.applicationForm.save')}
+          </Button>
+        </div>
+      )}
 
       {/* Delete question confirmation */}
       <ConfirmationDialog

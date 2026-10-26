@@ -10,6 +10,7 @@
     "deleting": "Eliminando…",
     "noTemplates": "Aún no hay plantillas",
     "noTemplatesHint": "Crea una o importa una desde la biblioteca.",
+    "browseLibrary": "Explorar la biblioteca general",
     "noTemplatesReadOnly": "Aún no hay plantillas.",
     "sectionList": "Secciones de plantillas",
     "templateList": "Plantillas",

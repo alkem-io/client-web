@@ -7,6 +7,7 @@ import { useOrganizationContext } from '@/domain/community/organization/hooks/us
 import useStorageConfig from '@/domain/storage/StorageBucket/useStorageConfig';
 import { MarkdownUploadScope } from '@/main/crdPages/markdown/MarkdownUploadScope';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
+import { useSettingsTabUnsavedChanges } from '../../../common/settingsUnsavedChanges';
 import useOrgProfileTabData from './useOrgProfileTabData';
 
 const EMPTY_VALUES = {
@@ -33,15 +34,15 @@ const EMPTY_VALUES = {
 /**
  * Integration page for the Org Profile tab. Wires
  * `useOrganizationContext` (org id from the route) →
- * `useOrgProfileTabData` (per-section save hook, parallel to
- * `useUserProfileTabData`) → `OrgProfileTabView` (presentational).
+ * `useOrgProfileTabData` (buffered edits, saved through the settings page's
+ * unsaved-changes bar) → `OrgProfileTabView` (presentational).
  *
  * The settings shell mounts no ambient `StorageConfigContextProvider`, so
  * `MarkdownUploadScope` mounts an `organization`-scoped one (description
  * editing is always EDIT mode → `temporaryLocation: false`) and yields the
  * upload wiring; before the id resolves it yields `undefined`.
  *
- * Save mutations and the references batch live in `useOrgProfileTabData`;
+ * Save mutations live in `useOrgProfileTabData`;
  * the country list comes from the existing domain `COUNTRIES` constants.
  * CRD components never import that module directly per FR-006.
  */
@@ -58,6 +59,7 @@ const CrdOrgProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUpl
   const { t } = useTranslation('crd-contributorSettings');
   const { organizationId } = useOrganizationContext();
   const data = useOrgProfileTabData(organizationId);
+  useSettingsTabUnsavedChanges(data.unsaved);
 
   // Reference file upload (paperclip) — uploads to the organization's storage bucket. The organization
   // already exists, so `useStorageConfig` resolves `temporaryLocation: false` and the upload is
@@ -71,8 +73,7 @@ const CrdOrgProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUpl
         values={data.values ?? EMPTY_VALUES}
         countries={COUNTRIES}
         loading={data.loading}
-        dirtyByField={data.dirtyByField}
-        saveStatusByField={data.saveStatusByField}
+        disabled={data.unsaved.saving}
         onChange={data.onChange}
         onReferencesChange={data.onReferencesChange}
         onReferenceFileUpload={referenceUpload.onFileUpload}
@@ -80,7 +81,6 @@ const CrdOrgProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUpl
         onUpdateRecognizedReference={data.onUpdateRecognizedReference}
         onUploadAvatar={data.onUploadAvatar}
         uploadingAvatar={data.uploadingAvatar}
-        onSaveSection={data.onSaveSection}
         {...markdownUpload}
       />
       <ImageCropDialog

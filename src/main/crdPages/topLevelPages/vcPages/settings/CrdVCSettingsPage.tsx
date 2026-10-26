@@ -10,6 +10,7 @@ import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
+import { SettingsUnsavedChangesContext, useSettingsUnsavedChanges } from '../../common/settingsUnsavedChanges';
 import useVcSettingsAccessGuard from './useVcSettingsAccessGuard';
 import useVcSettingsTab, { type VcSettingsTabId } from './useVcSettingsTab';
 
@@ -39,6 +40,7 @@ const CrdVCSettingsPage = () => {
 
   useVcSettingsAccessGuard({ vcId, profileUrl });
   const { activeTabId, onTabSelect } = useVcSettingsTab({ profileUrl });
+  const unsavedChanges = useSettingsUnsavedChanges(onTabSelect);
 
   usePageTitle(t('vc.profile.pageTitle'));
 
@@ -63,19 +65,22 @@ const CrdVCSettingsPage = () => {
   ];
 
   return (
-    <SettingsShell
-      header={{
-        avatarUrl,
-        avatarFallback: computeFallback(displayName),
-        avatarColor,
-        displayName: displayName || t('shared.loading'),
-      }}
-      tabs={tabs}
-      activeTab={activeTabId}
-      onTabChange={onTabSelect}
-    >
-      <Outlet />
-    </SettingsShell>
+    <SettingsUnsavedChangesContext value={unsavedChanges.context}>
+      <SettingsShell
+        header={{
+          avatarUrl,
+          avatarFallback: computeFallback(displayName),
+          avatarColor,
+          displayName: displayName || t('shared.loading'),
+        }}
+        tabs={tabs}
+        activeTab={activeTabId}
+        onTabChange={unsavedChanges.onTabChange}
+      >
+        <Outlet />
+      </SettingsShell>
+      {unsavedChanges.element}
+    </SettingsUnsavedChangesContext>
   );
 };
 

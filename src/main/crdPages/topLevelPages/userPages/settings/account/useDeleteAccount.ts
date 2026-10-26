@@ -121,10 +121,10 @@ export type UseDeleteAccountResult = {
  * falling through to the BFF redirect. A silent fallthrough on failure would
  * let exactly the outage it is guarding against downgrade the step-up gate
  * back into an automated, credential-less bounce. A resume flag rides on
- * `returnTo` so the Security tab can reopen the confirm dialog (name field
+ * `returnTo` so the Account tab can reopen the confirm dialog (name field
  * cleared, never auto-submitted) once the round trip completes.
  */
-const useDeleteAccount = (userId: string | undefined, securityTabUrl: string): UseDeleteAccountResult => {
+const useDeleteAccount = (userId: string | undefined, returnTabUrl: string): UseDeleteAccountResult => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [dialog, setDialog] = useState<DeleteAccountDialogState>({ kind: 'closed' });
@@ -144,7 +144,7 @@ const useDeleteAccount = (userId: string | undefined, securityTabUrl: string): U
       setDialog({ kind: 'reauth-failed' });
       return;
     }
-    const resumeUrl = new URL(securityTabUrl, window.location.origin);
+    const resumeUrl = new URL(returnTabUrl, window.location.origin);
     resumeUrl.searchParams.set(RESUME_QUERY_PARAM, RESUME_QUERY_VALUE);
     const returnTo = `${resumeUrl.pathname}${resumeUrl.search}`;
     sessionStorage.setItem(DELETE_ACCOUNT_REAUTH_ATTEMPTED_KEY, '1');

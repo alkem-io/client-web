@@ -6,20 +6,22 @@ import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import useStorageConfig from '@/domain/storage/StorageBucket/useStorageConfig';
 import { MarkdownUploadScope } from '@/main/crdPages/markdown/MarkdownUploadScope';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
+import { useSettingsTabUnsavedChanges } from '../../../common/settingsUnsavedChanges';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
 import useUserProfileTabData from './useUserProfileTabData';
 
 /**
  * Integration page for the User Profile tab. Wires
- * `useUserPageRouteContext` (096) → `useUserProfileTabData` (per-section
- * save hook) → `UserProfileTabView` (presentational).
+ * `useUserPageRouteContext` (096) → `useUserProfileTabData` (buffered
+ * edits, saved through the settings page's unsaved-changes bar) →
+ * `UserProfileTabView` (presentational).
  *
  * The settings shell mounts no ambient `StorageConfigContextProvider`, so
  * `MarkdownUploadScope` mounts a `user`-scoped one (the bio editor is always
  * EDIT mode → `temporaryLocation: false`) and yields the upload wiring; before
  * the id resolves it yields `undefined` and the editor hides the affordance.
  *
- * Save mutations and the references batch live in `useUserProfileTabData`;
+ * Save mutations live in `useUserProfileTabData`;
  * the country list is supplied by the existing domain `COUNTRIES`
  * constants. CRD components never import that module directly per FR-006.
  */
@@ -36,6 +38,7 @@ const CrdUserProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUp
   const { t } = useTranslation('crd-contributorSettings');
   const { userId } = useUserPageRouteContext();
   const data = useUserProfileTabData(userId);
+  useSettingsTabUnsavedChanges(data.unsaved);
 
   // Reference file upload (paperclip) — uploads to the user's storage bucket. The user already exists,
   // so `useStorageConfig` resolves `temporaryLocation: false` and the upload is permanent (propagated
@@ -49,8 +52,7 @@ const CrdUserProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUp
         values={data.values ?? EMPTY_VALUES}
         countries={COUNTRIES}
         loading={data.loading}
-        dirtyByField={data.dirtyByField}
-        saveStatusByField={data.saveStatusByField}
+        disabled={data.unsaved.saving}
         onChange={data.onChange}
         onReferencesChange={data.onReferencesChange}
         onReferenceFileUpload={referenceUpload.onFileUpload}
@@ -58,7 +60,6 @@ const CrdUserProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUp
         onUpdateRecognizedReference={data.onUpdateRecognizedReference}
         onUploadAvatar={data.onUploadAvatar}
         uploadingAvatar={data.uploadingAvatar}
-        onSaveSection={data.onSaveSection}
         {...markdownUpload}
       />
       <ImageCropDialog
