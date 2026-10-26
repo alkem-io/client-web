@@ -994,7 +994,8 @@
         "description": "Weet je zeker dat je \"{{name}}\" wilt verwijderen? Dit kan niet ongedaan worden gemaakt zodra je opslaat.",
         "untitled": "deze referentie",
         "confirm": "Verwijderen"
-      }
+      },
+      "titleRequired": "Voeg een titel toe om deze referentie op te slaan."
     },
     "preview": {
       "title": "VOORBEELD",

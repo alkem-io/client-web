@@ -57,6 +57,8 @@ export type UseAboutTabDataResult = {
   /** Reference file-upload (paperclip) — uploads to the space's storage bucket. */
   onReferenceFileUpload?: (file: File) => Promise<string | null>;
   referenceUploadAccept?: string;
+  /** New references with a URL or description but no title — they block Save until titled. */
+  untitledReferenceIds: string[];
   /** Every field except the visuals is buffered and saved through the unsaved-changes bar (spec 045 FR-005a). */
   unsaved: TabUnsavedChanges;
 
@@ -206,6 +208,12 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
       removed: saved.references.filter(r => !currentIds.has(r.id)),
     };
   })();
+
+  // A new row with a URL or description but no title can't be created; it blocks Save (and shows an
+  // error) instead of being skipped and then dropped by the post-save rebase.
+  const untitledReferenceIds = (values?.references ?? [])
+    .filter(r => isTempId(r.id) && !r.title.trim() && (r.uri.trim() || r.description.trim()))
+    .map(r => r.id);
 
   // ────────────────── Local changes ──────────────────
 
@@ -617,6 +625,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     referenceChanges.created.length +
     referenceChanges.edited.length +
     referenceChanges.removed.length +
+    untitledReferenceIds.length +
     stagedAdds.length +
     pendingRemovals.length +
     changedClassifications.length;
@@ -624,6 +633,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   const saveAll = async (): Promise<boolean> => {
     const current = valuesRef.current;
     if (!current || !saved || unsavedCount === 0) return true;
+    if (untitledReferenceIds.length > 0) return false;
     const { created, edited, removed } = referenceChanges;
     setSaving(true);
     setSaveError(null);
@@ -683,7 +693,14 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
     // Rebase the buffer on the fresh server values: what saved now matches the server, what
     // failed stays buffered so it stays counted and Save retries it.
-    const fresh = (await refetch().catch(() => null))?.data?.lookup.space;
+    // A failed refresh leaves the buffer out of step with the server (writes that succeeded are no
+    // longer staged, yet don't appear either), so it fails the Save and the page offers a reload.
+    const fresh = (
+      await refetch().catch(err => {
+        firstError ??= errorMessage(err);
+        return null;
+      })
+    )?.data?.lookup.space;
     if (fresh) {
       const freshValues = mapSpaceToAboutFormValues(fresh);
       const removedIds = new Set(removed.map(r => r.id));
@@ -739,9 +756,10 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     onReferencesChange,
     onReferenceFileUpload,
     referenceUploadAccept,
+    untitledReferenceIds,
     unsaved: {
       count: unsavedCount,
-      canSave: true,
+      canSave: untitledReferenceIds.length === 0,
       saving,
       error: saveError,
       saveAll,

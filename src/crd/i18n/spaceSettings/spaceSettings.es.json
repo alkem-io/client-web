@@ -994,7 +994,8 @@
         "description": "¿Estás seguro de que quieres eliminar \"{{name}}\"? Esto no se puede deshacer una vez que guardes.",
         "untitled": "esta referencia",
         "confirm": "Eliminar"
-      }
+      },
+      "titleRequired": "Añade un título para guardar esta referencia."
     },
     "preview": {
       "title": "VISTA PREVIA",

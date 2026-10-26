@@ -46,6 +46,8 @@ export type SpaceSettingsAboutViewProps = AboutFormValues & {
   /** Reference file-upload (paperclip) — passed through to the shared editor. */
   onReferenceFileUpload?: (file: File) => Promise<string | null>;
   referenceUploadAccept?: string;
+  /** New references that have a URL or description but no title — flagged, and they block Save. */
+  untitledReferenceIds?: string[];
   className?: string;
 
   // ── Classifications (D1) — staged with the rest of the tab and saved by the unsaved-changes bar ──
@@ -86,6 +88,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     onReferencesChange,
     onReferenceFileUpload,
     referenceUploadAccept,
+    untitledReferenceIds = [],
     className,
     onImageUpload,
     iframeAllowedUrls,
@@ -317,6 +320,11 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
             onChange={onReferencesChange}
             onFileUpload={onReferenceFileUpload}
             uploadAccept={referenceUploadAccept}
+            errors={Object.fromEntries(
+              references.flatMap((r, index) =>
+                untitledReferenceIds.includes(r.id) ? [[`${index}.name`, t('about.references.titleRequired')]] : []
+              )
+            )}
           />
           <FieldHint>{t('about.references.description')}</FieldHint>
         </SettingsSection>

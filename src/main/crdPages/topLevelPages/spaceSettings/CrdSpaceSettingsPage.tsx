@@ -418,20 +418,6 @@ export default function CrdSpaceSettingsPage() {
     subspacesTab.closeSaveAsTemplate();
   }, [subspacesTab, saveAs]);
 
-  // Hash-anchor scrolling: when the page is opened with a hash like `#description`
-  // (typically from an edit pencil on the About dialog), scroll the matching
-  // element into view once the active tab's content has rendered. The single
-  // rAF defers the lookup until after the section has mounted in the DOM.
-  useEffect(() => {
-    const hash = window.location.hash;
-    if (!hash) return;
-    const targetId = hash.slice(1);
-    const raf = requestAnimationFrame(() => {
-      document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-    return () => cancelAnimationFrame(raf);
-  }, [activeTab]);
-
   // Leave once the changes are saved or discarded: either the pending tab switch or View Post.
   const proceedAfterGuard = () => {
     guard.clearDirty();
@@ -509,6 +495,7 @@ export default function CrdSpaceSettingsPage() {
                   onUploadCardBanner={about.onUploadCardBanner}
                   onRecropVisual={about.onRecropVisual}
                   onReferencesChange={about.onReferencesChange}
+                  untitledReferenceIds={about.untitledReferenceIds}
                   onReferenceFileUpload={about.onReferenceFileUpload}
                   referenceUploadAccept={about.referenceUploadAccept}
                   onImageUpload={md.onImageUpload}

@@ -994,7 +994,8 @@
         "description": "Êtes-vous sûr de vouloir retirer \"{{name}}\" ? Cela ne pourra pas être annulé une fois enregistré.",
         "untitled": "cette référence",
         "confirm": "Retirer"
-      }
+      },
+      "titleRequired": "Ajoutez un titre pour enregistrer cette référence."
     },
     "preview": {
       "title": "APERÇU",

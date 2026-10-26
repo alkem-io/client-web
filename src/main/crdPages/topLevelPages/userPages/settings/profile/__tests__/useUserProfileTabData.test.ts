@@ -179,6 +179,21 @@ describe('useUserProfileTabData — saveAll', () => {
     expect(result.current.unsaved.count).toBe(1);
   });
 
+  it('reports the Save as failed when the refresh afterwards fails, so a retry cannot create the references twice', async () => {
+    mockRefetch.mockRejectedValueOnce(new Error('Network down'));
+    const { result } = renderHook(() => useUserProfileTabData('user-1'));
+    act(() => result.current.onReferencesChange([{ name: 'Blog', uri: 'https://blog.test', description: '' }]));
+
+    let ok = true;
+    await act(async () => {
+      ok = await result.current.unsaved.saveAll();
+    });
+
+    expect(mockCreateReference).toHaveBeenCalledTimes(1);
+    expect(ok).toBe(false);
+    expect(result.current.unsaved.error).toBe('Network down');
+  });
+
   it('patches edited references and creates and deletes the others', async () => {
     const { result } = renderHook(() => useUserProfileTabData('user-1'));
 

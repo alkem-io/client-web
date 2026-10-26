@@ -289,7 +289,15 @@ export const useOrgProfileTabData = (organizationId: string | undefined): UseOrg
 
     // Rebase the buffer on the fresh server values: what saved now matches the server, what
     // failed stays buffered so it stays counted and Save retries it.
-    const freshOrg = (await refetch().catch(() => null))?.data?.lookup.organization;
+    // A failed refresh leaves the buffer out of step with the server (references just created would
+    // be created again on retry), so it fails the Save and the page offers a reload.
+    let refreshError: string | null = null;
+    const freshOrg = (
+      await refetch().catch(err => {
+        refreshError = err instanceof Error ? err.message : String(err);
+        return null;
+      })
+    )?.data?.lookup.organization;
     if (freshOrg) {
       const fresh = mapOrganizationToProfileFormValues(freshOrg);
       const next: OrgProfileFormValues = { ...fresh, avatar: current.avatar };
@@ -315,8 +323,9 @@ export const useOrgProfileTabData = (organizationId: string | undefined): UseOrg
     }
 
     setSaving(false);
-    setSaveError(result.firstError);
-    return result.firstError === null;
+    const firstError = result.firstError ?? refreshError;
+    setSaveError(firstError);
+    return firstError === null;
   };
 
   const reset = () => {

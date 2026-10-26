@@ -440,7 +440,7 @@ export function SpaceSettingsCommunityView({
           title={t('community.guidelines.title')}
           icon={<Shield className="size-4" />}
           iconColor="green"
-          defaultOpen={hashIs('guidelines')}
+          defaultOpen={false}
           keepMounted={false}
         >
           {communityGuidelinesSlot}
@@ -666,11 +666,6 @@ export function SpaceSettingsCommunityView({
       )}
     </div>
   );
-}
-
-/** True when the URL hash targets this section — a deep link (e.g. `#guidelines`) mounts it open. */
-function hashIs(id: string): boolean {
-  return typeof window !== 'undefined' && window.location.hash === `#${id}`;
 }
 
 function CountBadge({ count }: { count: number }) {

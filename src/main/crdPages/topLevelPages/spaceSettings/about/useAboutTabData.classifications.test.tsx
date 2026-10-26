@@ -243,6 +243,28 @@ describe('useAboutTabData — unsaved-changes buffer', () => {
     expect(result.current.values?.name).toBe('Renamed');
   });
 
+  it('holds a new reference with a URL but no title as an unsaved, unsavable change instead of dropping it', async () => {
+    const { result } = renderAbout([spaceAboutDetailsMock([])]);
+    await waitFor(() => expect(result.current.values).not.toBeNull());
+
+    act(() => result.current.onReferencesChange([{ name: '', uri: 'https://example.org', description: '' }]));
+    expect(result.current.unsaved.count).toBe(1);
+    expect(result.current.unsaved.canSave).toBe(false);
+    expect(result.current.untitledReferenceIds).toHaveLength(1);
+
+    let ok: boolean | undefined;
+    await act(async () => {
+      ok = await result.current.unsaved.saveAll();
+    });
+    expect(ok).toBe(false);
+    expect(result.current.values?.references.map(r => r.uri)).toEqual(['https://example.org']);
+
+    // An entirely empty row is just ignored, as before.
+    act(() => result.current.onReferencesChange([{ name: '', uri: '', description: '' }]));
+    expect(result.current.unsaved.count).toBe(0);
+    expect(result.current.unsaved.canSave).toBe(true);
+  });
+
   it('reset puts the changed fields back without a request', async () => {
     const { result } = renderAbout([spaceAboutDetailsMock([])]);
     await waitFor(() => expect(result.current.values).not.toBeNull());
@@ -294,6 +316,30 @@ describe('useAboutTabData — staged classifications (spec 024 Session 2026-10-2
     );
     expect(result.current.unsavedClassificationIds).toEqual([]);
     expect(result.current.unsaved.count).toBe(0);
+  });
+
+  it('reports the Save as failed when the refresh after the writes fails, so the page offers a reload', async () => {
+    const { result } = renderAbout([
+      spaceAboutDetailsMock([]),
+      addClassificationMock('tpl-sdgs', 'SDGs', classificationEntry('entry-1')),
+      {
+        request: { query: SpaceAboutDetailsDocument, variables: { spaceId: SPACE_ID } },
+        error: new Error('Network down'),
+      },
+    ]);
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    act(() => {
+      result.current.addClassificationFromTemplate(SDGS_TEMPLATE);
+    });
+
+    let ok: boolean | undefined;
+    await act(async () => {
+      ok = await result.current.unsaved.saveAll();
+    });
+
+    expect(ok).toBe(false);
+    expect(result.current.unsaved.error).toBe('Network down');
   });
 
   it('rejects a pick whose label collides with an existing classification after FR-011c normalisation', async () => {

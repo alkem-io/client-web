@@ -17,8 +17,6 @@ import type { ClassificationEntryData } from './types';
 
 export type ClassificationEntryCardProps = {
   entry: ClassificationEntryData;
-  /** True while this entry's selection write is in flight — the selector renders disabled. */
-  selectionPending?: boolean;
   /** True for an entry added locally and not saved yet — shows an "Unsaved" badge. */
   unsaved?: boolean;
   /** Step B — full-replacement selection write (FR-012d). */
@@ -44,7 +42,6 @@ export type ClassificationEntryCardProps = {
  */
 export function ClassificationEntryCard({
   entry,
-  selectionPending,
   unsaved,
   onSelectValues,
   onToggleDisplay,
@@ -153,13 +150,8 @@ export function ClassificationEntryCard({
           values={entry.values}
           selectedValueIDs={entry.selectedValueIDs}
           onChange={selected => onSelectValues(entry.id, selected)}
-          disabled={selectionPending}
           className="pt-1"
         />
-      )}
-
-      {entry.selectedValueIDs.length === 0 && (
-        <p className="text-caption text-muted-foreground">{t('classifications.valueSelector.noneSelected')}</p>
       )}
 
       {/* Every value in authored order: selected = filled chip with ×, unselected = dashed chip with +. */}
@@ -178,9 +170,8 @@ export function ClassificationEntryCard({
                   <button
                     type="button"
                     onClick={() => deselect(value.id)}
-                    disabled={selectionPending}
                     aria-label={t('classifications.entry.deselectValue', { label: value.label })}
-                    className="rounded-sm p-0.5 text-primary-foreground/70 hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+                    className="rounded-sm p-0.5 text-primary-foreground/70 hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <X aria-hidden="true" className="size-3" />
                   </button>
@@ -189,9 +180,8 @@ export function ClassificationEntryCard({
                 <button
                   type="button"
                   onClick={() => select(value.id)}
-                  disabled={selectionPending}
                   aria-label={t('classifications.entry.selectValue', { label: value.label })}
-                  className="inline-flex items-center gap-1 rounded-md border border-dashed border-muted-foreground/40 px-2 py-0.5 text-caption text-muted-foreground transition-colors hover:border-primary hover:bg-primary/5 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+                  className="inline-flex items-center gap-1 rounded-md border border-dashed border-muted-foreground/40 px-2 py-0.5 text-caption text-muted-foreground transition-colors hover:border-primary hover:bg-primary/5 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <Plus aria-hidden="true" className="size-3" />
                   {value.label}
@@ -200,6 +190,11 @@ export function ClassificationEntryCard({
             </li>
           ))}
         </ul>
+      )}
+
+      {/* Below the chips, so it disappears on the first pick without moving the chips under the cursor. */}
+      {entry.selectedValueIDs.length === 0 && (
+        <p className="text-caption text-muted-foreground">{t('classifications.valueSelector.noneSelected')}</p>
       )}
     </div>
   );

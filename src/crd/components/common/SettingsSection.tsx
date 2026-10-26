@@ -1,6 +1,6 @@
 import { ChevronDown } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/crd/lib/utils';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/crd/primitives/collapsible';
 
@@ -59,6 +59,18 @@ export function SettingsSection({
   className,
 }: SettingsSectionProps) {
   const [open, setOpen] = useState(defaultOpen);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  // A deep link (`#description`, or an anchor inside the section such as `#why`) opens the section
+  // and brings the target into view; otherwise a collapsed section would hide what the link points at.
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    const target = hash ? document.getElementById(decodeURIComponent(hash)) : null;
+    if (!target || !rootRef.current?.contains(target)) return;
+    setOpen(true);
+    const raf = requestAnimationFrame(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   const heading = (
     <>
@@ -91,6 +103,7 @@ export function SettingsSection({
 
   return (
     <Collapsible
+      ref={rootRef}
       open={open}
       onOpenChange={setOpen}
       id={id}

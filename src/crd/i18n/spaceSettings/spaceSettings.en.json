@@ -994,7 +994,8 @@
         "description": "Are you sure you want to remove \"{{name}}\"? This cannot be undone once you Save.",
         "untitled": "this reference",
         "confirm": "Remove"
-      }
+      },
+      "titleRequired": "Add a title to save this reference."
     },
     "preview": {
       "title": "PREVIEW",

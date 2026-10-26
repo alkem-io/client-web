@@ -284,7 +284,15 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
 
     // Rebase the buffer on the fresh server values: what saved now matches the server, what
     // failed stays buffered so it stays counted and Save retries it.
-    const freshUser = (await refetch().catch(() => null))?.data?.lookup.user;
+    // A failed refresh leaves the buffer out of step with the server (references just created would
+    // be created again on retry), so it fails the Save and the page offers a reload.
+    let refreshError: string | null = null;
+    const freshUser = (
+      await refetch().catch(err => {
+        refreshError = err instanceof Error ? err.message : String(err);
+        return null;
+      })
+    )?.data?.lookup.user;
     if (freshUser) {
       const fresh = mapUserToProfileFormValues(freshUser);
       const next: UserProfileFormValues = { ...fresh, avatar: current.avatar };
@@ -310,8 +318,9 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
     }
 
     setSaving(false);
-    setSaveError(result.firstError);
-    return result.firstError === null;
+    const firstError = result.firstError ?? refreshError;
+    setSaveError(firstError);
+    return firstError === null;
   };
 
   const reset = () => {

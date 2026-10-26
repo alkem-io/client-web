@@ -994,7 +994,8 @@
         "description": "Möchten Sie \"{{name}}\" wirklich entfernen? Dies kann nach dem Speichern nicht rückgängig gemacht werden.",
         "untitled": "diesen Verweis",
         "confirm": "Entfernen"
-      }
+      },
+      "titleRequired": "Füge einen Titel hinzu, um diese Referenz zu speichern."
     },
     "preview": {
       "title": "VORSCHAU",
