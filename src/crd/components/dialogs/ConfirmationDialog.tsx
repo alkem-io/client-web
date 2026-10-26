@@ -63,6 +63,8 @@ type ConfirmationDialogDiscardProps = {
   onDiscard: () => void;
   onCancel?: () => void;
   loading?: boolean;
+  /** Disables Save while the buffered changes are invalid; Discard and Cancel stay available. */
+  saveDisabled?: boolean;
 };
 
 type ConfirmationDialogProps = ConfirmationDialogConfirmProps | ConfirmationDialogDiscardProps;
@@ -87,6 +89,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps) {
       onDiscard,
       onCancel,
       loading = false,
+      saveDisabled = false,
     } = props;
 
     const handleCancel = () => {
@@ -114,8 +117,14 @@ export function ConfirmationDialog(props: ConfirmationDialogProps) {
             >
               {discardLabel}
             </AlertDialogAction>
-            {/* Save is the safe default action — rendered last and auto-focused so Enter triggers onSave, not onDiscard. */}
-            <AlertDialogAction onClick={onSave} disabled={loading} aria-busy={loading} autoFocus={true}>
+            {/* Save is the safe default action — rendered last and auto-focused so Enter triggers onSave, not
+                onDiscard. A disabled Save cannot take focus, so Radix falls back to Cancel. */}
+            <AlertDialogAction
+              onClick={onSave}
+              disabled={loading || saveDisabled}
+              aria-busy={loading}
+              autoFocus={!saveDisabled}
+            >
               {saveLabel}
             </AlertDialogAction>
           </AlertDialogFooter>

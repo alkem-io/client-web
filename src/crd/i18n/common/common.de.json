@@ -1624,6 +1624,12 @@
       "description": "Sie haben nicht gespeicherte Änderungen auf diesem Tab. Möchten Sie sie speichern, verwerfen oder auf diesem Tab bleiben?",
       "save": "Speichern",
       "discard": "Verwerfen und verlassen"
+    },
+    "saveFailedDialog": {
+      "title": "Ihre Änderungen konnten nicht gespeichert werden",
+      "description": "Möglicherweise hat jemand diese Seite inzwischen geändert. Laden Sie die Seite neu, um die aktuelle Version zu sehen – Ihre nicht gespeicherten Änderungen gehen dabei verloren.",
+      "refresh": "Seite neu laden",
+      "close": "Schließen"
     }
   }
 }

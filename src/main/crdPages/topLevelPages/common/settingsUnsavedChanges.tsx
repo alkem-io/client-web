@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { SaveFailedDialog } from '@/crd/components/common/SaveFailedDialog';
 import { UnsavedChangesBar } from '@/crd/components/common/UnsavedChangesBar';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import {
@@ -35,8 +36,9 @@ export const useSettingsTabUnsavedChanges = (unsaved: TabUnsavedChanges) => {
 /**
  * Page side, for the User / Organization / VC settings shells: the active tab
  * publishes its changes through `context`; `onTabChange` asks to save or discard
- * them before switching tabs; `element` renders the bar, the Discard confirmation
- * and the leave dialog, and arms the browser's reload/close confirm while dirty.
+ * them before switching tabs; `element` renders the bar, the Discard confirmation,
+ * the leave dialog and the save-failed dialog, and arms the browser's reload/close
+ * confirm while dirty.
  */
 export const useSettingsUnsavedChanges = <TabId,>(onTabSelect: (next: TabId) => void) => {
   const { t } = useTranslation('crd-common');
@@ -46,6 +48,8 @@ export const useSettingsUnsavedChanges = <TabId,>(onTabSelect: (next: TabId) => 
   const [discardOpen, setDiscardOpen] = useState(false);
   const [pendingTab, setPendingTab] = useState<{ id: TabId } | null>(null);
   const [savingToLeave, setSavingToLeave] = useState(false);
+  const [saveFailed, setSaveFailed] = useState(false);
+  const [reloadRequested, setReloadRequested] = useState(false);
 
   // Stable for the page's lifetime, so a tab's unmount cleanup only runs when the tab actually unmounts.
   const [context] = useState<SettingsUnsavedChangesContextValue>(() => ({
@@ -67,13 +71,21 @@ export const useSettingsUnsavedChanges = <TabId,>(onTabSelect: (next: TabId) => 
     return () => window.removeEventListener('beforeunload', handler);
   }, [dirty]);
 
+  // Reload only once the discarded buffer has disarmed the reload confirm above — the
+  // user already chose to drop the changes, so the browser must not ask a second time.
+  useEffect(() => {
+    if (reloadRequested && !dirty) window.location.reload();
+  }, [reloadRequested, dirty]);
+
   const onTabChange = (next: TabId) => {
     if (dirty) setPendingTab({ id: next });
     else onTabSelect(next);
   };
 
   const save = async () => {
+    if (!latest.current.canSave) return;
     if (await latest.current.saveAll()) notify(t('unsavedChanges.saved'), 'success');
+    else setSaveFailed(true);
   };
 
   const leave = () => {
@@ -83,11 +95,17 @@ export const useSettingsUnsavedChanges = <TabId,>(onTabSelect: (next: TabId) => 
   };
 
   const saveAndLeave = async () => {
-    if (savingToLeave) return;
+    // Invalid edits are never sent — the dialog's Save is disabled for them, as the bar's is.
+    if (savingToLeave || !latest.current.canSave) return;
     setSavingToLeave(true);
-    // A failed save keeps the dialog open so the user can retry or discard; the bar shows what failed.
     const saved = await latest.current.saveAll().finally(() => setSavingToLeave(false));
-    if (saved) leave();
+    if (saved) {
+      leave();
+      return;
+    }
+    // Stay on this tab with the changes still buffered; the save-failed dialog takes over.
+    setPendingTab(null);
+    setSaveFailed(true);
   };
 
   const element = (
@@ -125,12 +143,22 @@ export const useSettingsUnsavedChanges = <TabId,>(onTabSelect: (next: TabId) => 
         discardLabel={t('unsavedChanges.leaveDialog.discard')}
         cancelLabel={t('cancel')}
         loading={savingToLeave}
+        saveDisabled={!snapshot.canSave}
         onSave={() => void saveAndLeave()}
         onDiscard={() => {
           latest.current.reset();
           leave();
         }}
         onCancel={() => setPendingTab(null)}
+      />
+      <SaveFailedDialog
+        open={saveFailed}
+        message={snapshot.error}
+        onRefresh={() => {
+          latest.current.reset();
+          setReloadRequested(true);
+        }}
+        onClose={() => setSaveFailed(false)}
       />
     </>
   );

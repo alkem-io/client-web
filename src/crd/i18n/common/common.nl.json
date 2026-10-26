@@ -1624,6 +1624,12 @@
       "description": "Je hebt niet-opgeslagen wijzigingen op dit tabblad. Sla ze op, verwerp ze of blijf op dit tabblad?",
       "save": "Opslaan",
       "discard": "Verwerpen en verlaten"
+    },
+    "saveFailedDialog": {
+      "title": "Je wijzigingen konden niet worden opgeslagen",
+      "description": "Iemand heeft deze pagina mogelijk intussen gewijzigd. Vernieuw de pagina om de nieuwste versie te laden — je niet-opgeslagen wijzigingen gaan verloren.",
+      "refresh": "Pagina vernieuwen",
+      "close": "Sluiten"
     }
   }
 }

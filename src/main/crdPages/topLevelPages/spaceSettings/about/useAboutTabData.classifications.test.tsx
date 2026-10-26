@@ -366,4 +366,29 @@ describe('useAboutTabData — staged classifications (spec 024 Session 2026-10-2
       expect.objectContaining({ id: 'entry-1', selectedValueIDs: ['v-climate'] }),
     ]);
   });
+  it('stops counting a removal that failed because someone else already deleted the classification', async () => {
+    const { result } = renderAbout([
+      spaceAboutDetailsMock([classificationEntry('entry-1')]),
+      {
+        request: { query: DeleteClassificationEntryDocument, variables: { classificationData: { ID: 'entry-1' } } },
+        error: new Error('Classification entry not found'),
+      },
+      // The refetch after Save: the other admin's delete has landed.
+      spaceAboutDetailsMock([]),
+    ]);
+    await waitFor(() => expect(result.current.classifications).toHaveLength(1));
+
+    act(() => result.current.removeClassification('entry-1'));
+    expect(result.current.unsaved.count).toBe(1);
+
+    let ok: boolean | undefined;
+    await act(async () => {
+      ok = await result.current.unsaved.saveAll();
+    });
+
+    expect(ok).toBe(false);
+    expect(result.current.unsaved.error).toMatch(/not found/);
+    await waitFor(() => expect(result.current.unsaved.count).toBe(0));
+    expect(result.current.classifications).toEqual([]);
+  });
 });

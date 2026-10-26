@@ -12,6 +12,7 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ClassificationPickerDialog } from '@/crd/components/classification/ClassificationPickerDialog';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
+import { SaveFailedDialog } from '@/crd/components/common/SaveFailedDialog';
 import { UnsavedChangesBar } from '@/crd/components/common/UnsavedChangesBar';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { AddCommunityMemberDialog } from '@/crd/components/space/settings/AddCommunityMemberDialog';
@@ -320,6 +321,10 @@ export default function CrdSpaceSettingsPage() {
   // Besides the bar's count, an unsent Updates draft and an open Application Form edit keep the
   // tab-switch guard armed, as before.
   const hasUnsavedChanges = activeUnsaved.count > 0 || applicationForm.isDirty || updatesTab.isDirty;
+  // What the bar's Save checks, plus the Application Form's own validity — the leave dialog's
+  // Save writes both, so it must refuse whatever either would refuse.
+  const canSaveAll =
+    (activeUnsaved.count === 0 || activeUnsaved.canSave) && (!applicationForm.isDirty || applicationForm.canSave);
   useEffect(() => {
     if (hasUnsavedChanges) {
       guard.markDirty();
@@ -332,8 +337,18 @@ export default function CrdSpaceSettingsPage() {
   // Layout's View Post leaves the page; with unsaved changes it waits behind the same dialog.
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
 
+  const [saveFailed, setSaveFailed] = useState(false);
+  const [reloadRequested, setReloadRequested] = useState(false);
+  // Reload only once the discarded buffers have disarmed the guard's reload confirm — the admin
+  // already chose to drop the changes, so the browser must not ask a second time.
+  useEffect(() => {
+    if (reloadRequested && !guard.isDirty) window.location.reload();
+  }, [reloadRequested, guard.isDirty]);
+
   const saveActiveTab = async () => {
+    if (!activeUnsaved.canSave) return;
     if (await activeUnsaved.saveAll()) notify(tCommon('unsavedChanges.saved'), 'success');
+    else setSaveFailed(true);
   };
   // Save-and-switch is async; disable the dialog while it runs so a double
   // click can't fire duplicate saves, and keep it open if a save rejects.
@@ -429,25 +444,34 @@ export default function CrdSpaceSettingsPage() {
   };
 
   const handleConfirmSwitchSave = async () => {
-    if (switchingSave) return;
+    // Invalid edits are never sent — the dialog's Save is disabled for them, as the bar's is.
+    if (switchingSave || !canSaveAll) return;
     setSwitchingSave(true);
+    let saved = true;
     try {
-      // A failed save keeps the dialog open (and nothing switches) so the admin can retry or
-      // discard; the bar shows what failed.
-      if (activeUnsaved.count > 0 && !(await activeUnsaved.saveAll())) return;
-      if (applicationForm.isDirty) await applicationForm.onSave();
-      if (updatesTab.isDirty) await updatesTab.onSubmit();
+      if (activeUnsaved.count > 0) saved = await activeUnsaved.saveAll();
+      if (saved && applicationForm.isDirty) await applicationForm.onSave();
+      if (saved && updatesTab.isDirty) await updatesTab.onSubmit();
     } catch {
-      return;
+      saved = false;
     } finally {
       setSwitchingSave(false);
     }
-    proceedAfterGuard();
+    if (saved) {
+      proceedAfterGuard();
+      return;
+    }
+    // Stay on this tab with the changes still buffered; the save-failed dialog takes over.
+    handleConfirmSwitchCancel();
+    setSaveFailed(true);
   };
-  const handleConfirmSwitchDiscard = () => {
+  const discardAll = () => {
     activeUnsaved.reset();
     applicationForm.onReset();
     updatesTab.onResetDraft();
+  };
+  const handleConfirmSwitchDiscard = () => {
+    discardAll();
     proceedAfterGuard();
   };
   const handleConfirmSwitchCancel = () => {
@@ -1038,9 +1062,20 @@ export default function CrdSpaceSettingsPage() {
         discardLabel={tCommon('unsavedChanges.leaveDialog.discard')}
         cancelLabel={t('dirtyGuard.cancel')}
         loading={switchingSave}
+        saveDisabled={!canSaveAll}
         onSave={handleConfirmSwitchSave}
         onDiscard={handleConfirmSwitchDiscard}
         onCancel={handleConfirmSwitchCancel}
+      />
+
+      <SaveFailedDialog
+        open={saveFailed}
+        message={activeUnsaved.error}
+        onRefresh={() => {
+          discardAll();
+          setReloadRequested(true);
+        }}
+        onClose={() => setSaveFailed(false)}
       />
 
       {/* Community-guidelines + Subspace save-as both drive this shared `<TemplateFormDialog>`

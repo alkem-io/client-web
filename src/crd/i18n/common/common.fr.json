@@ -1624,6 +1624,12 @@
       "description": "Vous avez des modifications non enregistrées sur cet onglet. Voulez-vous les enregistrer, les abandonner ou rester sur cet onglet ?",
       "save": "Enregistrer",
       "discard": "Abandonner et quitter"
+    },
+    "saveFailedDialog": {
+      "title": "Vos modifications n'ont pas pu être enregistrées",
+      "description": "Quelqu'un a peut-être modifié cette page entre-temps. Actualisez la page pour charger la dernière version — vos modifications non enregistrées seront perdues.",
+      "refresh": "Actualiser la page",
+      "close": "Fermer"
     }
   }
 }

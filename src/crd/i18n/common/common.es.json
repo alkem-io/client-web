@@ -1624,6 +1624,12 @@
       "description": "Tienes cambios sin guardar en esta pestaña. ¿Quieres guardarlos, descartarlos o quedarte en esta pestaña?",
       "save": "Guardar",
       "discard": "Descartar y salir"
+    },
+    "saveFailedDialog": {
+      "title": "No se pudieron guardar tus cambios",
+      "description": "Es posible que alguien haya cambiado esta página mientras tanto. Actualiza la página para cargar la versión más reciente; tus cambios sin guardar se perderán.",
+      "refresh": "Actualizar página",
+      "close": "Cerrar"
     }
   }
 }

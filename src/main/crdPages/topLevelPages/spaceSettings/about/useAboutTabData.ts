@@ -435,6 +435,9 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
   const serverClassifications = space ? mapClassificationEntries(space) : [];
   const keptClassifications = serverClassifications.filter(entry => !stagedRemovals.includes(entry.id));
+  // Only removals of entries the server still holds are pending: one already deleted elsewhere
+  // (a failed removal, refetched) has nothing left to save, so it must not stay counted.
+  const pendingRemovals = stagedRemovals.filter(id => serverClassifications.some(entry => entry.id === id));
   const lastSortOrder = serverClassifications.reduce((max, entry) => Math.max(max, entry.sortOrder), 0);
   const classifications: ClassificationEntryData[] = [
     ...keptClassifications.map(entry => ({
@@ -529,7 +532,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
     // Removals first, so a label freed by a removal is free for an add in the same Save.
     const failedRemovals: string[] = [];
-    for (const entryId of stagedRemovals) {
+    for (const entryId of pendingRemovals) {
       try {
         await deleteClassificationEntry({ variables: { classificationData: { ID: entryId } } });
       } catch (err) {
@@ -615,7 +618,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     referenceChanges.edited.length +
     referenceChanges.removed.length +
     stagedAdds.length +
-    stagedRemovals.length +
+    pendingRemovals.length +
     changedClassifications.length;
 
   const saveAll = async (): Promise<boolean> => {

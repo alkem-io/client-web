@@ -1624,6 +1624,12 @@
       "description": "You have unsaved changes on this tab. Save them, discard them, or stay on this tab?",
       "save": "Save",
       "discard": "Discard & leave"
+    },
+    "saveFailedDialog": {
+      "title": "Your changes couldn't be saved",
+      "description": "Someone may have changed this page in the meantime. Refresh the page to load the latest version — your unsaved changes will be lost.",
+      "refresh": "Refresh page",
+      "close": "Close"
     }
   }
 }
