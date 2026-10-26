@@ -49,6 +49,9 @@ const storeCredentials = async (record: CredentialRecord): Promise<boolean> => {
         tx.oncomplete = () => resolve();
         tx.onabort = () => reject(tx.error);
       });
+      // Only after the write committed: an index entry for a namespace that
+      // does not exist would send `loadActorCredentials` down a dead match.
+      writeNamespaceIndex([...readNamespaceIndex(), record.userId]);
       return true;
     } finally {
       db.close();
@@ -58,29 +61,78 @@ const storeCredentials = async (record: CredentialRecord): Promise<boolean> => {
   }
 };
 
-// Every namespace lookup — resume, sign-out cleanup — runs through the
-// database listing. A browser without it can still store credentials, but
-// never finds or clears them again.
-const listStoredUserIds = async (): Promise<string[]> => {
+// Every namespace lookup — resume, sign-out cleanup — runs through this
+// listing, and `indexedDB.databases()` alone cannot carry it: Firefox has
+// never implemented it. There the listing came back empty forever, so a
+// stored credential could never be resumed (a fresh one was issued on every
+// page load) and sign-out could never find one to delete. Both issuers hit
+// it, because both write through this module.
+//
+// So the namespaces are also mirrored into localStorage, and the listing is
+// the union of the two. The mirror is a second *record* of the same fact,
+// not a second owner of it: the databases are still the only store, and a
+// browser with `databases()` keeps working from it alone if the mirror is
+// unavailable (private mode, blocked site data) or has not backfilled yet.
+const NS_INDEX_KEY = `${DB_PREFIX}namespaces`;
+
+const readNamespaceIndex = (): string[] => {
   try {
-    const databases = await indexedDB.databases();
-    return databases
-      .map(db => db.name ?? '')
-      .filter(name => name.startsWith(DB_PREFIX))
-      .map(name => name.slice(DB_PREFIX.length));
+    const parsed: unknown = JSON.parse(localStorage.getItem(NS_INDEX_KEY) ?? '[]');
+    return Array.isArray(parsed) ? parsed.filter((id): id is string => typeof id === 'string') : [];
   } catch {
     return [];
   }
 };
 
-/** The stored record under the actor's own namespace prefix, or null. */
+const writeNamespaceIndex = (userIds: readonly string[]): void => {
+  try {
+    localStorage.setItem(NS_INDEX_KEY, JSON.stringify([...new Set(userIds)]));
+  } catch {
+    // Blocked or full storage. Never fatal: where `databases()` works the
+    // listing is already complete without the mirror, and where it does not
+    // the caller fails closed exactly as it did before this mirror existed.
+  }
+};
+
+const listStoredUserIds = async (): Promise<string[]> => {
+  let enumerated: string[] = [];
+  try {
+    enumerated = (await indexedDB.databases())
+      .map(db => db.name ?? '')
+      .filter(name => name.startsWith(DB_PREFIX))
+      .map(name => name.slice(DB_PREFIX.length));
+  } catch {
+    // Unimplemented or refused — the mirror below is the whole listing.
+  }
+  return [...new Set([...enumerated, ...readNamespaceIndex()])];
+};
+
+/**
+ * The stored record under the actor's own namespace prefix, or null.
+ *
+ * Every match is tried, not just the first: the mirror can outlive its
+ * database (deleted by the browser, or by a `clearNamespace` that resolved
+ * early because another tab still held the connection open), and one stale
+ * entry must not mask a live record for the same actor on another homeserver.
+ */
 const loadActorCredentials = async (actorLocalpart: string): Promise<CredentialRecord | null> => {
   const prefix = `@${actorLocalpart.toLowerCase()}:`;
-  const userId = (await listStoredUserIds()).find(id => id.startsWith(prefix));
-  return userId ? loadCredentials(userId) : null;
+  for (const userId of (await listStoredUserIds()).filter(id => id.startsWith(prefix))) {
+    const record = await loadCredentials(userId);
+    if (record) {
+      return record;
+    }
+  }
+  return null;
 };
 
 const clearNamespace = async (userId: string): Promise<void> => {
+  // Dropped first, and unconditionally: sign-out must not leave a namespace
+  // listed when the delete is blocked by another tab or the index is the only
+  // record of it. A dropped entry for a database that survives is recoverable
+  // — `databases()` still lists it where that works, and the next store
+  // re-adds it — whereas a kept entry for a deleted one is not.
+  writeNamespaceIndex(readNamespaceIndex().filter(id => id !== userId));
   await new Promise<void>((resolve, reject) => {
     const request = indexedDB.deleteDatabase(dbName(userId));
     request.onsuccess = () => resolve();
