@@ -416,7 +416,26 @@ describe('useOrgAssociatesTabData — inviting is gated apart from managing role
     );
   });
 
-  it('an inviter without GRANT (GLOBAL_SUPPORT) can invite, and does not select the GRANT-gated applications', () => {
+  it('Platform Support (its org-membership privilege plus invite, no GRANT) manages, invites, and reads applications', () => {
+    myPrivileges = ['PLATFORM_SUPPORT_ORG_MEMBERSHIP', 'ROLESET_ENTRY_ROLE_INVITE'];
+    const { result } = render();
+
+    expect(result.current.canManage).toBe(true);
+    expect(result.current.canInvite).toBe(true);
+    expect(useRoleSetApplicationsAndInvitationsMock).toHaveBeenCalledWith(
+      expect.objectContaining({ roleSetId: 'rs-1', includeApplications: true })
+    );
+  });
+
+  it('the org-membership privilege alone manages but does not invite — inviting keeps its own gate', () => {
+    myPrivileges = ['PLATFORM_SUPPORT_ORG_MEMBERSHIP'];
+    const { result } = render();
+
+    expect(result.current.canManage).toBe(true);
+    expect(result.current.canInvite).toBe(false);
+  });
+
+  it('an inviter with neither GRANT nor the org-membership privilege can invite, and does not select the applications', () => {
     myPrivileges = ['ROLESET_ENTRY_ROLE_INVITE'];
     const { result } = render();
 

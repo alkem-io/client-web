@@ -35,6 +35,7 @@
           "invalidToken": "Ongeldig token.",
           "loginFlow": "Login flow error.",
           "loginFlowInit": "Kan de login-flow niet initialiseren.",
+          "platformSupportSelfTarget": "Je kunt dit niet voor je eigen account doen. Vraag een andere Platform Support-gebruiker of een beheerder van de organisatie.",
           "sessionExpired": "Sessie verlopen.",
           "sessionExtend": "Kan sessie niet verlengen.",
           "subscriptionNotAuthenticated": "Abonnement vereist authenticatie.",
@@ -159,10 +160,10 @@
   "associates-view": {
     "less": "toon minder",
     "more": "...plus {{count}} meer",
-    "sign-in": "Log in om de gebruikers te zien die geassocieerd zijn met deze $t(common.organization)."
+    "sign-in": "Log in om de gebruikers te zien die betrokken zijn bij deze $t(common.organization)."
   },
   "authentication": {
-    "lockout": "Uw account is tijdelijk geblokkeerd vanwege te veel mislukte inlogpogingen. Probeer het opnieuw over {{duration}}.",
+    "lockout": "Je account is tijdelijk geblokkeerd vanwege te veel mislukte inlogpogingen. Probeer het opnieuw over {{duration}}.",
     "lockoutRetry": "Opnieuw proberen",
     "flowUnavailable": "We konden je aanmelding niet veilig starten. Start deze opnieuw.",
     "flowUnavailableRetry": "Aanmelden opnieuw starten",
@@ -703,7 +704,7 @@
       "apply-disabled": "Lid worden niet mogelijk",
       "apply-not-signed": "Log in om in te schrijven",
       "apply-parent": "Schrijf in voor de bovenliggende groep",
-      "apply-pending": "Uw aanmelding is in behandeling",
+      "apply-pending": "Je aanmelding is in behandeling",
       "applyTo": "Word lid",
       "contactOpportunityLeads": {
         "full": "Stuur een bericht naar de $t(common.subspace) $t(common.leads) om $t(common.member) te worden",
@@ -915,12 +916,12 @@
           "subject": "{{triggeredByName}} heeft {{contributorName}} uitgenodigd voor {{spaceName}}, waarvan je een $t(common.admin) bent"
         },
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_INVITATION": {
-          "subject": "Uw $t(common.organization) {{organizationName}} is uitgenodigd om lid te worden van {{spaceName}}",
+          "subject": "Je $t(common.organization) {{organizationName}} is uitgenodigd om lid te worden van {{spaceName}}",
           "description": "Als {{invitationRole}}.{{spacesToJoin}}"
         },
         "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_ACCEPTED": {
           "subject": "{{organizationName}} heeft de uitnodiging om lid te worden van {{spaceName}} geaccepteerd",
-          "description": "{{organizationName}} is toegetreden tot {{spaceName}}, waarvan u $t(common.admin) bent."
+          "description": "{{organizationName}} is toegetreden tot {{spaceName}}, waarvan je $t(common.admin) bent."
         },
         "SPACE_ADMIN_ORGANIZATION_COMMUNITY_INVITATION_DECLINED": {
           "subject": "{{organizationName}} heeft de uitnodiging om lid te worden van {{spaceName}} afgewezen",
@@ -928,42 +929,42 @@
         },
         "SPACE_ADMIN_USER_COMMUNITY_INVITATION_ACCEPTED": {
           "subject": "{{userName}} heeft de uitnodiging om lid te worden van {{spaceName}} geaccepteerd",
-          "description": "{{userName}} is toegetreden tot {{spaceName}}, waarvan u $t(common.admin) bent."
+          "description": "{{userName}} is toegetreden tot {{spaceName}}, waarvan je $t(common.admin) bent."
         },
         "SPACE_ADMIN_USER_COMMUNITY_INVITATION_DECLINED": {
           "subject": "{{userName}} heeft de uitnodiging om lid te worden van {{spaceName}} afgewezen",
           "description": ""
         },
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
-          "subject": "Uw $t(common.organization) {{organizationName}} is toegetreden tot {{spaceName}}",
+          "subject": "Je $t(common.organization) {{organizationName}} is toegetreden tot {{spaceName}}",
           "description": "Er is geen verdere actie nodig."
         },
         "USER_ORGANIZATION_ASSOCIATE_INVITATION": {
-          "subject": "{{triggeredByName}} heeft je uitgenodigd om je te associëren met {{organizationName}}",
+          "subject": "{{triggeredByName}} heeft je uitgenodigd om betrokkene te worden bij {{organizationName}}",
           "description": "Als {{associateRole}}."
         },
         "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED": {
-          "subject": "{{triggeredByName}} heeft de uitnodiging om zich te associëren met {{organizationName}} geaccepteerd",
-          "description": "{{triggeredByName}} is nu geassocieerde van {{organizationName}}, waarvan jij beheerder bent.{{withheld}}"
+          "subject": "{{triggeredByName}} heeft de uitnodiging om betrokkene te worden bij {{organizationName}} geaccepteerd",
+          "description": "{{triggeredByName}} is nu betrokkene bij {{organizationName}}, waarvan jij beheerder bent.{{withheld}}"
         },
         "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_DECLINED": {
-          "subject": "{{triggeredByName}} heeft de uitnodiging om zich te associëren met {{organizationName}} geweigerd",
+          "subject": "{{triggeredByName}} heeft de uitnodiging om betrokkene te worden bij {{organizationName}} geweigerd",
           "description": ""
         },
         "ORGANIZATION_ADMIN_ASSOCIATE_APPLICATION": {
-          "subject": "{{triggeredByName}} heeft gesolliciteerd om zich te associëren met {{organizationName}}",
+          "subject": "{{triggeredByName}} heeft zich aangemeld als betrokkene bij {{organizationName}}",
           "description": "Bekijk de aanvraag in de organisatie-instellingen"
         },
         "USER_ORGANIZATION_ASSOCIATE_APPLICATION_APPROVED": {
-          "subject": "Je aanvraag om je te associëren met {{organizationName}} is goedgekeurd",
+          "subject": "Je aanvraag om betrokkene te worden bij {{organizationName}} is goedgekeurd",
           "description": ""
         },
         "USER_ORGANIZATION_ASSOCIATE_APPLICATION_DECLINED": {
-          "subject": "Je aanvraag om je te associëren met {{organizationName}} is afgewezen",
+          "subject": "Je aanvraag om betrokkene te worden bij {{organizationName}} is afgewezen",
           "description": ""
         },
         "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
-          "subject": "\"{{memberName}}\" is toegetreden tot {{organizationName}} als geassocieerde",
+          "subject": "\"{{memberName}}\" is toegetreden tot {{organizationName}} als betrokkene",
           "description": "{{memberName}} is toegetreden tot {{organizationName}}, waarvan jij beheerder bent."
         },
         "SPACE_ADMIN_COLLABORATION_CALLOUT_FORM_RESPONSE": {
@@ -971,11 +972,11 @@
           "description": "In <b>{{spaceName}}</b>, waarvan je $t(common.admin) bent."
         }
       },
-      "spacesToJoin": "Bij accepteren wordt toegetreden tot: {{spaces}}",
+      "spacesToJoin": "Bij acceptatie wordt de organisatie lid van: {{spaces}}",
       "associateRole": {
-        "associate": "Geassocieerde",
-        "associateAdmin": "Geassocieerde + Beheerder",
-        "associateOwner": "Geassocieerde + Eigenaar"
+        "associate": "Betrokkene",
+        "associateAdmin": "Betrokkene + Beheerder",
+        "associateOwner": "Betrokkene + Eigenaar"
       },
       "withheldRole": {
         "admin": "Beheerder",
@@ -1125,7 +1126,7 @@
     },
     "messages": {
       "account-disabled": "Dit account is uitgeschakeld.",
-      "claim-missing": "U heeft uw Cleverbase identiteit nog niet geverifieerd. Controleer uw identiteit en probeer het opnieuw of probeer een andere registratiemethode.",
+      "claim-missing": "Je hebt je Cleverbase identiteit nog niet geverifieerd. Controleer je identiteit en probeer het opnieuw of probeer een andere registratiemethode.",
       "invalid-credentials": "Het ingevoerde e-mailadres of wachtwoord is ongeldig. Controleer je gegevens en probeer het opnieuw. Probeer je je in plaats daarvan aan te melden? Je kunt dit doen door op de link hierboven te klikken.",
       "login-flow-account-exists": "Dit e-mailadres is al verbonden met een $t(common.account). Als je je eerder hebt aangemeld via LinkedIn, GitHub of Microsoft, gebruik dan die inlogmethode. Anders kun je ook je wachtwoord herstellen.",
       "oidc-account-linking-conflict": "Je probeerde door te gaan met {{provider}}, maar er bestaat al een account met dat e-mailadres. Log hieronder in op dat account om te bevestigen dat jij het bent - {{provider}} wordt dan aan dat account gekoppeld en je kunt voortaan op beide manieren inloggen.",
@@ -1133,7 +1134,7 @@
       "property-missing": "{{field}} is vereist.",
       "recovery-flow-expired": "Deze wachtwoord reset-link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven.",
       "request-recover-password": "<strong>Een e-mail met een herstellink is verstuurd naar het opgegeven e-mailadres.</strong><br/> <br/>Als je geen e-mail hebt ontvangen, Controleer het volgende:<br/> <br/><li> <strong>Controleer de spelling</strong> van het e-mailadres.</li/><li> <strong>zorg ervoor dat je het e-mailadres gebruikt </strong> waarmee je je hebt geregistreerd.</li><li> <strong>Controleer je spam of ongewenste map</strong> </li><li> <strong>Als je je hebt geregistreerd met LinkedIn, Microsoft of een andere sociale login,</strong> dan werkt wachtwoord herstel via e-mail niet. Gebruik in plaats daarvan de respectievelijke optie voor social login.</li><br/><br/><i>Opmerking: Dit bevestigt niet dat een $t(common.account) geregistreerd is met deze e-mail.</i>",
-      "successfully-recovered-password": "Voer binnen de komende 15 minuten een nieuw wachtwoord in om uw wachtwoordreset te voltooien.",
+      "successfully-recovered-password": "Voer binnen de komende 15 minuten een nieuw wachtwoord in om je wachtwoordreset te voltooien.",
       "verification-flow-continue": "Volgende",
       "verification-flow-expired": "De verificatie link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven.",
       "settings-changes-saved": "Je wijzigingen zijn opgeslagen!",
@@ -1572,7 +1573,7 @@
         "copied": "Gekopieerd!"
       }
     },
-    "warning": "Houd er rekening mee dat uw persoonlijke e-mailadres zichtbaar is voor de gebruiker wanneer u hen een bericht stuurt."
+    "warning": "Houd er rekening mee dat je persoonlijke e-mailadres zichtbaar is voor de gebruiker wanneer je hen een bericht stuurt."
   },
   "space": "Space",
   "spaces": "Spaces",

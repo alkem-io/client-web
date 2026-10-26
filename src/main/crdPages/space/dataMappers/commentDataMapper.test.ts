@@ -78,6 +78,20 @@ describe('mapRoomToCommentData', () => {
     expect(comments[1].parentId).toBe('root');
   });
 
+  it('maps a captioned image message to one comment carrying both the text and the image', () => {
+    const image = { externalReference: 'media-1', displayName: 'shot.png', mimeType: 'image/png' };
+    const room = {
+      attachmentBucketId: 'space-bucket',
+      messages: [baseMessage({ id: 'm-1', message: 'see this', timestamp: Date.now(), attachments: [image] })],
+    };
+    const comments = mapRoomToCommentData(room, { t: tStub });
+    expect(comments).toHaveLength(1);
+    expect(comments[0].content).toBe('see this');
+    expect(comments[0].attachments).toEqual([
+      expect.objectContaining({ id: 'media-1', displayName: 'shot.png', mimeType: 'image/png' }),
+    ]);
+  });
+
   it('returns an empty list when the room is undefined', () => {
     expect(mapRoomToCommentData(undefined, { t: tStub })).toEqual([]);
   });

@@ -98,10 +98,12 @@ export type UseLayoutTabDataResult = {
    */
   reseedFromServer: () => void;
   /**
-   * Innovation flow state ids from the server — passed to `useColumnMenu`'s
-   * `innovationFlowStates` option so `onSaveLayout` can verify the target state exists.
+   * Innovation flow states as persisted on the server (never the unsaved column buffer) —
+   * passed to `useColumnMenu`'s `innovationFlowStates` option so `onSaveLayout` can verify
+   * the target state exists, and to Customize Sidebar, which reads and writes the persisted
+   * first state's sidebar.
    */
-  innovationFlowStates: ReadonlyArray<{ id: string }>;
+  innovationFlowStates: ReadonlyArray<{ id: string; sortOrder: number; settings: { sidebar: readonly string[] } }>;
 };
 
 type Snapshot = {

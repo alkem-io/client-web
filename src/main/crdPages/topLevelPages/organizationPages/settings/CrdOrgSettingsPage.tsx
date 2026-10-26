@@ -22,14 +22,15 @@ const computeFallback = (displayName: string | undefined): string => {
 
 /**
  * Hosts the Org Settings shell — sticky header + 6-tab strip + outlet.
- * Access is gated by `useOrgSettingsAccessGuard`.
+ * Access is gated by `useOrgSettingsAccessGuard`; in `community-only` mode the
+ * strip shows the Community tab alone.
  */
 const CrdOrgSettingsPage = () => {
   const { t } = useTranslation('crd-contributorSettings');
   const { organizationId, organization } = useOrganizationContext();
   const profileUrl = organization?.profile?.url;
 
-  useOrgSettingsAccessGuard({ profileUrl });
+  const { accessMode } = useOrgSettingsAccessGuard({ profileUrl });
   const { activeTabId, onTabSelect } = useOrgSettingsTab({ profileUrl });
 
   usePageTitle(t('org.profile.pageTitle'));
@@ -48,7 +49,7 @@ const CrdOrgSettingsPage = () => {
       : [];
   useSetBreadcrumbs(breadcrumbItems);
 
-  const tabs: ReadonlyArray<SettingsTabDescriptor<OrgSettingsTabId>> = [
+  const allTabs: ReadonlyArray<SettingsTabDescriptor<OrgSettingsTabId>> = [
     { id: 'profile', label: t('shell.tabs.org.profile'), icon: Briefcase },
     { id: 'account', label: t('shell.tabs.org.account'), icon: Briefcase },
     { id: 'community', label: t('shell.tabs.org.community'), icon: Users },
@@ -56,6 +57,8 @@ const CrdOrgSettingsPage = () => {
     { id: 'invitations', label: t('shell.tabs.org.invitations'), icon: Mail },
     { id: 'settings', label: t('shell.tabs.org.settings'), icon: Cog },
   ];
+  // A viewer confined to the Community tab sees no other tab to click into.
+  const tabs = accessMode === 'community-only' ? allTabs.filter(tab => tab.id === 'community') : allTabs;
 
   return (
     <SettingsShell

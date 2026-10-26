@@ -1,14 +1,20 @@
+import { ApolloError } from '@apollo/client';
 import { act, render } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { RoleSetInvitationResultType } from '@/core/apollo/generated/graphql-schema';
 import type { InvitationResult } from '@/crd/components/community/InviteMembersDialog';
+import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 import { OrgInviteAssociatesDialogConnector } from './OrgInviteAssociatesDialogConnector';
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key, i18n: { t: (key: string) => key } }),
+  useTranslation: () => ({
+    t: (key: string) => key,
+    i18n: { t: (key: string) => key, exists: (key: string) => key === 'apollo.errors.FORBIDDEN_POLICY' },
+  }),
 }));
 
-vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
+const notifyMock = vi.fn();
+vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notifyMock }));
 
 vi.mock('@/domain/platform/config/useConfig', () => ({
   useConfig: () => ({ language: { eligible: ['en', 'nl'] } }),
@@ -61,6 +67,7 @@ const renderConnector = () =>
 describe('OrgInviteAssociatesDialogConnector', () => {
   beforeEach(() => {
     runInviteMock.mockReset();
+    notifyMock.mockReset();
   });
 
   test('enables email paste and the language control, with the generic (non-member) search copy', async () => {
@@ -167,5 +174,49 @@ describe('OrgInviteAssociatesDialogConnector', () => {
     });
     expect(runInviteMock).toHaveBeenCalledTimes(1);
     expect(runInviteMock.mock.calls[0][0].variables.invitedUserEmails).toEqual(['new@example.com']);
+  });
+
+  const sendFailingWith = async (error: Error) => {
+    runInviteMock.mockRejectedValue(error);
+    await act(async () => {
+      renderConnector();
+    });
+    await act(async () => {
+      dialogProps.onAddEmails('new@example.com');
+    });
+    await act(async () => {
+      dialogProps.onSend();
+    });
+  };
+
+  test('shows the specific message once when Platform Support targets its own account', async () => {
+    await sendFailingWith(
+      new ApolloError({
+        graphQLErrors: [
+          { message: 'refused', extensions: { code: AlkemioGraphqlErrorCode.PLATFORM_SUPPORT_SELF_TARGET } },
+        ],
+      })
+    );
+    expect(notifyMock).toHaveBeenCalledTimes(1);
+    expect(notifyMock).toHaveBeenCalledWith(
+      'apollo.errors.userMessages.authorization.platformSupportSelfTarget',
+      'error'
+    );
+  });
+
+  test("shows the server's translated reason once for any other refusal, not a connectivity message", async () => {
+    await sendFailingWith(
+      new ApolloError({
+        graphQLErrors: [{ message: 'not allowed', extensions: { code: AlkemioGraphqlErrorCode.FORBIDDEN_POLICY } }],
+      })
+    );
+    expect(notifyMock).toHaveBeenCalledTimes(1);
+    expect(notifyMock).toHaveBeenCalledWith('apollo.errors.FORBIDDEN_POLICY', 'error');
+  });
+
+  test('shows the connectivity message once when no server reply came back', async () => {
+    await sendFailingWith(new ApolloError({ networkError: new Error('Failed to fetch') }));
+    expect(notifyMock).toHaveBeenCalledTimes(1);
+    expect(notifyMock).toHaveBeenCalledWith('inviteMembers.errors.networkFailure', 'error');
   });
 });

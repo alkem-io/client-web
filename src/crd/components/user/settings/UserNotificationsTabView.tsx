@@ -57,6 +57,13 @@ export type UserNotificationsTabViewProps = {
   pushRequiresPwa: boolean;
   onPushMasterToggle: () => void;
 
+  /**
+   * Running inside the native app shell. The OS owns permission there and there
+   * is no browser subscription, so the master card states nothing and the
+   * per-event push column stays reachable even though `pushAvailable` is false.
+   */
+  appMode: boolean;
+
   // Activity groups (already privilege-filtered by the integration layer).
   groups: NotificationGroupData[];
 
@@ -99,6 +106,7 @@ export function UserNotificationsTabView(props: UserNotificationsTabViewProps) {
         pushLoading={props.pushLoading}
         pushPermissionDenied={props.pushPermissionDenied}
         pushRequiresPwa={props.pushRequiresPwa}
+        appMode={props.appMode}
         onPushMasterToggle={props.onPushMasterToggle}
       />
 
@@ -110,7 +118,7 @@ export function UserNotificationsTabView(props: UserNotificationsTabViewProps) {
         <NotificationGroupSection
           key={group.groupId}
           group={group}
-          showPushColumn={props.pushAvailable}
+          showPushColumn={props.pushAvailable || props.appMode}
           onToggle={props.onToggle}
         />
       ))}
@@ -170,6 +178,7 @@ function PushMasterBanner({
   pushLoading,
   pushPermissionDenied,
   pushRequiresPwa,
+  appMode,
   onPushMasterToggle,
 }: {
   pushAvailable: boolean;
@@ -177,9 +186,18 @@ function PushMasterBanner({
   pushLoading: boolean;
   pushPermissionDenied: boolean;
   pushRequiresPwa: boolean;
+  appMode: boolean;
   onPushMasterToggle: () => void;
 }) {
   const { t } = useTranslation(NS);
+
+  // This card is the *browser*-subscription switch. In the app there is no
+  // browser subscription and the OS owns permission, so rendering nothing states
+  // nothing rather than asserting something false. Surfacing the OS permission
+  // state is deferred.
+  if (appMode) {
+    return null;
+  }
 
   if (pushRequiresPwa) {
     return (
