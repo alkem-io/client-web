@@ -92,6 +92,8 @@ export type SpaceSettingsSettingsViewProps = {
   membershipPolicy: MembershipPolicy;
   allowedActions: AllowedActionToggle[];
   hostOrganizationTrusted: boolean;
+  /** The "Trusted applicants" toggle is shown only when the space is hosted by an organization. */
+  hostIsOrganization: boolean;
   providerDisplayName: string;
   loading?: boolean;
   /** Locks every control while the tab's changes are being saved (FR-025d). */
@@ -168,6 +170,7 @@ export function SpaceSettingsSettingsView({
   membershipPolicy,
   allowedActions,
   hostOrganizationTrusted,
+  hostIsOrganization,
   providerDisplayName,
   disabled = false,
   onPrivacyChange,
@@ -338,7 +341,7 @@ export function SpaceSettingsSettingsView({
         </RadioGroup>
 
         {/* Trust host organization toggle */}
-        {providerDisplayName && (
+        {hostIsOrganization && providerDisplayName && (
           <div className="mt-4 flex items-center justify-between gap-4 rounded-md border p-4">
             <div className="space-y-1">
               <Label htmlFor="host-org-trust" className="text-body-emphasis">

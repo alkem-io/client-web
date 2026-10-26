@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useSpaceSettingsQuery, useUpdateSpaceSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
-import type {
-  CommunityMembershipPolicy,
-  SpacePrivacyMode,
-  UserInformationVisibility,
+import {
+  ActorType,
+  type CommunityMembershipPolicy,
+  type SpacePrivacyMode,
+  type UserInformationVisibility,
 } from '@/core/apollo/generated/graphql-schema';
 import type {
   AllowedActionKey,
@@ -49,6 +50,8 @@ export type UseSettingsTabDataResult = {
   membershipPolicy: MembershipPolicy;
   allowedActions: AllowedActionToggle[];
   hostOrganizationTrusted: boolean;
+  /** Trusting the host only makes sense when the space is hosted by an organization, not a user. */
+  hostIsOrganization: boolean;
   providerDisplayName: string;
   roleSetId: string | undefined;
   loading: boolean;
@@ -70,6 +73,7 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
   const settings = data?.lookup.space?.settings;
   const provider = data?.lookup.space?.about.provider;
   const hostId = provider?.id;
+  const hostIsOrganization = provider?.type === ActorType.Organization;
   const providerDisplayName = provider?.profile?.displayName ?? '';
   const roleSetId = data?.lookup.space?.about.membership?.roleSetID;
 
@@ -259,6 +263,7 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
     membershipPolicy,
     allowedActions,
     hostOrganizationTrusted: displayedHostOrganizationTrusted,
+    hostIsOrganization,
     providerDisplayName,
     roleSetId,
     loading,
