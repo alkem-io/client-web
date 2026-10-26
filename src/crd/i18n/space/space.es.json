@@ -1017,13 +1017,16 @@
     "cantComment": "No tienes permiso para comentar, responder o reaccionar aquí.",
     "attachments": {
       "attach": "Adjuntar archivos",
+      "addImage": "Añadir imagen",
       "dropHint": "Suelta los archivos para adjuntarlos",
       "stagedListLabel": "Archivos para enviar",
       "removeAttachment": "Quitar {{name}}",
       "uploading": "Subiendo…",
       "uploadFailed": "Error al subir. Envía de nuevo para reintentarlo o elimina el archivo.",
+      "failed": "Error al subir",
       "sendUnconfirmed": "El envío no se ha confirmado. Revisa la conversación antes de volver a enviar.",
-      "errorTooMany": "Puedes adjuntar hasta {{max}} archivos.",
+      "errorTooMany_one": "Solo puedes adjuntar un archivo.",
+      "errorTooMany_other": "Puedes adjuntar hasta {{count}} archivos.",
       "errorTooLarge": "{{name}} supera los {{max}} MB.",
       "errorUnsupportedType": "{{name}} tiene un tipo de archivo no admitido."
     }

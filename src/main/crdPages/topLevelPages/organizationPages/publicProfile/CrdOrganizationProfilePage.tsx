@@ -23,10 +23,10 @@ import {
 } from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
 import useResourceTabs from '@/main/crdPages/topLevelPages/common/useResourceTabs';
 import { useSendMessageToOrganizationHandler } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
-import { buildLoginUrl, buildSettingsUrl, buildSignUpUrl } from '@/main/routing/urlBuilders';
+import { buildLoginUrl, buildSignUpUrl } from '@/main/routing/urlBuilders';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { OrgApplyDialogConnector } from './OrgApplyDialogConnector';
-import { mapAssociates, offeredRoleLabelKey } from './organizationProfileMapper';
+import { mapAssociates, offeredRoleLabelKey, orgSettingsHref } from './organizationProfileMapper';
 import { useCrdOrganizationProfilePageData } from './useCrdOrganizationProfilePageData';
 import { useOrganizationAssociateAction } from './useOrganizationAssociateAction';
 import { useOrgInvitationResponse } from './useOrgInvitationResponse';
@@ -173,7 +173,7 @@ export const CrdOrganizationProfilePage = () => {
 
   const verified = organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation;
 
-  const settingsHref = provided.permissions.canEdit && profile?.url ? buildSettingsUrl(profile.url) : null;
+  const settingsHref = orgSettingsHref(provided.permissions, profile?.url);
 
   const associatesCount = getMetricCount(organization?.metrics ?? [], MetricType.Associate);
 

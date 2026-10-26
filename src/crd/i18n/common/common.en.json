@@ -35,6 +35,7 @@
           "invalidToken": "Invalid token.",
           "loginFlow": "Login flow error.",
           "loginFlowInit": "Unable to initialise login flow.",
+          "platformSupportSelfTarget": "You can't do this to your own account. Ask another Platform Support user or an organisation admin.",
           "sessionExpired": "Session expired.",
           "sessionExtend": "Unable to extend session.",
           "subscriptionNotAuthenticated": "Subscription requires authentication.",

@@ -93,6 +93,27 @@ const uploading: ComposerAttachment = { id: 'a2', name: 'big.pdf', status: 'uplo
 const failed: ComposerAttachment = { id: 'a3', name: 'broken.png', status: 'error', mimeType: 'image/png' };
 
 describe('CommentInput attachments', () => {
+  test('imagesOnly renders the image button with the "Add image" name and image chips', () => {
+    const { container } = render(
+      <CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} imagesOnly={true} attachments={[ready]} />
+    );
+    const button = screen.getByRole('button', { name: 'comments.attachments.addImage' });
+    expect(button.querySelector('svg')).toHaveClass('lucide-image-plus');
+    expect(screen.queryByRole('button', { name: 'comments.attachments.attach' })).not.toBeInTheDocument();
+    const chip = screen.getByText('photo.png').closest('li') as HTMLElement;
+    expect(chip.querySelector('svg')).toHaveClass('lucide-image');
+    expect(container.querySelector('.lucide-paperclip')).toBeNull();
+  });
+
+  test('without imagesOnly the paperclip button and label are unchanged', () => {
+    render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachments={[ready]} />);
+    const button = screen.getByRole('button', { name: 'comments.attachments.attach' });
+    expect(button.querySelector('svg')).toHaveClass('lucide-paperclip');
+    expect(screen.queryByRole('button', { name: 'comments.attachments.addImage' })).not.toBeInTheDocument();
+    const chip = screen.getByText('photo.png').closest('li') as HTMLElement;
+    expect(chip.querySelector('svg')).toHaveClass('lucide-paperclip');
+  });
+
   test('does not render the attach affordance unless attachments are enabled', () => {
     render(<CommentInput onSubmit={vi.fn()} />);
     expect(screen.queryByRole('button', { name: 'comments.attachments.attach' })).not.toBeInTheDocument();
@@ -187,6 +208,13 @@ describe('CommentInput attachments', () => {
       render(<CommentInput onSubmit={onSubmit} attachmentsEnabled={true} attachments={[failed]} value="here you go" />);
       fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' });
       expect(onSubmit).toHaveBeenCalledWith('here you go');
+    });
+
+    test('the failed file is marked failed in text, not by colour alone', () => {
+      render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachments={[ready, failed]} />);
+      const [readyChip, failedChip] = screen.getAllByRole('listitem');
+      expect(failedChip).toHaveTextContent('comments.attachments.failed');
+      expect(readyChip).not.toHaveTextContent('comments.attachments.failed');
     });
 
     test('busy sending disables retry and removal', () => {

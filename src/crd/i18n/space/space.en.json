@@ -1017,13 +1017,16 @@
     "cantComment": "You don't have permission to comment, reply or react here.",
     "attachments": {
       "attach": "Attach files",
+      "addImage": "Add image",
       "dropHint": "Drop files to attach",
       "stagedListLabel": "Files to send",
       "removeAttachment": "Remove {{name}}",
       "uploading": "Uploading…",
       "uploadFailed": "Upload failed. Send again to retry, or remove the file.",
+      "failed": "Upload failed",
       "sendUnconfirmed": "Send was not confirmed. Check the conversation before sending again.",
-      "errorTooMany": "You can attach up to {{max}} files.",
+      "errorTooMany_one": "You can attach only one file.",
+      "errorTooMany_other": "You can attach up to {{count}} files.",
       "errorTooLarge": "{{name}} is larger than {{max}} MB.",
       "errorUnsupportedType": "{{name}} has an unsupported file type."
     }

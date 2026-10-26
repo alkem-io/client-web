@@ -12,8 +12,13 @@ import useCommentReactionsMutations from '@/domain/communication/room/Comments/u
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import {
+  type SendEvent,
+  useConversationAttachments,
+} from '@/main/crdPages/unifiedChat/attachments/useConversationAttachments';
 import { useAttachmentReadiness } from '@/main/userMessaging/useAttachmentReadiness';
 import { mapRoomToCommentData } from '../dataMappers/commentDataMapper';
+import { useCommentImageStorageConfig } from './useCommentImageStorageConfig';
 import { useMentionableContributors } from './useMentionableContributors';
 
 type UseCrdRoomCommentsParams = {
@@ -85,6 +90,24 @@ export function useCrdRoomComments({
   const privileges = room?.authorization?.myPrivileges ?? [];
   const canComment = isAuthenticated && privileges.includes(AuthorizationPrivilege.CreateMessage);
 
+  // A room with a bucket gets image-capable composers from the first render, so
+  // the field never switches mode under typed text; the image button appears
+  // once the bucket policy allows uploads. Text and image go in one message, and
+  // the controlled field clears only once that message is confirmed.
+  const canReply = privileges.includes(AuthorizationPrivilege.CreateMessageReply);
+  const storageConfigs = useCommentImageStorageConfig(room?.attachmentBucketId, canComment, canReply);
+  const imageComposers = Boolean(room?.attachmentBucketId);
+  const [draft, setDraft] = useState('');
+  const [replyTarget, setReplyTarget] = useState<string | undefined>(undefined);
+  const [replyDraft, setReplyDraft] = useState('');
+  const imageOptions = { maxAttachments: 1, textWithAttachment: true };
+  const topLevelFiles = useConversationAttachments(storageConfigs.comment, { roomID: roomId }, imageOptions);
+  const replyFiles = useConversationAttachments(
+    storageConfigs.reply,
+    replyTarget ? { roomID: roomId, threadID: replyTarget } : undefined,
+    imageOptions
+  );
+
   const comments = useAttachmentReadiness(
     mapRoomToCommentData(room, { currentUserId: userModel?.id, t: tMain }),
     roomId
@@ -107,6 +130,30 @@ export function useCrdRoomComments({
   // is reloading. Existing comments must stay visible; the new one snaps
   // in via the cache update / subscription when the mutation resolves.
   const inputBusy = postingMessage || postingReply || deletingMessage;
+
+  const imageComposerProps = (
+    files: ReturnType<typeof useConversationAttachments>,
+    value: string,
+    onValueChange: (value: string) => void
+  ) => ({
+    value,
+    onValueChange,
+    attachmentsEnabled: files.enabled,
+    attachments: files.attachments,
+    onAttachFiles: files.attachFiles,
+    onRemoveAttachment: files.removeAttachment,
+    attachmentError: files.error,
+    acceptMimeTypes: files.accept,
+    imagesOnly: true,
+    disabled: inputBusy || files.isSending,
+  });
+
+  const sendTopLevel: SendEvent = async (text, attachmentUpload) =>
+    Boolean((await postMessage(text, attachmentUpload)).data?.sendMessageToRoom);
+  const sendReply =
+    (threadId: string): SendEvent =>
+    async (text, attachmentUpload) =>
+      Boolean((await postReply({ threadId, messageText: text, attachmentUpload })).data?.sendMessageReplyToRoom);
 
   // MUI parity (CommentsComponent → ConfirmationDialog): the user confirms the
   // delete in a separate dialog before the mutation fires. `pendingDeleteId`
@@ -138,8 +185,20 @@ export function useCrdRoomComments({
         canComment={canComment}
         mentionSearch={mentionSearch}
         onReply={(parentId, content) => {
+          if (imageComposers) return replyFiles.send(content, sendReply(parentId), () => setReplyDraft(''));
           void postReply({ messageText: content, threadId: parentId });
         }}
+        onReplyTargetChange={
+          imageComposers
+            ? id => {
+                setReplyTarget(id);
+                setReplyDraft('');
+                for (const file of replyFiles.attachments) replyFiles.removeAttachment(file.id);
+              }
+            : undefined
+        }
+        replyInputProps={imageComposers ? imageComposerProps(replyFiles, replyDraft, setReplyDraft) : undefined}
+        replyTogglesLocked={replyFiles.isSending}
         onDelete={commentId => {
           setPendingDeleteId(commentId);
         }}
@@ -192,8 +251,10 @@ export function useCrdRoomComments({
       currentUser={currentUser}
       disabled={inputBusy}
       mentionSearch={mentionSearch}
+      {...(imageComposers ? imageComposerProps(topLevelFiles, draft, setDraft) : undefined)}
       onSubmit={content => {
-        void postMessage(content);
+        if (imageComposers) void topLevelFiles.send(content, sendTopLevel, () => setDraft(''));
+        else void postMessage(content);
       }}
     />
   ) : cantCommentNotice ? (

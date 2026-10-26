@@ -18,6 +18,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
+  useCalloutCommentsRevalidateQuery: () => ({}),
   useCalloutContributionQuery: (options: { variables: { includeMemo?: boolean } }) => {
     if (!options.variables.includeMemo) return { data: undefined, loading: false };
     contributionQueryState.query(options);

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  useCalloutCommentsRevalidateQuery,
   useCalloutContributionQuery,
   useDeleteContributionMutation,
   useMemoMarkdownLazyQuery,
@@ -973,6 +974,18 @@ export function CalloutDetailDialogConnector({
   const postCommentsRoomId = selectedPost?.comments?.id;
   const activeCommentsRoomId = isPostSelected ? postCommentsRoomId : callout.comments?.id;
   const activeRoomData = isPostSelected ? undefined : callout.comments;
+  // The callout-level thread renders `callout.comments` from whichever
+  // cache-first query loaded the callout, and the live room subscription only
+  // carries messages posted while it is open. Re-read just that room on every
+  // open so comments added since the callout was last loaded show up. The
+  // result lands in the same normalized Room, so the cached thread stays on
+  // screen until it arrives; `network-only` because this query's own data is
+  // never rendered, only its cache write matters.
+  useCalloutCommentsRevalidateQuery({
+    variables: { calloutId: callout.id },
+    skip: !open || isPostSelected || !callout.comments?.id,
+    fetchPolicy: 'network-only',
+  });
   // Pre-load count fallback for case 2c — when comments are disabled and the live thread isn't
   // mounted yet, this seeds the dialog's `showDiscussion` rule so the section stays hidden
   // until/unless we actually have messages.

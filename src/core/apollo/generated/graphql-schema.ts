@@ -1178,6 +1178,7 @@ export enum AuthorizationPrivilege {
   PlatformRoleHoldersRead = 'PLATFORM_ROLE_HOLDERS_READ',
   PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
   PlatformSupportListsRead = 'PLATFORM_SUPPORT_LISTS_READ',
+  PlatformSupportOrgMembership = 'PLATFORM_SUPPORT_ORG_MEMBERSHIP',
   PlatformSupportOrgResources = 'PLATFORM_SUPPORT_ORG_RESOURCES',
   PlatformUsersAdmin = 'PLATFORM_USERS_ADMIN',
   PublicShare = 'PUBLIC_SHARE',
@@ -23386,6 +23387,20 @@ export type AddReactionMutation = {
   };
 };
 
+export type CommentRoomStorageBucketQueryVariables = Exact<{
+  bucketId: Scalars['UUID']['input'];
+}>;
+
+export type CommentRoomStorageBucketQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    storageBucket?:
+      | { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number }
+      | undefined;
+  };
+};
+
 export type MessageDetailsFragment = {
   __typename?: 'Message';
   id: string;
@@ -25054,6 +25069,9 @@ export type OrganizationInfoFragment = {
     __typename?: 'RoleSet';
     id: string;
     myMembershipStatus?: CommunityMembershipStatus | undefined;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
     applicationForm: {
       __typename?: 'Form';
       id: string;
@@ -25146,6 +25164,9 @@ export type OrganizationInfoQuery = {
             __typename?: 'RoleSet';
             id: string;
             myMembershipStatus?: CommunityMembershipStatus | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             applicationForm: {
               __typename?: 'Form';
               id: string;
@@ -40362,6 +40383,111 @@ export type AccountSpaceCandidatesQuery = {
             level: SpaceLevel;
             parentSpaceID?: string | undefined;
           }>;
+        }
+      | undefined;
+  };
+};
+
+export type CalloutCommentsRevalidateQueryVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+}>;
+
+export type CalloutCommentsRevalidateQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          comments?:
+            | {
+                __typename?: 'Room';
+                id: string;
+                attachmentBucketId?: string | undefined;
+                messagesCount: number;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+                messages: Array<{
+                  __typename?: 'Message';
+                  id: string;
+                  message: string;
+                  timestamp: number;
+                  threadID?: string | undefined;
+                  reactions: Array<{
+                    __typename?: 'Reaction';
+                    id: string;
+                    emoji: string;
+                    timestamp: number;
+                    sender?:
+                      | {
+                          __typename?: 'User';
+                          id: string;
+                          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                        }
+                      | undefined;
+                  }>;
+                  sender?:
+                    | {
+                        __typename?: 'Actor';
+                        id: string;
+                        type: ActorType;
+                        profile?:
+                          | {
+                              __typename?: 'Profile';
+                              id: string;
+                              displayName: string;
+                              url: string;
+                              description?: string | undefined;
+                              avatar?:
+                                | {
+                                    __typename?: 'Visual';
+                                    id: string;
+                                    uri: string;
+                                    name: VisualType;
+                                    alternativeText?: string | undefined;
+                                  }
+                                | undefined;
+                              tagsets?:
+                                | Array<{
+                                    __typename?: 'Tagset';
+                                    id: string;
+                                    name: string;
+                                    tags: Array<string>;
+                                    allowedValues: Array<string>;
+                                    type: TagsetType;
+                                  }>
+                                | undefined;
+                              location?:
+                                | {
+                                    __typename?: 'Location';
+                                    id: string;
+                                    country?: string | undefined;
+                                    city?: string | undefined;
+                                  }
+                                | undefined;
+                            }
+                          | undefined;
+                      }
+                    | undefined;
+                  attachments: Array<{
+                    __typename?: 'MessageAttachment';
+                    externalReference?: string | undefined;
+                    displayName: string;
+                    mimeType?: string | undefined;
+                    size?: number | undefined;
+                    width?: number | undefined;
+                    height?: number | undefined;
+                  }>;
+                }>;
+                vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
+              }
+            | undefined;
         }
       | undefined;
   };

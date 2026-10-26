@@ -21,11 +21,13 @@ import {
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 import {
   ORG_ROLE_SET_MANAGE_PRIVILEGES,
+  ORG_ROLE_SET_SUPPORT_MANAGE_PRIVILEGES,
   ROLE_SET_INVITE_PRIVILEGES,
 } from '@/main/crdPages/permissions/roleAssignmentPrivileges';
 import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionReasonText';
 import { offeredRoleLabelKey } from '@/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper';
 import { mapRoleLimitError, mapUsersInRolesToAssociateRows, type OrgAssociateRow } from './orgAssociatesMapper';
+import { isSelfTargetRefusal, SELF_TARGET_REFUSAL_MESSAGE_KEY } from './selfTargetRefusal';
 
 export type PendingRoleRemoval = { contributorId: string; displayName: string };
 
@@ -127,6 +129,8 @@ export type UseOrgAssociatesTabDataResult = {
 
 export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAssociatesTabDataResult => {
   const { t } = useTranslation('crd-contributorSettings');
+  const { t: tCommon } = useTranslation('crd-common');
+  const notifySelfTargetRefusal = () => notify(tCommon(SELF_TARGET_REFUSAL_MESSAGE_KEY), 'error');
   const notify = useNotification();
 
   const { data, loading, refetch } = useOrgAssociatesTabQuery({
@@ -138,10 +142,12 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
   const associates = mapUsersInRolesToAssociateRows(usersInRoles, RoleName.Associate, RoleName.Admin, RoleName.Owner);
 
   const reasonText = usePermissionReasonText();
-  const managePermission = useActionPermission(myPrivileges, ORG_ROLE_SET_MANAGE_PRIVILEGES, loading);
-  const canManage = managePermission.allowed;
-  // Inviting needs only the invite privilege, which GLOBAL_SUPPORT holds on every organization
-  // role set without GRANT (R47) — so it is gated separately from the role editor.
+  // An organization admin manages through GRANT; Platform Support through its own
+  // org-membership privilege. Either one is enough, so the two are evaluated apart and ORed.
+  const grantPermission = useActionPermission(myPrivileges, ORG_ROLE_SET_MANAGE_PRIVILEGES, loading);
+  const supportPermission = useActionPermission(myPrivileges, ORG_ROLE_SET_SUPPORT_MANAGE_PRIVILEGES, loading);
+  const canManage = grantPermission.allowed || supportPermission.allowed;
+  // Inviting needs only the invite privilege, so it is gated separately from the role editor.
   const invitePermission = useActionPermission(myPrivileges, ROLE_SET_INVITE_PRIVILEGES, loading);
   const inviteDisabledReason = reasonText(invitePermission);
   const canInvite = invitePermission.allowed;
@@ -179,6 +185,8 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
       const limit = code === AlkemioGraphqlErrorCode.ROLESET_POLICY_ROLE_LIMITS_VIOLATED && mapRoleLimitError(message);
       if (limit) {
         setRoleLimitError(limit);
+      } else if (isSelfTargetRefusal(error)) {
+        notifySelfTargetRefusal();
       } else if (!isAuthorizationCode(code)) {
         notify(t('org.associates.errors.generic'), 'error');
       }
@@ -207,6 +215,8 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
       if (limit) {
         // Removing the last owner is refused by the role policy: say which limit, not "couldn't remove".
         notify(t(`org.associates.errors.${limit}`), 'error');
+      } else if (isSelfTargetRefusal(error)) {
+        notifySelfTargetRefusal();
       } else if (!isAuthorizationCode(code)) {
         notify(t('org.associates.editor.removeError', { name: row.displayName }), 'error');
       }
@@ -224,8 +234,9 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
     resendPlatformInvitation,
     refetch: refetchApplicationsAndInvitations,
   } = useRoleSetApplicationsAndInvitations({
-    // Wait for the privileges, then select `applications` only with GRANT: the server gates that
-    // field on GRANT, and for an inviter without it the error would null the whole role set —
+    // Wait for the privileges, then select `applications` only for a viewer who manages the tab
+    // (GRANT, or Platform Support's org-membership privilege): the server gates that field on the
+    // same pair, and for an inviter without either the error would null the whole role set —
     // emptying the invitations list too.
     roleSetId: myPrivileges ? roleSetId : undefined,
     includeApplications: canManage,
@@ -312,7 +323,11 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
   const onPendingApprove = (id: string) => {
     void applicationStateChange(id, ApplicationEvent.APPROVE)
       .then(() => refetchApplicationsAndInvitations())
-      .catch(() => notify(t('org.associates.pending.actionError'), 'error'));
+      .catch(error =>
+        isSelfTargetRefusal(error)
+          ? notifySelfTargetRefusal()
+          : notify(t('org.associates.pending.actionError'), 'error')
+      );
   };
   const nameOfPendingRow = (id: string) => pendingMemberships.find(m => m.id === id)?.displayName ?? '';
 
@@ -350,8 +365,9 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
         await deleteInvitation(confirmation.id);
       }
       await refetchApplicationsAndInvitations();
-    } catch {
-      notify(t('org.associates.pending.actionError'), 'error');
+    } catch (error) {
+      if (isSelfTargetRefusal(error)) notifySelfTargetRefusal();
+      else notify(t('org.associates.pending.actionError'), 'error');
     }
   };
 
