@@ -5,6 +5,15 @@ import { type CredentialRecord, clearNamespace, storeCredentials } from './stora
 // The mutation takes no variables — there is no subject to pass (spec D4).
 const MINT_MUTATION = 'mutation MintMatrixSession { mintMatrixSession { userId deviceId accessToken } }';
 
+// The platform can accept the POST and never answer — an ordinary condition on a
+// mobile network, not a speculative edge. The caller's signal aborts on sign-out,
+// which is not a time limit, so with no deadline `establishSession` stays pending
+// for good: `start()` never runs and `setSessionEstablishing(false)` never fires.
+// In app mode this is the ONLY acquisition path, so chat would sit silently dead
+// until the page reloads. 20s is `attemptSilentSso`'s own deadline, which is what
+// the `catch` below means by failing "exactly like a timed-out SSO".
+const MINT_TIMEOUT_MS = 20_000;
+
 type MintResponse = {
   readonly data?: { readonly mintMatrixSession?: { userId: string; deviceId: string; accessToken: string } | null };
   readonly errors?: ReadonlyArray<unknown>;
@@ -17,7 +26,7 @@ type MintResponse = {
  *
  * Stores them exactly as the SSO callback does and returns the record, or null
  * when Matrix is not configured, the mutation fails, the response is
- * incomplete, or the attempt was aborted.
+ * incomplete, the attempt was aborted, or the request outlived MINT_TIMEOUT_MS.
  *
  * Posted with `fetch` rather than through the app's Apollo client, for the same
  * three reasons `exchangeLoginToken` next door does: this runs in a
@@ -31,10 +40,17 @@ const mintAndStore = async (signal?: AbortSignal): Promise<CredentialRecord | nu
     return null;
   }
 
+  // Composed by hand rather than with AbortSignal.any(): Safari shipped that in
+  // 17.4, under the repo's >90% support bar for a path every app launch takes.
+  const attempt = new AbortController();
+  const expire = setTimeout(() => attempt.abort(), MINT_TIMEOUT_MS);
+  const propagate = () => attempt.abort();
+  signal?.addEventListener('abort', propagate);
+
   try {
     const response = await fetch(privateGraphQLEndpoint, {
       method: 'POST',
-      signal,
+      signal: attempt.signal,
       // Same-origin through the gateway, authenticated by the alkemio_session
       // cookie only — no Authorization header. Precedent for a non-React module
       // reaching the platform API this way: src/main/assistant/assistantApi.ts:19.
@@ -81,6 +97,9 @@ const mintAndStore = async (signal?: AbortSignal): Promise<CredentialRecord | nu
   } catch {
     // Fail closed, exactly like a timed-out SSO.
     return null;
+  } finally {
+    clearTimeout(expire);
+    signal?.removeEventListener('abort', propagate);
   }
 };
 

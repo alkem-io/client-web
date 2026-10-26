@@ -108,6 +108,32 @@ describe('mintAndStore', () => {
     expect(await loadCredentials(MINTED.userId)).toBeNull();
   });
 
+  it('gives up when the platform accepts the request and never answers', async () => {
+    // The caller's signal aborts on sign-out, which is not a time limit. With no
+    // deadline this promise never settles, so establishSession stays pending,
+    // start() never runs, and in app mode — where this is the only acquisition
+    // path — chat sits silently dead until the page reloads.
+    let attemptSignal: AbortSignal | undefined;
+    vi.spyOn(globalThis, 'fetch').mockImplementation(
+      (_input, init) =>
+        new Promise((_resolve, reject) => {
+          attemptSignal = (init as RequestInit).signal ?? undefined;
+          attemptSignal?.addEventListener('abort', () => reject(new DOMException('aborted', 'AbortError')));
+        })
+    );
+    const mintAndStore = await freshMint(HOMESERVER);
+
+    vi.useFakeTimers();
+    try {
+      const pending = mintAndStore();
+      await vi.advanceTimersByTimeAsync(20_000);
+      expect(await pending).toBeNull();
+      expect(attemptSignal?.aborted).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('returns null when the credential write fails, rather than reporting an unstored record as persisted', async () => {
     setMatrixHomeserver(HOMESERVER);
     const storage = await import('./storage');
