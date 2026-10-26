@@ -24,6 +24,7 @@ export function VCProfileTabView(props: VcProfileViewProps) {
   const {
     values,
     loading,
+    disabled = false,
     onChange,
     onReferencesChange,
     onReferenceFileUpload,
@@ -50,7 +51,7 @@ export function VCProfileTabView(props: VcProfileViewProps) {
   }
 
   return (
-    <div className="flex flex-col items-start gap-8 lg:flex-row">
+    <div inert={disabled} aria-busy={disabled} className="flex flex-col items-start gap-8 lg:flex-row">
       <div className="w-full min-w-0 flex-1 space-y-6">
         <SettingsSection title={t('vc.profile.identity.title')} icon={<Bot className="size-4" />} iconColor="blue">
           <div className="space-y-6">

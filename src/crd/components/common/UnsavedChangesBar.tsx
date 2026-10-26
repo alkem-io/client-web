@@ -12,7 +12,8 @@ export type UnsavedChangesBarState =
   | { kind: 'clean' }
   | { kind: 'dirty'; count: number; canSave: boolean }
   | { kind: 'saving'; count: number }
-  | { kind: 'saveError'; count: number; message: string };
+  /** `canSave` gates the retry: an edit made after the failure can still be invalid. */
+  | { kind: 'saveError'; count: number; message: string; canSave: boolean };
 
 type UnsavedChangesBarProps = {
   state: UnsavedChangesBarState;
@@ -34,7 +35,7 @@ export function UnsavedChangesBar({ state, onSave, onDiscard }: UnsavedChangesBa
   if (visible && state.count !== shownCount) setShownCount(state.count);
   const count = visible ? state.count : shownCount;
   const saving = state.kind === 'saving';
-  const canSave = state.kind === 'dirty' ? state.canSave : state.kind === 'saveError';
+  const canSave = (state.kind === 'dirty' || state.kind === 'saveError') && state.canSave;
 
   return (
     <section

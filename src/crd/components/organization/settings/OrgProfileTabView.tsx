@@ -70,6 +70,8 @@ export type OrgProfileViewProps = {
   values: OrgProfileFormValuesData;
   countries: ReadonlyArray<OrgProfileCountryOption>;
   loading: boolean;
+  /** True while a Save runs: the form is frozen, so nothing typed is lost to the post-save rebase. */
+  disabled?: boolean;
   onChange: (patch: Partial<OrgProfileFormValuesData>) => void;
   /** Replace the arbitrary references list — the shared ReferencesEditor owns add/edit/remove + delete-confirm. */
   onReferencesChange: (rows: ReferenceRow[]) => void;
@@ -96,6 +98,7 @@ export function OrgProfileTabView(props: OrgProfileViewProps) {
     values,
     countries,
     loading,
+    disabled = false,
     onChange,
     onReferencesChange,
     onReferenceFileUpload,
@@ -122,7 +125,7 @@ export function OrgProfileTabView(props: OrgProfileViewProps) {
   }
 
   return (
-    <div className="flex flex-col items-start gap-8 lg:flex-row">
+    <div inert={disabled} aria-busy={disabled} className="flex flex-col items-start gap-8 lg:flex-row">
       <div className="w-full min-w-0 flex-1 space-y-6">
         <SettingsSection
           title={t('org.profile.identity.title')}

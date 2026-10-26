@@ -83,6 +83,8 @@ export type UserProfileViewProps = {
   /** Static list of countries for the Location combobox. */
   countries: ReadonlyArray<UserProfileCountryOption>;
   loading: boolean;
+  /** True while a Save runs: the form is frozen, so nothing typed is lost to the post-save rebase. */
+  disabled?: boolean;
 
   /** Patch the local buffer for any single field. */
   onChange: (patch: Partial<UserProfileFormValues>) => void;

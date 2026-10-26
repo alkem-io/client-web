@@ -88,6 +88,7 @@ const CrdVCProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUplo
       <VCProfileTabView
         values={data.values ?? EMPTY_VALUES}
         loading={data.loading}
+        disabled={data.unsaved.saving}
         onChange={data.onChange}
         onReferencesChange={data.onReferencesChange}
         onReferenceFileUpload={referenceUpload.onFileUpload}

@@ -332,6 +332,11 @@ export default function CrdSpaceSettingsPage() {
       guard.clearDirty();
     }
   }, [guard, hasUnsavedChanges]);
+  // No tab switch (and so no leave dialog) while the bar's Save is writing — its Save would start
+  // a second, concurrent write and its Discard would drop a buffer that is still being saved.
+  useEffect(() => {
+    guard.setSaving(activeUnsaved.saving);
+  }, [guard, activeUnsaved.saving]);
 
   const [discardOpen, setDiscardOpen] = useState(false);
   // Layout's View Post leaves the page; with unsaved changes it waits behind the same dialog.
@@ -550,6 +555,7 @@ export default function CrdSpaceSettingsPage() {
                   } catch {
                     // already a relative path — use as-is
                   }
+                  if (activeUnsaved.saving) return;
                   if (hasUnsavedChanges) setPendingNavigation(path);
                   else navigate(path);
                 }}

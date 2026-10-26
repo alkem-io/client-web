@@ -52,6 +52,7 @@ const CrdUserProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUp
         values={data.values ?? EMPTY_VALUES}
         countries={COUNTRIES}
         loading={data.loading}
+        disabled={data.unsaved.saving}
         onChange={data.onChange}
         onReferencesChange={data.onReferencesChange}
         onReferenceFileUpload={referenceUpload.onFileUpload}

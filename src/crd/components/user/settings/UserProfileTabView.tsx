@@ -29,6 +29,7 @@ export function UserProfileTabView(props: UserProfileViewProps) {
     values,
     countries,
     loading,
+    disabled = false,
     onChange,
     onReferencesChange,
     onReferenceFileUpload,
@@ -57,7 +58,7 @@ export function UserProfileTabView(props: UserProfileViewProps) {
   const requiredError = (value: string, message: string) => (value.trim() ? undefined : message);
 
   return (
-    <div className="flex flex-col items-start gap-8 lg:flex-row">
+    <div inert={disabled} aria-busy={disabled} className="flex flex-col items-start gap-8 lg:flex-row">
       <div className="w-full min-w-0 flex-1 space-y-6">
         <SettingsSection
           title={t('user.profile.identity.title')}

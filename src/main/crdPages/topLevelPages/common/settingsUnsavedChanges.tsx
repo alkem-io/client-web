@@ -78,6 +78,9 @@ export const useSettingsUnsavedChanges = <TabId,>(onTabSelect: (next: TabId) => 
   }, [reloadRequested, dirty]);
 
   const onTabChange = (next: TabId) => {
+    // No switch (and so no leave dialog) while the bar's Save is writing — its Save would start a
+    // second, concurrent write and its Discard would drop a buffer that is still being saved.
+    if (snapshot.saving) return;
     if (dirty) setPendingTab({ id: next });
     else onTabSelect(next);
   };

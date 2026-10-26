@@ -67,7 +67,11 @@ export function SettingsEditorDialog({
               {headerActions && <div className="flex flex-wrap items-center gap-2">{headerActions}</div>}
             </div>
           </DialogHeader>
-          <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
+          {/* Frozen while saving: the consumer clears its buffer once the write resolves, so anything
+              typed in the meantime would be silently dropped. */}
+          <div inert={saving} aria-busy={saving} className="min-h-0 flex-1 overflow-y-auto">
+            {children}
+          </div>
           <DialogFooter className="shrink-0">
             <Button type="button" variant="ghost" onClick={requestClose} disabled={saving}>
               {t('dirtyGuard.cancel')}

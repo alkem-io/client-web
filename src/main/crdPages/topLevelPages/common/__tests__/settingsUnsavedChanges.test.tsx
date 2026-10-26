@@ -127,6 +127,21 @@ describe('useSettingsUnsavedChanges', () => {
     expect(screen.getByRole('button', { name: 'Discard & leave' })).toBeEnabled();
   });
 
+  it('ignores tab changes while the bar is saving, so no second save or discard can start', async () => {
+    const changes = unsaved({ saving: true });
+    const onTabSelect = renderPage(changes);
+
+    await userEvent.click(screen.getByRole('button', { name: 'Account tab' }));
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    expect(onTabSelect).not.toHaveBeenCalled();
+    expect(changes.saveAll).not.toHaveBeenCalled();
+  });
+
+  it('keeps the bar from retrying a failed Save while a change is invalid', () => {
+    renderPage(unsaved({ error: 'Network error', canSave: false }));
+    expect(screen.getByRole('button', { name: 'Save changes' })).toBeDisabled();
+  });
+
   describe('after a failed Save from the bar', () => {
     const originalLocation = window.location;
     const reload = vi.fn();

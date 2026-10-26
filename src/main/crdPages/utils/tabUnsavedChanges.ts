@@ -31,7 +31,8 @@ export const NO_UNSAVED_CHANGES: TabUnsavedChanges = {
 export function toUnsavedChangesBarState(unsaved: TabUnsavedChanges): UnsavedChangesBarState {
   if (unsaved.saving) return { kind: 'saving', count: unsaved.count };
   if (unsaved.count === 0) return { kind: 'clean' };
-  if (unsaved.error) return { kind: 'saveError', count: unsaved.count, message: unsaved.error };
+  if (unsaved.error)
+    return { kind: 'saveError', count: unsaved.count, message: unsaved.error, canSave: unsaved.canSave };
   return { kind: 'dirty', count: unsaved.count, canSave: unsaved.canSave };
 }
 

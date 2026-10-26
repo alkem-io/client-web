@@ -52,9 +52,15 @@ describe('UnsavedChangesBar', () => {
   });
 
   it('shows the error and keeps Save available to retry', () => {
-    renderBar({ kind: 'saveError', count: 1, message: 'Network down' });
+    renderBar({ kind: 'saveError', count: 1, message: 'Network down', canSave: true });
     expect(screen.getByRole('alert')).toHaveTextContent('Network down');
     expect(screen.getByRole('button', { name: 'Save changes' })).toBeEnabled();
+  });
+
+  it('keeps Save disabled after a failure while a change is invalid', () => {
+    renderBar({ kind: 'saveError', count: 1, message: 'Network down', canSave: false });
+    expect(screen.getByRole('alert')).toHaveTextContent('Network down');
+    expect(screen.getByRole('button', { name: 'Save changes' })).toBeDisabled();
   });
 
   it('is hidden and inert when there is nothing to save', () => {
