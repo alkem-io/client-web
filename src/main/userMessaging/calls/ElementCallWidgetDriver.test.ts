@@ -131,6 +131,8 @@ const makeClient = (timeline: FakeEvent[] = [], state: FakeEvent[] = []) => {
     },
   };
   return {
+    baseUrl: 'https://matrix.example.org',
+    getAccessToken: () => 'access-token',
     getUserId: () => USER,
     getDeviceId: () => DEVICE,
     getRoom: vi.fn((roomId: string) => (roomId === ROOM ? room : null)),
@@ -252,6 +254,49 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
       ['d2', 'restart'],
       ['d3', 'send'],
     ]);
+  });
+
+  it('fires the scheduled leave at once, in a request that outlives the page, when the page goes away', async () => {
+    const client = makeClient();
+    const fetchMock = vi.fn(async () => new Response('{}'));
+    vi.stubGlobal('fetch', fetchMock);
+    try {
+      const driver = driverFor(client);
+      await driver.sendDelayedEvent(3600000, CALL_MEMBER, {}, `_${USER}_${DEVICE}_m.call`, ROOM);
+      driver.sendPendingLeavesNow();
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://matrix.example.org/_matrix/client/unstable/org.matrix.msc4140/delayed_events/delay-state',
+        {
+          method: 'POST',
+          keepalive: true,
+          headers: { Authorization: 'Bearer access-token', 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'send' }),
+        }
+      );
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('sends nothing on page exit for a leave already cancelled or sent, or for other delayed events', async () => {
+    const client = makeClient();
+    const fetchMock = vi.fn(async () => new Response('{}'));
+    vi.stubGlobal('fetch', fetchMock);
+    try {
+      const driver = driverFor(client);
+      client._unstable_sendDelayedStateEvent.mockResolvedValueOnce({ delay_id: 'cancelled' });
+      await driver.sendDelayedEvent(8000, CALL_MEMBER, {}, `_${USER}_${DEVICE}_m.call`, ROOM);
+      await driver.cancelScheduledDelayedEvent('cancelled');
+      client._unstable_sendDelayedStateEvent.mockResolvedValueOnce({ delay_id: 'sent' });
+      await driver.sendDelayedEvent(8000, CALL_MEMBER, {}, `_${USER}_${DEVICE}_m.call`, ROOM);
+      await driver.sendScheduledDelayedEvent('sent');
+      await driver.sendDelayedEvent(500, 'm.reaction', { key: 'x' });
+      driver.sendPendingLeavesNow();
+      expect(fetchMock).not.toHaveBeenCalled();
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it('publishes the identity assertion of the platform session to the call UI', async () => {

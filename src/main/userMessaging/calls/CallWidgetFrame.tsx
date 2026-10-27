@@ -58,12 +58,11 @@ export default function CallWidgetFrame({
       type: 'm.custom',
       url: new URL(frameSrc, window.location.origin).toString(),
     });
-    const api = new ClientWidgetApi(
-      widget,
-      iframe,
-      new ElementCallWidgetDriver({ client, matrixRoomId, livekitServiceUrl })
-    );
+    const driver = new ElementCallWidgetDriver({ client, matrixRoomId, livekitServiceUrl });
+    const api = new ClientWidgetApi(widget, iframe, driver);
     api.setViewedRoomId(matrixRoomId);
+    const onPageHide = () => driver.sendPendingLeavesNow();
+    window.addEventListener('pagehide', onPageHide);
 
     const onReady = () => markReady(widgetId);
     const onWidgetLeft = (event: CustomEvent<IWidgetApiRequest>) => {
@@ -110,6 +109,7 @@ export default function CallWidgetFrame({
     };
 
     return () => {
+      window.removeEventListener('pagehide', onPageHide);
       hangupRef.current = null;
       client.removeListener(ROOM_TIMELINE as never, onTimeline as never);
       client.removeListener(ROOM_STATE_EVENTS as never, onStateEvent as never);

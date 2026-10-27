@@ -56,6 +56,8 @@ type DelayedEventAction = 'cancel' | 'restart' | 'send';
 
 /** The part of the platform's Matrix client the driver uses, typed loosely enough for arbitrary event types. */
 type CallHostClient = {
+  baseUrl: string;
+  getAccessToken(): string | null;
   getUserId(): string | null;
   getDeviceId(): string | null;
   getRoom: MatrixClient['getRoom'];
@@ -106,6 +108,8 @@ class ElementCallWidgetDriver extends WidgetDriver {
   private readonly roomId: string;
   private readonly livekitServiceUrl: string;
   private readonly allowed: Set<Capability>;
+  /** Delayed leaves of this device's call membership that are still waiting on the chat server. */
+  private readonly pendingLeaves = new Set<string>();
 
   constructor({ client, matrixRoomId, livekitServiceUrl }: DriverOptions) {
     super();
@@ -153,10 +157,14 @@ class ElementCallWidgetDriver extends WidgetDriver {
       stateKey !== null && stateKey !== undefined
         ? await this.client._unstable_sendDelayedStateEvent(target, { delay }, eventType, content, stateKey)
         : await this.client._unstable_sendDelayedEvent(target, { delay }, null, eventType, content);
+    if (eventType === CALL_MEMBER && stateKey !== null && stateKey !== undefined) {
+      this.pendingLeaves.add(response.delay_id);
+    }
     return { roomId: target, delayId: response.delay_id };
   }
 
   public async cancelScheduledDelayedEvent(delayId: string): Promise<void> {
+    this.pendingLeaves.delete(delayId);
     await this.client._unstable_updateDelayedEvent(delayId, 'cancel');
   }
 
@@ -165,7 +173,32 @@ class ElementCallWidgetDriver extends WidgetDriver {
   }
 
   public async sendScheduledDelayedEvent(delayId: string): Promise<void> {
+    this.pendingLeaves.delete(delayId);
     await this.client._unstable_updateDelayedEvent(delayId, 'send');
+  }
+
+  /**
+   * Leaves the call now when the page goes away (reload, close, navigation):
+   * the call UI's own leave does not survive the unload, and its delayed leave
+   * may be set to fire much later. `keepalive` lets the browser finish the
+   * request after the page is gone, which the chat client's own requests can't.
+   */
+  public sendPendingLeavesNow(): void {
+    const accessToken = this.client.getAccessToken();
+    for (const delayId of this.pendingLeaves) {
+      fetch(
+        `${this.client.baseUrl}/_matrix/client/unstable/org.matrix.msc4140/delayed_events/${encodeURIComponent(delayId)}`,
+        {
+          method: 'POST',
+          keepalive: true,
+          headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'send' }),
+        }
+      ).catch(() => {
+        // The page is going away; a leave that does not arrive still fires when its delay runs out.
+      });
+    }
+    this.pendingLeaves.clear();
   }
 
   public sendStickyEvent(): Promise<ISendEventDetails> {
