@@ -23,7 +23,8 @@
   "layout": {
     "pageHeader": {
       "title": "Diseño",
-      "subtitle": "Personaliza las pestañas de navegación de tu Espacio. Cambia el nombre, reordena y gestiona las asignaciones de publicaciones."
+      "subtitle": "Personaliza las pestañas de navegación de tu Espacio. Cambia el nombre, reordena y gestiona las asignaciones de publicaciones.",
+      "subtitle_subspace": "Personaliza las pestañas de navegación de tu Subespacio. Cambia el nombre, reordena y gestiona las asignaciones de publicaciones."
     },
     "loading": "Cargando el diseño…",
     "column": {
@@ -86,8 +87,8 @@
         }
       },
       "phaseLayout": {
-        "menuLabel": "Layout",
-        "dialogTitle": "Layout: {{phaseName}}",
+        "menuLabel": "Diseño",
+        "dialogTitle": "Diseño: {{phaseName}}",
         "descriptionHeight": {
           "label": "Descripción del Post",
           "collapsedHint": "Los Posts comienzan contraídos — los miembros los expanden para leer.",
@@ -113,6 +114,7 @@
         "widgets": {
           "intent": "Intención y líderes",
           "about": "Acerca de este Espacio",
+          "about_subspace": "Acerca de este Subespacio",
           "createPost": "Añadir publicación",
           "applicationButton": "Solicitar / Unirse",
           "createSubspace": "Crear subespacio",
@@ -286,6 +288,7 @@
     },
     "members": {
       "title": "Miembros del espacio",
+      "title_subspace": "Miembros del subespacio",
       "search": "Buscar miembros…",
       "invite": "Invitar",
       "name": "Nombre",
@@ -304,7 +307,8 @@
       "dropdown": {
         "viewProfile": "Ver perfil",
         "changeRole": "Cambiar rol",
-        "removeFromSpace": "Eliminar del Espacio"
+        "removeFromSpace": "Eliminar del Espacio",
+        "removeFromSpace_subspace": "Eliminar del Subespacio"
       },
       "pagination": {
         "showing": "Mostrando {{from}} a {{to}} de {{total}} miembros",
@@ -344,7 +348,8 @@
       "dropdown": {
         "viewProfile": "Ver perfil",
         "changeRole": "Cambiar rol",
-        "removeFromSpace": "Eliminar del Espacio"
+        "removeFromSpace": "Eliminar del Espacio",
+        "removeFromSpace_subspace": "Eliminar del Subespacio"
       },
       "invite": "Invitar organización",
       "search": "Buscar organizaciones…",
@@ -393,6 +398,7 @@
       "title": "Normas de la comunidad",
       "hint": "Se muestran a los nuevos miembros al unirse.",
       "placeholder": "Describe el código de conducta de tu espacio…",
+      "placeholder_subspace": "Describe el código de conducta de tu subespacio…",
       "titleLabel": "Título",
       "titlePlaceholder": "Pon un nombre a tus normas de la comunidad",
       "referencesLabel": "Enlaces relacionados",
@@ -429,7 +435,8 @@
       },
       "applicationReject": {
         "title": "Rechazar solicitud",
-        "description": "¿Rechazar la solicitud de {{name}} para unirse a este espacio?"
+        "description": "¿Rechazar la solicitud de {{name}} para unirse a este espacio?",
+        "description_subspace": "¿Rechazar la solicitud de {{name}} para unirse a este subespacio?"
       },
       "applicationDelete": {
         "title": "Eliminar solicitud",
@@ -759,23 +766,30 @@
       "title": "Visibilidad",
       "public": "Público",
       "publicDescription": "Este espacio y su contenido son visibles para todos en la plataforma. Los usuarios solo pueden contribuir si son miembros.",
+      "publicDescription_subspace": "Este subespacio y su contenido son visibles para todos en la plataforma. Los usuarios solo pueden contribuir si son miembros.",
       "private": "Privado",
       "privateDescription": "Este espacio es visible para todos en la plataforma, pero el contenido solo es visible para los miembros.",
-      "hint": "Considera el propósito y el público de tu espacio al elegir la visibilidad."
+      "privateDescription_subspace": "Este subespacio es visible para todos en la plataforma, pero el contenido solo es visible para los miembros.",
+      "hint": "Considera el propósito y el público de tu espacio al elegir la visibilidad.",
+      "hint_subspace": "Considera el propósito y el público de tu subespacio al elegir la visibilidad."
     },
     "membership": {
       "title": "Membresía",
       "open": "No se requiere solicitud",
       "openDescription": "Todos los miembros del espacio pueden unirse directamente, sin que tengas que revisar sus solicitudes.",
+      "openDescription_subspace": "Todos los miembros del espacio principal pueden unirse directamente, sin que tengas que revisar sus solicitudes.",
       "openHint": "Ideal para espacios públicos y abiertos de colaboración",
+      "openHint_subspace": "Ideal para subespacios públicos y abiertos de colaboración",
       "application": "Solicitud requerida",
       "applicationDescription": "Si las personas quieren convertirse en miembros, deben rellenar el formulario de solicitud. Recibes sus solicitudes (mira la pestaña de comunidad aquí) y puedes aceptarlas o rechazarlas.",
       "applicationHint": "Ideal para espacios curados con requisitos específicos",
+      "applicationHint_subspace": "Ideal para subespacios curados con requisitos específicos",
       "invitation": "Solo por invitación",
       "invitationDescription": "Los usuarios solo pueden ser miembros después de que les hayas invitado. No hay un botón de 'solicitar' o 'unirse' para que otros pulsen.",
       "invitationHint": "Ideal para equipos de colaboración privados y restringidos",
       "trustedApplicants": "Solicitantes de confianza",
-      "hostOrgTrust": "Permite que los miembros de {{host}} se unan a este espacio sin solicitud."
+      "hostOrgTrust": "Permite que los miembros de {{host}} se unan a este espacio sin solicitud.",
+      "hostOrgTrust_subspace": "Permite que los miembros de {{host}} se unan a este subespacio sin solicitud."
     },
     "applicationForm": {
       "title": "Formulario de solicitud",
@@ -830,10 +844,14 @@
     "userInfoVisibility": {
       "title": "Visibilidad de la información de usuario",
       "description": "Controla quién puede ver la información de los usuarios miembros en este espacio. Las organizaciones y los colaboradores virtuales siguen la visibilidad del espacio.",
+      "description_subspace": "Controla quién puede ver la información de los usuarios miembros en este subespacio. Las organizaciones y los colaboradores virtuales siguen la visibilidad del subespacio.",
       "followSpace": "Seguir la visibilidad del espacio",
+      "followSpace_subspace": "Seguir la visibilidad del subespacio",
       "followSpaceDescription": "La información de los usuarios miembros es visible según la visibilidad del espacio.",
+      "followSpaceDescription_subspace": "La información de los usuarios miembros es visible según la visibilidad del subespacio.",
       "membersOnly": "Solo miembros",
-      "membersOnlyDescription": "Solo los miembros de este espacio pueden ver la información de los usuarios miembros."
+      "membersOnlyDescription": "Solo los miembros de este espacio pueden ver la información de los usuarios miembros.",
+      "membersOnlyDescription_subspace": "Solo los miembros de este subespacio pueden ver la información de los usuarios miembros."
     }
   },
   "storage": {
@@ -902,11 +920,14 @@
     },
     "name": {
       "title": "Nombre del espacio",
-      "description": "El nombre público de tu espacio."
+      "title_subspace": "Nombre del subespacio",
+      "description": "El nombre público de tu espacio.",
+      "description_subspace": "El nombre público de tu subespacio."
     },
     "tagline": {
       "title": "Subtítulo",
-      "description": "Un subtítulo corto que se muestra junto al nombre del espacio."
+      "description": "Un subtítulo corto que se muestra junto al nombre del espacio.",
+      "description_subspace": "Un subtítulo corto que se muestra junto al nombre del subespacio."
     },
     "branding": {
       "noImage": "Sin imagen",
@@ -914,6 +935,7 @@
         "title": "Avatar",
         "size": "410 × 410px",
         "hint": "El logo del espacio.",
+        "hint_subspace": "El logo del subespacio.",
         "recrop": "Recortar el avatar actual",
         "upload": "Subir avatar"
       },
@@ -928,6 +950,7 @@
         "title": "Banner de tarjeta",
         "size": "416 × 256px",
         "hint": "Se muestra en los resultados de búsqueda y las tarjetas de espacio.",
+        "hint_subspace": "Se muestra en los resultados de búsqueda y en la vista general del espacio principal.",
         "recrop": "Recortar el banner de tarjeta actual",
         "upload": "Subir banner de tarjeta"
       },
@@ -951,6 +974,7 @@
     "location": {
       "title": "Ubicación",
       "description": "La ciudad y el país de este espacio.",
+      "description_subspace": "La ciudad y el país de este subespacio.",
       "city": "Ciudad",
       "country": "País (código ISO)",
       "countryPlaceholder": "País"
@@ -958,26 +982,33 @@
     "what": {
       "title": "Qué",
       "description": "Describe de qué trata este espacio.",
-      "placeholder": "¿De qué trata este espacio…?"
+      "description_subspace": "Describe de qué trata este subespacio.",
+      "placeholder": "¿De qué trata este espacio…?",
+      "placeholder_subspace": "¿De qué trata este subespacio…?"
     },
     "why": {
       "title": "Por qué",
       "description": "Explica la motivación o el valor de este espacio.",
-      "placeholder": "¿Por qué existe este espacio…?"
+      "description_subspace": "Explica la motivación o el valor de este subespacio.",
+      "placeholder": "¿Por qué existe este espacio…?",
+      "placeholder_subspace": "¿Por qué existe este subespacio…?"
     },
     "who": {
       "title": "Quién",
       "description": "Describe el público objetivo o los miembros ideales.",
-      "placeholder": "¿Para quién es este espacio…?"
+      "placeholder": "¿Para quién es este espacio…?",
+      "placeholder_subspace": "¿Para quién es este subespacio…?"
     },
     "tags": {
       "title": "Etiquetas",
       "description": "Las etiquetas ayudan a los miembros a descubrir tu espacio.",
+      "description_subspace": "Las etiquetas ayudan a los miembros a descubrir tu subespacio.",
       "placeholder": "Añade una etiqueta y pulsa Enter"
     },
     "references": {
       "title": "Referencias y enlaces",
       "description": "Enlaces externos mostrados en la página de este espacio.",
+      "description_subspace": "Enlaces externos mostrados en la página de este subespacio.",
       "empty": "Aún no se han añadido referencias.",
       "add": "Añadir",
       "row": {
@@ -1002,44 +1033,52 @@
       "label": "VISTA PREVIA",
       "livePreview": {
         "title": "Vista previa en vivo",
-        "description": "Esta vista previa muestra cómo aparecerá tu tarjeta de espacio en el directorio \"Explorar espacios\"."
+        "description": "Esta vista previa muestra cómo aparecerá tu tarjeta de espacio en el directorio \"Explorar espacios\".",
+        "description_subspace": "Esta vista previa muestra cómo aparecerá tu tarjeta de subespacio en la vista general del espacio principal y en los resultados de búsqueda."
       }
     }
   },
   "classifications": {
     "sectionTitle": "Clasificaciones",
     "sectionDescription": "Clasifica tu espacio con vocabularios estructurados (p. ej. ODS, Sector) para mejorar la visibilidad y los informes.",
+    "sectionDescription_subspace": "Clasifica tu subespacio con vocabularios estructurados (p. ej. ODS, Sector) para mejorar la visibilidad y los informes.",
     "addButton": "Añadir clasificación",
     "picker": {
-      "title": "Add a classification",
-      "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
-      "platformSection": "Platform-wide",
-      "spaceSection": "This Space's library",
+      "title": "Añadir una clasificación",
+      "description": "Elige una plantilla de clasificación para añadirla a este espacio. A continuación seleccionarás sus valores.",
+      "description_subspace": "Elige una plantilla de clasificación para añadirla a este subespacio. A continuación seleccionarás sus valores.",
+      "platformSection": "Toda la plataforma",
+      "spaceSection": "Biblioteca de este espacio",
+      "spaceSection_subspace": "Biblioteca del espacio de nivel superior",
       "emptyState": {
-        "title": "No Classification Templates yet",
-        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it."
+        "title": "Aún no hay plantillas de clasificación",
+        "description": "Crea una en un paquete de plantillas o en la biblioteca de plantillas de este espacio y vuelve aquí para añadirla.",
+        "description_subspace": "Crea una en un paquete de plantillas o en la biblioteca de plantillas del espacio de nivel superior y vuelve aquí para añadirla."
       },
       "conflict": {
-        "title": "That name is already in use",
-        "description": "This Space already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
-        "fieldLabel": "Display label",
-        "retry": "Add with this label"
+        "title": "Ese nombre ya está en uso",
+        "description": "Este espacio ya tiene una clasificación con la etiqueta \"{{label}}\". Dale a la nueva una etiqueta distinta para diferenciarlas.",
+        "description_subspace": "Este subespacio ya tiene una clasificación con la etiqueta \"{{label}}\". Dale a la nueva una etiqueta distinta para diferenciarlas.",
+        "fieldLabel": "Etiqueta visible",
+        "retry": "Añadir con esta etiqueta"
       },
-      "cancel": "Cancel",
+      "cancel": "Cancelar",
       "searchPlaceholder": "Buscar plantillas…",
       "noMatches": "Ninguna plantilla coincide con \"{{query}}\".",
       "multiSelect": "Múltiple",
       "singleSelect": "Única"
     },
     "valueSelector": {
-      "noneSelected": "No values selected yet"
+      "noneSelected": "Aún no hay valores seleccionados"
     },
     "display": {
-      "toggleLabel": "Show on the Space page",
-      "hiddenHint": "Not shown on the Space page"
+      "toggleLabel": "Mostrar en la página del espacio",
+      "toggleLabel_subspace": "Mostrar en la página del subespacio",
+      "hiddenHint": "No se muestra en la página del espacio",
+      "hiddenHint_subspace": "No se muestra en la página del subespacio"
     },
     "remove": {
-      "menuLabel": "Remove classification"
+      "menuLabel": "Eliminar clasificación"
     },
     "entry": {
       "multiSelect": "Selección múltiple",

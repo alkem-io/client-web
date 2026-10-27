@@ -609,6 +609,7 @@ export default function CrdSpaceSettingsPage() {
                         })
                       }
                       markdown={md}
+                      subspace={level !== 'L0'}
                     />
                   ) : undefined
                 }
@@ -795,6 +796,7 @@ export default function CrdSpaceSettingsPage() {
         conflict={about.classificationConflict}
         onRetryWithLabel={stageClassificationAdd}
         onDismissConflict={about.dismissClassificationConflict}
+        subspace={level !== 'L0'}
       />
 
       <ConfirmationDialog
@@ -865,7 +867,10 @@ export default function CrdSpaceSettingsPage() {
             case 'virtualContributor':
               return t('community.confirmRemove.virtualContributor.description', { name });
             case 'applicationReject':
-              return t('community.confirmRemove.applicationReject.description', { name });
+              return t('community.confirmRemove.applicationReject.description', {
+                name,
+                context: level === 'L0' ? undefined : 'subspace',
+              });
             case 'organizationInvitationRevoke':
               return t('community.confirmRemove.invitation.description', { name });
             case 'pendingDelete':
