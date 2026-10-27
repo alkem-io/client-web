@@ -164,7 +164,37 @@ describe('ssoLogin', () => {
 
       expect(await attempt).toBe('authenticated');
       expect(exchangeAndStore).toHaveBeenCalledOnce();
-      expect(exchangeAndStore).toHaveBeenCalledWith(HOMESERVER, 'mlt_1', undefined);
+      // The third argument is no longer the caller's signal: ssoLogin owns one of
+      // its own so the deadline path can cancel an exchange still in flight.
+      expect(exchangeAndStore).toHaveBeenCalledWith(HOMESERVER, 'mlt_1', expect.any(AbortSignal));
+      vi.doUnmock('./matrixCallback');
+    });
+
+    it('cancels an exchange still in flight at the deadline, so no write of its can land after the caller acts', async () => {
+      // Without this, `timeout` is returned while the exchange runs on. The
+      // caller then mints, starts a client on the minted credential, and the
+      // exchange's own storeCredentials overwrites the record that client was
+      // built from — live session and stored credential on two Synapse devices.
+      setMatrixHomeserver(HOMESERVER);
+      let captured: AbortSignal | undefined;
+      const exchangeAndStore = vi.fn(async (_homeserver: string, _token: string, signal?: AbortSignal) => {
+        captured = signal;
+        // The homeserver took the token and went quiet.
+        await new Promise(() => {});
+      });
+      vi.doMock('./matrixCallback', () => ({ exchangeAndStore }));
+      const { attemptSilentSso: fresh } = await import('./ssoLogin');
+      const attempt = fresh(LOCALPART, { timeoutMs: 300, pollIntervalMs: 20, platformOrigin: 'https://alkem.io' });
+      await vi.waitFor(() => {
+        expect(document.querySelector('iframe')).not.toBeNull();
+      });
+      window.dispatchEvent(
+        new MessageEvent('message', { origin: 'https://alkem.io', data: { loginToken: 'mlt_late' } })
+      );
+
+      expect(await attempt).toBe('timeout');
+      expect(exchangeAndStore).toHaveBeenCalledOnce();
+      expect(captured?.aborted).toBe(true);
       vi.doUnmock('./matrixCallback');
     });
   });

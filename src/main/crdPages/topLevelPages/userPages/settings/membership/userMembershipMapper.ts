@@ -16,17 +16,15 @@ export type MembershipRow = {
   /** Id of the space or subspace whose role set the Leave flow acts on. */
   spaceId: string;
   displayName: string;
-  /** Optional tagline, surfaced as the card body text when present. */
-  tagline?: string;
-  /** Banner image URL for the card top. Falls back to a deterministic gradient when absent. */
-  bannerUrl?: string;
-  /** Deterministic accent colour (used as banner gradient + avatar fallback bg). */
+  /** Space avatar; the row falls back to an initials tile when absent. */
+  avatarUrl?: string;
+  /** Deterministic accent colour for the initials fallback. */
   color: string;
   type: 'Space' | 'Subspace';
   role: 'Admin' | 'Lead' | 'Member';
-  /** Public space URL for "View Space" / "View Subspace" navigation. */
+  /** Public space URL — the row's name links to it. */
   spaceUrl: string;
-  /** Users who lead this space's community — rendered as the card's "Led by:" footer. Empty when the enrichment query hasn't resolved yet or the space has no leads. */
+  /** Users who lead this space's community — rendered as the row's "Led by:" avatars. Empty when the enrichment query hasn't resolved yet or the space has no leads. */
   leadUsers: LeadUser[];
 };
 
@@ -155,8 +153,7 @@ const toRow = (
     id,
     spaceId: id,
     displayName: enrich?.displayName ?? fallbackName,
-    tagline: enrich?.tagline,
-    bannerUrl: enrich?.bannerUrl,
+    avatarUrl: enrich?.avatarUrl,
     color: pickColorFromId(id),
     type,
     role: resolveRole(roles),

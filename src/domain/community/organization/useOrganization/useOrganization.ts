@@ -31,6 +31,11 @@ export interface UseOrganizationProvided {
   permissions: {
     canEdit: boolean;
     canReadUsers: boolean;
+    /**
+     * Platform Support may manage this organization's Community tab (and only that tab)
+     * without being able to edit the organization itself.
+     */
+    canManageCommunityAsSupport: boolean;
   };
   website?: string;
   handleSendMessage: (text: string) => Promise<void>;
@@ -76,9 +81,12 @@ const useOrganizationProvider = (): UseOrganizationProvided => {
 
   const organizationPrivileges = organization?.authorization?.myPrivileges ?? [];
 
+  const roleSetPrivileges = organization?.roleSet?.authorization?.myPrivileges ?? [];
+
   const permissions = {
     canEdit: organizationPrivileges.includes(AuthorizationPrivilege.Update),
     canReadUsers,
+    canManageCommunityAsSupport: roleSetPrivileges.includes(AuthorizationPrivilege.PlatformSupportOrgMembership),
   };
 
   const associates = (() => {

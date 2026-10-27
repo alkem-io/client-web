@@ -9,6 +9,7 @@ import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
+import { SettingsUnsavedChangesContext, useSettingsUnsavedChanges } from '../../common/settingsUnsavedChanges';
 import useOrgSettingsAccessGuard from './useOrgSettingsAccessGuard';
 import useOrgSettingsTab, { type OrgSettingsTabId } from './useOrgSettingsTab';
 
@@ -22,15 +23,17 @@ const computeFallback = (displayName: string | undefined): string => {
 
 /**
  * Hosts the Org Settings shell — sticky header + 6-tab strip + outlet.
- * Access is gated by `useOrgSettingsAccessGuard`.
+ * Access is gated by `useOrgSettingsAccessGuard`; in `community-only` mode the
+ * strip shows the Community tab alone.
  */
 const CrdOrgSettingsPage = () => {
   const { t } = useTranslation('crd-contributorSettings');
   const { organizationId, organization } = useOrganizationContext();
   const profileUrl = organization?.profile?.url;
 
-  useOrgSettingsAccessGuard({ profileUrl });
+  const { accessMode } = useOrgSettingsAccessGuard({ profileUrl });
   const { activeTabId, onTabSelect } = useOrgSettingsTab({ profileUrl });
+  const unsavedChanges = useSettingsUnsavedChanges(onTabSelect);
 
   usePageTitle(t('org.profile.pageTitle'));
 
@@ -48,29 +51,34 @@ const CrdOrgSettingsPage = () => {
       : [];
   useSetBreadcrumbs(breadcrumbItems);
 
-  const tabs: ReadonlyArray<SettingsTabDescriptor<OrgSettingsTabId>> = [
+  const allTabs: ReadonlyArray<SettingsTabDescriptor<OrgSettingsTabId>> = [
     { id: 'profile', label: t('shell.tabs.org.profile'), icon: Briefcase },
     { id: 'account', label: t('shell.tabs.org.account'), icon: Briefcase },
-    { id: 'community', label: t('shell.tabs.org.community'), icon: Users },
+    { id: 'associates', label: t('shell.tabs.org.associates'), icon: Users },
     { id: 'membership', label: t('shell.tabs.org.membership'), icon: Globe },
     { id: 'invitations', label: t('shell.tabs.org.invitations'), icon: Mail },
     { id: 'settings', label: t('shell.tabs.org.settings'), icon: Cog },
   ];
+  // A viewer confined to the Associates tab sees no other tab to click into.
+  const tabs = accessMode === 'community-only' ? allTabs.filter(tab => tab.id === 'associates') : allTabs;
 
   return (
-    <SettingsShell
-      header={{
-        avatarUrl,
-        avatarFallback: computeFallback(displayName),
-        avatarColor,
-        displayName: displayName || t('shared.loading'),
-      }}
-      tabs={tabs}
-      activeTab={activeTabId}
-      onTabChange={onTabSelect}
-    >
-      <Outlet />
-    </SettingsShell>
+    <SettingsUnsavedChangesContext value={unsavedChanges.context}>
+      <SettingsShell
+        header={{
+          avatarUrl,
+          avatarFallback: computeFallback(displayName),
+          avatarColor,
+          displayName: displayName || t('shared.loading'),
+        }}
+        tabs={tabs}
+        activeTab={activeTabId}
+        onTabChange={unsavedChanges.onTabChange}
+      >
+        <Outlet />
+      </SettingsShell>
+      {unsavedChanges.element}
+    </SettingsUnsavedChangesContext>
   );
 };
 

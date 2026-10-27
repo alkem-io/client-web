@@ -430,9 +430,10 @@ export function InviteMembersDialogConnector({
   const [vcLoading, setVcLoading] = useState(false);
   const [vcBusyId, setVcBusyId] = useState<string | null>(null);
   const [vcPreviewData, setVcPreviewData] = useState<VcPreviewData | undefined>(undefined);
-  const toVcItem = (vc: { id: string; profile?: { displayName: string } }): VcInviteItem => ({
+  const toVcItem = (vc: VirtualContributorFullFragment): VcInviteItem => ({
     id: vc.id,
     displayName: vc.profile?.displayName ?? '',
+    avatarUrl: vc.profile?.avatar?.uri,
   });
   const toVcPreviewData = (vc: VirtualContributorFullFragment): VcPreviewData => ({
     id: vc.id,

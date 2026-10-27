@@ -1,10 +1,6 @@
 import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  useCalloutsSetTagsQuery,
-  useSpaceDefaultTemplatesQuery,
-  useSpaceTemplatesManagerQuery,
-} from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceDefaultTemplatesQuery, useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import { TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
 import { FlowStateSearchResults } from '@/crd/components/search/FlowStateSearchResults';
 import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
@@ -12,20 +8,14 @@ import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/ca
 import { useSpace } from '@/domain/space/context/useSpace';
 import { CreateSubspaceDialogs } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/CreateSubspaceDialogs';
 import { useCreateSubspace } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/useCreateSubspace';
-import { useDebouncedValue } from '@/main/crdPages/utils/useDebouncedValue';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { LazyCalloutItem } from '../callout/LazyCalloutItem';
-import { buildFlowStateSearchTerms, mapFlowStateSearchCalloutIds } from '../dataMappers/flowStateSearchDataMapper';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
-import { useFlowStateSearch } from '../hooks/useFlowStateSearch';
+import { useSidebarFlowStateSearch } from '../hooks/useSidebarFlowStateSearch';
 import { SpaceTabSidebarConnector } from '../layout/SpaceTabSidebarConnector';
 import { resolveSidebarPlan } from '../layout/sidebarWidgetPlan';
-
-/** Debounce window between a keystroke and the search it drives (SC-003). */
-const SEARCH_DEBOUNCE_MS = 300;
-const isEmptySearchText = (text: string) => text === '';
 
 type CrdSpaceTabPageProps = {
   tabPosition: number;
@@ -88,44 +78,13 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
   // fetching because the sidebar subtree is portalled into two hosts
   // (desktop column, mobile drawer); the widget itself is a pure controlled
   // component.
-  const hasSearchWidget = sidebarPlan.includes('search');
-  const [tagsFilter, setTagsFilter] = useState<string[]>([]);
-  const [searchText, setSearchText] = useState('');
-  // Clearing the field applies immediately — only a non-empty value waits out
-  // the debounce, so the X button (and deleting down to empty) never lags, and
-  // a term typed right after a clear can never re-apply the cleared one.
-  const appliedText = useDebouncedValue(searchText, SEARCH_DEBOUNCE_MS, { immediate: isEmptySearchText }).trim();
-  const flowStateId = flowStateForNewCallouts?.id;
-  const { data: tagsData, loading: tagsLoading } = useCalloutsSetTagsQuery({
-    variables: {
-      // biome-ignore lint/style/noNonNullAssertion: ensured by skip
-      calloutsSetId: calloutsSetId!,
-      classificationTagsets: classificationTagsetModelToTagsetArgs(classificationTagsets),
-    },
-    skip: !calloutsSetId || !hasSearchWidget,
+  const search = useSidebarFlowStateSearch({
+    enabled: sidebarPlan.includes('search'),
+    spaceId: space.id,
+    flowStateId: flowStateForNewCallouts?.id,
+    calloutsSetId,
+    classificationTagsets: classificationTagsetModelToTagsetArgs(classificationTagsets),
   });
-  const allTags = tagsData?.lookup.calloutsSet?.tags ?? [];
-  const handleToggleTag = (tag: string) => {
-    setTagsFilter(prev => (prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]));
-  };
-  // The applied text and every selected tag are joined into exactly one term —
-  // identical to what the search service does internally, and it keeps the
-  // request's term count structurally under the service's limit regardless of
-  // how many tags are selected.
-  const searchTerms = buildFlowStateSearchTerms(appliedText, tagsFilter);
-  const isSearching = hasSearchWidget && searchTerms.length > 0;
-  const search = useFlowStateSearch({
-    flowStateID: flowStateId,
-    spaceID: space.id,
-    terms: searchTerms,
-    skip: !isSearching,
-  });
-  const searchCalloutIds = mapFlowStateSearchCalloutIds(search.results);
-  const matchCount = search.status === 'results' || search.status === 'empty' ? searchCalloutIds.length : undefined;
-  const clearSearch = () => {
-    setSearchText('');
-    setTagsFilter([]);
-  };
   const searchLabels = {
     emptyTitle: t('crd-space:knowledge.search.emptyTitle'),
     emptyDescription: t('crd-space:knowledge.search.emptyDescription'),
@@ -148,25 +107,14 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
           onCreatePost={() => setCreateOpen(true)}
           onAboutClick={onOpenAbout}
           onCreateSubspace={createSubspace.openDialog}
-          search={{
-            text: searchText,
-            onTextChange: setSearchText,
-            appliedText,
-            allTags,
-            tagsLoading,
-            selectedTags: tagsFilter,
-            onToggleTag: handleToggleTag,
-            matchCount,
-            hasMore: search.hasMore,
-            onClear: clearSearch,
-          }}
+          search={search.section}
         />
       </Suspense>
 
       <div className="space-y-6">
         <TabStateHeader description={tabDescription} />
 
-        {isSearching ? (
+        {search.isSearching ? (
           <FlowStateSearchResults
             status={search.status}
             appending={search.appending}
@@ -175,7 +123,7 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
             onRetry={search.retry}
             labels={searchLabels}
           >
-            {searchCalloutIds.map(id => (
+            {search.calloutIds.map(id => (
               <LazyCalloutItem
                 key={id}
                 calloutId={id}

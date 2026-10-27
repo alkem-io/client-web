@@ -1,0 +1,161 @@
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import { beforeAll, describe, expect, test, vi } from 'vitest';
+import type { CommentData } from './types';
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, opts?: { name?: string }) => (opts?.name ? `${key}:${opts.name}` : key),
+  }),
+}));
+
+// Shared jsdom-safe avatar double from src/crd/primitives/__mocks__/avatar.tsx.
+vi.mock('@/crd/primitives/avatar');
+
+const { CommentThread } = await import('./CommentThread');
+
+const comment: CommentData = {
+  id: 'c1',
+  author: { id: 'u1', name: 'Alice Smith' },
+  content: 'hello there',
+  timestamp: '2m ago',
+  timestampMs: 1000,
+  reactions: [],
+  canDelete: false,
+};
+
+const noop = () => {};
+
+type ThreadProps = Partial<Parameters<typeof CommentThread>[0]>;
+const renderThread = (props: ThreadProps = {}) =>
+  render(
+    <CommentThread
+      comments={[comment]}
+      onReply={noop}
+      onDelete={noop}
+      onAddReaction={noop}
+      onRemoveReaction={noop}
+      {...props}
+    />
+  );
+
+const openReply = () => fireEvent.click(screen.getByRole('button', { name: 'comments.reply' }));
+const replyBox = () => screen.queryByRole('textbox', { name: 'comments.addComment' });
+const submitReply = (text: string) => {
+  const textarea = replyBox() as HTMLTextAreaElement;
+  fireEvent.change(textarea, { target: { value: text } });
+  fireEvent.keyDown(textarea, { key: 'Enter' });
+};
+
+const deferred = <T,>() => {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>(res => {
+    resolve = res;
+  });
+  return { promise, resolve };
+};
+
+const imageReply = { attachmentsEnabled: true, imagesOnly: true };
+
+describe('CommentThread reply composer', () => {
+  // The reply input scrolls itself into view on open; jsdom has no layout.
+  beforeAll(() => {
+    Element.prototype.scrollIntoView = vi.fn();
+  });
+
+  test('reports the open reply target on open and undefined on close', () => {
+    const onReplyTargetChange = vi.fn();
+    renderThread({ onReplyTargetChange });
+    expect(onReplyTargetChange).not.toHaveBeenCalled();
+    openReply();
+    expect(onReplyTargetChange).toHaveBeenLastCalledWith('c1');
+    openReply();
+    expect(onReplyTargetChange).toHaveBeenLastCalledWith(undefined);
+  });
+
+  test('with reply input props, keeps the reply box open until onReply resolves, then closes it', async () => {
+    const pending = deferred<boolean>();
+    const onReply = vi.fn(() => pending.promise);
+    renderThread({ onReply, replyInputProps: imageReply });
+    openReply();
+    submitReply('a reply');
+    expect(onReply).toHaveBeenCalledWith('c1', 'a reply');
+    expect(replyBox()).toBeInTheDocument();
+    await act(async () => {
+      pending.resolve(true);
+      await pending.promise;
+    });
+    expect(replyBox()).not.toBeInTheDocument();
+  });
+
+  test('with reply input props, keeps the box open when onReply resolves false', async () => {
+    const pending = deferred<boolean>();
+    renderThread({ onReply: () => pending.promise, replyInputProps: imageReply });
+    openReply();
+    submitReply('a reply');
+    await act(async () => {
+      pending.resolve(false);
+      await pending.promise;
+    });
+    expect(replyBox()).toBeInTheDocument();
+  });
+
+  test('reply toggles are ignored while replyTogglesLocked is set', () => {
+    const onReplyTargetChange = vi.fn();
+    const older: CommentData = { ...comment, id: 'c0', content: 'older', timestampMs: 500 };
+    const props: ThreadProps = { comments: [comment, older], onReplyTargetChange, replyInputProps: imageReply };
+    const { rerender } = renderThread(props);
+    const rerenderThread = (replyTogglesLocked: boolean) =>
+      rerender(
+        <CommentThread
+          comments={[comment]}
+          onReply={noop}
+          onDelete={noop}
+          onAddReaction={noop}
+          onRemoveReaction={noop}
+          {...props}
+          replyTogglesLocked={replyTogglesLocked}
+        />
+      );
+    const replyButtons = () => screen.getAllByRole('button', { name: 'comments.reply' });
+    // Newest first: c1, then c0.
+    fireEvent.click(replyButtons()[0]);
+    rerenderThread(true);
+    // Opening another comment's reply while locked is ignored...
+    fireEvent.click(replyButtons()[1]);
+    expect(onReplyTargetChange).toHaveBeenLastCalledWith('c1');
+    expect(document.getElementById('comment-reply-input-c0')).toBeNull();
+    // ...and so is closing the open box.
+    fireEvent.click(replyButtons()[0]);
+    expect(onReplyTargetChange).toHaveBeenLastCalledWith('c1');
+    expect(document.getElementById('comment-reply-input-c1')).toBeInTheDocument();
+    rerenderThread(false);
+    fireEvent.click(replyButtons()[1]);
+    expect(onReplyTargetChange).toHaveBeenLastCalledWith('c0');
+    expect(document.getElementById('comment-reply-input-c0')).toBeInTheDocument();
+  });
+
+  test('with reply input props, a synchronous void onReply still closes the box', async () => {
+    const onReply = vi.fn();
+    renderThread({ onReply, replyInputProps: imageReply });
+    openReply();
+    submitReply('a reply');
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(onReply).toHaveBeenCalledWith('c1', 'a reply');
+    expect(replyBox()).not.toBeInTheDocument();
+  });
+
+  test('without reply input props the box closes on submit, without waiting for onReply', () => {
+    const pending = deferred<boolean>();
+    const onReply = vi.fn(() => pending.promise);
+    renderThread({ onReply });
+    openReply();
+    submitReply('a reply');
+    expect(onReply).toHaveBeenCalledExactlyOnceWith('c1', 'a reply');
+    expect(replyBox()).not.toBeInTheDocument();
+    // Toggles are never held back, and a reopened box starts empty.
+    openReply();
+    expect(replyBox()).toHaveValue('');
+  });
+});

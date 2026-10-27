@@ -22,6 +22,8 @@ type LayoutCalloutRowProps = {
   onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
   onViewPost: (calloutId: string) => void;
   className?: string;
+  /** Freezes the row while the layout is being saved: no drag, no Move to. */
+  locked?: boolean;
 };
 
 export function LayoutCalloutRow({
@@ -31,11 +33,13 @@ export function LayoutCalloutRow({
   showDescription,
   onMoveToColumn,
   onViewPost,
+  locked = false,
   className,
 }: LayoutCalloutRowProps) {
   const { t } = useTranslation('crd-spaceSettings');
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: callout.id,
+    disabled: locked,
   });
 
   const style = {
@@ -48,7 +52,7 @@ export function LayoutCalloutRow({
       ref={setNodeRef}
       style={style}
       className={cn(
-        'group/row flex items-start gap-2 rounded-md border bg-card px-2 py-2 transition-colors hover:bg-accent/40',
+        'group/row flex items-center gap-2 rounded-lg border bg-background px-2.5 py-2 transition-colors hover:border-primary/30',
         // While dragging, collapse the original row into a thin placeholder — the
         // DragOverlay carries the real visual, and this leaves a clear gap that
         // shifts alongside sibling reorder so the drop target is obvious.
@@ -60,27 +64,34 @@ export function LayoutCalloutRow({
       <button
         type="button"
         aria-label={t('layout.row.drag')}
-        className="mt-1 cursor-grab touch-none rounded p-0.5 text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50 active:cursor-grabbing"
+        disabled={locked}
+        className="shrink-0 cursor-grab touch-none rounded p-0.5 text-muted-foreground/30 outline-none group-hover/row:text-muted-foreground/60 focus-visible:ring-2 focus-visible:ring-ring/50 active:cursor-grabbing disabled:cursor-not-allowed disabled:opacity-40"
         {...attributes}
         {...listeners}
       >
-        <GripVertical aria-hidden="true" className="size-4" />
+        <GripVertical aria-hidden="true" className="size-3.5" />
       </button>
       <div className="min-w-0 flex-1">
-        <div className="truncate text-body-emphasis">{callout.title}</div>
+        <div className="line-clamp-2 text-caption font-medium text-foreground">{callout.title}</div>
         {showDescription && callout.description ? (
           <p className="mt-0.5 line-clamp-3 text-caption text-muted-foreground">{callout.description}</p>
         ) : null}
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild={true}>
-          <Button type="button" variant="ghost" size="icon" aria-label={t('layout.row.menu')} className="shrink-0">
-            <MoreVertical aria-hidden="true" className="size-4" />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label={t('layout.row.menu')}
+            className="size-6 shrink-0 opacity-0 transition-opacity group-hover/row:opacity-100 group-focus-within/row:opacity-100 focus-visible:opacity-100 data-[state=open]:opacity-100"
+          >
+            <MoreVertical aria-hidden="true" className="size-3.5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger>{t('layout.row.moveTo')}</DropdownMenuSubTrigger>
+            <DropdownMenuSubTrigger disabled={locked}>{t('layout.row.moveTo')}</DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
               {otherColumns.map(col => (
                 <DropdownMenuItem key={col.id} onClick={() => onMoveToColumn(callout.id, col.id)}>
@@ -112,17 +123,17 @@ type LayoutCalloutRowPreviewProps = {
  */
 export function LayoutCalloutRowPreview({ callout, showDescription }: LayoutCalloutRowPreviewProps) {
   return (
-    <div className="flex cursor-grabbing items-start gap-2 rounded-md border bg-card px-2 py-2 shadow-lg ring-1 ring-ring/40">
-      <span className="mt-1 p-0.5 text-muted-foreground">
-        <GripVertical aria-hidden="true" className="size-4" />
+    <div className="flex rotate-2 cursor-grabbing items-center gap-2 rounded-lg border bg-background px-2.5 py-2 shadow-lg">
+      <span className="p-0.5 text-muted-foreground/60">
+        <GripVertical aria-hidden="true" className="size-3.5" />
       </span>
       <div className="min-w-0 flex-1">
-        <div className="truncate text-body-emphasis">{callout.title}</div>
+        <div className="line-clamp-2 text-caption font-medium text-foreground">{callout.title}</div>
         {showDescription && callout.description ? (
           <p className="mt-0.5 line-clamp-3 text-caption text-muted-foreground">{callout.description}</p>
         ) : null}
       </div>
-      <span aria-hidden="true" className="size-9 shrink-0" />
+      <span aria-hidden="true" className="size-6 shrink-0" />
     </div>
   );
 }

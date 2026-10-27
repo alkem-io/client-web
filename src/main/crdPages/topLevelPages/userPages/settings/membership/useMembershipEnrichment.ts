@@ -18,6 +18,7 @@ export type MembershipEnrichment = {
   displayName: string;
   tagline?: string;
   bannerUrl?: string;
+  avatarUrl?: string;
   spaceUrl: string;
   /** roleSetID — used by the Leave flow to scope `removeRoleFromUser`. */
   roleSetId?: string;
@@ -81,6 +82,7 @@ export const useMembershipEnrichment = (spaceIds: ReadonlyArray<string>): Map<st
                 // space hasn't uploaded one, fall back to undefined so the
                 // deterministic gradient takes over.
                 bannerUrl: profile.cardBanner?.uri,
+                avatarUrl: profile.avatar?.uri,
                 spaceUrl: profile.url,
                 roleSetId: space.about.membership?.roleSetID,
                 leadUsers,

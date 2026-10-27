@@ -35,6 +35,7 @@
           "invalidToken": "Invalid token.",
           "loginFlow": "Login flow error.",
           "loginFlowInit": "Unable to initialize login flow.",
+          "platformSupportSelfTarget": "Vous ne pouvez pas effectuer cette action sur votre propre compte. Demandez à un autre membre du support de la plateforme ou à un administrateur de l'organisation.",
           "sessionExpired": "Session expired.",
           "sessionExtend": "Unable to extend session.",
           "subscriptionNotAuthenticated": "Subscription requires authentication.",
@@ -1603,5 +1604,32 @@
     "unavailableHint": "Ce fichier n’a pas pu être chargé. Téléchargez-le pour le consulter.",
     "unavailableNoDownload": "Ce fichier n’est pas disponible.",
     "loading": "Chargement de la pièce jointe"
+  },
+  "unsavedChanges": {
+    "count_one": "{{count}} modification non enregistrée",
+    "count_other": "{{count}} modifications non enregistrées",
+    "save": "Enregistrer les modifications",
+    "discard": "Abandonner",
+    "saving": "Enregistrement…",
+    "saved": "Modifications enregistrées",
+    "regionLabel": "Modifications non enregistrées",
+    "discardDialog": {
+      "title_one": "Abandonner 1 modification non enregistrée ?",
+      "title_other": "Abandonner {{count}} modifications non enregistrées ?",
+      "description": "Chaque champ modifié dans cet onglet reprend sa valeur enregistrée.",
+      "confirm": "Abandonner"
+    },
+    "leaveDialog": {
+      "title": "Modifications non enregistrées",
+      "description": "Vous avez des modifications non enregistrées sur cet onglet. Voulez-vous les enregistrer, les abandonner ou rester sur cet onglet ?",
+      "save": "Enregistrer",
+      "discard": "Abandonner et quitter"
+    },
+    "saveFailedDialog": {
+      "title": "Vos modifications n'ont pas pu être enregistrées",
+      "description": "Quelqu'un a peut-être modifié cette page entre-temps. Actualisez la page pour charger la dernière version — vos modifications non enregistrées seront perdues.",
+      "refresh": "Actualiser la page",
+      "close": "Fermer"
+    }
   }
 }

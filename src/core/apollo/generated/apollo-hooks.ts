@@ -104,6 +104,10 @@ export const AdminCommunityCandidateMemberFragmentDoc = gql`
     id
     displayName
     url
+    avatar: visual(type: AVATAR) {
+      id
+      uri
+    }
   }
 }
     `;
@@ -1567,6 +1571,40 @@ export const BasicOrganizationDetailsFragmentDoc = gql`
   }
 }
     ${VisualModelFragmentDoc}`;
+export const AccountResourceProfileFragmentDoc = gql`
+    fragment AccountResourceProfile on Profile {
+  id
+  displayName
+  tagline
+  url
+  avatar: visual(type: AVATAR) {
+    ...VisualModel
+  }
+}
+    ${VisualModelFragmentDoc}`;
+export const AccountHostedResourcesFieldsFragmentDoc = gql`
+    fragment AccountHostedResourcesFields on AccountHostedResources {
+  virtualContributors {
+    id
+    profile {
+      ...AccountResourceProfile
+    }
+  }
+  innovationPacks {
+    id
+    profile {
+      ...AccountResourceProfile
+    }
+  }
+  innovationHubs {
+    id
+    nameID
+    profile {
+      ...AccountResourceProfile
+    }
+  }
+}
+    ${AccountResourceProfileFragmentDoc}`;
 export const FullLocationFragmentDoc = gql`
     fragment fullLocation on Location {
   id
@@ -1589,6 +1627,10 @@ export const OrganizationInfoFragmentDoc = gql`
   }
   roleSet {
     id
+    authorization {
+      id
+      myPrivileges
+    }
     myMembershipStatus
     applicationForm {
       id
@@ -2239,17 +2281,6 @@ export const InnovationHubSettingsFragmentDoc = gql`
 }
     ${InnovationHubProfileFragmentDoc}
 ${InnovationHubSpaceFragmentDoc}`;
-export const AccountResourceProfileFragmentDoc = gql`
-    fragment AccountResourceProfile on Profile {
-  id
-  displayName
-  tagline
-  url
-  avatar: visual(type: AVATAR) {
-    ...VisualModel
-  }
-}
-    ${VisualModelFragmentDoc}`;
 export const InnovationHubHomeInnovationHubFragmentDoc = gql`
     fragment InnovationHubHomeInnovationHub on InnovationHub {
   id
@@ -8071,6 +8102,13 @@ export const UpdateInnovationFlowStatesSortOrderDocument = gql`
   ) {
     id
     sortOrder
+    settings {
+      sidebar
+      allowNewCallouts
+      visible
+      descriptionDisplayMode
+      showPublishDetails
+    }
   }
 }
     `;
@@ -13566,6 +13604,85 @@ export type AddReactionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AddReactionMutation,
   SchemaTypes.AddReactionMutationVariables
 >;
+export const CommentRoomStorageBucketDocument = gql`
+    query CommentRoomStorageBucket($bucketId: UUID!) {
+  lookup {
+    storageBucket(ID: $bucketId) {
+      id
+      allowedMimeTypes
+      maxFileSize
+    }
+  }
+}
+    `;
+
+/**
+ * __useCommentRoomStorageBucketQuery__
+ *
+ * To run a query within a React component, call `useCommentRoomStorageBucketQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommentRoomStorageBucketQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommentRoomStorageBucketQuery({
+ *   variables: {
+ *      bucketId: // value for 'bucketId'
+ *   },
+ * });
+ */
+export function useCommentRoomStorageBucketQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CommentRoomStorageBucketQuery,
+    SchemaTypes.CommentRoomStorageBucketQueryVariables
+  > &
+    ({ variables: SchemaTypes.CommentRoomStorageBucketQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CommentRoomStorageBucketQuery, SchemaTypes.CommentRoomStorageBucketQueryVariables>(
+    CommentRoomStorageBucketDocument,
+    options
+  );
+}
+export function useCommentRoomStorageBucketLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommentRoomStorageBucketQuery,
+    SchemaTypes.CommentRoomStorageBucketQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CommentRoomStorageBucketQuery,
+    SchemaTypes.CommentRoomStorageBucketQueryVariables
+  >(CommentRoomStorageBucketDocument, options);
+}
+export function useCommentRoomStorageBucketSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CommentRoomStorageBucketQuery,
+        SchemaTypes.CommentRoomStorageBucketQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.CommentRoomStorageBucketQuery,
+    SchemaTypes.CommentRoomStorageBucketQueryVariables
+  >(CommentRoomStorageBucketDocument, options);
+}
+export type CommentRoomStorageBucketQueryHookResult = ReturnType<typeof useCommentRoomStorageBucketQuery>;
+export type CommentRoomStorageBucketLazyQueryHookResult = ReturnType<typeof useCommentRoomStorageBucketLazyQuery>;
+export type CommentRoomStorageBucketSuspenseQueryHookResult = ReturnType<
+  typeof useCommentRoomStorageBucketSuspenseQuery
+>;
+export type CommentRoomStorageBucketQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommentRoomStorageBucketQuery,
+  SchemaTypes.CommentRoomStorageBucketQueryVariables
+>;
+export function refetchCommentRoomStorageBucketQuery(variables: SchemaTypes.CommentRoomStorageBucketQueryVariables) {
+  return { query: CommentRoomStorageBucketDocument, variables: variables };
+}
 export const ForumMentionableContributorsDocument = gql`
     query ForumMentionableContributors($filter: ContributorFilterInput, $limit: Int = 30, $types: [ActorType!]!) {
   platform {
@@ -14596,6 +14713,166 @@ export type ActorDetailsQueryResult = Apollo.QueryResult<
 >;
 export function refetchActorDetailsQuery(variables: SchemaTypes.ActorDetailsQueryVariables) {
   return { query: ActorDetailsDocument, variables: variables };
+}
+export const UserHostedResourcesDocument = gql`
+    query UserHostedResources($userId: UUID!) {
+  lookup {
+    user(ID: $userId) {
+      id
+      hostedResources {
+        ...AccountHostedResourcesFields
+      }
+    }
+  }
+}
+    ${AccountHostedResourcesFieldsFragmentDoc}`;
+
+/**
+ * __useUserHostedResourcesQuery__
+ *
+ * To run a query within a React component, call `useUserHostedResourcesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserHostedResourcesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserHostedResourcesQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useUserHostedResourcesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UserHostedResourcesQuery,
+    SchemaTypes.UserHostedResourcesQueryVariables
+  > &
+    ({ variables: SchemaTypes.UserHostedResourcesQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserHostedResourcesQuery, SchemaTypes.UserHostedResourcesQueryVariables>(
+    UserHostedResourcesDocument,
+    options
+  );
+}
+export function useUserHostedResourcesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserHostedResourcesQuery,
+    SchemaTypes.UserHostedResourcesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserHostedResourcesQuery, SchemaTypes.UserHostedResourcesQueryVariables>(
+    UserHostedResourcesDocument,
+    options
+  );
+}
+export function useUserHostedResourcesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.UserHostedResourcesQuery,
+        SchemaTypes.UserHostedResourcesQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.UserHostedResourcesQuery, SchemaTypes.UserHostedResourcesQueryVariables>(
+    UserHostedResourcesDocument,
+    options
+  );
+}
+export type UserHostedResourcesQueryHookResult = ReturnType<typeof useUserHostedResourcesQuery>;
+export type UserHostedResourcesLazyQueryHookResult = ReturnType<typeof useUserHostedResourcesLazyQuery>;
+export type UserHostedResourcesSuspenseQueryHookResult = ReturnType<typeof useUserHostedResourcesSuspenseQuery>;
+export type UserHostedResourcesQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserHostedResourcesQuery,
+  SchemaTypes.UserHostedResourcesQueryVariables
+>;
+export function refetchUserHostedResourcesQuery(variables: SchemaTypes.UserHostedResourcesQueryVariables) {
+  return { query: UserHostedResourcesDocument, variables: variables };
+}
+export const OrganizationHostedResourcesDocument = gql`
+    query OrganizationHostedResources($organizationId: UUID!) {
+  lookup {
+    organization(ID: $organizationId) {
+      id
+      hostedResources {
+        ...AccountHostedResourcesFields
+      }
+    }
+  }
+}
+    ${AccountHostedResourcesFieldsFragmentDoc}`;
+
+/**
+ * __useOrganizationHostedResourcesQuery__
+ *
+ * To run a query within a React component, call `useOrganizationHostedResourcesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationHostedResourcesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationHostedResourcesQuery({
+ *   variables: {
+ *      organizationId: // value for 'organizationId'
+ *   },
+ * });
+ */
+export function useOrganizationHostedResourcesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OrganizationHostedResourcesQuery,
+    SchemaTypes.OrganizationHostedResourcesQueryVariables
+  > &
+    ({ variables: SchemaTypes.OrganizationHostedResourcesQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.OrganizationHostedResourcesQuery,
+    SchemaTypes.OrganizationHostedResourcesQueryVariables
+  >(OrganizationHostedResourcesDocument, options);
+}
+export function useOrganizationHostedResourcesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrganizationHostedResourcesQuery,
+    SchemaTypes.OrganizationHostedResourcesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OrganizationHostedResourcesQuery,
+    SchemaTypes.OrganizationHostedResourcesQueryVariables
+  >(OrganizationHostedResourcesDocument, options);
+}
+export function useOrganizationHostedResourcesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.OrganizationHostedResourcesQuery,
+        SchemaTypes.OrganizationHostedResourcesQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.OrganizationHostedResourcesQuery,
+    SchemaTypes.OrganizationHostedResourcesQueryVariables
+  >(OrganizationHostedResourcesDocument, options);
+}
+export type OrganizationHostedResourcesQueryHookResult = ReturnType<typeof useOrganizationHostedResourcesQuery>;
+export type OrganizationHostedResourcesLazyQueryHookResult = ReturnType<typeof useOrganizationHostedResourcesLazyQuery>;
+export type OrganizationHostedResourcesSuspenseQueryHookResult = ReturnType<
+  typeof useOrganizationHostedResourcesSuspenseQuery
+>;
+export type OrganizationHostedResourcesQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrganizationHostedResourcesQuery,
+  SchemaTypes.OrganizationHostedResourcesQueryVariables
+>;
+export function refetchOrganizationHostedResourcesQuery(
+  variables: SchemaTypes.OrganizationHostedResourcesQueryVariables
+) {
+  return { query: OrganizationHostedResourcesDocument, variables: variables };
 }
 export const AccountResourcesInfoDocument = gql`
     query AccountResourcesInfo($accountId: UUID!) {
@@ -26803,6 +27080,7 @@ export const SpaceSettingsDocument = gql`
         id
         provider {
           id
+          type
           profile {
             id
             displayName
@@ -31393,6 +31671,86 @@ export type AccountSpaceCandidatesQueryResult = Apollo.QueryResult<
 >;
 export function refetchAccountSpaceCandidatesQuery(variables: SchemaTypes.AccountSpaceCandidatesQueryVariables) {
   return { query: AccountSpaceCandidatesDocument, variables: variables };
+}
+export const CalloutCommentsRevalidateDocument = gql`
+    query CalloutCommentsRevalidate($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      comments {
+        ...CommentsWithMessages
+      }
+    }
+  }
+}
+    ${CommentsWithMessagesFragmentDoc}`;
+
+/**
+ * __useCalloutCommentsRevalidateQuery__
+ *
+ * To run a query within a React component, call `useCalloutCommentsRevalidateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutCommentsRevalidateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutCommentsRevalidateQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useCalloutCommentsRevalidateQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutCommentsRevalidateQuery,
+    SchemaTypes.CalloutCommentsRevalidateQueryVariables
+  > &
+    ({ variables: SchemaTypes.CalloutCommentsRevalidateQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CalloutCommentsRevalidateQuery,
+    SchemaTypes.CalloutCommentsRevalidateQueryVariables
+  >(CalloutCommentsRevalidateDocument, options);
+}
+export function useCalloutCommentsRevalidateLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutCommentsRevalidateQuery,
+    SchemaTypes.CalloutCommentsRevalidateQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CalloutCommentsRevalidateQuery,
+    SchemaTypes.CalloutCommentsRevalidateQueryVariables
+  >(CalloutCommentsRevalidateDocument, options);
+}
+export function useCalloutCommentsRevalidateSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CalloutCommentsRevalidateQuery,
+        SchemaTypes.CalloutCommentsRevalidateQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.CalloutCommentsRevalidateQuery,
+    SchemaTypes.CalloutCommentsRevalidateQueryVariables
+  >(CalloutCommentsRevalidateDocument, options);
+}
+export type CalloutCommentsRevalidateQueryHookResult = ReturnType<typeof useCalloutCommentsRevalidateQuery>;
+export type CalloutCommentsRevalidateLazyQueryHookResult = ReturnType<typeof useCalloutCommentsRevalidateLazyQuery>;
+export type CalloutCommentsRevalidateSuspenseQueryHookResult = ReturnType<
+  typeof useCalloutCommentsRevalidateSuspenseQuery
+>;
+export type CalloutCommentsRevalidateQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutCommentsRevalidateQuery,
+  SchemaTypes.CalloutCommentsRevalidateQueryVariables
+>;
+export function refetchCalloutCommentsRevalidateQuery(variables: SchemaTypes.CalloutCommentsRevalidateQueryVariables) {
+  return { query: CalloutCommentsRevalidateDocument, variables: variables };
 }
 export const CalloutsListForFeedDocument = gql`
     query CalloutsListForFeed($calloutsSetId: UUID!, $classificationTagsets: [TagsetArgs!] = []) {

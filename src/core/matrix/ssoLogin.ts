@@ -61,6 +61,16 @@ const attemptSilentSso = async (
   // exchanging it; the exchange then persists credentials in this origin's
   // storage, where the polling below finds them.
   let tokenConsumed = false;
+  // A consumed token's exchange runs beside the poll loop below and is not
+  // awaited by it. If the loop reaches its deadline first and returns `timeout`,
+  // the caller goes on to mint and starts a client on the MINTED credential
+  // while this exchange is still in flight — and its own `storeCredentials`
+  // then overwrites the record that running client was built from, leaving the
+  // live session and the stored credential on two different Synapse devices.
+  // So the exchange gets a signal this function controls, and the deadline path
+  // settles it rather than walking away from it.
+  const exchangeAbort = new AbortController();
+  signal?.addEventListener('abort', () => exchangeAbort.abort());
   const onMessage = (event: MessageEvent) => {
     if (tokenConsumed || signal?.aborted || event.origin !== platformOrigin) {
       return;
@@ -70,7 +80,7 @@ const attemptSilentSso = async (
       return;
     }
     tokenConsumed = true;
-    void exchangeAndStore(homeserverUrl, loginToken, signal);
+    void exchangeAndStore(homeserverUrl, loginToken, exchangeAbort.signal);
   };
   window.addEventListener('message', onMessage);
 
@@ -84,6 +94,19 @@ const attemptSilentSso = async (
         return 'authenticated';
       }
     }
+    // The deadline passed. One last read first: an exchange that completed
+    // between the final poll and here has already persisted, and reporting that
+    // as a timeout would mint a second credential for no reason.
+    if (await loadActorCredentials(expectedLocalpart)) {
+      return 'authenticated';
+    }
+    // Otherwise cancel it, so no write of its can land after the caller has
+    // acted on this `timeout`. If it is already past its own write, it sees the
+    // abort and clears what it stored (matrixCallback.ts:53-55) — so every
+    // interleaving leaves the stored record agreeing with the running client,
+    // which is the point. The cost is an orphaned Synapse device in that narrow
+    // window: the known device-churn residual, and the lesser of the two.
+    exchangeAbort.abort();
     return 'timeout';
   } finally {
     window.removeEventListener('message', onMessage);

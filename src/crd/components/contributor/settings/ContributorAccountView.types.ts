@@ -71,8 +71,6 @@ export type AccountResourceGroup = {
    * redirect to the contact page rather than open the create dialog.
    */
   isEntitled: boolean;
-  /** Pre-localized "Create" button label. */
-  createButtonLabel: string;
   onCreate: () => void;
   items: AccountResourceCardItem[];
   /** Per-group capacity for the hover-tooltip badge; absent during loading or when the license is missing. */
@@ -81,8 +79,6 @@ export type AccountResourceGroup = {
 
 /** The shared contributor-account view shape. Both User Account and Org Account map to this. */
 export type ContributorAccountViewProps = {
-  /** Pre-localized help-banner copy. */
-  helpBannerLabel: string;
   groups: AccountResourceGroup[];
   loading: boolean;
 };

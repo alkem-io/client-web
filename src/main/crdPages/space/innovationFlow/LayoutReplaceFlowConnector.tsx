@@ -1,6 +1,7 @@
 import { Replace } from 'lucide-react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { GatedAction } from '@/crd/components/common/GatedAction';
 import { CrdApplySpaceTemplateDialog } from '@/crd/components/space/innovationFlow/CrdApplySpaceTemplateDialog';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { Button } from '@/crd/primitives/button';
@@ -18,11 +19,12 @@ export type LayoutReplaceFlowConnectorProps = {
    */
   existingCalloutsCount: number;
   /**
-   * Disables the entry-point button. The parent passes the layout buffer's
-   * dirty flag here so the admin can't replace the flow (which reseeds from
-   * the server and discards the buffer) while there are unsaved layout edits.
+   * Disables the entry-point button and explains why in a tooltip. The parent
+   * sets it while the layout buffer has unsaved changes, so the admin can't
+   * replace the flow (which reseeds from the server and discards the buffer)
+   * before saving or discarding them (spec 045 FR-026b).
    */
-  disabled?: boolean;
+  disabledReason?: string;
   /** Called after the replace mutation completes + refetches land. */
   onApplyComplete?: () => void;
   /**
@@ -43,7 +45,7 @@ export type LayoutReplaceFlowConnectorProps = {
 export function LayoutReplaceFlowConnector({
   collaborationId,
   existingCalloutsCount,
-  disabled,
+  disabledReason,
   onApplyComplete,
   onImportingChange,
 }: LayoutReplaceFlowConnectorProps) {
@@ -62,17 +64,19 @@ export function LayoutReplaceFlowConnector({
 
   return (
     <>
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        className="gap-2 shrink-0"
-        onClick={replaceFlow.open}
-        disabled={!collaborationId || replaceFlow.importing || disabled}
-      >
-        <Replace aria-hidden="true" className="size-4" />
-        {t('layout.replaceFlow.button')}
-      </Button>
+      <GatedAction disabledReason={disabledReason}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="gap-2 shrink-0"
+          onClick={replaceFlow.open}
+          disabled={!collaborationId || replaceFlow.importing}
+        >
+          <Replace aria-hidden="true" className="size-4" />
+          {t('layout.replaceFlow.button')}
+        </Button>
+      </GatedAction>
 
       <TemplatePicker {...replaceFlow.pickerProps} />
 
@@ -81,6 +85,8 @@ export function LayoutReplaceFlowConnector({
         onClose={replaceFlow.onApplyDialogClose}
         onConfirm={replaceFlow.onApplyConfirm}
         existingCalloutsCount={existingCalloutsCount}
+        // Rendered only on subspaces, whose single sidebar comes from the replaced flow.
+        showSidebarNote={true}
       />
     </>
   );

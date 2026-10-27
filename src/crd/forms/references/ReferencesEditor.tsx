@@ -30,6 +30,8 @@ type ReferencesEditorProps = {
   disabled?: boolean;
   /** Heading override; defaults to the shared `references.heading` label. */
   label?: string;
+  /** Omit the heading — for hosts that already title the editor (e.g. a settings section card). */
+  hideLabel?: boolean;
   /**
    * Optional file-attach integration. When provided, each row exposes a paperclip
    * button that opens a file picker; the resolved URL is written into `row.uri`.
@@ -55,6 +57,7 @@ export function ReferencesEditor({
   errors,
   disabled,
   label,
+  hideLabel = false,
   onFileUpload,
   uploadAccept,
 }: ReferencesEditorProps) {
@@ -107,7 +110,7 @@ export function ReferencesEditor({
 
   return (
     <div className="space-y-3">
-      <Label className="text-body-emphasis text-foreground">{label ?? t('references.heading')}</Label>
+      {!hideLabel && <Label className="text-body-emphasis text-foreground">{label ?? t('references.heading')}</Label>}
 
       {rows.length === 0 && <p className="text-caption text-muted-foreground italic">{t('references.empty')}</p>}
 

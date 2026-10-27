@@ -1,6 +1,6 @@
 import { Globe, MessageSquare } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
+import { SettingsSection } from '@/crd/components/common/SettingsSection';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
 import { Skeleton } from '@/crd/primitives/skeleton';
 import { Switch } from '@/crd/primitives/switch';
@@ -28,6 +28,11 @@ export type UserSettingsTabViewProps = {
   onLanguageChange: (languageCode: string) => void;
 };
 
+/**
+ * User Settings tab — Communication (open) then Language (collapsed), as
+ * collapsible `SettingsSection`s (spec 097 Session 2026-10-23). Every control
+ * commits immediately.
+ */
 export function UserSettingsTabView(props: UserSettingsTabViewProps) {
   const { t } = useTranslation(NS);
 
@@ -42,33 +47,15 @@ export function UserSettingsTabView(props: UserSettingsTabViewProps) {
 
   return (
     <div className="space-y-6">
-      {/* Language row (T011 — FR-011/FR-017) */}
-      <SettingsCard icon={Globe} title={t('user.settings.language.title')}>
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <p className="text-body-emphasis">{t('user.settings.language.label')}</p>
-            <p className="mt-0.5 text-caption text-muted-foreground">{t('user.settings.language.description')}</p>
-          </div>
-          <Select value={props.currentLanguage} onValueChange={props.onLanguageChange} disabled={props.languageSaving}>
-            <SelectTrigger className="w-[160px]" aria-label={t('user.settings.language.label')}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {props.availableLanguages.map(lang => (
-                <SelectItem key={lang.code} value={lang.code}>
-                  {lang.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </SettingsCard>
-
-      <SettingsCard icon={MessageSquare} title={t('user.settings.communication.title')}>
+      <SettingsSection
+        title={t('user.settings.communication.title')}
+        icon={<MessageSquare className="size-4" />}
+        iconColor="blue"
+      >
         <div className="space-y-4">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
-              <p className="text-body-emphasis">{t('user.settings.communication.allowMessagesLabel')}</p>
+              <p className="text-body">{t('user.settings.communication.allowMessagesLabel')}</p>
               <p className="mt-0.5 text-caption text-muted-foreground">
                 {t('user.settings.communication.allowMessagesDescription')}
               </p>
@@ -102,7 +89,34 @@ export function UserSettingsTabView(props: UserSettingsTabViewProps) {
           </div>
           */}
         </div>
-      </SettingsCard>
+      </SettingsSection>
+
+      {/* Language row (T011 — FR-011/FR-017) */}
+      <SettingsSection
+        title={t('user.settings.language.title')}
+        icon={<Globe className="size-4" />}
+        iconColor="green"
+        defaultOpen={false}
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1">
+            <p className="text-body">{t('user.settings.language.label')}</p>
+            <p className="mt-0.5 text-caption text-muted-foreground">{t('user.settings.language.description')}</p>
+          </div>
+          <Select value={props.currentLanguage} onValueChange={props.onLanguageChange} disabled={props.languageSaving}>
+            <SelectTrigger className="w-[160px]" aria-label={t('user.settings.language.label')}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {props.availableLanguages.map(lang => (
+                <SelectItem key={lang.code} value={lang.code}>
+                  {lang.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </SettingsSection>
     </div>
   );
 }

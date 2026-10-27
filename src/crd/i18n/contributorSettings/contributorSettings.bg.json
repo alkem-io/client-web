@@ -93,7 +93,7 @@
       "org": {
         "profile": "Профил",
         "account": "Акаунт",
-        "community": "Асоциирани",
+        "associates": "Асоциирани",
         "membership": "Членство",
         "settings": "Настройки",
         "invitations": "Покани",
@@ -179,6 +179,9 @@
           "confirm": "Премахване на препратката"
         }
       },
+      "references": {
+        "title": "Препратки"
+      },
       "avatar": {
         "title": "Профилна снимка",
         "changeButton": "Смени аватара",
@@ -205,17 +208,10 @@
         "filteredEmptyDescription": "Опитайте да промените филтрите или думите за търсене.",
         "clearFilters": "Изчистване на филтрите"
       },
-      "menu": {
-        "viewByType": "Преглед на {{type}}"
-      },
       "filter": {
         "all": "Всички",
         "spaces": "Spaces",
         "subspaces": "Subspaces"
-      },
-      "type": {
-        "space": "Space",
-        "subspace": "Subspace"
       },
       "role": {
         "admin": "Администратор",
@@ -223,8 +219,8 @@
         "member": "Член"
       },
       "leave": {
-        "menuItem": "Напускане",
-        "menuItemLabeled": "Напускане на {{type}}",
+        "button": "Напускане",
+        "buttonAria": "Напускане на {{name}}",
         "dialogTitle": "Напускане на това членство?",
         "dialogDescription": "На път сте да напуснете „{{spaceName}}“. Ще загубите достъп до съдържание само за членове и ще трябва да кандидатствате отново.",
         "dialogConfirm": "Напускане",
@@ -570,25 +566,25 @@
     },
     "organizations": {
       "pageTitle": "Организации",
+      "myOrganizations": "Моите организации",
       "searchPlaceholder": "Търсене на организации...",
       "createButton": "Създаване на организация",
+      "createDescription": "Създайте нова организация, за да си сътрудничите с екипа си.",
+      "newOrganization": "Нова организация",
       "summary": "Показани са {{shown}} от {{total}} организации",
       "empty": "Все още не сте свързани с нито една организация.",
       "filteredEmptyTitle": "Не са намерени организации",
       "filteredEmptyDescription": "Опитайте с друго име или местоположение.",
       "clearSearch": "Изчистване на търсенето",
       "verified": "Потвърдена",
-      "associates": "Асоциирани",
       "associatesCount": "{{count}} асоциирани",
       "role": {
         "admin": "Администратор",
         "associate": "Асоцииран"
       },
-      "menu": {
-        "viewProfile": "Преглед на профила",
-        "disassociate": "Прекратяване на връзката"
-      },
       "disassociate": {
+        "button": "Прекратяване на връзката",
+        "buttonAria": "Прекратяване на връзката с {{name}}",
         "dialogTitle": "Прекратяване на връзката с тази организация?",
         "dialogDescription": "На път сте да напуснете „{{name}}“. Ще загубите ролята си на асоцииран и свързаните права.",
         "dialogConfirm": "Прекратяване",
@@ -598,22 +594,17 @@
     },
     "account": {
       "pageTitle": "Акаунт",
-      "helpBanner": "Тук можете да видите активните си ресурси и да управлявате лимитите на акаунта си.",
       "spaces": {
-        "title": "Хоствани Spaces",
-        "createButton": "Създаване на Space"
+        "title": "Хоствани Spaces"
       },
       "virtualContributors": {
-        "title": "Виртуални сътрудници",
-        "createButton": "Добавяне на сътрудник"
+        "title": "Виртуални сътрудници"
       },
       "innovationPacks": {
-        "title": "Шаблонни пакети",
-        "createButton": "Нов пакет"
+        "title": "Шаблонни пакети"
       },
       "innovationHubs": {
-        "title": "Персонализирани начални страници",
-        "createButton": "Нова страница"
+        "title": "Персонализирани начални страници"
       },
       "actions": {
         "view": "Преглед",
@@ -625,6 +616,9 @@
         "title": "Изтриване на този ресурс?",
         "description": "Това ще премахне „{{name}}“ завинаги. Действието не може да се отмени.",
         "confirm": "Изтриване"
+      },
+      "dangerZone": {
+        "title": "Опасна зона"
       }
     },
     "assistant": {
@@ -725,6 +719,9 @@
           "confirm": "Премахване"
         }
       },
+      "references": {
+        "title": "Препратки"
+      },
       "logo": {
         "title": "Лого",
         "changeButton": "Смяна на лого",
@@ -739,22 +736,17 @@
     },
     "account": {
       "pageTitle": "Акаунт",
-      "helpBanner": "Тук можете да видите активните ресурси на организацията и да управлявате лимитите на акаунта.",
       "spaces": {
-        "title": "Хоствани Spaces",
-        "createButton": "Създаване на Space"
+        "title": "Хоствани Spaces"
       },
       "virtualContributors": {
-        "title": "Виртуални сътрудници",
-        "createButton": "Добавяне на сътрудник"
+        "title": "Виртуални сътрудници"
       },
       "innovationPacks": {
-        "title": "Шаблонни пакети",
-        "createButton": "Нов пакет"
+        "title": "Шаблонни пакети"
       },
       "innovationHubs": {
-        "title": "Персонализирани начални страници",
-        "createButton": "Нова страница"
+        "title": "Персонализирани начални страници"
       },
       "actions": {
         "view": "Преглед",
@@ -800,19 +792,13 @@
         "spaces": "Spaces",
         "subspaces": "Subspaces"
       },
-      "type": {
-        "space": "Space",
-        "subspace": "Subspace"
-      },
       "role": {
         "lead": "Лидер",
         "member": "Член"
       },
-      "menu": {
-        "viewByType": "Преглед на {{type}}"
-      },
       "leave": {
-        "menuItemLabeled": "Напускане на {{type}}",
+        "button": "Напускане",
+        "buttonAria": "Напускане на {{name}}",
         "dialogTitle": "Напускане на това членство?",
         "dialogDescription": "Вашата организация е на път да напусне „{{spaceName}}“ и всички негови подпространства, като се откаже от всяка роля, която има там, включително Лидер. Тя ще загуби достъп до съдържанието само за членове и ще трябва да бъде поканена отново, за да се присъедини.",
         "dialogConfirm": "Напускане",
@@ -1109,8 +1095,8 @@
         "innovationPacksTooltip": "Създали сте {{usage}} от {{limit}} налични Template Packs във вашия акаунт.",
         "innovationHubsTooltip": "Създали сте {{usage}} от {{limit}} налични персонализирани начални страници във вашия акаунт."
       },
+      "empty": "Все още няма нищо тук.",
       "kebabAriaLabel": "Още действия",
-      "kebabAriaLabelFor": "Още действия за {{name}}",
       "createNewSpace": {
         "ariaLabel": "Създаване на нов Space",
         "heading": "Създаване на нов Space",

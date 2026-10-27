@@ -3,6 +3,7 @@ import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAu
 import Loading from '@/core/ui/loading/Loading';
 import { CrdNotFoundView } from '@/main/crdPages/error/CrdNotFoundView';
 import { useConfig } from '../config/useConfig';
+import useIdentityOrigin from './useIdentityOrigin';
 import usePlatformOrigin from './usePlatformOrigin';
 
 const NonIdentity = ({ children }: PropsWithChildren) => {
@@ -12,7 +13,7 @@ const NonIdentity = ({ children }: PropsWithChildren) => {
 
   const { isAuthenticated, loading: loadingAuthentication } = useAuthenticationContext();
 
-  const identityOrigin = config.authentication?.providers[0].config.issuer;
+  const identityOrigin = useIdentityOrigin();
 
   const isIdentityOrigin = window.location.origin === identityOrigin;
 

@@ -71,6 +71,10 @@ type LayoutPoolColumnProps = {
   entityNoun?: 'tab' | 'phase';
   /** Enables the column drag handle + sortable behaviour (off at L0). */
   draggable?: boolean;
+  /** Freezes the column and its rows while the layout is being saved: no drag, no drop, no Move to. */
+  locked?: boolean;
+  /** When set, Delete is disabled and this reason is shown under it (unsaved layout changes — FR-026b). */
+  deleteDisabledReason?: string;
   /** Whether the Layout dialog shows the sidebar-widgets section (hidden on subspaces for now). */
   sidebarSettingsEnabled?: boolean;
   /** Character limit of a column description; turns on the editor's progress ring and blocks Save past it. */
@@ -87,6 +91,8 @@ export function LayoutPoolColumn({
   columnMenuActions,
   entityNoun = 'phase',
   draggable = false,
+  locked = false,
+  deleteDisabledReason,
   sidebarSettingsEnabled = true,
   descriptionMaxLength,
   className,
@@ -101,7 +107,7 @@ export function LayoutPoolColumn({
   const calloutIds = column.callouts.map(c => c.id);
   // Drop target for cross-column callout moves — keeps `column.id` as the
   // droppable id so the view's `resolveTargetColumn` continues to work unchanged.
-  const { setNodeRef: setCalloutDropRef, isOver } = useDroppable({ id: column.id });
+  const { setNodeRef: setCalloutDropRef, isOver } = useDroppable({ id: column.id, disabled: locked });
   // Column-level sortable — registers the card under the prefixed sortable id
   // `col:${column.id}` so it doesn't collide with the callout droppable above.
   // Disabled at L0 (`draggable={false}`), in which case it's inert.
@@ -115,7 +121,7 @@ export function LayoutPoolColumn({
   } = useSortable({
     id: `col:${column.id}`,
     data: { type: 'column' },
-    disabled: !draggable,
+    disabled: !draggable || locked,
   });
   const sortableStyle = draggable
     ? {
@@ -137,33 +143,48 @@ export function LayoutPoolColumn({
         ref={draggable ? setSortableRef : undefined}
         style={sortableStyle}
         className={cn(
-          'flex min-w-0 flex-1 flex-col overflow-hidden',
-          column.isCurrentPhase && 'border-2 border-primary',
+          'flex min-w-0 flex-1 flex-col gap-0 overflow-hidden rounded-xl py-0',
+          column.isCurrentPhase && 'border-primary/40',
           isOver && 'ring-2 ring-primary/30',
           isDragging && 'opacity-50',
           className
         )}
       >
-        <div className="bg-muted/40 px-4 pt-4 pb-3">
+        <div className="space-y-2 bg-muted/30 p-3">
           <div className="flex items-center justify-between gap-2">
             {draggable && (
               <button
                 type="button"
                 aria-label={t('layout.column.drag')}
-                className="shrink-0 cursor-grab touch-none rounded p-0.5 text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50 active:cursor-grabbing"
+                disabled={locked}
+                className="shrink-0 cursor-grab touch-none rounded p-0.5 text-muted-foreground/40 outline-none hover:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring/50 active:cursor-grabbing"
                 {...attributes}
                 {...listeners}
               >
                 <GripVertical aria-hidden="true" className="size-4" />
               </button>
             )}
-            <span title={column.title} className="min-w-0 flex-1 truncate text-card-title">
-              {column.title}
-            </span>
+            <div className="flex min-w-0 flex-1 items-center gap-1.5">
+              <span title={column.title} className="min-w-0 truncate text-card-title">
+                {column.title}
+              </span>
+              <EditDetailsPencil
+                label={t('layout.column.editDetails.menuLabel')}
+                onClick={() => setEditDetailsOpen(true)}
+              />
+            </div>
+            <Badge
+              variant="secondary"
+              className="shrink-0 tabular-nums"
+              aria-label={t('layout.column.postCount', { count: column.callouts.length })}
+            >
+              {column.callouts.length}
+            </Badge>
             <ColumnOverflowMenu
               column={column}
               actions={columnMenuActions}
               deleteKeys={deleteKeys}
+              deleteDisabledReason={deleteDisabledReason}
               onEditDetails={() => setEditDetailsOpen(true)}
               onRequestLayout={() => setLayoutDialogOpen(true)}
               onRequestPostTemplate={() => setPostTemplateDialogOpen(true)}
@@ -172,34 +193,41 @@ export function LayoutPoolColumn({
               t={t}
             />
           </div>
-          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-            {column.isCurrentPhase && (
-              <Badge variant="default">
-                <Check aria-hidden="true" />
-                {t('layout.column.activePhase.badge')}
-              </Badge>
-            )}
-            {column.isHidden && (
-              <Badge variant="secondary">
-                <EyeOff aria-hidden="true" />
-                {t('layout.column.hideShow.hiddenBadge')}
-              </Badge>
-            )}
-          </div>
+          {(column.isCurrentPhase || column.isHidden) && (
+            <div className="flex flex-wrap items-center gap-1.5">
+              {column.isCurrentPhase && (
+                <Badge variant="outline" className="border-primary/40 bg-primary/5 text-primary">
+                  <Check aria-hidden="true" />
+                  {t('layout.column.activePhase.badge')}
+                </Badge>
+              )}
+              {column.isHidden && (
+                <Badge variant="secondary">
+                  <EyeOff aria-hidden="true" />
+                  {t('layout.column.hideShow.hiddenBadge')}
+                </Badge>
+              )}
+            </div>
+          )}
           {column.description && (
-            <InlineMarkdown
-              content={column.description}
-              clampLines={3}
-              className="mt-1 block text-body text-muted-foreground break-words"
-            />
+            <div className="flex items-start gap-1">
+              <InlineMarkdown
+                content={column.description}
+                clampLines={2}
+                className="block min-w-0 flex-1 text-caption text-muted-foreground break-words"
+              />
+              <EditDetailsPencil
+                label={t('layout.column.editDetails.menuLabel')}
+                onClick={() => setEditDetailsOpen(true)}
+                className="mt-0.5"
+              />
+            </div>
           )}
         </div>
-        <CardContent ref={setCalloutDropRef} className="flex flex-col gap-2 px-4 py-3">
+        <CardContent ref={setCalloutDropRef} className="flex min-h-[60px] flex-col gap-1.5 p-1.5">
           <SortableContext items={calloutIds} strategy={verticalListSortingStrategy}>
             {column.callouts.length === 0 && (
-              <div className="rounded-md border border-dashed p-4 text-center text-caption text-muted-foreground">
-                {t('layout.column.empty')}
-              </div>
+              <div className="py-4 text-center text-caption text-muted-foreground/70">{t('layout.column.empty')}</div>
             )}
             {column.callouts.map((callout: LayoutCallout) => (
               <LayoutCalloutRow
@@ -210,6 +238,7 @@ export function LayoutPoolColumn({
                 showDescription={showDescription}
                 onMoveToColumn={onMoveToColumn}
                 onViewPost={onViewPost}
+                locked={locked}
               />
             ))}
           </SortableContext>
@@ -302,6 +331,7 @@ type ColumnOverflowMenuProps = {
   actions: ColumnMenuActions;
   /** Literal i18n keys for the Delete entry — the tab set (L0) or the phase set (subspaces). */
   deleteKeys: DeleteKeySet;
+  deleteDisabledReason?: string;
   onEditDetails: () => void;
   onRequestLayout: () => void;
   onRequestPostTemplate: () => void;
@@ -310,10 +340,28 @@ type ColumnOverflowMenuProps = {
   t: ReturnType<typeof useTranslation<'crd-spaceSettings'>>['t'];
 };
 
+/** Small pencil that opens the column's Edit Details dialog (same as the ⋯ menu entry). */
+function EditDetailsPencil({ label, onClick, className }: { label: string; onClick: () => void; className?: string }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className={cn(
+        'shrink-0 rounded-sm text-muted-foreground/50 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        className
+      )}
+    >
+      <Pencil aria-hidden="true" className="size-3" />
+    </button>
+  );
+}
+
 function ColumnOverflowMenu({
   column,
   actions,
   deleteKeys,
+  deleteDisabledReason,
   onEditDetails,
   onRequestLayout,
   onRequestPostTemplate,
@@ -327,8 +375,14 @@ function ColumnOverflowMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild={true}>
-        <Button type="button" variant="ghost" size="icon" aria-label={t('layout.column.menu')} className="shrink-0">
-          <MoreVertical aria-hidden="true" className="size-4" />
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          aria-label={t('layout.column.menu')}
+          className="size-6 shrink-0 text-muted-foreground"
+        >
+          <MoreVertical aria-hidden="true" className="size-3.5" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -381,9 +435,18 @@ function ColumnOverflowMenu({
         {actions.onDeletePhase && column.isDeletable !== false && (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={onRequestDeletePhase}>
-              <Trash2 aria-hidden="true" className="mr-2 size-3.5" />
-              {t(deleteKeys.menuLabel)}
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
+              onClick={onRequestDeletePhase}
+              disabled={!!deleteDisabledReason}
+            >
+              <Trash2 aria-hidden="true" className="mr-2 size-3.5 self-start mt-0.5" />
+              <span className="flex flex-col">
+                {t(deleteKeys.menuLabel)}
+                {deleteDisabledReason && (
+                  <span className="text-caption text-muted-foreground">{deleteDisabledReason}</span>
+                )}
+              </span>
             </DropdownMenuItem>
           </>
         )}

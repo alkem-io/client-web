@@ -14,12 +14,9 @@ const buildLabels = (owner: 'user' | 'organisation'): MembershipsSectionLabels =
   filteredEmptyDescription: `${owner}: adjust filters`,
   clearFilters: 'Clear Filters',
   emptyCaption: `${owner}: no memberships yet`,
-  typeSpace: 'Space',
-  typeSubspace: 'Subspace',
   roleLabel: role => `${owner} role ${role}`,
-  viewLabel: type => `View ${type}`,
-  leaveLabel: type => `Leave ${type}`,
-  menuTriggerAriaLabel: name => `${owner}: more actions for ${name}`,
+  leave: 'Leave',
+  leaveAriaLabel: name => `${owner}: leave ${name}`,
   ledBy: 'Led by:',
   ledByAria: count => `${count} leads`,
   leadsMore: count => `and ${count} more`,
@@ -29,7 +26,7 @@ const ROWS: MembershipRowData[] = [
   {
     id: 'space-1',
     displayName: 'Garden Space',
-    bannerUrl: 'https://cdn/garden.jpg',
+    avatarUrl: 'https://cdn/garden.jpg',
     color: '#42a5f5',
     type: 'Space',
     role: 'Member',
@@ -69,25 +66,21 @@ const renderSection = (overrides: Partial<Parameters<typeof MembershipsSection>[
 };
 
 describe('MembershipsSection', () => {
-  it.each([
-    'user',
-    'organisation',
-  ] as const)('renders every row with its type badge and role label (%s labels)', owner => {
+  it.each(['user', 'organisation'] as const)('renders every row with its role label (%s labels)', owner => {
     renderSection({ labels: buildLabels(owner) });
 
     expect(screen.getByText('Garden Space')).toBeInTheDocument();
     expect(screen.getByText('Garden Patch')).toBeInTheDocument();
-    expect(screen.getByText('Space')).toBeInTheDocument();
-    expect(screen.getByText('Subspace')).toBeInTheDocument();
     expect(screen.getByText(`${owner} role Member`)).toBeInTheDocument();
     expect(screen.getByText(`${owner} role Lead`)).toBeInTheDocument();
     expect(screen.getByText(`${owner}: showing 2 of 2`)).toBeInTheDocument();
   });
 
-  it('names each card menu trigger after the card it acts on', () => {
+  it('names each Leave button after the row it acts on and links the name to the space', () => {
     renderSection();
-    expect(screen.getByRole('button', { name: 'organisation: more actions for Garden Space' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'organisation: more actions for Garden Patch' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'organisation: leave Garden Space' })).toHaveTextContent('Leave');
+    expect(screen.getByRole('button', { name: 'organisation: leave Garden Patch' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Garden Patch' })).toHaveAttribute('href', '/garden/patch');
   });
 
   it('exposes the pressed state on the filter segments and reports a segment click', () => {
@@ -101,14 +94,11 @@ describe('MembershipsSection', () => {
     expect(props.onFilterChange).toHaveBeenCalledWith('subspaces');
   });
 
-  it('calls onLeave with the exact row from the card menu and nothing else', async () => {
-    const user = userEvent.setup({ pointerEventsCheck: 0 });
+  it('calls onLeave with the exact row from its Leave button and nothing else', async () => {
+    const user = userEvent.setup();
     const props = renderSection();
 
-    const subspaceTrigger = screen.getByRole('button', { name: 'organisation: more actions for Garden Patch' });
-    await user.click(subspaceTrigger);
-    expect(screen.queryByRole('menuitem', { name: 'View Subspace' })).toBeInTheDocument();
-    await user.click(screen.getByRole('menuitem', { name: 'Leave Subspace' }));
+    await user.click(screen.getByRole('button', { name: 'organisation: leave Garden Patch' }));
 
     expect(props.onLeave).toHaveBeenCalledTimes(1);
     expect(props.onLeave).toHaveBeenCalledWith(ROWS[1]);
@@ -135,11 +125,11 @@ describe('MembershipsSection', () => {
     expect(props.onClearFilters).toHaveBeenCalledTimes(1);
   });
 
-  it('describes the banner by the space name and labels the "Led by" avatar group', () => {
+  it('labels the "Led by" avatar group, and shows it only for rows with leads', () => {
     renderSection();
 
-    expect(screen.getByRole('img', { name: 'Garden Space' })).toHaveAttribute('src', 'https://cdn/garden.jpg');
     expect(screen.getByRole('group', { name: '2 leads' })).toBeInTheDocument();
+    expect(screen.getAllByText('Led by:')).toHaveLength(1);
   });
 
   it('reports search input changes', () => {

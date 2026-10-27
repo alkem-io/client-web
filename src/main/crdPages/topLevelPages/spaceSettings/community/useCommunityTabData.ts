@@ -207,6 +207,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
         state,
         contributorType: mapActorType(app.contributorType),
         displayName: app.actor.profile?.displayName ?? '',
+        avatarUrl: app.actor.profile?.avatar?.uri,
         email: app.actor.profile?.email,
         url: app.actor.profile?.url,
         createdDate: toIsoString(app.createdDate),
@@ -220,7 +221,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
 
   // Open organization invitations get their own section (Member Organisations →
   // Pending invitations), not the generic pending-memberships table — excluded
-  // here. Resolved ones fall through and are listed (and deletable) exactly
+  // here. Resolved ones fall through and are listed (rejected ones deletable) exactly
   // like a resolved user invitation.
   const invitationMemberships: PendingMembership[] = community.membershipAdmin.invitations
     .filter(inv => !isOpenOrganizationInvitation(inv))
@@ -233,12 +234,14 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
         state,
         contributorType: mapActorType(inv.contributorType),
         displayName: inv.actor.profile?.displayName ?? '',
+        avatarUrl: inv.actor.profile?.avatar?.uri,
         email: inv.actor.profile?.email,
         url: inv.actor.profile?.url,
         createdDate: toIsoString(inv.createdDate),
         canApprove: false,
         canReject: false,
-        canDelete: true,
+        // Deleting an accepted invitation fails server-side — hidden like an approved application.
+        canDelete: state !== 'accepted',
         canResend: false,
       };
     })

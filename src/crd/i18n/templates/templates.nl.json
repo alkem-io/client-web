@@ -10,6 +10,7 @@
     "deleting": "Bezig met verwijderen…",
     "noTemplates": "Nog geen templates",
     "noTemplatesHint": "Maak er een, of importeer er een uit de bibliotheek.",
+    "browseLibrary": "Algemene bibliotheek doorzoeken",
     "noTemplatesReadOnly": "Nog geen templates.",
     "sectionList": "Template-secties",
     "templateList": "Templates",
@@ -94,8 +95,8 @@
       "formQuestionType": {
         "SHORT_TEXT": "Korte tekst",
         "LONG_TEXT": "Lange tekst",
-        "SINGLE_CHOICE": "Enkele keuze",
-        "MULTIPLE_CHOICE": "Meerdere keuzes"
+        "SINGLE_CHOICE": "Eén antwoord",
+        "MULTIPLE_CHOICE": "Meerdere antwoorden mogelijk"
       }
     },
     "whiteboard": {
@@ -324,7 +325,7 @@
     },
     "searchVisibilityHints": {
       "public": "Iedereen kan dit pakket via zoeken vinden.",
-      "account": "Alleen het eigenaarsaccount kan dit pakket via zoeken vinden — inclusief de geassocieerden, als de eigenaar een organisatie is.",
+      "account": "Alleen het eigenaarsaccount kan dit pakket via zoeken vinden — inclusief de betrokkenen, als de eigenaar een organisatie is.",
       "hidden": "Alleen beheerders van het eigenaarsaccount kunnen dit pakket via zoeken vinden."
     },
     "save": "Wijzigingen opslaan",

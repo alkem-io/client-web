@@ -93,7 +93,7 @@
       "org": {
         "profile": "Profil",
         "account": "Konto",
-        "community": "Assoziierte",
+        "associates": "Assoziierte",
         "membership": "Mitgliedschaft",
         "settings": "Einstellungen",
         "invitations": "Einladungen",
@@ -179,6 +179,9 @@
           "confirm": "Referenz entfernen"
         }
       },
+      "references": {
+        "title": "Referenzen"
+      },
       "avatar": {
         "title": "Profilbild",
         "changeButton": "Avatar ändern",
@@ -205,17 +208,10 @@
         "filteredEmptyDescription": "Passe die Filter oder die Suchanfrage an.",
         "clearFilters": "Filter zurücksetzen"
       },
-      "menu": {
-        "viewByType": "{{type}} ansehen"
-      },
       "filter": {
         "all": "Alle",
         "spaces": "Spaces",
         "subspaces": "Subspaces"
-      },
-      "type": {
-        "space": "Space",
-        "subspace": "Subspace"
       },
       "role": {
         "admin": "Admin",
@@ -223,8 +219,8 @@
         "member": "Mitglied"
       },
       "leave": {
-        "menuItem": "Verlassen",
-        "menuItemLabeled": "{{type}} verlassen",
+        "button": "Verlassen",
+        "buttonAria": "{{name}} verlassen",
         "dialogTitle": "Diese Mitgliedschaft verlassen?",
         "dialogDescription": "Du bist im Begriff, „{{spaceName}}“ zu verlassen. Du verlierst den Zugriff auf mitgliederexklusive Inhalte und musst dich erneut bewerben.",
         "dialogConfirm": "Verlassen",
@@ -570,25 +566,25 @@
     },
     "organizations": {
       "pageTitle": "Organisationen",
+      "myOrganizations": "Meine Organisationen",
       "searchPlaceholder": "Organisationen suchen...",
       "createButton": "Organisation erstellen",
+      "createDescription": "Erstelle eine neue Organisation, um mit deinem Team zusammenzuarbeiten.",
+      "newOrganization": "Neue Organisation",
       "summary": "{{shown}} von {{total}} Organisationen angezeigt",
       "empty": "Du bist noch keiner Organisation zugeordnet.",
       "filteredEmptyTitle": "Keine Organisationen gefunden",
       "filteredEmptyDescription": "Versuche es mit einem anderen Namen oder Standort.",
       "clearSearch": "Suche zurücksetzen",
       "verified": "Verifiziert",
-      "associates": "Mitglieder",
       "associatesCount": "{{count}} Mitglieder",
       "role": {
         "admin": "Admin",
         "associate": "Mitglied"
       },
-      "menu": {
-        "viewProfile": "Profil ansehen",
-        "disassociate": "Verbindung lösen"
-      },
       "disassociate": {
+        "button": "Verbindung lösen",
+        "buttonAria": "Verbindung zu {{name}} lösen",
         "dialogTitle": "Verbindung mit dieser Organisation lösen?",
         "dialogDescription": "Du bist im Begriff, „{{name}}“ zu verlassen. Du verlierst deine Rolle und alle zugehörigen Rechte.",
         "dialogConfirm": "Verbindung lösen",
@@ -598,22 +594,17 @@
     },
     "account": {
       "pageTitle": "Konto",
-      "helpBanner": "Hier kannst du deine aktiven Ressourcen einsehen und deine Kontolimits verwalten.",
       "spaces": {
-        "title": "Gehostete Spaces",
-        "createButton": "Space erstellen"
+        "title": "Gehostete Spaces"
       },
       "virtualContributors": {
-        "title": "Virtuelle Mitwirkende",
-        "createButton": "Mitwirkenden hinzufügen"
+        "title": "Virtuelle Mitwirkende"
       },
       "innovationPacks": {
-        "title": "Vorlagenpakete",
-        "createButton": "Neues Paket"
+        "title": "Vorlagenpakete"
       },
       "innovationHubs": {
-        "title": "Eigene Startseiten",
-        "createButton": "Neue Seite"
+        "title": "Eigene Startseiten"
       },
       "actions": {
         "view": "Anzeigen",
@@ -625,6 +616,9 @@
         "title": "Diese Ressource löschen?",
         "description": "Damit wird „{{name}}“ dauerhaft entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
         "confirm": "Löschen"
+      },
+      "dangerZone": {
+        "title": "Gefahrenzone"
       }
     },
     "assistant": {
@@ -725,6 +719,9 @@
           "confirm": "Referenz entfernen"
         }
       },
+      "references": {
+        "title": "Referenzen"
+      },
       "logo": {
         "title": "Logo",
         "changeButton": "Logo ändern",
@@ -739,22 +736,17 @@
     },
     "account": {
       "pageTitle": "Konto",
-      "helpBanner": "Hier kannst du die aktiven Ressourcen deiner Organisation einsehen und Kontolimits verwalten.",
       "spaces": {
-        "title": "Gehostete Spaces",
-        "createButton": "Space erstellen"
+        "title": "Gehostete Spaces"
       },
       "virtualContributors": {
-        "title": "Virtuelle Mitwirkende",
-        "createButton": "Mitwirkenden hinzufügen"
+        "title": "Virtuelle Mitwirkende"
       },
       "innovationPacks": {
-        "title": "Vorlagenpakete",
-        "createButton": "Neues Paket"
+        "title": "Vorlagenpakete"
       },
       "innovationHubs": {
-        "title": "Eigene Startseiten",
-        "createButton": "Neue Seite"
+        "title": "Eigene Startseiten"
       },
       "actions": {
         "view": "Anzeigen",
@@ -800,19 +792,13 @@
         "spaces": "Spaces",
         "subspaces": "Subspaces"
       },
-      "type": {
-        "space": "Space",
-        "subspace": "Subspace"
-      },
       "role": {
         "lead": "Lead",
         "member": "Mitglied"
       },
-      "menu": {
-        "viewByType": "{{type}} ansehen"
-      },
       "leave": {
-        "menuItemLabeled": "{{type}} verlassen",
+        "button": "Verlassen",
+        "buttonAria": "{{name}} verlassen",
         "dialogTitle": "Diese Mitgliedschaft verlassen?",
         "dialogDescription": "Ihre Organisation ist im Begriff, „{{spaceName}}“ und alle seine Subspaces zu verlassen und gibt dort jede Rolle auf, auch die als Lead. Sie verliert den Zugriff auf mitgliederexklusive Inhalte und müsste erneut eingeladen werden, um wieder beizutreten.",
         "dialogConfirm": "Verlassen",
@@ -1109,8 +1095,8 @@
         "innovationPacksTooltip": "Du hast {{usage}} von {{limit}} verfügbaren Template Packs in deinem Konto erstellt.",
         "innovationHubsTooltip": "Du hast {{usage}} von {{limit}} verfügbaren eigenen Startseiten in deinem Konto erstellt."
       },
+      "empty": "Hier ist noch nichts.",
       "kebabAriaLabel": "Weitere Aktionen",
-      "kebabAriaLabelFor": "Weitere Aktionen für {{name}}",
       "createNewSpace": {
         "ariaLabel": "Neuen Space erstellen",
         "heading": "Neuen Space erstellen",
