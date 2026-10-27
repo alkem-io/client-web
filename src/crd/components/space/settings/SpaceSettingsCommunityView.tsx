@@ -179,6 +179,8 @@ export function SpaceSettingsCommunityView({
 }: SpaceSettingsCommunityViewProps) {
   const { t, i18n } = useTranslation('crd-spaceSettings');
   const locale = resolveDateFnsLocale(i18n.language);
+  // FR-042: subspace copy via the i18next `_subspace` key variants.
+  const context = level === 'L0' ? undefined : 'subspace';
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [orgSearch, setOrgSearch] = useState('');
@@ -240,7 +242,7 @@ export function SpaceSettingsCommunityView({
       {/* Space Members table */}
       <SettingsSection
         id="members"
-        title={t('community.members.title')}
+        title={t('community.members.title', { context })}
         icon={<Users className="size-4" />}
         iconColor="blue"
         badge={<CountBadge count={filtered.length} />}
@@ -366,7 +368,7 @@ export function SpaceSettingsCommunityView({
                                     onClick={() => onUserRemove?.(m.id)}
                                   >
                                     <Trash2 aria-hidden="true" className="mr-2 size-4" />
-                                    {t('community.members.dropdown.removeFromSpace')}
+                                    {t('community.members.dropdown.removeFromSpace', { context })}
                                   </DropdownMenuItem>
                                 )}
                               </>
@@ -561,7 +563,7 @@ export function SpaceSettingsCommunityView({
                                   onClick={() => onOrgRemove?.(org.id)}
                                 >
                                   <Trash2 aria-hidden="true" className="mr-2 size-4" />
-                                  {t('community.organizations.dropdown.removeFromSpace')}
+                                  {t('community.organizations.dropdown.removeFromSpace', { context })}
                                 </DropdownMenuItem>
                               )}
                             </>

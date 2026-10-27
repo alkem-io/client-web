@@ -23,7 +23,8 @@
   "layout": {
     "pageHeader": {
       "title": "Layout",
-      "subtitle": "Pas de navigatietabbladen van je Space aan. Hernoem, herorden en beheer toewijzingen van Posts."
+      "subtitle": "Pas de navigatietabbladen van je Space aan. Hernoem, herorden en beheer toewijzingen van Posts.",
+      "subtitle_subspace": "Pas de navigatietabbladen van je Subspace aan. Hernoem, herorden en beheer toewijzingen van Posts."
     },
     "loading": "Layout laden…",
     "column": {
@@ -113,6 +114,7 @@
         "widgets": {
           "intent": "Intentie & Leads",
           "about": "Over deze Space",
+          "about_subspace": "Over deze Subspace",
           "createPost": "Post toevoegen",
           "applicationButton": "Aanmelden / Deelnemen",
           "createSubspace": "Subspace aanmaken",
@@ -286,6 +288,7 @@
     },
     "members": {
       "title": "Space-leden",
+      "title_subspace": "Subspace-leden",
       "search": "Leden zoeken…",
       "invite": "Uitnodigen",
       "name": "Naam",
@@ -304,7 +307,8 @@
       "dropdown": {
         "viewProfile": "Profiel bekijken",
         "changeRole": "Rol wijzigen",
-        "removeFromSpace": "Uit Space verwijderen"
+        "removeFromSpace": "Uit Space verwijderen",
+        "removeFromSpace_subspace": "Uit Subspace verwijderen"
       },
       "pagination": {
         "showing": "{{from}} tot {{to}} van {{total}} leden weergegeven",
@@ -344,7 +348,8 @@
       "dropdown": {
         "viewProfile": "Profiel bekijken",
         "changeRole": "Rol wijzigen",
-        "removeFromSpace": "Uit Space verwijderen"
+        "removeFromSpace": "Uit Space verwijderen",
+        "removeFromSpace_subspace": "Uit Subspace verwijderen"
       },
       "invite": "Organisatie uitnodigen",
       "search": "Organisaties zoeken…",
@@ -393,6 +398,7 @@
       "title": "Communityrichtlijnen",
       "hint": "Wordt aan nieuwe leden getoond bij hun lidmaatschap.",
       "placeholder": "Beschrijf de gedragscode van je Space…",
+      "placeholder_subspace": "Beschrijf de gedragscode van je Subspace…",
       "titleLabel": "Titel",
       "titlePlaceholder": "Geef je communityrichtlijnen een naam",
       "referencesLabel": "Gerelateerde links",
@@ -429,7 +435,8 @@
       },
       "applicationReject": {
         "title": "Aanvraag afwijzen",
-        "description": "De aanvraag van {{name}} om lid te worden van deze Space afwijzen?"
+        "description": "De aanvraag van {{name}} om lid te worden van deze Space afwijzen?",
+        "description_subspace": "De aanvraag van {{name}} om lid te worden van deze Subspace afwijzen?"
       },
       "applicationDelete": {
         "title": "Aanvraag verwijderen",
@@ -759,23 +766,30 @@
       "title": "Zichtbaarheid",
       "public": "Openbaar",
       "publicDescription": "Deze Space en de inhoud ervan zijn zichtbaar voor iedereen op het platform. Gebruikers kunnen alleen bijdragen als ze lid zijn.",
+      "publicDescription_subspace": "Deze Subspace en de inhoud ervan zijn zichtbaar voor iedereen op het platform. Gebruikers kunnen alleen bijdragen als ze lid zijn.",
       "private": "Privé",
       "privateDescription": "Deze Space is zichtbaar voor iedereen op het platform, maar de inhoud is alleen zichtbaar voor leden.",
-      "hint": "Houd rekening met het doel en het publiek van je Space bij het kiezen van de zichtbaarheid."
+      "privateDescription_subspace": "Deze Subspace is zichtbaar voor iedereen op het platform, maar de inhoud is alleen zichtbaar voor leden.",
+      "hint": "Houd rekening met het doel en het publiek van je Space bij het kiezen van de zichtbaarheid.",
+      "hint_subspace": "Houd rekening met het doel en het publiek van je Subspace bij het kiezen van de zichtbaarheid."
     },
     "membership": {
       "title": "Lidmaatschap",
       "open": "Geen aanvraag vereist",
       "openDescription": "Alle Space-leden kunnen direct lid worden, zonder dat je hun aanvragen hoeft te beoordelen.",
+      "openDescription_subspace": "Alle leden van de bovenliggende Space kunnen direct lid worden, zonder dat je hun aanvragen hoeft te beoordelen.",
       "openHint": "Het beste voor openbare, open samenwerkings-Spaces",
+      "openHint_subspace": "Het beste voor openbare, open samenwerkings-Subspaces",
       "application": "Aanvraag vereist",
       "applicationDescription": "Als mensen lid willen worden, moeten ze het aanvraagformulier invullen. Je ontvangt hun aanvragen (zie het communitytabblad hier) en je kunt ze accepteren of afwijzen.",
       "applicationHint": "Het beste voor gecureerde Spaces met specifieke vereisten",
+      "applicationHint_subspace": "Het beste voor gecureerde Subspaces met specifieke vereisten",
       "invitation": "Alleen op uitnodiging",
       "invitationDescription": "Gebruikers kunnen alleen lid worden nadat je ze hebt uitgenodigd. Er is geen 'aanvragen'- of 'lid worden'-knop voor anderen om op te klikken.",
       "invitationHint": "Het beste voor private, beperkte samenwerkingsteams",
       "trustedApplicants": "Vertrouwde aanvragers",
-      "hostOrgTrust": "Sta leden van {{host}} toe lid te worden van deze Space zonder aanvraag."
+      "hostOrgTrust": "Sta leden van {{host}} toe lid te worden van deze Space zonder aanvraag.",
+      "hostOrgTrust_subspace": "Sta leden van {{host}} toe lid te worden van deze Subspace zonder aanvraag."
     },
     "applicationForm": {
       "title": "Aanvraagformulier",
@@ -830,10 +844,14 @@
     "userInfoVisibility": {
       "title": "Zichtbaarheid van gebruikersinformatie",
       "description": "Bepaal wie de gebruikersinformatie van leden in deze space kan zien. Organisaties en virtual contributors volgen de zichtbaarheid van de space.",
+      "description_subspace": "Bepaal wie de gebruikersinformatie van leden in deze subspace kan zien. Organisaties en virtual contributors volgen de zichtbaarheid van de subspace.",
       "followSpace": "Volg de space-zichtbaarheid",
+      "followSpace_subspace": "Volg de subspace-zichtbaarheid",
       "followSpaceDescription": "Gebruikersinformatie van leden is zichtbaar volgens de zichtbaarheid van de space.",
+      "followSpaceDescription_subspace": "Gebruikersinformatie van leden is zichtbaar volgens de zichtbaarheid van de subspace.",
       "membersOnly": "Alleen leden",
-      "membersOnlyDescription": "Alleen leden van deze space kunnen de gebruikersinformatie van leden zien."
+      "membersOnlyDescription": "Alleen leden van deze space kunnen de gebruikersinformatie van leden zien.",
+      "membersOnlyDescription_subspace": "Alleen leden van deze subspace kunnen de gebruikersinformatie van leden zien."
     }
   },
   "storage": {
@@ -902,11 +920,14 @@
     },
     "name": {
       "title": "Naam van de Space",
-      "description": "De openbare naam van je Space."
+      "title_subspace": "Naam van de Subspace",
+      "description": "De openbare naam van je Space.",
+      "description_subspace": "De openbare naam van je Subspace."
     },
     "tagline": {
       "title": "Ondertitel",
-      "description": "Een korte ondertitel die naast de Space-naam wordt weergegeven."
+      "description": "Een korte ondertitel die naast de Space-naam wordt weergegeven.",
+      "description_subspace": "Een korte ondertitel die naast de Subspace-naam wordt weergegeven."
     },
     "branding": {
       "noImage": "Geen afbeelding",
@@ -914,6 +935,7 @@
         "title": "Avatar",
         "size": "410 × 410px",
         "hint": "Het logo van de Space.",
+        "hint_subspace": "Het logo van de Subspace.",
         "recrop": "Huidige avatar bijsnijden",
         "upload": "Avatar uploaden"
       },
@@ -928,6 +950,7 @@
         "title": "Kaartbanner",
         "size": "416 × 256px",
         "hint": "Wordt weergegeven in zoekresultaten en Space-kaarten.",
+        "hint_subspace": "Wordt weergegeven in zoekresultaten en op het overzicht van de bovenliggende Space.",
         "recrop": "Huidige kaartbanner bijsnijden",
         "upload": "Kaartbanner uploaden"
       },
@@ -951,6 +974,7 @@
     "location": {
       "title": "Locatie",
       "description": "De stad en het land van deze Space.",
+      "description_subspace": "De stad en het land van deze Subspace.",
       "city": "Stad",
       "country": "Land (ISO-code)",
       "countryPlaceholder": "Land"
@@ -958,26 +982,33 @@
     "what": {
       "title": "Wat",
       "description": "Beschrijf waarover deze Space gaat.",
-      "placeholder": "Waarover gaat deze Space…"
+      "description_subspace": "Beschrijf waarover deze Subspace gaat.",
+      "placeholder": "Waarover gaat deze Space…",
+      "placeholder_subspace": "Waarover gaat deze Subspace…"
     },
     "why": {
       "title": "Waarom",
       "description": "Leg de motivatie of waarde van deze Space uit.",
-      "placeholder": "Waarom bestaat deze Space…"
+      "description_subspace": "Leg de motivatie of waarde van deze Subspace uit.",
+      "placeholder": "Waarom bestaat deze Space…",
+      "placeholder_subspace": "Waarom bestaat deze Subspace…"
     },
     "who": {
       "title": "Wie",
       "description": "Beschrijf het doelpubliek of de ideale leden.",
-      "placeholder": "Voor wie is deze Space…"
+      "placeholder": "Voor wie is deze Space…",
+      "placeholder_subspace": "Voor wie is deze Subspace…"
     },
     "tags": {
       "title": "Tags",
       "description": "Tags helpen leden je Space te ontdekken.",
+      "description_subspace": "Tags helpen leden je Subspace te ontdekken.",
       "placeholder": "Voeg een tag toe en druk op Enter"
     },
     "references": {
       "title": "Referenties en links",
       "description": "Externe links die op deze Space-pagina worden weergegeven.",
+      "description_subspace": "Externe links die op deze Subspace-pagina worden weergegeven.",
       "empty": "Nog geen referenties toegevoegd.",
       "add": "Toevoegen",
       "row": {
@@ -1002,26 +1033,32 @@
       "label": "VOORBEELD",
       "livePreview": {
         "title": "Live voorbeeld",
-        "description": "Dit voorbeeld toont hoe je Space-kaart wordt weergegeven in de \"Explore Spaces\"-directory."
+        "description": "Dit voorbeeld toont hoe je Space-kaart wordt weergegeven in de \"Explore Spaces\"-directory.",
+        "description_subspace": "Dit voorbeeld toont hoe je Subspace-kaart wordt weergegeven op het overzicht van de bovenliggende Space en in zoekresultaten."
       }
     }
   },
   "classifications": {
     "sectionTitle": "Classificaties",
     "sectionDescription": "Classificeer je Space met gestructureerde vocabulaires (bijv. SDG's, Sector) voor vindbaarheid en rapportage.",
+    "sectionDescription_subspace": "Classificeer je Subspace met gestructureerde vocabulaires (bijv. SDG's, Sector) voor vindbaarheid en rapportage.",
     "addButton": "Classificatie toevoegen",
     "picker": {
       "title": "Add a classification",
       "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
+      "description_subspace": "Kies een classificatie-template om aan deze Subspace toe te voegen. Daarna selecteer je de waarden.",
       "platformSection": "Platform-wide",
       "spaceSection": "This Space's library",
+      "spaceSection_subspace": "Bibliotheek van de hoofd-Space",
       "emptyState": {
         "title": "No Classification Templates yet",
-        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it."
+        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it.",
+        "description_subspace": "Maak er een aan in een Template Pack of in de Template Bibliotheek van de hoofd-Space en kom dan hier terug om hem toe te voegen."
       },
       "conflict": {
         "title": "That name is already in use",
         "description": "This Space already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
+        "description_subspace": "Deze Subspace heeft al een classificatie met het label \"{{label}}\". Geef de nieuwe een ander weergavelabel om ze uit elkaar te houden.",
         "fieldLabel": "Display label",
         "retry": "Add with this label"
       },
@@ -1036,7 +1073,9 @@
     },
     "display": {
       "toggleLabel": "Show on the Space page",
-      "hiddenHint": "Not shown on the Space page"
+      "toggleLabel_subspace": "Tonen op de Subspace-pagina",
+      "hiddenHint": "Not shown on the Space page",
+      "hiddenHint_subspace": "Niet getoond op de Subspace-pagina"
     },
     "remove": {
       "menuLabel": "Remove classification"

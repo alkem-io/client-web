@@ -12,6 +12,7 @@ type CommunityGuidelinesSectionProps = {
   onApplyTemplate: () => void;
   onSaveAsTemplate: () => void;
   markdown: MarkdownUploadProps;
+  subspace?: boolean;
 };
 
 /** Community tab → Community Guidelines: rendered preview inline, editing (and templates) in a dialog. */
@@ -20,6 +21,7 @@ export function CommunityGuidelinesSection({
   onApplyTemplate,
   onSaveAsTemplate,
   markdown,
+  subspace,
 }: CommunityGuidelinesSectionProps) {
   const { t } = useTranslation('crd-spaceSettings');
   const [editing, setEditing] = useState(false);
@@ -73,6 +75,7 @@ export function CommunityGuidelinesSection({
           onReferenceFileUpload={guidelines.onReferenceFileUpload}
           referenceUploadAccept={guidelines.referenceUploadAccept}
           hideActions={true}
+          subspace={subspace}
           {...markdown}
         />
       </SettingsEditorDialog>
