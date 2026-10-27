@@ -87,8 +87,8 @@
         }
       },
       "phaseLayout": {
-        "menuLabel": "Layout",
-        "dialogTitle": "Layout: {{phaseName}}",
+        "menuLabel": "Оформление",
+        "dialogTitle": "Оформление: {{phaseName}}",
         "descriptionHeight": {
           "label": "Описание на Post",
           "collapsedHint": "Posts започват свити — членовете могат да ги разгърнат за четене.",
@@ -1044,41 +1044,41 @@
     "sectionDescription_subspace": "Класифицирайте подпространството си със структурирани речници (напр. ЦУР, Сектор) за откриваемост и отчетност.",
     "addButton": "Добави класификация",
     "picker": {
-      "title": "Add a classification",
-      "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
+      "title": "Добавяне на класификация",
+      "description": "Изберете шаблон за класификация, който да добавите към това пространство. След това ще изберете стойностите му.",
       "description_subspace": "Изберете шаблон за класификация, който да добавите към това подпространство. След това ще изберете стойностите му.",
-      "platformSection": "Platform-wide",
-      "spaceSection": "This Space's library",
+      "platformSection": "За цялата платформа",
+      "spaceSection": "Библиотека на това пространство",
       "spaceSection_subspace": "Библиотека на пространството от най-горно ниво",
       "emptyState": {
-        "title": "No Classification Templates yet",
-        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it.",
+        "title": "Все още няма шаблони за класификация",
+        "description": "Създайте такъв в пакет с шаблони или в библиотеката с шаблони на това пространство, след което се върнете тук, за да го добавите.",
         "description_subspace": "Създайте такъв в пакет с шаблони или в библиотеката с шаблони на пространството от най-горно ниво, след което се върнете тук, за да го добавите."
       },
       "conflict": {
-        "title": "That name is already in use",
-        "description": "This Space already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
+        "title": "Това име вече се използва",
+        "description": "Това пространство вече има класификация с етикет \"{{label}}\". Дайте на новата различен етикет, за да ги различавате.",
         "description_subspace": "Това подпространство вече има класификация с етикет \"{{label}}\". Дайте на новата различен етикет, за да ги различавате.",
-        "fieldLabel": "Display label",
-        "retry": "Add with this label"
+        "fieldLabel": "Показван етикет",
+        "retry": "Добавяне с този етикет"
       },
-      "cancel": "Cancel",
+      "cancel": "Отказ",
       "searchPlaceholder": "Търсене на шаблони…",
       "noMatches": "Няма шаблони, съвпадащи с \"{{query}}\".",
       "multiSelect": "Множ.",
       "singleSelect": "Един."
     },
     "valueSelector": {
-      "noneSelected": "No values selected yet"
+      "noneSelected": "Все още няма избрани стойности"
     },
     "display": {
-      "toggleLabel": "Show on the Space page",
+      "toggleLabel": "Показване на страницата на пространството",
       "toggleLabel_subspace": "Показване на страницата на подпространството",
-      "hiddenHint": "Not shown on the Space page",
+      "hiddenHint": "Не се показва на страницата на пространството",
       "hiddenHint_subspace": "Не се показва на страницата на подпространството"
     },
     "remove": {
-      "menuLabel": "Remove classification"
+      "menuLabel": "Премахване на класификацията"
     },
     "entry": {
       "multiSelect": "Множествен избор",

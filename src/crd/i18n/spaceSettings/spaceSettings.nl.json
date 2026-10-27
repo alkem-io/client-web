@@ -1044,41 +1044,41 @@
     "sectionDescription_subspace": "Classificeer je Subspace met gestructureerde vocabulaires (bijv. SDG's, Sector) voor vindbaarheid en rapportage.",
     "addButton": "Classificatie toevoegen",
     "picker": {
-      "title": "Add a classification",
-      "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
+      "title": "Classificatie toevoegen",
+      "description": "Kies een classificatie-template om aan deze Space toe te voegen. Daarna selecteer je de waarden.",
       "description_subspace": "Kies een classificatie-template om aan deze Subspace toe te voegen. Daarna selecteer je de waarden.",
-      "platformSection": "Platform-wide",
-      "spaceSection": "This Space's library",
+      "platformSection": "Platformbreed",
+      "spaceSection": "Bibliotheek van deze Space",
       "spaceSection_subspace": "Bibliotheek van de hoofd-Space",
       "emptyState": {
-        "title": "No Classification Templates yet",
-        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it.",
+        "title": "Nog geen classificatie-templates",
+        "description": "Maak er een aan in een Template Pack of in de Template Bibliotheek van deze Space en kom dan hier terug om hem toe te voegen.",
         "description_subspace": "Maak er een aan in een Template Pack of in de Template Bibliotheek van de hoofd-Space en kom dan hier terug om hem toe te voegen."
       },
       "conflict": {
-        "title": "That name is already in use",
-        "description": "This Space already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
+        "title": "Die naam is al in gebruik",
+        "description": "Deze Space heeft al een classificatie met het label \"{{label}}\". Geef de nieuwe een ander weergavelabel om ze uit elkaar te houden.",
         "description_subspace": "Deze Subspace heeft al een classificatie met het label \"{{label}}\". Geef de nieuwe een ander weergavelabel om ze uit elkaar te houden.",
-        "fieldLabel": "Display label",
-        "retry": "Add with this label"
+        "fieldLabel": "Weergavelabel",
+        "retry": "Toevoegen met dit label"
       },
-      "cancel": "Cancel",
+      "cancel": "Annuleren",
       "searchPlaceholder": "Templates zoeken…",
       "noMatches": "Geen templates gevonden voor \"{{query}}\".",
       "multiSelect": "Meer",
       "singleSelect": "Eén"
     },
     "valueSelector": {
-      "noneSelected": "No values selected yet"
+      "noneSelected": "Nog geen waarden geselecteerd"
     },
     "display": {
-      "toggleLabel": "Show on the Space page",
+      "toggleLabel": "Tonen op de Space-pagina",
       "toggleLabel_subspace": "Tonen op de Subspace-pagina",
-      "hiddenHint": "Not shown on the Space page",
+      "hiddenHint": "Niet getoond op de Space-pagina",
       "hiddenHint_subspace": "Niet getoond op de Subspace-pagina"
     },
     "remove": {
-      "menuLabel": "Remove classification"
+      "menuLabel": "Classificatie verwijderen"
     },
     "entry": {
       "multiSelect": "Meerkeuze",

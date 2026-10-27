@@ -59,6 +59,15 @@ describe('crd-spaceSettings subspace variants', () => {
     expect(problems).toEqual([]);
   });
 
+  it.each(
+    locales.filter(([lang]) => lang !== 'en')
+  )('%s translates every subspace variant and its base copy (no English left behind)', (_lang, json) => {
+    const untranslated = subspaceKeys
+      .flatMap(path => [path, path.slice(0, -SUFFIX.length)])
+      .filter(path => getValue(json, path) === getValue(enJson as Json, path));
+    expect(untranslated).toEqual([]);
+  });
+
   it('only mentions a "space" in English when it is the parent or top-level space', () => {
     const offenders = subspaceKeys.filter(path => {
       const value = getValue(enJson as Json, path) ?? '';

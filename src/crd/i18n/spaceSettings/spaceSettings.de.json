@@ -1044,41 +1044,41 @@
     "sectionDescription_subspace": "Klassifiziere deinen Subspace mit strukturierten Vokabularen (z. B. SDGs, Sektor) für Auffindbarkeit und Berichte.",
     "addButton": "Klassifikation hinzufügen",
     "picker": {
-      "title": "Add a classification",
-      "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
+      "title": "Klassifizierung hinzufügen",
+      "description": "Wählen Sie eine Klassifizierungsvorlage, die Sie diesem Space hinzufügen möchten. Als Nächstes wählen Sie ihre Werte aus.",
       "description_subspace": "Wählen Sie eine Klassifizierungsvorlage, die Sie diesem Subspace hinzufügen möchten. Als Nächstes wählen Sie ihre Werte aus.",
-      "platformSection": "Platform-wide",
-      "spaceSection": "This Space's library",
+      "platformSection": "Plattformweit",
+      "spaceSection": "Bibliothek dieses Spaces",
       "spaceSection_subspace": "Bibliothek des Haupt-Spaces",
       "emptyState": {
-        "title": "No Classification Templates yet",
-        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it.",
+        "title": "Noch keine Klassifizierungsvorlagen",
+        "description": "Erstellen Sie eine in einem Vorlagenpaket oder in der Vorlagenbibliothek dieses Spaces und kehren Sie dann hierher zurück, um sie hinzuzufügen.",
         "description_subspace": "Erstellen Sie eine in einem Vorlagenpaket oder in der Vorlagenbibliothek des Haupt-Spaces und kehren Sie dann hierher zurück, um sie hinzuzufügen."
       },
       "conflict": {
-        "title": "That name is already in use",
-        "description": "This Space already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
+        "title": "Dieser Name wird bereits verwendet",
+        "description": "Dieser Space hat bereits eine Klassifizierung mit der Bezeichnung \"{{label}}\". Geben Sie der neuen eine andere Anzeigebezeichnung, um sie zu unterscheiden.",
         "description_subspace": "Dieser Subspace hat bereits eine Klassifizierung mit der Bezeichnung \"{{label}}\". Geben Sie der neuen eine andere Anzeigebezeichnung, um sie zu unterscheiden.",
-        "fieldLabel": "Display label",
-        "retry": "Add with this label"
+        "fieldLabel": "Anzeigebezeichnung",
+        "retry": "Mit dieser Bezeichnung hinzufügen"
       },
-      "cancel": "Cancel",
+      "cancel": "Abbrechen",
       "searchPlaceholder": "Vorlagen durchsuchen…",
       "noMatches": "Keine Vorlagen passen zu \"{{query}}\".",
       "multiSelect": "Mehrfach",
       "singleSelect": "Einzeln"
     },
     "valueSelector": {
-      "noneSelected": "No values selected yet"
+      "noneSelected": "Noch keine Werte ausgewählt"
     },
     "display": {
-      "toggleLabel": "Show on the Space page",
+      "toggleLabel": "Auf der Space-Seite anzeigen",
       "toggleLabel_subspace": "Auf der Subspace-Seite anzeigen",
-      "hiddenHint": "Not shown on the Space page",
+      "hiddenHint": "Nicht auf der Space-Seite angezeigt",
       "hiddenHint_subspace": "Nicht auf der Subspace-Seite angezeigt"
     },
     "remove": {
-      "menuLabel": "Remove classification"
+      "menuLabel": "Klassifizierung entfernen"
     },
     "entry": {
       "multiSelect": "Mehrfachauswahl",

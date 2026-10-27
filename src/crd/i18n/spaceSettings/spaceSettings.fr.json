@@ -87,8 +87,8 @@
         }
       },
       "phaseLayout": {
-        "menuLabel": "Layout",
-        "dialogTitle": "Layout : {{phaseName}}",
+        "menuLabel": "Mise en page",
+        "dialogTitle": "Mise en page : {{phaseName}}",
         "descriptionHeight": {
           "label": "Description du Post",
           "collapsedHint": "Les Posts commencent réduits — les membres les développent pour lire.",
@@ -1044,41 +1044,41 @@
     "sectionDescription_subspace": "Classez votre sous-espace avec des vocabulaires structurés (p. ex. ODD, Secteur) pour la découvrabilité et le reporting.",
     "addButton": "Ajouter une classification",
     "picker": {
-      "title": "Add a classification",
-      "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
+      "title": "Ajouter une classification",
+      "description": "Choisissez un modèle de classification à ajouter à cet espace. Vous sélectionnerez ensuite ses valeurs.",
       "description_subspace": "Choisissez un modèle de classification à ajouter à ce sous-espace. Vous sélectionnerez ensuite ses valeurs.",
-      "platformSection": "Platform-wide",
-      "spaceSection": "This Space's library",
+      "platformSection": "Toute la plateforme",
+      "spaceSection": "Bibliothèque de cet espace",
       "spaceSection_subspace": "Bibliothèque de l'espace de premier niveau",
       "emptyState": {
-        "title": "No Classification Templates yet",
-        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it.",
-        "description_subspace": "Créez-en une dans un pack de modèles ou dans la bibliothèque de modèles de l'espace de premier niveau, puis revenez ici pour l'ajouter."
+        "title": "Aucun modèle de classification pour l'instant",
+        "description": "Créez-en un dans un pack de modèles ou dans la bibliothèque de modèles de cet espace, puis revenez ici pour l'ajouter.",
+        "description_subspace": "Créez-en un dans un pack de modèles ou dans la bibliothèque de modèles de l'espace de premier niveau, puis revenez ici pour l'ajouter."
       },
       "conflict": {
-        "title": "That name is already in use",
-        "description": "This Space already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
+        "title": "Ce nom est déjà utilisé",
+        "description": "Cet espace a déjà une classification intitulée « {{label}} ». Donnez à la nouvelle un libellé d'affichage différent pour les distinguer.",
         "description_subspace": "Ce sous-espace a déjà une classification intitulée « {{label}} ». Donnez à la nouvelle un libellé d'affichage différent pour les distinguer.",
-        "fieldLabel": "Display label",
-        "retry": "Add with this label"
+        "fieldLabel": "Libellé d'affichage",
+        "retry": "Ajouter avec ce libellé"
       },
-      "cancel": "Cancel",
+      "cancel": "Annuler",
       "searchPlaceholder": "Rechercher des modèles…",
       "noMatches": "Aucun modèle ne correspond à \"{{query}}\".",
       "multiSelect": "Multiple",
       "singleSelect": "Unique"
     },
     "valueSelector": {
-      "noneSelected": "No values selected yet"
+      "noneSelected": "Aucune valeur sélectionnée pour l'instant"
     },
     "display": {
-      "toggleLabel": "Show on the Space page",
+      "toggleLabel": "Afficher sur la page de l'espace",
       "toggleLabel_subspace": "Afficher sur la page du sous-espace",
-      "hiddenHint": "Not shown on the Space page",
-      "hiddenHint_subspace": "Non affiché sur la page du sous-espace"
+      "hiddenHint": "Non affichée sur la page de l'espace",
+      "hiddenHint_subspace": "Non affichée sur la page du sous-espace"
     },
     "remove": {
-      "menuLabel": "Remove classification"
+      "menuLabel": "Supprimer la classification"
     },
     "entry": {
       "multiSelect": "Sélection multiple",

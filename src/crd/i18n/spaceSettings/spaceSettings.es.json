@@ -87,8 +87,8 @@
         }
       },
       "phaseLayout": {
-        "menuLabel": "Layout",
-        "dialogTitle": "Layout: {{phaseName}}",
+        "menuLabel": "Diseño",
+        "dialogTitle": "Diseño: {{phaseName}}",
         "descriptionHeight": {
           "label": "Descripción del Post",
           "collapsedHint": "Los Posts comienzan contraídos — los miembros los expanden para leer.",
@@ -1044,41 +1044,41 @@
     "sectionDescription_subspace": "Clasifica tu subespacio con vocabularios estructurados (p. ej. ODS, Sector) para mejorar la visibilidad y los informes.",
     "addButton": "Añadir clasificación",
     "picker": {
-      "title": "Add a classification",
-      "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
+      "title": "Añadir una clasificación",
+      "description": "Elige una plantilla de clasificación para añadirla a este espacio. A continuación seleccionarás sus valores.",
       "description_subspace": "Elige una plantilla de clasificación para añadirla a este subespacio. A continuación seleccionarás sus valores.",
-      "platformSection": "Platform-wide",
-      "spaceSection": "This Space's library",
+      "platformSection": "Toda la plataforma",
+      "spaceSection": "Biblioteca de este espacio",
       "spaceSection_subspace": "Biblioteca del espacio de nivel superior",
       "emptyState": {
-        "title": "No Classification Templates yet",
-        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it.",
+        "title": "Aún no hay plantillas de clasificación",
+        "description": "Crea una en un paquete de plantillas o en la biblioteca de plantillas de este espacio y vuelve aquí para añadirla.",
         "description_subspace": "Crea una en un paquete de plantillas o en la biblioteca de plantillas del espacio de nivel superior y vuelve aquí para añadirla."
       },
       "conflict": {
-        "title": "That name is already in use",
-        "description": "This Space already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
+        "title": "Ese nombre ya está en uso",
+        "description": "Este espacio ya tiene una clasificación con la etiqueta \"{{label}}\". Dale a la nueva una etiqueta distinta para diferenciarlas.",
         "description_subspace": "Este subespacio ya tiene una clasificación con la etiqueta \"{{label}}\". Dale a la nueva una etiqueta distinta para diferenciarlas.",
-        "fieldLabel": "Display label",
-        "retry": "Add with this label"
+        "fieldLabel": "Etiqueta visible",
+        "retry": "Añadir con esta etiqueta"
       },
-      "cancel": "Cancel",
+      "cancel": "Cancelar",
       "searchPlaceholder": "Buscar plantillas…",
       "noMatches": "Ninguna plantilla coincide con \"{{query}}\".",
       "multiSelect": "Múltiple",
       "singleSelect": "Única"
     },
     "valueSelector": {
-      "noneSelected": "No values selected yet"
+      "noneSelected": "Aún no hay valores seleccionados"
     },
     "display": {
-      "toggleLabel": "Show on the Space page",
+      "toggleLabel": "Mostrar en la página del espacio",
       "toggleLabel_subspace": "Mostrar en la página del subespacio",
-      "hiddenHint": "Not shown on the Space page",
+      "hiddenHint": "No se muestra en la página del espacio",
       "hiddenHint_subspace": "No se muestra en la página del subespacio"
     },
     "remove": {
-      "menuLabel": "Remove classification"
+      "menuLabel": "Eliminar clasificación"
     },
     "entry": {
       "multiSelect": "Selección múltiple",
