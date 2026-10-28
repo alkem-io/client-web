@@ -414,8 +414,12 @@ export function CommentInput({
               {t('comments.attachments.dropHint')}
             </div>
           )}
+          {/* Below `md`, 16px text: iOS Safari zooms the page on focus when a
+              field's text is smaller, and does not zoom back out. The mentions
+              textarea inherits its font from this wrapper (and its overlay must
+              match it), so the size is set here rather than on the textarea. */}
           {mentionsEnabled ? (
-            <div className="min-h-6 min-w-0 flex-1 text-body [&_textarea]:placeholder:text-muted-foreground">
+            <div className="min-h-6 min-w-0 flex-1 text-base md:text-body [&_textarea]:placeholder:text-muted-foreground">
               <MentionsInput
                 value={content}
                 onChange={(_event, newValue) => setContent(newValue)}
@@ -485,7 +489,7 @@ export function CommentInput({
               onChange={event => setContent(event.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={t('comments.addComment')}
-              className="min-h-6 min-w-0 flex-1 resize-none bg-transparent px-1 py-1 text-body outline-hidden placeholder:text-muted-foreground"
+              className="min-h-6 min-w-0 flex-1 resize-none bg-transparent px-1 py-1 text-base md:text-body outline-hidden placeholder:text-muted-foreground"
               rows={1}
               aria-label={t('comments.addComment')}
             />

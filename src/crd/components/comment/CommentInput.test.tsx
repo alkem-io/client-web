@@ -365,3 +365,24 @@ describe('CommentInput drop and paste', () => {
     expect(onAttachFiles).not.toHaveBeenCalled();
   });
 });
+
+// iOS Safari zooms the page in on focus when a field's text is under 16px. The
+// composer (chat and comments) must use 16px text below `md`; jsdom does not
+// apply Tailwind, so the classes are what is asserted.
+describe('CommentInput phone font size', () => {
+  test('plain textarea uses 16px text below md', () => {
+    render(<CommentInput onSubmit={vi.fn()} />);
+
+    expect(getTextarea()).toHaveClass('text-base', 'md:text-body');
+    expect(getTextarea()).not.toHaveClass('text-body');
+  });
+
+  test('mentions textarea inherits 16px text below md from its wrapper', () => {
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={vi.fn()} />);
+
+    const wrapper = getTextarea().closest('.text-base');
+    expect(wrapper).not.toBeNull();
+    expect(wrapper).toHaveClass('md:text-body');
+    expect(wrapper).not.toHaveClass('text-body');
+  });
+});

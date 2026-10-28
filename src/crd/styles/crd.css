@@ -69,3 +69,18 @@
     cursor: pointer;
   }
 }
+
+/*
+ * iOS Safari zooms the whole page in when a text field with text smaller than
+ * 16px takes focus, and does not zoom back out when the keyboard closes. Below
+ * `md` (where the Input and Textarea primitives also use 16px), every
+ * text-entry control gets 16px text. The rule is deliberately outside any
+ * @layer so it wins over the Tailwind text-* utilities call sites pass to
+ * inputs. Zoom must not be disabled in the viewport meta instead: that breaks
+ * whiteboards and pinch-zoom accessibility.
+ */
+@media (max-width: 767px) {
+  :where(input, textarea, select) {
+    font-size: 16px;
+  }
+}

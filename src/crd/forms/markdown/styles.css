@@ -16,6 +16,13 @@
   color: var(--foreground);
 }
 
+/* 16px on phones so iOS Safari does not zoom the page in when the editor takes focus. */
+@media (max-width: 767px) {
+  .crd-markdown-editor .ProseMirror {
+    font-size: 16px;
+  }
+}
+
 /* Placeholder */
 .crd-markdown-editor .ProseMirror p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
