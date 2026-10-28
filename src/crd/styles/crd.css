@@ -11,6 +11,13 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* iOS and iPadOS WebKit only (Safari, every iOS browser, the app WebView) - not macOS Safari or Android. */
+@custom-variant ios {
+  @supports (-webkit-touch-callout: none) {
+    @slot;
+  }
+}
+
 /*
  * Base resets scoped to .crd-root
  *
@@ -71,15 +78,16 @@
 }
 
 /*
- * iOS Safari zooms the whole page in when a text field with text smaller than
- * 16px takes focus, and does not zoom back out when the keyboard closes. Below
- * `md` (where the Input and Textarea primitives also use 16px), every
- * text-entry control gets 16px text. The rule is deliberately outside any
+ * iOS WebKit zooms the whole page in when a text field with text smaller than
+ * 16px takes focus, and does not zoom back out when the keyboard closes. On iOS
+ * and iPadOS, at every width (landscape phones and iPads zoom too), every
+ * text-entry control gets 16px text. Android and desktop browsers do not zoom,
+ * so they keep the designed sizes. The rule is deliberately outside any
  * @layer so it wins over the Tailwind text-* utilities call sites pass to
  * inputs. Zoom must not be disabled in the viewport meta instead: that breaks
  * whiteboards and pinch-zoom accessibility.
  */
-@media (max-width: 767px) {
+@supports (-webkit-touch-callout: none) {
   :where(input, textarea, select) {
     font-size: 16px;
   }

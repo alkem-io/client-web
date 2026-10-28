@@ -2,20 +2,21 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, test } from 'vitest';
 
-// iOS Safari zooms the page in when a text field whose text is smaller than
-// 16px takes focus, and never zooms back out. jsdom evaluates neither media
-// queries nor Tailwind, so these tests pin the stylesheet rules themselves.
+// iOS WebKit zooms the page in when a text field whose text is smaller than
+// 16px takes focus, and never zooms back out. The rules target iOS only, at
+// every width (landscape phones and iPads zoom too). jsdom evaluates neither
+// @supports nor Tailwind, so these tests pin the stylesheet rules themselves.
 
 const readCss = (path: string) => readFileSync(resolve(process.cwd(), path), 'utf8');
 
-const PHONE_MEDIA = '@media (max-width: 767px)';
+const IOS_SUPPORTS = '@supports (-webkit-touch-callout: none)';
 
-// Returns the body of the first `@media (max-width: 767px) { ... }` block whose
+// Returns the body of the first `@supports (-webkit-touch-callout: none) { ... }` block whose
 // body matches `selector`, and whether it sits at the top level (not in a @layer).
-const findPhoneBlock = (css: string, selector: RegExp) => {
+const findIosBlock = (css: string, selector: RegExp) => {
   let from = 0;
   while (true) {
-    const start = css.indexOf(PHONE_MEDIA, from);
+    const start = css.indexOf(IOS_SUPPORTS, from);
     if (start === -1) return undefined;
     const open = css.indexOf('{', start);
     let depth = 1;
@@ -40,9 +41,9 @@ const fontSizePx = (body: string) => {
   return match ? Number(match[1]) : undefined;
 };
 
-describe('phone text-entry font size (prevents iOS focus zoom)', () => {
-  test('input, textarea and select get at least 16px on phones, outside any @layer', () => {
-    const block = findPhoneBlock(readCss('src/crd/styles/crd.css'), /input,\s*textarea,\s*select/);
+describe('iOS text-entry font size (prevents iOS focus zoom)', () => {
+  test('input, textarea and select get at least 16px on iOS, outside any @layer', () => {
+    const block = findIosBlock(readCss('src/crd/styles/crd.css'), /input,\s*textarea,\s*select/);
 
     expect(block).toBeDefined();
     // Inside a layer, Tailwind's text-* utilities on call sites would win.
@@ -50,8 +51,8 @@ describe('phone text-entry font size (prevents iOS focus zoom)', () => {
     expect(fontSizePx(block?.body ?? '')).toBeGreaterThanOrEqual(16);
   });
 
-  test('the markdown editor gets at least 16px on phones', () => {
-    const block = findPhoneBlock(readCss('src/crd/forms/markdown/styles.css'), /\.crd-markdown-editor \.ProseMirror/);
+  test('the markdown editor gets at least 16px on iOS', () => {
+    const block = findIosBlock(readCss('src/crd/forms/markdown/styles.css'), /\.crd-markdown-editor \.ProseMirror/);
 
     expect(block).toBeDefined();
     expect(fontSizePx(block?.body ?? '')).toBeGreaterThanOrEqual(16);
