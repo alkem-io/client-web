@@ -28,10 +28,10 @@ export type UseCreateSubspaceOptions = {
   /** The space's configured default subspace template — pre-selected when the dialog opens. */
   defaultTemplateId?: string;
   /**
-   * Whether a successful create lands the user on the new subspace. Defaults to
-   * true: creating from the member-facing space/subspace pages is a step into the
-   * new subspace. The parent's Settings → Subspaces list opts out, because there
-   * the admin is managing the list and stays on it to see the new row.
+   * Whether a successful create lands the user on the new subspace. Off by
+   * default: the member-facing space/subspace pages opt in, because creating there
+   * is a step into the new subspace. The parent's Settings → Subspaces list stays
+   * put, because there the admin is managing the list and wants to see the new row.
    */
   navigateOnCreate?: boolean;
 };
@@ -93,7 +93,7 @@ const EMPTY_VALUES: CreateSubspaceFormValues = {
  * subspace template (if any) is pre-selected when the dialog opens.
  */
 export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOptions = {}): UseCreateSubspaceResult {
-  const { accountId, templatesSetId, defaultTemplateId, navigateOnCreate = true } = options;
+  const { accountId, templatesSetId, defaultTemplateId, navigateOnCreate = false } = options;
   const { t } = useTranslation('crd-spaceSettings');
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);

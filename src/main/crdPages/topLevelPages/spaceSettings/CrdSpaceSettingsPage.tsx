@@ -138,8 +138,6 @@ export default function CrdSpaceSettingsPage() {
     accountId,
     templatesSetId: subspacesTab.templatesSetId,
     defaultTemplateId: subspacesTab.defaultTemplateId,
-    // Managing the subspace list: stay on it rather than jump into the new subspace.
-    navigateOnCreate: false,
   });
   // Subspace "Save as template" now runs through the unified `saveAs` instance below — see T053.
   const storageTab = useStorageTabData(activeTab === 'storage' ? spaceId : '');

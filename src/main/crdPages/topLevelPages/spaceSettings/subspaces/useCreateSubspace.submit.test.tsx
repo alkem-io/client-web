@@ -149,7 +149,7 @@ describe('useCreateSubspace submit', () => {
 
   it('closes the dialog and still lands on the new subspace when the visual upload fails', async () => {
     mockUploadVisual.mockRejectedValueOnce(new Error('upload failed'));
-    const { result } = renderFilledForm({}, { withAvatar: true });
+    const { result } = renderFilledForm({ navigateOnCreate: true }, { withAvatar: true });
 
     await act(async () => {
       await result.current.onSubmit();
@@ -165,7 +165,7 @@ describe('useCreateSubspace submit', () => {
   it('waits for every visual upload to settle before closing when one upload fails first', async () => {
     const cardUpload = deferred<unknown>();
     mockUploadVisual.mockRejectedValueOnce(new Error('avatar upload failed')).mockReturnValueOnce(cardUpload.promise);
-    const { result } = renderFilledForm({}, { withAvatar: true, withCardBanner: true });
+    const { result } = renderFilledForm({ navigateOnCreate: true }, { withAvatar: true, withCardBanner: true });
 
     let first!: Promise<void>;
     await act(async () => {
@@ -192,7 +192,6 @@ describe('useCreateSubspace submit', () => {
   it.each([
     ['the Space tab sidebar (member UI)', { navigateOnCreate: true }],
     ['the subspace page (member UI)', { navigateOnCreate: true }],
-    ['a caller that does not set the option', {}],
   ])('navigates to the new subspace from %s', async (_caller, options: UseCreateSubspaceOptions) => {
     const { result } = renderFilledForm(options);
 
@@ -205,8 +204,8 @@ describe('useCreateSubspace submit', () => {
     expect(mockNavigate).toHaveBeenCalledWith(NEW_SUBSPACE_URL);
   });
 
-  it('stays on the page when creating from Settings → Subspaces', async () => {
-    const { result } = renderFilledForm({ navigateOnCreate: false });
+  it('stays on the page when creating from Settings → Subspaces (the default)', async () => {
+    const { result } = renderFilledForm();
 
     await act(async () => {
       await result.current.onSubmit();
