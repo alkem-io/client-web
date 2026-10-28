@@ -1,6 +1,6 @@
 import { act, render } from '@testing-library/react';
 import type { ReactNode } from 'react';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { SubspaceSidebarProps } from '@/crd/components/space/SubspaceSidebar';
 import type { SidebarWidgetId } from '@/crd/components/space/settings/SpaceSettingsLayoutView.types';
 import CrdSubspacePageLayout, { type SubspaceOutletContext } from './CrdSubspacePageLayout';
@@ -8,7 +8,7 @@ import CrdSubspacePageLayout, { type SubspaceOutletContext } from './CrdSubspace
 // ---- controllable state -----------------------------------------------------
 
 let sidebarPlan: SidebarWidgetId[] = [];
-let activePhaseId = 'phase-a';
+let activePhaseId: string | undefined = 'phase-a';
 let isAuthenticated = true;
 let canUpdate = true;
 let lastSidebarProps: SubspaceSidebarProps | undefined;
@@ -194,6 +194,8 @@ describe('CrdSubspacePageLayout sidebar search', () => {
     useCalloutsSetTagsQuery.mockClear();
     useCrdCommunityUpdates.mockClear();
     inviteDialogMounts.mockClear();
+    // Switching phase scrolls to the top; jsdom does not implement scrollTo.
+    vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
   });
 
   test('scopes the search to the level-zero space and the active phase, never the subspace id', () => {
@@ -291,5 +293,38 @@ describe('CrdSubspacePageLayout widget gates', () => {
     render(<CrdSubspacePageLayout />);
     expect(lastSidebarProps?.onInviteClick).toBeTypeOf('function');
     expect(inviteDialogMounts).toHaveBeenCalledWith(expect.objectContaining({ spaceId: 'L1-ID' }));
+  });
+});
+
+describe('CrdSubspacePageLayout scroll on phase change', () => {
+  let scrollTo: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    sidebarPlan = [];
+    activePhaseId = 'phase-a';
+    scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    scrollTo.mockClear();
+  });
+
+  afterEach(() => {
+    scrollTo.mockRestore();
+  });
+
+  test('switching phase scrolls to the top', () => {
+    const { rerender } = render(<CrdSubspacePageLayout />);
+    expect(scrollTo).not.toHaveBeenCalled();
+
+    activePhaseId = 'phase-b';
+    rerender(<CrdSubspacePageLayout />);
+    expect(scrollTo).toHaveBeenCalledTimes(1);
+    expect(scrollTo).toHaveBeenCalledWith(0, 0);
+  });
+
+  test('the first phase resolving does not scroll', () => {
+    activePhaseId = undefined;
+    const { rerender } = render(<CrdSubspacePageLayout />);
+    activePhaseId = 'phase-a';
+    rerender(<CrdSubspacePageLayout />);
+    expect(scrollTo).not.toHaveBeenCalled();
   });
 });
