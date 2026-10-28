@@ -1,11 +1,11 @@
-import type { MatrixClient, MatrixEvent, Room } from 'matrix-js-sdk';
+import type { MatrixClient, MatrixEvent } from 'matrix-js-sdk';
 import { ClientWidgetApi, type IRoomEvent, type IWidgetApiRequest, Widget } from 'matrix-widget-api';
 import { type RefObject, useEffect, useRef, useState } from 'react';
-import { ROOM_TIMELINE } from '@/main/userMessaging/matrix/matrixRooms';
 import { closeCall, markReady } from './callOverlayStore';
 import { ElementCallWidgetDriver } from './ElementCallWidgetDriver';
 
-// matrix-js-sdk RoomStateEvent.Events, as a string so the SDK stays a lazily loaded chunk.
+// matrix-js-sdk ClientEvent.Event and RoomStateEvent.Events, as strings so the SDK stays a lazily loaded chunk.
+const CLIENT_EVENT = 'event';
 const ROOM_STATE_EVENTS = 'RoomState.events';
 
 /** Widget actions of the pinned call UI: it hangs up / closes, the host asks it to hang up. */
@@ -74,9 +74,11 @@ export default function CallWidgetFrame({
     api.on(`action:${HANGUP_ACTION}`, onWidgetLeft);
     api.on(`action:${CLOSE_ACTION}`, onWidgetLeft);
 
-    const onTimeline = (event: MatrixEvent, room: Room | undefined, toStartOfTimeline: boolean) => {
-      // Local echoes carry a temporary id; the call UI already knows its own sends by their real one.
-      if (room?.roomId === matrixRoomId && !toStartOfTimeline && !event.status) {
+    // Every event the chat server syncs, as the reference host feeds it. Unlike the room's
+    // timeline this includes the synced copy of the call UI's own sends, which the call UI waits
+    // for, and never a local echo or an event paginated in from the past.
+    const onEvent = (event: MatrixEvent) => {
+      if (event.getRoomId() === matrixRoomId) {
         api.feedEvent(toRoomEvent(event)).catch(() => {
           // The call UI may not be listening yet; it reads the room state itself once it is.
         });
@@ -89,7 +91,7 @@ export default function CallWidgetFrame({
         });
       }
     };
-    client.on(ROOM_TIMELINE as never, onTimeline as never);
+    client.on(CLIENT_EVENT as never, onEvent as never);
     client.on(ROOM_STATE_EVENTS as never, onStateEvent as never);
 
     hangupRef.current = async () => {
@@ -111,7 +113,7 @@ export default function CallWidgetFrame({
     return () => {
       window.removeEventListener('pagehide', onPageHide);
       hangupRef.current = null;
-      client.removeListener(ROOM_TIMELINE as never, onTimeline as never);
+      client.removeListener(CLIENT_EVENT as never, onEvent as never);
       client.removeListener(ROOM_STATE_EVENTS as never, onStateEvent as never);
       api.off('ready', onReady);
       api.off(`action:${HANGUP_ACTION}`, onWidgetLeft);
