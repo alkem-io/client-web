@@ -27,7 +27,8 @@ const SEND_AND_RECEIVE_EVENT_TYPES = [
   'org.matrix.msc4310.rtc.decline',
   'org.matrix.msc4143.rtc.member',
 ];
-const RECEIVE_STATE_TYPES = ['m.room.create', 'm.room.name', 'm.room.member', 'm.room.encryption', CALL_MEMBER];
+const ROOM_MEMBER = 'm.room.member';
+const RECEIVE_STATE_TYPES = ['m.room.create', 'm.room.name', ROOM_MEMBER, 'm.room.encryption', CALL_MEMBER];
 
 /**
  * Every capability the host may grant the call UI, for one room, user and
@@ -228,19 +229,23 @@ class ElementCallWidgetDriver extends WidgetDriver {
     return Promise.resolve();
   }
 
-  public readRoomState(roomId: string, eventType: string, stateKey: string | undefined): Promise<IRoomEvent[]> {
-    if (roomId !== this.roomId) {
-      return Promise.resolve([]);
+  public async readRoomState(roomId: string, eventType: string, stateKey: string | undefined): Promise<IRoomEvent[]> {
+    const room = roomId === this.roomId ? this.client.getRoom(roomId) : null;
+    if (!room) {
+      return [];
     }
-    const state = this.client.getRoom(roomId)?.currentState;
-    if (!state) {
-      return Promise.resolve([]);
+    if (eventType === ROOM_MEMBER) {
+      // The chat session loads room members lazily; the call UI needs every one for names and avatars.
+      await room.loadMembersIfNeeded().catch(() => {
+        // Answer with the members already known; the next read tries again.
+      });
     }
+    const state = room.currentState;
     const events =
       stateKey === undefined
         ? state.getStateEvents(eventType)
         : [state.getStateEvents(eventType, stateKey)].filter((event): event is MatrixEvent => event !== null);
-    return Promise.resolve(events.map(toRoomEvent));
+    return events.map(toRoomEvent);
   }
 
   public async readStateEvents(

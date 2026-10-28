@@ -123,6 +123,7 @@ const fakeEvent = (id: string, type: string, stateKey?: string, content: Record<
 const makeClient = (timeline: FakeEvent[] = [], state: FakeEvent[] = []) => {
   const room = {
     roomId: ROOM,
+    loadMembersIfNeeded: vi.fn(async () => true),
     getLiveTimeline: () => ({ getEvents: () => timeline }),
     currentState: {
       getStateEvents: (type: string, stateKey?: string) =>
@@ -347,6 +348,44 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
     await expect(driver.readRoomState(ROOM, 'm.room.name', 'missing')).resolves.toEqual([]);
     await expect(driver.readRoomState(OTHER_ROOM, CALL_MEMBER, undefined)).resolves.toEqual([]);
     await expect(driver.readStateEvents(CALL_MEMBER, undefined, 0, [OTHER_ROOM])).resolves.toEqual([]);
+  });
+
+  it('loads the room members the chat session has not loaded yet before answering a member read', async () => {
+    const known = fakeEvent('$known', 'm.room.member', '@known:matrix.example.org');
+    const lazy = fakeEvent('$lazy', 'm.room.member', '@lazy:matrix.example.org');
+    const state = [known];
+    const client = makeClient([], state);
+    const room = client.getRoom(ROOM)!;
+    let finishLoading: () => void = () => {};
+    room.loadMembersIfNeeded.mockImplementationOnce(
+      () =>
+        new Promise<boolean>(resolve => {
+          finishLoading = () => {
+            state.push(lazy);
+            resolve(true);
+          };
+        })
+    );
+    const read = driverFor(client).readRoomState(ROOM, 'm.room.member', undefined);
+    await Promise.resolve();
+    finishLoading();
+
+    await expect(read).resolves.toEqual([known.getEffectiveEvent(), lazy.getEffectiveEvent()]);
+  });
+
+  it('answers a member read with the members it has when loading the rest fails', async () => {
+    const known = fakeEvent('$known', 'm.room.member', '@known:matrix.example.org');
+    const client = makeClient([], [known]);
+    client.getRoom(ROOM)!.loadMembersIfNeeded.mockRejectedValueOnce(new Error('offline'));
+    await expect(driverFor(client).readRoomState(ROOM, 'm.room.member', undefined)).resolves.toEqual([
+      known.getEffectiveEvent(),
+    ]);
+  });
+
+  it('loads no members for reads of other state', async () => {
+    const client = makeClient();
+    await driverFor(client).readRoomState(ROOM, CALL_MEMBER, undefined);
+    expect(client.getRoom(ROOM)!.loadMembersIfNeeded).not.toHaveBeenCalled();
   });
 
   it('reads the call room timeline newest first, honouring type, state key, limit and since', async () => {
