@@ -36,6 +36,11 @@ const RECEIVE_STATE_TYPES = ['m.room.create', 'm.room.name', ROOM_MEMBER, 'm.roo
  * device-to-device messaging and sticky events (the pinned chat server
  * supports neither, and the rooms are unencrypted), plain messages, and every
  * other room.
+ *
+ * This keeps the call UI's widget-API requests to what a call needs; it is not
+ * a security boundary. The call UI is served from the platform's own origin
+ * without a sandbox, so its code runs with the platform page's privileges and
+ * could reach the chat session directly. It is trusted as pinned code.
  */
 const allowedCapabilitiesFor = (roomId: string, userId: string, deviceId: string): Set<Capability> =>
   new Set<Capability>([
@@ -89,7 +94,7 @@ type CallHostClient = {
 
 type DriverOptions = {
   client: MatrixClient;
-  /** The one room the call takes place in; the call UI can reach no other. */
+  /** The one room the call takes place in; the host acts on no other for the call UI. */
   matrixRoomId: string;
   livekitServiceUrl: string;
 };
@@ -130,7 +135,7 @@ class ElementCallWidgetDriver extends WidgetDriver {
   private targetRoom(roomId?: string | null): string {
     const target = roomId ?? this.roomId;
     if (target !== this.roomId) {
-      throw new Error('The call can only reach its own room');
+      throw new Error('The host acts only on the room of the call');
     }
     return target;
   }

@@ -30,7 +30,10 @@ type CallWidgetFrameProps = {
 /**
  * The call UI's iframe and its widget-API link to the platform's Matrix
  * session. One instance per call: the host keys it by widget id, so the link is
- * built exactly once, before the iframe loads.
+ * built exactly once, before the iframe loads. The iframe is same-origin and
+ * unsandboxed (the call UI needs both its storage and scripts, and a sandbox
+ * allowing both on the same origin can be lifted from inside), so it isolates
+ * nothing from the platform page.
  */
 export default function CallWidgetFrame({
   widgetId,
