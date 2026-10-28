@@ -4,9 +4,11 @@ import { closeCall, getCallOverlay, markReady, openCall, subscribeCallOverlay } 
 const first = { alkemioRoomId: 'alk-1', matrixRoomId: '!one:hs', intent: 'start_call' } as const;
 const second = { alkemioRoomId: 'alk-2', matrixRoomId: '!two:hs', intent: 'join_existing_voice' } as const;
 
+const currentWidgetId = (): string => getCallOverlay()?.widgetId ?? '';
+
 describe('callOverlayStore', () => {
   afterEach(() => {
-    closeCall();
+    closeCall(currentWidgetId());
   });
 
   it('opening a call publishes it with a fresh widget id, not yet ready', () => {
@@ -26,8 +28,16 @@ describe('callOverlayStore', () => {
 
   it('closing clears the call', () => {
     openCall(first);
-    closeCall();
+    closeCall(currentWidgetId());
     expect(getCallOverlay()).toBeNull();
+  });
+
+  it('closing a call that was replaced leaves the newer call open', () => {
+    openCall(first);
+    const replaced = currentWidgetId();
+    openCall(second);
+    closeCall(replaced);
+    expect(getCallOverlay()).toMatchObject(second);
   });
 
   it('marks only the current overlay session ready', () => {
@@ -45,9 +55,10 @@ describe('callOverlayStore', () => {
     const unsubscribe = subscribeCallOverlay(listener);
     openCall(first);
     expect(listener).toHaveBeenCalledTimes(1);
-    closeCall();
+    const widgetId = currentWidgetId();
+    closeCall(widgetId);
     expect(listener).toHaveBeenCalledTimes(2);
-    closeCall();
+    closeCall(widgetId);
     expect(listener).toHaveBeenCalledTimes(2);
     unsubscribe();
     openCall(first);

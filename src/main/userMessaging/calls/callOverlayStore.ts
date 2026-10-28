@@ -37,8 +37,11 @@ const openCall = ({ alkemioRoomId, matrixRoomId, intent }: OpenCallInput): void 
   publish({ alkemioRoomId, matrixRoomId, intent, widgetId: crypto.randomUUID(), ready: false });
 };
 
-const closeCall = (): void => {
-  publish(null);
+/** Closes the given call; a call opened after it in the meantime stays open. */
+const closeCall = (widgetId: string): void => {
+  if (current?.widgetId === widgetId) {
+    publish(null);
+  }
 };
 
 /** Marks the call UI of the given overlay session as ready; ignored once that session is gone. */

@@ -34,13 +34,13 @@ export const CallOverlayHost = () => {
       return;
     }
     if (!client) {
-      closeCall();
+      closeCall(session.widgetId);
       return;
     }
     if (ownerRef.current?.widgetId !== session.widgetId) {
       ownerRef.current = { widgetId: session.widgetId, client };
     } else if (ownerRef.current.client !== client) {
-      closeCall();
+      closeCall(session.widgetId);
     }
   }, [session, client]);
 
@@ -52,14 +52,14 @@ export const CallOverlayHost = () => {
     if (isJoinedHere) {
       setConfirmOpen(true);
     } else {
-      closeCall();
+      closeCall(session.widgetId);
     }
   };
 
   const leaveAndClose = async () => {
     setConfirmOpen(false);
     await hangupRef.current?.();
-    closeCall();
+    closeCall(session.widgetId);
   };
 
   const src = buildElementCallWidgetUrl({

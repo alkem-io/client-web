@@ -68,7 +68,7 @@ export default function CallWidgetFrame({
     const onWidgetLeft = (event: CustomEvent<IWidgetApiRequest>) => {
       event.preventDefault();
       api.transport.reply(event.detail, {});
-      closeCall();
+      closeCall(widgetId);
     };
     api.on('ready', onReady);
     api.on(`action:${HANGUP_ACTION}`, onWidgetLeft);

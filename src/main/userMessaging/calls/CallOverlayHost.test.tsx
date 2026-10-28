@@ -69,6 +69,8 @@ const makeClient = () =>
 const CALL_MEMBER = 'org.matrix.msc3401.call.member';
 const OWN_MEMBERSHIP_KEY = '_@me:hs.example_DEV1_m.call';
 
+const closeCurrentCall = () => closeCall(getCallOverlay()?.widgetId ?? '');
+
 const widgetAction = (action: string) =>
   new CustomEvent(`action:${action}`, { cancelable: true, detail: { action, requestId: 'r1', data: {} } });
 
@@ -85,7 +87,7 @@ describe('CallOverlayHost', () => {
     harness.apis.length = 0;
   });
   afterEach(() => {
-    act(() => closeCall());
+    act(() => closeCurrentCall());
   });
 
   it('renders nothing without a call', () => {
@@ -138,7 +140,7 @@ describe('CallOverlayHost', () => {
     ]);
     expect(api.feedStateUpdate.mock.calls).toEqual([[{ event_id: '$state', room_id: '!room:hs.example' }]]);
 
-    act(() => closeCall());
+    act(() => closeCurrentCall());
     expect(client.listenerCount('event')).toBe(0);
     expect(client.listenerCount('RoomState.events')).toBe(0);
   });
@@ -179,6 +181,25 @@ describe('CallOverlayHost', () => {
     await user.click(screen.getByRole('button', { name: 'call.leaveConfirm.confirm' }));
     await waitFor(() => expect(getCallOverlay()).toBeNull());
     expect(api.transport.send).toHaveBeenCalledWith('im.vector.hangup', {});
+  });
+
+  it('a slow leave of one call never closes the call opened after it', async () => {
+    harness.isJoinedHere = true;
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    render(<CallOverlayHost />);
+    const api = await startCall();
+    let answerHangup: (value: unknown) => void = () => {};
+    api.transport.send.mockImplementationOnce(() => new Promise(resolve => (answerHangup = resolve)));
+
+    await user.click(screen.getByRole('button', { name: 'call.close' }));
+    await user.click(screen.getByRole('button', { name: 'call.leaveConfirm.confirm' }));
+    expect(api.transport.send).toHaveBeenCalledWith('im.vector.hangup', {});
+    act(() => openCall({ alkemioRoomId: 'alk-2', matrixRoomId: '!next:hs.example', intent: 'start_call' }));
+    const next = getCallOverlay();
+    await act(async () => answerHangup({}));
+
+    expect(getCallOverlay()).toBe(next);
+    expect(next?.matrixRoomId).toBe('!next:hs.example');
   });
 
   it('keeps the call when the leave confirmation is cancelled', async () => {
