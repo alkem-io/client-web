@@ -75,9 +75,11 @@ function DropdownMenuTrigger({
         onClick?.(event);
         const pressClosedMenu = pressClosedMenuRef.current;
         pressClosedMenuRef.current = false;
-        if (event.defaultPrevented || !menu || pressClosedMenu) return;
-        // A touch/pen tap, or a tap whose `pointerdown` iOS never delivered. After a
-        // mouse press that opened the menu this is a no-op: it is already open.
+        // Skipped when the menu is already open: a mouse press opened it on
+        // `pointerdown`, and reporting the same opening twice would call a
+        // controlled consumer's onOpenChange(true) again.
+        if (event.defaultPrevented || !menu || pressClosedMenu || menu.open) return;
+        // A touch/pen tap, or a tap whose `pointerdown` iOS never delivered.
         menu.setOpen(true);
       }}
       {...props}

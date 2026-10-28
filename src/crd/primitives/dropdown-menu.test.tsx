@@ -101,6 +101,26 @@ describe('DropdownMenuTrigger', () => {
     expect(menuItem()).not.toBeInTheDocument();
   });
 
+  test('a mouse press reports its opening once, even when its click reaches the trigger', () => {
+    const onOpenChange = vi.fn();
+    render(
+      <DropdownMenu modal={false} onOpenChange={onOpenChange}>
+        <DropdownMenuTrigger>Open menu</DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>My profile</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+    const button = trigger();
+
+    fireEvent.pointerDown(button, { pointerType: 'mouse', button: 0 });
+    fireEvent.click(button);
+
+    expect(onOpenChange).toHaveBeenCalledTimes(1);
+    expect(onOpenChange).toHaveBeenCalledWith(true);
+    expect(menuItem()).toBeInTheDocument();
+  });
+
   test('a controlled menu is opened through its onOpenChange', () => {
     const onOpenChange = vi.fn();
     function ControlledMenu() {
