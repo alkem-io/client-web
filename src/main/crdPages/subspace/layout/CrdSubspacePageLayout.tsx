@@ -149,6 +149,7 @@ export default function CrdSubspacePageLayout() {
   const createSubspace = useCreateSubspace(data.subspaceId ?? '', {
     templatesSetId: data.templatesSetId,
     defaultTemplateId: data.defaultSubspaceTemplateId,
+    navigateOnCreate: true,
   });
   const { wide: fullWidth, toggle: toggleFullWidth } = useLayoutWidthPreference();
 

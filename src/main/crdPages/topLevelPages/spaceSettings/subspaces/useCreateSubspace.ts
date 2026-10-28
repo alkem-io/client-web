@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import {
@@ -7,6 +7,7 @@ import {
   useTemplateContentLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
 import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import type { ImageCropConfig } from '@/crd/components/common/ImageCropDialog';
 import type {
@@ -26,6 +27,13 @@ export type UseCreateSubspaceOptions = {
   templatesSetId?: string;
   /** The space's configured default subspace template — pre-selected when the dialog opens. */
   defaultTemplateId?: string;
+  /**
+   * Whether a successful create lands the user on the new subspace. Defaults to
+   * true: creating from the member-facing space/subspace pages is a step into the
+   * new subspace. The parent's Settings → Subspaces list opts out, because there
+   * the admin is managing the list and stays on it to see the new row.
+   */
+  navigateOnCreate?: boolean;
 };
 
 /** An avatar/card image awaiting crop in the ImageCropDialog. */
@@ -85,8 +93,9 @@ const EMPTY_VALUES: CreateSubspaceFormValues = {
  * subspace template (if any) is pre-selected when the dialog opens.
  */
 export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOptions = {}): UseCreateSubspaceResult {
-  const { accountId, templatesSetId, defaultTemplateId } = options;
+  const { accountId, templatesSetId, defaultTemplateId, navigateOnCreate = true } = options;
   const { t } = useTranslation('crd-spaceSettings');
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [values, setValues] = useState<CreateSubspaceFormValues>(EMPTY_VALUES);
   const [errors, setErrors] = useState<CreateSubspaceFieldErrors>({});
@@ -105,7 +114,16 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
     cardBannerFile: '',
   });
 
-  const { createSubspace, loading: submitting } = useSubspaceCreation({
+  // One create at a time. The ref is the synchronous guard — it is set before the
+  // first await, so a second click in the same tick (before any re-render
+  // disables the button) is rejected. The state mirrors it for the UI. Both span
+  // the whole create → refetch → visual upload sequence, not just the mutation,
+  // because the button would otherwise re-enable while the upload is running and
+  // the dialog is still open.
+  const inFlightRef = useRef(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const { createSubspace } = useSubspaceCreation({
     // Two independent readers show the new subspace and neither is reachable from
     // the other's cache entry. The settings tab reads `space.subspaces`, refetched
     // here by variables; the Subspaces tab and the subspace page render a
@@ -362,34 +380,49 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
   };
 
   const onSubmit = async () => {
+    if (inFlightRef.current) return;
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
-    await createSubspace({
-      spaceID: spaceId,
-      about: {
-        profile: {
-          displayName: values.displayName.trim(),
-          tagline: values.tagline.trim(),
-          description: values.description.trim() || undefined,
-          tags: values.tags,
-          visuals: {
-            avatar: values.avatarFile ? { file: values.avatarFile, altText: visualAltText.avatarFile } : undefined,
-            cardBanner: values.cardBannerFile
-              ? { file: values.cardBannerFile, altText: visualAltText.cardBannerFile }
-              : undefined,
+    inFlightRef.current = true;
+    setSubmitting(true);
+
+    let created: Awaited<ReturnType<typeof createSubspace>>;
+    try {
+      created = await createSubspace({
+        spaceID: spaceId,
+        about: {
+          profile: {
+            displayName: values.displayName.trim(),
+            tagline: values.tagline.trim(),
+            description: values.description.trim() || undefined,
+            tags: values.tags,
+            visuals: {
+              avatar: values.avatarFile ? { file: values.avatarFile, altText: visualAltText.avatarFile } : undefined,
+              cardBanner: values.cardBannerFile
+                ? { file: values.cardBannerFile, altText: visualAltText.cardBannerFile }
+                : undefined,
+            },
           },
         },
-      },
-      addTutorialCallouts: false,
-      addCallouts: true,
-      spaceTemplateId: values.spaceTemplateId || undefined,
-    });
+        addTutorialCallouts: false,
+        addCallouts: true,
+        spaceTemplateId: values.spaceTemplateId || undefined,
+      });
+    } finally {
+      inFlightRef.current = false;
+      setSubmitting(false);
+    }
 
     closeDialog();
+    // The mutation result carries the new subspace's canonical url — no lookup needed.
+    const newSubspaceUrl = created?.about.profile.url;
+    if (navigateOnCreate && newSubspaceUrl) {
+      navigate(newSubspaceUrl);
+    }
   };
 
   return {

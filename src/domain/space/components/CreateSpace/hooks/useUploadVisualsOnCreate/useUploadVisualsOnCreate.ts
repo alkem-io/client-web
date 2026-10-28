@@ -20,10 +20,7 @@ interface VisualsForm {
 }
 
 interface UseUploadVisualsOnCreateProvided {
-  uploadVisuals: (
-    createResult: ProfileWithVisuals | undefined,
-    data: VisualsForm | undefined
-  ) => Promise<unknown> | undefined;
+  uploadVisuals: (createResult: ProfileWithVisuals | undefined, data: VisualsForm | undefined) => Promise<void>;
 }
 
 interface UseUploadVisualsOnCreateProps {
@@ -45,7 +42,7 @@ const useUploadVisualsOnCreate = ({
   const notify = useNotification();
   const [uploadVisual] = useUploadVisualMutation();
 
-  const uploadVisuals = (createResult: ProfileWithVisuals | undefined, data: VisualsForm | undefined) => {
+  const uploadVisuals = async (createResult: ProfileWithVisuals | undefined, data: VisualsForm | undefined) => {
     try {
       const uploadPromises: Promise<unknown>[] = [];
       for (const visualType of VisualTypes) {
@@ -64,7 +61,9 @@ const useUploadVisualsOnCreate = ({
         }
       }
 
-      return Promise.all(uploadPromises);
+      // Awaited inside the try so a rejected upload lands in the catch below,
+      // rather than escaping to the caller as if the entity had not been created.
+      await Promise.all(uploadPromises);
     } catch (error) {
       // Space/Subspace is created anyway, just the images failed. Log the error and continue
       notify(t('components.visual-upload.entityCreatedErrorUploading', { entity: entityName }), 'error');
