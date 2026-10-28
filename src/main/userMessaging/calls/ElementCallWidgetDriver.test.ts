@@ -133,6 +133,7 @@ const makeClient = (timeline: FakeEvent[] = [], state: FakeEvent[] = []) => {
     },
   };
   return {
+    room,
     baseUrl: 'https://matrix.example.org',
     getAccessToken: () => 'access-token',
     getUserId: () => USER,
@@ -355,9 +356,8 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
     const lazy = fakeEvent('$lazy', 'm.room.member', '@lazy:matrix.example.org');
     const state = [known];
     const client = makeClient([], state);
-    const room = client.getRoom(ROOM)!;
     let finishLoading: () => void = () => {};
-    room.loadMembersIfNeeded.mockImplementationOnce(
+    client.room.loadMembersIfNeeded.mockImplementationOnce(
       () =>
         new Promise<boolean>(resolve => {
           finishLoading = () => {
@@ -376,7 +376,7 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
   it('answers a member read with the members it has when loading the rest fails', async () => {
     const known = fakeEvent('$known', 'm.room.member', '@known:matrix.example.org');
     const client = makeClient([], [known]);
-    client.getRoom(ROOM)!.loadMembersIfNeeded.mockRejectedValueOnce(new Error('offline'));
+    client.room.loadMembersIfNeeded.mockRejectedValueOnce(new Error('offline'));
     await expect(driverFor(client).readRoomState(ROOM, 'm.room.member', undefined)).resolves.toEqual([
       known.getEffectiveEvent(),
     ]);
@@ -385,7 +385,7 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
   it('loads no members for reads of other state', async () => {
     const client = makeClient();
     await driverFor(client).readRoomState(ROOM, CALL_MEMBER, undefined);
-    expect(client.getRoom(ROOM)!.loadMembersIfNeeded).not.toHaveBeenCalled();
+    expect(client.room.loadMembersIfNeeded).not.toHaveBeenCalled();
   });
 
   it('reads the call room timeline newest first, honouring type, state key, limit and since', async () => {
