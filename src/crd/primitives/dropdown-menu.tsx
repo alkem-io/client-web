@@ -1,19 +1,84 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
 import type * as React from 'react';
+import { createContext, useContext, useRef, useState } from 'react';
 
 import { cn } from '@/crd/lib/utils';
 
-function DropdownMenu({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
-  return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
+/**
+ * Lets the trigger open the menu itself. Radix opens a dropdown on `pointerdown`
+ * for every pointer type, but iOS Safari does not always deliver `pointerdown`
+ * for a tap: once the page is scrolled, taps on the sticky header's menus reach
+ * the page as a `click` only, so a pointerdown-only trigger never opens. Touch and
+ * pen therefore open on `click` (finger lift), the way Radix's own Select trigger
+ * does; mouse keeps opening on press so press-drag-release selection still works.
+ */
+const DropdownMenuOpenContext = createContext<((open: boolean) => void) | null>(null);
+
+function DropdownMenu({
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+  const isControlled = openProp !== undefined;
+  const open = isControlled ? openProp : uncontrolledOpen;
+
+  const setOpen = (next: boolean) => {
+    if (!isControlled) setUncontrolledOpen(next);
+    onOpenChange?.(next);
+  };
+
+  return (
+    <DropdownMenuOpenContext.Provider value={setOpen}>
+      <DropdownMenuPrimitive.Root data-slot="dropdown-menu" open={open} onOpenChange={setOpen} {...props} />
+    </DropdownMenuOpenContext.Provider>
+  );
 }
 
 function DropdownMenuPortal({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>) {
   return <DropdownMenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />;
 }
 
-function DropdownMenuTrigger({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
-  return <DropdownMenuPrimitive.Trigger data-slot="dropdown-menu-trigger" {...props} />;
+const isTouchLikePointer = (pointerType: string) => pointerType === 'touch' || pointerType === 'pen';
+
+function DropdownMenuTrigger({
+  onPointerDown,
+  onClick,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
+  const setOpen = useContext(DropdownMenuOpenContext);
+  // True while the current press was a mouse press that Radix already toggled on
+  // `pointerdown`, so the click that ends it must not act again.
+  const pressHandledByRadixRef = useRef(false);
+
+  return (
+    <DropdownMenuPrimitive.Trigger
+      data-slot="dropdown-menu-trigger"
+      onPointerDown={event => {
+        onPointerDown?.(event);
+        if (event.defaultPrevented || !setOpen) return;
+        if (isTouchLikePointer(event.pointerType)) {
+          // Skips Radix's own pointerdown toggle (it bails on a prevented event):
+          // a touch that turns into a scroll then never opens the menu either.
+          event.preventDefault();
+          pressHandledByRadixRef.current = false;
+        } else {
+          pressHandledByRadixRef.current = true;
+        }
+      }}
+      onClick={event => {
+        onClick?.(event);
+        const handledByRadix = pressHandledByRadixRef.current;
+        pressHandledByRadixRef.current = false;
+        if (event.defaultPrevented || !setOpen || handledByRadix) return;
+        // A touch/pen tap, or a tap whose `pointerdown` iOS never delivered.
+        setOpen(true);
+      }}
+      {...props}
+    />
+  );
 }
 
 function DropdownMenuContent({
