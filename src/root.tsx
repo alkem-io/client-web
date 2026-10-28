@@ -93,10 +93,12 @@ function UnifiedChatGate() {
   const hidden = isAuthPage || fullscreen || isFullscreenEditorOpen;
   return (
     <>
+      {/* Before the chat, so the dimmed page behind the expanded chat (same z-50)
+          also covers this launcher. */}
+      {!hidden && <CrdAssistantButtonGate />}
       <UnifiedChatLauncher hidden={hidden} />
       {/* Not subject to `hidden`: a running call outlives every route and editor. */}
       <CallOverlayHost />
-      {!hidden && <CrdAssistantButtonGate />}
     </>
   );
 }
