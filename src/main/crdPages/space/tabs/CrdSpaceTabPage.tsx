@@ -71,6 +71,7 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
     accountId: space.accountId || undefined,
     templatesSetId,
     defaultTemplateId: defaultSubspaceTemplateId,
+    navigateOnCreate: true,
   });
 
   // Search widget (the sidebar `search` widget — every tab it's configured
