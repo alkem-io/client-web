@@ -38,7 +38,7 @@ const RECEIVE_STATE_TYPES = ['m.room.create', 'm.room.name', 'm.room.member', 'm
 const allowedCapabilitiesFor = (roomId: string, userId: string, deviceId: string): Set<Capability> =>
   new Set<Capability>([
     'm.always_on_screen',
-    // Only used for bug reports; granted so the call UI starts, the download itself is refused.
+    // The call UI loads participants' avatars through the host; only chat server media is served.
     'org.matrix.msc4039.download_file',
     `org.matrix.msc2762.timeline:${roomId}`,
     ...[...SEND_ONLY_EVENT_TYPES, ...SEND_AND_RECEIVE_EVENT_TYPES].map(type => `org.matrix.msc2762.send.event:${type}`),
@@ -61,6 +61,7 @@ type CallHostClient = {
   getUserId(): string | null;
   getDeviceId(): string | null;
   getRoom: MatrixClient['getRoom'];
+  mxcUrlToHttp: MatrixClient['mxcUrlToHttp'];
   getOpenIdToken: MatrixClient['getOpenIdToken'];
   relations: MatrixClient['relations'];
   sendStateEvent(roomId: string, eventType: string, content: unknown, stateKey: string): Promise<{ event_id: string }>;
@@ -341,8 +342,18 @@ class ElementCallWidgetDriver extends WidgetDriver {
     return notSupported('Uploading files');
   }
 
-  public downloadFile(): Promise<{ file: XMLHttpRequestBodyInit }> {
-    return notSupported('Downloading files');
+  /** Media of the chat server only, fetched with the platform's session as the chat server requires. */
+  public async downloadFile(contentUri: string): Promise<{ file: XMLHttpRequestBodyInit }> {
+    // Not a valid chat server media address (including any other URL) yields no address at all.
+    const url = this.client.mxcUrlToHttp(contentUri, undefined, undefined, undefined, false, true, true);
+    if (!url) {
+      throw new Error('Only chat server media can be downloaded');
+    }
+    const response = await fetch(url, { headers: { Authorization: `Bearer ${this.client.getAccessToken()}` } });
+    if (!response.ok) {
+      throw new Error(`Downloading the media failed with status ${response.status}`);
+    }
+    return { file: await response.blob() };
   }
 
   public getRtcLivekitToken(): Promise<never> {

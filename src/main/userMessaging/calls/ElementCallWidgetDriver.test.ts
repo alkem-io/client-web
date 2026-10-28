@@ -1,3 +1,4 @@
+import { getHttpUriForMxc } from 'matrix-js-sdk';
 import { EventDirection, OpenIDRequestState, WidgetEventCapability } from 'matrix-widget-api';
 import { describe, expect, it, vi } from 'vitest';
 import { allowedCapabilitiesFor, ElementCallWidgetDriver } from './ElementCallWidgetDriver';
@@ -136,6 +137,8 @@ const makeClient = (timeline: FakeEvent[] = [], state: FakeEvent[] = []) => {
     getUserId: () => USER,
     getDeviceId: () => DEVICE,
     getRoom: vi.fn((roomId: string) => (roomId === ROOM ? room : null)),
+    mxcUrlToHttp: (mxc: string, ...rest: [number?, number?, string?, boolean?, boolean?, boolean?]) =>
+      getHttpUriForMxc('https://matrix.example.org', mxc, ...rest) || null,
     getOpenIdToken: vi.fn(async () => ({
       access_token: 'openid-token',
       token_type: 'Bearer',
@@ -145,6 +148,7 @@ const makeClient = (timeline: FakeEvent[] = [], state: FakeEvent[] = []) => {
     relations: vi.fn(async () => ({ events: [fakeEvent('$rel', 'm.reaction')], nextBatch: 'n1', prevBatch: null })),
     sendStateEvent: vi.fn(async () => ({ event_id: '$state' })),
     sendEvent: vi.fn(async () => ({ event_id: '$event' })),
+    redactEvent: vi.fn(async () => ({ event_id: '$redaction' })),
     _unstable_sendDelayedStateEvent: vi.fn(async () => ({ delay_id: 'delay-state' })),
     _unstable_sendDelayedEvent: vi.fn(async () => ({ delay_id: 'delay-event' })),
     _unstable_updateDelayedEvent: vi.fn(async () => ({})),
@@ -379,11 +383,53 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
     await expect(driver.sendDelayedStickyEvent()).rejects.toThrow();
     await expect(driver.readStickyEvents()).rejects.toThrow();
     await expect(driver.uploadFile()).rejects.toThrow();
-    await expect(driver.downloadFile()).rejects.toThrow();
     await expect(driver.getRtcLivekitToken()).rejects.toThrow();
     await expect(driver.delegateRtcLivekitDelayedLeave()).rejects.toThrow();
     await expect(driver.navigate()).resolves.toBeUndefined();
     expect((await driver.getTurnServers().next()).done).toBe(true);
     expect(driver.getKnownRooms()).toEqual([ROOM]);
+  });
+
+  it('downloads media of the chat server through its authenticated media endpoint, as the platform session', async () => {
+    const fetchMock = vi.fn(async () => new Response('avatar-bytes'));
+    vi.stubGlobal('fetch', fetchMock);
+    try {
+      const { file } = await driverFor(makeClient()).downloadFile('mxc://matrix.example.org/abc123');
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://matrix.example.org/_matrix/client/v1/media/download/matrix.example.org/abc123?allow_redirect=true',
+        {
+          headers: { Authorization: 'Bearer access-token' },
+        }
+      );
+      expect(file).toBeInstanceOf(Blob);
+      expect((file as Blob).size).toBe('avatar-bytes'.length);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('refuses to download anything that is not chat server media, without a request', async () => {
+    const fetchMock = vi.fn(async () => new Response('x'));
+    vi.stubGlobal('fetch', fetchMock);
+    try {
+      const driver = driverFor(makeClient());
+      await expect(driver.downloadFile('https://elsewhere.example.com/avatar.png')).rejects.toThrow();
+      await expect(driver.downloadFile('mxc://matrix.example.org/../../_synapse/admin')).rejects.toThrow();
+      expect(fetchMock).not.toHaveBeenCalled();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('fails the download when the chat server refuses it, so the call UI falls back to initials', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response('{}', { status: 404 }))
+    );
+    try {
+      await expect(driverFor(makeClient()).downloadFile('mxc://matrix.example.org/gone')).rejects.toThrow();
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });
