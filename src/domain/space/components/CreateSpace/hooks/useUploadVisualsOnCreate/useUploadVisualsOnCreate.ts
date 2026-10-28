@@ -61,9 +61,16 @@ const useUploadVisualsOnCreate = ({
         }
       }
 
-      // Awaited inside the try so a rejected upload lands in the catch below,
+      // Wait for every upload to settle, not just the first failure: the caller
+      // treats this promise as the end of the create sequence (dialog close,
+      // navigation), so it must not resolve while another upload is still running.
+      // A rejection is rethrown inside the try so it lands in the catch below,
       // rather than escaping to the caller as if the entity had not been created.
-      await Promise.all(uploadPromises);
+      const results = await Promise.allSettled(uploadPromises);
+      const failure = results.find((result): result is PromiseRejectedResult => result.status === 'rejected');
+      if (failure) {
+        throw failure.reason;
+      }
     } catch (error) {
       // Space/Subspace is created anyway, just the images failed. Log the error and continue
       notify(t('components.visual-upload.entityCreatedErrorUploading', { entity: entityName }), 'error');

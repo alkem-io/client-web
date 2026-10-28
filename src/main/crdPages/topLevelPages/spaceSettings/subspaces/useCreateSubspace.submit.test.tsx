@@ -70,13 +70,19 @@ vi.mock('@/main/crdPages/templates/templateContentMapper', () => ({ mapTemplateC
 import { type UseCreateSubspaceOptions, useCreateSubspace } from './useCreateSubspace';
 
 /** Opens the dialog and fills a valid form; with an avatar, the create is followed by a visual upload. */
-const renderFilledForm = (options: UseCreateSubspaceOptions = {}, { withAvatar = false } = {}) => {
+const renderFilledForm = (
+  options: UseCreateSubspaceOptions = {},
+  { withAvatar = false, withCardBanner = false } = {}
+) => {
   const hook = renderHook(() => useCreateSubspace('space-1', options));
   act(() => hook.result.current.openDialog());
   act(() => hook.result.current.onChange({ displayName: 'New subspace' }));
   if (withAvatar) {
     // No visual constraints are loaded, so the pick goes straight into form state.
     act(() => hook.result.current.onChange({ avatarFile: new File(['x'], 'avatar.png', { type: 'image/png' }) }));
+  }
+  if (withCardBanner) {
+    act(() => hook.result.current.onChange({ cardBannerFile: new File(['y'], 'card.png', { type: 'image/png' }) }));
   }
   return hook;
 };
@@ -150,6 +156,33 @@ describe('useCreateSubspace submit', () => {
     });
 
     expect(mockCreateSubspaceMutation).toHaveBeenCalledTimes(1);
+    expect(mockNotify).toHaveBeenCalledTimes(1);
+    expect(mockNotify).toHaveBeenCalledWith(expect.any(String), 'error');
+    expect(result.current.open).toBe(false);
+    expect(mockNavigate).toHaveBeenCalledWith(NEW_SUBSPACE_URL);
+  });
+
+  it('waits for every visual upload to settle before closing when one upload fails first', async () => {
+    const cardUpload = deferred<unknown>();
+    mockUploadVisual.mockRejectedValueOnce(new Error('avatar upload failed')).mockReturnValueOnce(cardUpload.promise);
+    const { result } = renderFilledForm({}, { withAvatar: true, withCardBanner: true });
+
+    let first!: Promise<void>;
+    await act(async () => {
+      first = result.current.onSubmit();
+      // Let the mutation resolve and the avatar upload reject; the card upload stays pending.
+      for (let i = 0; i < 5; i++) await Promise.resolve();
+    });
+
+    expect(mockUploadVisual).toHaveBeenCalledTimes(2);
+    expect(result.current.open).toBe(true);
+    expect(result.current.submitting).toBe(true);
+    expect(mockNavigate).not.toHaveBeenCalled();
+
+    await act(async () => {
+      cardUpload.resolve({});
+      await first;
+    });
     expect(mockNotify).toHaveBeenCalledTimes(1);
     expect(mockNotify).toHaveBeenCalledWith(expect.any(String), 'error');
     expect(result.current.open).toBe(false);
