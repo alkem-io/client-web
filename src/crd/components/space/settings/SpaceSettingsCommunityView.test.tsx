@@ -143,3 +143,14 @@ describe('SpaceSettingsCommunityView — organization search, invite gating, and
     expect(screen.queryByRole('button', { name: /pendingInvitations.revoke/ })).not.toBeInTheDocument();
   });
 });
+
+describe('SpaceSettingsCommunityView — subspace wording (spec 045 FR-042)', () => {
+  test('asks for the subspace copy at L1 and the base copy at L0', () => {
+    const { unmount } = render(<SpaceSettingsCommunityView {...baseProps} level="L1" />);
+    expect(screen.getByText('community.members.title:{"context":"subspace"}')).toBeInTheDocument();
+    unmount();
+
+    render(<SpaceSettingsCommunityView {...baseProps} level="L0" />);
+    expect(screen.getByText('community.members.title:{}')).toBeInTheDocument();
+  });
+});

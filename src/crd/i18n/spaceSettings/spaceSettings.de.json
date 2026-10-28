@@ -23,7 +23,8 @@
   "layout": {
     "pageHeader": {
       "title": "Layout",
-      "subtitle": "Passen Sie die Navigations-Tabs Ihres Spaces an. Benennen Sie um, ordnen Sie neu an und verwalten Sie Beitragszuweisungen."
+      "subtitle": "Passen Sie die Navigations-Tabs Ihres Spaces an. Benennen Sie um, ordnen Sie neu an und verwalten Sie Beitragszuweisungen.",
+      "subtitle_subspace": "Passen Sie die Navigations-Tabs Ihres Subspaces an. Benennen Sie um, ordnen Sie neu an und verwalten Sie Beitragszuweisungen."
     },
     "loading": "Layout wird geladen…",
     "column": {
@@ -113,6 +114,7 @@
         "widgets": {
           "intent": "Zweck & Leiter",
           "about": "Über diesen Bereich",
+          "about_subspace": "Über diesen Subspace",
           "createPost": "Post hinzufügen",
           "applicationButton": "Bewerben / Beitreten",
           "createSubspace": "Unterbereich erstellen",
@@ -286,6 +288,7 @@
     },
     "members": {
       "title": "Space-Mitglieder",
+      "title_subspace": "Subspace-Mitglieder",
       "search": "Mitglieder suchen…",
       "invite": "Einladen",
       "name": "Name",
@@ -304,7 +307,8 @@
       "dropdown": {
         "viewProfile": "Profil anzeigen",
         "changeRole": "Rolle ändern",
-        "removeFromSpace": "Aus Space entfernen"
+        "removeFromSpace": "Aus Space entfernen",
+        "removeFromSpace_subspace": "Aus Subspace entfernen"
       },
       "pagination": {
         "showing": "Zeige {{from}} bis {{to}} von {{total}} Mitgliedern",
@@ -344,7 +348,8 @@
       "dropdown": {
         "viewProfile": "Profil anzeigen",
         "changeRole": "Rolle ändern",
-        "removeFromSpace": "Aus Space entfernen"
+        "removeFromSpace": "Aus Space entfernen",
+        "removeFromSpace_subspace": "Aus Subspace entfernen"
       },
       "invite": "Organisation einladen",
       "search": "Organisationen suchen…",
@@ -393,6 +398,7 @@
       "title": "Community-Richtlinien",
       "hint": "Werden neuen Mitgliedern beim Beitritt angezeigt.",
       "placeholder": "Beschreiben Sie den Verhaltenskodex Ihres Spaces…",
+      "placeholder_subspace": "Beschreiben Sie den Verhaltenskodex Ihres Subspaces…",
       "titleLabel": "Titel",
       "titlePlaceholder": "Benennen Sie Ihre Community-Richtlinien",
       "referencesLabel": "Verwandte Links",
@@ -429,7 +435,8 @@
       },
       "applicationReject": {
         "title": "Antrag ablehnen",
-        "description": "Den Antrag von {{name}} auf Beitritt zu diesem Space ablehnen?"
+        "description": "Den Antrag von {{name}} auf Beitritt zu diesem Space ablehnen?",
+        "description_subspace": "Den Antrag von {{name}} auf Beitritt zu diesem Subspace ablehnen?"
       },
       "applicationDelete": {
         "title": "Antrag entfernen",
@@ -759,23 +766,30 @@
       "title": "Sichtbarkeit",
       "public": "Öffentlich",
       "publicDescription": "Dieser Space und seine Inhalte sind für alle auf der Plattform sichtbar. Benutzer können nur beitragen, wenn sie Mitglied sind.",
+      "publicDescription_subspace": "Dieser Subspace und seine Inhalte sind für alle auf der Plattform sichtbar. Benutzer können nur beitragen, wenn sie Mitglied sind.",
       "private": "Privat",
       "privateDescription": "Dieser Space ist für alle auf der Plattform sichtbar, aber die Inhalte sind nur für Mitglieder sichtbar.",
-      "hint": "Berücksichtigen Sie den Zweck und das Publikum Ihres Spaces bei der Wahl der Sichtbarkeit."
+      "privateDescription_subspace": "Dieser Subspace ist für alle auf der Plattform sichtbar, aber die Inhalte sind nur für Mitglieder sichtbar.",
+      "hint": "Berücksichtigen Sie den Zweck und das Publikum Ihres Spaces bei der Wahl der Sichtbarkeit.",
+      "hint_subspace": "Berücksichtigen Sie den Zweck und das Publikum Ihres Subspaces bei der Wahl der Sichtbarkeit."
     },
     "membership": {
       "title": "Mitgliedschaft",
       "open": "Kein Antrag erforderlich",
       "openDescription": "Alle Space-Mitglieder können direkt beitreten, ohne dass Sie ihre Anträge prüfen müssen.",
+      "openDescription_subspace": "Alle Mitglieder des übergeordneten Spaces können direkt beitreten, ohne dass Sie ihre Anträge prüfen müssen.",
       "openHint": "Am besten für öffentliche, offene Kollaborationsspaces",
+      "openHint_subspace": "Am besten für öffentliche, offene Kollaborations-Subspaces",
       "application": "Antrag erforderlich",
       "applicationDescription": "Wenn Personen Mitglied werden möchten, müssen sie das Antragsformular ausfüllen. Sie erhalten ihre Anträge (siehe Community-Tab hier) und können sie annehmen oder ablehnen.",
       "applicationHint": "Am besten für kuratierte Spaces mit spezifischen Anforderungen",
+      "applicationHint_subspace": "Am besten für kuratierte Subspaces mit spezifischen Anforderungen",
       "invitation": "Nur auf Einladung",
       "invitationDescription": "Benutzer können erst Mitglied werden, nachdem Sie sie eingeladen haben. Es gibt keine 'Beantragen'- oder 'Beitreten'-Schaltfläche für andere.",
       "invitationHint": "Am besten für private, eingeschränkte Kollaborationsteams",
       "trustedApplicants": "Vertrauenswürdige Antragsteller",
-      "hostOrgTrust": "Erlauben Sie Mitgliedern von {{host}}, ohne Antrag diesem Space beizutreten."
+      "hostOrgTrust": "Erlauben Sie Mitgliedern von {{host}}, ohne Antrag diesem Space beizutreten.",
+      "hostOrgTrust_subspace": "Erlauben Sie Mitgliedern von {{host}}, ohne Antrag diesem Subspace beizutreten."
     },
     "applicationForm": {
       "title": "Antragsformular",
@@ -830,10 +844,14 @@
     "userInfoVisibility": {
       "title": "Sichtbarkeit der Benutzerinformationen",
       "description": "Legen Sie fest, wer die Informationen der Mitglieder in diesem Space sehen kann. Organisationen und virtuelle Mitwirkende folgen der Sichtbarkeit des Space.",
+      "description_subspace": "Legen Sie fest, wer die Informationen der Mitglieder in diesem Subspace sehen kann. Organisationen und virtuelle Mitwirkende folgen der Sichtbarkeit des Subspace.",
       "followSpace": "Sichtbarkeit des Space übernehmen",
+      "followSpace_subspace": "Sichtbarkeit des Subspace übernehmen",
       "followSpaceDescription": "Die Benutzerinformationen der Mitglieder sind entsprechend der Sichtbarkeit des Space sichtbar.",
+      "followSpaceDescription_subspace": "Die Benutzerinformationen der Mitglieder sind entsprechend der Sichtbarkeit des Subspace sichtbar.",
       "membersOnly": "Nur Mitglieder",
-      "membersOnlyDescription": "Nur Mitglieder dieses Space können die Benutzerinformationen der Mitglieder sehen."
+      "membersOnlyDescription": "Nur Mitglieder dieses Space können die Benutzerinformationen der Mitglieder sehen.",
+      "membersOnlyDescription_subspace": "Nur Mitglieder dieses Subspace können die Benutzerinformationen der Mitglieder sehen."
     }
   },
   "storage": {
@@ -902,11 +920,14 @@
     },
     "name": {
       "title": "Space-Name",
-      "description": "Der öffentliche Name Ihres Spaces."
+      "title_subspace": "Subspace-Name",
+      "description": "Der öffentliche Name Ihres Spaces.",
+      "description_subspace": "Der öffentliche Name Ihres Subspaces."
     },
     "tagline": {
       "title": "Untertitel",
-      "description": "Ein kurzer Untertitel, der neben dem Space-Namen angezeigt wird."
+      "description": "Ein kurzer Untertitel, der neben dem Space-Namen angezeigt wird.",
+      "description_subspace": "Ein kurzer Untertitel, der neben dem Subspace-Namen angezeigt wird."
     },
     "branding": {
       "noImage": "Kein Bild",
@@ -914,6 +935,7 @@
         "title": "Avatar",
         "size": "410 × 410px",
         "hint": "Das Logo des Spaces.",
+        "hint_subspace": "Das Logo des Subspaces.",
         "recrop": "Aktuellen Avatar zuschneiden",
         "upload": "Avatar hochladen"
       },
@@ -928,6 +950,7 @@
         "title": "Karten-Banner",
         "size": "416 × 256px",
         "hint": "Wird in Suchergebnissen und Space-Karten angezeigt.",
+        "hint_subspace": "Wird in Suchergebnissen und in der Übersicht des übergeordneten Spaces angezeigt.",
         "recrop": "Aktuelles Kartenbanner zuschneiden",
         "upload": "Karten-Banner hochladen"
       },
@@ -951,6 +974,7 @@
     "location": {
       "title": "Standort",
       "description": "Stadt und Land dieses Spaces.",
+      "description_subspace": "Stadt und Land dieses Subspaces.",
       "city": "Stadt",
       "country": "Land (ISO-Code)",
       "countryPlaceholder": "Land"
@@ -958,26 +982,33 @@
     "what": {
       "title": "Was",
       "description": "Beschreiben Sie, worum es in diesem Space geht.",
-      "placeholder": "Worum es in diesem Space geht…"
+      "description_subspace": "Beschreiben Sie, worum es in diesem Subspace geht.",
+      "placeholder": "Worum es in diesem Space geht…",
+      "placeholder_subspace": "Worum es in diesem Subspace geht…"
     },
     "why": {
       "title": "Warum",
       "description": "Erklären Sie die Motivation oder den Wert dieses Spaces.",
-      "placeholder": "Warum dieser Space existiert…"
+      "description_subspace": "Erklären Sie die Motivation oder den Wert dieses Subspaces.",
+      "placeholder": "Warum dieser Space existiert…",
+      "placeholder_subspace": "Warum dieser Subspace existiert…"
     },
     "who": {
       "title": "Wer",
       "description": "Beschreiben Sie das Zielpublikum oder die idealen Mitglieder.",
-      "placeholder": "Für wen dieser Space gedacht ist…"
+      "placeholder": "Für wen dieser Space gedacht ist…",
+      "placeholder_subspace": "Für wen dieser Subspace gedacht ist…"
     },
     "tags": {
       "title": "Tags",
       "description": "Tags helfen Mitgliedern, Ihren Space zu entdecken.",
+      "description_subspace": "Tags helfen Mitgliedern, Ihren Subspace zu entdecken.",
       "placeholder": "Tag hinzufügen und Enter drücken"
     },
     "references": {
       "title": "Verweise und Links",
       "description": "Externe Links, die auf dieser Space-Seite angezeigt werden.",
+      "description_subspace": "Externe Links, die auf dieser Subspace-Seite angezeigt werden.",
       "empty": "Noch keine Verweise hinzugefügt.",
       "add": "Hinzufügen",
       "row": {
@@ -1002,44 +1033,52 @@
       "label": "VORSCHAU",
       "livePreview": {
         "title": "Live-Vorschau",
-        "description": "Diese Vorschau zeigt, wie Ihre Space-Karte im Verzeichnis \"Spaces erkunden\" angezeigt wird."
+        "description": "Diese Vorschau zeigt, wie Ihre Space-Karte im Verzeichnis \"Spaces erkunden\" angezeigt wird.",
+        "description_subspace": "Diese Vorschau zeigt, wie Ihre Subspace-Karte in der Übersicht des übergeordneten Spaces und in Suchergebnissen angezeigt wird."
       }
     }
   },
   "classifications": {
     "sectionTitle": "Klassifikationen",
     "sectionDescription": "Klassifiziere deinen Space mit strukturierten Vokabularen (z. B. SDGs, Sektor) für Auffindbarkeit und Berichte.",
+    "sectionDescription_subspace": "Klassifiziere deinen Subspace mit strukturierten Vokabularen (z. B. SDGs, Sektor) für Auffindbarkeit und Berichte.",
     "addButton": "Klassifikation hinzufügen",
     "picker": {
-      "title": "Add a classification",
-      "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
-      "platformSection": "Platform-wide",
-      "spaceSection": "This Space's library",
+      "title": "Klassifizierung hinzufügen",
+      "description": "Wählen Sie eine Klassifizierungsvorlage, die Sie diesem Space hinzufügen möchten. Als Nächstes wählen Sie ihre Werte aus.",
+      "description_subspace": "Wählen Sie eine Klassifizierungsvorlage, die Sie diesem Subspace hinzufügen möchten. Als Nächstes wählen Sie ihre Werte aus.",
+      "platformSection": "Plattformweit",
+      "spaceSection": "Bibliothek dieses Spaces",
+      "spaceSection_subspace": "Bibliothek des Haupt-Spaces",
       "emptyState": {
-        "title": "No Classification Templates yet",
-        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it."
+        "title": "Noch keine Klassifizierungsvorlagen",
+        "description": "Erstellen Sie eine in einem Vorlagenpaket oder in der Vorlagenbibliothek dieses Spaces und kehren Sie dann hierher zurück, um sie hinzuzufügen.",
+        "description_subspace": "Erstellen Sie eine in einem Vorlagenpaket oder in der Vorlagenbibliothek des Haupt-Spaces und kehren Sie dann hierher zurück, um sie hinzuzufügen."
       },
       "conflict": {
-        "title": "That name is already in use",
-        "description": "This Space already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
-        "fieldLabel": "Display label",
-        "retry": "Add with this label"
+        "title": "Dieser Name wird bereits verwendet",
+        "description": "Dieser Space hat bereits eine Klassifizierung mit der Bezeichnung \"{{label}}\". Geben Sie der neuen eine andere Anzeigebezeichnung, um sie zu unterscheiden.",
+        "description_subspace": "Dieser Subspace hat bereits eine Klassifizierung mit der Bezeichnung \"{{label}}\". Geben Sie der neuen eine andere Anzeigebezeichnung, um sie zu unterscheiden.",
+        "fieldLabel": "Anzeigebezeichnung",
+        "retry": "Mit dieser Bezeichnung hinzufügen"
       },
-      "cancel": "Cancel",
+      "cancel": "Abbrechen",
       "searchPlaceholder": "Vorlagen durchsuchen…",
       "noMatches": "Keine Vorlagen passen zu \"{{query}}\".",
       "multiSelect": "Mehrfach",
       "singleSelect": "Einzeln"
     },
     "valueSelector": {
-      "noneSelected": "No values selected yet"
+      "noneSelected": "Noch keine Werte ausgewählt"
     },
     "display": {
-      "toggleLabel": "Show on the Space page",
-      "hiddenHint": "Not shown on the Space page"
+      "toggleLabel": "Auf der Space-Seite anzeigen",
+      "toggleLabel_subspace": "Auf der Subspace-Seite anzeigen",
+      "hiddenHint": "Nicht auf der Space-Seite angezeigt",
+      "hiddenHint_subspace": "Nicht auf der Subspace-Seite angezeigt"
     },
     "remove": {
-      "menuLabel": "Remove classification"
+      "menuLabel": "Klassifizierung entfernen"
     },
     "entry": {
       "multiSelect": "Mehrfachauswahl",
