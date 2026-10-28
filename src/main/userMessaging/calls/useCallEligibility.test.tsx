@@ -85,7 +85,26 @@ describe('useCallEligibility', () => {
       client.state = 'PREPARED';
       client.emit('sync', 'PREPARED');
     });
-    expect(result.current).toEqual({ eligible: true, matrixRoomId: '!m-alk-group:hs' });
+    await waitFor(() => expect(result.current).toEqual({ eligible: true, matrixRoomId: '!m-alk-group:hs' }));
+  });
+
+  it('looks the room up again when the session syncs after a failed lookup', async () => {
+    const client = makeClient('SYNCING');
+    harness.client = client;
+    harness.resolve.mockResolvedValueOnce(null);
+    const { result } = renderHook(() => useCallEligibility(group));
+    await act(async () => {});
+    expect(result.current.eligible).toBe(false);
+
+    act(() => {
+      client.state = 'RECONNECTING';
+      client.emit('sync', 'RECONNECTING');
+    });
+    act(() => {
+      client.state = 'SYNCING';
+      client.emit('sync', 'SYNCING');
+    });
+    await waitFor(() => expect(result.current).toEqual({ eligible: true, matrixRoomId: '!m-alk-group:hs' }));
   });
 
   it('does not reuse a room resolved for another conversation', async () => {

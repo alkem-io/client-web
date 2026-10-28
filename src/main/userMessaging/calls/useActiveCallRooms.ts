@@ -4,7 +4,7 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import { resolveMatrixRoomId } from '@/main/userMessaging/matrix/matrixRooms';
 import { isCallsConfigured } from './callConfig';
 import { watchLiveMemberships } from './matrixRtc';
-import { type CallableConversation, isBetaTester } from './useCallEligibility';
+import { type CallableConversation, isBetaTester, useIsSynced } from './useCallEligibility';
 
 const NONE: ReadonlySet<string> = new Set();
 
@@ -19,6 +19,7 @@ const sameSet = (a: ReadonlySet<string>, b: ReadonlySet<string>): boolean =>
 const useActiveCallRooms = (conversations: readonly CallableConversation[]): ReadonlySet<string> => {
   const { platformRoles } = useCurrentUserContext();
   const client = useMatrixClient();
+  const isSynced = useIsSynced(client);
   const enabled = isBetaTester(platformRoles) && isCallsConfigured();
   // A stable key, so the effect re-runs only when the set of group rooms changes.
   const roomsKey = enabled
@@ -30,9 +31,15 @@ const useActiveCallRooms = (conversations: readonly CallableConversation[]): Rea
     : '';
   const [active, setActive] = useState<ReadonlySet<string>>(NONE);
 
+  // Rooms are looked up once the session is synced, and again each time it syncs anew, so a
+  // room whose lookup failed while the chat server was unreachable gets its badge later.
   useEffect(() => {
     if (!client || roomsKey === '') {
       setActive(NONE);
+      return;
+    }
+    if (!isSynced) {
+      // The badges shown stay until the session syncs again and they are re-read.
       return;
     }
     let cancelled = false;
@@ -62,7 +69,7 @@ const useActiveCallRooms = (conversations: readonly CallableConversation[]): Rea
       cancelled = true;
       stopWatching?.();
     };
-  }, [client, roomsKey]);
+  }, [client, isSynced, roomsKey]);
 
   return active;
 };

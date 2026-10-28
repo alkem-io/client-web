@@ -63,8 +63,10 @@ const useCallEligibility = (conversation: CallableConversation | null): CallElig
     matrixRoomId: string | null;
   } | null>(null);
 
+  // Looked up once the session is synced, and again each time it syncs anew: a lookup that
+  // failed while the chat server was unreachable is not remembered and would otherwise never retry.
   useEffect(() => {
-    if (!client || !candidateRoomId) {
+    if (!client || !candidateRoomId || !isSynced) {
       return;
     }
     let cancelled = false;
@@ -76,7 +78,7 @@ const useCallEligibility = (conversation: CallableConversation | null): CallElig
     return () => {
       cancelled = true;
     };
-  }, [client, candidateRoomId]);
+  }, [client, candidateRoomId, isSynced]);
 
   const matrixRoomId =
     resolved && resolved.client === client && resolved.alkemioRoomId === candidateRoomId ? resolved.matrixRoomId : null;

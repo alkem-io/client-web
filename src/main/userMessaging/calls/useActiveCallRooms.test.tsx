@@ -6,6 +6,7 @@ const harness = vi.hoisted(() => ({
   client: null as unknown,
   platformRoles: ['FEATURE_BETA_TESTER'] as string[],
   configured: true,
+  resolve: vi.fn(async (_client: unknown, alkemioRoomId: string): Promise<string | null> => `!${alkemioRoomId}:hs`),
 }));
 
 vi.mock('@/core/matrix/activeClient', () => ({ useMatrixClient: () => harness.client }));
@@ -16,7 +17,7 @@ vi.mock('./callConfig', () => ({ isCallsConfigured: () => harness.configured }))
 vi.mock('@/main/userMessaging/matrix/matrixRooms', () => ({
   CLIENT_ROOM: 'Room',
   CLIENT_SYNC: 'sync',
-  resolveMatrixRoomId: async (_client: unknown, alkemioRoomId: string) => `!${alkemioRoomId}:hs`,
+  resolveMatrixRoomId: harness.resolve,
 }));
 
 import { useActiveCallRooms } from './useActiveCallRooms';
@@ -43,6 +44,10 @@ const makeClient = (sessions: Record<string, FakeSession>) =>
       getRoomSession: (room: { roomId: string }) => sessions[room.roomId] ?? new FakeSession(),
     }),
     getRoom: (roomId: string) => ({ roomId }),
+    syncState: 'SYNCING' as string,
+    getSyncState() {
+      return this.syncState;
+    },
   });
 
 const conversations = [
@@ -55,6 +60,7 @@ describe('useActiveCallRooms', () => {
   beforeEach(() => {
     harness.platformRoles = ['FEATURE_BETA_TESTER'];
     harness.configured = true;
+    harness.resolve.mockClear();
   });
   afterEach(() => {
     harness.client = null;
@@ -92,6 +98,25 @@ describe('useActiveCallRooms', () => {
       session.emit('memberships_changed');
     });
     expect(result.current.size).toBe(0);
+  });
+
+  it('looks a room up again when the session syncs after its lookup failed', async () => {
+    const client = makeClient({ '!g1:hs': new FakeSession([membership('@ann:hs', 60_000)]) });
+    harness.client = client;
+    harness.resolve.mockResolvedValueOnce(null);
+    const { result } = renderHook(() => useActiveCallRooms(conversations.slice(0, 1)));
+    await act(async () => {});
+    expect(result.current.size).toBe(0);
+
+    act(() => {
+      client.syncState = 'RECONNECTING';
+      client.emit('sync', 'RECONNECTING');
+    });
+    act(() => {
+      client.syncState = 'SYNCING';
+      client.emit('sync', 'SYNCING');
+    });
+    await waitFor(() => expect([...result.current]).toEqual(['g1']));
   });
 
   it('flags nothing for someone who is not a beta tester, or where calls are off', async () => {
