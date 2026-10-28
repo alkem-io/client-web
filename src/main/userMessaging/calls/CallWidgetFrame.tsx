@@ -111,6 +111,10 @@ export default function CallWidgetFrame({
     };
 
     return () => {
+      // The call UI is torn down with its leave possibly still unsent (sign-out, a replaced
+      // session, a close before its membership synced); its own delayed leave would leave
+      // the others seeing this device in the call for a while.
+      driver.sendPendingLeavesNow();
       window.removeEventListener('pagehide', onPageHide);
       hangupRef.current = null;
       client.removeListener(CLIENT_EVENT as never, onEvent as never);

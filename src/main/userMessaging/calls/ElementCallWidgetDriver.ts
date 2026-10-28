@@ -188,10 +188,12 @@ class ElementCallWidgetDriver extends WidgetDriver {
   }
 
   /**
-   * Leaves the call now when the page goes away (reload, close, navigation):
-   * the call UI's own leave does not survive the unload, and its delayed leave
-   * may be set to fire much later. `keepalive` lets the browser finish the
-   * request after the page is gone, which the chat client's own requests can't.
+   * Leaves the call now when the call UI goes away without having left: the
+   * page unloads (reload, close, navigation) or the host tears the call UI
+   * down. Its own leave does not survive that, and its delayed leave may be
+   * set to fire much later. A leave the call UI already sent or cancelled is
+   * not in the set any more. `keepalive` lets the browser finish the request
+   * after the page is gone, which the chat client's own requests can't.
    */
   public sendPendingLeavesNow(): void {
     const accessToken = this.client.getAccessToken();

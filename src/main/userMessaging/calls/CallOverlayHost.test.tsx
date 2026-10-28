@@ -13,6 +13,10 @@ const harness = vi.hoisted(() => ({
     transport: { reply: ReturnType<typeof vi.fn>; send: ReturnType<typeof vi.fn> };
     setViewedRoomId: ReturnType<typeof vi.fn>;
     stop: ReturnType<typeof vi.fn>;
+    driver: {
+      sendDelayedEvent: (delay: number, type: string, content: unknown, stateKey: string) => Promise<unknown>;
+      sendScheduledDelayedEvent: (delayId: string) => Promise<void>;
+    };
   }>,
 }));
 
@@ -27,7 +31,8 @@ vi.mock('matrix-widget-api', async () => {
     feedStateUpdate = vitest.fn(async () => {});
     constructor(
       readonly widget: unknown,
-      readonly iframe: HTMLIFrameElement
+      readonly iframe: HTMLIFrameElement,
+      readonly driver: unknown
     ) {
       super();
       harness.apis.push(this as never);
@@ -56,7 +61,13 @@ const makeClient = () =>
     baseUrl: 'https://hs.example',
     getUserId: () => '@me:hs.example',
     getDeviceId: () => 'DEV1',
+    getAccessToken: () => 'access-token',
+    _unstable_sendDelayedStateEvent: vi.fn(async () => ({ delay_id: 'leave-1' })),
+    _unstable_updateDelayedEvent: vi.fn(async () => ({})),
   });
+
+const CALL_MEMBER = 'org.matrix.msc3401.call.member';
+const OWN_MEMBERSHIP_KEY = '_@me:hs.example_DEV1_m.call';
 
 const widgetAction = (action: string) =>
   new CustomEvent(`action:${action}`, { cancelable: true, detail: { action, requestId: 'r1', data: {} } });
@@ -198,5 +209,45 @@ describe('CallOverlayHost', () => {
     harness.client = makeClient();
     rerender(<CallOverlayHost />);
     expect(getCallOverlay()).toBeNull();
+  });
+
+  it('leaves the call at once when the call UI goes away before it could leave by itself', async () => {
+    const fetchMock = vi.fn(async () => new Response('{}'));
+    vi.stubGlobal('fetch', fetchMock);
+    try {
+      const { rerender } = render(<CallOverlayHost />);
+      const api = await startCall();
+      await api.driver.sendDelayedEvent(18_000, CALL_MEMBER, {}, OWN_MEMBERSHIP_KEY);
+      harness.client = null;
+      rerender(<CallOverlayHost />);
+
+      expect(api.stop).toHaveBeenCalled();
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://hs.example/_matrix/client/unstable/org.matrix.msc4140/delayed_events/leave-1',
+        expect.objectContaining({ method: 'POST', keepalive: true, body: JSON.stringify({ action: 'send' }) })
+      );
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('sends no second leave when the call UI already left before closing', async () => {
+    const fetchMock = vi.fn(async () => new Response('{}'));
+    vi.stubGlobal('fetch', fetchMock);
+    try {
+      render(<CallOverlayHost />);
+      const api = await startCall();
+      await api.driver.sendDelayedEvent(18_000, CALL_MEMBER, {}, OWN_MEMBERSHIP_KEY);
+      await api.driver.sendScheduledDelayedEvent('leave-1');
+      act(() => {
+        api.emit('action:im.vector.hangup', widgetAction('im.vector.hangup'));
+      });
+
+      expect(getCallOverlay()).toBeNull();
+      expect(fetchMock).not.toHaveBeenCalled();
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });
