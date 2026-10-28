@@ -43,6 +43,7 @@ import {
   type TabUnsavedChanges,
   toUnsavedChangesBarState,
 } from '@/main/crdPages/utils/tabUnsavedChanges';
+import { useCityOptions } from '@/main/crdPages/utils/useCityOptions';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { CustomizeSidebarConnector } from '../../space/innovationFlow/CustomizeSidebarConnector';
 import { LayoutReplaceFlowConnector } from '../../space/innovationFlow/LayoutReplaceFlowConnector';
@@ -88,6 +89,7 @@ const ABOUT_MARKDOWN_MAX_LENGTH = {
  * NOT render a second hero here.
  */
 export default function CrdSpaceSettingsPage() {
+  const cities = useCityOptions();
   const { t, i18n } = useTranslation('crd-spaceSettings');
   const { t: tCommon } = useTranslation('crd-common');
   const notify = useNotification();
@@ -487,6 +489,8 @@ export default function CrdSpaceSettingsPage() {
                   level={level}
                   previewCard={about.previewCard}
                   countries={COUNTRIES}
+                  cityOptions={cities.options}
+                  onCityFocus={cities.onRequest}
                   disabled={about.unsaved.saving}
                   markdownMaxLengthByField={ABOUT_MARKDOWN_MAX_LENGTH}
                   onChange={about.onChange}

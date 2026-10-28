@@ -559,6 +559,14 @@ With 4–12 developers:
 - This spec ships together with sibling spec `096-crd-user-pages` as one contributor-vertical CRD release.
 - 096 already added `useUserPageRouteContext`, `useCanEditSettings` (User-side predicate base), `CrdUserRoutes.tsx`, and `CrdOrganizationRoutes.tsx`. This spec extends those: T013 renames / aliases the User-vertical predicate as `useCanEditUserSettings`; T024 adds the User Settings dispatch into `TopLevelRoutes.tsx`; T025 extends `CrdOrganizationRoutes.tsx`'s existing `settings/*` route to gate via `useCrdEnabled()`.
 
+## Sub-spec: City autocomplete (Session 2026-10-28, [`city-autocomplete/spec.md`](./city-autocomplete/spec.md))
+
+- [X] T135 Add the `crd-cities` namespace (`src/crd/i18n/cities/cities.<lang>.json`, all six languages), register it in the lazy i18n backend, and add a key-parity test.
+- [X] T136 Add the presentational `@/crd/components/common/CityAutocompleteInput` (free-text ARIA combobox: accent-insensitive matching, prefix-first ranking, max 8 suggestions, keyboard navigation), plus a unit test.
+- [X] T137 Add the integration hook `useCityOptions` (loads `crd-cities` on first focus, follows the UI language, falls back to English) and wire it into `CrdUserProfileTab` → `UserProfileTabView`. Choosing a suggestion writes `{ city, country }` to the buffer in one change.
+- [X] T139 Move `useCityOptions` to `src/main/crdPages/utils/` and apply the input to every other City + Country pair: `OrgProfileTabView`, `OrganizationForm` (edit mode), `UserEditForm`, and `SpaceSettingsAboutView` (spec 045, all levels).
+- [ ] T138 Manual check: no `cities.*` chunk is requested before the City input gets focus; acceptance scenarios 1–3. **Deferred to user (manual)**.
+
 ---
 
 ## Notes

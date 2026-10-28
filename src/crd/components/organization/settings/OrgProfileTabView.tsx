@@ -1,6 +1,7 @@
 import { Bookmark, Building2, FileText, Globe, Image as ImageIcon, Link2, Mail } from 'lucide-react';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CityAutocompleteInput, type CityOption } from '@/crd/components/common/CityAutocompleteInput';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
 import { SettingsSection } from '@/crd/components/common/SettingsSection';
 import { type OrgVerificationStatus, OrgVerifiedBadge } from '@/crd/components/contributor/settings/OrgVerifiedBadge';
@@ -14,7 +15,6 @@ import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/M
 import { type ReferenceRow, ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { isValidEmailOrEmpty, isValidUrlOrEmpty } from '@/crd/lib/validators';
-import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
 import { Skeleton } from '@/crd/primitives/skeleton';
 
@@ -69,6 +69,10 @@ export type OrgProfileCountryOption = { code: string; name: string };
 export type OrgProfileViewProps = {
   values: OrgProfileFormValuesData;
   countries: ReadonlyArray<OrgProfileCountryOption>;
+  /** City suggestions; `undefined` until loaded (see `onCityFocus`). */
+  cityOptions?: ReadonlyArray<CityOption>;
+  /** City input focused — the consumer lazily loads `cityOptions`. */
+  onCityFocus?: () => void;
   loading: boolean;
   /** True while a Save runs: the form is frozen, so nothing typed is lost to the post-save rebase. */
   disabled?: boolean;
@@ -97,6 +101,8 @@ export function OrgProfileTabView(props: OrgProfileViewProps) {
   const {
     values,
     countries,
+    cityOptions,
+    onCityFocus,
     loading,
     disabled = false,
     onChange,
@@ -182,10 +188,13 @@ export function OrgProfileTabView(props: OrgProfileViewProps) {
                   <Label htmlFor={cityId} className="mb-1 text-caption text-muted-foreground">
                     {t('org.profile.about.location.city')}
                   </Label>
-                  <Input
+                  <CityAutocompleteInput
                     id={cityId}
                     value={values.city}
-                    onChange={e => onChange({ city: e.target.value })}
+                    onChange={city => onChange({ city })}
+                    onSelect={option => onChange({ city: option.name, country: option.countryCode })}
+                    options={cityOptions}
+                    onFocus={onCityFocus}
                     placeholder={t('org.profile.about.location.city')}
                   />
                 </div>

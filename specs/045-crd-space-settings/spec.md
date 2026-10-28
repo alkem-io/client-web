@@ -94,6 +94,10 @@ Decided by the product owner after reviewing the subspace settings page, which r
 - Q: The classification picker at L1 / L2 says "This Space's library" — which library is it? → A: A subspace has no classification library of its own: the picker reads the **top-level (L0) Space's** Template Library (workspace spec 024 FR-007a). At L1 / L2 the section heading reads "The top-level space's library" and the empty state points to "the top-level space's Template Library". It does not say "parent space", which would be wrong for an L2.
 - Q: The add-tab dialog and the Virtual Contributors strings also say "space" — do they change? → A: **No.** The add-tab dialog is L0-only (subspaces add *phases*, whose dialog does not mention a space), and the Virtual Contributors block, its add dialog and its remove confirmation are hidden at L1 / L2 (FR-036).
 
+### Session 2026-10-28 (City autocomplete in the About Location section)
+
+- Q: Should the About → Location **City** input suggest cities, as the profile Location fields do? → A: **Yes, on Space and Subspace About alike (every level).** The City input becomes the shared free-text `CityAutocompleteInput`. Picking a suggestion sets City and Country together as one buffered change through the unsaved-changes bar. The translated city list is loaded lazily on first focus. Behaviour, data set and requirements are specified once in [`097-crd-user-settings/city-autocomplete/spec.md`](../097-crd-user-settings/city-autocomplete/spec.md).
+
 ## User Scenarios & Testing
 
 **All nine tabs are P1 and ship together in a single release (FR-018 / FR-050).** The priority label exists only for traceability; the user stories below are equally important and each is independently testable within its own tab.

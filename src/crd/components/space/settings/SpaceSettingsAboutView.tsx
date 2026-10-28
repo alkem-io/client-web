@@ -3,6 +3,7 @@ import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ClassificationEntryCard } from '@/crd/components/classification/ClassificationEntryCard';
 import type { ClassificationEntryData } from '@/crd/components/classification/types';
+import { CityAutocompleteInput, type CityOption } from '@/crd/components/common/CityAutocompleteInput';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
 import { SettingsSection } from '@/crd/components/common/SettingsSection';
 import { SpaceCard, type SpaceCardData } from '@/crd/components/space/SpaceCard';
@@ -31,6 +32,10 @@ export type SpaceSettingsAboutViewProps = AboutFormValues & {
   level: SpaceSettingsLevel;
   previewCard: SpaceCardPreview;
   countries: ReadonlyArray<{ name: string; code: string }>;
+  /** City suggestions; `undefined` until loaded (see `onCityFocus`). */
+  cityOptions?: ReadonlyArray<CityOption>;
+  /** City input focused — the consumer lazily loads `cityOptions`. */
+  onCityFocus?: () => void;
   /** Locks every field while the tab's changes are being saved (spec 045 FR-025d). */
   disabled?: boolean;
   /** Character limits of the markdown sections; each turns on that editor's progress ring. */
@@ -215,10 +220,13 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <FieldLabel htmlFor={cityId}>{t('about.location.city')}</FieldLabel>
-              <Input
+              <CityAutocompleteInput
                 id={cityId}
                 value={city}
-                onChange={e => onChange({ city: e.target.value })}
+                onChange={next => onChange({ city: next })}
+                onSelect={option => onChange({ city: option.name, country: option.countryCode })}
+                options={props.cityOptions}
+                onFocus={props.onCityFocus}
                 placeholder={t('about.location.city')}
                 className="mt-2"
               />
