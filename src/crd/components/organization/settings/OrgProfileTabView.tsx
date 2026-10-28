@@ -241,19 +241,6 @@ export function OrgProfileTabView(props: OrgProfileViewProps) {
         >
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <ProfileTextField
-              label={t('org.profile.contactLegal.contactEmail.label')}
-              hint={t('org.profile.contactLegal.contactEmail.hint')}
-              value={values.contactEmail}
-              icon={Mail}
-              placeholder="contact@example.org"
-              error={
-                isValidEmailOrEmpty(values.contactEmail)
-                  ? undefined
-                  : t('org.profile.contactLegal.contactEmail.invalidFormat')
-              }
-              onChange={next => onChange({ contactEmail: next })}
-            />
-            <ProfileTextField
               label={t('org.profile.contactLegal.domain.label')}
               hint={t('org.profile.contactLegal.domain.hint')}
               value={values.domain}
@@ -286,6 +273,22 @@ export function OrgProfileTabView(props: OrgProfileViewProps) {
           iconColor="blue"
           defaultOpen={false}
         >
+          {/* Spec 097 FR-091a (#10180): contact details sit with the social links. */}
+          <div className="mb-4">
+            <ProfileTextField
+              label={t('org.profile.contactLegal.contactEmail.label')}
+              hint={t('org.profile.contactLegal.contactEmail.hint')}
+              value={values.contactEmail}
+              icon={Mail}
+              placeholder="contact@example.org"
+              error={
+                isValidEmailOrEmpty(values.contactEmail)
+                  ? undefined
+                  : t('org.profile.contactLegal.contactEmail.invalidFormat')
+              }
+              onChange={next => onChange({ contactEmail: next })}
+            />
+          </div>
           <SocialLinksFields
             values={{
               linkedin: values.recognizedReferences.linkedin?.uri ?? '',

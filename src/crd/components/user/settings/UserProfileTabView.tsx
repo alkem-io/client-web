@@ -91,23 +91,13 @@ export function UserProfileTabView(props: UserProfileViewProps) {
                 onChange={next => onChange({ lastName: next })}
               />
             </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <TextField
-                label={t('user.profile.identity.email.label')}
-                hint={t('user.profile.identity.email.readOnlyCaption')}
-                value={values.email}
-                icon={Mail}
-                readOnly={true}
-              />
-              <TextField
-                label={t('user.profile.identity.phone.label')}
-                hint={t('user.profile.identity.phone.hint')}
-                value={values.phone}
-                icon={Phone}
-                error={isValidPhoneOrEmpty(values.phone) ? undefined : t('user.profile.identity.phone.invalidFormat')}
-                onChange={next => onChange({ phone: next })}
-              />
-            </div>
+            <TextField
+              label={t('user.profile.identity.email.label')}
+              hint={t('user.profile.identity.email.readOnlyCaption')}
+              value={values.email}
+              icon={Mail}
+              readOnly={true}
+            />
           </div>
         </SettingsSection>
 
@@ -180,6 +170,17 @@ export function UserProfileTabView(props: UserProfileViewProps) {
           iconColor="blue"
           defaultOpen={false}
         >
+          {/* Spec 097 FR-021a (#10180): contact details sit with the social links. */}
+          <div className="mb-4">
+            <TextField
+              label={t('user.profile.identity.phone.label')}
+              hint={t('user.profile.identity.phone.hint')}
+              value={values.phone}
+              icon={Phone}
+              error={isValidPhoneOrEmpty(values.phone) ? undefined : t('user.profile.identity.phone.invalidFormat')}
+              onChange={next => onChange({ phone: next })}
+            />
+          </div>
           <SocialLinksFields
             values={{
               linkedin: values.recognizedReferences.linkedin?.uri ?? '',

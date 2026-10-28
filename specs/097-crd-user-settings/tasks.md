@@ -565,6 +565,8 @@ With 4–12 developers:
 - [X] T136 Add the presentational `@/crd/components/common/CityAutocompleteInput` (free-text ARIA combobox: accent-insensitive matching, prefix-first ranking, max 8 suggestions, keyboard navigation), plus a unit test.
 - [X] T137 Add the integration hook `useCityOptions` (loads `crd-cities` on first focus, follows the UI language, falls back to English) and wire it into `CrdUserProfileTab` → `UserProfileTabView`. Choosing a suggestion writes `{ city, country }` to the buffer in one change.
 - [X] T139 Move `useCityOptions` to `src/main/crdPages/utils/` and apply the input to every other City + Country pair: `OrgProfileTabView`, `OrganizationForm` (edit mode), `UserEditForm`, and `SpaceSettingsAboutView` (spec 045, all levels).
+- [X] T140 *(#10180, FR-021a / FR-091a)* Move the user **Phone** field and the org **Contact Email** field into their tab's Social links section, above the social links; Contact & Legal keeps Domain, Legal Entity Name and Website. View tests for the new placement.
+- [ ] T141 *(#10180 — blocked on server, not specified)* Organisation phone field; optional public contact email for users; users on a map (alkem-io/product#2182).
 - [ ] T138 Manual check: no `cities.*` chunk is requested before the City input gets focus; acceptance scenarios 1–3. **Deferred to user (manual)**.
 
 ---
