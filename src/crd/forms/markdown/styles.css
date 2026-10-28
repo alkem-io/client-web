@@ -16,6 +16,13 @@
   color: var(--foreground);
 }
 
+/* 16px on iOS and iPadOS so WebKit does not zoom the page in when the editor takes focus. */
+@supports (-webkit-touch-callout: none) {
+  .crd-markdown-editor .ProseMirror {
+    font-size: 16px;
+  }
+}
+
 /* Placeholder */
 .crd-markdown-editor .ProseMirror p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
