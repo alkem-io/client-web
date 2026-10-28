@@ -898,16 +898,28 @@
       "title": "Statut de visibilité",
       "prefix": "Cet espace est actuellement en",
       "suffix": "mode",
-      "contact": "Pour les changements de statut, contactez l'équipe Alkemio."
+      "contact": "Pour les changements de statut, contactez l'équipe Alkemio.",
+      "status": {
+        "active": "Actif",
+        "archived": "Archivé",
+        "demo": "Démo",
+        "inactive": "Inactif"
+      }
     },
     "host": {
-      "title": "Informations sur l'hôte"
+      "title": "Informations sur l'hôte",
+      "type": {
+        "organization": "Organisation",
+        "user": "Utilisateur",
+        "virtualContributor": "Contributeur virtuel"
+      }
     },
     "plan": {
       "title": "Licence",
       "featuresHeading": "Fonctionnalités incluses",
       "daysLeft": "{{count}} jours restants",
-      "changeLicense": "Changer de licence"
+      "changeLicense": "Changer de licence",
+      "none": "Aucune licence active"
     },
     "support": {
       "title": "Support",
@@ -918,6 +930,7 @@
       "title": "Zone de danger",
       "description": "Supprimer définitivement cet espace et tout son contenu.",
       "delete": "Supprimer cet espace",
+      "deleteError": "L'espace n'a pas pu être supprimé. Veuillez réessayer.",
       "deleteDialog": {
         "title": "Supprimer l'espace",
         "description": "Cela supprimera définitivement cet espace et tout son contenu. Cette action ne peut pas être annulée.",

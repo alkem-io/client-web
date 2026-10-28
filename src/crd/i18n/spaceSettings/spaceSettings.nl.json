@@ -898,16 +898,28 @@
       "title": "Zichtbaarheidsstatus",
       "prefix": "Deze Space staat momenteel in",
       "suffix": "modus",
-      "contact": "Voor statuswijzigingen neem je contact op met het Alkemio-team."
+      "contact": "Voor statuswijzigingen neem je contact op met het Alkemio-team.",
+      "status": {
+        "active": "Actief",
+        "archived": "Gearchiveerd",
+        "demo": "Demo",
+        "inactive": "Inactief"
+      }
     },
     "host": {
-      "title": "Hostinformatie"
+      "title": "Hostinformatie",
+      "type": {
+        "organization": "Organisatie",
+        "user": "Gebruiker",
+        "virtualContributor": "Virtual Contributor"
+      }
     },
     "plan": {
       "title": "Licentie",
       "featuresHeading": "Inbegrepen functies",
       "daysLeft": "Nog {{count}} dagen",
-      "changeLicense": "Licentie wijzigen"
+      "changeLicense": "Licentie wijzigen",
+      "none": "Geen actieve licentie"
     },
     "support": {
       "title": "Ondersteuning",
@@ -918,6 +930,7 @@
       "title": "Gevarenzone",
       "description": "Verwijder deze Space en alle inhoud ervan permanent.",
       "delete": "Deze Space verwijderen",
+      "deleteError": "De Space kon niet worden verwijderd. Probeer het opnieuw.",
       "deleteDialog": {
         "title": "Space verwijderen",
         "description": "Hierdoor wordt deze Space en alle inhoud ervan permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",

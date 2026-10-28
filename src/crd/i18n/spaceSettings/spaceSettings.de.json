@@ -898,16 +898,28 @@
       "title": "Sichtbarkeitsstatus",
       "prefix": "Dieser Space befindet sich derzeit im",
       "suffix": "Modus",
-      "contact": "Wenden Sie sich für Statusänderungen an das Alkemio-Team."
+      "contact": "Wenden Sie sich für Statusänderungen an das Alkemio-Team.",
+      "status": {
+        "active": "Aktiv",
+        "archived": "Archiviert",
+        "demo": "Demo",
+        "inactive": "Inaktiv"
+      }
     },
     "host": {
-      "title": "Host-Informationen"
+      "title": "Host-Informationen",
+      "type": {
+        "organization": "Organisation",
+        "user": "Benutzer",
+        "virtualContributor": "Virtueller Mitwirkender"
+      }
     },
     "plan": {
       "title": "Lizenz",
       "featuresHeading": "Enthaltene Funktionen",
       "daysLeft": "Noch {{count}} Tage",
-      "changeLicense": "Lizenz ändern"
+      "changeLicense": "Lizenz ändern",
+      "none": "Keine aktive Lizenz"
     },
     "support": {
       "title": "Support",
@@ -918,6 +930,7 @@
       "title": "Gefahrenzone",
       "description": "Diesen Space und alle Inhalte dauerhaft löschen.",
       "delete": "Diesen Space löschen",
+      "deleteError": "Der Space konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.",
       "deleteDialog": {
         "title": "Space löschen",
         "description": "Dadurch werden dieser Space und alle Inhalte dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",

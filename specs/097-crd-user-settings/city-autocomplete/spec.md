@@ -4,7 +4,7 @@
 (first surface). Also applies to the Space / Subspace About Location section owned by
 [`045-crd-space-settings`](../../045-crd-space-settings/spec.md).
 **Created**: 2026-10-28
-**Branch**: `feat/profile-city-autocomplete`
+**Branch**: `client-10184`
 
 ## Goal
 

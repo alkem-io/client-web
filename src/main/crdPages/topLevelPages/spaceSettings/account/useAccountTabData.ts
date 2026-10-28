@@ -1,13 +1,20 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDeleteSpaceMutation, useSpaceAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import type { AccountHost, AccountPlan } from '@/crd/components/space/settings/SpaceSettingsAccountView';
-import { mapAccountHost, mapAccountPlan } from './accountMapper';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import type {
+  AccountHost,
+  AccountPlan,
+  AccountVisibility,
+} from '@/crd/components/space/settings/SpaceSettingsAccountView';
+import { ROUTE_HOME } from '@/domain/platform/routes/constants';
+import { mapAccountHost, mapAccountPlan, mapAccountVisibility } from './accountMapper';
 
 export type UseAccountTabDataResult = {
   url: string;
   plan: AccountPlan | null;
-  visibility: string;
+  visibility: AccountVisibility | null;
   host: AccountHost | null;
   contactSupportHref: string;
   changeLicenseHref: string | null;
@@ -30,7 +37,7 @@ export function useAccountTabData(spaceId: string): UseAccountTabDataResult {
   const platform = data?.platform;
 
   const url = space?.about.profile.url ?? '';
-  const visibility = space?.visibility ?? '';
+  const visibility = mapAccountVisibility(space?.visibility);
   const plan = space && platform ? mapAccountPlan(space, platform) : null;
   const host = space ? mapAccountHost(space) : null;
   const contactSupportHref = platform?.configuration.locations.support ?? '';
@@ -41,7 +48,14 @@ export function useAccountTabData(spaceId: string): UseAccountTabDataResult {
   const privileges = space?.authorization?.myPrivileges ?? [];
   const canDeleteSpace = privileges.includes(AuthorizationPrivilege.Delete);
 
-  const [deleteSpace] = useDeleteSpaceMutation();
+  const { t } = useTranslation('crd-spaceSettings');
+  const notify = useNotification();
+  // Spec 045 FR-024a: the deleted space's pages no longer exist, and a hard navigation also drops its
+  // cached data. No success toast — notifications are in memory and would not survive the reload.
+  const [deleteSpace] = useDeleteSpaceMutation({
+    onCompleted: () => window.location.replace(ROUTE_HOME),
+    onError: () => notify(t('account.dangerZone.deleteError'), 'error'),
+  });
   const [pendingDeleteSpace, setPendingDeleteSpace] = useState(false);
 
   const onDeleteSpace = () => {

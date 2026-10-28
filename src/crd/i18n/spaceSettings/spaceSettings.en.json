@@ -898,16 +898,28 @@
       "title": "Visibility Status",
       "prefix": "This Space is currently in",
       "suffix": "mode",
-      "contact": "For status changes, contact the Alkemio team."
+      "contact": "For status changes, contact the Alkemio team.",
+      "status": {
+        "active": "Active",
+        "archived": "Archived",
+        "demo": "Demo",
+        "inactive": "Inactive"
+      }
     },
     "host": {
-      "title": "Host Information"
+      "title": "Host Information",
+      "type": {
+        "organization": "Organisation",
+        "user": "User",
+        "virtualContributor": "Virtual Contributor"
+      }
     },
     "plan": {
       "title": "License",
       "featuresHeading": "Included Features",
       "daysLeft": "{{count}} days remaining",
-      "changeLicense": "Change License"
+      "changeLicense": "Change License",
+      "none": "No active license"
     },
     "support": {
       "title": "Support",
@@ -918,6 +930,7 @@
       "title": "Danger Zone",
       "description": "Permanently delete this space and all its content.",
       "delete": "Delete this Space",
+      "deleteError": "The space could not be deleted. Please try again.",
       "deleteDialog": {
         "title": "Delete Space",
         "description": "This will permanently delete this space and all its content. This action cannot be undone.",
