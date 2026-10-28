@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import type { NavigationState } from './ScrollToTop';
 
@@ -14,7 +14,7 @@ export function useScrollToTopOnChange(value: string | number | undefined) {
   const keepScroll = (state as NavigationState | undefined | null)?.keepScroll === true;
   const previous = useRef(value);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const prev = previous.current;
     previous.current = value;
     if (prev !== undefined && value !== undefined && prev !== value && !keepScroll) {
