@@ -1,0 +1,1 @@
+Element Call 0.28.0, unmodified, Copyright New Vector Ltd, licensed AGPL-3.0-only (also available under a commercial licence). Corresponding source: https://github.com/element-hq/element-call/tree/v0.28.0

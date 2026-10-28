@@ -2,11 +2,11 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig } from 'vite';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
 import svgrPlugin from 'vite-plugin-svgr';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { generateMetaJson } from './build-utils.mjs';
+import { elementCallStaticCopy } from './vite.element-call.mjs';
 
 /**
  * Vite configuration for the Alkemio client-web project.
@@ -15,8 +15,8 @@ import { generateMetaJson } from './build-utils.mjs';
  * - Integrates TypeScript path resolution and SVGR plugins.
  * - Adds a custom plugin (`no-cache-index`) to prevent caching of `index.html` and `/home` routes in the dev server by setting aggressive no-cache headers.
  * - Adds a custom plugin (`generate-meta-json`) to generate `public/meta.json` with version info from `package.json` at build time.
- * - Serves the embedded call UI and its configuration under `/element-call/` (dev server and every build of this
- *   config). The Sentry build config, which sandbox and production images use, deliberately does not.
+ * - Serves the embedded call UI, its configuration and its licence files under `/element-call/` (shared with the
+ *   Sentry build config, see `vite.element-call.mjs`).
  * - Sets up path aliasing for `@` to `./src`.
  * - Configures the dev server to run on `localhost:3001`.
  * - Customizes build output directory, sourcemaps, and Rollup output filenames.
@@ -135,18 +135,7 @@ export default defineConfig({
         generateMetaJson();
       },
     },
-    // The embedded call UI is served as static files beside the app, never bundled into it.
-    viteStaticCopy({
-      targets: [
-        {
-          src: 'node_modules/@element-hq/element-call-embedded/dist/**/*',
-          dest: 'element-call',
-          // keep the package's own layout (index.html, assets/) below /element-call/
-          rename: { stripBase: 4 },
-        },
-        { src: '.build/element-call/config.json', dest: 'element-call', rename: { stripBase: 2 } },
-      ],
-    }),
+    elementCallStaticCopy(),
     // Bundle analyzer - generates stats.html when ANALYZE=true
     process.env.ANALYZE === 'true' && visualizer({
       open: true,
