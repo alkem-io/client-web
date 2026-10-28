@@ -1,18 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
-import { CLIENT_ROOM } from '@/main/userMessaging/matrix/matrixRooms';
 import { useCallOverlay } from './callOverlayStore';
-import {
-  liveMemberships,
-  MEMBERSHIPS_CHANGED,
-  type MembershipLike,
-  nextExpiryMs,
-  rtcOf,
-  SESSION_ENDED,
-  SESSION_STARTED,
-  type SessionLike,
-  sessionOf,
-} from './matrixRtc';
+import { type MembershipLike, watchLiveMemberships } from './matrixRtc';
 
 type RoomCallSession = {
   /** Distinct users with at least one unexpired membership — people, not devices. */
@@ -61,40 +50,10 @@ const useRoomCallSession = (matrixRoomId: string | null): RoomCallSession => {
       setView(NO_CALL);
       return;
     }
-    let session: SessionLike | undefined;
-    let expiryTimer: ReturnType<typeof setTimeout> | undefined;
-
-    const evaluate = (): void => {
-      clearTimeout(expiryTimer);
-      expiryTimer = undefined;
-      const next = sessionOf(client, matrixRoomId);
-      if (next !== session) {
-        session?.off(MEMBERSHIPS_CHANGED, evaluate);
-        next?.on(MEMBERSHIPS_CHANGED, evaluate);
-        session = next;
-      }
-      const live = liveMemberships(session);
-      const summary = summarize(live, client.getUserId(), client.getDeviceId());
+    return watchLiveMemberships(client, [matrixRoomId], live => {
+      const summary = summarize(live.get(matrixRoomId) ?? [], client.getUserId(), client.getDeviceId());
       setView(previous => (sameView(previous, summary) ? previous : summary));
-      const untilExpiry = nextExpiryMs(live);
-      if (untilExpiry !== undefined) {
-        expiryTimer = setTimeout(evaluate, untilExpiry);
-      }
-    };
-
-    evaluate();
-    const rtc = rtcOf(client);
-    rtc.on(SESSION_STARTED, evaluate);
-    rtc.on(SESSION_ENDED, evaluate);
-    // The room itself may arrive with a later sync.
-    client.on(CLIENT_ROOM as never, evaluate as never);
-    return () => {
-      clearTimeout(expiryTimer);
-      session?.off(MEMBERSHIPS_CHANGED, evaluate);
-      rtc.off(SESSION_STARTED, evaluate);
-      rtc.off(SESSION_ENDED, evaluate);
-      client.removeListener(CLIENT_ROOM as never, evaluate as never);
-    };
+    });
   }, [client, matrixRoomId]);
 
   const hostedHere = matrixRoomId !== null && overlay?.matrixRoomId === matrixRoomId;

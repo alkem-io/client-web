@@ -1,18 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { CLIENT_ROOM, resolveMatrixRoomId } from '@/main/userMessaging/matrix/matrixRooms';
+import { resolveMatrixRoomId } from '@/main/userMessaging/matrix/matrixRooms';
 import { isCallsConfigured } from './callConfig';
-import {
-  liveMemberships,
-  MEMBERSHIPS_CHANGED,
-  nextExpiryMs,
-  rtcOf,
-  SESSION_ENDED,
-  SESSION_STARTED,
-  type SessionLike,
-  sessionOf,
-} from './matrixRtc';
+import { watchLiveMemberships } from './matrixRtc';
 import { type CallableConversation, isBetaTester } from './useCallEligibility';
 
 const NONE: ReadonlySet<string> = new Set();
@@ -45,42 +36,8 @@ const useActiveCallRooms = (conversations: readonly CallableConversation[]): Rea
       return;
     }
     let cancelled = false;
+    let stopWatching: (() => void) | undefined;
     const alkemioByMatrixId = new Map<string, string>();
-    const sessions = new Map<string, SessionLike>();
-    let expiryTimer: ReturnType<typeof setTimeout> | undefined;
-
-    const evaluate = (): void => {
-      clearTimeout(expiryTimer);
-      expiryTimer = undefined;
-      const next = new Set<string>();
-      let untilExpiry: number | undefined;
-      for (const [matrixRoomId, alkemioRoomId] of alkemioByMatrixId) {
-        const session = sessionOf(client, matrixRoomId);
-        const known = sessions.get(matrixRoomId);
-        if (session !== known) {
-          known?.off(MEMBERSHIPS_CHANGED, evaluate);
-          session?.on(MEMBERSHIPS_CHANGED, evaluate);
-          if (session) {
-            sessions.set(matrixRoomId, session);
-          } else {
-            sessions.delete(matrixRoomId);
-          }
-        }
-        const live = liveMemberships(session);
-        if (live.length > 0) {
-          next.add(alkemioRoomId);
-        }
-        const roomExpiry = nextExpiryMs(live);
-        if (roomExpiry !== undefined) {
-          untilExpiry = untilExpiry === undefined ? roomExpiry : Math.min(untilExpiry, roomExpiry);
-        }
-      }
-      setActive(previous => (sameSet(previous, next) ? previous : next));
-      if (untilExpiry !== undefined) {
-        expiryTimer = setTimeout(evaluate, untilExpiry);
-      }
-    };
-
     void Promise.all(
       roomsKey.split('\n').map(async alkemioRoomId => {
         const matrixRoomId = await resolveMatrixRoomId(client, alkemioRoomId);
@@ -89,24 +46,21 @@ const useActiveCallRooms = (conversations: readonly CallableConversation[]): Rea
         }
       })
     ).then(() => {
-      if (!cancelled) {
-        evaluate();
+      if (cancelled) {
+        return;
       }
+      stopWatching = watchLiveMemberships(client, [...alkemioByMatrixId.keys()], live => {
+        const next = new Set(
+          [...alkemioByMatrixId].flatMap(([matrixRoomId, alkemioRoomId]) =>
+            (live.get(matrixRoomId)?.length ?? 0) > 0 ? [alkemioRoomId] : []
+          )
+        );
+        setActive(previous => (sameSet(previous, next) ? previous : next));
+      });
     });
-
-    const rtc = rtcOf(client);
-    rtc.on(SESSION_STARTED, evaluate);
-    rtc.on(SESSION_ENDED, evaluate);
-    client.on(CLIENT_ROOM as never, evaluate as never);
     return () => {
       cancelled = true;
-      clearTimeout(expiryTimer);
-      for (const session of sessions.values()) {
-        session.off(MEMBERSHIPS_CHANGED, evaluate);
-      }
-      rtc.off(SESSION_STARTED, evaluate);
-      rtc.off(SESSION_ENDED, evaluate);
-      client.removeListener(CLIENT_ROOM as never, evaluate as never);
+      stopWatching?.();
     };
   }, [client, roomsKey]);
 
