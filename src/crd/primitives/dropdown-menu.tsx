@@ -13,7 +13,7 @@ import { cn } from '@/crd/lib/utils';
  * pen therefore open on `click` (finger lift), the way Radix's own Select trigger
  * does; mouse keeps opening on press so press-drag-release selection still works.
  */
-const DropdownMenuOpenContext = createContext<((open: boolean) => void) | null>(null);
+const DropdownMenuOpenContext = createContext<{ open: boolean; setOpen: (open: boolean) => void } | null>(null);
 
 function DropdownMenu({
   open: openProp,
@@ -31,7 +31,7 @@ function DropdownMenu({
   };
 
   return (
-    <DropdownMenuOpenContext.Provider value={setOpen}>
+    <DropdownMenuOpenContext.Provider value={{ open, setOpen }}>
       <DropdownMenuPrimitive.Root data-slot="dropdown-menu" open={open} onOpenChange={setOpen} {...props} />
     </DropdownMenuOpenContext.Provider>
   );
@@ -48,33 +48,37 @@ function DropdownMenuTrigger({
   onClick,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
-  const setOpen = useContext(DropdownMenuOpenContext);
-  // True while the current press was a mouse press that Radix already toggled on
-  // `pointerdown`, so the click that ends it must not act again.
-  const pressHandledByRadixRef = useRef(false);
+  const menu = useContext(DropdownMenuOpenContext);
+  // True while the current press is a mouse press with which Radix closed the menu
+  // on `pointerdown`, so the click that ends it must not reopen it. Only a closing
+  // press sets it: the click after an opening press often never reaches the trigger
+  // (a modal menu disables pointer events outside itself), and a marker left set
+  // would swallow the next tap that arrives as a click alone.
+  const pressClosedMenuRef = useRef(false);
 
   return (
     <DropdownMenuPrimitive.Trigger
       data-slot="dropdown-menu-trigger"
       onPointerDown={event => {
         onPointerDown?.(event);
-        if (event.defaultPrevented || !setOpen) return;
+        if (event.defaultPrevented || !menu) return;
         if (isTouchLikePointer(event.pointerType)) {
           // Skips Radix's own pointerdown toggle (it bails on a prevented event):
           // a touch that turns into a scroll then never opens the menu either.
           event.preventDefault();
-          pressHandledByRadixRef.current = false;
+          pressClosedMenuRef.current = false;
         } else {
-          pressHandledByRadixRef.current = true;
+          pressClosedMenuRef.current = menu.open;
         }
       }}
       onClick={event => {
         onClick?.(event);
-        const handledByRadix = pressHandledByRadixRef.current;
-        pressHandledByRadixRef.current = false;
-        if (event.defaultPrevented || !setOpen || handledByRadix) return;
-        // A touch/pen tap, or a tap whose `pointerdown` iOS never delivered.
-        setOpen(true);
+        const pressClosedMenu = pressClosedMenuRef.current;
+        pressClosedMenuRef.current = false;
+        if (event.defaultPrevented || !menu || pressClosedMenu) return;
+        // A touch/pen tap, or a tap whose `pointerdown` iOS never delivered. After a
+        // mouse press that opened the menu this is a no-op: it is already open.
+        menu.setOpen(true);
       }}
       {...props}
     />

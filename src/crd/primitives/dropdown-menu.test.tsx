@@ -66,6 +66,41 @@ describe('DropdownMenuTrigger', () => {
     expect(menuItem()).toBeInTheDocument();
   });
 
+  test('a mouse open whose click never reaches the trigger does not swallow the next tap', () => {
+    render(<UncontrolledMenu />);
+    const button = trigger();
+
+    // The modal menu sets pointer-events: none on <body>, so the click that ends a
+    // mouse press lands outside the trigger and the trigger never sees it.
+    fireEvent.pointerDown(button, { pointerType: 'mouse', button: 0 });
+    expect(menuItem()).toBeInTheDocument();
+    fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
+    expect(menuItem()).not.toBeInTheDocument();
+
+    fireEvent.click(button);
+    expect(menuItem()).toBeInTheDocument();
+  });
+
+  test('on a non-modal menu, a mouse press that closes it is not undone by its click', () => {
+    render(
+      <DropdownMenu modal={false}>
+        <DropdownMenuTrigger>Open menu</DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>My profile</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+    const button = trigger();
+
+    fireEvent.pointerDown(button, { pointerType: 'mouse', button: 0 });
+    fireEvent.click(button);
+    expect(menuItem()).toBeInTheDocument();
+
+    fireEvent.pointerDown(button, { pointerType: 'mouse', button: 0 });
+    fireEvent.click(button);
+    expect(menuItem()).not.toBeInTheDocument();
+  });
+
   test('a controlled menu is opened through its onOpenChange', () => {
     const onOpenChange = vi.fn();
     function ControlledMenu() {
