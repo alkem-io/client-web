@@ -19,6 +19,10 @@ import { AddCommunityMemberDialog } from '@/crd/components/space/settings/AddCom
 import { ChangeDefaultSubspaceTemplateDialog } from '@/crd/components/space/settings/ChangeDefaultSubspaceTemplateDialog';
 import { MemberSettingsDialog } from '@/crd/components/space/settings/MemberSettingsDialog';
 import type { MemberSettingsSubject } from '@/crd/components/space/settings/memberSettingsTypes';
+import type {
+  PendingMembershipState,
+  PendingMembershipType,
+} from '@/crd/components/space/settings/PendingMembershipsTable';
 import { SpaceSettingsAboutView } from '@/crd/components/space/settings/SpaceSettingsAboutView';
 import { SpaceSettingsAccountView } from '@/crd/components/space/settings/SpaceSettingsAccountView';
 import type { CommunityMember, CommunityOrg } from '@/crd/components/space/settings/SpaceSettingsCommunityView';
@@ -239,6 +243,7 @@ export default function CrdSpaceSettingsPage() {
 
   const csvExport = useCommunityCsvExport({
     members: community.members,
+    organizations: community.organizations,
     applications: community.applications,
     spaceDisplayName: level === 'L0' ? spaceContext.about.profile.displayName : subspace.about.profile.displayName,
     loading: community.loading,
@@ -590,14 +595,7 @@ export default function CrdSpaceSettingsPage() {
                 virtualContributors={community.virtualContributors}
                 pendingOrganizationInvitations={community.pendingOrganizationInvitations}
                 applicationFormSlot={
-                  roleSetId ? (
-                    <ApplicationFormSection
-                      form={applicationForm}
-                      onExportApplications={csvExport.exportApplications}
-                      exportDisabled={csvExport.exportDisabled}
-                      markdown={md}
-                    />
-                  ) : undefined
+                  roleSetId ? <ApplicationFormSection form={applicationForm} markdown={md} /> : undefined
                 }
                 communityGuidelinesSlot={
                   communityGuidelinesId ? (
@@ -642,6 +640,8 @@ export default function CrdSpaceSettingsPage() {
                 resendingIds={community.resendingIds}
                 onInviteUsers={() => setInviteMembersOpen(true)}
                 onExportMembers={csvExport.exportMembers}
+                onExportApplications={roleSetId ? csvExport.exportApplications : undefined}
+                onExportOrganizations={csvExport.exportOrganizations}
                 exportDisabled={csvExport.exportDisabled}
               />
             )}
@@ -853,10 +853,7 @@ export default function CrdSpaceSettingsPage() {
             case 'organizationInvitationRevoke':
               return t('community.confirmRemove.invitation.title');
             case 'pendingDelete':
-              if (community.pendingRemoval.membershipType === 'application') {
-                return t('community.confirmRemove.applicationDelete.title');
-              }
-              return t('community.confirmRemove.invitation.title');
+              return t(`community.confirmRemove.${pendingDeleteCopy(community.pendingRemoval)}.title`);
             default:
               return '';
           }
@@ -878,10 +875,7 @@ export default function CrdSpaceSettingsPage() {
             case 'organizationInvitationRevoke':
               return t('community.confirmRemove.invitation.description', { name });
             case 'pendingDelete':
-              if (community.pendingRemoval.membershipType === 'application') {
-                return t('community.confirmRemove.applicationDelete.description', { name });
-              }
-              return t('community.confirmRemove.invitation.description', { name });
+              return t(`community.confirmRemove.${pendingDeleteCopy(community.pendingRemoval)}.description`, { name });
             default:
               return '';
           }
@@ -1118,3 +1112,20 @@ export default function CrdSpaceSettingsPage() {
     </div>
   );
 }
+
+/**
+ * Confirmation copy for a pending-table delete, named after what the delete really does
+ * (spec 045 FR-012b): reject + remove a new application, revoke an open invitation, or
+ * only clear a closed row from the list.
+ */
+const pendingDeleteCopy = ({
+  membershipType,
+  state,
+}: {
+  membershipType: PendingMembershipType;
+  state: PendingMembershipState;
+}): 'applicationDelete' | 'invitation' | 'platformInvitation' | 'resolvedDelete' => {
+  if (membershipType === 'application') return state === 'new' ? 'applicationDelete' : 'resolvedDelete';
+  if (membershipType === 'platformInvitation') return 'platformInvitation';
+  return state === 'invited' ? 'invitation' : 'resolvedDelete';
+};

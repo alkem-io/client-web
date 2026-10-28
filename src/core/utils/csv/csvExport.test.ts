@@ -5,6 +5,7 @@ import {
   buildCsvFilename,
   buildFormResponsesCsv,
   buildMembersCsv,
+  buildOrganizationsCsv,
   type MemberExportRow,
   normalizeEmailCell,
   toCsv,
@@ -292,11 +293,26 @@ describe('buildMembersCsv', () => {
   });
 });
 
+describe('buildOrganizationsCsv', () => {
+  it('writes displayName, role and url per organisation, neutralizing formula injection', () => {
+    const csv = buildOrganizationsCsv([
+      { displayName: 'Acme, Inc.', role: 'lead', url: 'https://example.com/acme' },
+      { displayName: '=HYPERLINK("x")', role: 'member', url: undefined },
+    ]);
+    expect(parseCsv(csv)).toEqual([
+      ['displayName', 'role', 'url'],
+      ['Acme, Inc.', 'lead', 'https://example.com/acme'],
+      ['\'=HYPERLINK("x")', 'member', ''],
+    ]);
+  });
+});
+
 describe('buildCsvFilename', () => {
   it('C9: generates correct filename', () => {
     const d = new Date('2026-08-17T00:00:00.000Z');
     expect(buildCsvFilename('My Space!', 'members', d)).toBe('my-space-members-2026-08-17.csv');
     expect(buildCsvFilename('My Space!', 'applications', d)).toBe('my-space-applications-2026-08-17.csv');
+    expect(buildCsvFilename('My Space!', 'organizations', d)).toBe('my-space-organizations-2026-08-17.csv');
   });
 
   it('C9: slug fallback to "space" when undefined', () => {

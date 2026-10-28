@@ -241,7 +241,11 @@
       "actions": "Actions",
       "approve": "Approve",
       "reject": "Reject",
-      "delete": "Delete",
+      "deleteAction": {
+        "rejectAndRemove": "Reject and remove application",
+        "removeFromList": "Remove from list",
+        "revokeInvitation": "Revoke invitation"
+      },
       "resend": "Resend invitation email",
       "resendSuccess": "Invitation email sent again",
       "resendThrottled": "Already resent recently — try again in a few minutes",
@@ -317,7 +321,8 @@
         "next": "Next page"
       },
       "roleColumn": "Role",
-      "export": "Export all Member overview"
+      "export": "Export all Member overview",
+      "exportApplications": "Export All Submitted Applications"
     },
     "memberSettings": {
       "title": "Member settings",
@@ -339,6 +344,7 @@
       "close": "Close"
     },
     "organizations": {
+      "export": "Export Organisations",
       "title": "Member Organisations",
       "name": "Name",
       "role": "Role",
@@ -431,7 +437,7 @@
       },
       "invitation": {
         "title": "Revoke invitation",
-        "description": "Revoke the pending invitation for {{name}}?"
+        "description": "{{name}} will no longer be able to accept this invitation, and it will be removed from the list."
       },
       "applicationReject": {
         "title": "Reject application",
@@ -439,8 +445,16 @@
         "description_subspace": "Reject {{name}}'s application to join this subspace?"
       },
       "applicationDelete": {
-        "title": "Remove application",
-        "description": "Remove {{name}}'s application from the list?"
+        "title": "Reject and remove application",
+        "description": "{{name}}'s application will be rejected and removed from this list. They will not become a member."
+      },
+      "resolvedDelete": {
+        "title": "Remove from list",
+        "description": "This only removes {{name}}'s closed request from this list. It does not change anyone's membership."
+      },
+      "platformInvitation": {
+        "title": "Revoke invitation",
+        "description": "The invitation sent to {{name}} will be cancelled and removed from the list. It can no longer be used to join."
       }
     },
     "addDialog": {
@@ -809,8 +823,7 @@
         "description": "Are you sure you want to remove this question?",
         "confirm": "Delete"
       },
-      "save": "Save",
-      "export": "Export All Submitted Applications"
+      "save": "Save"
     },
     "allowedActions": {
       "title": "Allowed Actions",

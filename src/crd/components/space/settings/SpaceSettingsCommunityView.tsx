@@ -139,6 +139,8 @@ export type SpaceSettingsCommunityViewProps = {
   resendingIds?: ReadonlySet<string>;
   onInviteUsers: () => void;
   onExportMembers?: () => void;
+  onExportApplications?: () => void;
+  onExportOrganizations?: () => void;
   exportDisabled?: boolean;
   className?: string;
 };
@@ -174,6 +176,8 @@ export function SpaceSettingsCommunityView({
   resendingIds,
   onInviteUsers,
   onExportMembers,
+  onExportApplications,
+  onExportOrganizations,
   exportDisabled,
   className,
 }: SpaceSettingsCommunityViewProps) {
@@ -280,6 +284,19 @@ export function SpaceSettingsCommunityView({
                 >
                   <Download aria-hidden="true" className="size-4" />
                   {t('community.members.export')}
+                </Button>
+              )}
+              {onExportApplications && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={onExportApplications}
+                  disabled={exportDisabled}
+                >
+                  <Download aria-hidden="true" className="size-4" />
+                  {t('community.members.exportApplications')}
                 </Button>
               )}
             </div>
@@ -471,7 +488,7 @@ export function SpaceSettingsCommunityView({
               className="h-9 w-[220px] pl-9 text-control"
             />
           </div>
-          <div className="flex">
+          <div className="flex items-center gap-2 flex-wrap">
             {/* Gated, not hidden: every Space admin can eventually invite, so concealing this
                 action would hide a capability the user can actually obtain, and it would flip
                 hidden→shown once the privilege query resolves. Invitation is the only way an
@@ -482,6 +499,19 @@ export function SpaceSettingsCommunityView({
                 {t('community.organizations.invite')}
               </Button>
             </GatedAction>
+            {onExportOrganizations && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={onExportOrganizations}
+                disabled={exportDisabled}
+              >
+                <Download aria-hidden="true" className="size-4" />
+                {t('community.organizations.export')}
+              </Button>
+            )}
           </div>
         </div>
         <div className="rounded-lg border bg-card overflow-hidden">
