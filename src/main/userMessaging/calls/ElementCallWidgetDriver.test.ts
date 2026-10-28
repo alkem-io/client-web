@@ -221,6 +221,16 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
     expect(client.sendEvent).toHaveBeenCalledWith(ROOM, 'm.reaction', { key: '👍' });
   });
 
+  it('sends a redaction through the redact endpoint, naming the redacted event, as the reference host does', async () => {
+    const client = makeClient();
+    await expect(driverFor(client).sendEvent('m.room.redaction', { redacts: '$raised-hand' })).resolves.toEqual({
+      roomId: ROOM,
+      eventId: '$redaction',
+    });
+    expect(client.redactEvent).toHaveBeenCalledWith(ROOM, '$raised-hand');
+    expect(client.sendEvent).not.toHaveBeenCalled();
+  });
+
   it('schedules a delayed state event and returns its delay id', async () => {
     const client = makeClient();
     const content = {};

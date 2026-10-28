@@ -16,12 +16,13 @@ import {
 // Event types the pinned call UI exchanges, copied from the chat SDK's
 // constants as strings so the SDK stays a lazily loaded chunk.
 const CALL_MEMBER = 'org.matrix.msc3401.call.member';
+const REDACTION = 'm.room.redaction';
 const SEND_ONLY_EVENT_TYPES = ['org.matrix.msc4075.call.notify', 'org.matrix.msc4075.rtc.notification'];
 const SEND_AND_RECEIVE_EVENT_TYPES = [
   'org.matrix.rageshake_request',
   'io.element.call.encryption_keys',
   'm.reaction',
-  'm.room.redaction',
+  REDACTION,
   'io.element.call.reaction',
   'org.matrix.msc4310.rtc.decline',
   'org.matrix.msc4143.rtc.member',
@@ -66,6 +67,7 @@ type CallHostClient = {
   relations: MatrixClient['relations'];
   sendStateEvent(roomId: string, eventType: string, content: unknown, stateKey: string): Promise<{ event_id: string }>;
   sendEvent(roomId: string, eventType: string, content: unknown): Promise<{ event_id: string }>;
+  redactEvent(roomId: string, eventId: string): Promise<{ event_id: string }>;
   _unstable_sendDelayedStateEvent(
     roomId: string,
     delayOpts: { delay: number },
@@ -139,10 +141,16 @@ class ElementCallWidgetDriver extends WidgetDriver {
     roomId: string | null = null
   ): Promise<ISendEventDetails> {
     const target = this.targetRoom(roomId);
-    const response =
-      stateKey !== null && stateKey !== undefined
-        ? await this.client.sendStateEvent(target, eventType, content, stateKey)
-        : await this.client.sendEvent(target, eventType, content);
+    let response: { event_id: string };
+    if (stateKey !== null && stateKey !== undefined) {
+      response = await this.client.sendStateEvent(target, eventType, content, stateKey);
+    } else if (eventType === REDACTION) {
+      // The widget API carries the redacted event in the content; the chat
+      // server's rooms take it only through the redact endpoint.
+      response = await this.client.redactEvent(target, (content as { redacts: string }).redacts);
+    } else {
+      response = await this.client.sendEvent(target, eventType, content);
+    }
     return { roomId: target, eventId: response.event_id };
   }
 
