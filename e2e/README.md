@@ -67,8 +67,10 @@ specs assert only their UI-observable half and do not present it as storage proo
 ## Group calls
 
 `specs/groupCalls.e2e.spec.ts` walks group calls in the web platform against an
-environment configured for calls (dev): starting audio and video calls, the
-overlay surviving in-app navigation, the leave confirmation, a second beta
+environment configured for calls (dev): its deployed client must be built with
+`VITE_APP_LIVEKIT_SERVICE_URL` set, otherwise every call control stays hidden and
+the specs fail at their first call action. They cover starting audio and video
+calls, the overlay surviving in-app navigation, the leave confirmation, a second beta
 tester seeing and joining the call, the conversation-list badge and sign-out.
 It needs `AUTH_TEST_HARNESS_EMAIL` and `AUTH_TEST_HARNESS_EMAIL_2` (both holding
 the Feature Beta Tester role), `E2E_NON_BETA_EMAIL` (a member without it) and

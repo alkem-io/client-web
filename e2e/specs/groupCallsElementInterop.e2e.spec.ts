@@ -21,7 +21,7 @@ const openElementRoom = async (browser: Browser): Promise<Page> => {
   const context = await browser.newContext({ storageState: ELEMENT_SESSION });
   const page = await context.newPage();
   await page.goto(ELEMENT_URL);
-  await page.getByRole('treeitem', { name: new RegExp(GROUP_CONVERSATION_NAME) }).click({ timeout: 60_000 });
+  await page.getByRole('treeitem', { name: GROUP_CONVERSATION_NAME }).click({ timeout: 60_000 });
   return page;
 };
 
