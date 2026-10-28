@@ -384,4 +384,4 @@ class ElementCallWidgetDriver extends WidgetDriver {
   }
 }
 
-export { allowedCapabilitiesFor, ElementCallWidgetDriver };
+export { allowedCapabilitiesFor, ElementCallWidgetDriver, toRoomEvent };

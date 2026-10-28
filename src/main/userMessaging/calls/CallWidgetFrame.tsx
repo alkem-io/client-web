@@ -1,8 +1,8 @@
 import type { MatrixClient, MatrixEvent } from 'matrix-js-sdk';
-import { ClientWidgetApi, type IRoomEvent, type IWidgetApiRequest, Widget } from 'matrix-widget-api';
+import { ClientWidgetApi, type IWidgetApiRequest, Widget } from 'matrix-widget-api';
 import { type RefObject, useEffect, useRef, useState } from 'react';
 import { closeCall } from './callOverlayStore';
-import { ElementCallWidgetDriver } from './ElementCallWidgetDriver';
+import { ElementCallWidgetDriver, toRoomEvent } from './ElementCallWidgetDriver';
 
 // matrix-js-sdk ClientEvent.Event and RoomStateEvent.Events, as strings so the SDK stays a lazily loaded chunk.
 const CLIENT_EVENT = 'event';
@@ -26,8 +26,6 @@ type CallWidgetFrameProps = {
   /** Filled with "leave the call" while the call UI is mounted. */
   hangupRef: RefObject<(() => Promise<void>) | null>;
 };
-
-const toRoomEvent = (event: MatrixEvent): IRoomEvent => event.getEffectiveEvent() as unknown as IRoomEvent;
 
 /**
  * The call UI's iframe and its widget-API link to the platform's Matrix
