@@ -7,15 +7,12 @@ import type { CallIntent } from './widgetUrl';
  * the chat panel only writes it, the overlay host mounted at the root reads it.
  */
 type CallOverlaySession = {
-  readonly alkemioRoomId: string;
   readonly matrixRoomId: string;
   readonly intent: CallIntent;
   readonly widgetId: string;
-  /** True once the call UI is up and talking to the host. */
-  readonly ready: boolean;
 };
 
-type OpenCallInput = Pick<CallOverlaySession, 'alkemioRoomId' | 'matrixRoomId' | 'intent'>;
+type OpenCallInput = Pick<CallOverlaySession, 'matrixRoomId' | 'intent'>;
 
 type Listener = () => void;
 
@@ -33,21 +30,14 @@ const publish = (next: CallOverlaySession | null): void => {
 };
 
 /** Opens the overlay for a call; a call already open in this tab is replaced. */
-const openCall = ({ alkemioRoomId, matrixRoomId, intent }: OpenCallInput): void => {
-  publish({ alkemioRoomId, matrixRoomId, intent, widgetId: crypto.randomUUID(), ready: false });
+const openCall = ({ matrixRoomId, intent }: OpenCallInput): void => {
+  publish({ matrixRoomId, intent, widgetId: crypto.randomUUID() });
 };
 
 /** Closes the given call; a call opened after it in the meantime stays open. */
 const closeCall = (widgetId: string): void => {
   if (current?.widgetId === widgetId) {
     publish(null);
-  }
-};
-
-/** Marks the call UI of the given overlay session as ready; ignored once that session is gone. */
-const markReady = (widgetId: string): void => {
-  if (current && current.widgetId === widgetId && !current.ready) {
-    publish({ ...current, ready: true });
   }
 };
 
@@ -63,5 +53,5 @@ const subscribeCallOverlay = (listener: Listener): (() => void) => {
 const useCallOverlay = (): CallOverlaySession | null =>
   useSyncExternalStore(subscribeCallOverlay, getCallOverlay, () => null);
 
-export { closeCall, getCallOverlay, markReady, openCall, subscribeCallOverlay, useCallOverlay };
+export { closeCall, getCallOverlay, openCall, subscribeCallOverlay, useCallOverlay };
 export type { CallOverlaySession, OpenCallInput };

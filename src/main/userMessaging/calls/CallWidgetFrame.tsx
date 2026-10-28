@@ -1,7 +1,7 @@
 import type { MatrixClient, MatrixEvent } from 'matrix-js-sdk';
 import { ClientWidgetApi, type IRoomEvent, type IWidgetApiRequest, Widget } from 'matrix-widget-api';
 import { type RefObject, useEffect, useRef, useState } from 'react';
-import { closeCall, markReady } from './callOverlayStore';
+import { closeCall } from './callOverlayStore';
 import { ElementCallWidgetDriver } from './ElementCallWidgetDriver';
 
 // matrix-js-sdk ClientEvent.Event and RoomStateEvent.Events, as strings so the SDK stays a lazily loaded chunk.
@@ -64,13 +64,11 @@ export default function CallWidgetFrame({
     const onPageHide = () => driver.sendPendingLeavesNow();
     window.addEventListener('pagehide', onPageHide);
 
-    const onReady = () => markReady(widgetId);
     const onWidgetLeft = (event: CustomEvent<IWidgetApiRequest>) => {
       event.preventDefault();
       api.transport.reply(event.detail, {});
       closeCall(widgetId);
     };
-    api.on('ready', onReady);
     api.on(`action:${HANGUP_ACTION}`, onWidgetLeft);
     api.on(`action:${CLOSE_ACTION}`, onWidgetLeft);
 
@@ -119,7 +117,6 @@ export default function CallWidgetFrame({
       hangupRef.current = null;
       client.removeListener(CLIENT_EVENT as never, onEvent as never);
       client.removeListener(ROOM_STATE_EVENTS as never, onStateEvent as never);
-      api.off('ready', onReady);
       api.off(`action:${HANGUP_ACTION}`, onWidgetLeft);
       api.off(`action:${CLOSE_ACTION}`, onWidgetLeft);
       api.stop();

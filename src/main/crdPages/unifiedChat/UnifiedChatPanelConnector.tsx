@@ -249,7 +249,7 @@ export const UnifiedChatPanelConnector = () => {
     const { matrixRoomId } = callEligibility;
     const startCall = (intent: CallIntent) => {
       if (matrixRoomId) {
-        openCall({ alkemioRoomId: selectedConversation.roomId, matrixRoomId, intent });
+        openCall({ matrixRoomId, intent });
       }
     };
     let callActions: ReactNode = null;

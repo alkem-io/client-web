@@ -128,10 +128,10 @@ describe('useRoomCallSession', () => {
     const { result } = renderHook(() => useRoomCallSession(ROOM));
     expect(result.current).toMatchObject({ isJoinedOnThisDevice: true, isJoinedHere: false });
 
-    act(() => openCall({ alkemioRoomId: 'alk-other', matrixRoomId: '!other:hs', intent: 'start_call' }));
+    act(() => openCall({ matrixRoomId: '!other:hs', intent: 'start_call' }));
     expect(result.current.isJoinedHere).toBe(false);
 
-    act(() => openCall({ alkemioRoomId: 'alk-call', matrixRoomId: ROOM, intent: 'join_existing' }));
+    act(() => openCall({ matrixRoomId: ROOM, intent: 'join_existing' }));
     expect(result.current.isJoinedHere).toBe(true);
 
     act(() => closeCall(getCallOverlay()?.widgetId ?? ''));

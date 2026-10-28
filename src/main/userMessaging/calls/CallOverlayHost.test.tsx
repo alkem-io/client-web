@@ -75,7 +75,7 @@ const widgetAction = (action: string) =>
   new CustomEvent(`action:${action}`, { cancelable: true, detail: { action, requestId: 'r1', data: {} } });
 
 const startCall = async () => {
-  act(() => openCall({ alkemioRoomId: 'alk-1', matrixRoomId: '!room:hs.example', intent: 'start_call' }));
+  act(() => openCall({ matrixRoomId: '!room:hs.example', intent: 'start_call' }));
   await waitFor(() => expect(harness.apis).toHaveLength(1));
   return harness.apis[0];
 };
@@ -194,7 +194,7 @@ describe('CallOverlayHost', () => {
     await user.click(screen.getByRole('button', { name: 'call.close' }));
     await user.click(screen.getByRole('button', { name: 'call.leaveConfirm.confirm' }));
     expect(api.transport.send).toHaveBeenCalledWith('im.vector.hangup', {});
-    act(() => openCall({ alkemioRoomId: 'alk-2', matrixRoomId: '!next:hs.example', intent: 'start_call' }));
+    act(() => openCall({ matrixRoomId: '!next:hs.example', intent: 'start_call' }));
     const next = getCallOverlay();
     await act(async () => answerHangup({}));
 

@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { closeCall, getCallOverlay, markReady, openCall, subscribeCallOverlay } from './callOverlayStore';
+import { closeCall, getCallOverlay, openCall, subscribeCallOverlay } from './callOverlayStore';
 
-const first = { alkemioRoomId: 'alk-1', matrixRoomId: '!one:hs', intent: 'start_call' } as const;
-const second = { alkemioRoomId: 'alk-2', matrixRoomId: '!two:hs', intent: 'join_existing_voice' } as const;
+const first = { matrixRoomId: '!one:hs', intent: 'start_call' } as const;
+const second = { matrixRoomId: '!two:hs', intent: 'join_existing_voice' } as const;
 
 const currentWidgetId = (): string => getCallOverlay()?.widgetId ?? '';
 
@@ -11,10 +11,10 @@ describe('callOverlayStore', () => {
     closeCall(currentWidgetId());
   });
 
-  it('opening a call publishes it with a fresh widget id, not yet ready', () => {
+  it('opening a call publishes it with a fresh widget id', () => {
     openCall(first);
     const session = getCallOverlay();
-    expect(session).toMatchObject({ ...first, ready: false });
+    expect(session).toMatchObject(first);
     expect(session?.widgetId).toMatch(/^[0-9a-f-]{36}$/);
   });
 
@@ -38,16 +38,6 @@ describe('callOverlayStore', () => {
     openCall(second);
     closeCall(replaced);
     expect(getCallOverlay()).toMatchObject(second);
-  });
-
-  it('marks only the current overlay session ready', () => {
-    openCall(first);
-    const stale = getCallOverlay()?.widgetId ?? '';
-    openCall(second);
-    markReady(stale);
-    expect(getCallOverlay()?.ready).toBe(false);
-    markReady(getCallOverlay()?.widgetId ?? '');
-    expect(getCallOverlay()?.ready).toBe(true);
   });
 
   it('notifies listeners once per change and not after unsubscribing', () => {

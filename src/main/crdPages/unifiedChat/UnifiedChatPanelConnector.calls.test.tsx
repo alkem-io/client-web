@@ -183,13 +183,11 @@ describe('UnifiedChatPanelConnector group calls', () => {
     expect(calls.eligibilityInput[calls.eligibilityInput.length - 1]).toBe(groupChat);
     await user.click(screen.getByRole('button', { name: 'call.startVideo' }));
     expect(calls.openCall).toHaveBeenLastCalledWith({
-      alkemioRoomId: 'r-group',
       matrixRoomId: '!group:hs',
       intent: 'start_call',
     });
     await user.click(screen.getByRole('button', { name: 'call.startAudio' }));
     expect(calls.openCall).toHaveBeenLastCalledWith({
-      alkemioRoomId: 'r-group',
       matrixRoomId: '!group:hs',
       intent: 'start_call_voice',
     });
@@ -220,13 +218,11 @@ describe('UnifiedChatPanelConnector group calls', () => {
 
     await user.click(screen.getByRole('button', { name: 'call.joinVideo' }));
     expect(calls.openCall).toHaveBeenLastCalledWith({
-      alkemioRoomId: 'r-group',
       matrixRoomId: '!group:hs',
       intent: 'join_existing',
     });
     await user.click(screen.getByRole('button', { name: 'call.joinAudio' }));
     expect(calls.openCall).toHaveBeenLastCalledWith({
-      alkemioRoomId: 'r-group',
       matrixRoomId: '!group:hs',
       intent: 'join_existing_voice',
     });
