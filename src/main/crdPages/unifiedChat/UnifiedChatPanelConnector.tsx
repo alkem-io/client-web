@@ -259,8 +259,13 @@ export const UnifiedChatPanelConnector = () => {
           <ActiveCallIndicator
             activeLabel={t('call.active')}
             count={callSession.participantCount}
+            joinedNote={
+              callSession.isJoinedOnThisDevice && !callSession.isJoinedHere ? t('call.joinedOnThisDevice') : undefined
+            }
+            // Every tab of a browser is the same chat device: a join from a second tab would
+            // write over the first tab's membership, and its leave would end both.
             join={
-              callSession.isJoinedHere
+              callSession.isJoinedOnThisDevice
                 ? undefined
                 : {
                     joinLabel: t('call.join'),

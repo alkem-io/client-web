@@ -113,6 +113,7 @@
     "join": "Deelnemen",
     "joinVideo": "Deelnemen met video",
     "joinAudio": "Alleen met audio deelnemen",
+    "joinedOnThisDevice": "Al deelgenomen op dit apparaat",
     "overlayLabel": "Gesprek",
     "close": "Gesprek sluiten",
     "leaveConfirm": {

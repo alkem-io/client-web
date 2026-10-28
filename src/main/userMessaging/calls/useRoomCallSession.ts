@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import { CLIENT_ROOM } from '@/main/userMessaging/matrix/matrixRooms';
+import { useCallOverlay } from './callOverlayStore';
 import {
   liveMemberships,
   MEMBERSHIPS_CHANGED,
@@ -17,25 +18,32 @@ type RoomCallSession = {
   /** Distinct users with at least one unexpired membership — people, not devices. */
   readonly participants: string[];
   readonly participantCount: number;
-  /** This tab's own device is in the call. */
+  /**
+   * This browser's chat device is in the call. Every tab of a browser shares
+   * that one device, so this holds in all of them, whichever tab joined.
+   */
+  readonly isJoinedOnThisDevice: boolean;
+  /** This tab hosts the call of this room, and the device is in it. */
   readonly isJoinedHere: boolean;
 };
 
-const NO_CALL: RoomCallSession = { participants: [], participantCount: 0, isJoinedHere: false };
+type MembershipView = Omit<RoomCallSession, 'isJoinedHere'>;
 
-const summarize = (live: MembershipLike[], userId: string | null, deviceId: string | null): RoomCallSession => {
+const NO_CALL: MembershipView = { participants: [], participantCount: 0, isJoinedOnThisDevice: false };
+
+const summarize = (live: MembershipLike[], userId: string | null, deviceId: string | null): MembershipView => {
   const participants = [...new Set(live.flatMap(membership => (membership.sender ? [membership.sender] : [])))];
   return {
     participants,
     participantCount: participants.length,
-    // The embedded call UI joins with this tab's own user and device, so its
+    // The embedded call UI joins with the session's own user and device, so its
     // membership is the one carrying both.
-    isJoinedHere: live.some(membership => membership.sender === userId && membership.deviceId === deviceId),
+    isJoinedOnThisDevice: live.some(membership => membership.sender === userId && membership.deviceId === deviceId),
   };
 };
 
-const sameSession = (a: RoomCallSession, b: RoomCallSession): boolean =>
-  a.isJoinedHere === b.isJoinedHere && a.participants.join('\n') === b.participants.join('\n');
+const sameView = (a: MembershipView, b: MembershipView): boolean =>
+  a.isJoinedOnThisDevice === b.isJoinedOnThisDevice && a.participants.join('\n') === b.participants.join('\n');
 
 /**
  * The call running in one Matrix room, as the chat SDK tracks it. Expired
@@ -45,7 +53,8 @@ const sameSession = (a: RoomCallSession, b: RoomCallSession): boolean =>
  */
 const useRoomCallSession = (matrixRoomId: string | null): RoomCallSession => {
   const client = useMatrixClient();
-  const [view, setView] = useState<RoomCallSession>(NO_CALL);
+  const overlay = useCallOverlay();
+  const [view, setView] = useState<MembershipView>(NO_CALL);
 
   useEffect(() => {
     if (!client || !matrixRoomId) {
@@ -66,7 +75,7 @@ const useRoomCallSession = (matrixRoomId: string | null): RoomCallSession => {
       }
       const live = liveMemberships(session);
       const summary = summarize(live, client.getUserId(), client.getDeviceId());
-      setView(previous => (sameSession(previous, summary) ? previous : summary));
+      setView(previous => (sameView(previous, summary) ? previous : summary));
       const untilExpiry = nextExpiryMs(live);
       if (untilExpiry !== undefined) {
         expiryTimer = setTimeout(evaluate, untilExpiry);
@@ -88,7 +97,8 @@ const useRoomCallSession = (matrixRoomId: string | null): RoomCallSession => {
     };
   }, [client, matrixRoomId]);
 
-  return view;
+  const hostedHere = matrixRoomId !== null && overlay?.matrixRoomId === matrixRoomId;
+  return { ...view, isJoinedHere: hostedHere && view.isJoinedOnThisDevice };
 };
 
 export { useRoomCallSession };

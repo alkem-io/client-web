@@ -14,7 +14,7 @@ const state: { selectedConversationId: string | null; conversations: Conversatio
 const openGroupSettings = vi.fn();
 const calls = vi.hoisted(() => ({
   eligibility: { eligible: false, matrixRoomId: null as string | null },
-  session: { participants: [] as string[], participantCount: 0, isJoinedHere: false },
+  session: { participants: [] as string[], participantCount: 0, isJoinedOnThisDevice: false, isJoinedHere: false },
   activeRooms: new Set<string>(),
   openCall: vi.fn(),
   eligibilityInput: [] as unknown[],
@@ -166,7 +166,7 @@ const eligible = () => {
 describe('UnifiedChatPanelConnector group calls', () => {
   beforeEach(() => {
     calls.eligibility = { eligible: false, matrixRoomId: null };
-    calls.session = { participants: [], participantCount: 0, isJoinedHere: false };
+    calls.session = { participants: [], participantCount: 0, isJoinedOnThisDevice: false, isJoinedHere: false };
     calls.activeRooms = new Set();
     calls.openCall.mockClear();
     calls.eligibilityInput.length = 0;
@@ -205,7 +205,12 @@ describe('UnifiedChatPanelConnector group calls', () => {
 
   it('shows the active call with its participant count and join buttons instead of the start controls', async () => {
     eligible();
-    calls.session = { participants: ['@ann:hs', '@bob:hs'], participantCount: 2, isJoinedHere: false };
+    calls.session = {
+      participants: ['@ann:hs', '@bob:hs'],
+      participantCount: 2,
+      isJoinedOnThisDevice: false,
+      isJoinedHere: false,
+    };
     const user = userEvent.setup({ pointerEventsCheck: 0 });
     render(<UnifiedChatPanelConnector />);
 
@@ -229,14 +234,29 @@ describe('UnifiedChatPanelConnector group calls', () => {
 
   it('offers no join while this tab is already in the call', () => {
     eligible();
-    calls.session = { participants: ['@me:hs'], participantCount: 1, isJoinedHere: true };
+    calls.session = { participants: ['@me:hs'], participantCount: 1, isJoinedOnThisDevice: true, isJoinedHere: true };
     render(<UnifiedChatPanelConnector />);
     expect(screen.getByTestId('call-active-indicator')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'call.joinVideo' })).not.toBeInTheDocument();
+    expect(screen.queryByText('call.joinedOnThisDevice')).not.toBeInTheDocument();
+  });
+
+  it('says the call is joined on this device in another tab, instead of offering to join it twice', () => {
+    eligible();
+    calls.session = { participants: ['@me:hs'], participantCount: 1, isJoinedOnThisDevice: true, isJoinedHere: false };
+    render(<UnifiedChatPanelConnector />);
+    expect(screen.getByText('call.joinedOnThisDevice')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'call.joinVideo' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'call.joinAudio' })).not.toBeInTheDocument();
   });
 
   it('hides a running call from someone who is not eligible', () => {
-    calls.session = { participants: ['@ann:hs'], participantCount: 1, isJoinedHere: false };
+    calls.session = {
+      participants: ['@ann:hs'],
+      participantCount: 1,
+      isJoinedOnThisDevice: false,
+      isJoinedHere: false,
+    };
     render(<UnifiedChatPanelConnector />);
     expect(screen.queryByTestId('call-active-indicator')).not.toBeInTheDocument();
   });

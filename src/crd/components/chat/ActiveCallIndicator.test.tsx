@@ -37,4 +37,10 @@ describe('ActiveCallIndicator', () => {
     expect(screen.getByTestId('call-participant-count')).toHaveTextContent('1');
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
+
+  test('says why there is nothing to join when a note is given', () => {
+    render(<ActiveCallIndicator activeLabel="Call active" count={1} joinedNote="Already joined on this device" />);
+    expect(screen.getByText('Already joined on this device')).toBeInTheDocument();
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+  });
 });

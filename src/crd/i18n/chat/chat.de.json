@@ -113,6 +113,7 @@
     "join": "Beitreten",
     "joinVideo": "Mit Video beitreten",
     "joinAudio": "Nur mit Audio beitreten",
+    "joinedOnThisDevice": "Auf diesem Gerät bereits beigetreten",
     "overlayLabel": "Anruf",
     "close": "Anruf schließen",
     "leaveConfirm": {

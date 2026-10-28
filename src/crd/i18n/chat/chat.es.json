@@ -113,6 +113,7 @@
     "join": "Unirse",
     "joinVideo": "Unirse con vídeo",
     "joinAudio": "Unirse solo con audio",
+    "joinedOnThisDevice": "Ya te has unido desde este dispositivo",
     "overlayLabel": "Llamada",
     "close": "Cerrar llamada",
     "leaveConfirm": {

@@ -113,6 +113,7 @@
     "join": "Join",
     "joinVideo": "Join with video",
     "joinAudio": "Join with audio only",
+    "joinedOnThisDevice": "Already joined on this device",
     "overlayLabel": "Call",
     "close": "Close call",
     "leaveConfirm": {

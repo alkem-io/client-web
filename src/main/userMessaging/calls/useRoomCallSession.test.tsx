@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 const harness = vi.hoisted(() => ({ client: null as unknown }));
 vi.mock('@/core/matrix/activeClient', () => ({ useMatrixClient: () => harness.client }));
 
+import { closeCall, getCallOverlay, openCall } from './callOverlayStore';
 import { useRoomCallSession } from './useRoomCallSession';
 
 const ROOM = '!call:hs';
@@ -64,7 +65,12 @@ describe('useRoomCallSession', () => {
     harness.client = makeClient(session);
 
     const { result } = renderHook(() => useRoomCallSession(ROOM));
-    expect(result.current).toEqual({ participants: ['@ann:hs'], participantCount: 1, isJoinedHere: false });
+    expect(result.current).toEqual({
+      participants: ['@ann:hs'],
+      participantCount: 1,
+      isJoinedOnThisDevice: false,
+      isJoinedHere: false,
+    });
   });
 
   it('never counts an expired membership', () => {
@@ -104,21 +110,43 @@ describe('useRoomCallSession', () => {
     expect(result.current.participantCount).toBe(0);
   });
 
-  it('knows when this tab’s own device is in the call', () => {
+  it('knows when this browser’s device is in the call, from whichever tab', () => {
     const session = new FakeSession();
-    session.memberships = [membership(ME, 'OTHERTAB', 60_000)];
+    session.memberships = [membership(ME, 'OTHERDEVICE', 60_000)];
     harness.client = makeClient(session);
     const { result } = renderHook(() => useRoomCallSession(ROOM));
-    expect(result.current.isJoinedHere).toBe(false);
+    expect(result.current.isJoinedOnThisDevice).toBe(false);
 
     act(() => session.setMemberships([membership(ME, MY_DEVICE, 60_000)]));
+    expect(result.current.isJoinedOnThisDevice).toBe(true);
+  });
+
+  it('is joined here only in the tab that hosts the call for this room, not in another tab of the same device', () => {
+    const session = new FakeSession();
+    session.memberships = [membership(ME, MY_DEVICE, 60_000)];
+    harness.client = makeClient(session);
+    const { result } = renderHook(() => useRoomCallSession(ROOM));
+    expect(result.current).toMatchObject({ isJoinedOnThisDevice: true, isJoinedHere: false });
+
+    act(() => openCall({ alkemioRoomId: 'alk-other', matrixRoomId: '!other:hs', intent: 'start_call' }));
+    expect(result.current.isJoinedHere).toBe(false);
+
+    act(() => openCall({ alkemioRoomId: 'alk-call', matrixRoomId: ROOM, intent: 'join_existing' }));
     expect(result.current.isJoinedHere).toBe(true);
+
+    act(() => closeCall(getCallOverlay()?.widgetId ?? ''));
+    expect(result.current).toMatchObject({ isJoinedOnThisDevice: true, isJoinedHere: false });
   });
 
   it('shows no call without a room or a client', () => {
     harness.client = makeClient(new FakeSession());
     const { result } = renderHook(() => useRoomCallSession(null));
-    expect(result.current).toEqual({ participants: [], participantCount: 0, isJoinedHere: false });
+    expect(result.current).toEqual({
+      participants: [],
+      participantCount: 0,
+      isJoinedOnThisDevice: false,
+      isJoinedHere: false,
+    });
 
     harness.client = null;
     const { result: noClient } = renderHook(() => useRoomCallSession(ROOM));

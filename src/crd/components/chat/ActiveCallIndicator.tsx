@@ -17,10 +17,12 @@ type ActiveCallIndicatorProps = {
   count: number;
   /** Omitted when there is nothing to join (the user is already in the call). */
   join?: JoinProps;
+  /** Says why there is nothing to join, e.g. the call is joined from another tab. */
+  joinedNote?: string;
 };
 
 /** "Call active · N" in a conversation header, with join buttons (video first, audio only) when joinable. */
-export function ActiveCallIndicator({ activeLabel, count, join }: ActiveCallIndicatorProps) {
+export function ActiveCallIndicator({ activeLabel, count, join, joinedNote }: ActiveCallIndicatorProps) {
   return (
     <div className="flex items-center gap-1" data-testid="call-active-indicator">
       <span className="flex h-7 items-center gap-1.5 rounded-full bg-primary/10 px-2.5 text-caption font-medium text-primary">
@@ -29,6 +31,7 @@ export function ActiveCallIndicator({ activeLabel, count, join }: ActiveCallIndi
         <span aria-hidden="true">·</span>
         <span data-testid="call-participant-count">{count}</span>
       </span>
+      {joinedNote && <span className="text-caption text-muted-foreground">{joinedNote}</span>}
       {join && (
         // biome-ignore lint/a11y/useSemanticElements: a group of two buttons, not a form fieldset
         <div role="group" aria-label={join.joinLabel} className="flex items-center" data-testid="call-join">
