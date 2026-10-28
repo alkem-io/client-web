@@ -6,6 +6,9 @@ const SESSION_STARTED = 'session_started';
 const SESSION_ENDED = 'session_ended';
 const MEMBERSHIPS_CHANGED = 'memberships_changed';
 
+// A membership's expiry is whatever its sender wrote; a setTimeout delay above 2^31-1 ms fires at once.
+const MAX_TIMER_DELAY_MS = 2 ** 31 - 1;
+
 type MembershipLike = {
   readonly sender?: string;
   readonly deviceId: string;
@@ -83,7 +86,7 @@ const watchLiveMemberships = (
     }
     onChange(live);
     if (untilExpiry !== undefined) {
-      expiryTimer = setTimeout(evaluate, untilExpiry);
+      expiryTimer = setTimeout(evaluate, Math.min(untilExpiry, MAX_TIMER_DELAY_MS));
     }
   };
 
