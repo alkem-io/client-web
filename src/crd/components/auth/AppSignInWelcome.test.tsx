@@ -28,4 +28,40 @@ describe('AppSignInWelcome', () => {
 
     expect(screen.queryByRole('link', { name: 'appWelcome.browseSpaces' })).not.toBeInTheDocument();
   });
+
+  test('shows no message by default', () => {
+    render(<AppSignInWelcome signInHref="/in" createAccountHref="/up" />);
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  test('an info message is plain muted text announced politely', () => {
+    render(<AppSignInWelcome signInHref="/in" createAccountHref="/up" message={{ text: 'cancelled', tone: 'info' }} />);
+
+    const message = screen.getByRole('status');
+    expect(message).toHaveTextContent('cancelled');
+    expect(message).toHaveClass('text-caption', 'text-muted-foreground');
+    expect(message.className).not.toMatch(/\bbg-/);
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  test('a destructive message is plain red text announced assertively', () => {
+    render(
+      <AppSignInWelcome signInHref="/in" createAccountHref="/up" message={{ text: 'failed', tone: 'destructive' }} />
+    );
+
+    const message = screen.getByRole('alert');
+    expect(message).toHaveTextContent('failed');
+    expect(message).toHaveClass('text-caption', 'text-destructive');
+    expect(message.className).not.toMatch(/\bbg-/);
+  });
+
+  test('the message sits directly above the buttons', () => {
+    render(
+      <AppSignInWelcome signInHref="/in" createAccountHref="/up" message={{ text: 'failed', tone: 'destructive' }} />
+    );
+
+    const signIn = screen.getByRole('link', { name: 'appWelcome.signIn' });
+    expect(screen.getByRole('alert').nextElementSibling).toContainElement(signIn);
+  });
 });

@@ -11,8 +11,7 @@
   },
   "appSignIn": {
     "cancelled": "Se canceló el inicio de sesión.",
-    "failed": "No se pudo completar el inicio de sesión. Inténtalo de nuevo.",
-    "action": "Iniciar sesión"
+    "failed": "No se pudo completar el inicio de sesión. Inténtalo de nuevo."
   },
   "appWelcome": {
     "body": "Únete a espacios, comparte ideas y construye cosas juntos.",

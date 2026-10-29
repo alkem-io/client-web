@@ -11,8 +11,7 @@
   },
   "appSignIn": {
     "cancelled": "Sign-in was cancelled.",
-    "failed": "Sign-in could not be completed. Please try again.",
-    "action": "Sign in"
+    "failed": "Sign-in could not be completed. Please try again."
   },
   "appWelcome": {
     "body": "Join spaces, share ideas and build things together.",

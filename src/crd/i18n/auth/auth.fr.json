@@ -11,8 +11,7 @@
   },
   "appSignIn": {
     "cancelled": "La connexion a été annulée.",
-    "failed": "La connexion n'a pas pu aboutir. Veuillez réessayer.",
-    "action": "Se connecter"
+    "failed": "La connexion n'a pas pu aboutir. Veuillez réessayer."
   },
   "appWelcome": {
     "body": "Rejoignez des espaces, partagez des idées et construisez ensemble.",

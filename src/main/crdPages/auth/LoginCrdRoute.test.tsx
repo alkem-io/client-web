@@ -47,12 +47,19 @@ vi.mock('@/crd/components/auth/AppSignInWelcome', () => ({
     signInHref,
     createAccountHref,
     browseSpacesHref,
+    message,
   }: {
     signInHref: string;
     createAccountHref: string;
     browseSpacesHref?: string;
+    message?: { text: string; tone: string };
   }) => (
     <div data-testid="app-signin-welcome">
+      {message ? (
+        <span data-testid="welcome-message" data-tone={message.tone}>
+          {message.text}
+        </span>
+      ) : null}
       <a data-testid="welcome-sign-in" href={signInHref}>
         sign in
       </a>
@@ -303,20 +310,22 @@ describe('LoginCrdRoute', () => {
   it.each([
     ['cancelled', 'info'],
     ['failed', 'destructive'],
-  ])('an app_signin=%s arrival lands instead of redirecting, in the %s tone', (reason, tone) => {
+  ])('an app_signin=%s arrival renders the welcome view with its reason, in the %s tone', (reason, tone) => {
     mockIsAuthenticated.mockReturnValue(false);
     mockSearch = `app_signin=${reason}`;
 
     renderRoute();
 
     expect(replaceSpy).not.toHaveBeenCalled();
-    const notice = screen.getByTestId('card-notice');
-    expect(notice).toHaveTextContent(`appSignIn.${reason}`);
-    expect(notice).toHaveAttribute('data-tone', tone);
-    expect(notice.querySelector('a')?.getAttribute('href')).toBe(
+    expect(screen.queryByTestId('card-notice')).not.toBeInTheDocument();
+    const message = screen.getByTestId('welcome-message');
+    expect(message).toHaveTextContent(`appSignIn.${reason}`);
+    expect(message).toHaveAttribute('data-tone', tone);
+    expect(screen.getByTestId('welcome-sign-in')).toHaveAttribute(
+      'href',
       'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F'
     );
-    expect(notice.querySelector('a')).toHaveTextContent('appSignIn.action');
+    expect(screen.getByTestId('welcome-create-account')).toHaveAttribute('href', '/sign_up');
   });
 
   // `required` is the app's first sign-in screen, before any attempt was made:
@@ -336,6 +345,7 @@ describe('LoginCrdRoute', () => {
     );
     expect(screen.getByTestId('welcome-create-account')).toHaveAttribute('href', '/sign_up');
     expect(screen.getByTestId('welcome-browse-spaces')).toHaveAttribute('href', 'https://sandbox-alkem.io/spaces');
+    expect(screen.queryByTestId('welcome-message')).not.toBeInTheDocument();
   });
 
   it('the welcome view forwards the pending returnUrl to sign-in and sign-up', () => {

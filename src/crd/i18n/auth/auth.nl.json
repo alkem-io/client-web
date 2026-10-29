@@ -11,8 +11,7 @@
   },
   "appSignIn": {
     "cancelled": "Het inloggen is geannuleerd.",
-    "failed": "Het inloggen kon niet worden voltooid. Probeer het opnieuw.",
-    "action": "Inloggen"
+    "failed": "Het inloggen kon niet worden voltooid. Probeer het opnieuw."
   },
   "appWelcome": {
     "body": "Doe mee in Spaces, deel ideeën en bouw samen verder.",

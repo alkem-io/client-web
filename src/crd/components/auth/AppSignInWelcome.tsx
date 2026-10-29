@@ -1,6 +1,7 @@
 import { ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
+import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 
 export type AppSignInWelcomeProps = {
@@ -10,18 +11,23 @@ export type AppSignInWelcomeProps = {
   createAccountHref: string;
   /** Public space explorer. The link is omitted when not provided. */
   browseSpacesHref?: string;
+  /**
+   * Already-translated reason shown above the buttons, e.g. after a cancelled
+   * sign-in. `'destructive'` announces assertively; `'info'` politely.
+   */
+  message?: { text: string; tone: 'info' | 'destructive' };
 };
 
 const CTA_CLASS = 'text-control h-12 w-full font-semibold uppercase tracking-wider';
 
 /**
  * Full-height welcome screen the native app shows when it sends a signed-out
- * visitor to sign in: the brand, one line about Alkemio, and the same
- * sign-in / create-account buttons the web auth card uses. It replaces a
- * cramped card whose only content was a "Sign in to continue." notice.
+ * visitor to sign in, or back after a cancelled or failed attempt: the brand,
+ * one line about Alkemio, an optional reason, and the same sign-in /
+ * create-account buttons the web auth card uses.
  * Purely presentational — every href arrives via props.
  */
-export function AppSignInWelcome({ signInHref, createAccountHref, browseSpacesHref }: AppSignInWelcomeProps) {
+export function AppSignInWelcome({ signInHref, createAccountHref, browseSpacesHref, message }: AppSignInWelcomeProps) {
   const { t } = useTranslation('crd-auth');
 
   return (
@@ -36,6 +42,18 @@ export function AppSignInWelcome({ signInHref, createAccountHref, browseSpacesHr
       </div>
 
       <div aria-hidden="true" className="flex-[1.3]" />
+
+      {message ? (
+        <p
+          role={message.tone === 'destructive' ? 'alert' : 'status'}
+          className={cn(
+            'text-caption mb-4 text-center',
+            message.tone === 'destructive' ? 'text-destructive' : 'text-muted-foreground'
+          )}
+        >
+          {message.text}
+        </p>
+      ) : null}
 
       <div className="flex flex-col gap-3">
         <Button asChild={true} className={CTA_CLASS}>
