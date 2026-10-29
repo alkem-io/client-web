@@ -6,7 +6,11 @@ import {
   useMarkNotificationsAsReadMutation,
   useUpdateNotificationStateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { type NotificationEvent, NotificationEventInAppState } from '@/core/apollo/generated/graphql-schema';
+import {
+  type InAppNotificationsQuery,
+  type NotificationEvent,
+  NotificationEventInAppState,
+} from '@/core/apollo/generated/graphql-schema';
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
 import { useInAppNotificationsContext } from './InAppNotificationsContext';
 import type { InAppNotificationModel } from './model/InAppNotificationModel';
@@ -37,6 +41,37 @@ const updateNotificationsCache = (
       },
     });
   });
+};
+
+type FetchedInAppNotification = NonNullable<
+  InAppNotificationsQuery['me']['notifications']['inAppNotifications']
+>[number];
+
+// A notification the panel cannot render (its triggering actor no longer
+// resolves) still counts towards the server's unread total, so it keeps the
+// bell dot lit with nothing the user can click. Once no renderable unread
+// notification is left among everything fetched, the unread unrenderable ones
+// are returned so they can be marked read on the user's behalf. While any
+// renderable unread notification remains, nothing is returned.
+// `settledIds` are notifications whose state has just changed away from unread
+// but whose new state may not be reflected in the fetched rows yet.
+export const findHiddenUnreadToMarkRead = (
+  fetched: ReadonlyArray<ReadonlyArray<FetchedInAppNotification> | undefined>,
+  settledIds: ReadonlySet<string> = new Set()
+): string[] => {
+  const hiddenUnreadIds = new Set<string>();
+  for (const rows of fetched) {
+    for (const row of rows ?? []) {
+      if (row.state !== NotificationEventInAppState.Unread || settledIds.has(row.id)) {
+        continue;
+      }
+      if (mapInAppNotificationToModel(row)) {
+        return [];
+      }
+      hiddenUnreadIds.add(row.id);
+    }
+  }
+  return [...hiddenUnreadIds];
 };
 
 // The set of notification event types currently being retrieved
@@ -172,9 +207,36 @@ export const useInAppNotifications = () => {
     } catch (_error) {}
   };
 
+  // Marks the given unrenderable notifications read. This is a follow-up to an
+  // action that already succeeded, so a failure must not surface a second
+  // error to the user: it skips the global error toast and is only logged. The
+  // next read action retries, since the rows are still unread.
+  const markHiddenNotificationsRead = async (ids: string[]) => {
+    const results = await Promise.allSettled(
+      ids.map(id =>
+        updateState({
+          variables: { ID: id, state: NotificationEventInAppState.Read },
+          context: { skipGlobalErrorHandler: true },
+          update: (cache, result) => {
+            if (result?.data?.updateNotificationState === NotificationEventInAppState.Read) {
+              updateNotificationsCache(cache, [id], NotificationEventInAppState.Read);
+            }
+          },
+        })
+      )
+    );
+    const failedIds = ids.filter((_, index) => results[index].status === 'rejected');
+    if (failedIds.length > 0) {
+      logError('Failed to mark hidden InAppNotifications as read', {
+        category: TagCategoryValues.NOTIFICATIONS,
+        label: `ids=${failedIds.join(',')}`,
+      });
+    }
+  };
+
   const updateNotificationState = async (id: string, status: NotificationEventInAppState) => {
     try {
-      await updateState({
+      const result = await updateState({
         variables: {
           ID: id,
           state: status,
@@ -185,23 +247,41 @@ export const useInAppNotifications = () => {
           }
         },
       });
+      if (status === NotificationEventInAppState.Unread || result?.data?.updateNotificationState !== status) {
+        return;
+      }
+      const hiddenIds = findHiddenUnreadToMarkRead(
+        [allTypesData?.me?.notifications?.inAppNotifications, data?.me?.notifications?.inAppNotifications],
+        new Set([id])
+      );
+      if (hiddenIds.length > 0) {
+        await markHiddenNotificationsRead(hiddenIds);
+      }
     } catch (_error) {}
   };
 
   const markNotificationsAsRead = async () => {
     try {
-      await markAsRead({
+      const result = await markAsRead({
         variables: {
           types: notificationTypes as NotificationEvent[],
         },
-        update: (_, result) => {
-          if (result?.data?.markNotificationsAsRead) {
-            // far simpler than updating the cache manually
-            refetch?.();
-            refetchAllTypes?.();
-          }
-        },
       });
+      if (!result?.data?.markNotificationsAsRead) {
+        return;
+      }
+      // far simpler than updating the cache manually; awaited so the check
+      // below sees the post-mark state rather than the rows from before it
+      const [tabResult, allTypesResult] = await Promise.all([refetch(), refetchAllTypes()]);
+      const tabRows = tabResult?.data?.me?.notifications?.inAppNotifications;
+      const allTypesRows = allTypesResult?.data?.me?.notifications?.inAppNotifications;
+      if (!tabRows || !allTypesRows) {
+        return;
+      }
+      const hiddenIds = findHiddenUnreadToMarkRead([allTypesRows, tabRows]);
+      if (hiddenIds.length > 0) {
+        await markHiddenNotificationsRead(hiddenIds);
+      }
     } catch (_error) {}
   };
 
