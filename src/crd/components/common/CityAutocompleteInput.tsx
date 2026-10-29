@@ -89,8 +89,10 @@ export function CityAutocompleteInput({
         event.preventDefault();
         const step = event.key === 'ArrowDown' ? 1 : -1;
         setDismissed(false);
+        // Typing opens the list with no option active; the first arrow then starts from either end.
+        const hasActive = open && activeIndex >= 0;
         setActiveIndex(
-          open ? (activeIndex + step + matches.length) % matches.length : step === 1 ? 0 : matches.length - 1
+          hasActive ? (activeIndex + step + matches.length) % matches.length : step === 1 ? 0 : matches.length - 1
         );
         break;
       }

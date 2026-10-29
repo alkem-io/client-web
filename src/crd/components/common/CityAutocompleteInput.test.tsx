@@ -83,6 +83,16 @@ describe('CityAutocompleteInput', () => {
     expect(onSelect).toHaveBeenCalledTimes(1);
   });
 
+  it('starts Arrow Up from the last suggestion when typing opened the list', () => {
+    const onSelect = vi.fn();
+    render(<Harness onSelect={onSelect} />);
+    const input = type('r');
+
+    fireEvent.keyDown(input, { key: 'ArrowUp' });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onSelect).toHaveBeenCalledWith(OPTIONS[1]);
+  });
+
   it('keeps free text and shows no list when nothing matches', () => {
     const onSelect = vi.fn();
     render(<Harness onSelect={onSelect} />);

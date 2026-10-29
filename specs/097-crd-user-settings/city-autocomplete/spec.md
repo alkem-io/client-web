@@ -39,7 +39,8 @@ free-text field: the user can type and save any value, suggested or not.
   At most 8 suggestions are shown, and each one shows its country name as context.
 - **Accessibility (WCAG 2.1 AA):** the input is an ARIA 1.2 combobox (`role="combobox"`,
   `aria-autocomplete="list"`, `aria-expanded`, `aria-controls`, `aria-activedescendant`), and the
-  list is a `listbox` of `option`s. Arrow Up/Down move through the options. Enter picks the active
+  list is a `listbox` of `option`s. Arrow Up/Down move through the options, wrapping around; with no
+  option active yet, Arrow Down goes to the first and Arrow Up to the last. Enter picks the active
   option, and only while one is active, so the form never swallows Enter otherwise. Escape closes the
   list. Moving focus away closes it. Clicking an option does not blur the input.
 
