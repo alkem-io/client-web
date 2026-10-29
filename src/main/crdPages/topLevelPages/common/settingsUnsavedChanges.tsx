@@ -10,7 +10,7 @@ import {
   toUnsavedChangesBarState,
 } from '@/main/crdPages/utils/tabUnsavedChanges';
 
-type UnsavedChangesSnapshot = Pick<TabUnsavedChanges, 'count' | 'canSave' | 'saving' | 'error'>;
+type UnsavedChangesSnapshot = Pick<TabUnsavedChanges, 'count' | 'canSave' | 'saveBlockedReason' | 'saving' | 'error'>;
 
 type SettingsUnsavedChangesContextValue = {
   publish: (unsaved: TabUnsavedChanges) => void;
@@ -19,7 +19,11 @@ type SettingsUnsavedChangesContextValue = {
 export const SettingsUnsavedChangesContext = createContext<SettingsUnsavedChangesContextValue | null>(null);
 
 const sameSnapshot = (a: UnsavedChangesSnapshot, b: UnsavedChangesSnapshot) =>
-  a.count === b.count && a.canSave === b.canSave && a.saving === b.saving && a.error === b.error;
+  a.count === b.count &&
+  a.canSave === b.canSave &&
+  a.saveBlockedReason === b.saveBlockedReason &&
+  a.saving === b.saving &&
+  a.error === b.error;
 
 /**
  * Tab side: hands the tab's buffered changes to the settings page, which shows
@@ -55,8 +59,8 @@ export const useSettingsUnsavedChanges = <TabId,>(onTabSelect: (next: TabId) => 
   const [context] = useState<SettingsUnsavedChangesContextValue>(() => ({
     publish: unsaved => {
       latest.current = unsaved;
-      const { count, canSave, saving, error } = unsaved;
-      setSnapshot(prev => (sameSnapshot(prev, unsaved) ? prev : { count, canSave, saving, error }));
+      const { count, canSave, saveBlockedReason, saving, error } = unsaved;
+      setSnapshot(prev => (sameSnapshot(prev, unsaved) ? prev : { count, canSave, saveBlockedReason, saving, error }));
     },
   }));
 

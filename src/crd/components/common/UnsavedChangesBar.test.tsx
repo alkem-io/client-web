@@ -44,6 +44,13 @@ describe('UnsavedChangesBar', () => {
     expect(screen.getByRole('button', { name: 'Save changes' })).toBeDisabled();
   });
 
+  it('explains a disabled Save in a tooltip', async () => {
+    renderBar({ kind: 'dirty', count: 1, canSave: false, saveBlockedReason: 'Fix the phone number' });
+    expect(screen.getByRole('button', { name: 'Save changes' })).toBeDisabled();
+    await userEvent.hover(screen.getByRole('button', { name: 'Save changes' }).parentElement as HTMLElement);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('Fix the phone number');
+  });
+
   it('disables both buttons and announces saving while saving', () => {
     renderBar({ kind: 'saving', count: 2 });
     expect(screen.getByText('Saving…')).toBeInTheDocument();
