@@ -116,6 +116,8 @@
     "joinedOnThisDevice": "Auf diesem Gerät bereits beigetreten",
     "overlayLabel": "Anruf",
     "close": "Anruf schließen",
+    "license": "Open-Source-Lizenz",
+    "opensInNewTab": "öffnet in einem neuen Tab",
     "leaveConfirm": {
       "title": "Anruf verlassen?",
       "description": "Du verlässt den Anruf. Die anderen können ohne dich weitermachen.",

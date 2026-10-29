@@ -116,6 +116,8 @@
     "joinedOnThisDevice": "Ya te has unido desde este dispositivo",
     "overlayLabel": "Llamada",
     "close": "Cerrar llamada",
+    "license": "Licencia de código abierto",
+    "opensInNewTab": "se abre en una pestaña nueva",
     "leaveConfirm": {
       "title": "¿Salir de la llamada?",
       "description": "Saldrás de la llamada. Los demás pueden continuar sin ti.",
