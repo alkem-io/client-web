@@ -116,10 +116,14 @@ const mapActorType = (t: ActorType | undefined): PendingMembershipContributorTyp
   return 'user';
 };
 
+// A transient `approving` / `accepting` row stays listed — the admin sees the answer is
+// being processed — with no action but a (disabled) View (spec 045 FR-012a).
 const mapApplicationState = (state: string): PendingMembershipState | null => {
   switch (state) {
     case ApplicationState.NEW:
       return 'new';
+    case ApplicationState.APPROVING:
+      return 'approving';
     case ApplicationState.APPROVED:
       return 'approved';
     case ApplicationState.REJECTED:
@@ -139,12 +143,14 @@ const mapApplicationState = (state: string): PendingMembershipState | null => {
 // invitation stays listed and removable.
 const isOpenOrganizationInvitation = (invitation: { contributorType: ActorType; state: string }) =>
   invitation.contributorType === ActorType.Organization &&
-  (invitation.state === InvitationState.INVITED || invitation.state === 'accepting');
+  (invitation.state === InvitationState.INVITED || invitation.state === InvitationState.ACCEPTING);
 
 const mapInvitationState = (state: string): PendingMembershipState | null => {
   switch (state) {
     case InvitationState.INVITED:
       return 'invited';
+    case InvitationState.ACCEPTING:
+      return 'accepting';
     case InvitationState.ACCEPTED:
       return 'accepted';
     case InvitationState.REJECTED:
@@ -213,7 +219,8 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
         createdDate: toIsoString(app.createdDate),
         canApprove: state === 'new',
         canReject: state === 'new',
-        canDelete: state !== 'approved',
+        // Only a new (reject + remove) or rejected (remove from list) application — spec 045 FR-012b.
+        canDelete: state === 'new' || state === 'rejected',
         canResend: false,
       };
     })
@@ -240,8 +247,9 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
         createdDate: toIsoString(inv.createdDate),
         canApprove: false,
         canReject: false,
-        // Deleting an accepted invitation fails server-side — hidden like an approved application.
-        canDelete: state !== 'accepted',
+        // Only an open (revoke) or rejected (remove from list) invitation — deleting an accepted
+        // invitation fails server-side, and an `accepting` one is in flight (spec 045 FR-012b).
+        canDelete: state === 'invited' || state === 'rejected',
         canResend: false,
       };
     })

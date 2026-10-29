@@ -239,3 +239,63 @@ describe('useCommunityTabData — email invitation resend', () => {
     await waitFor(() => expect(notify).toHaveBeenCalledWith('community.pendingMemberships.resendThrottled', 'error'));
   });
 });
+
+describe('useCommunityTabData — pending rows and delete rules (spec 045 FR-012a / FR-012b)', () => {
+  beforeEach(() => {
+    vi.mocked(useCommunityAdmin).mockReset();
+  });
+
+  const application = (id: string, state: string) => ({
+    id,
+    state,
+    nextEvents: [],
+    contributorType: ActorType.User,
+    createdDate: new Date('2026-01-01T00:00:00.000Z'),
+    updatedDate: new Date('2026-01-01T00:00:00.000Z'),
+    questions: [],
+    actor: { id: `actor-${id}`, profile: { id: `p-${id}`, displayName: id, url: `/user/${id}` } },
+  });
+
+  const invitation = (id: string, state: string): InvitationModel => ({ ...userInvitation(), id, state });
+
+  const rows = () => {
+    const admin = baseAdmin([
+      invitation('inv-invited', 'invited'),
+      invitation('inv-accepting', 'accepting'),
+      invitation('inv-accepted', 'accepted'),
+      invitation('inv-rejected', 'rejected'),
+    ]);
+    admin.membershipAdmin.applications = [
+      application('app-new', 'new'),
+      application('app-approving', 'approving'),
+      application('app-approved', 'approved'),
+      application('app-rejected', 'rejected'),
+    ] as never[];
+    vi.mocked(useCommunityAdmin).mockReturnValue(admin as ReturnType<typeof useCommunityAdmin>);
+    const { result } = renderHook(() => useCommunityTabData('rs1'));
+    return Object.fromEntries(result.current.pendingMemberships.map(r => [r.id, r]));
+  };
+
+  it('lists transient (approving / accepting) rows with their in-flight state', () => {
+    const byId = rows();
+    expect(byId['app-approving'].state).toBe('approving');
+    expect(byId['inv-accepting'].state).toBe('accepting');
+  });
+
+  it('offers delete only on new / rejected applications and open / rejected invitations', () => {
+    const byId = rows();
+    const deletable = Object.values(byId)
+      .filter(r => r.canDelete)
+      .map(r => r.id)
+      .sort();
+    expect(deletable).toEqual(['app-new', 'app-rejected', 'inv-invited', 'inv-rejected']);
+  });
+
+  it('offers approve / reject only on a new application', () => {
+    const byId = rows();
+    const actionable = Object.values(byId)
+      .filter(r => r.canApprove || r.canReject)
+      .map(r => r.id);
+    expect(actionable).toEqual(['app-new']);
+  });
+});

@@ -1,5 +1,6 @@
 import { Bookmark, FileText, Link2, Mail, Phone, User as UserIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { CityAutocompleteInput } from '@/crd/components/common/CityAutocompleteInput';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
 import { SettingsSection } from '@/crd/components/common/SettingsSection';
 import {
@@ -12,7 +13,6 @@ import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { isValidPhoneOrEmpty } from '@/crd/lib/validators';
-import { Input } from '@/crd/primitives/input';
 import { Skeleton } from '@/crd/primitives/skeleton';
 import type { UserProfileViewProps } from './UserProfileTabView.types';
 
@@ -28,6 +28,8 @@ export function UserProfileTabView(props: UserProfileViewProps) {
   const {
     values,
     countries,
+    cityOptions,
+    onCityFocus,
     loading,
     disabled = false,
     onChange,
@@ -89,23 +91,13 @@ export function UserProfileTabView(props: UserProfileViewProps) {
                 onChange={next => onChange({ lastName: next })}
               />
             </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <TextField
-                label={t('user.profile.identity.email.label')}
-                hint={t('user.profile.identity.email.readOnlyCaption')}
-                value={values.email}
-                icon={Mail}
-                readOnly={true}
-              />
-              <TextField
-                label={t('user.profile.identity.phone.label')}
-                hint={t('user.profile.identity.phone.hint')}
-                value={values.phone}
-                icon={Phone}
-                error={isValidPhoneOrEmpty(values.phone) ? undefined : t('user.profile.identity.phone.invalidFormat')}
-                onChange={next => onChange({ phone: next })}
-              />
-            </div>
+            <TextField
+              label={t('user.profile.identity.email.label')}
+              hint={t('user.profile.identity.email.readOnlyCaption')}
+              value={values.email}
+              icon={Mail}
+              readOnly={true}
+            />
           </div>
         </SettingsSection>
 
@@ -125,9 +117,12 @@ export function UserProfileTabView(props: UserProfileViewProps) {
             <fieldset>
               <legend className="mb-1.5 text-body-emphasis">{t('user.profile.aboutYou.location.title')}</legend>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <Input
+                <CityAutocompleteInput
                   value={values.city}
-                  onChange={e => onChange({ city: e.target.value })}
+                  onChange={city => onChange({ city })}
+                  onSelect={city => onChange({ city: city.name, country: city.countryCode })}
+                  options={cityOptions}
+                  onFocus={onCityFocus}
                   placeholder={t('user.profile.aboutYou.location.city')}
                   aria-label={t('user.profile.aboutYou.location.city')}
                 />
@@ -175,6 +170,17 @@ export function UserProfileTabView(props: UserProfileViewProps) {
           iconColor="blue"
           defaultOpen={false}
         >
+          {/* Spec 097 FR-021a (#10180): contact details sit with the social links. */}
+          <div className="mb-4">
+            <TextField
+              label={t('user.profile.identity.phone.label')}
+              hint={t('user.profile.identity.phone.hint')}
+              value={values.phone}
+              icon={Phone}
+              error={isValidPhoneOrEmpty(values.phone) ? undefined : t('user.profile.identity.phone.invalidFormat')}
+              onChange={next => onChange({ phone: next })}
+            />
+          </div>
           <SocialLinksFields
             values={{
               linkedin: values.recognizedReferences.linkedin?.uri ?? '',

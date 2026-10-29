@@ -241,7 +241,11 @@
       "actions": "Actions",
       "approve": "Approuver",
       "reject": "Rejeter",
-      "delete": "Supprimer",
+      "deleteAction": {
+        "rejectAndRemove": "Refuser et retirer la candidature",
+        "removeFromList": "Retirer de la liste",
+        "revokeInvitation": "Révoquer l'invitation"
+      },
       "resend": "Renvoyer l'e-mail d'invitation",
       "resendSuccess": "E-mail d'invitation renvoyé",
       "resendThrottled": "Déjà renvoyé récemment — réessayez dans quelques minutes",
@@ -317,7 +321,8 @@
         "next": "Page suivante"
       },
       "roleColumn": "Rôle",
-      "export": "Exporter tous les membres"
+      "export": "Exporter tous les membres",
+      "exportApplications": "Exporter toutes les candidatures soumises"
     },
     "memberSettings": {
       "title": "Paramètres du membre",
@@ -339,6 +344,7 @@
       "close": "Fermer"
     },
     "organizations": {
+      "export": "Exporter les organisations",
       "title": "Organisations membres",
       "name": "Nom",
       "role": "Rôle",
@@ -431,7 +437,7 @@
       },
       "invitation": {
         "title": "Révoquer l'invitation",
-        "description": "Révoquer l'invitation en attente pour {{name}} ?"
+        "description": "{{name}} ne pourra plus accepter cette invitation, qui sera retirée de la liste."
       },
       "applicationReject": {
         "title": "Rejeter la candidature",
@@ -439,8 +445,16 @@
         "description_subspace": "Rejeter la candidature de {{name}} pour rejoindre ce sous-espace ?"
       },
       "applicationDelete": {
-        "title": "Retirer la candidature",
-        "description": "Retirer la candidature de {{name}} de la liste ?"
+        "title": "Refuser et retirer la candidature",
+        "description": "La candidature de {{name}} sera refusée et retirée de cette liste. Aucune adhésion n'en résultera."
+      },
+      "resolvedDelete": {
+        "title": "Retirer de la liste",
+        "description": "Seule la demande clôturée de {{name}} est retirée de cette liste. Aucune adhésion n'est modifiée."
+      },
+      "platformInvitation": {
+        "title": "Révoquer l'invitation",
+        "description": "L'invitation envoyée à {{name}} sera annulée et retirée de la liste. Elle ne permettra plus de rejoindre."
       }
     },
     "addDialog": {
@@ -809,8 +823,7 @@
         "description": "Êtes-vous sûr de vouloir retirer cette question ?",
         "confirm": "Supprimer"
       },
-      "save": "Enregistrer",
-      "export": "Exporter toutes les candidatures soumises"
+      "save": "Enregistrer"
     },
     "allowedActions": {
       "title": "Actions autorisées",
@@ -885,16 +898,28 @@
       "title": "Statut de visibilité",
       "prefix": "Cet espace est actuellement en",
       "suffix": "mode",
-      "contact": "Pour les changements de statut, contactez l'équipe Alkemio."
+      "contact": "Pour les changements de statut, contactez l'équipe Alkemio.",
+      "status": {
+        "active": "Actif",
+        "archived": "Archivé",
+        "demo": "Démo",
+        "inactive": "Inactif"
+      }
     },
     "host": {
-      "title": "Informations sur l'hôte"
+      "title": "Informations sur l'hôte",
+      "type": {
+        "organization": "Organisation",
+        "user": "Utilisateur",
+        "virtualContributor": "Contributeur virtuel"
+      }
     },
     "plan": {
       "title": "Licence",
       "featuresHeading": "Fonctionnalités incluses",
       "daysLeft": "{{count}} jours restants",
-      "changeLicense": "Changer de licence"
+      "changeLicense": "Changer de licence",
+      "none": "Aucune licence active"
     },
     "support": {
       "title": "Support",
@@ -905,6 +930,7 @@
       "title": "Zone de danger",
       "description": "Supprimer définitivement cet espace et tout son contenu.",
       "delete": "Supprimer cet espace",
+      "deleteError": "L'espace n'a pas pu être supprimé. Veuillez réessayer.",
       "deleteDialog": {
         "title": "Supprimer l'espace",
         "description": "Cela supprimera définitivement cet espace et tout son contenu. Cette action ne peut pas être annulée.",

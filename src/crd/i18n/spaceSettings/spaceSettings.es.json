@@ -241,7 +241,11 @@
       "actions": "Acciones",
       "approve": "Aprobar",
       "reject": "Rechazar",
-      "delete": "Eliminar",
+      "deleteAction": {
+        "rejectAndRemove": "Rechazar y quitar la solicitud",
+        "removeFromList": "Quitar de la lista",
+        "revokeInvitation": "Revocar invitación"
+      },
       "resend": "Reenviar el correo de invitación",
       "resendSuccess": "Correo de invitación reenviado",
       "resendThrottled": "Reenviado hace poco — inténtalo de nuevo en unos minutos",
@@ -317,7 +321,8 @@
         "next": "Página siguiente"
       },
       "roleColumn": "Rol",
-      "export": "Exportar todos los miembros"
+      "export": "Exportar todos los miembros",
+      "exportApplications": "Exportar todas las solicitudes enviadas"
     },
     "memberSettings": {
       "title": "Configuración del miembro",
@@ -339,6 +344,7 @@
       "close": "Cerrar"
     },
     "organizations": {
+      "export": "Exportar organizaciones",
       "title": "Organizaciones miembros",
       "name": "Nombre",
       "role": "Rol",
@@ -431,7 +437,7 @@
       },
       "invitation": {
         "title": "Revocar invitación",
-        "description": "¿Revocar la invitación pendiente para {{name}}?"
+        "description": "{{name}} ya no podrá aceptar esta invitación y se quitará de la lista."
       },
       "applicationReject": {
         "title": "Rechazar solicitud",
@@ -439,8 +445,16 @@
         "description_subspace": "¿Rechazar la solicitud de {{name}} para unirse a este subespacio?"
       },
       "applicationDelete": {
-        "title": "Eliminar solicitud",
-        "description": "¿Eliminar la solicitud de {{name}} de la lista?"
+        "title": "Rechazar y quitar la solicitud",
+        "description": "La solicitud de {{name}} se rechazará y se quitará de esta lista. No pasará a ser miembro."
+      },
+      "resolvedDelete": {
+        "title": "Quitar de la lista",
+        "description": "Solo se quita de esta lista la solicitud cerrada de {{name}}. No cambia la membresía de nadie."
+      },
+      "platformInvitation": {
+        "title": "Revocar invitación",
+        "description": "La invitación enviada a {{name}} se cancelará y se quitará de la lista. Ya no se podrá usar para unirse."
       }
     },
     "addDialog": {
@@ -809,8 +823,7 @@
         "description": "¿Estás seguro de que quieres eliminar esta pregunta?",
         "confirm": "Eliminar"
       },
-      "save": "Guardar",
-      "export": "Exportar todas las solicitudes enviadas"
+      "save": "Guardar"
     },
     "allowedActions": {
       "title": "Acciones permitidas",
@@ -885,16 +898,28 @@
       "title": "Estado de visibilidad",
       "prefix": "Este espacio está actualmente en",
       "suffix": "modo",
-      "contact": "Para cambios de estado, contacta con el equipo de Alkemio."
+      "contact": "Para cambios de estado, contacta con el equipo de Alkemio.",
+      "status": {
+        "active": "Activo",
+        "archived": "Archivado",
+        "demo": "Demo",
+        "inactive": "Inactivo"
+      }
     },
     "host": {
-      "title": "Información del anfitrión"
+      "title": "Información del anfitrión",
+      "type": {
+        "organization": "Organización",
+        "user": "Usuario",
+        "virtualContributor": "Contribuidor virtual"
+      }
     },
     "plan": {
       "title": "Licencia",
       "featuresHeading": "Funciones incluidas",
       "daysLeft": "{{count}} días restantes",
-      "changeLicense": "Cambiar licencia"
+      "changeLicense": "Cambiar licencia",
+      "none": "Sin licencia activa"
     },
     "support": {
       "title": "Soporte",
@@ -905,6 +930,7 @@
       "title": "Zona de peligro",
       "description": "Elimina permanentemente este espacio y todo su contenido.",
       "delete": "Eliminar este espacio",
+      "deleteError": "No se pudo eliminar el espacio. Inténtalo de nuevo.",
       "deleteDialog": {
         "title": "Eliminar espacio",
         "description": "Esto eliminará permanentemente este espacio y todo su contenido. Esta acción no se puede deshacer.",
