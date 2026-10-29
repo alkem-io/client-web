@@ -1,6 +1,7 @@
 import { Bot, FileBox, Home, Layers, type LucideIcon, MoreVertical, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SettingsSection, type SettingsSectionIconColor } from '@/crd/components/common/SettingsSection';
+import { VcPausedNotice } from '@/crd/components/virtualContributor/VcPausedNotice';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -98,7 +99,7 @@ function ResourceCardGroup({ group, variant }: { group: AccountResourceGroup; va
   const { t } = useTranslation(NS);
   const { icon: Icon, color } = SECTION_ICON[variant];
   // Nothing to list and nothing the actor may create: say so instead of opening onto an empty card.
-  const isEmpty = group.items.length === 0 && !group.canCreate;
+  const isEmpty = group.items.length === 0 && !group.canCreate && !group.createPaused;
   const emptyMessage =
     group.capacity && !group.capacity.isAvailable
       ? t('shared.account.capacity.notAvailableTooltip')
@@ -128,6 +129,8 @@ function ResourceCardGroup({ group, variant }: { group: AccountResourceGroup; va
             )
           )}
           {group.canCreate ? <InlineCreateCard variant={variant} onClick={group.onCreate} /> : null}
+          {/* TEMP: VCs disabled (#10398) */}
+          {group.createPaused ? <VcPausedNotice className="h-full" /> : null}
         </div>
       )}
     </SettingsSection>

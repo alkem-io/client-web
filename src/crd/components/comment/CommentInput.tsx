@@ -183,6 +183,12 @@ export function CommentInput({
     (trimmedContent.length > 0 || (attachmentsEnabled && attachments.length > 0));
   const showCharCount = content.length >= Math.floor(maxLength * 0.8);
   const mentionsEnabled = Boolean(mentionSearch);
+  // TEMP: VCs disabled (#10398) — ids of suggestions that cannot be picked; a change that adds one is rejected.
+  const unavailableMentionIdsRef = useRef(new Set<string>());
+  const addsUnavailableMention = (next: string) =>
+    Array.from(unavailableMentionIdsRef.current).some(
+      id => next.split(`](${id})`).length > content.split(`](${id})`).length
+    );
 
   const handleFilesPicked = (fileList: FileList | null) => {
     if (!fileList || fileList.length === 0) return;
@@ -328,6 +334,9 @@ export function CommentInput({
   const handleMentionSearch = async (query: string, callback: (items: EnrichedSuggestion[]) => void) => {
     if (!mentionSearch) return callback([]);
     const results = await mentionSearch(query);
+    for (const suggestion of results) {
+      if (suggestion.unavailable) unavailableMentionIdsRef.current.add(suggestion.id);
+    }
     callback(
       results.map(suggestion => ({
         id: suggestion.id,
@@ -336,6 +345,7 @@ export function CommentInput({
         city: suggestion.city,
         country: suggestion.country,
         virtualContributor: suggestion.virtualContributor,
+        unavailable: suggestion.unavailable,
         displayName: suggestion.displayName,
       }))
     );
@@ -422,7 +432,10 @@ export function CommentInput({
             <div className="min-h-6 min-w-0 flex-1 text-body ios:text-base [&_textarea]:placeholder:text-muted-foreground">
               <MentionsInput
                 value={content}
-                onChange={(_event, newValue) => setContent(newValue)}
+                onChange={(_event, newValue) => {
+                  if (addsUnavailableMention(newValue)) return;
+                  setContent(newValue);
+                }}
                 onKeyDown={handleKeyDown}
                 disabled={disabled}
                 maxLength={maxLength}

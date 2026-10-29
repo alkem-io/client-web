@@ -1632,5 +1632,12 @@
       "refresh": "Actualiser la page",
       "close": "Fermer"
     }
+  },
+  "vcPaused": {
+    "title": "Les Virtual Contributors font peau neuve ! 🚀",
+    "description": "Nous les reconstruisons pour qu'ils soient plus intelligents et plus utiles. En attendant, vous ne pouvez pas les créer, les ajouter ou les mentionner, mais vos VC existants restent visibles.",
+    "learnMore": "En savoir plus",
+    "contactSupport": "Contacter le support",
+    "mentionUnavailable": "Temporairement indisponible"
   }
 }

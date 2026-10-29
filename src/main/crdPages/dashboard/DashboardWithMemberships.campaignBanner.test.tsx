@@ -91,7 +91,8 @@ describe('DashboardWithMemberships — VC campaign banner gating (workspace#027 
     localStorage.clear();
   });
 
-  test('a holder of only FEATURE_VC_CAMPAIGN with the VC entitlement sees the banner', () => {
+  // TEMP: VCs disabled (#10398) — restore: test(
+  test.skip('a holder of only FEATURE_VC_CAMPAIGN with the VC entitlement sees the banner', () => {
     mockPlatformRoles = ['FEATURE_VC_CAMPAIGN'];
     mockAccountEntitlements = ['ACCOUNT_VIRTUAL_CONTRIBUTOR'];
 

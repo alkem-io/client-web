@@ -220,7 +220,9 @@ export function SpaceTabSidebarConnector({
   // so only a signed-in viewer can end up with the button; nearly every space has a user lead.
   const showContactLeadsPlaceholder =
     !skips.contactLeads && communityLoading && isAuthenticated && hasWidgetsBelow('contactLeads');
-  const canInviteVc = hasVcEntitlement && canInvite && Boolean(roleSetId);
+  // TEMP: VCs disabled (#10398) — drop `vcsPaused` to restore the Invite VC button.
+  const vcsPaused = true;
+  const canInviteVc = !vcsPaused && hasVcEntitlement && canInvite && Boolean(roleSetId);
   const leadRecipients: ContactLeadRecipient[] = leadUsers.map(lead => ({
     id: lead.id,
     displayName: lead.name,

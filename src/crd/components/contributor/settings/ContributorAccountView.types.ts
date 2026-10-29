@@ -72,6 +72,8 @@ export type AccountResourceGroup = {
    */
   isEntitled: boolean;
   onCreate: () => void;
+  /** TEMP: VCs disabled (#10398) — show the paused notice in place of the "Create New" tile. */
+  createPaused?: boolean;
   items: AccountResourceCardItem[];
   /** Per-group capacity for the hover-tooltip badge; absent during loading or when the license is missing. */
   capacity?: AccountCapacity;

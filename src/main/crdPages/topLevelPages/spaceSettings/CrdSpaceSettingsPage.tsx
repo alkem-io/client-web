@@ -626,8 +626,7 @@ export default function CrdSpaceSettingsPage() {
                 onOrgRemove={community.onOrgRemove}
                 onOrgChangeRole={org => setActiveMemberSubject(buildOrgSubject(org))}
                 onOrgInvitationRevoke={community.onOrgInvitationRevoke}
-                onVCAdd={addVCDialog.openDialog}
-                onVCAddExternal={() => setVcExternalOpen(true)}
+                // TEMP: VCs disabled (#10398) — restore: onVCAdd={addVCDialog.openDialog} onVCAddExternal={() => setVcExternalOpen(true)}
                 onVCRemove={community.onVCRemove}
                 onPendingView={id => {
                   const target = community.pendingMemberships.find(m => m.id === id);
