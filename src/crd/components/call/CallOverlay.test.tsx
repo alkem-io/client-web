@@ -18,24 +18,26 @@ describe('CallOverlay', () => {
     expect(screen.getByText('call ui')).toBeInTheDocument();
   });
 
-  test('links to the call UI licence in a new tab when given a licence notice', () => {
+  test('links to the call UI license in a new tab, and says so to screen readers', () => {
     render(
       <CallOverlay
         {...baseProps}
         open={true}
         onRequestClose={vi.fn()}
-        licenceNotice={{ label: 'Open-source licence', href: '/element-call/SOURCE.txt' }}
+        licenseHref="/element-call/SOURCE.html"
+        licenseLabel="Open-source license"
+        licenseNewTabLabel="opens in a new tab"
       >
         <p>call ui</p>
       </CallOverlay>
     );
-    const link = screen.getByRole('link', { name: 'Open-source licence' });
-    expect(link).toHaveAttribute('href', '/element-call/SOURCE.txt');
+    const link = screen.getByRole('link', { name: 'Open-source license (opens in a new tab)' });
+    expect(link).toHaveAttribute('href', '/element-call/SOURCE.html');
     expect(link).toHaveAttribute('target', '_blank');
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
-  test('shows no licence link without a licence notice', () => {
+  test('shows no license link without a license page', () => {
     render(
       <CallOverlay {...baseProps} open={true} onRequestClose={vi.fn()}>
         <p>call ui</p>

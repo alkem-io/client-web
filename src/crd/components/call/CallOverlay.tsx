@@ -1,4 +1,4 @@
-import { XIcon } from 'lucide-react';
+import { ExternalLinkIcon, XIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { Dialog, DialogContentRaw, DialogOverlay, DialogPortal, DialogTitle } from '@/crd/primitives/dialog';
@@ -13,11 +13,6 @@ type CallOverlayConfirm = {
   onCancel: () => void;
 };
 
-type CallOverlayLicenceNotice = {
-  label: string;
-  href: string;
-};
-
 type CallOverlayProps = {
   open: boolean;
   /** Accessible name of the overlay. */
@@ -25,8 +20,11 @@ type CallOverlayProps = {
   closeLabel: string;
   /** The close button or Escape; the consumer decides whether to confirm first. */
   onRequestClose: () => void;
-  /** A link to the call UI's licence and corresponding source, shown in the header. */
-  licenceNotice?: CallOverlayLicenceNotice;
+  /** A link to the call UI's license and corresponding source, opened in a new tab; shown in the header when set. */
+  licenseHref?: string;
+  licenseLabel?: string;
+  /** Screen-reader hint that the license link opens a new tab. */
+  licenseNewTabLabel?: string;
   /** Shown above the overlay when closing needs a confirmation. */
   confirm?: CallOverlayConfirm;
   /** The call UI itself. */
@@ -43,7 +41,9 @@ export function CallOverlay({
   label,
   closeLabel,
   onRequestClose,
-  licenceNotice,
+  licenseHref,
+  licenseLabel,
+  licenseNewTabLabel,
   confirm,
   children,
 }: CallOverlayProps) {
@@ -68,14 +68,16 @@ export function CallOverlay({
             <div className="flex h-10 shrink-0 items-center justify-between border-b border-border px-3">
               <DialogTitle className="text-body-emphasis">{label}</DialogTitle>
               <div className="flex items-center gap-2">
-                {licenceNotice && (
+                {licenseHref && (
                   <a
-                    href={licenceNotice.href}
+                    href={licenseHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-md px-2 text-caption text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="inline-flex items-center gap-1 rounded-md px-2 text-caption text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
-                    {licenceNotice.label}
+                    {licenseLabel}
+                    <ExternalLinkIcon aria-hidden="true" className="size-3" />
+                    <span className="sr-only">({licenseNewTabLabel})</span>
                   </a>
                 )}
                 <button
