@@ -5,6 +5,11 @@ query UserConversationsUnreadCount {
         id
         room {
           id
+          type
+        }
+        members {
+          id
+          type
         }
       }
     }

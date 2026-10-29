@@ -36666,6 +36666,11 @@ export const UserConversationsUnreadCountDocument = gql`
         id
         room {
           id
+          type
+        }
+        members {
+          id
+          type
         }
       }
     }

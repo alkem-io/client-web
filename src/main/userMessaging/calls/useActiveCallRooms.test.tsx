@@ -44,6 +44,7 @@ const makeClient = (sessions: Record<string, FakeSession>) =>
       getRoomSession: (room: { roomId: string }) => sessions[room.roomId] ?? new FakeSession(),
     }),
     getRoom: (roomId: string) => ({ roomId }),
+    getUserId: () => '@me:hs',
     syncState: 'SYNCING' as string,
     getSyncState() {
       return this.syncState;
@@ -129,6 +130,40 @@ describe('useActiveCallRooms', () => {
       client.emit('sync', 'SYNCING');
     });
     await waitFor(() => expect([...result.current]).toEqual(['g1']));
+  });
+
+  it('with withoutMe, leaves out the calls the user is in on any device', async () => {
+    harness.client = makeClient({
+      '!g1:hs': new FakeSession([membership('@ann:hs', 60_000), membership('@me:hs', 60_000)]),
+      '!g2:hs': new FakeSession([membership('@ann:hs', 60_000)]),
+    });
+    const { result } = renderHook(() => useActiveCallRooms(conversations, { withoutMe: true }));
+    await waitFor(() => expect([...result.current]).toEqual(['g2']));
+  });
+
+  it('reports the calls that start while watching, not the ones already running', async () => {
+    const running = new FakeSession([membership('@ann:hs', 60_000)]);
+    const idle = new FakeSession();
+    const client = makeClient({ '!g1:hs': running, '!direct:hs': idle });
+    harness.client = client;
+    const onStarted = vi.fn();
+    const { result } = renderHook(() => useActiveCallRooms(conversations, { onStarted }));
+    await waitFor(() => expect([...result.current]).toEqual(['g1']));
+    expect(onStarted).not.toHaveBeenCalled();
+
+    act(() => {
+      idle.memberships = [membership('@bob:hs', 60_000)];
+      client.matrixRTC.emit('session_started');
+    });
+    expect(onStarted).toHaveBeenCalledTimes(1);
+    expect(onStarted).toHaveBeenCalledWith(['direct']);
+
+    // Another person joining a running call is not a call starting.
+    act(() => {
+      idle.memberships = [membership('@bob:hs', 60_000), membership('@cat:hs', 60_000)];
+      idle.emit('memberships_changed');
+    });
+    expect(onStarted).toHaveBeenCalledTimes(1);
   });
 
   it('flags nothing for someone who is not a beta tester, or where calls are off', async () => {

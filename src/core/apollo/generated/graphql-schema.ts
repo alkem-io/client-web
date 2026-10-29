@@ -12,23 +12,14 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: Date; output: Date };
-  /** An Emoji. */
   Emoji: { input: string; output: string };
-  /** A representation of a Lifecycle Definition, based on XState. It is serialized JSON. */
   LifecycleDefinition: { input: string; output: string };
-  /** A markdown string. */
   Markdown: { input: string; output: string };
-  /** An identifier that originates from the underlying messaging platform. */
   MessageID: { input: string; output: string };
-  /** A human readable identifier, 3 <= length <= 28. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: { input: string; output: string };
-  /** Cursor used for paginating search results. */
   SearchCursor: { input: string; output: string };
-  /** A uuid identifier. Length 36 characters. */
   UUID: { input: string; output: string };
-  /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
 };
 
@@ -5284,6 +5275,17 @@ export type LookupQueryResultsWhiteboardArgs = {
   ID: Scalars['UUID']['input'];
 };
 
+/** Credentials for one Matrix chat session belonging to the current user's own actor. */
+export type MatrixSessionCredentials = {
+  __typename?: 'MatrixSessionCredentials';
+  /** A LIVE Matrix access token for this session, returned once per mint. It is not stored by the platform and cannot be re-read. */
+  accessToken: Scalars['String']['output'];
+  /** The Matrix device id Synapse generated for this session. A fresh device per mint. */
+  deviceId: Scalars['String']['output'];
+  /** The actor's Matrix user id (MXID), e.g. `@uuid:matrix.host`. */
+  userId: Scalars['String']['output'];
+};
+
 /** Metadata for one MCP API key. The key value itself is never exposed here. */
 export type McpApiKey = {
   __typename?: 'McpApiKey';
@@ -5979,6 +5981,8 @@ export type Mutation = {
   migrateLegacyMemoContent: CollaborationMigrationResult;
   /** Migrates pending legacy Whiteboard documents and independently normalizes every legacy Whiteboard contribution default, including defaults stored by Callout templates. Idempotent: repeated calls process only unmigrated documents and non-canonical defaults. */
   migrateLegacyWhiteboardContent: CollaborationMigrationResult;
+  /** Mint a Matrix access token for the current user's own chat session. Takes no subject: the actor is the authenticated caller. */
+  mintMatrixSession: MatrixSessionCredentials;
   /** Mint a new MCP API key for the current user. Returns the plaintext exactly once. */
   mintMcpApiKey: McpApiKeyMintResult;
   /** Moves the specified Contribution to another Callout. */
@@ -53170,7 +53174,12 @@ export type UserConversationsUnreadCountQuery = {
     __typename?: 'MeQueryResults';
     conversations: {
       __typename?: 'MeConversationsResult';
-      conversations: Array<{ __typename?: 'Conversation'; id: string; room: { __typename?: 'Room'; id: string } }>;
+      conversations: Array<{
+        __typename?: 'Conversation';
+        id: string;
+        room: { __typename?: 'Room'; id: string; type: RoomType };
+        members: Array<{ __typename?: 'Actor'; id: string; type: ActorType }>;
+      }>;
     };
   };
 };
