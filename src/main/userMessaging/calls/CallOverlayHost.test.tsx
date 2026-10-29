@@ -183,6 +183,21 @@ describe('CallOverlayHost', () => {
     expect(api.transport.send).toHaveBeenCalledWith('im.vector.hangup', {});
   });
 
+  it('says a group call carries on without you, and a 1:1 call ends for the other person too', async () => {
+    harness.isJoinedHere = true;
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    render(<CallOverlayHost />);
+    await startCall();
+    await user.click(screen.getByRole('button', { name: 'call.close' }));
+    expect(screen.getByText('call.leaveConfirm.description')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'call.leaveConfirm.cancel' }));
+
+    act(() => openCall({ matrixRoomId: '!direct:hs.example', intent: 'start_call_dm' }));
+    await waitFor(() => expect(harness.apis).toHaveLength(2));
+    await user.click(screen.getByRole('button', { name: 'call.close' }));
+    expect(screen.getByText('call.leaveConfirm.descriptionDirect')).toBeInTheDocument();
+  });
+
   it('a slow leave of one call never closes the call opened after it', async () => {
     harness.isJoinedHere = true;
     const user = userEvent.setup({ pointerEventsCheck: 0 });

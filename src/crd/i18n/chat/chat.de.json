@@ -119,6 +119,7 @@
     "leaveConfirm": {
       "title": "Anruf verlassen?",
       "description": "Du verlässt den Anruf. Die anderen können ohne dich weitermachen.",
+      "descriptionDirect": "Du verlässt den Anruf, und er endet auch für die andere Person.",
       "confirm": "Anruf verlassen",
       "cancel": "Im Anruf bleiben"
     },

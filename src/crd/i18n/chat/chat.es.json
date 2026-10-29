@@ -119,6 +119,7 @@
     "leaveConfirm": {
       "title": "¿Salir de la llamada?",
       "description": "Saldrás de la llamada. Los demás pueden continuar sin ti.",
+      "descriptionDirect": "Saldrás de la llamada y también terminará para la otra persona.",
       "confirm": "Salir de la llamada",
       "cancel": "Seguir en la llamada"
     },

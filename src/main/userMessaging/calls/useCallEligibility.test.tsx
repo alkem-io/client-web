@@ -21,7 +21,10 @@ vi.mock('@/main/userMessaging/matrix/matrixRooms', () => ({
 
 import { useCallEligibility } from './useCallEligibility';
 
-const group = { roomId: 'alk-group', isGroup: true, isGuidance: false };
+const user = { type: 'USER' as never };
+const virtualContributor = { type: 'VIRTUAL_CONTRIBUTOR' as never };
+const group = { roomId: 'alk-group', isGroup: true, isGuidance: false, members: [user, user, user] };
+const direct = { roomId: 'alk-direct', isGroup: false, isGuidance: false, members: [user, user] };
 
 const makeClient = (syncState: string | null = 'SYNCING') => {
   const client = Object.assign(new EventEmitter(), {
@@ -63,9 +66,17 @@ describe('useCallEligibility', () => {
     expect(result.current).toEqual({ eligible: false, matrixRoomId: null });
   });
 
+  it('is eligible for a beta tester in a synced 1:1 conversation with another user', async () => {
+    const { result } = renderHook(() => useCallEligibility(direct));
+    await waitFor(() => expect(result.current).toEqual({ eligible: true, matrixRoomId: '!m-alk-direct:hs' }));
+  });
+
   it.each([
-    ['a 1:1 conversation', { roomId: 'alk-direct', isGroup: false, isGuidance: false }],
-    ['the guidance thread', { roomId: 'alk-guidance', isGroup: true, isGuidance: true }],
+    ['a 1:1 conversation with a virtual contributor', { ...direct, members: [user, virtualContributor] }],
+    ['a 1:1 conversation with an organization', { ...direct, members: [user, { type: 'ORGANIZATION' as never }] }],
+    ['a 1:1 conversation whose counterpart is not loaded', { ...direct, members: [user] }],
+    ['the guidance thread', { roomId: 'alk-guidance', isGroup: false, isGuidance: true, members: [user, user] }],
+    ['a guidance thread flagged as a group', { ...group, isGuidance: true }],
     ['no conversation', null],
   ])('is not eligible for %s and never resolves its room', async (_label, conversation) => {
     const { result } = renderHook(() => useCallEligibility(conversation));
@@ -115,7 +126,7 @@ describe('useCallEligibility', () => {
     await waitFor(() => expect(result.current.eligible).toBe(true));
 
     harness.resolve.mockReturnValueOnce(new Promise(resolve => (resolveSecond = resolve)));
-    rerender({ conversation: { roomId: 'alk-other', isGroup: true, isGuidance: false } });
+    rerender({ conversation: { ...group, roomId: 'alk-other' } });
     expect(result.current).toEqual({ eligible: false, matrixRoomId: null });
 
     await act(async () => resolveSecond('!other:hs'));

@@ -50,10 +50,12 @@ const makeClient = (sessions: Record<string, FakeSession>) =>
     },
   });
 
+const user = { type: 'USER' as never };
 const conversations = [
-  { roomId: 'g1', isGroup: true, isGuidance: false },
-  { roomId: 'g2', isGroup: true, isGuidance: false },
-  { roomId: 'direct', isGroup: false, isGuidance: false },
+  { roomId: 'g1', isGroup: true, isGuidance: false, members: [user, user, user] },
+  { roomId: 'g2', isGroup: true, isGuidance: false, members: [user, user, user] },
+  { roomId: 'direct', isGroup: false, isGuidance: false, members: [user, user] },
+  { roomId: 'vc', isGroup: false, isGuidance: false, members: [user, { type: 'VIRTUAL_CONTRIBUTOR' as never }] },
 ];
 
 describe('useActiveCallRooms', () => {
@@ -70,6 +72,16 @@ describe('useActiveCallRooms', () => {
     harness.client = makeClient({ '!g1:hs': new FakeSession([membership('@ann:hs', 60_000)]) });
     const { result } = renderHook(() => useActiveCallRooms(conversations));
     await waitFor(() => expect([...result.current]).toEqual(['g1']));
+  });
+
+  it('flags a 1:1 conversation with a running call, but never a chat with a virtual contributor', async () => {
+    harness.client = makeClient({
+      '!direct:hs': new FakeSession([membership('@ann:hs', 60_000)]),
+      '!vc:hs': new FakeSession([membership('@ann:hs', 60_000)]),
+    });
+    const { result } = renderHook(() => useActiveCallRooms(conversations));
+    await waitFor(() => expect([...result.current]).toEqual(['direct']));
+    expect(harness.resolve).not.toHaveBeenCalledWith(expect.anything(), 'vc');
   });
 
   it('ignores rooms whose only membership has expired', async () => {

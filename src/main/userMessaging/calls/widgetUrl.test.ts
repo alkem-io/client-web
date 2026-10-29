@@ -1,5 +1,14 @@
+import { readdirSync, readFileSync } from 'node:fs';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { buildElementCallWidgetUrl, type WidgetUrlInput } from './widgetUrl';
+import {
+  buildElementCallWidgetUrl,
+  type CallAction,
+  type CallMedia,
+  callIntentFor,
+  isDirectCallIntent,
+  type WidgetUrlInput,
+} from './widgetUrl';
 
 const input: WidgetUrlInput = {
   widgetId: 'w-1',
@@ -61,5 +70,37 @@ describe('buildElementCallWidgetUrl', () => {
 
   it('does not set a theme', () => {
     expect(paramsOf(buildElementCallWidgetUrl(input)).has('theme')).toBe(false);
+  });
+});
+
+describe('callIntentFor', () => {
+  it.each([
+    [true, 'start', 'video', 'start_call'],
+    [true, 'start', 'voice', 'start_call_voice'],
+    [true, 'join', 'video', 'join_existing'],
+    [true, 'join', 'voice', 'join_existing_voice'],
+    [false, 'start', 'video', 'start_call_dm'],
+    [false, 'start', 'voice', 'start_call_dm_voice'],
+    [false, 'join', 'video', 'join_existing_dm'],
+    [false, 'join', 'voice', 'join_existing_dm_voice'],
+  ] as const)('isGroup %s, %s with %s opens %s', (isGroup, action, media, intent) => {
+    expect(callIntentFor({ isGroup, action, media })).toBe(intent);
+    expect(isDirectCallIntent(intent)).toBe(!isGroup);
+  });
+
+  it('uses only intents the pinned call UI configures itself for', () => {
+    const assetsDir = path.join(process.cwd(), 'node_modules/@element-hq/element-call-embedded/dist/assets');
+    const bundle = readdirSync(assetsDir)
+      .filter(file => /^index-.*\.js$/.test(file))
+      .map(file => readFileSync(path.join(assetsDir, file), 'utf8'))
+      .join('\n');
+    for (const isGroup of [true, false]) {
+      for (const action of ['start', 'join'] as CallAction[]) {
+        for (const media of ['video', 'voice'] as CallMedia[]) {
+          const intent = callIntentFor({ isGroup, action, media });
+          expect(bundle).toContain(`case\`${intent}\`:`);
+        }
+      }
+    }
   });
 });

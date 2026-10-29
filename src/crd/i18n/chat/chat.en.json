@@ -119,6 +119,7 @@
     "leaveConfirm": {
       "title": "Leave call?",
       "description": "You will leave the call. The others can carry on without you.",
+      "descriptionDirect": "You will leave the call, and it ends for the other person too.",
       "confirm": "Leave call",
       "cancel": "Stay in call"
     },

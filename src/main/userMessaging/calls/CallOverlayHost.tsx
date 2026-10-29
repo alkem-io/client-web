@@ -7,7 +7,7 @@ import { CallOverlay } from '@/crd/components/call/CallOverlay';
 import { getCallConfig } from './callConfig';
 import { closeCall, useCallOverlay } from './callOverlayStore';
 import { useRoomCallSession } from './useRoomCallSession';
-import { buildElementCallWidgetUrl } from './widgetUrl';
+import { buildElementCallWidgetUrl, isDirectCallIntent } from './widgetUrl';
 
 // The widget API and its driver load only when a call opens.
 const CallWidgetFrame = lazyWithGlobalErrorHandler(() => import('./CallWidgetFrame'));
@@ -82,7 +82,10 @@ export const CallOverlayHost = () => {
       confirm={{
         open: confirmOpen,
         title: t('call.leaveConfirm.title'),
-        description: t('call.leaveConfirm.description'),
+        // A direct call ends for the other person once one of the two leaves.
+        description: t(
+          isDirectCallIntent(session.intent) ? 'call.leaveConfirm.descriptionDirect' : 'call.leaveConfirm.description'
+        ),
         confirmLabel: t('call.leaveConfirm.confirm'),
         cancelLabel: t('call.leaveConfirm.cancel'),
         onConfirm: () => {
