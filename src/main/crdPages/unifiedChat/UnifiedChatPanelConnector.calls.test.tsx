@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -238,11 +238,12 @@ describe('UnifiedChatPanelConnector calls', () => {
     expect(screen.queryByText('call.joinedOnThisDevice')).not.toBeInTheDocument();
   });
 
-  it('says the call is joined on this device in another tab, instead of offering to join it twice', () => {
+  it('says the call is joined on this device in another tab, instead of offering to join it twice', async () => {
     eligible();
     calls.session = { participants: ['@me:hs'], participantCount: 1, isJoinedOnThisDevice: true, isJoinedHere: false };
     render(<UnifiedChatPanelConnector />);
-    expect(screen.getByText('call.joinedOnThisDevice')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('call.active'));
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('call.joinedOnThisDevice');
     expect(screen.queryByRole('button', { name: 'call.joinVideo' })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'call.joinAudio' })).not.toBeInTheDocument();
   });

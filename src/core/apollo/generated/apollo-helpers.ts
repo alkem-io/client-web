@@ -3199,17 +3199,6 @@ export type LookupQueryResultsFieldPolicy = {
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MatrixSessionCredentialsKeySpecifier = (
-  | 'accessToken'
-  | 'deviceId'
-  | 'userId'
-  | MatrixSessionCredentialsKeySpecifier
-)[];
-export type MatrixSessionCredentialsFieldPolicy = {
-  accessToken?: FieldPolicy<any> | FieldReadFunction<any>;
-  deviceId?: FieldPolicy<any> | FieldReadFunction<any>;
-  userId?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type McpApiKeyKeySpecifier = (
   | 'createdDate'
   | 'expiresAt'
@@ -3597,7 +3586,6 @@ export type MutationKeySpecifier = (
   | 'markNotificationsAsUnread'
   | 'migrateLegacyMemoContent'
   | 'migrateLegacyWhiteboardContent'
-  | 'mintMatrixSession'
   | 'mintMcpApiKey'
   | 'moveContributionToCallout'
   | 'moveSpaceL1ToSpaceL0'
@@ -3846,7 +3834,6 @@ export type MutationFieldPolicy = {
   markNotificationsAsUnread?: FieldPolicy<any> | FieldReadFunction<any>;
   migrateLegacyMemoContent?: FieldPolicy<any> | FieldReadFunction<any>;
   migrateLegacyWhiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
-  mintMatrixSession?: FieldPolicy<any> | FieldReadFunction<any>;
   mintMcpApiKey?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   moveSpaceL1ToSpaceL0?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -7818,10 +7805,6 @@ export type StrictTypedTypePolicies = {
   LookupQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LookupQueryResultsKeySpecifier | (() => undefined | LookupQueryResultsKeySpecifier);
     fields?: LookupQueryResultsFieldPolicy;
-  };
-  MatrixSessionCredentials?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | MatrixSessionCredentialsKeySpecifier | (() => undefined | MatrixSessionCredentialsKeySpecifier);
-    fields?: MatrixSessionCredentialsFieldPolicy;
   };
   McpApiKey?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | McpApiKeyKeySpecifier | (() => undefined | McpApiKeyKeySpecifier);

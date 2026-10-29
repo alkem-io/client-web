@@ -65,6 +65,7 @@ export const UnifiedChatPanelConnector = () => {
     selectedConversationId,
     setSelectedConversationId,
     setSelectedRoomId,
+    newlyCreatedConversationId,
     setNewlyCreatedConversationId,
   } = useUserMessagingContext();
   const { guidanceVcId } = useUnifiedChatContext();
@@ -136,7 +137,8 @@ export const UnifiedChatPanelConnector = () => {
       // A draft replaces the last-message preview but leaves the ordering and the
       // timestamp alone — the conversation does not jump the list for it.
       return draft ? { ...item, draftPreview: draft.trim() } : item;
-    })
+    }),
+    newlyCreatedConversationId
   );
 
   const view = selectedConversationId ? 'thread' : 'list';

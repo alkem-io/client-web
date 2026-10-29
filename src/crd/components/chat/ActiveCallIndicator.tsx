@@ -1,4 +1,5 @@
 import { Phone, Video } from 'lucide-react';
+import { useState } from 'react';
 import { chatHeaderIconButtonClass } from '@/crd/components/chat/CallControls';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 
@@ -23,29 +24,40 @@ type ActiveCallIndicatorProps = {
 
 /** "Call active · N" in a conversation header, with join buttons (video first, audio only) when joinable. */
 export function ActiveCallIndicator({ activeLabel, count, join, joinedNote }: ActiveCallIndicatorProps) {
-  const pill = (
-    <span
-      // Focusable only when it carries a note, so keyboard users can open the tooltip too.
-      tabIndex={joinedNote ? 0 : undefined}
-      className="flex h-7 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-primary/10 px-2.5 text-caption font-medium text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-    >
+  const [noteOpen, setNoteOpen] = useState(false);
+  const pillClassName =
+    'flex h-7 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-primary/10 px-2.5 text-caption font-medium text-primary';
+  const pillContent = (
+    <>
       <span aria-hidden="true" className="size-2 rounded-full bg-primary" />
       <span>{activeLabel}</span>
       <span aria-hidden="true">·</span>
       <span data-testid="call-participant-count">{count}</span>
-      {joinedNote && <span className="sr-only">{joinedNote}</span>}
-    </span>
+    </>
   );
 
   return (
     <div className="flex shrink-0 items-center gap-1" data-testid="call-active-indicator">
       {joinedNote ? (
-        <Tooltip>
-          <TooltipTrigger asChild={true}>{pill}</TooltipTrigger>
+        <Tooltip open={noteOpen} onOpenChange={setNoteOpen}>
+          <TooltipTrigger asChild={true}>
+            <button
+              type="button"
+              // Hover and focus open the note; a tap toggles it, as touch never hovers.
+              onClick={event => {
+                // Stops the tooltip's own close-on-click.
+                event.preventDefault();
+                setNoteOpen(open => !open);
+              }}
+              className={`${pillClassName} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring`}
+            >
+              {pillContent}
+            </button>
+          </TooltipTrigger>
           <TooltipContent>{joinedNote}</TooltipContent>
         </Tooltip>
       ) : (
-        pill
+        <span className={pillClassName}>{pillContent}</span>
       )}
       {join && (
         // biome-ignore lint/a11y/useSemanticElements: a group of two buttons, not a form fieldset

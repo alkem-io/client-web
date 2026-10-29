@@ -122,12 +122,7 @@ export const useConversationEventsSubscription = () => {
                 {
                   __typename: 'Conversation' as const,
                   id: conversation.id,
-                  room: { __typename: 'Room' as const, id: room.id, type: room.type },
-                  members: conversation.members.map(member => ({
-                    __typename: 'Actor' as const,
-                    id: member.id,
-                    type: member.type,
-                  })),
+                  room: { __typename: 'Room' as const, id: room.id },
                 },
                 ...existing.me.conversations.conversations,
               ],
@@ -290,12 +285,7 @@ export const useConversationEventsSubscription = () => {
                     {
                       __typename: 'Conversation' as const,
                       id: conversation.id,
-                      room: { __typename: 'Room' as const, id: room.id, type: room.type },
-                      members: conversation.members.map(member => ({
-                        __typename: 'Actor' as const,
-                        id: member.id,
-                        type: member.type,
-                      })),
+                      room: { __typename: 'Room' as const, id: room.id },
                     },
                     ...existing.me.conversations.conversations,
                   ],

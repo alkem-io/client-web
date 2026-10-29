@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { resolveMatrixRoomId } from '@/main/userMessaging/matrix/matrixRooms';
@@ -14,8 +14,6 @@ const sameSet = (a: ReadonlySet<string>, b: ReadonlySet<string>): boolean =>
 type ActiveCallRoomsOptions = {
   /** Only calls the current user is not in, on any device. */
   readonly withoutMe?: boolean;
-  /** Called with the rooms whose call started while watching; calls already running when watching began are not reported. */
-  readonly onStarted?: (alkemioRoomIds: readonly string[]) => void;
 };
 
 /**
@@ -25,7 +23,7 @@ type ActiveCallRoomsOptions = {
  */
 const useActiveCallRooms = (
   conversations: readonly CallableConversation[],
-  { withoutMe = false, onStarted }: ActiveCallRoomsOptions = {}
+  { withoutMe = false }: ActiveCallRoomsOptions = {}
 ): ReadonlySet<string> => {
   const { platformRoles } = useCurrentUserContext();
   const client = useMatrixClient();
@@ -40,11 +38,6 @@ const useActiveCallRooms = (
         .join('\n')
     : '';
   const [active, setActive] = useState<ReadonlySet<string>>(NONE);
-  // Read inside the watcher; synced post-commit so a new callback does not restart the watch.
-  const onStartedRef = useRef(onStarted);
-  useEffect(() => {
-    onStartedRef.current = onStarted;
-  }, [onStarted]);
 
   // Rooms are looked up once the session is synced, and again each time it syncs anew, so a
   // room whose lookup failed while the chat server was unreachable gets its badge later.
@@ -74,20 +67,13 @@ const useActiveCallRooms = (
       const myUserId = client.getUserId();
       const counts = (memberships: readonly MembershipLike[]): boolean =>
         memberships.length > 0 && !(withoutMe && memberships.some(membership => membership.sender === myUserId));
-      // The first report is the state when watching began: nothing in it has just started.
-      let reported: ReadonlySet<string> | undefined;
       stopWatching = watchLiveMemberships(client, [...alkemioByMatrixId.keys()], live => {
         const next = new Set(
           [...alkemioByMatrixId].flatMap(([matrixRoomId, alkemioRoomId]) =>
             counts(live.get(matrixRoomId) ?? []) ? [alkemioRoomId] : []
           )
         );
-        const started = reported ? [...next].filter(alkemioRoomId => !reported?.has(alkemioRoomId)) : [];
-        reported = next;
         setActive(previous => (sameSet(previous, next) ? previous : next));
-        if (started.length > 0) {
-          onStartedRef.current?.(started);
-        }
       });
     });
     return () => {

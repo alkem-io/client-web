@@ -148,12 +148,17 @@ describe('withActiveCallsFirst', () => {
       { id: 'older' },
       { id: 'oldest-call', hasActiveCall: true },
     ];
-    expect(withActiveCallsFirst(items).map(item => item.id)).toEqual([
+    expect(withActiveCallsFirst(items, null).map(item => item.id)).toEqual([
       'pinned',
       'older-call',
       'oldest-call',
       'recent',
       'older',
     ]);
+  });
+
+  it('keeps the newly-created conversation directly below the pinned one', () => {
+    const items = [{ id: 'pinned', pinned: true }, { id: 'new' }, { id: 'call', hasActiveCall: true }];
+    expect(withActiveCallsFirst(items, 'new').map(item => item.id)).toEqual(['pinned', 'new', 'call']);
   });
 });
