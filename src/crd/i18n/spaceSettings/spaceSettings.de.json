@@ -241,7 +241,11 @@
       "actions": "Aktionen",
       "approve": "Genehmigen",
       "reject": "Ablehnen",
-      "delete": "Löschen",
+      "deleteAction": {
+        "rejectAndRemove": "Antrag ablehnen und entfernen",
+        "removeFromList": "Aus der Liste entfernen",
+        "revokeInvitation": "Einladung widerrufen"
+      },
       "resend": "Einladungs-E-Mail erneut senden",
       "resendSuccess": "Einladungs-E-Mail erneut gesendet",
       "resendThrottled": "Erst kürzlich erneut gesendet — versuche es in ein paar Minuten noch einmal",
@@ -317,7 +321,8 @@
         "next": "Nächste Seite"
       },
       "roleColumn": "Rolle",
-      "export": "Alle Mitglieder exportieren"
+      "export": "Alle Mitglieder exportieren",
+      "exportApplications": "Alle eingereichten Bewerbungen exportieren"
     },
     "memberSettings": {
       "title": "Mitgliedereinstellungen",
@@ -339,6 +344,7 @@
       "close": "Schließen"
     },
     "organizations": {
+      "export": "Organisationen exportieren",
       "title": "Mitgliedsorganisationen",
       "name": "Name",
       "role": "Rolle",
@@ -431,7 +437,7 @@
       },
       "invitation": {
         "title": "Einladung widerrufen",
-        "description": "Die ausstehende Einladung für {{name}} widerrufen?"
+        "description": "{{name}} kann diese Einladung nicht mehr annehmen, und sie wird aus der Liste entfernt."
       },
       "applicationReject": {
         "title": "Antrag ablehnen",
@@ -439,8 +445,16 @@
         "description_subspace": "Den Antrag von {{name}} auf Beitritt zu diesem Subspace ablehnen?"
       },
       "applicationDelete": {
-        "title": "Antrag entfernen",
-        "description": "Den Antrag von {{name}} aus der Liste entfernen?"
+        "title": "Antrag ablehnen und entfernen",
+        "description": "Der Antrag von {{name}} wird abgelehnt und aus dieser Liste entfernt. Es entsteht keine Mitgliedschaft."
+      },
+      "resolvedDelete": {
+        "title": "Aus der Liste entfernen",
+        "description": "Damit wird nur die abgeschlossene Anfrage von {{name}} aus dieser Liste entfernt. Mitgliedschaften ändern sich nicht."
+      },
+      "platformInvitation": {
+        "title": "Einladung widerrufen",
+        "description": "Die an {{name}} gesendete Einladung wird storniert und aus der Liste entfernt. Sie kann nicht mehr zum Beitritt verwendet werden."
       }
     },
     "addDialog": {
@@ -809,8 +823,7 @@
         "description": "Möchten Sie diese Frage wirklich entfernen?",
         "confirm": "Löschen"
       },
-      "save": "Speichern",
-      "export": "Alle eingereichten Bewerbungen exportieren"
+      "save": "Speichern"
     },
     "allowedActions": {
       "title": "Erlaubte Aktionen",
@@ -885,16 +898,28 @@
       "title": "Sichtbarkeitsstatus",
       "prefix": "Dieser Space befindet sich derzeit im",
       "suffix": "Modus",
-      "contact": "Wenden Sie sich für Statusänderungen an das Alkemio-Team."
+      "contact": "Wenden Sie sich für Statusänderungen an das Alkemio-Team.",
+      "status": {
+        "active": "Aktiv",
+        "archived": "Archiviert",
+        "demo": "Demo",
+        "inactive": "Inaktiv"
+      }
     },
     "host": {
-      "title": "Host-Informationen"
+      "title": "Host-Informationen",
+      "type": {
+        "organization": "Organisation",
+        "user": "Benutzer",
+        "virtualContributor": "Virtueller Mitwirkender"
+      }
     },
     "plan": {
       "title": "Lizenz",
       "featuresHeading": "Enthaltene Funktionen",
       "daysLeft": "Noch {{count}} Tage",
-      "changeLicense": "Lizenz ändern"
+      "changeLicense": "Lizenz ändern",
+      "none": "Keine aktive Lizenz"
     },
     "support": {
       "title": "Support",
@@ -905,6 +930,7 @@
       "title": "Gefahrenzone",
       "description": "Diesen Space und alle Inhalte dauerhaft löschen.",
       "delete": "Diesen Space löschen",
+      "deleteError": "Der Space konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.",
       "deleteDialog": {
         "title": "Space löschen",
         "description": "Dadurch werden dieser Space und alle Inhalte dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",

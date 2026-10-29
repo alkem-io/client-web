@@ -241,7 +241,11 @@
       "actions": "Acties",
       "approve": "Goedkeuren",
       "reject": "Afwijzen",
-      "delete": "Verwijderen",
+      "deleteAction": {
+        "rejectAndRemove": "Aanvraag afwijzen en verwijderen",
+        "removeFromList": "Uit de lijst verwijderen",
+        "revokeInvitation": "Uitnodiging intrekken"
+      },
       "resend": "Uitnodigingsmail opnieuw versturen",
       "resendSuccess": "Uitnodigingsmail opnieuw verstuurd",
       "resendThrottled": "Onlangs al opnieuw verstuurd — probeer het over enkele minuten opnieuw",
@@ -317,7 +321,8 @@
         "next": "Volgende pagina"
       },
       "roleColumn": "Rol",
-      "export": "Exporteer volledig ledenoverzicht"
+      "export": "Exporteer volledig ledenoverzicht",
+      "exportApplications": "Exporteer alle ingediende aanvragen"
     },
     "memberSettings": {
       "title": "Lidinstellingen",
@@ -339,6 +344,7 @@
       "close": "Sluiten"
     },
     "organizations": {
+      "export": "Exporteer organisaties",
       "title": "Aangesloten organisaties",
       "name": "Naam",
       "role": "Rol",
@@ -431,7 +437,7 @@
       },
       "invitation": {
         "title": "Uitnodiging intrekken",
-        "description": "De lopende uitnodiging voor {{name}} intrekken?"
+        "description": "{{name}} kan deze uitnodiging niet meer accepteren en ze wordt uit de lijst verwijderd."
       },
       "applicationReject": {
         "title": "Aanvraag afwijzen",
@@ -439,8 +445,16 @@
         "description_subspace": "De aanvraag van {{name}} om lid te worden van deze Subspace afwijzen?"
       },
       "applicationDelete": {
-        "title": "Aanvraag verwijderen",
-        "description": "De aanvraag van {{name}} uit de lijst verwijderen?"
+        "title": "Aanvraag afwijzen en verwijderen",
+        "description": "De aanvraag van {{name}} wordt afgewezen en uit deze lijst verwijderd. Er volgt geen lidmaatschap."
+      },
+      "resolvedDelete": {
+        "title": "Uit de lijst verwijderen",
+        "description": "Hiermee verdwijnt alleen het afgesloten verzoek van {{name}} uit deze lijst. Niemands lidmaatschap verandert."
+      },
+      "platformInvitation": {
+        "title": "Uitnodiging intrekken",
+        "description": "De uitnodiging aan {{name}} wordt geannuleerd en uit de lijst verwijderd. Ze kan niet meer worden gebruikt om lid te worden."
       }
     },
     "addDialog": {
@@ -809,8 +823,7 @@
         "description": "Weet je zeker dat je deze vraag wilt verwijderen?",
         "confirm": "Verwijderen"
       },
-      "save": "Opslaan",
-      "export": "Exporteer alle ingediende aanvragen"
+      "save": "Opslaan"
     },
     "allowedActions": {
       "title": "Toegestane acties",
@@ -885,16 +898,28 @@
       "title": "Zichtbaarheidsstatus",
       "prefix": "Deze Space staat momenteel in",
       "suffix": "modus",
-      "contact": "Voor statuswijzigingen neem je contact op met het Alkemio-team."
+      "contact": "Voor statuswijzigingen neem je contact op met het Alkemio-team.",
+      "status": {
+        "active": "Actief",
+        "archived": "Gearchiveerd",
+        "demo": "Demo",
+        "inactive": "Inactief"
+      }
     },
     "host": {
-      "title": "Hostinformatie"
+      "title": "Hostinformatie",
+      "type": {
+        "organization": "Organisatie",
+        "user": "Gebruiker",
+        "virtualContributor": "Virtual Contributor"
+      }
     },
     "plan": {
       "title": "Licentie",
       "featuresHeading": "Inbegrepen functies",
       "daysLeft": "Nog {{count}} dagen",
-      "changeLicense": "Licentie wijzigen"
+      "changeLicense": "Licentie wijzigen",
+      "none": "Geen actieve licentie"
     },
     "support": {
       "title": "Ondersteuning",
@@ -905,6 +930,7 @@
       "title": "Gevarenzone",
       "description": "Verwijder deze Space en alle inhoud ervan permanent.",
       "delete": "Deze Space verwijderen",
+      "deleteError": "De Space kon niet worden verwijderd. Probeer het opnieuw.",
       "deleteDialog": {
         "title": "Space verwijderen",
         "description": "Hierdoor wordt deze Space en alle inhoud ervan permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
