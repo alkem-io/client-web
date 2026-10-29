@@ -38,6 +38,7 @@ import {
   mapMembersToGroupMembers,
   mapMemberToCommentAuthor,
   mapMessageToChatMessage,
+  withActiveCallsFirst,
 } from './dataMapper';
 import { useUnifiedChatContext } from './UnifiedChatProvider';
 import { useChatDeepLinkSelect } from './useChatDeepLink';
@@ -127,14 +128,16 @@ export const UnifiedChatPanelConnector = () => {
   const formatTimestamp = (timestampMs: number) =>
     formatDistanceToNowStrict(new Date(timestampMs), { addSuffix: true, locale });
 
-  const listItems = conversations.map(conversation => {
-    const mapped = mapConversationToListItem(conversation, { currentUserId, formatTimestamp });
-    const item = activeCallRooms.has(conversation.roomId) ? { ...mapped, hasActiveCall: true } : mapped;
-    const draft = drafts[conversation.id];
-    // A draft replaces the last-message preview but leaves the ordering and the
-    // timestamp alone — the conversation does not jump the list for it.
-    return draft ? { ...item, draftPreview: draft.trim() } : item;
-  });
+  const listItems = withActiveCallsFirst(
+    conversations.map(conversation => {
+      const mapped = mapConversationToListItem(conversation, { currentUserId, formatTimestamp });
+      const item = activeCallRooms.has(conversation.roomId) ? { ...mapped, hasActiveCall: true } : mapped;
+      const draft = drafts[conversation.id];
+      // A draft replaces the last-message preview but leaves the ordering and the
+      // timestamp alone — the conversation does not jump the list for it.
+      return draft ? { ...item, draftPreview: draft.trim() } : item;
+    })
+  );
 
   const view = selectedConversationId ? 'thread' : 'list';
 

@@ -299,10 +299,10 @@ describe('UnifiedChatPanelConnector calls', () => {
     expect(screen.queryByTestId('call-active-indicator')).not.toBeInTheDocument();
   });
 
-  it('marks list rows of conversations with a running call', () => {
+  it('marks list rows of conversations with a running call and moves them to the top', () => {
     state.selectedConversationId = null;
     calls.activeRooms = new Set(['r-group']);
     render(<UnifiedChatPanelConnector />);
-    expect(listProps?.conversations).toEqual([{ id: 'direct' }, { id: 'group', hasActiveCall: true }]);
+    expect(listProps?.conversations).toEqual([{ id: 'group', hasActiveCall: true }, { id: 'direct' }]);
   });
 });
