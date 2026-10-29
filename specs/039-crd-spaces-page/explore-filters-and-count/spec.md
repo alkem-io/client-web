@@ -41,17 +41,22 @@ filter could not work on them at all: it tested `parent`, which search results n
   the visitor can remove it to include subspaces. **Search ignores the default**: while a search term is set and the
   user has not chosen a Type, Type is "All", so subspaces stay findable. A Type the user picked applies to both.
   "Clear all filters" sets Type to "All".
-- **Every view shows cards in batches of 24** (`BATCH_SIZE`). 24 is a multiple of 1, 2, 3 and 4 columns, so no row
-  is left half-empty until the last batch. The first load shows 24 cards; each Load more adds 24. Cards already
-  loaded beyond the current batch wait for the next Load more. This applies to every filter combination, to
-  "My Spaces", to search, and to the unfiltered "All" (which used to show everything one page loaded, ~87 cards).
+- **Every view shows cards in batches that fill whole rows.** The grid fits as many 280px cards per row as the
+  width allows (5 on a 1920px screen), so no fixed size can fill every row. `SpaceExplorer` measures how many
+  columns its grid has and reports it (`onColumnsChange`); a batch is the multiple of that column count closest to
+  24 (`BATCH_SIZE`): 24 with 1, 2, 3, 4 or 6 columns, 25 with 5, 21 with 7. The first load shows one batch; each
+  Load more adds one. Only the last batch can leave a row part-empty. The page remembers how many batches are
+  shown, not how many cards, so resizing the window re-cuts the shown cards to whole rows of the new width (loading
+  more if needed). Before the first measurement, 4 columns are assumed. Cards already loaded beyond the current
+  batches wait for the next Load more. This applies to every filter combination, to "My Spaces", to search, and to
+  the unfiltered "All" (which used to show everything one page loaded, ~87 cards).
 - **The filters run in the integration hook, and the hook loads pages until the batch is full.** Type and Privacy
   are controlled props of `SpaceExplorer` (state in `useSpaceExplorer`); the hook filters (Type by `level`, Privacy
-  by `isContentPublic`) and keeps fetching server pages while fewer than `batches × 24` cards match and the server
+  by `isContentPublic`) and keeps fetching server pages while fewer than `batches × batch size` cards match and the server
   has more. Load more resolves once its batch is full or the results are exhausted, so its button stays busy until
   then. A failed page stops the filling until the next Load more.
-- **Page sizes.** "Spaces only" browses 24 top-level spaces per page and fetches no subspaces at all, so one page is
-  one batch. Other browse views keep 10 top-level spaces per page (each brings its subspaces). Search fetches 24
+- **Page sizes.** "Spaces only" browses one batch of top-level spaces per page and fetches no subspaces at all, so
+  one page is one batch. Other browse views keep 10 top-level spaces per page (each brings its subspaces). Search fetches 24
   results per page, by the search `cursor`; a `null` cursor means there is nothing more.
 - **No reshuffling.** A top-level space is shown only once its subspaces have been fetched (or the user cannot read
   them), so subspaces never get inserted between cards that are already on screen.
@@ -67,8 +72,9 @@ filter could not work on them at all: it tested `parent`, which search results n
   (`spaces.matchingTerms`, six languages). Without a search term it MUST show no results line.
 - **FR-EX-5**: A search MUST be paginated by the search `cursor`.
 - **FR-EX-6**: Browsing MUST default to Type = "Spaces only"; a search with no user-chosen Type MUST use "All".
-- **FR-EX-7**: Every view MUST show 24 cards on first load and add 24 per Load more, except the last batch, loading as
-  many server pages as needed. Load more MUST remain available while more matching cards may exist.
+- **FR-EX-7**: Every view MUST show one batch on first load and add one per Load more, a batch being the multiple of
+  the grid's column count closest to 24; only the last batch may leave a row part-empty. It MUST load as many server
+  pages as needed. Load more MUST remain available while more matching cards may exist.
 
 ## Acceptance scenarios
 
@@ -77,11 +83,15 @@ filter could not work on them at all: it tested `parent`, which search results n
 2. **Given** a guest opens Filters, **Then** there is no Membership section.
 3. **Given** no search term, with or without filters, **Then** no count and no results line are shown.
 4. **Given** the user searches `energie`, **Then** "Spaces matching “energie”" is shown, without a number.
-5. **Given** a visitor opens Explore Spaces, **Then** "Spaces only" is active and 24 top-level spaces are shown.
-   **When** they press Load more, **Then** 24 more are added; with 189 spaces the last of 8 batches holds 21.
-6. **Given** "Subspaces only" or "Private only", **When** the user presses Load more, **Then** 24 more cards are
+5. **Given** a visitor opens Explore Spaces on a screen with 4 cards per row, **Then** "Spaces only" is active and
+   24 top-level spaces are shown. **When** they press Load more, **Then** 24 more are added; with 189 spaces the
+   last of 8 batches holds 21.
+6. **Given** a screen with 5 cards per row, **Then** each batch is 25 cards (5 full rows).
+7. **Given** a batch is shown and the window is resized to a different number of columns, **Then** the shown cards
+   are re-cut to whole rows of the new width.
+8. **Given** "Subspaces only" or "Private only", **When** the user presses Load more, **Then** one more batch is
    added, however many server pages that takes, unless fewer remain.
-7. **Given** a search with no Type chosen, **Then** matching subspaces are listed too.
+9. **Given** a search with no Type chosen, **Then** matching subspaces are listed too.
 
 ## Out of scope
 

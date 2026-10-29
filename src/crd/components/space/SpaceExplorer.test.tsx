@@ -133,6 +133,32 @@ describe('SpaceExplorer results line (spec 039 explore-filters-and-count)', () =
   });
 });
 
+describe('SpaceExplorer grid columns (spec 039 explore-filters-and-count FR-EX-7)', () => {
+  it('reports how many cards its grid fits per row', () => {
+    // jsdom has no layout or ResizeObserver: observe() reports at once, and the computed track list is stubbed.
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        constructor(private readonly callback: () => void) {}
+        observe() {
+          this.callback();
+        }
+        disconnect() {}
+      }
+    );
+    const computed = vi
+      .spyOn(window, 'getComputedStyle')
+      .mockReturnValue({ gridTemplateColumns: '280px 280px 280px 280px 280px' } as CSSStyleDeclaration);
+    const onColumnsChange = vi.fn();
+
+    renderExplorer({ onColumnsChange });
+
+    expect(onColumnsChange).toHaveBeenCalledWith(5);
+    computed.mockRestore();
+    vi.unstubAllGlobals();
+  });
+});
+
 describe('SpaceExplorer Load more (spec 039 explore-filters-and-count FR-EX-7)', () => {
   it('stays, busy, while its own batch is loading', async () => {
     let finish: () => void = () => {};

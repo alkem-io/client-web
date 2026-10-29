@@ -24,6 +24,7 @@ export default function DashboardUnauthenticated() {
     onTypeFilterChange,
     privacyFilter,
     onPrivacyFilterChange,
+    onColumnsChange,
     authenticated,
     loadingSearchResults,
   } = useSpaceExplorer();
@@ -47,6 +48,7 @@ export default function DashboardUnauthenticated() {
         onTypeFilterChange={onTypeFilterChange}
         privacyFilter={privacyFilter}
         onPrivacyFilterChange={onPrivacyFilterChange}
+        onColumnsChange={onColumnsChange}
         onParentClick={parent => navigate(parent.href)}
       />
 

@@ -184,6 +184,24 @@ describe('useSpaceExplorer browsing (spec 039 explore-filters-and-count)', () =>
     expect(ids(result.current.spaces)).toHaveLength(30);
   });
 
+  it('sizes batches in whole rows of the grid, and re-cuts them when the row size changes', async () => {
+    fake.state.topLevel = topLevel(100);
+    const { result } = renderHook(() => useSpaceExplorer());
+
+    // 5 cards per row (a 1920px screen): 5 rows of 5, not 24.
+    act(() => result.current.onColumnsChange(5));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(ids(result.current.spaces)).toHaveLength(25);
+
+    await loadMore(result);
+    expect(ids(result.current.spaces)).toHaveLength(50);
+
+    // Resized to 3 per row: still 2 batches, now of 8 rows of 3.
+    act(() => result.current.onColumnsChange(3));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(ids(result.current.spaces)).toHaveLength(48);
+  });
+
   it('never moves a space ahead of one whose subspaces are still loading', async () => {
     fake.state.topLevel = topLevel(3);
     // s1 cannot be read by this user, so it never waits for subspaces.

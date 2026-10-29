@@ -50,6 +50,7 @@ const SpaceExplorerPage = () => {
     onTypeFilterChange,
     privacyFilter,
     onPrivacyFilterChange,
+    onColumnsChange,
     fetchMore,
     hasMore,
     authenticated,
@@ -73,6 +74,7 @@ const SpaceExplorerPage = () => {
       onTypeFilterChange={onTypeFilterChange}
       privacyFilter={privacyFilter}
       onPrivacyFilterChange={onPrivacyFilterChange}
+      onColumnsChange={onColumnsChange}
       onLoadMore={fetchMore}
       onParentClick={parent => navigate(parent.href)}
     />

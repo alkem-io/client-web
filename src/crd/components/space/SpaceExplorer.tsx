@@ -1,5 +1,5 @@
 import { ChevronDown, FolderOpen, Search, SlidersHorizontal, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { SpaceCardData, SpaceCardParent } from '@/crd/components/space/SpaceCard';
 import { SpaceCard, SpaceCardSkeleton } from '@/crd/components/space/SpaceCard';
@@ -39,6 +39,8 @@ export type SpaceExplorerProps = {
   onPrivacyFilterChange: (filter: SpacePrivacyFilter) => void;
   onLoadMore: () => Promise<void>;
   onParentClick?: (parent: SpaceCardParent) => void;
+  /** Reports how many cards the grid fits per row, whenever that changes — lets the consumer size batches in whole rows. */
+  onColumnsChange?: (columns: number) => void;
   /** Override the card grid column classes. Default: auto-fill responsive grid. */
   gridClassName?: string;
   className?: string;
@@ -64,6 +66,7 @@ export function SpaceExplorer({
   onPrivacyFilterChange,
   onLoadMore,
   onParentClick,
+  onColumnsChange,
   gridClassName,
   className,
 }: SpaceExplorerProps) {
@@ -71,6 +74,24 @@ export function SpaceExplorer({
   const [loadingMore, setLoadingMore] = useState(false);
 
   const gridCols = gridClassName ?? 'grid-cols-[repeat(auto-fill,minmax(280px,1fr))]';
+
+  // The skeleton grid and the card grid share the column template; measure whichever is on screen.
+  const [gridElement, setGridElement] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    if (!gridElement || !onColumnsChange || typeof ResizeObserver === 'undefined') {
+      return;
+    }
+    let reported = 0;
+    const observer = new ResizeObserver(() => {
+      const columns = getComputedStyle(gridElement).gridTemplateColumns.split(' ').filter(Boolean).length;
+      if (columns > 0 && columns !== reported) {
+        reported = columns;
+        onColumnsChange(columns);
+      }
+    });
+    observer.observe(gridElement);
+    return () => observer.disconnect();
+  }, [gridElement, onColumnsChange]);
   const cardsListClassName = cn('grid gap-6 list-none p-0 m-0', gridCols);
 
   const handleLoadMore = async () => {
@@ -265,7 +286,7 @@ export function SpaceExplorer({
 
           {/* Cards grid */}
           {showSkeletons ? (
-            <output className={cn('grid gap-6', gridCols)} aria-label={t('spaces.loading')}>
+            <output ref={setGridElement} className={cn('grid gap-6', gridCols)} aria-label={t('spaces.loading')}>
               {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
                 // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders have no stable key
                 <SpaceCardSkeleton key={i} />
@@ -274,7 +295,7 @@ export function SpaceExplorer({
           ) : spaces.length > 0 ? (
             // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
             // biome-ignore lint/a11y/useSemanticElements: role="list" restores list semantics after the list-style reset
-            <ul role="list" className={cardsListClassName} aria-label={t('spaces.spacesLabel')}>
+            <ul ref={setGridElement} role="list" className={cardsListClassName} aria-label={t('spaces.spacesLabel')}>
               {spaces.map(space => (
                 <li key={space.id}>
                   <SpaceCard space={space} onParentClick={onParentClick} />

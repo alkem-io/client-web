@@ -20,8 +20,11 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import type { TypedSearchResult } from '@/main/search/searchTypes';
 import type { SpaceWithParent } from './SpaceExplorerPage';
 
-/** Cards per batch: a multiple of 1, 2, 3 and 4 grid columns, so only the last batch leaves a row part-empty. */
+/** Target cards per batch; the actual batch is the multiple of the grid's column count closest to it. */
 export const BATCH_SIZE = 24;
+
+/** Assumed until the grid reports how many cards fit per row. */
+const DEFAULT_COLUMNS = 4;
 
 /** Top-level spaces per page when their subspaces are shown too — each one brings its subspaces along. */
 export const ITEMS_LIMIT = 10;
@@ -37,6 +40,7 @@ export interface SpacesExplorerContainerEntities {
   onTypeFilterChange: (filter: SpaceTypeFilter) => void;
   privacyFilter: SpacePrivacyFilter;
   onPrivacyFilterChange: (filter: SpacePrivacyFilter) => void;
+  onColumnsChange: (columns: number) => void;
   fetchMore: () => Promise<void>;
   loading: boolean;
   hasMore: boolean | undefined;
@@ -58,10 +62,14 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
   const [chosenTypeFilter, setChosenTypeFilter] = useState<SpaceTypeFilter>();
   const [privacyFilter, setPrivacyFilter] = useState<SpacePrivacyFilter>('all');
   const [batches, setBatches] = useState(1);
+  const [columns, setColumns] = useState(DEFAULT_COLUMNS);
 
   const shouldSearch = searchTerms.length > 0;
   const typeFilter = chosenTypeFilter ?? (shouldSearch ? 'all' : 'spaces');
-  const visibleCount = batches * BATCH_SIZE;
+  // Whole rows only: e.g. 25 cards with 5 per row, 24 with 4 or 6. Kept as a number of batches, so a resize re-cuts
+  // the shown cards to whole rows of the new width.
+  const batchSize = Math.max(1, Math.round(BATCH_SIZE / columns)) * columns;
+  const visibleCount = batches * batchSize;
 
   // Every filter change starts again from one batch.
   const changeFilter =
@@ -143,7 +151,7 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
   const usesPagination = membershipFilter === 'all' && !shouldSearch;
   // "Spaces only" needs no subspaces, so one page of top-level spaces is exactly one batch.
   const withSubspaces = typeFilter !== 'spaces';
-  const pageSize = withSubspaces ? ITEMS_LIMIT : BATCH_SIZE;
+  const pageSize = withSubspaces ? ITEMS_LIMIT : batchSize;
 
   const {
     data: spacesData,
@@ -328,6 +336,7 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
     onTypeFilterChange: changeFilter(setChosenTypeFilter),
     privacyFilter,
     onPrivacyFilterChange: changeFilter(setPrivacyFilter),
+    onColumnsChange: setColumns,
     fetchMore,
     loading: filling,
     hasMore: matchingCount > visibleCount || serverHasMore,
