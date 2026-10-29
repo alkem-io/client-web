@@ -53,7 +53,16 @@ export function CalloutMediaGalleryCarousel({
     if (!api) return;
     if (initialIndex > 0) api.scrollTo(initialIndex, true);
     setCurrentIndex(api.selectedScrollSnap());
-    const handleSelect = () => setCurrentIndex(api.selectedScrollSnap());
+    // Off-screen slides stay mounted (they only fade out), so a video left playing would
+    // keep its audio running after a swipe, thumbnail click or arrow key. Pause it.
+    const handleSelect = () => {
+      const selected = api.selectedScrollSnap();
+      setCurrentIndex(selected);
+      api.slideNodes().forEach((slide, index) => {
+        if (index === selected) return;
+        for (const video of slide.querySelectorAll('video')) video.pause();
+      });
+    };
     api.on('select', handleSelect);
     api.on('reInit', handleSelect);
     return () => {
