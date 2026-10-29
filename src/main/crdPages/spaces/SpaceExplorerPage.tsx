@@ -46,6 +46,10 @@ const SpaceExplorerPage = () => {
     setSearchTerms,
     membershipFilter,
     onMembershipFilterChange,
+    typeFilter,
+    onTypeFilterChange,
+    privacyFilter,
+    onPrivacyFilterChange,
     fetchMore,
     hasMore,
     authenticated,
@@ -65,6 +69,10 @@ const SpaceExplorerPage = () => {
       loadingSearchResults={loadingSearchResults}
       onSearchTermsChange={terms => setSearchTerms(terms)}
       onMembershipFilterChange={onMembershipFilterChange}
+      typeFilter={typeFilter}
+      onTypeFilterChange={onTypeFilterChange}
+      privacyFilter={privacyFilter}
+      onPrivacyFilterChange={onPrivacyFilterChange}
       onLoadMore={fetchMore}
       onParentClick={parent => navigate(parent.href)}
     />
