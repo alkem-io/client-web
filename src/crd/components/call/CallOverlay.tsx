@@ -13,18 +13,23 @@ type CallOverlayConfirm = {
   onCancel: () => void;
 };
 
-type CallOverlayProps = {
+/** A link to the call UI's license and corresponding source, opened in a new tab; it needs both labels. */
+type CallOverlayLicenseLink =
+  | {
+      licenseHref: string;
+      licenseLabel: string;
+      /** Screen-reader hint that the license link opens a new tab. */
+      licenseNewTabLabel: string;
+    }
+  | { licenseHref?: undefined; licenseLabel?: string; licenseNewTabLabel?: string };
+
+type CallOverlayProps = CallOverlayLicenseLink & {
   open: boolean;
   /** Accessible name of the overlay. */
   label: string;
   closeLabel: string;
   /** The close button or Escape; the consumer decides whether to confirm first. */
   onRequestClose: () => void;
-  /** A link to the call UI's license and corresponding source, opened in a new tab; shown in the header when set. */
-  licenseHref?: string;
-  licenseLabel?: string;
-  /** Screen-reader hint that the license link opens a new tab. */
-  licenseNewTabLabel?: string;
   /** Shown above the overlay when closing needs a confirmation. */
   confirm?: CallOverlayConfirm;
   /** The call UI itself. */
