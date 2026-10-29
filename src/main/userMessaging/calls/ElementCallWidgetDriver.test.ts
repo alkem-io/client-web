@@ -450,7 +450,9 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
           headers: { Authorization: 'Bearer access-token' },
         }
       );
-      expect(file).toBeInstanceOf(Blob);
+      // fetch's Blob and jsdom's global Blob can come from different realms, so
+      // `instanceof Blob` depends on the runtime; check the brand instead.
+      expect(Object.prototype.toString.call(file)).toBe('[object Blob]');
       expect((file as Blob).size).toBe('avatar-bytes'.length);
     } finally {
       vi.unstubAllGlobals();
