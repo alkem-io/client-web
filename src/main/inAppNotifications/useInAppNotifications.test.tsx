@@ -92,6 +92,17 @@ describe('useInAppNotifications — unread notifications the panel cannot show',
     expect(state.updateState.mock.calls[0][0].context).toEqual({ skipGlobalErrorHandler: true });
   });
 
+  it('sends each hidden notification once across hook instances and re-renders', () => {
+    state.rows = [row('broken-a', false), row('broken-b', false)];
+    const first = renderHook(() => useInAppNotifications());
+    renderHook(() => useInAppNotifications());
+    // A cache write gives the query results a new identity while the requests are in flight.
+    state.rows = [...state.rows];
+    first.rerender();
+
+    expect(markedReadIds()).toEqual(['broken-a', 'broken-b']);
+  });
+
   it('leaves hidden unread notifications alone while a visible unread one remains', () => {
     state.rows = [row('visible', true), row('broken', false)];
     renderHook(() => useInAppNotifications());

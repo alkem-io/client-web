@@ -22,6 +22,9 @@ export const IN_APP_NOTIFICATIONS_PAGE_SIZE = 10;
 // reflect recent unread across categories without paginating.
 const ALL_TYPES_PROBE_SIZE = 50;
 
+// Shared by every mounted instance of the hook, so each hidden notification is sent once
+const hiddenIdsMarkedRead = new Set<string>();
+
 // Update the cache as refetching all could be expensive
 const updateNotificationsCache = (
   cache: ApolloCache<unknown>,
@@ -137,11 +140,17 @@ export const useInAppNotifications = () => {
       ...(data.me?.notifications?.inAppNotifications ?? []),
     ].filter(notification => notification.state === NotificationEventInAppState.Unread);
     if (unread.some(notification => mapInAppNotificationToModel(notification))) return;
-    for (const id of new Set(unread.map(notification => notification.id))) {
+    for (const { id } of unread) {
+      if (hiddenIdsMarkedRead.has(id)) continue;
+      hiddenIdsMarkedRead.add(id);
       updateState({
         variables: { ID: id, state: NotificationEventInAppState.Read },
         context: { skipGlobalErrorHandler: true },
-        update: cache => updateNotificationsCache(cache, [id], NotificationEventInAppState.Read),
+        update: (cache, result) => {
+          if (result?.data?.updateNotificationState === NotificationEventInAppState.Read) {
+            updateNotificationsCache(cache, [id], NotificationEventInAppState.Read);
+          }
+        },
       }).catch(() => {});
     }
   }, [allTypesData, data, updateState]);
