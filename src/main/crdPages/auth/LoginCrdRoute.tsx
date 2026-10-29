@@ -201,15 +201,16 @@ function CrdLoginPage({ flow }: { flow?: string }) {
     : undefined;
 
   // The app hand-off arrival is the app's sign-in screen: a welcome with room
-  // for the brand and both entry points. `required` comes before any attempt
-  // and needs no message; after a cancelled or failed attempt the reason sits
-  // above the buttons on the same screen.
+  // for the brand, sign-in and a way to browse public spaces. It offers no
+  // sign-up: inside the app the shell turns /sign_up into the OIDC sign-in, so
+  // that button would open the sign-in screen. `required` comes before any
+  // attempt and needs no message; after a cancelled or failed attempt the
+  // reason sits above the buttons on the same screen.
   if (!flow && !isLockedOutArrival && appSignIn) {
     return (
       <AuthShellWrapper plain={true}>
         <AppSignInWelcome
           signInHref={buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin)}
-          createAccountHref={signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH}
           // Absolute against the apex, like the OIDC hand-off, because this page
           // also renders on the identity subdomain where the explorer does not live.
           browseSpacesHref={`${platformOrigin ?? ''}${URL_SPACE_EXPLORER}`}

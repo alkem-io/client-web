@@ -4,6 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { LoginCrdRoute } from './LoginCrdRoute';
 
 let mockSearch = '';
+// The props the route last passed to the welcome screen.
+let mockWelcomeProps: Record<string, unknown> | undefined;
 const mockIsAuthenticated = vi.fn<() => boolean>();
 const replaceSpy = vi.fn<(url: string) => void>();
 
@@ -43,36 +45,31 @@ vi.mock('@/crd/components/auth/LoginCard', () => ({
   ),
 }));
 vi.mock('@/crd/components/auth/AppSignInWelcome', () => ({
-  AppSignInWelcome: ({
-    signInHref,
-    createAccountHref,
-    browseSpacesHref,
-    message,
-  }: {
+  AppSignInWelcome: (props: {
     signInHref: string;
-    createAccountHref: string;
     browseSpacesHref?: string;
     message?: { text: string; tone: string };
-  }) => (
-    <div data-testid="app-signin-welcome">
-      {message ? (
-        <span data-testid="welcome-message" data-tone={message.tone}>
-          {message.text}
-        </span>
-      ) : null}
-      <a data-testid="welcome-sign-in" href={signInHref}>
-        sign in
-      </a>
-      <a data-testid="welcome-create-account" href={createAccountHref}>
-        create account
-      </a>
-      {browseSpacesHref ? (
-        <a data-testid="welcome-browse-spaces" href={browseSpacesHref}>
-          browse
+  }) => {
+    mockWelcomeProps = props;
+    const { signInHref, browseSpacesHref, message } = props;
+    return (
+      <div data-testid="app-signin-welcome">
+        {message ? (
+          <span data-testid="welcome-message" data-tone={message.tone}>
+            {message.text}
+          </span>
+        ) : null}
+        <a data-testid="welcome-sign-in" href={signInHref}>
+          sign in
         </a>
-      ) : null}
-    </div>
-  ),
+        {browseSpacesHref ? (
+          <a data-testid="welcome-browse-spaces" href={browseSpacesHref}>
+            browse
+          </a>
+        ) : null}
+      </div>
+    );
+  },
 }));
 vi.mock('./AuthShellWrapper', () => ({
   AuthShellWrapper: ({ children }: { children: React.ReactNode }) => <>{children}</>,
@@ -125,6 +122,7 @@ const renderRoute = () =>
 describe('LoginCrdRoute', () => {
   beforeEach(() => {
     mockSearch = '';
+    mockWelcomeProps = undefined;
     mockFlowState = { flow: undefined, error: undefined, loading: false };
     mockIsAuthenticated.mockReset();
     replaceSpy.mockReset();
@@ -325,11 +323,10 @@ describe('LoginCrdRoute', () => {
       'href',
       'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F'
     );
-    expect(screen.getByTestId('welcome-create-account')).toHaveAttribute('href', '/sign_up');
   });
 
   // `required` is the app's first sign-in screen, before any attempt was made:
-  // it renders the welcome view (sign in + create account) instead of a card
+  // it renders the welcome view (sign in + browse) instead of a card
   // whose only content was a "Sign in to continue." notice.
   it('an app_signin=required arrival renders the welcome view instead of the notice card', () => {
     mockIsAuthenticated.mockReturnValue(false);
@@ -343,12 +340,14 @@ describe('LoginCrdRoute', () => {
       'href',
       'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F'
     );
-    expect(screen.getByTestId('welcome-create-account')).toHaveAttribute('href', '/sign_up');
     expect(screen.getByTestId('welcome-browse-spaces')).toHaveAttribute('href', 'https://sandbox-alkem.io/spaces');
     expect(screen.queryByTestId('welcome-message')).not.toBeInTheDocument();
+    // No sign-up entry: in the app the shell turns /sign_up into an OIDC
+    // sign-in, so a Create account button would open the sign-in screen.
+    expect(JSON.stringify(mockWelcomeProps)).not.toContain('sign_up');
   });
 
-  it('the welcome view forwards the pending returnUrl to sign-in and sign-up', () => {
+  it('the welcome view forwards the pending returnUrl to sign-in', () => {
     mockIsAuthenticated.mockReturnValue(false);
     mockSearch = 'app_signin=required&returnUrl=%2Fspace%2Fdemo';
 
@@ -358,7 +357,6 @@ describe('LoginCrdRoute', () => {
       'href',
       'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2Fspace%2Fdemo'
     );
-    expect(screen.getByTestId('welcome-create-account').getAttribute('href')).toContain('returnUrl=');
   });
 
   it('a lockout wins over app_signin=required', () => {

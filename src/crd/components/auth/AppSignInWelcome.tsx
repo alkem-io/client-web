@@ -7,8 +7,6 @@ import { Button } from '@/crd/primitives/button';
 export type AppSignInWelcomeProps = {
   /** Restarts sign-in at the OIDC entry. */
   signInHref: string;
-  /** The sign-up page, carrying the pending destination when there is one. */
-  createAccountHref: string;
   /** Public space explorer. The link is omitted when not provided. */
   browseSpacesHref?: string;
   /**
@@ -18,16 +16,15 @@ export type AppSignInWelcomeProps = {
   message?: { text: string; tone: 'info' | 'destructive' };
 };
 
-const CTA_CLASS = 'text-control h-12 w-full font-semibold uppercase tracking-wider';
-
 /**
  * Full-height welcome screen the native app shows when it sends a signed-out
  * visitor to sign in, or back after a cancelled or failed attempt: the brand,
- * one line about Alkemio, an optional reason, and the same sign-in /
- * create-account buttons the web auth card uses.
+ * one line about Alkemio, an optional reason, the same sign-in button the
+ * web auth card uses, and a way to browse public spaces. There is no sign-up
+ * entry: inside the app the shell turns sign-up into the OIDC sign-in.
  * Purely presentational — every href arrives via props.
  */
-export function AppSignInWelcome({ signInHref, createAccountHref, browseSpacesHref, message }: AppSignInWelcomeProps) {
+export function AppSignInWelcome({ signInHref, browseSpacesHref, message }: AppSignInWelcomeProps) {
   const { t } = useTranslation('crd-auth');
 
   return (
@@ -56,11 +53,8 @@ export function AppSignInWelcome({ signInHref, createAccountHref, browseSpacesHr
       ) : null}
 
       <div className="flex flex-col gap-3">
-        <Button asChild={true} className={CTA_CLASS}>
+        <Button asChild={true} className="text-control h-12 w-full font-semibold uppercase tracking-wider">
           <a href={signInHref}>{t('appWelcome.signIn')}</a>
-        </Button>
-        <Button asChild={true} variant="outline" className={CTA_CLASS}>
-          <a href={createAccountHref}>{t('appWelcome.createAccount')}</a>
         </Button>
         {browseSpacesHref ? (
           <Button asChild={true} variant="ghost" className="text-body h-10 w-full font-semibold text-primary">
