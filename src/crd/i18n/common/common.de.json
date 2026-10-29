@@ -1603,7 +1603,8 @@
     "download": "{{name}} herunterladen",
     "unavailableHint": "Diese Datei konnte nicht geladen werden. Laden Sie sie zum Ansehen herunter.",
     "unavailableNoDownload": "Diese Datei ist nicht verfügbar.",
-    "loading": "Anhang wird geladen"
+    "loading": "Anhang wird geladen",
+    "openMedia": "{{name}} im Medienbetrachter öffnen"
   },
   "unsavedChanges": {
     "count_one": "{{count}} ungespeicherte Änderung",

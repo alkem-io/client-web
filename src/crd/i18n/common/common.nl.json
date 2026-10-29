@@ -1603,7 +1603,8 @@
     "download": "{{name}} downloaden",
     "unavailableHint": "Dit bestand kon niet worden geladen. Download het om te bekijken.",
     "unavailableNoDownload": "Dit bestand is niet beschikbaar.",
-    "loading": "Bijlage laden"
+    "loading": "Bijlage laden",
+    "openMedia": "{{name}} openen in de mediaviewer"
   },
   "unsavedChanges": {
     "count_one": "{{count}} niet-opgeslagen wijziging",
