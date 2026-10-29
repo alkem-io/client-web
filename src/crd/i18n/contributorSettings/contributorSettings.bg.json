@@ -165,6 +165,7 @@
       },
       "socialLinks": {
         "title": "Социални връзки",
+        "phoneInvalidSaveBlocked": "Поправете телефонния номер в „Социални връзки“, за да запазите",
         "linkedinPlaceholder": "https://linkedin.com/in/вашeто-име",
         "bskyPlaceholder": "https://bsky.app/profile/вашeто-име",
         "githubPlaceholder": "https://github.com/вашeто-име",

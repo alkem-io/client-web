@@ -16,8 +16,8 @@ export function mapAccountPlan(space: SpaceData, platform: PlatformData): Accoun
 
   const plans = platform.licensingFramework.plans.filter(p => p.type === LicensingCredentialBasedPlanType.SpacePlan);
 
+  // A credential the licensing framework has no plan for is still an active license — show it by its raw name.
   const matchedPlan = plans.find(p => p.licenseCredential === subscription.name);
-  if (!matchedPlan) return null;
 
   let daysLeft: number | null = null;
   if (subscription.expires) {
@@ -26,7 +26,7 @@ export function mapAccountPlan(space: SpaceData, platform: PlatformData): Accoun
   }
 
   return {
-    name: matchedPlan.name,
+    name: matchedPlan?.name ?? subscription.name,
     features: [],
     daysLeft,
   };

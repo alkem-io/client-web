@@ -68,10 +68,10 @@ describe('mapAccountPlan', () => {
     expect(mapAccountPlan(space(), platform)).toBeNull();
   });
 
-  it('returns null when the subscription matches no space plan', () => {
-    expect(
-      mapAccountPlan(space({ activeSubscription: { name: 'ACCOUNT_LICENSE', expires: null } }), platform)
-    ).toBeNull();
+  it('names the raw credential when the subscription matches no space plan', () => {
+    expect(mapAccountPlan(space({ activeSubscription: { name: 'ACCOUNT_LICENSE', expires: null } }), platform)).toEqual(
+      { name: 'ACCOUNT_LICENSE', features: [], daysLeft: null }
+    );
   });
 
   it('names the matching space plan, without days left when it never expires', () => {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { type MouseEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDeleteSpaceMutation, useSpaceAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
@@ -23,7 +23,8 @@ export type UseAccountTabDataResult = {
   onDeleteSpace: () => void;
   onCopyUrl: () => Promise<boolean>;
   pendingDeleteSpace: boolean;
-  confirmDeleteSpace: () => void;
+  deletingSpace: boolean;
+  confirmDeleteSpace: (event: MouseEvent<HTMLButtonElement>) => void;
   cancelDeleteSpace: () => void;
 };
 
@@ -52,22 +53,28 @@ export function useAccountTabData(spaceId: string): UseAccountTabDataResult {
   const notify = useNotification();
   // Spec 045 FR-024a: the deleted space's pages no longer exist, and a hard navigation also drops its
   // cached data. No success toast — notifications are in memory and would not survive the reload.
-  const [deleteSpace] = useDeleteSpaceMutation({
-    onCompleted: () => window.location.replace(ROUTE_HOME),
-    onError: () => notify(t('account.dangerZone.deleteError'), 'error'),
-  });
   const [pendingDeleteSpace, setPendingDeleteSpace] = useState(false);
+  // The dialog stays open with a busy Confirm until the reload, so the delete cannot be sent twice.
+  const [deleteSpace, { loading: deletingSpace }] = useDeleteSpaceMutation({
+    onCompleted: () => window.location.replace(ROUTE_HOME),
+    onError: () => {
+      setPendingDeleteSpace(false);
+      notify(t('account.dangerZone.deleteError'), 'error');
+    },
+  });
 
   const onDeleteSpace = () => {
     setPendingDeleteSpace(true);
   };
 
-  const confirmDeleteSpace = () => {
+  const confirmDeleteSpace = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (deletingSpace) return;
     void deleteSpace({ variables: { spaceId } });
-    setPendingDeleteSpace(false);
   };
 
   const cancelDeleteSpace = () => {
+    if (deletingSpace) return;
     setPendingDeleteSpace(false);
   };
 
@@ -93,6 +100,7 @@ export function useAccountTabData(spaceId: string): UseAccountTabDataResult {
     onDeleteSpace,
     onCopyUrl,
     pendingDeleteSpace,
+    deletingSpace,
     confirmDeleteSpace,
     cancelDeleteSpace,
   };

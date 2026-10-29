@@ -1013,6 +1013,7 @@ export default function CrdSpaceSettingsPage() {
         description={t('account.dangerZone.deleteDialog.description')}
         confirmLabel={t('account.dangerZone.deleteDialog.confirm')}
         cancelLabel={t('dirtyGuard.cancel')}
+        loading={accountTab.deletingSpace}
         onConfirm={accountTab.confirmDeleteSpace}
         onCancel={accountTab.cancelDeleteSpace}
       />

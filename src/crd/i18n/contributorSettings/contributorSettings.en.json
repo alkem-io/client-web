@@ -165,6 +165,7 @@
       },
       "socialLinks": {
         "title": "Social Links",
+        "phoneInvalidSaveBlocked": "Fix the phone number under Social Links to save",
         "linkedinPlaceholder": "https://linkedin.com/in/your-handle",
         "bskyPlaceholder": "https://bsky.app/profile/your-handle",
         "githubPlaceholder": "https://github.com/your-handle",
