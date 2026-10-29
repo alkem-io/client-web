@@ -35,8 +35,8 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ platformRoles: harness.platformRoles }),
 }));
-vi.mock('@/main/crdPages/unifiedChat/UnifiedChatProvider', () => ({
-  useUnifiedChatContext: () => ({ guidanceVcId: harness.guidanceVcId }),
+vi.mock('@/main/guidance/chatWidget/useGuidanceVcId', () => ({
+  useGuidanceVcId: ({ skip }: { skip: boolean }) => ({ guidanceVcId: skip ? null : harness.guidanceVcId }),
 }));
 vi.mock('../UserMessagingContext', () => ({ useUserMessagingContext: () => ({ isEnabled: true }) }));
 vi.mock('./callConfig', () => ({ isCallsConfigured: () => true }));

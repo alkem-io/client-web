@@ -26,18 +26,19 @@ type ActiveCallIndicatorProps = {
 export function ActiveCallIndicator({ activeLabel, count, join, joinedNote }: ActiveCallIndicatorProps) {
   const [noteOpen, setNoteOpen] = useState(false);
   const pillClassName =
-    'flex h-7 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-primary/10 px-2.5 text-caption font-medium text-primary';
+    'flex h-7 min-w-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-primary/10 px-2.5 text-caption font-medium text-primary';
   const pillContent = (
     <>
-      <span aria-hidden="true" className="size-2 rounded-full bg-primary" />
-      <span>{activeLabel}</span>
+      <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-primary" />
+      {/* The label is what gives way in a narrow header: it truncates, never wraps, and the header's buttons stay in view. */}
+      <span className="min-w-0 truncate">{activeLabel}</span>
       <span aria-hidden="true">·</span>
       <span data-testid="call-participant-count">{count}</span>
     </>
   );
 
   return (
-    <div className="flex shrink-0 items-center gap-1" data-testid="call-active-indicator">
+    <div className="flex min-w-0 items-center gap-1" data-testid="call-active-indicator">
       {joinedNote ? (
         <Tooltip open={noteOpen} onOpenChange={setNoteOpen}>
           <TooltipTrigger asChild={true}>
@@ -61,7 +62,7 @@ export function ActiveCallIndicator({ activeLabel, count, join, joinedNote }: Ac
       )}
       {join && (
         // biome-ignore lint/a11y/useSemanticElements: a group of two buttons, not a form fieldset
-        <div role="group" aria-label={join.joinLabel} className="flex items-center" data-testid="call-join">
+        <div role="group" aria-label={join.joinLabel} className="flex shrink-0 items-center" data-testid="call-join">
           <Tooltip>
             <TooltipTrigger asChild={true}>
               <button

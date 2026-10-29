@@ -3,7 +3,7 @@ import { useUserConversationsQuery } from '@/core/apollo/generated/apollo-hooks'
 import { RoomType } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { isGuidanceConversation } from '@/main/crdPages/unifiedChat/dataMapper';
-import { useUnifiedChatContext } from '@/main/crdPages/unifiedChat/UnifiedChatProvider';
+import { useGuidanceVcId } from '@/main/guidance/chatWidget/useGuidanceVcId';
 import { useUserMessagingContext } from '../UserMessagingContext';
 import { isCallsConfigured } from './callConfig';
 import { setIncomingCallRooms } from './incomingCallStore';
@@ -21,7 +21,6 @@ const DELAY_MS = 2000;
 export const useIncomingCallsWatcher = () => {
   const { isEnabled } = useUserMessagingContext();
   const { platformRoles } = useCurrentUserContext();
-  const { guidanceVcId } = useUnifiedChatContext();
   const enabled = isEnabled && isBetaTester(platformRoles) && isCallsConfigured();
   const [ready, setReady] = useState(false);
 
@@ -31,8 +30,10 @@ export const useIncomingCallsWatcher = () => {
     return () => clearTimeout(timer);
   }, [enabled]);
 
-  // The chat panel's own list query: the room type and member types tell which conversations take calls.
+  // The chat panel's own queries, loaded here even while it is closed: the room type, member types
+  // and the guidance assistant's id tell which conversations take calls.
   const { data } = useUserConversationsQuery({ skip: !enabled || !ready, fetchPolicy: 'cache-first' });
+  const { guidanceVcId } = useGuidanceVcId({ skip: !enabled || !ready });
   const conversations: CallableConversation[] = (data?.me?.conversations?.conversations ?? []).flatMap(conv =>
     conv.room
       ? [
