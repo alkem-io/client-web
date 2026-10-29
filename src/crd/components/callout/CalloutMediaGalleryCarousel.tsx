@@ -19,6 +19,8 @@ export type CalloutMediaGalleryCarouselItem = {
   alternativeText?: string;
   /** Defaults to an image. A video slide plays inline with native controls. */
   kind?: 'image' | 'video';
+  /** When set, the download control is a plain download link to this file instead of calling `onDownload`. */
+  download?: { href: string; fileName: string };
 };
 
 type CalloutMediaGalleryCarouselProps<Item extends CalloutMediaGalleryCarouselItem> = {
@@ -26,7 +28,8 @@ type CalloutMediaGalleryCarouselProps<Item extends CalloutMediaGalleryCarouselIt
   initialIndex?: number;
   canEdit?: boolean;
   onAddImages?: () => void;
-  onDownload: (item: Item) => void;
+  /** Called for items without a `download` link. */
+  onDownload?: (item: Item) => void;
   className?: string;
 };
 
@@ -267,17 +270,34 @@ export function CalloutMediaGalleryCarousel<Item extends CalloutMediaGalleryCaro
         {/* Top-right action bar — download + fullscreen only. The "Add images"
           control lives below the gallery so it doesn't sit on top of the image. */}
         <div className="absolute top-2 right-2 z-10 flex items-center gap-1">
-          <Button
-            variant="secondary"
-            size="icon"
-            className="h-8 w-8 shadow-sm opacity-90 hover:opacity-100"
-            aria-label={t(currentItem?.kind === 'video' ? 'mediaGallery.downloadVideo' : 'mediaGallery.download')}
-            onClick={() => {
-              if (currentItem) onDownload(currentItem);
-            }}
-          >
-            <Download className="size-4" aria-hidden="true" />
-          </Button>
+          {currentItem?.download ? (
+            <Button
+              asChild={true}
+              variant="secondary"
+              size="icon"
+              className="h-8 w-8 shadow-sm opacity-90 hover:opacity-100"
+            >
+              <a
+                href={currentItem.download.href}
+                download={currentItem.download.fileName}
+                aria-label={t(currentItem.kind === 'video' ? 'mediaGallery.downloadVideo' : 'mediaGallery.download')}
+              >
+                <Download className="size-4" aria-hidden="true" />
+              </a>
+            </Button>
+          ) : (
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-8 w-8 shadow-sm opacity-90 hover:opacity-100"
+              aria-label={t(currentItem?.kind === 'video' ? 'mediaGallery.downloadVideo' : 'mediaGallery.download')}
+              onClick={() => {
+                if (currentItem) onDownload?.(currentItem);
+              }}
+            >
+              <Download className="size-4" aria-hidden="true" />
+            </Button>
+          )}
           {fullscreenSupported && (
             <Button
               variant="secondary"

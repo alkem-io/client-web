@@ -18,8 +18,6 @@ type MessageAttachmentsProps = {
   className?: string;
 };
 
-type MessageGalleryItem = CalloutMediaGalleryCarouselItem & { displayName: string };
-
 const isImage = (mimeType: string | undefined) => mimeType?.startsWith('image/');
 const isVideo = (mimeType: string | undefined) => mimeType?.startsWith('video/');
 
@@ -27,17 +25,6 @@ const isVideo = (mimeType: string | undefined) => mimeType?.startsWith('video/')
  *  http(s) URL — belt-and-suspenders against a `javascript:`/`data:` URL slipping
  *  through. */
 const isHttpUrl = (url: string | undefined): url is string => typeof url === 'string' && /^https?:\/\//i.test(url);
-
-// Attachment URLs are same-origin, so the browser honours `download` and streams
-// the file — the same mechanism as the inline download control.
-const downloadMedia = (item: MessageGalleryItem) => {
-  const anchor = document.createElement('a');
-  anchor.href = item.uri;
-  anchor.download = item.displayName;
-  document.body.appendChild(anchor);
-  anchor.click();
-  anchor.remove();
-};
 
 // Identifies one load attempt of an attachment: a new URL or retryKey is a fresh
 // attempt, so an earlier failure no longer applies.
@@ -66,7 +53,7 @@ export function MessageAttachments({ attachments, align = 'start', className }: 
 
   // The viewer swipes through this message's images and videos only, and only
   // those with a URL we are willing to render and that did not fail to load inline.
-  const galleryItems: MessageGalleryItem[] = [];
+  const galleryItems: CalloutMediaGalleryCarouselItem[] = [];
   const galleryIdByAttachment = new Map<number, string>();
   attachments.forEach((attachment, index) => {
     const kind = isImage(attachment.mimeType) ? 'image' : isVideo(attachment.mimeType) ? 'video' : undefined;
@@ -76,7 +63,8 @@ export function MessageAttachments({ attachments, align = 'start', className }: 
       id: `${attachment.id ?? `media-${index}`}:${index}`,
       uri: attachment.url,
       kind,
-      displayName: attachment.displayName,
+      // Same-origin attachment URL, so `download` is honoured — the same link as the inline download control.
+      download: { href: attachment.url, fileName: attachment.displayName },
       alternativeText: t(kind === 'image' ? 'messageAttachments.imageAlt' : 'messageAttachments.videoLabel', {
         name: attachment.displayName,
       }),
@@ -137,13 +125,7 @@ export function MessageAttachments({ attachments, align = 'start', className }: 
           <Suspense
             fallback={<Loader2 aria-hidden="true" className="mx-auto size-6 animate-spin text-muted-foreground" />}
           >
-            {galleryIndex !== -1 && (
-              <CalloutMediaGalleryCarousel
-                items={galleryItems}
-                initialIndex={galleryIndex}
-                onDownload={downloadMedia}
-              />
-            )}
+            {galleryIndex !== -1 && <CalloutMediaGalleryCarousel items={galleryItems} initialIndex={galleryIndex} />}
           </Suspense>
         </DialogContent>
       </Dialog>

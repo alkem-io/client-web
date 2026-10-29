@@ -117,22 +117,15 @@ describe('MessageAttachments', () => {
     expect(player).toHaveAttribute('playsinline');
   });
 
-  test('the viewer download saves the current media under its file name via a same-origin download link', async () => {
+  test('the viewer download is a download link to the current media under its file name', async () => {
     const user = userEvent.setup();
-    const clicked: { href: string; download: string; connected: boolean }[] = [];
-    const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (this: HTMLAnchorElement) {
-      clicked.push({ href: this.href, download: this.download, connected: this.isConnected });
-    });
-    const fetchSpy = vi.spyOn(globalThis, 'fetch');
     render(<MessageAttachments attachments={[image, video]} />);
 
     await user.click(screen.getByRole('button', { name: `messageAttachments.openMedia:${video.displayName}` }));
-    await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'mediaGallery.downloadVideo' }));
+    const link = within(screen.getByRole('dialog')).getByRole('link', { name: 'mediaGallery.downloadVideo' });
 
-    expect(clicked).toEqual([{ href: video.url, download: video.displayName, connected: true }]);
-    expect(fetchSpy).not.toHaveBeenCalled();
-    click.mockRestore();
-    fetchSpy.mockRestore();
+    expect(link).toHaveAttribute('href', video.url);
+    expect(link).toHaveAttribute('download', video.displayName);
   });
 
   test('opening a video in the viewer pauses the inline player first', async () => {
