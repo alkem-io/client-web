@@ -3,7 +3,6 @@ import { type ComponentProps, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CommentInput } from './CommentInput';
 import { CommentItem } from './CommentItem';
-import type { MessageMediaDownload } from './MessageAttachments';
 import type { CommentData, CommentsContainerData, CrdMentionSearch } from './types';
 
 type CommentThreadProps = CommentsContainerData & {
@@ -15,8 +14,6 @@ type CommentThreadProps = CommentsContainerData & {
   replyInputProps?: Partial<ComponentProps<typeof CommentInput>>;
   /** Ignores reply open/close toggles, e.g. while a reply is being sent. */
   replyTogglesLocked?: boolean;
-  /** Downloads an image/video from the in-page media viewer. */
-  onDownloadMedia?: (media: MessageMediaDownload) => void;
 };
 
 /**
@@ -42,7 +39,6 @@ export function CommentThread({
   onReplyTargetChange,
   replyInputProps,
   replyTogglesLocked = false,
-  onDownloadMedia,
 }: CommentThreadProps) {
   const { t } = useTranslation('crd-space');
 
@@ -112,7 +108,6 @@ export function CommentThread({
                   onDelete={onDelete}
                   onAddReaction={onAddReaction}
                   onRemoveReaction={onRemoveReaction}
-                  onDownloadMedia={onDownloadMedia}
                 />
 
                 {replies.length > 0 && (
@@ -136,7 +131,6 @@ export function CommentThread({
                             onDelete={onDelete}
                             onAddReaction={onAddReaction}
                             onRemoveReaction={onRemoveReaction}
-                            onDownloadMedia={onDownloadMedia}
                           />
                         </li>
                       );

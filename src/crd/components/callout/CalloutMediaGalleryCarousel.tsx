@@ -10,6 +10,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  isMediaControlTarget,
 } from '@/crd/primitives/carousel';
 
 export type CalloutMediaGalleryCarouselItem = {
@@ -20,13 +21,12 @@ export type CalloutMediaGalleryCarouselItem = {
   kind?: 'image' | 'video';
 };
 
-type CalloutMediaGalleryCarouselProps = {
-  items: CalloutMediaGalleryCarouselItem[];
+type CalloutMediaGalleryCarouselProps<Item extends CalloutMediaGalleryCarouselItem> = {
+  items: Item[];
   initialIndex?: number;
   canEdit?: boolean;
   onAddImages?: () => void;
-  /** Omit to hide the download control. */
-  onDownload?: (item: CalloutMediaGalleryCarouselItem) => void;
+  onDownload: (item: Item) => void;
   className?: string;
 };
 
@@ -34,14 +34,18 @@ type CalloutMediaGalleryCarouselProps = {
 // Higher = faster fade. Multiplied by scrollSnap count so it scales with gallery size.
 const TWEEN_FACTOR_BASE = 0.52;
 
-export function CalloutMediaGalleryCarousel({
+// A pointer drag on a video belongs to its native controls (scrubbing, volume), not to the carousel.
+export const shouldDragCarousel = (_api: unknown, event: MouseEvent | TouchEvent) =>
+  !(event.target instanceof Element && event.target.closest('video'));
+
+export function CalloutMediaGalleryCarousel<Item extends CalloutMediaGalleryCarouselItem>({
   items,
   initialIndex = 0,
   canEdit = false,
   onAddImages,
   onDownload,
   className,
-}: CalloutMediaGalleryCarouselProps) {
+}: CalloutMediaGalleryCarouselProps<Item>) {
   const { t } = useTranslation('crd-space');
   const [api, setApi] = useState<CarouselApi>();
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
@@ -144,7 +148,7 @@ export function CalloutMediaGalleryCarousel({
       if (event.defaultPrevented) return;
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
       const target = event.target as HTMLElement | null;
-      if (!target || root.contains(target)) return;
+      if (!target || root.contains(target) || isMediaControlTarget(target)) return;
       if (
         target.tagName === 'INPUT' ||
         target.tagName === 'TEXTAREA' ||
@@ -202,7 +206,8 @@ export function CalloutMediaGalleryCarousel({
     const target = event.target as HTMLElement | null;
     if (
       target &&
-      (target.tagName === 'INPUT' ||
+      (isMediaControlTarget(target) ||
+        target.tagName === 'INPUT' ||
         target.tagName === 'TEXTAREA' ||
         target.tagName === 'SELECT' ||
         target.isContentEditable)
@@ -262,19 +267,17 @@ export function CalloutMediaGalleryCarousel({
         {/* Top-right action bar — download + fullscreen only. The "Add images"
           control lives below the gallery so it doesn't sit on top of the image. */}
         <div className="absolute top-2 right-2 z-10 flex items-center gap-1">
-          {onDownload && (
-            <Button
-              variant="secondary"
-              size="icon"
-              className="h-8 w-8 shadow-sm opacity-90 hover:opacity-100"
-              aria-label={t('mediaGallery.download')}
-              onClick={() => {
-                if (currentItem) onDownload(currentItem);
-              }}
-            >
-              <Download className="size-4" aria-hidden="true" />
-            </Button>
-          )}
+          <Button
+            variant="secondary"
+            size="icon"
+            className="h-8 w-8 shadow-sm opacity-90 hover:opacity-100"
+            aria-label={t(currentItem?.kind === 'video' ? 'mediaGallery.downloadVideo' : 'mediaGallery.download')}
+            onClick={() => {
+              if (currentItem) onDownload(currentItem);
+            }}
+          >
+            <Download className="size-4" aria-hidden="true" />
+          </Button>
           {fullscreenSupported && (
             <Button
               variant="secondary"
@@ -300,6 +303,7 @@ export function CalloutMediaGalleryCarousel({
             startIndex: initialIndex,
             align: 'center',
             containScroll: 'trimSnaps',
+            watchDrag: shouldDragCarousel,
           }}
         >
           <CarouselContent className={cn('-ml-4', isFullscreen && 'h-full')}>
@@ -357,7 +361,9 @@ export function CalloutMediaGalleryCarousel({
                 type="button"
                 role="tab"
                 aria-selected={index === currentIndex}
-                aria-label={t('mediaGallery.goToImage', { index: index + 1 })}
+                aria-label={t(item.kind === 'video' ? 'mediaGallery.goToVideo' : 'mediaGallery.goToImage', {
+                  index: index + 1,
+                })}
                 onClick={() => api?.scrollTo(index)}
                 className={cn(
                   'shrink-0 size-14 rounded-md overflow-hidden border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',

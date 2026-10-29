@@ -939,8 +939,10 @@
     "previous": "Vorige afbeelding",
     "next": "Volgende afbeelding",
     "goToImage": "Ga naar afbeelding {{index}}",
+    "goToVideo": "Ga naar video {{index}}",
     "thumbnailsLabel": "Miniaturen",
     "download": "Afbeelding downloaden",
+    "downloadVideo": "Video downloaden",
     "fullscreen": "Volledig scherm",
     "exitFullscreen": "Volledig scherm verlaten",
     "emptyState": {

@@ -117,24 +117,67 @@ describe('MessageAttachments', () => {
     expect(player).toHaveAttribute('playsinline');
   });
 
-  test('the viewer download hands the current media and its file name to the consumer', async () => {
+  test('the viewer download saves the current media under its file name via a same-origin download link', async () => {
     const user = userEvent.setup();
-    const onDownloadMedia = vi.fn();
-    render(<MessageAttachments attachments={[image, video]} onDownloadMedia={onDownloadMedia} />);
+    const clicked: { href: string; download: string; connected: boolean }[] = [];
+    const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (this: HTMLAnchorElement) {
+      clicked.push({ href: this.href, download: this.download, connected: this.isConnected });
+    });
+    const fetchSpy = vi.spyOn(globalThis, 'fetch');
+    render(<MessageAttachments attachments={[image, video]} />);
 
     await user.click(screen.getByRole('button', { name: `messageAttachments.openMedia:${video.displayName}` }));
-    await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'mediaGallery.download' }));
+    await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'mediaGallery.downloadVideo' }));
 
-    expect(onDownloadMedia).toHaveBeenCalledWith({ url: video.url, displayName: video.displayName });
+    expect(clicked).toEqual([{ href: video.url, download: video.displayName, connected: true }]);
+    expect(fetchSpy).not.toHaveBeenCalled();
+    click.mockRestore();
+    fetchSpy.mockRestore();
   });
 
-  test('the viewer has no download control when the consumer cannot download', async () => {
+  test('opening a video in the viewer pauses the inline player first', async () => {
     const user = userEvent.setup();
-    render(<MessageAttachments attachments={[image]} />);
+    const paused: (string | null)[] = [];
+    const pause = vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(function (this: HTMLMediaElement) {
+      paused.push(this.closest('[role="dialog"]') ? 'viewer' : 'inline');
+    });
+    render(<MessageAttachments attachments={[video]} />);
+
+    await user.click(screen.getByRole('button', { name: `messageAttachments.openMedia:${video.displayName}` }));
+
+    expect(paused).toContain('inline');
+    pause.mockRestore();
+  });
+
+  test('an image that failed to load inline is not offered in the viewer', async () => {
+    const user = userEvent.setup();
+    const broken = { ...image, id: 'att-img-broken', displayName: 'broken.jpg', url: `${image.url}-broken` };
+    render(<MessageAttachments attachments={[broken, image]} />);
+
+    fireEvent.error(screen.getByRole('img', { name: `messageAttachments.imageAlt:${broken.displayName}` }));
     await user.click(screen.getByRole('button', { name: `messageAttachments.openMedia:${image.displayName}` }));
+
+    const dialog = screen.getByRole('dialog');
+    // A single slide has no thumbnail strip.
+    expect(within(dialog).queryAllByRole('tab')).toHaveLength(0);
     expect(
-      within(screen.getByRole('dialog')).queryByRole('button', { name: 'mediaGallery.download' })
+      within(dialog).getByRole('img', { name: `messageAttachments.imageAlt:${image.displayName}` })
+    ).toBeInTheDocument();
+    expect(
+      within(dialog).queryByRole('img', { name: `messageAttachments.imageAlt:${broken.displayName}` })
     ).not.toBeInTheDocument();
+  });
+
+  test('a retried image is offered in the viewer again', async () => {
+    const user = userEvent.setup();
+    const broken = { ...image, id: 'att-img-broken', displayName: 'broken.jpg', url: `${image.url}-broken` };
+    const { rerender } = render(<MessageAttachments attachments={[broken, image]} />);
+    fireEvent.error(screen.getByRole('img', { name: `messageAttachments.imageAlt:${broken.displayName}` }));
+
+    rerender(<MessageAttachments attachments={[{ ...broken, retryKey: 1 }, image]} />);
+    await user.click(screen.getByRole('button', { name: `messageAttachments.openMedia:${image.displayName}` }));
+
+    expect(within(screen.getByRole('dialog')).getAllByRole('tab')).toHaveLength(2);
   });
 
   test('renders a non-image attachment as a downloadable file chip with size', () => {

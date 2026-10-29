@@ -2,7 +2,6 @@ import { Loader2 } from 'lucide-react';
 import { type PointerEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CommentInput } from '@/crd/components/comment/CommentInput';
-import type { MessageMediaDownload } from '@/crd/components/comment/MessageAttachments';
 import type { CommentAuthor, ComposerAttachment } from '@/crd/components/comment/types';
 import { cn } from '@/crd/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
@@ -39,8 +38,6 @@ type ChatThreadViewProps = {
   onRemoveAttachment?: (id: string) => void;
   attachmentError?: string;
   acceptMimeTypes?: string;
-  /** Downloads an image/video from the in-page media viewer. */
-  onDownloadMedia?: (media: MessageMediaDownload) => void;
 };
 
 /**
@@ -74,7 +71,6 @@ export function ChatThreadView({
   onRemoveAttachment,
   attachmentError,
   acceptMimeTypes,
-  onDownloadMedia,
 }: ChatThreadViewProps) {
   const { t } = useTranslation('crd-chat');
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -129,7 +125,6 @@ export function ChatThreadView({
                 canReact={canReact}
                 onAddReaction={onAddReaction ? emoji => onAddReaction(message.id, emoji) : undefined}
                 onRemoveReaction={onRemoveReaction ? emoji => onRemoveReaction(message.id, emoji) : undefined}
-                onDownloadMedia={onDownloadMedia}
               />
             );
             return (

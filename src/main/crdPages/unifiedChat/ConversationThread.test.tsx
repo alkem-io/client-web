@@ -14,7 +14,6 @@ vi.mock('@/crd/components/chat/ChatThreadView', () => ({
   },
 }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
-vi.mock('@/main/crdPages/utils/useDownloadMessageMedia', () => ({ useDownloadMessageMedia: () => vi.fn() }));
 vi.mock('./attachments/useConversationStorageConfig', () => ({
   useConversationStorageConfig: () => ({
     storageConfig: {

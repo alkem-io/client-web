@@ -1604,8 +1604,7 @@
     "unavailableHint": "This file could not be loaded. Download it to view.",
     "unavailableNoDownload": "This file is unavailable.",
     "loading": "Loading attachment",
-    "openMedia": "Open {{name}} in the media viewer",
-    "downloadError": "Could not download the file."
+    "openMedia": "Open {{name}} in the media viewer"
   },
   "unsavedChanges": {
     "count_one": "{{count}} unsaved change",

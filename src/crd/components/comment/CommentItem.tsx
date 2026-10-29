@@ -7,7 +7,7 @@ import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { CommentReactions } from './CommentReactions';
-import { MessageAttachments, type MessageMediaDownload } from './MessageAttachments';
+import { MessageAttachments } from './MessageAttachments';
 import { hasRenderableText } from './messageText';
 import type { CommentData } from './types';
 
@@ -36,7 +36,6 @@ type CommentItemProps = {
    *  thread uses the same id on the input container so the relationship is
    *  exposed to assistive tech even though the input renders elsewhere. */
   replyInputId?: string;
-  onDownloadMedia?: (media: MessageMediaDownload) => void;
 };
 
 export function CommentItem({
@@ -49,7 +48,6 @@ export function CommentItem({
   isReplyOpen = false,
   onToggleReply,
   replyInputId,
-  onDownloadMedia,
 }: CommentItemProps) {
   const { t } = useTranslation('crd-space');
 
@@ -116,7 +114,7 @@ export function CommentItem({
           </div>
 
           {!comment.isDeleted && comment.attachments && comment.attachments.length > 0 && (
-            <MessageAttachments attachments={comment.attachments} onDownloadMedia={onDownloadMedia} />
+            <MessageAttachments attachments={comment.attachments} />
           )}
 
           {!comment.isDeleted && (
