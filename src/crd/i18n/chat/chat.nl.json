@@ -116,6 +116,8 @@
     "joinedOnThisDevice": "Al deelgenomen op dit apparaat",
     "overlayLabel": "Gesprek",
     "close": "Gesprek sluiten",
+    "license": "Opensourcelicentie",
+    "opensInNewTab": "opent in een nieuw tabblad",
     "leaveConfirm": {
       "title": "Gesprek verlaten?",
       "description": "Je verlaat het gesprek. De anderen kunnen zonder jou verder.",
