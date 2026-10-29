@@ -38,9 +38,15 @@ describe('ActiveCallIndicator', () => {
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
-  test('says why there is nothing to join when a note is given', () => {
+  test('says why there is nothing to join in a tooltip on the pill, not beside it', async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
     render(<ActiveCallIndicator activeLabel="Call active" count={1} joinedNote="Already joined on this device" />);
-    expect(screen.getByText('Already joined on this device')).toBeInTheDocument();
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+    // Only the screen-reader copy inside the pill is rendered until hover.
+    expect(screen.getByText('Already joined on this device')).toHaveClass('sr-only');
+
+    await user.hover(screen.getByText('Call active'));
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('Already joined on this device');
   });
 });
