@@ -1,5 +1,5 @@
 import { ChevronDown, FolderOpen, Search, SlidersHorizontal, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { SpaceCardData, SpaceCardParent } from '@/crd/components/space/SpaceCard';
 import { SpaceCard, SpaceCardSkeleton } from '@/crd/components/space/SpaceCard';
@@ -17,12 +17,13 @@ import {
   DropdownMenuTrigger,
 } from '@/crd/primitives/dropdown-menu';
 
-export type SpacesFilterValue = 'all' | 'member' | 'public';
+export type SpacesFilterValue = 'all' | 'member';
 
-type TypeFilter = 'all' | 'spaces' | 'subspaces';
-type PrivacyFilter = 'all' | 'public' | 'private';
+export type SpaceTypeFilter = 'all' | 'spaces' | 'subspaces';
+export type SpacePrivacyFilter = 'all' | 'public' | 'private';
 
 export type SpaceExplorerProps = {
+  /** The spaces to show, already filtered by every filter below. */
   spaces: SpaceCardData[];
   loading: boolean;
   hasMore?: boolean;
@@ -32,8 +33,14 @@ export type SpaceExplorerProps = {
   loadingSearchResults?: boolean;
   onSearchTermsChange: (terms: string[]) => void;
   onMembershipFilterChange?: (filter: SpacesFilterValue) => void;
+  typeFilter: SpaceTypeFilter;
+  onTypeFilterChange: (filter: SpaceTypeFilter) => void;
+  privacyFilter: SpacePrivacyFilter;
+  onPrivacyFilterChange: (filter: SpacePrivacyFilter) => void;
   onLoadMore: () => Promise<void>;
   onParentClick?: (parent: SpaceCardParent) => void;
+  /** Reports how many cards the grid fits per row, whenever that changes — lets the consumer size batches in whole rows. */
+  onColumnsChange?: (columns: number) => void;
   /** Override the card grid column classes. Default: auto-fill responsive grid. */
   gridClassName?: string;
   className?: string;
@@ -53,8 +60,13 @@ export function SpaceExplorer({
   loadingSearchResults,
   onSearchTermsChange,
   onMembershipFilterChange,
+  typeFilter,
+  onTypeFilterChange,
+  privacyFilter,
+  onPrivacyFilterChange,
   onLoadMore,
   onParentClick,
+  onColumnsChange,
   gridClassName,
   className,
 }: SpaceExplorerProps) {
@@ -62,11 +74,25 @@ export function SpaceExplorer({
   const [loadingMore, setLoadingMore] = useState(false);
 
   const gridCols = gridClassName ?? 'grid-cols-[repeat(auto-fill,minmax(280px,1fr))]';
-  const cardsListClassName = cn('grid gap-6 list-none p-0 m-0', gridCols);
 
-  // Client-side filters
-  const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
-  const [privacyFilter, setPrivacyFilter] = useState<PrivacyFilter>('all');
+  // The skeleton grid and the card grid share the column template; measure whichever is on screen.
+  const [gridElement, setGridElement] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    if (!gridElement || !onColumnsChange || typeof ResizeObserver === 'undefined') {
+      return;
+    }
+    let reported = 0;
+    const observer = new ResizeObserver(() => {
+      const columns = getComputedStyle(gridElement).gridTemplateColumns.split(' ').filter(Boolean).length;
+      if (columns > 0 && columns !== reported) {
+        reported = columns;
+        onColumnsChange(columns);
+      }
+    });
+    observer.observe(gridElement);
+    return () => observer.disconnect();
+  }, [gridElement, onColumnsChange]);
+  const cardsListClassName = cn('grid gap-6 list-none p-0 m-0', gridCols);
 
   const handleLoadMore = async () => {
     setLoadingMore(true);
@@ -77,28 +103,16 @@ export function SpaceExplorer({
     }
   };
 
-  // Client-side filtering
-  const displayedSpaces = (() => {
-    let result = spaces;
-
-    if (privacyFilter === 'public') result = result.filter(s => !s.isPrivate);
-    if (privacyFilter === 'private') result = result.filter(s => s.isPrivate);
-
-    if (typeFilter === 'spaces') result = result.filter(s => !s.parent);
-    if (typeFilter === 'subspaces') result = result.filter(s => !!s.parent);
-
-    return result;
-  })();
-
   const activeFilterCount = (privacyFilter !== 'all' ? 1 : 0) + (typeFilter !== 'all' ? 1 : 0);
 
   const clearFilters = () => {
-    setPrivacyFilter('all');
-    setTypeFilter('all');
+    onPrivacyFilterChange('all');
+    onTypeFilterChange('all');
     onMembershipFilterChange?.('all');
   };
 
-  const showEmpty = displayedSpaces.length === 0 && !loading && !loadingSearchResults;
+  // With more to load, a still-empty list (e.g. a page failed before any card matched) keeps Load more, not a dead end.
+  const showEmpty = spaces.length === 0 && !hasMore && !loading && !loadingSearchResults;
   const showSkeletons = loading && spaces.length === 0;
 
   return (
@@ -142,48 +156,46 @@ export function SpaceExplorer({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="min-w-[200px]">
-                {/* Membership section (server-side) */}
-                <DropdownMenuLabel className={filterLabelClassName}>{t('spaces.filterMembership')}</DropdownMenuLabel>
-                <DropdownMenuCheckboxItem
-                  checked={membershipFilter === 'all'}
-                  onCheckedChange={() => onMembershipFilterChange?.('all')}
-                >
-                  {t('spaces.filterAll')}
-                </DropdownMenuCheckboxItem>
+                {/* Membership section (server-side). Guests could only pick "All", so they don't get it. */}
                 {authenticated && (
-                  <DropdownMenuCheckboxItem
-                    checked={membershipFilter === 'member'}
-                    onCheckedChange={() => onMembershipFilterChange?.('member')}
-                  >
-                    {t('spaces.filterMember')}
-                  </DropdownMenuCheckboxItem>
-                )}
-                <DropdownMenuCheckboxItem
-                  checked={membershipFilter === 'public'}
-                  onCheckedChange={() => onMembershipFilterChange?.('public')}
-                >
-                  {t('spaces.filterPublic')}
-                </DropdownMenuCheckboxItem>
+                  <>
+                    <DropdownMenuLabel className={filterLabelClassName}>
+                      {t('spaces.filterMembership')}
+                    </DropdownMenuLabel>
+                    <DropdownMenuCheckboxItem
+                      checked={membershipFilter === 'all'}
+                      onCheckedChange={() => onMembershipFilterChange?.('all')}
+                    >
+                      {t('spaces.filterAll')}
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={membershipFilter === 'member'}
+                      onCheckedChange={() => onMembershipFilterChange?.('member')}
+                    >
+                      {t('spaces.filterMember')}
+                    </DropdownMenuCheckboxItem>
 
-                <DropdownMenuSeparator />
+                    <DropdownMenuSeparator />
+                  </>
+                )}
 
                 {/* Privacy section (client-side) */}
                 <DropdownMenuLabel className={filterLabelClassName}>{t('spaces.filterPrivacy')}</DropdownMenuLabel>
                 <DropdownMenuCheckboxItem
                   checked={privacyFilter === 'all'}
-                  onCheckedChange={() => setPrivacyFilter('all')}
+                  onCheckedChange={() => onPrivacyFilterChange('all')}
                 >
                   {t('spaces.filterAll')}
                 </DropdownMenuCheckboxItem>
                 <DropdownMenuCheckboxItem
                   checked={privacyFilter === 'public'}
-                  onCheckedChange={() => setPrivacyFilter('public')}
+                  onCheckedChange={() => onPrivacyFilterChange('public')}
                 >
                   {t('spaces.filterPublicOnly')}
                 </DropdownMenuCheckboxItem>
                 <DropdownMenuCheckboxItem
                   checked={privacyFilter === 'private'}
-                  onCheckedChange={() => setPrivacyFilter('private')}
+                  onCheckedChange={() => onPrivacyFilterChange('private')}
                 >
                   {t('spaces.filterPrivateOnly')}
                 </DropdownMenuCheckboxItem>
@@ -192,18 +204,21 @@ export function SpaceExplorer({
 
                 {/* Type section (client-side) */}
                 <DropdownMenuLabel className={filterLabelClassName}>{t('spaces.filterType')}</DropdownMenuLabel>
-                <DropdownMenuCheckboxItem checked={typeFilter === 'all'} onCheckedChange={() => setTypeFilter('all')}>
+                <DropdownMenuCheckboxItem
+                  checked={typeFilter === 'all'}
+                  onCheckedChange={() => onTypeFilterChange('all')}
+                >
                   {t('spaces.filterAllTypes')}
                 </DropdownMenuCheckboxItem>
                 <DropdownMenuCheckboxItem
                   checked={typeFilter === 'spaces'}
-                  onCheckedChange={() => setTypeFilter('spaces')}
+                  onCheckedChange={() => onTypeFilterChange('spaces')}
                 >
                   {t('spaces.filterSpacesOnly')}
                 </DropdownMenuCheckboxItem>
                 <DropdownMenuCheckboxItem
                   checked={typeFilter === 'subspaces'}
-                  onCheckedChange={() => setTypeFilter('subspaces')}
+                  onCheckedChange={() => onTypeFilterChange('subspaces')}
                 >
                   {t('spaces.filterSubspacesOnly')}
                 </DropdownMenuCheckboxItem>
@@ -234,7 +249,7 @@ export function SpaceExplorer({
               {privacyFilter !== 'all' && (
                 <button
                   type="button"
-                  onClick={() => setPrivacyFilter('all')}
+                  onClick={() => onPrivacyFilterChange('all')}
                   className="inline-flex items-center gap-1 cursor-pointer rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 text-caption px-2.5 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   {privacyFilter === 'public' ? t('spaces.filterPublicOnly') : t('spaces.filterPrivateOnly')}
@@ -245,7 +260,7 @@ export function SpaceExplorer({
               {typeFilter !== 'all' && (
                 <button
                   type="button"
-                  onClick={() => setTypeFilter('all')}
+                  onClick={() => onTypeFilterChange('all')}
                   className="inline-flex items-center gap-1 cursor-pointer rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 text-caption px-2.5 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   {typeFilter === 'spaces' ? t('spaces.filterSpacesOnly') : t('spaces.filterSubspacesOnly')}
@@ -256,15 +271,11 @@ export function SpaceExplorer({
             </div>
           )}
 
-          {/* Results count */}
-          {!showSkeletons && displayedSpaces.length > 0 && (
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-body text-muted-foreground">
-                {t('spaces.showing')}{' '}
-                <span className="text-body-emphasis text-foreground">{displayedSpaces.length}</span>{' '}
-                {t('spaces.spacesLabel')}
-              </p>
-            </div>
+          {/* No count: the loaded spaces are only a page of the results, so any number would understate them. */}
+          {searchTerms.length > 0 && !showSkeletons && spaces.length > 0 && (
+            <p className="mb-4 text-body text-muted-foreground">
+              {t('spaces.matchingTerms', { terms: searchTerms.join(', ') })}
+            </p>
           )}
 
           {/* Loading search indicator */}
@@ -276,17 +287,17 @@ export function SpaceExplorer({
 
           {/* Cards grid */}
           {showSkeletons ? (
-            <output className={cn('grid gap-6', gridCols)} aria-label={t('spaces.loading')}>
+            <output ref={setGridElement} className={cn('grid gap-6', gridCols)} aria-label={t('spaces.loading')}>
               {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
                 // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders have no stable key
                 <SpaceCardSkeleton key={i} />
               ))}
             </output>
-          ) : displayedSpaces.length > 0 ? (
+          ) : spaces.length > 0 ? (
             // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
             // biome-ignore lint/a11y/useSemanticElements: role="list" restores list semantics after the list-style reset
-            <ul role="list" className={cardsListClassName} aria-label={t('spaces.spacesLabel')}>
-              {displayedSpaces.map(space => (
+            <ul ref={setGridElement} role="list" className={cardsListClassName} aria-label={t('spaces.spacesLabel')}>
+              {spaces.map(space => (
                 <li key={space.id}>
                   <SpaceCard space={space} onParentClick={onParentClick} />
                 </li>
@@ -310,7 +321,8 @@ export function SpaceExplorer({
           )}
 
           {/* Load More */}
-          {hasMore && displayedSpaces.length > 0 && !loading && (
+          {/* While its own batch loads, Load more stays and shows it is busy. */}
+          {hasMore && (!loading || loadingMore) && (
             <div className="flex justify-center mt-8">
               <Button
                 variant="outline"
