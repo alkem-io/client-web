@@ -105,5 +105,23 @@
       "messageTooLong": "Bericht mag maximaal {{max}} tekens bevatten.",
       "sendFailed": "Kon het bericht niet verzenden. Probeer het opnieuw."
     }
+  },
+  "call": {
+    "startAudio": "Audiogesprek starten",
+    "startVideo": "Videogesprek starten",
+    "active": "Gesprek actief",
+    "join": "Deelnemen",
+    "joinVideo": "Deelnemen met video",
+    "joinAudio": "Alleen met audio deelnemen",
+    "joinedOnThisDevice": "Al deelgenomen op dit apparaat",
+    "overlayLabel": "Gesprek",
+    "close": "Gesprek sluiten",
+    "leaveConfirm": {
+      "title": "Gesprek verlaten?",
+      "description": "Je verlaat het gesprek. De anderen kunnen zonder jou verder.",
+      "confirm": "Gesprek verlaten",
+      "cancel": "In gesprek blijven"
+    },
+    "listBadge": "Gesprek actief"
   }
 }

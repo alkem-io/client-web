@@ -105,5 +105,23 @@
       "messageTooLong": "El mensaje debe tener {{max}} caracteres o menos.",
       "sendFailed": "No se pudo enviar el mensaje. Inténtalo de nuevo."
     }
+  },
+  "call": {
+    "startAudio": "Iniciar llamada de audio",
+    "startVideo": "Iniciar videollamada",
+    "active": "Llamada activa",
+    "join": "Unirse",
+    "joinVideo": "Unirse con vídeo",
+    "joinAudio": "Unirse solo con audio",
+    "joinedOnThisDevice": "Ya te has unido desde este dispositivo",
+    "overlayLabel": "Llamada",
+    "close": "Cerrar llamada",
+    "leaveConfirm": {
+      "title": "¿Salir de la llamada?",
+      "description": "Saldrás de la llamada. Los demás pueden continuar sin ti.",
+      "confirm": "Salir de la llamada",
+      "cancel": "Seguir en la llamada"
+    },
+    "listBadge": "Llamada activa"
   }
 }

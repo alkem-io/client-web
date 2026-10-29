@@ -81,6 +81,24 @@ describe('ChatPanel', () => {
       expect(toggle).toHaveAccessibleName('Expand chat');
     });
 
+    test('dims the page behind the expanded panel, like other dialogs, and a click on it collapses the panel', async () => {
+      const user = userEvent.setup();
+      const { container } = renderPanel();
+      expect(container.querySelector('[data-slot="chat-backdrop"]')).not.toBeInTheDocument();
+      await user.click(screen.getByRole('button', { name: 'Expand chat' }));
+      const backdrop = container.querySelector('[data-slot="chat-backdrop"]');
+      expect(backdrop).toHaveClass('bg-black/50');
+      await user.click(backdrop as Element);
+      expect(screen.getByRole('dialog', { name: 'Design team' })).toHaveAttribute('data-expanded', 'false');
+      expect(container.querySelector('[data-slot="chat-backdrop"]')).not.toBeInTheDocument();
+    });
+
+    test('has no backdrop full-screen on a small screen', () => {
+      screenSize.isSmallScreen = true;
+      const { container } = renderPanel();
+      expect(container.querySelector('[data-slot="chat-backdrop"]')).not.toBeInTheDocument();
+    });
+
     test('tells assistive technology whether the panel is expanded', async () => {
       renderPanel();
       const toggle = screen.getByRole('button', { name: 'Expand chat' });

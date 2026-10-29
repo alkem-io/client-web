@@ -40,9 +40,10 @@ const ICON_BUTTON_CLASS =
  * body region — each child view (list / thread) owns its own scrollable area via
  * the `flex-1 min-h-0 overflow-y-auto` pattern.
  *
- * Non-modal in every mode: focus is not trapped and the page stays interactive.
- * While the panel covers the page (expanded, or full-screen on a small screen)
- * the page itself does not scroll behind it.
+ * Non-modal in every mode: focus is not trapped. While the panel covers the
+ * page (expanded, or full-screen on a small screen) the page itself does not
+ * scroll behind it; expanded, the page is dimmed like behind any other dialog,
+ * and a click on the dimmed page collapses the panel again.
  */
 export function ChatPanel({
   open,
@@ -96,63 +97,73 @@ export function ChatPanel({
   );
 
   return (
-    <div
-      role="dialog"
-      aria-label={title}
-      data-expanded={isExpanded}
-      className={cn(
-        'fixed z-50 flex flex-col overflow-hidden bg-card text-card-foreground shadow-xl',
-        isSmallScreen
-          ? 'inset-0 rounded-none'
-          : isExpanded
-            ? 'left-1/2 top-1/2 h-[min(800px,calc(100vh-4rem))] w-[min(960px,calc(100vw-10rem))] -translate-x-1/2 -translate-y-1/2 rounded-xl border border-border'
-            : 'bottom-24 right-4 h-[600px] max-h-[calc(100vh-7rem)] w-[380px] rounded-xl border border-border'
+    <>
+      {isExpanded && (
+        <div
+          aria-hidden="true"
+          data-slot="chat-backdrop"
+          className="fixed inset-0 z-50 bg-black/50"
+          onClick={() => setExpanded(false)}
+        />
       )}
-    >
-      <header className="flex shrink-0 items-center gap-1 border-b border-border px-2 py-2">
-        {onBack && (
-          <button type="button" onClick={onBack} aria-label={backLabel} className={ICON_BUTTON_CLASS}>
-            <ChevronLeft aria-hidden="true" className="size-5" />
-          </button>
+      <div
+        role="dialog"
+        aria-label={title}
+        data-expanded={isExpanded}
+        className={cn(
+          'fixed z-50 flex flex-col overflow-hidden bg-card text-card-foreground shadow-xl',
+          isSmallScreen
+            ? 'inset-0 rounded-none'
+            : isExpanded
+              ? 'left-1/2 top-1/2 h-[min(800px,calc(100vh-4rem))] w-[min(960px,calc(100vw-10rem))] -translate-x-1/2 -translate-y-1/2 rounded-xl border border-border'
+              : 'bottom-24 right-4 h-[600px] max-h-[calc(100vh-7rem)] w-[380px] rounded-xl border border-border'
         )}
-        {onTitleClick ? (
-          <button
-            type="button"
-            onClick={onTitleClick}
-            className="flex min-w-0 flex-1 items-center gap-1 rounded-md text-left hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            {titleContent}
-            {titleActionLabel && <span className="sr-only">, {titleActionLabel}</span>}
+      >
+        <header className="flex shrink-0 items-center gap-1 border-b border-border px-2 py-2">
+          {onBack && (
+            <button type="button" onClick={onBack} aria-label={backLabel} className={ICON_BUTTON_CLASS}>
+              <ChevronLeft aria-hidden="true" className="size-5" />
+            </button>
+          )}
+          {onTitleClick ? (
+            <button
+              type="button"
+              onClick={onTitleClick}
+              className="flex min-w-0 flex-1 items-center gap-1 rounded-md text-left hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {titleContent}
+              {titleActionLabel && <span className="sr-only">, {titleActionLabel}</span>}
+            </button>
+          ) : (
+            titleContent
+          )}
+          {headerActions}
+          {!isSmallScreen && (
+            <button
+              type="button"
+              onClick={() => setExpanded(!expanded)}
+              aria-label={isExpanded ? collapseLabel : expandLabel}
+              aria-expanded={isExpanded}
+              className={ICON_BUTTON_CLASS}
+            >
+              {isExpanded ? (
+                <Minimize2 aria-hidden="true" className="size-4" />
+              ) : (
+                <Maximize2 aria-hidden="true" className="size-4" />
+              )}
+            </button>
+          )}
+          {onGoToSettings && (
+            <button type="button" onClick={onGoToSettings} aria-label={settingsLabel} className={ICON_BUTTON_CLASS}>
+              <Settings aria-hidden="true" className="size-5" />
+            </button>
+          )}
+          <button type="button" onClick={onClose} aria-label={closeLabel} className={ICON_BUTTON_CLASS}>
+            <X aria-hidden="true" className="size-5" />
           </button>
-        ) : (
-          titleContent
-        )}
-        {headerActions}
-        {!isSmallScreen && (
-          <button
-            type="button"
-            onClick={() => setExpanded(!expanded)}
-            aria-label={isExpanded ? collapseLabel : expandLabel}
-            aria-expanded={isExpanded}
-            className={ICON_BUTTON_CLASS}
-          >
-            {isExpanded ? (
-              <Minimize2 aria-hidden="true" className="size-4" />
-            ) : (
-              <Maximize2 aria-hidden="true" className="size-4" />
-            )}
-          </button>
-        )}
-        {onGoToSettings && (
-          <button type="button" onClick={onGoToSettings} aria-label={settingsLabel} className={ICON_BUTTON_CLASS}>
-            <Settings aria-hidden="true" className="size-5" />
-          </button>
-        )}
-        <button type="button" onClick={onClose} aria-label={closeLabel} className={ICON_BUTTON_CLASS}>
-          <X aria-hidden="true" className="size-5" />
-        </button>
-      </header>
-      <div className="flex min-h-0 flex-1 flex-col">{children}</div>
-    </div>
+        </header>
+        <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+      </div>
+    </>
   );
 }
