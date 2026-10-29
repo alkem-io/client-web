@@ -1,13 +1,14 @@
 import type { MatrixClient } from 'matrix-js-sdk';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { isAppMode } from '@/core/appMode/isAppMode';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import { CallOverlay } from '@/crd/components/call/CallOverlay';
 import { getCallConfig } from './callConfig';
 import { closeCall, useCallOverlay } from './callOverlayStore';
 import { useRoomCallSession } from './useRoomCallSession';
-import { buildElementCallWidgetUrl, isDirectCallIntent } from './widgetUrl';
+import { buildElementCallWidgetUrl, ELEMENT_CALL_LICENSE_PAGE, isDirectCallIntent } from './widgetUrl';
 
 // The widget API and its driver load only when a call opens.
 const CallWidgetFrame = lazyWithGlobalErrorHandler(() => import('./CallWidgetFrame'));
@@ -79,6 +80,11 @@ export const CallOverlayHost = () => {
       label={t('call.overlayLabel')}
       closeLabel={t('call.close')}
       onRequestClose={requestClose}
+      // The app's WebView has no second window: a new-tab link to the platform's own origin
+      // would replace the page and end the call, so the app shows no license link.
+      licenseHref={isAppMode() ? undefined : ELEMENT_CALL_LICENSE_PAGE}
+      licenseLabel={t('call.license')}
+      licenseNewTabLabel={t('call.opensInNewTab')}
       confirm={{
         open: confirmOpen,
         title: t('call.leaveConfirm.title'),

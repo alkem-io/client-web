@@ -110,6 +110,27 @@ describe('CallOverlayHost', () => {
     expect(api.setViewedRoomId).toHaveBeenCalledWith('!room:hs.example');
   });
 
+  it('links to the call UI license page', async () => {
+    render(<CallOverlayHost />);
+    await startCall();
+    expect(screen.getByRole('link', { name: 'call.license (call.opensInNewTab)' })).toHaveAttribute(
+      'href',
+      '/element-call/SOURCE.html'
+    );
+  });
+
+  it('shows no license link in the app, where a new tab would replace the page and end the call', async () => {
+    window.Capacitor = { isNativePlatform: () => true };
+    try {
+      render(<CallOverlayHost />);
+      await startCall();
+      expect(screen.getByTestId('call-overlay')).toBeInTheDocument();
+      expect(screen.queryByRole('link')).not.toBeInTheDocument();
+    } finally {
+      Reflect.deleteProperty(window, 'Capacitor');
+    }
+  });
+
   it('forwards the call room’s synced events, its own included, and state updates to the call UI, and nothing else', async () => {
     const client = harness.client as EventEmitter;
     render(<CallOverlayHost />);

@@ -1,4 +1,4 @@
-import { XIcon } from 'lucide-react';
+import { ExternalLinkIcon, XIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { Dialog, DialogContentRaw, DialogOverlay, DialogPortal, DialogTitle } from '@/crd/primitives/dialog';
@@ -13,7 +13,17 @@ type CallOverlayConfirm = {
   onCancel: () => void;
 };
 
-type CallOverlayProps = {
+/** A link to the call UI's license and corresponding source, opened in a new tab; it needs both labels. */
+type CallOverlayLicenseLink =
+  | {
+      licenseHref: string;
+      licenseLabel: string;
+      /** Screen-reader hint that the license link opens a new tab. */
+      licenseNewTabLabel: string;
+    }
+  | { licenseHref?: undefined; licenseLabel?: string; licenseNewTabLabel?: string };
+
+type CallOverlayProps = CallOverlayLicenseLink & {
   open: boolean;
   /** Accessible name of the overlay. */
   label: string;
@@ -31,7 +41,17 @@ type CallOverlayProps = {
  * small screens, a large centred window over a dimmed backdrop on wider ones.
  * A click on the backdrop does nothing — leaving a call is never an accident.
  */
-export function CallOverlay({ open, label, closeLabel, onRequestClose, confirm, children }: CallOverlayProps) {
+export function CallOverlay({
+  open,
+  label,
+  closeLabel,
+  onRequestClose,
+  licenseHref,
+  licenseLabel,
+  licenseNewTabLabel,
+  confirm,
+  children,
+}: CallOverlayProps) {
   return (
     <>
       <Dialog
@@ -52,15 +72,29 @@ export function CallOverlay({ open, label, closeLabel, onRequestClose, confirm, 
           >
             <div className="flex h-10 shrink-0 items-center justify-between border-b border-border px-3">
               <DialogTitle className="text-body-emphasis">{label}</DialogTitle>
-              <button
-                type="button"
-                aria-label={closeLabel}
-                onClick={onRequestClose}
-                data-testid="call-overlay-close"
-                className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <XIcon aria-hidden="true" className="size-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                {licenseHref && (
+                  <a
+                    href={licenseHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 rounded-md px-2 text-caption text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {licenseLabel}
+                    <ExternalLinkIcon aria-hidden="true" className="size-3" />
+                    <span className="sr-only">({licenseNewTabLabel})</span>
+                  </a>
+                )}
+                <button
+                  type="button"
+                  aria-label={closeLabel}
+                  onClick={onRequestClose}
+                  data-testid="call-overlay-close"
+                  className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <XIcon aria-hidden="true" className="size-4" />
+                </button>
+              </div>
             </div>
             <div className="min-h-0 flex-1">{children}</div>
           </DialogContentRaw>

@@ -37,7 +37,11 @@ const callIntentFor = ({ isGroup, action, media }: { isGroup: boolean; action: C
 const isDirectCallIntent = (intent: CallIntent): boolean =>
   Object.values(INTENTS.direct).some(byMedia => Object.values(byMedia).includes(intent));
 
-const ELEMENT_CALL_ENTRY = '/element-call/index.html';
+/** Where the call UI and its licence files are served; the copy targets in vite.element-call.mjs fill it. */
+const ELEMENT_CALL_BASE = '/element-call/';
+const ELEMENT_CALL_ENTRY = `${ELEMENT_CALL_BASE}index.html`;
+/** The call UI's licence, licence texts and corresponding source, as one page. */
+const ELEMENT_CALL_LICENSE_PAGE = `${ELEMENT_CALL_BASE}SOURCE.html`;
 
 type WidgetUrlInput = {
   widgetId: string;
@@ -87,5 +91,12 @@ const buildElementCallWidgetUrl = ({
   return `${ELEMENT_CALL_ENTRY}#?${params.toString()}`;
 };
 
-export { buildElementCallWidgetUrl, callIntentFor, ELEMENT_CALL_ENTRY, isDirectCallIntent };
+export {
+  buildElementCallWidgetUrl,
+  callIntentFor,
+  ELEMENT_CALL_BASE,
+  ELEMENT_CALL_ENTRY,
+  ELEMENT_CALL_LICENSE_PAGE,
+  isDirectCallIntent,
+};
 export type { CallAction, CallIntent, CallMedia, WidgetUrlInput };
