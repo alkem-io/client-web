@@ -42,6 +42,31 @@ vi.mock('@/crd/components/auth/LoginCard', () => ({
     </div>
   ),
 }));
+vi.mock('@/crd/components/auth/AppSignInWelcome', () => ({
+  AppSignInWelcome: ({
+    signInHref,
+    createAccountHref,
+    browseSpacesHref,
+  }: {
+    signInHref: string;
+    createAccountHref: string;
+    browseSpacesHref?: string;
+  }) => (
+    <div data-testid="app-signin-welcome">
+      <a data-testid="welcome-sign-in" href={signInHref}>
+        sign in
+      </a>
+      <a data-testid="welcome-create-account" href={createAccountHref}>
+        create account
+      </a>
+      {browseSpacesHref ? (
+        <a data-testid="welcome-browse-spaces" href={browseSpacesHref}>
+          browse
+        </a>
+      ) : null}
+    </div>
+  ),
+}));
 vi.mock('./AuthShellWrapper', () => ({
   AuthShellWrapper: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
@@ -276,7 +301,6 @@ describe('LoginCrdRoute', () => {
   // arrival — today's OIDC-entry behaviour — would discard the reason before it
   // could be read and put the app straight back into the loop it just left.
   it.each([
-    ['required', 'info'],
     ['cancelled', 'info'],
     ['failed', 'destructive'],
   ])('an app_signin=%s arrival lands instead of redirecting, in the %s tone', (reason, tone) => {
@@ -295,19 +319,61 @@ describe('LoginCrdRoute', () => {
     expect(notice.querySelector('a')).toHaveTextContent('appSignIn.action');
   });
 
+  // `required` is the app's first sign-in screen, before any attempt was made:
+  // it renders the welcome view (sign in + create account) instead of a card
+  // whose only content was a "Sign in to continue." notice.
+  it('an app_signin=required arrival renders the welcome view instead of the notice card', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'app_signin=required';
+
+    renderRoute();
+
+    expect(replaceSpy).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('crd-login-card')).not.toBeInTheDocument();
+    expect(screen.getByTestId('welcome-sign-in')).toHaveAttribute(
+      'href',
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F'
+    );
+    expect(screen.getByTestId('welcome-create-account')).toHaveAttribute('href', '/sign_up');
+    expect(screen.getByTestId('welcome-browse-spaces')).toHaveAttribute('href', 'https://sandbox-alkem.io/spaces');
+  });
+
+  it('the welcome view forwards the pending returnUrl to sign-in and sign-up', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'app_signin=required&returnUrl=%2Fspace%2Fdemo';
+
+    renderRoute();
+
+    expect(screen.getByTestId('welcome-sign-in')).toHaveAttribute(
+      'href',
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2Fspace%2Fdemo'
+    );
+    expect(screen.getByTestId('welcome-create-account').getAttribute('href')).toContain('returnUrl=');
+  });
+
+  it('a lockout wins over app_signin=required', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'app_signin=required&lockout=true&retry_after=120';
+
+    renderRoute();
+
+    expect(screen.queryByTestId('app-signin-welcome')).not.toBeInTheDocument();
+    expect(screen.getByTestId('card-notice')).toHaveAttribute('data-tone', 'destructive');
+  });
+
   // The user this landing exists for is signed in: the WebView holds a live
   // `alkemio_session`, so `isAuthenticated` is true when Settings > Security
   // bounces them back here. Without the route-level exemption
   // `NotAuthenticatedRoute` navigates to /home and the notice never renders —
   // the case the three tests above miss, because they all pin `false`.
-  it('an authenticated app_signin=required arrival still lands on the notice', () => {
+  it('an authenticated app_signin=required arrival still lands on the welcome view', () => {
     mockIsAuthenticated.mockReturnValue(true);
     mockSearch = 'app_signin=required';
 
     renderRoute();
 
     expect(replaceSpy).not.toHaveBeenCalled();
-    expect(screen.getByTestId('card-notice')).toHaveTextContent('appSignIn.required');
+    expect(screen.getByTestId('app-signin-welcome')).toBeInTheDocument();
   });
 
   // The exemption is value-scoped too: an authenticated visitor on a crafted

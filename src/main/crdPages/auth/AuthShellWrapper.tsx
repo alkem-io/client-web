@@ -7,7 +7,7 @@ import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
  * language selector and link hrefs from the shared navigation hook. The
  * `AuthShell` itself is purely presentational; this is the integration glue.
  */
-export function AuthShellWrapper({ children, wide }: { children: ReactNode; wide?: boolean }) {
+export function AuthShellWrapper({ children, wide, plain }: { children: ReactNode; wide?: boolean; plain?: boolean }) {
   const { footerLinks, languages, currentLanguage, handleLanguageChange } = useCrdNavigation();
 
   return (
@@ -17,6 +17,7 @@ export function AuthShellWrapper({ children, wide }: { children: ReactNode; wide
       onLanguageChange={handleLanguageChange}
       footerLinks={footerLinks}
       wide={wide}
+      plain={plain}
     >
       {children}
     </AuthShell>

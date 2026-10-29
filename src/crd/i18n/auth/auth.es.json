@@ -10,10 +10,15 @@
     "preparing": "Preparando inicio de sesión seguro…"
   },
   "appSignIn": {
-    "required": "Inicia sesión para continuar.",
     "cancelled": "Se canceló el inicio de sesión.",
     "failed": "No se pudo completar el inicio de sesión. Inténtalo de nuevo.",
     "action": "Iniciar sesión"
+  },
+  "appWelcome": {
+    "body": "Únete a espacios, comparte ideas y construye cosas juntos.",
+    "signIn": "Iniciar sesión",
+    "createAccount": "Crear cuenta",
+    "browseSpaces": "Explorar espacios públicos"
   },
   "signUp": {
     "title": "Regístrate",

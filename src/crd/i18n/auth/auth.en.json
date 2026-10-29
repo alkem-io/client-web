@@ -10,10 +10,15 @@
     "preparing": "Preparing secure sign-in…"
   },
   "appSignIn": {
-    "required": "Sign in to continue.",
     "cancelled": "Sign-in was cancelled.",
     "failed": "Sign-in could not be completed. Please try again.",
     "action": "Sign in"
+  },
+  "appWelcome": {
+    "body": "Join spaces, share ideas and build things together.",
+    "signIn": "Sign in",
+    "createAccount": "Create account",
+    "browseSpaces": "Browse public spaces"
   },
   "signUp": {
     "title": "Sign up",

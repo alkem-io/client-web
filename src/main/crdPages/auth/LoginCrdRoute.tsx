@@ -21,11 +21,12 @@ import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { resolveInternalReturnPath } from '@/core/utils/links';
+import { AppSignInWelcome } from '@/crd/components/auth/AppSignInWelcome';
 import type { KratosFlowDescriptor, KratosMessage } from '@/crd/components/auth/flowDescriptor';
 import { LoginCard, type LoginCardNotice } from '@/crd/components/auth/LoginCard';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
-import { buildSignUpUrl } from '@/main/routing/urlBuilders';
+import { buildSignUpUrl, URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
 import { AuthShellWrapper } from './AuthShellWrapper';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
 import { invokePasskeyTrigger, PasskeyTriggerError } from './passkeyTrigger';
@@ -197,7 +198,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
         actionLabel: t('authentication.lockoutRetry'),
         actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
       }
-    : appSignIn
+    : appSignIn && appSignIn !== 'required'
       ? {
           text: tAuth(`appSignIn.${appSignIn}`),
           actionLabel: tAuth('appSignIn.action'),
@@ -205,6 +206,24 @@ function CrdLoginPage({ flow }: { flow?: string }) {
           tone: appSignIn === 'failed' ? 'destructive' : 'info',
         }
       : undefined;
+
+  // The app sends a signed-out visitor here with `required` before any sign-in
+  // has been attempted, so this is their first screen: a welcome with room for
+  // the brand and both entry points, rather than the cramped notice card.
+  // Lockout still wins — the account is blocked either way.
+  if (!flow && !isLockedOutArrival && appSignIn === 'required') {
+    return (
+      <AuthShellWrapper plain={true}>
+        <AppSignInWelcome
+          signInHref={buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin)}
+          createAccountHref={signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH}
+          // Absolute against the apex, like the OIDC hand-off, because this page
+          // also renders on the identity subdomain where the explorer does not live.
+          browseSpacesHref={`${platformOrigin ?? ''}${URL_SPACE_EXPLORER}`}
+        />
+      </AuthShellWrapper>
+    );
+  }
 
   if (!flow && arrivalNotice) {
     return (
