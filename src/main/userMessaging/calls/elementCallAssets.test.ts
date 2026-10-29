@@ -18,8 +18,9 @@ describe('call UI static files', () => {
   it('states the installed Element Call version and its corresponding source', () => {
     const source = readFileSync(path.join(repoRoot, '.build/element-call/SOURCE.txt'), 'utf8');
     expect(source.trim()).toBe(
-      `Element Call ${installedVersion}, unmodified, Copyright New Vector Ltd, licensed AGPL-3.0-or-later ` +
-        '(also available under a commercial licence from Element). Corresponding source: ' +
+      `Element Call ${installedVersion}, unmodified, Copyright New Vector Ltd, licensed ` +
+        'AGPL-3.0-only OR LicenseRef-Element-Commercial. Licence text: /element-call/LICENSE-AGPL-3.0. ' +
+        'Corresponding source: ' +
         `https://github.com/element-hq/element-call/tree/v${installedVersion}`
     );
   });

@@ -440,7 +440,9 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
   });
 
   it('downloads media of the chat server through its authenticated media endpoint, as the platform session', async () => {
-    const fetchMock = vi.fn(async () => new Response('avatar-bytes'));
+    // A stand-in response: a real Response's Blob and the test's global Blob come from different realms.
+    const body = new Blob(['avatar-bytes']);
+    const fetchMock = vi.fn(async () => ({ ok: true, status: 200, blob: async () => body }));
     vi.stubGlobal('fetch', fetchMock);
     try {
       const { file } = await driverFor(makeClient()).downloadFile('mxc://matrix.example.org/abc123');
@@ -450,8 +452,7 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
           headers: { Authorization: 'Bearer access-token' },
         }
       );
-      expect(file).toBeInstanceOf(Blob);
-      expect((file as Blob).size).toBe('avatar-bytes'.length);
+      expect(file).toBe(body);
     } finally {
       vi.unstubAllGlobals();
     }

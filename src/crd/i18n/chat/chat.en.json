@@ -116,6 +116,7 @@
     "joinedOnThisDevice": "Already joined on this device",
     "overlayLabel": "Call",
     "close": "Close call",
+    "licence": "Open-source licence",
     "leaveConfirm": {
       "title": "Leave call?",
       "description": "You will leave the call. The others can carry on without you.",

@@ -13,6 +13,11 @@ type CallOverlayConfirm = {
   onCancel: () => void;
 };
 
+type CallOverlayLicenceNotice = {
+  label: string;
+  href: string;
+};
+
 type CallOverlayProps = {
   open: boolean;
   /** Accessible name of the overlay. */
@@ -20,6 +25,8 @@ type CallOverlayProps = {
   closeLabel: string;
   /** The close button or Escape; the consumer decides whether to confirm first. */
   onRequestClose: () => void;
+  /** A link to the call UI's licence and corresponding source, shown in the header. */
+  licenceNotice?: CallOverlayLicenceNotice;
   /** Shown above the overlay when closing needs a confirmation. */
   confirm?: CallOverlayConfirm;
   /** The call UI itself. */
@@ -31,7 +38,15 @@ type CallOverlayProps = {
  * small screens, a large centred window over a dimmed backdrop on wider ones.
  * A click on the backdrop does nothing — leaving a call is never an accident.
  */
-export function CallOverlay({ open, label, closeLabel, onRequestClose, confirm, children }: CallOverlayProps) {
+export function CallOverlay({
+  open,
+  label,
+  closeLabel,
+  onRequestClose,
+  licenceNotice,
+  confirm,
+  children,
+}: CallOverlayProps) {
   return (
     <>
       <Dialog
@@ -52,15 +67,27 @@ export function CallOverlay({ open, label, closeLabel, onRequestClose, confirm, 
           >
             <div className="flex h-10 shrink-0 items-center justify-between border-b border-border px-3">
               <DialogTitle className="text-body-emphasis">{label}</DialogTitle>
-              <button
-                type="button"
-                aria-label={closeLabel}
-                onClick={onRequestClose}
-                data-testid="call-overlay-close"
-                className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <XIcon aria-hidden="true" className="size-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                {licenceNotice && (
+                  <a
+                    href={licenceNotice.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-md px-2 text-caption text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {licenceNotice.label}
+                  </a>
+                )}
+                <button
+                  type="button"
+                  aria-label={closeLabel}
+                  onClick={onRequestClose}
+                  data-testid="call-overlay-close"
+                  className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <XIcon aria-hidden="true" className="size-4" />
+                </button>
+              </div>
             </div>
             <div className="min-h-0 flex-1">{children}</div>
           </DialogContentRaw>

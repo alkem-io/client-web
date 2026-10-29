@@ -116,6 +116,7 @@
     "joinedOnThisDevice": "Déjà rejoint sur cet appareil",
     "overlayLabel": "Appel",
     "close": "Fermer l’appel",
+    "licence": "Licence open source",
     "leaveConfirm": {
       "title": "Quitter l’appel ?",
       "description": "Vous allez quitter l’appel. Les autres peuvent continuer sans vous.",

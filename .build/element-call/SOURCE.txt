@@ -1,1 +1,1 @@
-Element Call 0.28.0, unmodified, Copyright New Vector Ltd, licensed AGPL-3.0-or-later (also available under a commercial licence from Element). Corresponding source: https://github.com/element-hq/element-call/tree/v0.28.0
+Element Call 0.28.0, unmodified, Copyright New Vector Ltd, licensed AGPL-3.0-only OR LicenseRef-Element-Commercial. Licence text: /element-call/LICENSE-AGPL-3.0. Corresponding source: https://github.com/element-hq/element-call/tree/v0.28.0

@@ -110,6 +110,12 @@ describe('CallOverlayHost', () => {
     expect(api.setViewedRoomId).toHaveBeenCalledWith('!room:hs.example');
   });
 
+  it('links to the call UI licence and source statement', async () => {
+    render(<CallOverlayHost />);
+    await startCall();
+    expect(screen.getByRole('link', { name: 'call.licence' })).toHaveAttribute('href', '/element-call/SOURCE.txt');
+  });
+
   it('forwards the call room’s synced events, its own included, and state updates to the call UI, and nothing else', async () => {
     const client = harness.client as EventEmitter;
     render(<CallOverlayHost />);

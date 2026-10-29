@@ -79,6 +79,7 @@ export const CallOverlayHost = () => {
       label={t('call.overlayLabel')}
       closeLabel={t('call.close')}
       onRequestClose={requestClose}
+      licenceNotice={{ label: t('call.licence'), href: '/element-call/SOURCE.txt' }}
       confirm={{
         open: confirmOpen,
         title: t('call.leaveConfirm.title'),
