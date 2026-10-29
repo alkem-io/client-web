@@ -1,4 +1,4 @@
-import { Download, ImagePlus, Maximize2, Minimize2 } from 'lucide-react';
+import { Download, ImagePlus, Maximize2, Minimize2, Play } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -16,6 +16,8 @@ export type CalloutMediaGalleryCarouselItem = {
   id: string;
   uri: string;
   alternativeText?: string;
+  /** Defaults to an image. A video slide plays inline with native controls. */
+  kind?: 'image' | 'video';
 };
 
 type CalloutMediaGalleryCarouselProps = {
@@ -23,7 +25,8 @@ type CalloutMediaGalleryCarouselProps = {
   initialIndex?: number;
   canEdit?: boolean;
   onAddImages?: () => void;
-  onDownload: (item: CalloutMediaGalleryCarouselItem) => void;
+  /** Omit to hide the download control. */
+  onDownload?: (item: CalloutMediaGalleryCarouselItem) => void;
   className?: string;
 };
 
@@ -250,17 +253,19 @@ export function CalloutMediaGalleryCarousel({
         {/* Top-right action bar — download + fullscreen only. The "Add images"
           control lives below the gallery so it doesn't sit on top of the image. */}
         <div className="absolute top-2 right-2 z-10 flex items-center gap-1">
-          <Button
-            variant="secondary"
-            size="icon"
-            className="h-8 w-8 shadow-sm opacity-90 hover:opacity-100"
-            aria-label={t('mediaGallery.download')}
-            onClick={() => {
-              if (currentItem) onDownload(currentItem);
-            }}
-          >
-            <Download className="size-4" aria-hidden="true" />
-          </Button>
+          {onDownload && (
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-8 w-8 shadow-sm opacity-90 hover:opacity-100"
+              aria-label={t('mediaGallery.download')}
+              onClick={() => {
+                if (currentItem) onDownload(currentItem);
+              }}
+            >
+              <Download className="size-4" aria-hidden="true" />
+            </Button>
+          )}
           {fullscreenSupported && (
             <Button
               variant="secondary"
@@ -291,15 +296,31 @@ export function CalloutMediaGalleryCarousel({
           <CarouselContent className={cn('-ml-4', isFullscreen && 'h-full')}>
             {items.map(item => (
               <CarouselItem key={item.id} className={cn('flex items-center justify-center pl-4 basis-[100%]')}>
-                <img
-                  src={item.uri}
-                  alt={item.alternativeText ?? ''}
-                  draggable={false}
-                  className={cn(
-                    'block mx-auto object-contain rounded-md pointer-events-none',
-                    isFullscreen ? 'max-h-[calc(100vh-8rem)] max-w-full' : 'max-h-[60vh] max-w-full'
-                  )}
-                />
+                {item.kind === 'video' ? (
+                  // Uploaded clips carry no caption track.
+                  // biome-ignore lint/a11y/useMediaCaption: no caption track is available for uploaded media
+                  <video
+                    src={item.uri}
+                    controls={true}
+                    playsInline={true}
+                    preload="metadata"
+                    aria-label={item.alternativeText}
+                    className={cn(
+                      'block mx-auto rounded-md bg-black object-contain',
+                      isFullscreen ? 'max-h-[calc(100vh-8rem)] max-w-full' : 'max-h-[60vh] max-w-full'
+                    )}
+                  />
+                ) : (
+                  <img
+                    src={item.uri}
+                    alt={item.alternativeText ?? ''}
+                    draggable={false}
+                    className={cn(
+                      'block mx-auto object-contain rounded-md pointer-events-none',
+                      isFullscreen ? 'max-h-[calc(100vh-8rem)] max-w-full' : 'max-h-[60vh] max-w-full'
+                    )}
+                  />
+                )}
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -336,12 +357,18 @@ export function CalloutMediaGalleryCarousel({
                     : 'border-border opacity-60 hover:opacity-100'
                 )}
               >
-                <img
-                  src={item.uri}
-                  alt=""
-                  draggable={false}
-                  className="w-full h-full object-cover pointer-events-none"
-                />
+                {item.kind === 'video' ? (
+                  <span className="flex h-full w-full items-center justify-center bg-black text-white">
+                    <Play className="size-5" aria-hidden="true" />
+                  </span>
+                ) : (
+                  <img
+                    src={item.uri}
+                    alt=""
+                    draggable={false}
+                    className="w-full h-full object-cover pointer-events-none"
+                  />
+                )}
               </button>
             ))}
           </div>

@@ -16,6 +16,7 @@ import {
   type SendEvent,
   useConversationAttachments,
 } from '@/main/crdPages/unifiedChat/attachments/useConversationAttachments';
+import { useDownloadMessageMedia } from '@/main/crdPages/utils/useDownloadMessageMedia';
 import { useAttachmentReadiness } from '@/main/userMessaging/useAttachmentReadiness';
 import { mapRoomToCommentData } from '../dataMappers/commentDataMapper';
 import { useCommentImageStorageConfig } from './useCommentImageStorageConfig';
@@ -155,6 +156,8 @@ export function useCrdRoomComments({
     async (text, attachmentUpload) =>
       Boolean((await postReply({ threadId, messageText: text, attachmentUpload })).data?.sendMessageReplyToRoom);
 
+  const downloadMedia = useDownloadMessageMedia();
+
   // MUI parity (CommentsComponent → ConfirmationDialog): the user confirms the
   // delete in a separate dialog before the mutation fires. `pendingDeleteId`
   // holds the comment id while the dialog is open.
@@ -199,6 +202,7 @@ export function useCrdRoomComments({
         }
         replyInputProps={imageComposers ? imageComposerProps(replyFiles, replyDraft, setReplyDraft) : undefined}
         replyTogglesLocked={replyFiles.isSending}
+        onDownloadMedia={downloadMedia}
         onDelete={commentId => {
           setPendingDeleteId(commentId);
         }}

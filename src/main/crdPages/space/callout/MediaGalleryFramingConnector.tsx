@@ -5,6 +5,7 @@ import {
   type CalloutMediaGalleryCarouselItem,
 } from '@/crd/components/callout/CalloutMediaGalleryCarousel';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import { downloadUrlAsFile } from '@/main/crdPages/utils/downloadUrlAsFile';
 import { mapMediaGalleryToViewProps } from '../dataMappers/mediaGalleryDataMapper';
 import { useMediaGalleryDirectUpload } from '../hooks/useMediaGalleryDirectUpload';
 
@@ -48,28 +49,11 @@ export function MediaGalleryFramingConnector({
     enabled: canEdit,
   });
 
-  // Fetches the image as a blob and triggers a real download. Using `<a href download>`
-  // directly is unreliable for cross-origin URLs — most browsers ignore `download` and
-  // just open the image in a new tab.
   const handleDownload = async (item: CalloutMediaGalleryCarouselItem) => {
-    let objectUrl: string | undefined;
     try {
-      const response = await fetch(item.uri);
-      if (!response.ok) {
-        throw new Error(`Failed to download media: ${response.status}`);
-      }
-      const blob = await response.blob();
-      objectUrl = URL.createObjectURL(blob);
-      const anchor = document.createElement('a');
-      anchor.href = objectUrl;
-      anchor.download = deriveDownloadName(item.uri);
-      document.body.appendChild(anchor);
-      anchor.click();
-      document.body.removeChild(anchor);
+      await downloadUrlAsFile(item.uri, deriveDownloadName(item.uri));
     } catch {
       notify(t('mediaGallery.downloadError'), 'error');
-    } finally {
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
     }
   };
 

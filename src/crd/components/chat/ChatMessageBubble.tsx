@@ -1,7 +1,7 @@
 import { Smile } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { CommentReactions } from '@/crd/components/comment/CommentReactions';
-import { MessageAttachments } from '@/crd/components/comment/MessageAttachments';
+import { MessageAttachments, type MessageMediaDownload } from '@/crd/components/comment/MessageAttachments';
 import { hasRenderableText } from '@/crd/components/comment/messageText';
 import { EmojiPicker } from '@/crd/components/common/EmojiPicker';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
@@ -51,6 +51,7 @@ type ChatMessageBubbleProps = {
   canReact?: boolean;
   onAddReaction?: (emoji: string) => void;
   onRemoveReaction?: (emoji: string) => void;
+  onDownloadMedia?: (media: MessageMediaDownload) => void;
 };
 
 /**
@@ -71,6 +72,7 @@ export function ChatMessageBubble({
   canReact = false,
   onAddReaction,
   onRemoveReaction,
+  onDownloadMedia,
 }: ChatMessageBubbleProps) {
   const { t } = useTranslation('crd-chat');
   const { isOwn, author } = message;
@@ -166,6 +168,7 @@ export function ChatMessageBubble({
           attachments={message.attachments ?? []}
           align={isOwn ? 'end' : 'start'}
           className="mt-0.5"
+          onDownloadMedia={onDownloadMedia}
         />
       )}
       {message.reactions.length > 0 && (

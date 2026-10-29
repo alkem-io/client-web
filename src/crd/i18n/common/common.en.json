@@ -1603,7 +1603,9 @@
     "download": "Download {{name}}",
     "unavailableHint": "This file could not be loaded. Download it to view.",
     "unavailableNoDownload": "This file is unavailable.",
-    "loading": "Loading attachment"
+    "loading": "Loading attachment",
+    "openMedia": "Open {{name}} in the media viewer",
+    "downloadError": "Could not download the file."
   },
   "unsavedChanges": {
     "count_one": "{{count}} unsaved change",

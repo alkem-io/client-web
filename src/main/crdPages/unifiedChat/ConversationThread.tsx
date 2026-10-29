@@ -1,5 +1,6 @@
 import type { ComponentProps } from 'react';
 import { ChatThreadView } from '@/crd/components/chat/ChatThreadView';
+import { useDownloadMessageMedia } from '@/main/crdPages/utils/useDownloadMessageMedia';
 import { type SendEvent, useConversationAttachments } from './attachments/useConversationAttachments';
 import { useConversationStorageConfig } from './attachments/useConversationStorageConfig';
 
@@ -23,6 +24,7 @@ export function ConversationThread({
   ...view
 }: Props) {
   const { storageConfig } = useConversationStorageConfig(conversationId);
+  const downloadMedia = useDownloadMessageMedia();
   const files = useConversationAttachments(
     attachmentsAllowed ? storageConfig : undefined,
     roomId ? { roomID: roomId } : undefined
@@ -49,6 +51,7 @@ export function ConversationThread({
       onRemoveAttachment={files.removeAttachment}
       attachmentError={files.error}
       acceptMimeTypes={files.accept}
+      onDownloadMedia={downloadMedia}
     />
   );
 }

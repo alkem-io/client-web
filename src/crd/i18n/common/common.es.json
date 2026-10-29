@@ -1603,7 +1603,9 @@
     "download": "Descargar {{name}}",
     "unavailableHint": "No se pudo cargar este archivo. Descárgalo para verlo.",
     "unavailableNoDownload": "Este archivo no está disponible.",
-    "loading": "Cargando adjunto"
+    "loading": "Cargando adjunto",
+    "openMedia": "Abrir {{name}} en el visor multimedia",
+    "downloadError": "No se pudo descargar el archivo."
   },
   "unsavedChanges": {
     "count_one": "{{count}} cambio sin guardar",

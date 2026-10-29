@@ -1603,7 +1603,9 @@
     "download": "Télécharger {{name}}",
     "unavailableHint": "Ce fichier n’a pas pu être chargé. Téléchargez-le pour le consulter.",
     "unavailableNoDownload": "Ce fichier n’est pas disponible.",
-    "loading": "Chargement de la pièce jointe"
+    "loading": "Chargement de la pièce jointe",
+    "openMedia": "Ouvrir {{name}} dans la visionneuse",
+    "downloadError": "Impossible de télécharger le fichier."
   },
   "unsavedChanges": {
     "count_one": "{{count}} modification non enregistrée",
