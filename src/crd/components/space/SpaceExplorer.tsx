@@ -111,7 +111,8 @@ export function SpaceExplorer({
     onMembershipFilterChange?.('all');
   };
 
-  const showEmpty = spaces.length === 0 && !loading && !loadingSearchResults;
+  // With more to load, a still-empty list (e.g. a page failed before any card matched) keeps Load more, not a dead end.
+  const showEmpty = spaces.length === 0 && !hasMore && !loading && !loadingSearchResults;
   const showSkeletons = loading && spaces.length === 0;
 
   return (
@@ -321,7 +322,7 @@ export function SpaceExplorer({
 
           {/* Load More */}
           {/* While its own batch loads, Load more stays and shows it is busy. */}
-          {hasMore && spaces.length > 0 && (!loading || loadingMore) && (
+          {hasMore && (!loading || loadingMore) && (
             <div className="flex justify-center mt-8">
               <Button
                 variant="outline"

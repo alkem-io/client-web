@@ -160,6 +160,20 @@ describe('SpaceExplorer grid columns (spec 039 explore-filters-and-count FR-EX-7
 });
 
 describe('SpaceExplorer Load more (spec 039 explore-filters-and-count FR-EX-7)', () => {
+  it('keeps Load more instead of "No spaces found" while more may exist but nothing matched yet', () => {
+    renderExplorer({ spaces: [], hasMore: true, privacyFilter: 'private' });
+
+    expect(screen.getByRole('button', { name: /load more/i })).toBeInTheDocument();
+    expect(screen.queryByText('No spaces found')).not.toBeInTheDocument();
+  });
+
+  it('shows "No spaces found" once nothing more can be loaded', () => {
+    renderExplorer({ spaces: [], hasMore: false, privacyFilter: 'private' });
+
+    expect(screen.getByText('No spaces found')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /load more/i })).not.toBeInTheDocument();
+  });
+
   it('stays, busy, while its own batch is loading', async () => {
     let finish: () => void = () => {};
     const onLoadMore = vi.fn(() => new Promise<void>(resolve => (finish = resolve)));

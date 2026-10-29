@@ -54,7 +54,9 @@ filter could not work on them at all: it tested `parent`, which search results n
   are controlled props of `SpaceExplorer` (state in `useSpaceExplorer`); the hook filters (Type by `level`, Privacy
   by `isContentPublic`) and keeps fetching server pages while fewer than `batches × batch size` cards match and the server
   has more. Load more resolves once its batch is full or the results are exhausted, so its button stays busy until
-  then. A failed page stops the filling until the next Load more.
+  then. A failed page stops the filling until the next Load more or the next filter/search change (each starts a
+  fresh view). While more may exist, Load more stays even if no card has matched yet, and "No spaces found" is shown
+  only when nothing more can be loaded — a failed page never leaves a dead-end empty state.
 - **Page sizes.** "Spaces only" browses one batch of top-level spaces per page and fetches no subspaces at all, so
   one page is one batch. Other browse views keep 10 top-level spaces per page (each brings its subspaces). Search fetches 24
   results per page, by the search `cursor`; a `null` cursor means there is nothing more.

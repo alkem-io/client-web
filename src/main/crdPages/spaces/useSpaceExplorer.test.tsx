@@ -184,6 +184,22 @@ describe('useSpaceExplorer browsing (spec 039 explore-filters-and-count)', () =>
     expect(ids(result.current.spaces)).toHaveLength(30);
   });
 
+  it('does not carry a failed page over to the next filter change', async () => {
+    // No private space in the first page of 24, so "Private only" must fetch the next page — which fails once.
+    fake.state.topLevel = topLevel(100, index => index < 30 || index % 2 === 0);
+    fake.allSpacesFetchMore.mockImplementationOnce(() => Promise.reject(new Error('network')));
+    const { result } = renderHook(() => useSpaceExplorer());
+
+    act(() => result.current.onPrivacyFilterChange('private'));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(ids(result.current.spaces)).toEqual([]);
+    expect(result.current.hasMore).toBe(true);
+
+    act(() => result.current.onPrivacyFilterChange('private'));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(ids(result.current.spaces)).toHaveLength(BATCH_SIZE);
+  });
+
   it('sizes batches in whole rows of the grid, and re-cuts them when the row size changes', async () => {
     fake.state.topLevel = topLevel(100);
     const { result } = renderHook(() => useSpaceExplorer());

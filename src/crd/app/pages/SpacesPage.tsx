@@ -8,7 +8,9 @@ const BATCH_SIZE = 12;
 export function SpacesPage() {
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [membershipFilter, setMembershipFilter] = useState<SpacesFilterValue>('all');
-  const [typeFilter, setTypeFilter] = useState<SpaceTypeFilter>('spaces');
+  // Same default as the app: "Spaces only" while browsing, "All" while searching, unless the visitor picks a Type.
+  const [chosenTypeFilter, setChosenTypeFilter] = useState<SpaceTypeFilter>();
+  const typeFilter = chosenTypeFilter ?? (searchTerms.length > 0 ? 'all' : 'spaces');
   const [privacyFilter, setPrivacyFilter] = useState<SpacePrivacyFilter>('all');
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
 
@@ -48,7 +50,7 @@ export function SpacesPage() {
       onMembershipFilterChange={setMembershipFilter}
       typeFilter={typeFilter}
       onTypeFilterChange={filter => {
-        setTypeFilter(filter);
+        setChosenTypeFilter(filter);
         setVisibleCount(BATCH_SIZE);
       }}
       privacyFilter={privacyFilter}

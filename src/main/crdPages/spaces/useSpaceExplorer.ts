@@ -62,6 +62,8 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
   const [chosenTypeFilter, setChosenTypeFilter] = useState<SpaceTypeFilter>();
   const [privacyFilter, setPrivacyFilter] = useState<SpacePrivacyFilter>('all');
   const [batches, setBatches] = useState(1);
+  // The batch a page failed to fill; filling resumes on the next Load more instead of retrying in a loop.
+  const [failedBatch, setFailedBatch] = useState<number>();
   const [columns, setColumns] = useState(DEFAULT_COLUMNS);
 
   const shouldSearch = searchTerms.length > 0;
@@ -71,12 +73,13 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
   const batchSize = Math.max(1, Math.round(BATCH_SIZE / columns)) * columns;
   const visibleCount = batches * batchSize;
 
-  // Every filter change starts again from one batch.
+  // Every filter change starts a fresh view: one batch, and no failure carried over from the previous view.
   const changeFilter =
     <T>(set: (value: T) => void) =>
     (value: T) => {
       set(value);
       setBatches(1);
+      setFailedBatch(undefined);
     };
 
   // PRIVATE: Spaces if the user is logged in
@@ -294,8 +297,6 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
 
   // Fill the current batch: fetch one more server page at a time while too few cards match.
   const [fetchingPage, setFetchingPage] = useState(false);
-  // The batch a page failed to fill; filling resumes on the next Load more instead of retrying in a loop.
-  const [failedBatch, setFailedBatch] = useState<number>();
   const needsPage = !!fetchNextPage && matchingCount < visibleCount && serverHasMore && failedBatch !== batches;
   const filling = busy || fetchingPage || needsPage;
 
