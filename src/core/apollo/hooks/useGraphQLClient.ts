@@ -40,6 +40,7 @@ export const useGraphQLClient = (
   const errorHandlerLink = useErrorHandlerLink();
   const errorLoggerLink = useErrorLoggerLink(enableErrorLogging);
 
+  // eslint-disable-next-line no-restricted-syntax -- ApolloClient must be referentially stable; recreating it drops the in-memory cache and re-opens the link/WebSocket chain.
   return useMemo(
     () =>
       new ApolloClient({

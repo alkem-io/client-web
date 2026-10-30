@@ -1,6 +1,6 @@
 import type { ExcalidrawImperativeAPI, ExcalidrawProps } from '@excalidraw-yjs/excalidraw/types';
 import type React from 'react';
-import { type PropsWithChildren, type Ref, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { type PropsWithChildren, type Ref, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CollaborationState } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
 import { UnifiedCollabProvider } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
@@ -48,17 +48,14 @@ const CollaborativeExcalidrawWrapper = ({
   });
   const [controls, setControls] = useState<ReturnType<typeof bindWhiteboardEditor>>();
   const providerRef = useRef<UnifiedCollabProvider | null>(null);
-  const collabApi = useMemo<CollabAPI>(
-    () => ({
-      getState: () => providerRef.current?.state ?? { kind: 'loading' },
-      hasLocalEdits: () => providerRef.current?.hasLocalEdits ?? false,
-      hasUnsavedChanges: () => providerRef.current?.hasUnsavedChanges ?? false,
-      hasChangesAtRisk: () => providerRef.current?.hasChangesAtRisk ?? false,
-      requestDurability: () =>
-        providerRef.current?.requestDurability() ?? Promise.reject(new Error('Collaboration is not ready')),
-    }),
-    []
-  );
+  const collabApi: CollabAPI = {
+    getState: () => providerRef.current?.state ?? { kind: 'loading' },
+    hasLocalEdits: () => providerRef.current?.hasLocalEdits ?? false,
+    hasUnsavedChanges: () => providerRef.current?.hasUnsavedChanges ?? false,
+    hasChangesAtRisk: () => providerRef.current?.hasChangesAtRisk ?? false,
+    requestDurability: () =>
+      providerRef.current?.requestDurability() ?? Promise.reject(new Error('Collaboration is not ready')),
+  };
   useImperativeHandle(collabApiRef, () => collabApi, [collabApi]);
   const { userModel } = useCurrentUserContext();
   const { t } = useTranslation();
