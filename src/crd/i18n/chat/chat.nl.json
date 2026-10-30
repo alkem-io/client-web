@@ -121,6 +121,7 @@
     "leaveConfirm": {
       "title": "Gesprek verlaten?",
       "description": "Je verlaat het gesprek. De anderen kunnen zonder jou verder.",
+      "descriptionDirect": "Je verlaat het gesprek, en het gesprek eindigt ook voor de ander.",
       "confirm": "Gesprek verlaten",
       "cancel": "In gesprek blijven"
     },

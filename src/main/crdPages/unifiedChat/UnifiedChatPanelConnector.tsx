@@ -27,7 +27,7 @@ import { openCall } from '@/main/userMessaging/calls/callOverlayStore';
 import { useActiveCallRooms } from '@/main/userMessaging/calls/useActiveCallRooms';
 import { useCallEligibility } from '@/main/userMessaging/calls/useCallEligibility';
 import { useRoomCallSession } from '@/main/userMessaging/calls/useRoomCallSession';
-import type { CallIntent } from '@/main/userMessaging/calls/widgetUrl';
+import { type CallAction, type CallMedia, callIntentFor } from '@/main/userMessaging/calls/widgetUrl';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
 import { ConversationThread } from './ConversationThread';
@@ -38,6 +38,7 @@ import {
   mapMembersToGroupMembers,
   mapMemberToCommentAuthor,
   mapMessageToChatMessage,
+  withActiveCallsFirst,
 } from './dataMapper';
 import { useUnifiedChatContext } from './UnifiedChatProvider';
 import { useChatDeepLinkSelect } from './useChatDeepLink';
@@ -64,6 +65,7 @@ export const UnifiedChatPanelConnector = () => {
     selectedConversationId,
     setSelectedConversationId,
     setSelectedRoomId,
+    newlyCreatedConversationId,
     setNewlyCreatedConversationId,
   } = useUserMessagingContext();
   const { guidanceVcId } = useUnifiedChatContext();
@@ -88,7 +90,7 @@ export const UnifiedChatPanelConnector = () => {
   } = useConversationMessages(selectedConversation ?? null);
   const isGuidanceThread = selectedConversation?.isGuidance ?? false;
 
-  // Group calls: shown only to beta testers, in a synced session, where the environment has calls.
+  // Calls: shown only to beta testers, in a synced session, where the environment has calls.
   const callEligibility = useCallEligibility(selectedConversation ?? null);
   const callSession = useRoomCallSession(callEligibility.matrixRoomId);
   const activeCallRooms = useActiveCallRooms(conversations);
@@ -127,14 +129,17 @@ export const UnifiedChatPanelConnector = () => {
   const formatTimestamp = (timestampMs: number) =>
     formatDistanceToNowStrict(new Date(timestampMs), { addSuffix: true, locale });
 
-  const listItems = conversations.map(conversation => {
-    const mapped = mapConversationToListItem(conversation, { currentUserId, formatTimestamp });
-    const item = activeCallRooms.has(conversation.roomId) ? { ...mapped, hasActiveCall: true } : mapped;
-    const draft = drafts[conversation.id];
-    // A draft replaces the last-message preview but leaves the ordering and the
-    // timestamp alone — the conversation does not jump the list for it.
-    return draft ? { ...item, draftPreview: draft.trim() } : item;
-  });
+  const listItems = withActiveCallsFirst(
+    conversations.map(conversation => {
+      const mapped = mapConversationToListItem(conversation, { currentUserId, formatTimestamp });
+      const item = activeCallRooms.has(conversation.roomId) ? { ...mapped, hasActiveCall: true } : mapped;
+      const draft = drafts[conversation.id];
+      // A draft replaces the last-message preview but leaves the ordering and the
+      // timestamp alone — the conversation does not jump the list for it.
+      return draft ? { ...item, draftPreview: draft.trim() } : item;
+    }),
+    newlyCreatedConversationId
+  );
 
   const view = selectedConversationId ? 'thread' : 'list';
 
@@ -245,11 +250,12 @@ export const UnifiedChatPanelConnector = () => {
         </button>
       </>
     );
-  } else if (selectedConversation?.isGroup) {
+  } else if (selectedConversation) {
+    const { isGroup } = selectedConversation;
     const { matrixRoomId } = callEligibility;
-    const startCall = (intent: CallIntent) => {
+    const openCallWith = (action: CallAction, media: CallMedia) => {
       if (matrixRoomId) {
-        openCall({ matrixRoomId, intent });
+        openCall({ matrixRoomId, intent: callIntentFor({ isGroup, action, media }) });
       }
     };
     let callActions: ReactNode = null;
@@ -271,8 +277,8 @@ export const UnifiedChatPanelConnector = () => {
                     joinLabel: t('call.join'),
                     joinVideoLabel: t('call.joinVideo'),
                     joinAudioLabel: t('call.joinAudio'),
-                    onJoinVideo: () => startCall('join_existing'),
-                    onJoinAudio: () => startCall('join_existing_voice'),
+                    onJoinVideo: () => openCallWith('join', 'video'),
+                    onJoinAudio: () => openCallWith('join', 'voice'),
                   }
             }
           />
@@ -280,23 +286,27 @@ export const UnifiedChatPanelConnector = () => {
           <CallControls
             startAudioLabel={t('call.startAudio')}
             startVideoLabel={t('call.startVideo')}
-            onStartAudio={() => startCall('start_call_voice')}
-            onStartVideo={() => startCall('start_call')}
+            onStartAudio={() => openCallWith('start', 'voice')}
+            onStartVideo={() => openCallWith('start', 'video')}
           />
         );
     }
-    headerActions = (
-      <div className="flex items-center gap-1">
-        {callActions}
-        <ChatOptionsMenu
-          label={t('thread.options')}
-          settingsLabel={t('group.settings')}
-          onOpenSettings={groupSettings.openDialog}
-          leaveLabel={t('group.leave')}
-          onLeave={() => setLeaveConfirmOpen(true)}
-        />
-      </div>
-    );
+    if (isGroup) {
+      headerActions = (
+        <div className="flex items-center gap-1">
+          {callActions}
+          <ChatOptionsMenu
+            label={t('thread.options')}
+            settingsLabel={t('group.settings')}
+            onOpenSettings={groupSettings.openDialog}
+            leaveLabel={t('group.leave')}
+            onLeave={() => setLeaveConfirmOpen(true)}
+          />
+        </div>
+      );
+    } else if (callActions) {
+      headerActions = <div className="flex items-center gap-1">{callActions}</div>;
+    }
   }
   const isGroupThread = view === 'thread' && Boolean(selectedConversation?.isGroup);
 

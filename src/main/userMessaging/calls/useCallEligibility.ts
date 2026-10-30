@@ -1,6 +1,6 @@
 import type { MatrixClient } from 'matrix-js-sdk';
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { CLIENT_SYNC, resolveMatrixRoomId } from '@/main/userMessaging/matrix/matrixRooms';
@@ -11,6 +11,7 @@ type CallableConversation = {
   readonly roomId: string;
   readonly isGroup: boolean;
   readonly isGuidance: boolean;
+  readonly members: readonly { readonly type: ActorType }[];
 };
 
 type CallEligibility = {
@@ -40,20 +41,37 @@ const isBetaTester = (platformRoles: readonly RoleName[] | undefined): boolean =
   (platformRoles ?? []).includes(RoleName.FeatureBetaTester);
 
 /**
+ * A call is between people: any group conversation, or a direct conversation
+ * between two users. A direct conversation with a virtual contributor or any
+ * other non-user actor is a chat with software, not someone to call. The
+ * guidance conversation is never callable.
+ */
+const isCallableConversation = (conversation: CallableConversation): boolean => {
+  if (conversation.isGuidance) {
+    return false;
+  }
+  if (conversation.isGroup) {
+    return true;
+  }
+  return conversation.members.length === 2 && conversation.members.every(member => member.type === ActorType.User);
+};
+
+/**
  * Whether call controls may show for a conversation. The Feature Beta Tester
  * role only decides what this client renders — it is not access control: any
  * room member can still start or join a call from another Matrix client.
  *
  * Nothing shows until the chat session is synced and the conversation's
- * Matrix room is resolved; a group conversation, a configured environment
- * and the role are required as well.
+ * Matrix room is resolved; a callable conversation (a group, or a direct
+ * conversation with another user), a configured environment and the role are
+ * required as well.
  */
 const useCallEligibility = (conversation: CallableConversation | null): CallEligibility => {
   const { platformRoles } = useCurrentUserContext();
   const client = useMatrixClient();
   const isSynced = useIsSynced(client);
   const candidateRoomId =
-    conversation?.isGroup && !conversation.isGuidance && isBetaTester(platformRoles) && isCallsConfigured()
+    conversation && isCallableConversation(conversation) && isBetaTester(platformRoles) && isCallsConfigured()
       ? conversation.roomId
       : null;
 
@@ -86,5 +104,5 @@ const useCallEligibility = (conversation: CallableConversation | null): CallElig
   return { eligible, matrixRoomId: eligible ? matrixRoomId : null };
 };
 
-export { isBetaTester, useCallEligibility, useIsSynced };
+export { isBetaTester, isCallableConversation, useCallEligibility, useIsSynced };
 export type { CallableConversation, CallEligibility };

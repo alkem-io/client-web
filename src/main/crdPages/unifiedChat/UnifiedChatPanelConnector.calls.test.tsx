@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -163,7 +163,7 @@ const eligible = () => {
   calls.eligibility = { eligible: true, matrixRoomId: '!group:hs' };
 };
 
-describe('UnifiedChatPanelConnector group calls', () => {
+describe('UnifiedChatPanelConnector calls', () => {
   beforeEach(() => {
     calls.eligibility = { eligible: false, matrixRoomId: null };
     calls.session = { participants: [], participantCount: 0, isJoinedOnThisDevice: false, isJoinedHere: false };
@@ -173,6 +173,7 @@ describe('UnifiedChatPanelConnector group calls', () => {
     state.conversations = [directChat, groupChat];
     state.selectedConversationId = 'group';
     listProps = undefined;
+    menuProps = undefined;
   });
 
   it('offers start-call controls before the options menu in an eligible group with no call', async () => {
@@ -237,11 +238,12 @@ describe('UnifiedChatPanelConnector group calls', () => {
     expect(screen.queryByText('call.joinedOnThisDevice')).not.toBeInTheDocument();
   });
 
-  it('says the call is joined on this device in another tab, instead of offering to join it twice', () => {
+  it('says the call is joined on this device in another tab, instead of offering to join it twice', async () => {
     eligible();
     calls.session = { participants: ['@me:hs'], participantCount: 1, isJoinedOnThisDevice: true, isJoinedHere: false };
     render(<UnifiedChatPanelConnector />);
-    expect(screen.getByText('call.joinedOnThisDevice')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('call.active'));
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('call.joinedOnThisDevice');
     expect(screen.queryByRole('button', { name: 'call.joinVideo' })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'call.joinAudio' })).not.toBeInTheDocument();
   });
@@ -257,10 +259,51 @@ describe('UnifiedChatPanelConnector group calls', () => {
     expect(screen.queryByTestId('call-active-indicator')).not.toBeInTheDocument();
   });
 
-  it('marks list rows of conversations with a running call', () => {
+  it('offers start-call controls in an eligible 1:1 conversation, opening direct calls', async () => {
+    state.selectedConversationId = 'direct';
+    calls.eligibility = { eligible: true, matrixRoomId: '!direct:hs' };
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    render(<UnifiedChatPanelConnector />);
+
+    expect(calls.eligibilityInput[calls.eligibilityInput.length - 1]).toBe(directChat);
+    await user.click(screen.getByRole('button', { name: 'call.startVideo' }));
+    expect(calls.openCall).toHaveBeenLastCalledWith({ matrixRoomId: '!direct:hs', intent: 'start_call_dm' });
+    await user.click(screen.getByRole('button', { name: 'call.startAudio' }));
+    expect(calls.openCall).toHaveBeenLastCalledWith({ matrixRoomId: '!direct:hs', intent: 'start_call_dm_voice' });
+    // A 1:1 conversation has no group options menu.
+    expect(menuProps).toBeUndefined();
+  });
+
+  it('shows a running call in a 1:1 conversation and joins it as a direct call', async () => {
+    state.selectedConversationId = 'direct';
+    calls.eligibility = { eligible: true, matrixRoomId: '!direct:hs' };
+    calls.session = {
+      participants: ['@ann:hs'],
+      participantCount: 1,
+      isJoinedOnThisDevice: false,
+      isJoinedHere: false,
+    };
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    render(<UnifiedChatPanelConnector />);
+
+    expect(screen.getByText('call.active')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'call.joinVideo' }));
+    expect(calls.openCall).toHaveBeenLastCalledWith({ matrixRoomId: '!direct:hs', intent: 'join_existing_dm' });
+    await user.click(screen.getByRole('button', { name: 'call.joinAudio' }));
+    expect(calls.openCall).toHaveBeenLastCalledWith({ matrixRoomId: '!direct:hs', intent: 'join_existing_dm_voice' });
+  });
+
+  it('shows nothing call-related in a 1:1 conversation that is not eligible', () => {
+    state.selectedConversationId = 'direct';
+    render(<UnifiedChatPanelConnector />);
+    expect(screen.queryByTestId('call-controls')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('call-active-indicator')).not.toBeInTheDocument();
+  });
+
+  it('marks list rows of conversations with a running call and moves them to the top', () => {
     state.selectedConversationId = null;
     calls.activeRooms = new Set(['r-group']);
     render(<UnifiedChatPanelConnector />);
-    expect(listProps?.conversations).toEqual([{ id: 'direct' }, { id: 'group', hasActiveCall: true }]);
+    expect(listProps?.conversations).toEqual([{ id: 'group', hasActiveCall: true }, { id: 'direct' }]);
   });
 });
