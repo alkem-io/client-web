@@ -105,5 +105,28 @@
       "messageTooLong": "Le message doit comporter au maximum {{max}} caractères.",
       "sendFailed": "Impossible d'envoyer le message. Veuillez réessayer."
     }
+  },
+  "call": {
+    "startAudio": "Démarrer un appel audio",
+    "startVideo": "Démarrer un appel vidéo",
+    "active": "Appel en cours",
+    "join": "Rejoindre",
+    "joinVideo": "Rejoindre avec la vidéo",
+    "joinAudio": "Rejoindre en audio uniquement",
+    "joinedOnThisDevice": "Déjà rejoint sur cet appareil",
+    "overlayLabel": "Appel",
+    "close": "Fermer l’appel",
+    "license": "Licence open source",
+    "opensInNewTab": "ouvre un nouvel onglet",
+    "leaveConfirm": {
+      "title": "Quitter l’appel ?",
+      "description": "Vous allez quitter l’appel. Les autres peuvent continuer sans vous.",
+      "descriptionDirect": "Vous allez quitter l’appel, et il se terminera aussi pour l’autre personne.",
+      "confirm": "Quitter l’appel",
+      "cancel": "Rester dans l’appel"
+    },
+    "listBadge": "Appel en cours",
+    "callingYou": "{{name}} vous appelle",
+    "groupCall": "Appel dans {{name}}"
   }
 }

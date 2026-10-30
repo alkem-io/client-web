@@ -1,8 +1,13 @@
-import { Download, FileText } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Download, FileText, Loader2, Maximize2 } from 'lucide-react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  CalloutMediaGalleryCarousel,
+  type CalloutMediaGalleryCarouselItem,
+} from '@/crd/components/callout/CalloutMediaGalleryCarousel';
 import { formatBytes } from '@/crd/lib/formatBytes';
 import { cn } from '@/crd/lib/utils';
+import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
 import type { MessageAttachment } from './types';
 
 type MessageAttachmentsProps = {
@@ -21,46 +26,116 @@ const isVideo = (mimeType: string | undefined) => mimeType?.startsWith('video/')
  *  through. */
 const isHttpUrl = (url: string | undefined): url is string => typeof url === 'string' && /^https?:\/\//i.test(url);
 
+// Identifies one load attempt of an attachment: a new URL or retryKey is a fresh
+// attempt, so an earlier failure no longer applies.
+const loadAttemptKey = (attachment: MessageAttachment, index: number) =>
+  `${attachment.id ?? `unavailable-${index}`}:${attachment.retryKey ?? 0}:${attachment.url ?? ''}`;
+
 /**
- * Renders the media attachments on a message (feature 013). Images show an
- * inline preview that links to the full document; videos use native controls
- * without preloading the timeline. Other types render a downloadable file chip.
+ * Renders the media attachments on a message. Images show an inline preview
+ * that opens the message's media in an in-page viewer; videos use native
+ * controls without preloading the timeline, plus an expand control into the
+ * same viewer. Other types render a downloadable file chip.
  * `url` is the integration-supplied media resource,
  * so web- and Element-origin attachments render identically. Images that fail
  * to load degrade to the same downloadable chip with an "unavailable" hint.
  */
 export function MessageAttachments({ attachments, align = 'start', className }: MessageAttachmentsProps) {
   const { t } = useTranslation('crd-common');
+  // Gallery item id of the media the viewer opened at; undefined = closed.
+  const [openItemId, setOpenItemId] = useState<string | undefined>(undefined);
+  // Load attempts whose inline preview failed; those are not offered in the viewer.
+  const [failedAttempts, setFailedAttempts] = useState<ReadonlySet<string>>(() => new Set());
 
   if (!attachments.length) {
     return null;
   }
 
+  // The viewer swipes through this message's images and videos only, and only
+  // those with a URL we are willing to render and that did not fail to load inline.
+  const galleryItems: CalloutMediaGalleryCarouselItem[] = [];
+  const galleryIdByAttachment = new Map<number, string>();
+  attachments.forEach((attachment, index) => {
+    const kind = isImage(attachment.mimeType) ? 'image' : isVideo(attachment.mimeType) ? 'video' : undefined;
+    if (!kind || !isHttpUrl(attachment.url) || failedAttempts.has(loadAttemptKey(attachment, index))) return;
+    galleryIdByAttachment.set(index, `${attachment.id ?? `media-${index}`}:${index}`);
+    galleryItems.push({
+      id: `${attachment.id ?? `media-${index}`}:${index}`,
+      uri: attachment.url,
+      kind,
+      // Same-origin attachment URL, so `download` is honoured — the same link as the inline download control.
+      download: { href: attachment.url, fileName: attachment.displayName },
+      alternativeText: t(kind === 'image' ? 'messageAttachments.imageAlt' : 'messageAttachments.videoLabel', {
+        name: attachment.displayName,
+      }),
+    });
+  });
+
+  const galleryIndex = openItemId === undefined ? -1 : galleryItems.findIndex(item => item.id === openItemId);
+
+  const openGalleryAt = (attachmentIndex: number) => () => setOpenItemId(galleryIdByAttachment.get(attachmentIndex));
+
+  const markFailed = (attachment: MessageAttachment, index: number) => () =>
+    setFailedAttempts(previous => new Set(previous).add(loadAttemptKey(attachment, index)));
+
   const listClassName = cn('flex flex-col gap-1.5', align === 'end' && 'items-end', className);
 
   return (
-    // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
-    // biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset
-    <ul role="list" aria-label={t('messageAttachments.listLabel')} className={listClassName}>
-      {attachments.map((attachment, index) => (
-        <li
-          key={`${attachment.id ?? `unavailable-${index}`}:${attachment.retryKey ?? 0}`}
-          className="max-w-[min(320px,100%)]"
+    <>
+      {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+      {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+      <ul role="list" aria-label={t('messageAttachments.listLabel')} className={listClassName}>
+        {attachments.map((attachment, index) => (
+          <li
+            key={`${attachment.id ?? `unavailable-${index}`}:${attachment.retryKey ?? 0}`}
+            className="max-w-[min(320px,100%)]"
+          >
+            {isImage(attachment.mimeType) ? (
+              <AttachmentImage
+                attachment={attachment}
+                onOpen={openGalleryAt(index)}
+                onFailed={markFailed(attachment, index)}
+              />
+            ) : isVideo(attachment.mimeType) ? (
+              <AttachmentVideo
+                attachment={attachment}
+                onOpen={openGalleryAt(index)}
+                onFailed={markFailed(attachment, index)}
+              />
+            ) : (
+              <AttachmentFileChip attachment={attachment} />
+            )}
+          </li>
+        ))}
+      </ul>
+      <Dialog
+        open={galleryIndex !== -1}
+        onOpenChange={open => {
+          if (!open) setOpenItemId(undefined);
+        }}
+      >
+        <DialogContent
+          closeLabel={t('close')}
+          aria-describedby={undefined}
+          className="max-h-[100dvh] w-full max-w-[calc(100%-1rem)] overflow-y-auto p-2 pt-12 sm:max-w-4xl sm:p-4 sm:pt-12"
         >
-          {isImage(attachment.mimeType) ? (
-            <AttachmentImage attachment={attachment} />
-          ) : isVideo(attachment.mimeType) ? (
-            <AttachmentVideo attachment={attachment} />
-          ) : (
-            <AttachmentFileChip attachment={attachment} />
-          )}
-        </li>
-      ))}
-    </ul>
+          <DialogTitle className="sr-only">{t('messageAttachments.listLabel')}</DialogTitle>
+          {/* The viewer's labels live in a lazily-loaded namespace; suspend here,
+              not in whatever boundary sits above the thread. */}
+          <Suspense
+            fallback={<Loader2 aria-hidden="true" className="mx-auto size-6 animate-spin text-muted-foreground" />}
+          >
+            {galleryIndex !== -1 && <CalloutMediaGalleryCarousel items={galleryItems} initialIndex={galleryIndex} />}
+          </Suspense>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
-function AttachmentImage({ attachment }: { attachment: MessageAttachment }) {
+type InlineMediaProps = { attachment: MessageAttachment; onOpen: () => void; onFailed: () => void };
+
+function AttachmentImage({ attachment, onOpen, onFailed }: InlineMediaProps) {
   const { t } = useTranslation('crd-common');
   const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
 
@@ -87,11 +162,11 @@ function AttachmentImage({ attachment }: { attachment: MessageAttachment }) {
 
   return (
     <div className="group/media relative overflow-hidden rounded-lg border border-border">
-      <a
-        href={attachment.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+      <button
+        type="button"
+        onClick={onOpen}
+        aria-label={t('messageAttachments.openMedia', { name: attachment.displayName })}
+        className="block w-full cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
       >
         {/* Overlays the image rather than replacing it — see the `img` note below. */}
         {status === 'loading' && (
@@ -104,6 +179,7 @@ function AttachmentImage({ attachment }: { attachment: MessageAttachment }) {
           onLoad={() => setStatus('loaded')}
           onError={() => {
             setStatus('error');
+            onFailed();
             attachment.onLoadError?.();
           }}
           // Never take the image OUT of the layout while it loads. A
@@ -120,15 +196,16 @@ function AttachmentImage({ attachment }: { attachment: MessageAttachment }) {
           )}
           style={aspectStyle}
         />
-      </a>
+      </button>
       <AttachmentDownload attachment={attachment} />
     </div>
   );
 }
 
-function AttachmentVideo({ attachment }: { attachment: MessageAttachment }) {
+function AttachmentVideo({ attachment, onOpen, onFailed }: InlineMediaProps) {
   const { t } = useTranslation('crd-common');
   const [failed, setFailed] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     setFailed(false);
@@ -143,6 +220,7 @@ function AttachmentVideo({ attachment }: { attachment: MessageAttachment }) {
       {/* User-provided clips have no caption track supplied by the attachment API. */}
       {/* biome-ignore lint/a11y/useMediaCaption: no caption track is available for uploaded attachments */}
       <video
+        ref={videoRef}
         src={attachment.url}
         controls={true}
         playsInline={true}
@@ -151,18 +229,37 @@ function AttachmentVideo({ attachment }: { attachment: MessageAttachment }) {
         onLoadedMetadata={event => {
           if (event.currentTarget.videoWidth === 0) {
             setFailed(true);
+            onFailed();
           }
         }}
         onError={() => {
           setFailed(true);
+          onFailed();
           attachment.onLoadError?.();
         }}
         className="block aspect-video max-h-80 w-80 max-w-full bg-black object-contain focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
       />
+      <button
+        type="button"
+        onClick={() => {
+          // The viewer plays its own copy; don't leave this one playing behind it.
+          videoRef.current?.pause();
+          onOpen();
+        }}
+        aria-label={t('messageAttachments.openMedia', { name: attachment.displayName })}
+        className={cn(MEDIA_ACTION_CLASS, 'right-11')}
+      >
+        <Maximize2 aria-hidden="true" className="size-4" />
+      </button>
       <AttachmentDownload attachment={attachment} />
     </div>
   );
 }
+
+// Shared by the overlay actions on an image/video: always visible on touch,
+// revealed on hover/focus where the device can hover.
+const MEDIA_ACTION_CLASS =
+  'absolute top-2 z-10 flex size-8 items-center justify-center rounded-md border border-border bg-background text-foreground opacity-100 shadow-md transition-opacity hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background [@media(hover:hover)]:opacity-0 group-hover/media:opacity-100 group-focus-within/media:opacity-100 focus-visible:opacity-100';
 
 function AttachmentDownload({ attachment }: { attachment: MessageAttachment }) {
   const { t } = useTranslation('crd-common');
@@ -172,7 +269,7 @@ function AttachmentDownload({ attachment }: { attachment: MessageAttachment }) {
       href={attachment.url}
       download={attachment.displayName}
       aria-label={t('messageAttachments.download', { name: attachment.displayName })}
-      className="absolute right-2 top-2 z-10 flex size-8 items-center justify-center rounded-md border border-border bg-background text-foreground opacity-100 shadow-md transition-opacity hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background [@media(hover:hover)]:opacity-0 group-hover/media:opacity-100 group-focus-within/media:opacity-100 focus-visible:opacity-100"
+      className={cn(MEDIA_ACTION_CLASS, 'right-2')}
     >
       <Download aria-hidden="true" className="size-4" />
     </a>

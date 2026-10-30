@@ -24,6 +24,13 @@ export type AuthShellProps = {
    * single-column width, so smaller screens are unaffected. Defaults to `false`.
    */
   wide?: boolean;
+
+  /**
+   * Renders the children as a full-height screen on the plain page background
+   * instead of a centred card over the decorative backdrop. For content that is
+   * the whole screen rather than a card. Defaults to `false`.
+   */
+  plain?: boolean;
 };
 
 /**
@@ -40,13 +47,21 @@ export function AuthShell({
   footerLinks,
   onSupportClick,
   wide,
+  plain,
 }: AuthShellProps) {
   return (
-    <div className="crd-root relative flex min-h-screen flex-col">
-      <AuthBackdrop />
+    <div className={cn('crd-root relative flex min-h-screen flex-col', plain && 'bg-background')}>
+      {plain ? null : <AuthBackdrop />}
 
-      <main className="relative z-10 flex flex-1 items-center justify-center px-6 py-12 md:px-12 lg:px-24 xl:px-32">
-        <div className={cn('w-full max-w-[420px]', wide && 'lg:max-w-[880px]')}>{children}</div>
+      <main
+        className={cn(
+          'relative z-10 flex flex-1 justify-center px-6 md:px-12 lg:px-24 xl:px-32',
+          plain ? 'items-stretch' : 'items-center py-12'
+        )}
+      >
+        <div className={cn('w-full max-w-[420px]', wide && 'lg:max-w-[880px]', plain && 'flex flex-col')}>
+          {children}
+        </div>
       </main>
 
       <div className="relative z-10">

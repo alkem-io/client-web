@@ -23,6 +23,7 @@ import type { PendingMembership } from '@/crd/components/space/settings/PendingM
 import { PendingMembershipsTable } from '@/crd/components/space/settings/PendingMembershipsTable';
 import type { PendingOrganizationInvitationItem } from '@/crd/components/space/settings/PendingOrganizationInvitationsList';
 import { PendingOrganizationInvitationsList } from '@/crd/components/space/settings/PendingOrganizationInvitationsList';
+import { VcPausedNotice } from '@/crd/components/virtualContributor/VcPausedNotice';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { formatShortDate } from '@/crd/lib/dateTimeFormat';
 import { cn } from '@/crd/lib/utils';
@@ -128,7 +129,8 @@ export type SpaceSettingsCommunityViewProps = {
   /** Open the Member settings dialog for this organization. */
   onOrgChangeRole?: (org: CommunityOrg) => void;
   onOrgInvitationRevoke: (id: string) => void;
-  onVCAdd: () => void;
+  // TEMP: VCs disabled (#10398) — optional so the page can stop passing it; restore to required.
+  onVCAdd?: () => void;
   onVCAddExternal?: () => void;
   onVCRemove: (id: string) => void;
   onPendingView: (id: string) => void;
@@ -139,6 +141,8 @@ export type SpaceSettingsCommunityViewProps = {
   resendingIds?: ReadonlySet<string>;
   onInviteUsers: () => void;
   onExportMembers?: () => void;
+  onExportApplications?: () => void;
+  onExportOrganizations?: () => void;
   exportDisabled?: boolean;
   className?: string;
 };
@@ -174,11 +178,15 @@ export function SpaceSettingsCommunityView({
   resendingIds,
   onInviteUsers,
   onExportMembers,
+  onExportApplications,
+  onExportOrganizations,
   exportDisabled,
   className,
 }: SpaceSettingsCommunityViewProps) {
   const { t, i18n } = useTranslation('crd-spaceSettings');
   const locale = resolveDateFnsLocale(i18n.language);
+  // FR-042: subspace copy via the i18next `_subspace` key variants.
+  const context = level === 'L0' ? undefined : 'subspace';
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [orgSearch, setOrgSearch] = useState('');
@@ -240,7 +248,7 @@ export function SpaceSettingsCommunityView({
       {/* Space Members table */}
       <SettingsSection
         id="members"
-        title={t('community.members.title')}
+        title={t('community.members.title', { context })}
         icon={<Users className="size-4" />}
         iconColor="blue"
         badge={<CountBadge count={filtered.length} />}
@@ -278,6 +286,19 @@ export function SpaceSettingsCommunityView({
                 >
                   <Download aria-hidden="true" className="size-4" />
                   {t('community.members.export')}
+                </Button>
+              )}
+              {onExportApplications && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={onExportApplications}
+                  disabled={exportDisabled}
+                >
+                  <Download aria-hidden="true" className="size-4" />
+                  {t('community.members.exportApplications')}
                 </Button>
               )}
             </div>
@@ -366,7 +387,7 @@ export function SpaceSettingsCommunityView({
                                     onClick={() => onUserRemove?.(m.id)}
                                   >
                                     <Trash2 aria-hidden="true" className="mr-2 size-4" />
-                                    {t('community.members.dropdown.removeFromSpace')}
+                                    {t('community.members.dropdown.removeFromSpace', { context })}
                                   </DropdownMenuItem>
                                 )}
                               </>
@@ -469,7 +490,7 @@ export function SpaceSettingsCommunityView({
               className="h-9 w-[220px] pl-9 text-control"
             />
           </div>
-          <div className="flex">
+          <div className="flex items-center gap-2 flex-wrap">
             {/* Gated, not hidden: every Space admin can eventually invite, so concealing this
                 action would hide a capability the user can actually obtain, and it would flip
                 hidden→shown once the privilege query resolves. Invitation is the only way an
@@ -480,6 +501,19 @@ export function SpaceSettingsCommunityView({
                 {t('community.organizations.invite')}
               </Button>
             </GatedAction>
+            {onExportOrganizations && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={onExportOrganizations}
+                disabled={exportDisabled}
+              >
+                <Download aria-hidden="true" className="size-4" />
+                {t('community.organizations.export')}
+              </Button>
+            )}
           </div>
         </div>
         <div className="rounded-lg border bg-card overflow-hidden">
@@ -561,7 +595,7 @@ export function SpaceSettingsCommunityView({
                                   onClick={() => onOrgRemove?.(org.id)}
                                 >
                                   <Trash2 aria-hidden="true" className="mr-2 size-4" />
-                                  {t('community.organizations.dropdown.removeFromSpace')}
+                                  {t('community.organizations.dropdown.removeFromSpace', { context })}
                                 </DropdownMenuItem>
                               )}
                             </>
@@ -646,22 +680,29 @@ export function SpaceSettingsCommunityView({
               </TableBody>
             </Table>
           </div>
-          <div className="mt-4 flex flex-wrap items-center gap-2">
-            <GatedAction disabledReason={addDisabledReasons?.virtualContributors}>
-              <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAdd}>
-                <Plus aria-hidden="true" className="size-4" />
-                {t('community.virtualContributors.add')}
-              </Button>
-            </GatedAction>
-            {onVCAddExternal && (
-              <GatedAction disabledReason={addDisabledReasons?.virtualContributors}>
-                <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAddExternal}>
-                  <Plus aria-hidden="true" className="size-4" />
-                  {t('community.virtualContributors.addExternal')}
-                </Button>
-              </GatedAction>
-            )}
-          </div>
+          {/* TEMP: VCs disabled (#10398) — the notice replaces the Add buttons when the page passes none. */}
+          {onVCAdd || onVCAddExternal ? (
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              {onVCAdd && (
+                <GatedAction disabledReason={addDisabledReasons?.virtualContributors}>
+                  <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAdd}>
+                    <Plus aria-hidden="true" className="size-4" />
+                    {t('community.virtualContributors.add')}
+                  </Button>
+                </GatedAction>
+              )}
+              {onVCAddExternal && (
+                <GatedAction disabledReason={addDisabledReasons?.virtualContributors}>
+                  <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAddExternal}>
+                    <Plus aria-hidden="true" className="size-4" />
+                    {t('community.virtualContributors.addExternal')}
+                  </Button>
+                </GatedAction>
+              )}
+            </div>
+          ) : (
+            <VcPausedNotice className="mt-4" />
+          )}
         </SettingsSection>
       )}
     </div>

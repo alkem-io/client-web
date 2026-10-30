@@ -1603,7 +1603,8 @@
     "download": "Download {{name}}",
     "unavailableHint": "This file could not be loaded. Download it to view.",
     "unavailableNoDownload": "This file is unavailable.",
-    "loading": "Loading attachment"
+    "loading": "Loading attachment",
+    "openMedia": "Open {{name}} in the media viewer"
   },
   "unsavedChanges": {
     "count_one": "{{count}} unsaved change",
@@ -1631,5 +1632,12 @@
       "refresh": "Refresh page",
       "close": "Close"
     }
+  },
+  "vcPaused": {
+    "title": "Virtual Contributors are getting an upgrade! 🚀",
+    "description": "We're rebuilding them to be smarter and more helpful. While we do, you can't create, add or mention them, but your existing VCs stay visible.",
+    "learnMore": "Learn more",
+    "contactSupport": "Contact support",
+    "mentionUnavailable": "Temporarily unavailable"
   }
 }

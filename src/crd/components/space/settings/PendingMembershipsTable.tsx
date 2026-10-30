@@ -129,6 +129,15 @@ function statusId(type: PendingMembershipType, state: PendingMembershipState): S
   return 'invitedExternal';
 }
 
+/**
+ * A new application is rejected then removed; an open invitation is revoked; any
+ * closed row is only cleared from the list.
+ */
+function deleteActionId(row: PendingMembership): 'rejectAndRemove' | 'revokeInvitation' | 'removeFromList' {
+  if (row.type === 'application') return row.state === 'new' ? 'rejectAndRemove' : 'removeFromList';
+  return row.state === 'invited' ? 'revokeInvitation' : 'removeFromList';
+}
+
 function statusVariantClass(id: StatusId): string {
   switch (id) {
     case 'applicationReceived':
@@ -173,6 +182,9 @@ export function PendingMembershipsTable({
       : row.state === 'accepting'
         ? t('community.pendingMemberships.status.invitationAccepting')
         : statusLabel(statusId(row.type, row.state));
+  /** Names what the bin actually does for this row (spec 045 FR-012b). */
+  const deleteActionLabel = (row: PendingMembership) =>
+    t(`community.pendingMemberships.deleteAction.${deleteActionId(row)}`);
   const typeLabel = (row: PendingMembership) =>
     t(`community.pendingMemberships.contributorType.${row.contributorType}`);
 
@@ -429,16 +441,21 @@ export function PendingMembershipsTable({
                         </Tooltip>
                       )}
                       {row.canDelete ? (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="size-8"
-                          onClick={() => onDelete(row.id)}
-                          aria-label={t('community.pendingMemberships.delete')}
-                        >
-                          <Trash2 aria-hidden="true" className="size-4 text-destructive" />
-                        </Button>
+                        <Tooltip>
+                          <TooltipTrigger asChild={true}>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="size-8"
+                              onClick={() => onDelete(row.id)}
+                              aria-label={deleteActionLabel(row)}
+                            >
+                              <Trash2 aria-hidden="true" className="size-4 text-destructive" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>{deleteActionLabel(row)}</TooltipContent>
+                        </Tooltip>
                       ) : (
                         <span className="size-8" />
                       )}{' '}

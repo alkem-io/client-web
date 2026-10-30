@@ -4,6 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { LoginCrdRoute } from './LoginCrdRoute';
 
 let mockSearch = '';
+// The props the route last passed to the welcome screen.
+let mockWelcomeProps: Record<string, unknown> | undefined;
 const mockIsAuthenticated = vi.fn<() => boolean>();
 const replaceSpy = vi.fn<(url: string) => void>();
 
@@ -41,6 +43,33 @@ vi.mock('@/crd/components/auth/LoginCard', () => ({
       ) : null}
     </div>
   ),
+}));
+vi.mock('@/crd/components/auth/AppSignInWelcome', () => ({
+  AppSignInWelcome: (props: {
+    signInHref: string;
+    browseSpacesHref?: string;
+    message?: { text: string; tone: string };
+  }) => {
+    mockWelcomeProps = props;
+    const { signInHref, browseSpacesHref, message } = props;
+    return (
+      <div data-testid="app-signin-welcome">
+        {message ? (
+          <span data-testid="welcome-message" data-tone={message.tone}>
+            {message.text}
+          </span>
+        ) : null}
+        <a data-testid="welcome-sign-in" href={signInHref}>
+          sign in
+        </a>
+        {browseSpacesHref ? (
+          <a data-testid="welcome-browse-spaces" href={browseSpacesHref}>
+            browse
+          </a>
+        ) : null}
+      </div>
+    );
+  },
 }));
 vi.mock('./AuthShellWrapper', () => ({
   AuthShellWrapper: ({ children }: { children: React.ReactNode }) => <>{children}</>,
@@ -93,6 +122,7 @@ const renderRoute = () =>
 describe('LoginCrdRoute', () => {
   beforeEach(() => {
     mockSearch = '';
+    mockWelcomeProps = undefined;
     mockFlowState = { flow: undefined, error: undefined, loading: false };
     mockIsAuthenticated.mockReset();
     replaceSpy.mockReset();
@@ -276,23 +306,67 @@ describe('LoginCrdRoute', () => {
   // arrival — today's OIDC-entry behaviour — would discard the reason before it
   // could be read and put the app straight back into the loop it just left.
   it.each([
-    ['required', 'info'],
     ['cancelled', 'info'],
     ['failed', 'destructive'],
-  ])('an app_signin=%s arrival lands instead of redirecting, in the %s tone', (reason, tone) => {
+  ])('an app_signin=%s arrival renders the welcome view with its reason, in the %s tone', (reason, tone) => {
     mockIsAuthenticated.mockReturnValue(false);
     mockSearch = `app_signin=${reason}`;
 
     renderRoute();
 
     expect(replaceSpy).not.toHaveBeenCalled();
-    const notice = screen.getByTestId('card-notice');
-    expect(notice).toHaveTextContent(`appSignIn.${reason}`);
-    expect(notice).toHaveAttribute('data-tone', tone);
-    expect(notice.querySelector('a')?.getAttribute('href')).toBe(
+    expect(screen.queryByTestId('card-notice')).not.toBeInTheDocument();
+    const message = screen.getByTestId('welcome-message');
+    expect(message).toHaveTextContent(`appSignIn.${reason}`);
+    expect(message).toHaveAttribute('data-tone', tone);
+    expect(screen.getByTestId('welcome-sign-in')).toHaveAttribute(
+      'href',
       'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F'
     );
-    expect(notice.querySelector('a')).toHaveTextContent('appSignIn.action');
+  });
+
+  // `required` is the app's first sign-in screen, before any attempt was made:
+  // it renders the welcome view (sign in + browse) instead of a card
+  // whose only content was a "Sign in to continue." notice.
+  it('an app_signin=required arrival renders the welcome view instead of the notice card', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'app_signin=required';
+
+    renderRoute();
+
+    expect(replaceSpy).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('crd-login-card')).not.toBeInTheDocument();
+    expect(screen.getByTestId('welcome-sign-in')).toHaveAttribute(
+      'href',
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F'
+    );
+    expect(screen.getByTestId('welcome-browse-spaces')).toHaveAttribute('href', 'https://sandbox-alkem.io/spaces');
+    expect(screen.queryByTestId('welcome-message')).not.toBeInTheDocument();
+    // No sign-up entry: in the app the shell turns /sign_up into an OIDC
+    // sign-in, so a Create account button would open the sign-in screen.
+    expect(JSON.stringify(mockWelcomeProps)).not.toContain('sign_up');
+  });
+
+  it('the welcome view forwards the pending returnUrl to sign-in', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'app_signin=required&returnUrl=%2Fspace%2Fdemo';
+
+    renderRoute();
+
+    expect(screen.getByTestId('welcome-sign-in')).toHaveAttribute(
+      'href',
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2Fspace%2Fdemo'
+    );
+  });
+
+  it('a lockout wins over app_signin=required', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'app_signin=required&lockout=true&retry_after=120';
+
+    renderRoute();
+
+    expect(screen.queryByTestId('app-signin-welcome')).not.toBeInTheDocument();
+    expect(screen.getByTestId('card-notice')).toHaveAttribute('data-tone', 'destructive');
   });
 
   // The user this landing exists for is signed in: the WebView holds a live
@@ -300,14 +374,14 @@ describe('LoginCrdRoute', () => {
   // bounces them back here. Without the route-level exemption
   // `NotAuthenticatedRoute` navigates to /home and the notice never renders —
   // the case the three tests above miss, because they all pin `false`.
-  it('an authenticated app_signin=required arrival still lands on the notice', () => {
+  it('an authenticated app_signin=required arrival still lands on the welcome view', () => {
     mockIsAuthenticated.mockReturnValue(true);
     mockSearch = 'app_signin=required';
 
     renderRoute();
 
     expect(replaceSpy).not.toHaveBeenCalled();
-    expect(screen.getByTestId('card-notice')).toHaveTextContent('appSignIn.required');
+    expect(screen.getByTestId('app-signin-welcome')).toBeInTheDocument();
   });
 
   // The exemption is value-scoped too: an authenticated visitor on a crafted

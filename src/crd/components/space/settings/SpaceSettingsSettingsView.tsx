@@ -182,6 +182,8 @@ export function SpaceSettingsSettingsView({
   className,
 }: SpaceSettingsSettingsViewProps) {
   const { t } = useTranslation('crd-spaceSettings');
+  // FR-042: subspace copy via the i18next `_subspace` key variants.
+  const context = level === 'L0' ? undefined : 'subspace';
   const visibleActions = allowedActions.filter(action => isActionVisibleAtLevel(level, action.key));
 
   return (
@@ -206,7 +208,9 @@ export function SpaceSettingsSettingsView({
                 <Globe className="size-4 text-primary" />
                 {t('settings.visibility.public')}
               </span>
-              <p className="text-body text-muted-foreground">{t('settings.visibility.publicDescription')}</p>
+              <p className="text-body text-muted-foreground">
+                {t('settings.visibility.publicDescription', { context })}
+              </p>
             </div>
           </label>
           <label
@@ -222,11 +226,13 @@ export function SpaceSettingsSettingsView({
                 <Lock className="size-4 text-muted-foreground" />
                 {t('settings.visibility.private')}
               </span>
-              <p className="text-body text-muted-foreground">{t('settings.visibility.privateDescription')}</p>
+              <p className="text-body text-muted-foreground">
+                {t('settings.visibility.privateDescription', { context })}
+              </p>
             </div>
           </label>
         </RadioGroup>
-        <p className="text-caption text-muted-foreground mt-4 italic">{t('settings.visibility.hint')}</p>
+        <p className="text-caption text-muted-foreground mt-4 italic">{t('settings.visibility.hint', { context })}</p>
 
         {/* User-information visibility (feature 008). Enforcement is
                 server-side; this only configures + reflects the setting. */}
@@ -234,7 +240,9 @@ export function SpaceSettingsSettingsView({
         <div className="space-y-3">
           <div className="space-y-1">
             <h4 className="text-card-title">{t('settings.userInfoVisibility.title')}</h4>
-            <p className="text-body text-muted-foreground">{t('settings.userInfoVisibility.description')}</p>
+            <p className="text-body text-muted-foreground">
+              {t('settings.userInfoVisibility.description', { context })}
+            </p>
           </div>
           <RadioGroup
             value={userInfoVisibility}
@@ -261,11 +269,14 @@ export function SpaceSettingsSettingsView({
                       ) : (
                         <Globe className="size-4 text-primary" aria-hidden="true" />
                       )}
-                      {t(`settings.userInfoVisibility.${option}` as 'settings.userInfoVisibility.followSpace')}
+                      {t(`settings.userInfoVisibility.${option}` as 'settings.userInfoVisibility.followSpace', {
+                        context,
+                      })}
                     </span>
                     <p className="text-body text-muted-foreground">
                       {t(
-                        `settings.userInfoVisibility.${option}Description` as 'settings.userInfoVisibility.followSpaceDescription'
+                        `settings.userInfoVisibility.${option}Description` as 'settings.userInfoVisibility.followSpaceDescription',
+                        { context }
                       )}
                     </p>
                   </div>
@@ -296,8 +307,10 @@ export function SpaceSettingsSettingsView({
                 <UserPlus className="size-4 text-primary" />
                 {t('settings.membership.open')}
               </span>
-              <p className="text-body text-muted-foreground">{t('settings.membership.openDescription')}</p>
-              <p className="text-caption text-muted-foreground italic mt-1">{t('settings.membership.openHint')}</p>
+              <p className="text-body text-muted-foreground">{t('settings.membership.openDescription', { context })}</p>
+              <p className="text-caption text-muted-foreground italic mt-1">
+                {t('settings.membership.openHint', { context })}
+              </p>
             </div>
           </label>
           <label
@@ -315,7 +328,7 @@ export function SpaceSettingsSettingsView({
               </span>
               <p className="text-body text-muted-foreground">{t('settings.membership.applicationDescription')}</p>
               <p className="text-caption text-muted-foreground italic mt-1">
-                {t('settings.membership.applicationHint')}
+                {t('settings.membership.applicationHint', { context })}
               </p>
             </div>
           </label>
@@ -348,7 +361,7 @@ export function SpaceSettingsSettingsView({
                 {t('settings.membership.trustedApplicants')}
               </Label>
               <p className="text-caption text-muted-foreground">
-                {t('settings.membership.hostOrgTrust', { host: providerDisplayName })}
+                {t('settings.membership.hostOrgTrust', { host: providerDisplayName, context })}
               </p>
             </div>
             <Switch
