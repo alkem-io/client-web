@@ -5,7 +5,8 @@ import {
   NotificationEventCategory,
   NotificationEventInAppState,
 } from '@/core/apollo/generated/graphql-schema';
-import { useInAppNotifications } from './useInAppNotifications';
+import { NotificationFilterType } from './notificationFilters';
+import { IN_APP_NOTIFICATIONS_PAGE_SIZE, useInAppNotifications } from './useInAppNotifications';
 
 type Row = {
   id: string;
@@ -20,6 +21,10 @@ type Row = {
 const state = vi.hoisted(() => ({
   rows: [] as unknown[],
   updateState: vi.fn(),
+  unreadCount: 2 as number | undefined,
+  selectedFilter: 'all' as string,
+  refetch: vi.fn(),
+  fetchMore: vi.fn(),
 }));
 
 vi.mock('@/core/logging/sentry/log', () => ({
@@ -27,16 +32,13 @@ vi.mock('@/core/logging/sentry/log', () => ({
   TagCategoryValues: { NOTIFICATIONS: 'notifications' },
 }));
 
-vi.mock('./InAppNotificationsContext', async () => {
-  const { NotificationFilterType } = await import('./notificationFilters');
-  return {
-    useInAppNotificationsContext: () => ({
-      isEnabled: true,
-      isOpen: true,
-      selectedFilter: NotificationFilterType.All,
-    }),
-  };
-});
+vi.mock('./InAppNotificationsContext', () => ({
+  useInAppNotificationsContext: () => ({
+    isEnabled: true,
+    isOpen: true,
+    selectedFilter: state.selectedFilter,
+  }),
+}));
 
 const queryResult = () => ({
   me: {
@@ -50,14 +52,16 @@ const queryResult = () => ({
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   // The panel page and the all-types probe both read the same fetched rows here.
-  useInAppNotificationsQuery: () => ({
+  useInAppNotificationsQuery: (options: { variables: { first: number } }) => ({
     data: queryResult(),
     loading: false,
     error: undefined,
-    fetchMore: vi.fn(),
-    refetch: vi.fn(),
+    fetchMore: state.fetchMore,
+    refetch: () => Promise.resolve(state.refetch(options.variables.first)),
   }),
-  useInAppNotificationsUnreadCountQuery: () => ({ data: { me: { notificationsUnreadCount: 2 } } }),
+  useInAppNotificationsUnreadCountQuery: () => ({
+    data: state.unreadCount === undefined ? undefined : { me: { notificationsUnreadCount: state.unreadCount } },
+  }),
   useUpdateNotificationStateMutation: () => [state.updateState],
   useMarkNotificationsAsReadMutation: () => [vi.fn()],
 }));
@@ -108,5 +112,110 @@ describe('useInAppNotifications — unread notifications the panel cannot show',
     renderHook(() => useInAppNotifications());
 
     expect(state.updateState).not.toHaveBeenCalled();
+  });
+});
+
+describe('useInAppNotifications — a notification arriving while the dialog is open', () => {
+  beforeEach(() => {
+    state.rows = [];
+    state.unreadCount = 2;
+    state.selectedFilter = NotificationFilterType.All;
+    state.refetch.mockReset();
+    state.fetchMore.mockReset();
+    state.fetchMore.mockResolvedValue({});
+  });
+
+  it('refetches the per-tab probe and pulls the newest page into the list when the unread count rises', () => {
+    const { rerender } = renderHook(() => useInAppNotifications());
+    expect(state.refetch).not.toHaveBeenCalled();
+    expect(state.fetchMore).not.toHaveBeenCalled();
+
+    state.unreadCount = 3;
+    rerender();
+
+    expect(state.refetch.mock.calls.map(([first]) => first)).toEqual([50]);
+    expect(state.fetchMore).toHaveBeenCalledTimes(1);
+    expect(state.fetchMore.mock.calls[0][0].variables).toEqual(
+      expect.objectContaining({ first: IN_APP_NOTIFICATIONS_PAGE_SIZE })
+    );
+    expect(state.fetchMore.mock.calls[0][0].variables.after).toBeUndefined();
+  });
+
+  it('keeps the pages already loaded with "load more" and their cursor when the new notification arrives', () => {
+    const { rerender } = renderHook(() => useInAppNotifications());
+    state.unreadCount = 3;
+    rerender();
+
+    const page = (ids: string[], endCursor: string, hasNextPage: boolean) => ({
+      me: {
+        notifications: {
+          inAppNotifications: ids.map(id => row(id, true)),
+          pageInfo: { endCursor, hasNextPage },
+          total: 30,
+        },
+      },
+    });
+    // Two pages loaded; the newest page now starts with the arrived notification.
+    const prev = page(['a', 'b', 'c', 'd'], 'cursor-d', true);
+    const newest = page(['new', 'a', 'b'], 'cursor-b', true);
+
+    const { updateQuery } = state.fetchMore.mock.calls[0][0];
+    const merged = updateQuery(prev, { fetchMoreResult: newest });
+
+    expect(merged.me.notifications.inAppNotifications.map((n: Row) => n.id)).toEqual(['new', 'a', 'b', 'c', 'd']);
+    expect(merged.me.notifications.pageInfo).toEqual({ endCursor: 'cursor-d', hasNextPage: true });
+  });
+
+  it('does not refetch when the unread count falls or stays the same', () => {
+    const { rerender } = renderHook(() => useInAppNotifications());
+
+    rerender();
+    state.unreadCount = 1;
+    rerender();
+
+    expect(state.refetch).not.toHaveBeenCalled();
+  });
+
+  it('refreshes the open dialog when the first unread count arrives after the list', () => {
+    state.unreadCount = undefined;
+    const { rerender } = renderHook(() => useInAppNotifications());
+    expect(state.fetchMore).not.toHaveBeenCalled();
+
+    state.unreadCount = 3;
+    rerender();
+
+    expect(state.fetchMore).toHaveBeenCalledTimes(1);
+    expect(state.refetch.mock.calls.map(([first]) => first)).toEqual([50]);
+  });
+
+  it('drops a newest-page response that arrives after the user switched to another filter', () => {
+    const { rerender } = renderHook(() => useInAppNotifications());
+    state.unreadCount = 3;
+    rerender();
+
+    state.selectedFilter = NotificationFilterType.Space;
+    rerender();
+
+    const spaceList = {
+      me: {
+        notifications: {
+          inAppNotifications: [row('space-1', true)],
+          pageInfo: { endCursor: 'cursor-space-1', hasNextPage: false },
+          total: 1,
+        },
+      },
+    };
+    const allResponse = {
+      me: {
+        notifications: {
+          inAppNotifications: [row('mention', true)],
+          pageInfo: { endCursor: 'cursor-mention', hasNextPage: true },
+          total: 30,
+        },
+      },
+    };
+    const { updateQuery } = state.fetchMore.mock.calls[0][0];
+
+    expect(updateQuery(spaceList, { fetchMoreResult: allResponse })).toBe(spaceList);
   });
 });

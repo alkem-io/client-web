@@ -62,6 +62,8 @@ export const useInAppNotifications = () => {
       first: IN_APP_NOTIFICATIONS_PAGE_SIZE,
     },
     errorPolicy: 'ignore',
+    // Report refetches and fetchMore as loading too, so a refresh can wait for them
+    notifyOnNetworkStatusChange: true,
     skip: !isEnabled || !isOpen,
   });
 
@@ -84,14 +86,80 @@ export const useInAppNotifications = () => {
 
   // Probe all categories so we can render per-tab unread indicators independently
   // of the currently-selected filter's paginated list.
-  const { data: allTypesData, refetch: refetchAllTypes } = useInAppNotificationsQuery({
+  const {
+    data: allTypesData,
+    loading: allTypesLoading,
+    refetch: refetchAllTypes,
+  } = useInAppNotificationsQuery({
     variables: {
       types: getNotificationTypesForFilter(NotificationFilterType.All),
       first: ALL_TYPES_PROBE_SIZE,
     },
     errorPolicy: 'ignore',
+    notifyOnNetworkStatusChange: true,
     skip: !isEnabled || !isOpen,
   });
+
+  // Re-read the newest rows, as many as are loaded; a refetch would drop the pages loaded by fetchMore.
+  const loadNewNotifications = () => {
+    const requestFilter = selectedFilter;
+    const loadedCount = data?.me?.notifications?.inAppNotifications?.length ?? 0;
+    fetchMore({
+      variables: {
+        types: notificationTypes,
+        first: Math.max(loadedCount, IN_APP_NOTIFICATIONS_PAGE_SIZE),
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        // Apollo merges into the query's current variables; drop a response for a filter the user has left
+        if (prevFilterRef.current !== requestFilter) return prev;
+        const loaded = prev?.me?.notifications?.inAppNotifications ?? [];
+        const newest = fetchMoreResult.me?.notifications?.inAppNotifications ?? [];
+        const newestIds = new Set(newest.map(({ id }) => id));
+        // Without a loaded row among the newest ones, more arrived than were fetched: keeping the
+        // loaded rows would leave a gap, so show the newest rows and continue paging after them.
+        if (!loaded.some(({ id }) => newestIds.has(id))) return fetchMoreResult;
+
+        return {
+          ...fetchMoreResult,
+          me: {
+            ...fetchMoreResult.me,
+            notifications: {
+              ...fetchMoreResult.me.notifications,
+              // The loaded rows continue the newest ones, so the next page still follows the last loaded row
+              pageInfo: prev?.me?.notifications?.pageInfo ?? fetchMoreResult.me.notifications.pageInfo,
+              inAppNotifications: [...newest, ...loaded.filter(({ id }) => !newestIds.has(id))],
+            },
+          },
+        };
+      },
+    }).catch(() => {});
+  };
+
+  // The count subscription only updates the count cache; pull the new notification
+  // into the open dialog (list and per-tab probe) when the count rises. A first count
+  // arriving while the dialog is open counts too: before it the subscription has no
+  // cached count to update, so a notification in that window shows only through it.
+  // Apollo shares an identical request already in flight, and a response that started
+  // before the arrival does not hold it, so the refresh waits until neither query is loading.
+  const fetchedUnreadCount = unreadCountData?.me?.notificationsUnreadCount;
+  const prevUnreadCountRef = useRef(fetchedUnreadCount);
+  const refreshPendingRef = useRef(false);
+  useEffect(() => {
+    const previous = prevUnreadCountRef.current;
+    prevUnreadCountRef.current = fetchedUnreadCount;
+    if (!isEnabled || !isOpen) {
+      refreshPendingRef.current = false;
+      return;
+    }
+    if (fetchedUnreadCount !== undefined && (previous === undefined || fetchedUnreadCount > previous)) {
+      refreshPendingRef.current = true;
+    }
+    if (refreshPendingRef.current && !loading && !allTypesLoading) {
+      refreshPendingRef.current = false;
+      loadNewNotifications();
+      refetchAllTypes().catch(() => {});
+    }
+  }, [fetchedUnreadCount, isEnabled, isOpen, loading, allTypesLoading, loadNewNotifications, refetchAllTypes]);
 
   const unreadCountsByFilter: Record<NotificationFilterType, number> = {
     [NotificationFilterType.All]: 0,
