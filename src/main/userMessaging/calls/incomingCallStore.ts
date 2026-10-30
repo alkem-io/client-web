@@ -1,20 +1,32 @@
 import { useSyncExternalStore } from 'react';
 
 /**
- * The Alkemio room ids of the user's conversations with a call running that
- * the user is not in. A module-level store so the unread signals (header dot,
+ * The user's conversations with a call running that the user is not in, keyed
+ * by Alkemio room id, each with the caller's name for a direct conversation or
+ * the group's name (null when it has none). A module-level store so the unread signals (header dot,
  * tab title) can read it without watching the calls themselves: the one
  * always-mounted watcher writes it.
  */
 type Listener = () => void;
 
-const NONE: ReadonlySet<string> = new Set();
+type IncomingCall = { readonly name: string; readonly isGroup: boolean };
 
-let current: ReadonlySet<string> = NONE;
+type IncomingCallRooms = ReadonlyMap<string, IncomingCall | null>;
+
+const NONE: IncomingCallRooms = new Map();
+
+let current: IncomingCallRooms = NONE;
 const listeners = new Set<Listener>();
 
-const setIncomingCallRooms = (next: ReadonlySet<string>): void => {
-  if (current === next) {
+const sameRooms = (a: IncomingCallRooms, b: IncomingCallRooms): boolean =>
+  a.size === b.size &&
+  [...a].every(([roomId, call]) => {
+    const other = b.get(roomId);
+    return b.has(roomId) && other?.name === call?.name && other?.isGroup === call?.isGroup;
+  });
+
+const setIncomingCallRooms = (next: IncomingCallRooms): void => {
+  if (sameRooms(current, next)) {
     return;
   }
   current = next;
@@ -23,7 +35,7 @@ const setIncomingCallRooms = (next: ReadonlySet<string>): void => {
   }
 };
 
-const getIncomingCallRooms = (): ReadonlySet<string> => current;
+const getIncomingCallRooms = (): IncomingCallRooms => current;
 
 const subscribeIncomingCallRooms = (listener: Listener): (() => void) => {
   listeners.add(listener);
@@ -32,7 +44,8 @@ const subscribeIncomingCallRooms = (listener: Listener): (() => void) => {
   };
 };
 
-const useIncomingCallRooms = (): ReadonlySet<string> =>
+const useIncomingCallRooms = (): IncomingCallRooms =>
   useSyncExternalStore(subscribeIncomingCallRooms, getIncomingCallRooms, () => NONE);
 
+export type { IncomingCall, IncomingCallRooms };
 export { getIncomingCallRooms, setIncomingCallRooms, subscribeIncomingCallRooms, useIncomingCallRooms };

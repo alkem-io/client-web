@@ -125,6 +125,8 @@
       "confirm": "Gesprek verlaten",
       "cancel": "In gesprek blijven"
     },
-    "listBadge": "Gesprek actief"
+    "listBadge": "Gesprek actief",
+    "callingYou": "{{name}} belt je",
+    "groupCall": "Gesprek in {{name}}"
   }
 }

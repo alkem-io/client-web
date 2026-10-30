@@ -125,6 +125,8 @@
       "confirm": "Leave call",
       "cancel": "Stay in call"
     },
-    "listBadge": "Call active"
+    "listBadge": "Call active",
+    "callingYou": "{{name}} is calling you",
+    "groupCall": "Call in {{name}}"
   }
 }

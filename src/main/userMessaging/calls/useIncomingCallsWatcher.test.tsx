@@ -12,6 +12,8 @@ const harness = vi.hoisted(() => ({
 }));
 
 const vc = { id: 'vc', type: 'VIRTUAL_CONTRIBUTOR' };
+const me = { id: 'me', type: 'USER', profile: { displayName: 'Me' } };
+const ana = { id: 'ana', type: 'USER', profile: { displayName: 'Ana' } };
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useUserConversationsQuery: ({ skip }: { skip: boolean }) => {
     harness.querySkip = skip;
@@ -22,8 +24,8 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
             me: {
               conversations: {
                 conversations: [
-                  { id: 'c1', room: { id: 'direct', type: 'CONVERSATION_DIRECT' }, members: [] },
-                  { id: 'c2', room: { id: 'group', type: 'CONVERSATION_GROUP' }, members: [] },
+                  { id: 'c1', room: { id: 'direct', type: 'CONVERSATION_DIRECT' }, members: [me, ana] },
+                  { id: 'c2', room: { id: 'group', type: 'CONVERSATION_GROUP', displayName: 'Team' }, members: [] },
                   { id: 'c3', room: { id: 'guidance', type: 'CONVERSATION_GROUP' }, members: [vc] },
                 ],
               },
@@ -33,7 +35,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   },
 }));
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
-  useCurrentUserContext: () => ({ platformRoles: harness.platformRoles }),
+  useCurrentUserContext: () => ({ platformRoles: harness.platformRoles, userModel: { id: 'me' } }),
 }));
 vi.mock('@/main/guidance/chatWidget/useGuidanceVcId', () => ({
   useGuidanceVcId: ({ skip }: { skip: boolean }) => ({ guidanceVcId: skip ? null : harness.guidanceVcId }),
@@ -73,11 +75,23 @@ describe('useIncomingCallsWatcher', () => {
     expect(harness.querySkip).toBe(false);
     expect(harness.options?.withoutMe).toBe(true);
     expect(harness.conversations).toEqual([
-      { roomId: 'direct', isGroup: false, isGuidance: false, members: [] },
+      { roomId: 'direct', isGroup: false, isGuidance: false, members: [me, ana] },
       { roomId: 'group', isGroup: true, isGuidance: false, members: [] },
       { roomId: 'guidance', isGroup: true, isGuidance: true, members: [vc] },
     ]);
-    expect([...getIncomingCallRooms()]).toEqual(['group']);
+    expect([...getIncomingCallRooms()]).toEqual([['group', { name: 'Team', isGroup: true }]]);
+  });
+
+  it('names a direct call after the other person', () => {
+    harness.active = new Set(['direct', 'group']);
+    renderHook(() => useIncomingCallsWatcher());
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+    expect([...getIncomingCallRooms()]).toEqual([
+      ['direct', { name: 'Ana', isGroup: false }],
+      ['group', { name: 'Team', isGroup: true }],
+    ]);
   });
 
   it('loads and watches nothing for someone who is not a beta tester', () => {

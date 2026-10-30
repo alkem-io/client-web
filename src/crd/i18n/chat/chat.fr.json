@@ -125,6 +125,8 @@
       "confirm": "Quitter l’appel",
       "cancel": "Rester dans l’appel"
     },
-    "listBadge": "Appel en cours"
+    "listBadge": "Appel en cours",
+    "callingYou": "{{name}} vous appelle",
+    "groupCall": "Appel dans {{name}}"
   }
 }

@@ -6,7 +6,7 @@ import { isGuidanceConversation } from '@/main/crdPages/unifiedChat/dataMapper';
 import { useGuidanceVcId } from '@/main/guidance/chatWidget/useGuidanceVcId';
 import { useUserMessagingContext } from '../UserMessagingContext';
 import { isCallsConfigured } from './callConfig';
-import { setIncomingCallRooms } from './incomingCallStore';
+import { type IncomingCall, type IncomingCallRooms, setIncomingCallRooms } from './incomingCallStore';
 import { useActiveCallRooms } from './useActiveCallRooms';
 import { type CallableConversation, isBetaTester } from './useCallEligibility';
 
@@ -20,7 +20,7 @@ const DELAY_MS = 2000;
  */
 export const useIncomingCallsWatcher = () => {
   const { isEnabled } = useUserMessagingContext();
-  const { platformRoles } = useCurrentUserContext();
+  const { platformRoles, userModel } = useCurrentUserContext();
   const enabled = isEnabled && isBetaTester(platformRoles) && isCallsConfigured();
   const [ready, setReady] = useState(false);
 
@@ -34,7 +34,8 @@ export const useIncomingCallsWatcher = () => {
   // and the guidance assistant's id tell which conversations take calls.
   const { data } = useUserConversationsQuery({ skip: !enabled || !ready, fetchPolicy: 'cache-first' });
   const { guidanceVcId } = useGuidanceVcId({ skip: !enabled || !ready });
-  const conversations: CallableConversation[] = (data?.me?.conversations?.conversations ?? []).flatMap(conv =>
+  const userConversations = data?.me?.conversations?.conversations ?? [];
+  const conversations: CallableConversation[] = userConversations.flatMap(conv =>
     conv.room
       ? [
           {
@@ -48,8 +49,22 @@ export const useIncomingCallsWatcher = () => {
   );
 
   const incoming = useActiveCallRooms(enabled ? conversations : [], { withoutMe: true });
+  // A group call is named after the group; a direct one after the other person, who started it.
+  const calls = new Map<string, IncomingCall | null>();
+  for (const { room, members } of userConversations) {
+    if (room) {
+      const isGroup = room.type === RoomType.ConversationGroup;
+      const name = isGroup
+        ? room.displayName
+        : members.find(member => member.id !== userModel?.id)?.profile?.displayName;
+      calls.set(room.id, name ? { name, isGroup } : null);
+    }
+  }
+  const incomingCallRooms: IncomingCallRooms = new Map(
+    [...incoming].map(roomId => [roomId, calls.get(roomId) ?? null])
+  );
 
   useEffect(() => {
-    setIncomingCallRooms(incoming);
-  }, [incoming]);
+    setIncomingCallRooms(incomingCallRooms);
+  }, [incomingCallRooms]);
 };

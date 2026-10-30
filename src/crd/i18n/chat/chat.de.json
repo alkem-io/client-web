@@ -125,6 +125,8 @@
       "confirm": "Anruf verlassen",
       "cancel": "Im Anruf bleiben"
     },
-    "listBadge": "Anruf aktiv"
+    "listBadge": "Anruf aktiv",
+    "callingYou": "{{name}} ruft dich an",
+    "groupCall": "Anruf in {{name}}"
   }
 }
