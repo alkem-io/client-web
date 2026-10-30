@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockConversations = vi.fn<() => number>();
@@ -14,6 +14,19 @@ vi.mock('@/main/inAppNotifications/useUnreadNotificationsCount', () => ({
 // The badge must NOT read the sound settings (FR-009). This mock exists purely so the
 // "muting changes nothing" tests below can set the flags off and prove the badge ignores
 // them — if someone reintroduces the coupling, those tests fail.
+const titleStrings: Record<string, string> = {
+  'pages.titles.separator': ' | ',
+  'call.callingYou': '{{name}} is calling you',
+};
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, values?: { name?: string }) => (titleStrings[key] ?? key).replace('{{name}}', values?.name ?? ''),
+  }),
+}));
+const mockSelectedRoomId = vi.fn<() => string | null>();
+vi.mock('@/main/userMessaging/UserMessagingContext', () => ({
+  useUserMessagingContext: () => ({ selectedRoomId: mockSelectedRoomId() }),
+}));
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: { settings: { notification: { sound: mockSound() } } } }),
 }));
@@ -26,6 +39,7 @@ vi.mock('./faviconBadge', () => ({
 }));
 
 import { setBaseTitle, setTitlePrefix } from '@/core/routing/documentTitle';
+import { setIncomingCallRooms } from '@/main/userMessaging/calls/incomingCallStore';
 import { clearFaviconBadge, setFaviconBadge } from './faviconBadge';
 import { useUnreadTabBadge } from './useUnreadTabBadge';
 
@@ -36,9 +50,11 @@ describe('useUnreadTabBadge', () => {
     mockConversations.mockReturnValue(0);
     mockNotifications.mockReturnValue(0);
     mockSound.mockReturnValue({ chatMessage: true, inAppNotification: true });
+    mockSelectedRoomId.mockReturnValue(null);
   });
 
   afterEach(() => {
+    setIncomingCallRooms(new Map());
     setTitlePrefix('');
     vi.clearAllMocks();
   });
@@ -116,5 +132,38 @@ describe('useUnreadTabBadge', () => {
     expect(document.title).toBe('Alkemio');
     expect(setFaviconBadge).not.toHaveBeenCalled();
     expect(clearFaviconBadge).toHaveBeenCalled();
+  });
+
+  it('says who is calling in a direct conversation, after the count', () => {
+    mockConversations.mockReturnValue(1);
+    setIncomingCallRooms(new Map([['direct', 'Ana']]));
+
+    const { rerender } = renderHook(() => useUnreadTabBadge());
+
+    expect(document.title).toBe('(1) Ana is calling you | Alkemio');
+
+    act(() => setIncomingCallRooms(new Map()));
+    mockConversations.mockReturnValue(0);
+    rerender();
+
+    expect(document.title).toBe('Alkemio');
+  });
+
+  it('names no caller for a group call', () => {
+    mockConversations.mockReturnValue(1);
+    setIncomingCallRooms(new Map([['group', null]]));
+
+    renderHook(() => useUnreadTabBadge());
+
+    expect(document.title).toBe('(1) Alkemio');
+  });
+
+  it('names no caller for the conversation being viewed', () => {
+    mockSelectedRoomId.mockReturnValue('direct');
+    setIncomingCallRooms(new Map([['direct', 'Ana']]));
+
+    renderHook(() => useUnreadTabBadge());
+
+    expect(document.title).toBe('Alkemio');
   });
 });

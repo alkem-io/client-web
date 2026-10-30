@@ -125,6 +125,7 @@
       "confirm": "Salir de la llamada",
       "cancel": "Seguir en la llamada"
     },
-    "listBadge": "Llamada activa"
+    "listBadge": "Llamada activa",
+    "callingYou": "{{name}} te está llamando"
   }
 }

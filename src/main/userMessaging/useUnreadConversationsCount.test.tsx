@@ -31,7 +31,7 @@ import { useUnreadConversationsCount } from './useUnreadConversationsCount';
 
 describe('useUnreadConversationsCount', () => {
   afterEach(() => {
-    act(() => setIncomingCallRooms(new Set()));
+    act(() => setIncomingCallRooms(new Map()));
     harness.unread = {};
     harness.selectedRoomId = undefined;
   });
@@ -41,13 +41,20 @@ describe('useUnreadConversationsCount', () => {
     const { result } = renderHook(() => useUnreadConversationsCount());
     expect(result.current).toBe(1);
 
-    act(() => setIncomingCallRooms(new Set(['a', 'b'])));
+    act(() =>
+      setIncomingCallRooms(
+        new Map([
+          ['a', null],
+          ['b', null],
+        ])
+      )
+    );
     expect(result.current).toBe(2);
   });
 
   it('does not count the call in the conversation being viewed', () => {
     harness.selectedRoomId = 'b';
-    act(() => setIncomingCallRooms(new Set(['b'])));
+    act(() => setIncomingCallRooms(new Map([['b', null]])));
     const { result } = renderHook(() => useUnreadConversationsCount());
     expect(result.current).toBe(0);
   });

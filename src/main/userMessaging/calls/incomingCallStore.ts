@@ -1,20 +1,26 @@
 import { useSyncExternalStore } from 'react';
 
 /**
- * The Alkemio room ids of the user's conversations with a call running that
- * the user is not in. A module-level store so the unread signals (header dot,
+ * The user's conversations with a call running that the user is not in, keyed
+ * by Alkemio room id, each with the caller's name for a direct conversation
+ * (null for a group). A module-level store so the unread signals (header dot,
  * tab title) can read it without watching the calls themselves: the one
  * always-mounted watcher writes it.
  */
 type Listener = () => void;
 
-const NONE: ReadonlySet<string> = new Set();
+type IncomingCallRooms = ReadonlyMap<string, string | null>;
 
-let current: ReadonlySet<string> = NONE;
+const NONE: IncomingCallRooms = new Map();
+
+let current: IncomingCallRooms = NONE;
 const listeners = new Set<Listener>();
 
-const setIncomingCallRooms = (next: ReadonlySet<string>): void => {
-  if (current === next) {
+const sameRooms = (a: IncomingCallRooms, b: IncomingCallRooms): boolean =>
+  a.size === b.size && [...a].every(([roomId, caller]) => b.has(roomId) && b.get(roomId) === caller);
+
+const setIncomingCallRooms = (next: IncomingCallRooms): void => {
+  if (sameRooms(current, next)) {
     return;
   }
   current = next;
@@ -23,7 +29,7 @@ const setIncomingCallRooms = (next: ReadonlySet<string>): void => {
   }
 };
 
-const getIncomingCallRooms = (): ReadonlySet<string> => current;
+const getIncomingCallRooms = (): IncomingCallRooms => current;
 
 const subscribeIncomingCallRooms = (listener: Listener): (() => void) => {
   listeners.add(listener);
@@ -32,7 +38,8 @@ const subscribeIncomingCallRooms = (listener: Listener): (() => void) => {
   };
 };
 
-const useIncomingCallRooms = (): ReadonlySet<string> =>
+const useIncomingCallRooms = (): IncomingCallRooms =>
   useSyncExternalStore(subscribeIncomingCallRooms, getIncomingCallRooms, () => NONE);
 
+export type { IncomingCallRooms };
 export { getIncomingCallRooms, setIncomingCallRooms, subscribeIncomingCallRooms, useIncomingCallRooms };
