@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { setBaseTitle, setTitlePrefix } from './documentTitle';
+import { setBaseTitle, setTitleOverride, setTitlePrefix } from './documentTitle';
 
 describe('documentTitle', () => {
   beforeEach(() => {
@@ -9,6 +9,7 @@ describe('documentTitle', () => {
   });
 
   afterEach(() => {
+    setTitleOverride(null);
     setTitlePrefix('');
     setBaseTitle('');
   });
@@ -45,6 +46,19 @@ describe('documentTitle', () => {
     expect(document.title).toBe('(1) First Page | Alkemio');
 
     setBaseTitle('Second Page | Alkemio');
+    expect(document.title).toBe('(1) Second Page | Alkemio');
+  });
+
+  it('an override stands in for the base, and a navigation under it shows once it clears', () => {
+    setTitlePrefix('(1) ');
+    setBaseTitle('First Page | Alkemio');
+    setTitleOverride('Ana is calling you');
+    expect(document.title).toBe('(1) Ana is calling you');
+
+    setBaseTitle('Second Page | Alkemio');
+    expect(document.title).toBe('(1) Ana is calling you');
+
+    setTitleOverride(null);
     expect(document.title).toBe('(1) Second Page | Alkemio');
   });
 });

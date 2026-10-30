@@ -15,8 +15,8 @@ vi.mock('@/main/inAppNotifications/useUnreadNotificationsCount', () => ({
 // "muting changes nothing" tests below can set the flags off and prove the badge ignores
 // them — if someone reintroduces the coupling, those tests fail.
 const titleStrings: Record<string, string> = {
-  'pages.titles.separator': ' | ',
   'call.callingYou': '{{name}} is calling you',
+  'call.groupCall': 'Call in {{name}}',
 };
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -134,36 +134,63 @@ describe('useUnreadTabBadge', () => {
     expect(clearFaviconBadge).toHaveBeenCalled();
   });
 
-  it('says who is calling in a direct conversation, after the count', () => {
-    mockConversations.mockReturnValue(1);
-    setIncomingCallRooms(new Map([['direct', 'Ana']]));
+  describe('during a call the user is not in', () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+    afterEach(() => {
+      vi.useRealTimers();
+    });
 
-    const { rerender } = renderHook(() => useUnreadTabBadge());
+    it('alternates the page title with who is calling, keeping the count', () => {
+      mockConversations.mockReturnValue(1);
+      setIncomingCallRooms(new Map([['direct', { name: 'Ana', isGroup: false }]]));
 
-    expect(document.title).toBe('(1) Ana is calling you | Alkemio');
+      renderHook(() => useUnreadTabBadge());
+      expect(document.title).toBe('(1) Ana is calling you');
 
-    act(() => setIncomingCallRooms(new Map()));
-    mockConversations.mockReturnValue(0);
-    rerender();
+      act(() => vi.advanceTimersByTime(1500));
+      expect(document.title).toBe('(1) Alkemio');
 
-    expect(document.title).toBe('Alkemio');
-  });
+      act(() => vi.advanceTimersByTime(1500));
+      expect(document.title).toBe('(1) Ana is calling you');
+    });
 
-  it('names no caller for a group call', () => {
-    mockConversations.mockReturnValue(1);
-    setIncomingCallRooms(new Map([['group', null]]));
+    it('names a group call after the group', () => {
+      setIncomingCallRooms(new Map([['group', { name: 'Team', isGroup: true }]]));
 
-    renderHook(() => useUnreadTabBadge());
+      renderHook(() => useUnreadTabBadge());
 
-    expect(document.title).toBe('(1) Alkemio');
-  });
+      expect(document.title).toBe('Call in Team');
+    });
 
-  it('names no caller for the conversation being viewed', () => {
-    mockSelectedRoomId.mockReturnValue('direct');
-    setIncomingCallRooms(new Map([['direct', 'Ana']]));
+    it('restores the page title and stops alternating once the call is over', () => {
+      setIncomingCallRooms(new Map([['direct', { name: 'Ana', isGroup: false }]]));
+      const { rerender } = renderHook(() => useUnreadTabBadge());
 
-    renderHook(() => useUnreadTabBadge());
+      act(() => setIncomingCallRooms(new Map()));
+      rerender();
+      expect(document.title).toBe('Alkemio');
 
-    expect(document.title).toBe('Alkemio');
+      act(() => vi.advanceTimersByTime(3000));
+      expect(document.title).toBe('Alkemio');
+    });
+
+    it('shows nothing for a call without a name', () => {
+      setIncomingCallRooms(new Map([['group', null]]));
+
+      renderHook(() => useUnreadTabBadge());
+
+      expect(document.title).toBe('Alkemio');
+    });
+
+    it('shows nothing for the conversation being viewed', () => {
+      mockSelectedRoomId.mockReturnValue('direct');
+      setIncomingCallRooms(new Map([['direct', { name: 'Ana', isGroup: false }]]));
+
+      renderHook(() => useUnreadTabBadge());
+
+      expect(document.title).toBe('Alkemio');
+    });
   });
 });

@@ -126,6 +126,7 @@
       "cancel": "Seguir en la llamada"
     },
     "listBadge": "Llamada activa",
-    "callingYou": "{{name}} te está llamando"
+    "callingYou": "{{name}} te está llamando",
+    "groupCall": "Llamada en {{name}}"
   }
 }

@@ -6,7 +6,7 @@ import { isGuidanceConversation } from '@/main/crdPages/unifiedChat/dataMapper';
 import { useGuidanceVcId } from '@/main/guidance/chatWidget/useGuidanceVcId';
 import { useUserMessagingContext } from '../UserMessagingContext';
 import { isCallsConfigured } from './callConfig';
-import { type IncomingCallRooms, setIncomingCallRooms } from './incomingCallStore';
+import { type IncomingCall, type IncomingCallRooms, setIncomingCallRooms } from './incomingCallStore';
 import { useActiveCallRooms } from './useActiveCallRooms';
 import { type CallableConversation, isBetaTester } from './useCallEligibility';
 
@@ -49,15 +49,19 @@ export const useIncomingCallsWatcher = () => {
   );
 
   const incoming = useActiveCallRooms(enabled ? conversations : [], { withoutMe: true });
-  // In a direct conversation the call was started by the other person.
-  const callerNames = new Map<string, string | null>();
+  // A group call is named after the group; a direct one after the other person, who started it.
+  const calls = new Map<string, IncomingCall | null>();
   for (const { room, members } of userConversations) {
-    if (room && room.type !== RoomType.ConversationGroup) {
-      callerNames.set(room.id, members.find(member => member.id !== userModel?.id)?.profile?.displayName ?? null);
+    if (room) {
+      const isGroup = room.type === RoomType.ConversationGroup;
+      const name = isGroup
+        ? room.displayName
+        : members.find(member => member.id !== userModel?.id)?.profile?.displayName;
+      calls.set(room.id, name ? { name, isGroup } : null);
     }
   }
   const incomingCallRooms: IncomingCallRooms = new Map(
-    [...incoming].map(roomId => [roomId, callerNames.get(roomId) ?? null])
+    [...incoming].map(roomId => [roomId, calls.get(roomId) ?? null])
   );
 
   useEffect(() => {

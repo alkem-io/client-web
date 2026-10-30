@@ -126,6 +126,7 @@
       "cancel": "Im Anruf bleiben"
     },
     "listBadge": "Anruf aktiv",
-    "callingYou": "{{name}} ruft dich an"
+    "callingYou": "{{name}} ruft dich an",
+    "groupCall": "Anruf in {{name}}"
   }
 }

@@ -25,7 +25,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
               conversations: {
                 conversations: [
                   { id: 'c1', room: { id: 'direct', type: 'CONVERSATION_DIRECT' }, members: [me, ana] },
-                  { id: 'c2', room: { id: 'group', type: 'CONVERSATION_GROUP' }, members: [] },
+                  { id: 'c2', room: { id: 'group', type: 'CONVERSATION_GROUP', displayName: 'Team' }, members: [] },
                   { id: 'c3', room: { id: 'guidance', type: 'CONVERSATION_GROUP' }, members: [vc] },
                 ],
               },
@@ -79,18 +79,18 @@ describe('useIncomingCallsWatcher', () => {
       { roomId: 'group', isGroup: true, isGuidance: false, members: [] },
       { roomId: 'guidance', isGroup: true, isGuidance: true, members: [vc] },
     ]);
-    expect([...getIncomingCallRooms()]).toEqual([['group', null]]);
+    expect([...getIncomingCallRooms()]).toEqual([['group', { name: 'Team', isGroup: true }]]);
   });
 
-  it('publishes the other person as the caller of a direct conversation', () => {
+  it('names a direct call after the other person', () => {
     harness.active = new Set(['direct', 'group']);
     renderHook(() => useIncomingCallsWatcher());
     act(() => {
       vi.advanceTimersByTime(2000);
     });
     expect([...getIncomingCallRooms()]).toEqual([
-      ['direct', 'Ana'],
-      ['group', null],
+      ['direct', { name: 'Ana', isGroup: false }],
+      ['group', { name: 'Team', isGroup: true }],
     ]);
   });
 

@@ -126,6 +126,7 @@
       "cancel": "Оставане в разговора"
     },
     "listBadge": "Активен разговор",
-    "callingYou": "{{name}} ви се обажда"
+    "callingYou": "{{name}} ви се обажда",
+    "groupCall": "Разговор в {{name}}"
   }
 }

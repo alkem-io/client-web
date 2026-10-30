@@ -126,6 +126,7 @@
       "cancel": "In gesprek blijven"
     },
     "listBadge": "Gesprek actief",
-    "callingYou": "{{name}} belt je"
+    "callingYou": "{{name}} belt je",
+    "groupCall": "Gesprek in {{name}}"
   }
 }
