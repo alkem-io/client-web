@@ -93,6 +93,35 @@ export const useInAppNotifications = () => {
     skip: !isEnabled || !isOpen,
   });
 
+  // Prepend the newest page's not-yet-loaded rows; a refetch would drop the pages loaded by fetchMore.
+  const loadNewNotifications = () =>
+    fetchMore({
+      variables: {
+        types: notificationTypes,
+        first: IN_APP_NOTIFICATIONS_PAGE_SIZE,
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        const loaded = prev?.me?.notifications?.inAppNotifications ?? [];
+        const loadedIds = new Set(loaded.map(({ id }) => id));
+        const newRows = (fetchMoreResult.me?.notifications?.inAppNotifications ?? []).filter(
+          ({ id }) => !loadedIds.has(id)
+        );
+
+        return {
+          ...fetchMoreResult,
+          me: {
+            ...fetchMoreResult.me,
+            notifications: {
+              ...fetchMoreResult.me.notifications,
+              // Keep the cursor of the last loaded row so the next page continues after it
+              pageInfo: prev?.me?.notifications?.pageInfo ?? fetchMoreResult.me.notifications.pageInfo,
+              inAppNotifications: [...newRows, ...loaded],
+            },
+          },
+        };
+      },
+    }).catch(() => {});
+
   // The count subscription only updates the count cache; pull the new notification
   // into the open dialog (list and per-tab probe) when the count rises.
   const fetchedUnreadCount = unreadCountData?.me?.notificationsUnreadCount;
@@ -102,10 +131,10 @@ export const useInAppNotifications = () => {
     prevUnreadCountRef.current = fetchedUnreadCount;
     const countRose = previous !== undefined && fetchedUnreadCount !== undefined && fetchedUnreadCount > previous;
     if (countRose && isEnabled && isOpen) {
-      refetch();
+      loadNewNotifications();
       refetchAllTypes();
     }
-  }, [fetchedUnreadCount, isEnabled, isOpen, refetch, refetchAllTypes]);
+  }, [fetchedUnreadCount, isEnabled, isOpen, loadNewNotifications, refetchAllTypes]);
 
   const unreadCountsByFilter: Record<NotificationFilterType, number> = {
     [NotificationFilterType.All]: 0,

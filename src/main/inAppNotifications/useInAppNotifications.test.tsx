@@ -22,6 +22,7 @@ const state = vi.hoisted(() => ({
   updateState: vi.fn(),
   unreadCount: 2,
   refetch: vi.fn(),
+  fetchMore: vi.fn(),
 }));
 
 vi.mock('@/core/logging/sentry/log', () => ({
@@ -56,7 +57,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
     data: queryResult(),
     loading: false,
     error: undefined,
-    fetchMore: vi.fn(),
+    fetchMore: state.fetchMore,
     refetch: () => state.refetch(options.variables.first),
   }),
   useInAppNotificationsUnreadCountQuery: () => ({ data: { me: { notificationsUnreadCount: state.unreadCount } } }),
@@ -118,16 +119,49 @@ describe('useInAppNotifications — a notification arriving while the dialog is 
     state.rows = [];
     state.unreadCount = 2;
     state.refetch.mockReset();
+    state.fetchMore.mockReset();
+    state.fetchMore.mockResolvedValue({});
   });
 
-  it('refetches the list and the per-tab probe when the unread count rises', () => {
+  it('refetches the per-tab probe and pulls the newest page into the list when the unread count rises', () => {
     const { rerender } = renderHook(() => useInAppNotifications());
     expect(state.refetch).not.toHaveBeenCalled();
+    expect(state.fetchMore).not.toHaveBeenCalled();
 
     state.unreadCount = 3;
     rerender();
 
-    expect(state.refetch.mock.calls.map(([first]) => first).sort()).toEqual([IN_APP_NOTIFICATIONS_PAGE_SIZE, 50]);
+    expect(state.refetch.mock.calls.map(([first]) => first)).toEqual([50]);
+    expect(state.fetchMore).toHaveBeenCalledTimes(1);
+    expect(state.fetchMore.mock.calls[0][0].variables).toEqual(
+      expect.objectContaining({ first: IN_APP_NOTIFICATIONS_PAGE_SIZE })
+    );
+    expect(state.fetchMore.mock.calls[0][0].variables.after).toBeUndefined();
+  });
+
+  it('keeps the pages already loaded with "load more" and their cursor when the new notification arrives', () => {
+    const { rerender } = renderHook(() => useInAppNotifications());
+    state.unreadCount = 3;
+    rerender();
+
+    const page = (ids: string[], endCursor: string, hasNextPage: boolean) => ({
+      me: {
+        notifications: {
+          inAppNotifications: ids.map(id => row(id, true)),
+          pageInfo: { endCursor, hasNextPage },
+          total: 30,
+        },
+      },
+    });
+    // Two pages loaded; the newest page now starts with the arrived notification.
+    const prev = page(['a', 'b', 'c', 'd'], 'cursor-d', true);
+    const newest = page(['new', 'a', 'b'], 'cursor-b', true);
+
+    const { updateQuery } = state.fetchMore.mock.calls[0][0];
+    const merged = updateQuery(prev, { fetchMoreResult: newest });
+
+    expect(merged.me.notifications.inAppNotifications.map((n: Row) => n.id)).toEqual(['new', 'a', 'b', 'c', 'd']);
+    expect(merged.me.notifications.pageInfo).toEqual({ endCursor: 'cursor-d', hasNextPage: true });
   });
 
   it('does not refetch when the unread count falls or stays the same', () => {
