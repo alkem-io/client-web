@@ -93,6 +93,20 @@ export const useInAppNotifications = () => {
     skip: !isEnabled || !isOpen,
   });
 
+  // The count subscription only updates the count cache; pull the new notification
+  // into the open dialog (list and per-tab probe) when the count rises.
+  const fetchedUnreadCount = unreadCountData?.me?.notificationsUnreadCount;
+  const prevUnreadCountRef = useRef(fetchedUnreadCount);
+  useEffect(() => {
+    const previous = prevUnreadCountRef.current;
+    prevUnreadCountRef.current = fetchedUnreadCount;
+    const countRose = previous !== undefined && fetchedUnreadCount !== undefined && fetchedUnreadCount > previous;
+    if (countRose && isEnabled && isOpen) {
+      refetch();
+      refetchAllTypes();
+    }
+  }, [fetchedUnreadCount, isEnabled, isOpen, refetch, refetchAllTypes]);
+
   const unreadCountsByFilter: Record<NotificationFilterType, number> = {
     [NotificationFilterType.All]: 0,
     [NotificationFilterType.MessagesAndReplies]: 0,

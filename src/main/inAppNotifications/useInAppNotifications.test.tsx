@@ -5,7 +5,7 @@ import {
   NotificationEventCategory,
   NotificationEventInAppState,
 } from '@/core/apollo/generated/graphql-schema';
-import { useInAppNotifications } from './useInAppNotifications';
+import { IN_APP_NOTIFICATIONS_PAGE_SIZE, useInAppNotifications } from './useInAppNotifications';
 
 type Row = {
   id: string;
@@ -20,6 +20,8 @@ type Row = {
 const state = vi.hoisted(() => ({
   rows: [] as unknown[],
   updateState: vi.fn(),
+  unreadCount: 2,
+  refetch: vi.fn(),
 }));
 
 vi.mock('@/core/logging/sentry/log', () => ({
@@ -50,14 +52,14 @@ const queryResult = () => ({
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   // The panel page and the all-types probe both read the same fetched rows here.
-  useInAppNotificationsQuery: () => ({
+  useInAppNotificationsQuery: (options: { variables: { first: number } }) => ({
     data: queryResult(),
     loading: false,
     error: undefined,
     fetchMore: vi.fn(),
-    refetch: vi.fn(),
+    refetch: () => state.refetch(options.variables.first),
   }),
-  useInAppNotificationsUnreadCountQuery: () => ({ data: { me: { notificationsUnreadCount: 2 } } }),
+  useInAppNotificationsUnreadCountQuery: () => ({ data: { me: { notificationsUnreadCount: state.unreadCount } } }),
   useUpdateNotificationStateMutation: () => [state.updateState],
   useMarkNotificationsAsReadMutation: () => [vi.fn()],
 }));
@@ -108,5 +110,33 @@ describe('useInAppNotifications — unread notifications the panel cannot show',
     renderHook(() => useInAppNotifications());
 
     expect(state.updateState).not.toHaveBeenCalled();
+  });
+});
+
+describe('useInAppNotifications — a notification arriving while the dialog is open', () => {
+  beforeEach(() => {
+    state.rows = [];
+    state.unreadCount = 2;
+    state.refetch.mockReset();
+  });
+
+  it('refetches the list and the per-tab probe when the unread count rises', () => {
+    const { rerender } = renderHook(() => useInAppNotifications());
+    expect(state.refetch).not.toHaveBeenCalled();
+
+    state.unreadCount = 3;
+    rerender();
+
+    expect(state.refetch.mock.calls.map(([first]) => first).sort()).toEqual([IN_APP_NOTIFICATIONS_PAGE_SIZE, 50]);
+  });
+
+  it('does not refetch when the unread count falls or stays the same', () => {
+    const { rerender } = renderHook(() => useInAppNotifications());
+
+    rerender();
+    state.unreadCount = 1;
+    rerender();
+
+    expect(state.refetch).not.toHaveBeenCalled();
   });
 });
