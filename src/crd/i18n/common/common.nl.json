@@ -1632,5 +1632,12 @@
       "refresh": "Pagina vernieuwen",
       "close": "Sluiten"
     }
+  },
+  "vcPaused": {
+    "title": "Virtual Contributors krijgen een upgrade! 🚀",
+    "description": "We bouwen ze opnieuw op om ze slimmer en behulpzamer te maken. In de tussentijd kun je ze niet aanmaken, toevoegen of vermelden, maar je bestaande VC's blijven zichtbaar.",
+    "learnMore": "Meer informatie",
+    "contactSupport": "Contact opnemen met support",
+    "mentionUnavailable": "Tijdelijk niet beschikbaar"
   }
 }

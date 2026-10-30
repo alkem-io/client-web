@@ -1,4 +1,4 @@
-import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import type { RoleName } from '@/core/apollo/generated/graphql-schema';
 
 /**
  * Whether the viewer is targeted by the Virtual Contributor campaign (the
@@ -8,5 +8,5 @@ import { RoleName } from '@/core/apollo/generated/graphql-schema';
  * `PLATFORM_VC_CAMPAIGN`, retired at Slice B (T013/T077). The VC entitlement is
  * a separate condition the callers still AND with this.
  */
-export const isVcCampaignTargeted = (platformRoles: readonly RoleName[] | undefined): boolean =>
-  platformRoles?.some(role => role === RoleName.FeatureVcCampaign) ?? false;
+// TEMP: VCs disabled (#10398) — restore: platformRoles?.some(role => role === RoleName.FeatureVcCampaign) ?? false
+export const isVcCampaignTargeted = (_platformRoles: readonly RoleName[] | undefined): boolean => false;

@@ -122,7 +122,8 @@ export function useMentionableContributors(): CrdMentionSearch {
               displayName: contributor.profile.displayName,
               avatarUrl: contributor.profile.avatar?.uri,
               ...(isVc
-                ? { virtualContributor: true }
+                ? // TEMP: VCs disabled (#10398) — restore: { virtualContributor: true }
+                  { virtualContributor: true, unavailable: true }
                 : {
                     city: contributor.profile.location?.city,
                     country: contributor.profile.location?.country,
