@@ -94,13 +94,16 @@ export const useInAppNotifications = () => {
   });
 
   // Prepend the newest page's not-yet-loaded rows; a refetch would drop the pages loaded by fetchMore.
-  const loadNewNotifications = () =>
-    fetchMore({
+  const loadNewNotifications = () => {
+    const requestFilter = selectedFilter;
+    return fetchMore({
       variables: {
         types: notificationTypes,
         first: IN_APP_NOTIFICATIONS_PAGE_SIZE,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
+        // Apollo merges into the query's current variables; drop a response for a filter the user has left
+        if (prevFilterRef.current !== requestFilter) return prev;
         const loaded = prev?.me?.notifications?.inAppNotifications ?? [];
         const loadedIds = new Set(loaded.map(({ id }) => id));
         const newRows = (fetchMoreResult.me?.notifications?.inAppNotifications ?? []).filter(
@@ -121,20 +124,39 @@ export const useInAppNotifications = () => {
         };
       },
     }).catch(() => {});
+  };
+
+  // Apollo shares an in-flight request with an identical one, so a rise during a refresh
+  // would get a response from before it; run one more refresh once the current one settles.
+  const refreshStateRef = useRef({ running: false, queued: false });
+  const refreshOpenDialog = async () => {
+    const refresh = refreshStateRef.current;
+    if (refresh.running) {
+      refresh.queued = true;
+      return;
+    }
+    refresh.running = true;
+    do {
+      refresh.queued = false;
+      await Promise.allSettled([loadNewNotifications(), refetchAllTypes()]);
+    } while (refresh.queued);
+    refresh.running = false;
+  };
 
   // The count subscription only updates the count cache; pull the new notification
-  // into the open dialog (list and per-tab probe) when the count rises.
+  // into the open dialog (list and per-tab probe) when the count rises. A first count
+  // arriving while the dialog is open counts too: before it the subscription has no
+  // cached count to update, so a notification in that window shows only through it.
   const fetchedUnreadCount = unreadCountData?.me?.notificationsUnreadCount;
   const prevUnreadCountRef = useRef(fetchedUnreadCount);
   useEffect(() => {
     const previous = prevUnreadCountRef.current;
     prevUnreadCountRef.current = fetchedUnreadCount;
-    const countRose = previous !== undefined && fetchedUnreadCount !== undefined && fetchedUnreadCount > previous;
+    const countRose = fetchedUnreadCount !== undefined && (previous === undefined || fetchedUnreadCount > previous);
     if (countRose && isEnabled && isOpen) {
-      loadNewNotifications();
-      refetchAllTypes();
+      refreshOpenDialog();
     }
-  }, [fetchedUnreadCount, isEnabled, isOpen, loadNewNotifications, refetchAllTypes]);
+  }, [fetchedUnreadCount, isEnabled, isOpen, refreshOpenDialog]);
 
   const unreadCountsByFilter: Record<NotificationFilterType, number> = {
     [NotificationFilterType.All]: 0,
