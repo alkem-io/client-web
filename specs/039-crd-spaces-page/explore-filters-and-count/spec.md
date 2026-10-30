@@ -5,7 +5,7 @@ renders the same `SpaceExplorer` through the same `useSpaceExplorer` hook.
 **Created**: 2026-10-29
 **Branch**: `space-explorer`
 **Issues**: client-web#10406, client-web#10404, alkem-io/alkemio#2130, client-web#10405 (all part of
-alkem-io/alkemio#2139)
+alkem-io/alkemio#2139), client-web#9493 (filter badge and chips)
 
 ## Goal
 
@@ -33,6 +33,10 @@ filter could not work on them at all: it tested `parent`, which search results n
   Membership keeps **All** and **My Spaces**.
 - **Guests do not see the Membership section.** "My Spaces" is already hidden for guests, so the section would hold
   "All" alone. Guests see Privacy and Type only.
+- **All three filters show as active the same way** (#9493). Membership, Privacy and Type each add 1 to the
+  Filters button's badge when not "All", and each shows a removable chip below the filters ("My Spaces", "Public
+  only" / "Private only", "Spaces only" / "Subspaces only"), in menu order. Removing a chip sets that filter back to
+  "All". "Clear all filters" shows whenever the badge does and resets all three.
 - **No number anywhere.** The "Showing N spaces" line is removed. With a search term the line reads
   "Spaces matching “energie”" (all terms, comma-separated, quoted per language), without a count. Without a search
   term there is no line, whether or not filters are applied. A count is not shown during a search either: the
@@ -77,6 +81,8 @@ filter could not work on them at all: it tested `parent`, which search results n
 - **FR-EX-7**: Every view MUST show one batch on first load and add one per Load more, a batch being the multiple of
   the grid's column count closest to 24; only the last batch may leave a row part-empty. It MUST load as many server
   pages as needed. Load more MUST remain available while more matching cards may exist.
+- **FR-EX-8**: Each of the Membership, Privacy and Type filters that is not "All" MUST count 1 in the Filters
+  button's badge and MUST show a chip that, when activated, sets that filter back to "All".
 
 ## Acceptance scenarios
 
@@ -94,6 +100,9 @@ filter could not work on them at all: it tested `parent`, which search results n
 8. **Given** "Subspaces only" or "Private only", **When** the user presses Load more, **Then** one more batch is
    added, however many server pages that takes, unless fewer remain.
 9. **Given** a search with no Type chosen, **Then** matching subspaces are listed too.
+10. **Given** a signed-in user picks Membership → My Spaces, **Then** the Filters badge reads 1 and a "My Spaces"
+    chip is shown. **When** they also pick Type → Subspaces only, **Then** the badge reads 2 and a "Subspaces only"
+    chip is added. **When** they remove the "My Spaces" chip, **Then** Membership is "All" and the badge reads 1.
 
 ## Out of scope
 

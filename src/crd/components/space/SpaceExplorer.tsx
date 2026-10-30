@@ -103,7 +103,8 @@ export function SpaceExplorer({
     }
   };
 
-  const activeFilterCount = (privacyFilter !== 'all' ? 1 : 0) + (typeFilter !== 'all' ? 1 : 0);
+  const activeFilterCount =
+    (membershipFilter !== 'all' ? 1 : 0) + (privacyFilter !== 'all' ? 1 : 0) + (typeFilter !== 'all' ? 1 : 0);
 
   const clearFilters = () => {
     onPrivacyFilterChange('all');
@@ -246,6 +247,17 @@ export function SpaceExplorer({
           {/* Active filter chips */}
           {activeFilterCount > 0 && (
             <div className="flex flex-wrap items-center gap-2 mb-4">
+              {membershipFilter !== 'all' && (
+                <button
+                  type="button"
+                  onClick={() => onMembershipFilterChange?.('all')}
+                  className="inline-flex items-center gap-1 cursor-pointer rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 text-caption px-2.5 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  {t('spaces.filterMember')}
+                  <X aria-hidden="true" className="size-2.5" />
+                  <span className="sr-only">, {t('spaces.removeFilter')}</span>
+                </button>
+              )}
               {privacyFilter !== 'all' && (
                 <button
                   type="button"
