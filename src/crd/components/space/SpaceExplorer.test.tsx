@@ -99,6 +99,14 @@ describe('SpaceExplorer filters (spec 039 explore-filters-and-count)', () => {
     expect(screen.getAllByRole('listitem')).toHaveLength(2);
   });
 
+  it('counts My Spaces like any other filter and shows a chip for it (#9493)', () => {
+    const { props } = renderExplorer({ membershipFilter: 'member', typeFilter: 'spaces' });
+
+    expect(screen.getByRole('button', { name: /filters/i })).toHaveTextContent('2');
+    fireEvent.click(screen.getByRole('button', { name: /my spaces/i }));
+    expect(props.onMembershipFilterChange).toHaveBeenCalledWith('all');
+  });
+
   it('clears every filter to All', () => {
     const { props } = renderExplorer({ typeFilter: 'spaces', privacyFilter: 'private' });
 
