@@ -23,6 +23,7 @@ import type { PendingMembership } from '@/crd/components/space/settings/PendingM
 import { PendingMembershipsTable } from '@/crd/components/space/settings/PendingMembershipsTable';
 import type { PendingOrganizationInvitationItem } from '@/crd/components/space/settings/PendingOrganizationInvitationsList';
 import { PendingOrganizationInvitationsList } from '@/crd/components/space/settings/PendingOrganizationInvitationsList';
+import { VcPausedNotice } from '@/crd/components/virtualContributor/VcPausedNotice';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { formatShortDate } from '@/crd/lib/dateTimeFormat';
 import { cn } from '@/crd/lib/utils';
@@ -128,7 +129,8 @@ export type SpaceSettingsCommunityViewProps = {
   /** Open the Member settings dialog for this organization. */
   onOrgChangeRole?: (org: CommunityOrg) => void;
   onOrgInvitationRevoke: (id: string) => void;
-  onVCAdd: () => void;
+  // TEMP: VCs disabled (#10398) — optional so the page can stop passing it; restore to required.
+  onVCAdd?: () => void;
   onVCAddExternal?: () => void;
   onVCRemove: (id: string) => void;
   onPendingView: (id: string) => void;
@@ -678,22 +680,29 @@ export function SpaceSettingsCommunityView({
               </TableBody>
             </Table>
           </div>
-          <div className="mt-4 flex flex-wrap items-center gap-2">
-            <GatedAction disabledReason={addDisabledReasons?.virtualContributors}>
-              <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAdd}>
-                <Plus aria-hidden="true" className="size-4" />
-                {t('community.virtualContributors.add')}
-              </Button>
-            </GatedAction>
-            {onVCAddExternal && (
-              <GatedAction disabledReason={addDisabledReasons?.virtualContributors}>
-                <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAddExternal}>
-                  <Plus aria-hidden="true" className="size-4" />
-                  {t('community.virtualContributors.addExternal')}
-                </Button>
-              </GatedAction>
-            )}
-          </div>
+          {/* TEMP: VCs disabled (#10398) — the notice replaces the Add buttons when the page passes none. */}
+          {onVCAdd || onVCAddExternal ? (
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              {onVCAdd && (
+                <GatedAction disabledReason={addDisabledReasons?.virtualContributors}>
+                  <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAdd}>
+                    <Plus aria-hidden="true" className="size-4" />
+                    {t('community.virtualContributors.add')}
+                  </Button>
+                </GatedAction>
+              )}
+              {onVCAddExternal && (
+                <GatedAction disabledReason={addDisabledReasons?.virtualContributors}>
+                  <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAddExternal}>
+                    <Plus aria-hidden="true" className="size-4" />
+                    {t('community.virtualContributors.addExternal')}
+                  </Button>
+                </GatedAction>
+              )}
+            </div>
+          ) : (
+            <VcPausedNotice className="mt-4" />
+          )}
         </SettingsSection>
       )}
     </div>

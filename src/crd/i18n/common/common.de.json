@@ -1632,5 +1632,12 @@
       "refresh": "Seite neu laden",
       "close": "Schließen"
     }
+  },
+  "vcPaused": {
+    "title": "Virtual Contributors bekommen ein Upgrade! 🚀",
+    "description": "Wir bauen sie neu auf, damit sie intelligenter und hilfreicher werden. Bis dahin kannst du sie nicht erstellen, hinzufügen oder erwähnen, aber deine bestehenden VCs bleiben sichtbar.",
+    "learnMore": "Mehr erfahren",
+    "contactSupport": "Support kontaktieren",
+    "mentionUnavailable": "Vorübergehend nicht verfügbar"
   }
 }

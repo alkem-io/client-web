@@ -114,6 +114,8 @@ export type CrdMentionSuggestion = {
   city?: string;
   country?: string;
   virtualContributor?: boolean;
+  /** TEMP: VCs disabled (#10398) — shown greyed out and cannot be picked. */
+  unavailable?: boolean;
 };
 
 /**
