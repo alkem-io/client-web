@@ -165,6 +165,7 @@
       },
       "socialLinks": {
         "title": "Soziale Profile",
+        "phoneInvalidSaveBlocked": "Korrigiere die Telefonnummer unter „Soziale Profile“, um zu speichern",
         "linkedinPlaceholder": "https://linkedin.com/in/dein-name",
         "bskyPlaceholder": "https://bsky.app/profile/dein-name",
         "githubPlaceholder": "https://github.com/dein-name",

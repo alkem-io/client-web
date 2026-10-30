@@ -235,6 +235,16 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/language/language.de.json'),
     fr: () => import('@/crd/i18n/language/language.fr.json'),
   },
+  // City-name suggestions for the profile Location field (spec 097 city-autocomplete).
+  // Never preloaded — fetched on first focus of the City input.
+  'crd-cities': {
+    en: () => import('@/crd/i18n/cities/cities.en.json'),
+    es: () => import('@/crd/i18n/cities/cities.es.json'),
+    nl: () => import('@/crd/i18n/cities/cities.nl.json'),
+    bg: () => import('@/crd/i18n/cities/cities.bg.json'),
+    de: () => import('@/crd/i18n/cities/cities.de.json'),
+    fr: () => import('@/crd/i18n/cities/cities.fr.json'),
+  },
   'crd-reactions': {
     en: () => import('@/crd/i18n/reactions/reactions.en.json'),
     es: () => import('@/crd/i18n/reactions/reactions.es.json'),

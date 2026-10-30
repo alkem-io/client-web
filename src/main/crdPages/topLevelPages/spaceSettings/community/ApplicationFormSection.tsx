@@ -8,18 +8,11 @@ import type { UseApplicationFormDataResult } from '../settings/useApplicationFor
 
 type ApplicationFormSectionProps = {
   form: UseApplicationFormDataResult;
-  onExportApplications?: () => void;
-  exportDisabled?: boolean;
   markdown: MarkdownUploadProps;
 };
 
 /** Community tab → Application Form: question preview inline, editing in a dialog. */
-export function ApplicationFormSection({
-  form,
-  onExportApplications,
-  exportDisabled,
-  markdown,
-}: ApplicationFormSectionProps) {
+export function ApplicationFormSection({ form, markdown }: ApplicationFormSectionProps) {
   const { t } = useTranslation('crd-spaceSettings');
   const [editing, setEditing] = useState(false);
 
@@ -29,8 +22,6 @@ export function ApplicationFormSection({
         questions={form.questions}
         loading={form.loading && !editing}
         onEdit={() => setEditing(true)}
-        onExportApplications={onExportApplications}
-        exportDisabled={exportDisabled}
       />
       <SettingsEditorDialog
         open={editing}

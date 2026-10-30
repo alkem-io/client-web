@@ -3,7 +3,8 @@ import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { isVcCampaignTargeted } from './isVcCampaignTargeted';
 
 describe('isVcCampaignTargeted (workspace#027 Slice A — legacy and successor both honoured)', () => {
-  test('the additive FEATURE_VC_CAMPAIGN successor targets the campaign on its own', () => {
+  // TEMP: VCs disabled (#10398) — restore: test(
+  test.skip('the additive FEATURE_VC_CAMPAIGN successor targets the campaign on its own', () => {
     expect(isVcCampaignTargeted([RoleName.FeatureVcCampaign])).toBe(true);
   });
 

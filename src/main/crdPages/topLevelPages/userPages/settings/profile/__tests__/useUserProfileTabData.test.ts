@@ -122,12 +122,15 @@ describe('useUserProfileTabData — unsaved changes', () => {
   it('cannot save while a required name is empty or the phone is malformed', () => {
     const { result } = renderHook(() => useUserProfileTabData('user-1'));
     expect(result.current.unsaved.canSave).toBe(true);
+    expect(result.current.unsaved.saveBlockedReason).toBeUndefined();
 
     act(() => result.current.onChange({ lastName: ' ' }));
     expect(result.current.unsaved.canSave).toBe(false);
+    expect(result.current.unsaved.saveBlockedReason).toBe('user.profile.identity.lastName.required');
 
     act(() => result.current.onChange({ lastName: 'Lovelace', phone: 'not a phone' }));
     expect(result.current.unsaved.canSave).toBe(false);
+    expect(result.current.unsaved.saveBlockedReason).toBe('user.profile.socialLinks.phoneInvalidSaveBlocked');
   });
 
   it('reset puts every field back to its saved value', () => {

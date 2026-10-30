@@ -4,6 +4,7 @@ import { LoginPage } from './loginPage';
 const PRIMARY_EMAIL = process.env.AUTH_TEST_HARNESS_EMAIL || 'admin@alkem.io';
 const SECONDARY_EMAIL = process.env.AUTH_TEST_HARNESS_EMAIL_2 || 'community.admin@alkem.io';
 const READONLY_EMAIL = process.env.E2E_READONLY_USER_EMAIL;
+const NON_BETA_EMAIL = process.env.E2E_NON_BETA_EMAIL;
 
 type AuthenticatedSession = { context: BrowserContext; page: Page; close: () => Promise<void> };
 
@@ -16,6 +17,8 @@ type AuthFixtures = {
   freshPrimaryUser: () => Promise<AuthenticatedSession>;
   /** Opens the explicitly configured account that can read, but cannot update, the test document. */
   readonlyUser: () => Promise<AuthenticatedSession>;
+  /** Opens a third account, one that does not hold the Feature Beta Tester role. */
+  thirdUser: () => Promise<AuthenticatedSession>;
 };
 
 /**
@@ -67,6 +70,19 @@ export const test = base.extend<AuthFixtures>({
       opened.push(context);
       const page = await context.newPage();
       await new LoginPage(page).login(READONLY_EMAIL);
+      return { context, page, close: async () => context.close() };
+    });
+    await Promise.all(opened.map(c => c.close()));
+  },
+
+  thirdUser: async ({ browser }, use) => {
+    const opened: BrowserContext[] = [];
+    await use(async () => {
+      if (!NON_BETA_EMAIL) throw new Error('E2E_NON_BETA_EMAIL is required for the group-call rows');
+      const context = await (browser as Browser).newContext();
+      opened.push(context);
+      const page = await context.newPage();
+      await new LoginPage(page).login(NON_BETA_EMAIL);
       return { context, page, close: async () => context.close() };
     });
     await Promise.all(opened.map(c => c.close()));

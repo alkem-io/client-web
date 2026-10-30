@@ -939,8 +939,10 @@
     "previous": "Предишно изображение",
     "next": "Следващо изображение",
     "goToImage": "Премини към изображение {{index}}",
+    "goToVideo": "Премини към видео {{index}}",
     "thumbnailsLabel": "Миниатюри на изображения",
     "download": "Изтегли изображение",
+    "downloadVideo": "Изтегли видео",
     "fullscreen": "Цял екран",
     "exitFullscreen": "Изход от цял екран",
     "emptyState": {

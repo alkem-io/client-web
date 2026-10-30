@@ -25,6 +25,8 @@ export type ClassificationEntryCardProps = {
   onToggleDisplay: (entryId: string, display: boolean) => void;
   /** Opens the removal confirmation (owned by the connector, FR-014b). */
   onRequestRemove: (entryId: string) => void;
+  /** Words the shown/hidden copy for a subspace ("Subspace page") instead of a Space (FR-042). */
+  subspace?: boolean;
   className?: string;
 };
 
@@ -46,9 +48,11 @@ export function ClassificationEntryCard({
   onSelectValues,
   onToggleDisplay,
   onRequestRemove,
+  subspace,
   className,
 }: ClassificationEntryCardProps) {
   const { t } = useTranslation('crd-spaceSettings');
+  const context = subspace ? 'subspace' : undefined;
   // Every value is always on screen as a chip, so the chip row itself is the
   // Step B prompt; the checkbox/radio selector stays available from the kebab.
   const [selectorOpen, setSelectorOpen] = useState(false);
@@ -90,7 +94,7 @@ export function ClassificationEntryCard({
               {!entry.display && (
                 <Badge variant="outline" className="gap-1 shrink-0">
                   <EyeOff className="size-3" aria-hidden="true" />
-                  {t('classifications.display.hiddenHint')}
+                  {t('classifications.display.hiddenHint', { context })}
                 </Badge>
               )}
             </div>
@@ -129,7 +133,7 @@ export function ClassificationEntryCard({
               }}
             >
               <Switch checked={entry.display} className="mr-2 pointer-events-none" aria-hidden="true" />
-              {t('classifications.display.toggleLabel')}
+              {t('classifications.display.toggleLabel', { context })}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

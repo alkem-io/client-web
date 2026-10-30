@@ -3,6 +3,7 @@ import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ClassificationEntryCard } from '@/crd/components/classification/ClassificationEntryCard';
 import type { ClassificationEntryData } from '@/crd/components/classification/types';
+import { CityAutocompleteInput, type CityOption } from '@/crd/components/common/CityAutocompleteInput';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
 import { SettingsSection } from '@/crd/components/common/SettingsSection';
 import { SpaceCard, type SpaceCardData } from '@/crd/components/space/SpaceCard';
@@ -31,6 +32,10 @@ export type SpaceSettingsAboutViewProps = AboutFormValues & {
   level: SpaceSettingsLevel;
   previewCard: SpaceCardPreview;
   countries: ReadonlyArray<{ name: string; code: string }>;
+  /** City suggestions; `undefined` until loaded (see `onCityFocus`). */
+  cityOptions?: ReadonlyArray<CityOption>;
+  /** City input focused — the consumer lazily loads `cityOptions`. */
+  onCityFocus?: () => void;
   /** Locks every field while the tab's changes are being saved (spec 045 FR-025d). */
   disabled?: boolean;
   /** Character limits of the markdown sections; each turns on that editor's progress ring. */
@@ -105,6 +110,8 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
   //   - L1/L2: avatar + cardBanner — L1/L2 have NO settable page banner (they inherit L0 root's)
   const showPageBanner = level === 'L0';
   const showAvatar = level !== 'L0';
+  // FR-042: subspace copy via the i18next `_subspace` key variants.
+  const context = level === 'L0' ? undefined : 'subspace';
   const nameId = useId();
   const taglineId = useId();
   const cityId = useId();
@@ -120,15 +127,15 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
         <SettingsSection title={t('about.sections.identity')} icon={<Type className="size-4" />} iconColor="blue">
           <div className="space-y-4">
             <div>
-              <FieldLabel htmlFor={nameId}>{t('about.name.title')}</FieldLabel>
+              <FieldLabel htmlFor={nameId}>{t('about.name.title', { context })}</FieldLabel>
               <Input
                 id={nameId}
                 value={name}
                 onChange={e => onChange({ name: e.target.value })}
-                placeholder={t('about.name.title')}
+                placeholder={t('about.name.title', { context })}
                 className="mt-2"
               />
-              <FieldHint>{t('about.name.description')}</FieldHint>
+              <FieldHint>{t('about.name.description', { context })}</FieldHint>
             </div>
             <div>
               <FieldLabel htmlFor={taglineId}>{t('about.tagline.title')}</FieldLabel>
@@ -139,7 +146,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                 placeholder={t('about.tagline.title')}
                 className="mt-2"
               />
-              <FieldHint>{t('about.tagline.description')}</FieldHint>
+              <FieldHint>{t('about.tagline.description', { context })}</FieldHint>
             </div>
           </div>
         </SettingsSection>
@@ -165,7 +172,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                   uploadLabel={t('about.branding.avatar.upload')}
                   sizeLabel={t('about.branding.avatar.size')}
                 />
-                <FieldHint>{t('about.branding.avatar.hint')}</FieldHint>
+                <FieldHint>{t('about.branding.avatar.hint', { context })}</FieldHint>
               </div>
             )}
 
@@ -181,7 +188,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                 uploadLabel={t('about.branding.cardBanner.upload')}
                 sizeLabel={t('about.branding.cardBanner.size')}
               />
-              <FieldHint>{t('about.branding.cardBanner.hint')}</FieldHint>
+              <FieldHint>{t('about.branding.cardBanner.hint', { context })}</FieldHint>
             </div>
 
             {showPageBanner && (
@@ -213,10 +220,13 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <FieldLabel htmlFor={cityId}>{t('about.location.city')}</FieldLabel>
-              <Input
+              <CityAutocompleteInput
                 id={cityId}
                 value={city}
-                onChange={e => onChange({ city: e.target.value })}
+                onChange={next => onChange({ city: next })}
+                onSelect={option => onChange({ city: option.name, country: option.countryCode })}
+                options={props.cityOptions}
+                onFocus={props.onCityFocus}
                 placeholder={t('about.location.city')}
                 className="mt-2"
               />
@@ -232,7 +242,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               />
             </div>
           </div>
-          <FieldHint>{t('about.location.description')}</FieldHint>
+          <FieldHint>{t('about.location.description', { context })}</FieldHint>
         </SettingsSection>
 
         <SettingsSection
@@ -251,13 +261,13 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                     value={props[field]}
                     onChange={next => onChange({ [field]: next })}
                     maxLength={markdownMaxLengthByField?.[field]}
-                    placeholder={t(`about.${field}.placeholder`)}
+                    placeholder={t(`about.${field}.placeholder`, { context })}
                     onImageUpload={onImageUpload}
                     iframeAllowedUrls={iframeAllowedUrls}
                     onError={onError}
                   />
                 </div>
-                <FieldHint>{t(`about.${field}.description`)}</FieldHint>
+                <FieldHint>{t(`about.${field}.description`, { context })}</FieldHint>
               </div>
             ))}
           </div>
@@ -274,7 +284,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
             onChange={next => onChange({ tags: next })}
             placeholder={t('about.tags.placeholder')}
           />
-          <FieldHint>{t('about.tags.description')}</FieldHint>
+          <FieldHint>{t('about.tags.description', { context })}</FieldHint>
         </SettingsSection>
 
         {/* Classifications (D1, product#2161 design 01) */}
@@ -285,7 +295,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
           icon={<Tags className="size-4" />}
           iconColor="purple"
         >
-          <p className="text-caption text-muted-foreground">{t('classifications.sectionDescription')}</p>
+          <p className="text-caption text-muted-foreground">{t('classifications.sectionDescription', { context })}</p>
           {classifications.length > 0 && (
             <div className="mt-4 space-y-3">
               {classifications.map(entry => (
@@ -296,6 +306,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                   onSelectValues={onSelectClassificationValues}
                   onToggleDisplay={onToggleClassificationDisplay}
                   onRequestRemove={onRemoveClassification}
+                  subspace={level !== 'L0'}
                 />
               ))}
             </div>
@@ -326,7 +337,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               )
             )}
           />
-          <FieldHint>{t('about.references.description')}</FieldHint>
+          <FieldHint>{t('about.references.description', { context })}</FieldHint>
         </SettingsSection>
       </div>
 
@@ -340,7 +351,9 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
             <span className="mt-0.5 text-muted-foreground">ⓘ</span>
             <div>
               <p className="text-card-title text-foreground">{t('about.preview.livePreview.title')}</p>
-              <p className="text-body text-muted-foreground mt-1">{t('about.preview.livePreview.description')}</p>
+              <p className="text-body text-muted-foreground mt-1">
+                {t('about.preview.livePreview.description', { context })}
+              </p>
             </div>
           </div>
         </div>

@@ -21,11 +21,12 @@ import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { resolveInternalReturnPath } from '@/core/utils/links';
+import { AppSignInWelcome } from '@/crd/components/auth/AppSignInWelcome';
 import type { KratosFlowDescriptor, KratosMessage } from '@/crd/components/auth/flowDescriptor';
 import { LoginCard, type LoginCardNotice } from '@/crd/components/auth/LoginCard';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
-import { buildSignUpUrl } from '@/main/routing/urlBuilders';
+import { buildSignUpUrl, URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
 import { AuthShellWrapper } from './AuthShellWrapper';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
 import { invokePasskeyTrigger, PasskeyTriggerError } from './passkeyTrigger';
@@ -187,24 +188,41 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   // proxy's lockout bounce, and the shell / server hand-off bounce. Neither may
   // render a Kratos form — the auto-provisioned flow is deliberately ignored,
   // both because a Kratos-native login would bypass Hydra and because the
-  // backoff proxy would refuse the POST anyway — so each renders its notice with
-  // a manual re-entry into the OIDC sign-in. Lockout wins when both are present:
-  // the account is blocked either way. Nothing here knows or asks whether it is
-  // running in the app; the card is correct in a plain browser too.
+  // backoff proxy would refuse the POST anyway — so each offers a manual
+  // re-entry into the OIDC sign-in. Lockout wins when both are present: the
+  // account is blocked either way. Nothing here knows or asks whether it is
+  // running in the app; both screens are correct in a plain browser too.
   const arrivalNotice: LoginCardNotice | undefined = isLockedOutArrival
     ? {
         text: t('authentication.lockout', { duration: lockoutDuration }),
         actionLabel: t('authentication.lockoutRetry'),
         actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
       }
-    : appSignIn
-      ? {
-          text: tAuth(`appSignIn.${appSignIn}`),
-          actionLabel: tAuth('appSignIn.action'),
-          actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
-          tone: appSignIn === 'failed' ? 'destructive' : 'info',
-        }
-      : undefined;
+    : undefined;
+
+  // The app hand-off arrival is the app's sign-in screen: a welcome with room
+  // for the brand, sign-in and a way to browse public spaces. It offers no
+  // sign-up: inside the app the shell turns /sign_up into the OIDC sign-in, so
+  // that button would open the sign-in screen. `required` comes before any
+  // attempt and needs no message; after a cancelled or failed attempt the
+  // reason sits above the buttons on the same screen.
+  if (!flow && !isLockedOutArrival && appSignIn) {
+    return (
+      <AuthShellWrapper plain={true}>
+        <AppSignInWelcome
+          signInHref={buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin)}
+          // Absolute against the apex, like the OIDC hand-off, because this page
+          // also renders on the identity subdomain where the explorer does not live.
+          browseSpacesHref={`${platformOrigin ?? ''}${URL_SPACE_EXPLORER}`}
+          message={
+            appSignIn === 'required'
+              ? undefined
+              : { text: tAuth(`appSignIn.${appSignIn}`), tone: appSignIn === 'failed' ? 'destructive' : 'info' }
+          }
+        />
+      </AuthShellWrapper>
+    );
+  }
 
   if (!flow && arrivalNotice) {
     return (
