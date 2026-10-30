@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react';
+import { renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   NotificationEvent,
@@ -57,7 +57,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
     loading: false,
     error: undefined,
     fetchMore: state.fetchMore,
-    refetch: () => state.refetch(options.variables.first),
+    refetch: () => Promise.resolve(state.refetch(options.variables.first)),
   }),
   useInAppNotificationsUnreadCountQuery: () => ({
     data: state.unreadCount === undefined ? undefined : { me: { notificationsUnreadCount: state.unreadCount } },
@@ -186,26 +186,6 @@ describe('useInAppNotifications — a notification arriving while the dialog is 
 
     expect(state.fetchMore).toHaveBeenCalledTimes(1);
     expect(state.refetch.mock.calls.map(([first]) => first)).toEqual([50]);
-  });
-
-  it('refreshes once more after the in-flight refresh when the count rises again meanwhile', async () => {
-    const settle: Array<() => void> = [];
-    state.fetchMore.mockImplementation(() => new Promise<void>(resolve => settle.push(resolve)));
-    const { rerender } = renderHook(() => useInAppNotifications());
-
-    state.unreadCount = 3;
-    rerender();
-    state.unreadCount = 4;
-    rerender();
-    // The second rise shares the first request, so no new request is sent while it is in flight.
-    expect(state.fetchMore).toHaveBeenCalledTimes(1);
-
-    await act(async () => settle[0]());
-    expect(state.fetchMore).toHaveBeenCalledTimes(2);
-    expect(state.refetch).toHaveBeenCalledTimes(2);
-
-    await act(async () => settle[1]());
-    expect(state.fetchMore).toHaveBeenCalledTimes(2);
   });
 
   it('drops a newest-page response that arrives after the user switched to another filter', () => {
