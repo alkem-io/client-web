@@ -1,6 +1,7 @@
 import { ChevronLeft, Maximize2, Minimize2, Settings, X } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
+import { claimEscape } from '@/crd/lib/claimEscape';
 import { cn } from '@/crd/lib/utils';
 
 type ChatPanelProps = {
@@ -80,6 +81,23 @@ export function ChatPanel({
       body.style.overflow = previousOverflow;
     };
   }, [coversPage]);
+
+  // While the panel covers the page it is the topmost layer: Escape steps back
+  // from a thread to the list, then closes. A dialog opened from inside the chat
+  // is a Radix layer that handles Escape first, so the chat skips that press.
+  // The floating card leaves Escape to the page.
+  useEffect(() => {
+    if (!coversPage) {
+      return;
+    }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (claimEscape(e)) {
+        (onBack ?? onClose)();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [coversPage, onBack, onClose]);
 
   if (!open) {
     return null;

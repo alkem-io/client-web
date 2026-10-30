@@ -1,7 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { ComponentProps } from 'react';
+import { type ComponentProps, useState } from 'react';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { handleAppBack } from '@/core/appMode/appBack';
+import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
 import { ChatPanel } from './ChatPanel';
 
 const screenSize = { isSmallScreen: false, isMediumScreen: false, isLargeScreen: true };
@@ -21,6 +23,25 @@ const baseProps: ComponentProps<typeof ChatPanel> = {
 
 const renderPanel = (props: Partial<ComponentProps<typeof ChatPanel>> = {}) =>
   render(<ChatPanel {...baseProps} {...props} />);
+
+const back = () => {
+  let consumed = false;
+  act(() => {
+    consumed = handleAppBack();
+  });
+  return consumed;
+};
+
+const OpenDialog = () => {
+  const [open, setOpen] = useState(true);
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent aria-describedby={undefined}>
+        <DialogTitle>Group settings</DialogTitle>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 describe('ChatPanel', () => {
   beforeEach(() => {
@@ -157,6 +178,68 @@ describe('ChatPanel', () => {
       await userEvent.setup().click(screen.getByRole('button', { name: 'Expand chat' }));
       unmount();
       expect(document.body.style.overflow).toBe('');
+    });
+  });
+  describe('Escape and the app Back button', () => {
+    test('on a small screen, steps back from the thread instead of closing', () => {
+      screenSize.isSmallScreen = true;
+      const onBack = vi.fn();
+      const onClose = vi.fn();
+      renderPanel({ onBack, onClose });
+      expect(back()).toBe(true);
+      expect(onBack).toHaveBeenCalledTimes(1);
+      expect(onClose).not.toHaveBeenCalled();
+    });
+
+    test('on a small screen without a thread open, closes the panel', () => {
+      screenSize.isSmallScreen = true;
+      const onClose = vi.fn();
+      renderPanel({ onClose });
+      expect(back()).toBe(true);
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    test('leaves Escape to the page while the panel is the floating desktop card', () => {
+      const onBack = vi.fn();
+      const onClose = vi.fn();
+      renderPanel({ onBack, onClose });
+      expect(back()).toBe(false);
+      expect(onBack).not.toHaveBeenCalled();
+      expect(onClose).not.toHaveBeenCalled();
+    });
+
+    test('closes the expanded desktop panel', async () => {
+      const onClose = vi.fn();
+      renderPanel({ onClose });
+      await userEvent.setup().click(screen.getByRole('button', { name: 'Expand chat' }));
+      expect(back()).toBe(true);
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    test('a dialog opened from inside the chat closes first, then the thread steps back', () => {
+      screenSize.isSmallScreen = true;
+      const onBack = vi.fn();
+      const onClose = vi.fn();
+      renderPanel({ onBack, onClose, children: <OpenDialog /> });
+      expect(screen.getByRole('dialog', { name: 'Group settings' })).toBeInTheDocument();
+
+      expect(back()).toBe(true);
+      expect(screen.queryByRole('dialog', { name: 'Group settings' })).not.toBeInTheDocument();
+      expect(onBack).not.toHaveBeenCalled();
+      expect(onClose).not.toHaveBeenCalled();
+
+      expect(back()).toBe(true);
+      expect(onBack).toHaveBeenCalledTimes(1);
+      expect(onClose).not.toHaveBeenCalled();
+    });
+
+    test('stops listening once the panel no longer covers the page', () => {
+      screenSize.isSmallScreen = true;
+      const onClose = vi.fn();
+      const { rerender } = renderPanel({ onClose });
+      rerender(<ChatPanel {...baseProps} onClose={onClose} open={false} />);
+      expect(back()).toBe(false);
+      expect(onClose).not.toHaveBeenCalled();
     });
   });
 });
