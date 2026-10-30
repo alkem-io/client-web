@@ -16,7 +16,7 @@ import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { MentionSuggestionItem } from './MentionSuggestionItem';
-import { MENTION_MARKUP, mapPlainIndexToMarkupIndex } from './mentionMarkup';
+import { countMentionsOf, MENTION_MARKUP, mapPlainIndexToMarkupIndex } from './mentionMarkup';
 import type { CommentAuthor, ComposerAttachment, CrdMentionSearch, CrdMentionSuggestion } from './types';
 
 type CommentInputProps = {
@@ -186,9 +186,7 @@ export function CommentInput({
   // TEMP: VCs disabled (#10398) — ids of suggestions that cannot be picked; a change that adds one is rejected.
   const unavailableMentionIdsRef = useRef(new Set<string>());
   const addsUnavailableMention = (next: string) =>
-    Array.from(unavailableMentionIdsRef.current).some(
-      id => next.split(`](${id})`).length > content.split(`](${id})`).length
-    );
+    Array.from(unavailableMentionIdsRef.current).some(id => countMentionsOf(next, id) > countMentionsOf(content, id));
 
   const handleFilesPicked = (fileList: FileList | null) => {
     if (!fileList || fileList.length === 0) return;
