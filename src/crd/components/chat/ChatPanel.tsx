@@ -85,7 +85,8 @@ export function ChatPanel({
   // While the panel covers the page it is the topmost layer: Escape steps back
   // from a thread to the list, then closes. A dialog opened from inside the chat
   // is a Radix layer that handles Escape first, so the chat skips that press.
-  // The floating card leaves Escape to the page.
+  // Listening on window lets document-level overlays opened above the chat
+  // (search) claim Escape first. The floating card leaves Escape to the page.
   useEffect(() => {
     if (!coversPage) {
       return;
@@ -95,8 +96,8 @@ export function ChatPanel({
         (onBack ?? onClose)();
       }
     };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [coversPage, onBack, onClose]);
 
   if (!open) {

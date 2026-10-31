@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { type ComponentProps, useState } from 'react';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { handleAppBack } from '@/core/appMode/appBack';
+import { SearchOverlay } from '@/crd/components/search/SearchOverlay';
 import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
 import { ChatPanel } from './ChatPanel';
 
@@ -230,6 +231,32 @@ describe('ChatPanel', () => {
 
       expect(back()).toBe(true);
       expect(onBack).toHaveBeenCalledTimes(1);
+      expect(onClose).not.toHaveBeenCalled();
+    });
+
+    test('search opened over the expanded panel closes first, the panel stays', async () => {
+      const onClose = vi.fn();
+      const onSearchClose = vi.fn();
+      renderPanel({ onClose });
+      await userEvent.setup().click(screen.getByRole('button', { name: 'Expand chat' }));
+      render(
+        <SearchOverlay
+          isOpen={true}
+          onClose={onSearchClose}
+          state="empty"
+          tags={[]}
+          inputValue=""
+          onInputChange={() => {}}
+          onTagAdd={() => {}}
+          onTagRemove={() => {}}
+          maxTags={5}
+          categories={[]}
+          disclaimer=""
+          noResultsTerms=""
+        />
+      );
+      expect(back()).toBe(true);
+      expect(onSearchClose).toHaveBeenCalledTimes(1);
       expect(onClose).not.toHaveBeenCalled();
     });
 
