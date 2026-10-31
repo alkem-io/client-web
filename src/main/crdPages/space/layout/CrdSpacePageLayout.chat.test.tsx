@@ -7,6 +7,7 @@ import CrdSpacePageLayout from './CrdSpacePageLayout';
 // ---- controllable state -----------------------------------------------------
 
 let chatOpen = false;
+let edgeSwipeEnabled: boolean | undefined;
 const tabsLoaded = true;
 const defaultTabIndex = 0;
 
@@ -49,9 +50,13 @@ vi.mock('@/crd/components/space/SpaceHeader', () => ({ SpaceHeader: () => null }
 vi.mock('@/crd/components/space/SpaceVisibilityNotice', () => ({ SpaceVisibilityNotice: () => null }));
 vi.mock('@/crd/components/space/settings/SpaceSettingsHeader', () => ({ SpaceSettingsHeader: () => null }));
 vi.mock('@/crd/components/space/settings/SpaceSettingsTabStrip', () => ({ SpaceSettingsTabStrip: () => null }));
-vi.mock('@/crd/hooks/useEdgeSwipe', () => ({ useEdgeSwipe: () => {} }));
+vi.mock('@/crd/hooks/useEdgeSwipe', () => ({
+  useEdgeSwipe: (_onSwipe: () => void, options?: { enabled?: boolean }) => {
+    edgeSwipeEnabled = options?.enabled;
+  },
+}));
 vi.mock('@/crd/hooks/useMediaQuery', () => ({
-  useMediaQuery: () => false,
+  useMediaQuery: (query: string) => query === '(max-width: 1023px)',
   useScreenSize: () => ({ isSmallScreen: false }),
 }));
 vi.mock('@/domain/space/context/useSpace', () => ({
@@ -108,6 +113,7 @@ const drawerOpen = () => screen.getByTestId('drawer').getAttribute('data-open');
 describe('CrdSpacePageLayout mobile menu and the chat', () => {
   beforeEach(() => {
     chatOpen = false;
+    edgeSwipeEnabled = undefined;
     Element.prototype.scrollIntoView = vi.fn();
   });
 
@@ -119,6 +125,15 @@ describe('CrdSpacePageLayout mobile menu and the chat', () => {
     chatOpen = true;
     rerender(layout());
     expect(drawerOpen()).toBe('false');
+  });
+
+  test('the edge swipe cannot reopen the menu under an open chat', () => {
+    const { rerender } = render(layout());
+    expect(edgeSwipeEnabled).toBe(true);
+
+    chatOpen = true;
+    rerender(layout());
+    expect(edgeSwipeEnabled).toBe(false);
   });
 
   test('the menu opens normally while the chat is closed', () => {

@@ -132,9 +132,12 @@ export default function CrdSpacePageLayout() {
 
   // Edge-swipe from the left opens the mobile sidebar drawer — same drawer the
   // hamburger triggers. Only armed while the drawer exists: below lg (the
-  // desktop sidebar takes over at lg+) and off settings (no drawer there).
+  // desktop sidebar takes over at lg+) and off settings (no drawer there), and
+  // not while the chat covers the page, which would hide the drawer behind it.
   const belowLg = useMediaQuery('(max-width: 1023px)');
-  useEdgeSwipe(() => setMobileMenuOpen(true), { enabled: belowLg && isLevelZero && !isOnSettings });
+  useEdgeSwipe(() => setMobileMenuOpen(true), {
+    enabled: belowLg && isLevelZero && !isOnSettings && !chatOpen,
+  });
 
   if (resolvingUrl || loadingSpace) {
     // Same reservation as `SpaceShell`'s content column, so the footer stays put while the
