@@ -50,6 +50,7 @@ import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
 import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
+import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { CalloutShareOnAlkemioForm } from '../callout/CalloutShareOnAlkemioForm';
 import { mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
 import { CrdSpaceAboutDialogConnector } from '../dialogs/CrdSpaceAboutDialogConnector';
@@ -93,6 +94,16 @@ export default function CrdSpacePageLayout() {
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);
+
+  // The chat covers the page, so opening it from inside the drawer (contact the
+  // leads, then open the chat) leaves the drawer just like a navigation does.
+  // Left open underneath, it would also take the next Escape before the chat.
+  const { isOpen: chatOpen } = useUserMessagingContext();
+  useEffect(() => {
+    if (chatOpen) {
+      setMobileMenuOpen(false);
+    }
+  }, [chatOpen]);
 
   const isLevelZero = spaceLevel === SpaceLevel.L0;
   usePageTitle(isLevelZero ? space.about.profile.displayName : undefined);
