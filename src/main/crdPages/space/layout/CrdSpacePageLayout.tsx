@@ -50,6 +50,7 @@ import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
 import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
+import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { CalloutShareOnAlkemioForm } from '../callout/CalloutShareOnAlkemioForm';
 import { mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
 import { CrdSpaceAboutDialogConnector } from '../dialogs/CrdSpaceAboutDialogConnector';
@@ -94,6 +95,16 @@ export default function CrdSpacePageLayout() {
     setMobileMenuOpen(false);
   }, [pathname]);
 
+  // The chat covers the page, so opening it from inside the drawer (contact the
+  // leads, then open the chat) leaves the drawer just like a navigation does.
+  // Left open underneath, it would also take the next Escape before the chat.
+  const { isOpen: chatOpen } = useUserMessagingContext();
+  useEffect(() => {
+    if (chatOpen) {
+      setMobileMenuOpen(false);
+    }
+  }, [chatOpen]);
+
   const isLevelZero = spaceLevel === SpaceLevel.L0;
   usePageTitle(isLevelZero ? space.about.profile.displayName : undefined);
 
@@ -121,9 +132,12 @@ export default function CrdSpacePageLayout() {
 
   // Edge-swipe from the left opens the mobile sidebar drawer — same drawer the
   // hamburger triggers. Only armed while the drawer exists: below lg (the
-  // desktop sidebar takes over at lg+) and off settings (no drawer there).
+  // desktop sidebar takes over at lg+) and off settings (no drawer there), and
+  // not while the chat covers the page, which would hide the drawer behind it.
   const belowLg = useMediaQuery('(max-width: 1023px)');
-  useEdgeSwipe(() => setMobileMenuOpen(true), { enabled: belowLg && isLevelZero && !isOnSettings });
+  useEdgeSwipe(() => setMobileMenuOpen(true), {
+    enabled: belowLg && isLevelZero && !isOnSettings && !chatOpen,
+  });
 
   if (resolvingUrl || loadingSpace) {
     // Same reservation as `SpaceShell`'s content column, so the footer stays put while the

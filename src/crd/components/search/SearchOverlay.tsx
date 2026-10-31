@@ -3,6 +3,7 @@ import type { ComponentType } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { claimEscape } from '@/crd/lib/claimEscape';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { type SearchCategoryId, SearchCategorySidebar, type SidebarCategory } from './SearchCategorySidebar';
@@ -106,7 +107,7 @@ export function SearchOverlay({
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (claimEscape(e)) {
         onClose();
         return;
       }
