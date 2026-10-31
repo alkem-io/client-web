@@ -3,12 +3,11 @@ import { expect, test } from '../fixtures/authFixture';
 
 /**
  * @forge-acceptance
- * 093-app-back-closes-overlays — User Story 1 "Back closes the topmost open overlay"
- * (US1-AS1 .. AS8).
+ * App Back closes the topmost open overlay, one layer per press.
  *
  * Drives the page's web-owned entry point exactly as the Android shell does:
  * `window.alkemioApp.handleBack()`. Phone viewport. Seeds its own space, post callout,
- * subspace and calendar event through the API (unique nameIDs per run, all prefixed `093-`),
+ * subspace and calendar event through the API (unique nameIDs per run, all with a fixed test prefix),
  * so it is re-runnable and never touches existing content. Runs serially (shared fixture).
  *
  * Required env: ALKEMIO_BASE_URL (default http://localhost:3000), AUTH_TEST_HARNESS_EMAIL
@@ -16,10 +15,10 @@ import { expect, test } from '../fixtures/authFixture';
  *
  * Notes recorded from the walk:
  *  - A card tap on the space page opens a STATE-bound callout dialog (no route). The URL-bound
- *    dialog (AS2) is reached through an in-app link to the callout route (Activity list) or a
+ *    dialog is reached through an in-app link to the callout route (Activity list) or a
  *    deep link; closing it is one replace-navigation to the parent, `?tab` preserved.
  *  - The calendar / add-event sheets are URL-bound, so closing them navigates to the parent;
- *    the non-URL-bound sheet is the subspace mobile menu (AS6).
+ *    the non-URL-bound sheet is the subspace mobile menu.
  */
 const BASE = process.env.ALKEMIO_BASE_URL || 'http://localhost:3000';
 const RUN = Date.now().toString(36);
