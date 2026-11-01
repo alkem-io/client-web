@@ -1,8 +1,15 @@
 import { createEvent, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { type ReactNode, useState } from 'react';
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { ComposerAttachment } from './types';
+
+const screenSize = vi.hoisted(() => ({ isSmallScreen: false, isMediumScreen: false, isLargeScreen: true }));
+
+vi.mock('@/crd/hooks/useMediaQuery', async importOriginal => ({
+  ...(await importOriginal<typeof import('@/crd/hooks/useMediaQuery')>()),
+  useScreenSize: () => screenSize,
+}));
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -382,5 +389,90 @@ describe('CommentInput iOS font size', () => {
     const wrapper = getTextarea().closest('.ios\\:text-base');
     expect(wrapper).not.toBeNull();
     expect(wrapper).toHaveClass('text-body');
+  });
+});
+
+// jsdom has no layout, so the input and dialog rects are stubbed and the inline
+// style is what is asserted. The numbers below follow from the input's top: the
+// list's bottom edge sits 4px above it, and the list never reaches the top 72px,
+// where the site and dialog headers paint over it.
+describe('CommentInput mention list placement', () => {
+  const stubTop = (element: Element, top: number) =>
+    vi.spyOn(element, 'getBoundingClientRect').mockReturnValue({ top } as DOMRect);
+  const mentionSearch = vi.fn(async () => [{ id: 'u1', displayName: 'Neil' }]);
+
+  const openList = async () => {
+    fireEvent.change(getTextarea(), { target: { value: '@ne', selectionStart: 3, selectionEnd: 3 } });
+    // react-mentions runs the query from the select event a real keystroke also fires.
+    fireEvent.select(getTextarea());
+    const name = await screen.findByText('Neil');
+    return name.closest('.overflow-y-auto') as HTMLElement;
+  };
+
+  beforeEach(() => {
+    screenSize.isSmallScreen = true;
+  });
+
+  afterEach(() => {
+    screenSize.isSmallScreen = false;
+    vi.restoreAllMocks();
+  });
+
+  test('on a small screen the list is anchored from the input top, not from 100vh', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 400);
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />);
+
+    const { style } = await openList();
+
+    expect(style.position).toBe('fixed');
+    expect(style.top).toBe('396px');
+    expect(style.transform).toBe('translateY(-100%)');
+    expect(style.bottom).toBe('');
+    expect(style.cssText).not.toContain('vh');
+  });
+
+  test('inside a dialog the anchor is converted to the dialog coordinates, without a portal', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 500);
+    const { container } = render(
+      <div data-slot="dialog-content">
+        <CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />
+      </div>
+    );
+    const dialog = container.querySelector('[data-slot="dialog-content"]') as HTMLElement;
+    stubTop(dialog, 100);
+
+    const list = await openList();
+
+    expect(list.style.top).toBe('396px');
+    expect(dialog).toContainElement(list);
+  });
+
+  test('with room above the input the list keeps its full height', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 500);
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />);
+
+    const { style } = await openList();
+
+    expect(style.maxHeight).toBe('min(14rem, 424px)');
+  });
+
+  test('with little room above the input the list stays below the header and tappable', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 90);
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />);
+
+    const { style } = await openList();
+
+    expect(style.top).toBe('216px');
+    expect(style.maxHeight).toBe('min(14rem, 144px)');
+  });
+
+  test('from 640px up the list has no inline positioning', async () => {
+    screenSize.isSmallScreen = false;
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />);
+
+    const list = await openList();
+
+    expect(list.getAttribute('style')).toBeNull();
+    expect(list).toHaveClass('max-h-72', 'w-72');
   });
 });

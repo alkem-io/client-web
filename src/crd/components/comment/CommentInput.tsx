@@ -85,6 +85,13 @@ const STAGED_LIST_CLASS = 'mb-1.5 flex flex-wrap gap-1.5';
 
 const carriesFiles = (transfer: DataTransfer) => Array.from(transfer.types).includes('Files');
 
+// The small-screen mention list stops short of the site/dialog header (h-16),
+// which paints over it because react-mentions' wrapper is only zIndex 1.
+const MOBILE_LIST_TOP_GUTTER = 72;
+// With less room than this above the input, the list overlaps the input instead
+// of shrinking until a suggestion can no longer be tapped.
+const MOBILE_LIST_MIN_HEIGHT = 144;
+
 // react-mentions renders an overlay + textarea stack. These inline styles
 // neutralize its defaults so the textarea blends with the surrounding Tailwind
 // bordered container (no double borders, transparent background).
@@ -453,14 +460,19 @@ export function CommentInput({
                   // fully tappable.
                   let mobileStyle: CSSProperties | undefined;
                   if (isSmallScreen) {
-                    const rect = textareaRef.current?.getBoundingClientRect();
-                    const inputTop = rect?.top ?? 0;
+                    const input = textareaRef.current;
+                    // A transformed dialog is the containing block of its fixed
+                    // descendants, so `top` is relative to it, not the viewport.
+                    const blockTop = input?.closest('[data-slot="dialog-content"]')?.getBoundingClientRect().top ?? 0;
+                    const inputTop = (input?.getBoundingClientRect().top ?? 0) - blockTop;
+                    const listBottom = Math.max(inputTop - 4, MOBILE_LIST_TOP_GUTTER + MOBILE_LIST_MIN_HEIGHT);
                     mobileStyle = {
                       position: 'fixed',
                       left: '0.5rem',
                       right: '0.5rem',
-                      bottom: `calc(100vh - ${Math.max(inputTop, 80) - 4}px)`,
-                      maxHeight: '14rem',
+                      top: `${listBottom}px`,
+                      transform: 'translateY(-100%)',
+                      maxHeight: `min(14rem, ${listBottom - MOBILE_LIST_TOP_GUTTER}px)`,
                       zIndex: 50,
                     };
                   }
