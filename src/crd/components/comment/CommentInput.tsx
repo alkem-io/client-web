@@ -85,8 +85,7 @@ const STAGED_LIST_CLASS = 'mb-1.5 flex flex-wrap gap-1.5';
 
 const carriesFiles = (transfer: DataTransfer) => Array.from(transfer.types).includes('Files');
 
-// The small-screen mention list stops short of the site/dialog header (h-16),
-// which paints over it because react-mentions' wrapper is only zIndex 1.
+// The small-screen mention list stops short of the site/dialog header (h-16).
 const MOBILE_LIST_TOP_GUTTER = 72;
 // With less room than this above the input, the list overlaps the input instead
 // of shrinking until a suggestion can no longer be tapped.
@@ -128,6 +127,14 @@ const mentionsInputStyle = {
       padding: 0,
     } satisfies CSSProperties,
   },
+};
+
+// react-mentions' suggestions wrapper is only zIndex 1, so the `relative z-10`
+// links in a post and its comments would paint over the small-screen list and
+// take its taps. Stays below the site header (z-50).
+const smallScreenMentionsInputStyle = {
+  ...mentionsInputStyle,
+  suggestions: { ...mentionsInputStyle.suggestions, zIndex: 30 },
 };
 
 // `react-mentions` paints the styled mention chip in an overlay layer on top
@@ -448,7 +455,7 @@ export function CommentInput({
                 aria-label={t('comments.addComment')}
                 allowSpaceInQuery={true}
                 forceSuggestionsAboveCursor={true}
-                style={mentionsInputStyle}
+                style={isSmallScreen ? smallScreenMentionsInputStyle : mentionsInputStyle}
                 inputRef={(input: HTMLTextAreaElement | null) => {
                   textareaRef.current = input;
                 }}
@@ -473,7 +480,6 @@ export function CommentInput({
                       top: `${listBottom}px`,
                       transform: 'translateY(-100%)',
                       maxHeight: `min(14rem, ${listBottom - MOBILE_LIST_TOP_GUTTER}px)`,
-                      zIndex: 50,
                     };
                   }
 

@@ -466,6 +466,15 @@ describe('CommentInput mention list placement', () => {
     expect(style.maxHeight).toBe('min(14rem, 144px)');
   });
 
+  test('on a small screen the list wrapper sits above the z-10 links in a post', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 400);
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />);
+
+    const list = await openList();
+
+    expect(list.parentElement?.style.zIndex).toBe('30');
+  });
+
   test('from 640px up the list has no inline positioning', async () => {
     screenSize.isSmallScreen = false;
     render(<CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />);
@@ -474,5 +483,6 @@ describe('CommentInput mention list placement', () => {
 
     expect(list.getAttribute('style')).toBeNull();
     expect(list).toHaveClass('max-h-72', 'w-72');
+    expect(list.parentElement?.style.zIndex).toBe('1');
   });
 });
