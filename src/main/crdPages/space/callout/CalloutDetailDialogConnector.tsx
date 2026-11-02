@@ -78,6 +78,8 @@ type CalloutDetailDialogConnectorProps = {
   initialMemoId?: string;
   /** For post contributions only: the underlying post id (the contribution wrapper id goes into `initialContributionId`). */
   initialPostId?: string;
+  /** Opens the contributions grid expanded — set when the feed's "+N more" opened the dialog. */
+  contributionsExpanded?: boolean;
   /** Move-action prop bag forwarded from the feed (plan T064) so the detail-dialog's 3-dots menu offers the same Move items as the card's. */
   moveActions?: CalloutMoveActions;
   /**
@@ -95,9 +97,11 @@ function ContributionsSlot({
   onContributionClick,
   onContributionCreated,
   onOpenMemoSignedCopies,
+  expanded,
 }: {
   callout: CalloutDetailsModelExtended;
   open: boolean;
+  expanded?: boolean;
   onContributionClick?: (id: string, entityId?: string) => void;
   onContributionCreated?: () => void;
   onOpenMemoSignedCopies?: (memoId: string) => void;
@@ -192,6 +196,7 @@ function ContributionsSlot({
           onContributionClick={onContributionClick}
           onOpenMemoSignedCopies={onOpenMemoSignedCopies}
           trailingSlot={trailingSlot}
+          expanded={expanded}
         />
       )}
     </div>
@@ -274,6 +279,7 @@ export function CalloutDetailDialogConnector({
   initialContributionId,
   initialMemoId,
   initialPostId,
+  contributionsExpanded,
   moveActions,
   elevated = false,
   memoSigningRestore,
@@ -602,6 +608,7 @@ export function CalloutDetailDialogConnector({
       open={open}
       onContributionClick={handleContributionClick}
       onOpenMemoSignedCopies={setSignedCopiesMemoId}
+      expanded={contributionsExpanded}
     />
   ) : undefined;
 

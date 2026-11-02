@@ -19,8 +19,33 @@ vi.mock('@/crd/hooks/useGridColumnCount', () => ({
 // jsdom has no layout either: each card reports the top/height given in its data attributes.
 const offsetTop = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetTop');
 const offsetHeight = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetHeight');
-let resizeCallbacks: ResizeObserverCallback[] = [];
 const OriginalResizeObserver = globalThis.ResizeObserver;
+
+// A ResizeObserver double that, like the real one, only notifies observers watching the resized
+// element and stops notifying once disconnected.
+let activeObservers = new Set<FakeResizeObserver>();
+class FakeResizeObserver {
+  private readonly targets = new Set<Element>();
+  constructor(private readonly callback: ResizeObserverCallback) {}
+  observe(target: Element) {
+    this.targets.add(target);
+    activeObservers.add(this);
+  }
+  unobserve(target: Element) {
+    this.targets.delete(target);
+  }
+  disconnect() {
+    this.targets.clear();
+    activeObservers.delete(this);
+  }
+  notify(target: Element) {
+    if (this.targets.has(target)) this.callback([], this as unknown as ResizeObserver);
+  }
+}
+const resize = (target: Element) =>
+  act(() => {
+    for (const observer of activeObservers) observer.notify(target);
+  });
 
 beforeEach(() => {
   Object.defineProperty(HTMLElement.prototype, 'offsetTop', {
@@ -35,15 +60,8 @@ beforeEach(() => {
       return Number(this.dataset.height ?? 0);
     },
   });
-  resizeCallbacks = [];
-  globalThis.ResizeObserver = class {
-    constructor(callback: ResizeObserverCallback) {
-      resizeCallbacks.push(callback);
-    }
-    observe() {}
-    unobserve() {}
-    disconnect() {}
-  } as unknown as typeof ResizeObserver;
+  activeObservers = new Set();
+  globalThis.ResizeObserver = FakeResizeObserver as unknown as typeof ResizeObserver;
 });
 
 afterEach(() => {
@@ -112,12 +130,53 @@ describe('ContributionGrid', () => {
     expect(grid.style.maxHeight).toBe(`${ROW_HEIGHT + GAP + ROW_HEIGHT / 2}px`);
 
     // A second-row whiteboard grows once its preview image loads.
-    screen.getByTestId('card-4').dataset.height = '300';
-    act(() => {
-      for (const callback of resizeCallbacks) callback([], {} as ResizeObserver);
-    });
+    const card = screen.getByTestId('card-4');
+    card.dataset.height = '300';
+    resize(card);
 
     expect(grid.style.maxHeight).toBe(`${ROW_HEIGHT + GAP + 150}px`);
+  });
+
+  it('re-measures when the cards are reordered without any card resizing', () => {
+    // Cards 0-2 are 300px tall, cards 3-8 are 100px; the second row starts below the first.
+    const sized = (order: number[]) => {
+      const firstRowHeight = order[0] < 3 ? 300 : 100;
+      return order.map((id, index) => (
+        <div
+          key={`card-${id}`}
+          data-testid={`card-${id}`}
+          data-top={index < 3 ? 0 : firstRowHeight + GAP}
+          data-height={id < 3 ? 300 : 100}
+        />
+      ));
+    };
+    const { rerender } = render(
+      <ContributionGrid contributionCount={9} columns={3}>
+        {sized([3, 4, 5, 0, 1, 2, 6, 7, 8])}
+      </ContributionGrid>
+    );
+    const grid = gridOf(screen.getByTestId('card-0'));
+    expect(grid.style.maxHeight).toBe(`${100 + GAP + 150}px`);
+
+    // A sort swaps the two rows: the tall row moves up, the short one down.
+    rerender(
+      <ContributionGrid contributionCount={9} columns={3}>
+        {sized([0, 1, 2, 3, 4, 5, 6, 7, 8])}
+      </ContributionGrid>
+    );
+
+    expect(grid.style.maxHeight).toBe(`${300 + GAP + 50}px`);
+  });
+
+  it('starts expanded when the entry point already asked to see every contribution', () => {
+    render(
+      <ContributionGrid contributionCount={9} columns={3} defaultExpanded={true}>
+        {cards(9)}
+      </ContributionGrid>
+    );
+
+    expect(gridOf(screen.getByTestId('card-0'))).not.toHaveClass('overflow-hidden');
+    expect(screen.getByRole('button', { name: 'callout.collapse' })).toBeInTheDocument();
   });
 
   it('reveals every contribution on a single Show more click', async () => {

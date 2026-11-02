@@ -1,5 +1,5 @@
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { type ReactNode, useLayoutEffect, useState } from 'react';
+import { Children, isValidElement, type ReactNode, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGridColumnCount } from '@/crd/hooks/useGridColumnCount';
 import { cn } from '@/crd/lib/utils';
@@ -23,6 +23,8 @@ type ContributionGridProps = {
   /** True when `children` ends with one extra card (e.g. "add") that is never counted as hidden. */
   hasTrailingCard?: boolean;
   columns?: ContributionGridColumns;
+  /** Starts expanded — for an entry point that already asked to see every contribution. */
+  defaultExpanded?: boolean;
   className?: string;
 };
 
@@ -31,10 +33,11 @@ export function ContributionGrid({
   contributionCount,
   hasTrailingCard = false,
   columns = 2,
+  defaultExpanded = false,
   className,
 }: ContributionGridProps) {
   const { t } = useTranslation('crd-space');
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(defaultExpanded);
   const [columnCount, setColumnCountNode] = useGridColumnCount();
   const [gridNode, setGridNode] = useState<HTMLDivElement | null>(null);
   const [collapsedHeight, setCollapsedHeight] = useState<number>();
@@ -44,9 +47,15 @@ export function ContributionGrid({
   const shouldCollapse = cardCount > collapsedCardCount;
   const collapsed = shouldCollapse && !expanded;
   const hiddenCount = Math.max(0, contributionCount - collapsedCardCount);
+  // Reordering the cards (e.g. a sort) can move rows of a different height into the first two
+  // without resizing any card, so the card order is part of what the measurement depends on.
+  const cardOrder = Children.toArray(children)
+    .map(child => (isValidElement(child) ? child.key : ''))
+    .join();
 
   // Clip at the middle of the second row, measured from the rendered cards. Re-measured when any
-  // card of the first two rows resizes — a whiteboard card grows once its preview image loads.
+  // card of the first two rows resizes — a whiteboard card grows once its preview image loads —
+  // and rebuilt when the cards are reordered.
   useLayoutEffect(() => {
     if (!gridNode || !collapsed) return;
     const visibleCards = Array.from(gridNode.children).slice(0, collapsedCardCount) as HTMLElement[];
@@ -62,7 +71,7 @@ export function ContributionGrid({
       observer.observe(card);
     }
     return () => observer.disconnect();
-  }, [gridNode, collapsed, columnCount, collapsedCardCount, cardCount]);
+  }, [gridNode, collapsed, columnCount, collapsedCardCount, cardCount, cardOrder]);
 
   return (
     <div className={cn('space-y-3', className)}>

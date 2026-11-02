@@ -59,3 +59,23 @@ describe('ContributionGridConnector signed copies', () => {
     expect(screen.queryByRole('button', { name: 'Signed copies (2)' })).not.toBeInTheDocument();
   });
 });
+
+describe('ContributionGridConnector expansion', () => {
+  const whiteboards = Array.from({ length: 5 }, (_, index) => ({
+    id: `contribution-${index}`,
+    type: 'whiteboard',
+    title: `Whiteboard ${index}`,
+  }));
+
+  it('opens collapsed by default', () => {
+    render(<ContributionGridConnector contributions={whiteboards as never} />);
+
+    expect(screen.getByRole('button', { name: 'callout.moreContributions' })).toBeInTheDocument();
+  });
+
+  it('opens expanded when the entry point asked to see every contribution', () => {
+    render(<ContributionGridConnector contributions={whiteboards as never} expanded={true} />);
+
+    expect(screen.getByRole('button', { name: 'callout.collapse' })).toBeInTheDocument();
+  });
+});

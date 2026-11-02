@@ -18,6 +18,8 @@ type ContributionGridConnectorProps = {
   onOpenMemoSignedCopies?: (memoId: string) => void;
   /** Rendered at the end of the grid — used for the "Add Response" card */
   trailingSlot?: ReactNode;
+  /** Opens the grid expanded — the user already asked to see every contribution. */
+  expanded?: boolean;
 };
 
 export function ContributionGridConnector({
@@ -25,11 +27,17 @@ export function ContributionGridConnector({
   onContributionClick,
   onOpenMemoSignedCopies,
   trailingSlot,
+  expanded,
 }: ContributionGridConnectorProps) {
   if (contributions.length === 0 && !trailingSlot) return null;
 
   return (
-    <ContributionGrid contributionCount={contributions.length} hasTrailingCard={Boolean(trailingSlot)} columns={3}>
+    <ContributionGrid
+      contributionCount={contributions.length}
+      hasTrailingCard={Boolean(trailingSlot)}
+      columns={3}
+      defaultExpanded={expanded}
+    >
       {contributions.map(contribution => {
         switch (contribution.type) {
           case 'whiteboard':
