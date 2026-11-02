@@ -90,7 +90,7 @@ export function MarkdownContent({ content, className, allowHtml = true, newTabLi
         '[&_p]:mb-3 [&_p]:leading-relaxed [&_p]:text-muted-foreground',
         '[&_p:last-child]:mb-0',
         // Links
-        '[&_a]:text-primary [&_a]:no-underline hover:[&_a]:underline',
+        '[&_a]:text-primary [&_a]:no-underline hover:[&_a]:underline [&_a]:rounded-sm [&_a]:focus-visible:outline-none [&_a]:focus-visible:ring-2 [&_a]:focus-visible:ring-ring',
         // Lists
         '[&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-3',
         '[&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-3',
