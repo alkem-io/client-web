@@ -47,13 +47,25 @@ export function SpaceNavigationTabs({
   isSmallScreen,
   className,
 }: SpaceNavigationTabsProps) {
+  // The tabs are redundant only when none leads anywhere but the active section. A hidden
+  // section opened by URL keeps the tab back to the sole visible state.
+  const showTabs = tabs.some(tab => tab.index !== activeIndex);
+
   if (isSmallScreen) {
-    return <MobileTabBar tabs={tabs} activeIndex={activeIndex} onTabChange={onTabChange} onMenuClick={onMenuClick} />;
+    return (
+      <MobileTabBar
+        tabs={tabs}
+        activeIndex={activeIndex}
+        showTabs={showTabs}
+        onTabChange={onTabChange}
+        onMenuClick={onMenuClick}
+      />
+    );
   }
 
-  // A single visible flow state leaves nothing to navigate between: drop the tab strip but keep
-  // the action slot, which carries the header actions on this row.
-  if (tabs.length <= 1) {
+  // No other state to navigate to: drop the tab strip but keep the action slot, which carries
+  // the header actions on this row.
+  if (!showTabs) {
     return <div className={cn('flex justify-end pb-3', className)}>{action}</div>;
   }
 
@@ -169,11 +181,13 @@ function DesktopTabs({
 function MobileTabBar({
   tabs,
   activeIndex,
+  showTabs,
   onTabChange,
   onMenuClick,
 }: {
   tabs: TabItem[];
   activeIndex: number;
+  showTabs: boolean;
   onTabChange: (index: number) => void;
   onMenuClick?: () => void;
 }) {
@@ -205,8 +219,8 @@ function MobileTabBar({
             <div className="w-px h-6 self-center bg-border" aria-hidden="true" />
           </>
         )}
-        {/* A single visible flow state leaves nothing to navigate between; the menu button stays. */}
-        {tabs.length > 1 && (
+        {/* No other state to navigate to; the menu button stays. */}
+        {showTabs && (
           // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
           // biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset
           <ul ref={scrollRef} role="list" className={MOBILE_TAB_LIST_CLASSES}>

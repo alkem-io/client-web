@@ -46,6 +46,24 @@ describe('SpaceNavigationTabs', () => {
     expect(screen.getByRole('button', { name: 'mobile.menu' })).toBeInTheDocument();
   });
 
+  it('keeps the route to the sole visible state while a hidden section is selected (desktop)', () => {
+    render(<SpaceNavigationTabs tabs={[{ index: 3, label: 'Knowledge' }]} activeIndex={0} onTabChange={() => {}} />);
+    expect(screen.getByRole('tab', { name: 'Knowledge' })).toBeInTheDocument();
+  });
+
+  it('keeps the route to the sole visible state while a hidden section is selected (mobile)', () => {
+    render(
+      <SpaceNavigationTabs
+        tabs={[{ index: 3, label: 'Knowledge' }]}
+        activeIndex={0}
+        onTabChange={() => {}}
+        onMenuClick={() => {}}
+        isSmallScreen={true}
+      />
+    );
+    expect(screen.getByRole('tab', { name: 'Knowledge' })).toBeInTheDocument();
+  });
+
   it('shows the tabs when more than one state is visible', () => {
     render(<SpaceNavigationTabs tabs={twoTabs} activeIndex={0} onTabChange={() => {}} />);
     expect(screen.getAllByRole('tab')).toHaveLength(2);

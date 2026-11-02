@@ -48,6 +48,12 @@ const TAB_LIST_CLASSES =
 const TAB_LIST_FADE_CLASSES =
   '[mask-image:linear-gradient(to_right,black_calc(100%-1rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-1rem),transparent)]';
 
+/**
+ * Whether the mobile fixed bottom bar renders. Without a menu and with no phases to switch
+ * between it would be empty, so it is omitted; consumers use this to reserve its clearance.
+ */
+export const hasMobileFlowBar = (phaseCount: number, hasMenu: boolean) => hasMenu || phaseCount > 1;
+
 export function SubspaceFlowTabs({
   phases,
   activePhaseId,
@@ -278,8 +284,7 @@ function MobileFlowBar({
     activeTabRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
   }, [activePhaseId]);
 
-  // No menu and no phases to switch between: the bar would be empty.
-  if (!onMobileMenuOpenChange && phases.length <= 1) {
+  if (!hasMobileFlowBar(phases.length, !!onMobileMenuOpenChange)) {
     return null;
   }
 
