@@ -1,5 +1,8 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
+import { MAIN_CONTENT_ID } from '@/crd/lib/mainContent';
 import { SpaceNavigationTabs } from './SpaceNavigationTabs';
 
 beforeAll(() => {
@@ -62,6 +65,31 @@ describe('SpaceNavigationTabs', () => {
       />
     );
     expect(screen.getByRole('tab', { name: 'Knowledge' })).toBeInTheDocument();
+  });
+
+  it.each([
+    ['desktop', false],
+    ['mobile', true],
+  ])('moves focus to the main content when choosing the sole visible state removes the tabs (%s)', async (_, isSmallScreen) => {
+    const Harness = () => {
+      const [activeIndex, setActiveIndex] = useState(0);
+      return (
+        <main id={MAIN_CONTENT_ID} tabIndex={-1}>
+          <SpaceNavigationTabs
+            tabs={[{ index: 3, label: 'Knowledge' }]}
+            activeIndex={activeIndex}
+            onTabChange={setActiveIndex}
+            isSmallScreen={isSmallScreen}
+          />
+        </main>
+      );
+    };
+    const user = userEvent.setup();
+    render(<Harness />);
+    screen.getByRole('tab', { name: 'Knowledge' }).focus();
+    await user.keyboard('{Enter}');
+    expect(screen.queryByRole('tab')).not.toBeInTheDocument();
+    expect(screen.getByRole('main')).toHaveFocus();
   });
 
   it('shows the tabs when more than one state is visible', () => {

@@ -2,6 +2,7 @@ import { Menu } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDragScroll } from '@/crd/hooks/useDragScroll';
+import { MAIN_CONTENT_ID } from '@/crd/lib/mainContent';
 import { cn } from '@/crd/lib/utils';
 
 type TabItem = {
@@ -51,13 +52,22 @@ export function SpaceNavigationTabs({
   // section opened by URL keeps the tab back to the sole visible state.
   const showTabs = tabs.some(tab => tab.index !== activeIndex);
 
+  // Choosing the last other destination removes the tabs, and the focused tab with them. Hand
+  // focus to the main content (the skip-link target) instead of letting it fall to the document.
+  const changeTab = (index: number) => {
+    if (tabs.every(tab => tab.index === index)) {
+      document.getElementById(MAIN_CONTENT_ID)?.focus({ preventScroll: true });
+    }
+    onTabChange(index);
+  };
+
   if (isSmallScreen) {
     return (
       <MobileTabBar
         tabs={tabs}
         activeIndex={activeIndex}
         showTabs={showTabs}
-        onTabChange={onTabChange}
+        onTabChange={changeTab}
         onMenuClick={onMenuClick}
       />
     );
@@ -70,13 +80,7 @@ export function SpaceNavigationTabs({
   }
 
   return (
-    <DesktopTabs
-      tabs={tabs}
-      activeIndex={activeIndex}
-      onTabChange={onTabChange}
-      action={action}
-      className={className}
-    />
+    <DesktopTabs tabs={tabs} activeIndex={activeIndex} onTabChange={changeTab} action={action} className={className} />
   );
 }
 
