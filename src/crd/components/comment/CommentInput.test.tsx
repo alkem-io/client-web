@@ -397,8 +397,8 @@ describe('CommentInput iOS font size', () => {
 // list's bottom edge sits 4px above it, and the list never reaches the top 72px,
 // where the site and dialog headers paint over it.
 describe('CommentInput mention list placement', () => {
-  const stubTop = (element: Element, top: number) =>
-    vi.spyOn(element, 'getBoundingClientRect').mockReturnValue({ top } as DOMRect);
+  const stubTop = (element: Element, top: number, bottom = top + 30) =>
+    vi.spyOn(element, 'getBoundingClientRect').mockReturnValue({ top, bottom } as DOMRect);
   const mentionSearch = vi.fn(async () => [{ id: 'u1', displayName: 'Neil' }]);
 
   const openList = async () => {
@@ -416,6 +416,7 @@ describe('CommentInput mention list placement', () => {
   afterEach(() => {
     screenSize.isSmallScreen = false;
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
   });
 
   test('on a small screen the list is anchored from the input top, not from 100vh', async () => {
@@ -456,14 +457,86 @@ describe('CommentInput mention list placement', () => {
     expect(style.maxHeight).toBe('min(14rem, 424px)');
   });
 
-  test('with little room above the input the list stays below the header and tappable', async () => {
-    stubTop(HTMLTextAreaElement.prototype, 90);
+  test('with little room above the input the list opens below it, clear of the text', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 170);
+    vi.stubGlobal('visualViewport', { offsetTop: 0, height: 500 });
     render(<CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />);
 
     const { style } = await openList();
 
-    expect(style.top).toBe('216px');
-    expect(style.maxHeight).toBe('min(14rem, 144px)');
+    expect(style.top).toBe('204px');
+    expect(style.transform).toBe('');
+    expect(style.maxHeight).toBe('min(14rem, 292px)');
+  });
+
+  test('below the input, the list height stops at the keyboard inside a dialog too', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 120);
+    vi.stubGlobal('visualViewport', { offsetTop: 40, height: 300 });
+    const { container } = render(
+      <div data-slot="dialog-content">
+        <CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />
+      </div>
+    );
+    stubTop(container.querySelector('[data-slot="dialog-content"]') as HTMLElement, 20, 800);
+
+    const { style } = await openList();
+
+    expect(style.top).toBe('134px');
+    expect(style.maxHeight).toBe('min(14rem, 182px)');
+  });
+
+  test.each([
+    [220, '216px', 'translateY(-100%)'],
+    [219, '253px', ''],
+  ])('with the input at %ipx the list needs 144px above it to open there', async (top, listTop, transform) => {
+    stubTop(HTMLTextAreaElement.prototype, top);
+    vi.stubGlobal('visualViewport', { offsetTop: 0, height: 844 });
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />);
+
+    const { style } = await openList();
+
+    expect(style.top).toBe(listTop);
+    expect(style.transform).toBe(transform);
+  });
+
+  test('a tall input with the keyboard up leaves more room above, so the list stays there', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 180, 300);
+    vi.stubGlobal('visualViewport', { offsetTop: 0, height: 300 });
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />);
+
+    const { style } = await openList();
+
+    expect(style.top).toBe('176px');
+    expect(style.transform).toBe('translateY(-100%)');
+    expect(style.maxHeight).toBe('min(14rem, 104px)');
+  });
+
+  test('room above is measured from the visible area when iOS has panned the page', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 300, 332);
+    vi.stubGlobal('visualViewport', { offsetTop: 250, height: 332 });
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />);
+
+    const { style } = await openList();
+
+    expect(style.top).toBe('336px');
+    expect(style.transform).toBe('');
+    expect(style.maxHeight).toBe('min(14rem, 242px)');
+  });
+
+  test('below the input, a short dialog limits the list height so it is not clipped', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 422);
+    vi.stubGlobal('visualViewport', { offsetTop: 0, height: 844 });
+    const { container } = render(
+      <div data-slot="dialog-content">
+        <CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />
+      </div>
+    );
+    stubTop(container.querySelector('[data-slot="dialog-content"]') as HTMLElement, 272, 572);
+
+    const { style } = await openList();
+
+    expect(style.top).toBe('184px');
+    expect(style.maxHeight).toBe('min(14rem, 112px)');
   });
 
   test('on a small screen the list wrapper sits above the z-10 links in a post', async () => {

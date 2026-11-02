@@ -87,9 +87,10 @@ const carriesFiles = (transfer: DataTransfer) => Array.from(transfer.types).incl
 
 // The small-screen mention list stops short of the site/dialog header (h-16).
 const MOBILE_LIST_TOP_GUTTER = 72;
-// With less room than this above the input, the list overlaps the input instead
-// of shrinking until a suggestion can no longer be tapped.
+// With less room than this above the input, the list opens below it instead of
+// shrinking until a suggestion can no longer be tapped.
 const MOBILE_LIST_MIN_HEIGHT = 144;
+const MOBILE_LIST_INPUT_GAP = 4;
 
 // react-mentions renders an overlay + textarea stack. These inline styles
 // neutralize its defaults so the textarea blends with the surrounding Tailwind
@@ -462,24 +463,39 @@ export function CommentInput({
                 customSuggestionsContainer={children => {
                   // On phones react-mentions' cursor-anchored popover often
                   // spills past the viewport edge. Position the dropdown as a
-                  // fixed overlay anchored just above the input's top so it
-                  // stays near the text the user is typing while still being
-                  // fully tappable.
+                  // fixed overlay just above the input, or just below it when
+                  // there is too little room above, so it stays near the text
+                  // the user is typing while still being fully tappable.
                   let mobileStyle: CSSProperties | undefined;
                   if (isSmallScreen) {
                     const input = textareaRef.current;
+                    const inputRect = input?.getBoundingClientRect();
                     // A transformed dialog is the containing block of its fixed
                     // descendants, so `top` is relative to it, not the viewport.
-                    const blockTop = input?.closest('[data-slot="dialog-content"]')?.getBoundingClientRect().top ?? 0;
-                    const inputTop = (input?.getBoundingClientRect().top ?? 0) - blockTop;
-                    const listBottom = Math.max(inputTop - 4, MOBILE_LIST_TOP_GUTTER + MOBILE_LIST_MIN_HEIGHT);
+                    // It also clips them.
+                    const block = input?.closest('[data-slot="dialog-content"]')?.getBoundingClientRect();
+                    const blockTop = block?.top ?? 0;
+                    // The visual viewport is what the on-screen keyboard and
+                    // iOS panning leave visible of the layout viewport.
+                    const viewport = window.visualViewport;
+                    const viewportBottom = viewport ? viewport.offsetTop + viewport.height : window.innerHeight;
+                    const listBottom = (inputRect?.top ?? 0) - blockTop - MOBILE_LIST_INPUT_GAP;
+                    const listTop = (inputRect?.bottom ?? 0) - blockTop + MOBILE_LIST_INPUT_GAP;
+                    const roomAbove =
+                      listBottom - Math.max(MOBILE_LIST_TOP_GUTTER, (viewport?.offsetTop ?? 0) - blockTop);
+                    const roomBelow =
+                      Math.min(viewportBottom, block?.bottom ?? viewportBottom) -
+                      blockTop -
+                      listTop -
+                      MOBILE_LIST_INPUT_GAP;
+                    const opensAbove = roomAbove >= MOBILE_LIST_MIN_HEIGHT || roomAbove >= roomBelow;
                     mobileStyle = {
                       position: 'fixed',
                       left: '0.5rem',
                       right: '0.5rem',
-                      top: `${listBottom}px`,
-                      transform: 'translateY(-100%)',
-                      maxHeight: `min(14rem, ${listBottom - MOBILE_LIST_TOP_GUTTER}px)`,
+                      top: `${opensAbove ? listBottom : listTop}px`,
+                      transform: opensAbove ? 'translateY(-100%)' : undefined,
+                      maxHeight: `min(14rem, ${opensAbove ? roomAbove : roomBelow}px)`,
                     };
                   }
 
