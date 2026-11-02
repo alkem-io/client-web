@@ -392,6 +392,43 @@ describe('DocumentContributionAddConnector — multi-file import', () => {
     expect(notice).toHaveTextContent('fileSelection.reason.size');
   });
 
+  test('re-picking an all-rejected pair after dismissing the notice names them again', async () => {
+    const user = userEvent.setup();
+    const files = [oversizedDocx('huge-1.docx'), oversizedDocx('huge-2.docx')];
+    render(<DocumentContributionAddConnector {...baseProps} />);
+    const fileInput = () => document.querySelector('input[type="file"]') as HTMLInputElement;
+
+    await user.upload(fileInput(), files);
+    expect(screen.getByRole('status')).toHaveTextContent('huge-1.docx');
+    await user.click(screen.getByRole('button', { name: 'fileSelection.dismiss' }));
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+
+    await user.upload(fileInput(), files);
+    const notice = screen.getByRole('status');
+    expect(notice).toHaveTextContent('huge-1.docx');
+    expect(notice).toHaveTextContent('huge-2.docx');
+  });
+
+  test.each([
+    ['FORMAT_NOT_SUPPORTED', 'callout.documentImportErrorUnsupported'],
+    ['STORAGE_UPLOAD_FAILED', 'callout.documentImportErrorTooLarge'],
+    ['STORAGE_SERVICE_UNAVAILABLE', 'callout.documentImportErrorServiceUnavailable'],
+  ])('a batch file rejected with %s is listed with %s and raises no toast', async (code, message) => {
+    const user = userEvent.setup();
+    const { calls } = controlImports();
+
+    render(<DocumentContributionAddConnector {...baseProps} />);
+    pickFiles([docx('a.docx'), docx('b.docx')]);
+    await user.click(screen.getByRole('button', { name: 'dialogs.create' }));
+    await settleAll(calls, 2, i => (i === 0 ? apolloErrorWithCode(code) : 'ok'));
+
+    await waitFor(() => expect(screen.getByText(message)).toBeInTheDocument());
+    expect(screen.getByText('a.docx')).toBeInTheDocument();
+    expect(screen.queryByText('b.docx')).not.toBeInTheDocument();
+    expect(screen.queryByText('callout.documentImportFailed')).not.toBeInTheDocument();
+    expect(notifyMock).not.toHaveBeenCalled();
+  });
+
   test('a staged batch makes the dialog dirty, and reopening clears the batch and the notice', async () => {
     const user = userEvent.setup();
     const { rerender } = render(<DocumentContributionAddConnector {...baseProps} />);

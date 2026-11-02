@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import { DocumentImportZone, type DocumentImportZoneProps } from './DocumentImportZone';
 
@@ -48,6 +49,18 @@ describe('DocumentImportZone with onFiles', () => {
 
     expect(onError).not.toHaveBeenCalledWith({ kind: 'multiple-files' });
     expect(onChange).not.toHaveBeenCalled();
+  });
+
+  test('picking the same files again reaches onFiles again', async () => {
+    const user = userEvent.setup();
+    const onFiles = vi.fn();
+    const { input } = renderZone({ onFiles });
+
+    await user.upload(input, [a, b]);
+    await user.upload(input, [a, b]);
+
+    expect(onFiles).toHaveBeenCalledTimes(2);
+    expect(onFiles).toHaveBeenLastCalledWith([a, b]);
   });
 
   test('one file still goes to onChange', () => {

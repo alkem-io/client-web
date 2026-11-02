@@ -77,6 +77,8 @@ export function DocumentImportZone({
       if (onFiles) {
         onError(null);
         onFiles(Array.from(files));
+        // The zone stays mounted when no file was kept, so picking the same files again must fire.
+        if (inputRef.current) inputRef.current.value = '';
       } else {
         onError({ kind: 'multiple-files' });
       }
