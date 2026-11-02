@@ -115,3 +115,30 @@ describe('LinksPrePopulateRows — several files on one paperclip', () => {
     expect(titleInputs()[0]).toHaveValue('alpha');
   });
 });
+
+/** Merges rows into a whole form value captured at render. */
+function WholeFormHost({ onFileUpload }: { onFileUpload: RowFileUpload }) {
+  const [value, setValue] = useState({ title: 'Callout', rows: [emptyRow] });
+  return (
+    <>
+      <input aria-label="title" value={value.title} onChange={e => setValue({ ...value, title: e.target.value })} />
+      <LinksPrePopulateRows rows={value.rows} onChange={rows => setValue({ ...value, rows })} onFileUpload={onFileUpload} />
+    </>
+  );
+}
+
+describe('LinksPrePopulateRows — a host that merges rows into its whole form value', () => {
+  test('a multi-file result landing after another field was edited keeps that edit', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    render(<WholeFormHost onFileUpload={upload} />);
+
+    pick(fileInputs()[0], [pdf('alpha.pdf'), pdf('beta.pdf')]);
+    await user.type(screen.getByLabelText('title'), ' renamed');
+    await act(async () => calls[0].resolve('https://cdn/alpha'));
+    await act(async () => calls[1].resolve('https://cdn/beta'));
+
+    expect(screen.getByLabelText('title')).toHaveValue('Callout renamed');
+    expect(urlInputs().map(i => i.value)).toEqual(['https://cdn/alpha', 'https://cdn/beta']);
+  });
+});

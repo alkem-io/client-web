@@ -54,16 +54,22 @@ export function LinksPrePopulateRows({
   // is stale by the time `await onFileUpload` resolves. Reading from the ref
   // avoids reverting concurrent keystrokes. (Same pattern as ReferencesEditor.)
   const rowsRef = useRef(rows);
+  // A write that lands after an upload must use the host's latest `onChange`, or a host that
+  // merges rows into a whole form value reverts its other fields.
+  const onChangeRef = useRef(onChange);
   useEffect(() => {
     rowsRef.current = rows;
   }, [rows]);
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
   const uploads = useRowFileUploads(onFileUpload, uploadAccept);
 
   // Every write refreshes the mirror first, so two uploads settling before the next render each
   // build on the other's result.
   const commit = (next: LinkRow[]) => {
     rowsRef.current = next;
-    onChange(next);
+    onChangeRef.current(next);
   };
 
   const updateRow = (index: number, patch: Partial<LinkRow>) => {

@@ -258,3 +258,47 @@ describe('ReferencesEditor — several files on one paperclip', () => {
     expect(upload).toHaveBeenCalledTimes(12);
   });
 });
+
+/** Merges rows into a whole form value captured at render, as `InnovationPackForm` does. */
+function WholeFormHost({ onFileUpload }: { onFileUpload: RowFileUpload }) {
+  const [value, setValue] = useState({ title: 'Pack', references: [emptyRow] });
+  return (
+    <>
+      <input aria-label="title" value={value.title} onChange={e => setValue({ ...value, title: e.target.value })} />
+      <ReferencesEditor
+        rows={value.references}
+        onChange={references => setValue({ ...value, references })}
+        onFileUpload={onFileUpload}
+      />
+    </>
+  );
+}
+
+describe('ReferencesEditor — a host that merges rows into its whole form value', () => {
+  test('a multi-file result landing after another field was edited keeps that edit', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    render(<WholeFormHost onFileUpload={upload} />);
+
+    pick(fileInputs()[0], [pdf('alpha.pdf'), pdf('beta.pdf')]);
+    await user.type(screen.getByLabelText('title'), ' renamed');
+    await act(async () => calls[0].resolve('https://cdn/alpha'));
+    await act(async () => calls[1].resolve('https://cdn/beta'));
+
+    expect(screen.getByLabelText('title')).toHaveValue('Pack renamed');
+    expect(uriInputs().map(i => i.value)).toEqual(['https://cdn/alpha', 'https://cdn/beta']);
+  });
+
+  test('a one-file result landing after another field was edited keeps that edit', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    render(<WholeFormHost onFileUpload={upload} />);
+
+    pick(fileInputs()[0], [pdf('alpha.pdf')]);
+    await user.type(screen.getByLabelText('title'), ' renamed');
+    await act(async () => calls[0].resolve('https://cdn/alpha'));
+
+    expect(screen.getByLabelText('title')).toHaveValue('Pack renamed');
+    expect(uriInputs().map(i => i.value)).toEqual(['https://cdn/alpha']);
+  });
+});

@@ -74,16 +74,22 @@ export function ReferencesEditor({
   // by the time `await onFileUpload` resolves. Reading from the ref avoids
   // reverting concurrent keystrokes.
   const rowsRef = useRef(rows);
+  // Hosts that merge rows into a whole form value hand in a new `onChange` per render; a write
+  // that lands after an upload must use the latest one, or it reverts the host's other fields.
+  const onChangeRef = useRef(onChange);
   useEffect(() => {
     rowsRef.current = rows;
   }, [rows]);
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
   const uploads = useRowFileUploads(onFileUpload, uploadAccept);
 
   // Every write refreshes the mirror first, so two uploads settling before the next render each
   // build on the other's result.
   const commit = (next: ReferenceRow[]) => {
     rowsRef.current = next;
-    onChange(next);
+    onChangeRef.current(next);
   };
 
   const updateRow = (index: number, patch: Partial<ReferenceRow>) => {
