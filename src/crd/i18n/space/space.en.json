@@ -963,8 +963,7 @@
   },
   "postSnippet": {
     "readMore": "Read more",
-    "showLess": "Show less",
-    "seeFullDescription": "See full description"
+    "showLess": "Show less"
   },
   "postPreview": {
     "createdBy": "Created by",

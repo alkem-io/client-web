@@ -30,6 +30,8 @@ describe('MarkdownContent — iframe rendering', () => {
     const iframe = container.querySelector('iframe');
     expect(iframe?.getAttribute('src')).toBe('https://www.youtube.com/embed/dQw4w9WgXcQ');
     expect(container.textContent).toContain('Intro text');
+    // The embed's outer box is tagged so a collapsed ExpandableMarkdown can crop or hide it.
+    expect(iframe?.parentElement?.hasAttribute('data-embed')).toBe(true);
   });
 
   it('strips every iframe when no origins are configured (strip-by-default)', () => {

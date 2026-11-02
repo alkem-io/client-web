@@ -13,10 +13,6 @@ type ExpandableMarkdownProps = {
    * space-level `calloutDescriptionDisplayMode` setting (Expanded vs Collapsed).
    */
   defaultExpanded?: boolean;
-  /** Override the collapsed-state toggle label (defaults to "Read more"). */
-  expandLabel?: string;
-  /** Override the expanded-state toggle label (defaults to "Show less"). */
-  collapseLabel?: string;
   className?: string;
 };
 
@@ -31,37 +27,45 @@ type Measurement = { overflow: 'unknown' } | { overflow: 'yes' | 'no'; cutAt: nu
 const fallbackMaxHeight = (maxLines: number) => `calc(${maxLines} * 1.625 * 0.875rem)`;
 
 /**
- * Marks every image with how the collapsed view treats it: `hero` (it comes before
- * any text — shown, cropped to 160px) or `hidden` (it follows text — withheld until
- * expanded). With no text at all every image is a hero, so an image-only post is
- * cropped rather than emptied. Returns whether there are any images.
+ * Marks every image and embed (`MarkdownContent` tags an embed's outer box `data-embed`)
+ * with how the collapsed view treats it: `hero` (it comes before any text — shown,
+ * cropped to 160px) or `hidden` (it follows text — withheld until expanded). With no
+ * text at all every one is a hero, so an image-only post is cropped rather than emptied.
+ * Returns whether there are any.
  */
-function classifyImages(el: HTMLElement): boolean {
+function classifyMedia(el: HTMLElement): boolean {
   const walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
-  const images: HTMLImageElement[] = [];
+  const media: HTMLElement[] = [];
   let firstTrailing = -1;
   for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-    if (node.nodeName === 'IMG') images.push(node as HTMLImageElement);
-    else if (firstTrailing === -1 && node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
-      firstTrailing = images.length;
+    if (node.nodeName === 'IMG' || (node as HTMLElement).dataset?.embed !== undefined) {
+      media.push(node as HTMLElement);
+    } else if (firstTrailing === -1 && node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
+      firstTrailing = media.length;
     }
   }
-  images.forEach((img, index) => {
+  media.forEach((item, index) => {
     const role = firstTrailing === -1 || index < firstTrailing ? 'hero' : 'hidden';
-    if (img.dataset.collapse !== role) img.dataset.collapse = role;
+    if (item.dataset.collapse !== role) item.dataset.collapse = role;
   });
-  return images.length > 0;
+  return media.length > 0;
 }
 
+type Line = { top: number; bottom: number };
+
+const middle = (top: number, bottom: number) => (top + bottom) / 2;
+
 /**
- * The rendered lines of text inside `el`, top to bottom, relative to its top. Counting
- * real line boxes — not multiples of a line height — is what lets the cut land under a
- * full line: a paragraph gap or heading inside the first lines would otherwise put it
- * mid-line.
+ * The first `limit` rendered lines of text inside `el`, top to bottom, relative to its
+ * top. Counting real line boxes — not multiples of a line height — is what lets the cut
+ * land under a full line: a paragraph gap or heading inside the first lines would
+ * otherwise put it mid-line. Text is walked in document order, which is not always visual
+ * order (table cells side by side), so a fragment may belong anywhere among the kept
+ * lines; anything below the `limit`-th is dropped, so each fragment costs O(limit).
  */
-function measureLines(el: HTMLElement) {
+function measureLines(el: HTMLElement, limit: number) {
   const origin = el.getBoundingClientRect().top;
-  const lines: { top: number; bottom: number }[] = [];
+  const lines: Line[] = [];
   const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
   const range = document.createRange();
   for (let node = walker.nextNode(); node; node = walker.nextNode()) {
@@ -71,24 +75,39 @@ function measureLines(el: HTMLElement) {
       if (rect.height === 0) continue;
       const top = rect.top - origin;
       const bottom = rect.bottom - origin;
-      // Fragments on the same line (bold, links) share a top; merge them.
-      const line = lines.find(l => Math.abs(l.top - top) < rect.height / 2);
-      if (line) line.bottom = Math.max(line.bottom, bottom);
-      else lines.push({ top, bottom });
+      // Fragments of one visual line (bold, links, inline code in a heading) overlap at
+      // their vertical middles, whatever their font sizes; merge them.
+      const fragmentMiddle = middle(top, bottom);
+      const line = lines.find(l => {
+        const lineMiddle = middle(l.top, l.bottom);
+        return (fragmentMiddle >= l.top && fragmentMiddle <= l.bottom) || (lineMiddle >= top && lineMiddle <= bottom);
+      });
+      if (line) {
+        line.top = Math.min(line.top, top);
+        line.bottom = Math.max(line.bottom, bottom);
+        continue;
+      }
+      const index = lines.findIndex(l => l.top > top);
+      if (index === -1) {
+        if (lines.length < limit) lines.push({ top, bottom });
+      } else {
+        lines.splice(index, 0, { top, bottom });
+        if (lines.length > limit) lines.pop();
+      }
     }
   }
-  return lines.sort((a, b) => a.top - b.top);
+  return lines;
 }
 
 /**
  * Markdown body that collapses to a clean cut directly under its `maxLines`-th
  * rendered line of text, with a "Read more" / "Show less" link below it. Only text
- * that *exceeds* `maxLines` is cut. Images never get a fade or overlay: one before
- * the text (or every image of an image-only post) is cropped to 160px, any other is
- * hidden until expanded — so any image makes the content collapsible. Expanded, the
- * content renders exactly as authored.
+ * that *exceeds* `maxLines` is cut. Images and embeds never get a fade or overlay: one
+ * before the text (or every one of a post without text) is cropped to 160px, any other
+ * is hidden until expanded — so any image or embed makes the content collapsible.
+ * Expanded, the content renders exactly as authored.
  *
- * Two decoupled concerns: the measurement (images + line count, re-measured by a
+ * Two decoupled concerns: the measurement (media + line count, re-measured by a
  * `ResizeObserver` as layout settles / the container resizes) and the expanded mode
  * (`userExpanded ?? defaultExpanded` — the `calloutDescriptionDisplayMode` setting
  * drives it until the user clicks a toggle). An async settings load or admin change
@@ -99,8 +118,6 @@ export function ExpandableMarkdown({
   content,
   maxLines = 3,
   defaultExpanded = false,
-  expandLabel,
-  collapseLabel,
   className,
 }: ExpandableMarkdownProps) {
   const { t } = useTranslation('crd-space');
@@ -113,7 +130,7 @@ export function ExpandableMarkdown({
 
   const isExpanded = userExpanded ?? defaultExpanded;
   // Collapse only while not expanded (and the content overflows or is still unmeasured).
-  // An expanded block renders as authored from its very first paint (issue #10043).
+  // An expanded block renders as authored from its very first paint.
   const isCollapsed = !isExpanded && measurement.overflow !== 'no';
   const maxHeight =
     measurement.overflow === 'unknown'
@@ -130,7 +147,7 @@ export function ExpandableMarkdown({
   // Measured synchronously before paint, and again by a ResizeObserver on the content
   // (react-markdown commits, web fonts, images loading) and the container (width changes
   // on sidebar resize / rotation). Re-run when the view flips: the cut depends on the
-  // collapsed layout (hero crop, hidden images), while the line count and the images —
+  // collapsed layout (hero crop, hidden media), while the line count and the media —
   // and so the toggle — do not, so flipping never removes the toggle.
   useLayoutEffect(() => {
     const container = containerRef.current;
@@ -138,11 +155,11 @@ export function ExpandableMarkdown({
     if (!container || !contentEl) return;
 
     const evaluate = () => {
-      const hasImages = classifyImages(contentEl);
-      const lines = measureLines(contentEl);
+      const hasMedia = classifyMedia(contentEl);
+      const lines = measureLines(contentEl, maxLines + 1);
       const textOverflows = lines.length > maxLines;
       setMeasurement({
-        overflow: textOverflows || hasImages ? 'yes' : 'no',
+        overflow: textOverflows || hasMedia ? 'yes' : 'no',
         cutAt: textOverflows ? Math.ceil(lines[maxLines - 1].bottom) : null,
       });
     };
@@ -156,18 +173,18 @@ export function ExpandableMarkdown({
   }, [content, maxLines, isExpanded]);
 
   const showToggle = measurement.overflow === 'yes';
-  const expandText = expandLabel ?? t('postSnippet.readMore');
-  const collapseText = collapseLabel ?? t('postSnippet.showLess');
 
   return (
     <div className={className}>
       <div
         ref={containerRef}
         className={cn(
+          // `!important`: the authored inline styles markdown keeps (display, sizes,
+          // overflow) must not undo the preview; expanded, they apply again.
           isCollapsed && [
             maxHeight && 'overflow-hidden',
-            '[&_img[data-collapse=hero]]:block [&_img[data-collapse=hero]]:max-h-[160px] [&_img[data-collapse=hero]]:w-full [&_img[data-collapse=hero]]:object-cover',
-            '[&_img[data-collapse=hidden]]:hidden',
+            '[&_[data-collapse=hero]]:!block [&_[data-collapse=hero]]:!w-full [&_[data-collapse=hero]]:!min-h-0 [&_[data-collapse=hero]]:!max-h-[160px] [&_[data-collapse=hero]]:!overflow-hidden [&_[data-collapse=hero]]:object-cover',
+            '[&_[data-collapse=hidden]]:!hidden',
           ]
         )}
         style={isCollapsed && maxHeight ? { maxHeight } : undefined}
@@ -185,7 +202,7 @@ export function ExpandableMarkdown({
           aria-expanded={isExpanded}
           className="mt-1 block cursor-pointer rounded text-body-emphasis text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          {isExpanded ? collapseText : expandText}
+          {isExpanded ? t('postSnippet.showLess') : t('postSnippet.readMore')}
         </button>
       )}
     </div>

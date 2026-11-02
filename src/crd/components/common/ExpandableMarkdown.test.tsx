@@ -27,17 +27,18 @@ const LINE_PITCH = 22;
 
 /**
  * jsdom has no layout. A text node's rendered lines come from its parent's
- * `data-top` (px from the content top) and `data-lines` attributes, one line box
- * every `LINE_PITCH` px.
+ * `data-top` (px from the content top), `data-lines` and optional `data-height`
+ * attributes, one line box every `LINE_PITCH` px.
  */
 function getClientRects(this: Range) {
   const parent = this.startContainer.parentElement;
   const top = Number(parent?.dataset.top ?? 0);
   const count = Number(parent?.dataset.lines ?? 1);
+  const height = Number(parent?.dataset.height ?? LINE_HEIGHT);
   return Array.from({ length: count }, (_, i) => ({
     top: top + i * LINE_PITCH,
-    bottom: top + i * LINE_PITCH + LINE_HEIGHT,
-    height: LINE_HEIGHT,
+    bottom: top + i * LINE_PITCH + height,
+    height,
   }));
 }
 
@@ -116,7 +117,7 @@ describe('ExpandableMarkdown', () => {
     );
 
     expect(document.querySelector('img')?.dataset.collapse).toBe('hero');
-    expect(clipBox().className).toContain('[&_img[data-collapse=hero]]:max-h-[160px]');
+    expect(clipBox().className).toContain('[&_[data-collapse=hero]]:!max-h-[160px]');
     expect(clipBox().style.maxHeight).toBe('');
     expect(screen.getByRole('button', { name: 'postSnippet.readMore' })).toBeInTheDocument();
   });
@@ -134,10 +135,10 @@ describe('ExpandableMarkdown', () => {
 
     const images = Array.from(document.querySelectorAll('img'));
     expect(images.map(img => img.dataset.collapse)).toEqual(['hidden', 'hidden']);
-    expect(clipBox().className).toContain('[&_img[data-collapse=hidden]]:hidden');
+    expect(clipBox().className).toContain('[&_[data-collapse=hidden]]:!hidden');
 
     fireEvent.click(screen.getByRole('button', { name: 'postSnippet.readMore' }));
-    expect(clipBox().className).not.toContain('[&_img[data-collapse=hidden]]:hidden');
+    expect(clipBox().className).not.toContain('[&_[data-collapse=hidden]]:!hidden');
   });
 
   test('image-only post: every image cropped like a hero, never hidden', () => {
@@ -151,5 +152,78 @@ describe('ExpandableMarkdown', () => {
     const images = Array.from(document.querySelectorAll('img'));
     expect(images.map(img => img.dataset.collapse)).toEqual(['hero', 'hero']);
     expect(screen.getByRole('button', { name: 'postSnippet.readMore' })).toBeInTheDocument();
+  });
+
+  test('the preview rules beat authored inline styles (display, min-height) while collapsed', () => {
+    render(
+      <ExpandableMarkdown
+        content={
+          '<p><img src="a.png" alt="" style="min-height:300px" /></p><p data-top="200" data-lines="1">Text</p>' +
+          '<p><img src="b.png" alt="" style="display:block" /></p>'
+        }
+        defaultExpanded={false}
+      />
+    );
+
+    expect(clipBox().className).toContain('[&_[data-collapse=hero]]:!min-h-0');
+    expect(clipBox().className).toContain('[&_[data-collapse=hero]]:!max-h-[160px]');
+    expect(clipBox().className).toContain('[&_[data-collapse=hidden]]:!hidden');
+  });
+
+  test('an embed with short text is collapsible like an image: leading cropped, trailing hidden', () => {
+    const { unmount } = render(
+      <ExpandableMarkdown
+        content={'<div data-embed=""><iframe title="video"></iframe></div><p data-top="200" data-lines="1">Short</p>'}
+        defaultExpanded={false}
+      />
+    );
+    expect(document.querySelector<HTMLElement>('[data-embed]')?.dataset.collapse).toBe('hero');
+    expect(screen.getByRole('button', { name: 'postSnippet.readMore' })).toBeInTheDocument();
+    unmount();
+
+    render(
+      <ExpandableMarkdown
+        content={'<p data-top="0" data-lines="1">Short</p><div data-embed=""><iframe title="video"></iframe></div>'}
+        defaultExpanded={false}
+      />
+    );
+    expect(document.querySelector<HTMLElement>('[data-embed]')?.dataset.collapse).toBe('hidden');
+    expect(screen.getByRole('button', { name: 'postSnippet.readMore' })).toBeInTheDocument();
+  });
+
+  test('inline code in a heading is one visual line, not two', () => {
+    // A 30px heading line box with a 16px code fragment sitting inside it, then two lines.
+    render(
+      <ExpandableMarkdown
+        content={
+          '<h1 data-top="0" data-height="30">Title <code data-top="8" data-height="16">x</code></h1>' +
+          '<p data-top="40" data-lines="2">Body</p>'
+        }
+        defaultExpanded={false}
+      />
+    );
+
+    expect(clipBox().style.maxHeight).toBe('');
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+  });
+
+  test('text out of visual order (table cells side by side) still cuts under the 3rd visual line', () => {
+    render(
+      <ExpandableMarkdown
+        content={'<p data-top="44" data-lines="3">Right cell</p><p data-top="0" data-lines="2">Left cell</p>'}
+        defaultExpanded={false}
+      />
+    );
+
+    expect(clipBox().style.maxHeight).toBe(`${44 + LINE_HEIGHT}px`);
+  });
+
+  test('a very long post is measured in time linear in its lines', () => {
+    const start = performance.now();
+    render(<ExpandableMarkdown content={'<pre data-top="0" data-lines="25000">code</pre>'} defaultExpanded={false} />);
+    const elapsed = performance.now() - start;
+
+    expect(clipBox().style.maxHeight).toBe(`${2 * LINE_PITCH + LINE_HEIGHT}px`);
+    expect(elapsed).toBeLessThan(1000);
   });
 });
