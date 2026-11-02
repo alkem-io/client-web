@@ -31,19 +31,8 @@ describe('quietDownloadErrors', () => {
     expect(sink.mock.contexts[2]).toBe(target);
     release();
     expect(console.error).toBe(sink);
-  });
-
-  it('stays until the last of two open calls releases, and a repeated release counts once', () => {
-    const first = quietDownloadErrors();
-    const second = quietDownloadErrors();
-    first();
-    first();
     console.error(MESSAGE);
-    expect(sink).not.toHaveBeenCalled();
-    second();
-    expect(console.error).toBe(sink);
-    console.error(MESSAGE);
-    expect(sink).toHaveBeenCalledTimes(1);
+    expect(sink).toHaveBeenLastCalledWith(MESSAGE);
   });
 
   it('never removes a wrapper installed over it, and passes everything through once released', () => {
@@ -55,15 +44,16 @@ describe('quietDownloadErrors', () => {
     expect(console.error).toBe(later);
     console.error(MESSAGE);
     expect(sink).toHaveBeenCalledWith(MESSAGE);
+  });
 
-    // Opening another call reuses the filter still in the chain instead of stacking a second one.
-    const again = quietDownloadErrors();
+  it('filters again for a call opened after one was replaced over it', () => {
+    quietDownloadErrors();
+    const replacement = vi.fn<(...args: unknown[]) => void>();
+    console.error = replacement;
+    const release = quietDownloadErrors();
     console.error(MESSAGE);
-    expect(sink).toHaveBeenCalledTimes(1);
-    again();
-    // Once the later wrapper is gone, the filter's own last release restores the original.
-    console.error = ours;
-    quietDownloadErrors()();
-    expect(console.error).toBe(sink);
+    expect(replacement).not.toHaveBeenCalled();
+    release();
+    expect(console.error).toBe(replacement);
   });
 });

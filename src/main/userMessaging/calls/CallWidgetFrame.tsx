@@ -61,8 +61,8 @@ export default function CallWidgetFrame({
       url: new URL(frameSrc, window.location.origin).toString(),
     });
     const driver = new ElementCallWidgetDriver({ client, matrixRoomId, livekitServiceUrl });
-    const releaseConsoleFilter = quietDownloadErrors();
     const api = new ClientWidgetApi(widget, iframe, driver);
+    const releaseConsoleFilter = quietDownloadErrors();
     api.setViewedRoomId(matrixRoomId);
     const onPageHide = () => driver.sendPendingLeavesNow();
     window.addEventListener('pagehide', onPageHide);

@@ -153,7 +153,6 @@ const makeClient = (timeline: FakeEvent[] = [], state: FakeEvent[] = []) => {
     redactEvent: vi.fn(async () => ({ event_id: '$redaction' })),
     _unstable_sendDelayedStateEvent: vi.fn(async () => ({ delay_id: 'delay-state' })),
     _unstable_sendDelayedEvent: vi.fn(async () => ({ delay_id: 'delay-event' })),
-    doesServerSupportUnstableFeature: vi.fn(async (feature: string) => feature === 'org.matrix.msc4140'),
     http: { authedRequest: vi.fn(async () => ({})) },
   };
 };
@@ -272,13 +271,6 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
       ['POST', '/delayed_events/d2', undefined, { action: 'restart' }, prefix],
       ['POST', '/delayed_events/d%2F3', undefined, { action: 'send' }, prefix],
     ]);
-  });
-
-  it('refuses delayed-event updates without a request when the chat server lacks delayed events', async () => {
-    const client = makeClient();
-    client.doesServerSupportUnstableFeature.mockResolvedValue(false);
-    await expect(driverFor(client).restartScheduledDelayedEvent('d1')).rejects.toThrow();
-    expect(client.http.authedRequest).not.toHaveBeenCalled();
   });
 
   it.each([
@@ -492,9 +484,7 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
       const { file } = await driverFor(makeClient()).downloadFile('mxc://matrix.example.org/abc123');
       expect(fetchMock).toHaveBeenCalledWith(
         'https://matrix.example.org/_matrix/client/v1/media/download/matrix.example.org/abc123?allow_redirect=true',
-        {
-          headers: { Authorization: 'Bearer access-token' },
-        }
+        expect.objectContaining({ headers: { Authorization: 'Bearer access-token' } })
       );
       // fetch's Blob and jsdom's global Blob can come from different realms, so
       // `instanceof Blob` depends on the runtime; check the brand instead.
@@ -534,7 +524,7 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
           )
         ),
     ],
-  ])('fails a download that was %s again for the rest of the call, without a request', async (_, answer) => {
+  ])('fails a download that was %s again for a while, without a request', async (_, answer) => {
     const fetchMock = vi.fn(answer);
     vi.stubGlobal('fetch', fetchMock);
     try {
@@ -578,6 +568,48 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
       await expect(fifth).resolves.toBeDefined();
       expect(fetchMock).toHaveBeenCalledTimes(3);
     } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('fetches a failed download again once the hold has passed', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout'] });
+    const fetchMock = vi.fn(async () => new Response('{}', { status: 500 }));
+    vi.stubGlobal('fetch', fetchMock);
+    try {
+      const driver = driverFor(makeClient());
+      await expect(driver.downloadFile('mxc://matrix.example.org/flaky')).rejects.toThrow();
+      vi.advanceTimersByTime(59_000);
+      await expect(driver.downloadFile('mxc://matrix.example.org/flaky')).rejects.toThrow();
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+
+      vi.advanceTimersByTime(1_000);
+      fetchMock.mockImplementation(async () => new Response('avatar-bytes'));
+      await expect(driver.downloadFile('mxc://matrix.example.org/flaky')).resolves.toBeDefined();
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.useRealTimers();
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('gives up a download that hangs, so later asks are not held behind it', async () => {
+    const timeout = new AbortController();
+    const timeoutSpy = vi.spyOn(AbortSignal, 'timeout').mockReturnValue(timeout.signal);
+    const fetchMock = vi.fn(
+      (_: RequestInfo | URL, init?: RequestInit) =>
+        new Promise<Response>((_resolve, reject) => {
+          init?.signal?.addEventListener('abort', () => reject(init.signal?.reason));
+        })
+    );
+    vi.stubGlobal('fetch', fetchMock);
+    try {
+      const pending = driverFor(makeClient()).downloadFile('mxc://matrix.example.org/stuck');
+      expect(timeoutSpy).toHaveBeenCalledWith(20_000);
+      timeout.abort(new DOMException('timed out', 'TimeoutError'));
+      await expect(pending).rejects.toThrow('timed out');
+    } finally {
+      timeoutSpy.mockRestore();
       vi.unstubAllGlobals();
     }
   });

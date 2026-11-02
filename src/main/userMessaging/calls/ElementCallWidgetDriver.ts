@@ -61,9 +61,12 @@ const allowedCapabilitiesFor = (roomId: string, userId: string, deviceId: string
 
 type DelayedEventAction = 'cancel' | 'restart' | 'send';
 
-// The chat SDK's delayed-events feature name and its unstable path prefix.
-const DELAYED_EVENTS_FEATURE = 'org.matrix.msc4140';
-const DELAYED_EVENTS_PREFIX = `/_matrix/client/unstable/${DELAYED_EVENTS_FEATURE}`;
+// The unstable path prefix of the chat server's delayed events.
+const DELAYED_EVENTS_PREFIX = '/_matrix/client/unstable/org.matrix.msc4140';
+/** A failed download is not retried for this long, so tile resizes don't repeat it; then it may recover. */
+const FAILED_DOWNLOAD_HOLD_MS = 60_000;
+/** A download that hangs is given up after this long, so later asks are not held behind it. */
+const DOWNLOAD_TIMEOUT_MS = 20_000;
 
 /** The part of the platform's Matrix client the driver uses, typed loosely enough for arbitrary event types. */
 type CallHostClient = {
@@ -92,7 +95,6 @@ type CallHostClient = {
     eventType: string,
     content: unknown
   ): Promise<{ delay_id: string }>;
-  doesServerSupportUnstableFeature(feature: string): Promise<boolean>;
   http: {
     authedRequest(
       method: 'POST',
@@ -132,10 +134,10 @@ class ElementCallWidgetDriver extends WidgetDriver {
   /** Delayed leaves of this device's call membership that are still waiting on the chat server. */
   private readonly pendingLeaves = new Set<string>();
   /**
-   * Downloads still in flight, and those that failed in this call. The call UI
-   * asks for an avatar again every time its tile is resized; overlapping asks
-   * share one request, and a broken one fails at once instead of hitting the
-   * chat server again.
+   * Downloads still in flight, and those that failed recently. The call UI asks
+   * for an avatar again every time its tile is resized; overlapping asks share
+   * one request, and a broken one fails at once for a while instead of hitting
+   * the chat server again.
    */
   private readonly downloads = new Map<string, Promise<{ file: XMLHttpRequestBodyInit }>>();
 
@@ -204,9 +206,6 @@ class ElementCallWidgetDriver extends WidgetDriver {
    * refuses, which logs a failed request on every call heartbeat.
    */
   private async updateDelayedEvent(delayId: string, action: DelayedEventAction): Promise<void> {
-    if (!(await this.client.doesServerSupportUnstableFeature(DELAYED_EVENTS_FEATURE))) {
-      throw new Error('The chat server does not support delayed events');
-    }
     await this.client.http.authedRequest(
       'POST',
       `/delayed_events/${encodeURIComponent(delayId)}`,
@@ -241,15 +240,12 @@ class ElementCallWidgetDriver extends WidgetDriver {
   public sendPendingLeavesNow(): void {
     const accessToken = this.client.getAccessToken();
     for (const delayId of this.pendingLeaves) {
-      fetch(
-        `${this.client.baseUrl}/_matrix/client/unstable/org.matrix.msc4140/delayed_events/${encodeURIComponent(delayId)}`,
-        {
-          method: 'POST',
-          keepalive: true,
-          headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'send' }),
-        }
-      ).catch(() => {
+      fetch(`${this.client.baseUrl}${DELAYED_EVENTS_PREFIX}/delayed_events/${encodeURIComponent(delayId)}`, {
+        method: 'POST',
+        keepalive: true,
+        headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'send' }),
+      }).catch(() => {
         // The page is going away; a leave that does not arrive still fires when its delay runs out.
       });
     }
@@ -413,16 +409,23 @@ class ElementCallWidgetDriver extends WidgetDriver {
     }
     const download = this.fetchMedia(url);
     this.downloads.set(contentUri, download);
-    // A successful download is fetched afresh next time; a failed one stays failed for the call.
-    download.then(
-      () => this.downloads.delete(contentUri),
-      () => undefined
-    );
+    // A successful download is fetched afresh next time; a failed one is held for a while, then retried.
+    const forget = () => {
+      if (this.downloads.get(contentUri) === download) {
+        this.downloads.delete(contentUri);
+      }
+    };
+    download.then(forget, () => {
+      setTimeout(forget, FAILED_DOWNLOAD_HOLD_MS);
+    });
     return download;
   }
 
   private async fetchMedia(url: string): Promise<{ file: XMLHttpRequestBodyInit }> {
-    const response = await fetch(url, { headers: { Authorization: `Bearer ${this.client.getAccessToken()}` } });
+    const response = await fetch(url, {
+      headers: { Authorization: `Bearer ${this.client.getAccessToken()}` },
+      signal: AbortSignal.timeout(DOWNLOAD_TIMEOUT_MS),
+    });
     if (!response.ok) {
       throw new Error(`Downloading the media failed with status ${response.status}`);
     }

@@ -63,7 +63,6 @@ const makeClient = () =>
     getDeviceId: () => 'DEV1',
     getAccessToken: () => 'access-token',
     _unstable_sendDelayedStateEvent: vi.fn(async () => ({ delay_id: 'leave-1' })),
-    doesServerSupportUnstableFeature: vi.fn(async () => true),
     http: { authedRequest: vi.fn(async () => ({})) },
   });
 
