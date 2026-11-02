@@ -105,6 +105,7 @@ export function CommentItem({
               ) : (
                 hasText && (
                   <MarkdownContent
+                    newTabLinks="external"
                     content={comment.content}
                     className="break-words text-body text-foreground [&_p]:mb-0 [&_p]:leading-normal [&_p]:text-foreground"
                   />

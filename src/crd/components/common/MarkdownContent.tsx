@@ -1,6 +1,6 @@
 import { defaultSchema } from 'hast-util-sanitize';
 import type { ComponentPropsWithoutRef } from 'react';
-import Markdown from 'react-markdown';
+import Markdown, { type Components } from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 import remarkGfm from 'remark-gfm';
@@ -34,6 +34,9 @@ const sanitizeSchema = {
   },
 };
 
+/** `all`: every web link, wherever it points. `external`: web links to another origin only. */
+export type NewTabLinks = 'all' | 'external';
+
 export type MarkdownContentProps = {
   /** Raw markdown string — rendered via react-markdown, not dangerouslySetInnerHTML */
   content: string;
@@ -44,6 +47,12 @@ export type MarkdownContentProps = {
    * typed instead of disappearing.
    */
   allowHtml?: boolean;
+  /**
+   * Which web links open in a new tab. Off by default, leaving every link a bare
+   * anchor that follows in place. In-page (`#...`) and non-web (`mailto:`) links
+   * are never affected.
+   */
+  newTabLinks?: NewTabLinks;
 };
 
 /**
@@ -61,7 +70,7 @@ export type MarkdownContentProps = {
  * Does NOT depend on @tailwindcss/typography (prose classes). Typography is applied
  * via Tailwind's `[&_element]` descendant selector pattern.
  */
-export function MarkdownContent({ content, className, allowHtml = true }: MarkdownContentProps) {
+export function MarkdownContent({ content, className, allowHtml = true, newTabLinks }: MarkdownContentProps) {
   const { iframeAllowedUrls } = useMarkdownConfig();
 
   return (
@@ -81,7 +90,7 @@ export function MarkdownContent({ content, className, allowHtml = true }: Markdo
         '[&_p]:mb-3 [&_p]:leading-relaxed [&_p]:text-muted-foreground',
         '[&_p:last-child]:mb-0',
         // Links
-        '[&_a]:text-primary [&_a]:no-underline hover:[&_a]:underline',
+        '[&_a]:text-primary [&_a]:no-underline hover:[&_a]:underline [&_a]:rounded-sm [&_a]:focus-visible:outline-none [&_a]:focus-visible:ring-2 [&_a]:focus-visible:ring-ring',
         // Lists
         '[&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-3',
         '[&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-3',
@@ -117,13 +126,43 @@ export function MarkdownContent({ content, className, allowHtml = true }: Markdo
             ? [[rehypeRaw, { passThrough: ['iframe'] }], [rehypeSanitize, sanitizeSchema], rehypeSanitizeStyles]
             : [[rehypeSanitize, sanitizeSchema], rehypeSanitizeStyles]
         }
-        components={{ iframe: IframeRenderer }}
+        components={newTabLinks ? NEW_TAB_COMPONENTS[newTabLinks] : DEFAULT_COMPONENTS}
       >
         {content}
       </Markdown>
     </div>
   );
 }
+
+function opensInNewTab(href: string | undefined, newTabLinks: NewTabLinks): boolean {
+  // An in-page reference, such as a GFM footnote, must move within this page.
+  if (!href || href.startsWith('#')) return false;
+  let url: URL;
+  try {
+    url = new URL(href, window.location.href);
+  } catch {
+    return false;
+  }
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') return false;
+  return newTabLinks === 'all' || url.origin !== window.location.origin;
+}
+
+// Built once per mode: react-markdown uses these as component types, so a new function
+// on each render would remount every link whenever the content re-parses.
+const DEFAULT_COMPONENTS: Components = { iframe: IframeRenderer };
+const newTabComponents = (mode: NewTabLinks): Components => ({
+  ...DEFAULT_COMPONENTS,
+  // `node` is the hast node react-markdown passes alongside DOM props; pluck it off so it never
+  // reaches the DOM. The sanitize schema has already stripped any authored `target`, so the
+  // decision here is the only one.
+  a: ({ node: _node, ...props }) => (
+    <a {...props} {...(opensInNewTab(props.href, mode) && { target: '_blank', rel: 'noopener noreferrer' })} />
+  ),
+});
+const NEW_TAB_COMPONENTS: Record<NewTabLinks, Components> = {
+  all: newTabComponents('all'),
+  external: newTabComponents('external'),
+};
 
 // Iframe rendering branches on the authored width/height attributes:
 //   1. Both pixel (e.g. pasted Figma `width="800" height="450"`) — passthrough so the iframe

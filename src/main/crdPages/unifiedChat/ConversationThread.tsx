@@ -1,4 +1,5 @@
 import type { ComponentProps } from 'react';
+import { isAppMode } from '@/core/appMode/isAppMode';
 import { ChatThreadView } from '@/crd/components/chat/ChatThreadView';
 import { type SendEvent, useConversationAttachments } from './attachments/useConversationAttachments';
 import { useConversationStorageConfig } from './attachments/useConversationStorageConfig';
@@ -41,6 +42,9 @@ export function ConversationThread({
   return (
     <ChatThreadView
       {...view}
+      // The iOS shell opens every `_blank` link in Safari, whose separate cookie jar would leave
+      // a link back to the platform signed out, so in the app those stay in the WebView.
+      newTabLinks={isAppMode() ? 'external' : 'all'}
       isSending={view.isSending || files.isSending}
       onSendMessage={text => files.send(text, sendWithDraft, () => {})}
       attachmentsEnabled={files.enabled}
