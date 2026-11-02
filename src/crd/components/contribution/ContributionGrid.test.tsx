@@ -108,9 +108,20 @@ describe('ContributionGrid', () => {
     expect(gridOf(screen.getByTestId('card-0'))).not.toHaveClass('overflow-hidden');
   });
 
+  it('does not collapse when only the add card goes past two rows', () => {
+    render(
+      <ContributionGrid contributionCount={6} columns={3}>
+        {cards(7)}
+      </ContributionGrid>
+    );
+
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    expect(gridOf(screen.getByTestId('card-0'))).not.toHaveClass('overflow-hidden');
+  });
+
   it('collapses past two rows and counts only the hidden contributions, not the add card', () => {
     render(
-      <ContributionGrid contributionCount={8} hasTrailingCard={true} columns={3}>
+      <ContributionGrid contributionCount={8} columns={3}>
         {cards(9)}
       </ContributionGrid>
     );

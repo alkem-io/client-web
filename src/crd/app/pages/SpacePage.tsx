@@ -482,7 +482,7 @@ export function SpacePage() {
               }
               contributionsSlot={
                 dialogPost?.id === 'p-post-contributions' ? (
-                  <ContributionGrid contributionCount={MOCK_POST_CONTRIBUTIONS.length} hasTrailingCard={true} columns={3}>
+                  <ContributionGrid contributionCount={MOCK_POST_CONTRIBUTIONS.length} columns={3}>
                     {MOCK_POST_CONTRIBUTIONS.map(pc => (
                       <ContributionPostCard
                         key={pc.id}
@@ -498,7 +498,7 @@ export function SpacePage() {
                     <ContributionAddCard label="Add post" icon={MessageSquare} />
                   </ContributionGrid>
                 ) : dialogPost?.id === 'p-memo-contribs' ? (
-                  <ContributionGrid contributionCount={MOCK_MEMO_CONTRIBUTIONS.length} hasTrailingCard={true} columns={3}>
+                  <ContributionGrid contributionCount={MOCK_MEMO_CONTRIBUTIONS.length} columns={3}>
                     {MOCK_MEMO_CONTRIBUTIONS.map(memo => (
                       <ContributionMemoCard
                         key={memo.id}
@@ -511,7 +511,7 @@ export function SpacePage() {
                     <ContributionAddCard label="Add memo" icon={MessageSquare} />
                   </ContributionGrid>
                 ) : (dialogPost?.id === 'p2' || dialogPost?.id === 'p-wb-contributions') ? (
-                  <ContributionGrid contributionCount={MOCK_WHITEBOARD_CONTRIBUTIONS.length} hasTrailingCard={true} columns={3}>
+                  <ContributionGrid contributionCount={MOCK_WHITEBOARD_CONTRIBUTIONS.length} columns={3}>
                     {MOCK_WHITEBOARD_CONTRIBUTIONS.map(wb => (
                       <ContributionWhiteboardCard
                         key={wb.id}

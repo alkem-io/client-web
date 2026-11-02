@@ -18,10 +18,8 @@ const COLLAPSED_ROWS = 2;
 
 type ContributionGridProps = {
   children: ReactNode;
-  /** Number of contribution cards in `children`. */
+  /** Number of contribution cards in `children`; a trailing "add" card is not counted. */
   contributionCount: number;
-  /** True when `children` ends with one extra card (e.g. "add") that is never counted as hidden. */
-  hasTrailingCard?: boolean;
   columns?: ContributionGridColumns;
   /** Starts expanded — for an entry point that already asked to see every contribution. */
   defaultExpanded?: boolean;
@@ -31,7 +29,6 @@ type ContributionGridProps = {
 export function ContributionGrid({
   children,
   contributionCount,
-  hasTrailingCard = false,
   columns = 2,
   defaultExpanded = false,
   className,
@@ -43,12 +40,13 @@ export function ContributionGrid({
   const [collapsedHeight, setCollapsedHeight] = useState<number>();
 
   const collapsedCardCount = COLLAPSED_ROWS * columnCount;
-  const cardCount = contributionCount + (hasTrailingCard ? 1 : 0);
-  const shouldCollapse = cardCount > collapsedCardCount;
+  // Only contributions decide the collapse: an "add" card alone past two rows is never hidden.
+  const shouldCollapse = contributionCount > collapsedCardCount;
   const collapsed = shouldCollapse && !expanded;
-  const hiddenCount = Math.max(0, contributionCount - collapsedCardCount);
-  // Reordering the cards (e.g. a sort) can move rows of a different height into the first two
-  // without resizing any card, so the card order is part of what the measurement depends on.
+  const hiddenCount = contributionCount - collapsedCardCount;
+  // Adding, removing or reordering cards (e.g. a sort) can move rows of a different height into
+  // the first two without resizing any card, so the card order is part of what the measurement
+  // depends on.
   const cardOrder = Children.toArray(children)
     .map(child => (isValidElement(child) ? child.key : ''))
     .join();
@@ -71,7 +69,7 @@ export function ContributionGrid({
       observer.observe(card);
     }
     return () => observer.disconnect();
-  }, [gridNode, collapsed, columnCount, collapsedCardCount, cardCount, cardOrder]);
+  }, [gridNode, collapsed, columnCount, collapsedCardCount, cardOrder]);
 
   return (
     <div className={cn('space-y-3', className)}>
@@ -97,7 +95,7 @@ export function ContributionGrid({
             ) : (
               <>
                 <ChevronDown className="w-4 h-4" aria-hidden="true" />
-                {hiddenCount > 0 ? t('callout.moreContributions', { count: hiddenCount }) : t('callout.expand')}
+                {t('callout.moreContributions', { count: hiddenCount })}
               </>
             )}
           </Button>

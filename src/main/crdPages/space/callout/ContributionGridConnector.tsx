@@ -32,12 +32,7 @@ export function ContributionGridConnector({
   if (contributions.length === 0 && !trailingSlot) return null;
 
   return (
-    <ContributionGrid
-      contributionCount={contributions.length}
-      hasTrailingCard={Boolean(trailingSlot)}
-      columns={3}
-      defaultExpanded={expanded}
-    >
+    <ContributionGrid contributionCount={contributions.length} columns={3} defaultExpanded={expanded}>
       {contributions.map(contribution => {
         switch (contribution.type) {
           case 'whiteboard':
