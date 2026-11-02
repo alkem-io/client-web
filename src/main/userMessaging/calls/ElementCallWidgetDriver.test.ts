@@ -521,6 +521,19 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
   it.each([
     ['refused', () => Promise.resolve(new Response('{}', { status: 500 }))],
     ['unreachable', () => Promise.reject(new TypeError('Failed to fetch'))],
+    [
+      'cut off while reading',
+      () =>
+        Promise.resolve(
+          new Response(
+            new ReadableStream({
+              start(controller) {
+                controller.error(new TypeError('network error'));
+              },
+            })
+          )
+        ),
+    ],
   ])('fails a download that was %s again for the rest of the call, without a request', async (_, answer) => {
     const fetchMock = vi.fn(answer);
     vi.stubGlobal('fetch', fetchMock);

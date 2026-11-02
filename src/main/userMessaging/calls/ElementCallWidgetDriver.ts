@@ -409,18 +409,17 @@ class ElementCallWidgetDriver extends WidgetDriver {
     if (this.failedDownloads.has(contentUri)) {
       throw new Error('Downloading the media already failed in this call');
     }
-    let response: Response;
     try {
-      response = await fetch(url, { headers: { Authorization: `Bearer ${this.client.getAccessToken()}` } });
+      const response = await fetch(url, { headers: { Authorization: `Bearer ${this.client.getAccessToken()}` } });
+      if (!response.ok) {
+        throw new Error(`Downloading the media failed with status ${response.status}`);
+      }
+      // Reading the body can still fail after the response arrived, e.g. when the connection drops.
+      return { file: await response.blob() };
     } catch (error) {
       this.failedDownloads.add(contentUri);
       throw error;
     }
-    if (!response.ok) {
-      this.failedDownloads.add(contentUri);
-      throw new Error(`Downloading the media failed with status ${response.status}`);
-    }
-    return { file: await response.blob() };
   }
 
   public getRtcLivekitToken(): Promise<never> {
