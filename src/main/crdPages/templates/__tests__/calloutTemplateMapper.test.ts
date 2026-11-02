@@ -189,6 +189,27 @@ describe('calloutFormValuesToUpdateCalloutEntityInput', () => {
     const input = calloutFormValuesToUpdateCalloutEntityInput(values({ framingChip: 'none', memoMarkdown: 'x' }), 'c1');
     expect(input.framing?.memoContent).toBeUndefined();
   });
+
+  // A template's stored `enabled` is an independent server field the template form never reads.
+  // An API caller can store `enabled: false` beside Members or Admins; a metadata-only save of the
+  // loaded template must carry the stored actors and comments, never a re-derived `enabled`.
+  it.each([
+    [CalloutContributionType.CollaboraDocument, CalloutAllowedActors.Admins],
+    [CalloutContributionType.CollaboraDocument, CalloutAllowedActors.Members],
+    [CalloutContributionType.CollaboraDocument, CalloutAllowedActors.None],
+    [CalloutContributionType.Link, CalloutAllowedActors.Members],
+  ])('a closed %s template (actors %s) saves its actors and comments without enabled', (type, actors) => {
+    const frag = baseFragment();
+    frag.settings.contribution.enabled = false;
+    frag.settings.contribution.allowedTypes = [type];
+    frag.settings.contribution.canAddContributions = actors;
+
+    const input = calloutFormValuesToUpdateCalloutEntityInput(
+      { ...EMPTY_CALLOUT_FORM_VALUES, ...calloutTemplateContentToFormValues(frag) },
+      'callout-1'
+    );
+    expect(input.settings?.contribution).toEqual({ canAddContributions: actors, commentsEnabled: true });
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -621,6 +642,24 @@ describe('calloutTemplateContentToFormValues', () => {
     const frag = baseFragment();
     frag.settings.contribution.allowedTypes = [];
     expect(calloutTemplateContentToFormValues(frag).responseType).toBe('none');
+  });
+
+  it('reads a Documents template as the "document" response type, keeping actors and comments', () => {
+    const frag = baseFragment();
+    frag.settings.contribution.allowedTypes = [CalloutContributionType.CollaboraDocument];
+    frag.settings.contribution.canAddContributions = CalloutAllowedActors.Admins;
+    frag.settings.contribution.commentsEnabled = false;
+
+    const v = calloutTemplateContentToFormValues(frag);
+    expect(v.responseType).toBe('document');
+    expect(v.allowedActors).toEqual({ members: false, admins: true });
+    expect(v.contributionCommentsEnabled).toBe(false);
+  });
+
+  it('reads a Memo template as the "memo" response type', () => {
+    const frag = baseFragment();
+    frag.settings.contribution.allowedTypes = [CalloutContributionType.Memo];
+    expect(calloutTemplateContentToFormValues(frag).responseType).toBe('memo');
   });
 
   // Spec D14, 2026-05-18 — the response-type chip derives from `allowedTypes[0]` ALONE.
