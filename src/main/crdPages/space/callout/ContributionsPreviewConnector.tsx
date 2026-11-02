@@ -3,12 +3,14 @@ import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import { ContributionDocumentCard } from '@/crd/components/contribution/ContributionDocumentCard';
+import { CONTRIBUTION_GRID_COLUMNS } from '@/crd/components/contribution/ContributionGrid';
 import { ContributionLinkList } from '@/crd/components/contribution/ContributionLinkList';
 import { ContributionMemoCard } from '@/crd/components/contribution/ContributionMemoCard';
 import { ContributionPostCard } from '@/crd/components/contribution/ContributionPostCard';
 import { ContributionsPreviewSkeleton } from '@/crd/components/contribution/ContributionsPreviewSkeleton';
 import { ContributionWhiteboardCard } from '@/crd/components/contribution/ContributionWhiteboardCard';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
+import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { CroppedMarkdown } from '@/crd/primitives/croppedMarkdown';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -193,7 +195,11 @@ export function ContributionsPreviewConnector({
   const loadingBody =
     !loaded && expectedCount > 0 ? (
       <output className="block" aria-label={t('a11y.loadingContributions')}>
-        <ContributionsPreviewSkeleton kind={mapContributionTypeToPreviewKind(contributionType)} count={expectedCount} />
+        <ContributionsPreviewSkeleton
+          kind={mapContributionTypeToPreviewKind(contributionType)}
+          count={expectedCount}
+          columns={3}
+        />
       </output>
     ) : undefined;
 
@@ -287,7 +293,7 @@ export function ContributionsPreviewConnector({
     return (
       <div ref={inViewRef}>
         {header}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className={cn('grid gap-3', CONTRIBUTION_GRID_COLUMNS[3])}>
           {visibleItems.map(contribution => (
             <ContributionCard
               key={contribution.id}
@@ -316,7 +322,7 @@ export function ContributionsPreviewConnector({
       {header}
       {loadingBody ??
         ((visibleItems.length > 0 || hasMore) && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className={cn('grid gap-3', CONTRIBUTION_GRID_COLUMNS[3])}>
             {visibleItems.map(contribution => (
               <ContributionCard
                 key={contribution.id}
