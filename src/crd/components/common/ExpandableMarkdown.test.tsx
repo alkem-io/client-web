@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import { Profiler } from 'react';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { ExpandableMarkdown } from './ExpandableMarkdown';
 
@@ -225,5 +226,31 @@ describe('ExpandableMarkdown', () => {
 
     expect(clipBox().style.maxHeight).toBe(`${2 * LINE_PITCH + LINE_HEIGHT}px`);
     expect(elapsed).toBeLessThan(1000);
+  });
+
+  test('a resize that leaves the measurement unchanged does not re-render', () => {
+    const callbacks: ResizeObserverCallback[] = [];
+    vi.spyOn(globalThis, 'ResizeObserver').mockImplementation(function (this: unknown, cb: ResizeObserverCallback) {
+      callbacks.push(cb);
+      return { observe: () => {}, unobserve: () => {}, disconnect: () => {} } as unknown as ResizeObserver;
+    } as unknown as typeof ResizeObserver);
+    let commits = 0;
+    render(
+      <Profiler id="expandable" onRender={() => commits++}>
+        <ExpandableMarkdown content={LONG_TEXT} defaultExpanded={false} />
+      </Profiler>
+    );
+    const resize = () =>
+      act(() => {
+        for (const cb of callbacks) cb([], {} as ResizeObserver);
+      });
+    // React may render once more before it bails out of a same-state update; settle that first.
+    resize();
+    const before = commits;
+
+    resize();
+    resize();
+
+    expect(commits).toBe(before);
   });
 });

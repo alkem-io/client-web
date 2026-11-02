@@ -158,10 +158,13 @@ export function ExpandableMarkdown({
       const hasMedia = classifyMedia(contentEl);
       const lines = measureLines(contentEl, maxLines + 1);
       const textOverflows = lines.length > maxLines;
-      setMeasurement({
-        overflow: textOverflows || hasMedia ? 'yes' : 'no',
-        cutAt: textOverflows ? Math.ceil(lines[maxLines - 1].bottom) : null,
-      });
+      const overflow = textOverflows || hasMedia ? 'yes' : 'no';
+      const cutAt = textOverflows ? Math.ceil(lines[maxLines - 1].bottom) : null;
+      // Keep the previous object when nothing changed, so a resize that moves no line
+      // (every observed callback, including the one on `observe()`) re-renders nothing.
+      setMeasurement(prev =>
+        prev.overflow === overflow && 'cutAt' in prev && prev.cutAt === cutAt ? prev : { overflow, cutAt }
+      );
     };
 
     evaluate();
