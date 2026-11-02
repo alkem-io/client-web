@@ -20,6 +20,9 @@ export type DocumentImportZoneProps = {
   value: File | null;
   /** Called when the user picks or drops a file (single-file flow). `null` clears. */
   onChange: (file: File | null) => void;
+  /** When given, the zone accepts several files; a pick or drop of two or more goes here instead of
+   *  raising `multiple-files`. */
+  onFiles?: (files: File[]) => void;
   /**
    * Called when the OS surfaces a non-file drop (folder, multi-drop, etc.).
    * The component itself does NOT validate file content; the consumer runs
@@ -48,6 +51,7 @@ export function DocumentImportZone({
   acceptAttr,
   value,
   onChange,
+  onFiles,
   onError,
   error,
   busy = false,
@@ -70,7 +74,12 @@ export function DocumentImportZone({
       return;
     }
     if (files.length > 1) {
-      onError({ kind: 'multiple-files' });
+      if (onFiles) {
+        onError(null);
+        onFiles(Array.from(files));
+      } else {
+        onError({ kind: 'multiple-files' });
+      }
       return;
     }
     onError(null);
@@ -198,6 +207,7 @@ export function DocumentImportZone({
           ref={inputRef}
           type="file"
           accept={acceptAttr}
+          multiple={Boolean(onFiles)}
           onChange={event => handleFiles(event.currentTarget.files)}
           disabled={busy || disabled}
           className="sr-only"

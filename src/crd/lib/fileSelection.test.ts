@@ -31,7 +31,7 @@ describe('selectFiles', () => {
 
   test('files past the cap are never passed to check', () => {
     const files = makeFiles(30);
-    const check = vi.fn(() => null);
+    const check = vi.fn((_file: File) => null);
     selectFiles(files, check);
 
     expect(check).toHaveBeenCalledTimes(25);
