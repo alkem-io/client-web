@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useUserConversationsUnreadCountQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useIncomingCallRooms } from './calls/incomingCallStore';
 import { displayedUnreadCount, useConversationSummaries } from './matrix/conversationSummaryStore';
 import { useUserMessagingContext } from './UserMessagingContext';
 
@@ -24,11 +25,16 @@ export const useUnreadConversationsCount = () => {
     fetchPolicy: 'cache-first',
   });
 
-  // Counts conversations with unread messages, not messages; the per-room
-  // counts come from Matrix sync, the conversation list from GraphQL.
+  // Counts conversations with unread messages or a call the user is not in, not
+  // messages; the per-room counts come from Matrix sync, the conversation list from GraphQL.
   const roomIds = (data?.me?.conversations?.conversations ?? []).flatMap(conv => (conv.room ? [conv.room.id] : []));
   const summaries = useConversationSummaries(roomIds);
-  const totalUnreadCount = roomIds.filter(roomId => displayedUnreadCount(summaries, roomId, selectedRoomId) > 0).length;
+  const incomingCallRooms = useIncomingCallRooms();
+  const totalUnreadCount = roomIds.filter(
+    roomId =>
+      displayedUnreadCount(summaries, roomId, selectedRoomId) > 0 ||
+      (incomingCallRooms.has(roomId) && roomId !== selectedRoomId)
+  ).length;
 
   return totalUnreadCount;
 };

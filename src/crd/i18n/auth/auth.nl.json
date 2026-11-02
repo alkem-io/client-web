@@ -10,10 +10,13 @@
     "preparing": "Veilige aanmelding voorbereiden…"
   },
   "appSignIn": {
-    "required": "Log in om verder te gaan.",
     "cancelled": "Het inloggen is geannuleerd.",
-    "failed": "Het inloggen kon niet worden voltooid. Probeer het opnieuw.",
-    "action": "Inloggen"
+    "failed": "Het inloggen kon niet worden voltooid. Probeer het opnieuw."
+  },
+  "appWelcome": {
+    "body": "Doe mee in Spaces, deel ideeën en bouw samen verder.",
+    "signIn": "Inloggen",
+    "browseSpaces": "Openbare Spaces bekijken"
   },
   "signUp": {
     "title": "Registreren",

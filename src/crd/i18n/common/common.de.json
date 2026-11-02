@@ -1603,7 +1603,8 @@
     "download": "{{name}} herunterladen",
     "unavailableHint": "Diese Datei konnte nicht geladen werden. Laden Sie sie zum Ansehen herunter.",
     "unavailableNoDownload": "Diese Datei ist nicht verfügbar.",
-    "loading": "Anhang wird geladen"
+    "loading": "Anhang wird geladen",
+    "openMedia": "{{name}} im Medienbetrachter öffnen"
   },
   "unsavedChanges": {
     "count_one": "{{count}} ungespeicherte Änderung",
@@ -1631,5 +1632,12 @@
       "refresh": "Seite neu laden",
       "close": "Schließen"
     }
+  },
+  "vcPaused": {
+    "title": "Virtual Contributors bekommen ein Upgrade! 🚀",
+    "description": "Wir bauen sie neu auf, damit sie intelligenter und hilfreicher werden. Bis dahin kannst du sie nicht erstellen, hinzufügen oder erwähnen, aber deine bestehenden VCs bleiben sichtbar.",
+    "learnMore": "Mehr erfahren",
+    "contactSupport": "Support kontaktieren",
+    "mentionUnavailable": "Vorübergehend nicht verfügbar"
   }
 }

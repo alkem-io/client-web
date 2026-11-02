@@ -167,7 +167,9 @@ export function mapAccountToViewProps(
   const vcGroup: AccountResourceGroup = {
     groupId: 'virtualContributors',
     title: labels.virtualContributors.title,
-    canCreate: canCreateVc,
+    // TEMP: VCs disabled (#10398) — restore: canCreate: canCreateVc, and drop createPaused
+    canCreate: false,
+    createPaused: canCreateVc,
     isEntitled: isEntitledToCreateVc,
     onCreate: callbacks.onCreateVc,
     capacity: vcCapacity,

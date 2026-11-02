@@ -6,6 +6,7 @@ import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 import useStorageConfig from '@/domain/storage/StorageBucket/useStorageConfig';
 import { MarkdownUploadScope } from '@/main/crdPages/markdown/MarkdownUploadScope';
+import { useCityOptions } from '@/main/crdPages/utils/useCityOptions';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { useSettingsTabUnsavedChanges } from '../../../common/settingsUnsavedChanges';
 import useOrgProfileTabData from './useOrgProfileTabData';
@@ -56,6 +57,7 @@ const CrdOrgProfileTab = () => {
 };
 
 const CrdOrgProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUploadProps }) => {
+  const cities = useCityOptions();
   const { t } = useTranslation('crd-contributorSettings');
   const { organizationId } = useOrganizationContext();
   const data = useOrgProfileTabData(organizationId);
@@ -72,6 +74,8 @@ const CrdOrgProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUpl
       <OrgProfileTabView
         values={data.values ?? EMPTY_VALUES}
         countries={COUNTRIES}
+        cityOptions={cities.options}
+        onCityFocus={cities.onRequest}
         loading={data.loading}
         disabled={data.unsaved.saving}
         onChange={data.onChange}

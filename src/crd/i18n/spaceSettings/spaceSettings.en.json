@@ -23,7 +23,8 @@
   "layout": {
     "pageHeader": {
       "title": "Layout",
-      "subtitle": "Customise your Space's navigation tabs. Rename, reorder, and manage Post assignments."
+      "subtitle": "Customise your Space's navigation tabs. Rename, reorder, and manage Post assignments.",
+      "subtitle_subspace": "Customise your Subspace's navigation tabs. Rename, reorder, and manage Post assignments."
     },
     "loading": "Loading layout…",
     "column": {
@@ -113,6 +114,7 @@
         "widgets": {
           "intent": "Intention & Leads",
           "about": "About this Space",
+          "about_subspace": "About this Subspace",
           "createPost": "Add Post",
           "applicationButton": "Apply / Join",
           "createSubspace": "Create Subspace",
@@ -239,7 +241,11 @@
       "actions": "Actions",
       "approve": "Approve",
       "reject": "Reject",
-      "delete": "Delete",
+      "deleteAction": {
+        "rejectAndRemove": "Reject and remove application",
+        "removeFromList": "Remove from list",
+        "revokeInvitation": "Revoke invitation"
+      },
       "resend": "Resend invitation email",
       "resendSuccess": "Invitation email sent again",
       "resendThrottled": "Already resent recently — try again in a few minutes",
@@ -286,6 +292,7 @@
     },
     "members": {
       "title": "Space Members",
+      "title_subspace": "Subspace Members",
       "search": "Search members…",
       "invite": "Invite",
       "name": "Name",
@@ -304,7 +311,8 @@
       "dropdown": {
         "viewProfile": "View Profile",
         "changeRole": "Change Role",
-        "removeFromSpace": "Remove from Space"
+        "removeFromSpace": "Remove from Space",
+        "removeFromSpace_subspace": "Remove from Subspace"
       },
       "pagination": {
         "showing": "Showing {{from}} to {{to}} of {{total}} members",
@@ -313,7 +321,8 @@
         "next": "Next page"
       },
       "roleColumn": "Role",
-      "export": "Export all Member overview"
+      "export": "Export all Member overview",
+      "exportApplications": "Export All Submitted Applications"
     },
     "memberSettings": {
       "title": "Member settings",
@@ -335,6 +344,7 @@
       "close": "Close"
     },
     "organizations": {
+      "export": "Export Organisations",
       "title": "Member Organisations",
       "name": "Name",
       "role": "Role",
@@ -344,7 +354,8 @@
       "dropdown": {
         "viewProfile": "View Profile",
         "changeRole": "Change Role",
-        "removeFromSpace": "Remove from Space"
+        "removeFromSpace": "Remove from Space",
+        "removeFromSpace_subspace": "Remove from Subspace"
       },
       "invite": "Invite Organisation",
       "search": "Search organisations…",
@@ -393,6 +404,7 @@
       "title": "Community Guidelines",
       "hint": "Displayed to new members upon joining.",
       "placeholder": "Describe your space's code of conduct…",
+      "placeholder_subspace": "Describe your subspace's code of conduct…",
       "titleLabel": "Title",
       "titlePlaceholder": "Name your community guidelines",
       "referencesLabel": "Related links",
@@ -425,15 +437,24 @@
       },
       "invitation": {
         "title": "Revoke invitation",
-        "description": "Revoke the pending invitation for {{name}}?"
+        "description": "{{name}} will no longer be able to accept this invitation, and it will be removed from the list."
       },
       "applicationReject": {
         "title": "Reject application",
-        "description": "Reject {{name}}'s application to join this space?"
+        "description": "Reject {{name}}'s application to join this space?",
+        "description_subspace": "Reject {{name}}'s application to join this subspace?"
       },
       "applicationDelete": {
-        "title": "Remove application",
-        "description": "Remove {{name}}'s application from the list?"
+        "title": "Reject and remove application",
+        "description": "{{name}}'s application will be rejected and removed from this list. They will not become a member."
+      },
+      "resolvedDelete": {
+        "title": "Remove from list",
+        "description": "This only removes {{name}}'s closed request from this list. It does not change anyone's membership."
+      },
+      "platformInvitation": {
+        "title": "Revoke invitation",
+        "description": "The invitation sent to {{name}} will be cancelled and removed from the list. It can no longer be used to join."
       }
     },
     "addDialog": {
@@ -759,23 +780,30 @@
       "title": "Visibility",
       "public": "Public",
       "publicDescription": "This Space and its contents are visible to everyone on the platform. Users can only contribute if they are a member.",
+      "publicDescription_subspace": "This Subspace and its contents are visible to everyone on the platform. Users can only contribute if they are a member.",
       "private": "Private",
       "privateDescription": "This Space is visible to everyone on the platform, but the content is only visible to members.",
-      "hint": "Consider your space's purpose and audience when choosing visibility."
+      "privateDescription_subspace": "This Subspace is visible to everyone on the platform, but the content is only visible to members.",
+      "hint": "Consider your space's purpose and audience when choosing visibility.",
+      "hint_subspace": "Consider your subspace's purpose and audience when choosing visibility."
     },
     "membership": {
       "title": "Membership",
       "open": "No Application Required",
       "openDescription": "All Space members can directly join, without you having to review their applications.",
+      "openDescription_subspace": "All members of the parent space can join directly, without you having to review their applications.",
       "openHint": "Best for public, open collaboration spaces",
+      "openHint_subspace": "Best for public, open collaboration subspaces",
       "application": "Application Required",
       "applicationDescription": "If people want to become a member, they have to fill in the application form. You receive their applications (see community tab here) and you can accept them or reject them.",
       "applicationHint": "Best for curated spaces with specific requirements",
+      "applicationHint_subspace": "Best for curated subspaces with specific requirements",
       "invitation": "Invitation Only",
       "invitationDescription": "Users can only become a member after you've invited them. There is no 'apply' or 'join' button for others to click.",
       "invitationHint": "Best for private, restricted collaboration teams",
       "trustedApplicants": "Trusted Applicants",
-      "hostOrgTrust": "Allow members of {{host}} to join this Space without an application."
+      "hostOrgTrust": "Allow members of {{host}} to join this Space without an application.",
+      "hostOrgTrust_subspace": "Allow members of {{host}} to join this Subspace without an application."
     },
     "applicationForm": {
       "title": "Application Form",
@@ -795,8 +823,7 @@
         "description": "Are you sure you want to remove this question?",
         "confirm": "Delete"
       },
-      "save": "Save",
-      "export": "Export All Submitted Applications"
+      "save": "Save"
     },
     "allowedActions": {
       "title": "Allowed Actions",
@@ -830,10 +857,14 @@
     "userInfoVisibility": {
       "title": "User information visibility",
       "description": "Control who can see member user information in this space. Organizations and virtual contributors follow the space visibility.",
+      "description_subspace": "Control who can see member user information in this subspace. Organizations and virtual contributors follow the subspace visibility.",
       "followSpace": "Follow space visibility",
+      "followSpace_subspace": "Follow subspace visibility",
       "followSpaceDescription": "Member user information is visible according to the space visibility.",
+      "followSpaceDescription_subspace": "Member user information is visible according to the subspace visibility.",
       "membersOnly": "Members only",
-      "membersOnlyDescription": "Only members of this space can see member user information."
+      "membersOnlyDescription": "Only members of this space can see member user information.",
+      "membersOnlyDescription_subspace": "Only members of this subspace can see member user information."
     }
   },
   "storage": {
@@ -867,16 +898,28 @@
       "title": "Visibility Status",
       "prefix": "This Space is currently in",
       "suffix": "mode",
-      "contact": "For status changes, contact the Alkemio team."
+      "contact": "For status changes, contact the Alkemio team.",
+      "status": {
+        "active": "Active",
+        "archived": "Archived",
+        "demo": "Demo",
+        "inactive": "Inactive"
+      }
     },
     "host": {
-      "title": "Host Information"
+      "title": "Host Information",
+      "type": {
+        "organization": "Organisation",
+        "user": "User",
+        "virtualContributor": "Virtual Contributor"
+      }
     },
     "plan": {
       "title": "License",
       "featuresHeading": "Included Features",
       "daysLeft": "{{count}} days remaining",
-      "changeLicense": "Change License"
+      "changeLicense": "Change License",
+      "none": "No active license"
     },
     "support": {
       "title": "Support",
@@ -887,6 +930,7 @@
       "title": "Danger Zone",
       "description": "Permanently delete this space and all its content.",
       "delete": "Delete this Space",
+      "deleteError": "The space could not be deleted. Please try again.",
       "deleteDialog": {
         "title": "Delete Space",
         "description": "This will permanently delete this space and all its content. This action cannot be undone.",
@@ -902,11 +946,14 @@
     },
     "name": {
       "title": "Space Name",
-      "description": "The public name of your space."
+      "title_subspace": "Subspace Name",
+      "description": "The public name of your space.",
+      "description_subspace": "The public name of your subspace."
     },
     "tagline": {
       "title": "Tagline",
-      "description": "A short subtitle shown next to the space name."
+      "description": "A short subtitle shown next to the space name.",
+      "description_subspace": "A short subtitle shown next to the subspace name."
     },
     "branding": {
       "noImage": "No image",
@@ -914,6 +961,7 @@
         "title": "Avatar",
         "size": "410 × 410px",
         "hint": "The space logo.",
+        "hint_subspace": "The subspace logo.",
         "recrop": "Crop current avatar",
         "upload": "Upload avatar"
       },
@@ -928,6 +976,7 @@
         "title": "Card Banner",
         "size": "416 × 256px",
         "hint": "Shown in search results and space cards.",
+        "hint_subspace": "Shown in search results and on the parent space's overview.",
         "recrop": "Crop current card banner",
         "upload": "Upload card banner"
       },
@@ -951,6 +1000,7 @@
     "location": {
       "title": "Location",
       "description": "The city and country of this space.",
+      "description_subspace": "The city and country of this subspace.",
       "city": "City",
       "country": "Country (ISO code)",
       "countryPlaceholder": "Country"
@@ -958,26 +1008,33 @@
     "what": {
       "title": "What",
       "description": "Describe what this space is about.",
-      "placeholder": "What's this space about…"
+      "description_subspace": "Describe what this subspace is about.",
+      "placeholder": "What's this space about…",
+      "placeholder_subspace": "What's this subspace about…"
     },
     "why": {
       "title": "Why",
       "description": "Explain the motivation or value of this space.",
-      "placeholder": "Why does this space exist…"
+      "description_subspace": "Explain the motivation or value of this subspace.",
+      "placeholder": "Why does this space exist…",
+      "placeholder_subspace": "Why does this subspace exist…"
     },
     "who": {
       "title": "Who",
       "description": "Describe the target audience or ideal members.",
-      "placeholder": "Who is this space for…"
+      "placeholder": "Who is this space for…",
+      "placeholder_subspace": "Who is this subspace for…"
     },
     "tags": {
       "title": "Tags",
       "description": "Tags help members discover your space.",
+      "description_subspace": "Tags help members discover your subspace.",
       "placeholder": "Add a tag and press Enter"
     },
     "references": {
       "title": "References & Links",
       "description": "External links shown on this space page.",
+      "description_subspace": "External links shown on this subspace page.",
       "empty": "No references added yet.",
       "add": "Add",
       "row": {
@@ -1002,26 +1059,32 @@
       "label": "PREVIEW",
       "livePreview": {
         "title": "Live Preview",
-        "description": "This preview shows how your space card will appear in the \"Explore Spaces\" directory."
+        "description": "This preview shows how your space card will appear in the \"Explore Spaces\" directory.",
+        "description_subspace": "This preview shows how your subspace card will appear on the parent space's overview and in search results."
       }
     }
   },
   "classifications": {
     "sectionTitle": "Classifications",
     "sectionDescription": "Classify your space with structured vocabularies (e.g. SDGs, Sector) for discoverability and reporting.",
+    "sectionDescription_subspace": "Classify your subspace with structured vocabularies (e.g. SDGs, Sector) for discoverability and reporting.",
     "addButton": "Add Classification",
     "picker": {
       "title": "Add a classification",
       "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
+      "description_subspace": "Pick a Classification Template to add to this Subspace. You'll select its values next.",
       "platformSection": "Platform-wide",
       "spaceSection": "This Space's library",
+      "spaceSection_subspace": "The top-level space's library",
       "emptyState": {
         "title": "No Classification Templates yet",
-        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it."
+        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it.",
+        "description_subspace": "Create one in a Template Pack or the top-level space's Template Library, then come back here to add it."
       },
       "conflict": {
         "title": "That name is already in use",
         "description": "This Space already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
+        "description_subspace": "This Subspace already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
         "fieldLabel": "Display label",
         "retry": "Add with this label"
       },
@@ -1036,7 +1099,9 @@
     },
     "display": {
       "toggleLabel": "Show on the Space page",
-      "hiddenHint": "Not shown on the Space page"
+      "toggleLabel_subspace": "Show on the Subspace page",
+      "hiddenHint": "Not shown on the Space page",
+      "hiddenHint_subspace": "Not shown on the Subspace page"
     },
     "remove": {
       "menuLabel": "Remove classification"

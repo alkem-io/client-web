@@ -4,6 +4,8 @@ import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { ActiveCallIndicator } from '@/crd/components/chat/ActiveCallIndicator';
+import { CallControls } from '@/crd/components/chat/CallControls';
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
 import { ChatOptionsMenu } from '@/crd/components/chat/ChatOptionsMenu';
 import { ChatPanel } from '@/crd/components/chat/ChatPanel';
@@ -21,6 +23,11 @@ import { Avatar, AvatarImage } from '@/crd/primitives/avatar';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { buildUserNotificationSettingsUrl } from '@/main/routing/urlBuilders';
 import { useConversationDrafts } from '@/main/userMessaging/ConversationDraftsContext';
+import { openCall } from '@/main/userMessaging/calls/callOverlayStore';
+import { useActiveCallRooms } from '@/main/userMessaging/calls/useActiveCallRooms';
+import { useCallEligibility } from '@/main/userMessaging/calls/useCallEligibility';
+import { useRoomCallSession } from '@/main/userMessaging/calls/useRoomCallSession';
+import { type CallAction, type CallMedia, callIntentFor } from '@/main/userMessaging/calls/widgetUrl';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
 import { ConversationThread } from './ConversationThread';
@@ -31,6 +38,7 @@ import {
   mapMembersToGroupMembers,
   mapMemberToCommentAuthor,
   mapMessageToChatMessage,
+  withActiveCallsFirst,
 } from './dataMapper';
 import { useUnifiedChatContext } from './UnifiedChatProvider';
 import { useChatDeepLinkSelect } from './useChatDeepLink';
@@ -57,6 +65,7 @@ export const UnifiedChatPanelConnector = () => {
     selectedConversationId,
     setSelectedConversationId,
     setSelectedRoomId,
+    newlyCreatedConversationId,
     setNewlyCreatedConversationId,
   } = useUserMessagingContext();
   const { guidanceVcId } = useUnifiedChatContext();
@@ -80,6 +89,11 @@ export const UnifiedChatPanelConnector = () => {
     isLoading: messagesLoading,
   } = useConversationMessages(selectedConversation ?? null);
   const isGuidanceThread = selectedConversation?.isGuidance ?? false;
+
+  // Calls: shown only to beta testers, in a synced session, where the environment has calls.
+  const callEligibility = useCallEligibility(selectedConversation ?? null);
+  const callSession = useRoomCallSession(callEligibility.matrixRoomId);
+  const activeCallRooms = useActiveCallRooms(conversations);
 
   // Realtime conversation events are subscribed globally by
   // <ConversationEventsSubscriber /> (mounted in root.tsx) so they arrive with
@@ -115,13 +129,17 @@ export const UnifiedChatPanelConnector = () => {
   const formatTimestamp = (timestampMs: number) =>
     formatDistanceToNowStrict(new Date(timestampMs), { addSuffix: true, locale });
 
-  const listItems = conversations.map(conversation => {
-    const item = mapConversationToListItem(conversation, { currentUserId, formatTimestamp });
-    const draft = drafts[conversation.id];
-    // A draft replaces the last-message preview but leaves the ordering and the
-    // timestamp alone — the conversation does not jump the list for it.
-    return draft ? { ...item, draftPreview: draft.trim() } : item;
-  });
+  const listItems = withActiveCallsFirst(
+    conversations.map(conversation => {
+      const mapped = mapConversationToListItem(conversation, { currentUserId, formatTimestamp });
+      const item = activeCallRooms.has(conversation.roomId) ? { ...mapped, hasActiveCall: true } : mapped;
+      const draft = drafts[conversation.id];
+      // A draft replaces the last-message preview but leaves the ordering and the
+      // timestamp alone — the conversation does not jump the list for it.
+      return draft ? { ...item, draftPreview: draft.trim() } : item;
+    }),
+    newlyCreatedConversationId
+  );
 
   const view = selectedConversationId ? 'thread' : 'list';
 
@@ -232,16 +250,63 @@ export const UnifiedChatPanelConnector = () => {
         </button>
       </>
     );
-  } else if (selectedConversation?.isGroup) {
-    headerActions = (
-      <ChatOptionsMenu
-        label={t('thread.options')}
-        settingsLabel={t('group.settings')}
-        onOpenSettings={groupSettings.openDialog}
-        leaveLabel={t('group.leave')}
-        onLeave={() => setLeaveConfirmOpen(true)}
-      />
-    );
+  } else if (selectedConversation) {
+    const { isGroup } = selectedConversation;
+    const { matrixRoomId } = callEligibility;
+    const openCallWith = (action: CallAction, media: CallMedia) => {
+      if (matrixRoomId) {
+        openCall({ matrixRoomId, intent: callIntentFor({ isGroup, action, media }) });
+      }
+    };
+    let callActions: ReactNode = null;
+    if (callEligibility.eligible) {
+      callActions =
+        callSession.participantCount > 0 ? (
+          <ActiveCallIndicator
+            activeLabel={t('call.active')}
+            count={callSession.participantCount}
+            joinedNote={
+              callSession.isJoinedOnThisDevice && !callSession.isJoinedHere ? t('call.joinedOnThisDevice') : undefined
+            }
+            // Every tab of a browser is the same chat device: a join from a second tab would
+            // write over the first tab's membership, and its leave would end both.
+            join={
+              callSession.isJoinedOnThisDevice
+                ? undefined
+                : {
+                    joinLabel: t('call.join'),
+                    joinVideoLabel: t('call.joinVideo'),
+                    joinAudioLabel: t('call.joinAudio'),
+                    onJoinVideo: () => openCallWith('join', 'video'),
+                    onJoinAudio: () => openCallWith('join', 'voice'),
+                  }
+            }
+          />
+        ) : (
+          <CallControls
+            startAudioLabel={t('call.startAudio')}
+            startVideoLabel={t('call.startVideo')}
+            onStartAudio={() => openCallWith('start', 'voice')}
+            onStartVideo={() => openCallWith('start', 'video')}
+          />
+        );
+    }
+    if (isGroup) {
+      headerActions = (
+        <div className="flex items-center gap-1">
+          {callActions}
+          <ChatOptionsMenu
+            label={t('thread.options')}
+            settingsLabel={t('group.settings')}
+            onOpenSettings={groupSettings.openDialog}
+            leaveLabel={t('group.leave')}
+            onLeave={() => setLeaveConfirmOpen(true)}
+          />
+        </div>
+      );
+    } else if (callActions) {
+      headerActions = <div className="flex items-center gap-1">{callActions}</div>;
+    }
   }
   const isGroupThread = view === 'thread' && Boolean(selectedConversation?.isGroup);
 

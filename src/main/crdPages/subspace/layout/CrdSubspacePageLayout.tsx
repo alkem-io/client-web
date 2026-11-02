@@ -6,6 +6,7 @@ import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import useNavigate from '@/core/routing/useNavigate';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import { useScrollToTopOnChange } from '@/core/routing/useScrollToTopOnChange';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { ShareDialog } from '@/crd/components/common/ShareDialog';
 import type { FlowStateSearchStatus } from '@/crd/components/search/FlowStateSearchResults';
@@ -116,6 +117,8 @@ export default function CrdSubspacePageLayout() {
   // Active flow phase (URL-driven, shared with the callouts page) — the Add Post
   // dialog pre-selects it, exactly as the old flow-tabs button did.
   const { activePhaseId } = useCrdSubspaceFlow(data.phases, data.currentPhaseId);
+  // The phase lives in the query string, which ScrollToTop ignores, so a phase switch resets here.
+  useScrollToTopOnChange(activePhaseId);
   const activePhase = data.phases.find(phase => phase.id === activePhaseId);
   const { collapsed: sidebarCollapsed, toggle: toggleSidebarCollapsed } = useSubspaceSidebarCollapsed();
   const locale = useCrdSpaceLocale();
@@ -146,6 +149,7 @@ export default function CrdSubspacePageLayout() {
   const createSubspace = useCreateSubspace(data.subspaceId ?? '', {
     templatesSetId: data.templatesSetId,
     defaultTemplateId: data.defaultSubspaceTemplateId,
+    navigateOnCreate: true,
   });
   const { wide: fullWidth, toggle: toggleFullWidth } = useLayoutWidthPreference();
 

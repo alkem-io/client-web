@@ -939,8 +939,10 @@
     "previous": "Previous image",
     "next": "Next image",
     "goToImage": "Go to image {{index}}",
+    "goToVideo": "Go to video {{index}}",
     "thumbnailsLabel": "Image thumbnails",
     "download": "Download image",
+    "downloadVideo": "Download video",
     "fullscreen": "Enter fullscreen",
     "exitFullscreen": "Exit fullscreen",
     "emptyState": {

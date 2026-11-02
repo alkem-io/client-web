@@ -26,16 +26,21 @@ export type AccountPlan = {
   daysLeft: number | null;
 };
 
+export type AccountVisibility = 'active' | 'archived' | 'demo' | 'inactive';
+
+export type AccountHostType = 'organization' | 'user' | 'virtualContributor';
+
 export type AccountHost = {
   displayName: string;
   avatarUrl: string | null;
-  type: string;
+  /** null when the host is another kind of actor: the type line is left out. */
+  type: AccountHostType | null;
 };
 
 export type SpaceSettingsAccountViewProps = {
   url: string;
   plan: AccountPlan | null;
-  visibility: string;
+  visibility: AccountVisibility | null;
   host: AccountHost | null;
   contactSupportHref: string;
   changeLicenseHref: string | null;
@@ -86,50 +91,45 @@ export function SpaceSettingsAccountView({
         <p className="text-caption text-muted-foreground mt-2">{t('account.url.hint')}</p>
       </SettingsSection>
 
-      {plan && (
-        <SettingsSection title={t('account.plan.title')} icon={<CreditCard className="size-4" />} iconColor="purple">
-          <div className="space-y-4">
+      <SettingsSection title={t('account.plan.title')} icon={<CreditCard className="size-4" />} iconColor="purple">
+        <div className="space-y-4">
+          {plan ? (
             <div>
               <Badge variant="secondary" className="px-3 py-1 font-semibold">
                 {plan.name}
               </Badge>
             </div>
-            {plan.features.length > 0 && (
-              <div className="space-y-3">
-                <p className="text-body-emphasis text-muted-foreground">{t('account.plan.featuresHeading')}</p>
-                {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
-                {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
-                <ul role="list" className="space-y-2 text-body">
-                  {plan.features.map(f => (
-                    <li key={f} className="flex items-center gap-2">
-                      <Check aria-hidden="true" className="size-4 text-emerald-600 shrink-0" />
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {plan.daysLeft !== null && (
-              <p className="text-caption text-muted-foreground">
-                {t('account.plan.daysLeft', { count: plan.daysLeft })}
-              </p>
-            )}
-            {changeLicenseHref && (
-              <Button className="w-fit" variant="outline" size="sm" asChild={true}>
-                <a
-                  href={changeLicenseHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2"
-                >
-                  {t('account.plan.changeLicense')}
-                  <ExternalLink aria-hidden="true" className="size-3" />
-                </a>
-              </Button>
-            )}
-          </div>
-        </SettingsSection>
-      )}
+          ) : (
+            <p className="text-body text-muted-foreground">{t('account.plan.none')}</p>
+          )}
+          {plan && plan.features.length > 0 && (
+            <div className="space-y-3">
+              <p className="text-body-emphasis text-muted-foreground">{t('account.plan.featuresHeading')}</p>
+              {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+              {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+              <ul role="list" className="space-y-2 text-body">
+                {plan.features.map(f => (
+                  <li key={f} className="flex items-center gap-2">
+                    <Check aria-hidden="true" className="size-4 text-emerald-600 shrink-0" />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {plan && plan.daysLeft !== null && (
+            <p className="text-caption text-muted-foreground">{t('account.plan.daysLeft', { count: plan.daysLeft })}</p>
+          )}
+          {changeLicenseHref && (
+            <Button className="w-fit" variant="outline" size="sm" asChild={true}>
+              <a href={changeLicenseHref} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                {t('account.plan.changeLicense')}
+                <ExternalLink aria-hidden="true" className="size-3" />
+              </a>
+            </Button>
+          )}
+        </div>
+      </SettingsSection>
 
       <SettingsSection
         title={t('account.visibility.title')}
@@ -139,7 +139,7 @@ export function SpaceSettingsAccountView({
       >
         <div className="flex flex-wrap items-center gap-2">
           <p className="text-body">{t('account.visibility.prefix')}</p>
-          <Badge variant="secondary">{visibility}</Badge>
+          {visibility && <Badge variant="secondary">{t(`account.visibility.status.${visibility}`)}</Badge>}
           <p className="text-body">{t('account.visibility.suffix')}</p>
         </div>
         <p className="text-caption text-muted-foreground mt-2">{t('account.visibility.contact')}</p>
@@ -154,16 +154,18 @@ export function SpaceSettingsAccountView({
             </Avatar>
             <div className="space-y-1">
               <p className="text-card-title">{host.displayName}</p>
-              <div className="flex items-center gap-3 text-body text-muted-foreground">
-                <span className="inline-flex items-center gap-1">
-                  {host.type.toLowerCase().includes('org') ? (
-                    <Building aria-hidden="true" className="size-3" />
-                  ) : (
-                    <User aria-hidden="true" className="size-3" />
-                  )}
-                  {formatHostType(host.type)}
-                </span>
-              </div>
+              {host.type && (
+                <div className="flex items-center gap-3 text-body text-muted-foreground">
+                  <span className="inline-flex items-center gap-1">
+                    {host.type === 'organization' ? (
+                      <Building aria-hidden="true" className="size-3" />
+                    ) : (
+                      <User aria-hidden="true" className="size-3" />
+                    )}
+                    {t(`account.host.type.${host.type}`)}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </SettingsSection>
@@ -238,10 +240,4 @@ function AccountSkeletons() {
       ))}
     </div>
   );
-}
-
-/** `USER` → `User`, `VIRTUAL_CONTRIBUTOR` → `Virtual contributor`. */
-function formatHostType(type: string) {
-  const words = type.toLowerCase().replaceAll('_', ' ');
-  return words.charAt(0).toUpperCase() + words.slice(1);
 }

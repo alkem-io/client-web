@@ -6,6 +6,7 @@
  * `specs/097-crd-user-settings/contracts/tab-userProfile.ts`.
  */
 
+import type { CityOption } from '@/crd/components/common/CityAutocompleteInput';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
 
@@ -82,6 +83,10 @@ export type UserProfileViewProps = {
   values: UserProfileFormValues;
   /** Static list of countries for the Location combobox. */
   countries: ReadonlyArray<UserProfileCountryOption>;
+  /** City suggestions for the City input; `undefined` until loaded (see `onCityFocus`). */
+  cityOptions?: ReadonlyArray<CityOption>;
+  /** City input focused — the consumer lazily loads `cityOptions`. */
+  onCityFocus?: () => void;
   loading: boolean;
   /** True while a Save runs: the form is frozen, so nothing typed is lost to the post-save rebase. */
   disabled?: boolean;

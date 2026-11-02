@@ -47,6 +47,8 @@ export type ClassificationPickerDialogProps = {
   onRetryWithLabel: (templateId: string, displayLabel: string) => void;
   onDismissConflict: () => void;
   submitting?: boolean;
+  /** Words the copy for a subspace, whose space-scoped source is the top-level Space's library (FR-042). */
+  subspace?: boolean;
   className?: string;
 };
 
@@ -64,9 +66,11 @@ export function ClassificationPickerDialog({
   onRetryWithLabel,
   onDismissConflict,
   submitting,
+  subspace,
   className,
 }: ClassificationPickerDialogProps) {
   const { t } = useTranslation('crd-spaceSettings');
+  const context = subspace ? 'subspace' : undefined;
   const [retryLabel, setRetryLabel] = useState(conflict?.attemptedLabel ?? '');
   const [search, setSearch] = useState('');
 
@@ -110,7 +114,7 @@ export function ClassificationPickerDialog({
             <DialogTitle>{t('classifications.picker.conflict.title')}</DialogTitle>
           </DialogHeader>
           <p className="text-body text-muted-foreground">
-            {t('classifications.picker.conflict.description', { label: conflict.attemptedLabel })}
+            {t('classifications.picker.conflict.description', { label: conflict.attemptedLabel, context })}
           </p>
           <div className="space-y-1.5">
             <Label htmlFor="classification-conflict-label">{t('classifications.picker.conflict.fieldLabel')}</Label>
@@ -144,7 +148,7 @@ export function ClassificationPickerDialog({
         <DialogHeader>
           <DialogTitle>{t('classifications.picker.title')}</DialogTitle>
         </DialogHeader>
-        <p className="text-body text-muted-foreground">{t('classifications.picker.description')}</p>
+        <p className="text-body text-muted-foreground">{t('classifications.picker.description', { context })}</p>
 
         <div className="relative">
           <Search aria-hidden="true" className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
@@ -169,7 +173,7 @@ export function ClassificationPickerDialog({
             <div className="rounded-lg border border-dashed border-border p-4 text-center">
               <p className="text-body-emphasis text-foreground">{t('classifications.picker.emptyState.title')}</p>
               <p className="mt-1 text-caption text-muted-foreground">
-                {t('classifications.picker.emptyState.description')}
+                {t('classifications.picker.emptyState.description', { context })}
               </p>
             </div>
           )}
@@ -188,7 +192,7 @@ export function ClassificationPickerDialog({
                     <h3 className="mb-2 text-label uppercase text-muted-foreground">
                       {source.key === 'platform'
                         ? t('classifications.picker.platformSection')
-                        : t('classifications.picker.spaceSection')}{' '}
+                        : t('classifications.picker.spaceSection', { context })}{' '}
                       ({source.templates.length})
                     </h3>
                     {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}

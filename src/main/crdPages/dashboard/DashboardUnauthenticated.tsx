@@ -20,6 +20,11 @@ export default function DashboardUnauthenticated() {
     fetchMore,
     membershipFilter,
     onMembershipFilterChange,
+    typeFilter,
+    onTypeFilterChange,
+    privacyFilter,
+    onPrivacyFilterChange,
+    onColumnsChange,
     authenticated,
     loadingSearchResults,
   } = useSpaceExplorer();
@@ -39,6 +44,11 @@ export default function DashboardUnauthenticated() {
         onLoadMore={fetchMore}
         onSearchTermsChange={terms => setSearchTerms(terms)}
         onMembershipFilterChange={onMembershipFilterChange}
+        typeFilter={typeFilter}
+        onTypeFilterChange={onTypeFilterChange}
+        privacyFilter={privacyFilter}
+        onPrivacyFilterChange={onPrivacyFilterChange}
+        onColumnsChange={onColumnsChange}
         onParentClick={parent => navigate(parent.href)}
       />
 

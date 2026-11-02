@@ -15,6 +15,7 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
 import { toRoutePath } from '@/crd/lib/toRoutePath';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
+import { useCityOptions } from '@/main/crdPages/utils/useCityOptions';
 import { useSeededFormState } from '@/main/crdPages/utils/useSeededFormState';
 import { EMPTY_ORG_FORM, mapOrgToFormValues, toCreateInput, toUpdateInput } from './orgFormMapper';
 
@@ -31,6 +32,7 @@ type CrdOrganizationFormPageProps = {
  * changes. Non-admin creation uses `CreateOrganizationDialog` instead.
  */
 const CrdOrganizationFormPage = ({ returnUrl }: CrdOrganizationFormPageProps) => {
+  const cities = useCityOptions();
   const { t } = useTranslation('crd-admin');
   const navigate = useNavigate();
   const notify = useNotification();
@@ -116,6 +118,8 @@ const CrdOrganizationFormPage = ({ returnUrl }: CrdOrganizationFormPageProps) =>
         onCancel={handleCancel}
         submitting={submitting}
         countries={COUNTRIES}
+        cityOptions={cities.options}
+        onCityFocus={cities.onRequest}
       />
 
       <ConfirmationDialog

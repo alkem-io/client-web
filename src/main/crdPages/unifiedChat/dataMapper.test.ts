@@ -9,6 +9,7 @@ import {
   mapReactionsToCommentReactions,
   sortUnifiedConversations,
   type UnifiedConversation,
+  withActiveCallsFirst,
 } from './dataMapper';
 
 const GUIDANCE_VC = 'vc-guidance';
@@ -135,5 +136,29 @@ describe('mapMemberToCommentAuthor virtual contributor flag', () => {
       displayName: 'Guidance',
     });
     expect(author.isVirtualContributor).toBe(true);
+  });
+});
+
+describe('withActiveCallsFirst', () => {
+  it('moves conversations with a running call to the top, below the pinned one, keeping the order otherwise', () => {
+    const items = [
+      { id: 'pinned', pinned: true },
+      { id: 'recent' },
+      { id: 'older-call', hasActiveCall: true },
+      { id: 'older' },
+      { id: 'oldest-call', hasActiveCall: true },
+    ];
+    expect(withActiveCallsFirst(items, null).map(item => item.id)).toEqual([
+      'pinned',
+      'older-call',
+      'oldest-call',
+      'recent',
+      'older',
+    ]);
+  });
+
+  it('keeps the newly-created conversation directly below the pinned one', () => {
+    const items = [{ id: 'pinned', pinned: true }, { id: 'new' }, { id: 'call', hasActiveCall: true }];
+    expect(withActiveCallsFirst(items, 'new').map(item => item.id)).toEqual(['pinned', 'new', 'call']);
   });
 });

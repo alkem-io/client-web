@@ -68,6 +68,8 @@ type PhaseLayoutDialogProps = {
    *  `values.sidebar` must stay within this list; the consumer moves any other stored value
    *  into `sidebarUnknown`, which round-trips untouched. */
   availableWidgets?: readonly SidebarWidgetId[];
+  /** Words the widget labels for a subspace ("About this Subspace", FR-042). */
+  subspace?: boolean;
 };
 
 /**
@@ -88,8 +90,10 @@ export function PhaseLayoutDialog({
   sidebarSettingsEnabled = true,
   sidebarOnly = false,
   availableWidgets = SIDEBAR_WIDGET_IDS,
+  subspace,
 }: PhaseLayoutDialogProps) {
   const { t } = useTranslation('crd-spaceSettings');
+  const context = subspace ? 'subspace' : undefined;
 
   const [descriptionCollapsed, setDescriptionCollapsed] = useState(values.descriptionCollapsed);
   const [showPublishDetails, setShowPublishDetails] = useState(values.showPublishDetails);
@@ -230,7 +234,7 @@ export function PhaseLayoutDialog({
                     {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
                     <ul role="list" className="flex flex-col gap-1">
                       {sidebar.map(widgetId => {
-                        const widgetLabel = t(`layout.column.sidebarDialog.widgets.${widgetId}`);
+                        const widgetLabel = t(`layout.column.sidebarDialog.widgets.${widgetId}`, { context });
                         return (
                           <SortableWidgetRow
                             key={widgetId}
@@ -253,7 +257,7 @@ export function PhaseLayoutDialog({
                 {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
                 <ul role="list" className="flex flex-col gap-1">
                   {unselectedWidgets.map(widgetId => {
-                    const widgetLabel = t(`layout.column.sidebarDialog.widgets.${widgetId}`);
+                    const widgetLabel = t(`layout.column.sidebarDialog.widgets.${widgetId}`, { context });
                     return (
                       <li key={widgetId} className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted/50">
                         {/* Spacer aligns the checkbox with the selected rows' drag handle. */}

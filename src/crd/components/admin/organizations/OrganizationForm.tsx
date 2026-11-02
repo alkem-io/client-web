@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CityAutocompleteInput, type CityOption } from '@/crd/components/common/CityAutocompleteInput';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
 import { AdminFormField } from '@/crd/forms/AdminFormField';
 import { AdminFormSection } from '@/crd/forms/AdminFormSection';
@@ -35,6 +36,10 @@ type OrganizationFormProps = {
   submitting?: boolean;
   errorMessage?: string;
   countries: ReadonlyArray<OrgCountryOption>;
+  /** City suggestions; `undefined` until loaded (see `onCityFocus`). */
+  cityOptions?: ReadonlyArray<CityOption>;
+  /** City input focused — the consumer lazily loads `cityOptions`. */
+  onCityFocus?: () => void;
 };
 
 /**
@@ -54,6 +59,8 @@ export function OrganizationForm({
   submitting = false,
   errorMessage,
   countries,
+  cityOptions,
+  onCityFocus,
 }: OrganizationFormProps) {
   const { t } = useTranslation('crd-admin');
   const ids = {
@@ -137,10 +144,13 @@ export function OrganizationForm({
         <AdminFormSection title={t('orgForm.location')}>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <AdminFormField id={ids.city} label={t('orgForm.city')}>
-              <Input
+              <CityAutocompleteInput
                 id={ids.city}
                 value={values.city}
-                onChange={e => onChange({ city: e.target.value })}
+                onChange={city => onChange({ city })}
+                onSelect={option => onChange({ city: option.name, country: option.countryCode })}
+                options={cityOptions}
+                onFocus={onCityFocus}
                 disabled={submitting}
               />
             </AdminFormField>

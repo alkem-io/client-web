@@ -30,6 +30,8 @@ type UseCrdSpaceTabsProvided = {
    * `undefined` means "unknown", never "configured empty".
    */
   stateSidebars: ReadonlyArray<readonly string[]>;
+  /** False until the tabs query has returned; the defaults above are placeholders until then. */
+  loaded: boolean;
 };
 
 const tabsDefaultNames: Record<string, 'tabs.dashboard' | 'tabs.community' | 'tabs.subspaces' | 'tabs.knowledgeBase'> =
@@ -121,5 +123,6 @@ export function useCrdSpaceTabs({
     sectionCount,
     showSettings: permissions.canUpdate,
     stateSidebars: allStates.map(state => state.settings.sidebar),
+    loaded: data !== undefined,
   };
 }

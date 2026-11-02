@@ -9,6 +9,7 @@ declare global {
       VITE_APP_ASSISTANT_ENABLED?: string;
       VITE_APP_ASSISTANT_BASE_PATH?: string;
       VITE_APP_MATRIX_HOMESERVER_URL?: string;
+      VITE_APP_LIVEKIT_SERVICE_URL?: string;
     };
   }
 }

@@ -10,6 +10,7 @@ import { UserEditForm } from '@/crd/components/admin/users/UserEditForm';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
+import { useCityOptions } from '@/main/crdPages/utils/useCityOptions';
 import { useSeededFormState } from '@/main/crdPages/utils/useSeededFormState';
 import { EMPTY_USER_FORM, mapUserToFormValues, toUpdateUserInput } from './userDetailMapper';
 
@@ -21,6 +22,7 @@ import { EMPTY_USER_FORM, mapUserToFormValues, toUpdateUserInput } from './userD
  * changes (Cancel).
  */
 const CrdAdminUserPage = () => {
+  const cities = useCityOptions();
   const { t } = useTranslation('crd-admin');
   const navigate = useNavigate();
   const notify = useNotification();
@@ -94,6 +96,8 @@ const CrdAdminUserPage = () => {
         onCancel={handleCancel}
         submitting={updating}
         countries={COUNTRIES}
+        cityOptions={cities.options}
+        onCityFocus={cities.onRequest}
         readOnly={!canUpdate}
         readOnlyNotice={t('userForm.readOnlyNotice')}
       />

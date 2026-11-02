@@ -10,6 +10,8 @@ export type TabUnsavedChanges = {
   count: number;
   /** False while any buffered edit is invalid. */
   canSave: boolean;
+  /** Why Save is disabled, shown on the disabled button — for an invalid edit the user may not be looking at. */
+  saveBlockedReason?: string;
   saving: boolean;
   /** Message of the last failed Save; the failed parts stay counted. */
   error: string | null;
@@ -32,8 +34,19 @@ export function toUnsavedChangesBarState(unsaved: TabUnsavedChanges): UnsavedCha
   if (unsaved.saving) return { kind: 'saving', count: unsaved.count };
   if (unsaved.count === 0) return { kind: 'clean' };
   if (unsaved.error)
-    return { kind: 'saveError', count: unsaved.count, message: unsaved.error, canSave: unsaved.canSave };
-  return { kind: 'dirty', count: unsaved.count, canSave: unsaved.canSave };
+    return {
+      kind: 'saveError',
+      count: unsaved.count,
+      message: unsaved.error,
+      canSave: unsaved.canSave,
+      saveBlockedReason: unsaved.saveBlockedReason,
+    };
+  return {
+    kind: 'dirty',
+    count: unsaved.count,
+    canSave: unsaved.canSave,
+    saveBlockedReason: unsaved.saveBlockedReason,
+  };
 }
 
 export const errorMessage = (err: unknown): string => (err instanceof Error ? err.message : String(err));

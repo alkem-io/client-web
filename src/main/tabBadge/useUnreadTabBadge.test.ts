@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockConversations = vi.fn<() => number>();
@@ -14,6 +14,19 @@ vi.mock('@/main/inAppNotifications/useUnreadNotificationsCount', () => ({
 // The badge must NOT read the sound settings (FR-009). This mock exists purely so the
 // "muting changes nothing" tests below can set the flags off and prove the badge ignores
 // them — if someone reintroduces the coupling, those tests fail.
+const titleStrings: Record<string, string> = {
+  'call.callingYou': '{{name}} is calling you',
+  'call.groupCall': 'Call in {{name}}',
+};
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, values?: { name?: string }) => (titleStrings[key] ?? key).replace('{{name}}', values?.name ?? ''),
+  }),
+}));
+const mockSelectedRoomId = vi.fn<() => string | null>();
+vi.mock('@/main/userMessaging/UserMessagingContext', () => ({
+  useUserMessagingContext: () => ({ selectedRoomId: mockSelectedRoomId() }),
+}));
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: { settings: { notification: { sound: mockSound() } } } }),
 }));
@@ -26,6 +39,7 @@ vi.mock('./faviconBadge', () => ({
 }));
 
 import { setBaseTitle, setTitlePrefix } from '@/core/routing/documentTitle';
+import { setIncomingCallRooms } from '@/main/userMessaging/calls/incomingCallStore';
 import { clearFaviconBadge, setFaviconBadge } from './faviconBadge';
 import { useUnreadTabBadge } from './useUnreadTabBadge';
 
@@ -36,9 +50,11 @@ describe('useUnreadTabBadge', () => {
     mockConversations.mockReturnValue(0);
     mockNotifications.mockReturnValue(0);
     mockSound.mockReturnValue({ chatMessage: true, inAppNotification: true });
+    mockSelectedRoomId.mockReturnValue(null);
   });
 
   afterEach(() => {
+    setIncomingCallRooms(new Map());
     setTitlePrefix('');
     vi.clearAllMocks();
   });
@@ -116,5 +132,65 @@ describe('useUnreadTabBadge', () => {
     expect(document.title).toBe('Alkemio');
     expect(setFaviconBadge).not.toHaveBeenCalled();
     expect(clearFaviconBadge).toHaveBeenCalled();
+  });
+
+  describe('during a call the user is not in', () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('alternates the page title with who is calling, keeping the count', () => {
+      mockConversations.mockReturnValue(1);
+      setIncomingCallRooms(new Map([['direct', { name: 'Ana', isGroup: false }]]));
+
+      renderHook(() => useUnreadTabBadge());
+      expect(document.title).toBe('(1) Ana is calling you');
+
+      act(() => vi.advanceTimersByTime(1500));
+      expect(document.title).toBe('(1) Alkemio');
+
+      act(() => vi.advanceTimersByTime(1500));
+      expect(document.title).toBe('(1) Ana is calling you');
+    });
+
+    it('names a group call after the group', () => {
+      setIncomingCallRooms(new Map([['group', { name: 'Team', isGroup: true }]]));
+
+      renderHook(() => useUnreadTabBadge());
+
+      expect(document.title).toBe('Call in Team');
+    });
+
+    it('restores the page title and stops alternating once the call is over', () => {
+      setIncomingCallRooms(new Map([['direct', { name: 'Ana', isGroup: false }]]));
+      const { rerender } = renderHook(() => useUnreadTabBadge());
+
+      act(() => setIncomingCallRooms(new Map()));
+      rerender();
+      expect(document.title).toBe('Alkemio');
+
+      act(() => vi.advanceTimersByTime(3000));
+      expect(document.title).toBe('Alkemio');
+    });
+
+    it('shows nothing for a call without a name', () => {
+      setIncomingCallRooms(new Map([['group', null]]));
+
+      renderHook(() => useUnreadTabBadge());
+
+      expect(document.title).toBe('Alkemio');
+    });
+
+    it('shows nothing for the conversation being viewed', () => {
+      mockSelectedRoomId.mockReturnValue('direct');
+      setIncomingCallRooms(new Map([['direct', { name: 'Ana', isGroup: false }]]));
+
+      renderHook(() => useUnreadTabBadge());
+
+      expect(document.title).toBe('Alkemio');
+    });
   });
 });

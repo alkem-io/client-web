@@ -1603,7 +1603,8 @@
     "download": "Télécharger {{name}}",
     "unavailableHint": "Ce fichier n’a pas pu être chargé. Téléchargez-le pour le consulter.",
     "unavailableNoDownload": "Ce fichier n’est pas disponible.",
-    "loading": "Chargement de la pièce jointe"
+    "loading": "Chargement de la pièce jointe",
+    "openMedia": "Ouvrir {{name}} dans la visionneuse"
   },
   "unsavedChanges": {
     "count_one": "{{count}} modification non enregistrée",
@@ -1631,5 +1632,12 @@
       "refresh": "Actualiser la page",
       "close": "Fermer"
     }
+  },
+  "vcPaused": {
+    "title": "Les Virtual Contributors font peau neuve ! 🚀",
+    "description": "Nous les reconstruisons pour qu'ils soient plus intelligents et plus utiles. En attendant, vous ne pouvez pas les créer, les ajouter ou les mentionner, mais vos VC existants restent visibles.",
+    "learnMore": "En savoir plus",
+    "contactSupport": "Contacter le support",
+    "mentionUnavailable": "Temporairement indisponible"
   }
 }

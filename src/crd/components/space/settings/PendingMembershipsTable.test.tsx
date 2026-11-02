@@ -139,3 +139,40 @@ describe('PendingMembershipsTable — resend', () => {
     expect(screen.getByRole('button', { name: 'Resend invitation email' })).toBeDisabled();
   });
 });
+
+describe('PendingMembershipsTable — delete names its effect (spec 045 FR-012b)', () => {
+  it.each([
+    ['a new application', row({ id: 'a', displayName: 'Ada', canDelete: true }), 'Reject and remove application'],
+    [
+      'an open invitation',
+      row({ id: 'c', displayName: 'Cy', type: 'invitation', state: 'invited', canDelete: true }),
+      'Revoke invitation',
+    ],
+    [
+      'a rejected invitation',
+      row({ id: 'd', displayName: 'Di', type: 'invitation', state: 'rejected', canDelete: true }),
+      'Remove from list',
+    ],
+    [
+      'an external invitation',
+      row({ id: 'e', displayName: 'e@x.org', type: 'platformInvitation', state: 'invited', canDelete: true }),
+      'Revoke invitation',
+    ],
+  ])('labels the bin of %s', (_case, item, label) => {
+    renderTable([item]);
+    expect(screen.getByRole('button', { name: label })).toBeTruthy();
+  });
+
+  it('labels the bin of a rejected application (hidden until its status chip is on)', async () => {
+    renderTable([row({ id: 'b', displayName: 'Bob', state: 'rejected', canDelete: true })]);
+    await userEvent.click(screen.getByRole('button', { name: /Application rejected/ }));
+    expect(screen.getByRole('button', { name: 'Remove from list' })).toBeTruthy();
+  });
+
+  it('shows no bin when the row cannot be deleted', () => {
+    renderTable([row({ id: 'f', displayName: 'Fay', type: 'invitation', state: 'accepted' })]);
+    const names = actionButtons(rowOf('Fay')).map(b => b.getAttribute('aria-label'));
+    expect(names).not.toContain('Remove from list');
+    expect(names).not.toContain('Revoke invitation');
+  });
+});

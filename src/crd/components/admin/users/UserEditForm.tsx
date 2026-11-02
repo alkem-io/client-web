@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CityAutocompleteInput, type CityOption } from '@/crd/components/common/CityAutocompleteInput';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
 import { AdminFormField } from '@/crd/forms/AdminFormField';
 import { AdminFormSection } from '@/crd/forms/AdminFormSection';
@@ -33,6 +34,10 @@ type UserEditFormProps = {
   submitting?: boolean;
   errorMessage?: string;
   countries: ReadonlyArray<UserCountryOption>;
+  /** City suggestions; `undefined` until loaded (see `onCityFocus`). */
+  cityOptions?: ReadonlyArray<CityOption>;
+  /** City input focused — the consumer lazily loads `cityOptions`. */
+  onCityFocus?: () => void;
   /**
    * Render every field, edit none, and offer no Save.
    *
@@ -63,6 +68,8 @@ export function UserEditForm({
   submitting = false,
   errorMessage,
   countries,
+  cityOptions,
+  onCityFocus,
   readOnly = false,
   readOnlyNotice,
 }: UserEditFormProps) {
@@ -170,10 +177,13 @@ export function UserEditForm({
       <AdminFormSection title={t('userForm.location')}>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <AdminFormField id={ids.city} label={t('userForm.city')}>
-            <Input
+            <CityAutocompleteInput
               id={ids.city}
               value={values.city}
-              onChange={e => onChange({ city: e.target.value })}
+              onChange={city => onChange({ city })}
+              onSelect={option => onChange({ city: option.name, country: option.countryCode })}
+              options={cityOptions}
+              onFocus={onCityFocus}
               disabled={submitting || readOnly}
             />
           </AdminFormField>

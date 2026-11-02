@@ -1,6 +1,7 @@
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { GatedAction } from '@/crd/components/common/GatedAction';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 
@@ -10,10 +11,11 @@ import { Button } from '@/crd/primitives/button';
  */
 export type UnsavedChangesBarState =
   | { kind: 'clean' }
-  | { kind: 'dirty'; count: number; canSave: boolean }
+  /** `saveBlockedReason` is shown as the tooltip of the disabled Save. */
+  | { kind: 'dirty'; count: number; canSave: boolean; saveBlockedReason?: string }
   | { kind: 'saving'; count: number }
   /** `canSave` gates the retry: an edit made after the failure can still be invalid. */
-  | { kind: 'saveError'; count: number; message: string; canSave: boolean };
+  | { kind: 'saveError'; count: number; message: string; canSave: boolean; saveBlockedReason?: string };
 
 type UnsavedChangesBarProps = {
   state: UnsavedChangesBarState;
@@ -36,6 +38,8 @@ export function UnsavedChangesBar({ state, onSave, onDiscard }: UnsavedChangesBa
   const count = visible ? state.count : shownCount;
   const saving = state.kind === 'saving';
   const canSave = (state.kind === 'dirty' || state.kind === 'saveError') && state.canSave;
+  const saveBlockedReason =
+    (state.kind === 'dirty' || state.kind === 'saveError') && !state.canSave ? state.saveBlockedReason : undefined;
 
   return (
     <section
@@ -80,16 +84,18 @@ export function UnsavedChangesBar({ state, onSave, onDiscard }: UnsavedChangesBa
               <Button type="button" variant="ghost" size="sm" onClick={onDiscard} disabled={saving}>
                 {t('unsavedChanges.discard')}
               </Button>
-              <Button
-                type="button"
-                onClick={onSave}
-                disabled={!canSave || saving}
-                aria-busy={saving}
-                className="min-w-[120px] shadow-md transition-shadow hover:shadow-lg"
-              >
-                {saving && <Loader2 aria-hidden="true" className="mr-2 size-4 animate-spin" />}
-                {t('unsavedChanges.save')}
-              </Button>
+              <GatedAction disabledReason={saveBlockedReason}>
+                <Button
+                  type="button"
+                  onClick={onSave}
+                  disabled={!canSave || saving}
+                  aria-busy={saving}
+                  className="min-w-[120px] shadow-md transition-shadow hover:shadow-lg"
+                >
+                  {saving && <Loader2 aria-hidden="true" className="mr-2 size-4 animate-spin" />}
+                  {t('unsavedChanges.save')}
+                </Button>
+              </GatedAction>
             </div>
           </div>
         </div>

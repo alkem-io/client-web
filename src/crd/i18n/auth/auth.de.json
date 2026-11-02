@@ -10,10 +10,13 @@
     "preparing": "Sichere Anmeldung wird vorbereitet…"
   },
   "appSignIn": {
-    "required": "Melde dich an, um fortzufahren.",
     "cancelled": "Die Anmeldung wurde abgebrochen.",
-    "failed": "Die Anmeldung konnte nicht abgeschlossen werden. Bitte versuche es erneut.",
-    "action": "Anmelden"
+    "failed": "Die Anmeldung konnte nicht abgeschlossen werden. Bitte versuche es erneut."
+  },
+  "appWelcome": {
+    "body": "Tritt Spaces bei, teile Ideen und gestalte gemeinsam Neues.",
+    "signIn": "Anmelden",
+    "browseSpaces": "Öffentliche Spaces durchsuchen"
   },
   "signUp": {
     "title": "Registrieren",

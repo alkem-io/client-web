@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useCreateReferenceOnProfileMutation,
   useCreateTagsetOnProfileMutation,
@@ -74,6 +75,7 @@ const allReferences = (values: UserProfileFormValues) => [
  * (the crop dialog's Save IS the commit).
  */
 export const useUserProfileTabData = (userId: string | undefined): UseUserProfileTabDataResult => {
+  const { t } = useTranslation('crd-contributorSettings');
   const {
     data,
     loading: queryLoading,
@@ -213,10 +215,16 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
       : { created: [], edited: [], removed: [] };
   const unsavedCount = changedScalars.length + changedTagsets.length + countReferenceChanges(referenceChanges);
 
-  const canSave =
-    values !== null &&
-    Boolean(values.displayName.trim() && values.firstName.trim() && values.lastName.trim()) &&
-    isValidPhoneOrEmpty(values.phone);
+  // The phone field sits in the collapsed Social Links section, so its error may be out of sight.
+  const saveBlockedReason = (() => {
+    if (!values) return undefined;
+    if (!values.displayName.trim()) return t('user.profile.identity.displayName.required');
+    if (!values.firstName.trim()) return t('user.profile.identity.firstName.required');
+    if (!values.lastName.trim()) return t('user.profile.identity.lastName.required');
+    if (!isValidPhoneOrEmpty(values.phone)) return t('user.profile.socialLinks.phoneInvalidSaveBlocked');
+    return undefined;
+  })();
+  const canSave = values !== null && saveBlockedReason === undefined;
 
   const saveAll = async (): Promise<boolean> => {
     const current = valuesRef.current;
@@ -344,7 +352,7 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
     onUploadAvatar,
     onAvatarCropComplete,
     onAvatarCropCancel,
-    unsaved: { count: unsavedCount, canSave, saving, error: saveError, saveAll, reset },
+    unsaved: { count: unsavedCount, canSave, saveBlockedReason, saving, error: saveError, saveAll, reset },
   };
 };
 

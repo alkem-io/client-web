@@ -1,5 +1,4 @@
-import { uniqBy } from 'lodash-es';
-import { type Dispatch, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   useMySpacesExplorerPageQuery,
   useSpaceExplorerAllSpacesQuery,
@@ -14,35 +13,74 @@ import {
   SearchResultType,
   type SpaceExplorerSearchSpaceFragment,
   type SpaceExplorerSubspacesQuery,
+  SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
+import type { SpacePrivacyFilter, SpacesFilterValue, SpaceTypeFilter } from '@/crd/components/space/SpaceExplorer';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import type { TypedSearchResult } from '@/main/search/searchTypes';
 import type { SpaceWithParent } from './SpaceExplorerPage';
 
-export type SpacesFilterValue = 'all' | 'member' | 'public';
+/** Target cards per batch; the actual batch is the multiple of the grid's column count closest to it. */
+export const BATCH_SIZE = 24;
 
+/** Assumed until the grid reports how many cards fit per row. */
+const DEFAULT_COLUMNS = 4;
+
+/** Top-level spaces per page when their subspaces are shown too — each one brings its subspaces along. */
 export const ITEMS_LIMIT = 10;
+
+type Subspaces = NonNullable<SpaceExplorerSubspacesQuery['spaces'][number]['subspaces']>;
 
 export interface SpacesExplorerContainerEntities {
   spaces: SpaceWithParent[] | undefined;
   searchTerms: string[];
   membershipFilter: SpacesFilterValue;
-  onMembershipFilterChange: Dispatch<SpacesFilterValue>;
+  onMembershipFilterChange: (filter: SpacesFilterValue) => void;
+  typeFilter: SpaceTypeFilter;
+  onTypeFilterChange: (filter: SpaceTypeFilter) => void;
+  privacyFilter: SpacePrivacyFilter;
+  onPrivacyFilterChange: (filter: SpacePrivacyFilter) => void;
+  onColumnsChange: (columns: number) => void;
   fetchMore: () => Promise<void>;
   loading: boolean;
   hasMore: boolean | undefined;
   authenticated: boolean;
-  setSearchTerms: React.Dispatch<React.SetStateAction<string[]>>;
+  setSearchTerms: (terms: string[]) => void;
   loadingSearchResults: boolean;
 }
 
+/**
+ * Spec 039 explore-filters-and-count: Type and Privacy filter here, not in the view, so that every view shows
+ * full batches of BATCH_SIZE cards — the hook keeps loading server pages until a batch is full.
+ */
 const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
   const { userModel, isAuthenticated, loading: loadingUser } = useCurrentUserContext();
 
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [membershipFilter, setMembershipFilter] = useState<SpacesFilterValue>('all');
+  // undefined = the user hasn't picked a Type: "Spaces only" while browsing, "All" while searching (#10405).
+  const [chosenTypeFilter, setChosenTypeFilter] = useState<SpaceTypeFilter>();
+  const [privacyFilter, setPrivacyFilter] = useState<SpacePrivacyFilter>('all');
+  const [batches, setBatches] = useState(1);
+  // The batch a page failed to fill; filling resumes on the next Load more instead of retrying in a loop.
+  const [failedBatch, setFailedBatch] = useState<number>();
+  const [columns, setColumns] = useState(DEFAULT_COLUMNS);
 
   const shouldSearch = searchTerms.length > 0;
+  const typeFilter = chosenTypeFilter ?? (shouldSearch ? 'all' : 'spaces');
+  // Whole rows only: e.g. 25 cards with 5 per row, 24 with 4 or 6. Kept as a number of batches, so a resize re-cuts
+  // the shown cards to whole rows of the new width.
+  const batchSize = Math.max(1, Math.round(BATCH_SIZE / columns)) * columns;
+  const visibleCount = batches * batchSize;
+
+  // Every filter change starts a fresh view: one batch, and no failure carried over from the previous view.
+  const changeFilter =
+    <T>(set: (value: T) => void) =>
+    (value: T) => {
+      set(value);
+      setBatches(1);
+      setFailedBatch(undefined);
+    };
 
   // PRIVATE: Spaces if the user is logged in
   const { data: spaceMembershipsData, loading: loadingUserData } = useMySpacesExplorerPageQuery({
@@ -59,7 +97,11 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
   });
 
   // PUBLIC: Search for spaces and subspaces
-  const { data: rawSearchResults, loading: loadingSearchResults } = useSpaceExplorerSearchQuery({
+  const {
+    data: rawSearchResults,
+    loading: loadingSearchResults,
+    fetchMore: fetchMoreSearchResultsRaw,
+  } = useSpaceExplorerSearchQuery({
     variables: {
       searchData: {
         terms: searchTerms,
@@ -67,7 +109,7 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
         filters: [
           {
             category: SearchCategory.Spaces,
-            size: ITEMS_LIMIT,
+            size: BATCH_SIZE,
           },
         ],
       },
@@ -76,16 +118,51 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
     skip: !shouldSearch,
   });
 
-  const usesPagination = (membershipFilter === 'all' || membershipFilter === 'public') && !shouldSearch;
+  // A null cursor means the search has no more results.
+  const searchCursor = rawSearchResults?.search.spaceResults?.cursor;
 
-  // Call the query hook directly instead of passing it to usePaginatedQuery
+  const fetchMoreSearchResults = async () => {
+    if (!searchCursor) {
+      return;
+    }
+
+    await fetchMoreSearchResultsRaw({
+      variables: {
+        searchData: {
+          terms: searchTerms,
+          tagsetNames: ['skills', 'keywords'],
+          filters: [{ category: SearchCategory.Spaces, size: BATCH_SIZE, cursor: searchCursor }],
+        },
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        const prevResults = prev.search.spaceResults;
+        const nextResults = fetchMoreResult.search.spaceResults;
+        if (!prevResults || !nextResults) {
+          return prev;
+        }
+        return {
+          ...prev,
+          search: {
+            ...prev.search,
+            spaceResults: { ...nextResults, results: [...prevResults.results, ...nextResults.results] },
+          },
+        };
+      },
+    });
+  };
+
+  const usesPagination = membershipFilter === 'all' && !shouldSearch;
+  // "Spaces only" needs no subspaces, so one page of top-level spaces is exactly one batch.
+  const withSubspaces = typeFilter !== 'spaces';
+  const pageSize = withSubspaces ? ITEMS_LIMIT : batchSize;
+
   const {
     data: spacesData,
     fetchMore: fetchMoreSpacesRaw,
     loading: isLoadingSpaces,
   } = useSpaceExplorerAllSpacesQuery({
     variables: {
-      first: ITEMS_LIMIT,
+      first: pageSize,
     },
     skip: !usesPagination,
   });
@@ -100,20 +177,18 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
 
     await fetchMoreSpacesRaw({
       variables: {
-        first: ITEMS_LIMIT,
+        first: pageSize,
         after: spacePageInfo?.endCursor,
       },
     });
   };
 
-  const fetchMore = usesPagination ? fetchMoreSpaces : () => Promise.resolve();
-
-  const hasMore = usesPagination ? hasMoreSpaces : false;
+  const fetchNextPage = shouldSearch ? fetchMoreSearchResults : usesPagination ? fetchMoreSpaces : undefined;
+  const serverHasMore = shouldSearch ? !!searchCursor : usesPagination ? hasMoreSpaces : false;
 
   const fetchedSpaces = (() => {
     switch (membershipFilter) {
       case 'all':
-      case 'public':
         return spacesData?.spacesPaginated.spaces;
       case 'member':
         return spacesExplorerData?.spaces;
@@ -121,41 +196,42 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
   })();
 
   // Spaces which allow this user read their subspaces:
-  const readableSpacesIds = fetchedSpaces
-    ?.filter(space => space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read))
-    .map(space => space.id);
+  const readableSpacesIds = withSubspaces
+    ? fetchedSpaces
+        ?.filter(space => space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read))
+        .map(space => space.id)
+    : undefined;
 
   const [fetchSubspaces, { loading: loadingSubspaces }] = useSpaceExplorerSubspacesLazyQuery();
-  const [fetchedSpacesWithSubspaces, setFetchedSpacesWithSubspaces] = useState<SpaceExplorerSubspacesQuery['spaces']>(
-    []
-  );
+  // Keyed by parent id; a parent is in here once its subspaces were requested, even if that request failed.
+  const [subspacesByParent, setSubspacesByParent] = useState<Record<string, Subspaces>>({});
+  const requestedSubspaces = useRef(new Set<string>());
+
+  const missingSubspaceIds = readableSpacesIds?.filter(spaceId => !(spaceId in subspacesByParent)) ?? [];
 
   useEffect(() => {
     const fetchSubspacesData = async () => {
-      // Fetch the spaces that are not already fetched
-      const missingSubspaces = readableSpacesIds?.filter(
-        spaceId => !fetchedSpacesWithSubspaces.some(space => space.id === spaceId)
-      );
-      if (!missingSubspaces || missingSubspaces.length === 0) {
+      const toRequest = missingSubspaceIds.filter(spaceId => !requestedSubspaces.current.has(spaceId));
+      if (toRequest.length === 0) {
         return;
+      }
+      for (const spaceId of toRequest) {
+        requestedSubspaces.current.add(spaceId);
       }
       const { data } = await fetchSubspaces({
         variables: {
-          IDs: missingSubspaces,
+          IDs: toRequest,
         },
       });
-      setFetchedSpacesWithSubspaces(prev => uniqBy([...prev, ...(data?.spaces ?? [])], space => space.id));
+      setSubspacesByParent(prev => ({
+        ...prev,
+        ...Object.fromEntries(
+          toRequest.map(spaceId => [spaceId, data?.spaces.find(space => space.id === spaceId)?.subspaces ?? []])
+        ),
+      }));
     };
     fetchSubspacesData();
-  }, [readableSpacesIds]);
-
-  const loading =
-    isLoadingSpaces ||
-    isLoadingMemberSpaces ||
-    loadingSearchResults ||
-    loadingUserData ||
-    loadingUser ||
-    loadingSubspaces;
+  }, [missingSubspaceIds.join()]);
 
   const flattenedSpaces = (() => {
     if (shouldSearch) {
@@ -174,14 +250,16 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
       });
     }
 
-    return fetchedSpaces?.flatMap<SpaceWithParent>(space => {
-      const subspaces = fetchedSpacesWithSubspaces?.find(
-        spaceWithSubspaces => spaceWithSubspaces.id === space.id
-      )?.subspaces;
+    // Only the spaces before the first one still waiting for its subspaces: what is on screen is always the start
+    // of the final order, so nothing gets inserted between or moved ahead of cards already shown.
+    const firstPending = fetchedSpaces?.findIndex(space => missingSubspaceIds.includes(space.id)) ?? -1;
+    const ready = firstPending === -1 ? fetchedSpaces : fetchedSpaces?.slice(0, firstPending);
 
-      if (!subspaces || subspaces.length === 0) {
+    return ready?.flatMap<SpaceWithParent>(space => {
+      if (!withSubspaces) {
         return space;
       }
+      const subspaces = subspacesByParent[space.id] ?? [];
       return [
         space,
         ...subspaces.map(subspace => ({
@@ -192,32 +270,78 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
     });
   })();
 
-  const filteredSpaces = (() => {
-    if (membershipFilter === 'member') {
-      if (!shouldSearch) {
-        // already filtered by the query
-        return flattenedSpaces;
-      }
-      return flattenedSpaces?.filter(
-        space => space.about.membership?.myMembershipStatus === CommunityMembershipStatus.Member
-      );
+  const filteredSpaces = flattenedSpaces?.filter(space => {
+    if (
+      membershipFilter === 'member' &&
+      shouldSearch &&
+      space.about.membership?.myMembershipStatus !== CommunityMembershipStatus.Member
+    ) {
+      return false;
     }
-    if (membershipFilter === 'public') {
-      return flattenedSpaces?.filter(space => space.about.isContentPublic);
+    if (typeFilter === 'spaces' && space.level !== SpaceLevel.L0) return false;
+    if (typeFilter === 'subspaces' && space.level === SpaceLevel.L0) return false;
+    if (privacyFilter === 'public' && !space.about.isContentPublic) return false;
+    if (privacyFilter === 'private' && space.about.isContentPublic) return false;
+    return true;
+  });
+
+  const matchingCount = filteredSpaces?.length ?? 0;
+  const busy =
+    isLoadingSpaces ||
+    isLoadingMemberSpaces ||
+    loadingSearchResults ||
+    loadingUserData ||
+    loadingUser ||
+    loadingSubspaces ||
+    missingSubspaceIds.length > 0;
+
+  // Fill the current batch: fetch one more server page at a time while too few cards match.
+  const [fetchingPage, setFetchingPage] = useState(false);
+  const needsPage = !!fetchNextPage && matchingCount < visibleCount && serverHasMore && failedBatch !== batches;
+  const filling = busy || fetchingPage || needsPage;
+
+  useEffect(() => {
+    if (!needsPage || busy || fetchingPage || !fetchNextPage) {
+      return;
     }
-    return flattenedSpaces;
-  })();
+    setFetchingPage(true);
+    fetchNextPage()
+      .catch(() => setFailedBatch(batches))
+      .finally(() => setFetchingPage(false));
+  }, [needsPage, busy, fetchingPage]);
+
+  // Load more resolves once its batch is full (or nothing more can be loaded), keeping its button busy until then.
+  const pendingLoadMore = useRef<(() => void)[]>([]);
+  useEffect(() => {
+    if (filling) {
+      return;
+    }
+    for (const resolve of pendingLoadMore.current.splice(0)) {
+      resolve();
+    }
+  }, [filling, batches]);
+
+  const fetchMore = () =>
+    new Promise<void>(resolve => {
+      pendingLoadMore.current.push(resolve);
+      setBatches(count => count + 1);
+    });
 
   return {
-    spaces: filteredSpaces,
+    spaces: filteredSpaces?.slice(0, visibleCount),
     authenticated: isAuthenticated,
     searchTerms,
     membershipFilter,
-    onMembershipFilterChange: setMembershipFilter,
+    onMembershipFilterChange: changeFilter(setMembershipFilter),
+    typeFilter,
+    onTypeFilterChange: changeFilter(setChosenTypeFilter),
+    privacyFilter,
+    onPrivacyFilterChange: changeFilter(setPrivacyFilter),
+    onColumnsChange: setColumns,
     fetchMore,
-    loading,
-    hasMore,
-    setSearchTerms,
+    loading: filling,
+    hasMore: matchingCount > visibleCount || serverHasMore,
+    setSearchTerms: changeFilter(setSearchTerms),
     loadingSearchResults: loadingSearchResults ?? false,
   };
 };

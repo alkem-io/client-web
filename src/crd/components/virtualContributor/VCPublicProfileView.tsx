@@ -2,6 +2,7 @@ import { Skeleton } from '@/crd/primitives/skeleton';
 import { VCContentView, type VCContentViewProps } from './VCContentView';
 import { VCPageHero, type VCPageHeroProps } from './VCPageHero';
 import { VCProfileSidebar, type VCProfileSidebarProps } from './VCProfileSidebar';
+import { VcPausedNotice } from './VcPausedNotice';
 
 export type VCPublicProfileViewProps = {
   hero: VCPageHeroProps;
@@ -26,6 +27,10 @@ export type VCPublicProfileViewProps = {
 export function VCPublicProfileView({ hero, sidebar, contentView, loading, loadingLabels }: VCPublicProfileViewProps) {
   return (
     <div className="min-h-screen bg-background pb-12">
+      {/* TEMP: VCs disabled (#10398) */}
+      <div className="container mx-auto px-4 md:px-8 pt-6">
+        <VcPausedNotice />
+      </div>
       {loading.hero ? (
         <output aria-label={loadingLabels.hero}>
           <HeroSkeleton />

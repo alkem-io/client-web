@@ -7,6 +7,7 @@ import { useCommunityCsvExport } from './useCommunityCsvExport';
 vi.mock('@/core/utils/csv/csvExport', () => ({
   buildMembersCsv: vi.fn(() => 'members-csv'),
   buildApplicationsCsv: vi.fn(() => 'applications-csv'),
+  buildOrganizationsCsv: vi.fn(() => 'organizations-csv'),
   buildCsvFilename: vi.fn((name: string, kind: string) => `${name ?? 'space'}-${kind}.csv`),
   normalizeEmailCell: vi.fn((v: string) => v),
   toCsv: vi.fn(),
@@ -16,7 +17,12 @@ vi.mock('@/core/utils/csv/downloadCsv', () => ({
   downloadCsv: vi.fn(),
 }));
 
-import { buildApplicationsCsv, buildCsvFilename, buildMembersCsv } from '@/core/utils/csv/csvExport';
+import {
+  buildApplicationsCsv,
+  buildCsvFilename,
+  buildMembersCsv,
+  buildOrganizationsCsv,
+} from '@/core/utils/csv/csvExport';
 import { downloadCsv } from '@/core/utils/csv/downloadCsv';
 
 const makeMember = (overrides?: Partial<CommunityMember>): CommunityMember => ({
@@ -58,6 +64,7 @@ describe('useCommunityCsvExport', () => {
   it('exportDisabled is true when loading', () => {
     const result = useCommunityCsvExport({
       members: [],
+      organizations: [],
       applications: [],
       spaceDisplayName: 'My Space',
       loading: true,
@@ -69,6 +76,7 @@ describe('useCommunityCsvExport', () => {
   it('exportDisabled is true when errored', () => {
     const result = useCommunityCsvExport({
       members: [],
+      organizations: [],
       applications: [],
       spaceDisplayName: 'My Space',
       loading: false,
@@ -80,6 +88,7 @@ describe('useCommunityCsvExport', () => {
   it('exportDisabled is false only when loaded and not errored', () => {
     const result = useCommunityCsvExport({
       members: [],
+      organizations: [],
       applications: [],
       spaceDisplayName: 'My Space',
       loading: false,
@@ -92,6 +101,7 @@ describe('useCommunityCsvExport', () => {
     const members = [makeMember({ displayName: 'Alice', email: 'alice@example.com' })];
     const result = useCommunityCsvExport({
       members,
+      organizations: [],
       applications: [],
       spaceDisplayName: 'My Space',
       loading: false,
@@ -108,6 +118,7 @@ describe('useCommunityCsvExport', () => {
     const applications = [makeApplication()];
     const result = useCommunityCsvExport({
       members: [],
+      organizations: [],
       applications,
       spaceDisplayName: 'Test Space',
       loading: false,
@@ -130,6 +141,7 @@ describe('useCommunityCsvExport', () => {
     const app = makeApplication({ user: undefined });
     const result = useCommunityCsvExport({
       members: [],
+      organizations: [],
       applications: [app],
       spaceDisplayName: 'Test Space',
       loading: false,
@@ -158,6 +170,7 @@ describe('useCommunityCsvExport', () => {
     });
     const result = useCommunityCsvExport({
       members: [],
+      organizations: [],
       applications: [app],
       spaceDisplayName: 'Test Space',
       loading: false,
@@ -177,6 +190,7 @@ describe('useCommunityCsvExport', () => {
     const members = [makeMember()];
     const result = useCommunityCsvExport({
       members,
+      organizations: [],
       applications: [],
       spaceDisplayName: 'My Space',
       loading: false,
@@ -186,5 +200,28 @@ describe('useCommunityCsvExport', () => {
     result.exportMembers();
 
     expect(buildCsvFilename).toHaveBeenCalledWith('My Space', 'members', expect.any(Date));
+  });
+
+  it('exportOrganizations: maps lead/member role and url, downloads as organizations', () => {
+    const result = useCommunityCsvExport({
+      members: [],
+      organizations: [
+        { id: 'o1', displayName: 'Acme', url: 'https://example.com/acme', isMember: true, isLead: true },
+        { id: 'o2', displayName: 'Globex', isMember: true, isLead: false },
+      ],
+      applications: [],
+      spaceDisplayName: 'My Space',
+      loading: false,
+      errored: false,
+    });
+
+    result.exportOrganizations();
+
+    expect(buildOrganizationsCsv).toHaveBeenCalledWith([
+      { displayName: 'Acme', role: 'lead', url: 'https://example.com/acme' },
+      { displayName: 'Globex', role: 'member', url: undefined },
+    ]);
+    expect(buildCsvFilename).toHaveBeenCalledWith('My Space', 'organizations', expect.any(Date));
+    expect(downloadCsv).toHaveBeenCalledWith('organizations-csv', 'My Space-organizations.csv');
   });
 });

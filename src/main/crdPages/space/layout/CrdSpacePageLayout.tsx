@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import { useScrollToTopOnChange } from '@/core/routing/useScrollToTopOnChange';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { MobileSidebarDrawer } from '@/crd/components/common/MobileSidebarDrawer';
@@ -96,7 +97,14 @@ export default function CrdSpacePageLayout() {
   const isLevelZero = spaceLevel === SpaceLevel.L0;
   usePageTitle(isLevelZero ? space.about.profile.displayName : undefined);
 
-  const { tabs, defaultTabIndex, sectionCount, showSettings, stateSidebars } = useCrdSpaceTabs({
+  const {
+    tabs,
+    defaultTabIndex,
+    sectionCount,
+    showSettings,
+    stateSidebars,
+    loaded: tabsLoaded,
+  } = useCrdSpaceTabs({
     spaceId,
     skip: !isLevelZero || !permissions.canRead,
   });
@@ -220,6 +228,7 @@ export default function CrdSpacePageLayout() {
           <SpaceVisibilityNotice status={visibilityData.status} contactHref={visibilityData.contactHref} />
         )}
         {enableBannerOverlay && <EnableBannerOverlay />}
+        {!isOnSettings && <ScrollToTopOnTabChange tabIndex={tabsLoaded ? activeTabIndex : undefined} />}
         <EnableSpaceFullWidth />
         <SpaceShell
           fullWidth={fullWidth}
@@ -348,6 +357,12 @@ export default function CrdSpacePageLayout() {
 
 function EnableBannerOverlay() {
   useEnableBannerOverlay();
+  return null;
+}
+
+// Tabs live in the query string, which ScrollToTop ignores, so a tab switch resets here.
+function ScrollToTopOnTabChange({ tabIndex }: { tabIndex: number | undefined }) {
+  useScrollToTopOnChange(tabIndex);
   return null;
 }
 

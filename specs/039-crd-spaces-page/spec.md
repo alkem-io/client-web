@@ -161,7 +161,7 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 - What happens when a space has no banner image? Show a fallback with initials/avatar color, as defined in the prototype's SpaceCard
 - What happens when a space has no leads? Show the card without the leads section
 - What happens when a space has more than 4 leads? Show first 4 with a "+N" overflow indicator
-- What happens when the user is not authenticated? Hide lead avatars and the "Member" filter option, consistent with current behavior
+- What happens when the user is not authenticated? Hide lead avatars and the whole Membership filter section (see [`explore-filters-and-count`](./explore-filters-and-count/spec.md))
 - What happens when the PlatformNavigation menu is opened on a CRD page that is one of the menu destinations (e.g., `/spaces`)? The menu item for the current page may appear visually distinct (e.g., highlighted) but remains clickable — no special handling required
 - What happens when the user has no notifications? The notifications dialog shows an empty state with a descriptive message
 - What happens when the user has many notifications? The dialog uses infinite scroll pagination (10 items per page), loading more as the user scrolls
@@ -187,7 +187,7 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 - **FR-006**: The CRD `/spaces` page MUST reuse the existing data layer (`useSpaceExplorer` hook, GraphQL queries) without modification
 - **FR-007**: The CRD SpaceCard component MUST render: banner image (with fallback), space name, tagline/description, tags, lead avatars, and privacy badge. Prototype features requiring data layer changes (e.g., member count) are omitted and deferred to follow-up
 - **FR-008**: The CRD SpaceCard MUST accept plain TypeScript props (no GraphQL generated types) per the CRD golden rules
-- **FR-009**: The CRD spaces page MUST support tag-based search, membership filtering (All, Member, Public), and lazy loading / "Load More" pagination — same behavior as the MUI version. Sorting is **deferred** — the GraphQL API lacks server-side `orderBy` support, and client-side sorting with pagination is misleading (only sorts loaded items). Sorting will be added when backend support is available (see Session 2026-03-31 clarifications)
+- **FR-009**: The CRD spaces page MUST support tag-based search, membership filtering (All, Member — see [`explore-filters-and-count`](./explore-filters-and-count/spec.md): the duplicate "Public" option was removed, it lives under Privacy only), and lazy loading / "Load More" pagination, for search results too. Sorting is **deferred** — the GraphQL API lacks server-side `orderBy` support, and client-side sorting with pagination is misleading (only sorts loaded items). Sorting will be added when backend support is available (see Session 2026-03-31 clarifications)
 - **FR-010**: All user-visible text in CRD components MUST use `react-i18next` for translation — no hardcoded strings
 
 #### Architecture

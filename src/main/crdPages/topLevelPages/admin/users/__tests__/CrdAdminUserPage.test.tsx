@@ -22,6 +22,9 @@ vi.mock('react-i18next', () => ({
 }));
 
 vi.mock('react-router-dom', () => ({ useParams: () => ({ userId: 'user-1' }) }));
+vi.mock('@/main/crdPages/utils/useCityOptions', () => ({
+  useCityOptions: () => ({ options: undefined, onRequest: () => {} }),
+}));
 vi.mock('@/core/routing/useNavigate', () => ({ default: () => vi.fn() }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
 

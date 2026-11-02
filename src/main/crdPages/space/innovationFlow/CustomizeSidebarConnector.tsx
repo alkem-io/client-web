@@ -107,6 +107,7 @@ export function CustomizeSidebarConnector({
         onSave={handleSave}
         sidebarOnly={true}
         availableWidgets={vocabulary}
+        subspace={true}
       />
     </>
   );

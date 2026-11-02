@@ -1,4 +1,4 @@
-import { Download, Pencil } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
@@ -9,18 +9,10 @@ type ApplicationFormPreviewProps = {
   questions: ApplicationQuestion[];
   loading?: boolean;
   onEdit: () => void;
-  onExportApplications?: () => void;
-  exportDisabled?: boolean;
 };
 
-/** Read-only summary of the application form's questions, with Edit (opens the editor dialog) and Export. */
-export function ApplicationFormPreview({
-  questions,
-  loading,
-  onEdit,
-  onExportApplications,
-  exportDisabled,
-}: ApplicationFormPreviewProps) {
+/** Read-only summary of the application form's questions, with Edit (opens the editor dialog). */
+export function ApplicationFormPreview({ questions, loading, onEdit }: ApplicationFormPreviewProps) {
   const { t } = useTranslation('crd-spaceSettings');
 
   return (
@@ -54,19 +46,6 @@ export function ApplicationFormPreview({
           <Pencil aria-hidden="true" className="size-4" />
           {t('community.applicationForm.edit')}
         </Button>
-        {onExportApplications && (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            onClick={onExportApplications}
-            disabled={exportDisabled}
-          >
-            <Download aria-hidden="true" className="size-4" />
-            {t('settings.applicationForm.export')}
-          </Button>
-        )}
       </div>
     </div>
   );

@@ -105,5 +105,28 @@
       "messageTooLong": "Message must be {{max}} characters or fewer.",
       "sendFailed": "Could not send the message. Please try again."
     }
+  },
+  "call": {
+    "startAudio": "Start audio call",
+    "startVideo": "Start video call",
+    "active": "Call active",
+    "join": "Join",
+    "joinVideo": "Join with video",
+    "joinAudio": "Join with audio only",
+    "joinedOnThisDevice": "Already joined on this device",
+    "overlayLabel": "Call",
+    "close": "Close call",
+    "license": "Open-source license",
+    "opensInNewTab": "opens in a new tab",
+    "leaveConfirm": {
+      "title": "Leave call?",
+      "description": "You will leave the call. The others can carry on without you.",
+      "descriptionDirect": "You will leave the call, and it ends for the other person too.",
+      "confirm": "Leave call",
+      "cancel": "Stay in call"
+    },
+    "listBadge": "Call active",
+    "callingYou": "{{name}} is calling you",
+    "groupCall": "Call in {{name}}"
   }
 }

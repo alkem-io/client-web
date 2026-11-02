@@ -29,6 +29,8 @@ export type ChatListItem = {
   unreadCount: number;
   /** True for the Guidance row; sorts first while search is empty. */
   pinned?: boolean;
+  /** A call is running in this conversation. */
+  hasActiveCall?: boolean;
 };
 
 /** A single message in a thread. Shape compatible with the comment system. */

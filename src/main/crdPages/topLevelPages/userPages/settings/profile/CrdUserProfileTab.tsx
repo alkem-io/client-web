@@ -5,6 +5,7 @@ import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import useStorageConfig from '@/domain/storage/StorageBucket/useStorageConfig';
 import { MarkdownUploadScope } from '@/main/crdPages/markdown/MarkdownUploadScope';
+import { useCityOptions } from '@/main/crdPages/utils/useCityOptions';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { useSettingsTabUnsavedChanges } from '../../../common/settingsUnsavedChanges';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
@@ -23,7 +24,8 @@ import useUserProfileTabData from './useUserProfileTabData';
  *
  * Save mutations live in `useUserProfileTabData`;
  * the country list is supplied by the existing domain `COUNTRIES`
- * constants. CRD components never import that module directly per FR-006.
+ * constants (City suggestions come from `useCityOptions`, lazy-loaded on
+ * first focus). CRD components never import that module directly per FR-006.
  */
 const CrdUserProfileTab = () => {
   const { userId } = useUserPageRouteContext();
@@ -45,12 +47,15 @@ const CrdUserProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUp
   // to `file_backup_outbox`, issue #10126).
   const { storageConfig } = useStorageConfig({ locationType: 'user', userId: userId ?? '', skip: !userId });
   const referenceUpload = useReferenceFileUpload(storageConfig);
+  const cities = useCityOptions();
 
   return (
     <>
       <UserProfileTabView
         values={data.values ?? EMPTY_VALUES}
         countries={COUNTRIES}
+        cityOptions={cities.options}
+        onCityFocus={cities.onRequest}
         loading={data.loading}
         disabled={data.unsaved.saving}
         onChange={data.onChange}

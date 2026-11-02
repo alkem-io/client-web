@@ -1,4 +1,5 @@
 export type MemberExportRow = { displayName: string; email: string | undefined };
+export type OrganizationExportRow = { displayName: string; role: 'lead' | 'member'; url: string | undefined };
 export type ApplicationExportRow = {
   displayName: string;
   email: string | undefined;
@@ -67,6 +68,13 @@ export function buildMembersCsv(rows: MemberExportRow[]): string {
   return toCsv(header, dataRows);
 }
 
+/** Build a CSV export of a space's member organisations. */
+export function buildOrganizationsCsv(rows: OrganizationExportRow[]): string {
+  const header = ['displayName', 'role', 'url'];
+  const dataRows = rows.map(r => [r.displayName, r.role, r.url ?? '']);
+  return toCsv(header, dataRows);
+}
+
 /**
  * Build a CSV export of applications.
  * Union header: fixed lead (displayName, email) + question columns in first-encounter order + tail (createdDate).
@@ -120,7 +128,7 @@ export function buildFormResponsesCsv(header: FormResponsesExportHeader, rows: F
 /** Build a sanitized filename for the CSV export. */
 export function buildCsvFilename(
   displayName: string | undefined,
-  kind: 'members' | 'applications' | 'responses',
+  kind: 'members' | 'applications' | 'organizations' | 'responses',
   now: Date,
   fallbackSlug = 'space'
 ): string {

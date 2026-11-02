@@ -165,6 +165,7 @@
       },
       "socialLinks": {
         "title": "Liens sociaux",
+        "phoneInvalidSaveBlocked": "Corrigez le numéro de téléphone dans Liens sociaux pour enregistrer",
         "linkedinPlaceholder": "https://linkedin.com/in/votre-identifiant",
         "bskyPlaceholder": "https://bsky.app/profile/votre-identifiant",
         "githubPlaceholder": "https://github.com/votre-identifiant",

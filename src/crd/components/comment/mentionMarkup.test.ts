@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { mapPlainIndexToMarkupIndex } from './mentionMarkup';
+import { countMentionsOf, mapPlainIndexToMarkupIndex } from './mentionMarkup';
 
 // Markup `[@John](abc-123) hello` renders as plain `@John hello`.
 const VALUE = '[@John](abc-123) hello';
@@ -37,5 +37,14 @@ describe('mapPlainIndexToMarkupIndex', () => {
 
   it('clamps an out-of-range index to the end of the markup', () => {
     expect(mapPlainIndexToMarkupIndex(VALUE, 99).markupIndex).toBe(VALUE.length);
+  });
+});
+
+// TEMP: VCs disabled (#10398)
+describe('countMentionsOf', () => {
+  it('counts mention tokens for the id and ignores plain Markdown links to the same url', () => {
+    const value = '[@Bot](/vc/bot) and [@Bot](/vc/bot), see [profile](/vc/bot) or [@Ann](/user/ann)';
+    expect(countMentionsOf(value, '/vc/bot')).toBe(2);
+    expect(countMentionsOf('[profile](/vc/bot)', '/vc/bot')).toBe(0);
   });
 });

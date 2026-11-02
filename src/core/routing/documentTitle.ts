@@ -11,10 +11,11 @@
 
 let base = typeof document !== 'undefined' ? document.title : '';
 let prefix = '';
+let override: string | null = null;
 
 const apply = () => {
   if (typeof document !== 'undefined') {
-    document.title = `${prefix}${base}`;
+    document.title = `${prefix}${override ?? base}`;
   }
 };
 
@@ -27,5 +28,11 @@ export const setBaseTitle = (nextBase: string): void => {
 /** Set the unread-count prefix (owned by the tab badge); `''` clears it. */
 export const setTitlePrefix = (nextPrefix: string): void => {
   prefix = nextPrefix;
+  apply();
+};
+
+/** Show `text` in place of the page base title (owned by the tab badge); `null` restores the base. */
+export const setTitleOverride = (text: string | null): void => {
+  override = text;
   apply();
 };

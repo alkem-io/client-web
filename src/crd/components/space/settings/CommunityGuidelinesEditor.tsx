@@ -41,6 +41,8 @@ export type CommunityGuidelinesEditorProps = {
    * (e.g. a dialog with template actions in its header and Save in its footer).
    */
   hideActions?: boolean;
+  /** Words the body placeholder for a subspace (FR-042). */
+  subspace?: boolean;
 } & MarkdownUploadProps;
 
 /**
@@ -60,6 +62,7 @@ export function CommunityGuidelinesEditor({
   onReferenceFileUpload,
   referenceUploadAccept,
   hideActions = false,
+  subspace,
   onImageUpload,
   iframeAllowedUrls,
   onError,
@@ -104,7 +107,7 @@ export function CommunityGuidelinesEditor({
       <MarkdownEditor
         value={value.body}
         onChange={body => onChange({ body })}
-        placeholder={t('community.guidelines.placeholder')}
+        placeholder={t('community.guidelines.placeholder', { context: subspace ? 'subspace' : undefined })}
         onImageUpload={onImageUpload}
         iframeAllowedUrls={iframeAllowedUrls}
         onError={onError}

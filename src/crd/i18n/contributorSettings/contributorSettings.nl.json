@@ -165,6 +165,7 @@
       },
       "socialLinks": {
         "title": "Sociale links",
+        "phoneInvalidSaveBlocked": "Corrigeer het telefoonnummer onder Sociale links om op te slaan",
         "linkedinPlaceholder": "https://linkedin.com/in/jouw-naam",
         "bskyPlaceholder": "https://bsky.app/profile/jouw-naam",
         "githubPlaceholder": "https://github.com/jouw-naam",
