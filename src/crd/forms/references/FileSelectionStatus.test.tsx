@@ -23,7 +23,7 @@ beforeAll(async () => {
 const renderStatus = (ui: ReactElement) => render(<I18nextProvider i18n={i18n}>{ui}</I18nextProvider>);
 
 describe('FileSelectionStatus', () => {
-  test('lists each pending file with a spinner', () => {
+  test('lists each pending file with a spinner inside a named status region', () => {
     renderStatus(
       <FileSelectionStatus
         pending={[
@@ -40,7 +40,9 @@ describe('FileSelectionStatus', () => {
     expect(items[0]).toHaveTextContent('alpha.pdf');
     expect(items[0].querySelector('.animate-spin')).not.toBeNull();
     expect(items[1]).toHaveTextContent('beta.pdf');
-    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    const status = screen.getByRole('status', { name: commonEnJson.fileSelection.uploading });
+    expect(status).toContainElement(items[0]);
+    expect(status).toContainElement(items[1]);
   });
 
   test('names every left-out file with its reason under a plural heading', () => {

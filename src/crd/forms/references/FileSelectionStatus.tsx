@@ -32,17 +32,19 @@ export function FileSelectionStatus({ pending, leftOut, onDismiss }: FileSelecti
   return (
     <div className="space-y-2">
       {pending.length > 0 && (
-        <ul className="space-y-1">
-          {pending.map(file => (
-            <li key={file.key} className="flex items-center gap-2 text-caption text-muted-foreground">
-              <Loader2 className="size-3.5 shrink-0 animate-spin" aria-hidden="true" />
-              <span className="truncate" title={file.name}>
-                {file.name}
-              </span>
-              <span className="shrink-0">{t('fileSelection.uploading')}</span>
-            </li>
-          ))}
-        </ul>
+        <output aria-label={t('fileSelection.uploading')} className="block">
+          <ul className="space-y-1">
+            {pending.map(file => (
+              <li key={file.key} className="flex items-center gap-2 text-caption text-muted-foreground">
+                <Loader2 className="size-3.5 shrink-0 animate-spin" aria-hidden="true" />
+                <span className="truncate" title={file.name}>
+                  {file.name}
+                </span>
+                <span className="shrink-0">{t('fileSelection.uploading')}</span>
+              </li>
+            ))}
+          </ul>
+        </output>
       )}
       {leftOut.length > 0 && (
         <output className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/5 p-3">

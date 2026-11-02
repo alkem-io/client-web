@@ -24,6 +24,8 @@ describe('StagedDocumentList', () => {
     expect(rows[1]).toHaveTextContent('beta.xlsx');
     expect(rows[1]).toHaveTextContent('1.5 MB');
     expect(rows[1]).toHaveTextContent('callout.documentImporting');
+    expect(screen.getByRole('status', { name: 'callout.documentImporting' })).toBeInTheDocument();
+    expect(rows[0]).not.toContainElement(screen.getByRole('status'));
     expect(rows[2]).toHaveTextContent('It broke');
   });
 

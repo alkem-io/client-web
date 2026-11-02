@@ -34,10 +34,13 @@ export function StagedDocumentList({ items, busy, onRemove }: StagedDocumentList
             </p>
             <p className="text-caption text-muted-foreground">{formatBytes(item.size)}</p>
             {item.status === 'importing' && (
-              <p className="flex items-center gap-1.5 text-caption text-muted-foreground">
+              <output
+                aria-label={t('callout.documentImporting')}
+                className="flex items-center gap-1.5 text-caption text-muted-foreground"
+              >
                 <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
                 {t('callout.documentImporting')}
-              </p>
+              </output>
             )}
             {item.status === 'failed' && item.error && (
               <p role="alert" className="text-caption text-destructive">
