@@ -96,6 +96,10 @@ const checkImportFile = (file: File): LeftOutReason | null => {
  * On success either path opens the newly-created contribution's editor immediately — mirroring
  * `WhiteboardContributionAddConnector`'s `editingWhiteboard` pattern (own local state, own
  * rendered overlay, no delete affordance at this ephemeral point).
+ *
+ * Picking or dropping several files stages a batch instead: one document per file, imported at
+ * most `MAX_CONCURRENT_UPLOADS` at a time, the list refreshed once, and no editor opened. Files
+ * that fail stay listed with their reason; the dialog closes only when every file was imported.
  */
 export function DocumentContributionAddConnector({
   calloutId,
