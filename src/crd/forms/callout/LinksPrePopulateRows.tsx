@@ -2,8 +2,11 @@ import { Plus, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { LinkRow } from '@/crd/forms/callout/types';
+import { FileSelectionStatus } from '@/crd/forms/references/FileSelectionStatus';
 import { RowAttachFileButton } from '@/crd/forms/references/RowAttachFileButton';
+import { useRowFileUploads } from '@/crd/forms/references/useRowFileUploads';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
+import type { RowFileUpload } from '@/crd/lib/fileSelection';
 import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
 
@@ -21,14 +24,16 @@ type LinksPrePopulateRowsProps = {
    * `null` means the upload failed — the editor leaves the row unchanged and
    * the connector is expected to have already notified the user. This is what
    * makes the response type "Links **& Files**" — identical affordance to the
-   * References editor.
+   * References editor. Picking several files adds one row per file.
    */
-  onFileUpload?: (file: File) => Promise<string | null>;
+  onFileUpload?: RowFileUpload;
   /** `accept` attribute for the file picker (extension list, e.g. ".pdf,.png"). */
   uploadAccept?: string;
 };
 
 const createEmptyRow = (): LinkRow => ({ title: '', url: '', description: '' });
+
+const fileNameBase = (file: File) => file.name.replace(/\.[^./\\]+$/, '').trim();
 
 /**
  * "Pre-populate collection" editor shown inside the Links & Files response
@@ -54,9 +59,17 @@ export function LinksPrePopulateRows({
   useEffect(() => {
     rowsRef.current = rows;
   }, [rows]);
+  const uploads = useRowFileUploads(onFileUpload, uploadAccept);
+
+  // Every write refreshes the mirror first, so two uploads settling before the next render each
+  // build on the other's result.
+  const commit = (next: LinkRow[]) => {
+    rowsRef.current = next;
+    onChange(next);
+  };
 
   const updateRow = (index: number, patch: Partial<LinkRow>) => {
-    onChange(rowsRef.current.map((row, i) => (i === index ? { ...row, ...patch } : row)));
+    commit(rowsRef.current.map((row, i) => (i === index ? { ...row, ...patch } : row)));
   };
 
   const handleFileSelected = async (index: number, file: File | undefined) => {
@@ -67,7 +80,7 @@ export function LinksPrePopulateRows({
       if (!url) return;
       const current = rowsRef.current[index];
       const titleEmpty = !current?.title.trim();
-      const filenameBase = file.name.replace(/\.[^./\\]+$/, '').trim();
+      const filenameBase = fileNameBase(file);
       const patch: Partial<LinkRow> = { url };
       if (titleEmpty && filenameBase) patch.title = filenameBase;
       updateRow(index, patch);
@@ -80,12 +93,34 @@ export function LinksPrePopulateRows({
     }
   };
 
+  // A result fills the clicked row only while that row still holds its pick-time values and an
+  // empty URL; otherwise it is appended as a row of its own (compared by value: the host maps
+  // fresh row objects on every render).
+  const handleFilesSelected = (index: number, files: File[]) => {
+    const picked = rowsRef.current[index];
+    uploads.uploadMany(files, (file, url) => {
+      const current = rowsRef.current[index];
+      const title = fileNameBase(file);
+      const fillsPicked =
+        picked &&
+        current &&
+        !current.url.trim() &&
+        current.title === picked.title &&
+        current.description === picked.description;
+      if (fillsPicked) {
+        updateRow(index, current.title.trim() || !title ? { url } : { url, title });
+      } else {
+        commit([...rowsRef.current, { title, url, description: '' }]);
+      }
+    });
+  };
+
   const removeRow = (index: number) => {
-    onChange(rows.filter((_, i) => i !== index));
+    commit(rowsRef.current.filter((_, i) => i !== index));
   };
 
   const addRow = () => {
-    onChange([...rows, createEmptyRow()]);
+    commit([...rowsRef.current, createEmptyRow()]);
   };
 
   return (
@@ -144,6 +179,7 @@ export function LinksPrePopulateRows({
                       uploading={Boolean(uploadingRows[index])}
                       ariaLabel={t('contributionSettings.prePopulate.attachFile')}
                       onFile={file => handleFileSelected(index, file)}
+                      onFiles={files => handleFilesSelected(index, files)}
                     />
                   )}
                 </div>
@@ -176,6 +212,8 @@ export function LinksPrePopulateRows({
           </div>
         );
       })}
+
+      <FileSelectionStatus pending={uploads.pending} leftOut={uploads.leftOut} onDismiss={uploads.dismiss} />
 
       <Button type="button" variant="outline" size="sm" onClick={addRow} disabled={disabled}>
         <Plus className="w-4 h-4 mr-1" aria-hidden="true" />
