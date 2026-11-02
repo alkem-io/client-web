@@ -22,5 +22,5 @@ const STREAMING_REPARSE_MS = 75;
 export const AssistantTextPart = ({ text, streaming }: { text: string; streaming?: boolean }) => {
   // Only throttle while actively streaming; settled turns render immediately.
   const throttledText = useThrottledValue(text, streaming ? STREAMING_REPARSE_MS : 0);
-  return <MarkdownContent content={throttledText} />;
+  return <MarkdownContent content={throttledText} newTabLinks="external" />;
 };

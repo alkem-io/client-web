@@ -31,6 +31,17 @@ const basePost: PostCardData = {
   timestamp: '2 hours ago',
 };
 
+describe('PostCard hover lift', () => {
+  // jsdom cannot evaluate hover or containing blocks, so this pins the class:
+  // below sm a translated card would capture CommentInput's fixed mention list.
+  it('translates the card on hover only from the sm breakpoint', () => {
+    const { container } = render(<PostCard post={basePost} />);
+    const card = container.querySelector('[data-slot="card"]');
+    expect(card).toHaveClass('sm:hover:-translate-y-0.5');
+    expect(card).not.toHaveClass('hover:-translate-y-0.5');
+  });
+});
+
 describe('PostCard showPublishDetails', () => {
   it('shows author, avatar, and timestamp by default (showPublishDetails undefined)', () => {
     render(<PostCard post={basePost} />);
