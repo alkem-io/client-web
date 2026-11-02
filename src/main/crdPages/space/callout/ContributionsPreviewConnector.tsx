@@ -70,7 +70,7 @@ export function ContributionsPreviewConnector({
   const {
     inViewRef,
     loaded,
-    contributions: { items, total, setFetchAll },
+    contributions: { items, total, hasMore: hasMoreToFetch, setFetchAll },
   } = useCalloutContributions({
     callout,
     contributionType: contributionType ?? CalloutContributionType.Post,
@@ -173,18 +173,14 @@ export function ContributionsPreviewConnector({
     | undefined
   >(undefined);
 
-  // "+N more" expands the preview in place; the detail dialog stays behind the post title (#10015).
-  const [expanded, setExpanded] = useState(false);
-  const showAll = () => {
-    setFetchAll(true);
-    setExpanded(true);
-  };
+  // "+N more" expands the preview in place; the detail dialog stays behind the post title.
+  const showAll = () => setFetchAll(true);
 
   if (!hasContributionType || !contributionType) {
     return <div ref={inViewRef} />;
   }
 
-  const hasMore = !expanded && total > MAX_PREVIEW_ITEMS;
+  const hasMore = hasMoreToFetch && total > MAX_PREVIEW_ITEMS;
   const visibleItems = hasMore ? contributions.slice(0, ITEMS_BEFORE_MORE) : contributions;
   const moreCount = total - ITEMS_BEFORE_MORE;
 
