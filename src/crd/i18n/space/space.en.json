@@ -962,8 +962,8 @@
     }
   },
   "postSnippet": {
-    "readMore": "… Read more",
-    "readLess": "Read less",
+    "readMore": "Read more",
+    "showLess": "Show less",
     "seeFullDescription": "See full description"
   },
   "postPreview": {

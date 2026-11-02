@@ -32,7 +32,6 @@ export function TabStateHeader({ description, action, className }: TabStateHeade
           <ExpandableMarkdown
             content={description ?? ''}
             maxLines={isSmallScreen ? 3 : 2}
-            surface="background"
             expandLabel={t('postSnippet.seeFullDescription')}
           />
         </div>
