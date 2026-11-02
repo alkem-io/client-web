@@ -3,7 +3,12 @@ import { describe, expect, test, vi } from 'vitest';
 import { FileUploadRejection, type RowFileUpload } from '@/crd/lib/fileSelection';
 import { useRowFileUploads } from './useRowFileUploads';
 
-type Call = { file: File; options?: { silent?: boolean }; resolve: (url: string) => void; reject: (e: unknown) => void };
+type Call = {
+  file: File;
+  options?: { silent?: boolean };
+  resolve: (url: string) => void;
+  reject: (e: unknown) => void;
+};
 
 /** An `onFileUpload` whose calls stay unresolved until the test settles them. */
 const createControlledUpload = () => {

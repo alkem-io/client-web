@@ -2,6 +2,10 @@ import { Plus, Trash2, X } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDialogCloseGuard } from '@/crd/components/dialogs/useDialogCloseGuard';
+import { FileSelectionStatus } from '@/crd/forms/references/FileSelectionStatus';
+import { RowAttachFileButton } from '@/crd/forms/references/RowAttachFileButton';
+import { useRowFileUploads } from '@/crd/forms/references/useRowFileUploads';
+import type { RowFileUpload } from '@/crd/lib/fileSelection';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
@@ -13,26 +17,17 @@ export type LinkContributionFormValues = {
   description: string;
 };
 
-/** Setters exposed to the `urlAdornment` slot so a consumer-rendered control (e.g. a file-upload
- *  button) can write back into the dialog's internal URL + display-name state for that row. */
-export type LinkContributionDialogUrlAdornmentState = {
-  rowId: string;
-  setUrl: (value: string) => void;
-  setDisplayName: (value: string) => void;
-};
-
 type CommonProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   saving?: boolean;
-  /** Row-scoped slot rendered inside the URL input row (e.g. an attach-file button). */
-  urlAdornment?: (state: LinkContributionDialogUrlAdornmentState) => ReactNode;
+  /** When provided, the URL row shows a paperclip that uploads a file and uses its URL and name.
+   *  Create mode accepts several files at once, one row per file. */
+  onFileUpload?: RowFileUpload;
+  /** `accept` attribute for the file picker (extension list, e.g. ".pdf,.png"). */
+  uploadAccept?: string;
   /** Static slot rendered below the URL input (e.g. terms-and-conditions helper text). */
   urlHelperSlot?: ReactNode;
-  /** Called when a row is removed from the create form so the consumer can clean up uploads attached to that row. */
-  onRowRemoved?: (rowId: string) => void;
-  /** Called when the dialog is cancelled (Cancel / X / confirmed discard) so the consumer can clean up. */
-  onCancel?: () => void;
 };
 
 type CreateProps = CommonProps & {
@@ -78,22 +73,26 @@ function LinkCreateDialog({
   open,
   onOpenChange,
   saving,
-  urlAdornment,
+  onFileUpload,
+  uploadAccept,
   urlHelperSlot,
-  onRowRemoved,
-  onCancel,
   onSubmit,
 }: CreateProps) {
   const { t } = useTranslation('crd-space');
   const [rows, setRows] = useState<Row[]>(() => [
     { id: newRowId(), url: '', displayName: t('callout.linkDefaultName'), description: '' },
   ]);
+  // Rows whose one-file upload is in flight (paperclip spinner).
+  const [uploadingRowIds, setUploadingRowIds] = useState<string[]>([]);
+  const uploads = useRowFileUploads(onFileUpload, uploadAccept);
   const contentRef = useRef<HTMLDivElement>(null);
   const justAddedRowId = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     if (!open) return;
     setRows([{ id: newRowId(), url: '', displayName: t('callout.linkDefaultName'), description: '' }]);
+    setUploadingRowIds([]);
+    uploads.dismiss();
   }, [open, t]);
 
   useEffect(() => {
@@ -108,19 +107,54 @@ function LinkCreateDialog({
   const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
     isDirty,
     onClose: () => {
-      onCancel?.();
+      uploads.cancel();
       onOpenChange(false);
     },
     blockClose: saving,
   });
 
+  // Rows appear only as their uploads finish, so Create waits for every upload.
+  const uploading = uploadingRowIds.length > 0 || uploads.pending.length > 0;
+
   const updateRow = (id: string, patch: Partial<Row>) => {
     setRows(prev => prev.map(r => (r.id === id ? { ...r, ...patch } : r)));
   };
 
+  const handleFile = async (rowId: string, file: File | undefined) => {
+    if (!file || !onFileUpload) return;
+    setUploadingRowIds(prev => [...prev, rowId]);
+    try {
+      const url = await onFileUpload(file);
+      if (url) updateRow(rowId, { url, urlError: undefined, displayName: file.name, nameError: undefined });
+    } finally {
+      setUploadingRowIds(prev => prev.filter(id => id !== rowId));
+    }
+  };
+
+  // A result fills the clicked row only while it is still as it was at pick time with an empty URL;
+  // otherwise it gets a row of its own.
+  const handleFiles = (picked: Row, files: File[]) => {
+    uploads.uploadMany(files, (file, url) => {
+      const appendedId = newRowId();
+      setRows(prev => {
+        const target = prev.find(r => r.id === picked.id);
+        const fillsPicked =
+          target &&
+          !target.url.trim() &&
+          target.displayName === picked.displayName &&
+          target.description === picked.description;
+        if (fillsPicked) {
+          return prev.map(r =>
+            r.id === picked.id ? { ...r, url, urlError: undefined, displayName: file.name, nameError: undefined } : r
+          );
+        }
+        return [...prev, { id: appendedId, url, displayName: file.name, description: '' }];
+      });
+    });
+  };
+
   const removeRow = (id: string) => {
     setRows(prev => (prev.length <= 1 ? prev : prev.filter(r => r.id !== id)));
-    onRowRemoved?.(id);
   };
 
   const addRow = () => {
@@ -183,12 +217,24 @@ function LinkCreateDialog({
                 index={index}
                 canRemove={rows.length > 1}
                 saving={saving}
-                urlAdornment={urlAdornment}
+                attachButton={
+                  onFileUpload && (
+                    <RowAttachFileButton
+                      accept={uploadAccept}
+                      disabled={saving}
+                      uploading={uploadingRowIds.includes(row.id)}
+                      ariaLabel={t('contributionSettings.prePopulate.attachFile')}
+                      onFile={file => handleFile(row.id, file)}
+                      onFiles={files => handleFiles(row, files)}
+                    />
+                  )
+                }
                 urlHelperSlot={urlHelperSlot}
                 onChange={patch => updateRow(row.id, patch)}
                 onRemove={() => removeRow(row.id)}
               />
             ))}
+            <FileSelectionStatus pending={uploads.pending} leftOut={uploads.leftOut} onDismiss={uploads.dismiss} />
             <div className="flex justify-end">
               <Button variant="outline" size="sm" onClick={addRow} disabled={saving} className="gap-2">
                 <Plus className="size-4" aria-hidden="true" />
@@ -200,7 +246,7 @@ function LinkCreateDialog({
             <Button variant="outline" onClick={requestClose} disabled={saving}>
               {t('dialogs.cancel')}
             </Button>
-            <Button onClick={handleSubmit} disabled={saving} aria-busy={saving}>
+            <Button onClick={handleSubmit} disabled={saving || uploading} aria-busy={saving}>
               {t('callout.linkCreate')}
             </Button>
           </DialogFooter>
@@ -216,7 +262,7 @@ function LinkFormRow({
   index,
   canRemove,
   saving,
-  urlAdornment,
+  attachButton,
   urlHelperSlot,
   onChange,
   onRemove,
@@ -225,7 +271,7 @@ function LinkFormRow({
   index: number;
   canRemove: boolean;
   saving?: boolean;
-  urlAdornment?: (state: LinkContributionDialogUrlAdornmentState) => ReactNode;
+  attachButton?: ReactNode;
   urlHelperSlot?: ReactNode;
   onChange: (patch: Partial<Row>) => void;
   onRemove: () => void;
@@ -280,11 +326,7 @@ function LinkFormRow({
             className={cn('flex-1', row.urlError && 'border-destructive')}
             aria-invalid={Boolean(row.urlError)}
           />
-          {urlAdornment?.({
-            rowId: row.id,
-            setUrl: value => onChange({ url: value, urlError: undefined }),
-            setDisplayName: value => onChange({ displayName: value, nameError: undefined }),
-          })}
+          {attachButton}
         </div>
         {urlHelperSlot && <div className="text-caption text-muted-foreground">{urlHelperSlot}</div>}
         {row.urlError && <p className="text-caption text-destructive">{row.urlError}</p>}
@@ -314,9 +356,9 @@ function LinkEditDialog({
   saving,
   onDelete,
   onSubmit,
-  urlAdornment,
+  onFileUpload,
+  uploadAccept,
   urlHelperSlot,
-  onCancel,
 }: EditProps) {
   const { t } = useTranslation('crd-space');
   const [url, setUrl] = useState(initialValues?.url ?? '');
@@ -324,7 +366,9 @@ function LinkEditDialog({
   const [description, setDescription] = useState(initialValues?.description ?? '');
   const [urlError, setUrlError] = useState<string | undefined>();
   const [nameError, setNameError] = useState<string | undefined>();
-  // Local row id is stable per open-cycle so the upload-tracking consumer can key its Map by it.
+  const [uploading, setUploading] = useState(false);
+  // Renewed on every open, so an upload that resolves after the dialog was reopened (possibly for
+  // another link) can tell it no longer belongs to this form.
   const rowIdRef = useRef<string>(newRowId());
 
   useEffect(() => {
@@ -335,7 +379,25 @@ function LinkEditDialog({
     setDescription(initialValues?.description ?? '');
     setUrlError(undefined);
     setNameError(undefined);
+    setUploading(false);
   }, [open, initialValues?.url, initialValues?.displayName, initialValues?.description]);
+
+  const handleFile = async (file: File | undefined) => {
+    if (!file || !onFileUpload) return;
+    const openCycle = rowIdRef.current;
+    setUploading(true);
+    try {
+      const uploadedUrl = await onFileUpload(file);
+      if (uploadedUrl && rowIdRef.current === openCycle) {
+        setUrl(uploadedUrl);
+        setUrlError(undefined);
+        setDisplayName(file.name);
+        setNameError(undefined);
+      }
+    } finally {
+      if (rowIdRef.current === openCycle) setUploading(false);
+    }
+  };
 
   const isDirty =
     url !== (initialValues?.url ?? '') ||
@@ -344,10 +406,7 @@ function LinkEditDialog({
 
   const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
     isDirty,
-    onClose: () => {
-      onCancel?.();
-      onOpenChange(false);
-    },
+    onClose: () => onOpenChange(false),
     blockClose: saving,
   });
 
@@ -416,17 +475,15 @@ function LinkEditDialog({
                   className={cn('flex-1', urlError && 'border-destructive')}
                   aria-invalid={Boolean(urlError)}
                 />
-                {urlAdornment?.({
-                  rowId: rowIdRef.current,
-                  setUrl: value => {
-                    setUrl(value);
-                    setUrlError(undefined);
-                  },
-                  setDisplayName: value => {
-                    setDisplayName(value);
-                    setNameError(undefined);
-                  },
-                })}
+                {onFileUpload && (
+                  <RowAttachFileButton
+                    accept={uploadAccept}
+                    disabled={saving}
+                    uploading={uploading}
+                    ariaLabel={t('contributionSettings.prePopulate.attachFile')}
+                    onFile={handleFile}
+                  />
+                )}
               </div>
               {urlHelperSlot && <div className="text-caption text-muted-foreground">{urlHelperSlot}</div>}
               {urlError && <p className="text-caption text-destructive">{urlError}</p>}

@@ -45,7 +45,7 @@ export function FileSelectionStatus({ pending, leftOut, onDismiss }: FileSelecti
         </ul>
       )}
       {leftOut.length > 0 && (
-        <div role="status" className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/5 p-3">
+        <output className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/5 p-3">
           <div className="flex-1 min-w-0 space-y-1">
             <p className="text-body-emphasis text-destructive">
               {t('fileSelection.notAdded', { count: leftOut.length })}
@@ -71,7 +71,7 @@ export function FileSelectionStatus({ pending, leftOut, onDismiss }: FileSelecti
           >
             <X className="size-4" aria-hidden="true" />
           </Button>
-        </div>
+        </output>
       )}
     </div>
   );

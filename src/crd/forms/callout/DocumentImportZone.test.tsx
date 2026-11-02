@@ -28,7 +28,9 @@ const renderZone = (props: Partial<DocumentImportZoneProps> = {}) => {
 };
 
 const drop = (zone: HTMLElement, files: File[], items?: unknown[]) =>
-  fireEvent.drop(zone, { dataTransfer: { files, items: items ?? files.map(() => ({ webkitGetAsEntry: () => null })) } });
+  fireEvent.drop(zone, {
+    dataTransfer: { files, items: items ?? files.map(() => ({ webkitGetAsEntry: () => null })) },
+  });
 
 describe('DocumentImportZone with onFiles', () => {
   test('the input takes several files; picked and dropped pairs reach onFiles without an error', () => {

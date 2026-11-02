@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
-import { StagedDocumentList, type StagedDocumentItem } from './StagedDocumentList';
+import { type StagedDocumentItem, StagedDocumentList } from './StagedDocumentList';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),

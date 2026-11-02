@@ -1,7 +1,11 @@
 export const MAX_FILES_PER_SELECTION = 25;
 export const MAX_CONCURRENT_UPLOADS = 3;
 
-export type LeftOutReason = { kind: 'limit' } | { kind: 'type' } | { kind: 'size'; maxBytes: number } | { kind: 'failed' };
+export type LeftOutReason =
+  | { kind: 'limit' }
+  | { kind: 'type' }
+  | { kind: 'size'; maxBytes: number }
+  | { kind: 'failed' };
 
 export type LeftOutFile = { name: string; reason: LeftOutReason };
 

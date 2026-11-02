@@ -1,7 +1,8 @@
+import { useApolloClient } from '@apollo/client';
 import { Link2 } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCreateLinkOnCalloutMutation, useDeleteDocumentMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useCreateLinkOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import { ContributionAddCard } from '@/crd/components/contribution/ContributionAddCard';
 import {
   LinkContributionDialog,
@@ -12,8 +13,8 @@ import {
   StorageConfigContextProvider,
   useStorageConfigContext,
 } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { LinkTermsHelper } from './LinkTermsHelper';
-import { LinkUrlAttachFileButton } from './LinkUrlAttachFileButton';
 
 // `open` + `onOpenChange` form a discriminated pair: pass both (controlled) or neither
 // (uncontrolled). Passing only one would compile but leave the dialog inert in one direction.
@@ -68,41 +69,17 @@ function LinkAddDialog({
   onCreated?: () => void;
 }) {
   const storageConfig = useStorageConfigContext();
-  // Documents uploaded into the temporary bucket during this dialog session, keyed by the row id
-  // they belong to. Removing a row deletes that row's doc; cancelling the dialog deletes them all.
-  // On successful submit, links capture the document URLs and the temp ids are forgotten.
-  const uploadedDocIds = useRef<Map<string, string>>(new Map());
+  // Temporary uploads, which the server relocates when a link adopts them. The client never deletes
+  // an upload: an abandoned one is left for the server to expire.
+  const referenceUpload = useReferenceFileUpload(storageConfig, { temporaryLocation: true, ownFailureToast: false });
   const [createLink] = useCreateLinkOnCalloutMutation();
-  const [deleteDocument] = useDeleteDocumentMutation();
-
-  const deleteOneRow = async (rowId: string) => {
-    const documentId = uploadedDocIds.current.get(rowId);
-    if (!documentId) return;
-    uploadedDocIds.current.delete(rowId);
-    try {
-      await deleteDocument({ variables: { documentId } });
-    } catch {
-      // Best-effort cleanup — the document may already be gone or unreachable.
-    }
-  };
-
-  const deleteAllRows = async () => {
-    const ids = Array.from(uploadedDocIds.current.values());
-    uploadedDocIds.current.clear();
-    await Promise.all(
-      ids.map(documentId =>
-        deleteDocument({ variables: { documentId } }).catch(() => {
-          // Best-effort cleanup.
-        })
-      )
-    );
-  };
+  const client = useApolloClient();
 
   const [handleSubmit, saving] = useLoadingState(async (rows: LinkContributionFormValues[]) => {
-    // Create all rows in parallel — matches MUI's CreateLinksDialog.handleSaveNewLinks. The
-    // refetch is deferred to the final mutation so the contributions list reloads once, not N times.
-    await Promise.all(
-      rows.map((row, i) =>
+    // Create all rows in parallel, then refresh the list once after every row has settled: the
+    // rows commit in no fixed order, so no single row's mutation can carry the refresh.
+    const results = await Promise.allSettled(
+      rows.map(row =>
         createLink({
           variables: {
             calloutId,
@@ -114,16 +91,18 @@ function LinkAddDialog({
               },
             },
           },
-          ...(i === rows.length - 1
-            ? {
-                refetchQueries: ['CalloutDetails', 'CalloutContributions'],
-                awaitRefetchQueries: true,
-              }
-            : {}),
         })
       )
     );
-    uploadedDocIds.current.clear();
+    if (results.some(result => result.status === 'fulfilled')) {
+      try {
+        await client.refetchQueries({ include: ['CalloutDetails', 'CalloutContributions'] });
+      } catch {
+        // The links exist; a failed list refresh only delays seeing them.
+      }
+    }
+    const failure = results.find(result => result.status === 'rejected');
+    if (failure) throw failure.reason;
     onOpenChange(false);
     onCreated?.();
   });
@@ -135,28 +114,8 @@ function LinkAddDialog({
       onOpenChange={onOpenChange}
       saving={saving}
       onSubmit={handleSubmit}
-      onRowRemoved={rowId => {
-        void deleteOneRow(rowId);
-      }}
-      onCancel={() => {
-        void deleteAllRows();
-      }}
-      urlAdornment={({ rowId, setUrl, setDisplayName }) => (
-        <LinkUrlAttachFileButton
-          storageConfig={storageConfig}
-          disabled={saving}
-          onUploaded={({ url, documentId, fileName }) => {
-            // Replacing an existing upload on the same row: delete the previous one first.
-            const prev = uploadedDocIds.current.get(rowId);
-            if (prev) {
-              deleteDocument({ variables: { documentId: prev } }).catch(() => {});
-            }
-            uploadedDocIds.current.set(rowId, documentId);
-            setUrl(url);
-            setDisplayName(fileName);
-          }}
-        />
-      )}
+      onFileUpload={referenceUpload.onFileUpload}
+      uploadAccept={referenceUpload.accept}
       urlHelperSlot={<LinkTermsHelper />}
     />
   );

@@ -212,7 +212,9 @@ export function DocumentContributionAddConnector({
           setBatch(prev => prev.filter(staged => staged.key !== item.key));
         } catch (err) {
           const error = importErrorMessage(err, item.file);
-          setBatch(prev => prev.map(staged => (staged.key === item.key ? { ...staged, status: 'failed', error } : staged)));
+          setBatch(prev =>
+            prev.map(staged => (staged.key === item.key ? { ...staged, status: 'failed', error } : staged))
+          );
           throw err;
         }
       }),

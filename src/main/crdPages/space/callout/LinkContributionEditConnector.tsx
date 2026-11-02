@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useDeleteContributionMutation,
-  useDeleteDocumentMutation,
   useDeleteLinkMutation,
   useUpdateLinkMutation,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -16,8 +15,8 @@ import {
   StorageConfigContextProvider,
   useStorageConfigContext,
 } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { LinkTermsHelper } from './LinkTermsHelper';
-import { LinkUrlAttachFileButton } from './LinkUrlAttachFileButton';
 
 type EditTarget = {
   contributionId: string;
@@ -150,27 +149,13 @@ function LinkEditDialog({
   deleting: boolean;
 }) {
   const storageConfig = useStorageConfigContext();
-  // Track docs uploaded during this edit session for cleanup on cancel. Note that the
-  // *previous* URL (if it was a stored document) is not in this set — we only track
-  // newly uploaded ones from this session.
-  const uploadedDocIds = useRef<string[]>([]);
+  // Temporary uploads, which the server relocates when the link adopts one. The client never
+  // deletes an upload: an abandoned one is left for the server to expire.
+  const referenceUpload = useReferenceFileUpload(storageConfig, { temporaryLocation: true, ownFailureToast: false });
   const [updateLink] = useUpdateLinkMutation({
     refetchQueries: ['CalloutDetails', 'CalloutContributions'],
     awaitRefetchQueries: true,
   });
-  const [deleteDocument] = useDeleteDocumentMutation();
-
-  const deleteUploadedDocuments = async () => {
-    const ids = uploadedDocIds.current;
-    uploadedDocIds.current = [];
-    await Promise.all(
-      ids.map(documentId =>
-        deleteDocument({ variables: { documentId } }).catch(() => {
-          // Best-effort cleanup.
-        })
-      )
-    );
-  };
 
   const [handleSubmit, saving] = useLoadingState(async (values: LinkContributionFormValues) => {
     if (!target) return;
@@ -186,7 +171,6 @@ function LinkEditDialog({
         },
       },
     });
-    uploadedDocIds.current = [];
     onSaved?.();
     onClose();
   });
@@ -211,20 +195,8 @@ function LinkEditDialog({
       saving={saving}
       onDelete={canDelete ? onTriggerDelete : undefined}
       onSubmit={handleSubmit}
-      onCancel={() => {
-        void deleteUploadedDocuments();
-      }}
-      urlAdornment={({ setUrl, setDisplayName }) => (
-        <LinkUrlAttachFileButton
-          storageConfig={storageConfig}
-          disabled={saving}
-          onUploaded={({ url, documentId, fileName }) => {
-            setUrl(url);
-            setDisplayName(fileName);
-            uploadedDocIds.current.push(documentId);
-          }}
-        />
-      )}
+      onFileUpload={referenceUpload.onFileUpload}
+      uploadAccept={referenceUpload.accept}
       urlHelperSlot={<LinkTermsHelper />}
     />
   );

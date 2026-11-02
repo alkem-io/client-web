@@ -201,24 +201,24 @@ describe('DocumentContributionAddConnector — one-file import outcomes', () => 
 
   // The inline error these codes set is not rendered while the file stays staged (the import zone
   // shows the staged-file row instead), so what is observable is: no toast, no editor, still open.
-  test.each(['FORMAT_NOT_SUPPORTED', 'STORAGE_UPLOAD_FAILED'])(
-    '%s raises no toast, opens no editor and keeps the dialog open',
-    async code => {
-      const user = userEvent.setup();
-      importDocumentMock.mockRejectedValue(apolloErrorWithCode(code));
+  test.each([
+    'FORMAT_NOT_SUPPORTED',
+    'STORAGE_UPLOAD_FAILED',
+  ])('%s raises no toast, opens no editor and keeps the dialog open', async code => {
+    const user = userEvent.setup();
+    importDocumentMock.mockRejectedValue(apolloErrorWithCode(code));
 
-      render(<DocumentContributionAddConnector {...baseProps} />);
-      await stageOneFile(user, docx('report.docx'));
-      await user.click(screen.getByRole('button', { name: 'dialogs.create' }));
+    render(<DocumentContributionAddConnector {...baseProps} />);
+    await stageOneFile(user, docx('report.docx'));
+    await user.click(screen.getByRole('button', { name: 'dialogs.create' }));
 
-      await waitFor(() => expect(importDocumentMock).toHaveBeenCalledTimes(1));
-      await waitFor(() => expect(screen.getByRole('button', { name: 'dialogs.create' })).toBeEnabled());
-      expect(notifyMock).not.toHaveBeenCalled();
-      expect(screen.queryByTestId('document-editor')).not.toBeInTheDocument();
-      expect(baseProps.onOpenChange).not.toHaveBeenCalledWith(false);
-      expect(screen.getByText('report.docx')).toBeInTheDocument();
-    }
-  );
+    await waitFor(() => expect(importDocumentMock).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'dialogs.create' })).toBeEnabled());
+    expect(notifyMock).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('document-editor')).not.toBeInTheDocument();
+    expect(baseProps.onOpenChange).not.toHaveBeenCalledWith(false);
+    expect(screen.getByText('report.docx')).toBeInTheDocument();
+  });
 
   test('STORAGE_SERVICE_UNAVAILABLE notifies and keeps the dialog open', async () => {
     const user = userEvent.setup();
