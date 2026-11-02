@@ -51,6 +51,12 @@ export function SpaceNavigationTabs({
     return <MobileTabBar tabs={tabs} activeIndex={activeIndex} onTabChange={onTabChange} onMenuClick={onMenuClick} />;
   }
 
+  // A single visible flow state leaves nothing to navigate between: drop the tab strip but keep
+  // the action slot, which carries the header actions on this row.
+  if (tabs.length <= 1) {
+    return <div className={cn('flex justify-end pb-3', className)}>{action}</div>;
+  }
+
   return (
     <DesktopTabs
       tabs={tabs}
@@ -199,29 +205,36 @@ function MobileTabBar({
             <div className="w-px h-6 self-center bg-border" aria-hidden="true" />
           </>
         )}
-        {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
-        {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
-        <ul ref={scrollRef} role="list" className={MOBILE_TAB_LIST_CLASSES}>
-          {tabs.map(tab => {
-            const active = tab.index === activeIndex;
-            return (
-              <li key={tab.index} ref={active ? activeTabRef : undefined} className="inline-flex items-center shrink-0">
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => onTabChange(tab.index)}
-                  className={cn(
-                    'whitespace-nowrap py-2 px-1 text-control transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                    active ? 'text-primary font-semibold' : 'text-muted-foreground hover:text-foreground'
-                  )}
+        {/* A single visible flow state leaves nothing to navigate between; the menu button stays. */}
+        {tabs.length > 1 && (
+          // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
+          // biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset
+          <ul ref={scrollRef} role="list" className={MOBILE_TAB_LIST_CLASSES}>
+            {tabs.map(tab => {
+              const active = tab.index === activeIndex;
+              return (
+                <li
+                  key={tab.index}
+                  ref={active ? activeTabRef : undefined}
+                  className="inline-flex items-center shrink-0"
                 >
-                  {tab.label}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => onTabChange(tab.index)}
+                    className={cn(
+                      'whitespace-nowrap py-2 px-1 text-control transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                      active ? 'text-primary font-semibold' : 'text-muted-foreground hover:text-foreground'
+                    )}
+                  >
+                    {tab.label}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </div>
     </nav>
   );
