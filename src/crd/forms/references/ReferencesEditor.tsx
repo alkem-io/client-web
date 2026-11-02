@@ -6,7 +6,7 @@ import { FileSelectionStatus } from '@/crd/forms/references/FileSelectionStatus'
 import { RowAttachFileButton } from '@/crd/forms/references/RowAttachFileButton';
 import { useRowFileUploads } from '@/crd/forms/references/useRowFileUploads';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
-import type { RowFileUpload } from '@/crd/lib/fileSelection';
+import { fileNameBase, type RowFileUpload } from '@/crd/lib/fileSelection';
 import { Button } from '@/crd/primitives/button';
 import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
@@ -50,8 +50,6 @@ type ReferencesEditorProps = {
 };
 
 const createEmptyRow = (): ReferenceRow => ({ name: '', uri: '', description: '' });
-
-const fileNameBase = (file: File) => file.name.replace(/\.[^./\\]+$/, '').trim();
 
 /**
  * Shared references editor. Each row is (name, URL, description). Empty rows are

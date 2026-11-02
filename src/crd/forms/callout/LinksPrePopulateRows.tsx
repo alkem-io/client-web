@@ -6,7 +6,7 @@ import { FileSelectionStatus } from '@/crd/forms/references/FileSelectionStatus'
 import { RowAttachFileButton } from '@/crd/forms/references/RowAttachFileButton';
 import { useRowFileUploads } from '@/crd/forms/references/useRowFileUploads';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
-import type { RowFileUpload } from '@/crd/lib/fileSelection';
+import { fileNameBase, type RowFileUpload } from '@/crd/lib/fileSelection';
 import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
 
@@ -32,8 +32,6 @@ type LinksPrePopulateRowsProps = {
 };
 
 const createEmptyRow = (): LinkRow => ({ title: '', url: '', description: '' });
-
-const fileNameBase = (file: File) => file.name.replace(/\.[^./\\]+$/, '').trim();
 
 /**
  * "Pre-populate collection" editor shown inside the Links & Files response

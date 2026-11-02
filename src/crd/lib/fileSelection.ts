@@ -36,6 +36,8 @@ export function selectFiles(
   return { kept, leftOut };
 }
 
+export const fileNameBase = (file: File) => file.name.replace(/\.[^./\\]+$/, '').trim();
+
 /** Whether the file's extension is in an `<input accept>` extension list. No list accepts all. */
 export function acceptsFile(file: File, accept: string | undefined): boolean {
   if (accept === undefined) return true;
