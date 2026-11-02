@@ -35,7 +35,8 @@ const CrdOrgSettingsPage = () => {
   const { activeTabId, onTabSelect } = useOrgSettingsTab({ profileUrl });
   const unsavedChanges = useSettingsUnsavedChanges(onTabSelect);
 
-  usePageTitle(t('org.profile.pageTitle'));
+  // The shell is the only writer of the settings title: a lazy tab writing its own raced this one.
+  usePageTitle(t(`shell.tabs.org.${activeTabId}`));
 
   const displayName = organization?.profile?.displayName ?? '';
   const avatarUrl = organization?.profile?.avatar?.uri ?? undefined;

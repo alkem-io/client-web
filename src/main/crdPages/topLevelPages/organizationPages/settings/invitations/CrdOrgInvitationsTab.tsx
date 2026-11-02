@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import { usePageTitle } from '@/core/routing/usePageTitle';
 import { OrgInvitationsTabView } from '@/crd/components/organization/settings/OrgInvitationsTabView';
 import type { OrgInvitationRow } from '@/crd/components/organization/settings/OrgInvitationsTabView.types';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
@@ -24,8 +23,6 @@ const CrdOrgInvitationsTab = () => {
   // to.
   const { organizationId, loading: resolvingOrganization } = useOrganizationContext();
   const data = useOrgInvitationsTabData(organizationId);
-
-  usePageTitle(t('org.invitations.pageTitle'));
 
   const roleLabel = (role: 'member' | 'memberLead') =>
     role === 'memberLead' ? t('org.invitations.roleMemberLead') : t('org.invitations.roleMember');
