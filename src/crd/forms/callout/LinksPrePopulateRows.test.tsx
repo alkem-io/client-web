@@ -122,7 +122,11 @@ function WholeFormHost({ onFileUpload }: { onFileUpload: RowFileUpload }) {
   return (
     <>
       <input aria-label="title" value={value.title} onChange={e => setValue({ ...value, title: e.target.value })} />
-      <LinksPrePopulateRows rows={value.rows} onChange={rows => setValue({ ...value, rows })} onFileUpload={onFileUpload} />
+      <LinksPrePopulateRows
+        rows={value.rows}
+        onChange={rows => setValue({ ...value, rows })}
+        onFileUpload={onFileUpload}
+      />
     </>
   );
 }
