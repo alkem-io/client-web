@@ -136,6 +136,7 @@ export function useRowFileUploads<Row extends string | number>(
 
   const cancel = () => {
     token.current += 1;
+    for (const task of queue.current) release(task.target);
     queue.current = [];
     for (const target of targets.current) target.reserves = false;
     setPending([]);
