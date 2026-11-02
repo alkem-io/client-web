@@ -300,26 +300,28 @@ export const useOrgProfileTabData = (organizationId: string | undefined): UseOrg
     )?.data?.lookup.organization;
     if (freshOrg) {
       const fresh = mapOrganizationToProfileFormValues(freshOrg);
-      const next: OrgProfileFormValues = { ...fresh, avatar: current.avatar };
-      if (result.coreFailed) {
-        for (const f of SCALAR_FIELDS) next[f] = current[f];
-      }
-      for (const f of TAGSET_FIELDS) {
-        if ((result.coreFailed && current[f].id) || result.failedTagsets.includes(f)) next[f] = current[f];
-      }
-      const rows = rebaseReferences(
-        allReferences(fresh).filter((r): r is OrgProfileReference => Boolean(r?.id)),
-        referenceChanges,
-        result
-      );
-      next.references = rows.filter(r => !r.recognized);
-      next.recognizedReferences = { ...fresh.recognizedReferences };
-      for (const kind of SOCIAL_LINK_KINDS) {
-        const row = rows.find(r => r.recognized && r.name.toLowerCase() === kind);
-        if (row) next.recognizedReferences[kind] = row;
-      }
-      valuesRef.current = next;
-      setValues(next);
+      update(latest => {
+        const next: OrgProfileFormValues = { ...fresh, avatar: latest.avatar };
+        if (result.coreFailed) {
+          for (const f of SCALAR_FIELDS) next[f] = current[f];
+        }
+        for (const f of TAGSET_FIELDS) {
+          if ((result.coreFailed && current[f].id) || result.failedTagsets.includes(f)) next[f] = current[f];
+        }
+        const rows = rebaseReferences(
+          allReferences(fresh).filter((r): r is OrgProfileReference => Boolean(r?.id)),
+          referenceChanges,
+          result,
+          { snapshot: current.references, latest: latest.references }
+        );
+        next.references = rows.filter(r => !r.recognized);
+        next.recognizedReferences = { ...fresh.recognizedReferences };
+        for (const kind of SOCIAL_LINK_KINDS) {
+          const row = rows.find(r => r.recognized && r.name.toLowerCase() === kind);
+          if (row) next.recognizedReferences[kind] = row;
+        }
+        return next;
+      });
     }
 
     setSaving(false);
