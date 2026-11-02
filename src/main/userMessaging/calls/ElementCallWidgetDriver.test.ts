@@ -553,6 +553,35 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
     }
   });
 
+  it('shares one request among downloads of the same media that overlap, and fetches it afresh after a success', async () => {
+    let answer: (response: Response) => void = () => undefined;
+    const fetchMock = vi.fn(() => new Promise<Response>(resolve => (answer = resolve)));
+    vi.stubGlobal('fetch', fetchMock);
+    try {
+      const driver = driverFor(makeClient());
+      const first = driver.downloadFile('mxc://matrix.example.org/broken');
+      const second = driver.downloadFile('mxc://matrix.example.org/broken');
+      answer(new Response('{}', { status: 500 }));
+      await expect(first).rejects.toThrow('status 500');
+      await expect(second).rejects.toThrow('status 500');
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+
+      const third = driver.downloadFile('mxc://matrix.example.org/fine');
+      const fourth = driver.downloadFile('mxc://matrix.example.org/fine');
+      answer(new Response('avatar-bytes'));
+      await expect(third).resolves.toBeDefined();
+      await expect(fourth).resolves.toBeDefined();
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+
+      const fifth = driver.downloadFile('mxc://matrix.example.org/fine');
+      answer(new Response('avatar-bytes'));
+      await expect(fifth).resolves.toBeDefined();
+      expect(fetchMock).toHaveBeenCalledTimes(3);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it('fails the download when the chat server refuses it, so the call UI falls back to initials', async () => {
     vi.stubGlobal(
       'fetch',

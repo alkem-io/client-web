@@ -132,11 +132,12 @@ class ElementCallWidgetDriver extends WidgetDriver {
   /** Delayed leaves of this device's call membership that are still waiting on the chat server. */
   private readonly pendingLeaves = new Set<string>();
   /**
-   * Media whose download failed in this call. The call UI asks for an avatar
-   * again every time its tile is resized; a broken one fails at once instead
-   * of hitting the chat server again.
+   * Downloads still in flight, and those that failed in this call. The call UI
+   * asks for an avatar again every time its tile is resized; overlapping asks
+   * share one request, and a broken one fails at once instead of hitting the
+   * chat server again.
    */
-  private readonly failedDownloads = new Set<string>();
+  private readonly downloads = new Map<string, Promise<{ file: XMLHttpRequestBodyInit }>>();
 
   constructor({ client, matrixRoomId, livekitServiceUrl }: DriverOptions) {
     super();
@@ -406,20 +407,27 @@ class ElementCallWidgetDriver extends WidgetDriver {
     if (!url) {
       throw new Error('Only chat server media can be downloaded');
     }
-    if (this.failedDownloads.has(contentUri)) {
-      throw new Error('Downloading the media already failed in this call');
+    const known = this.downloads.get(contentUri);
+    if (known) {
+      return known;
     }
-    try {
-      const response = await fetch(url, { headers: { Authorization: `Bearer ${this.client.getAccessToken()}` } });
-      if (!response.ok) {
-        throw new Error(`Downloading the media failed with status ${response.status}`);
-      }
-      // Reading the body can still fail after the response arrived, e.g. when the connection drops.
-      return { file: await response.blob() };
-    } catch (error) {
-      this.failedDownloads.add(contentUri);
-      throw error;
+    const download = this.fetchMedia(url);
+    this.downloads.set(contentUri, download);
+    // A successful download is fetched afresh next time; a failed one stays failed for the call.
+    download.then(
+      () => this.downloads.delete(contentUri),
+      () => undefined
+    );
+    return download;
+  }
+
+  private async fetchMedia(url: string): Promise<{ file: XMLHttpRequestBodyInit }> {
+    const response = await fetch(url, { headers: { Authorization: `Bearer ${this.client.getAccessToken()}` } });
+    if (!response.ok) {
+      throw new Error(`Downloading the media failed with status ${response.status}`);
     }
+    // Reading the body can still fail after the response arrived, e.g. when the connection drops.
+    return { file: await response.blob() };
   }
 
   public getRtcLivekitToken(): Promise<never> {
