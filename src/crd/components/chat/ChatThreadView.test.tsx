@@ -190,3 +190,17 @@ describe('ChatThreadView — grouping', () => {
     expect(bubble('message 3')).not.toHaveClass('rounded-bl-sm');
   });
 });
+
+describe('ChatThreadView — links in messages', () => {
+  test('applies the host-chosen new-tab mode to every bubble', () => {
+    const { container } = render(
+      <ChatThreadView
+        conversation={direct}
+        messages={[msg(at(14, 10, 0), { content: `[a](${window.location.origin}/space/a)` })]}
+        messagesLoading={false}
+        newTabLinks="external"
+      />
+    );
+    expect(container.querySelector('[data-chat-message] a')).not.toHaveAttribute('target');
+  });
+});
