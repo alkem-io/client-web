@@ -82,7 +82,7 @@ export function ReferencesEditor({
   useEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
-  const uploads = useRowFileUploads(onFileUpload, uploadAccept);
+  const uploads = useRowFileUploads<number>(onFileUpload, uploadAccept);
 
   // Every write refreshes the mirror first, so two uploads settling before the next render each
   // build on the other's result.
@@ -97,33 +97,35 @@ export function ReferencesEditor({
 
   const handleFileSelected = (index: number, file: File | undefined) => {
     if (!file) return;
-    void uploads.uploadOne(index, file, uri => {
-      const current = rowsRef.current[index];
+    void uploads.uploadOne(index, file, (uri, row) => {
+      const current = rowsRef.current[row];
       const nameEmpty = !current?.name.trim();
       const filenameBase = fileNameBase(file);
       const patch: Partial<ReferenceRow> = { uri };
       if (nameEmpty && filenameBase) patch.name = filenameBase;
-      updateRow(index, patch);
+      updateRow(row, patch);
     });
   };
 
-  // A result fills the clicked row only while no one-file pick holds that row and it still has its
-  // pick-time values and an empty URL; otherwise it is appended as a row of its own. Rows are
-  // compared by value because hosts hand in freshly mapped row objects on every render.
+  // A result fills the clicked row only while that row is still there, no one-file pick holds it,
+  // and it still has its pick-time values and an empty URL; otherwise it is appended as a row of
+  // its own. Rows are compared by value because hosts hand in freshly mapped row objects on every
+  // render.
   const handleFilesSelected = (index: number, files: File[]) => {
     const picked = rowsRef.current[index];
-    uploads.uploadMany(files, (file, uri) => {
-      const current = rowsRef.current[index];
+    uploads.uploadMany(index, files, (file, uri, row) => {
+      const current = row === null ? undefined : rowsRef.current[row];
       const name = fileNameBase(file);
       const fillsPicked =
+        row !== null &&
         picked &&
         current &&
-        !uploads.isReserved(index) &&
+        !uploads.isReserved(row) &&
         !current.uri.trim() &&
         current.name === picked.name &&
         (current.description ?? '') === (picked.description ?? '');
       if (fillsPicked) {
-        updateRow(index, current.name.trim() || !name ? { uri } : { uri, name });
+        updateRow(row, current.name.trim() || !name ? { uri } : { uri, name });
       } else {
         commit([...rowsRef.current, { name, uri, description: '' }]);
       }
@@ -131,6 +133,7 @@ export function ReferencesEditor({
   };
 
   const removeRow = (index: number) => {
+    uploads.rowRemoved(index);
     commit(rowsRef.current.filter((_, i) => i !== index));
   };
 

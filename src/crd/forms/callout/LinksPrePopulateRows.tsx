@@ -61,7 +61,7 @@ export function LinksPrePopulateRows({
   useEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
-  const uploads = useRowFileUploads(onFileUpload, uploadAccept);
+  const uploads = useRowFileUploads<number>(onFileUpload, uploadAccept);
 
   // Every write refreshes the mirror first, so two uploads settling before the next render each
   // build on the other's result.
@@ -76,33 +76,34 @@ export function LinksPrePopulateRows({
 
   const handleFileSelected = (index: number, file: File | undefined) => {
     if (!file) return;
-    void uploads.uploadOne(index, file, url => {
-      const current = rowsRef.current[index];
+    void uploads.uploadOne(index, file, (url, row) => {
+      const current = rowsRef.current[row];
       const titleEmpty = !current?.title.trim();
       const filenameBase = fileNameBase(file);
       const patch: Partial<LinkRow> = { url };
       if (titleEmpty && filenameBase) patch.title = filenameBase;
-      updateRow(index, patch);
+      updateRow(row, patch);
     });
   };
 
-  // A result fills the clicked row only while no one-file pick holds that row and it still has its
-  // pick-time values and an empty URL; otherwise it is appended as a row of its own (compared by value: the host maps
-  // fresh row objects on every render).
+  // A result fills the clicked row only while that row is still there, no one-file pick holds it,
+  // and it still has its pick-time values and an empty URL; otherwise it is appended as a row of
+  // its own (compared by value: the host maps fresh row objects on every render).
   const handleFilesSelected = (index: number, files: File[]) => {
     const picked = rowsRef.current[index];
-    uploads.uploadMany(files, (file, url) => {
-      const current = rowsRef.current[index];
+    uploads.uploadMany(index, files, (file, url, row) => {
+      const current = row === null ? undefined : rowsRef.current[row];
       const title = fileNameBase(file);
       const fillsPicked =
+        row !== null &&
         picked &&
         current &&
-        !uploads.isReserved(index) &&
+        !uploads.isReserved(row) &&
         !current.url.trim() &&
         current.title === picked.title &&
         current.description === picked.description;
       if (fillsPicked) {
-        updateRow(index, current.title.trim() || !title ? { url } : { url, title });
+        updateRow(row, current.title.trim() || !title ? { url } : { url, title });
       } else {
         commit([...rowsRef.current, { title, url, description: '' }]);
       }
@@ -110,6 +111,7 @@ export function LinksPrePopulateRows({
   };
 
   const removeRow = (index: number) => {
+    uploads.rowRemoved(index);
     commit(rowsRef.current.filter((_, i) => i !== index));
   };
 

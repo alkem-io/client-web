@@ -82,7 +82,7 @@ function LinkCreateDialog({
   const [rows, setRows] = useState<Row[]>(() => [
     { id: newRowId(), url: '', displayName: t('callout.linkDefaultName'), description: '' },
   ]);
-  const uploads = useRowFileUploads(onFileUpload, uploadAccept);
+  const uploads = useRowFileUploads<string>(onFileUpload, uploadAccept);
   const contentRef = useRef<HTMLDivElement>(null);
   const justAddedRowId = useRef<string | undefined>(undefined);
 
@@ -127,7 +127,7 @@ function LinkCreateDialog({
   // A result fills the clicked row only while no one-file pick holds it and it is still as it was at
   // pick time with an empty URL; otherwise it gets a row of its own.
   const handleFiles = (picked: Row, files: File[]) => {
-    uploads.uploadMany(files, (file, url) => {
+    uploads.uploadMany(picked.id, files, (file, url) => {
       const appendedId = newRowId();
       const reserved = uploads.isReserved(picked.id);
       setRows(prev => {

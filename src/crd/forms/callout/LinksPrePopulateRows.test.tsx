@@ -119,6 +119,38 @@ describe('LinksPrePopulateRows — several files on one paperclip', () => {
     expect(titleInputs().map(i => i.value)).toEqual(['c', 'a', 'b']);
   });
 
+  test('removing a row while uploads run writes every result into its own row (a, b batch on row 1, c on row 2)', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    render(<Host initial={[emptyRow, { ...emptyRow }]} onFileUpload={upload} />);
+
+    pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf')]);
+    pick(fileInputs()[1], [pdf('c.pdf')]);
+    await user.click(screen.getAllByRole('button', { name: 'contributionSettings.prePopulate.removeRow' })[0]);
+    expect(urlInputs()).toHaveLength(1);
+
+    await act(async () => calls[0].resolve('https://cdn/a'));
+    await act(async () => calls[1].resolve('https://cdn/b'));
+    await act(async () => calls[2].resolve('https://cdn/c'));
+
+    expect(urlInputs().map(i => i.value)).toEqual(['https://cdn/c', 'https://cdn/a', 'https://cdn/b']);
+    expect(titleInputs().map(i => i.value)).toEqual(['c', 'a', 'b']);
+  });
+
+  test('removing a row above the clicked one still fills the clicked row', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    render(<Host initial={[{ title: 'Gone', url: '', description: '' }, emptyRow]} onFileUpload={upload} />);
+
+    pick(fileInputs()[1], [pdf('a.pdf'), pdf('b.pdf')]);
+    await user.click(screen.getAllByRole('button', { name: 'contributionSettings.prePopulate.removeRow' })[0]);
+    await act(async () => calls[0].resolve('https://cdn/a'));
+    await act(async () => calls[1].resolve('https://cdn/b'));
+
+    expect(urlInputs().map(i => i.value)).toEqual(['https://cdn/a', 'https://cdn/b']);
+    expect(titleInputs().map(i => i.value)).toEqual(['a', 'b']);
+  });
+
   test('one file picked behaves as today', async () => {
     const { upload, calls } = createControlledUpload();
     render(<Host initial={[emptyRow]} onFileUpload={upload} />);

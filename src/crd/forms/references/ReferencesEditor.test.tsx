@@ -81,6 +81,11 @@ const nameInputs = () => screen.getAllByLabelText('references.nameLabel') as HTM
 const uriInputs = () => screen.getAllByLabelText('references.uriLabel') as HTMLInputElement[];
 const descriptionInputs = () => screen.getAllByLabelText('references.descriptionLabel') as HTMLInputElement[];
 
+const removeRowAt = async (user: ReturnType<typeof userEvent.setup>, index: number) => {
+  await user.click(screen.getAllByRole('button', { name: 'references.removeRow' })[index]);
+  await user.click(screen.getByRole('button', { name: 'references.removeConfirm.confirm' }));
+};
+
 describe('ReferencesEditor — several files on one paperclip', () => {
   test('the first result fills the empty clicked row, later ones are appended, uploading files are listed', async () => {
     const { upload, calls } = createControlledUpload();
@@ -183,6 +188,51 @@ describe('ReferencesEditor — several files on one paperclip', () => {
 
     expect(uriInputs().map(i => i.value)).toEqual(['https://cdn/c', 'https://cdn/a', 'https://cdn/b']);
     expect(nameInputs().map(i => i.value)).toEqual(['c', 'a', 'b']);
+  });
+
+  test('removing a row while uploads run writes every result into its own row (a, b batch on row 1, c on row 2)', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    render(<Host initial={[emptyRow, { ...emptyRow }]} onFileUpload={upload} />);
+
+    pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf')]);
+    pick(fileInputs()[1], [pdf('c.pdf')]);
+    await removeRowAt(user, 0);
+    expect(uriInputs()).toHaveLength(1);
+
+    await act(async () => calls[0].resolve('https://cdn/a'));
+    await act(async () => calls[1].resolve('https://cdn/b'));
+    await act(async () => calls[2].resolve('https://cdn/c'));
+
+    expect(uriInputs().map(i => i.value)).toEqual(['https://cdn/c', 'https://cdn/a', 'https://cdn/b']);
+    expect(nameInputs().map(i => i.value)).toEqual(['c', 'a', 'b']);
+  });
+
+  test('removing a row above the clicked one still fills the clicked row', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    render(<Host initial={[{ name: 'Gone', uri: '', description: '' }, emptyRow]} onFileUpload={upload} />);
+
+    pick(fileInputs()[1], [pdf('a.pdf'), pdf('b.pdf')]);
+    await removeRowAt(user, 0);
+    await act(async () => calls[0].resolve('https://cdn/a'));
+    await act(async () => calls[1].resolve('https://cdn/b'));
+
+    expect(uriInputs().map(i => i.value)).toEqual(['https://cdn/a', 'https://cdn/b']);
+    expect(nameInputs().map(i => i.value)).toEqual(['a', 'b']);
+  });
+
+  test('a one-file result whose row was removed writes nothing', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    render(<Host initial={[emptyRow, { name: 'Kept', uri: '', description: '' }]} onFileUpload={upload} />);
+
+    pick(fileInputs()[0], [pdf('c.pdf')]);
+    await removeRowAt(user, 0);
+    await act(async () => calls[0].resolve('https://cdn/c'));
+
+    expect(uriInputs().map(i => i.value)).toEqual(['']);
+    expect(nameInputs().map(i => i.value)).toEqual(['Kept']);
   });
 
   test('one file picked behaves as today: same row, not silent', async () => {
