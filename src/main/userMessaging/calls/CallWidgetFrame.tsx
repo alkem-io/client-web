@@ -3,6 +3,7 @@ import { ClientWidgetApi, type IWidgetApiRequest, Widget } from 'matrix-widget-a
 import { type RefObject, useEffect, useRef, useState } from 'react';
 import { closeCall } from './callOverlayStore';
 import { ElementCallWidgetDriver, toRoomEvent } from './ElementCallWidgetDriver';
+import { quietDownloadErrors } from './quietDownloadErrors';
 
 // matrix-js-sdk ClientEvent.Event and RoomStateEvent.Events, as strings so the SDK stays a lazily loaded chunk.
 const CLIENT_EVENT = 'event';
@@ -60,6 +61,7 @@ export default function CallWidgetFrame({
       url: new URL(frameSrc, window.location.origin).toString(),
     });
     const driver = new ElementCallWidgetDriver({ client, matrixRoomId, livekitServiceUrl });
+    const releaseConsoleFilter = quietDownloadErrors();
     const api = new ClientWidgetApi(widget, iframe, driver);
     api.setViewedRoomId(matrixRoomId);
     const onPageHide = () => driver.sendPendingLeavesNow();
@@ -121,6 +123,7 @@ export default function CallWidgetFrame({
       api.off(`action:${HANGUP_ACTION}`, onWidgetLeft);
       api.off(`action:${CLOSE_ACTION}`, onWidgetLeft);
       api.stop();
+      releaseConsoleFilter();
     };
   }, [client, matrixRoomId, livekitServiceUrl, widgetId, frameSrc, hangupRef]);
 

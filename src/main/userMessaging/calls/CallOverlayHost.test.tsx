@@ -63,7 +63,8 @@ const makeClient = () =>
     getDeviceId: () => 'DEV1',
     getAccessToken: () => 'access-token',
     _unstable_sendDelayedStateEvent: vi.fn(async () => ({ delay_id: 'leave-1' })),
-    _unstable_updateDelayedEvent: vi.fn(async () => ({})),
+    doesServerSupportUnstableFeature: vi.fn(async () => true),
+    http: { authedRequest: vi.fn(async () => ({})) },
   });
 
 const CALL_MEMBER = 'org.matrix.msc3401.call.member';
@@ -286,6 +287,27 @@ describe('CallOverlayHost', () => {
       );
     } finally {
       vi.unstubAllGlobals();
+    }
+  });
+
+  it('hides the widget library’s failed-download error while the call is open, and only that', async () => {
+    const original = console.error;
+    const sink = vi.fn();
+    console.error = sink;
+    try {
+      render(<CallOverlayHost />);
+      await startCall();
+      const failure = new Error('Downloading the media failed with status 500');
+      console.error('error while downloading a file', failure);
+      console.error('error updating delayed event: ', failure);
+      expect(sink.mock.calls).toEqual([['error updating delayed event: ', failure]]);
+
+      act(() => closeCurrentCall());
+      expect(console.error).toBe(sink);
+      console.error('error while downloading a file', failure);
+      expect(sink).toHaveBeenCalledTimes(2);
+    } finally {
+      console.error = original;
     }
   });
 
