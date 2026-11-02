@@ -1639,5 +1639,17 @@
     "learnMore": "Meer informatie",
     "contactSupport": "Contact opnemen met support",
     "mentionUnavailable": "Tijdelijk niet beschikbaar"
+  },
+  "fileSelection": {
+    "uploading": "Uploaden…",
+    "notAdded_one": "{{count}} bestand is niet toegevoegd",
+    "notAdded_other": "{{count}} bestanden zijn niet toegevoegd",
+    "reason": {
+      "limit": "er zijn meer dan 25 bestanden geselecteerd",
+      "type": "dit bestandstype wordt niet geaccepteerd",
+      "size": "groter dan {{maxMb}} MB",
+      "failed": "het uploaden is mislukt"
+    },
+    "dismiss": "Sluiten"
   }
 }

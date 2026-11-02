@@ -1639,5 +1639,17 @@
     "learnMore": "Mehr erfahren",
     "contactSupport": "Support kontaktieren",
     "mentionUnavailable": "Vorübergehend nicht verfügbar"
+  },
+  "fileSelection": {
+    "uploading": "Wird hochgeladen…",
+    "notAdded_one": "{{count}} Datei wurde nicht hinzugefügt",
+    "notAdded_other": "{{count}} Dateien wurden nicht hinzugefügt",
+    "reason": {
+      "limit": "es wurden mehr als 25 Dateien ausgewählt",
+      "type": "dieser Dateityp wird nicht akzeptiert",
+      "size": "größer als {{maxMb}} MB",
+      "failed": "der Upload ist fehlgeschlagen"
+    },
+    "dismiss": "Schließen"
   }
 }

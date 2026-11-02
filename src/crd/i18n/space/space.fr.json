@@ -317,7 +317,9 @@
     "contributors": "Contributeurs",
     "subspaces": "Sous-espaces",
     "spacesHidden": "Certains espaces de cet aperçu ne sont pas affichés car vous n’y avez pas accès.",
-    "form": "Formulaire"
+    "form": "Formulaire",
+    "documentImportFailed": "Ce document n’a pas pu être importé.",
+    "documentImporting": "Importation…"
   },
   "contribution": {
     "edit": "Modifier",

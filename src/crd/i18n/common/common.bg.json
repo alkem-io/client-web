@@ -1639,5 +1639,17 @@
     "learnMore": "Научете повече",
     "contactSupport": "Свържете се с поддръжката",
     "mentionUnavailable": "Временно недостъпно"
+  },
+  "fileSelection": {
+    "uploading": "Качване…",
+    "notAdded_one": "{{count}} файл не беше добавен",
+    "notAdded_other": "{{count}} файла не бяха добавени",
+    "reason": {
+      "limit": "избрани са повече от 25 файла",
+      "type": "този тип файл не се приема",
+      "size": "по-голям от {{maxMb}} MB",
+      "failed": "качването не успя"
+    },
+    "dismiss": "Затвори"
   }
 }

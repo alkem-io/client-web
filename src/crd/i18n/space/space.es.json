@@ -317,7 +317,9 @@
     "contributors": "Colaboradores",
     "subspaces": "Subespacios",
     "spacesHidden": "Algunos espacios de esta vista no se muestran porque no tienes acceso a ellos.",
-    "form": "Formulario"
+    "form": "Formulario",
+    "documentImportFailed": "No se pudo importar este documento.",
+    "documentImporting": "Importando…"
   },
   "contribution": {
     "edit": "Editar",

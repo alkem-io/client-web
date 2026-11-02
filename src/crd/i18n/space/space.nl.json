@@ -317,7 +317,9 @@
     "contributors": "Contributors",
     "subspaces": "Subspaces",
     "spacesHidden": "Sommige Spaces in dit overzicht worden niet weergegeven omdat je er geen toegang tot hebt.",
-    "form": "Formulier"
+    "form": "Formulier",
+    "documentImportFailed": "Dit document kon niet worden geïmporteerd.",
+    "documentImporting": "Importeren…"
   },
   "contribution": {
     "edit": "Bewerken",

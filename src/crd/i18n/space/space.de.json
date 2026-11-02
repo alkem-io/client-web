@@ -317,7 +317,9 @@
     "contributors": "Mitwirkende",
     "subspaces": "Unterbereiche",
     "spacesHidden": "Einige Spaces in dieser Übersicht werden nicht angezeigt, weil du keinen Zugriff darauf hast.",
-    "form": "Formular"
+    "form": "Formular",
+    "documentImportFailed": "Dieses Dokument konnte nicht importiert werden.",
+    "documentImporting": "Wird importiert…"
   },
   "contribution": {
     "edit": "Bearbeiten",

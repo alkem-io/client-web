@@ -1639,5 +1639,17 @@
     "learnMore": "Learn more",
     "contactSupport": "Contact support",
     "mentionUnavailable": "Temporarily unavailable"
+  },
+  "fileSelection": {
+    "uploading": "Uploading…",
+    "notAdded_one": "{{count}} file was not added",
+    "notAdded_other": "{{count}} files were not added",
+    "reason": {
+      "limit": "more than 25 files were selected",
+      "type": "this file type is not accepted",
+      "size": "larger than {{maxMb}} MB",
+      "failed": "the upload failed"
+    },
+    "dismiss": "Dismiss"
   }
 }

@@ -1639,5 +1639,17 @@
     "learnMore": "En savoir plus",
     "contactSupport": "Contacter le support",
     "mentionUnavailable": "Temporairement indisponible"
+  },
+  "fileSelection": {
+    "uploading": "Téléversement…",
+    "notAdded_one": "{{count}} fichier n’a pas été ajouté",
+    "notAdded_other": "{{count}} fichiers n’ont pas été ajoutés",
+    "reason": {
+      "limit": "plus de 25 fichiers ont été sélectionnés",
+      "type": "ce type de fichier n’est pas accepté",
+      "size": "plus de {{maxMb}} Mo",
+      "failed": "le téléversement a échoué"
+    },
+    "dismiss": "Fermer"
   }
 }
