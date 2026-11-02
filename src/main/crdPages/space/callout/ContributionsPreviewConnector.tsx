@@ -35,7 +35,6 @@ const ITEMS_BEFORE_MORE = 3;
 
 type ContributionsPreviewConnectorProps = {
   callout: CalloutDetailsModelExtended;
-  onShowAll: () => void;
   onContributionClick?: (contributionId: string, memoId?: string) => void;
   onOpenMemoSignedCopies?: (memoId: string) => void;
   /**
@@ -48,7 +47,6 @@ type ContributionsPreviewConnectorProps = {
 
 export function ContributionsPreviewConnector({
   callout,
-  onShowAll,
   onContributionClick,
   onOpenMemoSignedCopies,
   isTaskBoard,
@@ -72,7 +70,7 @@ export function ContributionsPreviewConnector({
   const {
     inViewRef,
     loaded,
-    contributions: { items, total },
+    contributions: { items, total, setFetchAll },
   } = useCalloutContributions({
     callout,
     contributionType: contributionType ?? CalloutContributionType.Post,
@@ -175,11 +173,18 @@ export function ContributionsPreviewConnector({
     | undefined
   >(undefined);
 
+  // "+N more" expands the preview in place; the detail dialog stays behind the post title (#10015).
+  const [expanded, setExpanded] = useState(false);
+  const showAll = () => {
+    setFetchAll(true);
+    setExpanded(true);
+  };
+
   if (!hasContributionType || !contributionType) {
     return <div ref={inViewRef} />;
   }
 
-  const hasMore = total > MAX_PREVIEW_ITEMS;
+  const hasMore = !expanded && total > MAX_PREVIEW_ITEMS;
   const visibleItems = hasMore ? contributions.slice(0, ITEMS_BEFORE_MORE) : contributions;
   const moreCount = total - ITEMS_BEFORE_MORE;
 
@@ -260,7 +265,7 @@ export function ContributionsPreviewConnector({
               />
             )}
             {hasMore && (
-              <Button variant="ghost" size="sm" className="mt-2 text-muted-foreground" onClick={onShowAll}>
+              <Button variant="ghost" size="sm" className="mt-2 text-muted-foreground" onClick={showAll}>
                 {t('callout.moreContributions', { count: moreCount })}
               </Button>
             )}
@@ -301,7 +306,7 @@ export function ContributionsPreviewConnector({
             lastContribution={lastContribution}
             contributionType={contributionType}
             label={t('callout.moreContributions', { count: moreCount })}
-            onClick={onShowAll}
+            onClick={showAll}
           />
         </div>
         {addConnector}
@@ -330,7 +335,7 @@ export function ContributionsPreviewConnector({
               <button
                 type="button"
                 className="flex items-center justify-center rounded-lg border border-dashed border-border bg-muted/20 hover:bg-muted/40 transition-colors cursor-pointer text-muted-foreground text-card-title min-h-[100px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                onClick={onShowAll}
+                onClick={showAll}
               >
                 {t('callout.moreContributions', { count: moreCount })}
               </button>
