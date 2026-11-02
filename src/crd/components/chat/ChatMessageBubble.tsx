@@ -150,9 +150,12 @@ export function ChatMessageBubble({
               )}
             >
               {/* Markdown joins a single line break into a space; a chat line break
-                  (Shift+Enter) should stay one, so paragraphs keep their newlines. */}
+                  (Shift+Enter) should stay one, so paragraphs keep their newlines.
+                  Chat floats over the page the user is on, so every web link opens
+                  in a new tab rather than navigating that page away. */}
               <MarkdownContent
                 allowHtml={false}
+                newTabLinks="all"
                 content={message.content}
                 className="text-body [&_p]:mb-1 [&_p]:whitespace-pre-line [&_p]:text-foreground [&_p:last-child]:mb-0"
               />

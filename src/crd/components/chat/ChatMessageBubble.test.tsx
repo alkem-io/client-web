@@ -335,3 +335,35 @@ describe('ChatMessageBubble', () => {
     });
   });
 });
+
+describe('ChatMessageBubble links', () => {
+  const linkIn = (content: string) => {
+    const { container } = render(<ChatMessageBubble message={{ ...baseMessage, content }} />);
+    return container.querySelector('a');
+  };
+
+  // Chat lives in a popup over whatever page the user is on, so following any web
+  // link in place would lose that page, even when the link stays on the platform.
+  test.each([
+    ['external', '[x](https://example.com/a)'],
+    ['bare external URL', 'https://example.com/a'],
+    ['same-origin', `[x](${window.location.origin}/space/a)`],
+    ['relative', '[x](/space/a)'],
+    ['protocol-relative', '[x](//example.com/a)'],
+  ])('%s link opens in a new tab', (_name, content) => {
+    const link = linkIn(content);
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
+  test.each([
+    ['fragment', '[x](#section)'],
+    ['mailto', '[x](mailto:a@example.com)'],
+    ['unparseable', '[x](http://)'],
+  ])('%s link stays as it is', (_name, content) => {
+    const link = linkIn(content);
+    expect(link).toHaveAttribute('href');
+    expect(link).not.toHaveAttribute('target');
+    expect(link).not.toHaveAttribute('rel');
+  });
+});
