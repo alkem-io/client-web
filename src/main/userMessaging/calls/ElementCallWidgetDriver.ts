@@ -61,6 +61,10 @@ const allowedCapabilitiesFor = (roomId: string, userId: string, deviceId: string
 
 type DelayedEventAction = 'cancel' | 'restart' | 'send';
 
+// The chat SDK's delayed-events feature name and its unstable path prefix.
+const DELAYED_EVENTS_FEATURE = 'org.matrix.msc4140';
+const DELAYED_EVENTS_PREFIX = `/_matrix/client/unstable/${DELAYED_EVENTS_FEATURE}`;
+
 /** The part of the platform's Matrix client the driver uses, typed loosely enough for arbitrary event types. */
 type CallHostClient = {
   baseUrl: string;
@@ -88,8 +92,16 @@ type CallHostClient = {
     eventType: string,
     content: unknown
   ): Promise<{ delay_id: string }>;
-  // The update form with the action in the body is the one the pinned chat server serves.
-  _unstable_updateDelayedEvent(delayId: string, action: DelayedEventAction): Promise<unknown>;
+  doesServerSupportUnstableFeature(feature: string): Promise<boolean>;
+  http: {
+    authedRequest(
+      method: 'POST',
+      path: string,
+      queryParams: undefined,
+      body: { action: DelayedEventAction },
+      opts: { prefix: string }
+    ): Promise<unknown>;
+  };
 };
 
 type DriverOptions = {
@@ -119,6 +131,12 @@ class ElementCallWidgetDriver extends WidgetDriver {
   private readonly allowed: Set<Capability>;
   /** Delayed leaves of this device's call membership that are still waiting on the chat server. */
   private readonly pendingLeaves = new Set<string>();
+  /**
+   * Media whose download failed in this call. The call UI asks for an avatar
+   * again every time its tile is resized; a broken one fails at once instead
+   * of hitting the chat server again.
+   */
+  private readonly failedDownloads = new Set<string>();
 
   constructor({ client, matrixRoomId, livekitServiceUrl }: DriverOptions) {
     super();
@@ -178,18 +196,37 @@ class ElementCallWidgetDriver extends WidgetDriver {
     return { roomId: target, delayId: response.delay_id };
   }
 
+  /**
+   * The update form with the action in the body, the one the pinned chat server
+   * serves, sent with the session's token from the start. The chat SDK sends it
+   * without a token first and retries with one only after the chat server
+   * refuses, which logs a failed request on every call heartbeat.
+   */
+  private async updateDelayedEvent(delayId: string, action: DelayedEventAction): Promise<void> {
+    if (!(await this.client.doesServerSupportUnstableFeature(DELAYED_EVENTS_FEATURE))) {
+      throw new Error('The chat server does not support delayed events');
+    }
+    await this.client.http.authedRequest(
+      'POST',
+      `/delayed_events/${encodeURIComponent(delayId)}`,
+      undefined,
+      { action },
+      { prefix: DELAYED_EVENTS_PREFIX }
+    );
+  }
+
   public async cancelScheduledDelayedEvent(delayId: string): Promise<void> {
     this.pendingLeaves.delete(delayId);
-    await this.client._unstable_updateDelayedEvent(delayId, 'cancel');
+    await this.updateDelayedEvent(delayId, 'cancel');
   }
 
   public async restartScheduledDelayedEvent(delayId: string): Promise<void> {
-    await this.client._unstable_updateDelayedEvent(delayId, 'restart');
+    await this.updateDelayedEvent(delayId, 'restart');
   }
 
   public async sendScheduledDelayedEvent(delayId: string): Promise<void> {
     this.pendingLeaves.delete(delayId);
-    await this.client._unstable_updateDelayedEvent(delayId, 'send');
+    await this.updateDelayedEvent(delayId, 'send');
   }
 
   /**
@@ -369,8 +406,18 @@ class ElementCallWidgetDriver extends WidgetDriver {
     if (!url) {
       throw new Error('Only chat server media can be downloaded');
     }
-    const response = await fetch(url, { headers: { Authorization: `Bearer ${this.client.getAccessToken()}` } });
+    if (this.failedDownloads.has(contentUri)) {
+      throw new Error('Downloading the media already failed in this call');
+    }
+    let response: Response;
+    try {
+      response = await fetch(url, { headers: { Authorization: `Bearer ${this.client.getAccessToken()}` } });
+    } catch (error) {
+      this.failedDownloads.add(contentUri);
+      throw error;
+    }
     if (!response.ok) {
+      this.failedDownloads.add(contentUri);
       throw new Error(`Downloading the media failed with status ${response.status}`);
     }
     return { file: await response.blob() };

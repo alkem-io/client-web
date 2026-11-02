@@ -1,4 +1,4 @@
-import { getHttpUriForMxc } from 'matrix-js-sdk';
+import { createClient, getHttpUriForMxc } from 'matrix-js-sdk';
 import { EventDirection, OpenIDRequestState, WidgetEventCapability } from 'matrix-widget-api';
 import { describe, expect, it, vi } from 'vitest';
 import { allowedCapabilitiesFor, ElementCallWidgetDriver } from './ElementCallWidgetDriver';
@@ -153,7 +153,8 @@ const makeClient = (timeline: FakeEvent[] = [], state: FakeEvent[] = []) => {
     redactEvent: vi.fn(async () => ({ event_id: '$redaction' })),
     _unstable_sendDelayedStateEvent: vi.fn(async () => ({ delay_id: 'delay-state' })),
     _unstable_sendDelayedEvent: vi.fn(async () => ({ delay_id: 'delay-event' })),
-    _unstable_updateDelayedEvent: vi.fn(async () => ({})),
+    doesServerSupportUnstableFeature: vi.fn(async (feature: string) => feature === 'org.matrix.msc4140'),
+    http: { authedRequest: vi.fn(async () => ({})) },
   };
 };
 
@@ -264,12 +265,57 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
     const driver = driverFor(client);
     await driver.cancelScheduledDelayedEvent('d1');
     await driver.restartScheduledDelayedEvent('d2');
-    await driver.sendScheduledDelayedEvent('d3');
-    expect(client._unstable_updateDelayedEvent.mock.calls).toEqual([
-      ['d1', 'cancel'],
-      ['d2', 'restart'],
-      ['d3', 'send'],
+    await driver.sendScheduledDelayedEvent('d/3');
+    const prefix = { prefix: '/_matrix/client/unstable/org.matrix.msc4140' };
+    expect(client.http.authedRequest.mock.calls).toEqual([
+      ['POST', '/delayed_events/d1', undefined, { action: 'cancel' }, prefix],
+      ['POST', '/delayed_events/d2', undefined, { action: 'restart' }, prefix],
+      ['POST', '/delayed_events/d%2F3', undefined, { action: 'send' }, prefix],
     ]);
+  });
+
+  it('refuses delayed-event updates without a request when the chat server lacks delayed events', async () => {
+    const client = makeClient();
+    client.doesServerSupportUnstableFeature.mockResolvedValue(false);
+    await expect(driverFor(client).restartScheduledDelayedEvent('d1')).rejects.toThrow();
+    expect(client.http.authedRequest).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ['cancel', 'cancelScheduledDelayedEvent'],
+    ['restart', 'restartScheduledDelayedEvent'],
+    ['send', 'sendScheduledDelayedEvent'],
+  ] as const)('sends the %s update of a delayed event once, with the session token', async (action, method) => {
+    // The real chat client, so a request it sends without the token is visible here.
+    const fetchFn = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      if (String(input).includes('/_matrix/client/versions')) {
+        return Response.json({ versions: ['v1.11'], unstable_features: { 'org.matrix.msc4140': true } });
+      }
+      // The pinned chat server refuses an update without the token.
+      return new Headers(init?.headers).has('Authorization')
+        ? Response.json({})
+        : Response.json({ errcode: 'M_MISSING_TOKEN', error: 'Missing access token' }, { status: 401 });
+    });
+    const client = createClient({
+      baseUrl: 'https://matrix.example.org',
+      accessToken: 'access-token',
+      userId: USER,
+      deviceId: DEVICE,
+      fetchFn: fetchFn as unknown as typeof fetch,
+    });
+    const driver = new ElementCallWidgetDriver({ client, matrixRoomId: ROOM, livekitServiceUrl: TOKEN_SERVICE });
+
+    await driver[method]('delay-1');
+
+    const updates = fetchFn.mock.calls.filter(([input]) => String(input).includes('/delayed_events/'));
+    expect(updates).toHaveLength(1);
+    const [input, init] = updates[0];
+    expect(String(input)).toBe(
+      'https://matrix.example.org/_matrix/client/unstable/org.matrix.msc4140/delayed_events/delay-1'
+    );
+    expect(init?.method).toBe('POST');
+    expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer access-token');
+    expect(JSON.parse(String(init?.body))).toEqual({ action });
   });
 
   it('fires the scheduled leave at once, in a request that outlives the page, when the page goes away', async () => {
@@ -467,6 +513,28 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
       await expect(driver.downloadFile('https://elsewhere.example.com/avatar.png')).rejects.toThrow();
       await expect(driver.downloadFile('mxc://matrix.example.org/../../_synapse/admin')).rejects.toThrow();
       expect(fetchMock).not.toHaveBeenCalled();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it.each([
+    ['refused', () => Promise.resolve(new Response('{}', { status: 500 }))],
+    ['unreachable', () => Promise.reject(new TypeError('Failed to fetch'))],
+  ])('fails a download that was %s again for the rest of the call, without a request', async (_, answer) => {
+    const fetchMock = vi.fn(answer);
+    vi.stubGlobal('fetch', fetchMock);
+    try {
+      const driver = driverFor(makeClient());
+      await expect(driver.downloadFile('mxc://matrix.example.org/broken')).rejects.toThrow();
+      await expect(driver.downloadFile('mxc://matrix.example.org/broken')).rejects.toThrow();
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+
+      // Other media of the call, and the same media in another call, are still fetched.
+      fetchMock.mockImplementation(async () => new Response('avatar-bytes'));
+      await expect(driver.downloadFile('mxc://matrix.example.org/fine')).resolves.toBeDefined();
+      await expect(driverFor(makeClient()).downloadFile('mxc://matrix.example.org/broken')).resolves.toBeDefined();
+      expect(fetchMock).toHaveBeenCalledTimes(3);
     } finally {
       vi.unstubAllGlobals();
     }
