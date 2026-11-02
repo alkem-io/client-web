@@ -3,6 +3,7 @@ import { type PointerEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CommentInput } from '@/crd/components/comment/CommentInput';
 import type { CommentAuthor, ComposerAttachment } from '@/crd/components/comment/types';
+import type { NewTabLinks } from '@/crd/components/common/MarkdownContent';
 import { cn } from '@/crd/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 import { ChatMessageBubble } from './ChatMessageBubble';
@@ -19,6 +20,8 @@ type ChatThreadViewProps = {
   currentUser?: CommentAuthor;
   isSending?: boolean;
   canReact?: boolean;
+  /** Which links in messages open in a new tab; see `ChatMessageBubble`. */
+  newTabLinks?: NewTabLinks;
   /** Guidance only: the assistant is generating a reply — show a loader, disable input. */
   isAwaitingGuidanceResponse?: boolean;
   /**
@@ -59,6 +62,7 @@ export function ChatThreadView({
   currentUser,
   isSending,
   canReact,
+  newTabLinks,
   isAwaitingGuidanceResponse,
   draft,
   onDraftChange,
@@ -123,6 +127,7 @@ export function ChatThreadView({
                 groupPosition={flags.groupPosition}
                 revealed={isRevealed}
                 canReact={canReact}
+                newTabLinks={newTabLinks}
                 onAddReaction={onAddReaction ? emoji => onAddReaction(message.id, emoji) : undefined}
                 onRemoveReaction={onRemoveReaction ? emoji => onRemoveReaction(message.id, emoji) : undefined}
               />
