@@ -356,6 +356,18 @@ describe('ChatMessageBubble links', () => {
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
+  test('a host can limit new tabs to external links', () => {
+    const { container } = render(
+      <ChatMessageBubble
+        newTabLinks="external"
+        message={{ ...baseMessage, content: `[a](${window.location.origin}/space/a) [b](https://example.com/b)` }}
+      />
+    );
+    const [internal, external] = container.querySelectorAll('a');
+    expect(internal).not.toHaveAttribute('target');
+    expect(external).toHaveAttribute('target', '_blank');
+  });
+
   test.each([
     ['fragment', '[x](#section)'],
     ['mailto', '[x](mailto:a@example.com)'],

@@ -35,7 +35,7 @@ const sanitizeSchema = {
 };
 
 /** `all`: every web link, wherever it points. `external`: web links to another origin only. */
-type NewTabLinks = 'all' | 'external';
+export type NewTabLinks = 'all' | 'external';
 
 export type MarkdownContentProps = {
   /** Raw markdown string — rendered via react-markdown, not dangerouslySetInnerHTML */
@@ -134,19 +134,6 @@ export function MarkdownContent({ content, className, allowHtml = true, newTabLi
   );
 }
 
-// `node` is the hast node react-markdown passes alongside DOM props; pluck it off so it never
-// reaches the DOM. The sanitize schema has already stripped any authored `target`, so the
-// decision here is the only one.
-type LinkRendererProps = ComponentPropsWithoutRef<'a'> & { node?: unknown; newTabLinks: NewTabLinks };
-
-function LinkRenderer({ node: _node, newTabLinks, ...props }: LinkRendererProps) {
-  return opensInNewTab(props.href, newTabLinks) ? (
-    <a {...props} target="_blank" rel="noopener noreferrer" />
-  ) : (
-    <a {...props} />
-  );
-}
-
 function opensInNewTab(href: string | undefined, newTabLinks: NewTabLinks): boolean {
   // An in-page reference, such as a GFM footnote, must move within this page.
   if (!href || href.startsWith('#')) return false;
@@ -163,9 +150,18 @@ function opensInNewTab(href: string | undefined, newTabLinks: NewTabLinks): bool
 // Built once per mode: react-markdown uses these as component types, so a new function
 // on each render would remount every link whenever the content re-parses.
 const DEFAULT_COMPONENTS: Components = { iframe: IframeRenderer };
+const newTabComponents = (mode: NewTabLinks): Components => ({
+  ...DEFAULT_COMPONENTS,
+  // `node` is the hast node react-markdown passes alongside DOM props; pluck it off so it never
+  // reaches the DOM. The sanitize schema has already stripped any authored `target`, so the
+  // decision here is the only one.
+  a: ({ node: _node, ...props }) => (
+    <a {...props} {...(opensInNewTab(props.href, mode) && { target: '_blank', rel: 'noopener noreferrer' })} />
+  ),
+});
 const NEW_TAB_COMPONENTS: Record<NewTabLinks, Components> = {
-  all: { ...DEFAULT_COMPONENTS, a: props => <LinkRenderer {...props} newTabLinks="all" /> },
-  external: { ...DEFAULT_COMPONENTS, a: props => <LinkRenderer {...props} newTabLinks="external" /> },
+  all: newTabComponents('all'),
+  external: newTabComponents('external'),
 };
 
 // Iframe rendering branches on the authored width/height attributes:
