@@ -168,6 +168,51 @@ describe('useRowFileUploads', () => {
     expect(result.current.pending).toEqual([]);
   });
 
+  test('a one-file upload runs at once, not silent, and reserves its row until it settles', async () => {
+    const { upload, calls } = createControlledUpload();
+    const { result } = renderHook(() => useRowFileUploads(upload, undefined));
+    const place = vi.fn();
+    const [file] = makeFiles(1);
+
+    act(() => {
+      void result.current.uploadOne('row-1', file, place);
+    });
+    expect(calls[0].options).toBeUndefined();
+    expect(result.current.uploadingRows).toEqual(['row-1']);
+    expect(result.current.isReserved('row-1')).toBe(true);
+    expect(result.current.isReserved('row-2')).toBe(false);
+
+    await act(async () => calls[0].resolve('url-1'));
+    expect(place).toHaveBeenCalledWith('url-1');
+    expect(result.current.uploadingRows).toEqual([]);
+    expect(result.current.isReserved('row-1')).toBe(false);
+  });
+
+  test('a failed one-file upload places nothing and frees its row', async () => {
+    const upload = vi.fn<RowFileUpload>(async () => null);
+    const { result } = renderHook(() => useRowFileUploads(upload, undefined));
+    const place = vi.fn();
+
+    await act(async () => result.current.uploadOne(0, makeFiles(1)[0], place));
+
+    expect(place).not.toHaveBeenCalled();
+    expect(result.current.uploadingRows).toEqual([]);
+    expect(result.current.isReserved(0)).toBe(false);
+  });
+
+  test('cancel frees rows held by one-file uploads', () => {
+    const { upload } = createControlledUpload();
+    const { result } = renderHook(() => useRowFileUploads(upload, undefined));
+
+    act(() => {
+      void result.current.uploadOne('row-1', makeFiles(1)[0], vi.fn());
+    });
+    act(() => result.current.cancel());
+
+    expect(result.current.uploadingRows).toEqual([]);
+    expect(result.current.isReserved('row-1')).toBe(false);
+  });
+
   test('without an upload callback nothing is uploaded', () => {
     const { result } = renderHook(() => useRowFileUploads(undefined, undefined));
     const place = vi.fn();

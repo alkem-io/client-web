@@ -1,5 +1,5 @@
 import { Plus, Trash2 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { LinkRow } from '@/crd/forms/callout/types';
 import { FileSelectionStatus } from '@/crd/forms/references/FileSelectionStatus';
@@ -47,8 +47,6 @@ export function LinksPrePopulateRows({
   uploadAccept,
 }: LinksPrePopulateRowsProps) {
   const { t } = useTranslation('crd-space');
-  // Per-row upload spinner state, keyed by row index.
-  const [uploadingRows, setUploadingRows] = useState<Record<number, boolean>>({});
   // Mirror of `rows` for post-await reads. A file upload takes seconds; if the
   // user types into any row while it's in flight, the closure-captured `rows`
   // is stale by the time `await onFileUpload` resolves. Reading from the ref
@@ -76,29 +74,20 @@ export function LinksPrePopulateRows({
     commit(rowsRef.current.map((row, i) => (i === index ? { ...row, ...patch } : row)));
   };
 
-  const handleFileSelected = async (index: number, file: File | undefined) => {
-    if (!file || !onFileUpload) return;
-    setUploadingRows(prev => ({ ...prev, [index]: true }));
-    try {
-      const url = await onFileUpload(file);
-      if (!url) return;
+  const handleFileSelected = (index: number, file: File | undefined) => {
+    if (!file) return;
+    void uploads.uploadOne(index, file, url => {
       const current = rowsRef.current[index];
       const titleEmpty = !current?.title.trim();
       const filenameBase = fileNameBase(file);
       const patch: Partial<LinkRow> = { url };
       if (titleEmpty && filenameBase) patch.title = filenameBase;
       updateRow(index, patch);
-    } finally {
-      setUploadingRows(prev => {
-        const next = { ...prev };
-        delete next[index];
-        return next;
-      });
-    }
+    });
   };
 
-  // A result fills the clicked row only while that row still holds its pick-time values and an
-  // empty URL; otherwise it is appended as a row of its own (compared by value: the host maps
+  // A result fills the clicked row only while no one-file pick holds that row and it still has its
+  // pick-time values and an empty URL; otherwise it is appended as a row of its own (compared by value: the host maps
   // fresh row objects on every render).
   const handleFilesSelected = (index: number, files: File[]) => {
     const picked = rowsRef.current[index];
@@ -108,6 +97,7 @@ export function LinksPrePopulateRows({
       const fillsPicked =
         picked &&
         current &&
+        !uploads.isReserved(index) &&
         !current.url.trim() &&
         current.title === picked.title &&
         current.description === picked.description;
@@ -180,7 +170,7 @@ export function LinksPrePopulateRows({
                     <RowAttachFileButton
                       accept={uploadAccept}
                       disabled={disabled}
-                      uploading={Boolean(uploadingRows[index])}
+                      uploading={uploads.uploadingRows.includes(index)}
                       ariaLabel={t('contributionSettings.prePopulate.attachFile')}
                       onFile={file => handleFileSelected(index, file)}
                       onFiles={files => handleFilesSelected(index, files)}

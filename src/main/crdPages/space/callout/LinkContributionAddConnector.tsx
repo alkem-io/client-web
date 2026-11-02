@@ -70,7 +70,7 @@ function LinkAddDialog({
 }) {
   const storageConfig = useStorageConfigContext();
   // Temporary uploads, which the server relocates when a link adopts them. The client never deletes
-  // an upload: an abandoned one is left for the server to expire.
+  // an upload: an abandoned one stays stored, and the server does not expire it yet.
   const referenceUpload = useReferenceFileUpload(storageConfig, { temporaryLocation: true, ownFailureToast: false });
   const [createLink] = useCreateLinkOnCalloutMutation();
   const client = useApolloClient();

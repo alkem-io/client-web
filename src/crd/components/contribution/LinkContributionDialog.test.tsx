@@ -115,6 +115,29 @@ describe('LinkContributionDialog — create mode', () => {
     expect(notice).toHaveTextContent('fileSelection.reason.size');
   });
 
+  test('a one-file pick made while a batch from the same row runs keeps every file (a, c, b order)', async () => {
+    const { upload, calls } = createControlledUpload();
+    const { onSubmit } = renderCreate(upload);
+
+    pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf')]);
+    pick(fileInputs()[0], [pdf('c.pdf')]);
+    expect(calls.map(call => call.file.name)).toEqual(['a.pdf', 'b.pdf', 'c.pdf']);
+    expect(calls[2].options).toBeUndefined();
+
+    await act(async () => calls[0].resolve('https://cdn/a'));
+    await act(async () => calls[2].resolve('https://cdn/c'));
+    await act(async () => calls[1].resolve('https://cdn/b'));
+
+    expect(urlInputs().map(i => i.value)).toEqual(['https://cdn/c', 'https://cdn/a', 'https://cdn/b']);
+    expect(nameInputs().map(i => i.value)).toEqual(['c.pdf', 'a.pdf', 'b.pdf']);
+    fireEvent.click(createButton());
+    expect(onSubmit).toHaveBeenCalledWith([
+      { url: 'https://cdn/c', displayName: 'c.pdf', description: '' },
+      { url: 'https://cdn/a', displayName: 'a.pdf', description: '' },
+      { url: 'https://cdn/b', displayName: 'b.pdf', description: '' },
+    ]);
+  });
+
   test('Create is withheld while uploads run and Cancel stays enabled', async () => {
     const { upload, calls } = createControlledUpload();
     renderCreate(upload);

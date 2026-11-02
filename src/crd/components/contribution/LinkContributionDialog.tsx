@@ -82,8 +82,6 @@ function LinkCreateDialog({
   const [rows, setRows] = useState<Row[]>(() => [
     { id: newRowId(), url: '', displayName: t('callout.linkDefaultName'), description: '' },
   ]);
-  // Rows whose one-file upload is in flight (paperclip spinner).
-  const [uploadingRowIds, setUploadingRowIds] = useState<string[]>([]);
   const uploads = useRowFileUploads(onFileUpload, uploadAccept);
   const contentRef = useRef<HTMLDivElement>(null);
   const justAddedRowId = useRef<string | undefined>(undefined);
@@ -91,7 +89,6 @@ function LinkCreateDialog({
   useEffect(() => {
     if (!open) return;
     setRows([{ id: newRowId(), url: '', displayName: t('callout.linkDefaultName'), description: '' }]);
-    setUploadingRowIds([]);
     uploads.dismiss();
   }, [open, t]);
 
@@ -114,31 +111,29 @@ function LinkCreateDialog({
   });
 
   // Rows appear only as their uploads finish, so Create waits for every upload.
-  const uploading = uploadingRowIds.length > 0 || uploads.pending.length > 0;
+  const uploading = uploads.uploadingRows.length > 0 || uploads.pending.length > 0;
 
   const updateRow = (id: string, patch: Partial<Row>) => {
     setRows(prev => prev.map(r => (r.id === id ? { ...r, ...patch } : r)));
   };
 
-  const handleFile = async (rowId: string, file: File | undefined) => {
-    if (!file || !onFileUpload) return;
-    setUploadingRowIds(prev => [...prev, rowId]);
-    try {
-      const url = await onFileUpload(file);
-      if (url) updateRow(rowId, { url, urlError: undefined, displayName: file.name, nameError: undefined });
-    } finally {
-      setUploadingRowIds(prev => prev.filter(id => id !== rowId));
-    }
+  const handleFile = (rowId: string, file: File | undefined) => {
+    if (!file) return;
+    void uploads.uploadOne(rowId, file, url =>
+      updateRow(rowId, { url, urlError: undefined, displayName: file.name, nameError: undefined })
+    );
   };
 
-  // A result fills the clicked row only while it is still as it was at pick time with an empty URL;
-  // otherwise it gets a row of its own.
+  // A result fills the clicked row only while no one-file pick holds it and it is still as it was at
+  // pick time with an empty URL; otherwise it gets a row of its own.
   const handleFiles = (picked: Row, files: File[]) => {
     uploads.uploadMany(files, (file, url) => {
       const appendedId = newRowId();
+      const reserved = uploads.isReserved(picked.id);
       setRows(prev => {
         const target = prev.find(r => r.id === picked.id);
         const fillsPicked =
+          !reserved &&
           target &&
           !target.url.trim() &&
           target.displayName === picked.displayName &&
@@ -222,7 +217,7 @@ function LinkCreateDialog({
                     <RowAttachFileButton
                       accept={uploadAccept}
                       disabled={saving}
-                      uploading={uploadingRowIds.includes(row.id)}
+                      uploading={uploads.uploadingRows.includes(row.id)}
                       ariaLabel={t('contributionSettings.prePopulate.attachFile')}
                       onFile={file => handleFile(row.id, file)}
                       onFiles={files => handleFiles(row, files)}

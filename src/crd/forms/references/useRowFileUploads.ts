@@ -16,15 +16,21 @@ type UploadTask = {
   token: number;
 };
 
+type RowKey = string | number;
+
 /**
- * One upload queue per row-list surface: every multi-file selection made on any of its rows
- * joins it, and at most `MAX_CONCURRENT_UPLOADS` run at a time. `cancel()` and unmount stop
- * queued files from starting and make late results write nothing; a cancelled upload still
- * holds its slot until it settles.
+ * Owns every upload of a row-list surface. A one-file pick (`uploadOne`) runs at once with the
+ * host's own failure handling and reserves its row until it settles, so `isReserved` tells batch
+ * placement to append instead of filling that row. Multi-file selections made on any row join
+ * one queue, and at most `MAX_CONCURRENT_UPLOADS` run at a time. `cancel()` and unmount stop
+ * queued files from starting and make late batch results write nothing; a cancelled upload
+ * still holds its slot until it settles.
  */
 export function useRowFileUploads(onFileUpload: RowFileUpload | undefined, accept: string | undefined) {
   const [pending, setPending] = useState<{ key: string; name: string }[]>([]);
   const [leftOut, setLeftOut] = useState<LeftOutFile[]>([]);
+  const [uploadingRows, setUploadingRows] = useState<RowKey[]>([]);
+  const reservedRows = useRef(new Set<RowKey>());
   const queue = useRef<UploadTask[]>([]);
   const active = useRef(0);
   const token = useRef(0);
@@ -78,14 +84,31 @@ export function useRowFileUploads(onFileUpload: RowFileUpload | undefined, accep
     pump();
   };
 
+  const uploadOne = async (row: RowKey, file: File, place: (url: string) => void) => {
+    if (!onFileUpload) return;
+    reservedRows.current.add(row);
+    setUploadingRows(prev => [...prev, row]);
+    try {
+      const url = await onFileUpload(file);
+      if (url) place(url);
+    } finally {
+      reservedRows.current.delete(row);
+      setUploadingRows(prev => prev.filter(key => key !== row));
+    }
+  };
+
+  const isReserved = (row: RowKey) => reservedRows.current.has(row);
+
   const cancel = () => {
     token.current += 1;
     queue.current = [];
+    reservedRows.current.clear();
     setPending([]);
     setLeftOut([]);
+    setUploadingRows([]);
   };
 
   const dismiss = () => setLeftOut([]);
 
-  return { pending, leftOut, uploadMany, cancel, dismiss };
+  return { pending, leftOut, uploadingRows, uploadOne, isReserved, uploadMany, cancel, dismiss };
 }

@@ -68,7 +68,6 @@ export function ReferencesEditor({
 }: ReferencesEditorProps) {
   const { t } = useTranslation('crd-common');
   const [pendingDeleteIndex, setPendingDeleteIndex] = useState<number | null>(null);
-  const [uploadingRows, setUploadingRows] = useState<Record<number, boolean>>({});
   // Mirror of `rows` for post-await reads: a file upload takes seconds, and if
   // the user types into any row meanwhile the closure-captured `rows` is stale
   // by the time `await onFileUpload` resolves. Reading from the ref avoids
@@ -96,30 +95,21 @@ export function ReferencesEditor({
     commit(rowsRef.current.map((row, i) => (i === index ? { ...row, ...patch } : row)));
   };
 
-  const handleFileSelected = async (index: number, file: File | undefined) => {
-    if (!file || !onFileUpload) return;
-    setUploadingRows(prev => ({ ...prev, [index]: true }));
-    try {
-      const uri = await onFileUpload(file);
-      if (!uri) return;
+  const handleFileSelected = (index: number, file: File | undefined) => {
+    if (!file) return;
+    void uploads.uploadOne(index, file, uri => {
       const current = rowsRef.current[index];
       const nameEmpty = !current?.name.trim();
       const filenameBase = fileNameBase(file);
       const patch: Partial<ReferenceRow> = { uri };
       if (nameEmpty && filenameBase) patch.name = filenameBase;
       updateRow(index, patch);
-    } finally {
-      setUploadingRows(prev => {
-        const next = { ...prev };
-        delete next[index];
-        return next;
-      });
-    }
+    });
   };
 
-  // A result fills the clicked row only while that row still holds its pick-time values and an
-  // empty URL; otherwise it is appended as a row of its own. Rows are compared by value because
-  // hosts hand in freshly mapped row objects on every render.
+  // A result fills the clicked row only while no one-file pick holds that row and it still has its
+  // pick-time values and an empty URL; otherwise it is appended as a row of its own. Rows are
+  // compared by value because hosts hand in freshly mapped row objects on every render.
   const handleFilesSelected = (index: number, files: File[]) => {
     const picked = rowsRef.current[index];
     uploads.uploadMany(files, (file, uri) => {
@@ -128,6 +118,7 @@ export function ReferencesEditor({
       const fillsPicked =
         picked &&
         current &&
+        !uploads.isReserved(index) &&
         !current.uri.trim() &&
         current.name === picked.name &&
         (current.description ?? '') === (picked.description ?? '');
@@ -196,7 +187,7 @@ export function ReferencesEditor({
                     <RowAttachFileButton
                       accept={uploadAccept}
                       disabled={disabled}
-                      uploading={Boolean(uploadingRows[index])}
+                      uploading={uploads.uploadingRows.includes(index)}
                       ariaLabel={t('references.attachFile')}
                       onFile={file => handleFileSelected(index, file)}
                       onFiles={files => handleFilesSelected(index, files)}

@@ -199,12 +199,13 @@ describe('DocumentContributionAddConnector — one-file import outcomes', () => 
     expect(await screen.findByTestId('document-editor')).toHaveTextContent('contribution-42');
   });
 
-  // The inline error these codes set is not rendered while the file stays staged (the import zone
-  // shows the staged-file row instead), so what is observable is: no toast, no editor, still open.
+  // The mutation is mocked, so the app's global GraphQL error handling is not in play here: these
+  // assert the connector's own outcome only. The inline error these codes set is not rendered while
+  // the file stays staged (the import zone shows the staged-file row instead).
   test.each([
     'FORMAT_NOT_SUPPORTED',
     'STORAGE_UPLOAD_FAILED',
-  ])('%s raises no toast, opens no editor and keeps the dialog open', async code => {
+  ])('%s raises no notification of the connector, opens no editor and keeps the dialog open', async code => {
     const user = userEvent.setup();
     importDocumentMock.mockRejectedValue(apolloErrorWithCode(code));
 
@@ -220,7 +221,7 @@ describe('DocumentContributionAddConnector — one-file import outcomes', () => 
     expect(screen.getByText('report.docx')).toBeInTheDocument();
   });
 
-  test('STORAGE_SERVICE_UNAVAILABLE notifies and keeps the dialog open', async () => {
+  test("STORAGE_SERVICE_UNAVAILABLE gets the connector's notification and keeps the dialog open", async () => {
     const user = userEvent.setup();
     importDocumentMock.mockRejectedValue(apolloErrorWithCode('STORAGE_SERVICE_UNAVAILABLE'));
 
