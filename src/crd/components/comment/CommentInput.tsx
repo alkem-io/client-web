@@ -85,6 +85,13 @@ const STAGED_LIST_CLASS = 'mb-1.5 flex flex-wrap gap-1.5';
 
 const carriesFiles = (transfer: DataTransfer) => Array.from(transfer.types).includes('Files');
 
+// The small-screen mention list stops short of the site/dialog header (h-16).
+const MOBILE_LIST_TOP_GUTTER = 72;
+// With less room than this above the input, the list opens below it instead of
+// shrinking until a suggestion can no longer be tapped.
+const MOBILE_LIST_MIN_HEIGHT = 144;
+const MOBILE_LIST_INPUT_GAP = 4;
+
 // react-mentions renders an overlay + textarea stack. These inline styles
 // neutralize its defaults so the textarea blends with the surrounding Tailwind
 // bordered container (no double borders, transparent background).
@@ -121,6 +128,14 @@ const mentionsInputStyle = {
       padding: 0,
     } satisfies CSSProperties,
   },
+};
+
+// react-mentions' suggestions wrapper is only zIndex 1, so the `relative z-10`
+// links in a post and its comments would paint over the small-screen list and
+// take its taps. Stays below the site header (z-50).
+const smallScreenMentionsInputStyle = {
+  ...mentionsInputStyle,
+  suggestions: { ...mentionsInputStyle.suggestions, zIndex: 30 },
 };
 
 // `react-mentions` paints the styled mention chip in an overlay layer on top
@@ -441,27 +456,46 @@ export function CommentInput({
                 aria-label={t('comments.addComment')}
                 allowSpaceInQuery={true}
                 forceSuggestionsAboveCursor={true}
-                style={mentionsInputStyle}
+                style={isSmallScreen ? smallScreenMentionsInputStyle : mentionsInputStyle}
                 inputRef={(input: HTMLTextAreaElement | null) => {
                   textareaRef.current = input;
                 }}
                 customSuggestionsContainer={children => {
                   // On phones react-mentions' cursor-anchored popover often
                   // spills past the viewport edge. Position the dropdown as a
-                  // fixed overlay anchored just above the input's top so it
-                  // stays near the text the user is typing while still being
-                  // fully tappable.
+                  // fixed overlay just above the input, or just below it when
+                  // there is too little room above, so it stays near the text
+                  // the user is typing while still being fully tappable.
                   let mobileStyle: CSSProperties | undefined;
                   if (isSmallScreen) {
-                    const rect = textareaRef.current?.getBoundingClientRect();
-                    const inputTop = rect?.top ?? 0;
+                    const input = textareaRef.current;
+                    const inputRect = input?.getBoundingClientRect();
+                    // A transformed dialog is the containing block of its fixed
+                    // descendants, so `top` is relative to it, not the viewport.
+                    // It also clips them.
+                    const block = input?.closest('[data-slot="dialog-content"]')?.getBoundingClientRect();
+                    const blockTop = block?.top ?? 0;
+                    // The visual viewport is what the on-screen keyboard and
+                    // iOS panning leave visible of the layout viewport.
+                    const viewport = window.visualViewport;
+                    const viewportBottom = viewport ? viewport.offsetTop + viewport.height : window.innerHeight;
+                    const listBottom = (inputRect?.top ?? 0) - blockTop - MOBILE_LIST_INPUT_GAP;
+                    const listTop = (inputRect?.bottom ?? 0) - blockTop + MOBILE_LIST_INPUT_GAP;
+                    const roomAbove =
+                      listBottom - Math.max(MOBILE_LIST_TOP_GUTTER, (viewport?.offsetTop ?? 0) - blockTop);
+                    const roomBelow =
+                      Math.min(viewportBottom, block?.bottom ?? viewportBottom) -
+                      blockTop -
+                      listTop -
+                      MOBILE_LIST_INPUT_GAP;
+                    const opensAbove = roomAbove >= MOBILE_LIST_MIN_HEIGHT || roomAbove >= roomBelow;
                     mobileStyle = {
                       position: 'fixed',
                       left: '0.5rem',
                       right: '0.5rem',
-                      bottom: `calc(100vh - ${Math.max(inputTop, 80) - 4}px)`,
-                      maxHeight: '14rem',
-                      zIndex: 50,
+                      top: `${opensAbove ? listBottom : listTop}px`,
+                      transform: opensAbove ? 'translateY(-100%)' : undefined,
+                      maxHeight: `min(14rem, ${opensAbove ? roomAbove : roomBelow}px)`,
                     };
                   }
 
