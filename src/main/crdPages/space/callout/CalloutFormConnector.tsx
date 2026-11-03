@@ -276,12 +276,16 @@ function CalloutFormConnectorInner({
   const showFramingComments = mode !== 'create' || !restrictions?.disableFramingComments;
   const showContributionComments = mode !== 'create' || !restrictions?.disableContributionComments;
   const disableRichMedia = mode === 'create' && Boolean(restrictions?.disableRichMedia);
-  const { values, errors, setField, setValues, validate, reset, prefill: prefillForm, dirty } = form;
-  // Keys the row editors that upload files, so replacing the form content remounts them and their
-  // unmount discards uploads still running for the replaced content.
+  const { values, errors, setField, setValues, validate, reset: resetForm, prefill: prefillForm, dirty } = form;
+  // Keys the row editors that upload files, so replacing or resetting the form content remounts them
+  // and their unmount discards uploads still running for the replaced content.
   const [contentGeneration, setContentGeneration] = useState(0);
   const prefill = (data: Partial<CalloutFormValues>) => {
     prefillForm(data);
+    setContentGeneration(generation => generation + 1);
+  };
+  const reset = () => {
+    resetForm();
     setContentGeneration(generation => generation + 1);
   };
 

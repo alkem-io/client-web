@@ -6,6 +6,7 @@ import type { CalloutFormValues } from '../hooks/useCrdCalloutForm';
 
 type CapturedModalProps = {
   blockedReason?: string;
+  onOpenChange: (open: boolean) => void;
   title: { onChange: (value: string) => void };
   onSubmit: () => void;
   onSaveDraft?: () => void;
@@ -99,7 +100,12 @@ vi.mock('@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreatio
 }));
 
 vi.mock('@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft', () => ({
-  useWhiteboardDraft: () => ({ loading: false, discard: vi.fn(), consumed: vi.fn(), handle: undefined }),
+  useWhiteboardDraft: () => ({
+    loading: false,
+    discard: vi.fn().mockResolvedValue(true),
+    consumed: vi.fn(),
+    handle: undefined,
+  }),
 }));
 
 vi.mock('@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals', () => ({
@@ -266,5 +272,23 @@ describe('CalloutFormConnector — replacing the content from a template', () =>
 
     expect(within(responses).getByText('contributionSettings.prePopulate.empty')).toBeInTheDocument();
     expect(within(responses).queryByLabelText('contributionSettings.prePopulate.urlLabel')).not.toBeInTheDocument();
+  });
+
+  test('an upload settling after Discard, while the closing form is still mounted, leaves the form empty', async () => {
+    const references = screen.getByRole('region', { name: 'more-options' });
+    fireEvent.click(within(references).getByRole('button', { name: 'references.addRow' }));
+    const fileInput = references.querySelector('input[type="file"]') as HTMLInputElement;
+    const files = ['a', 'b', 'c', 'd', 'e'].map(name => new File(['x'], `${name}.pdf`));
+    fireEvent.change(fileInput, { target: { files } });
+    expect(harness.onFileUpload).toHaveBeenCalledTimes(3);
+
+    await act(async () => harness.modal?.onOpenChange(false));
+    fireEvent.click(screen.getByRole('button', { name: 'dialogs.discardChanges.confirm' }));
+    await waitFor(() => expect(within(references).getByText('references.empty')).toBeInTheDocument());
+    await finishAll();
+
+    expect(within(references).getByText('references.empty')).toBeInTheDocument();
+    expect(within(references).queryByLabelText('references.uriLabel')).not.toBeInTheDocument();
+    expect(harness.onFileUpload).toHaveBeenCalledTimes(3);
   });
 });
