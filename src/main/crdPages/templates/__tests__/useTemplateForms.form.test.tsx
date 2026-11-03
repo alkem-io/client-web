@@ -1,5 +1,6 @@
 /** @vitest-environment jsdom */
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { useEffect } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const harness = vi.hoisted(() => ({
@@ -184,7 +185,9 @@ let latest: UseTemplateFormsResult;
 /** Renders the per-type form only while the dialog is open, as `TemplateFormDialog` does. */
 function GuidelinesHarness({ referenceUpload }: { referenceUpload: TemplateReferenceUpload }) {
   const forms = useTemplateForms({ templatesSetId: 'templates-set-1', referenceUpload });
-  latest = forms;
+  useEffect(() => {
+    latest = forms;
+  });
   return <>{forms.open && forms.perTypeFormSlot}</>;
 }
 
