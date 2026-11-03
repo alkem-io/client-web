@@ -10,8 +10,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/toolti
 
 export type AddPostModalMode = 'create' | 'edit';
 
-/** Why the footer actions are currently blocked: the title is missing, or the description is over its limit. */
-export type AddPostModalBlockedReason = 'titleRequired' | 'descriptionTooLong';
+/** Why the footer actions are currently blocked: the title is missing, the description is over its limit, or files are still uploading. */
+export type AddPostModalBlockedReason = 'titleRequired' | 'descriptionTooLong' | 'filesUploading';
 
 export type AddPostModalProps = {
   open: boolean;
@@ -100,7 +100,11 @@ export function AddPostModal({
   const primaryLabel = submitLabel ?? (isCreate ? t('forms.publish') : t('forms.save'));
   const blocked = !submitting && blockedReason !== undefined;
   const blockedHint =
-    blockedReason === 'descriptionTooLong' ? t('forms.descriptionTooLongHint') : t('forms.titleRequiredHint');
+    blockedReason === 'descriptionTooLong'
+      ? t('forms.descriptionTooLongHint')
+      : blockedReason === 'filesUploading'
+        ? t('forms.filesUploadingHint')
+        : t('forms.titleRequiredHint');
 
   const { maxLength: titleMaxLength, counterThreshold } = title;
   const titleLength = title.value.length;

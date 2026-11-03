@@ -577,6 +577,7 @@ function CalloutFormConnectorInner({
     creating || updating || mediaGalleryUploading || framingWhiteboardDraft.loading || defaultWhiteboardDraft.loading;
 
   const createAndUpload = async (visibility: CalloutVisibility) => {
+    if (referenceUpload.uploading) return;
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) return;
 
@@ -710,7 +711,7 @@ function CalloutFormConnectorInner({
   };
 
   const saveEdit = async () => {
-    if (!calloutId) return;
+    if (!calloutId || referenceUpload.uploading) return;
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) return;
 
@@ -999,7 +1000,13 @@ function CalloutFormConnectorInner({
   const descriptionError =
     errors.description ??
     (descriptionOverLimit ? t('crd-common:components.wysiwyg-editor.validation.maxLength') : undefined);
-  const blockedReason = !canSubmit ? 'titleRequired' : descriptionOverLimit ? 'descriptionTooLong' : undefined;
+  const blockedReason = referenceUpload.uploading
+    ? 'filesUploading'
+    : !canSubmit
+      ? 'titleRequired'
+      : descriptionOverLimit
+        ? 'descriptionTooLong'
+        : undefined;
   const notifySwitch =
     mode === 'create' && canSubmit ? (
       <div className="flex items-center gap-2">

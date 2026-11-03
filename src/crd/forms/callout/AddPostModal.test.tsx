@@ -138,6 +138,28 @@ describe('AddPostModal — blocked by an over-long description', () => {
   });
 });
 
+describe('AddPostModal — blocked while files upload', () => {
+  test('every create footer action describes the files-uploading reason', () => {
+    render(<AddPostModal {...baseProps} onSaveDraft={vi.fn()} blockedReason="filesUploading" />);
+    for (const name of [/forms.publish/i, /forms.saveDraft/i]) {
+      const describedBy = screen.getByRole('button', { name }).getAttribute('aria-describedby');
+      expect(document.getElementById(describedBy as string)).toHaveTextContent('forms.filesUploadingHint');
+    }
+  });
+
+  test('edit-mode Save describes the files-uploading reason', () => {
+    render(<AddPostModal {...baseProps} mode="edit" blockedReason="filesUploading" />);
+    const describedBy = screen.getByRole('button', { name: /^forms.save$/i }).getAttribute('aria-describedby');
+    expect(document.getElementById(describedBy as string)).toHaveTextContent('forms.filesUploadingHint');
+  });
+
+  test('hovering the blocked Publish button shows the files-uploading hint in a tooltip', async () => {
+    render(<AddPostModal {...baseProps} blockedReason="filesUploading" />);
+    await userEvent.hover(screen.getByRole('button', { name: /forms.publish/i }));
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('forms.filesUploadingHint');
+  });
+});
+
 describe('AddPostModal — FR-133 validation error region', () => {
   test('title error message has aria-live="polite"', () => {
     render(<AddPostModal {...baseProps} title={{ value: '', onChange: vi.fn(), error: 'validation.titleRequired' }} />);
