@@ -47,6 +47,8 @@ export interface SpacesExplorerContainerEntities {
   authenticated: boolean;
   setSearchTerms: (terms: string[]) => void;
   loadingSearchResults: boolean;
+  /** How many results the search has in total; undefined while not searching, or when a filter applied here hides some. */
+  searchTotal: number | undefined;
 }
 
 /**
@@ -96,6 +98,14 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
     skip: !mySpaceIds || shouldSearch,
   });
 
+  // The search filters by Type on the server, so its total counts the shown Type only.
+  const searchTypes =
+    typeFilter === 'spaces'
+      ? [SearchResultType.Space]
+      : typeFilter === 'subspaces'
+        ? [SearchResultType.Subspace]
+        : undefined;
+
   // PUBLIC: Search for spaces and subspaces
   const {
     data: rawSearchResults,
@@ -110,6 +120,7 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
           {
             category: SearchCategory.Spaces,
             size: BATCH_SIZE,
+            types: searchTypes,
           },
         ],
       },
@@ -120,6 +131,13 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
 
   // A null cursor means the search has no more results.
   const searchCursor = rawSearchResults?.search.spaceResults?.cursor;
+  // Membership and Privacy still filter the results here, on the client, so the server's total only counts what is
+  // shown while neither is set. -1 means the server did not count.
+  const serverSearchTotal = rawSearchResults?.search.spaceResults?.total ?? -1;
+  const searchTotal =
+    shouldSearch && membershipFilter === 'all' && privacyFilter === 'all' && serverSearchTotal >= 0
+      ? serverSearchTotal
+      : undefined;
 
   const fetchMoreSearchResults = async () => {
     if (!searchCursor) {
@@ -131,7 +149,7 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
         searchData: {
           terms: searchTerms,
           tagsetNames: ['skills', 'keywords'],
-          filters: [{ category: SearchCategory.Spaces, size: BATCH_SIZE, cursor: searchCursor }],
+          filters: [{ category: SearchCategory.Spaces, size: BATCH_SIZE, cursor: searchCursor, types: searchTypes }],
         },
       },
       updateQuery: (prev, { fetchMoreResult }) => {
@@ -343,6 +361,7 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
     hasMore: matchingCount > visibleCount || serverHasMore,
     setSearchTerms: changeFilter(setSearchTerms),
     loadingSearchResults: loadingSearchResults ?? false,
+    searchTotal,
   };
 };
 

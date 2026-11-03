@@ -35,6 +35,7 @@ const fake = vi.hoisted(() => {
     },
     allSpacesFetchMore: vi.fn(),
     searchFetchMore: vi.fn(),
+    searchQuery: vi.fn(),
     subspacesQuery: vi.fn(),
   };
 });
@@ -63,7 +64,9 @@ vi.mock('@/core/apollo/generated/apollo-hooks', async () => {
         fetchMore: fake.allSpacesFetchMore,
       };
     },
-    useSpaceExplorerSearchQuery: ({ skip }: { skip: boolean }) => {
+    useSpaceExplorerSearchQuery: (options: { skip: boolean }) => {
+      fake.searchQuery(options);
+      const { skip } = options;
       const search = useSyncExternalStore(fake.subscribe, () => fake.state.search);
       return { data: skip ? undefined : search, loading: false, fetchMore: fake.searchFetchMore };
     },
@@ -294,5 +297,42 @@ describe('useSpaceExplorer search (spec 039 explore-filters-and-count)', () => {
     act(() => result.current.setSearchTerms(['energie']));
 
     expect(result.current.hasMore).toBe(false);
+  });
+
+  it('filters the search by the chosen Type on the server', () => {
+    const { result } = renderHook(() => useSpaceExplorer());
+    const lastSearchFilter = () => fake.searchQuery.mock.lastCall?.[0].variables.searchData.filters[0];
+
+    act(() => result.current.setSearchTerms(['energie']));
+    expect(lastSearchFilter().types).toBeUndefined();
+
+    act(() => result.current.onTypeFilterChange('spaces'));
+    expect(lastSearchFilter().types).toEqual([SearchResultType.Space]);
+
+    act(() => result.current.onTypeFilterChange('subspaces'));
+    expect(lastSearchFilter().types).toEqual([SearchResultType.Subspace]);
+  });
+
+  it("reports the search's total, unless Privacy filters it here or the server did not count", () => {
+    fake.state.search = {
+      search: { spaceResults: { cursor: null, total: 42, results: [searchResult(makeSpace('a'))] } },
+    };
+    const { result } = renderHook(() => useSpaceExplorer());
+    expect(result.current.searchTotal).toBeUndefined();
+
+    act(() => result.current.setSearchTerms(['energie']));
+    expect(result.current.searchTotal).toBe(42);
+
+    act(() => result.current.onPrivacyFilterChange('public'));
+    expect(result.current.searchTotal).toBeUndefined();
+
+    act(() => result.current.onPrivacyFilterChange('all'));
+    act(() => {
+      fake.state.search = {
+        search: { spaceResults: { cursor: null, total: -1, results: [searchResult(makeSpace('a'))] } },
+      };
+      fake.notify();
+    });
+    expect(result.current.searchTotal).toBeUndefined();
   });
 });
