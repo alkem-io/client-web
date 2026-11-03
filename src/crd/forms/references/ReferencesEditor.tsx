@@ -1,10 +1,11 @@
 import { Plus, Trash2 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { FileSelectionStatus } from '@/crd/forms/references/FileSelectionStatus';
 import { RowAttachFileButton } from '@/crd/forms/references/RowAttachFileButton';
 import { useRowFileUploads } from '@/crd/forms/references/useRowFileUploads';
+import { useRowsCommit } from '@/crd/forms/references/useRowsCommit';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { fileNameBase, type RowFileUpload } from '@/crd/lib/fileSelection';
 import { Button } from '@/crd/primitives/button';
@@ -69,37 +70,9 @@ export function ReferencesEditor({
   const { t } = useTranslation('crd-common');
   const [pendingDeleteIndex, setPendingDeleteIndex] = useState<number | null>(null);
   const [uploadingRows, setUploadingRows] = useState<Record<number, boolean>>({});
-  // Mirror of `rows` for post-await reads: a file upload takes seconds, and if
-  // the user types into any row meanwhile the closure-captured `rows` is stale
-  // by the time `await onFileUpload` resolves. Reading from the ref avoids
-  // reverting concurrent keystrokes.
-  const rowsRef = useRef(rows);
-  // Hosts that merge rows into a whole form value hand in a new `onChange` per render; a write
-  // that lands after an upload must use the latest one, or it reverts the host's other fields.
-  const onChangeRef = useRef(onChange);
-  const mounted = useRef(false);
-  useEffect(() => {
-    rowsRef.current = rows;
-  }, [rows]);
-  useEffect(() => {
-    onChangeRef.current = onChange;
-  });
-  useEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
+  const { rowsRef, commit } = useRowsCommit(rows, onChange);
   const uploads = useRowFileUploads(onFileUpload);
   const anyRowUploading = Object.keys(uploadingRows).length > 0;
-
-  // The one write path: nothing after unmount, and the mirror is refreshed first so two uploads
-  // settling before the next render each build on the other's result.
-  const commit = (next: ReferenceRow[]) => {
-    if (!mounted.current) return;
-    rowsRef.current = next;
-    onChangeRef.current(next);
-  };
 
   const updateRow = (index: number, patch: Partial<ReferenceRow>) => {
     commit(rowsRef.current.map((row, i) => (i === index ? { ...row, ...patch } : row)));
