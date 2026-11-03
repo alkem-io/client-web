@@ -1,13 +1,16 @@
-import { act, render, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import type { CalloutFormValues } from '../hooks/useCrdCalloutForm';
 
 type CapturedModalProps = {
   blockedReason?: string;
   title: { onChange: (value: string) => void };
   onSubmit: () => void;
   onSaveDraft?: () => void;
+  moreOptionsSlot?: ReactNode;
+  responsesZoneSlot?: ReactNode;
 };
 
 const harness = vi.hoisted(() => ({
@@ -15,6 +18,9 @@ const harness = vi.hoisted(() => ({
   modal: undefined as CapturedModalProps | undefined,
   handleCreateCallout: vi.fn(),
   updateCallout: vi.fn(),
+  renderSlots: false,
+  onFileUpload: vi.fn(),
+  onTemplateSelected: undefined as ((values: Partial<CalloutFormValues>) => void) | undefined,
 }));
 
 const editedCallout = {
@@ -80,7 +86,12 @@ vi.mock('@/main/crdPages/markdown/useMarkdownEditorIntegration', () => ({
 }));
 
 vi.mock('@/main/crdPages/utils/useReferenceFileUpload', () => ({
-  useReferenceFileUpload: () => ({ onFileUpload: vi.fn(), accept: '', canUpload: true, uploading: harness.uploading }),
+  useReferenceFileUpload: () => ({
+    onFileUpload: harness.onFileUpload,
+    accept: '',
+    canUpload: true,
+    uploading: harness.uploading,
+  }),
 }));
 
 vi.mock('@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation', () => ({
@@ -126,12 +137,22 @@ vi.mock('../hooks/useCrdSpaceContributors', () => ({
 vi.mock('@/crd/forms/callout/AddPostModal', () => ({
   AddPostModal: (props: CapturedModalProps) => {
     harness.modal = props;
-    return null;
+    return harness.renderSlots ? (
+      <>
+        <section aria-label="responses">{props.responsesZoneSlot}</section>
+        <section aria-label="more-options">{props.moreOptionsSlot}</section>
+      </>
+    ) : null;
   },
 }));
 vi.mock('./FramingEditorConnector', () => ({ FramingEditorConnector: () => null }));
 vi.mock('./ResponseDefaultsConnector', () => ({ ResponseDefaultsConnector: () => null }));
-vi.mock('./TemplateImportConnector', () => ({ TemplateImportConnector: () => null }));
+vi.mock('./TemplateImportConnector', () => ({
+  TemplateImportConnector: (props: { onTemplateSelected: (values: Partial<CalloutFormValues>) => void }) => {
+    harness.onTemplateSelected = props.onTemplateSelected;
+    return null;
+  },
+}));
 
 const { CalloutFormConnector } = await import('./CalloutFormConnector');
 
@@ -152,6 +173,9 @@ describe('CalloutFormConnector — no save while reference files upload', () => 
     harness.uploading = true;
     harness.modal = undefined;
     harness.handleCreateCallout.mockReset();
+    harness.renderSlots = false;
+    harness.onFileUpload = vi.fn();
+    harness.onTemplateSelected = undefined;
     harness.updateCallout = vi.fn().mockResolvedValue({ data: { updateCallout: { id: 'callout-1', framing: {} } } });
   });
 
@@ -189,5 +213,58 @@ describe('CalloutFormConnector — no save while reference files upload', () => 
     await renderEdit();
     await act(async () => harness.modal?.onSubmit());
     await waitFor(() => expect(harness.updateCallout).toHaveBeenCalled());
+  });
+});
+
+describe('CalloutFormConnector — replacing the content from a template', () => {
+  const finishUploads: ((url: string) => void)[] = [];
+
+  const pickTwoFiles = (region: HTMLElement) => {
+    const fileInput = region.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(fileInput, { target: { files: [new File(['x'], 'alpha.pdf'), new File(['y'], 'beta.pdf')] } });
+    expect(harness.onFileUpload).toHaveBeenCalledTimes(2);
+  };
+
+  const finishAll = () =>
+    act(async () => {
+      for (const finish of finishUploads) finish('https://cdn/file');
+    });
+
+  beforeEach(async () => {
+    finishUploads.length = 0;
+    harness.renderSlots = true;
+    harness.uploading = false;
+    harness.onFileUpload = vi.fn(
+      () =>
+        new Promise<string>(resolve => {
+          finishUploads.push(resolve);
+        })
+    );
+    await renderCreate();
+  });
+
+  test('an upload still running for the replaced references does not land in the template content', async () => {
+    const references = screen.getByRole('region', { name: 'more-options' });
+    fireEvent.click(within(references).getByRole('button', { name: 'references.addRow' }));
+    pickTwoFiles(references);
+
+    await act(async () => harness.onTemplateSelected?.({ title: 'From template', referenceRows: [] }));
+    await finishAll();
+
+    expect(within(references).getByText('references.empty')).toBeInTheDocument();
+    expect(within(references).queryByLabelText('references.uriLabel')).not.toBeInTheDocument();
+  });
+
+  test('an upload still running for the replaced pre-populated links does not land in the template content', async () => {
+    const emptyLink = { title: '', url: '', description: '' };
+    await act(async () => harness.onTemplateSelected?.({ responseType: 'link', prePopulateLinkRows: [emptyLink] }));
+    const responses = screen.getByRole('region', { name: 'responses' });
+    pickTwoFiles(responses);
+
+    await act(async () => harness.onTemplateSelected?.({ responseType: 'link', prePopulateLinkRows: [] }));
+    await finishAll();
+
+    expect(within(responses).getByText('contributionSettings.prePopulate.empty')).toBeInTheDocument();
+    expect(within(responses).queryByLabelText('contributionSettings.prePopulate.urlLabel')).not.toBeInTheDocument();
   });
 });

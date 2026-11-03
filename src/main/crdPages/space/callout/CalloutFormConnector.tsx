@@ -82,7 +82,12 @@ import { loadCalloutTemplateFormValues } from '@/main/crdPages/templates/loadCal
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
-import { formQuestionErrors, referenceRowErrors, useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
+import {
+  type CalloutFormValues,
+  formQuestionErrors,
+  referenceRowErrors,
+  useCrdCalloutForm,
+} from '../hooks/useCrdCalloutForm';
 import { useCrdSpaceContributors } from '../hooks/useCrdSpaceContributors';
 import {
   formDefinitionChanged,
@@ -271,7 +276,14 @@ function CalloutFormConnectorInner({
   const showFramingComments = mode !== 'create' || !restrictions?.disableFramingComments;
   const showContributionComments = mode !== 'create' || !restrictions?.disableContributionComments;
   const disableRichMedia = mode === 'create' && Boolean(restrictions?.disableRichMedia);
-  const { values, errors, setField, setValues, validate, reset, prefill, dirty } = form;
+  const { values, errors, setField, setValues, validate, reset, prefill: prefillForm, dirty } = form;
+  // Keys the row editors that upload files, so replacing the form content remounts them and their
+  // unmount discards uploads still running for the replaced content.
+  const [contentGeneration, setContentGeneration] = useState(0);
+  const prefill = (data: Partial<CalloutFormValues>) => {
+    prefillForm(data);
+    setContentGeneration(generation => generation + 1);
+  };
 
   const framingWhiteboardDraft = useWhiteboardDraft({
     scope: { type: 'calloutsSet', id: calloutsSetId },
@@ -1234,6 +1246,7 @@ function CalloutFormConnectorInner({
               locked={mode === 'edit'}
             />
             <ResponsePanel
+              key={contentGeneration}
               type={values.responseType}
               allowedActors={values.allowedActors}
               onAllowedActorsChange={v => setField('allowedActors', v)}
@@ -1283,6 +1296,7 @@ function CalloutFormConnectorInner({
               />
             )}
             <ReferencesEditor
+              key={contentGeneration}
               rows={values.referenceRows}
               onChange={rows => setField('referenceRows', rows)}
               errors={referenceRowErrors(errors)}
