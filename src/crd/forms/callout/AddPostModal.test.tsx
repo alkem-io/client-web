@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useEffect } from 'react';
 import { describe, expect, test, vi } from 'vitest';
 import { AddPostModal } from './AddPostModal';
 
@@ -238,5 +239,32 @@ describe('AddPostModal — FR-72 notify-members slot', () => {
   test('does not render notify slot when the consumer passes null (empty title in create)', () => {
     render(<AddPostModal {...baseProps} notifySwitchSlot={null} />);
     expect(screen.queryByTestId('notify-slot')).not.toBeInTheDocument();
+  });
+});
+
+describe('AddPostModal — More options', () => {
+  test('collapsing hides the options without unmounting them, so their in-progress work survives', async () => {
+    const user = userEvent.setup();
+    const mounts = vi.fn();
+    const unmounts = vi.fn();
+    function Options() {
+      useEffect(() => {
+        mounts();
+        return unmounts;
+      }, []);
+      return <p>options-content</p>;
+    }
+    render(<AddPostModal {...baseProps} moreOptionsSlot={<Options />} />);
+    const toggle = screen.getByRole('button', { name: 'forms.moreOptions' });
+
+    expect(screen.getByText('options-content')).not.toBeVisible();
+    await user.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByText('options-content')).toBeVisible();
+    await user.click(toggle);
+    expect(screen.getByText('options-content')).not.toBeVisible();
+
+    expect(mounts).toHaveBeenCalledTimes(1);
+    expect(unmounts).not.toHaveBeenCalled();
   });
 });

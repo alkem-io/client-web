@@ -254,7 +254,9 @@ export function AddPostModal({
                     aria-hidden="true"
                   />
                 </button>
-                {moreOpen && <div className="space-y-4 pt-2 px-2">{moreOptionsSlot}</div>}
+                <div hidden={!moreOpen} className="space-y-4 pt-2 px-2">
+                  {moreOptionsSlot}
+                </div>
               </div>
             </>
           )}
