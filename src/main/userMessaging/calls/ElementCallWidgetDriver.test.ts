@@ -132,10 +132,15 @@ const makeClient = (timeline: FakeEvent[] = [], state: FakeEvent[] = []) => {
           : (state.find(event => event.getType() === type && event.getStateKey() === stateKey) ?? null),
     },
   };
+  // The chat SDK's own request layer, sending through whatever `fetch` the test stubs.
+  const { http } = createClient({
+    baseUrl: 'https://matrix.example.org',
+    accessToken: 'access-token',
+    fetchFn: ((...args: Parameters<typeof fetch>) => globalThis.fetch(...args)) as typeof fetch,
+  });
+  vi.spyOn(http, 'authedRequest');
   return {
     room,
-    baseUrl: 'https://matrix.example.org',
-    getAccessToken: () => 'access-token',
     getUserId: () => USER,
     getDeviceId: () => DEVICE,
     getRoom: vi.fn((roomId: string) => (roomId === ROOM ? room : null)),
@@ -153,7 +158,7 @@ const makeClient = (timeline: FakeEvent[] = [], state: FakeEvent[] = []) => {
     redactEvent: vi.fn(async () => ({ event_id: '$redaction' })),
     _unstable_sendDelayedStateEvent: vi.fn(async () => ({ delay_id: 'delay-state' })),
     _unstable_sendDelayedEvent: vi.fn(async () => ({ delay_id: 'delay-event' })),
-    http: { authedRequest: vi.fn(async () => ({})) },
+    http,
   };
 };
 
@@ -260,17 +265,25 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
   });
 
   it('maps delayed-event updates to the body-form update the pinned chat server serves', async () => {
-    const client = makeClient();
-    const driver = driverFor(client);
-    await driver.cancelScheduledDelayedEvent('d1');
-    await driver.restartScheduledDelayedEvent('d2');
-    await driver.sendScheduledDelayedEvent('d/3');
-    const prefix = { prefix: '/_matrix/client/unstable/org.matrix.msc4140' };
-    expect(client.http.authedRequest.mock.calls).toEqual([
-      ['POST', '/delayed_events/d1', undefined, { action: 'cancel' }, prefix],
-      ['POST', '/delayed_events/d2', undefined, { action: 'restart' }, prefix],
-      ['POST', '/delayed_events/d%2F3', undefined, { action: 'send' }, prefix],
-    ]);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => Response.json({}))
+    );
+    try {
+      const client = makeClient();
+      const driver = driverFor(client);
+      await driver.cancelScheduledDelayedEvent('d1');
+      await driver.restartScheduledDelayedEvent('d2');
+      await driver.sendScheduledDelayedEvent('d/3');
+      const opts = { prefix: '/_matrix/client/unstable/org.matrix.msc4140', keepAlive: false };
+      expect(vi.mocked(client.http.authedRequest).mock.calls).toEqual([
+        ['POST', '/delayed_events/d1', undefined, { action: 'cancel' }, opts],
+        ['POST', '/delayed_events/d2', undefined, { action: 'restart' }, opts],
+        ['POST', '/delayed_events/d%2F3', undefined, { action: 'send' }, opts],
+      ]);
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it.each([
@@ -312,22 +325,25 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
 
   it('fires the scheduled leave at once, in a request that outlives the page, when the page goes away', async () => {
     const client = makeClient();
-    const fetchMock = vi.fn(async () => new Response('{}'));
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => Response.json({}));
     vi.stubGlobal('fetch', fetchMock);
     try {
       const driver = driverFor(client);
       await driver.sendDelayedEvent(3600000, CALL_MEMBER, {}, `_${USER}_${DEVICE}_m.call`, ROOM);
       driver.sendPendingLeavesNow();
+      // The request leaves within the page-exit task: only already-settled steps run before it, no timer.
+      for (let step = 0; step < 10; step++) {
+        await Promise.resolve();
+      }
       expect(fetchMock).toHaveBeenCalledTimes(1);
-      expect(fetchMock).toHaveBeenCalledWith(
-        'https://matrix.example.org/_matrix/client/unstable/org.matrix.msc4140/delayed_events/delay-state',
-        {
-          method: 'POST',
-          keepalive: true,
-          headers: { Authorization: 'Bearer access-token', 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'send' }),
-        }
+      const [input, init] = fetchMock.mock.calls[0];
+      expect(String(input)).toBe(
+        'https://matrix.example.org/_matrix/client/unstable/org.matrix.msc4140/delayed_events/delay-state'
       );
+      expect(init?.method).toBe('POST');
+      expect(init?.keepalive).toBe(true);
+      expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer access-token');
+      expect(JSON.parse(String(init?.body))).toEqual({ action: 'send' });
     } finally {
       vi.unstubAllGlobals();
     }
@@ -346,7 +362,9 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
       await driver.sendDelayedEvent(8000, CALL_MEMBER, {}, `_${USER}_${DEVICE}_m.call`, ROOM);
       await driver.sendScheduledDelayedEvent('sent');
       await driver.sendDelayedEvent(500, 'm.reaction', { key: 'x' });
+      fetchMock.mockClear();
       driver.sendPendingLeavesNow();
+      await new Promise(resolve => setTimeout(resolve, 0));
       expect(fetchMock).not.toHaveBeenCalled();
     } finally {
       vi.unstubAllGlobals();
@@ -478,14 +496,17 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
   });
 
   it('downloads media of the chat server through its authenticated media endpoint, as the platform session', async () => {
-    const fetchMock = vi.fn(async () => new Response('avatar-bytes'));
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => new Response('avatar-bytes'));
     vi.stubGlobal('fetch', fetchMock);
     try {
       const { file } = await driverFor(makeClient()).downloadFile('mxc://matrix.example.org/abc123');
-      expect(fetchMock).toHaveBeenCalledWith(
-        'https://matrix.example.org/_matrix/client/v1/media/download/matrix.example.org/abc123?allow_redirect=true',
-        expect.objectContaining({ headers: { Authorization: 'Bearer access-token' } })
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      const [input, init] = fetchMock.mock.calls[0];
+      expect(String(input)).toBe(
+        'https://matrix.example.org/_matrix/client/v1/media/download/matrix.example.org/abc123?allow_redirect=true'
       );
+      expect(init?.method).toBe('GET');
+      expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer access-token');
       // fetch's Blob and jsdom's global Blob can come from different realms, so
       // `instanceof Blob` depends on the runtime; check the brand instead.
       expect(Object.prototype.toString.call(file)).toBe('[object Blob]');
@@ -551,19 +572,22 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
       const driver = driverFor(makeClient());
       const first = driver.downloadFile('mxc://matrix.example.org/broken');
       const second = driver.downloadFile('mxc://matrix.example.org/broken');
+      await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
       answer(new Response('{}', { status: 500 }));
-      await expect(first).rejects.toThrow('status 500');
-      await expect(second).rejects.toThrow('status 500');
+      await expect(first).rejects.toMatchObject({ httpStatus: 500 });
+      await expect(second).rejects.toMatchObject({ httpStatus: 500 });
       expect(fetchMock).toHaveBeenCalledTimes(1);
 
       const third = driver.downloadFile('mxc://matrix.example.org/fine');
       const fourth = driver.downloadFile('mxc://matrix.example.org/fine');
+      await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
       answer(new Response('avatar-bytes'));
       await expect(third).resolves.toBeDefined();
       await expect(fourth).resolves.toBeDefined();
       expect(fetchMock).toHaveBeenCalledTimes(2);
 
       const fifth = driver.downloadFile('mxc://matrix.example.org/fine');
+      await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(3));
       answer(new Response('avatar-bytes'));
       await expect(fifth).resolves.toBeDefined();
       expect(fetchMock).toHaveBeenCalledTimes(3);
@@ -594,22 +618,25 @@ describe('ElementCallWidgetDriver — host behaviour', () => {
   });
 
   it('gives up a download that hangs, so later asks are not held behind it', async () => {
-    const timeout = new AbortController();
-    const timeoutSpy = vi.spyOn(AbortSignal, 'timeout').mockReturnValue(timeout.signal);
+    vi.useFakeTimers({ toFake: ['setTimeout'] });
     const fetchMock = vi.fn(
       (_: RequestInfo | URL, init?: RequestInit) =>
         new Promise<Response>((_resolve, reject) => {
-          init?.signal?.addEventListener('abort', () => reject(init.signal?.reason));
+          init?.signal?.addEventListener('abort', () => reject(new DOMException('aborted', 'AbortError')));
         })
     );
     vi.stubGlobal('fetch', fetchMock);
     try {
-      const pending = driverFor(makeClient()).downloadFile('mxc://matrix.example.org/stuck');
-      expect(timeoutSpy).toHaveBeenCalledWith(20_000);
-      timeout.abort(new DOMException('timed out', 'TimeoutError'));
-      await expect(pending).rejects.toThrow('timed out');
+      const driver = driverFor(makeClient());
+      const pending = driver.downloadFile('mxc://matrix.example.org/stuck');
+      const settled = vi.fn();
+      pending.then(settled, settled);
+      await vi.advanceTimersByTimeAsync(19_999);
+      expect(settled).not.toHaveBeenCalled();
+      await vi.advanceTimersByTimeAsync(1);
+      await expect(pending).rejects.toThrow();
     } finally {
-      timeoutSpy.mockRestore();
+      vi.useRealTimers();
       vi.unstubAllGlobals();
     }
   });
