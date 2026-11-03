@@ -140,6 +140,32 @@ describe('ReferencesEditor — several files on one paperclip', () => {
     expect(uriInputs().map(i => i.value)).toEqual(['https://kept', 'https://cdn/alpha', 'https://cdn/beta']);
   });
 
+  test('removing an earlier row during the uploads appends every result and leaves the clicked row as authored', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    render(
+      <Host
+        initial={[
+          { name: 'A', uri: 'https://a', description: '' },
+          { name: 'B', uri: '', description: 'about B' },
+        ]}
+        onFileUpload={upload}
+      />
+    );
+
+    pick(fileInputs()[1], [pdf('alpha.pdf'), pdf('beta.pdf')]);
+    await user.click(screen.getAllByRole('button', { name: 'references.removeRow' })[0]);
+    await user.click(screen.getByRole('button', { name: 'references.removeConfirm.confirm' }));
+    await act(async () => {
+      calls[0].resolve('https://cdn/alpha');
+      calls[1].resolve('https://cdn/beta');
+    });
+
+    expect(nameInputs().map(i => i.value)).toEqual(['B', 'alpha', 'beta']);
+    expect(uriInputs().map(i => i.value)).toEqual(['', 'https://cdn/alpha', 'https://cdn/beta']);
+    expect(descriptionInputs()[0]).toHaveValue('about B');
+  });
+
   test('one failure of three: two rows added and the failed file is named once, with no notification', async () => {
     const { upload, calls } = createControlledUpload();
     render(<Host initial={[emptyRow]} onFileUpload={upload} />);

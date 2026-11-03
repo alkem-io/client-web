@@ -122,6 +122,31 @@ describe('LinksPrePopulateRows — several files on one paperclip', () => {
     expect(urlInputs().map(i => i.value)).toEqual(['https://kept', 'https://cdn/alpha', 'https://cdn/beta']);
   });
 
+  test('removing an earlier row during the uploads appends every result and leaves the clicked row as authored', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    render(
+      <Host
+        initial={[
+          { title: 'A', url: 'https://a', description: '' },
+          { title: 'B', url: '', description: 'about B' },
+        ]}
+        onFileUpload={upload}
+      />
+    );
+
+    pick(fileInputs()[1], [pdf('alpha.pdf'), pdf('beta.pdf')]);
+    await user.click(screen.getAllByRole('button', { name: 'contributionSettings.prePopulate.removeRow' })[0]);
+    await act(async () => {
+      calls[0].resolve('https://cdn/alpha');
+      calls[1].resolve('https://cdn/beta');
+    });
+
+    expect(titleInputs().map(i => i.value)).toEqual(['B', 'alpha', 'beta']);
+    expect(urlInputs().map(i => i.value)).toEqual(['', 'https://cdn/alpha', 'https://cdn/beta']);
+    expect(descriptionInputs()[0]).toHaveValue('about B');
+  });
+
   test('one file picked behaves as today', async () => {
     const { upload, calls } = createControlledUpload();
     render(<Host initial={[emptyRow]} onFileUpload={upload} />);
