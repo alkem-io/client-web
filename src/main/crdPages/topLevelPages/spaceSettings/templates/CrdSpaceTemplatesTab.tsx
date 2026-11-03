@@ -32,16 +32,22 @@ export function CrdSpaceTemplatesTab({ spaceId, accountId }: { spaceId: string; 
   // References paperclip — uploads land in the space's own (ABOUT) bucket. The space already exists,
   // so the ambient context resolves `temporaryLocation: false` and the upload is permanent, so the
   // file is propagated to `file_backup_outbox` (issue #10126).
-  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(
-    useStorageConfigContext()
-  );
+  const {
+    onFileUpload: onReferenceFileUpload,
+    accept: referenceUploadAccept,
+    uploading: referenceUploading,
+  } = useReferenceFileUpload(useStorageConfigContext());
   const tm = useTemplatesManager({
     holderKind: 'space',
     templatesSetId,
     accountId,
     spaceId,
     markdownUpload: { create: mdCreate, edit: mdEdit },
-    referenceUpload: { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept },
+    referenceUpload: {
+      onFileUpload: onReferenceFileUpload,
+      accept: referenceUploadAccept,
+      uploading: referenceUploading,
+    },
   });
 
   return (
@@ -83,6 +89,7 @@ export function CrdSpaceTemplatesTab({ spaceId, accountId }: { spaceId: string; 
         onCommonChange={tm.form.onCommonChange}
         perTypeFormSlot={tm.form.perTypeFormSlot}
         submitting={tm.form.submitting}
+        uploading={tm.form.uploading}
         onSubmit={tm.form.onSubmit}
         onCancel={tm.form.onCancel}
         isDirty={tm.form.isDirty}

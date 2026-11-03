@@ -11,6 +11,7 @@ export function CommunityGuidelinesTemplateForm({
   onChange,
   onReferenceFileUpload,
   referenceUploadAccept,
+  disabled,
   onImageUpload,
   iframeAllowedUrls,
   onError,
@@ -59,6 +60,7 @@ export function CommunityGuidelinesTemplateForm({
         label={t('form.communityGuidelines.references')}
         onFileUpload={onReferenceFileUpload}
         uploadAccept={referenceUploadAccept}
+        disabled={disabled}
       />
     </div>
   );

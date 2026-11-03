@@ -24,6 +24,8 @@ export type UseCommunityGuidelinesDataResult = {
   hasContent: boolean;
   /** Per-row paperclip file-attach for the references editor (D24) — uploads to the space bucket, resolves the stored URL. */
   onReferenceFileUpload: ((file: File) => Promise<string | null>) | undefined;
+  /** Whether a reference file upload has not settled yet; Save and the template actions wait for it. */
+  referenceUploading: boolean;
   /** `accept` attribute for the references file picker, derived from the bucket's allowed mime types. */
   referenceUploadAccept: string | undefined;
 };
@@ -53,9 +55,11 @@ export function useCommunityGuidelinesData(
   // file uploads land in the space's own bucket. The space already exists, so the context resolves
   // `temporaryLocation: false` and the upload is permanent (propagated to `file_backup_outbox`,
   // issue #10126) — same path as the About tab references and the Innovation Pack form (spec 098 D24 / FR-038).
-  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(
-    useStorageConfigContext()
-  );
+  const {
+    onFileUpload: onReferenceFileUpload,
+    accept: referenceUploadAccept,
+    uploading: referenceUploading,
+  } = useReferenceFileUpload(useStorageConfigContext());
 
   const serverValue: CommunityGuidelinesEditorValue = communityGuidelines
     ? {
@@ -145,13 +149,14 @@ export function useCommunityGuidelinesData(
     loading: loading && !communityGuidelines,
     submitting,
     isDirty,
-    canSave: !!communityGuidelinesId && isDirty && !submitting,
+    canSave: !!communityGuidelinesId && isDirty && !submitting && !referenceUploading,
     onChange,
     onSave,
     onReset: () => setLocalValue(null),
     onApplyTemplate,
     hasContent,
     onReferenceFileUpload,
+    referenceUploading,
     referenceUploadAccept,
   };
 }

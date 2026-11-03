@@ -34,6 +34,8 @@ export type { AboutFormValues };
 
 export type UseAboutTabDataResult = {
   values: AboutFormValues | null;
+  /** Incremented by every Discard; keys the references editor so a Discard drops its pending files. */
+  resetGeneration: number;
   previewCard: ReturnType<typeof buildPreviewCard> | null;
   loading: boolean;
   error: Error | null;
@@ -177,9 +179,11 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
   // Reference file upload (paperclip) — the space settings tab is always rendered inside the
   // ambient space StorageConfigContextProvider, so the bucket resolves from context.
-  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(
-    useStorageConfigContext()
-  );
+  const {
+    onFileUpload: onReferenceFileUpload,
+    accept: referenceUploadAccept,
+    uploading: referenceUploading,
+  } = useReferenceFileUpload(useStorageConfigContext());
 
   // Seed once when the query first resolves. Subsequent cache updates are
   // picked up via `saved` (for dirty detection) without overwriting user edits.
@@ -727,6 +731,8 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
   const dismissClassificationConflict = () => setClassificationConflict(null);
 
+  const [resetGeneration, setResetGeneration] = useState(0);
+
   const reset = () => {
     if (saved) {
       setValues(saved);
@@ -734,10 +740,12 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     }
     resetClassifications();
     setSaveError(null);
+    setResetGeneration(generation => generation + 1);
   };
 
   return {
     values,
+    resetGeneration,
     previewCard,
     loading: queryLoading,
     error: queryError ?? null,
@@ -759,7 +767,8 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     untitledReferenceIds,
     unsaved: {
       count: unsavedCount,
-      canSave: untitledReferenceIds.length === 0,
+      canSave: untitledReferenceIds.length === 0 && !referenceUploading,
+      saveBlockedReason: referenceUploading ? t('fileSelection.saveBlocked', { ns: 'crd-common' }) : undefined,
       saving,
       error: saveError,
       saveAll,

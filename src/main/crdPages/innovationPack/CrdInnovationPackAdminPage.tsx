@@ -151,6 +151,7 @@ const CrdInnovationPackAdminPageInner = () => {
         onCommonChange={tm.form.onCommonChange}
         perTypeFormSlot={tm.form.perTypeFormSlot}
         submitting={tm.form.submitting}
+        uploading={tm.form.uploading}
         onSubmit={tm.form.onSubmit}
         onCancel={tm.form.onCancel}
         isDirty={tm.form.isDirty}

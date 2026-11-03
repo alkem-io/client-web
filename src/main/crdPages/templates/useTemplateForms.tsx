@@ -133,6 +133,8 @@ export type TemplateMarkdownUploadByIntent = {
 export type TemplateReferenceUpload = {
   onFileUpload?: (file: File) => Promise<string | null>;
   accept?: string;
+  /** Whether an upload through `onFileUpload` has not settled yet. */
+  uploading?: boolean;
 };
 
 export type UseTemplateFormsArgs = {
@@ -156,6 +158,8 @@ export type UseTemplateFormsResult = {
   onCommonChange: (next: TemplateCommonValues) => void;
   perTypeFormSlot: ReactNode;
   submitting: boolean;
+  /** True while a reference file upload has not settled — the dialog withholds Save. */
+  uploading: boolean;
   isDirty: boolean;
   onSubmit: () => void;
   onCancel: () => void;
@@ -1029,6 +1033,7 @@ export function useTemplateForms({
           onChange={onPerTypeChange}
           onReferenceFileUpload={referenceUpload?.onFileUpload}
           referenceUploadAccept={referenceUpload?.accept}
+          disabled={submitting}
           {...markdownUploadProps}
         />
       );
@@ -1089,6 +1094,7 @@ export function useTemplateForms({
     onCommonChange,
     perTypeFormSlot,
     submitting: submitting || materializingWhiteboard || calloutFramingDraft.loading || calloutDefaultDraft.loading,
+    uploading: referenceUpload?.uploading ?? false,
     isDirty: !pristine || (values.type === 'callout' && calloutForm.dirty),
     onSubmit,
     onCancel: cancel,

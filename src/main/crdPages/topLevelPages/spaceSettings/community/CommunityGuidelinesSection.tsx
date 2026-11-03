@@ -49,7 +49,7 @@ export function CommunityGuidelinesSection({
               variant="outline"
               size="sm"
               onClick={onApplyTemplate}
-              disabled={guidelines.submitting}
+              disabled={guidelines.submitting || guidelines.referenceUploading}
             >
               {t('community.guidelines.applyTemplate')}
             </Button>
@@ -58,7 +58,7 @@ export function CommunityGuidelinesSection({
               variant="outline"
               size="sm"
               onClick={onSaveAsTemplate}
-              disabled={guidelines.submitting}
+              disabled={guidelines.submitting || guidelines.referenceUploading}
             >
               {t('community.guidelines.saveAsTemplate')}
             </Button>

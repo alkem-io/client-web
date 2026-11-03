@@ -44,3 +44,29 @@ describe('TemplateFormDialog edit actions', () => {
     expect(screen.getByRole('button', { name: 'form.save' })).toBeEnabled();
   });
 });
+
+describe('TemplateFormDialog while reference files upload', () => {
+  it('disables Save without marking it busy, and leaves Cancel enabled', () => {
+    render(
+      <TemplateFormDialog
+        open={true}
+        intent="create"
+        type="communityGuidelines"
+        commonValue={{ name: 'Template', description: 'Description', tags: [] }}
+        commonErrors={{}}
+        onCommonChange={vi.fn()}
+        perTypeFormSlot={<div>Body</div>}
+        submitting={false}
+        uploading={true}
+        onSubmit={vi.fn()}
+        onCancel={vi.fn()}
+        isDirty={true}
+      />
+    );
+
+    const save = screen.getByRole('button', { name: 'form.save' });
+    expect(save).toBeDisabled();
+    expect(save).not.toHaveAttribute('aria-busy', 'true');
+    expect(screen.getByRole('button', { name: 'form.cancel' })).toBeEnabled();
+  });
+});

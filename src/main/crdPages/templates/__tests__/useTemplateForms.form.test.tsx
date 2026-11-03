@@ -1,5 +1,5 @@
 /** @vitest-environment jsdom */
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const harness = vi.hoisted(() => ({
@@ -67,9 +67,14 @@ vi.mock('@/main/crdPages/templates/CalloutTemplateForm', () => ({
   ),
 }));
 
+vi.mock('@/crd/forms/markdown/MarkdownEditor', () => ({
+  MarkdownEditor: () => null,
+}));
+
+import type { CommunityGuidelinesTemplateValues } from '@/crd/components/templates/types';
 import { createFormQuestion, DEFAULT_FORM_SETTINGS } from '@/crd/forms/callout/formValues';
 import { EMPTY_CALLOUT_FORM_VALUES } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
-import { useTemplateForms } from '../useTemplateForms';
+import { type TemplateReferenceUpload, type UseTemplateFormsResult, useTemplateForms } from '../useTemplateForms';
 
 function Harness() {
   const forms = useTemplateForms({ templatesSetId: 'templates-set-1' });
@@ -158,5 +163,85 @@ describe('useTemplateForms — editing a Form template', () => {
     expect(harness.updateTemplate).not.toHaveBeenCalled();
     expect(harness.updateCalloutTemplate).not.toHaveBeenCalled();
     expect(screen.getByTestId('dialog-open')).toHaveTextContent('true');
+  });
+});
+
+const guidelinesTemplate = (
+  key: string,
+  references: CommunityGuidelinesTemplateValues['references']
+): CommunityGuidelinesTemplateValues => ({
+  type: 'communityGuidelines',
+  name: `Template ${key}`,
+  description: `Description ${key}`,
+  tags: [],
+  title: `Guidelines ${key}`,
+  guidelinesMarkdown: '',
+  references,
+});
+
+let latest: UseTemplateFormsResult;
+
+/** Renders the per-type form only while the dialog is open, as `TemplateFormDialog` does. */
+function GuidelinesHarness({ referenceUpload }: { referenceUpload: TemplateReferenceUpload }) {
+  const forms = useTemplateForms({ templatesSetId: 'templates-set-1', referenceUpload });
+  latest = forms;
+  return <>{forms.open && forms.perTypeFormSlot}</>;
+}
+
+const openEditGuidelines = (key: string, references: CommunityGuidelinesTemplateValues['references']) =>
+  act(() =>
+    latest.openEdit(`template-${key}`, guidelinesTemplate(key, references), `cg-${key}`, undefined, {
+      profileId: `profile-${key}`,
+      originalReferenceIds: references.flatMap(r => (r.id ? [r.id] : [])),
+    })
+  );
+
+describe('useTemplateForms — community guidelines references while files upload', () => {
+  beforeEach(() => {
+    harness.updateTemplate.mockReset();
+  });
+
+  it('reports the reference upload as form.uploading', () => {
+    const { rerender } = render(<GuidelinesHarness referenceUpload={{ uploading: true }} />);
+    expect(latest.uploading).toBe(true);
+
+    rerender(<GuidelinesHarness referenceUpload={{ uploading: false }} />);
+    expect(latest.uploading).toBe(false);
+  });
+
+  it('disables the references paperclips while the template saves', async () => {
+    harness.updateTemplate.mockReturnValue(new Promise(() => {}));
+    render(<GuidelinesHarness referenceUpload={{ onFileUpload: vi.fn() }} />);
+    openEditGuidelines('a', [{ id: 'ref-a', name: 'Link', uri: 'https://a', description: '' }]);
+    expect(screen.getByRole('button', { name: 'references.attachFile' })).toBeEnabled();
+
+    act(() => latest.onSubmit());
+
+    await waitFor(() => expect(latest.submitting).toBe(true));
+    expect(screen.getByRole('button', { name: 'references.attachFile' })).toBeDisabled();
+  });
+
+  it("a cancelled template's late upload does not change the next template's form", async () => {
+    const resolvers: Array<(url: string) => void> = [];
+    const onFileUpload = vi.fn((_file: File) => new Promise<string | null>(resolve => resolvers.push(resolve)));
+    render(<GuidelinesHarness referenceUpload={{ onFileUpload }} />);
+
+    openEditGuidelines('a', [{ name: '', uri: '', description: '' }]);
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(fileInput, { target: { files: [new File(['x'], 'alpha.pdf')] } });
+    expect(onFileUpload).toHaveBeenCalledOnce();
+
+    act(() => latest.onCancel());
+    await waitFor(() => expect(latest.open).toBe(false));
+    const referencesB = [{ id: 'ref-b', name: 'B link', uri: 'https://b', description: 'kept' }];
+    openEditGuidelines('b', referencesB);
+    await act(async () => resolvers[0]('https://cdn/alpha'));
+
+    expect(latest.commonValue).toEqual({ name: 'Template b', description: 'Description b', tags: [] });
+    expect(screen.getByLabelText('form.communityGuidelines.title')).toHaveValue('Guidelines b');
+    expect((screen.getAllByLabelText('references.uriLabel') as HTMLInputElement[]).map(input => input.value)).toEqual([
+      'https://b',
+    ]);
+    expect(latest.isDirty).toBe(false);
   });
 });

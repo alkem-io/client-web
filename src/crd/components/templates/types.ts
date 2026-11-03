@@ -340,6 +340,8 @@ export type TemplateFormDialogProps = {
   perTypeFormSlot: ReactNode;
   /** True while the create/update mutation (+ any uploads) is in flight — disables Save, shows aria-busy. */
   submitting: boolean;
+  /** True while a reference file of the form is uploading — disables Save only. */
+  uploading?: boolean;
   onSubmit: () => void;
   /** Closing with unsaved changes triggers an internal DiscardChangesDialog when `isDirty` is true. */
   onCancel: () => void;
@@ -365,6 +367,8 @@ export type CommunityGuidelinesTemplateFormProps = {
   onReferenceFileUpload?: (file: File) => Promise<string | null>;
   /** `accept` attribute for the references file picker. */
   referenceUploadAccept?: string;
+  /** Disables the references paperclips (e.g. while the template saves). */
+  disabled?: boolean;
 } & MarkdownUploadProps;
 export type ClassificationTemplateFormProps = {
   value: ClassificationTemplateValues;
