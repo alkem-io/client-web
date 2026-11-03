@@ -59,3 +59,17 @@ describe('useCommunityGuidelinesData — Save while reference files upload', () 
     expect(result.current.referenceUploading).toBe(false);
   });
 });
+
+describe('useCommunityGuidelinesData — Discard', () => {
+  it('each reset drops the local edits and increments resetGeneration', () => {
+    const { result } = renderHook(() => useCommunityGuidelinesData('cg-1'));
+    const before = result.current.resetGeneration;
+
+    act(() => result.current.onChange({ title: 'Renamed' }));
+    act(() => result.current.onReset());
+    expect(result.current.isDirty).toBe(false);
+    expect(result.current.resetGeneration).toBe(before + 1);
+    act(() => result.current.onReset());
+    expect(result.current.resetGeneration).toBe(before + 2);
+  });
+});

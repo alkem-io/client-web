@@ -18,6 +18,8 @@ export type UseCommunityGuidelinesDataResult = {
   onSave: () => Promise<void>;
   /** Drops unsaved edits, back to the server value. */
   onReset: () => void;
+  /** Incremented by each `onReset`; keys the references editor so a Discard drops its running uploads. */
+  resetGeneration: number;
   /** Apply a community-guidelines template (id) to the live guidelines — overwrites title/body/references on the server. */
   onApplyTemplate: (templateId: string) => Promise<void>;
   /** True when there is any user-authored content (title / body / a link) — used to gate the apply-template confirm. */
@@ -73,6 +75,7 @@ export function useCommunityGuidelinesData(
 
   const [localValue, setLocalValue] = useState<CommunityGuidelinesEditorValue | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [resetGeneration, setResetGeneration] = useState(0);
 
   // Reset the local edit buffer whenever the guidelines id or the server data changes.
   useEffect(() => {
@@ -152,7 +155,11 @@ export function useCommunityGuidelinesData(
     canSave: !!communityGuidelinesId && isDirty && !submitting && !referenceUploading,
     onChange,
     onSave,
-    onReset: () => setLocalValue(null),
+    onReset: () => {
+      setLocalValue(null);
+      setResetGeneration(generation => generation + 1);
+    },
+    resetGeneration,
     onApplyTemplate,
     hasContent,
     onReferenceFileUpload,

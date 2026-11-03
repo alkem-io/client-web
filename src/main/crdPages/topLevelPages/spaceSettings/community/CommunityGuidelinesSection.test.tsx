@@ -8,8 +8,12 @@ vi.mock('react-i18next', () => {
   return { useTranslation: () => ({ t }) };
 });
 
+const editorProps = vi.hoisted(() => ({ referencesKey: undefined as unknown }));
 vi.mock('@/crd/components/space/settings/CommunityGuidelinesEditor', () => ({
-  CommunityGuidelinesEditor: () => null,
+  CommunityGuidelinesEditor: ({ referencesKey }: { referencesKey?: unknown }) => {
+    editorProps.referencesKey = referencesKey;
+    return null;
+  },
 }));
 vi.mock('@/crd/components/space/settings/CommunityGuidelinesPreview', () => ({
   CommunityGuidelinesPreview: ({ onEdit }: { onEdit: () => void }) => (
@@ -28,6 +32,7 @@ const guidelines = (referenceUploading: boolean): UseCommunityGuidelinesDataResu
   onChange: vi.fn(),
   onSave: vi.fn(),
   onReset: vi.fn(),
+  resetGeneration: 7,
   onApplyTemplate: vi.fn(),
   hasContent: true,
   onReferenceFileUpload: vi.fn(),
@@ -76,5 +81,13 @@ describe('CommunityGuidelinesSection — template actions while reference files 
     fireEvent.click(saveAsTemplate);
     expect(onApplyTemplate).toHaveBeenCalledOnce();
     expect(onSaveAsTemplate).toHaveBeenCalledOnce();
+  });
+});
+
+describe('CommunityGuidelinesSection — Discard', () => {
+  it("keys the references editor on the data hook's resetGeneration", () => {
+    renderSection(false);
+
+    expect(editorProps.referencesKey).toBe(7);
   });
 });
