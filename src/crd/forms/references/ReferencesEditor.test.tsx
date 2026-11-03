@@ -293,7 +293,13 @@ describe('ReferencesEditor — one pick at a time', () => {
 });
 
 describe('ReferencesEditor — a result calls the onChange current when it lands', () => {
-  function SwapHost({ onFileUpload, onChange }: { onFileUpload: RowFileUpload; onChange: (rows: ReferenceRow[]) => void }) {
+  function SwapHost({
+    onFileUpload,
+    onChange,
+  }: {
+    onFileUpload: RowFileUpload;
+    onChange: (rows: ReferenceRow[]) => void;
+  }) {
     return <ReferencesEditor rows={[emptyRow]} onChange={onChange} onFileUpload={onFileUpload} />;
   }
 

@@ -61,13 +61,19 @@ const CrdOrgProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUpl
   const { t } = useTranslation('crd-contributorSettings');
   const { organizationId } = useOrganizationContext();
   const data = useOrgProfileTabData(organizationId);
-  useSettingsTabUnsavedChanges(data.unsaved);
 
   // Reference file upload (paperclip) — uploads to the organization's storage bucket. The organization
   // already exists, so `useStorageConfig` resolves `temporaryLocation: false` and the upload is
   // permanent (propagated to `file_backup_outbox`, issue #10126).
   const { storageConfig } = useStorageConfig({ locationType: 'organization', organizationId });
   const referenceUpload = useReferenceFileUpload(storageConfig);
+  useSettingsTabUnsavedChanges({
+    ...data.unsaved,
+    canSave: data.unsaved.canSave && !referenceUpload.uploading,
+    saveBlockedReason: referenceUpload.uploading
+      ? t('fileSelection.saveBlocked', { ns: 'crd-common' })
+      : data.unsaved.saveBlockedReason,
+  });
 
   return (
     <>
@@ -79,6 +85,7 @@ const CrdOrgProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUpl
         loading={data.loading}
         disabled={data.unsaved.saving}
         onChange={data.onChange}
+        referencesKey={data.resetGeneration}
         onReferencesChange={data.onReferencesChange}
         onReferenceFileUpload={referenceUpload.onFileUpload}
         referenceUploadAccept={referenceUpload.accept}

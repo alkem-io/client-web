@@ -40,13 +40,19 @@ const CrdUserProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUp
   const { t } = useTranslation('crd-contributorSettings');
   const { userId } = useUserPageRouteContext();
   const data = useUserProfileTabData(userId);
-  useSettingsTabUnsavedChanges(data.unsaved);
 
   // Reference file upload (paperclip) — uploads to the user's storage bucket. The user already exists,
   // so `useStorageConfig` resolves `temporaryLocation: false` and the upload is permanent (propagated
   // to `file_backup_outbox`, issue #10126).
   const { storageConfig } = useStorageConfig({ locationType: 'user', userId: userId ?? '', skip: !userId });
   const referenceUpload = useReferenceFileUpload(storageConfig);
+  useSettingsTabUnsavedChanges({
+    ...data.unsaved,
+    canSave: data.unsaved.canSave && !referenceUpload.uploading,
+    saveBlockedReason: referenceUpload.uploading
+      ? t('fileSelection.saveBlocked', { ns: 'crd-common' })
+      : data.unsaved.saveBlockedReason,
+  });
   const cities = useCityOptions();
 
   return (
@@ -59,6 +65,7 @@ const CrdUserProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUp
         loading={data.loading}
         disabled={data.unsaved.saving}
         onChange={data.onChange}
+        referencesKey={data.resetGeneration}
         onReferencesChange={data.onReferencesChange}
         onReferenceFileUpload={referenceUpload.onFileUpload}
         referenceUploadAccept={referenceUpload.accept}

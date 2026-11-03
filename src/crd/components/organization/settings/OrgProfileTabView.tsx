@@ -79,6 +79,8 @@ export type OrgProfileViewProps = {
   onChange: (patch: Partial<OrgProfileFormValuesData>) => void;
   /** Replace the arbitrary references list — the shared ReferencesEditor owns add/edit/remove + delete-confirm. */
   onReferencesChange: (rows: ReferenceRow[]) => void;
+  /** Keys the references editor: a new value remounts it, dropping its pending uploads. */
+  referencesKey?: React.Key;
   /** Reference file-upload (paperclip) — passed through to the shared editor. */
   onReferenceFileUpload?: (file: File) => Promise<string | null>;
   referenceUploadAccept?: string;
@@ -107,6 +109,7 @@ export function OrgProfileTabView(props: OrgProfileViewProps) {
     disabled = false,
     onChange,
     onReferencesChange,
+    referencesKey,
     onReferenceFileUpload,
     referenceUploadAccept,
     onUpdateRecognizedReference,
@@ -311,6 +314,7 @@ export function OrgProfileTabView(props: OrgProfileViewProps) {
           defaultOpen={false}
         >
           <ReferencesEditor
+            key={referencesKey}
             rows={values.references.map(r => ({ id: r.id, name: r.name, uri: r.uri, description: r.description }))}
             onChange={onReferencesChange}
             onFileUpload={onReferenceFileUpload}

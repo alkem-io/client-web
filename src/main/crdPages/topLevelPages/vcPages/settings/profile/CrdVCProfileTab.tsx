@@ -42,7 +42,6 @@ const CrdVCProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUplo
   const { t } = useTranslation('crd-contributorSettings');
   const { vcId } = useUrlResolver();
   const data = useVcProfileTabData(vcId);
-  useSettingsTabUnsavedChanges(data.unsaved);
 
   // Reference file upload (paperclip) — uploads to the VC's storage bucket.
   const { storageConfig } = useStorageConfig({
@@ -51,6 +50,13 @@ const CrdVCProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUplo
     skip: !vcId,
   });
   const referenceUpload = useReferenceFileUpload(storageConfig);
+  useSettingsTabUnsavedChanges({
+    ...data.unsaved,
+    canSave: data.unsaved.canSave && !referenceUpload.uploading,
+    saveBlockedReason: referenceUpload.uploading
+      ? t('fileSelection.saveBlocked', { ns: 'crd-common' })
+      : data.unsaved.saveBlockedReason,
+  });
 
   // Read-only metadata rows: host + body-of-knowledge description. The host
   // comes from the separate `useVirtualContributorProviderQuery`; the BoK
@@ -90,6 +96,7 @@ const CrdVCProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUplo
         loading={data.loading}
         disabled={data.unsaved.saving}
         onChange={data.onChange}
+        referencesKey={data.resetGeneration}
         onReferencesChange={data.onReferencesChange}
         onReferenceFileUpload={referenceUpload.onFileUpload}
         referenceUploadAccept={referenceUpload.accept}
