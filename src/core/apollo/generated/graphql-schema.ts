@@ -9204,7 +9204,7 @@ export enum SearchCategory {
 export type SearchFilterInput = {
   /** Include this category in the search results. */
   category: SearchCategory;
-  /** Count every result the requester may see and paginate over them exactly (see `total`). Only honoured for the SPACES category in a search that is not scoped to a Space. Costs a full scan of the matching Spaces, so only ask for it when the total is shown. */
+  /** Count the Space and Subspace results the requester may see among the 1000 best ranked matches, and paginate over them exactly (see `total`); lower ranked matches are neither counted nor reachable. Only honoured for the SPACES category in a search that is not scoped to a Space. Costs a scan of up to 1000 matches, so only ask for it when the total is shown. */
   countTotal?: InputMaybe<Scalars['Boolean']['input']>;
   /** The cursor after which we want results (offset) - pass this from your previous search to request additional results. Useful for paginating results. */
   cursor?: InputMaybe<Scalars['SearchCursor']['input']>;
