@@ -179,6 +179,31 @@ describe('ReferencesEditor — several files on one paperclip', () => {
     expect(descriptionInputs()[0]).toHaveValue('about B');
   });
 
+  test('removing the clicked row during the uploads appends every result, even when an identical row takes its place', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    render(
+      <Host
+        initial={[
+          { name: 'Report', uri: '', description: '' },
+          { id: 'kept', name: 'Report', uri: '', description: '' },
+        ]}
+        onFileUpload={upload}
+      />
+    );
+
+    pick(fileInputs()[0], [pdf('alpha.pdf'), pdf('beta.pdf')]);
+    await user.click(screen.getAllByRole('button', { name: 'references.removeRow' })[0]);
+    await user.click(screen.getByRole('button', { name: 'references.removeConfirm.confirm' }));
+    await act(async () => {
+      calls[0].resolve('https://cdn/alpha');
+      calls[1].resolve('https://cdn/beta');
+    });
+
+    expect(nameInputs().map(i => i.value)).toEqual(['Report', 'alpha', 'beta']);
+    expect(uriInputs().map(i => i.value)).toEqual(['', 'https://cdn/alpha', 'https://cdn/beta']);
+  });
+
   test('one failure of three: two rows added and the failed file is named once, with no notification', async () => {
     const { upload, calls } = createControlledUpload();
     render(<Host initial={[emptyRow]} onFileUpload={upload} />);

@@ -1,5 +1,5 @@
 import { Plus, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { LinkRow } from '@/crd/forms/callout/types';
 import { FileSelectionStatus } from '@/crd/forms/references/FileSelectionStatus';
@@ -52,6 +52,8 @@ export function LinksPrePopulateRows({
   const [uploadingRows, setUploadingRows] = useState<Record<number, boolean>>({});
   const { rowsRef, commit } = useRowsCommit(rows, onChange);
   const uploads = useRowFileUploads(onFileUpload);
+  // The row a multi-file pick may fill; removing it or any row above it gives the slot up for good.
+  const pickedSlot = useRef<number | null>(null);
   const anyRowUploading = Object.keys(uploadingRows).length > 0;
 
   const updateRow = (index: number, patch: Partial<LinkRow>) => {
@@ -79,15 +81,17 @@ export function LinksPrePopulateRows({
     }
   };
 
-  // A result fills the clicked row while it still has its pick-time title, description and URL, and
-  // that URL is empty; otherwise it is appended as a row of its own (compared by value: the host maps
+  // A result fills the clicked row while it still holds its slot and has its pick-time title,
+  // description and URL, and that URL is empty; otherwise it is appended as a row of its own (compared by value: the host maps
   // fresh row objects on every render).
   const handleFilesSelected = (index: number, files: File[]) => {
     const picked = rowsRef.current[index];
+    pickedSlot.current = index;
     uploads.uploadMany(files, (file, url) => {
       const current = rowsRef.current[index];
       const title = fileNameBase(file);
       const fillsPicked =
+        pickedSlot.current === index &&
         picked &&
         current &&
         !current.url.trim() &&
@@ -103,6 +107,7 @@ export function LinksPrePopulateRows({
   };
 
   const removeRow = (index: number) => {
+    if (pickedSlot.current !== null && index <= pickedSlot.current) pickedSlot.current = null;
     commit(rowsRef.current.filter((_, i) => i !== index));
   };
 

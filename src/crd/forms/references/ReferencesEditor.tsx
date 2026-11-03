@@ -1,5 +1,5 @@
 import { Plus, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { FileSelectionStatus } from '@/crd/forms/references/FileSelectionStatus';
@@ -72,6 +72,8 @@ export function ReferencesEditor({
   const [uploadingRows, setUploadingRows] = useState<Record<number, boolean>>({});
   const { rowsRef, commit } = useRowsCommit(rows, onChange);
   const uploads = useRowFileUploads(onFileUpload);
+  // The row a multi-file pick may fill; removing it or any row above it gives the slot up for good.
+  const pickedSlot = useRef<number | null>(null);
   const anyRowUploading = Object.keys(uploadingRows).length > 0;
 
   const updateRow = (index: number, patch: Partial<ReferenceRow>) => {
@@ -99,15 +101,17 @@ export function ReferencesEditor({
     }
   };
 
-  // A result fills the clicked row while it still has its pick-time name, description and URL, and
-  // that URL is empty; otherwise it is appended as a row of its own. Rows are compared by value because
+  // A result fills the clicked row while it still holds its slot and has its pick-time name,
+  // description and URL, and that URL is empty; otherwise it is appended as a row of its own. Rows are compared by value because
   // hosts hand in freshly mapped row objects on every render.
   const handleFilesSelected = (index: number, files: File[]) => {
     const picked = rowsRef.current[index];
+    pickedSlot.current = index;
     uploads.uploadMany(files, (file, uri) => {
       const current = rowsRef.current[index];
       const name = fileNameBase(file);
       const fillsPicked =
+        pickedSlot.current === index &&
         picked &&
         current &&
         !current.uri.trim() &&
@@ -123,6 +127,7 @@ export function ReferencesEditor({
   };
 
   const removeRow = (index: number) => {
+    if (pickedSlot.current !== null && index <= pickedSlot.current) pickedSlot.current = null;
     commit(rowsRef.current.filter((_, i) => i !== index));
   };
 
