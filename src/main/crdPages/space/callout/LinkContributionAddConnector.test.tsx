@@ -190,7 +190,7 @@ describe('LinkContributionAddConnector — the client deletes no upload', () => 
 });
 
 describe('LinkContributionAddConnector — creating the links', () => {
-  test('one create per row with today’s variables and no refetch options', async () => {
+  test('one create per row with today’s variables, no refetch options and no global error toast', async () => {
     createLinkMock.mockResolvedValue({});
     refetchQueriesMock.mockResolvedValue([]);
     renderConnector();
@@ -208,12 +208,14 @@ describe('LinkContributionAddConnector — creating the links', () => {
         calloutId: 'callout-1',
         link: { uri: 'https://a', profile: { displayName: 'A', description: 'about a' } },
       },
+      context: { skipGlobalErrorHandler: true },
     });
     expect(createLinkMock.mock.calls[1][0]).toEqual({
       variables: {
         calloutId: 'callout-1',
         link: { uri: 'https://b', profile: { displayName: 'B', description: undefined } },
       },
+      context: { skipGlobalErrorHandler: true },
     });
   });
 
@@ -274,5 +276,36 @@ describe('LinkContributionAddConnector — creating the links', () => {
     expect(refetchQueriesMock).toHaveBeenCalledTimes(1);
     expect(onOpenChange).not.toHaveBeenCalledWith(false);
     expect(onCreated).not.toHaveBeenCalled();
+  });
+
+  test('several failed rows raise one notification and no global error toast', async () => {
+    createLinkMock.mockImplementation(({ variables }: { variables: { link: { uri: string } } }) =>
+      variables.link.uri === 'https://l/0' ? Promise.resolve({}) : Promise.reject(new Error('failed'))
+    );
+    refetchQueriesMock.mockResolvedValue([]);
+    renderConnector();
+
+    await act(async () => {
+      await expect(dialogProps?.onSubmit(rows(3))).rejects.toThrow('failed');
+    });
+
+    for (const [options] of createLinkMock.mock.calls) {
+      expect(options.context).toEqual({ skipGlobalErrorHandler: true });
+    }
+    expect(notifyMock).toHaveBeenCalledTimes(1);
+    expect(notifyMock).toHaveBeenCalledWith('callout.linksCreateFailed', 'error');
+  });
+
+  test('one failed row keeps the global error handler and raises no notification of its own', async () => {
+    const failure = new Error('failed');
+    createLinkMock.mockRejectedValue(failure);
+    renderConnector();
+
+    await act(async () => {
+      await expect(dialogProps?.onSubmit(rows(1))).rejects.toBe(failure);
+    });
+
+    expect(createLinkMock.mock.calls[0][0].context).toBeUndefined();
+    expect(notifyMock).not.toHaveBeenCalled();
   });
 });

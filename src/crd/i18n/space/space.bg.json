@@ -270,6 +270,8 @@
     "linkCreate": "Добави",
     "linkAddAnother": "Добави още една връзка",
     "linkRemoveRow": "Премахни тази връзка",
+    "linksCreateFailed_one": "{{count}} от {{total}} връзки не можа да бъде добавена.",
+    "linksCreateFailed_other": "{{count}} от {{total}} връзки не можаха да бъдат добавени.",
     "linkDefaultName": "Нова връзка",
     "linkDefaultNameNumbered": "Нова връзка ({{count}})",
     "linkCancelConfirmTitle": "Отказване на промените?",

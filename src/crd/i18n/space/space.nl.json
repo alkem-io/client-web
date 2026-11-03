@@ -270,6 +270,8 @@
     "linkCreate": "Toevoegen",
     "linkAddAnother": "Nog een link toevoegen",
     "linkRemoveRow": "Deze link verwijderen",
+    "linksCreateFailed_one": "{{count}} van de {{total}} links kon niet worden toegevoegd.",
+    "linksCreateFailed_other": "{{count}} van de {{total}} links konden niet worden toegevoegd.",
     "linkDefaultName": "Nieuwe link",
     "linkDefaultNameNumbered": "Nieuwe link ({{count}})",
     "linkCancelConfirmTitle": "Wijzigingen verwerpen?",

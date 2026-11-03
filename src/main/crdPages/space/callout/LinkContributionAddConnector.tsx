@@ -3,6 +3,7 @@ import { Link2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCreateLinkOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ContributionAddCard } from '@/crd/components/contribution/ContributionAddCard';
 import {
   LinkContributionDialog,
@@ -74,8 +75,12 @@ function LinkAddDialog({
   const referenceUpload = useReferenceFileUpload(storageConfig, { temporaryLocation: true, ownFailureToast: false });
   const [createLink] = useCreateLinkOnCalloutMutation();
   const client = useApolloClient();
+  const { t } = useTranslation('crd-space');
+  const notify = useNotification();
 
   const [handleSubmit, saving] = useLoadingState(async (rows: LinkContributionFormValues[]) => {
+    // Several rows report their failures in one message here, not one global toast per row.
+    const isBatch = rows.length > 1;
     // Create all rows in parallel, then refresh the list once after every row has settled: the
     // rows commit in no fixed order, so no single row's mutation can carry the refresh.
     const results = await Promise.allSettled(
@@ -91,6 +96,7 @@ function LinkAddDialog({
               },
             },
           },
+          ...(isBatch ? { context: { skipGlobalErrorHandler: true } } : {}),
         })
       )
     );
@@ -101,8 +107,11 @@ function LinkAddDialog({
         // The links exist; a failed list refresh only delays seeing them.
       }
     }
-    const failure = results.find(result => result.status === 'rejected');
-    if (failure) throw failure.reason;
+    const failures = results.filter(result => result.status === 'rejected');
+    if (failures.length > 0) {
+      if (isBatch) notify(t('callout.linksCreateFailed', { count: failures.length, total: rows.length }), 'error');
+      throw failures[0].reason;
+    }
     onOpenChange(false);
     onCreated?.();
   });

@@ -270,6 +270,8 @@
     "linkCreate": "Hinzufügen",
     "linkAddAnother": "Weiteren Link hinzufügen",
     "linkRemoveRow": "Diesen Link entfernen",
+    "linksCreateFailed_one": "{{count}} von {{total}} Links konnte nicht hinzugefügt werden.",
+    "linksCreateFailed_other": "{{count}} von {{total}} Links konnten nicht hinzugefügt werden.",
     "linkDefaultName": "Neuer Link",
     "linkDefaultNameNumbered": "Neuer Link ({{count}})",
     "linkCancelConfirmTitle": "Änderungen verwerfen?",
