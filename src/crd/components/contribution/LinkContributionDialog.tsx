@@ -145,6 +145,7 @@ function LinkCreateDialog({
         const fillsPicked =
           target &&
           !target.url.trim() &&
+          target.url === picked.url &&
           target.displayName === picked.displayName &&
           target.description === picked.description;
         if (fillsPicked) {

@@ -105,6 +105,20 @@ describe('LinkContributionDialog — create mode', () => {
     expect(descriptionInputs()[0]).toHaveValue('mine');
   });
 
+  test('a clicked row whose URL was cleared after the pick keeps its title; the result is appended', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    renderCreate(upload);
+
+    await user.type(urlInputs()[0], 'https://old');
+    pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf')]);
+    await user.clear(urlInputs()[0]);
+    await act(async () => calls[0].resolve('https://cdn/a'));
+
+    expect(urlInputs().map(i => i.value)).toEqual(['', 'https://cdn/a']);
+    expect(nameInputs().map(i => i.value)).toEqual(['callout.linkDefaultName', 'a.pdf']);
+  });
+
   test('an oversized file is named in the notice while the others fill rows', async () => {
     const { upload, calls } = createControlledUpload();
     renderCreate(upload);

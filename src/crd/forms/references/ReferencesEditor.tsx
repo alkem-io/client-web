@@ -99,8 +99,8 @@ export function ReferencesEditor({
     }
   };
 
-  // A result fills the clicked row while it still has its pick-time name and description and an
-  // empty URL; otherwise it is appended as a row of its own. Rows are compared by value because
+  // A result fills the clicked row while it still has its pick-time name, description and URL, and
+  // that URL is empty; otherwise it is appended as a row of its own. Rows are compared by value because
   // hosts hand in freshly mapped row objects on every render.
   const handleFilesSelected = (index: number, files: File[]) => {
     const picked = rowsRef.current[index];
@@ -111,6 +111,7 @@ export function ReferencesEditor({
         picked &&
         current &&
         !current.uri.trim() &&
+        current.uri === picked.uri &&
         current.name === picked.name &&
         (current.description ?? '') === (picked.description ?? '');
       if (fillsPicked) {

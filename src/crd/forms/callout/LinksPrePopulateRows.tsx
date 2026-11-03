@@ -79,8 +79,8 @@ export function LinksPrePopulateRows({
     }
   };
 
-  // A result fills the clicked row while it still has its pick-time title and description and an
-  // empty URL; otherwise it is appended as a row of its own (compared by value: the host maps
+  // A result fills the clicked row while it still has its pick-time title, description and URL, and
+  // that URL is empty; otherwise it is appended as a row of its own (compared by value: the host maps
   // fresh row objects on every render).
   const handleFilesSelected = (index: number, files: File[]) => {
     const picked = rowsRef.current[index];
@@ -91,6 +91,7 @@ export function LinksPrePopulateRows({
         picked &&
         current &&
         !current.url.trim() &&
+        current.url === picked.url &&
         current.title === picked.title &&
         current.description === picked.description;
       if (fillsPicked) {

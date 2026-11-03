@@ -127,6 +127,19 @@ describe('ReferencesEditor — several files on one paperclip', () => {
     expect(uriInputs().map(i => i.value)).toEqual(['', 'https://cdn/alpha']);
   });
 
+  test('a clicked row whose URL was cleared after the pick is not filled; results are appended', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    render(<Host initial={[{ name: '', uri: 'https://old', description: '' }]} onFileUpload={upload} />);
+
+    pick(fileInputs()[0], [pdf('alpha.pdf'), pdf('beta.pdf')]);
+    await user.clear(uriInputs()[0]);
+    await act(async () => calls[0].resolve('https://cdn/alpha'));
+
+    expect(uriInputs().map(i => i.value)).toEqual(['', 'https://cdn/alpha']);
+    expect(nameInputs().map(i => i.value)).toEqual(['', 'alpha']);
+  });
+
   test('two results settling in the same act both land', async () => {
     const { upload, calls } = createControlledUpload();
     render(<Host initial={[{ name: 'Kept', uri: 'https://kept', description: '' }]} onFileUpload={upload} />);

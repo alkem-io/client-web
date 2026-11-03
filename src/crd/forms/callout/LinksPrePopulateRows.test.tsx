@@ -109,6 +109,19 @@ describe('LinksPrePopulateRows — several files on one paperclip', () => {
     expect(descriptionInputs()[0]).toHaveValue('Mine');
   });
 
+  test('a clicked row whose URL was cleared after the pick is not filled; results are appended', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    render(<Host initial={[{ title: '', url: 'https://old', description: '' }]} onFileUpload={upload} />);
+
+    pick(fileInputs()[0], [pdf('alpha.pdf'), pdf('beta.pdf')]);
+    await user.clear(urlInputs()[0]);
+    await act(async () => calls[0].resolve('https://cdn/alpha'));
+
+    expect(urlInputs().map(i => i.value)).toEqual(['', 'https://cdn/alpha']);
+    expect(titleInputs().map(i => i.value)).toEqual(['', 'alpha']);
+  });
+
   test('two results settling in the same act both land', async () => {
     const { upload, calls } = createControlledUpload();
     render(<Host initial={[{ title: 'Kept', url: 'https://kept', description: '' }]} onFileUpload={upload} />);
