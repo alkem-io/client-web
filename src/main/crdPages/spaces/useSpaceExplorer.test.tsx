@@ -279,13 +279,62 @@ describe('useSpaceExplorer search (spec 039 explore-filters-and-count)', () => {
     const { variables, updateQuery } = fake.searchFetchMore.mock.calls[0][0];
     expect(variables.searchData).toMatchObject({
       terms: ['energie'],
-      filters: [{ category: SearchCategory.Spaces, size: BATCH_SIZE, cursor: 'c1' }],
+      filters: [{ category: SearchCategory.Spaces, size: BATCH_SIZE, cursor: 'c1', countTotal: true }],
     });
 
     const next = { search: { spaceResults: { cursor: null, total: 30, results: [searchResult(makeSpace('b'))] } } };
     const merged = updateQuery(fake.state.search, { fetchMoreResult: next });
     expect(merged.search.spaceResults.results).toHaveLength(BATCH_SIZE + 1);
     expect(merged.search.spaceResults.cursor).toBeNull();
+  });
+
+  it('discards a page that arrives after the Type changed, instead of merging it into the new search', async () => {
+    const first = Array.from({ length: BATCH_SIZE }, (_, index) => searchResult(makeSpace(`a${index}`)));
+    fake.state.search = { search: { spaceResults: { cursor: 'c1', total: 30, results: first } } };
+    fake.searchFetchMore.mockResolvedValue(undefined);
+    const { result } = renderHook(() => useSpaceExplorer());
+
+    act(() => result.current.setSearchTerms(['energie']));
+    act(() => void result.current.fetchMore());
+    await waitFor(() => expect(fake.searchFetchMore).toHaveBeenCalledTimes(1));
+    const { updateQuery } = fake.searchFetchMore.mock.calls[0][0];
+
+    act(() => result.current.onTypeFilterChange('subspaces'));
+
+    const current = { search: { spaceResults: { cursor: null, total: 1, results: [searchResult(makeSpace('x'))] } } };
+    const stale = { search: { spaceResults: { cursor: 'c2', total: 30, results: [searchResult(makeSpace('b'))] } } };
+    expect(updateQuery(current, { fetchMoreResult: stale })).toBe(current);
+  });
+
+  it('asks the server to count the search', () => {
+    const { result } = renderHook(() => useSpaceExplorer());
+
+    act(() => result.current.setSearchTerms(['energie']));
+
+    expect(fake.searchQuery.mock.lastCall?.[0].variables.searchData.filters[0].countTotal).toBe(true);
+  });
+
+  it('shows every search result the server returns for the Type, so the cards match the total', () => {
+    // the server filters a search by Type; a result whose level disagrees is still counted, so it is shown
+    fake.state.search = {
+      search: {
+        spaceResults: {
+          cursor: null,
+          total: 2,
+          results: [
+            searchResult(makeSpace('a')),
+            { ...searchResult(makeSpace('b', SpaceLevel.L1)), type: SearchResultType.Space },
+          ],
+        },
+      },
+    };
+    const { result } = renderHook(() => useSpaceExplorer());
+
+    act(() => result.current.setSearchTerms(['energie']));
+    act(() => result.current.onTypeFilterChange('spaces'));
+
+    expect(ids(result.current.spaces)).toEqual(['a', 'b']);
+    expect(result.current.searchTotal).toBe(2);
   });
 
   it('offers nothing more once the search returns no cursor', () => {

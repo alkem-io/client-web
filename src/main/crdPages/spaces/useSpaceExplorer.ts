@@ -106,6 +106,12 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
         ? [SearchResultType.Subspace]
         : undefined;
 
+  // Identifies the search a page belongs to: a page requested for an earlier search (other terms or Type) can arrive
+  // after the new search started, and must not be merged into it.
+  const searchKey = JSON.stringify([searchTerms, searchTypes]);
+  const currentSearchKey = useRef(searchKey);
+  currentSearchKey.current = searchKey;
+
   // PUBLIC: Search for spaces and subspaces
   const {
     data: rawSearchResults,
@@ -121,6 +127,7 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
             category: SearchCategory.Spaces,
             size: BATCH_SIZE,
             types: searchTypes,
+            countTotal: true,
           },
         ],
       },
@@ -144,18 +151,27 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
       return;
     }
 
+    const requestedFor = searchKey;
     await fetchMoreSearchResultsRaw({
       variables: {
         searchData: {
           terms: searchTerms,
           tagsetNames: ['skills', 'keywords'],
-          filters: [{ category: SearchCategory.Spaces, size: BATCH_SIZE, cursor: searchCursor, types: searchTypes }],
+          filters: [
+            {
+              category: SearchCategory.Spaces,
+              size: BATCH_SIZE,
+              cursor: searchCursor,
+              types: searchTypes,
+              countTotal: true,
+            },
+          ],
         },
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         const prevResults = prev.search.spaceResults;
         const nextResults = fetchMoreResult.search.spaceResults;
-        if (!prevResults || !nextResults) {
+        if (!prevResults || !nextResults || requestedFor !== currentSearchKey.current) {
           return prev;
         }
         return {
@@ -296,8 +312,9 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
     ) {
       return false;
     }
-    if (typeFilter === 'spaces' && space.level !== SpaceLevel.L0) return false;
-    if (typeFilter === 'subspaces' && space.level === SpaceLevel.L0) return false;
+    // A search is filtered by Type on the server (searchTypes), so its cards are exactly what its total counts.
+    if (!shouldSearch && typeFilter === 'spaces' && space.level !== SpaceLevel.L0) return false;
+    if (!shouldSearch && typeFilter === 'subspaces' && space.level === SpaceLevel.L0) return false;
     if (privacyFilter === 'public' && !space.about.isContentPublic) return false;
     if (privacyFilter === 'private' && space.about.isContentPublic) return false;
     return true;

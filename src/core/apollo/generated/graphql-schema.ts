@@ -3927,7 +3927,7 @@ export type ISearchCategoryResult = {
   cursor?: Maybe<Scalars['SearchCursor']['output']>;
   /** The ranked search results for this category, sorted by relevance */
   results: Array<SearchResult>;
-  /** The total number of search results. Not implemented yet. */
+  /** The total number of results the requester may see in this category. Only computed for spaceResults when the SPACES filter sets `countTotal` and the search is not scoped to a Space; -1 otherwise, or when the count failed. Only the 1000 best ranked Space / Subspace matches are counted (and reachable by the cursor), so the total never exceeds 1000. */
   total: Scalars['Float']['output'];
 };
 
@@ -9204,6 +9204,8 @@ export enum SearchCategory {
 export type SearchFilterInput = {
   /** Include this category in the search results. */
   category: SearchCategory;
+  /** Count every result the requester may see and paginate over them exactly (see `total`). Only honoured for the SPACES category in a search that is not scoped to a Space. Costs a full scan of the matching Spaces, so only ask for it when the total is shown. */
+  countTotal?: InputMaybe<Scalars['Boolean']['input']>;
   /** The cursor after which we want results (offset) - pass this from your previous search to request additional results. Useful for paginating results. */
   cursor?: InputMaybe<Scalars['SearchCursor']['input']>;
   /** How many results per category to return. Useful for paginating results. */
@@ -9232,7 +9234,7 @@ export type SearchResult = {
   id: Scalars['UUID']['output'];
   /** The score for this search result; more matches means a higher score. */
   score: Scalars['Float']['output'];
-  /** The terms that were matched for this result */
+  /** The terms that were matched for this result. Empty when they could not be determined, e.g. when highlighting the matches failed. */
   terms: Array<Scalars['String']['output']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
@@ -9248,7 +9250,7 @@ export type SearchResultCallout = SearchResult & {
   score: Scalars['Float']['output'];
   /** The parent Space of the Callout. */
   space: Space;
-  /** The terms that were matched for this result */
+  /** The terms that were matched for this result. Empty when they could not be determined, e.g. when highlighting the matches failed. */
   terms: Array<Scalars['String']['output']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
@@ -9268,7 +9270,7 @@ export type SearchResultCollaboraDocument = SearchResult & {
   score: Scalars['Float']['output'];
   /** The Space of the Collabora document. */
   space: Space;
-  /** The terms that were matched for this result */
+  /** The terms that were matched for this result. Empty when they could not be determined, e.g. when highlighting the matches failed. */
   terms: Array<Scalars['String']['output']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
@@ -9288,7 +9290,7 @@ export type SearchResultMemo = SearchResult & {
   score: Scalars['Float']['output'];
   /** The Space of the Memo. */
   space: Space;
-  /** The terms that were matched for this result */
+  /** The terms that were matched for this result. Empty when they could not be determined, e.g. when highlighting the matches failed. */
   terms: Array<Scalars['String']['output']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
@@ -9302,7 +9304,7 @@ export type SearchResultOrganization = SearchResult & {
   organization: Organization;
   /** The score for this search result; more matches means a higher score. */
   score: Scalars['Float']['output'];
-  /** The terms that were matched for this result */
+  /** The terms that were matched for this result. Empty when they could not be determined, e.g. when highlighting the matches failed. */
   terms: Array<Scalars['String']['output']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
@@ -9320,7 +9322,7 @@ export type SearchResultPost = SearchResult & {
   score: Scalars['Float']['output'];
   /** The Space of the Post. */
   space: Space;
-  /** The terms that were matched for this result */
+  /** The terms that were matched for this result. Empty when they could not be determined, e.g. when highlighting the matches failed. */
   terms: Array<Scalars['String']['output']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
@@ -9336,7 +9338,7 @@ export type SearchResultSpace = SearchResult & {
   score: Scalars['Float']['output'];
   /** The Space that was found. */
   space: Space;
-  /** The terms that were matched for this result */
+  /** The terms that were matched for this result. Empty when they could not be determined, e.g. when highlighting the matches failed. */
   terms: Array<Scalars['String']['output']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
@@ -9361,7 +9363,7 @@ export type SearchResultUser = SearchResult & {
   id: Scalars['UUID']['output'];
   /** The score for this search result; more matches means a higher score. */
   score: Scalars['Float']['output'];
-  /** The terms that were matched for this result */
+  /** The terms that were matched for this result. Empty when they could not be determined, e.g. when highlighting the matches failed. */
   terms: Array<Scalars['String']['output']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
@@ -9381,7 +9383,7 @@ export type SearchResultWhiteboard = SearchResult & {
   score: Scalars['Float']['output'];
   /** The Space of the Whiteboard. */
   space: Space;
-  /** The terms that were matched for this result */
+  /** The terms that were matched for this result. Empty when they could not be determined, e.g. when highlighting the matches failed. */
   terms: Array<Scalars['String']['output']>;
   /** The type of returned result for this search. */
   type: SearchResultType;

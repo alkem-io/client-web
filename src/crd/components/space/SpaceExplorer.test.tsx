@@ -146,6 +146,12 @@ describe('SpaceExplorer results line (spec 039 explore-filters-and-count)', () =
     expect(screen.getByText('42 spaces matching “energie”')).toBeInTheDocument();
   });
 
+  it('counts a search with no results', () => {
+    renderExplorer({ spaces: [], searchTerms: ['energie'], searchTotal: 0 });
+
+    expect(screen.getByText('0 spaces matching “energie”')).toBeInTheDocument();
+  });
+
   it('counts a single result in the singular', () => {
     renderExplorer({ spaces: [space('a')], searchTerms: ['energie'], searchTotal: 1 });
 

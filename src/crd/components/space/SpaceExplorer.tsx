@@ -287,7 +287,7 @@ export function SpaceExplorer({
           )}
 
           {/* The count is the search's total, not the loaded spaces, which are only a page of the results. */}
-          {searchTerms.length > 0 && !showSkeletons && spaces.length > 0 && (
+          {searchTerms.length > 0 && !showSkeletons && (spaces.length > 0 || searchTotal === 0) && (
             <p className="mb-4 text-body text-muted-foreground">
               {searchTotal === undefined
                 ? t('spaces.matchingTerms', { terms: searchTerms.join(', ') })
