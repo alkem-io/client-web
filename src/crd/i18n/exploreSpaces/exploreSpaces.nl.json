@@ -20,6 +20,8 @@
     "filterSubspacesOnly": "Alleen Subspaces",
     "clearFilters": "Alle filters wissen",
     "matchingTerms": "Spaces die overeenkomen met “{{terms}}”",
+    "matchingTermsCount_one": "{{count}} Space die overeenkomt met “{{terms}}”",
+    "matchingTermsCount_other": "{{count}} Spaces die overeenkomen met “{{terms}}”",
     "of": "van",
     "spacesLabel": "spaces",
     "emptyTitle": "Geen spaces gevonden",
