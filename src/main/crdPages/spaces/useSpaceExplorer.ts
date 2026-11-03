@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   useMySpacesExplorerPageQuery,
   useSpaceExplorerAllSpacesQuery,
@@ -110,7 +110,10 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
   // after the new search started, and must not be merged into it.
   const searchKey = JSON.stringify([searchTerms, searchTypes]);
   const currentSearchKey = useRef(searchKey);
-  currentSearchKey.current = searchKey;
+  // Only once the render commits: a render React discards must not change which search is current.
+  useLayoutEffect(() => {
+    currentSearchKey.current = searchKey;
+  }, [searchKey]);
 
   // PUBLIC: Search for spaces and subspaces
   const {
