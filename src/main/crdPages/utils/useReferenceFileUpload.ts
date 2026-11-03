@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -16,6 +17,8 @@ type UseReferenceFileUploadResult = {
   accept: string | undefined;
   /** Whether the current user is allowed to upload to this bucket. */
   canUpload: boolean;
+  /** Whether any upload started through this hook has not settled yet. */
+  uploading: boolean;
 };
 
 type UseReferenceFileUploadOptions = {
@@ -54,6 +57,7 @@ export function useReferenceFileUpload(
   const { t } = useTranslation();
   const notify = useNotification();
   const [uploadFile] = useUploadFileMutation();
+  const [unsettled, setUnsettled] = useState(0);
 
   // Fall back to the value resolved by `useStorageConfig` (defaults to `false` for edit
   // flows) rather than hardcoding `true`, so reference uploads on existing entities are
@@ -70,16 +74,22 @@ export function useReferenceFileUpload(
 
   // A silent upload (one file of a multi-file selection) raises no notification of its own and
   // none from the global error handler: it rejects with the reason, which the editor reports once.
+  // Its type check is the server's: the declared MIME type against the bucket's allowed list.
   const onFileUpload: RowFileUpload | undefined =
     canUpload && storageConfig
       ? async (file, options) => {
           const silent = Boolean(options?.silent);
+          const allowedMimeTypes = storageConfig.allowedMimeTypes ?? [];
+          if (silent && allowedMimeTypes.length > 0 && !allowedMimeTypes.includes(file.type)) {
+            throw new FileUploadRejection({ kind: 'type' });
+          }
           const maxBytes = storageConfig.maxFileSize ?? 0;
           if (maxBytes && file.size > maxBytes) {
             if (silent) throw new FileUploadRejection({ kind: 'size', maxBytes });
             notify(t('components.file-upload.file-size-error', { limit: maxBytes / BYTES_IN_MB }), 'error');
             return null;
           }
+          setUnsettled(count => count + 1);
           let url: string | undefined;
           try {
             const { data } = await uploadFile({
@@ -97,6 +107,8 @@ export function useReferenceFileUpload(
             if (silent) throw new FileUploadRejection({ kind: 'failed' });
             if (ownFailureToast) notify(t('components.file-upload.file-upload-error'), 'error');
             return null;
+          } finally {
+            setUnsettled(count => count - 1);
           }
           if (!url) {
             if (silent) throw new FileUploadRejection({ kind: 'failed' });
@@ -108,5 +120,5 @@ export function useReferenceFileUpload(
         }
       : undefined;
 
-  return { onFileUpload, accept, canUpload };
+  return { onFileUpload, accept, canUpload, uploading: unsettled > 0 };
 }

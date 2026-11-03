@@ -1,5 +1,5 @@
 import { Plus, Trash2 } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { LinkRow } from '@/crd/forms/callout/types';
 import { FileSelectionStatus } from '@/crd/forms/references/FileSelectionStatus';
@@ -47,6 +47,8 @@ export function LinksPrePopulateRows({
   uploadAccept,
 }: LinksPrePopulateRowsProps) {
   const { t } = useTranslation('crd-space');
+  // Per-row upload spinner state, keyed by row index.
+  const [uploadingRows, setUploadingRows] = useState<Record<number, boolean>>({});
   // Mirror of `rows` for post-await reads. A file upload takes seconds; if the
   // user types into any row while it's in flight, the closure-captured `rows`
   // is stale by the time `await onFileUpload` resolves. Reading from the ref
@@ -55,17 +57,26 @@ export function LinksPrePopulateRows({
   // A write that lands after an upload must use the host's latest `onChange`, or a host that
   // merges rows into a whole form value reverts its other fields.
   const onChangeRef = useRef(onChange);
+  const mounted = useRef(false);
   useEffect(() => {
     rowsRef.current = rows;
   }, [rows]);
   useEffect(() => {
     onChangeRef.current = onChange;
-  }, [onChange]);
-  const uploads = useRowFileUploads<number>(onFileUpload, uploadAccept);
+  });
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+  const uploads = useRowFileUploads(onFileUpload);
+  const anyRowUploading = Object.keys(uploadingRows).length > 0;
 
-  // Every write refreshes the mirror first, so two uploads settling before the next render each
-  // build on the other's result.
+  // The one write path: nothing after unmount, and the mirror is refreshed first so two uploads
+  // settling before the next render each build on the other's result.
   const commit = (next: LinkRow[]) => {
+    if (!mounted.current) return;
     rowsRef.current = next;
     onChangeRef.current(next);
   };
@@ -74,36 +85,43 @@ export function LinksPrePopulateRows({
     commit(rowsRef.current.map((row, i) => (i === index ? { ...row, ...patch } : row)));
   };
 
-  const handleFileSelected = (index: number, file: File | undefined) => {
-    if (!file) return;
-    void uploads.uploadOne(index, file, (url, row) => {
-      const current = rowsRef.current[row];
+  const handleFileSelected = async (index: number, file: File | undefined) => {
+    if (!file || !onFileUpload) return;
+    setUploadingRows(prev => ({ ...prev, [index]: true }));
+    try {
+      const url = await onFileUpload(file);
+      if (!url) return;
+      const current = rowsRef.current[index];
       const titleEmpty = !current?.title.trim();
       const filenameBase = fileNameBase(file);
       const patch: Partial<LinkRow> = { url };
       if (titleEmpty && filenameBase) patch.title = filenameBase;
-      updateRow(row, patch);
-    });
+      updateRow(index, patch);
+    } finally {
+      setUploadingRows(prev => {
+        const next = { ...prev };
+        delete next[index];
+        return next;
+      });
+    }
   };
 
-  // A result fills the clicked row only while that row is still there, no one-file pick holds it,
-  // and it still has its pick-time values and an empty URL; otherwise it is appended as a row of
-  // its own (compared by value: the host maps fresh row objects on every render).
+  // A result fills the clicked row while it still has its pick-time title and description and an
+  // empty URL; otherwise it is appended as a row of its own (compared by value: the host maps
+  // fresh row objects on every render).
   const handleFilesSelected = (index: number, files: File[]) => {
     const picked = rowsRef.current[index];
-    uploads.uploadMany(index, files, (file, url, row) => {
-      const current = row === null ? undefined : rowsRef.current[row];
+    uploads.uploadMany(files, (file, url) => {
+      const current = rowsRef.current[index];
       const title = fileNameBase(file);
       const fillsPicked =
-        row !== null &&
         picked &&
         current &&
-        !uploads.isReserved(row) &&
         !current.url.trim() &&
         current.title === picked.title &&
         current.description === picked.description;
       if (fillsPicked) {
-        updateRow(row, current.title.trim() || !title ? { url } : { url, title });
+        updateRow(index, current.title.trim() || !title ? { url } : { url, title });
       } else {
         commit([...rowsRef.current, { title, url, description: '' }]);
       }
@@ -111,7 +129,6 @@ export function LinksPrePopulateRows({
   };
 
   const removeRow = (index: number) => {
-    uploads.rowRemoved(index);
     commit(rowsRef.current.filter((_, i) => i !== index));
   };
 
@@ -171,8 +188,8 @@ export function LinksPrePopulateRows({
                   {onFileUpload && (
                     <RowAttachFileButton
                       accept={uploadAccept}
-                      disabled={disabled}
-                      uploading={uploads.uploadingRows.includes(index)}
+                      disabled={disabled || uploads.busy || anyRowUploading}
+                      uploading={Boolean(uploadingRows[index])}
                       ariaLabel={t('contributionSettings.prePopulate.attachFile')}
                       onFile={file => handleFileSelected(index, file)}
                       onFiles={files => handleFilesSelected(index, files)}

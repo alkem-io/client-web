@@ -1,6 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
 import {
-  acceptsFile,
   FileUploadRejection,
   type LeftOutReason,
   MAX_CONCURRENT_UPLOADS,
@@ -38,25 +37,16 @@ describe('selectFiles', () => {
     expect(check.mock.calls.map(([file]) => file)).toEqual(files.slice(0, 25));
   });
 
+  test('without a check, the cap alone decides', () => {
+    const files = makeFiles(26);
+    const { kept, leftOut } = selectFiles(files);
+
+    expect(kept).toEqual(files.slice(0, 25));
+    expect(leftOut).toEqual([{ name: 'file-26.pdf', reason: { kind: 'limit' } }]);
+  });
+
   test('an empty input returns two empty lists', () => {
     expect(selectFiles([], () => null)).toEqual({ kept: [], leftOut: [] });
-  });
-});
-
-describe('acceptsFile', () => {
-  test('accepts every file when accept is undefined', () => {
-    expect(acceptsFile(makeFile('anything.xyz'), undefined)).toBe(true);
-    expect(acceptsFile(makeFile('no-extension'), undefined)).toBe(true);
-  });
-
-  test('matches the extension case-insensitively against a comma list, spaces allowed', () => {
-    expect(acceptsFile(makeFile('report.PDF'), '.pdf,.docx')).toBe(true);
-    expect(acceptsFile(makeFile('report.docx'), '.pdf , .DOCX')).toBe(true);
-  });
-
-  test('rejects an unlisted extension and a file without one', () => {
-    expect(acceptsFile(makeFile('image.png'), '.pdf,.docx')).toBe(false);
-    expect(acceptsFile(makeFile('README'), '.pdf,.docx')).toBe(false);
   });
 });
 

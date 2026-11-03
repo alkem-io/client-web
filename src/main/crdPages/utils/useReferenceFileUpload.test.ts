@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { FileUploadRejection } from '@/crd/lib/fileSelection';
 import type { StorageConfig } from '@/domain/storage/StorageBucket/useStorageConfig';
@@ -172,5 +172,99 @@ describe('useReferenceFileUpload ownFailureToast: false', () => {
 
     await expect(result.current.onFileUpload?.(file)).resolves.toBe('https://cdn/file');
     expect(notifyMock).toHaveBeenLastCalledWith('components.file-upload.file-upload-success', 'success');
+  });
+});
+
+describe('useReferenceFileUpload type check (silent only, declared type against the bucket list)', () => {
+  const typed = (type: string) => new File(['x'], 'file', { type });
+  const allowed = ['application/pdf', 'text/csv', 'application/rtf', 'application/vnd.oasis.opendocument.graphics'];
+
+  test('files of each allowed declared type reach the mutation', async () => {
+    const { result } = renderHook(() => useReferenceFileUpload({ ...baseConfig, allowedMimeTypes: allowed }));
+
+    for (const type of allowed) {
+      await expect(result.current.onFileUpload?.(typed(type), { silent: true })).resolves.toBe('https://cdn/file');
+    }
+    expect(uploadFileMock).toHaveBeenCalledTimes(allowed.length);
+  });
+
+  test('an unlisted or empty declared type rejects as type, with no mutation and no notification', async () => {
+    const { result } = renderHook(() => useReferenceFileUpload({ ...baseConfig, allowedMimeTypes: allowed }));
+
+    for (const type of ['application/zip', '']) {
+      const rejection = await result.current.onFileUpload?.(typed(type), { silent: true }).catch(error => error);
+      expect(rejection).toBeInstanceOf(FileUploadRejection);
+      expect(rejection.reason).toEqual({ kind: 'type' });
+    }
+    expect(uploadFileMock).not.toHaveBeenCalled();
+    expect(notifyMock).not.toHaveBeenCalled();
+  });
+
+  test('an empty allowed list rejects no file for its type', async () => {
+    const { result } = renderHook(() => useReferenceFileUpload(baseConfig));
+
+    await expect(result.current.onFileUpload?.(typed('application/zip'), { silent: true })).resolves.toBe(
+      'https://cdn/file'
+    );
+  });
+
+  test('a one-file (non-silent) upload sends any type to the mutation unchanged', async () => {
+    const { result } = renderHook(() => useReferenceFileUpload({ ...baseConfig, allowedMimeTypes: allowed }));
+
+    await expect(result.current.onFileUpload?.(typed('text/plain'))).resolves.toBe('https://cdn/file');
+    expect(uploadFileMock).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('useReferenceFileUpload uploading', () => {
+  const file = new File(['x'], 'ref.pdf', { type: 'application/pdf' });
+  const oversized = new File(['x'.repeat(2048)], 'big.pdf', { type: 'application/pdf' });
+
+  const deferredUpload = () => {
+    let settle: (url: string | null) => void = () => {};
+    uploadFileMock.mockReturnValueOnce(
+      new Promise((resolve, reject) => {
+        settle = url =>
+          url === null ? reject(new Error('network')) : resolve({ data: { uploadFileOnStorageBucket: { url } } });
+      })
+    );
+    return (url: string | null) => settle(url);
+  };
+
+  test('is true from the first unsettled call to the last settlement, silent or not', async () => {
+    const { result } = renderHook(() => useReferenceFileUpload(baseConfig));
+    expect(result.current.uploading).toBe(false);
+
+    const settleSilent = deferredUpload();
+    const settleLoud = deferredUpload();
+    let silentCall: Promise<unknown> = Promise.resolve();
+    let loudCall: Promise<unknown> = Promise.resolve();
+    act(() => {
+      silentCall = result.current.onFileUpload?.(file, { silent: true }).catch(() => undefined) ?? silentCall;
+      loudCall = result.current.onFileUpload?.(file) ?? loudCall;
+    });
+    expect(result.current.uploading).toBe(true);
+
+    await act(async () => {
+      settleSilent(null);
+      await silentCall;
+    });
+    expect(result.current.uploading).toBe(true);
+
+    await act(async () => {
+      settleLoud('https://cdn/file');
+      await loudCall;
+    });
+    expect(result.current.uploading).toBe(false);
+  });
+
+  test('stays false for a size rejection', async () => {
+    const { result } = renderHook(() => useReferenceFileUpload(baseConfig));
+
+    await act(async () => {
+      await result.current.onFileUpload?.(oversized);
+      await result.current.onFileUpload?.(oversized, { silent: true }).catch(() => undefined);
+    });
+    expect(result.current.uploading).toBe(false);
   });
 });

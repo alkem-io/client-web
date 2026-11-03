@@ -266,18 +266,14 @@ export const useVcProfileTabData = (vcId: string | undefined): UseVcProfileTabDa
     )?.data?.lookup.virtualContributor;
     if (freshVc) {
       const fresh = mapVirtualContributorToProfileFormValues(freshVc);
-      update(latest => {
-        const next: VcProfileFormValues = { ...fresh, avatar: latest.avatar };
-        if (result.coreFailed) {
-          for (const f of SCALAR_FIELDS) next[f] = current[f];
-        }
-        if ((result.coreFailed && current.keywords.id) || result.failedTagsets.length) next.keywords = current.keywords;
-        next.references = rebaseReferences(fresh.references, referenceChanges, result, {
-          snapshot: current.references,
-          latest: latest.references,
-        });
-        return next;
-      });
+      const next: VcProfileFormValues = { ...fresh, avatar: current.avatar };
+      if (result.coreFailed) {
+        for (const f of SCALAR_FIELDS) next[f] = current[f];
+      }
+      if ((result.coreFailed && current.keywords.id) || result.failedTagsets.length) next.keywords = current.keywords;
+      next.references = rebaseReferences(fresh.references, referenceChanges, result);
+      valuesRef.current = next;
+      setValues(next);
     }
 
     setSaving(false);

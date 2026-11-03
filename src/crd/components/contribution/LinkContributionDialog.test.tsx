@@ -9,6 +9,9 @@ vi.mock('react-i18next', () => {
   return { useTranslation: () => ({ t }) };
 });
 
+// jsdom has no layout; adding a row scrolls it into view.
+Element.prototype.scrollIntoView = vi.fn();
+
 type Call = {
   file: File;
   options?: { silent?: boolean };
@@ -34,8 +37,9 @@ const urlInputs = () => screen.getAllByLabelText('callout.linkUrlLabel') as HTML
 const nameInputs = () => screen.getAllByLabelText('callout.linkNameLabel') as HTMLInputElement[];
 const descriptionInputs = () => screen.getAllByLabelText('callout.linkDescriptionLabel') as HTMLTextAreaElement[];
 const createButton = () => screen.getByRole('button', { name: 'callout.linkCreate' });
+const paperclips = () => screen.getAllByRole('button', { name: 'contributionSettings.prePopulate.attachFile' });
 
-const renderCreate = (onFileUpload?: RowFileUpload, props: { open?: boolean } = {}) => {
+const renderCreate = (onFileUpload?: RowFileUpload, props: { open?: boolean; saving?: boolean } = {}) => {
   const onOpenChange = vi.fn();
   const onSubmit = vi.fn();
   const element = (open: boolean) => (
@@ -45,6 +49,7 @@ const renderCreate = (onFileUpload?: RowFileUpload, props: { open?: boolean } = 
       onOpenChange={onOpenChange}
       onSubmit={onSubmit}
       onFileUpload={onFileUpload}
+      saving={props.saving}
     />
   );
   const utils = render(element(props.open ?? true));
@@ -115,27 +120,87 @@ describe('LinkContributionDialog — create mode', () => {
     expect(notice).toHaveTextContent('fileSelection.reason.size');
   });
 
-  test('a one-file pick made while a batch from the same row runs keeps every file (a, c, b order)', async () => {
+  test('every paperclip is disabled while a multi pick uploads, enabled when the last settles', async () => {
+    const user = userEvent.setup();
     const { upload, calls } = createControlledUpload();
-    const { onSubmit } = renderCreate(upload);
+    renderCreate(upload);
+    await user.click(screen.getByRole('button', { name: 'callout.linkAddAnother' }));
 
     pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf')]);
-    pick(fileInputs()[0], [pdf('c.pdf')]);
-    expect(calls.map(call => call.file.name)).toEqual(['a.pdf', 'b.pdf', 'c.pdf']);
-    expect(calls[2].options).toBeUndefined();
-
+    for (const clip of paperclips()) expect(clip).toBeDisabled();
     await act(async () => calls[0].resolve('https://cdn/a'));
-    await act(async () => calls[2].resolve('https://cdn/c'));
+    for (const clip of paperclips()) expect(clip).toBeDisabled();
     await act(async () => calls[1].resolve('https://cdn/b'));
 
-    expect(urlInputs().map(i => i.value)).toEqual(['https://cdn/c', 'https://cdn/a', 'https://cdn/b']);
-    expect(nameInputs().map(i => i.value)).toEqual(['c.pdf', 'a.pdf', 'b.pdf']);
-    fireEvent.click(createButton());
-    expect(onSubmit).toHaveBeenCalledWith([
-      { url: 'https://cdn/c', displayName: 'c.pdf', description: '' },
-      { url: 'https://cdn/a', displayName: 'a.pdf', description: '' },
-      { url: 'https://cdn/b', displayName: 'b.pdf', description: '' },
-    ]);
+    for (const clip of paperclips()) expect(clip).toBeEnabled();
+  });
+
+  test('every paperclip is disabled while a one-file pick uploads, enabled when it settles', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    renderCreate(upload);
+    await user.click(screen.getByRole('button', { name: 'callout.linkAddAnother' }));
+
+    pick(fileInputs()[1], [pdf('a.pdf')]);
+    for (const clip of paperclips()) expect(clip).toBeDisabled();
+    await act(async () => calls[0].resolve('https://cdn/a'));
+
+    for (const clip of paperclips()) expect(clip).toBeEnabled();
+  });
+
+  test('with saving, every paperclip is disabled', () => {
+    const { upload } = createControlledUpload();
+    renderCreate(upload, { saving: true });
+
+    for (const clip of paperclips()) expect(clip).toBeDisabled();
+  });
+
+  test('a one-file upload cancelled before it settles keeps the paperclips and Create disabled in the reopened dialog, then changes no row', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    const { onOpenChange, rerenderOpen } = renderCreate(upload);
+
+    pick(fileInputs()[0], [pdf('a.pdf')]);
+    await user.click(screen.getByRole('button', { name: 'dialogs.cancel' }));
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    rerenderOpen(false);
+    rerenderOpen(true);
+
+    for (const clip of paperclips()) expect(clip).toBeDisabled();
+    expect(createButton()).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'dialogs.cancel' })).toBeEnabled();
+
+    await act(async () => calls[0].resolve('https://cdn/a'));
+
+    expect(urlInputs().map(i => i.value)).toEqual(['']);
+    expect(nameInputs()[0]).toHaveValue('callout.linkDefaultName');
+    for (const clip of paperclips()) expect(clip).toBeEnabled();
+    expect(createButton()).toBeEnabled();
+  });
+
+  test('a multi pick cancelled before it settles keeps Create disabled in the reopened dialog, a valid link notwithstanding', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    const { rerenderOpen } = renderCreate(upload);
+
+    pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf'), pdf('c.pdf')]);
+    await user.click(screen.getByRole('button', { name: 'dialogs.cancel' }));
+    rerenderOpen(false);
+    rerenderOpen(true);
+    await user.type(urlInputs()[0], 'https://example.org');
+
+    expect(createButton()).toBeDisabled();
+    for (const clip of paperclips()) expect(clip).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'dialogs.cancel' })).toBeEnabled();
+
+    await act(async () => calls[0].resolve('https://cdn/a'));
+    await act(async () => calls[1].resolve('https://cdn/b'));
+    expect(createButton()).toBeDisabled();
+    await act(async () => calls[2].resolve('https://cdn/c'));
+
+    expect(urlInputs().map(i => i.value)).toEqual(['https://example.org']);
+    expect(createButton()).toBeEnabled();
+    for (const clip of paperclips()) expect(clip).toBeEnabled();
   });
 
   test('Create is withheld while uploads run and Cancel stays enabled', async () => {
@@ -208,7 +273,11 @@ describe('LinkContributionDialog — create mode', () => {
 });
 
 describe('LinkContributionDialog — edit mode', () => {
-  const renderEdit = (onFileUpload: RowFileUpload, initialValues: { url: string; displayName: string }) => {
+  const renderEdit = (
+    onFileUpload: RowFileUpload,
+    initialValues: { url: string; displayName: string },
+    saving?: boolean
+  ) => {
     const element = (open: boolean, values: { url: string; displayName: string }) => (
       <LinkContributionDialog
         mode="edit"
@@ -217,6 +286,7 @@ describe('LinkContributionDialog — edit mode', () => {
         onSubmit={vi.fn()}
         initialValues={{ ...values, description: '' }}
         onFileUpload={onFileUpload}
+        saving={saving}
       />
     );
     const utils = render(element(true, initialValues));
@@ -251,5 +321,46 @@ describe('LinkContributionDialog — edit mode', () => {
 
     expect(screen.getByLabelText('callout.linkUrlLabel')).toHaveValue('https://b');
     expect(screen.getByLabelText('callout.linkNameLabel')).toHaveValue('B');
+  });
+
+  const saveButton = () => screen.getByRole('button', { name: 'callout.linkSave' });
+  const paperclip = () => screen.getByRole('button', { name: 'contributionSettings.prePopulate.attachFile' });
+
+  test('while the upload runs, Save and the paperclip are disabled and Cancel is enabled', async () => {
+    const { upload, calls } = createControlledUpload();
+    renderEdit(upload, { url: 'https://old', displayName: 'Old' });
+
+    pick(fileInputs()[0], [pdf('new.pdf')]);
+    expect(saveButton()).toBeDisabled();
+    expect(paperclip()).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'dialogs.cancel' })).toBeEnabled();
+
+    await act(async () => calls[0].resolve('https://cdn/new'));
+    expect(screen.getByLabelText('callout.linkUrlLabel')).toHaveValue('https://cdn/new');
+    expect(screen.getByLabelText('callout.linkNameLabel')).toHaveValue('new.pdf');
+    expect(saveButton()).toBeEnabled();
+  });
+
+  test('after a cancel and reopen during the upload, Save and the paperclip stay disabled until it settles', async () => {
+    const { upload, calls } = createControlledUpload();
+    const link = { url: 'https://old', displayName: 'Old' };
+    const { rerenderWith } = renderEdit(upload, link);
+
+    pick(fileInputs()[0], [pdf('new.pdf')]);
+    rerenderWith(false, link);
+    rerenderWith(true, link);
+    expect(saveButton()).toBeDisabled();
+    expect(paperclip()).toBeDisabled();
+
+    await act(async () => calls[0].resolve('https://cdn/new'));
+    expect(saveButton()).toBeEnabled();
+    expect(paperclip()).toBeEnabled();
+  });
+
+  test('with saving, the paperclip is disabled', () => {
+    const { upload } = createControlledUpload();
+    renderEdit(upload, { url: 'https://old', displayName: 'Old' }, true);
+
+    expect(paperclip()).toBeDisabled();
   });
 });

@@ -20,16 +20,16 @@ export class FileUploadRejection extends Error {
   }
 }
 
-/** Caps a selection at `MAX_FILES_PER_SELECTION` (first files in the given order) and checks each
- *  kept file; everything left out is reported by name with its reason. */
+/** Caps a selection at `MAX_FILES_PER_SELECTION` (first files in the given order) and, when a
+ *  `check` is given, checks each kept file; everything left out is reported by name with its reason. */
 export function selectFiles(
   files: File[],
-  check: (file: File) => LeftOutReason | null
+  check?: (file: File) => LeftOutReason | null
 ): { kept: File[]; leftOut: LeftOutFile[] } {
   const kept: File[] = [];
   const leftOut: LeftOutFile[] = [];
   files.forEach((file, index) => {
-    const reason = index < MAX_FILES_PER_SELECTION ? check(file) : { kind: 'limit' as const };
+    const reason = index < MAX_FILES_PER_SELECTION ? (check?.(file) ?? null) : { kind: 'limit' as const };
     if (reason) leftOut.push({ name: file.name, reason });
     else kept.push(file);
   });
@@ -37,15 +37,3 @@ export function selectFiles(
 }
 
 export const fileNameBase = (file: File) => file.name.replace(/\.[^./\\]+$/, '').trim();
-
-/** Whether the file's extension is in an `<input accept>` extension list. No list accepts all. */
-export function acceptsFile(file: File, accept: string | undefined): boolean {
-  if (accept === undefined) return true;
-  const dot = file.name.lastIndexOf('.');
-  if (dot < 0) return false;
-  const extension = file.name.slice(dot).toLowerCase();
-  return accept
-    .split(',')
-    .map(entry => entry.trim().toLowerCase())
-    .includes(extension);
-}

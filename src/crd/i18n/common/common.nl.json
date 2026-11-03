@@ -1650,6 +1650,7 @@
       "size": "groter dan {{maxMb}} MB",
       "failed": "het uploaden is mislukt"
     },
-    "dismiss": "Sluiten"
+    "dismiss": "Sluiten",
+    "saveBlocked": "Wacht tot de bestanden klaar zijn met uploaden"
   }
 }

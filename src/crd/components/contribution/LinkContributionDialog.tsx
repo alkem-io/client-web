@@ -82,7 +82,9 @@ function LinkCreateDialog({
   const [rows, setRows] = useState<Row[]>(() => [
     { id: newRowId(), url: '', displayName: t('callout.linkDefaultName'), description: '' },
   ]);
-  const uploads = useRowFileUploads<string>(onFileUpload, uploadAccept);
+  const uploads = useRowFileUploads(onFileUpload);
+  // Row ids whose one-file upload has not settled; an id leaves only when its upload settles.
+  const [uploadingIds, setUploadingIds] = useState<ReadonlySet<string>>(() => new Set());
   const contentRef = useRef<HTMLDivElement>(null);
   const justAddedRowId = useRef<string | undefined>(undefined);
 
@@ -110,30 +112,37 @@ function LinkCreateDialog({
     blockClose: saving,
   });
 
-  // Rows appear only as their uploads finish, so Create waits for every upload.
-  const uploading = uploads.uploadingRows.length > 0 || uploads.pending.length > 0;
+  // Rows appear only as their uploads finish, so Create waits for every upload, and one pick runs at
+  // a time; a cancelled upload still counts until it settles.
+  const uploadsUnsettled = uploads.busy || uploadingIds.size > 0;
 
   const updateRow = (id: string, patch: Partial<Row>) => {
     setRows(prev => prev.map(r => (r.id === id ? { ...r, ...patch } : r)));
   };
 
-  const handleFile = (rowId: string, file: File | undefined) => {
-    if (!file) return;
-    void uploads.uploadOne(rowId, file, url =>
-      updateRow(rowId, { url, urlError: undefined, displayName: file.name, nameError: undefined })
-    );
+  const handleFile = async (rowId: string, file: File | undefined) => {
+    if (!file || !onFileUpload) return;
+    setUploadingIds(prev => new Set(prev).add(rowId));
+    try {
+      const url = await onFileUpload(file);
+      if (url) updateRow(rowId, { url, urlError: undefined, displayName: file.name, nameError: undefined });
+    } finally {
+      setUploadingIds(prev => {
+        const next = new Set(prev);
+        next.delete(rowId);
+        return next;
+      });
+    }
   };
 
-  // A result fills the clicked row only while no one-file pick holds it and it is still as it was at
-  // pick time with an empty URL; otherwise it gets a row of its own.
+  // A result fills the clicked row while it is still as it was at pick time with an empty URL;
+  // otherwise it gets a row of its own.
   const handleFiles = (picked: Row, files: File[]) => {
-    uploads.uploadMany(picked.id, files, (file, url) => {
+    uploads.uploadMany(files, (file, url) => {
       const appendedId = newRowId();
-      const reserved = uploads.isReserved(picked.id);
       setRows(prev => {
         const target = prev.find(r => r.id === picked.id);
         const fillsPicked =
-          !reserved &&
           target &&
           !target.url.trim() &&
           target.displayName === picked.displayName &&
@@ -216,8 +225,8 @@ function LinkCreateDialog({
                   onFileUpload && (
                     <RowAttachFileButton
                       accept={uploadAccept}
-                      disabled={saving}
-                      uploading={uploads.uploadingRows.includes(row.id)}
+                      disabled={saving || uploadsUnsettled}
+                      uploading={uploadingIds.has(row.id)}
                       ariaLabel={t('contributionSettings.prePopulate.attachFile')}
                       onFile={file => handleFile(row.id, file)}
                       onFiles={files => handleFiles(row, files)}
@@ -241,7 +250,7 @@ function LinkCreateDialog({
             <Button variant="outline" onClick={requestClose} disabled={saving}>
               {t('dialogs.cancel')}
             </Button>
-            <Button onClick={handleSubmit} disabled={saving || uploading} aria-busy={saving}>
+            <Button onClick={handleSubmit} disabled={saving || uploadsUnsettled} aria-busy={saving}>
               {t('callout.linkCreate')}
             </Button>
           </DialogFooter>
@@ -374,7 +383,6 @@ function LinkEditDialog({
     setDescription(initialValues?.description ?? '');
     setUrlError(undefined);
     setNameError(undefined);
-    setUploading(false);
   }, [open, initialValues?.url, initialValues?.displayName, initialValues?.description]);
 
   const handleFile = async (file: File | undefined) => {
@@ -390,7 +398,7 @@ function LinkEditDialog({
         setNameError(undefined);
       }
     } finally {
-      if (rowIdRef.current === openCycle) setUploading(false);
+      setUploading(false);
     }
   };
 
@@ -473,7 +481,7 @@ function LinkEditDialog({
                 {onFileUpload && (
                   <RowAttachFileButton
                     accept={uploadAccept}
-                    disabled={saving}
+                    disabled={saving || uploading}
                     uploading={uploading}
                     ariaLabel={t('contributionSettings.prePopulate.attachFile')}
                     onFile={handleFile}
@@ -516,7 +524,7 @@ function LinkEditDialog({
               <Button variant="outline" onClick={requestClose} disabled={saving}>
                 {t('dialogs.cancel')}
               </Button>
-              <Button onClick={handleSubmit} disabled={saving} aria-busy={saving}>
+              <Button onClick={handleSubmit} disabled={saving || uploading} aria-busy={saving}>
                 {t('callout.linkSave')}
               </Button>
             </div>

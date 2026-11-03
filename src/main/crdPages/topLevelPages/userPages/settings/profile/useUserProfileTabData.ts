@@ -303,28 +303,26 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
     )?.data?.lookup.user;
     if (freshUser) {
       const fresh = mapUserToProfileFormValues(freshUser);
-      update(latest => {
-        const next: UserProfileFormValues = { ...fresh, avatar: latest.avatar };
-        if (result.coreFailed) {
-          for (const f of SCALAR_FIELDS) next[f] = current[f];
-        }
-        for (const f of TAGSET_FIELDS) {
-          if ((result.coreFailed && current[f].id) || result.failedTagsets.includes(f)) next[f] = current[f];
-        }
-        const rows = rebaseReferences(
-          allReferences(fresh).filter((r): r is UserProfileReference => Boolean(r?.id)),
-          referenceChanges,
-          result,
-          { snapshot: current.references, latest: latest.references }
-        );
-        next.references = rows.filter(r => !r.recognized);
-        next.recognizedReferences = { ...fresh.recognizedReferences };
-        for (const kind of SOCIAL_LINK_KINDS) {
-          const row = rows.find(r => r.recognized && r.name.toLowerCase() === kind);
-          if (row) next.recognizedReferences[kind] = row;
-        }
-        return next;
-      });
+      const next: UserProfileFormValues = { ...fresh, avatar: current.avatar };
+      if (result.coreFailed) {
+        for (const f of SCALAR_FIELDS) next[f] = current[f];
+      }
+      for (const f of TAGSET_FIELDS) {
+        if ((result.coreFailed && current[f].id) || result.failedTagsets.includes(f)) next[f] = current[f];
+      }
+      const rows = rebaseReferences(
+        allReferences(fresh).filter((r): r is UserProfileReference => Boolean(r?.id)),
+        referenceChanges,
+        result
+      );
+      next.references = rows.filter(r => !r.recognized);
+      next.recognizedReferences = { ...fresh.recognizedReferences };
+      for (const kind of SOCIAL_LINK_KINDS) {
+        const row = rows.find(r => r.recognized && r.name.toLowerCase() === kind);
+        if (row) next.recognizedReferences[kind] = row;
+      }
+      valuesRef.current = next;
+      setValues(next);
     }
 
     setSaving(false);

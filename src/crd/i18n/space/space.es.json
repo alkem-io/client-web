@@ -591,6 +591,7 @@
     "notifyMembers": "Notificar a los miembros del espacio",
     "titleRequiredHint": "Añade un título a tu publicación para continuar",
     "descriptionTooLongHint": "Acorta la descripción para continuar: supera el límite de longitud",
+    "filesUploadingHint": "Espera a que terminen de subirse los archivos para continuar",
     "saveDraft": "Guardar borrador",
     "save": "Guardar",
     "publish": "Publicar",

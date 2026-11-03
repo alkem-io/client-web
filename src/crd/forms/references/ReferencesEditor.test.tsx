@@ -47,11 +47,11 @@ const onChangeSpy = vi.fn();
 function Host({
   initial,
   onFileUpload,
-  uploadAccept,
+  disabled,
 }: {
   initial: ReferenceRow[];
   onFileUpload: RowFileUpload;
-  uploadAccept?: string;
+  disabled?: boolean;
 }) {
   const [rows, setRows] = useState(initial);
   const [, setTick] = useState(0);
@@ -67,7 +67,7 @@ function Host({
           setRows(next);
         }}
         onFileUpload={onFileUpload}
-        uploadAccept={uploadAccept}
+        disabled={disabled}
       />
     </>
   );
@@ -80,11 +80,7 @@ const pick = (input: HTMLInputElement, files: File[]) => fireEvent.change(input,
 const nameInputs = () => screen.getAllByLabelText('references.nameLabel') as HTMLInputElement[];
 const uriInputs = () => screen.getAllByLabelText('references.uriLabel') as HTMLInputElement[];
 const descriptionInputs = () => screen.getAllByLabelText('references.descriptionLabel') as HTMLInputElement[];
-
-const removeRowAt = async (user: ReturnType<typeof userEvent.setup>, index: number) => {
-  await user.click(screen.getAllByRole('button', { name: 'references.removeRow' })[index]);
-  await user.click(screen.getByRole('button', { name: 'references.removeConfirm.confirm' }));
-};
+const paperclips = () => screen.getAllByRole('button', { name: 'references.attachFile' });
 
 describe('ReferencesEditor — several files on one paperclip', () => {
   test('the first result fills the empty clicked row, later ones are appended, uploading files are listed', async () => {
@@ -173,68 +169,6 @@ describe('ReferencesEditor — several files on one paperclip', () => {
     for (const call of calls) expect(call.options).toEqual({ silent: true });
   });
 
-  test('a one-file pick made while a batch from the same row runs keeps every file (a, c, b order)', async () => {
-    const { upload, calls } = createControlledUpload();
-    render(<Host initial={[emptyRow]} onFileUpload={upload} />);
-
-    pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf')]);
-    pick(fileInputs()[0], [pdf('c.pdf')]);
-    expect(calls.map(call => call.file.name)).toEqual(['a.pdf', 'b.pdf', 'c.pdf']);
-    expect(calls[2].options).toBeUndefined();
-
-    await act(async () => calls[0].resolve('https://cdn/a'));
-    await act(async () => calls[2].resolve('https://cdn/c'));
-    await act(async () => calls[1].resolve('https://cdn/b'));
-
-    expect(uriInputs().map(i => i.value)).toEqual(['https://cdn/c', 'https://cdn/a', 'https://cdn/b']);
-    expect(nameInputs().map(i => i.value)).toEqual(['c', 'a', 'b']);
-  });
-
-  test('removing a row while uploads run writes every result into its own row (a, b batch on row 1, c on row 2)', async () => {
-    const user = userEvent.setup();
-    const { upload, calls } = createControlledUpload();
-    render(<Host initial={[emptyRow, { ...emptyRow }]} onFileUpload={upload} />);
-
-    pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf')]);
-    pick(fileInputs()[1], [pdf('c.pdf')]);
-    await removeRowAt(user, 0);
-    expect(uriInputs()).toHaveLength(1);
-
-    await act(async () => calls[0].resolve('https://cdn/a'));
-    await act(async () => calls[1].resolve('https://cdn/b'));
-    await act(async () => calls[2].resolve('https://cdn/c'));
-
-    expect(uriInputs().map(i => i.value)).toEqual(['https://cdn/c', 'https://cdn/a', 'https://cdn/b']);
-    expect(nameInputs().map(i => i.value)).toEqual(['c', 'a', 'b']);
-  });
-
-  test('removing a row above the clicked one still fills the clicked row', async () => {
-    const user = userEvent.setup();
-    const { upload, calls } = createControlledUpload();
-    render(<Host initial={[{ name: 'Gone', uri: '', description: '' }, emptyRow]} onFileUpload={upload} />);
-
-    pick(fileInputs()[1], [pdf('a.pdf'), pdf('b.pdf')]);
-    await removeRowAt(user, 0);
-    await act(async () => calls[0].resolve('https://cdn/a'));
-    await act(async () => calls[1].resolve('https://cdn/b'));
-
-    expect(uriInputs().map(i => i.value)).toEqual(['https://cdn/a', 'https://cdn/b']);
-    expect(nameInputs().map(i => i.value)).toEqual(['a', 'b']);
-  });
-
-  test('a one-file result whose row was removed writes nothing', async () => {
-    const user = userEvent.setup();
-    const { upload, calls } = createControlledUpload();
-    render(<Host initial={[emptyRow, { name: 'Kept', uri: '', description: '' }]} onFileUpload={upload} />);
-
-    pick(fileInputs()[0], [pdf('c.pdf')]);
-    await removeRowAt(user, 0);
-    await act(async () => calls[0].resolve('https://cdn/c'));
-
-    expect(uriInputs().map(i => i.value)).toEqual(['']);
-    expect(nameInputs().map(i => i.value)).toEqual(['Kept']);
-  });
-
   test('one file picked behaves as today: same row, not silent', async () => {
     const { upload, calls } = createControlledUpload();
     render(<Host initial={[emptyRow]} onFileUpload={upload} />);
@@ -248,17 +182,29 @@ describe('ReferencesEditor — several files on one paperclip', () => {
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
 
-  test('after unmount, a late result calls no onChange', async () => {
+  test('after unmount, late multi-file results call no onChange and queued files never start', async () => {
     const { upload, calls } = createControlledUpload();
     const { unmount } = render(<Host initial={[emptyRow]} onFileUpload={upload} />);
 
-    pick(fileInputs()[0], [pdf('alpha.pdf'), pdf('beta.pdf')]);
+    pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf'), pdf('c.pdf'), pdf('d.pdf')]);
     onChangeSpy.mockClear();
     unmount();
     await act(async () => {
-      calls[0].resolve('https://cdn/alpha');
-      calls[1].resolve('https://cdn/beta');
+      for (const call of [...calls]) call.resolve(`https://cdn/${call.file.name}`);
     });
+
+    expect(onChangeSpy).not.toHaveBeenCalled();
+    expect(upload).toHaveBeenCalledTimes(3);
+  });
+
+  test('after unmount, a late one-file result calls no onChange', async () => {
+    const { upload, calls } = createControlledUpload();
+    const { unmount } = render(<Host initial={[emptyRow]} onFileUpload={upload} />);
+
+    pick(fileInputs()[0], [pdf('alpha.pdf')]);
+    onChangeSpy.mockClear();
+    unmount();
+    await act(async () => calls[0].resolve('https://cdn/alpha'));
 
     expect(onChangeSpy).not.toHaveBeenCalled();
   });
@@ -282,47 +228,107 @@ describe('ReferencesEditor — several files on one paperclip', () => {
     expect(notice).toHaveTextContent('fileSelection.reason.limit');
   });
 
-  test('unaccepted files are named and never uploaded; dismissing clears the notice; later selections add to it', async () => {
+  test('files the upload rejects for their type each reach it once, add no row and are named; dismiss clears, later selections add', async () => {
     const user = userEvent.setup();
-    const { upload } = createControlledUpload();
-    render(<Host initial={[emptyRow]} onFileUpload={upload} uploadAccept=".pdf" />);
+    const upload = vi.fn<RowFileUpload>(async () => {
+      throw new FileUploadRejection({ kind: 'type' });
+    });
+    render(<Host initial={[emptyRow]} onFileUpload={upload} />);
+    onChangeSpy.mockClear();
 
-    pick(fileInputs()[0], [new File(['x'], 'a.png'), new File(['x'], 'b.gif')]);
-    expect(upload).not.toHaveBeenCalled();
+    await act(async () => pick(fileInputs()[0], [pdf('a.png'), pdf('b.gif')]));
+    expect(upload).toHaveBeenCalledTimes(2);
+    expect(onChangeSpy).not.toHaveBeenCalled();
     expect(uriInputs()).toHaveLength(1);
-    expect(screen.getByRole('status')).toHaveTextContent('a.png');
-    expect(screen.getByRole('status')).toHaveTextContent('b.gif');
+    const notice = screen.getByRole('status');
+    expect(notice).toHaveTextContent('a.png');
+    expect(notice).toHaveTextContent('b.gif');
+    expect(notice).toHaveTextContent('fileSelection.reason.type');
 
     await user.click(screen.getByRole('button', { name: 'fileSelection.dismiss' }));
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
 
-    pick(fileInputs()[0], [new File(['x'], 'c.png'), new File(['x'], 'd.png')]);
-    pick(fileInputs()[0], [new File(['x'], 'e.png'), new File(['x'], 'f.png')]);
-    const notice = screen.getByRole('status');
-    expect(notice).toHaveTextContent('c.png');
-    expect(notice).toHaveTextContent('f.png');
-    expect(notice).not.toHaveTextContent('a.png');
+    await act(async () => pick(fileInputs()[0], [pdf('c.png'), pdf('d.png')]));
+    await act(async () => pick(fileInputs()[0], [pdf('e.png'), pdf('f.png')]));
+    const later = screen.getByRole('status');
+    expect(later).toHaveTextContent('c.png');
+    expect(later).toHaveTextContent('f.png');
+    expect(later).not.toHaveTextContent('a.png');
   });
+});
 
-  test('selections on two rows share the limit of three uploads', async () => {
-    const { upload, calls, inFlight } = createControlledUpload();
+describe('ReferencesEditor — one pick at a time', () => {
+  test('while a multi-file pick uploads, every paperclip is disabled until the last settles', async () => {
+    const { upload, calls } = createControlledUpload();
     render(<Host initial={[emptyRow, { ...emptyRow }]} onFileUpload={upload} />);
 
-    pick(
-      fileInputs()[0],
-      Array.from({ length: 6 }, (_, i) => pdf(`a-${i}.pdf`))
-    );
-    pick(
-      fileInputs()[1],
-      Array.from({ length: 6 }, (_, i) => pdf(`b-${i}.pdf`))
-    );
-    expect(inFlight()).toBe(3);
+    pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf'), pdf('c.pdf')]);
+    for (const clip of paperclips()) expect(clip).toBeDisabled();
 
-    for (let i = 0; i < 12; i += 1) {
-      await act(async () => calls[i].resolve(`https://cdn/${i}`));
-      expect(inFlight()).toBeLessThanOrEqual(3);
-    }
-    expect(upload).toHaveBeenCalledTimes(12);
+    await act(async () => calls[0].resolve('https://cdn/a'));
+    await act(async () => calls[1].resolve('https://cdn/b'));
+    for (const clip of paperclips()) expect(clip).toBeDisabled();
+    await act(async () => calls[2].resolve('https://cdn/c'));
+
+    for (const clip of paperclips()) expect(clip).toBeEnabled();
+  });
+
+  test('while a one-file pick uploads, every paperclip is disabled until it settles', async () => {
+    const { upload, calls } = createControlledUpload();
+    render(<Host initial={[emptyRow, { ...emptyRow }]} onFileUpload={upload} />);
+
+    pick(fileInputs()[0], [pdf('a.pdf')]);
+    for (const clip of paperclips()) expect(clip).toBeDisabled();
+    await act(async () => calls[0].resolve('https://cdn/a'));
+
+    for (const clip of paperclips()) expect(clip).toBeEnabled();
+  });
+
+  test('with disabled, every paperclip is disabled', () => {
+    const { upload } = createControlledUpload();
+    render(<Host initial={[emptyRow, { ...emptyRow }]} onFileUpload={upload} disabled={true} />);
+
+    for (const clip of paperclips()) expect(clip).toBeDisabled();
+  });
+});
+
+describe('ReferencesEditor — a result calls the onChange current when it lands', () => {
+  function SwapHost({ onFileUpload, onChange }: { onFileUpload: RowFileUpload; onChange: (rows: ReferenceRow[]) => void }) {
+    return <ReferencesEditor rows={[emptyRow]} onChange={onChange} onFileUpload={onFileUpload} />;
+  }
+
+  test('a one-file result calls the new onChange once and never the pick-time one', async () => {
+    const { upload, calls } = createControlledUpload();
+    const pickTime = vi.fn();
+    const current = vi.fn();
+    const { rerender } = render(<SwapHost onFileUpload={upload} onChange={pickTime} />);
+
+    pick(fileInputs()[0], [pdf('alpha.pdf')]);
+    rerender(<SwapHost onFileUpload={upload} onChange={current} />);
+    await act(async () => calls[0].resolve('https://cdn/alpha'));
+
+    expect(pickTime).not.toHaveBeenCalled();
+    expect(current).toHaveBeenCalledTimes(1);
+    expect(current).toHaveBeenCalledWith([{ name: 'alpha', uri: 'https://cdn/alpha', description: '' }]);
+  });
+
+  test('each multi-file result calls the onChange current when it lands', async () => {
+    const { upload, calls } = createControlledUpload();
+    const pickTime = vi.fn();
+    const second = vi.fn();
+    const third = vi.fn();
+    const { rerender } = render(<SwapHost onFileUpload={upload} onChange={pickTime} />);
+
+    pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf'), pdf('c.pdf')]);
+    rerender(<SwapHost onFileUpload={upload} onChange={second} />);
+    await act(async () => calls[0].resolve('https://cdn/a'));
+    rerender(<SwapHost onFileUpload={upload} onChange={third} />);
+    await act(async () => calls[1].resolve('https://cdn/b'));
+    await act(async () => calls[2].resolve('https://cdn/c'));
+
+    expect(pickTime).not.toHaveBeenCalled();
+    expect(second).toHaveBeenCalledTimes(1);
+    expect(third).toHaveBeenCalledTimes(2);
   });
 });
 

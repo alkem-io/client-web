@@ -1650,6 +1650,7 @@
       "size": "plus de {{maxMb}} Mo",
       "failed": "le téléversement a échoué"
     },
-    "dismiss": "Fermer"
+    "dismiss": "Fermer",
+    "saveBlocked": "Attendez la fin du téléversement des fichiers"
   }
 }

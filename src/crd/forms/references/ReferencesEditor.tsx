@@ -68,6 +68,7 @@ export function ReferencesEditor({
 }: ReferencesEditorProps) {
   const { t } = useTranslation('crd-common');
   const [pendingDeleteIndex, setPendingDeleteIndex] = useState<number | null>(null);
+  const [uploadingRows, setUploadingRows] = useState<Record<number, boolean>>({});
   // Mirror of `rows` for post-await reads: a file upload takes seconds, and if
   // the user types into any row meanwhile the closure-captured `rows` is stale
   // by the time `await onFileUpload` resolves. Reading from the ref avoids
@@ -76,17 +77,26 @@ export function ReferencesEditor({
   // Hosts that merge rows into a whole form value hand in a new `onChange` per render; a write
   // that lands after an upload must use the latest one, or it reverts the host's other fields.
   const onChangeRef = useRef(onChange);
+  const mounted = useRef(false);
   useEffect(() => {
     rowsRef.current = rows;
   }, [rows]);
   useEffect(() => {
     onChangeRef.current = onChange;
-  }, [onChange]);
-  const uploads = useRowFileUploads<number>(onFileUpload, uploadAccept);
+  });
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+  const uploads = useRowFileUploads(onFileUpload);
+  const anyRowUploading = Object.keys(uploadingRows).length > 0;
 
-  // Every write refreshes the mirror first, so two uploads settling before the next render each
-  // build on the other's result.
+  // The one write path: nothing after unmount, and the mirror is refreshed first so two uploads
+  // settling before the next render each build on the other's result.
   const commit = (next: ReferenceRow[]) => {
+    if (!mounted.current) return;
     rowsRef.current = next;
     onChangeRef.current(next);
   };
@@ -95,37 +105,43 @@ export function ReferencesEditor({
     commit(rowsRef.current.map((row, i) => (i === index ? { ...row, ...patch } : row)));
   };
 
-  const handleFileSelected = (index: number, file: File | undefined) => {
-    if (!file) return;
-    void uploads.uploadOne(index, file, (uri, row) => {
-      const current = rowsRef.current[row];
+  const handleFileSelected = async (index: number, file: File | undefined) => {
+    if (!file || !onFileUpload) return;
+    setUploadingRows(prev => ({ ...prev, [index]: true }));
+    try {
+      const uri = await onFileUpload(file);
+      if (!uri) return;
+      const current = rowsRef.current[index];
       const nameEmpty = !current?.name.trim();
       const filenameBase = fileNameBase(file);
       const patch: Partial<ReferenceRow> = { uri };
       if (nameEmpty && filenameBase) patch.name = filenameBase;
-      updateRow(row, patch);
-    });
+      updateRow(index, patch);
+    } finally {
+      setUploadingRows(prev => {
+        const next = { ...prev };
+        delete next[index];
+        return next;
+      });
+    }
   };
 
-  // A result fills the clicked row only while that row is still there, no one-file pick holds it,
-  // and it still has its pick-time values and an empty URL; otherwise it is appended as a row of
-  // its own. Rows are compared by value because hosts hand in freshly mapped row objects on every
-  // render.
+  // A result fills the clicked row while it still has its pick-time name and description and an
+  // empty URL; otherwise it is appended as a row of its own. Rows are compared by value because
+  // hosts hand in freshly mapped row objects on every render.
   const handleFilesSelected = (index: number, files: File[]) => {
     const picked = rowsRef.current[index];
-    uploads.uploadMany(index, files, (file, uri, row) => {
-      const current = row === null ? undefined : rowsRef.current[row];
+    uploads.uploadMany(files, (file, uri) => {
+      const current = rowsRef.current[index];
       const name = fileNameBase(file);
       const fillsPicked =
-        row !== null &&
         picked &&
         current &&
-        !uploads.isReserved(row) &&
         !current.uri.trim() &&
         current.name === picked.name &&
         (current.description ?? '') === (picked.description ?? '');
       if (fillsPicked) {
-        updateRow(row, current.name.trim() || !name ? { uri } : { uri, name });
+        updateRow(index, current.name.trim() || !name ? { uri } : { uri, name });
       } else {
         commit([...rowsRef.current, { name, uri, description: '' }]);
       }
@@ -133,7 +149,6 @@ export function ReferencesEditor({
   };
 
   const removeRow = (index: number) => {
-    uploads.rowRemoved(index);
     commit(rowsRef.current.filter((_, i) => i !== index));
   };
 
@@ -189,8 +204,8 @@ export function ReferencesEditor({
                   {onFileUpload && (
                     <RowAttachFileButton
                       accept={uploadAccept}
-                      disabled={disabled}
-                      uploading={uploads.uploadingRows.includes(index)}
+                      disabled={disabled || uploads.busy || anyRowUploading}
+                      uploading={Boolean(uploadingRows[index])}
                       ariaLabel={t('references.attachFile')}
                       onFile={file => handleFileSelected(index, file)}
                       onFiles={files => handleFilesSelected(index, files)}

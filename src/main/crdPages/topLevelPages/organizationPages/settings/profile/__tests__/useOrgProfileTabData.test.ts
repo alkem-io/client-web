@@ -279,45 +279,6 @@ describe('useOrgProfileTabData — saveAll', () => {
     });
     expect(mockDeleteReference).toHaveBeenCalledWith({ variables: { input: { ID: 'ref-2' } } });
   });
-
-  it('keeps reference rows that uploads add or fill while the Save is running', async () => {
-    let resolveRefetch: (value: unknown) => void = () => {};
-    mockRefetch.mockReturnValueOnce(new Promise(resolve => (resolveRefetch = resolve)));
-    const { result } = renderHook(() => useOrgProfileTabData('org-1'));
-    act(() => {
-      result.current.onChange({ tagline: 'New tagline' });
-      result.current.onReferencesChange([
-        ...(result.current.values?.references ?? []),
-        { name: '', uri: '', description: '' },
-      ]);
-    });
-    const pickedRow = result.current.values?.references[1];
-
-    let saving: Promise<boolean> = Promise.resolve(false);
-    act(() => {
-      saving = result.current.unsaved.saveAll();
-    });
-    await waitFor(() => expect(mockRefetch).toHaveBeenCalled());
-    act(() =>
-      result.current.onReferencesChange([
-        ...(result.current.values?.references ?? []).map(r =>
-          r.id === pickedRow?.id ? { ...r, name: 'notes', uri: 'https://files.test/notes.pdf' } : r
-        ),
-        { name: 'slides', uri: 'https://files.test/slides.pdf', description: '' },
-      ])
-    );
-    await act(async () => {
-      resolveRefetch({ data: { lookup: { organization: buildOrg() } } });
-      await saving;
-    });
-
-    expect(result.current.values?.references.map(r => r.uri)).toEqual([
-      'https://alkemio.test/report',
-      'https://files.test/notes.pdf',
-      'https://files.test/slides.pdf',
-    ]);
-    expect(result.current.unsaved.count).toBe(2);
-  });
 });
 
 describe('useOrgProfileTabData — logo upload (FR-093, crop-then-commit)', () => {

@@ -591,6 +591,7 @@
     "notifyMembers": "Notify space members",
     "titleRequiredHint": "Add a title to your $t(common.callout) to continue",
     "descriptionTooLongHint": "Shorten the description to continue — it is over the length limit",
+    "filesUploadingHint": "Wait for the files to finish uploading to continue",
     "saveDraft": "Save Draft",
     "save": "Save",
     "publish": "Post",

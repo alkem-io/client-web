@@ -591,6 +591,7 @@
     "notifyMembers": "Notifier les membres de l'espace",
     "titleRequiredHint": "Ajoutez un titre à votre publication pour continuer",
     "descriptionTooLongHint": "Raccourcissez la description pour continuer : elle dépasse la longueur autorisée",
+    "filesUploadingHint": "Attendez la fin du téléversement des fichiers pour continuer",
     "saveDraft": "Enregistrer le brouillon",
     "save": "Enregistrer",
     "publish": "Publier",

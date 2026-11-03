@@ -591,6 +591,7 @@
     "notifyMembers": "Bereichsmitglieder benachrichtigen",
     "titleRequiredHint": "Fügen Sie Ihrem Beitrag einen Titel hinzu, um fortzufahren",
     "descriptionTooLongHint": "Kürzen Sie die Beschreibung, um fortzufahren – sie überschreitet die zulässige Länge",
+    "filesUploadingHint": "Warten Sie, bis die Dateien hochgeladen sind, um fortzufahren",
     "saveDraft": "Entwurf speichern",
     "save": "Speichern",
     "publish": "Veröffentlichen",

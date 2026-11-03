@@ -1650,6 +1650,7 @@
       "size": "supera los {{maxMb}} MB",
       "failed": "la subida falló"
     },
-    "dismiss": "Descartar"
+    "dismiss": "Descartar",
+    "saveBlocked": "Espera a que terminen de subirse los archivos"
   }
 }

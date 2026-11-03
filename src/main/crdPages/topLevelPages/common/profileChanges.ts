@@ -93,38 +93,21 @@ export const saveProfileChanges = async <R extends ProfileReference, T extends s
   return { firstError: firstError as string | null, coreFailed, failedTagsets, failedCreates, failedRemovals };
 };
 
-const sameReference = (a: ProfileReference, b: ProfileReference) =>
-  a.name === b.name && a.uri === b.uri && a.description === b.description;
-
 /**
  * The reference list to keep after a Save: the server's rows, minus removals
  * that failed (they stay removed in the buffer), with the buffered edits kept
- * when the core update failed, plus the creates that failed. Rows the buffer
- * gained or changed after the Save took its `snapshot` (an upload that finished
- * meanwhile) are kept from `latest`, so the next Save picks them up.
+ * when the core update failed, plus the creates that failed.
  */
 export const rebaseReferences = <R extends ProfileReference>(
   fresh: ReadonlyArray<R>,
   references: ProfileReferenceChanges<R>,
-  result: { coreFailed: boolean; failedCreates: ReadonlyArray<R>; failedRemovals: ReadonlySet<string> },
-  buffer: { snapshot: ReadonlyArray<R>; latest: ReadonlyArray<R> }
+  result: { coreFailed: boolean; failedCreates: ReadonlyArray<R>; failedRemovals: ReadonlySet<string> }
 ): R[] => {
   const editedById = new Map(references.edited.map(r => [r.id, r] as const));
-  const snapshotById = new Map(buffer.snapshot.map(r => [r.id, r] as const));
-  const laterById = new Map(
-    buffer.latest
-      .filter(r => {
-        const before = snapshotById.get(r.id);
-        return before === undefined || !sameReference(before, r);
-      })
-      .map(r => [r.id, r] as const)
-  );
-  const rows = [
+  return [
     ...fresh
       .filter(r => !result.failedRemovals.has(r.id))
       .map(r => (result.coreFailed ? (editedById.get(r.id) ?? r) : r)),
     ...result.failedCreates,
-  ].map(r => laterById.get(r.id) ?? r);
-  const kept = new Set(rows.map(r => r.id));
-  return [...rows, ...[...laterById.values()].filter(r => !kept.has(r.id))];
+  ];
 };

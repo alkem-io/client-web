@@ -1650,6 +1650,7 @@
       "size": "größer als {{maxMb}} MB",
       "failed": "der Upload ist fehlgeschlagen"
     },
-    "dismiss": "Schließen"
+    "dismiss": "Schließen",
+    "saveBlocked": "Warten Sie, bis die Dateien hochgeladen sind"
   }
 }

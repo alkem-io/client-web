@@ -24,8 +24,18 @@ const createControlledUpload = () => {
   return { upload, calls };
 };
 
+const onChangeSpy = vi.fn();
+
 /** Keeps rows in state and hands the editor a freshly mapped array on every render. */
-function Host({ initial, onFileUpload }: { initial: LinkRow[]; onFileUpload: RowFileUpload }) {
+function Host({
+  initial,
+  onFileUpload,
+  disabled,
+}: {
+  initial: LinkRow[];
+  onFileUpload: RowFileUpload;
+  disabled?: boolean;
+}) {
   const [rows, setRows] = useState(initial);
   const [, setTick] = useState(0);
   return (
@@ -33,7 +43,15 @@ function Host({ initial, onFileUpload }: { initial: LinkRow[]; onFileUpload: Row
       <button type="button" onClick={() => setTick(n => n + 1)}>
         rerender
       </button>
-      <LinksPrePopulateRows rows={rows.map(r => ({ ...r }))} onChange={setRows} onFileUpload={onFileUpload} />
+      <LinksPrePopulateRows
+        rows={rows.map(r => ({ ...r }))}
+        onChange={next => {
+          onChangeSpy(next);
+          setRows(next);
+        }}
+        onFileUpload={onFileUpload}
+        disabled={disabled}
+      />
     </>
   );
 }
@@ -46,6 +64,7 @@ const titleInputs = () => screen.getAllByLabelText('contributionSettings.prePopu
 const urlInputs = () => screen.getAllByLabelText('contributionSettings.prePopulate.urlLabel') as HTMLInputElement[];
 const descriptionInputs = () =>
   screen.getAllByLabelText('contributionSettings.prePopulate.descriptionLabel') as HTMLInputElement[];
+const paperclips = () => screen.getAllByRole('button', { name: 'contributionSettings.prePopulate.attachFile' });
 
 describe('LinksPrePopulateRows — several files on one paperclip', () => {
   test('the first result fills the empty clicked row, later ones are appended, uploading files are listed', async () => {
@@ -103,54 +122,6 @@ describe('LinksPrePopulateRows — several files on one paperclip', () => {
     expect(urlInputs().map(i => i.value)).toEqual(['https://kept', 'https://cdn/alpha', 'https://cdn/beta']);
   });
 
-  test('a one-file pick made while a batch from the same row runs keeps every file (a, c, b order)', async () => {
-    const { upload, calls } = createControlledUpload();
-    render(<Host initial={[emptyRow]} onFileUpload={upload} />);
-
-    pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf')]);
-    pick(fileInputs()[0], [pdf('c.pdf')]);
-    expect(calls.map(call => call.file.name)).toEqual(['a.pdf', 'b.pdf', 'c.pdf']);
-
-    await act(async () => calls[0].resolve('https://cdn/a'));
-    await act(async () => calls[2].resolve('https://cdn/c'));
-    await act(async () => calls[1].resolve('https://cdn/b'));
-
-    expect(urlInputs().map(i => i.value)).toEqual(['https://cdn/c', 'https://cdn/a', 'https://cdn/b']);
-    expect(titleInputs().map(i => i.value)).toEqual(['c', 'a', 'b']);
-  });
-
-  test('removing a row while uploads run writes every result into its own row (a, b batch on row 1, c on row 2)', async () => {
-    const user = userEvent.setup();
-    const { upload, calls } = createControlledUpload();
-    render(<Host initial={[emptyRow, { ...emptyRow }]} onFileUpload={upload} />);
-
-    pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf')]);
-    pick(fileInputs()[1], [pdf('c.pdf')]);
-    await user.click(screen.getAllByRole('button', { name: 'contributionSettings.prePopulate.removeRow' })[0]);
-    expect(urlInputs()).toHaveLength(1);
-
-    await act(async () => calls[0].resolve('https://cdn/a'));
-    await act(async () => calls[1].resolve('https://cdn/b'));
-    await act(async () => calls[2].resolve('https://cdn/c'));
-
-    expect(urlInputs().map(i => i.value)).toEqual(['https://cdn/c', 'https://cdn/a', 'https://cdn/b']);
-    expect(titleInputs().map(i => i.value)).toEqual(['c', 'a', 'b']);
-  });
-
-  test('removing a row above the clicked one still fills the clicked row', async () => {
-    const user = userEvent.setup();
-    const { upload, calls } = createControlledUpload();
-    render(<Host initial={[{ title: 'Gone', url: '', description: '' }, emptyRow]} onFileUpload={upload} />);
-
-    pick(fileInputs()[1], [pdf('a.pdf'), pdf('b.pdf')]);
-    await user.click(screen.getAllByRole('button', { name: 'contributionSettings.prePopulate.removeRow' })[0]);
-    await act(async () => calls[0].resolve('https://cdn/a'));
-    await act(async () => calls[1].resolve('https://cdn/b'));
-
-    expect(urlInputs().map(i => i.value)).toEqual(['https://cdn/a', 'https://cdn/b']);
-    expect(titleInputs().map(i => i.value)).toEqual(['a', 'b']);
-  });
-
   test('one file picked behaves as today', async () => {
     const { upload, calls } = createControlledUpload();
     render(<Host initial={[emptyRow]} onFileUpload={upload} />);
@@ -161,6 +132,102 @@ describe('LinksPrePopulateRows — several files on one paperclip', () => {
 
     expect(urlInputs().map(i => i.value)).toEqual(['https://cdn/alpha']);
     expect(titleInputs()[0]).toHaveValue('alpha');
+  });
+
+  test('after unmount, late multi-file results call no onChange and queued files never start', async () => {
+    const { upload, calls } = createControlledUpload();
+    const { unmount } = render(<Host initial={[emptyRow]} onFileUpload={upload} />);
+
+    pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf'), pdf('c.pdf'), pdf('d.pdf')]);
+    onChangeSpy.mockClear();
+    unmount();
+    await act(async () => {
+      for (const call of [...calls]) call.resolve(`https://cdn/${call.file.name}`);
+    });
+
+    expect(onChangeSpy).not.toHaveBeenCalled();
+    expect(upload).toHaveBeenCalledTimes(3);
+  });
+
+  test('after unmount, a late one-file result calls no onChange', async () => {
+    const { upload, calls } = createControlledUpload();
+    const { unmount } = render(<Host initial={[emptyRow]} onFileUpload={upload} />);
+
+    pick(fileInputs()[0], [pdf('alpha.pdf')]);
+    onChangeSpy.mockClear();
+    unmount();
+    await act(async () => calls[0].resolve('https://cdn/alpha'));
+
+    expect(onChangeSpy).not.toHaveBeenCalled();
+  });
+});
+
+describe('LinksPrePopulateRows — one pick at a time', () => {
+  test('while a multi-file pick uploads, every paperclip is disabled until the last settles', async () => {
+    const { upload, calls } = createControlledUpload();
+    render(<Host initial={[emptyRow, { ...emptyRow }]} onFileUpload={upload} />);
+
+    pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf')]);
+    for (const clip of paperclips()) expect(clip).toBeDisabled();
+    await act(async () => calls[0].resolve('https://cdn/a'));
+    for (const clip of paperclips()) expect(clip).toBeDisabled();
+    await act(async () => calls[1].resolve('https://cdn/b'));
+
+    for (const clip of paperclips()) expect(clip).toBeEnabled();
+  });
+
+  test('while a one-file pick uploads, every paperclip is disabled until it settles', async () => {
+    const { upload, calls } = createControlledUpload();
+    render(<Host initial={[emptyRow, { ...emptyRow }]} onFileUpload={upload} />);
+
+    pick(fileInputs()[1], [pdf('a.pdf')]);
+    for (const clip of paperclips()) expect(clip).toBeDisabled();
+    await act(async () => calls[0].resolve('https://cdn/a'));
+
+    for (const clip of paperclips()) expect(clip).toBeEnabled();
+  });
+
+  test('with disabled, every paperclip is disabled', () => {
+    const { upload } = createControlledUpload();
+    render(<Host initial={[emptyRow, { ...emptyRow }]} onFileUpload={upload} disabled={true} />);
+
+    for (const clip of paperclips()) expect(clip).toBeDisabled();
+  });
+});
+
+describe('LinksPrePopulateRows — a result calls the onChange current when it lands', () => {
+  function SwapHost({ onFileUpload, onChange }: { onFileUpload: RowFileUpload; onChange: (rows: LinkRow[]) => void }) {
+    return <LinksPrePopulateRows rows={[emptyRow]} onChange={onChange} onFileUpload={onFileUpload} />;
+  }
+
+  test('a one-file result calls the new onChange once and never the pick-time one', async () => {
+    const { upload, calls } = createControlledUpload();
+    const pickTime = vi.fn();
+    const current = vi.fn();
+    const { rerender } = render(<SwapHost onFileUpload={upload} onChange={pickTime} />);
+
+    pick(fileInputs()[0], [pdf('alpha.pdf')]);
+    rerender(<SwapHost onFileUpload={upload} onChange={current} />);
+    await act(async () => calls[0].resolve('https://cdn/alpha'));
+
+    expect(pickTime).not.toHaveBeenCalled();
+    expect(current).toHaveBeenCalledTimes(1);
+    expect(current).toHaveBeenCalledWith([{ title: 'alpha', url: 'https://cdn/alpha', description: '' }]);
+  });
+
+  test('each multi-file result calls the onChange current when it lands', async () => {
+    const { upload, calls } = createControlledUpload();
+    const pickTime = vi.fn();
+    const later = vi.fn();
+    const { rerender } = render(<SwapHost onFileUpload={upload} onChange={pickTime} />);
+
+    pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf')]);
+    rerender(<SwapHost onFileUpload={upload} onChange={later} />);
+    await act(async () => calls[0].resolve('https://cdn/a'));
+    await act(async () => calls[1].resolve('https://cdn/b'));
+
+    expect(pickTime).not.toHaveBeenCalled();
+    expect(later).toHaveBeenCalledTimes(2);
   });
 });
 

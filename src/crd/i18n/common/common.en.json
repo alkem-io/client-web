@@ -1650,6 +1650,7 @@
       "size": "larger than {{maxMb}} MB",
       "failed": "the upload failed"
     },
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "saveBlocked": "Wait for the files to finish uploading"
   }
 }
