@@ -47,3 +47,30 @@ jobs:
             ARG_BUILD_REVISION=${{ github.sha }}
             ARG_BUILD_ENVIRONMENT=production
           labels: ${{ steps.meta.outputs.labels }}
+
+      # Source maps for Elastic APM (client-web#10549): copy them out of the
+      # build that just ran. Same builder + same args, so every builder step is
+      # a cache hit and this only copies build/assets/*.map (seconds). The maps
+      # belong to exactly the bundles in the pushed image and never enter it.
+      - name: Export source maps
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          target: sourcemaps
+          push: false
+          outputs: type=local,dest=./sourcemaps
+          build-args: |
+            ARG_BUILD_VERSION=${{ github.event.release.tag_name }}
+            ARG_BUILD_DATE=${{ github.event.release.created_at }}
+            ARG_BUILD_REVISION=${{ github.sha }}
+            ARG_BUILD_ENVIRONMENT=production
+
+      - name: Upload source maps to Elastic APM
+        env:
+          KIBANA_URL: ${{ secrets.KIBANA_URL }}
+          KIBANA_APM_SOURCEMAP_API_KEY: ${{ secrets.KIBANA_APM_SOURCEMAP_API_KEY }}
+        run: |
+          SERVICE_VERSION="$(jq -r .version package.json)" \
+            ./.build/apm/upload-sourcemaps.sh ./sourcemaps

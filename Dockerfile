@@ -42,6 +42,14 @@ RUN if [ "$ARG_BUILD_ENVIRONMENT" = "development" ]; then \
   pnpm run-script build:sentry; \
   fi
 
+# Source maps only (client-web#10549): the release workflow exports this stage
+# with `--target sourcemaps --output type=local` and uploads the maps to Elastic
+# APM, so APM can de-minify stack traces. Built from the SAME builder stage as
+# the image (shared cache), so the bundle hashes match what production serves.
+# Never the default target; the production image still drops every *.map below.
+FROM scratch AS sourcemaps
+COPY --from=builder /app/build/assets/*.map /
+
 # Runtime: nginxinc/nginx-unprivileged — the official non-root nginx image.
 # It runs as UID 101 and listens on 8080 (a non-root process cannot bind ports
 # below 1024), and relocates the pid/temp paths to writable locations. The
