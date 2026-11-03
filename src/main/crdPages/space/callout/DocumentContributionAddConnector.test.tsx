@@ -412,7 +412,7 @@ describe('DocumentContributionAddConnector — multi-file import', () => {
 
   test.each([
     ['FORMAT_NOT_SUPPORTED', 'callout.documentImportErrorUnsupported'],
-    ['STORAGE_UPLOAD_FAILED', 'callout.documentImportErrorTooLarge'],
+    ['STORAGE_UPLOAD_FAILED', 'callout.documentImportFailed'],
     ['STORAGE_SERVICE_UNAVAILABLE', 'callout.documentImportErrorServiceUnavailable'],
   ])('a batch file rejected with %s is listed with %s and raises no toast', async (code, message) => {
     const user = userEvent.setup();
@@ -426,7 +426,7 @@ describe('DocumentContributionAddConnector — multi-file import', () => {
     await waitFor(() => expect(screen.getByText(message)).toBeInTheDocument());
     expect(screen.getByText('a.docx')).toBeInTheDocument();
     expect(screen.queryByText('b.docx')).not.toBeInTheDocument();
-    expect(screen.queryByText('callout.documentImportFailed')).not.toBeInTheDocument();
+    expect(screen.queryByText('callout.documentImportErrorTooLarge')).not.toBeInTheDocument();
     expect(notifyMock).not.toHaveBeenCalled();
   });
 

@@ -49,26 +49,15 @@ type DocumentContributionAddConnectorProps = {
 
 const DEFAULT_DOCUMENT_TYPE: CollaboraDocumentTypeValue = 'WORDPROCESSING';
 
-type ImportFailure = { kind: 'inline'; error: DocumentImportError } | { kind: 'unavailable' } | { kind: 'unknown' };
-
 const HANDLED_IMPORT_CODES = ['FORMAT_NOT_SUPPORTED', 'STORAGE_UPLOAD_FAILED', 'STORAGE_SERVICE_UNAVAILABLE'] as const;
 
-// Maps server errors the same way the framing-upload flow does.
 // Decisions are driven by the structured `extensions.code`, never the error's message.
-const classifyImportFailure = (err: unknown, file: File): ImportFailure => {
-  const code =
-    err instanceof ApolloError
-      ? err.graphQLErrors.find(gqlErr =>
-          HANDLED_IMPORT_CODES.includes(gqlErr.extensions?.code as (typeof HANDLED_IMPORT_CODES)[number])
-        )?.extensions?.code
-      : undefined;
-  if (code === 'FORMAT_NOT_SUPPORTED') return { kind: 'inline', error: { kind: 'extension', received: '' } };
-  if (code === 'STORAGE_UPLOAD_FAILED') {
-    return { kind: 'inline', error: { kind: 'size', bytes: file.size, maxBytes: COLLABORA_IMPORT_MAX_BYTES } };
-  }
-  if (code === 'STORAGE_SERVICE_UNAVAILABLE') return { kind: 'unavailable' };
-  return { kind: 'unknown' };
-};
+const importFailureCode = (err: unknown) =>
+  err instanceof ApolloError
+    ? (err.graphQLErrors.find(gqlErr =>
+        HANDLED_IMPORT_CODES.includes(gqlErr.extensions?.code as (typeof HANDLED_IMPORT_CODES)[number])
+      )?.extensions?.code as (typeof HANDLED_IMPORT_CODES)[number] | undefined)
+    : undefined;
 
 type BatchItem = StagedDocumentItem & { file: File };
 
@@ -194,12 +183,14 @@ export function DocumentContributionAddConnector({
     setBatch(selection.kept.map(toBatchItem));
   };
 
-  const importErrorMessage = (err: unknown, failedFile: File) => {
-    const failure = classifyImportFailure(err, failedFile);
-    const inlineMessage =
-      failure.kind === 'inline' ? deriveCollaboraImportErrorMessage(failure.error, t, formatList, capMb) : null;
-    if (inlineMessage) return inlineMessage;
-    if (failure.kind === 'unavailable') return t('callout.documentImportErrorServiceUnavailable');
+  // Every batch file already passed the local size check, so STORAGE_UPLOAD_FAILED gets the
+  // generic retry message rather than a size one.
+  const importErrorMessage = (err: unknown) => {
+    const code = importFailureCode(err);
+    if (code === 'FORMAT_NOT_SUPPORTED') {
+      return t('callout.documentImportErrorUnsupported', { formats: formatList });
+    }
+    if (code === 'STORAGE_SERVICE_UNAVAILABLE') return t('callout.documentImportErrorServiceUnavailable');
     logError(new Error('Document contribution import failed', { cause: err as Error }));
     return t('callout.documentImportFailed');
   };
@@ -215,7 +206,7 @@ export function DocumentContributionAddConnector({
           });
           setBatch(prev => prev.filter(staged => staged.key !== item.key));
         } catch (err) {
-          const error = importErrorMessage(err, item.file);
+          const error = importErrorMessage(err);
           setBatch(prev =>
             prev.map(staged => (staged.key === item.key ? { ...staged, status: 'failed', error } : staged))
           );
@@ -261,12 +252,17 @@ export function DocumentContributionAddConnector({
         const createdContributionId = data?.importCollaboraDocument.id;
         if (createdContributionId) setEditingContributionId(createdContributionId);
       } catch (err) {
-        const failure = classifyImportFailure(err, file);
-        if (failure.kind === 'inline') {
-          setImportError(failure.error);
+        // Maps server errors the same way the framing-upload flow does.
+        const code = importFailureCode(err);
+        if (code === 'FORMAT_NOT_SUPPORTED') {
+          setImportError({ kind: 'extension', received: '' });
           return;
         }
-        if (failure.kind === 'unavailable') {
+        if (code === 'STORAGE_UPLOAD_FAILED') {
+          setImportError({ kind: 'size', bytes: file.size, maxBytes: COLLABORA_IMPORT_MAX_BYTES });
+          return;
+        }
+        if (code === 'STORAGE_SERVICE_UNAVAILABLE') {
           notify(t('callout.documentImportErrorServiceUnavailable'), 'error');
           return;
         }
