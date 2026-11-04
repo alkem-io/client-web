@@ -1,6 +1,7 @@
 import { Check, CircleEllipsis, Globe, Grid3X3, HelpCircle, Home, LogOut, Settings, Shield, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useGridOverlay } from '@/crd/hooks/useGridOverlay';
+import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import type {
   CrdLanguageOption,
   CrdNavigationHrefs,
@@ -14,7 +15,6 @@ import { Button } from '@/crd/primitives/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -30,7 +30,7 @@ type UserMenuProps = {
   navigationHrefs: CrdNavigationHrefs;
   isAdmin?: boolean;
   pendingInvitationsCount?: number;
-  /** The apps menu's items, also listed here on phones. Hidden from the `md` breakpoint up. */
+  /** The apps menu's items, also listed here on phones. Not rendered from the `md` breakpoint up. */
   platformNavigationItems?: CrdPlatformNavigationItem[];
   languages?: CrdLanguageOption[];
   currentLanguage?: string;
@@ -41,6 +41,9 @@ type UserMenuProps = {
   showGridToggle?: boolean;
   showBetaBadge?: boolean;
 };
+
+/** Phones only: at least a 48px tap target for every row, including the language sub-menu's. */
+const PHONE_ROW_HEIGHT = 'max-md:[&_[role=menuitem]]:min-h-12';
 
 export function UserMenu({
   user,
@@ -60,6 +63,7 @@ export function UserMenu({
 }: UserMenuProps) {
   const { t } = useTranslation('crd-layout');
   const { isVisible: isGridVisible, toggle: toggleGrid } = useGridOverlay();
+  const isDesktop = useMediaQuery('(min-width: 768px)');
 
   const currentLanguageLabel = languages?.find(l => currentLanguage?.startsWith(l.code))?.label;
 
@@ -90,7 +94,7 @@ export function UserMenu({
           )}
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent align="end" className={cn('w-56', PHONE_ROW_HEIGHT)}>
         {/* User identity */}
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col gap-0.5">
@@ -155,7 +159,7 @@ export function UserMenu({
                 <span className="ml-auto text-caption text-muted-foreground">{currentLanguageLabel}</span>
               )}
             </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent>
+            <DropdownMenuSubContent className={PHONE_ROW_HEIGHT}>
               {languages.map(lang => (
                 <DropdownMenuItem
                   key={lang.code}
@@ -192,9 +196,9 @@ export function UserMenu({
           <DropdownMenuSeparator />
         )}
 
-        {/* Apps menu items — phones only; the separator stays inside the group so desktop is unchanged */}
-        {platformNavigationItems && platformNavigationItems.length > 0 && (
-          <DropdownMenuGroup className="md:hidden">
+        {/* Apps menu items — phones only; not rendered on desktop so hidden rows can't catch Radix's typeahead */}
+        {!isDesktop && platformNavigationItems && platformNavigationItems.length > 0 && (
+          <>
             {platformNavigationItems.map(item => (
               <DropdownMenuItem key={item.href} asChild={true}>
                 <a href={item.href} className="cursor-pointer">
@@ -206,7 +210,7 @@ export function UserMenu({
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-          </DropdownMenuGroup>
+          </>
         )}
 
         {/* Logout */}
