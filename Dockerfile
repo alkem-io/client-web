@@ -50,13 +50,22 @@ RUN if [ "$ARG_BUILD_ENVIRONMENT" = "development" ]; then \
 FROM scratch AS sourcemaps
 COPY --from=builder /app/build/assets/*.map /
 
+# The site as shipped. Production maps are deleted HERE, before anything is
+# copied into the runtime image: deleting them in a runtime layer (as before)
+# only hid them, every map stayed readable in the COPY layer underneath. This
+# covers element-call/ too, not just assets/.
+FROM builder AS web
+ARG ARG_BUILD_ENVIRONMENT=development
+RUN if [ "$ARG_BUILD_ENVIRONMENT" = "production" ]; then \
+  find /app/build -name "*.map" -type f -delete; \
+  fi
+
 # Runtime: nginxinc/nginx-unprivileged — the official non-root nginx image.
 # It runs as UID 101 and listens on 8080 (a non-root process cannot bind ports
 # below 1024), and relocates the pid/temp paths to writable locations. The
 # Service's external port stays 80; only its targetPort follows to 8080
 # (dev-orchestration, same feature — the manifest and image MUST ship together).
 FROM nginxinc/nginx-unprivileged:1.30-alpine@sha256:44e36330f74d4f3a1d4e222acca9e23b401fb87811a7597024502bb759c4dd49 as production-build
-ARG ARG_BUILD_ENVIRONMENT=development
 
 # Root is needed only to lay down files and hand ownership to UID 101; the
 # container itself runs unprivileged (USER 101 below, inherited from the base
@@ -68,20 +77,18 @@ COPY ./.build/.nginx/nginx.conf /etc/nginx/nginx.conf
 ## Remove default nginx index page
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copy from the stage 1
-COPY --from=builder /app/build /usr/share/nginx/html
+# Owned by UID 101 as copied: a `chown -R` afterwards would rewrite every file
+# into a second layer of the same size.
+COPY --from=web --chown=101:101 /app/build /usr/share/nginx/html
 WORKDIR /usr/share/nginx/html
 
-RUN if [ "$ARG_BUILD_ENVIRONMENT" = "production" ]; then \
-  find /usr/share/nginx/html/assets -name "*.map" -type f -delete; \
-  fi
-COPY --from=builder /app/.build/docker/env.sh .
-COPY --from=builder /app/.build/docker/.env.base .
+COPY --from=builder --chown=101:101 --chmod=755 /app/.build/docker/env.sh .
+COPY --from=builder --chown=101:101 /app/.build/docker/.env.base .
 
 # env.sh runs at container start and WRITES env-config.js + robots.txt into this
 # directory, so UID 101 must own it — otherwise the unprivileged container dies
 # on startup. This is the one substantive difference from the root-era image.
-RUN chmod +x env.sh && chown -R 101:101 /usr/share/nginx/html
+RUN chown 101:101 /usr/share/nginx/html
 
 USER 101
 
