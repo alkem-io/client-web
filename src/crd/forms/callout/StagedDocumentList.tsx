@@ -22,7 +22,9 @@ export function StagedDocumentList({ items, busy, onRemove }: StagedDocumentList
   const { t } = useTranslation('crd-space');
 
   return (
-    <ul className="flex flex-col gap-2">
+    // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight strips the list semantics that this role restores
+    // biome-ignore lint/a11y/useSemanticElements: the ul is already the semantic element
+    <ul role="list" className="flex flex-col gap-2">
       {items.map(item => (
         <li
           key={item.key}

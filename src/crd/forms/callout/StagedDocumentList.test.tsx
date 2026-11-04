@@ -29,6 +29,12 @@ describe('StagedDocumentList', () => {
     expect(rows[2]).toHaveTextContent('It broke');
   });
 
+  test('the list keeps an explicit list role, which the Tailwind list-style reset strips in Safari', () => {
+    render(<StagedDocumentList items={items} busy={false} onRemove={vi.fn()} />);
+
+    expect(screen.getByRole('list')).toHaveAttribute('role', 'list');
+  });
+
   test('the remove button calls onRemove with the key', async () => {
     const onRemove = vi.fn();
     render(<StagedDocumentList items={items} busy={false} onRemove={onRemove} />);
