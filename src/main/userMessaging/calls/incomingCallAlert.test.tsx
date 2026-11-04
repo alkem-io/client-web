@@ -41,8 +41,9 @@ vi.mock('@/main/tabBadge/faviconBadge', () => ({ setFaviconBadge: vi.fn(), clear
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string, values?: { name?: string }) => `${key}:${values?.name}` }),
 }));
-// Each tab has its own title; the real tabs do not share a document.
-vi.mock('@/core/routing/documentTitle', () => {
+// Each tab has its own title; the real tabs do not share a document. Registered per tab in
+// openTab, since a hoisted mock's factory is not run again after resetModules.
+const tabDocumentTitle = () => {
   let prefix = '';
   let override: string | null = null;
   return {
@@ -55,7 +56,7 @@ vi.mock('@/core/routing/documentTitle', () => {
     },
     tabTitle: () => `${prefix}${override ?? 'Alkemio'}`,
   };
-});
+};
 // The conversation open in a tab comes from that tab's own provider.
 vi.mock('@/main/userMessaging/UserMessagingContext', async () => {
   const { createContext, useContext } = await import('react');
@@ -106,11 +107,13 @@ const CALL_TITLE = 'call.callingYou:Ana';
 /** Mounts one tab: its own module instances, with the conversation open in it under its control. */
 const openTab = async () => {
   vi.resetModules();
+  const documentTitle = tabDocumentTitle();
+  vi.doMock('@/core/routing/documentTitle', () => documentTitle);
   const { useIncomingCallsWatcher } = await import('./useIncomingCallsWatcher');
   const { useUnreadTabBadge } = await import('@/main/tabBadge/useUnreadTabBadge');
   const { useUnreadConversationsCount } = await import('@/main/userMessaging/useUnreadConversationsCount');
   const { getIncomingCallRooms } = await import('./incomingCallStore');
-  const { tabTitle } = (await import('@/core/routing/documentTitle')) as unknown as { tabTitle: () => string };
+  const { tabTitle } = documentTitle;
   const { TabContext } = (await import('@/main/userMessaging/UserMessagingContext')) as unknown as {
     TabContext: React.Context<string | null>;
   };
@@ -133,7 +136,13 @@ const openTab = async () => {
   return {
     /** Whether this tab's title, header count and store all show the call. */
     alerting: () => {
-      const inTitle = tabTitle().includes(CALL_TITLE);
+      // The title alternates, so it is checked over one full switch.
+      act(() => {});
+      let inTitle = tabTitle().includes(CALL_TITLE);
+      act(() => {
+        vi.advanceTimersByTime(1500);
+      });
+      inTitle ||= tabTitle().includes(CALL_TITLE);
       const inStore = getIncomingCallRooms().has('direct');
       const inCount = view.result.current > 0;
       expect(new Set([inTitle, inStore, inCount]).size, 'title, store and header count disagree').toBe(1);
@@ -148,6 +157,13 @@ const openTab = async () => {
   };
 };
 
+let documentActive = true;
+const setDocumentActive = (active: boolean) =>
+  act(() => {
+    documentActive = active;
+    window.dispatchEvent(new Event(active ? 'focus' : 'blur'));
+  });
+
 describe('the incoming-call alert', () => {
   let tabs: Awaited<ReturnType<typeof openTab>>[] = [];
   const tab = async () => {
@@ -161,6 +177,8 @@ describe('the incoming-call alert', () => {
     window.localStorage.clear();
     harness.client = makeClient();
     session.memberships = [membership('@ana:hs', 1_000)];
+    documentActive = true;
+    vi.spyOn(document, 'hasFocus').mockImplementation(() => documentActive);
   });
   afterEach(() => {
     for (const opened of tabs) {
@@ -191,6 +209,24 @@ describe('the incoming-call alert', () => {
 
     tabA.select(null);
     expect(tabA.alerting()).toBe(false);
+  });
+
+  it('does not count a conversation left open in a background tab as seen', async () => {
+    const tabB = await tab();
+    const tabA = await tab();
+    setDocumentActive(false);
+    tabA.select('direct');
+    act(() => {
+      window.dispatchEvent(new StorageEvent('storage', { key: null }));
+    });
+    expect(tabA.alerting()).toBe(false);
+    expect(tabB.alerting()).toBe(true);
+
+    setDocumentActive(true);
+    act(() => {
+      window.dispatchEvent(new StorageEvent('storage', { key: null }));
+    });
+    expect(tabB.alerting()).toBe(false);
   });
 
   it('does not alert again after the user joins and then leaves, while others stay in', async () => {
