@@ -23,13 +23,16 @@ type HeaderIconButtonProps = {
   badge?: React.ReactNode;
 };
 
+/** Phones only: a 44px tap target, the same as the avatar's, and a 20px icon. `!` beats the Button's default icon size. */
+const PHONE_ICON_BUTTON = 'max-md:size-11 max-md:[&_svg]:size-5!';
+
 function HeaderIconButton({ onClick, href, ariaLabel, icon, badge }: HeaderIconButtonProps) {
   if (onClick) {
     return (
       <Button
         variant="ghost"
         size="icon"
-        className="relative text-muted-foreground"
+        className={cn('relative text-muted-foreground', PHONE_ICON_BUTTON)}
         aria-label={ariaLabel}
         onClick={onClick}
       >
@@ -42,7 +45,7 @@ function HeaderIconButton({ onClick, href, ariaLabel, icon, badge }: HeaderIconB
     <Button
       variant="ghost"
       size="icon"
-      className="relative text-muted-foreground"
+      className={cn('relative text-muted-foreground', PHONE_ICON_BUTTON)}
       aria-label={ariaLabel}
       asChild={true}
     >
@@ -168,7 +171,11 @@ export function Header({
             {/* Left: Logo + breadcrumbs. The pill padding (`px-3 py-1`) is unconditional: toggling
                 it with the pill moved the contents 12px sideways / 8px down on every transition. */}
             <div className={cn('flex items-center gap-2 md:gap-4 min-w-0 px-1 md:px-3 py-1', pillClasses)}>
-              <a href={navigationHrefs.home} className="flex items-center shrink-0" aria-label={t('header.home')}>
+              <a
+                href={navigationHrefs.home}
+                className="flex items-center justify-center shrink-0 max-md:size-11"
+                aria-label={t('header.home')}
+              >
                 <AlkemioLogo className="w-8 h-8" />
               </a>
               {breadcrumbs && (
@@ -230,7 +237,7 @@ export function Header({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-muted-foreground"
+                  className={cn('text-muted-foreground', PHONE_ICON_BUTTON)}
                   aria-label={t('header.spaces')}
                   asChild={true}
                 >

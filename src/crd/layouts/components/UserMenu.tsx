@@ -69,7 +69,7 @@ export function UserMenu({
 
   if (!authenticated || !user) {
     return (
-      <Button variant="ghost" size="sm" asChild={true}>
+      <Button variant="ghost" size="sm" className="max-md:h-11" asChild={true}>
         <a href={navigationHrefs.login}>{t('header.login')}</a>
       </Button>
     );
@@ -159,7 +159,9 @@ export function UserMenu({
                 <span className="ml-auto text-caption text-muted-foreground">{currentLanguageLabel}</span>
               )}
             </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent className={PHONE_ROW_HEIGHT}>
+            <DropdownMenuSubContent
+              className={cn('max-h-(--radix-dropdown-menu-content-available-height) overflow-y-auto', PHONE_ROW_HEIGHT)}
+            >
               {languages.map(lang => (
                 <DropdownMenuItem
                   key={lang.code}
