@@ -69,7 +69,6 @@ const CrdUserProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUp
         onReferencesChange={data.onReferencesChange}
         onReferenceFileUpload={referenceUpload.onFileUpload}
         referenceUploadAccept={referenceUpload.accept}
-        referenceUploading={referenceUpload.uploading}
         onUpdateRecognizedReference={data.onUpdateRecognizedReference}
         onUploadAvatar={data.onUploadAvatar}
         uploadingAvatar={data.uploadingAvatar}

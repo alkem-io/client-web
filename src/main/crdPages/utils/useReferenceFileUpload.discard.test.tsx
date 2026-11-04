@@ -60,13 +60,7 @@ function SettingsTab() {
       <button type="button" disabled={upload.uploading}>
         save
       </button>
-      <ReferencesEditor
-        key={resetGeneration}
-        rows={rows}
-        onChange={setRows}
-        onFileUpload={upload.onFileUpload}
-        uploading={upload.uploading}
-      />
+      <ReferencesEditor key={resetGeneration} rows={rows} onChange={setRows} onFileUpload={upload.onFileUpload} />
     </>
   );
 }
@@ -91,7 +85,7 @@ beforeEach(() => {
 });
 
 describe('Discard while a multi-file pick uploads, then a new pick', () => {
-  test('the old pick writes nothing and starts no queued file; the pickers and Save wait for it', async () => {
+  test('the old pick writes nothing and starts no queued file; Save waits for both picks', async () => {
     render(<SettingsTab />);
 
     pick(['a.pdf', 'b.pdf', 'c.pdf', 'd.pdf']);
@@ -100,17 +94,15 @@ describe('Discard while a multi-file pick uploads, then a new pick', () => {
     expect(save()).toBeDisabled();
 
     fireEvent.click(screen.getByRole('button', { name: 'discard' }));
-    expect(paperclip()).toBeDisabled();
-    expect(save()).toBeDisabled();
-
-    await settle(['a.pdf', 'b.pdf', 'c.pdf']);
-    expect(uploadFileMock).toHaveBeenCalledTimes(3);
-    expect(uris()).toEqual(['']);
     expect(paperclip()).toBeEnabled();
-    expect(save()).toBeEnabled();
+    expect(save()).toBeDisabled();
 
     pick(['x.pdf', 'y.pdf']);
     expect(requests.map(r => r.name)).toEqual(['a.pdf', 'b.pdf', 'c.pdf', 'x.pdf', 'y.pdf']);
+
+    await settle(['a.pdf', 'b.pdf', 'c.pdf']);
+    expect(uploadFileMock).toHaveBeenCalledTimes(5);
+    expect(uris()).toEqual(['']);
     expect(save()).toBeDisabled();
 
     await settle(['x.pdf', 'y.pdf']);
@@ -118,21 +110,19 @@ describe('Discard while a multi-file pick uploads, then a new pick', () => {
     expect(save()).toBeEnabled();
   });
 
-  test('successive Discards before anything settles never put more than one pick on the network', async () => {
+  test('Save stays withheld while only the old pick is still on the network', async () => {
     render(<SettingsTab />);
 
-    pick(['a.pdf', 'b.pdf', 'c.pdf']);
+    pick(['a.pdf', 'b.pdf']);
     fireEvent.click(screen.getByRole('button', { name: 'discard' }));
-    fireEvent.click(screen.getByRole('button', { name: 'discard' }));
-    expect(paperclip()).toBeDisabled();
+    pick(['x.pdf']);
+    await settle(['x.pdf']);
 
-    await settle(['a.pdf', 'b.pdf']);
-    expect(paperclip()).toBeDisabled();
+    expect(uris()).toEqual(['https://cdn/x.pdf']);
     expect(save()).toBeDisabled();
 
-    await settle(['c.pdf']);
-    expect(paperclip()).toBeEnabled();
-    expect(uploadFileMock).toHaveBeenCalledTimes(3);
-    expect(uris()).toEqual(['']);
+    await settle(['a.pdf', 'b.pdf']);
+    expect(uris()).toEqual(['https://cdn/x.pdf']);
+    expect(save()).toBeEnabled();
   });
 });

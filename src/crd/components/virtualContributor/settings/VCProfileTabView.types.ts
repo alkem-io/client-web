@@ -78,8 +78,6 @@ export type VcProfileViewProps = {
   /** Reference file-upload (paperclip) — passed through to the shared editor. */
   onReferenceFileUpload?: (file: File) => Promise<string | null>;
   referenceUploadAccept?: string;
-  /** A reference upload has not settled; the references pickers wait for it. */
-  referenceUploading?: boolean;
 
   /** Avatar upload — opens the CRD `ImageCropDialog` first (Decision #10). */
   onUploadAvatar: (file: File) => void;

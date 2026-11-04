@@ -101,8 +101,6 @@ export type UserProfileViewProps = {
   /** Reference file-upload (paperclip) — passed through to the shared editor. */
   onReferenceFileUpload?: (file: File) => Promise<string | null>;
   referenceUploadAccept?: string;
-  /** A reference upload has not settled; the references pickers wait for it. */
-  referenceUploading?: boolean;
 
   /** Patch a recognized reference by network kind (linkedin/bsky/github). */
   onUpdateRecognizedReference: (kind: 'linkedin' | 'bsky' | 'github', uri: string) => void;

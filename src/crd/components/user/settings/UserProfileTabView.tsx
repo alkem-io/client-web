@@ -37,7 +37,6 @@ export function UserProfileTabView(props: UserProfileViewProps) {
     referencesKey,
     onReferenceFileUpload,
     referenceUploadAccept,
-    referenceUploading,
     onUpdateRecognizedReference,
     onUploadAvatar,
     uploadingAvatar,
@@ -210,7 +209,6 @@ export function UserProfileTabView(props: UserProfileViewProps) {
             onChange={onReferencesChange}
             onFileUpload={onReferenceFileUpload}
             uploadAccept={referenceUploadAccept}
-            uploading={referenceUploading}
           />
         </SettingsSection>
       </div>

@@ -59,8 +59,6 @@ export type UseAboutTabDataResult = {
   /** Reference file-upload (paperclip) — uploads to the space's storage bucket. */
   onReferenceFileUpload?: (file: File) => Promise<string | null>;
   referenceUploadAccept?: string;
-  /** A reference upload has not settled, including one a Discard left running. */
-  referenceUploading: boolean;
   /** New references with a URL or description but no title — they block Save until titled. */
   untitledReferenceIds: string[];
   /** Every field except the visuals is buffered and saved through the unsaved-changes bar (spec 045 FR-005a). */
@@ -766,7 +764,6 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     onReferencesChange,
     onReferenceFileUpload,
     referenceUploadAccept,
-    referenceUploading,
     untitledReferenceIds,
     unsaved: {
       count: unsavedCount,

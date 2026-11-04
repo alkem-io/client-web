@@ -36,8 +36,6 @@ export type CommunityGuidelinesEditorProps = {
   onReferenceFileUpload?: (file: File) => Promise<string | null>;
   /** `accept` attribute for the references file picker. */
   referenceUploadAccept?: string;
-  /** A reference upload has not settled; the references pickers wait for it. */
-  referenceUploading?: boolean;
   /** Changing it remounts the references editor, dropping its pending file selection (a Discard). */
   referencesKey?: React.Key;
   /**
@@ -65,7 +63,6 @@ export function CommunityGuidelinesEditor({
   onSaveAsTemplate,
   onReferenceFileUpload,
   referenceUploadAccept,
-  referenceUploading,
   referencesKey,
   hideActions = false,
   subspace,
@@ -127,7 +124,6 @@ export function CommunityGuidelinesEditor({
         disabled={submitting}
         onFileUpload={onReferenceFileUpload}
         uploadAccept={referenceUploadAccept}
-        uploading={referenceUploading}
       />
 
       {!hideActions && (

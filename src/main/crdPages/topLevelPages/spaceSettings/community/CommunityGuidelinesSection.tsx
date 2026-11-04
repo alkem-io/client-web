@@ -74,7 +74,6 @@ export function CommunityGuidelinesSection({
           onSave={() => void guidelines.onSave()}
           onReferenceFileUpload={guidelines.onReferenceFileUpload}
           referenceUploadAccept={guidelines.referenceUploadAccept}
-          referenceUploading={guidelines.referenceUploading}
           referencesKey={guidelines.resetGeneration}
           hideActions={true}
           subspace={subspace}

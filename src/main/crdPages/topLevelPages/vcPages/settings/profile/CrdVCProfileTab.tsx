@@ -100,7 +100,6 @@ const CrdVCProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUplo
         onReferencesChange={data.onReferencesChange}
         onReferenceFileUpload={referenceUpload.onFileUpload}
         referenceUploadAccept={referenceUpload.accept}
-        referenceUploading={referenceUpload.uploading}
         onUploadAvatar={data.onUploadAvatar}
         uploadingAvatar={data.uploadingAvatar}
         metadata={{ host, bodyOfKnowledge }}

@@ -51,8 +51,6 @@ export type SpaceSettingsAboutViewProps = AboutFormValues & {
   /** Reference file-upload (paperclip) — passed through to the shared editor. */
   onReferenceFileUpload?: (file: File) => Promise<string | null>;
   referenceUploadAccept?: string;
-  /** A reference upload has not settled; the references pickers wait for it. */
-  referenceUploading?: boolean;
   /** Changing it remounts the references editor, dropping its pending file selection (a Discard). */
   referencesKey?: React.Key;
   /** New references that have a URL or description but no title — flagged, and they block Save. */
@@ -97,7 +95,6 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     onReferencesChange,
     onReferenceFileUpload,
     referenceUploadAccept,
-    referenceUploading,
     referencesKey,
     untitledReferenceIds = [],
     className,
@@ -338,7 +335,6 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
             onChange={onReferencesChange}
             onFileUpload={onReferenceFileUpload}
             uploadAccept={referenceUploadAccept}
-            uploading={referenceUploading}
             errors={Object.fromEntries(
               references.flatMap((r, index) =>
                 untitledReferenceIds.includes(r.id) ? [[`${index}.name`, t('about.references.titleRequired')]] : []
