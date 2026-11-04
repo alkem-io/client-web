@@ -30,6 +30,7 @@ export function VCProfileTabView(props: VcProfileViewProps) {
     referencesKey,
     onReferenceFileUpload,
     referenceUploadAccept,
+    referenceUploading,
     onUploadAvatar,
     uploadingAvatar,
     metadata,
@@ -103,6 +104,7 @@ export function VCProfileTabView(props: VcProfileViewProps) {
             onChange={onReferencesChange}
             onFileUpload={onReferenceFileUpload}
             uploadAccept={referenceUploadAccept}
+            uploading={referenceUploading}
           />
         </SettingsSection>
 

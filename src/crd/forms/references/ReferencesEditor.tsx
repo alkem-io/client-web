@@ -48,6 +48,11 @@ type ReferencesEditorProps = {
   onFileUpload?: RowFileUpload;
   /** `accept` attribute for the file picker (extension list, e.g. ".pdf,.png"). */
   uploadAccept?: string;
+  /**
+   * An upload through `onFileUpload` has not settled, counted by the upload's owner. It outlives
+   * this editor when a host remounts it on Discard, so the pickers wait for the discarded uploads.
+   */
+  uploading?: boolean;
 };
 
 const createEmptyRow = (): ReferenceRow => ({ name: '', uri: '', description: '' });
@@ -66,6 +71,7 @@ export function ReferencesEditor({
   hideLabel = false,
   onFileUpload,
   uploadAccept,
+  uploading,
 }: ReferencesEditorProps) {
   const { t } = useTranslation('crd-common');
   const [pendingDeleteIndex, setPendingDeleteIndex] = useState<number | null>(null);
@@ -183,7 +189,7 @@ export function ReferencesEditor({
                   {onFileUpload && (
                     <RowAttachFileButton
                       accept={uploadAccept}
-                      disabled={disabled || uploads.busy || anyRowUploading}
+                      disabled={disabled || uploading || uploads.busy || anyRowUploading}
                       uploading={Boolean(uploadingRows[index])}
                       ariaLabel={t('references.attachFile')}
                       onFile={file => handleFileSelected(index, file)}

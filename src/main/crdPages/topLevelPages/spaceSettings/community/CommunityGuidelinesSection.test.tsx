@@ -8,10 +8,20 @@ vi.mock('react-i18next', () => {
   return { useTranslation: () => ({ t }) };
 });
 
-const editorProps = vi.hoisted(() => ({ referencesKey: undefined as unknown }));
+const editorProps = vi.hoisted(() => ({
+  referencesKey: undefined as unknown,
+  referenceUploading: undefined as unknown,
+}));
 vi.mock('@/crd/components/space/settings/CommunityGuidelinesEditor', () => ({
-  CommunityGuidelinesEditor: ({ referencesKey }: { referencesKey?: unknown }) => {
+  CommunityGuidelinesEditor: ({
+    referencesKey,
+    referenceUploading,
+  }: {
+    referencesKey?: unknown;
+    referenceUploading?: boolean;
+  }) => {
     editorProps.referencesKey = referencesKey;
+    editorProps.referenceUploading = referenceUploading;
     return null;
   },
 }));
@@ -89,5 +99,11 @@ describe('CommunityGuidelinesSection — Discard', () => {
     renderSection(false);
 
     expect(editorProps.referencesKey).toBe(7);
+  });
+
+  it("hands the upload owner's unsettled state to the references pickers", () => {
+    renderSection(true);
+
+    expect(editorProps.referenceUploading).toBe(true);
   });
 });

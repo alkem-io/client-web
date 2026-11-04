@@ -30,6 +30,8 @@ type LinksPrePopulateRowsProps = {
   onFileUpload?: RowFileUpload;
   /** `accept` attribute for the file picker (extension list, e.g. ".pdf,.png"). */
   uploadAccept?: string;
+  /** An upload through `onFileUpload` has not settled, as `ReferencesEditor.uploading`. */
+  uploading?: boolean;
 };
 
 const createEmptyRow = (): LinkRow => ({ title: '', url: '', description: '' });
@@ -46,6 +48,7 @@ export function LinksPrePopulateRows({
   disabled,
   onFileUpload,
   uploadAccept,
+  uploading,
 }: LinksPrePopulateRowsProps) {
   const { t } = useTranslation('crd-space');
   // Per-row upload spinner state, keyed by row index.
@@ -167,7 +170,7 @@ export function LinksPrePopulateRows({
                   {onFileUpload && (
                     <RowAttachFileButton
                       accept={uploadAccept}
-                      disabled={disabled || uploads.busy || anyRowUploading}
+                      disabled={disabled || uploading || uploads.busy || anyRowUploading}
                       uploading={Boolean(uploadingRows[index])}
                       ariaLabel={t('contributionSettings.prePopulate.attachFile')}
                       onFile={file => handleFileSelected(index, file)}

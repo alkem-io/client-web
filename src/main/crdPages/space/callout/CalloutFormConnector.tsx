@@ -1262,6 +1262,7 @@ function CalloutFormConnectorInner({
               prePopulateLinkErrors={errors as Record<string, string | undefined>}
               prePopulateLinkFileUpload={referenceUpload.onFileUpload}
               prePopulateLinkUploadAccept={referenceUpload.accept}
+              prePopulateLinkUploading={referenceUpload.uploading}
               onSetDefaults={responseTypeSupportsDefaults ? () => setDefaultsOpen(true) : undefined}
               disabled={submitting}
             />
@@ -1307,6 +1308,7 @@ function CalloutFormConnectorInner({
               disabled={submitting}
               onFileUpload={referenceUpload.onFileUpload}
               uploadAccept={referenceUpload.accept}
+              uploading={referenceUpload.uploading}
             />
           </div>
         }

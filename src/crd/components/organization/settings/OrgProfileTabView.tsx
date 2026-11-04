@@ -84,6 +84,8 @@ export type OrgProfileViewProps = {
   /** Reference file-upload (paperclip) — passed through to the shared editor. */
   onReferenceFileUpload?: (file: File) => Promise<string | null>;
   referenceUploadAccept?: string;
+  /** A reference upload has not settled; the references pickers wait for it. */
+  referenceUploading?: boolean;
   onUpdateRecognizedReference: (kind: 'linkedin' | 'bsky' | 'github', uri: string) => void;
   onUploadAvatar: (file: File) => void;
   uploadingAvatar: boolean;
@@ -112,6 +114,7 @@ export function OrgProfileTabView(props: OrgProfileViewProps) {
     referencesKey,
     onReferenceFileUpload,
     referenceUploadAccept,
+    referenceUploading,
     onUpdateRecognizedReference,
     onUploadAvatar,
     uploadingAvatar,
@@ -319,6 +322,7 @@ export function OrgProfileTabView(props: OrgProfileViewProps) {
             onChange={onReferencesChange}
             onFileUpload={onReferenceFileUpload}
             uploadAccept={referenceUploadAccept}
+            uploading={referenceUploading}
           />
         </SettingsSection>
       </div>

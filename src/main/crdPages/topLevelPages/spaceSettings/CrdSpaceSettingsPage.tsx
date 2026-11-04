@@ -508,6 +508,7 @@ export default function CrdSpaceSettingsPage() {
                   untitledReferenceIds={about.untitledReferenceIds}
                   onReferenceFileUpload={about.onReferenceFileUpload}
                   referenceUploadAccept={about.referenceUploadAccept}
+                  referenceUploading={about.referenceUploading}
                   referencesKey={about.resetGeneration}
                   onImageUpload={md.onImageUpload}
                   iframeAllowedUrls={md.iframeAllowedUrls}

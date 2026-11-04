@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { TabUnsavedChanges } from '@/main/crdPages/utils/tabUnsavedChanges';
 
 const published = vi.fn<(unsaved: TabUnsavedChanges) => void>();
-const viewProps = vi.fn<(props: { referencesKey?: unknown }) => void>();
+const viewProps = vi.fn<(props: { referencesKey?: unknown; referenceUploading?: boolean }) => void>();
 let uploading = false;
 const unsaved: TabUnsavedChanges = {
   count: 1,
@@ -42,7 +42,7 @@ vi.mock('../useUserProfileTabData', () => ({
   }),
 }));
 vi.mock('@/crd/components/user/settings/UserProfileTabView', () => ({
-  UserProfileTabView: (props: { referencesKey?: unknown }) => {
+  UserProfileTabView: (props: { referencesKey?: unknown; referenceUploading?: boolean }) => {
     viewProps(props);
     return null;
   },
@@ -78,5 +78,11 @@ describe('CrdUserProfileTab — no Save while files upload', () => {
   it("keys the references editor on the data hook's resetGeneration", () => {
     render(<CrdUserProfileTab />);
     expect(viewProps.mock.calls[viewProps.mock.calls.length - 1][0].referencesKey).toBe(7);
+  });
+
+  it("hands the upload owner's unsettled state to the references pickers", () => {
+    uploading = true;
+    render(<CrdUserProfileTab />);
+    expect(viewProps.mock.calls[viewProps.mock.calls.length - 1][0].referenceUploading).toBe(true);
   });
 });

@@ -32,6 +32,8 @@ export type ResponsePanelProps = {
   prePopulateLinkFileUpload?: (file: File) => Promise<string | null>;
   /** `accept` attribute for the pre-populate link file picker. */
   prePopulateLinkUploadAccept?: string;
+  /** An upload through `prePopulateLinkFileUpload` has not settled. */
+  prePopulateLinkUploading?: boolean;
   /**
    * Click handler for "Set Default Response" button (opens the nested dialog
    * via the connector). Rendered for post / memo / whiteboard types.
@@ -75,6 +77,7 @@ function LinksPanel(props: ResponsePanelProps) {
     prePopulateLinkErrors,
     prePopulateLinkFileUpload,
     prePopulateLinkUploadAccept,
+    prePopulateLinkUploading,
     disabled,
   } = props;
 
@@ -89,6 +92,7 @@ function LinksPanel(props: ResponsePanelProps) {
           disabled={disabled}
           onFileUpload={prePopulateLinkFileUpload}
           uploadAccept={prePopulateLinkUploadAccept}
+          uploading={prePopulateLinkUploading}
         />
       )}
     </PanelWrapper>
