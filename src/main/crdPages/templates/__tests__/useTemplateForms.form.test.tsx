@@ -7,6 +7,7 @@ const harness = vi.hoisted(() => ({
   updateCalloutTemplate: vi.fn(),
   updateTemplate: vi.fn(),
   updateCalloutForm: vi.fn(),
+  uploadFile: vi.fn(),
   notify: vi.fn(),
 }));
 
@@ -33,6 +34,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useUpdatePollOptionMutation: () => [vi.fn(), {}],
   useUpdateTemplateFromSpaceMutation: () => [vi.fn()],
   useUpdateTemplateMutation: () => [harness.updateTemplate],
+  useUploadFileMutation: () => [harness.uploadFile, { loading: false }],
   useUrlResolverLazyQuery: () => [vi.fn()],
 }));
 
@@ -75,6 +77,7 @@ vi.mock('@/crd/forms/markdown/MarkdownEditor', () => ({
 import type { CommunityGuidelinesTemplateValues } from '@/crd/components/templates/types';
 import { createFormQuestion, DEFAULT_FORM_SETTINGS } from '@/crd/forms/callout/formValues';
 import { EMPTY_CALLOUT_FORM_VALUES } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
+import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { type TemplateReferenceUpload, type UseTemplateFormsResult, useTemplateForms } from '../useTemplateForms';
 
 function Harness() {
@@ -246,5 +249,71 @@ describe('useTemplateForms — community guidelines references while files uploa
       'https://b',
     ]);
     expect(latest.isDirty).toBe(false);
+  });
+});
+
+/** One upload owner for the dialog host's lifetime, as the templates page holds it. */
+function GuidelinesWithUploadOwner() {
+  const upload = useReferenceFileUpload({
+    storageBucketId: 'bucket-1',
+    allowedMimeTypes: [],
+    maxFileSize: 1024,
+    canUpload: true,
+    temporaryLocation: true,
+  });
+  return <GuidelinesHarness referenceUpload={upload} />;
+}
+
+describe('useTemplateForms — reopening while a cancelled multi-file pick still uploads', () => {
+  const requests: { name: string; resolve: (url: string) => void }[] = [];
+  const pick = (names: string[]) =>
+    fireEvent.change(document.querySelector('input[type="file"]') as HTMLInputElement, {
+      target: { files: names.map(name => new File(['x'], name)) },
+    });
+  const settle = async (names: string[]) => {
+    for (const name of names) {
+      await act(async () => requests.find(r => r.name === name)?.resolve(`https://cdn/${name}`));
+    }
+  };
+  const uris = () => (screen.getAllByLabelText('references.uriLabel') as HTMLInputElement[]).map(input => input.value);
+
+  beforeEach(() => {
+    requests.length = 0;
+    harness.uploadFile.mockReset();
+    harness.uploadFile.mockImplementation(
+      ({ variables }: { variables: { file: File } }) =>
+        new Promise(resolve =>
+          requests.push({
+            name: variables.file.name,
+            resolve: url => resolve({ data: { uploadFileOnStorageBucket: { url } } }),
+          })
+        )
+    );
+  });
+
+  it("stops A's queue, keeps A's results out of B, and withholds Save through both picks", async () => {
+    render(<GuidelinesWithUploadOwner />);
+
+    openEditGuidelines('a', [{ name: '', uri: '', description: '' }]);
+    pick(['a1.pdf', 'a2.pdf', 'a3.pdf', 'a4.pdf']);
+    expect(requests.map(r => r.name)).toEqual(['a1.pdf', 'a2.pdf', 'a3.pdf']);
+    expect(latest.uploading).toBe(true);
+
+    act(() => latest.onCancel());
+    await waitFor(() => expect(latest.open).toBe(false));
+    openEditGuidelines('b', [{ id: 'ref-b', name: 'B link', uri: 'https://b', description: '' }]);
+    expect(screen.getByRole('button', { name: 'references.attachFile' })).toBeEnabled();
+
+    pick(['b1.pdf', 'b2.pdf']);
+    expect(requests.map(r => r.name)).toEqual(['a1.pdf', 'a2.pdf', 'a3.pdf', 'b1.pdf', 'b2.pdf']);
+
+    await settle(['a1.pdf', 'a2.pdf', 'a3.pdf']);
+    expect(harness.uploadFile).toHaveBeenCalledTimes(5);
+    expect(uris()).toEqual(['https://b']);
+    expect(latest.uploading).toBe(true);
+
+    await settle(['b1.pdf', 'b2.pdf']);
+    expect(uris()).toEqual(['https://b', 'https://cdn/b1.pdf', 'https://cdn/b2.pdf']);
+    expect(latest.uploading).toBe(false);
   });
 });
