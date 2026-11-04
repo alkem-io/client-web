@@ -102,7 +102,7 @@ function LinkCreateDialog({
     justAddedRowId.current = undefined;
   }, [rows.length]);
 
-  const isDirty = rows.some(r => r.url.trim() || r.description.trim());
+  const isDirty = rows.some(r => r.url.trim() || r.description.trim()) || uploads.pending.length > 0;
 
   const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
     isDirty,

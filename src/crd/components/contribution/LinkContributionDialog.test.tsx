@@ -199,6 +199,7 @@ describe('LinkContributionDialog — create mode', () => {
 
     pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf'), pdf('c.pdf')]);
     await user.click(screen.getByRole('button', { name: 'dialogs.cancel' }));
+    await user.click(screen.getByRole('button', { name: 'dialogs.discardChanges.confirm' }));
     rerenderOpen(false);
     rerenderOpen(true);
     await user.type(urlInputs()[0], 'https://example.org');
@@ -249,6 +250,7 @@ describe('LinkContributionDialog — create mode', () => {
     pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf'), pdf('c.pdf'), pdf('d.pdf'), pdf('e.pdf')]);
     expect(upload).toHaveBeenCalledTimes(3);
     await user.click(screen.getByRole('button', { name: 'dialogs.cancel' }));
+    await user.click(screen.getByRole('button', { name: 'dialogs.discardChanges.confirm' }));
     expect(onOpenChange).toHaveBeenCalledWith(false);
 
     rerenderOpen(false);
@@ -261,6 +263,36 @@ describe('LinkContributionDialog — create mode', () => {
     expect(urlInputs()).toHaveLength(1);
     expect(urlInputs()[0]).toHaveValue('');
     expect(screen.queryByText('a.pdf')).not.toBeInTheDocument();
+  });
+
+  test('Escape before the first upload settles asks to discard; keeping the dialog keeps the uploads', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    const { onOpenChange } = renderCreate(upload);
+
+    pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf'), pdf('c.pdf'), pdf('d.pdf'), pdf('e.pdf')]);
+    await user.keyboard('{Escape}');
+
+    expect(onOpenChange).not.toHaveBeenCalled();
+    await user.click(screen.getByRole('button', { name: 'dialogs.discardChanges.cancel' }));
+    expect(onOpenChange).not.toHaveBeenCalled();
+
+    await act(async () => calls[0].resolve('https://cdn/a'));
+    expect(upload).toHaveBeenCalledTimes(4);
+    expect(urlInputs()[0]).toHaveValue('https://cdn/a');
+  });
+
+  test('confirming Discard while a multi pick uploads closes the dialog and starts no queued file', async () => {
+    const user = userEvent.setup();
+    const { upload } = createControlledUpload();
+    const { onOpenChange } = renderCreate(upload);
+
+    pick(fileInputs()[0], [pdf('a.pdf'), pdf('b.pdf'), pdf('c.pdf'), pdf('d.pdf'), pdf('e.pdf')]);
+    await user.keyboard('{Escape}');
+    await user.click(screen.getByRole('button', { name: 'dialogs.discardChanges.confirm' }));
+
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(upload).toHaveBeenCalledTimes(3);
   });
 
   test('no paperclip without an upload callback', () => {
