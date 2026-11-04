@@ -20,6 +20,8 @@
     "filterSubspacesOnly": "Subspaces only",
     "clearFilters": "Clear all filters",
     "matchingTerms": "Spaces matching “{{terms}}”",
+    "matchingTermsCount_one": "{{count}} space matching “{{terms}}”",
+    "matchingTermsCount_other": "{{count}} spaces matching “{{terms}}”",
     "of": "of",
     "spacesLabel": "spaces",
     "emptyTitle": "No spaces found",

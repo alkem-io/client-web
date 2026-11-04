@@ -20,6 +20,8 @@
     "filterSubspacesOnly": "Само подпространства",
     "clearFilters": "Изчисти всички филтри",
     "matchingTerms": "Пространства, отговарящи на „{{terms}}“",
+    "matchingTermsCount_one": "{{count}} пространство, отговарящо на „{{terms}}“",
+    "matchingTermsCount_other": "{{count}} пространства, отговарящи на „{{terms}}“",
     "of": "от",
     "spacesLabel": "пространства",
     "emptyTitle": "Не са намерени пространства",
