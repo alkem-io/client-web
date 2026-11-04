@@ -242,6 +242,7 @@ export function Header({
                 navigationHrefs={navigationHrefs}
                 isAdmin={isAdmin}
                 pendingInvitationsCount={pendingInvitationsCount}
+                platformNavigationItems={platformNavigationItems}
                 languages={languages}
                 currentLanguage={currentLanguage}
                 onLogout={onLogout}

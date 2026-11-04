@@ -1,7 +1,12 @@
 import { Check, CircleEllipsis, Globe, Grid3X3, HelpCircle, Home, LogOut, Settings, Shield, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useGridOverlay } from '@/crd/hooks/useGridOverlay';
-import type { CrdLanguageOption, CrdNavigationHrefs, CrdUserInfo } from '@/crd/layouts/types';
+import type {
+  CrdLanguageOption,
+  CrdNavigationHrefs,
+  CrdPlatformNavigationItem,
+  CrdUserInfo,
+} from '@/crd/layouts/types';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -9,6 +14,7 @@ import { Button } from '@/crd/primitives/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -24,6 +30,8 @@ type UserMenuProps = {
   navigationHrefs: CrdNavigationHrefs;
   isAdmin?: boolean;
   pendingInvitationsCount?: number;
+  /** The apps menu's items, also listed here on phones. Hidden from the `md` breakpoint up. */
+  platformNavigationItems?: CrdPlatformNavigationItem[];
   languages?: CrdLanguageOption[];
   currentLanguage?: string;
   onLogout?: () => void;
@@ -40,6 +48,7 @@ export function UserMenu({
   navigationHrefs,
   isAdmin,
   pendingInvitationsCount,
+  platformNavigationItems,
   languages,
   currentLanguage,
   onLogout,
@@ -181,6 +190,23 @@ export function UserMenu({
 
         {(isAdmin || onHelpClick || showGridToggle || (languages && languages.length > 0 && onLanguageChange)) && (
           <DropdownMenuSeparator />
+        )}
+
+        {/* Apps menu items — phones only; the separator stays inside the group so desktop is unchanged */}
+        {platformNavigationItems && platformNavigationItems.length > 0 && (
+          <DropdownMenuGroup className="md:hidden">
+            {platformNavigationItems.map(item => (
+              <DropdownMenuItem key={item.href} asChild={true}>
+                <a href={item.href} className="cursor-pointer">
+                  <span aria-hidden="true" className="mr-2 flex">
+                    {item.icon}
+                  </span>
+                  <span>{item.label}</span>
+                </a>
+              </DropdownMenuItem>
+            ))}
+            <DropdownMenuSeparator />
+          </DropdownMenuGroup>
         )}
 
         {/* Logout */}
