@@ -24,8 +24,8 @@
 #                                 default 3; older ones are deleted after a fully
 #                                 successful upload. 0 disables pruning.
 #
-# Without KIBANA_URL or the key it skips with a warning, so a release never fails
-# for lack of credentials.
+# Without the key (or KIBANA_URL) it skips with a warning, so a release never
+# fails for lack of credentials.
 set -euo pipefail
 
 dir="${1:?usage: upload-sourcemaps.sh <dir-with-*.js.map>}"

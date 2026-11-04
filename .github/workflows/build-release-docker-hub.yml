@@ -67,7 +67,7 @@ jobs:
 
       - name: Upload source maps to Elastic APM
         env:
-          KIBANA_URL: ${{ secrets.KIBANA_URL }}
+          KIBANA_URL: https://kibana.alkem.io
           KIBANA_APM_SOURCEMAP_API_KEY: ${{ secrets.KIBANA_APM_SOURCEMAP_API_KEY }}
         run: |
           SERVICE_VERSION="$(jq -r .version package.json)" \
