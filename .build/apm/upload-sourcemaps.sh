@@ -23,9 +23,14 @@
 #   KEEP_VERSIONS                 newest service versions whose maps are kept,
 #                                 default 3; older ones are deleted after a fully
 #                                 successful upload. 0 disables pruning.
-#
-# Without the key (or KIBANA_URL) it skips with a warning, so a release never
-# fails for lack of credentials.
+#   MAX_SOURCEMAP_BYTES           largest map Kibana accepts, default 15728640
+#                                 (15 MB): Kibana's server.maxPayload, raised from
+#                                 the 1 MB default in reporting-orchestration. A
+#                                 bigger map is reported before anything uploads.
+#   APM_SOURCEMAPS_STRICT         true (default): any problem (missing key, a map
+#                                 too big, a failed upload, listing or delete)
+#                                 exits 1 and fails the job. false: the same
+#                                 problems are warnings and it exits 0.
 set -euo pipefail
 
 dir="${1:?usage: upload-sourcemaps.sh <dir-with-*.js.map>}"
@@ -34,19 +39,41 @@ export SERVICE_VERSION="${SERVICE_VERSION:?SERVICE_VERSION is required}"
 bundle_path="${APM_BUNDLE_PATH:-/assets}"
 concurrency="${UPLOAD_CONCURRENCY:-8}"
 keep_versions="${KEEP_VERSIONS:-3}"
+max_bytes="${MAX_SOURCEMAP_BYTES:-15728640}"
+strict="${APM_SOURCEMAPS_STRICT:-true}"
+
+# Stop on a problem: an error that fails the job when strict, else a warning.
+fail() {
+  if [ "$strict" = "true" ]; then
+    echo "::error::$1"
+    exit 1
+  fi
+  echo "::warning::$1 (APM_SOURCEMAPS_STRICT=false, not failing)"
+  exit 0
+}
 
 if [ -z "${KIBANA_URL:-}" ] || [ -z "${KIBANA_APM_SOURCEMAP_API_KEY:-}" ]; then
-  echo "::warning::KIBANA_URL or KIBANA_APM_SOURCEMAP_API_KEY not set; skipping APM source map upload"
-  exit 0
+  fail "KIBANA_URL or KIBANA_APM_SOURCEMAP_API_KEY not set; no source maps uploaded"
 fi
 export KIBANA_URL KIBANA_APM_SOURCEMAP_API_KEY
 
 shopt -s nullglob
 maps=("$dir"/*.js.map)
 if [ "${#maps[@]}" -eq 0 ]; then
-  echo "::error::no *.js.map files in $dir"
-  exit 1
+  fail "no *.js.map files in $dir"
 fi
+
+# Kibana rejects an oversized request with 413 only after the others uploaded,
+# leaving a partial set; catch it up front. 4 KB covers the multipart fields.
+too_big=0
+for map in "${maps[@]}"; do
+  size="$(wc -c < "$map")"
+  if [ $((size + 4096)) -gt "$max_bytes" ]; then
+    echo "::error::$(basename "$map") is $size bytes, over the $max_bytes Kibana accepts (server.maxPayload)"
+    too_big=$((too_big + 1))
+  fi
+done
+[ "$too_big" -eq 0 ] || fail "$too_big source map(s) too big for Kibana; none uploaded"
 
 # One upload: "<map path> <bundle url>". Prints exactly one line (curl's own
 # stderr goes into it, so parallel workers never interleave); non-zero on failure.
@@ -61,7 +88,7 @@ upload_one() {
     -F "service_name=$APM_SERVICE_NAME" \
     -F "service_version=$SERVICE_VERSION" \
     -F "bundle_filepath=$url" \
-    -F "sourcemap=@$map;type=application/json")" || status="curl-error"
+    -F "sourcemap=@$map")" || status="curl-error"
   if [ "$status" = "200" ]; then
     echo "uploaded $url"
     rm -f "$response" "$err"
@@ -91,8 +118,7 @@ rm -f "$jobs" "$log"
 
 echo "uploaded $uploaded/$total source map(s) for $APM_SERVICE_NAME@$SERVICE_VERSION, $((total - uploaded)) failed"
 if [ "$upload_ok" -ne 1 ] || [ "$uploaded" -ne "$total" ]; then
-  echo "::warning::upload incomplete; not pruning older source maps"
-  exit 1
+  fail "$((total - uploaded)) of $total source map upload(s) failed; not pruning older source maps"
 fi
 [ "$keep_versions" -gt 0 ] || exit 0
 
@@ -109,9 +135,8 @@ while :; do
     "$KIBANA_URL/api/apm/sourcemaps?page=$page&perPage=$per_page" \
     -H "Authorization: ApiKey $KIBANA_APM_SOURCEMAP_API_KEY")" || status="curl-error"
   if [ "$status" != "200" ]; then
-    echo "::warning::listing source maps failed (HTTP $status); not pruning"
     rm -f "$body" "$index"
-    exit 0
+    fail "listing source maps failed (HTTP $status); not pruning"
   fi
   jq -r --arg s "$APM_SERVICE_NAME" \
     '.artifacts[] | select(.body.serviceName == $s) | [.id, .body.serviceVersion, .created] | @tsv' \
@@ -155,5 +180,7 @@ xargs -P "$concurrency" -n 1 bash -c 'delete_one "$@"' _ < "$stale" > "$log" 2>&
 cat "$log"
 prune_failed="$(grep -c '^::warning::deleting' "$log" || true)"
 rm -f "$stale" "$log"
-# A failed delete only leaves an old map behind; the next release retries it.
 echo "pruned $((stale_count - prune_failed))/$stale_count older source map(s)"
+# A failed delete only leaves an old map behind (the next release retries it),
+# but the key or Kibana is likely broken, so it still counts as a problem.
+[ "$prune_failed" -eq 0 ] || fail "$prune_failed older source map(s) could not be deleted"
