@@ -2,6 +2,7 @@ import { Bell, LayoutGrid, MessageCircle, Search } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
+import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import { PlatformNavigationMenu } from '@/crd/layouts/components/PlatformNavigationMenu';
 import { UserMenu } from '@/crd/layouts/components/UserMenu';
 import type {
@@ -123,6 +124,9 @@ export function Header({
   className,
 }: HeaderProps) {
   const { t } = useTranslation('crd-layout');
+  const isDesktop = useMediaQuery('(min-width: 768px)');
+  // On phones the profile menu lists the apps items, so the grid icon goes. Signed-out visitors have no profile menu.
+  const appsInProfileMenu = !isDesktop && authenticated && Boolean(user);
   const [scrolledPastBanner, setScrolledPastBanner] = useState(false);
 
   useEffect(() => {
@@ -219,7 +223,9 @@ export function Header({
               )}
 
               {platformNavigationItems && platformNavigationItems.length > 0 ? (
-                <PlatformNavigationMenu items={platformNavigationItems} currentPath={currentPath} />
+                !appsInProfileMenu && (
+                  <PlatformNavigationMenu items={platformNavigationItems} currentPath={currentPath} />
+                )
               ) : (
                 <Button
                   variant="ghost"

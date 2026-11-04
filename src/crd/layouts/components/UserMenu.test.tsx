@@ -98,4 +98,33 @@ describe('UserMenu apps items', () => {
     expect(within(menu).getAllByRole('menuitem').at(-1)).toHaveTextContent('header.logout');
     expect(within(menu).getAllByRole('separator')).toHaveLength(separatorsWithItems - 1);
   });
+
+  describe('apps (grid) icon', () => {
+    const gridIcon = () => screen.queryByRole('button', { name: 'header.platformNavigation' });
+
+    test('is gone on phones when signed in, since the profile menu carries the items', () => {
+      renderHeader(platformNavigationItems);
+
+      expect(gridIcon()).toBeNull();
+    });
+
+    test('stays from the md breakpoint up', () => {
+      viewport.isDesktop = true;
+      renderHeader(platformNavigationItems);
+
+      expect(gridIcon()).toBeInTheDocument();
+    });
+
+    test('stays on phones when signed out, since there is no profile menu', () => {
+      render(
+        <Header
+          authenticated={false}
+          navigationHrefs={navigationHrefs}
+          platformNavigationItems={platformNavigationItems}
+        />
+      );
+
+      expect(gridIcon()).toBeInTheDocument();
+    });
+  });
 });
