@@ -260,16 +260,15 @@ describe('LinkContributionAddConnector — creating the links', () => {
     expect(order).toEqual(['created', 'created', 'created', 'created', 'refresh', 'close', 'created-callback']);
   });
 
-  test('a failed row still refreshes once, rejects, keeps the dialog open and skips onCreated', async () => {
-    const failure = new Error('row 2 failed');
+  test('a failed row still refreshes once, reports its index, keeps the dialog open and skips onCreated', async () => {
     createLinkMock.mockImplementation(({ variables }: { variables: { link: { uri: string } } }) =>
-      variables.link.uri === 'https://l/1' ? Promise.reject(failure) : Promise.resolve({})
+      variables.link.uri === 'https://l/1' ? Promise.reject(new Error('row 2 failed')) : Promise.resolve({})
     );
     refetchQueriesMock.mockRejectedValue(new Error('refresh failed'));
     const { onOpenChange, onCreated } = renderConnector();
 
     await act(async () => {
-      await expect(dialogProps?.onSubmit(rows(4))).rejects.toBe(failure);
+      await expect(dialogProps?.onSubmit(rows(4))).resolves.toEqual([1]);
     });
 
     expect(createLinkMock).toHaveBeenCalledTimes(4);
@@ -286,7 +285,7 @@ describe('LinkContributionAddConnector — creating the links', () => {
     renderConnector();
 
     await act(async () => {
-      await expect(dialogProps?.onSubmit(rows(3))).rejects.toThrow('failed');
+      await expect(dialogProps?.onSubmit(rows(3))).resolves.toEqual([1, 2]);
     });
 
     for (const [options] of createLinkMock.mock.calls) {
@@ -297,15 +296,42 @@ describe('LinkContributionAddConnector — creating the links', () => {
   });
 
   test('one failed row keeps the global error handler and raises no notification of its own', async () => {
-    const failure = new Error('failed');
-    createLinkMock.mockRejectedValue(failure);
+    createLinkMock.mockRejectedValue(new Error('failed'));
     renderConnector();
 
     await act(async () => {
-      await expect(dialogProps?.onSubmit(rows(1))).rejects.toBe(failure);
+      await expect(dialogProps?.onSubmit(rows(1))).resolves.toEqual([0]);
     });
 
     expect(createLinkMock.mock.calls[0][0].context).toBeUndefined();
     expect(notifyMock).not.toHaveBeenCalled();
+  });
+
+  test('after a partial failure only the failed rows stay, so a retry creates no link twice', async () => {
+    const user = userEvent.setup();
+    let secondRowFails = true;
+    createLinkMock.mockImplementation(({ variables }: { variables: { link: { uri: string } } }) =>
+      variables.link.uri === 'https://b' && secondRowFails ? Promise.reject(new Error('failed')) : Promise.resolve({})
+    );
+    refetchQueriesMock.mockResolvedValue([]);
+    const { onOpenChange, onCreated } = renderConnector();
+
+    await user.click(screen.getByRole('button', { name: 'callout.linkAddAnother' }));
+    await user.type(urlInputs()[0], 'https://a');
+    await user.type(urlInputs()[1], 'https://b');
+    await user.click(screen.getByRole('button', { name: 'callout.linkCreate' }));
+
+    await waitFor(() => expect(urlInputs()).toHaveLength(1));
+    expect(urlInputs()[0]).toHaveValue('https://b');
+    expect(notifyMock).toHaveBeenCalledTimes(1);
+    expect(onOpenChange).not.toHaveBeenCalledWith(false);
+
+    secondRowFails = false;
+    await user.click(screen.getByRole('button', { name: 'callout.linkCreate' }));
+
+    await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(false));
+    const createdUris = createLinkMock.mock.calls.map(([options]) => options.variables.link.uri);
+    expect(createdUris).toEqual(['https://a', 'https://b', 'https://b']);
+    expect(onCreated).toHaveBeenCalledTimes(1);
   });
 });

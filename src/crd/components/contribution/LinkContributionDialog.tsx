@@ -32,7 +32,8 @@ type CommonProps = {
 
 type CreateProps = CommonProps & {
   mode: 'create';
-  onSubmit: (rows: LinkContributionFormValues[]) => void;
+  /** Resolves with the indexes of the rows that were not created; the dialog keeps only those. */
+  onSubmit: (rows: LinkContributionFormValues[]) => Promise<number[]>;
 };
 
 type EditProps = CommonProps & {
@@ -177,7 +178,7 @@ function LinkCreateDialog({
     justAddedRowId.current = id;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     let valid = true;
     const nextRows = rows.map(r => {
       const trimmedUrl = r.url.trim();
@@ -198,13 +199,15 @@ function LinkCreateDialog({
       setRows(nextRows);
       return;
     }
-    onSubmit(
+    const failed = await onSubmit(
       nextRows.map(r => ({
         url: r.url.trim(),
         displayName: r.displayName.trim(),
         description: r.description.trim(),
       }))
     );
+    const keptIds = new Set(failed.map(index => nextRows[index].id));
+    setRows(prev => prev.filter(r => keptIds.has(r.id)));
   };
 
   return (

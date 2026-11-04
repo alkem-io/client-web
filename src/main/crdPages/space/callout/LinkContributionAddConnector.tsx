@@ -107,13 +107,14 @@ function LinkAddDialog({
         // The links exist; a failed list refresh only delays seeing them.
       }
     }
-    const failures = results.filter(result => result.status === 'rejected');
-    if (failures.length > 0) {
-      if (isBatch) notify(t('callout.linksCreateFailed', { count: failures.length, total: rows.length }), 'error');
-      throw failures[0].reason;
+    const failed = results.flatMap((result, index) => (result.status === 'rejected' ? [index] : []));
+    if (failed.length > 0) {
+      if (isBatch) notify(t('callout.linksCreateFailed', { count: failed.length, total: rows.length }), 'error');
+      return failed;
     }
     onOpenChange(false);
     onCreated?.();
+    return failed;
   });
 
   return (

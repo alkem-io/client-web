@@ -41,7 +41,7 @@ const paperclips = () => screen.getAllByRole('button', { name: 'contributionSett
 
 const renderCreate = (onFileUpload?: RowFileUpload, props: { open?: boolean; saving?: boolean } = {}) => {
   const onOpenChange = vi.fn();
-  const onSubmit = vi.fn();
+  const onSubmit = vi.fn().mockResolvedValue([]);
   const element = (open: boolean) => (
     <LinkContributionDialog
       mode="create"

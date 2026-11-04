@@ -33,7 +33,9 @@ export function FileSelectionStatus({ pending, leftOut, onDismiss }: FileSelecti
     <div className="space-y-2">
       {pending.length > 0 && (
         <output aria-label={t('fileSelection.uploading')} className="block">
-          <ul className="space-y-1">
+          {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight strips the list semantics that this role restores */}
+          {/* biome-ignore lint/a11y/useSemanticElements: the ul is already the semantic element */}
+          <ul role="list" className="space-y-1">
             {pending.map(file => (
               <li key={file.key} className="flex items-center gap-2 text-caption text-muted-foreground">
                 <Loader2 className="size-3.5 shrink-0 animate-spin" aria-hidden="true" />
@@ -52,7 +54,9 @@ export function FileSelectionStatus({ pending, leftOut, onDismiss }: FileSelecti
             <p className="text-body-emphasis text-destructive">
               {t('fileSelection.notAdded', { count: leftOut.length })}
             </p>
-            <ul className="space-y-0.5">
+            {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight strips the list semantics that this role restores */}
+            {/* biome-ignore lint/a11y/useSemanticElements: the ul is already the semantic element */}
+            <ul role="list" className="space-y-0.5">
               {leftOut.map((file, index) => (
                 // biome-ignore lint/suspicious/noArrayIndexKey: the same file name can be left out twice
                 <li key={index} className="text-caption text-foreground break-words">
