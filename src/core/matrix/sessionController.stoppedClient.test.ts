@@ -39,8 +39,25 @@ const tokenRejected = (): Response =>
 /** A response that never arrives, until the request is aborted (as the SDK does when it stops). */
 const pendingUntilAborted = (signal: AbortSignal | null | undefined): Promise<Response> =>
   new Promise((_, reject) => {
-    signal?.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError')));
+    const abort = () => reject(new DOMException('Aborted', 'AbortError'));
+    if (signal?.aborted) {
+      abort();
+      return;
+    }
+    signal?.addEventListener('abort', abort);
   });
+
+// How long the server holds a fresh sync long-poll before answering it.
+const SYNC_HOLD_MS = 30_000;
+
+/** A sync long-poll that answers with an empty batch after a while, as a quiet server does. */
+const answerSyncLater = (signal: AbortSignal | null | undefined, batch: number): Promise<Response> =>
+  Promise.race([
+    new Promise<Response>(resolve => {
+      setTimeout(() => resolve(json(200, { next_batch: `s${batch}` })), SYNC_HOLD_MS);
+    }),
+    pendingUntilAborted(signal),
+  ]);
 
 type SentRequest = { path: string; token: string | undefined };
 
@@ -54,7 +71,7 @@ type ExpiredTokenScript = {
 /**
  * A chat server double. Requests made with the expired token are held so the
  * test decides when — and in which order — they fail; requests made with the
- * fresh token succeed, except the long-poll sync, which stays open.
+ * fresh token succeed; the fresh sync long-poll answers after a while.
  */
 const scriptChatServer = () => {
   const sent: SentRequest[] = [];
@@ -85,7 +102,7 @@ const scriptChatServer = () => {
         expired.sync.push(held);
         return Promise.race([held.promise, pendingUntilAborted(init?.signal)]);
       }
-      return pendingUntilAborted(init?.signal);
+      return answerSyncLater(init?.signal, sent.length);
     }
     if (path.endsWith('/pushrules/')) {
       return json(200, { global: {} });
@@ -144,22 +161,27 @@ describe('a chat client stopped by session recovery', () => {
   const capabilitiesWith = (token: string, fromIndex = 0) =>
     sentWith(token, fromIndex).filter(r => r.path.endsWith('/capabilities'));
 
+  const freshSyncs = () => sentWith(FRESH_TOKEN).filter(r => r.path.endsWith('/sync')).length;
+
   /** The fresh client is up once it has opened its sync long-poll. */
-  const recovered = () => sentWith(FRESH_TOKEN).some(r => r.path.endsWith('/sync'));
+  const recovered = () => freshSyncs() > 0;
 
   it('sends no further request once its own rejected capabilities request triggered the recovery', async () => {
     void establishSession(ACTOR);
     await settle(() => server.expired.capabilities.length === 1);
 
+    // Everything the stopped client sends from here on is measured.
+    const atStop = server.sent.length;
     server.expired.capabilities[0].resolve(tokenRejected());
     await settle(recovered);
-    const afterRecovery = server.sent.length;
+    const syncsAtRecovery = freshSyncs();
 
     await vi.advanceTimersByTimeAsync(BEYOND_RETRY_WINDOW_MS);
 
-    expect(capabilitiesWith(EXPIRED_TOKEN, afterRecovery)).toEqual([]);
-    expect(sentWith(EXPIRED_TOKEN, afterRecovery)).toEqual([]);
+    expect(capabilitiesWith(EXPIRED_TOKEN, atStop)).toEqual([]);
+    expect(sentWith(EXPIRED_TOKEN, atStop)).toEqual([]);
     expect(getActiveClient()?.getAccessToken()).toBe(FRESH_TOKEN);
+    expect(freshSyncs()).toBeGreaterThan(syncsAtRecovery);
   });
 
   it('sends no further request when its capabilities request was still in flight as another request triggered the recovery', async () => {
@@ -168,30 +190,37 @@ describe('a chat client stopped by session recovery', () => {
 
     // The sync request is rejected first: recovery stops this client while its
     // capabilities request is still waiting for an answer.
+    const atStop = server.sent.length;
     server.expired.sync[0].resolve(tokenRejected());
     await settle(recovered);
-    const afterRecovery = server.sent.length;
+    const syncsAtRecovery = freshSyncs();
 
     // Only then does the in-flight capabilities request fail.
     server.expired.capabilities[0].resolve(tokenRejected());
     await vi.advanceTimersByTimeAsync(BEYOND_RETRY_WINDOW_MS);
 
-    expect(capabilitiesWith(EXPIRED_TOKEN, afterRecovery)).toEqual([]);
-    expect(sentWith(EXPIRED_TOKEN, afterRecovery)).toEqual([]);
+    expect(capabilitiesWith(EXPIRED_TOKEN, atStop)).toEqual([]);
+    expect(sentWith(EXPIRED_TOKEN, atStop)).toEqual([]);
+    expect(getActiveClient()?.getAccessToken()).toBe(FRESH_TOKEN);
+    expect(freshSyncs()).toBeGreaterThan(syncsAtRecovery);
   });
 
   it('does not re-arm its refresh when its in-flight capabilities request succeeds after the recovery', async () => {
     void establishSession(ACTOR);
     await settle(() => server.expired.capabilities.length === 1 && server.expired.sync.length === 1);
 
+    const atStop = server.sent.length;
     server.expired.sync[0].resolve(tokenRejected());
     await settle(recovered);
-    const afterRecovery = server.sent.length;
+    const syncsAtRecovery = freshSyncs();
 
     server.expired.capabilities[0].resolve(json(200, { capabilities: {} }));
     // The refresh interval of a successful fetch is six hours.
     await vi.advanceTimersByTimeAsync(6 * 60 * 60 * 1000 + BEYOND_RETRY_WINDOW_MS);
 
-    expect(capabilitiesWith(EXPIRED_TOKEN, afterRecovery)).toEqual([]);
+    expect(capabilitiesWith(EXPIRED_TOKEN, atStop)).toEqual([]);
+    expect(sentWith(EXPIRED_TOKEN, atStop)).toEqual([]);
+    expect(getActiveClient()?.getAccessToken()).toBe(FRESH_TOKEN);
+    expect(freshSyncs()).toBeGreaterThan(syncsAtRecovery);
   });
 });
