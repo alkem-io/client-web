@@ -68,74 +68,52 @@ export function ReferencesEditor({
   uploadAccept,
 }: ReferencesEditorProps) {
   const { t } = useTranslation('crd-common');
-  const [pendingDeleteIndex, setPendingDeleteIndex] = useState<number | null>(null);
-  const [uploadingRows, setUploadingRows] = useState<Record<number, boolean>>({});
-  const { rowsRef, commit } = useRowsCommit(rows, onChange);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [uploadingIds, setUploadingIds] = useState<ReadonlySet<string>>(() => new Set());
+  const { rowIds, rowById, updateRow, removeRow, appendRow } = useRowsCommit(rows, onChange);
   const uploads = useRowFileUploads(onFileUpload);
-  // The row a multi-file pick may fill; removing it or any row above it gives the slot up for good.
-  const pickedSlot = useRef<number | null>(null);
-  const anyRowUploading = Object.keys(uploadingRows).length > 0;
+  // The row a multi-file pick fills: the clicked row, while its URL is empty and nothing has changed it since the pick.
+  const fillableId = useRef<string | null>(null);
+  const anyRowUploading = uploadingIds.size > 0;
 
-  const updateRow = (index: number, patch: Partial<ReferenceRow>) => {
-    commit(rowsRef.current.map((row, i) => (i === index ? { ...row, ...patch } : row)));
+  const editRow = (id: string, patch: Partial<ReferenceRow>) => {
+    if (fillableId.current === id) fillableId.current = null;
+    updateRow(id, patch);
   };
 
-  const handleFileSelected = async (index: number, file: File | undefined) => {
+  const handleFileSelected = async (id: string, file: File | undefined) => {
     if (!file || !onFileUpload) return;
-    setUploadingRows(prev => ({ ...prev, [index]: true }));
+    setUploadingIds(prev => new Set(prev).add(id));
     try {
       const uri = await onFileUpload(file);
-      if (!uri) return;
-      const current = rowsRef.current[index];
-      const nameEmpty = !current?.name.trim();
-      const filenameBase = fileNameBase(file);
-      const patch: Partial<ReferenceRow> = { uri };
-      if (nameEmpty && filenameBase) patch.name = filenameBase;
-      updateRow(index, patch);
+      const current = rowById(id);
+      if (!uri || !current) return;
+      const name = fileNameBase(file);
+      updateRow(id, current.name.trim() || !name ? { uri } : { uri, name });
     } finally {
-      setUploadingRows(prev => {
-        const next = { ...prev };
-        delete next[index];
+      setUploadingIds(prev => {
+        const next = new Set(prev);
+        next.delete(id);
         return next;
       });
     }
   };
 
-  // A result fills the clicked row while it still holds its slot and has its pick-time name,
-  // description and URL, and that URL is empty; otherwise it is appended as a row of its own. Rows are compared by value because
-  // hosts hand in freshly mapped row objects on every render.
-  const handleFilesSelected = (index: number, files: File[]) => {
-    const picked = rowsRef.current[index];
-    pickedSlot.current = index;
+  const handleFilesSelected = (id: string, files: File[]) => {
+    fillableId.current = rowById(id)?.uri.trim() ? null : id;
     uploads.uploadMany(files, (file, uri) => {
-      const current = rowsRef.current[index];
       const name = fileNameBase(file);
-      const fillsPicked =
-        pickedSlot.current === index &&
-        picked &&
-        current &&
-        !current.uri.trim() &&
-        current.uri === picked.uri &&
-        current.name === picked.name &&
-        (current.description ?? '') === (picked.description ?? '');
-      if (fillsPicked) {
-        updateRow(index, current.name.trim() || !name ? { uri } : { uri, name });
+      const fillable = fillableId.current === id ? rowById(id) : undefined;
+      if (fillable) {
+        fillableId.current = null;
+        updateRow(id, fillable.name.trim() || !name ? { uri } : { uri, name });
       } else {
-        commit([...rowsRef.current, { name, uri, description: '' }]);
+        appendRow({ name, uri, description: '' });
       }
     });
   };
 
-  const removeRow = (index: number) => {
-    if (pickedSlot.current !== null && index <= pickedSlot.current) pickedSlot.current = null;
-    commit(rowsRef.current.filter((_, i) => i !== index));
-  };
-
-  const addRow = () => {
-    commit([...rowsRef.current, createEmptyRow()]);
-  };
-
-  const pendingDeleteRow = pendingDeleteIndex !== null ? rows[pendingDeleteIndex] : undefined;
+  const pendingDeleteRow = pendingDeleteId !== null ? rows[rowIds.indexOf(pendingDeleteId)] : undefined;
 
   return (
     <div className="space-y-3">
@@ -144,15 +122,16 @@ export function ReferencesEditor({
       {rows.length === 0 && <p className="text-caption text-muted-foreground italic">{t('references.empty')}</p>}
 
       {rows.map((row, index) => {
+        const id = rowIds[index];
         const nameError = errors?.[`${index}.name`];
         const uriError = errors?.[`${index}.uri`];
         return (
-          <div key={row.id ?? index} className="border border-border rounded-lg p-3 space-y-2">
+          <div key={id} className="border border-border rounded-lg p-3 space-y-2">
             <div className="flex items-start gap-2">
               <div className="flex-1 space-y-2">
                 <Input
                   value={row.name}
-                  onChange={e => updateRow(index, { name: e.target.value })}
+                  onChange={e => editRow(id, { name: e.target.value })}
                   placeholder={t('references.namePlaceholder')}
                   disabled={disabled}
                   aria-label={t('references.nameLabel')}
@@ -168,10 +147,10 @@ export function ReferencesEditor({
                   <Input
                     type="url"
                     value={row.uri}
-                    onChange={e => updateRow(index, { uri: e.target.value })}
+                    onChange={e => editRow(id, { uri: e.target.value })}
                     onBlur={e => {
                       const normalized = ensureHttps(e.target.value);
-                      if (normalized !== e.target.value) updateRow(index, { uri: normalized });
+                      if (normalized !== e.target.value) editRow(id, { uri: normalized });
                     }}
                     placeholder={t('references.uriPlaceholder')}
                     disabled={disabled}
@@ -184,10 +163,10 @@ export function ReferencesEditor({
                     <RowAttachFileButton
                       accept={uploadAccept}
                       disabled={disabled || uploads.busy || anyRowUploading}
-                      uploading={Boolean(uploadingRows[index])}
+                      uploading={uploadingIds.has(id)}
                       ariaLabel={t('references.attachFile')}
-                      onFile={file => handleFileSelected(index, file)}
-                      onFiles={files => handleFilesSelected(index, files)}
+                      onFile={file => handleFileSelected(id, file)}
+                      onFiles={files => handleFilesSelected(id, files)}
                     />
                   )}
                 </div>
@@ -198,7 +177,7 @@ export function ReferencesEditor({
                 )}
                 <Input
                   value={row.description ?? ''}
-                  onChange={e => updateRow(index, { description: e.target.value })}
+                  onChange={e => editRow(id, { description: e.target.value })}
                   placeholder={t('references.descriptionPlaceholder')}
                   disabled={disabled}
                   aria-label={t('references.descriptionLabel')}
@@ -207,7 +186,7 @@ export function ReferencesEditor({
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setPendingDeleteIndex(index)}
+                onClick={() => setPendingDeleteId(id)}
                 disabled={disabled}
                 aria-label={t('references.removeRow')}
                 className="text-muted-foreground hover:text-destructive"
@@ -221,15 +200,15 @@ export function ReferencesEditor({
 
       <FileSelectionStatus pending={uploads.pending} leftOut={uploads.leftOut} onDismiss={uploads.dismiss} />
 
-      <Button type="button" variant="outline" size="sm" onClick={addRow} disabled={disabled}>
+      <Button type="button" variant="outline" size="sm" onClick={() => appendRow(createEmptyRow())} disabled={disabled}>
         <Plus className="w-4 h-4 mr-1" aria-hidden="true" />
         {t('references.addRow')}
       </Button>
 
       <ConfirmationDialog
-        open={pendingDeleteIndex !== null}
+        open={pendingDeleteId !== null}
         onOpenChange={open => {
-          if (!open) setPendingDeleteIndex(null);
+          if (!open) setPendingDeleteId(null);
         }}
         title={t('references.removeConfirm.title')}
         description={t('references.removeConfirm.description', {
@@ -239,8 +218,8 @@ export function ReferencesEditor({
         cancelLabel={t('cancel')}
         variant="destructive"
         onConfirm={() => {
-          if (pendingDeleteIndex !== null) removeRow(pendingDeleteIndex);
-          setPendingDeleteIndex(null);
+          if (pendingDeleteId !== null) removeRow(pendingDeleteId);
+          setPendingDeleteId(null);
         }}
       />
     </div>

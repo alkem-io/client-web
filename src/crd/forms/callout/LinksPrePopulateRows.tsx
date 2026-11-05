@@ -48,71 +48,48 @@ export function LinksPrePopulateRows({
   uploadAccept,
 }: LinksPrePopulateRowsProps) {
   const { t } = useTranslation('crd-space');
-  // Per-row upload spinner state, keyed by row index.
-  const [uploadingRows, setUploadingRows] = useState<Record<number, boolean>>({});
-  const { rowsRef, commit } = useRowsCommit(rows, onChange);
+  const [uploadingIds, setUploadingIds] = useState<ReadonlySet<string>>(() => new Set());
+  const { rowIds, rowById, updateRow, removeRow, appendRow } = useRowsCommit(rows, onChange);
   const uploads = useRowFileUploads(onFileUpload);
-  // The row a multi-file pick may fill; removing it or any row above it gives the slot up for good.
-  const pickedSlot = useRef<number | null>(null);
-  const anyRowUploading = Object.keys(uploadingRows).length > 0;
+  // The row a multi-file pick fills: the clicked row, while its URL is empty and nothing has changed it since the pick.
+  const fillableId = useRef<string | null>(null);
+  const anyRowUploading = uploadingIds.size > 0;
 
-  const updateRow = (index: number, patch: Partial<LinkRow>) => {
-    commit(rowsRef.current.map((row, i) => (i === index ? { ...row, ...patch } : row)));
+  const editRow = (id: string, patch: Partial<LinkRow>) => {
+    if (fillableId.current === id) fillableId.current = null;
+    updateRow(id, patch);
   };
 
-  const handleFileSelected = async (index: number, file: File | undefined) => {
+  const handleFileSelected = async (id: string, file: File | undefined) => {
     if (!file || !onFileUpload) return;
-    setUploadingRows(prev => ({ ...prev, [index]: true }));
+    setUploadingIds(prev => new Set(prev).add(id));
     try {
       const url = await onFileUpload(file);
-      if (!url) return;
-      const current = rowsRef.current[index];
-      const titleEmpty = !current?.title.trim();
-      const filenameBase = fileNameBase(file);
-      const patch: Partial<LinkRow> = { url };
-      if (titleEmpty && filenameBase) patch.title = filenameBase;
-      updateRow(index, patch);
+      const current = rowById(id);
+      if (!url || !current) return;
+      const title = fileNameBase(file);
+      updateRow(id, current.title.trim() || !title ? { url } : { url, title });
     } finally {
-      setUploadingRows(prev => {
-        const next = { ...prev };
-        delete next[index];
+      setUploadingIds(prev => {
+        const next = new Set(prev);
+        next.delete(id);
         return next;
       });
     }
   };
 
-  // A result fills the clicked row while it still holds its slot and has its pick-time title,
-  // description and URL, and that URL is empty; otherwise it is appended as a row of its own (compared by value: the host maps
-  // fresh row objects on every render).
-  const handleFilesSelected = (index: number, files: File[]) => {
-    const picked = rowsRef.current[index];
-    pickedSlot.current = index;
+  const handleFilesSelected = (id: string, files: File[]) => {
+    fillableId.current = rowById(id)?.url.trim() ? null : id;
     uploads.uploadMany(files, (file, url) => {
-      const current = rowsRef.current[index];
       const title = fileNameBase(file);
-      const fillsPicked =
-        pickedSlot.current === index &&
-        picked &&
-        current &&
-        !current.url.trim() &&
-        current.url === picked.url &&
-        current.title === picked.title &&
-        current.description === picked.description;
-      if (fillsPicked) {
-        updateRow(index, current.title.trim() || !title ? { url } : { url, title });
+      const fillable = fillableId.current === id ? rowById(id) : undefined;
+      if (fillable) {
+        fillableId.current = null;
+        updateRow(id, fillable.title.trim() || !title ? { url } : { url, title });
       } else {
-        commit([...rowsRef.current, { title, url, description: '' }]);
+        appendRow({ title, url, description: '' });
       }
     });
-  };
-
-  const removeRow = (index: number) => {
-    if (pickedSlot.current !== null && index <= pickedSlot.current) pickedSlot.current = null;
-    commit(rowsRef.current.filter((_, i) => i !== index));
-  };
-
-  const addRow = () => {
-    commit([...rowsRef.current, createEmptyRow()]);
   };
 
   return (
@@ -125,17 +102,17 @@ export function LinksPrePopulateRows({
       )}
 
       {rows.map((row, index) => {
+        const id = rowIds[index];
         const titleError = errors?.[`prePopulateLinkRows.${index}.title`];
         const urlError = errors?.[`prePopulateLinkRows.${index}.url`];
         return (
-          // biome-ignore lint/suspicious/noArrayIndexKey: rows are append-and-delete; no stable id exists in the row model
-          <div key={index} className="border border-border rounded-lg p-3 space-y-2">
+          <div key={id} className="border border-border rounded-lg p-3 space-y-2">
             <div className="flex items-start gap-2">
               <div className="flex-1 space-y-2">
                 <input
                   type="text"
                   value={row.title}
-                  onChange={e => updateRow(index, { title: e.target.value })}
+                  onChange={e => editRow(id, { title: e.target.value })}
                   placeholder={t('contributionSettings.prePopulate.titlePlaceholder')}
                   disabled={disabled}
                   aria-label={t('contributionSettings.prePopulate.titleLabel')}
@@ -152,10 +129,10 @@ export function LinksPrePopulateRows({
                   <input
                     type="url"
                     value={row.url}
-                    onChange={e => updateRow(index, { url: e.target.value })}
+                    onChange={e => editRow(id, { url: e.target.value })}
                     onBlur={e => {
                       const normalized = ensureHttps(e.target.value);
-                      if (normalized !== e.target.value) updateRow(index, { url: normalized });
+                      if (normalized !== e.target.value) editRow(id, { url: normalized });
                     }}
                     placeholder={t('contributionSettings.prePopulate.urlPlaceholder')}
                     disabled={disabled}
@@ -168,10 +145,10 @@ export function LinksPrePopulateRows({
                     <RowAttachFileButton
                       accept={uploadAccept}
                       disabled={disabled || uploads.busy || anyRowUploading}
-                      uploading={Boolean(uploadingRows[index])}
+                      uploading={uploadingIds.has(id)}
                       ariaLabel={t('contributionSettings.prePopulate.attachFile')}
-                      onFile={file => handleFileSelected(index, file)}
-                      onFiles={files => handleFilesSelected(index, files)}
+                      onFile={file => handleFileSelected(id, file)}
+                      onFiles={files => handleFilesSelected(id, files)}
                     />
                   )}
                 </div>
@@ -183,7 +160,7 @@ export function LinksPrePopulateRows({
                 <input
                   type="text"
                   value={row.description}
-                  onChange={e => updateRow(index, { description: e.target.value })}
+                  onChange={e => editRow(id, { description: e.target.value })}
                   placeholder={t('contributionSettings.prePopulate.descriptionPlaceholder')}
                   disabled={disabled}
                   aria-label={t('contributionSettings.prePopulate.descriptionLabel')}
@@ -193,7 +170,7 @@ export function LinksPrePopulateRows({
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => removeRow(index)}
+                onClick={() => removeRow(id)}
                 disabled={disabled}
                 aria-label={t('contributionSettings.prePopulate.removeRow')}
                 className="text-muted-foreground hover:text-destructive"
@@ -207,7 +184,7 @@ export function LinksPrePopulateRows({
 
       <FileSelectionStatus pending={uploads.pending} leftOut={uploads.leftOut} onDismiss={uploads.dismiss} />
 
-      <Button type="button" variant="outline" size="sm" onClick={addRow} disabled={disabled}>
+      <Button type="button" variant="outline" size="sm" onClick={() => appendRow(createEmptyRow())} disabled={disabled}>
         <Plus className="w-4 h-4 mr-1" aria-hidden="true" />
         {t('contributionSettings.prePopulate.addRow')}
       </Button>

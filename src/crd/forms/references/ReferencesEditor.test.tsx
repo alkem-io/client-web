@@ -153,7 +153,7 @@ describe('ReferencesEditor — several files on one paperclip', () => {
     expect(uriInputs().map(i => i.value)).toEqual(['https://kept', 'https://cdn/alpha', 'https://cdn/beta']);
   });
 
-  test('removing an earlier row during the uploads appends every result and leaves the clicked row as authored', async () => {
+  test('removing an earlier row during the uploads still fills the clicked row and keeps what it holds', async () => {
     const user = userEvent.setup();
     const { upload, calls } = createControlledUpload();
     render(
@@ -174,8 +174,8 @@ describe('ReferencesEditor — several files on one paperclip', () => {
       calls[1].resolve('https://cdn/beta');
     });
 
-    expect(nameInputs().map(i => i.value)).toEqual(['B', 'alpha', 'beta']);
-    expect(uriInputs().map(i => i.value)).toEqual(['', 'https://cdn/alpha', 'https://cdn/beta']);
+    expect(nameInputs().map(i => i.value)).toEqual(['B', 'beta']);
+    expect(uriInputs().map(i => i.value)).toEqual(['https://cdn/alpha', 'https://cdn/beta']);
     expect(descriptionInputs()[0]).toHaveValue('about B');
   });
 
@@ -244,6 +244,56 @@ describe('ReferencesEditor — several files on one paperclip', () => {
     expect(uriInputs().map(i => i.value)).toEqual(['https://cdn/alpha']);
     expect(nameInputs()[0]).toHaveValue('alpha');
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  });
+
+  test('a one-file result lands on its own row when a row above it is removed meanwhile', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    render(
+      <Host
+        initial={[
+          { name: 'A', uri: 'https://a', description: '' },
+          { name: 'B', uri: 'https://b', description: '' },
+          { name: 'C', uri: '', description: '' },
+        ]}
+        onFileUpload={upload}
+      />
+    );
+
+    pick(fileInputs()[2], [pdf('alpha.pdf')]);
+    await user.click(screen.getAllByRole('button', { name: 'references.removeRow' })[0]);
+    await user.click(screen.getByRole('button', { name: 'references.removeConfirm.confirm' }));
+    expect(paperclips()[1]).toHaveAttribute('aria-busy', 'true');
+    expect(paperclips()[0]).toHaveAttribute('aria-busy', 'false');
+    await act(async () => calls[0].resolve('https://cdn/alpha'));
+
+    expect(nameInputs().map(i => i.value)).toEqual(['B', 'C']);
+    expect(uriInputs().map(i => i.value)).toEqual(['https://b', 'https://cdn/alpha']);
+  });
+
+  test('removing the row of a one-file upload drops its result and changes no other row', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    render(
+      <Host
+        initial={[
+          { name: 'A', uri: '', description: '' },
+          { name: 'B', uri: 'https://b', description: '' },
+        ]}
+        onFileUpload={upload}
+      />
+    );
+
+    pick(fileInputs()[0], [pdf('alpha.pdf')]);
+    await user.click(screen.getAllByRole('button', { name: 'references.removeRow' })[0]);
+    await user.click(screen.getByRole('button', { name: 'references.removeConfirm.confirm' }));
+    expect(paperclips()[0]).toHaveAttribute('aria-busy', 'false');
+    onChangeSpy.mockClear();
+    await act(async () => calls[0].resolve('https://cdn/alpha'));
+
+    expect(onChangeSpy).not.toHaveBeenCalled();
+    expect(nameInputs().map(i => i.value)).toEqual(['B']);
+    expect(uriInputs().map(i => i.value)).toEqual(['https://b']);
   });
 
   test('after unmount, late multi-file results call no onChange and queued files never start', async () => {

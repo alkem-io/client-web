@@ -135,7 +135,7 @@ describe('LinksPrePopulateRows — several files on one paperclip', () => {
     expect(urlInputs().map(i => i.value)).toEqual(['https://kept', 'https://cdn/alpha', 'https://cdn/beta']);
   });
 
-  test('removing an earlier row during the uploads appends every result and leaves the clicked row as authored', async () => {
+  test('removing an earlier row during the uploads still fills the clicked row and keeps what it holds', async () => {
     const user = userEvent.setup();
     const { upload, calls } = createControlledUpload();
     render(
@@ -155,8 +155,8 @@ describe('LinksPrePopulateRows — several files on one paperclip', () => {
       calls[1].resolve('https://cdn/beta');
     });
 
-    expect(titleInputs().map(i => i.value)).toEqual(['B', 'alpha', 'beta']);
-    expect(urlInputs().map(i => i.value)).toEqual(['', 'https://cdn/alpha', 'https://cdn/beta']);
+    expect(titleInputs().map(i => i.value)).toEqual(['B', 'beta']);
+    expect(urlInputs().map(i => i.value)).toEqual(['https://cdn/alpha', 'https://cdn/beta']);
     expect(descriptionInputs()[0]).toHaveValue('about B');
   });
 
@@ -194,6 +194,54 @@ describe('LinksPrePopulateRows — several files on one paperclip', () => {
 
     expect(urlInputs().map(i => i.value)).toEqual(['https://cdn/alpha']);
     expect(titleInputs()[0]).toHaveValue('alpha');
+  });
+
+  test('a one-file result lands on its own row when a row above it is removed meanwhile', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    render(
+      <Host
+        initial={[
+          { title: 'A', url: 'https://a', description: '' },
+          { title: 'B', url: 'https://b', description: '' },
+          { title: 'C', url: '', description: '' },
+        ]}
+        onFileUpload={upload}
+      />
+    );
+
+    pick(fileInputs()[2], [pdf('alpha.pdf')]);
+    await user.click(screen.getAllByRole('button', { name: 'contributionSettings.prePopulate.removeRow' })[0]);
+    expect(paperclips()[1]).toHaveAttribute('aria-busy', 'true');
+    expect(paperclips()[0]).toHaveAttribute('aria-busy', 'false');
+    await act(async () => calls[0].resolve('https://cdn/alpha'));
+
+    expect(titleInputs().map(i => i.value)).toEqual(['B', 'C']);
+    expect(urlInputs().map(i => i.value)).toEqual(['https://b', 'https://cdn/alpha']);
+  });
+
+  test('removing the row of a one-file upload drops its result and changes no other row', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    render(
+      <Host
+        initial={[
+          { title: 'A', url: '', description: '' },
+          { title: 'B', url: 'https://b', description: '' },
+        ]}
+        onFileUpload={upload}
+      />
+    );
+
+    pick(fileInputs()[0], [pdf('alpha.pdf')]);
+    await user.click(screen.getAllByRole('button', { name: 'contributionSettings.prePopulate.removeRow' })[0]);
+    expect(paperclips()[0]).toHaveAttribute('aria-busy', 'false');
+    onChangeSpy.mockClear();
+    await act(async () => calls[0].resolve('https://cdn/alpha'));
+
+    expect(onChangeSpy).not.toHaveBeenCalled();
+    expect(titleInputs().map(i => i.value)).toEqual(['B']);
+    expect(urlInputs().map(i => i.value)).toEqual(['https://b']);
   });
 
   test('after unmount, late multi-file results call no onChange and queued files never start', async () => {
