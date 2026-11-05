@@ -12,6 +12,7 @@ const MAX_TIMER_DELAY_MS = 2 ** 31 - 1;
 type MembershipLike = {
   readonly sender?: string;
   readonly deviceId: string;
+  createdTs(): number;
   isExpired(): boolean;
   getMsUntilExpiry(): number | undefined;
 };
