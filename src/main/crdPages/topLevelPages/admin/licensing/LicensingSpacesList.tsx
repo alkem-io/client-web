@@ -3,16 +3,19 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   refetchLicensingAdminSpacesQuery,
+  useAdminUpdateSpacePromoteMutation,
   useAdminUpdateSpaceVisibilityMutation,
   useLicensingAdminSpacesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { usePermissionDeniedNotifier } from '@/core/apollo/hooks/usePermissionDeniedNotifier';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   AdminSearchableTable,
   type AdminTableColumn,
   type AdminTableRow,
 } from '@/crd/components/admin/AdminSearchableTable';
+import { PromoteCheckboxCell } from '@/crd/components/admin/columns/PromoteCheckboxCell';
 import { Button } from '@/crd/primitives/button';
 import { SpaceLicensePlansDialog } from '../spaces/SpaceLicensePlansDialog';
 import { useAdminListSearch } from '../useAdminListSearch';
@@ -31,6 +34,8 @@ type LicensingSpaceRow = AdminTableRow & {
   visibility: SpaceVisibility;
   owner: string;
   plans: ActivePlan[];
+  /** Stored platform-promote flag; `null` when the viewer may not read it. */
+  promote: boolean | null;
 };
 
 /**
@@ -42,6 +47,7 @@ type LicensingSpaceRow = AdminTableRow & {
 export function LicensingSpacesList({ plans }: { plans: LicensingPlan[] }) {
   const { t } = useTranslation('crd-admin');
   const notify = useNotification();
+  const guard = usePermissionDeniedNotifier();
   // `errorPolicy: 'all'`, as the Spaces section: one space with a corrupt
   // nested policy must not blank the whole list.
   const { data, loading } = useLicensingAdminSpacesQuery({ errorPolicy: 'all' });
@@ -52,6 +58,10 @@ export function LicensingSpacesList({ plans }: { plans: LicensingPlan[] }) {
     onCompleted: () => notify(t('licensing.visibilityUpdated'), 'success'),
   });
 
+  // No refetch: the mutation selects `{ id promote }`, so Apollo updates the
+  // cached row in place.
+  const [updatePromote, { loading: savingPromote }] = useAdminUpdateSpacePromoteMutation();
+
   const rows: LicensingSpaceRow[] = (data?.platformAdmin.spaces ?? []).map(space => ({
     id: space.id,
     name: space.about.profile.displayName,
@@ -59,6 +69,7 @@ export function LicensingSpacesList({ plans }: { plans: LicensingPlan[] }) {
     visibility: space.visibility,
     owner: space.about.provider?.profile?.displayName || 'N/A',
     plans: resolveActivePlans(plans, space.subscriptions),
+    promote: space.promote ?? null,
   }));
   const { searchTerm, onSearchTermChange, filteredRows } = useAdminListSearch(rows);
 
@@ -94,6 +105,24 @@ export function LicensingSpacesList({ plans }: { plans: LicensingPlan[] }) {
     },
     { header: t('licensing.columns.plans'), render: row => <ActivePlansCell plans={row.plans} /> },
   ];
+  // Shown only when the server returned the flag on some row — it does so
+  // only for viewers who may manage it.
+  if (rows.some(row => row.promote != null)) {
+    columns.push({
+      header: t('columns.promoteHeader'),
+      render: row =>
+        row.promote == null ? null : (
+          <PromoteCheckboxCell
+            checked={row.promote}
+            name={row.name}
+            disabled={savingPromote}
+            onCheckedChange={next => {
+              void guard(() => updatePromote({ variables: { spaceId: row.id, promote: next } })).catch(() => {});
+            }}
+          />
+        ),
+    });
+  }
 
   return (
     <>

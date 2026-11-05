@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   refetchPlatformAdminSpacesListQuery,
   useAdminUpdateSpaceNameIdMutation,
+  useAdminUpdateSpacePromoteMutation,
   useAdminUpdateSpaceVisibilityMutation,
   useDeleteSpaceMutation,
   usePlatformAdminSpacesListQuery,
@@ -13,6 +14,7 @@ import { usePermissionDeniedNotifier } from '@/core/apollo/hooks/usePermissionDe
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { AdminSearchableTable, type AdminTableColumn } from '@/crd/components/admin/AdminSearchableTable';
 import { AccountOwnerCell } from '@/crd/components/admin/columns/AccountOwnerCell';
+import { PromoteCheckboxCell } from '@/crd/components/admin/columns/PromoteCheckboxCell';
 import { VisibilityChipCell, type VisibilityChipTone } from '@/crd/components/admin/columns/VisibilityChipCell';
 import { SpaceSettingsDialog } from '@/crd/components/admin/spaces/SpaceSettingsDialog';
 import { Button } from '@/crd/primitives/button';
@@ -61,6 +63,9 @@ const CrdAdminSpacesPage = () => {
     awaitRefetchQueries: true,
   });
   const savingSettings = savingVisibility || savingNameId;
+  // No refetch: the mutation selects `{ id promote }`, so Apollo updates the
+  // cached row in place and the checkbox re-renders from it.
+  const [updatePromote, { loading: savingPromote }] = useAdminUpdateSpacePromoteMutation();
 
   const rows = (data?.platformAdmin.spaces ?? []).map(mapSpaceToRow);
   const { searchTerm, onSearchTermChange, filteredRows } = useAdminListSearch(rows);
@@ -138,6 +143,24 @@ const CrdAdminSpacesPage = () => {
     },
     { header: t('columns.ownerHeader'), render: row => <AccountOwnerCell owner={row.accountOwner} /> },
   ];
+  // The server returns `promote` only to viewers who may manage it, so the
+  // column follows the data rather than a client-side copy of the role rule.
+  if (rows.some(row => row.promote != null)) {
+    columns.push({
+      header: t('columns.promoteHeader'),
+      render: row =>
+        row.promote == null ? null : (
+          <PromoteCheckboxCell
+            checked={row.promote}
+            name={row.name}
+            disabled={savingPromote}
+            onCheckedChange={next => {
+              void guard(() => updatePromote({ variables: { spaceId: row.id, promote: next } })).catch(() => {});
+            }}
+          />
+        ),
+    });
+  }
 
   return (
     <>
