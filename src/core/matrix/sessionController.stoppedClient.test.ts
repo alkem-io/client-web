@@ -116,10 +116,20 @@ const scriptChatServer = () => {
   return { sent, expired, fetchStub };
 };
 
-/** Lets pending promise chains and zero-delay timers run under fake timers. */
-const settle = async (until: () => boolean, rounds = 200): Promise<void> => {
-  for (let i = 0; i < rounds && !until(); i++) {
+// Real time a step may take; a cold start on a slow runner needs more than a fast laptop.
+const SETTLE_BUDGET_MS = 10_000;
+
+/**
+ * Lets pending promise chains and short timers run under fake timers. Each
+ * round also yields one real macrotask, so work on the real clock (the
+ * IndexedDB double's setImmediate) can finish; the budget is real time, not a
+ * round count.
+ */
+const settle = async (until: () => boolean): Promise<void> => {
+  const deadline = performance.now() + SETTLE_BUDGET_MS;
+  while (!until() && performance.now() < deadline) {
     await vi.advanceTimersByTimeAsync(1);
+    await new Promise<void>(resolve => setImmediate(resolve));
   }
   expect(until()).toBe(true);
 };
