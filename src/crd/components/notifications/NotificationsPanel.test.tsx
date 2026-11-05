@@ -34,7 +34,7 @@ describe('NotificationsPanel — full screen on a small screen', () => {
 
   const closeButtons = () => screen.getAllByRole('button', { name: 'notifications.close' });
 
-  it('is pinned to the edges and closes from a single back arrow', async () => {
+  it('is pinned to the edges and keeps its corner close button', async () => {
     screenSize.isSmallScreen = true;
     const onClose = renderPanel();
 
@@ -42,9 +42,10 @@ describe('NotificationsPanel — full screen on a small screen', () => {
     expect(dialog).toHaveClass('inset-0', 'translate-x-0', 'translate-y-0', 'border-none');
     expect(dialog).not.toHaveClass('top-[50%]', 'left-[50%]');
 
-    // The arrow replaces the corner close button instead of sitting beside it.
+    // Same close control as the chat panel and as above a small screen: an X, not a back arrow.
     expect(closeButtons()).toHaveLength(1);
-    expect(closeButtons()[0].querySelector('.lucide-chevron-left')).not.toBeNull();
+    expect(closeButtons()[0].querySelector('.lucide-x')).not.toBeNull();
+    expect(dialog.querySelector('.lucide-chevron-left')).toBeNull();
     await userEvent.click(closeButtons()[0]);
     expect(onClose).toHaveBeenCalledOnce();
   });

@@ -1,4 +1,4 @@
-import { BellOff, ChevronLeft, MailOpen, Settings } from 'lucide-react';
+import { BellOff, MailOpen, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { NotificationItem } from '@/crd/components/notifications/NotificationItem';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
@@ -71,29 +71,10 @@ export function NotificationsPanel({
           isSmallScreen && 'inset-0 translate-x-0 translate-y-0 border-none'
         )}
         closeLabel={t('notifications.close')}
-        hideClose={isSmallScreen}
       >
         {/* Header */}
-        <div
-          className={cn(
-            'flex items-center justify-between pt-[10px] pb-3 border-b border-border bg-muted/30',
-            isSmallScreen ? 'pl-2 pr-4' : 'pl-4 pr-10'
-          )}
-        >
-          <div className="flex min-w-0 items-center gap-1">
-            {isSmallScreen && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-8 shrink-0 text-muted-foreground"
-                aria-label={t('notifications.close')}
-                onClick={onClose}
-              >
-                <ChevronLeft aria-hidden="true" className="size-5" />
-              </Button>
-            )}
-            <DialogTitle className="text-card-title">{t('notifications.title')}</DialogTitle>
-          </div>
+        <div className="flex items-center justify-between pl-4 pr-10 pt-[10px] pb-3 border-b border-border bg-muted/30">
+          <DialogTitle className="text-card-title">{t('notifications.title')}</DialogTitle>
           <div className="flex items-center gap-1">
             <Button
               variant="ghost"
