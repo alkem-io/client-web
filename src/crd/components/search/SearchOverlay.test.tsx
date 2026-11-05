@@ -2,11 +2,12 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { handleAppBack } from '@/core/appMode/appBack';
 import { SearchOverlay } from './SearchOverlay';
+import type { SearchScopeData } from './SearchTagInput';
 
 const screenSize = { isSmallScreen: false, isMediumScreen: false, isLargeScreen: true };
 vi.mock('@/crd/hooks/useMediaQuery', () => ({ useScreenSize: () => screenSize }));
 
-const renderOverlay = (onClose = vi.fn()) => {
+const renderOverlay = (onClose = vi.fn(), scope?: SearchScopeData) => {
   render(
     <SearchOverlay
       isOpen={true}
@@ -18,6 +19,8 @@ const renderOverlay = (onClose = vi.fn()) => {
       onTagAdd={() => {}}
       onTagRemove={() => {}}
       maxTags={5}
+      scope={scope}
+      onScopeChange={() => {}}
       categories={[]}
       disclaimer=""
       noResultsTerms=""
@@ -100,11 +103,13 @@ describe('SearchOverlay — full screen on a small screen', () => {
 
   it('keeps the input usable by wrapping the scope chip to its own line', () => {
     screenSize.isSmallScreen = true;
-    renderOverlay();
+    renderOverlay(vi.fn(), { currentSpaceName: 'Space A', activeScope: 'Space A' });
 
     const input = screen.getByRole('textbox');
     expect(input).toHaveClass('min-w-40');
-    expect(input.parentElement).toHaveClass('flex-wrap');
+    const row = input.parentElement as HTMLElement;
+    expect(row).toHaveClass('flex-wrap');
+    expect(row.querySelector('button[aria-haspopup="menu"]')).toHaveClass('max-w-full');
   });
 
   it('stays a card with its close button above a small screen', () => {
