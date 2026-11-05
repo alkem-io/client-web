@@ -176,6 +176,7 @@ describe('LinkContributionDialog — create mode', () => {
 
     pick(fileInputs()[0], [pdf('a.pdf')]);
     await user.click(screen.getByRole('button', { name: 'dialogs.cancel' }));
+    await user.click(screen.getByRole('button', { name: 'dialogs.discardChanges.confirm' }));
     expect(onOpenChange).toHaveBeenCalledWith(false);
     rerenderOpen(false);
     rerenderOpen(true);
@@ -183,6 +184,11 @@ describe('LinkContributionDialog — create mode', () => {
     for (const clip of paperclips()) expect(clip).toBeDisabled();
     expect(createButton()).toBeDisabled();
     expect(screen.getByRole('button', { name: 'dialogs.cancel' })).toBeEnabled();
+
+    onOpenChange.mockClear();
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('button', { name: 'dialogs.discardChanges.confirm' })).not.toBeInTheDocument();
+    expect(onOpenChange).toHaveBeenCalledWith(false);
 
     await act(async () => calls[0].resolve('https://cdn/a'));
 
@@ -282,6 +288,22 @@ describe('LinkContributionDialog — create mode', () => {
     expect(urlInputs()[0]).toHaveValue('https://cdn/a');
   });
 
+  test('Escape before a one-file upload settles asks to discard; keeping the dialog keeps the upload', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    const { onOpenChange } = renderCreate(upload);
+
+    pick(fileInputs()[0], [pdf('a.pdf')]);
+    await user.keyboard('{Escape}');
+
+    expect(onOpenChange).not.toHaveBeenCalled();
+    await user.click(screen.getByRole('button', { name: 'dialogs.discardChanges.cancel' }));
+    expect(onOpenChange).not.toHaveBeenCalled();
+
+    await act(async () => calls[0].resolve('https://cdn/a'));
+    expect(urlInputs()[0]).toHaveValue('https://cdn/a');
+  });
+
   test('confirming Discard while a multi pick uploads closes the dialog and starts no queued file', async () => {
     const user = userEvent.setup();
     const { upload } = createControlledUpload();
@@ -324,11 +346,12 @@ describe('LinkContributionDialog — edit mode', () => {
     initialValues: { url: string; displayName: string },
     saving?: boolean
   ) => {
+    const onOpenChange = vi.fn();
     const element = (open: boolean, values: { url: string; displayName: string }) => (
       <LinkContributionDialog
         mode="edit"
         open={open}
-        onOpenChange={vi.fn()}
+        onOpenChange={onOpenChange}
         onSubmit={vi.fn()}
         initialValues={{ ...values, description: '' }}
         onFileUpload={onFileUpload}
@@ -337,6 +360,7 @@ describe('LinkContributionDialog — edit mode', () => {
     );
     const utils = render(element(true, initialValues));
     return {
+      onOpenChange,
       rerenderWith: (open: boolean, values: { url: string; displayName: string }) =>
         utils.rerender(element(open, values)),
     };
@@ -401,6 +425,29 @@ describe('LinkContributionDialog — edit mode', () => {
     await act(async () => calls[0].resolve('https://cdn/new'));
     expect(saveButton()).toBeEnabled();
     expect(paperclip()).toBeEnabled();
+  });
+
+  test('Escape before the upload settles asks to discard; confirming closes and the late result writes nothing', async () => {
+    const user = userEvent.setup();
+    const { upload, calls } = createControlledUpload();
+    const link = { url: 'https://old', displayName: 'Old' };
+    const { onOpenChange, rerenderWith } = renderEdit(upload, link);
+
+    pick(fileInputs()[0], [pdf('new.pdf')]);
+    await user.keyboard('{Escape}');
+    expect(onOpenChange).not.toHaveBeenCalled();
+    await user.click(screen.getByRole('button', { name: 'dialogs.discardChanges.confirm' }));
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+
+    rerenderWith(false, link);
+    rerenderWith(true, link);
+    onOpenChange.mockClear();
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('button', { name: 'dialogs.discardChanges.confirm' })).not.toBeInTheDocument();
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+
+    await act(async () => calls[0].resolve('https://cdn/new'));
+    expect(screen.getByLabelText('callout.linkUrlLabel')).toHaveValue('https://old');
   });
 
   test('with saving, the paperclip is disabled', () => {

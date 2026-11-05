@@ -102,7 +102,8 @@ function LinkCreateDialog({
     justAddedRowId.current = undefined;
   }, [rows.length]);
 
-  const isDirty = rows.some(r => r.url.trim() || r.description.trim()) || uploads.pending.length > 0;
+  const isDirty =
+    rows.some(r => r.url.trim() || r.description.trim() || uploadingIds.has(r.id)) || uploads.pending.length > 0;
 
   const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
     isDirty,
@@ -375,6 +376,8 @@ function LinkEditDialog({
   const [urlError, setUrlError] = useState<string | undefined>();
   const [nameError, setNameError] = useState<string | undefined>();
   const [uploading, setUploading] = useState(false);
+  // An upload picked in an earlier open writes nothing here, so only one picked since this open is unsaved input.
+  const [uploadingSinceOpen, setUploadingSinceOpen] = useState(false);
   // Renewed on every open, so an upload that resolves after the dialog was reopened (possibly for
   // another link) can tell it no longer belongs to this form.
   const rowIdRef = useRef<string>(newRowId());
@@ -387,12 +390,14 @@ function LinkEditDialog({
     setDescription(initialValues?.description ?? '');
     setUrlError(undefined);
     setNameError(undefined);
+    setUploadingSinceOpen(false);
   }, [open, initialValues?.url, initialValues?.displayName, initialValues?.description]);
 
   const handleFile = async (file: File | undefined) => {
     if (!file || !onFileUpload) return;
     const openCycle = rowIdRef.current;
     setUploading(true);
+    setUploadingSinceOpen(true);
     try {
       const uploadedUrl = await onFileUpload(file);
       if (uploadedUrl && rowIdRef.current === openCycle) {
@@ -403,10 +408,12 @@ function LinkEditDialog({
       }
     } finally {
       setUploading(false);
+      setUploadingSinceOpen(false);
     }
   };
 
   const isDirty =
+    uploadingSinceOpen ||
     url !== (initialValues?.url ?? '') ||
     displayName !== (initialValues?.displayName ?? '') ||
     description !== (initialValues?.description ?? '');
