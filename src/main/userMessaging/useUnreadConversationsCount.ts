@@ -25,15 +25,13 @@ export const useUnreadConversationsCount = () => {
     fetchPolicy: 'cache-first',
   });
 
-  // Counts conversations with unread messages or a call the user is not in, not
+  // Counts conversations with unread messages or a call the user has not dealt with yet, not
   // messages; the per-room counts come from Matrix sync, the conversation list from GraphQL.
   const roomIds = (data?.me?.conversations?.conversations ?? []).flatMap(conv => (conv.room ? [conv.room.id] : []));
   const summaries = useConversationSummaries(roomIds);
   const incomingCallRooms = useIncomingCallRooms();
   const totalUnreadCount = roomIds.filter(
-    roomId =>
-      displayedUnreadCount(summaries, roomId, selectedRoomId) > 0 ||
-      (incomingCallRooms.has(roomId) && roomId !== selectedRoomId)
+    roomId => displayedUnreadCount(summaries, roomId, selectedRoomId) > 0 || incomingCallRooms.has(roomId)
   ).length;
 
   return totalUnreadCount;
