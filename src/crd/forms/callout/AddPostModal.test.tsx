@@ -243,7 +243,7 @@ describe('AddPostModal — FR-72 notify-members slot', () => {
 });
 
 describe('AddPostModal — More options', () => {
-  test('collapsing hides the options without unmounting them, so their in-progress work survives', async () => {
+  test('the options mount on first expansion, and collapsing hides them without unmounting, so their in-progress work survives', async () => {
     const user = userEvent.setup();
     const mounts = vi.fn();
     const unmounts = vi.fn();
@@ -257,7 +257,8 @@ describe('AddPostModal — More options', () => {
     render(<AddPostModal {...baseProps} moreOptionsSlot={<Options />} />);
     const toggle = screen.getByRole('button', { name: 'forms.moreOptions' });
 
-    expect(screen.getByText('options-content')).not.toBeVisible();
+    expect(screen.queryByText('options-content')).not.toBeInTheDocument();
+    expect(mounts).not.toHaveBeenCalled();
     await user.click(toggle);
     expect(toggle).toHaveAttribute('aria-expanded', 'true');
     expect(screen.getByText('options-content')).toBeVisible();

@@ -92,6 +92,8 @@ export function AddPostModal({
 }: AddPostModalProps) {
   const { t } = useTranslation('crd-space');
   const [moreOpen, setMoreOpen] = useState(false);
+  // Mounted on first expansion and kept mounted after, so a collapse never drops its running uploads.
+  const [moreMounted, setMoreMounted] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
   const blockedHintId = useId();
 
@@ -242,7 +244,10 @@ export function AddPostModal({
                 <button
                   type="button"
                   className="w-full flex items-center justify-between p-2 hover:bg-muted/50 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  onClick={() => setMoreOpen(v => !v)}
+                  onClick={() => {
+                    setMoreOpen(v => !v);
+                    setMoreMounted(true);
+                  }}
                   aria-expanded={moreOpen}
                 >
                   <div className="flex items-center gap-2 text-muted-foreground">
@@ -254,9 +259,11 @@ export function AddPostModal({
                     aria-hidden="true"
                   />
                 </button>
-                <div hidden={!moreOpen} className="space-y-4 pt-2 px-2">
-                  {moreOptionsSlot}
-                </div>
+                {moreMounted && (
+                  <div hidden={!moreOpen} className="space-y-4 pt-2 px-2">
+                    {moreOptionsSlot}
+                  </div>
+                )}
               </div>
             </>
           )}
