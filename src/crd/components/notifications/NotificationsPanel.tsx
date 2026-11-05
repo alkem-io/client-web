@@ -1,7 +1,9 @@
-import { BellOff, MailOpen, Settings } from 'lucide-react';
+import { BellOff, ChevronLeft, MailOpen, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { NotificationItem } from '@/crd/components/notifications/NotificationItem';
+import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import type { CrdNotificationFilter, CrdNotificationItemData } from '@/crd/layouts/types';
+import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
 import { Skeleton } from '@/crd/primitives/skeleton';
@@ -55,6 +57,7 @@ export function NotificationsPanel({
   onArchive,
 }: NotificationsPanelProps) {
   const { t } = useTranslation('crd-notifications');
+  const { isSmallScreen } = useScreenSize();
 
   const showEmpty = items.length === 0 && !loading;
   const showSkeletons = loading && items.length === 0;
@@ -62,12 +65,35 @@ export function NotificationsPanel({
   return (
     <Dialog open={open} onOpenChange={isOpen => !isOpen && onClose()}>
       <DialogContent
-        className="max-w-none h-[100dvh] sm:h-[560px] md:h-[600px] sm:max-w-lg md:max-w-xl rounded-none sm:rounded-lg p-0 gap-0 overflow-hidden flex flex-col"
+        className={cn(
+          'max-w-none h-[100dvh] sm:h-[560px] md:h-[600px] sm:max-w-lg md:max-w-xl rounded-none sm:rounded-lg p-0 gap-0 overflow-hidden flex flex-col',
+          // Full screen on a small screen, like the chat panel: pinned to the edges, no panel border.
+          isSmallScreen && 'inset-0 translate-x-0 translate-y-0 border-none'
+        )}
         closeLabel={t('notifications.close')}
+        hideClose={isSmallScreen}
       >
         {/* Header */}
-        <div className="flex items-center justify-between pl-4 pr-10 pt-[10px] pb-3 border-b border-border bg-muted/30">
-          <DialogTitle className="text-card-title">{t('notifications.title')}</DialogTitle>
+        <div
+          className={cn(
+            'flex items-center justify-between pt-[10px] pb-3 border-b border-border bg-muted/30',
+            isSmallScreen ? 'pl-2 pr-4' : 'pl-4 pr-10'
+          )}
+        >
+          <div className="flex min-w-0 items-center gap-1">
+            {isSmallScreen && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8 shrink-0 text-muted-foreground"
+                aria-label={t('notifications.close')}
+                onClick={onClose}
+              >
+                <ChevronLeft aria-hidden="true" className="size-5" />
+              </Button>
+            )}
+            <DialogTitle className="text-card-title">{t('notifications.title')}</DialogTitle>
+          </div>
           <div className="flex items-center gap-1">
             <Button
               variant="ghost"
