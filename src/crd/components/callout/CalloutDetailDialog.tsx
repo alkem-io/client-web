@@ -173,7 +173,7 @@ export function CalloutDetailDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         overlayClassName={overlayClassName}
-        hideClose={focusedPost}
+        hideClose={true}
         className={cn(
           'w-full p-0 gap-0 overflow-hidden flex flex-col bg-background border-none shadow-2xl',
           // Full screen on a small screen, like the chat panel. Above that, focused

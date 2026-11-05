@@ -101,8 +101,10 @@ describe('CalloutDetailDialog — full screen on a small screen', () => {
     expect(dialog).toHaveClass('inset-0', 'max-w-none', 'translate-x-0', 'translate-y-0', 'rounded-none');
     expect(dialog).not.toHaveClass('top-[50%]', 'left-[50%]', 'h-[95vh]', 'rounded-xl');
 
-    // The arrow replaces the close button instead of sitting beside it.
+    // The arrow replaces the close button instead of sitting beside it, including the
+    // primitive's unnamed X, which the header would hide from sight but not from focus.
     expect(closeButton().querySelector('.lucide-chevron-left')).not.toBeNull();
+    expect(dialog.querySelector('.lucide-x')).toBeNull();
     await userEvent.click(closeButton());
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
@@ -124,6 +126,7 @@ describe('CalloutDetailDialog — full screen on a small screen', () => {
     expect(dialog).toHaveClass('top-[50%]', 'left-[50%]', 'h-[95vh]', 'sm:max-w-5xl', 'rounded-xl');
     expect(dialog).not.toHaveClass('inset-0');
     expect(closeButton().querySelector('.lucide-x')).not.toBeNull();
+    expect(dialog.querySelectorAll('.lucide-x')).toHaveLength(1);
   });
 
   it('keeps focused mode a capped box without a back arrow above a small screen', () => {
