@@ -26,7 +26,7 @@ import type {
 import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
 import { MAX_BANNER_ASPECT_RATIO, MIN_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { errorMessage, type TabUnsavedChanges } from '@/main/crdPages/utils/tabUnsavedChanges';
+import { errorMessage, type TabUnsavedChanges, useUploadGate } from '@/main/crdPages/utils/tabUnsavedChanges';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { buildPreviewCard, mapClassificationEntries, mapSpaceToAboutFormValues } from './aboutMapper';
 
@@ -147,6 +147,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const { t } = useTranslation('crd-spaceSettings');
+  const withUploadGate = useUploadGate();
   const notify = useNotification();
 
   const [updateSpace] = useUpdateSpaceMutation();
@@ -765,15 +766,17 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     onReferenceFileUpload,
     referenceUploadAccept,
     untitledReferenceIds,
-    unsaved: {
-      count: unsavedCount,
-      canSave: untitledReferenceIds.length === 0 && !referenceUploading,
-      saveBlockedReason: referenceUploading ? t('fileSelection.saveBlocked', { ns: 'crd-common' }) : undefined,
-      saving,
-      error: saveError,
-      saveAll,
-      reset,
-    },
+    unsaved: withUploadGate(
+      {
+        count: unsavedCount,
+        canSave: untitledReferenceIds.length === 0,
+        saving,
+        error: saveError,
+        saveAll,
+        reset,
+      },
+      referenceUploading
+    ),
     classifications,
     unsavedClassificationIds: stagedAdds.map(add => add.tempId),
     addClassificationFromTemplate,

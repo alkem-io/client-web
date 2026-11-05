@@ -16,7 +16,9 @@ const unsaved: TabUnsavedChanges = {
 };
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string, options?: { ns?: string }) => `${options?.ns ?? 'tab'}:${key}` }),
+  useTranslation: (ns?: string) => ({
+    t: (key: string, options?: { ns?: string }) => `${options?.ns ?? ns ?? 'tab'}:${key}`,
+  }),
 }));
 vi.mock('@/main/crdPages/markdown/MarkdownUploadScope', () => ({
   MarkdownUploadScope: ({ children }: { children: (upload: undefined) => React.ReactNode }) => children(undefined),

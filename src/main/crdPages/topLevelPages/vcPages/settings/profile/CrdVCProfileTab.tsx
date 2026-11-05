@@ -9,6 +9,7 @@ import type {
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import useStorageConfig from '@/domain/storage/StorageBucket/useStorageConfig';
 import { MarkdownUploadScope } from '@/main/crdPages/markdown/MarkdownUploadScope';
+import { useUploadGate } from '@/main/crdPages/utils/tabUnsavedChanges';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSettingsTabUnsavedChanges } from '../../../common/settingsUnsavedChanges';
@@ -50,13 +51,8 @@ const CrdVCProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUplo
     skip: !vcId,
   });
   const referenceUpload = useReferenceFileUpload(storageConfig);
-  useSettingsTabUnsavedChanges({
-    ...data.unsaved,
-    canSave: data.unsaved.canSave && !referenceUpload.uploading,
-    saveBlockedReason: referenceUpload.uploading
-      ? t('fileSelection.saveBlocked', { ns: 'crd-common' })
-      : data.unsaved.saveBlockedReason,
-  });
+  const withUploadGate = useUploadGate();
+  useSettingsTabUnsavedChanges(withUploadGate(data.unsaved, referenceUpload.uploading));
 
   // Read-only metadata rows: host + body-of-knowledge description. The host
   // comes from the separate `useVirtualContributorProviderQuery`; the BoK

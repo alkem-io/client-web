@@ -5,6 +5,7 @@ import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import useStorageConfig from '@/domain/storage/StorageBucket/useStorageConfig';
 import { MarkdownUploadScope } from '@/main/crdPages/markdown/MarkdownUploadScope';
+import { useUploadGate } from '@/main/crdPages/utils/tabUnsavedChanges';
 import { useCityOptions } from '@/main/crdPages/utils/useCityOptions';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { useSettingsTabUnsavedChanges } from '../../../common/settingsUnsavedChanges';
@@ -46,13 +47,8 @@ const CrdUserProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUp
   // to `file_backup_outbox`, issue #10126).
   const { storageConfig } = useStorageConfig({ locationType: 'user', userId: userId ?? '', skip: !userId });
   const referenceUpload = useReferenceFileUpload(storageConfig);
-  useSettingsTabUnsavedChanges({
-    ...data.unsaved,
-    canSave: data.unsaved.canSave && !referenceUpload.uploading,
-    saveBlockedReason: referenceUpload.uploading
-      ? t('fileSelection.saveBlocked', { ns: 'crd-common' })
-      : data.unsaved.saveBlockedReason,
-  });
+  const withUploadGate = useUploadGate();
+  useSettingsTabUnsavedChanges(withUploadGate(data.unsaved, referenceUpload.uploading));
   const cities = useCityOptions();
 
   return (

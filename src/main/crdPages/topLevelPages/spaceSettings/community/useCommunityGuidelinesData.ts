@@ -6,6 +6,7 @@ import type {
 } from '@/crd/components/space/settings/CommunityGuidelinesEditor';
 import useCommunityGuidelines from '@/domain/community/community/CommunityGuidelines/useCommunityGuidelines';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useUploadGate } from '@/main/crdPages/utils/tabUnsavedChanges';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 
 export type UseCommunityGuidelinesDataResult = {
@@ -62,6 +63,7 @@ export function useCommunityGuidelinesData(
     accept: referenceUploadAccept,
     uploading: referenceUploading,
   } = useReferenceFileUpload(useStorageConfigContext());
+  const withUploadGate = useUploadGate();
 
   const serverValue: CommunityGuidelinesEditorValue = communityGuidelines
     ? {
@@ -152,7 +154,7 @@ export function useCommunityGuidelinesData(
     loading: loading && !communityGuidelines,
     submitting,
     isDirty,
-    canSave: !!communityGuidelinesId && isDirty && !submitting && !referenceUploading,
+    canSave: withUploadGate({ canSave: !!communityGuidelinesId && isDirty && !submitting }, referenceUploading).canSave,
     onChange,
     onSave,
     onReset: () => {
