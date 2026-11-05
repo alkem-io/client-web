@@ -98,6 +98,15 @@ describe('SearchOverlay — full screen on a small screen', () => {
     expect(onClose).toHaveBeenCalledOnce();
   });
 
+  it('keeps the input usable by wrapping the scope chip to its own line', () => {
+    screenSize.isSmallScreen = true;
+    renderOverlay();
+
+    const input = screen.getByRole('textbox');
+    expect(input).toHaveClass('min-w-40');
+    expect(input.parentElement).toHaveClass('flex-wrap');
+  });
+
   it('stays a card with its close button above a small screen', () => {
     renderOverlay();
 
@@ -105,5 +114,6 @@ describe('SearchOverlay — full screen on a small screen', () => {
     expect(dialog).toHaveClass('border', 'rounded-xl');
     expect(icon('x')).not.toBeNull();
     expect(icon('chevron-left')).toBeNull();
+    expect(screen.getByRole('textbox').parentElement).not.toHaveClass('flex-wrap');
   });
 });

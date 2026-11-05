@@ -67,7 +67,8 @@ export function SearchTagInput({
       )}
     >
       {/* Row 1: Input row */}
-      <div className="flex items-center gap-3">
+      {/* On a small screen the scope chip wraps to its own line rather than squeezing the input. */}
+      <div className={cn('flex items-center gap-3', isSmallScreen && 'flex-wrap')}>
         {/* Full screen on a small screen: the back arrow leads the row and stands in for the close button. */}
         {isSmallScreen ? (
           <button
@@ -89,7 +90,10 @@ export function SearchTagInput({
           onKeyDown={handleKeyDown}
           placeholder={t('search.placeholder')}
           aria-label={t('search.a11y.searchInput')}
-          className="min-w-0 flex-1 bg-transparent outline-none text-subheader md:text-body text-foreground placeholder:text-muted-foreground"
+          className={cn(
+            'flex-1 bg-transparent outline-none text-subheader md:text-body text-foreground placeholder:text-muted-foreground',
+            isSmallScreen && 'min-w-40'
+          )}
         />
 
         {/* Scope dropdown */}
@@ -104,16 +108,17 @@ export function SearchTagInput({
                 className={cn(
                   'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-control whitespace-nowrap shrink-0 border border-primary',
                   'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  'bg-primary text-primary-foreground'
+                  'bg-primary text-primary-foreground',
+                  isSmallScreen && 'max-w-full'
                 )}
               >
-                <Globe aria-hidden="true" className="size-3.5" />
-                <span>
+                <Globe aria-hidden="true" className="size-3.5 shrink-0" />
+                <span className="truncate">
                   {t('search.scopeTriggerLabel', {
                     option: scope.activeScope === 'all' ? t('search.scopeAll') : scope.currentSpaceName,
                   })}
                 </span>
-                <ChevronDown aria-hidden="true" className="size-3.5" />
+                <ChevronDown aria-hidden="true" className="size-3.5 shrink-0" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
