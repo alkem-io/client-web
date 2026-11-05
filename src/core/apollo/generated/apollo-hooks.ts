@@ -19974,6 +19974,7 @@ export const PlatformAdminInnovationPacksDocument = gql`
       }
       listedInStore
       searchVisibility
+      promote
       provider {
         id
         profile {
@@ -20060,6 +20061,60 @@ export function refetchPlatformAdminInnovationPacksQuery(
 ) {
   return { query: PlatformAdminInnovationPacksDocument, variables: variables };
 }
+export const AdminUpdateInnovationPackPromoteDocument = gql`
+    mutation AdminUpdateInnovationPackPromote($innovationPackId: UUID!, $promote: Boolean!) {
+  adminUpdateInnovationPackPromote(
+    promoteData: {innovationPackID: $innovationPackId, promote: $promote}
+  ) {
+    id
+    promote
+  }
+}
+    `;
+export type AdminUpdateInnovationPackPromoteMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AdminUpdateInnovationPackPromoteMutation,
+  SchemaTypes.AdminUpdateInnovationPackPromoteMutationVariables
+>;
+
+/**
+ * __useAdminUpdateInnovationPackPromoteMutation__
+ *
+ * To run a mutation, you first call `useAdminUpdateInnovationPackPromoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminUpdateInnovationPackPromoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminUpdateInnovationPackPromoteMutation, { data, loading, error }] = useAdminUpdateInnovationPackPromoteMutation({
+ *   variables: {
+ *      innovationPackId: // value for 'innovationPackId'
+ *      promote: // value for 'promote'
+ *   },
+ * });
+ */
+export function useAdminUpdateInnovationPackPromoteMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AdminUpdateInnovationPackPromoteMutation,
+    SchemaTypes.AdminUpdateInnovationPackPromoteMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AdminUpdateInnovationPackPromoteMutation,
+    SchemaTypes.AdminUpdateInnovationPackPromoteMutationVariables
+  >(AdminUpdateInnovationPackPromoteDocument, options);
+}
+export type AdminUpdateInnovationPackPromoteMutationHookResult = ReturnType<
+  typeof useAdminUpdateInnovationPackPromoteMutation
+>;
+export type AdminUpdateInnovationPackPromoteMutationResult =
+  Apollo.MutationResult<SchemaTypes.AdminUpdateInnovationPackPromoteMutation>;
+export type AdminUpdateInnovationPackPromoteMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AdminUpdateInnovationPackPromoteMutation,
+  SchemaTypes.AdminUpdateInnovationPackPromoteMutationVariables
+>;
 export const LicensingAdminOrganizationsDocument = gql`
     query licensingAdminOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
   platformAdmin {
@@ -20164,6 +20219,7 @@ export const LicensingAdminSpacesDocument = gql`
     spaces(filter: {visibilities: [ACTIVE, DEMO, INACTIVE, ARCHIVED]}) {
       id
       visibility
+      promote
       subscriptions {
         name
       }
@@ -20662,6 +20718,55 @@ export type AdminUpdateSpaceNameIdMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AdminUpdateSpaceNameIdMutation,
   SchemaTypes.AdminUpdateSpaceNameIdMutationVariables
 >;
+export const AdminUpdateSpacePromoteDocument = gql`
+    mutation AdminUpdateSpacePromote($spaceId: UUID!, $promote: Boolean!) {
+  adminUpdateSpacePromote(promoteData: {spaceID: $spaceId, promote: $promote}) {
+    id
+    promote
+  }
+}
+    `;
+export type AdminUpdateSpacePromoteMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AdminUpdateSpacePromoteMutation,
+  SchemaTypes.AdminUpdateSpacePromoteMutationVariables
+>;
+
+/**
+ * __useAdminUpdateSpacePromoteMutation__
+ *
+ * To run a mutation, you first call `useAdminUpdateSpacePromoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminUpdateSpacePromoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminUpdateSpacePromoteMutation, { data, loading, error }] = useAdminUpdateSpacePromoteMutation({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      promote: // value for 'promote'
+ *   },
+ * });
+ */
+export function useAdminUpdateSpacePromoteMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AdminUpdateSpacePromoteMutation,
+    SchemaTypes.AdminUpdateSpacePromoteMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AdminUpdateSpacePromoteMutation,
+    SchemaTypes.AdminUpdateSpacePromoteMutationVariables
+  >(AdminUpdateSpacePromoteDocument, options);
+}
+export type AdminUpdateSpacePromoteMutationHookResult = ReturnType<typeof useAdminUpdateSpacePromoteMutation>;
+export type AdminUpdateSpacePromoteMutationResult = Apollo.MutationResult<SchemaTypes.AdminUpdateSpacePromoteMutation>;
+export type AdminUpdateSpacePromoteMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AdminUpdateSpacePromoteMutation,
+  SchemaTypes.AdminUpdateSpacePromoteMutationVariables
+>;
 export const AdminUpdateSpaceVisibilityDocument = gql`
     mutation AdminUpdateSpaceVisibility($spaceId: UUID!, $visibility: SpaceVisibility!) {
   adminUpdateSpaceVisibility(
@@ -20829,6 +20934,7 @@ export const PlatformAdminSpacesListDocument = gql`
       id
       nameID
       visibility
+      promote
       about {
         id
         profile {
@@ -21472,6 +21578,60 @@ export type PlatformAdminUsersListQueryResult = Apollo.QueryResult<
 export function refetchPlatformAdminUsersListQuery(variables: SchemaTypes.PlatformAdminUsersListQueryVariables) {
   return { query: PlatformAdminUsersListDocument, variables: variables };
 }
+export const AdminUpdateVirtualContributorPromoteDocument = gql`
+    mutation AdminUpdateVirtualContributorPromote($virtualContributorId: UUID!, $promote: Boolean!) {
+  adminUpdateVirtualContributorPromote(
+    promoteData: {virtualContributorID: $virtualContributorId, promote: $promote}
+  ) {
+    id
+    promote
+  }
+}
+    `;
+export type AdminUpdateVirtualContributorPromoteMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AdminUpdateVirtualContributorPromoteMutation,
+  SchemaTypes.AdminUpdateVirtualContributorPromoteMutationVariables
+>;
+
+/**
+ * __useAdminUpdateVirtualContributorPromoteMutation__
+ *
+ * To run a mutation, you first call `useAdminUpdateVirtualContributorPromoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminUpdateVirtualContributorPromoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminUpdateVirtualContributorPromoteMutation, { data, loading, error }] = useAdminUpdateVirtualContributorPromoteMutation({
+ *   variables: {
+ *      virtualContributorId: // value for 'virtualContributorId'
+ *      promote: // value for 'promote'
+ *   },
+ * });
+ */
+export function useAdminUpdateVirtualContributorPromoteMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AdminUpdateVirtualContributorPromoteMutation,
+    SchemaTypes.AdminUpdateVirtualContributorPromoteMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AdminUpdateVirtualContributorPromoteMutation,
+    SchemaTypes.AdminUpdateVirtualContributorPromoteMutationVariables
+  >(AdminUpdateVirtualContributorPromoteDocument, options);
+}
+export type AdminUpdateVirtualContributorPromoteMutationHookResult = ReturnType<
+  typeof useAdminUpdateVirtualContributorPromoteMutation
+>;
+export type AdminUpdateVirtualContributorPromoteMutationResult =
+  Apollo.MutationResult<SchemaTypes.AdminUpdateVirtualContributorPromoteMutation>;
+export type AdminUpdateVirtualContributorPromoteMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AdminUpdateVirtualContributorPromoteMutation,
+  SchemaTypes.AdminUpdateVirtualContributorPromoteMutationVariables
+>;
 export const PlatformAdminVirtualContributorsListDocument = gql`
     query platformAdminVirtualContributorsList {
   platformAdmin {
@@ -21479,6 +21639,7 @@ export const PlatformAdminVirtualContributorsListDocument = gql`
       id
       listedInStore
       searchVisibility
+      promote
       account {
         id
         host {

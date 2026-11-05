@@ -43,7 +43,9 @@
     "listedHeader": "Répertorié dans la boutique",
     "visibilityHeader": "Visibilité de recherche",
     "ownerHeader": "Propriétaire du compte",
-    "spaceVisibility": "Visibilité"
+    "spaceVisibility": "Visibilité",
+    "promoteHeader": "Promouvoir",
+    "promoteOf": "Promouvoir {{name}}"
   },
   "licensePlans": {
     "active": "Actif",

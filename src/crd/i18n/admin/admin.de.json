@@ -43,7 +43,9 @@
     "listedHeader": "Im Store gelistet",
     "visibilityHeader": "Suchsichtbarkeit",
     "ownerHeader": "Kontoinhaber",
-    "spaceVisibility": "Sichtbarkeit"
+    "spaceVisibility": "Sichtbarkeit",
+    "promoteHeader": "Hervorheben",
+    "promoteOf": "{{name}} hervorheben"
   },
   "licensePlans": {
     "active": "Aktiv",

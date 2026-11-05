@@ -1,0 +1,8 @@
+mutation AdminUpdateVirtualContributorPromote($virtualContributorId: UUID!, $promote: Boolean!) {
+  adminUpdateVirtualContributorPromote(
+    promoteData: { virtualContributorID: $virtualContributorId, promote: $promote }
+  ) {
+    id
+    promote
+  }
+}
