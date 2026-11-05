@@ -46,6 +46,10 @@ describe('NotificationsPanel — full screen on a small screen', () => {
     expect(closeButtons()).toHaveLength(1);
     expect(closeButtons()[0].querySelector('.lucide-x')).not.toBeNull();
     expect(dialog.querySelector('.lucide-chevron-left')).toBeNull();
+    // The same target as the chat panel's X, not the dialog primitive's bare icon.
+    expect(closeButtons()[0]).toHaveClass('size-9');
+    expect(closeButtons()[0].querySelector('svg')).toHaveClass('size-6');
+    expect(screen.getByRole('button', { name: 'notifications.markAllRead' })).toHaveClass('size-9');
     await userEvent.click(closeButtons()[0]);
     expect(onClose).toHaveBeenCalledOnce();
   });
@@ -58,6 +62,7 @@ describe('NotificationsPanel — full screen on a small screen', () => {
     expect(dialog).not.toHaveClass('inset-0');
     expect(closeButtons()).toHaveLength(1);
     expect(closeButtons()[0].querySelector('.lucide-x')).not.toBeNull();
+    expect(closeButtons()[0]).toHaveClass('size-9');
     expect(dialog.querySelector('.lucide-chevron-left')).toBeNull();
   });
 });
