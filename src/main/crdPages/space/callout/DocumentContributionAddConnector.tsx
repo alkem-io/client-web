@@ -191,7 +191,7 @@ export function DocumentContributionAddConnector({
       return t('callout.documentImportErrorUnsupported', { formats: formatList });
     }
     if (code === 'STORAGE_SERVICE_UNAVAILABLE') return t('callout.documentImportErrorServiceUnavailable');
-    logError(new Error('Document contribution import failed', { cause: err as Error }));
+    if (!code) logError(new Error('Document contribution import failed', { cause: err as Error }));
     return t('callout.documentImportFailed');
   };
 

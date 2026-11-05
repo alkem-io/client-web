@@ -29,6 +29,11 @@ vi.mock('@/core/ui/notifications/useNotification', () => ({
   useNotification: () => notifyMock,
 }));
 
+const logErrorMock = vi.fn();
+vi.mock('@/core/logging/sentry/log', () => ({
+  error: (...args: unknown[]) => logErrorMock(...args),
+}));
+
 // The just-created editor pulls a contribution via Apollo — stub it out so the
 // connector's own behaviour is what's under test, not the overlay's data layer.
 vi.mock('./DocumentContributionConnector', () => ({
@@ -414,7 +419,7 @@ describe('DocumentContributionAddConnector — multi-file import', () => {
     ['FORMAT_NOT_SUPPORTED', 'callout.documentImportErrorUnsupported'],
     ['STORAGE_UPLOAD_FAILED', 'callout.documentImportFailed'],
     ['STORAGE_SERVICE_UNAVAILABLE', 'callout.documentImportErrorServiceUnavailable'],
-  ])('a batch file rejected with %s is listed with %s and raises no toast', async (code, message) => {
+  ])('a batch file rejected with %s is listed with %s and raises no toast or error report', async (code, message) => {
     const user = userEvent.setup();
     const { calls } = controlImports();
 
@@ -428,6 +433,20 @@ describe('DocumentContributionAddConnector — multi-file import', () => {
     expect(screen.queryByText('b.docx')).not.toBeInTheDocument();
     expect(screen.queryByText('callout.documentImportErrorTooLarge')).not.toBeInTheDocument();
     expect(notifyMock).not.toHaveBeenCalled();
+    expect(logErrorMock).not.toHaveBeenCalled();
+  });
+
+  test('a batch file failing for an unhandled reason gets the generic message and is reported', async () => {
+    const user = userEvent.setup();
+    const { calls } = controlImports();
+
+    render(<DocumentContributionAddConnector {...baseProps} />);
+    pickFiles([docx('a.docx'), docx('b.docx')]);
+    await user.click(screen.getByRole('button', { name: 'dialogs.create' }));
+    await settleAll(calls, 2, i => (i === 0 ? apolloErrorWithCode('INTERNAL_SERVER_ERROR') : 'ok'));
+
+    await waitFor(() => expect(screen.getByText('callout.documentImportFailed')).toBeInTheDocument());
+    expect(logErrorMock).toHaveBeenCalledTimes(1);
   });
 
   test('a staged batch makes the dialog dirty, and reopening clears the batch and the notice', async () => {
