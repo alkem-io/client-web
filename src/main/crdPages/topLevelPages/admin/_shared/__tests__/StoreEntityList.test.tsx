@@ -73,4 +73,44 @@ describe('StoreEntityList', () => {
     render(<StoreEntityList rows={rows} loading={false} />);
     expect(screen.queryByRole('button', { name: 'table.delete' })).toBeNull();
   });
+
+  describe('Promote column', () => {
+    const promoteLabel = (name: string) => `columns.promoteOf:${JSON.stringify({ name })}`;
+    const promoted: AdminStoreEntityRow[] = [
+      { ...rows[0], promote: true },
+      { ...rows[1], promote: false },
+    ];
+
+    test('without onPromoteChange there is no Promote column, even when rows carry a value', () => {
+      render(<StoreEntityList rows={promoted} loading={false} />);
+      expect(screen.queryByRole('columnheader', { name: 'columns.promoteHeader' })).toBeNull();
+      expect(screen.queryByRole('checkbox')).toBeNull();
+    });
+
+    test('with onPromoteChange and a non-null row it is the last header before Actions', () => {
+      render(<StoreEntityList rows={promoted} loading={false} onPromoteChange={vi.fn()} />);
+      const headers = screen.getAllByRole('columnheader').map(header => header.textContent);
+      expect(headers.slice(-3)).toEqual(['columns.ownerHeader', 'columns.promoteHeader', 'table.actions']);
+      expect(screen.getByRole('checkbox', { name: promoteLabel('Pack One') })).toBeChecked();
+      expect(screen.getByRole('checkbox', { name: promoteLabel('Pack Two') })).not.toBeChecked();
+    });
+
+    test('clicking a box calls onPromoteChange with the row and the next value', async () => {
+      const onPromoteChange = vi.fn();
+      render(<StoreEntityList rows={promoted} loading={false} onPromoteChange={onPromoteChange} />);
+      await userEvent.click(screen.getByRole('checkbox', { name: promoteLabel('Pack Two') }));
+      expect(onPromoteChange).toHaveBeenCalledWith(expect.objectContaining({ id: 'p2' }), true);
+    });
+
+    test('with onPromoteChange but all-null rows there is no Promote column', () => {
+      const hidden = rows.map(row => ({ ...row, promote: null }));
+      render(<StoreEntityList rows={hidden} loading={false} onPromoteChange={vi.fn()} />);
+      expect(screen.queryByRole('columnheader', { name: 'columns.promoteHeader' })).toBeNull();
+    });
+
+    test('boxes are disabled while promoteSaving', () => {
+      render(<StoreEntityList rows={promoted} loading={false} onPromoteChange={vi.fn()} promoteSaving={true} />);
+      expect(screen.getByRole('checkbox', { name: promoteLabel('Pack One') })).toBeDisabled();
+    });
+  });
 });
