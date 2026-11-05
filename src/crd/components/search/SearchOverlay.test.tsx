@@ -1,7 +1,10 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { handleAppBack } from '@/core/appMode/appBack';
 import { SearchOverlay } from './SearchOverlay';
+
+const screenSize = { isSmallScreen: false, isMediumScreen: false, isLargeScreen: true };
+vi.mock('@/crd/hooks/useMediaQuery', () => ({ useScreenSize: () => screenSize }));
 
 const renderOverlay = (onClose = vi.fn()) => {
   render(
@@ -72,5 +75,35 @@ describe('SearchOverlay Escape', () => {
     });
     expect(consumed).toBe(true);
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('SearchOverlay — full screen on a small screen', () => {
+  afterEach(() => {
+    screenSize.isSmallScreen = false;
+  });
+
+  const icon = (name: string) => screen.getByRole('dialog').querySelector(`.lucide-${name}`);
+
+  it('drops the card edges and closes from a back arrow in place of the close button', () => {
+    screenSize.isSmallScreen = true;
+    const onClose = renderOverlay();
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveClass('rounded-none');
+    expect(dialog).not.toHaveClass('border', 'rounded-xl');
+    expect(icon('x')).toBeNull();
+
+    fireEvent.click(icon('chevron-left')?.closest('button') as HTMLButtonElement);
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+
+  it('stays a card with its close button above a small screen', () => {
+    renderOverlay();
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveClass('border', 'rounded-xl');
+    expect(icon('x')).not.toBeNull();
+    expect(icon('chevron-left')).toBeNull();
   });
 });
