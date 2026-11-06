@@ -270,6 +270,8 @@
     "linkCreate": "Toevoegen",
     "linkAddAnother": "Nog een link toevoegen",
     "linkRemoveRow": "Deze link verwijderen",
+    "linksCreateFailed_one": "{{count}} van de {{total}} links kon niet worden toegevoegd.",
+    "linksCreateFailed_other": "{{count}} van de {{total}} links konden niet worden toegevoegd.",
     "linkDefaultName": "Nieuwe link",
     "linkDefaultNameNumbered": "Nieuwe link ({{count}})",
     "linkCancelConfirmTitle": "Wijzigingen verwerpen?",
@@ -317,7 +319,9 @@
     "contributors": "Contributors",
     "subspaces": "Subspaces",
     "spacesHidden": "Sommige Spaces in dit overzicht worden niet weergegeven omdat je er geen toegang tot hebt.",
-    "form": "Formulier"
+    "form": "Formulier",
+    "documentImportFailed": "Dit document kon niet worden geïmporteerd.",
+    "documentImporting": "Importeren…"
   },
   "contribution": {
     "edit": "Bewerken",
@@ -589,6 +593,7 @@
     "notifyMembers": "Space-leden informeren",
     "titleRequiredHint": "Voeg een titel toe aan je $t(common.callout) om verder te gaan",
     "descriptionTooLongHint": "Maak de beschrijving korter om verder te gaan — deze is langer dan toegestaan",
+    "filesUploadingHint": "Wacht tot de bestanden klaar zijn met uploaden om verder te gaan",
     "saveDraft": "Concept opslaan",
     "save": "Opslaan",
     "publish": "Post",

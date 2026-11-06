@@ -54,6 +54,8 @@ export type UseVcProfileTabDataResult = {
   onAvatarCropCancel: () => void;
   /** Every field is buffered and saved through the unsaved-changes bar (spec 097 Session 2026-10-22). */
   unsaved: TabUnsavedChanges;
+  /** Increments on every `unsaved.reset()`; keys the references editor so a Discard drops its pending uploads. */
+  resetGeneration: number;
 };
 
 /**
@@ -86,6 +88,7 @@ export const useVcProfileTabData = (vcId: string | undefined): UseVcProfileTabDa
   const valuesRef = useRef<VcProfileFormValues | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [resetGeneration, setResetGeneration] = useState(0);
 
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [pendingAvatarCrop, setPendingAvatarCrop] = useState<PendingAvatarCrop | null>(null);
@@ -283,6 +286,7 @@ export const useVcProfileTabData = (vcId: string | undefined): UseVcProfileTabDa
   };
 
   const reset = () => {
+    setResetGeneration(generation => generation + 1);
     if (saved) {
       const next = { ...saved, avatar: valuesRef.current?.avatar ?? saved.avatar };
       valuesRef.current = next;
@@ -303,6 +307,7 @@ export const useVcProfileTabData = (vcId: string | undefined): UseVcProfileTabDa
     onAvatarCropComplete,
     onAvatarCropCancel,
     unsaved: { count: unsavedCount, canSave, saving, error: saveError, saveAll, reset },
+    resetGeneration,
   };
 };
 

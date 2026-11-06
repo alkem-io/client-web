@@ -6,6 +6,7 @@ import type {
 } from '@/crd/components/space/settings/CommunityGuidelinesEditor';
 import useCommunityGuidelines from '@/domain/community/community/CommunityGuidelines/useCommunityGuidelines';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useUploadGate } from '@/main/crdPages/utils/tabUnsavedChanges';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 
 export type UseCommunityGuidelinesDataResult = {
@@ -18,12 +19,16 @@ export type UseCommunityGuidelinesDataResult = {
   onSave: () => Promise<void>;
   /** Drops unsaved edits, back to the server value. */
   onReset: () => void;
+  /** Incremented by each `onReset`; keys the references editor so a Discard drops its running uploads. */
+  resetGeneration: number;
   /** Apply a community-guidelines template (id) to the live guidelines — overwrites title/body/references on the server. */
   onApplyTemplate: (templateId: string) => Promise<void>;
   /** True when there is any user-authored content (title / body / a link) — used to gate the apply-template confirm. */
   hasContent: boolean;
   /** Per-row paperclip file-attach for the references editor (D24) — uploads to the space bucket, resolves the stored URL. */
   onReferenceFileUpload: ((file: File) => Promise<string | null>) | undefined;
+  /** Whether a reference file upload has not settled yet; Save and the template actions wait for it. */
+  referenceUploading: boolean;
   /** `accept` attribute for the references file picker, derived from the bucket's allowed mime types. */
   referenceUploadAccept: string | undefined;
 };
@@ -53,9 +58,12 @@ export function useCommunityGuidelinesData(
   // file uploads land in the space's own bucket. The space already exists, so the context resolves
   // `temporaryLocation: false` and the upload is permanent (propagated to `file_backup_outbox`,
   // issue #10126) — same path as the About tab references and the Innovation Pack form (spec 098 D24 / FR-038).
-  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(
-    useStorageConfigContext()
-  );
+  const {
+    onFileUpload: onReferenceFileUpload,
+    accept: referenceUploadAccept,
+    uploading: referenceUploading,
+  } = useReferenceFileUpload(useStorageConfigContext());
+  const withUploadGate = useUploadGate();
 
   const serverValue: CommunityGuidelinesEditorValue = communityGuidelines
     ? {
@@ -69,6 +77,7 @@ export function useCommunityGuidelinesData(
 
   const [localValue, setLocalValue] = useState<CommunityGuidelinesEditorValue | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [resetGeneration, setResetGeneration] = useState(0);
 
   // Reset the local edit buffer whenever the guidelines id or the server data changes.
   useEffect(() => {
@@ -145,13 +154,18 @@ export function useCommunityGuidelinesData(
     loading: loading && !communityGuidelines,
     submitting,
     isDirty,
-    canSave: !!communityGuidelinesId && isDirty && !submitting,
+    canSave: withUploadGate({ canSave: !!communityGuidelinesId && isDirty && !submitting }, referenceUploading).canSave,
     onChange,
     onSave,
-    onReset: () => setLocalValue(null),
+    onReset: () => {
+      setLocalValue(null);
+      setResetGeneration(generation => generation + 1);
+    },
+    resetGeneration,
     onApplyTemplate,
     hasContent,
     onReferenceFileUpload,
+    referenceUploading,
     referenceUploadAccept,
   };
 }

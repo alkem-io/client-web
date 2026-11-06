@@ -32,6 +32,7 @@ export function InnovationPackForm({
   onChange,
   onSubmit,
   submitting,
+  uploading,
   isDirty,
   providerName,
   avatarUrl,
@@ -59,7 +60,7 @@ export function InnovationPackForm({
       className="space-y-6"
       onSubmit={e => {
         e.preventDefault();
-        onSubmit();
+        if (!uploading) onSubmit();
       }}
       aria-busy={submitting}
     >
@@ -126,6 +127,7 @@ export function InnovationPackForm({
         label={t('packForm.references')}
         onFileUpload={onReferenceFileUpload}
         uploadAccept={referenceUploadAccept}
+        disabled={submitting}
       />
 
       {/* Listed in store */}
@@ -169,7 +171,7 @@ export function InnovationPackForm({
 
       {/* Save */}
       <div className="flex justify-end pt-2">
-        <Button type="submit" disabled={submitting || hasBlockingError || !isDirty} aria-busy={submitting}>
+        <Button type="submit" disabled={submitting || uploading || hasBlockingError || !isDirty} aria-busy={submitting}>
           {submitting && <Loader2 aria-hidden="true" className={cn('size-4 mr-2 animate-spin')} />}
           {t('packForm.save')}
         </Button>

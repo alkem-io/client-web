@@ -36,6 +36,8 @@ export type CommunityGuidelinesEditorProps = {
   onReferenceFileUpload?: (file: File) => Promise<string | null>;
   /** `accept` attribute for the references file picker. */
   referenceUploadAccept?: string;
+  /** Changing it remounts the references editor, dropping its pending file selection (a Discard). */
+  referencesKey?: React.Key;
   /**
    * Omit the built-in template buttons and the hint + Save row — for hosts that provide their own
    * (e.g. a dialog with template actions in its header and Save in its footer).
@@ -61,6 +63,7 @@ export function CommunityGuidelinesEditor({
   onSaveAsTemplate,
   onReferenceFileUpload,
   referenceUploadAccept,
+  referencesKey,
   hideActions = false,
   subspace,
   onImageUpload,
@@ -114,6 +117,7 @@ export function CommunityGuidelinesEditor({
       />
 
       <ReferencesEditor
+        key={referencesKey}
         rows={value.references}
         onChange={references => onChange({ references })}
         label={t('community.guidelines.referencesLabel')}

@@ -149,6 +149,15 @@ describe('useOrgProfileTabData — unsaved changes', () => {
     expect(result.current.values?.legalEntityName).toBe('Alkemio Foundation');
     expect(result.current.unsaved.count).toBe(0);
   });
+
+  it('reset increments resetGeneration', () => {
+    const { result } = renderHook(() => useOrgProfileTabData('org-1'));
+    const before = result.current.resetGeneration;
+    act(() => result.current.unsaved.reset());
+    expect(result.current.resetGeneration).toBe(before + 1);
+    act(() => result.current.unsaved.reset());
+    expect(result.current.resetGeneration).toBe(before + 2);
+  });
 });
 
 describe('useOrgProfileTabData — saveAll', () => {

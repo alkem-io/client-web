@@ -270,6 +270,8 @@
     "linkCreate": "Hinzufügen",
     "linkAddAnother": "Weiteren Link hinzufügen",
     "linkRemoveRow": "Diesen Link entfernen",
+    "linksCreateFailed_one": "{{count}} von {{total}} Links konnte nicht hinzugefügt werden.",
+    "linksCreateFailed_other": "{{count}} von {{total}} Links konnten nicht hinzugefügt werden.",
     "linkDefaultName": "Neuer Link",
     "linkDefaultNameNumbered": "Neuer Link ({{count}})",
     "linkCancelConfirmTitle": "Änderungen verwerfen?",
@@ -317,7 +319,9 @@
     "contributors": "Mitwirkende",
     "subspaces": "Unterbereiche",
     "spacesHidden": "Einige Spaces in dieser Übersicht werden nicht angezeigt, weil du keinen Zugriff darauf hast.",
-    "form": "Formular"
+    "form": "Formular",
+    "documentImportFailed": "Dieses Dokument konnte nicht importiert werden.",
+    "documentImporting": "Wird importiert…"
   },
   "contribution": {
     "edit": "Bearbeiten",
@@ -589,6 +593,7 @@
     "notifyMembers": "Bereichsmitglieder benachrichtigen",
     "titleRequiredHint": "Fügen Sie Ihrem Beitrag einen Titel hinzu, um fortzufahren",
     "descriptionTooLongHint": "Kürzen Sie die Beschreibung, um fortzufahren – sie überschreitet die zulässige Länge",
+    "filesUploadingHint": "Warten Sie, bis die Dateien hochgeladen sind, um fortzufahren",
     "saveDraft": "Entwurf speichern",
     "save": "Speichern",
     "publish": "Veröffentlichen",

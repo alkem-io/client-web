@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useEffect } from 'react';
 import { describe, expect, test, vi } from 'vitest';
 import { AddPostModal } from './AddPostModal';
 
@@ -138,6 +139,28 @@ describe('AddPostModal — blocked by an over-long description', () => {
   });
 });
 
+describe('AddPostModal — blocked while files upload', () => {
+  test('every create footer action describes the files-uploading reason', () => {
+    render(<AddPostModal {...baseProps} onSaveDraft={vi.fn()} blockedReason="filesUploading" />);
+    for (const name of [/forms.publish/i, /forms.saveDraft/i]) {
+      const describedBy = screen.getByRole('button', { name }).getAttribute('aria-describedby');
+      expect(document.getElementById(describedBy as string)).toHaveTextContent('forms.filesUploadingHint');
+    }
+  });
+
+  test('edit-mode Save describes the files-uploading reason', () => {
+    render(<AddPostModal {...baseProps} mode="edit" blockedReason="filesUploading" />);
+    const describedBy = screen.getByRole('button', { name: /^forms.save$/i }).getAttribute('aria-describedby');
+    expect(document.getElementById(describedBy as string)).toHaveTextContent('forms.filesUploadingHint');
+  });
+
+  test('hovering the blocked Publish button shows the files-uploading hint in a tooltip', async () => {
+    render(<AddPostModal {...baseProps} blockedReason="filesUploading" />);
+    await userEvent.hover(screen.getByRole('button', { name: /forms.publish/i }));
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('forms.filesUploadingHint');
+  });
+});
+
 describe('AddPostModal — FR-133 validation error region', () => {
   test('title error message has aria-live="polite"', () => {
     render(<AddPostModal {...baseProps} title={{ value: '', onChange: vi.fn(), error: 'validation.titleRequired' }} />);
@@ -216,5 +239,33 @@ describe('AddPostModal — FR-72 notify-members slot', () => {
   test('does not render notify slot when the consumer passes null (empty title in create)', () => {
     render(<AddPostModal {...baseProps} notifySwitchSlot={null} />);
     expect(screen.queryByTestId('notify-slot')).not.toBeInTheDocument();
+  });
+});
+
+describe('AddPostModal — More options', () => {
+  test('the options mount on first expansion, and collapsing hides them without unmounting, so their in-progress work survives', async () => {
+    const user = userEvent.setup();
+    const mounts = vi.fn();
+    const unmounts = vi.fn();
+    function Options() {
+      useEffect(() => {
+        mounts();
+        return unmounts;
+      }, []);
+      return <p>options-content</p>;
+    }
+    render(<AddPostModal {...baseProps} moreOptionsSlot={<Options />} />);
+    const toggle = screen.getByRole('button', { name: 'forms.moreOptions' });
+
+    expect(screen.queryByText('options-content')).not.toBeInTheDocument();
+    expect(mounts).not.toHaveBeenCalled();
+    await user.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByText('options-content')).toBeVisible();
+    await user.click(toggle);
+    expect(screen.getByText('options-content')).not.toBeVisible();
+
+    expect(mounts).toHaveBeenCalledTimes(1);
+    expect(unmounts).not.toHaveBeenCalled();
   });
 });

@@ -26,7 +26,7 @@ import type {
 import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
 import { MAX_BANNER_ASPECT_RATIO, MIN_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { errorMessage, type TabUnsavedChanges } from '@/main/crdPages/utils/tabUnsavedChanges';
+import { errorMessage, type TabUnsavedChanges, useUploadGate } from '@/main/crdPages/utils/tabUnsavedChanges';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { buildPreviewCard, mapClassificationEntries, mapSpaceToAboutFormValues } from './aboutMapper';
 
@@ -34,6 +34,8 @@ export type { AboutFormValues };
 
 export type UseAboutTabDataResult = {
   values: AboutFormValues | null;
+  /** Incremented by every Discard; keys the references editor so a Discard drops its pending files. */
+  resetGeneration: number;
   previewCard: ReturnType<typeof buildPreviewCard> | null;
   loading: boolean;
   error: Error | null;
@@ -145,6 +147,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const { t } = useTranslation('crd-spaceSettings');
+  const withUploadGate = useUploadGate();
   const notify = useNotification();
 
   const [updateSpace] = useUpdateSpaceMutation();
@@ -177,9 +180,11 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
   // Reference file upload (paperclip) — the space settings tab is always rendered inside the
   // ambient space StorageConfigContextProvider, so the bucket resolves from context.
-  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(
-    useStorageConfigContext()
-  );
+  const {
+    onFileUpload: onReferenceFileUpload,
+    accept: referenceUploadAccept,
+    uploading: referenceUploading,
+  } = useReferenceFileUpload(useStorageConfigContext());
 
   // Seed once when the query first resolves. Subsequent cache updates are
   // picked up via `saved` (for dirty detection) without overwriting user edits.
@@ -727,6 +732,8 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
   const dismissClassificationConflict = () => setClassificationConflict(null);
 
+  const [resetGeneration, setResetGeneration] = useState(0);
+
   const reset = () => {
     if (saved) {
       setValues(saved);
@@ -734,10 +741,12 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     }
     resetClassifications();
     setSaveError(null);
+    setResetGeneration(generation => generation + 1);
   };
 
   return {
     values,
+    resetGeneration,
     previewCard,
     loading: queryLoading,
     error: queryError ?? null,
@@ -757,14 +766,17 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     onReferenceFileUpload,
     referenceUploadAccept,
     untitledReferenceIds,
-    unsaved: {
-      count: unsavedCount,
-      canSave: untitledReferenceIds.length === 0,
-      saving,
-      error: saveError,
-      saveAll,
-      reset,
-    },
+    unsaved: withUploadGate(
+      {
+        count: unsavedCount,
+        canSave: untitledReferenceIds.length === 0,
+        saving,
+        error: saveError,
+        saveAll,
+        reset,
+      },
+      referenceUploading
+    ),
     classifications,
     unsavedClassificationIds: stagedAdds.map(add => add.tempId),
     addClassificationFromTemplate,

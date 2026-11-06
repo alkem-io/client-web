@@ -591,7 +591,11 @@ export function CrdPostContributionDialog({
               <Button variant="ghost" onClick={requestClose} disabled={submitting || deleting}>
                 {t('dialogs.cancel')}
               </Button>
-              <Button onClick={handleSubmit} disabled={submitting || deleting} aria-busy={submitting}>
+              <Button
+                onClick={handleSubmit}
+                disabled={submitting || deleting || referenceUpload.uploading}
+                aria-busy={submitting}
+              >
                 {submitting && <Loader2 aria-hidden="true" className="mr-1.5 size-4 animate-spin" />}
                 {mode === 'create'
                   ? isTaskBoard

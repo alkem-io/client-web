@@ -82,7 +82,12 @@ import { loadCalloutTemplateFormValues } from '@/main/crdPages/templates/loadCal
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
-import { formQuestionErrors, referenceRowErrors, useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
+import {
+  type CalloutFormValues,
+  formQuestionErrors,
+  referenceRowErrors,
+  useCrdCalloutForm,
+} from '../hooks/useCrdCalloutForm';
 import { useCrdSpaceContributors } from '../hooks/useCrdSpaceContributors';
 import {
   formDefinitionChanged,
@@ -271,7 +276,18 @@ function CalloutFormConnectorInner({
   const showFramingComments = mode !== 'create' || !restrictions?.disableFramingComments;
   const showContributionComments = mode !== 'create' || !restrictions?.disableContributionComments;
   const disableRichMedia = mode === 'create' && Boolean(restrictions?.disableRichMedia);
-  const { values, errors, setField, setValues, validate, reset, prefill, dirty } = form;
+  const { values, errors, setField, setValues, validate, reset: resetForm, prefill: prefillForm, dirty } = form;
+  // Keys the row editors that upload files, so replacing or resetting the form content remounts them
+  // and their unmount discards uploads still running for the replaced content.
+  const [contentGeneration, setContentGeneration] = useState(0);
+  const prefill = (data: Partial<CalloutFormValues>) => {
+    prefillForm(data);
+    setContentGeneration(generation => generation + 1);
+  };
+  const reset = () => {
+    resetForm();
+    setContentGeneration(generation => generation + 1);
+  };
 
   const framingWhiteboardDraft = useWhiteboardDraft({
     scope: { type: 'calloutsSet', id: calloutsSetId },
@@ -577,6 +593,7 @@ function CalloutFormConnectorInner({
     creating || updating || mediaGalleryUploading || framingWhiteboardDraft.loading || defaultWhiteboardDraft.loading;
 
   const createAndUpload = async (visibility: CalloutVisibility) => {
+    if (referenceUpload.uploading) return;
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) return;
 
@@ -710,7 +727,7 @@ function CalloutFormConnectorInner({
   };
 
   const saveEdit = async () => {
-    if (!calloutId) return;
+    if (!calloutId || referenceUpload.uploading) return;
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) return;
 
@@ -999,7 +1016,13 @@ function CalloutFormConnectorInner({
   const descriptionError =
     errors.description ??
     (descriptionOverLimit ? t('crd-common:components.wysiwyg-editor.validation.maxLength') : undefined);
-  const blockedReason = !canSubmit ? 'titleRequired' : descriptionOverLimit ? 'descriptionTooLong' : undefined;
+  const blockedReason = referenceUpload.uploading
+    ? 'filesUploading'
+    : !canSubmit
+      ? 'titleRequired'
+      : descriptionOverLimit
+        ? 'descriptionTooLong'
+        : undefined;
   const notifySwitch =
     mode === 'create' && canSubmit ? (
       <div className="flex items-center gap-2">
@@ -1227,6 +1250,7 @@ function CalloutFormConnectorInner({
               locked={mode === 'edit'}
             />
             <ResponsePanel
+              key={contentGeneration}
               type={values.responseType}
               allowedActors={values.allowedActors}
               onAllowedActorsChange={v => setField('allowedActors', v)}
@@ -1276,6 +1300,7 @@ function CalloutFormConnectorInner({
               />
             )}
             <ReferencesEditor
+              key={contentGeneration}
               rows={values.referenceRows}
               onChange={rows => setField('referenceRows', rows)}
               errors={referenceRowErrors(errors)}

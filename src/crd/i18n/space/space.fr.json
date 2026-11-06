@@ -270,6 +270,8 @@
     "linkCreate": "Ajouter",
     "linkAddAnother": "Ajouter un autre lien",
     "linkRemoveRow": "Supprimer ce lien",
+    "linksCreateFailed_one": "{{count}} lien sur {{total}} n'a pas pu être ajouté.",
+    "linksCreateFailed_other": "{{count}} liens sur {{total}} n'ont pas pu être ajoutés.",
     "linkDefaultName": "Nouveau lien",
     "linkDefaultNameNumbered": "Nouveau lien ({{count}})",
     "linkCancelConfirmTitle": "Abandonner les modifications ?",
@@ -317,7 +319,9 @@
     "contributors": "Contributeurs",
     "subspaces": "Sous-espaces",
     "spacesHidden": "Certains espaces de cet aperçu ne sont pas affichés car vous n’y avez pas accès.",
-    "form": "Formulaire"
+    "form": "Formulaire",
+    "documentImportFailed": "Ce document n’a pas pu être importé.",
+    "documentImporting": "Importation…"
   },
   "contribution": {
     "edit": "Modifier",
@@ -589,6 +593,7 @@
     "notifyMembers": "Notifier les membres de l'espace",
     "titleRequiredHint": "Ajoutez un titre à votre publication pour continuer",
     "descriptionTooLongHint": "Raccourcissez la description pour continuer : elle dépasse la longueur autorisée",
+    "filesUploadingHint": "Attendez la fin du téléversement des fichiers pour continuer",
     "saveDraft": "Enregistrer le brouillon",
     "save": "Enregistrer",
     "publish": "Publier",

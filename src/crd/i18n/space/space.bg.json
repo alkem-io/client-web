@@ -270,6 +270,8 @@
     "linkCreate": "Добави",
     "linkAddAnother": "Добави още една връзка",
     "linkRemoveRow": "Премахни тази връзка",
+    "linksCreateFailed_one": "{{count}} от {{total}} връзки не можа да бъде добавена.",
+    "linksCreateFailed_other": "{{count}} от {{total}} връзки не можаха да бъдат добавени.",
     "linkDefaultName": "Нова връзка",
     "linkDefaultNameNumbered": "Нова връзка ({{count}})",
     "linkCancelConfirmTitle": "Отказване на промените?",
@@ -317,7 +319,9 @@
     "contributors": "Сътрудници",
     "subspaces": "Подпространства",
     "spacesHidden": "Някои пространства в този преглед не се показват, защото нямате достъп до тях.",
-    "form": "Формуляр"
+    "form": "Формуляр",
+    "documentImportFailed": "Този документ не можа да бъде импортиран.",
+    "documentImporting": "Импортиране…"
   },
   "contribution": {
     "edit": "Редактирай",
@@ -589,6 +593,7 @@
     "notifyMembers": "Уведоми членовете на пространството",
     "titleRequiredHint": "Добавете заглавие на вашата публикация, за да продължите",
     "descriptionTooLongHint": "Съкратете описанието, за да продължите — то надвишава ограничението за дължина",
+    "filesUploadingHint": "Изчакайте файловете да се качат, за да продължите",
     "saveDraft": "Запази чернова",
     "save": "Запази",
     "publish": "Публикувай",

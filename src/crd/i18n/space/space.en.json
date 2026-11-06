@@ -270,6 +270,8 @@
     "linkCreate": "Add",
     "linkAddAnother": "Add another link",
     "linkRemoveRow": "Remove this link",
+    "linksCreateFailed_one": "{{count}} of {{total}} links could not be added.",
+    "linksCreateFailed_other": "{{count}} of {{total}} links could not be added.",
     "linkDefaultName": "New link",
     "linkDefaultNameNumbered": "New link ({{count}})",
     "linkCancelConfirmTitle": "Discard your changes?",
@@ -317,7 +319,9 @@
     "contributors": "Contributors",
     "subspaces": "Subspaces",
     "spacesHidden": "Some spaces in this overview are not shown because you don't have access to them.",
-    "form": "Form"
+    "form": "Form",
+    "documentImportFailed": "This document could not be imported.",
+    "documentImporting": "Importing…"
   },
   "contribution": {
     "edit": "Edit",
@@ -589,6 +593,7 @@
     "notifyMembers": "Notify space members",
     "titleRequiredHint": "Add a title to your $t(common.callout) to continue",
     "descriptionTooLongHint": "Shorten the description to continue — it is over the length limit",
+    "filesUploadingHint": "Wait for the files to finish uploading to continue",
     "saveDraft": "Save Draft",
     "save": "Save",
     "publish": "Post",
