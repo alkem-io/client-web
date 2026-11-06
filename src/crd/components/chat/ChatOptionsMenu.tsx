@@ -1,4 +1,5 @@
 import { EllipsisVertical, LogOut, Settings2 } from 'lucide-react';
+import { chatHeaderIconButtonClass } from '@/crd/components/chat/CallControls';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,12 +30,8 @@ export function ChatOptionsMenu({ label, settingsLabel, onOpenSettings, leaveLab
       <Tooltip>
         <TooltipTrigger asChild={true}>
           <DropdownMenuTrigger asChild={true}>
-            <button
-              type="button"
-              aria-label={label}
-              className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
-            >
-              <EllipsisVertical aria-hidden="true" className="size-5" />
+            <button type="button" aria-label={label} className={chatHeaderIconButtonClass}>
+              <EllipsisVertical aria-hidden="true" className="size-6" />
             </button>
           </DropdownMenuTrigger>
         </TooltipTrigger>
