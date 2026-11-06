@@ -962,9 +962,8 @@
     }
   },
   "postSnippet": {
-    "readMore": "… Прочети повече",
-    "readLess": "Прочети по-малко",
-    "seeFullDescription": "Виж пълното описание"
+    "readMore": "Прочети повече",
+    "showLess": "Покажи по-малко"
   },
   "postPreview": {
     "createdBy": "Създадено от",
