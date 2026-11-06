@@ -8,6 +8,7 @@
     "emptyMessage": "You're all caught up! New notifications will appear here.",
     "loadMore": "Load more",
     "loading": "Loading notifications",
+    "newNotifications": "New notifications",
     "actions": {
       "menu": "Actions",
       "read": "Mark as read",

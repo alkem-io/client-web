@@ -25,6 +25,8 @@ export function useCrdNotifications(userProfileUrl?: string) {
     markNotificationsAsRead,
     fetchMore: fetchMoreNotifications,
     hasMore: hasMoreNotifications,
+    hasNewNotifications,
+    showNewNotifications,
   } = useInAppNotifications();
 
   const notificationItems = mapNotificationsToItemDataList(
@@ -78,6 +80,8 @@ export function useCrdNotifications(userProfileUrl?: string) {
     setNotificationFilter,
     isLoadingNotifications,
     hasMoreNotifications,
+    hasNewNotifications,
+    showNewNotifications,
     notificationSettingsHref,
     handleNotificationClick,
     markNotificationsAsRead,
