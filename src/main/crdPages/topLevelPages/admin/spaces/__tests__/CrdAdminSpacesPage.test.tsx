@@ -17,11 +17,13 @@ const useSpacesListMock = vi.fn();
 const deleteSpaceMock = vi.fn();
 const updateSpaceVisibilityMock = vi.fn(() => Promise.resolve());
 const updateSpaceNameIdMock = vi.fn(() => Promise.resolve());
+const updateSpacePromoteMock = vi.fn((_options: unknown) => Promise.resolve());
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   usePlatformAdminSpacesListQuery: () => useSpacesListMock(),
   useDeleteSpaceMutation: () => [deleteSpaceMock, { loading: false }],
   useAdminUpdateSpaceVisibilityMutation: () => [updateSpaceVisibilityMock, { loading: false }],
   useAdminUpdateSpaceNameIdMutation: () => [updateSpaceNameIdMock, { loading: false }],
+  useAdminUpdateSpacePromoteMutation: () => [updateSpacePromoteMock, { loading: false }],
   refetchPlatformAdminSpacesListQuery: () => ({}),
 }));
 const notify = vi.fn();
@@ -60,6 +62,7 @@ beforeEach(() => {
   useSpacesListMock.mockReturnValue({ data: { platformAdmin: { spaces } }, loading: false });
   updateSpaceVisibilityMock.mockResolvedValue(undefined);
   updateSpaceNameIdMock.mockResolvedValue(undefined);
+  updateSpacePromoteMock.mockResolvedValue(undefined);
   canManageLicensePlansMock.mockReturnValue(true);
 });
 
@@ -166,5 +169,79 @@ describe('CrdAdminSpacesPage', () => {
     });
     render(<CrdAdminSpacesPage />);
     expect(screen.queryByRole('button', { name: 'spaces.editSettings' })).toBeNull();
+  });
+
+  describe('Promote column', () => {
+    const promoteLabel = (name: string) => `columns.promoteOf:${JSON.stringify({ name })}`;
+    const withPromote = (values: (boolean | null)[]) =>
+      useSpacesListMock.mockReturnValue({
+        data: { platformAdmin: { spaces: spaces.map((space, i) => ({ ...space, promote: values[i] })) } },
+        loading: false,
+      });
+
+    test('is the last header before Actions when rows carry a promote value', () => {
+      withPromote([true, false]);
+      render(<CrdAdminSpacesPage />);
+      const headers = screen.getAllByRole('columnheader').map(header => header.textContent);
+      expect(headers.slice(-2)).toEqual(['columns.promoteHeader', 'table.actions']);
+      expect(screen.getByRole('checkbox', { name: promoteLabel('Alpha') })).toBeChecked();
+      expect(screen.getByRole('checkbox', { name: promoteLabel('Beta [ARCHIVED]') })).not.toBeChecked();
+    });
+
+    test('clicking an unchecked box sends the promote mutation for that space', async () => {
+      withPromote([true, false]);
+      render(<CrdAdminSpacesPage />);
+      await userEvent.click(screen.getByRole('checkbox', { name: promoteLabel('Beta [ARCHIVED]') }));
+      expect(updateSpacePromoteMock).toHaveBeenCalledWith({ variables: { spaceId: 's2', promote: true } });
+    });
+
+    test('is hidden, header included, when every row has a null promote', () => {
+      withPromote([null, null]);
+      render(<CrdAdminSpacesPage />);
+      expect(screen.queryByRole('columnheader', { name: 'columns.promoteHeader' })).toBeNull();
+      expect(screen.queryByRole('checkbox')).toBeNull();
+    });
+
+    test('is hidden when the server omits the field', () => {
+      render(<CrdAdminSpacesPage />);
+      expect(screen.queryByRole('columnheader', { name: 'columns.promoteHeader' })).toBeNull();
+    });
+
+    test('a save in flight makes only its own row busy, and that box keeps focus', async () => {
+      withPromote([true, false]);
+      updateSpacePromoteMock.mockReturnValueOnce(new Promise(() => {}));
+      render(<CrdAdminSpacesPage />);
+      const alpha = screen.getByRole('checkbox', { name: promoteLabel('Alpha') });
+      await userEvent.click(alpha);
+      await waitFor(() => expect(alpha).toHaveAttribute('aria-busy', 'true'));
+      expect(alpha).toHaveFocus();
+      const beta = screen.getByRole('checkbox', { name: promoteLabel('Beta [ARCHIVED]') });
+      expect(beta).not.toHaveAttribute('aria-busy');
+      expect(beta).not.toBeDisabled();
+    });
+
+    test('a permission refusal notifies exactly once and the box keeps the stored value', async () => {
+      withPromote([true, false]);
+      updateSpacePromoteMock.mockRejectedValueOnce({
+        graphQLErrors: [{ message: 'nope', extensions: { code: 'FORBIDDEN_POLICY' } }],
+      });
+      render(<CrdAdminSpacesPage />);
+      const box = screen.getByRole('checkbox', { name: promoteLabel('Beta [ARCHIVED]') });
+      await userEvent.click(box);
+      await waitFor(() => expect(notify).toHaveBeenCalledWith('permissions.errorDenied', 'error'));
+      expect(notify).toHaveBeenCalledTimes(1);
+      expect(box).not.toBeChecked();
+    });
+
+    test('a non-permission failure leaves the toast to the global handler and keeps the stored value', async () => {
+      withPromote([true, false]);
+      updateSpacePromoteMock.mockRejectedValueOnce({ networkError: new Error('offline'), graphQLErrors: [] });
+      render(<CrdAdminSpacesPage />);
+      const box = screen.getByRole('checkbox', { name: promoteLabel('Alpha') });
+      await userEvent.click(box);
+      await waitFor(() => expect(updateSpacePromoteMock).toHaveBeenCalledTimes(1));
+      expect(notify).not.toHaveBeenCalled();
+      expect(box).toBeChecked();
+    });
   });
 });

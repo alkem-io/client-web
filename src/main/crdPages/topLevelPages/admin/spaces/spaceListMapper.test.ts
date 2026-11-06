@@ -34,3 +34,14 @@ describe('mapSpaceToRow — client-8 privilege gating', () => {
     expect(mapSpaceToRow(space(['READ']) as never).canDelete).toBe(false);
   });
 });
+
+describe('mapSpaceToRow — promote', () => {
+  it.each([
+    [true, true],
+    [false, false],
+    [undefined, null],
+    [null, null],
+  ])('maps promote %s to %s', (promote, expected) => {
+    expect(mapSpaceToRow({ ...space([]), promote } as never).promote).toBe(expected);
+  });
+});

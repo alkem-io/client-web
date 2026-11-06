@@ -43,7 +43,9 @@
     "listedHeader": "In winkel vermeld",
     "visibilityHeader": "Zoekzichtbaarheid",
     "ownerHeader": "Account-eigenaar",
-    "spaceVisibility": "Zichtbaarheid"
+    "spaceVisibility": "Zichtbaarheid",
+    "promoteHeader": "Promoten",
+    "promoteOf": "Promoot {{name}}"
   },
   "licensePlans": {
     "active": "Actief",
