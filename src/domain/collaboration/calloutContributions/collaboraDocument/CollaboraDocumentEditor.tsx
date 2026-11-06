@@ -123,7 +123,7 @@ const CollaboraDocumentEditor = ({
       src={editorUrl}
       title={t('collaboraDocument.editor.title')}
       style={{ width: '100%', flex: 1, border: 'none', minHeight: 0 }}
-      allow="clipboard-read; clipboard-write; microphone; camera"
+      allow="clipboard-read; clipboard-write"
       allowFullScreen={true}
     />
   );

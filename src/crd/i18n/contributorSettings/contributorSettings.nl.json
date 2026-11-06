@@ -643,7 +643,6 @@
   },
   "org": {
     "profile": {
-      "pageTitle": "Profiel",
       "identity": {
         "title": "Identiteit",
         "displayName": {
@@ -762,7 +761,6 @@
       }
     },
     "community": {
-      "pageTitle": "Betrokkenen",
       "title": "Betrokkenen",
       "description": "Beheer wie bij deze organisatie betrokken is. Voeg nieuwe betrokkenen toe uit de lijst met beschikbare gebruikers; het verwijderen van een betrokkene trekt hun organisatierol in.",
       "currentAssociatesTitle": "Huidige betrokkenen",
@@ -780,7 +778,6 @@
       "removeError": "Verwijderen mislukt — probeer opnieuw"
     },
     "membership": {
-      "pageTitle": "Lidmaatschap",
       "title": "Space-lidmaatschappen",
       "searchPlaceholder": "Zoek lidmaatschappen...",
       "empty": "Deze organisatie is nog geen lid van een Space.",
@@ -831,7 +828,6 @@
       "errorToast": "Voorkeur opslaan mislukt — probeer opnieuw"
     },
     "invitations": {
-      "pageTitle": "Uitnodigingen",
       "title": "Space-uitnodigingen",
       "empty": "Geen openstaande Space-uitnodigingen.",
       "invitedBy": "Uitgenodigd door {{name}}",

@@ -32,8 +32,8 @@ importers:
         specifier: 0.28.0
         version: 0.28.0
       '@excalidraw-yjs/excalidraw':
-        specifier: 0.5.5
-        version: 0.5.5(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(immer@10.1.3)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(yjs@13.6.27)
+        specifier: 0.5.6
+        version: 0.5.6(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(immer@10.1.3)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(yjs@13.6.27)
       '@ory/kratos-client':
         specifier: 26.2.0
         version: 26.2.0
@@ -251,11 +251,11 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       matrix-js-sdk:
-        specifier: ^42.2.0
-        version: 42.2.0
+        specifier: ^45.0.0
+        version: 45.0.0
       matrix-widget-api:
-        specifier: 1.19.0
-        version: 1.19.0
+        specifier: 1.20.0
+        version: 1.20.0
       mdast-util-to-hast:
         specifier: ^13.2.1
         version: 13.2.1
@@ -1219,16 +1219,16 @@ packages:
     resolution: {integrity: sha512-Z5kJ+wU3oA7MMIqVR9tyZRtjYPr4OC004Q4Rw7pgOKUOKkJfZ3O24nz3WYfGRpMDNmcOi3TwQOmgm7B7Tpii0w==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@excalidraw-yjs/common@0.5.5':
-    resolution: {integrity: sha512-d6byJxiAT5XPQE+eWLZqxGGZDa0fmFD7GOavC/mEavf9jFCxOgQ5sd1nVC/5g37IoXi+ZunXWHvOQc32hetEjQ==}
+  '@excalidraw-yjs/common@0.5.6':
+    resolution: {integrity: sha512-iwmHfdPDNvLjaW6gGr4ug9DH2gRlFomdYVHJ/01Bxt3SLVAE0uW8paaZZJOqfXjkWM1jgW0KyZ3Wnv0VpMFflA==}
 
-  '@excalidraw-yjs/element@0.5.5':
-    resolution: {integrity: sha512-9mJ2vxHFSphdTfGii2o8zBlQaX2ecjBHHimD9a0NSHEzW8qqibKx2LmCCbpy2FeMht8azalfBMlfsmmOEWx/6Q==}
+  '@excalidraw-yjs/element@0.5.6':
+    resolution: {integrity: sha512-XENhWZ9P6uyKXIaZPYEaRuFkNTiNexB8AWN4zYTmKfdXtKqyufHhoqZYFqcvONdFS/QU8Y87f4kxFX4h6KOd7g==}
     peerDependencies:
       yjs: ^13.6.27
 
-  '@excalidraw-yjs/excalidraw@0.5.5':
-    resolution: {integrity: sha512-cnC404JmlqxJqxJI+ndutvpKOaBGVTPjkQIPAwawguRISV0ZVfmNA13FblyRoYSWrpKFWohwu5UI/0MuhNlDww==}
+  '@excalidraw-yjs/excalidraw@0.5.6':
+    resolution: {integrity: sha512-Wrr+xCTZCAX4n/dZoCAuiOkT1t0f5QXDHJacAANXvaSagQtm7irZ/CA3iftdbJxroCDL9O6/e2xjKwgFXbxPsg==}
     peerDependencies:
       '@napi-rs/canvas': 1.0.11
       react: ^17.0.2 || ^18.2.0 || ^19.0.0
@@ -1237,12 +1237,12 @@ packages:
       '@napi-rs/canvas':
         optional: true
 
-  '@excalidraw-yjs/fractional-indexing@0.5.5':
-    resolution: {integrity: sha512-Ro0gJTkMOkT9AC/9MTEVzSkkrDWC0/RyWvRaeketjRwKaQDmmaD8BxTodgaydoc5AKwWDvyGDOlZ+gaq8HsIYA==}
+  '@excalidraw-yjs/fractional-indexing@0.5.6':
+    resolution: {integrity: sha512-rW+mIwnMkmETQjTPhbqciauQNahiMD6z4CYZQw4vShI0fkxGpB5gJzmm+o/GvZ4CdN8IdZPtsGwuNTP3Iqyz4g==}
     engines: {node: ^14.13.1 || >=16.0.0}
 
-  '@excalidraw-yjs/math@0.5.5':
-    resolution: {integrity: sha512-U6TbIg61yPBU1roRRaGzM1Lpj+WFlSnpqESFckaDuq+M9JM7T95ShLhPnbiHm97OrSGYnIfgpLoQPmkAvYp5Ow==}
+  '@excalidraw-yjs/math@0.5.6':
+    resolution: {integrity: sha512-NGhu3riH6UpmtuCb775VD+iqzTWm4T/64ovAj0gAxtOAfcdXbcPAUgxoC+lIuQS4xTmIRi5It/XrDecfNC9wAg==}
 
   '@excalidraw/laser-pointer@1.3.1':
     resolution: {integrity: sha512-psA1z1N2qeAfsORdXc9JmD2y4CmDwmuMRxnNdJHZexIcPwaNEyIpNcelw+QkL9rz9tosaN9krXuKaRqYpRAR6g==}
@@ -1724,8 +1724,8 @@ packages:
   '@marijn/find-cluster-break@1.0.3':
     resolution: {integrity: sha512-FY+MKLBoTsLNJF/eLWaOsXGdz6uh3Iu1axjPf6TUq92IYumcTcXWHoS747JARLkcdlJ/Waiaxc5wQfFO8jC6NA==}
 
-  '@matrix-org/matrix-sdk-crypto-wasm@18.6.0':
-    resolution: {integrity: sha512-P3v8849O/1+c1CYDQ1X6L1p6UpakYAav1L4wTNvwLA54n9wNpadpw8sLZoxhaG4ftlmNzxFztjRYwDvx56d11w==}
+  '@matrix-org/matrix-sdk-crypto-wasm@18.9.0':
+    resolution: {integrity: sha512-NtLzNDTEfNASBjNCTGZHuk7N0jrQhS6Zx2CM857rCHZYYh/rpbKGQNrJ7azktm4S1P5Jy3WU3nwJTGohGw26qQ==}
     engines: {node: '>= 18'}
 
   '@mermaid-js/parser@0.6.3':
@@ -1930,6 +1930,7 @@ packages:
   '@opentelemetry/sdk-trace-base@1.30.1':
     resolution: {integrity: sha512-jVPgBbH1gCy2Lb7X0AVQ8XAfgg0pJ4nvl8/IiQA6nxOsPvS+0zMJaFSs2ltXe0J6C8dqjcnpyqINDJmU30+uOg==}
     engines: {node: '>=14'}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
@@ -4333,6 +4334,7 @@ packages:
   basic-ftp@5.1.0:
     resolution: {integrity: sha512-RkaJzeJKDbaDWTIPiJwubyljaEPwpVWkm9Rt5h9Nd6h7tEXTJ3VB4qxdZBioV7JO5yLUaOKwz7vDOzlncUsegw==}
     engines: {node: '>=10.0.0'}
+    deprecated: Security vulnerability fixed in 5.2.1, please upgrade
 
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
@@ -4607,9 +4609,9 @@ packages:
     resolution: {integrity: sha512-kRGRZw3bLlFISDBgwTSA1TMBFN6J6GWDeubmDE3AF+3+yXL8hTWv8r5rkLbqYXY4RjPk/EzHnClI3zQf1cFmHA==}
     engines: {node: '>= 0.6'}
 
-  content-type@2.1.0:
-    resolution: {integrity: sha512-mj7UPXE0jaqaOsukNZRUEfEi2AcL7C/vwmwcHV0O97eO1E1pxBZuyjlZrx5seTaNBg1U6+o35wpa35Qfcc+7ag==}
-    engines: {node: '>=18'}
+  content-type@3.1.1:
+    resolution: {integrity: sha512-GW4qUsfFo59d0HbUibDlWv5wPz+vAAcaTWbKIuKCf0JkC7wWkSyf8f13IpXn5JkeMlB2P8iTSSIjwXljorg2vA==}
+    engines: {node: '>=22'}
 
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
@@ -5125,6 +5127,7 @@ packages:
   eslint@9.36.0:
     resolution: {integrity: sha512-hB4FIzXovouYzwzECDcUkJ4OcfOEkXTv2zRY6B9bkwjx/cprAq0uvm1nl7zvQ0/TsUk0zQiN4uPfJpB9m+rPMQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -5382,11 +5385,12 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   glob@9.3.5:
     resolution: {integrity: sha512-e1LleDykUz2Iu+MTYdkSsuWX8lvAjAcs0Xef0lNIu0S2wOAzuTxCJtcd9S3cijlwYF18EsU3rzb8jPVobxDh9Q==}
     engines: {node: '>=16 || 14 >=14.17'}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   globals@14.0.0:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
@@ -5960,8 +5964,8 @@ packages:
   layout-base@2.0.1:
     resolution: {integrity: sha512-dp3s92+uNI1hWIpPGH3jK2kxE2lMjdXdr+DH8ynZHpd6PUlH6x6cbuXnoMmiNumznqaNO31xu9e79F0uuZ0JFg==}
 
-  legacy-javascript@0.0.3:
-    resolution: {integrity: sha512-1r6MT4dVaJyXt4G07Cm2cQ0AUaLJdefiEp4SmIAylA++gnEQ82YvmzE58RkM5EP0fk5hROLCslUPGnwIYdZQVA==}
+  legacy-javascript@0.0.4:
+    resolution: {integrity: sha512-UTmeKBVxnfJcpmpOvzzNnLsQT99BXHpPlc/ZKddIRmWmrR0fw6335I3lq4+sJoP60UTbBNaYsGYVPc65YB1x3A==}
 
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
@@ -6230,12 +6234,12 @@ packages:
   matrix-events-sdk@0.0.1:
     resolution: {integrity: sha512-1QEOsXO+bhyCroIe2/A5OwaxHvBm7EsSQ46DEDn8RBIfQwN5HWBpFvyWWR4QY0KHPPnnJdI99wgRiAl7Ad5qaA==}
 
-  matrix-js-sdk@42.2.0:
-    resolution: {integrity: sha512-XlW++tv4BvWE3WrC9K0yZE5CMfZZnKFoZQkYZPxmtb5n/F4sZo6t7G7u59Llx455xGxnrdx1FxFd3tmhkGH8Mw==}
+  matrix-js-sdk@45.0.0:
+    resolution: {integrity: sha512-vpc3o48R/OYZ+WxIx/nHvw5Ho7K1zD4XWepzUFbo/MLXXLkCTcOVzKvkRyRz+KPkzshci2RuwYkJgynNsXg8ug==}
     engines: {node: '>=22.0.0'}
 
-  matrix-widget-api@1.19.0:
-    resolution: {integrity: sha512-Qe7L6G1mQJphBC47/Bzp5ljPIK1UARgLiuGgS+/KmEs/eaNHkQ3+ArD0/0kvMV+d6kCGAZ9OKRqsnuPjizI+tw==}
+  matrix-widget-api@1.20.0:
+    resolution: {integrity: sha512-qwFP37rgns7mPesM5/vvZgknzb+kvyRB5BISv5sCuBxsGMceMr+Kogf7OkjRxBXdMCPBFuf6gIuYRe5S+lpzQw==}
 
   mdast-util-find-and-replace@3.0.2:
     resolution: {integrity: sha512-Tmd1Vg/m3Xz43afeNxDIhWRtFZgM2VLyaf4vSTYwudTyeuTneoL3qtWMA5jeLyz/O1vDJmmV4QuScFCA2tBPwg==}
@@ -7099,6 +7103,7 @@ packages:
 
   react-mentions@4.4.10:
     resolution: {integrity: sha512-JHiQlgF1oSZR7VYPjq32wy97z1w1oE4x10EuhKjPr4WUKhVzG1uFQhQjKqjQkbVqJrmahf+ldgBTv36NrkpKpA==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     peerDependencies:
       react: '>=16.8.3'
       react-dom: '>=16.8.3'
@@ -7765,6 +7770,7 @@ packages:
   tsconfck@3.1.6:
     resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
     engines: {node: ^18 || >=20}
+    deprecated: unmaintained
     hasBin: true
     peerDependencies:
       typescript: ^5.0.0
@@ -8128,6 +8134,7 @@ packages:
   whatwg-encoding@3.1.1:
     resolution: {integrity: sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==}
     engines: {node: '>=18'}
+    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-mimetype@4.0.0:
     resolution: {integrity: sha512-QaKxh0eNIi2mE9p2vEdzfagOKHCcj1pJ56EEHGQOVxp8r9/iszLUUV7v89x9O1p/T+NlTM5W7jW6+cz4Fq1YVg==}
@@ -9132,28 +9139,28 @@ snapshots:
       '@eslint/core': 0.15.2
       levn: 0.4.1
 
-  '@excalidraw-yjs/common@0.5.5':
+  '@excalidraw-yjs/common@0.5.6':
     dependencies:
-      '@excalidraw-yjs/math': 0.5.5
+      '@excalidraw-yjs/math': 0.5.6
       tinycolor2: 1.6.0
 
-  '@excalidraw-yjs/element@0.5.5(yjs@13.6.27)':
+  '@excalidraw-yjs/element@0.5.6(yjs@13.6.27)':
     dependencies:
-      '@excalidraw-yjs/common': 0.5.5
-      '@excalidraw-yjs/fractional-indexing': 0.5.5
-      '@excalidraw-yjs/math': 0.5.5
+      '@excalidraw-yjs/common': 0.5.6
+      '@excalidraw-yjs/fractional-indexing': 0.5.6
+      '@excalidraw-yjs/math': 0.5.6
       yjs: 13.6.27
 
-  '@excalidraw-yjs/excalidraw@0.5.5(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(immer@10.1.3)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(yjs@13.6.27)':
+  '@excalidraw-yjs/excalidraw@0.5.6(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(immer@10.1.3)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(yjs@13.6.27)':
     dependencies:
       '@braintree/sanitize-url': 6.0.2
       '@codemirror/commands': 6.11.0
       '@codemirror/language': 6.12.4
       '@codemirror/state': 6.7.1
       '@codemirror/view': 6.43.9
-      '@excalidraw-yjs/common': 0.5.5
-      '@excalidraw-yjs/element': 0.5.5(yjs@13.6.27)
-      '@excalidraw-yjs/math': 0.5.5
+      '@excalidraw-yjs/common': 0.5.6
+      '@excalidraw-yjs/element': 0.5.6(yjs@13.6.27)
+      '@excalidraw-yjs/math': 0.5.6
       '@excalidraw/laser-pointer': 1.3.1
       '@excalidraw/mermaid-to-excalidraw': 2.2.2
       '@excalidraw/random-username': 1.1.0
@@ -9188,9 +9195,9 @@ snapshots:
       - immer
       - yjs
 
-  '@excalidraw-yjs/fractional-indexing@0.5.5': {}
+  '@excalidraw-yjs/fractional-indexing@0.5.6': {}
 
-  '@excalidraw-yjs/math@0.5.5': {}
+  '@excalidraw-yjs/math@0.5.6': {}
 
   '@excalidraw/laser-pointer@1.3.1': {}
 
@@ -9945,7 +9952,7 @@ snapshots:
 
   '@marijn/find-cluster-break@1.0.3': {}
 
-  '@matrix-org/matrix-sdk-crypto-wasm@18.6.0': {}
+  '@matrix-org/matrix-sdk-crypto-wasm@18.9.0': {}
 
   '@mermaid-js/parser@0.6.3':
     dependencies:
@@ -10239,7 +10246,7 @@ snapshots:
 
   '@paulirish/trace_engine@0.0.59':
     dependencies:
-      legacy-javascript: 0.0.3
+      legacy-javascript: 0.0.4
       third-party-web: 0.30.0
 
   '@playwright/test@1.57.0':
@@ -12957,7 +12964,7 @@ snapshots:
 
   content-disposition@0.5.2: {}
 
-  content-type@2.1.0: {}
+  content-type@3.1.1: {}
 
   convert-source-map@2.0.0: {}
 
@@ -14433,7 +14440,7 @@ snapshots:
 
   layout-base@2.0.1: {}
 
-  legacy-javascript@0.0.3: {}
+  legacy-javascript@0.0.4: {}
 
   levn@0.4.1:
     dependencies:
@@ -14736,21 +14743,21 @@ snapshots:
 
   matrix-events-sdk@0.0.1: {}
 
-  matrix-js-sdk@42.2.0:
+  matrix-js-sdk@45.0.0:
     dependencies:
       '@babel/runtime': 8.0.0
-      '@matrix-org/matrix-sdk-crypto-wasm': 18.6.0
+      '@matrix-org/matrix-sdk-crypto-wasm': 18.9.0
       another-json: 0.2.0
       bs58: 6.0.0
-      content-type: 2.1.0
+      content-type: 3.1.1
       loglevel: 1.9.2
       matrix-events-sdk: 0.0.1
-      matrix-widget-api: 1.19.0
+      matrix-widget-api: 1.20.0
       p-retry: 8.0.0
       sdp-transform: 3.0.0
       unhomoglyph: 1.0.6
 
-  matrix-widget-api@1.19.0:
+  matrix-widget-api@1.20.0:
     dependencies:
       '@types/events': 3.0.3
       events: 3.3.0
