@@ -4,7 +4,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/toolti
 
 /** Same footprint as the conversation's options trigger, so the header icons line up. */
 export const chatHeaderIconButtonClass =
-  'flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
+  'flex size-9 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 
 type HeaderIconButtonProps = {
   label: string;
@@ -44,10 +44,10 @@ export function CallControls({ startAudioLabel, startVideoLabel, onStartAudio, o
   return (
     <div className="flex items-center" data-testid="call-controls">
       <HeaderIconButton label={startAudioLabel} onClick={onStartAudio} testId="call-start-audio">
-        <Phone aria-hidden="true" className="size-4" />
+        <Phone aria-hidden="true" className="size-6" />
       </HeaderIconButton>
       <HeaderIconButton label={startVideoLabel} onClick={onStartVideo} testId="call-start-video">
-        <Video aria-hidden="true" className="size-4" />
+        <Video aria-hidden="true" className="size-6" />
       </HeaderIconButton>
     </div>
   );

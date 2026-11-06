@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useOutletContext } from 'react-router-dom';
 import { AuthorizationPrivilege, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import { FlowStateSearchResults } from '@/crd/components/search/FlowStateSearchResults';
-import { SubspaceFlowTabs } from '@/crd/components/space/SubspaceFlowTabs';
+import { hasMobileFlowBar, SubspaceFlowTabs } from '@/crd/components/space/SubspaceFlowTabs';
 import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
@@ -104,8 +104,8 @@ export default function CrdSubspaceCalloutsPage() {
           />
         ))}
 
-      {/* Clearance for the fixed h-14 mobile bottom bar (always rendered below sm). */}
-      <div className="h-20 sm:hidden" aria-hidden="true" />
+      {/* Clearance for the fixed h-14 mobile bottom bar, only while that bar renders (below sm). */}
+      {hasMobileFlowBar(phases.length, mobileMenu.available) && <div className="h-20 sm:hidden" aria-hidden="true" />}
     </div>
   );
 }
