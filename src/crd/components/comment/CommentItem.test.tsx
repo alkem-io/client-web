@@ -1,5 +1,7 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
+import type { ContributorPreviewData } from '@/crd/components/contributor/ContributorHoverCard';
 import type { CommentData, MessageAttachment } from './types';
 
 vi.mock('react-i18next', () => ({
@@ -131,5 +133,59 @@ describe('CommentItem links', () => {
     const backRef = container.querySelector('a[data-footnote-backref]');
     expect(backRef).not.toHaveAttribute('target');
     expect(container.querySelector('a[href="https://example.com/a"]')).toHaveAttribute('target', '_blank');
+  });
+});
+
+describe('CommentItem hover card', () => {
+  const preview: ContributorPreviewData = {
+    id: 'u1',
+    type: 'user',
+    name: 'Alice Smith',
+    href: '/user/alice',
+    tagline: 'Plants trees',
+    canMessage: true,
+  };
+  const linked: CommentData = { ...baseComment, author: { ...baseComment.author, profileUrl: '/user/alice' } };
+  const MESSAGE = { name: 'contributors.card.message' };
+  const hoverAvatar = () => userEvent.hover(screen.getByRole('link', { name: 'Alice Smith' }));
+  const renderWith = (comment: CommentData, onMessageContributor?: (c: ContributorPreviewData) => void) =>
+    render(
+      <CommentItem
+        comment={comment}
+        onDelete={noop}
+        onAddReaction={noop}
+        onRemoveReaction={noop}
+        canComment={false}
+        onMessageContributor={onMessageContributor}
+      />
+    );
+
+  test('an author with a preview opens a card showing the tagline', async () => {
+    renderWith({ ...linked, author: { ...linked.author, preview } });
+    await hoverAvatar();
+    expect(await screen.findByText('Plants trees')).toBeInTheDocument();
+  });
+
+  test('an author without a preview keeps the plain link and opens nothing', async () => {
+    renderWith(linked);
+    expect(screen.getByRole('link', { name: 'Alice Smith' })).toHaveAttribute('href', '/user/alice');
+    await hoverAvatar();
+    await new Promise(resolve => setTimeout(resolve, 400));
+    expect(document.querySelector('[data-slot="hover-card-content"]')).toBeNull();
+  });
+
+  test('the message button reports the preview to onMessageContributor', async () => {
+    const onMessageContributor = vi.fn();
+    renderWith({ ...linked, author: { ...linked.author, preview } }, onMessageContributor);
+    await hoverAvatar();
+    await userEvent.click(await screen.findByRole('button', MESSAGE));
+    expect(onMessageContributor).toHaveBeenCalledWith(preview);
+  });
+
+  test('without onMessageContributor there is no message button', async () => {
+    renderWith({ ...linked, author: { ...linked.author, preview } });
+    await hoverAvatar();
+    await screen.findByText('Plants trees');
+    expect(screen.queryByRole('button', MESSAGE)).not.toBeInTheDocument();
   });
 });
