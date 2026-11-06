@@ -1,7 +1,8 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
 
 const mockSendMessage = vi.fn();
@@ -73,8 +74,14 @@ const withComment = room({
   ],
 });
 
-function Harness({ value }: { value: Room }) {
-  const { thread, commentInput } = useCrdRoomComments({ roomId: 'room-1', room: value });
+function Harness({
+  value,
+  onMessageContributor,
+}: {
+  value: Room;
+  onMessageContributor?: (contributor: { id: string }) => void;
+}) {
+  const { thread, commentInput } = useCrdRoomComments({ roomId: 'room-1', room: value, onMessageContributor });
   return (
     <>
       {thread}
@@ -415,6 +422,35 @@ describe('useCrdRoomComments composers', () => {
     fireEvent.click(screen.getByRole('button', { name: 'collapse' }));
     fireEvent.click(screen.getByRole('button', { name: 'comments.reply' }));
     expect(within(replyBox()).queryByText('reply.png')).toBeNull();
+  });
+
+  test('the Message button on a comment author hover card reaches onMessageContributor', async () => {
+    mockBucketQuery.mockReturnValue(noBucket);
+    const onMessageContributor = vi.fn();
+    render(
+      <Harness
+        value={room({
+          messages: [
+            {
+              id: 'c1',
+              message: 'first comment',
+              timestamp: Date.now(),
+              reactions: [],
+              sender: {
+                type: ActorType.User,
+                id: 'u2',
+                profile: { id: 'p2', displayName: 'Other', url: '/u/other' },
+              },
+            },
+          ],
+        })}
+        onMessageContributor={onMessageContributor}
+      />
+    );
+    await userEvent.hover(screen.getAllByRole('link', { name: 'Other' })[0]);
+    await userEvent.click(await screen.findByRole('button', { name: 'contributors.card.message' }));
+    expect(onMessageContributor).toHaveBeenCalledOnce();
+    expect(onMessageContributor).toHaveBeenCalledWith(expect.objectContaining({ id: 'u2' }));
   });
 
   test('the bucket policy is not queried when the viewer cannot comment', () => {

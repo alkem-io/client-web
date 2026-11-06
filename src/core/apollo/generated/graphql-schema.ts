@@ -16885,6 +16885,7 @@ export type UpdateCalloutContentMutation = {
                         id: string;
                         displayName: string;
                         url: string;
+                        tagline?: string | undefined;
                         description?: string | undefined;
                         avatar?:
                           | {
@@ -17418,6 +17419,7 @@ export type UpdateCalloutVisibilityMutation = {
                         id: string;
                         displayName: string;
                         url: string;
+                        tagline?: string | undefined;
                         description?: string | undefined;
                         avatar?:
                           | {
@@ -18049,6 +18051,7 @@ export type CalloutContributionCommentsQuery = {
                                 id: string;
                                 displayName: string;
                                 url: string;
+                                tagline?: string | undefined;
                                 description?: string | undefined;
                                 avatar?:
                                   | {
@@ -19369,6 +19372,7 @@ export type CreateCalloutMutation = {
                         id: string;
                         displayName: string;
                         url: string;
+                        tagline?: string | undefined;
                         description?: string | undefined;
                         avatar?:
                           | {
@@ -20076,6 +20080,7 @@ export type CalloutDetailsQuery = {
                               id: string;
                               displayName: string;
                               url: string;
+                              tagline?: string | undefined;
                               description?: string | undefined;
                               avatar?:
                                 | {
@@ -20641,6 +20646,7 @@ export type CalloutDetailsFragment = {
                       id: string;
                       displayName: string;
                       url: string;
+                      tagline?: string | undefined;
                       description?: string | undefined;
                       avatar?:
                         | {
@@ -22940,6 +22946,7 @@ export type CreateDiscussionMutation = {
                     id: string;
                     displayName: string;
                     url: string;
+                    tagline?: string | undefined;
                     description?: string | undefined;
                     avatar?:
                       | {
@@ -23034,6 +23041,7 @@ export type UpdateDiscussionMutation = {
                     id: string;
                     displayName: string;
                     url: string;
+                    tagline?: string | undefined;
                     description?: string | undefined;
                     avatar?:
                       | {
@@ -23131,6 +23139,7 @@ export type DiscussionDetailsFragment = {
                   id: string;
                   displayName: string;
                   url: string;
+                  tagline?: string | undefined;
                   description?: string | undefined;
                   avatar?:
                     | {
@@ -23326,6 +23335,7 @@ export type PlatformDiscussionQuery = {
                             id: string;
                             displayName: string;
                             url: string;
+                            tagline?: string | undefined;
                             description?: string | undefined;
                             avatar?:
                               | {
@@ -23486,6 +23496,7 @@ export type MessageDetailsFragment = {
               id: string;
               displayName: string;
               url: string;
+              tagline?: string | undefined;
               description?: string | undefined;
               avatar?:
                 | {
@@ -23586,6 +23597,7 @@ export type CommentsWithMessagesFragment = {
                 id: string;
                 displayName: string;
                 url: string;
+                tagline?: string | undefined;
                 description?: string | undefined;
                 avatar?:
                   | {
@@ -24182,6 +24194,7 @@ export type RoomEventsSubscription = {
                         id: string;
                         displayName: string;
                         url: string;
+                        tagline?: string | undefined;
                         description?: string | undefined;
                         avatar?:
                           | {
@@ -24298,6 +24311,7 @@ export type CommunityUpdatesQuery = {
                             id: string;
                             displayName: string;
                             url: string;
+                            tagline?: string | undefined;
                             description?: string | undefined;
                             avatar?:
                               | {
@@ -24663,6 +24677,7 @@ export type ContributorDetailsFragment = {
         id: string;
         displayName: string;
         url: string;
+        tagline?: string | undefined;
         description?: string | undefined;
         avatar?:
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
@@ -31156,6 +31171,7 @@ export type SpaceAboutDetailsQuery = {
                       id: string;
                       url: string;
                       displayName: string;
+                      tagline?: string | undefined;
                       avatar?:
                         | {
                             __typename?: 'Visual';
@@ -31172,6 +31188,9 @@ export type SpaceAboutDetailsQuery = {
                             city?: string | undefined;
                             country?: string | undefined;
                           }
+                        | undefined;
+                      tagsets?:
+                        | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                         | undefined;
                     }
                   | undefined;
@@ -31185,6 +31204,7 @@ export type SpaceAboutDetailsQuery = {
                       id: string;
                       url: string;
                       displayName: string;
+                      tagline?: string | undefined;
                       avatar?:
                         | {
                             __typename?: 'Visual';
@@ -31201,6 +31221,9 @@ export type SpaceAboutDetailsQuery = {
                             city?: string | undefined;
                             country?: string | undefined;
                           }
+                        | undefined;
+                      tagsets?:
+                        | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                         | undefined;
                     }
                   | undefined;
@@ -31410,6 +31433,7 @@ export type SpaceAboutDetailsFragment = {
             id: string;
             url: string;
             displayName: string;
+            tagline?: string | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -31422,6 +31446,7 @@ export type SpaceAboutDetailsFragment = {
             location?:
               | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
               | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
           }
         | undefined;
     }>;
@@ -31434,6 +31459,7 @@ export type SpaceAboutDetailsFragment = {
             id: string;
             url: string;
             displayName: string;
+            tagline?: string | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -31446,6 +31472,7 @@ export type SpaceAboutDetailsFragment = {
             location?:
               | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
               | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
           }
         | undefined;
     }>;
@@ -32658,6 +32685,7 @@ export type UpdateSpaceMutation = {
                 id: string;
                 url: string;
                 displayName: string;
+                tagline?: string | undefined;
                 avatar?:
                   | {
                       __typename?: 'Visual';
@@ -32670,6 +32698,7 @@ export type UpdateSpaceMutation = {
                 location?:
                   | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                   | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
               }
             | undefined;
         }>;
@@ -32682,6 +32711,7 @@ export type UpdateSpaceMutation = {
                 id: string;
                 url: string;
                 displayName: string;
+                tagline?: string | undefined;
                 avatar?:
                   | {
                       __typename?: 'Visual';
@@ -32694,6 +32724,7 @@ export type UpdateSpaceMutation = {
                 location?:
                   | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                   | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
               }
             | undefined;
         }>;
@@ -32835,6 +32866,7 @@ export type SpaceInfoFragment = {
               id: string;
               url: string;
               displayName: string;
+              tagline?: string | undefined;
               avatar?:
                 | {
                     __typename?: 'Visual';
@@ -32847,6 +32879,7 @@ export type SpaceInfoFragment = {
               location?:
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                 | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
             }
           | undefined;
       }>;
@@ -32859,6 +32892,7 @@ export type SpaceInfoFragment = {
               id: string;
               url: string;
               displayName: string;
+              tagline?: string | undefined;
               avatar?:
                 | {
                     __typename?: 'Visual';
@@ -32871,6 +32905,7 @@ export type SpaceInfoFragment = {
               location?:
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                 | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
             }
           | undefined;
       }>;
@@ -33487,6 +33522,7 @@ export type SpacePageQuery = {
                       id: string;
                       url: string;
                       displayName: string;
+                      tagline?: string | undefined;
                       avatar?:
                         | {
                             __typename?: 'Visual';
@@ -33503,6 +33539,9 @@ export type SpacePageQuery = {
                             city?: string | undefined;
                             country?: string | undefined;
                           }
+                        | undefined;
+                      tagsets?:
+                        | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                         | undefined;
                     }
                   | undefined;
@@ -33516,6 +33555,7 @@ export type SpacePageQuery = {
                       id: string;
                       url: string;
                       displayName: string;
+                      tagline?: string | undefined;
                       avatar?:
                         | {
                             __typename?: 'Visual';
@@ -33532,6 +33572,9 @@ export type SpacePageQuery = {
                             city?: string | undefined;
                             country?: string | undefined;
                           }
+                        | undefined;
+                      tagsets?:
+                        | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
                         | undefined;
                     }
                   | undefined;
@@ -33633,6 +33676,7 @@ export type SpacePageQuery = {
                         url: string;
                         displayName: string;
                         type?: ProfileType | undefined;
+                        tagline?: string | undefined;
                         description?: string | undefined;
                         avatar?:
                           | {
@@ -33752,6 +33796,7 @@ export type SpacePageFragment = {
               id: string;
               url: string;
               displayName: string;
+              tagline?: string | undefined;
               avatar?:
                 | {
                     __typename?: 'Visual';
@@ -33764,6 +33809,7 @@ export type SpacePageFragment = {
               location?:
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                 | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
             }
           | undefined;
       }>;
@@ -33776,6 +33822,7 @@ export type SpacePageFragment = {
               id: string;
               url: string;
               displayName: string;
+              tagline?: string | undefined;
               avatar?:
                 | {
                     __typename?: 'Visual';
@@ -33788,6 +33835,7 @@ export type SpacePageFragment = {
               location?:
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                 | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
             }
           | undefined;
       }>;
@@ -33882,6 +33930,7 @@ export type SpacePageFragment = {
                 url: string;
                 displayName: string;
                 type?: ProfileType | undefined;
+                tagline?: string | undefined;
                 description?: string | undefined;
                 avatar?:
                   | {
@@ -39291,6 +39340,7 @@ export type CalendarEventDetailsQuery = {
                           id: string;
                           displayName: string;
                           url: string;
+                          tagline?: string | undefined;
                           description?: string | undefined;
                           avatar?:
                             | {
@@ -39455,6 +39505,7 @@ export type CalendarEventDetailsFragment = {
                   id: string;
                   displayName: string;
                   url: string;
+                  tagline?: string | undefined;
                   description?: string | undefined;
                   avatar?:
                     | {
@@ -39634,6 +39685,7 @@ export type CreateCalendarEventMutation = {
                     id: string;
                     displayName: string;
                     url: string;
+                    tagline?: string | undefined;
                     description?: string | undefined;
                     avatar?:
                       | {
@@ -39792,6 +39844,7 @@ export type UpdateCalendarEventMutation = {
                     id: string;
                     displayName: string;
                     url: string;
+                    tagline?: string | undefined;
                     description?: string | undefined;
                     avatar?:
                       | {
@@ -40537,6 +40590,7 @@ export type CalloutCommentsRevalidateQuery = {
                               id: string;
                               displayName: string;
                               url: string;
+                              tagline?: string | undefined;
                               description?: string | undefined;
                               avatar?:
                                 | {

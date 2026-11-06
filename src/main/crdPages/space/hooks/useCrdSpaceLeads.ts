@@ -1,5 +1,6 @@
 import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import type { LeadItem } from '@/crd/components/space/sidebar/InfoBlock';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { mapSidebarLeads } from '../dataMappers/spacePageDataMapper';
 
 /**
@@ -21,6 +22,7 @@ export function useCrdSpaceLeads(spaceId: string | undefined, skip?: boolean): {
     variables: { spaceId: spaceId ?? '' },
     skip: skip || !spaceId,
   });
+  const { userModel } = useCurrentUserContext();
   const membership = data?.lookup.space?.about.membership;
-  return { leads: mapSidebarLeads(membership?.leadUsers, membership?.leadOrganizations), loading };
+  return { leads: mapSidebarLeads(membership?.leadUsers, membership?.leadOrganizations, userModel?.id), loading };
 }

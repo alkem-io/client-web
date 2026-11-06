@@ -1,6 +1,7 @@
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import type { LeadItem } from '@/crd/components/space/sidebar/InfoBlock';
 import { getInitials } from '@/crd/lib/getInitials';
+import { mapContributorPreview, type PreviewProfileLike } from './contributorPreviewMapper';
 
 export { getInitials };
 
@@ -22,42 +23,42 @@ export function mapSpaceVisibility(visibility: SpaceVisibility | undefined): Spa
   }
 }
 
-type LeadContributorLike = {
-  id: string;
-  profile?: {
-    displayName?: string | null;
-    avatar?: { uri?: string | null } | null;
-    url?: string | null;
-    location?: { city?: string | null; country?: string | null } | null;
-  } | null;
-};
+type LeadContributorLike = { id: string; profile?: PreviewProfileLike | null };
 
-function mapLeadContributor(contributor: LeadContributorLike, type: 'person' | 'org'): LeadItem | undefined {
+function mapLeadContributor(
+  contributor: LeadContributorLike,
+  type: 'person' | 'org',
+  currentUserId: string | undefined
+): LeadItem | undefined {
   if (!contributor.profile) return undefined;
-  const name = contributor.profile.displayName ?? '';
-  const cityCountry = [contributor.profile.location?.city, contributor.profile.location?.country]
-    .filter(Boolean)
-    .join(', ');
+  const preview = mapContributorPreview(
+    contributor.id,
+    type === 'person' ? 'user' : 'organization',
+    contributor.profile,
+    currentUserId
+  );
   return {
-    id: contributor.id,
-    name,
-    avatarUrl: contributor.profile.avatar?.uri ?? undefined,
-    initials: getInitials(name) || '??',
-    location: cityCountry || undefined,
-    href: contributor.profile.url ?? undefined,
+    id: preview.id,
+    name: preview.name,
+    avatarUrl: preview.avatarUrl,
+    initials: getInitials(preview.name) || '??',
+    location: preview.locationLabel,
+    href: preview.href,
     type,
+    preview,
   };
 }
 
 export function mapSidebarLeads(
   leadUsers: LeadContributorLike[] | undefined,
-  leadOrganizations?: LeadContributorLike[] | undefined
+  leadOrganizations: LeadContributorLike[] | undefined,
+  currentUserId: string | undefined
 ): LeadItem[] {
   const users = (leadUsers ?? [])
-    .map(u => mapLeadContributor(u, 'person'))
+    .map(u => mapLeadContributor(u, 'person', currentUserId))
     .filter((l): l is LeadItem => l !== undefined);
   const orgs = (leadOrganizations ?? [])
-    .map(o => mapLeadContributor(o, 'org'))
+    .map(o => mapLeadContributor(o, 'org', currentUserId))
     .filter((l): l is LeadItem => l !== undefined);
   return [...users, ...orgs];
 }

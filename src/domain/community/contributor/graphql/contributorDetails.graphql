@@ -5,6 +5,7 @@ fragment ContributorDetails on Actor {
     id
     displayName
     url
+    tagline
     avatar: visual(type: AVATAR) {
       ...VisualModel
     }
