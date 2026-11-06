@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events';
 import { act, renderHook } from '@testing-library/react';
 import { createElement, type ReactNode } from 'react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Drives the real watcher, call stores, tab badge and header count together, with only the
 // Matrix client, GraphQL and the context around them faked. Each "tab" gets fresh module
@@ -165,6 +165,16 @@ const setDocumentActive = (active: boolean) =>
   });
 
 describe('the incoming-call alert', () => {
+  // Each tab re-imports its modules after resetModules. The first import also transforms the
+  // whole graph, which under a full parallel run outlasts a test's 5 s budget; done once here,
+  // each tab only evaluates modules that are already transformed.
+  beforeAll(async () => {
+    await import('./useIncomingCallsWatcher');
+    await import('@/main/tabBadge/useUnreadTabBadge');
+    await import('@/main/userMessaging/useUnreadConversationsCount');
+    await import('./incomingCallStore');
+  }, 60_000);
+
   let tabs: Awaited<ReturnType<typeof openTab>>[] = [];
   const tab = async () => {
     const opened = await openTab();
