@@ -1,4 +1,6 @@
+import { ApolloError } from '@apollo/client';
 import { renderHook } from '@testing-library/react';
+import { GraphQLError } from 'graphql';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 
 // ---- Mocks ----
@@ -6,7 +8,7 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 const startDirectChatMock = vi.fn();
 vi.mock('@/main/crdPages/unifiedChat/useStartDirectChat', () => ({
   useStartDirectChat: (userId: string | undefined) => ({
-    startDirectChat: () => startDirectChatMock(userId),
+    startDirectChat: (id = userId) => startDirectChatMock(id),
   }),
 }));
 
@@ -59,6 +61,29 @@ describe('useOpenDirectChatHandler (US1 — profile Message → open 1:1 chat)',
     await result.current.onOpenChat();
 
     expect(toastErrorMock).toHaveBeenCalledWith('common.messagePopover.openChatError');
+  });
+
+  test('opens the chat with a call-time recipient when the hook has none', async () => {
+    startDirectChatMock.mockResolvedValue({ conversationId: 'conv-9', roomId: 'room-9' });
+
+    const { result } = renderHook(() => useOpenDirectChatHandler({ recipientUserId: undefined }));
+    await result.current.onOpenChat('user-9');
+
+    expect(startDirectChatMock).toHaveBeenCalledWith('user-9');
+  });
+
+  test('a MESSAGING_NOT_ENABLED refusal shows exactly one cannotBeReached toast', async () => {
+    startDirectChatMock.mockRejectedValue(
+      new ApolloError({
+        graphQLErrors: [new GraphQLError('not enabled', { extensions: { code: 'MESSAGING_NOT_ENABLED' } })],
+      })
+    );
+
+    const { result } = renderHook(() => useOpenDirectChatHandler({ recipientUserId: 'user-2' }));
+    await result.current.onOpenChat();
+
+    expect(toastErrorMock).toHaveBeenCalledTimes(1);
+    expect(toastErrorMock).toHaveBeenCalledWith('common.messagePopover.cannotBeReached');
   });
 
   test('throws when no recipient is loaded', async () => {

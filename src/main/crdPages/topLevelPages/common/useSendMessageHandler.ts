@@ -1,3 +1,4 @@
+import { ApolloError } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import {
@@ -11,7 +12,7 @@ export type SendMessageHandlerResult = {
 };
 
 export type OpenDirectChatHandlerResult = {
-  onOpenChat: () => Promise<void>;
+  onOpenChat: (targetUserId?: string) => Promise<void>;
 };
 
 /**
@@ -21,22 +22,31 @@ export type OpenDirectChatHandlerResult = {
  * (dedup-or-create, FR-002). There is NO intermediate compose dialog: the user
  * writes inside the chat thread itself, so the handler opens/focuses the
  * conversation and does not send any message.
+ *
+ * `onOpenChat` takes an optional call-time recipient for hosts that list many
+ * contributors; it defaults to `recipientUserId`.
  */
 export const useOpenDirectChatHandler = (params: {
   recipientUserId: string | undefined;
 }): OpenDirectChatHandlerResult => {
   const { recipientUserId } = params;
-  const { t } = useTranslation('crd-profilePages');
+  // Lazily loaded namespace: without useSuspense: false every host suspends on first render; `t` is read only at click time.
+  const { t } = useTranslation('crd-profilePages', { useSuspense: false });
   const { startDirectChat } = useStartDirectChat(recipientUserId);
 
-  const onOpenChat = async () => {
-    if (!recipientUserId) {
+  const onOpenChat = async (targetUserId: string | undefined = recipientUserId) => {
+    if (!targetUserId) {
       throw new Error('Recipient user not loaded.');
     }
     try {
-      await startDirectChat();
-    } catch {
-      toast.error(t('common.messagePopover.openChatError'));
+      await startDirectChat(targetUserId);
+    } catch (err) {
+      const code = err instanceof ApolloError ? err.graphQLErrors[0]?.extensions?.code : undefined;
+      toast.error(
+        code === 'MESSAGING_NOT_ENABLED'
+          ? t('common.messagePopover.cannotBeReached')
+          : t('common.messagePopover.openChatError')
+      );
     }
   };
 
