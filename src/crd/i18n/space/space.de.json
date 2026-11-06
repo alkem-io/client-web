@@ -962,9 +962,8 @@
     }
   },
   "postSnippet": {
-    "readMore": "… Mehr lesen",
-    "readLess": "Weniger lesen",
-    "seeFullDescription": "Vollständige Beschreibung anzeigen"
+    "readMore": "Mehr lesen",
+    "showLess": "Weniger anzeigen"
   },
   "postPreview": {
     "createdBy": "Erstellt von",

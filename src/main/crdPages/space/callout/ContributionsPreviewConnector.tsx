@@ -3,12 +3,14 @@ import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import { ContributionDocumentCard } from '@/crd/components/contribution/ContributionDocumentCard';
+import { CONTRIBUTION_GRID_COLUMNS } from '@/crd/components/contribution/ContributionGrid';
 import { ContributionLinkList } from '@/crd/components/contribution/ContributionLinkList';
 import { ContributionMemoCard } from '@/crd/components/contribution/ContributionMemoCard';
 import { ContributionPostCard } from '@/crd/components/contribution/ContributionPostCard';
 import { ContributionsPreviewSkeleton } from '@/crd/components/contribution/ContributionsPreviewSkeleton';
 import { ContributionWhiteboardCard } from '@/crd/components/contribution/ContributionWhiteboardCard';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
+import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { CroppedMarkdown } from '@/crd/primitives/croppedMarkdown';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -35,7 +37,6 @@ const ITEMS_BEFORE_MORE = 3;
 
 type ContributionsPreviewConnectorProps = {
   callout: CalloutDetailsModelExtended;
-  onShowAll: () => void;
   onContributionClick?: (contributionId: string, memoId?: string) => void;
   onOpenMemoSignedCopies?: (memoId: string) => void;
   /**
@@ -48,7 +49,6 @@ type ContributionsPreviewConnectorProps = {
 
 export function ContributionsPreviewConnector({
   callout,
-  onShowAll,
   onContributionClick,
   onOpenMemoSignedCopies,
   isTaskBoard,
@@ -72,7 +72,7 @@ export function ContributionsPreviewConnector({
   const {
     inViewRef,
     loaded,
-    contributions: { items, total },
+    contributions: { items, total, hasMore: hasMoreToFetch, setFetchAll },
   } = useCalloutContributions({
     callout,
     contributionType: contributionType ?? CalloutContributionType.Post,
@@ -175,11 +175,14 @@ export function ContributionsPreviewConnector({
     | undefined
   >(undefined);
 
+  // "+N more" expands the preview in place; the detail dialog stays behind the post title.
+  const showAll = () => setFetchAll(true);
+
   if (!hasContributionType || !contributionType) {
     return <div ref={inViewRef} />;
   }
 
-  const hasMore = total > MAX_PREVIEW_ITEMS;
+  const hasMore = hasMoreToFetch && total > MAX_PREVIEW_ITEMS;
   const visibleItems = hasMore ? contributions.slice(0, ITEMS_BEFORE_MORE) : contributions;
   const moreCount = total - ITEMS_BEFORE_MORE;
 
@@ -193,7 +196,11 @@ export function ContributionsPreviewConnector({
   const loadingBody =
     !loaded && expectedCount > 0 ? (
       <output className="block" aria-label={t('a11y.loadingContributions')}>
-        <ContributionsPreviewSkeleton kind={mapContributionTypeToPreviewKind(contributionType)} count={expectedCount} />
+        <ContributionsPreviewSkeleton
+          kind={mapContributionTypeToPreviewKind(contributionType)}
+          count={expectedCount}
+          columns={3}
+        />
       </output>
     ) : undefined;
 
@@ -260,7 +267,7 @@ export function ContributionsPreviewConnector({
               />
             )}
             {hasMore && (
-              <Button variant="ghost" size="sm" className="mt-2 text-muted-foreground" onClick={onShowAll}>
+              <Button variant="ghost" size="sm" className="mt-2 text-muted-foreground" onClick={showAll}>
                 {t('callout.moreContributions', { count: moreCount })}
               </Button>
             )}
@@ -287,7 +294,7 @@ export function ContributionsPreviewConnector({
     return (
       <div ref={inViewRef}>
         {header}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className={cn('grid gap-3', CONTRIBUTION_GRID_COLUMNS[3])}>
           {visibleItems.map(contribution => (
             <ContributionCard
               key={contribution.id}
@@ -301,7 +308,7 @@ export function ContributionsPreviewConnector({
             lastContribution={lastContribution}
             contributionType={contributionType}
             label={t('callout.moreContributions', { count: moreCount })}
-            onClick={onShowAll}
+            onClick={showAll}
           />
         </div>
         {addConnector}
@@ -316,7 +323,7 @@ export function ContributionsPreviewConnector({
       {header}
       {loadingBody ??
         ((visibleItems.length > 0 || hasMore) && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className={cn('grid gap-3', CONTRIBUTION_GRID_COLUMNS[3])}>
             {visibleItems.map(contribution => (
               <ContributionCard
                 key={contribution.id}
@@ -330,7 +337,7 @@ export function ContributionsPreviewConnector({
               <button
                 type="button"
                 className="flex items-center justify-center rounded-lg border border-dashed border-border bg-muted/20 hover:bg-muted/40 transition-colors cursor-pointer text-muted-foreground text-card-title min-h-[100px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                onClick={onShowAll}
+                onClick={showAll}
               >
                 {t('callout.moreContributions', { count: moreCount })}
               </button>

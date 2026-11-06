@@ -72,7 +72,6 @@ describe('ContributionsPreviewConnector signed copies', () => {
     render(
       <ContributionsPreviewConnector
         callout={callout as never}
-        onShowAll={vi.fn()}
         onContributionClick={onContributionClick}
         onOpenMemoSignedCopies={onOpenMemoSignedCopies}
       />
@@ -103,7 +102,7 @@ describe('ContributionsPreviewConnector signed copies', () => {
       contributions: [{ id: 'contribution-1' }],
     };
 
-    render(<ContributionsPreviewConnector callout={callout as never} onShowAll={vi.fn()} />);
+    render(<ContributionsPreviewConnector callout={callout as never} />);
 
     expect(screen.queryByRole('button', { name: 'Signed copies (1)' })).not.toBeInTheDocument();
   });
