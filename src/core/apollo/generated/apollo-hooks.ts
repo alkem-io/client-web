@@ -1123,6 +1123,7 @@ export const ContributorDetailsFragmentDoc = gql`
     id
     displayName
     url
+    tagline
     avatar: visual(type: AVATAR) {
       ...VisualModel
     }
@@ -2603,10 +2604,16 @@ export const SpaceAboutDetailsFragmentDoc = gql`
         avatar: visual(type: AVATAR) {
           ...VisualModel
         }
+        tagline
         location {
           id
           city
           country
+        }
+        tagsets {
+          id
+          name
+          tags
         }
       }
     }
@@ -2619,10 +2626,16 @@ export const SpaceAboutDetailsFragmentDoc = gql`
         avatar: visual(type: AVATAR) {
           ...VisualModel
         }
+        tagline
         location {
           id
           city
           country
+        }
+        tagsets {
+          id
+          name
+          tags
         }
       }
     }

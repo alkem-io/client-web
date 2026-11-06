@@ -11,6 +11,7 @@ type ContributorModel = {
     displayName: string;
     url: string;
     description?: string;
+    tagline?: string;
     avatar?: VisualModel;
     tagsets?: TagsetModel[];
     location?: {
