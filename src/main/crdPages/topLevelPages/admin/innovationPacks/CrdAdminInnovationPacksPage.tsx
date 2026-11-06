@@ -11,11 +11,13 @@ import { canDeleteOrgResource } from '@/main/crdPages/innovationPack/innovationP
 import { buildInnovationPackSettingsUrl } from '@/main/routing/urlBuilders';
 import { StoreEntityList } from '../_shared/StoreEntityList';
 import { type AdminStoreEntityRow, toSearchVisibility } from '../_shared/storeEntityRow';
+import { usePendingRows } from '../_shared/usePendingRows';
 
 const CrdAdminInnovationPacksPage = () => {
   const { t } = useTranslation();
   const notify = useNotification();
   const guard = usePermissionDeniedNotifier();
+  const promoteRows = usePendingRows();
   const { data, loading } = usePlatformAdminInnovationPacksQuery();
 
   const [deletePack] = useDeleteInnovationPackMutation({
@@ -26,7 +28,7 @@ const CrdAdminInnovationPacksPage = () => {
 
   // No refetch: the mutation selects `{ id promote }`, so Apollo updates the
   // cached row in place.
-  const [updatePromote, { loading: savingPromote }] = useAdminUpdateInnovationPackPromoteMutation();
+  const [updatePromote] = useAdminUpdateInnovationPackPromoteMutation();
 
   const rows: AdminStoreEntityRow[] = (data?.platformAdmin.innovationPacks ?? []).map(pack => ({
     id: pack.id,
@@ -48,9 +50,11 @@ const CrdAdminInnovationPacksPage = () => {
         void deletePack({ variables: { innovationPackId: row.id } });
       }}
       onPromoteChange={(row, next) => {
-        void guard(() => updatePromote({ variables: { innovationPackId: row.id, promote: next } })).catch(() => {});
+        void promoteRows
+          .run(row.id, () => guard(() => updatePromote({ variables: { innovationPackId: row.id, promote: next } })))
+          .catch(() => {});
       }}
-      promoteSaving={savingPromote}
+      isPromoteSaving={row => promoteRows.isPending(row.id)}
     />
   );
 };

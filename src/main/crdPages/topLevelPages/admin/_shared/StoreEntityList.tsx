@@ -14,8 +14,8 @@ type StoreEntityListProps = {
   onDelete?: (row: AdminStoreEntityRow) => void;
   /** Omit for sections without promotion (Innovation Hubs). */
   onPromoteChange?: (row: AdminStoreEntityRow, next: boolean) => void;
-  /** True while a promote change is in flight. */
-  promoteSaving?: boolean;
+  /** True while this row's promote change is in flight. */
+  isPromoteSaving?: (row: AdminStoreEntityRow) => boolean;
 };
 
 /**
@@ -23,7 +23,7 @@ type StoreEntityListProps = {
  * Innovation Hubs, Virtual Contributors). Identical columns + client-side
  * search/pagination; only the data + delete differ per section.
  */
-export function StoreEntityList({ rows, loading, onDelete, onPromoteChange, promoteSaving }: StoreEntityListProps) {
+export function StoreEntityList({ rows, loading, onDelete, onPromoteChange, isPromoteSaving }: StoreEntityListProps) {
   const { t } = useTranslation('crd-admin');
   const { searchTerm, onSearchTermChange, filteredRows } = useAdminListSearch(rows);
 
@@ -45,7 +45,7 @@ export function StoreEntityList({ rows, loading, onDelete, onPromoteChange, prom
           <PromoteCheckboxCell
             checked={row.promote}
             name={row.name}
-            disabled={promoteSaving}
+            saving={isPromoteSaving?.(row)}
             onCheckedChange={next => onPromoteChange(row, next)}
           />
         ),

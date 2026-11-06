@@ -5,8 +5,11 @@ type PromoteCheckboxCellProps = {
   checked: boolean;
   /** Resource display name — the checkbox's accessible name reads "Promote <name>". */
   name: string;
-  /** True while a promote change is in flight; blocks further clicks. */
-  disabled?: boolean;
+  /**
+   * True while this row's change is in flight. Further clicks are ignored, but
+   * the box stays focusable (aria-disabled, not disabled) so keyboard focus is kept.
+   */
+  saving?: boolean;
   onCheckedChange: (next: boolean) => void;
 };
 
@@ -15,16 +18,19 @@ type PromoteCheckboxCellProps = {
  * platform-promote flag. The checked state always comes from the caller's
  * data, so a failed save leaves the box showing the stored value.
  */
-export function PromoteCheckboxCell({ checked, name, disabled, onCheckedChange }: PromoteCheckboxCellProps) {
+export function PromoteCheckboxCell({ checked, name, saving, onCheckedChange }: PromoteCheckboxCellProps) {
   const { t } = useTranslation('crd-admin');
 
   return (
     <Checkbox
       checked={checked}
-      disabled={disabled}
       aria-label={t('columns.promoteOf', { name })}
-      aria-busy={disabled || undefined}
-      onCheckedChange={value => onCheckedChange(value === true)}
+      className="aria-busy:cursor-wait aria-busy:opacity-50"
+      aria-disabled={saving || undefined}
+      aria-busy={saving || undefined}
+      onCheckedChange={value => {
+        if (!saving) onCheckedChange(value === true);
+      }}
     />
   );
 }

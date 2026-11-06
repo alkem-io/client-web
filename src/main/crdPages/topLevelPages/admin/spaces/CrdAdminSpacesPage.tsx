@@ -19,6 +19,7 @@ import { VisibilityChipCell, type VisibilityChipTone } from '@/crd/components/ad
 import { SpaceSettingsDialog } from '@/crd/components/admin/spaces/SpaceSettingsDialog';
 import { Button } from '@/crd/primitives/button';
 import useCanManageLicensePlans from '@/domain/platformAdmin/domain/licensing/useCanManageLicensePlans';
+import { usePendingRows } from '../_shared/usePendingRows';
 import { useAdminListSearch } from '../useAdminListSearch';
 import { SpaceLicensePlansDialog } from './SpaceLicensePlansDialog';
 import { type AdminSpaceRow, mapSpaceToRow } from './spaceListMapper';
@@ -35,6 +36,7 @@ const CrdAdminSpacesPage = () => {
   const { t: tApp } = useTranslation();
   const notify = useNotification();
   const guard = usePermissionDeniedNotifier();
+  const promoteRows = usePendingRows();
   const canManageLicensePlans = useCanManageLicensePlans();
   // `errorPolicy: 'all'` so one space with a corrupt server-side authorization
   // policy on its nested `about.provider` (AUTHORIZATION_INVALID_POLICY) doesn't
@@ -65,7 +67,7 @@ const CrdAdminSpacesPage = () => {
   const savingSettings = savingVisibility || savingNameId;
   // No refetch: the mutation selects `{ id promote }`, so Apollo updates the
   // cached row in place and the checkbox re-renders from it.
-  const [updatePromote, { loading: savingPromote }] = useAdminUpdateSpacePromoteMutation();
+  const [updatePromote] = useAdminUpdateSpacePromoteMutation();
 
   const rows = (data?.platformAdmin.spaces ?? []).map(mapSpaceToRow);
   const { searchTerm, onSearchTermChange, filteredRows } = useAdminListSearch(rows);
@@ -153,9 +155,11 @@ const CrdAdminSpacesPage = () => {
           <PromoteCheckboxCell
             checked={row.promote}
             name={row.name}
-            disabled={savingPromote}
+            saving={promoteRows.isPending(row.id)}
             onCheckedChange={next => {
-              void guard(() => updatePromote({ variables: { spaceId: row.id, promote: next } })).catch(() => {});
+              void promoteRows
+                .run(row.id, () => guard(() => updatePromote({ variables: { spaceId: row.id, promote: next } })))
+                .catch(() => {});
             }}
           />
         ),

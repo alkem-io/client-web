@@ -108,9 +108,21 @@ describe('StoreEntityList', () => {
       expect(screen.queryByRole('columnheader', { name: 'columns.promoteHeader' })).toBeNull();
     });
 
-    test('boxes are disabled while promoteSaving', () => {
-      render(<StoreEntityList rows={promoted} loading={false} onPromoteChange={vi.fn()} promoteSaving={true} />);
-      expect(screen.getByRole('checkbox', { name: promoteLabel('Pack One') })).toBeDisabled();
+    test('only the row whose save is in flight is busy; the others stay usable', async () => {
+      const onPromoteChange = vi.fn();
+      render(
+        <StoreEntityList
+          rows={promoted}
+          loading={false}
+          onPromoteChange={onPromoteChange}
+          isPromoteSaving={row => row.id === 'p1'}
+        />
+      );
+      expect(screen.getByRole('checkbox', { name: promoteLabel('Pack One') })).toHaveAttribute('aria-busy', 'true');
+      const other = screen.getByRole('checkbox', { name: promoteLabel('Pack Two') });
+      expect(other).not.toHaveAttribute('aria-busy');
+      await userEvent.click(other);
+      expect(onPromoteChange).toHaveBeenCalledWith(expect.objectContaining({ id: 'p2' }), true);
     });
   });
 });

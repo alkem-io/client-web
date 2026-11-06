@@ -43,15 +43,18 @@ describe('PromoteCheckboxCell', () => {
     expect(onCheckedChange).toHaveBeenCalledWith(false);
   });
 
-  test('a disabled (saving) box is busy and blocks the click', async () => {
+  test('a saving box is busy, ignores clicks and keeps keyboard focus', async () => {
     const onCheckedChange = vi.fn();
     render(
-      <PromoteCheckboxCell checked={false} name="Green Cities Lab" disabled={true} onCheckedChange={onCheckedChange} />
+      <PromoteCheckboxCell checked={false} name="Green Cities Lab" saving={true} onCheckedChange={onCheckedChange} />
     );
     const box = screen.getByRole('checkbox', { name: 'Promote Green Cities Lab' });
-    expect(box).toBeDisabled();
+    expect(box).not.toBeDisabled();
     expect(box).toHaveAttribute('aria-busy', 'true');
+    expect(box).toHaveAttribute('aria-disabled', 'true');
     await userEvent.click(box);
     expect(onCheckedChange).not.toHaveBeenCalled();
+    expect(box).toHaveFocus();
+    expect(box).not.toBeChecked();
   });
 });

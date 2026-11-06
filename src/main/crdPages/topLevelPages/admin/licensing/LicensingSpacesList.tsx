@@ -17,6 +17,7 @@ import {
 } from '@/crd/components/admin/AdminSearchableTable';
 import { PromoteCheckboxCell } from '@/crd/components/admin/columns/PromoteCheckboxCell';
 import { Button } from '@/crd/primitives/button';
+import { usePendingRows } from '../_shared/usePendingRows';
 import { SpaceLicensePlansDialog } from '../spaces/SpaceLicensePlansDialog';
 import { useAdminListSearch } from '../useAdminListSearch';
 import { ActivePlansCell } from './ActivePlansCell';
@@ -48,6 +49,7 @@ export function LicensingSpacesList({ plans }: { plans: LicensingPlan[] }) {
   const { t } = useTranslation('crd-admin');
   const notify = useNotification();
   const guard = usePermissionDeniedNotifier();
+  const promoteRows = usePendingRows();
   // `errorPolicy: 'all'`, as the Spaces section: one space with a corrupt
   // nested policy must not blank the whole list.
   const { data, loading } = useLicensingAdminSpacesQuery({ errorPolicy: 'all' });
@@ -60,7 +62,7 @@ export function LicensingSpacesList({ plans }: { plans: LicensingPlan[] }) {
 
   // No refetch: the mutation selects `{ id promote }`, so Apollo updates the
   // cached row in place.
-  const [updatePromote, { loading: savingPromote }] = useAdminUpdateSpacePromoteMutation();
+  const [updatePromote] = useAdminUpdateSpacePromoteMutation();
 
   const rows: LicensingSpaceRow[] = (data?.platformAdmin.spaces ?? []).map(space => ({
     id: space.id,
@@ -115,9 +117,11 @@ export function LicensingSpacesList({ plans }: { plans: LicensingPlan[] }) {
           <PromoteCheckboxCell
             checked={row.promote}
             name={row.name}
-            disabled={savingPromote}
+            saving={promoteRows.isPending(row.id)}
             onCheckedChange={next => {
-              void guard(() => updatePromote({ variables: { spaceId: row.id, promote: next } })).catch(() => {});
+              void promoteRows
+                .run(row.id, () => guard(() => updatePromote({ variables: { spaceId: row.id, promote: next } })))
+                .catch(() => {});
             }}
           />
         ),

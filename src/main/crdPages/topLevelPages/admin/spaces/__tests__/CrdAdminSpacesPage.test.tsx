@@ -18,13 +18,12 @@ const deleteSpaceMock = vi.fn();
 const updateSpaceVisibilityMock = vi.fn(() => Promise.resolve());
 const updateSpaceNameIdMock = vi.fn(() => Promise.resolve());
 const updateSpacePromoteMock = vi.fn((_options: unknown) => Promise.resolve());
-const promoteLoading = { loading: false };
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   usePlatformAdminSpacesListQuery: () => useSpacesListMock(),
   useDeleteSpaceMutation: () => [deleteSpaceMock, { loading: false }],
   useAdminUpdateSpaceVisibilityMutation: () => [updateSpaceVisibilityMock, { loading: false }],
   useAdminUpdateSpaceNameIdMutation: () => [updateSpaceNameIdMock, { loading: false }],
-  useAdminUpdateSpacePromoteMutation: () => [updateSpacePromoteMock, promoteLoading],
+  useAdminUpdateSpacePromoteMutation: () => [updateSpacePromoteMock, { loading: false }],
   refetchPlatformAdminSpacesListQuery: () => ({}),
 }));
 const notify = vi.fn();
@@ -64,7 +63,6 @@ beforeEach(() => {
   updateSpaceVisibilityMock.mockResolvedValue(undefined);
   updateSpaceNameIdMock.mockResolvedValue(undefined);
   updateSpacePromoteMock.mockResolvedValue(undefined);
-  promoteLoading.loading = false;
   canManageLicensePlansMock.mockReturnValue(true);
 });
 
@@ -209,11 +207,17 @@ describe('CrdAdminSpacesPage', () => {
       expect(screen.queryByRole('columnheader', { name: 'columns.promoteHeader' })).toBeNull();
     });
 
-    test('boxes are disabled while a promote save is in flight', () => {
+    test('a save in flight makes only its own row busy, and that box keeps focus', async () => {
       withPromote([true, false]);
-      promoteLoading.loading = true;
+      updateSpacePromoteMock.mockReturnValueOnce(new Promise(() => {}));
       render(<CrdAdminSpacesPage />);
-      expect(screen.getByRole('checkbox', { name: promoteLabel('Alpha') })).toBeDisabled();
+      const alpha = screen.getByRole('checkbox', { name: promoteLabel('Alpha') });
+      await userEvent.click(alpha);
+      await waitFor(() => expect(alpha).toHaveAttribute('aria-busy', 'true'));
+      expect(alpha).toHaveFocus();
+      const beta = screen.getByRole('checkbox', { name: promoteLabel('Beta [ARCHIVED]') });
+      expect(beta).not.toHaveAttribute('aria-busy');
+      expect(beta).not.toBeDisabled();
     });
 
     test('a permission refusal notifies exactly once and the box keeps the stored value', async () => {
