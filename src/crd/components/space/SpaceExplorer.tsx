@@ -31,6 +31,8 @@ export type SpaceExplorerProps = {
   membershipFilter: SpacesFilterValue;
   authenticated: boolean;
   loadingSearchResults?: boolean;
+  /** How many spaces match the search terms in total, when known; shown next to the terms. */
+  searchTotal?: number;
   onSearchTermsChange: (terms: string[]) => void;
   onMembershipFilterChange?: (filter: SpacesFilterValue) => void;
   typeFilter: SpaceTypeFilter;
@@ -58,6 +60,7 @@ export function SpaceExplorer({
   membershipFilter,
   authenticated,
   loadingSearchResults,
+  searchTotal,
   onSearchTermsChange,
   onMembershipFilterChange,
   typeFilter,
@@ -283,10 +286,12 @@ export function SpaceExplorer({
             </div>
           )}
 
-          {/* No count: the loaded spaces are only a page of the results, so any number would understate them. */}
-          {searchTerms.length > 0 && !showSkeletons && spaces.length > 0 && (
+          {/* The count is the search's total, not the loaded spaces, which are only a page of the results. */}
+          {searchTerms.length > 0 && !showSkeletons && (spaces.length > 0 || searchTotal === 0) && (
             <p className="mb-4 text-body text-muted-foreground">
-              {t('spaces.matchingTerms', { terms: searchTerms.join(', ') })}
+              {searchTotal === undefined
+                ? t('spaces.matchingTerms', { terms: searchTerms.join(', ') })
+                : t('spaces.matchingTermsCount', { count: searchTotal, terms: searchTerms.join(', ') })}
             </p>
           )}
 

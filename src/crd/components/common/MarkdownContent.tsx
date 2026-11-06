@@ -1,6 +1,6 @@
 import { defaultSchema } from 'hast-util-sanitize';
 import type { ComponentPropsWithoutRef } from 'react';
-import Markdown from 'react-markdown';
+import Markdown, { type Components } from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 import remarkGfm from 'remark-gfm';
@@ -15,7 +15,9 @@ const IFRAME_ALLOWED_ATTRIBUTES = [
   'width',
   'height',
   'title',
-  'allow',
+  // The only value the editor writes (markdownConverter.ts). An author must not be able to delegate
+  // camera or microphone to an embedded origin: the app shell grants capture without checking it.
+  ['allow', 'clipboard-write'],
   'loading',
   'frameborder',
   'referrerpolicy',
@@ -34,6 +36,9 @@ const sanitizeSchema = {
   },
 };
 
+/** `all`: every web link, wherever it points. `external`: web links to another origin only. */
+export type NewTabLinks = 'all' | 'external';
+
 export type MarkdownContentProps = {
   /** Raw markdown string — rendered via react-markdown, not dangerouslySetInnerHTML */
   content: string;
@@ -44,6 +49,12 @@ export type MarkdownContentProps = {
    * typed instead of disappearing.
    */
   allowHtml?: boolean;
+  /**
+   * Which web links open in a new tab. Off by default, leaving every link a bare
+   * anchor that follows in place. In-page (`#...`) and non-web (`mailto:`) links
+   * are never affected.
+   */
+  newTabLinks?: NewTabLinks;
 };
 
 /**
@@ -61,7 +72,7 @@ export type MarkdownContentProps = {
  * Does NOT depend on @tailwindcss/typography (prose classes). Typography is applied
  * via Tailwind's `[&_element]` descendant selector pattern.
  */
-export function MarkdownContent({ content, className, allowHtml = true }: MarkdownContentProps) {
+export function MarkdownContent({ content, className, allowHtml = true, newTabLinks }: MarkdownContentProps) {
   const { iframeAllowedUrls } = useMarkdownConfig();
 
   return (
@@ -81,7 +92,7 @@ export function MarkdownContent({ content, className, allowHtml = true }: Markdo
         '[&_p]:mb-3 [&_p]:leading-relaxed [&_p]:text-muted-foreground',
         '[&_p:last-child]:mb-0',
         // Links
-        '[&_a]:text-primary [&_a]:no-underline hover:[&_a]:underline',
+        '[&_a]:text-primary [&_a]:no-underline hover:[&_a]:underline [&_a]:rounded-sm [&_a]:focus-visible:outline-none [&_a]:focus-visible:ring-2 [&_a]:focus-visible:ring-ring',
         // Lists
         '[&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-3',
         '[&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-3',
@@ -117,13 +128,43 @@ export function MarkdownContent({ content, className, allowHtml = true }: Markdo
             ? [[rehypeRaw, { passThrough: ['iframe'] }], [rehypeSanitize, sanitizeSchema], rehypeSanitizeStyles]
             : [[rehypeSanitize, sanitizeSchema], rehypeSanitizeStyles]
         }
-        components={{ iframe: IframeRenderer }}
+        components={newTabLinks ? NEW_TAB_COMPONENTS[newTabLinks] : DEFAULT_COMPONENTS}
       >
         {content}
       </Markdown>
     </div>
   );
 }
+
+function opensInNewTab(href: string | undefined, newTabLinks: NewTabLinks): boolean {
+  // An in-page reference, such as a GFM footnote, must move within this page.
+  if (!href || href.startsWith('#')) return false;
+  let url: URL;
+  try {
+    url = new URL(href, window.location.href);
+  } catch {
+    return false;
+  }
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') return false;
+  return newTabLinks === 'all' || url.origin !== window.location.origin;
+}
+
+// Built once per mode: react-markdown uses these as component types, so a new function
+// on each render would remount every link whenever the content re-parses.
+const DEFAULT_COMPONENTS: Components = { iframe: IframeRenderer };
+const newTabComponents = (mode: NewTabLinks): Components => ({
+  ...DEFAULT_COMPONENTS,
+  // `node` is the hast node react-markdown passes alongside DOM props; pluck it off so it never
+  // reaches the DOM. The sanitize schema has already stripped any authored `target`, so the
+  // decision here is the only one.
+  a: ({ node: _node, ...props }) => (
+    <a {...props} {...(opensInNewTab(props.href, mode) && { target: '_blank', rel: 'noopener noreferrer' })} />
+  ),
+});
+const NEW_TAB_COMPONENTS: Record<NewTabLinks, Components> = {
+  all: newTabComponents('all'),
+  external: newTabComponents('external'),
+};
 
 // Iframe rendering branches on the authored width/height attributes:
 //   1. Both pixel (e.g. pasted Figma `width="800" height="450"`) — passthrough so the iframe
@@ -133,7 +174,8 @@ export function MarkdownContent({ content, className, allowHtml = true }: Markdo
 //   3. Anything else (e.g. the editor's `width="100%" height="100%"`) — wrap in a 16:9 responsive
 //      container so the iframe doesn't collapse to zero height.
 // `node` is the hast node react-markdown passes alongside DOM props; pluck it off so it never
-// reaches the DOM.
+// reaches the DOM. The outermost element carries `data-embed`, so a collapsed
+// `ExpandableMarkdown` can crop or hide the embed like an image.
 type IframeRendererProps = ComponentPropsWithoutRef<'iframe'> & { node?: unknown };
 
 function IframeRenderer({ node: _node, width, height, className, ...props }: IframeRendererProps) {
@@ -144,6 +186,7 @@ function IframeRenderer({ node: _node, width, height, className, ...props }: Ifr
     return (
       <iframe
         {...props}
+        data-embed=""
         width={width}
         height={height}
         className={cn('block max-w-full rounded-lg border-0 my-3', className)}
@@ -153,14 +196,14 @@ function IframeRenderer({ node: _node, width, height, className, ...props }: Ifr
 
   if (heightPx) {
     return (
-      <div className="relative w-full my-3" style={{ height: heightPx }}>
+      <div data-embed="" className="relative w-full my-3" style={{ height: heightPx }}>
         <iframe {...props} className={cn('absolute inset-0 w-full h-full rounded-lg border-0', className)} />
       </div>
     );
   }
 
   return (
-    <div className="relative w-full my-3 aspect-video">
+    <div data-embed="" className="relative w-full my-3 aspect-video">
       <iframe {...props} className={cn('absolute inset-0 w-full h-full rounded-lg border-0', className)} />
     </div>
   );

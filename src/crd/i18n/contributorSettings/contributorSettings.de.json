@@ -643,7 +643,6 @@
   },
   "org": {
     "profile": {
-      "pageTitle": "Profil",
       "identity": {
         "title": "Identität",
         "displayName": {
@@ -762,7 +761,6 @@
       }
     },
     "community": {
-      "pageTitle": "Assoziierte",
       "title": "Mitglieder",
       "description": "Verwalte, wer mit dieser Organisation verbunden ist. Füge neue Mitglieder aus der Liste der verfügbaren Nutzer hinzu; das Entfernen eines Mitglieds entzieht die Organisationsrolle.",
       "currentAssociatesTitle": "Aktuelle Mitglieder",
@@ -780,7 +778,6 @@
       "removeError": "Entfernen fehlgeschlagen — bitte erneut versuchen"
     },
     "membership": {
-      "pageTitle": "Mitgliedschaft",
       "title": "Space-Mitgliedschaften",
       "searchPlaceholder": "Mitgliedschaften suchen...",
       "empty": "Diese Organisation ist noch in keinem Space Mitglied.",
@@ -831,7 +828,6 @@
       "errorToast": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen"
     },
     "invitations": {
-      "pageTitle": "Einladungen",
       "title": "Space-Einladungen",
       "empty": "Keine ausstehenden Space-Einladungen.",
       "invitedBy": "Eingeladen von {{name}}",

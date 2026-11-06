@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { usePageTitle } from '@/core/routing/usePageTitle';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import {
   OrgAssociateSettingsDialog,
@@ -54,8 +53,6 @@ const ROLE_LIMIT_KEY_BY_ERROR = {
 const CrdOrgAssociatesTab = () => {
   const { t } = useTranslation('crd-contributorSettings');
   const { roleSetId, displayName } = useOrganizationContext();
-
-  usePageTitle(t('org.community.pageTitle'));
 
   const state = useOrgAssociatesTabData(roleSetId);
 
