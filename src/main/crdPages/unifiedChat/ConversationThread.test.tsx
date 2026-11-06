@@ -5,6 +5,7 @@ import { ConversationThread } from './ConversationThread';
 type View = {
   onSendMessage: (text: string) => Promise<boolean>;
   onAttachFiles: (files: File[]) => void;
+  newTabLinks?: string;
 };
 const harness = vi.hoisted(() => ({ view: null as View | null }));
 vi.mock('@/crd/components/chat/ChatThreadView', () => ({
@@ -37,6 +38,33 @@ beforeEach(() => {
   vi.stubGlobal('fetch', upload);
 });
 afterEach(() => vi.unstubAllGlobals());
+
+describe('links in messages', () => {
+  const renderThread = () =>
+    render(
+      <ConversationThread
+        conversationId="conversation"
+        roomId="room"
+        attachmentsAllowed={true}
+        messages={[]}
+        messagesLoading={false}
+        sendEvent={vi.fn()}
+        onClearDraft={vi.fn()}
+        onRestoreDraft={vi.fn()}
+      />
+    );
+
+  it('opens every web link in a new tab in a browser', () => {
+    renderThread();
+    expect(renderedView().newTabLinks).toBe('all');
+  });
+
+  it('keeps links to the platform in place inside the native app', () => {
+    vi.stubGlobal('Capacitor', { isNativePlatform: () => true });
+    renderThread();
+    expect(renderedView().newTabLinks).toBe('external');
+  });
+});
 
 describe('native conversation composer', () => {
   it.each([true, false])('waits for native text acknowledgement before uploading a file (%s)', async confirmed => {

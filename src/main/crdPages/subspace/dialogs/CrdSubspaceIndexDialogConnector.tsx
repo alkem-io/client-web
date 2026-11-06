@@ -7,7 +7,7 @@ type CrdSubspaceIndexDialogConnectorProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   calloutsSetId: string | undefined;
-  /** Flow state names in innovation-flow order, so the index groups match the tab strip. */
+  /** Visible flow state names in innovation-flow order; the index shows only these groups, matching the tab strip. */
   phaseNames: string[];
 };
 
@@ -26,28 +26,16 @@ export function CrdSubspaceIndexDialogConnector({
     skip: !open || !calloutsSetId,
   });
 
-  // Group by flow state (phase). Items without a flow state fall under "—".
-  const groups = (() => {
-    const map = new Map<string, typeof callouts>();
-    (callouts ?? []).forEach(c => {
-      const state = c.classification?.flowState?.tags?.[0] ?? '—';
-      const arr = map.get(state) ?? [];
-      arr.push(c);
-      map.set(state, arr);
-    });
-    // Groups follow the innovation-flow order shown in the tab strip; any state
-    // no longer in the flow (or the "—" bucket) trails behind it.
-    const orderOf = (state: string) => {
-      const index = phaseNames.indexOf(state);
-      return index === -1 ? Number.MAX_SAFE_INTEGER : index;
-    };
-    return Array.from(map.entries())
-      .map(([state, items]) => ({
-        state,
-        items: [...(items ?? [])].sort((a, b) => a.sortOrder - b.sortOrder),
-      }))
-      .sort((a, b) => orderOf(a.state) - orderOf(b.state));
-  })();
+  // One group per phase shown in the tab strip, in innovation-flow order. Callouts in a
+  // hidden phase (or any state not in the strip) are left out, matching the tabs.
+  const groups = phaseNames
+    .map(state => ({
+      state,
+      items: (callouts ?? [])
+        .filter(c => c.classification?.flowState?.tags?.[0] === state)
+        .sort((a, b) => a.sortOrder - b.sortOrder),
+    }))
+    .filter(group => group.items.length > 0);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

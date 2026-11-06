@@ -90,3 +90,46 @@ describe('CommentItem message text', () => {
     expect(getByText('comments.deleted')).toBeInTheDocument();
   });
 });
+
+describe('CommentItem links', () => {
+  const linkIn = (content: string) => renderComment({ ...baseComment, content }).container.querySelector('a');
+
+  test.each([
+    ['external', '[x](https://example.com/a)'],
+    ['bare external URL', 'https://example.com/a'],
+    ['protocol-relative', '[x](//example.com/a)'],
+  ])('%s link opens in a new tab', (_name, content) => {
+    const link = linkIn(content);
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
+  test.each([
+    ['same-origin', `[x](${window.location.origin}/space/a)`],
+    ['relative', '[x](/space/a)'],
+    ['fragment', '[x](#section)'],
+    ['mailto', '[x](mailto:a@example.com)'],
+    ['unparseable', '[x](http://)'],
+  ])('%s link stays in the current tab', (_name, content) => {
+    const link = linkIn(content);
+    expect(link).toHaveAttribute('href');
+    expect(link).not.toHaveAttribute('target');
+    expect(link).not.toHaveAttribute('rel');
+  });
+
+  test('an authored target cannot pull a same-origin link out of the current tab', () => {
+    const link = linkIn(`<a href="${window.location.origin}/space/a" target="_blank">x</a>`);
+    expect(link).toHaveAttribute('href');
+    expect(link).not.toHaveAttribute('target');
+  });
+
+  test('footnote references keep their attributes and stay in the page', () => {
+    const { container } = renderComment({ ...baseComment, content: 'text[^1]\n\n[^1]: see https://example.com/a' });
+    const footnoteRef = container.querySelector('a[data-footnote-ref]');
+    expect(footnoteRef).toHaveAttribute('href', '#user-content-fn-1');
+    expect(footnoteRef).not.toHaveAttribute('target');
+    const backRef = container.querySelector('a[data-footnote-backref]');
+    expect(backRef).not.toHaveAttribute('target');
+    expect(container.querySelector('a[href="https://example.com/a"]')).toHaveAttribute('target', '_blank');
+  });
+});

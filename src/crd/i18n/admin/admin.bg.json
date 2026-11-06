@@ -43,7 +43,9 @@
     "listedHeader": "Вписан в магазина",
     "visibilityHeader": "Видимост при търсене",
     "ownerHeader": "Собственик на акаунта",
-    "spaceVisibility": "Видимост"
+    "spaceVisibility": "Видимост",
+    "promoteHeader": "Промотирай",
+    "promoteOf": "Промотирай {{name}}"
   },
   "licensePlans": {
     "active": "Активен",

@@ -4,7 +4,7 @@ import { CommentReactions } from '@/crd/components/comment/CommentReactions';
 import { MessageAttachments } from '@/crd/components/comment/MessageAttachments';
 import { hasRenderableText } from '@/crd/components/comment/messageText';
 import { EmojiPicker } from '@/crd/components/common/EmojiPicker';
-import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
+import { MarkdownContent, type NewTabLinks } from '@/crd/components/common/MarkdownContent';
 import { VirtualContributorBadge } from '@/crd/components/common/VirtualContributorBadge';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -34,6 +34,8 @@ const GROUP_CORNERS: Record<'own' | 'other', Record<GroupPosition, string>> = {
 };
 
 type ChatMessageBubbleProps = {
+  /** Which links open in a new tab. Every web link unless the host says otherwise. */
+  newTabLinks?: NewTabLinks;
   message: ChatMessage;
   /** Show the author name above the bubble — true only for the first message of a run. */
   showAuthor?: boolean;
@@ -69,6 +71,7 @@ export function ChatMessageBubble({
   groupPosition = 'single',
   revealed = false,
   canReact = false,
+  newTabLinks = 'all',
   onAddReaction,
   onRemoveReaction,
 }: ChatMessageBubbleProps) {
@@ -150,9 +153,12 @@ export function ChatMessageBubble({
               )}
             >
               {/* Markdown joins a single line break into a space; a chat line break
-                  (Shift+Enter) should stay one, so paragraphs keep their newlines. */}
+                  (Shift+Enter) should stay one, so paragraphs keep their newlines.
+                  Chat floats over the page the user is on, so every web link opens
+                  in a new tab rather than navigating that page away. */}
               <MarkdownContent
                 allowHtml={false}
+                newTabLinks={newTabLinks}
                 content={message.content}
                 className="text-body [&_p]:mb-1 [&_p]:whitespace-pre-line [&_p]:text-foreground [&_p:last-child]:mb-0"
               />
