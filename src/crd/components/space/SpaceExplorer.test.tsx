@@ -134,10 +134,28 @@ describe('SpaceExplorer results line (spec 039 explore-filters-and-count)', () =
     expect(screen.queryByText(/spaces matching/i)).not.toBeInTheDocument();
   });
 
-  it('names the search terms, without a number', () => {
+  it('names the search terms, without a number when the total is unknown', () => {
     renderExplorer({ searchTerms: ['energie', 'water'] });
 
     expect(screen.getByText('Spaces matching “energie, water”')).toBeInTheDocument();
+  });
+
+  it("counts the search's total, not the loaded cards", () => {
+    renderExplorer({ searchTerms: ['energie'], searchTotal: 42 });
+
+    expect(screen.getByText('42 spaces matching “energie”')).toBeInTheDocument();
+  });
+
+  it('counts a search with no results', () => {
+    renderExplorer({ spaces: [], searchTerms: ['energie'], searchTotal: 0 });
+
+    expect(screen.getByText('0 spaces matching “energie”')).toBeInTheDocument();
+  });
+
+  it('counts a single result in the singular', () => {
+    renderExplorer({ spaces: [space('a')], searchTerms: ['energie'], searchTotal: 1 });
+
+    expect(screen.getByText('1 space matching “energie”')).toBeInTheDocument();
   });
 });
 

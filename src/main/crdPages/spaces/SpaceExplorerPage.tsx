@@ -55,6 +55,7 @@ const SpaceExplorerPage = () => {
     hasMore,
     authenticated,
     loadingSearchResults,
+    searchTotal,
   } = useSpaceExplorer();
 
   const cardData = mapSpacesToCardDataList(spaces, authenticated);
@@ -68,6 +69,7 @@ const SpaceExplorerPage = () => {
       membershipFilter={membershipFilter}
       authenticated={authenticated}
       loadingSearchResults={loadingSearchResults}
+      searchTotal={searchTotal}
       onSearchTermsChange={terms => setSearchTerms(terms)}
       onMembershipFilterChange={onMembershipFilterChange}
       typeFilter={typeFilter}

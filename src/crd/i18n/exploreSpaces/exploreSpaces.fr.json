@@ -20,6 +20,8 @@
     "filterSubspacesOnly": "Sous-espaces uniquement",
     "clearFilters": "Effacer tous les filtres",
     "matchingTerms": "Espaces correspondant à « {{terms}} »",
+    "matchingTermsCount_one": "{{count}} espace correspondant à « {{terms}} »",
+    "matchingTermsCount_other": "{{count}} espaces correspondant à « {{terms}} »",
     "of": "sur",
     "spacesLabel": "espaces",
     "emptyTitle": "Aucun espace trouvé",

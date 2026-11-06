@@ -643,7 +643,6 @@
   },
   "org": {
     "profile": {
-      "pageTitle": "Perfil",
       "identity": {
         "title": "Identidad",
         "displayName": {
@@ -762,7 +761,6 @@
       }
     },
     "community": {
-      "pageTitle": "Asociados",
       "title": "Asociados",
       "description": "Gestiona quién está asociado a esta organización. Añade nuevos asociados desde la lista de usuarios disponibles; al quitar a un asociado se revoca su rol en la organización.",
       "currentAssociatesTitle": "Asociados actuales",
@@ -780,7 +778,6 @@
       "removeError": "No se pudo quitar — inténtalo de nuevo"
     },
     "membership": {
-      "pageTitle": "Membresía",
       "title": "Membresías en Spaces",
       "searchPlaceholder": "Buscar membresías...",
       "empty": "Esta organización aún no es miembro de ningún Space.",
@@ -831,7 +828,6 @@
       "errorToast": "No se pudo guardar la preferencia — inténtalo de nuevo"
     },
     "invitations": {
-      "pageTitle": "Invitaciones",
       "title": "Invitaciones a Spaces",
       "empty": "No hay invitaciones a Spaces pendientes.",
       "invitedBy": "Invitado por {{name}}",

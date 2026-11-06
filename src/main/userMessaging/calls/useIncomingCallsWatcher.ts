@@ -5,21 +5,29 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import { isGuidanceConversation } from '@/main/crdPages/unifiedChat/dataMapper';
 import { useGuidanceVcId } from '@/main/guidance/chatWidget/useGuidanceVcId';
 import { useUserMessagingContext } from '../UserMessagingContext';
+import { useIsDocumentActive } from '../useIsDocumentActive';
 import { isCallsConfigured } from './callConfig';
+import { type CallDismissals, dismissCall, isCallDismissed, useCallDismissals } from './callDismissalStore';
 import { type IncomingCall, type IncomingCallRooms, setIncomingCallRooms } from './incomingCallStore';
-import { useActiveCallRooms } from './useActiveCallRooms';
+import { type LiveCall, useLiveCalls } from './useActiveCallRooms';
 import { type CallableConversation, isBetaTester } from './useCallEligibility';
 
 // Kept off the startup path, like the unread count.
 const DELAY_MS = 2000;
 
+/** Joined on any device, seen in its open conversation, or already dealt with in some tab. */
+const isDealtWith = (call: LiveCall, roomId: string, isSeen: boolean, dismissals: CallDismissals): boolean =>
+  call.withMe || isSeen || isCallDismissed(dismissals, roomId, call.startedTs);
+
 /**
  * Watches every callable conversation of the user, with the chat panel closed
- * too, for calls the user is not in, and publishes them for the unread signals.
+ * too, for calls the user has not dealt with yet, and publishes them for the
+ * unread signals. A call is dealt with, in every tab, once the user opens its
+ * conversation while it runs, joins it on any device, or leaves it.
  * The sound for a call starting comes from its notification event (useSyncChatSound).
  */
 export const useIncomingCallsWatcher = () => {
-  const { isEnabled } = useUserMessagingContext();
+  const { isEnabled, selectedRoomId } = useUserMessagingContext();
   const { platformRoles, userModel } = useCurrentUserContext();
   const enabled = isEnabled && isBetaTester(platformRoles) && isCallsConfigured();
   const [ready, setReady] = useState(false);
@@ -48,7 +56,25 @@ export const useIncomingCallsWatcher = () => {
       : []
   );
 
-  const incoming = useActiveCallRooms(enabled ? conversations : [], { withoutMe: true });
+  const liveCalls = useLiveCalls(enabled ? conversations : []);
+  const dismissals = useCallDismissals();
+  const isDocumentActive = useIsDocumentActive();
+  // The conversation open here hides its call in this tab; it counts as seen, for every tab, only
+  // while the user is in this tab: a conversation left open in a background tab sees nothing.
+  const incoming = [...liveCalls].flatMap(([roomId, call]) =>
+    isDealtWith(call, roomId, roomId === selectedRoomId, dismissals) ? [] : [roomId]
+  );
+
+  // Remembers each call dealt with, and keeps up with members joining it later, so the call is
+  // still recognised once the members who were in it back then have left.
+  useEffect(() => {
+    for (const [roomId, call] of liveCalls) {
+      if (isDealtWith(call, roomId, isDocumentActive && roomId === selectedRoomId, dismissals)) {
+        dismissCall(roomId, call.latestTs);
+      }
+    }
+  }, [liveCalls, selectedRoomId, isDocumentActive, dismissals]);
+
   // A group call is named after the group; a direct one after the other person, who started it.
   const calls = new Map<string, IncomingCall | null>();
   for (const { room, members } of userConversations) {
@@ -60,9 +86,7 @@ export const useIncomingCallsWatcher = () => {
       calls.set(room.id, name ? { name, isGroup } : null);
     }
   }
-  const incomingCallRooms: IncomingCallRooms = new Map(
-    [...incoming].map(roomId => [roomId, calls.get(roomId) ?? null])
-  );
+  const incomingCallRooms: IncomingCallRooms = new Map(incoming.map(roomId => [roomId, calls.get(roomId) ?? null]));
 
   useEffect(() => {
     setIncomingCallRooms(incomingCallRooms);

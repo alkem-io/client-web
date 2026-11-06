@@ -15,7 +15,9 @@ const IFRAME_ALLOWED_ATTRIBUTES = [
   'width',
   'height',
   'title',
-  'allow',
+  // The only value the editor writes (markdownConverter.ts). An author must not be able to delegate
+  // camera or microphone to an embedded origin: the app shell grants capture without checking it.
+  ['allow', 'clipboard-write'],
   'loading',
   'frameborder',
   'referrerpolicy',
