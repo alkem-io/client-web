@@ -83,14 +83,6 @@ const useCalloutContributions = ({
   // if no pageSize provided, fetch all from the start
   const [fetchAllEnabled, setFetchAllEnabled] = useState(!pageSize);
   const [returnAllResults, setReturnAllResult] = useState(false);
-  const handleSetFetchAll = (fetchAll: boolean) => {
-    if (fetchAll) {
-      setFetchAllEnabled(true);
-      setReturnAllResult(true);
-    } else {
-      setReturnAllResult(false);
-    }
-  };
 
   const { data, previousData, loading, error, refetch, subscribeToMore } = useCalloutContributionsQuery({
     variables: {
@@ -111,14 +103,27 @@ const useCalloutContributions = ({
     nextFetchPolicy: 'cache-first', // But subsequent fetches can use cache
   });
 
+  const handleSetFetchAll = (fetchAll: boolean) => {
+    if (fetchAll) {
+      // A failed full fetch keeps its variables, so flipping the flags again would not re-query.
+      if (fetchAllEnabled && error) {
+        refetch().catch(() => undefined);
+      }
+      setFetchAllEnabled(true);
+      setReturnAllResult(true);
+    } else {
+      setReturnAllResult(false);
+    }
+  };
+
   const subscription = useCalloutPostCreatedSubscription(data, data => data?.lookup.callout, subscribeToMore, {
     variables: { calloutId: callout?.id! },
     skip: !inView || !callout?.id || skip || contributionType !== CalloutContributionType.Post,
   });
 
-  // Use previousData while loading to avoid losing already shown items when the expanded query fires
+  // Use previousData while loading, or after a failed fetch, to avoid losing already shown items when the expanded query fires
   const effectiveData = (() => {
-    if (loading) {
+    if (loading || error) {
       return previousData ?? data;
     }
     return data;
@@ -155,7 +160,7 @@ const useCalloutContributions = ({
     inViewRef,
     contributions: {
       items,
-      hasMore: (effectiveData?.lookup.callout?.contributions.length ?? 0) < totalContributionsCount,
+      hasMore: items.length < totalContributionsCount,
       setFetchAll: handleSetFetchAll,
       total: totalContributionsCount,
     },
