@@ -643,7 +643,6 @@
   },
   "org": {
     "profile": {
-      "pageTitle": "Profile",
       "identity": {
         "title": "Identity",
         "displayName": {
@@ -762,7 +761,6 @@
       }
     },
     "community": {
-      "pageTitle": "Associates",
       "title": "Associates",
       "description": "Manage who is associated with this organisation. Add new associates from the available users list; removing an associate revokes their organisation role.",
       "currentAssociatesTitle": "Current Associates",
@@ -780,7 +778,6 @@
       "removeError": "Couldn't remove associate — try again"
     },
     "membership": {
-      "pageTitle": "Membership",
       "title": "Space Memberships",
       "searchPlaceholder": "Search memberships...",
       "empty": "This organisation is not a member of any Space yet.",
@@ -831,7 +828,6 @@
       "errorToast": "Couldn't save preference — try again"
     },
     "invitations": {
-      "pageTitle": "Invitations",
       "title": "Space Invitations",
       "empty": "No pending Space invitations.",
       "invitedBy": "Invited by {{name}}",
