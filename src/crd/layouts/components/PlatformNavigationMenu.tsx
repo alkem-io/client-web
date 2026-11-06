@@ -19,7 +19,7 @@ export function PlatformNavigationMenu({ items, currentPath }: PlatformNavigatio
         <Button
           variant="ghost"
           size="icon"
-          className="text-muted-foreground"
+          className="text-muted-foreground max-md:size-11 max-md:[&_svg]:size-5!"
           aria-label={t('header.platformNavigation')}
         >
           <LayoutGrid aria-hidden="true" className="w-5 h-5" />
