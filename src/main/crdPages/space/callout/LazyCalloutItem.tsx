@@ -15,6 +15,7 @@ import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/us
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import { MemoSignedCopiesDialogConnector } from '@/main/crdPages/memo/MemoSignedCopiesDialogConnector';
+import { useOpenDirectChatHandler } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
 import { getCalloutContributionType, mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
 import { useCrdCalloutMoveActions } from '../hooks/useCrdCalloutMoveActions';
@@ -140,6 +141,7 @@ function LazyCalloutItemContent({
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { t } = useTranslation('crd-space');
+  const { onOpenChat } = useOpenDirectChatHandler({ recipientUserId: undefined });
   // Resolve per-phase layout from the FLOW_STATE classification tag.
   // `flowState.tags[0]` is the phase display name the callout is tagged under.
   // `useFlowStateLayout` reads from the cached SpaceTabsQuery (zero extra round-trips)
@@ -373,6 +375,7 @@ function LazyCalloutItemContent({
           calloutId={callout.id}
           roomData={callout.comments}
           skipSubscription={!commentsExpanded}
+          onMessageContributor={contributor => void onOpenChat(contributor.id)}
         >
           {({ thread, commentInput }) => (
             <PostCard

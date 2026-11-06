@@ -95,6 +95,9 @@ vi.mock('./CalloutDetailDialogConnector', () => ({
     props.open ? <div data-testid="callout-dialog">callout dialog</div> : null,
 }));
 vi.mock('./CalloutSettingsConnector', () => ({ CalloutSettingsConnector: () => null }));
+vi.mock('@/main/crdPages/topLevelPages/common/useSendMessageHandler', () => ({
+  useOpenDirectChatHandler: () => ({ onOpenChat: vi.fn() }),
+}));
 vi.mock('./CalloutShareDialog', () => ({ CalloutShareDialog: () => null }));
 vi.mock('./ContributionsPreviewConnector', () => ({
   ContributionsPreviewConnector: (props: { onOpenMemoSignedCopies?: (memoId: string) => void }) =>
