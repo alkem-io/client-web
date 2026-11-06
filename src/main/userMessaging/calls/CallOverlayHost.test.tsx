@@ -7,7 +7,7 @@ const harness = vi.hoisted(() => ({
   client: null as unknown,
   isJoinedHere: false,
   apis: [] as Array<{
-    widget: { definition: { id: string; url: string; creatorUserId: string } };
+    widget: { definition: { id: string; url: string; creatorUserId: string; waitForIframeLoad?: boolean } };
     iframe: HTMLIFrameElement;
     emit: (event: string, ...args: unknown[]) => boolean;
     transport: { reply: ReturnType<typeof vi.fn>; send: ReturnType<typeof vi.fn> };
@@ -108,6 +108,12 @@ describe('CallOverlayHost', () => {
     expect(api.setViewedRoomId).toHaveBeenCalledWith('!room:hs.example');
   });
 
+  it('waits for the call UI to say it is ready before the capability exchange', async () => {
+    render(<CallOverlayHost />);
+    const api = await startCall();
+    expect(api.widget.definition.waitForIframeLoad).toBe(false);
+  });
+
   it('links to the call UI license page', async () => {
     render(<CallOverlayHost />);
     await startCall();
@@ -176,6 +182,23 @@ describe('CallOverlayHost', () => {
     expect(getCallOverlay()).toBeNull();
     expect(screen.queryByTestId('call-overlay')).not.toBeInTheDocument();
     expect(api.stop).toHaveBeenCalled();
+  });
+
+  it.each([
+    'io.element.join',
+    'set_always_on_screen',
+  ])('acknowledges %s from the call UI and keeps the call', async action => {
+    render(<CallOverlayHost />);
+    const api = await startCall();
+    const event = widgetAction(action);
+    act(() => {
+      api.emit(`action:${action}`, event);
+    });
+    expect(event.defaultPrevented).toBe(true);
+    expect(api.transport.reply).toHaveBeenCalledWith(event.detail, {});
+    expect(getCallOverlay()).not.toBeNull();
+    expect(screen.getByTestId('call-overlay')).toBeInTheDocument();
+    expect(api.stop).not.toHaveBeenCalled();
   });
 
   it('closes immediately when closed before joining', async () => {
