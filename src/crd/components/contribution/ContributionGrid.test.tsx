@@ -179,17 +179,6 @@ describe('ContributionGrid', () => {
     expect(grid.style.maxHeight).toBe(`${300 + GAP + 50}px`);
   });
 
-  it('starts expanded when the entry point already asked to see every contribution', () => {
-    render(
-      <ContributionGrid contributionCount={9} columns={3} defaultExpanded={true}>
-        {cards(9)}
-      </ContributionGrid>
-    );
-
-    expect(gridOf(screen.getByTestId('card-0'))).not.toHaveClass('overflow-hidden');
-    expect(screen.getByRole('button', { name: 'callout.collapse' })).toBeInTheDocument();
-  });
-
   it('reveals every contribution on a single Show more click', async () => {
     const user = userEvent.setup();
     render(

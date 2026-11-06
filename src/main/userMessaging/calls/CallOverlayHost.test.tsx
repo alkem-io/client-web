@@ -58,12 +58,10 @@ import { closeCall, getCallOverlay, openCall } from './callOverlayStore';
 
 const makeClient = () =>
   Object.assign(new EventEmitter(), {
-    baseUrl: 'https://hs.example',
     getUserId: () => '@me:hs.example',
     getDeviceId: () => 'DEV1',
-    getAccessToken: () => 'access-token',
     _unstable_sendDelayedStateEvent: vi.fn(async () => ({ delay_id: 'leave-1' })),
-    _unstable_updateDelayedEvent: vi.fn(async () => ({})),
+    http: { authedRequest: vi.fn(async () => ({})) },
   });
 
 const CALL_MEMBER = 'org.matrix.msc3401.call.member';
@@ -269,23 +267,42 @@ describe('CallOverlayHost', () => {
   });
 
   it('leaves the call at once when the call UI goes away before it could leave by itself', async () => {
-    const fetchMock = vi.fn(async () => new Response('{}'));
-    vi.stubGlobal('fetch', fetchMock);
-    try {
-      const { rerender } = render(<CallOverlayHost />);
-      const api = await startCall();
-      await api.driver.sendDelayedEvent(18_000, CALL_MEMBER, {}, OWN_MEMBERSHIP_KEY);
-      harness.client = null;
-      rerender(<CallOverlayHost />);
+    const { rerender } = render(<CallOverlayHost />);
+    const api = await startCall();
+    await api.driver.sendDelayedEvent(18_000, CALL_MEMBER, {}, OWN_MEMBERSHIP_KEY);
+    const client = harness.client as ReturnType<typeof makeClient>;
+    harness.client = null;
+    rerender(<CallOverlayHost />);
 
-      expect(api.stop).toHaveBeenCalled();
-      expect(fetchMock).toHaveBeenCalledTimes(1);
-      expect(fetchMock).toHaveBeenCalledWith(
-        'https://hs.example/_matrix/client/unstable/org.matrix.msc4140/delayed_events/leave-1',
-        expect.objectContaining({ method: 'POST', keepalive: true, body: JSON.stringify({ action: 'send' }) })
-      );
+    expect(api.stop).toHaveBeenCalled();
+    expect(client.http.authedRequest).toHaveBeenCalledTimes(1);
+    expect(client.http.authedRequest).toHaveBeenCalledWith(
+      'POST',
+      '/delayed_events/leave-1',
+      undefined,
+      { action: 'send' },
+      { prefix: '/_matrix/client/unstable/org.matrix.msc4140', keepAlive: true }
+    );
+  });
+
+  it('hides the widget library’s failed-download error while the call is open, and only that', async () => {
+    const original = console.error;
+    const sink = vi.fn();
+    console.error = sink;
+    try {
+      render(<CallOverlayHost />);
+      await startCall();
+      const failure = new Error('Downloading the media failed with status 500');
+      console.error('error while downloading a file', failure);
+      console.error('error updating delayed event: ', failure);
+      expect(sink.mock.calls).toEqual([['error updating delayed event: ', failure]]);
+
+      act(() => closeCurrentCall());
+      expect(console.error).toBe(sink);
+      console.error('error while downloading a file', failure);
+      expect(sink).toHaveBeenCalledTimes(2);
     } finally {
-      vi.unstubAllGlobals();
+      console.error = original;
     }
   });
 

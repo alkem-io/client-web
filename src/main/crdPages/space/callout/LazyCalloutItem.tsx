@@ -129,7 +129,6 @@ function LazyCalloutItemContent({
   const [initialContributionId, setInitialContributionId] = useState<string | undefined>();
   const [initialMemoId, setInitialMemoId] = useState<string | undefined>();
   const [initialPostId, setInitialPostId] = useState<string | undefined>();
-  const [contributionsExpanded, setContributionsExpanded] = useState(false);
   const [collaboraEditorOpen, setCollaboraEditorOpen] = useState(false);
   const [commentsExpanded, setCommentsExpanded] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
@@ -213,7 +212,6 @@ function LazyCalloutItemContent({
       setInitialContributionId(undefined);
       setInitialMemoId(undefined);
       setInitialPostId(undefined);
-      setContributionsExpanded(false);
     }
   };
 
@@ -306,10 +304,6 @@ function LazyCalloutItemContent({
   const plainContributionsPreview = hasContributionType ? (
     <ContributionsPreviewConnector
       callout={callout}
-      onShowAll={() => {
-        setContributionsExpanded(true);
-        openDialog();
-      }}
       onContributionClick={(contributionId, memoId) => openDialog(contributionId, memoId)}
       onOpenMemoSignedCopies={setSignedCopiesMemoId}
       isTaskBoard={isBoard}
@@ -473,7 +467,6 @@ function LazyCalloutItemContent({
         initialContributionId={initialContributionId}
         initialMemoId={initialMemoId}
         initialPostId={initialPostId}
-        contributionsExpanded={contributionsExpanded}
         // A task's focused dialog opens on top of the board dialog, so it (and
         // its edit/delete/share) must stack above it.
         elevated={isBoard}

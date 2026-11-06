@@ -21,20 +21,12 @@ type ContributionGridProps = {
   /** Number of contribution cards in `children`; a trailing "add" card is not counted. */
   contributionCount: number;
   columns?: ContributionGridColumns;
-  /** Starts expanded — for an entry point that already asked to see every contribution. */
-  defaultExpanded?: boolean;
   className?: string;
 };
 
-export function ContributionGrid({
-  children,
-  contributionCount,
-  columns = 2,
-  defaultExpanded = false,
-  className,
-}: ContributionGridProps) {
+export function ContributionGrid({ children, contributionCount, columns = 2, className }: ContributionGridProps) {
   const { t } = useTranslation('crd-space');
-  const [expanded, setExpanded] = useState(defaultExpanded);
+  const [expanded, setExpanded] = useState(false);
   const [columnCount, setColumnCountNode] = useGridColumnCount();
   const [gridNode, setGridNode] = useState<HTMLDivElement | null>(null);
   const [collapsedHeight, setCollapsedHeight] = useState<number>();

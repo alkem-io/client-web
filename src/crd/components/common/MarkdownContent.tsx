@@ -15,7 +15,9 @@ const IFRAME_ALLOWED_ATTRIBUTES = [
   'width',
   'height',
   'title',
-  'allow',
+  // The only value the editor writes (markdownConverter.ts). An author must not be able to delegate
+  // camera or microphone to an embedded origin: the app shell grants capture without checking it.
+  ['allow', 'clipboard-write'],
   'loading',
   'frameborder',
   'referrerpolicy',
@@ -172,7 +174,8 @@ const NEW_TAB_COMPONENTS: Record<NewTabLinks, Components> = {
 //   3. Anything else (e.g. the editor's `width="100%" height="100%"`) — wrap in a 16:9 responsive
 //      container so the iframe doesn't collapse to zero height.
 // `node` is the hast node react-markdown passes alongside DOM props; pluck it off so it never
-// reaches the DOM.
+// reaches the DOM. The outermost element carries `data-embed`, so a collapsed
+// `ExpandableMarkdown` can crop or hide the embed like an image.
 type IframeRendererProps = ComponentPropsWithoutRef<'iframe'> & { node?: unknown };
 
 function IframeRenderer({ node: _node, width, height, className, ...props }: IframeRendererProps) {
@@ -183,6 +186,7 @@ function IframeRenderer({ node: _node, width, height, className, ...props }: Ifr
     return (
       <iframe
         {...props}
+        data-embed=""
         width={width}
         height={height}
         className={cn('block max-w-full rounded-lg border-0 my-3', className)}
@@ -192,14 +196,14 @@ function IframeRenderer({ node: _node, width, height, className, ...props }: Ifr
 
   if (heightPx) {
     return (
-      <div className="relative w-full my-3" style={{ height: heightPx }}>
+      <div data-embed="" className="relative w-full my-3" style={{ height: heightPx }}>
         <iframe {...props} className={cn('absolute inset-0 w-full h-full rounded-lg border-0', className)} />
       </div>
     );
   }
 
   return (
-    <div className="relative w-full my-3 aspect-video">
+    <div data-embed="" className="relative w-full my-3 aspect-video">
       <iframe {...props} className={cn('absolute inset-0 w-full h-full rounded-lg border-0', className)} />
     </div>
   );

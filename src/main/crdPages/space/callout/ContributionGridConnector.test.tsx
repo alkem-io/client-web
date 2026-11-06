@@ -72,10 +72,4 @@ describe('ContributionGridConnector expansion', () => {
 
     expect(screen.getByRole('button', { name: 'callout.moreContributions' })).toBeInTheDocument();
   });
-
-  it('opens expanded when the entry point asked to see every contribution', () => {
-    render(<ContributionGridConnector contributions={whiteboards as never} expanded={true} />);
-
-    expect(screen.getByRole('button', { name: 'callout.collapse' })).toBeInTheDocument();
-  });
 });
