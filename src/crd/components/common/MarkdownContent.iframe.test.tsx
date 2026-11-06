@@ -30,6 +30,8 @@ describe('MarkdownContent — iframe rendering', () => {
     const iframe = container.querySelector('iframe');
     expect(iframe?.getAttribute('src')).toBe('https://www.youtube.com/embed/dQw4w9WgXcQ');
     expect(container.textContent).toContain('Intro text');
+    // The embed's outer box is tagged so a collapsed ExpandableMarkdown can crop or hide it.
+    expect(iframe?.parentElement?.hasAttribute('data-embed')).toBe(true);
   });
 
   it('strips every iframe when no origins are configured (strip-by-default)', () => {
@@ -51,5 +53,32 @@ describe('MarkdownContent — iframe rendering', () => {
   it('always strips a non-https iframe, even with no origins configured', () => {
     const { container } = render(<MarkdownContent content={iframeHtml('http://www.youtube.com/embed/x')} />);
     expect(container.querySelector('iframe')).toBeNull();
+  });
+
+  const renderWithAllow = (allow: string) => {
+    const { container } = render(
+      <MarkdownConfigProvider iframeAllowedUrls={['https://www.youtube.com']}>
+        <MarkdownContent
+          content={`<iframe src="https://www.youtube.com/embed/x" width="100%" height="100%" allow="${allow}" title="Embedded iframe"></iframe>`}
+        />
+      </MarkdownConfigProvider>
+    );
+    const iframe = container.querySelector('iframe');
+    expect(iframe?.getAttribute('src')).toBe('https://www.youtube.com/embed/x');
+    return iframe;
+  };
+
+  it.each([
+    'camera; microphone',
+    'CAMERA',
+    'microphone *',
+    'display-capture',
+    'autoplay; camera',
+  ])('renders an iframe authored with allow="%s" without any allow attribute', allow => {
+    expect(renderWithAllow(allow)?.hasAttribute('allow')).toBe(false);
+  });
+
+  it('keeps the allow value the editor writes', () => {
+    expect(renderWithAllow('clipboard-write')?.getAttribute('allow')).toBe('clipboard-write');
   });
 });

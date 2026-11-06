@@ -643,7 +643,6 @@
   },
   "org": {
     "profile": {
-      "pageTitle": "Profil",
       "identity": {
         "title": "Identité",
         "displayName": {
@@ -762,7 +761,6 @@
       }
     },
     "community": {
-      "pageTitle": "Associés",
       "title": "Associés",
       "description": "Gérez qui est associé à cette organisation. Ajoutez de nouveaux associés depuis la liste des utilisateurs disponibles ; retirer un associé révoque son rôle dans l'organisation.",
       "currentAssociatesTitle": "Associés actuels",
@@ -780,7 +778,6 @@
       "removeError": "Échec — réessayez"
     },
     "membership": {
-      "pageTitle": "Adhésion",
       "title": "Adhésions aux Spaces",
       "searchPlaceholder": "Rechercher des adhésions...",
       "empty": "Cette organisation n'est encore membre d'aucun Space.",
@@ -831,7 +828,6 @@
       "errorToast": "Échec de l'enregistrement de la préférence — réessayez"
     },
     "invitations": {
-      "pageTitle": "Invitations",
       "title": "Invitations aux espaces",
       "empty": "Aucune invitation à un espace en attente.",
       "invitedBy": "Invité par {{name}}",

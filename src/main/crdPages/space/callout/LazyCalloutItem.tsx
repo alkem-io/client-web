@@ -304,7 +304,6 @@ function LazyCalloutItemContent({
   const plainContributionsPreview = hasContributionType ? (
     <ContributionsPreviewConnector
       callout={callout}
-      onShowAll={() => openDialog()}
       onContributionClick={(contributionId, memoId) => openDialog(contributionId, memoId)}
       onOpenMemoSignedCopies={setSignedCopiesMemoId}
       isTaskBoard={isBoard}

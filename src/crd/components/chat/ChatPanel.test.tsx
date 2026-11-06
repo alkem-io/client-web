@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { type ComponentProps, useState } from 'react';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -54,6 +54,17 @@ describe('ChatPanel', () => {
   });
 
   describe('header', () => {
+    test('sizes every header control the same', () => {
+      renderPanel({ onBack: vi.fn(), backLabel: 'Back', onGoToSettings: vi.fn(), settingsLabel: 'Settings' });
+
+      const buttons = within(screen.getByRole('banner')).getAllByRole('button');
+      expect(buttons.length).toBeGreaterThanOrEqual(3);
+      for (const button of buttons) {
+        expect(button).toHaveClass('size-9');
+        expect(button.querySelector('svg')).toHaveClass('size-6');
+      }
+    });
+
     test('shows the notification-settings gear only when the consumer passes onGoToSettings', () => {
       const { rerender } = renderPanel();
       expect(screen.queryByRole('button', { name: 'Notification settings' })).not.toBeInTheDocument();
