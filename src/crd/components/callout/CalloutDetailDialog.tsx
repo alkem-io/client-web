@@ -183,7 +183,7 @@ export function CalloutDetailDialog({
           <div className="h-16 shrink-0 bg-background flex items-center justify-between px-6 shadow-sm border-b border-border z-20">
             <div className="flex items-center gap-4 min-w-0">
               <div className="min-w-0">
-                <DialogTitle className="text-body-emphasis leading-tight text-foreground truncate">
+                <DialogTitle className="text-body-emphasis leading-tight text-foreground truncate max-sm:sr-only">
                   {callout.title}
                 </DialogTitle>
                 <DialogDescription
