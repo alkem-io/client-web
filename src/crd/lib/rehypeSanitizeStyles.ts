@@ -5,17 +5,13 @@ import { visit } from 'unist-util-visit';
 /**
  * Whitelist of CSS properties considered safe for user-provided HTML in markdown.
  *
- * Covers the common responsive-embed pattern (position + padding-bottom + absolute children)
- * and basic layout/visual properties. Anything not listed is stripped.
+ * Covers basic layout/visual properties. Anything not listed is stripped. `position` is allowed
+ * only with the values in SAFE_POSITION_VALUES; the offsets and `z-index` are never allowed, so
+ * author HTML cannot lay an overlay across the page.
  */
 const SAFE_CSS_PROPERTIES = new Set([
-  // Positioning
+  // Positioning — the editor's iframe wrapper saves `position: relative`
   'position',
-  'top',
-  'right',
-  'bottom',
-  'left',
-  'z-index',
   // Sizing
   'width',
   'height',
@@ -78,6 +74,8 @@ const SAFE_CSS_PROPERTIES = new Set([
   'text-decoration',
 ]);
 
+const SAFE_POSITION_VALUES = new Set(['static', 'relative']);
+
 /**
  * Patterns that indicate dangerous CSS values — rejected regardless of property.
  *
@@ -106,6 +104,7 @@ function sanitizeCss(styleString: string): string | undefined {
 
     if (!SAFE_CSS_PROPERTIES.has(property)) continue;
     if (DANGEROUS_VALUE_PATTERN.test(value)) continue;
+    if (property === 'position' && !SAFE_POSITION_VALUES.has(value.toLowerCase())) continue;
 
     safe.push(`${property}: ${value}`);
   }

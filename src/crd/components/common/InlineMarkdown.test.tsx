@@ -61,6 +61,29 @@ describe('InlineMarkdown default mode — unchanged behaviour (characterisation)
     const span = container.querySelector('span[style]');
     expect(span).not.toBeNull();
   });
+
+  test('a fixed-position, full-viewport raw HTML block loses its positioning and stacking', () => {
+    const { container } = render(
+      <InlineMarkdown content='<div style="position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;z-index:99999">PWNED</div>' />
+    );
+    const div = container.firstElementChild?.querySelector('div');
+    expect(div?.style.position).toBe('');
+    expect(div?.style.zIndex).toBe('');
+    expect(div?.style.top).toBe('');
+    expect(div?.style.left).toBe('');
+    expect(div?.style.right).toBe('');
+    expect(div?.style.bottom).toBe('');
+    expect(div?.style.width).toBe('100%');
+  });
+
+  test('the editor’s iframe wrapper keeps position: relative', () => {
+    const { container } = render(
+      <InlineMarkdown content='<div class="iframe-wrapper" style="position: relative; height: 442px; width: 100%;">x</div>' />
+    );
+    const div = container.firstElementChild?.querySelector('div');
+    expect(div?.style.position).toBe('relative');
+    expect(div?.style.height).toBe('442px');
+  });
 });
 
 describe('InlineMarkdown card-safe mode (rawHtml="skip") — cross-scope content injection', () => {
