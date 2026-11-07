@@ -123,9 +123,11 @@ export function useCrdSubspace(): CrdSubspacePageData {
   const { isVideoCallEnabled, videoCallUrl } = useVideoCall(subspaceId, subspaceNameId);
 
   // Subspace-specific page query (collaboration + calloutsSet IDs, templatesManager).
+  // Both fields require READ on the subspace; a non-member of a private subspace only
+  // reaches the About route, so the query is skipped rather than answered FORBIDDEN_POLICY.
   const { data: subspacePageData, loading: subspacePageLoading } = useSubspacePageQuery({
     variables: { spaceId: subspaceId },
-    skip: !subspaceId,
+    skip: !subspaceId || !permissions.canRead,
   });
   const collaborationId = subspacePageData?.lookup.space?.collaboration.id;
   const calloutsSetId = subspacePageData?.lookup.space?.collaboration.calloutsSet.id;
@@ -140,7 +142,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
   // Configured default subspace template for FR-031 pre-selection — light query, non-blocking.
   const { data: defaultTemplatesData } = useSpaceDefaultTemplatesQuery({
     variables: { spaceId: subspaceId },
-    skip: !subspaceId,
+    skip: !subspaceId || !permissions.canRead,
   });
   const defaultSubspaceTemplateId = defaultTemplatesData?.lookup.space?.templatesManager?.templateDefaults?.find(
     td => td.type === TemplateDefaultType.SpaceSubspace

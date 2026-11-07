@@ -126,7 +126,9 @@ export default function CrdSubspacePageLayout() {
   // Recent Activity needs a signed-in viewer: the activity query is gated on the platform
   // read-users right, so for anonymous viewers the widget would only produce an error.
   const { isAuthenticated } = useAuthenticationContext();
-  const communityUpdates = useCrdCommunityUpdates(data.communityId, skips.updates);
+  // Updates and calendar events require READ on the subspace — a viewer without it is on
+  // the About route and must not request them.
+  const communityUpdates = useCrdCommunityUpdates(data.communityId, skips.updates || !data.canRead);
   // Calendar deep links (/calendar, /calendar/:eventId) must keep opening the events dialog
   // even when the `events` widget is not configured.
   const { isAnyCalendarRoute } = useCrdCalendarUrlState();
@@ -499,7 +501,7 @@ export default function CrdSubspacePageLayout() {
         />
       )}
 
-      {(!skips.events || isAnyCalendarRoute) && (
+      {data.canRead && (!skips.events || isAnyCalendarRoute) && (
         <CrdSubspaceEventsDialogConnector
           open={activeDialog === 'events'}
           onOpenChange={open => setActiveDialog(open ? 'events' : null)}
