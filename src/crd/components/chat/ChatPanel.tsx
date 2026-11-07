@@ -1,5 +1,6 @@
 import { ChevronLeft, Maximize2, Minimize2, Settings, X } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
+import { chatHeaderIconButtonClass } from '@/crd/components/chat/CallControls';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { claimEscape } from '@/crd/lib/claimEscape';
 import { cn } from '@/crd/lib/utils';
@@ -30,9 +31,6 @@ type ChatPanelProps = {
   headerActions?: ReactNode;
   children: ReactNode;
 };
-
-const ICON_BUTTON_CLASS =
-  'flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 
 /**
  * The floating card shell for the unified chat. Anchored above the launcher on
@@ -140,15 +138,15 @@ export function ChatPanel({
       >
         <header className="flex shrink-0 items-center gap-1 border-b border-border px-2 py-2">
           {onBack && (
-            <button type="button" onClick={onBack} aria-label={backLabel} className={ICON_BUTTON_CLASS}>
-              <ChevronLeft aria-hidden="true" className="size-5" />
+            <button type="button" onClick={onBack} aria-label={backLabel} className={chatHeaderIconButtonClass}>
+              <ChevronLeft aria-hidden="true" className="size-6" />
             </button>
           )}
           {onTitleClick ? (
             <button
               type="button"
               onClick={onTitleClick}
-              className="flex min-w-0 flex-1 items-center gap-1 rounded-md text-left hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex min-w-8 flex-1 items-center gap-1 rounded-md text-left hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {titleContent}
               {titleActionLabel && <span className="sr-only">, {titleActionLabel}</span>}
@@ -163,22 +161,27 @@ export function ChatPanel({
               onClick={() => setExpanded(!expanded)}
               aria-label={isExpanded ? collapseLabel : expandLabel}
               aria-expanded={isExpanded}
-              className={ICON_BUTTON_CLASS}
+              className={chatHeaderIconButtonClass}
             >
               {isExpanded ? (
-                <Minimize2 aria-hidden="true" className="size-4" />
+                <Minimize2 aria-hidden="true" className="size-6" />
               ) : (
-                <Maximize2 aria-hidden="true" className="size-4" />
+                <Maximize2 aria-hidden="true" className="size-6" />
               )}
             </button>
           )}
           {onGoToSettings && (
-            <button type="button" onClick={onGoToSettings} aria-label={settingsLabel} className={ICON_BUTTON_CLASS}>
-              <Settings aria-hidden="true" className="size-5" />
+            <button
+              type="button"
+              onClick={onGoToSettings}
+              aria-label={settingsLabel}
+              className={chatHeaderIconButtonClass}
+            >
+              <Settings aria-hidden="true" className="size-6" />
             </button>
           )}
-          <button type="button" onClick={onClose} aria-label={closeLabel} className={ICON_BUTTON_CLASS}>
-            <X aria-hidden="true" className="size-5" />
+          <button type="button" onClick={onClose} aria-label={closeLabel} className={chatHeaderIconButtonClass}>
+            <X aria-hidden="true" className="size-6" />
           </button>
         </header>
         <div className="flex min-h-0 flex-1 flex-col">{children}</div>

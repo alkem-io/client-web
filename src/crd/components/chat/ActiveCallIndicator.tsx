@@ -72,7 +72,7 @@ export function ActiveCallIndicator({ activeLabel, count, join, joinedNote }: Ac
                 data-testid="call-join-video"
                 className={chatHeaderIconButtonClass}
               >
-                <Video aria-hidden="true" className="size-4" />
+                <Video aria-hidden="true" className="size-6" />
               </button>
             </TooltipTrigger>
             <TooltipContent>{join.joinVideoLabel}</TooltipContent>
@@ -86,7 +86,7 @@ export function ActiveCallIndicator({ activeLabel, count, join, joinedNote }: Ac
                 data-testid="call-join-audio"
                 className={chatHeaderIconButtonClass}
               >
-                <Phone aria-hidden="true" className="size-4" />
+                <Phone aria-hidden="true" className="size-6" />
               </button>
             </TooltipTrigger>
             <TooltipContent>{join.joinAudioLabel}</TooltipContent>

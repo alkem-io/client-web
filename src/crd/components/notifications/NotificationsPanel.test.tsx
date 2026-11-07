@@ -1,27 +1,77 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeAll, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { NotificationsPanel } from './NotificationsPanel';
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: string) => key }),
+}));
+
+const screenSize = { isSmallScreen: false, isMediumScreen: false, isLargeScreen: true };
+vi.mock('@/crd/hooks/useMediaQuery', () => ({ useScreenSize: () => screenSize }));
 
 beforeAll(() => {
   // jsdom does not lay out, so elements have no scrollTo; the panel scrolls the list back to the top.
   Element.prototype.scrollTo = vi.fn();
 });
 
-const renderPanel = (props: { hasNewNotifications?: boolean; onShowNewNotifications?: () => void }) =>
+const renderPanel = (props: { hasNewNotifications?: boolean; onShowNewNotifications?: () => void } = {}) => {
+  const onClose = vi.fn();
   render(
     <NotificationsPanel
       open={true}
-      onClose={vi.fn()}
+      onClose={onClose}
       items={[]}
       filters={[]}
-      selectedFilter="ALL"
-      onFilterChange={vi.fn()}
-      onMarkAllRead={vi.fn()}
-      onLoadMore={vi.fn()}
+      selectedFilter="all"
+      onFilterChange={() => {}}
+      onMarkAllRead={() => {}}
+      onLoadMore={() => {}}
       {...props}
     />
   );
+  return onClose;
+};
+
+describe('NotificationsPanel — full screen on a small screen', () => {
+  afterEach(() => {
+    screenSize.isSmallScreen = false;
+  });
+
+  const closeButtons = () => screen.getAllByRole('button', { name: 'notifications.close' });
+
+  it('is pinned to the edges and keeps its corner close button', async () => {
+    screenSize.isSmallScreen = true;
+    const onClose = renderPanel();
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveClass('inset-0', 'translate-x-0', 'translate-y-0', 'border-none');
+    expect(dialog).not.toHaveClass('top-[50%]', 'left-[50%]');
+
+    // Same close control as the chat panel and as above a small screen: an X, not a back arrow.
+    expect(closeButtons()).toHaveLength(1);
+    expect(closeButtons()[0].querySelector('.lucide-x')).not.toBeNull();
+    expect(dialog.querySelector('.lucide-chevron-left')).toBeNull();
+    // The same target as the chat panel's X, not the dialog primitive's bare icon.
+    expect(closeButtons()[0]).toHaveClass('size-9');
+    expect(closeButtons()[0].querySelector('svg')).toHaveClass('size-6');
+    expect(screen.getByRole('button', { name: 'notifications.markAllRead' })).toHaveClass('size-9');
+    await userEvent.click(closeButtons()[0]);
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+
+  it('stays a centered panel with its corner close button above a small screen', () => {
+    renderPanel();
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveClass('top-[50%]', 'left-[50%]', 'sm:h-[560px]', 'sm:max-w-lg');
+    expect(dialog).not.toHaveClass('inset-0');
+    expect(closeButtons()).toHaveLength(1);
+    expect(closeButtons()[0].querySelector('.lucide-x')).not.toBeNull();
+    expect(closeButtons()[0]).toHaveClass('size-9');
+    expect(dialog.querySelector('.lucide-chevron-left')).toBeNull();
+  });
+});
 
 describe('NotificationsPanel — newer notifications', () => {
   it('offers them and asks for them on click', async () => {

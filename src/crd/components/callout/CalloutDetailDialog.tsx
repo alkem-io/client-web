@@ -1,4 +1,4 @@
-import { Share2, X } from 'lucide-react';
+import { ChevronLeft, Share2, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -6,6 +6,7 @@ import {
   type ReferencesAndTagsStripReference,
 } from '@/crd/components/callout/ReferencesAndTagsStrip';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
+import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -136,6 +137,7 @@ export function CalloutDetailDialog({
   focusedPost = false,
 }: CalloutDetailDialogProps) {
   const { t } = useTranslation('crd-space');
+  const { isSmallScreen } = useScreenSize();
   const showDiscussion = !editing && (commentsEnabled !== false || (callout.commentCount ?? 0) > 0);
 
   const author = callout.author;
@@ -154,17 +156,35 @@ export function CalloutDetailDialog({
     </div>
   ) : null;
 
+  const backButton = (
+    <DialogClose asChild={true}>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="shrink-0 text-muted-foreground hover:text-foreground hover:bg-muted rounded-full"
+        aria-label={t('calloutDialog.close')}
+      >
+        <ChevronLeft className="size-5" aria-hidden="true" />
+      </Button>
+    </DialogClose>
+  );
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         overlayClassName={overlayClassName}
-        hideClose={focusedPost}
+        hideClose={true}
         className={cn(
-          'w-full p-0 gap-0 overflow-hidden flex flex-col bg-background border-none shadow-2xl rounded-xl',
-          // Focused mode grows with its (single-post) content up to a cap, so a
-          // short task doesn't leave a tall empty dialog; the full callout dialog
-          // keeps its fixed, roomy height.
-          focusedPost ? 'sm:max-w-3xl max-h-[90vh]' : 'sm:max-w-5xl h-[95vh]',
+          'w-full p-0 gap-0 overflow-hidden flex flex-col bg-background border-none shadow-2xl',
+          // Full screen on a small screen, like the chat panel. Above that, focused
+          // mode grows with its (single-post) content up to a cap, so a short task
+          // doesn't leave a tall empty dialog; the full callout dialog keeps its
+          // fixed, roomy height.
+          isSmallScreen
+            ? 'inset-0 max-w-none translate-x-0 translate-y-0 rounded-none'
+            : focusedPost
+              ? 'sm:max-w-3xl max-h-[90vh] rounded-xl'
+              : 'sm:max-w-5xl h-[95vh] rounded-xl',
           contentClassName
         )}
         aria-describedby="callout-dialog-description"
@@ -174,14 +194,21 @@ export function CalloutDetailDialog({
             dropped — only the sr-only title/description remain, for a11y. */}
         {focusedPost ? (
           <>
+            {isSmallScreen && <div className="flex shrink-0 items-center border-b border-border p-2">{backButton}</div>}
             <DialogTitle className="sr-only">{callout.title}</DialogTitle>
             <DialogDescription id="callout-dialog-description" className="sr-only">
               {callout.author?.name}
             </DialogDescription>
           </>
         ) : (
-          <div className="h-16 shrink-0 bg-background flex items-center justify-between px-6 shadow-sm border-b border-border z-20">
-            <div className="flex items-center gap-4 min-w-0">
+          <div
+            className={cn(
+              'h-16 shrink-0 bg-background flex items-center justify-between shadow-sm border-b border-border z-20',
+              isSmallScreen ? 'px-2' : 'px-6'
+            )}
+          >
+            <div className={cn('flex items-center min-w-0', isSmallScreen ? 'gap-1' : 'gap-4')}>
+              {isSmallScreen && backButton}
               <div className="min-w-0">
                 <DialogTitle className="text-body-emphasis leading-tight text-foreground truncate max-sm:sr-only">
                   {callout.title}
@@ -216,17 +243,21 @@ export function CalloutDetailDialog({
                 <Share2 className="w-5 h-5" aria-hidden="true" />
               </Button>
               {settingsSlot}
-              <div className="w-px h-6 bg-border mx-2" aria-hidden="true" />
-              <DialogClose asChild={true}>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full"
-                  aria-label={t('calloutDialog.close')}
-                >
-                  <X className="w-5 h-5" aria-hidden="true" />
-                </Button>
-              </DialogClose>
+              {!isSmallScreen && (
+                <>
+                  <div className="w-px h-6 bg-border mx-2" aria-hidden="true" />
+                  <DialogClose asChild={true}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full"
+                      aria-label={t('calloutDialog.close')}
+                    >
+                      <X className="w-5 h-5" aria-hidden="true" />
+                    </Button>
+                  </DialogClose>
+                </>
+              )}
             </div>
           </div>
         )}
