@@ -40,14 +40,22 @@ export function mapRoomToCommentData(
 
     return {
       id: message.id,
-      author: {
-        id: authorId ?? 'unknown',
-        name: sender?.profile?.displayName ?? 'Unknown',
-        avatarUrl: sender?.profile?.avatar?.uri,
-        profileUrl: sender?.profile?.url,
-        isVirtualContributor: sender?.type === ActorType.VirtualContributor,
-        preview,
-      },
+      author: preview
+        ? {
+            id: preview.id,
+            name: preview.name,
+            avatarUrl: preview.avatarUrl,
+            profileUrl: preview.href,
+            isVirtualContributor: preview.type === 'virtualContributor',
+            preview,
+          }
+        : {
+            id: authorId ?? 'unknown',
+            name: sender?.profile?.displayName ?? 'Unknown',
+            avatarUrl: sender?.profile?.avatar?.uri,
+            profileUrl: sender?.profile?.url,
+            isVirtualContributor: sender?.type === ActorType.VirtualContributor,
+          },
       content: message.message,
       timestamp: formatTimeElapsed(new Date(message.timestamp), t, 'long'),
       timestampMs: message.timestamp,

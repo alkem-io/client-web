@@ -243,6 +243,18 @@ describe('mapRoomToCommentData', () => {
       expect(author.isVirtualContributor).toBe(false);
     });
 
+    it('takes the author fields from the preview, not the raw sender profile', () => {
+      const author = authorOf({
+        id: 'bob',
+        type: ActorType.User,
+        profile: { ...senderProfile, url: null, avatar: { ...senderProfile.avatar, uri: null } },
+      } as unknown as Message['sender']);
+      expect(author.avatarUrl).toBeUndefined();
+      expect(author.profileUrl).toBeUndefined();
+      expect(author.avatarUrl).toBe(author.preview?.avatarUrl);
+      expect(author.profileUrl).toBe(author.preview?.href);
+    });
+
     it('gives a virtual contributor sender a preview that cannot be messaged', () => {
       const author = authorOf({ id: 'vc', type: ActorType.VirtualContributor, profile: senderProfile });
       expect(author.preview?.type).toBe('virtualContributor');
