@@ -62,7 +62,16 @@ describe('NotificationsPanel — full screen on a small screen', () => {
     expect(dialog).not.toHaveClass('inset-0');
     expect(closeButtons()).toHaveLength(1);
     expect(closeButtons()[0].querySelector('.lucide-x')).not.toBeNull();
-    expect(closeButtons()[0]).toHaveClass('size-9');
     expect(dialog.querySelector('.lucide-chevron-left')).toBeNull();
+  });
+
+  it('keeps the larger controls for phones and the compact size from the sm breakpoint up', () => {
+    renderPanel();
+
+    const controls = [closeButtons()[0], screen.getByRole('button', { name: 'notifications.markAllRead' })];
+    for (const control of controls) {
+      expect(control).toHaveClass('size-9', 'sm:size-7');
+      expect(control.querySelector('svg')).toHaveClass('size-6', 'sm:size-4');
+    }
   });
 });

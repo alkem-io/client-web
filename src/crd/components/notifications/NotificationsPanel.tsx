@@ -8,6 +8,10 @@ import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
 import { Skeleton } from '@/crd/primitives/skeleton';
 
+/** Phones get the larger touch-friendly controls; from the `sm` breakpoint up, the compact desktop size. */
+const headerButtonClass = 'size-9 sm:size-7 text-muted-foreground';
+const headerIconClass = 'size-6 sm:size-4';
+
 type NotificationsPanelProps = {
   open: boolean;
   onClose: () => void;
@@ -73,33 +77,33 @@ export function NotificationsPanel({
         hideClose={true}
       >
         {/* Header */}
-        <div className="flex items-center justify-between pl-4 pr-2 py-2 border-b border-border bg-muted/30">
+        <div className="flex items-center justify-between pl-4 pr-2 py-2 sm:pr-2.5 sm:pt-[10px] sm:pb-3 border-b border-border bg-muted/30">
           <DialogTitle className="text-card-title">{t('notifications.title')}</DialogTitle>
           <div className="flex items-center gap-1">
             <Button
               variant="ghost"
               size="icon"
-              className="size-9 text-muted-foreground"
+              className={headerButtonClass}
               aria-label={t('notifications.markAllRead')}
               onClick={onMarkAllRead}
             >
-              <MailOpen aria-hidden="true" className="size-6" />
+              <MailOpen aria-hidden="true" className={headerIconClass} />
             </Button>
             {settingsHref && (
-              <Button variant="ghost" size="icon" className="size-9 text-muted-foreground" asChild={true}>
+              <Button variant="ghost" size="icon" className={headerButtonClass} asChild={true}>
                 <a href={settingsHref} aria-label={t('notifications.settings')}>
-                  <Settings aria-hidden="true" className="size-6" />
+                  <Settings aria-hidden="true" className={headerIconClass} />
                 </a>
               </Button>
             )}
             <Button
               variant="ghost"
               size="icon"
-              className="size-9 text-muted-foreground"
+              className={headerButtonClass}
               aria-label={t('notifications.close')}
               onClick={onClose}
             >
-              <X aria-hidden="true" className="size-6" />
+              <X aria-hidden="true" className={headerIconClass} />
             </Button>
           </div>
         </div>
