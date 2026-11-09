@@ -96,6 +96,10 @@ type ResolveReadonlyReasonParams = {
   myMembershipStatus?: CommunityMembershipStatus | string;
 };
 
+/**
+ * Picks the footer message that explains why the memo is read-only. Server signals that the memo is
+ * occupied (single-editor licence, capacity reached) win over the content-update-policy fallback.
+ */
 function resolveReadonlyReason({
   synced,
   isAuthenticated,
