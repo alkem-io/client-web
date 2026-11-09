@@ -4,7 +4,8 @@ import type { CommentData, CommentReaction } from '@/crd/components/comment/type
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { mapMessageAttachments } from '@/main/userMessaging/models';
-import { contributorTypeFromActor, mapContributorPreview } from './contributorPreviewMapper';
+import { keywordTags, mapContributorPreview } from './contributorPreviewMapper';
+import { contributorTypeFromActor } from './contributorType';
 
 type RoomWithMessages = Pick<CommentsWithMessagesModel, 'messages' | 'authorization' | 'attachmentBucketId'>;
 
@@ -36,7 +37,14 @@ export function mapRoomToCommentData(
     const canDelete = canDeleteAny || (Boolean(currentUserId) && authorId === currentUserId);
     const kind = contributorTypeFromActor(sender?.type);
     const preview =
-      sender?.profile && kind ? mapContributorPreview(sender.id, kind, sender.profile, currentUserId) : undefined;
+      sender?.profile && kind
+        ? mapContributorPreview(
+            sender.id,
+            kind,
+            { ...sender.profile, keywords: keywordTags(sender.profile.tagsets) },
+            currentUserId
+          )
+        : undefined;
 
     return {
       id: message.id,

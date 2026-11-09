@@ -17,8 +17,7 @@
       "emailNotice": "Se envía a la dirección de correo electrónico de la cuenta de esta persona.",
       "emailPlaceholder": "Escribe un correo electrónico…",
       "emailSuccessToast": "Tu correo electrónico se ha enviado.",
-      "cannotBeReached": "No se puede contactar con esta persona.",
-      "openChatError": "No se pudo abrir el chat. Inténtalo de nuevo."
+      "cannotBeReached": "No se puede contactar con esta persona."
     },
     "resourceTabsAriaLabel": "Secciones de recursos",
     "loading": {

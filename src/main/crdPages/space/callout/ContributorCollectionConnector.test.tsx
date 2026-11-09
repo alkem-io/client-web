@@ -110,16 +110,18 @@ beforeEach(async () => {
     await i18n.use(initReactI18next).init({
       lng: 'en',
       fallbackLng: 'en',
-      ns: ['crd-space', 'crd-profilePages'],
+      ns: ['crd-space', 'crd-profilePages', 'crd-common'],
       defaultNS: 'crd-space',
       resources: {
         en: {
           'crd-space': spaceEnJson,
+          'crd-common': {
+            apollo: { errors: { MESSAGING_NOT_ENABLED: 'Messaging is disabled.', UNSPECIFIED: 'Unexpected.' } },
+          },
           'crd-profilePages': {
             common: {
               messagePopover: {
                 cannotBeReached: 'This person cannot be contacted.',
-                openChatError: "We couldn't open the chat. Please try again.",
                 ariaLabel: 'Compose message',
                 cancel: 'Cancel',
                 send: 'Send',
@@ -248,7 +250,7 @@ describe('ContributorCollectionConnector — Message wiring (US3)', () => {
     );
   });
 
-  test('a MESSAGING_NOT_ENABLED error shows the cannot-be-contacted text and never opens the panel', async () => {
+  test('a MESSAGING_NOT_ENABLED error shows the messaging-disabled text and never opens the panel', async () => {
     const { ApolloError } = await import('@apollo/client');
     mockCreateConversation.mockRejectedValue(
       new ApolloError({
@@ -261,7 +263,7 @@ describe('ContributorCollectionConnector — Message wiring (US3)', () => {
     await userEvent.click(screen.getByRole('button', { name: /Actions for Ben/ }));
     await userEvent.click(screen.getByRole('menuitem', { name: 'Message' }));
 
-    expect(mockToastError).toHaveBeenCalledWith('This person cannot be contacted.');
+    expect(mockToastError).toHaveBeenCalledWith('Messaging is disabled.');
     expect(mockSetIsOpen).not.toHaveBeenCalledWith(true);
   });
 

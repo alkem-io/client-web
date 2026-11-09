@@ -31098,9 +31098,7 @@ export type SpaceAboutDetailsQuery = {
                             country?: string | undefined;
                           }
                         | undefined;
-                      tagsets?:
-                        | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                        | undefined;
+                      keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                     }
                   | undefined;
               }>;
@@ -31131,9 +31129,7 @@ export type SpaceAboutDetailsQuery = {
                             country?: string | undefined;
                           }
                         | undefined;
-                      tagsets?:
-                        | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                        | undefined;
+                      keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                     }
                   | undefined;
               }>;
@@ -31355,7 +31351,7 @@ export type SpaceAboutDetailsFragment = {
             location?:
               | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
               | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+            keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
           }
         | undefined;
     }>;
@@ -31381,7 +31377,7 @@ export type SpaceAboutDetailsFragment = {
             location?:
               | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
               | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+            keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
           }
         | undefined;
     }>;
@@ -32607,7 +32603,7 @@ export type UpdateSpaceMutation = {
                 location?:
                   | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                   | undefined;
-                tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+                keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               }
             | undefined;
         }>;
@@ -32633,7 +32629,7 @@ export type UpdateSpaceMutation = {
                 location?:
                   | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                   | undefined;
-                tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+                keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               }
             | undefined;
         }>;
@@ -32788,7 +32784,7 @@ export type SpaceInfoFragment = {
               location?:
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                 | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+              keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             }
           | undefined;
       }>;
@@ -32814,7 +32810,7 @@ export type SpaceInfoFragment = {
               location?:
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                 | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+              keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             }
           | undefined;
       }>;
@@ -33449,9 +33445,7 @@ export type SpacePageQuery = {
                             country?: string | undefined;
                           }
                         | undefined;
-                      tagsets?:
-                        | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                        | undefined;
+                      keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                     }
                   | undefined;
               }>;
@@ -33482,9 +33476,7 @@ export type SpacePageQuery = {
                             country?: string | undefined;
                           }
                         | undefined;
-                      tagsets?:
-                        | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                        | undefined;
+                      keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                     }
                   | undefined;
               }>;
@@ -33718,7 +33710,7 @@ export type SpacePageFragment = {
               location?:
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                 | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+              keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             }
           | undefined;
       }>;
@@ -33744,7 +33736,7 @@ export type SpacePageFragment = {
               location?:
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                 | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+              keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             }
           | undefined;
       }>;

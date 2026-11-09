@@ -2610,9 +2610,8 @@ export const SpaceAboutDetailsFragmentDoc = gql`
           city
           country
         }
-        tagsets {
+        keywords: tagset(tagsetName: KEYWORDS) {
           id
-          name
           tags
         }
       }
@@ -2632,9 +2631,8 @@ export const SpaceAboutDetailsFragmentDoc = gql`
           city
           country
         }
-        tagsets {
+        keywords: tagset(tagsetName: KEYWORDS) {
           id
-          name
           tags
         }
       }

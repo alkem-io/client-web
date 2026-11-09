@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
-import { canMessageContributor, contributorTypeFromActor, mapContributorPreview } from './contributorPreviewMapper';
+import { canMessageContributor, keywordTags, mapContributorPreview } from './contributorPreviewMapper';
+import { contributorTypeFromActor } from './contributorType';
 
 describe('mapContributorPreview', () => {
   const profile = {
@@ -42,23 +43,32 @@ describe('mapContributorPreview', () => {
     expect(mapContributorPreview('bob', 'user', { tagline: '   ' }, 'me').tagline).toBeUndefined();
   });
 
-  it('takes tags from the keywords tagset in any case and ignores skills and capabilities', () => {
+  it('shows the keywords it is given, and none when there are none', () => {
+    expect(mapContributorPreview('bob', 'user', { keywords: ['climate', 'energy'] }, 'me').tags).toEqual([
+      'climate',
+      'energy',
+    ]);
+    expect(mapContributorPreview('bob', 'user', { keywords: null }, 'me').tags).toEqual([]);
+  });
+
+  it('marks only users as messageable; an organisation never gets the card Message action', () => {
+    expect(mapContributorPreview('bob', 'user', {}, 'me').canMessage).toBe(true);
+    expect(mapContributorPreview('org', 'organization', {}, 'me').canMessage).toBe(false);
+    expect(mapContributorPreview('vc', 'virtualContributor', {}, 'me').canMessage).toBe(false);
+  });
+});
+
+describe('keywordTags', () => {
+  it('takes the keywords tagset in any case and ignores skills and capabilities', () => {
     const tagsets = (keywordsName: string) => [
       { name: 'skills', tags: ['typescript'] },
       { name: 'capabilities', tags: ['hosting'] },
       { name: keywordsName, tags: ['climate', 'energy'] },
     ];
-    expect(mapContributorPreview('bob', 'user', { tagsets: tagsets('KEYWORDS') }, 'me').tags).toEqual([
-      'climate',
-      'energy',
-    ]);
-    expect(mapContributorPreview('bob', 'user', { tagsets: tagsets('Keywords') }, 'me').tags).toEqual([
-      'climate',
-      'energy',
-    ]);
-    expect(mapContributorPreview('bob', 'user', { tagsets: [{ name: 'skills', tags: ['ts'] }] }, 'me').tags).toEqual(
-      []
-    );
+    expect(keywordTags(tagsets('KEYWORDS'))).toEqual(['climate', 'energy']);
+    expect(keywordTags(tagsets('Keywords'))).toEqual(['climate', 'energy']);
+    expect(keywordTags([{ name: 'skills', tags: ['ts'] }])).toBeUndefined();
+    expect(keywordTags(undefined)).toBeUndefined();
   });
 });
 
@@ -86,7 +96,7 @@ describe('canMessageContributor', () => {
     expect(canMessageContributor({ type: 'virtualContributor', id: 'vc' }, 'me')).toBe(false);
   });
 
-  it('allows an organisation for a signed-in viewer (the hover card hides it by type)', () => {
+  it('allows an organisation for a signed-in viewer (its own message dialog, not the card)', () => {
     expect(canMessageContributor({ type: 'organization', id: 'org' }, 'me')).toBe(true);
   });
 });

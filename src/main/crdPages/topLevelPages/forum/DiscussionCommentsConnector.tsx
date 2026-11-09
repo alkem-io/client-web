@@ -1,6 +1,6 @@
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
 import { useCrdRoomComments } from '@/main/crdPages/space/hooks/useCrdRoomComments';
-import { useOpenDirectChatHandler } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
+import { useMessageContributor } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 
 type DiscussionCommentsConnectorProps = {
   roomId: string;
@@ -8,11 +8,11 @@ type DiscussionCommentsConnectorProps = {
 };
 
 export function DiscussionCommentsConnector({ roomId, room }: DiscussionCommentsConnectorProps) {
-  const { onOpenChat } = useOpenDirectChatHandler({ recipientUserId: undefined });
+  const onMessageContributor = useMessageContributor();
   const { thread, commentInput } = useCrdRoomComments({
     roomId,
     room,
-    onMessageContributor: contributor => void onOpenChat(contributor.id),
+    onMessageContributor,
   });
 
   return (

@@ -10,7 +10,7 @@ vi.mock('@/main/crdPages/space/hooks/useCrdRoomComments', () => ({
 }));
 const onOpenChatSpy = vi.fn();
 vi.mock('@/main/crdPages/topLevelPages/common/useSendMessageHandler', () => ({
-  useOpenDirectChatHandler: () => ({ onOpenChat: onOpenChatSpy }),
+  useMessageContributor: () => (contributor: { id: string }) => onOpenChatSpy(contributor.id),
 }));
 
 import { DiscussionCommentsConnector } from './DiscussionCommentsConnector';

@@ -5,6 +5,8 @@ import {
   useSendMessageToOrganizationMutation,
   useSendMessageToUsersMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import type { ContributorPreviewData } from '@/crd/components/contributor/ContributorHoverCard';
+import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 import { useStartDirectChat } from '@/main/crdPages/unifiedChat/useStartDirectChat';
 
 export type SendMessageHandlerResult = {
@@ -30,8 +32,8 @@ export const useOpenDirectChatHandler = (params: {
   recipientUserId: string | undefined;
 }): OpenDirectChatHandlerResult => {
   const { recipientUserId } = params;
-  // Lazily loaded namespace: without useSuspense: false every host suspends on first render; `t` is read only at click time.
-  const { t } = useTranslation('crd-profilePages', { useSuspense: false });
+  // The eagerly loaded default namespace: hosts never suspend and the toast never shows a raw key.
+  const { t } = useTranslation('crd-common');
   const { startDirectChat } = useStartDirectChat(recipientUserId);
 
   const onOpenChat = async (targetUserId: string | undefined = recipientUserId) => {
@@ -43,14 +45,20 @@ export const useOpenDirectChatHandler = (params: {
     } catch (err) {
       const code = err instanceof ApolloError ? err.graphQLErrors[0]?.extensions?.code : undefined;
       toast.error(
-        code === 'MESSAGING_NOT_ENABLED'
-          ? t('common.messagePopover.cannotBeReached')
-          : t('common.messagePopover.openChatError')
+        code === AlkemioGraphqlErrorCode.MESSAGING_NOT_ENABLED
+          ? t('apollo.errors.MESSAGING_NOT_ENABLED')
+          : t('apollo.errors.UNSPECIFIED')
       );
     }
   };
 
   return { onOpenChat };
+};
+
+/** The hover card's Message action for hosts that list many contributors: a direct chat with the one clicked. */
+export const useMessageContributor = () => {
+  const { onOpenChat } = useOpenDirectChatHandler({ recipientUserId: undefined });
+  return (contributor: Pick<ContributorPreviewData, 'id'>) => void onOpenChat(contributor.id);
 };
 
 /**

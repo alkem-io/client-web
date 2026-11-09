@@ -1,4 +1,4 @@
-import { ActorType, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import type { ContributorPreviewData } from '@/crd/components/contributor/ContributorHoverCard';
 
 type ContributorKind = ContributorPreviewData['type'];
@@ -9,18 +9,9 @@ export type PreviewProfileLike = {
   avatar?: { uri?: string | null } | null;
   tagline?: string | null;
   location?: { city?: string | null; country?: string | null } | null;
-  tagsets?: { name: string; tags: string[] }[] | null;
+  /** The Keywords tagset's tags — the only tags the card shows. */
+  keywords?: string[] | null;
 };
-
-// Only the contributor ActorType subtypes map to a card kind; the others (SPACE/ACCOUNT/VIRTUAL_ASSISTANT) do not.
-const SERVER_TO_TYPE_ID: Partial<Record<ActorType, ContributorKind>> = {
-  [ActorType.User]: 'user',
-  [ActorType.Organization]: 'organization',
-  [ActorType.VirtualContributor]: 'virtualContributor',
-};
-
-export const contributorTypeFromActor = (type?: ActorType): ContributorKind | undefined =>
-  type ? SERVER_TO_TYPE_ID[type] : undefined;
 
 export const canMessageContributor = (
   contributor: { type: ContributorKind; id: string },
@@ -28,6 +19,10 @@ export const canMessageContributor = (
 ) => Boolean(viewerId) && contributor.type !== 'virtualContributor' && contributor.id !== viewerId;
 
 const KEYWORDS = TagsetReservedName.Keywords.toLowerCase();
+
+/** The Keywords tags out of a profile's full tagset list (comment senders load every tagset). */
+export const keywordTags = (tagsets: { name: string; tags: string[] }[] | null | undefined) =>
+  tagsets?.find(tagset => tagset.name.toLowerCase() === KEYWORDS)?.tags;
 
 export function mapContributorPreview(
   id: string,
@@ -43,7 +38,9 @@ export function mapContributorPreview(
     href: profile.url ?? undefined,
     locationLabel: [profile.location?.city, profile.location?.country].filter(Boolean).join(', ') || undefined,
     tagline: profile.tagline?.trim() || undefined,
-    tags: profile.tagsets?.find(tagset => tagset.name.toLowerCase() === KEYWORDS)?.tags ?? [],
-    canMessage: canMessageContributor({ type, id }, currentUserId),
+    tags: profile.keywords ?? [],
+    // The card's Message action is a direct chat, which only users have; an organisation
+    // is messaged through its own dialog elsewhere, never from the card.
+    canMessage: type === 'user' && canMessageContributor({ type, id }, currentUserId),
   };
 }

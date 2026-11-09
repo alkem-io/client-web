@@ -25,9 +25,8 @@ fragment SpaceAboutDetails on SpaceAbout {
           city
           country
         }
-        tagsets {
+        keywords: tagset(tagsetName: KEYWORDS) {
           id
-          name
           tags
         }
       }
@@ -47,9 +46,8 @@ fragment SpaceAboutDetails on SpaceAbout {
           city
           country
         }
-        tagsets {
+        keywords: tagset(tagsetName: KEYWORDS) {
           id
-          name
           tags
         }
       }

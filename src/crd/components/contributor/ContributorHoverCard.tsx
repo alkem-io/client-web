@@ -1,5 +1,5 @@
 import { MapPin, MessageCircle } from 'lucide-react';
-import type { ReactElement } from 'react';
+import { type ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ContributorCardData } from '@/crd/components/callout/ContributorCollection/ContributorCard';
 import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
@@ -24,10 +24,11 @@ export function ContributorHoverCard({ contributor, onMessage, children }: Contr
   const { t } = useTranslation('crd-space');
   const isOrg = contributor.type === 'organization';
   const showLocation = contributor.type !== 'virtualContributor' && Boolean(contributor.locationLabel);
-  const showMessage = contributor.type === 'user' && contributor.canMessage && onMessage;
+  const showMessage = contributor.canMessage && onMessage;
+  const [open, setOpen] = useState(false);
 
   return (
-    <HoverCard openDelay={300} closeDelay={150}>
+    <HoverCard open={open} onOpenChange={setOpen} openDelay={300} closeDelay={150}>
       <HoverCardTrigger asChild={true}>{children}</HoverCardTrigger>
       <HoverCardContent className="w-72 p-4">
         <div className="flex items-start gap-3">
@@ -62,7 +63,11 @@ export function ContributorHoverCard({ contributor, onMessage, children }: Contr
               variant="ghost"
               tooltipLabel={t('contributors.card.message')}
               className="h-8 w-8 shrink-0 text-muted-foreground"
-              onClick={() => onMessage(contributor)}
+              onClick={() => {
+                // The chat panel opens where the card would otherwise sit on top of it.
+                setOpen(false);
+                onMessage(contributor);
+              }}
             >
               <MessageCircle aria-hidden="true" />
             </IconButton>

@@ -58,7 +58,7 @@ vi.mock('../hooks/useCrdSpaceCommunity', () => ({
   }),
 }));
 vi.mock('@/main/crdPages/topLevelPages/common/useSendMessageHandler', () => ({
-  useOpenDirectChatHandler: () => ({ onOpenChat: onOpenChatSpy }),
+  useMessageContributor: () => (contributor: { id: string }) => onOpenChatSpy(contributor.id),
 }));
 vi.mock('@/crd/components/space/sidebar/InfoBlock', () => ({
   InfoBlock: (props: unknown) => {

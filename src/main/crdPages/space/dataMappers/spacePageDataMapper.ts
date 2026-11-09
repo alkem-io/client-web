@@ -23,7 +23,10 @@ export function mapSpaceVisibility(visibility: SpaceVisibility | undefined): Spa
   }
 }
 
-type LeadContributorLike = { id: string; profile?: PreviewProfileLike | null };
+type LeadContributorLike = {
+  id: string;
+  profile?: (Omit<PreviewProfileLike, 'keywords'> & { keywords?: { tags: string[] } | null }) | null;
+};
 
 function mapLeadContributor(
   contributor: LeadContributorLike,
@@ -34,7 +37,7 @@ function mapLeadContributor(
   const preview = mapContributorPreview(
     contributor.id,
     type === 'person' ? 'user' : 'organization',
-    contributor.profile,
+    { ...contributor.profile, keywords: contributor.profile.keywords?.tags },
     currentUserId
   );
   return {

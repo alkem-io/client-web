@@ -21,7 +21,7 @@ const orgPreview: ContributorPreviewData = {
   name: 'Green Org',
   href: '/organization/green',
   tagline: 'Greening cities',
-  canMessage: true,
+  canMessage: false,
 };
 
 const orgLead: LeadItem = {
@@ -50,7 +50,13 @@ describe('InfoBlock lead hover card', () => {
   });
 
   test('a user lead that can be messaged reports the preview to onMessageContributor', async () => {
-    const userPreview: ContributorPreviewData = { ...orgPreview, id: 'u-1', type: 'user', name: 'Green Org' };
+    const userPreview: ContributorPreviewData = {
+      ...orgPreview,
+      id: 'u-1',
+      type: 'user',
+      name: 'Green Org',
+      canMessage: true,
+    };
     const onMessageContributor = vi.fn();
     render(
       <InfoBlock

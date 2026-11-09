@@ -157,7 +157,7 @@ test.describe('101 US1 — preview a member from their comment', () => {
     expect(conversations[0].room.messagesCount).toBe(0);
   });
 
-  test('US1-AS3 Bob has chat disabled: exactly one "cannot be contacted" toast and no chat opens', async ({
+  test('US1-AS3 Bob has chat disabled: exactly one "messaging disabled" toast and no chat opens', async ({
     authedPage: page,
     playwright,
   }) => {
@@ -168,7 +168,7 @@ test.describe('101 US1 — preview a member from their comment', () => {
       const comments = await openFeedComments(page);
       await hoverOpen(page, comments.getByRole('link', { name: BOB, exact: true }));
       await messageButton(page).click();
-      const toast = page.locator('[data-sonner-toast]').filter({ hasText: 'This person cannot be contacted.' });
+      const toast = page.locator('[data-sonner-toast]').filter({ hasText: 'This user has disabled direct messaging.' });
       await expect(toast).toHaveCount(1);
       await evidence(page, 'US1-AS3');
       await page.waitForTimeout(1000); // observation window: no second toast, no chat

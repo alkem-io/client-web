@@ -11,7 +11,7 @@ import type {
   ContributorTypeId,
   ContributorViewId,
 } from '@/crd/forms/callout/types';
-import { contributorTypeFromActor } from '../dataMappers/contributorPreviewMapper';
+import { contributorTypeFromActor } from '../dataMappers/contributorType';
 
 /**
  * Pure mapping between the CRD callout form's contributor-collection config and

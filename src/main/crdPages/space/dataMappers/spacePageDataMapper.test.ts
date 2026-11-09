@@ -12,7 +12,7 @@ const leadUsers: Leads = [
       avatar: { uri: 'https://example.org/bob.png' },
       tagline: 'Builds things',
       location: { city: 'Utrecht', country: 'NL' },
-      tagsets: [{ name: 'keywords', tags: ['climate'] }],
+      keywords: { tags: ['climate'] },
     },
   },
   {
@@ -42,6 +42,7 @@ describe('mapSidebarLeads', () => {
     }
     expect(leads[0].preview).toMatchObject({ tagline: 'Builds things', tags: ['climate'], canMessage: true });
     expect(leads[0].initials).toBe('BB');
+    expect(leads[2].preview?.canMessage).toBe(false);
   });
 
   it('gives the viewer themselves no message action', () => {

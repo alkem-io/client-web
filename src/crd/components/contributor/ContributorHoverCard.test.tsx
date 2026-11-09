@@ -56,6 +56,13 @@ describe('ContributorHoverCard', () => {
     expect(onMessage).toHaveBeenCalledWith(bob);
   });
 
+  test('clicking Message closes the card so it does not cover the chat panel', async () => {
+    renderCard(bob, vi.fn());
+    await openByHover();
+    await userEvent.click(screen.getByRole('button', MESSAGE));
+    await waitFor(() => expect(screen.queryByText('Bob Builder')).not.toBeInTheDocument());
+  });
+
   test('a user who cannot be messaged gets no message button', async () => {
     renderCard({ ...bob, canMessage: false }, vi.fn());
     await openByHover();
@@ -68,8 +75,8 @@ describe('ContributorHoverCard', () => {
     expect(screen.queryByRole('button', MESSAGE)).not.toBeInTheDocument();
   });
 
-  test('an organisation never gets a message button, and empty tags render no tag list', async () => {
-    renderCard({ ...bob, type: 'organization', tags: [] }, vi.fn());
+  test('an organisation (which the mapper never marks messageable) has no message button, and empty tags render no tag list', async () => {
+    renderCard({ ...bob, type: 'organization', tags: [], canMessage: false }, vi.fn());
     await openByHover();
     expect(screen.queryByRole('button', MESSAGE)).not.toBeInTheDocument();
     expect(cardContent().querySelector('ul')).toBeNull();
