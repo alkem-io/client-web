@@ -756,7 +756,9 @@
         "unauthenticated": "Meld je aan om deze memo te bewerken.",
         "contentUpdatePolicy": "Je hebt geen toestemming om deze memo te bewerken. Vraag de eigenaar, <ownerlink>{{ownerName}}</ownerlink>, om de deelinstellingen te wijzigen.",
         "contentUpdatePolicyNoOwner": "Je hebt geen toestemming om deze memo te bewerken. De eigenaar is niet meer beschikbaar — vraag een beheerder van de Space om de deelinstellingen te wijzigen.",
-        "noMembership": "Alleen leden van deze space kunnen deze memo bewerken. Word lid om bij te dragen."
+        "noMembership": "Alleen leden van deze space kunnen deze memo bewerken. Word lid om bij te dragen.",
+        "multiUserNotAllowed": "Je kunt deze memo niet bewerken omdat deze space slechts één bewerker tegelijk toestaat.",
+        "roomCapacityReached": "Je kunt deze memo niet bewerken omdat het maximale aantal bewerkers tegelijk is bereikt."
       }
     },
     "errors": {

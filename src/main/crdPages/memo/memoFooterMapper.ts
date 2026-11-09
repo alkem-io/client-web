@@ -1,4 +1,5 @@
 import { CommunityMembershipStatus, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
+import { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
 import type { ConnectedUser, ReadonlyReason } from '@/crd/components/memo/MemoCollabFooter';
 import type { CollabStatus } from '@/crd/forms/markdown/collabProviderTypes';
 import type { CollaborationSave } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
@@ -9,6 +10,8 @@ type MapMemoFooterParams = {
   synced: boolean;
   isAuthenticated: boolean;
   isReadOnly: boolean;
+  // Why the collaboration service made this connection read-only (e.g. the single-editor licence).
+  readOnlyCode?: ReadOnlyCode;
   memberCount: number;
   connectedUsers: ConnectedUser[];
   isContribution: boolean;
@@ -51,6 +54,7 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
     synced,
     isAuthenticated,
     isReadOnly,
+    readOnlyCode,
     memberCount,
     connectedUsers,
     isContribution,
@@ -73,6 +77,7 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
       synced,
       isAuthenticated,
       isReadOnly,
+      readOnlyCode,
       contentUpdatePolicy,
       hasOwner,
       myMembershipStatus,
@@ -85,6 +90,7 @@ type ResolveReadonlyReasonParams = {
   synced: boolean;
   isAuthenticated: boolean;
   isReadOnly: boolean;
+  readOnlyCode?: ReadOnlyCode;
   contentUpdatePolicy?: ContentUpdatePolicy;
   hasOwner?: boolean;
   myMembershipStatus?: CommunityMembershipStatus | string;
@@ -94,6 +100,7 @@ function resolveReadonlyReason({
   synced,
   isAuthenticated,
   isReadOnly,
+  readOnlyCode,
   contentUpdatePolicy,
   hasOwner,
   myMembershipStatus,
@@ -101,6 +108,10 @@ function resolveReadonlyReason({
   if (!synced) return 'connecting';
   if (!isAuthenticated) return 'unauthenticated';
   if (!isReadOnly) return null;
+  // The user may edit, but the collaboration room is occupied (parity with the whiteboard footer):
+  // single-editor licence, or the multi-editor maximum is reached.
+  if (readOnlyCode === ReadOnlyCode.MULTI_USER_NOT_ALLOWED) return 'multiUserNotAllowed';
+  if (readOnlyCode === ReadOnlyCode.ROOM_CAPACITY_REACHED) return 'roomCapacityReached';
   if (
     contentUpdatePolicy === ContentUpdatePolicy.Contributors &&
     myMembershipStatus !== CommunityMembershipStatus.Member
