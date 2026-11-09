@@ -5,7 +5,8 @@ import { registerActiveSession, unregisterActiveSession } from './activeSession'
 import { mintAndStore } from './mintSession';
 import { quietSdkLogging } from './sdkLogging';
 import { attemptSilentSso } from './ssoLogin';
-import { type CredentialRecord, clearNamespace, loadActorCredentials } from './storage';
+import { type CredentialRecord, clearNamespace, loadActorCredentials, loadCredentials } from './storage';
+import { renewTokens } from './tokenRefresh';
 
 // matrix-js-sdk's HttpApiEvent.SessionLoggedOut: emitted when the homeserver
 // rejects the access token (M_UNKNOWN_TOKEN). A string here keeps the SDK a
@@ -17,10 +18,13 @@ const CLIENT_SYNC = 'sync';
 // paged in when a conversation is opened.
 const INITIAL_SYNC_LIMIT = 20;
 
+const RENEW_BEFORE_MS = 60_000;
+
 type MatrixClientLike = {
   stopClient(): void;
   startClient(opts?: { initialSyncLimit?: number; lazyLoadMembers?: boolean }): Promise<void>;
   on(event: string, listener: (state?: string) => void): unknown;
+  setAccessToken(token: string): void;
 };
 
 type SessionHandle = {
@@ -39,9 +43,11 @@ type SessionOptions = {
  * when none is usable, then starts the sync loop and publishes the client to
  * the read hooks. Registers the session so an Alkemio sign-out can stop it.
  *
- * A rejected token clears the stored record and gets one silent SSO and
- * restart; if that restart is rejected before it has synced, the session stays
- * stopped. A restart that syncs earns a fresh recovery for the next expiry.
+ * The access token is renewed in place before it expires. A rejected token
+ * restarts on another device's stored credential when there is one; otherwise
+ * it deletes the stored credential and gets one silent SSO and restart. If that
+ * restart is rejected before it has synced, the session stays stopped. A
+ * restart that syncs earns a fresh recovery for the next expiry.
  */
 const establishSession = async (
   actorId: string,
@@ -103,13 +109,75 @@ const establishSession = async (
   const start = async (record: CredentialRecord): Promise<void> => {
     await quietSdkLogging();
     const sdk = (await import('matrix-js-sdk')) as unknown as {
-      createClient(opts: { baseUrl: string; userId: string; deviceId: string; accessToken: string }): MatrixClientLike;
+      createClient(opts: {
+        baseUrl: string;
+        userId: string;
+        deviceId: string;
+        accessToken: string;
+        fetchFn?: typeof fetch;
+      }): MatrixClientLike;
     };
+    let current = record;
+    let renewal: Promise<void> | undefined;
+
+    const renewIfDue = async (): Promise<void> => {
+      if (
+        current.refreshToken === undefined ||
+        current.expiresAt === undefined ||
+        Date.now() < current.expiresAt - RENEW_BEFORE_MS
+      ) {
+        return;
+      }
+      renewal ??= renewTokens(current)
+        .then(
+          tokens => {
+            if (activeClient !== client) {
+              return;
+            }
+            if (tokens) {
+              current = { ...current, ...tokens };
+              client.setAccessToken(tokens.accessToken);
+            } else {
+              void recover(current);
+            }
+          },
+          // Transient: a later request tries again.
+          () => undefined
+        )
+        .finally(() => {
+          renewal = undefined;
+        });
+      // Still valid: the renewal finishes in the background.
+      if (Date.now() < current.expiresAt) {
+        return;
+      }
+      await renewal;
+      if (Date.now() >= current.expiresAt) {
+        // Never send a token known to be dead; the SDK treats this as a connection error and retries.
+        throw new TypeError('Matrix access token expired');
+      }
+    };
+
+    const fetchFn: typeof fetch = async (input, init) => {
+      // The token the SDK built this request's header with.
+      const sentWith = current.accessToken;
+      await renewIfDue();
+      if (current.accessToken !== sentWith) {
+        const headers = new Headers(init?.headers);
+        if (headers.get('Authorization') === `Bearer ${sentWith}`) {
+          headers.set('Authorization', `Bearer ${current.accessToken}`);
+        }
+        init = { ...init, headers };
+      }
+      return fetch(input, init);
+    };
+
     const client = sdk.createClient({
       baseUrl: record.homeserverUrl,
       userId: record.userId,
       deviceId: record.deviceId,
       accessToken: record.accessToken,
+      fetchFn,
     });
     if (abort.signal.aborted) {
       client.stopClient();
@@ -133,7 +201,10 @@ const establishSession = async (
   const recover = async (rejected: CredentialRecord): Promise<void> => {
     stopClient();
     try {
-      await clearNamespace(rejected.userId);
+      const stored = await loadCredentials(rejected.userId);
+      if (!stored || stored.deviceId === rejected.deviceId) {
+        await clearNamespace(rejected.userId);
+      }
     } catch {
       // The record is unusable either way; a failed delete must not block recovery.
     }
