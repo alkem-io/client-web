@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useIdTokenHintUrl } from '@/core/auth/authentication/hooks/useIdTokenHintUrl';
+import { runMatrixLogoutCleanup } from '@/core/matrix/logoutCleanup';
 
 // Probes the BFF for an active OIDC (alkemio_session) session by hitting
 // the id-token-hint endpoint. Status 200 implies a live session; 401 means
@@ -20,6 +21,8 @@ export const useOidcSessionStatus = () => {
           cache: 'no-store',
           headers: { Accept: 'application/json' },
         });
+        // The Alkemio session is gone, so the Matrix device ends with it before anything can navigate away.
+        if (response.status === 401) await runMatrixLogoutCleanup();
         if (!cancelled) {
           setActive(response.ok);
         }
