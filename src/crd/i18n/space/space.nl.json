@@ -962,9 +962,8 @@
     }
   },
   "postSnippet": {
-    "readMore": "… Lees meer",
-    "readLess": "Lees minder",
-    "seeFullDescription": "Volledige beschrijving"
+    "readMore": "Lees meer",
+    "showLess": "Minder tonen"
   },
   "postPreview": {
     "createdBy": "Aangemaakt door",
