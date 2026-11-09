@@ -23,6 +23,7 @@ describe('matrixCallback', () => {
 
   afterEach(async () => {
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
     window.history.replaceState(null, '', '/');
     await clearNamespace(EXCHANGE_RESPONSE.user_id);
   });
@@ -38,7 +39,7 @@ describe('matrixCallback', () => {
       expect(await loadCredentials(EXCHANGE_RESPONSE.user_id)).toBe(null);
     });
 
-    it('reads the loginToken from the URL, exchanges it without requesting a refresh token, and persists credentials', async () => {
+    it('reads the loginToken from the URL, exchanges it, and persists credentials', async () => {
       setUrlWithToken('mlt_valid');
 
       const fetchSpy = vi
@@ -55,13 +56,49 @@ describe('matrixCallback', () => {
       const body = JSON.parse(init?.body as string);
       expect(body.type).toBe('m.login.token');
       expect(body.token).toBe('mlt_valid');
-      expect(body.refresh_token).toBeUndefined();
+      expect(body.refresh_token).toBe(false);
       expect(body.initial_device_display_name).toBe('Alkemio Web');
 
       const stored = await loadCredentials(EXCHANGE_RESPONSE.user_id);
       expect(stored).not.toBeNull();
       expect(stored?.accessToken).toBe(EXCHANGE_RESPONSE.access_token);
       expect(stored?.deviceId).toBe(EXCHANGE_RESPONSE.device_id);
+    });
+
+    it('requests a refresh token and persists it with the credentials', async () => {
+      vi.stubGlobal('navigator', { ...navigator, locks: {} });
+      setUrlWithToken('mlt_valid');
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(JSON.stringify({ ...EXCHANGE_RESPONSE, refresh_token: 'syr_new', expires_in_ms: 900000 }), {
+          status: 200,
+        })
+      );
+
+      const before = Date.now();
+      await handleMatrixCallback(HOMESERVER);
+      const after = Date.now();
+
+      expect(JSON.parse(fetchSpy.mock.calls[0][1]?.body as string).refresh_token).toBe(true);
+      const stored = await loadCredentials(EXCHANGE_RESPONSE.user_id);
+      expect(stored?.refreshToken).toBe('syr_new');
+      expect(stored?.expiresAt).toBeGreaterThanOrEqual(before + 900000);
+      expect(stored?.expiresAt).toBeLessThanOrEqual(after + 900000);
+    });
+
+    it('keeps the non-refreshable exchange where the browser has no cross-tab lock', async () => {
+      expect('locks' in navigator).toBe(false);
+      setUrlWithToken('mlt_valid');
+      const fetchSpy = vi
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValueOnce(new Response(JSON.stringify(EXCHANGE_RESPONSE), { status: 200 }));
+
+      await handleMatrixCallback(HOMESERVER);
+
+      expect(JSON.parse(fetchSpy.mock.calls[0][1]?.body as string).refresh_token).toBe(false);
+      const stored = await loadCredentials(EXCHANGE_RESPONSE.user_id);
+      expect(stored).not.toBeNull();
+      expect(stored).not.toHaveProperty('refreshToken');
+      expect(stored).not.toHaveProperty('expiresAt');
     });
 
     it('stores nothing when the exchange response lacks the access token', async () => {

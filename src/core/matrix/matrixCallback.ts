@@ -1,9 +1,12 @@
 import { clearNamespace, storeCredentials } from './storage';
+import { canRenew, refreshPair } from './tokenRefresh';
 
 type ExchangeResult = {
   readonly user_id: string;
   readonly device_id: string;
   readonly access_token: string;
+  readonly refresh_token?: string;
+  readonly expires_in_ms?: number;
 };
 
 const exchangeLoginToken = async (
@@ -20,6 +23,7 @@ const exchangeLoginToken = async (
       type: 'm.login.token',
       token: loginToken,
       initial_device_display_name: 'Alkemio Web',
+      refresh_token: canRenew(),
     }),
   });
 
@@ -47,6 +51,7 @@ const exchangeAndStore = async (homeserverUrl: string, loginToken: string, signa
       deviceId: result.device_id,
       accessToken: result.access_token,
       homeserverUrl,
+      ...refreshPair(result),
     });
     // A sign-out during the write may already have listed and cleared the
     // stored namespaces; remove what this write left behind.
