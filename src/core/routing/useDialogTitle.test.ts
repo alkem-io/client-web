@@ -1,41 +1,47 @@
 import { renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { setBaseTitle, setDialogTitle, setTitleOverride, setTitlePrefix } from './documentTitle';
+import { claimDialogTitle, setBaseTitle, setTitleOverride, setTitlePrefix } from './documentTitle';
 import { useDialogTitle } from './useDialogTitle';
 import '@/core/i18n/config';
 
 describe('dialog title layer', () => {
+  const releases: Array<() => void> = [];
+  const claim = (text: string) => {
+    const release = claimDialogTitle(text);
+    releases.push(release);
+    return release;
+  };
+
   beforeEach(() => {
     setTitleOverride(null);
-    setDialogTitle(null);
     setTitlePrefix('');
     setBaseTitle('Building the A-team | Alkemio');
   });
 
   afterEach(() => {
+    while (releases.length) releases.pop()?.();
     setTitleOverride(null);
-    setDialogTitle(null);
     setTitlePrefix('');
     setBaseTitle('');
   });
 
-  it('shows the dialog title in place of the base and restores the base when cleared', () => {
-    setDialogTitle('Mobile issues tracker | Alkemio');
+  it('shows the dialog title in place of the base and restores the base when released', () => {
+    const release = claim('Mobile issues tracker | Alkemio');
     expect(document.title).toBe('Mobile issues tracker | Alkemio');
 
-    setDialogTitle(null);
+    release();
     expect(document.title).toBe('Building the A-team | Alkemio');
   });
 
   it('composes the unread prefix on top of the dialog title', () => {
     setTitlePrefix('(2) ');
-    setDialogTitle('Mobile issues tracker | Alkemio');
+    claim('Mobile issues tracker | Alkemio');
     expect(document.title).toBe('(2) Mobile issues tracker | Alkemio');
   });
 
   it('lets the badge override win over the dialog title', () => {
     setTitlePrefix('(1) ');
-    setDialogTitle('Mobile issues tracker | Alkemio');
+    claim('Mobile issues tracker | Alkemio');
     setTitleOverride('Ana is calling you');
     expect(document.title).toBe('(1) Ana is calling you');
 
@@ -43,26 +49,47 @@ describe('dialog title layer', () => {
     expect(document.title).toBe('(1) Mobile issues tracker | Alkemio');
   });
 
-  it('keeps a base change made while the dialog is open and shows it on close', () => {
-    setDialogTitle('Mobile issues tracker | Alkemio');
+  it('keeps a base change made while the dialog is open and shows it on release', () => {
+    const release = claim('Mobile issues tracker | Alkemio');
     setBaseTitle('Other space | Alkemio');
     expect(document.title).toBe('Mobile issues tracker | Alkemio');
 
-    setDialogTitle(null);
+    release();
     expect(document.title).toBe('Other space | Alkemio');
+  });
+
+  it('keeps the board title when the task dialog on top of it closes', () => {
+    const releaseBoard = claim('Sprint board | Alkemio');
+    const releaseTask = claim('Sprint board | Alkemio');
+
+    releaseTask();
+    expect(document.title).toBe('Sprint board | Alkemio');
+
+    releaseBoard();
+    expect(document.title).toBe('Building the A-team | Alkemio');
+  });
+
+  it('shows the remaining claim when the lower one is released first', () => {
+    const releaseLower = claim('Lower | Alkemio');
+    const releaseUpper = claim('Upper | Alkemio');
+
+    releaseLower();
+    expect(document.title).toBe('Upper | Alkemio');
+
+    releaseUpper();
+    releaseUpper();
+    expect(document.title).toBe('Building the A-team | Alkemio');
   });
 });
 
 describe('useDialogTitle', () => {
   beforeEach(() => {
     setTitleOverride(null);
-    setDialogTitle(null);
     setTitlePrefix('');
     setBaseTitle('Building the A-team | Alkemio');
   });
 
   afterEach(() => {
-    setDialogTitle(null);
     setTitlePrefix('');
     setBaseTitle('');
   });

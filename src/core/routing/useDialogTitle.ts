@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { setDialogTitle } from './documentTitle';
+import { claimDialogTitle } from './documentTitle';
 import { useComposedTitle } from './usePageTitle';
 
 /**
@@ -7,15 +7,14 @@ import { useComposedTitle } from './usePageTitle';
  * true, in place of the page title. When `enabled` turns false or the caller
  * unmounts, the page title the tab showed before comes back unchanged.
  *
- * Only one dialog claims the tab at a time: the callout detail dialog is modal,
- * so a second one cannot be opened on top of it.
+ * Dialogs may stack (a task's dialog over its board): the newest open one is
+ * shown, and closing it shows the one beneath.
  */
 export const useDialogTitle = (title: string | undefined, enabled: boolean): void => {
   const fullTitle = useComposedTitle(title);
 
   useEffect(() => {
     if (!enabled) return;
-    setDialogTitle(fullTitle);
-    return () => setDialogTitle(null);
+    return claimDialogTitle(fullTitle);
   }, [enabled, fullTitle]);
 };
