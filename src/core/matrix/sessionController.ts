@@ -206,8 +206,10 @@ const establishSession = async (
       const stored = await loadCredentials(rejected.userId);
       if (!stored || stored.deviceId === rejected.deviceId) {
         await clearNamespace(rejected.userId);
-        // A refused renewal can mean a thief already rotated this device's
-        // refresh chain; logging the device out ends that chain too.
+        // A refused renewal can mean a thief rotated this device's refresh
+        // chain. Logging out with the last access token ends that chain only
+        // if the thief has not yet refreshed again: a second rotation deletes
+        // this token on Synapse, and the logout fails (accepted residual R-5).
         void serverSideLogout(rejected);
       }
     } catch {
