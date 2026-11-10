@@ -5,13 +5,14 @@ import { type Browser, type BrowserContext, expect, type Page, test } from '@pla
 /**
  * @forge-acceptance
  * workspace#101-profile-hover-cards — User Story 4: touch and keyboard keep working.
- *   US4-AS1  phone + touch: tapping a commenter's avatar lands on that member's profile
- *   US4-AS2  phone + touch: tapping a lead row in the space sidebar (mobile drawer) lands on the lead's profile
+ *   US4-AS1  phone + touch: tapping a commenter's avatar opens the preview sheet instead of navigating, and
+ *            its View Profile button lands on that member's profile
+ *   US4-AS2  phone + touch: the same for a lead row in the space sidebar (mobile drawer)
  *   US4-AS3  desktop keyboard: Tab onto a commenter's avatar opens the hover card, Escape closes it and keeps
  *            focus on the link, Enter navigates to the profile
  *
- * A card that mounts briefly between the tap and the navigation is accepted (spec FR-007 / residual R-4),
- * so the touch walks assert only on the destination URL; whether the card mounted is recorded as an annotation.
+ * On a touch screen the hover card is never rendered (spec FR-007, amended 2026-11-10), so the touch walks
+ * also assert that no hover card mounts.
  *
  * Fixture (spec repos.yaml verification notes): a PUBLIC space with a post callout on which the member has
  * commented, and the member as a space lead. Everything is env-overridable:
@@ -98,9 +99,28 @@ async function memberCommentAvatar(page: Page) {
 
 const hoverCard = (page: Page) => page.locator('[data-slot="hover-card-content"]');
 
+/** After a tap: the preview sheet is open on the member, the page has not navigated, then View Profile goes on. */
+async function sheetThenProfile(page: Page, evidence: string): Promise<void> {
+  const sheet = page.getByRole('dialog', { name: MEMBER_NAME });
+  await expect(sheet).toBeVisible();
+  await expect(sheet).toContainText(MEMBER_TAGLINE);
+  await expect(hoverCard(page)).toHaveCount(0);
+  await expect(page).not.toHaveURL(PROFILE_URL);
+  await shot(page, `${evidence}-sheet`);
+
+  const viewProfile = sheet.getByRole('link', { name: 'View Profile' });
+  await expect(viewProfile).toHaveAttribute('href', PROFILE_URL);
+  await viewProfile.tap();
+  await page.waitForURL(PROFILE_URL, { timeout: 30_000 });
+  await expect(page.getByRole('heading', { name: MEMBER_NAME }).first()).toBeVisible();
+  await shot(page, `${evidence}-profile`);
+}
+
 // ---------------------------------------------------------------- scenarios
 
-test('US4-AS1 — phone tap on a commenter avatar lands on the member profile', async ({ browser }, testInfo) => {
+test('US4-AS1 — phone tap on a commenter avatar opens the preview sheet, which leads to the profile', async ({
+  browser,
+}) => {
   expect(PASSWORD, 'E2E_USER_PASSWORD is required').not.toBe('');
   const { context, page } = await signedInContext(browser, PHONE);
   try {
@@ -110,20 +130,15 @@ test('US4-AS1 — phone tap on a commenter avatar lands on the member profile', 
     await shot(page, 'us4-as1-before-tap');
 
     await avatar.tap();
-    const cardMounted = await hoverCard(page)
-      .isVisible()
-      .catch(() => false);
-    testInfo.annotations.push({ type: 'card-mounted-on-tap', description: String(cardMounted) });
-
-    await page.waitForURL(PROFILE_URL, { timeout: 30_000 });
-    await expect(page.getByRole('heading', { name: MEMBER_NAME }).first()).toBeVisible();
-    await shot(page, 'us4-as1-profile');
+    await sheetThenProfile(page, 'us4-as1');
   } finally {
     await context.close();
   }
 });
 
-test('US4-AS2 — phone tap on a sidebar lead row lands on the lead profile', async ({ browser }, testInfo) => {
+test('US4-AS2 — phone tap on a sidebar lead row opens the preview sheet, which leads to the profile', async ({
+  browser,
+}) => {
   expect(PASSWORD, 'E2E_USER_PASSWORD is required').not.toBe('');
   const { context, page } = await signedInContext(browser, PHONE);
   try {
@@ -137,14 +152,7 @@ test('US4-AS2 — phone tap on a sidebar lead row lands on the lead profile', as
     await shot(page, 'us4-as2-before-tap');
 
     await leadRow.tap();
-    const cardMounted = await hoverCard(page)
-      .isVisible()
-      .catch(() => false);
-    testInfo.annotations.push({ type: 'card-mounted-on-tap', description: String(cardMounted) });
-
-    await page.waitForURL(PROFILE_URL, { timeout: 30_000 });
-    await expect(page.getByRole('heading', { name: MEMBER_NAME }).first()).toBeVisible();
-    await shot(page, 'us4-as2-profile');
+    await sheetThenProfile(page, 'us4-as2');
   } finally {
     await context.close();
   }
