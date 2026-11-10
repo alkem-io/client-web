@@ -54,7 +54,20 @@ describe('mintAndStore', () => {
     const body = JSON.parse(init?.body as string);
     expect(body.query).toContain('mintMatrixSession');
     expect(body.variables).toBeUndefined();
-    expect(record).toEqual({ ...MINTED, homeserverUrl: HOMESERVER });
+    expect(record).toEqual({ ...MINTED, homeserverUrl: HOMESERVER, issuedAt: expect.any(Number) });
+    expect(await loadActorCredentials(LOCALPART)).toEqual(record);
+  });
+
+  it('stamps the minted record with the time it was issued', async () => {
+    respondWith({ data: { mintMatrixSession: MINTED } });
+    const mintAndStore = await freshMint(HOMESERVER);
+
+    const before = Date.now();
+    const record = await mintAndStore();
+    const after = Date.now();
+
+    expect(record?.issuedAt).toBeGreaterThanOrEqual(before);
+    expect(record?.issuedAt).toBeLessThanOrEqual(after);
     expect(await loadActorCredentials(LOCALPART)).toEqual(record);
   });
 
