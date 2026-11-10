@@ -1,6 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { ContributorPreviewData } from './ContributorHoverCard';
 
 vi.mock('react-i18next', () => ({
@@ -82,10 +82,11 @@ describe('ContributorHoverCard', () => {
     expect(cardContent().querySelector('ul')).toBeNull();
   });
 
-  test('a VC hides its location but shows tagline and tags', async () => {
+  test('a VC shows "Virtual contributor" instead of a location, plus tagline and tags', async () => {
     renderCard({ ...bob, type: 'virtualContributor', canMessage: false }, vi.fn());
     await openByHover();
     expect(screen.queryByText('Utrecht, NL')).not.toBeInTheDocument();
+    expect(screen.getByText('contributors.preview.virtualContributor')).toBeInTheDocument();
     expect(screen.getByText('Builds bridges')).toBeInTheDocument();
     expect(screen.getByText('climate', { ignore: HIDDEN_TEXT })).toBeInTheDocument();
   });
@@ -105,5 +106,81 @@ describe('ContributorHoverCard', () => {
 
     await userEvent.keyboard('{Escape}');
     await waitFor(() => expect(screen.queryByText('Bob Builder')).not.toBeInTheDocument());
+  });
+});
+
+describe('ContributorHoverCard on a touch screen', () => {
+  const realMatchMedia = window.matchMedia;
+  // jsdom has no PointerEvent, so fireEvent.pointer* would drop clientY.
+  if (!window.PointerEvent) {
+    window.PointerEvent = class extends MouseEvent {
+      pointerId: number;
+      constructor(type: string, init: PointerEventInit = {}) {
+        super(type, init);
+        this.pointerId = init.pointerId ?? 0;
+      }
+    } as unknown as typeof PointerEvent;
+  }
+  beforeEach(() => {
+    window.matchMedia = (query: string) => ({ ...realMatchMedia(query), matches: query.includes('hover: none') });
+  });
+  afterEach(() => {
+    window.matchMedia = realMatchMedia;
+  });
+
+  const tap = () => userEvent.click(screen.getByRole('link', { name: 'Bob' }));
+  const sheet = () => screen.getByRole('dialog', { name: 'Bob Builder' });
+  const VIEW_PROFILE = { name: 'contributors.card.viewProfile' };
+
+  test('a tap opens a sheet with the preview and both actions instead of following the link', async () => {
+    const onMessage = vi.fn();
+    renderCard(bob, onMessage);
+    // React handles the click at its root, so read defaultPrevented after it has bubbled past.
+    const followed = vi.fn();
+    const onWindowClick = (event: MouseEvent) => followed(!event.defaultPrevented);
+    window.addEventListener('click', onWindowClick);
+    await tap();
+    window.removeEventListener('click', onWindowClick);
+
+    expect(followed).toHaveBeenCalledWith(false);
+    expect(within(sheet()).getByText('Utrecht, NL')).toBeInTheDocument();
+    expect(within(sheet()).getByText('Builds bridges')).toBeInTheDocument();
+    expect(within(sheet()).getByRole('link', VIEW_PROFILE)).toHaveAttribute('href', '/user/bob');
+    expect(document.querySelector('[data-slot="hover-card-content"]')).toBeNull();
+
+    await userEvent.click(within(sheet()).getByRole('button', MESSAGE));
+    expect(onMessage).toHaveBeenCalledWith(bob);
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+  });
+
+  test('an organisation gets only View profile', async () => {
+    renderCard({ ...bob, type: 'organization', canMessage: false }, vi.fn());
+    await tap();
+    expect(within(sheet()).getByRole('link', VIEW_PROFILE)).toBeInTheDocument();
+    expect(within(sheet()).queryByRole('button', MESSAGE)).not.toBeInTheDocument();
+  });
+
+  test('your own preview offers only View your profile', async () => {
+    renderCard({ ...bob, self: true, canMessage: false }, vi.fn());
+    await tap();
+    expect(within(sheet()).getByRole('link', { name: 'contributors.preview.viewOwnProfile' })).toBeInTheDocument();
+    expect(within(sheet()).queryByRole('button', MESSAGE)).not.toBeInTheDocument();
+  });
+
+  test('dragging the sheet down past the threshold closes it; a short drag does not', async () => {
+    renderCard(bob);
+    await tap();
+    const content = sheet();
+    content.setPointerCapture = () => {};
+
+    fireEvent.pointerDown(content, { clientY: 100, pointerId: 1 });
+    fireEvent.pointerMove(content, { clientY: 140, pointerId: 1 });
+    fireEvent.pointerUp(content, { pointerId: 1 });
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    fireEvent.pointerDown(content, { clientY: 100, pointerId: 1 });
+    fireEvent.pointerMove(content, { clientY: 200, pointerId: 1 });
+    fireEvent.pointerUp(content, { pointerId: 1 });
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
   });
 });

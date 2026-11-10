@@ -236,6 +236,7 @@ describe('mapRoomToCommentData', () => {
         tagline: 'Builder of things',
         tags: ['climate'],
         canMessage: true,
+        self: false,
       });
       expect(author.name).toBe(author.preview?.name);
       expect(author.avatarUrl).toBe(author.preview?.avatarUrl);

@@ -1,17 +1,21 @@
-import { MapPin, MessageCircle } from 'lucide-react';
+import { Slot } from '@radix-ui/react-slot';
+import { MessageCircle } from 'lucide-react';
 import { type ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ContributorCardData } from '@/crd/components/callout/ContributorCollection/ContributorCard';
-import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
-import { cn } from '@/crd/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
+import { PreviewDetails, PreviewHead } from '@/crd/components/contributor/ContributorPreviewParts';
+import { ContributorPreviewSheet } from '@/crd/components/contributor/ContributorPreviewSheet';
+import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/crd/primitives/hover-card';
 import { IconButton } from '@/crd/primitives/icon-button';
 
 export type ContributorPreviewData = Pick<
   ContributorCardData,
   'id' | 'type' | 'name' | 'avatarUrl' | 'href' | 'locationLabel' | 'tagline' | 'tags' | 'canMessage'
->;
+> & {
+  /** The previewed contributor is the viewer. */
+  self?: boolean;
+};
 
 type ContributorHoverCardProps = {
   contributor: ContributorPreviewData;
@@ -20,44 +24,55 @@ type ContributorHoverCardProps = {
   children: ReactElement;
 };
 
+/** A primary input that cannot hover (a finger) gets the bottom sheet; a mouse or trackpad gets the hover card. */
+const TOUCH_INPUT = '(hover: none) and (pointer: coarse)';
+
 export function ContributorHoverCard({ contributor, onMessage, children }: ContributorHoverCardProps) {
   const { t } = useTranslation('crd-space');
-  const isOrg = contributor.type === 'organization';
-  const showLocation = contributor.type !== 'virtualContributor' && Boolean(contributor.locationLabel);
+  const touch = useMediaQuery(TOUCH_INPUT);
   const showMessage = contributor.canMessage && onMessage;
   const [open, setOpen] = useState(false);
+
+  if (touch) {
+    return (
+      <>
+        <Slot
+          aria-haspopup="dialog"
+          onClick={event => {
+            // A tap previews instead of navigating; the sheet's View profile goes on.
+            event.preventDefault();
+            setOpen(true);
+          }}
+        >
+          {children}
+        </Slot>
+        <ContributorPreviewSheet contributor={contributor} open={open} onOpenChange={setOpen} onMessage={onMessage} />
+      </>
+    );
+  }
 
   return (
     <HoverCard open={open} onOpenChange={setOpen} openDelay={300} closeDelay={150}>
       <HoverCardTrigger asChild={true}>{children}</HoverCardTrigger>
       <HoverCardContent className="w-72 p-4">
         <div className="flex items-start gap-3">
-          <Avatar className={cn('w-12 h-12 shrink-0 border border-border', isOrg && 'rounded-md')}>
-            {contributor.avatarUrl && (
-              <AvatarImage src={contributor.avatarUrl} alt={contributor.name} className={cn(isOrg && 'rounded-md')} />
-            )}
-            <AvatarFallback className={cn('text-card-title', isOrg && 'rounded-md')}>
-              {contributor.name.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <div className="min-w-0 flex-1">
-            {contributor.href ? (
-              <a
-                href={contributor.href}
-                className="block truncate text-card-title text-foreground transition-colors hover:text-primary focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                {contributor.name}
-              </a>
-            ) : (
-              <span className="block truncate text-card-title text-foreground">{contributor.name}</span>
-            )}
-            {showLocation && (
-              <div className="mt-1 flex items-center gap-1 text-caption text-muted-foreground">
-                <MapPin className="w-3 h-3 shrink-0" aria-hidden="true" />
-                <span className="truncate">{contributor.locationLabel}</span>
-              </div>
-            )}
-          </div>
+          <PreviewHead
+            contributor={contributor}
+            avatarClassName="size-12"
+            className="min-w-0 flex-1"
+            name={
+              contributor.href ? (
+                <a
+                  href={contributor.href}
+                  className="block truncate text-card-title text-foreground transition-colors hover:text-primary focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {contributor.name}
+                </a>
+              ) : (
+                <span className="block truncate text-card-title text-foreground">{contributor.name}</span>
+              )
+            }
+          />
           {showMessage && (
             <IconButton
               variant="ghost"
@@ -73,10 +88,7 @@ export function ContributorHoverCard({ contributor, onMessage, children }: Contr
             </IconButton>
           )}
         </div>
-        {contributor.tagline && (
-          <p className="mt-3 line-clamp-2 text-body text-muted-foreground">{contributor.tagline}</p>
-        )}
-        {contributor.tags?.length ? <CollapsibleTagList tags={contributor.tags} maxRows={1} className="mt-3" /> : null}
+        <PreviewDetails contributor={contributor} taglineClassName="line-clamp-2" tagRows={1} />
       </HoverCardContent>
     </HoverCard>
   );

@@ -42,5 +42,6 @@ export function mapContributorPreview(
     // The card's Message action is a direct chat, which only users have; an organisation
     // is messaged through its own dialog elsewhere, never from the card.
     canMessage: type === 'user' && canMessageContributor({ type, id }, currentUserId),
+    self: Boolean(currentUserId) && id === currentUserId,
   };
 }

@@ -27,6 +27,7 @@ describe('mapContributorPreview', () => {
       tagline: undefined,
       tags: [],
       canMessage: true,
+      self: false,
     });
   });
 
@@ -55,6 +56,12 @@ describe('mapContributorPreview', () => {
     expect(mapContributorPreview('bob', 'user', {}, 'me').canMessage).toBe(true);
     expect(mapContributorPreview('org', 'organization', {}, 'me').canMessage).toBe(false);
     expect(mapContributorPreview('vc', 'virtualContributor', {}, 'me').canMessage).toBe(false);
+  });
+
+  it('marks the viewer as self, and nobody when signed out', () => {
+    expect(mapContributorPreview('me', 'user', {}, 'me').self).toBe(true);
+    expect(mapContributorPreview('bob', 'user', {}, 'me').self).toBe(false);
+    expect(mapContributorPreview('bob', 'user', {}, undefined).self).toBe(false);
   });
 });
 

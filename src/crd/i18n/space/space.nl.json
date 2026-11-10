@@ -1200,6 +1200,12 @@
       "mapAriaLabel": "Kaartvoorvertoning van bijdragers — versleep en zoom om de vaste weergave in te stellen",
       "captureHint": "Versleep en zoom de kaart en klik daarna op 'Gebruik huidige weergave' om de beginpositie vast te leggen.",
       "controlAriaLabel": "Kaartweergave-instellingen"
+    },
+    "preview": {
+      "virtualContributor": "Virtual Contributor",
+      "viewOwnProfile": "Bekijk je profiel",
+      "close": "Sluiten",
+      "description": "Profielvoorbeeld"
     }
   },
   "spaceCollection": {
