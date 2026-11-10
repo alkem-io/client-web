@@ -159,7 +159,7 @@
         },
         "keywords": {
           "label": "Palabras clave",
-          "hint": "Palabras clave que describen tus intereses. Pulsa Intro para añadir.",
+          "hint": "Palabras clave que describen tus intereses. Aparecen como etiquetas en la tarjeta emergente de tu perfil. Pulsa Intro para añadir.",
           "placeholder": "p. ej. clima, gobernanza, código abierto"
         }
       },
@@ -673,7 +673,7 @@
         },
         "keywords": {
           "label": "Palabras clave",
-          "hint": "Temas en los que trabaja tu organización. Pulsa Intro para añadir.",
+          "hint": "Temas en los que trabaja tu organización. Aparecen como etiquetas en la tarjeta emergente de tu organización. Pulsa Intro para añadir.",
           "placeholder": "p. ej. clima, gobernanza, código abierto"
         },
         "capabilities": {
@@ -978,7 +978,7 @@
       },
       "keywords": {
         "label": "Palabras clave",
-        "hint": "Añade palabras clave para que los usuarios puedan descubrir este Contribuidor Virtual.",
+        "hint": "Añade palabras clave para que los usuarios puedan descubrir este Contribuidor Virtual. Aparecen como etiquetas en su tarjeta emergente.",
         "placeholder": "Añade una palabra clave y pulsa Enter"
       },
       "socialLinks": {

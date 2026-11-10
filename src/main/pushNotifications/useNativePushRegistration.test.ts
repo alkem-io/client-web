@@ -15,12 +15,17 @@ import type { NativePushPlugin } from './nativePushPlugin';
 const isAppMode = vi.hoisted(() => vi.fn<() => boolean>());
 const getNativePushPlugin = vi.hoisted(() => vi.fn<() => NativePushPlugin | undefined>());
 const registerDevicePushToken = vi.hoisted(() => vi.fn());
+const resetPushBadgeCount = vi.hoisted(() => vi.fn());
+const useMutationSpy = vi.hoisted(() => vi.fn());
 
 vi.mock('@/core/appMode/isAppMode', () => ({ isAppMode }));
 vi.mock('@/main/pushNotifications/nativePushPlugin', () => ({ getNativePushPlugin }));
 vi.mock('@apollo/client', () => ({
   gql: (strings: TemplateStringsArray) => strings.join(''),
-  useMutation: () => [registerDevicePushToken],
+  useMutation: (document: string, options?: unknown) => {
+    useMutationSpy(document, options);
+    return [document.includes('ResetPushBadgeCount') ? resetPushBadgeCount : registerDevicePushToken];
+  },
 }));
 
 import { useNativePushRegistration } from './useNativePushRegistration';
@@ -39,12 +44,22 @@ const makePlugin = (receive: 'granted' | 'denied'): NativePushPlugin =>
     register: vi.fn(async () => {
       calls.push('register');
     }),
+    removeAllDeliveredNotifications: vi.fn(async () => {}),
     addListener: vi.fn((eventName: string, listenerFunc: (payload: never) => void) => {
       calls.push(`addListener:${eventName}`);
       listeners[eventName] = listenerFunc;
       return { remove: vi.fn() };
     }),
   }) as unknown as NativePushPlugin;
+
+const setVisibility = (state: DocumentVisibilityState) => {
+  Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => state });
+};
+
+const returnToVisible = () => {
+  setVisibility('visible');
+  document.dispatchEvent(new Event('visibilitychange'));
+};
 
 describe('useNativePushRegistration (SC-020)', () => {
   beforeEach(() => {
@@ -53,6 +68,8 @@ describe('useNativePushRegistration (SC-020)', () => {
     listeners = {};
     plugin = makePlugin('granted');
     registerDevicePushToken.mockResolvedValue({ data: { registerDevicePushToken: true } });
+    resetPushBadgeCount.mockResolvedValue({ data: { resetPushBadgeCount: true } });
+    setVisibility('visible');
     localStorage.clear();
     window.Capacitor = { getPlatform: () => 'android' };
   });
@@ -167,5 +184,93 @@ describe('useNativePushRegistration (SC-020)', () => {
     const { result } = renderHook(() => useNativePushRegistration());
 
     expect(result.current).toBeUndefined();
+  });
+
+  describe('badge clearing', () => {
+    const mountOn = async (platform: string) => {
+      isAppMode.mockReturnValue(true);
+      getNativePushPlugin.mockReturnValue(plugin);
+      window.Capacitor = { getPlatform: () => platform };
+      const view = renderHook(() => useNativePushRegistration());
+      await waitFor(() => expect(listeners.registration).toBeDefined());
+      return view;
+    };
+
+    it('clears on registration on iOS', async () => {
+      await mountOn('ios');
+      listeners.registration({ value: 'apns-token-1' } as never);
+
+      expect(registerDevicePushToken).toHaveBeenCalledTimes(1);
+      expect(resetPushBadgeCount).toHaveBeenCalledTimes(1);
+      expect(plugin.removeAllDeliveredNotifications).toHaveBeenCalledTimes(1);
+    });
+
+    it('clears on return to visible on iOS', async () => {
+      await mountOn('ios');
+      returnToVisible();
+
+      expect(resetPushBadgeCount).toHaveBeenCalledTimes(1);
+      expect(plugin.removeAllDeliveredNotifications).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not clear when the document is hidden', async () => {
+      await mountOn('ios');
+      setVisibility('hidden');
+      document.dispatchEvent(new Event('visibilitychange'));
+      listeners.registration({ value: 'apns-token-1' } as never);
+
+      expect(resetPushBadgeCount).not.toHaveBeenCalled();
+      expect(plugin.removeAllDeliveredNotifications).not.toHaveBeenCalled();
+    });
+
+    it('never clears on Android', async () => {
+      await mountOn('android');
+      returnToVisible();
+      listeners.registration({ value: 'fcm-token-1' } as never);
+
+      expect(registerDevicePushToken).toHaveBeenCalledTimes(1);
+      expect(resetPushBadgeCount).not.toHaveBeenCalled();
+      expect(plugin.removeAllDeliveredNotifications).not.toHaveBeenCalled();
+    });
+
+    it('does not listen outside app mode', () => {
+      isAppMode.mockReturnValue(false);
+      renderHook(() => useNativePushRegistration());
+      returnToVisible();
+
+      expect(resetPushBadgeCount).not.toHaveBeenCalled();
+    });
+
+    it('swallows a failed reset and a rejected plugin call', async () => {
+      const logged = vi.spyOn(console, 'error').mockImplementation(() => {});
+      resetPushBadgeCount.mockRejectedValue(new Error('redis down'));
+      vi.mocked(plugin.removeAllDeliveredNotifications).mockRejectedValue(new Error('not registered'));
+      await mountOn('ios');
+
+      expect(returnToVisible).not.toThrow();
+      expect(resetPushBadgeCount).toHaveBeenCalledTimes(1);
+      expect(plugin.removeAllDeliveredNotifications).toHaveBeenCalledTimes(1);
+      await waitFor(() => expect(logged).toHaveBeenCalledTimes(2));
+    });
+
+    it('opts only the reset out of the global error handler', async () => {
+      await mountOn('ios');
+
+      const optionsFor = (name: string) =>
+        useMutationSpy.mock.calls.find(([document]) => String(document).includes(name))?.[1];
+      expect(optionsFor('ResetPushBadgeCount')).toEqual(
+        expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
+      );
+      expect(optionsFor('RegisterDevicePushToken')).toBeUndefined();
+    });
+
+    it('stops clearing after unmount', async () => {
+      const { unmount } = await mountOn('ios');
+      unmount();
+      returnToVisible();
+
+      expect(resetPushBadgeCount).not.toHaveBeenCalled();
+      expect(plugin.removeAllDeliveredNotifications).not.toHaveBeenCalled();
+    });
   });
 });
