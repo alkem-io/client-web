@@ -112,12 +112,30 @@ describe('ChatThreadView — date separators and times', () => {
 describe('ChatThreadView — exact time on demand', () => {
   test('keyboard focus on a message shows its exact time in a tooltip', async () => {
     renderThread([msg(at(14, 9, 12))]);
-    const row = rowFor('message 1');
-    expect(row).toHaveAttribute('tabIndex', '0');
+    const bubble = screen.getByText('message 1').closest('[tabindex]') as HTMLElement;
+    expect(bubble).toHaveAttribute('tabIndex', '0');
+    expect(bubble).not.toBe(rowFor('message 1'));
     await act(async () => {
-      row.focus();
+      bubble.focus();
     });
     expect(await screen.findByRole('tooltip')).toHaveTextContent('Today, 09:12');
+  });
+
+  test('hovering the bubble opens its exact time; hovering beside it does not', async () => {
+    renderThread([msg(at(14, 9, 12), { author: alice }), msg(at(14, 9, 13), { author: bob })], group);
+    const row = rowFor('message 2');
+    const bubble = screen.getByText('message 2').closest('.rounded-2xl') as HTMLElement;
+    expect(row).not.toBe(bubble);
+
+    // The empty space of the full-width row, outside the bubble: nothing opens.
+    fireEvent.pointerMove(row, { pointerType: 'mouse' });
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 500));
+    });
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+
+    fireEvent.pointerMove(bubble, { pointerType: 'mouse' });
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('Today, 09:13');
   });
 
   test('tapping a message opens its time underneath and shows the reaction trigger; tapping again closes', () => {

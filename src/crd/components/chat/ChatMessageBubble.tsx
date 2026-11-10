@@ -1,4 +1,5 @@
 import { Smile } from 'lucide-react';
+import type { ReactElement, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CommentReactions } from '@/crd/components/comment/CommentReactions';
 import { MessageAttachments } from '@/crd/components/comment/MessageAttachments';
@@ -53,6 +54,12 @@ type ChatMessageBubbleProps = {
   canReact?: boolean;
   onAddReaction?: (emoji: string) => void;
   onRemoveReaction?: (emoji: string) => void;
+  /**
+   * Wraps the message's visible box — the text bubble, or the attachments when
+   * there is no text — so the host can attach behaviour (the time tooltip) to
+   * exactly that box rather than to the full-width row around it.
+   */
+  wrapBubble?: (box: ReactElement) => ReactNode;
 };
 
 /**
@@ -74,6 +81,7 @@ export function ChatMessageBubble({
   newTabLinks = 'all',
   onAddReaction,
   onRemoveReaction,
+  wrapBubble = box => box,
 }: ChatMessageBubbleProps) {
   const { t } = useTranslation('crd-chat');
   const { isOwn, author } = message;
@@ -140,40 +148,49 @@ export function ChatMessageBubble({
               attachments renders no bubble at all — the previous condition
               (`hasText || !hasAttachments`) painted an empty bubble around an
               empty MarkdownContent in that case. */}
-          {hasText && (
-            <div
-              className={cn(
-                // `overflow-wrap:anywhere` lets an unbroken token (a long URL) wrap
-                // and, unlike `break-words`, also shrinks the bubble's minimum
-                // width, so the token cannot push the bubble past its cap.
-                'min-w-0 max-w-[85%] rounded-2xl px-3 py-2 [overflow-wrap:anywhere]',
-                isOwn ? 'bg-primary/15' : 'bg-muted',
-                GROUP_CORNERS[isOwn ? 'own' : 'other'][groupPosition],
-                message.isPending && 'opacity-60'
-              )}
-            >
-              {/* Markdown joins a single line break into a space; a chat line break
+          {hasText &&
+            wrapBubble(
+              <div
+                className={cn(
+                  // `overflow-wrap:anywhere` lets an unbroken token (a long URL) wrap
+                  // and, unlike `break-words`, also shrinks the bubble's minimum
+                  // width, so the token cannot push the bubble past its cap.
+                  'min-w-0 max-w-[85%] rounded-2xl px-3 py-2 [overflow-wrap:anywhere]',
+                  isOwn ? 'bg-primary/15' : 'bg-muted',
+                  GROUP_CORNERS[isOwn ? 'own' : 'other'][groupPosition],
+                  message.isPending && 'opacity-60'
+                )}
+              >
+                {/* Markdown joins a single line break into a space; a chat line break
                   (Shift+Enter) should stay one, so paragraphs keep their newlines.
                   Chat floats over the page the user is on, so every web link opens
                   in a new tab rather than navigating that page away. */}
-              <MarkdownContent
-                allowHtml={false}
-                newTabLinks={newTabLinks}
-                content={message.content}
-                className="text-body [&_p]:mb-1 [&_p]:whitespace-pre-line [&_p]:text-foreground [&_p:last-child]:mb-0"
-              />
-            </div>
-          )}
+                <MarkdownContent
+                  allowHtml={false}
+                  newTabLinks={newTabLinks}
+                  content={message.content}
+                  className="text-body [&_p]:mb-1 [&_p]:whitespace-pre-line [&_p]:text-foreground [&_p:last-child]:mb-0"
+                />
+              </div>
+            )}
           {!hasAttachments && addReactionTrigger}
         </div>
       )}
-      {hasAttachments && (
-        <MessageAttachments
-          attachments={message.attachments ?? []}
-          align={isOwn ? 'end' : 'start'}
-          className="mt-0.5"
-        />
-      )}
+      {hasAttachments &&
+        (hasText ? (
+          <MessageAttachments
+            attachments={message.attachments ?? []}
+            align={isOwn ? 'end' : 'start'}
+            className="mt-0.5"
+          />
+        ) : (
+          // Without text the attachments are the message's visible box.
+          wrapBubble(
+            <div className="mt-0.5">
+              <MessageAttachments attachments={message.attachments ?? []} align={isOwn ? 'end' : 'start'} />
+            </div>
+          )
+        ))}
       {message.reactions.length > 0 && (
         <CommentReactions
           reactions={message.reactions}
