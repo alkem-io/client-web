@@ -756,7 +756,9 @@
         "unauthenticated": "Melde dich an, um diese Notiz zu bearbeiten.",
         "contentUpdatePolicy": "Du hast keine Berechtigung, diese Notiz zu bearbeiten. Bitte den Eigentümer, <ownerlink>{{ownerName}}</ownerlink>, die Freigabeeinstellungen zu ändern.",
         "contentUpdatePolicyNoOwner": "Du hast keine Berechtigung, diese Notiz zu bearbeiten. Der Eigentümer ist nicht mehr verfügbar – bitte einen Administrator des Bereichs, die Freigabeeinstellungen zu ändern.",
-        "noMembership": "Nur Mitglieder dieses Bereichs können diese Notiz bearbeiten. Tritt dem Bereich bei, um beizutragen."
+        "noMembership": "Nur Mitglieder dieses Bereichs können diese Notiz bearbeiten. Tritt dem Bereich bei, um beizutragen.",
+        "multiUserNotAllowed": "Du kannst diese Notiz nicht bearbeiten, weil dieser Space nur einen Bearbeiter gleichzeitig erlaubt.",
+        "roomCapacityReached": "Du kannst diese Notiz nicht bearbeiten, weil die maximale Anzahl gleichzeitiger Bearbeiter erreicht ist."
       }
     },
     "errors": {

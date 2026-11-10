@@ -1,6 +1,10 @@
 import { ChevronLeft, Maximize2, Minimize2, Settings, X } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
-import { chatHeaderIconButtonClass } from '@/crd/components/chat/CallControls';
+import {
+  chatHeaderIconButtonClass,
+  chatHeaderIconClass,
+  chatHeaderLargeIconClass,
+} from '@/crd/components/chat/CallControls';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { claimEscape } from '@/crd/lib/claimEscape';
 import { cn } from '@/crd/lib/utils';
@@ -139,7 +143,7 @@ export function ChatPanel({
         <header className="flex shrink-0 items-center gap-1 border-b border-border px-2 py-2">
           {onBack && (
             <button type="button" onClick={onBack} aria-label={backLabel} className={chatHeaderIconButtonClass}>
-              <ChevronLeft aria-hidden="true" className="size-6" />
+              <ChevronLeft aria-hidden="true" className={chatHeaderLargeIconClass} />
             </button>
           )}
           {onTitleClick ? (
@@ -164,9 +168,9 @@ export function ChatPanel({
               className={chatHeaderIconButtonClass}
             >
               {isExpanded ? (
-                <Minimize2 aria-hidden="true" className="size-6" />
+                <Minimize2 aria-hidden="true" className={chatHeaderIconClass} />
               ) : (
-                <Maximize2 aria-hidden="true" className="size-6" />
+                <Maximize2 aria-hidden="true" className={chatHeaderIconClass} />
               )}
             </button>
           )}
@@ -177,11 +181,11 @@ export function ChatPanel({
               aria-label={settingsLabel}
               className={chatHeaderIconButtonClass}
             >
-              <Settings aria-hidden="true" className="size-6" />
+              <Settings aria-hidden="true" className={chatHeaderLargeIconClass} />
             </button>
           )}
           <button type="button" onClick={onClose} aria-label={closeLabel} className={chatHeaderIconButtonClass}>
-            <X aria-hidden="true" className="size-6" />
+            <X aria-hidden="true" className={chatHeaderLargeIconClass} />
           </button>
         </header>
         <div className="flex min-h-0 flex-1 flex-col">{children}</div>

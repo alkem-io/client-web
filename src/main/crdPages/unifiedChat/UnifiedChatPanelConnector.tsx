@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ActiveCallIndicator } from '@/crd/components/chat/ActiveCallIndicator';
-import { CallControls, chatHeaderIconButtonClass } from '@/crd/components/chat/CallControls';
+import { CallControls, chatHeaderIconButtonClass, chatHeaderIconClass } from '@/crd/components/chat/CallControls';
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
 import { ChatOptionsMenu } from '@/crd/components/chat/ChatOptionsMenu';
 import { ChatPanel } from '@/crd/components/chat/ChatPanel';
@@ -235,7 +235,7 @@ export const UnifiedChatPanelConnector = () => {
           aria-label={t('guidance.infoButton')}
           className={chatHeaderIconButtonClass}
         >
-          <Info aria-hidden="true" className="size-6" />
+          <Info aria-hidden="true" className={chatHeaderIconClass} />
         </button>
         <button
           type="button"
@@ -243,7 +243,7 @@ export const UnifiedChatPanelConnector = () => {
           aria-label={t('guidance.clear')}
           className={chatHeaderIconButtonClass}
         >
-          <Trash2 aria-hidden="true" className="size-6" />
+          <Trash2 aria-hidden="true" className={chatHeaderIconClass} />
         </button>
       </>
     );

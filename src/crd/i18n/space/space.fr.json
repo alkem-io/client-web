@@ -756,7 +756,9 @@
         "unauthenticated": "Connectez-vous pour modifier ce mémo.",
         "contentUpdatePolicy": "Vous n'avez pas la permission de modifier ce mémo. Demandez au propriétaire, <ownerlink>{{ownerName}}</ownerlink>, de modifier les paramètres de partage.",
         "contentUpdatePolicyNoOwner": "Vous n'avez pas la permission de modifier ce mémo. Le propriétaire n'est plus disponible — demandez à un administrateur de l'espace de modifier les paramètres de partage.",
-        "noMembership": "Seuls les membres de cet espace peuvent modifier ce mémo. Rejoignez l'espace pour contribuer."
+        "noMembership": "Seuls les membres de cet espace peuvent modifier ce mémo. Rejoignez l'espace pour contribuer.",
+        "multiUserNotAllowed": "Vous ne pouvez pas modifier ce mémo car dans cet espace, une seule personne à la fois peut le modifier.",
+        "roomCapacityReached": "Vous ne pouvez pas modifier ce mémo car le nombre maximal de personnes pouvant le modifier en même temps est atteint."
       }
     },
     "errors": {
