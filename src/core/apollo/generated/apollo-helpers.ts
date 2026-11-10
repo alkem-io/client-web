@@ -2718,6 +2718,7 @@ export type InnovationPackKeySpecifier = (
   | 'listedInStore'
   | 'nameID'
   | 'profile'
+  | 'promote'
   | 'provider'
   | 'searchVisibility'
   | 'templatesSet'
@@ -2731,6 +2732,7 @@ export type InnovationPackFieldPolicy = {
   listedInStore?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  promote?: FieldPolicy<any> | FieldReadFunction<any>;
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
   searchVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesSet?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3199,6 +3201,17 @@ export type LookupQueryResultsFieldPolicy = {
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type MatrixSessionCredentialsKeySpecifier = (
+  | 'accessToken'
+  | 'deviceId'
+  | 'userId'
+  | MatrixSessionCredentialsKeySpecifier
+)[];
+export type MatrixSessionCredentialsFieldPolicy = {
+  accessToken?: FieldPolicy<any> | FieldReadFunction<any>;
+  deviceId?: FieldPolicy<any> | FieldReadFunction<any>;
+  userId?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type McpApiKeyKeySpecifier = (
   | 'createdDate'
   | 'expiresAt'
@@ -3482,7 +3495,10 @@ export type MutationKeySpecifier = (
   | 'adminSearchIngestFromScratch'
   | 'adminUpdateContributorAvatars'
   | 'adminUpdateGeoLocationData'
+  | 'adminUpdateInnovationPackPromote'
+  | 'adminUpdateSpacePromote'
   | 'adminUpdateSpaceVisibility'
+  | 'adminUpdateVirtualContributorPromote'
   | 'adminUserAccountDelete'
   | 'adminUserEmailChange'
   | 'adminUserEmailChangeDriftResolve'
@@ -3586,6 +3602,7 @@ export type MutationKeySpecifier = (
   | 'markNotificationsAsUnread'
   | 'migrateLegacyMemoContent'
   | 'migrateLegacyWhiteboardContent'
+  | 'mintMatrixSession'
   | 'mintMcpApiKey'
   | 'moveContributionToCallout'
   | 'moveSpaceL1ToSpaceL0'
@@ -3730,7 +3747,10 @@ export type MutationFieldPolicy = {
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateGeoLocationData?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUpdateInnovationPackPromote?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUpdateSpacePromote?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateSpaceVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUpdateVirtualContributorPromote?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserAccountDelete?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserEmailChange?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserEmailChangeDriftResolve?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3834,6 +3854,7 @@ export type MutationFieldPolicy = {
   markNotificationsAsUnread?: FieldPolicy<any> | FieldReadFunction<any>;
   migrateLegacyMemoContent?: FieldPolicy<any> | FieldReadFunction<any>;
   migrateLegacyWhiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  mintMatrixSession?: FieldPolicy<any> | FieldReadFunction<any>;
   mintMcpApiKey?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   moveSpaceL1ToSpaceL0?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4878,6 +4899,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'pinned'
   | 'platformAccess'
   | 'profile'
+  | 'promote'
   | 'settings'
   | 'sortMode'
   | 'sortOrder'
@@ -4913,6 +4935,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   pinned?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  promote?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   sortMode?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5370,6 +5393,7 @@ export type SpaceKeySpecifier = (
   | 'pinned'
   | 'platformAccess'
   | 'profile'
+  | 'promote'
   | 'settings'
   | 'sortMode'
   | 'sortOrder'
@@ -5405,6 +5429,7 @@ export type SpaceFieldPolicy = {
   pinned?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  promote?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   sortMode?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6455,6 +6480,7 @@ export type VirtualContributorKeySpecifier = (
   | 'nameID'
   | 'platformSettings'
   | 'profile'
+  | 'promote'
   | 'promptGraphDefinition'
   | 'provider'
   | 'searchVisibility'
@@ -6487,6 +6513,7 @@ export type VirtualContributorFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   platformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  promote?: FieldPolicy<any> | FieldReadFunction<any>;
   promptGraphDefinition?: FieldPolicy<any> | FieldReadFunction<any>;
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
   searchVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -7805,6 +7832,10 @@ export type StrictTypedTypePolicies = {
   LookupQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LookupQueryResultsKeySpecifier | (() => undefined | LookupQueryResultsKeySpecifier);
     fields?: LookupQueryResultsFieldPolicy;
+  };
+  MatrixSessionCredentials?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MatrixSessionCredentialsKeySpecifier | (() => undefined | MatrixSessionCredentialsKeySpecifier);
+    fields?: MatrixSessionCredentialsFieldPolicy;
   };
   McpApiKey?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | McpApiKeyKeySpecifier | (() => undefined | McpApiKeyKeySpecifier);
