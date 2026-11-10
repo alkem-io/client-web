@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { mapSidebarLeads } from './spacePageDataMapper';
+import { mapAboutLeads, mapSidebarLeads } from './spacePageDataMapper';
 
 type Leads = NonNullable<Parameters<typeof mapSidebarLeads>[0]>;
 
@@ -57,5 +57,28 @@ describe('mapSidebarLeads', () => {
 
   it('skips leads without a profile', () => {
     expect(mapSidebarLeads([{ id: 'ghost', profile: null }], undefined, 'me')).toEqual([]);
+  });
+});
+
+describe('mapAboutLeads', () => {
+  it('builds the About lead lists from the same previews as the sidebar', () => {
+    const { leadUsers: users, leadOrganizations: orgs } = mapAboutLeads(leadUsers, leadOrganizations, 'me');
+    const sidebar = mapSidebarLeads(leadUsers, leadOrganizations, 'me');
+
+    expect([...users, ...orgs].map(lead => lead.preview)).toEqual(sidebar.map(lead => lead.preview));
+    expect(users.map(lead => lead.type)).toEqual(['person', 'person']);
+    expect(orgs.map(lead => lead.type)).toEqual(['organization']);
+    for (const lead of [...users, ...orgs]) {
+      expect(lead.name).toBe(lead.preview?.name);
+      expect(lead.href).toBe(lead.preview?.href);
+      expect(lead.location).toBe(lead.preview?.locationLabel);
+    }
+  });
+
+  it('skips leads without a profile', () => {
+    expect(mapAboutLeads([{ id: 'ghost', profile: null }], undefined, 'me')).toEqual({
+      leadUsers: [],
+      leadOrganizations: [],
+    });
   });
 });
