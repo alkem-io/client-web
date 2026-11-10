@@ -19,6 +19,11 @@ vi.mock(
   })
 );
 
+// jsdom has no grid layout: render the two-column grid, whose two rows hold 3 cards + "+3 more".
+vi.mock('@/crd/hooks/useGridColumnCount', () => ({
+  useGridColumnCount: () => [2, () => {}],
+}));
+
 const TOTAL = 6;
 const whiteboards = Array.from({ length: TOTAL }, (_, i) => ({
   id: `contribution-${i + 1}`,
