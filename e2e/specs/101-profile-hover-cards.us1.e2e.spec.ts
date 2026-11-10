@@ -157,23 +157,16 @@ test.describe('101 US1 — preview a member from their comment', () => {
     expect(conversations[0].room.messagesCount).toBe(0);
   });
 
-  test('US1-AS3 Bob has chat disabled: exactly one "messaging disabled" toast and no chat opens', async ({
-    authedPage: page,
-    playwright,
-  }) => {
+  test('US1-AS3 Bob has chat disabled: his card opens without Message', async ({ authedPage: page, playwright }) => {
     // A cookie-less context: the viewer's session cookie must not shadow Bob's bearer token.
     const request = await playwright.request.newContext();
     await setBobMessaging(request, false);
     try {
       const comments = await openFeedComments(page);
       await hoverOpen(page, comments.getByRole('link', { name: BOB, exact: true }));
-      await messageButton(page).click();
-      const toast = page.locator('[data-sonner-toast]').filter({ hasText: 'This user has disabled direct messaging.' });
-      await expect(toast).toHaveCount(1);
+      await expect(card(page).getByRole('link', { name: BOB, exact: true })).toBeVisible();
+      await expect(messageButton(page)).toHaveCount(0);
       await evidence(page, 'US1-AS3');
-      await page.waitForTimeout(1000); // observation window: no second toast, no chat
-      await expect(page.locator('[data-sonner-toast]')).toHaveCount(1);
-      await expect(page.getByRole('dialog', { name: BOB, exact: true })).toHaveCount(0);
     } finally {
       await setBobMessaging(request, true);
       await request.dispose();

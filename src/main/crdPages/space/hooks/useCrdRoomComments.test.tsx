@@ -9,6 +9,7 @@ const mockSendMessage = vi.fn();
 const mockReply = vi.fn();
 const mockFetch = vi.fn();
 const mockBucketQuery = vi.fn();
+const mockContactability = vi.fn();
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -20,6 +21,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useSendMessageToRoomMutation: () => [mockSendMessage, { loading: false }],
   useReplyToMessageMutation: () => [mockReply, { loading: false }],
   useCommentRoomStorageBucketQuery: (options: unknown) => mockBucketQuery(options),
+  useUsersContactabilityQuery: (options: unknown) => mockContactability(options) ?? { data: undefined },
 }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
 vi.mock('@/domain/collaboration/callout/useSubscribeOnRoomEvents', () => ({ default: () => true }));
@@ -426,6 +428,7 @@ describe('useCrdRoomComments composers', () => {
 
   test('the Message button on a comment author hover card reaches onMessageContributor', async () => {
     mockBucketQuery.mockReturnValue(noBucket);
+    mockContactability.mockReturnValue({ data: { users: [{ id: 'u2', isContactable: true }] } });
     const onMessageContributor = vi.fn();
     render(
       <Harness
@@ -451,6 +454,37 @@ describe('useCrdRoomComments composers', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'contributors.card.message' }));
     expect(onMessageContributor).toHaveBeenCalledOnce();
     expect(onMessageContributor).toHaveBeenCalledWith(expect.objectContaining({ id: 'u2' }));
+  });
+
+  const otherAuthorRoom = room({
+    messages: [
+      {
+        id: 'c1',
+        message: 'first comment',
+        timestamp: Date.now(),
+        reactions: [],
+        sender: { type: ActorType.User, id: 'u2', profile: { id: 'p2', displayName: 'Other', url: '/u/other' } },
+      },
+    ],
+  });
+
+  test('an author who turned messaging off gets a card without the Message button', async () => {
+    mockBucketQuery.mockReturnValue(noBucket);
+    mockContactability.mockReturnValue({ data: { users: [{ id: 'u2', isContactable: false }] } });
+    render(<Harness value={otherAuthorRoom} onMessageContributor={vi.fn()} />);
+    await userEvent.hover(screen.getAllByRole('link', { name: 'Other' })[0]);
+    await screen.findByRole('link', { name: 'Other', hidden: false });
+    await new Promise(resolve => setTimeout(resolve, 400));
+    expect(document.querySelector('[data-slot="hover-card-content"]')).not.toBeNull();
+    expect(screen.queryByRole('button', { name: 'contributors.card.message' })).not.toBeInTheDocument();
+    expect(mockContactability).toHaveBeenCalledWith({ variables: { ids: ['u2'] }, skip: false });
+  });
+
+  test('a host without the Message action never asks who can be contacted', () => {
+    mockBucketQuery.mockReturnValue(noBucket);
+    mockContactability.mockReset().mockReturnValue({ data: undefined });
+    render(<Harness value={otherAuthorRoom} />);
+    expect(mockContactability).not.toHaveBeenCalledWith(expect.objectContaining({ skip: false }));
   });
 
   test('the bucket policy is not queried when the viewer cannot comment', () => {

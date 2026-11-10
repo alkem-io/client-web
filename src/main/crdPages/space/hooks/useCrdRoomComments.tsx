@@ -20,6 +20,7 @@ import {
 import { useAttachmentReadiness } from '@/main/userMessaging/useAttachmentReadiness';
 import { mapRoomToCommentData } from '../dataMappers/commentDataMapper';
 import { useCommentImageStorageConfig } from './useCommentImageStorageConfig';
+import { useContactableUsers } from './useContactableUsers';
 import { useMentionableContributors } from './useMentionableContributors';
 
 type UseCrdRoomCommentsParams = {
@@ -113,8 +114,17 @@ export function useCrdRoomComments({
     imageOptions
   );
 
+  const mapped = mapRoomToCommentData(room, { currentUserId: userModel?.id, t: tMain });
+  // Only hosts that offer Message ask who can be contacted (FR-004).
+  const withContactability = useContactableUsers(
+    mapped.map(comment => comment.author.preview),
+    !onMessageContributor || !isAuthenticated
+  );
   const comments = useAttachmentReadiness(
-    mapRoomToCommentData(room, { currentUserId: userModel?.id, t: tMain }),
+    mapped.map(comment => ({
+      ...comment,
+      author: { ...comment.author, preview: withContactability(comment.author.preview) },
+    })),
     roomId
   );
 

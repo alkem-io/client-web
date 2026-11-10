@@ -2,6 +2,7 @@ import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks'
 import type { LeadItem } from '@/crd/components/space/sidebar/InfoBlock';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { mapSidebarLeads } from '../dataMappers/spacePageDataMapper';
+import { useContactableUsers } from './useContactableUsers';
 
 /**
  * Fetches lead users + lead organizations for the L0 sidebar info block.
@@ -24,5 +25,10 @@ export function useCrdSpaceLeads(spaceId: string | undefined, skip?: boolean): {
   });
   const { userModel } = useCurrentUserContext();
   const membership = data?.lookup.space?.about.membership;
-  return { leads: mapSidebarLeads(membership?.leadUsers, membership?.leadOrganizations, userModel?.id), loading };
+  const leads = mapSidebarLeads(membership?.leadUsers, membership?.leadOrganizations, userModel?.id);
+  const withContactability = useContactableUsers(
+    leads.map(lead => lead.preview),
+    !userModel
+  );
+  return { leads: leads.map(lead => ({ ...lead, preview: withContactability(lead.preview) })), loading };
 }
