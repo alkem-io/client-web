@@ -5,6 +5,11 @@ type Sound = { chatMessage?: boolean };
 const harness = vi.hoisted(() => ({
   userModel: undefined as { id: string; settings?: { notification?: { sound?: Sound } } } | undefined,
   updateUserSettings: vi.fn(),
+  query: vi.fn(),
+}));
+
+vi.mock('@apollo/client', () => ({
+  useApolloClient: () => ({ query: harness.query }),
 }));
 
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
@@ -35,6 +40,7 @@ describe('useChatSound', () => {
     localStorage.clear();
     harness.userModel = undefined;
     harness.updateUserSettings.mockReset().mockResolvedValue({});
+    harness.query.mockReset().mockResolvedValue({});
   });
 
   it('is on by default and offers no way to change it to a visitor who is not signed in', () => {
@@ -107,14 +113,19 @@ describe('useChatSound', () => {
     expect(options.variables).toEqual({
       settingsData: { userID: 'toggle', settings: { notification: { sound: { chatMessage: false } } } },
     });
-    expect(options.refetchQueries).toEqual([{ query: 'UserSettings', variables: { userID: 'toggle' } }]);
     expect(options.context).toEqual({ skipGlobalErrorHandler: true });
+    expect(harness.query).not.toHaveBeenCalled();
 
     await act(async () => {
       save({});
       await pending;
     });
     expect(result.current.enabled).toBe(false);
+    expect(harness.query).toHaveBeenCalledExactlyOnceWith({
+      query: 'UserSettings',
+      variables: { userID: 'toggle' },
+      fetchPolicy: 'network-only',
+    });
   });
 
   it('a failed save restores the previous value and rejects', async () => {
@@ -132,6 +143,54 @@ describe('useChatSound', () => {
     expect(failure).toEqual(new Error('network'));
     expect(result.current.enabled).toBe(true);
     expect(localStorage.getItem(chatSoundStorageKey('failure'))).toBe('true');
+    expect(harness.query).not.toHaveBeenCalled();
+  });
+
+  it('ignores a press until the saved setting has been read back', async () => {
+    signIn('read-back', true);
+    let finishReadBack: () => void = () => {};
+    harness.query.mockImplementation(
+      () =>
+        new Promise<void>(resolve => {
+          finishReadBack = resolve;
+        })
+    );
+    const { result } = renderHook(() => useChatSound());
+
+    let first: Promise<void> | undefined;
+    await act(async () => {
+      first = result.current.setEnabled?.(false);
+    });
+    expect(harness.query).toHaveBeenCalledOnce();
+    await act(async () => {
+      await result.current.setEnabled?.(true);
+    });
+
+    expect(harness.updateUserSettings).toHaveBeenCalledTimes(1);
+    expect(localStorage.getItem(chatSoundStorageKey('read-back'))).toBe('false');
+
+    await act(async () => {
+      finishReadBack();
+      await first;
+    });
+    harness.query.mockResolvedValue({});
+    await act(async () => {
+      await result.current.setEnabled?.(true);
+    });
+    expect(harness.updateUserSettings).toHaveBeenCalledTimes(2);
+  });
+
+  it('keeps the saved choice when reading it back fails', async () => {
+    signIn('read-back-failure', true);
+    harness.query.mockRejectedValue(new Error('network'));
+    const { result } = renderHook(() => useChatSound());
+
+    await act(async () => {
+      await result.current.setEnabled?.(false);
+    });
+
+    expect(result.current.enabled).toBe(false);
+    expect(localStorage.getItem(chatSoundStorageKey('read-back-failure'))).toBe('false');
   });
 
   it('ignores a press while a save is still running', async () => {
