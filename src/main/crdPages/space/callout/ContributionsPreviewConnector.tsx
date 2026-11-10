@@ -9,6 +9,7 @@ import { ContributionMemoCard } from '@/crd/components/contribution/Contribution
 import { ContributionPostCard } from '@/crd/components/contribution/ContributionPostCard';
 import { ContributionsPreviewSkeleton } from '@/crd/components/contribution/ContributionsPreviewSkeleton';
 import { ContributionWhiteboardCard } from '@/crd/components/contribution/ContributionWhiteboardCard';
+import { useGridColumnCount } from '@/crd/hooks/useGridColumnCount';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -32,8 +33,13 @@ import { MemoContributionAddConnector } from './MemoContributionAddConnector';
 import { PostContributionAddConnector } from './PostContributionAddConnector';
 import { WhiteboardContributionAddConnector } from './WhiteboardContributionAddConnector';
 
-const MAX_PREVIEW_ITEMS = 4;
-const ITEMS_BEFORE_MORE = 3;
+/** The card grid previews two rows of whatever column count it renders; the last slot becomes "+N more". */
+const PREVIEW_ROWS = 2;
+const PREVIEW_COLUMNS = 3;
+/** Enough for two rows at the widest layout. */
+const PREVIEW_PAGE_SIZE = PREVIEW_ROWS * PREVIEW_COLUMNS;
+/** The link list is not a grid: it keeps a fixed four slots. */
+const LINK_PREVIEW_SLOTS = 4;
 
 type ContributionsPreviewConnectorProps = {
   callout: CalloutDetailsModelExtended;
@@ -76,7 +82,7 @@ export function ContributionsPreviewConnector({
   } = useCalloutContributions({
     callout,
     contributionType: contributionType ?? CalloutContributionType.Post,
-    pageSize: MAX_PREVIEW_ITEMS,
+    pageSize: PREVIEW_PAGE_SIZE,
     skip: !hasContributionType,
   });
 
@@ -175,16 +181,27 @@ export function ContributionsPreviewConnector({
     | undefined
   >(undefined);
 
+  const [columnCount, setGridNode] = useGridColumnCount();
+  // The page holds two rows at the widest layout, so a narrower grid can be fully fetched and still
+  // collapsed: the expansion is tracked here. Until the full request lands (or after it fails), the hook
+  // still reports more to fetch, so "+N more" stays and a second click retries.
+  const [expanded, setExpanded] = useState(false);
+
   // "+N more" expands the preview in place; the detail dialog stays behind the post title.
-  const showAll = () => setFetchAll(true);
+  const showAll = () => {
+    setExpanded(true);
+    setFetchAll(true);
+  };
 
   if (!hasContributionType || !contributionType) {
     return <div ref={inViewRef} />;
   }
 
-  const hasMore = hasMoreToFetch && total > MAX_PREVIEW_ITEMS;
-  const visibleItems = hasMore ? contributions.slice(0, ITEMS_BEFORE_MORE) : contributions;
-  const moreCount = total - ITEMS_BEFORE_MORE;
+  const slots = contributionType === CalloutContributionType.Link ? LINK_PREVIEW_SLOTS : PREVIEW_ROWS * columnCount;
+  const hasMore = (!expanded || hasMoreToFetch) && total > slots;
+  const itemsBeforeMore = slots - 1;
+  const visibleItems = hasMore ? contributions.slice(0, itemsBeforeMore) : contributions;
+  const moreCount = total - itemsBeforeMore;
 
   // The contributions page is fetched lazily (own in-view observer + round-trip), so
   // for a while the card would show `Contributions (0)` and no grid, then grow when the
@@ -199,7 +216,7 @@ export function ContributionsPreviewConnector({
         <ContributionsPreviewSkeleton
           kind={mapContributionTypeToPreviewKind(contributionType)}
           count={expectedCount}
-          columns={3}
+          columns={PREVIEW_COLUMNS}
         />
       </output>
     ) : undefined;
@@ -212,7 +229,7 @@ export function ContributionsPreviewConnector({
   //
   // The header also hosts the `+` icon button that opens the create-contribution dialog
   // (any type — Post/Memo/Whiteboard/Link). This replaces the in-grid "+ Add" tile, which
-  // disappeared when the section filled up to `MAX_PREVIEW_ITEMS` and forced users into the
+  // disappeared when the section filled up to its preview slots and forced users into the
   // detail dialog just to add another contribution.
   const header = (
     <div className="mt-4 mb-2 flex items-center justify-between gap-2">
@@ -260,7 +277,7 @@ export function ContributionsPreviewConnector({
           <>
             {contributions.length > 0 && (
               <ContributionLinkList
-                links={hasMore ? links.slice(0, ITEMS_BEFORE_MORE) : links}
+                links={hasMore ? links.slice(0, itemsBeforeMore) : links}
                 canAdd={false}
                 onEdit={id => openLinkTarget(id, 'edit')}
                 onDelete={id => openLinkTarget(id, 'delete')}
@@ -290,11 +307,11 @@ export function ContributionsPreviewConnector({
     contributionType === CalloutContributionType.Whiteboard || contributionType === CalloutContributionType.Memo;
 
   if (usesOverlayPattern && hasMore) {
-    const lastContribution = contributions[ITEMS_BEFORE_MORE];
+    const lastContribution = contributions[itemsBeforeMore];
     return (
       <div ref={inViewRef}>
         {header}
-        <div className={cn('grid gap-3', CONTRIBUTION_GRID_COLUMNS[3])}>
+        <div ref={setGridNode} className={cn('grid gap-3', CONTRIBUTION_GRID_COLUMNS[PREVIEW_COLUMNS])}>
           {visibleItems.map(contribution => (
             <ContributionCard
               key={contribution.id}
@@ -323,7 +340,7 @@ export function ContributionsPreviewConnector({
       {header}
       {loadingBody ??
         ((visibleItems.length > 0 || hasMore) && (
-          <div className={cn('grid gap-3', CONTRIBUTION_GRID_COLUMNS[3])}>
+          <div ref={setGridNode} className={cn('grid gap-3', CONTRIBUTION_GRID_COLUMNS[PREVIEW_COLUMNS])}>
             {visibleItems.map(contribution => (
               <ContributionCard
                 key={contribution.id}
