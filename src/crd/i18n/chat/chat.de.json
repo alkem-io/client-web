@@ -9,7 +9,7 @@
     "settings": "Benachrichtigungseinstellungen",
     "muteSound": "Chat-Ton stummschalten",
     "unmuteSound": "Chat-Ton einschalten",
-    "soundToggleError": "Die Einstellung für den Chat-Ton konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+    "soundToggleError": "Die Einstellung für den Chat-Ton konnte nicht gespeichert werden. Bitte versuche es erneut.",
     "expand": "Chat vergrößern",
     "collapse": "Chat verkleinern"
   },
@@ -106,7 +106,7 @@
     "errors": {
       "messageRequired": "Die Nachricht darf nicht leer sein.",
       "messageTooLong": "Die Nachricht darf höchstens {{max}} Zeichen lang sein.",
-      "sendFailed": "Die Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut."
+      "sendFailed": "Die Nachricht konnte nicht gesendet werden. Bitte versuche es erneut."
     }
   },
   "call": {

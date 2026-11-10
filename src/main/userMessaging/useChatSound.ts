@@ -1,4 +1,4 @@
-import { useEffect, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { refetchUserSettingsQuery, useUpdateUserSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
 import type { UserDetailsFragment } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -42,12 +42,18 @@ export const useChatSound = () => {
   const userId = userModel?.id;
   const enabled = useChatSoundEnabled();
   const [updateUserSettings] = useUpdateUserSettingsMutation();
+  const savingRef = useRef(false);
 
-  /** Applies the change in every tab at once, then saves it; a failed save is undone and rejects. */
+  /**
+   * Applies the change in every tab at once, then saves it; a failed save is undone and rejects.
+   * A press while a save is still running is ignored: two saves have no guaranteed order, so the
+   * saved setting could end up different from what the tabs show.
+   */
   const setEnabled = async (next: boolean) => {
-    if (!userId) {
+    if (!userId || savingRef.current) {
       return;
     }
+    savingRef.current = true;
     writeStoredChatSound(userId, next);
     try {
       await updateUserSettings({
@@ -66,6 +72,8 @@ export const useChatSound = () => {
         writeStoredChatSound(userId, enabled);
       }
       throw error;
+    } finally {
+      savingRef.current = false;
     }
   };
 

@@ -134,6 +134,39 @@ describe('useChatSound', () => {
     expect(localStorage.getItem(chatSoundStorageKey('failure'))).toBe('true');
   });
 
+  it('ignores a press while a save is still running', async () => {
+    signIn('double-press', true);
+    let finishSave: () => void = () => {};
+    harness.updateUserSettings.mockImplementation(
+      () =>
+        new Promise<void>(resolve => {
+          finishSave = resolve;
+        })
+    );
+    const { result } = renderHook(() => useChatSound());
+
+    let first: Promise<void> | undefined;
+    await act(async () => {
+      first = result.current.setEnabled?.(false);
+    });
+    await act(async () => {
+      await result.current.setEnabled?.(true);
+    });
+
+    expect(harness.updateUserSettings).toHaveBeenCalledTimes(1);
+    expect(localStorage.getItem(chatSoundStorageKey('double-press'))).toBe('false');
+
+    await act(async () => {
+      finishSave();
+      await first;
+    });
+    harness.updateUserSettings.mockResolvedValue({});
+    await act(async () => {
+      await result.current.setEnabled?.(true);
+    });
+    expect(harness.updateUserSettings).toHaveBeenCalledTimes(2);
+  });
+
   it('still reads and saves the setting when storage is unavailable', async () => {
     signIn('private-mode', false);
     const getItem = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
