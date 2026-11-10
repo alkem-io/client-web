@@ -172,6 +172,14 @@ describe('ChatThreadView — exact time on demand', () => {
 
     fireEvent.pointerUp(row, { pointerType: 'touch' });
     expect(revealedTime()).toBeNull();
+
+    // A real tap lands on the bubble (the tooltip trigger), not the row around it.
+    const bubble = screen.getByText('message 1').closest('[tabindex="0"]') as HTMLElement;
+    expect(bubble).not.toBe(row);
+    fireEvent.pointerUp(bubble, { pointerType: 'touch' });
+    expect(revealedTime()).toHaveTextContent('Today, 09:12');
+    fireEvent.pointerUp(bubble, { pointerType: 'touch' });
+    expect(revealedTime()).toBeNull();
   });
 
   test('a mouse click does not toggle the time (hover covers it)', () => {
