@@ -47,6 +47,13 @@ export type MessageAttachment = {
   width?: number;
   /** Pixel height — images only. */
   height?: number;
+  /**
+   * Set for a voice message, which then renders as an inline voice player
+   * whatever its MIME type. The integration layer has already validated the
+   * values: `durationMs` is a positive integer, every waveform item is an
+   * integer in 0..1024.
+   */
+  voice?: { durationMs?: number; waveform: number[] };
 };
 
 export type CommentData = {

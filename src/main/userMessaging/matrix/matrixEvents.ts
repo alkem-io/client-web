@@ -1,3 +1,4 @@
+import type { MessageAttachment } from '@/crd/components/comment/types';
 import { mapMatrixMessageAttachments } from '../models';
 
 /**
@@ -28,6 +29,7 @@ type MediaRef = {
   readonly size?: number;
   readonly width?: number;
   readonly height?: number;
+  readonly voice?: MessageAttachment['voice'];
 };
 
 type ParsedReaction = {
@@ -59,6 +61,30 @@ const MAX_INT = 2_147_483_647;
 const positiveInt = (value: unknown): number | undefined =>
   typeof value === 'number' && Number.isInteger(value) && value > 0 && value <= MAX_INT ? value : undefined;
 
+const MAX_WAVEFORM_VALUE = 1024;
+
+/**
+ * Element's voice message (MSC3245 marker on `m.audio`, MSC1767 audio metadata).
+ * Unusable metadata is dropped field by field; the message stays a voice message.
+ */
+const voiceOf = (content: Record<string, unknown>): MessageAttachment['voice'] => {
+  if (content.msgtype !== 'm.audio' || !content['org.matrix.msc3245.voice']) {
+    return undefined;
+  }
+  const raw = content['org.matrix.msc1767.audio'];
+  const audio =
+    raw !== null && typeof raw === 'object' && !Array.isArray(raw) ? (raw as Record<string, unknown>) : undefined;
+  const waveform = audio?.waveform;
+  return {
+    durationMs: positiveInt(audio?.duration),
+    waveform:
+      Array.isArray(waveform) &&
+      waveform.every(value => Number.isInteger(value) && value >= 0 && value <= MAX_WAVEFORM_VALUE)
+        ? waveform
+        : [],
+  };
+};
+
 const extractMedia = (event: RawEvent, homeserver: string): MediaRef | undefined => {
   const { content } = event;
   if (event.type !== EVENT_STICKER && !MEDIA_MSGTYPES.has(content.msgtype as string)) {
@@ -75,6 +101,7 @@ const extractMedia = (event: RawEvent, homeserver: string): MediaRef | undefined
     size: positiveInt(attachment.size),
     width: positiveInt(attachment.width),
     height: positiveInt(attachment.height),
+    voice: voiceOf(content),
   };
 };
 
