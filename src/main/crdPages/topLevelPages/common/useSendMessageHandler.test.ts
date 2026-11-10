@@ -1,4 +1,6 @@
+import { ApolloError } from '@apollo/client';
 import { renderHook } from '@testing-library/react';
+import { GraphQLError } from 'graphql';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 
 // ---- Mocks ----
@@ -6,7 +8,7 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 const startDirectChatMock = vi.fn();
 vi.mock('@/main/crdPages/unifiedChat/useStartDirectChat', () => ({
   useStartDirectChat: (userId: string | undefined) => ({
-    startDirectChat: () => startDirectChatMock(userId),
+    startDirectChat: (id = userId) => startDirectChatMock(id),
   }),
 }));
 
@@ -24,7 +26,7 @@ vi.mock('react-i18next', () => ({
 const toastErrorMock = vi.fn();
 vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: (...args: unknown[]) => toastErrorMock(...args) } }));
 
-import { useOpenDirectChatHandler } from './useSendMessageHandler';
+import { useMessageContributor, useOpenDirectChatHandler } from './useSendMessageHandler';
 
 describe('useOpenDirectChatHandler (US1 — profile Message → open 1:1 chat)', () => {
   afterEach(() => {
@@ -61,9 +63,45 @@ describe('useOpenDirectChatHandler (US1 — profile Message → open 1:1 chat)',
     expect(toastErrorMock).toHaveBeenCalledWith('common.messagePopover.openChatError');
   });
 
+  test('opens the chat with a call-time recipient when the hook has none', async () => {
+    startDirectChatMock.mockResolvedValue({ conversationId: 'conv-9', roomId: 'room-9' });
+
+    const { result } = renderHook(() => useOpenDirectChatHandler({ recipientUserId: undefined }));
+    await result.current.onOpenChat('user-9');
+
+    expect(startDirectChatMock).toHaveBeenCalledWith('user-9');
+  });
+
+  test('a MESSAGING_NOT_ENABLED refusal shows exactly one cannotBeReached toast', async () => {
+    startDirectChatMock.mockRejectedValue(
+      new ApolloError({
+        graphQLErrors: [new GraphQLError('not enabled', { extensions: { code: 'MESSAGING_NOT_ENABLED' } })],
+      })
+    );
+
+    const { result } = renderHook(() => useOpenDirectChatHandler({ recipientUserId: 'user-2' }));
+    await result.current.onOpenChat();
+
+    expect(toastErrorMock).toHaveBeenCalledTimes(1);
+    expect(toastErrorMock).toHaveBeenCalledWith('common.messagePopover.cannotBeReached');
+  });
+
   test('throws when no recipient is loaded', async () => {
     const { result } = renderHook(() => useOpenDirectChatHandler({ recipientUserId: undefined }));
     await expect(result.current.onOpenChat()).rejects.toThrow('Recipient user not loaded.');
     expect(startDirectChatMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('useMessageContributor (hover card Message action)', () => {
+  afterEach(() => vi.clearAllMocks());
+
+  test('opens a direct chat with the clicked contributor', async () => {
+    startDirectChatMock.mockResolvedValue({ conversationId: 'conv-3', roomId: 'room-3' });
+
+    const { result } = renderHook(() => useMessageContributor());
+    result.current({ id: 'user-3' });
+
+    await vi.waitFor(() => expect(startDirectChatMock).toHaveBeenCalledWith('user-3'));
   });
 });

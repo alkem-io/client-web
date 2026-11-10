@@ -6,17 +6,20 @@ import {
   type ClassificationGroupListEntry,
 } from '@/crd/components/classification/ClassificationGroupList';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
+import { ContributorHoverCard, type ContributorPreviewData } from '@/crd/components/contributor/ContributorHoverCard';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 
-type SpaceLeadData = {
+export type SpaceLeadData = {
   name: string;
   avatarUrl?: string;
   type: 'person' | 'organization';
   location?: string;
   href: string;
+  /** Opens a profile preview on hover (tap on touch screens). No Message action: this is a modal. */
+  preview?: ContributorPreviewData;
 };
 
 type CalloutReference = {
@@ -186,8 +189,8 @@ export function SpaceAboutView({
                 {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
                 {/* biome-ignore lint/a11y/useSemanticElements: role="list" restores semantics after Tailwind reset */}
                 <ul role="list" className="flex flex-wrap gap-x-6 gap-y-3">
-                  {leads.map(lead => (
-                    <li key={lead.href}>
+                  {leads.map(lead => {
+                    const link = (
                       <a
                         href={lead.href}
                         className="flex items-center gap-3 rounded-md p-1 -m-1 hover:bg-primary-foreground/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground/50"
@@ -200,8 +203,17 @@ export function SpaceAboutView({
                         </Avatar>
                         <span className="text-card-title text-primary-foreground truncate">{lead.name}</span>
                       </a>
-                    </li>
-                  ))}
+                    );
+                    return (
+                      <li key={lead.href}>
+                        {lead.preview ? (
+                          <ContributorHoverCard contributor={lead.preview}>{link}</ContributorHoverCard>
+                        ) : (
+                          link
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             )}

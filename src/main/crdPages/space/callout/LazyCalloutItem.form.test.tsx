@@ -62,6 +62,9 @@ vi.mock('@/main/crdPages/memo/MemoSignedCopiesDialogConnector', () => ({
 }));
 vi.mock('./CalloutDetailDialogConnector', () => ({ CalloutDetailDialogConnector: () => null }));
 vi.mock('./CalloutSettingsConnector', () => ({ CalloutSettingsConnector: () => null }));
+vi.mock('@/main/crdPages/topLevelPages/common/useSendMessageHandler', () => ({
+  useMessageContributor: () => vi.fn(),
+}));
 vi.mock('./CalloutShareDialog', () => ({ CalloutShareDialog: () => null }));
 vi.mock('./ContributionsPreviewConnector', () => ({ ContributionsPreviewConnector: () => null }));
 vi.mock('./CalloutPollConnector', () => ({ CalloutPollConnector: () => null }));

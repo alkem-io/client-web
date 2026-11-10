@@ -159,7 +159,7 @@
         },
         "keywords": {
           "label": "Keywords",
-          "hint": "Keywords describing your interests. Press Enter to add.",
+          "hint": "Keywords describing your interests. They appear as tags on your profile hover card. Press Enter to add.",
           "placeholder": "e.g. climate, governance, open source"
         }
       },
@@ -673,7 +673,7 @@
         },
         "keywords": {
           "label": "Keywords",
-          "hint": "Topics your organisation works on. Press Enter to add.",
+          "hint": "Topics your organisation works on. They appear as tags on your organisation's hover card. Press Enter to add.",
           "placeholder": "e.g. climate, governance, open source"
         },
         "capabilities": {
@@ -978,7 +978,7 @@
       },
       "keywords": {
         "label": "Keywords",
-        "hint": "Add keywords to help users discover this Virtual Contributor.",
+        "hint": "Add keywords to help users discover this Virtual Contributor. They appear as tags on its hover card.",
         "placeholder": "Add a keyword and press Enter"
       },
       "socialLinks": {
