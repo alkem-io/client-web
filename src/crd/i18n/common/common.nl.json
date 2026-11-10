@@ -1598,6 +1598,7 @@
   "messageAttachments": {
     "videoLabel": "Bijgevoegde video: {{name}}",
     "videoUnavailableHint": "Deze video kan hier niet worden afgespeeld. Download de video om deze te bekijken.",
+    "voiceUnavailableHint": "Dit spraakbericht kan hier niet worden afgespeeld. Download het om te luisteren.",
     "listLabel": "Bijlagen",
     "imageAlt": "Bijgevoegde afbeelding: {{name}}",
     "download": "{{name}} downloaden",

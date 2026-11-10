@@ -35,7 +35,8 @@ const loadAttemptKey = (attachment: MessageAttachment, index: number) =>
  * Renders the media attachments on a message. Images show an inline preview
  * that opens the message's media in an in-page viewer; videos use native
  * controls without preloading the timeline, plus an expand control into the
- * same viewer. Other types render a downloadable file chip.
+ * same viewer. Voice messages play inline with native controls beside a static
+ * waveform, whatever their MIME type. Other types render a downloadable file chip.
  * `url` is the integration-supplied media resource,
  * so web- and Element-origin attachments render identically. Images that fail
  * to load degrade to the same downloadable chip with an "unavailable" hint.
@@ -90,7 +91,9 @@ export function MessageAttachments({ attachments, align = 'start', className }: 
             key={`${attachment.id ?? `unavailable-${index}`}:${attachment.retryKey ?? 0}`}
             className="max-w-[min(320px,100%)]"
           >
-            {isImage(attachment.mimeType) ? (
+            {attachment.voice ? (
+              <AttachmentVoice attachment={attachment} voice={attachment.voice} />
+            ) : isImage(attachment.mimeType) ? (
               <AttachmentImage
                 attachment={attachment}
                 onOpen={openGalleryAt(index)}
@@ -252,6 +255,75 @@ function AttachmentVideo({ attachment, onOpen, onFailed }: InlineMediaProps) {
         <Maximize2 aria-hidden="true" className="size-4" />
       </button>
       <AttachmentDownload attachment={attachment} />
+    </div>
+  );
+}
+
+const VOICE_BAR_COUNT = 40;
+const MAX_WAVEFORM_VALUE = 1024;
+
+/** Exactly VOICE_BAR_COUNT peaks: each bar is the max of its waveform slice, so a
+ *  long waveform is downsampled and a short one stretched; empty gives flat bars. */
+const barsOf = (waveform: number[]): number[] =>
+  Array.from({ length: VOICE_BAR_COUNT }, (_, index) => {
+    const start = Math.floor((index * waveform.length) / VOICE_BAR_COUNT);
+    const end = Math.max(Math.floor(((index + 1) * waveform.length) / VOICE_BAR_COUNT), start + 1);
+    return Math.max(0, ...waveform.slice(start, end));
+  });
+
+const formatDuration = (ms: number) => {
+  const seconds = Math.floor(ms / 1000);
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+};
+
+function AttachmentVoice({
+  attachment,
+  voice,
+}: {
+  attachment: MessageAttachment;
+  voice: NonNullable<MessageAttachment['voice']>;
+}) {
+  const { t } = useTranslation('crd-common');
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    setFailed(false);
+  }, [attachment.url]);
+
+  if (failed || !isHttpUrl(attachment.url)) {
+    return <AttachmentFileChip attachment={attachment} hint={t('messageAttachments.voiceUnavailableHint')} />;
+  }
+
+  return (
+    <div className="flex w-80 max-w-full flex-col gap-1.5 rounded-lg border border-border bg-background p-2">
+      <div className="flex items-center gap-2">
+        <div aria-hidden="true" className="flex h-8 flex-1 items-center gap-px">
+          {barsOf(voice.waveform).map((peak, index) => (
+            <span
+              // biome-ignore lint/suspicious/noArrayIndexKey: a fixed-length strip whose bars never reorder
+              key={index}
+              data-voice-bar=""
+              className="flex-1 rounded-full bg-muted-foreground"
+              style={{ height: `${Math.max(peak / MAX_WAVEFORM_VALUE, 0.1) * 100}%` }}
+            />
+          ))}
+        </div>
+        {voice.durationMs !== undefined && (
+          <span className="text-caption tabular-nums text-muted-foreground">{formatDuration(voice.durationMs)}</span>
+        )}
+      </div>
+      {/* biome-ignore lint/a11y/useMediaCaption: no caption track is available for voice messages */}
+      <audio
+        src={attachment.url}
+        controls={true}
+        preload="none"
+        aria-label={attachment.displayName}
+        onError={() => {
+          setFailed(true);
+          attachment.onLoadError?.();
+        }}
+        className="block w-full"
+      />
     </div>
   );
 }
