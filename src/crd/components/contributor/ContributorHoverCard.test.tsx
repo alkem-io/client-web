@@ -153,6 +153,14 @@ describe('ContributorHoverCard on a touch screen', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
   });
 
+  test('closing the sheet returns focus to the profile link', async () => {
+    renderCard(bob, vi.fn());
+    await tap();
+    await userEvent.click(within(sheet()).getByRole('button', { name: 'contributors.preview.close' }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    expect(screen.getByRole('link', { name: 'Bob' })).toHaveFocus();
+  });
+
   test('an organisation gets only View profile', async () => {
     renderCard({ ...bob, type: 'organization', canMessage: false }, vi.fn());
     await tap();

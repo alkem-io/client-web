@@ -14,10 +14,18 @@ type ContributorPreviewSheetProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onMessage?: (contributor: ContributorPreviewData) => void;
+  /** Where focus goes once the sheet has closed. */
+  onCloseAutoFocus?: (event: Event) => void;
 };
 
 /** The touch-screen counterpart of the hover card: a bottom sheet with the same content plus actions. */
-export function ContributorPreviewSheet({ contributor, open, onOpenChange, onMessage }: ContributorPreviewSheetProps) {
+export function ContributorPreviewSheet({
+  contributor,
+  open,
+  onOpenChange,
+  onMessage,
+  onCloseAutoFocus,
+}: ContributorPreviewSheetProps) {
   const { t } = useTranslation('crd-space');
   const [drag, setDrag] = useState<{ startY: number; offset: number }>();
   const showMessage = contributor.canMessage && onMessage;
@@ -40,6 +48,7 @@ export function ContributorPreviewSheet({ contributor, open, onOpenChange, onMes
       <SheetContent
         side="bottom"
         closeLabel={t('contributors.preview.close')}
+        onCloseAutoFocus={onCloseAutoFocus}
         className="max-h-[70vh] gap-0 rounded-t-2xl px-5 pt-2 pb-[calc(2rem+env(safe-area-inset-bottom))] touch-none data-[state=closed]:duration-200 data-[state=open]:duration-250 motion-reduce:animate-none"
         // The drag offset follows the finger, so it can only be an inline value.
         style={drag?.offset ? { transform: `translateY(${drag.offset}px)` } : undefined}

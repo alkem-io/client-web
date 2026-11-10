@@ -1,6 +1,6 @@
 import { Slot } from '@radix-ui/react-slot';
 import { MessageCircle } from 'lucide-react';
-import { type ReactElement, useState } from 'react';
+import { type ReactElement, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ContributorCardData } from '@/crd/components/callout/ContributorCollection/ContributorCard';
 import { PreviewDetails, PreviewHead } from '@/crd/components/contributor/ContributorPreviewParts';
@@ -32,11 +32,13 @@ export function ContributorHoverCard({ contributor, onMessage, children }: Contr
   const touch = useMediaQuery(TOUCH_INPUT);
   const showMessage = contributor.canMessage && onMessage;
   const [open, setOpen] = useState(false);
+  const linkRef = useRef<HTMLElement>(null);
 
   if (touch) {
     return (
       <>
         <Slot
+          ref={linkRef}
           aria-haspopup="dialog"
           onClick={event => {
             // A tap previews instead of navigating; the sheet's View profile goes on.
@@ -46,7 +48,17 @@ export function ContributorHoverCard({ contributor, onMessage, children }: Contr
         >
           {children}
         </Slot>
-        <ContributorPreviewSheet contributor={contributor} open={open} onOpenChange={setOpen} onMessage={onMessage} />
+        <ContributorPreviewSheet
+          contributor={contributor}
+          open={open}
+          onOpenChange={setOpen}
+          onMessage={onMessage}
+          onCloseAutoFocus={event => {
+            // The link is not a Radix trigger, so Radix has nowhere to return focus on its own.
+            event.preventDefault();
+            linkRef.current?.focus();
+          }}
+        />
       </>
     );
   }
