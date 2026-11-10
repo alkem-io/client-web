@@ -17,7 +17,12 @@ const calls = vi.hoisted(() => ({
   session: { participants: [] as string[], participantCount: 0, isJoinedOnThisDevice: false, isJoinedHere: false },
   activeRooms: new Set<string>(),
   openCall: vi.fn(),
+  rotate: vi.fn(),
   eligibilityInput: [] as unknown[],
+}));
+vi.mock('@/core/matrix/activeSession', async importOriginal => ({
+  ...(await importOriginal<typeof import('@/core/matrix/activeSession')>()),
+  rotateActiveSessionIfDue: calls.rotate,
 }));
 vi.mock('@/main/userMessaging/calls/useCallEligibility', () => ({
   useCallEligibility: (conversation: unknown) => {
@@ -169,6 +174,8 @@ describe('UnifiedChatPanelConnector calls', () => {
     calls.session = { participants: [], participantCount: 0, isJoinedOnThisDevice: false, isJoinedHere: false };
     calls.activeRooms = new Set();
     calls.openCall.mockClear();
+    calls.rotate.mockReset();
+    calls.rotate.mockResolvedValue(false);
     calls.eligibilityInput.length = 0;
     state.conversations = [directChat, groupChat];
     state.selectedConversationId = 'group';
@@ -193,6 +200,38 @@ describe('UnifiedChatPanelConnector calls', () => {
       intent: 'start_call_voice',
     });
     expect(menuProps).toBeDefined();
+  });
+
+  it('opens the call when the chat session has nothing to rotate', async () => {
+    eligible();
+    let settle: (rotated: boolean) => void = () => {};
+    calls.rotate.mockReturnValue(
+      new Promise<boolean>(resolve => {
+        settle = resolve;
+      })
+    );
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    render(<UnifiedChatPanelConnector />);
+
+    await user.click(screen.getByRole('button', { name: 'call.startVideo' }));
+    expect(calls.openCall).not.toHaveBeenCalled();
+    expect(calls.rotate).toHaveBeenCalledOnce();
+    settle(false);
+    await vi.waitFor(() =>
+      expect(calls.openCall).toHaveBeenLastCalledWith({ matrixRoomId: '!group:hs', intent: 'start_call' })
+    );
+  });
+
+  it('does not open the call when the chat session rotated', async () => {
+    eligible();
+    calls.rotate.mockResolvedValue(true);
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    render(<UnifiedChatPanelConnector />);
+
+    await user.click(screen.getByRole('button', { name: 'call.startVideo' }));
+    await vi.waitFor(() => expect(calls.rotate).toHaveBeenCalledOnce());
+    await Promise.resolve();
+    expect(calls.openCall).not.toHaveBeenCalled();
   });
 
   it('shows nothing call-related when the conversation is not eligible', () => {
