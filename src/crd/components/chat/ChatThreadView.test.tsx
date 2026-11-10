@@ -47,6 +47,23 @@ const renderThread = (messages: ChatMessage[], conversation: ChatThreadHeader = 
 // Visible text of an element, leaving out screen-reader-only and aria-hidden parts.
 const rowFor = (content: string) => screen.getByText(content).closest('[data-chat-message]') as HTMLElement;
 
+// Hovering the row's empty space opens nothing; hovering the box opens the time.
+// The tooltip's open delay runs on fake timers, so no real time is spent waiting.
+const expectTooltipOnlyOver = (box: HTMLElement, row: HTMLElement, exactTime: string) => {
+  vi.useFakeTimers({ toFake: ['Date', 'setTimeout', 'clearTimeout'], now: NOW });
+  fireEvent.pointerMove(row, { pointerType: 'mouse' });
+  act(() => {
+    vi.advanceTimersByTime(500);
+  });
+  expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+
+  fireEvent.pointerMove(box, { pointerType: 'mouse' });
+  act(() => {
+    vi.advanceTimersByTime(500);
+  });
+  expect(screen.getByRole('tooltip')).toHaveTextContent(exactTime);
+};
+
 // jsdom has no PointerEvent, so `pointerType` would never reach the handler.
 class TestPointerEvent extends MouseEvent {
   pointerType: string;
@@ -127,15 +144,17 @@ describe('ChatThreadView — exact time on demand', () => {
     const bubble = screen.getByText('message 2').closest('.rounded-2xl') as HTMLElement;
     expect(row).not.toBe(bubble);
 
-    // The empty space of the full-width row, outside the bubble: nothing opens.
-    fireEvent.pointerMove(row, { pointerType: 'mouse' });
-    await act(async () => {
-      await new Promise(resolve => setTimeout(resolve, 500));
-    });
-    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+    expectTooltipOnlyOver(bubble, row, 'Today, 09:13');
+  });
 
-    fireEvent.pointerMove(bubble, { pointerType: 'mouse' });
-    expect(await screen.findByRole('tooltip')).toHaveTextContent('Today, 09:13');
+  test('a message with only attachments opens its time over the attachments, not beside them', () => {
+    const photo = { displayName: 'photo.png', mimeType: 'image/png', url: 'https://example.test/photo.png' };
+    renderThread([msg(at(14, 9, 12), { content: '', attachments: [photo] })]);
+    const row = screen.getByRole('list').closest('[data-chat-message]') as HTMLElement;
+    const box = screen.getByRole('list').closest('[tabindex="0"]') as HTMLElement;
+    expect(box).not.toBe(row);
+    expect(row.contains(box)).toBe(true);
+    expectTooltipOnlyOver(box, row, 'Today, 09:12');
   });
 
   test('tapping a message opens its time underneath and shows the reaction trigger; tapping again closes', () => {

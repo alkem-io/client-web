@@ -186,7 +186,7 @@ export function ChatMessageBubble({
         ) : (
           // Without text the attachments are the message's visible box.
           wrapBubble(
-            <div className="mt-0.5">
+            <div className="mt-0.5 rounded-lg">
               <MessageAttachments attachments={message.attachments ?? []} align={isOwn ? 'end' : 'start'} />
             </div>
           )
