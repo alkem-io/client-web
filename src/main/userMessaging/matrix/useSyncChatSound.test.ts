@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const harness = vi.hoisted(() => ({
@@ -13,7 +13,10 @@ const harness = vi.hoisted(() => ({
 vi.mock('@/core/matrix/activeClient', () => ({ useMatrixClient: () => harness.client }));
 vi.mock('@/core/sound/soundPlayer', () => ({ playSound: harness.playSound }));
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
-  useCurrentUserContext: () => ({ userModel: { id: 'me' }, platformRoles: harness.platformRoles }),
+  useCurrentUserContext: () => ({
+    userModel: { id: 'me', settings: { notification: { sound: { chatMessage: true } } } },
+    platformRoles: harness.platformRoles,
+  }),
 }));
 vi.mock('../calls/callConfig', () => ({ isCallsConfigured: () => harness.callsConfigured }));
 vi.mock('../UserMessagingContext', () => ({
@@ -23,6 +26,7 @@ vi.mock('./conversationSummaryStore', () => ({
   storeFor: () => ({ alkemioRoomIdFor: harness.alkemioRoomIdFor }),
 }));
 
+import { chatSoundStorageKey } from '../chatSoundPreference';
 import { useSyncChatSound } from './useSyncChatSound';
 
 const makeClient = (initialSyncComplete: boolean) => {
@@ -42,6 +46,7 @@ const live = { liveEvent: true };
 describe('useSyncChatSound', () => {
   beforeEach(() => {
     harness.playSound.mockClear();
+    localStorage.clear();
     harness.selectedRoomId = null;
     harness.platformRoles = [];
     harness.callsConfigured = true;
@@ -56,6 +61,26 @@ describe('useSyncChatSound', () => {
     client.emit('Room.timeline', message(), { roomId: '!conv' }, false, false, live);
 
     expect(harness.playSound).toHaveBeenCalledWith('chat');
+  });
+
+  it('stays silent once the sound is muted from another tab, though this tab’s saved setting still says on', () => {
+    const client = makeClient(true);
+    harness.client = client;
+    renderHook(() => useSyncChatSound());
+
+    localStorage.setItem(chatSoundStorageKey('me'), 'false');
+    act(() => {
+      window.dispatchEvent(new StorageEvent('storage', { key: chatSoundStorageKey('me'), newValue: 'false' }));
+    });
+    client.emit('Room.timeline', message(), { roomId: '!conv' }, false, false, live);
+    expect(harness.playSound).not.toHaveBeenCalled();
+
+    localStorage.setItem(chatSoundStorageKey('me'), 'true');
+    act(() => {
+      window.dispatchEvent(new StorageEvent('storage', { key: chatSoundStorageKey('me'), newValue: 'true' }));
+    });
+    client.emit('Room.timeline', message(), { roomId: '!conv' }, false, false, live);
+    expect(harness.playSound).toHaveBeenCalledOnce();
   });
 
   it('stays silent for own messages, the conversation being viewed, and rooms that are not conversations', () => {

@@ -7,6 +7,9 @@
   "panel": {
     "title": "Chat",
     "settings": "Paramètres de notification",
+    "muteSound": "Couper le son du chat",
+    "unmuteSound": "Réactiver le son du chat",
+    "soundToggleError": "Impossible d'enregistrer le réglage du son du chat. Veuillez réessayer.",
     "expand": "Agrandir le chat",
     "collapse": "Réduire le chat"
   },
