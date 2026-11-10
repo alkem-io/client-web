@@ -1,4 +1,4 @@
-import type { MessageAttachment } from '@/crd/components/comment/types';
+import { MAX_WAVEFORM_VALUE, type MessageAttachment } from '@/crd/components/comment/types';
 import { mapMatrixMessageAttachments } from '../models';
 
 /**
@@ -60,8 +60,6 @@ const MAX_INT = 2_147_483_647;
 
 const positiveInt = (value: unknown): number | undefined =>
   typeof value === 'number' && Number.isInteger(value) && value > 0 && value <= MAX_INT ? value : undefined;
-
-const MAX_WAVEFORM_VALUE = 1024;
 
 /**
  * Element's voice message (MSC3245 marker on `m.audio`, MSC1767 audio metadata).

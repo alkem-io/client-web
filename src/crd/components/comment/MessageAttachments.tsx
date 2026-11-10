@@ -8,7 +8,7 @@ import {
 import { formatBytes } from '@/crd/lib/formatBytes';
 import { cn } from '@/crd/lib/utils';
 import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
-import type { MessageAttachment } from './types';
+import { MAX_WAVEFORM_VALUE, type MessageAttachment } from './types';
 
 type MessageAttachmentsProps = {
   attachments: MessageAttachment[];
@@ -260,7 +260,6 @@ function AttachmentVideo({ attachment, onOpen, onFailed }: InlineMediaProps) {
 }
 
 const VOICE_BAR_COUNT = 40;
-const MAX_WAVEFORM_VALUE = 1024;
 
 /** Exactly VOICE_BAR_COUNT peaks: each bar is the max of its waveform slice, so a
  *  long waveform is downsampled and a short one stretched; empty gives flat bars. */
