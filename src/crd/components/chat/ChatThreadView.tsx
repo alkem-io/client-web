@@ -91,7 +91,7 @@ export function ChatThreadView({
     // React bubbles events from portalled popovers (the emoji picker) through the
     // message; only a tap on the message itself toggles it.
     if (!event.currentTarget.contains(event.target as Node)) return;
-    if ((event.target as HTMLElement).closest('button, a')) return;
+    if ((event.target as HTMLElement).closest('button, a, audio, video')) return;
     setRevealedIds(previous => {
       const next = new Set(previous);
       if (!next.delete(id)) next.add(id);
