@@ -60,7 +60,7 @@ describe('useOpenDirectChatHandler (US1 — profile Message → open 1:1 chat)',
     const { result } = renderHook(() => useOpenDirectChatHandler({ recipientUserId: 'user-2' }));
     await result.current.onOpenChat();
 
-    expect(toastErrorMock).toHaveBeenCalledWith('apollo.errors.UNSPECIFIED');
+    expect(toastErrorMock).toHaveBeenCalledWith('common.messagePopover.openChatError');
   });
 
   test('opens the chat with a call-time recipient when the hook has none', async () => {
@@ -72,7 +72,7 @@ describe('useOpenDirectChatHandler (US1 — profile Message → open 1:1 chat)',
     expect(startDirectChatMock).toHaveBeenCalledWith('user-9');
   });
 
-  test('a MESSAGING_NOT_ENABLED refusal shows exactly one messaging-disabled toast', async () => {
+  test('a MESSAGING_NOT_ENABLED refusal shows exactly one cannotBeReached toast', async () => {
     startDirectChatMock.mockRejectedValue(
       new ApolloError({
         graphQLErrors: [new GraphQLError('not enabled', { extensions: { code: 'MESSAGING_NOT_ENABLED' } })],
@@ -83,7 +83,7 @@ describe('useOpenDirectChatHandler (US1 — profile Message → open 1:1 chat)',
     await result.current.onOpenChat();
 
     expect(toastErrorMock).toHaveBeenCalledTimes(1);
-    expect(toastErrorMock).toHaveBeenCalledWith('apollo.errors.MESSAGING_NOT_ENABLED');
+    expect(toastErrorMock).toHaveBeenCalledWith('common.messagePopover.cannotBeReached');
   });
 
   test('throws when no recipient is loaded', async () => {

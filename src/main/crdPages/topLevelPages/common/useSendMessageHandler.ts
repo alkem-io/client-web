@@ -32,8 +32,8 @@ export const useOpenDirectChatHandler = (params: {
   recipientUserId: string | undefined;
 }): OpenDirectChatHandlerResult => {
   const { recipientUserId } = params;
-  // The eagerly loaded default namespace: hosts never suspend and the toast never shows a raw key.
-  const { t } = useTranslation('crd-common');
+  // Lazily loaded namespace: without useSuspense: false every host suspends on first render; `t` is read only at click time.
+  const { t } = useTranslation('crd-profilePages', { useSuspense: false });
   const { startDirectChat } = useStartDirectChat(recipientUserId);
 
   const onOpenChat = async (targetUserId: string | undefined = recipientUserId) => {
@@ -46,8 +46,8 @@ export const useOpenDirectChatHandler = (params: {
       const code = err instanceof ApolloError ? err.graphQLErrors[0]?.extensions?.code : undefined;
       toast.error(
         code === AlkemioGraphqlErrorCode.MESSAGING_NOT_ENABLED
-          ? t('apollo.errors.MESSAGING_NOT_ENABLED')
-          : t('apollo.errors.UNSPECIFIED')
+          ? t('common.messagePopover.cannotBeReached')
+          : t('common.messagePopover.openChatError')
       );
     }
   };
