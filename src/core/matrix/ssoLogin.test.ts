@@ -59,6 +59,29 @@ describe('ssoLogin', () => {
       expect(document.querySelector('iframe')).toBeNull();
     });
 
+    it('does not take the stored record of the device being replaced for fresh credentials', async () => {
+      setMatrixHomeserver(HOMESERVER);
+      await storeCredentials({
+        userId: USER_ID,
+        deviceId: 'DEV1',
+        accessToken: 'syt_replaced',
+        homeserverUrl: HOMESERVER,
+      });
+
+      const { attemptSilentSso: fresh } = await import('./ssoLogin');
+      expect(await fresh(LOCALPART, { timeoutMs: 200, pollIntervalMs: 20, replacing: 'DEV1' })).toBe('timeout');
+
+      const attempt = fresh(LOCALPART, { timeoutMs: 2000, pollIntervalMs: 20, replacing: 'DEV1' });
+      await storeCredentials({
+        userId: USER_ID,
+        deviceId: 'DEV2',
+        accessToken: 'syt_fresh',
+        homeserverUrl: HOMESERVER,
+      });
+
+      expect(await attempt).toBe('authenticated');
+    });
+
     it('times out and resolves timeout when no credentials appear', async () => {
       setMatrixHomeserver(HOMESERVER);
 
