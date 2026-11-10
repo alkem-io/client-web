@@ -5,7 +5,7 @@ import { registerActiveSession, unregisterActiveSession } from './activeSession'
 import { mintAndStore } from './mintSession';
 import { quietSdkLogging } from './sdkLogging';
 import { attemptSilentSso } from './ssoLogin';
-import { type CredentialRecord, clearNamespace, loadActorCredentials } from './storage';
+import { type CredentialRecord, clearNamespace, loadActorCredentials, loadCredentials } from './storage';
 
 // matrix-js-sdk's HttpApiEvent.SessionLoggedOut: emitted when the homeserver
 // rejects the access token (M_UNKNOWN_TOKEN). A string here keeps the SDK a
@@ -16,6 +16,23 @@ const CLIENT_SYNC = 'sync';
 // Room timelines start from the sync response; history deeper than this is
 // paged in when a conversation is opened.
 const INITIAL_SYNC_LIMIT = 20;
+
+// Synapse session_lifetime (infra-ops/dev-orchestration synapse config); the homeserver does not report it.
+const SESSION_LIFETIME_MS = 48 * 60 * 60 * 1000;
+// Rotate this long before expiry, so no call shorter than this starts on a credential that expires mid-call.
+const ROTATE_MARGIN_MS = 8 * 60 * 60 * 1000;
+// A record the homeserver can renew in place must never be rotated: when records gain a refresh token, exclude them here.
+const isRotationDue = (record: CredentialRecord, now: number): boolean =>
+  record.issuedAt === undefined || now - record.issuedAt >= SESSION_LIFETIME_MS - ROTATE_MARGIN_MS;
+
+// Best-effort, so the replaced device is gone early rather than at its expiry.
+const logoutMatrixToken = (record: CredentialRecord): void => {
+  fetch(`${record.homeserverUrl}/_matrix/client/v3/logout`, {
+    method: 'POST',
+    credentials: 'omit',
+    headers: { Authorization: `Bearer ${record.accessToken}` },
+  }).catch(() => undefined);
+};
 
 type MatrixClientLike = {
   stopClient(): void;
@@ -42,12 +59,18 @@ type SessionOptions = {
  * A rejected token clears the stored record and gets one silent SSO and
  * restart; if that restart is rejected before it has synced, the session stays
  * stopped. A restart that syncs earns a fresh recovery for the next expiry.
+ * A call click first rotates a credential near its expiry, on a new device.
  */
 const establishSession = async (
   actorId: string,
   { signal, platformOrigin }: SessionOptions = {}
 ): Promise<SessionHandle> => {
   let activeClient: MatrixClientLike | null = null;
+  // The record the active client was built from; null exactly while no client is active.
+  let running: CredentialRecord | null = null;
+  // The last record a rotation was attempted for: one attempt per credential.
+  let tried: CredentialRecord | null = null;
+  let rotation: Promise<boolean> | null = null;
   let recoveryUsed = false;
   // Cancels an in-flight silent SSO: its iframe would otherwise go on to
   // persist fresh credentials after this session has already been stopped.
@@ -56,6 +79,7 @@ const establishSession = async (
   const stopClient = (): void => {
     activeClient?.stopClient();
     activeClient = null;
+    running = null;
     setActiveClient(null);
   };
 
@@ -72,15 +96,9 @@ const establishSession = async (
     stopClient();
     unregisterActiveSession(stop);
   };
-  registerActiveSession(stop);
-  if (signal?.aborted) {
-    stop();
-  }
-  signal?.addEventListener('abort', stop);
-
-  const loadOrAcquireRecord = async (): Promise<CredentialRecord | null> => {
+  const loadOrAcquireRecord = async (replacing?: string): Promise<CredentialRecord | null> => {
     const record = await loadActorCredentials(actorId);
-    if (record) {
+    if (record && record.deviceId !== replacing) {
       return record;
     }
     // The app skips silent SSO entirely: no identity-origin cookie exists in
@@ -89,7 +107,7 @@ const establishSession = async (
     // hop through identity.<host>/login and navigates the MAIN WebView to a
     // "Sign in to continue" landing. See workspace#091 spec FR-014.
     if (!isAppMode()) {
-      const outcome = await attemptSilentSso(actorId, { signal: abort.signal, platformOrigin });
+      const outcome = await attemptSilentSso(actorId, { signal: abort.signal, platformOrigin, replacing });
       if (outcome === 'authenticated') {
         return loadActorCredentials(actorId);
       }
@@ -126,6 +144,7 @@ const establishSession = async (
       }
     });
     activeClient = client;
+    running = record;
     setActiveClient(client as unknown as MatrixClient);
     await client.startClient({ initialSyncLimit: INITIAL_SYNC_LIMIT, lazyLoadMembers: true });
   };
@@ -133,7 +152,11 @@ const establishSession = async (
   const recover = async (rejected: CredentialRecord): Promise<void> => {
     stopClient();
     try {
-      await clearNamespace(rejected.userId);
+      // Another tab may already have stored a newer device's record; only the rejected one goes.
+      const stored = await loadCredentials(rejected.userId);
+      if (!stored || stored.deviceId === rejected.deviceId) {
+        await clearNamespace(rejected.userId);
+      }
     } catch {
       // The record is unusable either way; a failed delete must not block recovery.
     }
@@ -153,6 +176,49 @@ const establishSession = async (
       finishEstablishing();
     }
   };
+
+  // Resolves true when a rotation was attempted (the caller then opens nothing),
+  // false only when nothing was due or this credential was already tried.
+  const rotateIfDue = (): Promise<boolean> => {
+    if (rotation) {
+      return rotation;
+    }
+    const old = running;
+    if (!old || tried === old || !isRotationDue(old, Date.now())) {
+      return Promise.resolve(false);
+    }
+    tried = old;
+    rotation = (async () => {
+      let swapped = false;
+      try {
+        // A stored record of another device means another tab already rotated: it is taken over, not re-acquired.
+        const fresh = await loadOrAcquireRecord(old.deviceId);
+        // Overtaken by stop() or recover(), or nothing acquired: leave the session as it is.
+        if (running === old && fresh) {
+          swapped = true;
+          setSessionEstablishing(true);
+          stopClient();
+          logoutMatrixToken(old);
+          await start(fresh);
+        }
+      } catch {
+        // Before the swap nothing changed. After stopClient() chat fails closed until reload, like recover().
+      } finally {
+        if (swapped) {
+          finishEstablishing();
+        }
+        rotation = null;
+      }
+      return true;
+    })();
+    return rotation;
+  };
+
+  registerActiveSession(stop, rotateIfDue);
+  if (signal?.aborted) {
+    stop();
+  }
+  signal?.addEventListener('abort', stop);
 
   if (!abort.signal.aborted) {
     setSessionEstablishing(true);
