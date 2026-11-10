@@ -78,7 +78,7 @@ export function ContributionsPreviewConnector({
   const {
     inViewRef,
     loaded,
-    contributions: { items, total, setFetchAll },
+    contributions: { items, total, hasMore: hasMoreToFetch, setFetchAll },
   } = useCalloutContributions({
     callout,
     contributionType: contributionType ?? CalloutContributionType.Post,
@@ -183,7 +183,8 @@ export function ContributionsPreviewConnector({
 
   const [columnCount, setGridNode] = useGridColumnCount();
   // The page holds two rows at the widest layout, so a narrower grid can be fully fetched and still
-  // collapsed: the expansion is tracked here rather than read from the fetch state.
+  // collapsed: the expansion is tracked here. Until the full request lands (or after it fails), the hook
+  // still reports more to fetch, so "+N more" stays and a second click retries.
   const [expanded, setExpanded] = useState(false);
 
   // "+N more" expands the preview in place; the detail dialog stays behind the post title.
@@ -197,7 +198,7 @@ export function ContributionsPreviewConnector({
   }
 
   const slots = contributionType === CalloutContributionType.Link ? LINK_PREVIEW_SLOTS : PREVIEW_ROWS * columnCount;
-  const hasMore = !expanded && total > slots;
+  const hasMore = (!expanded || hasMoreToFetch) && total > slots;
   const itemsBeforeMore = slots - 1;
   const visibleItems = hasMore ? contributions.slice(0, itemsBeforeMore) : contributions;
   const moreCount = total - itemsBeforeMore;
