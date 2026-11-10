@@ -2,6 +2,7 @@ import type { MatrixClient } from 'matrix-js-sdk';
 import { isAppMode } from '@/core/appMode/isAppMode';
 import { setActiveClient, setSessionEstablishing } from './activeClient';
 import { registerActiveSession, unregisterActiveSession } from './activeSession';
+import { serverSideLogout } from './logoutCleanup';
 import { mintAndStore } from './mintSession';
 import { quietSdkLogging } from './sdkLogging';
 import { attemptSilentSso } from './ssoLogin';
@@ -45,7 +46,8 @@ type SessionOptions = {
  *
  * The access token is renewed in place before it expires. A rejected token
  * restarts on another device's stored credential when there is one; otherwise
- * it deletes the stored credential and gets one silent SSO and restart. If that
+ * it deletes the stored credential, logs that device out on the homeserver, and
+ * gets one silent SSO and restart. If that
  * restart is rejected before it has synced, the session stays stopped. A
  * restart that syncs earns a fresh recovery for the next expiry.
  */
@@ -185,7 +187,7 @@ const establishSession = async (
     }
     client.on(SESSION_LOGGED_OUT, () => {
       if (activeClient === client) {
-        void recover(record);
+        void recover(current);
       }
     });
     client.on(CLIENT_SYNC, state => {
@@ -204,6 +206,9 @@ const establishSession = async (
       const stored = await loadCredentials(rejected.userId);
       if (!stored || stored.deviceId === rejected.deviceId) {
         await clearNamespace(rejected.userId);
+        // A refused renewal can mean a thief already rotated this device's
+        // refresh chain; logging the device out ends that chain too.
+        void serverSideLogout(rejected);
       }
     } catch {
       // The record is unusable either way; a failed delete must not block recovery.

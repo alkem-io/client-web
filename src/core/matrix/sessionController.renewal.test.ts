@@ -214,4 +214,20 @@ describe('in-place renewal of the chat access token', () => {
     expect(getActiveClient()).toBe(client);
     expect(seen.loggedOut).toBe(false);
   });
+
+  it('logs the device out on the homeserver when its renewal is refused', async () => {
+    const expiresAt = Date.now() + 90_000;
+    await seed(expiresAt);
+    const server = scriptChatServer(expiresAt, [403]);
+    vi.stubGlobal('fetch', server.fetchStub);
+    const { client } = await establish(() => true);
+
+    await vi.advanceTimersByTimeAsync(expiresAt - 60_000 - Date.now());
+    await settle(() => server.sent.some(r => r.path.endsWith('/logout')));
+
+    expect(server.sent.filter(r => r.path.endsWith('/logout'))).toEqual([
+      { path: '/_matrix/client/v3/logout', token: OLD_TOKEN },
+    ]);
+    expect(getActiveClient()).not.toBe(client);
+  });
 });

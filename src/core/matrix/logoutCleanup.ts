@@ -43,4 +43,4 @@ const runMatrixLogoutCleanup = async (): Promise<void> => {
   await Promise.all(records.map(serverSideLogout));
 };
 
-export { runMatrixLogoutCleanup };
+export { runMatrixLogoutCleanup, serverSideLogout };
