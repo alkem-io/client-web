@@ -131,7 +131,7 @@ export function ChatThreadView({
                 >
                   {box}
                 </TooltipTrigger>
-                <TooltipContent side="top" align={message.isOwn ? 'end' : 'start'}>
+                <TooltipContent side="top" align={message.isOwn ? 'end' : 'start'} hideArrow={true}>
                   {time.exact(ms)}
                 </TooltipContent>
               </Tooltip>
