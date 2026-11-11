@@ -66,7 +66,10 @@
     "lastName": "Nachname",
     "showPassword": "Passwort anzeigen",
     "hidePassword": "Passwort verbergen",
-    "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein."
+    "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein.",
+    "totpCode": "Bestätigungscode",
+    "recoveryCode": "Wiederherstellungscode",
+    "securityKeyName": "Name des Sicherheitsschlüssels"
   },
   "providers": {
     "connectWith": "Weiter mit {{provider}}",
@@ -84,5 +87,23 @@
     "websiteButton": "Zu unserer Website",
     "contributeTitle": "Möchtest du mehr beitragen?",
     "contributeDescription": "Registriere dich unten für ein Alkemio-Konto, um mit Teams zusammenzuarbeiten und auf erweiterte Tools zuzugreifen."
+  },
+  "secondFactor": {
+    "addSecurityKey": "Sicherheitsschlüssel hinzufügen",
+    "subtitle": "Bestätigen Sie mit Ihrem zweiten Faktor, dass Sie es sind, um die Anmeldung abzuschließen.",
+    "title": "Bestätigung in zwei Schritten",
+    "useAuthenticator": "Stattdessen die Authenticator-App verwenden",
+    "useRecoveryCode": "Wiederherstellungscode verwenden",
+    "useSecurityKey": "Sicherheitsschlüssel verwenden",
+    "verify": "Bestätigen"
+  },
+  "secondFactorPage": {
+    "app": "Richten Sie die Bestätigung in zwei Schritten zuerst in einem Webbrowser ein und melden Sie sich dann erneut in der App an.",
+    "enrolled": "Ihr zweiter Faktor ist eingerichtet. Melden Sie sich erneut an, um fortzufahren.",
+    "required": "Für Ihr Konto ist die Bestätigung in zwei Schritten erforderlich. Richten Sie unten einen zweiten Faktor ein, um fortzufahren.",
+    "signInAgain": "Erneut anmelden",
+    "signOut": "Abmelden",
+    "title": "Bestätigung in zwei Schritten einrichten",
+    "unavailable": "Ihre Sicherheitseinstellungen konnten nicht geladen werden. Melden Sie sich erneut an, um es noch einmal zu versuchen."
   }
 }

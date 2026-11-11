@@ -2,8 +2,15 @@ import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { FormEvent } from 'react';
 import { describe, expect, test, vi } from 'vitest';
+import {
+  aal2LoginFlow,
+  secondFactorSettingsFlow,
+  WEBAUTHN_LOGIN_OPTIONS,
+  WEBAUTHN_REGISTRATION_OPTIONS,
+} from '@/main/crdPages/auth/__fixtures__/secondFactorFlows';
+import { flowDescriptorAdapter } from '@/main/crdPages/auth/flowDescriptorAdapter';
 import { CrdKratosFlow } from './CrdKratosFlow';
-import type { KratosFlowDescriptor, KratosTextInputNode } from './flowDescriptor';
+import { emptySecondFactorGroup, type KratosFlowDescriptor, type KratosTextInputNode } from './flowDescriptor';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
@@ -41,6 +48,9 @@ const registrationDescriptor = (): KratosFlowDescriptor => ({
     submit: [{ name: 'method', value: 'profile', label: 'Next', disabled: false }],
     oidc: [{ name: 'provider', value: 'linkedin', label: 'LinkedIn', disabled: false }],
     passkey: [],
+    totp: emptySecondFactorGroup(),
+    lookupSecret: emptySecondFactorGroup(),
+    webauthn: emptySecondFactorGroup(),
     anchors: [],
   },
 });
@@ -129,5 +139,61 @@ describe('CrdKratosFlow email validation gate', () => {
     await user.click(getButton(container, 'provider'));
 
     expect(onSubmit).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('CrdKratosFlow second-factor nodes', () => {
+  const settingsDescriptor = () =>
+    flowDescriptorAdapter(secondFactorSettingsFlow, 'settings', { keepSecondFactor: true });
+
+  test('renders the QR image with its alt, and the secret and codes text monospace', () => {
+    const { container, getByRole, getByText } = render(<CrdKratosFlow descriptor={settingsDescriptor()} />);
+
+    expect(getByRole('img', { name: 'Authenticator app QR code' })).toHaveAttribute(
+      'src',
+      'data:image/png;base64,iVBORw0KGgo='
+    );
+    expect(getByText('JBSWY3DPEHPK3PXP')).toHaveClass('font-mono');
+    expect(getByText('abcd1234, efgh5678')).toHaveClass('font-mono');
+    expect(container.querySelector('input[name="totp_code"]')).not.toBeNull();
+  });
+
+  test('a click on the security-key registration trigger dispatches oryWebAuthnRegistration with the node value', async () => {
+    const user = userEvent.setup();
+    const onPasskeyTrigger = vi.fn();
+    const { container } = render(
+      <CrdKratosFlow descriptor={settingsDescriptor()} onPasskeyTrigger={onPasskeyTrigger} />
+    );
+
+    await user.click(getButton(container, 'webauthn_register_trigger'));
+
+    expect(onPasskeyTrigger).toHaveBeenCalledWith('oryWebAuthnRegistration', WEBAUTHN_REGISTRATION_OPTIONS);
+  });
+
+  test('the form holding the trigger holds the result input, the name input and exactly one trigger element', () => {
+    const { container } = render(<CrdKratosFlow descriptor={settingsDescriptor()} />);
+
+    const trigger = getButton(container, 'webauthn_register_trigger');
+    const form = trigger.closest('form');
+    if (!form) throw new Error('trigger is not inside a form');
+    expect(form.querySelector('input[type="hidden"][name="webauthn_register"]')).not.toBeNull();
+    expect(form.querySelector('input[name="webauthn_register_displayname"]')).not.toBeNull();
+    expect(form.querySelectorAll('[name="webauthn_register_trigger"]')).toHaveLength(1);
+    expect(trigger).toHaveAttribute('type', 'button');
+    expect(trigger).toHaveAttribute('value', WEBAUTHN_REGISTRATION_OPTIONS);
+  });
+
+  test('the aal2 login form holds the security-key trigger beside the hidden result input', async () => {
+    const user = userEvent.setup();
+    const onPasskeyTrigger = vi.fn();
+    const { container } = render(
+      <CrdKratosFlow descriptor={flowDescriptorAdapter(aal2LoginFlow, 'login')} onPasskeyTrigger={onPasskeyTrigger} />
+    );
+
+    const trigger = getButton(container, 'webauthn_login_trigger');
+    expect(trigger.closest('form')?.querySelector('input[type="hidden"][name="webauthn_login"]')).not.toBeNull();
+    expect(container.querySelectorAll('[name="webauthn_login_trigger"]')).toHaveLength(1);
+    await user.click(trigger);
+    expect(onPasskeyTrigger).toHaveBeenCalledWith('oryWebAuthnLogin', WEBAUTHN_LOGIN_OPTIONS);
   });
 });

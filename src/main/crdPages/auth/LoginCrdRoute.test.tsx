@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { aal2LoginFlow, passkeyLoginFlow } from './__fixtures__/secondFactorFlows';
 import { LoginCrdRoute } from './LoginCrdRoute';
 
 let mockSearch = '';
@@ -25,8 +27,12 @@ vi.mock('@/core/auth/authentication/hooks/useAuthenticationContext', () => ({
 
 // Render a cheap sentinel for the login screen so we can assert whether it
 // mounted without pulling in the full CRD auth UI / Kratos stack.
-vi.mock('@/crd/components/auth/LoginCard', () => ({
-  LoginCard: ({
+// The second-step cases render the real card and adapter against recorded flows; every other
+// case keeps the cheap sentinel.
+let mockRealFlow = false;
+vi.mock('@/crd/components/auth/LoginCard', async importOriginal => {
+  const actual = await importOriginal<typeof import('@/crd/components/auth/LoginCard')>();
+  const Sentinel = ({
     descriptor,
     notice,
   }: {
@@ -42,8 +48,12 @@ vi.mock('@/crd/components/auth/LoginCard', () => ({
         </div>
       ) : null}
     </div>
-  ),
-}));
+  );
+  return {
+    LoginCard: (props: Parameters<typeof actual.LoginCard>[0]) =>
+      mockRealFlow ? <actual.LoginCard {...props} /> : <Sentinel {...props} />,
+  };
+});
 vi.mock('@/crd/components/auth/AppSignInWelcome', () => ({
   AppSignInWelcome: (props: {
     signInHref: string;
@@ -98,7 +108,13 @@ vi.mock('./useKratosMessageCopy', () => ({
   useTranslateDescriptor: () => (descriptor: unknown) => descriptor,
   useKratosMessageCopy: () => (messages: unknown) => messages,
 }));
-vi.mock('./flowDescriptorAdapter', () => ({ flowDescriptorAdapter: () => ({}) }));
+vi.mock('./flowDescriptorAdapter', async importOriginal => {
+  const actual = await importOriginal<typeof import('./flowDescriptorAdapter')>();
+  return {
+    flowDescriptorAdapter: (...args: Parameters<typeof actual.flowDescriptorAdapter>) =>
+      mockRealFlow ? actual.flowDescriptorAdapter(...args) : {},
+  };
+});
 vi.mock('./passkeyTrigger', () => ({
   invokePasskeyTrigger: vi.fn(),
   PasskeyTriggerError: class extends Error {},
@@ -124,6 +140,7 @@ describe('LoginCrdRoute', () => {
     mockSearch = '';
     mockWelcomeProps = undefined;
     mockFlowState = { flow: undefined, error: undefined, loading: false };
+    mockRealFlow = false;
     mockIsAuthenticated.mockReset();
     replaceSpy.mockReset();
     // Simulate the page being served on the identity subdomain (where signup
@@ -436,5 +453,85 @@ describe('LoginCrdRoute', () => {
 
     expect(screen.queryByTestId('card-notice')).not.toBeInTheDocument();
     expect(screen.getByTestId('crd-login-card')).toBeInTheDocument();
+  });
+
+  describe('second step (requested_aal: aal2)', () => {
+    beforeEach(() => {
+      mockRealFlow = true;
+      mockIsAuthenticated.mockReturnValue(true);
+    });
+
+    const codeInput = (container: HTMLElement, name: string) => container.querySelector(`input[name="${name}"]`);
+
+    it('renders the code entry, posts to the flow, and is not treated as an OIDC entry', () => {
+      mockSearch = 'flow=login-aal2';
+      mockFlowState = { flow: aal2LoginFlow, error: undefined, loading: false };
+
+      const { container } = renderRoute();
+
+      expect(screen.getByText('secondFactor.title')).toBeInTheDocument();
+      expect(codeInput(container, 'totp_code')).not.toBeNull();
+      expect(codeInput(container, 'lookup_secret')).toBeNull();
+      // Kratos owns the submission and, on success, its own return_to (the pending sign-in).
+      expect(container.querySelector('form')).toHaveAttribute('action', aal2LoginFlow.ui.action);
+      expect(container.querySelector('button[name="method"][value="totp"]')).not.toBeNull();
+      expect(screen.queryByText('signIn.forgotPassword')).not.toBeInTheDocument();
+      expect(replaceSpy).not.toHaveBeenCalled();
+    });
+
+    it("shows the identity provider's own message for a wrong code", () => {
+      mockSearch = 'flow=login-aal2';
+      mockFlowState = {
+        flow: {
+          ...aal2LoginFlow,
+          ui: {
+            ...aal2LoginFlow.ui,
+            messages: [{ id: 4000008, type: 'error', text: 'The provided authentication code is invalid.' }],
+          },
+        },
+        error: undefined,
+        loading: false,
+      };
+
+      renderRoute();
+
+      expect(screen.getByRole('alert')).toHaveTextContent('The provided authentication code is invalid.');
+    });
+
+    it('"Use a recovery code" swaps the code for the recovery code, submitted as method lookup_secret', async () => {
+      mockSearch = 'flow=login-aal2';
+      mockFlowState = { flow: aal2LoginFlow, error: undefined, loading: false };
+
+      const { container } = renderRoute();
+      await userEvent.click(screen.getByRole('button', { name: 'secondFactor.useRecoveryCode' }));
+
+      expect(codeInput(container, 'lookup_secret')).not.toBeNull();
+      expect(codeInput(container, 'totp_code')).toBeNull();
+      expect(container.querySelector('button[name="method"][value="lookup_secret"]')).not.toBeNull();
+      expect(screen.getByRole('button', { name: 'secondFactor.useAuthenticator' })).toBeInTheDocument();
+    });
+
+    it('offers the security key beside the code', () => {
+      mockSearch = 'flow=login-aal2';
+      mockFlowState = { flow: aal2LoginFlow, error: undefined, loading: false };
+
+      const { container } = renderRoute();
+
+      expect(container.querySelector('button[name="webauthn_login_trigger"]')).not.toBeNull();
+      expect(screen.getByRole('button', { name: /secondFactor\.useSecurityKey/ })).toBeInTheDocument();
+    });
+
+    it('leaves a passkey sign-in (first factor) unchanged: the passkey button and no second-factor group', () => {
+      mockSearch = 'flow=login-aal1';
+      mockFlowState = { flow: passkeyLoginFlow, error: undefined, loading: false };
+
+      const { container } = renderRoute();
+
+      expect(screen.getByText('signIn.title')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Sign in with passkey' })).toBeInTheDocument();
+      expect(codeInput(container, 'totp_code')).toBeNull();
+      expect(codeInput(container, 'lookup_secret')).toBeNull();
+      expect(container.querySelector('[name="webauthn_login_trigger"]')).toBeNull();
+    });
   });
 });

@@ -424,6 +424,53 @@
             "SOLE_ORGANIZATION_OWNER": "Organization (sole owner)"
           }
         }
+      },
+      "twoStep": {
+        "authenticator": {
+          "active": "Your authenticator app is active.",
+          "codeLabel": "Code from the app",
+          "confirm": "Confirm",
+          "explanation": "An app on your phone, such as Google Authenticator, Microsoft Authenticator or 1Password, shows a new six-digit code every 30 seconds.",
+          "qrAlt": "QR code for your authenticator app",
+          "removeDescription": "You will no longer be able to sign in with codes from this app.",
+          "removeTitle": "Remove the authenticator app?",
+          "secretLabel": "Key:",
+          "setUp": "Set up an authenticator app: scan the QR code with the app, or enter the key by hand, then type the code it shows.",
+          "title": "Authenticator app"
+        },
+        "description": "Add a second step to signing in: after your password, you also confirm with your phone or a security key.",
+        "lastFactorWarning": "This is your last second factor. Two-step verification is required for you, so you will have to set one up again the next time you sign in.",
+        "neverShare": "A code is never read out or sent to anyone, and Alkemio will never ask you for one. Do not share your codes.",
+        "recoveryCodes": {
+          "active": "You have recovery codes.",
+          "confirm": "I have saved these codes",
+          "copied": "Copied",
+          "copy": "Copy codes",
+          "explanation": "One-time codes for when you cannot use your app or key. Each code works once.",
+          "generate": "Generate recovery codes",
+          "needsFactor": "Set up an authenticator app or a security key first.",
+          "regenerate": "Regenerate",
+          "regenerateDescription": "Your current recovery codes will stop working.",
+          "regenerateTitle": "Generate new recovery codes?",
+          "remove": "Remove recovery codes",
+          "removeDescription": "You will no longer be able to sign in with a recovery code.",
+          "removeTitle": "Remove your recovery codes?",
+          "reveal": "Show recovery codes",
+          "shownOnce": "Save these codes somewhere safe now. They will not be shown again.",
+          "title": "Recovery codes"
+        },
+        "remove": "Remove",
+        "securityKeys": {
+          "add": "Add a security key",
+          "empty": "No security keys added yet.",
+          "explanation": "A physical key, such as a YubiKey, or your device's built-in authenticator, which you touch when you sign in.",
+          "nameLabel": "Name of the key",
+          "removeDescription": "You will no longer be able to sign in with this key.",
+          "removeNamed": "Remove {{name}}",
+          "removeTitle": "Remove the security key \"{{name}}\"?",
+          "title": "Security keys"
+        },
+        "title": "Two-step verification"
       }
     },
     "settings": {
@@ -825,7 +872,12 @@
         "contributionRolesLabel": "Show contribution roles publicly",
         "contributionRolesCaption": "When enabled, the organisation's role assignments (Admin, Owner, Associate) are visible on its public profile."
       },
-      "errorToast": "Couldn't save preference — try again"
+      "errorToast": "Couldn't save preference — try again",
+      "security": {
+        "requireSecondFactorCaption": "Owners, admins and associates of this organisation must use a second factor when they sign in. They have 14 days to set one up.",
+        "requireSecondFactorLabel": "Require two-step verification for members",
+        "title": "Security"
+      }
     },
     "invitations": {
       "title": "Space Invitations",

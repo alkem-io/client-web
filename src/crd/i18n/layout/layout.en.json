@@ -57,5 +57,10 @@
     "settings": "settings",
     "acceptAll": "Accept All Cookies",
     "confirmChoice": "Confirm Choice"
+  },
+  "secondFactorReminder": {
+    "action": "Set it up",
+    "dismiss": "Dismiss",
+    "text": "Set up two-step verification before {{deadline}}. After that date you cannot use Alkemio until you do."
   }
 }

@@ -24,6 +24,7 @@ import { I18nextProvider } from 'react-i18next';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import i18n from '@/core/i18n/config';
+import { emptySecondFactorGroup } from '@/crd/components/auth/flowDescriptor';
 import { SignUpCrdRoute } from './SignUpCrdRoute';
 
 const h = vi.hoisted(() => ({
@@ -66,7 +67,12 @@ vi.mock('./flowDescriptorAdapter', () => ({
     action: '#',
     method: 'POST',
     messages: [],
-    groups: { hidden: [], default: [], password: [], rest: [], submit: [], oidc: [], passkey: [], anchors: [] },
+    groups: { hidden: [], default: [], password: [], rest: [], submit: [], oidc: [], passkey: [],
+      totp: emptySecondFactorGroup(),
+      lookupSecret: emptySecondFactorGroup(),
+      webauthn: emptySecondFactorGroup(),
+      anchors: [],
+    },
   }),
 }));
 vi.mock('./passkeyTrigger', () => ({ invokePasskeyTrigger: vi.fn() }));

@@ -22,7 +22,11 @@ import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { resolveInternalReturnPath } from '@/core/utils/links';
 import { AppSignInWelcome } from '@/crd/components/auth/AppSignInWelcome';
-import type { KratosFlowDescriptor, KratosMessage } from '@/crd/components/auth/flowDescriptor';
+import {
+  emptySecondFactorGroup,
+  type KratosFlowDescriptor,
+  type KratosMessage,
+} from '@/crd/components/auth/flowDescriptor';
 import { LoginCard, type LoginCardNotice } from '@/crd/components/auth/LoginCard';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
@@ -86,6 +90,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   const { kratosErrors } = (useLocation().state as LocationStateWithKratosErrors | null) ?? {};
   const params = useQueryParams();
   const [passkeyError, setPasskeyError] = useState<string>();
+  const [showRecoveryCode, setShowRecoveryCode] = useState(false);
   const translateDescriptor = useTranslateDescriptor();
   const translateMessages = useKratosMessageCopy();
 
@@ -183,6 +188,25 @@ function CrdLoginPage({ flow }: { flow?: string }) {
     }
     return { ...base, messages };
   })();
+
+  // The sign-in's second step: Kratos asks for a second factor (`requested_aal: aal2`). The code
+  // and the recovery code are separate submits with a required field each, so only one of the two
+  // is in the form at a time; the security key, when enrolled, is always offered beside it.
+  const isSecondFactorStep = loginFlow?.requested_aal === 'aal2';
+  const hasAuthenticatorCode = (descriptor?.groups.totp.inputs.length ?? 0) > 0;
+  const hasRecoveryCode = (descriptor?.groups.lookupSecret.inputs.length ?? 0) > 0;
+  const showingRecoveryCode = hasRecoveryCode && (showRecoveryCode || !hasAuthenticatorCode);
+  const stepDescriptor =
+    descriptor && isSecondFactorStep
+      ? {
+          ...descriptor,
+          groups: {
+            ...descriptor.groups,
+            totp: showingRecoveryCode ? emptySecondFactorGroup() : descriptor.groups.totp,
+            lookupSecret: showingRecoveryCode ? descriptor.groups.lookupSecret : emptySecondFactorGroup(),
+          },
+        }
+      : descriptor;
 
   // The two arrivals that carry their reason in the query string: the backoff
   // proxy's lockout bounce, and the shell / server hand-off bounce. Neither may
@@ -287,7 +311,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   return (
     <AuthShellWrapper>
       <LoginCard
-        descriptor={descriptor}
+        descriptor={stepDescriptor}
         isLoading={loading}
         signUpHref={
           // Forward the pending returnUrl so a first-time visitor who came
@@ -296,12 +320,21 @@ function CrdLoginPage({ flow }: { flow?: string }) {
           signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH
         }
         forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
-        onPasskeyTrigger={trigger => {
+        onPasskeyTrigger={(trigger, value) => {
           setPasskeyError(undefined);
-          invokePasskeyTrigger(trigger).catch(error => {
+          invokePasskeyTrigger(trigger, value).catch(error => {
             setPasskeyError(translatePasskeyError(t, error));
           });
         }}
+        secondFactorStep={
+          isSecondFactorStep
+            ? {
+                showingRecoveryCode,
+                onToggleRecoveryCode:
+                  hasAuthenticatorCode && hasRecoveryCode ? () => setShowRecoveryCode(shown => !shown) : undefined,
+              }
+            : undefined
+        }
       />
     </AuthShellWrapper>
   );

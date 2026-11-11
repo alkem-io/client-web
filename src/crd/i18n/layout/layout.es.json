@@ -57,5 +57,10 @@
     "settings": "configuración",
     "acceptAll": "Aceptar todas las cookies",
     "confirmChoice": "Confirmar elección"
+  },
+  "secondFactorReminder": {
+    "action": "Configurar",
+    "dismiss": "Cerrar",
+    "text": "Configura la verificación en dos pasos antes del {{deadline}}. Después de esa fecha no podrás usar Alkemio hasta que lo hagas."
   }
 }

@@ -57,5 +57,10 @@
     "settings": "einstellungen",
     "acceptAll": "Alle Cookies akzeptieren",
     "confirmChoice": "Auswahl bestätigen"
+  },
+  "secondFactorReminder": {
+    "action": "Jetzt einrichten",
+    "dismiss": "Schließen",
+    "text": "Richten Sie die Bestätigung in zwei Schritten vor dem {{deadline}} ein. Danach können Sie Alkemio erst wieder nutzen, wenn Sie das getan haben."
   }
 }

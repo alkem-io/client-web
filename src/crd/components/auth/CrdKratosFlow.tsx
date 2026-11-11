@@ -1,10 +1,13 @@
 import { Info, KeyRound } from 'lucide-react';
-import { type FormEvent, type ReactNode, useState } from 'react';
+import { type FormEvent, Fragment, type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type {
   KratosFlowDescriptor,
+  KratosPasskeyButtonNode,
   KratosPasskeyTrigger,
+  KratosSubmitButtonNode,
   KratosTextInputNode,
+  KratosTextNode,
 } from '@/crd/components/auth/flowDescriptor';
 import { OrContinueWithDivider } from '@/crd/components/auth/OrContinueWithDivider';
 import { SocialProviderButton } from '@/crd/components/auth/SocialProviderButton';
@@ -29,8 +32,9 @@ export type CrdKratosFlowProps = {
   onSubmit?: (event: FormEvent<HTMLFormElement>) => void;
   /** Fired when an OIDC provider button is activated (for analytics). */
   onProviderClick?: (providerKey: string) => void;
-  /** Fired when a passkey button is activated — the consumer runs the WebAuthn ceremony. */
-  onPasskeyTrigger?: (trigger: KratosPasskeyTrigger) => void;
+  /** Fired when a passkey or security-key button is activated — the consumer runs the WebAuthn
+   *  ceremony with the trigger node's value (the ceremony options of a security key). */
+  onPasskeyTrigger?: (trigger: KratosPasskeyTrigger, value: string) => void;
   /**
    * Provider-continuation mode: when set, the flow's OIDC submit node(s)
    * render as the form's full-width primary CTA carrying this (already
@@ -45,6 +49,8 @@ export type CrdKratosFlowProps = {
 };
 
 const EMAIL_FIELD_NAMES = new Set(['identifier', 'password_identifier', 'traits.email']);
+// Text nodes whose content is a secret the person copies: rendered monospace.
+const SECRET_TEXT_IDS = new Set(['totp_secret_key', 'lookup_secret_codes']);
 
 /**
  * Renders a Kratos authentication flow as a native form, reproducing the
@@ -67,11 +73,20 @@ export function CrdKratosFlow({
 }: CrdKratosFlowProps) {
   const { t } = useTranslation('crd-auth');
   const { groups } = descriptor;
+  const secondFactorGroups = [
+    { method: 'totp', ...groups.totp },
+    { method: 'lookupSecret', ...groups.lookupSecret },
+    { method: 'webauthn', ...groups.webauthn },
+  ];
+  const secondFactorInputs = secondFactorGroups.flatMap(group => group.inputs);
+  const submits = [...groups.submit, ...secondFactorGroups.flatMap(group => group.submits)];
 
   // Track live values for required inputs to disable the submit button until
   // every required field is filled. The form itself stays uncontrolled — these
   // values are only used for the submit-disabled check.
-  const requiredInputs = [...groups.default, ...groups.password, ...groups.rest].filter(node => node.required);
+  const requiredInputs = [...groups.default, ...groups.password, ...groups.rest, ...secondFactorInputs].filter(
+    node => node.required
+  );
   const [requiredValues, setRequiredValues] = useState<Record<string, string>>(() =>
     Object.fromEntries(requiredInputs.map(node => [node.name, node.value || '']))
   );
@@ -93,8 +108,36 @@ export function CrdKratosFlow({
     if (node.name === 'password') return t('fields.password');
     if (node.name === 'traits.name.first') return t('fields.firstName');
     if (node.name === 'traits.name.last') return t('fields.lastName');
+    if (node.name === 'totp_code') return t('fields.totpCode');
+    if (node.name === 'lookup_secret') return t('fields.recoveryCode');
+    if (node.name === 'webauthn_register_displayname') return t('fields.securityKeyName');
     return node.label;
   };
+
+  const submitLabel = (node: KratosSubmitButtonNode): string => {
+    if (node.name === 'method' && (node.value === 'totp' || node.value === 'lookup_secret')) {
+      return t('secondFactor.verify');
+    }
+    return node.label;
+  };
+
+  const triggerLabel = (node: KratosPasskeyButtonNode): string => {
+    if (node.trigger === 'oryWebAuthnLogin') return t('secondFactor.useSecurityKey');
+    if (node.trigger === 'oryWebAuthnRegistration') return t('secondFactor.addSecurityKey');
+    return node.label;
+  };
+
+  const renderText = (node: KratosTextNode) => (
+    <p
+      key={node.id}
+      className={cn(
+        'rounded-md border border-border bg-muted/40 px-3 py-2.5 text-body break-all',
+        SECRET_TEXT_IDS.has(node.id) && 'font-mono'
+      )}
+    >
+      {node.text}
+    </p>
+  );
 
   const renderInput = (node: KratosTextInputNode) => {
     // Treat a field as email if EITHER Kratos says so (`node.type === 'email'`)
@@ -213,9 +256,25 @@ export function CrdKratosFlow({
       {groups.password.map(renderInput)}
       {resetPasswordElement}
       {groups.rest.map(renderInput)}
+      {secondFactorGroups.map(group => (
+        <Fragment key={group.method}>
+          {group.images.map(image => (
+            <img
+              key={image.src}
+              src={image.src}
+              alt={image.alt}
+              width={image.width}
+              height={image.height}
+              className="mx-auto"
+            />
+          ))}
+          {group.texts.map(renderText)}
+          {group.inputs.map(renderInput)}
+        </Fragment>
+      ))}
       {children}
 
-      {groups.submit.map(node => (
+      {submits.map(node => (
         <Button
           key={`${node.name}-${node.value}`}
           type="submit"
@@ -224,9 +283,29 @@ export function CrdKratosFlow({
           disabled={formSubmitDisabled || disableInputs || node.disabled}
           className="text-control h-12 w-full font-semibold uppercase tracking-wider"
         >
-          {submitLabelOverride ? submitLabelOverride(node.label) : node.label}
+          {submitLabelOverride ? submitLabelOverride(submitLabel(node)) : submitLabel(node)}
         </Button>
       ))}
+
+      {/* Security-key triggers: `type="button"`, and the one element of the form that bears the
+          trigger's name, carrying the ceremony options as its value (see passkeyTrigger.ts). */}
+      {secondFactorGroups.flatMap(group =>
+        group.triggers.map(node => (
+          <Button
+            key={`${node.name}-trigger`}
+            type="button"
+            variant="outline"
+            name={node.name}
+            value={node.value}
+            disabled={alternativeSubmitDisabled || disableInputs || node.disabled}
+            onClick={() => onPasskeyTrigger?.(node.trigger, node.value)}
+            className="text-control h-12 w-full font-semibold uppercase tracking-wider"
+          >
+            <KeyRound aria-hidden="true" className="size-5" />
+            {triggerLabel(node)}
+          </Button>
+        ))
+      )}
 
       {/* `oidcSubmitCtaLabel` is a single string naming ONE provider — `SignUpCard`
           derives it (and the continuation heading) from `groups.oidc[0]`. Mapping every
@@ -267,7 +346,7 @@ export function CrdKratosFlow({
         </Button>
       ))}
 
-      {alternativeButtons && (groups.submit.length > 0 || groups.anchors.length > 0) ? (
+      {alternativeButtons && (submits.length > 0 || groups.anchors.length > 0) ? (
         <OrContinueWithDivider label={t('continueWith')} />
       ) : null}
 
@@ -289,7 +368,7 @@ export function CrdKratosFlow({
               label={node.label || t('providers.fallback')}
               icon={<KeyRound aria-hidden="true" className="size-5" />}
               disabled={alternativeSubmitDisabled || disableInputs || node.disabled}
-              onClick={() => onPasskeyTrigger?.(node.trigger)}
+              onClick={() => onPasskeyTrigger?.(node.trigger, node.value)}
             />
           ))}
           {oidcSubmitCtaLabel
