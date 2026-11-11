@@ -9,7 +9,7 @@ import { flowDescriptorAdapter } from './flowDescriptorAdapter';
 
 const SECOND_FACTOR_METHODS = new Set(['totp', 'lookup_secret', 'webauthn']);
 
-export type TwoStepVerificationModel = Pick<
+type TwoStepVerificationModel = Pick<
   TwoStepVerificationSectionProps,
   'authenticator' | 'recoveryCodes' | 'securityKeys' | 'messages'
 > & {
