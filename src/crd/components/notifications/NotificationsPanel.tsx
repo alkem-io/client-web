@@ -1,4 +1,5 @@
-import { BellOff, MailOpen, Settings, X } from 'lucide-react';
+import { BellOff, MailOpen, RefreshCw, Settings, X } from 'lucide-react';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NotificationItem } from '@/crd/components/notifications/NotificationItem';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
@@ -20,10 +21,13 @@ type NotificationsPanelProps = {
   selectedFilter: string;
   loading?: boolean;
   hasMore?: boolean;
+  /** Newer notifications than the listed ones exist; the panel offers to show them. */
+  hasNewNotifications?: boolean;
   settingsHref?: string;
   onFilterChange: (key: string) => void;
   onMarkAllRead: () => void;
   onLoadMore: () => void;
+  onShowNewNotifications?: () => void;
   onNotificationClick?: (notification: CrdNotificationItemData) => void;
   onRead?: (id: string) => void;
   onUnread?: (id: string) => void;
@@ -51,10 +55,12 @@ export function NotificationsPanel({
   selectedFilter,
   loading,
   hasMore,
+  hasNewNotifications,
   settingsHref,
   onFilterChange,
   onMarkAllRead,
   onLoadMore,
+  onShowNewNotifications,
   onNotificationClick,
   onRead,
   onUnread,
@@ -62,6 +68,7 @@ export function NotificationsPanel({
 }: NotificationsPanelProps) {
   const { t } = useTranslation('crd-notifications');
   const { isSmallScreen } = useScreenSize();
+  const listRef = useRef<HTMLDivElement>(null);
 
   const showEmpty = items.length === 0 && !loading;
   const showSkeletons = loading && items.length === 0;
@@ -127,7 +134,26 @@ export function NotificationsPanel({
         )}
 
         {/* Notification list */}
-        <div className="flex-1 overflow-y-auto">
+        <div ref={listRef} className="flex-1 overflow-y-auto">
+          {/* New notifications: offered, never pushed in above what the user is reading */}
+          <div aria-live="polite" className="sticky top-0 z-10">
+            {hasNewNotifications && onShowNewNotifications && (
+              <div className="flex justify-center p-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="h-7 rounded-full text-caption shadow-sm"
+                  onClick={() => {
+                    onShowNewNotifications();
+                    listRef.current?.scrollTo({ top: 0 });
+                  }}
+                >
+                  <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
+                  {t('notifications.newNotifications')}
+                </Button>
+              </div>
+            )}
+          </div>
           {showSkeletons && (
             <output aria-label={t('notifications.loading')}>
               {Array.from({ length: 5 }).map((_, i) => (
