@@ -83,7 +83,7 @@
   "thread": {
     "back": "Terug naar gesprekken",
     "loading": "Berichten laden",
-    "refreshing": "Controleren op nieuwe berichten",
+    "refreshing": "Berichten bijwerken",
     "addReaction": "Reactie toevoegen",
     "options": "Chatopties"
   },

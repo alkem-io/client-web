@@ -83,7 +83,7 @@
   "thread": {
     "back": "Zurück zu den Unterhaltungen",
     "loading": "Nachrichten werden geladen",
-    "refreshing": "Nach neuen Nachrichten wird gesucht",
+    "refreshing": "Nachrichten werden aktualisiert",
     "addReaction": "Reaktion hinzufügen",
     "options": "Chat-Optionen"
   },

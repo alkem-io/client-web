@@ -264,7 +264,6 @@ describe('ChatThreadView — refreshing indicator', () => {
   test('shows over existing messages, outside the scroller so it cannot move them', () => {
     renderRefreshing([msg(at(14, 10, 0))], true);
     const indicator = screen.getByRole('status', { name: 'thread.refreshing' });
-    expect(indicator).toHaveTextContent('thread.refreshing');
     expect(indicator.contains(rowFor('message 1'))).toBe(false);
     expect(rowFor('message 1').closest('.overflow-y-auto')?.contains(indicator)).toBe(false);
   });

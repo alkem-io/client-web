@@ -113,10 +113,9 @@ export function ChatThreadView({
       {refreshing && messages.length > 0 && (
         <output
           aria-label={t('thread.refreshing')}
-          className="pointer-events-none absolute top-2 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-border bg-background/90 px-2.5 py-1 text-caption text-muted-foreground shadow-sm backdrop-blur-sm motion-safe:animate-in motion-safe:fade-in"
+          className="pointer-events-none absolute top-2 left-1/2 z-10 flex -translate-x-1/2 rounded-full border border-border bg-background/90 p-1.5 text-muted-foreground shadow-sm backdrop-blur-sm motion-safe:animate-in motion-safe:fade-in"
         >
-          <Loader2 aria-hidden="true" className="size-3.5 motion-safe:animate-spin" />
-          {t('thread.refreshing')}
+          <Loader2 aria-hidden="true" className="size-4 motion-safe:animate-spin" />
         </output>
       )}
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-3 pt-1 pb-3">
