@@ -47,6 +47,7 @@ const exchangeAndStore = async (homeserverUrl: string, loginToken: string, signa
       deviceId: result.device_id,
       accessToken: result.access_token,
       homeserverUrl,
+      issuedAt: Date.now(),
     });
     // A sign-out during the write may already have listed and cleared the
     // stored namespaces; remove what this write left behind.

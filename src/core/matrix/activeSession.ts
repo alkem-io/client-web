@@ -1,30 +1,37 @@
 /**
- * Per-tab registry of the one live Matrix session's sign-out hook, so the
- * Alkemio sign-out flow can stop it without holding a reference to it.
+ * Per-tab registry of the one live Matrix session's hooks: its sign-out, so
+ * the Alkemio sign-out flow can stop it without holding a reference to it, and
+ * its pre-call rotation, so a call click can replace a credential near expiry.
  */
 type SignOut = () => void;
+type Rotate = () => Promise<boolean>;
 
-let current: SignOut | null = null;
+const noRotation: Rotate = () => Promise.resolve(false);
 
-const registerActiveSession = (signOut: SignOut): void => {
-  current = signOut;
+let current: { readonly stop: SignOut; readonly rotateIfDue: Rotate } | null = null;
+
+const registerActiveSession = (stop: SignOut, rotateIfDue: Rotate = noRotation): void => {
+  current = { stop, rotateIfDue };
 };
 
-const unregisterActiveSession = (signOut: SignOut): void => {
-  if (current === signOut) {
+const unregisterActiveSession = (stop: SignOut): void => {
+  if (current?.stop === stop) {
     current = null;
   }
 };
 
 /** Stops the registered session, if any. Returns whether one was registered. */
 const stopActiveSession = (): boolean => {
-  const signOut = current;
+  const session = current;
   current = null;
-  if (signOut) {
-    signOut();
+  if (session) {
+    session.stop();
     return true;
   }
   return false;
 };
 
-export { registerActiveSession, unregisterActiveSession, stopActiveSession };
+/** Rotates the registered session's credential when due; true when a rotation was attempted, so no call opens. */
+const rotateActiveSessionIfDue = (): Promise<boolean> => (current ? current.rotateIfDue() : Promise.resolve(false));
+
+export { registerActiveSession, unregisterActiveSession, stopActiveSession, rotateActiveSessionIfDue };

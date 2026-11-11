@@ -7,6 +7,8 @@ type CredentialRecord = {
   readonly deviceId: string;
   readonly accessToken: string;
   readonly homeserverUrl: string;
+  /** epoch ms (client clock) when the homeserver issued this credential; absent on records stored before it was recorded */
+  readonly issuedAt?: number;
 };
 
 const dbName = (userId: string): string => `${DB_PREFIX}${userId}`;

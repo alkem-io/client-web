@@ -2,6 +2,7 @@ import { formatDistanceToNowStrict } from 'date-fns';
 import { Info, Loader2, Trash2 } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { rotateActiveSessionIfDue } from '@/core/matrix/activeSession';
 import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ActiveCallIndicator } from '@/crd/components/chat/ActiveCallIndicator';
@@ -264,7 +265,12 @@ export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPan
     const { matrixRoomId } = callEligibility;
     const openCallWith = (action: CallAction, media: CallMedia) => {
       if (matrixRoomId) {
-        openCall({ matrixRoomId, intent: callIntentFor({ isGroup, action, media }) });
+        // A due chat credential is replaced instead of opening the call: a call open across the swap would end.
+        void rotateActiveSessionIfDue().then(rotated => {
+          if (!rotated) {
+            openCall({ matrixRoomId, intent: callIntentFor({ isGroup, action, media }) });
+          }
+        });
       }
     };
     let callActions: ReactNode = null;

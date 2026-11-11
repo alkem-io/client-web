@@ -9,6 +9,8 @@ type SilentSsoOptions = {
   readonly signal?: AbortSignal;
   /** The origin serving the callback page; defaults to this page's origin. */
   readonly platformOrigin?: string;
+  /** The device whose stored record this attempt replaces; that record is not success. */
+  readonly replacing?: string;
 };
 
 /**
@@ -37,11 +39,18 @@ const buildSsoUrl = (homeserverUrl: string, platformOrigin: string): string => {
  * else stalls invisibly until the timeout and fails closed. Success is
  * detected by fresh credentials appearing in this origin's IndexedDB — put
  * there by the callback itself on the platform origin, or by the token
- * handoff below on any other origin.
+ * handoff below on any other origin. A record of the replaced device does
+ * not count.
  */
 const attemptSilentSso = async (
   expectedLocalpart: string,
-  { timeoutMs = 20_000, pollIntervalMs = 400, signal, platformOrigin = window.location.origin }: SilentSsoOptions = {}
+  {
+    timeoutMs = 20_000,
+    pollIntervalMs = 400,
+    signal,
+    platformOrigin = window.location.origin,
+    replacing,
+  }: SilentSsoOptions = {}
 ): Promise<SilentSsoOutcome> => {
   const { homeserverUrl } = getConfig();
   if (homeserverUrl === '' || signal?.aborted) {
@@ -84,20 +93,25 @@ const attemptSilentSso = async (
   };
   window.addEventListener('message', onMessage);
 
+  const found = async (): Promise<boolean> => {
+    const record = await loadActorCredentials(expectedLocalpart);
+    return record !== null && record.deviceId !== replacing;
+  };
+
   try {
     while (Date.now() < deadline) {
       if (signal?.aborted) {
         return 'timeout';
       }
       await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
-      if (await loadActorCredentials(expectedLocalpart)) {
+      if (await found()) {
         return 'authenticated';
       }
     }
     // The deadline passed. One last read first: an exchange that completed
     // between the final poll and here has already persisted, and reporting that
     // as a timeout would mint a second credential for no reason.
-    if (await loadActorCredentials(expectedLocalpart)) {
+    if (await found()) {
       return 'authenticated';
     }
     // Otherwise cancel it, so no write of its can land after the caller has

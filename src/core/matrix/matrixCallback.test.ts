@@ -64,6 +64,19 @@ describe('matrixCallback', () => {
       expect(stored?.deviceId).toBe(EXCHANGE_RESPONSE.device_id);
     });
 
+    it('stamps the exchanged record with the time it was issued', async () => {
+      setUrlWithToken('mlt_stamped');
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify(EXCHANGE_RESPONSE), { status: 200 }));
+
+      const before = Date.now();
+      await handleMatrixCallback(HOMESERVER);
+      const after = Date.now();
+
+      const stored = await loadCredentials(EXCHANGE_RESPONSE.user_id);
+      expect(stored?.issuedAt).toBeGreaterThanOrEqual(before);
+      expect(stored?.issuedAt).toBeLessThanOrEqual(after);
+    });
+
     it('stores nothing when the exchange response lacks the access token', async () => {
       setUrlWithToken('mlt_valid');
       const { access_token: _omitted, ...incomplete } = EXCHANGE_RESPONSE;
