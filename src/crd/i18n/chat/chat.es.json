@@ -7,6 +7,9 @@
   "panel": {
     "title": "Chat",
     "settings": "Configuración de notificaciones",
+    "muteSound": "Silenciar el sonido del chat",
+    "unmuteSound": "Activar el sonido del chat",
+    "soundToggleError": "No pudimos guardar el ajuste del sonido del chat. Inténtalo de nuevo.",
     "expand": "Ampliar chat",
     "collapse": "Reducir chat"
   },

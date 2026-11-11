@@ -1,7 +1,5 @@
 import type { ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ExpandableMarkdown } from '@/crd/components/common/ExpandableMarkdown';
-import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { cn } from '@/crd/lib/utils';
 
 type TabStateHeaderProps = {
@@ -19,8 +17,6 @@ const hasVisibleMarkdownContent = (value?: string) => {
 };
 
 export function TabStateHeader({ description, action, className }: TabStateHeaderProps) {
-  const { t } = useTranslation('crd-space');
-  const { isSmallScreen } = useScreenSize();
   const hasDescription = hasVisibleMarkdownContent(description);
 
   if (!hasDescription && !action) return null;
@@ -29,12 +25,7 @@ export function TabStateHeader({ description, action, className }: TabStateHeade
     <div className={cn('flex flex-col sm:flex-row sm:items-start justify-between gap-4 sm:gap-6', className)}>
       {hasDescription ? (
         <div className="flex-1 min-w-0">
-          <ExpandableMarkdown
-            content={description ?? ''}
-            maxLines={isSmallScreen ? 3 : 2}
-            surface="background"
-            expandLabel={t('postSnippet.seeFullDescription')}
-          />
+          <ExpandableMarkdown content={description ?? ''} />
         </div>
       ) : (
         <div className="flex-1" />

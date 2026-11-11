@@ -5,7 +5,7 @@ import { cn } from '@/crd/lib/utils';
 
 type ExpandableMarkdownProps = {
   content: string;
-  /** Lines to show when collapsed; defaults to 3 (post-card snippet). */
+  /** Lines of text to show when collapsed; defaults to 3 (post-card snippet). */
   maxLines?: number;
   /**
    * Initial expanded state once overflow has been detected. When the content
@@ -13,106 +13,158 @@ type ExpandableMarkdownProps = {
    * space-level `calloutDescriptionDisplayMode` setting (Expanded vs Collapsed).
    */
   defaultExpanded?: boolean;
-  /**
-   * Surface the content sits on. Drives the colour the collapse fade gradient
-   * (and the "read more" chip) blends into. `'card'` (default) for content on
-   * a card (PostCard); `'background'` for content directly on the page
-   * background (flow-state / tab descriptions). Matters in dark mode where
-   * `--card` and `--background` differ.
-   */
-  surface?: 'card' | 'background';
-  /** Override the collapsed-state toggle label (defaults to "… Read more"). */
-  expandLabel?: string;
-  /** Override the expanded-state toggle label (defaults to "Read less"). */
-  collapseLabel?: string;
   className?: string;
 };
 
-const surfaceClasses = {
-  card: { fade: 'bg-gradient-to-b from-transparent to-card', chip: 'bg-card' },
-  background: { fade: 'bg-gradient-to-b from-transparent to-background', chip: 'bg-background' },
-} as const;
+/**
+ * What the collapsed view needs to know about the rendered content — independent
+ * of the display mode. `cutAt` is the height (px, from the content's top) that ends
+ * directly under text line `maxLines`; `null` when the text fits in `maxLines`.
+ */
+type Measurement = { overflow: 'unknown' } | { overflow: 'yes' | 'no'; cutAt: number | null };
 
-/** Whether the content exceeds `maxLines` — independent of the display mode. */
-type Overflow = 'unknown' | 'yes' | 'no';
-
-// Collapsed height is a hard cap of `maxLines` text lines, applied as a
-// `max-height` + `overflow: hidden` rather than `-webkit-line-clamp`. Line-clamp
-// only bounds *text* lines, so a block image inside the markdown renders at full
-// size and blows the collapsed box open. A fixed max-height clips any content
-// (text, image, embed) to the same ~N-line band. `0.875rem` is the rendered
-// `text-body` size (14px); `1.625` is the paragraph `leading-relaxed`.
-const collapsedMaxHeight = (maxLines: number) => `calc(${maxLines} * 1.625 * 0.875rem)`;
-/** The same clamp height in px, for comparing against the measured content height. */
-const collapsedMaxHeightPx = (maxLines: number) => {
-  const rootFontSize = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-  return maxLines * 1.625 * 0.875 * rootFontSize;
-};
+// Before the first measurement: `text-body` (0.875rem) at `leading-relaxed` (1.625).
+const fallbackMaxHeight = (maxLines: number) => `calc(${maxLines} * 1.625 * 0.875rem)`;
 
 /**
- * Markdown body with a "Read more" / "Read less" toggle that only appears when
- * the content actually overflows. Mirrors the MUI `ExpandableDescription` +
- * `AutomaticOverflowGradient` pattern (see `src/core/ui/markdown/ExpandableMarkdown.tsx`).
+ * Marks every image and embed (`MarkdownContent` tags an embed's outer box `data-embed`)
+ * with how the collapsed view treats it: `hero` (it comes before any text — shown,
+ * cropped to 160px) or `hidden` (it follows text — withheld until expanded). With no
+ * text at all every one is a hero, so an image-only post is cropped rather than emptied.
+ * Returns whether there are any.
+ */
+function classifyMedia(el: HTMLElement): boolean {
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
+  const media: HTMLElement[] = [];
+  let firstTrailing = -1;
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (node.nodeName === 'IMG' || (node as HTMLElement).dataset?.embed !== undefined) {
+      media.push(node as HTMLElement);
+    } else if (firstTrailing === -1 && node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
+      firstTrailing = media.length;
+    }
+  }
+  media.forEach((item, index) => {
+    const role = firstTrailing === -1 || index < firstTrailing ? 'hero' : 'hidden';
+    if (item.dataset.collapse !== role) item.dataset.collapse = role;
+  });
+  return media.length > 0;
+}
+
+type Line = { top: number; bottom: number };
+
+const middle = (top: number, bottom: number) => (top + bottom) / 2;
+
+/**
+ * The first `limit` rendered lines of text inside `el`, top to bottom, relative to its
+ * top. Counting real line boxes — not multiples of a line height — is what lets the cut
+ * land under a full line: a paragraph gap or heading inside the first lines would
+ * otherwise put it mid-line. Text is walked in document order, which is not always visual
+ * order (table cells side by side), so a fragment may belong anywhere among the kept
+ * lines; anything below the `limit`-th is dropped, so each fragment costs O(limit).
+ */
+function measureLines(el: HTMLElement, limit: number) {
+  const origin = el.getBoundingClientRect().top;
+  const lines: Line[] = [];
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  const range = document.createRange();
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (!node.textContent?.trim()) continue;
+    range.selectNodeContents(node);
+    for (const rect of Array.from(range.getClientRects())) {
+      if (rect.height === 0) continue;
+      const top = rect.top - origin;
+      const bottom = rect.bottom - origin;
+      // Fragments of one visual line (bold, links, inline code in a heading) overlap at
+      // their vertical middles, whatever their font sizes; merge them.
+      const fragmentMiddle = middle(top, bottom);
+      const line = lines.find(l => {
+        const lineMiddle = middle(l.top, l.bottom);
+        return (fragmentMiddle >= l.top && fragmentMiddle <= l.bottom) || (lineMiddle >= top && lineMiddle <= bottom);
+      });
+      if (line) {
+        line.top = Math.min(line.top, top);
+        line.bottom = Math.max(line.bottom, bottom);
+        continue;
+      }
+      const index = lines.findIndex(l => l.top > top);
+      if (index === -1) {
+        if (lines.length < limit) lines.push({ top, bottom });
+      } else {
+        lines.splice(index, 0, { top, bottom });
+        if (lines.length > limit) lines.pop();
+      }
+    }
+  }
+  return lines;
+}
+
+/**
+ * Markdown body that collapses to a clean cut directly under its `maxLines`-th
+ * rendered line of text, with a "Read more" / "Show less" link below it. Only text
+ * that *exceeds* `maxLines` is cut. Images and embeds never get a fade or overlay: one
+ * before the text (or every one of a post without text) is cropped to 160px, any other
+ * is hidden until expanded — so any image or embed makes the content collapsible.
+ * Expanded, the content renders exactly as authored.
  *
- * Two decoupled concerns: overflow detection (does the content exceed
- * `maxLines`? — measured under the `max-height` clamp, re-measured by a
- * `ResizeObserver` as layout settles / the container resizes; depends only on
- * content + clamp height) and the
- * expanded mode (`userExpanded ?? defaultExpanded` — the
- * `calloutDescriptionDisplayMode` setting drives it until the user clicks a
- * toggle). Keeping them independent is what makes the component adhere to the
- * setting: an async settings load or admin change flips `defaultExpanded` and
- * switches the view instantly, with no re-measurement race.
+ * Two decoupled concerns: the measurement (media + line count, re-measured by a
+ * `ResizeObserver` as layout settles / the container resizes) and the expanded mode
+ * (`userExpanded ?? defaultExpanded` — the `calloutDescriptionDisplayMode` setting
+ * drives it until the user clicks a toggle). An async settings load or admin change
+ * flips `defaultExpanded` and switches the view instantly; whether there is a toggle
+ * does not depend on the mode.
  */
 export function ExpandableMarkdown({
   content,
   maxLines = 3,
   defaultExpanded = false,
-  surface = 'card',
-  expandLabel,
-  collapseLabel,
   className,
 }: ExpandableMarkdownProps) {
   const { t } = useTranslation('crd-space');
-  const [overflow, setOverflow] = useState<Overflow>('unknown');
+  const [measurement, setMeasurement] = useState<Measurement>({ overflow: 'unknown' });
   // `null` → follow the `defaultExpanded` setting. Set only by an explicit
-  // user click on "Read more" / "Read less", which then takes precedence.
+  // user click on "Read more" / "Show less", which then takes precedence.
   const [userExpanded, setUserExpanded] = useState<boolean | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const isExpanded = userExpanded ?? defaultExpanded;
-  // Clamp only while collapsed (and the content overflows or is still unmeasured).
-  // An expanded block renders at full height from its very first paint: clamping it
-  // "until measured" and then releasing the clamp a frame later made every
-  // expanded-by-default post with a long description jump ~hundreds of px on each
-  // load (issue #10043).
-  const isClamped = !isExpanded && overflow !== 'no';
+  // Collapse only while not expanded (and the content overflows or is still unmeasured).
+  // An expanded block renders as authored from its very first paint.
+  const isCollapsed = !isExpanded && measurement.overflow !== 'no';
+  const maxHeight =
+    measurement.overflow === 'unknown'
+      ? fallbackMaxHeight(maxLines)
+      : measurement.cutAt !== null
+        ? `${measurement.cutAt}px`
+        : undefined;
 
-  // Overflow depends only on the rendered text and the clamp height — re-detect when
-  // those change, NOT when the display-mode setting flips. Decoupling the two is what
-  // makes the component adhere to the setting: when the space settings query resolves
-  // (or an admin toggles the mode), `defaultExpanded` flips and the view switches
-  // instantly via `isExpanded` — no re-measurement, no race that could leave a
-  // "Collapse by default" post open. A content change also drops the user's explicit
-  // toggle so the new text follows the setting again.
-  //
-  // Detection is independent of the clamp: compare the *content* element's own height
-  // (unaffected by the container's `max-height` + `overflow: hidden`) with the clamp
-  // height, synchronously before paint. Re-measured by a ResizeObserver on the content
-  // (react-markdown commits, web fonts) and the container (width changes on sidebar
-  // resize / rotation), so a first pass that measured too early never latches the
-  // wrong result.
+  // A content change drops the user's explicit toggle so the new text follows the setting again.
   useLayoutEffect(() => {
     setUserExpanded(null);
+  }, [content, maxLines]);
+
+  // Measured synchronously before paint, and again by a ResizeObserver on the content
+  // (react-markdown commits, web fonts, images loading) and the container (width changes
+  // on sidebar resize / rotation). Re-run when the view flips: the cut depends on the
+  // collapsed layout (hero crop, hidden media), while the line count and the media —
+  // and so the toggle — do not, so flipping never removes the toggle.
+  useLayoutEffect(() => {
     const container = containerRef.current;
     const contentEl = contentRef.current;
     if (!container || !contentEl) return;
 
-    const clampPx = collapsedMaxHeightPx(maxLines);
     const evaluate = () => {
-      const overflowing = contentEl.getBoundingClientRect().height > clampPx + 1; // +1px tolerance for sub-pixel rounding
-      setOverflow(overflowing ? 'yes' : 'no');
+      const hasMedia = classifyMedia(contentEl);
+      const lines = measureLines(contentEl, maxLines + 1);
+      const textOverflows = lines.length > maxLines;
+      const overflow = textOverflows || hasMedia ? 'yes' : 'no';
+      const cutAt = textOverflows ? Math.ceil(lines[maxLines - 1].bottom) : null;
+      // Keep the previous object when nothing changed, so a resize that moves no line
+      // (every observed callback, including the one on `observe()`) re-renders nothing.
+      setMeasurement(prev =>
+        prev.overflow === overflow && 'cutAt' in prev && prev.cutAt === cutAt ? prev : { overflow, cutAt }
+      );
     };
 
     evaluate();
@@ -121,62 +173,40 @@ export function ExpandableMarkdown({
     observer.observe(contentEl);
     observer.observe(container);
     return () => observer.disconnect();
-  }, [content, maxLines]);
+  }, [content, maxLines, isExpanded]);
 
-  const toggle = (expanded: boolean) => setUserExpanded(expanded);
-
-  const showToggle = overflow === 'yes';
-  const surfaceClass = surfaceClasses[surface];
-  const expandText = expandLabel ?? t('postSnippet.readMore');
-  const collapseText = collapseLabel ?? t('postSnippet.readLess');
+  const showToggle = measurement.overflow === 'yes';
 
   return (
-    <div className={cn('relative', className)}>
+    <div className={className}>
       <div
         ref={containerRef}
-        className={cn(isClamped && 'overflow-hidden')}
-        style={isClamped ? { maxHeight: collapsedMaxHeight(maxLines) } : undefined}
+        className={cn(
+          // `!important`: the authored inline styles markdown keeps (display, sizes,
+          // overflow) must not undo the preview; expanded, they apply again.
+          isCollapsed && [
+            maxHeight && 'overflow-hidden',
+            '[&_[data-collapse=hero]]:!block [&_[data-collapse=hero]]:!w-full [&_[data-collapse=hero]]:!min-h-0 [&_[data-collapse=hero]]:!max-h-[160px] [&_[data-collapse=hero]]:!overflow-hidden [&_[data-collapse=hero]]:object-cover',
+            '[&_[data-collapse=hidden]]:!hidden',
+          ]
+        )}
+        style={isCollapsed && maxHeight ? { maxHeight } : undefined}
       >
         {/* `flow-root` makes the measured wrapper a block formatting context, so a leading
-            heading's / trailing list's margin lands inside its height instead of collapsing
-            through it — the clamp box includes those margins, so the measurement must too. */}
+            heading's margin lands inside its box and line positions are measured from it. */}
         <div ref={contentRef} className="flow-root">
           <MarkdownContent content={content} className="text-muted-foreground" />
         </div>
       </div>
-      {showToggle && !isExpanded && (
-        <>
-          <div
-            aria-hidden="true"
-            className={cn('pointer-events-none absolute inset-x-0 bottom-0 h-8', surfaceClass.fade)}
-          />
-          {/* Pinned to the bottom-right of the clipped block so it sits on the last
-              visible line (matches the MUI ExpandableDescription / SeeMore layout).
-              The fade gradient above provides contrast behind the label. */}
-          <button
-            type="button"
-            onClick={() => toggle(true)}
-            aria-expanded={false}
-            className={cn(
-              'absolute bottom-0 right-0 z-10 cursor-pointer text-caption uppercase text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded px-1',
-              surfaceClass.chip
-            )}
-          >
-            {expandText}
-          </button>
-        </>
-      )}
-      {showToggle && isExpanded && (
-        <div className="flex justify-end mt-1">
-          <button
-            type="button"
-            onClick={() => toggle(false)}
-            aria-expanded={true}
-            className="cursor-pointer text-caption uppercase text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
-          >
-            {collapseText}
-          </button>
-        </div>
+      {showToggle && (
+        <button
+          type="button"
+          onClick={() => setUserExpanded(!isExpanded)}
+          aria-expanded={isExpanded}
+          className="mt-1 block cursor-pointer rounded text-body-emphasis text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          {isExpanded ? t('postSnippet.showLess') : t('postSnippet.readMore')}
+        </button>
       )}
     </div>
   );

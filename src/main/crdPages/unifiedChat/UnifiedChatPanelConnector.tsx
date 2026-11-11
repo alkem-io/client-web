@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ActiveCallIndicator } from '@/crd/components/chat/ActiveCallIndicator';
-import { CallControls } from '@/crd/components/chat/CallControls';
+import { CallControls, chatHeaderIconButtonClass, chatHeaderIconClass } from '@/crd/components/chat/CallControls';
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
 import { ChatOptionsMenu } from '@/crd/components/chat/ChatOptionsMenu';
 import { ChatPanel } from '@/crd/components/chat/ChatPanel';
@@ -29,6 +29,7 @@ import { useCallEligibility } from '@/main/userMessaging/calls/useCallEligibilit
 import { useRoomCallSession } from '@/main/userMessaging/calls/useRoomCallSession';
 import { type CallAction, type CallMedia, callIntentFor } from '@/main/userMessaging/calls/widgetUrl';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
+import { useChatSound } from '@/main/userMessaging/useChatSound';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
 import { ConversationThread } from './ConversationThread';
 import { resolveChatLocale } from './chatLocale';
@@ -58,6 +59,7 @@ export const UnifiedChatPanelConnector = () => {
   const currentUserId = userModel?.id;
   const navigate = useNavigate();
   const notify = useNotification();
+  const chatSound = useChatSound();
 
   const {
     isOpen,
@@ -225,9 +227,6 @@ export const UnifiedChatPanelConnector = () => {
     }
   };
 
-  const iconButtonClass =
-    'flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
-
   let headerActions: ReactNode;
   if (isGuidanceThread) {
     headerActions = (
@@ -236,17 +235,17 @@ export const UnifiedChatPanelConnector = () => {
           type="button"
           onClick={() => setInfoOpen(true)}
           aria-label={t('guidance.infoButton')}
-          className={iconButtonClass}
+          className={chatHeaderIconButtonClass}
         >
-          <Info aria-hidden="true" className="size-4" />
+          <Info aria-hidden="true" className={chatHeaderIconClass} />
         </button>
         <button
           type="button"
           onClick={() => setClearConfirmOpen(true)}
           aria-label={t('guidance.clear')}
-          className={iconButtonClass}
+          className={chatHeaderIconButtonClass}
         >
-          <Trash2 aria-hidden="true" className="size-4" />
+          <Trash2 aria-hidden="true" className={chatHeaderIconClass} />
         </button>
       </>
     );
@@ -293,7 +292,7 @@ export const UnifiedChatPanelConnector = () => {
     }
     if (isGroup) {
       headerActions = (
-        <div className="flex items-center gap-1">
+        <div className="flex min-w-0 items-center gap-1">
           {callActions}
           <ChatOptionsMenu
             label={t('thread.options')}
@@ -305,7 +304,7 @@ export const UnifiedChatPanelConnector = () => {
         </div>
       );
     } else if (callActions) {
-      headerActions = <div className="flex items-center gap-1">{callActions}</div>;
+      headerActions = <div className="flex min-w-0 items-center gap-1">{callActions}</div>;
     }
   }
   const isGroupThread = view === 'thread' && Boolean(selectedConversation?.isGroup);
@@ -380,6 +379,17 @@ export const UnifiedChatPanelConnector = () => {
             : undefined
         }
         settingsLabel={t('panel.settings')}
+        // Shown in a conversation too, so the sound can be silenced without leaving it.
+        onToggleSound={
+          chatSound.setEnabled
+            ? () => {
+                chatSound.setEnabled?.(!chatSound.enabled).catch(() => notify(t('panel.soundToggleError'), 'error'));
+              }
+            : undefined
+        }
+        soundMuted={!chatSound.enabled}
+        muteSoundLabel={t('panel.muteSound')}
+        unmuteSoundLabel={t('panel.unmuteSound')}
         expandLabel={t('panel.expand')}
         collapseLabel={t('panel.collapse')}
         titleAvatar={titleAvatar}

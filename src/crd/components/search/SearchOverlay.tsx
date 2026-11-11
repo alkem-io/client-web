@@ -3,6 +3,7 @@ import type { ComponentType } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { claimEscape } from '@/crd/lib/claimEscape';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -65,6 +66,7 @@ export function SearchOverlay({
   onSearchAll,
 }: SearchOverlayProps) {
   const { t } = useTranslation('crd-search');
+  const { isSmallScreen } = useScreenSize();
   const [visible, setVisible] = useState(false);
   const [activeCategoryId, setActiveCategoryId] = useState<SearchCategoryId | null>(null);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
@@ -209,7 +211,9 @@ export function SearchOverlay({
           className={cn(
             'col-span-12 lg:col-start-2 lg:col-span-10 max-md:col-span-12',
             'flex flex-col overflow-hidden pointer-events-auto',
-            'bg-popover border border-border rounded-xl shadow-lg',
+            'bg-popover shadow-lg',
+            // Full screen on a small screen, like the chat panel: no card edges around the page.
+            isSmallScreen ? 'rounded-none' : 'border border-border rounded-xl',
             'transition-all duration-200 ease-out',
             visible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-[0.97] translate-y-2.5'
           )}

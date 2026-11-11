@@ -187,6 +187,7 @@ describe('ContributorCollectionConnector — join-month decoration at render (US
 describe('ContributorCollectionConnector — canMessage wiring (US3, D-AUTH/D-CONTACT)', () => {
   test('signed out: every card has canMessage false (no menu Message item)', async () => {
     mockSignedIn = false;
+    mockCurrentUserId = undefined;
     mockCards = [otherUserCard];
     renderConnector(<ContributorCollectionConnector calloutId="callout-1" />);
 

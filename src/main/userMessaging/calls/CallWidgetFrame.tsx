@@ -12,6 +12,9 @@ const ROOM_STATE_EVENTS = 'RoomState.events';
 /** Widget actions of the pinned call UI: it hangs up / closes, the host asks it to hang up. */
 const HANGUP_ACTION = 'im.vector.hangup';
 const CLOSE_ACTION = 'io.element.close';
+/** Notices from the pinned call UI that it joined and wants to stay on screen; the host only acknowledges them. */
+const JOIN_ACTION = 'io.element.join';
+const ALWAYS_ON_SCREEN_ACTION = 'set_always_on_screen';
 
 /** How long the call UI gets to leave the call before the overlay closes regardless. */
 const HANGUP_TIMEOUT_MS = 5_000;
@@ -59,6 +62,9 @@ export default function CallWidgetFrame({
       creatorUserId: client.getUserId() ?? '',
       type: 'm.custom',
       url: new URL(frameSrc, window.location.origin).toString(),
+      // The call UI says when it is ready; starting the capability exchange on iframe load instead
+      // makes the library answer the call UI's ready notice with an error.
+      waitForIframeLoad: false,
     });
     const driver = new ElementCallWidgetDriver({ client, matrixRoomId, livekitServiceUrl });
     const api = new ClientWidgetApi(widget, iframe, driver);
@@ -74,6 +80,12 @@ export default function CallWidgetFrame({
     };
     api.on(`action:${HANGUP_ACTION}`, onWidgetLeft);
     api.on(`action:${CLOSE_ACTION}`, onWidgetLeft);
+    const onWidgetNotice = (event: CustomEvent<IWidgetApiRequest>) => {
+      event.preventDefault();
+      api.transport.reply(event.detail, {});
+    };
+    api.on(`action:${JOIN_ACTION}`, onWidgetNotice);
+    api.on(`action:${ALWAYS_ON_SCREEN_ACTION}`, onWidgetNotice);
 
     // Every event the chat server syncs, as the reference host feeds it. Unlike the room's
     // timeline this includes the synced copy of the call UI's own sends, which the call UI waits
@@ -122,6 +134,8 @@ export default function CallWidgetFrame({
       client.removeListener(ROOM_STATE_EVENTS as never, onStateEvent as never);
       api.off(`action:${HANGUP_ACTION}`, onWidgetLeft);
       api.off(`action:${CLOSE_ACTION}`, onWidgetLeft);
+      api.off(`action:${JOIN_ACTION}`, onWidgetNotice);
+      api.off(`action:${ALWAYS_ON_SCREEN_ACTION}`, onWidgetNotice);
       api.stop();
       releaseConsoleFilter();
     };

@@ -1,6 +1,5 @@
 import type { MatrixEvent, Room } from 'matrix-js-sdk';
 import { useEffect, useRef } from 'react';
-import type { UserDetailsFragment } from '@/core/apollo/generated/graphql-schema';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import { playSound } from '@/core/sound/soundPlayer';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -8,6 +7,7 @@ import { isCallsConfigured } from '../calls/callConfig';
 import { isBetaTester } from '../calls/useCallEligibility';
 import { shouldPlayChatSound } from '../shouldPlayChatSound';
 import { useUserMessagingContext } from '../UserMessagingContext';
+import { useChatSoundEnabled } from '../useChatSound';
 import { storeFor } from './conversationSummaryStore';
 import { isMessageLike } from './matrixEvents';
 import { CLIENT_SYNC, ROOM_TIMELINE } from './matrixRooms';
@@ -25,10 +25,9 @@ const CALL_STARTED_EVENT_TYPES = new Set(['org.matrix.msc4075.rtc.notification',
 export const useSyncChatSound = () => {
   const client = useMatrixClient();
   const { selectedRoomId } = useUserMessagingContext();
-  const { userModel, platformRoles } = useCurrentUserContext();
+  const { platformRoles } = useCurrentUserContext();
   const callsShown = isBetaTester(platformRoles) && isCallsConfigured();
-  const chatSoundEnabled =
-    (userModel as UserDetailsFragment | undefined)?.settings?.notification?.sound?.chatMessage ?? true;
+  const chatSoundEnabled = useChatSoundEnabled();
 
   // Read inside client callbacks; synced post-commit.
   const selectedRoomIdRef = useRef(selectedRoomId);

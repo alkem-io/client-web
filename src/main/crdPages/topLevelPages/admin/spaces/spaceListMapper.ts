@@ -12,12 +12,15 @@ export type AdminSpaceRow = AdminTableRow & {
   canEditPlatformSettings: boolean;
   /** May the viewer delete this space? (Delete, or PlatformContentFullAccess) */
   canDelete: boolean;
+  /** Stored platform-promote flag; `null` when the viewer may not read it. */
+  promote: boolean | null;
 };
 
 type SpaceListItem = {
   id: string;
   nameID: string;
   visibility: SpaceVisibility;
+  promote?: boolean | null;
   about: {
     profile: { displayName: string; url: string };
     provider?: { profile?: { displayName: string } } | null;
@@ -51,5 +54,6 @@ export const mapSpaceToRow = (space: SpaceListItem): AdminSpaceRow => {
     canDelete:
       privileges.includes(AuthorizationPrivilege.Delete) ||
       privileges.includes(AuthorizationPrivilege.PlatformContentFullAccess),
+    promote: space.promote ?? null,
   };
 };

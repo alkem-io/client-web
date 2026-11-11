@@ -7,6 +7,9 @@
   "panel": {
     "title": "Chat",
     "settings": "Notification settings",
+    "muteSound": "Mute chat sound",
+    "unmuteSound": "Unmute chat sound",
+    "soundToggleError": "We couldn't save the chat sound setting. Please try again.",
     "expand": "Expand chat",
     "collapse": "Collapse chat"
   },
