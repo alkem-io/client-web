@@ -1,5 +1,5 @@
 import { Loader2 } from 'lucide-react';
-import { type PointerEvent, useEffect, useRef, useState } from 'react';
+import { type PointerEvent, type ReactElement, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CommentInput } from '@/crd/components/comment/CommentInput';
 import type { CommentAuthor, ComposerAttachment } from '@/crd/components/comment/types';
@@ -118,6 +118,24 @@ export function ChatThreadView({
             const hasTime = ms > 0;
             const isRevealed = hasTime && revealedIds.has(message.id);
             const isFirstOfGroup = flags.groupPosition === 'single' || flags.groupPosition === 'first';
+            // Only the bubble itself opens the time tooltip: the row around it spans
+            // the full thread width, and hovering its empty side would open the
+            // tooltip over the previous message.
+            const withTimeTooltip = (box: ReactElement) => (
+              <Tooltip delayDuration={300}>
+                <TooltipTrigger
+                  asChild={true}
+                  // Keyboard focus is how the exact time is reached without hover.
+                  tabIndex={0}
+                  className="outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {box}
+                </TooltipTrigger>
+                <TooltipContent side="top" align={message.isOwn ? 'end' : 'start'} hideArrow={true}>
+                  {time.exact(ms)}
+                </TooltipContent>
+              </Tooltip>
+            );
             const bubble = (
               <ChatMessageBubble
                 message={message}
@@ -130,6 +148,7 @@ export function ChatThreadView({
                 newTabLinks={newTabLinks}
                 onAddReaction={onAddReaction ? emoji => onAddReaction(message.id, emoji) : undefined}
                 onRemoveReaction={onRemoveReaction ? emoji => onRemoveReaction(message.id, emoji) : undefined}
+                wrapBubble={hasTime ? withTimeTooltip : undefined}
               />
             );
             return (
@@ -148,44 +167,27 @@ export function ChatThreadView({
                   </div>
                 )}
                 {hasTime ? (
-                  <Tooltip delayDuration={300}>
-                    <TooltipTrigger asChild={true}>
-                      <div
-                        data-chat-message={true}
-                        // biome-ignore lint/a11y/noNoninteractiveTabindex: keyboard focus is how the exact time is reached without hover
-                        tabIndex={0}
-                        onPointerUp={toggleRevealedOnTap(message.id)}
+                  <div
+                    data-chat-message={true}
+                    onPointerUp={toggleRevealedOnTap(message.id)}
+                    className={cn('flex flex-col', isFirstOfGroup ? 'mt-3' : 'mt-0.5')}
+                  >
+                    <span className="sr-only">{time.exact(ms)}</span>
+                    {bubble}
+                    {isRevealed && (
+                      <span
+                        data-testid="chat-revealed-time"
+                        aria-hidden="true"
                         className={cn(
-                          'flex flex-col rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                          isFirstOfGroup ? 'mt-3' : 'mt-0.5'
+                          'px-1 pt-0.5 text-caption text-muted-foreground',
+                          message.isOwn ? 'self-end' : 'self-start',
+                          flags.avatarGutter && 'pl-11'
                         )}
                       >
-                        <span className="sr-only">{time.exact(ms)}</span>
-                        {bubble}
-                        {isRevealed && (
-                          <span
-                            data-testid="chat-revealed-time"
-                            aria-hidden="true"
-                            className={cn(
-                              'px-1 pt-0.5 text-caption text-muted-foreground',
-                              message.isOwn ? 'self-end' : 'self-start',
-                              flags.avatarGutter && 'pl-11'
-                            )}
-                          >
-                            {time.exact(ms)}
-                          </span>
-                        )}
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side="top"
-                      align={message.isOwn ? 'end' : 'start'}
-                      // Line up with the bubble rather than the avatar gutter.
-                      alignOffset={flags.avatarGutter ? 40 : 0}
-                    >
-                      {time.exact(ms)}
-                    </TooltipContent>
-                  </Tooltip>
+                        {time.exact(ms)}
+                      </span>
+                    )}
+                  </div>
                 ) : (
                   <div data-chat-message={true} className={cn('flex flex-col', isFirstOfGroup ? 'mt-3' : 'mt-0.5')}>
                     {bubble}
