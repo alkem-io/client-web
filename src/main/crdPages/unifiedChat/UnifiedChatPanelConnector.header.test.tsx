@@ -166,18 +166,25 @@ describe('UnifiedChatPanelConnector header', () => {
     chatSound.setEnabled = vi.fn().mockResolvedValue(undefined);
   });
 
-  it('offers the sound toggle in the list and in a conversation, muting when the sound is on', () => {
+  it('offers the sound toggle in the conversation list, muting when the sound is on', () => {
     render(<UnifiedChatPanelConnector />);
     expect(panelProps.soundMuted).toBe(false);
     expect(panelProps.muteSoundLabel).toBe('panel.muteSound');
     expect(panelProps.unmuteSoundLabel).toBe('panel.unmuteSound');
 
-    state.selectedConversationId = 'direct';
-    render(<UnifiedChatPanelConnector />);
     panelProps.onToggleSound?.();
 
     expect(chatSound.setEnabled).toHaveBeenCalledExactlyOnceWith(false);
     expect(notify).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ['a 1:1 chat', 'direct'],
+    ['a group chat', 'group'],
+  ])('has no sound toggle inside %s, because the sound is muted for the whole chat', (_name, conversationId) => {
+    state.selectedConversationId = conversationId;
+    render(<UnifiedChatPanelConnector />);
+    expect(panelProps.onToggleSound).toBeUndefined();
   });
 
   it('unmutes when the sound is off, and reports a failed save once', async () => {

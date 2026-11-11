@@ -389,9 +389,10 @@ export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPan
             : undefined
         }
         settingsLabel={t('panel.settings')}
-        // Shown in a conversation too, so the sound can be silenced without leaving it.
+        // The sound is on or off for the whole chat, never per conversation, so like the gear
+        // the toggle lives in the list header only.
         onToggleSound={
-          chatSound.setEnabled
+          view === 'list' && chatSound.setEnabled
             ? () => {
                 chatSound.setEnabled?.(!chatSound.enabled).catch(() => notify(t('panel.soundToggleError'), 'error'));
               }
