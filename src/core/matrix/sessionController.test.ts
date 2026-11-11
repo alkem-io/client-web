@@ -7,10 +7,12 @@ import { mintAndStore } from './mintSession';
 import { establishSession, type MatrixClientLike } from './sessionController';
 import { attemptSilentSso } from './ssoLogin';
 import { clearNamespace, loadActorCredentials, storeCredentials } from './storage';
+import { renewTokens } from './tokenRefresh';
 
 vi.mock('matrix-js-sdk', () => ({ createClient: vi.fn() }));
 vi.mock('./ssoLogin', () => ({ attemptSilentSso: vi.fn() }));
 vi.mock('./mintSession', () => ({ mintAndStore: vi.fn() }));
+vi.mock('./tokenRefresh', () => ({ renewTokens: vi.fn() }));
 
 const HOMESERVER = 'https://matrix.dev-alkem.io';
 
@@ -22,10 +24,12 @@ type CreateClientFn = (opts: {
   userId: string;
   deviceId: string;
   accessToken: string;
+  fetchFn?: typeof fetch;
 }) => MatrixClientLike;
 const mockedCreateClient = createClient as unknown as MockedFunction<CreateClientFn>;
 const mockedSilentSso = vi.mocked(attemptSilentSso);
 const mockedMint = vi.mocked(mintAndStore);
+const mockedRenew = vi.mocked(renewTokens);
 
 // The native shell's own signal; `isAppMode` reads it on every call, so no
 // module reset is needed to enter or leave app mode.
@@ -41,6 +45,7 @@ const makeClient = (): FakeClient => {
     stopClient: vi.fn(),
     startClient: vi.fn(async () => {}),
     on: vi.fn((event: string, listener: (state?: string) => void) => handlers.set(event, listener)),
+    setAccessToken: vi.fn(),
     emit: (event: string, state?: string) => handlers.get(event)?.(state),
   };
 };
@@ -73,11 +78,17 @@ describe('establishSession', () => {
     mockedSilentSso.mockResolvedValue('timeout');
     mockedMint.mockReset();
     mockedMint.mockResolvedValue(null);
+    mockedRenew.mockReset();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(null, { status: 200 }))
+    );
   });
 
   afterEach(async () => {
     stopActiveSession();
     Reflect.deleteProperty(window, 'Capacitor');
+    vi.unstubAllGlobals();
     await clearNamespace(USER_ID);
   });
 
@@ -470,5 +481,72 @@ describe('establishSession', () => {
     expect(mockedSilentSso).not.toHaveBeenCalled();
     expect(mockedCreateClient.mock.calls[1][0].accessToken).toBe('syt_minted_access');
     expect(second.startClient).toHaveBeenCalledOnce();
+  });
+
+  describe('access token renewal', () => {
+    const REQUEST_URL = `${HOMESERVER}/_matrix/client/v3/sync`;
+    const refreshable = () => ({ refreshToken: 'syr_stored_refresh', expiresAt: Date.now() + 30_000 });
+    const fetchFnOf = (call: number) => {
+      const fetchFn = mockedCreateClient.mock.calls[call][0].fetchFn;
+      expect(fetchFn).toBeDefined();
+      return fetchFn as typeof fetch;
+    };
+
+    it('passes a request hook to the client and leaves records without a refresh token untouched', async () => {
+      await seedRecord();
+      mockedCreateClient.mockReturnValue(makeClient());
+      await establishSession(ACTOR);
+
+      const response = await fetchFnOf(0)(REQUEST_URL);
+
+      expect(response.status).toBe(200);
+      expect(globalThis.fetch).toHaveBeenCalledWith(REQUEST_URL, undefined);
+      expect(mockedRenew).not.toHaveBeenCalled();
+    });
+
+    it('forwards a due request with the still-valid token while the renewal is pending', async () => {
+      await seedRecord(refreshable());
+      const client = makeClient();
+      mockedCreateClient.mockReturnValue(client);
+      mockedRenew.mockReturnValue(new Promise(() => {}));
+      await establishSession(ACTOR);
+      const fetchFn = fetchFnOf(0);
+      const init = { headers: { Authorization: 'Bearer syt_stored_access' } };
+
+      await fetchFn(REQUEST_URL, init);
+
+      expect(mockedRenew).toHaveBeenCalledOnce();
+      expect(globalThis.fetch).toHaveBeenCalledWith(REQUEST_URL, init);
+
+      await fetchFn(REQUEST_URL, init);
+
+      expect(mockedRenew).toHaveBeenCalledOnce();
+      expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+      expect(client.setAccessToken).not.toHaveBeenCalled();
+    });
+
+    it("a refused renewal restarts on another tab's stored device without silent SSO", async () => {
+      await seedRecord(refreshable());
+      const first = makeClient();
+      const second = makeClient();
+      mockedCreateClient.mockReturnValueOnce(first).mockReturnValueOnce(second);
+      await establishSession(ACTOR);
+      await seedRecord({ deviceId: 'DEV2', accessToken: 'syt_other_tab_access' });
+      mockedRenew.mockResolvedValue(null);
+
+      await fetchFnOf(0)(REQUEST_URL);
+
+      await vi.waitFor(() => expect(mockedCreateClient).toHaveBeenCalledTimes(2));
+      const restarted = mockedCreateClient.mock.calls[1][0];
+      expect(restarted.deviceId).toBe('DEV2');
+      expect(restarted.accessToken).toBe('syt_other_tab_access');
+      expect(first.stopClient).toHaveBeenCalled();
+      expect(mockedSilentSso).not.toHaveBeenCalled();
+      expect(getActiveClient()).toBe(second);
+      expect(await loadActorCredentials(ACTOR)).toMatchObject({
+        deviceId: 'DEV2',
+        accessToken: 'syt_other_tab_access',
+      });
+    });
   });
 });

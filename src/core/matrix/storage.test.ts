@@ -6,6 +6,7 @@ import {
   listStoredUserIds,
   loadActorCredentials,
   loadCredentials,
+  replaceTokens,
   storeCredentials,
 } from './storage';
 
@@ -71,6 +72,32 @@ describe('storage (IndexedDB)', () => {
       const bobResult = await loadCredentials(OTHER_USER_ID);
       expect(aliceResult?.deviceId).toBe('DEVICE_ABC');
       expect(bobResult?.deviceId).toBe('DEVICE_BOB');
+    });
+  });
+
+  describe('replaceTokens', () => {
+    const ROTATED = { accessToken: 'access-token-2', refreshToken: 'refresh-token-2', expiresAt: 1_700_000_900_000 };
+
+    it('replaces the token pair only in an existing record of the same device', async () => {
+      const record = makeRecord({ refreshToken: 'refresh-token-1', expiresAt: 1_700_000_000_000 });
+      await storeCredentials(record);
+
+      expect(await replaceTokens(USER_ID, 'DEVICE_ABC', ROTATED)).toBe(true);
+      expect(await loadCredentials(USER_ID)).toEqual({ ...record, ...ROTATED });
+
+      const rotated = await loadCredentials(USER_ID);
+      expect(await replaceTokens(USER_ID, 'DEVICE_OTHER', { ...ROTATED, accessToken: 'x', refreshToken: 'y' })).toBe(
+        false
+      );
+      expect(await loadCredentials(USER_ID)).toEqual(rotated);
+    });
+
+    it('never writes rotated tokens into a cleared namespace', async () => {
+      await storeCredentials(makeRecord({ refreshToken: 'refresh-token-1', expiresAt: 1_700_000_000_000 }));
+      await clearNamespace(USER_ID);
+
+      expect(await replaceTokens(USER_ID, 'DEVICE_ABC', ROTATED)).toBe(false);
+      expect(await loadCredentials(USER_ID)).toBe(null);
     });
   });
 

@@ -189,7 +189,8 @@ describe('a chat client stopped by session recovery', () => {
     await vi.advanceTimersByTimeAsync(BEYOND_RETRY_WINDOW_MS);
 
     expect(capabilitiesWith(EXPIRED_TOKEN, atStop)).toEqual([]);
-    expect(sentWith(EXPIRED_TOKEN, atStop)).toEqual([]);
+    // Only the recovery's logout of the rejected device carries the expired token.
+    expect(sentWith(EXPIRED_TOKEN, atStop)).toEqual([{ path: '/_matrix/client/v3/logout', token: EXPIRED_TOKEN }]);
     expect(getActiveClient()?.getAccessToken()).toBe(FRESH_TOKEN);
     expect(freshSyncs()).toBeGreaterThan(syncsAtRecovery);
   });
@@ -210,7 +211,8 @@ describe('a chat client stopped by session recovery', () => {
     await vi.advanceTimersByTimeAsync(BEYOND_RETRY_WINDOW_MS);
 
     expect(capabilitiesWith(EXPIRED_TOKEN, atStop)).toEqual([]);
-    expect(sentWith(EXPIRED_TOKEN, atStop)).toEqual([]);
+    // Only the recovery's logout of the rejected device carries the expired token.
+    expect(sentWith(EXPIRED_TOKEN, atStop)).toEqual([{ path: '/_matrix/client/v3/logout', token: EXPIRED_TOKEN }]);
     expect(getActiveClient()?.getAccessToken()).toBe(FRESH_TOKEN);
     expect(freshSyncs()).toBeGreaterThan(syncsAtRecovery);
   });
@@ -229,7 +231,8 @@ describe('a chat client stopped by session recovery', () => {
     await vi.advanceTimersByTimeAsync(6 * 60 * 60 * 1000 + BEYOND_RETRY_WINDOW_MS);
 
     expect(capabilitiesWith(EXPIRED_TOKEN, atStop)).toEqual([]);
-    expect(sentWith(EXPIRED_TOKEN, atStop)).toEqual([]);
+    // Only the recovery's logout of the rejected device carries the expired token.
+    expect(sentWith(EXPIRED_TOKEN, atStop)).toEqual([{ path: '/_matrix/client/v3/logout', token: EXPIRED_TOKEN }]);
     expect(getActiveClient()?.getAccessToken()).toBe(FRESH_TOKEN);
     expect(freshSyncs()).toBeGreaterThan(syncsAtRecovery);
   });
