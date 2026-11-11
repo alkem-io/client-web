@@ -168,6 +168,9 @@ vi.mock('@/main/ui/layout/LayoutWidthContext', () => ({
 vi.mock('@/main/ui/layout/useDownNoticeBanner', () => ({
   useDownNoticeBanner: () => ({ visible: false, dismiss: vi.fn() }),
 }));
+vi.mock('@/main/ui/layout/useSecondFactorReminder', () => ({
+  useSecondFactorReminder: () => ({ visible: false, deadline: undefined, securityHref: '', dismiss: vi.fn() }),
+}));
 vi.mock('@/core/lazyLoading/lazyWithGlobalErrorHandler', () => ({
   lazyWithGlobalErrorHandler: () => () => null,
 }));

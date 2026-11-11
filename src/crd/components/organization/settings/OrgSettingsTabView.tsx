@@ -1,4 +1,4 @@
-import { Eye, Settings as SettingsIcon, Users } from 'lucide-react';
+import { Eye, Settings as SettingsIcon, ShieldCheck, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
 import { Skeleton } from '@/crd/primitives/skeleton';
@@ -24,6 +24,10 @@ export type OrgSettingsTabViewProps = {
   contributionRolesPubliclyVisible: boolean;
   privacySaving: boolean;
   onToggleContributionRoles: (next: boolean) => void;
+  // Security
+  secondFactorRequired: boolean;
+  secondFactorRequiredSaving: boolean;
+  onToggleSecondFactorRequired: (next: boolean) => void;
 };
 
 type SwitchRowProps = {
@@ -55,12 +59,13 @@ function SwitchRow({ label, caption, checked, saving, onCheckedChange }: SwitchR
 /**
  * Org Settings tab — presentational view (US12).
  *
- * Two `SettingsCard`s:
+ * Three `SettingsCard`s:
  *
  * 1. **Membership** — `allowSpaceInvitations` (whether Spaces may invite this
  *    organization, 061), `allowUsersMatchingDomainToJoin` and `allowApplications`
  *    (062, R41).
  * 2. **Privacy** (`contributionRolesPubliclyVisible`).
+ * 3. **Security** (`secondFactorRequired`: members must use a second factor).
  *
  * **No Design System toggle** on this tab (FR-132 — User-only). Every
  * switch commits via a callback prop; the parent owns the optimistic
@@ -114,6 +119,16 @@ export function OrgSettingsTabView(props: OrgSettingsTabViewProps) {
           checked={props.contributionRolesPubliclyVisible}
           saving={props.privacySaving}
           onCheckedChange={props.onToggleContributionRoles}
+        />
+      </SettingsCard>
+
+      <SettingsCard icon={ShieldCheck} title={t('org.settings.security.title')}>
+        <SwitchRow
+          label={t('org.settings.security.requireSecondFactorLabel')}
+          caption={t('org.settings.security.requireSecondFactorCaption')}
+          checked={props.secondFactorRequired}
+          saving={props.secondFactorRequiredSaving}
+          onCheckedChange={props.onToggleSecondFactorRequired}
         />
       </SettingsCard>
     </div>

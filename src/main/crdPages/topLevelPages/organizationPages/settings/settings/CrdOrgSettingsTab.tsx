@@ -13,7 +13,7 @@ import { OrgSettingsTabView } from '@/crd/components/organization/settings/OrgSe
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 import { mapOrgSettings } from './orgSettingsMapper';
 
-type SwitchKey = 'spaceInvitations' | 'domain' | 'applications' | 'privacy';
+type SwitchKey = 'spaceInvitations' | 'domain' | 'applications' | 'privacy' | 'secondFactor';
 
 /**
  * Integration page for the Org Settings tab (US12). Four independent
@@ -114,6 +114,11 @@ const CrdOrgSettingsTab = () => {
       privacySaving={Boolean(saving.privacy)}
       onToggleContributionRoles={next =>
         void commit('privacy', next, { privacy: { contributionRolesPubliclyVisible: next } })
+      }
+      secondFactorRequired={resolved('secondFactor', mapped.secondFactorRequired)}
+      secondFactorRequiredSaving={Boolean(saving.secondFactor)}
+      onToggleSecondFactorRequired={next =>
+        void commit('secondFactor', next, { security: { secondFactorRequired: next } })
       }
     />
   );
