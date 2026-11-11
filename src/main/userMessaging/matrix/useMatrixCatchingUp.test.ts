@@ -99,6 +99,16 @@ describe('useMatrixCatchingUp', () => {
     expect(result.current).toBe(false);
   });
 
+  it('counts time away that began before the client was available', () => {
+    vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('hidden');
+    harness.client = new FakeClient('SYNCING');
+    const { result } = renderHook(() => useMatrixCatchingUp());
+
+    vi.advanceTimersByTime(30_000);
+    setVisibility('visible');
+    expect(result.current).toBe(true);
+  });
+
   it('stays false after a short time away, when the sync connection was still live', () => {
     harness.client = new FakeClient('SYNCING');
     const { result } = renderHook(() => useMatrixCatchingUp());

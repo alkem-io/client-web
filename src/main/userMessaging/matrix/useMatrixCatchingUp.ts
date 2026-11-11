@@ -46,7 +46,8 @@ export const useMatrixCatchingUp = (): boolean => {
       return;
     }
     let timer: ReturnType<typeof setTimeout> | undefined;
-    let hiddenAt: number | undefined;
+    // The client can appear while the app is already in the background, after the event that would record it.
+    let hiddenAt = document.visibilityState === 'hidden' ? Date.now() : undefined;
     const stop = () => {
       clearTimeout(timer);
       setResuming(false);
