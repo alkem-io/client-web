@@ -117,7 +117,7 @@ vi.mock('./flowDescriptorAdapter', async importOriginal => {
 });
 vi.mock('./passkeyTrigger', () => ({
   invokePasskeyTrigger: vi.fn(),
-  PasskeyTriggerError: class extends Error {},
+  translatePasskeyError: vi.fn(),
 }));
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({

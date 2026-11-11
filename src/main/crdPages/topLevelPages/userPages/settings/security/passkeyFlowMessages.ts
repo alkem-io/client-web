@@ -11,4 +11,4 @@ import type { SettingsFlow } from '@ory/kratos-client';
  * (no attribution at all), `'password'`, `'profile'` and anything else all drop.
  */
 export const passkeyOwnsFlowMessages = (active: SettingsFlow['active']): boolean =>
-  active === 'webauthn' || active === 'passkey';
+  active === 'passkey';

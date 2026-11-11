@@ -15857,6 +15857,9 @@ export const OrganizationSettingsDocument = gql`
         privacy {
           contributionRolesPubliclyVisible
         }
+        security {
+          secondFactorRequired
+        }
       }
     }
   }
@@ -15984,6 +15987,9 @@ export const UpdateOrganizationSettingsDocument = gql`
         allowUsersMatchingDomainToJoin
         allowSpaceInvitations
         allowApplications
+      }
+      security {
+        secondFactorRequired
       }
     }
   }
@@ -33802,6 +33808,81 @@ export type RevokeMcpApiKeyMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RevokeMcpApiKeyMutation,
   SchemaTypes.RevokeMcpApiKeyMutationVariables
 >;
+export const SecondFactorRequirementDocument = gql`
+    query SecondFactorRequirement {
+  me {
+    secondFactorRequirement {
+      covered
+      deadline
+      satisfied
+    }
+  }
+}
+    `;
+
+/**
+ * __useSecondFactorRequirementQuery__
+ *
+ * To run a query within a React component, call `useSecondFactorRequirementQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSecondFactorRequirementQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSecondFactorRequirementQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSecondFactorRequirementQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.SecondFactorRequirementQuery,
+    SchemaTypes.SecondFactorRequirementQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SecondFactorRequirementQuery, SchemaTypes.SecondFactorRequirementQueryVariables>(
+    SecondFactorRequirementDocument,
+    options
+  );
+}
+export function useSecondFactorRequirementLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SecondFactorRequirementQuery,
+    SchemaTypes.SecondFactorRequirementQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SecondFactorRequirementQuery,
+    SchemaTypes.SecondFactorRequirementQueryVariables
+  >(SecondFactorRequirementDocument, options);
+}
+export function useSecondFactorRequirementSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.SecondFactorRequirementQuery,
+        SchemaTypes.SecondFactorRequirementQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.SecondFactorRequirementQuery,
+    SchemaTypes.SecondFactorRequirementQueryVariables
+  >(SecondFactorRequirementDocument, options);
+}
+export type SecondFactorRequirementQueryHookResult = ReturnType<typeof useSecondFactorRequirementQuery>;
+export type SecondFactorRequirementLazyQueryHookResult = ReturnType<typeof useSecondFactorRequirementLazyQuery>;
+export type SecondFactorRequirementSuspenseQueryHookResult = ReturnType<typeof useSecondFactorRequirementSuspenseQuery>;
+export type SecondFactorRequirementQueryResult = Apollo.QueryResult<
+  SchemaTypes.SecondFactorRequirementQuery,
+  SchemaTypes.SecondFactorRequirementQueryVariables
+>;
+export function refetchSecondFactorRequirementQuery(variables?: SchemaTypes.SecondFactorRequirementQueryVariables) {
+  return { query: SecondFactorRequirementDocument, variables: variables };
+}
 export const UserSecurityAuthenticationMethodsDocument = gql`
     query UserSecurityAuthenticationMethods {
   me {

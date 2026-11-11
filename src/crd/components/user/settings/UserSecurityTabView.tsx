@@ -1,4 +1,4 @@
-import { Info, KeyRound, Link2, Plug, ShieldAlert, ShieldCheck } from 'lucide-react';
+import { Info, KeyRound, Link2, Plug, ShieldAlert, ShieldCheck, Smartphone } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SettingsSection } from '@/crd/components/common/SettingsSection';
@@ -43,6 +43,8 @@ export type UserSecurityTabViewProps = {
    * `state.hasWebauthn === true`.
    */
   webauthnForm: ReactNode;
+  /** Slot for the two-step verification section; rendered when `state.kind === 'ready'`. */
+  twoStepVerificationSection: ReactNode;
   /**
    * Slot for the MCP API Keys card (038). Provided by the integration page
    * so the CRD view stays free of Apollo/GraphQL imports; rendered whenever
@@ -70,6 +72,7 @@ export function UserSecurityTabView({
   state,
   passwordForm,
   webauthnForm,
+  twoStepVerificationSection,
   mcpApiKeysCard,
   connectedAccountsSection,
 }: UserSecurityTabViewProps) {
@@ -161,6 +164,15 @@ export function UserSecurityTabView({
                 <p>{t('user.security.notEnabled')}</p>
               </div>
             )}
+          </SettingsSection>
+        </div>
+        <div id="two-step-verification" className="scroll-mt-60">
+          <SettingsSection
+            title={t('user.security.twoStep.title')}
+            icon={<Smartphone className="size-4" />}
+            iconColor="blue"
+          >
+            {twoStepVerificationSection}
           </SettingsSection>
         </div>
         <SettingsSection

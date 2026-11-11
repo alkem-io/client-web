@@ -38,6 +38,7 @@ describe('UserSecurityTabView', () => {
           state={loadingState}
           passwordForm={null}
           webauthnForm={null}
+          twoStepVerificationSection={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
         />
@@ -51,6 +52,7 @@ describe('UserSecurityTabView', () => {
           state={readyState}
           passwordForm={null}
           webauthnForm={null}
+          twoStepVerificationSection={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
         />
@@ -90,6 +92,7 @@ describe('UserSecurityTabView', () => {
           state={errorState}
           passwordForm={null}
           webauthnForm={null}
+          twoStepVerificationSection={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
         />
@@ -121,6 +124,7 @@ describe('UserSecurityTabView', () => {
           state={sessionExpiredState}
           passwordForm={null}
           webauthnForm={null}
+          twoStepVerificationSection={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={null}
         />

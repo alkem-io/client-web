@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import type { KratosPasskeyTrigger } from '@/crd/components/auth/flowDescriptor';
 
 /**
@@ -82,4 +83,15 @@ export async function invokePasskeyTrigger(trigger: KratosPasskeyTrigger, value?
   } catch (error) {
     throw new PasskeyTriggerError('failed', error instanceof Error ? error.message : 'Passkey authentication failed.');
   }
+}
+
+/** Maps a passkey-trigger failure to its localised user-facing message. Falls
+ *  back to the existing `authentication.passkey.unknown-error` copy for any
+ *  shape we don't recognise (e.g. a non-PasskeyTriggerError thrown). */
+export function translatePasskeyError(t: TFunction, error: unknown): string {
+  if (error instanceof PasskeyTriggerError) {
+    if (error.reason === 'not-supported') return t('authentication.passkey.not-supported');
+    if (error.reason === 'script-not-loaded') return t('authentication.passkey.script-loading');
+  }
+  return t('authentication.passkey.unknown-error');
 }

@@ -1,5 +1,4 @@
 import { formatDuration } from 'date-fns';
-import type { TFunction } from 'i18next';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
@@ -33,7 +32,7 @@ import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import { buildSignUpUrl, URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
 import { AuthShellWrapper } from './AuthShellWrapper';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
-import { invokePasskeyTrigger, PasskeyTriggerError } from './passkeyTrigger';
+import { invokePasskeyTrigger, translatePasskeyError } from './passkeyTrigger';
 import { useKratosMessageCopy, useTranslateDescriptor } from './useKratosMessageCopy';
 
 const EMAIL_NOT_VERIFIED_MESSAGE_ID = 4000010;
@@ -338,17 +337,6 @@ function CrdLoginPage({ flow }: { flow?: string }) {
       />
     </AuthShellWrapper>
   );
-}
-
-/** Maps a passkey-trigger failure to its localised user-facing message. Falls
- *  back to the existing `authentication.passkey.unknown-error` copy for any
- *  shape we don't recognise (e.g. a non-PasskeyTriggerError thrown). */
-function translatePasskeyError(t: TFunction, error: unknown): string {
-  if (error instanceof PasskeyTriggerError) {
-    if (error.reason === 'not-supported') return t('authentication.passkey.not-supported');
-    if (error.reason === 'script-not-loaded') return t('authentication.passkey.script-loading');
-  }
-  return t('authentication.passkey.unknown-error');
 }
 
 /**
