@@ -1,5 +1,6 @@
 import { X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useDialogTitle } from '@/core/routing/useDialogTitle';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import { CrdFullscreenButton } from '@/crd/components/common/CrdFullscreenButton';
 import { cn } from '@/crd/lib/utils';
@@ -28,6 +29,7 @@ type TaskBoardDialogProps = {
 export function TaskBoardDialog({ calloutId, title, open, onOpenChange, onOpenTask }: TaskBoardDialogProps) {
   const { t } = useTranslation('crd-common');
   const { fullscreen, setFullscreen } = useFullscreen();
+  useDialogTitle(title, open);
 
   const handleOpenChange = (next: boolean) => {
     // Leaving the dialog must also leave the browser's fullscreen — otherwise

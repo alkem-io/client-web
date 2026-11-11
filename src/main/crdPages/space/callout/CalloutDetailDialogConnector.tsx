@@ -12,6 +12,7 @@ import {
   CalloutFramingType,
 } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
+import { useDialogTitle } from '@/core/routing/useDialogTitle';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
 import { CalloutPostPreview } from '@/crd/components/callout/CalloutPostPreview';
@@ -280,6 +281,9 @@ export function CalloutDetailDialogConnector({
   onMemoSigningRestoreConsumed,
 }: CalloutDetailDialogConnectorProps) {
   const { t, i18n } = useTranslation('crd-space');
+  // Every opener (feed card, callout URL, Post Index) renders this connector,
+  // so the browser tab follows the open callout here.
+  useDialogTitle(callout.framing.profile.displayName, open);
   // Over the fullscreen board (z-[100]) the detail dialog sits at z-[110], and
   // any dialog it spawns (edit, delete, share) at z-[120] so it clears both.
   const elevatedDialog = elevated ? { overlayClassName: 'z-[110]', contentClassName: 'z-[110]' } : {};
