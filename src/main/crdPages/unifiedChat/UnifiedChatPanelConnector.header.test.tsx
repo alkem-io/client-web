@@ -13,7 +13,13 @@ const state: { selectedConversationId: string | null; conversations: Conversatio
 const openGroupSettings = vi.fn();
 const leaveGroup = vi.fn();
 
-vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
+const notify = vi.fn();
+const chatSound: { enabled: boolean; setEnabled: ReturnType<typeof vi.fn> | undefined } = {
+  enabled: true,
+  setEnabled: vi.fn(),
+};
+vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notify }));
+vi.mock('@/main/userMessaging/useChatSound', () => ({ useChatSound: () => chatSound }));
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
 }));
@@ -66,6 +72,10 @@ vi.mock('@/crd/components/common/ImageCropDialog', () => ({ ImageCropDialog: () 
 
 type PanelProps = {
   onGoToSettings?: () => void;
+  onToggleSound?: () => void;
+  soundMuted?: boolean;
+  muteSoundLabel: string;
+  unmuteSoundLabel: string;
   onTitleClick?: () => void;
   titleActionLabel?: string;
   expandLabel: string;
@@ -151,6 +161,48 @@ describe('UnifiedChatPanelConnector header', () => {
     confirmations.length = 0;
     openGroupSettings.mockClear();
     leaveGroup.mockClear();
+    notify.mockClear();
+    chatSound.enabled = true;
+    chatSound.setEnabled = vi.fn().mockResolvedValue(undefined);
+  });
+
+  it('offers the sound toggle in the conversation list, muting when the sound is on', () => {
+    render(<UnifiedChatPanelConnector />);
+    expect(panelProps.soundMuted).toBe(false);
+    expect(panelProps.muteSoundLabel).toBe('panel.muteSound');
+    expect(panelProps.unmuteSoundLabel).toBe('panel.unmuteSound');
+
+    panelProps.onToggleSound?.();
+
+    expect(chatSound.setEnabled).toHaveBeenCalledExactlyOnceWith(false);
+    expect(notify).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ['a 1:1 chat', 'direct'],
+    ['a group chat', 'group'],
+  ])('has no sound toggle inside %s, because the sound is muted for the whole chat', (_name, conversationId) => {
+    state.selectedConversationId = conversationId;
+    render(<UnifiedChatPanelConnector />);
+    expect(panelProps.onToggleSound).toBeUndefined();
+  });
+
+  it('unmutes when the sound is off, and reports a failed save once', async () => {
+    chatSound.enabled = false;
+    chatSound.setEnabled = vi.fn().mockRejectedValue(new Error('network'));
+    render(<UnifiedChatPanelConnector />);
+    expect(panelProps.soundMuted).toBe(true);
+
+    panelProps.onToggleSound?.();
+
+    expect(chatSound.setEnabled).toHaveBeenCalledExactlyOnceWith(true);
+    await vi.waitFor(() => expect(notify).toHaveBeenCalledExactlyOnceWith('panel.soundToggleError', 'error'));
+  });
+
+  it('has no sound toggle when the sound cannot be changed', () => {
+    chatSound.setEnabled = undefined;
+    render(<UnifiedChatPanelConnector />);
+    expect(panelProps.onToggleSound).toBeUndefined();
   });
 
   it('keeps the notification-settings gear in the conversation list header', () => {
