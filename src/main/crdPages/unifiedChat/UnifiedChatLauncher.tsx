@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { trackChatOpen } from '@/core/analytics/events/unifiedChat';
 import { FloatingChatLauncher } from '@/crd/components/chat/FloatingChatLauncher';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
+import { useMatrixCatchingUp } from '@/main/userMessaging/matrix/useMatrixCatchingUp';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useUnreadConversationsCount } from '@/main/userMessaging/useUnreadConversationsCount';
 import { UnifiedChatPanelConnector } from './UnifiedChatPanelConnector';
@@ -26,6 +27,9 @@ export const UnifiedChatLauncher = ({ hidden }: UnifiedChatLauncherProps) => {
   // on a cold load; this is the always-mounted spot that can do so (the panel
   // connector below only renders once `isOpen`).
   useChatDeepLinkOpen();
+  // Tracked here, not in the panel: opening a chat from a notification brings the
+  // app to the foreground before the panel mounts, and the panel would miss that.
+  const catchingUp = useMatrixCatchingUp();
 
   if (!isEnabled || hidden) {
     return null;
@@ -45,7 +49,7 @@ export const UnifiedChatLauncher = ({ hidden }: UnifiedChatLauncherProps) => {
         closeLabel={t('launcher.close')}
         unreadLabel={t('launcher.unreadLabel')}
       />
-      {isOpen && <UnifiedChatPanelConnector />}
+      {isOpen && <UnifiedChatPanelConnector catchingUp={catchingUp} />}
     </>
   );
 };
