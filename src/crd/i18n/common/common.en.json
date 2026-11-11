@@ -1598,6 +1598,7 @@
   "messageAttachments": {
     "videoLabel": "Attached video: {{name}}",
     "videoUnavailableHint": "This video cannot be played here. Download it to view.",
+    "voiceUnavailableHint": "This voice message cannot be played here. Download it to listen.",
     "listLabel": "Attachments",
     "imageAlt": "Attached image: {{name}}",
     "download": "Download {{name}}",

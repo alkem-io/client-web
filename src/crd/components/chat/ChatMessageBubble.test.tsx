@@ -138,6 +138,22 @@ describe('ChatMessageBubble', () => {
       );
       expect(bubbleOf(withCaption.container)).toBeInTheDocument();
     });
+
+    // Element Web's voice message has no filename: its body is the display name.
+    test('hides the Voice message body above a voice attachment', () => {
+      const voice = {
+        id: 'att-voice',
+        url: 'https://alkem.io/storage/document/voice-1',
+        displayName: 'Voice message',
+        mimeType: 'audio/ogg',
+        voice: { durationMs: 7300, waveform: [0, 512, 1024] },
+      };
+      const { container } = render(
+        <ChatMessageBubble message={{ ...baseMessage, content: 'Voice message', attachments: [voice] }} />
+      );
+      expect(bubbleOf(container)).not.toBeInTheDocument();
+      expect(container.querySelector('audio')).toBeInTheDocument();
+    });
   });
 
   describe('add-reaction control placement', () => {

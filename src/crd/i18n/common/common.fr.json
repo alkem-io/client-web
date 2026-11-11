@@ -1598,6 +1598,7 @@
   "messageAttachments": {
     "videoLabel": "Vidéo jointe : {{name}}",
     "videoUnavailableHint": "Cette vidéo ne peut pas être lue ici. Téléchargez-la pour la regarder.",
+    "voiceUnavailableHint": "Ce message vocal ne peut pas être lu ici. Téléchargez-le pour l’écouter.",
     "listLabel": "Pièces jointes",
     "imageAlt": "Image jointe : {{name}}",
     "download": "Télécharger {{name}}",

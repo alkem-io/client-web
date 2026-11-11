@@ -207,6 +207,23 @@ describe('ChatThreadView — exact time on demand', () => {
     fireEvent.pointerUp(within(row).getByRole('button', { name: /^👍/ }), { pointerType: 'touch' });
     expect(row.querySelector('[data-testid="chat-revealed-time"]')).toBeNull();
   });
+
+  // The native player's controls live in its shadow root, so their taps target the <audio>.
+  test('a tap on a voice player does not toggle the time', () => {
+    const voice = {
+      id: 'att-voice',
+      url: 'https://alkem.io/storage/document/voice-1',
+      displayName: 'Voice message',
+      mimeType: 'audio/ogg',
+      voice: { durationMs: 7300, waveform: [] },
+    };
+    const { container } = renderThread([msg(at(14, 9, 12), { content: 'Voice message', attachments: [voice] })]);
+    const audio = container.querySelector('audio') as HTMLAudioElement;
+    const row = audio.closest('[data-chat-message]') as HTMLElement;
+    expect(row).not.toBeNull();
+    fireEvent.pointerUp(audio, { pointerType: 'touch' });
+    expect(row.querySelector('[data-testid="chat-revealed-time"]')).toBeNull();
+  });
 });
 
 describe('ChatThreadView — grouping', () => {
