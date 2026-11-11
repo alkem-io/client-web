@@ -2,7 +2,9 @@ import { EventEmitter } from 'node:events';
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const harness = vi.hoisted(() => ({ client: null as unknown, establishing: false }));
+const harness = vi.hoisted(() => ({ client: null as unknown, establishing: false, appMode: true }));
+
+vi.mock('@/core/appMode/isAppMode', () => ({ isAppMode: () => harness.appMode }));
 
 vi.mock('@/core/matrix/activeClient', () => ({
   useMatrixClient: () => harness.client,
@@ -48,6 +50,7 @@ describe('useMatrixCatchingUp', () => {
     vi.restoreAllMocks();
     harness.client = null;
     harness.establishing = false;
+    harness.appMode = true;
   });
 
   it('is false without a Matrix client', () => {
@@ -117,6 +120,15 @@ describe('useMatrixCatchingUp', () => {
     vi.advanceTimersByTime(30_000);
     setVisibility('visible');
     expect(result.current).toBe(true);
+  });
+
+  it('has no foreground window in a browser tab, which keeps syncing in the background', () => {
+    harness.appMode = false;
+    harness.client = new FakeClient('SYNCING');
+    const { result } = renderHook(() => useMatrixCatchingUp());
+
+    resumeAfter(60_000);
+    expect(result.current).toBe(false);
   });
 
   it('stays false after a short time away, when the sync connection was still live', () => {

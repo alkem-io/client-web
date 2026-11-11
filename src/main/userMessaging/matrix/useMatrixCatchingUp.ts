@@ -1,49 +1,36 @@
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useEffect, useState } from 'react';
+import { isAppMode } from '@/core/appMode/isAppMode';
 import { useMatrixClient, useMatrixSessionEstablishing } from '@/core/matrix/activeClient';
 import { CLIENT_SYNC } from './matrixRooms';
+import { useMatrixSyncState } from './useMatrixSyncState';
 
 // Not ERROR: that is an outage, which can last indefinitely and is not "checking".
 // RECONNECTING turns into ERROR after a few failed syncs, so both states here are short.
 const CATCHING_UP_STATES = new Set(['CATCHUP', 'RECONNECTING']);
 const SYNCED_STATES = new Set(['PREPARED', 'SYNCING']);
-// The sync long-poll lasts 30s: after a shorter time away the connection was live and nothing was missed.
+// The sync long-poll lasts 30s: after a shorter time away nothing was missed.
 const MIN_HIDDEN_MS = 30_000;
 const RESUME_TIMEOUT_MS = 5_000;
 
-const noop = () => {};
-
 /**
  * Whether the chat session may be missing messages it is about to receive:
- * the session is still being established, the Matrix client has not finished its first sync, is catching up or
- * reconnecting, or the app has just come back to the foreground after a while
- * away and the next sync has not completed yet. The foreground window ends on
- * that sync, or after a timeout, so it never stays on.
+ * the session is still being established, the Matrix client has not finished
+ * its first sync, or it is catching up or reconnecting.
+ *
+ * In the app it also covers coming back to the foreground after a while away,
+ * until the next sync completes or a timeout passes. The app's WebView is
+ * suspended in the background, so its sync connection is stale on return while
+ * the client still reports itself synced. A browser tab keeps syncing in the
+ * background and needs no such window.
  */
 export const useMatrixCatchingUp = (): boolean => {
   const client = useMatrixClient();
   const establishing = useMatrixSessionEstablishing();
+  const syncState = useMatrixSyncState(client);
   const [resuming, setResuming] = useState(false);
 
-  const syncCatchingUp = useSyncExternalStore(
-    listener => {
-      if (!client) {
-        return noop;
-      }
-      client.on(CLIENT_SYNC as never, listener as never);
-      return () => client.removeListener(CLIENT_SYNC as never, listener as never);
-    },
-    () => {
-      if (!client) {
-        return false;
-      }
-      const state = client.getSyncState();
-      return state === null || CATCHING_UP_STATES.has(state);
-    },
-    () => false
-  );
-
   useEffect(() => {
-    if (!client) {
+    if (!client || !isAppMode()) {
       return;
     }
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -82,5 +69,8 @@ export const useMatrixCatchingUp = (): boolean => {
     };
   }, [client]);
 
-  return client ? syncCatchingUp || resuming : establishing;
+  if (!client) {
+    return establishing;
+  }
+  return syncState === null || CATCHING_UP_STATES.has(syncState) || resuming;
 };

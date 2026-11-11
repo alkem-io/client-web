@@ -6,6 +6,7 @@ import { UnifiedChatLauncher } from './UnifiedChatLauncher';
 const messaging = { isEnabled: true, isOpen: false, setIsOpen: vi.fn() };
 const client = Object.assign(new EventEmitter(), { getSyncState: () => 'SYNCING' });
 
+vi.mock('@/core/appMode/isAppMode', () => ({ isAppMode: () => true }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 vi.mock('@/core/matrix/activeClient', () => ({
   useMatrixClient: () => client,

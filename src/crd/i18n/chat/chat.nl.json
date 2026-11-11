@@ -83,6 +83,7 @@
   "thread": {
     "back": "Terug naar gesprekken",
     "loading": "Berichten laden",
+    "jumpToLatest": "Naar de nieuwste berichten",
     "addReaction": "Reactie toevoegen",
     "options": "Chatopties"
   },

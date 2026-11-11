@@ -105,8 +105,12 @@ export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPan
   // Realtime conversation events are subscribed globally by
   // <ConversationEventsSubscriber /> (mounted in root.tsx) so they arrive with
   // the panel closed too. The selected room's message stream is inside the view hook.
+  // The conversation the reader has scrolled up in. Messages that arrive there are not on
+  // screen, so the read marker waits until the reader is back at the latest message.
+  const [scrolledUpIn, setScrolledUpIn] = useState<string | null>(null);
+  const isReadingOlder = scrolledUpIn !== null && scrolledUpIn === selectedConversationId;
   const { isSending, handleSendMessage, handleAddReaction, handleRemoveReaction, handleLeaveGroup, clearGuidance } =
-    useUnifiedConversationView(selectedConversation ?? null, readUpToEventId);
+    useUnifiedConversationView(selectedConversation ?? null, isReadingOlder ? null : readUpToEventId);
 
   const groupSettings = useGroupSettings(selectedConversation?.id, selectedConversation?.members ?? [], {
     displayName: selectedConversation?.roomDisplayName ?? '',
@@ -197,6 +201,7 @@ export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPan
   };
 
   const handleBack = () => {
+    setScrolledUpIn(null);
     setSelectedConversationId(null);
     setSelectedRoomId(null);
   };
@@ -409,6 +414,7 @@ export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPan
             roomId={selectedConversation?.roomId}
             attachmentsAllowed={!isGuidanceThread}
             conversation={threadHeader}
+            onFollowingChange={following => setScrolledUpIn(following ? null : (selectedConversationId ?? null))}
             messages={chatMessages}
             // Older history paging in, or the sync bringing newer messages: both may change what the thread shows.
             messagesLoading={messagesLoading || catchingUp}
