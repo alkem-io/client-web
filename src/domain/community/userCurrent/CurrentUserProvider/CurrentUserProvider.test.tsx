@@ -27,7 +27,9 @@ describe('CurrentUserProvider', () => {
     auth.secondFactorRequired = false;
     // A skipped query yields nothing; a query that ran (unskipped) fails here, which would show the error page.
     currentUserLightQuery.mockImplementation(({ skip }: { skip: boolean }) =>
-      skip ? { data: undefined, loading: false, error: undefined } : { data: undefined, loading: false, error: new Error('refused') }
+      skip
+        ? { data: undefined, loading: false, error: undefined }
+        : { data: undefined, loading: false, error: new Error('refused') }
     );
     platformLevelAuthorizationQuery.mockReturnValue({ data: undefined, loading: false });
   });

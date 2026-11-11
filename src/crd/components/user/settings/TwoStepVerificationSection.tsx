@@ -246,7 +246,9 @@ export function TwoStepVerificationSection({
                 </p>
               ) : null}
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="two-step-authenticator-code">{t('user.security.twoStep.authenticator.codeLabel')}</Label>
+                <Label htmlFor="two-step-authenticator-code">
+                  {t('user.security.twoStep.authenticator.codeLabel')}
+                </Label>
                 <Input
                   id="two-step-authenticator-code"
                   name="code"
@@ -352,9 +354,9 @@ export function TwoStepVerificationSection({
           ) : null}
           {recoveryCodes.kind === 'unconfirmed' ? (
             <>
-              <p role="status" className="text-body-emphasis text-destructive">
+              <output className="block text-body-emphasis text-destructive">
                 {t('user.security.twoStep.recoveryCodes.shownOnce')}
-              </p>
+              </output>
               {renderCodes(recoveryCodes.codes)}
               <Button type="button" className="self-start" onClick={onConfirmRecoveryCodes}>
                 {t('user.security.twoStep.recoveryCodes.confirm')}

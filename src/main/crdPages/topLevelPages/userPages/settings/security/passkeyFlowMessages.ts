@@ -10,5 +10,4 @@ import type { SettingsFlow } from '@ory/kratos-client';
  * the message stays only when Kratos explicitly names a passkey-owned method. `undefined`
  * (no attribution at all), `'password'`, `'profile'` and anything else all drop.
  */
-export const passkeyOwnsFlowMessages = (active: SettingsFlow['active']): boolean =>
-  active === 'passkey';
+export const passkeyOwnsFlowMessages = (active: SettingsFlow['active']): boolean => active === 'passkey';

@@ -99,7 +99,9 @@ export function LoginCard({
               onClick={secondFactorStep.onToggleRecoveryCode}
               className="text-body self-start rounded-sm text-primary outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
-              {secondFactorStep.showingRecoveryCode ? t('secondFactor.useAuthenticator') : t('secondFactor.useRecoveryCode')}
+              {secondFactorStep.showingRecoveryCode
+                ? t('secondFactor.useAuthenticator')
+                : t('secondFactor.useRecoveryCode')}
             </button>
           ) : null}
         </CrdKratosFlow>

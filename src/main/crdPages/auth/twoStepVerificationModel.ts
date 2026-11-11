@@ -49,9 +49,7 @@ export const adaptTwoStepVerification = (flow: SettingsFlow): TwoStepVerificatio
           kind: 'available',
           qr: totp.images[0],
           secret: totp.texts.find(node => node.id === 'totp_secret_key')?.text,
-          codeError: totp.inputs
-            .flatMap(node => node.messages)
-            .find(message => message.type === 'error')?.text,
+          codeError: totp.inputs.flatMap(node => node.messages).find(message => message.type === 'error')?.text,
         }
       : { kind: 'unavailable' };
 

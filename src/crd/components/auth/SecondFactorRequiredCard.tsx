@@ -51,15 +51,14 @@ export function SecondFactorRequiredCard({
   return (
     <AuthCard title={t('secondFactorPage.title')}>
       <div className="flex flex-col gap-5">
-        <p
-          role="status"
+        <output
           className={cn(
-            'text-body rounded-md px-3 py-2.5',
+            'text-body block rounded-md px-3 py-2.5',
             state === 'unavailable' ? 'bg-destructive/10 text-destructive' : 'bg-muted text-foreground'
           )}
         >
           {t(NOTICE_KEY[state])}
-        </p>
+        </output>
         {state === 'enrol' ? enrolment : null}
         <div className="flex flex-col gap-3">
           <Button

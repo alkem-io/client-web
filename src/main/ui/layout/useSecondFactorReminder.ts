@@ -21,7 +21,7 @@ export function useSecondFactorReminder() {
 
   const requirement = data?.me.secondFactorRequirement;
   const deadline = requirement?.deadline ? new Date(requirement.deadline) : undefined;
-  const securityHref = buildSettingsTabUrl(userModel?.profile.url, 'security', 'two-step-verification');
+  const securityHref = buildSettingsTabUrl(userModel?.profile?.url, 'security', 'two-step-verification');
   const visible =
     !secondFactorRequired &&
     !dismissed &&

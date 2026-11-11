@@ -34,7 +34,9 @@ const renderSection = (props: Partial<TwoStepVerificationSectionProps> = {}) => 
 
 const confirmDialog = async () => {
   const dialog = await screen.findByRole('alertdialog').catch(() => screen.getByRole('dialog'));
-  await userEvent.click(within(dialog).getByRole('button', { name: /user\.security\.twoStep\.(remove|recoveryCodes\.)/ }));
+  await userEvent.click(
+    within(dialog).getByRole('button', { name: /user\.security\.twoStep\.(remove|recoveryCodes\.)/ })
+  );
 };
 
 describe('TwoStepVerificationSection — authenticator', () => {

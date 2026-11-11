@@ -20,7 +20,11 @@ describe('flowDescriptorAdapter — second factor', () => {
     expect(names(groups.lookupSecret.inputs)).toEqual(['lookup_secret']);
     expect(groups.lookupSecret.submits).toEqual([expect.objectContaining({ name: 'method', value: 'lookup_secret' })]);
     expect(groups.webauthn.triggers).toEqual([
-      expect.objectContaining({ name: 'webauthn_login_trigger', trigger: 'oryWebAuthnLogin', value: WEBAUTHN_LOGIN_OPTIONS }),
+      expect.objectContaining({
+        name: 'webauthn_login_trigger',
+        trigger: 'oryWebAuthnLogin',
+        value: WEBAUTHN_LOGIN_OPTIONS,
+      }),
     ]);
 
     expect(groups.default).toEqual([]);
@@ -36,9 +40,7 @@ describe('flowDescriptorAdapter — second factor', () => {
     expect(groups.totp.images).toEqual([
       { src: 'data:image/png;base64,iVBORw0KGgo=', alt: 'Authenticator app QR code', width: 256, height: 256 },
     ]);
-    expect(groups.totp.texts).toEqual([
-      expect.objectContaining({ id: 'totp_secret_key', text: 'JBSWY3DPEHPK3PXP' }),
-    ]);
+    expect(groups.totp.texts).toEqual([expect.objectContaining({ id: 'totp_secret_key', text: 'JBSWY3DPEHPK3PXP' })]);
     expect(names(groups.totp.inputs)).toEqual(['totp_code']);
     expect(groups.lookupSecret.texts).toEqual([
       expect.objectContaining({ id: 'lookup_secret_codes', text: 'abcd1234, efgh5678' }),
@@ -65,7 +67,11 @@ describe('flowDescriptorAdapter — second factor', () => {
 
     expect(groups.totp.submits).toEqual([expect.objectContaining({ name: 'totp_unlink', value: 'true' })]);
     expect(groups.webauthn.submits).toEqual([
-      expect.objectContaining({ name: 'webauthn_remove', value: 'key-1', labelContext: expect.objectContaining({ display_name: 'Blue key' }) }),
+      expect.objectContaining({
+        name: 'webauthn_remove',
+        value: 'key-1',
+        labelContext: expect.objectContaining({ display_name: 'Blue key' }),
+      }),
     ]);
   });
 

@@ -102,7 +102,11 @@ describe('adaptTwoStepVerification', () => {
 
   it('reads confirmed recovery codes, and counts them as enrolled', () => {
     const model = adaptTwoStepVerification(
-      withLookup(secondFactorSettingsFlow, ['lookup_secret_reveal', 'lookup_secret_regenerate', 'lookup_secret_disable'])
+      withLookup(secondFactorSettingsFlow, [
+        'lookup_secret_reveal',
+        'lookup_secret_regenerate',
+        'lookup_secret_disable',
+      ])
     );
 
     expect(model.recoveryCodes).toEqual({ kind: 'confirmed', codes: undefined });
@@ -117,7 +121,11 @@ describe('adaptTwoStepVerification', () => {
   it('keeps flow messages only when a second-factor method produced them', () => {
     const message = { id: 1050001, type: 'success', text: 'Your changes have been saved!' };
     const flow = (active: string) =>
-      ({ ...secondFactorSettingsFlow, active, ui: { ...secondFactorSettingsFlow.ui, messages: [message] } }) as SettingsFlow;
+      ({
+        ...secondFactorSettingsFlow,
+        active,
+        ui: { ...secondFactorSettingsFlow.ui, messages: [message] },
+      }) as SettingsFlow;
 
     expect(adaptTwoStepVerification(flow('totp')).messages).toEqual([{ type: 'success', text: message.text }]);
     expect(adaptTwoStepVerification(flow('password')).messages).toEqual([]);

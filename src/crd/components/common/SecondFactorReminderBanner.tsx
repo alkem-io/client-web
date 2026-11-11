@@ -25,7 +25,7 @@ export function SecondFactorReminderBanner({
   const { t } = useTranslation('crd-layout');
 
   return (
-    <div role="status" className={cn('block border-b border-amber-200 bg-amber-50 text-amber-800 text-body', className)}>
+    <output className={cn('block border-b border-amber-200 bg-amber-50 text-amber-800 text-body', className)}>
       <div className="w-full px-6 md:px-8">
         <div className="grid grid-cols-12 gap-6">
           <div className={cn('col-span-12 flex items-center gap-2 py-3 lg:px-3', contentColumnClass())}>
@@ -48,6 +48,6 @@ export function SecondFactorReminderBanner({
           </div>
         </div>
       </div>
-    </div>
+    </output>
   );
 }

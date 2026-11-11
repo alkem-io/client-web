@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
 import type { SettingsFlow, UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { enrolledSecondFactorSettingsFlow, secondFactorSettingsFlow } from './__fixtures__/secondFactorFlows';

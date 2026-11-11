@@ -85,13 +85,34 @@ export const aal2LoginFlow = {
     nodes: [
       csrf,
       input('default', 'identifier', 'hidden', 'person@example.test'),
-      input('totp', 'totp_code', 'text', '', { required: true, autocomplete: 'one-time-code' }, {
-        id: 1010006,
-        text: 'Authentication code',
-      }),
+      input(
+        'totp',
+        'totp_code',
+        'text',
+        '',
+        { required: true, autocomplete: 'one-time-code' },
+        {
+          id: 1010006,
+          text: 'Authentication code',
+        }
+      ),
       input('totp', 'method', 'submit', 'totp', {}, { id: 1010009, text: 'Use Authenticator' }),
-      input('lookup_secret', 'lookup_secret', 'text', '', { required: true }, { id: 1010007, text: 'Backup recovery code' }),
-      input('lookup_secret', 'method', 'submit', 'lookup_secret', {}, { id: 1010010, text: 'Use backup recovery code' }),
+      input(
+        'lookup_secret',
+        'lookup_secret',
+        'text',
+        '',
+        { required: true },
+        { id: 1010007, text: 'Backup recovery code' }
+      ),
+      input(
+        'lookup_secret',
+        'method',
+        'submit',
+        'lookup_secret',
+        {},
+        { id: 1010010, text: 'Use backup recovery code' }
+      ),
       input('webauthn', 'webauthn_login', 'hidden', ''),
       input(
         'webauthn',
@@ -162,9 +183,30 @@ const settingsNodes = (enrolled: boolean): UiNode[] => [
       { id: 1050009, type: 'info', text: 'efgh5678' },
     ],
   }),
-  input('lookup_secret', 'lookup_secret_regenerate', 'submit', 'true', {}, { id: 1050008, text: 'Generate new backup recovery codes' }),
-  input('lookup_secret', 'lookup_secret_reveal', 'submit', 'true', {}, { id: 1050005, text: 'Reveal backup recovery codes' }),
-  input('lookup_secret', 'lookup_secret_confirm', 'submit', 'true', {}, { id: 1050010, text: 'Confirm backup recovery codes' }),
+  input(
+    'lookup_secret',
+    'lookup_secret_regenerate',
+    'submit',
+    'true',
+    {},
+    { id: 1050008, text: 'Generate new backup recovery codes' }
+  ),
+  input(
+    'lookup_secret',
+    'lookup_secret_reveal',
+    'submit',
+    'true',
+    {},
+    { id: 1050005, text: 'Reveal backup recovery codes' }
+  ),
+  input(
+    'lookup_secret',
+    'lookup_secret_confirm',
+    'submit',
+    'true',
+    {},
+    { id: 1050010, text: 'Confirm backup recovery codes' }
+  ),
   input('lookup_secret', 'lookup_secret_disable', 'submit', 'true', {}, { id: 1050016, text: 'Disable this method' }),
   input('lookup_secret', 'method', 'hidden', 'lookup_secret'),
   input('webauthn', 'webauthn_register_displayname', 'text', '', {}, { id: 1050013, text: 'Name of the security key' }),
@@ -185,7 +227,11 @@ const settingsNodes = (enrolled: boolean): UiNode[] => [
           'submit',
           'key-1',
           {},
-          { id: 1050018, text: 'Remove security key "Blue key"', context: { display_name: 'Blue key', added_at: '2026-11-01T10:00:00Z' } }
+          {
+            id: 1050018,
+            text: 'Remove security key "Blue key"',
+            context: { display_name: 'Blue key', added_at: '2026-11-01T10:00:00Z' },
+          }
         ),
       ]
     : []),
