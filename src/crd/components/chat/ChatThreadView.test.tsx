@@ -275,7 +275,17 @@ describe('ChatThreadView — refreshing indicator', () => {
 
   test('an empty thread keeps its own loading state instead', () => {
     renderRefreshing([], true, true);
-    expect(screen.getByRole('status', { name: 'thread.loading' })).toHaveTextContent('thread.loading');
+    expect(screen.getByRole('status', { name: 'thread.loading' })).toBeInTheDocument();
     expect(screen.queryByRole('status', { name: 'thread.refreshing' })).not.toBeInTheDocument();
+  });
+
+  test('an empty thread shows the loading state while messages are on their way, before any history loads', () => {
+    renderRefreshing([], true, false);
+    expect(screen.getByRole('status', { name: 'thread.loading' })).toBeInTheDocument();
+  });
+
+  test('an empty thread with nothing on its way shows no loading state', () => {
+    renderRefreshing([], false, false);
+    expect(screen.queryByRole('status', { name: 'thread.loading' })).not.toBeInTheDocument();
   });
 });

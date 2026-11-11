@@ -15,7 +15,7 @@ type ChatThreadViewProps = {
   conversation?: ChatThreadHeader;
   messages: ChatMessage[];
   messagesLoading: boolean;
-  /** Messages may be on their way (sync catching up, history loading): show a cue over a non-empty thread. */
+  /** Messages may be on their way (session starting, sync catching up, history loading): show a loading cue. */
   refreshing?: boolean;
   /** BCP 47 locale for the times shown in the thread; undefined = browser default. */
   locale?: string;
@@ -48,7 +48,8 @@ type ChatThreadViewProps = {
 /**
  * The message thread for a selected conversation. The back affordance and the
  * conversation title live in the panel header; this view owns the scrollable
- * message list and the composer. Auto-scrolls to the latest message.
+ * message list and the composer. Follows the latest message while the reader is
+ * at the bottom, and leaves the scroll position alone once they scroll up.
  *
  * Time is shown only where it tells the reader something: a separator opens
  * each day with the time its conversation started, and a small time marks
@@ -56,6 +57,9 @@ type ChatThreadViewProps = {
  * exact time is in a tooltip on hover or keyboard focus, opens under the
  * message on a tap (touch has no hover), and is always there for screen readers.
  */
+/** How close to the bottom still counts as reading the latest message. */
+const FOLLOW_THRESHOLD_PX = 80;
+
 export function ChatThreadView({
   conversation,
   messages,
@@ -80,10 +84,16 @@ export function ChatThreadView({
   acceptMimeTypes,
 }: ChatThreadViewProps) {
   const { t } = useTranslation('crd-chat');
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  // Whether the reader is at the latest message; only then does the thread follow new content.
+  const followingRef = useRef(true);
   const [revealedIds, setRevealedIds] = useState<ReadonlySet<string>>(() => new Set());
 
-  const lastMessageId = messages.length > 0 ? messages[messages.length - 1].id : null;
+  const lastMessage = messages.length > 0 ? messages[messages.length - 1] : undefined;
+  const lastMessageId = lastMessage?.id ?? null;
+  const lastMessageIsOwn = lastMessage?.isOwn ?? false;
   const runFlags = computeMessageRunFlags(messages, conversation?.isGroup ?? false);
   const time = createChatTimeFormat(locale);
 
@@ -102,10 +112,30 @@ export function ChatThreadView({
     });
   };
 
-  // Keep the latest message in view as the thread loads / receives messages.
+  // A new latest message is brought into view for a reader who is at the bottom,
+  // and always when it is their own. A reader who scrolled up keeps their place.
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ block: 'end' });
-  }, [lastMessageId]);
+    if (lastMessageId !== null && (followingRef.current || lastMessageIsOwn)) {
+      followingRef.current = true;
+      bottomRef.current?.scrollIntoView({ block: 'end' });
+    }
+  }, [lastMessageId, lastMessageIsOwn]);
+
+  // Images, videos and previews get their height after the messages render, and the
+  // composer or keyboard can resize the scroller: stay at the bottom through both.
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    const content = contentRef.current;
+    if (!scroller || !content) return;
+    const observer = new ResizeObserver(() => {
+      if (followingRef.current) {
+        bottomRef.current?.scrollIntoView({ block: 'end' });
+      }
+    });
+    observer.observe(scroller);
+    observer.observe(content);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
@@ -118,107 +148,116 @@ export function ChatThreadView({
           <Loader2 aria-hidden="true" className="size-4 motion-safe:animate-spin" />
         </output>
       )}
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-3 pt-1 pb-3">
-        {messagesLoading && messages.length === 0 ? (
-          <output className="m-auto text-caption text-muted-foreground" aria-label={t('thread.loading')}>
-            {t('thread.loading')}
-          </output>
-        ) : (
-          messages.map((message, index) => {
-            const flags = runFlags[index];
-            const ms = message.timestampMs;
-            const hasTime = ms > 0;
-            const isRevealed = hasTime && revealedIds.has(message.id);
-            const isFirstOfGroup = flags.groupPosition === 'single' || flags.groupPosition === 'first';
-            // Only the bubble itself opens the time tooltip: the row around it spans
-            // the full thread width, and hovering its empty side would open the
-            // tooltip over the previous message.
-            const withTimeTooltip = (box: ReactElement) => (
-              <Tooltip delayDuration={300}>
-                <TooltipTrigger
-                  asChild={true}
-                  // Keyboard focus is how the exact time is reached without hover.
-                  tabIndex={0}
-                  className="outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  {box}
-                </TooltipTrigger>
-                <TooltipContent side="top" align={message.isOwn ? 'end' : 'start'} hideArrow={true}>
-                  {time.exact(ms)}
-                </TooltipContent>
-              </Tooltip>
-            );
-            const bubble = (
-              <ChatMessageBubble
-                message={message}
-                showAuthor={flags.showAuthor}
-                showAvatar={flags.showAvatar}
-                avatarGutter={flags.avatarGutter}
-                groupPosition={flags.groupPosition}
-                revealed={isRevealed}
-                canReact={canReact}
-                newTabLinks={newTabLinks}
-                onAddReaction={onAddReaction ? emoji => onAddReaction(message.id, emoji) : undefined}
-                onRemoveReaction={onRemoveReaction ? emoji => onRemoveReaction(message.id, emoji) : undefined}
-                wrapBubble={hasTime ? withTimeTooltip : undefined}
-              />
-            );
-            return (
-              <div key={message.id} className="flex flex-col">
-                {flags.dayStart && (
-                  <div
-                    data-testid="chat-day-separator"
-                    className="mt-3 mb-1 self-center rounded-full bg-muted px-2.5 py-0.5 text-caption text-muted-foreground"
+      <div
+        ref={scrollerRef}
+        onScroll={event => {
+          const { scrollHeight, scrollTop, clientHeight } = event.currentTarget;
+          followingRef.current = scrollHeight - scrollTop - clientHeight <= FOLLOW_THRESHOLD_PX;
+        }}
+        className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-3 pt-1 pb-3"
+      >
+        <div ref={contentRef} className="flex flex-1 flex-col">
+          {(messagesLoading || refreshing) && messages.length === 0 ? (
+            <output className="m-auto text-muted-foreground" aria-label={t('thread.loading')}>
+              <Loader2 aria-hidden="true" className="size-6 motion-safe:animate-spin" />
+            </output>
+          ) : (
+            messages.map((message, index) => {
+              const flags = runFlags[index];
+              const ms = message.timestampMs;
+              const hasTime = ms > 0;
+              const isRevealed = hasTime && revealedIds.has(message.id);
+              const isFirstOfGroup = flags.groupPosition === 'single' || flags.groupPosition === 'first';
+              // Only the bubble itself opens the time tooltip: the row around it spans
+              // the full thread width, and hovering its empty side would open the
+              // tooltip over the previous message.
+              const withTimeTooltip = (box: ReactElement) => (
+                <Tooltip delayDuration={300}>
+                  <TooltipTrigger
+                    asChild={true}
+                    // Keyboard focus is how the exact time is reached without hover.
+                    tabIndex={0}
+                    className="outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
-                    {time.day(ms)} {time.clock(ms)}
-                  </div>
-                )}
-                {flags.afterPause && (
-                  <div data-testid="chat-pause-time" className="mt-3 self-center text-caption text-muted-foreground">
-                    {time.clock(ms)}
-                  </div>
-                )}
-                {hasTime ? (
-                  <div
-                    data-chat-message={true}
-                    onPointerUp={toggleRevealedOnTap(message.id)}
-                    className={cn('flex flex-col', isFirstOfGroup ? 'mt-3' : 'mt-0.5')}
-                  >
-                    <span className="sr-only">{time.exact(ms)}</span>
-                    {bubble}
-                    {isRevealed && (
-                      <span
-                        data-testid="chat-revealed-time"
-                        aria-hidden="true"
-                        className={cn(
-                          'px-1 pt-0.5 text-caption text-muted-foreground',
-                          message.isOwn ? 'self-end' : 'self-start',
-                          flags.avatarGutter && 'pl-11'
-                        )}
-                      >
-                        {time.exact(ms)}
-                      </span>
-                    )}
-                  </div>
-                ) : (
-                  <div data-chat-message={true} className={cn('flex flex-col', isFirstOfGroup ? 'mt-3' : 'mt-0.5')}>
-                    {bubble}
-                  </div>
-                )}
-              </div>
-            );
-          })
-        )}
-        {isAwaitingGuidanceResponse && (
-          <output
-            className="mt-3 flex items-center gap-2 self-start rounded-2xl rounded-bl-sm bg-muted px-3 py-2 text-caption text-muted-foreground"
-            aria-label={t('guidance.thinking')}
-          >
-            <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-            {t('guidance.thinking')}
-          </output>
-        )}
-        <div ref={bottomRef} />
+                    {box}
+                  </TooltipTrigger>
+                  <TooltipContent side="top" align={message.isOwn ? 'end' : 'start'} hideArrow={true}>
+                    {time.exact(ms)}
+                  </TooltipContent>
+                </Tooltip>
+              );
+              const bubble = (
+                <ChatMessageBubble
+                  message={message}
+                  showAuthor={flags.showAuthor}
+                  showAvatar={flags.showAvatar}
+                  avatarGutter={flags.avatarGutter}
+                  groupPosition={flags.groupPosition}
+                  revealed={isRevealed}
+                  canReact={canReact}
+                  newTabLinks={newTabLinks}
+                  onAddReaction={onAddReaction ? emoji => onAddReaction(message.id, emoji) : undefined}
+                  onRemoveReaction={onRemoveReaction ? emoji => onRemoveReaction(message.id, emoji) : undefined}
+                  wrapBubble={hasTime ? withTimeTooltip : undefined}
+                />
+              );
+              return (
+                <div key={message.id} className="flex flex-col">
+                  {flags.dayStart && (
+                    <div
+                      data-testid="chat-day-separator"
+                      className="mt-3 mb-1 self-center rounded-full bg-muted px-2.5 py-0.5 text-caption text-muted-foreground"
+                    >
+                      {time.day(ms)} {time.clock(ms)}
+                    </div>
+                  )}
+                  {flags.afterPause && (
+                    <div data-testid="chat-pause-time" className="mt-3 self-center text-caption text-muted-foreground">
+                      {time.clock(ms)}
+                    </div>
+                  )}
+                  {hasTime ? (
+                    <div
+                      data-chat-message={true}
+                      onPointerUp={toggleRevealedOnTap(message.id)}
+                      className={cn('flex flex-col', isFirstOfGroup ? 'mt-3' : 'mt-0.5')}
+                    >
+                      <span className="sr-only">{time.exact(ms)}</span>
+                      {bubble}
+                      {isRevealed && (
+                        <span
+                          data-testid="chat-revealed-time"
+                          aria-hidden="true"
+                          className={cn(
+                            'px-1 pt-0.5 text-caption text-muted-foreground',
+                            message.isOwn ? 'self-end' : 'self-start',
+                            flags.avatarGutter && 'pl-11'
+                          )}
+                        >
+                          {time.exact(ms)}
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <div data-chat-message={true} className={cn('flex flex-col', isFirstOfGroup ? 'mt-3' : 'mt-0.5')}>
+                      {bubble}
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+          {isAwaitingGuidanceResponse && (
+            <output
+              className="mt-3 flex items-center gap-2 self-start rounded-2xl rounded-bl-sm bg-muted px-3 py-2 text-caption text-muted-foreground"
+              aria-label={t('guidance.thinking')}
+            >
+              <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+              {t('guidance.thinking')}
+            </output>
+          )}
+          <div ref={bottomRef} />
+        </div>
       </div>
       {onSendMessage && (
         <div className="shrink-0 border-t border-border p-2">

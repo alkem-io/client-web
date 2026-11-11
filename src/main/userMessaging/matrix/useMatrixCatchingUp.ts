@@ -1,5 +1,5 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { useMatrixClient } from '@/core/matrix/activeClient';
+import { useMatrixClient, useMatrixSessionEstablishing } from '@/core/matrix/activeClient';
 import { CLIENT_SYNC } from './matrixRooms';
 
 // Not ERROR: that is an outage, which can last indefinitely and is not "checking".
@@ -14,13 +14,14 @@ const noop = () => {};
 
 /**
  * Whether the chat session may be missing messages it is about to receive:
- * the Matrix client has not finished its first sync, is catching up or
+ * the session is still being established, the Matrix client has not finished its first sync, is catching up or
  * reconnecting, or the app has just come back to the foreground after a while
  * away and the next sync has not completed yet. The foreground window ends on
  * that sync, or after a timeout, so it never stays on.
  */
 export const useMatrixCatchingUp = (): boolean => {
   const client = useMatrixClient();
+  const establishing = useMatrixSessionEstablishing();
   const [resuming, setResuming] = useState(false);
 
   const syncCatchingUp = useSyncExternalStore(
@@ -81,5 +82,5 @@ export const useMatrixCatchingUp = (): boolean => {
     };
   }, [client]);
 
-  return syncCatchingUp || resuming;
+  return client ? syncCatchingUp || resuming : establishing;
 };

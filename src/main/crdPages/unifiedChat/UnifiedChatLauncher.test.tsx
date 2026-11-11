@@ -7,7 +7,10 @@ const messaging = { isEnabled: true, isOpen: false, setIsOpen: vi.fn() };
 const client = Object.assign(new EventEmitter(), { getSyncState: () => 'SYNCING' });
 
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
-vi.mock('@/core/matrix/activeClient', () => ({ useMatrixClient: () => client }));
+vi.mock('@/core/matrix/activeClient', () => ({
+  useMatrixClient: () => client,
+  useMatrixSessionEstablishing: () => false,
+}));
 vi.mock('@/crd/components/chat/FloatingChatLauncher', () => ({ FloatingChatLauncher: () => null }));
 vi.mock('@/crd/hooks/useMediaQuery', () => ({ useScreenSize: () => ({ isSmallScreen: false }) }));
 vi.mock('@/main/userMessaging/UserMessagingContext', () => ({ useUserMessagingContext: () => messaging }));

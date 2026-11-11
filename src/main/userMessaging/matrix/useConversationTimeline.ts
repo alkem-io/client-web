@@ -136,6 +136,8 @@ const useConversationTimeline = (alkemioRoomId: string | null): Omit<TimelineSta
     const onSync = (syncState: string) => {
       if (syncState === 'PREPARED' && lookupFailed) {
         lookupFailed = false;
+        // Loading again, so the thread does not sit empty and idle while the retry runs.
+        setState({ roomKey, messages: [], readUpToEventId: null, isLoading: true });
         void lookUp();
       }
     };

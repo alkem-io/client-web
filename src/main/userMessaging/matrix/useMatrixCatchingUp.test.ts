@@ -2,9 +2,12 @@ import { EventEmitter } from 'node:events';
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const harness = vi.hoisted(() => ({ client: null as unknown }));
+const harness = vi.hoisted(() => ({ client: null as unknown, establishing: false }));
 
-vi.mock('@/core/matrix/activeClient', () => ({ useMatrixClient: () => harness.client }));
+vi.mock('@/core/matrix/activeClient', () => ({
+  useMatrixClient: () => harness.client,
+  useMatrixSessionEstablishing: () => harness.establishing,
+}));
 
 import { useMatrixCatchingUp } from './useMatrixCatchingUp';
 
@@ -44,11 +47,18 @@ describe('useMatrixCatchingUp', () => {
     vi.useRealTimers();
     vi.restoreAllMocks();
     harness.client = null;
+    harness.establishing = false;
   });
 
   it('is false without a Matrix client', () => {
     const { result } = renderHook(() => useMatrixCatchingUp());
     expect(result.current).toBe(false);
+  });
+
+  it('is true while the session is being established, before there is a client', () => {
+    harness.establishing = true;
+    const { result } = renderHook(() => useMatrixCatchingUp());
+    expect(result.current).toBe(true);
   });
 
   it('is true before the first sync and false once prepared', () => {
