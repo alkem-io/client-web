@@ -2,7 +2,8 @@ import { split } from '@apollo/client';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { getMainDefinition } from '@apollo/client/utilities';
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
-import { createClient } from 'graphql-ws';
+import { CloseCode, createClient } from 'graphql-ws';
+import { routeToSecondFactor } from '@/core/auth/authentication/routeToSecondFactor';
 import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import { env } from '@/main/env';
 
@@ -24,6 +25,12 @@ export const httpLink = (graphQLEndpoint: string, enableWebSockets: boolean) => 
           lazy: true,
           retryAttempts: WS_RETRY_ATTEMPTS,
           on: {
+            // The server closes a subscription of a session refused for a missing second factor.
+            closed: event => {
+              if ((event as CloseEvent | undefined)?.code === CloseCode.Forbidden) {
+                routeToSecondFactor();
+              }
+            },
             error: errorOrCloseEvent => {
               const message = isError(errorOrCloseEvent)
                 ? 'Fatal ws error'

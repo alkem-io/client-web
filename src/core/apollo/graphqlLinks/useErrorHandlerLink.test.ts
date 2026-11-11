@@ -3,6 +3,11 @@ import { renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const notify = vi.fn();
+const routeToSecondFactor = vi.fn();
+
+vi.mock('@/core/auth/authentication/routeToSecondFactor', () => ({
+  routeToSecondFactor: () => routeToSecondFactor(),
+}));
 
 vi.mock('@/core/ui/notifications/useNotification', () => ({
   useNotification: () => notify,
@@ -56,6 +61,7 @@ const runOperation = (link: ApolloLink, query: typeof QUERY) =>
 describe('useErrorHandlerLink', () => {
   beforeEach(() => {
     notify.mockClear();
+    routeToSecondFactor.mockClear();
     Object.defineProperty(window.navigator, 'onLine', { value: true, configurable: true });
   });
 
@@ -85,5 +91,58 @@ describe('useErrorHandlerLink', () => {
     await runOperation(result.current, QUERY);
 
     expect(notify).toHaveBeenCalledWith('apollo.errors.network.generic', 'error');
+  });
+
+  describe('SECOND_FACTOR_REQUIRED', () => {
+    /** Terminating link that answers every operation with the server's second-factor refusal. */
+    const refusingLink = new ApolloLink(
+      () =>
+        new Observable(observer => {
+          observer.next({
+            errors: [
+              {
+                message: 'Two-step verification is required for your account.',
+                extensions: { code: 'SECOND_FACTOR_REQUIRED', numericCode: 11119 },
+              },
+            ],
+          } as never);
+          observer.complete();
+        })
+    );
+
+    const runRefused = (link: ApolloLink, context: Record<string, unknown> = {}) =>
+      new Promise<void>(resolve => {
+        execute(ApolloLink.from([link, refusingLink]), { query: QUERY, context }).subscribe({
+          error: () => resolve(),
+          complete: () => resolve(),
+        });
+      });
+
+    it('routes to the second-factor page and shows no toast', async () => {
+      const { result } = renderHook(() => useErrorHandlerLink());
+
+      await runRefused(result.current);
+
+      expect(routeToSecondFactor).toHaveBeenCalledTimes(1);
+      expect(notify).not.toHaveBeenCalled();
+    });
+
+    it('routes even for an operation that opted out of the global handler', async () => {
+      const { result } = renderHook(() => useErrorHandlerLink());
+
+      await runRefused(result.current, { skipGlobalErrorHandler: true });
+
+      expect(routeToSecondFactor).toHaveBeenCalledTimes(1);
+      expect(notify).not.toHaveBeenCalled();
+    });
+
+    it('hands every concurrent refusal to the one helper, which navigates once', async () => {
+      const { result } = renderHook(() => useErrorHandlerLink());
+
+      await Promise.all([runRefused(result.current), runRefused(result.current)]);
+
+      expect(routeToSecondFactor).toHaveBeenCalledTimes(2);
+      expect(notify).not.toHaveBeenCalled();
+    });
   });
 });
