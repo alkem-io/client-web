@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { ChatThreadView } from './ChatThreadView';
 import type { ChatMessage } from './types';
@@ -59,8 +59,8 @@ describe('ChatThreadView scrolling', () => {
   };
 
   test('contains overscroll on the message scroller, so scrolling past either end does not scroll the page behind', () => {
-    render(<ChatThreadView messages={[]} messagesLoading={true} />);
-    const scroller = screen.getByRole('status', { name: 'thread.loading' }).closest('.overflow-y-auto');
+    const { container } = render(<ChatThreadView messages={[]} messagesLoading={true} />);
+    const scroller = container.querySelector('.overflow-y-auto');
     expect(scroller?.className).toContain('overflow-y-auto');
     expect(scroller?.className).toContain('overscroll-contain');
   });

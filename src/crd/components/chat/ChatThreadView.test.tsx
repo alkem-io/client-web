@@ -250,42 +250,23 @@ describe('ChatThreadView — links in messages', () => {
   });
 });
 
-describe('ChatThreadView — refreshing indicator', () => {
-  const renderRefreshing = (messages: ChatMessage[], refreshing: boolean, messagesLoading = false) =>
-    render(
-      <ChatThreadView
-        conversation={direct}
-        messages={messages}
-        messagesLoading={messagesLoading}
-        refreshing={refreshing}
-      />
-    );
+describe('ChatThreadView — loading bar', () => {
+  const renderLoading = (messages: ChatMessage[], messagesLoading: boolean) =>
+    render(<ChatThreadView conversation={direct} messages={messages} messagesLoading={messagesLoading} />);
 
-  test('shows over existing messages, outside the scroller so it cannot move them', () => {
-    renderRefreshing([msg(at(14, 10, 0))], true);
-    const indicator = screen.getByRole('status', { name: 'thread.refreshing' });
-    expect(indicator.contains(rowFor('message 1'))).toBe(false);
-    expect(rowFor('message 1').closest('.overflow-y-auto')?.contains(indicator)).toBe(false);
+  test.each([
+    ['an empty thread', () => []],
+    ['a thread with messages', () => [msg(at(14, 10, 0))]],
+  ])('shows in the same place for %s: above the scroller, so it cannot move the messages', (_name, messages) => {
+    const { container } = renderLoading(messages(), true);
+    const bar = screen.getByRole('status', { name: 'thread.loading' });
+    const scroller = container.querySelector('.overflow-y-auto');
+    expect(scroller?.contains(bar)).toBe(false);
+    expect(bar.nextElementSibling).toBe(scroller);
   });
 
-  test('is absent when not refreshing', () => {
-    renderRefreshing([msg(at(14, 10, 0))], false);
-    expect(screen.queryByRole('status', { name: 'thread.refreshing' })).not.toBeInTheDocument();
-  });
-
-  test('an empty thread keeps its own loading state instead', () => {
-    renderRefreshing([], true, true);
-    expect(screen.getByRole('status', { name: 'thread.loading' })).toBeInTheDocument();
-    expect(screen.queryByRole('status', { name: 'thread.refreshing' })).not.toBeInTheDocument();
-  });
-
-  test('an empty thread shows the loading state while messages are on their way, before any history loads', () => {
-    renderRefreshing([], true, false);
-    expect(screen.getByRole('status', { name: 'thread.loading' })).toBeInTheDocument();
-  });
-
-  test('an empty thread with nothing on its way shows no loading state', () => {
-    renderRefreshing([], false, false);
+  test('is absent when nothing is loading', () => {
+    renderLoading([msg(at(14, 10, 0))], false);
     expect(screen.queryByRole('status', { name: 'thread.loading' })).not.toBeInTheDocument();
   });
 });

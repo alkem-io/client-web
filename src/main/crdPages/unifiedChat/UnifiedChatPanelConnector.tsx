@@ -95,8 +95,6 @@ export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPan
     readUpToEventId,
     isLoading: messagesLoading,
   } = useConversationMessages(selectedConversation ?? null);
-  // Older history paging in, or the sync bringing newer messages: both may change what the thread shows.
-  const refreshing = catchingUp || messagesLoading;
   const isGuidanceThread = selectedConversation?.isGuidance ?? false;
 
   // Calls: shown only to beta testers, in a synced session, where the environment has calls.
@@ -412,8 +410,8 @@ export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPan
             attachmentsAllowed={!isGuidanceThread}
             conversation={threadHeader}
             messages={chatMessages}
-            messagesLoading={messagesLoading}
-            refreshing={refreshing}
+            // Older history paging in, or the sync bringing newer messages: both may change what the thread shows.
+            messagesLoading={messagesLoading || catchingUp}
             locale={resolveChatLocale(i18n.language, navigator.languages)}
             currentUser={currentUser}
             isSending={isSending}
