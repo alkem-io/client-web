@@ -60,12 +60,12 @@ RUN if [ "$ARG_BUILD_ENVIRONMENT" = "production" ]; then \
   find /app/build -name "*.map" -type f -delete; \
   fi
 
-# Runtime: nginxinc/nginx-unprivileged — the official non-root nginx image.
+# Runtime: ghcr.io/nginx/nginx-unprivileged (the upstream nginx project's GHCR copy of nginxinc/nginx-unprivileged) — the official non-root nginx image.
 # It runs as UID 101 and listens on 8080 (a non-root process cannot bind ports
 # below 1024), and relocates the pid/temp paths to writable locations. The
 # Service's external port stays 80; only its targetPort follows to 8080
 # (dev-orchestration, same feature — the manifest and image MUST ship together).
-FROM nginxinc/nginx-unprivileged:1.30-alpine@sha256:44e36330f74d4f3a1d4e222acca9e23b401fb87811a7597024502bb759c4dd49 as production-build
+FROM ghcr.io/nginx/nginx-unprivileged:1.30.6-alpine@sha256:c3fc8fa482be50ef709c6438eb1bc98d50dbfe5a9b48be90711b8814f4dfd701 as production-build
 
 # Root is needed only to lay down files and hand ownership to UID 101; the
 # container itself runs unprivileged (USER 101 below, inherited from the base
