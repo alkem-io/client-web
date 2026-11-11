@@ -28,6 +28,7 @@ import { useActiveCallRooms } from '@/main/userMessaging/calls/useActiveCallRoom
 import { useCallEligibility } from '@/main/userMessaging/calls/useCallEligibility';
 import { useRoomCallSession } from '@/main/userMessaging/calls/useRoomCallSession';
 import { type CallAction, type CallMedia, callIntentFor } from '@/main/userMessaging/calls/widgetUrl';
+import { useMatrixCatchingUp } from '@/main/userMessaging/matrix/useMatrixCatchingUp';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useChatSound } from '@/main/userMessaging/useChatSound';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
@@ -90,6 +91,8 @@ export const UnifiedChatPanelConnector = () => {
     readUpToEventId,
     isLoading: messagesLoading,
   } = useConversationMessages(selectedConversation ?? null);
+  // Older history paging in, or the sync bringing newer messages: both may change what the thread shows.
+  const refreshing = useMatrixCatchingUp() || messagesLoading;
   const isGuidanceThread = selectedConversation?.isGuidance ?? false;
 
   // Calls: shown only to beta testers, in a synced session, where the environment has calls.
@@ -406,6 +409,7 @@ export const UnifiedChatPanelConnector = () => {
             conversation={threadHeader}
             messages={chatMessages}
             messagesLoading={messagesLoading}
+            refreshing={refreshing}
             locale={resolveChatLocale(i18n.language, navigator.languages)}
             currentUser={currentUser}
             isSending={isSending}

@@ -249,3 +249,34 @@ describe('ChatThreadView — links in messages', () => {
     expect(container.querySelector('[data-chat-message] a')).not.toHaveAttribute('target');
   });
 });
+
+describe('ChatThreadView — refreshing indicator', () => {
+  const renderRefreshing = (messages: ChatMessage[], refreshing: boolean, messagesLoading = false) =>
+    render(
+      <ChatThreadView
+        conversation={direct}
+        messages={messages}
+        messagesLoading={messagesLoading}
+        refreshing={refreshing}
+      />
+    );
+
+  test('shows over existing messages, outside the scroller so it cannot move them', () => {
+    renderRefreshing([msg(at(14, 10, 0))], true);
+    const indicator = screen.getByRole('status', { name: 'thread.refreshing' });
+    expect(indicator).toHaveTextContent('thread.refreshing');
+    expect(indicator.contains(rowFor('message 1'))).toBe(false);
+    expect(rowFor('message 1').closest('.overflow-y-auto')?.contains(indicator)).toBe(false);
+  });
+
+  test('is absent when not refreshing', () => {
+    renderRefreshing([msg(at(14, 10, 0))], false);
+    expect(screen.queryByRole('status', { name: 'thread.refreshing' })).not.toBeInTheDocument();
+  });
+
+  test('an empty thread keeps its own loading state instead', () => {
+    renderRefreshing([], true, true);
+    expect(screen.getByRole('status', { name: 'thread.loading' })).toHaveTextContent('thread.loading');
+    expect(screen.queryByRole('status', { name: 'thread.refreshing' })).not.toBeInTheDocument();
+  });
+});

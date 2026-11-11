@@ -15,6 +15,8 @@ type ChatThreadViewProps = {
   conversation?: ChatThreadHeader;
   messages: ChatMessage[];
   messagesLoading: boolean;
+  /** Messages may be on their way (sync catching up, history loading): show a cue over a non-empty thread. */
+  refreshing?: boolean;
   /** BCP 47 locale for the times shown in the thread; undefined = browser default. */
   locale?: string;
   currentUser?: CommentAuthor;
@@ -58,6 +60,7 @@ export function ChatThreadView({
   conversation,
   messages,
   messagesLoading,
+  refreshing,
   locale,
   currentUser,
   isSending,
@@ -105,7 +108,17 @@ export function ChatThreadView({
   }, [lastMessageId]);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    <div className="relative flex min-h-0 flex-1 flex-col">
+      {/* Floats over the top of the scroller, outside it, so it never moves the messages or the scroll position. */}
+      {refreshing && messages.length > 0 && (
+        <output
+          aria-label={t('thread.refreshing')}
+          className="pointer-events-none absolute top-2 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-border bg-background/90 px-2.5 py-1 text-caption text-muted-foreground shadow-sm backdrop-blur-sm motion-safe:animate-in motion-safe:fade-in"
+        >
+          <Loader2 aria-hidden="true" className="size-3.5 motion-safe:animate-spin" />
+          {t('thread.refreshing')}
+        </output>
+      )}
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-3 pt-1 pb-3">
         {messagesLoading && messages.length === 0 ? (
           <output className="m-auto text-caption text-muted-foreground" aria-label={t('thread.loading')}>
