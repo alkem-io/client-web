@@ -108,6 +108,7 @@ export function TwoStepVerificationSection({
   const [copied, setCopied] = useState(false);
 
   const keys = securityKeys?.keys ?? [];
+  const registration = securityKeys?.registration;
   const isLastFactor = (removal: PendingRemoval): boolean => {
     if (removal.kind === 'authenticator') return keys.length === 0;
     if (removal.kind === 'securityKey') return authenticator.kind !== 'enrolled' && keys.length === 1;
@@ -175,7 +176,7 @@ export function TwoStepVerificationSection({
         variant="outline"
         size="sm"
         className="self-start"
-        disabled={typeof navigator === 'undefined' || !navigator.clipboard}
+        disabled={!navigator.clipboard}
         onClick={() => copyCodes(codes)}
       >
         <Copy aria-hidden="true" className="size-4" />
@@ -299,31 +300,27 @@ export function TwoStepVerificationSection({
           ) : (
             <p className="text-body text-muted-foreground">{t('user.security.twoStep.securityKeys.empty')}</p>
           )}
-          {securityKeys.registration ? (
+          {registration ? (
             <form
-              action={securityKeys.registration.action}
+              action={registration.action}
               method="POST"
               className="flex flex-col gap-3"
               onSubmit={event => event.preventDefault()}
             >
-              {securityKeys.registration.hiddenFields.map(field => (
+              {registration.hiddenFields.map(field => (
                 <input key={field.name} type="hidden" name={field.name} defaultValue={field.value} />
               ))}
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="two-step-security-key-name">{t('user.security.twoStep.securityKeys.nameLabel')}</Label>
-                <Input
-                  id="two-step-security-key-name"
-                  name={securityKeys.registration.nameFieldName}
-                  className="max-w-80"
-                />
+                <Input id="two-step-security-key-name" name={registration.nameFieldName} className="max-w-80" />
               </div>
               <Button
                 type="button"
                 variant="outline"
                 className="self-start"
-                name={securityKeys.registration.trigger.name}
-                value={securityKeys.registration.trigger.value}
-                onClick={() => onAddSecurityKey(securityKeys.registration?.trigger.value ?? '')}
+                name={registration.trigger.name}
+                value={registration.trigger.value}
+                onClick={() => onAddSecurityKey(registration.trigger.value)}
               >
                 <KeyRound aria-hidden="true" className="size-4" />
                 {t('user.security.twoStep.securityKeys.add')}
