@@ -20,6 +20,8 @@ const baseProps: ComponentProps<typeof ChatPanel> = {
   closeLabel: 'Close chat',
   backLabel: 'Back to conversations',
   settingsLabel: 'Notification settings',
+  muteSoundLabel: 'Mute chat sound',
+  unmuteSoundLabel: 'Unmute chat sound',
   expandLabel: 'Expand chat',
   collapseLabel: 'Collapse chat',
   children: <div>body</div>,
@@ -57,6 +59,27 @@ describe('ChatPanel', () => {
   });
 
   describe('header', () => {
+    test('the sound toggle shows the current state, is named after what a press does, and calls the handler', async () => {
+      const onToggleSound = vi.fn();
+      const { rerender } = renderPanel({ onToggleSound, soundMuted: false });
+
+      const mute = screen.getByRole('button', { name: 'Mute chat sound' });
+      expect(mute.querySelector('.lucide-volume-2')).not.toBeNull();
+      await userEvent.click(mute);
+      expect(onToggleSound).toHaveBeenCalledOnce();
+
+      rerender(<ChatPanel {...baseProps} onToggleSound={onToggleSound} soundMuted={true} />);
+      const unmute = screen.getByRole('button', { name: 'Unmute chat sound' });
+      expect(unmute.querySelector('.lucide-volume-x')).not.toBeNull();
+      expect(screen.queryByRole('button', { name: 'Mute chat sound' })).toBeNull();
+    });
+
+    test('there is no sound toggle without a handler', () => {
+      renderPanel();
+
+      expect(screen.queryByRole('button', { name: /chat sound/ })).toBeNull();
+    });
+
     test('every header control is enlarged on phones and keeps its compact size from the sm breakpoint', () => {
       renderPanel({
         onBack: vi.fn(),

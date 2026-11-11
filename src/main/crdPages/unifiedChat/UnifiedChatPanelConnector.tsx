@@ -29,6 +29,7 @@ import { useCallEligibility } from '@/main/userMessaging/calls/useCallEligibilit
 import { useRoomCallSession } from '@/main/userMessaging/calls/useRoomCallSession';
 import { type CallAction, type CallMedia, callIntentFor } from '@/main/userMessaging/calls/widgetUrl';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
+import { useChatSound } from '@/main/userMessaging/useChatSound';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
 import { ConversationThread } from './ConversationThread';
 import { resolveChatLocale } from './chatLocale';
@@ -58,6 +59,7 @@ export const UnifiedChatPanelConnector = () => {
   const currentUserId = userModel?.id;
   const navigate = useNavigate();
   const notify = useNotification();
+  const chatSound = useChatSound();
 
   const {
     isOpen,
@@ -377,6 +379,17 @@ export const UnifiedChatPanelConnector = () => {
             : undefined
         }
         settingsLabel={t('panel.settings')}
+        // Shown in a conversation too, so the sound can be silenced without leaving it.
+        onToggleSound={
+          chatSound.setEnabled
+            ? () => {
+                chatSound.setEnabled?.(!chatSound.enabled).catch(() => notify(t('panel.soundToggleError'), 'error'));
+              }
+            : undefined
+        }
+        soundMuted={!chatSound.enabled}
+        muteSoundLabel={t('panel.muteSound')}
+        unmuteSoundLabel={t('panel.unmuteSound')}
         expandLabel={t('panel.expand')}
         collapseLabel={t('panel.collapse')}
         titleAvatar={titleAvatar}

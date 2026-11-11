@@ -9,6 +9,9 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
 }));
 vi.mock('@/core/routing/useNavigate', () => ({ default: () => vi.fn() }));
+vi.mock('@/main/userMessaging/useChatSound', () => ({
+  useChatSound: () => ({ enabled: true, setEnabled: vi.fn() }),
+}));
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: { id: 'me' } }),
 }));
