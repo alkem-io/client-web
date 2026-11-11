@@ -5,6 +5,9 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { handleAppBack } from '@/core/appMode/appBack';
 import { SearchOverlay } from '@/crd/components/search/SearchOverlay';
 import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
+import { TooltipProvider } from '@/crd/primitives/tooltip';
+import { CallControls } from './CallControls';
+import { ChatOptionsMenu } from './ChatOptionsMenu';
 import { ChatPanel } from './ChatPanel';
 
 const screenSize = { isSmallScreen: false, isMediumScreen: false, isLargeScreen: true };
@@ -54,14 +57,49 @@ describe('ChatPanel', () => {
   });
 
   describe('header', () => {
-    test('sizes every header control the same', () => {
-      renderPanel({ onBack: vi.fn(), backLabel: 'Back', onGoToSettings: vi.fn(), settingsLabel: 'Settings' });
+    test('every header control is enlarged on phones and keeps its compact size from the sm breakpoint', () => {
+      renderPanel({
+        onBack: vi.fn(),
+        onGoToSettings: vi.fn(),
+        headerActions: (
+          <TooltipProvider>
+            <CallControls
+              startAudioLabel="Start audio call"
+              startVideoLabel="Start video call"
+              onStartAudio={vi.fn()}
+              onStartVideo={vi.fn()}
+            />
+            <ChatOptionsMenu
+              label="Chat options"
+              settingsLabel="Chat settings"
+              onOpenSettings={vi.fn()}
+              leaveLabel="Leave chat"
+              onLeave={vi.fn()}
+            />
+          </TooltipProvider>
+        ),
+      });
+
+      const desktopIconSizeByControl: Record<string, string> = {
+        'Back to conversations': 'sm:size-5',
+        'Start audio call': 'sm:size-4',
+        'Start video call': 'sm:size-4',
+        'Chat options': 'sm:size-5',
+        'Expand chat': 'sm:size-4',
+        'Notification settings': 'sm:size-5',
+        'Close chat': 'sm:size-5',
+      };
 
       const buttons = within(screen.getByRole('banner')).getAllByRole('button');
-      expect(buttons.length).toBeGreaterThanOrEqual(3);
+      expect(buttons.map(button => button.getAttribute('aria-label')).sort()).toEqual(
+        Object.keys(desktopIconSizeByControl).sort()
+      );
       for (const button of buttons) {
-        expect(button).toHaveClass('size-9');
-        expect(button.querySelector('svg')).toHaveClass('size-6');
+        expect(button).toHaveClass('size-9', 'sm:size-8');
+        expect(button.querySelector('svg')).toHaveClass(
+          'size-6',
+          desktopIconSizeByControl[button.getAttribute('aria-label') ?? '']
+        );
       }
     });
 

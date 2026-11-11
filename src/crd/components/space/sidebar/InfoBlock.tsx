@@ -2,6 +2,7 @@ import { MapPin, Pencil } from 'lucide-react';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
+import { ContributorHoverCard, type ContributorPreviewData } from '@/crd/components/contributor/ContributorHoverCard';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Skeleton } from '@/crd/primitives/skeleton';
@@ -14,6 +15,7 @@ export type LeadItem = {
   location?: string;
   href?: string;
   type: 'person' | 'org';
+  preview?: ContributorPreviewData;
 };
 
 type InfoBlockProps = {
@@ -26,6 +28,7 @@ type InfoBlockProps = {
    */
   leadsLoading?: boolean;
   onEditClick?: () => void;
+  onMessageContributor?: (contributor: ContributorPreviewData) => void;
   className?: string;
 };
 
@@ -46,7 +49,14 @@ const MARKDOWN_OVERRIDES = cn(
   '[&_a]:text-primary-foreground [&_a]:underline'
 );
 
-export function InfoBlock({ description, leads = [], leadsLoading = false, onEditClick, className }: InfoBlockProps) {
+export function InfoBlock({
+  description,
+  leads = [],
+  leadsLoading = false,
+  onEditClick,
+  onMessageContributor,
+  className,
+}: InfoBlockProps) {
   const { t } = useTranslation('crd-space');
   const descriptionRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -113,7 +123,7 @@ export function InfoBlock({ description, leads = [], leadsLoading = false, onEdi
           <ul role="list" className="flex flex-col gap-3">
             {leads.map(lead => (
               <li key={lead.id}>
-                <LeadRow lead={lead} />
+                <LeadRow lead={lead} onMessageContributor={onMessageContributor} />
               </li>
             ))}
           </ul>
@@ -138,7 +148,13 @@ export function InfoBlock({ description, leads = [], leadsLoading = false, onEdi
   );
 }
 
-function LeadRow({ lead }: { lead: LeadItem }) {
+function LeadRow({
+  lead,
+  onMessageContributor,
+}: {
+  lead: LeadItem;
+  onMessageContributor?: (contributor: ContributorPreviewData) => void;
+}) {
   const inner = (
     <div className="flex items-center gap-3">
       <Avatar className={cn('w-8 h-8 shrink-0 border-2 border-white/25', lead.type === 'org' && 'rounded-md')}>
@@ -165,7 +181,7 @@ function LeadRow({ lead }: { lead: LeadItem }) {
 
   if (!lead.href) return inner;
 
-  return (
+  const link = (
     <a
       href={lead.href}
       onClick={e => e.stopPropagation()}
@@ -173,5 +189,13 @@ function LeadRow({ lead }: { lead: LeadItem }) {
     >
       {inner}
     </a>
+  );
+
+  if (!lead.preview) return link;
+
+  return (
+    <ContributorHoverCard contributor={lead.preview} onMessage={onMessageContributor}>
+      {link}
+    </ContributorHoverCard>
   );
 }

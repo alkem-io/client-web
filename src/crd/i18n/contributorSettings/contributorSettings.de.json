@@ -159,7 +159,7 @@
         },
         "keywords": {
           "label": "Schlüsselwörter",
-          "hint": "Schlüsselwörter, die deine Interessen beschreiben. Mit Enter hinzufügen.",
+          "hint": "Schlüsselwörter, die deine Interessen beschreiben. Sie erscheinen als Tags auf der Hover-Karte deines Profils. Mit Enter hinzufügen.",
           "placeholder": "z. B. Klima, Governance, Open Source"
         }
       },
@@ -673,7 +673,7 @@
         },
         "keywords": {
           "label": "Schlüsselwörter",
-          "hint": "Themen, an denen deine Organisation arbeitet. Mit Enter hinzufügen.",
+          "hint": "Themen, an denen deine Organisation arbeitet. Sie erscheinen als Tags auf der Hover-Karte deiner Organisation. Mit Enter hinzufügen.",
           "placeholder": "z. B. Klima, Governance, Open Source"
         },
         "capabilities": {
@@ -978,7 +978,7 @@
       },
       "keywords": {
         "label": "Schlüsselwörter",
-        "hint": "Fügen Sie Schlüsselwörter hinzu, damit Benutzer diesen Virtuellen Mitwirkenden entdecken können.",
+        "hint": "Fügen Sie Schlüsselwörter hinzu, damit Benutzer diesen Virtuellen Mitwirkenden entdecken können. Sie erscheinen als Tags auf seiner Hover-Karte.",
         "placeholder": "Schlüsselwort hinzufügen und Enter drücken"
       },
       "socialLinks": {
