@@ -249,3 +249,24 @@ describe('ChatThreadView — links in messages', () => {
     expect(container.querySelector('[data-chat-message] a')).not.toHaveAttribute('target');
   });
 });
+
+describe('ChatThreadView — loading bar', () => {
+  const renderLoading = (messages: ChatMessage[], messagesLoading: boolean) =>
+    render(<ChatThreadView conversation={direct} messages={messages} messagesLoading={messagesLoading} />);
+
+  test.each([
+    ['an empty thread', () => []],
+    ['a thread with messages', () => [msg(at(14, 10, 0))]],
+  ])('shows in the same place for %s: above the scroller, so it cannot move the messages', (_name, messages) => {
+    const { container } = renderLoading(messages(), true);
+    const bar = screen.getByRole('status', { name: 'thread.loading' });
+    const scroller = container.querySelector('.overflow-y-auto');
+    expect(scroller?.contains(bar)).toBe(false);
+    expect(bar.nextElementSibling).toBe(scroller);
+  });
+
+  test('is absent when nothing is loading', () => {
+    renderLoading([msg(at(14, 10, 0))], false);
+    expect(screen.queryByRole('status', { name: 'thread.loading' })).not.toBeInTheDocument();
+  });
+});
