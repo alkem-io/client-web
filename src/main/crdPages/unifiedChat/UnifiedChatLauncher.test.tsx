@@ -1,6 +1,6 @@
 import { EventEmitter } from 'node:events';
 import { act, render, screen } from '@testing-library/react';
-import { expect, it, vi } from 'vitest';
+import { afterEach, expect, it, vi } from 'vitest';
 import { UnifiedChatLauncher } from './UnifiedChatLauncher';
 
 const messaging = { isEnabled: true, isOpen: false, setIsOpen: vi.fn() };
@@ -19,13 +19,26 @@ vi.mock('./UnifiedChatPanelConnector', () => ({
   ),
 }));
 
-it('tells the panel the sync is catching up when the app resumed before the panel opened', () => {
-  const { rerender } = render(<UnifiedChatLauncher />);
-
-  // The app comes to the foreground (notification tap) while the panel is still closed.
+const setVisibility = (state: DocumentVisibilityState) => {
+  vi.spyOn(document, 'visibilityState', 'get').mockReturnValue(state);
   act(() => {
     document.dispatchEvent(new Event('visibilitychange'));
   });
+};
+
+afterEach(() => {
+  vi.useRealTimers();
+  vi.restoreAllMocks();
+});
+
+it('tells the panel the sync is catching up when the app resumed before the panel opened', () => {
+  vi.useFakeTimers();
+  const { rerender } = render(<UnifiedChatLauncher />);
+
+  // The app comes back to the foreground (notification tap) while the panel is still closed.
+  setVisibility('hidden');
+  vi.advanceTimersByTime(60_000);
+  setVisibility('visible');
   messaging.isOpen = true;
   rerender(<UnifiedChatLauncher />);
   expect(screen.getByLabelText('panel').textContent).toBe('true');

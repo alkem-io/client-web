@@ -22,10 +22,17 @@ class FakeClient extends EventEmitter {
 }
 
 const setVisibility = (state: DocumentVisibilityState) => {
-  Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => state });
+  vi.spyOn(document, 'visibilityState', 'get').mockReturnValue(state);
   act(() => {
     document.dispatchEvent(new Event('visibilitychange'));
   });
+};
+
+/** Sends the app to the background for `awayMs`, then brings it back. */
+const resumeAfter = (awayMs: number) => {
+  setVisibility('hidden');
+  vi.advanceTimersByTime(awayMs);
+  setVisibility('visible');
 };
 
 describe('useMatrixCatchingUp', () => {
@@ -35,6 +42,7 @@ describe('useMatrixCatchingUp', () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    vi.restoreAllMocks();
     harness.client = null;
   });
 
@@ -53,7 +61,7 @@ describe('useMatrixCatchingUp', () => {
     expect(result.current).toBe(false);
   });
 
-  it.each(['CATCHUP', 'RECONNECTING', 'ERROR'])('is true while the sync state is %s, until it syncs', state => {
+  it.each(['CATCHUP', 'RECONNECTING'])('is true while the sync state is %s, until it syncs', state => {
     const client = new FakeClient('SYNCING');
     harness.client = client;
     const { result } = renderHook(() => useMatrixCatchingUp());
@@ -66,13 +74,23 @@ describe('useMatrixCatchingUp', () => {
     expect(result.current).toBe(false);
   });
 
-  it('is true from returning to the foreground until the next sync', () => {
+  it('is false during an outage, which has no bound', () => {
+    const client = new FakeClient('SYNCING');
+    harness.client = client;
+    const { result } = renderHook(() => useMatrixCatchingUp());
+
+    client.sync('ERROR');
+    expect(result.current).toBe(false);
+  });
+
+  it('is true from returning to the foreground after a while away until the next sync', () => {
     const client = new FakeClient('SYNCING');
     harness.client = client;
     const { result } = renderHook(() => useMatrixCatchingUp());
 
     setVisibility('hidden');
     expect(result.current).toBe(false);
+    vi.advanceTimersByTime(30_000);
 
     setVisibility('visible');
     expect(result.current).toBe(true);
@@ -81,16 +99,24 @@ describe('useMatrixCatchingUp', () => {
     expect(result.current).toBe(false);
   });
 
+  it('stays false after a short time away, when the sync connection was still live', () => {
+    harness.client = new FakeClient('SYNCING');
+    const { result } = renderHook(() => useMatrixCatchingUp());
+
+    resumeAfter(29_999);
+    expect(result.current).toBe(false);
+  });
+
   it('ends the foreground window after the timeout when no sync arrives', () => {
     const client = new FakeClient('SYNCING');
     harness.client = client;
     const { result } = renderHook(() => useMatrixCatchingUp());
 
-    setVisibility('visible');
+    resumeAfter(30_000);
     expect(result.current).toBe(true);
 
     act(() => {
-      vi.advanceTimersByTime(9_999);
+      vi.advanceTimersByTime(4_999);
     });
     expect(result.current).toBe(true);
 
