@@ -28,7 +28,6 @@ import { useActiveCallRooms } from '@/main/userMessaging/calls/useActiveCallRoom
 import { useCallEligibility } from '@/main/userMessaging/calls/useCallEligibility';
 import { useRoomCallSession } from '@/main/userMessaging/calls/useRoomCallSession';
 import { type CallAction, type CallMedia, callIntentFor } from '@/main/userMessaging/calls/widgetUrl';
-import { useMatrixCatchingUp } from '@/main/userMessaging/matrix/useMatrixCatchingUp';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useChatSound } from '@/main/userMessaging/useChatSound';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
@@ -54,7 +53,12 @@ import { useUnifiedConversationView } from './useUnifiedConversationView';
  * Wires the unified conversation list + selected thread to the CRD ChatPanel.
  * Owns list/thread selection, realtime, send + reactions, and Guidance behaviors.
  */
-export const UnifiedChatPanelConnector = () => {
+type UnifiedChatPanelConnectorProps = {
+  /** The Matrix sync is catching up. Tracked by the always-mounted launcher, so a resume that happened before the panel opened still counts. */
+  catchingUp?: boolean;
+};
+
+export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPanelConnectorProps) => {
   const { t, i18n } = useTranslation('crd-chat');
   const { userModel } = useCurrentUserContext();
   const currentUserId = userModel?.id;
@@ -92,7 +96,7 @@ export const UnifiedChatPanelConnector = () => {
     isLoading: messagesLoading,
   } = useConversationMessages(selectedConversation ?? null);
   // Older history paging in, or the sync bringing newer messages: both may change what the thread shows.
-  const refreshing = useMatrixCatchingUp() || messagesLoading;
+  const refreshing = catchingUp || messagesLoading;
   const isGuidanceThread = selectedConversation?.isGuidance ?? false;
 
   // Calls: shown only to beta testers, in a synced session, where the environment has calls.
