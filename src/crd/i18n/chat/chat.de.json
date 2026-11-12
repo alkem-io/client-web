@@ -7,6 +7,9 @@
   "panel": {
     "title": "Chat",
     "settings": "Benachrichtigungseinstellungen",
+    "muteSound": "Chat-Ton stummschalten",
+    "unmuteSound": "Chat-Ton einschalten",
+    "soundToggleError": "Die Einstellung für den Chat-Ton konnte nicht gespeichert werden. Bitte versuche es erneut.",
     "expand": "Chat vergrößern",
     "collapse": "Chat verkleinern"
   },
@@ -80,6 +83,7 @@
   "thread": {
     "back": "Zurück zu den Unterhaltungen",
     "loading": "Nachrichten werden geladen",
+    "jumpToLatest": "Zu den neuesten Nachrichten",
     "addReaction": "Reaktion hinzufügen",
     "options": "Chat-Optionen"
   },

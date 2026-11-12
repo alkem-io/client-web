@@ -22,3 +22,5 @@
 **/secrets.dev.yaml
 **/values.dev.yaml
 README.md
+.forge-evidence
+.husky

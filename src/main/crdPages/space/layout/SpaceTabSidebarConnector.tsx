@@ -26,6 +26,7 @@ import { Skeleton } from '@/crd/primitives/skeleton';
 import type { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { isApplyUnavailable } from '@/main/crdPages/space/isApplyUnavailable';
+import { useMessageContributor } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { PostIndexDialogConnector } from '../callout/PostIndexDialogConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
@@ -99,6 +100,7 @@ export function SpaceTabSidebarConnector({
   const { t } = useTranslation('crd-space');
   const navigate = useNavigate();
   const locale = useCrdSpaceLocale();
+  const onMessageContributor = useMessageContributor();
 
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [updatesOpen, setUpdatesOpen] = useState(false);
@@ -241,6 +243,7 @@ export function SpaceTabSidebarConnector({
         leads={sidebarLeads}
         leadsLoading={leadsLoading && hasWidgetsBelow('intent')}
         onEditClick={onEditClick}
+        onMessageContributor={onMessageContributor}
       />
     ),
     about: <AboutButton key="about" onClick={onAboutClick} />,

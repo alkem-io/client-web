@@ -9,6 +9,9 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
 }));
 vi.mock('@/core/routing/useNavigate', () => ({ default: () => vi.fn() }));
+vi.mock('@/main/userMessaging/useChatSound', () => ({
+  useChatSound: () => ({ enabled: true, setEnabled: vi.fn() }),
+}));
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: { id: 'me' } }),
 }));
@@ -47,26 +50,33 @@ vi.mock('./dataMapper', () => ({
 vi.mock('@/main/userMessaging/useConversationMessages', () => ({
   useConversationMessages: () => ({
     messages: [{ id: 'm1', reactions: [{ id: 'r1', emoji: '👍', sender: { id: 'me' } }] }],
+    readUpToEventId: 'm1',
     isLoading: false,
   }),
 }));
 
 const addReaction = vi.fn();
 const removeReaction = vi.fn();
+const readMarker = vi.fn();
 vi.mock('./useUnifiedConversationView', () => ({
-  useUnifiedConversationView: () => ({
-    isSending: false,
-    handleSendMessage: vi.fn(),
-    handleAddReaction: () => addReaction,
-    handleRemoveReaction: removeReaction,
-    handleLeaveGroup: vi.fn(),
-    clearGuidance: vi.fn(),
-  }),
+  useUnifiedConversationView: (_conversation: unknown, readUpToEventId: string | null) => {
+    readMarker(readUpToEventId);
+    return view;
+  },
 }));
+const view = {
+  isSending: false,
+  handleSendMessage: vi.fn(),
+  handleAddReaction: () => addReaction,
+  handleRemoveReaction: removeReaction,
+  handleLeaveGroup: vi.fn(),
+  clearGuidance: vi.fn(),
+};
 
 type ThreadProps = {
   onAddReaction: (id: string, emoji: string) => void;
   onRemoveReaction: (id: string, e: string) => void;
+  onFollowingChange: (following: boolean) => void;
 };
 let threadProps: ThreadProps;
 vi.mock('./ConversationThread', () => ({
@@ -111,5 +121,18 @@ describe('UnifiedChatPanelConnector reaction failures', () => {
     await act(async () => reject(new Error('refused')));
 
     expect(notifyMock).toHaveBeenCalledWith('apollo.errors.generic', 'error');
+  });
+});
+
+describe('UnifiedChatPanelConnector read marker', () => {
+  it('holds the read marker while the reader has scrolled up, and releases it at the latest message', () => {
+    render(<UnifiedChatPanelConnector />);
+    expect(readMarker).toHaveBeenLastCalledWith('m1');
+
+    act(() => threadProps.onFollowingChange(false));
+    expect(readMarker).toHaveBeenLastCalledWith(null);
+
+    act(() => threadProps.onFollowingChange(true));
+    expect(readMarker).toHaveBeenLastCalledWith('m1');
   });
 });
