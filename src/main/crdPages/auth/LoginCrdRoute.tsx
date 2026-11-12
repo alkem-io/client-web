@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
 import {
+  AUTH_LOGOUT_PATH,
   AUTH_REMINDER_PATH,
   AUTH_RESET_PASSWORD_PATH,
   AUTH_SIGN_UP_PATH,
@@ -333,6 +334,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
                 showingRecoveryCode,
                 onToggleRecoveryCode:
                   hasAuthenticatorCode && hasRecoveryCode ? () => setRecoveryCodeChoice(!showRecoveryCode) : undefined,
+                signOutHref: AUTH_LOGOUT_PATH,
               }
             : undefined
         }

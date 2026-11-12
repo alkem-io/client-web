@@ -479,6 +479,15 @@ describe('LoginCrdRoute', () => {
       expect(replaceSpy).not.toHaveBeenCalled();
     });
 
+    it('offers a way out of the step to someone without their second factor', () => {
+      mockSearch = 'flow=login-aal2';
+      mockFlowState = { flow: aal2LoginFlow, error: undefined, loading: false };
+
+      renderRoute();
+
+      expect(screen.getByRole('link', { name: 'secondFactorPage.signOut' })).toHaveAttribute('href', '/logout');
+    });
+
     it("shows the identity provider's own message for a wrong code", () => {
       mockSearch = 'flow=login-aal2';
       mockFlowState = {

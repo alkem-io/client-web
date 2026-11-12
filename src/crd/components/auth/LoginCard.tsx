@@ -39,10 +39,12 @@ export type LoginCardProps = {
    * drops the sign-up and forgotten-password links, and — when the person has
    * both an authenticator and recovery codes — offers one action that switches
    * between the two; the consumer decides which group the descriptor carries.
+   * `signOutHref` lets someone without their second factor leave the step.
    */
   secondFactorStep?: {
     showingRecoveryCode: boolean;
     onToggleRecoveryCode?: () => void;
+    signOutHref: string;
   };
 };
 
@@ -109,6 +111,12 @@ export function LoginCard({
             </button>
           ) : null}
         </CrdKratosFlow>
+        <a
+          href={secondFactorStep.signOutHref}
+          className="text-body mt-5 inline-block rounded-sm text-primary outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        >
+          {t('secondFactorPage.signOut')}
+        </a>
       </AuthCard>
     );
   }
