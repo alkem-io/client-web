@@ -446,6 +446,7 @@
           "confirm": "Ich habe diese Codes gespeichert",
           "copied": "Kopiert",
           "copy": "Codes kopieren",
+          "copyFailed": "Kopieren fehlgeschlagen. Markieren Sie die Codes und kopieren Sie sie selbst.",
           "explanation": "Einmalcodes für den Fall, dass Sie Ihre App oder Ihren Schlüssel nicht verwenden können. Jeder Code funktioniert einmal.",
           "generate": "Wiederherstellungscodes erzeugen",
           "needsFactor": "Richten Sie zuerst eine Authenticator-App oder einen Sicherheitsschlüssel ein.",

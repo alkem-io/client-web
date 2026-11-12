@@ -446,6 +446,7 @@
           "confirm": "I have saved these codes",
           "copied": "Copied",
           "copy": "Copy codes",
+          "copyFailed": "Couldn't copy. Select the codes and copy them yourself.",
           "explanation": "One-time codes for when you cannot use your app or key. Each code works once.",
           "generate": "Generate recovery codes",
           "needsFactor": "Set up an authenticator app or a security key first.",

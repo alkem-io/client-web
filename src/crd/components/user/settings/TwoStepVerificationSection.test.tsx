@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { TwoStepVerificationSection, type TwoStepVerificationSectionProps } from './TwoStepVerificationSection';
@@ -119,6 +119,24 @@ describe('TwoStepVerificationSection — recovery codes', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.recoveryCodes.confirm' }));
     expect(callbacks.onConfirmRecoveryCodes).toHaveBeenCalledTimes(1);
+  });
+
+  it('says so when the codes could not be copied', async () => {
+    const original = Object.getOwnPropertyDescriptor(navigator, 'clipboard');
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText: vi.fn().mockRejectedValue(new Error('NotAllowedError')) },
+      configurable: true,
+    });
+    try {
+      renderSection({ recoveryCodes: { kind: 'unconfirmed', codes: ['abcd1234'] } });
+
+      fireEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.recoveryCodes.copy' }));
+
+      expect(await screen.findByRole('alert')).toHaveTextContent('user.security.twoStep.recoveryCodes.copyFailed');
+    } finally {
+      if (original) Object.defineProperty(navigator, 'clipboard', original);
+      else Reflect.deleteProperty(navigator, 'clipboard');
+    }
   });
 
   it('confirmed: never shows the codes again, and offers regenerate and remove (after confirmation)', async () => {

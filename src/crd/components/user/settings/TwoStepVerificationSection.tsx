@@ -106,7 +106,7 @@ export function TwoStepVerificationSection({
 }: TwoStepVerificationSectionProps) {
   const { t } = useTranslation(NS);
   const [pendingRemoval, setPendingRemoval] = useState<PendingRemoval>();
-  const [copied, setCopied] = useState(false);
+  const [copyOutcome, setCopyOutcome] = useState<'copied' | 'failed'>();
 
   const keys = securityKeys?.keys ?? [];
   const registration = securityKeys?.registration;
@@ -166,9 +166,11 @@ export function TwoStepVerificationSection({
     onAddSecurityKey(registration.trigger.value);
   };
 
-  const copyCodes = async (codes: string[]) => {
-    await navigator.clipboard.writeText(codes.join('\n'));
-    setCopied(true);
+  const copyCodes = (codes: string[]) => {
+    navigator.clipboard.writeText(codes.join('\n')).then(
+      () => setCopyOutcome('copied'),
+      () => setCopyOutcome('failed')
+    );
   };
 
   const renderCodes = (codes: string[]) => (
@@ -187,8 +189,15 @@ export function TwoStepVerificationSection({
         onClick={() => copyCodes(codes)}
       >
         <Copy aria-hidden="true" className="size-4" />
-        {copied ? t('user.security.twoStep.recoveryCodes.copied') : t('user.security.twoStep.recoveryCodes.copy')}
+        {copyOutcome === 'copied'
+          ? t('user.security.twoStep.recoveryCodes.copied')
+          : t('user.security.twoStep.recoveryCodes.copy')}
       </Button>
+      {copyOutcome === 'failed' ? (
+        <p role="alert" className="text-caption text-destructive">
+          {t('user.security.twoStep.recoveryCodes.copyFailed')}
+        </p>
+      ) : null}
     </div>
   );
 

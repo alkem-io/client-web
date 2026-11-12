@@ -446,6 +446,7 @@
           "confirm": "Ik heb deze codes bewaard",
           "copied": "Gekopieerd",
           "copy": "Codes kopiëren",
+          "copyFailed": "Kopiëren is mislukt. Selecteer de codes en kopieer ze zelf.",
           "explanation": "Eenmalige codes voor als je je app of sleutel niet kunt gebruiken. Elke code werkt één keer.",
           "generate": "Herstelcodes genereren",
           "needsFactor": "Stel eerst een authenticator-app of een beveiligingssleutel in.",
