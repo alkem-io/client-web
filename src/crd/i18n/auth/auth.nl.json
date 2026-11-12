@@ -68,8 +68,7 @@
     "hidePassword": "Wachtwoord verbergen",
     "invalidEmail": "Voer een geldig e-mailadres in.",
     "totpCode": "Verificatiecode",
-    "recoveryCode": "Herstelcode",
-    "securityKeyName": "Naam van de beveiligingssleutel"
+    "recoveryCode": "Herstelcode"
   },
   "providers": {
     "connectWith": "Doorgaan met {{provider}}",
@@ -89,7 +88,6 @@
     "contributeDescription": "Meld je hieronder aan voor een Alkemio account om samen te werken met teams en toegang te krijgen tot geavanceerde hulpmiddelen."
   },
   "secondFactor": {
-    "addSecurityKey": "Beveiligingssleutel toevoegen",
     "subtitle": "Bevestig met je tweede factor dat jij het bent om het inloggen af te ronden.",
     "title": "Verificatie in twee stappen",
     "useAuthenticator": "Toch je authenticator-app gebruiken",

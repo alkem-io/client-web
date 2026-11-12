@@ -68,8 +68,7 @@
     "hidePassword": "Passwort verbergen",
     "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein.",
     "totpCode": "Bestätigungscode",
-    "recoveryCode": "Wiederherstellungscode",
-    "securityKeyName": "Name des Sicherheitsschlüssels"
+    "recoveryCode": "Wiederherstellungscode"
   },
   "providers": {
     "connectWith": "Weiter mit {{provider}}",
@@ -89,7 +88,6 @@
     "contributeDescription": "Registriere dich unten für ein Alkemio-Konto, um mit Teams zusammenzuarbeiten und auf erweiterte Tools zuzugreifen."
   },
   "secondFactor": {
-    "addSecurityKey": "Sicherheitsschlüssel hinzufügen",
     "subtitle": "Bestätigen Sie mit Ihrem zweiten Faktor, dass Sie es sind, um die Anmeldung abzuschließen.",
     "title": "Bestätigung in zwei Schritten",
     "useAuthenticator": "Stattdessen die Authenticator-App verwenden",

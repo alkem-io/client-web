@@ -1,5 +1,5 @@
 import { Info, KeyRound } from 'lucide-react';
-import { type FormEvent, Fragment, type ReactNode, useState } from 'react';
+import { type FormEvent, type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type {
   KratosFlowDescriptor,
@@ -7,7 +7,6 @@ import type {
   KratosPasskeyTrigger,
   KratosSubmitButtonNode,
   KratosTextInputNode,
-  KratosTextNode,
 } from '@/crd/components/auth/flowDescriptor';
 import { OrContinueWithDivider } from '@/crd/components/auth/OrContinueWithDivider';
 import { SocialProviderButton } from '@/crd/components/auth/SocialProviderButton';
@@ -49,8 +48,6 @@ export type CrdKratosFlowProps = {
 };
 
 const EMAIL_FIELD_NAMES = new Set(['identifier', 'password_identifier', 'traits.email']);
-// Text nodes whose content is a secret the person copies: rendered monospace.
-const SECRET_TEXT_IDS = new Set(['totp_secret_key', 'lookup_secret_codes']);
 
 /**
  * Renders a Kratos authentication flow as a native form, reproducing the
@@ -73,11 +70,7 @@ export function CrdKratosFlow({
 }: CrdKratosFlowProps) {
   const { t } = useTranslation('crd-auth');
   const { groups } = descriptor;
-  const secondFactorGroups = [
-    { method: 'totp', ...groups.totp },
-    { method: 'lookupSecret', ...groups.lookupSecret },
-    { method: 'webauthn', ...groups.webauthn },
-  ];
+  const secondFactorGroups = [groups.totp, groups.lookupSecret, groups.webauthn];
   const secondFactorInputs = secondFactorGroups.flatMap(group => group.inputs);
   const submits = [...groups.submit, ...secondFactorGroups.flatMap(group => group.submits)];
 
@@ -110,7 +103,6 @@ export function CrdKratosFlow({
     if (node.name === 'traits.name.last') return t('fields.lastName');
     if (node.name === 'totp_code') return t('fields.totpCode');
     if (node.name === 'lookup_secret') return t('fields.recoveryCode');
-    if (node.name === 'webauthn_register_displayname') return t('fields.securityKeyName');
     return node.label;
   };
 
@@ -123,21 +115,8 @@ export function CrdKratosFlow({
 
   const triggerLabel = (node: KratosPasskeyButtonNode): string => {
     if (node.trigger === 'oryWebAuthnLogin') return t('secondFactor.useSecurityKey');
-    if (node.trigger === 'oryWebAuthnRegistration') return t('secondFactor.addSecurityKey');
     return node.label;
   };
-
-  const renderText = (node: KratosTextNode) => (
-    <p
-      key={node.id}
-      className={cn(
-        'rounded-md border border-border bg-muted/40 px-3 py-2.5 text-body break-all',
-        SECRET_TEXT_IDS.has(node.id) && 'font-mono'
-      )}
-    >
-      {node.text}
-    </p>
-  );
 
   const renderInput = (node: KratosTextInputNode) => {
     // Treat a field as email if EITHER Kratos says so (`node.type === 'email'`)
@@ -256,22 +235,7 @@ export function CrdKratosFlow({
       {groups.password.map(renderInput)}
       {resetPasswordElement}
       {groups.rest.map(renderInput)}
-      {secondFactorGroups.map(group => (
-        <Fragment key={group.method}>
-          {group.images.map(image => (
-            <img
-              key={image.src}
-              src={image.src}
-              alt={image.alt}
-              width={image.width}
-              height={image.height}
-              className="mx-auto"
-            />
-          ))}
-          {group.texts.map(renderText)}
-          {group.inputs.map(renderInput)}
-        </Fragment>
-      ))}
+      {secondFactorInputs.map(renderInput)}
       {children}
 
       {submits.map(node => (

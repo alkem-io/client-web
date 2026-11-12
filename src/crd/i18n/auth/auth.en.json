@@ -68,8 +68,7 @@
     "hidePassword": "Hide password",
     "invalidEmail": "Please enter a valid email address.",
     "totpCode": "Authentication code",
-    "recoveryCode": "Recovery code",
-    "securityKeyName": "Name of the security key"
+    "recoveryCode": "Recovery code"
   },
   "providers": {
     "connectWith": "Continue with {{provider}}",
@@ -89,7 +88,6 @@
     "contributeDescription": "Sign up for an Alkemio account below to collaborate with teams and access advanced tools."
   },
   "secondFactor": {
-    "addSecurityKey": "Add a security key",
     "subtitle": "Confirm it's you with your second factor to finish signing in.",
     "title": "Two-step verification",
     "useAuthenticator": "Use your authenticator app instead",

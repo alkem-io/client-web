@@ -68,8 +68,7 @@
     "hidePassword": "Masquer le mot de passe",
     "invalidEmail": "Veuillez saisir une adresse e-mail valide.",
     "totpCode": "Code d'authentification",
-    "recoveryCode": "Code de récupération",
-    "securityKeyName": "Nom de la clé de sécurité"
+    "recoveryCode": "Code de récupération"
   },
   "providers": {
     "connectWith": "Continuer avec {{provider}}",
@@ -89,7 +88,6 @@
     "contributeDescription": "Inscrivez-vous ci-dessous pour un compte Alkemio afin de collaborer avec des équipes et d'accéder à des outils avancés."
   },
   "secondFactor": {
-    "addSecurityKey": "Ajouter une clé de sécurité",
     "subtitle": "Confirmez votre identité avec votre second facteur pour terminer la connexion.",
     "title": "Validation en deux étapes",
     "useAuthenticator": "Utiliser plutôt votre application d'authentification",
