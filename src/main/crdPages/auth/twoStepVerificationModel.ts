@@ -8,6 +8,8 @@ import type {
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
 
 const SECOND_FACTOR_METHODS = new Set(['totp', 'lookup_secret', 'webauthn']);
+/** The hidden input Ory's script writes the registration ceremony's result into. */
+const WEBAUTHN_RESULT_FIELD = 'webauthn_register';
 
 type TwoStepVerificationModel = Pick<
   TwoStepVerificationSectionProps,
@@ -67,8 +69,9 @@ export const adaptTwoStepVerification = (flow: SettingsFlow): TwoStepVerificatio
                 hiddenFields: [
                   ...csrf,
                   { name: 'method', value: 'webauthn' },
-                  ...hidden.filter(field => field.name === 'webauthn_register'),
+                  ...hidden.filter(field => field.name === WEBAUTHN_RESULT_FIELD),
                 ],
+                resultFieldName: WEBAUTHN_RESULT_FIELD,
                 nameFieldName: webauthn.inputs[0]?.name ?? 'webauthn_register_displayname',
                 trigger: { name: trigger.name, value: trigger.value },
               }

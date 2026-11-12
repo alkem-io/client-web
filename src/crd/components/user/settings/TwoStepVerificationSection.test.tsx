@@ -151,9 +151,44 @@ describe('TwoStepVerificationSection — security keys', () => {
       { name: 'method', value: 'webauthn' },
       { name: 'webauthn_register', value: '' },
     ],
+    resultFieldName: 'webauthn_register',
     nameFieldName: 'webauthn_register_displayname',
     trigger: { name: 'webauthn_register_trigger', value: '{"publicKey":{}}' },
   };
+
+  /** Submits the form as Ory's script does once the ceremony has run, and returns whether it went through. */
+  const submitAsScript = (form: HTMLFormElement) =>
+    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+
+  it('lets the submission carrying the ceremony result through to the flow action, with the key name', async () => {
+    const { callbacks } = renderSection({ securityKeys: { keys: [], registration } });
+    const form = screen.getByRole('button', { name: 'user.security.twoStep.securityKeys.add' }).closest('form');
+    if (!form) throw new Error('no registration form');
+
+    await userEvent.type(screen.getByLabelText('user.security.twoStep.securityKeys.nameLabel'), 'Desk key');
+    const result = form.querySelector<HTMLInputElement>('input[name="webauthn_register"]');
+    if (!result) throw new Error('no result input');
+    result.value = '{"id":"credential"}';
+
+    expect(form).toHaveAttribute('method', 'POST');
+    expect(form).toHaveAttribute('action', registration.action);
+    expect(Object.fromEntries(new FormData(form))).toEqual({
+      csrf_token: 'csrf',
+      method: 'webauthn',
+      webauthn_register: '{"id":"credential"}',
+      webauthn_register_displayname: 'Desk key',
+    });
+    expect(submitAsScript(form)).toBe(true);
+    expect(callbacks.onAddSecurityKey).not.toHaveBeenCalled();
+  });
+
+  it('starts the ceremony instead of posting when Enter is pressed in the name field', async () => {
+    const { callbacks } = renderSection({ securityKeys: { keys: [], registration } });
+
+    await userEvent.type(screen.getByLabelText('user.security.twoStep.securityKeys.nameLabel'), 'Desk key{Enter}');
+
+    expect(callbacks.onAddSecurityKey).toHaveBeenCalledWith(registration.trigger.value);
+  });
 
   it('empty list: says so and offers the name field and the add trigger in one native form', async () => {
     const { callbacks, container } = renderSection({ securityKeys: { keys: [], registration } });

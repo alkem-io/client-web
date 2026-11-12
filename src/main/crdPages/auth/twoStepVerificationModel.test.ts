@@ -72,6 +72,7 @@ describe('adaptTwoStepVerification', () => {
           { name: 'method', value: 'webauthn' },
           { name: 'webauthn_register', value: '' },
         ],
+        resultFieldName: 'webauthn_register',
         nameFieldName: 'webauthn_register_displayname',
         trigger: { name: 'webauthn_register_trigger', value: WEBAUTHN_REGISTRATION_OPTIONS },
       },

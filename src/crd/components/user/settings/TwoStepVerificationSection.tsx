@@ -32,13 +32,16 @@ export type TwoStepSecurityKeys = {
   keys: { id: string; name: string }[];
   /**
    * The registration form, submitted natively by the identity provider's
-   * script once the ceremony completes: `action` and `hiddenFields` (anti-CSRF
-   * token, the input the script writes its result into) come from the flow, and
-   * the trigger carries the ceremony options as its value.
+   * script once the ceremony has written its result into `resultFieldName`:
+   * `action` and `hiddenFields` (anti-CSRF token, the result input) come from
+   * the flow, and the trigger carries the ceremony options as its value. A
+   * submission without a result (the Add button, Enter in the name field)
+   * starts the ceremony instead.
    */
   registration?: {
     action: string;
     hiddenFields: { name: string; value: string }[];
+    resultFieldName: string;
     nameFieldName: string;
     trigger: { name: string; value: string };
   };
@@ -157,6 +160,12 @@ export function TwoStepVerificationSection({
     event.preventDefault();
     const code = String(new FormData(event.currentTarget).get('code') ?? '').trim();
     if (code) onConfirmAuthenticator(code);
+  };
+
+  const handleRegistrationSubmit = (event: FormEvent<HTMLFormElement>) => {
+    if (!registration || new FormData(event.currentTarget).get(registration.resultFieldName)) return;
+    event.preventDefault();
+    onAddSecurityKey(registration.trigger.value);
   };
 
   const copyCodes = async (codes: string[]) => {
@@ -305,7 +314,7 @@ export function TwoStepVerificationSection({
               action={registration.action}
               method="POST"
               className="flex flex-col gap-3"
-              onSubmit={event => event.preventDefault()}
+              onSubmit={handleRegistrationSubmit}
             >
               {registration.hiddenFields.map(field => (
                 <input key={field.name} type="hidden" name={field.name} defaultValue={field.value} />
@@ -315,12 +324,11 @@ export function TwoStepVerificationSection({
                 <Input id="two-step-security-key-name" name={registration.nameFieldName} className="max-w-80" />
               </div>
               <Button
-                type="button"
+                type="submit"
                 variant="outline"
                 className="self-start"
                 name={registration.trigger.name}
                 value={registration.trigger.value}
-                onClick={() => onAddSecurityKey(registration.trigger.value)}
               >
                 <KeyRound aria-hidden="true" className="size-4" />
                 {t('user.security.twoStep.securityKeys.add')}
