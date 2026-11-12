@@ -89,16 +89,15 @@ describe('SecondFactorCrdRoute', () => {
     expect(usePasskeyScriptSpy).toHaveBeenCalledWith(notEnrolledFlow.ui.nodes);
   });
 
-  it('once a factor is enrolled, says to sign in again, through the sign-in on the platform origin', () => {
+  // Signing in again must first end the identity-provider session: a sign-in that rode it would
+  // complete with no prompt and never ask for the second step.
+  it('once a factor is enrolled, says to sign in again, through the logout that ends the session', () => {
     mockFlow = enrolledSecondFactorSettingsFlow;
 
     renderRoute();
 
     expect(screen.getByText('secondFactorPage.enrolled')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'secondFactorPage.signInAgain' })).toHaveAttribute(
-      'href',
-      'https://alkem.io/api/auth/oidc/login?returnTo=%2F'
-    );
+    expect(screen.getByRole('link', { name: 'secondFactorPage.signInAgain' })).toHaveAttribute('href', '/logout');
     expect(screen.queryByText('user.security.twoStep.authenticator.setUp')).not.toBeInTheDocument();
   });
 
