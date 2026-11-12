@@ -75,7 +75,7 @@ describe('TwoStepVerificationSection — authenticator', () => {
   });
 });
 
-describe('TwoStepVerificationSection — last-factor warning (FR-018)', () => {
+describe('TwoStepVerificationSection — last-factor warning', () => {
   it('warns that the requirement applies again when the last factor is removed while covered', async () => {
     renderSection({ authenticator: { kind: 'enrolled' }, requirementCovered: true });
     await userEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.remove' }));

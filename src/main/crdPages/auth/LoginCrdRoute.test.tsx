@@ -602,6 +602,19 @@ describe('LoginCrdRoute', () => {
       expect(screen.getByRole('button', { name: 'secondFactor.useAuthenticator' })).toBeInTheDocument();
     });
 
+    it('starts the code entry empty again after switching away and back, with its submit disabled', async () => {
+      mockSearch = 'flow=login-aal2';
+      mockFlowState = { flow: aal2LoginFlow, error: undefined, loading: false };
+
+      const { container } = renderRoute();
+      await userEvent.type(codeInput(container, 'totp_code') as HTMLInputElement, '123456');
+      await userEvent.click(screen.getByRole('button', { name: 'secondFactor.useRecoveryCode' }));
+      await userEvent.click(screen.getByRole('button', { name: 'secondFactor.useAuthenticator' }));
+
+      expect(codeInput(container, 'totp_code')).toHaveValue('');
+      expect(container.querySelector('button[name="method"][value="totp"]')).toBeDisabled();
+    });
+
     it('offers the security key beside the code', () => {
       mockSearch = 'flow=login-aal2';
       mockFlowState = { flow: aal2LoginFlow, error: undefined, loading: false };

@@ -92,7 +92,11 @@ export function LoginCard({
     return (
       <AuthCard title={t('secondFactor.title')}>
         <p className="text-body mb-5 text-muted-foreground">{t('secondFactor.subtitle')}</p>
-        <CrdKratosFlow descriptor={descriptor} onPasskeyTrigger={onPasskeyTrigger}>
+        <CrdKratosFlow
+          key={secondFactorStep.showingRecoveryCode ? 'recoveryCode' : 'authenticator'}
+          descriptor={descriptor}
+          onPasskeyTrigger={onPasskeyTrigger}
+        >
           {secondFactorStep.onToggleRecoveryCode ? (
             <button
               type="button"

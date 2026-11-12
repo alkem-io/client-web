@@ -136,7 +136,7 @@ describe('useErrorHandlerLink', () => {
       expect(notify).not.toHaveBeenCalled();
     });
 
-    it('hands every concurrent refusal to the one helper, which navigates once', async () => {
+    it('hands every concurrent refusal to the one helper', async () => {
       const { result } = renderHook(() => useErrorHandlerLink());
 
       await Promise.all([runRefused(result.current), runRefused(result.current)]);
