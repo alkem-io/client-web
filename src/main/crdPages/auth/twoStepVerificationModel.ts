@@ -1,4 +1,5 @@
 import type { SettingsFlow } from '@ory/kratos-client';
+import type { KratosMessage } from '@/crd/components/auth/flowDescriptor';
 import type {
   TwoStepAuthenticator,
   TwoStepRecoveryCodes,
@@ -13,8 +14,9 @@ const WEBAUTHN_RESULT_FIELD = 'webauthn_register';
 
 type TwoStepVerificationModel = Pick<
   TwoStepVerificationSectionProps,
-  'authenticator' | 'recoveryCodes' | 'securityKeys' | 'messages'
+  'authenticator' | 'recoveryCodes' | 'securityKeys'
 > & {
+  messages: KratosMessage[];
   /** The person holds a second factor: an authenticator, a security key or confirmed recovery codes. */
   enrolled: boolean;
   /** The person holds exactly one such factor, so removing it leaves none. */
@@ -106,7 +108,7 @@ export const adaptTwoStepVerification = (flow: SettingsFlow): TwoStepVerificatio
     authenticator,
     recoveryCodes,
     securityKeys,
-    messages: descriptor.messages.map(message => ({ type: message.type, text: message.text })),
+    messages: descriptor.messages,
     enrolled: factorCount > 0,
     soleFactor: factorCount === 1,
     action: descriptor.action,

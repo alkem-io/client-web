@@ -151,7 +151,9 @@ describe('adaptTwoStepVerification', () => {
         ui: { ...secondFactorSettingsFlow.ui, messages: [message] },
       }) as SettingsFlow;
 
-    expect(adaptTwoStepVerification(flow('totp')).messages).toEqual([{ type: 'success', text: message.text }]);
+    expect(adaptTwoStepVerification(flow('totp')).messages).toEqual([
+      expect.objectContaining({ id: 1050001, type: 'success', text: message.text }),
+    ]);
     expect(adaptTwoStepVerification(flow('password')).messages).toEqual([]);
   });
 });

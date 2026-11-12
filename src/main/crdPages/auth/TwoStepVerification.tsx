@@ -5,6 +5,7 @@ import { TwoStepVerificationSection } from '@/crd/components/user/settings/TwoSt
 import { invokePasskeyTrigger, translatePasskeyError } from './passkeyTrigger';
 import { postKratosForm } from './postKratosForm';
 import { adaptTwoStepVerification } from './twoStepVerificationModel';
+import { useKratosMessageCopy } from './useKratosMessageCopy';
 
 type TwoStepVerificationProps = {
   flow: SettingsFlow;
@@ -20,13 +21,15 @@ type TwoStepVerificationProps = {
  */
 export const TwoStepVerification = ({ flow, requirementCovered }: TwoStepVerificationProps) => {
   const { t } = useTranslation();
+  const translateKratosMessages = useKratosMessageCopy();
   const [securityKeyError, setSecurityKeyError] = useState<string>();
   const model = adaptTwoStepVerification(flow);
   const post = (fields: Record<string, string>) => postKratosForm(model.action, fields);
 
+  const flowMessages = translateKratosMessages(model.messages).map(({ type, text }) => ({ type, text }));
   const messages = securityKeyError
-    ? [...(model.messages ?? []), { type: 'error' as const, text: securityKeyError }]
-    : model.messages;
+    ? [...flowMessages, { type: 'error' as const, text: securityKeyError }]
+    : flowMessages;
 
   return (
     <TwoStepVerificationSection
