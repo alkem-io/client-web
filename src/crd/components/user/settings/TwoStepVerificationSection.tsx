@@ -51,7 +51,7 @@ export type TwoStepVerificationSectionProps = {
   authenticator: TwoStepAuthenticator;
   recoveryCodes: TwoStepRecoveryCodes;
   securityKeys?: TwoStepSecurityKeys;
-  /** Outcome messages of the last submission (already translated by the identity provider). */
+  /** Outcome messages of the last submission, already translated by the consumer. */
   messages?: { type: 'info' | 'error' | 'success'; text: string }[];
   /** Removing a factor leaves none while a rule requires one: the removal warns that the rule applies again. */
   warnOnLastFactor?: boolean;

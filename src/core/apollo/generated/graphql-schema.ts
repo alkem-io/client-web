@@ -720,7 +720,7 @@ export type AdminCommunicationReconcileForumHierarchyInput = {
 };
 
 export type AdminResetUserSecondFactorInput = {
-  /** True whenever anyone else may hold the member's password: the password is then replaced with a secret nobody holds, and the account is regained only through the emailed recovery link. No default. */
+  /** True whenever anyone else may hold the member's password: the password is then replaced with a secret nobody holds. Other first factors (a passkey, a linked social sign-in) and the identity's addresses are not touched and must be checked separately. No default. */
   invalidatePassword: Scalars['Boolean']['input'];
   /** The user whose second factor is reset. */
   userID: Scalars['UUID']['input'];
@@ -5829,7 +5829,7 @@ export type Mutation = {
   adminLicensePolicyUpdateCredentialRule: LicensingCredentialBasedPolicyCredentialRule;
   /** Lists, and on request copies, the files templates reference but do not store. A file is copied only when the template's owner can read it. A dry run by default. */
   adminRepairTemplateFiles: AdminTemplateFileRepairResult;
-  /** Platform Support or Platform Users Admin: remove a user's second factor (authenticator app, security keys, recovery codes) and end all their sessions. Audited fail-closed. Refuses self-targeting. */
+  /** Platform Support or Platform Users Admin: remove a user's second factor (authenticator app, security keys, recovery codes) and end their identity-provider sessions and their platform sign-in sessions. A bearer token issued to an application outside the platform's own sign-in is not ended and stays valid until it expires. Audited fail-closed. Refuses self-targeting. */
   adminResetUserSecondFactor: AdminResetUserSecondFactorResult;
   /** Platform Users Admin: revoke a named user's MCP API key. Idempotent. */
   adminRevokeMcpApiKey: McpApiKey;
@@ -42638,21 +42638,6 @@ export type RevokeMcpApiKeyMutation = {
   };
 };
 
-export type SecondFactorRequirementQueryVariables = Exact<{ [key: string]: never }>;
-
-export type SecondFactorRequirementQuery = {
-  __typename?: 'Query';
-  me: {
-    __typename?: 'MeQueryResults';
-    secondFactorRequirement: {
-      __typename?: 'MeSecondFactorRequirement';
-      covered: boolean;
-      deadline?: Date | undefined;
-      satisfied: boolean;
-    };
-  };
-};
-
 export type UserSecurityAuthenticationMethodsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserSecurityAuthenticationMethodsQuery = {
@@ -53065,6 +53050,21 @@ export type RecentSpacesQuery = {
         | { __typename?: 'ActivityLogEntryUpdateSent'; id: string; createdDate: Date }
         | undefined;
     }>;
+  };
+};
+
+export type SecondFactorRequirementQueryVariables = Exact<{ [key: string]: never }>;
+
+export type SecondFactorRequirementQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    secondFactorRequirement: {
+      __typename?: 'MeSecondFactorRequirement';
+      covered: boolean;
+      deadline?: Date | undefined;
+      satisfied: boolean;
+    };
   };
 };
 
