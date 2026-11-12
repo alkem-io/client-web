@@ -31,4 +31,12 @@ describe('routeToSecondFactor', () => {
 
     expect(replace).not.toHaveBeenCalled();
   });
+
+  it('leaves the identity screens alone, so a settings flow handed back to /settings?flow= resumes', async () => {
+    const routeToSecondFactor = await loadHelper('/settings');
+
+    routeToSecondFactor();
+
+    expect(replace).not.toHaveBeenCalled();
+  });
 });
