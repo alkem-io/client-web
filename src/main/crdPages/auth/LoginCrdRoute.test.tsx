@@ -298,13 +298,17 @@ describe('LoginCrdRoute', () => {
   });
 
   describe('the refresh sign-in before a privileged settings change', () => {
-    const kratos = 'https://alkem.io/ory/kratos/public';
+    // The flows as the local stack records them: the gateway strips the public path prefix before
+    // the identity provider sees the request, so `request_url` lacks it while the addresses the
+    // identity provider builds from its public base URL (`ui.action`, the settings continuation) keep it.
+    const gateway = 'http://localhost:3000';
+    const kratos = `${gateway}/ory/kratos/public`;
     const settingsContinuation = `${kratos}/self-service/settings?flow=settings-1`;
     const refreshFlow = (returnTo: string) => ({
       id: 'refresh-1',
       refresh: true,
       requested_aal: 'aal1',
-      request_url: `${kratos}/self-service/login/browser?refresh=true&return_to=${encodeURIComponent(returnTo)}`,
+      request_url: `${gateway}/self-service/login/browser?refresh=true&return_to=${encodeURIComponent(returnTo)}`,
       return_to: returnTo,
       ui: { action: `${kratos}/self-service/login?flow=refresh-1`, method: 'POST', nodes: [] },
     });
@@ -336,11 +340,25 @@ describe('LoginCrdRoute', () => {
       expect(screen.getByTestId('crd-login-card')).toHaveAttribute('data-loading', 'true');
     });
 
-    it('renders the password step of a refresh already returning into the second step', () => {
+    it('renders the password step of the restarted refresh, which returns into the second step', () => {
       mockSessionAal = 'aal2';
-      const secondStep = `${kratos}/self-service/login/browser?refresh=true&aal=aal2&return_to=${encodeURIComponent(settingsContinuation)}`;
-      mockFlowState = { flow: refreshFlow(secondStep), error: undefined, loading: false };
+      mockFlowState = { flow: refreshFlow(settingsContinuation), error: undefined, loading: false };
+      const { unmount } = renderRoute();
+      const restart = new URL(replaceSpy.mock.calls[0][0]);
+      unmount();
+      replaceSpy.mockReset();
 
+      // The flow the identity provider creates for the restart: its request reached it with the
+      // prefix stripped, and it keeps the nested return into the second step.
+      const restartedReturnTo = restart.searchParams.get('return_to') ?? '';
+      mockFlowState = {
+        flow: {
+          ...refreshFlow(restartedReturnTo),
+          request_url: `${gateway}${restart.pathname.replace('/ory/kratos/public', '')}${restart.search}`,
+        },
+        error: undefined,
+        loading: false,
+      };
       renderRoute();
 
       expect(replaceSpy).not.toHaveBeenCalled();

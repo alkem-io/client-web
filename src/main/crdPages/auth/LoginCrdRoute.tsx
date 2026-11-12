@@ -89,13 +89,20 @@ function buildOidcRestartHref(rawReturnUrl: string, platformOrigin: string | und
  * one was going (for a settings change, the identity provider's own
  * continuation of it). A refresh already returning into the second step is left
  * as it is.
+ *
+ * Both steps are started from the submit action's address: `request_url` is the
+ * address the identity provider received, behind a gateway that strips its public
+ * path prefix, so the browser cannot open it.
  */
 function refreshWithSecondStep(flow: LoginFlow, sessionAal: string | undefined): string | undefined {
   if (!flow.refresh || flow.requested_aal !== 'aal1' || sessionAal !== 'aal2') return undefined;
-  const firstStep = new URL(flow.request_url);
+  const action = new URL(flow.ui.action);
+  const browserInit = new URL(`${action.pathname}/browser`, action.origin);
+  const firstStep = new URL(browserInit);
+  firstStep.search = new URL(flow.request_url).search;
   const returnTo = flow.return_to ?? firstStep.searchParams.get('return_to') ?? undefined;
   if (returnTo && new URL(returnTo, firstStep).searchParams.get('aal') === 'aal2') return undefined;
-  const secondStep = new URL(firstStep.pathname, firstStep.origin);
+  const secondStep = new URL(browserInit);
   secondStep.searchParams.set('refresh', 'true');
   secondStep.searchParams.set('aal', 'aal2');
   if (returnTo) secondStep.searchParams.set('return_to', returnTo);
