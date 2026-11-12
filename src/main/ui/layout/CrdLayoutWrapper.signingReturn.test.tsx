@@ -38,6 +38,10 @@ const state = vi.hoisted(() => ({
   verify: vi.fn(),
   plainChildMounted: vi.fn(),
   forbiddenReturnUrlObserved: vi.fn(),
+  currentLanguage: 'en',
+  downNoticeVisible: false,
+  reminderVisible: false,
+  reminderDeadline: undefined as Date | undefined,
 }));
 
 const returnStorageKey = (attemptId: string) => `alkemio.memo-signing-return.v1:${attemptId}`;
@@ -65,7 +69,10 @@ const callout = () => ({
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string, values?: { count?: number }) => (values?.count === undefined ? key : `${key}:${values.count}`),
+    t: (key: string, values?: { count?: number; deadline?: string }) => {
+      if (values?.deadline !== undefined) return `${key}:${values.deadline}`;
+      return values?.count === undefined ? key : `${key}:${values.count}`;
+    },
     i18n: { language: 'en' },
   }),
 }));
@@ -126,7 +133,7 @@ vi.mock('@/main/ui/layout/useCrdNavigation', () => ({
     navigationHrefs: {},
     footerLinks: [],
     languages: [],
-    currentLanguage: 'en',
+    currentLanguage: state.currentLanguage,
     currentPath: '/',
     handleLanguageChange: vi.fn(),
     platformNavigationItems: [],
@@ -166,16 +173,26 @@ vi.mock('@/main/ui/layout/LayoutWidthContext', () => ({
   useSpaceFullWidthActive: () => false,
 }));
 vi.mock('@/main/ui/layout/useDownNoticeBanner', () => ({
-  useDownNoticeBanner: () => ({ visible: false, dismiss: vi.fn() }),
+  useDownNoticeBanner: () => ({ visible: state.downNoticeVisible, dismiss: vi.fn() }),
 }));
 vi.mock('@/main/ui/layout/useSecondFactorReminder', () => ({
-  useSecondFactorReminder: () => ({ visible: false, deadline: undefined, securityHref: '', dismiss: vi.fn() }),
+  useSecondFactorReminder: () => ({
+    visible: state.reminderVisible,
+    deadline: state.reminderDeadline,
+    securityHref: '/user/me/settings/security#two-step-verification',
+    dismiss: vi.fn(),
+  }),
 }));
 vi.mock('@/core/lazyLoading/lazyWithGlobalErrorHandler', () => ({
   lazyWithGlobalErrorHandler: () => () => null,
 }));
 vi.mock('@/crd/layouts/CrdLayout', () => ({
-  CrdLayout: ({ children }: { children: ReactNode }) => <main>{children}</main>,
+  CrdLayout: ({ children, topBanner }: { children: ReactNode; topBanner?: ReactNode }) => (
+    <main>
+      {topBanner}
+      {children}
+    </main>
+  ),
 }));
 vi.mock('@/crd/lib/markdownConfig', () => ({
   MarkdownConfigProvider: ({ children }: { children: ReactNode }) => children,
@@ -365,6 +382,10 @@ beforeEach(() => {
   state.verify.mockClear();
   state.plainChildMounted.mockClear();
   state.forbiddenReturnUrlObserved.mockClear();
+  state.currentLanguage = 'en';
+  state.downNoticeVisible = false;
+  state.reminderVisible = false;
+  state.reminderDeadline = undefined;
   window.sessionStorage.clear();
   globalThis.history.replaceState(null, '', '/space/collaboration/callout-1');
 });
@@ -873,5 +894,44 @@ describe('CrdLayoutWrapper memo-signing return lifecycle', () => {
     );
     expect(screen.getByRole('dialog', { name: 'Restored framing memo editor' })).toBeInTheDocument();
     expect(screen.getAllByTestId('framing-memo-editor')).toHaveLength(1);
+  });
+});
+
+describe('CrdLayoutWrapper top banners', () => {
+  beforeEach(() => {
+    globalThis.history.replaceState(null, '', '/dashboard');
+  });
+
+  it("shows the second-factor reminder with its deadline in the reader's language", () => {
+    state.currentLanguage = 'de';
+    state.reminderVisible = true;
+    state.reminderDeadline = new Date(2026, 11, 1);
+
+    renderPlainRoute();
+
+    expect(screen.getByText('secondFactorReminder.text:1. Dezember 2026')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'secondFactorReminder.action' })).toHaveAttribute(
+      'href',
+      '/user/me/settings/security#two-step-verification'
+    );
+  });
+
+  it('shows the reminder beside the down notice when both apply', () => {
+    state.downNoticeVisible = true;
+    state.reminderVisible = true;
+    state.reminderDeadline = new Date(2026, 11, 1);
+
+    renderPlainRoute();
+
+    expect(screen.getByText('downNoticeBanner.message')).toBeInTheDocument();
+    expect(screen.getByText('secondFactorReminder.text:December 1st, 2026')).toBeInTheDocument();
+  });
+
+  it('shows no reminder while its deadline is unknown', () => {
+    state.reminderVisible = true;
+
+    renderPlainRoute();
+
+    expect(screen.queryByText(/secondFactorReminder\.text/)).not.toBeInTheDocument();
   });
 });
