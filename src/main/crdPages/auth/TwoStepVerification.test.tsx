@@ -1,4 +1,4 @@
-import type { SettingsFlow } from '@ory/kratos-client';
+import type { SettingsFlow, UiNode } from '@ory/kratos-client';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -62,5 +62,41 @@ describe('TwoStepVerification', () => {
     render(<TwoStepVerification flow={flow} />);
 
     expect(screen.getByText('localised: Your changes have been saved!')).toHaveAttribute('role', 'status');
+  });
+
+  describe('last-factor warning', () => {
+    // One security key and no other second factor: removing it leaves none.
+    const soleKeyFlow = {
+      ...enrolledSecondFactorSettingsFlow,
+      ui: {
+        ...enrolledSecondFactorSettingsFlow.ui,
+        nodes: enrolledSecondFactorSettingsFlow.ui.nodes.filter(
+          (node: UiNode) => !['totp', 'lookup_secret'].includes(node.group)
+        ),
+      },
+    } as SettingsFlow;
+
+    const openKeyRemoval = async () => {
+      await userEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.securityKeys.removeNamed' }));
+      return screen.findByRole('alertdialog');
+    };
+
+    it('warns a covered member removing their only factor', async () => {
+      render(<TwoStepVerification flow={soleKeyFlow} requirementCovered={true} />);
+
+      expect(await openKeyRemoval()).toHaveTextContent('user.security.twoStep.lastFactorWarning');
+    });
+
+    it('does not warn a member no requirement covers', async () => {
+      render(<TwoStepVerification flow={soleKeyFlow} requirementCovered={false} />);
+
+      expect(await openKeyRemoval()).not.toHaveTextContent('user.security.twoStep.lastFactorWarning');
+    });
+
+    it('does not warn a covered member who keeps another factor', async () => {
+      render(<TwoStepVerification flow={enrolledSecondFactorSettingsFlow} requirementCovered={true} />);
+
+      expect(await openKeyRemoval()).not.toHaveTextContent('user.security.twoStep.lastFactorWarning');
+    });
   });
 });
