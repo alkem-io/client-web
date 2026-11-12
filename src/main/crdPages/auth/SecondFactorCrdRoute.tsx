@@ -1,7 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
 import { isAppMode } from '@/core/appMode/isAppMode';
-import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import {
+  AUTH_LOGOUT_PATH,
+  PARAM_NAME_LOGOUT_RETURN_TO,
+} from '@/core/auth/authentication/constants/authentication.constants';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
 import { SECOND_FACTOR_PATH } from '@/core/auth/authentication/routeToSecondFactor';
@@ -12,6 +15,7 @@ import {
   type SecondFactorRequiredState,
 } from '@/crd/components/auth/SecondFactorRequiredCard';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
+import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import { AuthShellWrapper } from './AuthShellWrapper';
 import { TwoStepVerification } from './TwoStepVerification';
 import { adaptTwoStepVerification } from './twoStepVerificationModel';
@@ -28,10 +32,10 @@ export function SecondFactorCrdRoute() {
   const { t } = useTranslation('crd-auth');
   usePageTitle(t('secondFactorPage.title'));
   const platformOrigin = usePlatformOrigin();
-  // Signing in again goes through the logout: a sign-in on the live identity-provider session would
-  // complete silently and never ask for the second step.
+  // Signing in again goes through the logout, which then lands on the sign-in: a sign-in on the live
+  // identity-provider session would complete silently and never ask for the second step.
   const actions = {
-    signInAgainHref: AUTH_LOGOUT_PATH,
+    signInAgainHref: `${AUTH_LOGOUT_PATH}?${PARAM_NAME_LOGOUT_RETURN_TO}=${encodeURIComponent(buildLoginUrl())}`,
     signOutHref: AUTH_LOGOUT_PATH,
   };
 

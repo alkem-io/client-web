@@ -11,14 +11,21 @@ import { DEVICE_PUSH_TOKEN_KEY } from '@/main/pushNotifications/constants';
 
 const unregisterDeviceToken = vi.hoisted(() => vi.fn());
 const unsubscribeMutation = vi.hoisted(() => vi.fn());
+const getLogoutUrl = vi.hoisted(() => vi.fn());
+const logout = vi.hoisted(() => ({
+  outcome: { kind: 'redirect', url: '/end-session' } as { kind: string; url?: string; returnTo?: string } | undefined,
+  search: '',
+}));
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
 vi.mock('@/core/auth/authentication/hooks/useLogoutUrl', () => ({
-  useLogoutUrl: () => ({ outcome: { kind: 'redirect', url: '/end-session' }, loading: false, getLogoutUrl: vi.fn() }),
+  useLogoutUrl: () => ({ outcome: logout.outcome, loading: false, getLogoutUrl }),
 }));
+
+vi.mock('@/core/routing/useQueryParams', () => ({ useQueryParams: () => new URLSearchParams(logout.search) }));
 
 vi.mock('@/core/auth/authentication/utils/useSignUpReturnUrl', () => ({
   useReturnUrl: () => ({ clearReturnUrl: vi.fn() }),
@@ -45,6 +52,8 @@ describe('LogoutPage — native device-token unbind (SC-017)', () => {
     localStorage.clear();
     unsubscribeMutation.mockResolvedValue({});
     unregisterDeviceToken.mockResolvedValue({});
+    logout.outcome = { kind: 'redirect', url: '/end-session' };
+    logout.search = '';
     Object.defineProperty(window, 'location', { value: { ...originalLocation, replace }, configurable: true });
   });
 
@@ -94,5 +103,52 @@ describe('LogoutPage — native device-token unbind (SC-017)', () => {
 
     await waitFor(() => expect(replace).toHaveBeenCalledWith('/end-session'));
     expect(localStorage.getItem(DEVICE_PUSH_TOKEN_KEY)).toBeNull();
+  });
+});
+
+describe('LogoutPage — landing after every session has ended', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorage.clear();
+    logout.search = '';
+    Object.defineProperty(window, 'location', { value: { ...originalLocation, replace }, configurable: true });
+  });
+
+  afterEach(() => {
+    Object.defineProperty(window, 'location', { value: originalLocation, configurable: true });
+  });
+
+  it('starts the logout with the in-platform path named by ?returnTo=', () => {
+    logout.outcome = undefined;
+    logout.search = 'returnTo=%2Flogin';
+
+    render(<LogoutPage />);
+
+    expect(getLogoutUrl).toHaveBeenCalledWith('/login');
+  });
+
+  it('refuses a ?returnTo= that leaves the platform', () => {
+    logout.outcome = undefined;
+    logout.search = 'returnTo=%2F%2Fevil.example%2Flogin';
+
+    render(<LogoutPage />);
+
+    expect(getLogoutUrl).toHaveBeenCalledWith(undefined);
+  });
+
+  it('lands on the return target once cleared', async () => {
+    logout.outcome = { kind: 'cleared', returnTo: '/login' };
+
+    render(<LogoutPage />);
+
+    await waitFor(() => expect(replace).toHaveBeenCalledWith('/login'));
+  });
+
+  it('lands on the public home page once cleared with no return target', async () => {
+    logout.outcome = { kind: 'cleared' };
+
+    render(<LogoutPage />);
+
+    await waitFor(() => expect(replace).toHaveBeenCalledWith('/home'));
   });
 });

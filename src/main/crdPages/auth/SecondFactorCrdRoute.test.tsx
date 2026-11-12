@@ -89,15 +89,20 @@ describe('SecondFactorCrdRoute', () => {
     expect(usePasskeyScriptSpy).toHaveBeenCalledWith(notEnrolledFlow.ui.nodes);
   });
 
-  // Signing in again must first end the identity-provider session: a sign-in that rode it would
-  // complete with no prompt and never ask for the second step.
-  it('once a factor is enrolled, says to sign in again, through the logout that ends the session', () => {
+  // Signing in again must first end the identity-provider session (a sign-in that rode it would
+  // complete with no prompt and never ask for the second step), then land on the sign-in; signing out
+  // lands wherever a plain logout does.
+  it('once a factor is enrolled, says to sign in again, through the logout that ends the session on the sign-in', () => {
     mockFlow = enrolledSecondFactorSettingsFlow;
 
     renderRoute();
 
     expect(screen.getByText('secondFactorPage.enrolled')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'secondFactorPage.signInAgain' })).toHaveAttribute('href', '/logout');
+    expect(screen.getByRole('link', { name: 'secondFactorPage.signInAgain' })).toHaveAttribute(
+      'href',
+      '/logout?returnTo=%2Flogin'
+    );
+    expect(screen.getByRole('link', { name: 'secondFactorPage.signOut' })).toHaveAttribute('href', '/logout');
     expect(screen.queryByText('user.security.twoStep.authenticator.setUp')).not.toBeInTheDocument();
   });
 
