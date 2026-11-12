@@ -148,7 +148,7 @@ function toPasskeyNode(node: InputNode, trigger: KratosPasskeyTrigger): KratosPa
   };
 }
 
-const SECOND_FACTOR_GROUPS = {
+export const SECOND_FACTOR_GROUPS = {
   totp: 'totp',
   lookup_secret: 'lookupSecret',
   webauthn: 'webauthn',

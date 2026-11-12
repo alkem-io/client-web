@@ -6,9 +6,9 @@ import type {
   TwoStepSecurityKeys,
   TwoStepVerificationSectionProps,
 } from '@/crd/components/user/settings/TwoStepVerificationSection';
-import { flowDescriptorAdapter } from './flowDescriptorAdapter';
+import { flowDescriptorAdapter, SECOND_FACTOR_GROUPS } from './flowDescriptorAdapter';
 
-const SECOND_FACTOR_METHODS = new Set(['totp', 'lookup_secret', 'webauthn']);
+const SECOND_FACTOR_METHODS = new Set<string>(Object.keys(SECOND_FACTOR_GROUPS));
 /** The hidden input Ory's script writes the registration ceremony's result into. */
 const WEBAUTHN_RESULT_FIELD = 'webauthn_register';
 
