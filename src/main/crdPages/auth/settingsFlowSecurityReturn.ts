@@ -1,7 +1,8 @@
 import type { SettingsFlow } from '@ory/kratos-client';
+import { SECOND_FACTOR_PATH } from '@/core/auth/authentication/routeToSecondFactor';
 
 // The two pages that create settings flows of their own: the Security tab, and /second-factor.
-const RESUMABLE_PATH_SUFFIXES = ['/settings/security', '/second-factor'];
+const RESUMABLE_PATH_SUFFIXES = ['/settings/security', SECOND_FACTOR_PATH];
 
 /**
  * The `return_to` a settings flow was created with. Kratos serialises it as

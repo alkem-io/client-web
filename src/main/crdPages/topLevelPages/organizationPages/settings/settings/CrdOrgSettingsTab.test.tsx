@@ -40,7 +40,9 @@ describe('CrdOrgSettingsTab — a failed save', () => {
     await waitFor(() => expect(notify).toHaveBeenCalledExactlyOnceWith('org.settings.errorToast', 'error'));
     expect(updateOrgSettings).toHaveBeenCalledWith(
       expect.objectContaining({
-        variables: { settingsData: { organizationID: 'org-1', settings: { security: { secondFactorRequired: true } } } },
+        variables: {
+          settingsData: { organizationID: 'org-1', settings: { security: { secondFactorRequired: true } } },
+        },
         context: { skipGlobalErrorHandler: true },
       })
     );
