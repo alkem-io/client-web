@@ -39,7 +39,6 @@ export const TwoStepVerification = ({ flow, requirementCovered }: TwoStepVerific
       onRemoveAuthenticator={() => post(model.fields.removeAuthenticator())}
       onGenerateRecoveryCodes={() => post(model.fields.generateRecoveryCodes())}
       onConfirmRecoveryCodes={() => post(model.fields.confirmRecoveryCodes())}
-      onRevealRecoveryCodes={() => post(model.fields.revealRecoveryCodes())}
       onRemoveRecoveryCodes={() => post(model.fields.removeRecoveryCodes())}
       onRemoveSecurityKey={id => post(model.fields.removeSecurityKey(id))}
       onAddSecurityKey={value => {

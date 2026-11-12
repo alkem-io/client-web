@@ -23,7 +23,7 @@ export type TwoStepRecoveryCodes =
   | { kind: 'none' }
   /** Generated and shown once; they count only after the person confirms they saved them. */
   | { kind: 'unconfirmed'; codes: string[] }
-  | { kind: 'confirmed'; codes?: string[] }
+  | { kind: 'confirmed' }
   /** Recovery codes need an authenticator or a security key first. */
   | { kind: 'disabled' }
   | { kind: 'unavailable' };
@@ -59,7 +59,6 @@ export type TwoStepVerificationSectionProps = {
   onRemoveAuthenticator: () => void;
   onGenerateRecoveryCodes: () => void;
   onConfirmRecoveryCodes: () => void;
-  onRevealRecoveryCodes: () => void;
   onRemoveRecoveryCodes: () => void;
   onAddSecurityKey: (triggerValue: string) => void;
   onRemoveSecurityKey: (id: string) => void;
@@ -101,7 +100,6 @@ export function TwoStepVerificationSection({
   onRemoveAuthenticator,
   onGenerateRecoveryCodes,
   onConfirmRecoveryCodes,
-  onRevealRecoveryCodes,
   onRemoveRecoveryCodes,
   onAddSecurityKey,
   onRemoveSecurityKey,
@@ -374,13 +372,7 @@ export function TwoStepVerificationSection({
                 <ShieldCheck aria-hidden="true" className="size-4 text-primary" />
                 {t('user.security.twoStep.recoveryCodes.active')}
               </p>
-              {recoveryCodes.codes ? renderCodes(recoveryCodes.codes) : null}
               <div className="flex flex-wrap gap-2">
-                {recoveryCodes.codes ? null : (
-                  <Button type="button" variant="outline" onClick={onRevealRecoveryCodes}>
-                    {t('user.security.twoStep.recoveryCodes.reveal')}
-                  </Button>
-                )}
                 <Button type="button" variant="outline" onClick={() => setPendingRemoval({ kind: 'regenerate' })}>
                   {t('user.security.twoStep.recoveryCodes.regenerate')}
                 </Button>

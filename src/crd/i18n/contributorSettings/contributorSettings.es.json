@@ -455,7 +455,6 @@
           "remove": "Eliminar códigos de recuperación",
           "removeDescription": "Ya no podrás iniciar sesión con un código de recuperación.",
           "removeTitle": "¿Eliminar tus códigos de recuperación?",
-          "reveal": "Mostrar códigos de recuperación",
           "shownOnce": "Guarda estos códigos en un lugar seguro ahora. No se volverán a mostrar.",
           "title": "Códigos de recuperación"
         },

@@ -24,7 +24,6 @@ type TwoStepVerificationModel = Pick<
     removeAuthenticator: () => Record<string, string>;
     generateRecoveryCodes: () => Record<string, string>;
     confirmRecoveryCodes: () => Record<string, string>;
-    revealRecoveryCodes: () => Record<string, string>;
     removeRecoveryCodes: () => Record<string, string>;
     removeSecurityKey: (id: string) => Record<string, string>;
   };
@@ -90,7 +89,7 @@ export const adaptTwoStepVerification = (flow: SettingsFlow): TwoStepVerificatio
       : lookupNames.has('lookup_secret_confirm')
         ? { kind: 'unconfirmed', codes: codes ?? [] }
         : lookupNames.has('lookup_secret_disable')
-          ? { kind: 'confirmed', codes }
+          ? { kind: 'confirmed' }
           : hasOtherFactor
             ? { kind: 'none' }
             : { kind: 'disabled' };
@@ -107,7 +106,6 @@ export const adaptTwoStepVerification = (flow: SettingsFlow): TwoStepVerificatio
       removeAuthenticator: () => withCsrf({ method: 'totp', totp_unlink: 'true' }),
       generateRecoveryCodes: () => withCsrf({ method: 'lookup_secret', lookup_secret_regenerate: 'true' }),
       confirmRecoveryCodes: () => withCsrf({ method: 'lookup_secret', lookup_secret_confirm: 'true' }),
-      revealRecoveryCodes: () => withCsrf({ method: 'lookup_secret', lookup_secret_reveal: 'true' }),
       removeRecoveryCodes: () => withCsrf({ method: 'lookup_secret', lookup_secret_disable: 'true' }),
       removeSecurityKey: id => withCsrf({ method: 'webauthn', webauthn_remove: id }),
     },

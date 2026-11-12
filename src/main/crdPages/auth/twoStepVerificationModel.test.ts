@@ -110,7 +110,7 @@ describe('adaptTwoStepVerification', () => {
       ])
     );
 
-    expect(model.recoveryCodes).toEqual({ kind: 'confirmed', codes: undefined });
+    expect(model.recoveryCodes).toEqual({ kind: 'confirmed' });
     expect(model.enrolled).toBe(true);
     expect(model.fields.removeRecoveryCodes()).toEqual({
       csrf_token: 'csrf-value',

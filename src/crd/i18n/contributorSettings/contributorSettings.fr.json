@@ -455,7 +455,6 @@
           "remove": "Supprimer les codes de récupération",
           "removeDescription": "Vous ne pourrez plus vous connecter avec un code de récupération.",
           "removeTitle": "Supprimer vos codes de récupération ?",
-          "reveal": "Afficher les codes de récupération",
           "shownOnce": "Conservez ces codes en lieu sûr dès maintenant. Ils ne seront plus affichés.",
           "title": "Codes de récupération"
         },

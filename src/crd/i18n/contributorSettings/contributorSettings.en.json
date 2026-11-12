@@ -455,7 +455,6 @@
           "remove": "Remove recovery codes",
           "removeDescription": "You will no longer be able to sign in with a recovery code.",
           "removeTitle": "Remove your recovery codes?",
-          "reveal": "Show recovery codes",
           "shownOnce": "Save these codes somewhere safe now. They will not be shown again.",
           "title": "Recovery codes"
         },

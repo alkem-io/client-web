@@ -12,7 +12,6 @@ const handlers = () => ({
   onRemoveAuthenticator: vi.fn(),
   onGenerateRecoveryCodes: vi.fn(),
   onConfirmRecoveryCodes: vi.fn(),
-  onRevealRecoveryCodes: vi.fn(),
   onRemoveRecoveryCodes: vi.fn(),
   onAddSecurityKey: vi.fn(),
   onRemoveSecurityKey: vi.fn(),
@@ -122,11 +121,12 @@ describe('TwoStepVerificationSection — recovery codes', () => {
     expect(callbacks.onConfirmRecoveryCodes).toHaveBeenCalledTimes(1);
   });
 
-  it('confirmed: offers reveal, regenerate and remove (after confirmation)', async () => {
+  it('confirmed: never shows the codes again, and offers regenerate and remove (after confirmation)', async () => {
     const { callbacks } = renderSection({ recoveryCodes: { kind: 'confirmed' } });
 
-    await userEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.recoveryCodes.reveal' }));
-    expect(callbacks.onRevealRecoveryCodes).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole('list')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /recoveryCodes\.(reveal|copy)/ })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'user.security.twoStep.recoveryCodes.regenerate' })).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.recoveryCodes.remove' }));
     expect(callbacks.onRemoveRecoveryCodes).not.toHaveBeenCalled();
