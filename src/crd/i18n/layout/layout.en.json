@@ -61,6 +61,6 @@
   "secondFactorReminder": {
     "action": "Set it up",
     "dismiss": "Dismiss",
-    "text": "Set up two-step verification before {{deadline}}. After that date you cannot use Alkemio until you do."
+    "text": "Use two-step verification by {{deadline}}: set it up, or sign in again with it if you already have. After that date you cannot use Alkemio without it."
   }
 }

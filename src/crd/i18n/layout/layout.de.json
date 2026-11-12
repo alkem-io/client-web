@@ -61,6 +61,6 @@
   "secondFactorReminder": {
     "action": "Jetzt einrichten",
     "dismiss": "Schließen",
-    "text": "Richten Sie die Bestätigung in zwei Schritten vor dem {{deadline}} ein. Danach können Sie Alkemio erst wieder nutzen, wenn Sie das getan haben."
+    "text": "Nutzen Sie die Bestätigung in zwei Schritten bis zum {{deadline}}: Richten Sie sie ein oder melden Sie sich erneut damit an, wenn Sie sie bereits eingerichtet haben. Danach können Sie Alkemio nicht mehr ohne sie nutzen."
   }
 }

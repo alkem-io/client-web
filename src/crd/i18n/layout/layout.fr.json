@@ -61,6 +61,6 @@
   "secondFactorReminder": {
     "action": "Configurer",
     "dismiss": "Fermer",
-    "text": "Configurez la validation en deux étapes avant le {{deadline}}. Après cette date, vous ne pourrez plus utiliser Alkemio tant que ce ne sera pas fait."
+    "text": "Utilisez la validation en deux étapes d'ici le {{deadline}} : configurez-la, ou reconnectez-vous avec elle si c'est déjà fait. Après cette date, vous ne pourrez plus utiliser Alkemio sans elle."
   }
 }

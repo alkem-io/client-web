@@ -7,8 +7,8 @@ import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 export const SECOND_FACTOR_REMINDER_DISMISSED_KEY = 'alkemio_second_factor_reminder_dismissed';
 
 /**
- * The reminder shown while a rule requires a second factor the person has not
- * set up and its deadline is still ahead. Dismissed for the rest of the browser
+ * The reminder shown while a rule requires a second factor this sign-in did not
+ * use and its deadline is still ahead. Dismissed for the rest of the browser
  * session by the person who dismissed it; anyone else signing in on the tab
  * still sees their own. A refused session asks nothing: it is on its way to
  * /second-factor.
