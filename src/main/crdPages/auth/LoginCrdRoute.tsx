@@ -90,6 +90,10 @@ function buildOidcRestartHref(rawReturnUrl: string, platformOrigin: string | und
  * continuation of it). A refresh already returning into the second step is left
  * as it is.
  *
+ * This guides the browser; it is not the control. The identity provider still
+ * accepts the password-only refresh from a client that skips the restart, and
+ * only the identity provider can refuse it.
+ *
  * Both steps are started from the submit action's address: `request_url` is the
  * address the identity provider received, behind a gateway that strips its public
  * path prefix, so the browser cannot open it.
@@ -121,7 +125,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   const { kratosErrors } = (useLocation().state as LocationStateWithKratosErrors | null) ?? {};
   const params = useQueryParams();
   const [passkeyError, setPasskeyError] = useState<string>();
-  const [showRecoveryCode, setShowRecoveryCode] = useState(false);
+  const [recoveryCodeChoice, setRecoveryCodeChoice] = useState<boolean>();
   const translateDescriptor = useTranslateDescriptor();
   const translateMessages = useKratosMessageCopy();
 
@@ -238,6 +242,8 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   const isSecondFactorStep = loginFlow?.requested_aal === 'aal2';
   const hasAuthenticatorCode = (descriptor?.groups.totp.inputs.length ?? 0) > 0;
   const hasRecoveryCode = (descriptor?.groups.lookupSecret.inputs.length ?? 0) > 0;
+  // A submitted recovery code comes back with the flow on its method, so the page reopens on it.
+  const showRecoveryCode = recoveryCodeChoice ?? loginFlow?.active === 'lookup_secret';
   const showingRecoveryCode = hasRecoveryCode && (showRecoveryCode || !hasAuthenticatorCode);
   const stepDescriptor =
     descriptor && isSecondFactorStep
@@ -374,7 +380,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
             ? {
                 showingRecoveryCode,
                 onToggleRecoveryCode:
-                  hasAuthenticatorCode && hasRecoveryCode ? () => setShowRecoveryCode(shown => !shown) : undefined,
+                  hasAuthenticatorCode && hasRecoveryCode ? () => setRecoveryCodeChoice(!showRecoveryCode) : undefined,
               }
             : undefined
         }

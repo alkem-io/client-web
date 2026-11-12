@@ -602,6 +602,31 @@ describe('LoginCrdRoute', () => {
       expect(screen.getByRole('button', { name: 'secondFactor.useAuthenticator' })).toBeInTheDocument();
     });
 
+    it('reopens on the recovery code after a submitted one is refused, and can switch back', async () => {
+      mockSearch = 'flow=login-aal2';
+      mockFlowState = {
+        flow: {
+          ...aal2LoginFlow,
+          active: 'lookup_secret',
+          ui: {
+            ...aal2LoginFlow.ui,
+            messages: [{ id: 4000016, type: 'error', text: 'The recovery code is not valid.' }],
+          },
+        },
+        error: undefined,
+        loading: false,
+      };
+
+      const { container } = renderRoute();
+
+      expect(codeInput(container, 'lookup_secret')).not.toBeNull();
+      expect(codeInput(container, 'totp_code')).toBeNull();
+      expect(screen.getByRole('alert')).toHaveTextContent('The recovery code is not valid.');
+
+      await userEvent.click(screen.getByRole('button', { name: 'secondFactor.useAuthenticator' }));
+      expect(codeInput(container, 'totp_code')).not.toBeNull();
+    });
+
     it('starts the code entry empty again after switching away and back, with its submit disabled', async () => {
       mockSearch = 'flow=login-aal2';
       mockFlowState = { flow: aal2LoginFlow, error: undefined, loading: false };
