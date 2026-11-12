@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { ConnectedAccountsView } from '../ConnectedAccountsView';
@@ -143,4 +143,23 @@ describe('UserSecurityTabView', () => {
       expect(action).toHaveAttribute('href', '/logout');
     }
   );
+
+  it('scrolls to the two-step section when the reminder link lands before the section has loaded', async () => {
+    const scrollIntoView = vi.fn();
+    Element.prototype.scrollIntoView = scrollIntoView;
+    globalThis.history.replaceState(null, '', '/user/me/settings/security#two-step-verification');
+    const readyState: UserSecurityViewState = { kind: 'ready', hasPassword: true, hasWebauthn: false };
+    const props = { passwordForm: null, webauthnForm: null, mcpApiKeysCard: null, connectedAccountsSection: null };
+
+    const { rerender } = render(
+      <UserSecurityTabView state={readyState} twoStepVerificationSection={null} {...props} />
+    );
+    expect(scrollIntoView).not.toHaveBeenCalled();
+
+    rerender(<UserSecurityTabView state={readyState} twoStepVerificationSection={<p>two-step</p>} {...props} />);
+
+    await waitFor(() => expect(scrollIntoView).toHaveBeenCalledTimes(1));
+    expect(scrollIntoView.mock.contexts[0]).toHaveAttribute('id', 'two-step-verification');
+    globalThis.history.replaceState(null, '', '/');
+  });
 });

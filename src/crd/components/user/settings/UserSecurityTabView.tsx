@@ -167,15 +167,15 @@ export function UserSecurityTabView({
           </SettingsSection>
         </div>
         {twoStepVerificationSection ? (
-          <div id="two-step-verification" className="scroll-mt-60">
-            <SettingsSection
-              title={t('user.security.twoStep.title')}
-              icon={<Smartphone className="size-4" />}
-              iconColor="blue"
-            >
-              {twoStepVerificationSection}
-            </SettingsSection>
-          </div>
+          <SettingsSection
+            id="two-step-verification"
+            className="scroll-mt-60"
+            title={t('user.security.twoStep.title')}
+            icon={<Smartphone className="size-4" />}
+            iconColor="blue"
+          >
+            {twoStepVerificationSection}
+          </SettingsSection>
         ) : null}
         <SettingsSection
           title={t('user.security.mcpApiKeys.title')}
