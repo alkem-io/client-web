@@ -3,7 +3,7 @@ import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeCont
 import { isAppMode } from '@/core/appMode/isAppMode';
 import {
   AUTH_LOGOUT_PATH,
-  PARAM_NAME_LOGOUT_RETURN_TO,
+  PARAM_NAME_LOGOUT_SIGN_IN_AGAIN,
 } from '@/core/auth/authentication/constants/authentication.constants';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
@@ -15,7 +15,6 @@ import {
   type SecondFactorRequiredState,
 } from '@/crd/components/auth/SecondFactorRequiredCard';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
-import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import { AuthShellWrapper } from './AuthShellWrapper';
 import { TwoStepVerification } from './TwoStepVerification';
 import { adaptTwoStepVerification } from './twoStepVerificationModel';
@@ -35,7 +34,7 @@ export function SecondFactorCrdRoute() {
   // Signing in again goes through the logout, which then lands on the sign-in: a sign-in on the live
   // identity-provider session would complete silently and never ask for the second step.
   const actions = {
-    signInAgainHref: `${AUTH_LOGOUT_PATH}?${PARAM_NAME_LOGOUT_RETURN_TO}=${encodeURIComponent(buildLoginUrl())}`,
+    signInAgainHref: `${AUTH_LOGOUT_PATH}?${PARAM_NAME_LOGOUT_SIGN_IN_AGAIN}=true`,
     signOutHref: AUTH_LOGOUT_PATH,
   };
 

@@ -38,11 +38,11 @@ export const OIDC_ID_TOKEN_HINT_PATH = `${OIDC_BFF_BASE}/id-token-hint`;
 // whenever a live BFF session is next observed.
 export const OIDC_RECOVERY_ATTEMPTED_KEY = 'alkemio_oidc_recovery_attempted';
 
-// Query parameter of /logout naming the in-platform path to land on once every
-// session has ended, and the sessionStorage key that carries it across the
+// Query parameter of /logout asking to land on the sign-in once every session
+// has ended, and the sessionStorage key that carries it across the
 // identity-provider leg, which returns to a bare /logout (see useLogoutUrl).
-export const PARAM_NAME_LOGOUT_RETURN_TO = 'returnTo';
-export const LOGOUT_RETURN_TO_KEY = 'alkemio_logout_return_to';
+export const PARAM_NAME_LOGOUT_SIGN_IN_AGAIN = 'signInAgain';
+export const LOGOUT_SIGN_IN_AGAIN_KEY = 'alkemio_logout_sign_in_again';
 
 // sessionStorage marker (see useDeleteAccount): a forced re-authentication
 // round trip for account deletion has already been attempted in this tab —

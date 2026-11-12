@@ -1,6 +1,7 @@
 import { render, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { DEVICE_PUSH_TOKEN_KEY } from '@/main/pushNotifications/constants';
+import { SECOND_FACTOR_REMINDER_DISMISSED_KEY } from '@/main/ui/layout/useSecondFactorReminder';
 
 /**
  * SC-017 / US2-1 — the cross-user-leak control. An unbound device token keeps
@@ -13,7 +14,9 @@ const unregisterDeviceToken = vi.hoisted(() => vi.fn());
 const unsubscribeMutation = vi.hoisted(() => vi.fn());
 const getLogoutUrl = vi.hoisted(() => vi.fn());
 const logout = vi.hoisted(() => ({
-  outcome: { kind: 'redirect', url: '/end-session' } as { kind: string; url?: string; returnTo?: string } | undefined,
+  outcome: { kind: 'redirect', url: '/end-session' } as
+    | { kind: string; url?: string; signInAgain?: boolean }
+    | undefined,
   search: '',
 }));
 
@@ -118,26 +121,29 @@ describe('LogoutPage — landing after every session has ended', () => {
     Object.defineProperty(window, 'location', { value: originalLocation, configurable: true });
   });
 
-  it('starts the logout with the in-platform path named by ?returnTo=', () => {
+  it('starts the logout asking to sign in again for ?signInAgain=true', () => {
     logout.outcome = undefined;
-    logout.search = 'returnTo=%2Flogin';
+    logout.search = 'signInAgain=true';
 
     render(<LogoutPage />);
 
-    expect(getLogoutUrl).toHaveBeenCalledWith('/login');
+    expect(getLogoutUrl).toHaveBeenCalledWith(true);
   });
 
-  it('refuses a ?returnTo= that leaves the platform', () => {
+  it('takes no landing target from the address', async () => {
     logout.outcome = undefined;
-    logout.search = 'returnTo=%2F%2Fevil.example%2Flogin';
+    logout.search = 'returnTo=%2F.%2F%2Fevil.example%2Flogin';
 
-    render(<LogoutPage />);
+    const { rerender } = render(<LogoutPage />);
+    expect(getLogoutUrl).toHaveBeenCalledWith(false);
 
-    expect(getLogoutUrl).toHaveBeenCalledWith(undefined);
+    logout.outcome = { kind: 'cleared' };
+    rerender(<LogoutPage />);
+    await waitFor(() => expect(replace).toHaveBeenCalledWith('/home'));
   });
 
-  it('lands on the return target once cleared', async () => {
-    logout.outcome = { kind: 'cleared', returnTo: '/login' };
+  it('lands on the sign-in once cleared when asked to sign in again', async () => {
+    logout.outcome = { kind: 'cleared', signInAgain: true };
 
     render(<LogoutPage />);
 
@@ -150,5 +156,15 @@ describe('LogoutPage — landing after every session has ended', () => {
     render(<LogoutPage />);
 
     await waitFor(() => expect(replace).toHaveBeenCalledWith('/home'));
+  });
+
+  it('forgets the dismissed second-step reminder, so the next person on this tab sees their own', async () => {
+    sessionStorage.setItem(SECOND_FACTOR_REMINDER_DISMISSED_KEY, 'true');
+    logout.outcome = { kind: 'cleared' };
+
+    render(<LogoutPage />);
+
+    await waitFor(() => expect(replace).toHaveBeenCalled());
+    expect(sessionStorage.getItem(SECOND_FACTOR_REMINDER_DISMISSED_KEY)).toBeNull();
   });
 });

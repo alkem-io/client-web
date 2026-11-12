@@ -2,12 +2,14 @@ import { useMutation } from '@apollo/client';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUnsubscribeFromPushNotificationsMutation } from '@/core/apollo/generated/apollo-hooks';
-import { PARAM_NAME_LOGOUT_RETURN_TO } from '@/core/auth/authentication/constants/authentication.constants';
+import {
+  _AUTH_LOGIN_PATH,
+  PARAM_NAME_LOGOUT_SIGN_IN_AGAIN,
+} from '@/core/auth/authentication/constants/authentication.constants';
 import { useLogoutUrl } from '@/core/auth/authentication/hooks/useLogoutUrl';
 import { useReturnUrl, useSignUpRoundTrip } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import Loading from '@/core/ui/loading/Loading';
-import { resolveInternalReturnPath } from '@/core/utils/links';
 import {
   DEVICE_PUSH_TOKEN_KEY,
   PUSH_SUBSCRIPTION_ID_KEY,
@@ -17,6 +19,7 @@ import {
   UnregisterDevicePushTokenDocument,
   type UnregisterDevicePushTokenVariables,
 } from '@/main/pushNotifications/devicePushTokenMutations';
+import { SECOND_FACTOR_REMINDER_DISMISSED_KEY } from '@/main/ui/layout/useSecondFactorReminder';
 import { clearMessagingDrafts } from '@/main/userMessaging/messagingDrafts';
 
 async function cleanupPushSubscription(
@@ -66,7 +69,7 @@ const LogoutPage = () => {
   const { t } = useTranslation();
 
   const { getLogoutUrl, outcome } = useLogoutUrl();
-  const returnTo = resolveInternalReturnPath(useQueryParams().get(PARAM_NAME_LOGOUT_RETURN_TO) ?? undefined, undefined);
+  const signInAgain = useQueryParams().get(PARAM_NAME_LOGOUT_SIGN_IN_AGAIN) === 'true';
   const { clearReturnUrl } = useReturnUrl();
   const { clearArmed } = useSignUpRoundTrip();
   const [unsubscribeMutation] = useUnsubscribeFromPushNotificationsMutation();
@@ -75,9 +78,16 @@ const LogoutPage = () => {
     UnregisterDevicePushTokenVariables
   >(UnregisterDevicePushTokenDocument);
 
+  const clearSessionState = () => {
+    clearReturnUrl();
+    clearArmed();
+    clearMessagingDrafts();
+    sessionStorage.removeItem(SECOND_FACTOR_REMINDER_DISMISSED_KEY);
+  };
+
   useEffect(() => {
     if (!outcome) {
-      getLogoutUrl(returnTo ?? undefined);
+      getLogoutUrl(signInAgain);
       return;
     }
     if (outcome.kind === 'redirect') {
@@ -85,21 +95,17 @@ const LogoutPage = () => {
       // The target is whichever logout leg useLogoutUrl picked next — the Hydra
       // end_session URL or the Kratos SSO logout URL.
       cleanupPushSubscription(unsubscribeMutation, unregisterDeviceToken).finally(() => {
-        clearReturnUrl();
-        clearArmed();
-        clearMessagingDrafts();
+        clearSessionState();
         window.location.replace(outcome.url);
       });
       return;
     }
     // outcome.kind === 'cleared' — nothing left to end (no BFF session, no Kratos
-    // session). Land where the logout was asked to return to, or on the public
+    // session). Land on the sign-in when the logout was asked to, or on the public
     // home page instead of the bare placeholder.
     cleanupPushSubscription(unsubscribeMutation, unregisterDeviceToken).finally(() => {
-      clearReturnUrl();
-      clearArmed();
-      clearMessagingDrafts();
-      window.location.replace(outcome.returnTo ?? '/home');
+      clearSessionState();
+      window.location.replace(outcome.signInAgain ? _AUTH_LOGIN_PATH : '/home');
     });
   }, [outcome]);
 

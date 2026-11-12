@@ -100,7 +100,7 @@ describe('SecondFactorCrdRoute', () => {
     expect(screen.getByText('secondFactorPage.enrolled')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'secondFactorPage.signInAgain' })).toHaveAttribute(
       'href',
-      '/logout?returnTo=%2Flogin'
+      '/logout?signInAgain=true'
     );
     expect(screen.getByRole('link', { name: 'secondFactorPage.signOut' })).toHaveAttribute('href', '/logout');
     expect(screen.queryByText('user.security.twoStep.authenticator.setUp')).not.toBeInTheDocument();
