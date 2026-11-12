@@ -156,5 +156,4 @@ describe('LogoutPage — landing after every session has ended', () => {
 
     await waitFor(() => expect(replace).toHaveBeenCalledWith('/home'));
   });
-
 });

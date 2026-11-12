@@ -11,7 +11,6 @@ const EXCLUDE_FROM_GLOBAL_HANDLER_ERRORS = [
   AlkemioGraphqlErrorCode.FORBIDDEN,
   AlkemioGraphqlErrorCode.FORBIDDEN_POLICY,
   AlkemioGraphqlErrorCode.URL_RESOLVER_ERROR,
-  AlkemioGraphqlErrorCode.SECOND_FACTOR_REQUIRED,
 ];
 
 const isSubscription = (operation: Operation) => {

@@ -164,14 +164,12 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
 
   // Two-step verification: the same settings flow's totp / lookup_secret / webauthn nodes. Whether a
   // rule requires a second factor of this person decides only the warning on removing the last one.
-  const { data: requirementData } = useSecondFactorRequirementQuery();
-  const twoStepVerificationSection =
-    flowResult.kind === 'ready' && offersTwoStepVerification(flowResult.flow) ? (
-      <TwoStepVerification
-        flow={flowResult.flow}
-        requirementCovered={requirementData?.me.secondFactorRequirement.covered}
-      />
-    ) : null;
+  const twoStepFlow =
+    flowResult.kind === 'ready' && offersTwoStepVerification(flowResult.flow) ? flowResult.flow : undefined;
+  const { data: requirementData } = useSecondFactorRequirementQuery({ skip: !twoStepFlow });
+  const twoStepVerificationSection = twoStepFlow ? (
+    <TwoStepVerification flow={twoStepFlow} requirementCovered={requirementData?.me.secondFactorRequirement.covered} />
+  ) : null;
 
   // Connected Accounts (US1-3, FR-001-FR-012, FR-017-FR-026): derived from
   // the same Settings flow plus the same authentication-methods query the
