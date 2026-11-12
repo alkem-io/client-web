@@ -21,14 +21,8 @@ vi.mock('@/domain/platform/routes/usePlatformOrigin', () => ({
   default: () => 'https://sandbox-alkem.io',
 }));
 
-// The identity provider's session level, as `whoami` reports it.
-let mockSessionAal: string | undefined;
 vi.mock('@/core/auth/authentication/hooks/useAuthenticationContext', () => ({
-  useAuthenticationContext: () => ({
-    isAuthenticated: mockIsAuthenticated(),
-    loading: false,
-    session: mockSessionAal ? { authenticator_assurance_level: mockSessionAal } : undefined,
-  }),
+  useAuthenticationContext: () => ({ isAuthenticated: mockIsAuthenticated() }),
 }));
 
 // Render a cheap sentinel for the login screen so we can assert whether it
@@ -36,20 +30,16 @@ vi.mock('@/core/auth/authentication/hooks/useAuthenticationContext', () => ({
 // The second-step cases render the real card and adapter against recorded flows; every other
 // case keeps the cheap sentinel.
 let mockRealFlow = false;
-// The real adapter behind the sentinel card, for cases that read the flow but not the card.
-let mockRealAdapter = false;
 vi.mock('@/crd/components/auth/LoginCard', async importOriginal => {
   const actual = await importOriginal<typeof import('@/crd/components/auth/LoginCard')>();
   const Sentinel = ({
     descriptor,
-    isLoading,
     notice,
   }: {
     descriptor?: { flowType?: string };
-    isLoading?: boolean;
     notice?: { text: string; actionLabel: string; actionHref: string; tone?: string };
   }) => (
-    <div data-testid="crd-login-card" data-loading={String(Boolean(isLoading))}>
+    <div data-testid="crd-login-card">
       {descriptor?.flowType ?? 'no-descriptor'}
       {notice ? (
         <div data-testid="card-notice" data-tone={notice.tone ?? 'destructive'}>
@@ -122,7 +112,7 @@ vi.mock('./flowDescriptorAdapter', async importOriginal => {
   const actual = await importOriginal<typeof import('./flowDescriptorAdapter')>();
   return {
     flowDescriptorAdapter: (...args: Parameters<typeof actual.flowDescriptorAdapter>) =>
-      mockRealFlow || mockRealAdapter ? actual.flowDescriptorAdapter(...args) : {},
+      mockRealFlow ? actual.flowDescriptorAdapter(...args) : {},
   };
 });
 vi.mock('./passkeyTrigger', () => ({
@@ -151,8 +141,6 @@ describe('LoginCrdRoute', () => {
     mockWelcomeProps = undefined;
     mockFlowState = { flow: undefined, error: undefined, loading: false };
     mockRealFlow = false;
-    mockRealAdapter = false;
-    mockSessionAal = undefined;
     mockIsAuthenticated.mockReset();
     replaceSpy.mockReset();
     // Simulate the page being served on the identity subdomain (where signup
@@ -295,85 +283,6 @@ describe('LoginCrdRoute', () => {
     renderRoute();
 
     expect(screen.getByTestId('crd-login-card')).toBeInTheDocument();
-  });
-
-  describe('the refresh sign-in before a privileged settings change', () => {
-    // The flows as the local stack records them: the gateway strips the public path prefix before
-    // the identity provider sees the request, so `request_url` lacks it while the addresses the
-    // identity provider builds from its public base URL (`ui.action`, the settings continuation) keep it.
-    const gateway = 'http://localhost:3000';
-    const kratos = `${gateway}/ory/kratos/public`;
-    const settingsContinuation = `${kratos}/self-service/settings?flow=settings-1`;
-    const refreshFlow = (returnTo: string) => ({
-      id: 'refresh-1',
-      refresh: true,
-      requested_aal: 'aal1',
-      request_url: `${gateway}/self-service/login/browser?refresh=true&return_to=${encodeURIComponent(returnTo)}`,
-      return_to: returnTo,
-      ui: { action: `${kratos}/self-service/login?flow=refresh-1`, method: 'POST', nodes: [] },
-    });
-
-    beforeEach(() => {
-      mockIsAuthenticated.mockReturnValue(true);
-      mockSearch = 'flow=refresh-1';
-      mockRealAdapter = true;
-    });
-
-    // The identity provider's refresh asks the password alone even of a session that holds a second
-    // factor, so the password by itself would remove that factor.
-    it('restarts the refresh of a second-factor session so the password step returns into the second step', () => {
-      mockSessionAal = 'aal2';
-      mockFlowState = { flow: refreshFlow(settingsContinuation), error: undefined, loading: false };
-
-      renderRoute();
-
-      expect(replaceSpy).toHaveBeenCalledTimes(1);
-      const firstStep = new URL(replaceSpy.mock.calls[0][0]);
-      expect(`${firstStep.origin}${firstStep.pathname}`).toBe(`${kratos}/self-service/login/browser`);
-      expect(firstStep.searchParams.get('refresh')).toBe('true');
-      expect(firstStep.searchParams.get('aal')).toBeNull();
-      const secondStep = new URL(firstStep.searchParams.get('return_to') ?? '');
-      expect(`${secondStep.origin}${secondStep.pathname}`).toBe(`${kratos}/self-service/login/browser`);
-      expect(secondStep.searchParams.get('refresh')).toBe('true');
-      expect(secondStep.searchParams.get('aal')).toBe('aal2');
-      expect(secondStep.searchParams.get('return_to')).toBe(settingsContinuation);
-      expect(screen.getByTestId('crd-login-card')).toHaveAttribute('data-loading', 'true');
-    });
-
-    it('renders the password step of the restarted refresh, which returns into the second step', () => {
-      mockSessionAal = 'aal2';
-      mockFlowState = { flow: refreshFlow(settingsContinuation), error: undefined, loading: false };
-      const { unmount } = renderRoute();
-      const restart = new URL(replaceSpy.mock.calls[0][0]);
-      unmount();
-      replaceSpy.mockReset();
-
-      // The flow the identity provider creates for the restart: its request reached it with the
-      // prefix stripped, and it keeps the nested return into the second step.
-      const restartedReturnTo = restart.searchParams.get('return_to') ?? '';
-      mockFlowState = {
-        flow: {
-          ...refreshFlow(restartedReturnTo),
-          request_url: `${gateway}${restart.pathname.replace('/ory/kratos/public', '')}${restart.search}`,
-        },
-        error: undefined,
-        loading: false,
-      };
-      renderRoute();
-
-      expect(replaceSpy).not.toHaveBeenCalled();
-      expect(screen.getByTestId('crd-login-card')).toHaveAttribute('data-loading', 'false');
-    });
-
-    it('renders the password step of a session with no second factor', () => {
-      mockSessionAal = 'aal1';
-      mockFlowState = { flow: refreshFlow(settingsContinuation), error: undefined, loading: false };
-
-      renderRoute();
-
-      expect(replaceSpy).not.toHaveBeenCalled();
-      expect(screen.getByTestId('crd-login-card')).toHaveAttribute('data-loading', 'false');
-    });
   });
 
   // Kratos rejects a flow id whose anti-CSRF cookie has moved on with 403

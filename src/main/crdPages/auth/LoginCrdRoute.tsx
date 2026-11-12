@@ -1,4 +1,3 @@
-import type { LoginFlow } from '@ory/kratos-client';
 import { formatDuration } from 'date-fns';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +11,6 @@ import {
   PARAM_NAME_RETURN_URL,
   STORAGE_KEY_RETURN_URL,
 } from '@/core/auth/authentication/constants/authentication.constants';
-import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
 import type { LocationStateWithKratosErrors } from '@/core/auth/authentication/pages/LocationStateWithKratosErrors';
@@ -80,40 +78,6 @@ function buildOidcRestartHref(rawReturnUrl: string, platformOrigin: string | und
   return `${platformOrigin ?? ''}${OIDC_LOGIN_PATH}?returnTo=${encodeURIComponent(returnTo)}`;
 }
 
-/**
- * The identity provider confirms a stale session before a privileged settings
- * change with a refresh sign-in that asks the first factor alone, even when the
- * session holds a second factor — so the password by itself could remove the
- * second factor. For such a session the refresh is restarted with its return
- * pointed at a refresh of the second step, which then returns where the first
- * one was going (for a settings change, the identity provider's own
- * continuation of it). A refresh already returning into the second step is left
- * as it is.
- *
- * This guides the browser; it is not the control. The identity provider still
- * accepts the password-only refresh from a client that skips the restart, and
- * only the identity provider can refuse it.
- *
- * Both steps are started from the submit action's address: `request_url` is the
- * address the identity provider received, behind a gateway that strips its public
- * path prefix, so the browser cannot open it.
- */
-function refreshWithSecondStep(flow: LoginFlow, sessionAal: string | undefined): string | undefined {
-  if (!flow.refresh || flow.requested_aal !== 'aal1' || sessionAal !== 'aal2') return undefined;
-  const action = new URL(flow.ui.action);
-  const browserInit = new URL(`${action.pathname}/browser`, action.origin);
-  const firstStep = new URL(browserInit);
-  firstStep.search = new URL(flow.request_url).search;
-  const returnTo = flow.return_to ?? firstStep.searchParams.get('return_to') ?? undefined;
-  if (returnTo && new URL(returnTo, firstStep).searchParams.get('aal') === 'aal2') return undefined;
-  const secondStep = new URL(browserInit);
-  secondStep.searchParams.set('refresh', 'true');
-  secondStep.searchParams.set('aal', 'aal2');
-  if (returnTo) secondStep.searchParams.set('return_to', returnTo);
-  firstStep.searchParams.set('return_to', secondStep.toString());
-  return firstStep.toString();
-}
-
 function CrdLoginPage({ flow }: { flow?: string }) {
   useTransactionScope({ type: 'authentication' });
   const { t, i18n } = useTranslation();
@@ -163,18 +127,6 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   }, [isOidcEntry, returnUrlFromParam, platformOrigin]);
 
   usePasskeyScript(loginFlow?.ui?.nodes);
-
-  // A refresh is held on the loading card until the session's level is known, so
-  // the first factor cannot be submitted before the restart below is decided.
-  const { session, loading: sessionLoading } = useAuthenticationContext();
-  const secondStepRefresh = loginFlow
-    ? refreshWithSecondStep(loginFlow, session?.authenticator_assurance_level)
-    : undefined;
-  const isDecidingRefresh = Boolean(loginFlow?.refresh) && (sessionLoading || Boolean(secondStepRefresh));
-
-  useLayoutEffect(() => {
-    if (secondStepRefresh) window.location.replace(secondStepRefresh);
-  }, [secondStepRefresh]);
 
   const isLockedOut = isLockedOutArrival;
   const retryAfterRaw = Number(params.get('retry_after'));
@@ -361,7 +313,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
     <AuthShellWrapper>
       <LoginCard
         descriptor={stepDescriptor}
-        isLoading={loading || isDecidingRefresh}
+        isLoading={loading}
         signUpHref={
           // Forward the pending returnUrl so a first-time visitor who came
           // for a specific space/subspace keeps that destination through
