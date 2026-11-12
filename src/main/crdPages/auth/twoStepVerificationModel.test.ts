@@ -5,7 +5,7 @@ import {
   secondFactorSettingsFlow,
   WEBAUTHN_REGISTRATION_OPTIONS,
 } from './__fixtures__/secondFactorFlows';
-import { adaptTwoStepVerification } from './twoStepVerificationModel';
+import { adaptTwoStepVerification, offersTwoStepVerification } from './twoStepVerificationModel';
 
 const LOOKUP_SUBMITS = [
   'lookup_secret_regenerate',
@@ -29,6 +29,27 @@ const withLookup = (flow: SettingsFlow, keep: string[], withCodes = false): Sett
       }),
     },
   }) as SettingsFlow;
+
+describe('offersTwoStepVerification', () => {
+  it('is true for a flow carrying a second-factor method', () => {
+    expect(offersTwoStepVerification(secondFactorSettingsFlow)).toBe(true);
+  });
+
+  it('is false for a flow with none of the second-factor methods', () => {
+    const flow = {
+      ...secondFactorSettingsFlow,
+      ui: {
+        ...secondFactorSettingsFlow.ui,
+        nodes: secondFactorSettingsFlow.ui.nodes.filter(
+          (node: UiNode) => !['totp', 'lookup_secret', 'webauthn'].includes(node.group)
+        ),
+      },
+    } as SettingsFlow;
+
+    expect(flow.ui.nodes.length).toBeGreaterThan(0);
+    expect(offersTwoStepVerification(flow)).toBe(false);
+  });
+});
 
 describe('adaptTwoStepVerification', () => {
   it('offers the authenticator set-up with its QR and secret when none is enrolled', () => {

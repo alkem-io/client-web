@@ -18,6 +18,7 @@ import { platformBaseAddress } from '@/main/constants/endpoints';
 import { flowDescriptorAdapter } from '@/main/crdPages/auth/flowDescriptorAdapter';
 import { invokePasskeyTrigger } from '@/main/crdPages/auth/passkeyTrigger';
 import { TwoStepVerification } from '@/main/crdPages/auth/TwoStepVerification';
+import { offersTwoStepVerification } from '@/main/crdPages/auth/twoStepVerificationModel';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import useCanEditUserSettings from '../../useCanEditUserSettings';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
@@ -165,7 +166,7 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
   // rule requires a second factor of this person decides only the warning on removing the last one.
   const { data: requirementData } = useSecondFactorRequirementQuery();
   const twoStepVerificationSection =
-    flowResult.kind === 'ready' ? (
+    flowResult.kind === 'ready' && offersTwoStepVerification(flowResult.flow) ? (
       <TwoStepVerification
         flow={flowResult.flow}
         requirementCovered={requirementData?.me.secondFactorRequirement.covered}

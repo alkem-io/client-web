@@ -29,6 +29,10 @@ type TwoStepVerificationModel = Pick<
   };
 };
 
+/** The identity provider offers at least one second-factor method in this flow. */
+export const offersTwoStepVerification = (flow: SettingsFlow): boolean =>
+  flow.ui.nodes.some(node => SECOND_FACTOR_METHODS.has(node.group));
+
 /** The two-step verification section's view of a Kratos settings flow (its `totp`, `lookup_secret` and `webauthn` nodes). */
 export const adaptTwoStepVerification = (flow: SettingsFlow): TwoStepVerificationModel => {
   const descriptor = flowDescriptorAdapter(flow, 'settings', {

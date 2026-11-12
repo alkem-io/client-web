@@ -43,7 +43,7 @@ export type UserSecurityTabViewProps = {
    * `state.hasWebauthn === true`.
    */
   webauthnForm: ReactNode;
-  /** Slot for the two-step verification section; rendered when `state.kind === 'ready'`. */
+  /** Slot for the two-step verification section; rendered when `state.kind === 'ready'` and it is provided. */
   twoStepVerificationSection: ReactNode;
   /**
    * Slot for the MCP API Keys card (038). Provided by the integration page
@@ -166,15 +166,17 @@ export function UserSecurityTabView({
             )}
           </SettingsSection>
         </div>
-        <div id="two-step-verification" className="scroll-mt-60">
-          <SettingsSection
-            title={t('user.security.twoStep.title')}
-            icon={<Smartphone className="size-4" />}
-            iconColor="blue"
-          >
-            {twoStepVerificationSection}
-          </SettingsSection>
-        </div>
+        {twoStepVerificationSection ? (
+          <div id="two-step-verification" className="scroll-mt-60">
+            <SettingsSection
+              title={t('user.security.twoStep.title')}
+              icon={<Smartphone className="size-4" />}
+              iconColor="blue"
+            >
+              {twoStepVerificationSection}
+            </SettingsSection>
+          </div>
+        ) : null}
         <SettingsSection
           title={t('user.security.mcpApiKeys.title')}
           description={t('user.security.mcpApiKeys.description')}
