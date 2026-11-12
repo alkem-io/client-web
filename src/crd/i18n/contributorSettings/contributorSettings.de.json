@@ -876,7 +876,10 @@
       "security": {
         "requireSecondFactorCaption": "Inhaber, Admins und Mitarbeitende dieser Organisation müssen bei der Anmeldung einen zweiten Faktor verwenden. Sie haben 14 Tage Zeit, ihn einzurichten.",
         "requireSecondFactorLabel": "Bestätigung in zwei Schritten für Mitglieder vorschreiben",
-        "title": "Sicherheit"
+        "title": "Sicherheit",
+        "turnOffTitle": "Bestätigung in zwei Schritten nicht mehr vorschreiben?",
+        "turnOffDescription": "Mitglieder brauchen bei der Anmeldung keinen zweiten Faktor mehr. Wenn du die Vorgabe wieder einschaltest, haben sie erneut 14 Tage Zeit, ihn einzurichten.",
+        "turnOffConfirm": "Nicht mehr vorschreiben"
       }
     },
     "invitations": {

@@ -876,7 +876,10 @@
       "security": {
         "requireSecondFactorCaption": "Owners, admins and associates of this organisation must use a second factor when they sign in. They have 14 days to set one up.",
         "requireSecondFactorLabel": "Require two-step verification for members",
-        "title": "Security"
+        "title": "Security",
+        "turnOffTitle": "Stop requiring two-step verification?",
+        "turnOffDescription": "Members will no longer need a second factor to sign in. If you switch the requirement back on, they get a new 14 days to set one up.",
+        "turnOffConfirm": "Stop requiring"
       }
     },
     "invitations": {

@@ -16,7 +16,7 @@ import { mapOrgSettings } from './orgSettingsMapper';
 type SwitchKey = 'spaceInvitations' | 'domain' | 'applications' | 'privacy' | 'secondFactor';
 
 /**
- * Integration page for the Org Settings tab (US12). Five independent
+ * Integration page for the Org Settings tab. Five independent
  * switches — all wired through `updateOrganizationSettings` with the
  * optimistic-flip + hard-failure-revert + toast pattern (parity with
  * FR-133 and the User Settings communication switch).

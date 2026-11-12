@@ -876,7 +876,10 @@
       "security": {
         "requireSecondFactorCaption": "Eigenaren, beheerders en medewerkers van deze organisatie moeten een tweede factor gebruiken bij het inloggen. Ze krijgen 14 dagen om er een in te stellen.",
         "requireSecondFactorLabel": "Verificatie in twee stappen verplichten voor leden",
-        "title": "Beveiliging"
+        "title": "Beveiliging",
+        "turnOffTitle": "Verificatie in twee stappen niet langer verplichten?",
+        "turnOffDescription": "Leden hebben geen tweede factor meer nodig om in te loggen. Als je de verplichting weer inschakelt, krijgen ze opnieuw 14 dagen om er een in te stellen.",
+        "turnOffConfirm": "Niet langer verplichten"
       }
     },
     "invitations": {

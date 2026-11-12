@@ -876,7 +876,10 @@
       "security": {
         "requireSecondFactorCaption": "Les propriétaires, administrateurs et associés de cette organisation doivent utiliser un second facteur à la connexion. Ils ont 14 jours pour le configurer.",
         "requireSecondFactorLabel": "Exiger la validation en deux étapes pour les membres",
-        "title": "Sécurité"
+        "title": "Sécurité",
+        "turnOffTitle": "Ne plus exiger la validation en deux étapes ?",
+        "turnOffDescription": "Les membres n'auront plus besoin d'un second facteur pour se connecter. Si vous réactivez l'exigence, ils disposeront de 14 nouveaux jours pour le configurer.",
+        "turnOffConfirm": "Ne plus exiger"
       }
     },
     "invitations": {

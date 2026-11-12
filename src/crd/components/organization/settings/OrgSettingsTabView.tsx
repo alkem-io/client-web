@@ -1,6 +1,8 @@
 import { Eye, Settings as SettingsIcon, ShieldCheck, Users } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
+import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { Skeleton } from '@/crd/primitives/skeleton';
 import { Switch } from '@/crd/primitives/switch';
 
@@ -69,10 +71,12 @@ function SwitchRow({ label, caption, checked, saving, onCheckedChange }: SwitchR
  *
  * **No Design System toggle** on this tab (FR-132 — User-only). Every
  * switch commits via a callback prop; the parent owns the optimistic
- * flip + hard-failure revert with toast (FR-133).
+ * flip + hard-failure revert with toast (FR-133). Switching the second-factor
+ * requirement off is confirmed first: switching it back on starts a new grace.
  */
 export function OrgSettingsTabView(props: OrgSettingsTabViewProps) {
   const { t } = useTranslation(NS);
+  const [confirmingSecondFactorOff, setConfirmingSecondFactorOff] = useState(false);
 
   if (props.loading) {
     return (
@@ -128,9 +132,21 @@ export function OrgSettingsTabView(props: OrgSettingsTabViewProps) {
           caption={t('org.settings.security.requireSecondFactorCaption')}
           checked={props.secondFactorRequired}
           saving={props.secondFactorRequiredSaving}
-          onCheckedChange={props.onToggleSecondFactorRequired}
+          onCheckedChange={next =>
+            next ? props.onToggleSecondFactorRequired(true) : setConfirmingSecondFactorOff(true)
+          }
         />
       </SettingsCard>
+
+      <ConfirmationDialog
+        open={confirmingSecondFactorOff}
+        onOpenChange={setConfirmingSecondFactorOff}
+        variant="destructive"
+        title={t('org.settings.security.turnOffTitle')}
+        description={t('org.settings.security.turnOffDescription')}
+        confirmLabel={t('org.settings.security.turnOffConfirm')}
+        onConfirm={() => props.onToggleSecondFactorRequired(false)}
+      />
     </div>
   );
 }

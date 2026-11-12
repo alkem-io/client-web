@@ -113,4 +113,40 @@ describe('OrgSettingsTabView — Security card', () => {
     render(<OrgSettingsTabView {...baseProps} secondFactorRequiredSaving={true} />);
     expect(screen.getByRole('switch', { name: SECOND_FACTOR_LABEL })).toBeDisabled();
   });
+
+  test('switching the requirement off waits for confirmation', async () => {
+    const user = userEvent.setup();
+    const onToggleSecondFactorRequired = vi.fn();
+    render(
+      <OrgSettingsTabView
+        {...baseProps}
+        secondFactorRequired={true}
+        onToggleSecondFactorRequired={onToggleSecondFactorRequired}
+      />
+    );
+
+    await user.click(screen.getByRole('switch', { name: SECOND_FACTOR_LABEL }));
+    expect(onToggleSecondFactorRequired).not.toHaveBeenCalled();
+    expect(screen.getByText('org.settings.security.turnOffDescription')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'org.settings.security.turnOffConfirm' }));
+    expect(onToggleSecondFactorRequired).toHaveBeenCalledExactlyOnceWith(false);
+  });
+
+  test('cancelling the switch-off leaves the requirement on', async () => {
+    const user = userEvent.setup();
+    const onToggleSecondFactorRequired = vi.fn();
+    render(
+      <OrgSettingsTabView
+        {...baseProps}
+        secondFactorRequired={true}
+        onToggleSecondFactorRequired={onToggleSecondFactorRequired}
+      />
+    );
+
+    await user.click(screen.getByRole('switch', { name: SECOND_FACTOR_LABEL }));
+    await user.click(screen.getByRole('button', { name: 'dialogs.cancel' }));
+    expect(onToggleSecondFactorRequired).not.toHaveBeenCalled();
+    expect(screen.queryByText('org.settings.security.turnOffDescription')).not.toBeInTheDocument();
+  });
 });

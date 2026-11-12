@@ -876,7 +876,10 @@
       "security": {
         "requireSecondFactorCaption": "Los propietarios, administradores y asociados de esta organización deben usar un segundo factor al iniciar sesión. Tienen 14 días para configurarlo.",
         "requireSecondFactorLabel": "Exigir la verificación en dos pasos a los miembros",
-        "title": "Seguridad"
+        "title": "Seguridad",
+        "turnOffTitle": "¿Dejar de exigir la verificación en dos pasos?",
+        "turnOffDescription": "Los miembros ya no necesitarán un segundo factor para iniciar sesión. Si vuelves a activar el requisito, tendrán de nuevo 14 días para configurarlo.",
+        "turnOffConfirm": "Dejar de exigir"
       }
     },
     "invitations": {
