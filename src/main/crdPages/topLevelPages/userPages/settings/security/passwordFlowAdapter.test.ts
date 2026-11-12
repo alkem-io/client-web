@@ -90,6 +90,18 @@ describe('adaptSettingsPasswordFlow', () => {
     expect(adaptSettingsPasswordFlow(flow)?.messages).toEqual([]);
   });
 
+  it("carries only its own method's hidden fields, not another method's on the shared flow", () => {
+    const flow = buildFlow([
+      hiddenNode('csrf_token', 'x'),
+      { ...hiddenNode('webauthn_register', ''), group: 'webauthn' } as UiNode,
+      { ...hiddenNode('passkey_settings_register', ''), group: 'passkey' } as UiNode,
+      passwordInputNode(),
+      passwordSubmitNode(),
+    ]);
+
+    expect(adaptSettingsPasswordFlow(flow)?.hidden).toEqual([{ name: 'csrf_token', value: 'x' }]);
+  });
+
   it('returns null when the password input or submit is absent', () => {
     expect(adaptSettingsPasswordFlow(buildFlow([hiddenNode('csrf_token', 'x'), passwordSubmitNode()]))).toBeNull();
     expect(adaptSettingsPasswordFlow(buildFlow([hiddenNode('csrf_token', 'x'), passwordInputNode()]))).toBeNull();
