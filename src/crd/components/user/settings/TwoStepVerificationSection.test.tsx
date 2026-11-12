@@ -75,30 +75,29 @@ describe('TwoStepVerificationSection — authenticator', () => {
 });
 
 describe('TwoStepVerificationSection — last-factor warning', () => {
-  it('warns that the requirement applies again when the last factor is removed while covered', async () => {
-    renderSection({ authenticator: { kind: 'enrolled' }, requirementCovered: true });
+  it('warns that the requirement applies again when removing the last factor', async () => {
+    renderSection({ authenticator: { kind: 'enrolled' }, warnOnLastFactor: true });
     await userEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.remove' }));
 
     expect(await screen.findByText(/user\.security\.twoStep\.lastFactorWarning/)).toBeInTheDocument();
   });
 
-  it('does not warn when not covered', async () => {
-    renderSection({ authenticator: { kind: 'enrolled' }, requirementCovered: false });
+  it('warns when the last factor removed is the recovery codes', async () => {
+    renderSection({
+      authenticator: { kind: 'unavailable' },
+      recoveryCodes: { kind: 'confirmed' },
+      warnOnLastFactor: true,
+    });
+    await userEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.recoveryCodes.remove' }));
+
+    expect(await screen.findByText(/recoveryCodes\.removeDescription.*lastFactorWarning/)).toBeInTheDocument();
+  });
+
+  it('does not warn otherwise', async () => {
+    renderSection({ authenticator: { kind: 'enrolled' } });
     await userEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.remove' }));
 
     expect(await screen.findByText(/user\.security\.twoStep\.authenticator\.removeDescription/)).toBeInTheDocument();
-    expect(screen.queryByText(/lastFactorWarning/)).not.toBeInTheDocument();
-  });
-
-  it('does not warn when another factor remains', async () => {
-    renderSection({
-      authenticator: { kind: 'enrolled' },
-      securityKeys: { keys: [{ id: 'key-1', name: 'Blue key' }] },
-      requirementCovered: true,
-    });
-    await userEvent.click(screen.getAllByRole('button', { name: 'user.security.twoStep.remove' })[0]);
-
-    expect(await screen.findByText(/authenticator\.removeDescription/)).toBeInTheDocument();
     expect(screen.queryByText(/lastFactorWarning/)).not.toBeInTheDocument();
   });
 });

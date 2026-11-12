@@ -106,6 +106,7 @@ describe('adaptTwoStepVerification', () => {
     expect(model.authenticator).toEqual({ kind: 'enrolled' });
     expect(model.securityKeys?.keys).toEqual([{ id: 'key-1', name: 'Blue key' }]);
     expect(model.enrolled).toBe(true);
+    expect(model.soleFactor).toBe(false);
     expect(model.recoveryCodes).toEqual({ kind: 'none' });
     expect(model.fields.removeSecurityKey('key-1')).toEqual({
       csrf_token: 'csrf-value',
@@ -133,6 +134,7 @@ describe('adaptTwoStepVerification', () => {
 
     expect(model.recoveryCodes).toEqual({ kind: 'confirmed' });
     expect(model.enrolled).toBe(true);
+    expect(model.soleFactor).toBe(true);
     expect(model.fields.removeRecoveryCodes()).toEqual({
       csrf_token: 'csrf-value',
       method: 'lookup_secret',

@@ -53,8 +53,8 @@ export type TwoStepVerificationSectionProps = {
   securityKeys?: TwoStepSecurityKeys;
   /** Outcome messages of the last submission (already translated by the identity provider). */
   messages?: { type: 'info' | 'error' | 'success'; text: string }[];
-  /** A rule requires a second factor of this person: removing the last one warns that it applies again. */
-  requirementCovered?: boolean;
+  /** Removing a factor leaves none while a rule requires one: the removal warns that the rule applies again. */
+  warnOnLastFactor?: boolean;
   onConfirmAuthenticator: (code: string) => void;
   onRemoveAuthenticator: () => void;
   onGenerateRecoveryCodes: () => void;
@@ -95,7 +95,7 @@ export function TwoStepVerificationSection({
   recoveryCodes,
   securityKeys,
   messages = [],
-  requirementCovered = false,
+  warnOnLastFactor = false,
   onConfirmAuthenticator,
   onRemoveAuthenticator,
   onGenerateRecoveryCodes,
@@ -110,15 +110,9 @@ export function TwoStepVerificationSection({
 
   const keys = securityKeys?.keys ?? [];
   const registration = securityKeys?.registration;
-  const isLastFactor = (removal: PendingRemoval): boolean => {
-    if (removal.kind === 'authenticator') return keys.length === 0;
-    if (removal.kind === 'securityKey') return authenticator.kind !== 'enrolled' && keys.length === 1;
-    return false;
-  };
 
   const confirmCopy = (removal: PendingRemoval) => {
-    const warning =
-      requirementCovered && isLastFactor(removal) ? ` ${t('user.security.twoStep.lastFactorWarning')}` : '';
+    const warning = warnOnLastFactor ? ` ${t('user.security.twoStep.lastFactorWarning')}` : '';
     switch (removal.kind) {
       case 'authenticator':
         return {
@@ -135,7 +129,7 @@ export function TwoStepVerificationSection({
       case 'recoveryCodes':
         return {
           title: t('user.security.twoStep.recoveryCodes.removeTitle'),
-          description: t('user.security.twoStep.recoveryCodes.removeDescription'),
+          description: `${t('user.security.twoStep.recoveryCodes.removeDescription')}${warning}`,
           confirmLabel: t('user.security.twoStep.recoveryCodes.remove'),
         };
       case 'regenerate':

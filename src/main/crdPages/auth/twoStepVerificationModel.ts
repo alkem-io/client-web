@@ -17,6 +17,8 @@ type TwoStepVerificationModel = Pick<
 > & {
   /** The person holds a second factor: an authenticator, a security key or confirmed recovery codes. */
   enrolled: boolean;
+  /** The person holds exactly one such factor, so removing it leaves none. */
+  soleFactor: boolean;
   /** Fields of each settings submission, anti-CSRF token included, POSTed to `action`. */
   action: string;
   fields: {
@@ -85,13 +87,15 @@ export const adaptTwoStepVerification = (flow: SettingsFlow): TwoStepVerificatio
   const lookupNames = new Set(lookupSecret.submits.map(node => node.name));
   const codesNode = lookupSecret.texts.find(node => node.id === 'lookup_secret_codes');
   const secrets = codesNode?.context?.secrets as { text: string }[] | undefined;
-  const codes = codesNode ? (secrets?.map(secret => secret.text) ?? codesNode.text.split(/[\s,]+/)) : undefined;
+  const codes = secrets?.map(secret => secret.text) ?? [];
   const hasOtherFactor = authenticator.kind === 'enrolled' || keys.length > 0;
+  const factorCount =
+    (authenticator.kind === 'enrolled' ? 1 : 0) + keys.length + (lookupNames.has('lookup_secret_disable') ? 1 : 0);
   const recoveryCodes: TwoStepRecoveryCodes =
     lookupNames.size === 0
       ? { kind: 'unavailable' }
       : lookupNames.has('lookup_secret_confirm')
-        ? { kind: 'unconfirmed', codes: codes ?? [] }
+        ? { kind: 'unconfirmed', codes }
         : lookupNames.has('lookup_secret_disable')
           ? { kind: 'confirmed' }
           : hasOtherFactor
@@ -103,7 +107,8 @@ export const adaptTwoStepVerification = (flow: SettingsFlow): TwoStepVerificatio
     recoveryCodes,
     securityKeys,
     messages: descriptor.messages.map(message => ({ type: message.type, text: message.text })),
-    enrolled: authenticator.kind === 'enrolled' || keys.length > 0 || lookupNames.has('lookup_secret_disable'),
+    enrolled: factorCount > 0,
+    soleFactor: factorCount === 1,
     action: descriptor.action,
     fields: {
       confirmAuthenticator: code => withCsrf({ method: 'totp', totp_code: code }),
