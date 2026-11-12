@@ -68,6 +68,8 @@ const CrdOrgSettingsTab = () => {
         variables: { settingsData: { organizationID: organizationId, settings } },
         refetchQueries: [refetchOrganizationSettingsQuery({ orgId: organizationId })],
         awaitRefetchQueries: true,
+        // The failure's one toast is the one below.
+        context: { skipGlobalErrorHandler: true },
       });
       if (refreshProfileEligibility) {
         void apolloClient.refetchQueries({ include: [OrganizationInfoDocument] });
