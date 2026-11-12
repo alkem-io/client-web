@@ -7,12 +7,13 @@ const requirement = vi.hoisted(() => ({
   current: { covered: true, satisfied: false, deadline: '' as string | null },
 }));
 const querySpy = vi.hoisted(() => vi.fn());
+const currentUser = vi.hoisted(() => ({ id: 'jane-id' }));
 
 vi.mock('@/core/auth/authentication/hooks/useAuthenticationContext', () => ({
   useAuthenticationContext: () => auth,
 }));
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
-  useCurrentUserContext: () => ({ userModel: { profile: { url: '/user/jane' } } }),
+  useCurrentUserContext: () => ({ userModel: { id: currentUser.id, profile: { url: '/user/jane' } } }),
 }));
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useSecondFactorRequirementQuery: (options: { skip: boolean }) => {
@@ -27,6 +28,7 @@ describe('useSecondFactorReminder', () => {
   beforeEach(() => {
     sessionStorage.clear();
     auth.secondFactorRequired = false;
+    currentUser.id = 'jane-id';
     requirement.current = { covered: true, satisfied: false, deadline: inDays(10) };
     querySpy.mockClear();
   });
@@ -45,7 +47,15 @@ describe('useSecondFactorReminder', () => {
 
     const second = renderHook(() => useSecondFactorReminder());
     expect(second.result.current.visible).toBe(false);
-    expect(sessionStorage.getItem(SECOND_FACTOR_REMINDER_DISMISSED_KEY)).toBe('true');
+    expect(sessionStorage.getItem(SECOND_FACTOR_REMINDER_DISMISSED_KEY)).toBe('jane-id');
+  });
+
+  it('is still shown to another person signing in on the tab after one dismissed it', () => {
+    const first = renderHook(() => useSecondFactorReminder());
+    act(() => first.result.current.dismiss());
+
+    currentUser.id = 'john-id';
+    expect(renderHook(() => useSecondFactorReminder()).result.current.visible).toBe(true);
   });
 
   it('is hidden when the session satisfies the requirement', () => {

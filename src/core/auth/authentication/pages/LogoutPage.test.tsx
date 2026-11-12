@@ -1,7 +1,6 @@
 import { render, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { DEVICE_PUSH_TOKEN_KEY } from '@/main/pushNotifications/constants';
-import { SECOND_FACTOR_REMINDER_DISMISSED_KEY } from '@/main/ui/layout/useSecondFactorReminder';
 
 /**
  * SC-017 / US2-1 — the cross-user-leak control. An unbound device token keeps
@@ -158,13 +157,4 @@ describe('LogoutPage — landing after every session has ended', () => {
     await waitFor(() => expect(replace).toHaveBeenCalledWith('/home'));
   });
 
-  it('forgets the dismissed second-step reminder, so the next person on this tab sees their own', async () => {
-    sessionStorage.setItem(SECOND_FACTOR_REMINDER_DISMISSED_KEY, 'true');
-    logout.outcome = { kind: 'cleared' };
-
-    render(<LogoutPage />);
-
-    await waitFor(() => expect(replace).toHaveBeenCalled());
-    expect(sessionStorage.getItem(SECOND_FACTOR_REMINDER_DISMISSED_KEY)).toBeNull();
-  });
 });

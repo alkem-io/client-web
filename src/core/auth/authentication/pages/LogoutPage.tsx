@@ -19,7 +19,6 @@ import {
   UnregisterDevicePushTokenDocument,
   type UnregisterDevicePushTokenVariables,
 } from '@/main/pushNotifications/devicePushTokenMutations';
-import { SECOND_FACTOR_REMINDER_DISMISSED_KEY } from '@/main/ui/layout/useSecondFactorReminder';
 import { clearMessagingDrafts } from '@/main/userMessaging/messagingDrafts';
 
 async function cleanupPushSubscription(
@@ -82,7 +81,6 @@ const LogoutPage = () => {
     clearReturnUrl();
     clearArmed();
     clearMessagingDrafts();
-    sessionStorage.removeItem(SECOND_FACTOR_REMINDER_DISMISSED_KEY);
   };
 
   useEffect(() => {
