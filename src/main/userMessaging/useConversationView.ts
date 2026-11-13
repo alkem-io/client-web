@@ -123,6 +123,12 @@ export const useConversationView = (
     }
   };
 
+  const isEncryptedRoom = async (roomId: string) => {
+    if (!matrixClient) return false;
+    const matrixRoomId = await resolveMatrixRoomId(matrixClient, roomId);
+    return Boolean(matrixRoomId && matrixClient.getRoom(matrixRoomId)?.hasEncryptionStateEvent());
+  };
+
   const handleSendMessage = async (message: string, attachmentUpload?: RoomMessageAttachmentInput) => {
     const text = message.trim();
     if (!conversation?.roomId || (!text && !attachmentUpload)) return;
@@ -160,9 +166,17 @@ export const useConversationView = (
             return false;
           }
         }
-        await sendDirect(roomId, (client, matrixRoomId, txnId) =>
-          client.sendEvent(matrixRoomId, ROOM_MESSAGE, { msgtype: TEXT, body: text }, txnId)
-        );
+        if (await isEncryptedRoom(roomId)) {
+          // This client runs without crypto, so matrix-js-sdk refuses to send
+          // into an end-to-end encrypted room before any request is made. Such
+          // rooms predate Alkemio's own (unencrypted) rooms; the server's send
+          // still reaches them.
+          await sendMessage({ variables: { messageData: { roomID: roomId, message: text } } });
+        } else {
+          await sendDirect(roomId, (client, matrixRoomId, txnId) =>
+            client.sendEvent(matrixRoomId, ROOM_MESSAGE, { msgtype: TEXT, body: text }, txnId)
+          );
+        }
       }
       return true;
     } catch (_error) {
