@@ -7,6 +7,9 @@
   "panel": {
     "title": "Chat",
     "settings": "Meldingsinstellingen",
+    "muteSound": "Chatgeluid dempen",
+    "unmuteSound": "Chatgeluid aanzetten",
+    "soundToggleError": "We konden de instelling voor het chatgeluid niet opslaan. Probeer het opnieuw.",
     "expand": "Chat vergroten",
     "collapse": "Chat verkleinen"
   },
@@ -80,6 +83,7 @@
   "thread": {
     "back": "Terug naar gesprekken",
     "loading": "Berichten laden",
+    "jumpToLatest": "Naar de nieuwste berichten",
     "addReaction": "Reactie toevoegen",
     "options": "Chatopties"
   },

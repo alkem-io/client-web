@@ -47,6 +47,23 @@ const renderThread = (messages: ChatMessage[], conversation: ChatThreadHeader = 
 // Visible text of an element, leaving out screen-reader-only and aria-hidden parts.
 const rowFor = (content: string) => screen.getByText(content).closest('[data-chat-message]') as HTMLElement;
 
+// Hovering the row's empty space opens nothing; hovering the box opens the time.
+// The tooltip's open delay runs on fake timers, so no real time is spent waiting.
+const expectTooltipOnlyOver = (box: HTMLElement, row: HTMLElement, exactTime: string) => {
+  vi.useFakeTimers({ toFake: ['Date', 'setTimeout', 'clearTimeout'], now: NOW });
+  fireEvent.pointerMove(row, { pointerType: 'mouse' });
+  act(() => {
+    vi.advanceTimersByTime(500);
+  });
+  expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+
+  fireEvent.pointerMove(box, { pointerType: 'mouse' });
+  act(() => {
+    vi.advanceTimersByTime(500);
+  });
+  expect(screen.getByRole('tooltip')).toHaveTextContent(exactTime);
+};
+
 // jsdom has no PointerEvent, so `pointerType` would never reach the handler.
 class TestPointerEvent extends MouseEvent {
   pointerType: string;
@@ -112,12 +129,32 @@ describe('ChatThreadView — date separators and times', () => {
 describe('ChatThreadView — exact time on demand', () => {
   test('keyboard focus on a message shows its exact time in a tooltip', async () => {
     renderThread([msg(at(14, 9, 12))]);
-    const row = rowFor('message 1');
-    expect(row).toHaveAttribute('tabIndex', '0');
+    const bubble = screen.getByText('message 1').closest('[tabindex]') as HTMLElement;
+    expect(bubble).toHaveAttribute('tabIndex', '0');
+    expect(bubble).not.toBe(rowFor('message 1'));
     await act(async () => {
-      row.focus();
+      bubble.focus();
     });
     expect(await screen.findByRole('tooltip')).toHaveTextContent('Today, 09:12');
+  });
+
+  test('hovering the bubble opens its exact time; hovering beside it does not', async () => {
+    renderThread([msg(at(14, 9, 12), { author: alice }), msg(at(14, 9, 13), { author: bob })], group);
+    const row = rowFor('message 2');
+    const bubble = screen.getByText('message 2').closest('.rounded-2xl') as HTMLElement;
+    expect(row).not.toBe(bubble);
+
+    expectTooltipOnlyOver(bubble, row, 'Today, 09:13');
+  });
+
+  test('a message with only attachments opens its time over the attachments, not beside them', () => {
+    const photo = { displayName: 'photo.png', mimeType: 'image/png', url: 'https://example.test/photo.png' };
+    renderThread([msg(at(14, 9, 12), { content: '', attachments: [photo] })]);
+    const row = screen.getByRole('list').closest('[data-chat-message]') as HTMLElement;
+    const box = screen.getByRole('list').closest('[tabindex="0"]') as HTMLElement;
+    expect(box).not.toBe(row);
+    expect(row.contains(box)).toBe(true);
+    expectTooltipOnlyOver(box, row, 'Today, 09:12');
   });
 
   test('tapping a message opens its time underneath and shows the reaction trigger; tapping again closes', () => {
@@ -134,6 +171,14 @@ describe('ChatThreadView — exact time on demand', () => {
     expect(trigger()).not.toHaveClass('[@media(hover:none)]:hidden');
 
     fireEvent.pointerUp(row, { pointerType: 'touch' });
+    expect(revealedTime()).toBeNull();
+
+    // A real tap lands on the bubble (the tooltip trigger), not the row around it.
+    const bubble = screen.getByText('message 1').closest('[tabindex="0"]') as HTMLElement;
+    expect(bubble).not.toBe(row);
+    fireEvent.pointerUp(bubble, { pointerType: 'touch' });
+    expect(revealedTime()).toHaveTextContent('Today, 09:12');
+    fireEvent.pointerUp(bubble, { pointerType: 'touch' });
     expect(revealedTime()).toBeNull();
   });
 
@@ -202,5 +247,26 @@ describe('ChatThreadView — links in messages', () => {
       />
     );
     expect(container.querySelector('[data-chat-message] a')).not.toHaveAttribute('target');
+  });
+});
+
+describe('ChatThreadView — loading bar', () => {
+  const renderLoading = (messages: ChatMessage[], messagesLoading: boolean) =>
+    render(<ChatThreadView conversation={direct} messages={messages} messagesLoading={messagesLoading} />);
+
+  test.each([
+    ['an empty thread', () => []],
+    ['a thread with messages', () => [msg(at(14, 10, 0))]],
+  ])('shows in the same place for %s: above the scroller, so it cannot move the messages', (_name, messages) => {
+    const { container } = renderLoading(messages(), true);
+    const bar = screen.getByRole('status', { name: 'thread.loading' });
+    const scroller = container.querySelector('.overflow-y-auto');
+    expect(scroller?.contains(bar)).toBe(false);
+    expect(bar.nextElementSibling).toBe(scroller);
+  });
+
+  test('is absent when nothing is loading', () => {
+    renderLoading([msg(at(14, 10, 0))], false);
+    expect(screen.queryByRole('status', { name: 'thread.loading' })).not.toBeInTheDocument();
   });
 });

@@ -7,6 +7,8 @@ import { SpaceTabSidebarConnector } from './SpaceTabSidebarConnector';
 let isAuthenticated = true;
 const communityDialogMounts = vi.fn();
 const activityDialogMounts = vi.fn();
+const infoBlockProps = vi.fn();
+const onOpenChatSpy = vi.fn();
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
@@ -54,6 +56,15 @@ vi.mock('../hooks/useCrdSpaceCommunity', () => ({
     guidelines: { id: undefined },
     loading: false,
   }),
+}));
+vi.mock('@/main/crdPages/topLevelPages/common/useSendMessageHandler', () => ({
+  useMessageContributor: () => (contributor: { id: string }) => onOpenChatSpy(contributor.id),
+}));
+vi.mock('@/crd/components/space/sidebar/InfoBlock', () => ({
+  InfoBlock: (props: unknown) => {
+    infoBlockProps(props);
+    return null;
+  },
 }));
 vi.mock('../hooks/useCrdSpaceLocale', () => ({ useCrdSpaceLocale: () => undefined }));
 vi.mock('../callout/PostIndexDialogConnector', () => ({ PostIndexDialogConnector: () => null }));
@@ -133,5 +144,16 @@ describe('SpaceTabSidebarConnector community and activity widgets', () => {
     renderConnector([SidebarWidget.Activity, SidebarWidget.Index, SidebarWidget.Community]);
     const labels = screen.getAllByRole('button').map(button => button.textContent);
     expect(labels).toEqual(['sidebar.recentActivity', 'sidebar.postIndex', 'sidebar.community']);
+  });
+});
+
+describe('SpaceTabSidebarConnector intent widget', () => {
+  test('the lead hover card Message action opens a chat with that lead', () => {
+    renderConnector([SidebarWidget.Intent]);
+    const { onMessageContributor } = infoBlockProps.mock.lastCall?.[0] as {
+      onMessageContributor: (contributor: { id: string }) => void;
+    };
+    onMessageContributor({ id: 'u2' });
+    expect(onOpenChatSpy).toHaveBeenCalledWith('u2');
   });
 });

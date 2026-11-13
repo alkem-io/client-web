@@ -1,3 +1,5 @@
+import type { ContributorPreviewData } from '@/crd/components/contributor/ContributorHoverCard';
+
 export type CommentAuthor = {
   id: string;
   name: string;
@@ -5,6 +7,8 @@ export type CommentAuthor = {
   profileUrl?: string;
   /** True when the author is a Virtual Contributor — drives the VC indicator badge. */
   isVirtualContributor?: boolean;
+  /** Set for user and VC senders; opens a hover card on the linked avatar. */
+  preview?: ContributorPreviewData;
 };
 
 export type CommentReactionSender = {

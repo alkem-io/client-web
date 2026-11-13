@@ -1,0 +1,230 @@
+#!/usr/bin/env bash
+# Upload a release's source maps to Elastic APM (client-web#10549).
+#
+# APM de-minifies a RUM stack frame only when a map is stored under the exact
+# (service name, service version, bundle URL) the frame reports. In 8.x the only
+# supported write path is Kibana's source map API; APM Server's own upload
+# endpoint was removed in 8.0.
+#
+# Usage: upload-sourcemaps.sh <dir-with-*.js.map>
+#
+# Environment:
+#   KIBANA_URL                    e.g. https://kibana.alkem.io
+#   KIBANA_APM_SOURCEMAP_API_KEY  Kibana API key, "APM and User Experience: All"
+#   SERVICE_VERSION               must equal the RUM agent's serviceVersion, i.e.
+#                                 package.json "version" (VITE_VERSION), NOT the tag
+#   APM_SERVICE_NAME              default alkemio-client-web
+#   APM_BUNDLE_PATH               URL path the bundles are served under, default
+#                                 /assets. Maps are uploaded path-only (no host):
+#                                 APM Server falls back from a frame's full URL to
+#                                 its path, so one upload serves every host
+#                                 (alkem.io, identity.alkem.io, ...).
+#   UPLOAD_CONCURRENCY            parallel uploads and deletes, default 8
+#   KEEP_VERSIONS                 newest service versions whose maps are kept,
+#                                 default 3; older ones are deleted after a fully
+#                                 successful upload. 0 disables pruning.
+#   MAX_SOURCEMAP_BYTES           largest map Kibana accepts, default 15728640
+#                                 (15 MB): Kibana's server.maxPayload, raised from
+#                                 the 1 MB default in reporting-orchestration. A
+#                                 bigger map is reported before anything uploads.
+#   APM_SOURCEMAPS_STRICT         true (default): any problem (missing key, a map
+#                                 too big, a failed upload, listing or delete)
+#                                 exits 1 and fails the job. false: the same
+#                                 problems are warnings and it exits 0.
+set -euo pipefail
+
+dir="${1:?usage: upload-sourcemaps.sh <dir-with-*.js.map>}"
+export APM_SERVICE_NAME="${APM_SERVICE_NAME:-alkemio-client-web}"
+export SERVICE_VERSION="${SERVICE_VERSION:?SERVICE_VERSION is required}"
+bundle_path="${APM_BUNDLE_PATH:-/assets}"
+concurrency="${UPLOAD_CONCURRENCY:-8}"
+keep_versions="${KEEP_VERSIONS:-3}"
+max_bytes="${MAX_SOURCEMAP_BYTES:-15728640}"
+strict="${APM_SOURCEMAPS_STRICT:-true}"
+
+# Bytes as MB with one decimal, for the logs.
+mb() { awk -v b="$1" 'BEGIN { printf "%.1f MB", b / 1048576 }'; }
+
+# Stop on a problem: an error that fails the job when strict, else a warning.
+fail() {
+  if [ "$strict" = "true" ]; then
+    echo "::error::$1"
+    exit 1
+  fi
+  echo "::warning::$1 (APM_SOURCEMAPS_STRICT=false, not failing)"
+  exit 0
+}
+
+if [ -z "${KIBANA_URL:-}" ] || [ -z "${KIBANA_APM_SOURCEMAP_API_KEY:-}" ]; then
+  fail "KIBANA_URL or KIBANA_APM_SOURCEMAP_API_KEY not set; no source maps uploaded"
+fi
+export KIBANA_URL KIBANA_APM_SOURCEMAP_API_KEY
+echo "APM source maps for $APM_SERVICE_NAME@$SERVICE_VERSION"
+echo "  kibana:      $KIBANA_URL (API key set)"
+echo "  maps from:   $dir, uploaded as $bundle_path/<bundle>.js"
+echo "  concurrency: $concurrency, keep versions: $keep_versions, max map: $(mb "$max_bytes"), strict: $strict"
+
+shopt -s nullglob
+maps=("$dir"/*.js.map)
+if [ "${#maps[@]}" -eq 0 ]; then
+  fail "no *.js.map files in $dir"
+fi
+
+# Kibana rejects an oversized request with 413 only after the others uploaded,
+# leaving a partial set; catch it up front. 4 KB covers the multipart fields.
+too_big=0
+total_bytes=0
+largest=0
+largest_name=""
+for map in "${maps[@]}"; do
+  size="$(wc -c < "$map")"
+  total_bytes=$((total_bytes + size))
+  if [ "$size" -gt "$largest" ]; then
+    largest="$size"
+    largest_name="$(basename "$map")"
+  fi
+  if [ $((size + 4096)) -gt "$max_bytes" ]; then
+    echo "::error::$(basename "$map") is $size bytes, over the $max_bytes Kibana accepts (server.maxPayload)"
+    too_big=$((too_big + 1))
+  fi
+done
+echo "found ${#maps[@]} source map(s), $(mb "$total_bytes") in total; largest $largest_name ($(mb "$largest"))"
+[ "$too_big" -eq 0 ] || fail "$too_big source map(s) too big for Kibana; none uploaded"
+
+# One upload: "<map path> <bundle url>". Prints exactly one line (curl's own
+# stderr goes into it, so parallel workers never interleave); non-zero on failure.
+upload_one() {
+  local map="$1" url="$2" response err result status seconds
+  response="$(mktemp)"
+  err="$(mktemp)"
+  result="$(curl -sS -o "$response" -w '%{http_code} %{time_total}' --retry 2 2>"$err" \
+    -X POST "$KIBANA_URL/api/apm/sourcemaps" \
+    -H 'kbn-xsrf: true' \
+    -H "Authorization: ApiKey $KIBANA_APM_SOURCEMAP_API_KEY" \
+    -F "service_name=$APM_SERVICE_NAME" \
+    -F "service_version=$SERVICE_VERSION" \
+    -F "bundle_filepath=$url" \
+    -F "sourcemap=@$map")" || result="curl-error -"
+  status="${result%% *}"
+  seconds="${result##* }"
+  if [ "$status" = "200" ]; then
+    echo "uploaded $url ($(wc -c < "$map" | awk '{ printf "%.0f KB", $1 / 1024 }'), ${seconds}s)"
+    rm -f "$response" "$err"
+  else
+    echo "::error::$url -> HTTP $status: $(cat "$err" "$response" 2>/dev/null | tr '\n' ' ' | head -c 300 || true)"
+    rm -f "$response" "$err"
+    return 1
+  fi
+}
+export -f upload_one
+
+# One "<map> <bundle path>" line per upload. Vite's hashed file names contain
+# no whitespace, so plain word splitting into two arguments is safe.
+jobs="$(mktemp)"
+for map in "${maps[@]}"; do
+  echo "$map $bundle_path/$(basename "$map" .map)"
+done > "$jobs"
+total="$(wc -l < "$jobs")"
+
+log="$(mktemp)"
+# xargs exits non-zero if any upload failed; that, not the log, decides.
+upload_ok=1
+started=$SECONDS
+xargs -P "$concurrency" -n 2 bash -c 'upload_one "$@"' _ < "$jobs" > "$log" 2>&1 || upload_ok=0
+# Successes fold into a collapsed group; failures stay visible below it.
+echo "::group::Uploaded source maps"
+grep '^uploaded ' "$log" || true
+echo "::endgroup::"
+grep -v '^uploaded ' "$log" || true
+uploaded="$(grep -c '^uploaded ' "$log" || true)"
+rm -f "$jobs" "$log"
+
+echo "uploaded $uploaded/$total source map(s) for $APM_SERVICE_NAME@$SERVICE_VERSION, $((total - uploaded)) failed, in $((SECONDS - started))s"
+if [ "$upload_ok" -ne 1 ] || [ "$uploaded" -ne "$total" ]; then
+  fail "$((total - uploaded)) of $total source map upload(s) failed; not pruning older source maps"
+fi
+if [ "$keep_versions" -eq 0 ]; then
+  echo "KEEP_VERSIONS=0: not pruning older source maps"
+  exit 0
+fi
+
+# Prune: Kibana keeps every uploaded map forever. Keep this service's newest
+# $keep_versions versions (ranked by upload time, so the version just uploaded
+# is always kept) and delete the rest. The list API returns each map's full
+# body, newest first, so only the id/name/version/created of each are kept.
+per_page=100
+page=1
+listed=0
+index="$(mktemp)"
+while :; do
+  body="$(mktemp)"
+  status="$(curl -sS --compressed -o "$body" -w '%{http_code}' --retry 2 \
+    "$KIBANA_URL/api/apm/sourcemaps?page=$page&perPage=$per_page" \
+    -H "Authorization: ApiKey $KIBANA_APM_SOURCEMAP_API_KEY")" || status="curl-error"
+  if [ "$status" != "200" ]; then
+    rm -f "$body" "$index"
+    fail "listing source maps failed (HTTP $status); not pruning"
+  fi
+  jq -r --arg s "$APM_SERVICE_NAME" \
+    '.artifacts[] | select(.body.serviceName == $s) | [.id, .body.serviceVersion, .created] | @tsv' \
+    "$body" >> "$index"
+  count="$(jq '.artifacts | length' "$body")"
+  listed="$(jq '.total' "$body")"
+  rm -f "$body"
+  if [ "$count" -lt "$per_page" ] || [ $((page * per_page)) -ge "$listed" ]; then
+    break
+  fi
+  page=$((page + 1))
+done
+
+echo "Kibana holds $listed source map(s), $(wc -l < "$index") of them for $APM_SERVICE_NAME:"
+# Per version, newest upload first: "  <version>  <maps>  uploaded <newest>".
+sort -t$'\t' -k3,3r "$index" | awk -F'\t' '!($2 in n) { order[++k] = $2; at[$2] = $3 } { n[$2]++ }
+  END { for (i = 1; i <= k; i++) printf "  %-12s %5d map(s), uploaded %s\n", order[i], n[order[i]], at[order[i]] }'
+
+# Versions, newest upload first; the current one leads even if clocks disagree.
+keep="$( { echo "$SERVICE_VERSION"; sort -t$'\t' -k3,3r "$index" | cut -f2; } \
+  | awk '!seen[$0]++' | head -n "$keep_versions")"
+stale="$(mktemp)"
+KEEP="$keep" awk -F'\t' 'BEGIN { n = split(ENVIRON["KEEP"], k, "\n"); for (i = 1; i <= n; i++) kept[k[i]] = 1 }
+  !($2 in kept) { print $1, $2 }' "$index" > "$stale"
+rm -f "$index"
+stale_count="$(wc -l < "$stale")"
+echo "keeping versions: $(echo "$keep" | paste -sd' ' -)"
+if [ "$stale_count" -gt 0 ]; then
+  echo "deleting $stale_count older source map(s) of: $(cut -d' ' -f2 "$stale" | sort -u | paste -sd' ' -)"
+else
+  echo "nothing to prune"
+fi
+
+delete_one() {
+  local id="$1" version="$2" status
+  status="$(curl -sS -o /dev/null -w '%{http_code}' --retry 2 2>/dev/null -X DELETE \
+    "$KIBANA_URL/api/apm/sourcemaps/$(jq -rn --arg id "$id" '$id | @uri')" \
+    -H 'kbn-xsrf: true' \
+    -H "Authorization: ApiKey $KIBANA_APM_SOURCEMAP_API_KEY")" || status="curl-error"
+  # 404: already gone (e.g. a concurrent release pruned it).
+  if [ "$status" = "200" ] || [ "$status" = "404" ]; then
+    echo "deleted $version $id (HTTP $status)"
+    return 0
+  fi
+  echo "::warning::deleting source map $id ($version) -> HTTP $status"
+  return 1
+}
+export -f delete_one
+
+log="$(mktemp)"
+started=$SECONDS
+xargs -P "$concurrency" -n 2 bash -c 'delete_one "$@"' _ < "$stale" > "$log" 2>&1 || true
+if [ "$stale_count" -gt 0 ]; then
+  echo "::group::Deleted source maps"
+  grep '^deleted ' "$log" || true
+  echo "::endgroup::"
+fi
+grep -v '^deleted ' "$log" || true
+prune_failed="$(grep -c '^::warning::deleting' "$log" || true)"
+rm -f "$stale" "$log"
+echo "pruned $((stale_count - prune_failed))/$stale_count older source map(s) in $((SECONDS - started))s"
+# A failed delete only leaves an old map behind (the next release retries it),
+# but the key or Kibana is likely broken, so it still counts as a problem.
+[ "$prune_failed" -eq 0 ] || fail "$prune_failed older source map(s) could not be deleted"

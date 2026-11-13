@@ -34,9 +34,17 @@ trap cleanup EXIT
 echo "== client-image-smoke: $IMAGE =="
 
 # --- US1-AS1: both bases digest-pinned ------------------------------------
-# Every FROM line must carry an @sha256: pin. A floating tag means rebuilds are
-# not reproducible and can silently change the runtime.
-UNPINNED="$(grep -E '^FROM ' "$DOCKERFILE" | grep -cv '@sha256:' || true)"
+# Every FROM line that pulls an image must carry an @sha256: pin. A floating
+# tag means rebuilds are not reproducible and can silently change the runtime.
+# `scratch` (empty, nothing to pull) and earlier stages of this Dockerfile
+# (`FROM builder AS web`) are not pulled, so they are exempt.
+UNPINNED="$(awk 'toupper($1) == "FROM" {
+    i = 2; while ($i ~ /^--/) i++
+    image = $i
+    if (tolower($(i + 1)) == "as") stage[$(i + 2)] = 1
+    if (image == "scratch" || (image in stage) || image ~ /@sha256:/) next
+    n++
+  } END { print n + 0 }' "$DOCKERFILE")"
 [ "$UNPINNED" = "0" ] ||
   fail "$UNPINNED FROM line(s) in Dockerfile are not digest-pinned"
 pass "all Dockerfile bases are digest-pinned"
