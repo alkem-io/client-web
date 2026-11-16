@@ -1,4 +1,5 @@
-import { BellOff, MailOpen, Settings, X } from 'lucide-react';
+import { BellOff, MailOpen, RefreshCw, Settings, X } from 'lucide-react';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NotificationItem } from '@/crd/components/notifications/NotificationItem';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
@@ -8,6 +9,10 @@ import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
 import { Skeleton } from '@/crd/primitives/skeleton';
 
+/** Phones get the larger touch-friendly controls; from the `sm` breakpoint up, the compact desktop size. */
+const headerButtonClass = 'size-9 sm:size-7 text-muted-foreground';
+const headerIconClass = 'size-6 sm:size-4';
+
 type NotificationsPanelProps = {
   open: boolean;
   onClose: () => void;
@@ -16,10 +21,13 @@ type NotificationsPanelProps = {
   selectedFilter: string;
   loading?: boolean;
   hasMore?: boolean;
+  /** Newer notifications than the listed ones exist; the panel offers to show them. */
+  hasNewNotifications?: boolean;
   settingsHref?: string;
   onFilterChange: (key: string) => void;
   onMarkAllRead: () => void;
   onLoadMore: () => void;
+  onShowNewNotifications?: () => void;
   onNotificationClick?: (notification: CrdNotificationItemData) => void;
   onRead?: (id: string) => void;
   onUnread?: (id: string) => void;
@@ -47,10 +55,12 @@ export function NotificationsPanel({
   selectedFilter,
   loading,
   hasMore,
+  hasNewNotifications,
   settingsHref,
   onFilterChange,
   onMarkAllRead,
   onLoadMore,
+  onShowNewNotifications,
   onNotificationClick,
   onRead,
   onUnread,
@@ -58,6 +68,7 @@ export function NotificationsPanel({
 }: NotificationsPanelProps) {
   const { t } = useTranslation('crd-notifications');
   const { isSmallScreen } = useScreenSize();
+  const listRef = useRef<HTMLDivElement>(null);
 
   const showEmpty = items.length === 0 && !loading;
   const showSkeletons = loading && items.length === 0;
@@ -73,33 +84,33 @@ export function NotificationsPanel({
         hideClose={true}
       >
         {/* Header */}
-        <div className="flex items-center justify-between pl-4 pr-2 py-2 border-b border-border bg-muted/30">
+        <div className="flex items-center justify-between pl-4 pr-2 py-2 sm:pr-2.5 sm:pt-[10px] sm:pb-3 border-b border-border bg-muted/30">
           <DialogTitle className="text-card-title">{t('notifications.title')}</DialogTitle>
           <div className="flex items-center gap-1">
             <Button
               variant="ghost"
               size="icon"
-              className="size-9 text-muted-foreground"
+              className={headerButtonClass}
               aria-label={t('notifications.markAllRead')}
               onClick={onMarkAllRead}
             >
-              <MailOpen aria-hidden="true" className="size-6" />
+              <MailOpen aria-hidden="true" className={headerIconClass} />
             </Button>
             {settingsHref && (
-              <Button variant="ghost" size="icon" className="size-9 text-muted-foreground" asChild={true}>
+              <Button variant="ghost" size="icon" className={headerButtonClass} asChild={true}>
                 <a href={settingsHref} aria-label={t('notifications.settings')}>
-                  <Settings aria-hidden="true" className="size-6" />
+                  <Settings aria-hidden="true" className={headerIconClass} />
                 </a>
               </Button>
             )}
             <Button
               variant="ghost"
               size="icon"
-              className="size-9 text-muted-foreground"
+              className={headerButtonClass}
               aria-label={t('notifications.close')}
               onClick={onClose}
             >
-              <X aria-hidden="true" className="size-6" />
+              <X aria-hidden="true" className={headerIconClass} />
             </Button>
           </div>
         </div>
@@ -123,7 +134,26 @@ export function NotificationsPanel({
         )}
 
         {/* Notification list */}
-        <div className="flex-1 overflow-y-auto">
+        <div ref={listRef} className="flex-1 overflow-y-auto">
+          {/* New notifications: offered, never pushed in above what the user is reading */}
+          <div aria-live="polite" className="sticky top-0 z-10">
+            {hasNewNotifications && onShowNewNotifications && (
+              <div className="flex justify-center p-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="h-7 rounded-full text-caption shadow-sm"
+                  onClick={() => {
+                    onShowNewNotifications();
+                    listRef.current?.scrollTo({ top: 0 });
+                  }}
+                >
+                  <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
+                  {t('notifications.newNotifications')}
+                </Button>
+              </div>
+            )}
+          </div>
           {showSkeletons && (
             <output aria-label={t('notifications.loading')}>
               {Array.from({ length: 5 }).map((_, i) => (

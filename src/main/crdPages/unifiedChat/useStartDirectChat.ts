@@ -18,9 +18,8 @@ export type StartDirectChatResult = {
  *
  * `startDirectChat` accepts an optional recipient id that overrides the one
  * captured when the hook was called — a list of cards (each with its own
- * recipient) needs the id at click time, not at hook-call time. Backward
- * compatible: every existing caller (the profile page, `useOpenDirectChatHandler`)
- * calls it with no argument and keeps targeting the id it was constructed with.
+ * recipient) needs the id at click time, not at hook-call time. Called with no
+ * argument it targets the id it was constructed with.
  */
 export const useStartDirectChat = (userId: string | undefined) => {
   const [createConversation] = useCreateConversationMutation();
@@ -39,7 +38,7 @@ export const useStartDirectChat = (userId: string | undefined) => {
           type: ConversationCreationType.Direct,
         },
       },
-      // Callers (e.g. ContributorCollectionConnector's `handleMessage`) map a
+      // Callers (e.g. `useOpenDirectChatHandler`) map a
       // failure — such as the recipient having messaging disabled — to their own
       // friendly toast; the global error-handler link must not add a second, raw one.
       context: { skipGlobalErrorHandler: true },

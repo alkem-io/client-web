@@ -159,7 +159,7 @@
         },
         "keywords": {
           "label": "Trefwoorden",
-          "hint": "Trefwoorden die je interesses beschrijven. Druk op Enter om toe te voegen.",
+          "hint": "Trefwoorden die je interesses beschrijven. Ze verschijnen als tags op de hoverkaart van je profiel. Druk op Enter om toe te voegen.",
           "placeholder": "bv. klimaat, governance, open source"
         }
       },
@@ -673,7 +673,7 @@
         },
         "keywords": {
           "label": "Trefwoorden",
-          "hint": "Onderwerpen waaraan je organisatie werkt. Druk op Enter om toe te voegen.",
+          "hint": "Onderwerpen waaraan je organisatie werkt. Ze verschijnen als tags op de hoverkaart van je organisatie. Druk op Enter om toe te voegen.",
           "placeholder": "bv. klimaat, governance, open source"
         },
         "capabilities": {
@@ -978,7 +978,7 @@
       },
       "keywords": {
         "label": "Trefwoorden",
-        "hint": "Voeg trefwoorden toe zodat gebruikers deze Virtual Contributor kunnen vinden.",
+        "hint": "Voeg trefwoorden toe zodat gebruikers deze Virtual Contributor kunnen vinden. Ze verschijnen als tags op de hoverkaart.",
         "placeholder": "Voeg een trefwoord toe en druk op Enter"
       },
       "socialLinks": {

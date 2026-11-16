@@ -14,6 +14,8 @@ export type ReadonlyReason =
   | 'contentUpdatePolicy'
   | 'contentUpdatePolicyNoOwner'
   | 'noMembership'
+  | 'multiUserNotAllowed'
+  | 'roomCapacityReached'
   | null;
 
 /** Stable, React-key-safe identifier (e.g. Yjs awareness clientId as a string). */

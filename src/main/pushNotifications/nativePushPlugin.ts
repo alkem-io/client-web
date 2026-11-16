@@ -39,6 +39,8 @@ export type NativePushPlugin = {
   /** `PermissionStatus` resolves an **object**, not a bare permission string. */
   requestPermissions(): Promise<{ receive: 'prompt' | 'prompt-with-rationale' | 'granted' | 'denied' }>;
   register(): Promise<void>;
+  /** Rejects on iOS until registration has run; on Android it cancels the whole tray. */
+  removeAllDeliveredNotifications(): Promise<void>;
   /**
    * Typed `unknown` deliberately: the injected implementation returns a plain
    * `{ remove }` object *synchronously* (`native-bridge.js:183-195`), not the

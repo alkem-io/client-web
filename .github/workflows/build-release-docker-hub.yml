@@ -41,9 +41,37 @@ jobs:
           platforms: linux/amd64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
-          build-args: |
+          build-args: &build-args |
             ARG_BUILD_VERSION=${{ github.event.release.tag_name }}
             ARG_BUILD_DATE=${{ github.event.release.created_at }}
             ARG_BUILD_REVISION=${{ github.sha }}
             ARG_BUILD_ENVIRONMENT=production
           labels: ${{ steps.meta.outputs.labels }}
+
+      # Source maps for Elastic APM (client-web#10549): copy them out of the
+      # build that just ran. A buildx run exports one target, so this is a second
+      # run, but with the same builder and the same build-args (shared via the
+      # anchor; any difference would miss the cache and rebuild the app) every
+      # builder step is a cache hit and it only copies build/assets/*.map. The maps
+      # belong to exactly the bundles in the pushed image and never enter it.
+      - name: Export source maps
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          target: sourcemaps
+          push: false
+          outputs: type=local,dest=./sourcemaps
+          build-args: *build-args
+
+      - name: Upload source maps to Elastic APM
+        env:
+          KIBANA_URL: https://kibana.alkem.io
+          KIBANA_APM_SOURCEMAP_API_KEY: ${{ secrets.KIBANA_APM_SOURCEMAP_API_KEY }}
+          # Any upload problem fails this job (the image is already pushed). Set
+          # the repo variable APM_SOURCEMAPS_STRICT=false to only warn instead.
+          APM_SOURCEMAPS_STRICT: ${{ vars.APM_SOURCEMAPS_STRICT || 'true' }}
+        run: |
+          SERVICE_VERSION="$(jq -r .version package.json)" \
+            ./.build/apm/upload-sourcemaps.sh ./sourcemaps
