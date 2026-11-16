@@ -86,6 +86,8 @@ const CrdOrgSettingsTab = () => {
 
   return (
     <OrgSettingsTabView
+      // A confirmation opened for one organization must not survive navigating to another.
+      key={organizationId}
       loading={loading && !data}
       allowSpaceInvitations={resolved('spaceInvitations', mapped.allowSpaceInvitations)}
       allowSpaceInvitationsSaving={Boolean(saving.spaceInvitations)}

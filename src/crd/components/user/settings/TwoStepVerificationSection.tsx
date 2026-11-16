@@ -7,6 +7,8 @@ import { Button } from '@/crd/primitives/button';
 import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
 
+const CODES_LIST_CLASS = 'grid grid-cols-2 gap-1 rounded-md border border-border bg-muted/40 p-3 font-mono text-body';
+
 const NS = 'crd-contributorSettings';
 
 export type TwoStepAuthenticator =
@@ -169,7 +171,8 @@ export function TwoStepVerificationSection({
 
   const renderCodes = (codes: string[]) => (
     <div className="flex flex-col gap-2">
-      <ul className="grid grid-cols-2 gap-1 rounded-md border border-border bg-muted/40 p-3 font-mono text-body">
+      {/* biome-ignore lint/a11y/useSemanticElements lint/a11y/noRedundantRoles: role="list" restores semantics after Tailwind reset */}
+      <ul role="list" className={CODES_LIST_CLASS}>
         {codes.map(code => (
           <li key={code}>{code}</li>
         ))}
@@ -291,7 +294,8 @@ export function TwoStepVerificationSection({
         >
           <Explanation>{t('user.security.twoStep.securityKeys.explanation')}</Explanation>
           {keys.length > 0 ? (
-            <ul className="flex flex-col divide-y divide-border rounded-md border border-border">
+            // biome-ignore lint/a11y/useSemanticElements lint/a11y/noRedundantRoles: role="list" restores semantics after Tailwind reset
+            <ul role="list" className="flex flex-col divide-y divide-border rounded-md border border-border">
               {keys.map(key => (
                 <li key={key.id} className="flex items-center justify-between gap-2 px-3 py-2">
                   <span className="text-body-emphasis">{key.name}</span>

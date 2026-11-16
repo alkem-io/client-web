@@ -168,7 +168,11 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
     flowResult.kind === 'ready' && offersTwoStepVerification(flowResult.flow) ? flowResult.flow : undefined;
   const { data: requirementData } = useSecondFactorRequirementQuery({ skip: !twoStepFlow });
   const twoStepVerificationSection = twoStepFlow ? (
-    <TwoStepVerification flow={twoStepFlow} requirementCovered={requirementData?.me.secondFactorRequirement.covered} />
+    // Until the requirement is known (loading or failed), warn as if it applies: the warning is the safe default.
+    <TwoStepVerification
+      flow={twoStepFlow}
+      requirementCovered={requirementData?.me.secondFactorRequirement.covered ?? true}
+    />
   ) : null;
 
   // Connected Accounts (US1-3, FR-001-FR-012, FR-017-FR-026): derived from

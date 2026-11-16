@@ -50,6 +50,23 @@ describe('useSecondFactorReminder', () => {
     expect(sessionStorage.getItem(SECOND_FACTOR_REMINDER_DISMISSED_KEY)).toBe('jane-id');
   });
 
+  it('still works when the browser refuses session storage', () => {
+    const denied = () => {
+      throw new DOMException('denied', 'SecurityError');
+    };
+    const get = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(denied);
+    const set = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(denied);
+    try {
+      const { result } = renderHook(() => useSecondFactorReminder());
+      expect(result.current.visible).toBe(true);
+      act(() => result.current.dismiss());
+      expect(result.current.visible).toBe(false);
+    } finally {
+      get.mockRestore();
+      set.mockRestore();
+    }
+  });
+
   it('is still shown to another person signing in on the tab after one dismissed it', () => {
     const first = renderHook(() => useSecondFactorReminder());
     act(() => first.result.current.dismiss());
