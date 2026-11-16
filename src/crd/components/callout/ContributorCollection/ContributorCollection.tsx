@@ -181,6 +181,19 @@ export function ContributorCollection({
     }));
   const unlocated = filtered.filter(c => !c.hasValidCoordinates);
 
+  // A pin's popup shows the same card as the list; the popup draws the frame.
+  const renderPinCard = (pinId: string) => {
+    const contributor = filtered.find(c => c.id === pinId);
+    return contributor ? (
+      <ContributorCard
+        contributor={contributor}
+        onContributorClick={onContributorClick}
+        onMessage={onMessage}
+        className="h-auto rounded-none border-0 shadow-none hover:shadow-none"
+      />
+    ) : null;
+  };
+
   // Signature of the active type's located set BEFORE search — drives the map's
   // auto re-fit so it re-zooms when the dataset changes (switching contributor
   // type/role, or the set finishing its async load) but stays put while the user
@@ -320,6 +333,7 @@ export function ContributorCollection({
                 ariaLabel={t('contributors.viewMap')}
                 fixedView={fixedView ?? undefined}
                 onPinClick={onContributorClick}
+                renderPinCard={renderPinCard}
               />
             </Suspense>
             <Button
@@ -339,6 +353,12 @@ export function ContributorCollection({
             <DialogContent
               closeLabel={t('contributors.closeMap')}
               aria-describedby={undefined}
+              // Esc inside a pin's card popup closes that popup, not the expanded map.
+              onEscapeKeyDown={e => {
+                if (e.target instanceof Element && e.target.closest('[data-contributor-map-popup]')) {
+                  e.preventDefault();
+                }
+              }}
               className="block h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-none overflow-hidden p-0 sm:max-w-none"
             >
               <DialogTitle className="sr-only">{t('contributors.viewMap')}</DialogTitle>
@@ -355,6 +375,7 @@ export function ContributorCollection({
                   ariaLabel={t('contributors.viewMap')}
                   fixedView={fixedView ?? undefined}
                   onPinClick={onContributorClick}
+                  renderPinCard={renderPinCard}
                   className="h-full border-0"
                 />
               </Suspense>

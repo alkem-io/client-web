@@ -1,5 +1,7 @@
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { useEffect, useRef, useState } from 'react';
+import { X } from 'lucide-react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AttributionControl, Map as MapLibreMap, type MapRef, Marker, Popup } from 'react-map-gl/maplibre';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -93,8 +95,35 @@ type ContributorMapProps = {
    */
   onViewChange?: (view: ContributorMapFixedView) => void;
   onPinClick?: (href: string) => void;
+  /**
+   * Content of the popup opened by a pin (e.g. the contributor's full card).
+   * When absent, the popup shows the pin's avatar, name and role only.
+   */
+  renderPinCard?: (pinId: string) => ReactNode;
   className?: string;
 };
+
+// The card popup's width is capped by maplibre's `maxWidth` (its 240px default
+// is too narrow for a card) and never exceeds the viewport on mobile.
+const CARD_POPUP_MAX_WIDTH = 'min(20rem, calc(100vw - 2rem))';
+
+// Avatar pins are bottom-anchored and 48px tall, so a popup placed above the
+// point must clear the avatar; maplibre picks the side that fits in the map.
+const CARD_POPUP_OFFSET = {
+  center: [0, 0],
+  top: [0, 8],
+  'top-left': [0, 8],
+  'top-right': [0, 8],
+  bottom: [0, -56],
+  'bottom-left': [0, -56],
+  'bottom-right': [0, -56],
+  left: [28, -28],
+  right: [-28, -28],
+} satisfies Record<string, [number, number]>;
+
+// Module-level so its identity is stable: React only calls it when the popup
+// mounts, never on a re-render that would pull focus back into the popup.
+const focusOnMount = (el: HTMLElement | null) => el?.focus({ preventScroll: true });
 
 // Default to a Europe-centred view when there are no plottable pins; when there
 // are, fit the map to their bounds (single pin → centre on it). The view is only
@@ -171,10 +200,21 @@ export default function ContributorMap({
   fixedView,
   onViewChange,
   onPinClick,
+  renderPinCard,
   className,
 }: ContributorMapProps) {
+  const { t } = useTranslation();
   const [activeId, setActiveId] = useState<string | null>(null);
   const active = pins.find(p => p.id === activeId) ?? null;
+  const pinButtons = useRef(new Map<string, HTMLButtonElement>());
+
+  // Closing the card popup hands focus back to the pin that opened it.
+  const closeCardPopup = () => {
+    if (activeId) {
+      pinButtons.current.get(activeId)?.focus();
+    }
+    setActiveId(null);
+  };
 
   const mapRef = useRef<MapRef>(null);
   // Latest pins + fixedView, read inside the fit effect without making them
@@ -271,6 +311,13 @@ export default function ContributorMap({
           >
             <button
               type="button"
+              ref={el => {
+                if (el) {
+                  pinButtons.current.set(pin.id, el);
+                } else {
+                  pinButtons.current.delete(pin.id);
+                }
+              }}
               aria-label={pin.name}
               className="block rounded-md transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
@@ -284,7 +331,54 @@ export default function ContributorMap({
           </Marker>
         ))}
 
-        {active && (
+        {active && renderPinCard && (
+          <Popup
+            key={active.id}
+            longitude={active.longitude}
+            latitude={active.latitude}
+            offset={CARD_POPUP_OFFSET}
+            maxWidth={CARD_POPUP_MAX_WIDTH}
+            closeButton={false}
+            closeOnClick={false}
+            onClose={() => setActiveId(null)}
+            className="w-full [&_.maplibregl-popup-content]:rounded-lg [&_.maplibregl-popup-content]:bg-transparent [&_.maplibregl-popup-content]:p-0 [&_.maplibregl-popup-content]:shadow-none"
+          >
+            {/* Non-modal dialog: focus moves in on open, Esc and the close
+                button close it. The popup lives outside maplibre's canvas
+                container, so pointer and key events inside it never reach the
+                map's pan/zoom handlers. */}
+            <div
+              role="dialog"
+              aria-label={active.name}
+              data-contributor-map-popup={true}
+              tabIndex={-1}
+              ref={focusOnMount}
+              onKeyDown={e => {
+                // Ignore keys from portalled content (e.g. the card's open
+                // actions menu), which handles its own Esc.
+                if (e.key === 'Escape' && e.currentTarget.contains(e.target as Node)) {
+                  e.preventDefault();
+                  closeCardPopup();
+                }
+              }}
+              className="max-h-[min(18rem,60vh)] overflow-y-auto rounded-lg border border-border bg-card shadow-md focus-visible:outline-none"
+            >
+              <div className="flex justify-end px-1 pt-1">
+                <button
+                  type="button"
+                  aria-label={t('close')}
+                  onClick={closeCardPopup}
+                  className="flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <X className="size-4" aria-hidden="true" />
+                </button>
+              </div>
+              {renderPinCard(active.id)}
+            </div>
+          </Popup>
+        )}
+
+        {active && !renderPinCard && (
           <Popup
             longitude={active.longitude}
             latitude={active.latitude}
