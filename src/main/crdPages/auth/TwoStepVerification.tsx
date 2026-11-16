@@ -21,10 +21,21 @@ type TwoStepVerificationProps = {
  */
 export const TwoStepVerification = ({ flow, requirementCovered }: TwoStepVerificationProps) => {
   const { t } = useTranslation();
+  const { t: tSettings } = useTranslation('crd-contributorSettings');
   const translateKratosMessages = useKratosMessageCopy();
   const [securityKeyError, setSecurityKeyError] = useState<string>();
   const model = adaptTwoStepVerification(flow);
   const post = (fields: Record<string, string>) => postKratosForm(model.action, fields);
+
+  // Kratos's only refusal of a key's name is a missing one; its own text names the form field.
+  const registration = model.securityKeys?.registration;
+  const securityKeys =
+    registration?.nameError && model.securityKeys
+      ? {
+          ...model.securityKeys,
+          registration: { ...registration, nameError: tSettings('user.security.twoStep.securityKeys.nameRequired') },
+        }
+      : model.securityKeys;
 
   const flowMessages = translateKratosMessages(model.messages).map(({ type, text }) => ({ type, text }));
   const messages = securityKeyError
@@ -35,7 +46,7 @@ export const TwoStepVerification = ({ flow, requirementCovered }: TwoStepVerific
     <TwoStepVerificationSection
       authenticator={model.authenticator}
       recoveryCodes={model.recoveryCodes}
-      securityKeys={model.securityKeys}
+      securityKeys={securityKeys}
       messages={messages}
       warnOnLastFactor={Boolean(requirementCovered) && model.soleFactor}
       onConfirmAuthenticator={code => post(model.fields.confirmAuthenticator(code))}

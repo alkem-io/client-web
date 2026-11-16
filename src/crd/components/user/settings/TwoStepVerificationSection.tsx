@@ -45,6 +45,8 @@ export type TwoStepSecurityKeys = {
     hiddenFields: { name: string; value: string }[];
     resultFieldName: string;
     nameFieldName: string;
+    /** Why the identity provider refused the last registration's name, already translated by the consumer. */
+    nameError?: string;
     trigger: { name: string; value: string };
   };
 };
@@ -326,7 +328,19 @@ export function TwoStepVerificationSection({
               ))}
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="two-step-security-key-name">{t('user.security.twoStep.securityKeys.nameLabel')}</Label>
-                <Input id="two-step-security-key-name" name={registration.nameFieldName} className="max-w-80" />
+                <Input
+                  id="two-step-security-key-name"
+                  name={registration.nameFieldName}
+                  required={true}
+                  aria-invalid={registration.nameError ? true : undefined}
+                  aria-describedby={registration.nameError ? 'two-step-security-key-name-error' : undefined}
+                  className="max-w-80"
+                />
+                {registration.nameError ? (
+                  <p id="two-step-security-key-name-error" className="text-caption text-destructive">
+                    {registration.nameError}
+                  </p>
+                ) : null}
               </div>
               <Button
                 type="submit"

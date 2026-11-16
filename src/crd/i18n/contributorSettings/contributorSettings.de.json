@@ -465,6 +465,7 @@
           "empty": "Noch keine Sicherheitsschlüssel hinzugefügt.",
           "explanation": "Ein physischer Schlüssel, etwa ein YubiKey, oder der eingebaute Authenticator Ihres Geräts, den Sie bei der Anmeldung berühren.",
           "nameLabel": "Name des Schlüssels",
+          "nameRequired": "Geben Sie dem Schlüssel einen Namen.",
           "removeDescription": "Sie können sich dann nicht mehr mit diesem Schlüssel anmelden.",
           "removeNamed": "{{name}} entfernen",
           "removeTitle": "Sicherheitsschlüssel „{{name}}“ entfernen?",

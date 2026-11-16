@@ -66,6 +66,7 @@ export const adaptTwoStepVerification = (flow: SettingsFlow): TwoStepVerificatio
     .filter(node => node.name === 'webauthn_remove')
     .map(node => ({ id: node.value, name: String(node.labelContext?.display_name ?? node.label) }));
   const trigger = webauthn.triggers[0];
+  const nameInput = webauthn.inputs[0];
   const securityKeys: TwoStepSecurityKeys | undefined =
     trigger || keys.length > 0
       ? {
@@ -79,7 +80,8 @@ export const adaptTwoStepVerification = (flow: SettingsFlow): TwoStepVerificatio
                   ...hidden.filter(field => field.name === WEBAUTHN_RESULT_FIELD),
                 ],
                 resultFieldName: WEBAUTHN_RESULT_FIELD,
-                nameFieldName: webauthn.inputs[0]?.name ?? 'webauthn_register_displayname',
+                nameFieldName: nameInput?.name ?? 'webauthn_register_displayname',
+                nameError: nameInput?.messages.find(message => message.type === 'error')?.text,
                 trigger: { name: trigger.name, value: trigger.value },
               }
             : undefined,

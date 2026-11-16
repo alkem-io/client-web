@@ -100,6 +100,23 @@ describe('adaptTwoStepVerification', () => {
     });
   });
 
+  it("carries the identity provider's refusal of the key's name", () => {
+    const flow = {
+      ...secondFactorSettingsFlow,
+      ui: {
+        ...secondFactorSettingsFlow.ui,
+        nodes: secondFactorSettingsFlow.ui.nodes.map((node: UiNode) =>
+          (node.attributes as UiNodeInputAttributes).name === 'webauthn_register_displayname'
+            ? { ...node, messages: [{ id: 4000002, type: 'error', text: 'Property is missing.' }] }
+            : node
+        ),
+      },
+    } as SettingsFlow;
+
+    expect(adaptTwoStepVerification(flow).securityKeys?.registration?.nameError).toBe('Property is missing.');
+    expect(adaptTwoStepVerification(secondFactorSettingsFlow).securityKeys?.registration?.nameError).toBeUndefined();
+  });
+
   it('reads an enrolled authenticator and the named security keys', () => {
     const model = adaptTwoStepVerification(withLookup(enrolledSecondFactorSettingsFlow, ['lookup_secret_regenerate']));
 

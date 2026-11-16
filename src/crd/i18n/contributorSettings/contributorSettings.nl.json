@@ -465,6 +465,7 @@
           "empty": "Nog geen beveiligingssleutels toegevoegd.",
           "explanation": "Een fysieke sleutel, zoals een YubiKey, of de ingebouwde authenticator van je apparaat, die je aanraakt wanneer je inlogt.",
           "nameLabel": "Naam van de sleutel",
+          "nameRequired": "Geef de sleutel een naam.",
           "removeDescription": "Je kunt dan niet meer inloggen met deze sleutel.",
           "removeNamed": "{{name}} verwijderen",
           "removeTitle": "Beveiligingssleutel \"{{name}}\" verwijderen?",

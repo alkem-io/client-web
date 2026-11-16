@@ -465,6 +465,7 @@
           "empty": "No security keys added yet.",
           "explanation": "A physical key, such as a YubiKey, or your device's built-in authenticator, which you touch when you sign in.",
           "nameLabel": "Name of the key",
+          "nameRequired": "Enter a name for the key.",
           "removeDescription": "You will no longer be able to sign in with this key.",
           "removeNamed": "Remove {{name}}",
           "removeTitle": "Remove the security key \"{{name}}\"?",

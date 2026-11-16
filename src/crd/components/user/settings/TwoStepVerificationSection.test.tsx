@@ -219,8 +219,28 @@ describe('TwoStepVerificationSection — security keys', () => {
     expect(container.querySelectorAll('[name="webauthn_register_trigger"]')).toHaveLength(1);
     expect(trigger).toHaveAttribute('value', registration.trigger.value);
 
+    await userEvent.type(screen.getByLabelText('user.security.twoStep.securityKeys.nameLabel'), 'Desk key');
     await userEvent.click(trigger);
     expect(callbacks.onAddSecurityKey).toHaveBeenCalledWith(registration.trigger.value);
+  });
+
+  it('does not start the ceremony without a name: the identity provider refuses a key without one', async () => {
+    const { callbacks } = renderSection({ securityKeys: { keys: [], registration } });
+    const name = screen.getByLabelText('user.security.twoStep.securityKeys.nameLabel');
+
+    await userEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.securityKeys.add' }));
+
+    expect(name).toBeRequired();
+    expect(name).toBeInvalid();
+    expect(callbacks.onAddSecurityKey).not.toHaveBeenCalled();
+  });
+
+  it("shows the identity provider's refusal of the name on the name field", () => {
+    renderSection({ securityKeys: { keys: [], registration: { ...registration, nameError: 'Enter a name.' } } });
+
+    const name = screen.getByLabelText('user.security.twoStep.securityKeys.nameLabel');
+    expect(name).toHaveAttribute('aria-invalid', 'true');
+    expect(name).toHaveAccessibleDescription('Enter a name.');
   });
 
   it('one key: lists it by name and removes it after confirmation', async () => {

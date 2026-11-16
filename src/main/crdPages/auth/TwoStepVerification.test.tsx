@@ -44,9 +44,40 @@ describe('TwoStepVerification', () => {
     invokePasskeyTrigger.mockRejectedValue(new Error('cancelled'));
     render(<TwoStepVerification flow={enrolledSecondFactorSettingsFlow} />);
 
+    await userEvent.type(screen.getByLabelText('user.security.twoStep.securityKeys.nameLabel'), 'Desk key');
     await userEvent.click(screen.getByRole('button', { name: /user\.security\.twoStep\.securityKeys\.add/ }));
 
     expect(await screen.findByRole('alert')).toHaveTextContent('security key failed');
+  });
+
+  it("shows Kratos's refusal of a key without a name on the name field, in Alkemio's copy", () => {
+    const flow = {
+      ...enrolledSecondFactorSettingsFlow,
+      ui: {
+        ...enrolledSecondFactorSettingsFlow.ui,
+        nodes: enrolledSecondFactorSettingsFlow.ui.nodes.map(node =>
+          'name' in node.attributes && node.attributes.name === 'webauthn_register_displayname'
+            ? {
+                ...node,
+                messages: [
+                  {
+                    id: 4000002,
+                    type: 'error',
+                    text: 'Property webauthn_register_displayname is missing.',
+                    context: { property: 'webauthn_register_displayname' },
+                  },
+                ],
+              }
+            : node
+        ),
+      },
+    } as SettingsFlow;
+
+    render(<TwoStepVerification flow={flow} />);
+
+    const name = screen.getByLabelText('user.security.twoStep.securityKeys.nameLabel');
+    expect(name).toHaveAttribute('aria-invalid', 'true');
+    expect(name).toHaveAccessibleDescription('user.security.twoStep.securityKeys.nameRequired');
   });
 
   it("shows the flow's messages in Alkemio's own copy", () => {

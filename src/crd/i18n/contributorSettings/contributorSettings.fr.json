@@ -465,6 +465,7 @@
           "empty": "Aucune clé de sécurité ajoutée pour l'instant.",
           "explanation": "Une clé physique, comme une YubiKey, ou l'authentificateur intégré de votre appareil, que vous touchez lors de la connexion.",
           "nameLabel": "Nom de la clé",
+          "nameRequired": "Saisissez un nom pour la clé.",
           "removeDescription": "Vous ne pourrez plus vous connecter avec cette clé.",
           "removeNamed": "Supprimer {{name}}",
           "removeTitle": "Supprimer la clé de sécurité « {{name}} » ?",

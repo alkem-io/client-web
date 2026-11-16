@@ -465,6 +465,7 @@
           "empty": "Aún no has añadido llaves de seguridad.",
           "explanation": "Una llave física, como una YubiKey, o el autenticador integrado de tu dispositivo, que tocas al iniciar sesión.",
           "nameLabel": "Nombre de la llave",
+          "nameRequired": "Escribe un nombre para la llave.",
           "removeDescription": "Ya no podrás iniciar sesión con esta llave.",
           "removeNamed": "Eliminar {{name}}",
           "removeTitle": "¿Eliminar la llave de seguridad \"{{name}}\"?",
