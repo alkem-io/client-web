@@ -1,3 +1,5 @@
+import type { SettingsFlow } from '@ory/kratos-client';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
 import { isAppMode } from '@/core/appMode/isAppMode';
@@ -65,12 +67,16 @@ function SecondFactorEnrolment({
     returnTo: `${platformOrigin ?? window.location.origin}${SECOND_FACTOR_PATH}`,
   });
   usePasskeyScript(flow?.ui?.nodes);
+  // Enrolment answers in place (see TwoStepVerification): Kratos's latest answer, whatever its id, decides
+  // whether the person has enrolled, until a newer flow is loaded.
+  const [answered, setAnswered] = useState<{ to: SettingsFlow | undefined; flow: SettingsFlow }>();
+  const current = answered && answered.to === flow ? answered.flow : flow;
 
   const state: SecondFactorRequiredState = loading
     ? 'loading'
-    : !flow || error
+    : !current || error
       ? 'unavailable'
-      : adaptTwoStepVerification(flow).enrolled
+      : adaptTwoStepVerification(current).enrolled
         ? 'enrolled'
         : 'enrol';
 
@@ -78,7 +84,11 @@ function SecondFactorEnrolment({
     <AuthShellWrapper wide={state === 'enrol'}>
       <SecondFactorRequiredCard
         state={state}
-        enrolment={flow ? <TwoStepVerification flow={flow} /> : null}
+        enrolment={
+          current ? (
+            <TwoStepVerification flow={current} onFlowChange={answer => setAnswered({ to: flow, flow: answer })} />
+          ) : null
+        }
         {...actions}
       />
     </AuthShellWrapper>

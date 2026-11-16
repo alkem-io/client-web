@@ -1,17 +1,19 @@
 import type { SettingsFlow, UiNode } from '@ory/kratos-client';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { enrolledSecondFactorSettingsFlow } from './__fixtures__/secondFactorFlows';
+import { enrolledSecondFactorSettingsFlow, secondFactorSettingsFlow } from './__fixtures__/secondFactorFlows';
 import { TwoStepVerification } from './TwoStepVerification';
 
 const postKratosForm = vi.hoisted(() => vi.fn());
+const submitKratosSettings = vi.hoisted(() => vi.fn());
 const invokePasskeyTrigger = vi.hoisted(() => vi.fn());
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 vi.mock('./postKratosForm', () => ({ postKratosForm }));
+vi.mock('./submitKratosSettings', () => ({ submitKratosSettings }));
 vi.mock('./passkeyTrigger', () => ({
   invokePasskeyTrigger,
   translatePasskeyError: () => 'security key failed',
@@ -24,6 +26,8 @@ vi.mock('./useKratosMessageCopy', () => ({
 describe('TwoStepVerification', () => {
   beforeEach(() => {
     postKratosForm.mockClear();
+    submitKratosSettings.mockReset();
+    submitKratosSettings.mockResolvedValue({ kind: 'flow', flow: enrolledSecondFactorSettingsFlow });
     invokePasskeyTrigger.mockReset();
   });
 
@@ -34,9 +38,84 @@ describe('TwoStepVerification', () => {
     const dialog = await screen.findByRole('alertdialog').catch(() => screen.getByRole('dialog'));
     await userEvent.click(within(dialog).getByRole('button', { name: 'user.security.twoStep.remove' }));
 
-    expect(postKratosForm).toHaveBeenCalledWith(
+    expect(submitKratosSettings).toHaveBeenCalledWith(
       enrolledSecondFactorSettingsFlow.ui.action,
       expect.objectContaining({ method: 'webauthn', webauthn_remove: 'key-1' })
+    );
+    expect(postKratosForm).not.toHaveBeenCalled();
+  });
+
+  it('shows the flow Kratos answers with, in place, and hands it to the page', async () => {
+    // Kratos answers with the same flow, now carrying the enrolled authenticator.
+    const saved = { ...enrolledSecondFactorSettingsFlow, id: secondFactorSettingsFlow.id };
+    submitKratosSettings.mockResolvedValue({ kind: 'flow', flow: saved });
+    const onFlowChange = vi.fn();
+    render(<TwoStepVerification flow={secondFactorSettingsFlow} onFlowChange={onFlowChange} />);
+    expect(screen.queryByText('user.security.twoStep.authenticator.active')).toBeNull();
+
+    await userEvent.type(screen.getByLabelText('user.security.twoStep.authenticator.codeLabel'), '123456{Enter}');
+
+    expect(submitKratosSettings).toHaveBeenCalledWith(
+      secondFactorSettingsFlow.ui.action,
+      expect.objectContaining({ method: 'totp', totp_code: '123456' })
+    );
+    expect(await screen.findByText('user.security.twoStep.authenticator.active')).toBeInTheDocument();
+    expect(onFlowChange).toHaveBeenCalledWith(saved);
+    expect(postKratosForm).not.toHaveBeenCalled();
+  });
+
+  it('follows a completed flow onto the fresh one Kratos answers with', async () => {
+    // Kratos answers a submission to a flow it already completed on a new flow, with a new id and action.
+    const fresh = {
+      ...enrolledSecondFactorSettingsFlow,
+      id: 'settings-fresh',
+      ui: {
+        ...enrolledSecondFactorSettingsFlow.ui,
+        action: 'http://localhost/self-service/settings?flow=settings-fresh',
+      },
+    } as SettingsFlow;
+    submitKratosSettings.mockResolvedValue({ kind: 'flow', flow: fresh });
+    render(<TwoStepVerification flow={secondFactorSettingsFlow} />);
+
+    await userEvent.type(screen.getByLabelText('user.security.twoStep.authenticator.codeLabel'), '123456{Enter}');
+    expect(await screen.findByText('user.security.twoStep.authenticator.active')).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.securityKeys.removeNamed' }));
+    await userEvent.click(
+      within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'user.security.twoStep.remove' })
+    );
+    expect(submitKratosSettings).toHaveBeenLastCalledWith(
+      fresh.ui.action,
+      expect.objectContaining({ webauthn_remove: 'key-1' })
+    );
+  });
+
+  it('follows Kratos when it sends the browser elsewhere first', async () => {
+    const assign = vi.fn();
+    vi.stubGlobal('location', { ...window.location, assign });
+    try {
+      submitKratosSettings.mockResolvedValue({ kind: 'redirect', to: 'http://localhost/login?refresh=true' });
+      render(<TwoStepVerification flow={secondFactorSettingsFlow} />);
+
+      await userEvent.type(screen.getByLabelText('user.security.twoStep.authenticator.codeLabel'), '123456{Enter}');
+
+      await waitFor(() => expect(assign).toHaveBeenCalledWith('http://localhost/login?refresh=true'));
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('falls back to a native POST when Kratos answers with neither', async () => {
+    submitKratosSettings.mockRejectedValue(new Error('500'));
+    render(<TwoStepVerification flow={secondFactorSettingsFlow} />);
+
+    await userEvent.type(screen.getByLabelText('user.security.twoStep.authenticator.codeLabel'), '123456{Enter}');
+
+    await waitFor(() =>
+      expect(postKratosForm).toHaveBeenCalledWith(
+        secondFactorSettingsFlow.ui.action,
+        expect.objectContaining({ method: 'totp', totp_code: '123456' })
+      )
     );
   });
 

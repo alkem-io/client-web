@@ -199,7 +199,11 @@ export function TwoStepVerificationSection({
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => downloadTextFile(`${codes.join('\n')}\n`, RECOVERY_CODES_FILENAME)}
+          onClick={() => {
+            downloadTextFile(`${codes.join('\n')}\n`, RECOVERY_CODES_FILENAME);
+            // A downloaded file is a saved copy: the codes count from here.
+            onConfirmRecoveryCodes();
+          }}
         >
           <Download aria-hidden="true" className="size-4" />
           {t('user.security.twoStep.recoveryCodes.download')}

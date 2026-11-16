@@ -123,12 +123,13 @@ describe('TwoStepVerificationSection — recovery codes', () => {
     expect(callbacks.onConfirmRecoveryCodes).toHaveBeenCalledTimes(1);
   });
 
-  it('downloads the codes as a text file, one per line', async () => {
-    renderSection({ recoveryCodes: { kind: 'unconfirmed', codes: ['abcd1234', 'efgh5678'] } });
+  it('downloads the codes as a text file, one per line, and counts them as saved', async () => {
+    const { callbacks } = renderSection({ recoveryCodes: { kind: 'unconfirmed', codes: ['abcd1234', 'efgh5678'] } });
 
     await userEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.recoveryCodes.download' }));
 
     expect(downloadTextFile).toHaveBeenCalledWith('abcd1234\nefgh5678\n', 'alkemio-recovery-codes.txt');
+    expect(callbacks.onConfirmRecoveryCodes).toHaveBeenCalledTimes(1);
   });
 
   it('says so when the codes could not be copied', async () => {
