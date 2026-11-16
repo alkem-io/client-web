@@ -121,6 +121,25 @@ const CARD_POPUP_OFFSET = {
   right: [-28, -28],
 } satisfies Record<string, [number, number]>;
 
+// Space the card popup needs beyond its content: maplibre's tip (10px) plus a
+// small gap to the map edge.
+const CARD_POPUP_CHROME = 18;
+
+// Tallest card popup that fits inside the map at this pin, on whichever side of
+// the pin has more room. Maplibre picks the anchor that fits but never pans, and
+// the map clips its overflow, so a centred pin in a short map would otherwise
+// cut the card off. `undefined` (no map yet) leaves only the CSS cap.
+const cardPopupMaxHeight = (map: MapRef | null, pin: ContributorMapPin): number | undefined => {
+  if (!map) {
+    return undefined;
+  }
+  const { y } = map.project([pin.longitude, pin.latitude]);
+  const mapHeight = map.getContainer().clientHeight;
+  const above = y + CARD_POPUP_OFFSET.bottom[1] - CARD_POPUP_CHROME;
+  const below = mapHeight - y - CARD_POPUP_OFFSET.top[1] - CARD_POPUP_CHROME;
+  return Math.max(above, below, 0);
+};
+
 // Module-level so its identity is stable: React only calls it when the popup
 // mounts, never on a re-render that would pull focus back into the popup.
 const focusOnMount = (el: HTMLElement | null) => el?.focus({ preventScroll: true });
@@ -207,6 +226,7 @@ export default function ContributorMap({
   const [activeId, setActiveId] = useState<string | null>(null);
   const active = pins.find(p => p.id === activeId) ?? null;
   const pinButtons = useRef(new Map<string, HTMLButtonElement>());
+  const [cardMaxHeight, setCardMaxHeight] = useState<number | undefined>();
 
   // Closing the card popup hands focus back to the pin that opened it.
   const closeCardPopup = () => {
@@ -277,6 +297,14 @@ export default function ContributorMap({
     onViewChange({ longitude: center.lng, latitude: center.lat, zoom: map.getZoom() });
   };
 
+  const handleMoveEnd = () => {
+    handleViewChange();
+    // The pin moved within the map, so the room around it changed.
+    if (active && renderPinCard) {
+      setCardMaxHeight(cardPopupMaxHeight(mapRef.current, active));
+    }
+  };
+
   return (
     <section
       className={cn('h-96 w-full overflow-hidden rounded-lg border border-border', className)}
@@ -295,7 +323,7 @@ export default function ContributorMap({
           collapseAttribution(e.target);
           handleViewChange();
         }}
-        onMoveEnd={handleViewChange}
+        onMoveEnd={handleMoveEnd}
       >
         <AttributionControl compact={true} position="bottom-right" />
         {pins.map(pin => (
@@ -307,6 +335,9 @@ export default function ContributorMap({
             onClick={e => {
               e.originalEvent.stopPropagation();
               setActiveId(pin.id);
+              if (renderPinCard) {
+                setCardMaxHeight(cardPopupMaxHeight(mapRef.current, pin));
+              }
             }}
           >
             <button
@@ -353,6 +384,7 @@ export default function ContributorMap({
               data-contributor-map-popup={true}
               tabIndex={-1}
               ref={focusOnMount}
+              style={cardMaxHeight === undefined ? undefined : { maxHeight: `min(18rem, 60vh, ${cardMaxHeight}px)` }}
               onKeyDown={e => {
                 // Ignore keys from portalled content (e.g. the card's open
                 // actions menu), which handles its own Esc.

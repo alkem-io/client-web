@@ -21,18 +21,32 @@ import spaceEnJson from '@/crd/i18n/space/space.en.json';
 import type { ContributorCardData } from './ContributorCard';
 import { ContributorCollection } from './ContributorCollection';
 
-vi.mock('react-map-gl/maplibre', () => ({
-  Map: ({ children }: { children: ReactNode }) => <div data-testid="maplibre-map">{children}</div>,
-  AttributionControl: () => null,
-  // Mirrors react-map-gl: the marker's click listener sits on the wrapper element
-  // and hands the DOM event over as `originalEvent`.
-  Marker: ({ children, onClick }: { children: ReactNode; onClick?: (e: { originalEvent: Event }) => void }) => (
-    // biome-ignore lint/a11y/noStaticElementInteractions: test stand-in for the maplibre marker wrapper
-    // biome-ignore lint/a11y/useKeyWithClickEvents: the real pin is the inner <button>
-    <div onClick={e => onClick?.({ originalEvent: e.nativeEvent })}>{children}</div>
-  ),
-  Popup: ({ children }: { children: ReactNode }) => <div>{children}</div>,
-}));
+// The stand-in map is 384px tall (the inline map's h-96) with every pin projected
+// to its vertical centre — the case where neither side of the pin fits a full card.
+const MAP_HEIGHT = 384;
+const PIN_Y = 192;
+
+vi.mock('react-map-gl/maplibre', async () => {
+  const { forwardRef, useImperativeHandle } = await import('react');
+  return {
+    Map: forwardRef<unknown, { children: ReactNode }>(({ children }, ref) => {
+      useImperativeHandle(ref, () => ({
+        project: () => ({ x: 0, y: PIN_Y }),
+        getContainer: () => ({ clientHeight: MAP_HEIGHT }),
+      }));
+      return <div data-testid="maplibre-map">{children}</div>;
+    }),
+    AttributionControl: () => null,
+    // Mirrors react-map-gl: the marker's click listener sits on the wrapper element
+    // and hands the DOM event over as `originalEvent`.
+    Marker: ({ children, onClick }: { children: ReactNode; onClick?: (e: { originalEvent: Event }) => void }) => (
+      // biome-ignore lint/a11y/noStaticElementInteractions: test stand-in for the maplibre marker wrapper
+      // biome-ignore lint/a11y/useKeyWithClickEvents: the real pin is the inner <button>
+      <div onClick={e => onClick?.({ originalEvent: e.nativeEvent })}>{children}</div>
+    ),
+    Popup: ({ children }: { children: ReactNode }) => <div>{children}</div>,
+  };
+});
 
 const i18n = i18next.createInstance();
 
@@ -184,5 +198,37 @@ describe('ContributorCollection map — pin popup shows the full contributor car
     expect(within(expanded).queryByRole('dialog', { name: 'Ada' })).not.toBeInTheDocument();
     expect(screen.getByRole('dialog', { name: 'Map' })).toBeInTheDocument();
     expect(pin).toHaveFocus();
+  });
+
+  test('on the expanded map, Message closes the map before opening the chat', async () => {
+    const user = userEvent.setup();
+    const onMessage = vi.fn(() => {
+      // The chat opens outside the modal map, so the map must already be gone.
+      expect(screen.queryByRole('dialog', { name: 'Map' })).not.toBeInTheDocument();
+    });
+    renderMap([ada], onMessage);
+
+    await screen.findByRole('button', { name: 'Ada' });
+    await user.click(screen.getByRole('button', { name: 'Expand map' }));
+    const expanded = await screen.findByRole('dialog', { name: 'Map' });
+    await user.click(await within(expanded).findByRole('button', { name: 'Ada' }));
+    const popup = within(expanded).getByRole('dialog', { name: 'Ada' });
+
+    await user.click(within(popup).getByRole('button', { name: 'Actions for Ada' }));
+    await user.click(await screen.findByRole('menuitem', { name: 'Message' }));
+
+    expect(onMessage).toHaveBeenCalledWith(ada);
+    expect(screen.queryByRole('dialog', { name: 'Map' })).not.toBeInTheDocument();
+  });
+
+  test('a centred pin on the inline map caps the card to the room left inside the map', async () => {
+    const user = userEvent.setup();
+    renderMap([ada]);
+
+    await user.click(await screen.findByRole('button', { name: 'Ada' }));
+
+    // Below the pin: 384 - 192 - 8 (popup offset) - 18 (tip + edge gap) = 166px,
+    // more than the 118px above it — so the card scrolls inside the map, not past it.
+    expect(screen.getByRole('dialog', { name: 'Ada' }).style.maxHeight).toBe('min(18rem, 60vh, 166px)');
   });
 });
