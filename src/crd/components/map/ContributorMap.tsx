@@ -140,10 +140,6 @@ const cardPopupMaxHeight = (map: MapRef | null, pin: ContributorMapPin): number 
   return Math.max(above, below, 0);
 };
 
-// Module-level so its identity is stable: React only calls it when the popup
-// mounts, never on a re-render that would pull focus back into the popup.
-const focusOnMount = (el: HTMLElement | null) => el?.focus({ preventScroll: true });
-
 // Default to a Europe-centred view when there are no plottable pins; when there
 // are, fit the map to their bounds (single pin → centre on it). The view is only
 // the INITIAL state — the user can pan/zoom freely afterwards.
@@ -374,16 +370,18 @@ export default function ContributorMap({
             onClose={() => setActiveId(null)}
             className="w-full [&_.maplibregl-popup-content]:rounded-lg [&_.maplibregl-popup-content]:bg-transparent [&_.maplibregl-popup-content]:p-0 [&_.maplibregl-popup-content]:shadow-none"
           >
-            {/* Non-modal dialog: focus moves in on open, Esc and the close
-                button close it. The popup lives outside maplibre's canvas
+            {/* Non-modal dialog: on open maplibre (`focusAfterOpen`, on by
+                default) focuses its first focusable element, the close button;
+                Esc and the close button close it. React mounts this content
+                in a detached container that the popup only attaches after
+                render, so focusing from a ref here would do nothing. The
+                popup lives outside maplibre's canvas
                 container, so pointer and key events inside it never reach the
                 map's pan/zoom handlers. */}
             <div
               role="dialog"
               aria-label={active.name}
               data-contributor-map-popup={true}
-              tabIndex={-1}
-              ref={focusOnMount}
               style={cardMaxHeight === undefined ? undefined : { maxHeight: `min(18rem, 60vh, ${cardMaxHeight}px)` }}
               onKeyDown={e => {
                 // Ignore keys from portalled content (e.g. the card's open

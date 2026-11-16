@@ -26,8 +26,13 @@ import { ContributorCollection } from './ContributorCollection';
 const MAP_HEIGHT = 384;
 const PIN_Y = 192;
 
+// maplibre's `focusAfterOpen` selector: the popup focuses the first match on open.
+const POPUP_FOCUSABLE =
+  "a[href], [tabindex]:not([tabindex='-1']), [contenteditable]:not([contenteditable='false']), button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])";
+
 vi.mock('react-map-gl/maplibre', async () => {
-  const { forwardRef, useImperativeHandle } = await import('react');
+  const { forwardRef, useEffect, useImperativeHandle, useRef, useState } = await import('react');
+  const { createPortal } = await import('react-dom');
   return {
     Map: forwardRef<unknown, { children: ReactNode }>(({ children }, ref) => {
       useImperativeHandle(ref, () => ({
@@ -44,7 +49,19 @@ vi.mock('react-map-gl/maplibre', async () => {
       // biome-ignore lint/a11y/useKeyWithClickEvents: the real pin is the inner <button>
       <div onClick={e => onClick?.({ originalEvent: e.nativeEvent })}>{children}</div>
     ),
-    Popup: ({ children }: { children: ReactNode }) => <div>{children}</div>,
+    // Mirrors react-map-gl 8's lifecycle: children render into a detached
+    // container, which an effect then attaches before maplibre focuses the
+    // first focusable element — so a focus made during render would be lost.
+    Popup: ({ children }: { children: ReactNode }) => {
+      const [container] = useState(() => document.createElement('div'));
+      const anchor = useRef<HTMLDivElement>(null);
+      useEffect(() => {
+        anchor.current?.appendChild(container);
+        container.querySelector<HTMLElement>(POPUP_FOCUSABLE)?.focus();
+        return () => container.remove();
+      }, [container]);
+      return <div ref={anchor}>{createPortal(children, container)}</div>;
+    },
   };
 });
 
@@ -159,7 +176,7 @@ describe('ContributorCollection map — pin popup shows the full contributor car
     const pin = await screen.findByRole('button', { name: 'Ada' });
     await user.click(pin);
     const popup = screen.getByRole('dialog', { name: 'Ada' });
-    expect(popup).toHaveFocus();
+    expect(within(popup).getByRole('button', { name: 'Close' })).toHaveFocus();
 
     await user.keyboard('{Escape}');
 
@@ -191,7 +208,7 @@ describe('ContributorCollection map — pin popup shows the full contributor car
     await user.click(pin);
     const popup = within(expanded).getByRole('dialog', { name: 'Ada' });
     expect(within(popup).getByText('Urban planner who loves a good map.')).toBeInTheDocument();
-    expect(popup).toHaveFocus();
+    expect(within(popup).getByRole('button', { name: 'Close' })).toHaveFocus();
 
     await user.keyboard('{Escape}');
 
