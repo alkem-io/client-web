@@ -18,6 +18,7 @@ import { I18nextProvider, initReactI18next } from 'react-i18next';
 import { beforeAll, describe, expect, test, vi } from 'vitest';
 import commonEnJson from '@/crd/i18n/common/common.en.json';
 import spaceEnJson from '@/crd/i18n/space/space.en.json';
+import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
 import type { ContributorCardData } from './ContributorCard';
 import { ContributorCollection } from './ContributorCollection';
 
@@ -111,29 +112,41 @@ const acme: ContributorCardData = {
   canMessage: true,
 };
 
-const renderMap = (cards: ContributorCardData[], onMessage = vi.fn()) => {
+const renderMap = (cards: ContributorCardData[], onMessage = vi.fn(), wrap = (node: ReactNode) => node) => {
   const activeType = cards[0].type === 'organization' ? 'organization' : 'user';
   render(
     <I18nextProvider i18n={i18n}>
-      <ContributorCollection
-        types={[activeType]}
-        activeType={activeType}
-        onActiveTypeChange={() => {}}
-        defaultView="map"
-        counts={{
-          users: activeType === 'user' ? cards.length : 0,
-          organizations: activeType === 'organization' ? cards.length : 0,
-          virtualContributors: 0,
-        }}
-        cards={cards}
-        loading={false}
-        onContributorClick={vi.fn()}
-        onMessage={onMessage}
-      />
+      {wrap(
+        <ContributorCollection
+          types={[activeType]}
+          activeType={activeType}
+          onActiveTypeChange={() => {}}
+          defaultView="map"
+          counts={{
+            users: activeType === 'user' ? cards.length : 0,
+            organizations: activeType === 'organization' ? cards.length : 0,
+            virtualContributors: 0,
+          }}
+          cards={cards}
+          loading={false}
+          onContributorClick={vi.fn()}
+          onMessage={onMessage}
+        />
+      )}
     </I18nextProvider>
   );
   return { onMessage };
 };
+
+// The callout detail dialog renders the inline map inside a modal Radix dialog.
+const inCalloutDialog = (node: ReactNode) => (
+  <Dialog defaultOpen={true}>
+    <DialogContent aria-describedby={undefined}>
+      <DialogTitle>Contributors callout</DialogTitle>
+      {node}
+    </DialogContent>
+  </Dialog>
+);
 
 describe('ContributorCollection map — pin popup shows the full contributor card', () => {
   test('a user pin opens the full card, including the Message action', async () => {
@@ -181,6 +194,22 @@ describe('ContributorCollection map — pin popup shows the full contributor car
     await user.keyboard('{Escape}');
 
     expect(screen.queryByRole('dialog', { name: 'Ada' })).not.toBeInTheDocument();
+    expect(pin).toHaveFocus();
+  });
+
+  test('inside the callout dialog, Esc closes only the popup, not the callout dialog', async () => {
+    const user = userEvent.setup();
+    renderMap([ada], vi.fn(), inCalloutDialog);
+
+    const callout = await screen.findByRole('dialog', { name: 'Contributors callout' });
+    const pin = await within(callout).findByRole('button', { name: 'Ada' });
+    await user.click(pin);
+    expect(within(callout).getByRole('dialog', { name: 'Ada' })).toBeInTheDocument();
+
+    await user.keyboard('{Escape}');
+
+    expect(within(callout).queryByRole('dialog', { name: 'Ada' })).not.toBeInTheDocument();
+    expect(callout).toBeInTheDocument();
     expect(pin).toHaveFocus();
   });
 

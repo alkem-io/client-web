@@ -365,12 +365,6 @@ export function ContributorCollection({
             <DialogContent
               closeLabel={t('contributors.closeMap')}
               aria-describedby={undefined}
-              // Esc inside a pin's card popup closes that popup, not the expanded map.
-              onEscapeKeyDown={e => {
-                if (e.target instanceof Element && e.target.closest('[data-contributor-map-popup]')) {
-                  e.preventDefault();
-                }
-              }}
               className="block h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-none overflow-hidden p-0 sm:max-w-none"
             >
               <DialogTitle className="sr-only">{t('contributors.viewMap')}</DialogTitle>

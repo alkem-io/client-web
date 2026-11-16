@@ -232,6 +232,28 @@ export default function ContributorMap({
     setActiveId(null);
   };
 
+  // Esc inside the card popup closes only the popup, wherever the map sits. A
+  // window capture listener runs before Radix's document-level Escape handler,
+  // and a handled (default-prevented) Escape stops any enclosing dialog from
+  // closing too. Esc from portalled content, such as the card's open actions
+  // menu, is outside the popup and left to that content.
+  const cardPopupRef = useRef<HTMLDivElement>(null);
+  const hasCardPopup = Boolean(renderPinCard);
+  useEffect(() => {
+    if (!activeId || !hasCardPopup) {
+      return;
+    }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && e.target instanceof Node && cardPopupRef.current?.contains(e.target)) {
+        e.preventDefault();
+        pinButtons.current.get(activeId)?.focus();
+        setActiveId(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown, { capture: true });
+    return () => window.removeEventListener('keydown', handleKeyDown, { capture: true });
+  }, [activeId, hasCardPopup]);
+
   const mapRef = useRef<MapRef>(null);
   // Latest pins + fixedView, read inside the fit effect without making them
   // dependencies (we re-fit on `fitKey`, not on every pin change — so searching
@@ -379,18 +401,10 @@ export default function ContributorMap({
                 container, so pointer and key events inside it never reach the
                 map's pan/zoom handlers. */}
             <div
+              ref={cardPopupRef}
               role="dialog"
               aria-label={active.name}
-              data-contributor-map-popup={true}
               style={cardMaxHeight === undefined ? undefined : { maxHeight: `min(18rem, 60vh, ${cardMaxHeight}px)` }}
-              onKeyDown={e => {
-                // Ignore keys from portalled content (e.g. the card's open
-                // actions menu), which handles its own Esc.
-                if (e.key === 'Escape' && e.currentTarget.contains(e.target as Node)) {
-                  e.preventDefault();
-                  closeCardPopup();
-                }
-              }}
               className="max-h-[min(18rem,60vh)] overflow-y-auto rounded-lg border border-border bg-card shadow-md focus-visible:outline-none"
             >
               <div className="flex justify-end px-1 pt-1">
