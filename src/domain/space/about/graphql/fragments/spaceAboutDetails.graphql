@@ -19,10 +19,15 @@ fragment SpaceAboutDetails on SpaceAbout {
         avatar: visual(type: AVATAR) {
           ...VisualModel
         }
+        tagline
         location {
           id
           city
           country
+        }
+        keywords: tagset(tagsetName: KEYWORDS) {
+          id
+          tags
         }
       }
     }
@@ -35,10 +40,15 @@ fragment SpaceAboutDetails on SpaceAbout {
         avatar: visual(type: AVATAR) {
           ...VisualModel
         }
+        tagline
         location {
           id
           city
           country
+        }
+        keywords: tagset(tagsetName: KEYWORDS) {
+          id
+          tags
         }
       }
     }

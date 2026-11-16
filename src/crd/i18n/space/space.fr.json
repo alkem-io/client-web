@@ -1202,6 +1202,12 @@
       "mapAriaLabel": "Aperçu de la carte des contributeurs — faites glisser et zoomez pour définir la vue fixe",
       "captureHint": "Faites glisser et zoomez la carte, puis cliquez sur « Utiliser la vue actuelle » pour fixer la position de départ.",
       "controlAriaLabel": "Paramètres de vue carte"
+    },
+    "preview": {
+      "virtualContributor": "Contributeur virtuel",
+      "viewOwnProfile": "Voir votre profil",
+      "close": "Fermer",
+      "description": "Aperçu du profil"
     }
   },
   "spaceCollection": {

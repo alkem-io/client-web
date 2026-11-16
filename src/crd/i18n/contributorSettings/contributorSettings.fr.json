@@ -159,7 +159,7 @@
         },
         "keywords": {
           "label": "Mots-clés",
-          "hint": "Mots-clés décrivant vos intérêts. Appuyez sur Entrée pour ajouter.",
+          "hint": "Mots-clés décrivant vos intérêts. Ils apparaissent comme étiquettes sur la carte de survol de votre profil. Appuyez sur Entrée pour ajouter.",
           "placeholder": "ex. climat, gouvernance, open source"
         }
       },
@@ -673,7 +673,7 @@
         },
         "keywords": {
           "label": "Mots-clés",
-          "hint": "Sujets sur lesquels votre organisation travaille. Appuyez sur Entrée pour ajouter.",
+          "hint": "Sujets sur lesquels votre organisation travaille. Ils apparaissent comme étiquettes sur la carte de survol de votre organisation. Appuyez sur Entrée pour ajouter.",
           "placeholder": "ex. climat, gouvernance, open source"
         },
         "capabilities": {
@@ -978,7 +978,7 @@
       },
       "keywords": {
         "label": "Mots-clés",
-        "hint": "Ajoutez des mots-clés pour aider les utilisateurs à découvrir ce Contributeur Virtuel.",
+        "hint": "Ajoutez des mots-clés pour aider les utilisateurs à découvrir ce Contributeur Virtuel. Ils apparaissent comme étiquettes sur sa carte de survol.",
         "placeholder": "Ajoutez un mot-clé et appuyez sur Entrée"
       },
       "socialLinks": {

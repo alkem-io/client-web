@@ -1202,6 +1202,12 @@
       "mapAriaLabel": "Mitwirkenden-Kartenvorschau — Verschieben und Zoomen, um die feste Ansicht festzulegen",
       "captureHint": "Verschieben und zoomen Sie die Karte und klicken Sie dann auf 'Aktuelle Ansicht verwenden', um die Startposition festzulegen.",
       "controlAriaLabel": "Kartenansicht-Einstellungen"
+    },
+    "preview": {
+      "virtualContributor": "Virtueller Mitwirkender",
+      "viewOwnProfile": "Dein Profil ansehen",
+      "close": "Schließen",
+      "description": "Profilvorschau"
     }
   },
   "spaceCollection": {

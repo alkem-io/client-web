@@ -1,5 +1,6 @@
 import type { TFunction } from 'i18next';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { ActorType, TagsetType, VisualType } from '@/core/apollo/generated/graphql-schema';
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
 import { mapRoomToCommentData } from './commentDataMapper';
 
@@ -199,5 +200,84 @@ describe('mapRoomToCommentData', () => {
     // and correct — order is the thread component's concern.
     expect(result.find(c => c.id === 'a')?.timestampMs).toBe(messageA);
     expect(result.find(c => c.id === 'b')?.timestampMs).toBe(messageB);
+  });
+
+  describe('author preview', () => {
+    const senderProfile = {
+      id: 'profile-bob',
+      displayName: 'Bob',
+      url: '/user/bob',
+      avatar: { id: 'avatar-bob', uri: 'https://example.org/bob.png', name: VisualType.Avatar },
+      tagline: ' Builder of things ',
+      location: { city: 'Utrecht', country: 'NL' },
+      tagsets: [
+        { id: 'ts-skills', name: 'skills', tags: ['typescript'], allowedValues: [], type: TagsetType.Freeform },
+        { id: 'ts-keywords', name: 'KEYWORDS', tags: ['climate'], allowedValues: [], type: TagsetType.Freeform },
+      ],
+    };
+    const authorOf = (sender: Message['sender']) =>
+      mapRoomToCommentData(
+        { messages: [baseMessage({ id: 'm1', timestamp: Date.now(), sender })] },
+        {
+          currentUserId: 'me',
+          t: tStub,
+        }
+      )[0].author;
+
+    it('gives a user sender a preview and reads the author fields from it', () => {
+      const author = authorOf({ id: 'bob', type: ActorType.User, profile: senderProfile });
+      expect(author.preview).toEqual({
+        id: 'bob',
+        type: 'user',
+        name: 'Bob',
+        avatarUrl: 'https://example.org/bob.png',
+        href: '/user/bob',
+        locationLabel: 'Utrecht, NL',
+        tagline: 'Builder of things',
+        tags: ['climate'],
+        canMessage: true,
+        self: false,
+      });
+      expect(author.name).toBe(author.preview?.name);
+      expect(author.avatarUrl).toBe(author.preview?.avatarUrl);
+      expect(author.profileUrl).toBe(author.preview?.href);
+      expect(author.isVirtualContributor).toBe(false);
+    });
+
+    it('takes the author fields from the preview, not the raw sender profile', () => {
+      const author = authorOf({
+        id: 'bob',
+        type: ActorType.User,
+        profile: { ...senderProfile, url: null, avatar: { ...senderProfile.avatar, uri: null } },
+      } as unknown as Message['sender']);
+      expect(author.avatarUrl).toBeUndefined();
+      expect(author.profileUrl).toBeUndefined();
+      expect(author.avatarUrl).toBe(author.preview?.avatarUrl);
+      expect(author.profileUrl).toBe(author.preview?.href);
+    });
+
+    it('gives a virtual contributor sender a preview that cannot be messaged', () => {
+      const author = authorOf({ id: 'vc', type: ActorType.VirtualContributor, profile: senderProfile });
+      expect(author.preview?.type).toBe('virtualContributor');
+      expect(author.preview?.canMessage).toBe(false);
+      expect(author.isVirtualContributor).toBe(true);
+    });
+
+    it('gives a sender of another actor type, or no sender, no preview and the plain author fields', () => {
+      expect(authorOf({ id: 'space', type: ActorType.Space, profile: senderProfile })).toEqual({
+        id: 'space',
+        name: 'Bob',
+        avatarUrl: 'https://example.org/bob.png',
+        profileUrl: '/user/bob',
+        isVirtualContributor: false,
+      });
+      expect(authorOf(undefined)).toEqual({
+        id: 'unknown',
+        name: 'Unknown',
+        avatarUrl: undefined,
+        profileUrl: undefined,
+        isVirtualContributor: false,
+      });
+    });
   });
 });

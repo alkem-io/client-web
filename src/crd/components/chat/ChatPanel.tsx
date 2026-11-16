@@ -1,4 +1,4 @@
-import { ChevronLeft, Maximize2, Minimize2, Settings, X } from 'lucide-react';
+import { ChevronLeft, Maximize2, Minimize2, Settings, Volume2, VolumeX, X } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import {
   chatHeaderIconButtonClass,
@@ -22,6 +22,13 @@ type ChatPanelProps = {
   /** When provided, a shortcut to the notification (sound) settings is shown in the header. */
   onGoToSettings?: () => void;
   settingsLabel: string;
+  /** When provided, a mute / unmute toggle for the chat sound is shown in the header. */
+  onToggleSound?: () => void;
+  /** Whether the chat sound is currently off. */
+  soundMuted?: boolean;
+  /** Names of the sound toggle: what a press does in each state. */
+  muteSoundLabel: string;
+  unmuteSoundLabel: string;
   /** Labels of the expand / collapse toggle (desktop only). */
   expandLabel: string;
   collapseLabel: string;
@@ -57,6 +64,10 @@ export function ChatPanel({
   backLabel,
   onGoToSettings,
   settingsLabel,
+  onToggleSound,
+  soundMuted = false,
+  muteSoundLabel,
+  unmuteSoundLabel,
   expandLabel,
   collapseLabel,
   titleAvatar,
@@ -171,6 +182,20 @@ export function ChatPanel({
                 <Minimize2 aria-hidden="true" className={chatHeaderIconClass} />
               ) : (
                 <Maximize2 aria-hidden="true" className={chatHeaderIconClass} />
+              )}
+            </button>
+          )}
+          {onToggleSound && (
+            <button
+              type="button"
+              onClick={onToggleSound}
+              aria-label={soundMuted ? unmuteSoundLabel : muteSoundLabel}
+              className={chatHeaderIconButtonClass}
+            >
+              {soundMuted ? (
+                <VolumeX aria-hidden="true" className={chatHeaderLargeIconClass} />
+              ) : (
+                <Volume2 aria-hidden="true" className={chatHeaderLargeIconClass} />
               )}
             </button>
           )}
