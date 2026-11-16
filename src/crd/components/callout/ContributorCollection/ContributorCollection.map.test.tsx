@@ -217,12 +217,9 @@ describe('ContributorCollection map — pin popup shows the full contributor car
     expect(pin).toHaveFocus();
   });
 
-  test('on the expanded map, Message closes the map before opening the chat', async () => {
+  test('on the expanded map, Message closes the map and opens the chat', async () => {
     const user = userEvent.setup();
-    const onMessage = vi.fn(() => {
-      // The chat opens outside the modal map, so the map must already be gone.
-      expect(screen.queryByRole('dialog', { name: 'Map' })).not.toBeInTheDocument();
-    });
+    const onMessage = vi.fn();
     renderMap([ada], onMessage);
 
     await screen.findByRole('button', { name: 'Ada' });
@@ -234,8 +231,10 @@ describe('ContributorCollection map — pin popup shows the full contributor car
     await user.click(within(popup).getByRole('button', { name: 'Actions for Ada' }));
     await user.click(await screen.findByRole('menuitem', { name: 'Message' }));
 
+    // The chat opens outside the modal map, so the map must be gone. Check the saved element
+    // itself: a role query skips aria-hidden nodes and the open modal menu aria-hides the map.
     expect(onMessage).toHaveBeenCalledWith(ada);
-    expect(screen.queryByRole('dialog', { name: 'Map' })).not.toBeInTheDocument();
+    expect(expanded).not.toBeInTheDocument();
   });
 
   test('a centred pin on the inline map caps the card to the room left inside the map', async () => {
