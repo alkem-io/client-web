@@ -1,6 +1,7 @@
-import { Copy, Info, KeyRound, ShieldCheck, Smartphone } from 'lucide-react';
+import { Copy, Download, Info, KeyRound, ShieldCheck, Smartphone } from 'lucide-react';
 import { type FormEvent, type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { downloadTextFile } from '@/core/utils/downloadTextFile';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -10,6 +11,8 @@ import { Label } from '@/crd/primitives/label';
 const CODES_LIST_CLASS = 'grid grid-cols-2 gap-1 rounded-md border border-border bg-muted/40 p-3 font-mono text-body';
 
 const NS = 'crd-contributorSettings';
+
+const RECOVERY_CODES_FILENAME = 'alkemio-recovery-codes.txt';
 
 export type TwoStepAuthenticator =
   | { kind: 'enrolled' }
@@ -179,19 +182,29 @@ export function TwoStepVerificationSection({
           <li key={code}>{code}</li>
         ))}
       </ul>
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        className="self-start"
-        disabled={!navigator.clipboard}
-        onClick={() => copyCodes(codes)}
-      >
-        <Copy aria-hidden="true" className="size-4" />
-        {copyOutcome === 'copied'
-          ? t('user.security.twoStep.recoveryCodes.copied')
-          : t('user.security.twoStep.recoveryCodes.copy')}
-      </Button>
+      <div className="flex flex-wrap gap-2">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={!navigator.clipboard}
+          onClick={() => copyCodes(codes)}
+        >
+          <Copy aria-hidden="true" className="size-4" />
+          {copyOutcome === 'copied'
+            ? t('user.security.twoStep.recoveryCodes.copied')
+            : t('user.security.twoStep.recoveryCodes.copy')}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => downloadTextFile(`${codes.join('\n')}\n`, RECOVERY_CODES_FILENAME)}
+        >
+          <Download aria-hidden="true" className="size-4" />
+          {t('user.security.twoStep.recoveryCodes.download')}
+        </Button>
+      </div>
       {copyOutcome === 'failed' ? (
         <p role="alert" className="text-caption text-destructive">
           {t('user.security.twoStep.recoveryCodes.copyFailed')}

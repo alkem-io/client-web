@@ -7,6 +7,9 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
+const downloadTextFile = vi.hoisted(() => vi.fn());
+vi.mock('@/core/utils/downloadTextFile', () => ({ downloadTextFile }));
+
 const handlers = () => ({
   onConfirmAuthenticator: vi.fn(),
   onRemoveAuthenticator: vi.fn(),
@@ -118,6 +121,14 @@ describe('TwoStepVerificationSection — recovery codes', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.recoveryCodes.confirm' }));
     expect(callbacks.onConfirmRecoveryCodes).toHaveBeenCalledTimes(1);
+  });
+
+  it('downloads the codes as a text file, one per line', async () => {
+    renderSection({ recoveryCodes: { kind: 'unconfirmed', codes: ['abcd1234', 'efgh5678'] } });
+
+    await userEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.recoveryCodes.download' }));
+
+    expect(downloadTextFile).toHaveBeenCalledWith('abcd1234\nefgh5678\n', 'alkemio-recovery-codes.txt');
   });
 
   it('says so when the codes could not be copied', async () => {

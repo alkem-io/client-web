@@ -447,6 +447,7 @@
           "copied": "Copiado",
           "copy": "Copiar códigos",
           "copyFailed": "No se pudieron copiar. Selecciona los códigos y cópialos tú mismo.",
+          "download": "Descargar códigos",
           "explanation": "Códigos de un solo uso para cuando no puedas usar tu aplicación o tu llave. Cada código funciona una vez.",
           "generate": "Generar códigos de recuperación",
           "needsFactor": "Configura primero una aplicación de autenticación o una llave de seguridad.",
