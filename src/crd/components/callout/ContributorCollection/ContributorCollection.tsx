@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, List, Loader2, Map as MapIcon, Maximize2, Search, Users } from 'lucide-react';
-import { type ComponentType, lazy, Suspense, useEffect, useState } from 'react';
+import { type ComponentType, lazy, type ReactNode, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ContributorMapFixedView, ContributorMapPin } from '@/crd/components/map/ContributorMap';
 import { cn } from '@/crd/lib/utils';
@@ -182,17 +182,29 @@ export function ContributorCollection({
   const unlocated = filtered.filter(c => !c.hasValidCoordinates);
 
   // A pin's popup shows the same card as the list; the popup draws the frame.
-  const renderPinCard = (pinId: string) => {
-    const contributor = filtered.find(c => c.id === pinId);
-    return contributor ? (
-      <ContributorCard
-        contributor={contributor}
-        onContributorClick={onContributorClick}
-        onMessage={onMessage}
-        className="h-auto rounded-none border-0 shadow-none hover:shadow-none"
-      />
-    ) : null;
-  };
+  const pinCardRenderer =
+    (handleMessage: ContributorCollectionProps['onMessage']) =>
+    (pinId: string): ReactNode => {
+      const contributor = filtered.find(c => c.id === pinId);
+      return contributor ? (
+        <ContributorCard
+          contributor={contributor}
+          onContributorClick={onContributorClick}
+          onMessage={handleMessage}
+          className="h-auto rounded-none border-0 shadow-none hover:shadow-none"
+        />
+      ) : null;
+    };
+  const renderPinCard = pinCardRenderer(onMessage);
+  // The expanded map is a modal: the chat it would open sits outside it, so
+  // close the map first or the chat cannot be used.
+  const renderExpandedPinCard = pinCardRenderer(
+    onMessage &&
+      (contributor => {
+        setMapExpanded(false);
+        onMessage(contributor);
+      })
+  );
 
   // Signature of the active type's located set BEFORE search — drives the map's
   // auto re-fit so it re-zooms when the dataset changes (switching contributor
@@ -375,7 +387,7 @@ export function ContributorCollection({
                   ariaLabel={t('contributors.viewMap')}
                   fixedView={fixedView ?? undefined}
                   onPinClick={onContributorClick}
-                  renderPinCard={renderPinCard}
+                  renderPinCard={renderExpandedPinCard}
                   className="h-full border-0"
                 />
               </Suspense>
