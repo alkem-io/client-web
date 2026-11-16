@@ -1,4 +1,4 @@
-import { Loader2, Trash2 } from 'lucide-react';
+import { ChevronLeft, Loader2, Trash2 } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ValidationError } from 'yup';
@@ -21,11 +21,13 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
+import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -111,6 +113,27 @@ export function CrdPostContributionDialog({
   onUpdated,
 }: CrdPostContributionDialogProps) {
   const { t } = useTranslation('crd-space');
+  const { isSmallScreen } = useScreenSize();
+  const [visibleArea, setVisibleArea] = useState<{ top: number; height: number }>();
+
+  // The on-screen keyboard shrinks the visual viewport but not the layout viewport a
+  // fixed element is pinned to, so a full-screen form would keep its actions behind
+  // the keyboard. Following the visual viewport keeps them on screen.
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    if (!open || !isSmallScreen || !viewport) {
+      return;
+    }
+    const update = () => setVisibleArea({ top: viewport.offsetTop, height: viewport.height });
+    update();
+    viewport.addEventListener('resize', update);
+    viewport.addEventListener('scroll', update);
+    return () => {
+      viewport.removeEventListener('resize', update);
+      viewport.removeEventListener('scroll', update);
+    };
+  }, [open, isSmallScreen]);
+
   const translateValidation = useValidationMessageTranslation();
   const notify = useNotification();
   // Create mode: the post (and its storage bucket) doesn't exist yet, so both markdown-image and
@@ -444,9 +467,31 @@ export function CrdPostContributionDialog({
       >
         <DialogContent
           overlayClassName={overlayClassName}
-          className={cn('sm:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden', contentClassName)}
+          hideClose={isSmallScreen}
+          style={isSmallScreen && visibleArea ? { ...visibleArea, bottom: 'auto' } : undefined}
+          className={cn(
+            'flex flex-col overflow-hidden',
+            // Full screen on a small screen, like the chat panel. No duration: the height
+            // follows the on-screen keyboard and must not lag behind it.
+            isSmallScreen
+              ? 'inset-0 max-w-none translate-x-0 translate-y-0 rounded-none border-none p-4 duration-0'
+              : 'sm:max-w-3xl max-h-[90vh]',
+            contentClassName
+          )}
         >
-          <DialogHeader className="shrink-0">
+          <DialogHeader className={cn('shrink-0', isSmallScreen && 'flex-row items-center gap-1 text-left')}>
+            {isSmallScreen && (
+              <DialogClose asChild={true}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="-ml-2 shrink-0 text-muted-foreground"
+                  aria-label={t('calloutDialog.close')}
+                >
+                  <ChevronLeft aria-hidden="true" className="size-5" />
+                </Button>
+              </DialogClose>
+            )}
             <DialogTitle>{dialogTitle}</DialogTitle>
             <DialogDescription className="sr-only">{dialogTitle}</DialogDescription>
           </DialogHeader>
@@ -567,7 +612,8 @@ export function CrdPostContributionDialog({
                 </Button>
               )}
             </div>
-            <div className="flex items-center gap-2">
+            {/* Wraps on a small screen: in longer languages the notify switch would push the submit button off screen. */}
+            <div className={cn('flex items-center gap-2', isSmallScreen && 'flex-wrap justify-end')}>
               {mode === 'create' && (
                 <div className="flex items-center gap-2 mr-2">
                   <Switch

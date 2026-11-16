@@ -20,6 +20,8 @@
     "filterSubspacesOnly": "Solo subespacios",
     "clearFilters": "Borrar todos los filtros",
     "matchingTerms": "Espacios que coinciden con «{{terms}}»",
+    "matchingTermsCount_one": "{{count}} espacio que coincide con «{{terms}}»",
+    "matchingTermsCount_other": "{{count}} espacios que coinciden con «{{terms}}»",
     "of": "de",
     "spacesLabel": "espacios",
     "emptyTitle": "No se encontraron espacios",

@@ -267,3 +267,9 @@ html {
 @keyframes edgeFlow {
   to { stroke-dashoffset: -60; }
 }
+
+/* The chat thread's loading bar: a third-width segment crossing its track. */
+@keyframes chatLoadingSlide {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(300%); }
+}

@@ -756,7 +756,9 @@
         "unauthenticated": "Inicia sesión para editar esta nota.",
         "contentUpdatePolicy": "No tienes permiso para editar esta nota. Pide al propietario, <ownerlink>{{ownerName}}</ownerlink>, que cambie la configuración de uso compartido.",
         "contentUpdatePolicyNoOwner": "No tienes permiso para editar esta nota. El propietario ya no está disponible: pide a un administrador del espacio que cambie la configuración de uso compartido.",
-        "noMembership": "Solo los miembros de este espacio pueden editar esta nota. Únete al espacio para contribuir."
+        "noMembership": "Solo los miembros de este espacio pueden editar esta nota. Únete al espacio para contribuir.",
+        "multiUserNotAllowed": "No puedes editar esta nota porque este espacio solo permite un editor a la vez.",
+        "roomCapacityReached": "No puedes editar esta nota porque se ha alcanzado el número máximo de editores a la vez."
       }
     },
     "errors": {
@@ -962,9 +964,8 @@
     }
   },
   "postSnippet": {
-    "readMore": "… Leer más",
-    "readLess": "Leer menos",
-    "seeFullDescription": "Ver descripción completa"
+    "readMore": "Leer más",
+    "showLess": "Mostrar menos"
   },
   "postPreview": {
     "createdBy": "Creado por",
@@ -1201,6 +1202,12 @@
       "mapAriaLabel": "Vista previa del mapa de colaboradores — desplace y aplique zoom para establecer la vista fija",
       "captureHint": "Desplace y aplique zoom al mapa y luego haga clic en 'Usar la vista actual' para fijar la posición inicial.",
       "controlAriaLabel": "Configuración de la vista del mapa"
+    },
+    "preview": {
+      "virtualContributor": "Contribuidor virtual",
+      "viewOwnProfile": "Ver tu perfil",
+      "close": "Cerrar",
+      "description": "Vista previa del perfil"
     }
   },
   "spaceCollection": {

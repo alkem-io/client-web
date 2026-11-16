@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 import CrdAdminLicensingPage from '../CrdAdminLicensingPage';
@@ -20,19 +20,22 @@ const plansQueryMock = vi.fn();
 const updateVisibilityMock = vi.fn(() => Promise.resolve());
 const assignAccountPlanMock = vi.fn(() => Promise.resolve());
 const revokeAccountPlanMock = vi.fn(() => Promise.resolve());
+const updatePromoteMock = vi.fn((_options: unknown) => Promise.resolve());
+const notify = vi.fn();
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useLicensingAdminSpacesQuery: () => spacesQueryMock(),
   useLicensingAdminOrganizationsQuery: () => orgsQueryMock(),
   useLicensingAdminUsersQuery: () => usersQueryMock(),
   usePlatformLicensingPlansQuery: () => plansQueryMock(),
   useAdminUpdateSpaceVisibilityMutation: () => [updateVisibilityMock, { loading: false }],
+  useAdminUpdateSpacePromoteMutation: () => [updatePromoteMock, { loading: false }],
   useAssignLicensePlanToAccountMutation: () => [assignAccountPlanMock, { loading: false }],
   useRevokeLicensePlanFromAccountMutation: () => [revokeAccountPlanMock, { loading: false }],
   refetchLicensingAdminSpacesQuery: () => ({}),
   refetchLicensingAdminOrganizationsQuery: () => ({}),
   refetchLicensingAdminUsersQuery: () => ({}),
 }));
-vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
+vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notify }));
 vi.mock('../../spaces/SpaceLicensePlansDialog', () => ({
   SpaceLicensePlansDialog: ({ open, title }: { open: boolean; title: string }) =>
     open ? <div role="dialog">space plans: {title}</div> : null,
@@ -140,6 +143,7 @@ const users = [
 
 beforeEach(() => {
   vi.clearAllMocks();
+  updatePromoteMock.mockResolvedValue(undefined);
   plansQueryMock.mockReturnValue({ data: { platform: { licensingFramework: { id: 'lf', plans } } } });
   spacesQueryMock.mockReturnValue({ data: { platformAdmin: { spaces } }, loading: false });
   orgsQueryMock.mockReturnValue({
@@ -224,5 +228,51 @@ describe('CrdAdminLicensingPage', () => {
     render(<CrdAdminLicensingPage />);
     expect(screen.queryByRole('button', { name: 'table.delete' })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'spaces.editSettings' })).not.toBeInTheDocument();
+  });
+
+  describe('Spaces Promote column', () => {
+    const promoteLabel = (name: string) => `columns.promoteOf:${JSON.stringify({ name })}`;
+    const withPromote = (values: (boolean | null)[]) =>
+      spacesQueryMock.mockReturnValue({
+        data: { platformAdmin: { spaces: spaces.map((space, i) => ({ ...space, promote: values[i] })) } },
+        loading: false,
+      });
+
+    test('is the last header before Actions when a row carries a promote value', () => {
+      withPromote([false, null]);
+      render(<CrdAdminLicensingPage />);
+      const headers = screen.getAllByRole('columnheader').map(header => header.textContent);
+      expect(headers.slice(-3)).toEqual(['licensing.columns.plans', 'columns.promoteHeader', 'table.actions']);
+      expect(screen.getByRole('checkbox', { name: promoteLabel('Climate Lab') })).not.toBeChecked();
+      // A row without a value renders no control.
+      expect(screen.queryByRole('checkbox', { name: promoteLabel('Demo Space') })).toBeNull();
+    });
+
+    test('is hidden, header included, when every row has a null promote', () => {
+      withPromote([null, null]);
+      render(<CrdAdminLicensingPage />);
+      expect(screen.queryByRole('columnheader', { name: 'columns.promoteHeader' })).toBeNull();
+      expect(screen.queryByRole('checkbox')).toBeNull();
+    });
+
+    test('clicking the box sends the promote mutation for that space', async () => {
+      withPromote([true, false]);
+      render(<CrdAdminLicensingPage />);
+      await userEvent.click(screen.getByRole('checkbox', { name: promoteLabel('Climate Lab') }));
+      expect(updatePromoteMock).toHaveBeenCalledWith({ variables: { spaceId: 's1', promote: false } });
+    });
+
+    test('a permission refusal notifies exactly once', async () => {
+      withPromote([true, false]);
+      updatePromoteMock.mockRejectedValueOnce({
+        graphQLErrors: [{ message: 'nope', extensions: { code: 'FORBIDDEN_POLICY' } }],
+      });
+      render(<CrdAdminLicensingPage />);
+      const box = screen.getByRole('checkbox', { name: promoteLabel('Demo Space') });
+      await userEvent.click(box);
+      await waitFor(() => expect(notify).toHaveBeenCalledWith('permissions.errorDenied', 'error'));
+      expect(notify).toHaveBeenCalledTimes(1);
+      expect(box).not.toBeChecked();
+    });
   });
 });

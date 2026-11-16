@@ -1,7 +1,9 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { useState } from 'react';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
 import { CrdPostContributionDialog } from './CrdPostContributionDialog';
 
 const state = vi.hoisted(() => ({
@@ -15,6 +17,9 @@ const state = vi.hoisted(() => ({
 }));
 
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
+
+const screenSize = { isSmallScreen: false, isMediumScreen: false, isLargeScreen: true };
+vi.mock('@/crd/hooks/useMediaQuery', () => ({ useScreenSize: () => screenSize }));
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   usePostSettingsQuery: () => ({
@@ -215,5 +220,135 @@ describe('CrdPostContributionDialog — notify members switch (create mode)', ()
     await waitFor(() => expect(state.updatePost).toHaveBeenCalledTimes(1));
     expect(state.updatePost.mock.calls[0][0].variables).not.toHaveProperty('sendNotification');
     expect(state.updatePost.mock.calls[0][0].variables.input).not.toHaveProperty('sendNotification');
+  });
+});
+
+describe('CrdPostContributionDialog — full screen on a small screen', () => {
+  afterEach(() => {
+    screenSize.isSmallScreen = false;
+    vi.unstubAllGlobals();
+  });
+
+  const backArrow = () =>
+    screen.getAllByRole('dialog').at(-1)?.querySelector('.lucide-chevron-left')?.closest('button') as HTMLButtonElement;
+
+  const stubVisualViewport = (offsetTop: number, height: number) => {
+    const viewport = Object.assign(new EventTarget(), { offsetTop, height });
+    vi.stubGlobal('visualViewport', viewport);
+    return viewport;
+  };
+
+  test('fills the screen and closes from a single back arrow', async () => {
+    screenSize.isSmallScreen = true;
+    const onOpenChange = vi.fn();
+    render(<CrdPostContributionDialog {...editProps} open={true} onOpenChange={onOpenChange} />);
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveClass(
+      'inset-0',
+      'max-w-none',
+      'translate-x-0',
+      'translate-y-0',
+      'rounded-none',
+      'border-none'
+    );
+    expect(dialog).not.toHaveClass('top-[50%]', 'left-[50%]', 'max-h-[90vh]');
+    expect(dialog.querySelector('.lucide-x')).toBeNull();
+    expect(backArrow()).toHaveAccessibleName('calloutDialog.close');
+
+    await userEvent.click(backArrow());
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  test('asks before discarding unsaved changes when closed from the back arrow', async () => {
+    screenSize.isSmallScreen = true;
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(<CrdPostContributionDialog {...editProps} open={true} onOpenChange={onOpenChange} />);
+
+    await user.type(await screen.findByDisplayValue('Original title'), ' edited');
+    await user.click(backArrow());
+
+    expect(await screen.findByText('callout.postUnsavedCloseTitle')).toBeInTheDocument();
+    expect(onOpenChange).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole('button', { name: 'callout.postUnsavedCloseConfirm' }));
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  test('follows the visual viewport, so the actions stay above the on-screen keyboard', () => {
+    screenSize.isSmallScreen = true;
+    const viewport = stubVisualViewport(0, 844);
+    render(<CrdPostContributionDialog {...createProps} open={true} onOpenChange={vi.fn()} />);
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveStyle({ top: '0px', height: '844px' });
+
+    Object.assign(viewport, { offsetTop: 24, height: 460 });
+    act(() => {
+      viewport.dispatchEvent(new Event('resize'));
+    });
+    expect(dialog).toHaveStyle({ top: '24px', height: '460px', bottom: 'auto' });
+  });
+
+  test('wraps the actions so the submit button cannot be pushed off screen', () => {
+    screenSize.isSmallScreen = true;
+    render(<CrdPostContributionDialog {...createProps} open={true} onOpenChange={vi.fn()} />);
+
+    expect(screen.getByRole('button', { name: 'callout.postCreate' }).parentElement).toHaveClass('flex-wrap');
+  });
+
+  test('closing from the back arrow over a full-screen post returns to the post', async () => {
+    screenSize.isSmallScreen = true;
+    const user = userEvent.setup();
+    const onPostOpenChange = vi.fn();
+
+    const PostWithEditForm = () => {
+      const [editing, setEditing] = useState(false);
+      return (
+        <>
+          <CalloutDetailDialog
+            open={true}
+            onOpenChange={onPostOpenChange}
+            callout={{ id: 'c1', title: 'The post' }}
+            commentsSlot={
+              <button type="button" onClick={() => setEditing(true)}>
+                edit
+              </button>
+            }
+          />
+          <CrdPostContributionDialog {...editProps} open={editing} onOpenChange={setEditing} />
+        </>
+      );
+    };
+    render(<PostWithEditForm />);
+    await user.click(screen.getByRole('button', { name: 'edit' }));
+
+    expect(screen.getByRole('dialog', { name: 'callout.editPost' })).toBeInTheDocument();
+    await user.click(backArrow());
+
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'callout.editPost' })).not.toBeInTheDocument());
+    expect(screen.getByRole('dialog', { name: 'The post' })).toBeInTheDocument();
+    expect(onPostOpenChange).not.toHaveBeenCalled();
+  });
+
+  test('stays a centered box with its close button above a small screen', async () => {
+    stubVisualViewport(0, 500);
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(<CrdPostContributionDialog {...editProps} open={true} onOpenChange={onOpenChange} />);
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveClass('top-[50%]', 'left-[50%]', 'sm:max-w-3xl', 'max-h-[90vh]');
+    expect(dialog).not.toHaveClass('inset-0');
+    expect(dialog.style.height).toBe('');
+    expect(screen.getByRole('button', { name: 'callout.postSave' }).parentElement).not.toHaveClass('flex-wrap');
+    expect(dialog.querySelector('.lucide-chevron-left')).toBeNull();
+
+    // The corner close button routes through the same unsaved-changes guard.
+    await user.type(await screen.findByDisplayValue('Original title'), ' edited');
+    await user.click(dialog.querySelector('.lucide-x')?.closest('button') as HTMLButtonElement);
+    expect(await screen.findByText('callout.postUnsavedCloseTitle')).toBeInTheDocument();
+    expect(onOpenChange).not.toHaveBeenCalled();
   });
 });

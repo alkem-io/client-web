@@ -1,3 +1,7 @@
+import {
+  CONTRIBUTION_GRID_COLUMNS,
+  type ContributionGridColumns,
+} from '@/crd/components/contribution/ContributionGrid';
 import { cn } from '@/crd/lib/utils';
 import { Skeleton } from '@/crd/primitives/skeleton';
 
@@ -10,12 +14,14 @@ type ContributionsPreviewSkeletonProps = {
    * Unknown reserves one grid row.
    */
   count?: number;
+  /** Column count of the grid this placeholder stands in for. */
+  columns?: ContributionGridColumns;
   className?: string;
 };
 
 /** The feed preview renders at most 4 slots (3 + a "more" tile past that). */
 const MAX_CELLS = 4;
-/** One row of the two-column grid — the most common size of a populated preview. */
+/** One row of a two-column grid — the most common size of a populated preview. */
 const DEFAULT_CELLS = 2;
 
 /**
@@ -32,13 +38,14 @@ const CELL_HEIGHT: Record<Exclude<ContributionPreviewKind, 'link'>, string> = {
 
 /**
  * Decorative placeholder for a callout's contributions preview — mirrors the real
- * preview's footprint (a `space-y-2` list of link rows, or a 1/2-column grid of cards)
+ * preview's footprint (a `space-y-2` list of link rows, or a grid of cards with the same columns)
  * so the card doesn't grow when the lazily-fetched contributions arrive (issue #10043).
  * Purely decorative: the consumer supplies the `<output aria-label>` status wrapper.
  */
 export function ContributionsPreviewSkeleton({
   kind,
   count = DEFAULT_CELLS,
+  columns = 2,
   className,
 }: ContributionsPreviewSkeletonProps) {
   const cells = Array.from({ length: Math.min(count, MAX_CELLS) }, (_, index) => index);
@@ -57,7 +64,7 @@ export function ContributionsPreviewSkeleton({
   }
 
   return (
-    <div className={cn('grid grid-cols-1 sm:grid-cols-2 gap-3', className)} aria-hidden="true">
+    <div className={cn('grid gap-3', CONTRIBUTION_GRID_COLUMNS[columns], className)} aria-hidden="true">
       {cells.map(index => (
         <Skeleton key={index} className={cn('w-full rounded-lg', CELL_HEIGHT[kind])} />
       ))}

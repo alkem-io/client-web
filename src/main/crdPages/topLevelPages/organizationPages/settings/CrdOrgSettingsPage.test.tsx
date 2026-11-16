@@ -4,11 +4,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { OrgSettingsAccessMode } from '../useCanEditOrganizationSettings';
 
 let accessMode: OrgSettingsAccessMode = 'full';
+let activeTabId = 'associates';
+
+const TITLE_PARTS: Record<string, string> = { 'pages.titles.separator': ' | ', 'pages.titles.alkemio': 'Alkemio' };
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: () => ({ t: (key: string) => TITLE_PARTS[key] ?? key }),
 }));
-vi.mock('@/core/routing/usePageTitle', () => ({ usePageTitle: () => {} }));
 vi.mock('@/main/ui/breadcrumbs/BreadcrumbsContext', () => ({ useSetBreadcrumbs: () => {} }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => () => {} }));
 vi.mock('@/domain/community/organization/hooks/useOrganizationContext', () => ({
@@ -21,7 +23,7 @@ vi.mock('./useOrgSettingsAccessGuard', () => ({
   default: () => ({ accessMode, loading: false, canEditSettings: accessMode !== 'none', hasUpdatePrivilege: false }),
 }));
 vi.mock('./useOrgSettingsTab', () => ({
-  default: () => ({ activeTabId: 'associates', onTabSelect: () => {} }),
+  default: () => ({ activeTabId, onTabSelect: () => {} }),
 }));
 
 import CrdOrgSettingsPage from './CrdOrgSettingsPage';
@@ -35,6 +37,7 @@ const renderPage = () =>
 
 beforeEach(() => {
   accessMode = 'full';
+  activeTabId = 'associates';
   // jsdom does not lay out, so it has no scrollIntoView; the tab strip scrolls the active tab into view.
   Element.prototype.scrollIntoView = vi.fn();
 });
@@ -56,5 +59,32 @@ describe('CrdOrgSettingsPage — tab strip', () => {
     accessMode = 'community-only';
     renderPage();
     expect(screen.getAllByRole('tab').map(tab => tab.textContent)).toEqual(['shell.tabs.org.associates']);
+  });
+});
+
+describe('CrdOrgSettingsPage — browser title', () => {
+  it.each([
+    'profile',
+    'account',
+    'associates',
+    'membership',
+    'invitations',
+    'settings',
+  ])('titles the page after the active %s tab', tab => {
+    activeTabId = tab;
+    renderPage();
+    expect(document.title).toBe(`shell.tabs.org.${tab} | Alkemio`);
+  });
+
+  it('retitles the page when the active tab changes', () => {
+    activeTabId = 'invitations';
+    const { rerender } = renderPage();
+    activeTabId = 'membership';
+    rerender(
+      <MemoryRouter>
+        <CrdOrgSettingsPage />
+      </MemoryRouter>
+    );
+    expect(document.title).toBe('shell.tabs.org.membership | Alkemio');
   });
 });

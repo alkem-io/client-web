@@ -159,7 +159,7 @@
         },
         "keywords": {
           "label": "Keywords",
-          "hint": "Keywords describing your interests. Press Enter to add.",
+          "hint": "Keywords describing your interests. They appear as tags on your profile hover card. Press Enter to add.",
           "placeholder": "e.g. climate, governance, open source"
         }
       },
@@ -643,7 +643,6 @@
   },
   "org": {
     "profile": {
-      "pageTitle": "Profile",
       "identity": {
         "title": "Identity",
         "displayName": {
@@ -674,7 +673,7 @@
         },
         "keywords": {
           "label": "Keywords",
-          "hint": "Topics your organisation works on. Press Enter to add.",
+          "hint": "Topics your organisation works on. They appear as tags on your organisation's hover card. Press Enter to add.",
           "placeholder": "e.g. climate, governance, open source"
         },
         "capabilities": {
@@ -762,7 +761,6 @@
       }
     },
     "community": {
-      "pageTitle": "Associates",
       "title": "Associates",
       "description": "Manage who is associated with this organisation. Add new associates from the available users list; removing an associate revokes their organisation role.",
       "currentAssociatesTitle": "Current Associates",
@@ -780,7 +778,6 @@
       "removeError": "Couldn't remove associate — try again"
     },
     "membership": {
-      "pageTitle": "Membership",
       "title": "Space Memberships",
       "searchPlaceholder": "Search memberships...",
       "empty": "This organisation is not a member of any Space yet.",
@@ -831,7 +828,6 @@
       "errorToast": "Couldn't save preference — try again"
     },
     "invitations": {
-      "pageTitle": "Invitations",
       "title": "Space Invitations",
       "empty": "No pending Space invitations.",
       "invitedBy": "Invited by {{name}}",
@@ -982,7 +978,7 @@
       },
       "keywords": {
         "label": "Keywords",
-        "hint": "Add keywords to help users discover this Virtual Contributor.",
+        "hint": "Add keywords to help users discover this Virtual Contributor. They appear as tags on its hover card.",
         "placeholder": "Add a keyword and press Enter"
       },
       "socialLinks": {

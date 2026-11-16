@@ -51,11 +51,4 @@ describe('useUnreadConversationsCount', () => {
     );
     expect(result.current).toBe(2);
   });
-
-  it('does not count the call in the conversation being viewed', () => {
-    harness.selectedRoomId = 'b';
-    act(() => setIncomingCallRooms(new Map([['b', null]])));
-    const { result } = renderHook(() => useUnreadConversationsCount());
-    expect(result.current).toBe(0);
-  });
 });

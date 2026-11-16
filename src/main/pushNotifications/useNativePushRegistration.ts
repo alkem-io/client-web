@@ -5,6 +5,7 @@ import { DEVICE_PUSH_TOKEN_KEY } from '@/main/pushNotifications/constants';
 import {
   RegisterDevicePushTokenDocument,
   type RegisterDevicePushTokenVariables,
+  ResetPushBadgeCountDocument,
 } from '@/main/pushNotifications/devicePushTokenMutations';
 import { getNativePushPlugin } from '@/main/pushNotifications/nativePushPlugin';
 
@@ -16,6 +17,10 @@ import { getNativePushPlugin } from '@/main/pushNotifications/nativePushPlugin';
  */
 const logNativePushFailure = (detail: string) => {
   console.error(`[native push] device registration failed: ${detail}`);
+};
+
+const logBadgeFailure = (error: unknown) => {
+  console.error(`[native push] clearing the app badge failed: ${String(error)}`);
 };
 
 /**
@@ -36,6 +41,10 @@ export const useNativePushRegistration = () => {
   const [registerDevicePushToken] = useMutation<{ registerDevicePushToken: boolean }, RegisterDevicePushTokenVariables>(
     RegisterDevicePushTokenDocument
   );
+  // A background call repeated on every return to the app must never raise a toast.
+  const [resetPushBadgeCount] = useMutation(ResetPushBadgeCountDocument, {
+    context: { skipGlobalErrorHandler: true },
+  });
 
   useEffect(() => {
     if (!isAppMode()) return;
@@ -59,6 +68,14 @@ export const useNativePushRegistration = () => {
       return;
     }
 
+    // iOS only: on Android the plugin call would empty a tray that already clears itself.
+    const clearBadge = () => {
+      if (getPlatform() !== 'ios' || document.visibilityState !== 'visible') return;
+      resetPushBadgeCount().catch(logBadgeFailure);
+      plugin.removeAllDeliveredNotifications().catch(logBadgeFailure);
+    };
+    document.addEventListener('visibilitychange', clearBadge);
+
     plugin
       .requestPermissions()
       .then(status => {
@@ -79,6 +96,8 @@ export const useNativePushRegistration = () => {
           registerDevicePushToken({
             variables: { token: token.value, platform: getPlatform() },
           }).catch(error => logNativePushFailure(String(error)));
+          // The cold-start trigger: the plugin rejects the clear until registration has run.
+          clearBadge();
         });
 
         return plugin.register();
@@ -96,6 +115,7 @@ export const useNativePushRegistration = () => {
     // a still-accurate line).
     return () => {
       active = false;
+      document.removeEventListener('visibilitychange', clearBadge);
     };
-  }, [registerDevicePushToken]);
+  }, [registerDevicePushToken, resetPushBadgeCount]);
 };

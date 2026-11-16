@@ -11,6 +11,7 @@ import type {
   CrdPlatformNavigationItem,
   CrdUserInfo,
 } from '@/crd/layouts/types';
+import { MAIN_CONTENT_ID } from '@/crd/lib/mainContent';
 
 type CrdLayoutProps = {
   user?: CrdUserInfo;
@@ -74,7 +75,7 @@ export function CrdLayout({
   const content = (
     <div className="crd-root flex min-h-screen flex-col bg-background text-foreground">
       <a
-        href="#crd-main-content"
+        href={`#${MAIN_CONTENT_ID}`}
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-ring"
       >
         {t('header.skipToContent')}
@@ -104,7 +105,7 @@ export function CrdLayout({
         overlayBanner={overlayBanner}
       />
       {topBanner}
-      <main id="crd-main-content" tabIndex={-1} className="flex-1 flex flex-col outline-none">
+      <main id={MAIN_CONTENT_ID} tabIndex={-1} className="flex-1 flex flex-col outline-none">
         {children}
       </main>
       <Footer

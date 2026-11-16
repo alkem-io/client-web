@@ -20,13 +20,14 @@ vi.mock('@/main/userMessaging/matrix/matrixRooms', () => ({
   resolveMatrixRoomId: harness.resolve,
 }));
 
-import { useActiveCallRooms } from './useActiveCallRooms';
+import { useActiveCallRooms, useLiveCalls } from './useActiveCallRooms';
 
-const membership = (sender: string, ttlMs: number) => {
+const membership = (sender: string, ttlMs: number, createdTs = 0) => {
   const expiresAt = Date.now() + ttlMs;
   return {
     sender,
     deviceId: 'D',
+    createdTs: () => createdTs,
     isExpired: () => Date.now() >= expiresAt,
     getMsUntilExpiry: () => expiresAt - Date.now(),
   };
@@ -132,13 +133,18 @@ describe('useActiveCallRooms', () => {
     await waitFor(() => expect([...result.current]).toEqual(['g1']));
   });
 
-  it('with withoutMe, leaves out the calls the user is in on any device', async () => {
+  it('describes each running call by its memberships, and whether the user is in it on any device', async () => {
     harness.client = makeClient({
-      '!g1:hs': new FakeSession([membership('@ann:hs', 60_000), membership('@me:hs', 60_000)]),
-      '!g2:hs': new FakeSession([membership('@ann:hs', 60_000)]),
+      '!g1:hs': new FakeSession([membership('@ann:hs', 60_000, 300), membership('@me:hs', 60_000, 100)]),
+      '!g2:hs': new FakeSession([membership('@ann:hs', 60_000, 500)]),
     });
-    const { result } = renderHook(() => useActiveCallRooms(conversations, { withoutMe: true }));
-    await waitFor(() => expect([...result.current]).toEqual(['g2']));
+    const { result } = renderHook(() => useLiveCalls(conversations));
+    await waitFor(() =>
+      expect([...result.current]).toEqual([
+        ['g1', { startedTs: 100, latestTs: 300, withMe: true }],
+        ['g2', { startedTs: 500, latestTs: 500, withMe: false }],
+      ])
+    );
   });
 
   it('flags nothing for someone who is not a beta tester, or where calls are off', async () => {

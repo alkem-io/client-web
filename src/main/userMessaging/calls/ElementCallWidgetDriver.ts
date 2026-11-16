@@ -1,4 +1,4 @@
-import type { MatrixClient, MatrixEvent } from 'matrix-js-sdk';
+import type { MatrixClient, MatrixEvent, Method } from 'matrix-js-sdk';
 import {
   type Capability,
   type IOpenIDUpdate,
@@ -61,10 +61,18 @@ const allowedCapabilitiesFor = (roomId: string, userId: string, deviceId: string
 
 type DelayedEventAction = 'cancel' | 'restart' | 'send';
 
+// The unstable path prefix of the chat server's delayed events.
+const DELAYED_EVENTS_PREFIX = '/_matrix/client/unstable/org.matrix.msc4140';
+// The chat SDK's request methods, as strings: the SDK is loaded lazily and only its types are imported here.
+const POST = 'POST' as Method;
+const GET = 'GET' as Method;
+/** A failed download is not retried for this long, so tile resizes don't repeat it; then it may recover. */
+const FAILED_DOWNLOAD_HOLD_MS = 60_000;
+/** A download that hangs is given up after this long, so later asks are not held behind it. */
+const DOWNLOAD_TIMEOUT_MS = 20_000;
+
 /** The part of the platform's Matrix client the driver uses, typed loosely enough for arbitrary event types. */
 type CallHostClient = {
-  baseUrl: string;
-  getAccessToken(): string | null;
   getUserId(): string | null;
   getDeviceId(): string | null;
   getRoom: MatrixClient['getRoom'];
@@ -88,8 +96,7 @@ type CallHostClient = {
     eventType: string,
     content: unknown
   ): Promise<{ delay_id: string }>;
-  // The update form with the action in the body is the one the pinned chat server serves.
-  _unstable_updateDelayedEvent(delayId: string, action: DelayedEventAction): Promise<unknown>;
+  http: Pick<MatrixClient['http'], 'authedRequest'>;
 };
 
 type DriverOptions = {
@@ -119,6 +126,13 @@ class ElementCallWidgetDriver extends WidgetDriver {
   private readonly allowed: Set<Capability>;
   /** Delayed leaves of this device's call membership that are still waiting on the chat server. */
   private readonly pendingLeaves = new Set<string>();
+  /**
+   * Downloads still in flight, and those that failed recently. The call UI asks
+   * for an avatar again every time its tile is resized; overlapping asks share
+   * one request, and a broken one fails at once for a while instead of hitting
+   * the chat server again.
+   */
+  private readonly downloads = new Map<string, Promise<{ file: XMLHttpRequestBodyInit }>>();
 
   constructor({ client, matrixRoomId, livekitServiceUrl }: DriverOptions) {
     super();
@@ -178,18 +192,38 @@ class ElementCallWidgetDriver extends WidgetDriver {
     return { roomId: target, delayId: response.delay_id };
   }
 
+  /**
+   * The update form with the action in the body, the one the pinned chat server
+   * serves, sent with the session's token from the start. The chat SDK sends it
+   * without a token first and retries with one only after the chat server
+   * refuses, which logs a failed request on every call heartbeat.
+   */
+  private async updateDelayedEvent(
+    delayId: string,
+    action: DelayedEventAction,
+    { keepAlive = false }: { keepAlive?: boolean } = {}
+  ): Promise<void> {
+    await this.client.http.authedRequest(
+      POST,
+      `/delayed_events/${encodeURIComponent(delayId)}`,
+      undefined,
+      { action },
+      { prefix: DELAYED_EVENTS_PREFIX, keepAlive }
+    );
+  }
+
   public async cancelScheduledDelayedEvent(delayId: string): Promise<void> {
     this.pendingLeaves.delete(delayId);
-    await this.client._unstable_updateDelayedEvent(delayId, 'cancel');
+    await this.updateDelayedEvent(delayId, 'cancel');
   }
 
   public async restartScheduledDelayedEvent(delayId: string): Promise<void> {
-    await this.client._unstable_updateDelayedEvent(delayId, 'restart');
+    await this.updateDelayedEvent(delayId, 'restart');
   }
 
   public async sendScheduledDelayedEvent(delayId: string): Promise<void> {
     this.pendingLeaves.delete(delayId);
-    await this.client._unstable_updateDelayedEvent(delayId, 'send');
+    await this.updateDelayedEvent(delayId, 'send');
   }
 
   /**
@@ -197,21 +231,12 @@ class ElementCallWidgetDriver extends WidgetDriver {
    * page unloads (reload, close, navigation) or the host tears the call UI
    * down. Its own leave does not survive that, and its delayed leave may be
    * set to fire much later. A leave the call UI already sent or cancelled is
-   * not in the set any more. `keepalive` lets the browser finish the request
-   * after the page is gone, which the chat client's own requests can't.
+   * not in the set any more. `keepAlive` lets the browser finish the request
+   * after the page is gone.
    */
   public sendPendingLeavesNow(): void {
-    const accessToken = this.client.getAccessToken();
     for (const delayId of this.pendingLeaves) {
-      fetch(
-        `${this.client.baseUrl}/_matrix/client/unstable/org.matrix.msc4140/delayed_events/${encodeURIComponent(delayId)}`,
-        {
-          method: 'POST',
-          keepalive: true,
-          headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'send' }),
-        }
-      ).catch(() => {
+      this.updateDelayedEvent(delayId, 'send', { keepAlive: true }).catch(() => {
         // The page is going away; a leave that does not arrive still fires when its delay runs out.
       });
     }
@@ -369,11 +394,34 @@ class ElementCallWidgetDriver extends WidgetDriver {
     if (!url) {
       throw new Error('Only chat server media can be downloaded');
     }
-    const response = await fetch(url, { headers: { Authorization: `Bearer ${this.client.getAccessToken()}` } });
-    if (!response.ok) {
-      throw new Error(`Downloading the media failed with status ${response.status}`);
+    const known = this.downloads.get(contentUri);
+    if (known) {
+      return known;
     }
-    return { file: await response.blob() };
+    const download = this.fetchMedia(url);
+    this.downloads.set(contentUri, download);
+    // A successful download is fetched afresh next time; a failed one is held for a while, then retried.
+    const forget = () => {
+      if (this.downloads.get(contentUri) === download) {
+        this.downloads.delete(contentUri);
+      }
+    };
+    download.then(forget, () => {
+      setTimeout(forget, FAILED_DOWNLOAD_HOLD_MS);
+    });
+    return download;
+  }
+
+  private async fetchMedia(url: string): Promise<{ file: XMLHttpRequestBodyInit }> {
+    const { origin, pathname, searchParams } = new URL(url);
+    const file = await this.client.http.authedRequest<Blob>(
+      GET,
+      pathname,
+      Object.fromEntries(searchParams),
+      undefined,
+      { baseUrl: origin, prefix: '', rawResponseBody: true, localTimeoutMs: DOWNLOAD_TIMEOUT_MS }
+    );
+    return { file };
   }
 
   public getRtcLivekitToken(): Promise<never> {

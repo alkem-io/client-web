@@ -1,7 +1,13 @@
 import { Check, CircleEllipsis, Globe, Grid3X3, HelpCircle, Home, LogOut, Settings, Shield, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useGridOverlay } from '@/crd/hooks/useGridOverlay';
-import type { CrdLanguageOption, CrdNavigationHrefs, CrdUserInfo } from '@/crd/layouts/types';
+import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
+import type {
+  CrdLanguageOption,
+  CrdNavigationHrefs,
+  CrdPlatformNavigationItem,
+  CrdUserInfo,
+} from '@/crd/layouts/types';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -24,6 +30,8 @@ type UserMenuProps = {
   navigationHrefs: CrdNavigationHrefs;
   isAdmin?: boolean;
   pendingInvitationsCount?: number;
+  /** The apps menu's items, also listed here on phones. Not rendered from the `md` breakpoint up. */
+  platformNavigationItems?: CrdPlatformNavigationItem[];
   languages?: CrdLanguageOption[];
   currentLanguage?: string;
   onLogout?: () => void;
@@ -34,12 +42,16 @@ type UserMenuProps = {
   showBetaBadge?: boolean;
 };
 
+/** Phones only: at least a 48px tap target for every row, including the language sub-menu's. */
+const PHONE_ROW_HEIGHT = 'max-md:[&_[role=menuitem]]:min-h-12';
+
 export function UserMenu({
   user,
   authenticated,
   navigationHrefs,
   isAdmin,
   pendingInvitationsCount,
+  platformNavigationItems,
   languages,
   currentLanguage,
   onLogout,
@@ -51,12 +63,13 @@ export function UserMenu({
 }: UserMenuProps) {
   const { t } = useTranslation('crd-layout');
   const { isVisible: isGridVisible, toggle: toggleGrid } = useGridOverlay();
+  const isDesktop = useMediaQuery('(min-width: 768px)');
 
   const currentLanguageLabel = languages?.find(l => currentLanguage?.startsWith(l.code))?.label;
 
   if (!authenticated || !user) {
     return (
-      <Button variant="ghost" size="sm" asChild={true}>
+      <Button variant="ghost" size="sm" className="max-md:h-11" asChild={true}>
         <a href={navigationHrefs.login}>{t('header.login')}</a>
       </Button>
     );
@@ -81,7 +94,7 @@ export function UserMenu({
           )}
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent align="end" className={cn('w-56', PHONE_ROW_HEIGHT)}>
         {/* User identity */}
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col gap-0.5">
@@ -146,7 +159,9 @@ export function UserMenu({
                 <span className="ml-auto text-caption text-muted-foreground">{currentLanguageLabel}</span>
               )}
             </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent>
+            <DropdownMenuSubContent
+              className={cn('max-h-(--radix-dropdown-menu-content-available-height) overflow-y-auto', PHONE_ROW_HEIGHT)}
+            >
               {languages.map(lang => (
                 <DropdownMenuItem
                   key={lang.code}
@@ -181,6 +196,23 @@ export function UserMenu({
 
         {(isAdmin || onHelpClick || showGridToggle || (languages && languages.length > 0 && onLanguageChange)) && (
           <DropdownMenuSeparator />
+        )}
+
+        {/* Apps menu items — phones only; not rendered on desktop so hidden rows can't catch Radix's typeahead */}
+        {!isDesktop && platformNavigationItems && platformNavigationItems.length > 0 && (
+          <>
+            {platformNavigationItems.map(item => (
+              <DropdownMenuItem key={item.href} asChild={true}>
+                <a href={item.href} className="cursor-pointer">
+                  <span aria-hidden="true" className="mr-2 flex">
+                    {item.icon}
+                  </span>
+                  <span>{item.label}</span>
+                </a>
+              </DropdownMenuItem>
+            ))}
+            <DropdownMenuSeparator />
+          </>
         )}
 
         {/* Logout */}

@@ -6,25 +6,47 @@ import { isCallsConfigured } from './callConfig';
 import { type MembershipLike, watchLiveMemberships } from './matrixRtc';
 import { type CallableConversation, isBetaTester, isCallableConversation, useIsSynced } from './useCallEligibility';
 
-const NONE: ReadonlySet<string> = new Set();
+/** A running call, as its live memberships describe it. */
+type LiveCall = {
+  /** The earliest creation time among the live memberships, in ms (server clock). */
+  readonly startedTs: number;
+  /** The latest creation time among the live memberships, in ms (server clock). */
+  readonly latestTs: number;
+  /** Whether the current user is in it, on any device. */
+  readonly withMe: boolean;
+};
 
-const sameSet = (a: ReadonlySet<string>, b: ReadonlySet<string>): boolean =>
-  a.size === b.size && [...a].every(id => b.has(id));
+type LiveCalls = ReadonlyMap<string, LiveCall>;
 
-type ActiveCallRoomsOptions = {
-  /** Only calls the current user is not in, on any device. */
-  readonly withoutMe?: boolean;
+const NONE: LiveCalls = new Map();
+
+const sameCalls = (a: LiveCalls, b: LiveCalls): boolean =>
+  a.size === b.size &&
+  [...a].every(([roomId, call]) => {
+    const other = b.get(roomId);
+    return (
+      other !== undefined &&
+      other.startedTs === call.startedTs &&
+      other.latestTs === call.latestTs &&
+      other.withMe === call.withMe
+    );
+  });
+
+const describeCall = (memberships: readonly MembershipLike[], myUserId: string | null): LiveCall => {
+  const created = memberships.map(membership => membership.createdTs());
+  return {
+    startedTs: Math.min(...created),
+    latestTs: Math.max(...created),
+    withMe: memberships.some(membership => membership.sender === myUserId),
+  };
 };
 
 /**
- * The Alkemio room ids of the callable conversations with a call running, for
- * the conversation list's call badge. Empty for anyone the call controls are
- * hidden from (not a beta tester, or the environment has no calls).
+ * The calls running in the callable conversations, keyed by Alkemio room id.
+ * Empty for anyone the call controls are hidden from (not a beta tester, or the
+ * environment has no calls).
  */
-const useActiveCallRooms = (
-  conversations: readonly CallableConversation[],
-  { withoutMe = false }: ActiveCallRoomsOptions = {}
-): ReadonlySet<string> => {
+const useLiveCalls = (conversations: readonly CallableConversation[]): LiveCalls => {
   const { platformRoles } = useCurrentUserContext();
   const client = useMatrixClient();
   const isSynced = useIsSynced(client);
@@ -37,7 +59,7 @@ const useActiveCallRooms = (
         .sort()
         .join('\n')
     : '';
-  const [active, setActive] = useState<ReadonlySet<string>>(NONE);
+  const [active, setActive] = useState<LiveCalls>(NONE);
 
   // Rooms are looked up once the session is synced, and again each time it syncs anew, so a
   // room whose lookup failed while the chat server was unreachable gets its badge later.
@@ -65,25 +87,28 @@ const useActiveCallRooms = (
         return;
       }
       const myUserId = client.getUserId();
-      const counts = (memberships: readonly MembershipLike[]): boolean =>
-        memberships.length > 0 && !(withoutMe && memberships.some(membership => membership.sender === myUserId));
       stopWatching = watchLiveMemberships(client, [...alkemioByMatrixId.keys()], live => {
-        const next = new Set(
-          [...alkemioByMatrixId].flatMap(([matrixRoomId, alkemioRoomId]) =>
-            counts(live.get(matrixRoomId) ?? []) ? [alkemioRoomId] : []
-          )
+        const next: LiveCalls = new Map(
+          [...alkemioByMatrixId].flatMap(([matrixRoomId, alkemioRoomId]) => {
+            const memberships = live.get(matrixRoomId) ?? [];
+            return memberships.length > 0 ? [[alkemioRoomId, describeCall(memberships, myUserId)] as const] : [];
+          })
         );
-        setActive(previous => (sameSet(previous, next) ? previous : next));
+        setActive(previous => (sameCalls(previous, next) ? previous : next));
       });
     });
     return () => {
       cancelled = true;
       stopWatching?.();
     };
-  }, [client, isSynced, roomsKey, withoutMe]);
+  }, [client, isSynced, roomsKey]);
 
   return active;
 };
 
-export { useActiveCallRooms };
-export type { ActiveCallRoomsOptions };
+/** The Alkemio room ids of the callable conversations with a call running, for the conversation list's call badge. */
+const useActiveCallRooms = (conversations: readonly CallableConversation[]): ReadonlySet<string> =>
+  new Set(useLiveCalls(conversations).keys());
+
+export { useActiveCallRooms, useLiveCalls };
+export type { LiveCall, LiveCalls };

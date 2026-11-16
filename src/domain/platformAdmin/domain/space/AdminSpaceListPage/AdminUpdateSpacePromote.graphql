@@ -1,0 +1,6 @@
+mutation AdminUpdateSpacePromote($spaceId: UUID!, $promote: Boolean!) {
+  adminUpdateSpacePromote(promoteData: { spaceID: $spaceId, promote: $promote }) {
+    id
+    promote
+  }
+}

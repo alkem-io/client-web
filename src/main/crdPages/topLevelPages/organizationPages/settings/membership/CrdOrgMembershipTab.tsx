@@ -2,7 +2,6 @@ import type { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useOrganizationSettingsMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { isExclusivelyAuthorizationError } from '@/core/apollo/hooks/usePermissionDeniedNotifier';
-import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { MembershipsSectionLabels } from '@/crd/components/contributor/settings/MembershipsSection.types';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -38,8 +37,6 @@ const CrdOrgMembershipTab = () => {
     variables: { organizationId },
     skip: !organizationId,
   });
-
-  usePageTitle(t('org.membership.pageTitle'));
 
   const enrichment = useMembershipEnrichment(collectOrgMembershipSpaceIds(data));
   const rows = mapOrgMembershipRows(data, enrichment);

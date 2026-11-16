@@ -1,0 +1,6 @@
+mutation AdminUpdateInnovationPackPromote($innovationPackId: UUID!, $promote: Boolean!) {
+  adminUpdateInnovationPackPromote(promoteData: { innovationPackID: $innovationPackId, promote: $promote }) {
+    id
+    promote
+  }
+}
