@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { blobToDataURL } from '@/domain/common/whiteboard/excalidraw/fileStore/fileConverters';
 
 /**
  * The shell's `FileSave` plugin (client-appstore). Hand-written, like `nativePushPlugin.ts`.
@@ -9,24 +10,8 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
  */
 type FileSavePlugin = { save(options: { fileName: string; mimeType: string; data: string }): Promise<void> };
 
-const getFileSavePlugin = (): FileSavePlugin | undefined =>
-  window.Capacitor?.isPluginAvailable?.('FileSave') === true
-    ? (window.Capacitor?.Plugins?.FileSave as FileSavePlugin | undefined)
-    : undefined;
-
 /** Larger files are refused before encoding: the base64 copy crosses the bridge in memory (spec R-1, FR-013). */
 export const MAX_APP_DOWNLOAD_BYTES = 15 * 1024 * 1024;
-
-const readAsBase64 = (blob: Blob): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const dataUrl = reader.result as string;
-      resolve(dataUrl.slice(dataUrl.indexOf(',') + 1));
-    };
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(blob);
-  });
 
 /**
  * In the store app, every click on an `a[download][href]` is saved through the shell's
@@ -41,7 +26,10 @@ export function useAppDownloadInterception(): void {
   const saving = useRef(false); // FR-014: Android routes every activity result to the newest call (Plugin.java:148,180)
 
   useEffect(() => {
-    const plugin = getFileSavePlugin();
+    const plugin =
+      window.Capacitor?.isPluginAvailable?.('FileSave') === true
+        ? (window.Capacitor.Plugins?.FileSave as FileSavePlugin | undefined)
+        : undefined;
     if (!plugin) return;
 
     const onClick = (event: MouseEvent) => {
@@ -59,7 +47,8 @@ export function useAppDownloadInterception(): void {
         })
         .then(async blob => {
           if (blob.size > MAX_APP_DOWNLOAD_BYTES) throw new Error('too large');
-          return plugin.save({ fileName, mimeType: blob.type, data: await readAsBase64(blob) });
+          const dataUrl = await blobToDataURL(blob);
+          return plugin.save({ fileName, mimeType: blob.type, data: dataUrl.slice(dataUrl.indexOf(',') + 1) });
         })
         .catch(() => notify(t('appDownload.failed'), 'error'))
         .finally(() => {
