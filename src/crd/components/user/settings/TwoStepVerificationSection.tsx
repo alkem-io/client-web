@@ -1,7 +1,6 @@
 import { Copy, Download, Info, KeyRound, ShieldCheck, Smartphone } from 'lucide-react';
 import { type FormEvent, type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { downloadTextFile } from '@/core/utils/downloadTextFile';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -11,8 +10,6 @@ import { Label } from '@/crd/primitives/label';
 const CODES_LIST_CLASS = 'grid grid-cols-2 gap-1 rounded-md border border-border bg-muted/40 p-3 font-mono text-body';
 
 const NS = 'crd-contributorSettings';
-
-const RECOVERY_CODES_FILENAME = 'alkemio-recovery-codes.txt';
 
 export type TwoStepAuthenticator =
   | { kind: 'enrolled' }
@@ -66,6 +63,10 @@ export type TwoStepVerificationSectionProps = {
   onRemoveAuthenticator: () => void;
   onGenerateRecoveryCodes: () => void;
   onConfirmRecoveryCodes: () => void;
+  /** Copies the shown codes; absent when the browser offers no clipboard. Settles with the copy's outcome. */
+  onCopyRecoveryCodes?: (codes: string[]) => Promise<void>;
+  /** Saves the shown codes as a file. */
+  onDownloadRecoveryCodes: (codes: string[]) => void;
   onRemoveRecoveryCodes: () => void;
   onAddSecurityKey: (triggerValue: string) => void;
   onRemoveSecurityKey: (id: string) => void;
@@ -107,13 +108,16 @@ export function TwoStepVerificationSection({
   onRemoveAuthenticator,
   onGenerateRecoveryCodes,
   onConfirmRecoveryCodes,
+  onCopyRecoveryCodes,
+  onDownloadRecoveryCodes,
   onRemoveRecoveryCodes,
   onAddSecurityKey,
   onRemoveSecurityKey,
 }: TwoStepVerificationSectionProps) {
   const { t } = useTranslation(NS);
   const [pendingRemoval, setPendingRemoval] = useState<PendingRemoval>();
-  const [copyOutcome, setCopyOutcome] = useState<'copied' | 'failed'>();
+  // The outcome belongs to the code set it copied: a regenerated set starts uncopied.
+  const [copied, setCopied] = useState<{ codes: string; outcome: 'copied' | 'failed' }>();
 
   const keys = securityKeys?.keys ?? [];
   const registration = securityKeys?.registration;
@@ -168,54 +172,49 @@ export function TwoStepVerificationSection({
   };
 
   const copyCodes = (codes: string[]) => {
-    navigator.clipboard.writeText(codes.join('\n')).then(
-      () => setCopyOutcome('copied'),
-      () => setCopyOutcome('failed')
+    const key = codes.join('\n');
+    onCopyRecoveryCodes?.(codes).then(
+      () => setCopied({ codes: key, outcome: 'copied' }),
+      () => setCopied({ codes: key, outcome: 'failed' })
     );
   };
 
-  const renderCodes = (codes: string[]) => (
-    <div className="flex flex-col gap-2">
-      {/* biome-ignore lint/a11y/useSemanticElements lint/a11y/noRedundantRoles: role="list" restores semantics after Tailwind reset */}
-      <ul role="list" className={CODES_LIST_CLASS}>
-        {codes.map(code => (
-          <li key={code}>{code}</li>
-        ))}
-      </ul>
-      <div className="flex flex-wrap gap-2">
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={!navigator.clipboard}
-          onClick={() => copyCodes(codes)}
-        >
-          <Copy aria-hidden="true" className="size-4" />
-          {copyOutcome === 'copied'
-            ? t('user.security.twoStep.recoveryCodes.copied')
-            : t('user.security.twoStep.recoveryCodes.copy')}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            downloadTextFile(`${codes.join('\n')}\n`, RECOVERY_CODES_FILENAME);
-            // A downloaded file is a saved copy: the codes count from here.
-            onConfirmRecoveryCodes();
-          }}
-        >
-          <Download aria-hidden="true" className="size-4" />
-          {t('user.security.twoStep.recoveryCodes.download')}
-        </Button>
+  const renderCodes = (codes: string[]) => {
+    const copyOutcome = copied?.codes === codes.join('\n') ? copied.outcome : undefined;
+    return (
+      <div className="flex flex-col gap-2">
+        {/* biome-ignore lint/a11y/useSemanticElements lint/a11y/noRedundantRoles: role="list" restores semantics after Tailwind reset */}
+        <ul role="list" className={CODES_LIST_CLASS}>
+          {codes.map(code => (
+            <li key={code}>{code}</li>
+          ))}
+        </ul>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={!onCopyRecoveryCodes}
+            onClick={() => copyCodes(codes)}
+          >
+            <Copy aria-hidden="true" className="size-4" />
+            {copyOutcome === 'copied'
+              ? t('user.security.twoStep.recoveryCodes.copied')
+              : t('user.security.twoStep.recoveryCodes.copy')}
+          </Button>
+          <Button type="button" variant="outline" size="sm" onClick={() => onDownloadRecoveryCodes(codes)}>
+            <Download aria-hidden="true" className="size-4" />
+            {t('user.security.twoStep.recoveryCodes.download')}
+          </Button>
+        </div>
+        {copyOutcome === 'failed' ? (
+          <p role="alert" className="text-caption text-destructive">
+            {t('user.security.twoStep.recoveryCodes.copyFailed')}
+          </p>
+        ) : null}
       </div>
-      {copyOutcome === 'failed' ? (
-        <p role="alert" className="text-caption text-destructive">
-          {t('user.security.twoStep.recoveryCodes.copyFailed')}
-        </p>
-      ) : null}
-    </div>
-  );
+    );
+  };
 
   const pending = pendingRemoval ? confirmCopy(pendingRemoval) : undefined;
 

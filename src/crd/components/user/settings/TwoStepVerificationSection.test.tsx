@@ -7,14 +7,13 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
-const downloadTextFile = vi.hoisted(() => vi.fn());
-vi.mock('@/core/utils/downloadTextFile', () => ({ downloadTextFile }));
-
 const handlers = () => ({
   onConfirmAuthenticator: vi.fn(),
   onRemoveAuthenticator: vi.fn(),
   onGenerateRecoveryCodes: vi.fn(),
   onConfirmRecoveryCodes: vi.fn(),
+  onCopyRecoveryCodes: vi.fn().mockResolvedValue(undefined),
+  onDownloadRecoveryCodes: vi.fn(),
   onRemoveRecoveryCodes: vi.fn(),
   onAddSecurityKey: vi.fn(),
   onRemoveSecurityKey: vi.fn(),
@@ -123,31 +122,49 @@ describe('TwoStepVerificationSection — recovery codes', () => {
     expect(callbacks.onConfirmRecoveryCodes).toHaveBeenCalledTimes(1);
   });
 
-  it('downloads the codes as a text file, one per line, and counts them as saved', async () => {
+  it('hands the shown codes to the download, and decides nothing more itself', async () => {
     const { callbacks } = renderSection({ recoveryCodes: { kind: 'unconfirmed', codes: ['abcd1234', 'efgh5678'] } });
 
     await userEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.recoveryCodes.download' }));
 
-    expect(downloadTextFile).toHaveBeenCalledWith('abcd1234\nefgh5678\n', 'alkemio-recovery-codes.txt');
-    expect(callbacks.onConfirmRecoveryCodes).toHaveBeenCalledTimes(1);
+    expect(callbacks.onDownloadRecoveryCodes).toHaveBeenCalledWith(['abcd1234', 'efgh5678']);
+    expect(callbacks.onConfirmRecoveryCodes).not.toHaveBeenCalled();
   });
 
   it('says so when the codes could not be copied', async () => {
-    const original = Object.getOwnPropertyDescriptor(navigator, 'clipboard');
-    Object.defineProperty(navigator, 'clipboard', {
-      value: { writeText: vi.fn().mockRejectedValue(new Error('NotAllowedError')) },
-      configurable: true,
+    renderSection({
+      recoveryCodes: { kind: 'unconfirmed', codes: ['abcd1234'] },
+      onCopyRecoveryCodes: vi.fn().mockRejectedValue(new Error('NotAllowedError')),
     });
-    try {
-      renderSection({ recoveryCodes: { kind: 'unconfirmed', codes: ['abcd1234'] } });
 
-      fireEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.recoveryCodes.copy' }));
+    fireEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.recoveryCodes.copy' }));
 
-      expect(await screen.findByRole('alert')).toHaveTextContent('user.security.twoStep.recoveryCodes.copyFailed');
-    } finally {
-      if (original) Object.defineProperty(navigator, 'clipboard', original);
-      else Reflect.deleteProperty(navigator, 'clipboard');
-    }
+    expect(await screen.findByRole('alert')).toHaveTextContent('user.security.twoStep.recoveryCodes.copyFailed');
+  });
+
+  it('offers no copy when there is no clipboard', () => {
+    renderSection({ recoveryCodes: { kind: 'unconfirmed', codes: ['abcd1234'] }, onCopyRecoveryCodes: undefined });
+
+    expect(screen.getByRole('button', { name: 'user.security.twoStep.recoveryCodes.copy' })).toBeDisabled();
+  });
+
+  it('starts a regenerated set uncopied, though the earlier set was copied', async () => {
+    const { callbacks, rerender } = renderSection({ recoveryCodes: { kind: 'unconfirmed', codes: ['abcd1234'] } });
+    await userEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.recoveryCodes.copy' }));
+    expect(
+      await screen.findByRole('button', { name: 'user.security.twoStep.recoveryCodes.copied' })
+    ).toBeInTheDocument();
+
+    rerender(
+      <TwoStepVerificationSection
+        authenticator={{ kind: 'enrolled' }}
+        recoveryCodes={{ kind: 'unconfirmed', codes: ['wxyz9876'] }}
+        securityKeys={{ keys: [] }}
+        {...callbacks}
+      />
+    );
+
+    expect(screen.getByRole('button', { name: 'user.security.twoStep.recoveryCodes.copy' })).toBeInTheDocument();
   });
 
   it('confirmed: never shows the codes again, and offers regenerate and remove (after confirmation)', async () => {

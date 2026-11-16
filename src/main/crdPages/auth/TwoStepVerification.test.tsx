@@ -7,6 +7,7 @@ import { TwoStepVerification } from './TwoStepVerification';
 
 const postKratosForm = vi.hoisted(() => vi.fn());
 const submitKratosSettings = vi.hoisted(() => vi.fn());
+const downloadTextFile = vi.hoisted(() => vi.fn());
 const invokePasskeyTrigger = vi.hoisted(() => vi.fn());
 
 vi.mock('react-i18next', () => ({
@@ -14,6 +15,7 @@ vi.mock('react-i18next', () => ({
 }));
 vi.mock('./postKratosForm', () => ({ postKratosForm }));
 vi.mock('./submitKratosSettings', () => ({ submitKratosSettings }));
+vi.mock('@/core/utils/downloadTextFile', () => ({ downloadTextFile }));
 vi.mock('./passkeyTrigger', () => ({
   invokePasskeyTrigger,
   translatePasskeyError: () => 'security key failed',
@@ -88,6 +90,76 @@ describe('TwoStepVerification', () => {
       fresh.ui.action,
       expect.objectContaining({ webauthn_remove: 'key-1' })
     );
+  });
+
+  it('saves the codes as a file, then confirms them: the file is the saved copy', async () => {
+    const regenerated = {
+      ...enrolledSecondFactorSettingsFlow,
+      ui: {
+        ...enrolledSecondFactorSettingsFlow.ui,
+        nodes: [
+          ...enrolledSecondFactorSettingsFlow.ui.nodes.filter((node: UiNode) => node.group !== 'lookup_secret'),
+          {
+            type: 'text',
+            group: 'lookup_secret',
+            attributes: {
+              node_type: 'text',
+              id: 'lookup_secret_codes',
+              text: {
+                id: 1,
+                type: 'info',
+                text: '',
+                context: { secrets: [{ text: 'abcd1234' }, { text: 'efgh5678' }] },
+              },
+            },
+            messages: [],
+            meta: {},
+          },
+          {
+            type: 'input',
+            group: 'lookup_secret',
+            attributes: {
+              node_type: 'input',
+              type: 'submit',
+              name: 'lookup_secret_confirm',
+              value: 'true',
+              disabled: false,
+            },
+            messages: [],
+            meta: {},
+          },
+        ],
+      },
+    } as unknown as SettingsFlow;
+    render(<TwoStepVerification flow={regenerated} />);
+
+    await userEvent.click(screen.getByRole('button', { name: 'user.security.twoStep.recoveryCodes.download' }));
+
+    expect(downloadTextFile).toHaveBeenCalledWith('abcd1234\nefgh5678\n', 'alkemio-recovery-codes.txt');
+    expect(submitKratosSettings).toHaveBeenCalledWith(
+      regenerated.ui.action,
+      expect.objectContaining({ method: 'lookup_secret', lookup_secret_confirm: 'true' })
+    );
+  });
+
+  it('drops an answer that arrives after a later one', async () => {
+    let answerFirst: (value: unknown) => void = () => {};
+    submitKratosSettings
+      .mockImplementationOnce(() => new Promise(resolve => (answerFirst = resolve)))
+      .mockResolvedValueOnce({
+        kind: 'flow',
+        flow: { ...enrolledSecondFactorSettingsFlow, id: secondFactorSettingsFlow.id },
+      });
+    render(<TwoStepVerification flow={secondFactorSettingsFlow} />);
+    const code = screen.getByLabelText('user.security.twoStep.authenticator.codeLabel');
+
+    await userEvent.type(code, '111111{Enter}');
+    await userEvent.type(code, '{Backspace>6}222222{Enter}');
+    expect(await screen.findByText('user.security.twoStep.authenticator.active')).toBeInTheDocument();
+
+    answerFirst({ kind: 'flow', flow: secondFactorSettingsFlow });
+    await new Promise(resolve => setTimeout(resolve, 0));
+    expect(screen.getByText('user.security.twoStep.authenticator.active')).toBeInTheDocument();
   });
 
   it('follows Kratos when it sends the browser elsewhere first', async () => {
