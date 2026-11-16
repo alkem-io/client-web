@@ -1639,5 +1639,8 @@
     "learnMore": "Learn more",
     "contactSupport": "Contact support",
     "mentionUnavailable": "Temporarily unavailable"
+  },
+  "appDownload": {
+    "failed": "The file could not be downloaded."
   }
 }

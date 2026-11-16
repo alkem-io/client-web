@@ -1639,5 +1639,8 @@
     "learnMore": "Meer informatie",
     "contactSupport": "Contact opnemen met support",
     "mentionUnavailable": "Tijdelijk niet beschikbaar"
+  },
+  "appDownload": {
+    "failed": "Het bestand kon niet worden gedownload."
   }
 }

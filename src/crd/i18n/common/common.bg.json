@@ -1639,5 +1639,8 @@
     "learnMore": "Научете повече",
     "contactSupport": "Свържете се с поддръжката",
     "mentionUnavailable": "Временно недостъпно"
+  },
+  "appDownload": {
+    "failed": "Файлът не можа да бъде изтеглен."
   }
 }
