@@ -55,6 +55,9 @@ importers:
       '@radix-ui/react-dialog':
         specifier: ^1.1.15
         version: 1.1.15(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      '@radix-ui/react-dismissable-layer':
+        specifier: 1.1.11
+        version: 1.1.11(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
       '@radix-ui/react-dropdown-menu':
         specifier: ^2.1.16
         version: 2.1.16(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -304,6 +307,9 @@ importers:
       react-mentions:
         specifier: ^4.4.7
         version: 4.4.10(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      react-remove-scroll:
+        specifier: 2.7.2
+        version: 2.7.2(@types/react@19.1.8)(react@19.2.1)
       react-router-dom:
         specifier: ^7.4.0
         version: 7.9.3(react-dom@19.2.1(react@19.2.1))(react@19.2.1)

@@ -5,6 +5,8 @@ interface UserMessagingContextProps {
   isEnabled: boolean;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  /** Counts requests to show the chat, including ones made while it is already open. */
+  openRequestCount: number;
   selectedConversationId: string | null;
   setSelectedConversationId: (id: string | null) => void;
   selectedRoomId: string | null;
@@ -19,6 +21,7 @@ const defaultState: UserMessagingContextProps = {
   isEnabled: false,
   isOpen: false,
   setIsOpen: () => {},
+  openRequestCount: 0,
   selectedConversationId: null,
   setSelectedConversationId: () => {},
   selectedRoomId: null,
@@ -34,6 +37,7 @@ const UserMessagingContext = createContext<UserMessagingContextProps>(defaultSta
 export const UserMessagingProvider = ({ children }: { children: ReactNode }) => {
   const { userModel } = useCurrentUserContext();
   const [isOpen, setIsOpen] = useState(false);
+  const [openRequestCount, setOpenRequestCount] = useState(0);
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [totalUnreadCount, setTotalUnreadCount] = useState(0);
@@ -44,7 +48,9 @@ export const UserMessagingProvider = ({ children }: { children: ReactNode }) => 
 
   const handleSetIsOpen = (open: boolean) => {
     setIsOpen(open);
-    if (!open) {
+    if (open) {
+      setOpenRequestCount(count => count + 1);
+    } else {
       setSelectedConversationId(null);
       setSelectedRoomId(null);
       setNewlyCreatedConversationId(null);
@@ -57,6 +63,7 @@ export const UserMessagingProvider = ({ children }: { children: ReactNode }) => 
         isEnabled,
         isOpen,
         setIsOpen: handleSetIsOpen,
+        openRequestCount,
         selectedConversationId,
         setSelectedConversationId,
         selectedRoomId,
