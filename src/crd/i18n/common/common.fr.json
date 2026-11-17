@@ -36,6 +36,7 @@
           "loginFlow": "Login flow error.",
           "loginFlowInit": "Unable to initialize login flow.",
           "platformSupportSelfTarget": "Vous ne pouvez pas effectuer cette action sur votre propre compte. Demandez à un autre membre du support de la plateforme ou à un administrateur de l'organisation.",
+          "secondFactorRequired": "La validation en deux étapes est obligatoire pour votre compte.",
           "sessionExpired": "Session expired.",
           "sessionExtend": "Unable to extend session.",
           "subscriptionNotAuthenticated": "Subscription requires authentication.",
