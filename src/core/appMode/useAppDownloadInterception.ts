@@ -57,16 +57,16 @@ export function useAppDownloadInterception(): void {
     };
 
     // A programmatic click() on a detached anchor never reaches `document` (browser-fs-access's legacy save
-    // in the whiteboard editor, CrdMemoDialog, CrdWhiteboardDialog). Attach it for the click so `onClick` sees it;
-    // the anchor's own click listeners still fire (browser-fs-access revokes its blob: URL from one).
+    // in the whiteboard editor, CrdMemoDialog, CrdWhiteboardDialog). Listen on the anchor itself for that click;
+    // capture runs `onClick` before the anchor's own listeners (browser-fs-access revokes its blob: URL from one).
     const nativeClick = HTMLAnchorElement.prototype.click;
     HTMLAnchorElement.prototype.click = function (this: HTMLAnchorElement) {
       if (this.isConnected || !this.hasAttribute('download')) return nativeClick.call(this);
-      document.body.appendChild(this);
+      this.addEventListener('click', onClick, true);
       try {
         nativeClick.call(this);
       } finally {
-        this.remove();
+        this.removeEventListener('click', onClick, true);
       }
     };
     document.addEventListener('click', onClick, true);

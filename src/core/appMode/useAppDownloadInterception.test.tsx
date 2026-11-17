@@ -205,11 +205,12 @@ describe('useAppDownloadInterception', () => {
     expect(save.mock.calls[0][0].fileName).toBe('x.csv');
   });
 
-  it('(k) catches a detached anchor clicked programmatically, keeps its own listener and detaches it again', async () => {
+  it('(k) catches a detached anchor clicked programmatically, keeps its own listener and leaves it where it was', async () => {
     render(<Probe />);
     const own = vi.fn();
 
-    const a = document.createElement('a');
+    const parent = document.createElement('div'); // a detached parent must keep its child
+    const a = parent.appendChild(document.createElement('a'));
     a.download = 'm.md';
     a.href = 'https://app.test/m.md';
     a.addEventListener('click', own);
@@ -219,6 +220,7 @@ describe('useAppDownloadInterception', () => {
     expect(save.mock.calls[0][0].fileName).toBe('m.md');
     expect(own).toHaveBeenCalledTimes(1);
     expect(a.isConnected).toBe(false);
+    expect(a.parentNode).toBe(parent);
 
     await flush();
     const b = document.createElement('a');
