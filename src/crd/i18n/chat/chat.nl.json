@@ -11,7 +11,8 @@
     "unmuteSound": "Chatgeluid aanzetten",
     "soundToggleError": "We konden de instelling voor het chatgeluid niet opslaan. Probeer het opnieuw.",
     "expand": "Chat vergroten",
-    "collapse": "Chat verkleinen"
+    "collapse": "Chat verkleinen",
+    "reconnecting": "Opnieuw verbinden… Nieuwe berichten kunnen vertraagd zijn."
   },
   "actions": {
     "cancel": "Annuleren"
