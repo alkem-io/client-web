@@ -10,6 +10,12 @@ vi.mock('@/core/auth/authentication/hooks/useIdTokenHintUrl', () => ({
 
 const probeAnswers = (respond: () => Promise<Response>) => vi.spyOn(globalThis, 'fetch').mockImplementation(respond);
 
+const respond = (status: number, body?: unknown) =>
+  vi.stubGlobal(
+    'fetch',
+    vi.fn().mockResolvedValue({ ok: status >= 200 && status < 300, status, json: () => Promise.resolve(body) })
+  );
+
 describe('useOidcSessionStatus', () => {
   beforeEach(() => {
     vi.mocked(runMatrixLogoutCleanup).mockReset().mockResolvedValue(undefined);
@@ -17,6 +23,7 @@ describe('useOidcSessionStatus', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
   });
 
   it('runs the Matrix sign-out cleanup when the Alkemio session is gone', async () => {
@@ -63,5 +70,32 @@ describe('useOidcSessionStatus', () => {
     await waitFor(() => expect(result.current.loading).toBe(false));
     expect(result.current.active).toBe(active);
     expect(runMatrixLogoutCleanup).not.toHaveBeenCalled();
+  });
+
+  it('reads second_factor_required from the id-token-hint answer', async () => {
+    respond(200, { id_token: 'jwt', second_factor_required: true });
+
+    const { result } = renderHook(() => useOidcSessionStatus());
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current).toEqual({ active: true, loading: false, secondFactorRequired: true });
+  });
+
+  it('is not refused when the flag is false or absent', async () => {
+    respond(200, { id_token: 'jwt' });
+
+    const { result } = renderHook(() => useOidcSessionStatus());
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.secondFactorRequired).toBe(false);
+  });
+
+  it('is neither active nor refused without a session', async () => {
+    respond(401);
+
+    const { result } = renderHook(() => useOidcSessionStatus());
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current).toEqual({ active: false, loading: false, secondFactorRequired: false });
   });
 });

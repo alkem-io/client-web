@@ -1,8 +1,11 @@
-import { Suspense } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Suspense, useEffect } from 'react';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useSignUpReturnRedirect } from '@/core/auth/authentication/hooks/useSignUpReturnRedirect';
+import { routeToSecondFactor } from '@/core/auth/authentication/routeToSecondFactor';
 import { IdentityRoute } from '@/core/auth/authentication/routing/IdentityRoute';
 import useRedirectToIdentityDomain from '@/core/auth/authentication/routing/useRedirectToIdentityDomain';
+import { isAuthRoutePathname } from '@/core/auth/authentication/utils/isAuthRoutePathname';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import Loading from '@/core/ui/loading/Loading';
@@ -45,6 +48,20 @@ const InnovationPackRoute = lazyWithGlobalErrorHandler(() => import('@/domain/In
 export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();
   useSignUpReturnRedirect();
+
+  // A session refused for a missing second factor is served the auth screens and /second-factor only.
+  const { secondFactorRequired } = useAuthenticationContext();
+  const { pathname } = useLocation();
+  const leavingForSecondFactor = secondFactorRequired && !isAuthRoutePathname(pathname);
+  useEffect(() => {
+    if (leavingForSecondFactor) {
+      routeToSecondFactor();
+    }
+  }, [leavingForSecondFactor]);
+
+  if (leavingForSecondFactor) {
+    return null;
+  }
 
   return (
     <Routes>

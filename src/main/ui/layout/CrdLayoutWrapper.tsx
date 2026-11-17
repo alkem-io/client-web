@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { trackChatOpen } from '@/core/analytics/events/unifiedChat';
@@ -7,7 +8,9 @@ import useNavigate from '@/core/routing/useNavigate';
 import { BreadcrumbsTrail } from '@/crd/components/common/BreadcrumbsTrail';
 import { DownNoticeBanner } from '@/crd/components/common/DownNoticeBanner';
 import { MobileBreadcrumbs } from '@/crd/components/common/MobileBreadcrumbs';
+import { SecondFactorReminderBanner } from '@/crd/components/common/SecondFactorReminderBanner';
 import { CrdLayout } from '@/crd/layouts/CrdLayout';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { MarkdownConfigProvider } from '@/crd/lib/markdownConfig';
 import {
   PendingMembershipsDialogType,
@@ -27,6 +30,7 @@ import { MemoSigningReturnDialogConnector } from '@/main/ui/layout/MemoSigningRe
 import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
 import { useCrdUser } from '@/main/ui/layout/useCrdUser';
 import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
+import { useSecondFactorReminder } from '@/main/ui/layout/useSecondFactorReminder';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useUnreadConversationsCount } from '@/main/userMessaging/useUnreadConversationsCount';
 
@@ -61,6 +65,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const { visible: downNoticeVisible, dismiss: dismissDownNotice } = useDownNoticeBanner();
   const breadcrumbItems = useBreadcrumbs();
   const overlayBanner = useBannerOverlay();
+  const secondFactorReminder = useSecondFactorReminder();
   // Full-width is owned per-space by the space page; the global header reads
   // the live value here only so its top bar stays aligned with the body.
   const headerFullWidth = useSpaceFullWidthActive();
@@ -110,7 +115,22 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
           ) : undefined
         }
         overlayBanner={overlayBanner}
-        topBanner={downNoticeVisible ? <DownNoticeBanner onDismiss={dismissDownNotice} /> : undefined}
+        topBanner={
+          downNoticeVisible || secondFactorReminder.visible ? (
+            <>
+              {downNoticeVisible ? <DownNoticeBanner onDismiss={dismissDownNotice} /> : null}
+              {secondFactorReminder.visible && secondFactorReminder.deadline ? (
+                <SecondFactorReminderBanner
+                  deadline={format(secondFactorReminder.deadline, 'PPP', {
+                    locale: resolveDateFnsLocale(currentLanguage),
+                  })}
+                  securityHref={secondFactorReminder.securityHref}
+                  onDismiss={secondFactorReminder.dismiss}
+                />
+              ) : null}
+            </>
+          ) : undefined
+        }
         fullWidth={headerFullWidth}
         onLanguageChange={handleLanguageChange}
         onLogout={handleLogout}

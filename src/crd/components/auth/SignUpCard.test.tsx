@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
-import type { KratosFlowDescriptor } from '@/crd/components/auth/flowDescriptor';
+import { emptySecondFactorGroup, type KratosFlowDescriptor } from '@/crd/components/auth/flowDescriptor';
 import { SignUpCard } from './SignUpCard';
 
 // Mirror the other CRD auth tests: stub i18n so `t(key)` returns the key,
@@ -25,6 +25,9 @@ const descriptor = (): KratosFlowDescriptor => ({
     submit: [{ name: 'method', value: 'password', label: 'Sign up', disabled: false }],
     oidc: [],
     passkey: [],
+    totp: emptySecondFactorGroup(),
+    lookupSecret: emptySecondFactorGroup(),
+    webauthn: emptySecondFactorGroup(),
     anchors: [],
   },
 });
