@@ -1640,5 +1640,8 @@
     "learnMore": "En savoir plus",
     "contactSupport": "Contacter le support",
     "mentionUnavailable": "Temporairement indisponible"
+  },
+  "appDownload": {
+    "failed": "Le fichier n'a pas pu être téléchargé."
   }
 }
