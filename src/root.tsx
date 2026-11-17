@@ -3,6 +3,7 @@ import { UserGeoProvider } from '@/core/analytics/geo';
 import SentryErrorBoundaryProvider from '@/core/analytics/SentryErrorBoundaryProvider';
 import { SentryTransactionScopeContextProvider } from '@/core/analytics/SentryTransactionScopeContext';
 import AlkemioApolloProvider from '@/core/apollo/context/ApolloProvider';
+import { useRefetchActiveOnForeground } from '@/core/apollo/useRefetchActiveOnForeground';
 import { AuthenticationProvider } from '@/core/auth/authentication/context/AuthenticationProvider';
 import { IdentityRoutes } from '@/core/auth/authentication/routing/IdentityRoute';
 import '@/core/i18n/config';
@@ -73,6 +74,12 @@ function NativePushTapRouter() {
   return null;
 }
 
+/** Mounted inside `UserProvider`: the hook needs the Apollo client and the auth state. */
+function RefetchActiveOnForeground() {
+  useRefetchActiveOnForeground();
+  return null;
+}
+
 /** Top-level path segments owned by the auth flow — the unified chat is hidden on all of them. */
 const AUTH_ROUTE_SEGMENTS = new Set<string>(Object.values(IdentityRoutes));
 
@@ -125,6 +132,7 @@ const Root: FC = () => {
                                     <FullscreenEditorProvider>
                                       <AssistantProvider>
                                         <NavigationHistoryTracker />
+                                        <RefetchActiveOnForeground />
                                         <ApmUserSetter />
                                         <ScrollToTop />
                                         <NotificationsGate />
