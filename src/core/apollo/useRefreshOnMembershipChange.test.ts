@@ -72,7 +72,7 @@ const setup = () => {
     { wrapper }
   );
   const fetches = (name: string) => operations.filter(operation => operation === name).length;
-  return { server, result, fetches };
+  return { server, client, result, fetches };
 };
 
 beforeEach(() => {
@@ -97,6 +97,45 @@ describe('useRefreshOnMembershipChange', () => {
 
     await waitFor(() => expect(fetches('ActiveProbe')).toBe(2));
     expect(result.current.data).toBeDefined();
+  });
+
+  it('notices a second membership change after its own refresh dropped the cache', async () => {
+    const { server, result, fetches } = setup();
+    await waitFor(() => expect(fetches('LatestContributionsSpacesFlat')).toBe(1));
+    await waitFor(() => expect(result.current.data).toBeDefined());
+    vi.useFakeTimers({ toFake: ['Date'] });
+
+    server.membershipIds = ['membership-1', 'membership-2'];
+    fireVisibilityChange('visible');
+    await waitFor(() => expect(fetches('ActiveProbe')).toBe(2));
+
+    fireVisibilityChange('hidden');
+    vi.advanceTimersByTime(5_000);
+    server.membershipIds = ['membership-1', 'membership-2', 'membership-3'];
+    fireVisibilityChange('visible');
+
+    await waitFor(() => expect(fetches('ActiveProbe')).toBe(3));
+  });
+
+  it('notices a membership change after an accept dropped the cache', async () => {
+    const { server, client, result, fetches } = setup();
+    await waitFor(() => expect(fetches('LatestContributionsSpacesFlat')).toBe(1));
+    await waitFor(() => expect(result.current.data).toBeDefined());
+
+    // What accepting an invitation does (useInvitationActions).
+    await act(() =>
+      client.refetchQueries({
+        updateCache: cache => {
+          cache.evict({ id: 'ROOT_QUERY' });
+        },
+      })
+    );
+    await waitFor(() => expect(fetches('ActiveProbe')).toBe(2));
+
+    server.membershipIds = ['membership-1', 'membership-2'];
+    fireVisibilityChange('visible');
+
+    await waitFor(() => expect(fetches('ActiveProbe')).toBe(3));
   });
 
   it('refetches what is on screen when an invitation arrived while away', async () => {

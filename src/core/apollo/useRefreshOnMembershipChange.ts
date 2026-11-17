@@ -44,8 +44,14 @@ export const useRefreshOnMembershipChange = (): void => {
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    // Make sure the cache holds a state to compare against later.
-    readMembershipState(client, 'cache-first').catch(() => {});
+    // The state the screen was rendered with. Kept here, not in the Apollo cache, because
+    // every refresh evicts the cache and would erase it.
+    let known: string | undefined;
+    readMembershipState(client, 'cache-first')
+      .then(state => {
+        known ??= state;
+      })
+      .catch(() => {});
 
     let lastCheckAt = 0;
     const handleVisibilityChange = async () => {
@@ -54,9 +60,10 @@ export const useRefreshOnMembershipChange = (): void => {
       if (now - lastCheckAt < CHECK_THROTTLE_MS) return;
       lastCheckAt = now;
       try {
-        const known = await readMembershipState(client, 'cache-first');
         const current = await readMembershipState(client, 'network-only');
-        if (known === current) return;
+        const changed = known !== undefined && known !== current;
+        known = current;
+        if (!changed) return;
         await client.refetchQueries({
           updateCache: cache => {
             cache.evict({ id: 'ROOT_QUERY' });
