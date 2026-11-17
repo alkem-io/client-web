@@ -1,8 +1,6 @@
 import {
-  refetchLatestContributionsSpacesFlatQuery,
   refetchPendingInvitationsCountQuery,
   refetchPendingInvitationsQuery,
-  refetchSpaceAboutBaseQuery,
   useInvitationStateEventMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
@@ -12,7 +10,6 @@ interface UseInvitationActionsParams {
   onUpdate?: () => void;
   onAccept?: (spaceUrl: string) => void;
   onReject?: () => void;
-  spaceId?: string;
 }
 
 type UseInvitationActionsReturn = {
@@ -32,7 +29,6 @@ const useInvitationActions = ({
   onUpdate,
   onAccept,
   onReject,
-  spaceId,
 }: UseInvitationActionsParams): UseInvitationActionsReturn => {
   const [invitationStateEventMutation] = useInvitationStateEventMutation();
 
@@ -52,13 +48,10 @@ const useInvitationActions = ({
       onCompleted: () => {
         onAccept?.(spaceUrl);
       },
-      refetchQueries: [
-        refetchLatestContributionsSpacesFlatQuery(),
-        refetchPendingInvitationsQuery(),
-        refetchPendingInvitationsCountQuery(),
-        // Refetch space privileges so the user's new permissions are reflected immediately
-        ...(spaceId ? [refetchSpaceAboutBaseQuery({ spaceId })] : []),
-      ],
+      // Membership changes privileges across many queries (comments, callouts,
+      // admin options), so refetch everything on screen. Not awaited: a failed
+      // refetch never turns a successful accept into an error.
+      refetchQueries: 'active',
     })
   );
 
