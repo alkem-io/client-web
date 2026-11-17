@@ -22,15 +22,23 @@ describe('useMatrixConnectionLost', () => {
     expect(result.current).toBe(false);
   });
 
-  it('shows after a sustained ERROR/RECONNECTING and hides on recovery', () => {
+  it('shows after a sustained ERROR and hides on recovery', () => {
     const { result } = renderHook(() => useMatrixConnectionLost());
     act(() => setSyncState('ERROR'));
     act(() => vi.advanceTimersByTime(CONNECTION_LOST_DELAY_MS - 1));
     expect(result.current).toBe(false);
-    act(() => setSyncState('RECONNECTING'));
     act(() => vi.advanceTimersByTime(1));
     expect(result.current).toBe(true);
     act(() => setSyncState('PREPARED'));
+    expect(result.current).toBe(false);
+  });
+
+  it('never shows for RECONNECTING, a routine dropped long-poll the SDK recovers from', () => {
+    const { result } = renderHook(() => useMatrixConnectionLost());
+    act(() => setSyncState('RECONNECTING'));
+    act(() => vi.advanceTimersByTime(CONNECTION_LOST_DELAY_MS * 2));
+    expect(result.current).toBe(false);
+    act(() => setSyncState('SYNCING'));
     expect(result.current).toBe(false);
   });
 

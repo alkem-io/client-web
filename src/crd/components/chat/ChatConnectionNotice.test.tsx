@@ -5,6 +5,6 @@ import { ChatConnectionNotice } from './ChatConnectionNotice';
 describe('ChatConnectionNotice', () => {
   it('renders the message as a status', () => {
     render(<ChatConnectionNotice message="Reconnecting…" />);
-    expect(screen.getByRole('status')).toHaveTextContent('Reconnecting…');
+    expect(screen.getByRole('status', { name: 'Reconnecting…' })).toHaveTextContent('Reconnecting…');
   });
 });
