@@ -103,41 +103,67 @@ type ContributorMapProps = {
   className?: string;
 };
 
+// Gap kept between the card popup and the map's edges.
+const CARD_POPUP_EDGE_GAP = 8;
+
 // The card popup's width is capped by maplibre's `maxWidth` (its 240px default
-// is too narrow for a card) and never exceeds the viewport on mobile.
-const CARD_POPUP_MAX_WIDTH = 'min(20rem, calc(100vw - 2rem))';
+// is too narrow for a card). The popup sits in the map container, so `100%` is
+// the map's width: the card never gets wider than a narrow (mobile) map.
+const CARD_POPUP_MAX_WIDTH = `min(20rem, calc(100% - ${2 * CARD_POPUP_EDGE_GAP}px))`;
 
-// Avatar pins are bottom-anchored and 48px tall, so a popup placed above the
-// point must clear the avatar; maplibre picks the side that fits in the map.
-const CARD_POPUP_OFFSET = {
-  center: [0, 0],
-  top: [0, 8],
-  'top-left': [0, 8],
-  'top-right': [0, 8],
-  bottom: [0, -56],
-  'bottom-left': [0, -56],
-  'bottom-right': [0, -56],
-  left: [28, -28],
-  right: [-28, -28],
-} satisfies Record<string, [number, number]>;
+// The card sits centred below its pin (`top` anchor) or above it (`bottom`), so
+// the pin always stays within the card's width. Avatar pins are bottom-anchored
+// and 48px tall: a card above the point must clear the avatar.
+type CardPopupAnchor = 'top' | 'bottom';
+const CARD_POPUP_OFFSET: Record<CardPopupAnchor, [number, number]> = { top: [0, 8], bottom: [0, -56] };
 
-// Space the card popup needs beyond its content: maplibre's tip (10px) plus a
-// small gap to the map edge.
-const CARD_POPUP_CHROME = 18;
-
-// Tallest card popup that fits inside the map at this pin, on whichever side of
-// the pin has more room. Maplibre picks the anchor that fits but never pans, and
-// the map clips its overflow, so a centred pin in a short map would otherwise
-// cut the card off. `undefined` (no map yet) leaves only the CSS cap.
-const cardPopupMaxHeight = (map: MapRef | null, pin: ContributorMapPin): number | undefined => {
+// Where the card goes and how tall it may be: below the pin when the pin is in
+// the map's top half, above it otherwise; at most the map's height minus the
+// pin, maplibre's tip (10px) and the edge gaps. Without a map yet, only the CSS
+// cap applies.
+const cardPopupLayout = (
+  map: MapRef | null,
+  pin: ContributorMapPin
+): { anchor: CardPopupAnchor; maxHeight: number | undefined } => {
   if (!map) {
-    return undefined;
+    return { anchor: 'top', maxHeight: undefined };
   }
-  const { y } = map.project([pin.longitude, pin.latitude]);
   const mapHeight = map.getContainer().clientHeight;
-  const above = y + CARD_POPUP_OFFSET.bottom[1] - CARD_POPUP_CHROME;
-  const below = mapHeight - y - CARD_POPUP_OFFSET.top[1] - CARD_POPUP_CHROME;
-  return Math.max(above, below, 0);
+  const { y } = map.project([pin.longitude, pin.latitude]);
+  return {
+    anchor: y < mapHeight / 2 ? 'top' : 'bottom',
+    maxHeight: Math.max(mapHeight + CARD_POPUP_OFFSET.bottom[1] - 10 - 2 * CARD_POPUP_EDGE_GAP, 0),
+  };
+};
+
+// Maplibre never pans to show a popup, and the map clips its overflow. Once the
+// card has laid out, pan the map by however far the card and its pin stick out,
+// so both end up inside the map whatever the pin position or map size.
+const panCardPopupIntoView = (map: MapRef | null, popup: HTMLElement, pinButton: HTMLElement | undefined) => {
+  if (!map) {
+    return;
+  }
+  const bounds = map.getContainer().getBoundingClientRect();
+  const card = popup.getBoundingClientRect();
+  const pin = pinButton?.getBoundingClientRect() ?? card;
+  const left = Math.min(card.left, pin.left);
+  const right = Math.max(card.right, pin.right);
+  const top = Math.min(card.top, pin.top);
+  const bottom = Math.max(card.bottom, pin.bottom);
+  const overflow = (start: number, end: number, min: number, max: number) => {
+    if (start < min + CARD_POPUP_EDGE_GAP) {
+      return start - min - CARD_POPUP_EDGE_GAP;
+    }
+    if (end > max - CARD_POPUP_EDGE_GAP) {
+      return end - max + CARD_POPUP_EDGE_GAP;
+    }
+    return 0;
+  };
+  const dx = overflow(left, right, bounds.left, bounds.right);
+  const dy = overflow(top, bottom, bounds.top, bounds.bottom);
+  if (dx !== 0 || dy !== 0) {
+    map.panBy([dx, dy], { duration: 200 });
+  }
 };
 
 // Default to a Europe-centred view when there are no plottable pins; when there
@@ -222,7 +248,10 @@ export default function ContributorMap({
   const [activeId, setActiveId] = useState<string | null>(null);
   const active = pins.find(p => p.id === activeId) ?? null;
   const pinButtons = useRef(new Map<string, HTMLButtonElement>());
-  const [cardMaxHeight, setCardMaxHeight] = useState<number | undefined>();
+  const [cardLayout, setCardLayout] = useState<ReturnType<typeof cardPopupLayout>>({
+    anchor: 'top',
+    maxHeight: undefined,
+  });
 
   // Closing the card popup hands focus back to the pin that opened it.
   const closeCardPopup = () => {
@@ -315,14 +344,6 @@ export default function ContributorMap({
     onViewChange({ longitude: center.lng, latitude: center.lat, zoom: map.getZoom() });
   };
 
-  const handleMoveEnd = () => {
-    handleViewChange();
-    // The pin moved within the map, so the room around it changed.
-    if (active && renderPinCard) {
-      setCardMaxHeight(cardPopupMaxHeight(mapRef.current, active));
-    }
-  };
-
   return (
     <section
       className={cn('h-96 w-full overflow-hidden rounded-lg border border-border', className)}
@@ -341,7 +362,7 @@ export default function ContributorMap({
           collapseAttribution(e.target);
           handleViewChange();
         }}
-        onMoveEnd={handleMoveEnd}
+        onMoveEnd={handleViewChange}
       >
         <AttributionControl compact={true} position="bottom-right" />
         {pins.map(pin => (
@@ -354,7 +375,7 @@ export default function ContributorMap({
               e.originalEvent.stopPropagation();
               setActiveId(pin.id);
               if (renderPinCard) {
-                setCardMaxHeight(cardPopupMaxHeight(mapRef.current, pin));
+                setCardLayout(cardPopupLayout(mapRef.current, pin));
               }
             }}
           >
@@ -385,12 +406,20 @@ export default function ContributorMap({
             key={active.id}
             longitude={active.longitude}
             latitude={active.latitude}
-            offset={CARD_POPUP_OFFSET}
+            anchor={cardLayout.anchor}
+            offset={CARD_POPUP_OFFSET[cardLayout.anchor]}
             maxWidth={CARD_POPUP_MAX_WIDTH}
             closeButton={false}
             closeOnClick={false}
             onClose={() => setActiveId(null)}
-            className="w-full [&_.maplibregl-popup-content]:rounded-lg [&_.maplibregl-popup-content]:bg-transparent [&_.maplibregl-popup-content]:p-0 [&_.maplibregl-popup-content]:shadow-none"
+            onOpen={e =>
+              requestAnimationFrame(() =>
+                panCardPopupIntoView(mapRef.current, e.target.getElement(), pinButtons.current.get(active.id))
+              )
+            }
+            // maplibre-gl.css is unlayered, so it beats the layered Tailwind utilities
+            // whatever their specificity: `!` is needed to clear its white padded frame.
+            className="w-full [&_.maplibregl-popup-content]:rounded-lg! [&_.maplibregl-popup-content]:bg-transparent! [&_.maplibregl-popup-content]:p-0! [&_.maplibregl-popup-content]:shadow-none!"
           >
             {/* Non-modal dialog: on open maplibre (`focusAfterOpen`, on by
                 default) focuses its first focusable element, the close button;
@@ -404,7 +433,11 @@ export default function ContributorMap({
               ref={cardPopupRef}
               role="dialog"
               aria-label={active.name}
-              style={cardMaxHeight === undefined ? undefined : { maxHeight: `min(18rem, 60vh, ${cardMaxHeight}px)` }}
+              style={
+                cardLayout.maxHeight === undefined
+                  ? undefined
+                  : { maxHeight: `min(18rem, 60vh, ${cardLayout.maxHeight}px)` }
+              }
               className="max-h-[min(18rem,60vh)] overflow-y-auto rounded-lg border border-border bg-card shadow-md focus-visible:outline-none"
             >
               <div className="flex justify-end px-1 pt-1">

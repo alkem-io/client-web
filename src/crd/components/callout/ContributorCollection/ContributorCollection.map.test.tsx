@@ -10,7 +10,7 @@
  * inline and the expanded map; Esc closes the popup and returns focus to the
  * pin that opened it.
  */
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import i18next from 'i18next';
 import type { ReactNode } from 'react';
@@ -22,10 +22,16 @@ import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
 import type { ContributorCardData } from './ContributorCard';
 import { ContributorCollection } from './ContributorCollection';
 
-// The stand-in map is 384px tall (the inline map's h-96) with every pin projected
-// to its vertical centre — the case where neither side of the pin fits a full card.
+// The stand-in map is a phone-width inline map: 292px wide, 384px tall (h-96).
 const MAP_HEIGHT = 384;
-const PIN_Y = 192;
+const MAP_RECT = { left: 0, top: 0, right: 292, bottom: MAP_HEIGHT, width: 292, height: MAP_HEIGHT };
+
+// Where the stand-in popup reports it was laid out, and the map's pan calls.
+const layout = vi.hoisted(() => ({
+  popupRect: undefined as DOMRect | undefined,
+  pinY: 100,
+  panBy: (() => {}) as (offset: [number, number]) => void,
+}));
 
 // maplibre's `focusAfterOpen` selector: the popup focuses the first match on open.
 const POPUP_FOCUSABLE =
@@ -37,8 +43,9 @@ vi.mock('react-map-gl/maplibre', async () => {
   return {
     Map: forwardRef<unknown, { children: ReactNode }>(({ children }, ref) => {
       useImperativeHandle(ref, () => ({
-        project: () => ({ x: 0, y: PIN_Y }),
-        getContainer: () => ({ clientHeight: MAP_HEIGHT }),
+        getContainer: () => ({ clientHeight: MAP_HEIGHT, getBoundingClientRect: () => MAP_RECT }),
+        project: () => ({ x: 146, y: layout.pinY }),
+        panBy: (offset: [number, number]) => layout.panBy(offset),
       }));
       return <div data-testid="maplibre-map">{children}</div>;
     }),
@@ -52,16 +59,35 @@ vi.mock('react-map-gl/maplibre', async () => {
     ),
     // Mirrors react-map-gl 8's lifecycle: children render into a detached
     // container, which an effect then attaches before maplibre focuses the
-    // first focusable element — so a focus made during render would be lost.
-    Popup: ({ children }: { children: ReactNode }) => {
+    // first focusable element — so a focus made during render would be lost —
+    // and then fires `open` with the popup element.
+    Popup: ({
+      children,
+      anchor: side,
+      onOpen,
+    }: {
+      children: ReactNode;
+      anchor?: string;
+      onOpen?: (e: { target: { getElement: () => HTMLElement } }) => void;
+    }) => {
       const [container] = useState(() => document.createElement('div'));
       const anchor = useRef<HTMLDivElement>(null);
       useEffect(() => {
-        anchor.current?.appendChild(container);
+        const element = anchor.current;
+        if (!element) return;
+        element.appendChild(container);
+        if (layout.popupRect) {
+          element.getBoundingClientRect = () => layout.popupRect as DOMRect;
+        }
         container.querySelector<HTMLElement>(POPUP_FOCUSABLE)?.focus();
+        onOpen?.({ target: { getElement: () => element } });
         return () => container.remove();
       }, [container]);
-      return <div ref={anchor}>{createPortal(children, container)}</div>;
+      return (
+        <div ref={anchor} data-anchor={side}>
+          {createPortal(children, container)}
+        </div>
+      );
     },
   };
 });
@@ -246,7 +272,7 @@ describe('ContributorCollection map — pin popup shows the full contributor car
     expect(pin).toHaveFocus();
   });
 
-  test('on the expanded map, Message closes the map and opens the chat', async () => {
+  test('on the expanded map, Message hands the contributor to the consumer', async () => {
     const user = userEvent.setup();
     const onMessage = vi.fn();
     renderMap([ada], onMessage);
@@ -260,20 +286,100 @@ describe('ContributorCollection map — pin popup shows the full contributor car
     await user.click(within(popup).getByRole('button', { name: 'Actions for Ada' }));
     await user.click(await screen.findByRole('menuitem', { name: 'Message' }));
 
-    // The chat opens outside the modal map, so the map must be gone. Check the saved element
-    // itself: a role query skips aria-hidden nodes and the open modal menu aria-hides the map.
     expect(onMessage).toHaveBeenCalledWith(ada);
-    expect(expanded).not.toBeInTheDocument();
   });
 
-  test('a centred pin on the inline map caps the card to the room left inside the map', async () => {
+  test('the card is capped to the map height left beside its pin', async () => {
     const user = userEvent.setup();
     renderMap([ada]);
 
     await user.click(await screen.findByRole('button', { name: 'Ada' }));
 
-    // Below the pin: 384 - 192 - 8 (popup offset) - 18 (tip + edge gap) = 166px,
-    // more than the 118px above it — so the card scrolls inside the map, not past it.
-    expect(screen.getByRole('dialog', { name: 'Ada' }).style.maxHeight).toBe('min(18rem, 60vh, 166px)');
+    // 384 (map) - 56 (pin) - 10 (tip) - 2 × 8 (edge gaps) = 302px.
+    expect(screen.getByRole('dialog', { name: 'Ada' }).style.maxHeight).toBe('min(18rem, 60vh, 302px)');
+  });
+
+  test('a card that sticks out of a narrow map pans the map until it fits', async () => {
+    const user = userEvent.setup();
+    const panBy = vi.fn();
+    layout.panBy = panBy;
+    // Laid out 30px past the right edge and 21px past the bottom of the 292 × 384 map.
+    layout.popupRect = { left: 32, right: 322, top: 150, bottom: 405, width: 290, height: 255 } as DOMRect;
+    try {
+      renderMap([ada]);
+      const pin = await screen.findByRole('button', { name: 'Ada' });
+      // The pin sits inside the map, above the card.
+      pin.getBoundingClientRect = () => ({ left: 153, right: 201, top: 94, bottom: 142 }) as DOMRect;
+      await user.click(pin);
+
+      // Each overflow plus the 8px edge gap: 322 - 292 + 8 and 405 - 384 + 8.
+      await waitFor(() => expect(panBy).toHaveBeenCalledWith([38, 29]));
+    } finally {
+      layout.popupRect = undefined;
+      layout.panBy = () => {};
+    }
+  });
+
+  test('a card that already fits does not move the map', async () => {
+    const user = userEvent.setup();
+    const panBy = vi.fn();
+    layout.panBy = panBy;
+    layout.popupRect = { left: 20, right: 270, top: 60, bottom: 300, width: 250, height: 240 } as DOMRect;
+    try {
+      renderMap([ada]);
+      const pin = await screen.findByRole('button', { name: 'Ada' });
+      pin.getBoundingClientRect = () => ({ left: 121, right: 169, top: 10, bottom: 58 }) as DOMRect;
+      await user.click(pin);
+      await new Promise(resolve => requestAnimationFrame(resolve));
+
+      expect(panBy).not.toHaveBeenCalled();
+    } finally {
+      layout.popupRect = undefined;
+      layout.panBy = () => {};
+    }
+  });
+
+  test('a card that clips its pin on the narrow map pans until both fit', async () => {
+    const user = userEvent.setup();
+    const panBy = vi.fn();
+    layout.panBy = panBy;
+    // The card fits, but the pin above it is 15px past the map's top edge.
+    layout.popupRect = { left: 9, right: 283, top: 66, bottom: 360, width: 274, height: 294 } as DOMRect;
+    try {
+      renderMap([ada]);
+      const pin = await screen.findByRole('button', { name: 'Ada' });
+      pin.getBoundingClientRect = () => ({ left: 122, right: 170, top: -15, bottom: 33 }) as DOMRect;
+      await user.click(pin);
+
+      // -15 - 0 - 8: the map pans the pin down into view.
+      await waitFor(() => expect(panBy).toHaveBeenCalledWith([0, -23]));
+    } finally {
+      layout.popupRect = undefined;
+      layout.panBy = () => {};
+    }
+  });
+
+  test('a pin in the top half opens its card below it', async () => {
+    const user = userEvent.setup();
+    renderMap([ada]);
+    await user.click(await screen.findByRole('button', { name: 'Ada' }));
+
+    expect(screen.getByRole('dialog', { name: 'Ada' }).closest('[data-anchor]')).toHaveAttribute('data-anchor', 'top');
+  });
+
+  test('a pin in the bottom half opens its card above it', async () => {
+    const user = userEvent.setup();
+    layout.pinY = 300;
+    try {
+      renderMap([ada]);
+      await user.click(await screen.findByRole('button', { name: 'Ada' }));
+
+      expect(screen.getByRole('dialog', { name: 'Ada' }).closest('[data-anchor]')).toHaveAttribute(
+        'data-anchor',
+        'bottom'
+      );
+    } finally {
+      layout.pinY = 100;
+    }
   });
 });
