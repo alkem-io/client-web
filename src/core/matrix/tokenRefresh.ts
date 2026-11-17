@@ -31,7 +31,8 @@ const postRefresh = async (current: CredentialRecord): Promise<Tokens | null> =>
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refresh_token: current.refreshToken }),
     });
-    if (response.status >= 500 || response.status === 429) {
+    // 408 is a proxy timing the request out, not the homeserver refusing the token.
+    if (response.status >= 500 || response.status === 429 || response.status === 408) {
       throw new Error(`refresh failed: ${response.status}`);
     }
     if (!response.ok) {
@@ -51,7 +52,9 @@ const postRefresh = async (current: CredentialRecord): Promise<Tokens | null> =>
  * new pair, or null when it must not be used: the stored record is gone or
  * another device's, the homeserver refused the refresh token, or the record
  * changed before the new pair could be written. Rejects on a transient
- * failure, leaving the stored record as it was.
+ * failure, leaving the stored record as it was. A failed write of the new pair
+ * is transient too: the pair is dropped unused, and Synapse accepts the old
+ * refresh token again until the new access token has been used.
  */
 const renewTokens = (current: CredentialRecord): Promise<Tokens | null> =>
   navigator.locks.request(`alkemio-matrix-refresh/${current.userId}`, async () => {

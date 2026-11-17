@@ -75,30 +75,26 @@ const replaceTokens = async (
   deviceId: string,
   tokens: { accessToken: string; refreshToken: string; expiresAt: number }
 ): Promise<boolean> => {
+  // False only when the record is gone or another device's; a storage failure rejects.
+  const db = await openDb(userId);
   try {
-    const db = await openDb(userId);
-    try {
-      return await new Promise<boolean>(resolve => {
-        let written = false;
-        const tx = db.transaction(STORE_NAME, 'readwrite');
-        const store = tx.objectStore(STORE_NAME);
-        const request = store.get(RECORD_KEY);
-        request.onsuccess = () => {
-          const existing = request.result as CredentialRecord | undefined;
-          if (existing?.deviceId === deviceId) {
-            store.put({ ...existing, ...tokens }, RECORD_KEY);
-            written = true;
-          }
-        };
-        tx.oncomplete = () => resolve(written);
-        tx.onabort = () => resolve(false);
-        tx.onerror = () => resolve(false);
-      });
-    } finally {
-      db.close();
-    }
-  } catch {
-    return false;
+    return await new Promise<boolean>((resolve, reject) => {
+      let written = false;
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      const store = tx.objectStore(STORE_NAME);
+      const request = store.get(RECORD_KEY);
+      request.onsuccess = () => {
+        const existing = request.result as CredentialRecord | undefined;
+        if (existing?.deviceId === deviceId) {
+          store.put({ ...existing, ...tokens }, RECORD_KEY);
+          written = true;
+        }
+      };
+      tx.oncomplete = () => resolve(written);
+      tx.onabort = () => reject(tx.error ?? new Error('Matrix token write aborted'));
+    });
+  } finally {
+    db.close();
   }
 };
 

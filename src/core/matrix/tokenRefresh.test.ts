@@ -114,13 +114,13 @@ describe('renewTokens', () => {
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
-  it('treats network errors, 5xx, 429 and an unanswered request as transient', async () => {
+  it('treats network errors, 5xx, 429, 408 and an unanswered request as transient', async () => {
     await storeCredentials(CURRENT);
     const fetchSpy = vi.spyOn(globalThis, 'fetch');
 
     fetchSpy.mockRejectedValueOnce(new TypeError('Failed to fetch'));
     await expect(renewTokens(CURRENT)).rejects.toThrow();
-    for (const status of [503, 429]) {
+    for (const status of [503, 429, 408]) {
       fetchSpy.mockResolvedValueOnce(jsonResponse({}, status));
       await expect(renewTokens(CURRENT)).rejects.toThrow();
     }
@@ -147,6 +147,17 @@ describe('renewTokens', () => {
     await vi.advanceTimersByTimeAsync(1);
     await expect(unanswered).rejects.toThrow();
     vi.useRealTimers();
+    expect(await loadCredentials(USER_ID)).toEqual(CURRENT);
+  });
+
+  it('treats a failed write of the new pair as transient and keeps the stored record', async () => {
+    await storeCredentials(CURRENT);
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(jsonResponse(REFRESHED));
+    vi.spyOn(IDBObjectStore.prototype, 'put').mockImplementationOnce(() => {
+      throw new DOMException('quota exceeded', 'QuotaExceededError');
+    });
+
+    await expect(renewTokens(CURRENT)).rejects.toThrow();
     expect(await loadCredentials(USER_ID)).toEqual(CURRENT);
   });
 
