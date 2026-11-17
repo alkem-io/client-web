@@ -2,10 +2,12 @@ import { formatDistanceToNowStrict } from 'date-fns';
 import { Info, Loader2, Trash2 } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useMatrixConnectionLost } from '@/core/matrix/useMatrixConnectionLost';
 import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ActiveCallIndicator } from '@/crd/components/chat/ActiveCallIndicator';
 import { CallControls, chatHeaderIconButtonClass, chatHeaderIconClass } from '@/crd/components/chat/CallControls';
+import { ChatConnectionNotice } from '@/crd/components/chat/ChatConnectionNotice';
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
 import { ChatOptionsMenu } from '@/crd/components/chat/ChatOptionsMenu';
 import { ChatPanel } from '@/crd/components/chat/ChatPanel';
@@ -60,6 +62,7 @@ type UnifiedChatPanelConnectorProps = {
 
 export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPanelConnectorProps) => {
   const { t, i18n } = useTranslation('crd-chat');
+  const connectionLost = useMatrixConnectionLost();
   const { userModel } = useCurrentUserContext();
   const currentUserId = userModel?.id;
   const navigate = useNavigate();
@@ -407,6 +410,7 @@ export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPan
         onTitleClick={isGroupThread ? groupSettings.openDialog : undefined}
         titleActionLabel={isGroupThread ? t('group.settings') : undefined}
         headerActions={view === 'thread' ? headerActions : undefined}
+        notice={connectionLost ? <ChatConnectionNotice message={t('panel.reconnecting')} /> : undefined}
       >
         {view === 'thread' && selectedConversationId ? (
           <ConversationThread
