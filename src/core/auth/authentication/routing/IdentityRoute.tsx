@@ -27,6 +27,9 @@ const ErrorCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
 const CrdAuthRequiredRoute = lazyWithGlobalErrorHandler<object>(() =>
   import('@/main/crdPages/error/CrdAuthRequiredRoute').then(m => ({ default: m.CrdAuthRequiredRoute }))
 );
+const SecondFactorCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
+  import('@/main/crdPages/auth/SecondFactorCrdRoute').then(m => ({ default: m.SecondFactorCrdRoute }))
+);
 const LogoutRoute = lazyWithGlobalErrorHandler(() => import('./LogoutRoute'));
 
 export enum IdentityRoutes {
@@ -39,6 +42,7 @@ export enum IdentityRoutes {
   Required = 'required',
   Error = 'error',
   Settings = 'settings',
+  SecondFactor = 'second-factor',
 }
 
 export const IdentityRoute = () => {
@@ -115,6 +119,16 @@ export const IdentityRoute = () => {
         element={
           <Suspense fallback={null}>
             <SettingsCrdRoute />
+          </Suspense>
+        }
+      />
+      {/* Where a session refused for a missing second factor is sent: on the platform origin, and
+          built on the Kratos settings flow alone, since the server answers its GraphQL with the refusal. */}
+      <Route
+        path={`${IdentityRoutes.SecondFactor}`}
+        element={
+          <Suspense fallback={null}>
+            <SecondFactorCrdRoute />
           </Suspense>
         }
       />

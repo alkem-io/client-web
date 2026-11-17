@@ -57,5 +57,10 @@
     "settings": "instellingen",
     "acceptAll": "Accepteer Alle Cookies",
     "confirmChoice": "Bevestig keuze"
+  },
+  "secondFactorReminder": {
+    "action": "Nu instellen",
+    "dismiss": "Sluiten",
+    "text": "Gebruik verificatie in twee stappen vóór {{deadline}}: stel het in, of log er opnieuw mee in als je het al hebt ingesteld. Na die datum kun je Alkemio niet meer zonder gebruiken."
   }
 }

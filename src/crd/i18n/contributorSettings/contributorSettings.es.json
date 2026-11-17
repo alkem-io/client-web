@@ -424,6 +424,55 @@
             "SOLE_ORGANIZATION_OWNER": "Organización (propietario único)"
           }
         }
+      },
+      "twoStep": {
+        "authenticator": {
+          "active": "Tu aplicación de autenticación está activa.",
+          "codeLabel": "Código de la aplicación",
+          "confirm": "Confirmar",
+          "explanation": "Una aplicación en tu teléfono, como Google Authenticator, Microsoft Authenticator o 1Password, muestra un código nuevo de seis dígitos cada 30 segundos.",
+          "qrAlt": "Código QR para tu aplicación de autenticación",
+          "removeDescription": "Ya no podrás iniciar sesión con códigos de esta aplicación.",
+          "removeTitle": "¿Eliminar la aplicación de autenticación?",
+          "secretLabel": "Clave:",
+          "setUp": "Configura una aplicación de autenticación: escanea el código QR con la aplicación o introduce la clave a mano, y escribe el código que muestra.",
+          "title": "Aplicación de autenticación"
+        },
+        "description": "Añade un segundo paso al iniciar sesión: después de tu contraseña, confirmas también con tu teléfono o una llave de seguridad.",
+        "lastFactorWarning": "Es tu último segundo factor. La verificación en dos pasos es obligatoria para ti, así que tendrás que configurar uno de nuevo la próxima vez que inicies sesión.",
+        "neverShare": "Un código nunca se lee en voz alta ni se envía a nadie, y Alkemio nunca te lo pedirá. No compartas tus códigos.",
+        "recoveryCodes": {
+          "active": "Tienes códigos de recuperación.",
+          "confirm": "He guardado estos códigos",
+          "copied": "Copiado",
+          "copy": "Copiar códigos",
+          "copyFailed": "No se pudieron copiar. Selecciona los códigos y cópialos tú mismo.",
+          "download": "Descargar códigos",
+          "explanation": "Códigos de un solo uso para cuando no puedas usar tu aplicación o tu llave. Cada código funciona una vez.",
+          "generate": "Generar códigos de recuperación",
+          "needsFactor": "Configura primero una aplicación de autenticación o una llave de seguridad.",
+          "regenerate": "Regenerar",
+          "regenerateDescription": "Tus códigos de recuperación actuales dejarán de funcionar.",
+          "regenerateTitle": "¿Generar nuevos códigos de recuperación?",
+          "remove": "Eliminar códigos de recuperación",
+          "removeDescription": "Ya no podrás iniciar sesión con un código de recuperación.",
+          "removeTitle": "¿Eliminar tus códigos de recuperación?",
+          "shownOnce": "Guarda estos códigos en un lugar seguro ahora. No se volverán a mostrar.",
+          "title": "Códigos de recuperación"
+        },
+        "remove": "Eliminar",
+        "securityKeys": {
+          "add": "Añadir una llave de seguridad",
+          "empty": "Aún no has añadido llaves de seguridad.",
+          "explanation": "Una llave física, como una YubiKey, o el autenticador integrado de tu dispositivo, que tocas al iniciar sesión.",
+          "nameLabel": "Nombre de la llave",
+          "nameRequired": "Escribe un nombre para la llave.",
+          "removeDescription": "Ya no podrás iniciar sesión con esta llave.",
+          "removeNamed": "Eliminar {{name}}",
+          "removeTitle": "¿Eliminar la llave de seguridad \"{{name}}\"?",
+          "title": "Llaves de seguridad"
+        },
+        "title": "Verificación en dos pasos"
       }
     },
     "settings": {
@@ -825,7 +874,15 @@
         "contributionRolesLabel": "Mostrar los roles de contribución públicamente",
         "contributionRolesCaption": "Cuando está activado, las asignaciones de roles de la organización (Administrador, Propietario, Asociado) son visibles en el perfil público."
       },
-      "errorToast": "No se pudo guardar la preferencia — inténtalo de nuevo"
+      "errorToast": "No se pudo guardar la preferencia — inténtalo de nuevo",
+      "security": {
+        "requireSecondFactorCaption": "Los propietarios, administradores y asociados de esta organización deben usar un segundo factor al iniciar sesión. Tienen 14 días para configurarlo.",
+        "requireSecondFactorLabel": "Exigir la verificación en dos pasos a los miembros",
+        "title": "Seguridad",
+        "turnOffTitle": "¿Dejar de exigir la verificación en dos pasos?",
+        "turnOffDescription": "Los miembros ya no necesitarán un segundo factor para iniciar sesión. Si vuelves a activar el requisito, tendrán de nuevo 14 días para configurarlo.",
+        "turnOffConfirm": "Dejar de exigir"
+      }
     },
     "invitations": {
       "title": "Invitaciones a Spaces",
