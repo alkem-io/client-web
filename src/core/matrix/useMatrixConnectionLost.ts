@@ -5,9 +5,11 @@ import { useMatrixSyncState } from './activeClient';
 // shorter than this recovers before the user is told anything.
 export const CONNECTION_LOST_DELAY_MS = 5000;
 
-const isLost = (state: string | null): boolean => state === 'ERROR' || state === 'RECONNECTING';
+// CATCHUP follows a successful keepalive but precedes a successful /sync; it stays
+// "lost" so a stalled catch-up keeps the notice and a re-failure does not restart the delay.
+const isLost = (state: string | null): boolean => state === 'ERROR' || state === 'RECONNECTING' || state === 'CATCHUP';
 
-/** True once the chat sync has stayed in ERROR/RECONNECTING for CONNECTION_LOST_DELAY_MS; false as soon as it recovers. */
+/** True once the chat sync has stayed in ERROR/RECONNECTING/CATCHUP for CONNECTION_LOST_DELAY_MS; false as soon as it recovers. */
 export const useMatrixConnectionLost = (): boolean => {
   const lost = isLost(useMatrixSyncState());
   const [shown, setShown] = useState(false);

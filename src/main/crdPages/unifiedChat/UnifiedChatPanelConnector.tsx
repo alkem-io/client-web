@@ -2,7 +2,6 @@ import { formatDistanceToNowStrict } from 'date-fns';
 import { Info, Loader2, Trash2 } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMatrixConnectionLost } from '@/core/matrix/useMatrixConnectionLost';
 import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ActiveCallIndicator } from '@/crd/components/chat/ActiveCallIndicator';
@@ -58,11 +57,15 @@ import { useUnifiedConversationView } from './useUnifiedConversationView';
 type UnifiedChatPanelConnectorProps = {
   /** The Matrix sync is catching up. Tracked by the always-mounted launcher, so a resume that happened before the panel opened still counts. */
   catchingUp?: boolean;
+  /** Sync has stayed lost past the notice delay (computed by the always-mounted launcher). */
+  connectionLost?: boolean;
 };
 
-export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPanelConnectorProps) => {
+export const UnifiedChatPanelConnector = ({
+  catchingUp = false,
+  connectionLost = false,
+}: UnifiedChatPanelConnectorProps) => {
   const { t, i18n } = useTranslation('crd-chat');
-  const connectionLost = useMatrixConnectionLost();
   const { userModel } = useCurrentUserContext();
   const currentUserId = userModel?.id;
   const navigate = useNavigate();
