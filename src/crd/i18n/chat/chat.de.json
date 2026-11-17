@@ -83,6 +83,7 @@
   "thread": {
     "back": "Zurück zu den Unterhaltungen",
     "loading": "Nachrichten werden geladen",
+    "jumpToLatest": "Zu den neuesten Nachrichten",
     "addReaction": "Reaktion hinzufügen",
     "options": "Chat-Optionen"
   },

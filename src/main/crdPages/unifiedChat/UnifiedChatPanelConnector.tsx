@@ -53,7 +53,12 @@ import { useUnifiedConversationView } from './useUnifiedConversationView';
  * Wires the unified conversation list + selected thread to the CRD ChatPanel.
  * Owns list/thread selection, realtime, send + reactions, and Guidance behaviors.
  */
-export const UnifiedChatPanelConnector = () => {
+type UnifiedChatPanelConnectorProps = {
+  /** The Matrix sync is catching up. Tracked by the always-mounted launcher, so a resume that happened before the panel opened still counts. */
+  catchingUp?: boolean;
+};
+
+export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPanelConnectorProps) => {
   const { t, i18n } = useTranslation('crd-chat');
   const { userModel } = useCurrentUserContext();
   const currentUserId = userModel?.id;
@@ -100,8 +105,12 @@ export const UnifiedChatPanelConnector = () => {
   // Realtime conversation events are subscribed globally by
   // <ConversationEventsSubscriber /> (mounted in root.tsx) so they arrive with
   // the panel closed too. The selected room's message stream is inside the view hook.
+  // The conversation the reader has scrolled up in. Messages that arrive there are not on
+  // screen, so the read marker waits until the reader is back at the latest message.
+  const [scrolledUpIn, setScrolledUpIn] = useState<string | null>(null);
+  const isReadingOlder = scrolledUpIn !== null && scrolledUpIn === selectedConversationId;
   const { isSending, handleSendMessage, handleAddReaction, handleRemoveReaction, handleLeaveGroup, clearGuidance } =
-    useUnifiedConversationView(selectedConversation ?? null, readUpToEventId);
+    useUnifiedConversationView(selectedConversation ?? null, isReadingOlder ? null : readUpToEventId);
 
   const groupSettings = useGroupSettings(selectedConversation?.id, selectedConversation?.members ?? [], {
     displayName: selectedConversation?.roomDisplayName ?? '',
@@ -192,6 +201,7 @@ export const UnifiedChatPanelConnector = () => {
   };
 
   const handleBack = () => {
+    setScrolledUpIn(null);
     setSelectedConversationId(null);
     setSelectedRoomId(null);
   };
@@ -405,8 +415,10 @@ export const UnifiedChatPanelConnector = () => {
             roomId={selectedConversation?.roomId}
             attachmentsAllowed={!isGuidanceThread}
             conversation={threadHeader}
+            onFollowingChange={following => setScrolledUpIn(following ? null : (selectedConversationId ?? null))}
             messages={chatMessages}
-            messagesLoading={messagesLoading}
+            // Older history paging in, or the sync bringing newer messages: both may change what the thread shows.
+            messagesLoading={messagesLoading || catchingUp}
             locale={resolveChatLocale(i18n.language, navigator.languages)}
             currentUser={currentUser}
             isSending={isSending}
