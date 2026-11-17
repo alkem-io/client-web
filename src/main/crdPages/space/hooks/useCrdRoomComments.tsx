@@ -5,6 +5,7 @@ import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
 import { CommentInput } from '@/crd/components/comment/CommentInput';
 import { CommentThread } from '@/crd/components/comment/CommentThread';
+import type { ContributorPreviewData } from '@/crd/components/contributor/ContributorHoverCard';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { useNow } from '@/crd/hooks/useNow';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
@@ -19,6 +20,7 @@ import {
 import { useAttachmentReadiness } from '@/main/userMessaging/useAttachmentReadiness';
 import { mapRoomToCommentData } from '../dataMappers/commentDataMapper';
 import { useCommentImageStorageConfig } from './useCommentImageStorageConfig';
+import { useContactableUsers } from './useContactableUsers';
 import { useMentionableContributors } from './useMentionableContributors';
 
 type UseCrdRoomCommentsParams = {
@@ -37,6 +39,9 @@ type UseCrdRoomCommentsParams = {
    *  behind it and block the UI. */
   confirmOverlayClassName?: string;
   confirmContentClassName?: string;
+  /** Message action on the author hover card. Passed only by non-modal hosts: the chat
+   *  panel opens behind a modal dialog, so dialog hosts leave it out and the button hides. */
+  onMessageContributor?: (contributor: ContributorPreviewData) => void;
 };
 
 export type CrdRoomCommentsSlots = {
@@ -59,6 +64,7 @@ export function useCrdRoomComments({
   skipSubscription = false,
   confirmOverlayClassName,
   confirmContentClassName,
+  onMessageContributor,
 }: UseCrdRoomCommentsParams): CrdRoomCommentsSlots {
   const { t } = useTranslation('crd-space');
   // `tMain` resolves the default `translation` namespace, where the
@@ -108,8 +114,17 @@ export function useCrdRoomComments({
     imageOptions
   );
 
+  const mapped = mapRoomToCommentData(room, { currentUserId: userModel?.id, t: tMain });
+  // Only hosts that offer Message ask who can be contacted (FR-004).
+  const withContactability = useContactableUsers(
+    mapped.map(comment => comment.author.preview),
+    !onMessageContributor || !isAuthenticated
+  );
   const comments = useAttachmentReadiness(
-    mapRoomToCommentData(room, { currentUserId: userModel?.id, t: tMain }),
+    mapped.map(comment => ({
+      ...comment,
+      author: { ...comment.author, preview: withContactability(comment.author.preview) },
+    })),
     roomId
   );
 
@@ -184,6 +199,7 @@ export function useCrdRoomComments({
         currentUser={currentUser}
         canComment={canComment}
         mentionSearch={mentionSearch}
+        onMessageContributor={onMessageContributor}
         onReply={(parentId, content) => {
           if (imageComposers) return replyFiles.send(content, sendReply(parentId), () => setReplyDraft(''));
           void postReply({ messageText: content, threadId: parentId });

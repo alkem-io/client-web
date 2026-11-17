@@ -8,6 +8,7 @@
     "emptyMessage": "Vous êtes à jour ! Les nouvelles notifications apparaîtront ici.",
     "loadMore": "Charger plus",
     "loading": "Chargement des notifications",
+    "newNotifications": "Nouvelles notifications",
     "actions": {
       "menu": "Actions",
       "read": "Marquer comme lu",

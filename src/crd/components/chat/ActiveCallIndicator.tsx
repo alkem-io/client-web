@@ -1,6 +1,6 @@
 import { Phone, Video } from 'lucide-react';
 import { useState } from 'react';
-import { chatHeaderIconButtonClass } from '@/crd/components/chat/CallControls';
+import { chatHeaderIconButtonClass, chatHeaderIconClass } from '@/crd/components/chat/CallControls';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 
 type JoinProps = {
@@ -72,7 +72,7 @@ export function ActiveCallIndicator({ activeLabel, count, join, joinedNote }: Ac
                 data-testid="call-join-video"
                 className={chatHeaderIconButtonClass}
               >
-                <Video aria-hidden="true" className="size-6" />
+                <Video aria-hidden="true" className={chatHeaderIconClass} />
               </button>
             </TooltipTrigger>
             <TooltipContent>{join.joinVideoLabel}</TooltipContent>
@@ -86,7 +86,7 @@ export function ActiveCallIndicator({ activeLabel, count, join, joinedNote }: Ac
                 data-testid="call-join-audio"
                 className={chatHeaderIconButtonClass}
               >
-                <Phone aria-hidden="true" className="size-6" />
+                <Phone aria-hidden="true" className={chatHeaderIconClass} />
               </button>
             </TooltipTrigger>
             <TooltipContent>{join.joinAudioLabel}</TooltipContent>

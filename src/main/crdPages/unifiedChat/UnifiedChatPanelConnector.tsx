@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ActiveCallIndicator } from '@/crd/components/chat/ActiveCallIndicator';
-import { CallControls, chatHeaderIconButtonClass } from '@/crd/components/chat/CallControls';
+import { CallControls, chatHeaderIconButtonClass, chatHeaderIconClass } from '@/crd/components/chat/CallControls';
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
 import { ChatOptionsMenu } from '@/crd/components/chat/ChatOptionsMenu';
 import { ChatPanel } from '@/crd/components/chat/ChatPanel';
@@ -29,6 +29,7 @@ import { useCallEligibility } from '@/main/userMessaging/calls/useCallEligibilit
 import { useRoomCallSession } from '@/main/userMessaging/calls/useRoomCallSession';
 import { type CallAction, type CallMedia, callIntentFor } from '@/main/userMessaging/calls/widgetUrl';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
+import { useChatSound } from '@/main/userMessaging/useChatSound';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
 import { ConversationThread } from './ConversationThread';
 import { resolveChatLocale } from './chatLocale';
@@ -52,12 +53,18 @@ import { useUnifiedConversationView } from './useUnifiedConversationView';
  * Wires the unified conversation list + selected thread to the CRD ChatPanel.
  * Owns list/thread selection, realtime, send + reactions, and Guidance behaviors.
  */
-export const UnifiedChatPanelConnector = () => {
+type UnifiedChatPanelConnectorProps = {
+  /** The Matrix sync is catching up. Tracked by the always-mounted launcher, so a resume that happened before the panel opened still counts. */
+  catchingUp?: boolean;
+};
+
+export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPanelConnectorProps) => {
   const { t, i18n } = useTranslation('crd-chat');
   const { userModel } = useCurrentUserContext();
   const currentUserId = userModel?.id;
   const navigate = useNavigate();
   const notify = useNotification();
+  const chatSound = useChatSound();
 
   const {
     isOpen,
@@ -98,8 +105,12 @@ export const UnifiedChatPanelConnector = () => {
   // Realtime conversation events are subscribed globally by
   // <ConversationEventsSubscriber /> (mounted in root.tsx) so they arrive with
   // the panel closed too. The selected room's message stream is inside the view hook.
+  // The conversation the reader has scrolled up in. Messages that arrive there are not on
+  // screen, so the read marker waits until the reader is back at the latest message.
+  const [scrolledUpIn, setScrolledUpIn] = useState<string | null>(null);
+  const isReadingOlder = scrolledUpIn !== null && scrolledUpIn === selectedConversationId;
   const { isSending, handleSendMessage, handleAddReaction, handleRemoveReaction, handleLeaveGroup, clearGuidance } =
-    useUnifiedConversationView(selectedConversation ?? null, readUpToEventId);
+    useUnifiedConversationView(selectedConversation ?? null, isReadingOlder ? null : readUpToEventId);
 
   const groupSettings = useGroupSettings(selectedConversation?.id, selectedConversation?.members ?? [], {
     displayName: selectedConversation?.roomDisplayName ?? '',
@@ -190,6 +201,7 @@ export const UnifiedChatPanelConnector = () => {
   };
 
   const handleBack = () => {
+    setScrolledUpIn(null);
     setSelectedConversationId(null);
     setSelectedRoomId(null);
   };
@@ -235,7 +247,7 @@ export const UnifiedChatPanelConnector = () => {
           aria-label={t('guidance.infoButton')}
           className={chatHeaderIconButtonClass}
         >
-          <Info aria-hidden="true" className="size-6" />
+          <Info aria-hidden="true" className={chatHeaderIconClass} />
         </button>
         <button
           type="button"
@@ -243,7 +255,7 @@ export const UnifiedChatPanelConnector = () => {
           aria-label={t('guidance.clear')}
           className={chatHeaderIconButtonClass}
         >
-          <Trash2 aria-hidden="true" className="size-6" />
+          <Trash2 aria-hidden="true" className={chatHeaderIconClass} />
         </button>
       </>
     );
@@ -377,6 +389,18 @@ export const UnifiedChatPanelConnector = () => {
             : undefined
         }
         settingsLabel={t('panel.settings')}
+        // The sound is on or off for the whole chat, never per conversation, so like the gear
+        // the toggle lives in the list header only.
+        onToggleSound={
+          view === 'list' && chatSound.setEnabled
+            ? () => {
+                chatSound.setEnabled?.(!chatSound.enabled).catch(() => notify(t('panel.soundToggleError'), 'error'));
+              }
+            : undefined
+        }
+        soundMuted={!chatSound.enabled}
+        muteSoundLabel={t('panel.muteSound')}
+        unmuteSoundLabel={t('panel.unmuteSound')}
         expandLabel={t('panel.expand')}
         collapseLabel={t('panel.collapse')}
         titleAvatar={titleAvatar}
@@ -391,8 +415,10 @@ export const UnifiedChatPanelConnector = () => {
             roomId={selectedConversation?.roomId}
             attachmentsAllowed={!isGuidanceThread}
             conversation={threadHeader}
+            onFollowingChange={following => setScrolledUpIn(following ? null : (selectedConversationId ?? null))}
             messages={chatMessages}
-            messagesLoading={messagesLoading}
+            // Older history paging in, or the sync bringing newer messages: both may change what the thread shows.
+            messagesLoading={messagesLoading || catchingUp}
             locale={resolveChatLocale(i18n.language, navigator.languages)}
             currentUser={currentUser}
             isSending={isSending}

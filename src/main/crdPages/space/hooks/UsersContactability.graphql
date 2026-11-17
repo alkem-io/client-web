@@ -1,0 +1,8 @@
+# Who of these users accepts direct messages. Signed-in viewers only: `users` needs READ_USERS
+# and `isContactable` needs READ on the user, neither of which a signed-out viewer has.
+query UsersContactability($ids: [UUID!]!) {
+  users(IDs: $ids) {
+    id
+    isContactable
+  }
+}
