@@ -8,6 +8,7 @@ import type {
   LatestContributionsSpacesFlatQuery,
   PendingInvitationsCountQuery,
 } from '@/core/apollo/generated/graphql-schema';
+import { dropCachedQueries } from '@/core/apollo/utils/dropCachedQueries';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 
 const CHECK_THROTTLE_MS = 5_000;
@@ -33,8 +34,8 @@ const readMembershipState = async (client: ApolloClient<object>, fetchPolicy: Fe
 /**
  * When the page comes back to the foreground, checks whether the user's space
  * memberships or pending invitations changed while it was away (an invitation
- * received, a direct add by an admin). If they did, every cached query is
- * dropped and the ones on screen are refetched, so the new privileges apply
+ * received, a direct add by an admin). If they did, the cache is emptied
+ * and the queries on screen are refetched, so the new privileges apply
  * without a reload or an app restart. Skipped for anonymous users.
  */
 export const useRefreshOnMembershipChange = (): void => {
@@ -44,8 +45,9 @@ export const useRefreshOnMembershipChange = (): void => {
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    // The state the screen was rendered with. Kept here, not in the Apollo cache, because
-    // every refresh evicts the cache and would erase it.
+    // The state the screen was last brought up to date with. Kept here, not in the Apollo
+    // cache, because every refresh empties the cache. Undefined until the first read
+    // succeeds, which then counts as a change.
     let known: string | undefined;
     readMembershipState(client, 'cache-first')
       .then(state => {
@@ -61,16 +63,11 @@ export const useRefreshOnMembershipChange = (): void => {
       lastCheckAt = now;
       try {
         const current = await readMembershipState(client, 'network-only');
-        const changed = known !== undefined && known !== current;
+        if (current !== known) await client.refetchQueries({ updateCache: dropCachedQueries });
+        // Recorded only after the refresh succeeded, so a failed one is retried.
         known = current;
-        if (!changed) return;
-        await client.refetchQueries({
-          updateCache: cache => {
-            cache.evict({ id: 'ROOT_QUERY' });
-          },
-        });
       } catch {
-        // A failed background check changes nothing; the next foreground retries.
+        // A failed check or refresh changes nothing; the next foreground retries.
       }
     };
 

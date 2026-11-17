@@ -3,6 +3,7 @@ import {
   refetchPendingInvitationsQuery,
   useInvitationStateEventMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import { dropCachedQueries } from '@/core/apollo/utils/dropCachedQueries';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { InvitationEvent } from './InvitationApplicationConstants';
 
@@ -52,9 +53,7 @@ const useInvitationActions = ({
       // admin options). Drop every cached query so nothing stale is served
       // later, and refetch the ones on screen. Not awaited: a failed refetch
       // never turns a successful accept into an error.
-      update: cache => {
-        cache.evict({ id: 'ROOT_QUERY' });
-      },
+      update: dropCachedQueries,
       refetchQueries: 'active',
     })
   );

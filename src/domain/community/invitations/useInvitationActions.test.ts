@@ -91,6 +91,68 @@ describe('useInvitationActions', () => {
     expect(offScreenFetches()).toBe(2);
   });
 
+  it('does not serve privileges cached before the accept through an entity a refetch re-linked', async () => {
+    const ShellDocument = gql`
+      query SpaceShell {
+        space {
+          id
+        }
+      }
+    `;
+    const PrivilegesDocument = gql`
+      query SpacePrivilegesProbe {
+        space {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+    `;
+    let privileges = ['READ'];
+    const link = new ApolloLink(
+      operation =>
+        new Observable(observer => {
+          const data =
+            operation.operationName === 'InvitationStateEvent'
+              ? {
+                  eventOnInvitation: {
+                    __typename: 'Invitation',
+                    id: 'invitation-1',
+                    nextEvents: [],
+                    state: 'accepted',
+                    extraRolesWithheld: false,
+                  },
+                }
+              : {
+                  space: {
+                    __typename: 'Space',
+                    id: 'space-1',
+                    authorization: { __typename: 'Authorization', id: 'authorization-1', myPrivileges: privileges },
+                  },
+                };
+          observer.next({ data });
+          observer.complete();
+        })
+    );
+    const client = new ApolloClient({ link, cache: new InMemoryCache() });
+    const wrapper = ({ children }: { children: ReactNode }) => createElement(ApolloProvider, { client, children });
+    await client.query({ query: PrivilegesDocument });
+    const { result } = renderHook(() => ({ shell: useQuery(ShellDocument), actions: useInvitationActions({}) }), {
+      wrapper,
+    });
+    await waitFor(() => expect(result.current.shell.data).toBeDefined());
+
+    privileges = ['READ', 'CREATE_DISCUSSION'];
+    await act(() => result.current.actions.acceptInvitation('invitation-1', '/space-1'));
+    // The on-screen query that selects no privileges has been refetched and has re-linked the space.
+    await waitFor(() => expect(client.readQuery({ query: ShellDocument })).not.toBeNull());
+    const { data } = await client.query({ query: PrivilegesDocument });
+
+    expect(data.space.authorization.myPrivileges).toEqual(['READ', 'CREATE_DISCUSSION']);
+  });
+
   it('does not refetch unrelated active queries after a reject', async () => {
     const { result, operations, probeFetches } = setup();
     await waitFor(() => expect(result.current.probe.data).toBeDefined());

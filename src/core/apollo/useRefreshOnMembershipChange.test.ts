@@ -30,13 +30,17 @@ const fireVisibilityChange = (state: DocumentVisibilityState) => {
   act(() => void document.dispatchEvent(new Event('visibilitychange')));
 };
 
-const setup = () => {
-  const server = { membershipIds: ['membership-1'], invitations: 0 };
+const setup = ({ failChecks = false } = {}) => {
+  const server = { membershipIds: ['membership-1'], invitations: 0, failChecks, failProbe: false };
   const operations: string[] = [];
   const link = new ApolloLink(
     operation =>
       new Observable(observer => {
         operations.push(operation.operationName);
+        if (operation.operationName === 'ActiveProbe' ? server.failProbe : server.failChecks) {
+          observer.error(new Error('network down'));
+          return;
+        }
         const data =
           operation.operationName === 'LatestContributionsSpacesFlat'
             ? {
@@ -133,6 +137,36 @@ describe('useRefreshOnMembershipChange', () => {
     await waitFor(() => expect(fetches('ActiveProbe')).toBe(2));
 
     server.membershipIds = ['membership-1', 'membership-2'];
+    fireVisibilityChange('visible');
+
+    await waitFor(() => expect(fetches('ActiveProbe')).toBe(3));
+  });
+
+  it('refreshes on the first successful check when the state at start-up could not be read', async () => {
+    const { server, result, fetches } = setup({ failChecks: true });
+    await waitFor(() => expect(result.current.data).toBeDefined());
+    await waitFor(() => expect(fetches('PendingInvitationsCount')).toBe(1));
+
+    server.failChecks = false;
+    fireVisibilityChange('visible');
+
+    await waitFor(() => expect(fetches('ActiveProbe')).toBe(2));
+  });
+
+  it('retries a refresh that failed, even when nothing changed since', async () => {
+    const { server, result, fetches } = setup();
+    await waitFor(() => expect(fetches('LatestContributionsSpacesFlat')).toBe(1));
+    await waitFor(() => expect(result.current.data).toBeDefined());
+    vi.useFakeTimers({ toFake: ['Date'] });
+
+    server.membershipIds = ['membership-1', 'membership-2'];
+    server.failProbe = true;
+    fireVisibilityChange('visible');
+    await waitFor(() => expect(fetches('ActiveProbe')).toBe(2));
+
+    server.failProbe = false;
+    fireVisibilityChange('hidden');
+    vi.advanceTimersByTime(5_000);
     fireVisibilityChange('visible');
 
     await waitFor(() => expect(fetches('ActiveProbe')).toBe(3));
