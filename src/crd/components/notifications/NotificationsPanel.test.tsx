@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { NotificationsPanel } from './NotificationsPanel';
 
 vi.mock('react-i18next', () => ({
@@ -10,7 +10,12 @@ vi.mock('react-i18next', () => ({
 const screenSize = { isSmallScreen: false, isMediumScreen: false, isLargeScreen: true };
 vi.mock('@/crd/hooks/useMediaQuery', () => ({ useScreenSize: () => screenSize }));
 
-const renderPanel = () => {
+beforeAll(() => {
+  // jsdom does not lay out, so elements have no scrollTo; the panel scrolls the list back to the top.
+  Element.prototype.scrollTo = vi.fn();
+});
+
+const renderPanel = (props: { hasNewNotifications?: boolean; onShowNewNotifications?: () => void } = {}) => {
   const onClose = vi.fn();
   render(
     <NotificationsPanel
@@ -22,6 +27,7 @@ const renderPanel = () => {
       onFilterChange={() => {}}
       onMarkAllRead={() => {}}
       onLoadMore={() => {}}
+      {...props}
     />
   );
   return onClose;
@@ -62,7 +68,34 @@ describe('NotificationsPanel — full screen on a small screen', () => {
     expect(dialog).not.toHaveClass('inset-0');
     expect(closeButtons()).toHaveLength(1);
     expect(closeButtons()[0].querySelector('.lucide-x')).not.toBeNull();
-    expect(closeButtons()[0]).toHaveClass('size-9');
     expect(dialog.querySelector('.lucide-chevron-left')).toBeNull();
+  });
+
+  it('keeps the larger controls for phones and the compact size from the sm breakpoint up', () => {
+    renderPanel();
+
+    const controls = [closeButtons()[0], screen.getByRole('button', { name: 'notifications.markAllRead' })];
+    for (const control of controls) {
+      expect(control).toHaveClass('size-9', 'sm:size-7');
+      expect(control.querySelector('svg')).toHaveClass('size-6', 'sm:size-4');
+    }
+  });
+});
+
+describe('NotificationsPanel — newer notifications', () => {
+  it('offers them and asks for them on click', async () => {
+    const onShowNewNotifications = vi.fn();
+    renderPanel({ hasNewNotifications: true, onShowNewNotifications });
+
+    await userEvent.click(screen.getByRole('button', { name: 'notifications.newNotifications' }));
+
+    expect(onShowNewNotifications).toHaveBeenCalledTimes(1);
+    expect(Element.prototype.scrollTo).toHaveBeenCalledWith({ top: 0 });
+  });
+
+  it('offers nothing when there is nothing newer', () => {
+    renderPanel({ hasNewNotifications: false, onShowNewNotifications: vi.fn() });
+
+    expect(screen.queryByRole('button', { name: 'notifications.newNotifications' })).not.toBeInTheDocument();
   });
 });

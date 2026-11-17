@@ -1123,6 +1123,7 @@ export const ContributorDetailsFragmentDoc = gql`
     id
     displayName
     url
+    tagline
     avatar: visual(type: AVATAR) {
       ...VisualModel
     }
@@ -2603,10 +2604,15 @@ export const SpaceAboutDetailsFragmentDoc = gql`
         avatar: visual(type: AVATAR) {
           ...VisualModel
         }
+        tagline
         location {
           id
           city
           country
+        }
+        keywords: tagset(tagsetName: KEYWORDS) {
+          id
+          tags
         }
       }
     }
@@ -2619,10 +2625,15 @@ export const SpaceAboutDetailsFragmentDoc = gql`
         avatar: visual(type: AVATAR) {
           ...VisualModel
         }
+        tagline
         location {
           id
           city
           country
+        }
+        keywords: tagset(tagsetName: KEYWORDS) {
+          id
+          tags
         }
       }
     }
@@ -32893,6 +32904,80 @@ export type UpdateTaskColumnsSortOrderOnCalloutMutationOptions = Apollo.BaseMuta
   SchemaTypes.UpdateTaskColumnsSortOrderOnCalloutMutation,
   SchemaTypes.UpdateTaskColumnsSortOrderOnCalloutMutationVariables
 >;
+export const UsersContactabilityDocument = gql`
+    query UsersContactability($ids: [UUID!]!) {
+  users(IDs: $ids) {
+    id
+    isContactable
+  }
+}
+    `;
+
+/**
+ * __useUsersContactabilityQuery__
+ *
+ * To run a query within a React component, call `useUsersContactabilityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersContactabilityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersContactabilityQuery({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *   },
+ * });
+ */
+export function useUsersContactabilityQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UsersContactabilityQuery,
+    SchemaTypes.UsersContactabilityQueryVariables
+  > &
+    ({ variables: SchemaTypes.UsersContactabilityQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UsersContactabilityQuery, SchemaTypes.UsersContactabilityQueryVariables>(
+    UsersContactabilityDocument,
+    options
+  );
+}
+export function useUsersContactabilityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UsersContactabilityQuery,
+    SchemaTypes.UsersContactabilityQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UsersContactabilityQuery, SchemaTypes.UsersContactabilityQueryVariables>(
+    UsersContactabilityDocument,
+    options
+  );
+}
+export function useUsersContactabilitySuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.UsersContactabilityQuery,
+        SchemaTypes.UsersContactabilityQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.UsersContactabilityQuery, SchemaTypes.UsersContactabilityQueryVariables>(
+    UsersContactabilityDocument,
+    options
+  );
+}
+export type UsersContactabilityQueryHookResult = ReturnType<typeof useUsersContactabilityQuery>;
+export type UsersContactabilityLazyQueryHookResult = ReturnType<typeof useUsersContactabilityLazyQuery>;
+export type UsersContactabilitySuspenseQueryHookResult = ReturnType<typeof useUsersContactabilitySuspenseQuery>;
+export type UsersContactabilityQueryResult = Apollo.QueryResult<
+  SchemaTypes.UsersContactabilityQuery,
+  SchemaTypes.UsersContactabilityQueryVariables
+>;
+export function refetchUsersContactabilityQuery(variables: SchemaTypes.UsersContactabilityQueryVariables) {
+  return { query: UsersContactabilityDocument, variables: variables };
+}
 export const FlowStateSearchDocument = gql`
     query FlowStateSearch($searchData: SearchInput!) {
   search(searchData: $searchData) {

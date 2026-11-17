@@ -14,6 +14,7 @@ type CommentThreadProps = CommentsContainerData & {
   replyInputProps?: Partial<ComponentProps<typeof CommentInput>>;
   /** Ignores reply open/close toggles, e.g. while a reply is being sent. */
   replyTogglesLocked?: boolean;
+  onMessageContributor?: ComponentProps<typeof CommentItem>['onMessageContributor'];
 };
 
 /**
@@ -39,6 +40,7 @@ export function CommentThread({
   onReplyTargetChange,
   replyInputProps,
   replyTogglesLocked = false,
+  onMessageContributor,
 }: CommentThreadProps) {
   const { t } = useTranslation('crd-space');
 
@@ -108,6 +110,7 @@ export function CommentThread({
                   onDelete={onDelete}
                   onAddReaction={onAddReaction}
                   onRemoveReaction={onRemoveReaction}
+                  onMessageContributor={onMessageContributor}
                 />
 
                 {replies.length > 0 && (
@@ -131,6 +134,7 @@ export function CommentThread({
                             onDelete={onDelete}
                             onAddReaction={onAddReaction}
                             onRemoveReaction={onRemoveReaction}
+                            onMessageContributor={onMessageContributor}
                           />
                         </li>
                       );

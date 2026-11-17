@@ -11,6 +11,7 @@ import type {
   ContributorTypeId,
   ContributorViewId,
 } from '@/crd/forms/callout/types';
+import { contributorTypeFromActor } from '../dataMappers/contributorType';
 
 /**
  * Pure mapping between the CRD callout form's contributor-collection config and
@@ -30,14 +31,6 @@ const TYPE_ID_TO_SERVER: Record<ContributorTypeId, ActorType> = {
   virtualContributor: ActorType.VirtualContributor,
 };
 
-// Only the contributor ActorType subtypes map back; the server never returns the
-// others (SPACE/ACCOUNT/VIRTUAL_ASSISTANT) for a contributor-collection callout.
-const SERVER_TO_TYPE_ID: Partial<Record<ActorType, ContributorTypeId>> = {
-  [ActorType.User]: 'user',
-  [ActorType.Organization]: 'organization',
-  [ActorType.VirtualContributor]: 'virtualContributor',
-};
-
 const VIEW_ID_TO_SERVER: Record<ContributorViewId, ContributorCollectionView> = {
   list: ContributorCollectionView.List,
   map: ContributorCollectionView.Map,
@@ -49,7 +42,8 @@ const SERVER_TO_VIEW_ID: Record<ContributorCollectionView, ContributorViewId> = 
 };
 
 export const contributorTypeToServer = (id: ContributorTypeId): ActorType => TYPE_ID_TO_SERVER[id];
-export const contributorTypeFromServer = (type: ActorType): ContributorTypeId => SERVER_TO_TYPE_ID[type] ?? 'user';
+export const contributorTypeFromServer = (type: ActorType): ContributorTypeId =>
+  contributorTypeFromActor(type) ?? 'user';
 export const contributorViewToServer = (id: ContributorViewId): ContributorCollectionView => VIEW_ID_TO_SERVER[id];
 export const contributorViewFromServer = (view: ContributorCollectionView): ContributorViewId =>
   SERVER_TO_VIEW_ID[view];
