@@ -13,6 +13,7 @@ vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => k
 vi.mock('@/core/matrix/activeClient', () => ({
   useMatrixClient: () => client,
   useMatrixSessionEstablishing: () => false,
+  useMatrixSyncState: () => 'SYNCING',
 }));
 vi.mock('@/crd/components/chat/FloatingChatLauncher', () => ({ FloatingChatLauncher: () => null }));
 vi.mock('@/crd/hooks/useMediaQuery', () => ({ useScreenSize: () => ({ isSmallScreen: false }) }));

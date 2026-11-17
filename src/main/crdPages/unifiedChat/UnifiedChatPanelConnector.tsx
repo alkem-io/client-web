@@ -6,6 +6,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ActiveCallIndicator } from '@/crd/components/chat/ActiveCallIndicator';
 import { CallControls, chatHeaderIconButtonClass, chatHeaderIconClass } from '@/crd/components/chat/CallControls';
+import { ChatConnectionNotice } from '@/crd/components/chat/ChatConnectionNotice';
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
 import { ChatOptionsMenu } from '@/crd/components/chat/ChatOptionsMenu';
 import { ChatPanel } from '@/crd/components/chat/ChatPanel';
@@ -56,9 +57,14 @@ import { useUnifiedConversationView } from './useUnifiedConversationView';
 type UnifiedChatPanelConnectorProps = {
   /** The Matrix sync is catching up. Tracked by the always-mounted launcher, so a resume that happened before the panel opened still counts. */
   catchingUp?: boolean;
+  /** Sync has stayed lost past the notice delay (computed by the always-mounted launcher). */
+  connectionLost?: boolean;
 };
 
-export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPanelConnectorProps) => {
+export const UnifiedChatPanelConnector = ({
+  catchingUp = false,
+  connectionLost = false,
+}: UnifiedChatPanelConnectorProps) => {
   const { t, i18n } = useTranslation('crd-chat');
   const { userModel } = useCurrentUserContext();
   const currentUserId = userModel?.id;
@@ -407,6 +413,7 @@ export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPan
         onTitleClick={isGroupThread ? groupSettings.openDialog : undefined}
         titleActionLabel={isGroupThread ? t('group.settings') : undefined}
         headerActions={view === 'thread' ? headerActions : undefined}
+        notice={connectionLost ? <ChatConnectionNotice message={t('panel.reconnecting')} /> : undefined}
       >
         {view === 'thread' && selectedConversationId ? (
           <ConversationThread

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { trackChatOpen } from '@/core/analytics/events/unifiedChat';
+import { useMatrixConnectionLost } from '@/core/matrix/useMatrixConnectionLost';
 import { FloatingChatLauncher } from '@/crd/components/chat/FloatingChatLauncher';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { useMatrixCatchingUp } from '@/main/userMessaging/matrix/useMatrixCatchingUp';
@@ -30,6 +31,8 @@ export const UnifiedChatLauncher = ({ hidden }: UnifiedChatLauncherProps) => {
   // Tracked here, not in the panel: opening a chat from a notification brings the
   // app to the foreground before the panel mounts, and the panel would miss that.
   const catchingUp = useMatrixCatchingUp();
+  // Also here so the lost-connection delay runs while the panel is closed.
+  const connectionLost = useMatrixConnectionLost();
 
   if (!isEnabled || hidden) {
     return null;
@@ -50,7 +53,9 @@ export const UnifiedChatLauncher = ({ hidden }: UnifiedChatLauncherProps) => {
         unreadLabel={t('launcher.unreadLabel')}
       />
       {/* A new mount per open request brings the panel back above a dialog opened over it since (e.g. Message from that dialog). */}
-      {isOpen && <UnifiedChatPanelConnector key={openRequestCount} catchingUp={catchingUp} />}
+      {isOpen && (
+        <UnifiedChatPanelConnector key={openRequestCount} catchingUp={catchingUp} connectionLost={connectionLost} />
+      )}
     </>
   );
 };
