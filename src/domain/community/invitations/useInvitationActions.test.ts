@@ -57,7 +57,7 @@ const setup = ({ failProbeRefetch = false } = {}) => {
     { wrapper }
   );
   const probeFetches = () => operations.filter(name => name === 'ActiveProbe').length;
-  return { result, operations, onAccept, probeFetches };
+  return { client, result, operations, onAccept, probeFetches };
 };
 
 describe('useInvitationActions', () => {
@@ -70,6 +70,25 @@ describe('useInvitationActions', () => {
 
     expect(onAccept).toHaveBeenCalledWith('/space-1');
     await waitFor(() => expect(probeFetches()).toBe(2));
+  });
+
+  it('stops serving queries cached before the accept that are not on screen', async () => {
+    const OffScreenDocument = gql`
+      query OffScreenProbe {
+        me {
+          id
+        }
+      }
+    `;
+    const { client, result, operations } = setup();
+    await client.query({ query: OffScreenDocument });
+    const offScreenFetches = () => operations.filter(name => name === 'OffScreenProbe').length;
+    expect(offScreenFetches()).toBe(1);
+
+    await act(() => result.current.actions.acceptInvitation('invitation-1', '/space-1'));
+    await client.query({ query: OffScreenDocument });
+
+    expect(offScreenFetches()).toBe(2);
   });
 
   it('does not refetch unrelated active queries after a reject', async () => {

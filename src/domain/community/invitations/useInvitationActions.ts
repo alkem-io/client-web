@@ -49,8 +49,12 @@ const useInvitationActions = ({
         onAccept?.(spaceUrl);
       },
       // Membership changes privileges across many queries (comments, callouts,
-      // admin options), so refetch everything on screen. Not awaited: a failed
-      // refetch never turns a successful accept into an error.
+      // admin options). Drop every cached query so nothing stale is served
+      // later, and refetch the ones on screen. Not awaited: a failed refetch
+      // never turns a successful accept into an error.
+      update: cache => {
+        cache.evict({ id: 'ROOT_QUERY' });
+      },
       refetchQueries: 'active',
     })
   );
