@@ -2,6 +2,7 @@ import { ApolloError, type Operation } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { useMemo, useRef } from 'react';
+import { routeToSecondFactor } from '@/core/auth/authentication/routeToSecondFactor';
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
 
@@ -27,6 +28,14 @@ export const useErrorHandlerLink = () => {
   return useMemo(
     () =>
       onError(({ graphQLErrors, networkError, operation }) => {
+        // A session refused for a missing second factor is routed to /second-factor, whose page is
+        // the one notice. Checked before the opt-out below: an operation that handles its own errors
+        // must still not leave the person on a page every request of which is refused.
+        if (graphQLErrors?.some(error => error.extensions?.code === AlkemioGraphqlErrorCode.SECOND_FACTOR_REQUIRED)) {
+          routeToSecondFactor();
+          return;
+        }
+
         // Check if this operation should skip global error handling
         const { skipGlobalErrorHandler } = operation.getContext();
         if (skipGlobalErrorHandler) {

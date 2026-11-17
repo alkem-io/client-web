@@ -4,7 +4,9 @@ import type {
   RegistrationFlow,
   SettingsFlow,
   UiNode,
+  UiNodeImageAttributes,
   UiNodeInputAttributes,
+  UiNodeTextAttributes,
   UiText,
   VerificationFlow,
 } from '@ory/kratos-client';
@@ -17,25 +19,30 @@ import {
   getPasskeyTriggerType,
   isAnchorNode,
   isHiddenInput,
+  isImageNode,
   isInputNode,
   isPasskeyAutocompleteInit,
   isPasskeyTrigger,
   isScriptNode,
   isSubmitButton,
+  isTextNode,
 } from '@/core/auth/authentication/components/Kratos/helpers';
 import { kratosMessageTranslationKeys } from '@/core/auth/authentication/components/Kratos/messages';
 import { socialProviderCustomizations } from '@/core/auth/authentication/socialProviderCustomizations';
-import type {
-  KratosCheckboxNode,
-  KratosFlowDescriptor,
-  KratosFlowType,
-  KratosMessage,
-  KratosMessageType,
-  KratosOidcButtonNode,
-  KratosPasskeyButtonNode,
-  KratosPasskeyTrigger,
-  KratosSubmitButtonNode,
-  KratosTextInputNode,
+import {
+  emptySecondFactorGroup,
+  type KratosCheckboxNode,
+  type KratosFlowDescriptor,
+  type KratosFlowType,
+  type KratosImageNode,
+  type KratosMessage,
+  type KratosMessageType,
+  type KratosOidcButtonNode,
+  type KratosPasskeyButtonNode,
+  type KratosPasskeyTrigger,
+  type KratosSubmitButtonNode,
+  type KratosTextInputNode,
+  type KratosTextNode,
 } from '@/crd/components/auth/flowDescriptor';
 
 const ACCEPT_TERMS_FIELD = 'traits.accepted_terms';
@@ -114,6 +121,7 @@ function toSubmitNode(node: InputNode): KratosSubmitButtonNode {
     value: attrs.value == null ? '' : String(attrs.value),
     label: node.meta.label?.text ?? '',
     disabled: Boolean(attrs.disabled),
+    labelContext: node.meta.label?.context as Record<string, unknown> | undefined,
   };
 }
 
@@ -137,6 +145,29 @@ function toPasskeyNode(node: InputNode, trigger: KratosPasskeyTrigger): KratosPa
     label: node.meta.label?.text ?? '',
     disabled: Boolean(attrs.disabled),
     trigger,
+  };
+}
+
+export const SECOND_FACTOR_GROUPS = {
+  totp: 'totp',
+  lookup_secret: 'lookupSecret',
+  webauthn: 'webauthn',
+} as const;
+
+function toTextNode(node: UiNode & { attributes: UiNodeTextAttributes }): KratosTextNode {
+  return {
+    id: node.attributes.id,
+    text: node.attributes.text.text,
+    context: node.attributes.text.context as Record<string, unknown> | undefined,
+  };
+}
+
+function toImageNode(node: UiNode & { attributes: UiNodeImageAttributes }): KratosImageNode {
+  return {
+    src: node.attributes.src,
+    alt: node.meta.label?.text ?? '',
+    width: node.attributes.width,
+    height: node.attributes.height,
   };
 }
 
@@ -168,6 +199,12 @@ type FlowDescriptorOptions = {
    * (recovery-completion renders the flow alone).
    */
   dropFlowMessages?: boolean;
+  /**
+   * Settings flow only. When `true`, the second-factor methods (`totp`,
+   * `lookup_secret`, `webauthn`) are kept; they are stripped by default for the
+   * same reason the passkey nodes are.
+   */
+  keepSecondFactor?: boolean;
 };
 
 export function flowDescriptorAdapter(
@@ -183,6 +220,9 @@ export function flowDescriptorAdapter(
     submit: [],
     oidc: [],
     passkey: [],
+    totp: emptySecondFactorGroup(),
+    lookupSecret: emptySecondFactorGroup(),
+    webauthn: emptySecondFactorGroup(),
     anchors: [],
   };
 
@@ -205,7 +245,10 @@ export function flowDescriptorAdapter(
       if (node.group === 'oidc') {
         continue;
       }
-      if (!options.keepPasskeys && (node.group === 'passkey' || node.group === 'webauthn')) {
+      if (!options.keepPasskeys && node.group === 'passkey') {
+        continue;
+      }
+      if (!options.keepSecondFactor && node.group in SECOND_FACTOR_GROUPS) {
         continue;
       }
       // Drop the profile method's inputs and its dedicated submit button —
@@ -275,17 +318,31 @@ export function flowDescriptorAdapter(
           groups.rest.push(toTextInputNode(node, flowType));
         }
         break;
-      case 'webauthn':
       case 'passkey': {
         // Only passkey trigger buttons (login / register / settings-register)
-        // are rendered. The existing-credentials list — Kratos's `webauthn`
-        // text nodes + per-credential remove buttons — only appears inside the
-        // user-settings page (not yet a CRD flow), so we skip those here.
+        // are rendered; the existing-credentials list is the Security tab's.
         const trigger = isPasskeyTrigger(node)
           ? (getPasskeyTriggerType(node) as KratosPasskeyTrigger | undefined)
           : undefined;
         if (trigger && isInputNode(node)) {
           groups.passkey.push(toPasskeyNode(node, trigger));
+        }
+        break;
+      }
+      case 'totp':
+      case 'lookup_secret':
+      case 'webauthn': {
+        const target = groups[SECOND_FACTOR_GROUPS[node.group]];
+        if (isTextNode(node)) {
+          target.texts.push(toTextNode(node));
+        } else if (isImageNode(node)) {
+          target.images.push(toImageNode(node));
+        } else if (isInputNode(node) && isPasskeyTrigger(node)) {
+          target.triggers.push(toPasskeyNode(node, getPasskeyTriggerType(node) as KratosPasskeyTrigger));
+        } else if (isSubmitButton(node)) {
+          target.submits.push(toSubmitNode(node));
+        } else if (isInputNode(node)) {
+          target.inputs.push(toTextInputNode(node, flowType));
         }
         break;
       }

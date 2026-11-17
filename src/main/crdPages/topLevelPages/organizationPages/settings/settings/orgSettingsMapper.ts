@@ -9,6 +9,8 @@ export type OrgSettingsMappedData = {
   allowSpaceInvitations: boolean;
   /** `settings.membership.allowApplications` — server `@AfterLoad` default is `true`; the client mirrors that default. Read here so the Settings tab's other mutations can pass the current value through untouched; the switch itself lives on the Associates tab. */
   allowApplications: boolean;
+  /** `settings.security.secondFactorRequired` — off unless an admin switched it on. */
+  secondFactorRequired: boolean;
 };
 
 /**
@@ -23,5 +25,6 @@ export const mapOrgSettings = (data: OrganizationSettingsQuery | undefined): Org
     contributionRolesPubliclyVisible: settings?.privacy?.contributionRolesPubliclyVisible ?? false,
     allowSpaceInvitations: settings?.membership?.allowSpaceInvitations ?? true,
     allowApplications: settings?.membership?.allowApplications ?? true,
+    secondFactorRequired: settings?.security?.secondFactorRequired ?? false,
   };
 };

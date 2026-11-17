@@ -73,17 +73,12 @@ const isOidcSubmitNode = (node: UiNode): node is InputNode => node.group === 'oi
 const isPasswordCredentialPresent = (methods: AuthenticationType[]): boolean =>
   methods.includes(AuthenticationType.Email);
 
-// A registered passkey/WebAuthn credential is what produces a *remove* node
-// (as opposed to the registration-trigger nodes present regardless of
-// whether a credential exists). Kratos names it `webauthn_remove` in some
-// configurations and `passkey_remove` in others (V4 pins which on our
-// deployment) — accept either so this doesn't silently under-detect.
-const isPasskeyRemoveNode = (node: UiNode): boolean => {
-  if (node.group !== 'webauthn' && node.group !== 'passkey') return false;
-  if (!isSubmitButton(node)) return false;
-  const name = node.attributes.name;
-  return name === 'webauthn_remove' || name === 'passkey_remove';
-};
+// A registered passkey is what produces a *remove* node (as opposed to the
+// registration-trigger node present regardless of whether a credential
+// exists). Kratos's `webauthn` method is the security key — a second factor,
+// not a way to sign in — so its `webauthn_remove` nodes do not count.
+const isPasskeyRemoveNode = (node: UiNode): boolean =>
+  node.group === 'passkey' && isSubmitButton(node) && node.attributes.name === 'passkey_remove';
 
 export const displayNameFor = (providerId: string): string => {
   const customisation = socialProviderCustomizations[providerId];

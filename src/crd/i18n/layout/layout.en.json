@@ -57,5 +57,10 @@
     "settings": "settings",
     "acceptAll": "Accept All Cookies",
     "confirmChoice": "Confirm Choice"
+  },
+  "secondFactorReminder": {
+    "action": "Set it up",
+    "dismiss": "Dismiss",
+    "text": "Use two-step verification by {{deadline}}: set it up, or sign in again with it if you already have. After that date you cannot use Alkemio without it."
   }
 }
