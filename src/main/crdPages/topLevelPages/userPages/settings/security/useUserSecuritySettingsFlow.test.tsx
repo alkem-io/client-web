@@ -116,6 +116,51 @@ describe('useUserSecuritySettingsFlow', () => {
     expect(result.current.result.kind).toBe('sessionExpired');
   });
 
+  // A totp submission whose privileged session has lapsed is sent by Kratos to re-confirm the
+  // password; Kratos then returns to its settings page with the flow, which hands the browser back
+  // here with `?flow=`. That resumed flow is the one the tab renders, outcome included.
+  it('resumes the flow of a totp submission returned from the privileged-session re-confirmation', () => {
+    const resumed = {
+      id: 'flow-totp',
+      active: 'totp',
+      ui: { nodes: [], messages: [{ id: 1050001, type: 'success', text: 'Your changes have been saved!' }] },
+    } as unknown as SettingsFlow;
+    mockUseKratosFlow.mockReturnValue({ flow: resumed, error: undefined, loading: false, refetch: mockRefetch });
+
+    const { result } = renderHook(useHarness, { wrapper: wrapperWithUrl('/security?flow=flow-totp') });
+
+    expect(mockUseKratosFlow).toHaveBeenCalledWith('Settings', 'flow-totp', { returnTo: '/return/here' });
+    expect(result.current.result.kind === 'ready' && result.current.result.flow).toBe(resumed);
+    expect(result.current.result.kind === 'ready' && result.current.result.flowWasResumed).toBe(true);
+  });
+
+  it('does not count a security key (the webauthn method, a second factor) as the passkey method', () => {
+    const flow = {
+      id: 'flow-keys',
+      ui: {
+        nodes: [
+          {
+            type: 'input',
+            group: 'webauthn',
+            attributes: {
+              node_type: 'input',
+              name: 'webauthn_register_trigger',
+              type: 'button',
+              onclickTrigger: 'oryWebAuthnRegistration',
+            },
+            messages: [],
+            meta: {},
+          },
+        ],
+      },
+    } as unknown as SettingsFlow;
+    mockUseKratosFlow.mockReturnValue({ flow, error: undefined, loading: false, refetch: mockRefetch });
+
+    const { result } = renderHook(useHarness, { wrapper: wrapperWithUrl('/security') });
+
+    expect(result.current.result.kind === 'ready' && result.current.result.hasWebauthn).toBe(false);
+  });
+
   it('still reports any other flow failure as a generic error', () => {
     mockUseKratosFlow.mockReturnValue({
       flow: undefined,

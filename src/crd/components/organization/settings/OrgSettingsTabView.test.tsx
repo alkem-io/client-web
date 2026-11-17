@@ -21,6 +21,9 @@ const baseProps: OrgSettingsTabViewProps = {
   contributionRolesPubliclyVisible: false,
   privacySaving: false,
   onToggleContributionRoles: vi.fn(),
+  secondFactorRequired: false,
+  secondFactorRequiredSaving: false,
+  onToggleSecondFactorRequired: vi.fn(),
 };
 
 const MEMBERSHIP_SWITCH_LABELS = [
@@ -40,9 +43,9 @@ describe('OrgSettingsTabView — Membership card (R41, R45)', () => {
     }
   });
 
-  test('carries all three membership switches plus the privacy one, and nothing else', () => {
+  test('carries all three membership switches plus the privacy and security ones, and nothing else', () => {
     render(<OrgSettingsTabView {...baseProps} />);
-    expect(screen.getAllByRole('switch')).toHaveLength(4);
+    expect(screen.getAllByRole('switch')).toHaveLength(5);
     expect(screen.getByRole('switch', { name: 'org.settings.privacy.contributionRolesLabel' })).toBeInTheDocument();
   });
 
@@ -76,5 +79,74 @@ describe('OrgSettingsTabView — Membership card (R41, R45)', () => {
     render(<OrgSettingsTabView {...baseProps} allowApplicationsSaving={true} />);
     expect(screen.getByRole('switch', { name: 'org.settings.membership.allowApplicationsLabel' })).toBeDisabled();
     expect(screen.getByRole('switch', { name: 'org.settings.membership.allowDomainLabel' })).toBeEnabled();
+  });
+});
+
+describe('OrgSettingsTabView — Security card', () => {
+  const SECOND_FACTOR_LABEL = 'org.settings.security.requireSecondFactorLabel';
+
+  test('renders the second-factor switch once, reflecting the persisted value', () => {
+    render(<OrgSettingsTabView {...baseProps} secondFactorRequired={true} />);
+    expect(screen.getByText('org.settings.security.title')).toBeInTheDocument();
+    expect(screen.getAllByRole('switch', { name: SECOND_FACTOR_LABEL })).toHaveLength(1);
+    expect(screen.getByRole('switch', { name: SECOND_FACTOR_LABEL })).toBeChecked();
+  });
+
+  test('routes the switch to its own handler', async () => {
+    const user = userEvent.setup();
+    const onToggleSecondFactorRequired = vi.fn();
+    const onToggleContributionRoles = vi.fn();
+    render(
+      <OrgSettingsTabView
+        {...baseProps}
+        onToggleSecondFactorRequired={onToggleSecondFactorRequired}
+        onToggleContributionRoles={onToggleContributionRoles}
+      />
+    );
+
+    await user.click(screen.getByRole('switch', { name: SECOND_FACTOR_LABEL }));
+    expect(onToggleSecondFactorRequired).toHaveBeenCalledWith(true);
+    expect(onToggleContributionRoles).not.toHaveBeenCalled();
+  });
+
+  test('is disabled while saving', () => {
+    render(<OrgSettingsTabView {...baseProps} secondFactorRequiredSaving={true} />);
+    expect(screen.getByRole('switch', { name: SECOND_FACTOR_LABEL })).toBeDisabled();
+  });
+
+  test('switching the requirement off waits for confirmation', async () => {
+    const user = userEvent.setup();
+    const onToggleSecondFactorRequired = vi.fn();
+    render(
+      <OrgSettingsTabView
+        {...baseProps}
+        secondFactorRequired={true}
+        onToggleSecondFactorRequired={onToggleSecondFactorRequired}
+      />
+    );
+
+    await user.click(screen.getByRole('switch', { name: SECOND_FACTOR_LABEL }));
+    expect(onToggleSecondFactorRequired).not.toHaveBeenCalled();
+    expect(screen.getByText('org.settings.security.turnOffDescription')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'org.settings.security.turnOffConfirm' }));
+    expect(onToggleSecondFactorRequired).toHaveBeenCalledExactlyOnceWith(false);
+  });
+
+  test('cancelling the switch-off leaves the requirement on', async () => {
+    const user = userEvent.setup();
+    const onToggleSecondFactorRequired = vi.fn();
+    render(
+      <OrgSettingsTabView
+        {...baseProps}
+        secondFactorRequired={true}
+        onToggleSecondFactorRequired={onToggleSecondFactorRequired}
+      />
+    );
+
+    await user.click(screen.getByRole('switch', { name: SECOND_FACTOR_LABEL }));
+    await user.click(screen.getByRole('button', { name: 'dialogs.cancel' }));
+    expect(onToggleSecondFactorRequired).not.toHaveBeenCalled();
+    expect(screen.queryByText('org.settings.security.turnOffDescription')).not.toBeInTheDocument();
   });
 });

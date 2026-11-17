@@ -11,6 +11,7 @@ let sidebarPlan: SidebarWidgetId[] = [];
 let activePhaseId: string | undefined = 'phase-a';
 let isAuthenticated = true;
 let canUpdate = true;
+let canRead = true;
 let lastSidebarProps: SubspaceSidebarProps | undefined;
 let lastOutletContext: SubspaceOutletContext | undefined;
 
@@ -35,6 +36,7 @@ const useCrdCommunityUpdates = vi.fn((_communityId: string | undefined, _skip?: 
   loading: false,
 }));
 const inviteDialogMounts = vi.fn();
+const eventsDialogMounts = vi.fn();
 
 const deriveSkips = (plan: SidebarWidgetId[]) =>
   new Proxy({} as Record<SidebarWidgetId, boolean>, {
@@ -65,7 +67,7 @@ const subspaceData = () => ({
   ],
   currentPhaseId: 'phase-a',
   canEditFlow: false,
-  canRead: true,
+  canRead,
   canUpdate,
   canCreateSubspace: false,
   canCreateCallout: false,
@@ -168,7 +170,12 @@ vi.mock('../../space/timeline/useCrdCalendarUrlState', () => ({
 }));
 vi.mock('../about/CrdSubspaceAbout', () => ({ CrdSubspaceAbout: () => null }));
 vi.mock('../dialogs/CrdSubspaceActivityDialogConnector', () => ({ CrdSubspaceActivityDialogConnector: () => null }));
-vi.mock('../dialogs/CrdSubspaceEventsDialogConnector', () => ({ CrdSubspaceEventsDialogConnector: () => null }));
+vi.mock('../dialogs/CrdSubspaceEventsDialogConnector', () => ({
+  CrdSubspaceEventsDialogConnector: () => {
+    eventsDialogMounts();
+    return null;
+  },
+}));
 vi.mock('../dialogs/CrdSubspaceIndexDialogConnector', () => ({ CrdSubspaceIndexDialogConnector: () => null }));
 vi.mock('../hooks/useCrdSubspace', () => ({ useCrdSubspace: () => subspaceData() }));
 vi.mock('../hooks/useCrdSubspaceFlow', () => ({
@@ -293,6 +300,36 @@ describe('CrdSubspacePageLayout widget gates', () => {
     render(<CrdSubspacePageLayout />);
     expect(lastSidebarProps?.onInviteClick).toBeTypeOf('function');
     expect(inviteDialogMounts).toHaveBeenCalledWith(expect.objectContaining({ spaceId: 'L1-ID' }));
+  });
+});
+
+describe('CrdSubspacePageLayout read gate', () => {
+  beforeEach(() => {
+    sidebarPlan = ['updates', 'events'];
+    canRead = false;
+    useCrdCommunityUpdates.mockClear();
+    eventsDialogMounts.mockClear();
+  });
+
+  afterEach(() => {
+    canRead = true;
+  });
+
+  test('a viewer without READ on the subspace never fetches its community updates', () => {
+    render(<CrdSubspacePageLayout />);
+    expect(useCrdCommunityUpdates).toHaveBeenLastCalledWith('community-1', true);
+  });
+
+  test('a viewer without READ on the subspace never mounts the calendar events dialog', () => {
+    render(<CrdSubspacePageLayout />);
+    expect(eventsDialogMounts).not.toHaveBeenCalled();
+  });
+
+  test('a viewer with READ gets updates and the events dialog', () => {
+    canRead = true;
+    render(<CrdSubspacePageLayout />);
+    expect(useCrdCommunityUpdates).toHaveBeenLastCalledWith('community-1', false);
+    expect(eventsDialogMounts).toHaveBeenCalled();
   });
 });
 

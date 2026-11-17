@@ -9,7 +9,7 @@ const whoami = vi.hoisted(() => ({
   loading: false,
   verified: false,
 }));
-const oidcStatus = vi.hoisted(() => ({ active: false, loading: false }));
+const oidcStatus = vi.hoisted(() => ({ active: false, loading: false, secondFactorRequired: false }));
 const recoverySpy = vi.hoisted(() => vi.fn());
 
 vi.mock('@/core/auth/authentication/hooks/useWhoami', () => ({
@@ -40,6 +40,7 @@ describe('AuthenticationProvider isAuthenticated gate', () => {
     whoami.loading = false;
     oidcStatus.active = false;
     oidcStatus.loading = false;
+    oidcStatus.secondFactorRequired = false;
     recoverySpy.mockClear();
   });
 
@@ -87,5 +88,34 @@ describe('AuthenticationProvider isAuthenticated gate', () => {
       kratosAuthenticated: true,
       oidcActive: false,
     });
+  });
+});
+
+describe('AuthenticationProvider secondFactorRequired', () => {
+  const RefusalProbe = () => {
+    const { secondFactorRequired, isAuthenticated } = use(AuthenticationContext);
+    return <span data-testid="refusal">{`${secondFactorRequired}:${isAuthenticated}`}</span>;
+  };
+
+  it('exposes the refusal the id-token-hint probe read, keeping the session authenticated', () => {
+    oidcStatus.active = true;
+    oidcStatus.secondFactorRequired = true;
+    render(
+      <AuthenticationProvider>
+        <RefusalProbe />
+      </AuthenticationProvider>
+    );
+    expect(screen.getByTestId('refusal').textContent).toBe('true:true');
+  });
+
+  it('is false for a served session', () => {
+    oidcStatus.active = true;
+    oidcStatus.secondFactorRequired = false;
+    render(
+      <AuthenticationProvider>
+        <RefusalProbe />
+      </AuthenticationProvider>
+    );
+    expect(screen.getByTestId('refusal').textContent).toBe('false:true');
   });
 });

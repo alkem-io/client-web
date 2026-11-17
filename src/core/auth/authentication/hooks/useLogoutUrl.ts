@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   AUTH_LOGOUT_PATH,
+  LOGOUT_SIGN_IN_AGAIN_KEY,
   OIDC_LOGOUT_PATH,
   OIDC_RECOVERY_ATTEMPTED_KEY,
 } from '@/core/auth/authentication/constants/authentication.constants';
@@ -8,7 +9,7 @@ import { runMatrixLogoutCleanup } from '@/core/matrix/logoutCleanup';
 import { useIdTokenHint } from './useIdTokenHint';
 import { useKratosLogout } from './useKratosLogout';
 
-type LogoutOutcome = { kind: 'redirect'; url: string } | { kind: 'cleared' };
+type LogoutOutcome = { kind: 'redirect'; url: string } | { kind: 'cleared'; signInAgain?: boolean };
 
 /**
  * Computes the next logout redirect. Logout spans up to two sequential legs, each
@@ -21,14 +22,21 @@ type LogoutOutcome = { kind: 'redirect'; url: string } | { kind: 'cleared' };
  *    this browser (closes the shared-device whoami / silent re-login gap).
  *
  * When neither leg has anything left to end, the outcome is `cleared`.
+ *
+ * `signInAgain` asks to land on the sign-in once both legs are done. Leg 1 comes
+ * back to a bare /logout, so the request is kept in sessionStorage until leg 2,
+ * and leg 2 ends the Kratos session with a fetch rather than a navigation, whose
+ * landing page is Kratos's own. Should that fetch fail, leg 2 falls back to the
+ * navigation and the request is dropped: it never lands on a sign-in a live
+ * session would answer.
  */
 export const useLogoutUrl = () => {
   const { fetchIdTokenHint } = useIdTokenHint();
-  const { getKratosLogoutUrl } = useKratosLogout();
+  const { getKratosLogoutUrl, endKratosSsoSession } = useKratosLogout();
   const [loading, setLoading] = useState<boolean>();
   const [outcome, setOutcome] = useState<LogoutOutcome>();
 
-  const getLogoutUrl = async () => {
+  const getLogoutUrl = async (signInAgain: boolean) => {
     setLoading(true);
     // Disarm OIDC self-recovery so logging out is never silently undone by an
     // automatic re-login. (Logout also ends the Kratos SSO session below, which
@@ -39,6 +47,12 @@ export const useLogoutUrl = () => {
     const postLogoutRedirectUri = `${window.location.origin}${AUTH_LOGOUT_PATH}`;
     try {
       const idToken = await fetchIdTokenHint();
+      // A logout started without the request also clears one an abandoned logout left behind.
+      if (signInAgain) {
+        sessionStorage.setItem(LOGOUT_SIGN_IN_AGAIN_KEY, 'true');
+      } else {
+        sessionStorage.removeItem(LOGOUT_SIGN_IN_AGAIN_KEY);
+      }
       const params = new URLSearchParams({
         id_token_hint: idToken,
         post_logout_redirect_uri: postLogoutRedirectUri,
@@ -57,6 +71,12 @@ export const useLogoutUrl = () => {
       } catch {
         // Network error mid-cleanup is non-fatal — nothing to clear, or already cleared.
       }
+      const isSigningInAgain = signInAgain || sessionStorage.getItem(LOGOUT_SIGN_IN_AGAIN_KEY) === 'true';
+      sessionStorage.removeItem(LOGOUT_SIGN_IN_AGAIN_KEY);
+      if (isSigningInAgain && (await endKratosSsoSession()) !== 'failed') {
+        setOutcome({ kind: 'cleared', signInAgain: true });
+        return;
+      }
       // Leg 2 — end the Kratos SSO session too, if one is still live. Kratos's own
       // logout.after config decides the landing page. No live session -> cleared.
       const kratosLogoutUrl = await getKratosLogoutUrl();
@@ -69,6 +89,6 @@ export const useLogoutUrl = () => {
   return {
     outcome,
     loading,
-    getLogoutUrl: () => getLogoutUrl(),
+    getLogoutUrl: (signInAgain = false) => getLogoutUrl(signInAgain),
   };
 };

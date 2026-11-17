@@ -11,6 +11,7 @@ import { type FC, Suspense } from 'react';
 import { CookiesProvider } from 'react-cookie';
 import { BrowserRouter, useLocation } from 'react-router-dom';
 import { Error40XBoundary } from '@/core/40XErrorHandler/ErrorBoundary';
+import { useAppDownloadInterception } from '@/core/appMode/useAppDownloadInterception';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { MatrixSession } from '@/core/matrix/MatrixSessionProvider';
 import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
@@ -80,6 +81,11 @@ function RefreshOnMembershipChange() {
   return null;
 }
 
+function AppDownloadInterceptor() {
+  useAppDownloadInterception();
+  return null;
+}
+
 /** Top-level path segments owned by the auth flow — the unified chat is hidden on all of them. */
 const AUTH_ROUTE_SEGMENTS = new Set<string>(Object.values(IdentityRoutes));
 
@@ -121,6 +127,7 @@ const Root: FC = () => {
                 <AuthenticationProvider>
                   <BrowserRouter>
                     <NativePushTapRouter />
+                    <AppDownloadInterceptor />
                     <UserGeoProvider>
                       <ApmProvider>
                         <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>

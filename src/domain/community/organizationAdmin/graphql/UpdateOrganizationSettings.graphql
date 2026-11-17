@@ -7,6 +7,9 @@ mutation UpdateOrganizationSettings($settingsData: UpdateOrganizationSettingsInp
         allowSpaceInvitations
         allowApplications
       }
+      security {
+        secondFactorRequired
+      }
     }
   }
 }
