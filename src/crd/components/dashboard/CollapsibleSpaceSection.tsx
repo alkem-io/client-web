@@ -55,7 +55,8 @@ export function CollapsibleSpaceSection({
         </CollapsibleTrigger>
 
         <CollapsibleContent className="pt-4">
-          <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Below md: one horizontal scroll strip, the next card peeking in. md and up: the grid. */}
+          <ul className="-m-1 flex gap-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden overflow-x-auto p-1 *:w-48 *:shrink-0 md:m-0 md:grid md:grid-cols-2 md:gap-4 md:overflow-visible md:p-0 md:*:w-auto lg:grid-cols-4">
             {loading ? (
               // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders
               Array.from({ length: maxVisible }).map((_, i) => (
