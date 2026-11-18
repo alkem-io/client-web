@@ -462,6 +462,11 @@
           "title": "Herstelcodes"
         },
         "remove": "Verwijderen",
+        "secondWay": {
+          "added": "Je tweede manier om de tweede stap te doorlopen is ingesteld. Log opnieuw in zodat die meetelt.",
+          "needed": "Je account heeft een tweede manier nodig om de tweede stap te doorlopen: een authenticator-app, nog een beveiligingssleutel of herstelcodes. Voeg er hieronder een toe en log daarna opnieuw in.",
+          "suggested": "Verificatie in twee stappen staat aan. Voeg nu een tweede manier toe om de tweede stap te doorlopen (een authenticator-app, nog een beveiligingssleutel of herstelcodes), zodat je nog kunt inloggen als je deze kwijtraakt."
+        },
         "securityKeys": {
           "add": "Beveiligingssleutel toevoegen",
           "empty": "Nog geen beveiligingssleutels toegevoegd.",

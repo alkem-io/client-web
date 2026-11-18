@@ -2,7 +2,12 @@ import type { SettingsFlow, UiNode } from '@ory/kratos-client';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { enrolledSecondFactorSettingsFlow, secondFactorSettingsFlow } from './__fixtures__/secondFactorFlows';
+import {
+  authenticatorOnlySettingsFlow,
+  enrolledSecondFactorSettingsFlow,
+  notEnrolledSettingsFlow,
+  secondFactorSettingsFlow,
+} from './__fixtures__/secondFactorFlows';
 import { TwoStepVerification } from './TwoStepVerification';
 
 const postKratosForm = vi.hoisted(() => vi.fn());
@@ -279,6 +284,49 @@ describe('TwoStepVerification', () => {
       render(<TwoStepVerification flow={enrolledSecondFactorSettingsFlow} requirementCovered={true} />);
 
       expect(await openKeyRemoval()).not.toHaveTextContent('user.security.twoStep.lastFactorWarning');
+    });
+  });
+
+  describe('a second way to pass the second step', () => {
+    const secondWayCopy = /user\.security\.twoStep\.secondWay\./;
+
+    it('says a second way is needed while the sign-in counted one', () => {
+      render(<TwoStepVerification flow={authenticatorOnlySettingsFlow} secondWayNeeded={true} />);
+
+      expect(screen.getByText('user.security.twoStep.secondWay.needed')).toBeInTheDocument();
+    });
+
+    // The count is the sign-in's: a way added since shows in the flow, and only signing in again is left.
+    it('says to sign in again once the flow holds a second way the sign-in did not count', () => {
+      render(<TwoStepVerification flow={enrolledSecondFactorSettingsFlow} secondWayNeeded={true} />);
+
+      expect(screen.getByText('user.security.twoStep.secondWay.added')).toBeInTheDocument();
+      expect(screen.queryByText('user.security.twoStep.secondWay.needed')).toBeNull();
+    });
+
+    it('says nothing of it when the sign-in counted enough', () => {
+      render(<TwoStepVerification flow={authenticatorOnlySettingsFlow} secondWayNeeded={false} />);
+
+      expect(screen.queryByText(secondWayCopy)).toBeNull();
+    });
+
+    it('suggests a second way right after the first factor is confirmed', async () => {
+      submitKratosSettings.mockResolvedValue({
+        kind: 'flow',
+        flow: { ...authenticatorOnlySettingsFlow, id: notEnrolledSettingsFlow.id },
+      });
+      render(<TwoStepVerification flow={notEnrolledSettingsFlow} />);
+      expect(screen.queryByText(secondWayCopy)).toBeNull();
+
+      await userEvent.type(screen.getByLabelText('user.security.twoStep.authenticator.codeLabel'), '123456{Enter}');
+
+      expect(await screen.findByText('user.security.twoStep.secondWay.suggested')).toBeInTheDocument();
+    });
+
+    it('suggests nothing to a member who already held a factor', () => {
+      render(<TwoStepVerification flow={authenticatorOnlySettingsFlow} />);
+
+      expect(screen.queryByText(secondWayCopy)).toBeNull();
     });
   });
 });

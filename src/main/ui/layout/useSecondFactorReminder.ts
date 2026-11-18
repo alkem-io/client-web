@@ -16,8 +16,9 @@ const readDismissed = (): string | null => {
 };
 
 /**
- * The reminder shown while a rule requires a second factor this sign-in did not
- * use and its deadline is still ahead. Dismissed for the rest of the browser
+ * The reminder shown while this sign-in does not meet a rule and its deadline is
+ * still ahead: either it used no second factor, or the account holds a single
+ * way to pass the second step (`secondWayNeeded`), which the copy says apart. Dismissed for the rest of the browser
  * session by the person who dismissed it; anyone else signing in on the tab
  * still sees their own. A refused session asks nothing: it is on its way to
  * /second-factor.
@@ -50,5 +51,5 @@ export function useSecondFactorReminder() {
     setDismissedBy(userId);
   };
 
-  return { visible, deadline, securityHref, dismiss };
+  return { visible, deadline, secondWayNeeded: Boolean(requirement?.secondWayNeeded), securityHref, dismiss };
 }

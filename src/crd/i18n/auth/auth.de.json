@@ -99,6 +99,7 @@
     "app": "Richten Sie die Bestätigung in zwei Schritten zuerst in einem Webbrowser ein und melden Sie sich dann erneut in der App an.",
     "enrolled": "Ihr zweiter Faktor ist eingerichtet. Melden Sie sich erneut an, um fortzufahren.",
     "required": "Für Ihr Konto ist die Bestätigung in zwei Schritten erforderlich. Richten Sie unten einen zweiten Faktor ein, um fortzufahren.",
+    "secondWay": "Ihr Konto benötigt eine zweite Möglichkeit für den zweiten Schritt: eine Authenticator-App, einen weiteren Sicherheitsschlüssel oder Wiederherstellungscodes. Fügen Sie unten eine hinzu und melden Sie sich danach erneut an.",
     "signInAgain": "Erneut anmelden",
     "signOut": "Abmelden",
     "title": "Bestätigung in zwei Schritten einrichten",

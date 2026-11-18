@@ -99,6 +99,7 @@
     "app": "Set up two-step verification in a web browser first, then sign in to the app again.",
     "enrolled": "Your second factor is set up. Sign in again to continue.",
     "required": "Your account requires two-step verification. Set up a second factor below to continue.",
+    "secondWay": "Your account needs a second way to pass the second step: an authenticator app, another security key, or recovery codes. Add one below, then sign in again.",
     "signInAgain": "Sign in again",
     "signOut": "Sign out",
     "title": "Set up two-step verification",

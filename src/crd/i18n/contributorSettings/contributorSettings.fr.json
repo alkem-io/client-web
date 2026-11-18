@@ -462,6 +462,11 @@
           "title": "Codes de récupération"
         },
         "remove": "Supprimer",
+        "secondWay": {
+          "added": "Votre second moyen de passer la deuxième étape est configuré. Reconnectez-vous pour qu'il soit pris en compte.",
+          "needed": "Votre compte a besoin d'un second moyen de passer la deuxième étape : une application d'authentification, une autre clé de sécurité ou des codes de récupération. Ajoutez-en un ci-dessous, puis reconnectez-vous.",
+          "suggested": "La validation en deux étapes est activée. Ajoutez maintenant un second moyen de passer la deuxième étape (une application d'authentification, une autre clé de sécurité ou des codes de récupération) pour pouvoir encore vous connecter si vous perdez celui-ci."
+        },
         "securityKeys": {
           "add": "Ajouter une clé de sécurité",
           "empty": "Aucune clé de sécurité ajoutée pour l'instant.",

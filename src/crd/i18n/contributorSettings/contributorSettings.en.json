@@ -462,6 +462,11 @@
           "title": "Recovery codes"
         },
         "remove": "Remove",
+        "secondWay": {
+          "added": "Your second way to pass the second step is set up. Sign in again so it counts.",
+          "needed": "Your account needs a second way to pass the second step: an authenticator app, another security key, or recovery codes. Add one below, then sign in again.",
+          "suggested": "Two-step verification is on. Now add a second way to pass the second step (an authenticator app, another security key, or recovery codes), so you can still sign in if you lose this one."
+        },
         "securityKeys": {
           "add": "Add a security key",
           "empty": "No security keys added yet.",

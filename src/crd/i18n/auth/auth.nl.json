@@ -99,6 +99,7 @@
     "app": "Stel verificatie in twee stappen eerst in via een webbrowser en log daarna opnieuw in op de app.",
     "enrolled": "Je tweede factor is ingesteld. Log opnieuw in om verder te gaan.",
     "required": "Voor je account is verificatie in twee stappen verplicht. Stel hieronder een tweede factor in om verder te gaan.",
+    "secondWay": "Je account heeft een tweede manier nodig om de tweede stap te doorlopen: een authenticator-app, nog een beveiligingssleutel of herstelcodes. Voeg er hieronder een toe en log daarna opnieuw in.",
     "signInAgain": "Opnieuw inloggen",
     "signOut": "Uitloggen",
     "title": "Verificatie in twee stappen instellen",

@@ -61,6 +61,8 @@
   "secondFactorReminder": {
     "action": "Nu instellen",
     "dismiss": "Sluiten",
+    "secondWayAction": "Toevoegen",
+    "secondWayText": "Voeg vóór {{deadline}} een tweede manier toe om de tweede stap te doorlopen: een authenticator-app, nog een beveiligingssleutel of herstelcodes. Log daarna opnieuw in. Na die datum kun je Alkemio niet meer gebruiken met maar één manier.",
     "text": "Gebruik verificatie in twee stappen vóór {{deadline}}: stel het in, of log er opnieuw mee in als je het al hebt ingesteld. Na die datum kun je Alkemio niet meer zonder gebruiken."
   }
 }

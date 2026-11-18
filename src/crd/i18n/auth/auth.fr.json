@@ -99,6 +99,7 @@
     "app": "Configurez d'abord la validation en deux étapes dans un navigateur web, puis reconnectez-vous à l'application.",
     "enrolled": "Votre second facteur est configuré. Reconnectez-vous pour continuer.",
     "required": "Votre compte exige la validation en deux étapes. Configurez un second facteur ci-dessous pour continuer.",
+    "secondWay": "Votre compte a besoin d'un second moyen de passer la deuxième étape : une application d'authentification, une autre clé de sécurité ou des codes de récupération. Ajoutez-en un ci-dessous, puis reconnectez-vous.",
     "signInAgain": "Se reconnecter",
     "signOut": "Se déconnecter",
     "title": "Configurer la validation en deux étapes",

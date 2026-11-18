@@ -4,7 +4,7 @@ import { SECOND_FACTOR_REMINDER_DISMISSED_KEY, useSecondFactorReminder } from '.
 
 const auth = vi.hoisted(() => ({ isAuthenticated: true, secondFactorRequired: false }));
 const requirement = vi.hoisted(() => ({
-  current: { covered: true, satisfied: false, deadline: '' as string | null },
+  current: { covered: true, satisfied: false, secondWayNeeded: false, deadline: '' as string | null },
 }));
 const querySpy = vi.hoisted(() => vi.fn());
 const currentUser = vi.hoisted(() => ({ id: 'jane-id' }));
@@ -29,7 +29,7 @@ describe('useSecondFactorReminder', () => {
     sessionStorage.clear();
     auth.secondFactorRequired = false;
     currentUser.id = 'jane-id';
-    requirement.current = { covered: true, satisfied: false, deadline: inDays(10) };
+    requirement.current = { covered: true, satisfied: false, secondWayNeeded: false, deadline: inDays(10) };
     querySpy.mockClear();
   });
 
@@ -38,6 +38,14 @@ describe('useSecondFactorReminder', () => {
 
     expect(result.current.visible).toBe(true);
     expect(result.current.securityHref).toBe('/user/jane/settings/security#two-step-verification');
+  });
+
+  it('is shown, saying a second way is needed, when the sign-in used a second factor the account holds alone', () => {
+    requirement.current = { covered: true, satisfied: false, secondWayNeeded: true, deadline: inDays(10) };
+    const { result } = renderHook(() => useSecondFactorReminder());
+
+    expect(result.current.visible).toBe(true);
+    expect(result.current.secondWayNeeded).toBe(true);
   });
 
   it('is not shown again in the same browser session once dismissed', () => {
@@ -76,16 +84,16 @@ describe('useSecondFactorReminder', () => {
   });
 
   it('is hidden when the session satisfies the requirement', () => {
-    requirement.current = { covered: true, satisfied: true, deadline: inDays(10) };
+    requirement.current = { covered: true, satisfied: true, secondWayNeeded: false, deadline: inDays(10) };
     const { result } = renderHook(() => useSecondFactorReminder());
     expect(result.current.visible).toBe(false);
   });
 
   it('is hidden when not covered, or the deadline has passed', () => {
-    requirement.current = { covered: false, satisfied: false, deadline: null };
+    requirement.current = { covered: false, satisfied: false, secondWayNeeded: false, deadline: null };
     expect(renderHook(() => useSecondFactorReminder()).result.current.visible).toBe(false);
 
-    requirement.current = { covered: true, satisfied: false, deadline: inDays(-1) };
+    requirement.current = { covered: true, satisfied: false, secondWayNeeded: false, deadline: inDays(-1) };
     expect(renderHook(() => useSecondFactorReminder()).result.current.visible).toBe(false);
   });
 
