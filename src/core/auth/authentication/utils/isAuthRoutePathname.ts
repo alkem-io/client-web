@@ -9,6 +9,7 @@ const AUTH_ROUTE_SEGMENTS = [
   'required',
   'error',
   'settings',
+  'second-factor',
 ];
 
 /**

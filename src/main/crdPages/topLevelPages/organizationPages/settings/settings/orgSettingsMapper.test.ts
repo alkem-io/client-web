@@ -3,7 +3,7 @@ import type { OrganizationSettingsQuery } from '@/core/apollo/generated/graphql-
 import { mapOrgSettings } from './orgSettingsMapper';
 
 const buildData = (
-  settings?: Partial<{ allowSpaceInvitations: boolean; allowApplications: boolean }>
+  settings?: Partial<{ allowSpaceInvitations: boolean; allowApplications: boolean; secondFactorRequired: boolean }>
 ): OrganizationSettingsQuery => ({
   lookup: {
     organization: {
@@ -15,6 +15,7 @@ const buildData = (
           allowApplications: settings?.allowApplications ?? true,
         },
         privacy: { contributionRolesPubliclyVisible: true },
+        security: { secondFactorRequired: settings?.secondFactorRequired ?? false },
       },
     },
   },
@@ -40,5 +41,11 @@ describe('mapOrgSettings — allowSpaceInvitations (T015)', () => {
     expect(mapOrgSettings(buildData({ allowApplications: false })).allowApplications).toBe(false);
     expect(mapOrgSettings(buildData({ allowApplications: true })).allowApplications).toBe(true);
     expect(mapOrgSettings(undefined).allowApplications).toBe(true);
+  });
+
+  it('reads secondFactorRequired off the query, defaulting to off', () => {
+    expect(mapOrgSettings(buildData({ secondFactorRequired: true })).secondFactorRequired).toBe(true);
+    expect(mapOrgSettings(buildData()).secondFactorRequired).toBe(false);
+    expect(mapOrgSettings(undefined).secondFactorRequired).toBe(false);
   });
 });

@@ -60,6 +60,40 @@ describe('securitySettingsResumeTarget', () => {
     expect(securitySettingsResumeTarget(flow, ORIGIN)).toBeNull();
   });
 
+  it('routes a same-origin /second-factor return_to back to that page, carrying the flow id', () => {
+    const flow = buildFlow({ return_to: `${ORIGIN}/second-factor` });
+    expect(securitySettingsResumeTarget(flow, ORIGIN)).toBe('/second-factor?flow=4be070e3-fce2-4b09-897a-8215833c1831');
+  });
+
+  describe('identity origin distinct from the platform (apex) origin', () => {
+    const IDENTITY = 'https://identity.alkem.io';
+    const APEX = 'https://alkem.io';
+
+    it('returns the absolute apex URL for a /second-factor return_to', () => {
+      const flow = buildFlow({ return_to: `${APEX}/second-factor` });
+      expect(securitySettingsResumeTarget(flow, IDENTITY, APEX)).toBe(
+        `${APEX}/second-factor?flow=4be070e3-fce2-4b09-897a-8215833c1831`
+      );
+    });
+
+    it('returns the absolute apex URL for a Security settings return_to', () => {
+      const flow = buildFlow({ return_to: `${APEX}/user/s1-p1/settings/security` });
+      expect(securitySettingsResumeTarget(flow, IDENTITY, APEX)).toBe(
+        `${APEX}/user/s1-p1/settings/security?flow=4be070e3-fce2-4b09-897a-8215833c1831`
+      );
+    });
+
+    it('returns null for a third origin', () => {
+      const flow = buildFlow({ return_to: 'https://evil.example/second-factor' });
+      expect(securitySettingsResumeTarget(flow, IDENTITY, APEX)).toBeNull();
+    });
+  });
+
+  it('keeps single-host behaviour when no platform origin is known', () => {
+    const flow = buildFlow({ return_to: 'https://alkem.io/second-factor' });
+    expect(securitySettingsResumeTarget(flow, ORIGIN, undefined)).toBeNull();
+  });
+
   it('returns null for an unparsable request_url', () => {
     const flow = buildFlow({ return_to: undefined, request_url: 'not a url' });
     expect(securitySettingsResumeTarget(flow, ORIGIN)).toBeNull();

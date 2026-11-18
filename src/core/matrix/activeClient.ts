@@ -10,6 +10,9 @@ type Listener = () => void;
 
 let current: MatrixClient | null = null;
 let establishing = false;
+// matrix-js-sdk's SyncState of the active client ('PREPARED', 'SYNCING',
+// 'RECONNECTING', 'ERROR', ...); null while no client is syncing.
+let syncState: string | null = null;
 const listeners = new Set<Listener>();
 
 const setActiveClient = (client: MatrixClient | null): void => {
@@ -17,6 +20,7 @@ const setActiveClient = (client: MatrixClient | null): void => {
     return;
   }
   current = client;
+  syncState = null;
   for (const listener of listeners) {
     listener();
   }
@@ -32,6 +36,19 @@ const setSessionEstablishing = (value: boolean): void => {
     listener();
   }
 };
+
+/** Written by the session controller from the active client's sync event. */
+const setSyncState = (value: string | null): void => {
+  if (syncState === value) {
+    return;
+  }
+  syncState = value;
+  for (const listener of listeners) {
+    listener();
+  }
+};
+
+const getSyncState = (): string | null => syncState;
 
 const isSessionEstablishing = (): boolean => establishing;
 
@@ -50,7 +67,12 @@ const useMatrixClient = (): MatrixClient | null =>
 const useMatrixSessionEstablishing = (): boolean =>
   useSyncExternalStore(subscribeActiveClient, isSessionEstablishing, () => false);
 
+const useMatrixSyncState = (): string | null => useSyncExternalStore(subscribeActiveClient, getSyncState, () => null);
+
 export {
+  getSyncState,
+  setSyncState,
+  useMatrixSyncState,
   getActiveClient,
   isSessionEstablishing,
   setActiveClient,

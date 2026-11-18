@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import type { KratosPasskeyTrigger } from '@/crd/components/auth/flowDescriptor';
 
 /**
@@ -15,6 +16,8 @@ declare global {
     __oryPasskeyLoginAutocompleteInit?: (options?: unknown) => Promise<void>;
     __oryPasskeyRegistration?: (options?: unknown) => Promise<void>;
     __oryPasskeySettingsRegistration?: (options?: unknown) => Promise<void>;
+    __oryWebAuthnRegistration?: (options?: unknown) => Promise<void>;
+    __oryWebAuthnLogin?: (options?: unknown) => Promise<void>;
   }
 }
 
@@ -35,7 +38,24 @@ const TRIGGER_GLOBAL: Record<KratosPasskeyTrigger, keyof Window> = {
   oryPasskeyLoginAutocompleteInit: '__oryPasskeyLoginAutocompleteInit',
   oryPasskeyRegistration: '__oryPasskeyRegistration',
   oryPasskeySettingsRegistration: '__oryPasskeySettingsRegistration',
+  oryWebAuthnRegistration: '__oryWebAuthnRegistration',
+  oryWebAuthnLogin: '__oryWebAuthnLogin',
 };
+
+/*
+ * The DOM contract of the two WebAuthn (security key) routines of Ory's
+ * `webauthn.js`, which differ from the passkey ones:
+ * - ceremony options: the trigger node's `value` (JSON), handed to the routine
+ *   as its first argument; the routine falls back to reading the value of the
+ *   element named `webauthn_register_trigger` / `webauthn_login_trigger`, so
+ *   the rendered trigger carries the node's value as well;
+ * - result: written into the input named `webauthn_register` /
+ *   `webauthn_login` (a hidden node of the same flow);
+ * - submission: the form that holds the trigger element is submitted natively,
+ *   so the hidden result input and `webauthn_register_displayname` must sit in
+ *   that form, beside exactly one element bearing the trigger's name.
+ */
+const WEBAUTHN_TRIGGERS: ReadonlySet<KratosPasskeyTrigger> = new Set(['oryWebAuthnRegistration', 'oryWebAuthnLogin']);
 
 /**
  * Runs the passkey ceremony for the given trigger.
@@ -44,7 +64,7 @@ const TRIGGER_GLOBAL: Record<KratosPasskeyTrigger, keyof Window> = {
  * (`not-supported`), the Ory script has not loaded yet (`script-not-loaded`),
  * or the ceremony itself fails / is cancelled (`failed`).
  */
-export async function invokePasskeyTrigger(trigger: KratosPasskeyTrigger): Promise<void> {
+export async function invokePasskeyTrigger(trigger: KratosPasskeyTrigger, value?: string): Promise<void> {
   if (typeof window.PublicKeyCredential === 'undefined') {
     throw new PasskeyTriggerError('not-supported', 'Passkeys are not supported in this browser.');
   }
@@ -55,8 +75,23 @@ export async function invokePasskeyTrigger(trigger: KratosPasskeyTrigger): Promi
   }
 
   try {
-    await routine();
+    if (WEBAUTHN_TRIGGERS.has(trigger)) {
+      await routine(value ? JSON.parse(value) : undefined);
+    } else {
+      await routine();
+    }
   } catch (error) {
     throw new PasskeyTriggerError('failed', error instanceof Error ? error.message : 'Passkey authentication failed.');
   }
+}
+
+/** Maps a passkey-trigger failure to its localised user-facing message. Falls
+ *  back to the existing `authentication.passkey.unknown-error` copy for any
+ *  shape we don't recognise (e.g. a non-PasskeyTriggerError thrown). */
+export function translatePasskeyError(t: TFunction, error: unknown): string {
+  if (error instanceof PasskeyTriggerError) {
+    if (error.reason === 'not-supported') return t('authentication.passkey.not-supported');
+    if (error.reason === 'script-not-loaded') return t('authentication.passkey.script-loading');
+  }
+  return t('authentication.passkey.unknown-error');
 }
