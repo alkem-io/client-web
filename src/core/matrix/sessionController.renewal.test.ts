@@ -237,13 +237,18 @@ describe('in-place renewal of the chat access token', () => {
     const server = scriptChatServer(expiresAt, [403]);
     vi.stubGlobal('fetch', server.fetchStub);
     const { client } = await establish(() => true);
+    let deleteFailed = false;
     vi.spyOn(indexedDB, 'deleteDatabase').mockImplementationOnce(() => {
       const request = { error: new DOMException('disk', 'UnknownError') } as unknown as IDBOpenDBRequest;
-      queueMicrotask(() => request.onerror?.(new Event('error')));
+      queueMicrotask(() => {
+        request.onerror?.(new Event('error'));
+        deleteFailed = true;
+      });
       return request;
     });
 
     await vi.advanceTimersByTimeAsync(expiresAt - 60_000 - Date.now());
+    await settle(() => deleteFailed);
     await settle(() => server.sent.some(r => r.path.endsWith('/logout')));
 
     expect(server.sent.filter(r => r.path.endsWith('/logout'))).toEqual([
