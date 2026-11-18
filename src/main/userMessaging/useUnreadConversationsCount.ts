@@ -6,15 +6,20 @@ import { useUserMessagingContext } from './UserMessagingContext';
 
 const DELAY_MS = 2000;
 
+// The delay keeps this query out of the app's first load. Once it has passed for any instance, a
+// hook mounted later (the phone Home row) reads the cached result at once, in step with the header.
+let startupDelayPassed = false;
+
 export const useUnreadConversationsCount = () => {
   const { isEnabled, isOpen, selectedRoomId } = useUserMessagingContext();
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(startupDelayPassed);
 
   const skip = !isEnabled || (!ready && !isOpen);
 
   useEffect(() => {
-    if (!isEnabled) return;
+    if (!isEnabled || startupDelayPassed) return;
     const timer = setTimeout(() => {
+      startupDelayPassed = true;
       setReady(true);
     }, DELAY_MS);
     return () => clearTimeout(timer);
