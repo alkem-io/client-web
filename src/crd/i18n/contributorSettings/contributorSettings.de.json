@@ -384,7 +384,8 @@
             "label": "Passkey",
             "set": "Eingerichtet",
             "notSet": "Nicht eingerichtet",
-            "manage": "Passkeys verwalten"
+            "manage": "Passkeys verwalten",
+            "explanation": "Meldet Sie ohne Passwort an. Er ist kein zweiter Schritt."
           }
         }
       },
@@ -464,13 +465,13 @@
         "securityKeys": {
           "add": "Sicherheitsschlüssel hinzufügen",
           "empty": "Noch keine Sicherheitsschlüssel hinzugefügt.",
-          "explanation": "Ein physischer Schlüssel, etwa ein YubiKey, oder der eingebaute Authenticator Ihres Geräts, den Sie bei der Anmeldung berühren.",
+          "explanation": "Verwenden Sie einen Passkey aus Ihrem Passwort-Manager oder auf diesem Gerät (Face ID, Touch ID, Windows Hello) oder einen physischen Schlüssel wie einen YubiKey. Ihr Browser fragt, welchen Sie verwenden möchten.",
           "nameLabel": "Name des Schlüssels",
           "nameRequired": "Geben Sie dem Schlüssel einen Namen.",
           "removeDescription": "Sie können sich dann nicht mehr mit diesem Schlüssel anmelden.",
           "removeNamed": "{{name}} entfernen",
           "removeTitle": "Sicherheitsschlüssel „{{name}}“ entfernen?",
-          "title": "Sicherheitsschlüssel"
+          "title": "Passkeys und Sicherheitsschlüssel"
         },
         "title": "Bestätigung in zwei Schritten"
       }

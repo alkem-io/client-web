@@ -384,7 +384,8 @@
             "label": "Passkey",
             "set": "Ingesteld",
             "notSet": "Niet ingesteld",
-            "manage": "Passkeys beheren"
+            "manage": "Passkeys beheren",
+            "explanation": "Logt je in zonder wachtwoord. Het is geen tweede stap."
           }
         }
       },
@@ -464,13 +465,13 @@
         "securityKeys": {
           "add": "Beveiligingssleutel toevoegen",
           "empty": "Nog geen beveiligingssleutels toegevoegd.",
-          "explanation": "Een fysieke sleutel, zoals een YubiKey, of de ingebouwde authenticator van je apparaat, die je aanraakt wanneer je inlogt.",
+          "explanation": "Gebruik een passkey uit je wachtwoordbeheerder of op dit apparaat (Face ID, Touch ID, Windows Hello), of een fysieke sleutel zoals een YubiKey. Je browser vraagt welke je wilt gebruiken.",
           "nameLabel": "Naam van de sleutel",
           "nameRequired": "Geef de sleutel een naam.",
           "removeDescription": "Je kunt dan niet meer inloggen met deze sleutel.",
           "removeNamed": "{{name}} verwijderen",
           "removeTitle": "Beveiligingssleutel \"{{name}}\" verwijderen?",
-          "title": "Beveiligingssleutels"
+          "title": "Passkeys en beveiligingssleutels"
         },
         "title": "Verificatie in twee stappen"
       }
