@@ -384,7 +384,8 @@
             "label": "Clé d'accès",
             "set": "Définie",
             "notSet": "Non définie",
-            "manage": "Gérer les clés d'accès"
+            "manage": "Gérer les clés d'accès",
+            "explanation": "Vous connecte sans mot de passe. Ce n'est pas une deuxième étape."
           }
         }
       },
@@ -469,13 +470,13 @@
         "securityKeys": {
           "add": "Ajouter une clé de sécurité",
           "empty": "Aucune clé de sécurité ajoutée pour l'instant.",
-          "explanation": "Une clé physique, comme une YubiKey, ou l'authentificateur intégré de votre appareil, que vous touchez lors de la connexion.",
+          "explanation": "Utilisez une clé d'accès enregistrée dans votre gestionnaire de mots de passe ou sur cet appareil (Face ID, Touch ID, Windows Hello), ou une clé physique comme une YubiKey. Votre navigateur vous demande laquelle utiliser.",
           "nameLabel": "Nom de la clé",
           "nameRequired": "Saisissez un nom pour la clé.",
           "removeDescription": "Vous ne pourrez plus vous connecter avec cette clé.",
           "removeNamed": "Supprimer {{name}}",
           "removeTitle": "Supprimer la clé de sécurité « {{name}} » ?",
-          "title": "Clés de sécurité"
+          "title": "Clés d'accès et clés de sécurité"
         },
         "title": "Validation en deux étapes"
       }

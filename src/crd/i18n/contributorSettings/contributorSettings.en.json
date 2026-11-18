@@ -384,7 +384,8 @@
             "label": "Passkey",
             "set": "Set",
             "notSet": "Not set",
-            "manage": "Manage passkeys"
+            "manage": "Manage passkeys",
+            "explanation": "Signs you in without a password. It is not a second step."
           }
         }
       },
@@ -469,13 +470,13 @@
         "securityKeys": {
           "add": "Add a security key",
           "empty": "No security keys added yet.",
-          "explanation": "A physical key, such as a YubiKey, or your device's built-in authenticator, which you touch when you sign in.",
+          "explanation": "Use a passkey saved in your password manager or on this device (Face ID, Touch ID, Windows Hello), or a physical key such as a YubiKey. Your browser asks which one to use.",
           "nameLabel": "Name of the key",
           "nameRequired": "Enter a name for the key.",
           "removeDescription": "You will no longer be able to sign in with this key.",
           "removeNamed": "Remove {{name}}",
           "removeTitle": "Remove the security key \"{{name}}\"?",
-          "title": "Security keys"
+          "title": "Passkeys and security keys"
         },
         "title": "Two-step verification"
       }
