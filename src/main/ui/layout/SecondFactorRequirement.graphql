@@ -4,6 +4,7 @@ query SecondFactorRequirement {
       covered
       deadline
       satisfied
+      secondWayNeeded
     }
   }
 }
