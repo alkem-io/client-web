@@ -271,3 +271,42 @@ export const enrolledSecondFactorSettingsFlow = {
     nodes: settingsNodes(true),
   },
 } as unknown as SettingsFlow;
+
+// Nodes Kratos emits only for a security key or confirmed recovery codes the identity holds.
+const KEY_OR_CODES_ONLY = new Set([
+  'webauthn_remove',
+  'lookup_secret_reveal',
+  'lookup_secret_confirm',
+  'lookup_secret_disable',
+]);
+
+/** The same flow for an identity holding an authenticator alone: one way to pass the second step. */
+export const authenticatorOnlySettingsFlow = {
+  ...enrolledSecondFactorSettingsFlow,
+  id: 'settings-3',
+  ui: {
+    ...enrolledSecondFactorSettingsFlow.ui,
+    action: 'https://identity.example.test/self-service/settings?flow=settings-3',
+    nodes: settingsNodes(true).filter(
+      node =>
+        !KEY_OR_CODES_ONLY.has((node.attributes as { name?: string }).name ?? '') &&
+        !(node.attributes.node_type === 'text' && node.group === 'lookup_secret')
+    ),
+  },
+} as unknown as SettingsFlow;
+
+// A person with nothing enrolled is offered only the generation of recovery codes.
+const ENROLLED_ONLY = new Set(['lookup_secret_reveal', 'lookup_secret_confirm', 'lookup_secret_disable']);
+
+/** The flow for an identity holding no second factor at all. */
+export const notEnrolledSettingsFlow = {
+  ...secondFactorSettingsFlow,
+  ui: {
+    ...secondFactorSettingsFlow.ui,
+    nodes: secondFactorSettingsFlow.ui.nodes.filter(
+      node =>
+        !ENROLLED_ONLY.has((node.attributes as { name?: string }).name ?? '') &&
+        !(node.attributes.node_type === 'text' && node.group === 'lookup_secret')
+    ),
+  },
+} as unknown as SettingsFlow;

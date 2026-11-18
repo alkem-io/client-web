@@ -461,6 +461,11 @@
           "title": "Wiederherstellungscodes"
         },
         "remove": "Entfernen",
+        "secondWay": {
+          "added": "Ihre zweite Möglichkeit für den zweiten Schritt ist eingerichtet. Melden Sie sich erneut an, damit sie zählt.",
+          "needed": "Ihr Konto benötigt eine zweite Möglichkeit für den zweiten Schritt: eine Authenticator-App, einen weiteren Sicherheitsschlüssel oder Wiederherstellungscodes. Fügen Sie unten eine hinzu und melden Sie sich danach erneut an.",
+          "suggested": "Die Bestätigung in zwei Schritten ist aktiv. Fügen Sie jetzt eine zweite Möglichkeit für den zweiten Schritt hinzu (eine Authenticator-App, einen weiteren Sicherheitsschlüssel oder Wiederherstellungscodes), damit Sie sich weiterhin anmelden können, wenn Sie diese verlieren."
+        },
         "securityKeys": {
           "add": "Sicherheitsschlüssel hinzufügen",
           "empty": "Noch keine Sicherheitsschlüssel hinzugefügt.",

@@ -99,6 +99,7 @@
     "app": "Configura primero la verificación en dos pasos en un navegador web y después vuelve a iniciar sesión en la aplicación.",
     "enrolled": "Tu segundo factor está configurado. Vuelve a iniciar sesión para continuar.",
     "required": "Tu cuenta requiere la verificación en dos pasos. Configura un segundo factor a continuación para continuar.",
+    "secondWay": "Tu cuenta necesita una segunda forma de superar el segundo paso: una aplicación de autenticación, otra llave de seguridad o códigos de recuperación. Añade una a continuación y vuelve a iniciar sesión.",
     "signInAgain": "Volver a iniciar sesión",
     "signOut": "Cerrar sesión",
     "title": "Configura la verificación en dos pasos",

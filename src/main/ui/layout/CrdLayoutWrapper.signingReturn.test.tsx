@@ -42,6 +42,7 @@ const state = vi.hoisted(() => ({
   downNoticeVisible: false,
   reminderVisible: false,
   reminderDeadline: undefined as Date | undefined,
+  reminderSecondWayNeeded: false,
 }));
 
 const returnStorageKey = (attemptId: string) => `alkemio.memo-signing-return.v1:${attemptId}`;
@@ -179,6 +180,7 @@ vi.mock('@/main/ui/layout/useSecondFactorReminder', () => ({
   useSecondFactorReminder: () => ({
     visible: state.reminderVisible,
     deadline: state.reminderDeadline,
+    secondWayNeeded: state.reminderSecondWayNeeded,
     securityHref: '/user/me/settings/security#two-step-verification',
     dismiss: vi.fn(),
   }),
@@ -386,6 +388,7 @@ beforeEach(() => {
   state.downNoticeVisible = false;
   state.reminderVisible = false;
   state.reminderDeadline = undefined;
+  state.reminderSecondWayNeeded = false;
   window.sessionStorage.clear();
   globalThis.history.replaceState(null, '', '/space/collaboration/callout-1');
 });
@@ -911,6 +914,21 @@ describe('CrdLayoutWrapper top banners', () => {
 
     expect(screen.getByText('secondFactorReminder.text:1. Dezember 2026')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'secondFactorReminder.action' })).toHaveAttribute(
+      'href',
+      '/user/me/settings/security#two-step-verification'
+    );
+  });
+
+  it('asks for a second way to pass the second step, by the deadline, when the account holds only one', () => {
+    state.reminderVisible = true;
+    state.reminderDeadline = new Date(2026, 11, 1);
+    state.reminderSecondWayNeeded = true;
+
+    renderPlainRoute();
+
+    expect(screen.getByText('secondFactorReminder.secondWayText:December 1st, 2026')).toBeInTheDocument();
+    expect(screen.queryByText(/secondFactorReminder\.text/)).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'secondFactorReminder.secondWayAction' })).toHaveAttribute(
       'href',
       '/user/me/settings/security#two-step-verification'
     );

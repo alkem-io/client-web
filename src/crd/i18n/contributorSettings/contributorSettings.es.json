@@ -461,6 +461,11 @@
           "title": "Códigos de recuperación"
         },
         "remove": "Eliminar",
+        "secondWay": {
+          "added": "Tu segunda forma de superar el segundo paso está configurada. Vuelve a iniciar sesión para que cuente.",
+          "needed": "Tu cuenta necesita una segunda forma de superar el segundo paso: una aplicación de autenticación, otra llave de seguridad o códigos de recuperación. Añade una a continuación y vuelve a iniciar sesión.",
+          "suggested": "La verificación en dos pasos está activada. Añade ahora una segunda forma de superar el segundo paso (una aplicación de autenticación, otra llave de seguridad o códigos de recuperación) para poder seguir iniciando sesión si pierdes esta."
+        },
         "securityKeys": {
           "add": "Añadir una llave de seguridad",
           "empty": "Aún no has añadido llaves de seguridad.",

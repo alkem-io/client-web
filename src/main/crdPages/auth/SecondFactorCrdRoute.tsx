@@ -22,11 +22,12 @@ import { TwoStepVerification } from './TwoStepVerification';
 import { adaptTwoStepVerification } from './twoStepVerificationModel';
 
 /**
- * `/second-factor` — where a session refused for a missing second factor is
- * sent. Built on the Kratos settings flow alone: the server answers this
- * session's GraphQL with the refusal, so the page issues none. Whether the
- * person has enrolled is read from the flow; once they have, signing in again
- * (now with the second factor) ends the refusal.
+ * `/second-factor` — where a session refused by a second-factor rule is sent.
+ * Built on the Kratos settings flow alone: the server answers this session's
+ * GraphQL with the refusal, so the page issues none. The rule asks for a
+ * sign-in with a second factor and two ways to pass the second step; how many
+ * ways the person holds is read from the flow. Once they hold two, signing in
+ * again (with the second factor) ends the refusal.
  */
 export function SecondFactorCrdRoute() {
   useTransactionScope({ type: 'authentication' });
@@ -72,16 +73,20 @@ function SecondFactorEnrolment({
   const [answered, setAnswered] = useState<{ to: SettingsFlow | undefined; flow: SettingsFlow }>();
   const current = answered && answered.to === flow ? answered.flow : flow;
 
+  const model = current && !error ? adaptTwoStepVerification(current) : undefined;
+  // A single way is not enough whatever this sign-in used: signing in again with it alone is refused too.
   const state: SecondFactorRequiredState = loading
     ? 'loading'
-    : !current || error
+    : !model
       ? 'unavailable'
-      : adaptTwoStepVerification(current).enrolled
-        ? 'enrolled'
-        : 'enrol';
+      : !model.enrolled
+        ? 'enrol'
+        : model.soleFactor
+          ? 'secondWay'
+          : 'enrolled';
 
   return (
-    <AuthShellWrapper wide={state === 'enrol'}>
+    <AuthShellWrapper wide={state === 'enrol' || state === 'secondWay'}>
       <SecondFactorRequiredCard
         state={state}
         enrolment={

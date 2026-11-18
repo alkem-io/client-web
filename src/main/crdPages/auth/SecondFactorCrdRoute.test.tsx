@@ -1,24 +1,12 @@
-import type { SettingsFlow, UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { enrolledSecondFactorSettingsFlow, secondFactorSettingsFlow } from './__fixtures__/secondFactorFlows';
+import {
+  authenticatorOnlySettingsFlow,
+  enrolledSecondFactorSettingsFlow,
+  notEnrolledSettingsFlow,
+} from './__fixtures__/secondFactorFlows';
 import { SecondFactorCrdRoute } from './SecondFactorCrdRoute';
-
-// The fixture lists every node the methods can emit; a person with nothing enrolled is offered only
-// the generation of recovery codes, so the enrolled-only nodes are dropped.
-const ENROLLED_ONLY = new Set(['lookup_secret_reveal', 'lookup_secret_confirm', 'lookup_secret_disable']);
-const notEnrolledFlow = {
-  ...secondFactorSettingsFlow,
-  ui: {
-    ...secondFactorSettingsFlow.ui,
-    nodes: secondFactorSettingsFlow.ui.nodes.filter(
-      (node: UiNode) =>
-        !ENROLLED_ONLY.has((node.attributes as UiNodeInputAttributes).name) &&
-        !(node.attributes.node_type === 'text' && node.group === 'lookup_secret')
-    ),
-  },
-} as SettingsFlow;
 
 let mockSearch = '';
 let mockFlow: unknown;
@@ -57,7 +45,7 @@ const renderRoute = () =>
 describe('SecondFactorCrdRoute', () => {
   beforeEach(() => {
     mockSearch = '';
-    mockFlow = notEnrolledFlow;
+    mockFlow = notEnrolledSettingsFlow;
     mockAppMode = false;
     useKratosFlowSpy.mockClear();
     usePasskeyScriptSpy.mockClear();
@@ -86,7 +74,7 @@ describe('SecondFactorCrdRoute', () => {
   it("hands the flow's nodes to the Ory script hook", () => {
     renderRoute();
 
-    expect(usePasskeyScriptSpy).toHaveBeenCalledWith(notEnrolledFlow.ui.nodes);
+    expect(usePasskeyScriptSpy).toHaveBeenCalledWith(notEnrolledSettingsFlow.ui.nodes);
   });
 
   // Signing in again must first end the identity-provider session (a sign-in that rode it would
@@ -104,6 +92,26 @@ describe('SecondFactorCrdRoute', () => {
     );
     expect(screen.getByRole('link', { name: 'secondFactorPage.signOut' })).toHaveAttribute('href', '/logout');
     expect(screen.queryByText('user.security.twoStep.authenticator.setUp')).not.toBeInTheDocument();
+  });
+
+  // A single way is not enough, whatever this sign-in used: the page says so, keeps the settings in
+  // reach to add another, and still offers signing in again for after that.
+  it('with a single way to pass the second step, says a second one is needed and keeps the settings in reach', () => {
+    mockFlow = authenticatorOnlySettingsFlow;
+
+    renderRoute();
+
+    expect(screen.getByText('secondFactorPage.secondWay')).toBeInTheDocument();
+    expect(screen.queryByText('secondFactorPage.enrolled')).not.toBeInTheDocument();
+    expect(screen.getByText('user.security.twoStep.authenticator.active')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'user.security.twoStep.securityKeys.add' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'user.security.twoStep.recoveryCodes.generate' })).toBeEnabled();
+    expect(screen.getByRole('link', { name: 'secondFactorPage.signInAgain' })).toHaveAttribute(
+      'href',
+      '/logout?signInAgain=true'
+    );
+    // The page speaks for itself: the section repeats none of it.
+    expect(screen.queryByText(/user\.security\.twoStep\.secondWay\./)).not.toBeInTheDocument();
   });
 
   it('in the app, says to enrol on the web first and creates no flow', () => {
