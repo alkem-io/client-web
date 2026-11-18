@@ -14,6 +14,22 @@
     "navigation": "Dashboardnavigatie",
     "pendingCount": "{{count}} openstaand"
   },
+  "unreadSummary": {
+    "messages": {
+      "heading": "Berichten",
+      "text_one": "Je hebt <b>{{count}} ongelezen bericht</b>",
+      "text_other": "Je hebt <b>{{count}} ongelezen berichten</b>",
+      "ariaLabel_one": "Je hebt {{count}} ongelezen bericht. Berichten openen",
+      "ariaLabel_other": "Je hebt {{count}} ongelezen berichten. Berichten openen"
+    },
+    "notifications": {
+      "heading": "Meldingen",
+      "text_one": "Je hebt <b>{{count}} nieuwe melding</b>",
+      "text_other": "Je hebt <b>{{count}} nieuwe meldingen</b>",
+      "ariaLabel_one": "Je hebt {{count}} nieuwe melding. Meldingen openen",
+      "ariaLabel_other": "Je hebt {{count}} nieuwe meldingen. Meldingen openen"
+    }
+  },
   "recentSpaces": {
     "title": "Recente Spaces",
     "exploreAll": "Bekijk al je Spaces",
