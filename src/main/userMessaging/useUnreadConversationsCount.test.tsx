@@ -41,6 +41,30 @@ describe('useUnreadConversationsCount', () => {
     vi.useRealTimers();
   });
 
+  // First in the file: the startup delay is module state, and this test is the one that spends it.
+  it('shares one startup delay: overlapping mounts become ready together, later mounts at once', () => {
+    vi.useFakeTimers();
+    harness.isOpen = false;
+    harness.unread = { a: 1, b: 3 };
+
+    const header = renderHook(() => useUnreadConversationsCount());
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    const homeRow = renderHook(() => useUnreadConversationsCount());
+    expect(header.result.current).toBe(0);
+    expect(homeRow.result.current).toBe(0);
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(header.result.current).toBe(2);
+    expect(homeRow.result.current).toBe(2);
+
+    const later = renderHook(() => useUnreadConversationsCount());
+    expect(later.result.current).toBe(2);
+  });
+
   it('counts a conversation with a call the user is not in, once even when it also has unread messages', () => {
     harness.unread = { a: 2 };
     const { result } = renderHook(() => useUnreadConversationsCount());
@@ -55,22 +79,5 @@ describe('useUnreadConversationsCount', () => {
       )
     );
     expect(result.current).toBe(2);
-  });
-
-  it('waits out the startup delay once, then a later mount has the count on its first render', () => {
-    vi.useFakeTimers();
-    harness.isOpen = false;
-    harness.unread = { a: 1, b: 3 };
-
-    const first = renderHook(() => useUnreadConversationsCount());
-    expect(first.result.current).toBe(0);
-    act(() => {
-      vi.advanceTimersByTime(2000);
-    });
-    expect(first.result.current).toBe(2);
-    first.unmount();
-
-    const later = renderHook(() => useUnreadConversationsCount());
-    expect(later.result.current).toBe(2);
   });
 });
