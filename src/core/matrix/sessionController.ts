@@ -1,6 +1,6 @@
 import type { MatrixClient } from 'matrix-js-sdk';
 import { isAppMode } from '@/core/appMode/isAppMode';
-import { setActiveClient, setSessionEstablishing } from './activeClient';
+import { setActiveClient, setSessionEstablishing, setSyncState } from './activeClient';
 import { registerActiveSession, unregisterActiveSession } from './activeSession';
 import { serverSideLogout } from './logoutCleanup';
 import { mintAndStore } from './mintSession';
@@ -191,6 +191,9 @@ const establishSession = async (
       }
     });
     client.on(CLIENT_SYNC, state => {
+      if (activeClient === client) {
+        setSyncState(state ?? null);
+      }
       if (state === 'PREPARED') {
         recoveryUsed = false;
       }
