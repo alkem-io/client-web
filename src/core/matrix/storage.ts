@@ -7,6 +7,9 @@ type CredentialRecord = {
   readonly deviceId: string;
   readonly accessToken: string;
   readonly homeserverUrl: string;
+  // Epoch ms. Present together, or not at all.
+  readonly refreshToken?: string;
+  readonly expiresAt?: number;
 };
 
 const dbName = (userId: string): string => `${DB_PREFIX}${userId}`;
@@ -58,6 +61,40 @@ const storeCredentials = async (record: CredentialRecord): Promise<boolean> => {
     }
   } catch {
     return false;
+  }
+};
+
+/**
+ * Writes a renewed token pair into the stored record, only while that record
+ * still exists and belongs to `deviceId`: a sign-out or another device's
+ * credential written in the meantime is never overwritten. Resolves whether it
+ * wrote.
+ */
+const replaceTokens = async (
+  userId: string,
+  deviceId: string,
+  tokens: { accessToken: string; refreshToken: string; expiresAt: number }
+): Promise<boolean> => {
+  // False only when the record is gone or another device's; a storage failure rejects.
+  const db = await openDb(userId);
+  try {
+    return await new Promise<boolean>((resolve, reject) => {
+      let written = false;
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      const store = tx.objectStore(STORE_NAME);
+      const request = store.get(RECORD_KEY);
+      request.onsuccess = () => {
+        const existing = request.result as CredentialRecord | undefined;
+        if (existing?.deviceId === deviceId) {
+          store.put({ ...existing, ...tokens }, RECORD_KEY);
+          written = true;
+        }
+      };
+      tx.oncomplete = () => resolve(written);
+      tx.onabort = () => reject(tx.error ?? new Error('Matrix token write aborted'));
+    });
+  } finally {
+    db.close();
   }
 };
 
@@ -143,5 +180,5 @@ const clearNamespace = async (userId: string): Promise<void> => {
   });
 };
 
-export { loadCredentials, loadActorCredentials, storeCredentials, clearNamespace, listStoredUserIds };
+export { loadCredentials, loadActorCredentials, storeCredentials, replaceTokens, clearNamespace, listStoredUserIds };
 export type { CredentialRecord };
