@@ -40,6 +40,8 @@ type ChatPanelProps = {
   titleActionLabel?: string;
   /** Conversation-specific actions (e.g. group/guidance menu) shown in the header. */
   headerActions?: ReactNode;
+  /** A status strip shown under the header, e.g. a connection notice. */
+  notice?: ReactNode;
   children: ReactNode;
 };
 
@@ -74,6 +76,7 @@ export function ChatPanel({
   onTitleClick,
   titleActionLabel,
   headerActions,
+  notice,
   children,
 }: ChatPanelProps) {
   const { isSmallScreen } = useScreenSize();
@@ -213,6 +216,7 @@ export function ChatPanel({
             <X aria-hidden="true" className={chatHeaderLargeIconClass} />
           </button>
         </header>
+        {notice}
         <div className="flex min-h-0 flex-1 flex-col">{children}</div>
       </div>
     </>

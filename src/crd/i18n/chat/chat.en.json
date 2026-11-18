@@ -11,7 +11,8 @@
     "unmuteSound": "Unmute chat sound",
     "soundToggleError": "We couldn't save the chat sound setting. Please try again.",
     "expand": "Expand chat",
-    "collapse": "Collapse chat"
+    "collapse": "Collapse chat",
+    "reconnecting": "Reconnecting… New messages may be delayed."
   },
   "actions": {
     "cancel": "Cancel"
