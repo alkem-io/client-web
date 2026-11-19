@@ -86,6 +86,13 @@ export const getTranslationForCode = (error: GraphQLFormattedError, t: TFunction
 
 const NETWORK_ERROR_FALLBACK_KEY = 'apollo.errors.network.generic' as TranslationKey;
 
+// Codes whose server message is never shown beside the translation: it adds nothing the user can act on.
+const CODES_WITHOUT_DETAIL: string[] = [
+  AlkemioGraphqlErrorCode.UNSPECIFIED,
+  AlkemioGraphqlErrorCode.FORBIDDEN,
+  AlkemioGraphqlErrorCode.FORBIDDEN_POLICY,
+];
+
 export const useApolloErrorHandler = (severity: Severity = 'error') => {
   const { t, i18n } = useTranslation();
   const notify = useNotification();
@@ -95,9 +102,9 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
     const numericCode = graphqlError.extensions?.numericCode as number | undefined;
     notify(translation, severity, numericCode);
 
-    const code = graphqlError.extensions?.code as string | undefined;
+    const code = graphqlError.extensions?.code as string;
     const detail = stripIdsFromMessage(graphqlError.message);
-    if (detail && detail !== translation && code !== AlkemioGraphqlErrorCode.UNSPECIFIED) {
+    if (detail && detail !== translation && !CODES_WITHOUT_DETAIL.includes(code)) {
       notify(detail, severity, numericCode);
     }
   };

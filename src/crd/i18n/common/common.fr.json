@@ -30,7 +30,7 @@
           "bearerToken": "Bearer token error.",
           "forbidden": "Access denied.",
           "forbiddenLicensePolicy": "License restriction.",
-          "forbiddenPolicy": "You don't have the correct rights.",
+          "forbiddenPolicy": "Ceci n'est pas disponible. Il se peut que cela n'existe pas ou que vous n'y ayez pas accès.",
           "invalidPolicy": "Invalid authorization policy.",
           "invalidToken": "Invalid token.",
           "loginFlow": "Login flow error.",
@@ -1504,7 +1504,6 @@
   "permissions": {
     "checking": "Vérification des autorisations…",
     "denied": "Vous n'avez pas l'autorisation de modifier les membres de ce rôle.",
-    "errorDenied": "Vous n'avez pas l'autorisation d'effectuer cette modification. La modification n'a pas été enregistrée.",
     "unverifiable": "Les autorisations n'ont pas pu être vérifiées."
   },
   "pinned": "Épinglé",

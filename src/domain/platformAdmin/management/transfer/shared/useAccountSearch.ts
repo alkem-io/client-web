@@ -13,9 +13,7 @@ type AccountSearchResult = FormikSelectValue & {
 };
 
 // client-1: the codes that mean "you may not search accounts" rather than a
-// generic failure — mirrors `isExclusivelyAuthorizationError` in
-// `@/core/apollo/hooks/usePermissionDeniedNotifier` (the L4 twin — keep this
-// list aligned with that one if it changes).
+// generic failure.
 const DENIED_ERROR_CODES: string[] = [AlkemioGraphqlErrorCode.FORBIDDEN, AlkemioGraphqlErrorCode.FORBIDDEN_POLICY];
 
 const useAccountSearch = () => {

@@ -1,7 +1,8 @@
+import type { ApolloError } from '@apollo/client';
 import type { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useOrganizationSettingsMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { isExclusivelyAuthorizationError } from '@/core/apollo/hooks/usePermissionDeniedNotifier';
+import { isApolloAuthorizationError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { MembershipsSectionLabels } from '@/crd/components/contributor/settings/MembershipsSection.types';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -70,10 +71,14 @@ const CrdOrgMembershipTab = () => {
       await state.onConfirmLeave();
       notify(t('org.membership.leave.success'), 'success');
     } catch (error) {
-      // Only the organization's own admins and owners (or the Space's admins)
-      // may remove it; retrying cannot fix a denial, so say so instead.
+      // The Space may be gone, or only the organization's own admins and owners
+      // (or the Space's admins) may remove it; retrying fixes neither, so say so.
       notify(
-        t(isExclusivelyAuthorizationError(error) ? 'org.membership.leave.forbidden' : 'org.membership.leave.error'),
+        t(
+          isApolloAuthorizationError(error as ApolloError)
+            ? 'org.membership.leave.forbidden'
+            : 'org.membership.leave.error'
+        ),
         'error'
       );
     }

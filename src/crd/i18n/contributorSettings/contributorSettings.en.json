@@ -860,7 +860,7 @@
         "dialogConfirm": "Leave",
         "success": "Membership left",
         "error": "Couldn't leave — try again",
-        "forbidden": "Only this organisation's admins and owners can leave a Space"
+        "forbidden": "Couldn't leave. The Space may no longer exist, or only this organisation's admins and owners can leave it."
       },
       "ledBy": "Led by:",
       "ledByAria": "{{count}} community leads",

@@ -38,6 +38,7 @@ describe('useOrgMembershipTabData — Leave', () => {
     expect(mockFetchSpaceDetails).toHaveBeenCalledWith({ variables: { spaceId: 'sub-1' } });
     expect(mockRemoveRoleFromOrganization).toHaveBeenCalledWith({
       variables: { contributorId: 'org-1', roleSetId: 'rs-sub', role: RoleName.Member },
+      context: { skipGlobalErrorHandler: true },
     });
     expect(refetch).toHaveBeenCalledTimes(1);
     expect(result.current.pendingLeave).toBeNull();
@@ -190,6 +191,7 @@ describe('useOrgMembershipTabData — Leave', () => {
 
     expect(mockRemoveRoleFromOrganization).toHaveBeenCalledWith({
       variables: { contributorId: 'org-1', roleSetId: 'rs-sub', role: RoleName.Member },
+      context: { skipGlobalErrorHandler: true },
     });
   });
 

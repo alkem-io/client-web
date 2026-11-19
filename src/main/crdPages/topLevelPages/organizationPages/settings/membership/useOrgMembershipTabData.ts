@@ -87,6 +87,8 @@ export const useOrgMembershipTabData = (
       // that cascade.
       await removeRoleFromOrganization({
         variables: { contributorId: leaving.organizationId, roleSetId, role: RoleName.Member },
+        // The tab reports the outcome itself.
+        context: { skipGlobalErrorHandler: true },
       });
     } finally {
       // The leave's outcome is decided above: a failed refetch must neither

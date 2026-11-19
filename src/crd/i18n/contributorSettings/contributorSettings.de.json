@@ -860,7 +860,7 @@
         "dialogConfirm": "Verlassen",
         "success": "Mitgliedschaft verlassen",
         "error": "Verlassen fehlgeschlagen — bitte erneut versuchen",
-        "forbidden": "Nur Admins und Eigentümer dieser Organisation können einen Space verlassen"
+        "forbidden": "Verlassen nicht möglich. Der Space existiert möglicherweise nicht mehr, oder nur Admins und Eigentümer dieser Organisation können ihn verlassen."
       },
       "ledBy": "Geleitet von:",
       "ledByAria": "{{count}} Community-Leads",

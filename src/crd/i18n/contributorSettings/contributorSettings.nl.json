@@ -860,7 +860,7 @@
         "dialogConfirm": "Verlaten",
         "success": "Lidmaatschap verlaten",
         "error": "Verlaten mislukt — probeer opnieuw",
-        "forbidden": "Alleen beheerders en eigenaren van deze organisatie kunnen een space verlaten"
+        "forbidden": "Verlaten is niet gelukt. De space bestaat mogelijk niet meer, of alleen beheerders en eigenaren van deze organisatie kunnen hem verlaten."
       },
       "ledBy": "Geleid door:",
       "ledByAria": "{{count}} community-Leads",

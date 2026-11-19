@@ -30,7 +30,7 @@
           "bearerToken": "Bearer token error.",
           "forbidden": "Access denied.",
           "forbiddenLicensePolicy": "License restriction.",
-          "forbiddenPolicy": "You don't have the correct rights.",
+          "forbiddenPolicy": "This is not available. It may not exist, or you may not have access to it.",
           "invalidPolicy": "Invalid authorisation policy.",
           "invalidToken": "Invalid token.",
           "loginFlow": "Login flow error.",
@@ -1504,7 +1504,6 @@
   "permissions": {
     "checking": "Checking permissions…",
     "denied": "You don't have permission to change members of this role.",
-    "errorDenied": "You don't have permission to make this change. The change was not saved.",
     "unverifiable": "Permissions could not be verified."
   },
   "pinned": "Pinned",

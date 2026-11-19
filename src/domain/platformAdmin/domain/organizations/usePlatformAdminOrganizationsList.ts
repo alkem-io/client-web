@@ -10,7 +10,6 @@ import {
   useRevokeLicensePlanFromAccountMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
-import { usePermissionDeniedNotifier } from '@/core/apollo/hooks/usePermissionDeniedNotifier';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   OrgVerificationLifecycleEvents,
@@ -57,7 +56,6 @@ export const usePlatformAdminOrganizationsList = () => {
 
   const { t } = useTranslation();
   const notify = useNotification();
-  const guard = usePermissionDeniedNotifier();
 
   const [deleteOrganization] = useDeleteOrganizationMutation({
     // The admin list reads `platformAdmin.organizations`, not the root
@@ -94,20 +92,17 @@ export const usePlatformAdminOrganizationsList = () => {
     }
 
     if (orgFullData.verification.state === OrgVerificationLifecycleStates.manuallyVerified) {
-      await guard(() =>
-        verifyOrg({
-          variables: {
-            input: {
-              eventName: OrgVerificationLifecycleEvents.RESET,
-              organizationVerificationID: orgFullData.verification.id,
-            },
+      await verifyOrg({
+        variables: {
+          input: {
+            eventName: OrgVerificationLifecycleEvents.RESET,
+            organizationVerificationID: orgFullData.verification.id,
           },
-        })
-      );
+        },
+      });
     } else {
       // in case the VERIFICATION_REQUEST is not available, try to complete with MANUALLY_VERIFY.
-      // Not guarded: a denial here is expected to fall through to MANUALLY_VERIFY below, so it
-      // must not surface its own toast.
+      // A failure here falls through to MANUALLY_VERIFY below, so it must not surface its own toast.
       try {
         await verifyOrg({
           variables: {
@@ -116,62 +111,57 @@ export const usePlatformAdminOrganizationsList = () => {
               organizationVerificationID: orgFullData.verification.id,
             },
           },
+          context: { skipGlobalErrorHandler: true },
         });
       } catch (_error) {
         // ignore errors if the verification_request fails we still try to manually verify
       }
 
-      await guard(() =>
-        verifyOrg({
-          variables: {
-            input: {
-              eventName: OrgVerificationLifecycleEvents.MANUALLY_VERIFY,
-              organizationVerificationID: orgFullData.verification.id,
-            },
+      await verifyOrg({
+        variables: {
+          input: {
+            eventName: OrgVerificationLifecycleEvents.MANUALLY_VERIFY,
+            organizationVerificationID: orgFullData.verification.id,
           },
-        })
-      );
+        },
+      });
     }
   };
 
   const [assignLicense] = useAssignLicensePlanToAccountMutation();
   const assignLicensePlan = async (accountId: string, licensePlanId: string) => {
-    await guard(() =>
-      assignLicense({
-        variables: {
-          accountId,
-          licensePlanId,
-          licensingId: platformLicensePlans?.data?.platform.licensingFramework.id ?? '',
-        },
-        refetchQueries: [
-          refetchPlatformAdminOrganizationsListQuery({
-            first: PAGE_SIZE,
-            filter: { displayName: searchTerm },
-          }),
-        ],
-        onCompleted: () => notify(t('pages.admin.generic.sections.account.licenseUpdated'), 'success'),
-      })
-    );
+    await assignLicense({
+      variables: {
+        accountId,
+        licensePlanId,
+        licensingId: platformLicensePlans?.data?.platform.licensingFramework.id ?? '',
+      },
+      refetchQueries: [
+        refetchPlatformAdminOrganizationsListQuery({
+          first: PAGE_SIZE,
+          filter: { displayName: searchTerm },
+        }),
+      ],
+      onCompleted: () => notify(t('pages.admin.generic.sections.account.licenseUpdated'), 'success'),
+    });
   };
 
   const [revokeLicense] = useRevokeLicensePlanFromAccountMutation();
   const revokeLicensePlan = async (accountId: string, licensePlanId: string) => {
-    await guard(() =>
-      revokeLicense({
-        variables: {
-          accountId,
-          licensePlanId,
-          licensingId: platformLicensePlans.data?.platform.licensingFramework.id ?? '',
-        },
-        refetchQueries: [
-          refetchPlatformAdminOrganizationsListQuery({
-            first: PAGE_SIZE,
-            filter: { displayName: searchTerm },
-          }),
-        ],
-        onCompleted: () => notify(t('pages.admin.generic.sections.account.licenseUpdated'), 'success'),
-      })
-    );
+    await revokeLicense({
+      variables: {
+        accountId,
+        licensePlanId,
+        licensingId: platformLicensePlans.data?.platform.licensingFramework.id ?? '',
+      },
+      refetchQueries: [
+        refetchPlatformAdminOrganizationsListQuery({
+          first: PAGE_SIZE,
+          filter: { displayName: searchTerm },
+        }),
+      ],
+      onCompleted: () => notify(t('pages.admin.generic.sections.account.licenseUpdated'), 'success'),
+    });
   };
 
   const organizations =

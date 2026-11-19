@@ -30,7 +30,7 @@
           "bearerToken": "Bearer token error.",
           "forbidden": "Access denied.",
           "forbiddenLicensePolicy": "License restriction.",
-          "forbiddenPolicy": "You don't have the correct rights.",
+          "forbiddenPolicy": "Това не е налично. Възможно е да не съществува или да нямате достъп до него.",
           "invalidPolicy": "Invalid authorization policy.",
           "invalidToken": "Invalid token.",
           "loginFlow": "Login flow error.",
@@ -1504,7 +1504,6 @@
   "permissions": {
     "checking": "Проверка на правата…",
     "denied": "Нямате права да променяте членовете на тази роля.",
-    "errorDenied": "Нямате права да направите тази промяна. Промяната не беше запазена.",
     "unverifiable": "Правата не можаха да бъдат проверени."
   },
   "pinned": "Закрепено",

@@ -30,7 +30,7 @@
           "bearerToken": "Fout in bearer-token.",
           "forbidden": "Toegang geweigerd.",
           "forbiddenLicensePolicy": "Licentie beperking.",
-          "forbiddenPolicy": "Je hebt niet de juiste rechten.",
+          "forbiddenPolicy": "Dit is niet beschikbaar. Het bestaat mogelijk niet, of je hebt er geen toegang toe.",
           "invalidPolicy": "Ongeldige autorisatie beleid.",
           "invalidToken": "Ongeldig token.",
           "loginFlow": "Login flow error.",
@@ -1504,7 +1504,6 @@
   "permissions": {
     "checking": "Rechten controleren…",
     "denied": "Je hebt geen rechten om de leden van deze rol te wijzigen.",
-    "errorDenied": "Je hebt geen rechten om deze wijziging te maken. De wijziging is niet opgeslagen.",
     "unverifiable": "Rechten konden niet worden geverifieerd."
   },
   "pinned": "Vastgezet",

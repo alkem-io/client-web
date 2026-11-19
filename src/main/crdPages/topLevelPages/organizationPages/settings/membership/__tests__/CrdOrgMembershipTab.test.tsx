@@ -146,6 +146,7 @@ describe('CrdOrgMembershipTab', () => {
     expect(mockFetchSpaceDetails).toHaveBeenCalledWith({ variables: { spaceId: 'sub-a-1' } });
     expect(mockRemoveRoleFromOrganization).toHaveBeenCalledWith({
       variables: { contributorId: 'org-1', roleSetId: 'rs-sub', role: RoleName.Member },
+      context: { skipGlobalErrorHandler: true },
     });
     expect(mockRefetch).toHaveBeenCalled();
   });
@@ -207,7 +208,11 @@ describe('CrdOrgMembershipTab', () => {
   });
 
   it('reports an error, never success, when the leave is rejected', async () => {
-    mockRemoveRoleFromOrganization.mockRejectedValue(new Error('Authorization: unable to grant'));
+    mockRemoveRoleFromOrganization.mockRejectedValue(
+      new ApolloError({
+        graphQLErrors: [new GraphQLError('invalid', { extensions: { code: 'BAD_USER_INPUT' } })],
+      })
+    );
     const user = userEvent.setup({ pointerEventsCheck: 0 });
     renderTab();
 
@@ -220,10 +225,13 @@ describe('CrdOrgMembershipTab', () => {
     expect(mockRefetch).toHaveBeenCalled();
   });
 
-  it('says only the organization’s admins and owners can leave when the server denies it', async () => {
+  it.each([
+    ['one not-available error', [AlkemioGraphqlErrorCode.FORBIDDEN_POLICY]],
+    ['several not-available errors', [AlkemioGraphqlErrorCode.FORBIDDEN_POLICY, AlkemioGraphqlErrorCode.FORBIDDEN]],
+  ])('shows its own not-available text exactly once for %s', async (_, codes) => {
     mockRemoveRoleFromOrganization.mockRejectedValue(
       new ApolloError({
-        graphQLErrors: [new GraphQLError('denied', { extensions: { code: AlkemioGraphqlErrorCode.FORBIDDEN_POLICY } })],
+        graphQLErrors: codes.map(code => new GraphQLError('not available', { extensions: { code } })),
       })
     );
     const user = userEvent.setup({ pointerEventsCheck: 0 });
@@ -233,7 +241,7 @@ describe('CrdOrgMembershipTab', () => {
     await user.click(screen.getByRole('button', { name: en.leave.dialogConfirm }));
 
     await waitFor(() => expect(mockNotify).toHaveBeenCalledWith(en.leave.forbidden, 'error'));
-    expect(mockNotify).not.toHaveBeenCalledWith(en.leave.error, 'error');
+    expect(mockNotify).toHaveBeenCalledTimes(1);
   });
 
   it('warns that leaving also leaves every subspace and gives up Lead', async () => {

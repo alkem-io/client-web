@@ -860,7 +860,7 @@
         "dialogConfirm": "Quitter",
         "success": "Adhésion quittée",
         "error": "Échec — réessayez",
-        "forbidden": "Seuls les administrateurs et propriétaires de cette organisation peuvent quitter un espace"
+        "forbidden": "Impossible de quitter. L'espace n'existe peut-être plus, ou seuls les administrateurs et propriétaires de cette organisation peuvent le quitter."
       },
       "ledBy": "Animé par :",
       "ledByAria": "{{count}} animateurs de communauté",

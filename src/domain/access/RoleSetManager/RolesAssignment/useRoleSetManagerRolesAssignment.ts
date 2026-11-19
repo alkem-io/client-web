@@ -12,7 +12,6 @@ import {
   useRemoveRoleFromVirtualContributorMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import type { RoleName } from '@/core/apollo/generated/graphql-schema';
-import { usePermissionDeniedNotifier } from '@/core/apollo/hooks/usePermissionDeniedNotifier';
 import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
 
 type useRoleSetManagerRolesAssignmentParams = {
@@ -49,8 +48,6 @@ const useRoleSetManagerRolesAssignment = ({
   refetchRoleSetOnMutation = false,
   context,
 }: useRoleSetManagerRolesAssignmentParams): useRoleSetManagerRolesAssignmentProvided => {
-  const guard = usePermissionDeniedNotifier();
-
   const refetchQueries = (cache: Parameters<typeof evictFromCache>[0]) => {
     if (refetchRoleSetOnMutation && roleSetId) {
       evictFromCache(cache, roleSetId, 'RoleSet');
@@ -210,39 +207,18 @@ const useRoleSetManagerRolesAssignment = ({
     assignRoleToVirtualContributorLoading ||
     removeRoleFromVirtualContributorLoading;
 
-  /**
-   * Surfaces authorization failures that would otherwise be silent, via the shared
-   * `usePermissionDeniedNotifier` guard. Scoped deliberately to authorization codes
-   * only: every other failure class (validation, network, server) is already
-   * reported by the global error link, so notifying here as well would show the
-   * user two toasts for one failure. The rejection is always re-thrown so callers
-   * still see it.
-   */
-  const withPermissionErrorNotification =
-    <TArgs extends unknown[]>(run: (...args: TArgs) => Promise<unknown>) =>
-    (...args: TArgs) =>
-      guard(() => run(...args));
-
   const notReady = () => Promise.reject('roleSetId is not defined');
   return {
-    assignPlatformRoleToUser: roleSetId ? withPermissionErrorNotification(assignPlatformRoleToUser) : notReady,
-    removePlatformRoleFromUser: roleSetId ? withPermissionErrorNotification(removePlatformRoleFromUser) : notReady,
-    assignPlatformRoleToOrganization: roleSetId
-      ? withPermissionErrorNotification(assignPlatformRoleToOrganization)
-      : notReady,
-    removePlatformRoleFromOrganization: roleSetId
-      ? withPermissionErrorNotification(removePlatformRoleFromOrganization)
-      : notReady,
-    assignRoleToUser: roleSetId ? withPermissionErrorNotification(assignRoleToUser) : notReady,
-    removeRoleFromUser: roleSetId ? withPermissionErrorNotification(removeRoleFromUser) : notReady,
-    assignRoleToOrganization: roleSetId ? withPermissionErrorNotification(assignRoleToOrganization) : notReady,
-    removeRoleFromOrganization: roleSetId ? withPermissionErrorNotification(removeRoleFromOrganization) : notReady,
-    assignRoleToVirtualContributor: roleSetId
-      ? withPermissionErrorNotification(assignRoleToVirtualContributor)
-      : notReady,
-    removeRoleFromVirtualContributor: roleSetId
-      ? withPermissionErrorNotification(removeRoleFromVirtualContributor)
-      : notReady,
+    assignPlatformRoleToUser: roleSetId ? assignPlatformRoleToUser : notReady,
+    removePlatformRoleFromUser: roleSetId ? removePlatformRoleFromUser : notReady,
+    assignPlatformRoleToOrganization: roleSetId ? assignPlatformRoleToOrganization : notReady,
+    removePlatformRoleFromOrganization: roleSetId ? removePlatformRoleFromOrganization : notReady,
+    assignRoleToUser: roleSetId ? assignRoleToUser : notReady,
+    removeRoleFromUser: roleSetId ? removeRoleFromUser : notReady,
+    assignRoleToOrganization: roleSetId ? assignRoleToOrganization : notReady,
+    removeRoleFromOrganization: roleSetId ? removeRoleFromOrganization : notReady,
+    assignRoleToVirtualContributor: roleSetId ? assignRoleToVirtualContributor : notReady,
+    removeRoleFromVirtualContributor: roleSetId ? removeRoleFromVirtualContributor : notReady,
     loading,
   };
 };
