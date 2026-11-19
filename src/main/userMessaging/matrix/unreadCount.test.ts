@@ -146,7 +146,7 @@ describe('computeUnreadCount call entries', () => {
   });
   const join = (eventId: string, timestamp: number, sender: string): ScannedEvent =>
     callMember(eventId, timestamp, sender, { application: 'm.call', call_id: '', device_id: 'D' });
-  const count = (newestFirst: ScannedEvent[], markerEventId: string, loaded = false) => {
+  const count = (newestFirst: ScannedEvent[], markerEventId: string, loaded = false, withCalls = true) => {
     const fetchBatch = roomOf(newestFirst);
     return {
       fetchBatch,
@@ -156,6 +156,7 @@ describe('computeUnreadCount call entries', () => {
         loadedNewestFirst: loaded ? newestFirst : [],
         fetchBatch,
         notificationCount: () => 99,
+        withCalls,
       }),
     };
   };
@@ -172,6 +173,10 @@ describe('computeUnreadCount call entries', () => {
       message(1),
     ];
     expect(await count(newestFirst, '$1').result).toBe(0);
+  });
+
+  it('does not count a ring where calls are not shown', async () => {
+    expect(await count([ring('$ring', 1_000), message(1)], '$1', false, false).result).toBe(0);
   });
 
   it('does not count the user’s own ring', async () => {

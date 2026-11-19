@@ -250,6 +250,7 @@ describe('ConversationSummaryStore call entries', () => {
     const chatty: FakeRoom = { roomId: '!chatty', events: [text('$c1', 'newer text', OTHER, 200)], notifications: 0 };
     const { client, createMessagesRequest } = makeClient([rung, chatty]);
     const store = new ConversationSummaryStore(client);
+    store.setWithCalls(true);
     store.watch(['rung', 'chatty']);
     await vi.waitFor(() => expect(store.getSnapshot().size).toBe(2));
 
@@ -287,10 +288,40 @@ describe('ConversationSummaryStore call entries', () => {
       })),
     }));
     const store = new ConversationSummaryStore(client);
+    store.setWithCalls(true);
     store.watch(['a']);
     await vi.waitFor(() => expect(store.getSnapshot().get('a')).toBeDefined());
 
     expect(store.getSnapshot().get('a')?.lastMessage).toMatchObject({ eventId: '$ring', call: 'answered' });
     expect(createMessagesRequest).toHaveBeenCalledTimes(1);
+  });
+  it('without calls shown a ring changes nothing, and showing calls moves the conversation up', async () => {
+    const rung: FakeRoom = {
+      roomId: '!rung',
+      events: [text('$r1', 'old news', OTHER, 100), ring('$ring', 300)],
+      notifications: 0,
+    };
+    const chatty: FakeRoom = { roomId: '!chatty', events: [text('$c1', 'newer text', OTHER, 200)], notifications: 0 };
+    const { client } = makeClient([rung, chatty]);
+    const store = new ConversationSummaryStore(client);
+    store.watch(['rung', 'chatty']);
+    await vi.waitFor(() => expect(store.getSnapshot().size).toBe(2));
+
+    const order = () => {
+      const summaries = store.getSnapshot();
+      return sortUnifiedConversations(
+        [
+          conversation('rung', summaries.get('rung')?.lastMessage?.timestamp),
+          conversation('chatty', summaries.get('chatty')?.lastMessage?.timestamp),
+        ],
+        null
+      ).map(item => item.id);
+    };
+    expect(store.getSnapshot().get('rung')).toMatchObject({ lastMessage: { eventId: '$r1' }, unreadCount: 0 });
+    expect(order()).toEqual(['chatty', 'rung']);
+
+    store.setWithCalls(true);
+    await vi.waitFor(() => expect(store.getSnapshot().get('rung')?.lastMessage?.eventId).toBe('$ring'));
+    expect(order()).toEqual(['rung', 'chatty']);
   });
 });

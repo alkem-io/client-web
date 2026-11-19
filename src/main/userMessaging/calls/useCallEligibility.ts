@@ -28,6 +28,12 @@ const useIsSynced = (client: MatrixClient | null): boolean => SYNCED_STATES.has(
 const isBetaTester = (platformRoles: readonly RoleName[] | undefined): boolean =>
   (platformRoles ?? []).includes(RoleName.FeatureBetaTester);
 
+/** Whether this user sees calls at all: call controls, and the call entries in chat. */
+const useCallsShown = (): boolean => {
+  const { platformRoles } = useCurrentUserContext();
+  return isBetaTester(platformRoles) && isCallsConfigured();
+};
+
 /**
  * A call is between people: any group conversation, or a direct conversation
  * between two users. A direct conversation with a virtual contributor or any
@@ -92,5 +98,5 @@ const useCallEligibility = (conversation: CallableConversation | null): CallElig
   return { eligible, matrixRoomId: eligible ? matrixRoomId : null };
 };
 
-export { isBetaTester, isCallableConversation, useCallEligibility, useIsSynced };
+export { isBetaTester, isCallableConversation, useCallEligibility, useCallsShown, useIsSynced };
 export type { CallableConversation, CallEligibility };

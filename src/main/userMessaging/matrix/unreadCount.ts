@@ -6,7 +6,8 @@ import { isAnswered, isMessageLike, isRing, type RawEvent } from './matrixEvents
  * other people's message-like events, over progressive batches (~285 events at
  * most); when there is no marker, or it is not reached within that window, use
  * the homeserver's own notification count instead. On top of that, the other
- * person's ring counts until the user answers it, so a missed call shows as unread.
+ * person's ring counts until the user answers it, so a missed call shows as unread —
+ * only where call entries show.
  */
 
 type ScannedEvent = RawEvent;
@@ -24,6 +25,7 @@ const walk = (
   events: readonly ScannedEvent[],
   markerEventId: string,
   ownUserId: string,
+  withCalls: boolean,
   count = 0,
   newer: ScannedEvent[] = []
 ): { count: number; found: boolean } => {
@@ -31,7 +33,10 @@ const walk = (
     if (event.eventId === markerEventId) {
       return { count, found: true };
     }
-    if (event.sender !== ownUserId && (isMessageLike(event.type) || (isRing(event) && !isAnswered(event, newer)))) {
+    if (
+      event.sender !== ownUserId &&
+      (isMessageLike(event.type) || (withCalls && isRing(event) && !isAnswered(event, newer)))
+    ) {
       count++;
     }
     newer.push(event);
@@ -42,7 +47,8 @@ const walk = (
 const countUnreadMessages = async (
   fetchBatch: FetchBatch,
   markerEventId: string,
-  ownUserId: string
+  ownUserId: string,
+  withCalls = false
 ): Promise<{ count: number; found: boolean }> => {
   let from: string | undefined;
   let count = 0;
@@ -50,7 +56,7 @@ const countUnreadMessages = async (
 
   for (const batchSize of BATCH_SIZES) {
     const { events, end } = await fetchBatch(from, batchSize);
-    const step = walk(events, markerEventId, ownUserId, count, newer);
+    const step = walk(events, markerEventId, ownUserId, withCalls, count, newer);
     if (step.found || !end || events.length < batchSize) {
       return { count: step.count, found: true };
     }
@@ -69,6 +75,8 @@ type UnreadInputs = {
   readonly fetchBatch: FetchBatch;
   /** The homeserver's notification count for the room. */
   readonly notificationCount: () => number;
+  /** Whether the other person's unanswered ring counts; off where call entries do not show. */
+  readonly withCalls?: boolean;
 };
 
 const computeUnreadCount = async ({
@@ -77,18 +85,19 @@ const computeUnreadCount = async ({
   loadedNewestFirst,
   fetchBatch,
   notificationCount,
+  withCalls = false,
 }: UnreadInputs): Promise<number> => {
   if (!markerEventId) {
     return notificationCount();
   }
   // The events already in memory answer most recomputes without a fetch; the
   // window matches the walk's own, so the result is the same either way.
-  const loaded = walk(loadedNewestFirst.slice(0, WINDOW), markerEventId, ownUserId);
+  const loaded = walk(loadedNewestFirst.slice(0, WINDOW), markerEventId, ownUserId, withCalls);
   if (loaded.found) {
     return loaded.count;
   }
   try {
-    const { count, found } = await countUnreadMessages(fetchBatch, markerEventId, ownUserId);
+    const { count, found } = await countUnreadMessages(fetchBatch, markerEventId, ownUserId, withCalls);
     return found ? count : notificationCount();
   } catch {
     return notificationCount();

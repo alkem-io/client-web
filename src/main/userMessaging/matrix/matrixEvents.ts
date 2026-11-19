@@ -63,9 +63,20 @@ const isMessageLike = (type: string): boolean => type === EVENT_MESSAGE || type 
 const isRing = (event: Pick<RawEvent, 'type' | 'content'>): boolean =>
   event.type === EVENT_CALL_NOTIFICATION && event.content.notification_type === 'ring';
 
+/**
+ * Whether call entries show. Calls are a beta: a user who cannot see call
+ * controls sees no call entries either, so a ring they never heard ring does
+ * not show up as missed.
+ */
+type EntryOptions = {
+  readonly withCalls?: boolean;
+  /** The time a ring's outcome is judged at. */
+  readonly now?: number;
+};
+
 /** What the thread, the list preview, the read marker and the unread count all treat as an entry. */
-const isTimelineEntry = (event: Pick<RawEvent, 'type' | 'content'>): boolean =>
-  isMessageLike(event.type) || isRing(event);
+const isTimelineEntry = (event: Pick<RawEvent, 'type' | 'content'>, withCalls = false): boolean =>
+  isMessageLike(event.type) || (withCalls && isRing(event));
 
 const ringEndOf = (ring: RawEvent): number => {
   const { lifetime } = ring.content;
@@ -140,13 +151,17 @@ const extractMedia = (event: RawEvent, homeserver: string): MediaRef | undefined
  * (no body, no attachment — e.g. redacted) are skipped, and reactions attach to
  * the message they annotate. A 1:1 ring becomes a call entry at its time.
  */
-const projectMessages = (events: RawEvent[], homeserver: string, now = Date.now()): ParsedMessage[] => {
+const projectMessages = (
+  events: RawEvent[],
+  homeserver: string,
+  { withCalls = false, now = Date.now() }: EntryOptions = {}
+): ParsedMessage[] => {
   const messages: ParsedMessage[] = [];
   const byId = new Map<string, ParsedMessage>();
 
   for (let index = 0; index < events.length; index++) {
     const event = events[index];
-    if (isRing(event)) {
+    if (withCalls && isRing(event)) {
       messages.push(parseRing(events, index, now));
       continue;
     }
@@ -196,10 +211,14 @@ const parseRing = (events: readonly RawEvent[], index: number, now: number): Par
 };
 
 /** The newest non-blank message or call entry among `events` (oldest first), if any. */
-const lastMessageOf = (events: RawEvent[], homeserver: string, now = Date.now()): ParsedMessage | undefined => {
+const lastMessageOf = (
+  events: RawEvent[],
+  homeserver: string,
+  { withCalls = false, now = Date.now() }: EntryOptions = {}
+): ParsedMessage | undefined => {
   for (let index = events.length - 1; index >= 0; index--) {
     const event = events[index];
-    if (isRing(event)) {
+    if (withCalls && isRing(event)) {
       return parseRing(events, index, now);
     }
     if (isMessageLike(event.type)) {
@@ -216,9 +235,9 @@ const lastMessageOf = (events: RawEvent[], homeserver: string, now = Date.now())
  * The newest entry among `events` (oldest first), rendered or not: the read
  * marker must reach every event the unread count would count.
  */
-const newestMessageLikeId = (events: RawEvent[]): string | null => {
+const newestMessageLikeId = (events: RawEvent[], withCalls = false): string | null => {
   for (let index = events.length - 1; index >= 0; index--) {
-    if (isTimelineEntry(events[index])) {
+    if (isTimelineEntry(events[index], withCalls)) {
       return events[index].eventId;
     }
   }
@@ -238,4 +257,4 @@ export {
   EVENT_REACTION,
   EVENT_STICKER,
 };
-export type { CallOutcome, MediaRef, ParsedMessage, ParsedReaction, RawEvent };
+export type { CallOutcome, EntryOptions, MediaRef, ParsedMessage, ParsedReaction, RawEvent };
