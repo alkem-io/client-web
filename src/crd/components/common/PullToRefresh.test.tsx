@@ -161,6 +161,30 @@ describe('PullToRefresh', () => {
     expect(state()).toBe('idle');
   });
 
+  test('(c4) a page that scrolled after the last move does not refresh on release', () => {
+    const onRefresh = setup(<div data-testid="target">content</div>);
+    moveTo(target(), 200);
+    setScrollY(10);
+    fire(target(), 'touchend', []);
+    expect(onRefresh).not.toHaveBeenCalled();
+    expect(state()).toBe('idle');
+  });
+
+  test('(s2) a status announces the refresh, and only while it runs', async () => {
+    const refresh = deferred();
+    setup(
+      <div data-testid="target">content</div>,
+      vi.fn(() => refresh.promise)
+    );
+    const status = () => document.querySelector('output')?.textContent;
+    expect(status()).toBe('');
+    pull(target(), 200);
+    expect(status()).not.toBe('');
+    refresh.resolve();
+    await advance(600);
+    expect(status()).toBe('');
+  });
+
   test('(e3) a pull whose end was lost does not turn the next tap into a refresh', () => {
     const onRefresh = setup(<div data-testid="target">content</div>);
     moveTo(target(), 200);

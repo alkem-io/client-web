@@ -1,5 +1,6 @@
 import { Loader2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MAIN_CONTENT_ID } from '@/crd/lib/mainContent';
 import { cn } from '@/crd/lib/utils';
 
@@ -50,10 +51,14 @@ const canStartPull = (target: EventTarget | null): boolean => {
  * ancestor inside `<main>`, inside an overflowing inner scroller, on editable content,
  * with more than one finger, or while the page is not at the top never starts a pull.
  *
+ * The disc is decorative; a visually hidden status announces the refresh. Under reduced
+ * motion the disc does not spin or animate.
+ *
  * Listeners are passive. Mounting turns the gesture on and switches off the native
  * overscroll feedback; unmounting restores both.
  */
 export function PullToRefresh({ onRefresh }: PullToRefreshProps) {
+  const { t } = useTranslation('crd-common');
   const [phase, setPhase] = useState<Phase>('idle');
   const [offset, setOffset] = useState(0);
   const onRefreshRef = useRef(onRefresh);
@@ -136,7 +141,8 @@ export function PullToRefresh({ onRefresh }: PullToRefreshProps) {
         tracking = false;
         return;
       }
-      const armed = e.type === 'touchend' && current >= PULL_THRESHOLD_PX;
+      // The page may have scrolled since the last move; a pull only counts at the top.
+      const armed = e.type === 'touchend' && current >= PULL_THRESHOLD_PX && window.scrollY <= 0;
       cancel();
       if (armed) void refresh();
     };
@@ -168,8 +174,12 @@ export function PullToRefresh({ onRefresh }: PullToRefreshProps) {
         )}
         style={{ transform: `translateY(${offset - INDICATOR_PX}px)`, opacity: progress }}
       >
-        <Loader2 className={cn('size-5 text-primary', phase === 'refreshing' && 'animate-spin')} />
+        <Loader2
+          className={cn('size-5 text-primary', phase === 'refreshing' && 'animate-spin motion-reduce:animate-none')}
+        />
       </div>
+      {/* Always mounted, so screen readers announce the text when it appears. */}
+      <output className="sr-only">{phase === 'refreshing' ? t('loading') : ''}</output>
     </div>
   );
 }
