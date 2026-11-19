@@ -1643,5 +1643,8 @@
   },
   "appDownload": {
     "failed": "Le fichier n'a pas pu être téléchargé."
+  },
+  "emojiPicker": {
+    "more": "Plus d'émojis"
   }
 }

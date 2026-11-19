@@ -2,6 +2,7 @@ import { format } from 'date-fns';
 import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { trackChatOpen } from '@/core/analytics/events/unifiedChat';
+import { isAppMode } from '@/core/appMode/isAppMode';
 import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import useNavigate from '@/core/routing/useNavigate';
@@ -142,6 +143,10 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         onNotificationsClick={() => setNotificationsOpen(true)}
         onPendingMembershipsClick={isAuthenticated ? handlePendingMembershipsClick : undefined}
         onHelpClick={() => setIsHelpDialogOpen(true)}
+        // A full reload, like the new-version banner: it also picks up a newer client build.
+        onRefreshClick={
+          isAppMode() ? () => window.location.replace(window.location.pathname + window.location.search) : undefined
+        }
         onSearchClick={() => openSearch()}
         footerLinks={footerLinks}
       >

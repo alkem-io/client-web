@@ -33,6 +33,7 @@ type CrdLayoutProps = {
   onSearchClick?: () => void;
   onPendingMembershipsClick?: () => void;
   onHelpClick?: () => void;
+  onRefreshClick?: () => void;
   footerLinks?: CrdFooterLinks;
   showGridToggle?: boolean;
   /** When true the header's inner content fills all 12 grid columns (full-width space pages). */
@@ -64,6 +65,7 @@ export function CrdLayout({
   onSearchClick,
   onPendingMembershipsClick,
   onHelpClick,
+  onRefreshClick,
   footerLinks,
   showGridToggle,
   fullWidth,
@@ -100,6 +102,7 @@ export function CrdLayout({
         onSearchClick={onSearchClick}
         onPendingMembershipsClick={onPendingMembershipsClick}
         onHelpClick={onHelpClick}
+        onRefreshClick={onRefreshClick}
         showGridToggle={showGridToggle}
         fullWidth={fullWidth}
         overlayBanner={overlayBanner}
