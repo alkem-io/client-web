@@ -257,28 +257,25 @@ describe('UnifiedChatPanelConnector calls', () => {
     expect(screen.queryByText('call.preparing')).not.toBeInTheDocument();
   });
 
-  it('drops a queued call when the new session has not synced 30 s after the swap', async () => {
+  it('drops a queued call that has not opened 10 s after the click', async () => {
     eligible();
     const settle = rotationPending();
-    const user = userEvent.setup({ pointerEventsCheck: 0 });
-    const { rerender } = render(<UnifiedChatPanelConnector />);
-
-    await user.click(screen.getByRole('button', { name: 'call.startVideo' }));
     vi.useFakeTimers();
     try {
-      calls.eligibility = { eligible: false, matrixRoomId: null };
-      await act(async () => settle(true));
-      rerender(<UnifiedChatPanelConnector />);
-      act(() => vi.advanceTimersByTime(29_999));
+      const { rerender } = render(<UnifiedChatPanelConnector />);
+      fireEvent.click(screen.getByRole('button', { name: 'call.startVideo' }));
+      act(() => vi.advanceTimersByTime(9_999));
       expect(screen.getByText('call.preparing')).toBeInTheDocument();
       act(() => vi.advanceTimersByTime(1));
       expect(screen.queryByText('call.preparing')).not.toBeInTheDocument();
+
+      // The rotation finishing late opens nothing.
+      await act(async () => settle(true));
+      rerender(<UnifiedChatPanelConnector />);
+      expect(calls.openCall).not.toHaveBeenCalled();
     } finally {
       vi.useRealTimers();
     }
-    eligible();
-    rerender(<UnifiedChatPanelConnector />);
-    expect(calls.openCall).not.toHaveBeenCalled();
   });
 
   it('opens a queued call on the old session when the rotation could not swap it', async () => {

@@ -51,8 +51,8 @@ import { useNewChat } from './useNewChat';
 import { useUnifiedConversations } from './useUnifiedConversations';
 import { useUnifiedConversationView } from './useUnifiedConversationView';
 
-// How long a queued call waits for the replaced chat session to sync.
-const QUEUED_CALL_TIMEOUT_MS = 30_000;
+// How long after the click a queued call may still open.
+const QUEUED_CALL_TIMEOUT_MS = 10_000;
 
 /**
  * Wires the unified conversation list + selected thread to the CRD ChatPanel.
@@ -124,17 +124,20 @@ export const UnifiedChatPanelConnector = ({
     }
     if (queuedCall.conversationId !== selectedConversationId) {
       setQueuedCall(null);
-    } else if (queuedCall.swapDone) {
-      if (callEligibility.matrixRoomId === queuedCall.matrixRoomId) {
-        setQueuedCall(null);
-        openCall({ matrixRoomId: queuedCall.matrixRoomId, intent: queuedCall.intent });
-      } else {
-        // A swap that failed after stopping the old client leaves the tab stopped until reload.
-        const timer = setTimeout(() => setQueuedCall(null), QUEUED_CALL_TIMEOUT_MS);
-        return () => clearTimeout(timer);
-      }
+    } else if (queuedCall.swapDone && callEligibility.matrixRoomId === queuedCall.matrixRoomId) {
+      setQueuedCall(null);
+      openCall({ matrixRoomId: queuedCall.matrixRoomId, intent: queuedCall.intent });
     }
   }, [queuedCall, selectedConversationId, callEligibility.matrixRoomId]);
+  // A call that has not opened by then is dropped, so none opens (or rings) long after the click.
+  const isCallQueued = queuedCall !== null;
+  useEffect(() => {
+    if (!isCallQueued) {
+      return;
+    }
+    const timer = setTimeout(() => setQueuedCall(null), QUEUED_CALL_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [isCallQueued]);
   const activeCallRooms = useActiveCallRooms(conversations);
 
   // Realtime conversation events are subscribed globally by
