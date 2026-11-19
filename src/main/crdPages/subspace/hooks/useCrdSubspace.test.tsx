@@ -7,6 +7,13 @@ type State = { id: string; sortOrder: number; settings: { visible: boolean; side
 
 let subspaceLevel: SpaceLevel = SpaceLevel.L1;
 let flowStates: State[] = [];
+let canRead = true;
+
+const useSubspacePageQuery = vi.fn((_options: { skip?: boolean }) => ({
+  data: { lookup: { space: { collaboration: { id: 'collab-1', calloutsSet: { id: 'cs-1' } } } } },
+  loading: false,
+}));
+const useSpaceDefaultTemplatesQuery = vi.fn((_options: { skip?: boolean }) => ({ data: undefined }));
 
 const useSpaceDashboardNavigation = vi.fn((_args: { spaceId: string | undefined; skip?: boolean }) => ({
   dashboardNavigation: undefined,
@@ -15,11 +22,8 @@ const useSpaceDashboardNavigation = vi.fn((_args: { spaceId: string | undefined;
 }));
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useSubspacePageQuery: () => ({
-    data: { lookup: { space: { collaboration: { id: 'collab-1', calloutsSet: { id: 'cs-1' } } } } },
-    loading: false,
-  }),
-  useSpaceDefaultTemplatesQuery: () => ({ data: undefined }),
+  useSubspacePageQuery: (options: { skip?: boolean }) => useSubspacePageQuery(options),
+  useSpaceDefaultTemplatesQuery: (options: { skip?: boolean }) => useSpaceDefaultTemplatesQuery(options),
   useInnovationFlowDetailsQuery: () => ({
     data: {
       lookup: {
@@ -40,7 +44,7 @@ vi.mock('@/domain/space/hooks/useSubSpace', () => ({
       about: { profile: { displayName: 'Sub', description: '', url: '/sub' }, membership: undefined },
     },
     parentSpaceId: 'parent-1',
-    permissions: { canRead: true, canUpdate: true, canCreateSubspace: true },
+    permissions: { canRead, canUpdate: true, canCreateSubspace: true },
     loading: false,
   }),
 }));
@@ -117,5 +121,27 @@ describe('useCrdSubspace sidebar plan', () => {
     flowStates = [state('a', 1, []), state('b', 2, [SidebarWidget.Index])];
     const { result } = renderHook(() => useCrdSubspace());
     expect(result.current.sidebarPlan).toEqual([]);
+  });
+});
+
+describe('useCrdSubspace read gate', () => {
+  beforeEach(() => {
+    flowStates = [];
+    useSubspacePageQuery.mockClear();
+    useSpaceDefaultTemplatesQuery.mockClear();
+  });
+
+  test('a viewer without READ on the subspace never requests collaboration or templatesManager', () => {
+    canRead = false;
+    renderHook(() => useCrdSubspace());
+    expect(useSubspacePageQuery.mock.calls.every(([options]) => options.skip === true)).toBe(true);
+    expect(useSpaceDefaultTemplatesQuery.mock.calls.every(([options]) => options.skip === true)).toBe(true);
+    canRead = true;
+  });
+
+  test('a viewer with READ fetches the subspace page and default templates', () => {
+    renderHook(() => useCrdSubspace());
+    expect(useSubspacePageQuery).toHaveBeenLastCalledWith(expect.objectContaining({ skip: false }));
+    expect(useSpaceDefaultTemplatesQuery).toHaveBeenLastCalledWith(expect.objectContaining({ skip: false }));
   });
 });

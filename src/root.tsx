@@ -3,6 +3,7 @@ import { UserGeoProvider } from '@/core/analytics/geo';
 import SentryErrorBoundaryProvider from '@/core/analytics/SentryErrorBoundaryProvider';
 import { SentryTransactionScopeContextProvider } from '@/core/analytics/SentryTransactionScopeContext';
 import AlkemioApolloProvider from '@/core/apollo/context/ApolloProvider';
+import { useRefreshOnMembershipChange } from '@/core/apollo/useRefreshOnMembershipChange';
 import { AuthenticationProvider } from '@/core/auth/authentication/context/AuthenticationProvider';
 import { IdentityRoutes } from '@/core/auth/authentication/routing/IdentityRoute';
 import '@/core/i18n/config';
@@ -10,6 +11,7 @@ import { type FC, Suspense } from 'react';
 import { CookiesProvider } from 'react-cookie';
 import { BrowserRouter, useLocation } from 'react-router-dom';
 import { Error40XBoundary } from '@/core/40XErrorHandler/ErrorBoundary';
+import { useAppDownloadInterception } from '@/core/appMode/useAppDownloadInterception';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { MatrixSession } from '@/core/matrix/MatrixSessionProvider';
 import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
@@ -27,6 +29,7 @@ import { UnifiedChatProvider } from '@/main/crdPages/unifiedChat/UnifiedChatProv
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
 import { UnreadTabBadge } from '@/main/tabBadge/UnreadTabBadge';
+import { AppPullToRefresh } from '@/main/ui/layout/AppPullToRefresh';
 import { ConversationEventsSubscriber } from '@/main/userMessaging/ConversationEventsSubscriber';
 import { CallOverlayHost } from '@/main/userMessaging/calls/CallOverlayHost';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
@@ -73,6 +76,17 @@ function NativePushTapRouter() {
   return null;
 }
 
+/** Mounted inside `UserProvider`: the hook needs the Apollo client and the auth state. */
+function RefreshOnMembershipChange() {
+  useRefreshOnMembershipChange();
+  return null;
+}
+
+function AppDownloadInterceptor() {
+  useAppDownloadInterception();
+  return null;
+}
+
 /** Top-level path segments owned by the auth flow — the unified chat is hidden on all of them. */
 const AUTH_ROUTE_SEGMENTS = new Set<string>(Object.values(IdentityRoutes));
 
@@ -114,6 +128,7 @@ const Root: FC = () => {
                 <AuthenticationProvider>
                   <BrowserRouter>
                     <NativePushTapRouter />
+                    <AppDownloadInterceptor />
                     <UserGeoProvider>
                       <ApmProvider>
                         <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
@@ -125,6 +140,7 @@ const Root: FC = () => {
                                     <FullscreenEditorProvider>
                                       <AssistantProvider>
                                         <NavigationHistoryTracker />
+                                        <RefreshOnMembershipChange />
                                         <ApmUserSetter />
                                         <ScrollToTop />
                                         <NotificationsGate />
@@ -137,6 +153,7 @@ const Root: FC = () => {
                                         </Suspense>
                                         <VersionHandling />
                                         <OnlineStatusNotification />
+                                        <AppPullToRefresh />
                                         <Error40XBoundary
                                           errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
                                         >

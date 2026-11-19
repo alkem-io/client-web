@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUserSecurityAuthenticationMethodsQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useSecondFactorRequirementQuery,
+  useUserSecurityAuthenticationMethodsQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 import { AuthenticationType } from '@/core/apollo/generated/graphql-schema';
 import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
@@ -14,6 +17,8 @@ import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { platformBaseAddress } from '@/main/constants/endpoints';
 import { flowDescriptorAdapter } from '@/main/crdPages/auth/flowDescriptorAdapter';
 import { invokePasskeyTrigger } from '@/main/crdPages/auth/passkeyTrigger';
+import { TwoStepVerification } from '@/main/crdPages/auth/TwoStepVerification';
+import { offersTwoStepVerification } from '@/main/crdPages/auth/twoStepVerificationModel';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import useCanEditUserSettings from '../../useCanEditUserSettings';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
@@ -76,6 +81,7 @@ const CrdUserSecurityTab = () => {
         state={{ kind: 'loading' }}
         passwordForm={null}
         webauthnForm={null}
+        twoStepVerificationSection={null}
         mcpApiKeysCard={null}
         connectedAccountsSection={null}
       />
@@ -156,6 +162,21 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
       />
     ) : null;
 
+  // Two-step verification: the same settings flow's totp / lookup_secret / webauthn nodes. Whether a
+  // rule requires a second factor of this person decides the warning on removing the last one, and whether its
+  // sign-in counted a single way to pass the second step decides the notice asking for a second.
+  const twoStepFlow =
+    flowResult.kind === 'ready' && offersTwoStepVerification(flowResult.flow) ? flowResult.flow : undefined;
+  const { data: requirementData } = useSecondFactorRequirementQuery({ skip: !twoStepFlow });
+  const twoStepVerificationSection = twoStepFlow ? (
+    // Until the requirement is known (loading or failed), warn as if it applies: the warning is the safe default.
+    <TwoStepVerification
+      flow={twoStepFlow}
+      requirementCovered={requirementData?.me.secondFactorRequirement.covered ?? true}
+      secondWayNeeded={requirementData?.me.secondFactorRequirement.secondWayNeeded}
+    />
+  ) : null;
+
   // Connected Accounts (US1-3, FR-001-FR-012, FR-017-FR-026): derived from
   // the same Settings flow plus the same authentication-methods query the
   // Change Password card already loads — no new round trip (research D2).
@@ -227,6 +248,7 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
       state={state}
       passwordForm={passwordForm}
       webauthnForm={webauthnForm}
+      twoStepVerificationSection={twoStepVerificationSection}
       mcpApiKeysCard={mcpApiKeysCard}
       connectedAccountsSection={connectedAccountsSection}
     />

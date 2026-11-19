@@ -145,6 +145,7 @@ export function CommentItem({
               {canComment && (
                 <EmojiPicker
                   onSelect={handleAddReaction}
+                  mode="reaction"
                   trigger={
                     <Button
                       type="button"

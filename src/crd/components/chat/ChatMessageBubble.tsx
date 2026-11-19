@@ -104,6 +104,7 @@ export function ChatMessageBubble({
   const addReactionTrigger = effectiveCanReact && onAddReaction && (
     <EmojiPicker
       onSelect={handlePick}
+      mode="reaction"
       trigger={
         <button
           type="button"

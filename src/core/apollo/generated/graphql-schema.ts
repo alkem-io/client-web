@@ -719,6 +719,23 @@ export type AdminCommunicationReconcileForumHierarchyInput = {
   repairRoomParentPointers?: Scalars['Boolean']['input'];
 };
 
+export type AdminResetUserSecondFactorInput = {
+  /** True whenever anyone else may hold the member's password: the password is then replaced with a secret nobody holds. Other first factors (a passkey, a linked social sign-in) and the identity's addresses are not touched and must be checked separately. No default. */
+  invalidatePassword: Scalars['Boolean']['input'];
+  /** The user whose second factor is reset. */
+  userID: Scalars['UUID']['input'];
+};
+
+export type AdminResetUserSecondFactorResult = {
+  __typename?: 'AdminResetUserSecondFactorResult';
+  /** False when it was not asked, or the identity holds no password. */
+  passwordInvalidated: Scalars['Boolean']['output'];
+  /** The second-factor credential types that were removed (totp, webauthn, lookup_secret). */
+  removedCredentialTypes: Array<Scalars['String']['output']>;
+  /** How many application sessions of the user were ended. */
+  sessionsRevoked: Scalars['Int']['output'];
+};
+
 export type AdminRevokeMcpApiKeyInput = {
   keyID: Scalars['UUID']['input'];
   /** Owner of the key. Required — it scopes the revoke and the audit subject. */
@@ -1199,6 +1216,7 @@ export enum AuthorizationPrivilege {
   PlatformPromoteManage = 'PLATFORM_PROMOTE_MANAGE',
   PlatformRolesAssign = 'PLATFORM_ROLES_ASSIGN',
   PlatformRoleHoldersRead = 'PLATFORM_ROLE_HOLDERS_READ',
+  PlatformSecondFactorReset = 'PLATFORM_SECOND_FACTOR_RESET',
   PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
   PlatformSupportListsRead = 'PLATFORM_SUPPORT_LISTS_READ',
   PlatformSupportOrgMembership = 'PLATFORM_SUPPORT_ORG_MEMBERSHIP',
@@ -5411,6 +5429,8 @@ export type MeQueryResults = {
   organizationInvitations: Array<OrganizationInvitationResult>;
   /** The number of the current authenticated user's own pending organization invitations. */
   organizationInvitationsCount: Scalars['Float']['output'];
+  /** Whether a second-factor rule covers the current user, its deadline, whether this session meets it, and whether the account needs a second way to pass the second step. */
+  secondFactorRequirement: MeSecondFactorRequirement;
   /** The Spaces the current user is a member of as a flat list. */
   spaceMembershipsFlat: Array<CommunityMembershipResult>;
   /** The hierarchy of the Spaces the current user is a member. */
@@ -5457,6 +5477,18 @@ export type MeQueryResultsOrganizationInvitationsCountArgs = {
 
 export type MeQueryResultsSpaceMembershipsHierarchicalArgs = {
   limit?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type MeSecondFactorRequirement = {
+  __typename?: 'MeSecondFactorRequirement';
+  /** False for any caller whose credential is not a person's sign-in (API key, delegation token, non-interactive token, service account), whatever its roles. A cookie session and a Hydra bearer read their real coverage. */
+  covered: Scalars['Boolean']['output'];
+  /** When a covering rule starts refusing a sign-in that does not meet it; the earliest of the rules that cover the user. */
+  deadline?: Maybe<Scalars['DateTime']['output']>;
+  /** Whether this session's sign-in meets a second-factor rule: it completed a second factor, and the account held at least two ways to pass the second step when they were counted at sign-in. */
+  satisfied: Scalars['Boolean']['output'];
+  /** True when a covering rule applies and this session signed in with a second factor, but the account held fewer than two ways to pass the second step at sign-in. An authenticator app, each security key and recovery codes count one each; a passkey does not count. Signing in again after adding a way updates it. */
+  secondWayNeeded: Scalars['Boolean']['output'];
 };
 
 export type MediaGallery = {
@@ -5799,6 +5831,8 @@ export type Mutation = {
   adminLicensePolicyUpdateCredentialRule: LicensingCredentialBasedPolicyCredentialRule;
   /** Lists, and on request copies, the files templates reference but do not store. A file is copied only when the template's owner can read it. A dry run by default. */
   adminRepairTemplateFiles: AdminTemplateFileRepairResult;
+  /** Platform Support or Platform Users Admin: remove a user's second factor (authenticator app, security keys, recovery codes) and end their identity-provider sessions and their platform sign-in sessions. A bearer token issued to an application outside the platform's own sign-in is not ended and stays valid until it expires. Audited fail-closed. Refuses self-targeting. */
+  adminResetUserSecondFactor: AdminResetUserSecondFactorResult;
   /** Platform Users Admin: revoke a named user's MCP API key. Idempotent. */
   adminRevokeMcpApiKey: McpApiKey;
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
@@ -6089,6 +6123,8 @@ export type Mutation = {
   resetConversationVc: Conversation;
   /** Reset all license plans on Accounts */
   resetLicenseOnAccounts: Scalars['Boolean']['output'];
+  /** Reset the current user’s app icon badge counter to zero. Called by the iOS app when it is opened. */
+  resetPushBadgeCount: Scalars['Boolean']['output'];
   /** Revoke a credential from an Actor. */
   revokeCredentialFromActor: Scalars['Boolean']['output'];
   /** Revokes the specified LicensePlan on an Account. */
@@ -6325,6 +6361,10 @@ export type MutationAdminLicensePolicyUpdateCredentialRuleArgs = {
 
 export type MutationAdminRepairTemplateFilesArgs = {
   repairData: AdminTemplateFileRepairInput;
+};
+
+export type MutationAdminResetUserSecondFactorArgs = {
+  resetData: AdminResetUserSecondFactorInput;
 };
 
 export type MutationAdminRevokeMcpApiKeyArgs = {
@@ -7290,6 +7330,7 @@ export enum NotificationEvent {
   UserOrganizationAssociateApplicationDeclined = 'USER_ORGANIZATION_ASSOCIATE_APPLICATION_DECLINED',
   UserOrganizationAssociateInvitation = 'USER_ORGANIZATION_ASSOCIATE_INVITATION',
   UserPasswordChangeSecuritySignal = 'USER_PASSWORD_CHANGE_SECURITY_SIGNAL',
+  UserSecondFactorChangeSecuritySignal = 'USER_SECOND_FACTOR_CHANGE_SECURITY_SIGNAL',
   UserSignUpWelcome = 'USER_SIGN_UP_WELCOME',
   UserSpaceCommunityApplicationDeclined = 'USER_SPACE_COMMUNITY_APPLICATION_DECLINED',
   UserSpaceCommunityInvitation = 'USER_SPACE_COMMUNITY_INVITATION',
@@ -7522,6 +7563,8 @@ export type OrganizationSettings = {
   membership: OrganizationSettingsMembership;
   /** The privacy settings for this Organization */
   privacy: OrganizationSettingsPrivacy;
+  /** The security settings for this Organization. */
+  security: OrganizationSettingsSecurity;
 };
 
 export type OrganizationSettingsMembership = {
@@ -7538,6 +7581,12 @@ export type OrganizationSettingsPrivacy = {
   __typename?: 'OrganizationSettingsPrivacy';
   /** Allow contribution roles (membership, lead etc) in Spaces to be visible. */
   contributionRolesPubliclyVisible: Scalars['Boolean']['output'];
+};
+
+export type OrganizationSettingsSecurity = {
+  __typename?: 'OrganizationSettingsSecurity';
+  /** Holders of an organization role (owner, admin, associate) must use a second factor. */
+  secondFactorRequired: Scalars['Boolean']['output'];
 };
 
 export type OrganizationVerification = {
@@ -7926,6 +7975,16 @@ export type PlatformSettings = {
   __typename?: 'PlatformSettings';
   /** The integration settings for this Platform */
   integration: PlatformIntegrationSettings;
+  /** The second-factor rule for platform roles. Null unless the reader holds the platform-settings privilege. */
+  security?: Maybe<PlatformSettingsSecurity>;
+};
+
+export type PlatformSettingsSecurity = {
+  __typename?: 'PlatformSettingsSecurity';
+  /** Holders of a Platform … role must use a second factor. */
+  secondFactorRequiredForPlatformRoles: Scalars['Boolean']['output'];
+  /** When the rule was last switched on; null while it has never been on. */
+  secondFactorRequiredForPlatformRolesSince?: Maybe<Scalars['DateTime']['output']>;
 };
 
 export type PlatformWellKnownVirtualContributorMapping = {
@@ -10772,6 +10831,8 @@ export type UpdateOrganizationInput = {
 export type UpdateOrganizationSettingsEntityInput = {
   membership?: InputMaybe<UpdateOrganizationSettingsMembershipInput>;
   privacy?: InputMaybe<UpdateOrganizationSettingsPrivacyInput>;
+  /** The second-factor rule for the members of this Organization. */
+  security?: InputMaybe<UpdateOrganizationSettingsSecurityInput>;
 };
 
 export type UpdateOrganizationSettingsInput = {
@@ -10795,8 +10856,15 @@ export type UpdateOrganizationSettingsPrivacyInput = {
   contributionRolesPubliclyVisible: Scalars['Boolean']['input'];
 };
 
+export type UpdateOrganizationSettingsSecurityInput = {
+  /** Require holders of an organization role (owner, admin, associate) to use a second factor. Switching it on starts a fourteen-day grace. */
+  secondFactorRequired?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 export type UpdatePlatformSettingsInput = {
   integration?: InputMaybe<UpdatePlatformSettingsIntegrationInput>;
+  /** The second-factor rule for platform roles. */
+  security?: InputMaybe<UpdatePlatformSettingsSecurityInput>;
 };
 
 export type UpdatePlatformSettingsIntegrationInput = {
@@ -10804,6 +10872,11 @@ export type UpdatePlatformSettingsIntegrationInput = {
   iframeAllowedUrls: Array<Scalars['String']['input']>;
   /** Update the list of email addresses blocked from receiving notifications. */
   notificationEmailBlacklist?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+export type UpdatePlatformSettingsSecurityInput = {
+  /** Require holders of a Platform … role to use a second factor. Switching it on starts a fourteen-day grace. */
+  secondFactorRequiredForPlatformRoles?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdatePollInput = {
@@ -25690,6 +25763,7 @@ export type OrganizationSettingsQuery = {
               allowApplications: boolean;
             };
             privacy: { __typename?: 'OrganizationSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+            security: { __typename?: 'OrganizationSettingsSecurity'; secondFactorRequired: boolean };
           };
         }
       | undefined;
@@ -25776,6 +25850,7 @@ export type UpdateOrganizationSettingsMutation = {
         allowSpaceInvitations: boolean;
         allowApplications: boolean;
       };
+      security: { __typename?: 'OrganizationSettingsSecurity'; secondFactorRequired: boolean };
     };
   };
 };
@@ -52977,6 +53052,22 @@ export type RecentSpacesQuery = {
         | { __typename?: 'ActivityLogEntryUpdateSent'; id: string; createdDate: Date }
         | undefined;
     }>;
+  };
+};
+
+export type SecondFactorRequirementQueryVariables = Exact<{ [key: string]: never }>;
+
+export type SecondFactorRequirementQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    secondFactorRequirement: {
+      __typename?: 'MeSecondFactorRequirement';
+      covered: boolean;
+      deadline?: Date | undefined;
+      satisfied: boolean;
+      secondWayNeeded: boolean;
+    };
   };
 };
 

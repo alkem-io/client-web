@@ -19,18 +19,21 @@ const CurrentUserContext = createContext<CurrentUserModel>({
 });
 
 const CurrentUserProvider = ({ children }: PropsWithChildren) => {
-  const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
-
   const {
-    data: meData,
-    loading: loadingMe,
-    error: userProviderError,
-  } = useCurrentUserLightQuery({ skip: !isAuthenticated });
+    isAuthenticated,
+    loading: loadingAuthentication,
+    verified,
+    secondFactorRequired,
+  } = useAuthenticationContext();
+  // A refused session is sent to /second-factor and asks the server nothing about the user meanwhile.
+  const skip = !isAuthenticated || secondFactorRequired;
+
+  const { data: meData, loading: loadingMe, error: userProviderError } = useCurrentUserLightQuery({ skip });
 
   const user = meData?.me?.user;
 
   const { data: platformLevelAuthorizationData, loading: isLoadingPlatformLevelAuthorization } =
-    usePlatformLevelAuthorizationQuery({ skip: !isAuthenticated });
+    usePlatformLevelAuthorizationQuery({ skip });
 
   const loading = loadingAuthentication || loadingMe || isLoadingPlatformLevelAuthorization;
 

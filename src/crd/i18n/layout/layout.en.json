@@ -22,6 +22,7 @@
     "changeLanguage": "Change Language",
     "changeLanguageError": "Couldn't save language preference — please try again.",
     "getHelp": "Get Help",
+    "refresh": "Refresh",
     "showGrid": "Show Grid",
     "hideGrid": "Hide Grid"
   },
@@ -57,5 +58,12 @@
     "settings": "settings",
     "acceptAll": "Accept All Cookies",
     "confirmChoice": "Confirm Choice"
+  },
+  "secondFactorReminder": {
+    "action": "Set it up",
+    "dismiss": "Dismiss",
+    "secondWayAction": "Add one",
+    "secondWayText": "Add a second way to pass the second step by {{deadline}}: an authenticator app, another security key, or recovery codes. Then sign in again. After that date you cannot use Alkemio with one way only.",
+    "text": "Use two-step verification by {{deadline}}: set it up, or sign in again with it if you already have. After that date you cannot use Alkemio without it."
   }
 }

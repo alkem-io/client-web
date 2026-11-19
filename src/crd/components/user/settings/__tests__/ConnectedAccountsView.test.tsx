@@ -304,6 +304,17 @@ describe('ConnectedAccountsView', () => {
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
+  it('says the passkey row signs you in without a password, and says nothing extra on the password row (client-web#10615)', () => {
+    render(
+      <ConnectedAccountsView status="ready" onRetry={vi.fn()} providers={[]} credentials={credentials} messages={[]} />
+    );
+
+    expect(screen.getAllByText('user.security.connectedAccounts.credentials.passkey.explanation')).toHaveLength(1);
+    expect(
+      screen.queryByText('user.security.connectedAccounts.credentials.password.explanation')
+    ).not.toBeInTheDocument();
+  });
+
   it('calls onProviderActionSubmit with the row when its native form submits (research D5)', () => {
     const onProviderActionSubmit = vi.fn();
     render(

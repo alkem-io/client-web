@@ -28,7 +28,6 @@ export function InvitationDetailConnector({ open, onOpenChange, invitation }: In
   const props = useInvitationActions({
     onAccept: close,
     onReject: close,
-    spaceId: invitation?.spacePendingMembershipInfo.id,
   });
 
   if (!hydrated) {
