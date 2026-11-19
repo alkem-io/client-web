@@ -18,7 +18,7 @@ export type SpaceLeadData = {
   type: 'person' | 'organization';
   location?: string;
   href: string;
-  /** Opens a profile preview on hover (tap on touch screens). No Message action: this is a modal. */
+  /** Opens a profile preview on hover (tap on touch screens). */
   preview?: ContributorPreviewData;
 };
 
@@ -76,6 +76,8 @@ type SpaceAboutViewProps = {
   onEditMembers?: () => void;
   /** Deep-links into Settings → About's Classifications section (FR-018d — reachable and reversible). */
   onEditClassifications?: () => void;
+  /** Message action on a lead's profile preview; without it the button hides. */
+  onMessageContributor?: (contributor: ContributorPreviewData) => void;
 };
 
 // Force light markdown colors when rendered on the dark accent panel. MarkdownContent
@@ -104,6 +106,7 @@ export function SpaceAboutView({
   onEditReferences,
   onEditMembers,
   onEditClassifications,
+  onMessageContributor,
 }: SpaceAboutViewProps) {
   const { t } = useTranslation('crd-space');
 
@@ -207,7 +210,9 @@ export function SpaceAboutView({
                     return (
                       <li key={lead.href}>
                         {lead.preview ? (
-                          <ContributorHoverCard contributor={lead.preview}>{link}</ContributorHoverCard>
+                          <ContributorHoverCard contributor={lead.preview} onMessage={onMessageContributor}>
+                            {link}
+                          </ContributorHoverCard>
                         ) : (
                           link
                         )}

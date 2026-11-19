@@ -1,9 +1,11 @@
 import { EventEmitter } from 'node:events';
 import { act, render, screen } from '@testing-library/react';
+import { useEffect } from 'react';
 import { afterEach, expect, it, vi } from 'vitest';
 import { UnifiedChatLauncher } from './UnifiedChatLauncher';
+import { UnifiedChatPanelConnector } from './UnifiedChatPanelConnector';
 
-const messaging = { isEnabled: true, isOpen: false, setIsOpen: vi.fn() };
+const messaging = { isEnabled: true, isOpen: false, setIsOpen: vi.fn(), openRequestCount: 0 };
 const client = Object.assign(new EventEmitter(), { getSyncState: () => 'SYNCING' });
 
 vi.mock('@/core/appMode/isAppMode', () => ({ isAppMode: () => true }));
@@ -19,9 +21,9 @@ vi.mock('@/main/userMessaging/UserMessagingContext', () => ({ useUserMessagingCo
 vi.mock('@/main/userMessaging/useUnreadConversationsCount', () => ({ useUnreadConversationsCount: () => 0 }));
 vi.mock('./useChatDeepLink', () => ({ useChatDeepLinkOpen: vi.fn() }));
 vi.mock('./UnifiedChatPanelConnector', () => ({
-  UnifiedChatPanelConnector: ({ catchingUp }: { catchingUp?: boolean }) => (
+  UnifiedChatPanelConnector: vi.fn(({ catchingUp }: { catchingUp?: boolean }) => (
     <output aria-label="panel">{String(catchingUp)}</output>
-  ),
+  )),
 }));
 
 const setVisibility = (state: DocumentVisibilityState) => {
@@ -53,4 +55,21 @@ it('tells the panel the sync is catching up when the app resumed before the pane
     client.emit('sync', 'SYNCING');
   });
   expect(screen.getByLabelText('panel').textContent).toBe('false');
+});
+
+it('mounts the panel afresh for every open request, including one made while it is open', () => {
+  const panelMounts = vi.fn();
+  const Panel = () => {
+    useEffect(panelMounts, []);
+    return <output aria-label="panel" />;
+  };
+  vi.mocked(UnifiedChatPanelConnector).mockImplementation(Panel);
+  Object.assign(messaging, { isOpen: true, openRequestCount: 1 });
+  const { rerender } = render(<UnifiedChatLauncher />);
+  rerender(<UnifiedChatLauncher />);
+  expect(panelMounts).toHaveBeenCalledTimes(1);
+
+  Object.assign(messaging, { openRequestCount: 2 });
+  rerender(<UnifiedChatLauncher />);
+  expect(panelMounts).toHaveBeenCalledTimes(2);
 });
