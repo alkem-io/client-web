@@ -1639,5 +1639,9 @@
     "learnMore": "Научете повече",
     "contactSupport": "Свържете се с поддръжката",
     "mentionUnavailable": "Временно недостъпно"
+  },
+  "contributorMap": {
+    "pinGroup": "{{count}} участници тук: {{names}}",
+    "pinGroupList": "{{count}} участници тук"
   }
 }

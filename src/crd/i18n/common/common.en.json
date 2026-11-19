@@ -1639,5 +1639,9 @@
     "learnMore": "Learn more",
     "contactSupport": "Contact support",
     "mentionUnavailable": "Temporarily unavailable"
+  },
+  "contributorMap": {
+    "pinGroup": "{{count}} contributors here: {{names}}",
+    "pinGroupList": "{{count}} contributors here"
   }
 }

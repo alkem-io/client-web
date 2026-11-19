@@ -34,6 +34,47 @@ export type ContributorMapPin = {
   longitude: number;
 };
 
+/** Pins drawn on top of each other at the current zoom, shown as one pin placed at the first. */
+export type ContributorMapPinGroup = {
+  id: string;
+  pins: ContributorMapPin[];
+};
+
+// Avatar pins are 48px squares: two pins closer than that on both axes overlap.
+const PIN_SIZE_PX = 48;
+// MapLibre's Web Mercator world is 512px wide at zoom 0.
+const WORLD_SIZE_AT_ZOOM_0 = 512;
+
+const toWorldPixels = (pin: ContributorMapPin, zoom: number) => {
+  const world = WORLD_SIZE_AT_ZOOM_0 * 2 ** zoom;
+  const sinLat = Math.sin((pin.latitude * Math.PI) / 180);
+  return {
+    x: ((pin.longitude + 180) / 360) * world,
+    y: (0.5 - Math.log((1 + sinLat) / (1 - sinLat)) / (4 * Math.PI)) * world,
+  };
+};
+
+/**
+ * Groups the pins that overlap at `zoom`. Panning moves every pin alike, so
+ * overlap depends on the zoom alone. Each pin joins the first group whose
+ * first pin it overlaps; pins at identical coordinates stay grouped at any zoom.
+ */
+export function groupOverlappingPins(pins: ContributorMapPin[], zoom: number): ContributorMapPinGroup[] {
+  const groups: { anchor: { x: number; y: number }; group: ContributorMapPinGroup }[] = [];
+  for (const pin of pins) {
+    const point = toWorldPixels(pin, zoom);
+    const overlapped = groups.find(
+      ({ anchor }) => Math.abs(anchor.x - point.x) < PIN_SIZE_PX && Math.abs(anchor.y - point.y) < PIN_SIZE_PX
+    );
+    if (overlapped) {
+      overlapped.group.pins.push(pin);
+    } else {
+      groups.push({ anchor: point, group: { id: pin.id, pins: [pin] } });
+    }
+  }
+  return groups.map(({ group }) => group);
+}
+
 /**
  * Admin-fixed initial map view. Absent/null ⇒ automatic framing.
  * Mirrors the server shape (longitude, latitude, zoom) — three floats.
@@ -103,28 +144,28 @@ type ContributorMapProps = {
   className?: string;
 };
 
-// Gap kept between the card popup and the map's edges.
-const CARD_POPUP_EDGE_GAP = 8;
+// Gap kept between a pin's popup (its card, or a group's list) and the map's edges.
+const PIN_POPUP_EDGE_GAP = 8;
 
 // The card popup's width is capped by maplibre's `maxWidth` (its 240px default
 // is too narrow for a card). The popup sits in the map container, so `100%` is
 // the map's width: the card never gets wider than a narrow (mobile) map.
-const CARD_POPUP_MAX_WIDTH = `min(20rem, calc(100% - ${2 * CARD_POPUP_EDGE_GAP}px))`;
+const CARD_POPUP_MAX_WIDTH = `min(20rem, calc(100% - ${2 * PIN_POPUP_EDGE_GAP}px))`;
 
-// The card sits centred below its pin (`top` anchor) or above it (`bottom`), so
-// the pin always stays within the card's width. Avatar pins are bottom-anchored
+// A pin's popup sits centred below its pin (`top` anchor) or above it (`bottom`),
+// so the pin always stays within the popup's width. Avatar pins are bottom-anchored
 // and 48px tall: a card above the point must clear the avatar.
-type CardPopupAnchor = 'top' | 'bottom';
-const CARD_POPUP_OFFSET: Record<CardPopupAnchor, [number, number]> = { top: [0, 8], bottom: [0, -56] };
+type PinPopupAnchor = 'top' | 'bottom';
+const PIN_POPUP_OFFSET: Record<PinPopupAnchor, [number, number]> = { top: [0, 8], bottom: [0, -56] };
 
-// Where the card goes and how tall it may be: below the pin when the pin is in
+// Where a pin's popup goes and how tall it may be: below the pin when the pin is in
 // the map's top half, above it otherwise; at most the map's height minus the
 // pin, maplibre's tip (10px) and the edge gaps. Without a map yet, only the CSS
 // cap applies.
-const cardPopupLayout = (
+const pinPopupLayout = (
   map: MapRef | null,
   pin: ContributorMapPin
-): { anchor: CardPopupAnchor; maxHeight: number | undefined } => {
+): { anchor: PinPopupAnchor; maxHeight: number | undefined } => {
   if (!map) {
     return { anchor: 'top', maxHeight: undefined };
   }
@@ -132,14 +173,14 @@ const cardPopupLayout = (
   const { y } = map.project([pin.longitude, pin.latitude]);
   return {
     anchor: y < mapHeight / 2 ? 'top' : 'bottom',
-    maxHeight: Math.max(mapHeight + CARD_POPUP_OFFSET.bottom[1] - 10 - 2 * CARD_POPUP_EDGE_GAP, 0),
+    maxHeight: Math.max(mapHeight + PIN_POPUP_OFFSET.bottom[1] - 10 - 2 * PIN_POPUP_EDGE_GAP, 0),
   };
 };
 
 // Maplibre never pans to show a popup, and the map clips its overflow. Once the
-// card has laid out, pan the map by however far the card and its pin stick out,
-// so both end up inside the map whatever the pin position or map size.
-const panCardPopupIntoView = (map: MapRef | null, popup: HTMLElement, pinButton: HTMLElement | undefined) => {
+// popup has laid out, pan the map by however far it and its pin stick out, so
+// both end up inside the map whatever the pin position or map size.
+const panPinPopupIntoView = (map: MapRef | null, popup: HTMLElement, pinButton: HTMLElement | undefined) => {
   if (!map) {
     return;
   }
@@ -151,11 +192,11 @@ const panCardPopupIntoView = (map: MapRef | null, popup: HTMLElement, pinButton:
   const top = Math.min(card.top, pin.top);
   const bottom = Math.max(card.bottom, pin.bottom);
   const overflow = (start: number, end: number, min: number, max: number) => {
-    if (start < min + CARD_POPUP_EDGE_GAP) {
-      return start - min - CARD_POPUP_EDGE_GAP;
+    if (start < min + PIN_POPUP_EDGE_GAP) {
+      return start - min - PIN_POPUP_EDGE_GAP;
     }
-    if (end > max - CARD_POPUP_EDGE_GAP) {
-      return end - max + CARD_POPUP_EDGE_GAP;
+    if (end > max - PIN_POPUP_EDGE_GAP) {
+      return end - max + PIN_POPUP_EDGE_GAP;
     }
     return 0;
   };
@@ -165,6 +206,10 @@ const panCardPopupIntoView = (map: MapRef | null, popup: HTMLElement, pinButton:
     map.panBy([dx, dy], { duration: 200 });
   }
 };
+
+// The popup's height cap: the CSS cap, tightened to the room beside the pin once known.
+const popupHeightStyle = ({ maxHeight }: { maxHeight: number | undefined }) =>
+  maxHeight === undefined ? undefined : { maxHeight: `min(18rem, 60vh, ${maxHeight}px)` };
 
 // Default to a Europe-centred view when there are no plottable pins; when there
 // are, fit the map to their bounds (single pin → centre on it). The view is only
@@ -234,6 +279,20 @@ function collapseAttribution(target: { getContainer(): HTMLElement }) {
   }
 }
 
+// The highest zoom MapLibre allows.
+const MAX_ZOOM = 22;
+
+function PinAvatar({ pin, className }: { pin: ContributorMapPin; className: string }) {
+  return (
+    <Avatar className={className}>
+      {pin.avatarUrl && <AvatarImage src={pin.avatarUrl} alt="" className="object-cover" />}
+      <AvatarFallback className="rounded-md bg-primary text-body text-primary-foreground">
+        {pin.name.charAt(0).toUpperCase()}
+      </AvatarFallback>
+    </Avatar>
+  );
+}
+
 export default function ContributorMap({
   pins,
   ariaLabel,
@@ -247,8 +306,13 @@ export default function ContributorMap({
   const { t } = useTranslation();
   const [activeId, setActiveId] = useState<string | null>(null);
   const active = pins.find(p => p.id === activeId) ?? null;
+  // Until the map reports its zoom, only pins at the very same spot are grouped.
+  const [zoom, setZoom] = useState(MAX_ZOOM);
+  const groups = groupOverlappingPins(pins, zoom);
+  const [openGroupId, setOpenGroupId] = useState<string | null>(null);
+  const openGroup = groups.find(g => g.id === openGroupId && g.pins.length > 1) ?? null;
   const pinButtons = useRef(new Map<string, HTMLButtonElement>());
-  const [cardLayout, setCardLayout] = useState<ReturnType<typeof cardPopupLayout>>({
+  const [popupLayout, setPopupLayout] = useState<ReturnType<typeof pinPopupLayout>>({
     anchor: 'top',
     maxHeight: undefined,
   });
@@ -261,27 +325,37 @@ export default function ContributorMap({
     setActiveId(null);
   };
 
-  // Esc inside the card popup closes only the popup, wherever the map sits. A
-  // window capture listener runs before Radix's document-level Escape handler,
-  // and a handled (default-prevented) Escape stops any enclosing dialog from
-  // closing too. Esc from portalled content, such as the card's open actions
-  // menu, is outside the popup and left to that content.
-  const cardPopupRef = useRef<HTMLDivElement>(null);
+  // Esc inside the card popup or a group's list closes only that popup, wherever
+  // the map sits. A window capture listener runs before Radix's document-level
+  // Escape handler, and a handled (default-prevented) Escape stops any enclosing
+  // dialog from closing too. Esc from portalled content, such as the card's open
+  // actions menu, is outside the popup and left to that content.
+  const popupRef = useRef<HTMLDivElement>(null);
   const hasCardPopup = Boolean(renderPinCard);
+  const openerId = openGroupId ?? (hasCardPopup ? activeId : null);
   useEffect(() => {
-    if (!activeId || !hasCardPopup) {
+    if (!openerId) {
       return;
     }
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && e.target instanceof Node && cardPopupRef.current?.contains(e.target)) {
+      if (e.key === 'Escape' && e.target instanceof Node && popupRef.current?.contains(e.target)) {
         e.preventDefault();
-        pinButtons.current.get(activeId)?.focus();
+        pinButtons.current.get(openerId)?.focus();
+        setOpenGroupId(null);
         setActiveId(null);
       }
     };
     window.addEventListener('keydown', handleKeyDown, { capture: true });
     return () => window.removeEventListener('keydown', handleKeyDown, { capture: true });
-  }, [activeId, hasCardPopup]);
+  }, [openerId]);
+
+  const openPin = (pin: ContributorMapPin) => {
+    setOpenGroupId(null);
+    setActiveId(pin.id);
+    if (renderPinCard) {
+      setPopupLayout(pinPopupLayout(mapRef.current, pin));
+    }
+  };
 
   const mapRef = useRef<MapRef>(null);
   // Latest pins + fixedView, read inside the fit effect without making them
@@ -360,61 +434,143 @@ export default function ContributorMap({
         attributionControl={false}
         onLoad={e => {
           collapseAttribution(e.target);
+          setZoom(e.target.getZoom());
           handleViewChange();
         }}
         onMoveEnd={handleViewChange}
+        onZoomEnd={e => setZoom(e.viewState.zoom)}
       >
         <AttributionControl compact={true} position="bottom-right" />
-        {pins.map(pin => (
-          <Marker
-            key={pin.id}
-            longitude={pin.longitude}
-            latitude={pin.latitude}
-            anchor="bottom"
-            onClick={e => {
-              e.originalEvent.stopPropagation();
-              setActiveId(pin.id);
-              if (renderPinCard) {
-                setCardLayout(cardPopupLayout(mapRef.current, pin));
-              }
-            }}
-          >
-            <button
-              type="button"
-              ref={el => {
-                if (el) {
-                  pinButtons.current.set(pin.id, el);
+        {groups.map(group => {
+          const [first] = group.pins;
+          const isGroup = group.pins.length > 1;
+          return (
+            <Marker
+              key={group.id}
+              longitude={first.longitude}
+              latitude={first.latitude}
+              anchor="bottom"
+              onClick={e => {
+                e.originalEvent.stopPropagation();
+                if (isGroup) {
+                  setActiveId(null);
+                  setOpenGroupId(group.id);
+                  setPopupLayout(pinPopupLayout(mapRef.current, first));
                 } else {
-                  pinButtons.current.delete(pin.id);
+                  openPin(first);
                 }
               }}
-              aria-label={pin.name}
-              className="block rounded-md transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              <Avatar className="size-12 rounded-md border-2 border-card shadow-md">
-                {pin.avatarUrl && <AvatarImage src={pin.avatarUrl} alt="" className="object-cover" />}
-                <AvatarFallback className="rounded-md bg-primary text-body text-primary-foreground">
-                  {pin.name.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-            </button>
-          </Marker>
-        ))}
+              <button
+                type="button"
+                // Every pin of a group is reached through the group's button, so focus
+                // returns here whether its list or one of its cards closes.
+                ref={el => {
+                  if (!el) {
+                    return;
+                  }
+                  for (const pin of group.pins) {
+                    pinButtons.current.set(pin.id, el);
+                  }
+                  return () => {
+                    for (const pin of group.pins) {
+                      if (pinButtons.current.get(pin.id) === el) {
+                        pinButtons.current.delete(pin.id);
+                      }
+                    }
+                  };
+                }}
+                aria-label={
+                  isGroup
+                    ? t('contributorMap.pinGroup', {
+                        count: group.pins.length,
+                        names: group.pins.map(p => p.name).join(', '),
+                      })
+                    : first.name
+                }
+                aria-haspopup={isGroup ? 'dialog' : undefined}
+                className="relative block rounded-md transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <PinAvatar pin={first} className="size-12 rounded-md border-2 border-card shadow-md" />
+                {isGroup && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute -top-2 -right-2 flex min-w-5 items-center justify-center rounded-full border-2 border-card bg-primary px-1 text-badge text-primary-foreground"
+                  >
+                    {group.pins.length}
+                  </span>
+                )}
+              </button>
+            </Marker>
+          );
+        })}
+
+        {openGroup && (
+          <Popup
+            // Its own key: a card popup keyed by the same pin id must mount anew, not
+            // take over this popup, or maplibre never opens (and focuses) the card.
+            key={`group-${openGroup.id}`}
+            longitude={openGroup.pins[0].longitude}
+            latitude={openGroup.pins[0].latitude}
+            anchor={popupLayout.anchor}
+            offset={PIN_POPUP_OFFSET[popupLayout.anchor]}
+            closeButton={false}
+            closeOnClick={false}
+            onClose={() => setOpenGroupId(null)}
+            onOpen={e =>
+              requestAnimationFrame(() =>
+                panPinPopupIntoView(mapRef.current, e.target.getElement(), pinButtons.current.get(openGroup.id))
+              )
+            }
+            className="[&_.maplibregl-popup-content]:rounded-lg! [&_.maplibregl-popup-content]:bg-transparent! [&_.maplibregl-popup-content]:p-0! [&_.maplibregl-popup-content]:shadow-none!"
+          >
+            {/* maplibre focuses the first contributor on open (`focusAfterOpen`). */}
+            <div
+              ref={popupRef}
+              role="dialog"
+              aria-label={t('contributorMap.pinGroupList', { count: openGroup.pins.length })}
+              style={popupHeightStyle(popupLayout)}
+              className="max-h-[min(18rem,60vh)] w-60 overflow-y-auto rounded-lg border border-border bg-card p-1 shadow-md"
+            >
+              {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+              {/* biome-ignore lint/a11y/useSemanticElements: role="list" restores semantics after Tailwind reset */}
+              <ul role="list" className="flex flex-col">
+                {openGroup.pins.map(pin => (
+                  <li key={pin.id}>
+                    <button
+                      type="button"
+                      onClick={() => openPin(pin)}
+                      className="flex w-full items-center gap-2 rounded-md p-2 text-left hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <PinAvatar pin={pin} className="size-8 rounded-md" />
+                      <span className="min-w-0">
+                        <span className="block truncate text-card-title text-foreground">{pin.name}</span>
+                        {pin.roleLabel && (
+                          <span className="block truncate text-caption text-muted-foreground">{pin.roleLabel}</span>
+                        )}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Popup>
+        )}
 
         {active && renderPinCard && (
           <Popup
             key={active.id}
             longitude={active.longitude}
             latitude={active.latitude}
-            anchor={cardLayout.anchor}
-            offset={CARD_POPUP_OFFSET[cardLayout.anchor]}
+            anchor={popupLayout.anchor}
+            offset={PIN_POPUP_OFFSET[popupLayout.anchor]}
             maxWidth={CARD_POPUP_MAX_WIDTH}
             closeButton={false}
             closeOnClick={false}
             onClose={() => setActiveId(null)}
             onOpen={e =>
               requestAnimationFrame(() =>
-                panCardPopupIntoView(mapRef.current, e.target.getElement(), pinButtons.current.get(active.id))
+                panPinPopupIntoView(mapRef.current, e.target.getElement(), pinButtons.current.get(active.id))
               )
             }
             // maplibre-gl.css is unlayered, so it beats the layered Tailwind utilities
@@ -430,14 +586,10 @@ export default function ContributorMap({
                 container, so pointer and key events inside it never reach the
                 map's pan/zoom handlers. */}
             <div
-              ref={cardPopupRef}
+              ref={popupRef}
               role="dialog"
               aria-label={active.name}
-              style={
-                cardLayout.maxHeight === undefined
-                  ? undefined
-                  : { maxHeight: `min(18rem, 60vh, ${cardLayout.maxHeight}px)` }
-              }
+              style={popupHeightStyle(popupLayout)}
               className="max-h-[min(18rem,60vh)] overflow-y-auto rounded-lg border border-border bg-card shadow-md focus-visible:outline-none"
             >
               <div className="flex justify-end px-1 pt-1">
