@@ -10,6 +10,12 @@ import { SilentErrorBoundary } from './SilentErrorBoundary';
 // starts as soon as the user reaches for the trigger, so the first open does
 // not wait for it.
 const loadEmojiPickerLib = () => import('emoji-picker-react');
+
+// Best effort: a failed preload is not an error, the open itself reports it.
+const preloadEmojiPickerLib = () => {
+  loadEmojiPickerLib().catch(() => {});
+};
+
 const EmojiPickerLib = lazy(loadEmojiPickerLib);
 
 /**
@@ -86,6 +92,8 @@ export function EmojiPicker({ onSelect, trigger, mode = 'insert' }: EmojiPickerP
   const [expanded, setExpanded] = useState(false);
   const [side, setSide] = useState<'top' | 'bottom'>('top');
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const openedByPointer = useRef(false);
 
   const handleOpenChange = (next: boolean) => {
     // The picker is capped to the room on its side, so it never overflows and
@@ -111,7 +119,18 @@ export function EmojiPicker({ onSelect, trigger, mode = 'insert' }: EmojiPickerP
 
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
-      <PopoverTrigger ref={triggerRef} asChild={true} onPointerEnter={loadEmojiPickerLib} onFocus={loadEmojiPickerLib}>
+      <PopoverTrigger
+        ref={triggerRef}
+        asChild={true}
+        onPointerEnter={preloadEmojiPickerLib}
+        onFocus={preloadEmojiPickerLib}
+        onPointerDown={() => {
+          openedByPointer.current = true;
+        }}
+        onKeyDown={() => {
+          openedByPointer.current = false;
+        }}
+      >
         {trigger}
       </PopoverTrigger>
       <PopoverContent
@@ -119,7 +138,13 @@ export function EmojiPicker({ onSelect, trigger, mode = 'insert' }: EmojiPickerP
         align="start"
         collisionPadding={SCREEN_EDGE_MARGIN_PX}
         className="z-[130] w-auto border p-0 shadow-lg"
-        onOpenAutoFocus={event => event.preventDefault()}
+        ref={contentRef}
+        // A tap must not move focus into the picker: the first focusable element
+        // is the search input, which raises the on-screen keyboard. An open from
+        // the keyboard still moves focus in, or Tab would leave the popover.
+        onOpenAutoFocus={event => {
+          if (openedByPointer.current) event.preventDefault();
+        }}
       >
         {mode === 'reaction' && !expanded ? (
           <div className="flex items-center gap-0.5 p-1">
@@ -137,7 +162,11 @@ export function EmojiPicker({ onSelect, trigger, mode = 'insert' }: EmojiPickerP
               type="button"
               aria-label={t('emojiPicker.more')}
               className="flex size-9 items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              onClick={() => setExpanded(true)}
+              onClick={() => {
+                // This button unmounts; keep focus inside the popover.
+                contentRef.current?.focus();
+                setExpanded(true);
+              }}
             >
               <Plus aria-hidden="true" className="size-4" />
             </button>
@@ -156,12 +185,13 @@ export function EmojiPicker({ onSelect, trigger, mode = 'insert' }: EmojiPickerP
               <SilentErrorBoundary>
                 <Suspense
                   fallback={
-                    <div
+                    <output
+                      aria-label={t('loading')}
                       className="flex items-center justify-center"
                       style={{ width: PICKER_WIDTH, height: PICKER_HEIGHT }}
                     >
                       <Loader2 aria-hidden="true" className="size-6 animate-spin text-muted-foreground" />
-                    </div>
+                    </output>
                   }
                 >
                   <EmojiPickerLib

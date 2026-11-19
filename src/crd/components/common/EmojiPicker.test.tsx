@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { cloneElement } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -18,8 +18,13 @@ vi.mock('@/crd/primitives/popover', () => ({
     return <div>{children}</div>;
   },
   // Like Radix with `asChild`, the ref lands on the trigger element itself.
-  PopoverTrigger: ({ children, ref }: { children: React.ReactElement; ref?: React.Ref<HTMLElement> }) =>
-    cloneElement(children as React.ReactElement<{ ref?: React.Ref<HTMLElement> }>, { ref }),
+  PopoverTrigger: ({
+    children,
+    asChild: _asChild,
+    onPointerEnter: _onPointerEnter,
+    onFocus: _onFocus,
+    ...props
+  }: { children: React.ReactElement } & Record<string, unknown>) => cloneElement(children, props),
   PopoverContent: ({ children, ...props }: { children: React.ReactNode } & Record<string, unknown>) => {
     captured.contentProps = props;
     return <div>{children}</div>;
@@ -150,14 +155,23 @@ describe('EmojiPicker on narrow screens', () => {
 // Radix moves focus into the popover when it opens, so on a phone the first
 // focusable element inside the picker raised the on-screen keyboard.
 describe('EmojiPicker focus on open', () => {
-  it('keeps the popover from moving focus into the picker when it opens', async () => {
+  const autoFocusEventAfter = async (open: (trigger: HTMLElement) => void) => {
     await renderPicker();
-    const onOpenAutoFocus = captured.contentProps.onOpenAutoFocus as (event: Event) => void;
+    open(screen.getByTestId('trigger'));
     const event = new Event('focus', { cancelable: true });
+    (captured.contentProps.onOpenAutoFocus as (event: Event) => void)(event);
+    return event;
+  };
 
-    onOpenAutoFocus(event);
-
+  it('keeps focus out of the picker when it is opened by a tap or click', async () => {
+    const event = await autoFocusEventAfter(trigger => fireEvent.pointerDown(trigger));
     expect(event.defaultPrevented).toBe(true);
+  });
+
+  // Otherwise the next Tab leaves the portalled popover without reaching it.
+  it('lets focus move into the picker when it is opened from the keyboard', async () => {
+    const event = await autoFocusEventAfter(trigger => fireEvent.keyDown(trigger, { key: 'Enter' }));
+    expect(event.defaultPrevented).toBe(false);
   });
 });
 
@@ -230,7 +244,7 @@ describe('EmojiPicker modes', () => {
 
 // A tab kept open across a deploy, or offline, cannot fetch the lazy chunk.
 describe('EmojiPicker when the library fails to load', () => {
-  it('empties the popover and reports the error instead of throwing to the page', () => {
+  it('empties the popover and reports the error instead of throwing to the page', async () => {
     captured.loadFails = true;
     const reportError = vi.fn();
     vi.stubGlobal('reportError', reportError);
@@ -240,7 +254,7 @@ describe('EmojiPicker when the library fails to load', () => {
 
     expect(screen.getByTestId('trigger')).toBeTruthy();
     expect(screen.queryByTestId('epr-body')).toBeNull();
-    expect(reportError).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(reportError).toHaveBeenCalledTimes(1));
   });
 });
 
