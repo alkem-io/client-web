@@ -51,6 +51,7 @@ export function EmojiPicker({ onSelect, trigger }: EmojiPickerProps) {
         align="start"
         collisionPadding={SCREEN_EDGE_MARGIN_PX}
         className="z-[130] w-auto border p-0 shadow-lg"
+        onOpenAutoFocus={event => event.preventDefault()}
       >
         {/* `overscroll-contain` keeps a gesture that runs past either end of the
             emoji list from scrolling whatever sits behind the picker. */}

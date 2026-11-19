@@ -132,3 +132,17 @@ describe('EmojiPicker on narrow screens', () => {
     expect(captured.pickerProps.width).toBe('min(350px, calc(100vw - 16px))');
   });
 });
+
+// Radix moves focus into the popover when it opens, so on a phone the first
+// focusable element inside the picker raised the on-screen keyboard.
+describe('EmojiPicker focus on open', () => {
+  it('keeps the popover from moving focus into the picker when it opens', () => {
+    renderPicker();
+    const onOpenAutoFocus = captured.contentProps.onOpenAutoFocus as (event: Event) => void;
+    const event = new Event('focus', { cancelable: true });
+
+    onOpenAutoFocus(event);
+
+    expect(event.defaultPrevented).toBe(true);
+  });
+});
