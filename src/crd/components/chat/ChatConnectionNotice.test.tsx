@@ -7,4 +7,9 @@ describe('ChatConnectionNotice', () => {
     render(<ChatConnectionNotice message="Reconnecting…" />);
     expect(screen.getByRole('status')).toHaveTextContent('Reconnecting…');
   });
+
+  it('spins its icon while something is under way', () => {
+    const { container } = render(<ChatConnectionNotice busy={true} message="Preparing your call…" />);
+    expect(container.querySelector('svg')).toHaveClass('animate-spin');
+  });
 });

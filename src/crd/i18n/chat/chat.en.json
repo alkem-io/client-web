@@ -119,6 +119,7 @@
     "joinVideo": "Join with video",
     "joinAudio": "Join with audio only",
     "joinedOnThisDevice": "Already joined on this device",
+    "preparing": "Preparing your call… It will start in a moment.",
     "overlayLabel": "Call",
     "close": "Close call",
     "license": "Open-source license",

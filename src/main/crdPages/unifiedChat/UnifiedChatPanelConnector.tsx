@@ -51,6 +51,9 @@ import { useNewChat } from './useNewChat';
 import { useUnifiedConversations } from './useUnifiedConversations';
 import { useUnifiedConversationView } from './useUnifiedConversationView';
 
+// How long a queued call waits for the replaced chat session to sync.
+const QUEUED_CALL_TIMEOUT_MS = 30_000;
+
 /**
  * Wires the unified conversation list + selected thread to the CRD ChatPanel.
  * Owns list/thread selection, realtime, send + reactions, and Guidance behaviors.
@@ -107,6 +110,31 @@ export const UnifiedChatPanelConnector = ({
   // Calls: shown only to beta testers, in a synced session, where the environment has calls.
   const callEligibility = useCallEligibility(selectedConversation ?? null);
   const callSession = useRoomCallSession(callEligibility.matrixRoomId);
+  // A call clicked while the chat credential is being replaced: it opens once the new session
+  // has synced and resolved the same room again, so the call never spans the swap.
+  const [queuedCall, setQueuedCall] = useState<{
+    readonly conversationId: string;
+    readonly matrixRoomId: string;
+    readonly intent: ReturnType<typeof callIntentFor>;
+    readonly swapDone: boolean;
+  } | null>(null);
+  useEffect(() => {
+    if (!queuedCall) {
+      return;
+    }
+    if (queuedCall.conversationId !== selectedConversationId) {
+      setQueuedCall(null);
+    } else if (queuedCall.swapDone) {
+      if (callEligibility.matrixRoomId === queuedCall.matrixRoomId) {
+        setQueuedCall(null);
+        openCall({ matrixRoomId: queuedCall.matrixRoomId, intent: queuedCall.intent });
+      } else {
+        // A swap that failed after stopping the old client leaves the tab stopped until reload.
+        const timer = setTimeout(() => setQueuedCall(null), QUEUED_CALL_TIMEOUT_MS);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [queuedCall, selectedConversationId, callEligibility.matrixRoomId]);
   const activeCallRooms = useActiveCallRooms(conversations);
 
   // Realtime conversation events are subscribed globally by
@@ -269,15 +297,22 @@ export const UnifiedChatPanelConnector = ({
   } else if (selectedConversation) {
     const { isGroup } = selectedConversation;
     const { matrixRoomId } = callEligibility;
+    const conversationId = selectedConversation.id;
     const openCallWith = (action: CallAction, media: CallMedia) => {
-      if (matrixRoomId) {
-        // A due chat credential is replaced instead of opening the call: a call open across the swap would end.
-        void rotateActiveSessionIfDue().then(rotated => {
-          if (!rotated) {
-            openCall({ matrixRoomId, intent: callIntentFor({ isGroup, action, media }) });
-          }
-        });
+      if (!matrixRoomId || queuedCall) {
+        return;
       }
+      const intent = callIntentFor({ isGroup, action, media });
+      setQueuedCall({ conversationId, matrixRoomId, intent, swapDone: false });
+      // A due chat credential is replaced first: a call open across the swap would end.
+      void rotateActiveSessionIfDue().then(rotated => {
+        if (rotated) {
+          setQueuedCall(queued => (queued ? { ...queued, swapDone: true } : null));
+        } else {
+          setQueuedCall(null);
+          openCall({ matrixRoomId, intent });
+        }
+      });
     };
     let callActions: ReactNode = null;
     if (callEligibility.eligible) {
@@ -419,7 +454,13 @@ export const UnifiedChatPanelConnector = ({
         onTitleClick={isGroupThread ? groupSettings.openDialog : undefined}
         titleActionLabel={isGroupThread ? t('group.settings') : undefined}
         headerActions={view === 'thread' ? headerActions : undefined}
-        notice={connectionLost ? <ChatConnectionNotice message={t('panel.reconnecting')} /> : undefined}
+        notice={
+          queuedCall && view === 'thread' ? (
+            <ChatConnectionNotice busy={true} message={t('call.preparing')} />
+          ) : connectionLost ? (
+            <ChatConnectionNotice message={t('panel.reconnecting')} />
+          ) : undefined
+        }
       >
         {view === 'thread' && selectedConversationId ? (
           <ConversationThread
