@@ -3313,12 +3313,14 @@ export type MeSecondFactorRequirementKeySpecifier = (
   | 'covered'
   | 'deadline'
   | 'satisfied'
+  | 'secondWayNeeded'
   | MeSecondFactorRequirementKeySpecifier
 )[];
 export type MeSecondFactorRequirementFieldPolicy = {
   covered?: FieldPolicy<any> | FieldReadFunction<any>;
   deadline?: FieldPolicy<any> | FieldReadFunction<any>;
   satisfied?: FieldPolicy<any> | FieldReadFunction<any>;
+  secondWayNeeded?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MediaGalleryKeySpecifier = (
   | 'authorization'

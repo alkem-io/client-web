@@ -15,6 +15,8 @@ type TwoStepVerificationProps = {
   flow: SettingsFlow;
   /** A rule requires a second factor of this person (removing the last one warns). */
   requirementCovered?: boolean;
+  /** This sign-in counted a single way to pass the second step where a rule asks for two. */
+  secondWayNeeded?: boolean;
   /** Kratos answered a submission with this flow, which the section now shows. */
   onFlowChange?: (flow: SettingsFlow) => void;
 };
@@ -28,7 +30,12 @@ type TwoStepVerificationProps = {
  * lets Kratos render the outcome itself. A security key is registered through
  * Ory's script, which submits its own form.
  */
-export const TwoStepVerification = ({ flow, requirementCovered, onFlowChange }: TwoStepVerificationProps) => {
+export const TwoStepVerification = ({
+  flow,
+  requirementCovered,
+  secondWayNeeded,
+  onFlowChange,
+}: TwoStepVerificationProps) => {
   const { t } = useTranslation();
   const { t: tSettings } = useTranslation('crd-contributorSettings');
   const translateKratosMessages = useKratosMessageCopy();
@@ -68,6 +75,19 @@ export const TwoStepVerification = ({ flow, requirementCovered, onFlowChange }: 
         }
       : model.securityKeys;
 
+  // The sign-in's count stays as it was until the person signs in again, so a way added since is read from the flow.
+  // The first factor was confirmed here when the flow handed in held none and Kratos's answer holds one. A page
+  // that hands each answer back in as the flow (the secure-your-account page) speaks for itself instead.
+  const holdsTwoWays = model.enrolled && !model.soleFactor;
+  const firstFactorConfirmed = model.soleFactor && !adaptTwoStepVerification(flow).enrolled;
+  const secondWayNotice = secondWayNeeded
+    ? holdsTwoWays
+      ? 'added'
+      : 'needed'
+    : firstFactorConfirmed
+      ? 'suggested'
+      : undefined;
+
   const flowMessages = translateKratosMessages(model.messages).map(({ type, text }) => ({ type, text }));
   const messages = securityKeyError
     ? [...flowMessages, { type: 'error' as const, text: securityKeyError }]
@@ -80,6 +100,7 @@ export const TwoStepVerification = ({ flow, requirementCovered, onFlowChange }: 
       securityKeys={securityKeys}
       messages={messages}
       warnOnLastFactor={Boolean(requirementCovered) && model.soleFactor}
+      secondWayNotice={secondWayNotice}
       onConfirmAuthenticator={code => post(model.fields.confirmAuthenticator(code))}
       onRemoveAuthenticator={() => post(model.fields.removeAuthenticator())}
       onGenerateRecoveryCodes={() => post(model.fields.generateRecoveryCodes())}

@@ -4,11 +4,16 @@ import { AuthCard } from '@/crd/components/auth/AuthCard';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 
-export type SecondFactorRequiredState = 'loading' | 'unavailable' | 'app' | 'enrol' | 'enrolled';
+/**
+ * `enrol`: no second factor yet. `secondWay`: a single way to pass the second
+ * step, where the rule asks for two. `enrolled`: enough is set up, and only
+ * signing in again is left.
+ */
+export type SecondFactorRequiredState = 'loading' | 'unavailable' | 'app' | 'enrol' | 'secondWay' | 'enrolled';
 
 export type SecondFactorRequiredCardProps = {
   state: SecondFactorRequiredState;
-  /** The enrolment UI, rendered in the `enrol` state. */
+  /** The enrolment UI, rendered in the `enrol` and `secondWay` states. */
   enrolment?: ReactNode;
   signInAgainHref: string;
   signOutHref: string;
@@ -18,12 +23,14 @@ const NOTICE_KEY = {
   unavailable: 'secondFactorPage.unavailable',
   app: 'secondFactorPage.app',
   enrol: 'secondFactorPage.required',
+  secondWay: 'secondFactorPage.secondWay',
   enrolled: 'secondFactorPage.enrolled',
 } as const;
 
 /**
- * The page a session refused for a missing second factor is sent to: set one
- * up, then sign in again — or sign out.
+ * The page a session refused by a second-factor rule is sent to: set up a
+ * second factor, or a second way to pass the second step, then sign in again —
+ * or sign out.
  */
 export function SecondFactorRequiredCard({
   state,
@@ -46,7 +53,7 @@ export function SecondFactorRequiredCard({
     );
   }
 
-  const signInFirst = state !== 'enrol';
+  const enrolling = state === 'enrol' || state === 'secondWay';
 
   return (
     <AuthCard title={t('secondFactorPage.title')}>
@@ -59,11 +66,11 @@ export function SecondFactorRequiredCard({
         >
           {t(NOTICE_KEY[state])}
         </output>
-        {state === 'enrol' ? enrolment : null}
+        {enrolling ? enrolment : null}
         <div className="flex flex-col gap-3">
           <Button
             asChild={true}
-            variant={signInFirst ? 'default' : 'outline'}
+            variant={enrolling ? 'outline' : 'default'}
             className="text-control h-12 w-full font-semibold uppercase tracking-wider"
           >
             <a href={signInAgainHref}>{t('secondFactorPage.signInAgain')}</a>

@@ -384,7 +384,8 @@
             "label": "Passkey",
             "set": "Configurada",
             "notSet": "No configurada",
-            "manage": "Gestionar passkeys"
+            "manage": "Gestionar passkeys",
+            "explanation": "Inicia sesión sin contraseña. No es un segundo paso."
           }
         }
       },
@@ -461,16 +462,21 @@
           "title": "Códigos de recuperación"
         },
         "remove": "Eliminar",
+        "secondWay": {
+          "added": "Tu segunda forma de superar el segundo paso está configurada. Vuelve a iniciar sesión para que cuente.",
+          "needed": "Tu cuenta necesita una segunda forma de superar el segundo paso: una aplicación de autenticación, otra llave de seguridad o códigos de recuperación. Añade una a continuación y vuelve a iniciar sesión.",
+          "suggested": "La verificación en dos pasos está activada. Añade ahora una segunda forma de superar el segundo paso (una aplicación de autenticación, otra llave de seguridad o códigos de recuperación) para poder seguir iniciando sesión si pierdes esta."
+        },
         "securityKeys": {
           "add": "Añadir una llave de seguridad",
           "empty": "Aún no has añadido llaves de seguridad.",
-          "explanation": "Una llave física, como una YubiKey, o el autenticador integrado de tu dispositivo, que tocas al iniciar sesión.",
+          "explanation": "Usa una passkey guardada en tu gestor de contraseñas o en este dispositivo (Face ID, Touch ID, Windows Hello), o una llave física como una YubiKey. Tu navegador te pregunta cuál usar.",
           "nameLabel": "Nombre de la llave",
           "nameRequired": "Escribe un nombre para la llave.",
           "removeDescription": "Ya no podrás iniciar sesión con esta llave.",
           "removeNamed": "Eliminar {{name}}",
           "removeTitle": "¿Eliminar la llave de seguridad \"{{name}}\"?",
-          "title": "Llaves de seguridad"
+          "title": "Passkeys y llaves de seguridad"
         },
         "title": "Verificación en dos pasos"
       }

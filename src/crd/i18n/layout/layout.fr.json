@@ -61,6 +61,8 @@
   "secondFactorReminder": {
     "action": "Configurer",
     "dismiss": "Fermer",
+    "secondWayAction": "Ajouter",
+    "secondWayText": "Ajoutez un second moyen de passer la deuxième étape d'ici le {{deadline}} : une application d'authentification, une autre clé de sécurité ou des codes de récupération. Reconnectez-vous ensuite. Après cette date, vous ne pourrez plus utiliser Alkemio avec un seul moyen.",
     "text": "Utilisez la validation en deux étapes d'ici le {{deadline}} : configurez-la, ou reconnectez-vous avec elle si c'est déjà fait. Après cette date, vous ne pourrez plus utiliser Alkemio sans elle."
   }
 }

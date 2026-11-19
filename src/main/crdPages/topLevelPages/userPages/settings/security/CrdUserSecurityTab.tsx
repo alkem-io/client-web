@@ -163,7 +163,8 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
     ) : null;
 
   // Two-step verification: the same settings flow's totp / lookup_secret / webauthn nodes. Whether a
-  // rule requires a second factor of this person decides only the warning on removing the last one.
+  // rule requires a second factor of this person decides the warning on removing the last one, and whether its
+  // sign-in counted a single way to pass the second step decides the notice asking for a second.
   const twoStepFlow =
     flowResult.kind === 'ready' && offersTwoStepVerification(flowResult.flow) ? flowResult.flow : undefined;
   const { data: requirementData } = useSecondFactorRequirementQuery({ skip: !twoStepFlow });
@@ -172,6 +173,7 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
     <TwoStepVerification
       flow={twoStepFlow}
       requirementCovered={requirementData?.me.secondFactorRequirement.covered ?? true}
+      secondWayNeeded={requirementData?.me.secondFactorRequirement.secondWayNeeded}
     />
   ) : null;
 

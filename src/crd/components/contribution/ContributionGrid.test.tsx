@@ -213,4 +213,30 @@ describe('ContributionsPreviewSkeleton', () => {
 
     expect(container.firstElementChild).toHaveClass('grid-cols-1', 'sm:grid-cols-2', 'lg:grid-cols-3');
   });
+
+  it.each([
+    [3, 6],
+    [2, 4],
+  ])('reserves at most two rows of a %i-column grid (%i cells)', (columns, cap) => {
+    const { container } = render(
+      <ContributionsPreviewSkeleton kind="whiteboard" count={9} columns={columns as 2 | 3} />
+    );
+
+    expect(container.firstElementChild?.children).toHaveLength(cap);
+  });
+
+  it('shows each cell only from the breakpoint whose two rows hold it', () => {
+    const { container } = render(<ContributionsPreviewSkeleton kind="whiteboard" count={6} columns={3} />);
+    const cells = Array.from(container.firstElementChild?.children ?? []);
+
+    expect(cells.map(cell => cell.classList.contains('hidden'))).toEqual([false, false, true, true, true, true]);
+    expect(cells.slice(2, 4).every(cell => cell.classList.contains('sm:block'))).toBe(true);
+    expect(cells.slice(4).every(cell => cell.classList.contains('lg:block'))).toBe(true);
+  });
+
+  it('keeps the link list at its four rows', () => {
+    const { container } = render(<ContributionsPreviewSkeleton kind="link" count={9} columns={3} />);
+
+    expect(container.firstElementChild?.children).toHaveLength(4);
+  });
 });

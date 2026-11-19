@@ -384,7 +384,8 @@
             "label": "Passkey",
             "set": "Ingesteld",
             "notSet": "Niet ingesteld",
-            "manage": "Passkeys beheren"
+            "manage": "Passkeys beheren",
+            "explanation": "Logt je in zonder wachtwoord. Het is geen tweede stap."
           }
         }
       },
@@ -461,16 +462,21 @@
           "title": "Herstelcodes"
         },
         "remove": "Verwijderen",
+        "secondWay": {
+          "added": "Je tweede manier om de tweede stap te doorlopen is ingesteld. Log opnieuw in zodat die meetelt.",
+          "needed": "Je account heeft een tweede manier nodig om de tweede stap te doorlopen: een authenticator-app, nog een beveiligingssleutel of herstelcodes. Voeg er hieronder een toe en log daarna opnieuw in.",
+          "suggested": "Verificatie in twee stappen staat aan. Voeg nu een tweede manier toe om de tweede stap te doorlopen (een authenticator-app, nog een beveiligingssleutel of herstelcodes), zodat je nog kunt inloggen als je deze kwijtraakt."
+        },
         "securityKeys": {
           "add": "Beveiligingssleutel toevoegen",
           "empty": "Nog geen beveiligingssleutels toegevoegd.",
-          "explanation": "Een fysieke sleutel, zoals een YubiKey, of de ingebouwde authenticator van je apparaat, die je aanraakt wanneer je inlogt.",
+          "explanation": "Gebruik een passkey uit je wachtwoordbeheerder of op dit apparaat (Face ID, Touch ID, Windows Hello), of een fysieke sleutel zoals een YubiKey. Je browser vraagt welke je wilt gebruiken.",
           "nameLabel": "Naam van de sleutel",
           "nameRequired": "Geef de sleutel een naam.",
           "removeDescription": "Je kunt dan niet meer inloggen met deze sleutel.",
           "removeNamed": "{{name}} verwijderen",
           "removeTitle": "Beveiligingssleutel \"{{name}}\" verwijderen?",
-          "title": "Beveiligingssleutels"
+          "title": "Passkeys en beveiligingssleutels"
         },
         "title": "Verificatie in twee stappen"
       }
