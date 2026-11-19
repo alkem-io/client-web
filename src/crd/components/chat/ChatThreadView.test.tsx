@@ -270,3 +270,34 @@ describe('ChatThreadView — loading bar', () => {
     expect(screen.queryByRole('status', { name: 'thread.loading' })).not.toBeInTheDocument();
   });
 });
+
+describe('ChatThreadView call entries', () => {
+  test('renders a call entry in time order between messages, without a bubble', () => {
+    renderThread([
+      msg(at(14, 10, 0), { content: 'before' }),
+      msg(at(14, 10, 1), { author: undefined, content: '', call: 'missed' }),
+      msg(at(14, 10, 2), { content: 'after' }),
+    ]);
+    const entry = screen.getByTestId('chat-call-entry');
+    expect(entry).toHaveAttribute('data-kind', 'missed');
+    expect(entry).toHaveTextContent('call.entry.missed');
+    expect(entry).toHaveTextContent('10:01');
+    const before = rowFor('before');
+    const after = rowFor('after');
+    expect(before.compareDocumentPosition(entry) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(entry.compareDocumentPosition(after) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  test('the message after a call entry starts a new group', () => {
+    renderThread(
+      [
+        msg(at(14, 10, 0), { content: 'before' }),
+        msg(at(14, 10, 1), { author: undefined, content: '', call: 'incoming' }),
+        msg(at(14, 10, 2), { content: 'after' }),
+      ],
+      group
+    );
+    expect(within(rowFor('before')).getByText('Alice Smith')).toBeInTheDocument();
+    expect(within(rowFor('after')).getByText('Alice Smith')).toBeInTheDocument();
+  });
+});

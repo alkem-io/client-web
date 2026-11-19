@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Badge } from '@/crd/primitives/badge';
 import { Input } from '@/crd/primitives/input';
+import { ChatCallIcon } from './ChatCallEntry';
 import { ConversationAvatar } from './ConversationAvatar';
 import type { ChatListItem } from './types';
 
@@ -137,6 +138,11 @@ export function ChatConversationList({
                           <>
                             <span className="text-primary">{t('list.draft')}</span> {item.draftPreview}
                           </>
+                        ) : item.lastMessageCall ? (
+                          <span className="inline-flex items-center gap-1">
+                            <ChatCallIcon kind={item.lastMessageCall} className="size-3" />
+                            {t(`call.entry.${item.lastMessageCall}`)}
+                          </span>
                         ) : item.lastMessagePreview?.trim() ? (
                           item.lastMessagePreview
                         ) : item.lastMessageAttachmentCount ? (

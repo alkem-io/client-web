@@ -7,6 +7,7 @@ import type { NewTabLinks } from '@/crd/components/common/MarkdownContent';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
+import { ChatCallEntry } from './ChatCallEntry';
 import { ChatMessageBubble } from './ChatMessageBubble';
 import { createChatTimeFormat } from './chatTime';
 import { computeMessageRunFlags } from './messageRuns';
@@ -228,7 +229,12 @@ export function ChatThreadView({
                       {time.clock(ms)}
                     </div>
                   )}
-                  {hasTime ? (
+                  {message.call ? (
+                    <div className="mt-3 flex flex-col">
+                      <span className="sr-only">{time.exact(ms)}</span>
+                      <ChatCallEntry kind={message.call} time={time.clock(ms)} />
+                    </div>
+                  ) : hasTime ? (
                     <div
                       data-chat-message={true}
                       onPointerUp={toggleRevealedOnTap(message.id)}

@@ -132,6 +132,11 @@
     },
     "listBadge": "Anruf aktiv",
     "callingYou": "{{name}} ruft dich an",
-    "groupCall": "Anruf in {{name}}"
+    "groupCall": "Anruf in {{name}}",
+    "entry": {
+      "outgoing": "Ausgehender Anruf",
+      "incoming": "Eingehender Anruf",
+      "missed": "Verpasster Anruf"
+    }
   }
 }

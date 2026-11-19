@@ -132,6 +132,11 @@
     },
     "listBadge": "Gesprek actief",
     "callingYou": "{{name}} belt je",
-    "groupCall": "Gesprek in {{name}}"
+    "groupCall": "Gesprek in {{name}}",
+    "entry": {
+      "outgoing": "Uitgaande oproep",
+      "incoming": "Inkomende oproep",
+      "missed": "Gemiste oproep"
+    }
   }
 }

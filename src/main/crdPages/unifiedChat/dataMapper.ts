@@ -1,5 +1,5 @@
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
-import type { ChatListItem, ChatMessage, GroupMember } from '@/crd/components/chat/types';
+import type { ChatCallKind, ChatListItem, ChatMessage, GroupMember } from '@/crd/components/chat/types';
 import type { CommentAuthor, CommentReaction } from '@/crd/components/comment/types';
 import type {
   ConversationMember,
@@ -131,6 +131,17 @@ export const mapReactionsToCommentReactions = (
   return [...byEmoji.values()];
 };
 
+/** How the viewer reads a call: the caller always sees their own call as outgoing, never as missed. */
+const callKindOf = (message: ConversationMessage, currentUserId: string | undefined): ChatCallKind | undefined => {
+  if (!message.call) {
+    return undefined;
+  }
+  if (currentUserId && message.sender?.id === currentUserId) {
+    return 'outgoing';
+  }
+  return message.call === 'unanswered' ? 'missed' : 'incoming';
+};
+
 type ListItemOptions = {
   currentUserId: string | undefined;
   formatTimestamp: (timestampMs: number) => string;
@@ -152,6 +163,7 @@ export const mapConversationToListItem = (
     // A media-only message carries no body text, so the row needs the attachment
     // count to render something instead of an empty preview line.
     lastMessageAttachmentCount: conv.lastMessage?.attachments.length,
+    lastMessageCall: conv.lastMessage ? callKindOf(conv.lastMessage, currentUserId) : undefined,
     lastMessageTimestamp: conv.lastMessage ? formatTimestamp(conv.lastMessage.timestamp) : undefined,
     unreadCount: conv.unreadCount,
     pinned: conv.pinned,
@@ -165,21 +177,27 @@ type MessageOptions = {
 export const mapMessageToChatMessage = (
   message: ConversationMessage,
   { currentUserId }: MessageOptions
-): ChatMessage => ({
-  id: message.id,
-  author: message.sender
-    ? {
-        id: message.sender.id,
-        name: message.sender.displayName,
-        avatarUrl: message.sender.avatarUri,
-      }
-    : undefined,
-  content: message.message,
-  timestampMs: message.timestamp,
-  reactions: mapReactionsToCommentReactions(message.reactions, currentUserId),
-  attachments: message.attachments,
-  isOwn: Boolean(currentUserId && message.sender?.id === currentUserId),
-});
+): ChatMessage => {
+  const call = callKindOf(message, currentUserId);
+  return {
+    id: message.id,
+    // A call entry has no author, so it stands alone between the messages around it.
+    author:
+      message.sender && !call
+        ? {
+            id: message.sender.id,
+            name: message.sender.displayName,
+            avatarUrl: message.sender.avatarUri,
+          }
+        : undefined,
+    content: message.message,
+    timestampMs: message.timestamp,
+    reactions: mapReactionsToCommentReactions(message.reactions, currentUserId),
+    attachments: message.attachments,
+    isOwn: Boolean(currentUserId && message.sender?.id === currentUserId),
+    call,
+  };
+};
 
 /** Sentinel id for the synthetic Guidance introduction message. */
 export const GUIDANCE_INTRO_ID = '__intro';
