@@ -22,6 +22,7 @@
     "changeLanguage": "Change Language",
     "changeLanguageError": "Couldn't save language preference — please try again.",
     "getHelp": "Get Help",
+    "refresh": "Refresh",
     "showGrid": "Show Grid",
     "hideGrid": "Hide Grid"
   },
