@@ -27,15 +27,16 @@ vi.mock('emoji-picker-react', () => ({
     captured.pickerProps = props;
     return <div className="epr-body" data-testid="epr-body" />;
   },
-  EmojiStyle: { NATIVE: 'native' },
 }));
 
 const { EmojiPicker } = await import('./EmojiPicker');
 
-const renderPicker = () =>
-  render(
+// The library is lazy-loaded, so the list appears only once its import resolves.
+const renderPicker = async (mode?: 'reaction' | 'insert') => {
+  const view = render(
     <EmojiPicker
       onSelect={vi.fn()}
+      mode={mode}
       trigger={
         <button type="button" data-testid="trigger">
           open
@@ -43,6 +44,9 @@ const renderPicker = () =>
       }
     />
   );
+  await screen.findByTestId('epr-body');
+  return view;
+};
 
 const listeners: Array<[string, EventListener]> = [];
 const spyOnDocument = (type: string) => {
@@ -63,33 +67,33 @@ describe('EmojiPicker scroll containment', () => {
   // the document and does not recognise as its own. The portalled picker is
   // never recognised, so the gesture has to stop before the document for the
   // emoji list to scroll at all.
-  it.each(['wheel', 'touchmove'])('keeps a %s gesture over the emoji list from reaching the document', type => {
+  it.each(['wheel', 'touchmove'])('keeps a %s gesture over the emoji list from reaching the document', async type => {
     const seen = spyOnDocument(type);
-    renderPicker();
+    await renderPicker();
 
     screen.getByTestId('epr-body').dispatchEvent(new Event(type, { bubbles: true, cancelable: true }));
 
     expect(seen).not.toHaveBeenCalled();
   });
 
-  it.each(['wheel', 'touchmove'])('still lets a %s gesture outside the picker reach the document', type => {
+  it.each(['wheel', 'touchmove'])('still lets a %s gesture outside the picker reach the document', async type => {
     const seen = spyOnDocument(type);
-    renderPicker();
+    await renderPicker();
 
     screen.getByTestId('trigger').dispatchEvent(new Event(type, { bubbles: true, cancelable: true }));
 
     expect(seen).toHaveBeenCalledTimes(1);
   });
 
-  it('contains overscroll so a gesture past either end of the list does not scroll what is behind it', () => {
-    renderPicker();
+  it('contains overscroll so a gesture past either end of the list does not scroll what is behind it', async () => {
+    await renderPicker();
 
     expect(screen.getByTestId('emoji-picker-scroll-container').className).toContain('[&_.epr-body]:overscroll-contain');
   });
 
-  it('detaches its listeners when the picker unmounts', () => {
+  it('detaches its listeners when the picker unmounts', async () => {
     const seen = spyOnDocument('wheel');
-    const { unmount } = renderPicker();
+    const { unmount } = await renderPicker();
     // The listener lives on the container, not on the list, so the container is
     // what has to survive the unmount: re-attaching the list alone would bubble
     // straight past the listener host and pass whether or not cleanup ran.
@@ -112,23 +116,23 @@ describe('EmojiPicker scroll containment', () => {
 // against the screen edge clipped it (seen at 412px wide); narrower phones
 // would lose more. jsdom has no layout, so the props that prevent it are pinned.
 describe('EmojiPicker on narrow screens', () => {
-  it('keeps a margin from the screen edges when it has to shift', () => {
-    renderPicker();
+  it('keeps a margin from the screen edges when it has to shift', async () => {
+    await renderPicker();
     expect(captured.contentProps.collisionPadding).toBe(8);
   });
 
   // Measured on a 360x640 phone: the 450px-tall picker ran 134px past the bottom
   // of the screen (and 69px past the top at 375x667) when neither side of the
   // trigger had room for it.
-  it('never grows taller than the room the popover has on its side', () => {
-    renderPicker();
+  it('never grows taller than the room the popover has on its side', async () => {
+    await renderPicker();
     expect(captured.pickerProps.height).toBe(
       'min(450px, calc(var(--radix-popover-content-available-height, 450px) - 2px))'
     );
   });
 
-  it('never grows wider than the screen minus that margin', () => {
-    renderPicker();
+  it('never grows wider than the screen minus that margin', async () => {
+    await renderPicker();
     expect(captured.pickerProps.width).toBe('min(350px, calc(100vw - 16px))');
   });
 });
@@ -136,13 +140,27 @@ describe('EmojiPicker on narrow screens', () => {
 // Radix moves focus into the popover when it opens, so on a phone the first
 // focusable element inside the picker raised the on-screen keyboard.
 describe('EmojiPicker focus on open', () => {
-  it('keeps the popover from moving focus into the picker when it opens', () => {
-    renderPicker();
+  it('keeps the popover from moving focus into the picker when it opens', async () => {
+    await renderPicker();
     const onOpenAutoFocus = captured.contentProps.onOpenAutoFocus as (event: Event) => void;
     const event = new Event('focus', { cancelable: true });
 
     onOpenAutoFocus(event);
 
     expect(event.defaultPrevented).toBe(true);
+  });
+});
+
+// A reaction wants one of a handful of emojis, so it opens on the library's
+// quick-reactions bar; inserting into text keeps the full grid.
+describe('EmojiPicker modes', () => {
+  it('opens on the quick-reactions bar in reaction mode', async () => {
+    await renderPicker('reaction');
+    expect(captured.pickerProps.reactionsDefaultOpen).toBe(true);
+  });
+
+  it('opens on the full grid by default', async () => {
+    await renderPicker();
+    expect(captured.pickerProps.reactionsDefaultOpen).toBe(false);
   });
 });
