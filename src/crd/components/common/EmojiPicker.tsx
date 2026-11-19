@@ -1,6 +1,7 @@
 import type { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Plus } from 'lucide-react';
 import { lazy, type ReactNode, Suspense, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Popover, PopoverContent, PopoverTrigger } from '@/crd/primitives/popover';
 
 // The library and its emoji dataset stay out of the main bundle. The download
@@ -31,6 +32,10 @@ const SCREEN_EDGE_MARGIN_PX = 8;
 const PICKER_WIDTH = `min(350px, calc(100vw - ${2 * SCREEN_EDGE_MARGIN_PX}px))`;
 const PICKER_HEIGHT = 'min(450px, calc(var(--radix-popover-content-available-height, 450px) - 2px))';
 
+// Shown first for a reaction. The library builds its whole grid even behind its
+// own quick bar, so the bar is rendered here and the library only on request.
+const QUICK_REACTIONS = ['👍', '❤️', '😃', '😢', '🙏', '👎', '😡'];
+
 const attachScrollContainment = (node: HTMLDivElement | null) => {
   if (!node) return;
   for (const type of CONTAINED_SCROLL_EVENTS) {
@@ -46,20 +51,29 @@ const attachScrollContainment = (node: HTMLDivElement | null) => {
 type EmojiPickerProps = {
   onSelect: (emoji: string) => void;
   trigger: ReactNode;
-  /** `reaction` opens on the library's quick-reactions bar; the full grid is one tap away. */
+  /** `reaction` opens on a short bar of common reactions; the full grid is one tap away. */
   mode?: 'reaction' | 'insert';
 };
 
 export function EmojiPicker({ onSelect, trigger, mode = 'insert' }: EmojiPickerProps) {
+  const { t } = useTranslation('crd-common');
   const [open, setOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
-  const handleEmojiClick = (emojiData: EmojiClickData) => {
-    onSelect(emojiData.emoji);
-    setOpen(false);
+  const handleOpenChange = (next: boolean) => {
+    setOpen(next);
+    if (!next) setExpanded(false);
   };
 
+  const pick = (emoji: string) => {
+    onSelect(emoji);
+    handleOpenChange(false);
+  };
+
+  const handleEmojiClick = (emojiData: EmojiClickData) => pick(emojiData.emoji);
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild={true} onPointerEnter={loadEmojiPickerLib} onFocus={loadEmojiPickerLib}>
         {trigger}
       </PopoverTrigger>
@@ -70,31 +84,58 @@ export function EmojiPicker({ onSelect, trigger, mode = 'insert' }: EmojiPickerP
         className="z-[130] w-auto border p-0 shadow-lg"
         onOpenAutoFocus={event => event.preventDefault()}
       >
-        {/* `overscroll-contain` keeps a gesture that runs past either end of the
-            emoji list from scrolling whatever sits behind the picker. */}
-        <div
-          ref={attachScrollContainment}
-          data-testid="emoji-picker-scroll-container"
-          className="[&_.epr-body]:overscroll-contain"
-        >
-          <Suspense
-            fallback={
-              <div className="flex items-center justify-center" style={{ width: PICKER_WIDTH, height: PICKER_HEIGHT }}>
-                <Loader2 aria-hidden="true" className="size-6 animate-spin text-muted-foreground" />
-              </div>
-            }
-          >
-            <EmojiPickerLib
-              onEmojiClick={handleEmojiClick}
-              emojiStyle={'native' as EmojiStyle}
-              autoFocusSearch={false}
-              lazyLoadEmojis={true}
-              reactionsDefaultOpen={mode === 'reaction'}
-              width={PICKER_WIDTH}
-              height={PICKER_HEIGHT}
-            />
-          </Suspense>
-        </div>
+        {mode === 'reaction' && !expanded ? (
+          <div className="flex items-center gap-0.5 p-1">
+            {QUICK_REACTIONS.map(emoji => (
+              <button
+                key={emoji}
+                type="button"
+                className="flex size-9 items-center justify-center rounded-full text-xl hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                onClick={() => pick(emoji)}
+              >
+                {emoji}
+              </button>
+            ))}
+            <button
+              type="button"
+              aria-label={t('emojiPicker.more')}
+              className="flex size-9 items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              onClick={() => setExpanded(true)}
+            >
+              <Plus aria-hidden="true" className="size-4" />
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* `overscroll-contain` keeps a gesture that runs past either end of the
+                emoji list from scrolling whatever sits behind the picker. */}
+            <div
+              ref={attachScrollContainment}
+              data-testid="emoji-picker-scroll-container"
+              className="[&_.epr-body]:overscroll-contain"
+            >
+              <Suspense
+                fallback={
+                  <div
+                    className="flex items-center justify-center"
+                    style={{ width: PICKER_WIDTH, height: PICKER_HEIGHT }}
+                  >
+                    <Loader2 aria-hidden="true" className="size-6 animate-spin text-muted-foreground" />
+                  </div>
+                }
+              >
+                <EmojiPickerLib
+                  onEmojiClick={handleEmojiClick}
+                  emojiStyle={'native' as EmojiStyle}
+                  autoFocusSearch={false}
+                  lazyLoadEmojis={true}
+                  width={PICKER_WIDTH}
+                  height={PICKER_HEIGHT}
+                />
+              </Suspense>
+            </div>
+          </>
+        )}
       </PopoverContent>
     </Popover>
   );

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 // Radix portals the popover content out of the tree that opened it; the mock
@@ -151,16 +151,40 @@ describe('EmojiPicker focus on open', () => {
   });
 });
 
-// A reaction wants one of a handful of emojis, so it opens on the library's
-// quick-reactions bar; inserting into text keeps the full grid.
+// A reaction wants one of a handful of emojis, and the library builds its whole
+// grid on every open, so reactions open on a short bar and load the library
+// only when the full grid is asked for.
 describe('EmojiPicker modes', () => {
-  it('opens on the quick-reactions bar in reaction mode', async () => {
-    await renderPicker('reaction');
-    expect(captured.pickerProps.reactionsDefaultOpen).toBe(true);
+  const renderReactionPicker = (onSelect = vi.fn()) =>
+    render(<EmojiPicker onSelect={onSelect} mode="reaction" trigger={<button type="button">open</button>} />);
+
+  it('opens on the quick bar without the library in reaction mode', () => {
+    renderReactionPicker();
+
+    expect(screen.getByRole('button', { name: '👍' })).toBeTruthy();
+    expect(screen.queryByTestId('epr-body')).toBeNull();
+  });
+
+  it('picks a quick reaction', () => {
+    const onSelect = vi.fn();
+    renderReactionPicker(onSelect);
+
+    fireEvent.click(screen.getByRole('button', { name: '❤️' }));
+
+    expect(onSelect).toHaveBeenCalledWith('❤️');
+  });
+
+  it('shows the full grid from the quick bar on request', async () => {
+    renderReactionPicker();
+
+    fireEvent.click(screen.getByRole('button', { name: 'emojiPicker.more' }));
+
+    expect(await screen.findByTestId('epr-body')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: '👍' })).toBeNull();
   });
 
   it('opens on the full grid by default', async () => {
     await renderPicker();
-    expect(captured.pickerProps.reactionsDefaultOpen).toBe(false);
+    expect(screen.queryByRole('button', { name: '👍' })).toBeNull();
   });
 });
