@@ -1,4 +1,3 @@
-import { useApolloClient } from '@apollo/client';
 import { format } from 'date-fns';
 import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
@@ -63,7 +62,6 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
   const { openSearch } = useSearch();
   const navigate = useNavigate();
-  const apolloClient = useApolloClient();
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const { visible: downNoticeVisible, dismiss: dismissDownNotice } = useDownNoticeBanner();
   const breadcrumbItems = useBreadcrumbs();
@@ -145,7 +143,10 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         onNotificationsClick={() => setNotificationsOpen(true)}
         onPendingMembershipsClick={isAuthenticated ? handlePendingMembershipsClick : undefined}
         onHelpClick={() => setIsHelpDialogOpen(true)}
-        onRefreshClick={isAppMode() ? () => void apolloClient.refetchQueries({ include: 'active' }) : undefined}
+        // A full reload, like the new-version banner: it also picks up a newer client build.
+        onRefreshClick={
+          isAppMode() ? () => window.location.replace(window.location.pathname + window.location.search) : undefined
+        }
         onSearchClick={() => openSearch()}
         footerLinks={footerLinks}
       >
