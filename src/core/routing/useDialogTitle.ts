@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { claimDialogTitle } from './documentTitle';
+import { claimDialogTitle, type DialogTitleClaim, type DialogTitleComposer } from './documentTitle';
 
 /** Longest a title part may be in a dialog's tab title, counting the ellipsis. */
 export const TITLE_PART_MAX_LENGTH = 11;
@@ -29,15 +29,28 @@ export const useDialogTitle = (title: string | undefined, enabled: boolean): voi
   const { t } = useTranslation();
   const separator = t('pages.titles.separator');
   const suffix = t('pages.titles.alkemio');
+  const composeRef = useRef<DialogTitleComposer>(() => '');
+  const claimRef = useRef<DialogTitleClaim | null>(null);
 
+  // A title change updates the claim in place, so a dialog renamed while another
+  // is open on top of it does not move above that one.
   useEffect(() => {
-    if (!enabled) return;
-    return claimDialogTitle(pageName =>
+    composeRef.current = pageName =>
       [title, pageName]
         .filter((part): part is string => Boolean(part?.trim()))
         .map(shortenTitlePart)
         .concat(suffix)
-        .join(separator)
-    );
-  }, [enabled, title, separator, suffix]);
+        .join(separator);
+    claimRef.current?.update(composeRef.current);
+  }, [title, separator, suffix]);
+
+  useEffect(() => {
+    if (!enabled) return;
+    const claim = claimDialogTitle(composeRef.current);
+    claimRef.current = claim;
+    return () => {
+      claim.release();
+      claimRef.current = null;
+    };
+  }, [enabled]);
 };

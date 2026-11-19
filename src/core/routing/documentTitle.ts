@@ -51,20 +51,32 @@ export const setTitleOverride = (text: string | null): void => {
   apply();
 };
 
+export type DialogTitleClaim = {
+  /** Change the claim's title without moving it in the stack. */
+  update: (compose: DialogTitleComposer) => void;
+  release: () => void;
+};
+
 /**
- * Show an open dialog's title in place of the page base title until the returned
- * release is called. The title is rebuilt from the current page name on every
- * change, so it follows the page it is open on.
+ * Show an open dialog's title in place of the page base title until the claim is
+ * released. The title is rebuilt from the current page name on every change, so
+ * it follows the page it is open on.
  */
-export const claimDialogTitle = (compose: DialogTitleComposer): (() => void) => {
+export const claimDialogTitle = (compose: DialogTitleComposer): DialogTitleClaim => {
   const claim = { compose };
   dialogClaims.push(claim);
   apply();
-  return () => {
-    const index = dialogClaims.indexOf(claim);
-    if (index !== -1) {
-      dialogClaims.splice(index, 1);
+  return {
+    update: nextCompose => {
+      claim.compose = nextCompose;
       apply();
-    }
+    },
+    release: () => {
+      const index = dialogClaims.indexOf(claim);
+      if (index !== -1) {
+        dialogClaims.splice(index, 1);
+        apply();
+      }
+    },
   };
 };

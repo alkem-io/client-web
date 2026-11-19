@@ -11,7 +11,7 @@ const PAGE_NAME = 'Building the A-team';
 describe('dialog title layer', () => {
   const releases: Array<() => void> = [];
   const claim = (text: string) => {
-    const release = claimDialogTitle(() => text);
+    const { release } = claimDialogTitle(() => text);
     releases.push(release);
     return release;
   };
@@ -38,7 +38,7 @@ describe('dialog title layer', () => {
   });
 
   it('hands the page name to the dialog and rebuilds when the page changes', () => {
-    const release = claimDialogTitle(pageName => `Retro / ${pageName}`);
+    const { release } = claimDialogTitle(pageName => `Retro / ${pageName}`);
     releases.push(release);
     expect(document.title).toBe(`Retro / ${PAGE_NAME}`);
 
@@ -153,6 +153,24 @@ describe('useDialogTitle', () => {
 
     unmount();
     expect(document.title).toBe(PAGE_TITLE);
+  });
+
+  it('keeps a renamed board beneath the task open on top of it', () => {
+    const { rerender, unmount } = renderHook(
+      ({ boardTitle, taskOpen }) => {
+        useDialogTitle(boardTitle, true);
+        useDialogTitle('Fix login', taskOpen);
+      },
+      { initialProps: { boardTitle: 'Sprint 1', taskOpen: true } }
+    );
+    expect(document.title).toBe('Fix login | Building t… | Alkemio');
+
+    rerender({ boardTitle: 'Sprint 2', taskOpen: true });
+    expect(document.title).toBe('Fix login | Building t… | Alkemio');
+
+    rerender({ boardTitle: 'Sprint 2', taskOpen: false });
+    expect(document.title).toBe('Sprint 2 | Building t… | Alkemio');
+    unmount();
   });
 
   it('follows a title change while enabled', () => {
