@@ -26,6 +26,8 @@ export function useVisibleViewportArea(enabled: boolean): VisibleViewportArea | 
     return () => {
       viewport.removeEventListener('resize', update);
       viewport.removeEventListener('scroll', update);
+      // Otherwise the next session would start from this one's area until it measures.
+      setArea(undefined);
     };
   }, [enabled]);
 

@@ -52,6 +52,28 @@ describe('useVisibleViewportArea', () => {
     expect(result.current).toBeUndefined();
   });
 
+  test('never reports the area of an earlier session when it is enabled again', () => {
+    const viewport = stubVisualViewport(24, 460);
+    const reported: ReturnType<typeof useVisibleViewportArea>[] = [];
+    const { rerender } = renderHook(
+      ({ enabled }) => {
+        const area = useVisibleViewportArea(enabled);
+        reported.push(area);
+        return area;
+      },
+      { initialProps: { enabled: true } }
+    );
+    rerender({ enabled: false });
+
+    // The keyboard closes while the surface is closed.
+    Object.assign(viewport, { offsetTop: 0, height: 844 });
+    reported.length = 0;
+    rerender({ enabled: true });
+
+    expect(reported).not.toContainEqual({ top: 24, height: 460 });
+    expect(reported[reported.length - 1]).toEqual({ top: 0, height: 844 });
+  });
+
   test('reports nothing in a browser without a visual viewport', () => {
     vi.stubGlobal('visualViewport', undefined);
     const { result } = renderHook(() => useVisibleViewportArea(true));

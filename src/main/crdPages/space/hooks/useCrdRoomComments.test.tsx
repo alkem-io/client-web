@@ -237,7 +237,7 @@ describe('useCrdRoomComments composers', () => {
 
   // The field is only marked busy: natively disabling it would blur it and drop
   // the on-screen keyboard on a phone.
-  test('the field is busy but keeps focus, and the image button is disabled, while a send is in flight', async () => {
+  test('the field is marked busy without being natively disabled, and the image button is disabled, while a send is in flight', async () => {
     mockBucketQuery.mockReturnValue(readableBucket);
     const upload = deferred<ReturnType<typeof uploadOk>>();
     mockFetch.mockReturnValue(upload.promise);
