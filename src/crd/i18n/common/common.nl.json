@@ -62,6 +62,7 @@
           "licenseEntitlementNotAvailable": "Licentierecht niet beschikbaar.",
           "licenseEntitlementNotSupported": "Licentierechten worden niet ondersteund.",
           "messagingNotEnabled": "Berichten niet ingeschakeld.",
+          "messageSendLimitReached": "Je kunt maximaal 20 berichten per uur versturen. Je kunt later weer berichten versturen.",
           "noAgentForUser": "Geen agent voor gebruiker.",
           "notEnabled": "Functionaliteit niet ingeschakeld.",
           "operationNotAllowed": "Handeling niet toegestaan.",
