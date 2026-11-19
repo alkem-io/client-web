@@ -97,18 +97,13 @@ export function PullToRefresh({ onRefresh }: PullToRefreshProps) {
 
     const onTouchStart = (e: TouchEvent) => {
       if (refreshing) return;
-      if (e.touches.length !== 1) {
-        cancel();
-        return;
-      }
-      if (!canStartPull(e.target)) {
-        tracking = false;
-        return;
-      }
+      // Every touch starts clean: the end of the previous one never reaches `window` when its
+      // target was removed from the page mid-touch.
+      cancel();
+      if (e.touches.length !== 1 || !canStartPull(e.target)) return;
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
       tracking = true;
-      pulling = false;
     };
 
     const onTouchMove = (e: TouchEvent) => {

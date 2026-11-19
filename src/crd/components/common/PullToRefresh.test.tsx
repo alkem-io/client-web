@@ -150,10 +150,24 @@ describe('PullToRefresh', () => {
     expect(onRefresh).not.toHaveBeenCalled();
   });
 
-  test('(e) no gesture when the page is not at the top', () => {
-    const onRefresh = setup(<p data-testid="target">content</p>);
+  test('(e) a touch that starts mid-page never pulls, even once the page reaches the top', () => {
+    const onRefresh = setup(<div data-testid="target">content</div>);
     setScrollY(100);
-    pull(target(), 200);
+    fire(target(), 'touchstart', at(0, 0));
+    setScrollY(0);
+    for (let y = 20; y <= 200; y += 20) fire(target(), 'touchmove', at(0, y));
+    fire(target(), 'touchend', []);
+    expect(onRefresh).not.toHaveBeenCalled();
+    expect(state()).toBe('idle');
+  });
+
+  test('(e3) a pull whose end was lost does not turn the next tap into a refresh', () => {
+    const onRefresh = setup(<div data-testid="target">content</div>);
+    moveTo(target(), 200);
+    setScrollY(100);
+    fire(target(), 'touchstart', at(0, 0));
+    expect(state()).toBe('idle');
+    fire(target(), 'touchend', []);
     expect(onRefresh).not.toHaveBeenCalled();
   });
 
