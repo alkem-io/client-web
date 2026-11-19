@@ -3,6 +3,7 @@ import { Loader2, Plus } from 'lucide-react';
 import { lazy, type ReactNode, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Popover, PopoverContent, PopoverTrigger } from '@/crd/primitives/popover';
+import { SilentErrorBoundary } from './SilentErrorBoundary';
 
 // The library and its emoji dataset stay out of the main bundle. The download
 // starts as soon as the user reaches for the trigger, so the first open does
@@ -114,25 +115,29 @@ export function EmojiPicker({ onSelect, trigger, mode = 'insert' }: EmojiPickerP
               data-testid="emoji-picker-scroll-container"
               className="[&_.epr-body]:overscroll-contain"
             >
-              <Suspense
-                fallback={
-                  <div
-                    className="flex items-center justify-center"
-                    style={{ width: PICKER_WIDTH, height: PICKER_HEIGHT }}
-                  >
-                    <Loader2 aria-hidden="true" className="size-6 animate-spin text-muted-foreground" />
-                  </div>
-                }
-              >
-                <EmojiPickerLib
-                  onEmojiClick={handleEmojiClick}
-                  emojiStyle={'native' as EmojiStyle}
-                  autoFocusSearch={false}
-                  lazyLoadEmojis={true}
-                  width={PICKER_WIDTH}
-                  height={PICKER_HEIGHT}
-                />
-              </Suspense>
+              {/* A chunk that fails to load (a deploy since the tab opened, or offline)
+                  empties the popover instead of replacing the page. */}
+              <SilentErrorBoundary>
+                <Suspense
+                  fallback={
+                    <div
+                      className="flex items-center justify-center"
+                      style={{ width: PICKER_WIDTH, height: PICKER_HEIGHT }}
+                    >
+                      <Loader2 aria-hidden="true" className="size-6 animate-spin text-muted-foreground" />
+                    </div>
+                  }
+                >
+                  <EmojiPickerLib
+                    onEmojiClick={handleEmojiClick}
+                    emojiStyle={'native' as EmojiStyle}
+                    autoFocusSearch={false}
+                    lazyLoadEmojis={true}
+                    width={PICKER_WIDTH}
+                    height={PICKER_HEIGHT}
+                  />
+                </Suspense>
+              </SilentErrorBoundary>
             </div>
           </>
         )}

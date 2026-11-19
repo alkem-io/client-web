@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 const captured = vi.hoisted(() => ({
   contentProps: {} as Record<string, unknown>,
   pickerProps: {} as Record<string, unknown>,
+  loadFails: false,
 }));
 
 vi.mock('@/crd/primitives/popover', () => ({
@@ -24,6 +25,7 @@ vi.mock('@/crd/primitives/popover', () => ({
 // only the list element it renders matters.
 vi.mock('emoji-picker-react', () => ({
   default: (props: Record<string, unknown>) => {
+    if (captured.loadFails) throw new Error('Failed to fetch dynamically imported module');
     captured.pickerProps = props;
     return <div className="epr-body" data-testid="epr-body" />;
   },
@@ -57,6 +59,9 @@ const spyOnDocument = (type: string) => {
 };
 
 afterEach(() => {
+  captured.loadFails = false;
+  vi.unstubAllGlobals();
+  vi.restoreAllMocks();
   for (const [type, listener] of listeners.splice(0)) {
     document.removeEventListener(type, listener);
   }
@@ -186,5 +191,21 @@ describe('EmojiPicker modes', () => {
   it('opens on the full grid by default', async () => {
     await renderPicker();
     expect(screen.queryByRole('button', { name: '👍' })).toBeNull();
+  });
+});
+
+// A tab kept open across a deploy, or offline, cannot fetch the lazy chunk.
+describe('EmojiPicker when the library fails to load', () => {
+  it('empties the popover and reports the error instead of throwing to the page', () => {
+    captured.loadFails = true;
+    const reportError = vi.fn();
+    vi.stubGlobal('reportError', reportError);
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    render(<EmojiPicker onSelect={vi.fn()} trigger={<button type="button" data-testid="trigger" />} />);
+
+    expect(screen.getByTestId('trigger')).toBeTruthy();
+    expect(screen.queryByTestId('epr-body')).toBeNull();
+    expect(reportError).toHaveBeenCalledTimes(1);
   });
 });
