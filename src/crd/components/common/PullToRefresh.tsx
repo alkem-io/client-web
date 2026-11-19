@@ -3,11 +3,11 @@ import { useEffect, useRef, useState } from 'react';
 import { MAIN_CONTENT_ID } from '@/crd/lib/mainContent';
 import { cn } from '@/crd/lib/utils';
 
-export const PULL_SLOP_PX = 10;
+const PULL_SLOP_PX = 10;
 export const PULL_MAX_PX = 128;
-export const PULL_THRESHOLD_PX = 64;
-export const MIN_SPIN_MS = 600;
-export const MAX_SPIN_MS = 10_000;
+const PULL_THRESHOLD_PX = 64;
+const MIN_SPIN_MS = 600;
+const MAX_SPIN_MS = 10_000;
 const INDICATOR_PX = 40;
 
 /** Rubber band: the indicator travels raw·MAX/(raw+MAX), never reaching MAX. */
@@ -98,8 +98,7 @@ export function PullToRefresh({ onRefresh }: PullToRefreshProps) {
     const onTouchStart = (e: TouchEvent) => {
       if (refreshing) return;
       if (e.touches.length !== 1) {
-        if (pulling) cancel();
-        else tracking = false;
+        cancel();
         return;
       }
       if (!canStartPull(e.target)) {
@@ -115,8 +114,7 @@ export function PullToRefresh({ onRefresh }: PullToRefreshProps) {
     const onTouchMove = (e: TouchEvent) => {
       if (!tracking) return;
       if (e.touches.length !== 1) {
-        if (pulling) cancel();
-        else tracking = false;
+        cancel();
         return;
       }
       const dx = e.touches[0].clientX - startX;
