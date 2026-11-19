@@ -6,13 +6,26 @@ const createColumnMock = vi.fn();
 const renameColumnMock = vi.fn();
 const deleteColumnMock = vi.fn();
 const reorderColumnsMock = vi.fn();
+const mutationHookOptions = vi.fn();
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useTaskBoardDataQuery: (options: unknown) => useTaskBoardDataQuery(options),
-  useCreateTaskColumnOnCalloutMutation: () => [createColumnMock, {}] as const,
-  useUpdateTaskColumnOnCalloutMutation: () => [renameColumnMock, {}] as const,
-  useDeleteTaskColumnOnCalloutMutation: () => [deleteColumnMock, {}] as const,
-  useUpdateTaskColumnsSortOrderOnCalloutMutation: () => [reorderColumnsMock, {}] as const,
+  useCreateTaskColumnOnCalloutMutation: (options: unknown) => {
+    mutationHookOptions(options);
+    return [createColumnMock, {}] as const;
+  },
+  useUpdateTaskColumnOnCalloutMutation: (options: unknown) => {
+    mutationHookOptions(options);
+    return [renameColumnMock, {}] as const;
+  },
+  useDeleteTaskColumnOnCalloutMutation: (options: unknown) => {
+    mutationHookOptions(options);
+    return [deleteColumnMock, {}] as const;
+  },
+  useUpdateTaskColumnsSortOrderOnCalloutMutation: (options: unknown) => {
+    mutationHookOptions(options);
+    return [reorderColumnsMock, {}] as const;
+  },
 }));
 
 vi.mock('sonner', () => ({ toast: { error: vi.fn() } }));
@@ -87,5 +100,15 @@ describe('TaskBoardColumnsConnector', () => {
     render(<TaskBoardColumnsConnector calloutId="callout-1" open={false} onOpenChange={onOpenChange} />);
     expect(capturedColumnsProps?.open).toBe(false);
     expect(capturedColumnsProps?.onOpenChange).toBe(onOpenChange);
+  });
+
+  it('leaves a refused column change to its own saveError toast', () => {
+    useTaskBoardDataQuery.mockReturnValue({ data: { lookup: { callout: boardCallout() } } });
+    render(<TaskBoardColumnsConnector calloutId="callout-1" open={true} onOpenChange={() => {}} />);
+
+    expect(mutationHookOptions).toHaveBeenCalled();
+    for (const [options] of mutationHookOptions.mock.calls) {
+      expect(options).toEqual({ context: { skipGlobalErrorHandler: true } });
+    }
   });
 });

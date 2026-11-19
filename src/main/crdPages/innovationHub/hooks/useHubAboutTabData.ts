@@ -109,8 +109,11 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
   const savedFlashTimers = useRef<Partial<Record<HubAboutSectionKey, ReturnType<typeof setTimeout>>>>({});
   const [, startTransition] = useTransition();
 
-  const [updateInnovationHub] = useUpdateInnovationHubMutation();
-  const [uploadVisual, { loading: bannerUploading }] = useUploadVisualMutation();
+  // Save and upload failures show inline on their section.
+  const [updateInnovationHub] = useUpdateInnovationHubMutation({ context: { skipGlobalErrorHandler: true } });
+  const [uploadVisual, { loading: bannerUploading }] = useUploadVisualMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
 
   const [pendingBannerCrop, setPendingBannerCrop] = useState<PendingBannerCrop | null>(null);
 

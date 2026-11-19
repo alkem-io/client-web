@@ -201,11 +201,16 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
   // bailed once with the new data still in scope).
   const [reseedToken, setReseedToken] = useState(0);
 
-  const [updateInnovationFlowState] = useUpdateInnovationFlowStateMutation();
   const [updateInnovationFlowStateSettings] = useUpdateInnovationFlowStateSettingsMutation();
-  const [updateCalloutFlowState] = useUpdateCalloutFlowStateMutation();
-  const [updateCalloutsSortOrder] = useUpdateCalloutsSortOrderMutation();
-  const [updateInnovationFlowStatesSortOrder] = useUpdateInnovationFlowStatesSortOrderMutation();
+  // Save failures show in the unsaved-changes bar.
+  const [updateInnovationFlowState] = useUpdateInnovationFlowStateMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
+  const [updateCalloutFlowState] = useUpdateCalloutFlowStateMutation({ context: { skipGlobalErrorHandler: true } });
+  const [updateCalloutsSortOrder] = useUpdateCalloutsSortOrderMutation({ context: { skipGlobalErrorHandler: true } });
+  const [updateInnovationFlowStatesSortOrder] = useUpdateInnovationFlowStatesSortOrderMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
 
   // Borrow only the structural action handlers from the legacy hook —
   // they handle the create+sortOrder atomicity and refetches.

@@ -36,7 +36,8 @@ export const useMarkdownEditorIntegration = (
   const notify = useNotification();
   const { integration: { iframeAllowedUrls = [] } = {} } = useConfig();
   const storageConfig = useStorageConfigContext();
-  const [uploadFile] = useUploadFileMutation();
+  // A failed upload throws; the editor reports it through `onError`.
+  const [uploadFile] = useUploadFileMutation({ context: { skipGlobalErrorHandler: true } });
 
   const onError = (message: string) => notify(message, 'error');
 

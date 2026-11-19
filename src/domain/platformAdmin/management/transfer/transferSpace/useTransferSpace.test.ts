@@ -6,11 +6,15 @@ import useTransferSpace from './useTransferSpace';
 let mockSpaceResolveData: Record<string, unknown> | undefined;
 let mockSpaceData: Record<string, unknown> | undefined;
 const mockTransferMutation = vi.fn();
+const mockTransferMutationOptions = vi.fn();
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useSpaceTransferUrlResolveQuery: () => ({ data: mockSpaceResolveData, loading: false }),
   useSpaceTransferLookupQuery: () => ({ data: mockSpaceData, loading: false }),
-  useTransferSpaceToAccountMutation: () => [mockTransferMutation, { loading: false }],
+  useTransferSpaceToAccountMutation: (options: unknown) => {
+    mockTransferMutationOptions(options);
+    return [mockTransferMutation, { loading: false }];
+  },
 }));
 
 let mockAccountOwner: { name?: string; accountId?: string } | undefined;
@@ -82,5 +86,11 @@ describe('useTransferSpace', () => {
     ).resolves.not.toThrow();
 
     expect(mockNotify).toHaveBeenCalledWith(expect.any(String), 'error');
+  });
+
+  test('runs the transfer without the global error handler, so a failure toasts once', () => {
+    renderHook(() => useTransferSpace());
+
+    expect(mockTransferMutationOptions).toHaveBeenCalledWith({ context: { skipGlobalErrorHandler: true } });
   });
 });

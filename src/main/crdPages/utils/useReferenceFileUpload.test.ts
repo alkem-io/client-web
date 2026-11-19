@@ -56,6 +56,15 @@ describe('useReferenceFileUpload accept derivation', () => {
   });
 });
 
+describe('useReferenceFileUpload failure reporting', () => {
+  test('uploads without the global error handler, since a failed upload shows its own toast', async () => {
+    const { result } = renderHook(() => useReferenceFileUpload(baseConfig));
+    await result.current.onFileUpload?.(new File(['x'], 'ref.pdf', { type: 'application/pdf' }));
+
+    expect(uploadFileMock.mock.calls[0][0].context).toEqual({ skipGlobalErrorHandler: true });
+  });
+});
+
 describe('useReferenceFileUpload temporaryLocation resolution (issue #10126)', () => {
   const file = new File(['x'], 'ref.pdf', { type: 'application/pdf' });
 

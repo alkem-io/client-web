@@ -448,8 +448,9 @@ export default function CrdSpaceSettingsPage() {
     let saved = true;
     try {
       if (activeUnsaved.count > 0) saved = await activeUnsaved.saveAll();
-      if (saved && applicationForm.isDirty) await applicationForm.onSave();
-      if (saved && updatesTab.isDirty) await updatesTab.onSubmit();
+      // A failure here opens the save-failed dialog below.
+      if (saved && applicationForm.isDirty) await applicationForm.onSave({ skipGlobalErrorHandler: true });
+      if (saved && updatesTab.isDirty) await updatesTab.onSubmit({ skipGlobalErrorHandler: true });
     } catch {
       saved = false;
     } finally {

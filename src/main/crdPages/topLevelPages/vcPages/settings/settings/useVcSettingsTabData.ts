@@ -96,9 +96,10 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
     skip: !vcId,
   });
 
-  const [updateVc] = useUpdateVirtualContributorMutation();
-  const [updateVcSettings] = useUpdateVirtualContributorSettingsMutation();
-  const [updateAiPersona] = useUpdateAiPersonaMutation();
+  // Failures show through `onCommitError` or the section's own error state.
+  const [updateVc] = useUpdateVirtualContributorMutation({ context: { skipGlobalErrorHandler: true } });
+  const [updateVcSettings] = useUpdateVirtualContributorSettingsMutation({ context: { skipGlobalErrorHandler: true } });
+  const [updateAiPersona] = useUpdateAiPersonaMutation({ context: { skipGlobalErrorHandler: true } });
   const [refreshBok] = useRefreshBodyOfKnowledgeMutation();
 
   const vc = vcData?.lookup.virtualContributor;
@@ -336,7 +337,7 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
   const editingEnabled = vc?.platformSettings?.promptGraphEditingEnabled ?? false;
 
   const [updatePlatformSettings, { loading: togglingPlatformSetting }] =
-    useUpdateVirtualContributorPlatformSettingsMutation();
+    useUpdateVirtualContributorPlatformSettingsMutation({ context: { skipGlobalErrorHandler: true } });
 
   const [graphDraft, setGraphDraft] = useState<VcPromptGraphNode[] | null>(null);
   const [graphStatus, setGraphStatus] = useState<SectionSaveStatus>({ kind: 'idle' });

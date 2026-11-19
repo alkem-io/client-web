@@ -16,9 +16,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // ── shared mocks ─────────────────────────────────────────────────────────────
 const mockUpdateUserSettings = vi.fn().mockResolvedValue({ data: {} });
+const mockUseUpdateUserSettingsMutation = vi.fn((_options?: unknown) => [mockUpdateUserSettings]);
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useUpdateUserSettingsMutation: () => [mockUpdateUserSettings],
+  useUpdateUserSettingsMutation: (options?: unknown) => mockUseUpdateUserSettingsMutation(options),
 }));
 
 const mockChangeLanguage = vi.fn().mockResolvedValue(undefined);
@@ -54,9 +55,10 @@ beforeEach(() => {
   mockTrackAccepted.mockClear();
   mockTrackDeclined.mockClear();
   mockNotify.mockClear();
+  mockUseUpdateUserSettingsMutation.mockClear();
   vi.resetModules();
   vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-    useUpdateUserSettingsMutation: () => [mockUpdateUserSettings],
+    useUpdateUserSettingsMutation: (options?: unknown) => mockUseUpdateUserSettingsMutation(options),
   }));
   vi.mock('@/core/i18n/config', () => ({
     default: { changeLanguage: mockChangeLanguage, language: 'en', options: { fallbackLng: 'en' } },
@@ -349,5 +351,27 @@ describe('useLanguageOffer — authenticated onAccept/onDecline error handling (
     expect(mockNotify).toHaveBeenCalledWith('settings.languageSaveError', 'error');
     // Banner must be un-dismissed (back to visible) so user can retry
     expect(result.current.offeredLanguage).toBe('nl');
+  });
+
+  it('reports its own failures and records an ignored offer unasked, so its writes opt out of the global error handler', async () => {
+    const { useLanguageOffer } = await import('./useLanguageOffer');
+
+    renderHook(() =>
+      useLanguageOffer({
+        consentResolved: true,
+        isAuthenticated: true,
+        userId: 'user-1',
+        accountLanguageOfferAnswered: false,
+        languageConfig: NL_CONFIG,
+        anonymousChoice: EMPTY_CHOICE,
+        setAnonymousChoice: vi.fn(),
+        invitationSuggestedLanguage: null,
+        preBannerActionsComplete: true,
+      })
+    );
+
+    expect(mockUseUpdateUserSettingsMutation).toHaveBeenCalledWith(
+      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
+    );
   });
 });

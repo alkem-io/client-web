@@ -6,10 +6,14 @@ import { overrideKey, soundOverrideKey } from '../userNotificationsMapper';
 // ─── Apollo hook mocks ────────────────────────────────────────────────────
 
 const mockUpdateUserSettings = vi.fn();
+const mockUseUpdateUserSettingsMutation = vi.fn();
 const mockRefetchUserSettings = vi.fn();
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useUpdateUserSettingsMutation: () => [mockUpdateUserSettings, { loading: false }],
+  useUpdateUserSettingsMutation: (options?: unknown) => {
+    mockUseUpdateUserSettingsMutation(options);
+    return [mockUpdateUserSettings, { loading: false }];
+  },
   refetchUserSettingsQuery: (vars: unknown) => mockRefetchUserSettings(vars),
 }));
 
@@ -45,6 +49,16 @@ beforeEach(() => {
 afterEach(() => vi.useRealTimers());
 
 // ─── Tests ────────────────────────────────────────────────────────────────
+
+describe('useUserNotificationsTabData — error reporting', () => {
+  it('hands its failures to the tab, which reports them, so its writes opt out of the global error handler', () => {
+    renderHook(() => useUserNotificationsTabData({ userId: 'user-1', serverSettings: baseServer }));
+
+    expect(mockUseUpdateUserSettingsMutation).toHaveBeenCalledWith(
+      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
+    );
+  });
+});
 
 describe('useUserNotificationsTabData — optimistic flip', () => {
   it('writes the override immediately so the UI flips before the mutation resolves', () => {

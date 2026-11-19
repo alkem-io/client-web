@@ -38,8 +38,10 @@ const logBadgeFailure = (error: unknown) => {
  * `localStorage`, the way this module already persists `PUSH_SUBSCRIPTION_ID_KEY`.
  */
 export const useNativePushRegistration = () => {
+  // Bound from a native event, not a gesture; a failure is logged below.
   const [registerDevicePushToken] = useMutation<{ registerDevicePushToken: boolean }, RegisterDevicePushTokenVariables>(
-    RegisterDevicePushTokenDocument
+    RegisterDevicePushTokenDocument,
+    { context: { skipGlobalErrorHandler: true } }
   );
   // A background call repeated on every return to the app must never raise a toast.
   const [resetPushBadgeCount] = useMutation(ResetPushBadgeCountDocument, {

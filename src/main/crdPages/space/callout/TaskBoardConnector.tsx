@@ -100,8 +100,9 @@ function TaskBoardBody({
   onOpenTask?: (contributionId: string) => void;
 }) {
   const { t } = useTranslation('crd-taskBoard');
-  const [moveTask] = useMoveTaskToColumnMutation();
-  const [reorderTasks] = useUpdateContributionsSortOrderMutation();
+  // A failed move or reorder shows its own moveError toast.
+  const [moveTask] = useMoveTaskToColumnMutation({ context: { skipGlobalErrorHandler: true } });
+  const [reorderTasks] = useUpdateContributionsSortOrderMutation({ context: { skipGlobalErrorHandler: true } });
   // Creation dialog state: closed when undefined. When open, `column` is the
   // per-column add's pre-targeted column. Using an explicit open flag keeps an
   // add with no column distinct from the closed state.

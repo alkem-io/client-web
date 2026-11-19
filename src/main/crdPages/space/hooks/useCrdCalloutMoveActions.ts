@@ -35,7 +35,9 @@ export function useCrdCalloutMoveActions({
 }: UseCrdCalloutMoveActionsParams): CalloutMoveActions {
   const { t } = useTranslation('crd-space');
   const notify = useNotification();
-  const [updateSortOrder, { loading: submitting }] = useUpdateCalloutsSortOrderMutation();
+  const [updateSortOrder, { loading: submitting }] = useUpdateCalloutsSortOrderMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
 
   const index = orderedCalloutIds.indexOf(calloutId);
   const isTop = index <= 0;

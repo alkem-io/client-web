@@ -15,6 +15,7 @@ import { fireEvent, render, screen, waitFor } from '@/main/test/testUtils';
 // ── Apollo + integration hook mocks ────────────────────────────────────────
 
 const mockUpdateUserAssistantSettings = vi.fn();
+const mockUseUpdateUserAssistantSettingsMutation = vi.fn();
 const mockRefetch = vi.fn();
 const mockNotify = vi.fn();
 
@@ -66,7 +67,10 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
     },
     loading: false,
   }),
-  useUpdateUserAssistantSettingsMutation: () => [mockUpdateUserAssistantSettings, { loading: false }],
+  useUpdateUserAssistantSettingsMutation: (options?: unknown) => {
+    mockUseUpdateUserAssistantSettingsMutation(options);
+    return [mockUpdateUserAssistantSettings, { loading: false }];
+  },
   refetchUserAssistantSettingsQuery: (vars: unknown) => mockRefetch(vars),
 }));
 
@@ -152,5 +156,14 @@ describe('CrdUserAssistantTab — persist (updateUserSettings assistant)', () =>
 
     // Refetch keyed by the user id.
     expect(mockRefetch).toHaveBeenCalledWith({ userId: 'user-1' });
+  });
+
+  it('reports its own toggle failure, so the write opts out of the global error handler', async () => {
+    render(<CrdUserAssistantTab />);
+    await screen.findByText('Create whiteboard');
+
+    expect(mockUseUpdateUserAssistantSettingsMutation).toHaveBeenCalledWith(
+      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
+    );
   });
 });

@@ -36,7 +36,10 @@ const useTransferVirtualContributor = () => {
   const currentAccountName = vc?.account?.host?.profile?.displayName;
 
   // Mutation
-  const [transferMutation, { loading: transferLoading }] = useTransferVirtualContributorToAccountMutation();
+  const [transferMutation, { loading: transferLoading }] = useTransferVirtualContributorToAccountMutation({
+    // handleTransfer notifies its own failure.
+    context: { skipGlobalErrorHandler: true },
+  });
 
   // Error derivation
   const isLoading = resolveLoading || vcLoading;

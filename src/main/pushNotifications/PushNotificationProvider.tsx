@@ -31,7 +31,7 @@ const PushNotificationProviderInner: FC<PropsWithChildren> = ({ children }) => {
   const pushState = usePushNotifications();
   const navigate = useNavigate();
   const [fetchSubscriptions] = useMyPushSubscriptionsLazyQuery();
-  const [subscribeMutation] = useSubscribeToPushNotificationsMutation();
+  const [subscribeMutation] = useSubscribeToPushNotificationsMutation({ context: { skipGlobalErrorHandler: true } });
 
   // In app mode: capture the OS device token and bind it to this user. Mounted
   // here, and only here, because this component mounts exactly when the session

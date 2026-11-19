@@ -70,6 +70,9 @@ export const updateMemoMarkdownCache = (
   return htmlToMarkdown(editor.getHTML()).then(writeMarkdown);
 };
 
+// A failed signing step is rendered as the signing dialog's error stage.
+const OWN_ERROR_STAGE = { skipGlobalErrorHandler: true } as const;
+
 export const canStartMemoSigning = (
   privileges: AuthorizationPrivilege[],
   entitlements: LicenseEntitlementType[],
@@ -166,12 +169,14 @@ export function CrdMemoDialog({
     memoId,
     requestDurability: () => provider?.requestDurability() ?? Promise.reject(new Error('Memo is not connected')),
     prepare: async id => {
-      const result = (await prepareMemoSigning({ variables: { memoID: id } })).data?.prepareMemoSigning;
+      const result = (await prepareMemoSigning({ variables: { memoID: id }, context: OWN_ERROR_STAGE })).data
+        ?.prepareMemoSigning;
       if (!result) throw new Error('Memo signing preparation returned no result');
       return result;
     },
     continueSigning: async attemptID => {
-      const result = (await continueMemoSigning({ variables: { attemptID } })).data?.continueMemoSigning;
+      const result = (await continueMemoSigning({ variables: { attemptID }, context: OWN_ERROR_STAGE })).data
+        ?.continueMemoSigning;
       if (!result) throw new Error('Memo signing continuation returned no result');
       return result.authorizeUrl;
     },

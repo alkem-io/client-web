@@ -44,7 +44,9 @@ const CrdUserOrganizationsTab = () => {
 
   const [search, setSearch] = useState('');
   const [pendingDisassociate, setPendingDisassociate] = useState<PendingDisassociate | null>(null);
-  const [disassociate, { loading: isDisassociating }] = useRemoveRoleFromUserMutation();
+  const [disassociate, { loading: isDisassociating }] = useRemoveRoleFromUserMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
 
   const allRows: OrgRow[] = mapUserOrganizations(organizationIds, enrichment);
   const visible = filterOrganizations(allRows, search);

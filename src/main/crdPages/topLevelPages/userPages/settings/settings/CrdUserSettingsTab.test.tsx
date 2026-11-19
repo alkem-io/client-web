@@ -25,10 +25,14 @@ vi.mock('@/domain/platform/config/useConfig', () => ({
 }));
 
 const updateUserSettingsMock = vi.fn();
+const useUpdateUserSettingsMutationMock = vi.fn();
 const refetchUserSettingsQueryMock = vi.fn((v: unknown) => ({ query: 'UserSettings', variables: v }));
 const useUserSettingsQueryMock = vi.fn();
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useUpdateUserSettingsMutation: () => [updateUserSettingsMock, { loading: false }],
+  useUpdateUserSettingsMutation: (options?: unknown) => {
+    useUpdateUserSettingsMutationMock(options);
+    return [updateUserSettingsMock, { loading: false }];
+  },
   refetchUserSettingsQuery: (v: unknown) => refetchUserSettingsQueryMock(v),
   useUserSettingsQuery: (opts: unknown) => useUserSettingsQueryMock(opts),
 }));
@@ -175,5 +179,15 @@ describe('CrdUserSettingsTab language row (T011)', () => {
     // the account language (null → platform default 'en'), not 'nl'
     const trigger = screen.getByRole('combobox', { name: 'user.settings.language.label' });
     expect(trigger.textContent).toBe('en');
+  });
+
+  test('reports its own failures, so its settings writes opt out of the global error handler', () => {
+    useUserSettingsQueryMock.mockReturnValue({ data: settingsData(true, false), loading: false });
+
+    render(<CrdUserSettingsTab />);
+
+    expect(useUpdateUserSettingsMutationMock).toHaveBeenCalledWith(
+      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
+    );
   });
 });

@@ -14,9 +14,16 @@ vi.mock('@/main/crdPages/unifiedChat/useStartDirectChat', () => ({
 
 const sendMessageToUsersMock = vi.fn();
 const sendMessageToOrganizationMock = vi.fn();
+const mutationOptionsMock = vi.fn();
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useSendMessageToUsersMutation: () => [sendMessageToUsersMock, { loading: false }],
-  useSendMessageToOrganizationMutation: () => [sendMessageToOrganizationMock, { loading: false }],
+  useSendMessageToUsersMutation: (options: unknown) => {
+    mutationOptionsMock('sendMessageToUsers', options);
+    return [sendMessageToUsersMock, { loading: false }];
+  },
+  useSendMessageToOrganizationMutation: (options: unknown) => {
+    mutationOptionsMock('sendMessageToOrganization', options);
+    return [sendMessageToOrganizationMock, { loading: false }];
+  },
 }));
 
 vi.mock('react-i18next', async importOriginal => ({
@@ -34,6 +41,7 @@ import commonNL from '@/crd/i18n/common/common.nl.json';
 import {
   useMessageContributor,
   useOpenDirectChatHandler,
+  useSendEmailToUserHandler,
   useSendMessageToOrganizationHandler,
 } from './useSendMessageHandler';
 
@@ -167,5 +175,17 @@ describe('useSendMessageToOrganizationHandler — hourly message allowance used 
     const { result } = renderHook(() => useSendMessageToOrganizationHandler({ recipientOrganizationId: 'org-1' }));
 
     await expect(result.current.onSendMessage('hello')).rejects.toBe(otherError);
+  });
+});
+
+describe('useSendEmailToUserHandler', () => {
+  afterEach(() => vi.clearAllMocks());
+
+  test('leaves a refused send to the compose surface, which shows it inline', () => {
+    renderHook(() => useSendEmailToUserHandler({ recipientUserId: 'user-1' }));
+
+    expect(mutationOptionsMock).toHaveBeenCalledWith('sendMessageToUsers', {
+      context: { skipGlobalErrorHandler: true },
+    });
   });
 });

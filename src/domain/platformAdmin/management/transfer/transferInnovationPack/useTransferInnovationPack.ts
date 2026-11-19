@@ -36,7 +36,10 @@ const useTransferInnovationPack = () => {
   const currentAccountName = pack?.provider?.profile?.displayName;
 
   // Mutation
-  const [transferMutation, { loading: transferLoading }] = useTransferInnovationPackToAccountMutation();
+  const [transferMutation, { loading: transferLoading }] = useTransferInnovationPackToAccountMutation({
+    // handleTransfer notifies its own failure.
+    context: { skipGlobalErrorHandler: true },
+  });
 
   // Error derivation
   const isLoading = resolveLoading || packLoading;

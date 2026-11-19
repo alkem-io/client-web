@@ -14,13 +14,17 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 
 const acceptInvitationMock = vi.fn();
 const rejectInvitationMock = vi.fn();
+const useInvitationActionsMock = vi.fn();
 vi.mock('@/domain/community/invitations/useInvitationActions', () => ({
-  default: () => ({
-    acceptInvitation: acceptInvitationMock,
-    rejectInvitation: rejectInvitationMock,
-    accepting: false,
-    rejecting: false,
-  }),
+  default: (params: unknown) => {
+    useInvitationActionsMock(params);
+    return {
+      acceptInvitation: acceptInvitationMock,
+      rejectInvitation: rejectInvitationMock,
+      accepting: false,
+      rejecting: false,
+    };
+  },
 }));
 
 vi.mock('./orgInvitationsMapper', () => ({
@@ -50,6 +54,14 @@ describe('useOrgInvitationsTabData — mutation failures are surfaced', () => {
 
     expect(rejectInvitationMock).toHaveBeenCalledWith('inv-1');
     await waitFor(() => expect(notifyMock).toHaveBeenCalledWith('org.invitations.errorToast', 'error'));
+  });
+
+  it('runs accept and decline without the global error handler, so a failure toasts once', () => {
+    renderHook(() => useOrgInvitationsTabData('org-1'));
+
+    expect(useInvitationActionsMock).toHaveBeenCalledWith(
+      expect.objectContaining({ mutationContext: { skipGlobalErrorHandler: true } })
+    );
   });
 
   it('toasts when accepting fails', async () => {

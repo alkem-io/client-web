@@ -107,7 +107,9 @@ export function CalloutSettingsConnector({
     skip: !sortOpen,
     fetchPolicy: 'cache-and-network',
   });
-  const [updateContributionsSortOrder, { loading: updatingSort }] = useUpdateContributionsSortOrderMutation();
+  const [updateContributionsSortOrder, { loading: updatingSort }] = useUpdateContributionsSortOrderMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
 
   // Delete summary of a Form callout: the response total, fetched only while the dialog is open. It is
   // shown only when the viewer reads every response; otherwise the count would be their own rows alone.

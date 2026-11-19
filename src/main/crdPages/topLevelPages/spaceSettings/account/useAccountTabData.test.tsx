@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const notify = vi.fn();
 const deleteSpace = vi.fn();
-let mutationOptions: { onCompleted?: () => void; onError?: () => void } = {};
+let mutationOptions: { onCompleted?: () => void; onError?: () => void; context?: unknown } = {};
 let deleting = false;
 
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
@@ -75,5 +75,10 @@ describe('useAccountTabData — delete outcome (spec 045 FR-024a)', () => {
     expect(result.current.pendingDeleteSpace).toBe(false);
     expect(notify).toHaveBeenCalledWith('account.dangerZone.deleteError', 'error');
     expect(replace).not.toHaveBeenCalled();
+  });
+
+  it('shows its own delete failure, so the delete opts out of the global error handler', () => {
+    renderHook(() => useAccountTabData('space-1'));
+    expect(mutationOptions.context).toEqual({ skipGlobalErrorHandler: true });
   });
 });

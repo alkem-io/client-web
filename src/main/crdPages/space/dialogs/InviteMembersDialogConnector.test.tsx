@@ -24,16 +24,18 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
 
 vi.mock('@/domain/platform/config/useConfig', () => ({ useConfig: () => ({ language: { eligible: [] } }) }));
 
-const useRoleSetApplicationsAndInvitationsMock = vi.fn(
-  (_params: { roleSetId: string | undefined; includeApplications?: boolean }) => ({
-    invitations: [],
-    inviteContributorsOnRoleSet: vi.fn(),
-    loading: false,
-  })
-);
+type RoleSetHookParams = {
+  roleSetId: string | undefined;
+  includeApplications?: boolean;
+  mutationContext?: Record<string, unknown>;
+};
+const useRoleSetApplicationsAndInvitationsMock = vi.fn((_params: RoleSetHookParams) => ({
+  invitations: [],
+  inviteContributorsOnRoleSet: vi.fn(),
+  loading: false,
+}));
 vi.mock('@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations', () => ({
-  default: (params: { roleSetId: string | undefined; includeApplications?: boolean }) =>
-    useRoleSetApplicationsAndInvitationsMock(params),
+  default: (params: RoleSetHookParams) => useRoleSetApplicationsAndInvitationsMock(params),
 }));
 
 vi.mock('@/domain/access/AvailableContributors/useRoleSetAvailableContributors', () => ({
@@ -52,10 +54,11 @@ vi.mock('@/domain/community/inviteContributors/components/FormikContributorsSele
 // A VC already in the community — proves `currentMembers` reaches
 // `useVirtualContributorsAdmin` non-empty once the community query resolves.
 const existingVcMember = { id: 'vc-existing' };
+const useCommunityAdminMock = vi.fn((_params: { roleSetId: string; mutationContext?: Record<string, unknown> }) => ({
+  virtualContributorAdmin: { members: [existingVcMember], onAdd: vi.fn(), inviteContributors: vi.fn() },
+}));
 vi.mock('@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin', () => ({
-  default: () => ({
-    virtualContributorAdmin: { members: [existingVcMember], onAdd: vi.fn(), inviteContributors: vi.fn() },
-  }),
+  default: (params: { roleSetId: string; mutationContext?: Record<string, unknown> }) => useCommunityAdminMock(params),
 }));
 
 const getAvailableMock = vi.fn(async () => []);
@@ -400,5 +403,35 @@ describe('InviteMembersDialogConnector — the invitation dedupe never selects a
       expect(params.includeApplications).toBe(false);
     }
     expect(calls[calls.length - 1][0].roleSetId).toBe('rs-1');
+  });
+});
+
+describe('InviteMembersDialogConnector — a refused invite or VC add shows only the dialog toast', () => {
+  test('runs the invite and the VC add/invite mutations without the global error handler', async () => {
+    inviteUsersDialogQueryReturn = {
+      data: {
+        lookup: {
+          space: {
+            about: { profile: { displayName: 'My Space' }, membership: { roleSetID: 'rs-1' } },
+            level: SpaceLevel.L0,
+          },
+        },
+      },
+      loading: false,
+    };
+    useRoleSetApplicationsAndInvitationsMock.mockClear();
+    useCommunityAdminMock.mockClear();
+
+    await act(async () => {
+      render(
+        <InviteMembersDialogConnector open={true} kind="virtualContributor" spaceId="space-1" onClose={vi.fn()} />
+      );
+    });
+
+    const own = { skipGlobalErrorHandler: true };
+    const inviteCalls = useRoleSetApplicationsAndInvitationsMock.mock.calls;
+    expect(inviteCalls[inviteCalls.length - 1][0].mutationContext).toEqual(own);
+    const vcCalls = useCommunityAdminMock.mock.calls;
+    expect(vcCalls[vcCalls.length - 1][0].mutationContext).toEqual(own);
   });
 });

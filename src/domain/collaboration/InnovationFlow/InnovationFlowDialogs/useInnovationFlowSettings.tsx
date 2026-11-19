@@ -259,6 +259,8 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
           sortOrder: newStateData.sortOrder,
         },
       },
+      // The Add phase dialog shows a failed create itself.
+      context: { skipGlobalErrorHandler: true },
       // Await the refetch so the follow-up sort-order mutation (and any
       // consumer that reseeds off this query) sees a settled cache. Without
       // this, the create-stage refetch — which can carry the colliding
@@ -290,6 +292,7 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
         innovationFlowID: requiredInnovationFlow.id,
         stateIDs: stateIdsSorted,
       },
+      context: { skipGlobalErrorHandler: true },
       // Await so `handleCreateState` only resolves once the cache reflects the
       // final, de-collided ordering — callers can reseed immediately after.
       awaitRefetchQueries: true,

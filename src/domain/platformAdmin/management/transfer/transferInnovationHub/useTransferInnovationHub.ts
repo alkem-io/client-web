@@ -36,7 +36,10 @@ const useTransferInnovationHub = () => {
   const currentAccountName = hub?.account?.host?.profile?.displayName;
 
   // Mutation
-  const [transferMutation, { loading: transferLoading }] = useTransferInnovationHubToAccountMutation();
+  const [transferMutation, { loading: transferLoading }] = useTransferInnovationHubToAccountMutation({
+    // handleTransfer notifies its own failure.
+    context: { skipGlobalErrorHandler: true },
+  });
 
   // Error derivation
   const isLoading = resolveLoading || hubLoading;

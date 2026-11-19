@@ -78,6 +78,7 @@ export function useReferenceFileUpload(
                   temporaryLocation: isTemporaryLocation,
                 },
               },
+              context: { skipGlobalErrorHandler: true },
             });
             const url = data?.uploadFileOnStorageBucket.url;
             if (!url) {

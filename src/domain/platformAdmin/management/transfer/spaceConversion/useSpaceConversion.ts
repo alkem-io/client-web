@@ -18,6 +18,8 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import toFullUrl from '../toFullUrl';
 
 const T_PREFIX = 'pages.admin.spaceConversion';
+// Every conversion and move notifies its own failure.
+const OWN_ERROR_HANDLING = { context: { skipGlobalErrorHandler: true } };
 
 const useSpaceConversion = () => {
   const { t } = useTranslation();
@@ -89,14 +91,14 @@ const useSpaceConversion = () => {
     })) ?? [];
 
   // Conversion mutations
-  const [promoteL1ToL0, { loading: promoteL1Loading }] = useConvertSpaceL1ToL0Mutation();
-  const [demoteL1ToL2, { loading: demoteL1Loading }] = useConvertSpaceL1ToL2Mutation();
-  const [promoteL2ToL1, { loading: promoteL2Loading }] = useConvertSpaceL2ToL1Mutation();
+  const [promoteL1ToL0, { loading: promoteL1Loading }] = useConvertSpaceL1ToL0Mutation(OWN_ERROR_HANDLING);
+  const [demoteL1ToL2, { loading: demoteL1Loading }] = useConvertSpaceL1ToL2Mutation(OWN_ERROR_HANDLING);
+  const [promoteL2ToL1, { loading: promoteL2Loading }] = useConvertSpaceL2ToL1Mutation(OWN_ERROR_HANDLING);
 
   // Move mutations
-  const [moveL1ToL0Mut, { loading: moveL1ToL0Loading }] = useMoveSpaceL1ToL0Mutation();
-  const [moveL1ToL2Mut, { loading: moveL1ToL2Loading }] = useMoveSpaceL1ToL2Mutation();
-  const [moveL2ToL1Mut, { loading: moveL2ToL1Loading }] = useMoveSpaceL2ToL1Mutation();
+  const [moveL1ToL0Mut, { loading: moveL1ToL0Loading }] = useMoveSpaceL1ToL0Mutation(OWN_ERROR_HANDLING);
+  const [moveL1ToL2Mut, { loading: moveL1ToL2Loading }] = useMoveSpaceL1ToL2Mutation(OWN_ERROR_HANDLING);
+  const [moveL2ToL1Mut, { loading: moveL2ToL1Loading }] = useMoveSpaceL2ToL1Mutation(OWN_ERROR_HANDLING);
 
   const mutationLoading =
     promoteL1Loading ||

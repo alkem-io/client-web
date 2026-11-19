@@ -1,3 +1,4 @@
+import type { DefaultContext } from '@apollo/client';
 import { useState } from 'react';
 import {
   refetchCommunityUpdatesQuery,
@@ -14,7 +15,8 @@ export type UseUpdatesTabDataResult = {
   submitting: boolean;
   removing: boolean;
   onDraftChange: (next: string) => void;
-  onSubmit: () => Promise<void>;
+  /** A caller that shows its own failure passes `{ skipGlobalErrorHandler: true }` as the context. */
+  onSubmit: (context?: DefaultContext) => Promise<void>;
   /** True when the composer has an unpublished, non-whitespace draft. */
   isDirty: boolean;
   /** Discard the unpublished draft (tab-switch guard's "Discard"). */
@@ -68,11 +70,11 @@ export function useUpdatesTabData(communityId: string | undefined): UseUpdatesTa
 
   const onDraftChange = (next: string) => setDraft(next);
 
-  const onSubmit = async () => {
+  const onSubmit = async (context?: DefaultContext) => {
     if (!roomId) return;
     const body = draft.trim();
     if (!body) return;
-    await sendMessage({ variables: { messageData: { message: body, roomID: roomId } } });
+    await sendMessage({ variables: { messageData: { message: body, roomID: roomId } }, context });
     setDraft('');
   };
 

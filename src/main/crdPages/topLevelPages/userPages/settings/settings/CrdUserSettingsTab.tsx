@@ -33,7 +33,7 @@ const CrdUserSettingsTab = () => {
   });
   const mapped = mapUserSettings(data);
 
-  const [updateUserSettings] = useUpdateUserSettingsMutation();
+  const [updateUserSettings] = useUpdateUserSettingsMutation({ context: { skipGlobalErrorHandler: true } });
   const [messagesOverride, setMessagesOverride] = useState<boolean | null>(null);
   // Email-contact toggle temporarily disabled client-side (chat-only).
   // const [emailContactOverride, setEmailContactOverride] = useState<boolean | null>(null);

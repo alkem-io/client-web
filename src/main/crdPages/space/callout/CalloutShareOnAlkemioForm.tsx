@@ -77,7 +77,9 @@ export function CalloutShareOnAlkemioForm({ url, entityLabel, onClose }: Callout
     .map(mapToShareUser)
     .filter((u): u is ShareUser => u !== null);
 
-  const [sendDirectMessage, { loading: sending }] = useSendDirectMessageToUsersMutation();
+  const [sendDirectMessage, { loading: sending }] = useSendDirectMessageToUsersMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
 
   const userError = selectedUsers.length === 0 ? t('share.alkemio.errors.atLeastOneUser') : null;
   const messageError =

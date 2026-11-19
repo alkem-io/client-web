@@ -7,9 +7,17 @@ const updateInnovationHubMock = vi.fn();
 const uploadVisualMock = vi.fn();
 const uploadVisualLoading = { current: false };
 
+const mutationOptions: Record<string, unknown> = {};
+
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useUpdateInnovationHubMutation: () => [updateInnovationHubMock, { loading: false }] as const,
-  useUploadVisualMutation: () => [uploadVisualMock, { loading: uploadVisualLoading.current }] as const,
+  useUpdateInnovationHubMutation: (options: unknown) => {
+    mutationOptions.updateInnovationHub = options;
+    return [updateInnovationHubMock, { loading: false }] as const;
+  },
+  useUploadVisualMutation: (options: unknown) => {
+    mutationOptions.uploadVisual = options;
+    return [uploadVisualMock, { loading: uploadVisualLoading.current }] as const;
+  },
 }));
 
 vi.mock('react-i18next', () => ({
@@ -65,6 +73,12 @@ afterEach(() => {
 });
 
 describe('useHubAboutTabData', () => {
+  test('shows its own save and upload failures, so both mutations opt out of the global error handler', () => {
+    renderHook(() => useHubAboutTabData(baseHub));
+    const ownErrorHandling = { context: { skipGlobalErrorHandler: true } };
+    expect(mutationOptions).toEqual({ updateInnovationHub: ownErrorHandling, uploadVisual: ownErrorHandling });
+  });
+
   test('seeds local values from the hub on first render', () => {
     const { result } = renderHook(() => useHubAboutTabData(baseHub));
     // After the seeding effect runs, values match the mapper output.

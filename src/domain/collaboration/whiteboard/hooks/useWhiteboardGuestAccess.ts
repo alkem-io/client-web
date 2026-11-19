@@ -46,7 +46,10 @@ const buildGuestLink = (guestShareUrl?: string, enabled?: boolean) => {
 
 const useWhiteboardGuestAccess = ({ whiteboard, guestShareUrl }: UseWhiteboardGuestAccessOptions) => {
   const [hasError, setHasError] = useState(false);
-  const [updateGuestAccess, { loading }] = useUpdateWhiteboardGuestAccessMutation();
+  // Failures are reported below through the error handler, once.
+  const [updateGuestAccess, { loading }] = useUpdateWhiteboardGuestAccessMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
   const handleApolloError = useApolloErrorHandler();
 
   const resolvedGuestShareUrl = (() => {

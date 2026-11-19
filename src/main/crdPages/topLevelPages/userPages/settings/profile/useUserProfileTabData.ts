@@ -94,10 +94,11 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [pendingAvatarCrop, setPendingAvatarCrop] = useState<PendingAvatarCrop | null>(null);
 
-  const [updateUser] = useUpdateUserMutation();
-  const [createReference] = useCreateReferenceOnProfileMutation();
-  const [deleteReference] = useDeleteReferenceMutation();
-  const [createTagset] = useCreateTagsetOnProfileMutation();
+  // Save failures show in the unsaved-changes bar.
+  const [updateUser] = useUpdateUserMutation({ context: { skipGlobalErrorHandler: true } });
+  const [createReference] = useCreateReferenceOnProfileMutation({ context: { skipGlobalErrorHandler: true } });
+  const [deleteReference] = useDeleteReferenceMutation({ context: { skipGlobalErrorHandler: true } });
+  const [createTagset] = useCreateTagsetOnProfileMutation({ context: { skipGlobalErrorHandler: true } });
   const [uploadVisual] = useUploadVisualMutation();
 
   // Seed the local buffer once when the query first resolves. Subsequent

@@ -97,8 +97,11 @@ export function useMcpApiKeys(): UseMcpApiKeysResult {
   const [revokingId, setRevokingId] = useState<string | undefined>(undefined);
   const [interruptedRevealKeyId, setInterruptedRevealKeyId] = useState<string | undefined>(undefined);
 
-  const [mintMutation, { loading: creating }] = useMintMcpApiKeyMutation({ fetchPolicy: 'no-cache' });
-  const [revokeMutation] = useRevokeMcpApiKeyMutation();
+  const [mintMutation, { loading: creating }] = useMintMcpApiKeyMutation({
+    fetchPolicy: 'no-cache',
+    context: { skipGlobalErrorHandler: true },
+  });
+  const [revokeMutation] = useRevokeMcpApiKeyMutation({ context: { skipGlobalErrorHandler: true } });
 
   const keys = (data?.me.mcpApiKeys ?? []).map(mapKey);
 

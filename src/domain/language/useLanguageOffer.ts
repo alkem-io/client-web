@@ -64,7 +64,8 @@ export function useLanguageOffer({
   invitationSuggestedLanguage,
   preBannerActionsComplete,
 }: UseLanguageOfferOpts): UseLanguageOfferResult {
-  const [updateUserSettings] = useUpdateUserSettingsMutation();
+  // Accept/decline report their own failure; the unmount decline runs unasked.
+  const [updateUserSettings] = useUpdateUserSettingsMutation({ context: { skipGlobalErrorHandler: true } });
   const notify = useNotification();
   const { t } = useTranslation('crd-language');
   // Local dismissed state so the banner hides immediately after action without waiting for refetch.

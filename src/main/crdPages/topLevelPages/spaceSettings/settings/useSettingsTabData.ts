@@ -79,7 +79,8 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
 
   const hostOrganizationTrusted = (!!hostId && settings?.membership?.trustedOrganizations?.includes(hostId)) ?? false;
 
-  const [updateSpaceSettings] = useUpdateSpaceSettingsMutation();
+  // Save failures show in the unsaved-changes bar.
+  const [updateSpaceSettings] = useUpdateSpaceSettingsMutation({ context: { skipGlobalErrorHandler: true } });
   const [draft, setDraft] = useState<SettingsDraft>({});
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);

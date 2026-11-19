@@ -112,10 +112,12 @@ const useWhiteboardActions = () => {
     previewImages?: WhiteboardPreviewImage[]
   ) => {
     if ((whiteboard.profile.visual || whiteboard.profile.preview) && previewImages) {
+      // The whiteboard dialog reports a failed preview upload itself.
       await uploadVisuals(
         previewImages,
         { cardVisualId: whiteboard.profile.visual?.id, previewVisualId: whiteboard.profile.preview?.id },
-        whiteboard.nameID
+        whiteboard.nameID,
+        { skipGlobalErrorHandler: true }
       );
     }
     return {

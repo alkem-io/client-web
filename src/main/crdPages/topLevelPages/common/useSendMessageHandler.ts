@@ -77,7 +77,8 @@ export const useSendEmailToUserHandler = (params: {
 }): SendMessageHandlerResult => {
   const { recipientUserId } = params;
   const { t } = useTranslation('crd-profilePages');
-  const [sendMessageToUsers] = useSendMessageToUsersMutation();
+  // The compose surface shows the rejection inline.
+  const [sendMessageToUsers] = useSendMessageToUsersMutation({ context: { skipGlobalErrorHandler: true } });
 
   const onSendMessage = async (messageText: string) => {
     if (!recipientUserId) {

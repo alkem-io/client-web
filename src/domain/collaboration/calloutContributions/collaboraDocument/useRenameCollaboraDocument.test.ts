@@ -7,8 +7,12 @@ vi.mock('react-i18next', () => ({
 }));
 
 const updateMock = vi.fn();
+const updateHookOptions = vi.fn();
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useUpdateCollaboraDocumentMutation: () => [updateMock, { loading: false }],
+  useUpdateCollaboraDocumentMutation: (options: unknown) => {
+    updateHookOptions(options);
+    return [updateMock, { loading: false }];
+  },
 }));
 
 const ID = 'doc-1';
@@ -21,6 +25,11 @@ beforeEach(() => {
 });
 
 describe('useRenameCollaboraDocument', () => {
+  test('a refused rename is shown only as its own inline error', () => {
+    setup('Budget');
+    expect(updateHookOptions).toHaveBeenCalledWith({ context: { skipGlobalErrorHandler: true } });
+  });
+
   test('readOnly reflects canRename', () => {
     const { result } = setup('Budget', false);
     expect(result.current.readOnly).toBe(true);

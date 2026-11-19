@@ -26,10 +26,12 @@ type TaskBoardColumnsConnectorProps = {
 export function TaskBoardColumnsConnector({ calloutId, open, onOpenChange }: TaskBoardColumnsConnectorProps) {
   const { t } = useTranslation('crd-taskBoard');
   const { data } = useTaskBoardDataQuery({ variables: { calloutId } });
-  const [createColumn] = useCreateTaskColumnOnCalloutMutation();
-  const [renameColumn] = useUpdateTaskColumnOnCalloutMutation();
-  const [deleteColumn] = useDeleteTaskColumnOnCalloutMutation();
-  const [reorderColumns] = useUpdateTaskColumnsSortOrderOnCalloutMutation();
+  // A failed column mutation shows its own saveError toast (runColumnMutation).
+  const ownErrorHandling = { context: { skipGlobalErrorHandler: true } };
+  const [createColumn] = useCreateTaskColumnOnCalloutMutation(ownErrorHandling);
+  const [renameColumn] = useUpdateTaskColumnOnCalloutMutation(ownErrorHandling);
+  const [deleteColumn] = useDeleteTaskColumnOnCalloutMutation(ownErrorHandling);
+  const [reorderColumns] = useUpdateTaskColumnsSortOrderOnCalloutMutation(ownErrorHandling);
 
   const callout = data?.lookup.callout;
   const columnNames = getBoardColumns({ classification: { tagsets: callout?.classification?.tagsets } });

@@ -144,6 +144,8 @@ export const useConversationView = (
               attachmentUpload,
             },
           },
+          // The attachment composer shows its own error for an unconfirmed send.
+          context: { skipGlobalErrorHandler: true },
         });
       } else {
         setIsSendingDirect(true);

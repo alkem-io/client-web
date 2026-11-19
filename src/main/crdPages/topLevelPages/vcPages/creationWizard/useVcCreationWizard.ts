@@ -113,6 +113,7 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
   };
 
   const [createVirtualContributor] = useCreateVirtualContributorOnAccountMutation({
+    context: { skipGlobalErrorHandler: true },
     refetchQueries: ['MyAccount', 'AccountInformation', refetchMyResourcesQuery({ accountId: myAccountId ?? '' })],
   });
 
@@ -159,7 +160,7 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
 
   const [createLinkOnCallout] = useCreateLinkOnCalloutMutation();
   const [getSpaceCommunity] = useSubspaceCommunityAndRoleSetIdLazyQuery();
-  const [assignRole] = useAssignRoleToVirtualContributorMutation();
+  const [assignRole] = useAssignRoleToVirtualContributorMutation({ context: { skipGlobalErrorHandler: true } });
 
   const addVcToCommunity = async (vcId: string, spaceId: string) => {
     const community = await getSpaceCommunity({ variables: { spaceId } });

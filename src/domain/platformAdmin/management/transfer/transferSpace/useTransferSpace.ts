@@ -51,7 +51,10 @@ const useTransferSpace = () => {
     AuthorizationPrivilege.TransferResourceAccept
   );
 
-  const [transferSpaceMutation, { loading: transferLoading }] = useTransferSpaceToAccountMutation();
+  const [transferSpaceMutation, { loading: transferLoading }] = useTransferSpaceToAccountMutation({
+    // handleTransfer notifies its own failure.
+    context: { skipGlobalErrorHandler: true },
+  });
 
   const isLoading = spaceResolveLoading || spaceLoading;
 

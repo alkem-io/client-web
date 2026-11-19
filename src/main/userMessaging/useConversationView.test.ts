@@ -331,6 +331,9 @@ describe('useConversationView — DM consent is checked per text send', () => {
 
     expect(actorDetailsMock).not.toHaveBeenCalled();
     expect(sendMessageMutationMock).toHaveBeenCalledTimes(1);
+    expect(sendMessageMutationMock).toHaveBeenCalledWith(
+      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
+    );
     expect(sendEventMock).not.toHaveBeenCalled();
   });
 });
@@ -387,6 +390,7 @@ describe('useConversationView — writes go straight to Synapse', () => {
           attachmentUpload: { externalReference: 'media-1', displayName: 'photo.png' },
         },
       },
+      context: { skipGlobalErrorHandler: true },
     });
     expect(sendEventMock).not.toHaveBeenCalled();
   });

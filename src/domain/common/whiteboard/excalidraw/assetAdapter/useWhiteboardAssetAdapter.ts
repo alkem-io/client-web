@@ -102,7 +102,8 @@ export function useWhiteboardAssetAdapter({
           const { data } = await Promise.race([
             deps.uploadFile({
               variables: { file: upload, uploadData: { storageBucketId: deps.storageBucketId } },
-              context: { fetchOptions: { signal: controller.signal } },
+              // The host reports `uploadError` itself.
+              context: { fetchOptions: { signal: controller.signal }, skipGlobalErrorHandler: true },
             }),
             deadline,
           ]);

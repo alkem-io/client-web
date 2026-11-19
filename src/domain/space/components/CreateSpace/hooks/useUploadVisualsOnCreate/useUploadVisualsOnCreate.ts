@@ -40,7 +40,7 @@ const useUploadVisualsOnCreate = ({
 }: UseUploadVisualsOnCreateProps = {}): UseUploadVisualsOnCreateProvided => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const [uploadVisual] = useUploadVisualMutation();
+  const [uploadVisual] = useUploadVisualMutation({ context: { skipGlobalErrorHandler: true } });
 
   const uploadVisuals = async (createResult: ProfileWithVisuals | undefined, data: VisualsForm | undefined) => {
     try {

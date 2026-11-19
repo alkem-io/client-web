@@ -1,3 +1,4 @@
+import type { DefaultContext } from '@apollo/client';
 import {
   ActorType,
   AuthorizationPrivilege,
@@ -18,6 +19,8 @@ import useRoleSetManager, {
 
 interface useCommunityAdminParams {
   roleSetId: string;
+  /** Apollo link context attached to every mutation this hook runs. */
+  mutationContext?: DefaultContext;
 }
 
 export interface useCommunityAdminProvided {
@@ -81,7 +84,7 @@ export interface CommunityMemberOrganizationFragmentWithRoles extends RoleSetMem
   isLead: boolean;
 }
 
-const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunityAdminProvided => {
+const useCommunityAdmin = ({ roleSetId, mutationContext }: useCommunityAdminParams): useCommunityAdminProvided => {
   const {
     users,
     organizations,
@@ -101,6 +104,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     contributorTypes: [ActorType.User, ActorType.Organization, ActorType.VirtualContributor],
     fetchContributors: true,
     fetchRoleDefinitions: true,
+    mutationContext,
   });
   const memberRoleDefinition = rolesDefinitions?.[RoleName.Member];
   const leadRoleDefinition = rolesDefinitions?.[RoleName.Lead];
@@ -154,6 +158,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     errored: erroredApplicationsAndInvitations,
   } = useRoleSetApplicationsAndInvitations({
     roleSetId,
+    mutationContext,
   });
 
   const inviteContributors = (inviteData: InviteContributorsData) =>

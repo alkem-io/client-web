@@ -13,6 +13,7 @@ const mocks = vi.hoisted(() => ({
   spaceCanUpdate: false,
   subspaceId: '',
   subspaceCanUpdate: false,
+  mutationHookOptions: vi.fn(),
 }));
 
 vi.mock('react-i18next', () => ({
@@ -31,12 +32,24 @@ vi.mock('@/crd/forms/markdown/MarkdownEditor', () => ({
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useCalloutFormResponsesQuery: () => ({ data: undefined, refetch: vi.fn() }),
   useCalloutContentQuery: () => ({ data: undefined, loading: false }),
-  useCreateReferenceOnProfileMutation: () => [vi.fn()],
-  useDeleteReferenceMutation: () => [vi.fn()],
+  useCreateReferenceOnProfileMutation: (options: unknown) => {
+    mocks.mutationHookOptions('createReferenceOnProfile', options);
+    return [vi.fn()];
+  },
+  useDeleteReferenceMutation: (options: unknown) => {
+    mocks.mutationHookOptions('deleteReference', options);
+    return [vi.fn()];
+  },
   useTemplateContentLazyQuery: () => [vi.fn()],
-  useUpdateCalloutContentMutation: () => [vi.fn(), { loading: false }],
+  useUpdateCalloutContentMutation: (options: unknown) => {
+    mocks.mutationHookOptions('updateCalloutContent', options);
+    return [vi.fn(), { loading: false }];
+  },
   useUpdateCalloutFormMutation: () => [vi.fn()],
-  useUpdatePollStatusMutation: () => [vi.fn()],
+  useUpdatePollStatusMutation: (options: unknown) => {
+    mocks.mutationHookOptions('updatePollStatus', options);
+    return [vi.fn()];
+  },
 }));
 
 vi.mock('@/domain/space/context/useSpace', () => ({
@@ -95,7 +108,10 @@ vi.mock('@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals', () =
 }));
 
 vi.mock('@/domain/collaboration/poll/hooks/usePollOptionManagement', () => ({
-  usePollOptionManagement: () => ({}),
+  usePollOptionManagement: (params: unknown) => {
+    mocks.mutationHookOptions('pollOptionManagement', params);
+    return {};
+  },
 }));
 
 vi.mock('@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument', () => ({
@@ -189,5 +205,18 @@ describe('CalloutFormConnector — admin-only framing chips follow the current l
     expect(chips).toContain('callout.poll');
     expect(chips).not.toContain('callout.form');
     expect(chips).not.toContain('callout.contributors');
+  });
+});
+
+describe('CalloutFormConnector — edit-path failures', () => {
+  test('are left to the connector, which shows its own message for each', () => {
+    openCreate();
+    for (const name of ['updateCalloutContent', 'createReferenceOnProfile', 'deleteReference', 'updatePollStatus']) {
+      expect(mocks.mutationHookOptions).toHaveBeenCalledWith(name, { context: { skipGlobalErrorHandler: true } });
+    }
+    expect(mocks.mutationHookOptions).toHaveBeenCalledWith(
+      'pollOptionManagement',
+      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
+    );
   });
 });

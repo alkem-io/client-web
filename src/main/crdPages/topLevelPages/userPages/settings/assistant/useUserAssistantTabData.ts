@@ -40,7 +40,9 @@ export const useUserAssistantTabData = ({
   storedToggles,
 }: UseUserAssistantTabDataParams): UseUserAssistantTabDataResult => {
   const [overrides, setOverrides] = useState<Map<string, boolean>>(() => new Map());
-  const [updateUserAssistantSettings] = useUpdateUserAssistantSettingsMutation();
+  const [updateUserAssistantSettings] = useUpdateUserAssistantSettingsMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
 
   const clearOverride = (name: string) => {
     setOverrides(prev => {

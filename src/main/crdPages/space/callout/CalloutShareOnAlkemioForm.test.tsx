@@ -9,8 +9,12 @@ vi.mock('react-i18next', async importOriginal => ({
 }));
 
 const sendDirectMessageMock = vi.fn();
+const sendDirectMessageOptions = vi.fn();
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useSendDirectMessageToUsersMutation: () => [sendDirectMessageMock, { loading: false }],
+  useSendDirectMessageToUsersMutation: (options: unknown) => {
+    sendDirectMessageOptions(options);
+    return [sendDirectMessageMock, { loading: false }];
+  },
   useUserSelectorQuery: () => ({ data: undefined, loading: false }),
 }));
 
@@ -123,6 +127,11 @@ describe('CalloutShareOnAlkemioForm (US2 — Share on Alkemio → individual cha
     expect(screen.getByTestId('confirmation').textContent).toContain('notReached:');
     expect(screen.getByTestId('confirmation').textContent).not.toContain('Alice');
     expect(screen.getByTestId('confirmation').textContent).not.toContain('Bob');
+  });
+
+  test('a refused send shows only its own sendFailed message', () => {
+    render(<CalloutShareOnAlkemioForm url="https://alkem.io/x" entityLabel="post" />);
+    expect(sendDirectMessageOptions).toHaveBeenCalledWith({ context: { skipGlobalErrorHandler: true } });
   });
 
   test('partial failure lists the not-reached recipients', async () => {

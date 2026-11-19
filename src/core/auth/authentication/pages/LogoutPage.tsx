@@ -71,11 +71,13 @@ const LogoutPage = () => {
   const signInAgain = useQueryParams().get(PARAM_NAME_LOGOUT_SIGN_IN_AGAIN) === 'true';
   const { clearReturnUrl } = useReturnUrl();
   const { clearArmed } = useSignUpRoundTrip();
-  const [unsubscribeMutation] = useUnsubscribeFromPushNotificationsMutation();
+  const [unsubscribeMutation] = useUnsubscribeFromPushNotificationsMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
   const [unregisterDeviceToken] = useMutation<
     { unregisterDevicePushToken: boolean },
     UnregisterDevicePushTokenVariables
-  >(UnregisterDevicePushTokenDocument);
+  >(UnregisterDevicePushTokenDocument, { context: { skipGlobalErrorHandler: true } });
 
   const clearSessionState = () => {
     clearReturnUrl();

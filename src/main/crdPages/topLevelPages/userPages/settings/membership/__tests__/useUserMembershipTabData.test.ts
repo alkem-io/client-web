@@ -8,11 +8,15 @@ import { filterMemberships, type MembershipRow, mapUserMembershipData } from '..
 const mockUpdateUserSettings = vi.fn();
 const mockFetchSpaceDetails = vi.fn();
 const mockRemoveRoleFromUser = vi.fn();
+const mockUseRemoveRoleFromUserMutation = vi.fn();
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useUpdateUserSettingsMutation: () => [mockUpdateUserSettings, { loading: false }],
   useSpaceContributionDetailsLazyQuery: () => [mockFetchSpaceDetails],
-  useRemoveRoleFromUserMutation: () => [mockRemoveRoleFromUser, { loading: false }],
+  useRemoveRoleFromUserMutation: (options?: unknown) => {
+    mockUseRemoveRoleFromUserMutation(options);
+    return [mockRemoveRoleFromUser, { loading: false }];
+  },
 }));
 
 import useUserMembershipTabData from '../useUserMembershipTabData';
@@ -313,5 +317,13 @@ describe('useUserMembershipTabData — Leave confirmation flow (Rule #9)', () =>
     });
     expect(refetch).toHaveBeenCalled();
     expect(result.current.pendingLeave).toBeNull();
+  });
+
+  it('hands a failed leave to the tab, which reports it, so the leave opts out of the global error handler', () => {
+    renderHook(() => useUserMembershipTabData('user-1'));
+
+    expect(mockUseRemoveRoleFromUserMutation).toHaveBeenCalledWith(
+      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
+    );
   });
 });

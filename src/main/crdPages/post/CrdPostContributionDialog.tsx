@@ -181,7 +181,9 @@ export function CrdPostContributionDialog({
   }, [open, calloutId]);
   const isMoveTargetChanged = targetCalloutId !== baselineCalloutIdRef.current;
 
-  const [moveContributionToCallout] = useMoveContributionToCalloutMutation();
+  const [moveContributionToCallout] = useMoveContributionToCalloutMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
 
   // Reset state on open / mode change.
   useEffect(() => {
@@ -234,8 +236,9 @@ export function CrdPostContributionDialog({
   const [createPost, { loading: creating }] = useCreatePostOnCalloutMutation();
   const [updatePost, { loading: updating }] = useUpdatePostMutation();
   const [deleteContribution] = useDeleteContributionMutation();
-  const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
-  const [deleteReference] = useDeleteReferenceMutation();
+  // A failed reference change or move reports its own message.
+  const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation({ context: { skipGlobalErrorHandler: true } });
+  const [deleteReference] = useDeleteReferenceMutation({ context: { skipGlobalErrorHandler: true } });
 
   const validate = (): boolean => {
     try {

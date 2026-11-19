@@ -97,10 +97,11 @@ export const useOrgProfileTabData = (organizationId: string | undefined): UseOrg
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [pendingAvatarCrop, setPendingAvatarCrop] = useState<PendingAvatarCrop | null>(null);
 
-  const [updateOrganization] = useUpdateOrganizationMutation();
-  const [createReference] = useCreateReferenceOnProfileMutation();
-  const [deleteReference] = useDeleteReferenceMutation();
-  const [createTagset] = useCreateTagsetOnProfileMutation();
+  // Save failures show in the unsaved-changes bar.
+  const [updateOrganization] = useUpdateOrganizationMutation({ context: { skipGlobalErrorHandler: true } });
+  const [createReference] = useCreateReferenceOnProfileMutation({ context: { skipGlobalErrorHandler: true } });
+  const [deleteReference] = useDeleteReferenceMutation({ context: { skipGlobalErrorHandler: true } });
+  const [createTagset] = useCreateTagsetOnProfileMutation({ context: { skipGlobalErrorHandler: true } });
   const [uploadVisual] = useUploadVisualMutation();
 
   useEffect(() => {

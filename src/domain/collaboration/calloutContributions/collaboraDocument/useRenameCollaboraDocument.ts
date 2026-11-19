@@ -33,7 +33,10 @@ export function useRenameCollaboraDocument({
   canRename,
 }: UseRenameCollaboraDocumentArgs) {
   const { t } = useTranslation('crd-space');
-  const [updateCollaboraDocument, { loading: saving }] = useUpdateCollaboraDocumentMutation();
+  // A failed save is shown inline through `error`.
+  const [updateCollaboraDocument, { loading: saving }] = useUpdateCollaboraDocumentMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState('');
   const [error, setError] = useState<string | null>(null);

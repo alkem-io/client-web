@@ -26,7 +26,11 @@ export const useCalloutTemplateFramingSave = (form: UseCrdCalloutFormResult) => 
   const { t } = useTranslation('crd-space');
   const notify = useNotification();
   const { save } = useCalloutFormDefinitionSave();
-  const pollMgmt = usePollOptionManagement({ pollId: form.values.editMeta?.pollId ?? '' });
+  // savePollOptions reports a failed option save itself.
+  const pollMgmt = usePollOptionManagement({
+    pollId: form.values.editMeta?.pollId ?? '',
+    context: { skipGlobalErrorHandler: true },
+  });
   // The poll as the server holds it after a save that failed part-way. The dialog stays open for a
   // retry, and `initialValues` is the stale pre-edit snapshot, so diffing against it would re-add
   // options that were added and re-remove ones already gone. Tied to the `initialValues` it was

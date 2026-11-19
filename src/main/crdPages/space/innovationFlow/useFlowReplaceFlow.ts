@@ -73,7 +73,9 @@ export function useFlowReplaceFlow({
   const picker = useTemplatePicker({ allowedTypes: ['space'], spaceTemplatesSetId, accountId });
   const { selectedTemplateId, clearSelection } = picker;
 
-  const [updateCollaborationFromSpaceTemplate] = useUpdateCollaborationFromSpaceTemplateMutation();
+  const [updateCollaborationFromSpaceTemplate] = useUpdateCollaborationFromSpaceTemplateMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
 
   const onApplyDialogClose = () => {
     // Cancel / X on the Apply dialog only dismisses the Apply layer; clearing

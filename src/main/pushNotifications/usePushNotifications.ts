@@ -36,8 +36,11 @@ export function usePushNotifications(): PushNotificationState {
   const vapidPublicKey = vapidData?.vapidPublicKey ?? null;
   const isServerEnabled = vapidPublicKey !== null;
 
-  const [subscribeMutation] = useSubscribeToPushNotificationsMutation();
-  const [unsubscribeMutation] = useUnsubscribeFromPushNotificationsMutation();
+  // subscribe() also runs unasked on mount; both are reported by the settings toggle that calls them.
+  const [subscribeMutation] = useSubscribeToPushNotificationsMutation({ context: { skipGlobalErrorHandler: true } });
+  const [unsubscribeMutation] = useUnsubscribeFromPushNotificationsMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
 
   const [permissionState, setPermissionState] = useState<NotificationPermission>(
     isSupported ? Notification.permission : 'default'

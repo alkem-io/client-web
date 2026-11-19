@@ -25,7 +25,9 @@ export const useHubPacksTabData = (
   refetch: () => Promise<unknown>
 ): UseHubPacksTabDataResult => {
   const { t } = useTranslation('crd-innovationHub');
-  const [updateInnovationHub, { loading: mutating }] = useUpdateInnovationHubMutation();
+  const [updateInnovationHub, { loading: mutating }] = useUpdateInnovationHubMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
   // `busy` must span mutation + refetch: if controls re-enable between the
   // two, a second edit computed from the stale rows races the in-flight
   // refetch and can clobber the list.

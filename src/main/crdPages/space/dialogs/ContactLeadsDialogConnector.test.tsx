@@ -11,8 +11,12 @@ vi.mock('react-i18next', async importOriginal => ({
 }));
 
 const sendDirectMessageMock = vi.fn();
+const sendDirectMessageOptions = vi.fn();
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useSendDirectMessageToUsersMutation: () => [sendDirectMessageMock, { loading: false }],
+  useSendDirectMessageToUsersMutation: (options: unknown) => {
+    sendDirectMessageOptions(options);
+    return [sendDirectMessageMock, { loading: false }];
+  },
 }));
 
 vi.mock('@/core/apollo/generated/graphql-schema', () => ({
@@ -52,6 +56,11 @@ describe('ContactLeadsDialog (US3 — Contact the leads → individual chats)', 
   test('renders the exact explanatory copy key', () => {
     render(<ContactLeadsDialogConnector open={true} onOpenChange={vi.fn()} recipients={recipients} />);
     expect(screen.getByText('contactLeads.explanation')).toBeTruthy();
+  });
+
+  test('a refused send shows only its own sendFailed message', () => {
+    render(<ContactLeadsDialogConnector open={true} onOpenChange={vi.fn()} recipients={recipients} />);
+    expect(sendDirectMessageOptions).toHaveBeenCalledWith({ context: { skipGlobalErrorHandler: true } });
   });
 
   test('fans out to all lead ids in a single mutation call', async () => {

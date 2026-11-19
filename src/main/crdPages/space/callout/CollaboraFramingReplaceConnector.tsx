@@ -62,7 +62,10 @@ export function CollaboraFramingReplaceConnector({
   const [titleValue, setTitleValue] = useState('');
   const [serverErrorMessage, setServerErrorMessage] = useState<string | null>(null);
 
-  const [replaceCollaboraDocument, { loading }] = useReplaceCollaboraDocumentMutation();
+  // Every server rejection is shown inline via serverErrorMessage.
+  const [replaceCollaboraDocument, { loading }] = useReplaceCollaboraDocumentMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
 
   const formatList = COLLABORA_IMPORT_EXTENSIONS_P1.join(', ');
   const capMb = Math.round(COLLABORA_IMPORT_MAX_BYTES / (1024 * 1024));

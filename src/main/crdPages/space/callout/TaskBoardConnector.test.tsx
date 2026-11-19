@@ -5,11 +5,18 @@ import { AuthorizationPrivilege, CalloutContributionType } from '@/core/apollo/g
 const useTaskBoardDataQuery = vi.fn();
 const moveTaskMock = vi.fn();
 const reorderTasksMock = vi.fn();
+const mutationHookOptions = vi.fn();
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useTaskBoardDataQuery: (options: unknown) => useTaskBoardDataQuery(options),
-  useMoveTaskToColumnMutation: () => [moveTaskMock, {}] as const,
-  useUpdateContributionsSortOrderMutation: () => [reorderTasksMock, {}] as const,
+  useMoveTaskToColumnMutation: (options: unknown) => {
+    mutationHookOptions('moveTask', options);
+    return [moveTaskMock, {}] as const;
+  },
+  useUpdateContributionsSortOrderMutation: (options: unknown) => {
+    mutationHookOptions('reorderTasks', options);
+    return [reorderTasksMock, {}] as const;
+  },
 }));
 
 vi.mock('sonner', () => ({ toast: { error: vi.fn() } }));
@@ -219,6 +226,14 @@ describe('TaskBoardConnector', () => {
     const options = moveTaskMock.mock.calls[0][0];
     options.onError();
     expect(toast.error).toHaveBeenCalledWith('moveError');
+  });
+
+  it('leaves a refused move or reorder to its own moveError toast', () => {
+    useTaskBoardDataQuery.mockReturnValue({ data: { lookup: { callout: boardCallout() } } });
+    render(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
+
+    expect(mutationHookOptions).toHaveBeenCalledWith('moveTask', { context: { skipGlobalErrorHandler: true } });
+    expect(mutationHookOptions).toHaveBeenCalledWith('reorderTasks', { context: { skipGlobalErrorHandler: true } });
   });
 
   it('persists a within-column reorder with optimistic sortOrder, only with MOVE_TASK', () => {

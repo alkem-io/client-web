@@ -16,8 +16,11 @@ type useCalloutEditProvided = {
   deleteCallout: (callout: Identifiable) => Promise<void>;
 };
 
+// The caller shows its own message when a visibility change or delete fails.
+const OWN_ERROR_HANDLING = { skipGlobalErrorHandler: true } as const;
+
 export const useCalloutManager = (): useCalloutEditProvided => {
-  const [updateCalloutVisibility] = useUpdateCalloutVisibilityMutation();
+  const [updateCalloutVisibility] = useUpdateCalloutVisibilityMutation({ context: OWN_ERROR_HANDLING });
 
   const apolloClient = useApolloClient();
 
@@ -53,6 +56,7 @@ export const useCalloutManager = (): useCalloutEditProvided => {
   // dashboards) without a network round-trip; a refetch of one named query
   // would only fix the surfaces that happen to watch it.
   const [deleteCallout] = useDeleteCalloutMutation({
+    context: OWN_ERROR_HANDLING,
     update(cache, { data }) {
       const deletedId = data?.deleteCallout?.id;
       if (!deletedId) return;

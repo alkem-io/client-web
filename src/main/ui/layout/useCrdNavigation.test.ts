@@ -25,9 +25,13 @@ vi.mock('@/domain/platform/config/useConfig', () => ({
 }));
 
 const updateUserSettingsMock = vi.fn();
+const useUpdateUserSettingsMutationMock = vi.fn();
 const refetchUserSettingsQueryMock = vi.fn((v: unknown) => ({ query: 'UserSettings', variables: v }));
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useUpdateUserSettingsMutation: () => [updateUserSettingsMock, { loading: false }],
+  useUpdateUserSettingsMutation: (options?: unknown) => {
+    useUpdateUserSettingsMutationMock(options);
+    return [updateUserSettingsMock, { loading: false }];
+  },
   refetchUserSettingsQuery: (v: unknown) => refetchUserSettingsQueryMock(v),
 }));
 
@@ -86,5 +90,15 @@ describe('useCrdNavigation — handleLanguageChange', () => {
 
     expect(notifyMock).toHaveBeenCalledWith('header.changeLanguageError', 'error');
     expect(mockI18nInstance.changeLanguage).not.toHaveBeenCalled();
+  });
+
+  test('reports its own failure, so the language write opts out of the global error handler', () => {
+    mockCurrentUserContext = { userModel: { id: 'user-1' }, isAuthenticated: true };
+
+    renderHook(() => useCrdNavigation());
+
+    expect(useUpdateUserSettingsMutationMock).toHaveBeenCalledWith(
+      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
+    );
   });
 });

@@ -25,7 +25,9 @@ export const ContactLeadsDialogConnector = ({ open, onOpenChange, recipients }: 
   const notify = useNotification();
   const { setIsOpen, setSelectedConversationId } = useUserMessagingContext();
 
-  const [sendDirectMessage, { loading: sending }] = useSendDirectMessageToUsersMutation();
+  const [sendDirectMessage, { loading: sending }] = useSendDirectMessageToUsersMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [notReached, setNotReached] = useState<string[]>([]);
   const [sentConversationIds, setSentConversationIds] = useState<string[]>([]);

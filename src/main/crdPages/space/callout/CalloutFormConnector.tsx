@@ -133,6 +133,9 @@ const ADMIN_ONLY_FRAMING_CHIPS: FramingChipId[] = ['contributors', 'spaces', 'fo
 /** Framing kinds that cannot be cleared once the callout exists (a Form's responses would be lost). */
 const FIXED_KIND_FRAMING_CHIPS: FramingChipId[] = ['form'];
 
+/** Edit-path mutations whose failure the connector reports with its own message. */
+const OWN_ERROR_HANDLING = { skipGlobalErrorHandler: true } as const;
+
 /** The title counter stays hidden until the value gets this close to `SMALL_TEXT_LENGTH`. */
 const TITLE_COUNTER_THRESHOLD = SMALL_TEXT_LENGTH - 10;
 
@@ -411,7 +414,9 @@ function CalloutFormConnectorInner({
   const referenceUpload = useReferenceFileUpload(ambientStorageConfig, { temporaryLocation: temporaryUpload });
 
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
-  const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
+  const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation({
+    context: OWN_ERROR_HANDLING,
+  });
 
   // Inline-rename state for the framing Collabora document, owned here (not in the
   // edit box) so the form's Save button commits any pending rename alongside the
@@ -423,8 +428,8 @@ function CalloutFormConnectorInner({
     displayName: editCollaboraDocument?.profile?.displayName ?? '',
     canRename: true,
   });
-  const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
-  const [deleteReference] = useDeleteReferenceMutation();
+  const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation({ context: OWN_ERROR_HANDLING });
+  const [deleteReference] = useDeleteReferenceMutation({ context: OWN_ERROR_HANDLING });
   const { uploadVisuals: uploadWhiteboardVisuals } = useUploadWhiteboardVisuals();
   const { uploadMediaGalleryVisuals, uploading: mediaGalleryUploading } = useUploadMediaGalleryVisuals();
   const notify = useNotification();
@@ -655,7 +660,7 @@ function CalloutFormConnectorInner({
 
   // --- Edit path ---------------------------------------------------------
   const pollId = editData?.lookup.callout?.framing.poll?.id ?? values.editMeta?.pollId;
-  const pollMgmt = usePollOptionManagement({ pollId: pollId ?? '' });
+  const pollMgmt = usePollOptionManagement({ pollId: pollId ?? '', context: OWN_ERROR_HANDLING });
 
   // Poll open/closed status. Unlike the option edits (which are diffed and flushed
   // on save), the status toggle applies immediately on confirm — matching the
@@ -663,7 +668,7 @@ function CalloutFormConnectorInner({
   // cache updates `framing.poll.status` and the form re-renders from it; there is
   // no local status field to keep in sync.
   const pollStatus = editData?.lookup.callout?.framing.poll?.status;
-  const [updatePollStatus] = useUpdatePollStatusMutation();
+  const [updatePollStatus] = useUpdatePollStatusMutation({ context: OWN_ERROR_HANDLING });
 
   const handlePollStatusChange = async (status: 'open' | 'closed') => {
     if (!pollId) return;

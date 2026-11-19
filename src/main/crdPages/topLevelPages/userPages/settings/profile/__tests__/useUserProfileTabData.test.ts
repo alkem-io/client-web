@@ -9,6 +9,7 @@ const mockCreateReference = vi.fn();
 const mockDeleteReference = vi.fn();
 const mockCreateTagset = vi.fn();
 const mockUploadVisual = vi.fn();
+const mockMutationOptions: Record<string, unknown> = {};
 
 let mockUserData: { lookup: { user: ReturnType<typeof buildUser> | null } } | undefined;
 
@@ -49,10 +50,22 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
     error: undefined,
     refetch: mockRefetch,
   }),
-  useUpdateUserMutation: () => [mockUpdateUser, { loading: false }],
-  useCreateReferenceOnProfileMutation: () => [mockCreateReference, { loading: false }],
-  useDeleteReferenceMutation: () => [mockDeleteReference, { loading: false }],
-  useCreateTagsetOnProfileMutation: () => [mockCreateTagset, { loading: false }],
+  useUpdateUserMutation: (options: unknown) => {
+    mockMutationOptions.updateUser = options;
+    return [mockUpdateUser, { loading: false }];
+  },
+  useCreateReferenceOnProfileMutation: (options: unknown) => {
+    mockMutationOptions.createReference = options;
+    return [mockCreateReference, { loading: false }];
+  },
+  useDeleteReferenceMutation: (options: unknown) => {
+    mockMutationOptions.deleteReference = options;
+    return [mockDeleteReference, { loading: false }];
+  },
+  useCreateTagsetOnProfileMutation: (options: unknown) => {
+    mockMutationOptions.createTagset = options;
+    return [mockCreateTagset, { loading: false }];
+  },
   useUploadVisualMutation: () => [mockUploadVisual, { loading: false }],
 }));
 
@@ -143,6 +156,17 @@ describe('useUserProfileTabData — unsaved changes', () => {
 });
 
 describe('useUserProfileTabData — saveAll', () => {
+  it('shows its own save failure, so its save mutations opt out of the global error handler', () => {
+    renderHook(() => useUserProfileTabData('user-1'));
+    const ownErrorHandling = { context: { skipGlobalErrorHandler: true } };
+    expect(mockMutationOptions).toEqual({
+      updateUser: ownErrorHandling,
+      createReference: ownErrorHandling,
+      deleteReference: ownErrorHandling,
+      createTagset: ownErrorHandling,
+    });
+  });
+
   it('sends every changed field in ONE updateUser call', async () => {
     const { result } = renderHook(() => useUserProfileTabData('user-1'));
     act(() => result.current.onChange({ firstName: 'Augusta', tagline: 'Poet', city: 'Paris' }));

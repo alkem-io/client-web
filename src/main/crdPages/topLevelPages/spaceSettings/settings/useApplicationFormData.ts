@@ -1,3 +1,4 @@
+import type { DefaultContext } from '@apollo/client';
 import { useState } from 'react';
 import {
   refetchRoleSetApplicationFormQuery,
@@ -21,8 +22,11 @@ export type UseApplicationFormDataResult = {
   onQuestionDelete: (index: number) => void;
   onQuestionMoveUp: (index: number) => void;
   onQuestionMoveDown: (index: number) => void;
-  /** Resolves once the form is saved and refetched; rejects on failure. */
-  onSave: () => Promise<void>;
+  /**
+   * Resolves once the form is saved and refetched; rejects on failure. A caller that shows its own
+   * failure passes `{ skipGlobalErrorHandler: true }` as the context.
+   */
+  onSave: (context?: DefaultContext) => Promise<void>;
   onReset: () => void;
 };
 
@@ -99,7 +103,7 @@ export function useApplicationFormData(roleSetId: string | undefined): UseApplic
     onQuestionMoveUp(index + 1);
   };
 
-  const onSave = async () => {
+  const onSave = async (context?: DefaultContext) => {
     if (!roleSetId) return;
     const formQuestions = questions.map((q, i) => ({
       question: q.question,
@@ -118,6 +122,7 @@ export function useApplicationFormData(roleSetId: string | undefined): UseApplic
       },
       refetchQueries: [refetchRoleSetApplicationFormQuery({ roleSetId })],
       awaitRefetchQueries: true,
+      context,
     });
     setLocalDescription(null);
     setLocalQuestions(null);

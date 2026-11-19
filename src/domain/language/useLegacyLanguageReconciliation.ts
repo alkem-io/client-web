@@ -56,7 +56,7 @@ export function useLegacyLanguageReconciliation({
   authLoading = false,
   languageConfig,
 }: ReconciliationOpts): ReconciliationResult {
-  const [updateUserSettings] = useUpdateUserSettingsMutation();
+  const [updateUserSettings] = useUpdateUserSettingsMutation({ context: { skipGlobalErrorHandler: true } });
   const didRunRef = useRef(false);
   const [reconcileComplete, setReconcileComplete] = useState(false);
 

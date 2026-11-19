@@ -13,9 +13,17 @@ vi.mock('@apollo/client', () => ({
   useApolloClient: () => mockApolloClient,
 }));
 
+const mutationHookOptions = vi.fn();
+
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useCastPollVoteMutation: () => [mockCastPollVoteMutation, { loading: false, error: undefined }],
-  useRemovePollVoteMutation: () => [mockRemovePollVoteMutation, { loading: false, error: undefined }],
+  useCastPollVoteMutation: (options: unknown) => {
+    mutationHookOptions('cast', options);
+    return [mockCastPollVoteMutation, { loading: false, error: undefined }];
+  },
+  useRemovePollVoteMutation: (options: unknown) => {
+    mutationHookOptions('remove', options);
+    return [mockRemovePollVoteMutation, { loading: false, error: undefined }];
+  },
 }));
 
 const basePoll: PollDetailsModel = {
@@ -41,6 +49,13 @@ const basePoll: PollDetailsModel = {
 describe('usePollVote', () => {
   beforeEach(() => {
     mockCastPollVoteMutation.mockClear();
+  });
+
+  test('leaves a refused vote to the inline error it returns', () => {
+    renderHook(() => usePollVote({ pollId: 'poll-1', poll: basePoll }));
+
+    expect(mutationHookOptions).toHaveBeenCalledWith('cast', { context: { skipGlobalErrorHandler: true } });
+    expect(mutationHookOptions).toHaveBeenCalledWith('remove', { context: { skipGlobalErrorHandler: true } });
   });
 
   test('castVote calls mutation with correct pollID and selectedOptionIDs', async () => {

@@ -47,6 +47,7 @@ export const useOrgInvitationsTabData = (organizationId: string | undefined) => 
   const [refreshing, setRefreshing] = useState(false);
 
   const { acceptInvitation, rejectInvitation, accepting, rejecting } = useInvitationActions({
+    mutationContext: { skipGlobalErrorHandler: true },
     onUpdate: () => {
       setRefreshing(true);
       void refetch().finally(() => setRefreshing(false));

@@ -147,6 +147,8 @@ export const mapInvitationResults = (
 
 const SEARCH_DEBOUNCE_MS = 300;
 const INVITE_PAGE_SIZE = 20;
+// Every mutation this dialog runs reports its own failure toast.
+const OWN_ERROR_HANDLING = { skipGlobalErrorHandler: true } as const;
 
 // Match the regex used by the legacy validation layer (FormikContributorsSelectorField.validation).
 // Inlined here to avoid coupling the CRD connector to a Yup schema we don't otherwise use.
@@ -357,7 +359,11 @@ export function InviteMembersDialogConnector({
     invitations: existingInvitations,
     inviteContributorsOnRoleSet,
     loading: loadingRoleSet,
-  } = useRoleSetApplicationsAndInvitations({ roleSetId, includeApplications: false });
+  } = useRoleSetApplicationsAndInvitations({
+    roleSetId,
+    includeApplications: false,
+    mutationContext: OWN_ERROR_HANDLING,
+  });
   // "Open" must mean the same thing here as in the Member Organisations >
   // Pending invitations list (`useCommunityTabData.isOpenOrganizationInvitation`):
   // 'invited' PLUS the brief in-flight 'accepting'. Excluding only 'invited'
@@ -417,7 +423,10 @@ export function InviteMembersDialogConnector({
   // internal `useRoleSetManager` skips its queries when roleSetId is falsy, so passing ''
   // for the other kinds costs nothing. Reused (not re-derived) because virtualContributorAdmin
   // .onAdd (a role ASSIGNMENT, not an invitation) and .inviteContributors already exist there.
-  const vcCommunity = useCommunityAdmin({ roleSetId: kind === 'virtualContributor' ? (roleSetId ?? '') : '' });
+  const vcCommunity = useCommunityAdmin({
+    roleSetId: kind === 'virtualContributor' ? (roleSetId ?? '') : '',
+    mutationContext: OWN_ERROR_HANDLING,
+  });
   const currentVcMemberIds = vcCommunity.virtualContributorAdmin.members.map(m => m.id).join(',');
   const { virtualContributorAdmin: vcLookup } = useVirtualContributorsAdmin({
     level: spaceLevel ?? SpaceLevel.L0,

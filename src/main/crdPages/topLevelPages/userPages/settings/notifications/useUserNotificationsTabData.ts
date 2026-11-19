@@ -46,7 +46,7 @@ export const useUserNotificationsTabData = ({
   serverSettings,
 }: UseUserNotificationsTabDataParams): UseUserNotificationsTabDataResult => {
   const [overrides, setOverrides] = useState<Map<string, boolean>>(() => new Map());
-  const [updateUserSettings] = useUpdateUserSettingsMutation();
+  const [updateUserSettings] = useUpdateUserSettingsMutation({ context: { skipGlobalErrorHandler: true } });
 
   const setOverride = useCallback((key: string, value: boolean) => {
     setOverrides(prev => {

@@ -90,7 +90,7 @@ export function useAnonymousLanguageCarry({
   anonymousChoice,
   discardAnonymousChoice,
 }: AnonymousLanguageCarryOpts): AnonymousLanguageCarryResult {
-  const [updateUserSettings] = useUpdateUserSettingsMutation();
+  const [updateUserSettings] = useUpdateUserSettingsMutation({ context: { skipGlobalErrorHandler: true } });
   const didRunRef = useRef(false);
   const [carryComplete, setCarryComplete] = useState(false);
 

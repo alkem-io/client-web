@@ -34,7 +34,7 @@ export function useCrdNavigation() {
   const { locations } = useConfig();
   const canonicalDomain = locations?.domain;
   const { userModel, isAuthenticated } = useCurrentUserContext();
-  const [updateUserSettings] = useUpdateUserSettingsMutation();
+  const [updateUserSettings] = useUpdateUserSettingsMutation({ context: { skipGlobalErrorHandler: true } });
   const notify = useNotification();
 
   // When the visitor is on a hub subdomain (e.g. `acme.alkemio.org`), every

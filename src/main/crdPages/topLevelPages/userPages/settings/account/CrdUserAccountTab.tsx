@@ -79,21 +79,25 @@ const CrdUserAccountTab = () => {
     refetchQueries: refetchAccount,
     onCompleted: () => notify(t('shared.account.deleteSuccess'), 'success'),
     onError: () => notify(t('shared.account.deleteError'), 'error'),
+    context: { skipGlobalErrorHandler: true },
   });
   const [deleteVc, { loading: deletingVc }] = useDeleteVirtualContributorOnAccountMutation({
     refetchQueries: refetchAccount,
     onCompleted: () => notify(t('shared.account.deleteSuccess'), 'success'),
     onError: () => notify(t('shared.account.deleteError'), 'error'),
+    context: { skipGlobalErrorHandler: true },
   });
   const [deletePack, { loading: deletingPack }] = useDeleteInnovationPackMutation({
     refetchQueries: refetchAccount,
     onCompleted: () => notify(t('shared.account.deleteSuccess'), 'success'),
     onError: () => notify(t('shared.account.deleteError'), 'error'),
+    context: { skipGlobalErrorHandler: true },
   });
   const [deleteHub, { loading: deletingHub }] = useDeleteInnovationHubMutation({
     refetchQueries: refetchAccount,
     onCompleted: () => notify(t('shared.account.deleteSuccess'), 'success'),
     onError: () => notify(t('shared.account.deleteError'), 'error'),
+    context: { skipGlobalErrorHandler: true },
   });
   const deletingAny = deletingSpace || deletingVc || deletingPack || deletingHub;
 

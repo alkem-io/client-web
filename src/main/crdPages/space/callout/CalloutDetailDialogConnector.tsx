@@ -438,7 +438,7 @@ function CalloutDetailDialogLayer({
   >(undefined);
   const [deletingContribution, setDeletingContribution] = useState(false);
   const notify = useNotification();
-  const [deleteContribution] = useDeleteContributionMutation();
+  const [deleteContribution] = useDeleteContributionMutation({ context: { skipGlobalErrorHandler: true } });
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const consumedSigningRestore = useRef<string | undefined>(undefined);

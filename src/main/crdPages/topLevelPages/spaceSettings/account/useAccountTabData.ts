@@ -56,6 +56,7 @@ export function useAccountTabData(spaceId: string): UseAccountTabDataResult {
   const [pendingDeleteSpace, setPendingDeleteSpace] = useState(false);
   // The dialog stays open with a busy Confirm until the reload, so the delete cannot be sent twice.
   const [deleteSpace, { loading: deletingSpace }] = useDeleteSpaceMutation({
+    context: { skipGlobalErrorHandler: true },
     onCompleted: () => window.location.replace(ROUTE_HOME),
     onError: () => {
       setPendingDeleteSpace(false);

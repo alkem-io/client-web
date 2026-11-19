@@ -130,7 +130,7 @@ const useDeleteAccount = (userId: string | undefined, returnTabUrl: string): Use
   const [dialog, setDialog] = useState<DeleteAccountDialogState>({ kind: 'closed' });
 
   const [runPreflight] = useAccountDeletionPreflightLazyQuery({ fetchPolicy: 'network-only' });
-  const [deleteUserMutation] = useDeleteUserMutation();
+  const [deleteUserMutation] = useDeleteUserMutation({ context: { skipGlobalErrorHandler: true } });
   const { endKratosSsoSession } = useKratosLogout();
 
   const redirectToReauth = async (): Promise<void> => {

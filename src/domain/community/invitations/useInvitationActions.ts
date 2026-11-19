@@ -1,3 +1,4 @@
+import type { DefaultContext } from '@apollo/client';
 import {
   refetchPendingInvitationsCountQuery,
   refetchPendingInvitationsQuery,
@@ -11,15 +12,17 @@ interface UseInvitationActionsParams {
   onUpdate?: () => void;
   onAccept?: (spaceUrl: string) => void;
   onReject?: () => void;
+  /** Apollo link context for accept and reject, e.g. for a caller that shows its own failure message. */
+  mutationContext?: DefaultContext;
 }
 
 type UseInvitationActionsReturn = {
   updating: boolean;
   // Both return the underlying promise, which REJECTS when the mutation
-  // fails. Callers that need to surface the failure (FORBIDDEN /
-  // FORBIDDEN_POLICY are excluded from the global Apollo error handler, so
-  // nothing else will) must await and catch it; callers that don't care may
-  // keep ignoring the result.
+  // fails. A caller that surfaces the failure itself must await and catch it,
+  // and pass `mutationContext: { skipGlobalErrorHandler: true }` so the global
+  // handler does not report it a second time; callers that don't care may keep
+  // ignoring the result.
   acceptInvitation: (invitationId: string, spaceUrl: string) => Promise<void>;
   accepting: boolean;
   rejectInvitation: (invitationId: string) => Promise<void>;
@@ -30,8 +33,9 @@ const useInvitationActions = ({
   onUpdate,
   onAccept,
   onReject,
+  mutationContext,
 }: UseInvitationActionsParams): UseInvitationActionsReturn => {
-  const [invitationStateEventMutation] = useInvitationStateEventMutation();
+  const [invitationStateEventMutation] = useInvitationStateEventMutation({ context: mutationContext });
 
   const [updateInvitationState, isUpdatingInvitationState] = useLoadingState(
     async (...args: Parameters<typeof invitationStateEventMutation>) => {

@@ -147,14 +147,23 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   const { t } = useTranslation('crd-spaceSettings');
   const notify = useNotification();
 
-  const [updateSpace] = useUpdateSpaceMutation();
   const [uploadVisual] = useUploadVisualMutation();
-  const [createReference] = useCreateReferenceOnProfileMutation();
-  const [deleteReference] = useDeleteReferenceMutation();
-  const [addClassificationEntryFromTemplate] = useAddClassificationEntryFromTemplateMutation();
-  const [updateClassificationEntrySelection] = useUpdateClassificationEntrySelectionMutation();
-  const [updateClassificationEntryDisplay] = useUpdateClassificationEntryDisplayMutation();
-  const [deleteClassificationEntry] = useDeleteClassificationEntryMutation();
+  // Save failures show in the unsaved-changes bar and the save-failed dialog.
+  const [updateSpace] = useUpdateSpaceMutation({ context: { skipGlobalErrorHandler: true } });
+  const [createReference] = useCreateReferenceOnProfileMutation({ context: { skipGlobalErrorHandler: true } });
+  const [deleteReference] = useDeleteReferenceMutation({ context: { skipGlobalErrorHandler: true } });
+  const [addClassificationEntryFromTemplate] = useAddClassificationEntryFromTemplateMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
+  const [updateClassificationEntrySelection] = useUpdateClassificationEntrySelectionMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
+  const [updateClassificationEntryDisplay] = useUpdateClassificationEntryDisplayMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
+  const [deleteClassificationEntry] = useDeleteClassificationEntryMutation({
+    context: { skipGlobalErrorHandler: true },
+  });
 
   // The allowed ratio range is a property of the visual TYPE, so it comes from
   // the platform config rather than from this space's own visual row.
