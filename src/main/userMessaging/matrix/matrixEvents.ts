@@ -9,6 +9,13 @@ import { mapMatrixMessageAttachments } from '../models';
 const EVENT_MESSAGE = 'm.room.message';
 const EVENT_STICKER = 'm.sticker';
 const EVENT_REACTION = 'm.reaction';
+// The call UI sends this once when a call starts: kind `ring` for a 1:1 call, `notification` for a group call.
+const EVENT_CALL_NOTIFICATION = 'org.matrix.msc4075.rtc.notification';
+// One per device in a call; empty content once the device has left.
+const EVENT_CALL_MEMBER = 'org.matrix.msc3401.call.member';
+// The call SDK's own default and cap for how long a ring rings.
+const DEFAULT_RING_LIFETIME_MS = 30_000;
+const MAX_RING_LIFETIME_MS = 90_000;
 const MEDIA_MSGTYPES = new Set(['m.image', 'm.file', 'm.video', 'm.audio']);
 
 type RawEvent = {
@@ -37,6 +44,9 @@ type ParsedReaction = {
   readonly sender: string;
 };
 
+/** What became of a 1:1 ring, as far as the room's events tell. */
+type CallOutcome = 'answered' | 'unanswered' | 'ringing';
+
 type ParsedMessage = {
   readonly eventId: string;
   readonly body: string;
@@ -44,9 +54,56 @@ type ParsedMessage = {
   readonly sender: string;
   readonly media?: MediaRef;
   readonly reactions: ParsedReaction[];
+  /** Set only on the entry a 1:1 ring makes in the timeline. */
+  readonly call?: CallOutcome;
 };
 
 const isMessageLike = (type: string): boolean => type === EVENT_MESSAGE || type === EVENT_STICKER;
+
+const isRing = (event: Pick<RawEvent, 'type' | 'content'>): boolean =>
+  event.type === EVENT_CALL_NOTIFICATION && event.content.notification_type === 'ring';
+
+/** What the thread, the list preview, the read marker and the unread count all treat as an entry. */
+const isTimelineEntry = (event: Pick<RawEvent, 'type' | 'content'>): boolean =>
+  isMessageLike(event.type) || isRing(event);
+
+const ringEndOf = (ring: RawEvent): number => {
+  const { lifetime } = ring.content;
+  const ms =
+    typeof lifetime === 'number' && lifetime > 0 ? Math.min(lifetime, MAX_RING_LIFETIME_MS) : DEFAULT_RING_LIFETIME_MS;
+  return ring.timestamp + ms;
+};
+
+const isCallJoin = (event: RawEvent): boolean =>
+  event.type === EVENT_CALL_MEMBER && Object.keys(event.content).length > 0;
+
+/** Whether someone other than the ringer joined the call while it rang; `newer` holds events after the ring. */
+const isAnswered = (ring: RawEvent, newer: Iterable<RawEvent>): boolean => {
+  const end = ringEndOf(ring);
+  for (const event of newer) {
+    if (event.sender !== ring.sender && isCallJoin(event) && event.timestamp <= end) {
+      return true;
+    }
+  }
+  return false;
+};
+
+/**
+ * The outcome of the ring at `events[index]` (oldest first): answered once the
+ * other person joins while it rings; unanswered once the ringer has left or the
+ * ring's lifetime has passed; ringing until then. A later join does not answer it.
+ */
+const callOutcomeOf = (events: readonly RawEvent[], index: number, now: number): CallOutcome => {
+  const ring = events[index];
+  const newer = events.slice(index + 1);
+  if (isAnswered(ring, newer)) {
+    return 'answered';
+  }
+  const ringerLeft = newer.some(
+    event => event.type === EVENT_CALL_MEMBER && event.sender === ring.sender && !isCallJoin(event)
+  );
+  return ringerLeft || now >= ringEndOf(ring) ? 'unanswered' : 'ringing';
+};
 
 const serverNameOf = (userId: string): string => userId.slice(userId.indexOf(':') + 1);
 
@@ -81,13 +138,18 @@ const extractMedia = (event: RawEvent, homeserver: string): MediaRef | undefined
 /**
  * Message-like events become messages carrying their body verbatim; blank ones
  * (no body, no attachment — e.g. redacted) are skipped, and reactions attach to
- * the message they annotate.
+ * the message they annotate. A 1:1 ring becomes a call entry at its time.
  */
-const projectMessages = (events: RawEvent[], homeserver: string): ParsedMessage[] => {
+const projectMessages = (events: RawEvent[], homeserver: string, now = Date.now()): ParsedMessage[] => {
   const messages: ParsedMessage[] = [];
   const byId = new Map<string, ParsedMessage>();
 
-  for (const event of events) {
+  for (let index = 0; index < events.length; index++) {
+    const event = events[index];
+    if (isRing(event)) {
+      messages.push(parseRing(events, index, now));
+      continue;
+    }
     if (!isMessageLike(event.type)) {
       continue;
     }
@@ -128,10 +190,18 @@ const parseMessage = (event: RawEvent, homeserver: string): ParsedMessage | unde
   return { eventId: event.eventId, body, timestamp: event.timestamp, sender: event.sender, media, reactions: [] };
 };
 
-/** The newest non-blank message among `events` (oldest first), if any. */
-const lastMessageOf = (events: RawEvent[], homeserver: string): ParsedMessage | undefined => {
+const parseRing = (events: readonly RawEvent[], index: number, now: number): ParsedMessage => {
+  const { eventId, timestamp, sender } = events[index];
+  return { eventId, body: '', timestamp, sender, reactions: [], call: callOutcomeOf(events, index, now) };
+};
+
+/** The newest non-blank message or call entry among `events` (oldest first), if any. */
+const lastMessageOf = (events: RawEvent[], homeserver: string, now = Date.now()): ParsedMessage | undefined => {
   for (let index = events.length - 1; index >= 0; index--) {
     const event = events[index];
+    if (isRing(event)) {
+      return parseRing(events, index, now);
+    }
     if (isMessageLike(event.type)) {
       const message = parseMessage(event, homeserver);
       if (message) {
@@ -143,12 +213,12 @@ const lastMessageOf = (events: RawEvent[], homeserver: string): ParsedMessage | 
 };
 
 /**
- * The newest message-like event among `events` (oldest first), rendered or
- * not: the read marker must reach every event the unread count would count.
+ * The newest entry among `events` (oldest first), rendered or not: the read
+ * marker must reach every event the unread count would count.
  */
 const newestMessageLikeId = (events: RawEvent[]): string | null => {
   for (let index = events.length - 1; index >= 0; index--) {
-    if (isMessageLike(events[index].type)) {
+    if (isTimelineEntry(events[index])) {
       return events[index].eventId;
     }
   }
@@ -157,7 +227,9 @@ const newestMessageLikeId = (events: RawEvent[]): string | null => {
 
 export {
   actorIdOf,
+  isAnswered,
   isMessageLike,
+  isRing,
   lastMessageOf,
   newestMessageLikeId,
   projectMessages,
@@ -166,4 +238,4 @@ export {
   EVENT_REACTION,
   EVENT_STICKER,
 };
-export type { MediaRef, ParsedMessage, ParsedReaction, RawEvent };
+export type { CallOutcome, MediaRef, ParsedMessage, ParsedReaction, RawEvent };

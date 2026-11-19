@@ -40,6 +40,7 @@ const toConversationMessage = (message: ParsedMessage, context: MappingContext):
     };
   }),
   attachments: mapMessageAttachments(message.media ? [message.media] : [], context.attachmentBucketId),
+  call: message.call,
 });
 
 /** Actor ids of senders (and reactors) who are not current members. */

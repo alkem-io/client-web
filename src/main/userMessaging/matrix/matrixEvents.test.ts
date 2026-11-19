@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { lastMessageOf, projectMessages, type RawEvent } from './matrixEvents';
+import { lastMessageOf, newestMessageLikeId, projectMessages, type RawEvent } from './matrixEvents';
 
 const HS = 'matrix.alkem.io';
 const ALICE = `@alice-id:${HS}`;
@@ -164,5 +164,84 @@ describe('lastMessageOf', () => {
       HS
     );
     expect(last?.body).toBe('latest');
+  });
+});
+
+describe('call entries', () => {
+  const RING_TYPE = 'org.matrix.msc4075.rtc.notification';
+  const CALL_MEMBER = 'org.matrix.msc3401.call.member';
+  const at = (timestamp: number, type: string, content: Record<string, unknown>, sender = ALICE): RawEvent =>
+    event(type, content, { timestamp, sender });
+  const ring = (timestamp: number, content: Record<string, unknown> = {}) =>
+    at(timestamp, RING_TYPE, { notification_type: 'ring', lifetime: 30_000, ...content });
+  const joined = (timestamp: number, sender: string) =>
+    at(timestamp, CALL_MEMBER, { application: 'm.call', call_id: '', device_id: 'D' }, sender);
+  const left = (timestamp: number, sender: string) => at(timestamp, CALL_MEMBER, {}, sender);
+  const text = (timestamp: number, body: string) => at(timestamp, 'm.room.message', { msgtype: 'm.text', body });
+
+  it('places a ring between the messages around it, as an entry without body', () => {
+    const before = text(1_000, 'before');
+    const call = ring(2_000);
+    const after = text(100_000, 'after');
+    const messages = projectMessages([before, call, after], HS, 200_000);
+    expect(messages.map(message => message.eventId)).toEqual([before.eventId, call.eventId, after.eventId]);
+    expect(messages[1]).toMatchObject({ body: '', timestamp: 2_000, sender: ALICE, call: 'unanswered' });
+    expect(messages[0].call).toBeUndefined();
+  });
+
+  it('is answered when the other member joins within the ring lifetime', () => {
+    const [entry] = projectMessages([ring(1_000), joined(5_000, BOB)], HS, 1_000_000);
+    expect(entry.call).toBe('answered');
+  });
+
+  it('is not answered by the ringer joining on another device', () => {
+    const [entry] = projectMessages([ring(1_000), joined(2_000, ALICE)], HS, 1_000_000);
+    expect(entry.call).toBe('unanswered');
+  });
+
+  it('is not answered by a join after the ring lifetime', () => {
+    const [entry] = projectMessages([ring(1_000), joined(40_000, BOB)], HS, 1_000_000);
+    expect(entry.call).toBe('unanswered');
+  });
+
+  it('is unanswered as soon as the ringer leaves, before the lifetime elapses', () => {
+    const [entry] = projectMessages([ring(1_000), left(3_000, ALICE)], HS, 4_000);
+    expect(entry.call).toBe('unanswered');
+  });
+
+  it('is ringing while the lifetime runs and nobody joined or left', () => {
+    const [entry] = projectMessages([ring(1_000)], HS, 20_000);
+    expect(entry.call).toBe('ringing');
+  });
+
+  it('caps the lifetime at 90 seconds and defaults it to 30 seconds', () => {
+    expect(projectMessages([ring(0, { lifetime: 600_000 })], HS, 90_000)[0].call).toBe('unanswered');
+    expect(projectMessages([ring(0, { lifetime: 600_000 })], HS, 89_000)[0].call).toBe('ringing');
+    expect(projectMessages([ring(0, { lifetime: undefined })], HS, 30_000)[0].call).toBe('unanswered');
+    expect(projectMessages([ring(0, { lifetime: undefined })], HS, 29_000)[0].call).toBe('ringing');
+  });
+
+  it('ignores group call notifications, removed rings and the deprecated call notify event', () => {
+    const messages = projectMessages(
+      [
+        at(1_000, RING_TYPE, { notification_type: 'notification', lifetime: 30_000 }),
+        at(2_000, RING_TYPE, {}),
+        at(3_000, 'org.matrix.msc4075.call.notify', { notify_type: 'ring', application: 'm.call', call_id: '' }),
+      ],
+      HS,
+      100_000
+    );
+    expect(messages).toEqual([]);
+  });
+
+  it('makes a ring newer than the last message the conversation preview, with its outcome', () => {
+    const call = ring(5_000);
+    const last = lastMessageOf([text(1_000, 'hello'), call, joined(6_000, BOB)], HS, 100_000);
+    expect(last).toMatchObject({ eventId: call.eventId, call: 'answered' });
+  });
+
+  it('moves the read marker to a ring newer than the last message', () => {
+    const call = ring(5_000);
+    expect(newestMessageLikeId([text(1_000, 'hello'), call, joined(6_000, BOB)])).toBe(call.eventId);
   });
 });

@@ -1,5 +1,6 @@
 import type { MatrixClient } from 'matrix-js-sdk';
 import { describe, expect, it, vi } from 'vitest';
+import { sortUnifiedConversations, type UnifiedConversation } from '@/main/crdPages/unifiedChat/dataMapper';
 import { ConversationSummaryStore } from './conversationSummaryStore';
 
 const HS = 'hs.test';
@@ -208,5 +209,88 @@ describe('ConversationSummaryStore', () => {
     await vi.waitFor(() => expect(store.getSnapshot().get('b')?.lastMessage?.body).toBe('b while unwatched'));
     expect(store.getSnapshot().get('a')).toBe(before.get('a'));
     expect(client.getRoomIdForAlias).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('ConversationSummaryStore call entries', () => {
+  const OTHER = `@other:${HS}`;
+  const ring = (eventId: string, ts: number, sender = OTHER) => ({
+    eventId,
+    type: 'org.matrix.msc4075.rtc.notification',
+    sender,
+    ts,
+    content: { notification_type: 'ring', lifetime: 30_000 },
+  });
+  const join = (eventId: string, ts: number, sender: string) => ({
+    eventId,
+    type: 'org.matrix.msc3401.call.member',
+    sender,
+    ts,
+    content: { application: 'm.call', call_id: '', device_id: 'D' },
+  });
+  const conversation = (id: string, timestamp: number | undefined) =>
+    ({
+      id,
+      roomId: id,
+      isGroup: false,
+      unreadCount: 0,
+      createdDate: new Date(0),
+      lastMessage: timestamp === undefined ? undefined : { id, message: '', timestamp, reactions: [], attachments: [] },
+      members: [],
+      isGuidance: false,
+      pinned: false,
+    }) satisfies UnifiedConversation;
+
+  it('a ring newer than the last text message moves the conversation to the top of the list', async () => {
+    const rung: FakeRoom = {
+      roomId: '!rung',
+      events: [text('$r1', 'old news', OTHER, 100), ring('$ring', 300)],
+      notifications: 0,
+    };
+    const chatty: FakeRoom = { roomId: '!chatty', events: [text('$c1', 'newer text', OTHER, 200)], notifications: 0 };
+    const { client, createMessagesRequest } = makeClient([rung, chatty]);
+    const store = new ConversationSummaryStore(client);
+    store.watch(['rung', 'chatty']);
+    await vi.waitFor(() => expect(store.getSnapshot().size).toBe(2));
+
+    const summaries = store.getSnapshot();
+    expect(summaries.get('rung')?.lastMessage).toMatchObject({ eventId: '$ring', call: 'unanswered' });
+    const sorted = sortUnifiedConversations(
+      [
+        conversation('chatty', summaries.get('chatty')?.lastMessage?.timestamp),
+        conversation('rung', summaries.get('rung')?.lastMessage?.timestamp),
+      ],
+      null
+    );
+    expect(sorted.map(item => item.id)).toEqual(['rung', 'chatty']);
+    // Found in memory: the ring adds no request.
+    expect(createMessagesRequest).not.toHaveBeenCalled();
+  });
+
+  it('a ring found in fetched history is answered by a join the client holds in memory', async () => {
+    const now = Date.now();
+    const room: FakeRoom = {
+      roomId: '!a',
+      events: [join('$join', now - 55_000, ME)],
+      older: [ring('$ring', now - 60_000)],
+      notifications: 0,
+    };
+    const { client, createMessagesRequest } = makeClient([room]);
+    // The server's page holds only the history memory lacks.
+    createMessagesRequest.mockImplementation(async () => ({
+      chunk: (room.older ?? []).map(event => ({
+        event_id: event.eventId,
+        type: event.type,
+        sender: event.sender,
+        origin_server_ts: event.ts,
+        content: event.content,
+      })),
+    }));
+    const store = new ConversationSummaryStore(client);
+    store.watch(['a']);
+    await vi.waitFor(() => expect(store.getSnapshot().get('a')).toBeDefined());
+
+    expect(store.getSnapshot().get('a')?.lastMessage).toMatchObject({ eventId: '$ring', call: 'answered' });
+    expect(createMessagesRequest).toHaveBeenCalledTimes(1);
   });
 });

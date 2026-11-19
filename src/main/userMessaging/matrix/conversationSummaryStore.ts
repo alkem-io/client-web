@@ -239,9 +239,12 @@ class ConversationSummaryStore {
       return local;
     }
     let from: string | undefined;
+    // Oldest first: a ring found in history is judged by everything newer the client holds.
+    let scanned = live;
     for (const batchSize of BATCH_SIZES) {
       const { events, end } = await fetchBatch(from, batchSize);
-      const found = lastMessageOf([...events].reverse(), homeserver);
+      scanned = [...[...events].reverse(), ...scanned];
+      const found = lastMessageOf(scanned, homeserver);
       if (found) {
         return found;
       }
