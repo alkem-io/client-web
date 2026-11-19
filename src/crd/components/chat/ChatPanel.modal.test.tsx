@@ -160,3 +160,35 @@ test('a dialog opened over the chat covers it, and a new open request brings the
   act(() => composer.focus());
   expect(composer).toHaveFocus();
 });
+
+test('on touch, closing the chat leaves the dialog underneath open', async () => {
+  // On touch Radix defers its outside-press check from pointerdown to the following click,
+  // by which time the tap on the chat's close button has already removed the chat.
+  const Host = ({ chatOpen }: { chatOpen: boolean }) => (
+    <>
+      <Dialog defaultOpen={true}>
+        <DialogContent aria-describedby={undefined}>
+          <DialogTitle>Our contributors</DialogTitle>
+        </DialogContent>
+      </Dialog>
+      <ChatPanel {...chatProps} open={chatOpen}>
+        <div />
+      </ChatPanel>
+    </>
+  );
+  const { rerender } = render(<Host chatOpen={true} />);
+  await flushRadixListeners();
+
+  const close = screen.getByRole('button', { name: 'Close chat', hidden: true });
+  const touchDown = new MouseEvent('pointerdown', { bubbles: true, cancelable: true });
+  Object.defineProperty(touchDown, 'pointerType', { value: 'touch' });
+  act(() => {
+    close.dispatchEvent(touchDown);
+  });
+  rerender(<Host chatOpen={false} />);
+  act(() => {
+    document.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  });
+
+  expect(screen.getByRole('dialog', { name: 'Our contributors' })).toBeInTheDocument();
+});

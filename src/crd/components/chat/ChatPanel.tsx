@@ -1,4 +1,3 @@
-import { DismissableLayerBranch } from '@radix-ui/react-dismissable-layer';
 import { FocusScope } from '@radix-ui/react-focus-scope';
 import { ChevronLeft, Maximize2, Minimize2, Settings, Volume2, VolumeX, X } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
@@ -66,8 +65,9 @@ type ChatPanelProps = {
  * end of <body>, so it paints above the dialog and is outside the dialog's
  * aria-hidden siblings; it takes pointer events back from the dialog's body lock;
  * its focus scope pauses the dialog's focus trap; its scroll lock replaces the
- * dialog's as the active one; and as a layer branch, presses in it do not dismiss
- * the dialog. A dialog opened afterwards covers the panel in the same way.
+ * dialog's as the active one; and it carries the dialog's dismiss-ignore marker,
+ * so presses in it (also a touch that closes the panel itself) do not dismiss the
+ * dialog. A dialog opened afterwards covers the panel in the same way.
  */
 export function ChatPanel({
   open,
@@ -144,7 +144,7 @@ export function ChatPanel({
   );
 
   return createPortal(
-    <DismissableLayerBranch>
+    <div data-dialog-dismiss-ignore="">
       {isExpanded && (
         <div
           aria-hidden="true"
@@ -235,7 +235,7 @@ export function ChatPanel({
           </div>
         </RemoveScroll>
       </FocusScope>
-    </DismissableLayerBranch>,
+    </div>,
     document.body
   );
 }
