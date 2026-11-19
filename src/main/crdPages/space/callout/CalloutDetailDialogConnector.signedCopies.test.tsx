@@ -131,6 +131,7 @@ vi.mock('@/main/crdPages/memo/CrdMemoDialog', () => ({
 }));
 
 vi.mock('./CalloutCommentsConnector', () => ({}));
+vi.mock('@/main/crdPages/topLevelPages/common/useSendMessageHandler', () => ({ useMessageContributor: () => vi.fn() }));
 vi.mock('./CalloutPollConnector', () => ({}));
 vi.mock('./CalloutReactionsConnector', () => ({}));
 vi.mock('./CalloutSettingsConnector', () => ({ CalloutSettingsConnector: () => null }));

@@ -304,6 +304,9 @@ importers:
       react-mentions:
         specifier: ^4.4.7
         version: 4.4.10(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      react-remove-scroll:
+        specifier: 2.7.2
+        version: 2.7.2(@types/react@19.1.8)(react@19.2.1)
       react-router-dom:
         specifier: ^7.4.0
         version: 7.9.3(react-dom@19.2.1(react@19.2.1))(react@19.2.1)

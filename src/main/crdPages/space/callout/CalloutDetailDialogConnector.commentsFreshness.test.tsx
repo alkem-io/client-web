@@ -61,6 +61,16 @@ vi.mock('../dataMappers/calloutDataMapper', () => ({
 
 // Dialog chrome only: it renders the comment slot the connector hands it, which
 // is the real thread from CalloutCommentsConnector.
+const { messageContributor } = vi.hoisted(() => ({ messageContributor: vi.fn() }));
+vi.mock('@/main/crdPages/topLevelPages/common/useSendMessageHandler', () => ({
+  useMessageContributor: () => messageContributor,
+}));
+// The real comments connector, observed so the props the dialog hands it can be read.
+vi.mock('./CalloutCommentsConnector', async importOriginal => {
+  const actual = await importOriginal<typeof import('./CalloutCommentsConnector')>();
+  return { ...actual, CalloutCommentsConnector: vi.fn(actual.CalloutCommentsConnector) };
+});
+
 vi.mock('@/crd/components/callout/CalloutDetailDialog', () => ({
   CalloutDetailDialog: (props: { open: boolean; commentsSlot?: ReactNode }) =>
     props.open ? <div data-testid="callout-dialog">{props.commentsSlot}</div> : null,
@@ -216,5 +226,20 @@ describe('CalloutDetailDialogConnector — reopening shows callout comments adde
     await waitFor(() => expect(screen.getByText('Comment from the notification')).toBeTruthy());
     expect(screen.getByText('First comment')).toBeTruthy();
     expect(completed()).toBe(2);
+  });
+});
+
+describe('CalloutDetailDialogConnector — comment author cards', () => {
+  it('offer the direct-chat Message action inside the dialog', async () => {
+    const { CalloutCommentsConnector } = await import('./CalloutCommentsConnector');
+    const { client } = setup();
+    render(
+      <ApolloProvider client={client}>
+        <CachedCalloutDialog open={true} />
+      </ApolloProvider>
+    );
+    expect(vi.mocked(CalloutCommentsConnector).mock.lastCall?.[0]).toMatchObject({
+      onMessageContributor: messageContributor,
+    });
   });
 });

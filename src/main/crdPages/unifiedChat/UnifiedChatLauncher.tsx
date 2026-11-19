@@ -21,7 +21,7 @@ type UnifiedChatLauncherProps = {
  */
 export const UnifiedChatLauncher = ({ hidden }: UnifiedChatLauncherProps) => {
   const { t } = useTranslation('crd-chat');
-  const { isEnabled, isOpen, setIsOpen } = useUserMessagingContext();
+  const { isEnabled, isOpen, setIsOpen, openRequestCount } = useUserMessagingContext();
   const { isSmallScreen } = useScreenSize();
   const unreadCount = useUnreadConversationsCount();
   // `?chat={conversationID}` deep link (contract C-6 / US1) — opens the panel
@@ -52,7 +52,10 @@ export const UnifiedChatLauncher = ({ hidden }: UnifiedChatLauncherProps) => {
         closeLabel={t('launcher.close')}
         unreadLabel={t('launcher.unreadLabel')}
       />
-      {isOpen && <UnifiedChatPanelConnector catchingUp={catchingUp} connectionLost={connectionLost} />}
+      {/* A new mount per open request brings the panel back above a dialog opened over it since (e.g. Message from that dialog). */}
+      {isOpen && (
+        <UnifiedChatPanelConnector key={openRequestCount} catchingUp={catchingUp} connectionLost={connectionLost} />
+      )}
     </>
   );
 };
