@@ -117,10 +117,9 @@ type ContributorMapProps = {
   /** Accessible label for the map region (consumer i18n's it). */
   ariaLabel: string;
   /**
-   * A value that changes when the underlying dataset changes (e.g. the active
-   * contributor type or its loaded set) — the map re-fits to the new pins when
-   * it changes. `initialViewState` only applies on mount, so without this the
-   * view would stay frozen on the first type's bounds.
+   * Identifies what the user chose to show (e.g. the contributor type and role
+   * filter). The map re-fits to the pins when it changes, and only then: pins
+   * that load or refetch never move a map that is already framed.
    */
   fitKey?: string;
   /**
@@ -255,7 +254,7 @@ function initialView(pins: ContributorMapPin[]): MapInitialView {
 /**
  * Shared view resolver. Returns the fixed view when valid
  * (`isRenderableMapView`), otherwise falls back to `initialView(pins)`.
- * Feeds BOTH the mount `initialViewState` AND the `fitKey` effect re-frame.
+ * Feeds the mount `initialViewState` and every re-frame (`fitKey`, first pins).
  */
 export function resolveView(
   fixedView: ContributorMapFixedView | null | undefined,
@@ -281,6 +280,18 @@ function collapseAttribution(target: { getContainer(): HTMLElement }) {
 
 // The highest zoom MapLibre allows.
 const MAX_ZOOM = 22;
+
+// The smallest box around a group's pins, as fitBounds takes it.
+const pinBounds = (pins: ContributorMapPin[]): [[number, number], [number, number]] => [
+  [Math.min(...pins.map(p => p.longitude)), Math.min(...pins.map(p => p.latitude))],
+  [Math.max(...pins.map(p => p.longitude)), Math.max(...pins.map(p => p.latitude))],
+];
+
+// Room kept around a group's pins when zooming onto them, so they land clear of the edges.
+const GROUP_ZOOM_PADDING = 64;
+
+// Whether a closer zoom separates a group's pins; pins sharing one spot never separate.
+const canZoomApart = (group: ContributorMapPinGroup) => groupOverlappingPins(group.pins, MAX_ZOOM).length > 1;
 
 function PinAvatar({ pin, className }: { pin: ContributorMapPin; className: string }) {
   return (
@@ -349,6 +360,31 @@ export default function ContributorMap({
     return () => window.removeEventListener('keydown', handleKeyDown, { capture: true });
   }, [openerId]);
 
+  // Zooming onto a group replaces its pin with its members' pins; focus then moves
+  // to the first of them, so a keyboard user carries on from where they were.
+  const focusAfterZoom = useRef<string | null>(null);
+  useEffect(() => {
+    const id = focusAfterZoom.current;
+    if (id) {
+      focusAfterZoom.current = null;
+      pinButtons.current.get(id)?.focus();
+    }
+  }, [zoom]);
+
+  // A group whose pins a closer zoom separates is zoomed onto; one whose pins
+  // share a spot no zoom separates opens a list of them instead.
+  const zoomOrListGroup = (group: ContributorMapPinGroup) => {
+    setActiveId(null);
+    if (canZoomApart(group)) {
+      userMovedMap.current = true;
+      focusAfterZoom.current = group.pins[0].id;
+      mapRef.current?.fitBounds(pinBounds(group.pins), { padding: GROUP_ZOOM_PADDING, maxZoom: MAX_ZOOM });
+      return;
+    }
+    setOpenGroupId(group.id);
+    setPopupLayout(pinPopupLayout(mapRef.current, group.pins[0]));
+  };
+
   const openPin = (pin: ContributorMapPin) => {
     setOpenGroupId(null);
     setActiveId(pin.id);
@@ -366,6 +402,11 @@ export default function ContributorMap({
   const fixedViewRef = useRef(fixedView);
   fixedViewRef.current = fixedView;
   const isFirstFit = useRef(true);
+  // The map frames itself on its own once, on its first pins. It never moves by
+  // itself after that, nor once the user has moved it: a refetch or a late load
+  // must not zoom out of where the user is looking.
+  const hasFramedPins = useRef(pins.length > 0);
+  const userMovedMap = useRef(false);
 
   // Re-frame the already-mounted map to the resolved view. `initialViewState`
   // only applies on mount, so every post-mount change must move the map here.
@@ -394,6 +435,17 @@ export default function ContributorMap({
     }
     reframe();
   }, [fitKey]);
+
+  const hasPins = pins.length > 0;
+  useEffect(() => {
+    if (!hasPins || hasFramedPins.current) {
+      return;
+    }
+    hasFramedPins.current = true;
+    if (!userMovedMap.current) {
+      reframe();
+    }
+  }, [hasPins]);
 
   // Re-frame live when the stored fixed view itself changes. An
   // admin saving a new view (or resetting to automatic) updates `fixedView`
@@ -438,12 +490,19 @@ export default function ContributorMap({
           handleViewChange();
         }}
         onMoveEnd={handleViewChange}
+        // Only a user's own pan or zoom carries the DOM event behind it.
+        onMoveStart={e => {
+          if (e.originalEvent) {
+            userMovedMap.current = true;
+          }
+        }}
         onZoomEnd={e => setZoom(e.viewState.zoom)}
       >
         <AttributionControl compact={true} position="bottom-right" />
         {groups.map(group => {
           const [first] = group.pins;
           const isGroup = group.pins.length > 1;
+          const opensList = isGroup && !canZoomApart(group);
           return (
             <Marker
               key={group.id}
@@ -453,9 +512,7 @@ export default function ContributorMap({
               onClick={e => {
                 e.originalEvent.stopPropagation();
                 if (isGroup) {
-                  setActiveId(null);
-                  setOpenGroupId(group.id);
-                  setPopupLayout(pinPopupLayout(mapRef.current, first));
+                  zoomOrListGroup(group);
                 } else {
                   openPin(first);
                 }
@@ -488,17 +545,22 @@ export default function ContributorMap({
                       })
                     : first.name
                 }
-                aria-haspopup={isGroup ? 'dialog' : undefined}
-                className="relative block rounded-md transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                aria-haspopup={opensList ? 'dialog' : undefined}
+                className={cn(
+                  'block transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  isGroup ? 'rounded-full' : 'rounded-md'
+                )}
               >
-                <PinAvatar pin={first} className="size-12 rounded-md border-2 border-card shadow-md" />
-                {isGroup && (
+                {isGroup ? (
+                  // Same 48px footprint as an avatar pin, so popups and pans place it alike.
                   <span
                     aria-hidden="true"
-                    className="absolute -top-2 -right-2 flex min-w-5 items-center justify-center rounded-full border-2 border-card bg-primary px-1 text-badge text-primary-foreground"
+                    className="flex size-12 items-center justify-center rounded-full border-2 border-card bg-primary text-card-title text-primary-foreground shadow-md"
                   >
                     {group.pins.length}
                   </span>
+                ) : (
+                  <PinAvatar pin={first} className="size-12 rounded-md border-2 border-card shadow-md" />
                 )}
               </button>
             </Marker>
