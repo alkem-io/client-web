@@ -1646,5 +1646,9 @@
   },
   "emojiPicker": {
     "more": "Weitere Emojis"
+  },
+  "contributorMap": {
+    "pinGroup": "{{count}} Mitwirkende hier: {{names}}",
+    "pinGroupList": "{{count}} Mitwirkende hier"
   }
 }
