@@ -22,6 +22,7 @@
     "changeLanguage": "Sprache ändern",
     "changeLanguageError": "Spracheinstellung konnte nicht gespeichert werden — bitte erneut versuchen.",
     "getHelp": "Hilfe erhalten",
+    "refresh": "Aktualisieren",
     "showGrid": "Raster anzeigen",
     "hideGrid": "Raster ausblenden"
   },

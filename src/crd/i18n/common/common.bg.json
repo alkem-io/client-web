@@ -1643,5 +1643,12 @@
   },
   "appDownload": {
     "failed": "Файлът не можа да бъде изтеглен."
+  },
+  "emojiPicker": {
+    "more": "Още емоджита"
+  },
+  "contributorMap": {
+    "pinGroup": "{{count}} участници тук: {{names}}",
+    "pinGroupList": "{{count}} участници тук"
   }
 }

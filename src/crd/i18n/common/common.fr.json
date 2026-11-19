@@ -1643,5 +1643,12 @@
   },
   "appDownload": {
     "failed": "Le fichier n'a pas pu être téléchargé."
+  },
+  "emojiPicker": {
+    "more": "Plus d'émojis"
+  },
+  "contributorMap": {
+    "pinGroup": "{{count}} contributeurs ici : {{names}}",
+    "pinGroupList": "{{count}} contributeurs ici"
   }
 }

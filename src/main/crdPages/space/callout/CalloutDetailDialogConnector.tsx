@@ -28,6 +28,7 @@ import useCalloutContributions from '@/domain/collaboration/calloutContributions
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import { MemoSignedCopiesDialogConnector } from '@/main/crdPages/memo/MemoSignedCopiesDialogConnector';
 import type { CalloutMoveActions } from '@/main/crdPages/space/hooks/useCrdCalloutMoveActions';
+import { useMessageContributor } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 import type { MemoSigningRestoreIntent } from '@/main/ui/layout/MemoSigningReturnContext';
 import {
   getCalloutContributionType,
@@ -290,6 +291,7 @@ export function CalloutDetailDialogConnector({
   const initialIsWhiteboard = contributionType === CalloutContributionType.Whiteboard;
   const initialIsDocument = open && contributionType === CalloutContributionType.CollaboraDocument;
 
+  const onMessageContributor = useMessageContributor();
   const [whiteboardContributionId, setWhiteboardContributionId] = useState<string | undefined>(
     initialIsWhiteboard ? initialContributionId : undefined
   );
@@ -1046,6 +1048,7 @@ export function CalloutDetailDialogConnector({
         calloutId={callout.id}
         contributionId={isPostSelected ? postContributionId : undefined}
         roomData={activeRoomData}
+        onMessageContributor={onMessageContributor}
         // In the focused-task dialog on a board (elevated, z-[110]) the comment
         // delete-confirmation would otherwise open behind it and block the UI —
         // lift it to the same nested tier as the dialog's other confirmations.

@@ -17,6 +17,9 @@ const SLUG_TO_GLYPH = new Map<string, string>([
   ['rocket', '🚀'],
 ]);
 
+/** The predefined set as glyphs, in display order. */
+export const REACTION_GLYPHS: readonly string[] = [...SLUG_TO_GLYPH.values()];
+
 /**
  * Returns the Unicode glyph for a known reaction slug, or `undefined` for
  * any slug the client does not recognise. Callers must skip unknown slugs

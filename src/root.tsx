@@ -29,6 +29,7 @@ import { UnifiedChatProvider } from '@/main/crdPages/unifiedChat/UnifiedChatProv
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
 import { UnreadTabBadge } from '@/main/tabBadge/UnreadTabBadge';
+import { AppPullToRefresh } from '@/main/ui/layout/AppPullToRefresh';
 import { ConversationEventsSubscriber } from '@/main/userMessaging/ConversationEventsSubscriber';
 import { CallOverlayHost } from '@/main/userMessaging/calls/CallOverlayHost';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
@@ -152,6 +153,7 @@ const Root: FC = () => {
                                         </Suspense>
                                         <VersionHandling />
                                         <OnlineStatusNotification />
+                                        <AppPullToRefresh />
                                         <Error40XBoundary
                                           errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
                                         >
