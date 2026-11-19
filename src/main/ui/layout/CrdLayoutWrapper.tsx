@@ -124,6 +124,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
                   deadline={format(secondFactorReminder.deadline, 'PPP', {
                     locale: resolveDateFnsLocale(currentLanguage),
                   })}
+                  secondWayNeeded={secondFactorReminder.secondWayNeeded}
                   securityHref={secondFactorReminder.securityHref}
                   onDismiss={secondFactorReminder.dismiss}
                 />

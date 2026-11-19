@@ -51,6 +51,14 @@ export type TwoStepSecurityKeys = {
   };
 };
 
+/**
+ * A notice about the second way to pass the second step a rule asks for:
+ * `needed` while the sign-in counted a single way, `added` once a second one is
+ * set up and only signing in again is left, `suggested` right after the first
+ * factor is confirmed.
+ */
+export type TwoStepSecondWayNotice = 'needed' | 'added' | 'suggested';
+
 export type TwoStepVerificationSectionProps = {
   authenticator: TwoStepAuthenticator;
   recoveryCodes: TwoStepRecoveryCodes;
@@ -59,6 +67,7 @@ export type TwoStepVerificationSectionProps = {
   messages?: { type: 'info' | 'error' | 'success'; text: string }[];
   /** Removing a factor leaves none while a rule requires one: the removal warns that the rule applies again. */
   warnOnLastFactor?: boolean;
+  secondWayNotice?: TwoStepSecondWayNotice;
   onConfirmAuthenticator: (code: string) => void;
   onRemoveAuthenticator: () => void;
   onGenerateRecoveryCodes: () => void;
@@ -104,6 +113,7 @@ export function TwoStepVerificationSection({
   securityKeys,
   messages = [],
   warnOnLastFactor = false,
+  secondWayNotice,
   onConfirmAuthenticator,
   onRemoveAuthenticator,
   onGenerateRecoveryCodes,
@@ -225,6 +235,12 @@ export function TwoStepVerificationSection({
         <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
         <p>{t('user.security.twoStep.neverShare')}</p>
       </div>
+
+      {secondWayNotice ? (
+        <output className="block rounded-md bg-secondary px-3 py-2.5 text-body text-foreground">
+          {t(`user.security.twoStep.secondWay.${secondWayNotice}`)}
+        </output>
+      ) : null}
 
       {messages.length > 0 ? (
         <div className="flex flex-col gap-2">

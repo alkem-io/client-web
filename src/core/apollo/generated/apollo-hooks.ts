@@ -36256,6 +36256,7 @@ export const SecondFactorRequirementDocument = gql`
       covered
       deadline
       satisfied
+      secondWayNeeded
     }
   }
 }

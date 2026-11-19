@@ -285,3 +285,21 @@ describe('TwoStepVerificationSection — security keys', () => {
     expect(callbacks.onRemoveSecurityKey).toHaveBeenCalledWith('key-1');
   });
 });
+
+describe('TwoStepVerificationSection — second way', () => {
+  it.each([
+    'needed',
+    'added',
+    'suggested',
+  ] as const)('shows the %s notice about a second way to pass the second step', notice => {
+    renderSection({ authenticator: { kind: 'enrolled' }, recoveryCodes: { kind: 'none' }, secondWayNotice: notice });
+
+    expect(screen.getByText(`user.security.twoStep.secondWay.${notice}`)).toBeInTheDocument();
+  });
+
+  it('shows no such notice unless asked', () => {
+    renderSection({ authenticator: { kind: 'enrolled' }, recoveryCodes: { kind: 'none' } });
+
+    expect(screen.queryByText(/user\.security\.twoStep\.secondWay\./)).not.toBeInTheDocument();
+  });
+});

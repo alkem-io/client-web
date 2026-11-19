@@ -3,6 +3,7 @@ import { UserGeoProvider } from '@/core/analytics/geo';
 import SentryErrorBoundaryProvider from '@/core/analytics/SentryErrorBoundaryProvider';
 import { SentryTransactionScopeContextProvider } from '@/core/analytics/SentryTransactionScopeContext';
 import AlkemioApolloProvider from '@/core/apollo/context/ApolloProvider';
+import { useRefreshOnMembershipChange } from '@/core/apollo/useRefreshOnMembershipChange';
 import { AuthenticationProvider } from '@/core/auth/authentication/context/AuthenticationProvider';
 import { IdentityRoutes } from '@/core/auth/authentication/routing/IdentityRoute';
 import '@/core/i18n/config';
@@ -74,6 +75,12 @@ function NativePushTapRouter() {
   return null;
 }
 
+/** Mounted inside `UserProvider`: the hook needs the Apollo client and the auth state. */
+function RefreshOnMembershipChange() {
+  useRefreshOnMembershipChange();
+  return null;
+}
+
 function AppDownloadInterceptor() {
   useAppDownloadInterception();
   return null;
@@ -132,6 +139,7 @@ const Root: FC = () => {
                                     <FullscreenEditorProvider>
                                       <AssistantProvider>
                                         <NavigationHistoryTracker />
+                                        <RefreshOnMembershipChange />
                                         <ApmUserSetter />
                                         <ScrollToTop />
                                         <NotificationsGate />

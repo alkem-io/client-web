@@ -61,6 +61,8 @@
   "secondFactorReminder": {
     "action": "Set it up",
     "dismiss": "Dismiss",
+    "secondWayAction": "Add one",
+    "secondWayText": "Add a second way to pass the second step by {{deadline}}: an authenticator app, another security key, or recovery codes. Then sign in again. After that date you cannot use Alkemio with one way only.",
     "text": "Use two-step verification by {{deadline}}: set it up, or sign in again with it if you already have. After that date you cannot use Alkemio without it."
   }
 }

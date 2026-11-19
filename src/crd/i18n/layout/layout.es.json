@@ -61,6 +61,8 @@
   "secondFactorReminder": {
     "action": "Configurar",
     "dismiss": "Cerrar",
+    "secondWayAction": "Añadir",
+    "secondWayText": "Añade una segunda forma de superar el segundo paso antes del {{deadline}}: una aplicación de autenticación, otra llave de seguridad o códigos de recuperación. Después, vuelve a iniciar sesión. A partir de esa fecha no podrás usar Alkemio con una sola forma.",
     "text": "Usa la verificación en dos pasos antes del {{deadline}}: configúrala o, si ya lo has hecho, vuelve a iniciar sesión con ella. Después de esa fecha no podrás usar Alkemio sin ella."
   }
 }

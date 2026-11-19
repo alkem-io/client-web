@@ -5429,7 +5429,7 @@ export type MeQueryResults = {
   organizationInvitations: Array<OrganizationInvitationResult>;
   /** The number of the current authenticated user's own pending organization invitations. */
   organizationInvitationsCount: Scalars['Float']['output'];
-  /** Whether a second-factor rule covers the current user, its deadline, and whether this session satisfies it. */
+  /** Whether a second-factor rule covers the current user, its deadline, whether this session meets it, and whether the account needs a second way to pass the second step. */
   secondFactorRequirement: MeSecondFactorRequirement;
   /** The Spaces the current user is a member of as a flat list. */
   spaceMembershipsFlat: Array<CommunityMembershipResult>;
@@ -5483,10 +5483,12 @@ export type MeSecondFactorRequirement = {
   __typename?: 'MeSecondFactorRequirement';
   /** False for any caller whose credential is not a person's sign-in (API key, delegation token, non-interactive token, service account), whatever its roles. A cookie session and a Hydra bearer read their real coverage. */
   covered: Scalars['Boolean']['output'];
-  /** When a covering rule starts refusing a sign-in without a second factor; the earliest of the rules that cover the user. */
+  /** When a covering rule starts refusing a sign-in that does not meet it; the earliest of the rules that cover the user. */
   deadline?: Maybe<Scalars['DateTime']['output']>;
-  /** Whether this session's sign-in completed a second factor. */
+  /** Whether this session's sign-in meets a second-factor rule: it completed a second factor, and the account held at least two ways to pass the second step when they were counted at sign-in. */
   satisfied: Scalars['Boolean']['output'];
+  /** True when a covering rule applies and this session signed in with a second factor, but the account held fewer than two ways to pass the second step at sign-in. An authenticator app, each security key and recovery codes count one each; a passkey does not count. Signing in again after adding a way updates it. */
+  secondWayNeeded: Scalars['Boolean']['output'];
 };
 
 export type MediaGallery = {
@@ -53064,6 +53066,7 @@ export type SecondFactorRequirementQuery = {
       covered: boolean;
       deadline?: Date | undefined;
       satisfied: boolean;
+      secondWayNeeded: boolean;
     };
   };
 };
