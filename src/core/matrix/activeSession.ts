@@ -31,7 +31,7 @@ const stopActiveSession = (): boolean => {
   return false;
 };
 
-/** Rotates the registered session's credential when due; true when a rotation was attempted, so no call opens. */
+/** Rotates the registered session's credential when due; true when a rotation was attempted, so a call waits for the session to resolve its room again. */
 const rotateActiveSessionIfDue = (): Promise<boolean> => (current ? current.rotateIfDue() : Promise.resolve(false));
 
 export { registerActiveSession, unregisterActiveSession, stopActiveSession, rotateActiveSessionIfDue };

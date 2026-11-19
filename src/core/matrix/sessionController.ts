@@ -247,7 +247,7 @@ const establishSession = async (
     }
   };
 
-  // Resolves true when a rotation was attempted (the caller then opens nothing),
+  // Resolves true when a rotation was attempted (the caller then waits for the new session),
   // false only when nothing was due or this credential was already tried.
   const rotateIfDue = (): Promise<boolean> => {
     if (rotation) {

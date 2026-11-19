@@ -14,7 +14,9 @@ describe('ChatConnectionNotice', () => {
   });
 
   it('shows the message of a failure as a status', () => {
-    render(<ChatConnectionNotice kind="failed" message="Couldn't start the call." />);
+    const { container } = render(<ChatConnectionNotice kind="failed" message="Couldn't start the call." />);
     expect(screen.getByRole('status')).toHaveTextContent("Couldn't start the call.");
+    expect(container.querySelector('svg')).toHaveClass('lucide-phone-off');
+    expect(container.querySelector('svg')).not.toHaveClass('animate-spin');
   });
 });
