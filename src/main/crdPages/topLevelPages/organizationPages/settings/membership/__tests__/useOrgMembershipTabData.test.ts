@@ -62,7 +62,7 @@ describe('useOrgMembershipTabData — Leave', () => {
   });
 
   it('rejects when the mutation fails, still clearing the dialog and refreshing the list', async () => {
-    mockRemoveRoleFromOrganization.mockRejectedValue(new Error('Authorization: unable to grant'));
+    mockRemoveRoleFromOrganization.mockRejectedValue(new Error('Leave failed'));
     const refetch = vi.fn().mockResolvedValue(undefined);
     const { result } = renderHook(() => useOrgMembershipTabData('org-1', refetch));
     act(() => {
@@ -70,7 +70,7 @@ describe('useOrgMembershipTabData — Leave', () => {
     });
 
     await act(async () => {
-      await expect(result.current.onConfirmLeave()).rejects.toThrow('Authorization: unable to grant');
+      await expect(result.current.onConfirmLeave()).rejects.toThrow('Leave failed');
     });
 
     expect(refetch).toHaveBeenCalledTimes(1);
@@ -94,7 +94,7 @@ describe('useOrgMembershipTabData — Leave', () => {
   });
 
   it('rejects with the leave error, not the refetch error, when both fail', async () => {
-    mockRemoveRoleFromOrganization.mockRejectedValue(new Error('Authorization: unable to grant'));
+    mockRemoveRoleFromOrganization.mockRejectedValue(new Error('Leave failed'));
     const refetch = vi.fn().mockRejectedValue(new Error('Network blip'));
     const { result } = renderHook(() => useOrgMembershipTabData('org-1', refetch));
     act(() => {
@@ -102,7 +102,7 @@ describe('useOrgMembershipTabData — Leave', () => {
     });
 
     await act(async () => {
-      await expect(result.current.onConfirmLeave()).rejects.toThrow('Authorization: unable to grant');
+      await expect(result.current.onConfirmLeave()).rejects.toThrow('Leave failed');
     });
   });
 

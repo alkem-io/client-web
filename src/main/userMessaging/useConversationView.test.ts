@@ -1,4 +1,6 @@
+import { ApolloError } from '@apollo/client';
 import { act, renderHook } from '@testing-library/react';
+import { GraphQLError } from 'graphql';
 import { createClient, MatrixEvent, Room, RoomEvent } from 'matrix-js-sdk';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ActorType, type RoomMessageAttachmentInput } from '@/core/apollo/generated/graphql-schema';
@@ -294,6 +296,19 @@ describe('useConversationView — DM consent is checked per text send', () => {
 
     expect(await send(dm(ActorType.User))).toBe(false);
     expect(sendEventMock).not.toHaveBeenCalled();
+  });
+
+  it('a counterpart that is not available makes no send, raises no message and resolves false', async () => {
+    actorDetailsMock.mockResolvedValue({
+      data: undefined,
+      error: new ApolloError({
+        graphQLErrors: [new GraphQLError('not available', { extensions: { code: 'FORBIDDEN_POLICY' } })],
+      }),
+    });
+
+    expect(await send(dm(ActorType.User))).toBe(false);
+    expect(sendEventMock).not.toHaveBeenCalled();
+    expect(notifyMock).not.toHaveBeenCalled();
   });
 
   it('a null actor proceeds', async () => {
