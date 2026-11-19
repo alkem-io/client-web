@@ -78,6 +78,11 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
+vi.mock('@apollo/client', async importOriginal => ({
+  ...(await importOriginal<typeof import('@apollo/client')>()),
+  useApolloClient: () => ({ refetchQueries: vi.fn() }),
+}));
+
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useMemoSigningAttemptQuery: (options: { variables: { attemptID: string }; skip: boolean }) => {
     state.attemptQuery(options);

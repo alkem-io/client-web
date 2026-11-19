@@ -1,7 +1,9 @@
+import { useApolloClient } from '@apollo/client';
 import { format } from 'date-fns';
 import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { trackChatOpen } from '@/core/analytics/events/unifiedChat';
+import { isAppMode } from '@/core/appMode/isAppMode';
 import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import useNavigate from '@/core/routing/useNavigate';
@@ -61,6 +63,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
   const { openSearch } = useSearch();
   const navigate = useNavigate();
+  const apolloClient = useApolloClient();
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const { visible: downNoticeVisible, dismiss: dismissDownNotice } = useDownNoticeBanner();
   const breadcrumbItems = useBreadcrumbs();
@@ -142,6 +145,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         onNotificationsClick={() => setNotificationsOpen(true)}
         onPendingMembershipsClick={isAuthenticated ? handlePendingMembershipsClick : undefined}
         onHelpClick={() => setIsHelpDialogOpen(true)}
+        onRefreshClick={isAppMode() ? () => void apolloClient.refetchQueries({ include: 'active' }) : undefined}
         onSearchClick={() => openSearch()}
         footerLinks={footerLinks}
       >
