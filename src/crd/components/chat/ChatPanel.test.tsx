@@ -341,4 +341,42 @@ describe('ChatPanel', () => {
       expect(onClose).not.toHaveBeenCalled();
     });
   });
+
+  // The on-screen keyboard shrinks the visual viewport, not the layout viewport
+  // a fixed panel is pinned to, so the composer at the bottom would sit behind it.
+  describe('on-screen keyboard', () => {
+    const stubVisualViewport = (offsetTop: number, height: number) => {
+      const viewport = Object.assign(new EventTarget(), { offsetTop, height });
+      vi.stubGlobal('visualViewport', viewport);
+      return viewport;
+    };
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    test('on a small screen the panel follows the visible area above the keyboard', () => {
+      screenSize.isSmallScreen = true;
+      const viewport = stubVisualViewport(0, 844);
+      renderPanel();
+
+      const panel = screen.getByRole('dialog');
+      expect(panel).toHaveStyle({ top: '0px', height: '844px', bottom: 'auto' });
+
+      Object.assign(viewport, { offsetTop: 24, height: 460 });
+      act(() => {
+        viewport.dispatchEvent(new Event('resize'));
+      });
+      expect(panel).toHaveStyle({ top: '24px', height: '460px', bottom: 'auto' });
+    });
+
+    test('the floating desktop card is left where its classes put it', () => {
+      const viewport = stubVisualViewport(0, 500);
+      const addEventListener = vi.spyOn(viewport, 'addEventListener');
+      renderPanel();
+
+      expect(screen.getByRole('dialog').getAttribute('style')).toBeNull();
+      expect(addEventListener).not.toHaveBeenCalled();
+    });
+  });
 });
