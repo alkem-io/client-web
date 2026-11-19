@@ -194,14 +194,10 @@ export function ContributorCollection({
     ) : null;
   };
 
-  // Signature of the active type's located set BEFORE search — drives the map's
-  // auto re-fit so it re-zooms when the dataset changes (switching contributor
-  // type/role, or the set finishing its async load) but stays put while the user
-  // types in the search box.
-  const fitKey = roleScoped
-    .filter(c => c.hasValidCoordinates && c.latitude != null && c.longitude != null)
-    .map(c => c.id)
-    .join(',');
+  // What the user chose to show: the map re-fits when this changes (switching the
+  // contributor type or role), never because contributors loaded or refetched,
+  // and not while the user types in the search box.
+  const fitKey = `${activeType}:${roleFilter}`;
 
   return (
     <section className={cn('space-y-4', className)} aria-label={t('contributors.title')}>

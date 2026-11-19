@@ -1639,5 +1639,9 @@
     "learnMore": "Meer informatie",
     "contactSupport": "Contact opnemen met support",
     "mentionUnavailable": "Tijdelijk niet beschikbaar"
+  },
+  "contributorMap": {
+    "pinGroup": "{{count}} bijdragers hier: {{names}}",
+    "pinGroupList": "{{count}} bijdragers hier"
   }
 }

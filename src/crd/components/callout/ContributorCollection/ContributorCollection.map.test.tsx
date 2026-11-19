@@ -10,7 +10,7 @@
  * inline and the expanded map; Esc closes the popup and returns focus to the
  * pin that opened it.
  */
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import i18next from 'i18next';
 import type { ReactNode } from 'react';
@@ -30,23 +30,67 @@ const MAP_RECT = { left: 0, top: 0, right: 292, bottom: MAP_HEIGHT, width: 292, 
 const layout = vi.hoisted(() => ({
   popupRect: undefined as DOMRect | undefined,
   pinY: 100,
+  // The zoom the stand-in map reports on load (a city-level view).
+  zoom: 10,
   panBy: (() => {}) as (offset: [number, number]) => void,
+  // Where fitBounds was asked to go, and the zoom the stand-in map then settles on.
+  fitBounds: [] as [[number, number], [number, number]][],
+  zoomAfterFit: 16,
+  // How many camera moves the map was asked to make (fitBounds or easeTo).
+  moves: 0,
 }));
 
 // maplibre's `focusAfterOpen` selector: the popup focuses the first match on open.
 const POPUP_FOCUSABLE =
   "a[href], [tabindex]:not([tabindex='-1']), [contenteditable]:not([contenteditable='false']), button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])";
 
+type MapStandInProps = {
+  children: ReactNode;
+  onLoad?: (e: { target: unknown }) => void;
+  onZoomEnd?: (e: { viewState: { zoom: number } }) => void;
+  onMoveStart?: (e: { originalEvent?: Event }) => void;
+};
+const mapEvents = vi.hoisted(() => ({}) as Pick<MapStandInProps, 'onZoomEnd' | 'onMoveStart'>);
+
+// A user's drag starts a move with the DOM event behind it; the map's own moves carry none.
+const userMovesMap = () => act(() => mapEvents.onMoveStart?.({ originalEvent: new MouseEvent('mousedown') }));
+
 vi.mock('react-map-gl/maplibre', async () => {
   const { forwardRef, useEffect, useImperativeHandle, useRef, useState } = await import('react');
   const { createPortal } = await import('react-dom');
+  const { act: actInMock } = await import('@testing-library/react');
+  const standInMap = {
+    getContainer: () => ({
+      clientHeight: MAP_HEIGHT,
+      getBoundingClientRect: () => MAP_RECT,
+      querySelector: () => null,
+    }),
+    getZoom: () => layout.zoom,
+    getCenter: () => ({ lng: 0, lat: 0 }),
+    project: () => ({ x: 146, y: layout.pinY }),
+    panBy: (offset: [number, number]) => layout.panBy(offset),
+    easeTo: () => {
+      layout.moves += 1;
+    },
+    // Like maplibre, fitting the bounds ends in a `zoomend` at the new zoom.
+    fitBounds: (bounds: [[number, number], [number, number]]) => {
+      layout.moves += 1;
+      layout.fitBounds.push(bounds);
+      layout.zoom = layout.zoomAfterFit;
+      actInMock(() => mapEvents.onZoomEnd?.({ viewState: { zoom: layout.zoom } }));
+    },
+  };
   return {
-    Map: forwardRef<unknown, { children: ReactNode }>(({ children }, ref) => {
-      useImperativeHandle(ref, () => ({
-        getContainer: () => ({ clientHeight: MAP_HEIGHT, getBoundingClientRect: () => MAP_RECT }),
-        project: () => ({ x: 146, y: layout.pinY }),
-        panBy: (offset: [number, number]) => layout.panBy(offset),
-      }));
+    Map: forwardRef<unknown, MapStandInProps>(({ children, onLoad, onZoomEnd, onMoveStart }, ref) => {
+      useImperativeHandle(ref, () => standInMap);
+      // The map's event props, for the stand-in's own moves and for tests driving the map.
+      useEffect(() => {
+        Object.assign(mapEvents, { onZoomEnd, onMoveStart });
+      });
+      // Like maplibre, `load` fires once the map is ready.
+      useEffect(() => {
+        onLoad?.({ target: standInMap });
+      }, []);
       return <div data-testid="maplibre-map">{children}</div>;
     }),
     AttributionControl: () => null,
@@ -381,5 +425,181 @@ describe('ContributorCollection map — pin popup shows the full contributor car
     } finally {
       layout.pinY = 100;
     }
+  });
+});
+
+describe('ContributorCollection map — pins on the same spot', () => {
+  // Hedy stands on the same spot as Ada; Alan is a street away.
+  const hedy: ContributorCardData = {
+    ...ada,
+    id: 'user-hedy',
+    name: 'Hedy',
+    href: '/user/hedy',
+    tagline: 'Frequency hopping.',
+  };
+  const alan: ContributorCardData = {
+    ...ada,
+    id: 'user-alan',
+    name: 'Alan',
+    href: '/user/alan',
+    latitude: 52.36,
+    longitude: 4.88,
+  };
+
+  test('overlapping pins show as one round pin with their count inside, named for who it holds', async () => {
+    renderMap([ada, hedy, alan]);
+
+    const group = await screen.findByRole('button', { name: '3 contributors here: Ada, Hedy, Alan' });
+    expect(group).toHaveTextContent(/^3$/);
+    expect(group.firstElementChild).toHaveClass('rounded-full');
+    expect(screen.queryByRole('button', { name: 'Ada' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Hedy' })).not.toBeInTheDocument();
+  });
+
+  test('clicking a group whose pins zooming can separate zooms the map in onto them', async () => {
+    const user = userEvent.setup();
+    layout.fitBounds = [];
+    try {
+      renderMap([alan, ada]);
+      await user.click(await screen.findByRole('button', { name: '2 contributors here: Alan, Ada' }));
+
+      expect(layout.fitBounds).toEqual([
+        [
+          [4.88, 52.36],
+          [4.9, 52.37],
+        ],
+      ]);
+      expect(screen.queryByRole('dialog', { name: '2 contributors here' })).not.toBeInTheDocument();
+      // Zoomed in, the pins stand apart; focus moves to the first of them.
+      expect(screen.getByRole('button', { name: 'Ada' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Alan' })).toHaveFocus();
+    } finally {
+      layout.zoom = 10;
+    }
+  });
+
+  test('a group at one exact spot, which no zoom separates, lists its contributors; choosing one opens its card', async () => {
+    const user = userEvent.setup();
+    renderMap([ada, hedy]);
+
+    await user.click(await screen.findByRole('button', { name: '2 contributors here: Ada, Hedy' }));
+    const list = screen.getByRole('dialog', { name: '2 contributors here' });
+    await user.click(within(list).getByRole('button', { name: /Hedy/ }));
+
+    expect(screen.queryByRole('dialog', { name: '2 contributors here' })).not.toBeInTheDocument();
+    expect(within(screen.getByRole('dialog', { name: 'Hedy' })).getByText('Frequency hopping.')).toBeInTheDocument();
+  });
+
+  test('Esc closes the list, and later the chosen card, returning focus to the group pin each time', async () => {
+    const user = userEvent.setup();
+    renderMap([ada, hedy]);
+    const group = await screen.findByRole('button', { name: '2 contributors here: Ada, Hedy' });
+
+    await user.click(group);
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog', { name: '2 contributors here' })).not.toBeInTheDocument();
+    expect(group).toHaveFocus();
+
+    await user.click(group);
+    await user.click(
+      within(screen.getByRole('dialog', { name: '2 contributors here' })).getByRole('button', { name: /Ada/ })
+    );
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog', { name: 'Ada' })).not.toBeInTheDocument();
+    expect(group).toHaveFocus();
+  });
+
+  test('like a card, the list of a group in the bottom half opens above it, capped to the room left', async () => {
+    const user = userEvent.setup();
+    layout.pinY = 300;
+    try {
+      renderMap([ada, hedy]);
+      await user.click(await screen.findByRole('button', { name: '2 contributors here: Ada, Hedy' }));
+
+      const list = screen.getByRole('dialog', { name: '2 contributors here' });
+      expect(list.closest('[data-anchor]')).toHaveAttribute('data-anchor', 'bottom');
+      expect(list.style.maxHeight).toBe('min(18rem, 60vh, 302px)');
+    } finally {
+      layout.pinY = 100;
+    }
+  });
+
+  test('zoomed in, nearby pins that no longer overlap stand alone again', async () => {
+    layout.zoom = 16;
+    try {
+      renderMap([ada, alan]);
+      expect(await screen.findByRole('button', { name: 'Ada' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Alan' })).toBeInTheDocument();
+    } finally {
+      layout.zoom = 10;
+    }
+  });
+});
+
+describe('ContributorCollection map — the map never zooms out on its own', () => {
+  const far: ContributorCardData = {
+    ...ada,
+    id: 'user-far',
+    name: 'Far',
+    href: '/user/far',
+    latitude: -1.29,
+    longitude: 36.82,
+  };
+  const near: ContributorCardData = {
+    ...ada,
+    id: 'user-near',
+    name: 'Near',
+    href: '/user/near',
+    latitude: 51.92,
+    longitude: 4.48,
+  };
+  const tree = (cards: ContributorCardData[], activeType: 'user' | 'organization' = 'user') => (
+    <I18nextProvider i18n={i18n}>
+      <ContributorCollection
+        types={['user', 'organization']}
+        activeType={activeType}
+        onActiveTypeChange={() => {}}
+        defaultView="map"
+        counts={{ users: 3, organizations: 1, virtualContributors: 0 }}
+        cards={cards}
+        loading={false}
+        onContributorClick={vi.fn()}
+      />
+    </I18nextProvider>
+  );
+  const movesDuring = (run: () => void) => {
+    layout.moves = 0;
+    run();
+    return layout.moves;
+  };
+
+  test('contributors that finish loading after the map opened frame it once', async () => {
+    const { rerender } = render(tree([]));
+    await screen.findByTestId('maplibre-map');
+
+    expect(movesDuring(() => rerender(tree([ada, near])))).toBe(1);
+  });
+
+  test('once framed, a change in the loaded contributors leaves the map where it is', async () => {
+    const { rerender } = render(tree([ada, near]));
+    await screen.findByRole('button', { name: 'Ada' });
+
+    expect(movesDuring(() => rerender(tree([ada, near, far])))).toBe(0);
+  });
+
+  test('a map the user has moved is not framed when contributors finish loading', async () => {
+    const { rerender } = render(tree([]));
+    await screen.findByTestId('maplibre-map');
+    userMovesMap();
+
+    expect(movesDuring(() => rerender(tree([ada, far])))).toBe(0);
+  });
+
+  test('switching what the map shows frames the new set', async () => {
+    // The consumer passes the cards of the active type.
+    const { rerender } = render(tree([ada, near]));
+    await screen.findByRole('button', { name: 'Ada' });
+
+    expect(movesDuring(() => rerender(tree([acme], 'organization')))).toBe(1);
   });
 });
