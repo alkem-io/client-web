@@ -3,7 +3,7 @@
  *
  * Every opener of the callout detail dialog (feed card, callout URL, Post
  * Index) renders this connector, so the tab title follows the open callout
- * here: `<callout title> | Alkemio` while open, the page title once closed.
+ * here: `<callout title> | <Space> | Alkemio` while open, the page title once closed.
  */
 import { render } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -94,7 +94,7 @@ const PAGE_TITLE = 'Building the A-team | Alkemio';
 describe('CalloutDetailDialogConnector tab title', () => {
   beforeEach(() => {
     setTitlePrefix('');
-    setBaseTitle(PAGE_TITLE);
+    setBaseTitle(PAGE_TITLE, 'Building the A-team');
   });
 
   afterEach(() => {
@@ -109,7 +109,7 @@ describe('CalloutDetailDialogConnector tab title', () => {
 
   it('shows the callout title while open and the page title again once closed', () => {
     const view = render(<CalloutDetailDialogConnector open={true} onOpenChange={vi.fn()} callout={callout} />);
-    expect(document.title).toBe('Mobile issues tracker | Alkemio');
+    expect(document.title).toBe('Mobile iss… | Building t… | Alkemio');
 
     view.rerender(<CalloutDetailDialogConnector open={false} onOpenChange={vi.fn()} callout={callout} />);
     expect(document.title).toBe(PAGE_TITLE);
@@ -118,7 +118,7 @@ describe('CalloutDetailDialogConnector tab title', () => {
   it('keeps the unread badge prefix on top of the callout title', () => {
     setTitlePrefix('(3) ');
     const view = render(<CalloutDetailDialogConnector open={true} onOpenChange={vi.fn()} callout={callout} />);
-    expect(document.title).toBe('(3) Mobile issues tracker | Alkemio');
+    expect(document.title).toBe('(3) Mobile iss… | Building t… | Alkemio');
 
     view.unmount();
     expect(document.title).toBe(`(3) ${PAGE_TITLE}`);

@@ -16,21 +16,26 @@
  * still wins over a dialog title, and the `prefix` composes on top.
  */
 
+/** Builds a dialog's tab title from the name of the page it is open on (undefined when the page has none). */
+export type DialogTitleComposer = (pageName: string | undefined) => string;
+
 let base = typeof document !== 'undefined' ? document.title : '';
+let pageName: string | undefined;
 let prefix = '';
 let override: string | null = null;
-const dialogClaims: { title: string }[] = [];
+const dialogClaims: { compose: DialogTitleComposer }[] = [];
 
 const apply = () => {
   if (typeof document !== 'undefined') {
-    const dialogTitle = dialogClaims[dialogClaims.length - 1]?.title;
+    const dialogTitle = dialogClaims[dialogClaims.length - 1]?.compose(pageName);
     document.title = `${prefix}${override ?? dialogTitle ?? base}`;
   }
 };
 
-/** Set the page-specific base title (owned by `usePageTitle`). */
-export const setBaseTitle = (nextBase: string): void => {
+/** Set the page-specific base title and the page's own name (owned by `usePageTitle`). */
+export const setBaseTitle = (nextBase: string, nextPageName?: string): void => {
   base = nextBase;
+  pageName = nextPageName;
   apply();
 };
 
@@ -46,9 +51,13 @@ export const setTitleOverride = (text: string | null): void => {
   apply();
 };
 
-/** Show an open dialog's title in place of the page base title until the returned release is called. */
-export const claimDialogTitle = (text: string): (() => void) => {
-  const claim = { title: text };
+/**
+ * Show an open dialog's title in place of the page base title until the returned
+ * release is called. The title is rebuilt from the current page name on every
+ * change, so it follows the page it is open on.
+ */
+export const claimDialogTitle = (compose: DialogTitleComposer): (() => void) => {
+  const claim = { compose };
   dialogClaims.push(claim);
   apply();
   return () => {
