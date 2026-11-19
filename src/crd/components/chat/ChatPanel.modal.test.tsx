@@ -192,3 +192,34 @@ test('on touch, closing the chat leaves the dialog underneath open', async () =>
 
   expect(screen.getByRole('dialog', { name: 'Our contributors' })).toBeInTheDocument();
 });
+
+test('on touch, stepping back from a thread to the list leaves the dialog underneath open', async () => {
+  // Back removes the back button itself, so the press's own element is gone by the click.
+  const Host = ({ inThread }: { inThread: boolean }) => (
+    <>
+      <Dialog defaultOpen={true}>
+        <DialogContent aria-describedby={undefined}>
+          <DialogTitle>Our contributors</DialogTitle>
+        </DialogContent>
+      </Dialog>
+      <ChatPanel {...chatProps} open={true} onBack={inThread ? () => {} : undefined}>
+        <div />
+      </ChatPanel>
+    </>
+  );
+  const { rerender } = render(<Host inThread={true} />);
+  await flushRadixListeners();
+
+  const back = screen.getByRole('button', { name: 'Back to conversations', hidden: true });
+  const touchDown = new MouseEvent('pointerdown', { bubbles: true, cancelable: true });
+  Object.defineProperty(touchDown, 'pointerType', { value: 'touch' });
+  act(() => {
+    back.dispatchEvent(touchDown);
+  });
+  rerender(<Host inThread={false} />);
+  act(() => {
+    document.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  });
+
+  expect(screen.getByRole('dialog', { name: 'Our contributors' })).toBeInTheDocument();
+});

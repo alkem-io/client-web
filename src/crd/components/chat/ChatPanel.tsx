@@ -66,8 +66,7 @@ type ChatPanelProps = {
  * aria-hidden siblings; it takes pointer events back from the dialog's body lock;
  * its focus scope pauses the dialog's focus trap; its scroll lock replaces the
  * dialog's as the active one; and it carries the dialog's dismiss-ignore marker,
- * so presses in it (also a touch that closes the panel itself) do not dismiss the
- * dialog. A dialog opened afterwards covers the panel in the same way.
+ * so presses in it do not dismiss the dialog. A dialog opened afterwards covers the panel in the same way.
  */
 export function ChatPanel({
   open,
