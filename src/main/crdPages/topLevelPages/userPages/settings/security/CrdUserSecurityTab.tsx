@@ -5,6 +5,7 @@ import {
   useUserSecurityAuthenticationMethodsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthenticationType } from '@/core/apollo/generated/graphql-schema';
+import { isAppMode } from '@/core/appMode/isAppMode';
 import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
 import useNavigate from '@/core/routing/useNavigate';
@@ -14,6 +15,7 @@ import { McpApiKeyRevealPanel } from '@/crd/components/user/settings/McpApiKeyRe
 import { McpApiKeysCard } from '@/crd/components/user/settings/McpApiKeysCard';
 import { UserSecurityTabView, type UserSecurityViewState } from '@/crd/components/user/settings/UserSecurityTabView';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
+import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { platformBaseAddress } from '@/main/constants/endpoints';
 import { flowDescriptorAdapter } from '@/main/crdPages/auth/flowDescriptorAdapter';
 import { invokePasskeyTrigger } from '@/main/crdPages/auth/passkeyTrigger';
@@ -129,11 +131,17 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
   const state: UserSecurityViewState =
     flowResult.kind === 'loading' || authMethodsLoading
       ? { kind: 'loading' }
-      : flowResult.kind === 'sessionExpired'
-        ? { kind: 'sessionExpired', reauthHref: AUTH_LOGOUT_PATH }
-        : flowResult.kind === 'error'
-          ? { kind: 'error' }
-          : { kind: 'ready', hasPassword: hasPasswordCredential, hasWebauthn: flowResult.hasWebauthn };
+      : // In the store app a 401 here is not a lapsed session: the WebView never holds a Kratos session
+        // after the SSO handoff (079), and signing out and in again re-enters that handoff — a loop. The
+        // way out is a web browser. `/home`, not the bare address: a signed-out visit to the bare address
+        // is sent to the marketing site.
+        flowResult.kind === 'sessionExpired' && isAppMode()
+        ? { kind: 'manageInBrowser', address: `${platformBaseAddress}${ROUTE_HOME}` }
+        : flowResult.kind === 'sessionExpired'
+          ? { kind: 'sessionExpired', reauthHref: AUTH_LOGOUT_PATH }
+          : flowResult.kind === 'error'
+            ? { kind: 'error' }
+            : { kind: 'ready', hasPassword: hasPasswordCredential, hasWebauthn: flowResult.hasWebauthn };
 
   const passwordForm =
     flowResult.kind === 'ready' && hasPasswordCredential ? <PasswordChangeForm flow={flowResult.flow} /> : null;

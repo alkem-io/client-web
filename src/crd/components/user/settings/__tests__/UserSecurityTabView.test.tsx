@@ -5,7 +5,9 @@ import { ConnectedAccountsView } from '../ConnectedAccountsView';
 import { UserSecurityTabView, type UserSecurityViewState } from '../UserSecurityTabView';
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: () => ({
+    t: (key: string, options?: Record<string, unknown>) => (options?.address ? `${key}:${options.address}` : key),
+  }),
 }));
 
 describe('UserSecurityTabView', () => {
@@ -141,6 +143,32 @@ describe('UserSecurityTabView', () => {
       // broker session too, forcing the next sign-in to be a real one.
       const action = screen.getByRole('link', { name: 'user.security.sessionExpired.action' });
       expect(action).toHaveAttribute('href', '/logout');
+    }
+  );
+
+  it(
+    'in the store app, says where security settings are managed instead of offering a sign-out that ' +
+      're-enters the app sign-in handoff, and leaves out Connected Accounts',
+    () => {
+      const { container } = render(
+        <UserSecurityTabView
+          state={{ kind: 'manageInBrowser', address: 'https://alkem.io/home' }}
+          passwordForm={null}
+          webauthnForm={null}
+          twoStepVerificationSection={null}
+          mcpApiKeysCard={null}
+          connectedAccountsSection={<p>connected-accounts-slot</p>}
+        />
+      );
+
+      expect(screen.getByText('user.security.manageInBrowser.description:https://alkem.io/home')).toBeInTheDocument();
+      expect(screen.queryAllByRole('link')).toHaveLength(0);
+      expect(screen.queryAllByRole('button')).toHaveLength(0);
+      expect(container.querySelector('a[href="/logout"]')).toBeNull();
+      expect(screen.queryByText('connected-accounts-slot')).not.toBeInTheDocument();
+      expect(screen.queryByText('user.security.connectedAccounts.title')).not.toBeInTheDocument();
+      expect(screen.queryByText('user.security.errorDescription')).not.toBeInTheDocument();
+      expect(screen.queryByText('user.security.sessionExpired.description')).not.toBeInTheDocument();
     }
   );
 

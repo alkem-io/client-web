@@ -249,6 +249,9 @@
         "description": "Deine Sitzung bei unserem Anmeldedienst ist abgelaufen, daher können diese Einstellungen nicht geladen werden. Ein Neuladen hilft nicht — melde dich ab und wieder an, um sie wiederherzustellen. Der Rest von Alkemio funktioniert währenddessen weiter.",
         "action": "Abmelden und erneut anmelden"
       },
+      "manageInBrowser": {
+        "description": "Dein Passwort, deine Passkeys, die Bestätigung in zwei Schritten und deine verbundenen Konten werden in einem Webbrowser verwaltet, nicht in der App. Öffne {{address}} in einem beliebigen Webbrowser, melde dich an und gehe zu Einstellungen › Sicherheit. Der Rest von Alkemio funktioniert in der App weiter."
+      },
       "password": {
         "title": "Passwort ändern",
         "description": "Aktualisiere das Passwort, mit dem du dich in deinem Konto anmeldest.",
