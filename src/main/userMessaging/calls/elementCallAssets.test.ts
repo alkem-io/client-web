@@ -62,6 +62,27 @@ describe('call UI static files', () => {
     }
   });
 
+  it('caps the per-person upload of the call UI so the shared call server carries more participants', () => {
+    const config = JSON.parse(readFileSync(path.join(repoRoot, '.build/element-call/config.json'), 'utf8'));
+    expect(config.matrix_rtc_mode).toBe('compatibility');
+    expect(config.media_quality).toEqual({
+      // VP8, not VP9: the call UI always adds a VP8 backup stream at 720p that ignores these caps,
+      // and VP9 is encoded in software.
+      video_codec: 'vp8',
+      video: {
+        max_resolution: 540,
+        max_bitrate: 600_000,
+        max_framerate: 20,
+        simulcast_layers: [
+          { height: 180, bitrate: 120_000 },
+          { height: 360, bitrate: 300_000 },
+        ],
+      },
+      // full resolution keeps shared text legible; a low frame rate suits documents and slides
+      screen_share: { max_resolution: 1080, max_bitrate: 1_200_000, max_framerate: 10 },
+    });
+  });
+
   it('is part of both the development and the release Vite configuration', () => {
     for (const config of ['vite.config.mjs', 'vite.sentry.config.mjs']) {
       const text = readFileSync(path.join(repoRoot, config), 'utf8');

@@ -1,3 +1,17 @@
 {
-  "matrix_rtc_mode": "compatibility"
+  "matrix_rtc_mode": "compatibility",
+  "media_quality": {
+    "video_codec": "vp8",
+    "video": {
+      "max_resolution": 540,
+      "max_bitrate": 600000,
+      "max_framerate": 20,
+      "simulcast_layers": [{ "height": 180, "bitrate": 120000 }, { "height": 360, "bitrate": 300000 }]
+    },
+    "screen_share": {
+      "max_resolution": 1080,
+      "max_bitrate": 1200000,
+      "max_framerate": 10
+    }
+  }
 }
