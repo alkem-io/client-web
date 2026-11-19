@@ -120,6 +120,7 @@
     "joinAudio": "Nur mit Audio beitreten",
     "joinedOnThisDevice": "Auf diesem Gerät bereits beigetreten",
     "preparing": "Anruf wird vorbereitet… Er startet gleich.",
+    "dropped": "Der Anruf konnte nicht gestartet werden. Bitte versuche es erneut.",
     "overlayLabel": "Anruf",
     "close": "Anruf schließen",
     "license": "Open-Source-Lizenz",

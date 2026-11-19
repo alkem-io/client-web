@@ -53,6 +53,8 @@ import { useUnifiedConversationView } from './useUnifiedConversationView';
 
 // How long after the click a queued call may still open.
 const QUEUED_CALL_TIMEOUT_MS = 10_000;
+// How long the "try again" notice of a dropped call stays.
+const DROPPED_CALL_NOTICE_MS = 8_000;
 
 /**
  * Wires the unified conversation list + selected thread to the CRD ChatPanel.
@@ -129,15 +131,27 @@ export const UnifiedChatPanelConnector = ({
       openCall({ matrixRoomId: queuedCall.matrixRoomId, intent: queuedCall.intent });
     }
   }, [queuedCall, selectedConversationId, callEligibility.matrixRoomId]);
-  // A call that has not opened by then is dropped, so none opens (or rings) long after the click.
-  const isCallQueued = queuedCall !== null;
+  // A call that has not opened by then is dropped, so none opens (or rings) long after the click,
+  // and the user is told to try again.
+  const [droppedCallIn, setDroppedCallIn] = useState<string | null>(null);
+  const queuedIn = queuedCall?.conversationId ?? null;
   useEffect(() => {
-    if (!isCallQueued) {
+    if (!queuedIn) {
       return;
     }
-    const timer = setTimeout(() => setQueuedCall(null), QUEUED_CALL_TIMEOUT_MS);
+    const timer = setTimeout(() => {
+      setQueuedCall(null);
+      setDroppedCallIn(queuedIn);
+    }, QUEUED_CALL_TIMEOUT_MS);
     return () => clearTimeout(timer);
-  }, [isCallQueued]);
+  }, [queuedIn]);
+  useEffect(() => {
+    if (!droppedCallIn) {
+      return;
+    }
+    const timer = setTimeout(() => setDroppedCallIn(null), DROPPED_CALL_NOTICE_MS);
+    return () => clearTimeout(timer);
+  }, [droppedCallIn]);
   const activeCallRooms = useActiveCallRooms(conversations);
 
   // Realtime conversation events are subscribed globally by
@@ -306,6 +320,7 @@ export const UnifiedChatPanelConnector = ({
         return;
       }
       const intent = callIntentFor({ isGroup, action, media });
+      setDroppedCallIn(null);
       setQueuedCall({ conversationId, matrixRoomId, intent, swapDone: false });
       // A due chat credential is replaced first: a call open across the swap would end.
       void rotateActiveSessionIfDue().then(rotated => {
@@ -459,7 +474,9 @@ export const UnifiedChatPanelConnector = ({
         headerActions={view === 'thread' ? headerActions : undefined}
         notice={
           queuedCall && view === 'thread' ? (
-            <ChatConnectionNotice busy={true} message={t('call.preparing')} />
+            <ChatConnectionNotice kind="busy" message={t('call.preparing')} />
+          ) : droppedCallIn && droppedCallIn === selectedConversationId && view === 'thread' ? (
+            <ChatConnectionNotice kind="failed" message={t('call.dropped')} />
           ) : connectionLost ? (
             <ChatConnectionNotice message={t('panel.reconnecting')} />
           ) : undefined

@@ -9,7 +9,12 @@ describe('ChatConnectionNotice', () => {
   });
 
   it('spins its icon while something is under way', () => {
-    const { container } = render(<ChatConnectionNotice busy={true} message="Preparing your call…" />);
+    const { container } = render(<ChatConnectionNotice kind="busy" message="Preparing your call…" />);
     expect(container.querySelector('svg')).toHaveClass('animate-spin');
+  });
+
+  it('shows the message of a failure as a status', () => {
+    render(<ChatConnectionNotice kind="failed" message="Couldn't start the call." />);
+    expect(screen.getByRole('status')).toHaveTextContent("Couldn't start the call.");
   });
 });

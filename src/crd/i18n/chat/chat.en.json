@@ -120,6 +120,7 @@
     "joinAudio": "Join with audio only",
     "joinedOnThisDevice": "Already joined on this device",
     "preparing": "Preparing your call… It will start in a moment.",
+    "dropped": "Couldn't start the call. Please try again.",
     "overlayLabel": "Call",
     "close": "Close call",
     "license": "Open-source license",

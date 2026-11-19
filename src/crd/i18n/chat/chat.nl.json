@@ -120,6 +120,7 @@
     "joinAudio": "Alleen met audio deelnemen",
     "joinedOnThisDevice": "Al deelgenomen op dit apparaat",
     "preparing": "Gesprek wordt voorbereid… Het start zo meteen.",
+    "dropped": "Kon het gesprek niet starten. Probeer het opnieuw.",
     "overlayLabel": "Gesprek",
     "close": "Gesprek sluiten",
     "license": "Opensourcelicentie",

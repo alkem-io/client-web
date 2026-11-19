@@ -268,11 +268,36 @@ describe('UnifiedChatPanelConnector calls', () => {
       expect(screen.getByText('call.preparing')).toBeInTheDocument();
       act(() => vi.advanceTimersByTime(1));
       expect(screen.queryByText('call.preparing')).not.toBeInTheDocument();
+      expect(screen.getByText('call.dropped')).toBeInTheDocument();
 
       // The rotation finishing late opens nothing.
       await act(async () => settle(true));
       rerender(<UnifiedChatPanelConnector />);
       expect(calls.openCall).not.toHaveBeenCalled();
+
+      act(() => vi.advanceTimersByTime(8_000));
+      expect(screen.queryByText('call.dropped')).not.toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('clears the try-again notice when the user clicks call again', async () => {
+    eligible();
+    rotationPending();
+    vi.useFakeTimers();
+    try {
+      render(<UnifiedChatPanelConnector />);
+      fireEvent.click(screen.getByRole('button', { name: 'call.startVideo' }));
+      act(() => vi.advanceTimersByTime(10_000));
+      expect(screen.getByText('call.dropped')).toBeInTheDocument();
+
+      calls.rotate.mockResolvedValue(false);
+      await act(async () => {
+        fireEvent.click(screen.getByRole('button', { name: 'call.startVideo' }));
+      });
+      expect(screen.queryByText('call.dropped')).not.toBeInTheDocument();
+      expect(calls.openCall).toHaveBeenCalledExactlyOnceWith({ matrixRoomId: '!group:hs', intent: 'start_call' });
     } finally {
       vi.useRealTimers();
     }
