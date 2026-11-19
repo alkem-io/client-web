@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import { cloneElement } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 // Radix portals the popover content out of the tree that opened it; the mock
@@ -8,13 +9,17 @@ const captured = vi.hoisted(() => ({
   contentProps: {} as Record<string, unknown>,
   pickerProps: {} as Record<string, unknown>,
   loadFails: false,
+  onOpenChange: (_open: boolean) => {},
 }));
 
 vi.mock('@/crd/primitives/popover', () => ({
-  Popover: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  PopoverTrigger: ({ children, asChild: _asChild }: { children: React.ReactNode; asChild?: boolean }) => (
-    <div>{children}</div>
-  ),
+  Popover: ({ children, onOpenChange }: { children: React.ReactNode; onOpenChange: (open: boolean) => void }) => {
+    captured.onOpenChange = onOpenChange;
+    return <div>{children}</div>;
+  },
+  // Like Radix with `asChild`, the ref lands on the trigger element itself.
+  PopoverTrigger: ({ children, ref }: { children: React.ReactElement; ref?: React.Ref<HTMLElement> }) =>
+    cloneElement(children as React.ReactElement<{ ref?: React.Ref<HTMLElement> }>, { ref }),
   PopoverContent: ({ children, ...props }: { children: React.ReactNode } & Record<string, unknown>) => {
     captured.contentProps = props;
     return <div>{children}</div>;
@@ -166,7 +171,7 @@ describe('EmojiPicker modes', () => {
   it('opens on the quick bar without the library in reaction mode', () => {
     renderReactionPicker();
 
-    expect(screen.getByRole('button', { name: '👍' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '🚀' })).toBeTruthy();
     expect(screen.queryByTestId('epr-body')).toBeNull();
   });
 
@@ -185,12 +190,41 @@ describe('EmojiPicker modes', () => {
     fireEvent.click(screen.getByRole('button', { name: 'emojiPicker.more' }));
 
     expect(await screen.findByTestId('epr-body')).toBeTruthy();
-    expect(screen.queryByRole('button', { name: '👍' })).toBeNull();
+    expect(screen.queryByRole('button', { name: '🚀' })).toBeNull();
+  });
+
+  it('fills the quick bar with the set offered for reacting to a post', () => {
+    renderReactionPicker();
+
+    expect(screen.getAllByRole('button').map(button => button.textContent)).toEqual([
+      'open',
+      '❤️',
+      '🤗',
+      '👏',
+      '💡',
+      '🎯',
+      '✅',
+      '🚀',
+      '',
+    ]);
+  });
+
+  it('puts the emojis last picked from the full grid first', () => {
+    window.localStorage.setItem('epr_suggested', JSON.stringify([{ unified: '1f44d' }, { unified: '2764-fe0f' }]));
+    renderReactionPicker();
+
+    expect(
+      screen
+        .getAllByRole('button')
+        .slice(1, 8)
+        .map(button => button.textContent)
+    ).toEqual(['👍', '❤️', '🤗', '👏', '💡', '🎯', '✅']);
+    window.localStorage.removeItem('epr_suggested');
   });
 
   it('opens on the full grid by default', async () => {
     await renderPicker();
-    expect(screen.queryByRole('button', { name: '👍' })).toBeNull();
+    expect(screen.queryByRole('button', { name: '🚀' })).toBeNull();
   });
 });
 
@@ -207,5 +241,45 @@ describe('EmojiPicker when the library fails to load', () => {
     expect(screen.getByTestId('trigger')).toBeTruthy();
     expect(screen.queryByTestId('epr-body')).toBeNull();
     expect(reportError).toHaveBeenCalledTimes(1);
+  });
+});
+
+// The picker never overflows (its height is capped to the room it has), so the
+// popover never flips by itself. Near the top of a phone screen that left a
+// sliver of a picker above the trigger.
+describe('EmojiPicker side', () => {
+  const openAt = (top: number) => {
+    render(
+      <EmojiPicker
+        onSelect={vi.fn()}
+        trigger={
+          <button type="button" data-testid="side-trigger">
+            open
+          </button>
+        }
+      />
+    );
+    vi.spyOn(screen.getByTestId('side-trigger'), 'getBoundingClientRect').mockReturnValue({
+      top,
+      bottom: top + 28,
+    } as DOMRect);
+    act(() => captured.onOpenChange(true));
+  };
+
+  it('opens below a trigger near the top of the screen', () => {
+    openAt(60);
+    expect(captured.contentProps.side).toBe('bottom');
+  });
+
+  it('opens above a trigger with room for the full picker', () => {
+    openAt(600);
+    expect(captured.contentProps.side).toBe('top');
+  });
+
+  it('stays above when there is even less room below', () => {
+    vi.stubGlobal('innerHeight', 400);
+    openAt(300);
+    expect(captured.contentProps.side).toBe('top');
+    vi.unstubAllGlobals();
   });
 });

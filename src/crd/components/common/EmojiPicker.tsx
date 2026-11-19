@@ -1,7 +1,8 @@
 import type { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
 import { Loader2, Plus } from 'lucide-react';
-import { lazy, type ReactNode, Suspense, useState } from 'react';
+import { lazy, type ReactNode, Suspense, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { REACTION_GLYPHS } from '@/crd/components/reactions/reactionEmoji';
 import { Popover, PopoverContent, PopoverTrigger } from '@/crd/primitives/popover';
 import { SilentErrorBoundary } from './SilentErrorBoundary';
 
@@ -24,6 +25,8 @@ const containScrollGesture = (event: Event) => event.stopPropagation();
 
 const CONTAINED_SCROLL_EVENTS = ['wheel', 'touchmove'] as const;
 
+const PICKER_MAX_HEIGHT_PX = 450;
+
 /** Space kept between the picker and the screen edges on narrow screens. */
 const SCREEN_EDGE_MARGIN_PX = 8;
 
@@ -31,11 +34,32 @@ const SCREEN_EDGE_MARGIN_PX = 8;
 // the margin on both sides, the height to the room Radix reports on the side it
 // opened (less the popover's 1px borders).
 const PICKER_WIDTH = `min(350px, calc(100vw - ${2 * SCREEN_EDGE_MARGIN_PX}px))`;
-const PICKER_HEIGHT = 'min(450px, calc(var(--radix-popover-content-available-height, 450px) - 2px))';
+const PICKER_HEIGHT = `min(${PICKER_MAX_HEIGHT_PX}px, calc(var(--radix-popover-content-available-height, ${PICKER_MAX_HEIGHT_PX}px) - 2px))`;
 
-// Shown first for a reaction. The library builds its whole grid even behind its
-// own quick bar, so the bar is rendered here and the library only on request.
-const QUICK_REACTIONS = ['👍', '❤️', '😃', '😢', '🙏', '👎', '😡'];
+const QUICK_BAR_SIZE = 7;
+
+type StoredEmoji = { unified: string };
+
+// Where the library keeps the emojis picked from its grid (it shows them there
+// as "Frequently Used"), most recent first.
+const LIBRARY_RECENTS_KEY = 'epr_suggested';
+
+const readRecentEmojis = (): string[] => {
+  try {
+    const stored: StoredEmoji[] = JSON.parse(window.localStorage.getItem(LIBRARY_RECENTS_KEY) ?? '[]');
+    return stored.map(({ unified }) =>
+      String.fromCodePoint(...unified.split('-').map(codePoint => Number.parseInt(codePoint, 16)))
+    );
+  } catch {
+    return [];
+  }
+};
+
+// The quick bar for a reaction: what the user last picked from the full grid,
+// filled up with the set offered for reacting to a post. The library builds its
+// whole grid even behind its own quick bar, so the bar is rendered here and the
+// library only on request.
+const quickReactions = () => [...new Set([...readRecentEmojis(), ...REACTION_GLYPHS])].slice(0, QUICK_BAR_SIZE);
 
 const attachScrollContainment = (node: HTMLDivElement | null) => {
   if (!node) return;
@@ -60,8 +84,20 @@ export function EmojiPicker({ onSelect, trigger, mode = 'insert' }: EmojiPickerP
   const { t } = useTranslation('crd-common');
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [side, setSide] = useState<'top' | 'bottom'>('top');
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   const handleOpenChange = (next: boolean) => {
+    // The picker is capped to the room on its side, so it never overflows and
+    // the popover never flips by itself: near the top of the screen it would
+    // stay above the trigger and shrink to a sliver. Open below instead when
+    // the full picker does not fit above and there is more room below.
+    const trigger = triggerRef.current?.getBoundingClientRect();
+    if (next && trigger) {
+      const above = trigger.top;
+      const below = window.innerHeight - trigger.bottom;
+      setSide(above < PICKER_MAX_HEIGHT_PX + SCREEN_EDGE_MARGIN_PX && below > above ? 'bottom' : 'top');
+    }
     setOpen(next);
     if (!next) setExpanded(false);
   };
@@ -75,11 +111,11 @@ export function EmojiPicker({ onSelect, trigger, mode = 'insert' }: EmojiPickerP
 
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
-      <PopoverTrigger asChild={true} onPointerEnter={loadEmojiPickerLib} onFocus={loadEmojiPickerLib}>
+      <PopoverTrigger ref={triggerRef} asChild={true} onPointerEnter={loadEmojiPickerLib} onFocus={loadEmojiPickerLib}>
         {trigger}
       </PopoverTrigger>
       <PopoverContent
-        side="top"
+        side={side}
         align="start"
         collisionPadding={SCREEN_EDGE_MARGIN_PX}
         className="z-[130] w-auto border p-0 shadow-lg"
@@ -87,7 +123,7 @@ export function EmojiPicker({ onSelect, trigger, mode = 'insert' }: EmojiPickerP
       >
         {mode === 'reaction' && !expanded ? (
           <div className="flex items-center gap-0.5 p-1">
-            {QUICK_REACTIONS.map(emoji => (
+            {quickReactions().map(emoji => (
               <button
                 key={emoji}
                 type="button"
