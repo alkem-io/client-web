@@ -60,12 +60,7 @@ export function EmojiPicker({ onSelect, trigger, mode = 'insert' }: EmojiPickerP
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger
-        asChild={true}
-        onPointerDown={loadEmojiPickerLib}
-        onPointerEnter={loadEmojiPickerLib}
-        onFocus={loadEmojiPickerLib}
-      >
+      <PopoverTrigger asChild={true} onPointerEnter={loadEmojiPickerLib} onFocus={loadEmojiPickerLib}>
         {trigger}
       </PopoverTrigger>
       <PopoverContent
@@ -84,11 +79,7 @@ export function EmojiPicker({ onSelect, trigger, mode = 'insert' }: EmojiPickerP
         >
           <Suspense
             fallback={
-              <div
-                data-testid="emoji-picker-loading"
-                className="flex items-center justify-center"
-                style={{ width: PICKER_WIDTH, height: PICKER_HEIGHT }}
-              >
+              <div className="flex items-center justify-center" style={{ width: PICKER_WIDTH, height: PICKER_HEIGHT }}>
                 <Loader2 aria-hidden="true" className="size-6 animate-spin text-muted-foreground" />
               </div>
             }
