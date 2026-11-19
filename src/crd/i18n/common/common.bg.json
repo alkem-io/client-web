@@ -1646,5 +1646,9 @@
   },
   "emojiPicker": {
     "more": "Още емоджита"
+  },
+  "contributorMap": {
+    "pinGroup": "{{count}} участници тук: {{names}}",
+    "pinGroupList": "{{count}} участници тук"
   }
 }
