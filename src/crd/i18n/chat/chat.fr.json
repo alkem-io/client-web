@@ -119,6 +119,8 @@
     "joinVideo": "Rejoindre avec la vidéo",
     "joinAudio": "Rejoindre en audio uniquement",
     "joinedOnThisDevice": "Déjà rejoint sur cet appareil",
+    "preparing": "Préparation de l’appel… Il commence dans un instant.",
+    "dropped": "Impossible de démarrer l’appel. Veuillez réessayer.",
     "overlayLabel": "Appel",
     "close": "Fermer l’appel",
     "license": "Licence open source",
