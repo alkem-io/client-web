@@ -1,18 +1,16 @@
-import { isMessageLike } from './matrixEvents';
+import { isAnswered, isMessageLike, isRing, type RawEvent } from './matrixEvents';
 
 /**
  * The per-room unread count exactly as matrix-adapter computes it: walk
  * backward from the newest event to the user's `m.fully_read` marker counting
  * other people's message-like events, over progressive batches (~285 events at
  * most); when there is no marker, or it is not reached within that window, use
- * the homeserver's own notification count instead.
+ * the homeserver's own notification count instead. On top of that, the other
+ * person's ring counts until the user answers it, so a missed call shows as unread —
+ * only where call entries show.
  */
 
-type ScannedEvent = {
-  readonly eventId: string;
-  readonly type: string;
-  readonly sender: string;
-};
+type ScannedEvent = RawEvent;
 
 type FetchBatch = (from: string | undefined, limit: number) => Promise<{ events: ScannedEvent[]; end?: string }>;
 
@@ -20,21 +18,28 @@ type FetchBatch = (from: string | undefined, limit: number) => Promise<{ events:
 const BATCH_SIZES = [5, 10, 20, 50, 200];
 const WINDOW = BATCH_SIZES.reduce((sum, size) => sum + size, 0);
 
-// Counts other people's message-like events until the marker, continuing a
-// count already started on newer events.
+// Counts other people's entries until the marker, continuing a count already
+// started on newer events. `newer` collects the events walked so far: a join
+// that answers a ring is newer than the ring, so it has been walked already.
 const walk = (
   events: readonly ScannedEvent[],
   markerEventId: string,
   ownUserId: string,
-  count = 0
+  withCalls: boolean,
+  count = 0,
+  newer: ScannedEvent[] = []
 ): { count: number; found: boolean } => {
   for (const event of events) {
     if (event.eventId === markerEventId) {
       return { count, found: true };
     }
-    if (isMessageLike(event.type) && event.sender !== ownUserId) {
+    if (
+      event.sender !== ownUserId &&
+      (isMessageLike(event.type) || (withCalls && isRing(event) && !isAnswered(event, newer)))
+    ) {
       count++;
     }
+    newer.push(event);
   }
   return { count, found: false };
 };
@@ -42,14 +47,16 @@ const walk = (
 const countUnreadMessages = async (
   fetchBatch: FetchBatch,
   markerEventId: string,
-  ownUserId: string
+  ownUserId: string,
+  withCalls = false
 ): Promise<{ count: number; found: boolean }> => {
   let from: string | undefined;
   let count = 0;
+  const newer: ScannedEvent[] = [];
 
   for (const batchSize of BATCH_SIZES) {
     const { events, end } = await fetchBatch(from, batchSize);
-    const step = walk(events, markerEventId, ownUserId, count);
+    const step = walk(events, markerEventId, ownUserId, withCalls, count, newer);
     if (step.found || !end || events.length < batchSize) {
       return { count: step.count, found: true };
     }
@@ -68,6 +75,8 @@ type UnreadInputs = {
   readonly fetchBatch: FetchBatch;
   /** The homeserver's notification count for the room. */
   readonly notificationCount: () => number;
+  /** Whether the other person's unanswered ring counts; off where call entries do not show. */
+  readonly withCalls?: boolean;
 };
 
 const computeUnreadCount = async ({
@@ -76,18 +85,19 @@ const computeUnreadCount = async ({
   loadedNewestFirst,
   fetchBatch,
   notificationCount,
+  withCalls = false,
 }: UnreadInputs): Promise<number> => {
   if (!markerEventId) {
     return notificationCount();
   }
   // The events already in memory answer most recomputes without a fetch; the
   // window matches the walk's own, so the result is the same either way.
-  const loaded = walk(loadedNewestFirst.slice(0, WINDOW), markerEventId, ownUserId);
+  const loaded = walk(loadedNewestFirst.slice(0, WINDOW), markerEventId, ownUserId, withCalls);
   if (loaded.found) {
     return loaded.count;
   }
   try {
-    const { count, found } = await countUnreadMessages(fetchBatch, markerEventId, ownUserId);
+    const { count, found } = await countUnreadMessages(fetchBatch, markerEventId, ownUserId, withCalls);
     return found ? count : notificationCount();
   } catch {
     return notificationCount();

@@ -7,6 +7,9 @@ export type ChatMemberAvatar = {
   avatarUrl?: string;
 };
 
+/** A call entry as the viewer reads it: a call they made, one they were rung for, or one they missed. */
+export type ChatCallKind = 'outgoing' | 'incoming' | 'missed';
+
 /** A row in the unified conversation list. Pure presentational shape. */
 export type ChatListItem = {
   id: string;
@@ -22,6 +25,8 @@ export type ChatListItem = {
    *  media-only message has no `lastMessagePreview`, so the row falls back to
    *  an attachment label instead of rendering a blank line. */
   lastMessageAttachmentCount?: number;
+  /** The last entry is a call: the preview shows its wording instead of a message. */
+  lastMessageCall?: ChatCallKind;
   /** Unsent text for this conversation — shown instead of `lastMessagePreview`. */
   draftPreview?: string;
   /** Pre-formatted relative-time display string for the last message. */
@@ -50,6 +55,8 @@ export type ChatMessage = {
   isOwn: boolean;
   /** Optimistic send, not yet confirmed by the server. */
   isPending?: boolean;
+  /** A call entry rather than a message: rendered as a compact row without author or bubble. */
+  call?: ChatCallKind;
 };
 
 /** A member shown in group settings / used by the group composite avatar. */

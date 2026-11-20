@@ -134,6 +134,11 @@
     },
     "listBadge": "Call active",
     "callingYou": "{{name}} is calling you",
-    "groupCall": "Call in {{name}}"
+    "groupCall": "Call in {{name}}",
+    "entry": {
+      "outgoing": "Outgoing call",
+      "incoming": "Incoming call",
+      "missed": "Missed call"
+    }
   }
 }

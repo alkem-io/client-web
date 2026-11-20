@@ -5,6 +5,7 @@ import {
   GUIDANCE_INTRO_ID,
   injectGuidanceIntro,
   isGuidanceConversation,
+  mapConversationToListItem,
   mapMessageToChatMessage,
   mapReactionsToCommentReactions,
   sortUnifiedConversations,
@@ -160,5 +161,61 @@ describe('withActiveCallsFirst', () => {
   it('keeps the newly-created conversation directly below the pinned one', () => {
     const items = [{ id: 'pinned', pinned: true }, { id: 'new' }, { id: 'call', hasActiveCall: true }];
     expect(withActiveCallsFirst(items, 'new').map(item => item.id)).toEqual(['pinned', 'new', 'call']);
+  });
+});
+
+describe('call entries', () => {
+  const OTHER = 'user-other';
+  const ring = (sender: string, call: ConversationMessage['call']): ConversationMessage => ({
+    id: 'ring',
+    message: '',
+    timestamp: 1_000,
+    sender: { id: sender, displayName: sender },
+    reactions: [],
+    attachments: [],
+    call,
+  });
+
+  it.each([
+    [OTHER, 'unanswered', 'missed'],
+    [OTHER, 'answered', 'incoming'],
+    [OTHER, 'ringing', 'incoming'],
+    [ME, 'unanswered', 'outgoing'],
+    [ME, 'answered', 'outgoing'],
+    [ME, 'ringing', 'outgoing'],
+  ] as const)('a ring from %s that is %s reads as %s, with no author', (sender, outcome, kind) => {
+    const result = mapMessageToChatMessage(ring(sender, outcome), { currentUserId: ME });
+    expect(result).toMatchObject({ call: kind, content: '', timestampMs: 1_000, isOwn: sender === ME });
+    expect(result.author).toBeUndefined();
+  });
+
+  it('leaves ordinary messages without a call kind', () => {
+    const result = mapMessageToChatMessage({ ...ring(OTHER, undefined), message: 'hi' }, { currentUserId: ME });
+    expect(result.call).toBeUndefined();
+    expect(result.author).toMatchObject({ id: OTHER });
+  });
+
+  it.each([
+    [OTHER, 'unanswered', 'missed'],
+    [OTHER, 'answered', 'incoming'],
+    [ME, 'unanswered', 'outgoing'],
+  ] as const)('a list row whose last entry is a ring from %s that is %s previews as %s', (sender, outcome, kind) => {
+    const item = mapConversationToListItem(makeConversation({ lastMessage: ring(sender, outcome) }), {
+      currentUserId: ME,
+      formatTimestamp: () => 'now',
+    });
+    expect(item.lastMessageCall).toBe(kind);
+    expect(item.lastMessageTimestamp).toBe('now');
+  });
+
+  it('a list row whose last entry is a message has no call preview', () => {
+    const item = mapConversationToListItem(
+      makeConversation({ lastMessage: { ...ring(OTHER, undefined), message: 'hi' } }),
+      {
+        currentUserId: ME,
+        formatTimestamp: () => 'now',
+      }
+    );
+    expect(item.lastMessageCall).toBeUndefined();
   });
 });

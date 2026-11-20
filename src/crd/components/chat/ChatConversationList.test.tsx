@@ -89,3 +89,16 @@ describe('ChatConversationList call badge', () => {
     expect(badges[0].closest('li')).not.toHaveTextContent('Other team');
   });
 });
+
+describe('ChatConversationList call preview', () => {
+  test.each(['missed', 'incoming', 'outgoing'] as const)('shows the %s call wording as the preview', kind => {
+    renderList([conversation({ lastMessageCall: kind, lastMessagePreview: '' })]);
+    expect(screen.getByText(`call.entry.${kind}`)).toBeInTheDocument();
+  });
+
+  test('a draft still replaces a call preview', () => {
+    renderList([conversation({ lastMessageCall: 'missed', draftPreview: 'Sorry I missed you' })]);
+    expect(screen.getByText(/Sorry I missed you/)).toBeInTheDocument();
+    expect(screen.queryByText('call.entry.missed')).not.toBeInTheDocument();
+  });
+});

@@ -19,15 +19,17 @@ const message = (index: number, sender = OTHER): ScannedEvent => ({
   eventId: `$${index}`,
   type: 'm.room.message',
   sender,
+  timestamp: index,
+  content: { msgtype: 'm.text', body: `message ${index}` },
 });
 
 describe('computeUnreadCount (matrix-adapter parity)', () => {
   it('counts other people’s messages back to the fully-read marker', async () => {
     const fetchBatch = roomOf([
       message(5),
-      { eventId: '$r', type: 'm.reaction', sender: OTHER },
+      { eventId: '$r', type: 'm.reaction', sender: OTHER, timestamp: 0, content: {} },
       message(4, ME),
-      { eventId: '$s', type: 'm.sticker', sender: OTHER },
+      { eventId: '$s', type: 'm.sticker', sender: OTHER, timestamp: 0, content: {} },
       message(3),
       message(2),
     ]);
@@ -124,5 +126,66 @@ describe('computeUnreadCount (matrix-adapter parity)', () => {
         notificationCount: () => 42,
       })
     ).toBe(42);
+  });
+});
+
+describe('computeUnreadCount call entries', () => {
+  const ring = (eventId: string, timestamp: number, sender = OTHER): ScannedEvent => ({
+    eventId,
+    type: 'org.matrix.msc4075.rtc.notification',
+    sender,
+    timestamp,
+    content: { notification_type: 'ring', lifetime: 30_000 },
+  });
+  const callMember = (eventId: string, timestamp: number, sender: string, content: Record<string, unknown>) => ({
+    eventId,
+    type: 'org.matrix.msc3401.call.member',
+    sender,
+    timestamp,
+    content,
+  });
+  const join = (eventId: string, timestamp: number, sender: string): ScannedEvent =>
+    callMember(eventId, timestamp, sender, { application: 'm.call', call_id: '', device_id: 'D' });
+  const count = (newestFirst: ScannedEvent[], markerEventId: string, loaded = false, withCalls = true) => {
+    const fetchBatch = roomOf(newestFirst);
+    return {
+      fetchBatch,
+      result: computeUnreadCount({
+        markerEventId,
+        ownUserId: ME,
+        loadedNewestFirst: loaded ? newestFirst : [],
+        fetchBatch,
+        notificationCount: () => 99,
+        withCalls,
+      }),
+    };
+  };
+
+  it('counts the other person’s unanswered ring', async () => {
+    expect(await count([ring('$ring', 1_000), message(1)], '$1').result).toBe(1);
+  });
+
+  it('does not count a ring the user answered, even when the join is in an earlier batch', async () => {
+    const newestFirst = [
+      ...Array.from({ length: 6 }, (_, index) => callMember(`$x${index}`, 9_000, OTHER, {})),
+      join('$join', 2_000, ME),
+      ring('$ring', 1_000),
+      message(1),
+    ];
+    expect(await count(newestFirst, '$1').result).toBe(0);
+  });
+
+  it('does not count a ring where calls are not shown', async () => {
+    expect(await count([ring('$ring', 1_000), message(1)], '$1', false, false).result).toBe(0);
+  });
+
+  it('does not count the user’s own ring', async () => {
+    expect(await count([ring('$ring', 1_000, ME), message(1)], '$1').result).toBe(0);
+  });
+
+  it('a ring adds no request when the marker is in memory', async () => {
+    const { fetchBatch, result } = count([ring('$ring', 1_000), message(1)], '$1', true);
+    expect(await result).toBe(1);
+    expect(fetchBatch).not.toHaveBeenCalled();
   });
 });

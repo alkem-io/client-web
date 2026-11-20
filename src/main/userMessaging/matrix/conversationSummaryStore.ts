@@ -1,6 +1,7 @@
 import type { MatrixClient, MatrixEvent, Room } from 'matrix-js-sdk';
 import { useEffect, useSyncExternalStore } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
+import { useCallsShown } from '../calls/useCallEligibility';
 import { lastMessageOf, type ParsedMessage, type RawEvent } from './matrixEvents';
 import {
   CLIENT_ROOM,
@@ -48,6 +49,7 @@ class ConversationSummaryStore {
   private readonly dirty = new Set<string>();
   // Rooms that changed while nobody watched them.
   private readonly stale = new Set<string>();
+  private withCalls = false;
 
   constructor(private readonly client: MatrixClient) {
     client.on(
@@ -102,6 +104,21 @@ class ConversationSummaryStore {
         }
       }) as never
     );
+  }
+
+  /** Shows or hides call entries; every summary computed the other way is computed again. */
+  setWithCalls(withCalls: boolean): void {
+    if (withCalls === this.withCalls) {
+      return;
+    }
+    this.withCalls = withCalls;
+    for (const alkemioRoomId of this.summaries.keys()) {
+      if (this.watchers.has(alkemioRoomId)) {
+        this.schedule(alkemioRoomId);
+      } else {
+        this.stale.add(alkemioRoomId);
+      }
+    }
   }
 
   /** The Alkemio room id of a watched conversation's Matrix room, if any. */
@@ -216,6 +233,7 @@ class ConversationSummaryStore {
           loadedNewestFirst: [...loaded].reverse(),
           fetchBatch,
           notificationCount: () => notificationCount(room),
+          withCalls: this.withCalls,
         }),
       ]);
       const next = new Map(this.summaries);
@@ -234,14 +252,18 @@ class ConversationSummaryStore {
     fetchBatch: ReturnType<typeof fetchBackward>,
     homeserver: string
   ): Promise<ParsedMessage | undefined> {
-    const local = lastMessageOf(live, homeserver);
+    const options = { withCalls: this.withCalls };
+    const local = lastMessageOf(live, homeserver, options);
     if (local) {
       return local;
     }
     let from: string | undefined;
+    // Oldest first: a ring found in history is judged by everything newer the client holds.
+    let scanned = live;
     for (const batchSize of BATCH_SIZES) {
       const { events, end } = await fetchBatch(from, batchSize);
-      const found = lastMessageOf([...events].reverse(), homeserver);
+      scanned = [...[...events].reverse(), ...scanned];
+      const found = lastMessageOf(scanned, homeserver, options);
       if (found) {
         return found;
       }
@@ -275,7 +297,12 @@ const noSubscription = () => () => {};
 const useConversationSummaries = (alkemioRoomIds: readonly string[]): Summaries | undefined => {
   const client = useMatrixClient();
   const store = client ? storeFor(client) : null;
+  const withCalls = useCallsShown();
   const watchKey = [...alkemioRoomIds].sort().join(',');
+
+  useEffect(() => {
+    store?.setWithCalls(withCalls);
+  }, [store, withCalls]);
 
   useEffect(() => {
     if (!store || watchKey === '') {

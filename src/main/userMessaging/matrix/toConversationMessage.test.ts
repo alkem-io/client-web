@@ -32,6 +32,14 @@ describe('toConversationMessage', () => {
     });
   });
 
+  it('carries a call entry outcome', () => {
+    const message = toConversationMessage(parsed({ body: '', call: 'unanswered' }), {
+      members: [member('alice', 'Alice')],
+      otherProfiles: new Map(),
+    });
+    expect(message.call).toBe('unanswered');
+  });
+
   it('uses a looked-up profile for a former member, and no profile when the lookup gave none', () => {
     const context = {
       members: [],

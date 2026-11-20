@@ -134,6 +134,11 @@
     },
     "listBadge": "Llamada activa",
     "callingYou": "{{name}} te está llamando",
-    "groupCall": "Llamada en {{name}}"
+    "groupCall": "Llamada en {{name}}",
+    "entry": {
+      "outgoing": "Llamada saliente",
+      "incoming": "Llamada entrante",
+      "missed": "Llamada perdida"
+    }
   }
 }

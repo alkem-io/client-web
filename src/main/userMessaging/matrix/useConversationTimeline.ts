@@ -1,6 +1,7 @@
 import type { MatrixClient, MatrixEvent, Room } from 'matrix-js-sdk';
 import { useEffect, useState } from 'react';
 import { useMatrixClient, useMatrixSessionEstablishing } from '@/core/matrix/activeClient';
+import { useCallsShown } from '../calls/useCallEligibility';
 import { newestMessageLikeId, type ParsedMessage, projectMessages } from './matrixEvents';
 import {
   CLIENT_ROOM,
@@ -50,6 +51,7 @@ const useConversationTimeline = (alkemioRoomId: string | null): Omit<TimelineSta
   const client = useMatrixClient();
   const establishing = useMatrixSessionEstablishing();
   const roomKey = client && alkemioRoomId ? alkemioRoomId : null;
+  const withCalls = useCallsShown();
   const [state, setState] = useState<TimelineState>({
     roomKey: null,
     messages: [],
@@ -71,8 +73,8 @@ const useConversationTimeline = (alkemioRoomId: string | null): Omit<TimelineSta
         const events = liveEvents(room);
         setState({
           roomKey,
-          messages: projectMessages(events, homeserver),
-          readUpToEventId: newestMessageLikeId(events),
+          messages: projectMessages(events, homeserver, { withCalls }),
+          readUpToEventId: newestMessageLikeId(events, withCalls),
           isLoading: loading,
         });
       }
@@ -161,7 +163,7 @@ const useConversationTimeline = (alkemioRoomId: string | null): Omit<TimelineSta
       client.removeListener(CLIENT_ROOM as never, onRoom as never);
       client.removeListener(CLIENT_SYNC as never, onSync as never);
     };
-  }, [client, roomKey]);
+  }, [client, roomKey, withCalls]);
 
   if (!client) {
     // Without a client the thread waits only while the session is being established
