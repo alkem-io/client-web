@@ -105,7 +105,8 @@ type CalloutDetailDialogLayerProps = Omit<CalloutDetailDialogConnectorProps, 'ta
   /** Set on the callout-level dialog of a Tasks board: the board replaces the responses grid. */
   taskBoardView?: {
     onOpenTask: (contributionId: string) => void;
-    onOpenBoardView: () => void;
+    /** `launcher` is the control that opened it, so focus can return there on close. */
+    onOpenBoardView: (launcher: HTMLElement) => void;
   };
 };
 
@@ -303,7 +304,9 @@ export function CalloutDetailDialogConnector({ taskBoard = false, ...props }: Ca
 
   // Same as the feed card's fullscreen control: the board-only view opens in
   // browser fullscreen, which must be requested inside the click gesture.
-  const openBoardView = () => {
+  const boardViewLauncherRef = useRef<HTMLElement | null>(null);
+  const openBoardView = (launcher: HTMLElement) => {
+    boardViewLauncherRef.current = launcher;
     const request = document.documentElement.requestFullscreen?.();
     if (request) request.catch(() => {});
     setBoardViewOpen(true);
@@ -326,6 +329,12 @@ export function CalloutDetailDialogConnector({ taskBoard = false, ...props }: Ca
           open={true}
           onOpenChange={setBoardViewOpen}
           onOpenTask={setFocusedTaskId}
+          // The board-only view has no trigger, so focus would drop to the page
+          // body on close: send it back to the control that opened it.
+          onCloseAutoFocus={event => {
+            event.preventDefault();
+            boardViewLauncherRef.current?.focus();
+          }}
         />
       )}
       {taskBoard && open && focusedTaskId && (
@@ -693,7 +702,7 @@ function CalloutDetailDialogLayer({
       className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full"
       aria-label={t('callout.fullscreen')}
       title={t('callout.fullscreen')}
-      onClick={taskBoardView.onOpenBoardView}
+      onClick={event => taskBoardView.onOpenBoardView(event.currentTarget)}
     >
       <Maximize className="size-5" aria-hidden="true" />
     </Button>

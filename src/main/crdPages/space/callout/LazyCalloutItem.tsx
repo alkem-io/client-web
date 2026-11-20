@@ -130,6 +130,15 @@ function LazyCalloutItemContent({
   const [boardDialogOpen, setBoardDialogOpen] = useState(false);
   // The task shown in its focused dialog on top of the board-only dialog.
   const [boardTaskId, setBoardTaskId] = useState<string | undefined>();
+  // A task clicked in the inline board, waiting for the board-only dialog to
+  // mount. Mounted in the same pass, the board dialog would hide the task
+  // dialog from assistive technology.
+  const [queuedBoardTaskId, setQueuedBoardTaskId] = useState<string | undefined>();
+  useEffect(() => {
+    if (!boardDialogOpen || !queuedBoardTaskId) return;
+    setBoardTaskId(queuedBoardTaskId);
+    setQueuedBoardTaskId(undefined);
+  }, [boardDialogOpen, queuedBoardTaskId]);
   const [initialContributionId, setInitialContributionId] = useState<string | undefined>();
   const [initialMemoId, setInitialMemoId] = useState<string | undefined>();
   const [initialPostId, setInitialPostId] = useState<string | undefined>();
@@ -313,7 +322,7 @@ function LazyCalloutItemContent({
         // Clicking a task in the inline preview presents it on top of the board
         // dialog: open the board dialog and the task's focused dialog above it.
         setBoardDialogOpen(true);
-        setBoardTaskId(contributionId);
+        setQueuedBoardTaskId(contributionId);
       }}
     />
   ) : (

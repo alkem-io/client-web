@@ -249,6 +249,8 @@ describe('a Tasks board callout opened by its link', () => {
     await user.keyboard('{Escape}');
     expect(screen.queryByTestId('board-only-view')).not.toBeInTheDocument();
     expect(within(calloutDetailDialog()).getByTestId('inline-board')).toBeInTheDocument();
+    // Keyboard users land back on the control that opened it, not on the page body.
+    expect(within(calloutDetailDialog()).getByRole('button', { name: 'callout.fullscreen' })).toHaveFocus();
   });
 
   it('opens a deep-linked task as a focused dialog on top of the callout detail', async () => {
@@ -342,5 +344,7 @@ describe('a Tasks board callout opened from its feed card', () => {
     expect(screen.getByTestId('board-only-view')).toBeInTheDocument();
     expect(screen.getByTestId('focused-task')).toBeInTheDocument();
     expect(screen.queryByText('Read this before picking up a task.')).not.toBeInTheDocument();
+    // The task dialog is the top layer, so assistive technology must reach it.
+    expect(screen.getByTestId('focused-task').closest('[aria-hidden="true"]')).toBeNull();
   });
 });
