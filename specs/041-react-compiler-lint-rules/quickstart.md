@@ -16,12 +16,12 @@ Write plain expressions and functions — let the compiler optimize:
 
 ```tsx
 // Before (fails lint)
-const sorted = useMemo(() => items.sort(compareFn), [items]);
+const sorted = useMemo(() => [...items].sort(compareFn), [items]);
 const handleClick = useCallback(() => doSomething(id), [id]);
 export default memo(MyComponent);
 
 // After (correct)
-const sorted = items.sort(compareFn);
+const sorted = [...items].sort(compareFn);
 const handleClick = () => doSomething(id);
 export default MyComponent;
 ```

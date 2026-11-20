@@ -103,18 +103,14 @@ listener counts are flat → **no leak detected.** ✓ SC-005.
 
 | ID | Criterion | Status |
 |---|---|---|
-| SC-001 | New memoization triggers a lint warning | ✅ verified |
+| SC-001 | New memoization fails lint (error level) | ✅ verified |
 | SC-002 | No-memoization policy discoverable in CLAUDE.md | ✅ (State & Hooks + React Compiler sections) |
 | SC-003 | Client metrics ≥ baseline | ✅ production Lighthouse 94–95/100, LCP ~1.3s (baseline non-comparable — see §4) |
 | SC-004 | Bundle within +0.5% of 14.19 MiB | ⚠️ 15.26 MiB; delta is product growth over 471 commits, not this PR (see §3) |
-| SC-005 | No new memory leaks | ✅ 0.27% growth, stable |
-| SC-006 | Documented exceptions allowed via eslint-disable | ✅ warn-level; suppressible with a reason comment |
+| SC-005 | No new memory leaks | ✅ −0.04% growth, stable |
+| SC-006 | Documented exceptions allowed via eslint-disable | ✅ error-level; suppressible only with a mandatory `-- <reason>` comment |
 
 ## 7. Deferred (out of this PR)
 
-- **T006/T007** — flip the rule `warn → error` + add `eslint-disable` reason comments to
-  the permanent exception files. Blocked until the remaining domain memoization is
-  migrated and `pnpm eslint .` reports zero `no-restricted-syntax` warnings outside those
-  files. Follow-up.
-- **T017** — post-deployment Sentry/Elastic APM RUM review for one week after the change
-  ships. Requires a production release; observational, cannot be done in-PR.
+- **T017 observation** — the monitoring plan is delivered (`post-deployment-monitoring.md`); the one-week
+  Sentry/Elastic APM RUM review runs after the change ships. Requires a production release; observational, cannot be done in-PR.

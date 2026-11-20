@@ -3,7 +3,7 @@
 **Input**: Design documents from `/specs/041-react-compiler-lint-rules/`
 **Prerequisites**: plan.md (required), spec.md (required), research.md, quickstart.md
 
-**Tests**: No test tasks generated — the existing test suite (1940 passed, 2 skipped across 232 test files) and ESLint validation serve as regression gates. Each task validates with `pnpm vitest run` and/or `pnpm eslint src/`.
+**Tests**: No test tasks generated — the existing test suite (1940 passed, 2 skipped across 232 test files) and ESLint validation serve as regression gates. Each task validates with `pnpm vitest run` and/or `pnpm eslint .` (`pnpm lint` runs TypeScript type-checking + Biome + ESLint). Locale caveat: one pre-existing test (`budgetMeter.test.tsx`) fails only under a non-en-US local ICU; it passes in CI (see T011).
 
 **Organization**: Tasks grouped by user story. US1 (P1) is the core deliverable. US2 (P2) is documentation. US3 (P3) is validation (partially deferred pending backend availability).
 
@@ -77,7 +77,7 @@
 ### Implementation
 
 - [x] T011 [US3] Run full test suite: `pnpm vitest run` — 1940 passed, 2 skipped, 232 test files. One pre-existing failure (`src/main/assistant/__tests__/budgetMeter.test.tsx`) is a locale/`Intl.NumberFormat` grouping-separator mismatch (local ICU renders `25 000`, test expects `25,000`); it is unrelated to this PR (0 `src/` changes) and passes in the CI en-US locale.
-- [x] T012 [US3] Run ESLint validation: `pnpm eslint .` — 0 errors, 28 warnings
+- [x] T012 [US3] Run ESLint validation: `pnpm eslint .` — 0 errors, 28 warnings at the time (warn level, before T006/T007). Final state after T006/T007/T026: **0 errors, 0 warnings** at error level.
 - [x] T013 [P] [US3] Run production build: `pnpm build` — succeeds in ~48s, 0 errors. Production bundle: 15.26 MiB JS raw / 516 chunks + 0.37 MiB CSS. See `benchmark-results.md`. NB: the +7.5% vs the 14.19 MiB March baseline reflects 471 commits of product work since (net of full MUI removal), **not** this build-neutral PR (which adds only a lint rule + docs and touches no runtime code).
 - [x] T014 [P] [US3] Bundle size measured directly from `build/` output and recorded in `benchmark-results.md`. (`build/stats.html` visualization requires `pnpm analyze` / `ANALYZE=true` and was not regenerated — not needed to record the size delta.)
 - [x] T015 [US3] Run Lighthouse benchmarks: served the production build on `localhost:3000` and ran `node scripts/performance-benchmark.mjs post-migration-final`. Results in `benchmark-results.md`. NB: routes load as static shells (no GraphQL backend), and the March baseline was a dev-server capture, so the numbers are a fresh snapshot rather than a rigorous before/after — see the caveats in the report.
@@ -114,22 +114,21 @@
 ### Phase Dependencies
 
 - **Foundational (Phase 2)**: No dependencies — can start immediately
-- **US1 Lint Rules (Phase 3)**: Depends on Phase 2 completion. T006-T007 blocked on external dependency (T040-T042 from 023-react-compiler-adoption)
+- **US1 Lint Rules (Phase 3)**: Depends on Phase 2 completion. T006-T007 completed in-PR by annotating every remaining usage (no longer blocked on 023 T040-T042)
 - **US2 Documentation (Phase 4)**: Can run in parallel with Phase 3 (different files)
-- **US3 Validation (Phase 5)**: Can run in parallel with Phase 3 and 4. T015-T017 deferred (require backend/production)
+- **US3 Validation (Phase 5)**: Can run in parallel with Phase 3 and 4. T015-T016 done against the served production build; T017 monitoring plan done, only the post-deploy observation remains
 - **Polish (Phase 6)**: Depends on all previous phases
 
 ### User Story Dependencies
 
-- **US1 (P1) Lint Rules**: Can start after Foundational. Core tasks (T003-T005) are independent. T006-T007 blocked on external migration work.
+- **US1 (P1) Lint Rules**: Can start after Foundational. Core tasks (T003-T005) are independent. T006-T007 done (error level, every exception annotated).
 - **US2 (P2) Documentation**: Independent of US1 — modifies different files (CLAUDE.md vs eslint.config.mjs)
-- **US3 (P3) Validation**: Independent of US1 and US2. T013-T014 can run immediately. T015-T017 deferred.
+- **US3 (P3) Validation**: Independent of US1 and US2. T013-T016 done. T017 plan done; observation deferred to post-deploy.
 
 ### External Dependencies
 
-- **T040-T042 from 023-react-compiler-adoption**: Remove memoization from domain/common, domain/space, domain/collaboration. Blocks T006 (warn → error transition).
-- **Running Alkemio backend**: Blocks T015 (Lighthouse), T016 (memory). Not needed for T013-T014 (build, bundle analysis).
-- **Production deployment**: Blocks T017 (post-deployment monitoring).
+- **T040-T042 from 023-react-compiler-adoption**: no longer a blocker — T006 shipped by annotating the remaining usages (T007) and T026 removed the non-essential ones.
+- **Production deployment**: Blocks only the T017 post-deployment *observation* (the monitoring plan itself is delivered in `post-deployment-monitoring.md`).
 
 ### Parallel Opportunities
 
@@ -144,17 +143,17 @@
 ### MVP First (US1 Only — Phase 3)
 
 1. Complete Phase 2: Audit codebase state
-2. Complete Phase 3: Add lint rules at warn level
-3. **STOP and VALIDATE**: `pnpm eslint src/` → 0 errors, warnings only on known files
+2. Complete Phase 3: Add lint rules (started at warn, shipped at error)
+3. **STOP and VALIDATE**: `pnpm eslint .` → 0 errors, 0 warnings
 4. This alone prevents reintroduction — the primary goal of the issue
 
 ### Incremental Delivery
 
 1. Foundational → Codebase audit complete
-2. Add US1 (Lint Rules) → Warn-level enforcement active → MVP done
+2. Add US1 (Lint Rules) → Error-level enforcement active → MVP done
 3. Add US2 (Documentation) → Policy discoverable by developers
-4. Add US3 (Validation) → Build + bundle verified → Benchmarks when backend available
-5. T006 (warn → error) → After T040-T042 complete externally
+4. Add US3 (Validation) → Build + bundle + Lighthouse/INP/memory captured on the served production build
+5. T006 (warn → error) → done in-PR (T007 annotations, T026 removals)
 
 ---
 
@@ -162,8 +161,8 @@
 
 - [P] tasks = different files, no dependencies
 - [Story] label maps task to specific user story for traceability
-- T006-T007 are blocked on external work (remaining domain memoization migrations) — they should be completed in a follow-up once those land and `pnpm eslint .` reports zero `no-restricted-syntax` warnings outside documented exception files
-- T017 is deferred — it requires a production deployment + one week of observation
+- T006-T007 are done — the rule is error-level and `pnpm eslint .` is clean
+- T017: the monitoring plan is done; only the one-week post-deployment observation (findings log + sign-off) remains, after release
 - Final state: the rule is **error**-level with **4** `no-restricted-syntax` exceptions across 4 files (Apollo links/client, cookie-consent ref), plus 1 `react-compiler` exception in `GlobalErrorContext.tsx`. `pnpm eslint .` is clean (0 errors, 0 warnings). (11 across 8 files at T026 time; the 2026-09-06 `develop` reconciliation removed the Yjs/TipTap and Excalidraw cases — see quickstart › Documented Exceptions.)
 - Commit after each logical group of tasks
-- PR description MUST note that Lighthouse/memory validation (T015-T016) is deferred pending backend availability and must complete before production release per Constitution Principle V (Experience Quality & Safeguards)
+- PR description MUST note that the T017 post-deployment RUM observation is still to run after release per Constitution Principle V (Experience Quality & Safeguards); T015-T016 were captured against the served production build
